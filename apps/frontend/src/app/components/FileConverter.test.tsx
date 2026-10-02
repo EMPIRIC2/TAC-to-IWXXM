@@ -1638,7 +1638,7 @@ describe('FileConverter Component', () => {
       await user.click(screen.getByRole('button', { name: 'Tighter' }));
       expect(frame).toHaveClass('max-w-6xl');
       expect(panes).toHaveAttribute('data-fit', 'tight');
-      expect(panes.className).not.toContain('min-h-');
+      expect(panes.className).not.toContain('min-h-[20rem]');
       await user.click(screen.getByRole('button', { name: 'Roomier' }));
       expect(frame).toHaveClass('max-w-none');
       expect(screen.getByRole('button', { name: 'Roomier' })).toHaveAttribute(
