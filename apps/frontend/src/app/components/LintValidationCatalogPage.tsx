@@ -681,7 +681,7 @@ export function LintValidationCatalogPage({
       className="min-h-screen bg-gray-50 p-6 dark:bg-gray-900"
       data-testid="lint-validation-catalog-page"
     >
-      <div className="mx-auto max-w-6xl space-y-6">
+      <div className="mx-auto w-full max-w-none space-y-6">
         <div>
           <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
             {LINT_VALIDATION_CATALOG_PAGE_TITLE}

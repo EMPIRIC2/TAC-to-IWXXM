@@ -60,6 +60,18 @@ describe('DecodeVisualsPage', () => {
     expect(screen.getByTestId('decode-visuals-empty')).toBeInTheDocument();
   });
 
+  it('suggests stations that start with the typed letters', async () => {
+    publishDecodeVisuals({ station: '', segments: [] });
+    const user = userEvent.setup();
+    render(<DecodeVisualsPage />);
+    await user.type(screen.getByTestId('decode-visuals-station'), 'KJ');
+    expect(screen.getByTestId('icao-suggestion-KJFK')).toHaveTextContent('Kennedy');
+    await user.click(screen.getByTestId('icao-suggestion-KJFK'));
+    expect(screen.getByTestId('decode-visuals-station')).toHaveValue('KJFK');
+    expect(screen.getByTestId('decode-visuals-heading')).toHaveTextContent('Kennedy');
+    publishDecodeVisuals({ station: '', segments: [] });
+  });
+
   it('lets the operator clear a published station down to an empty field', async () => {
     publishDecodeVisuals({
       station: 'T',

@@ -3,6 +3,7 @@
  */
 
 import { useState, useSyncExternalStore } from 'react';
+import { IcaoAutocomplete } from '@/app/components/IcaoAutocomplete';
 import { StationMinimap } from '@/app/components/StationMinimap';
 import { WindCue } from '@/app/components/WindCue';
 import { stationDisplayName } from '@/utils/decodeVisuals';
@@ -35,25 +36,21 @@ export function DecodeVisualsPage() {
 
   return (
     <section
-      className="mx-auto max-w-3xl space-y-4 px-4 py-6"
+      className="mx-auto flex min-h-[calc(100dvh-4rem)] w-full max-w-none flex-col gap-4 px-4 py-6"
       data-testid="decode-visuals-page"
     >
       <h1 className="text-xl font-semibold text-gray-900 dark:text-white">
         {DECODE_VISUALS_TITLE}
       </h1>
       <p className="text-sm text-gray-600 dark:text-gray-300">{DECODE_VISUALS_INTRO}</p>
-      <label className="block text-sm text-gray-800 dark:text-gray-100">
-        {DECODE_VISUALS_STATION_LABEL}
-        <input
-          className="mt-1 w-full max-w-xs rounded border border-gray-300 bg-white px-2 py-1 font-mono text-sm dark:border-gray-600 dark:bg-gray-900"
-          value={draft ?? published.station}
-          onChange={(event) => setDraft(event.target.value.toUpperCase())}
-          data-testid="decode-visuals-station"
-          aria-label={DECODE_VISUALS_STATION_LABEL}
-          autoComplete="off"
-          spellCheck={false}
-        />
-      </label>
+      <IcaoAutocomplete
+        id="decode-visuals-station-input"
+        label={DECODE_VISUALS_STATION_LABEL}
+        value={draft ?? published.station}
+        onChange={(value) => setDraft(value.toUpperCase())}
+        inputTestId="decode-visuals-station"
+        className="max-w-xl"
+      />
       {complete ? (
         <>
           <p

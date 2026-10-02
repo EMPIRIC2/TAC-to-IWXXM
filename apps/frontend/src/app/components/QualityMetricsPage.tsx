@@ -236,7 +236,7 @@ export function QualityMetricsPage({
       className="min-h-screen overflow-x-hidden bg-gray-50 p-6 dark:bg-gray-900"
       data-testid="quality-metrics-page"
     >
-      <div className="mx-auto max-w-5xl space-y-6">
+      <div className="mx-auto w-full max-w-none space-y-6">
         {!detailOnly ? (
           <>
             <div>

@@ -79,7 +79,7 @@ function StationMinimapLoaded({ icao }: StationMinimapProps) {
   return (
     <div
       ref={host}
-      className="z-0 h-64 w-full max-w-md overflow-hidden rounded border border-gray-200 dark:border-gray-700"
+      className="z-0 h-[min(36rem,calc(100dvh-18rem))] min-h-[20rem] w-full overflow-hidden rounded border border-gray-200 dark:border-gray-700"
       data-testid="station-map"
       role="img"
       aria-label={`Map of ${point.name}`}
