@@ -60,7 +60,9 @@ Supported database dialects include PostgreSQL, MySQL, SQLite, and SQL Server (v
 
 Preflight and send share a common `SinkAdapter` protocol. Unit tests mock transports;
 integration tests can use the Compose wis2box harness under
-`packages/dissemination/docker/wis2box-harness`.
+`packages/dissemination/docker/wis2box-harness`. That harness is a local MQTT
+and HTTP stand-in. The reference WIS2 node is
+[World-Meteorological-Organization/wis2box](https://github.com/World-Meteorological-Organization/wis2box).
 
 ## COLLECT / multi-version namespaces
 

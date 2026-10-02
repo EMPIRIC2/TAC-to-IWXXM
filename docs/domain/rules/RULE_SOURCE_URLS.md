@@ -435,14 +435,16 @@ Full ranking: [mining/wmo-im-org-mining-notes.md](../mining/wmo-im-org-mining-no
 | Repo | URL | Role | Label | Caveats |
 |------|-----|------|-------|---------|
 | collect | https://github.com/wmo-im/collect | bulletin lineage | historical (content = pin) | `1.2/collect.xsd` **byte-identical** to vendor `externalSchema/.../collect/1.2/`; prefer vendor for CI |
+| wis2box (reference node) | https://github.com/World-Meteorological-Organization/wis2box | F17 runtime home | informative | Canonical node is the **WMO org** repo, not `wmo-im`. Project harness stays the Compose stand-in |
 | wis2-cookbook (aviation) | https://github.com/wmo-im/wis2-cookbook (`publishing-aviation-data.adoc`) | WIS2 publish / Annex 3 use-rights | informative | Recommended policy + license; not TAC grammar |
-| wis2-topic-hierarchy | https://github.com/wmo-im/wis2-topic-hierarchy | F8 topic routing | normative-exchange (WIS2) | Aviation leaves **only** `metar`, `taf`, `qvaci` |
+| wis2-topic-hierarchy | https://github.com/wmo-im/wis2-topic-hierarchy | F8 topic routing | normative-exchange (WIS2) | Aviation leaves **only** `metar`, `taf`, `qvaci` (re-read 2026-10-02) |
+| wis2-notification-message | https://github.com/wmo-im/wis2-notification-message | MQP notification | normative-exchange (WIS2) | Encoding spec. The harness does not emit this GeoJSON |
 | wis2-guide (§2.8.1.1) | https://github.com/wmo-im/wis2-guide | WIS2↔SWIM / IWXXM format | informative | IWXXM for SWIM; WIS2 **does not** group bulletins; COLLECT AHL as optional unique ID |
 | GTStoWIS2 | https://github.com/wmo-im/GTStoWIS2 | historical AHL→topic | historical | Archived; richer T1T2 than current WTH — lineage only |
 | CCT | https://github.com/wmo-im/CCT | 306 Vol I.2 common tables | normative-vocabulary | Not aviation TAC FM / 4678 |
 | saf / metce / opm / met-basic | github.com/wmo-im/{saf,metce,opm,met-basic} | schema lineage | historical | Prefer **publish** https://schemas.wmo.int/{metce,opm,saf}/ + vendor `externalSchema`; saf **deprecated** (1.0–1.1 only; obsolete since IWXXM 2.0RC1); opm repo **archived**. METCE/OPM runtime = **1.2**; SAF = historical — [METCE](../mining/schemas-wmo-int-metce-mining-notes.md) · [OPM](../mining/schemas-wmo-int-opm-mining-notes.md) · [SAF](../mining/schemas-wmo-int-saf-mining-notes.md) |
 
-**Not useful for Annex 3 TAC / IWXXM conversion:** BUFR4, GRIB2, WMDR/WCMP*, Hydro/WHOS, wis2box services, pymetdecoder (SYNOP-only), VolumeC1 (CCCC freeze).
+**Not useful for Annex 3 TAC / IWXXM conversion:** BUFR4, GRIB2, WMDR/WCMP*, Hydro/WHOS, pymetdecoder (SYNOP-only), VolumeC1 (CCCC freeze). wis2box is not an encode source; its runtime home for F17 citation is the WMO org repository above.
 
 ### Tier A local clones (deep mine 2026-07-14)
 
