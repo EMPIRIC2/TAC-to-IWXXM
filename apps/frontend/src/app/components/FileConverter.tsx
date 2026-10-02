@@ -4006,6 +4006,8 @@ export function FileConverter({
               <ErrorLogPanel
                 log={conversionLog}
                 minLogLevel={conversionParams.logLevel as ConvertLogLevel}
+                catalogByCode={lintCatalogByCode}
+                onOpenCatalog={onOpenCatalog}
               />
             )}
 
