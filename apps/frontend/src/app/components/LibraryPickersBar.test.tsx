@@ -59,6 +59,15 @@ describe('LibraryPickersBar', () => {
     expect(screen.getByTestId('decoding-library-select-reason')).toHaveTextContent(
       'WMO baseline',
     );
+    expect(screen.getByTestId('decoding-library-select')).toHaveTextContent(
+      'ICAO / WMO Annex 3 (2025)',
+    );
+    expect(screen.getByTestId('tac-validation-library-select')).toHaveTextContent(
+      'United States (FAA/NWS)',
+    );
+    expect(screen.getByTestId('decoding-library-select')).not.toHaveTextContent(
+      'decoding ·',
+    );
 
     fireEvent.change(screen.getByTestId('conversion-library-select'), {
       target: { value: defaultLibraryId('conversion', 'US_FAA_NWS') },
@@ -84,6 +93,9 @@ describe('LibraryPickersBar', () => {
           ),
           label: `${kind} · CA_ECCC`,
         },
+        ...(kind === 'conversion'
+          ? [{ id: 'custom-asset', label: 'Kept custom' }]
+          : []),
       ],
     }));
     const onOpenCatalog = vi.fn();
@@ -104,6 +116,10 @@ describe('LibraryPickersBar', () => {
         ).map((opt) => opt.getAttribute('value')),
       ).toContain(defaultLibraryId('conversion', 'CA_ECCC'));
     });
+    expect(screen.getByTestId('conversion-library-select')).toHaveTextContent(
+      'Canada (ECCC)',
+    );
+    expect(screen.getByRole('option', { name: 'Kept custom' })).toBeInTheDocument();
     fireEvent.click(screen.getByTestId('conversion-library-catalog-link'));
     expect(onOpenCatalog).toHaveBeenCalledWith('conversion');
     fireEvent.click(screen.getByTestId('tac-validation-library-catalog-link'));

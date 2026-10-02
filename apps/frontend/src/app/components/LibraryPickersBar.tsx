@@ -6,7 +6,10 @@
 import { useCallback, useEffect, useState } from 'react';
 
 import { fetchSelectionOptions, type SelectionOptionKind } from '../../utils/api';
-import { libraryChoiceReason } from '../../utils/libraryChoiceReason';
+import {
+  libraryChoiceReason,
+  libraryDisplayName,
+} from '../../utils/libraryChoiceReason';
 import { defaultLibraryId } from '../../utils/libraryIds';
 import {
   CONVERT_LIBRARY_CATALOG_LINK,
@@ -115,10 +118,10 @@ export type LibraryPickersBarProps = {
  */
 function guestOptions(kind: ConvertSelectKind): SelectOption[] {
   const lines = ['ICAO_2025', 'US_FAA_NWS', 'CA_ECCC'];
-  return lines.map((line) => ({
-    id: defaultLibraryId(kind, line),
-    label: `${kind.replaceAll('_', ' ')} · ${line}`,
-  }));
+  return lines.map((line) => {
+    const id = defaultLibraryId(kind, line);
+    return { id, label: libraryDisplayName(id) };
+  });
 }
 
 /**
@@ -165,7 +168,10 @@ export function LibraryPickersBar({
           const res = await fetchSelectionOptions({ kind: meta.kind });
           next[meta.kind] =
             res.options.length > 0
-              ? res.options.map((o) => ({ id: o.id, label: o.label }))
+              ? res.options.map((o) => ({
+                  id: o.id,
+                  label: libraryDisplayName(o.id, o.label),
+                }))
               : guestOptions(meta.kind);
         } catch {
           next[meta.kind] = guestOptions(meta.kind);
