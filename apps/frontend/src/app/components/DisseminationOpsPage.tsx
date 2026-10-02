@@ -165,7 +165,7 @@ function DisseminationOpsAuthed({ accessToken }: AuthedOpsProps) {
 
   return (
     <div
-      className="mx-auto max-w-4xl space-y-6 px-4 py-8"
+      className="mx-auto min-h-[calc(100dvh-4rem)] w-full max-w-none space-y-6 px-4 py-8"
       data-testid="dissemination-ops-page"
     >
       <header>
@@ -382,7 +382,7 @@ export function DisseminationOpsPage({
   if (!accessToken) {
     return (
       <div
-        className="mx-auto max-w-3xl px-4 py-10"
+        className="mx-auto min-h-[calc(100dvh-4rem)] w-full max-w-none px-4 py-10"
         data-testid="dissemination-ops-page"
       >
         <div className="flex flex-wrap items-center gap-2">

@@ -915,11 +915,11 @@ describe('LintValidationCatalogPage', () => {
     render(<LintValidationCatalogPage />);
     expect(await screen.findByTestId('catalog-rule-example-pass')).toHaveAttribute(
       'data-tone',
-      'unavailable',
+      'pass',
     );
     expect(screen.getByTestId('catalog-rule-example-fail')).toHaveAttribute(
       'data-tone',
-      'unavailable',
+      'fail',
     );
 
     await user.click(
@@ -947,7 +947,12 @@ describe('LintValidationCatalogPage', () => {
     );
     expect(screen.getByTestId('catalog-rule-example-pass')).toHaveAttribute(
       'data-tone',
-      'unavailable',
+      'pass',
+    );
+    expect(screen.getByTestId('catalog-rule-example-pass')).toHaveTextContent('DTG:');
+    expect(screen.getByTestId('catalog-rule-example-fail')).toHaveAttribute(
+      'data-tone',
+      'fail',
     );
     expect(screen.getByTestId('catalog-rule-example-fail')).toHaveTextContent(
       'VA ADVISORY',

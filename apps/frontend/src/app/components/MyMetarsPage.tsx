@@ -180,7 +180,7 @@ export function MyMetarsPage({
 
   return (
     <div className="min-h-screen bg-gray-50 p-6 dark:bg-gray-900">
-      <div className="mx-auto max-w-4xl space-y-6">
+      <div className="mx-auto w-full max-w-none space-y-6">
         <div className="flex items-center justify-between gap-4">
           <div>
             <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">

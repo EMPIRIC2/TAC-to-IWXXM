@@ -163,6 +163,7 @@ export function IcaoAutocomplete({
               type="button"
               onClick={() => handleSuggestionClick(airport)}
               className="w-full px-3 py-2 text-left hover:bg-gray-100 dark:hover:bg-gray-700 flex flex-col border-b border-gray-200 dark:border-gray-700 last:border-0"
+              data-testid={`icao-suggestion-${airport.icao || index}`}
             >
               <span className="font-semibold text-gray-900 dark:text-white">
                 {airport.icao || 'N/A'}

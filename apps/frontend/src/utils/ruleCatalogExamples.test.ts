@@ -7,9 +7,11 @@ describe('ruleCatalogExamples', () => {
     expect(both.pass).toContain('KJFK');
     expect(both.fail).not.toContain('KJFK');
 
-    const failOnly = ruleExamplePair('MISSING_DTG');
-    expect(failOnly.pass).toBeNull();
-    expect(failOnly.fail).toContain('VA ADVISORY');
+    const advisory = ruleExamplePair('MISSING_DTG');
+    expect(advisory.pass).toContain('VA ADVISORY');
+    expect(advisory.pass).toMatch(/^DTG:/m);
+    expect(advisory.fail).toContain('VA ADVISORY');
+    expect(advisory.fail).not.toMatch(/^DTG:/m);
 
     expect(ruleExamplePair('NOT_A_RULE')).toEqual({ pass: null, fail: null });
     expect(
