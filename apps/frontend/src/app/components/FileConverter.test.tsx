@@ -298,6 +298,7 @@ vi.mock('./TacEditor', () => ({
     id,
     value,
     onChange,
+    onReportLoaded,
     readOnly,
     'aria-label': ariaLabel,
     focusOffset,
@@ -305,6 +306,7 @@ vi.mock('./TacEditor', () => ({
     id?: string;
     value: string;
     onChange: (v: string) => void;
+    onReportLoaded?: (text: string) => void;
     readOnly?: boolean;
     'aria-label'?: string;
     focusOffset?: number | null;
@@ -317,6 +319,10 @@ vi.mock('./TacEditor', () => ({
       data-testid="tac-editor"
       data-focus-offset={focusOffset ?? ''}
       onChange={(e) => onChange(e.target.value)}
+      onPaste={(event) => {
+        const text = event.clipboardData?.getData('text') ?? '';
+        if (text.trim()) onReportLoaded?.(text);
+      }}
     />
   ),
 }));
@@ -921,6 +927,42 @@ describe('FileConverter Component', () => {
       await waitFor(() => {
         expect(mockToast.success).toHaveBeenCalledWith('1 file(s) added to queue');
       });
+    });
+
+    it('fills an empty output filename from a loaded TAC file and keeps a typed name', async () => {
+      render(<FileConverter {...defaultProps} />);
+      const dropZone = screen.getByRole('button', { name: /file drop zone/i });
+      const filename = screen.getByTestId('output-filename-input');
+
+      fireEvent.drop(dropZone, {
+        dataTransfer: {
+          files: {
+            0: {
+              name: 'test.metar',
+              text: vi.fn().mockResolvedValue('METAR EGLL 121650Z'),
+            },
+            length: 1,
+          },
+        },
+      });
+
+      await waitFor(() => {
+        expect(screen.getByTestId('queue-item-0')).toBeInTheDocument();
+      });
+      fireEvent.click(screen.getByTestId('queue-item-0'));
+      expect(filename).toHaveValue('METAREGL');
+
+      fireEvent.change(filename, { target: { value: 'myreport' } });
+      fireEvent.change(screen.getByTestId('tac-editor'), {
+        target: { value: 'METAR KJFK 011200Z' },
+      });
+      expect(filename).toHaveValue('myreport');
+
+      fireEvent.change(filename, { target: { value: '' } });
+      fireEvent.paste(screen.getByTestId('tac-editor'), {
+        clipboardData: { getData: () => 'TAF YUDO 151800Z NIL=' },
+      });
+      expect(filename).toHaveValue('TAFYUDO1');
     });
   });
 
@@ -3912,6 +3954,8 @@ describe('FileConverter Component', () => {
           }),
         );
       });
+      await user.click(screen.getByTestId('queue-item-0'));
+      expect(screen.getByTestId('output-filename-input')).toHaveValue('');
     });
 
     it('file drop switches to AHL and COLLECT with mode toasts', async () => {

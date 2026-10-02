@@ -331,4 +331,19 @@ describe('TacEditor', () => {
     render(<TacEditor value="METAR" onChange={() => undefined} focusOffset={2} />);
     expect(editorMocks.getLastView().lastDispatch.selection.anchor).toBe(2);
   });
+
+  it('reports pasted report text and ignores an empty paste', () => {
+    const onReportLoaded = vi.fn();
+    render(
+      <TacEditor value="" onChange={() => undefined} onReportLoaded={onReportLoaded} />,
+    );
+    const editor = screen.getByLabelText('Enter TAC data manually');
+    fireEvent.paste(editor);
+    fireEvent.paste(editor, { clipboardData: { getData: () => '' } });
+    expect(onReportLoaded).not.toHaveBeenCalled();
+    fireEvent.paste(editor, {
+      clipboardData: { getData: () => 'METAR KJFK 011200Z' },
+    });
+    expect(onReportLoaded).toHaveBeenCalledWith('METAR KJFK 011200Z');
+  });
 });
