@@ -231,6 +231,7 @@ import {
   manualOutputName,
   nextFirstAccumulatedTac,
   outputArchiveName,
+  outputFilenameAfterReportLoad,
   sanitizeOutputFilename,
   uniquifyZipMemberNames,
 } from '/utils/outputFilename';
@@ -734,6 +735,8 @@ export function FileConverter({
     const saved = readGuestConverterState()?.conversionParams?.output_filename;
     return typeof saved === 'string' ? saved : '';
   });
+  /** True after the operator types a non-empty output filename. */
+  const outputFilenameOwned = useRef(outputFilename.trim() !== '');
   const [isDragging, setIsDragging] = useState(false);
   const [isConverting, setIsConverting] = useState(false);
   const [isConvertAndSending, setIsConvertAndSending] = useState(false);
@@ -1116,7 +1119,9 @@ export function FileConverter({
       | Record<string, unknown>
       | undefined;
     const savedName = params?.output_filename;
-    setOutputFilename(typeof savedName === 'string' ? savedName : '');
+    const restoredName = typeof savedName === 'string' ? savedName : '';
+    outputFilenameOwned.current = restoredName.trim() !== '';
+    setOutputFilename(restoredName);
     if (params) {
       setConversionParams((prev) => {
         const next = { ...prev };
@@ -1202,6 +1207,12 @@ export function FileConverter({
     } catch (error) {
       console.error('Error reloading preferences:', error);
     }
+  };
+
+  const applyLoadedReportName = (tac: string) => {
+    setOutputFilename((current) =>
+      outputFilenameAfterReportLoad(current, outputFilenameOwned.current, tac),
+    );
   };
 
   const handleFileSelect = async (files: FileList | null) => {
@@ -1908,6 +1919,7 @@ export function FileConverter({
     setPendingFiles([]);
     setManualInput('');
     setDemoExampleLabel(null);
+    outputFilenameOwned.current = false;
     setOutputFilename('');
     setConvertedFiles([]);
     setFirstAccumulatedTac(null);
@@ -1941,7 +1953,9 @@ export function FileConverter({
       setPlaceholderNotice(null);
       setDecodeError(null);
 
-      setManualInput(example.body.replace(/\s+$/, ''));
+      const exampleTac = example.body.replace(/\s+$/, '');
+      setManualInput(exampleTac);
+      applyLoadedReportName(exampleTac);
       setInputMode(example.inputMode);
       // Always set product — omit → auto — so a prior TAF pick cannot stick on AHL/TAC demos.
       setConversionParams((prev) => ({
@@ -2139,7 +2153,13 @@ export function FileConverter({
   const focusQueueItem = (index: number) => {
     const clamped = clampQueueIndex(index, pendingFiles.length);
     setQueueFocusIndex(clamped);
-    applyFocusedQueueContent(pendingFiles[clamped], setManualInput);
+    const focusedFile = pendingFiles[clamped];
+    applyFocusedQueueContent(focusedFile, (content) => {
+      setManualInput(content);
+      if (!focusedFile!.name.toLowerCase().endsWith('.xml')) {
+        applyLoadedReportName(content);
+      }
+    });
   };
 
   const handleQueueConvertFocused = async () => {
@@ -2269,6 +2289,7 @@ export function FileConverter({
     setQueueFocusIndex(0);
     setManualInput('');
     setDemoExampleLabel(null);
+    outputFilenameOwned.current = false;
     setOutputFilename('');
     setConvertedFiles([]);
     setFirstAccumulatedTac(null);
@@ -3400,6 +3421,7 @@ export function FileConverter({
                   <TacEditor
                     id="manual-input"
                     value={manualInput}
+                    onReportLoaded={applyLoadedReportName}
                     onChange={(value) => {
                       setManualInput(value);
                       setSelectedTrace(null);
@@ -3560,7 +3582,11 @@ export function FileConverter({
                   id="output-filename"
                   data-testid="output-filename-input"
                   value={outputFilename}
-                  onChange={(e) => setOutputFilename(e.target.value)}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    outputFilenameOwned.current = value.trim() !== '';
+                    setOutputFilename(value);
+                  }}
                   readOnly={isReadOnly}
                   placeholder="manual_input"
                   className="text-sm dark:border-gray-700 dark:bg-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500"

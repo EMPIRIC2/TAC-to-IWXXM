@@ -96,6 +96,38 @@ export function stemFromFirstTac(tac: string): string {
 }
 
 /**
+ * Output filename after a report is pasted or loaded.
+ *
+ * A name the operator typed is kept. Otherwise the field takes the existing
+ * TAC stem. An empty report leaves the field as it is.
+ *
+ * @param current - Current filename field
+ * @param operatorTyped - True when the operator typed a non-empty name
+ * @param tac - Report text just pasted or loaded
+ * @returns Next filename field value
+ * @example
+ * const _ = true;
+ */
+export function outputFilenameAfterReportLoad(
+  current: string,
+  operatorTyped: boolean,
+  tac: string,
+): string {
+  if (operatorTyped) {
+    return current;
+  }
+  const trimmed = tac.trim();
+  if (!trimmed) {
+    return current;
+  }
+  const stem = stemFromFirstTac(trimmed);
+  if (stem === 'converted') {
+    return current;
+  }
+  return stem;
+}
+
+/**
  * Format a local timestamp as ``yyyyMMddHHmmss`` for default ZIP names.
  *
  * @param date - Instant to format (defaults to now).

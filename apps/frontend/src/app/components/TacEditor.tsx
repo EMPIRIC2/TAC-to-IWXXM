@@ -45,6 +45,8 @@ export interface TacEditorProps {
   onSpanFix?: (fixCode: string) => void;
   /** Move the caret to this offset when a lint issue is chosen. */
   focusOffset?: number | null;
+  /** Called with pasted report text. Typing does not call this. */
+  onReportLoaded?: (text: string) => void;
 }
 
 /**
@@ -191,6 +193,7 @@ export function attachTacSpanFixListener(
  * @param props.readOnly - When true, editing is disabled
  * @param props.failedSpans - Optional soft-preview failure spans
  * @param props.issueSpans - Optional live lint spans
+ * @param props.onReportLoaded - Called when a report is pasted
  * @example
  * const _ = true;
  */
@@ -206,11 +209,13 @@ export function TacEditor({
   issueSpans = [],
   onSpanFix,
   focusOffset = null,
+  onReportLoaded,
 }: TacEditorProps) {
   const parentRef = useRef<HTMLDivElement | null>(null);
   const viewRef = useRef<EditorView | null>(null);
   const onChangeRef = useRef(onChange);
   const onSpanFixRef = useRef(onSpanFix);
+  const onReportLoadedRef = useRef(onReportLoaded);
   const hasFailedTac = failedSpans.length > 0;
 
   useEffect(() => {
@@ -220,6 +225,10 @@ export function TacEditor({
   useEffect(() => {
     onSpanFixRef.current = onSpanFix;
   }, [onSpanFix]);
+
+  useEffect(() => {
+    onReportLoadedRef.current = onReportLoaded;
+  }, [onReportLoaded]);
 
   useEffect(() => {
     return mountTacEditorView(parentRef.current, (parent) => {
@@ -253,6 +262,14 @@ export function TacEditor({
       });
       const view = new EditorView({ state, parent });
       viewRef.current = view;
+      const onPaste = (event: Event) => {
+        const clipboard = (event as ClipboardEvent).clipboardData;
+        const text = clipboard?.getData('text') ?? '';
+        if (text.trim()) {
+          onReportLoadedRef.current?.(text);
+        }
+      };
+      view.dom.addEventListener('paste', onPaste);
 
       if (issueSpans.length > 0) {
         view.dispatch({ effects: setTacSpansEffect.of(issueSpans) });
@@ -260,6 +277,7 @@ export function TacEditor({
 
       return {
         destroy: () => {
+          view.dom.removeEventListener('paste', onPaste);
           view.destroy();
           viewRef.current = null;
         },

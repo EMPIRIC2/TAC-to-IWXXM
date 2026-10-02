@@ -5,6 +5,7 @@ import {
   manualOutputName,
   manualDownloadXmlName,
   outputArchiveName,
+  outputFilenameAfterReportLoad,
   stemFromFirstTac,
   formatArchiveTimestamp,
   ACCUMULATE_RESULT_CAP,
@@ -91,6 +92,23 @@ describe('stemFromFirstTac', () => {
   it('falls back to converted when empty', () => {
     expect(stemFromFirstTac('')).toBe('converted');
     expect(stemFromFirstTac('   ')).toBe('converted');
+  });
+});
+
+describe('outputFilenameAfterReportLoad', () => {
+  it('fills an empty field from the report and keeps a typed name', () => {
+    expect(outputFilenameAfterReportLoad('', false, 'METAR KJFK 011200Z')).toBe(
+      'METARKJF',
+    );
+    expect(outputFilenameAfterReportLoad('myreport', true, 'METAR EGLL 121650Z')).toBe(
+      'myreport',
+    );
+    expect(outputFilenameAfterReportLoad('METARKJF', false, 'TAF YUDO 151800Z')).toBe(
+      'TAFYUDO1',
+    );
+    expect(outputFilenameAfterReportLoad('', false, '   ')).toBe('');
+    expect(outputFilenameAfterReportLoad('', false, '')).toBe('');
+    expect(outputFilenameAfterReportLoad('', false, '<>')).toBe('');
   });
 });
 
