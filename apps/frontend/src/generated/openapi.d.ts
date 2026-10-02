@@ -2109,6 +2109,49 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/stations/{icao}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Station Point
+         * @description Return the map point for one station ID.
+         *
+         *     The airport catalog is already loaded for ICAO checks. This reads that
+         *     one record. It does not call an external map service.
+         *
+         *     Parameters
+         *     ----------
+         *     icao :
+         *         Four-character station location indicator.
+         *
+         *     Returns
+         *     -------
+         *     dict[str, Any]
+         *         ICAO code, name, and decimal degrees.
+         *
+         *     Raises
+         *     ------
+         *     HTTPException
+         *         When the code is not a known station.
+         *
+         *     Examples
+         *     --------
+         *     >>> 1 + 1  # docstring smoke (station_point)
+         *     2
+         */
+        get: operations["station_point_api_v1_stations__icao__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/translation/airport-region/{airport_code}": {
         parameters: {
             query?: never;
@@ -9475,6 +9518,39 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["SelectionOptionsResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    station_point_api_v1_stations__icao__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                icao: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
                 };
             };
             /** @description Validation Error */

@@ -10,6 +10,8 @@ import { SHELL_NAV_LABELS } from '@/app/components/AppShellNav';
 import {
   DECODE_VISUALS_EMPTY,
   DECODE_VISUALS_INTRO,
+  DECODE_VISUALS_MAP_LOADING,
+  DECODE_VISUALS_NO_MAP,
   DECODE_VISUALS_NO_REGION,
   DECODE_VISUALS_NO_WIND,
   DECODE_VISUALS_OPEN,
@@ -376,6 +378,8 @@ export function collectOperatorVisibleCopy(): OperatorVisibleCopyEntry[] {
     { id: 'decode-visuals.intro', text: DECODE_VISUALS_INTRO },
     { id: 'decode-visuals.station', text: DECODE_VISUALS_STATION_LABEL },
     { id: 'decode-visuals.empty', text: DECODE_VISUALS_EMPTY },
+    { id: 'decode-visuals.no-map', text: DECODE_VISUALS_NO_MAP },
+    { id: 'decode-visuals.map-loading', text: DECODE_VISUALS_MAP_LOADING },
     { id: 'decode-visuals.no-region', text: DECODE_VISUALS_NO_REGION },
     { id: 'decode-visuals.region-caption', text: DECODE_VISUALS_REGION_CAPTION },
     { id: 'decode-visuals.no-wind', text: DECODE_VISUALS_NO_WIND },

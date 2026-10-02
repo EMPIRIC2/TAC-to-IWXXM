@@ -1755,6 +1755,11 @@
   happy-path encode; non-default profile/version equality
 - **Source**: E20-A=2; E20-3; E20-D3; ADR-032; [evolve-decisions.md](decisions/evolve-decisions.md) §EV-020
 
+### F7 / F9 hotfix — convert panes and station map
+
+- **What it does**: The live convert row is TAC, decode, then Live IWXXM. Decode stays open in the center column. Decode visuals asks for a station ID, lets that field be cleared, and shows a pannable map with a marker for that one station.
+- **Acceptance**: Wide convert row keeps the decode panel and Live IWXXM beside the TAC. Clearing the station ID leaves the field empty. A known station ID shows a map marker.
+
 ### F9 deepen (S026 / EV-020 — decode glossary)
 
 - **Status note**: F9 remains **Done**; this cycle deepens plain-language decode across **all

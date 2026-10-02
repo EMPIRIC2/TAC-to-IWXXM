@@ -1,10 +1,16 @@
 /**
  * Decode visuals tab, region sketch, and wind cue.
  */
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { DecodeVisualsPage } from './DecodeVisualsPage';
+
+vi.mock('@/app/components/StationMinimap', () => ({
+  StationMinimap: ({ icao }: { icao: string }) => (
+    <div data-testid="station-map">{icao}</div>
+  ),
+}));
 import { RegionSchematic } from './RegionSchematic';
 import { WindCue } from './WindCue';
 import { publishDecodeVisuals } from '@/utils/decodeVisualsStore';
@@ -47,7 +53,26 @@ describe('DecodeVisualsPage', () => {
     expect(screen.getByTestId('decode-visuals-empty')).toBeInTheDocument();
     await user.type(screen.getByTestId('decode-visuals-station'), 'KJFK');
     expect(screen.getByTestId('decode-visuals-heading')).toHaveTextContent('Kennedy');
+    expect(screen.getByTestId('station-map')).toHaveTextContent('KJFK');
     expect(screen.getByTestId('wind-cue')).toHaveTextContent('No wind group');
+    await user.clear(screen.getByTestId('decode-visuals-station'));
+    expect(screen.getByTestId('decode-visuals-station')).toHaveValue('');
+    expect(screen.getByTestId('decode-visuals-empty')).toBeInTheDocument();
+  });
+
+  it('lets the operator clear a published station down to an empty field', async () => {
+    publishDecodeVisuals({
+      station: 'T',
+      segments: [{ code: '18010KT', explanation: 'wind' }],
+    });
+    const user = userEvent.setup();
+    render(<DecodeVisualsPage />);
+    const input = screen.getByLabelText('Station ID');
+    expect(input).toHaveValue('T');
+    await user.clear(input);
+    expect(input).toHaveValue('');
+    expect(screen.getByTestId('decode-visuals-empty')).toBeInTheDocument();
+    publishDecodeVisuals({ station: '', segments: [] });
   });
 
   it('uses the published station and its wind until the operator types', () => {
