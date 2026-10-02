@@ -34,7 +34,13 @@ def _decode(client: TestClient, tac: str, product: str = "METAR") -> dict:
     return response.json()
 
 
-def test_tc_evpvd_004_decode_tac_kjfk_includes_airport_name(client: TestClient) -> None:
+def test_tc_evpvd_004_decode_tac_kjfk_includes_airport_name(
+    client: TestClient, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setattr(
+        "src.services.airport_name_lookup.lookup_airport_name",
+        lambda icao: "John F. Kennedy International Airport" if icao == "KJFK" else None,
+    )
     body = _decode(
         client,
         "METAR KJFK 121251Z 18004KT 10SM FEW250 24/18 A3012=",
@@ -48,7 +54,8 @@ def test_tc_evpvd_004_decode_tac_kjfk_includes_airport_name(client: TestClient) 
     assert "KJFK" in body["summary"]
 
 
-def test_tc_evpvd_005_decode_tac_unknown_icao_soft_fails(client: TestClient) -> None:
+def test_tc_evpvd_005_decode_tac_unknown_icao_soft_fails(client: TestClient, monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr("src.services.airport_name_lookup.lookup_airport_name", lambda _icao: None)
     body = _decode(
         client,
         "METAR ZZ99 121251Z 18004KT 10SM FEW250 24/18 A3012=",

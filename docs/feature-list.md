@@ -1090,8 +1090,10 @@
   depend on deleted `products/*.py` after selective delete-gate.
 - **EV-profile-validate-decode-deepen / #1221 / #724 (F9 deepen):** METAR/SPECI station
   token explanation and plain-language `summary` include full aerodrome name when the
-  existing airport lookup hits; miss soft-fails to ICAO designator only. No new `/decode-tac`
-  response keys. Reuse `tac_decoding.glossary` optional resolver + F3 airport data.
+  OpenAIP lookup hits for that one station; miss soft-fails to ICAO designator only.
+  The API remembers stations it has already asked for and does not load the airport
+  catalog for names. No new `/decode-tac` response keys. Reuse `tac_decoding.glossary`
+  optional resolver + F3 OpenAIP (`OPENAIP_API_KEY`).
   **Acceptance**: D-EVPVD AC4; TC-EVPVD-724-*.
 - **EV-conversion-profile-ux-libraries deepen (Decoding library stub):** Catalogued
   natural-language code definitions (reuse `decode_tac` / F9 explanations) as a first-class

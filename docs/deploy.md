@@ -239,6 +239,7 @@ F8 worker runs on DOKS.
 | `RATE_LIMIT_DISSEMINATION_PER_MIN` | No (default 10) | Dissemination preflight/send rate limit |
 | `MAX_REQUEST_BODY_BYTES` | No (default 2 MiB) | Request body cap |
 | `DISSEMINATION_EGRESS_ALLOWLIST` | Yes for F16–F19 | Host/CIDR allowlist (empty ⇒ deny) |
+| `OPENAIP_API_KEY` | Yes for decode station names | OpenAIP key. Decode asks for one station at a time. Empty ⇒ code-only names. Set on the staging and prod `metar-api-secrets` Secret, and as a GitHub Actions secret for the live lookup job. |
 | `METAR_CONFIG_ENV` | Yes (prod) | `prod`; selects `config/prod.json` |
 
 **Static inject:** `SUPABASE_PUBLISHABLE_KEY` into `/config.json` for optional login.

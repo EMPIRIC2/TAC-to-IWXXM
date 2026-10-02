@@ -405,6 +405,45 @@ jobs:
           path: apps/frontend/coverage/
           if-no-files-found: ignore
 
+  # Decode station names: the key must be present, and OpenAIP must answer.
+  openaip-station-lookup:
+    if: ${{ !(github.event_name == 'workflow_dispatch' && github.event.inputs.ops == 'ev933-staging') }}
+    runs-on: ubuntu-latest
+    name: OpenAIP station lookup
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          submodules: false
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip uv
+          uv sync
+
+      - name: Require the OpenAIP key
+        env:
+          OPENAIP_API_KEY: ${{ secrets.OPENAIP_API_KEY }}
+        run: |
+          if [ -z "${OPENAIP_API_KEY}" ]; then
+            echo "::error::OPENAIP_API_KEY secret is missing"
+            exit 1
+          fi
+
+      - name: Resolve a few stations against OpenAIP
+        working-directory: apps/backend
+        env:
+          OPENAIP_API_KEY: ${{ secrets.OPENAIP_API_KEY }}
+          CI: "true"
+        run: |
+          uv run pytest tests/live/test_openaip_station_names.py \
+            --override-ini='addopts=' -q --tb=short
+
   # EV-080 / #1077 — scripts Python cov + bats-core (D-TP080-2/3).
   scripts-coverage:
     if: ${{ !(github.event_name == 'workflow_dispatch' && github.event.inputs.ops == 'ev933-staging') }}
@@ -950,7 +989,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     name: Deploy (${{ github.ref_name }})
-    needs: [test, test-alembic, rust-crates-gate, tac2iwxxm-native, converter-perf, e2e-smoke]
+    needs: [test, test-alembic, rust-crates-gate, tac2iwxxm-native, converter-perf, e2e-smoke, openaip-station-lookup]
     if: |
       (github.event.inputs.ops != 'ev933-staging') && (
       (github.event_name == 'push' && github.ref == 'refs/heads/stage') ||
