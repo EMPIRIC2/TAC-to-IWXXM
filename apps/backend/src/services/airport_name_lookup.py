@@ -14,7 +14,7 @@ from typing import cast
 import httpx
 
 _OPENAIP_AIRPORTS_URL = "https://api.core.openaip.net/api/airports"
-_TIMEOUT_SECONDS = 3.0
+_TIMEOUT_SECONDS = 20.0
 _cache: dict[str, str | None] = {}
 
 
@@ -86,18 +86,20 @@ def _fetch_name(code: str) -> tuple[str | None, bool]:
     api_key = os.environ.get("OPENAIP_API_KEY", "").strip()
     if not api_key:
         return None, False
-    try:
-        response = httpx.get(
-            _OPENAIP_AIRPORTS_URL,
-            params={"search": code, "limit": 10},
-            headers={"x-openaip-api-key": api_key, "Accept": "application/json"},
-            timeout=_TIMEOUT_SECONDS,
-        )
-        response.raise_for_status()
-        payload: object = response.json()
-    except (httpx.HTTPError, ValueError):
-        return None, False
-    return _name_from_payload(payload, code), True
+    for _attempt in range(2):
+        try:
+            response = httpx.get(
+                _OPENAIP_AIRPORTS_URL,
+                params={"search": code, "limit": 10},
+                headers={"x-openaip-api-key": api_key, "Accept": "application/json"},
+                timeout=_TIMEOUT_SECONDS,
+            )
+            response.raise_for_status()
+            payload: object = response.json()
+        except (httpx.HTTPError, ValueError):
+            continue
+        return _name_from_payload(payload, code), True
+    return None, False
 
 
 def _name_from_payload(payload: object, icao: str) -> str | None:

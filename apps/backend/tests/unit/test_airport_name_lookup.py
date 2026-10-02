@@ -82,6 +82,21 @@ def test_lookup_does_not_remember_a_failed_request(monkeypatch: pytest.MonkeyPat
     monkeypatch.setattr(httpx, "get", _get)
     assert lookup_airport_name("KJFK") is None
     assert lookup_airport_name("KJFK") is None
+    assert calls["n"] == 4
+
+
+def test_lookup_retries_after_a_timeout(monkeypatch: pytest.MonkeyPatch) -> None:
+    calls = {"n": 0}
+
+    def _get(url: str, **kwargs: object) -> _Response:
+        calls["n"] += 1
+        if calls["n"] == 1:
+            raise httpx.TimeoutException("slow")
+        return _Response(_KJFK)
+
+    monkeypatch.setenv("OPENAIP_API_KEY", "test-key")
+    monkeypatch.setattr(httpx, "get", _get)
+    assert lookup_airport_name("KJFK") == "JOHN F KENNEDY INTL"
     assert calls["n"] == 2
 
 
