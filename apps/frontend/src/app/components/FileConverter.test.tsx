@@ -620,6 +620,14 @@ describe('FileConverter Component', () => {
       expect(help).toHaveAttribute('target', '_blank');
     });
 
+    it('opens decode visuals for the report station', async () => {
+      const user = userEvent.setup({ delay: null });
+      const onOpenVisuals = vi.fn();
+      render(<FileConverter {...defaultProps} onOpenVisuals={onOpenVisuals} />);
+      await user.click(screen.getByTestId('open-decode-visuals'));
+      expect(onOpenVisuals).toHaveBeenCalledTimes(1);
+    });
+
     it('shows Sign in for guests and guest loss notice when local work exists', async () => {
       const user = userEvent.setup({ delay: null });
       const onRequestLogin = vi.fn();

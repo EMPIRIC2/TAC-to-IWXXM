@@ -6,6 +6,9 @@ import {
   useCallback,
   useMemo,
 } from 'react';
+import { stationFromReport } from '@/utils/decodeVisuals';
+import { publishDecodeVisuals } from '@/utils/decodeVisualsStore';
+import { DECODE_VISUALS_OPEN } from '@/utils/decodeVisualsCopy';
 import { Button } from './ui/button';
 import { Card } from './ui/card';
 import { Input } from './ui/input';
@@ -336,6 +339,8 @@ interface FileConverterProps {
     family?: 'conversion' | 'lint' | 'iwxxm' | 'decoding',
     code?: string,
   ) => void;
+  /** Open the Decode visuals tab for the station in this report. */
+  onOpenVisuals?: () => void;
 }
 
 /**
@@ -690,6 +695,7 @@ export function FileConverter({
   activeWorkSessionId,
   loadedWorkSession,
   onOpenCatalog,
+  onOpenVisuals,
 }: FileConverterProps) {
   const [pendingFiles, setPendingFiles] = useState<PendingFile[]>([]);
   const [queueFocusIndex, setQueueFocusIndex] = useState(0);
@@ -2398,6 +2404,16 @@ export function FileConverter({
     liveIwxxmRunner,
   });
 
+  useEffect(() => {
+    publishDecodeVisuals({
+      station: stationFromReport(manualInput),
+      segments: decodeSegments.map((segment) => ({
+        code: segment.code,
+        explanation: segment.explanation,
+      })),
+    });
+  }, [manualInput, decodeSegments]);
+
   const tacLintSummary = lintSummaryLabel(lintIssues);
   const bulletinReports =
     inputMode === 'ahl_bulletin'
@@ -3539,24 +3555,36 @@ export function FileConverter({
                   ) : null}
                 </section>
                 {inputMode === 'validate_iwxxm' ? null : (
-                  <DecodePanel
-                    segments={decodeSegments}
-                    residuals={decodeResiduals}
-                    summary={decodeSummary}
-                    product={decodeProduct}
-                    loading={decodeLoading}
-                    error={decodeError}
-                    pinned
-                    defaultOpen
-                    decodingProfile={
-                      libraryDisplayName(conversionParams.decodingLibraryId) ||
-                      undefined
-                    }
-                    density={liveLayout.density}
-                    selectedStart={selectedTrace?.start}
-                    selectedEnd={selectedTrace?.end}
-                    onSelect={setSelectedTrace}
-                  />
+                  <>
+                    {onOpenVisuals ? (
+                      <button
+                        type="button"
+                        className="mb-2 text-sm text-sky-800 underline dark:text-sky-200"
+                        data-testid="open-decode-visuals"
+                        onClick={onOpenVisuals}
+                      >
+                        {DECODE_VISUALS_OPEN}
+                      </button>
+                    ) : null}
+                    <DecodePanel
+                      segments={decodeSegments}
+                      residuals={decodeResiduals}
+                      summary={decodeSummary}
+                      product={decodeProduct}
+                      loading={decodeLoading}
+                      error={decodeError}
+                      pinned
+                      defaultOpen
+                      decodingProfile={
+                        libraryDisplayName(conversionParams.decodingLibraryId) ||
+                        undefined
+                      }
+                      density={liveLayout.density}
+                      selectedStart={selectedTrace?.start}
+                      selectedEnd={selectedTrace?.end}
+                      onSelect={setSelectedTrace}
+                    />
+                  </>
                 )}
                 {inputMode === 'validate_iwxxm' ? (
                   <section

@@ -8,6 +8,17 @@
 import { EXAMPLES } from '@/fixtures/examples/examplesCatalog';
 import { SHELL_NAV_LABELS } from '@/app/components/AppShellNav';
 import {
+  DECODE_VISUALS_EMPTY,
+  DECODE_VISUALS_INTRO,
+  DECODE_VISUALS_NO_REGION,
+  DECODE_VISUALS_NO_WIND,
+  DECODE_VISUALS_OPEN,
+  DECODE_VISUALS_REGION_CAPTION,
+  DECODE_VISUALS_STATION_LABEL,
+  DECODE_VISUALS_TITLE,
+  DECODE_VISUALS_WIND_VARIABLE,
+} from '@/utils/decodeVisualsCopy';
+import {
   QUALITY_METRICS_DIFF_EMPTY_LABEL,
   QUALITY_METRICS_DIFF_EXPAND_ALL,
   QUALITY_METRICS_DIFF_COLLAPSE_ALL,
@@ -360,6 +371,16 @@ export function collectOperatorVisibleCopy(): OperatorVisibleCopyEntry[] {
     { id: 'shell.nav.history', text: SHELL_NAV_LABELS.history },
     { id: 'shell.nav.quality', text: SHELL_NAV_LABELS.quality },
     { id: 'shell.nav.catalog', text: SHELL_NAV_LABELS.catalog },
+    { id: 'shell.nav.visuals', text: SHELL_NAV_LABELS.visuals },
+    { id: 'decode-visuals.title', text: DECODE_VISUALS_TITLE },
+    { id: 'decode-visuals.intro', text: DECODE_VISUALS_INTRO },
+    { id: 'decode-visuals.station', text: DECODE_VISUALS_STATION_LABEL },
+    { id: 'decode-visuals.empty', text: DECODE_VISUALS_EMPTY },
+    { id: 'decode-visuals.no-region', text: DECODE_VISUALS_NO_REGION },
+    { id: 'decode-visuals.region-caption', text: DECODE_VISUALS_REGION_CAPTION },
+    { id: 'decode-visuals.no-wind', text: DECODE_VISUALS_NO_WIND },
+    { id: 'decode-visuals.wind-variable', text: DECODE_VISUALS_WIND_VARIABLE },
+    { id: 'decode-visuals.open', text: DECODE_VISUALS_OPEN },
     {
       id: 'shell.nav.dissemination-ops',
       text: SHELL_NAV_LABELS['dissemination-ops'],
