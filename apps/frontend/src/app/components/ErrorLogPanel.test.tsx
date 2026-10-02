@@ -249,4 +249,63 @@ describe('ErrorLogPanel', () => {
     );
     expect(screen.getByText(/Code: MISSING_TERMINATOR/).tagName).toBe('P');
   });
+
+  it('opens a fuller description for a lint issue and closes it', async () => {
+    const user = userEvent.setup();
+    render(
+      <ErrorLogPanel
+        catalogByCode={
+          new Map([
+            [
+              'MISSING_TERMINATOR',
+              {
+                ...CATALOG_ENTRY,
+                source_attribution: 'WMO code list',
+                product: 'METAR',
+                tags: ['terminator'],
+              },
+            ],
+          ])
+        }
+        log={{
+          errors: [],
+          issues: [
+            {
+              source: 'lint',
+              message: 'Add the end marker',
+              severity: 'warning',
+              hint: 'End the report with =',
+              code: 'MISSING_TERMINATOR',
+              location: 'line 1',
+              start: 0,
+              end: 4,
+            },
+            {
+              source: 'parser',
+              message: 'No code on this row',
+              severity: 'error',
+            },
+          ],
+        }}
+      />,
+    );
+    const open = screen.getByTestId('issue-detail-open-0');
+    open.focus();
+    await user.keyboard('{Enter}');
+    expect(screen.getByTestId('issue-detail-dialog')).toHaveTextContent(
+      "Reports in bulletins end with '='",
+    );
+    expect(screen.getByTestId('issue-detail-dialog')).toHaveTextContent(
+      'WMO code list',
+    );
+    expect(screen.getByTestId('issue-detail-dialog')).toHaveTextContent(
+      'End the report with =',
+    );
+    await user.click(screen.getByTestId('issue-detail-close'));
+    expect(screen.queryByTestId('issue-detail-dialog')).not.toBeInTheDocument();
+    await user.click(screen.getByTestId('issue-detail-open-1'));
+    expect(screen.getByTestId('issue-detail-dialog')).toHaveTextContent(
+      'No code on this row',
+    );
+  });
 });

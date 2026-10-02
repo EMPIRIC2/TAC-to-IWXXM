@@ -175,7 +175,8 @@ describe('QualityMetricsDetail C14N panes (TC-EV055-001)', () => {
     expect(screen.getByTestId('quality-metrics-pane-validate')).toHaveTextContent('X');
   });
 
-  it('formats diagnostics from detail when message is absent', () => {
+  it('formats diagnostics from detail when message is absent', async () => {
+    const user = userEvent.setup();
     const detail: QualityMetricsDetailResponse = {
       ...FORMATTING_ONLY,
       residuals: [{ detail: 'leftover token' }],
@@ -188,6 +189,10 @@ describe('QualityMetricsDetail C14N panes (TC-EV055-001)', () => {
     expect(screen.getByTestId('quality-metrics-pane-lint')).toHaveTextContent(
       'LINT1: bad group',
     );
+    await user.click(screen.getByTestId('quality-metrics-pane-lint-item-0'));
+    expect(screen.getByTestId('issue-detail-dialog')).toHaveTextContent('bad group');
+    await user.click(screen.getByTestId('issue-detail-close'));
+    expect(screen.queryByTestId('issue-detail-dialog')).not.toBeInTheDocument();
   });
 
   it('collapses distant equal context and expands on click', async () => {

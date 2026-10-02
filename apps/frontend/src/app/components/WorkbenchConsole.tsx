@@ -7,8 +7,11 @@
 
 import { useState, type ReactNode } from 'react';
 import { ChevronDown, ChevronUp, Terminal } from 'lucide-react';
+import { IssueDetailDialog } from '@/app/components/IssueDetailDialog';
 import type { LiveWorkbenchConsoleLine } from '@/hooks/useLiveWorkbenchAssist';
 import type { LintIssueCatalogEntry } from '@/utils/api';
+import { issueDetailFromConsoleLine, type IssueDetailModel } from '@/utils/issueDetail';
+import { ISSUE_DETAIL_BUTTON, ISSUE_DETAIL_OPEN } from '@/utils/issueDetailCopy';
 import {
   filterCatalogByTag,
   formatCatalogEntryCopy,
@@ -144,6 +147,7 @@ export function WorkbenchConsole({
   const [open, setOpen] = useState(defaultOpen);
   const [catalogOpen, setCatalogOpen] = useState(false);
   const [tagFilter, setTagFilter] = useState('');
+  const [detail, setDetail] = useState<IssueDetailModel | null>(null);
   const visibleLines = lines.filter((line) =>
     consoleLevelPasses(line.level, minLogLevel),
   );
@@ -223,6 +227,17 @@ export function WorkbenchConsole({
                   [{line.source}]
                 </span>{' '}
                 {messageWithCodeTooltips(line.message, catalogByCode, openCatalogCode)}
+                <button
+                  type="button"
+                  className="ml-2 font-sans underline"
+                  data-testid={`issue-detail-open-${index}`}
+                  aria-label={ISSUE_DETAIL_OPEN}
+                  onClick={() =>
+                    setDetail(issueDetailFromConsoleLine(line, catalogByCode))
+                  }
+                >
+                  {ISSUE_DETAIL_BUTTON}
+                </button>
                 {line.action && onLineAction ? (
                   <button
                     type="button"
@@ -294,6 +309,7 @@ export function WorkbenchConsole({
           ) : null}
         </div>
       ) : null}
+      <IssueDetailDialog detail={detail} onClose={() => setDetail(null)} />
     </section>
   );
 }

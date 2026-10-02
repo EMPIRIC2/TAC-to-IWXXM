@@ -3568,7 +3568,10 @@ export function FileConverter({
                       Validation results
                     </h3>
                     {validateReport ? (
-                      <ValidateIwxxmReport report={validateReport} />
+                      <ValidateIwxxmReport
+                        report={validateReport}
+                        catalogByCode={lintCatalogByCode}
+                      />
                     ) : (
                       <p
                         data-testid="validate-iwxxm-empty"
