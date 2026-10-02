@@ -187,7 +187,7 @@ without a new approved Fn. Cite this table from epic #846 roll-ups.
 | ICAO APAC IWXXM FAQs 3rd (public, informative) | NSC exclusivity warn | NSC omit layers; `translationFailedTAC`; translationCentre gate; FIR→polygon | NSC co-occurrence SCH smoke | COLLECT multi-version NS hooks (F16–F19; `dissemination.collect_namespaces`) · cite · #800 · [theme map](../../sessions/S030-apac-encode-validate/reports/apac-encode-theme-fixture-map.md) |
 | wmo-im/iwxxm `IWXXM/` tree (#804 dig) | Official `.tac` accept | Stem×surface wire; Guidance re-scrape | Pin XSD/SCH + examples | Examples catalog (UJ-039) · [tree dig](../mining/wmo-im-iwxxm-IWXXM-tree-mining-notes.md) |
 | IWXXM-US METAR/SPECI.pdf (#773) | US REMARKS types | `iwxxm_us` extension encode gaps → children | Combined catalog | US samples only (not WMO menu) · [PDF dig](../mining/iwxxm-us-metar-speci-pdf-mining-notes.md) |
-| WIS2 aviation (cookbook/guide/WTH) | — | — (no TAC encode) | — | F8 routing / Annex 3 use-rights; not COLLECT packing · **#806 OOS** EV-024 |
+| WIS2 aviation (cookbook/guide/WTH/wis2box) | — | — (no TAC encode) | — | F8 routing / F17 citation. Reference node is the WMO org repo. Leaves still `metar`/`taf`/`qvaci` · [#806](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/806) · [dig](../mining/wmo-wis2-orgs-mining-notes.md) |
 | Doc 10003 published (paywall) | — | translation-centre metadata / exchange | version/transition prose if present | cite |
 | Doc 10003 Advance 2014 draft (historical) | — | IWXXM v1 lineage; weather lists obsolete | 1.0RC2 sample only | lineage notes |
 | iwxxm-modelling UML/EA (informative) | — | WithNilReason / extension lineage | SCH **Pattern ID** taxonomy (not runtime SCH path) | cite |

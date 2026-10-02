@@ -127,6 +127,8 @@ Stand-alone `wmo-im/collect` is a lineage reference (2017). Active bulletin vali
 
 Topic hierarchy currently lists aviation `metar`, `taf`, `qvaci` under `weather/aviation/` — not a full F6 product map. Do not treat incomplete topic CSVs as product-scope SoT for converters.
 
+**Refresh 2026-10-02 (#806):** re-read `aviation/index.csv`; the three leaves are unchanged. The wis2box **runtime** repository is [World-Meteorological-Organization/wis2box](https://github.com/World-Meteorological-Organization/wis2box), not `wmo-im`. Full ranking: [wmo-wis2-orgs-mining-notes.md](./wmo-wis2-orgs-mining-notes.md).
+
 ---
 
 ## Catalog paste rows

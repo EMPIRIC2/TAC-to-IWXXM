@@ -22,6 +22,7 @@ Local binaries / full extracts: `.local/reference/<slug>/` (gitignored).
 | [awc-data-api-mining-notes.md](./awc-data-api-mining-notes.md) | NOAA AWC Data API — live TAC/IWXXM fixtures (informative) |
 | [community-wmo-iwxxm-wayback-mining-notes.md](./community-wmo-iwxxm-wayback-mining-notes.md) | Community IWXXM home via Wayback — package×Amd compatibility table |
 | [wmo-im-org-mining-notes.md](./wmo-im-org-mining-notes.md) | Org survey `github.com/wmo-im` |
+| [wmo-wis2-orgs-mining-notes.md](./wmo-wis2-orgs-mining-notes.md) | #806 — WIS2 repos on the WMO org and wmo-im (F8/F17) |
 | [wmo-im-tier-a-mining-notes.md](./wmo-im-tier-a-mining-notes.md) | Local Tier A clones / pin drift |
 | [wmo-im-tier-b-mining-notes.md](./wmo-im-tier-b-mining-notes.md) | Local Tier B (collect, WIS2*, GTStoWIS2, CCT, foundation pkgs) |
 | [iwxxm-modelling-v2025-2-mining-notes.md](./iwxxm-modelling-v2025-2-mining-notes.md) | UML/EA generators |
