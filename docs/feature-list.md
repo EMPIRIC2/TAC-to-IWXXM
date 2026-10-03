@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
-> **Last updated**: 2026-09-29 (EV-1159 SIGMET example validate visibility / #1159; prior EV-1266 / #1266)
+> **Last updated**: 2026-10-03 (EV-tac-map live map spec; prior EV-1159 / #1159)
 
 ## Summary
 
@@ -44,6 +44,7 @@
 | F34 | Contract + mutation quality gates | Done | Platform | S069 / EV-059; epic #841 CLOSED; #727 Schemathesis; #874 Stryker + pytest-gremlins; **deepen** S071 / EV-061 stricter stage→main required checks (#1015); promote held |
 | F35 | Semantic vs exchange profiles + canonical ID migration | Implemented | Product | EV-063 / PR #1026; #912 / #914; ADR-036 Accepted; alias cutover #1025 (2026-10-31); amends F6 wire; **deepen** EV-beta-ux-export-auth suppress operator-visible `DEPRECATED_PROFILE_ALIAS` notices; Conversion profiles UI marked **beta** (ADR-043) |
 | F36 | National semantic + regional exchange profile content | In progress | Product | EV-063 / #912; **#919 US closed (EV-085)**; **#916 CA_ECCC P1 closed (EV-078)**; **EV-098 CA_ECCC mining #1028–#1031 closed**; **#1032 closed (EV-075)**; **#1061 SIGMET emit (EV-076)**; VAA TAC validate-first (EV-077); VAA exchange emit waived; **EV-profile-validate-decode-deepen / #1221** AU/NZ → `implemented`; **deepen EV-1222 / #1222**: regional exchange overlays beyond COLLECT stubs (APAC_ROBEX first) |
+| F37 | Live TAC map on Decode visuals | In progress | Product | EV-tac-map; guests; API timer cache; Observations view still to build |
 | M1 | Monorepo layout (`apps/` + `packages/` + `vendor/`) | Implemented | Platform | REQ-002–006 |
 | M2 | Vendor snapshot sync (wmo-im iwxxm-*) | Planned | Platform | REQ-002, REQ-010 |
 | M3 | GIFTs as in-repo package | Deprecated (ADR-014) | Platform | REQ-003; removed with F6 cutover |
@@ -1757,7 +1758,7 @@
 
 ### F7 / F9 hotfix — convert panes and station map
 
-- **What it does**: The live convert row is TAC, decode, then Live IWXXM. Decode stays open in the center column. Decode visuals asks for a station ID, lets that field be cleared, and shows a pannable map with a marker for that one station.
+- **What it does**: The live convert row is TAC, decode, then Live IWXXM. Decode stays open in the center column. Decode visuals asks for a station ID, lets that field be cleared, and shows a pannable map with a marker for that one station. **F37** replaces that one-station map with a live world map. Until F37 is built, the one-station behavior remains.
 - **Acceptance**: Wide convert row keeps the decode panel and Live IWXXM beside the TAC. Clearing the station ID leaves the field empty. A known station ID shows a map marker.
 
 ### F9 deepen (S026 / EV-020 — decode glossary)
@@ -3041,6 +3042,53 @@
 - Cross-device sync **without** login (logged-in DO sessions are in scope via F31).
 - Full CMP / analytics / marketing tags (Solution B/C) unless a later evolve cycle adds them.
 - Per-US-state separate privacy UI variants (one global strict preference center).
+
+### F37: Live TAC map on Decode visuals — EV-tac-map
+
+- **Status**: **In progress** (EV-tac-map). The build gate is open. The cache read is in the API. The weather-feed pull and the Decode visuals map are not built yet.
+- **What it does**: Decode visuals becomes a world map of live TAC reports. A guest can open it without signing in. The existing API pulls a public aviation weather feed, keeps the latest report and two earlier ones for each place, and the browser talks only to this app. Clicking a place shows a graphic, the TAC text, and the IWXXM text when the feed has it.
+- **Feed**: NOAA Aviation Weather Center Data API (`https://aviationweather.gov/api/data/`). Informative live data, not a golden source. METAR and TAF stations are worldwide. Polygons are drawn only for reports that feed returns with a location, and the map says when a family has none in the current view. [Corpus: domain-rules] catalog row; mining notes are not the acceptance source.
+- **Pins**: Every station the feed returns inside the current map view. Not the curated Convert airport list, and not the full station-name catalog.
+- **Geography**:
+
+  | Family | Drawn as | On the map |
+  |--------|----------|------------|
+  | METAR, SPECI | Airport point. SPECI shares that airport’s last three with METAR | Yes |
+  | TAF | Airport point | Yes |
+  | AIRMET | Polygon | Only when the feed includes a region |
+  | SIGMET (ordinary, VA, TC) | Polygon, line, or circle | Only when the feed includes a geometry |
+  | Volcanic ash advisory | Volcano point plus ash polygon | Only when the feed includes a location |
+  | Tropical cyclone advisory | Storm point and radius | Only when the feed includes a location |
+  | Volcano observatory notice | Volcano point | Only when the feed includes a location |
+  | Space weather | No surface location | List beside the map, never a pin |
+
+- **Popup**: For an airport, a wind barb plus sky, temperature, and dewpoint from the decoded report. Three report choices, not a film. Tabs for the raw TAC and for IWXXM. If the feed has no IWXXM for that product, the tab says so. A control may run this app’s own conversion on that TAC.
+- **Views and layers**: One world map. The operator switches views and turns layers on or off. Panning loads whatever the cache has in that view. Default view is Observations, with METAR and SPECI on.
+
+  | View | Layers | Starts |
+  |------|--------|--------|
+  | Observations | METAR, SPECI | On. Both layers on |
+  | Forecasts | TAF | Off until selected |
+  | Hazards | AIRMET, SIGMET | Off until selected |
+  | Advisories | Volcanic ash, tropical cyclone, volcano notice | Off until selected |
+  | Space weather | Not a map layer | List beside the map |
+
+- **Refresh home**: A timer inside the API that is already running. It writes the last three feed reports per place into the existing database. The ingest worker stays scaled to **0**. No new pod, CronJob, cluster, or database.
+- **Timer must not sit on the request path**: Production is one API process (`python -m src`, one uvicorn worker, one replica, 1 CPU, 1 GiB). There is no separate job queue. A refresh that parses or converts the world on that same loop would delay Convert and validate. The tick therefore waits on the network without blocking, skips if a tick is already running, stores the feed text, and runs TAC→IWXXM only for the one report an operator opens.
+- **Replaces**: The one-station minimap on Decode visuals (F7 / F9). Convert, History, and station search stay. The map stays on the Leaflet library already used for the one-station map.
+- **Out of scope**: The browser calling the feed. Turning the ingest worker on for this map. A new CronJob, cluster, database, or map vendor. OpenAIP as the live source. Treating feed XML as goldens. A new Map tab. Sign-in required to view. Saving map history into work sessions. Animating a continuous three-hour film.
+- **Acceptance (Spec)**:
+  1. This row is the product scope for the map
+  2. Geography table above is the classification
+  3. Guests, proxy cache, viewport stations, and three instances are recorded
+- **Acceptance (Build — after gate)**:
+  1. A guest on Decode visuals sees the world map
+  2. Panning loads stations the feed returned for that view, with the last three reports
+  3. A METAR click shows the graphic, TAC, and IWXXM when present
+  4. Polygons appear only with feed geometry, and space weather stays in the list
+  5. Browser traffic for the map goes to this app’s API
+  6. Connectivity checks H4–H5 when the screen ships
+- **Source**: EV-tac-map intake; [docs/context/tac-live-map.md](context/tac-live-map.md)
 
 ## Planned Features (Post-Migration)
 
