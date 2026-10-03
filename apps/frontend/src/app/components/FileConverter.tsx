@@ -3505,64 +3505,70 @@ export function FileConverter({
                     />
                     {inputMode !== 'validate_iwxxm' ? (
                       <>
-                        <div
-                          className="mt-2 flex flex-wrap gap-1"
-                          data-testid="tac-group-chips"
-                          aria-label="Recognised groups"
-                        >
-                          {decodeSegments.map((segment) => {
-                            const selected =
-                              selectedTrace?.start === segment.start &&
-                              selectedTrace?.end === segment.end;
-                            return (
-                              <button
-                                key={`chip-${segment.start}-${segment.end}-${segment.code}`}
-                                type="button"
-                                aria-pressed={selected}
-                                className={`rounded px-2 py-0.5 font-mono text-xs ${
-                                  selected
-                                    ? 'bg-sky-200 text-sky-950 ring-1 ring-sky-800 dark:bg-sky-900 dark:text-sky-50'
-                                    : 'bg-gray-100 text-gray-900 dark:bg-gray-800 dark:text-gray-100'
-                                }`}
-                                onClick={() =>
-                                  setSelectedTrace({
-                                    start: segment.start,
-                                    end: segment.end,
-                                    code: segment.code,
-                                  })
-                                }
-                              >
-                                {segment.code}
-                              </button>
-                            );
-                          })}
-                          {decodeResiduals.map((residual) => {
-                            const selected =
-                              selectedTrace?.start === residual.start &&
-                              selectedTrace?.end === residual.end;
-                            return (
-                              <button
-                                key={`chip-res-${residual.start}-${residual.end}`}
-                                type="button"
-                                aria-pressed={selected}
-                                className={`rounded px-2 py-0.5 font-mono text-xs ${
-                                  selected
-                                    ? 'bg-sky-200 text-sky-950 ring-1 ring-sky-800'
-                                    : 'bg-amber-100 text-amber-950 dark:bg-amber-950 dark:text-amber-100'
-                                }`}
-                                onClick={() =>
-                                  setSelectedTrace({
-                                    start: residual.start,
-                                    end: residual.end,
-                                    code: residual.text,
-                                  })
-                                }
-                              >
-                                Error {residual.text}
-                              </button>
-                            );
-                          })}
-                        </div>
+                        {decodeSegments.length + decodeResiduals.length > 0 ? (
+                          <div className="mt-2" data-testid="tac-group-chips">
+                            <p className="mb-1 text-xs text-gray-500 dark:text-gray-400">
+                              Groups
+                            </p>
+                            <div
+                              className="flex gap-1 overflow-x-auto"
+                              aria-label="Recognised groups"
+                            >
+                              {decodeSegments.map((segment) => {
+                                const selected =
+                                  selectedTrace?.start === segment.start &&
+                                  selectedTrace?.end === segment.end;
+                                return (
+                                  <button
+                                    key={`chip-${segment.start}-${segment.end}-${segment.code}`}
+                                    type="button"
+                                    aria-pressed={selected}
+                                    className={`rounded px-2 py-0.5 font-mono text-xs ${
+                                      selected
+                                        ? 'bg-sky-200 text-sky-950 ring-1 ring-sky-800 dark:bg-sky-900 dark:text-sky-50'
+                                        : 'bg-gray-100 text-gray-900 dark:bg-gray-800 dark:text-gray-100'
+                                    }`}
+                                    onClick={() =>
+                                      setSelectedTrace({
+                                        start: segment.start,
+                                        end: segment.end,
+                                        code: segment.code,
+                                      })
+                                    }
+                                  >
+                                    {segment.code}
+                                  </button>
+                                );
+                              })}
+                              {decodeResiduals.map((residual) => {
+                                const selected =
+                                  selectedTrace?.start === residual.start &&
+                                  selectedTrace?.end === residual.end;
+                                return (
+                                  <button
+                                    key={`chip-res-${residual.start}-${residual.end}`}
+                                    type="button"
+                                    aria-pressed={selected}
+                                    className={`rounded px-2 py-0.5 font-mono text-xs ${
+                                      selected
+                                        ? 'bg-sky-200 text-sky-950 ring-1 ring-sky-800'
+                                        : 'bg-amber-100 text-amber-950 dark:bg-amber-950 dark:text-amber-100'
+                                    }`}
+                                    onClick={() =>
+                                      setSelectedTrace({
+                                        start: residual.start,
+                                        end: residual.end,
+                                        code: residual.text,
+                                      })
+                                    }
+                                  >
+                                    Error {residual.text}
+                                  </button>
+                                );
+                              })}
+                            </div>
+                          </div>
+                        ) : null}
                         <p
                           className="mt-2 text-xs text-gray-700 dark:text-gray-200"
                           data-testid="tac-lint-summary"

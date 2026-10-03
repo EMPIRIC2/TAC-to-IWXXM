@@ -310,4 +310,15 @@ describe('IcaoAutocomplete', () => {
     expect(screen.getByLabelText('ICAO')).toHaveValue('');
     expect(screen.queryByLabelText('Invalid ICAO')).not.toBeInTheDocument();
   });
+
+  it('shows the status for a station that is already filled in', () => {
+    mockIsValid.mockImplementation((code: string) => code === 'KJFK');
+    const { rerender } = render(
+      <IcaoAutocomplete label="Station ID" value="KJFK" onChange={vi.fn()} />,
+    );
+    expect(screen.getByLabelText('Valid Station ID')).toBeInTheDocument();
+    rerender(<IcaoAutocomplete label="Station ID" value="QXZX" onChange={vi.fn()} />);
+    expect(screen.getByLabelText('Invalid Station ID')).toBeInTheDocument();
+    expect(screen.queryByLabelText('Invalid ICAO code')).not.toBeInTheDocument();
+  });
 });
