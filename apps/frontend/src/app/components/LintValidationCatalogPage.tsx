@@ -680,10 +680,12 @@ export function LintValidationCatalogPage({
 
   return (
     <div
-      className="min-h-screen bg-gray-50 p-6 dark:bg-gray-900"
+      className="min-h-screen bg-gray-50 dark:bg-gray-900"
       data-testid="lint-validation-catalog-page"
     >
-      <div className={`mx-auto w-full space-y-6 ${shellFrameClass(layout.span)}`}>
+      <div
+        className={`mx-auto w-full space-y-6 px-4 py-6 ${shellFrameClass(layout.span)}`}
+      >
         <div>
           <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
             {LINT_VALIDATION_CATALOG_PAGE_TITLE}

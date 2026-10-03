@@ -37,13 +37,21 @@ def test_station_point_misses_a_record_without_coordinates(monkeypatch) -> None:
     )
     client = TestClient(api_module.app)
     response = client.get("/api/v1/stations/ZZ99")
-    assert response.status_code == 404
+    assert response.status_code == 200
+    assert response.json()["latitude"] is None
+    assert response.json()["longitude"] is None
 
 
 def test_station_point_misses_unknown_and_partial_codes() -> None:
     client = TestClient(api_module.app)
-    assert client.get("/api/v1/stations/ZZ99").status_code == 404
-    assert client.get("/api/v1/stations/T").status_code == 404
-    assert client.get("/api/v1/stations/1JFK").status_code == 404
-    assert client.get("/api/v1/stations/KJ-K").status_code == 404
-    assert client.get("/api/v1/stations/ZZ99").json()["detail"] == "Station not found"
+    for path in (
+        "/api/v1/stations/ZZ99",
+        "/api/v1/stations/T",
+        "/api/v1/stations/1JFK",
+        "/api/v1/stations/KJ-K",
+    ):
+        response = client.get(path)
+        assert response.status_code == 200
+        body = response.json()
+        assert body["latitude"] is None
+        assert body["longitude"] is None

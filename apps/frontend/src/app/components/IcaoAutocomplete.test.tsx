@@ -293,6 +293,8 @@ describe('IcaoAutocomplete', () => {
 
     await user.type(screen.getByLabelText('ICAO'), 'KJ');
     expect(screen.getByTestId('icao-suggestion-KJFK')).toBeInTheDocument();
+    await user.keyboard('{Escape}');
+    expect(screen.queryByTestId('icao-suggestion-KJFK')).not.toBeInTheDocument();
     await user.type(screen.getByLabelText('ICAO'), 'FK');
     expect(screen.queryByTestId('icao-suggestion-KJFK')).not.toBeInTheDocument();
     expect(screen.getByLabelText(/valid icao code/i)).toBeInTheDocument();

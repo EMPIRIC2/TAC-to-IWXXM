@@ -142,6 +142,11 @@ export function IcaoAutocomplete({
                 : ''
           }`}
           autoComplete="off"
+          onKeyDown={(event) => {
+            if (event.key === 'Escape') {
+              setShowSuggestions(false);
+            }
+          }}
         />
         {isValid !== null && (
           <div className="absolute right-2 top-1/2 -translate-y-1/2">

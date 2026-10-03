@@ -606,12 +606,8 @@ def station_point(icao: str) -> dict[str, Any]:
     Returns
     -------
     dict[str, Any]
-        ICAO code, name, and decimal degrees.
-
-    Raises
-    ------
-    HTTPException
-        When the code is not a known station.
+        ICAO code, name, and decimal degrees. Unknown codes return null
+        coordinates so a map lookup is a normal miss, not an error response.
 
     Examples
     --------
@@ -620,11 +616,11 @@ def station_point(icao: str) -> dict[str, Any]:
     """
     code = icao.strip().upper()
     if len(code) != 4 or not code.isalnum() or not code[0].isalpha():
-        raise HTTPException(status_code=404, detail="Station not found")
+        return {"icao": code, "name": None, "latitude": None, "longitude": None}
     airport = get_airport_validator().get_airport(code)
     coordinates = None if airport is None else airport.coordinates
     if airport is None or coordinates is None:
-        raise HTTPException(status_code=404, detail="Station not found")
+        return {"icao": code, "name": None, "latitude": None, "longitude": None}
     return {
         "icao": airport.icao,
         "name": airport.name,

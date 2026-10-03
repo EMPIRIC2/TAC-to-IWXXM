@@ -369,35 +369,42 @@ function App() {
             />
           )}
 
-          {currentView === 'converter' && (
-            <FileConverter
-              onLogout={handleLogout}
-              userEmail={isGuest ? 'Guest' : userEmail || 'Operator'}
-              accessToken={isAuthenticated ? accessToken : undefined}
-              isGuest={isGuest}
-              onRequestLogin={handleRequestLogin}
-              onOpenHistory={handleOpenHistory}
-              onLoadWorkSession={handleLoadWorkSession}
-              onNewMetar={handleNewMetar}
-              onSessionUpdated={handleSessionUpdated}
-              onActiveSessionIdChange={setActiveWorkSessionId}
-              activeWorkSessionId={activeWorkSessionId}
-              loadedWorkSession={loadedWorkSession}
-              onOpenCatalog={(family, code) => {
-                if (code) {
-                  setCatalogFocusCode(code);
-                } else {
-                  setCatalogFocusCode(null);
-                }
-                if (family === 'lint' || family === 'iwxxm') {
-                  setCatalogFocusFamily(family);
-                } else {
-                  setCatalogFocusFamily(null);
-                }
-                setCurrentView('catalog');
-              }}
-              onOpenVisuals={() => setCurrentView('visuals')}
-            />
+          {(currentView === 'converter' ||
+            currentView === 'history' ||
+            currentView === 'quality' ||
+            currentView === 'catalog' ||
+            currentView === 'visuals' ||
+            currentView === 'dissemination-ops') && (
+            <div hidden={currentView !== 'converter'}>
+              <FileConverter
+                onLogout={handleLogout}
+                userEmail={isGuest ? 'Guest' : userEmail || 'Operator'}
+                accessToken={isAuthenticated ? accessToken : undefined}
+                isGuest={isGuest}
+                onRequestLogin={handleRequestLogin}
+                onOpenHistory={handleOpenHistory}
+                onLoadWorkSession={handleLoadWorkSession}
+                onNewMetar={handleNewMetar}
+                onSessionUpdated={handleSessionUpdated}
+                onActiveSessionIdChange={setActiveWorkSessionId}
+                activeWorkSessionId={activeWorkSessionId}
+                loadedWorkSession={loadedWorkSession}
+                onOpenCatalog={(family, code) => {
+                  if (code) {
+                    setCatalogFocusCode(code);
+                  } else {
+                    setCatalogFocusCode(null);
+                  }
+                  if (family === 'lint' || family === 'iwxxm') {
+                    setCatalogFocusFamily(family);
+                  } else {
+                    setCatalogFocusFamily(null);
+                  }
+                  setCurrentView('catalog');
+                }}
+                onOpenVisuals={() => setCurrentView('visuals')}
+              />
+            </div>
           )}
 
           {currentView === 'history' && (

@@ -103,6 +103,20 @@ describe('API Utils', () => {
 
   // ============= METAR Conversion Tests =============
   describe('convertMetarToIwxxm', () => {
+    it('does not log a cancelled conversion', async () => {
+      const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+      (global.fetch as any).mockRejectedValueOnce(
+        new DOMException('signal is aborted without reason', 'AbortError'),
+      );
+      await expect(
+        convertMetarToIwxxm({
+          manualText: 'METAR KJFK 121251Z 18010KT 10SM FEW050 22/12 A3012',
+        }),
+      ).rejects.toMatchObject({ name: 'AbortError' });
+      expect(errorSpy).not.toHaveBeenCalled();
+      errorSpy.mockRestore();
+    });
+
     it('should convert manual METAR text successfully', async () => {
       const mockResponse: ConversionResponse = {
         results: [

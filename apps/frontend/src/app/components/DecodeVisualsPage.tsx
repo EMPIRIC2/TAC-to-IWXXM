@@ -2,7 +2,7 @@
  * Decode visuals tab: station map and wind cue (F7 / F9).
  */
 
-import { useState, useSyncExternalStore } from 'react';
+import { useSyncExternalStore } from 'react';
 import { IcaoAutocomplete } from '@/app/components/IcaoAutocomplete';
 import { StationMinimap } from '@/app/components/StationMinimap';
 import { WindCue } from '@/app/components/WindCue';
@@ -13,7 +13,13 @@ import {
   DECODE_VISUALS_STATION_LABEL,
   DECODE_VISUALS_TITLE,
 } from '@/utils/decodeVisualsCopy';
-import { readDecodeVisuals, subscribeDecodeVisuals } from '@/utils/decodeVisualsStore';
+import {
+  readDecodeVisuals,
+  readStationDraft,
+  subscribeDecodeVisuals,
+  subscribeStationDraft,
+  writeStationDraft,
+} from '@/utils/decodeVisualsStore';
 import { shellFrameClass, useLiveConvertLayout } from '@/utils/liveConvertLayout';
 
 const STATION_ID = /^[A-Z][A-Z0-9]{3}$/;
@@ -30,7 +36,11 @@ export function DecodeVisualsPage() {
     readDecodeVisuals,
     readDecodeVisuals,
   );
-  const [draft, setDraft] = useState<string | null>(null);
+  const draft = useSyncExternalStore(
+    subscribeStationDraft,
+    readStationDraft,
+    readStationDraft,
+  );
   const { layout } = useLiveConvertLayout();
   const station = (draft ?? published.station).trim().toUpperCase();
   const complete = STATION_ID.test(station);
@@ -49,7 +59,7 @@ export function DecodeVisualsPage() {
         id="decode-visuals-station-input"
         label={DECODE_VISUALS_STATION_LABEL}
         value={draft ?? published.station}
-        onChange={(value) => setDraft(value.toUpperCase())}
+        onChange={(value) => writeStationDraft(value.toUpperCase())}
         inputTestId="decode-visuals-station"
         className="max-w-xl"
       />
