@@ -49,7 +49,11 @@ def set_live_map_cache(cache: LiveMapCache | None) -> None:
     _cache = cache
 
 
-@router.get("")
+@router.get(
+    "",
+    summary="Cached reports in the current map view",
+    description="Reports cached for the area in view. The newest report is first. At most two earlier reports follow it.",
+)
 def read_live_map(
     west: float = Query(..., description="West edge of the view, in degrees."),
     south: float = Query(..., description="South edge of the view, in degrees."),

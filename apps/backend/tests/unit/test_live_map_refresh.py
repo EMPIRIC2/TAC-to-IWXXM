@@ -122,6 +122,27 @@ async def test_refresh_until_walks_a_second_tile_after_the_pause() -> None:
 
 
 @pytest.mark.asyncio
+async def test_refresh_until_stops_before_the_loop_and_during_the_pause() -> None:
+    cache = _cache()
+    stop = asyncio.Event()
+    stop.set()
+
+    async def unused(_bbox: tuple[float, float, float, float]) -> list[dict[str, object]]:
+        raise AssertionError("a stopped loop does not fetch")
+
+    await refresh_until(cache, unused, stop, ((1, 2, 3, 4),), 30)
+
+    stop.clear()
+
+    async def fetch(_bbox: tuple[float, float, float, float]) -> list[dict[str, object]]:
+        asyncio.get_running_loop().call_soon(stop.set)
+        return []
+
+    await refresh_until(cache, fetch, stop, ((1, 2, 3, 4),), 30)
+    await stop_live_map_refresh(asyncio.Event())
+
+
+@pytest.mark.asyncio
 async def test_fetch_bbox_uses_the_feed_client(monkeypatch: pytest.MonkeyPatch) -> None:
     class _Client:
         async def __aenter__(self) -> _Client:
