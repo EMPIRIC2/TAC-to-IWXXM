@@ -26,6 +26,7 @@ describe('LiveConvertPaneGrid', () => {
     expect(screen.getByTestId('live-convert-panes').className).toContain(
       'min-h-[20rem]',
     );
+    expect(screen.getByTestId('live-convert-panes').className).not.toContain('h-full');
     expect(screen.getByText('TAC')).toBeInTheDocument();
     unmount();
     render(
@@ -65,6 +66,7 @@ describe('LiveConvertPaneGrid', () => {
       'data-fit',
       'tight',
     );
+    expect(screen.getByTestId('live-convert-panes').className).toContain('h-full');
     const first = screen.getByRole('separator', {
       name: 'Resize TAC and decode panes',
     });

@@ -1635,6 +1635,12 @@ describe('FileConverter Component', () => {
         'true',
       );
       expect(panes).toHaveAttribute('data-fit', 'roomy');
+      expect(screen.getByTestId('live-convert-stage').className).toContain(
+        'xl:overflow-hidden',
+      );
+      expect(screen.getByTestId('live-convert-stage').className).not.toMatch(
+        /(^|\s)overflow-hidden(\s|$)/,
+      );
       await user.click(screen.getByRole('button', { name: 'Tighter' }));
       expect(frame).toHaveClass('max-w-6xl');
       expect(panes).toHaveAttribute('data-fit', 'tight');

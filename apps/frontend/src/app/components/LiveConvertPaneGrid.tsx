@@ -76,14 +76,18 @@ export function LiveConvertPaneGrid({
 
   const panes = Children.toArray(children);
 
-  const fitClass = roomy
-    ? 'h-full min-h-[20rem] flex-1'
-    : 'h-full min-h-[16rem] flex-1';
+  const fitClass = wide
+    ? roomy
+      ? 'h-full min-h-[20rem] flex-1'
+      : 'h-full min-h-[16rem] flex-1'
+    : roomy
+      ? 'min-h-[20rem]'
+      : 'min-h-[16rem]';
 
   if (!wide) {
     return (
       <div
-        className={`grid grid-cols-1 gap-3 xl:grid-cols-3 xl:items-stretch ${fitClass}`}
+        className={`grid grid-cols-1 gap-3 ${fitClass}`}
         data-testid="live-convert-panes"
         data-fit={roomy ? 'roomy' : 'tight'}
       >
