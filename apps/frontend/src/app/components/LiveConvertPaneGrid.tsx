@@ -77,9 +77,7 @@ export function LiveConvertPaneGrid({
   const panes = Children.toArray(children);
 
   const fitClass = wide
-    ? roomy
-      ? 'h-full min-h-[20rem] flex-1'
-      : 'h-full min-h-[16rem] flex-1'
+    ? 'h-full min-h-0 flex-1'
     : roomy
       ? 'min-h-[20rem]'
       : 'min-h-[16rem]';

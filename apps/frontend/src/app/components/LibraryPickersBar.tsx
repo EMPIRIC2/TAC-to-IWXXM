@@ -202,9 +202,20 @@ export function LibraryPickersBar({
     : null;
 
   return (
-    <div className="flex min-w-0 flex-col gap-3" data-testid="library-pickers-bar">
+    <div
+      className="order-2 flex min-w-0 basis-full flex-col gap-2"
+      data-testid="library-pickers-bar"
+    >
       <div className="flex flex-wrap items-center gap-2">
         <BetaBadge className="inline-flex shrink-0" />
+        {sharedReason ? (
+          <p
+            className="text-xs text-gray-800 dark:text-gray-200"
+            data-testid="library-pickers-shared-reason"
+          >
+            {sharedReason}
+          </p>
+        ) : null}
       </div>
       <div className="grid min-w-0 gap-3 sm:grid-cols-2 xl:grid-cols-4">
         {KIND_META.map((meta) => {
@@ -212,15 +223,28 @@ export function LibraryPickersBar({
           const value = values[meta.field] || options[0]!.id;
           return (
             <div key={meta.kind} className="flex min-w-0 flex-col gap-1">
-              <Label
-                htmlFor={`param-library-${meta.kind}`}
-                className="text-sm text-gray-700 dark:text-gray-300"
-              >
-                {meta.label}
-              </Label>
+              <div className="flex items-baseline justify-between gap-2">
+                <Label
+                  htmlFor={`param-library-${meta.kind}`}
+                  className="text-sm text-gray-700 dark:text-gray-300"
+                >
+                  {meta.label}
+                </Label>
+                {onOpenCatalog ? (
+                  <button
+                    type="button"
+                    className="text-xs text-blue-700 underline dark:text-blue-300"
+                    data-testid={meta.catalogTestId}
+                    onClick={() => onOpenCatalog(meta.catalogFamily)}
+                  >
+                    {CONVERT_LIBRARY_CATALOG_LINK}
+                  </button>
+                ) : null}
+              </div>
               <select
                 id={`param-library-${meta.kind}`}
                 aria-label={meta.label}
+                title={meta.help}
                 data-testid={meta.testId}
                 value={value}
                 disabled={disabled || options.length === 0}
@@ -248,34 +272,13 @@ export function LibraryPickersBar({
                   {libraryChoiceReason(value)}
                 </p>
               )}
-              <p
-                className="text-xs text-gray-500 dark:text-gray-400"
-                data-testid={meta.helpTestId}
-              >
-                {meta.help}{' '}
-                {onOpenCatalog ? (
-                  <button
-                    type="button"
-                    className="text-blue-700 underline dark:text-blue-300"
-                    data-testid={meta.catalogTestId}
-                    onClick={() => onOpenCatalog(meta.catalogFamily)}
-                  >
-                    {CONVERT_LIBRARY_CATALOG_LINK}
-                  </button>
-                ) : null}
+              <p className="sr-only" data-testid={meta.helpTestId}>
+                {meta.help}
               </p>
             </div>
           );
         })}
       </div>
-      {sharedReason ? (
-        <p
-          className="text-xs text-gray-800 dark:text-gray-200"
-          data-testid="library-pickers-shared-reason"
-        >
-          {sharedReason}
-        </p>
-      ) : null}
     </div>
   );
 }
