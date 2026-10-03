@@ -16,6 +16,7 @@ import {
   listWorkSessions,
   restoreWorkSession,
 } from '/utils/workSessionApi';
+import { shellFrameClass, useLiveConvertLayout } from '@/utils/liveConvertLayout';
 import { Button } from './ui/button';
 import { Card } from './ui/card';
 import { OutputVersionCompare } from './OutputVersionCompare';
@@ -79,6 +80,7 @@ export function MyMetarsPage({
   onBack,
   onOpenSession,
 }: MyMetarsPageProps) {
+  const { layout } = useLiveConvertLayout();
   const [statusFilter, setStatusFilter] = useState<WorkSessionStatus | 'all'>('all');
   const [includeDeleted, setIncludeDeleted] = useState(false);
   const [sessions, setSessions] = useState<WorkSession[]>([]);
@@ -180,7 +182,7 @@ export function MyMetarsPage({
 
   return (
     <div className="min-h-screen bg-gray-50 p-6 dark:bg-gray-900">
-      <div className="mx-auto w-full max-w-none space-y-6">
+      <div className={`mx-auto w-full space-y-6 ${shellFrameClass(layout.span)}`}>
         <div className="flex items-center justify-between gap-4">
           <div>
             <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
@@ -275,7 +277,16 @@ export function MyMetarsPage({
           )}
           {error && <p className="text-sm text-red-600">{error}</p>}
 
-          {!loading && !error && (
+          {!loading && !error && sessions.length === 0 && (
+            <p
+              className="text-sm text-gray-600 dark:text-gray-400"
+              data-testid="my-metars-empty"
+            >
+              No saved reports match this filter.
+            </p>
+          )}
+
+          {!loading && !error && sessions.length > 0 && (
             <ul className="divide-y divide-gray-200 dark:divide-gray-700">
               {sessions.map((session) => (
                 <li

@@ -52,6 +52,7 @@ describe('DecodeVisualsPage', () => {
     render(<DecodeVisualsPage />);
     expect(screen.getByTestId('decode-visuals-empty')).toBeInTheDocument();
     await user.type(screen.getByTestId('decode-visuals-station'), 'KJFK');
+    expect(screen.queryByTestId('icao-suggestion-KJFK')).not.toBeInTheDocument();
     expect(screen.getByTestId('decode-visuals-heading')).toHaveTextContent('Kennedy');
     expect(screen.getByTestId('station-map')).toHaveTextContent('KJFK');
     expect(screen.getByTestId('wind-cue')).toHaveTextContent('No wind group');
@@ -67,6 +68,7 @@ describe('DecodeVisualsPage', () => {
     await user.type(screen.getByTestId('decode-visuals-station'), 'KJ');
     expect(screen.getByTestId('icao-suggestion-KJFK')).toHaveTextContent('Kennedy');
     await user.click(screen.getByTestId('icao-suggestion-KJFK'));
+    expect(screen.queryByTestId('icao-suggestion-KJFK')).not.toBeInTheDocument();
     expect(screen.getByTestId('decode-visuals-station')).toHaveValue('KJFK');
     expect(screen.getByTestId('decode-visuals-heading')).toHaveTextContent('Kennedy');
     publishDecodeVisuals({ station: '', segments: [] });
@@ -96,5 +98,21 @@ describe('DecodeVisualsPage', () => {
     expect(screen.getByTestId('decode-visuals-station')).toHaveValue('EGLL');
     expect(screen.getByTestId('wind-cue')).toHaveTextContent('Wind from 270 degrees');
     publishDecodeVisuals({ station: '', segments: [] });
+  });
+
+  it('uses the tight column when Convert is set to tighter', () => {
+    window.localStorage.setItem(
+      'tac-to-iwxxm.live-convert.layout',
+      JSON.stringify({
+        density: 'detailed',
+        wrapXml: true,
+        paneWidths: [34, 27, 39],
+        span: 'tight',
+      }),
+    );
+    publishDecodeVisuals({ station: '', segments: [] });
+    render(<DecodeVisualsPage />);
+    expect(screen.getByTestId('decode-visuals-page')).toHaveClass('max-w-6xl');
+    window.localStorage.clear();
   });
 });

@@ -75,7 +75,10 @@ export function IcaoAutocomplete({
     const upperValue = inputValue.toUpperCase();
     onChange(upperValue);
 
-    if (upperValue.length === 0) {
+    if (upperValue.trim().length === 0) {
+      if (upperValue.length > 0) {
+        onChange('');
+      }
       setSuggestions([]);
       setShowSuggestions(false);
       setIsValid(null);
@@ -85,6 +88,11 @@ export function IcaoAutocomplete({
     if (upperValue.length === 4) {
       const valid = validateIcao(upperValue);
       setIsValid(valid);
+      if (valid) {
+        setSuggestions([]);
+        setShowSuggestions(false);
+        return;
+      }
     } else {
       setIsValid(null);
     }

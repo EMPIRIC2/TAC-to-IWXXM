@@ -4,6 +4,7 @@
  */
 
 import { useCallback, useEffect, useState } from 'react';
+import { shellFrameClass, useLiveConvertLayout } from '@/utils/liveConvertLayout';
 import { Loader2 } from 'lucide-react';
 import {
   executeDisseminationPlan,
@@ -70,6 +71,7 @@ interface AuthedOpsProps {
  * Function `DisseminationOpsAuthed`.
  */
 function DisseminationOpsAuthed({ accessToken }: AuthedOpsProps) {
+  const { layout } = useLiveConvertLayout();
   const [health, setHealth] = useState<GatewayHealthRow[] | null>(null);
   const [audit, setAudit] = useState<AuditRecordOut[] | null>(null);
   const [plan, setPlan] = useState<DisseminationPlanOut | null>(null);
@@ -165,7 +167,7 @@ function DisseminationOpsAuthed({ accessToken }: AuthedOpsProps) {
 
   return (
     <div
-      className="mx-auto min-h-[calc(100dvh-4rem)] w-full max-w-none space-y-6 px-4 py-8"
+      className={`mx-auto min-h-[calc(100dvh-4rem)] w-full space-y-6 px-4 py-8 ${shellFrameClass(layout.span)}`}
       data-testid="dissemination-ops-page"
     >
       <header>
@@ -379,10 +381,11 @@ export function DisseminationOpsPage({
   accessToken,
   onRequestLogin,
 }: DisseminationOpsPageProps) {
+  const { layout } = useLiveConvertLayout();
   if (!accessToken) {
     return (
       <div
-        className="mx-auto min-h-[calc(100dvh-4rem)] w-full max-w-none px-4 py-10"
+        className={`mx-auto min-h-[calc(100dvh-4rem)] w-full px-4 py-10 ${shellFrameClass(layout.span)}`}
         data-testid="dissemination-ops-page"
       >
         <div className="flex flex-wrap items-center gap-2">

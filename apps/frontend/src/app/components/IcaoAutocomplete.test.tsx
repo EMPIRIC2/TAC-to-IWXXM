@@ -273,9 +273,39 @@ describe('IcaoAutocomplete', () => {
         <IcaoAutocomplete label="ICAO" value={value} onChange={setValue} formatOnly />
       );
     }
+    mockSearchByIcao.mockReturnValue([
+      { icao: 'KJFK', name: 'Kennedy', city: 'New York', country: 'US' },
+    ]);
     render(<Harness />);
     await user.type(screen.getByLabelText('ICAO'), 'KJFK');
     expect(screen.getByLabelText(/valid icao code/i)).toBeInTheDocument();
     expect(mockIsValid).not.toHaveBeenCalled();
+    expect(screen.queryByTestId('icao-suggestion-KJFK')).not.toBeInTheDocument();
+  });
+
+  it('hides suggestions once the code is a complete valid station', async () => {
+    const user = userEvent.setup();
+    mockIsValid.mockReturnValue(true);
+    mockSearchByIcao.mockReturnValue([
+      { icao: 'KJFK', name: 'Kennedy', city: 'New York', country: 'US' },
+    ]);
+    renderHarness();
+
+    await user.type(screen.getByLabelText('ICAO'), 'KJ');
+    expect(screen.getByTestId('icao-suggestion-KJFK')).toBeInTheDocument();
+    await user.type(screen.getByLabelText('ICAO'), 'FK');
+    expect(screen.queryByTestId('icao-suggestion-KJFK')).not.toBeInTheDocument();
+    expect(screen.getByLabelText(/valid icao code/i)).toBeInTheDocument();
+  });
+
+  it('clears a field that is only spaces', async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    renderHarness(onChange);
+
+    await user.type(screen.getByLabelText('ICAO'), '    ');
+    expect(onChange).toHaveBeenLastCalledWith('');
+    expect(screen.getByLabelText('ICAO')).toHaveValue('');
+    expect(screen.queryByLabelText(/invalid icao code/i)).not.toBeInTheDocument();
   });
 });

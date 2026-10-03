@@ -187,7 +187,11 @@ import {
   readOutputVersions,
   type OutputVersion,
 } from '/utils/outputVersions';
-import { useLiveConvertLayout, useWideConvertPanes } from '/utils/liveConvertLayout';
+import {
+  shellFrameClass,
+  useLiveConvertLayout,
+  useWideConvertPanes,
+} from '/utils/liveConvertLayout';
 import { listBulletinReports, replaceBulletinReport } from '/utils/bulletinReportList';
 import { isAbortError } from '/utils/liveAssist';
 import {
@@ -2474,9 +2478,7 @@ export function FileConverter({
         data-testid="workbench-top-bar"
       >
         <div
-          className={`mx-auto flex w-full flex-wrap items-center justify-between gap-3 ${
-            liveLayout.span === 'tight' ? 'max-w-6xl' : 'max-w-none'
-          }`}
+          className={`mx-auto flex w-full flex-wrap items-center justify-between gap-3 ${shellFrameClass(liveLayout.span)}`}
         >
           <h1 className="text-2xl font-semibold text-gray-900 dark:text-white sm:text-3xl">
             {inputMode === 'validate_iwxxm'
@@ -2593,9 +2595,7 @@ export function FileConverter({
       </header>
       <div
         data-testid="workbench-frame"
-        className={`mx-auto w-full px-4 py-8 ${
-          liveLayout.span === 'tight' ? 'max-w-6xl' : 'max-w-none'
-        }`}
+        className={`mx-auto w-full px-4 py-8 ${shellFrameClass(liveLayout.span)}`}
       >
         <div className="mb-8">
           <p

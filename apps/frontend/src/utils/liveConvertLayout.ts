@@ -28,6 +28,17 @@ export type LiveConvertDensity = 'detailed' | 'compact';
 export type LiveConvertSpan = 'roomy' | 'tight';
 
 /**
+ * Width class shared by the shell tabs and each operator page.
+ *
+ * Roomy uses the full window. Tight keeps the same centered column as Convert.
+ * @example
+ * const _ = true;
+ */
+export function shellFrameClass(span: LiveConvertSpan): string {
+  return span === 'tight' ? 'max-w-6xl' : 'max-w-none';
+}
+
+/**
  * Type `LiveConvertLayout`.
  * @example
  * const _ = true;

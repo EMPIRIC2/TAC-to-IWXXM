@@ -10,12 +10,18 @@ import {
   parseLiveConvertLayout,
   readLiveConvertLayout,
   resizePanePair,
+  shellFrameClass,
   useLiveConvertLayout,
   useWideConvertPanes,
   writeLiveConvertLayout,
 } from './liveConvertLayout';
 
 describe('liveConvertLayout', () => {
+  it('matches the nav column to the chosen span', () => {
+    expect(shellFrameClass('tight')).toBe('max-w-6xl');
+    expect(shellFrameClass('roomy')).toBe('max-w-none');
+  });
+
   afterEach(() => {
     window.localStorage.clear();
   });
