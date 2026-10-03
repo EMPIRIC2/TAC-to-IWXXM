@@ -1710,6 +1710,11 @@ describe('FileConverter Component', () => {
       expect(screen.getByTestId('live-convert-stage').className).toContain(
         'xl:overflow-hidden',
       );
+      expect(screen.getByTestId('convert-setup').className).toContain(
+        'xl:max-h-[18rem]',
+      );
+      expect(screen.getByTestId('country-preset')).toBeVisible();
+      expect(screen.getByTestId('library-pickers-shared-reason')).toBeVisible();
       expect(screen.getByTestId('live-convert-stage').className).not.toMatch(
         /(^|\s)overflow-hidden(\s|$)/,
       );

@@ -2900,7 +2900,10 @@ export function FileConverter({
                 className="flex flex-col xl:h-[min(42rem,calc(100dvh-12rem))] xl:min-h-[24rem] xl:overflow-hidden"
                 data-testid="live-convert-stage"
               >
-                <div className="mb-2 flex flex-col gap-2 xl:max-h-[11rem] xl:min-h-0 xl:shrink-0 xl:overflow-y-auto">
+                <div
+                  className="mb-2 flex flex-col gap-2 xl:max-h-[18rem] xl:min-h-0 xl:shrink-0 xl:overflow-y-auto"
+                  data-testid="convert-setup"
+                >
                   <div className="flex flex-col gap-2 lg:flex-row lg:items-end lg:justify-between">
                     <label
                       htmlFor="manual-input"
@@ -3064,7 +3067,7 @@ export function FileConverter({
                               });
                             }}
                           />
-                          <div className="flex shrink-0 items-center gap-1">
+                          <div className="order-1 flex shrink-0 items-center gap-1">
                             <Button
                               type="button"
                               variant="ghost"
@@ -3102,7 +3105,7 @@ export function FileConverter({
                           {reportVariantOptions.length > 0 &&
                             inputMode !== 'ahl_bulletin' && (
                               <>
-                                <div className="flex shrink-0 items-center gap-1">
+                                <div className="order-1 flex shrink-0 items-center gap-1">
                                   <Label
                                     htmlFor="param-report-variant"
                                     className="shrink-0 text-sm text-gray-700 dark:text-gray-300"
@@ -3145,7 +3148,7 @@ export function FileConverter({
                                       reportVariant: e.target.value,
                                     }));
                                   }}
-                                  className="min-w-[10rem] shrink-0 rounded-md border border-gray-300 bg-white px-2 py-1.5 text-sm text-gray-900 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+                                  className="order-1 min-w-[10rem] shrink-0 rounded-md border border-gray-300 bg-white px-2 py-1.5 text-sm text-gray-900 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
                                 >
                                   <option value="">Auto-detect from TAC</option>
                                   {reportVariantOptions.map((variant) => (
@@ -3161,45 +3164,69 @@ export function FileConverter({
                               </>
                             )}
 
-                          <GoldenExamplesSelect
-                            applicableProducts={activeProfileExampleProducts}
-                            disabled={isReadOnly}
-                            semanticProfile={conversionParams.profile}
-                            onSelectExample={handleLoadGoldenExample}
-                            onOpenChange={(open) => {
-                              if (open) {
-                                setRecentWorkCollapsed(true);
-                              }
-                            }}
-                          />
+                          <div className="order-1">
+                            <GoldenExamplesSelect
+                              applicableProducts={activeProfileExampleProducts}
+                              disabled={isReadOnly}
+                              semanticProfile={conversionParams.profile}
+                              onSelectExample={handleLoadGoldenExample}
+                              onOpenChange={(open) => {
+                                if (open) {
+                                  setRecentWorkCollapsed(true);
+                                }
+                              }}
+                            />
+                          </div>
                         </>
                       ) : null}
                     </div>
                     {inputMode !== 'validate_iwxxm' ? (
                       <>
-                        <p
-                          id="product-profile-bar-summary"
-                          className="text-xs text-gray-600 dark:text-gray-400"
-                          data-testid="product-profile-bar-summary"
-                        >
-                          Encoding and packaging rules only. This does not set
-                          destinations, credentials, or editable overlays.
-                        </p>
+                        <div className="flex flex-wrap items-center justify-between gap-2">
+                          <p
+                            id="product-profile-bar-summary"
+                            className="text-xs text-gray-600 dark:text-gray-400"
+                            data-testid="product-profile-bar-summary"
+                          >
+                            Encoding and packaging rules only. This does not set
+                            destinations, credentials, or editable overlays.
+                          </p>
+                          <details
+                            className="rounded-md border border-gray-200 bg-white px-2 py-1 text-xs text-gray-600 open:pb-2 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400"
+                            data-testid="product-profile-trust-details"
+                          >
+                            <summary className="cursor-pointer select-none font-medium text-gray-700 dark:text-gray-300">
+                              What&apos;s this?
+                            </summary>
+                            <div className="mt-1.5 space-y-1.5 border-t border-gray-100 pt-1.5 dark:border-gray-700">
+                              <p data-testid="semantic-profile-help">
+                                Profile selects encoding rules for conversion. Does not
+                                set destinations or credentials, and does not make
+                                national overlays editable.
+                              </p>
+                              <p data-testid="exchange-profile-help">
+                                Exchange profile is used when packaging bulletins. Does
+                                not choose destinations or credentials.
+                              </p>
+                            </div>
+                          </details>
+                        </div>
                         <div
-                          className="rounded-md border border-gray-200 bg-white px-3 py-2 text-sm dark:border-gray-700 dark:bg-gray-800"
+                          className="flex flex-wrap items-center gap-2"
                           data-testid="country-preset"
                         >
                           <label
-                            className="flex flex-col gap-1"
+                            className="flex items-center gap-2"
                             htmlFor="country-preset-select"
                           >
-                            <span className="text-xs font-medium uppercase tracking-wide text-gray-500">
+                            <span className="text-xs font-medium text-gray-500">
                               {COUNTRY_PRESET_LABEL}
                             </span>
                             <select
                               id="country-preset-select"
                               data-testid="country-preset-select"
                               aria-label={COUNTRY_PRESET_LABEL}
+                              title={COUNTRY_PRESET_HELP}
                               className="min-w-[10rem] rounded-md border border-gray-300 bg-white px-2 py-1.5 text-sm text-gray-900 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
                               value={countryPresetLineForLibraries(conversionParams)}
                               disabled={isReadOnly}
@@ -3234,32 +3261,10 @@ export function FileConverter({
                               ))}
                             </select>
                           </label>
-                          <p
-                            className="mt-1 text-xs text-gray-600 dark:text-gray-400"
-                            data-testid="country-preset-help"
-                          >
+                          <p className="sr-only" data-testid="country-preset-help">
                             {COUNTRY_PRESET_HELP}
                           </p>
                         </div>
-                        <details
-                          className="rounded-md border border-gray-200 bg-white px-2 py-1 text-xs text-gray-600 open:pb-2 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400"
-                          data-testid="product-profile-trust-details"
-                        >
-                          <summary className="cursor-pointer select-none font-medium text-gray-700 dark:text-gray-300">
-                            What&apos;s this?
-                          </summary>
-                          <div className="mt-1.5 space-y-1.5 border-t border-gray-100 pt-1.5 dark:border-gray-700">
-                            <p data-testid="semantic-profile-help">
-                              Profile selects encoding rules for conversion. Does not
-                              set destinations or credentials, and does not make
-                              national overlays editable.
-                            </p>
-                            <p data-testid="exchange-profile-help">
-                              Exchange profile is used when packaging bulletins. Does
-                              not choose destinations or credentials.
-                            </p>
-                          </div>
-                        </details>
                         {isCaEcccProfile(conversionParams.profile) && (
                           <div
                             className="rounded border border-sky-200 bg-sky-50 px-2 py-1.5 text-xs text-sky-950 dark:border-sky-900 dark:bg-sky-950/40 dark:text-sky-100"
