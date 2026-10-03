@@ -8,6 +8,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Loader2 } from 'lucide-react';
 import { fetchQualityMetrics, fetchQualityMetricsDetail } from '@/utils/api';
+import { shellFrameClass, useLiveConvertLayout } from '@/utils/liveConvertLayout';
 import type {
   QualityMetricsDetailResponse,
   QualityMetricsFileRow,
@@ -92,6 +93,7 @@ export function QualityMetricsPage({
   onOpenDetailRoute,
   onBackToList,
 }: QualityMetricsPageProps) {
+  const { layout } = useLiveConvertLayout();
   const [productFilter, setProductFilter] = useState<string>('all');
   const [summaries, setSummaries] = useState<QualityMetricsSummaryWithPairCounts[]>([]);
   const [files, setFiles] = useState<QualityMetricsFileRowWithPairState[]>([]);
@@ -236,7 +238,7 @@ export function QualityMetricsPage({
       className="min-h-screen overflow-x-hidden bg-gray-50 p-6 dark:bg-gray-900"
       data-testid="quality-metrics-page"
     >
-      <div className="mx-auto w-full max-w-none space-y-6">
+      <div className={`mx-auto w-full space-y-6 ${shellFrameClass(layout.span)}`}>
         {!detailOnly ? (
           <>
             <div>

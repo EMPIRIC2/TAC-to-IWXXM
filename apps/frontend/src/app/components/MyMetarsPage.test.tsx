@@ -80,6 +80,20 @@ describe('MyMetarsPage', () => {
     mockRestoreServer.mockResolvedValue(sampleSession({ id: 'srv-1' }));
   });
 
+  it('says when the filter matches no saved reports', async () => {
+    mockList.mockResolvedValue({ items: [], total: 0, page: 1, limit: 50 });
+    render(
+      <MyMetarsPage
+        userEmail="Local history"
+        onBack={onBack}
+        onOpenSession={onOpenSession}
+      />,
+    );
+    expect(await screen.findByTestId('my-metars-empty')).toHaveTextContent(
+      'No saved reports match this filter.',
+    );
+  });
+
   it('loads and displays work sessions from IndexedDB', async () => {
     render(
       <MyMetarsPage

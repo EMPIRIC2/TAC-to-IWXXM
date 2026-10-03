@@ -9,6 +9,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Loader2 } from 'lucide-react';
 import { fetchLintIssueCatalog, fetchRuleCatalog } from '@/utils/api';
+import { shellFrameClass, useLiveConvertLayout } from '@/utils/liveConvertLayout';
 import type { LintIssueCatalogEntry } from '@/utils/openapiTypes';
 import { Card } from './ui/card';
 import {
@@ -518,6 +519,7 @@ export function LintValidationCatalogPage({
   initialFamily?: 'lint' | 'iwxxm';
   onFocusHandled?: () => void;
 } = {}) {
+  const { layout } = useLiveConvertLayout();
   const [familyFilter, setFamilyFilter] = useState<FamilyFilter>(
     initialFamily ?? 'all',
   );
@@ -681,7 +683,7 @@ export function LintValidationCatalogPage({
       className="min-h-screen bg-gray-50 p-6 dark:bg-gray-900"
       data-testid="lint-validation-catalog-page"
     >
-      <div className="mx-auto w-full max-w-none space-y-6">
+      <div className={`mx-auto w-full space-y-6 ${shellFrameClass(layout.span)}`}>
         <div>
           <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
             {LINT_VALIDATION_CATALOG_PAGE_TITLE}

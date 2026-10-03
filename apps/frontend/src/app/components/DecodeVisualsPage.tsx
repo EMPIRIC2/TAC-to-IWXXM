@@ -14,6 +14,7 @@ import {
   DECODE_VISUALS_TITLE,
 } from '@/utils/decodeVisualsCopy';
 import { readDecodeVisuals, subscribeDecodeVisuals } from '@/utils/decodeVisualsStore';
+import { shellFrameClass, useLiveConvertLayout } from '@/utils/liveConvertLayout';
 
 const STATION_ID = /^[A-Z][A-Z0-9]{3}$/;
 
@@ -30,13 +31,14 @@ export function DecodeVisualsPage() {
     readDecodeVisuals,
   );
   const [draft, setDraft] = useState<string | null>(null);
+  const { layout } = useLiveConvertLayout();
   const station = (draft ?? published.station).trim().toUpperCase();
   const complete = STATION_ID.test(station);
   const heading = complete ? stationDisplayName(station) : '';
 
   return (
     <section
-      className="mx-auto flex min-h-[calc(100dvh-4rem)] w-full max-w-none flex-col gap-4 px-4 py-6"
+      className={`mx-auto flex min-h-[calc(100dvh-4rem)] w-full flex-col gap-4 px-4 py-6 ${shellFrameClass(layout.span)}`}
       data-testid="decode-visuals-page"
     >
       <h1 className="text-xl font-semibold text-gray-900 dark:text-white">
