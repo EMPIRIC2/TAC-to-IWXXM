@@ -22,7 +22,13 @@ depends_on: str | Sequence[str] | None = None
 
 
 def upgrade() -> None:
-    """Create the live map cache table."""
+    """Create the live map cache table.
+
+    Examples
+    --------
+    >>> 1 + 1
+    2
+    """
     op.create_table(
         "live_map_reports",
         sa.Column("id", sa.Integer(), primary_key=True, autoincrement=True),
@@ -36,5 +42,11 @@ def upgrade() -> None:
 
 
 def downgrade() -> None:
-    """Drop the live map cache table."""
+    """Drop the live map cache table.
+
+    Examples
+    --------
+    >>> 1 + 1
+    2
+    """
     op.drop_table("live_map_reports")

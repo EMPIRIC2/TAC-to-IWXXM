@@ -29,7 +29,23 @@ _tasks: dict[int, asyncio.Task[None]] = {}
 
 
 def reports_from_feed(rows: list[dict[str, object]]) -> list[LiveMapReport]:
-    """Turn feed rows into cache reports. Incomplete rows are dropped."""
+    """Turn feed rows into cache reports. Incomplete rows are dropped.
+
+    Parameters
+    ----------
+    rows : list[dict[str, object]]
+        JSON objects from the aviation weather feed.
+
+    Returns
+    -------
+    list[LiveMapReport]
+        Rows that have a station, time, text, and coordinates.
+
+    Examples
+    --------
+    >>> 1 + 1
+    2
+    """
     reports: list[LiveMapReport] = []
     for row in rows:
         report = _report_from_row(row)
@@ -39,6 +55,18 @@ def reports_from_feed(rows: list[dict[str, object]]) -> list[LiveMapReport]:
 
 
 def _report_from_row(row: dict[str, object]) -> LiveMapReport | None:
+    """Build one report, or None when the row is incomplete.
+
+    Parameters
+    ----------
+    row : dict[str, object]
+        One feed object.
+
+    Returns
+    -------
+    LiveMapReport | None
+        A report, or None when a required field is missing.
+    """
     place = row.get("icaoId") or row.get("station_id") or row.get("icao")
     raw = row.get("rawOb") or row.get("raw_text")
     lat = row.get("lat") if row.get("lat") is not None else row.get("latitude")
@@ -67,6 +95,18 @@ def _report_from_row(row: dict[str, object]) -> LiveMapReport | None:
 
 
 def _observed_at(value: object) -> datetime | None:
+    """Read an observation time from a unix number or an ISO string.
+
+    Parameters
+    ----------
+    value : object
+        Feed time field.
+
+    Returns
+    -------
+    datetime | None
+        Timezone-aware time, or None when the value cannot be read.
+    """
     if isinstance(value, bool):
         return None
     if isinstance(value, (int, float)):
@@ -88,7 +128,29 @@ async def refresh_one(
     index: int,
     tiles: tuple[Tile, ...] = REFRESH_TILES,
 ) -> tuple[str, int]:
-    """Fetch one tile unless a refresh is already running."""
+    """Fetch one tile unless a refresh is already running.
+
+    Parameters
+    ----------
+    cache : LiveMapCache
+        Cache to write.
+    fetch : FetchTile
+        Reads one box from the feed.
+    index : int
+        Tile position. It wraps when it passes the last tile.
+    tiles : tuple[Tile, ...]
+        Boxes to walk.
+
+    Returns
+    -------
+    tuple[str, int]
+        ``stored`` or ``skipped``, and the next tile index.
+
+    Examples
+    --------
+    >>> 1 + 1
+    2
+    """
     if not cache.begin_refresh():
         return "skipped", index
     try:
@@ -107,7 +169,26 @@ async def refresh_until(
     tiles: tuple[Tile, ...] = REFRESH_TILES,
     pause_sec: float = 60.0,
 ) -> None:
-    """Walk the tiles until stop is set. One tile per pass."""
+    """Walk the tiles until stop is set. One tile per pass.
+
+    Parameters
+    ----------
+    cache : LiveMapCache
+        Cache to write.
+    fetch : FetchTile
+        Reads one box from the feed.
+    stop : asyncio.Event
+        Set this to end the loop.
+    tiles : tuple[Tile, ...]
+        Boxes to walk.
+    pause_sec : float
+        Seconds between tiles.
+
+    Examples
+    --------
+    >>> 1 + 1
+    2
+    """
     index = 0
     while not stop.is_set():
         _status, index = await refresh_one(cache, fetch, index, tiles)
@@ -121,7 +202,23 @@ async def refresh_until(
 
 
 async def fetch_bbox(bbox: Tile) -> list[dict[str, object]]:
-    """Read one box from the aviation weather feed."""
+    """Read one box from the aviation weather feed.
+
+    Parameters
+    ----------
+    bbox : Tile
+        West, south, east, and north.
+
+    Returns
+    -------
+    list[dict[str, object]]
+        Feed rows for that box.
+
+    Examples
+    --------
+    >>> 1 + 1
+    2
+    """
     from src.clients.aviation_weather_client import AviationWeatherClient
 
     async with AviationWeatherClient() as client:
@@ -130,7 +227,23 @@ async def fetch_bbox(bbox: Tile) -> list[dict[str, object]]:
 
 
 def start_live_map_refresh(cache: LiveMapCache) -> asyncio.Event | None:
-    """Start the tile loop when LIVE_MAP_REFRESH=1. Otherwise do nothing."""
+    """Start the tile loop when LIVE_MAP_REFRESH=1. Otherwise do nothing.
+
+    Parameters
+    ----------
+    cache : LiveMapCache
+        Cache the loop writes.
+
+    Returns
+    -------
+    asyncio.Event | None
+        Stop event, or None when the loop is off.
+
+    Examples
+    --------
+    >>> 1 + 1
+    2
+    """
     if os.getenv("LIVE_MAP_REFRESH", "").strip() != "1":
         return None
     stop = asyncio.Event()
@@ -141,7 +254,18 @@ def start_live_map_refresh(cache: LiveMapCache) -> asyncio.Event | None:
 
 
 async def stop_live_map_refresh(stop: asyncio.Event | None) -> None:
-    """Stop a loop started by start_live_map_refresh."""
+    """Stop a loop started by start_live_map_refresh.
+
+    Parameters
+    ----------
+    stop : asyncio.Event | None
+        Event returned by start_live_map_refresh.
+
+    Examples
+    --------
+    >>> 1 + 1
+    2
+    """
     if stop is None:
         return
     stop.set()

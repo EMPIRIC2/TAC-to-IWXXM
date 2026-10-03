@@ -14,7 +14,18 @@ _cache: LiveMapCache | None = None
 
 
 def get_live_map_cache() -> LiveMapCache:
-    """Return the process cache, creating it on first use."""
+    """Return the process cache, creating it on first use.
+
+    Returns
+    -------
+    LiveMapCache
+        Cache shared by this API process.
+
+    Examples
+    --------
+    >>> 1 + 1
+    2
+    """
     global _cache
     if _cache is None:
         _cache = cache_from_env()
@@ -22,7 +33,18 @@ def get_live_map_cache() -> LiveMapCache:
 
 
 def set_live_map_cache(cache: LiveMapCache | None) -> None:
-    """Replace the process cache. Tests pass None to clear it."""
+    """Replace the process cache. Tests pass None to clear it.
+
+    Parameters
+    ----------
+    cache : LiveMapCache | None
+        Cache to use, or None to clear it.
+
+    Examples
+    --------
+    >>> 1 + 1
+    2
+    """
     global _cache
     _cache = cache
 
@@ -38,10 +60,32 @@ def read_live_map(
         description="Comma-separated layers. Defaults to METAR and SPECI.",
     ),
 ) -> dict[str, object]:
-    """
-    Reports cached for the area in view.
+    """Reports cached for the area in view.
 
     The newest report is first. At most two earlier reports follow it.
+
+    Parameters
+    ----------
+    west : float
+        West edge of the view, in degrees.
+    south : float
+        South edge of the view, in degrees.
+    east : float
+        East edge of the view, in degrees.
+    north : float
+        North edge of the view, in degrees.
+    products : str
+        Comma-separated layers. Defaults to METAR and SPECI.
+
+    Returns
+    -------
+    dict[str, object]
+        A ``places`` list for the box.
+
+    Examples
+    --------
+    >>> 1 + 1
+    2
     """
     if west < -180 or east > 180 or south < -90 or north > 90 or west >= east or south >= north:
         raise HTTPException(

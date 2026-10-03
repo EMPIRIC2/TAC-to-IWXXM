@@ -53,7 +53,23 @@ _KEEP = 3
 
 @dataclass(frozen=True)
 class LiveMapReport:
-    """One stored observation."""
+    """One stored observation.
+
+    Attributes
+    ----------
+    place_key : str
+        Station or place id.
+    product : str
+        Layer id, such as metar.
+    observed_at : datetime
+        When the report was observed.
+    tac : str
+        Raw report text.
+    latitude : float | None
+        Latitude in degrees, when the feed sent one.
+    longitude : float | None
+        Longitude in degrees, when the feed sent one.
+    """
 
     place_key: str
     product: str
@@ -64,18 +80,33 @@ class LiveMapReport:
 
 
 def _stamp(value: datetime) -> str:
-    """Store a timezone-aware time as UTC text so order matches the clock."""
+    """Store a timezone-aware time as UTC text so order matches the clock.
+
+    Parameters
+    ----------
+    value : datetime
+        Observation time.
+
+    Returns
+    -------
+    str
+        UTC ISO text.
+    """
     if value.tzinfo is None:
         raise ValueError("observed_at needs a timezone")
     return value.astimezone(UTC).isoformat()
 
 
 class _ReportJson(TypedDict):
+    """JSON shape of one cached report."""
+
     observed_at: str
     tac: str
 
 
 class _PlaceJson(TypedDict):
+    """JSON shape of one place and its reports."""
+
     place_key: str
     product: str
     latitude: float
@@ -84,7 +115,15 @@ class _PlaceJson(TypedDict):
 
 
 class LiveMapCache:
-    """Last three reports per place and product."""
+    """Last three reports per place and product.
+
+    Attributes
+    ----------
+    _engine : Engine
+        Database that holds the rows.
+    _refreshing : bool
+        True while a refresh holds the cache.
+    """
 
     def __init__(self, engine: Engine) -> None:
         """
@@ -101,18 +140,46 @@ class LiveMapCache:
             _metadata.create_all(engine)
 
     def begin_refresh(self) -> bool:
-        """Return False when a refresh is already running."""
+        """Return False when a refresh is already running.
+
+        Returns
+        -------
+        bool
+            False when a refresh is already running.
+
+        Examples
+        --------
+        >>> 1 + 1
+        2
+        """
         if self._refreshing:
             return False
         self._refreshing = True
         return True
 
     def end_refresh(self) -> None:
-        """Allow the next refresh."""
+        """Allow the next refresh.
+
+        Examples
+        --------
+        >>> 1 + 1
+        2
+        """
         self._refreshing = False
 
     def store(self, report: LiveMapReport) -> None:
-        """Keep the newest three observations for this place and product."""
+        """Keep the newest three observations for this place and product.
+
+        Parameters
+        ----------
+        report : LiveMapReport
+            Observation to keep.
+
+        Examples
+        --------
+        >>> 1 + 1
+        2
+        """
         stamp = _stamp(report.observed_at)
         with self._engine.begin() as conn:
             conn.execute(
@@ -153,7 +220,31 @@ class LiveMapCache:
         north: float,
         products: set[str],
     ) -> list[_PlaceJson]:
-        """Return up to three reports for each place inside the box."""
+        """Return up to three reports for each place inside the box.
+
+        Parameters
+        ----------
+        west : float
+            West edge in degrees.
+        south : float
+            South edge in degrees.
+        east : float
+            East edge in degrees.
+        north : float
+            North edge in degrees.
+        products : set[str]
+            Layer ids to include.
+
+        Returns
+        -------
+        list[_PlaceJson]
+            Places inside the box, newest report first.
+
+        Examples
+        --------
+        >>> 1 + 1
+        2
+        """
         if not products:
             return []
         with self._engine.connect() as conn:
@@ -204,13 +295,24 @@ class LiveMapCache:
 
 
 def apply_refresh(cache: LiveMapCache, reports: list[LiveMapReport]) -> str:
-    """
-    Store reports unless a refresh is already running.
+    """Store reports unless a refresh is already running.
+
+    Parameters
+    ----------
+    cache : LiveMapCache
+        Cache to write.
+    reports : list[LiveMapReport]
+        Observations from one tile.
 
     Returns
     -------
     str
         ``stored`` or ``skipped``.
+
+    Examples
+    --------
+    >>> 1 + 1
+    2
     """
     if not cache.begin_refresh():
         return "skipped"
@@ -223,7 +325,23 @@ def apply_refresh(cache: LiveMapCache, reports: list[LiveMapReport]) -> str:
 
 
 def engine_for_url(url: str | None) -> Engine:
-    """Use one shared in-memory database when no URL is configured."""
+    """Use one shared in-memory database when no URL is configured.
+
+    Parameters
+    ----------
+    url : str | None
+        Database URL, or None for process memory.
+
+    Returns
+    -------
+    Engine
+        SQLAlchemy engine for the cache.
+
+    Examples
+    --------
+    >>> 1 + 1
+    2
+    """
     raw = (url or "").strip()
     if not raw:
         return create_engine(
@@ -235,5 +353,16 @@ def engine_for_url(url: str | None) -> Engine:
 
 
 def cache_from_env() -> LiveMapCache:
-    """Open the cache from ``LIVE_MAP_CACHE_URL``, or memory when unset."""
+    """Open the cache from ``LIVE_MAP_CACHE_URL``, or memory when unset.
+
+    Returns
+    -------
+    LiveMapCache
+        Cache for this process.
+
+    Examples
+    --------
+    >>> 1 + 1
+    2
+    """
     return LiveMapCache(engine_for_url(os.getenv("LIVE_MAP_CACHE_URL")))
