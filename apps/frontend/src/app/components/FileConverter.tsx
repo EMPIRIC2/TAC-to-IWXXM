@@ -2884,8 +2884,11 @@ export function FileConverter({
                   to start fresh.
                 </StatusBanner>
               )}
-              <div className="flex h-[min(42rem,calc(100dvh-12rem))] min-h-[24rem] flex-col overflow-hidden">
-                <div className="mb-2 flex max-h-[11rem] min-h-0 shrink-0 flex-col gap-2 overflow-y-auto">
+              <div
+                className="flex flex-col xl:h-[min(42rem,calc(100dvh-12rem))] xl:min-h-[24rem] xl:overflow-hidden"
+                data-testid="live-convert-stage"
+              >
+                <div className="mb-2 flex flex-col gap-2 xl:max-h-[11rem] xl:min-h-0 xl:shrink-0 xl:overflow-y-auto">
                   <div className="flex flex-col gap-2 lg:flex-row lg:items-end lg:justify-between">
                     <label
                       htmlFor="manual-input"
@@ -3434,7 +3437,7 @@ export function FileConverter({
                   onWidthsChange={(paneWidths) => updateLiveLayout({ paneWidths })}
                 >
                   <section
-                    className="flex h-full min-h-0 min-w-0 flex-col overflow-auto"
+                    className="flex min-w-0 flex-col overflow-auto xl:h-full xl:min-h-0"
                     aria-label={inputMode === 'validate_iwxxm' ? 'IWXXM' : 'TAC'}
                     onFocusCapture={() => setRecentWorkCollapsed(true)}
                     onKeyDown={(event) => {
@@ -3560,7 +3563,7 @@ export function FileConverter({
                   </section>
                   {inputMode === 'validate_iwxxm' ? null : (
                     <div
-                      className="flex h-full min-h-0 min-w-0 flex-col overflow-auto"
+                      className="flex min-w-0 flex-col overflow-auto xl:h-full xl:min-h-0"
                       data-testid="decode-pane"
                     >
                       {onOpenVisuals ? (
@@ -3618,7 +3621,7 @@ export function FileConverter({
                     </section>
                   ) : (
                     <IwxxmPreviewPane
-                      className="h-full min-h-0 min-w-0"
+                      className="min-w-0 xl:h-full xl:min-h-0"
                       xml={previewXml}
                       status={previewStatus}
                       mode={previewMode}
