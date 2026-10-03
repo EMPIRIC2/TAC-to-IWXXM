@@ -23,6 +23,7 @@ type StatusTone = 'ready' | 'caution' | 'problem' | 'idle';
 interface StatusItem {
   label: string;
   tone: StatusTone;
+  title?: string;
 }
 
 /**
@@ -65,6 +66,7 @@ export function LiveConvertStatusStrip({
           <li
             key={item.label}
             data-tone={item.tone}
+            title={item.title}
             className={`rounded-full border px-2 py-1 ${toneClass(item.tone)}`}
           >
             {item.label}
@@ -137,7 +139,8 @@ function checkItem(
     return { label: `${name}: failed`, tone: 'problem' };
   }
   return {
-    label: `${name}: not run yet. It runs when you validate.`,
+    label: `${name}: not run yet`,
+    title: 'It runs when you validate.',
     tone: 'idle',
   };
 }

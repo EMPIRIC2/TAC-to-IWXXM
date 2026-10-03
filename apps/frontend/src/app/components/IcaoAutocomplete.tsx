@@ -46,7 +46,6 @@ export function IcaoAutocomplete({
 }: IcaoAutocompleteProps) {
   const [suggestions, setSuggestions] = useState<AirportSuggestion[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
-  const [isValid, setIsValid] = useState<boolean | null>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -71,6 +70,12 @@ export function IcaoAutocomplete({
     return airports.isValid(code);
   };
 
+  const normalized = value.toUpperCase();
+  const isValid =
+    normalized.trim().length === 0 || normalized.length !== 4
+      ? null
+      : validateIcao(normalized);
+
   const handleInputChange = (inputValue: string) => {
     const upperValue = inputValue.toUpperCase();
     onChange(upperValue);
@@ -81,20 +86,16 @@ export function IcaoAutocomplete({
       }
       setSuggestions([]);
       setShowSuggestions(false);
-      setIsValid(null);
       return;
     }
 
     if (upperValue.length === 4) {
       const valid = validateIcao(upperValue);
-      setIsValid(valid);
       if (valid) {
         setSuggestions([]);
         setShowSuggestions(false);
         return;
       }
-    } else {
-      setIsValid(null);
     }
 
     if (upperValue.length >= 2) {
@@ -116,7 +117,6 @@ export function IcaoAutocomplete({
   const handleSuggestionClick = (airport: AirportSuggestion) => {
     const icaoCode = airport.icao || '';
     onChange(icaoCode);
-    setIsValid(true);
     setSuggestions([]);
     setShowSuggestions(false);
   };

@@ -1146,10 +1146,14 @@ describe('FileConverter Component', () => {
           'TAC lint: failed',
         );
         expect(screen.getByTestId('convert-status-strip')).toHaveTextContent(
-          'XML schema: not run yet. It runs when you validate.',
+          'XML schema: not run yet',
+        );
+        expect(screen.getByText('XML schema: not run yet')).toHaveAttribute(
+          'title',
+          'It runs when you validate.',
         );
         expect(screen.getByTestId('convert-status-strip')).toHaveTextContent(
-          'Schematron: not run yet. It runs when you validate.',
+          'Schematron: not run yet',
         );
         const group = screen.getByRole('button', { name: 'METAR' });
         fireEvent.click(group);

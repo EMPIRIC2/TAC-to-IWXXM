@@ -192,6 +192,15 @@ export function LibraryPickersBar({
   }, [load]);
   /* eslint-enable react-hooks/set-state-in-effect */
 
+  const reasons = KIND_META.map((meta) => {
+    const options = byKind[meta.kind];
+    const value = values[meta.field] || options[0]?.id || '';
+    return libraryChoiceReason(value);
+  });
+  const sharedReason = reasons.every((reason) => reason === reasons[0])
+    ? reasons[0]
+    : null;
+
   return (
     <div className="flex min-w-0 flex-col gap-3" data-testid="library-pickers-bar">
       <div className="flex flex-wrap items-center gap-2">
@@ -231,12 +240,14 @@ export function LibraryPickersBar({
                   </option>
                 ))}
               </select>
-              <p
-                className="text-xs text-gray-800 dark:text-gray-200"
-                data-testid={`${meta.testId}-reason`}
-              >
-                {libraryChoiceReason(value)}
-              </p>
+              {sharedReason ? null : (
+                <p
+                  className="text-xs text-gray-800 dark:text-gray-200"
+                  data-testid={`${meta.testId}-reason`}
+                >
+                  {libraryChoiceReason(value)}
+                </p>
+              )}
               <p
                 className="text-xs text-gray-500 dark:text-gray-400"
                 data-testid={meta.helpTestId}
@@ -257,6 +268,14 @@ export function LibraryPickersBar({
           );
         })}
       </div>
+      {sharedReason ? (
+        <p
+          className="text-xs text-gray-800 dark:text-gray-200"
+          data-testid="library-pickers-shared-reason"
+        >
+          {sharedReason}
+        </p>
+      ) : null}
     </div>
   );
 }

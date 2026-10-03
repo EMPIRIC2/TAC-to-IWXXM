@@ -56,9 +56,12 @@ describe('LibraryPickersBar', () => {
     ).not.toBeInTheDocument();
     expect(screen.getByTestId('conversion-library-help')).toBeInTheDocument();
     expect(screen.getByTestId('decoding-library-help')).toBeInTheDocument();
-    expect(screen.getByTestId('decoding-library-select-reason')).toHaveTextContent(
+    expect(screen.getByTestId('library-pickers-shared-reason')).toHaveTextContent(
       'WMO baseline',
     );
+    expect(
+      screen.queryByTestId('decoding-library-select-reason'),
+    ).not.toBeInTheDocument();
     expect(screen.getByTestId('decoding-library-select')).toHaveTextContent(
       'ICAO / WMO Annex 3 (2025)',
     );
@@ -153,9 +156,12 @@ describe('LibraryPickersBar', () => {
         defaultLibraryId('decoding'),
       );
     });
-    expect(screen.getByTestId('decoding-library-select-reason')).toHaveTextContent(
+    expect(screen.getByTestId('library-pickers-shared-reason')).toHaveTextContent(
       'WMO baseline',
     );
+    expect(
+      screen.queryByTestId('decoding-library-select-reason'),
+    ).not.toBeInTheDocument();
   });
 
   it('explains a national line and a custom library', async () => {
