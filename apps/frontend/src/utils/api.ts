@@ -6,6 +6,7 @@
  */
 
 import { apiUrl, getApiBaseUrl } from './apiBase';
+import { isAbortError } from './liveAssist';
 import { DEFAULT_IWXXM_VERSION } from './iwxxmVersions';
 import { wireSemanticProfile } from './semanticProfile';
 import { conversionLibraryIdFromProfile } from './libraryIds';
@@ -367,6 +368,9 @@ export async function convertMetarToIwxxm(params: {
 
     return await response.json();
   } catch (error) {
+    if (isAbortError(error)) {
+      throw error;
+    }
     if (error instanceof Error && error.message.includes('timeout')) {
       console.error('[API TIMEOUT]', error.message);
       throw error;

@@ -181,8 +181,10 @@ export function MyMetarsPage({
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6 dark:bg-gray-900">
-      <div className={`mx-auto w-full space-y-6 ${shellFrameClass(layout.span)}`}>
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <div
+        className={`mx-auto w-full space-y-6 px-4 py-6 ${shellFrameClass(layout.span)}`}
+      >
         <div className="flex items-center justify-between gap-4">
           <div>
             <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">

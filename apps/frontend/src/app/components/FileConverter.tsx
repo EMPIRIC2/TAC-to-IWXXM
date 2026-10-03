@@ -2595,9 +2595,9 @@ export function FileConverter({
       </header>
       <div
         data-testid="workbench-frame"
-        className={`mx-auto w-full px-4 py-8 ${shellFrameClass(liveLayout.span)}`}
+        className={`mx-auto w-full px-4 py-4 ${shellFrameClass(liveLayout.span)}`}
       >
-        <div className="mb-8">
+        <div className="mb-4">
           <p
             className="text-base text-gray-600 dark:text-gray-300"
             data-testid="workbench-intro"
@@ -2639,7 +2639,7 @@ export function FileConverter({
         </div>
 
         {/* Action Buttons — fixed strip; status lives outside so busy/save text cannot reflow */}
-        <div className="mb-8" data-testid="action-button-strip">
+        <div className="mb-4" data-testid="action-button-strip">
           <div
             className="mb-2 flex h-5 items-center"
             aria-live="polite"
@@ -2884,142 +2884,315 @@ export function FileConverter({
                   to start fresh.
                 </StatusBanner>
               )}
-              <div className="mb-2 flex flex-col gap-2">
-                <div className="flex flex-col gap-2 lg:flex-row lg:items-end lg:justify-between">
-                  <label
-                    htmlFor="manual-input"
-                    className="block text-base font-medium text-gray-900 dark:text-white"
-                  >
-                    {inputMode === 'validate_iwxxm'
-                      ? 'Manual IWXXM Input'
-                      : 'Manual TAC Input'}
-                  </label>
-                  <div
-                    className="flex flex-col gap-2 lg:flex-row lg:flex-nowrap lg:items-center"
-                    data-testid="input-mode-bar"
-                  >
-                    <div
-                      className="flex shrink-0 rounded-md border border-gray-300 dark:border-gray-600"
-                      role="group"
-                      aria-label="Input mode"
-                      data-testid="input-mode-group"
+              <div className="flex h-[min(42rem,calc(100dvh-12rem))] min-h-[24rem] flex-col overflow-hidden">
+                <div className="mb-2 flex max-h-[11rem] min-h-0 shrink-0 flex-col gap-2 overflow-y-auto">
+                  <div className="flex flex-col gap-2 lg:flex-row lg:items-end lg:justify-between">
+                    <label
+                      htmlFor="manual-input"
+                      className="block text-base font-medium text-gray-900 dark:text-white"
                     >
-                      {(
-                        [
-                          ['tac', 'TAC report'],
-                          ['ahl_bulletin', 'AHL bulletin'],
-                          ['collect_iwxxm', 'IWXXM COLLECT'],
-                          ['validate_iwxxm', 'Validate IWXXM'],
-                        ] as const
-                      ).map(([value, label]) => (
-                        <button
-                          key={value}
-                          type="button"
-                          data-testid={`input-mode-${value}`}
-                          disabled={isReadOnly}
-                          onClick={() => {
-                            if (
-                              value !== 'ahl_bulletin' &&
-                              focusedBulletinReport !== null
-                            ) {
-                              setManualInput(bulletinSource);
-                              setFocusedBulletinReport(null);
-                            }
-                            if (value === 'validate_iwxxm') {
-                              const xml =
-                                convertedFiles[0]?.convertedContent?.trim() || '';
-                              if (xml) {
-                                setManualInput(xml);
+                      {inputMode === 'validate_iwxxm'
+                        ? 'Manual IWXXM Input'
+                        : 'Manual TAC Input'}
+                    </label>
+                    <div
+                      className="flex min-w-0 max-w-full flex-col gap-2 lg:flex-row lg:flex-nowrap lg:items-center"
+                      data-testid="input-mode-bar"
+                    >
+                      <div
+                        className="flex max-w-full flex-wrap rounded-md border border-gray-300 dark:border-gray-600"
+                        role="group"
+                        aria-label="Input mode"
+                        data-testid="input-mode-group"
+                      >
+                        {(
+                          [
+                            ['tac', 'TAC report'],
+                            ['ahl_bulletin', 'AHL bulletin'],
+                            ['collect_iwxxm', 'IWXXM COLLECT'],
+                            ['validate_iwxxm', 'Validate IWXXM'],
+                          ] as const
+                        ).map(([value, label]) => (
+                          <button
+                            key={value}
+                            type="button"
+                            data-testid={`input-mode-${value}`}
+                            disabled={isReadOnly}
+                            onClick={() => {
+                              if (
+                                value !== 'ahl_bulletin' &&
+                                focusedBulletinReport !== null
+                              ) {
+                                setManualInput(bulletinSource);
+                                setFocusedBulletinReport(null);
                               }
-                            }
-                            setInputMode(value);
-                          }}
-                          className={`px-2 py-1 text-xs whitespace-nowrap ${
-                            inputMode === value
-                              ? 'bg-blue-600 text-white'
-                              : 'bg-white text-gray-700 dark:bg-gray-800 dark:text-gray-200'
-                          }`}
-                        >
-                          {label}
-                        </button>
-                      ))}
+                              if (value === 'validate_iwxxm') {
+                                const xml =
+                                  convertedFiles[0]?.convertedContent?.trim() || '';
+                                if (xml) {
+                                  setManualInput(xml);
+                                }
+                              }
+                              setInputMode(value);
+                            }}
+                            className={`px-2 py-1 text-xs whitespace-nowrap ${
+                              inputMode === value
+                                ? 'bg-blue-600 text-white'
+                                : 'bg-white text-gray-700 dark:bg-gray-800 dark:text-gray-200'
+                            }`}
+                          >
+                            {label}
+                          </button>
+                        ))}
+                      </div>
                     </div>
                   </div>
-                </div>
-                <div className="flex flex-col gap-1.5">
-                  <div
-                    className="flex min-w-0 flex-col gap-2 rounded-md border border-gray-300 bg-white px-2 py-2 dark:border-gray-600 dark:bg-gray-800 lg:flex-row lg:flex-wrap lg:items-center"
-                    data-testid="product-profile-bar"
-                  >
-                    <Label
-                      htmlFor="param-product"
-                      className="shrink-0 text-sm text-gray-700 dark:text-gray-300"
+                  <div className="flex flex-col gap-1.5">
+                    <div
+                      className="flex min-w-0 flex-col gap-2 rounded-md border border-gray-300 bg-white px-2 py-2 dark:border-gray-600 dark:bg-gray-800 lg:flex-row lg:flex-wrap lg:items-center"
+                      data-testid="product-profile-bar"
                     >
-                      Product type
-                    </Label>
-                    <select
-                      id="param-product"
-                      aria-label="Product"
-                      data-testid="product-type-select"
-                      value={conversionParams.product}
-                      disabled={isReadOnly}
-                      onChange={(e) =>
-                        setConversionParams((prev) => ({
-                          ...prev,
-                          product: e.target.value as TacProductSelection,
-                          reportVariant: '',
-                        }))
-                      }
-                      className="min-w-[9.5rem] shrink-0 rounded-md border border-gray-300 bg-white px-2 py-1.5 text-sm text-gray-900 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
-                    >
-                      <option value="auto">Auto-detect</option>
-                      <option value="AIRMET">AIRMET</option>
-                      <option value="METAR">METAR</option>
-                      <option value="SIGMET">SIGMET</option>
-                      <option value="SPECI">SPECI</option>
-                      <option value="TAF">TAF</option>
-                      <option value="VAA">VAA</option>
-                      <option value="TCA">TCA</option>
-                      <option value="SWXA">SWXA</option>
-                      <option value="VONA">VONA</option>
-                      <option value="IWXXM">IWXXM</option>
-                    </select>
-                    {inputMode !== 'validate_iwxxm' ? (
-                      <>
-                        <LibraryPickersBar
-                          disabled={isReadOnly}
-                          values={{
-                            conversionLibraryId: conversionParams.conversionLibraryId,
-                            tacValidationLibraryId:
-                              conversionParams.tacValidationLibraryId,
-                            iwxxmValidationLibraryId:
-                              conversionParams.iwxxmValidationLibraryId,
-                            disseminationLibraryId:
-                              conversionParams.disseminationLibraryId,
-                            decodingLibraryId: conversionParams.decodingLibraryId,
-                          }}
-                          onOpenCatalog={onOpenCatalog}
-                          onChange={(next, conversionEngineProfileId) => {
-                            setConversionParams((prev) => {
-                              if (!conversionEngineProfileId) {
-                                return { ...prev, ...next };
-                              }
-                              const lineChanging = isSemanticProfileLineChange(
-                                prev.profile,
-                                conversionEngineProfileId,
-                              );
-                              if (lineChanging) {
-                                if (
-                                  !confirmLibraryResetForProfile(
-                                    conversionEngineProfileId,
-                                  )
-                                ) {
-                                  return prev;
+                      <Label
+                        htmlFor="param-product"
+                        className="shrink-0 text-sm text-gray-700 dark:text-gray-300"
+                      >
+                        Product type
+                      </Label>
+                      <select
+                        id="param-product"
+                        aria-label="Product"
+                        data-testid="product-type-select"
+                        value={conversionParams.product}
+                        disabled={isReadOnly}
+                        onChange={(e) =>
+                          setConversionParams((prev) => ({
+                            ...prev,
+                            product: e.target.value as TacProductSelection,
+                            reportVariant: '',
+                          }))
+                        }
+                        className="min-w-[9.5rem] shrink-0 rounded-md border border-gray-300 bg-white px-2 py-1.5 text-sm text-gray-900 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+                      >
+                        <option value="auto">Auto-detect</option>
+                        <option value="AIRMET">AIRMET</option>
+                        <option value="METAR">METAR</option>
+                        <option value="SIGMET">SIGMET</option>
+                        <option value="SPECI">SPECI</option>
+                        <option value="TAF">TAF</option>
+                        <option value="VAA">VAA</option>
+                        <option value="TCA">TCA</option>
+                        <option value="SWXA">SWXA</option>
+                        <option value="VONA">VONA</option>
+                        <option value="IWXXM">IWXXM</option>
+                      </select>
+                      {inputMode !== 'validate_iwxxm' ? (
+                        <>
+                          <LibraryPickersBar
+                            disabled={isReadOnly}
+                            values={{
+                              conversionLibraryId: conversionParams.conversionLibraryId,
+                              tacValidationLibraryId:
+                                conversionParams.tacValidationLibraryId,
+                              iwxxmValidationLibraryId:
+                                conversionParams.iwxxmValidationLibraryId,
+                              disseminationLibraryId:
+                                conversionParams.disseminationLibraryId,
+                              decodingLibraryId: conversionParams.decodingLibraryId,
+                            }}
+                            onOpenCatalog={onOpenCatalog}
+                            onChange={(next, conversionEngineProfileId) => {
+                              setConversionParams((prev) => {
+                                if (!conversionEngineProfileId) {
+                                  return { ...prev, ...next };
                                 }
-                                const { profile, libraryIds } = libraryResetForProfile(
+                                const lineChanging = isSemanticProfileLineChange(
+                                  prev.profile,
+                                  conversionEngineProfileId,
+                                );
+                                if (lineChanging) {
+                                  if (
+                                    !confirmLibraryResetForProfile(
+                                      conversionEngineProfileId,
+                                    )
+                                  ) {
+                                    return prev;
+                                  }
+                                  const { profile, libraryIds } =
+                                    libraryResetForProfile(conversionEngineProfileId);
+                                  return {
+                                    ...prev,
+                                    ...libraryIds,
+                                    profile,
+                                    reportVariant: '',
+                                    iwxxmVersion: coerceIwxxmVersionForProfile(
+                                      profile,
+                                      prev.iwxxmVersion,
+                                    ),
+                                  };
+                                }
+                                const profile = coerceIwxxmProfile(
                                   conversionEngineProfileId,
                                 );
                                 return {
+                                  ...prev,
+                                  ...next,
+                                  profile,
+                                  reportVariant: '',
+                                  iwxxmVersion: coerceIwxxmVersionForProfile(
+                                    profile,
+                                    prev.iwxxmVersion,
+                                  ),
+                                };
+                              });
+                            }}
+                          />
+                          <div className="flex shrink-0 items-center gap-1">
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="sm"
+                              disabled={isReadOnly}
+                              data-testid="reset-wmo-library-defaults"
+                              className="text-xs text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800"
+                              onClick={() => {
+                                const sync = resetWmoLibraryDefaultsSync();
+                                applyWmoLibraryDefaultsSync(sync);
+                              }}
+                            >
+                              {CONVERT_RESET_WMO_LIBRARY_DEFAULTS}
+                            </Button>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <button
+                                  type="button"
+                                  className="inline-flex h-6 w-6 items-center justify-center rounded text-gray-500 hover:text-gray-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:text-gray-400 dark:hover:text-gray-100"
+                                  aria-label="About reset to WMO defaults"
+                                  data-testid="reset-wmo-library-defaults-help"
+                                >
+                                  <CircleHelp className="h-3.5 w-3.5" aria-hidden />
+                                </button>
+                              </TooltipTrigger>
+                              <TooltipContent
+                                side="bottom"
+                                className="max-w-xs text-balance"
+                              >
+                                {CONVERT_RESET_WMO_LIBRARY_DEFAULTS_HELP}
+                              </TooltipContent>
+                            </Tooltip>
+                          </div>
+
+                          {reportVariantOptions.length > 0 &&
+                            inputMode !== 'ahl_bulletin' && (
+                              <>
+                                <div className="flex shrink-0 items-center gap-1">
+                                  <Label
+                                    htmlFor="param-report-variant"
+                                    className="shrink-0 text-sm text-gray-700 dark:text-gray-300"
+                                  >
+                                    Report variant
+                                  </Label>
+                                  <Tooltip>
+                                    <TooltipTrigger asChild>
+                                      <button
+                                        type="button"
+                                        className="inline-flex h-6 w-6 items-center justify-center rounded text-gray-500 hover:text-gray-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:text-gray-400 dark:hover:text-gray-100"
+                                        aria-label="About Report variant"
+                                        data-testid="report-variant-help-icon"
+                                      >
+                                        <CircleHelp
+                                          className="h-3.5 w-3.5"
+                                          aria-hidden
+                                        />
+                                      </button>
+                                    </TooltipTrigger>
+                                    <TooltipContent
+                                      side="bottom"
+                                      className="max-w-xs text-balance"
+                                    >
+                                      Optional profile-scoped IWXXM root inside the
+                                      selected product family. Leave on Auto-detect to
+                                      infer from the TAC lead.
+                                    </TooltipContent>
+                                  </Tooltip>
+                                </div>
+                                <select
+                                  id="param-report-variant"
+                                  aria-label="Report variant"
+                                  data-testid="report-variant-select"
+                                  value={activeReportVariant}
+                                  disabled={isReadOnly}
+                                  onChange={(e) => {
+                                    setConversionParams((prev) => ({
+                                      ...prev,
+                                      reportVariant: e.target.value,
+                                    }));
+                                  }}
+                                  className="min-w-[10rem] shrink-0 rounded-md border border-gray-300 bg-white px-2 py-1.5 text-sm text-gray-900 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+                                >
+                                  <option value="">Auto-detect from TAC</option>
+                                  {reportVariantOptions.map((variant) => (
+                                    <option
+                                      key={variant.tac_lead}
+                                      value={variant.tac_lead}
+                                    >
+                                      {variant.tac_lead}
+                                      {variant.minimal_observation ? ' (minimal)' : ''}
+                                    </option>
+                                  ))}
+                                </select>
+                              </>
+                            )}
+
+                          <GoldenExamplesSelect
+                            applicableProducts={activeProfileExampleProducts}
+                            disabled={isReadOnly}
+                            semanticProfile={conversionParams.profile}
+                            onSelectExample={handleLoadGoldenExample}
+                            onOpenChange={(open) => {
+                              if (open) {
+                                setRecentWorkCollapsed(true);
+                              }
+                            }}
+                          />
+                        </>
+                      ) : null}
+                    </div>
+                    {inputMode !== 'validate_iwxxm' ? (
+                      <>
+                        <p
+                          id="product-profile-bar-summary"
+                          className="text-xs text-gray-600 dark:text-gray-400"
+                          data-testid="product-profile-bar-summary"
+                        >
+                          Encoding and packaging rules only. This does not set
+                          destinations, credentials, or editable overlays.
+                        </p>
+                        <div
+                          className="rounded-md border border-gray-200 bg-white px-3 py-2 text-sm dark:border-gray-700 dark:bg-gray-800"
+                          data-testid="country-preset"
+                        >
+                          <label
+                            className="flex flex-col gap-1"
+                            htmlFor="country-preset-select"
+                          >
+                            <span className="text-xs font-medium uppercase tracking-wide text-gray-500">
+                              {COUNTRY_PRESET_LABEL}
+                            </span>
+                            <select
+                              id="country-preset-select"
+                              data-testid="country-preset-select"
+                              aria-label={COUNTRY_PRESET_LABEL}
+                              className="min-w-[10rem] rounded-md border border-gray-300 bg-white px-2 py-1.5 text-sm text-gray-900 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+                              value={countryPresetLineForLibraries(conversionParams)}
+                              disabled={isReadOnly}
+                              onChange={(event) => {
+                                const line = event.target.value;
+                                if (line === '') {
+                                  return;
+                                }
+                                const { profile, libraryIds } =
+                                  libraryResetForProfile(line);
+                                setConversionParams((prev) => ({
                                   ...prev,
                                   ...libraryIds,
                                   profile,
@@ -3028,616 +3201,448 @@ export function FileConverter({
                                     profile,
                                     prev.iwxxmVersion,
                                   ),
-                                };
-                              }
-                              const profile = coerceIwxxmProfile(
-                                conversionEngineProfileId,
-                              );
-                              return {
-                                ...prev,
-                                ...next,
-                                profile,
-                                reportVariant: '',
-                                iwxxmVersion: coerceIwxxmVersionForProfile(
-                                  profile,
-                                  prev.iwxxmVersion,
-                                ),
-                              };
-                            });
-                          }}
-                        />
-                        <div className="flex shrink-0 items-center gap-1">
-                          <Button
-                            type="button"
-                            variant="ghost"
-                            size="sm"
-                            disabled={isReadOnly}
-                            data-testid="reset-wmo-library-defaults"
-                            className="text-xs text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800"
-                            onClick={() => {
-                              const sync = resetWmoLibraryDefaultsSync();
-                              applyWmoLibraryDefaultsSync(sync);
-                            }}
-                          >
-                            {CONVERT_RESET_WMO_LIBRARY_DEFAULTS}
-                          </Button>
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <button
-                                type="button"
-                                className="inline-flex h-6 w-6 items-center justify-center rounded text-gray-500 hover:text-gray-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:text-gray-400 dark:hover:text-gray-100"
-                                aria-label="About reset to WMO defaults"
-                                data-testid="reset-wmo-library-defaults-help"
-                              >
-                                <CircleHelp className="h-3.5 w-3.5" aria-hidden />
-                              </button>
-                            </TooltipTrigger>
-                            <TooltipContent
-                              side="bottom"
-                              className="max-w-xs text-balance"
+                                }));
+                              }}
                             >
-                              {CONVERT_RESET_WMO_LIBRARY_DEFAULTS_HELP}
-                            </TooltipContent>
-                          </Tooltip>
+                              <option value="">{COUNTRY_PRESET_CUSTOM}</option>
+                              {SEMANTIC_PROFILE_OPTIONS.filter((option) =>
+                                (COUNTRY_PRESET_LINES as readonly string[]).includes(
+                                  option.value,
+                                ),
+                              ).map((option) => (
+                                <option key={option.value} value={option.value}>
+                                  {option.label}
+                                </option>
+                              ))}
+                            </select>
+                          </label>
+                          <p
+                            className="mt-1 text-xs text-gray-600 dark:text-gray-400"
+                            data-testid="country-preset-help"
+                          >
+                            {COUNTRY_PRESET_HELP}
+                          </p>
                         </div>
-
-                        {reportVariantOptions.length > 0 &&
-                          inputMode !== 'ahl_bulletin' && (
-                            <>
-                              <div className="flex shrink-0 items-center gap-1">
-                                <Label
-                                  htmlFor="param-report-variant"
-                                  className="shrink-0 text-sm text-gray-700 dark:text-gray-300"
-                                >
-                                  Report variant
-                                </Label>
-                                <Tooltip>
-                                  <TooltipTrigger asChild>
-                                    <button
-                                      type="button"
-                                      className="inline-flex h-6 w-6 items-center justify-center rounded text-gray-500 hover:text-gray-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:text-gray-400 dark:hover:text-gray-100"
-                                      aria-label="About Report variant"
-                                      data-testid="report-variant-help-icon"
-                                    >
-                                      <CircleHelp className="h-3.5 w-3.5" aria-hidden />
-                                    </button>
-                                  </TooltipTrigger>
-                                  <TooltipContent
-                                    side="bottom"
-                                    className="max-w-xs text-balance"
-                                  >
-                                    Optional profile-scoped IWXXM root inside the
-                                    selected product family. Leave on Auto-detect to
-                                    infer from the TAC lead.
-                                  </TooltipContent>
-                                </Tooltip>
-                              </div>
-                              <select
-                                id="param-report-variant"
-                                aria-label="Report variant"
-                                data-testid="report-variant-select"
-                                value={activeReportVariant}
-                                disabled={isReadOnly}
-                                onChange={(e) => {
-                                  setConversionParams((prev) => ({
-                                    ...prev,
-                                    reportVariant: e.target.value,
-                                  }));
-                                }}
-                                className="min-w-[10rem] shrink-0 rounded-md border border-gray-300 bg-white px-2 py-1.5 text-sm text-gray-900 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
-                              >
-                                <option value="">Auto-detect from TAC</option>
-                                {reportVariantOptions.map((variant) => (
-                                  <option
-                                    key={variant.tac_lead}
-                                    value={variant.tac_lead}
-                                  >
-                                    {variant.tac_lead}
-                                    {variant.minimal_observation ? ' (minimal)' : ''}
-                                  </option>
-                                ))}
-                              </select>
-                            </>
-                          )}
-
-                        <GoldenExamplesSelect
-                          applicableProducts={activeProfileExampleProducts}
-                          disabled={isReadOnly}
-                          semanticProfile={conversionParams.profile}
-                          onSelectExample={handleLoadGoldenExample}
-                          onOpenChange={(open) => {
-                            if (open) {
-                              setRecentWorkCollapsed(true);
-                            }
-                          }}
-                        />
+                        <details
+                          className="rounded-md border border-gray-200 bg-white px-2 py-1 text-xs text-gray-600 open:pb-2 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400"
+                          data-testid="product-profile-trust-details"
+                        >
+                          <summary className="cursor-pointer select-none font-medium text-gray-700 dark:text-gray-300">
+                            What&apos;s this?
+                          </summary>
+                          <div className="mt-1.5 space-y-1.5 border-t border-gray-100 pt-1.5 dark:border-gray-700">
+                            <p data-testid="semantic-profile-help">
+                              Profile selects encoding rules for conversion. Does not
+                              set destinations or credentials, and does not make
+                              national overlays editable.
+                            </p>
+                            <p data-testid="exchange-profile-help">
+                              Exchange profile is used when packaging bulletins. Does
+                              not choose destinations or credentials.
+                            </p>
+                          </div>
+                        </details>
+                        {isCaEcccProfile(conversionParams.profile) && (
+                          <div
+                            className="rounded border border-sky-200 bg-sky-50 px-2 py-1.5 text-xs text-sky-950 dark:border-sky-900 dark:bg-sky-950/40 dark:text-sky-100"
+                            data-testid="ca-eccc-profile-metadata"
+                            role="status"
+                          >
+                            <p>IWXXM {CA_ECCC_IWXXM_VERSION} (MSC operational line)</p>
+                            <p>{CA_ECCC_EXTENSION_LABEL}</p>
+                            <p>
+                              Supported products:{' '}
+                              {CA_ECCC_SUPPORTED_PRODUCTS.join(', ')}
+                            </p>
+                            {caProfileBlocked && (
+                              <p className="mt-1 font-medium text-amber-900 dark:text-amber-200">
+                                Canadian extension schemas are not available on this
+                                deployment. Conversion is blocked until the vendor
+                                bundle is installed.
+                              </p>
+                            )}
+                          </div>
+                        )}
                       </>
                     ) : null}
                   </div>
-                  {inputMode !== 'validate_iwxxm' ? (
-                    <>
-                      <p
-                        id="product-profile-bar-summary"
-                        className="text-xs text-gray-600 dark:text-gray-400"
-                        data-testid="product-profile-bar-summary"
-                      >
-                        Encoding and packaging rules only. This does not set
-                        destinations, credentials, or editable overlays.
-                      </p>
-                      <div
-                        className="rounded-md border border-gray-200 bg-white px-3 py-2 text-sm dark:border-gray-700 dark:bg-gray-800"
-                        data-testid="country-preset"
-                      >
-                        <label
-                          className="flex flex-col gap-1"
-                          htmlFor="country-preset-select"
-                        >
-                          <span className="text-xs font-medium uppercase tracking-wide text-gray-500">
-                            {COUNTRY_PRESET_LABEL}
-                          </span>
-                          <select
-                            id="country-preset-select"
-                            data-testid="country-preset-select"
-                            aria-label={COUNTRY_PRESET_LABEL}
-                            className="min-w-[10rem] rounded-md border border-gray-300 bg-white px-2 py-1.5 text-sm text-gray-900 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
-                            value={countryPresetLineForLibraries(conversionParams)}
-                            disabled={isReadOnly}
-                            onChange={(event) => {
-                              const line = event.target.value;
-                              if (line === '') {
-                                return;
-                              }
-                              const { profile, libraryIds } =
-                                libraryResetForProfile(line);
-                              setConversionParams((prev) => ({
-                                ...prev,
-                                ...libraryIds,
-                                profile,
-                                reportVariant: '',
-                                iwxxmVersion: coerceIwxxmVersionForProfile(
-                                  profile,
-                                  prev.iwxxmVersion,
-                                ),
-                              }));
-                            }}
-                          >
-                            <option value="">{COUNTRY_PRESET_CUSTOM}</option>
-                            {SEMANTIC_PROFILE_OPTIONS.filter((option) =>
-                              (COUNTRY_PRESET_LINES as readonly string[]).includes(
-                                option.value,
-                              ),
-                            ).map((option) => (
-                              <option key={option.value} value={option.value}>
-                                {option.label}
-                              </option>
-                            ))}
-                          </select>
-                        </label>
-                        <p
-                          className="mt-1 text-xs text-gray-600 dark:text-gray-400"
-                          data-testid="country-preset-help"
-                        >
-                          {COUNTRY_PRESET_HELP}
-                        </p>
-                      </div>
-                      <details
-                        className="rounded-md border border-gray-200 bg-white px-2 py-1 text-xs text-gray-600 open:pb-2 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400"
-                        data-testid="product-profile-trust-details"
-                      >
-                        <summary className="cursor-pointer select-none font-medium text-gray-700 dark:text-gray-300">
-                          What&apos;s this?
-                        </summary>
-                        <div className="mt-1.5 space-y-1.5 border-t border-gray-100 pt-1.5 dark:border-gray-700">
-                          <p data-testid="semantic-profile-help">
-                            Profile selects encoding rules for conversion. Does not set
-                            destinations or credentials, and does not make national
-                            overlays editable.
-                          </p>
-                          <p data-testid="exchange-profile-help">
-                            Exchange profile is used when packaging bulletins. Does not
-                            choose destinations or credentials.
-                          </p>
-                        </div>
-                      </details>
-                      {isCaEcccProfile(conversionParams.profile) && (
-                        <div
-                          className="rounded border border-sky-200 bg-sky-50 px-2 py-1.5 text-xs text-sky-950 dark:border-sky-900 dark:bg-sky-950/40 dark:text-sky-100"
-                          data-testid="ca-eccc-profile-metadata"
-                          role="status"
-                        >
-                          <p>IWXXM {CA_ECCC_IWXXM_VERSION} (MSC operational line)</p>
-                          <p>{CA_ECCC_EXTENSION_LABEL}</p>
-                          <p>
-                            Supported products: {CA_ECCC_SUPPORTED_PRODUCTS.join(', ')}
-                          </p>
-                          {caProfileBlocked && (
-                            <p className="mt-1 font-medium text-amber-900 dark:text-amber-200">
-                              Canadian extension schemas are not available on this
-                              deployment. Conversion is blocked until the vendor bundle
-                              is installed.
-                            </p>
-                          )}
-                        </div>
-                      )}
-                    </>
-                  ) : null}
                 </div>
-              </div>
-              {inputMode !== 'validate_iwxxm' && demoExampleLabel && (
-                <StatusBanner
-                  tone="info"
-                  className="mb-2 text-xs"
-                  data-testid="demo-example-banner"
-                >
-                  Demo / non-operational example: {demoExampleLabel}
-                </StatusBanner>
-              )}
-              {inputMode === 'ahl_bulletin' && (
-                <p className="mb-2 text-xs text-gray-600 dark:text-gray-400">
-                  AHL bulletins are split and converted via{' '}
-                  <code>POST /api/v1/convert-bulletin</code>.
-                </p>
-              )}
-              {inputMode === 'collect_iwxxm' && (
-                <p className="mb-2 text-xs text-amber-800 dark:text-amber-200">
-                  IWXXM COLLECT / FTBP path uses{' '}
-                  <code>POST /api/v1/ingest-collect</code> (not available yet; the
-                  request returns 501 until member extract ships).
-                </p>
-              )}
-              {inputMode === 'validate_iwxxm' && (
-                <p
-                  className="mb-2 text-xs text-gray-600 dark:text-gray-400"
-                  data-testid="validate-iwxxm-help"
-                >
-                  Paste IWXXM XML or upload one <code>.xml</code> file. This checks the
-                  XML only. It does not convert TAC.
-                </p>
-              )}
-              {conversionParams.product === 'IWXXM' &&
-                inputMode !== 'validate_iwxxm' && (
-                  <p
-                    className="mb-2 text-xs text-gray-600 dark:text-gray-400"
-                    data-testid="iwxxm-product-help"
-                    role="status"
+                {inputMode !== 'validate_iwxxm' && demoExampleLabel && (
+                  <StatusBanner
+                    tone="info"
+                    className="mb-2 text-xs"
+                    data-testid="demo-example-banner"
                   >
-                    {IWXXM_PRODUCT_HELP}
+                    Demo / non-operational example: {demoExampleLabel}
+                  </StatusBanner>
+                )}
+                {inputMode === 'ahl_bulletin' && (
+                  <p className="mb-2 text-xs text-gray-600 dark:text-gray-400">
+                    AHL bulletins are split and converted via{' '}
+                    <code>POST /api/v1/convert-bulletin</code>.
                   </p>
                 )}
-              {bulletinSummary && (
-                <StatusBanner
-                  tone="info"
-                  className="mb-2 text-xs"
-                  data-testid="bulletin-summary"
-                >
-                  {bulletinSummary}
-                </StatusBanner>
-              )}
-              {placeholderNotice && (
-                <StatusBanner
-                  tone="caution"
-                  className="mb-2 text-xs"
-                  data-testid="placeholder-notice"
-                >
-                  {placeholderNotice}
-                </StatusBanner>
-              )}
-              {inputMode !== 'validate_iwxxm' ? (
-                <FailedTacCue failedSpans={failedSpans} />
-              ) : null}
-              {bulletinReports.length >= 2 ? (
-                <BulletinReportList
-                  reports={bulletinReports}
-                  selectedIndex={focusedBulletinReport}
-                  onShowAll={() => {
-                    setFocusedBulletinReport(null);
-                    setManualInput(bulletinSource || manualInput);
-                  }}
-                  onSelect={(index, tac) => {
-                    const source = bulletinSource || manualInput;
-                    setBulletinSource(source);
-                    setFocusedBulletinReport(index);
-                    setManualInput(tac);
-                    setSelectedTrace(null);
-                  }}
-                />
-              ) : null}
-              {inputMode !== 'validate_iwxxm' ? (
-                <LiveConvertStatusStrip
-                  hasTac={manualInput.trim().length > 0}
-                  decodeReady={decodeSegments.length > 0}
-                  decodeLoading={decodeLoading}
-                  previewState={
-                    !previewXml.trim()
-                      ? 'waiting'
-                      : previewIncomplete
-                        ? 'incomplete'
-                        : 'current'
-                  }
-                  lintStatus={tacLintLayerStatus({
-                    hasTac: manualInput.trim().length > 0,
-                    loading: decodeLoading,
-                    errorCount: lintCounts.errorCount,
-                    issueCount: lintCounts.issueCount,
-                  })}
-                  schemaStatus="not run"
-                  schematronStatus="not run"
-                />
-              ) : null}
-              {inputMode !== 'validate_iwxxm' ? (
-                <div className="mb-2 flex flex-wrap items-center gap-3">
-                  <div
-                    className="flex rounded-md bg-gray-100 p-0.5 dark:bg-gray-800"
-                    role="group"
-                    aria-label="Decode density"
+                {inputMode === 'collect_iwxxm' && (
+                  <p className="mb-2 text-xs text-amber-800 dark:text-amber-200">
+                    IWXXM COLLECT / FTBP path uses{' '}
+                    <code>POST /api/v1/ingest-collect</code> (not available yet; the
+                    request returns 501 until member extract ships).
+                  </p>
+                )}
+                {inputMode === 'validate_iwxxm' && (
+                  <p
+                    className="mb-2 text-xs text-gray-600 dark:text-gray-400"
+                    data-testid="validate-iwxxm-help"
                   >
-                    <button
-                      type="button"
-                      aria-pressed={liveLayout.density === 'detailed'}
-                      className="rounded px-2 py-1 text-xs font-medium text-gray-900 dark:text-gray-100"
-                      onClick={() => updateLiveLayout({ density: 'detailed' })}
+                    Paste IWXXM XML or upload one <code>.xml</code> file. This checks
+                    the XML only. It does not convert TAC.
+                  </p>
+                )}
+                {conversionParams.product === 'IWXXM' &&
+                  inputMode !== 'validate_iwxxm' && (
+                    <p
+                      className="mb-2 text-xs text-gray-600 dark:text-gray-400"
+                      data-testid="iwxxm-product-help"
+                      role="status"
                     >
-                      Detailed
-                    </button>
-                    <button
-                      type="button"
-                      aria-pressed={liveLayout.density === 'compact'}
-                      className="rounded px-2 py-1 text-xs font-medium text-gray-900 dark:text-gray-100"
-                      onClick={() => updateLiveLayout({ density: 'compact' })}
-                    >
-                      Compact
-                    </button>
-                  </div>
-                  <div
-                    className="flex rounded-md bg-gray-100 p-0.5 dark:bg-gray-800"
-                    role="group"
-                    aria-label="Convert layout"
+                      {IWXXM_PRODUCT_HELP}
+                    </p>
+                  )}
+                {bulletinSummary && (
+                  <StatusBanner
+                    tone="info"
+                    className="mb-2 text-xs"
+                    data-testid="bulletin-summary"
                   >
-                    <button
-                      type="button"
-                      aria-pressed={liveLayout.span === 'roomy'}
-                      className="rounded px-2 py-1 text-xs font-medium text-gray-900 dark:text-gray-100"
-                      onClick={() => updateLiveLayout({ span: 'roomy' })}
-                    >
-                      Roomier
-                    </button>
-                    <button
-                      type="button"
-                      aria-pressed={liveLayout.span === 'tight'}
-                      className="rounded px-2 py-1 text-xs font-medium text-gray-900 dark:text-gray-100"
-                      onClick={() => updateLiveLayout({ span: 'tight' })}
-                    >
-                      Tighter
-                    </button>
-                  </div>
-                  <label className="flex items-center gap-2 text-xs text-gray-800 dark:text-gray-200">
-                    <input
-                      type="checkbox"
-                      data-testid="wrap-xml-lines"
-                      checked={liveLayout.wrapXml}
-                      onChange={(event) =>
-                        updateLiveLayout({ wrapXml: event.target.checked })
-                      }
-                    />
-                    Wrap XML lines
-                  </label>
-                </div>
-              ) : null}
-              <LiveConvertPaneGrid
-                wide={wideConvertPanes}
-                roomy={liveLayout.span === 'roomy'}
-                widths={liveLayout.paneWidths}
-                onWidthsChange={(paneWidths) => updateLiveLayout({ paneWidths })}
-              >
-                <section
-                  className="flex h-full min-h-0 min-w-0 flex-col overflow-auto"
-                  aria-label={inputMode === 'validate_iwxxm' ? 'IWXXM' : 'TAC'}
-                  onFocusCapture={() => setRecentWorkCollapsed(true)}
-                  onKeyDown={(event) => {
-                    const issue = lintIssueFromKey(event, jumpIssues, lintJump);
-                    if (!issue) return;
-                    event.preventDefault();
-                    applyLintJump(issue);
-                  }}
-                >
-                  <h2 className="mb-2 text-sm font-semibold text-gray-900 dark:text-white">
-                    {inputMode === 'validate_iwxxm' ? 'IWXXM' : 'TAC'}
-                  </h2>
-                  <TacEditor
-                    id="manual-input"
-                    value={manualInput}
-                    onReportLoaded={applyLoadedReportName}
-                    onChange={(value) => {
-                      setManualInput(value);
-                      setSelectedTrace(null);
-                      setLintJump(null);
-                      setLintFocusOffset(null);
-                      if (inputMode !== 'ahl_bulletin') {
-                        return;
-                      }
-                      if (focusedBulletinReport === null) {
-                        setBulletinSource(value);
-                        return;
-                      }
-                      setBulletinSource((current) =>
-                        replaceBulletinReport(current, focusedBulletinReport, value),
-                      );
+                    {bulletinSummary}
+                  </StatusBanner>
+                )}
+                {placeholderNotice && (
+                  <StatusBanner
+                    tone="caution"
+                    className="mb-2 text-xs"
+                    data-testid="placeholder-notice"
+                  >
+                    {placeholderNotice}
+                  </StatusBanner>
+                )}
+                {inputMode !== 'validate_iwxxm' ? (
+                  <FailedTacCue failedSpans={failedSpans} />
+                ) : null}
+                {bulletinReports.length >= 2 ? (
+                  <BulletinReportList
+                    reports={bulletinReports}
+                    selectedIndex={focusedBulletinReport}
+                    onShowAll={() => {
+                      setFocusedBulletinReport(null);
+                      setManualInput(bulletinSource || manualInput);
                     }}
-                    readOnly={isReadOnly}
-                    placeholder={
-                      inputMode === 'validate_iwxxm'
-                        ? '<iwxxm:METAR>...</iwxxm:METAR>'
-                        : 'SPECI BGSF 282350Z 10RMF50MT 9999 SCT110 BKN130 0RN130 NN7/N11 Q1021'
-                    }
-                    aria-label={
-                      inputMode === 'validate_iwxxm'
-                        ? 'Enter IWXXM XML manually'
-                        : 'Enter METAR data manually'
-                    }
-                    className="min-h-[160px] focus-within:ring-2 focus-within:ring-blue-500"
-                    failedSpans={failedSpans}
-                    issueSpans={editorSpans}
-                    onSpanFix={applyLintFix}
-                    focusOffset={lintFocusOffset}
+                    onSelect={(index, tac) => {
+                      const source = bulletinSource || manualInput;
+                      setBulletinSource(source);
+                      setFocusedBulletinReport(index);
+                      setManualInput(tac);
+                      setSelectedTrace(null);
+                    }}
                   />
-                  {inputMode !== 'validate_iwxxm' ? (
-                    <>
-                      <div
-                        className="mt-2 flex flex-wrap gap-1"
-                        data-testid="tac-group-chips"
-                        aria-label="Recognised groups"
-                      >
-                        {decodeSegments.map((segment) => {
-                          const selected =
-                            selectedTrace?.start === segment.start &&
-                            selectedTrace?.end === segment.end;
-                          return (
-                            <button
-                              key={`chip-${segment.start}-${segment.end}-${segment.code}`}
-                              type="button"
-                              aria-pressed={selected}
-                              className={`rounded px-2 py-0.5 font-mono text-xs ${
-                                selected
-                                  ? 'bg-sky-200 text-sky-950 ring-1 ring-sky-800 dark:bg-sky-900 dark:text-sky-50'
-                                  : 'bg-gray-100 text-gray-900 dark:bg-gray-800 dark:text-gray-100'
-                              }`}
-                              onClick={() =>
-                                setSelectedTrace({
-                                  start: segment.start,
-                                  end: segment.end,
-                                  code: segment.code,
-                                })
-                              }
-                            >
-                              {segment.code}
-                            </button>
-                          );
-                        })}
-                        {decodeResiduals.map((residual) => {
-                          const selected =
-                            selectedTrace?.start === residual.start &&
-                            selectedTrace?.end === residual.end;
-                          return (
-                            <button
-                              key={`chip-res-${residual.start}-${residual.end}`}
-                              type="button"
-                              aria-pressed={selected}
-                              className={`rounded px-2 py-0.5 font-mono text-xs ${
-                                selected
-                                  ? 'bg-sky-200 text-sky-950 ring-1 ring-sky-800'
-                                  : 'bg-amber-100 text-amber-950 dark:bg-amber-950 dark:text-amber-100'
-                              }`}
-                              onClick={() =>
-                                setSelectedTrace({
-                                  start: residual.start,
-                                  end: residual.end,
-                                  code: residual.text,
-                                })
-                              }
-                            >
-                              Error {residual.text}
-                            </button>
-                          );
-                        })}
-                      </div>
-                      <p
-                        className="mt-2 text-xs text-gray-700 dark:text-gray-200"
-                        data-testid="tac-lint-summary"
-                      >
-                        {tacLintSummary}
-                      </p>
-                      <TacLintJumps
-                        issues={jumpIssues}
-                        activeIndex={lintJump}
-                        onSelect={applyLintJump}
-                      />
-                    </>
-                  ) : null}
-                </section>
-                {inputMode === 'validate_iwxxm' ? null : (
-                  <div
-                    className="flex h-full min-h-0 min-w-0 flex-col overflow-auto"
-                    data-testid="decode-pane"
-                  >
-                    {onOpenVisuals ? (
+                ) : null}
+                {inputMode !== 'validate_iwxxm' ? (
+                  <LiveConvertStatusStrip
+                    hasTac={manualInput.trim().length > 0}
+                    decodeReady={decodeSegments.length > 0}
+                    decodeLoading={decodeLoading}
+                    previewState={
+                      !previewXml.trim()
+                        ? 'waiting'
+                        : previewIncomplete
+                          ? 'incomplete'
+                          : 'current'
+                    }
+                    lintStatus={tacLintLayerStatus({
+                      hasTac: manualInput.trim().length > 0,
+                      loading: decodeLoading,
+                      errorCount: lintCounts.errorCount,
+                      issueCount: lintCounts.issueCount,
+                    })}
+                    schemaStatus="not run"
+                    schematronStatus="not run"
+                  />
+                ) : null}
+                {inputMode !== 'validate_iwxxm' ? (
+                  <div className="mb-2 flex flex-wrap items-center gap-3">
+                    <div
+                      className="flex rounded-md bg-gray-100 p-0.5 dark:bg-gray-800"
+                      role="group"
+                      aria-label="Decode density"
+                    >
                       <button
                         type="button"
-                        className="mb-2 text-sm text-sky-800 underline dark:text-sky-200"
-                        data-testid="open-decode-visuals"
-                        onClick={onOpenVisuals}
+                        aria-pressed={liveLayout.density === 'detailed'}
+                        className="rounded px-2 py-1 text-xs font-medium text-gray-900 dark:text-gray-100"
+                        onClick={() => updateLiveLayout({ density: 'detailed' })}
                       >
-                        {DECODE_VISUALS_OPEN}
+                        Detailed
                       </button>
-                    ) : null}
-                    <DecodePanel
-                      segments={decodeSegments}
-                      residuals={decodeResiduals}
-                      summary={decodeSummary}
-                      product={decodeProduct}
-                      loading={decodeLoading}
-                      error={decodeError}
-                      pinned
-                      defaultOpen
-                      decodingProfile={
-                        libraryDisplayName(conversionParams.decodingLibraryId) ||
-                        undefined
-                      }
-                      density={liveLayout.density}
-                      selectedStart={selectedTrace?.start}
-                      selectedEnd={selectedTrace?.end}
-                      onSelect={setSelectedTrace}
-                    />
-                  </div>
-                )}
-                {inputMode === 'validate_iwxxm' ? (
-                  <section
-                    data-testid="validate-iwxxm-results"
-                    aria-label="Validation results"
-                    className="flex min-h-[12rem] flex-col rounded-md border border-gray-200 bg-white p-3 dark:border-gray-700 dark:bg-gray-900"
-                  >
-                    <h3 className="mb-2 text-sm font-semibold text-gray-900 dark:text-white">
-                      Validation results
-                    </h3>
-                    {validateReport ? (
-                      <ValidateIwxxmReport
-                        report={validateReport}
-                        catalogByCode={lintCatalogByCode}
-                      />
-                    ) : (
-                      <p
-                        data-testid="validate-iwxxm-empty"
-                        className="text-sm text-gray-500 dark:text-gray-400"
+                      <button
+                        type="button"
+                        aria-pressed={liveLayout.density === 'compact'}
+                        className="rounded px-2 py-1 text-xs font-medium text-gray-900 dark:text-gray-100"
+                        onClick={() => updateLiveLayout({ density: 'compact' })}
                       >
-                        {VALIDATE_IWXXM_EMPTY_RESULTS}
-                      </p>
-                    )}
-                  </section>
-                ) : (
-                  <IwxxmPreviewPane
-                    className="h-full min-h-0 min-w-0"
-                    xml={previewXml}
-                    status={previewStatus}
-                    mode={previewMode}
-                    softFailDetail={previewSoftFailDetail}
-                    failedSpanCount={failedSpans.length}
-                    numbered
-                    highlightToken={selectedTrace?.code ?? ''}
-                    highlightStart={selectedTrace?.start}
-                    highlightEnd={selectedTrace?.end}
-                    groupTrace={groupTrace}
-                    incomplete={previewIncomplete && previewXml.trim().length > 0}
-                    conversionProfile={
-                      conversionParams.conversionLibraryId || conversionParams.profile
-                    }
-                    wrapXml={liveLayout.wrapXml}
-                    onFailedSpanFocus={() => {
-                      document
-                        .querySelector('[data-testid="failed-tac-cue"]')
-                        ?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                        Compact
+                      </button>
+                    </div>
+                    <div
+                      className="flex rounded-md bg-gray-100 p-0.5 dark:bg-gray-800"
+                      role="group"
+                      aria-label="Convert layout"
+                    >
+                      <button
+                        type="button"
+                        aria-pressed={liveLayout.span === 'roomy'}
+                        className="rounded px-2 py-1 text-xs font-medium text-gray-900 dark:text-gray-100"
+                        onClick={() => updateLiveLayout({ span: 'roomy' })}
+                      >
+                        Roomier
+                      </button>
+                      <button
+                        type="button"
+                        aria-pressed={liveLayout.span === 'tight'}
+                        className="rounded px-2 py-1 text-xs font-medium text-gray-900 dark:text-gray-100"
+                        onClick={() => updateLiveLayout({ span: 'tight' })}
+                      >
+                        Tighter
+                      </button>
+                    </div>
+                    <label className="flex items-center gap-2 text-xs text-gray-800 dark:text-gray-200">
+                      <input
+                        type="checkbox"
+                        data-testid="wrap-xml-lines"
+                        checked={liveLayout.wrapXml}
+                        onChange={(event) =>
+                          updateLiveLayout({ wrapXml: event.target.checked })
+                        }
+                      />
+                      Wrap XML lines
+                    </label>
+                  </div>
+                ) : null}
+                <LiveConvertPaneGrid
+                  wide={wideConvertPanes}
+                  roomy={liveLayout.span === 'roomy'}
+                  widths={liveLayout.paneWidths}
+                  onWidthsChange={(paneWidths) => updateLiveLayout({ paneWidths })}
+                >
+                  <section
+                    className="flex h-full min-h-0 min-w-0 flex-col overflow-auto"
+                    aria-label={inputMode === 'validate_iwxxm' ? 'IWXXM' : 'TAC'}
+                    onFocusCapture={() => setRecentWorkCollapsed(true)}
+                    onKeyDown={(event) => {
+                      const issue = lintIssueFromKey(event, jumpIssues, lintJump);
+                      if (!issue) return;
+                      event.preventDefault();
+                      applyLintJump(issue);
                     }}
-                  />
-                )}
-              </LiveConvertPaneGrid>
+                  >
+                    <h2 className="mb-2 text-sm font-semibold text-gray-900 dark:text-white">
+                      {inputMode === 'validate_iwxxm' ? 'IWXXM' : 'TAC'}
+                    </h2>
+                    <TacEditor
+                      id="manual-input"
+                      value={manualInput}
+                      onReportLoaded={applyLoadedReportName}
+                      onChange={(value) => {
+                        setManualInput(value);
+                        setSelectedTrace(null);
+                        setLintJump(null);
+                        setLintFocusOffset(null);
+                        if (inputMode !== 'ahl_bulletin') {
+                          return;
+                        }
+                        if (focusedBulletinReport === null) {
+                          setBulletinSource(value);
+                          return;
+                        }
+                        setBulletinSource((current) =>
+                          replaceBulletinReport(current, focusedBulletinReport, value),
+                        );
+                      }}
+                      readOnly={isReadOnly}
+                      placeholder={
+                        inputMode === 'validate_iwxxm'
+                          ? '<iwxxm:METAR>...</iwxxm:METAR>'
+                          : 'SPECI BGSF 282350Z 10RMF50MT 9999 SCT110 BKN130 0RN130 NN7/N11 Q1021'
+                      }
+                      aria-label={
+                        inputMode === 'validate_iwxxm'
+                          ? 'Enter IWXXM XML manually'
+                          : 'Enter METAR data manually'
+                      }
+                      className="min-h-[160px] focus-within:ring-2 focus-within:ring-blue-500"
+                      failedSpans={failedSpans}
+                      issueSpans={editorSpans}
+                      onSpanFix={applyLintFix}
+                      focusOffset={lintFocusOffset}
+                    />
+                    {inputMode !== 'validate_iwxxm' ? (
+                      <>
+                        <div
+                          className="mt-2 flex flex-wrap gap-1"
+                          data-testid="tac-group-chips"
+                          aria-label="Recognised groups"
+                        >
+                          {decodeSegments.map((segment) => {
+                            const selected =
+                              selectedTrace?.start === segment.start &&
+                              selectedTrace?.end === segment.end;
+                            return (
+                              <button
+                                key={`chip-${segment.start}-${segment.end}-${segment.code}`}
+                                type="button"
+                                aria-pressed={selected}
+                                className={`rounded px-2 py-0.5 font-mono text-xs ${
+                                  selected
+                                    ? 'bg-sky-200 text-sky-950 ring-1 ring-sky-800 dark:bg-sky-900 dark:text-sky-50'
+                                    : 'bg-gray-100 text-gray-900 dark:bg-gray-800 dark:text-gray-100'
+                                }`}
+                                onClick={() =>
+                                  setSelectedTrace({
+                                    start: segment.start,
+                                    end: segment.end,
+                                    code: segment.code,
+                                  })
+                                }
+                              >
+                                {segment.code}
+                              </button>
+                            );
+                          })}
+                          {decodeResiduals.map((residual) => {
+                            const selected =
+                              selectedTrace?.start === residual.start &&
+                              selectedTrace?.end === residual.end;
+                            return (
+                              <button
+                                key={`chip-res-${residual.start}-${residual.end}`}
+                                type="button"
+                                aria-pressed={selected}
+                                className={`rounded px-2 py-0.5 font-mono text-xs ${
+                                  selected
+                                    ? 'bg-sky-200 text-sky-950 ring-1 ring-sky-800'
+                                    : 'bg-amber-100 text-amber-950 dark:bg-amber-950 dark:text-amber-100'
+                                }`}
+                                onClick={() =>
+                                  setSelectedTrace({
+                                    start: residual.start,
+                                    end: residual.end,
+                                    code: residual.text,
+                                  })
+                                }
+                              >
+                                Error {residual.text}
+                              </button>
+                            );
+                          })}
+                        </div>
+                        <p
+                          className="mt-2 text-xs text-gray-700 dark:text-gray-200"
+                          data-testid="tac-lint-summary"
+                        >
+                          {tacLintSummary}
+                        </p>
+                        <TacLintJumps
+                          issues={jumpIssues}
+                          activeIndex={lintJump}
+                          onSelect={applyLintJump}
+                        />
+                      </>
+                    ) : null}
+                  </section>
+                  {inputMode === 'validate_iwxxm' ? null : (
+                    <div
+                      className="flex h-full min-h-0 min-w-0 flex-col overflow-auto"
+                      data-testid="decode-pane"
+                    >
+                      {onOpenVisuals ? (
+                        <button
+                          type="button"
+                          className="mb-2 text-sm text-sky-800 underline dark:text-sky-200"
+                          data-testid="open-decode-visuals"
+                          onClick={onOpenVisuals}
+                        >
+                          {DECODE_VISUALS_OPEN}
+                        </button>
+                      ) : null}
+                      <DecodePanel
+                        segments={decodeSegments}
+                        residuals={decodeResiduals}
+                        summary={decodeSummary}
+                        product={decodeProduct}
+                        loading={decodeLoading}
+                        error={decodeError}
+                        pinned
+                        defaultOpen
+                        decodingProfile={
+                          libraryDisplayName(conversionParams.decodingLibraryId) ||
+                          undefined
+                        }
+                        density={liveLayout.density}
+                        selectedStart={selectedTrace?.start}
+                        selectedEnd={selectedTrace?.end}
+                        onSelect={setSelectedTrace}
+                      />
+                    </div>
+                  )}
+                  {inputMode === 'validate_iwxxm' ? (
+                    <section
+                      data-testid="validate-iwxxm-results"
+                      aria-label="Validation results"
+                      className="flex min-h-[12rem] flex-col rounded-md border border-gray-200 bg-white p-3 dark:border-gray-700 dark:bg-gray-900"
+                    >
+                      <h3 className="mb-2 text-sm font-semibold text-gray-900 dark:text-white">
+                        Validation results
+                      </h3>
+                      {validateReport ? (
+                        <ValidateIwxxmReport
+                          report={validateReport}
+                          catalogByCode={lintCatalogByCode}
+                        />
+                      ) : (
+                        <p
+                          data-testid="validate-iwxxm-empty"
+                          className="text-sm text-gray-500 dark:text-gray-400"
+                        >
+                          {VALIDATE_IWXXM_EMPTY_RESULTS}
+                        </p>
+                      )}
+                    </section>
+                  ) : (
+                    <IwxxmPreviewPane
+                      className="h-full min-h-0 min-w-0"
+                      xml={previewXml}
+                      status={previewStatus}
+                      mode={previewMode}
+                      softFailDetail={previewSoftFailDetail}
+                      failedSpanCount={failedSpans.length}
+                      numbered
+                      highlightToken={selectedTrace?.code ?? ''}
+                      highlightStart={selectedTrace?.start}
+                      highlightEnd={selectedTrace?.end}
+                      groupTrace={groupTrace}
+                      incomplete={previewIncomplete && previewXml.trim().length > 0}
+                      conversionProfile={
+                        conversionParams.conversionLibraryId || conversionParams.profile
+                      }
+                      wrapXml={liveLayout.wrapXml}
+                      onFailedSpanFocus={() => {
+                        document
+                          .querySelector('[data-testid="failed-tac-cue"]')
+                          ?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                      }}
+                    />
+                  )}
+                </LiveConvertPaneGrid>
+              </div>
               {inputMode !== 'validate_iwxxm' ? (
                 <OutputVersionCompare versions={outputVersions} />
               ) : null}

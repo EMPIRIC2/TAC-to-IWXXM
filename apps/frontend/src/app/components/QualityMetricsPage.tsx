@@ -95,6 +95,7 @@ export function QualityMetricsPage({
 }: QualityMetricsPageProps) {
   const { layout } = useLiveConvertLayout();
   const [productFilter, setProductFilter] = useState<string>('all');
+  const [productCatalog, setProductCatalog] = useState<string[]>([]);
   const [summaries, setSummaries] = useState<QualityMetricsSummaryWithPairCounts[]>([]);
   const [files, setFiles] = useState<QualityMetricsFileRowWithPairState[]>([]);
   const [loading, setLoading] = useState(true);
@@ -114,8 +115,20 @@ export function QualityMetricsPage({
       const response = await fetchQualityMetrics({
         product: productFilter === 'all' ? undefined : productFilter,
       });
-      setSummaries(response.summaries.map(normalizeSummary));
+      const nextSummaries = response.summaries.map(normalizeSummary);
+      setSummaries(nextSummaries);
       setFiles(response.files);
+      const seen = Array.from(
+        new Set([
+          ...nextSummaries.map((row) => row.product),
+          ...response.files.map((row) => row.product),
+        ]),
+      ).sort();
+      setProductCatalog((current) =>
+        productFilter === 'all'
+          ? seen
+          : Array.from(new Set([...current, ...seen])).sort(),
+      );
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load quality metrics');
       setSummaries([]);
@@ -164,11 +177,7 @@ export function QualityMetricsPage({
     };
   }, [selectedStem]);
 
-  const productOptions = useMemo(() => {
-    const fromSummaries = summaries.map((s) => s.product);
-    const fromFiles = files.map((f) => f.product);
-    return Array.from(new Set([...fromSummaries, ...fromFiles])).sort();
-  }, [files, summaries]);
+  const productOptions = productCatalog;
 
   const activeSummary = useMemo(() => {
     if (productFilter === 'all') {
@@ -235,10 +244,12 @@ export function QualityMetricsPage({
 
   return (
     <div
-      className="min-h-screen overflow-x-hidden bg-gray-50 p-6 dark:bg-gray-900"
+      className="min-h-screen overflow-x-hidden bg-gray-50 dark:bg-gray-900"
       data-testid="quality-metrics-page"
     >
-      <div className={`mx-auto w-full space-y-6 ${shellFrameClass(layout.span)}`}>
+      <div
+        className={`mx-auto w-full space-y-6 px-4 py-6 ${shellFrameClass(layout.span)}`}
+      >
         {!detailOnly ? (
           <>
             <div>

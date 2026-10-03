@@ -2131,12 +2131,8 @@ export interface paths {
          *     Returns
          *     -------
          *     dict[str, Any]
-         *         ICAO code, name, and decimal degrees.
-         *
-         *     Raises
-         *     ------
-         *     HTTPException
-         *         When the code is not a known station.
+         *         ICAO code, name, and decimal degrees. Unknown codes return null
+         *         coordinates so a map lookup is a normal miss, not an error response.
          *
          *     Examples
          *     --------

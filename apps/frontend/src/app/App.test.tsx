@@ -516,8 +516,10 @@ describe('App Component (F31 optional Auth)', () => {
   it('opens history view and returns to converter', async () => {
     const user = userEvent.setup();
     render(<App />);
+    const converter = document.querySelector('[data-testid="file-converter"]');
     await user.click(screen.getByTestId('open-history'));
     expect(screen.getByTestId('history-view')).toBeInTheDocument();
+    expect(document.querySelector('[data-testid="file-converter"]')).toBe(converter);
     await user.click(screen.getByTestId('back-converter'));
     expect(screen.getByTestId('file-converter')).toBeInTheDocument();
   });
@@ -545,7 +547,7 @@ describe('App Component (F31 optional Auth)', () => {
 
     await user.click(screen.getByTestId('shell-nav-quality'));
     expect(screen.getByTestId('quality-metrics-page')).toBeInTheDocument();
-    expect(screen.queryByTestId('file-converter')).not.toBeInTheDocument();
+    expect(screen.getByTestId('file-converter')).not.toBeVisible();
     expect(screen.getByTestId('shell-nav-quality')).toHaveAttribute(
       'aria-selected',
       'true',

@@ -1,7 +1,7 @@
 /**
  * Decode visuals tab, region sketch, and wind cue.
  */
-import { describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { DecodeVisualsPage } from './DecodeVisualsPage';
@@ -13,7 +13,7 @@ vi.mock('@/app/components/StationMinimap', () => ({
 }));
 import { RegionSchematic } from './RegionSchematic';
 import { WindCue } from './WindCue';
-import { publishDecodeVisuals } from '@/utils/decodeVisualsStore';
+import { publishDecodeVisuals, writeStationDraft } from '@/utils/decodeVisualsStore';
 
 describe('RegionSchematic', () => {
   it('names the region and the station, or says the sketch is unavailable', () => {
@@ -46,6 +46,10 @@ describe('WindCue', () => {
 });
 
 describe('DecodeVisualsPage', () => {
+  beforeEach(() => {
+    writeStationDraft(null);
+  });
+
   it('starts empty, then shows a typed station without the published wind', async () => {
     publishDecodeVisuals({ station: '', segments: [] });
     const user = userEvent.setup();
@@ -98,6 +102,18 @@ describe('DecodeVisualsPage', () => {
     expect(screen.getByTestId('decode-visuals-station')).toHaveValue('EGLL');
     expect(screen.getByTestId('wind-cue')).toHaveTextContent('Wind from 270 degrees');
     publishDecodeVisuals({ station: '', segments: [] });
+  });
+
+  it('keeps a typed station after leaving the tab', async () => {
+    publishDecodeVisuals({ station: '', segments: [] });
+    const user = userEvent.setup();
+    const first = render(<DecodeVisualsPage />);
+    await user.type(screen.getByTestId('decode-visuals-station'), 'KJFK');
+    first.unmount();
+    render(<DecodeVisualsPage />);
+    expect(screen.getByTestId('decode-visuals-station')).toHaveValue('KJFK');
+    expect(screen.getByTestId('decode-visuals-heading')).toHaveTextContent('Kennedy');
+    writeStationDraft(null);
   });
 
   it('uses the tight column when Convert is set to tighter', () => {

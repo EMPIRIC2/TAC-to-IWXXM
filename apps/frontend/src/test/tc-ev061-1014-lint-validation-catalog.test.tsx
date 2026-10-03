@@ -154,7 +154,7 @@ describe('T5.1 / TC-EV061-1014: Validation Issues Catalog', () => {
 
     await user.click(catalogTab);
     expect(screen.getByTestId('lint-validation-catalog-page')).toBeInTheDocument();
-    expect(screen.queryByTestId('file-converter')).not.toBeInTheDocument();
+    expect(screen.getByTestId('file-converter')).not.toBeVisible();
     expect(catalogTab).toHaveAttribute('aria-selected', 'true');
   });
 

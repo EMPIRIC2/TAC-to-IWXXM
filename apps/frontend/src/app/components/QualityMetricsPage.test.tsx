@@ -200,6 +200,16 @@ describe('QualityMetricsPage (TC-EV054-002)', () => {
     expect(
       screen.queryByTestId('quality-metrics-row-taf-A5-1'),
     ).not.toBeInTheDocument();
+    expect(
+      within(screen.getByTestId('quality-metrics-product-filter')).getByRole('option', {
+        name: 'TAF',
+      }),
+    ).toBeInTheDocument();
+    expect(
+      within(screen.getByTestId('quality-metrics-product-filter')).getByRole('option', {
+        name: 'METAR',
+      }),
+    ).toBeInTheDocument();
   });
 
   it('surfaces list fetch errors', async () => {
