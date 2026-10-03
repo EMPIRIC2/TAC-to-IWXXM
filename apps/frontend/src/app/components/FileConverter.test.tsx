@@ -610,6 +610,26 @@ describe('FileConverter Component', () => {
       expect(bar).toContainElement(screen.getByTestId('sign-in-button'));
     });
 
+    it('keeps the Convert title on the same inset as the page body', async () => {
+      const user = userEvent.setup();
+      render(<FileConverter {...defaultProps} />);
+      const heading = screen.getByRole('heading', { name: 'METAR → IWXXM Converter' });
+      const titleRow = heading.parentElement as HTMLElement;
+      const frame = screen.getByTestId('workbench-frame');
+      const bar = screen.getByTestId('workbench-top-bar');
+
+      expect(bar.className).not.toMatch(/(^|\s)px-4(\s|$)/);
+      expect(titleRow.className).toContain('px-4');
+      expect(titleRow.className).toContain('max-w-none');
+      expect(frame.className).toContain('px-4');
+
+      await user.click(screen.getByRole('button', { name: 'Tighter' }));
+      expect(titleRow.className).toContain('max-w-6xl');
+      expect(titleRow.className).toContain('px-4');
+      expect(frame.className).toContain('max-w-6xl');
+      expect(frame.className).toContain('px-4');
+    });
+
     it('exposes Help link to the operator one-pager (UJ-054 / TC-EV047-011)', () => {
       render(<FileConverter {...defaultProps} />);
       const help = screen.getByTestId('operator-help-link');

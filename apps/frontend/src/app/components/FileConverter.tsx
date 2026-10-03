@@ -2474,11 +2474,11 @@ export function FileConverter({
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors">
       <header
-        className="sticky top-0 z-30 w-full border-b border-gray-200 bg-gray-50 px-4 py-3 dark:border-gray-700 dark:bg-gray-900"
+        className="sticky top-0 z-30 w-full border-b border-gray-200 bg-gray-50 py-3 dark:border-gray-700 dark:bg-gray-900"
         data-testid="workbench-top-bar"
       >
         <div
-          className={`mx-auto flex w-full flex-wrap items-center justify-between gap-3 ${shellFrameClass(liveLayout.span)}`}
+          className={`mx-auto flex w-full flex-wrap items-center justify-between gap-3 px-4 ${shellFrameClass(liveLayout.span)}`}
         >
           <h1 className="text-2xl font-semibold text-gray-900 dark:text-white sm:text-3xl">
             {inputMode === 'validate_iwxxm'
