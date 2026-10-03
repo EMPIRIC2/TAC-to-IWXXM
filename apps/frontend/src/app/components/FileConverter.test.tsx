@@ -4299,6 +4299,9 @@ describe('FileConverter Component', () => {
         expect.anything(),
         expect.objectContaining({ status: 'failed' }),
       );
+
+      await user.click(screen.getByTestId('input-mode-tac'));
+      expect(screen.queryByTestId('placeholder-notice')).not.toBeInTheDocument();
     });
 
     it('keeps logout menu open when scoped sign-out fails', async () => {
