@@ -131,4 +131,18 @@ describe('DecodeVisualsPage', () => {
     expect(screen.getByTestId('decode-visuals-page')).toHaveClass('max-w-6xl');
     window.localStorage.clear();
   });
+
+  it('names the station status with the Station ID label', async () => {
+    publishDecodeVisuals({ station: '', segments: [] });
+    const user = userEvent.setup();
+    render(<DecodeVisualsPage />);
+    await user.type(screen.getByTestId('decode-visuals-station'), 'KJFK');
+    expect(screen.getByLabelText('Valid Station ID')).toBeInTheDocument();
+    expect(screen.queryByLabelText('Valid ICAO code')).not.toBeInTheDocument();
+    await user.clear(screen.getByTestId('decode-visuals-station'));
+    await user.type(screen.getByTestId('decode-visuals-station'), 'QXZX');
+    expect(screen.getByLabelText('Invalid Station ID')).toBeInTheDocument();
+    expect(screen.queryByLabelText('Invalid ICAO code')).not.toBeInTheDocument();
+    writeStationDraft(null);
+  });
 });

@@ -153,12 +153,12 @@ export function IcaoAutocomplete({
             {isValid ? (
               <CheckCircle
                 className="w-5 h-5 text-green-500"
-                aria-label="Valid ICAO code"
+                aria-label={`Valid ${label}`}
               />
             ) : (
               <AlertCircle
                 className="w-5 h-5 text-red-500"
-                aria-label="Invalid ICAO code"
+                aria-label={`Invalid ${label}`}
               />
             )}
           </div>

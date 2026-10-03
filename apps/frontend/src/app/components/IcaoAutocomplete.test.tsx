@@ -61,7 +61,7 @@ describe('IcaoAutocomplete', () => {
     await user.type(screen.getByLabelText('ICAO'), 'KJFK');
 
     expect(mockIsValid).toHaveBeenCalledWith('KJFK');
-    expect(screen.getByLabelText(/valid icao code/i)).toBeInTheDocument();
+    expect(screen.getByLabelText('Valid ICAO')).toBeInTheDocument();
   });
 
   it('shows invalid icon for invalid 4-letter ICAO code', async () => {
@@ -72,7 +72,7 @@ describe('IcaoAutocomplete', () => {
 
     await user.type(screen.getByLabelText('ICAO'), 'XXXX');
 
-    expect(screen.getByLabelText(/invalid icao code/i)).toBeInTheDocument();
+    expect(screen.getByLabelText('Invalid ICAO')).toBeInTheDocument();
   });
 
   it('shows suggestions and selects one from dropdown', async () => {
@@ -261,8 +261,8 @@ describe('IcaoAutocomplete', () => {
 
     await user.type(screen.getByLabelText('ICAO'), 'KJF');
     expect(mockIsValid).not.toHaveBeenCalled();
-    expect(screen.queryByLabelText(/valid icao code/i)).not.toBeInTheDocument();
-    expect(screen.queryByLabelText(/invalid icao code/i)).not.toBeInTheDocument();
+    expect(screen.queryByLabelText('Valid ICAO')).not.toBeInTheDocument();
+    expect(screen.queryByLabelText('Invalid ICAO')).not.toBeInTheDocument();
   });
 
   it('uses formatOnly regex path for valid ICAO', async () => {
@@ -278,7 +278,7 @@ describe('IcaoAutocomplete', () => {
     ]);
     render(<Harness />);
     await user.type(screen.getByLabelText('ICAO'), 'KJFK');
-    expect(screen.getByLabelText(/valid icao code/i)).toBeInTheDocument();
+    expect(screen.getByLabelText('Valid ICAO')).toBeInTheDocument();
     expect(mockIsValid).not.toHaveBeenCalled();
     expect(screen.queryByTestId('icao-suggestion-KJFK')).not.toBeInTheDocument();
   });
@@ -297,7 +297,7 @@ describe('IcaoAutocomplete', () => {
     expect(screen.queryByTestId('icao-suggestion-KJFK')).not.toBeInTheDocument();
     await user.type(screen.getByLabelText('ICAO'), 'FK');
     expect(screen.queryByTestId('icao-suggestion-KJFK')).not.toBeInTheDocument();
-    expect(screen.getByLabelText(/valid icao code/i)).toBeInTheDocument();
+    expect(screen.getByLabelText('Valid ICAO')).toBeInTheDocument();
   });
 
   it('clears a field that is only spaces', async () => {
@@ -308,6 +308,6 @@ describe('IcaoAutocomplete', () => {
     await user.type(screen.getByLabelText('ICAO'), '    ');
     expect(onChange).toHaveBeenLastCalledWith('');
     expect(screen.getByLabelText('ICAO')).toHaveValue('');
-    expect(screen.queryByLabelText(/invalid icao code/i)).not.toBeInTheDocument();
+    expect(screen.queryByLabelText('Invalid ICAO')).not.toBeInTheDocument();
   });
 });
