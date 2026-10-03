@@ -13,7 +13,7 @@ export interface LiveConvertStatusStripProps {
   decodeReady: boolean;
   decodeLoading: boolean;
   previewState: 'waiting' | 'current' | 'incomplete';
-  lintStatus: 'waiting' | 'running' | 'passed' | 'failed' | 'warnings';
+  lintStatus: 'waiting' | 'running' | 'passed' | 'failed' | 'warnings' | 'notes';
   schemaStatus: 'not run' | 'passed' | 'failed';
   schematronStatus: 'not run' | 'passed' | 'failed';
 }
@@ -90,6 +90,9 @@ function lintItem(status: LiveConvertStatusStripProps['lintStatus']): StatusItem
   }
   if (status === 'warnings') {
     return { label: 'TAC lint: warnings', tone: 'caution' };
+  }
+  if (status === 'notes') {
+    return { label: 'TAC lint: notes', tone: 'caution' };
   }
   if (status === 'failed') {
     return { label: 'TAC lint: failed', tone: 'problem' };

@@ -100,10 +100,18 @@ describe('checkLayers', () => {
   });
 
   it('counts error issues', () => {
-    expect(lintIssueCounts([])).toEqual({ errorCount: 0, issueCount: 0 });
+    expect(lintIssueCounts([])).toEqual({
+      errorCount: 0,
+      warningCount: 0,
+      issueCount: 0,
+    });
     expect(
-      lintIssueCounts([{ severity: 'error' }, { severity: 'warning' }, {}]),
-    ).toEqual({ errorCount: 1, issueCount: 3 });
+      lintIssueCounts([
+        { severity: 'error' },
+        { severity: 'warning' },
+        { severity: 'info' },
+      ]),
+    ).toEqual({ errorCount: 1, warningCount: 1, issueCount: 3 });
   });
 
   it('describes live TAC lint', () => {
@@ -112,6 +120,7 @@ describe('checkLayers', () => {
         hasTac: false,
         loading: true,
         errorCount: 1,
+        warningCount: 0,
         issueCount: 1,
       }),
     ).toBe('waiting');
@@ -120,6 +129,7 @@ describe('checkLayers', () => {
         hasTac: true,
         loading: false,
         errorCount: 1,
+        warningCount: 0,
         issueCount: 2,
       }),
     ).toBe('failed');
@@ -128,14 +138,25 @@ describe('checkLayers', () => {
         hasTac: true,
         loading: false,
         errorCount: 0,
+        warningCount: 1,
         issueCount: 1,
       }),
     ).toBe('warnings');
     expect(
       tacLintLayerStatus({
         hasTac: true,
+        loading: false,
+        errorCount: 0,
+        warningCount: 0,
+        issueCount: 1,
+      }),
+    ).toBe('notes');
+    expect(
+      tacLintLayerStatus({
+        hasTac: true,
         loading: true,
         errorCount: 0,
+        warningCount: 0,
         issueCount: 0,
       }),
     ).toBe('running');
@@ -144,6 +165,7 @@ describe('checkLayers', () => {
         hasTac: true,
         loading: false,
         errorCount: 0,
+        warningCount: 0,
         issueCount: 0,
       }),
     ).toBe('passed');

@@ -111,6 +111,21 @@ describe('LiveConvertStatusStrip', () => {
     expect(byTone['Schematron: not run yet. It runs when you validate.']).toBe('idle');
   });
 
+  it('shows an info-level TAC note separately from a warning', () => {
+    render(
+      <LiveConvertStatusStrip
+        hasTac
+        decodeReady={false}
+        decodeLoading={false}
+        previewState="waiting"
+        lintStatus="notes"
+        schemaStatus="not run"
+        schematronStatus="not run"
+      />,
+    );
+    expect(tones()['TAC lint: notes']).toBe('caution');
+  });
+
   it('says when TAC lint is still checking the report', () => {
     render(
       <LiveConvertStatusStrip
