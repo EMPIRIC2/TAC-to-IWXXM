@@ -44,7 +44,7 @@
 | F34 | Contract + mutation quality gates | Done | Platform | S069 / EV-059; epic #841 CLOSED; #727 Schemathesis; #874 Stryker + pytest-gremlins; **deepen** S071 / EV-061 stricter stage→main required checks (#1015); promote held |
 | F35 | Semantic vs exchange profiles + canonical ID migration | Implemented | Product | EV-063 / PR #1026; #912 / #914; ADR-036 Accepted; alias cutover #1025 (2026-10-31); amends F6 wire; **deepen** EV-beta-ux-export-auth suppress operator-visible `DEPRECATED_PROFILE_ALIAS` notices; Conversion profiles UI marked **beta** (ADR-043) |
 | F36 | National semantic + regional exchange profile content | In progress | Product | EV-063 / #912; **#919 US closed (EV-085)**; **#916 CA_ECCC P1 closed (EV-078)**; **EV-098 CA_ECCC mining #1028–#1031 closed**; **#1032 closed (EV-075)**; **#1061 SIGMET emit (EV-076)**; VAA TAC validate-first (EV-077); VAA exchange emit waived; **EV-profile-validate-decode-deepen / #1221** AU/NZ → `implemented`; **deepen EV-1222 / #1222**: regional exchange overlays beyond COLLECT stubs (APAC_ROBEX first) |
-| F37 | Live TAC map on Decode visuals | In progress | Product | EV-tac-map; guests; API timer cache; Observations view still to build |
+| F37 | Live TAC map on Decode visuals | In progress | Product | EV-tac-map; guests; API timer cache; Decode visuals world map |
 | M1 | Monorepo layout (`apps/` + `packages/` + `vendor/`) | Implemented | Platform | REQ-002–006 |
 | M2 | Vendor snapshot sync (wmo-im iwxxm-*) | Planned | Platform | REQ-002, REQ-010 |
 | M3 | GIFTs as in-repo package | Deprecated (ADR-014) | Platform | REQ-003; removed with F6 cutover |
@@ -1758,7 +1758,7 @@
 
 ### F7 / F9 hotfix — convert panes and station map
 
-- **What it does**: The live convert row is TAC, decode, then Live IWXXM. Decode stays open in the center column. Decode visuals asks for a station ID, lets that field be cleared, and shows a pannable map with a marker for that one station. **F37** replaces that one-station map with a live world map. Until F37 is built, the one-station behavior remains.
+- **What it does**: The live convert row is TAC, decode, then Live IWXXM. Decode stays open in the center column. Decode visuals asks for a station ID, lets that field be cleared, and shows a world map of cached reports. **F37** is that map. The station field and wind cue stay.
 - **Acceptance**: Wide convert row keeps the decode panel and Live IWXXM beside the TAC. Clearing the station ID leaves the field empty. A known station ID shows a map marker.
 
 ### F9 deepen (S026 / EV-020 — decode glossary)
