@@ -1714,7 +1714,12 @@ export function FileConverter({
         hasLog ? { errors: responseErrors, issues: responseIssues } : null,
       );
       setConversionStatus({ type: 'idle' });
-      return { files: newConvertedFiles, hasErrors: hasLog || softFail, softFail };
+      // Info notes stay in the log. They do not fail a conversion that produced files.
+      return {
+        files: newConvertedFiles,
+        hasErrors: responseErrors.length > 0 || softFail,
+        softFail,
+      };
     } catch (error) {
       console.error('[FileConverter] Conversion error:', error);
 
@@ -1819,21 +1824,25 @@ export function FileConverter({
           toast.warning(
             'Soft preview found groups that failed. This result is not ready to publish.',
           );
-        } else {
+        } else if (result.files.length > 0) {
           toast.success(`Successfully converted ${result.files.length} file(s)`);
         }
-        const snapshot = buildSnapshot({
-          convertedFiles: result.files.map((file) => ({
-            originalName: file.originalName,
-            originalContent: file.originalContent,
-            convertedContent: file.convertedContent,
-          })),
-          manualInput,
-          pendingFiles: [],
-        });
-        await persistSession(snapshot, {
-          status: result.hasErrors ? 'failed' : 'wip',
-        });
+        // A mode that produced no files already explained itself. Do not mark
+        // the current draft failed or announce a zero-file success.
+        if (result.files.length > 0 || !result.hasErrors) {
+          const snapshot = buildSnapshot({
+            convertedFiles: result.files.map((file) => ({
+              originalName: file.originalName,
+              originalContent: file.originalContent,
+              convertedContent: file.convertedContent,
+            })),
+            manualInput,
+            pendingFiles: [],
+          });
+          await persistSession(snapshot, {
+            status: result.hasErrors ? 'failed' : 'wip',
+          });
+        }
       } else {
         await persistSession(buildSnapshot(), { status: 'failed' });
       }
@@ -2418,7 +2427,10 @@ export function FileConverter({
     });
   }, [manualInput, decodeSegments]);
 
-  const tacLintSummary = lintSummaryLabel(lintIssues);
+  const tacLintSummary =
+    manualInput.trim().length === 0
+      ? 'TAC lint: not run yet'
+      : lintSummaryLabel(lintIssues);
   const bulletinReports =
     inputMode === 'ahl_bulletin'
       ? listBulletinReports(bulletinSource || manualInput)
@@ -3365,6 +3377,7 @@ export function FileConverter({
                       hasTac: manualInput.trim().length > 0,
                       loading: decodeLoading,
                       errorCount: lintCounts.errorCount,
+                      warningCount: lintCounts.warningCount,
                       issueCount: lintCounts.issueCount,
                     })}
                     schemaStatus="not run"

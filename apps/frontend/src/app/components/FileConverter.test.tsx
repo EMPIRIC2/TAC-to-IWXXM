@@ -1224,6 +1224,54 @@ describe('FileConverter Component', () => {
         vi.useRealTimers();
       }
     });
+
+    it('keeps the TAC lint summary aligned with the status chip', async () => {
+      vi.useFakeTimers();
+      try {
+        render(<FileConverter {...defaultProps} />);
+        expect(screen.getByTestId('tac-lint-summary')).toHaveTextContent(
+          'TAC lint: not run yet',
+        );
+        expect(screen.getByTestId('convert-status-strip')).toHaveTextContent(
+          'TAC lint: not run yet',
+        );
+
+        mockLintTac.mockResolvedValue({
+          ok: true,
+          issues: [
+            {
+              severity: 'info',
+              code: 'MISSING_TERMINATOR',
+              message: "Reports in bulletins end with '='",
+              start: 0,
+              end: 5,
+            },
+          ],
+          fixes: [],
+        });
+        fireEvent.change(screen.getByTestId('tac-editor'), {
+          target: { value: 'METAR KJFK 021851Z' },
+        });
+        await act(async () => {
+          await vi.advanceTimersByTimeAsync(350);
+          await Promise.resolve();
+        });
+        expect(screen.getByTestId('tac-lint-summary')).toHaveTextContent(
+          'TAC lint: 1 note',
+        );
+        expect(screen.getByTestId('convert-status-strip')).toHaveTextContent(
+          'TAC lint: notes',
+        );
+        expect(screen.getByTestId('tac-lint-summary')).not.toHaveTextContent(
+          'TAC lint: passed',
+        );
+        expect(screen.getByTestId('convert-status-strip')).not.toHaveTextContent(
+          'TAC lint: warnings',
+        );
+      } finally {
+        vi.useRealTimers();
+      }
+    });
   });
 
   describe('Conversion Parameters', () => {
@@ -3957,6 +4005,9 @@ describe('FileConverter Component', () => {
         );
       });
       expect(mockToast.success).toHaveBeenCalledWith('COLLECT ingest succeeded');
+      expect(mockToast.success).not.toHaveBeenCalledWith(
+        expect.stringMatching(/Successfully converted/),
+      );
     });
 
     it('COLLECT ingest: files-only optional args', async () => {
@@ -4240,6 +4291,13 @@ describe('FileConverter Component', () => {
       });
       expect(mockToast.warning).toHaveBeenCalledWith(
         'COLLECT ingest placeholder (not implemented yet)',
+      );
+      expect(mockToast.success).not.toHaveBeenCalledWith(
+        expect.stringMatching(/Successfully converted/),
+      );
+      expect(mockPersistSession).not.toHaveBeenCalledWith(
+        expect.anything(),
+        expect.objectContaining({ status: 'failed' }),
       );
     });
 

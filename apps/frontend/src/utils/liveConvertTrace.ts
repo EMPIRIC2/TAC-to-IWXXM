@@ -68,7 +68,10 @@ export function lintSummaryLabel(issues: LintSeverityCount[]): string {
   if (warnings > 0) {
     return warnings === 1 ? 'TAC lint: 1 warning' : `TAC lint: ${warnings} warnings`;
   }
-  return 'TAC lint passes';
+  const notes = issues.filter((issue) => issue.severity === 'info').length;
+  if (notes === 1) return 'TAC lint: 1 note';
+  if (notes > 1) return `TAC lint: ${notes} notes`;
+  return 'TAC lint: passed';
 }
 
 /**

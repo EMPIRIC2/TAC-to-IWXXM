@@ -34,7 +34,11 @@ describe('liveConvertTrace', () => {
     expect(lintSummaryLabel([{ severity: 'warn' }, { severity: 'warning' }])).toBe(
       'TAC lint: 2 warnings',
     );
-    expect(lintSummaryLabel([])).toBe('TAC lint passes');
+    expect(lintSummaryLabel([{ severity: 'info' }])).toBe('TAC lint: 1 note');
+    expect(lintSummaryLabel([{ severity: 'info' }, { severity: 'info' }])).toBe(
+      'TAC lint: 2 notes',
+    );
+    expect(lintSummaryLabel([])).toBe('TAC lint: passed');
   });
 
   it('marks the preview incomplete when TAC still has a problem', () => {

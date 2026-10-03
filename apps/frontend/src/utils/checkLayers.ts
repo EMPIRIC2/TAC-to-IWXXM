@@ -19,7 +19,8 @@ export type TacLintLayerStatus =
   | 'running'
   | 'passed'
   | 'failed'
-  | 'warnings';
+  | 'warnings'
+  | 'notes';
 
 /**
  * Type `LayerIssue`.
@@ -121,19 +122,23 @@ export function outputLayerStatus(
  * Count lint issues and how many are errors.
  *
  * @param issues - Live lint issues
- * @returns Error count and total count
+ * @returns Error count, warning count, and total count
  * @example
  * const _ = true;
  */
 export function lintIssueCounts(issues: readonly { severity?: string | null }[]): {
   errorCount: number;
+  warningCount: number;
   issueCount: number;
 } {
   let errorCount = 0;
+  let warningCount = 0;
   for (const issue of issues) {
     if (issue.severity === 'error') errorCount += 1;
+    else if (issue.severity === 'warning' || issue.severity === 'warn')
+      warningCount += 1;
   }
-  return { errorCount, issueCount: issues.length };
+  return { errorCount, warningCount, issueCount: issues.length };
 }
 
 /**
@@ -142,6 +147,7 @@ export function lintIssueCounts(issues: readonly { severity?: string | null }[])
  * @param opts.hasTac - Editor has text
  * @param opts.loading - Lint request is in flight
  * @param opts.errorCount - Error-severity issues
+ * @param opts.warningCount - Warning-severity issues
  * @param opts.issueCount - All current issues
  * @returns Status word
  * @example
@@ -151,11 +157,13 @@ export function tacLintLayerStatus(opts: {
   hasTac: boolean;
   loading: boolean;
   errorCount: number;
+  warningCount: number;
   issueCount: number;
 }): TacLintLayerStatus {
   if (!opts.hasTac) return 'waiting';
   if (opts.errorCount > 0) return 'failed';
-  if (opts.issueCount > 0) return 'warnings';
+  if (opts.warningCount > 0) return 'warnings';
+  if (opts.issueCount > 0) return 'notes';
   if (opts.loading) return 'running';
   return 'passed';
 }
