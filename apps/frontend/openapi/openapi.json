@@ -8784,6 +8784,98 @@
         ]
       }
     },
+    "/api/v1/live-map": {
+      "get": {
+        "description": "Reports cached for the area in view. The newest report is first. At most two earlier reports follow it.",
+        "operationId": "read_live_map_api_v1_live_map_get",
+        "parameters": [
+          {
+            "description": "West edge of the view, in degrees.",
+            "in": "query",
+            "name": "west",
+            "required": true,
+            "schema": {
+              "description": "West edge of the view, in degrees.",
+              "title": "West",
+              "type": "number"
+            }
+          },
+          {
+            "description": "South edge of the view, in degrees.",
+            "in": "query",
+            "name": "south",
+            "required": true,
+            "schema": {
+              "description": "South edge of the view, in degrees.",
+              "title": "South",
+              "type": "number"
+            }
+          },
+          {
+            "description": "East edge of the view, in degrees.",
+            "in": "query",
+            "name": "east",
+            "required": true,
+            "schema": {
+              "description": "East edge of the view, in degrees.",
+              "title": "East",
+              "type": "number"
+            }
+          },
+          {
+            "description": "North edge of the view, in degrees.",
+            "in": "query",
+            "name": "north",
+            "required": true,
+            "schema": {
+              "description": "North edge of the view, in degrees.",
+              "title": "North",
+              "type": "number"
+            }
+          },
+          {
+            "description": "Comma-separated layers. Defaults to METAR and SPECI.",
+            "in": "query",
+            "name": "products",
+            "required": false,
+            "schema": {
+              "default": "metar,speci",
+              "description": "Comma-separated layers. Defaults to METAR and SPECI.",
+              "title": "Products",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response Read Live Map Api V1 Live Map Get",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Cached reports in the current map view",
+        "tags": [
+          "Live map"
+        ]
+      }
+    },
     "/api/v1/profiles/catalog": {
       "get": {
         "description": "Read-only ConversionProfile catalog for the authenticated Profiles inspector.\n\nRequires JWT so the inspector stays on the authenticated Profiles surface.\n\nExamples\n--------\n>>> 1 + 1  # docstring smoke (get_catalog)\n2\n\nParameters\n----------\n_user : object\n    Argument ``_user``.\nservice : object\n    Argument ``service``.\n\nReturns\n-------\nobject\n    Return value.",

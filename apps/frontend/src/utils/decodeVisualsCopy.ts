@@ -4,7 +4,7 @@
 
 export const DECODE_VISUALS_TITLE = 'Decode visuals';
 export const DECODE_VISUALS_INTRO =
-  'A map and a wind cue for the station in the report. This does not replace the text decode.';
+  'A world map of live reports. Observations start with METAR and SPECI. This does not replace the text decode.';
 export const DECODE_VISUALS_STATION_LABEL = 'Station ID';
 export const DECODE_VISUALS_EMPTY =
   'Enter a four-letter station ID, or open this tab after a report is in the converter.';

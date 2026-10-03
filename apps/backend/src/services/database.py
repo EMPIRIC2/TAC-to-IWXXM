@@ -354,7 +354,14 @@ async def database_lifespan(app: FastAPI) -> AsyncIterator[None]:
         await init_db_engine()
         # Create tables if they don't exist
         await create_tables()
-        yield
+        from src.services.live_map_cache import cache_from_env
+        from src.services.live_map_refresh import start_live_map_refresh, stop_live_map_refresh
+
+        map_stop = start_live_map_refresh(cache_from_env())
+        try:
+            yield
+        finally:
+            await stop_live_map_refresh(map_stop)
     finally:
         # Shutdown
         logger.info("Closing database engine on shutdown")

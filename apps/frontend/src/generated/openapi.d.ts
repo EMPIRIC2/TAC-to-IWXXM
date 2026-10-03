@@ -993,6 +993,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/live-map": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Cached reports in the current map view
+         * @description Reports cached for the area in view. The newest report is first. At most two earlier reports follow it.
+         */
+        get: operations["read_live_map_api_v1_live_map_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/profiles/catalog": {
         parameters: {
             query?: never;
@@ -8349,6 +8369,48 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    read_live_map_api_v1_live_map_get: {
+        parameters: {
+            query: {
+                /** @description West edge of the view, in degrees. */
+                west: number;
+                /** @description South edge of the view, in degrees. */
+                south: number;
+                /** @description East edge of the view, in degrees. */
+                east: number;
+                /** @description North edge of the view, in degrees. */
+                north: number;
+                /** @description Comma-separated layers. Defaults to METAR and SPECI. */
+                products?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
             };
             /** @description Validation Error */
             422: {

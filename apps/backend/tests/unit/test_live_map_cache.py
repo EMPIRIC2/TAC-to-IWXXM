@@ -1,0 +1,174 @@
+"""Live map cache keeps three reports and does not convert them."""
+
+from __future__ import annotations
+
+from datetime import UTC, datetime, timedelta
+from pathlib import Path
+
+import pytest
+from fastapi import FastAPI
+from fastapi.testclient import TestClient
+from src.routers.live_map import get_live_map_cache, router, set_live_map_cache
+from src.services.live_map_cache import (
+    LiveMapCache,
+    LiveMapReport,
+    apply_refresh,
+    cache_from_env,
+    engine_for_url,
+    live_map_reports,
+)
+
+
+def _cache() -> LiveMapCache:
+    return LiveMapCache(engine_for_url(None))
+
+
+def _report(
+    *,
+    minutes: int,
+    tac: str = "METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005=",
+    product: str = "metar",
+    place_key: str = "KJFK",
+    latitude: float | None = 40.64,
+    longitude: float | None = -73.78,
+) -> LiveMapReport:
+    return LiveMapReport(
+        place_key=place_key,
+        product=product,
+        observed_at=datetime(2026, 10, 3, 12, 0, tzinfo=UTC) + timedelta(minutes=minutes),
+        tac=tac,
+        latitude=latitude,
+        longitude=longitude,
+    )
+
+
+def test_naive_time_is_rejected() -> None:
+    cache = _cache()
+    with pytest.raises(ValueError, match="timezone"):
+        cache.store(
+            LiveMapReport(
+                place_key="KJFK",
+                product="metar",
+                observed_at=datetime(2026, 10, 3, 12, 0),
+                tac="METAR KJFK",
+                latitude=1.0,
+                longitude=2.0,
+            )
+        )
+
+
+def test_store_keeps_three_newest_and_replaces_the_same_time() -> None:
+    cache = _cache()
+    for minute in (1, 2, 3, 4):
+        cache.store(_report(minutes=minute, tac=f"M{minute}"))
+    replaced = _report(minutes=4, tac="replaced")
+    cache.store(replaced)
+    places = cache.query(west=-80, south=40, east=-70, north=41, products={"metar"})
+    reports = places[0]["reports"]
+    assert [item["tac"] for item in reports] == ["replaced", "M3", "M2"]
+
+
+def test_query_filters_box_product_and_missing_coordinates() -> None:
+    cache = _cache()
+    cache.store(_report(minutes=1))
+    cache.store(_report(minutes=1, product="taf", tac="TAF KJFK", place_key="KJFK"))
+    cache.store(_report(minutes=1, place_key="NZWN", latitude=-41.3, longitude=174.8, tac="METAR NZWN"))
+    cache.store(_report(minutes=1, place_key="NONE", latitude=None, longitude=None, tac="METAR NONE"))
+    places = cache.query(west=-80, south=40, east=-70, north=41, products={"metar"})
+    assert [place["place_key"] for place in places] == ["KJFK"]
+    assert cache.query(west=-80, south=40, east=-70, north=41, products=set()) == []
+
+
+def test_query_ignores_reports_beyond_three() -> None:
+    cache = _cache()
+    cache.store(_report(minutes=1, tac="one"))
+    with cache._engine.begin() as conn:
+        for minute in (2, 3, 4):
+            conn.execute(
+                live_map_reports.insert().values(
+                    place_key="KJFK",
+                    product="metar",
+                    observed_at=_report(minutes=minute).observed_at.isoformat(),
+                    tac=f"extra{minute}",
+                    latitude=40.64,
+                    longitude=-73.78,
+                )
+            )
+    places = cache.query(west=-80, south=40, east=-70, north=41, products={"metar"})
+    assert len(places[0]["reports"]) == 3
+
+
+def test_refresh_skips_when_busy_and_clears_after_failure() -> None:
+    cache = _cache()
+    assert cache.begin_refresh() is True
+    assert apply_refresh(cache, [_report(minutes=1)]) == "skipped"
+    cache.end_refresh()
+
+    def boom(_report: LiveMapReport) -> None:
+        raise RuntimeError("store failed")
+
+    cache.store = boom  # type: ignore[method-assign]
+    with pytest.raises(RuntimeError, match="store failed"):
+        apply_refresh(cache, [_report(minutes=1)])
+    assert cache.begin_refresh() is True
+
+
+def test_refresh_stores() -> None:
+    cache = _cache()
+    assert apply_refresh(cache, [_report(minutes=1, tac="stored")]) == "stored"
+    places = cache.query(west=-80, south=40, east=-70, north=41, products={"metar"})
+    assert places[0]["reports"][0]["tac"] == "stored"
+
+
+def test_postgres_engine_skips_table_create() -> None:
+    class _Dialect:
+        name = "postgresql"
+
+    class _Engine:
+        dialect = _Dialect()
+
+    cache = LiveMapCache(_Engine())  # type: ignore[arg-type]
+    assert cache.begin_refresh() is True
+    assert cache.begin_refresh() is False
+
+
+def test_engine_url_and_env(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    memory = engine_for_url("  ")
+    assert memory.dialect.name == "sqlite"
+    path = tmp_path / "map.sqlite"
+    monkeypatch.setenv("LIVE_MAP_CACHE_URL", f"sqlite:///{path}")
+    first = cache_from_env()
+    first.store(_report(minutes=1, tac="persisted"))
+    second = cache_from_env()
+    places = second.query(west=-80, south=40, east=-70, north=41, products={"metar"})
+    assert places[0]["reports"][0]["tac"] == "persisted"
+
+
+def test_read_live_map_route(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.delenv("LIVE_MAP_CACHE_URL", raising=False)
+    set_live_map_cache(None)
+    cache = get_live_map_cache()
+    assert get_live_map_cache() is cache
+    cache.store(_report(minutes=1, tac="on map"))
+    app = FastAPI()
+    app.include_router(router)
+    client = TestClient(app)
+    ok = client.get("/api/v1/live-map", params={"west": -80, "south": 40, "east": -70, "north": 41})
+    assert ok.status_code == 200
+    assert ok.json()["places"][0]["reports"][0]["tac"] == "on map"
+    blank = client.get(
+        "/api/v1/live-map",
+        params={"west": -80, "south": 40, "east": -70, "north": 41, "products": " , "},
+    )
+    assert blank.status_code == 200
+    bad_box = client.get(
+        "/api/v1/live-map",
+        params={"west": 10, "south": 0, "east": 0, "north": 1},
+    )
+    assert bad_box.status_code == 400
+    bad_layer = client.get(
+        "/api/v1/live-map",
+        params={"west": -80, "south": 40, "east": -70, "north": 41, "products": "spacewx"},
+    )
+    assert bad_layer.status_code == 400
+    set_live_map_cache(None)

@@ -4,7 +4,7 @@
 
 import { useSyncExternalStore } from 'react';
 import { IcaoAutocomplete } from '@/app/components/IcaoAutocomplete';
-import { StationMinimap } from '@/app/components/StationMinimap';
+import { LiveWorldMap } from '@/app/components/LiveWorldMap';
 import { WindCue } from '@/app/components/WindCue';
 import { stationDisplayName } from '@/utils/decodeVisuals';
 import {
@@ -63,6 +63,7 @@ export function DecodeVisualsPage() {
         inputTestId="decode-visuals-station"
         className="max-w-xl"
       />
+      <LiveWorldMap />
       {complete ? (
         <>
           <p
@@ -71,7 +72,6 @@ export function DecodeVisualsPage() {
           >
             {heading}
           </p>
-          <StationMinimap icao={station} />
           <WindCue segments={draft === null ? published.segments : []} />
         </>
       ) : (

@@ -6,10 +6,8 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { DecodeVisualsPage } from './DecodeVisualsPage';
 
-vi.mock('@/app/components/StationMinimap', () => ({
-  StationMinimap: ({ icao }: { icao: string }) => (
-    <div data-testid="station-map">{icao}</div>
-  ),
+vi.mock('@/app/components/LiveWorldMap', () => ({
+  LiveWorldMap: () => <div data-testid="live-world-map" />,
 }));
 import { RegionSchematic } from './RegionSchematic';
 import { WindCue } from './WindCue';
@@ -55,10 +53,11 @@ describe('DecodeVisualsPage', () => {
     const user = userEvent.setup();
     render(<DecodeVisualsPage />);
     expect(screen.getByTestId('decode-visuals-empty')).toBeInTheDocument();
+    expect(screen.getByTestId('live-world-map')).toBeInTheDocument();
     await user.type(screen.getByTestId('decode-visuals-station'), 'KJFK');
     expect(screen.queryByTestId('icao-suggestion-KJFK')).not.toBeInTheDocument();
     expect(screen.getByTestId('decode-visuals-heading')).toHaveTextContent('Kennedy');
-    expect(screen.getByTestId('station-map')).toHaveTextContent('KJFK');
+    expect(screen.getByTestId('live-world-map')).toBeInTheDocument();
     expect(screen.getByTestId('wind-cue')).toHaveTextContent('No wind group');
     await user.clear(screen.getByTestId('decode-visuals-station'));
     expect(screen.getByTestId('decode-visuals-station')).toHaveValue('');
