@@ -2949,6 +2949,9 @@ export function FileConverter({
                                 }
                               }
                               setInputMode(value);
+                              if (value !== 'collect_iwxxm') {
+                                setPlaceholderNotice(null);
+                              }
                             }}
                             className={`px-2 py-1 text-xs whitespace-nowrap ${
                               inputMode === value
