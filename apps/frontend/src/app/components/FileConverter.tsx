@@ -3505,7 +3505,7 @@ export function FileConverter({
                     />
                     {inputMode !== 'validate_iwxxm' ? (
                       <>
-                        {decodeSegments.length > 0 || decodeResiduals.length > 0 ? (
+                        {decodeSegments.length + decodeResiduals.length > 0 ? (
                           <div className="mt-2" data-testid="tac-group-chips">
                             <p className="mb-1 text-xs text-gray-500 dark:text-gray-400">
                               Groups

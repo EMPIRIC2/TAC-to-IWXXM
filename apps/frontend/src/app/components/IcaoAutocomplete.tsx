@@ -71,10 +71,7 @@ export function IcaoAutocomplete({
   };
 
   const normalized = value.toUpperCase();
-  const isValid =
-    normalized.trim().length === 0 || normalized.length !== 4
-      ? null
-      : validateIcao(normalized);
+  const isValid = normalized.length === 4 ? validateIcao(normalized) : null;
 
   const handleInputChange = (inputValue: string) => {
     const upperValue = inputValue.toUpperCase();

@@ -194,7 +194,7 @@ export function LibraryPickersBar({
 
   const reasons = KIND_META.map((meta) => {
     const options = byKind[meta.kind];
-    const value = values[meta.field] || options[0]?.id || '';
+    const value = values[meta.field] || options[0]!.id;
     return libraryChoiceReason(value);
   });
   const sharedReason = reasons.every((reason) => reason === reasons[0])
