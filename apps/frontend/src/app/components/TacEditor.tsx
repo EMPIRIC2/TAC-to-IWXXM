@@ -247,7 +247,7 @@ export function TacEditor({
           id,
         }),
         EditorView.theme({
-          '&': { minHeight: '120px', fontSize: '0.875rem' },
+          '&': { height: '100%', minHeight: '11rem', fontSize: '0.875rem' },
           '.cm-scroller': { overflow: 'auto' },
           '.cm-content': {
             fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace',
@@ -317,7 +317,7 @@ export function TacEditor({
 
   return (
     <div
-      className={`overflow-hidden rounded-md border bg-white dark:bg-gray-800 ${
+      className={`flex min-h-0 flex-1 flex-col overflow-hidden rounded-md border bg-white dark:bg-gray-800 ${
         hasFailedTac
           ? 'border-rose-400 dark:border-rose-600'
           : 'border-gray-300 dark:border-gray-700'
@@ -327,7 +327,7 @@ export function TacEditor({
       data-issue-span-count={issueSpans.length}
       {...(hasFailedTac ? { 'data-failed-tac': 'true' } : {})}
     >
-      <div ref={parentRef} />
+      <div ref={parentRef} className="min-h-0 flex-1" />
     </div>
   );
 }
