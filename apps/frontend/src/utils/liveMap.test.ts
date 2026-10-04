@@ -30,6 +30,16 @@ describe('live map helpers', () => {
         }),
       }),
     ).toEqual(bounds);
+    expect(
+      boundsOf({
+        getBounds: () => ({
+          getWest: () => -284,
+          getSouth: () => -80,
+          getEast: () => 284,
+          getNorth: () => 80,
+        }),
+      }),
+    ).toEqual({ west: -180, south: -80, east: 180, north: 80 });
     expect(viewById('missing').id).toBe('observations');
     expect(layerQuery('forecasts', new Set())).toBe('taf');
     expect(layerQuery('observations', new Set(['metar', 'speci']))).toBe('');

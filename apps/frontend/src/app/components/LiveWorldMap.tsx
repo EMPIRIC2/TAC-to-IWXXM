@@ -58,7 +58,14 @@ function drawPlace(map: L.Map, place: LivePlace): L.Layer {
   if (kind === 'circle' && place.geometry?.radius_m) {
     return L.circle(pointOf(place), { radius: place.geometry.radius_m }).addTo(map);
   }
-  return L.marker(pointOf(place)).addTo(map);
+  return L.marker(pointOf(place), {
+    icon: L.divIcon({
+      className: '',
+      html: '<span style="display:block;width:12px;height:12px;border-radius:9999px;background:#1d4ed8;border:2px solid #fff"></span>',
+      iconSize: [12, 12],
+      iconAnchor: [6, 6],
+    }),
+  }).addTo(map);
 }
 
 /**
@@ -66,7 +73,7 @@ function drawPlace(map: L.Map, place: LivePlace): L.Layer {
  * @example
  * const _ = true;
  */
-export function LiveWorldMap() {
+export function LiveWorldMap({ focusStation = '' }: { focusStation?: string }) {
   const host = useRef<HTMLDivElement>(null);
   const mapRef = useRef<L.Map | null>(null);
   const [off, setOff] = useState<ReadonlySet<string>>(new Set());
@@ -75,7 +82,20 @@ export function LiveWorldMap() {
   const [error, setError] = useState('');
   const [selected, setSelected] = useState<LivePlace | null>(null);
   const [reportIndex, setReportIndex] = useState(0);
+  const [appliedFocus, setAppliedFocus] = useState('');
   const products = selectedLayerQuery(off);
+  const focusMatch =
+    focusStation === ''
+      ? null
+      : (places.find((item) => item.place_key === focusStation) ?? null);
+  const focusToken = focusMatch ? focusStation : '';
+  if (focusToken !== appliedFocus) {
+    setAppliedFocus(focusToken);
+    if (focusMatch) {
+      setSelected(focusMatch);
+      setReportIndex(0);
+    }
+  }
   const visible = bounds && products ? places : EMPTY_PLACES;
   const message = products ? error : '';
   const report = selected?.reports[reportIndex];
@@ -100,6 +120,18 @@ export function LiveWorldMap() {
       mapRef.current = null;
     };
   }, []);
+
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map || !focusStation) {
+      return;
+    }
+    const place = places.find((item) => item.place_key === focusStation);
+    if (!place) {
+      return;
+    }
+    map.flyTo(pointOf(place), 8);
+  }, [focusStation, places]);
 
   useEffect(() => {
     if (!bounds || !products) {

@@ -11,6 +11,7 @@ import { LiveWorldMap } from './LiveWorldMap';
 const clicks: Array<() => void> = [];
 const map = {
   setView: vi.fn(),
+  flyTo: vi.fn(),
   remove: vi.fn(),
   on: vi.fn(),
   getBounds: () => ({
@@ -38,6 +39,7 @@ vi.mock('leaflet', () => ({
     map: vi.fn(() => map),
     tileLayer: vi.fn(() => ({ addTo: vi.fn() })),
     marker: vi.fn(() => marker),
+    divIcon: vi.fn(() => ({})),
     polygon: vi.fn(() => marker),
     polyline: vi.fn(() => marker),
     circle: vi.fn(() => marker),
@@ -205,8 +207,8 @@ describe('LiveWorldMap', () => {
     await waitFor(() => expect(L.polygon).toHaveBeenCalled());
     expect(L.polyline).toHaveBeenCalled();
     expect(L.circle).toHaveBeenCalled();
-    expect(L.marker).toHaveBeenCalledWith([10, 20]);
-    expect(L.marker).toHaveBeenCalledWith([1, 2]);
+    expect(L.marker).toHaveBeenCalledWith([10, 20], expect.anything());
+    expect(L.marker).toHaveBeenCalledWith([1, 2], expect.anything());
     await waitFor(() => expect(clicks.length).toBeGreaterThan(0));
     act(() => {
       clicks[0]?.();
@@ -233,6 +235,22 @@ describe('LiveWorldMap', () => {
     }
     await user.click(screen.getByTestId('layer-metar'));
     expect(screen.queryByTestId('live-map-error')).not.toBeInTheDocument();
+  });
+
+  it('moves the map to a searched station and skips an unknown one', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue({
+        ok: true,
+        json: async () => ({ places: [place] }),
+      }),
+    );
+    const view = render(<LiveWorldMap focusStation="KJFK" />);
+    await waitFor(() => expect(map.flyTo).toHaveBeenCalledWith([40.6, -73.7], 8));
+    expect(screen.getByTestId('live-map-detail')).toHaveTextContent('Kennedy');
+    map.flyTo.mockClear();
+    view.rerender(<LiveWorldMap focusStation="NONE" />);
+    expect(map.flyTo).not.toHaveBeenCalled();
   });
 
   it('shows an error when the cache cannot be read', async () => {
