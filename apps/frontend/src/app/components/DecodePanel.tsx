@@ -92,7 +92,11 @@ export function DecodePanel({
 
   return (
     <section
-      className="mt-3 rounded-md border border-gray-200 dark:border-gray-700"
+      className={
+        pinned
+          ? 'flex min-h-[15rem] min-w-0 flex-1 flex-col rounded-md border border-gray-200 dark:border-gray-700'
+          : 'mt-3 rounded-md border border-gray-200 dark:border-gray-700'
+      }
       aria-label="TAC decode panel"
       data-testid="decode-panel"
     >
@@ -127,7 +131,13 @@ export function DecodePanel({
       )}
 
       {shown ? (
-        <div className="border-t border-gray-200 px-3 py-3 dark:border-gray-700">
+        <div
+          className={
+            pinned
+              ? 'min-h-0 flex-1 overflow-auto border-t border-gray-200 px-3 py-3 dark:border-gray-700'
+              : 'border-t border-gray-200 px-3 py-3 dark:border-gray-700'
+          }
+        >
           {loading ? (
             <p className="text-sm text-gray-500" role="status">
               Decoding…

@@ -24,7 +24,7 @@ describe('LiveConvertPaneGrid', () => {
       'roomy',
     );
     expect(screen.getByTestId('live-convert-panes').className).toContain(
-      'min-h-[20rem]',
+      'min-h-[24rem]',
     );
     expect(screen.getByTestId('live-convert-panes').className).not.toContain('h-full');
     expect(screen.getByText('TAC')).toBeInTheDocument();

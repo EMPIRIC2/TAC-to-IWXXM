@@ -2897,7 +2897,7 @@ export function FileConverter({
                 </StatusBanner>
               )}
               <div
-                className="flex flex-col xl:h-[min(42rem,calc(100dvh-12rem))] xl:min-h-[24rem] xl:overflow-hidden"
+                className="flex flex-col xl:h-[min(46rem,calc(100dvh-8rem))] xl:min-h-[28rem] xl:overflow-hidden"
                 data-testid="live-convert-stage"
               >
                 <div
@@ -3458,7 +3458,7 @@ export function FileConverter({
                   onWidthsChange={(paneWidths) => updateLiveLayout({ paneWidths })}
                 >
                   <section
-                    className="flex min-w-0 flex-col overflow-auto xl:h-full xl:min-h-0"
+                    className="flex min-h-[15rem] min-w-0 flex-1 flex-col overflow-auto xl:h-full xl:min-h-0"
                     aria-label={inputMode === 'validate_iwxxm' ? 'IWXXM' : 'TAC'}
                     onFocusCapture={() => setRecentWorkCollapsed(true)}
                     onKeyDown={(event) => {
@@ -3502,7 +3502,7 @@ export function FileConverter({
                           ? 'Enter IWXXM XML manually'
                           : 'Enter METAR data manually'
                       }
-                      className="min-h-[160px] focus-within:ring-2 focus-within:ring-blue-500"
+                      className="min-h-[220px] flex-1 focus-within:ring-2 focus-within:ring-blue-500"
                       failedSpans={failedSpans}
                       issueSpans={editorSpans}
                       onSpanFix={applyLintFix}
@@ -3590,7 +3590,7 @@ export function FileConverter({
                   </section>
                   {inputMode === 'validate_iwxxm' ? null : (
                     <div
-                      className="flex min-w-0 flex-col overflow-auto xl:h-full xl:min-h-0"
+                      className="flex min-h-[15rem] min-w-0 flex-1 flex-col overflow-auto xl:h-full xl:min-h-0"
                       data-testid="decode-pane"
                     >
                       {onOpenVisuals ? (
@@ -3627,7 +3627,7 @@ export function FileConverter({
                     <section
                       data-testid="validate-iwxxm-results"
                       aria-label="Validation results"
-                      className="flex min-h-[12rem] flex-col rounded-md border border-gray-200 bg-white p-3 dark:border-gray-700 dark:bg-gray-900"
+                      className="flex min-h-[16rem] flex-1 flex-col rounded-md border border-gray-200 bg-white p-3 dark:border-gray-700 dark:bg-gray-900"
                     >
                       <h3 className="mb-2 text-sm font-semibold text-gray-900 dark:text-white">
                         Validation results
