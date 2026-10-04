@@ -6887,23 +6887,23 @@ Engineering quality — multi-language inline documentation bar. H4–H5 **N/A**
 - **Objective**: Decode visuals draws a Leaflet map and a Beta label. Place requests go to this app. The page does not call a weather vendor.
 - **Pass criteria**: The page requests `/api/v1/live-map` on this app’s API host. No request host is `aviationweather.gov` or `weather.gov`.
 
-### TC-F37-002: World zoom draws every cached shape
+### TC-F37-002: World zoom groups by continent
 
 - **Level**: T0
-- **Objective**: The lowest zoom returns every geographically located cached report in the world box. A polygon, line, or circle is included when the report has that geometry. Space weather is absent from `places`.
-- **Pass criteria**: A world box returns the cached points and shapes. A space-weather row is not a place.
+- **Objective**: The cache still returns every geographically located report. At world zoom the map draws one marker per continent that has reports. The next zoom draws sub-region markers. A closer zoom draws each station, polygon, line, and circle. A region click only zooms. Space weather is absent from `places`.
+- **Pass criteria**: A world box returns the cached points and shapes. World zoom does not draw a pin per station. A space-weather row is not a place.
 
 ### TC-F37-003: Open report
 
 - **Level**: T0 / T2
-- **Objective**: Opening a place shows the newest of three reports first, with TAC, stored IWXXM when present, and lint or validation issues. A report that is not translated yet still returns the TAC and says translation is pending. A failed translation returns the TAC and a failure note.
-- **Pass criteria**: The first report is the newest. Pending translation is distinct from a failure.
+- **Objective**: Hover, and a tap on a phone, opens a scrolling popup on the station. The panel under the map is gone. The popup shows the newest of three reports first, with the place name, wind line, TAC, stored IWXXM when present, and lint or validation issues. A report that is not translated yet still shows the TAC and says translation is pending. The page and the popup say the reports are not validated for operational use and name the Aviation Weather Center.
+- **Pass criteria**: The first report is the newest. Pending translation is distinct from a failure. The notice is on the page and in the popup.
 
-### TC-F37-004: Import tick is capped
+### TC-F37-004: A refresh area finishes before the next
 
 - **Level**: T0
-- **Objective**: One refresh stores every fetched location and translates at most `LIVE_MAP_IMPORT_LIMIT` reports (default 40). A second tick does not start while one is running. Convert is not on that path.
-- **Pass criteria**: Locations beyond the translation cap are still stored. Translated rows stop at 40. Convert tests stay green.
+- **Objective**: The map translator stores every fetched location in the current area and translates the ones that are not already ready before it starts the next area. The API timer, when it is on, still stops at `LIVE_MAP_IMPORT_LIMIT`. A second tick does not start while one is running. Convert is not on that path.
+- **Pass criteria**: The translator does not leave the remainder of an area pending. The API cap still stores locations it does not translate. Convert tests stay green.
 
 ### TC-F37-005: One station identifier, one airport
 

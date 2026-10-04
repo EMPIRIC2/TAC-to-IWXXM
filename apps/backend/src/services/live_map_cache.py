@@ -203,6 +203,36 @@ class LiveMapCache:
         """
         self._refreshing = False
 
+    def status_of(self, report: LiveMapReport) -> str | None:
+        """Return the stored translation status for one report.
+
+        Parameters
+        ----------
+        report : LiveMapReport
+            Report to look up.
+
+        Returns
+        -------
+        str | None
+            ``pending``, ``ready``, ``failed``, or None when the row is absent.
+
+        Examples
+        --------
+        >>> 1 + 1
+        2
+        """
+        with self._engine.connect() as conn:
+            row = conn.execute(
+                select(_translation_status).where(
+                    _place_key == report.place_key,
+                    _product == report.product,
+                    _observed_at == _stamp(report.observed_at),
+                )
+            ).first()
+        if row is None or row[0] is None:
+            return None
+        return str(row[0])
+
     def store(self, report: LiveMapReport) -> None:
         """Keep the newest three observations for this place and product.
 
@@ -218,6 +248,25 @@ class LiveMapCache:
         """
         stamp = _stamp(report.observed_at)
         with self._engine.begin() as conn:
+            existing = conn.execute(
+                select(_tac, _iwxxm, _issues_json, _translation_status).where(
+                    _place_key == report.place_key,
+                    _product == report.product,
+                    _observed_at == stamp,
+                )
+            ).first()
+            kept_iwxxm = report.iwxxm
+            kept_issues = json.dumps(list(report.issues))
+            kept_status = report.translation_status
+            if (
+                existing is not None
+                and existing[0] == report.tac
+                and existing[3] == "ready"
+                and report.translation_status == "pending"
+            ):
+                kept_iwxxm = existing[1] if isinstance(existing[1], str) else None
+                kept_issues = existing[2] if isinstance(existing[2], str) else "[]"
+                kept_status = "ready"
             conn.execute(
                 delete(live_map_reports).where(
                     _place_key == report.place_key,
@@ -236,9 +285,9 @@ class LiveMapCache:
                     geometry_kind=report.geometry_kind,
                     geometry_json=json.dumps(report.coordinates) if report.coordinates else None,
                     radius_m=report.radius_m,
-                    iwxxm=report.iwxxm,
-                    issues_json=json.dumps(list(report.issues)),
-                    translation_status=report.translation_status,
+                    iwxxm=kept_iwxxm,
+                    issues_json=kept_issues,
+                    translation_status=kept_status,
                 )
             )
             ids = conn.execute(
@@ -467,6 +516,36 @@ def apply_refresh(cache: LiveMapCache, reports: list[LiveMapReport]) -> str:
     return "stored"
 
 
+def _cache_url(url: str) -> str:
+    """Rewrite a product database URL for the synchronous cache driver.
+
+    Parameters
+    ----------
+    url : str
+        Database URL.
+
+    Returns
+    -------
+    str
+        URL SQLAlchemy can open with psycopg.
+
+    Examples
+    --------
+    >>> 1 + 1
+    2
+    """
+    raw = url.strip()
+    if raw.startswith("postgresql+asyncpg://"):
+        raw = "postgresql+psycopg://" + raw.removeprefix("postgresql+asyncpg://")
+    elif raw.startswith("postgresql+psycopg2://"):
+        raw = "postgresql+psycopg://" + raw.removeprefix("postgresql+psycopg2://")
+    elif raw.startswith("postgresql://"):
+        raw = "postgresql+psycopg://" + raw.removeprefix("postgresql://")
+    if "ssl=require" in raw and "sslmode=" not in raw:
+        raw = raw.replace("ssl=require", "sslmode=require")
+    return raw
+
+
 def engine_for_url(url: str | None) -> Engine:
     """Use one shared in-memory database when no URL is configured.
 
@@ -485,7 +564,7 @@ def engine_for_url(url: str | None) -> Engine:
     >>> 1 + 1
     2
     """
-    raw = (url or "").strip()
+    raw = _cache_url(url or "")
     if not raw:
         return create_engine(
             "sqlite://",

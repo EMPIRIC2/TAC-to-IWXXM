@@ -46,6 +46,223 @@ export type LivePlace = {
  * @example
  * const _ = true;
  */
+export const LIVE_MAP_NOTICE =
+  'These reports are not validated for operational use. They come from the Aviation Weather Center.';
+
+export const LIVE_MAP_CANVAS = 'Live weather map';
+export const LIVE_MAP_ZOOM_HINT =
+  'Zoom in to go from continents to regions to each station. The number is how many current reports are in that area.';
+
+export const LIVE_MAP_LOADING = 'Loading reports for this view.';
+export const LIVE_MAP_REFRESHING = 'Refreshing this view.';
+export const LIVE_MAP_EMPTY = 'No reports in this view.';
+export const LIVE_MAP_NO_TIME = 'Reports in this view have no observation time.';
+export const LIVE_MAP_LAYERS_OFF = 'Turn a layer on to see reports.';
+export const LIVE_MAP_SPACE = 'Space weather has no map location.';
+export const LIVE_MAP_ERROR = 'The live map could not be loaded.';
+export const LIVE_MAP_PENDING = 'Translation is pending.';
+export const LIVE_MAP_AREA = 'Area';
+export const LIVE_MAP_LATEST = 'Latest';
+export const LIVE_MAP_IWXXM = 'IWXXM';
+export const LIVE_MAP_REFRESH_MS = 60_000;
+
+const PRODUCT_LABELS: Record<string, string> = {
+  metar: 'METAR',
+  speci: 'SPECI',
+  taf: 'TAF',
+  airmet: 'AIRMET',
+  sigmet: 'SIGMET',
+  vaa: 'Volcanic ash',
+  tca: 'Tropical cyclone',
+  vona: 'Volcano notice',
+};
+
+const MONTHS = [
+  'Jan',
+  'Feb',
+  'Mar',
+  'Apr',
+  'May',
+  'Jun',
+  'Jul',
+  'Aug',
+  'Sep',
+  'Oct',
+  'Nov',
+  'Dec',
+];
+
+/**
+ * Plain name for a map layer.
+ *
+ * @param product - Layer id
+ * @returns Operator label
+ * @example
+ * const _ = true;
+ */
+export function productLabel(product: string): string {
+  return PRODUCT_LABELS[product] ?? product.toUpperCase();
+}
+
+/**
+ * Pin color for a product family.
+ *
+ * @param product - Layer id
+ * @returns CSS color
+ * @example
+ * const _ = true;
+ */
+export function pinColor(product: string): string {
+  if (product === 'taf') {
+    return '#0f766e';
+  }
+  if (product === 'airmet' || product === 'sigmet') {
+    return '#c2410c';
+  }
+  if (product === 'vaa' || product === 'tca' || product === 'vona') {
+    return '#6d28d9';
+  }
+  return '#1d4ed8';
+}
+
+/**
+ * Place name, or Area when the key is not an airport identifier.
+ *
+ * @param placeKey - Station or area id
+ * @param airportName - Known airport name
+ * @returns Name to show
+ * @example
+ * const _ = true;
+ */
+export function placeTitle(placeKey: string, airportName: string | undefined): string {
+  if (/^[A-Z][A-Z0-9]{3}$/.test(placeKey)) {
+    return airportName ?? placeKey;
+  }
+  return LIVE_MAP_AREA;
+}
+
+/**
+ * Clock time in UTC, or the original text when it is not a time.
+ *
+ * @param value - Observation stamp
+ * @returns Readable UTC time
+ * @example
+ * const _ = true;
+ */
+export function formatObservedAt(value: string): string {
+  const parsed = Date.parse(value);
+  if (Number.isNaN(parsed)) {
+    return value;
+  }
+  const date = new Date(parsed);
+  const day = String(date.getUTCDate()).padStart(2, '0');
+  const hours = String(date.getUTCHours()).padStart(2, '0');
+  const minutes = String(date.getUTCMinutes()).padStart(2, '0');
+  return `${day} ${MONTHS[date.getUTCMonth()]} ${hours}:${minutes} UTC`;
+}
+
+/**
+ * How long ago an observation was.
+ *
+ * @param value - Observation stamp
+ * @param now - Clock to compare
+ * @returns Short age, or an empty string when the stamp is not a time
+ * @example
+ * const _ = true;
+ */
+export function observationAge(value: string, now = Date.now()): string {
+  const parsed = Date.parse(value);
+  if (Number.isNaN(parsed)) {
+    return '';
+  }
+  const minutes = Math.max(0, Math.round((now - parsed) / 60_000));
+  if (minutes < 1) {
+    return 'just now';
+  }
+  if (minutes === 1) {
+    return '1 min ago';
+  }
+  if (minutes < 60) {
+    return `${minutes} min ago`;
+  }
+  const hours = Math.round(minutes / 60);
+  if (hours === 1) {
+    return '1 hour ago';
+  }
+  if (hours < 48) {
+    return `${hours} hours ago`;
+  }
+  return `${Math.round(hours / 24)} days ago`;
+}
+
+/**
+ * Latest observation stamp in the loaded places.
+ *
+ * @param places - Places in the current view
+ * @returns Stamp, or null when none parse
+ * @example
+ * const _ = true;
+ */
+export function newestObservedAt(places: LivePlace[]): string | null {
+  let best: string | null = null;
+  let bestMs = Number.NEGATIVE_INFINITY;
+  for (const place of places) {
+    for (const report of place.reports) {
+      const parsed = Date.parse(report.observed_at);
+      if (!Number.isNaN(parsed) && parsed > bestMs) {
+        bestMs = parsed;
+        best = report.observed_at;
+      }
+    }
+  }
+  return best;
+}
+
+/**
+ * One line that says whether the view is loading, empty, or current.
+ *
+ * @param places - Places in the current view
+ * @param loading - True before the first response
+ * @param refreshing - True while a later response is on the way
+ * @param now - Clock for the age
+ * @returns Status sentence
+ * @example
+ * const _ = true;
+ */
+export function viewStatus(
+  places: LivePlace[],
+  loading: boolean,
+  refreshing: boolean,
+  now = Date.now(),
+): string {
+  if (loading) {
+    return LIVE_MAP_LOADING;
+  }
+  if (refreshing) {
+    return LIVE_MAP_REFRESHING;
+  }
+  if (places.length === 0) {
+    return LIVE_MAP_EMPTY;
+  }
+  const newest = newestObservedAt(places);
+  if (!newest) {
+    return LIVE_MAP_NO_TIME;
+  }
+  return `Newest observation in this view: ${formatObservedAt(newest)} (${observationAge(newest, now)}).`;
+}
+
+/**
+ * Popup width that stays on a narrow screen.
+ *
+ * @param viewWidth - Map width in pixels
+ * @returns Popup width
+ * @example
+ * const _ = true;
+ */
+export function popupWidth(viewWidth: number): number {
+  return Math.min(320, Math.max(180, viewWidth - 32));
+}
+
 export type MapBounds = {
   west: number;
   south: number;

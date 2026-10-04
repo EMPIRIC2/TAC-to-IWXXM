@@ -6,7 +6,8 @@ still land here so they are not appended to `docs/context-brief.md`.
 
 | Brief | Session | Status |
 |-------|---------|--------|
-| [globe-live-map.md](globe-live-map.md) | EV-globe-live-map | active |
+| [map-worker-cluster.md](map-worker-cluster.md) | EV-map-worker-cluster | active |
+| [globe-live-map.md](globe-live-map.md) | EV-globe-live-map | prior cycle |
 | [tac-live-map.md](tac-live-map.md) | EV-tac-map | prior cycle |
 | [public-bulletin-profile-check.md](public-bulletin-profile-check.md) | EV-1272-public-bulletin-profile-check | active |
 | [lettered-bulletin-sequence.md](lettered-bulletin-sequence.md) | EV-1279-lettered-sequence | active |

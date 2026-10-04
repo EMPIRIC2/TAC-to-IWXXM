@@ -355,11 +355,12 @@ No new Render secrets required for P0/P1 library fixtures. Redeploy API before c
 
 | Name | Default | Rule |
 |------|---------|------|
-| `LIVE_MAP_REFRESH` | `1` on the API deployment | `1` starts the timer. Tests leave it unset so the timer stays off |
-| `LIVE_MAP_REFRESH_SECONDS` | `300` | How often the API timer starts a refresh. Integer ≥ 60 |
-| `LIVE_MAP_IMPORT_LIMIT` | `40` | Maximum reports translated and linted in one tick. Integer ≥ 1. The tick still stores every fetched location. Translation resumes next tick |
+| `LIVE_MAP_REFRESH` | `0` on staging once the translator is running. `1` starts a timer in that process | Tests leave it unset so the API timer stays off |
+| `LIVE_MAP_REFRESH_SECONDS` | `300` | Pause between refresh areas. Integer ≥ 60 |
+| `LIVE_MAP_IMPORT_LIMIT` | `40` | Cap for the API timer only. The map translator finishes every stored report in the current area before the next area |
+| `LIVE_MAP_CACHE_URL` | The product `DATABASE_URL` | Shared by the API and the translator. Unset uses process memory |
 
-The timer runs inside the API process. It is not a request-path setting. The F8 worker stays at 0 replicas for this map.
+Staging turns the API timer off and runs `metar-map-translator` at one replica. That Deployment is not a public service. The ingest poller stays at 0 replicas. [Corpus: product §F37] [Corpus: adr/ADR-052]
 
 ## References
 

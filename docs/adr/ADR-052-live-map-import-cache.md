@@ -33,4 +33,14 @@ The operator asked for every current alert on a world view, more than one public
 
 - Translate only the report someone opens. Rejected: the operator asked for translation at import.
 - Cluster pins at world zoom. Rejected: the operator asked for every pinpoint.
-- A separate worker or database. Rejected: the existing API and database stay the home unless the tech plan shows the cap cannot be met there.
+- A separate worker or database. Rejected for the 2026-10-03 cycle: the existing API and database stay the home unless the cap cannot be met there. Amended below.
+
+## Amend — EV-map-worker-cluster (2026-10-04)
+
+The operator accepted a review of translation pace and clustering. The 40-report cap does not finish a refresh area: the next tick moves to another area and later translates the same first 40 rows again. A worker that only has its own memory cannot update the map.
+
+1. Leaflet stays. There is no globe and no pin-clustering library. World zoom draws one marker per continent that has reports. The next zoom draws sub-region markers. A closer zoom draws each station, polygon, line, and circle. A continent or sub-region click only zooms.
+2. Hover, and a tap on a phone, opens a scrolling popup on the station. The panel under the map is removed. The popup keeps the place name, wind line, report times, TAC, and either the stored IWXXM, the issues, or “Translation is pending.”
+3. The page and the popup say: “These reports are not validated for operational use. They come from the Aviation Weather Center.”
+4. A new Deployment on the existing DigitalOcean Kubernetes cluster translates. It is not a public service. It has CPU and memory requests and a memory limit. Staging starts at one replica. It finishes one of the five refresh areas before it starts the next. The ingest poller stays at 0 replicas.
+5. The API stops running the translation timer once that Deployment owns it. The API and the translator use the same `LIVE_MAP_CACHE_URL`. That is the existing cache database, not a new database server. Convert and validate response bodies stay as they are. Staging only. Do not promote to production.

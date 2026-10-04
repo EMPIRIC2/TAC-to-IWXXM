@@ -5,3 +5,4 @@ metadata:
 data:
   METAR_CONFIG_ENV: "staging"
   METAR_CORS_ORIGINS: "https://app.staging.tac-to-iwxxm.com,http://app.staging.tac-to-iwxxm.com,http://143.244.202.13"
+  LIVE_MAP_REFRESH: "0"
