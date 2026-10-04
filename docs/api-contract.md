@@ -1386,3 +1386,49 @@ until then docs lead. #808 is docs/checklist only (no wire change).
 **Breaking changes**: None on HTTP.
 
 - EV-yaml-full-configurability (2026-09-21): #1226 / ADR-047 Proposed — no HTTP shape change in Spec. [Corpus: api] [Corpus: adr/ADR-047]
+
+## F37 live map — EV-globe-live-map
+
+Public. No JWT. The browser calls this route only. Convert and validate bodies are unchanged. [Corpus: product §F37] [Corpus: api] [Corpus: adr/ADR-052]
+
+```
+GET /api/v1/live-map?west=&south=&east=&north=&products=
+```
+
+| Query | Rule |
+|-------|------|
+| `west`, `south`, `east`, `north` | Degrees. West left of east. South below north. Outside −180..180 or −90..90 is 400 |
+| `products` | Comma-separated. Default is every geographically located family: `metar,speci,taf,airmet,sigmet,vaa,tca,vona`. Unknown token is 400. Space weather is not a product here |
+
+**Response**:
+
+```json
+{
+  "places": [
+    {
+      "place_key": "KJFK",
+      "product": "metar",
+      "latitude": 40.64,
+      "longitude": -73.78,
+      "geometry": { "kind": "point" },
+      "reports": [
+        {
+          "observed_at": "2026-10-03T21:00:00Z",
+          "tac": "METAR KJFK ...=",
+          "iwxxm": "<iwxxm:METAR ...>",
+          "issues": []
+        }
+      ]
+    }
+  ],
+  "space_weather": []
+}
+```
+
+- `reports` has at most three items. The newest is first.
+- `geometry.kind` is `point`, `polygon`, `line`, or `circle`. A polygon or line includes `coordinates`. A circle includes `radius_m`.
+- `iwxxm` is the translation stored for that report, or null when translation has not run yet or failed. A failure is an entry in `issues`. Pending translation is not a failure.
+- `issues` lists lint and validation findings for that stored report. Empty when there are none.
+- `space_weather` is the list of current products with no surface location. Those rows are never in `places`.
+
+The route reads the cache. It does not call a vendor during the request.

@@ -4,7 +4,11 @@
 
 export const DECODE_VISUALS_TITLE = 'Decode visuals';
 export const DECODE_VISUALS_INTRO =
-  'A world map of live reports. Observations start with METAR and SPECI. This does not replace the text decode.';
+  'A world map of current reports. Every layer starts on. This does not replace the text decode.';
+export const DECODE_VISUALS_BETA = 'Beta';
+export const DECODE_VISUALS_FEEDBACK = 'Send feedback';
+export const DECODE_VISUALS_FEEDBACK_URL =
+  'https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/new?labels=beta-feedback';
 export const DECODE_VISUALS_STATION_LABEL = 'Station ID';
 export const DECODE_VISUALS_EMPTY =
   'Enter a four-letter station ID, or open this tab after a report is in the converter.';

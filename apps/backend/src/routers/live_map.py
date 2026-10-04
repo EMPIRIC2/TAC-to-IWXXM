@@ -60,8 +60,8 @@ def read_live_map(
     east: float = Query(..., description="East edge of the view, in degrees."),
     north: float = Query(..., description="North edge of the view, in degrees."),
     products: str = Query(
-        "metar,speci",
-        description="Comma-separated layers. Defaults to METAR and SPECI.",
+        "metar,speci,taf,airmet,sigmet,vaa,tca,vona",
+        description="Comma-separated layers. Defaults to every geographically located family.",
     ),
 ) -> dict[str, object]:
     """Reports cached for the area in view.
@@ -79,7 +79,7 @@ def read_live_map(
     north : float
         North edge of the view, in degrees.
     products : str
-        Comma-separated layers. Defaults to METAR and SPECI.
+        Comma-separated layers. Defaults to every geographically located family.
 
     Returns
     -------
@@ -98,7 +98,7 @@ def read_live_map(
         )
     selected = {part.strip().lower() for part in products.split(",") if part.strip()}
     if not selected:
-        selected = {"metar", "speci"}
+        selected = set(MAP_PRODUCTS)
     unknown = selected - MAP_PRODUCTS
     if unknown:
         raise HTTPException(
@@ -112,5 +112,6 @@ def read_live_map(
             east=east,
             north=north,
             products=selected,
-        )
+        ),
+        "space_weather": [],
     }

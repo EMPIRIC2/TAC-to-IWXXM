@@ -179,9 +179,6 @@ async def test_fetch_metars_by_bbox_json_raw_and_errors() -> None:
     async def get_empty(*_args, **_kwargs):
         return _DummyResponse("[]", status_code=200, json_payload=[])
 
-    async def get_json(*_args, **_kwargs):
-        return _DummyResponse('[{"icaoId": "KJFK"}]', status_code=200, json_payload=[{"icaoId": "KJFK"}])
-
     async def get_invalid_json(*_args, **_kwargs):
         return _DummyResponse("not-json", status_code=200, json_payload=ValueError("bad json"))
 
@@ -197,8 +194,19 @@ async def test_fetch_metars_by_bbox_json_raw_and_errors() -> None:
     async def get_req_err(*_args, **_kwargs):
         raise httpx.RequestError("net", request=request)
 
-    client._client = SimpleNamespace(get=get_json)
-    assert await client.fetch_metars_by_bbox((-1, -1, 1, 1), format_type="json") == [{"icaoId": "KJFK"}]
+    seen: dict[str, object] = {}
+
+    async def get_json_seen(*_args, **kwargs):
+        seen["params"] = kwargs.get("params")
+        return _DummyResponse('[{"icaoId": "KJFK"}]', status_code=200, json_payload=[{"icaoId": "KJFK"}])
+
+    client._client = SimpleNamespace(get=get_json_seen)
+    assert await client.fetch_metars_by_bbox((-74.5, 40.0, -73.0, 41.5), format_type="json") == [{"icaoId": "KJFK"}]
+    assert seen["params"] == {
+        "bbox": "40.0,-74.5,41.5,-73.0",
+        "format": "json",
+        "hours": 2,
+    }
 
     client._client = SimpleNamespace(get=get_empty)
     assert await client.fetch_metars_by_bbox((-1, -1, 1, 1), format_type="json") == []
@@ -216,6 +224,44 @@ async def test_fetch_metars_by_bbox_json_raw_and_errors() -> None:
     client._client = SimpleNamespace(get=get_req_err)
     with pytest.raises(AviationWeatherAPIError, match="Request failed"):
         await client.fetch_metars_by_bbox((-1, -1, 1, 1), format_type="json")
+
+
+@pytest.mark.asyncio
+async def test_fetch_map_rows_tags_each_feed_and_skips_empty() -> None:
+    client = AviationWeatherClient()
+    paths: list[str] = []
+
+    async def get(url: str, params: dict[str, object] | None = None):
+        paths.append(url.rsplit("/", 1)[-1])
+        assert params is not None
+        assert params["bbox"] == "40.0,-74.5,41.5,-73.0"
+        if url.endswith("/taf"):
+            assert "hours" not in params
+            return _DummyResponse("", status_code=204)
+        if url.endswith("/metar"):
+            return _DummyResponse(
+                "[]",
+                status_code=200,
+                json_payload=[1, {"icaoId": "KJFK", "rawOb": "METAR"}],
+            )
+        if url.endswith("/isigmet"):
+            raise httpx.RequestError("net", request=httpx.Request("GET", url))
+        if url.endswith("/airsigmet"):
+            return _DummyResponse("no", status_code=400)
+        return _DummyResponse("{}", status_code=200, json_payload={})
+
+    client._client = SimpleNamespace(get=get)
+    rows = await client.fetch_map_rows((-74.5, 40.0, -73.0, 41.5))
+    assert paths == ["metar", "taf", "airsigmet", "isigmet", "gairmet"]
+    assert rows == [{"icaoId": "KJFK", "rawOb": "METAR", "_feed": "metar"}]
+
+    async def bad_json(*_args: object, **_kwargs: object) -> _DummyResponse:
+        return _DummyResponse("x", status_code=200, json_payload=ValueError("bad"))
+
+    client._client = SimpleNamespace(get=bad_json)
+    assert await client.fetch_map_rows((-74.5, 40.0, -73.0, 41.5)) == []
+    with pytest.raises(RuntimeError, match="Client not initialized"):
+        await AviationWeatherClient().fetch_map_rows((-1, -1, 1, 1))
 
 
 def test_parse_response_and_extract_station_paths() -> None:

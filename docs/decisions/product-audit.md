@@ -319,3 +319,24 @@ Delta audit only. Historical sections above are unchanged.
 | API no-wire ↔ test-plan H4–H5 N/A | Pass |
 | Shim window | Fixed — leftover “one release” now cites ADR-045 |
 
+## EV-globe-live-map (2026-10-03)
+
+Delta audit of F37 only. Historical sections above are unchanged. [Corpus: product §F37]
+
+| Metric | Count |
+|--------|-------|
+| Documents touched | feature-list, spec, journeys, test-plan, api-contract, config-spec, env-contract, deploy, ADR-052 |
+| Auto-approved (high) | 8 (Leaflet, every pin, three reports, Beta, 5-minute refresh, guest access, additive Convert/validate, space weather list) |
+| User-approved | 2 (AWC-only feeds; draw locations immediately and translate 40) |
+| Consistency fixes | 3 (spec write path, context brief feed row, TC-F37-003 and TC-F37-004) |
+
+### Consistency
+
+| Check | Result |
+|-------|--------|
+| F37 ↔ spec live-map component | Pass after write-path wording |
+| UJ-087 ↔ TC-F37-001..006 | Pass |
+| H4–H5 on UJ-087 and TC-F37-006 | Pass |
+| Config `LIVE_MAP_IMPORT_LIMIT` default 40 ↔ feature list | Pass |
+| NWS alerts excluded in feature list, ADR-052, and decisions | Pass |
+

@@ -8,7 +8,9 @@
 import { EXAMPLES } from '@/fixtures/examples/examplesCatalog';
 import { SHELL_NAV_LABELS } from '@/app/components/AppShellNav';
 import {
+  DECODE_VISUALS_BETA,
   DECODE_VISUALS_EMPTY,
+  DECODE_VISUALS_FEEDBACK,
   DECODE_VISUALS_INTRO,
   DECODE_VISUALS_MAP_LOADING,
   DECODE_VISUALS_NO_MAP,
@@ -376,6 +378,8 @@ export function collectOperatorVisibleCopy(): OperatorVisibleCopyEntry[] {
     { id: 'shell.nav.visuals', text: SHELL_NAV_LABELS.visuals },
     { id: 'decode-visuals.title', text: DECODE_VISUALS_TITLE },
     { id: 'decode-visuals.intro', text: DECODE_VISUALS_INTRO },
+    { id: 'decode-visuals.beta', text: DECODE_VISUALS_BETA },
+    { id: 'decode-visuals.feedback', text: DECODE_VISUALS_FEEDBACK },
     { id: 'decode-visuals.station', text: DECODE_VISUALS_STATION_LABEL },
     { id: 'decode-visuals.empty', text: DECODE_VISUALS_EMPTY },
     { id: 'decode-visuals.no-map', text: DECODE_VISUALS_NO_MAP },

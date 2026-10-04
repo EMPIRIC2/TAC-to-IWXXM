@@ -1,10 +1,11 @@
 /**
- * World map views, layers, and the report popup.
+ * World map layers and the report popup.
  */
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { act, cleanup, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { boundsOf } from '@/utils/liveMap';
+import L from 'leaflet';
+import { boundsOf, LIVE_MAP_PRODUCTS } from '@/utils/liveMap';
 import { LiveWorldMap } from './LiveWorldMap';
 
 const clicks: Array<() => void> = [];
@@ -37,6 +38,9 @@ vi.mock('leaflet', () => ({
     map: vi.fn(() => map),
     tileLayer: vi.fn(() => ({ addTo: vi.fn() })),
     marker: vi.fn(() => marker),
+    polygon: vi.fn(() => marker),
+    polyline: vi.fn(() => marker),
+    circle: vi.fn(() => marker),
   },
 }));
 
@@ -47,9 +51,43 @@ const place = {
   product: 'metar',
   latitude: 40.6,
   longitude: -73.7,
+  geometry: { kind: 'point' },
   reports: [
-    { observed_at: 'newest', tac: 'METAR KJFK 031200Z 18012KT' },
-    { observed_at: 'older', tac: 'METAR KJFK 031100Z VRB03KT' },
+    {
+      observed_at: 'newest',
+      tac: 'METAR KJFK 031200Z 18012KT',
+      iwxxm: '<iwxxm/>',
+      issues: [],
+    },
+    {
+      observed_at: 'older',
+      tac: 'METAR KJFK 031100Z VRB03KT',
+      iwxxm: null,
+      issues: [],
+    },
+  ],
+};
+
+const hazard = {
+  place_key: 'sigmet-abc',
+  product: 'sigmet',
+  latitude: 40,
+  longitude: -74,
+  geometry: {
+    kind: 'polygon',
+    coordinates: [
+      [40, -74],
+      [41, -73],
+      [40, -72],
+    ],
+  },
+  reports: [
+    {
+      observed_at: 'hazard',
+      tac: 'SIGMET',
+      iwxxm: null,
+      issues: ['Translation failed.'],
+    },
   ],
 };
 
@@ -57,6 +95,10 @@ describe('LiveWorldMap', () => {
   afterEach(() => {
     cleanup();
     clicks.length = 0;
+    vi.mocked(L.polygon).mockClear();
+    vi.mocked(L.polyline).mockClear();
+    vi.mocked(L.circle).mockClear();
+    vi.mocked(L.marker).mockClear();
     vi.unstubAllGlobals();
   });
 
@@ -69,44 +111,89 @@ describe('LiveWorldMap', () => {
     });
   });
 
-  it('loads observations, switches views, and opens a report', async () => {
+  it('loads every layer, draws a polygon, and opens stored text', async () => {
     const user = userEvent.setup();
-    let converts = 0;
     vi.stubGlobal(
       'fetch',
       vi.fn().mockImplementation(async (url: string) => {
         const target = new URL(String(url), 'http://localhost');
-        if (target.pathname.endsWith('/convert')) {
-          converts += 1;
-          if (converts > 1) {
-            return { ok: false };
-          }
-          return {
-            ok: true,
-            json: async () => ({ results: [{ content: '<iwxxm/>' }] }),
-          };
+        const products = target.searchParams.get('products') ?? '';
+        if (products === '') {
+          return { ok: true, json: async () => ({ places: [] }) };
         }
-        const products = target.searchParams.get('products');
-        if (products === 'taf') {
-          return { ok: false };
-        }
-        if (products === 'speci') {
+        if (!products.includes('metar')) {
           throw new DOMException('aborted', 'AbortError');
-        }
-        if (products === 'airmet,sigmet') {
-          throw new DOMException('offline', 'NetworkError');
         }
         return {
           ok: true,
           json: async () => ({
             places: [
               place,
+              hazard,
               {
-                place_key: 'NONE',
+                place_key: 'ZZZZ',
                 product: 'metar',
+                latitude: 10,
+                longitude: 20,
+                geometry: { kind: 'point' },
+                reports: [
+                  {
+                    observed_at: 'z',
+                    tac: 'METAR ZZZZ',
+                    iwxxm: null,
+                    issues: [],
+                  },
+                ],
+              },
+              {
+                place_key: 'line-1',
+                product: 'airmet',
+                latitude: 11,
+                longitude: 21,
+                geometry: {
+                  kind: 'line',
+                  coordinates: [
+                    [1, 2],
+                    [3, 4],
+                  ],
+                },
+                reports: [
+                  {
+                    observed_at: 'line',
+                    tac: 'AIRMET LINE',
+                    iwxxm: null,
+                    issues: [],
+                  },
+                ],
+              },
+              {
+                place_key: 'BARE',
+                product: 'speci',
                 latitude: 1,
                 longitude: 2,
-                reports: [],
+                reports: [
+                  {
+                    observed_at: 'bare',
+                    tac: 'SPECI BARE',
+                    iwxxm: null,
+                    issues: [],
+                  },
+                ],
+              },
+              {
+                place_key: 'circle-1',
+                product: 'airmet',
+                latitude: 12,
+                longitude: 22,
+                geometry: { kind: 'circle', radius_m: 5000 },
+                reports: [
+                  {
+                    observed_at: 'circle',
+                    tac: 'AIRMET CIRCLE',
+                    iwxxm: null,
+                    issues: [],
+                  },
+                ],
               },
             ],
           }),
@@ -114,34 +201,43 @@ describe('LiveWorldMap', () => {
       }),
     );
     render(<LiveWorldMap />);
+    expect(screen.getByTestId('live-map-beta')).toHaveTextContent('Beta');
+    await waitFor(() => expect(L.polygon).toHaveBeenCalled());
+    expect(L.polyline).toHaveBeenCalled();
+    expect(L.circle).toHaveBeenCalled();
+    expect(L.marker).toHaveBeenCalledWith([10, 20]);
+    expect(L.marker).toHaveBeenCalledWith([1, 2]);
     await waitFor(() => expect(clicks.length).toBeGreaterThan(0));
     act(() => {
       clicks[0]?.();
     });
+    expect(screen.getByTestId('live-map-detail')).toHaveTextContent('Kennedy');
     expect(screen.getByTestId('live-map-tac')).toHaveTextContent('18012KT');
+    expect(screen.getByTestId('live-map-xml')).toHaveTextContent('<iwxxm/>');
     await user.click(screen.getByTestId('live-map-report-1'));
-    expect(screen.getByTestId('live-map-wind')).toHaveTextContent('Variable wind');
-    await user.click(screen.getByTestId('live-map-iwxxm'));
-    expect(await screen.findByTestId('live-map-xml')).toHaveTextContent('<iwxxm/>');
+    expect(screen.getByTestId('live-map-pending')).toHaveTextContent(
+      'Translation is pending.',
+    );
     act(() => {
       clicks[1]?.();
     });
-    expect(screen.queryByTestId('live-map-detail')).not.toBeInTheDocument();
-    await user.click(screen.getByTestId('layer-metar'));
-    await user.click(screen.getByTestId('layer-speci'));
-    expect(screen.queryByTestId('live-map-detail')).not.toBeInTheDocument();
-    await user.click(screen.getByTestId('layer-metar'));
-    await user.click(screen.getByTestId('view-forecasts'));
-    expect(await screen.findByTestId('live-map-error')).toBeInTheDocument();
-    await user.click(screen.getByTestId('view-hazards'));
-    await user.click(screen.getByTestId('view-advisories'));
-    await user.click(screen.getByTestId('view-observations'));
+    expect(screen.getByTestId('live-map-issues')).toHaveTextContent(
+      'Translation failed.',
+    );
     act(() => {
-      clicks[0]?.();
+      clicks[2]?.();
     });
-    await user.click(screen.getByTestId('live-map-iwxxm'));
-    await waitFor(() => {
-      expect(screen.getByTestId('live-map-xml')).toHaveTextContent('not available');
-    });
+    expect(screen.getByTestId('live-map-detail')).toHaveTextContent('ZZZZ');
+    for (const product of LIVE_MAP_PRODUCTS) {
+      await user.click(screen.getByTestId(`layer-${product}`));
+    }
+    await user.click(screen.getByTestId('layer-metar'));
+    expect(screen.queryByTestId('live-map-error')).not.toBeInTheDocument();
+  });
+
+  it('shows an error when the cache cannot be read', async () => {
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: false }));
+    render(<LiveWorldMap />);
+    expect(await screen.findByTestId('live-map-error')).toBeInTheDocument();
   });
 });

@@ -8392,7 +8392,7 @@ export interface operations {
                 east: number;
                 /** @description North edge of the view, in degrees. */
                 north: number;
-                /** @description Comma-separated layers. Defaults to METAR and SPECI. */
+                /** @description Comma-separated layers. Defaults to every geographically located family. */
                 products?: string;
             };
             header?: never;

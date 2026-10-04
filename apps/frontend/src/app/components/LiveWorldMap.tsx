@@ -6,12 +6,16 @@ import { useEffect, useRef, useState } from 'react';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 import {
+  DECODE_VISUALS_BETA,
+  DECODE_VISUALS_FEEDBACK,
+  DECODE_VISUALS_FEEDBACK_URL,
+} from '@/utils/decodeVisualsCopy';
+import { airports } from '@/utils/airportsData';
+import {
   boundsOf,
   fetchLivePlaces,
-  iwxxmForReport,
-  layerQuery,
-  LIVE_MAP_VIEWS,
-  viewById,
+  LIVE_MAP_PRODUCTS,
+  selectedLayerQuery,
   windFromTac,
   type LivePlace,
   type MapBounds,
@@ -20,27 +24,65 @@ import {
 const EMPTY_PLACES: LivePlace[] = [];
 
 /**
- * Pannable map. Observations starts with METAR and SPECI on.
+ * Pin position from the stored report coordinate.
+ *
+ * @param place - Cached place
+ * @returns Latitude and longitude
+ * @example
+ * const _ = true;
+ */
+function pointOf(place: LivePlace): [number, number] {
+  return [place.latitude, place.longitude];
+}
+
+/**
+ * Draw one place as a point, polygon, line, or circle.
+ *
+ * @param map - Leaflet map
+ * @param place - Cached place
+ * @returns The layer that was added
+ * @example
+ * const _ = true;
+ */
+function drawPlace(map: L.Map, place: LivePlace): L.Layer {
+  const kind = place.geometry?.kind ?? 'point';
+  const coordinates = place.geometry?.coordinates;
+  if (
+    (kind === 'polygon' || kind === 'line') &&
+    coordinates &&
+    coordinates.length >= 2
+  ) {
+    const shape = kind === 'polygon' ? L.polygon(coordinates) : L.polyline(coordinates);
+    return shape.addTo(map);
+  }
+  if (kind === 'circle' && place.geometry?.radius_m) {
+    return L.circle(pointOf(place), { radius: place.geometry.radius_m }).addTo(map);
+  }
+  return L.marker(pointOf(place)).addTo(map);
+}
+
+/**
+ * Pannable map. Every layer starts on.
  * @example
  * const _ = true;
  */
 export function LiveWorldMap() {
   const host = useRef<HTMLDivElement>(null);
   const mapRef = useRef<L.Map | null>(null);
-  const [view, setView] =
-    useState<(typeof LIVE_MAP_VIEWS)[number]['id']>('observations');
   const [off, setOff] = useState<ReadonlySet<string>>(new Set());
   const [bounds, setBounds] = useState<MapBounds | null>(null);
   const [places, setPlaces] = useState<LivePlace[]>([]);
   const [error, setError] = useState('');
   const [selected, setSelected] = useState<LivePlace | null>(null);
   const [reportIndex, setReportIndex] = useState(0);
-  const [iwxxm, setIwxxm] = useState('');
-  const products = layerQuery(view, off);
-  const currentView = viewById(view);
+  const products = selectedLayerQuery(off);
   const visible = bounds && products ? places : EMPTY_PLACES;
   const message = products ? error : '';
   const report = selected?.reports[reportIndex];
+  const placeName =
+    selected && /^[A-Z][A-Z0-9]{3}$/.test(selected.place_key)
+      ? (airports.findWhere({ icao: selected.place_key })?.name ?? selected.place_key)
+      : selected?.place_key;
 
   useEffect(() => {
     const node = host.current as HTMLDivElement;
@@ -82,11 +124,10 @@ export function LiveWorldMap() {
   useEffect(() => {
     const map = mapRef.current as L.Map;
     const markers = visible.map((place) => {
-      const marker = L.marker([place.latitude, place.longitude]).addTo(map);
+      const marker = drawPlace(map, place);
       marker.on('click', () => {
         setSelected(place);
         setReportIndex(0);
-        setIwxxm('');
       });
       return marker;
     });
@@ -97,27 +138,13 @@ export function LiveWorldMap() {
 
   return (
     <div className="flex flex-col gap-3" data-testid="live-world-map">
-      <div className="flex flex-wrap gap-2" role="tablist" aria-label="Map views">
-        {LIVE_MAP_VIEWS.map((item) => (
-          <button
-            key={item.id}
-            type="button"
-            role="tab"
-            aria-selected={item.id === view}
-            data-testid={`view-${item.id}`}
-            className="rounded border border-gray-300 px-3 py-1 text-sm dark:border-gray-600"
-            onClick={() => {
-              setView(item.id);
-              setOff(new Set());
-              setSelected(null);
-            }}
-          >
-            {item.label}
-          </button>
-        ))}
-      </div>
+      <p className="text-sm text-gray-600 dark:text-gray-300">
+        <span data-testid="live-map-beta">{DECODE_VISUALS_BETA}</span>
+        {'. '}
+        <a href={DECODE_VISUALS_FEEDBACK_URL}>{DECODE_VISUALS_FEEDBACK}</a>
+      </p>
       <div className="flex flex-wrap gap-3">
-        {currentView.products.map((product) => (
+        {LIVE_MAP_PRODUCTS.map((product) => (
           <label key={product} className="flex items-center gap-1 text-sm">
             <input
               type="checkbox"
@@ -155,7 +182,7 @@ export function LiveWorldMap() {
       />
       {selected && report ? (
         <div data-testid="live-map-detail" className="flex flex-col gap-2 text-sm">
-          <p className="font-medium">{selected.place_key}</p>
+          <p className="font-medium">{placeName}</p>
           <p data-testid="live-map-wind">{windFromTac(report.tac)}</p>
           <div className="flex flex-wrap gap-2">
             {selected.reports.map((item, index) => (
@@ -165,7 +192,6 @@ export function LiveWorldMap() {
                 data-testid={`live-map-report-${index}`}
                 onClick={() => {
                   setReportIndex(index);
-                  setIwxxm('');
                 }}
               >
                 {item.observed_at}
@@ -175,23 +201,15 @@ export function LiveWorldMap() {
           <pre className="whitespace-pre-wrap" data-testid="live-map-tac">
             {report.tac}
           </pre>
-          <button
-            type="button"
-            data-testid="live-map-iwxxm"
-            onClick={() => {
-              const controller = new AbortController();
-              iwxxmForReport(report.tac, selected.product, controller.signal)
-                .then(setIwxxm)
-                .catch(() => setIwxxm('IWXXM is not available for this report.'));
-            }}
-          >
-            Show IWXXM
-          </button>
-          {iwxxm ? (
+          {report.iwxxm ? (
             <pre className="whitespace-pre-wrap" data-testid="live-map-xml">
-              {iwxxm}
+              {report.iwxxm}
             </pre>
-          ) : null}
+          ) : report.issues && report.issues.length > 0 ? (
+            <p data-testid="live-map-issues">{report.issues.join(' ')}</p>
+          ) : (
+            <p data-testid="live-map-pending">Translation is pending.</p>
+          )}
         </div>
       ) : null}
     </div>
