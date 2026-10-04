@@ -296,14 +296,16 @@ describe('LintValidationCatalogPage', () => {
     const xmlSchema = await screen.findByTestId(
       'lint-validation-catalog-entry-XML_SCHEMA',
     );
-    expect(xmlSchema).toHaveTextContent('Semantic: ICAO_2025, CA_ECCC');
+    expect(xmlSchema).toHaveTextContent(
+      'Semantic: ICAO / WMO Annex 3 (2025), Canada (ECCC)',
+    );
     expect(xmlSchema).toHaveTextContent('Exchange: All exchange profiles');
 
     const terminator = screen.getByTestId(
       'lint-validation-catalog-entry-MISSING_TERMINATOR',
     );
     expect(terminator).toHaveTextContent('Semantic: All semantic profiles');
-    expect(terminator).toHaveTextContent('Exchange: GLOBAL_AFS');
+    expect(terminator).toHaveTextContent('Exchange: Global AFS (default)');
   });
 
   it('filters by level client-side (TC-EV062-004)', async () => {

@@ -183,6 +183,64 @@ function profileList(value: string[] | null | undefined): string[] {
   );
 }
 
+const PROFILE_NAME_ALIASES: Record<string, string> = {
+  iwxxm_us: 'us_faa_nws',
+  manobs: 'ca_eccc',
+  manair: 'ca_eccc',
+};
+
+/**
+ * Compare stored catalog ids with the profile the operator selected.
+ *
+ * @param id - Stored id or select value
+ * @returns Lowercase id, with known aliases folded in
+ * @example
+ * const _ = true;
+ */
+function profileMatchKey(id: string): string {
+  const key = id.trim().toLowerCase();
+  return PROFILE_NAME_ALIASES[key] ?? key;
+}
+
+/**
+ * Operator name for a stored profile id.
+ *
+ * @param id - Stored catalog id
+ * @param options - Select labels
+ * @returns The profile name, or the stored id when it has no label
+ * @example
+ * const _ = true;
+ */
+function profileDisplayName(
+  id: string,
+  options: readonly { value: string; label: string }[],
+): string {
+  const key = profileMatchKey(id);
+  const match = options.find((option) => profileMatchKey(option.value) === key);
+  return match?.label ?? id;
+}
+
+/**
+ * Whether a stored list names the selected profile.
+ *
+ * @param value - Stored profile ids
+ * @param selected - Profile the operator chose
+ * @returns True when the list includes that profile
+ * @example
+ * const _ = true;
+ */
+function profileListIncludes(
+  value: string[] | null | undefined,
+  selected: string | undefined,
+): boolean {
+  const listed = profileList(value);
+  if (!selected) {
+    return listed.length > 0;
+  }
+  const want = profileMatchKey(selected);
+  return listed.some((item) => profileMatchKey(item) === want);
+}
+
 /**
  * Human-readable semantic/exchange profile lists for a catalog entry.
  *
@@ -198,8 +256,18 @@ export function formatApplicableProfiles(entry: LintIssueCatalogEntry): {
   const semantic = profileList(entry.semantic_profiles);
   const exchange = profileList(entry.exchange_profiles);
   return {
-    semantic: semantic.length > 0 ? semantic.join(', ') : 'All semantic profiles',
-    exchange: exchange.length > 0 ? exchange.join(', ') : 'All exchange profiles',
+    semantic:
+      semantic.length > 0
+        ? semantic
+            .map((id) => profileDisplayName(id, SEMANTIC_PROFILE_OPTIONS))
+            .join(', ')
+        : 'All semantic profiles',
+    exchange:
+      exchange.length > 0
+        ? exchange
+            .map((id) => profileDisplayName(id, EXCHANGE_PROFILE_OPTIONS))
+            .join(', ')
+        : 'All exchange profiles',
   };
 }
 
@@ -303,16 +371,19 @@ export function entryMatchesListedProfileFilter(
     listedOnly: boolean;
     semanticSelected: boolean;
     exchangeSelected: boolean;
+    semanticId?: string;
+    exchangeId?: string;
   },
 ): boolean {
-  const { listedOnly, semanticSelected, exchangeSelected } = options;
+  const { listedOnly, semanticSelected, exchangeSelected, semanticId, exchangeId } =
+    options;
   if (!listedOnly || (!semanticSelected && !exchangeSelected)) {
     return true;
   }
-  if (semanticSelected && profileList(entry.semantic_profiles).length === 0) {
+  if (semanticSelected && !profileListIncludes(entry.semantic_profiles, semanticId)) {
     return false;
   }
-  if (exchangeSelected && profileList(entry.exchange_profiles).length === 0) {
+  if (exchangeSelected && !profileListIncludes(entry.exchange_profiles, exchangeId)) {
     return false;
   }
   return true;
@@ -631,6 +702,8 @@ export function LintValidationCatalogPage({
           listedOnly: listedProfileOnly,
           semanticSelected,
           exchangeSelected,
+          semanticId: semanticSelected ? semanticProfileFilter : undefined,
+          exchangeId: exchangeSelected ? exchangeProfileFilter : undefined,
         }) &&
         catalogEntryMatchesQuery(entry.code, entry.message_template, query),
     );

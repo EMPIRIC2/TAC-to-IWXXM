@@ -7,6 +7,7 @@ import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import {
   entryMatchesListedProfileFilter,
+  formatApplicableProfiles,
   LintValidationCatalogPage,
 } from '../app/components/LintValidationCatalogPage';
 import type { LintIssueCatalogEntry } from '@/utils/openapiTypes';
@@ -109,6 +110,44 @@ describe('entryMatchesListedProfileFilter', () => {
     ).toBe(true);
   });
 
+  it('keeps the stored id only when it is the selected profile', () => {
+    const stored = {
+      ...listed,
+      semantic_profiles: ['us_faa_nws'],
+    } as LintIssueCatalogEntry;
+    const other = {
+      ...listed,
+      semantic_profiles: ['ca_eccc'],
+    } as LintIssueCatalogEntry;
+    expect(
+      entryMatchesListedProfileFilter(stored, {
+        listedOnly: true,
+        semanticSelected: true,
+        exchangeSelected: false,
+        semanticId: 'US_FAA_NWS',
+      }),
+    ).toBe(true);
+    expect(
+      entryMatchesListedProfileFilter(other, {
+        listedOnly: true,
+        semanticSelected: true,
+        exchangeSelected: false,
+        semanticId: 'US_FAA_NWS',
+      }),
+    ).toBe(false);
+    expect(formatApplicableProfiles(stored).semantic).toBe('United States (FAA/NWS)');
+    expect(
+      formatApplicableProfiles({ ...stored, semantic_profiles: ['iwxxm_us'] }).semantic,
+    ).toBe('United States (FAA/NWS)');
+    expect(
+      formatApplicableProfiles({ ...stored, semantic_profiles: ['ZZZ'] }).semantic,
+    ).toBe('ZZZ');
+    expect(
+      formatApplicableProfiles({ ...stored, exchange_profiles: ['EUR_RODEX'] })
+        .exchange,
+    ).toBe('EUR RODEX');
+  });
+
   it('excludes empty exchange_profiles when exchange axis selected', () => {
     expect(
       entryMatchesListedProfileFilter(listed, {
@@ -196,7 +235,7 @@ describe('TC-EV1312-001 listed-profile-only checkbox', () => {
     ).not.toBeInTheDocument();
     expect(
       within(list).getByTestId('lint-validation-catalog-entry-LISTED_SEMANTIC'),
-    ).toBeInTheDocument();
+    ).toHaveTextContent('United States (FAA/NWS)');
   });
 
   it('on with both axes All does not hide unrestricted rows', async () => {
