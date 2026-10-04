@@ -1,0 +1,48 @@
+# Map translator. Not a public Service. Staging scales this to 1 replica.
+# The ingest poller (metar-worker) stays at 0 replicas.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: metar-map-translator
+  labels:
+    app.kubernetes.io/name: metar-map-translator
+    app.kubernetes.io/component: worker
+spec:
+  replicas: 0
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: metar-map-translator
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: metar-map-translator
+        app.kubernetes.io/component: worker
+    spec:
+      imagePullSecrets:
+        - name: ghcr-pull
+      containers:
+        - name: translator
+          image: ghcr.io/empiric2/tac-to-iwxxm/backend:ev031-doks
+          imagePullPolicy: Always
+          command:
+            - python
+            - -c
+            - from src.map_translator import main; main()
+          envFrom:
+            - configMapRef:
+                name: metar-api-config
+            - secretRef:
+                name: metar-api-secrets
+          env:
+            - name: LIVE_MAP_CACHE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: metar-api-secrets
+                  key: DATABASE_URL
+          resources:
+            requests:
+              cpu: 100m
+              memory: 512Mi
+            limits:
+              cpu: "1"
+              memory: 1Gi

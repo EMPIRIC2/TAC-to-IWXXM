@@ -1,8 +1,9 @@
 """Refresh one map tile at a time from the public aviation feed.
 
-The tick stores every fetched location. It translates at most the import limit.
-A tick that is already running is skipped. Network waits yield so Convert is
-not blocked.
+The API tick stores every fetched location and translates at most the import
+limit. The map translator finishes every report in the current area before the
+next area starts. A tick that is already running is skipped. Network waits
+yield so Convert is not blocked.
 """
 
 from __future__ import annotations
@@ -10,6 +11,7 @@ from __future__ import annotations
 import asyncio
 import hashlib
 import importlib
+import logging
 import os
 from collections.abc import Awaitable, Callable
 from datetime import UTC, datetime
@@ -18,6 +20,7 @@ from typing import cast
 from src.services.live_map_cache import LiveMapCache, LiveMapReport
 
 convert_mod = importlib.import_module("tac2iwxxm.convert")
+logger = logging.getLogger(__name__)
 
 type Tile = tuple[float, float, float, float]
 type FetchTile = Callable[[Tile], Awaitable[list[dict[str, object]]]]
@@ -426,6 +429,59 @@ async def refresh_one(
     return "stored", index + 1
 
 
+async def refresh_region(
+    cache: LiveMapCache,
+    fetch: FetchTile,
+    index: int,
+    tiles: tuple[Tile, ...] = REFRESH_TILES,
+    translate: Translate | None = None,
+) -> tuple[str, int]:
+    """Fetch one area and translate every report that is not already ready.
+
+    Parameters
+    ----------
+    cache : LiveMapCache
+        Cache to write.
+    fetch : FetchTile
+        Reads one box from the feed.
+    index : int
+        Tile position. It wraps when it passes the last tile.
+    tiles : tuple[Tile, ...]
+        Boxes to walk.
+    translate : Translate | None
+        Translator. The default is ``translate_report``.
+
+    Returns
+    -------
+    tuple[str, int]
+        ``stored`` or ``skipped``, and the next tile index.
+
+    Examples
+    --------
+    >>> 1 + 1
+    2
+    """
+    if not cache.begin_refresh():
+        return "skipped", index
+    worker = translate if translate is not None else translate_report
+    try:
+        rows = await fetch(tiles[index % len(tiles)])
+        reports = reports_from_feed(rows)
+        for report in reports:
+            cache.store(report)
+        await asyncio.sleep(0)
+        for report in reports:
+            if cache.status_of(report) == "ready":
+                continue
+            xml, issues = await asyncio.to_thread(worker, report.tac, report.product)
+            cache.set_translation(report, xml, issues, "ready" if xml else "failed")
+            await asyncio.sleep(0)
+        logger.info("live map region %s stored %s", index % len(tiles), len(reports))
+    finally:
+        cache.end_refresh()
+    return "stored", index + 1
+
+
 async def refresh_until(
     cache: LiveMapCache,
     fetch: FetchTile,
@@ -433,6 +489,7 @@ async def refresh_until(
     tiles: tuple[Tile, ...] = REFRESH_TILES,
     pause_sec: float = 300.0,
     translate: Translate | None = None,
+    drain: bool = False,
 ) -> None:
     """Walk the tiles until stop is set. One tile per pass.
 
@@ -455,8 +512,9 @@ async def refresh_until(
     2
     """
     index = 0
+    step = refresh_region if drain else refresh_one
     while not stop.is_set():
-        _status, index = await refresh_one(cache, fetch, index, tiles, translate)
+        _status, index = await step(cache, fetch, index, tiles, translate)
         if stop.is_set():
             return
         try:
@@ -491,6 +549,26 @@ async def fetch_bbox(bbox: Tile) -> list[dict[str, object]]:
     return [dict(row) for row in rows]
 
 
+def pause_seconds() -> float:
+    """Seconds between refresh areas. The floor is 60.
+
+    Returns
+    -------
+    float
+        ``LIVE_MAP_REFRESH_SECONDS``, or 300 when the value is missing or invalid.
+
+    Examples
+    --------
+    >>> 1 + 1
+    2
+    """
+    raw = os.getenv("LIVE_MAP_REFRESH_SECONDS") or os.getenv("LIVE_MAP_REFRESH_SEC") or "300"
+    try:
+        return max(60.0, float(raw))
+    except ValueError:
+        return 300.0
+
+
 def start_live_map_refresh(cache: LiveMapCache) -> asyncio.Event | None:
     """Start the tile loop when LIVE_MAP_REFRESH=1. Otherwise do nothing.
 
@@ -512,12 +590,7 @@ def start_live_map_refresh(cache: LiveMapCache) -> asyncio.Event | None:
     if os.getenv("LIVE_MAP_REFRESH", "").strip() != "1":
         return None
     stop = asyncio.Event()
-    raw_pause = os.getenv("LIVE_MAP_REFRESH_SECONDS") or os.getenv("LIVE_MAP_REFRESH_SEC") or "300"
-    try:
-        pause = max(60.0, float(raw_pause))
-    except ValueError:
-        pause = 300.0
-    task = asyncio.create_task(refresh_until(cache, fetch_bbox, stop, REFRESH_TILES, pause, translate_report))
+    task = asyncio.create_task(refresh_until(cache, fetch_bbox, stop, REFRESH_TILES, pause_seconds(), translate_report))
     _tasks[id(stop)] = task
     return stop
 

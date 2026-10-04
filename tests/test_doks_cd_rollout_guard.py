@@ -14,6 +14,8 @@ def test_doks_rollout_script_exists_and_targets_three_deploys() -> None:
     assert "deploy/metar-api" in text
     assert "deploy/metar-frontend" in text
     assert "deploy/metar-worker" in text
+    assert "deploy/metar-map-translator" in text
+    assert "LIVE_MAP_REFRESH=0" in text
     assert "rollout status" in text
 
 

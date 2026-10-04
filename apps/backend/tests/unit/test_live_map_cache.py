@@ -176,6 +176,58 @@ def test_postgres_engine_skips_table_create() -> None:
     assert cache.begin_refresh() is False
 
 
+def test_ready_translation_survives_the_same_report() -> None:
+    cache = _cache()
+    report = _report(minutes=1, tac="METAR KJFK")
+    assert cache.status_of(report) is None
+    cache.store(report)
+    assert cache.status_of(report) == "pending"
+    cache.set_translation(report, "<iwxxm/>", ["kept"], "ready")
+    cache.store(report)
+    assert cache.status_of(report) == "ready"
+    places = cache.query(west=-80, south=40, east=-70, north=41, products={"metar"})
+    assert places[0]["reports"][0]["iwxxm"] == "<iwxxm/>"
+    assert places[0]["reports"][0]["issues"] == ["kept"]
+    changed = _report(minutes=1, tac="METAR KJFK CHANGED")
+    cache.store(changed)
+    assert cache.status_of(changed) == "pending"
+
+
+def test_ready_row_with_empty_fields_stays_ready() -> None:
+    cache = _cache()
+    report = _report(minutes=2, tac="METAR KJFK EMPTY")
+    cache.store(report)
+    with cache._engine.begin() as conn:
+        conn.execute(
+            live_map_reports.update()
+            .where(live_map_reports.c.tac == "METAR KJFK EMPTY")
+            .values(translation_status="ready", iwxxm=None, issues_json=None)
+        )
+    cache.store(report)
+    assert cache.status_of(report) == "ready"
+    with cache._engine.begin() as conn:
+        conn.execute(
+            live_map_reports.update()
+            .where(live_map_reports.c.tac == "METAR KJFK EMPTY")
+            .values(translation_status=None)
+        )
+    assert cache.status_of(report) is None
+
+
+def test_engine_rewrites_postgres_urls() -> None:
+    asyncpg = engine_for_url("postgresql+asyncpg://u:p@localhost/db?ssl=require")
+    assert asyncpg.url.drivername == "postgresql+psycopg"
+    assert "sslmode=require" in str(asyncpg.url)
+    asyncpg.dispose()
+    psycopg2 = engine_for_url("postgresql+psycopg2://u:p@localhost/db")
+    assert psycopg2.url.drivername == "postgresql+psycopg"
+    psycopg2.dispose()
+    plain = engine_for_url("postgresql://u:p@localhost/db?sslmode=require")
+    assert plain.url.drivername == "postgresql+psycopg"
+    assert str(plain.url).count("sslmode") == 1
+    plain.dispose()
+
+
 def test_engine_url_and_env(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
     memory = engine_for_url("  ")
     assert memory.dialect.name == "sqlite"

@@ -31,7 +31,7 @@ Staging DNS: [ops/doks-staging-dns-runbook.md](ops/doks-staging-dns-runbook.md).
 **Product DB**: DigitalOcean Postgres (`DATABASE_URL`) — sessions + F8 store/quarantine + F37 live-map cache.  
 **Auth**: Supabase Auth only (**JWKS**). No Supabase product DB on default path (ADR-033).
 
-**F37 live map (EV-globe-live-map)**: The refresh timer stays in the API deployment. The worker stays at 0 replicas for this map. This cycle aims at staging after the build gate. Production stays on the existing promote path. [Corpus: product §F37] [Corpus: deploy]
+**F37 live map**: Staging runs `metar-map-translator` (backend image, `from src.map_translator import main`) at one replica. It is not a public Service. The API timer is off on staging (`LIVE_MAP_REFRESH=0`). Both processes use `LIVE_MAP_CACHE_URL` from the product `DATABASE_URL`. `metar-worker` stays at 0 replicas. Production promotion is a separate step. [Corpus: product §F37] [Corpus: adr/ADR-052] [Corpus: deploy]
 
 ### DOKS public hostnames (T6.3 + EV-043 / EV-044 staging)
 

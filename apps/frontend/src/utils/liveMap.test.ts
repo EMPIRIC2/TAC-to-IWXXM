@@ -5,11 +5,23 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import {
   boundsOf,
   fetchLivePlaces,
+  formatObservedAt,
   iwxxmForReport,
   layerQuery,
+  newestObservedAt,
+  observationAge,
+  placeTitle,
+  pinColor,
+  popupWidth,
+  productLabel,
   selectedLayerQuery,
   viewById,
+  viewStatus,
   windFromTac,
+  LIVE_MAP_EMPTY,
+  LIVE_MAP_LOADING,
+  LIVE_MAP_NO_TIME,
+  LIVE_MAP_REFRESHING,
 } from './liveMap';
 
 const bounds = { west: -80, south: 40, east: -70, north: 41 };
@@ -46,6 +58,83 @@ describe('live map helpers', () => {
     expect(selectedLayerQuery(new Set())).toContain('metar');
     expect(selectedLayerQuery(new Set())).toContain('vona');
     expect(selectedLayerQuery(new Set(['metar']))).not.toContain('metar,');
+  });
+
+  it('names layers, times, and the current view', () => {
+    expect(pinColor('taf')).toBe('#0f766e');
+    expect(pinColor('airmet')).toBe('#c2410c');
+    expect(pinColor('sigmet')).toBe('#c2410c');
+    expect(pinColor('vaa')).toBe('#6d28d9');
+    expect(pinColor('tca')).toBe('#6d28d9');
+    expect(pinColor('vona')).toBe('#6d28d9');
+    expect(pinColor('metar')).toBe('#1d4ed8');
+    expect(productLabel('vaa')).toBe('Volcanic ash');
+    expect(productLabel('other')).toBe('OTHER');
+    expect(placeTitle('KJFK', 'Kennedy')).toBe('Kennedy');
+    expect(placeTitle('KJFK', undefined)).toBe('KJFK');
+    expect(placeTitle('sigmet-abc', undefined)).toBe('Area');
+    expect(formatObservedAt('newest')).toBe('newest');
+    expect(formatObservedAt('2026-10-03T21:00:00Z')).toBe('03 Oct 21:00 UTC');
+    const now = Date.parse('2026-10-03T21:00:00Z');
+    expect(observationAge('not-a-time', now)).toBe('');
+    expect(observationAge('2026-10-03T21:00:00Z', now)).toBe('just now');
+    expect(observationAge('2026-10-03T20:59:00Z', now)).toBe('1 min ago');
+    expect(observationAge('2026-10-03T20:30:00Z', now)).toBe('30 min ago');
+    expect(observationAge('2026-10-03T20:00:00Z', now)).toBe('1 hour ago');
+    expect(observationAge('2026-10-03T16:00:00Z', now)).toBe('5 hours ago');
+    expect(observationAge('2026-10-01T21:00:00Z', now)).toBe('2 days ago');
+    expect(newestObservedAt([])).toBeNull();
+    expect(
+      newestObservedAt([
+        {
+          place_key: 'KJFK',
+          product: 'metar',
+          latitude: 1,
+          longitude: 2,
+          reports: [
+            { observed_at: 'newest', tac: 'METAR' },
+            { observed_at: '2026-10-03T12:00:00Z', tac: 'METAR' },
+          ],
+        },
+      ]),
+    ).toBe('2026-10-03T12:00:00Z');
+    expect(viewStatus([], true, false)).toBe(LIVE_MAP_LOADING);
+    expect(viewStatus([], false, true)).toBe(LIVE_MAP_REFRESHING);
+    expect(viewStatus([], false, false)).toBe(LIVE_MAP_EMPTY);
+    expect(
+      viewStatus(
+        [
+          {
+            place_key: 'KJFK',
+            product: 'metar',
+            latitude: 1,
+            longitude: 2,
+            reports: [{ observed_at: '2026-10-03T20:30:00Z', tac: 'METAR' }],
+          },
+        ],
+        false,
+        false,
+        now,
+      ),
+    ).toBe('Newest observation in this view: 03 Oct 20:30 UTC (30 min ago).');
+    expect(
+      viewStatus(
+        [
+          {
+            place_key: 'KJFK',
+            product: 'metar',
+            latitude: 1,
+            longitude: 2,
+            reports: [{ observed_at: 'newest', tac: 'METAR' }],
+          },
+        ],
+        false,
+        false,
+      ),
+    ).toBe(LIVE_MAP_NO_TIME);
+    expect(popupWidth(400)).toBe(320);
+    expect(popupWidth(200)).toBe(180);
+    expect(popupWidth(250)).toBe(218);
   });
 
   it('reads a wind group or says it is missing', () => {

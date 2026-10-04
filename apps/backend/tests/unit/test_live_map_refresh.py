@@ -11,6 +11,7 @@ from src.services.live_map_refresh import (
     fetch_bbox,
     import_limit,
     refresh_one,
+    refresh_region,
     refresh_until,
     reports_from_feed,
     start_live_map_refresh,
@@ -326,6 +327,94 @@ async def test_refresh_translates_only_the_import_limit() -> None:
     assert by_key["KORD"]["reports"][0]["issues"] == []
     await refresh_one(cache, fetch, 0, translate=translate)
     assert len(calls) == 5
+
+
+@pytest.mark.asyncio
+async def test_refresh_region_finishes_the_area_and_keeps_ready_rows() -> None:
+    cache = _cache()
+    calls: list[str] = []
+
+    def translate(tac: str, product: str) -> tuple[str | None, list[str]]:
+        calls.append(tac)
+        if product == "metar" and tac.endswith("FAIL") and calls.count(tac) == 1:
+            return None, ["Translation failed."]
+        return "<iwxxm/>", []
+
+    async def fetch(_bbox: tuple[float, float, float, float]) -> list[dict[str, object]]:
+        return [
+            _row(icaoId="KJFK", rawOb="METAR KJFK ONE"),
+            _row(icaoId="KBOS", rawOb="METAR KBOS TWO"),
+            _row(icaoId="KORD", rawOb="METAR KORD FAIL"),
+        ]
+
+    status, index = await refresh_region(cache, fetch, 0, translate=translate)
+    assert status == "stored"
+    assert index == 1
+    assert calls == ["METAR KJFK ONE", "METAR KBOS TWO", "METAR KORD FAIL"]
+    status, index = await refresh_region(cache, fetch, 0, translate=translate)
+    assert status == "stored"
+    assert index == 1
+    assert calls[-1] == "METAR KORD FAIL"
+    assert calls.count("METAR KJFK ONE") == 1
+    places = cache.query(west=-180, south=-90, east=180, north=90, products={"metar"})
+    by_key = {place["place_key"]: place for place in places}
+    assert by_key["KORD"]["reports"][0]["iwxxm"] == "<iwxxm/>"
+
+
+@pytest.mark.asyncio
+async def test_refresh_region_skips_when_busy_and_uses_the_default_translator(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    cache = _cache()
+    cache.begin_refresh()
+
+    async def fetch(_bbox: tuple[float, float, float, float]) -> list[dict[str, object]]:
+        return [_row()]
+
+    skipped, index = await refresh_region(cache, fetch, 4)
+    assert skipped == "skipped"
+    assert index == 4
+    cache.end_refresh()
+
+    def translate(tac: str, _product: str) -> tuple[str | None, list[str]]:
+        return f"<done>{tac}</done>", []
+
+    monkeypatch.setattr("src.services.live_map_refresh.translate_report", translate)
+
+    async def boom(_bbox: tuple[float, float, float, float]) -> list[dict[str, object]]:
+        raise RuntimeError("down")
+
+    with pytest.raises(RuntimeError, match="down"):
+        await refresh_region(cache, boom, 0)
+    assert cache.begin_refresh() is True
+    cache.end_refresh()
+    status, index = await refresh_region(cache, fetch, 0)
+    assert status == "stored"
+    assert index == 1
+    places = cache.query(west=-180, south=-90, east=180, north=90, products={"metar"})
+    stored = places[0]["reports"][0]["iwxxm"]
+    assert stored is not None
+    assert stored.startswith("<done>")
+
+
+@pytest.mark.asyncio
+async def test_refresh_until_drains_before_the_next_area() -> None:
+    cache = _cache()
+    seen: list[tuple[float, float, float, float]] = []
+    stop = asyncio.Event()
+
+    async def fetch(bbox: tuple[float, float, float, float]) -> list[dict[str, object]]:
+        seen.append(bbox)
+        if len(seen) == 2:
+            stop.set()
+        return [_row(rawOb=f"METAR KJFK {len(seen)}")]
+
+    def translate(_tac: str, _product: str) -> tuple[str | None, list[str]]:
+        return "<iwxxm/>", []
+
+    await refresh_until(cache, fetch, stop, pause_sec=0.01, translate=translate, drain=True)
+    assert len(seen) == 2
+    assert seen[0] != seen[1]
 
 
 @pytest.mark.asyncio

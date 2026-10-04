@@ -61,9 +61,10 @@ Single source of truth for **what** each layer owns and **which name** to use ev
 | Default semantic profile (F35) | `DEFAULT_SEMANTIC_PROFILE` | API / `.env` — default `ICAO_2025` (or `annex3` alias during window); non-secret |
 | Default exchange profile (F35) | `DEFAULT_EXCHANGE_PROFILE` | API / `.env` — default `GLOBAL_AFS` when packaging invoked; non-secret |
 | Profile wire v2 cutover (F35) | `PROFILE_WIRE_V2` | API / `.env` — `true` prefers nested semantic/exchange fields; `false` keeps flat `profile=` default |
-| Live map timer (F37) | `LIVE_MAP_REFRESH` | API ConfigMap — `1` so the map fills. Not a secret |
-| Live map refresh (F37) | `LIVE_MAP_REFRESH_SECONDS` | API / `.env` — default `300`. Not a secret |
-| Live map import cap (F37) | `LIVE_MAP_IMPORT_LIMIT` | API / `.env` — default `40`. Max reports translated per tick. Not a secret |
+| Live map timer (F37) | `LIVE_MAP_REFRESH` | Staging API is `0` when `metar-map-translator` owns the loop. `1` starts a timer in that process. Not a secret |
+| Live map refresh (F37) | `LIVE_MAP_REFRESH_SECONDS` | Translator / API — default `300`. Pause between areas. Not a secret |
+| Live map import cap (F37) | `LIVE_MAP_IMPORT_LIMIT` | API timer only — default `40`. The translator finishes the whole area. Not a secret |
+| Live map cache (F37) | `LIVE_MAP_CACHE_URL` | Same product database as `DATABASE_URL` for the API and the translator. Not a second database server |
 
 **F35 (EV-063):** Profile ids are **not** secrets. Exchange profile must not imply dissemination
 credentials (F16–F19 memory-only BYOC unchanged). See [ADR-036](adr/ADR-036-semantic-vs-exchange-profiles.md).
