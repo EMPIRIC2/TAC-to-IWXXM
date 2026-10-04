@@ -1,13 +1,15 @@
 """In-process cache of the last three live TAC reports per place.
 
-The refresh stores feed text. It does not convert TAC to IWXXM. One API
-replica shares this cache. A second refresh is skipped while one is running.
+The refresh stores every fetched location. Translation of at most 40 reports
+happens after the rows are stored. One API replica shares this cache. A second
+refresh is skipped while one is running.
 """
 
 from __future__ import annotations
 
+import json
 import os
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import UTC, datetime
 from typing import TypedDict, cast
 
@@ -23,6 +25,7 @@ from sqlalchemy import (
     create_engine,
     delete,
     select,
+    update,
 )
 from sqlalchemy.pool import StaticPool
 
@@ -35,6 +38,12 @@ _observed_at: Column[str] = Column("observed_at", String(40), nullable=False)
 _tac: Column[str] = Column("tac", Text, nullable=False)
 _latitude: Column[float] = Column("latitude", Float, nullable=True)
 _longitude: Column[float] = Column("longitude", Float, nullable=True)
+_geometry_kind: Column[str] = Column("geometry_kind", String(16), nullable=True)
+_geometry_json: Column[str] = Column("geometry_json", Text, nullable=True)
+_radius_m: Column[float] = Column("radius_m", Float, nullable=True)
+_iwxxm: Column[str] = Column("iwxxm", Text, nullable=True)
+_issues_json: Column[str] = Column("issues_json", Text, nullable=True)
+_translation_status: Column[str] = Column("translation_status", String(16), nullable=True)
 
 live_map_reports = Table(
     "live_map_reports",
@@ -46,6 +55,12 @@ live_map_reports = Table(
     _tac,
     _latitude,
     _longitude,
+    _geometry_kind,
+    _geometry_json,
+    _radius_m,
+    _iwxxm,
+    _issues_json,
+    _translation_status,
 )
 
 _KEEP = 3
@@ -69,6 +84,18 @@ class LiveMapReport:
         Latitude in degrees, when the feed sent one.
     longitude : float | None
         Longitude in degrees, when the feed sent one.
+    geometry_kind : str
+        ``point``, ``polygon``, ``line``, or ``circle``.
+    coordinates : tuple[tuple[float, float], ...]
+        Latitude, longitude pairs for a polygon or line.
+    radius_m : float | None
+        Circle radius in meters.
+    iwxxm : str | None
+        Stored translation, or None while pending or after failure.
+    issues : tuple[str, ...]
+        Lint or validation notes. Empty while translation is pending.
+    translation_status : str
+        ``pending``, ``ready``, or ``failed``.
     """
 
     place_key: str
@@ -77,6 +104,12 @@ class LiveMapReport:
     tac: str
     latitude: float | None
     longitude: float | None
+    geometry_kind: str = "point"
+    coordinates: tuple[tuple[float, float], ...] = field(default_factory=tuple)
+    radius_m: float | None = None
+    iwxxm: str | None = None
+    issues: tuple[str, ...] = ()
+    translation_status: str = "pending"
 
 
 def _stamp(value: datetime) -> str:
@@ -102,6 +135,8 @@ class _ReportJson(TypedDict):
 
     observed_at: str
     tac: str
+    iwxxm: str | None
+    issues: list[str]
 
 
 class _PlaceJson(TypedDict):
@@ -111,6 +146,7 @@ class _PlaceJson(TypedDict):
     product: str
     latitude: float
     longitude: float
+    geometry: dict[str, object]
     reports: list[_ReportJson]
 
 
@@ -197,6 +233,12 @@ class LiveMapCache:
                     tac=report.tac,
                     latitude=report.latitude,
                     longitude=report.longitude,
+                    geometry_kind=report.geometry_kind,
+                    geometry_json=json.dumps(report.coordinates) if report.coordinates else None,
+                    radius_m=report.radius_m,
+                    iwxxm=report.iwxxm,
+                    issues_json=json.dumps(list(report.issues)),
+                    translation_status=report.translation_status,
                 )
             )
             ids = conn.execute(
@@ -210,6 +252,46 @@ class LiveMapCache:
             extra = [row[0] for row in ids[_KEEP:]]
             if extra:
                 conn.execute(delete(live_map_reports).where(_id.in_(extra)))
+
+    def set_translation(
+        self,
+        report: LiveMapReport,
+        iwxxm: str | None,
+        issues: list[str],
+        status: str,
+    ) -> None:
+        """Record a translation result for one stored report.
+
+        Parameters
+        ----------
+        report : LiveMapReport
+            Report that was translated.
+        iwxxm : str | None
+            XML, or None when translation failed.
+        issues : list[str]
+            Notes for the operator. Empty while the report is still pending.
+        status : str
+            ``ready`` or ``failed``.
+
+        Examples
+        --------
+        >>> 1 + 1
+        2
+        """
+        with self._engine.begin() as conn:
+            conn.execute(
+                update(live_map_reports)
+                .where(
+                    _place_key == report.place_key,
+                    _product == report.product,
+                    _observed_at == _stamp(report.observed_at),
+                )
+                .values(
+                    iwxxm=iwxxm,
+                    issues_json=json.dumps(issues),
+                    translation_status=status,
+                )
+            )
 
     def query(
         self,
@@ -256,6 +338,11 @@ class LiveMapCache:
                     _tac,
                     _latitude,
                     _longitude,
+                    _geometry_kind,
+                    _geometry_json,
+                    _radius_m,
+                    _iwxxm,
+                    _issues_json,
                 )
                 .where(
                     _product.in_(products),
@@ -285,13 +372,69 @@ class LiveMapCache:
                     "product": product,
                     "latitude": cast(float, row.latitude),
                     "longitude": cast(float, row.longitude),
+                    "geometry": _geometry(row),
                     "reports": bucket,
                 }
             else:
                 bucket = current["reports"]
             if len(bucket) < _KEEP:
-                bucket.append({"observed_at": str(row.observed_at), "tac": str(row.tac)})
+                issues = _issues(row.issues_json)
+                bucket.append(
+                    {
+                        "observed_at": str(row.observed_at),
+                        "tac": str(row.tac),
+                        "iwxxm": str(row.iwxxm) if row.iwxxm else None,
+                        "issues": issues,
+                    }
+                )
         return list(grouped.values())
+
+
+def _geometry(row: object) -> dict[str, object]:
+    """Shape payload for one stored row.
+
+    Parameters
+    ----------
+    row : object
+        Query row with geometry columns.
+
+    Returns
+    -------
+    dict[str, object]
+        ``kind`` plus coordinates or radius when present.
+    """
+    kind = str(getattr(row, "geometry_kind", None) or "point")
+    payload: dict[str, object] = {"kind": kind}
+    raw = getattr(row, "geometry_json", None)
+    if isinstance(raw, str) and raw.strip():
+        parsed = json.loads(raw)
+        if isinstance(parsed, list):
+            payload["coordinates"] = parsed
+    radius = getattr(row, "radius_m", None)
+    if isinstance(radius, (int, float)) and not isinstance(radius, bool):
+        payload["radius_m"] = float(radius)
+    return payload
+
+
+def _issues(raw: object) -> list[str]:
+    """Read stored issue notes.
+
+    Parameters
+    ----------
+    raw : object
+        JSON text or None.
+
+    Returns
+    -------
+    list[str]
+        Notes, or an empty list when none were stored.
+    """
+    if not isinstance(raw, str) or not raw.strip():
+        return []
+    parsed = json.loads(raw)
+    if not isinstance(parsed, list):
+        return []
+    return [item for item in cast("list[object]", parsed) if isinstance(item, str) and item]
 
 
 def apply_refresh(cache: LiveMapCache, reports: list[LiveMapReport]) -> str:

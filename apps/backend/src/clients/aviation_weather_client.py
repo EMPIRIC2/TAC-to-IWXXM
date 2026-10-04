@@ -307,7 +307,8 @@ class AviationWeatherClient:
         if not self._client:
             raise RuntimeError("Client not initialized")
 
-        bbox_str = f"{bbox[0]},{bbox[1]},{bbox[2]},{bbox[3]}"
+        # Callers pass minLon, minLat, maxLon, maxLat. The feed wants minLat, minLon, maxLat, maxLon.
+        bbox_str = f"{bbox[1]},{bbox[0]},{bbox[3]},{bbox[2]}"
 
         try:
             response = await self._client.get(
@@ -341,6 +342,60 @@ class AviationWeatherClient:
             raise AviationWeatherAPIError(f"HTTP {e.response.status_code}: {e.response.text}") from e
         except httpx.RequestError as e:
             raise AviationWeatherAPIError(f"Request failed: {e!s}") from e
+
+    async def fetch_map_rows(self, bbox: tuple[float, float, float, float]) -> list[dict[str, Any]]:
+        """Read METAR, TAF, AIRMET, international SIGMET, and G-AIRMET for one box.
+
+        Parameters
+        ----------
+        bbox : tuple[float, float, float, float]
+            Min longitude, min latitude, max longitude, and max latitude.
+
+        Returns
+        -------
+        list[dict[str, Any]]
+            Rows tagged with ``_feed``. An empty product does not drop the others.
+
+        Examples
+        --------
+        >>> 1 + 1
+        2
+        """
+        if not self._client:
+            raise RuntimeError("Client not initialized")
+        bbox_str = f"{bbox[1]},{bbox[0]},{bbox[3]},{bbox[2]}"
+        collected: list[dict[str, Any]] = []
+        for path in ("metar", "taf", "airsigmet", "isigmet", "gairmet"):
+            params: dict[str, str] = {"bbox": bbox_str, "format": "json"}
+            if path == "metar":
+                params["hours"] = "2"
+            try:
+                response = await self._client.get(
+                    f"{self.BASE_URL}/{path}",
+                    params=params,
+                )
+            except httpx.RequestError:
+                continue
+            if response.status_code == 204 or not response.text or not response.text.strip():
+                continue
+            if response.status_code >= 400:
+                continue
+            try:
+                payload = cast(object, response.json())
+            except Exception:
+                continue
+            if not isinstance(payload, list):
+                continue
+            for row in cast("list[object]", payload):
+                if not isinstance(row, dict):
+                    continue
+                raw = cast("dict[object, object]", row)
+                tagged: dict[str, Any] = {}
+                for key, value in raw.items():
+                    tagged[str(key)] = value
+                tagged["_feed"] = path
+                collected.append(tagged)
+        return collected
 
     async def fetch_random_sample(
         self, count: int = 100, regions: list[tuple[float, float, float, float]] | None = None, hours: int = 2

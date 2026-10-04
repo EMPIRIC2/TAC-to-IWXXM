@@ -8834,13 +8834,13 @@
             }
           },
           {
-            "description": "Comma-separated layers. Defaults to METAR and SPECI.",
+            "description": "Comma-separated layers. Defaults to every geographically located family.",
             "in": "query",
             "name": "products",
             "required": false,
             "schema": {
-              "default": "metar,speci",
-              "description": "Comma-separated layers. Defaults to METAR and SPECI.",
+              "default": "metar,speci,taf,airmet,sigmet,vaa,tca,vona",
+              "description": "Comma-separated layers. Defaults to every geographically located family.",
               "title": "Products",
               "type": "string"
             }

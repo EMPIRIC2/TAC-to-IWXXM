@@ -349,6 +349,17 @@ behavior ships in API image.
 No new Render secrets required for P0/P1 library fixtures. Redeploy API before claiming
 13-deploy-smoke if convert quarantine / nil / NSC behavior changes.
 
+## F37 — Live map cache (EV-globe-live-map)
+
+[Corpus: product §F37] [Corpus: tech-spec] [Corpus: adr/ADR-052]
+
+| Name | Default | Rule |
+|------|---------|------|
+| `LIVE_MAP_REFRESH_SECONDS` | `300` | How often the API timer starts a refresh. Integer ≥ 60 |
+| `LIVE_MAP_IMPORT_LIMIT` | `40` | Maximum reports translated and linted in one tick. Integer ≥ 1. The tick still stores every fetched location. Translation resumes next tick |
+
+The timer runs inside the API process. It is not a request-path setting. The F8 worker stays at 0 replicas for this map.
+
 ## References
 
 - [env-contract.md](env-contract.md) — per-environment matrix (**canonical F30/F31**)

@@ -114,6 +114,7 @@ describe monorepo workflows introduced by migration features M1–M6 and F6.
 | UJ-084 | Site terms before the public shell | apps/frontend | F21 / F22 (EV-1315 / #1315) | T0; client-only gate |
 | UJ-085 | Quality metrics subtitle, overflow, and count honesty | apps/frontend / API | F7.q (EV-1316 / #1316) | T0; existing quality-metrics routes |
 | UJ-086 | Browse enriched Dissemination catalog rows | apps/frontend / API | F7.v / F16–F19 (EV-1317 / #1317) | T0; existing rule-catalogs route |
+| UJ-087 | Open the live weather map, zoom, and read a report | apps/frontend / API | F37 (EV-globe-live-map) | T0 / T2 / **T3** / H4–H5 |
 | UJ-076 | Five package-owned trust catalogs (tabbed) | apps/frontend / API | F7.v (ADR-044) | T0 / T2 / **T3** / H4–H5 |
 | UJ-076a | Convert four-engine light selects + Send-drawer dissem (#1251) | apps/frontend / API | F7 / F9 / F16–F19 (ADR-044; EV-yaml-config-light-ux) | T0 / T2 / **T3** / H4–H5 |
 | UJ-076b | Decode via `tac-decoding` parity | apps/frontend / API | F9 (ADR-044) | T0 / T2 / H4–H5 |
@@ -3013,3 +3014,21 @@ and readable Conversion profile descriptions (not bare profile ids).
 **Pass**: T0/T2 (TC-EV1308-*); H4–H5 only if Build introduces a breaking wire change beyond
 additive `rule-catalogs` fields. EV-048 clean. Must-not-break UJ-068 / UJ-076 / TAC·IWXXM
 lint-issue-catalog filters.
+
+### UJ-087: Open the live weather map, zoom, and read a report
+
+**Goal**: A guest sees current aviation weather on Decode visuals, zooms from the world to a station, and opens one report.
+
+**Feature**: F37. EV-globe-live-map. [Corpus: product §F37] [Corpus: journeys]
+
+**Actors**: Guest. Sign-in is not required.
+
+**Steps**:
+1. Open Decode visuals. The screen shows a Beta label, a Leaflet world map, and filters that start on for observations, forecasts, hazards, and advisories.
+2. At the lowest zoom, every cached point and shape is drawn. Space weather is in a list beside the map and has no pin.
+3. Zoom in. The same reports stay individual points or shapes.
+4. Open one report. The newest of three is showing. The panel has the graphic or shape, the TAC, the stored IWXXM, and any lint or validation issues.
+5. Enter a known station identifier. Search, decode, and the map name the same airport.
+6. The browser calls this app’s API only. Convert and validate still answer as they do today.
+
+**Pass**: T0/T2 for the cache and the page. T3 and H4–H5 when the screen is on staging. Must not break Convert, validate, guest access, or station search.

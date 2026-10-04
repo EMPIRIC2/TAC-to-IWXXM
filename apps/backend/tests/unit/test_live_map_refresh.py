@@ -9,11 +9,13 @@ from src.services import database
 from src.services.live_map_cache import LiveMapCache, engine_for_url
 from src.services.live_map_refresh import (
     fetch_bbox,
+    import_limit,
     refresh_one,
     refresh_until,
     reports_from_feed,
     start_live_map_refresh,
     stop_live_map_refresh,
+    translate_report,
 )
 
 
@@ -143,6 +145,24 @@ async def test_refresh_until_stops_before_the_loop_and_during_the_pause() -> Non
 
 
 @pytest.mark.asyncio
+async def test_refresh_until_returns_when_the_pause_ends(monkeypatch: pytest.MonkeyPatch) -> None:
+    cache = _cache()
+    stop = asyncio.Event()
+
+    async def fetch(_bbox: tuple[float, float, float, float]) -> list[dict[str, object]]:
+        return []
+
+    async def finish(awaitable: object, _timeout: float) -> None:
+        close = getattr(awaitable, "close", None)
+        if close is not None:
+            close()
+        stop.set()
+
+    monkeypatch.setattr(asyncio, "wait_for", finish)
+    await refresh_until(cache, fetch, stop, ((1, 2, 3, 4),), 30)
+
+
+@pytest.mark.asyncio
 async def test_fetch_bbox_uses_the_feed_client(monkeypatch: pytest.MonkeyPatch) -> None:
     class _Client:
         async def __aenter__(self) -> _Client:
@@ -151,15 +171,11 @@ async def test_fetch_bbox_uses_the_feed_client(monkeypatch: pytest.MonkeyPatch) 
         async def __aexit__(self, *_args: object) -> None:
             return None
 
-        async def fetch_metars_by_bbox(
+        async def fetch_map_rows(
             self,
             bbox: tuple[float, float, float, float],
-            hours: int = 2,
-            format_type: str = "json",
         ) -> list[dict[str, str]]:
             assert bbox == (1.0, 2.0, 3.0, 4.0)
-            assert hours == 2
-            assert format_type == "json"
             return [{"icaoId": "KJFK"}]
 
     monkeypatch.setattr(
@@ -167,6 +183,149 @@ async def test_fetch_bbox_uses_the_feed_client(monkeypatch: pytest.MonkeyPatch) 
         lambda timeout=30.0: _Client(),
     )
     assert await fetch_bbox((1.0, 2.0, 3.0, 4.0)) == [{"icaoId": "KJFK"}]
+
+
+def test_polygon_rows_keep_a_centroid_and_station_rows_stay_points() -> None:
+    reports = reports_from_feed(
+        [
+            {
+                "_feed": "isigmet",
+                "rawSigmet": "WSUS31 KZNY 031200 SIGMET",
+                "validTimeFrom": "2026-10-03T12:00:00Z",
+                "coords": [
+                    {"lat": 40.0, "lon": -74.0},
+                    {"lat": 41.0, "lon": -73.0},
+                    {"lat": 40.0, "lon": -72.0},
+                ],
+            },
+            {
+                "_feed": "taf",
+                "icaoId": "KJFK",
+                "rawTAF": "TAF KJFK 031200Z 0312/0412 18010KT",
+                "lat": 40.64,
+                "lon": -73.78,
+                "issueTime": 1_700_000_000,
+            },
+            {
+                "_feed": "airsigmet",
+                "rawAirSigmet": "short",
+                "validTimeFrom": "2026-10-03T12:00:00Z",
+            },
+        ]
+    )
+    kinds = {report.product: report.geometry_kind for report in reports}
+    assert kinds["sigmet"] == "polygon"
+    assert kinds["taf"] == "point"
+    sigmet = next(report for report in reports if report.product == "sigmet")
+    assert sigmet.latitude == pytest.approx(40.3333333333)
+    assert len(sigmet.place_key) <= 64
+    shapes = reports_from_feed(
+        [
+            {
+                "_feed": "gairmet",
+                "rawAirSigmet": "line",
+                "validTimeFrom": "2026-10-03T12:00:00Z",
+                "geom": {
+                    "type": "LineString",
+                    "coordinates": ((-74.0, 40.0), (-73.0, 41.0)),
+                },
+            },
+            {
+                "_feed": "airsigmet",
+                "rawAirSigmet": "poly",
+                "validTimeFrom": "2026-10-03T12:00:00Z",
+                "geom": {
+                    "type": "Polygon",
+                    "coordinates": [[[-74.0, 40.0], [-73.0, 41.0], [-72.0, 40.0]]],
+                },
+            },
+            {
+                "_feed": "airsigmet",
+                "rawAirSigmet": "skip",
+                "validTimeFrom": "2026-10-03T12:00:00Z",
+                "coords": [{"lat": True, "lon": 1}, "nope", {"lat": "x", "lon": 1}],
+                "geom": {"type": "Point"},
+            },
+            {
+                "_feed": "isigmet",
+                "rawSigmet": "text only",
+                "validTimeFrom": "not-a-time",
+                "coords": "POLYGON",
+            },
+            {
+                "_feed": "airsigmet",
+                "icaoId": "KKCI",
+                "rawAirSigmet": "point fallback",
+                "lat": 40.0,
+                "lon": -100.0,
+                "validTimeFrom": "2026-10-03T12:00:00Z",
+                "geom": {"type": "Point"},
+            },
+        ]
+    )
+    assert {report.geometry_kind for report in shapes} == {"line", "polygon", "point"}
+
+
+def test_import_limit_falls_back(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("LIVE_MAP_IMPORT_LIMIT", "0")
+    assert import_limit() == 1
+    monkeypatch.setenv("LIVE_MAP_IMPORT_LIMIT", "nope")
+    assert import_limit() == 40
+    monkeypatch.setenv("LIVE_MAP_IMPORT_LIMIT", "")
+    assert import_limit() == 40
+
+
+def test_translate_report_records_success_and_failure(monkeypatch: pytest.MonkeyPatch) -> None:
+    class _Ok:
+        ok = True
+        xml = "<iwxxm/>"
+
+    class _Bad:
+        ok = False
+        xml = None
+
+    def convert(_tac: str, *, product: str) -> object:
+        if product == "VAA":
+            raise RuntimeError("down")
+        if product == "METAR":
+            return _Ok()
+        return _Bad()
+
+    monkeypatch.setattr("src.services.live_map_refresh.convert_mod.convert", convert)
+    assert translate_report("METAR KJFK", "metar") == ("<iwxxm/>", [])
+    assert translate_report("VAA", "vaa") == (None, ["Translation failed."])
+    assert translate_report("TAF KJFK", "taf") == (None, ["Translation failed."])
+
+
+@pytest.mark.asyncio
+async def test_refresh_translates_only_the_import_limit() -> None:
+    cache = _cache()
+    calls: list[str] = []
+
+    def translate(tac: str, product: str) -> tuple[str | None, list[str]]:
+        calls.append(tac)
+        if product == "metar" and tac.endswith("FAIL"):
+            return None, ["Translation failed."]
+        return "<iwxxm/>", []
+
+    async def fetch(_bbox: tuple[float, float, float, float]) -> list[dict[str, object]]:
+        return [
+            _row(icaoId="KJFK", rawOb="METAR KJFK ONE"),
+            _row(icaoId="KBOS", rawOb="METAR KBOS TWO"),
+            _row(icaoId="KORD", rawOb="METAR KORD FAIL"),
+        ]
+
+    status, _index = await refresh_one(cache, fetch, 0, translate=translate, limit=2)
+    assert status == "stored"
+    assert calls == ["METAR KJFK ONE", "METAR KBOS TWO"]
+    places = cache.query(west=-180, south=-90, east=180, north=90, products={"metar"})
+    by_key = {place["place_key"]: place for place in places}
+    assert set(by_key) == {"KJFK", "KBOS", "KORD"}
+    assert by_key["KJFK"]["reports"][0]["iwxxm"] == "<iwxxm/>"
+    assert by_key["KORD"]["reports"][0]["iwxxm"] is None
+    assert by_key["KORD"]["reports"][0]["issues"] == []
+    await refresh_one(cache, fetch, 0, translate=translate)
+    assert len(calls) == 5
 
 
 @pytest.mark.asyncio
@@ -177,6 +336,7 @@ async def test_start_is_off_unless_requested(monkeypatch: pytest.MonkeyPatch) ->
     await stop_live_map_refresh(None)
 
     monkeypatch.setenv("LIVE_MAP_REFRESH", "1")
+    monkeypatch.setenv("LIVE_MAP_REFRESH_SECONDS", "nope")
     monkeypatch.setenv("LIVE_MAP_REFRESH_SEC", "")
 
     async def idle(*_args: object, **_kwargs: object) -> None:

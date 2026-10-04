@@ -100,3 +100,7 @@
 | 2026-09-19 | S-pin | approved | Vendor pins: metar-A3-1, taf-A5-2, sigmet-A6-1a-TS, sigmet-A6-2-TC, sigmet-VA-EGGX, airmet-A6-1a-TS, va-advisory-A7-2, tc-advisory-A2-2, spacewx-A7-3, vona-A7-1 |
 | 2026-09-19 | EV1210-tech | approved | `TAC_DECODING_PACK_DIR`; 10,000 steps; catalog deferred; compare every pin that already has the example |
 | 2026-09-19 | EV1210-legacy | approved | Keep parsers, validation, and pin compares (`2023-1`, `2025-2`, `3.0.0`, other profile pins). Packs do not choose the pin. |
+| 2026-10-03 | EV-GLOBE-H1–H8 | auto-approved | Leaflet, every pin, three reports, Beta, 5-minute refresh, guests, additive contract, space-weather list |
+| 2026-10-03 | EV-GLOBE-NWS | approved | AWC METAR, TAF, AIRMET, international SIGMET, G-AIRMET only. NWS active alerts stay off the map |
+| 2026-10-03 | EV-GLOBE-CAP | approved | Store every fetched location. Translate at most 40 per refresh. Draw before IWXXM exists |
+| 2026-10-03 | EV-GLOBE-C1–C3 | modified | Spec write path, context feed row, and TC-F37-003/004 aligned to that cap |

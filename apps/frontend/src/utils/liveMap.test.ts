@@ -7,6 +7,7 @@ import {
   fetchLivePlaces,
   iwxxmForReport,
   layerQuery,
+  selectedLayerQuery,
   viewById,
   windFromTac,
 } from './liveMap';
@@ -32,6 +33,9 @@ describe('live map helpers', () => {
     expect(viewById('missing').id).toBe('observations');
     expect(layerQuery('forecasts', new Set())).toBe('taf');
     expect(layerQuery('observations', new Set(['metar', 'speci']))).toBe('');
+    expect(selectedLayerQuery(new Set())).toContain('metar');
+    expect(selectedLayerQuery(new Set())).toContain('vona');
+    expect(selectedLayerQuery(new Set(['metar']))).not.toContain('metar,');
   });
 
   it('reads a wind group or says it is missing', () => {

@@ -113,6 +113,50 @@ def test_refresh_skips_when_busy_and_clears_after_failure() -> None:
     assert cache.begin_refresh() is True
 
 
+def test_query_returns_geometry_and_ignores_bad_json() -> None:
+    cache = _cache()
+    cache.store(
+        _report(
+            minutes=1,
+            tac="SIGMET",
+            product="sigmet",
+            place_key="sigmet-1",
+        )
+    )
+    stored = LiveMapReport(
+        place_key="sigmet-1",
+        product="sigmet",
+        observed_at=datetime(2026, 10, 3, 12, 2, tzinfo=UTC),
+        tac="SIGMET NEWER",
+        latitude=40.64,
+        longitude=-73.78,
+        geometry_kind="circle",
+        coordinates=((40.0, -74.0), (41.0, -73.0), (40.0, -72.0)),
+        radius_m=1000.0,
+        issues=("Translation failed.",),
+        translation_status="failed",
+    )
+    cache.store(stored)
+    cache.store(_report(minutes=3, tac="OTHER", product="sigmet", place_key="sigmet-2"))
+    with cache._engine.begin() as conn:
+        conn.execute(
+            live_map_reports.update()
+            .where(live_map_reports.c.tac == "SIGMET")
+            .values(geometry_json='{"no": 1}', issues_json='{"no": 1}')
+        )
+        conn.execute(
+            live_map_reports.update().where(live_map_reports.c.tac == "OTHER").values(geometry_json='{"no": 1}')
+        )
+    places = cache.query(west=-80, south=40, east=-70, north=41, products={"sigmet"})
+    newest = places[0]["reports"][0]
+    assert newest["issues"] == ["Translation failed."]
+    assert places[0]["geometry"]["kind"] == "circle"
+    assert places[0]["geometry"]["radius_m"] == 1000.0
+    assert places[0]["geometry"]["coordinates"][0] == [40.0, -74.0]
+    older = places[0]["reports"][1]
+    assert older["issues"] == []
+
+
 def test_refresh_stores() -> None:
     cache = _cache()
     assert apply_refresh(cache, [_report(minutes=1, tac="stored")]) == "stored"

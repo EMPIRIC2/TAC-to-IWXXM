@@ -28,8 +28,10 @@ Staging DNS: [ops/doks-staging-dns-runbook.md](ops/doks-staging-dns-runbook.md).
 `alembic upgrade head` (same as `make db-migrate` / CI). Optional Job:
 `deploy/doks/base/job-alembic-upgrade.yaml`.
 
-**Product DB**: DigitalOcean Postgres (`DATABASE_URL`) — sessions + F8 store/quarantine.  
+**Product DB**: DigitalOcean Postgres (`DATABASE_URL`) — sessions + F8 store/quarantine + F37 live-map cache.  
 **Auth**: Supabase Auth only (**JWKS**). No Supabase product DB on default path (ADR-033).
+
+**F37 live map (EV-globe-live-map)**: The refresh timer stays in the API deployment. The worker stays at 0 replicas for this map. This cycle aims at staging after the build gate. Production stays on the existing promote path. [Corpus: product §F37] [Corpus: deploy]
 
 ### DOKS public hostnames (T6.3 + EV-043 / EV-044 staging)
 

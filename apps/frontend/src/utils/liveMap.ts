@@ -12,6 +12,19 @@ import { apiUrl } from '@/utils/apiBase';
 export type LiveReport = {
   observed_at: string;
   tac: string;
+  iwxxm?: string | null;
+  issues?: string[];
+};
+
+/**
+ * Shape drawn for one place.
+ * @example
+ * const _ = true;
+ */
+export type LiveGeometry = {
+  kind: 'point' | 'polygon' | 'line' | 'circle';
+  coordinates?: [number, number][];
+  radius_m?: number;
 };
 
 /**
@@ -24,6 +37,7 @@ export type LivePlace = {
   product: string;
   latitude: number;
   longitude: number;
+  geometry?: LiveGeometry;
   reports: LiveReport[];
 };
 
@@ -112,6 +126,25 @@ export function layerQuery(viewId: string, off: ReadonlySet<string>): string {
   return viewById(viewId)
     .products.filter((product) => !off.has(product))
     .join(',');
+}
+
+/**
+ * Every geographically located layer, in view order.
+ * @example
+ * const _ = true;
+ */
+export const LIVE_MAP_PRODUCTS = LIVE_MAP_VIEWS.flatMap((item) => [...item.products]);
+
+/**
+ * Layers still switched on. All of them start on.
+ *
+ * @param off - Layer ids the operator turned off
+ * @returns Comma-separated products, or an empty string when every layer is off
+ * @example
+ * const _ = true;
+ */
+export function selectedLayerQuery(off: ReadonlySet<string>): string {
+  return LIVE_MAP_PRODUCTS.filter((product) => !off.has(product)).join(',');
 }
 
 /**

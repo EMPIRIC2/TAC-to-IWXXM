@@ -383,6 +383,15 @@ EV-922 session `reports/923-platform-package-layout.md`; EV-922-synthesis `repor
   one-click **"Add `=`"** quick fix (also as editor affordance on the hint span). ADR-025.
 - **Source**: F6-R5; feature-list F6/F7/F9/F10/F21/F22; context/f7-operator-ui.md (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate).
 
+### F37 — Live TAC map (EV-globe-live-map)
+
+- **Purpose**: Guest-visible Leaflet map of current aviation weather on Decode visuals. The API timer pulls Aviation Weather Center feeds, stores every fetched location, translates at most 40 reports per tick, and serves the cache. [Corpus: product §F37] [Corpus: adr/ADR-052]
+- **Home**: `apps/frontend` Decode visuals and `apps/backend` live-map router plus the existing database. The F8 worker stays at 0 replicas.
+- **Read path**: `GET /api/v1/live-map` is public. It returns places already in the cache for the requested box and families. It does not call a feed.
+- **Write path**: About every 5 minutes the API process stores every fetched location and text. It translates and lints at most 40 reports. A stored place is drawn before IWXXM exists. Three reports per place, newest first.
+- **Map**: Leaflet. Lowest zoom shows every cached point and shape in the world view. Filters hide families. Space weather is a list, never a pin.
+- **Must not change**: Convert and validate response bodies, guest access, and station search.
+
 ### Runtime configuration (`config/`)
 
 - **Purpose**: Non-secret per-environment settings (URLs, CORS, validation flags).

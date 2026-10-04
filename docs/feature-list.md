@@ -44,7 +44,7 @@
 | F34 | Contract + mutation quality gates | Done | Platform | S069 / EV-059; epic #841 CLOSED; #727 Schemathesis; #874 Stryker + pytest-gremlins; **deepen** S071 / EV-061 stricter stage→main required checks (#1015); promote held |
 | F35 | Semantic vs exchange profiles + canonical ID migration | Implemented | Product | EV-063 / PR #1026; #912 / #914; ADR-036 Accepted; alias cutover #1025 (2026-10-31); amends F6 wire; **deepen** EV-beta-ux-export-auth suppress operator-visible `DEPRECATED_PROFILE_ALIAS` notices; Conversion profiles UI marked **beta** (ADR-043) |
 | F36 | National semantic + regional exchange profile content | In progress | Product | EV-063 / #912; **#919 US closed (EV-085)**; **#916 CA_ECCC P1 closed (EV-078)**; **EV-098 CA_ECCC mining #1028–#1031 closed**; **#1032 closed (EV-075)**; **#1061 SIGMET emit (EV-076)**; VAA TAC validate-first (EV-077); VAA exchange emit waived; **EV-profile-validate-decode-deepen / #1221** AU/NZ → `implemented`; **deepen EV-1222 / #1222**: regional exchange overlays beyond COLLECT stubs (APAC_ROBEX first) |
-| F37 | Live TAC map on Decode visuals | In progress | Product | EV-tac-map; guests; API timer cache; Decode visuals world map |
+| F37 | Live TAC map on Decode visuals | In progress | Product | EV-globe-live-map deepens EV-tac-map; Leaflet; multi-feed cache; import-time translation |
 | M1 | Monorepo layout (`apps/` + `packages/` + `vendor/`) | Implemented | Platform | REQ-002–006 |
 | M2 | Vendor snapshot sync (wmo-im iwxxm-*) | Planned | Platform | REQ-002, REQ-010 |
 | M3 | GIFTs as in-repo package | Deprecated (ADR-014) | Platform | REQ-003; removed with F6 cutover |
@@ -3043,52 +3043,54 @@
 - Full CMP / analytics / marketing tags (Solution B/C) unless a later evolve cycle adds them.
 - Per-US-state separate privacy UI variants (one global strict preference center).
 
-### F37: Live TAC map on Decode visuals — EV-tac-map
+### F37: Live TAC map on Decode visuals — EV-globe-live-map
 
-- **Status**: **In progress** (EV-tac-map). The build gate is open. The cache read is in the API. The weather-feed pull and the Decode visuals map are not built yet.
-- **What it does**: Decode visuals becomes a world map of live TAC reports. A guest can open it without signing in. The existing API pulls a public aviation weather feed, keeps the latest report and two earlier ones for each place, and the browser talks only to this app. Clicking a place shows a graphic, the TAC text, and the IWXXM text when the feed has it.
-- **Feed**: NOAA Aviation Weather Center Data API (`https://aviationweather.gov/api/data/`). Informative live data, not a golden source. METAR and TAF stations are worldwide. Polygons are drawn only for reports that feed returns with a location, and the map says when a family has none in the current view. [Corpus: domain-rules] catalog row; mining notes are not the acceptance source.
-- **Pins**: Every station the feed returns inside the current map view. Not the curated Convert airport list, and not the full station-name catalog.
+- **Status**: **In progress** (EV-globe-live-map deepens EV-tac-map). The documenting gate is closed. The branch already has a Leaflet map and a cache read. This cycle changes what that cache stores and what the map draws. [Corpus: product §F37] [Corpus: adr/ADR-052]
+- **What it does**: Decode visuals is a Leaflet world map of current aviation weather. A guest opens it without signing in. The screen carries a Beta label and a feedback link until sign-off. Zooming out shows the whole flat world. Every geographically located report in the cache is its own point, polygon, line, or circle. There is no clustering. Filters can hide a family. Space weather stays in a list beside the map.
+- **Feeds**: Public unauthenticated aviation feeds from the NOAA Aviation Weather Center Data API: METAR, TAF, AIRMET (`airsigmet`), international SIGMET (`isigmet`), and G-AIRMET (`gairmet`). A live check on 2026-10-03 returned coordinates or polygons for those products. The NWS active-alert API is public and is **not** a map feed: that same check returned marine and flood warnings, not aviation reports. There is no separate public ICAO live feed. Station names and coordinates use the existing OurAirports lookup. Feeds are informative live data, not goldens. The browser never calls them. [Corpus: adr/ADR-052]
+- **Pins**: Every cached report whose geometry intersects the current view, including the whole world at the lowest zoom. Not the curated Convert airport list.
 - **Geography**:
 
   | Family | Drawn as | On the map |
   |--------|----------|------------|
   | METAR, SPECI | Airport point. SPECI shares that airport’s last three with METAR | Yes |
   | TAF | Airport point | Yes |
-  | AIRMET | Polygon | Only when the feed includes a region |
-  | SIGMET (ordinary, VA, TC) | Polygon, line, or circle | Only when the feed includes a geometry |
-  | Volcanic ash advisory | Volcano point plus ash polygon | Only when the feed includes a location |
-  | Tropical cyclone advisory | Storm point and radius | Only when the feed includes a location |
-  | Volcano observatory notice | Volcano point | Only when the feed includes a location |
-  | Space weather | No surface location | List beside the map, never a pin |
+  | AIRMET | Polygon | When the report has a region |
+  | SIGMET (ordinary, VA, TC) | Polygon, line, or circle | When the report has a geometry |
+  | Volcanic ash advisory | Volcano point plus ash polygon | When the report has a location |
+  | Tropical cyclone advisory | Storm point and radius | When the report has a location |
+  | Volcano observatory notice | Volcano point | When the report has a location |
+  | Space weather (including SWSK and SWSX) | No surface location | List beside the map, never a pin |
 
-- **Popup**: For an airport, a wind barb plus sky, temperature, and dewpoint from the decoded report. Three report choices, not a film. Tabs for the raw TAC and for IWXXM. If the feed has no IWXXM for that product, the tab says so. A control may run this app’s own conversion on that TAC.
-- **Views and layers**: One world map. The operator switches views and turns layers on or off. Panning loads whatever the cache has in that view. Default view is Observations, with METAR and SPECI on.
+- **Popup**: Opening a point or polygon shows the station graphic or the shape, the TAC, the IWXXM stored at import, and any lint or validation issues. The newest of three reports is open first. The other two are choices, not a film. A failed translation still keeps the TAC and says the translation failed.
+- **Filters**: One map of everything current. These filters start on. Turning one off hides that family. Space weather is the list, not a filter on the map.
 
-  | View | Layers | Starts |
-  |------|--------|--------|
-  | Observations | METAR, SPECI | On. Both layers on |
-  | Forecasts | TAF | Off until selected |
-  | Hazards | AIRMET, SIGMET | Off until selected |
-  | Advisories | Volcanic ash, tropical cyclone, volcano notice | Off until selected |
-  | Space weather | Not a map layer | List beside the map |
+  | Filter | Families |
+  |--------|----------|
+  | Observations | METAR, SPECI |
+  | Forecasts | TAF |
+  | Hazards | AIRMET, SIGMET |
+  | Advisories | Volcanic ash, tropical cyclone, volcano notice |
 
-- **Refresh home**: A timer inside the API that is already running. It writes the last three feed reports per place into the existing database. The ingest worker stays scaled to **0**. No new pod, CronJob, cluster, or database.
-- **Timer must not sit on the request path**: Production is one API process (`python -m src`, one uvicorn worker, one replica, 1 CPU, 1 GiB). There is no separate job queue. A refresh that parses or converts the world on that same loop would delay Convert and validate. The tick therefore waits on the network without blocking, skips if a tick is already running, stores the feed text, and runs TAC→IWXXM only for the one report an operator opens.
-- **Replaces**: The one-station minimap on Decode visuals (F7 / F9). Convert, History, and station search stay. The map stays on the Leaflet library already used for the one-station map.
-- **Out of scope**: The browser calling the feed. Turning the ingest worker on for this map. A new CronJob, cluster, database, or map vendor. OpenAIP as the live source. Treating feed XML as goldens. A new Map tab. Sign-in required to view. Saving map history into work sessions. Animating a continuous three-hour film.
+- **Station identifiers**: Search, decode, and this map resolve one ICAO to the same airport name and coordinate. The station field on Decode visuals stays. Clearing it leaves the field empty. A known identifier shows the airport name even when the live feed has not loaded.
+- **Refresh**: A timer inside the existing API, about every 5 minutes (`LIVE_MAP_REFRESH_SECONDS`, default 300). Each place keeps the latest report and two earlier ones. One tick stores every fetched location and text, and translates and lints at most 40 reports (`LIVE_MAP_IMPORT_LIMIT`, default 40). A stored point or shape is drawn before its IWXXM exists. The click says when translation is still pending. A tick already running is skipped. The ingest worker stays at **0** replicas. No new pod, CronJob, cluster, or database.
+- **Timer must not sit on the request path**: Production is one API process. The tick waits on the network without blocking Convert and validate. Forty translations is the cap that keeps that true.
+- **Replaces**: The one-station minimap on Decode visuals. Convert, validate, History, guest access, and station search stay. Convert and validate response bodies stay as they are. The base map stays Leaflet with the existing tiles.
+- **Out of scope**: Browser calls to vendor feeds. A globe library. Clustering. Sign-in required to view. Pins for space weather. Credentialed feeds. A new database or map vendor. Saving map history into work sessions. Changing Convert or validate responses.
 - **Acceptance (Spec)**:
-  1. This row is the product scope for the map
-  2. Geography table above is the classification
-  3. Guests, proxy cache, viewport stations, and three instances are recorded
+  1. This row is the product scope
+  2. The geography table is the classification
+  3. Guests, the app-owned cache, every pinpoint, three reports, and import-time translation are recorded
 - **Acceptance (Build — after gate)**:
-  1. A guest on Decode visuals sees the world map
-  2. Panning loads stations the feed returned for that view, with the last three reports
-  3. A METAR click shows the graphic, TAC, and IWXXM when present
-  4. Polygons appear only with feed geometry, and space weather stays in the list
+  1. A guest on Decode visuals sees the Leaflet world map and the Beta label
+  2. The lowest zoom draws every cached point and shape, and space weather stays in the list
+  3. Opening a report shows the graphic or shape, TAC, stored IWXXM, and lint or validation issues
+  4. The same ICAO resolves to the same airport in search, decode, and the map
   5. Browser traffic for the map goes to this app’s API
-  6. Connectivity checks H4–H5 when the screen ships
-- **Source**: EV-tac-map intake; [docs/context/tac-live-map.md](context/tac-live-map.md)
+  6. A refresh tick stops at the import limit and does not stall Convert or validate
+  7. Connectivity checks H4–H5 when the screen ships to staging
+- **Journeys / tests**: **UJ-087**; **TC-F37-001..006**
+- **Source**: EV-globe-live-map intake; [docs/context/globe-live-map.md](context/globe-live-map.md); prior EV-tac-map row in [docs/context/tac-live-map.md](context/tac-live-map.md)
 
 ## Planned Features (Post-Migration)
 
