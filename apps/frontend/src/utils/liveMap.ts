@@ -70,12 +70,15 @@ export function boundsOf(map: {
   };
 }): MapBounds {
   const box = map.getBounds();
-  return {
-    west: box.getWest(),
-    south: box.getSouth(),
-    east: box.getEast(),
-    north: box.getNorth(),
-  };
+  let west = box.getWest();
+  let east = box.getEast();
+  const south = Math.min(90, Math.max(-90, box.getSouth()));
+  const north = Math.min(90, Math.max(-90, box.getNorth()));
+  if (west < -180 || east > 180 || east - west >= 360) {
+    west = -180;
+    east = 180;
+  }
+  return { west, south, east, north };
 }
 
 /**

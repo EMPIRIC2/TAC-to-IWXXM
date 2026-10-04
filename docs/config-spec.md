@@ -355,6 +355,7 @@ No new Render secrets required for P0/P1 library fixtures. Redeploy API before c
 
 | Name | Default | Rule |
 |------|---------|------|
+| `LIVE_MAP_REFRESH` | `1` on the API deployment | `1` starts the timer. Tests leave it unset so the timer stays off |
 | `LIVE_MAP_REFRESH_SECONDS` | `300` | How often the API timer starts a refresh. Integer ≥ 60 |
 | `LIVE_MAP_IMPORT_LIMIT` | `40` | Maximum reports translated and linted in one tick. Integer ≥ 1. The tick still stores every fetched location. Translation resumes next tick |
 

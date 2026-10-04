@@ -91,7 +91,17 @@ def read_live_map(
     >>> 1 + 1
     2
     """
-    if west < -180 or east > 180 or south < -90 or north > 90 or west >= east or south >= north:
+    south = min(90.0, max(-90.0, south))
+    north = min(90.0, max(-90.0, north))
+    if south >= north:
+        raise HTTPException(
+            status_code=400,
+            detail="The map view needs a west, south, east, and north edge, with west left of east.",
+        )
+    # Leaflet reports a world view with longitudes outside -180..180.
+    if west < -180 or east > 180 or east - west >= 360:
+        west, east = -180.0, 180.0
+    elif west >= east:
         raise HTTPException(
             status_code=400,
             detail="The map view needs a west, south, east, and north edge, with west left of east.",

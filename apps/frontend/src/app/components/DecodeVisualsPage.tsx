@@ -10,6 +10,7 @@ import { stationDisplayName } from '@/utils/decodeVisuals';
 import {
   DECODE_VISUALS_EMPTY,
   DECODE_VISUALS_INTRO,
+  DECODE_VISUALS_SEARCH_PLACEHOLDER,
   DECODE_VISUALS_STATION_LABEL,
   DECODE_VISUALS_TITLE,
 } from '@/utils/decodeVisualsCopy';
@@ -61,9 +62,16 @@ export function DecodeVisualsPage() {
         value={draft ?? published.station}
         onChange={(value) => writeStationDraft(value.toUpperCase())}
         inputTestId="decode-visuals-station"
+        placeholder={DECODE_VISUALS_SEARCH_PLACEHOLDER}
         className="max-w-xl"
       />
-      <LiveWorldMap />
+      <p
+        className="text-sm text-gray-600 dark:text-gray-300"
+        data-testid="decode-visuals-empty"
+      >
+        {DECODE_VISUALS_EMPTY}
+      </p>
+      <LiveWorldMap focusStation={complete ? station : ''} />
       {complete ? (
         <>
           <p
@@ -74,14 +82,7 @@ export function DecodeVisualsPage() {
           </p>
           <WindCue segments={draft === null ? published.segments : []} />
         </>
-      ) : (
-        <p
-          className="text-sm text-gray-600 dark:text-gray-300"
-          data-testid="decode-visuals-empty"
-        >
-          {DECODE_VISUALS_EMPTY}
-        </p>
-      )}
+      ) : null}
     </section>
   );
 }

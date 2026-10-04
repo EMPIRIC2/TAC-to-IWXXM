@@ -16,3 +16,6 @@ data:
   # CORS: DOKS FE hosts + LB IP. Suspended Render frontend origin removed (BUG-2026-08-07).
   METAR_CORS_ORIGINS: "https://app.tac-to-iwxxm.com,http://app.tac-to-iwxxm.com,http://168.144.12.70"
   PORT: "8000"
+  # Start the live-map timer in the API. Unset leaves the map empty.
+  LIVE_MAP_REFRESH: "1"
+  LIVE_MAP_REFRESH_SECONDS: "300"

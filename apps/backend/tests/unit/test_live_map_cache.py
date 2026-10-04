@@ -210,6 +210,26 @@ def test_read_live_map_route(monkeypatch: pytest.MonkeyPatch) -> None:
         params={"west": 10, "south": 0, "east": 0, "north": 1},
     )
     assert bad_box.status_code == 400
+    world = client.get(
+        "/api/v1/live-map",
+        params={"west": -284, "south": -80, "east": 284, "north": 80},
+    )
+    assert world.status_code == 200
+    east_only = client.get(
+        "/api/v1/live-map",
+        params={"west": -170, "south": -80, "east": 190, "north": 80},
+    )
+    assert east_only.status_code == 200
+    wide = client.get(
+        "/api/v1/live-map",
+        params={"west": -180, "south": -90, "east": 180, "north": 90},
+    )
+    assert wide.status_code == 200
+    flipped = client.get(
+        "/api/v1/live-map",
+        params={"west": -10, "south": 20, "east": 10, "north": 0},
+    )
+    assert flipped.status_code == 400
     bad_layer = client.get(
         "/api/v1/live-map",
         params={"west": -80, "south": 40, "east": -70, "north": 41, "products": "spacewx"},

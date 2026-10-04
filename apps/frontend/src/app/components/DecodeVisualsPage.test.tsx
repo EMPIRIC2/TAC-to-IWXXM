@@ -84,7 +84,7 @@ describe('DecodeVisualsPage', () => {
     });
     const user = userEvent.setup();
     render(<DecodeVisualsPage />);
-    const input = screen.getByLabelText('Station ID');
+    const input = screen.getByLabelText('Search');
     expect(input).toHaveValue('T');
     await user.clear(input);
     expect(input).toHaveValue('');
@@ -136,11 +136,11 @@ describe('DecodeVisualsPage', () => {
     const user = userEvent.setup();
     render(<DecodeVisualsPage />);
     await user.type(screen.getByTestId('decode-visuals-station'), 'KJFK');
-    expect(screen.getByLabelText('Valid Station ID')).toBeInTheDocument();
+    expect(screen.getByLabelText('Valid Search')).toBeInTheDocument();
     expect(screen.queryByLabelText('Valid ICAO code')).not.toBeInTheDocument();
     await user.clear(screen.getByTestId('decode-visuals-station'));
     await user.type(screen.getByTestId('decode-visuals-station'), 'QXZX');
-    expect(screen.getByLabelText('Invalid Station ID')).toBeInTheDocument();
+    expect(screen.getByLabelText('Invalid Search')).toBeInTheDocument();
     expect(screen.queryByLabelText('Invalid ICAO code')).not.toBeInTheDocument();
     writeStationDraft(null);
   });
