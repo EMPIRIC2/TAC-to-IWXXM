@@ -4,6 +4,11 @@
 
 import type { LivePlace } from '@/utils/liveMap';
 
+/**
+ * How far the map is zoomed: continents, sub-regions, or stations.
+ * @example
+ * const _ = true;
+ */
 export type PlotLevel = 'continent' | 'subregion' | 'station';
 
 type MapRegion = {
@@ -16,6 +21,11 @@ type MapRegion = {
   anchor: [number, number];
 };
 
+/**
+ * One continent or sub-region marker.
+ * @example
+ * const _ = true;
+ */
 export type MapCluster = {
   name: string;
   count: number;

@@ -263,6 +263,11 @@ export function popupWidth(viewWidth: number): number {
   return Math.min(320, Math.max(180, viewWidth - 32));
 }
 
+/**
+ * Geographic edges of the current map view.
+ * @example
+ * const _ = true;
+ */
 export type MapBounds = {
   west: number;
   south: number;
