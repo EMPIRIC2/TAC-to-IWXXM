@@ -31,7 +31,7 @@ _SIGA0_LINE = re.compile(r"^SIGA0[A-Z0-9]*\s*$", re.IGNORECASE)
 _CNL_FIR_MOVED = re.compile(r"\b(?:AND|MOV)\s+TO\s+FIR\b", re.IGNORECASE)
 # Optional leading WMO AHL (WC/WV/WS) so convert can family-select CNL roots (EV-029 M7).
 _AHL_PREFIX = re.compile(
-    r"^(?P<tt>[A-Z]{2})(?P<aa>[A-Z]{2})(?P<ii>\d{2})\s+"
+    r"^(?P<tt>[A-Z]{2})(?P<aa>[A-Z]{2})(?P<ii>(?=[A-Z0-9]*\d)[A-Z0-9]{2})\s+"
     r"(?P<cccc>[A-Z]{4})\s+(?P<yygggg>\d{6})"
     r"(?:\s+(?P<bbb>[A-Z]{1,3}))?\s*\n",
 )
@@ -42,13 +42,13 @@ _TC_CIRCLE = re.compile(
 )
 _TC_FCST_PSN = re.compile(
     r"\bFCST\s+AT\s+(?P<hhmm>\d{4})Z\s+TC\s+CENTRE\s+PSN\s+"
-    r"N(?P<lat_deg>\d{2})(?P<lat_min>\d{2})(?:\d{2})?\s+"
+    r"(?P<lat_hemi>[NS])(?P<lat_deg>\d{2})(?P<lat_min>\d{2})(?:\d{2})?\s+"
     r"(?P<lon_hemi>[EW])(?P<lon_deg>\d{3})(?P<lon_min>\d{2})(?:\d{2})?\b",
     re.IGNORECASE,
 )
 _TC_OBS_PSN = re.compile(
     r"\bTC\s+[A-Z][A-Z0-9-]*\s+PSN\s+"
-    r"N(?P<lat_deg>\d{2})(?P<lat_min>\d{2})(?:\d{2})?\s+"
+    r"(?P<lat_hemi>[NS])(?P<lat_deg>\d{2})(?P<lat_min>\d{2})(?:\d{2})?\s+"
     r"(?P<lon_hemi>[EW])(?P<lon_deg>\d{3})(?P<lon_min>\d{2})(?:\d{2})?\b",
     re.IGNORECASE,
 )
@@ -90,11 +90,15 @@ _SE_BOX = re.compile(
 # WMO airmet-A6-1a-TS: "N OF S50" → sample box north of S50 (Guidance / vendor XML).
 _N_OF_S = re.compile(r"\bN OF S(?P<lat>\d{1,2})\b", re.IGNORECASE)
 _POINT = re.compile(
-    r"\bN(?P<lat_deg>\d{2})(?P<lat_min>\d{2})(?:\d{2})?\s+"
+    r"\b(?P<lat_hemi>[NS])(?P<lat_deg>\d{2})(?P<lat_min>\d{2})(?:\d{2})?\s+"
     r"(?P<lon_hemi>[EW])(?P<lon_deg>\d{3})(?P<lon_min>\d{2})(?:\d{2})?\b",
     re.IGNORECASE,
 )
 _FL_BAND = re.compile(r"\bFL(?P<lo>\d{2,3})/(?P<hi>\d{2,3})\b", re.IGNORECASE)
+_FT_FL_LAYER = re.compile(
+    r"\b(?P<ft>\d{3,4})(?P<unit>FT|M)/FL(?P<fl>\d{2,3})\b",
+    re.IGNORECASE,
+)
 _SINGLE_FL = re.compile(r"\bFL(?P<fl>\d{2,3})\b", re.IGNORECASE)
 _SFC_FL = re.compile(r"\bSFC/FL(?P<fl>\d{2,3})\b", re.IGNORECASE)
 _WI_BLOCK = re.compile(
@@ -104,7 +108,7 @@ _WI_BLOCK = re.compile(
 _NO_VA_EXP = re.compile(r"\bNO\s+VA\s+EXP\b", re.IGNORECASE)
 _VA_ERUPTION = re.compile(
     r"\bVA\s+ERUPTION\s+(?P<name>MT\s+\w+)\s+PSN\s+"
-    r"N(?P<lat_deg>\d{2})(?P<lat_min>\d{2})(?:\d{2})?\s+"
+    r"(?P<lat_hemi>[NS])(?P<lat_deg>\d{2})(?P<lat_min>\d{2})(?:\d{2})?\s+"
     r"(?P<lon_hemi>[EW])(?P<lon_deg>\d{3})(?P<lon_min>\d{2})(?:\d{2})?\b",
     re.IGNORECASE,
 )
@@ -406,7 +410,10 @@ def _point_lat_lon(match: re.Match[str]) -> tuple[float, float]:
     """
     lat = int(match.group("lat_deg")) + int(match.group("lat_min")) / 60.0
     lon = int(match.group("lon_deg")) + int(match.group("lon_min")) / 60.0
-    if match.group("lon_hemi").upper() == "W":
+    groups = match.groupdict()
+    if (groups.get("lat_hemi") or "N").upper() == "S":
+        lat = -lat
+    if (groups.get("lon_hemi") or "E").upper() == "W":
         lon = -lon
     return lat, lon
 
@@ -737,11 +744,16 @@ def _enrich_hazard_body(ir: dict[str, Any], body: str) -> None:
         elif "BLW" in top.group(0).upper():
             ir["top_qualifier"] = "BLW"
 
+    feet_layer = _FT_FL_LAYER.search(body)
+    if feet_layer is not None:
+        ir["lower_ft"] = int(feet_layer.group("ft"))
+        ir["lower_unit"] = feet_layer.group("unit").upper()
+        ir["upper_fl"] = int(feet_layer.group("fl"))
     sfc_fl = _SFC_FL.search(body)
-    if sfc_fl is not None:
+    if feet_layer is None and sfc_fl is not None:
         ir["lower_surface"] = "SFC"
         ir["upper_fl"] = int(sfc_fl.group("fl"))
-    else:
+    elif feet_layer is None:
         frzlvl_band = _FRZLVL_BAND.search(body)
         if frzlvl_band is not None:
             ir["lower_surface"] = "FRZLVL"
@@ -754,7 +766,7 @@ def _enrich_hazard_body(ir: dict[str, Any], body: str) -> None:
         if band is not None:
             ir["lower_fl"] = int(band.group("lo"))
             ir["upper_fl"] = int(band.group("hi"))
-        elif "top_fl" not in ir:
+        elif "top_fl" not in ir and "upper_fl" not in ir:
             # Single FL token that is not TOP FLnnn (e.g. FL180 alone).
             singles = list(_SINGLE_FL.finditer(body))
             if len(singles) == 1 and "TOP" not in body.upper()[max(0, singles[0].start() - 4) : singles[0].start()]:

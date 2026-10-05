@@ -7,6 +7,7 @@ so the second cloud group marks the second cloud layer.
 
 from __future__ import annotations
 
+import re
 from typing import TypedDict
 
 from tac_decoding.match import MatchContext, match_tac
@@ -179,6 +180,30 @@ _PACK_RULES: dict[str, dict[str, tuple[_Emit, ...]]] = {
 _BARE_CLOUD = frozenset({"NSC", "SKC", "CLR"})
 _SIGMET_PACKS = frozenset({"sigmet", "va_sigmet", "tc_sigmet", "airmet"})
 _BODY_RULES = frozenset({"token", "fir", "sequence", "at_marker", "zulu_time"})
+_COORD_TOKEN = re.compile(r"^(?:[NS]\d{4,6}|[EW]\d{5,7})$")
+_LAYER_TOKEN = re.compile(r"^(?:FL\d{2,3}/(?:FL)?\d{2,3}|SFC/FL\d{2,3}|\d{3,4}(?:FT|M)/FL\d{2,3})$")
+_SINGLE_FL_TOKEN = re.compile(r"^FL\d{2,3}$")
+_SPEED_TOKEN = re.compile(r"^\d{1,3}(?:KT|KMH|MPS)$")
+_COMPASS = frozenset(
+    {
+        "N",
+        "NNE",
+        "NE",
+        "ENE",
+        "E",
+        "ESE",
+        "SE",
+        "SSE",
+        "S",
+        "SSW",
+        "SW",
+        "WSW",
+        "W",
+        "WNW",
+        "NW",
+        "NNW",
+    }
+)
 
 
 class GroupTraceRow(TypedDict):
@@ -272,9 +297,23 @@ def _body_emits(pack_id: str, rule_id: str, token: str, *, past_header: bool) ->
     """
     if pack_id not in _SIGMET_PACKS:
         return ()
-    if rule_id == "token" and token.strip().endswith("-"):
+    office = token.strip()
+    if rule_id == "token" and office.endswith("-") and office != "-":
         return (("originatingMeteorologicalWatchOffice", "block", "emit"),)
     if past_header and rule_id in _BODY_RULES:
+        text = token.strip().upper()
+        if text == "-" or _COORD_TOKEN.match(text):
+            # Tropical-cyclone centres are a gml:pos. Other SIGMET polygons are a posList.
+            position = "pos" if pack_id == "tc_sigmet" else "posList"
+            return ((position, "line", "next"),)
+        if _LAYER_TOKEN.match(text):
+            return (("lowerLimit", "line", "next"), ("upperLimit", "line", "next"))
+        if _SINGLE_FL_TOKEN.match(text):
+            return (("upperLimit", "line", "next"),)
+        if text in _COMPASS:
+            return (("directionOfMotion", "line", "next"),)
+        if _SPEED_TOKEN.match(text):
+            return (("speedOfMotion", "line", "next"),)
         element = "analysis" if pack_id == "airmet" else "analysisCollection"
         return ((element, "block", "next"),)
     return ()

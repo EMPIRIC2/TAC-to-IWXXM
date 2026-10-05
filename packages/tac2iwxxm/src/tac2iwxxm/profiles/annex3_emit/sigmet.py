@@ -373,6 +373,13 @@ def _sigmet_geometry_xml(
                 limits = f"""
               <aixm:upperLimit uom="FL">{int(upper_fl)}</aixm:upperLimit>
               <aixm:upperLimitReference>STD</aixm:upperLimitReference>"""
+        elif ir.get("lower_ft") is not None and upper_fl is not None:
+            unit = "[ft_i]" if str(ir.get("lower_unit", "FT")).upper() == "FT" else "m"
+            limits = f"""
+              <aixm:lowerLimit uom="{unit}">{int(ir["lower_ft"])}</aixm:lowerLimit>
+              <aixm:lowerLimitReference>MSL</aixm:lowerLimitReference>
+              <aixm:upperLimit uom="FL">{int(upper_fl)}</aixm:upperLimit>
+              <aixm:upperLimitReference>STD</aixm:upperLimitReference>"""
         elif lower_fl is not None and upper_fl is not None:
             limits = f"""
               <aixm:lowerLimit uom="FL">{int(lower_fl)}</aixm:lowerLimit>
