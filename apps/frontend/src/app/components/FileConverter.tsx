@@ -8,7 +8,7 @@ import {
 } from 'react';
 import { stationFromReport } from '@/utils/decodeVisuals';
 import { publishDecodeVisuals } from '@/utils/decodeVisualsStore';
-import { LIVE_MAP_PANEL } from '@/utils/liveMap';
+import { LIVE_MAP_PANEL, type LivePlace } from '@/utils/liveMap';
 import { Button } from './ui/button';
 import { Card } from './ui/card';
 import { Input } from './ui/input';
@@ -3676,7 +3676,26 @@ export function FileConverter({
                     </button>
                   </CollapsibleTrigger>
                   <CollapsibleContent data-testid="convert-weather-map-panel">
-                    <LiveWorldMap />
+                    <LiveWorldMap
+                      onOpenPlace={(place: LivePlace) => {
+                        const tac = place.reports[0]?.tac?.trim() ?? '';
+                        if (!tac) {
+                          return;
+                        }
+                        setInputMode('tac');
+                        setManualInput(tac);
+                        setSelectedTrace(null);
+                        setLintJump(null);
+                        setLintFocusOffset(null);
+                        setConversionParams((prev) => ({
+                          ...prev,
+                          product: detectTacProduct(tac),
+                        }));
+                        document
+                          .querySelector('[data-testid="live-convert-panes"]')
+                          ?.scrollIntoView({ behavior: 'auto', block: 'start' });
+                      }}
+                    />
                   </CollapsibleContent>
                 </Collapsible>
               </div>

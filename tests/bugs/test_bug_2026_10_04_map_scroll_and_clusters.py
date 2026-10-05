@@ -26,8 +26,12 @@ def test_bug_2026_10_04_map_draws_features_without_clusters_or_upward_pan() -> N
     assert "autoPan: false" in _MAP
     assert "L.polygon" in _MAP
     assert "live-map-tac" in _MAP
-    assert "live-map-decode" in _MAP
-    assert "live-map-xml" in _MAP
+    assert "live-map-station" in _MAP
+    assert "decodeTac" not in _MAP
+    assert "mouseover" not in _MAP
+    assert "onOpenPlace" in _MAP
+    assert "onOpenPlace" in _CONVERTER
+    assert "scrollIntoView" in _CONVERTER
     assert "convert-weather-map" in _CONVERTER
     assert "min-h-[100dvh]" in _CONVERTER
     assert "min-h-[100dvh]" in _PANES

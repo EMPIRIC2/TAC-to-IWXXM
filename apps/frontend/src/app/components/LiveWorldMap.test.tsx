@@ -6,7 +6,6 @@ import { act, cleanup, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import L from 'leaflet';
 import { boundsOf, LIVE_MAP_PRODUCTS, type LivePlace } from '@/utils/liveMap';
-import { decodeTac } from '@/utils/api';
 import { LiveWorldMap, StationPopup } from './LiveWorldMap';
 
 const clicks: Array<() => void> = [];
@@ -23,6 +22,7 @@ const map = {
   flyToBounds: vi.fn(),
   remove: vi.fn(),
   on: vi.fn(),
+  invalidateSize: vi.fn(),
   getZoom: vi.fn(() => 8),
   getSize: vi.fn(() => ({ x: 800, y: 600 })),
   getContainer: vi.fn(() => mapPane),
@@ -82,15 +82,6 @@ vi.mock('leaflet', () => ({
 }));
 
 vi.mock('leaflet/dist/leaflet.css', () => ({}));
-
-vi.mock('@/utils/api', () => ({
-  decodeTac: vi.fn().mockResolvedValue({
-    product: 'METAR',
-    segments: [],
-    residuals: [],
-    summary: 'Wind from the south at 12 knots.',
-  }),
-}));
 
 const place: LivePlace = {
   place_key: 'KJFK',
@@ -298,7 +289,8 @@ describe('LiveWorldMap', () => {
         };
       }),
     );
-    render(<LiveWorldMap />);
+    const onOpenPlace = vi.fn();
+    render(<LiveWorldMap onOpenPlace={onOpenPlace} />);
     expect(screen.getByTestId('live-map-beta')).toHaveTextContent('Beta');
     await waitFor(() => expect(L.polygon).toHaveBeenCalled());
     expect(L.polyline).toHaveBeenCalled();
@@ -312,31 +304,20 @@ describe('LiveWorldMap', () => {
     expect(screen.getByTestId('live-map-notice')).toHaveTextContent(
       'not validated for operational use',
     );
+    expect(screen.getByTestId('live-map-station')).toHaveTextContent('KJFK');
     expect(screen.getByTestId('live-map-detail')).toHaveTextContent('Kennedy');
-    expect(screen.getByTestId('live-map-detail')).toHaveTextContent(
-      'not validated for operational use',
-    );
-    expect(screen.getByTestId('live-map-wind')).toHaveTextContent('180');
+    expect(screen.queryByTestId('live-map-decode')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('live-map-xml')).not.toBeInTheDocument();
     expect(screen.getByTestId('live-map-tac')).toHaveTextContent('18012KT');
-    expect(await screen.findByTestId('live-map-decode')).toHaveTextContent(
-      'Wind from the south at 12 knots.',
-    );
-    expect(screen.getByTestId('live-map-xml')).toHaveTextContent('<iwxxm/>');
+    expect(onOpenPlace).toHaveBeenCalledWith(place);
     expect(map.panBy).not.toHaveBeenCalled();
     expect(map.flyToBounds).not.toHaveBeenCalled();
-    popupEl.dispatchEvent(new Event('mouseenter'));
-    popupEl.dispatchEvent(new Event('mouseleave'));
-    expect(marker.closePopup).toHaveBeenCalled();
-    await user.click(screen.getByTestId('live-map-report-1'));
-    expect(screen.getByTestId('live-map-pending')).toHaveTextContent(
-      'Translation is pending.',
-    );
+    expect(map.invalidateSize).toHaveBeenCalled();
     act(() => {
       clicks[1]?.();
     });
-    expect(screen.getByTestId('live-map-issues')).toHaveTextContent(
-      'Translation failed.',
-    );
+    expect(screen.getByTestId('live-map-tac')).toHaveTextContent('SIGMET');
+    expect(onOpenPlace).toHaveBeenCalledWith(hazard);
     act(() => {
       clicks[2]?.();
     });
@@ -349,32 +330,15 @@ describe('LiveWorldMap', () => {
     act(() => {
       clicks[5]?.();
     });
+    const opened = onOpenPlace.mock.calls.length;
+    act(() => {
+      clicks[5]?.();
+    });
+    expect(onOpenPlace).toHaveBeenCalledTimes(opened);
     marker.getPopup.mockReturnValueOnce(undefined as never);
     act(() => {
       clicks[0]?.();
     });
-    vi.useFakeTimers();
-    window.matchMedia = vi
-      .fn()
-      .mockImplementation(() => ({ matches: false })) as typeof window.matchMedia;
-    act(() => {
-      leaves[0]?.();
-    });
-    window.matchMedia = vi
-      .fn()
-      .mockImplementation(() => ({ matches: true })) as typeof window.matchMedia;
-    act(() => {
-      leaves[0]?.();
-      vi.advanceTimersByTime(400);
-    });
-    const previousMatch = window.matchMedia;
-    Reflect.deleteProperty(window, 'matchMedia');
-    act(() => {
-      leaves[0]?.();
-      vi.advanceTimersByTime(400);
-    });
-    window.matchMedia = previousMatch;
-    vi.useRealTimers();
     const preventDefault = vi.fn();
     act(() => {
       keys[0]?.({ originalEvent: { key: 'Enter', preventDefault } });
@@ -382,7 +346,7 @@ describe('LiveWorldMap', () => {
       keys[0]?.({ originalEvent: { key: 'x', preventDefault } });
       keys[0]?.({});
     });
-    expect(marker.closePopup).toHaveBeenCalled();
+    expect(preventDefault).toHaveBeenCalled();
   });
 
   it('draws route polygons at world zoom and opens the report', async () => {
@@ -405,13 +369,11 @@ describe('LiveWorldMap', () => {
     expect(map.panBy).not.toHaveBeenCalled();
   });
 
-  it('leaves the decode blank when the request fails', async () => {
-    vi.mocked(decodeTac).mockRejectedValueOnce(new Error('decode failed'));
+  it('shows the station and the TAC without a decode pane', () => {
     render(<StationPopup place={place} />);
-    expect(await screen.findByTestId('live-map-tac')).toHaveTextContent('18012KT');
-    await waitFor(() => {
-      expect(screen.getByTestId('live-map-decode')).toHaveTextContent('');
-    });
+    expect(screen.getByTestId('live-map-station')).toHaveTextContent('KJFK');
+    expect(screen.getByTestId('live-map-tac')).toHaveTextContent('18012KT');
+    expect(screen.queryByTestId('live-map-decode')).not.toBeInTheDocument();
   });
 
   it('renders nothing when a station has no reports', () => {
@@ -437,9 +399,11 @@ describe('LiveWorldMap', () => {
         json: async () => ({ places: [place, { ...place, product: 'taf' }] }),
       }),
     );
-    const view = render(<LiveWorldMap focusStation="KJFK" />);
+    const onOpenPlace = vi.fn();
+    const view = render(<LiveWorldMap focusStation="KJFK" onOpenPlace={onOpenPlace} />);
     await waitFor(() => expect(map.flyTo).toHaveBeenCalledWith([40.6, -73.7], 8));
     expect(screen.getByTestId('live-map-detail')).toHaveTextContent('Kennedy');
+    expect(onOpenPlace).not.toHaveBeenCalled();
     map.flyTo.mockClear();
     view.rerender(<LiveWorldMap focusStation="NONE" />);
     expect(map.flyTo).not.toHaveBeenCalled();

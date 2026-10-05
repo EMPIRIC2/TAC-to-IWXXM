@@ -51,7 +51,7 @@ export const LIVE_MAP_NOTICE =
 
 export const LIVE_MAP_CANVAS = 'Live weather map';
 export const LIVE_MAP_ZOOM_HINT =
-  'Points and outlined areas are current reports. Open one to read the TAC, the decode, and the IWXXM.';
+  'Open a point or outlined area to load it above. The map shows the station and the report.';
 
 export const LIVE_MAP_LOADING = 'Loading reports for this view.';
 export const LIVE_MAP_REFRESHING = 'Refreshing this view.';

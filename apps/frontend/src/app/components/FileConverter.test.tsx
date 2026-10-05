@@ -13,7 +13,71 @@ import userEvent from '@testing-library/user-event';
 import { FileConverter } from './FileConverter';
 
 vi.mock('./LiveWorldMap', () => ({
-  LiveWorldMap: () => <div data-testid="live-world-map" />,
+  LiveWorldMap: ({
+    onOpenPlace,
+  }: {
+    onOpenPlace?: (place: {
+      place_key: string;
+      product: string;
+      latitude: number;
+      longitude: number;
+      reports: { observed_at: string; tac: string; iwxxm: null }[];
+    }) => void;
+  }) => (
+    <div data-testid="live-world-map">
+      <button
+        type="button"
+        data-testid="live-map-load-report"
+        onClick={() =>
+          onOpenPlace?.({
+            place_key: 'KJFK',
+            product: 'metar',
+            latitude: 40.6,
+            longitude: -73.7,
+            reports: [
+              {
+                observed_at: 'newest',
+                tac: 'METAR KJFK 121755Z 18010KT 10SM',
+                iwxxm: null,
+              },
+            ],
+          })
+        }
+      >
+        Load KJFK
+      </button>
+      <button
+        type="button"
+        data-testid="live-map-load-empty"
+        onClick={() =>
+          onOpenPlace?.({
+            place_key: 'EMPTY',
+            product: 'metar',
+            latitude: 0,
+            longitude: 0,
+            reports: [{ observed_at: 'empty', tac: '   ', iwxxm: null }],
+          })
+        }
+      >
+        Load empty
+      </button>
+      <button
+        type="button"
+        data-testid="live-map-load-blank"
+        onClick={() =>
+          onOpenPlace?.({
+            place_key: 'BLANK',
+            product: 'metar',
+            latitude: 0,
+            longitude: 0,
+            reports: [],
+          })
+        }
+      >
+        Load blank
+      </button>
+    </div>
+  ),
 }));
 import { clearOverlayOnAuthLoss } from '@/app/utils/clearOverlayOnAuthLoss';
 import { operatorDisseminationUiConfig } from '/utils/operatorDisseminationUi';
@@ -1733,6 +1797,26 @@ describe('FileConverter Component', () => {
         'aria-pressed',
         'true',
       );
+    });
+
+    it('loads a map report into the TAC panes and scrolls up', async () => {
+      const user = userEvent.setup({ delay: null });
+      const scroll = vi.fn();
+      const originalScroll = HTMLElement.prototype.scrollIntoView;
+      HTMLElement.prototype.scrollIntoView = scroll;
+      render(<FileConverter {...defaultProps} />);
+      await user.click(screen.getByTestId('live-map-load-empty'));
+      await user.click(screen.getByTestId('live-map-load-blank'));
+      expect(screen.getByLabelText('Enter METAR data manually')).toHaveValue('');
+      await user.click(screen.getByTestId('live-map-load-report'));
+      expect(screen.getByLabelText('Enter METAR data manually')).toHaveValue(
+        'METAR KJFK 121755Z 18010KT 10SM',
+      );
+      expect(screen.getByRole('combobox', { name: 'Product' })).toHaveValue('METAR');
+      expect(scroll).toHaveBeenCalled();
+      screen.getByTestId('live-convert-panes').removeAttribute('data-testid');
+      await user.click(screen.getByTestId('live-map-load-report'));
+      HTMLElement.prototype.scrollIntoView = originalScroll;
     });
 
     it('nudges pane widths on a wide screen', () => {
