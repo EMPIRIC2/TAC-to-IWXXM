@@ -81,7 +81,7 @@ vi.mock('leaflet', () => ({
     polygon: vi.fn(() => marker),
     polyline: vi.fn(() => marker),
     circle: vi.fn(() => marker),
-    canvas: vi.fn(() => ({ _update: canvasUpdate })),
+    canvas: vi.fn(() => ({ _update: canvasUpdate, _map: map })),
     latLngBounds: vi.fn((points: unknown) => points),
   },
 }));
@@ -420,6 +420,7 @@ describe('LiveWorldMap', () => {
   });
 
   it('shows an error when the cache cannot be read', async () => {
+    vi.mocked(L.canvas).mockReturnValueOnce({ _update: canvasUpdate } as never);
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: false }));
     render(<LiveWorldMap />);
     expect(await screen.findByTestId('live-map-error')).toBeInTheDocument();

@@ -140,7 +140,13 @@ function drawPlace(map: L.Map, place: LivePlace): L.Layer {
  * const _ = true;
  */
 function redrawCanvas(map: L.Map): void {
-  (map.options.renderer as unknown as { _update: () => void })._update();
+  const renderer = map.options.renderer as unknown as {
+    _map?: unknown;
+    _update: () => void;
+  };
+  if (renderer._map) {
+    renderer._update();
+  }
 }
 
 /**
