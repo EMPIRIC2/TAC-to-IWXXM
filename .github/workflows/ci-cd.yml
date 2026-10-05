@@ -263,6 +263,7 @@ jobs:
             --cov-report=term-missing --cov-fail-under=100 -v
           uv run python scripts/ci/check_per_file_coverage.py packages/shared/coverage.json
           pnpm --filter @metar/shared run test:coverage
+          pnpm --filter @metar/live-map-geometry run test:coverage
 
       - name: Run backend unit tests with coverage
         if: matrix.package == 'backend'

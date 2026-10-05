@@ -27,6 +27,8 @@ def _report(
     *,
     minutes: int,
     tac: str = "METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005=",
+    iwxxm: str | None = None,
+    issues: tuple[str, ...] = (),
     product: str = "metar",
     place_key: str = "KJFK",
     latitude: float | None = 40.64,
@@ -39,6 +41,8 @@ def _report(
         tac=tac,
         latitude=latitude,
         longitude=longitude,
+        iwxxm=iwxxm,
+        issues=issues,
     )
 
 
@@ -245,13 +249,16 @@ def test_read_live_map_route(monkeypatch: pytest.MonkeyPatch) -> None:
     set_live_map_cache(None)
     cache = get_live_map_cache()
     assert get_live_map_cache() is cache
-    cache.store(_report(minutes=1, tac="on map"))
+    cache.store(_report(minutes=1, tac="on map", iwxxm="<iwxxm/>", issues=("Also noted.",)))
     app = FastAPI()
     app.include_router(router)
     client = TestClient(app)
     ok = client.get("/api/v1/live-map", params={"west": -80, "south": 40, "east": -70, "north": 41})
     assert ok.status_code == 200
-    assert ok.json()["places"][0]["reports"][0]["tac"] == "on map"
+    listed = ok.json()["places"][0]["reports"][0]
+    assert listed["tac"] == "on map"
+    assert "iwxxm" not in listed
+    assert "issues" not in listed
     blank = client.get(
         "/api/v1/live-map",
         params={"west": -80, "south": 40, "east": -70, "north": 41, "products": " , "},

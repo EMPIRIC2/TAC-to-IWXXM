@@ -269,6 +269,7 @@ test-unit-shared-py:
 
 test-unit-shared-js:
 	$(PNPM) --filter @metar/shared run test:coverage
+	$(PNPM) --filter @metar/live-map-geometry run test:coverage
 
 test-unit-workspace-js:
 	$(PNPM) --filter @metar/shared test

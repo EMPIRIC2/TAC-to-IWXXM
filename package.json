@@ -10,9 +10,9 @@
     "prepare": "husky",
     "format": "prettier --write \"apps/**/*.{ts,tsx,json,css,md}\" \"packages/**/*.{ts,tsx,json,md}\"",
     "format:check": "prettier --check \"apps/**/*.{ts,tsx,json,css,md}\" \"packages/**/*.{ts,tsx,json,md}\"",
-    "lint:js": "eslint apps/frontend/src apps/e2e packages/shared/src packages/shared/tests --max-warnings 0",
-    "lint:js:fix": "eslint apps/frontend/src apps/e2e packages/shared/src packages/shared/tests --fix",
-    "typecheck:js": "pnpm --filter @metar/frontend exec tsc --noEmit && pnpm --filter @metar/shared exec tsc --noEmit && pnpm --filter @metar/e2e exec tsc --noEmit"
+    "lint:js": "eslint apps/frontend/src apps/e2e packages/shared/src packages/shared/tests packages/live-map-geometry/src packages/live-map-geometry/tests --max-warnings 0",
+    "lint:js:fix": "eslint apps/frontend/src apps/e2e packages/shared/src packages/shared/tests packages/live-map-geometry/src packages/live-map-geometry/tests --fix",
+    "typecheck:js": "pnpm --filter @metar/frontend exec tsc --noEmit && pnpm --filter @metar/shared exec tsc --noEmit && pnpm --filter @metar/live-map-geometry exec tsc --noEmit && pnpm --filter @metar/e2e exec tsc --noEmit"
   },
   "devDependencies": {
     "@eslint/js": "^9.0.0",

@@ -26,7 +26,11 @@ export default tseslint.config(
   },
   {
     extends: [js.configs.recommended, ...tseslint.configs.recommended],
-    files: ['apps/e2e/**/*.{ts,tsx}', 'packages/shared/**/*.{ts,tsx}'],
+    files: [
+      'apps/e2e/**/*.{ts,tsx}',
+      'packages/shared/**/*.{ts,tsx}',
+      'packages/live-map-geometry/**/*.{ts,tsx}',
+    ],
     rules: sharedRules,
   },
   {

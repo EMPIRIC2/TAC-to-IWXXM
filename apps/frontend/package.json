@@ -30,6 +30,7 @@
     "@codemirror/view": "6.43.6",
     "@emotion/react": "11.14.0",
     "@emotion/styled": "11.14.1",
+    "@metar/live-map-geometry": "workspace:*",
     "@metar/shared": "workspace:*",
     "@mui/icons-material": "7.3.5",
     "@mui/material": "7.3.5",

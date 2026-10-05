@@ -16,6 +16,7 @@ const keys: Array<
 const originalSetTimeout = window.setTimeout.bind(window);
 const popupEl = document.createElement('div');
 const mapPane = document.createElement('div');
+const canvasUpdate = vi.fn();
 const map = {
   setView: vi.fn(),
   flyTo: vi.fn(),
@@ -37,6 +38,7 @@ const map = {
     getEast: () => -70,
     getNorth: () => 41,
   }),
+  _renderer: undefined as { _update: () => void } | undefined,
 };
 map.setView.mockReturnValue(map);
 
@@ -73,6 +75,7 @@ vi.mock('leaflet', () => ({
     map: vi.fn(() => map),
     tileLayer: vi.fn(() => ({ addTo: vi.fn() })),
     marker: vi.fn(() => marker),
+    circleMarker: vi.fn(() => marker),
     divIcon: vi.fn(() => ({})),
     polygon: vi.fn(() => marker),
     polyline: vi.fn(() => marker),
@@ -129,6 +132,8 @@ const hazard = {
 
 describe('LiveWorldMap', () => {
   beforeEach(() => {
+    map._renderer = { _update: canvasUpdate };
+    canvasUpdate.mockClear();
     vi.spyOn(window, 'setTimeout').mockImplementation(((
       handler: TimerHandler,
       timeout?: number,
@@ -180,6 +185,7 @@ describe('LiveWorldMap', () => {
     vi.mocked(L.polygon).mockClear();
     vi.mocked(L.polyline).mockClear();
     vi.mocked(L.circle).mockClear();
+    vi.mocked(L.circleMarker).mockClear();
     vi.mocked(L.marker).mockClear();
     vi.unstubAllGlobals();
   });
@@ -295,8 +301,9 @@ describe('LiveWorldMap', () => {
     await waitFor(() => expect(L.polygon).toHaveBeenCalled());
     expect(L.polyline).toHaveBeenCalled();
     expect(L.circle).toHaveBeenCalled();
-    expect(L.marker).toHaveBeenCalledWith([10, 20], expect.anything());
-    expect(L.marker).toHaveBeenCalledWith([1, 2], expect.anything());
+    expect(L.circleMarker).toHaveBeenCalledWith([10, 20], expect.anything());
+    expect(L.circleMarker).toHaveBeenCalledWith([1, 2], expect.anything());
+    expect(canvasUpdate).toHaveBeenCalled();
     await waitFor(() => expect(clicks.length).toBeGreaterThan(0));
     act(() => {
       clicks[0]?.();
@@ -359,7 +366,7 @@ describe('LiveWorldMap', () => {
     );
     render(<LiveWorldMap />);
     await waitFor(() => expect(L.polygon).toHaveBeenCalled());
-    expect(L.marker).toHaveBeenCalled();
+    expect(L.circleMarker).toHaveBeenCalled();
     expect(screen.getByTestId('live-map-canvas').className).toContain('min-h-[100dvh]');
     act(() => {
       clicks[1]?.();
@@ -410,6 +417,7 @@ describe('LiveWorldMap', () => {
   });
 
   it('shows an error when the cache cannot be read', async () => {
+    map._renderer = undefined;
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: false }));
     render(<LiveWorldMap />);
     expect(await screen.findByTestId('live-map-error')).toBeInTheDocument();
