@@ -58,6 +58,20 @@ describe('IwxxmPreviewPane', () => {
     expect(screen.getByTestId('iwxxm-preview-failed-count')).toHaveTextContent('3');
   });
 
+  it('uses the singular label for one failed span', () => {
+    render(
+      <IwxxmPreviewPane
+        xml={SAMPLE_XML}
+        status="soft-fail"
+        mode="soft-preview"
+        failedSpanCount={1}
+      />,
+    );
+    expect(screen.getByTestId('iwxxm-preview-failed-count')).toHaveTextContent(
+      '1 failed span',
+    );
+  });
+
   it('shows most recent XML only (replaces prior content)', () => {
     const { rerender } = render(
       <IwxxmPreviewPane xml="<a/>" status="passed" mode="live" />,
@@ -73,8 +87,7 @@ describe('IwxxmPreviewPane', () => {
       <IwxxmPreviewPane xml={SAMPLE_XML} status="passed" mode="soft-preview" />,
     );
     const root = container.querySelector('[data-testid="iwxxm-preview-pane"]');
-    expect(root?.className).toContain('lg:min-h-[16rem]');
-    expect(root?.className).toContain('xl:min-h-0');
+    expect(root?.className).toContain('min-h-[100dvh]');
   });
 
   it('numbers lines, names the conversion profile, and marks the selected group', () => {

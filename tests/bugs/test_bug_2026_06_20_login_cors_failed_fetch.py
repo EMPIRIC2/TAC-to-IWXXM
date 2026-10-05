@@ -5,8 +5,8 @@ production frontend origin. Root cause: deployed API missing METAR_CORS_ORIGINS.
 
 Live probe (requires STAGING_* env vars):
 
-    STAGING_API_URL=https://metar-to-iwxxm-api.onrender.com \\
-    STAGING_FRONTEND_ORIGIN=https://metar-to-iwxxm-frontend-v4-web.onrender.com \\
+    STAGING_API_URL=https://api.tac-to-iwxxm.com \\
+    STAGING_FRONTEND_ORIGIN=https://app.tac-to-iwxxm.com \\
       pytest tests/bugs/test_bug_2026_06_20_login_cors_failed_fetch.py -m live -v
 """
 
@@ -19,8 +19,8 @@ import pytest
 
 pytestmark = pytest.mark.live
 
-PRODUCTION_API = "https://metar-to-iwxxm-api.onrender.com"
-PRODUCTION_FRONTEND = "https://metar-to-iwxxm-frontend-v4-web.onrender.com"
+PRODUCTION_API = "https://api.tac-to-iwxxm.com"
+PRODUCTION_FRONTEND = "https://app.tac-to-iwxxm.com"
 
 
 def _require_env(name: str, default: str) -> str:

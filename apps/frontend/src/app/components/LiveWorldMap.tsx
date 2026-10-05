@@ -13,11 +13,13 @@ import {
   DECODE_VISUALS_FEEDBACK_URL,
 } from '@/utils/decodeVisualsCopy';
 import { airports } from '@/utils/airportsData';
+import { decodeTac } from '@/utils/api';
 import {
   boundsOf,
   fetchLivePlaces,
   formatObservedAt,
   LIVE_MAP_CANVAS,
+  LIVE_MAP_DECODE,
   LIVE_MAP_ERROR,
   LIVE_MAP_IWXXM,
   LIVE_MAP_LATEST,
@@ -26,6 +28,7 @@ import {
   LIVE_MAP_PENDING,
   LIVE_MAP_REFRESH_MS,
   LIVE_MAP_SPACE,
+  LIVE_MAP_TAC,
   LIVE_MAP_VIEWS,
   LIVE_MAP_ZOOM_HINT,
   pinColor,
@@ -38,7 +41,6 @@ import {
   type LivePlace,
   type MapBounds,
 } from '@/utils/liveMap';
-import { clusterPlaces, plotLevel } from '@/utils/liveMapRegions';
 
 const EMPTY_PLACES: LivePlace[] = [];
 const POPUP_CLOSE_MS = 400;
@@ -149,7 +151,33 @@ function drawPlace(map: L.Map, place: LivePlace): L.Layer {
  */
 export function StationPopup({ place }: { place: LivePlace }) {
   const [reportIndex, setReportIndex] = useState(0);
+  const [decodedFor, setDecodedFor] = useState<{ tac: string; text: string } | null>(
+    null,
+  );
   const report = place.reports[reportIndex] ?? place.reports[0];
+  const decoded =
+    report && decodedFor && decodedFor.tac === report.tac ? decodedFor.text : '';
+  useEffect(() => {
+    if (!report) {
+      return undefined;
+    }
+    const controller = new AbortController();
+    const tac = report.tac;
+    decodeTac({
+      manualText: tac,
+      product: place.product,
+      signal: controller.signal,
+    })
+      .then((result) => {
+        setDecodedFor({ tac, text: result.summary });
+      })
+      .catch(() => {
+        setDecodedFor({ tac, text: '' });
+      });
+    return () => {
+      controller.abort();
+    };
+  }, [place.product, report]);
   if (!report) {
     return null;
   }
@@ -161,7 +189,7 @@ export function StationPopup({ place }: { place: LivePlace }) {
     <div
       data-testid="live-map-detail"
       tabIndex={-1}
-      className="flex max-h-48 flex-col gap-2 overflow-y-auto text-sm text-gray-900"
+      className="flex max-h-[70vh] flex-col gap-2 overflow-y-auto text-sm text-gray-900"
     >
       <p className="text-base font-semibold">{placeName}</p>
       <p>{productLabel(place.product)}</p>
@@ -188,14 +216,29 @@ export function StationPopup({ place }: { place: LivePlace }) {
           </button>
         ))}
       </div>
-      <pre className="whitespace-pre-wrap font-mono text-xs" data-testid="live-map-tac">
-        {report.tac}
-      </pre>
+      <div>
+        <p className="text-xs font-medium">{LIVE_MAP_TAC}</p>
+        <pre
+          className="max-h-40 overflow-y-auto whitespace-pre-wrap font-mono text-xs"
+          data-testid="live-map-tac"
+        >
+          {report.tac}
+        </pre>
+      </div>
+      <div>
+        <p className="text-xs font-medium">{LIVE_MAP_DECODE}</p>
+        <pre
+          className="max-h-40 overflow-y-auto whitespace-pre-wrap text-xs"
+          data-testid="live-map-decode"
+        >
+          {decoded}
+        </pre>
+      </div>
       {report.iwxxm ? (
         <div>
           <p className="text-xs font-medium">{LIVE_MAP_IWXXM}</p>
           <pre
-            className="max-h-24 overflow-y-auto whitespace-pre-wrap font-mono text-xs"
+            className="max-h-40 overflow-y-auto whitespace-pre-wrap font-mono text-xs"
             data-testid="live-map-xml"
           >
             {report.iwxxm}
@@ -240,9 +283,8 @@ function showPopup(layer: L.Layer, place: LivePlace, roots: Root[], map: L.Map) 
   const width = popupWidth(map.getSize().x);
   layer.bindPopup(node, {
     maxWidth: width,
-    minWidth: Math.min(220, width),
-    autoPan: true,
-    autoPanPadding: [48, 48],
+    minWidth: Math.min(280, width),
+    autoPan: false,
     keepInView: false,
     autoClose: false,
     closeOnClick: false,
@@ -254,16 +296,11 @@ function showPopup(layer: L.Layer, place: LivePlace, roots: Root[], map: L.Map) 
   const element = popup?.getElement() ?? null;
   const container = map.getContainer();
   if (element) {
-    container.querySelectorAll('.leaflet-popup').forEach((node) => {
-      if (!node.contains(element)) {
-        node.remove();
+    container.querySelectorAll('.leaflet-popup').forEach((popupNode) => {
+      if (!popupNode.contains(element)) {
+        popupNode.remove();
       }
     });
-    window.setTimeout(() => {
-      const popupBox = element.getBoundingClientRect();
-      const mapBox = container.getBoundingClientRect();
-      map.panBy([0, -Math.max(0, mapBox.top + 16 - popupBox.top)], { animate: false });
-    }, 50);
     element.addEventListener('mouseenter', () => {
       window.clearTimeout(closeTimer);
     });
@@ -283,7 +320,6 @@ export function LiveWorldMap({ focusStation = '' }: { focusStation?: string }) {
   const mapRef = useRef<L.Map | null>(null);
   const [off, setOff] = useState<ReadonlySet<string>>(new Set());
   const [bounds, setBounds] = useState<MapBounds | null>(null);
-  const [zoom, setZoom] = useState<number | null>(null);
   const [places, setPlaces] = useState<LivePlace[]>([]);
   const [error, setError] = useState('');
   const [phase, setPhase] = useState<'loading' | 'ready' | 'refreshing'>('loading');
@@ -291,7 +327,6 @@ export function LiveWorldMap({ focusStation = '' }: { focusStation?: string }) {
   const products = selectedLayerQuery(off);
   const visible = bounds && products ? places : EMPTY_PLACES;
   const message = products ? error : '';
-  const level = zoom === null ? 'station' : plotLevel(zoom);
   const status = !products
     ? LIVE_MAP_LAYERS_OFF
     : viewStatus(places, phase === 'loading', phase === 'refreshing');
@@ -309,6 +344,52 @@ export function LiveWorldMap({ focusStation = '' }: { focusStation?: string }) {
   }, [focusStation, places]);
 
   useEffect(() => {
+    const map = mapRef.current;
+    if (!map) {
+      return undefined;
+    }
+    const roots: Root[] = [];
+    const layers: L.Layer[] = [];
+    let focused = false;
+    visible.forEach((place) => {
+      const layer = drawPlace(map, place);
+      const open = () => {
+        window.clearTimeout(closeTimer);
+        showPopup(layer, place, roots, map);
+      };
+      layer.on('mouseover', open);
+      layer.on('click', open);
+      layer.on('keydown', (event) => {
+        openOnKey(event, open);
+      });
+      layer.on('mouseout', () => {
+        if (!pointerCanHover()) {
+          return;
+        }
+        closeTimer = window.setTimeout(() => {
+          layer.closePopup();
+        }, POPUP_CLOSE_MS);
+      });
+      nameLayer(layer, `${place.place_key} ${productLabel(place.product)}`);
+      if (!focused && focusStation && place.place_key === focusStation) {
+        focused = true;
+        open();
+      }
+      layers.push(layer);
+    });
+    return () => {
+      window.clearTimeout(closeTimer);
+      layers.forEach((layer) => layer.remove());
+      const pending = roots.splice(0);
+      queueMicrotask(() => {
+        pending.forEach((root) => {
+          root.unmount();
+        });
+      });
+    };
+  }, [visible, focusStation]);
+
+  useEffect(() => {
     const node = host.current as HTMLDivElement;
     const map = L.map(node, { scrollWheelZoom: true }).setView([20, 0], 2);
     mapRef.current = map;
@@ -318,7 +399,6 @@ export function LiveWorldMap({ focusStation = '' }: { focusStation?: string }) {
     }).addTo(map);
     const publish = () => {
       setBounds(boundsOf(map));
-      setZoom(map.getZoom());
     };
     map.on('moveend', publish);
     map.on('zoomend', publish);
@@ -361,77 +441,6 @@ export function LiveWorldMap({ focusStation = '' }: { focusStation?: string }) {
     }, LIVE_MAP_REFRESH_MS);
     return () => window.clearInterval(timer);
   }, [bounds, products]);
-
-  useEffect(() => {
-    if (zoom === null) {
-      return undefined;
-    }
-    const map = mapRef.current as L.Map;
-    const roots: Root[] = [];
-    const layers: L.Layer[] = [];
-    if (level !== 'station') {
-      clusterPlaces(visible, level).forEach((group) => {
-        const marker = L.marker(group.anchor, {
-          icon: L.divIcon({
-            className: 'live-map-region',
-            html: `<span class="live-map-region-chip">${group.name} · ${group.count}</span>`,
-            iconSize: [0, 0],
-            iconAnchor: [0, 0],
-          }),
-        }).addTo(map);
-        const zoomTo = () => {
-          map.flyToBounds(L.latLngBounds(group.points), {
-            maxZoom: level === 'continent' ? 5 : 8,
-            padding: [24, 24],
-          });
-        };
-        marker.on('click', zoomTo);
-        marker.on('keydown', (event) => {
-          openOnKey(event, zoomTo);
-        });
-        nameLayer(marker, `${group.name} ${group.count}`);
-        layers.push(marker);
-      });
-    } else {
-      let focused = false;
-      visible.forEach((place) => {
-        const layer = drawPlace(map, place);
-        const open = () => {
-          window.clearTimeout(closeTimer);
-          showPopup(layer, place, roots, map);
-        };
-        layer.on('mouseover', open);
-        layer.on('click', open);
-        layer.on('keydown', (event) => {
-          openOnKey(event, open);
-        });
-        layer.on('mouseout', () => {
-          if (!pointerCanHover()) {
-            return;
-          }
-          closeTimer = window.setTimeout(() => {
-            layer.closePopup();
-          }, POPUP_CLOSE_MS);
-        });
-        nameLayer(layer, `${place.place_key} ${productLabel(place.product)}`);
-        if (!focused && focusStation && place.place_key === focusStation) {
-          focused = true;
-          open();
-        }
-        layers.push(layer);
-      });
-    }
-    return () => {
-      window.clearTimeout(closeTimer);
-      layers.forEach((layer) => layer.remove());
-      const pending = roots.splice(0);
-      queueMicrotask(() => {
-        pending.forEach((root) => {
-          root.unmount();
-        });
-      });
-    };
-  }, [visible, zoom, level, focusStation]);
 
   return (
     <div className="flex flex-col gap-3" data-testid="live-world-map">
@@ -490,7 +499,7 @@ export function LiveWorldMap({ focusStation = '' }: { focusStation?: string }) {
         role="region"
         aria-label={LIVE_MAP_CANVAS}
         aria-describedby="live-map-notice"
-        className="z-0 h-[min(36rem,calc(100dvh-18rem))] min-h-[20rem] w-full overflow-hidden rounded border border-gray-200 dark:border-gray-700"
+        className="z-0 h-[100dvh] min-h-[100dvh] w-full overflow-hidden rounded border border-gray-200 dark:border-gray-700"
         data-testid="live-map-canvas"
       />
     </div>

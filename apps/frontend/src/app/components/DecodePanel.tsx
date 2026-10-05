@@ -94,7 +94,7 @@ export function DecodePanel({
     <section
       className={
         pinned
-          ? 'flex min-h-[15rem] min-w-0 flex-1 flex-col rounded-md border border-gray-200 dark:border-gray-700'
+          ? 'flex min-h-[100dvh] min-w-0 flex-1 flex-col rounded-md border border-gray-200 dark:border-gray-700'
           : 'mt-3 rounded-md border border-gray-200 dark:border-gray-700'
       }
       aria-label="TAC decode panel"

@@ -5,7 +5,8 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { act, cleanup, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import L from 'leaflet';
-import { boundsOf, LIVE_MAP_PRODUCTS } from '@/utils/liveMap';
+import { boundsOf, LIVE_MAP_PRODUCTS, type LivePlace } from '@/utils/liveMap';
+import { decodeTac } from '@/utils/api';
 import { LiveWorldMap, StationPopup } from './LiveWorldMap';
 
 const clicks: Array<() => void> = [];
@@ -82,7 +83,16 @@ vi.mock('leaflet', () => ({
 
 vi.mock('leaflet/dist/leaflet.css', () => ({}));
 
-const place = {
+vi.mock('@/utils/api', () => ({
+  decodeTac: vi.fn().mockResolvedValue({
+    product: 'METAR',
+    segments: [],
+    residuals: [],
+    summary: 'Wind from the south at 12 knots.',
+  }),
+}));
+
+const place: LivePlace = {
   place_key: 'KJFK',
   product: 'metar',
   latitude: 40.6,
@@ -168,6 +178,8 @@ describe('LiveWorldMap', () => {
       el.parentElement?.remove();
     });
     clicks.length = 0;
+    map.panBy.mockClear();
+    map.flyToBounds.mockClear();
     leaves.length = 0;
     keys.length = 0;
     map.getZoom.mockReturnValue(8);
@@ -306,7 +318,12 @@ describe('LiveWorldMap', () => {
     );
     expect(screen.getByTestId('live-map-wind')).toHaveTextContent('180');
     expect(screen.getByTestId('live-map-tac')).toHaveTextContent('18012KT');
+    expect(await screen.findByTestId('live-map-decode')).toHaveTextContent(
+      'Wind from the south at 12 knots.',
+    );
     expect(screen.getByTestId('live-map-xml')).toHaveTextContent('<iwxxm/>');
+    expect(map.panBy).not.toHaveBeenCalled();
+    expect(map.flyToBounds).not.toHaveBeenCalled();
     popupEl.dispatchEvent(new Event('mouseenter'));
     popupEl.dispatchEvent(new Event('mouseleave'));
     expect(marker.closePopup).toHaveBeenCalled();
@@ -368,8 +385,7 @@ describe('LiveWorldMap', () => {
     expect(marker.closePopup).toHaveBeenCalled();
   });
 
-  it('zooms a continent cluster without opening a report', async () => {
-    map.getZoom.mockReturnValue(2);
+  it('draws route polygons at world zoom and opens the report', async () => {
     vi.stubGlobal(
       'fetch',
       vi.fn().mockResolvedValue({
@@ -378,39 +394,24 @@ describe('LiveWorldMap', () => {
       }),
     );
     render(<LiveWorldMap />);
-    await waitFor(() => expect(clicks.length).toBeGreaterThan(0));
-    expect(L.polygon).not.toHaveBeenCalled();
+    await waitFor(() => expect(L.polygon).toHaveBeenCalled());
+    expect(L.marker).toHaveBeenCalled();
+    expect(screen.getByTestId('live-map-canvas').className).toContain('min-h-[100dvh]');
     act(() => {
-      clicks[0]?.();
+      clicks[1]?.();
     });
-    act(() => {
-      keys[0]?.({ originalEvent: { key: 'Enter', preventDefault: vi.fn() } });
-    });
-    expect(map.flyToBounds).toHaveBeenCalledWith(
-      expect.anything(),
-      expect.objectContaining({ maxZoom: 5 }),
-    );
-    expect(screen.queryByTestId('live-map-tac')).not.toBeInTheDocument();
+    expect(screen.getByTestId('live-map-tac')).toHaveTextContent('SIGMET');
+    expect(map.flyToBounds).not.toHaveBeenCalled();
+    expect(map.panBy).not.toHaveBeenCalled();
   });
 
-  it('zooms a sub-region cluster closer than a continent', async () => {
-    map.getZoom.mockReturnValue(5);
-    vi.stubGlobal(
-      'fetch',
-      vi.fn().mockResolvedValue({
-        ok: true,
-        json: async () => ({ places: [place] }),
-      }),
-    );
-    render(<LiveWorldMap />);
-    await waitFor(() => expect(clicks.length).toBeGreaterThan(0));
-    act(() => {
-      clicks[0]?.();
+  it('leaves the decode blank when the request fails', async () => {
+    vi.mocked(decodeTac).mockRejectedValueOnce(new Error('decode failed'));
+    render(<StationPopup place={place} />);
+    expect(await screen.findByTestId('live-map-tac')).toHaveTextContent('18012KT');
+    await waitFor(() => {
+      expect(screen.getByTestId('live-map-decode')).toHaveTextContent('');
     });
-    expect(map.flyToBounds).toHaveBeenCalledWith(
-      expect.anything(),
-      expect.objectContaining({ maxZoom: 8 }),
-    );
   });
 
   it('renders nothing when a station has no reports', () => {
