@@ -488,6 +488,21 @@ def _offset_vertices(
     """
 
     def _normal(start: tuple[float, float], end: tuple[float, float]) -> tuple[float, float]:
+        """
+        Perpendicular step from one vertex to the next.
+
+        Parameters
+        ----------
+        start : tuple[float, float]
+            Segment start, latitude then longitude.
+        end : tuple[float, float]
+            Segment end, latitude then longitude.
+
+        Returns
+        -------
+        tuple[float, float]
+            Latitude and longitude offsets of half the corridor width.
+        """
         dlat = end[0] - start[0]
         dlon = end[1] - start[1]
         length = math.hypot(dlat, dlon) or 1.0
