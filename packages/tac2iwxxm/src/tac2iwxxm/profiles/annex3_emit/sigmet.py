@@ -689,6 +689,9 @@ def _sigmet_motion_xml(ir: dict[str, Any]) -> str:
         return f"""
               <iwxxm:directionOfMotion uom="deg">{_motion_deg_text(ir["motion_dir_deg"])}</iwxxm:directionOfMotion>
               <iwxxm:speedOfMotion uom="[kn_i]">{int(ir["motion_speed_kt"])}</iwxxm:speedOfMotion>"""
+    if "motion_dir_deg" in ir:
+        return f"""
+              <iwxxm:directionOfMotion uom="deg">{_motion_deg_text(ir["motion_dir_deg"])}</iwxxm:directionOfMotion>"""
     return ""
 
 

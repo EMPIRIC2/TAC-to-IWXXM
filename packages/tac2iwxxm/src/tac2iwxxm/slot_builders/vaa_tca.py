@@ -14,7 +14,11 @@ _ERUPTION_AT = re.compile(
     re.IGNORECASE,
 )
 _DAY_HHMM = re.compile(r"(?P<dd>\d{2})/(?P<hh>\d{2})(?P<mi>\d{2})Z")
-_MOV = re.compile(r"\bMOV\s+(?P<dir>N|NE|E|SE|S|SW|W|NW)\s+(?P<spd>\d+)\s*KT\b", re.IGNORECASE)
+_MOV = re.compile(
+    r"\bMOV\s+(?P<dir>NNE|ENE|ESE|SSE|SSW|WSW|WNW|NNW|NE|SE|SW|NW|N|E|S|W)"
+    r"\s+(?P<spd>\d+)\s*(?P<unit>KT|KM/?H|MPS)\b",
+    re.IGNORECASE,
+)
 _FL_BAND = re.compile(r"\bFL(?P<lo>\d{2,3})/(?P<hi>\d{2,3})\b", re.IGNORECASE)
 _SFC_FL = re.compile(r"\bSFC/FL(?P<hi>\d{2,3})\b", re.IGNORECASE)
 _CLOUD_CHUNK = re.compile(
@@ -24,21 +28,21 @@ _CLOUD_CHUNK = re.compile(
 )
 _DIR_DEG = {
     "N": 0,
-    "NNE": 22,
+    "NNE": 22.5,
     "NE": 45,
-    "ENE": 67,
+    "ENE": 67.5,
     "E": 90,
-    "ESE": 112,
+    "ESE": 112.5,
     "SE": 135,
-    "SSE": 157,
+    "SSE": 157.5,
     "S": 180,
-    "SSW": 202,
+    "SSW": 202.5,
     "SW": 225,
-    "WSW": 247,
+    "WSW": 247.5,
     "W": 270,
-    "WNW": 292,
+    "WNW": 292.5,
     "NW": 315,
-    "NNW": 337,
+    "NNW": 337.5,
 }
 _MOV_TCA = re.compile(
     r"(?P<dir>NNE|ENE|ESE|SSE|SSW|WSW|WNW|NNW|NE|SE|SW|NW|N|E|S|W)\s+"
@@ -54,6 +58,32 @@ _INTST_MAP = {
     "WKN": "WEAKEN",
     "NC": "NO_CHANGE",
 }
+
+
+def _vaa_motion(match: re.Match[str]) -> dict[str, int | float]:
+    """
+    Record ash-cloud direction and speed, keeping kilometres per hour distinct from knots.
+
+    Parameters
+    ----------
+    match : re.Match[str]
+        ``MOV`` group with a compass point, speed, and unit.
+
+    Returns
+    -------
+    dict[str, int | float]
+        ``motion_dir_deg`` plus either ``motion_speed_kmh`` or ``motion_speed_kt``.
+    """
+    recorded: dict[str, int | float] = {"motion_dir_deg": _DIR_DEG[match.group("dir").upper()]}
+    speed = int(match.group("spd"))
+    unit = match.group("unit").upper().replace("/", "")
+    if unit == "MPS":
+        recorded["motion_speed_kmh"] = round(speed * 3.6)
+    elif unit == "KMH":
+        recorded["motion_speed_kmh"] = speed
+    else:
+        recorded["motion_speed_kt"] = speed
+    return recorded
 
 
 def _fields(text: str) -> dict[str, str]:
@@ -266,8 +296,7 @@ def _parse_ash_clouds(blob: str) -> list[dict[str, Any]]:
             cloud["upper_ref"] = "STD"
         mov = _MOV.search(body)
         if mov:
-            cloud["motion_dir_deg"] = _DIR_DEG[mov.group("dir").upper()]
-            cloud["motion_speed_kt"] = int(mov.group("spd"))
+            cloud.update(_vaa_motion(mov))
         clouds.append(cloud)
     return clouds
 

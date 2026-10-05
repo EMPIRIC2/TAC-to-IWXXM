@@ -43,10 +43,11 @@ _SIG_VALID = re.compile(r"^(?P<d1>\d{2})(?P<h1>\d{2})(?P<m1>\d{2})/(?P<d2>\d{2})
 _SIG_FL = re.compile(r"^FL(?P<fl>\d{2,3})$")
 # Vertical layer - ``SFC/FL550`` or ``FL250/370``.
 _SIG_FL_LAYER = re.compile(r"^(?:SFC/FL(?P<sfc>\d{2,3})|FL(?P<a>\d{2,3})/(?:FL)?(?P<b>\d{2,3}))$")
-_SIG_SPEED = re.compile(r"^(?P<spd>\d{1,3})(?P<unit>KT|KMH|MPS)$")
+_SIG_SPEED = re.compile(r"^(?P<spd>\d{1,3})(?P<unit>KT|KM/H|KMH|MPS)$")
 _SIG_SPEED_UNIT = {
     "KT": "kt",
     "KMH": "kilometres per hour",
+    "KM/H": "kilometres per hour",
     "MPS": "metres per second",
 }
 _SIG_LAT = re.compile(r"^(?P<hemi>[NS])(?P<deg>\d{1,2})(?P<min>\d{2})?$")
@@ -956,6 +957,7 @@ _COMPASS = {
 
 _SPEED_UNIT = {
     "KMH": "kilometres per hour",
+    "KM/H": "kilometres per hour",
     "KT": "knots",
     "MPS": "metres per second",
 }
@@ -1098,7 +1100,8 @@ def _plain_advisory_value(value: str) -> str:
         str
             Direction, speed, and unit in words.
         """
-        return f"{_COMPASS[match.group(1)]} at {int(match.group(2))} {_SPEED_UNIT[match.group(3)]}"
+        unit = match.group(3).upper()
+        return f"{_COMPASS[match.group(1)]} at {int(match.group(2))} {_SPEED_UNIT[unit]}"
 
     def _speed(match: re.Match[str]) -> str:
         """Expand a bare speed.
@@ -1113,13 +1116,14 @@ def _plain_advisory_value(value: str) -> str:
         str
             Speed and unit in words.
         """
-        return f"{int(match.group(1))} {_SPEED_UNIT[match.group(2)]}"
+        unit = match.group(2).upper()
+        return f"{int(match.group(1))} {_SPEED_UNIT[unit]}"
 
     text = re.sub(r"\b(\d{8})/(\d{4})Z\b", _dtg, text)
     text = re.sub(r"\b(\d{2})/(\d{4})Z\b", _daytime, text)
     text = re.sub(r"\b([NS])(\d{2})(\d{2})\b", _lat, text)
     text = re.sub(r"\b([EW])(\d{2,3})(\d{2})\b", _lon, text)
-    text = re.sub(rf"\b({_COMPASS_RE})\s*(\d{{1,3}})\s*(KMH|KT|MPS)\b", _move, text)
+    text = re.sub(rf"\b({_COMPASS_RE})\s*(\d{{1,3}})\s*(KM/H|KMH|KT|MPS)\b", _move, text)
     text = re.sub(r"\bSFC/FL(\d+)\b", lambda m: f"surface to flight level {int(m.group(1))}", text)
     text = re.sub(
         r"\bFL(\d+)/(\d+)\b",
@@ -1127,7 +1131,7 @@ def _plain_advisory_value(value: str) -> str:
         text,
     )
     text = re.sub(r"\bFL(\d+)\b", lambda m: f"flight level {int(m.group(1))}", text)
-    text = re.sub(r"\b(\d+)(KMH|KT|MPS)\b", _speed, text)
+    text = re.sub(r"\b(\d+)(KM/H|KMH|KT|MPS)\b", _speed, text)
     text = re.sub(r"\b(\d+)HPA\b", lambda m: f"{int(m.group(1))} hectopascals", text)
     text = re.sub(r"\b(\d+)NM\b", lambda m: f"{int(m.group(1))} nautical miles", text)
     text = re.sub(r"\b(\d+)KM\b", lambda m: f"{int(m.group(1))} kilometres", text)

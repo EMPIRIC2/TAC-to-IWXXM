@@ -21,6 +21,26 @@ _VAA_FORBIDDEN_ROOTS = frozenset(
 )
 
 
+def _vaa_deg_text(degrees: int | float) -> str:
+    """
+    Format an ash-cloud bearing, keeping half-degree compass points.
+
+    Parameters
+    ----------
+    degrees : int | float
+        Bearing from true north.
+
+    Returns
+    -------
+    str
+        Whole degrees as an integer, otherwise one decimal place.
+    """
+    number = float(degrees)
+    if number.is_integer():
+        return str(int(number))
+    return f"{number:.1f}"
+
+
 def _vaa_cloud_extent_xml(cloud: dict[str, Any], *, gid: str) -> str:
     """
     Internal helper ``_vaa_cloud_extent_xml``.
@@ -52,9 +72,13 @@ def _vaa_cloud_extent_xml(cloud: dict[str, Any], *, gid: str) -> str:
                             <aixm:lowerLimitReference>STD</aixm:lowerLimitReference>"""
     pos_list = escape(str(cloud["pos_list"]))
     motion = ""
-    if "motion_dir_deg" in cloud and "motion_speed_kt" in cloud:
+    if "motion_dir_deg" in cloud and "motion_speed_kmh" in cloud:
         motion = f"""
-                    <iwxxm:directionOfMotion uom="deg">{int(cloud["motion_dir_deg"])}</iwxxm:directionOfMotion>
+                    <iwxxm:directionOfMotion uom="deg">{_vaa_deg_text(cloud["motion_dir_deg"])}</iwxxm:directionOfMotion>
+                    <iwxxm:speedOfMotion uom="km/h">{int(cloud["motion_speed_kmh"])}</iwxxm:speedOfMotion>"""
+    elif "motion_dir_deg" in cloud and "motion_speed_kt" in cloud:
+        motion = f"""
+                    <iwxxm:directionOfMotion uom="deg">{_vaa_deg_text(cloud["motion_dir_deg"])}</iwxxm:directionOfMotion>
                     <iwxxm:speedOfMotion uom="[kn_i]">{int(cloud["motion_speed_kt"])}</iwxxm:speedOfMotion>"""
     return f"""
                     <iwxxm:ashCloudExtent>

@@ -33,6 +33,21 @@ def test_spaced_speed_and_sixteen_point_direction() -> None:
     assert by_code["KMH"] == "kilometres per hour"
 
 
+def test_slash_kilometres_per_hour() -> None:
+    glued = decode_tac(
+        "USTV SIGMET 4 VALID 051330/051730 USTR- USTV TYUMEN FIR SEV TURB FCST SFC/FL100 MOV E 25KM/H NC=",
+        product="SIGMET",
+    )
+    by_code = {segment.code: segment.explanation for segment in glued.segments}
+    assert by_code["25KM/H"] == "Speed 25 kilometres per hour"
+    spaced = decode_tac(
+        "USTV SIGMET 5 VALID 051330/051730 USTR- USTV TYUMEN FIR SEV TURB FCST SFC/FL100 MOV E 25 KM/H NC=",
+        product="SIGMET",
+    )
+    spaced_codes = {segment.code: segment.explanation for segment in spaced.segments}
+    assert spaced_codes["KM/H"] == "kilometres per hour"
+
+
 def test_metres_per_second_and_polygon_dash_without_a_line() -> None:
     assert _explain_sigmet_airmet("15MPS", product="SIGMET", seen={}) == "Speed 15 metres per second"
     assert _explain_sigmet_airmet("-", product="SIGMET", seen={}) == "Polygon vertex separator"
