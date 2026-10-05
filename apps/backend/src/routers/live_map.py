@@ -2,6 +2,9 @@
 
 from __future__ import annotations
 
+from collections.abc import Mapping, Sequence
+from typing import cast
+
 from fastapi import APIRouter, HTTPException, Query
 
 from src.services.live_map_cache import LiveMapCache, cache_from_env
@@ -116,12 +119,46 @@ def read_live_map(
             detail="Choose map layers from METAR, SPECI, TAF, AIRMET, SIGMET, or an advisory.",
         )
     return {
-        "places": get_live_map_cache().query(
-            west=west,
-            south=south,
-            east=east,
-            north=north,
-            products=selected,
+        "places": _places_for_browser(
+            get_live_map_cache().query(
+                west=west,
+                south=south,
+                east=east,
+                north=north,
+                products=selected,
+            )
         ),
         "space_weather": [],
     }
+
+
+def _places_for_browser(
+    places: Sequence[Mapping[str, object]],
+) -> list[dict[str, object]]:
+    """Leave stored XML and issue notes off the map list.
+
+    Parameters
+    ----------
+    places : Sequence[Mapping[str, object]]
+        Cache rows. Each report may still hold a translation and notes.
+
+    Returns
+    -------
+    list[dict[str, object]]
+        The same places, with each report reduced to its time and TAC.
+
+    Examples
+    --------
+    >>> 1 + 1
+    2
+    """
+    slim: list[dict[str, object]] = []
+    for place in places:
+        reports = cast(list[dict[str, object]], place["reports"])
+        slim.append(
+            {
+                **place,
+                "reports": [{"observed_at": report["observed_at"], "tac": report["tac"]} for report in reports],
+            }
+        )
+    return slim

@@ -7,6 +7,7 @@ import { flushSync } from 'react-dom';
 import { createRoot, type Root } from 'react-dom/client';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
+import { drawForPlace } from '@metar/live-map-geometry';
 import {
   DECODE_VISUALS_BETA,
   DECODE_VISUALS_FEEDBACK,
@@ -109,29 +110,43 @@ function pointOf(place: LivePlace): [number, number] {
  * const _ = true;
  */
 function drawPlace(map: L.Map, place: LivePlace): L.Layer {
-  const kind = place.geometry?.kind ?? 'point';
-  const coordinates = place.geometry?.coordinates;
-  if (
-    (kind === 'polygon' || kind === 'line') &&
-    coordinates &&
-    coordinates.length >= 2
-  ) {
-    const shape = kind === 'polygon' ? L.polygon(coordinates) : L.polyline(coordinates);
-    return shape.addTo(map);
+  const draw = drawForPlace(place);
+  if (draw.kind === 'polygon') {
+    return L.polygon(draw.positions).addTo(map);
   }
-  if (kind === 'circle' && place.geometry?.radius_m) {
-    return L.circle(pointOf(place), { radius: place.geometry.radius_m }).addTo(map);
+  if (draw.kind === 'line') {
+    return L.polyline(draw.positions).addTo(map);
+  }
+  if (draw.kind === 'circle') {
+    return L.circle([draw.latitude, draw.longitude], { radius: draw.radiusM }).addTo(
+      map,
+    );
   }
   const color = pinColor(place.product);
-  return L.marker(pointOf(place), {
-    title: `${place.place_key} ${productLabel(place.product)}`,
-    icon: L.divIcon({
-      className: '',
-      html: `<span style="display:flex;width:44px;height:44px;align-items:center;justify-content:center"><span style="display:block;width:12px;height:12px;border-radius:9999px;background:${color};border:2px solid #fff"></span></span>`,
-      iconSize: [44, 44],
-      iconAnchor: [22, 22],
-    }),
+  return L.circleMarker([draw.latitude, draw.longitude], {
+    radius: 6,
+    color: '#ffffff',
+    weight: 2,
+    fillColor: color,
+    fillOpacity: 1,
   }).addTo(map);
+}
+
+/**
+ * Paint vectors again after a full replace. Leaflet 1.9.4 can leave the canvas blank.
+ *
+ * @param map - Leaflet map
+ * @example
+ * const _ = true;
+ */
+function redrawCanvas(map: L.Map): void {
+  const renderer = map.options.renderer as unknown as {
+    _map?: unknown;
+    _update: () => void;
+  };
+  if (renderer._map) {
+    renderer._update();
+  }
 }
 
 /**
@@ -281,6 +296,7 @@ export function LiveWorldMap({
       }
       layers.push(layer);
     });
+    redrawCanvas(map);
     return () => {
       layers.forEach((layer) => layer.remove());
       const pending = roots.splice(0);
@@ -294,10 +310,13 @@ export function LiveWorldMap({
 
   useEffect(() => {
     const node = host.current as HTMLDivElement;
-    const map = L.map(node, { scrollWheelZoom: true, preferCanvas: true }).setView(
-      [20, 0],
-      2,
-    );
+    const vectors = L.canvas({ tolerance: 18 });
+    const map = L.map(node, {
+      scrollWheelZoom: true,
+      preferCanvas: true,
+      renderer: vectors,
+    }).setView([20, 0], 2);
+    map.options.renderer = vectors;
     mapRef.current = map;
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '© OpenStreetMap',

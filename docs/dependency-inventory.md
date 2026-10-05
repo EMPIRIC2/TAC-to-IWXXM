@@ -146,6 +146,7 @@ via Supabase). **JWKS-only** (`D-S038-04-b1` Q2=2): do not use `SUPABASE_JWT_SEC
 | CodeMirror 6 | F7 workbench editor | MIT | npm — pinned S011 M2 T2.5: `codemirror@6.0.2`, `@codemirror/view@6.43.6`, `@codemirror/state@6.7.1`, `@codemirror/commands@6.10.4`, `@codemirror/language@6.12.4` (autocomplete deferred until needed) |
 | @sentry/react | Browser error monitoring when DSN set — EV-052 / #900 | MIT | npm (`apps/frontend`) |
 | leaflet | Pannable station map on Decode visuals (F7 / F9). Tiles from OpenStreetMap; one station coordinate comes from `GET /api/v1/stations/{icao}`. Types: `@types/leaflet` (MIT, dev) | BSD-2-Clause | npm (`apps/frontend`) |
+| @metar/live-map-geometry | Chooses point, line, polygon, or circle for one cached place (F37). No third-party packages. The frontend paints the result with Leaflet. | MIT (in-repo) | pnpm workspace (`packages/live-map-geometry`) |
 | openapi-typescript | OpenAPI → typed FE client — EV-052 / #900 (`D-S061-orval=1`; not full Orval) | MIT | npm (dev; `apps/frontend`) |
 
 ## Workspace Tooling
