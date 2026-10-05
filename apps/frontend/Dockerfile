@@ -12,11 +12,13 @@ RUN corepack enable
 # Workspace metadata (layer cache)
 COPY package.json pnpm-workspace.yaml pnpm-lock.yaml ./
 COPY packages/shared/package.json packages/shared/package.json
+COPY packages/live-map-geometry/package.json packages/live-map-geometry/package.json
 COPY apps/frontend/package.json apps/frontend/package.json
 
 RUN pnpm install --frozen-lockfile --filter @metar/frontend...
 
 COPY packages/shared packages/shared
+COPY packages/live-map-geometry packages/live-map-geometry
 COPY apps/frontend apps/frontend
 
 WORKDIR /workspace/apps/frontend
@@ -45,11 +47,13 @@ ENV VITE_API_BASE_URL=${VITE_API_BASE_URL}
 
 COPY package.json pnpm-workspace.yaml pnpm-lock.yaml ./
 COPY packages/shared/package.json packages/shared/package.json
+COPY packages/live-map-geometry/package.json packages/live-map-geometry/package.json
 COPY apps/frontend/package.json apps/frontend/package.json
 
 RUN pnpm install --frozen-lockfile --filter @metar/frontend...
 
 COPY packages/shared packages/shared
+COPY packages/live-map-geometry packages/live-map-geometry
 COPY apps/frontend apps/frontend
 
 WORKDIR /workspace/apps/frontend

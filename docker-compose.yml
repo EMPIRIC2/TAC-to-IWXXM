@@ -72,6 +72,7 @@ services:
     volumes:
       - ./apps/frontend:/workspace/apps/frontend
       - ./packages/shared:/workspace/packages/shared
+      - ./packages/live-map-geometry:/workspace/packages/live-map-geometry
       - ./config:/workspace/config:ro
       - ./scripts:/workspace/scripts:ro
       - /workspace/node_modules
