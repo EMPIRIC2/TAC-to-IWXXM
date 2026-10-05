@@ -398,7 +398,6 @@ export function collectOperatorVisibleCopy(): OperatorVisibleCopyEntry[] {
     { id: 'shell.nav.history', text: SHELL_NAV_LABELS.history },
     { id: 'shell.nav.quality', text: SHELL_NAV_LABELS.quality },
     { id: 'shell.nav.catalog', text: SHELL_NAV_LABELS.catalog },
-    { id: 'shell.nav.visuals', text: SHELL_NAV_LABELS.visuals },
     { id: 'decode-visuals.title', text: DECODE_VISUALS_TITLE },
     { id: 'decode-visuals.intro', text: DECODE_VISUALS_INTRO },
     { id: 'decode-visuals.beta', text: DECODE_VISUALS_BETA },

@@ -656,26 +656,15 @@ describe('FileConverter Component', () => {
         removeEventListener: () => undefined,
         dispatchEvent: () => true,
       })) as typeof window.matchMedia;
-      render(<FileConverter {...defaultProps} onOpenVisuals={() => undefined} />);
+      render(<FileConverter {...defaultProps} />);
       const panes = screen.getByTestId('live-convert-panes');
       const decodePane = within(panes).getByTestId('decode-pane');
-      expect(decodePane).toContainElement(
-        within(panes).getByTestId('open-decode-visuals'),
-      );
       expect(decodePane).toContainElement(
         within(panes).getByTestId('decode-panel-mock'),
       );
       expect(within(panes).getByTestId('iwxxm-preview-pane')).toBeInTheDocument();
       expect(within(panes).getAllByRole('separator')).toHaveLength(2);
       window.matchMedia = original;
-    });
-
-    it('opens decode visuals for the report station', async () => {
-      const user = userEvent.setup({ delay: null });
-      const onOpenVisuals = vi.fn();
-      render(<FileConverter {...defaultProps} onOpenVisuals={onOpenVisuals} />);
-      await user.click(screen.getByTestId('open-decode-visuals'));
-      expect(onOpenVisuals).toHaveBeenCalledTimes(1);
     });
 
     it('shows Sign in for guests and guest loss notice when local work exists', async () => {
@@ -1718,6 +1707,14 @@ describe('FileConverter Component', () => {
         'Weather map',
       );
       expect(screen.getByTestId('live-world-map')).toBeInTheDocument();
+      expect(
+        screen
+          .getByTestId('live-convert-panes')
+          .compareDocumentPosition(screen.getByTestId('convert-weather-map')),
+      ).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
+      expect(
+        screen.queryByRole('tab', { name: 'Decode visuals' }),
+      ).not.toBeInTheDocument();
       expect(screen.getByTestId('convert-setup').className).toContain(
         'xl:max-h-[18rem]',
       );

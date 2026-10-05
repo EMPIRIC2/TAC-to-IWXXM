@@ -56,7 +56,6 @@ vi.mock('./components/FileConverter', () => ({
     onSessionUpdated,
     onActiveSessionIdChange,
     onOpenCatalog,
-    onOpenVisuals,
     isGuest,
   }: {
     onOpenHistory?: () => void;
@@ -70,7 +69,6 @@ vi.mock('./components/FileConverter', () => ({
       family?: 'conversion' | 'lint' | 'iwxxm' | 'decoding',
       code?: string,
     ) => void;
-    onOpenVisuals?: () => void;
     isGuest?: boolean;
   }) => (
     <div data-testid="file-converter">
@@ -110,13 +108,6 @@ vi.mock('./components/FileConverter', () => ({
         onClick={() => onOpenCatalog?.('lint', 'MISSING_TERMINATOR')}
       >
         Catalog with code
-      </button>
-      <button
-        type="button"
-        data-testid="open-decode-visuals"
-        onClick={() => onOpenVisuals?.()}
-      >
-        Visuals
       </button>
       <button
         type="button"
@@ -537,8 +528,7 @@ describe('App Component (F31 optional Auth)', () => {
     render(<App />);
 
     expect(screen.getByTestId('app-shell-nav')).toBeInTheDocument();
-    await user.click(screen.getByTestId('open-decode-visuals'));
-    expect(screen.getByTestId('decode-visuals-page')).toBeInTheDocument();
+    expect(screen.queryByTestId('shell-nav-visuals')).not.toBeInTheDocument();
     await user.click(screen.getByTestId('shell-nav-converter'));
     expect(screen.getByTestId('shell-nav-converter')).toHaveAttribute(
       'aria-selected',
@@ -556,10 +546,6 @@ describe('App Component (F31 optional Auth)', () => {
     await user.click(screen.getByTestId('shell-nav-history'));
     expect(screen.getByTestId('history-view')).toBeInTheDocument();
     expect(screen.queryByTestId('quality-metrics-page')).not.toBeInTheDocument();
-
-    await user.click(screen.getByTestId('shell-nav-visuals'));
-    expect(screen.getByTestId('decode-visuals-page')).toBeInTheDocument();
-    expect(screen.getByTestId('decode-visuals-empty')).toBeInTheDocument();
   });
 
   it('opens catalog via shell nav and quality detail/list routes', async () => {

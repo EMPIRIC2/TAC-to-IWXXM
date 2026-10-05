@@ -21,6 +21,7 @@ describe('AppShellNav', () => {
       SHELL_NAV_LABELS.catalog,
     );
     expect(screen.queryByTestId('shell-nav-profiles')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('shell-nav-visuals')).not.toBeInTheDocument();
     await user.click(screen.getByTestId('shell-nav-catalog'));
     expect(onNavigate).toHaveBeenCalledWith('catalog');
   });
