@@ -52,7 +52,8 @@ _TC_OBS_PSN = re.compile(
     re.IGNORECASE,
 )
 _MOV = re.compile(
-    r"\bMOV\s+(?P<dir>N|NE|E|SE|S|SW|W|NW)\s+(?P<spd>\d+)\s*KT\b",
+    r"\bMOV\s+(?P<dir>NNE|ENE|ESE|SSE|SSW|WSW|WNW|NNW|NE|SE|SW|NW|N|E|S|W)"
+    r"\s+(?P<spd>\d+)\s*(?P<unit>KT|KMH|MPS)\b",
     re.IGNORECASE,
 )
 _AREA_TS_MOV = re.compile(
@@ -112,6 +113,7 @@ _SIG_PHENOMENA = (
     ("FRQ TS", "FRQ_TS"),
     ("SQL TS", "SQL_TS"),
     ("SEV TURB", "SEV_TURB"),
+    ("SEV ICE (FZRA)", "SEV_ICE_FZRA"),
     ("SEV ICE", "SEV_ICE"),
     ("TC", "TC"),
     ("VA", "VA"),
@@ -149,13 +151,21 @@ _GFA_CLOUD_BASE = re.compile(r"\b(?:BKN|OVC)(?P<base>\d{3})\b")
 
 _DIR_DEG = {
     "N": 0,
+    "NNE": 22.5,
     "NE": 45,
+    "ENE": 67.5,
     "E": 90,
+    "ESE": 112.5,
     "SE": 135,
+    "SSE": 157.5,
     "S": 180,
+    "SSW": 202.5,
     "SW": 225,
+    "WSW": 247.5,
     "W": 270,
+    "WNW": 292.5,
     "NW": 315,
+    "NNW": 337.5,
 }
 _INTENSITY = {
     "WKN": "WEAKEN",
@@ -227,6 +237,38 @@ def _parse_valid(token: str) -> tuple[int, int, int]:
         Return value.
     """
     return int(token[0:2]), int(token[2:4]), int(token[4:6])
+
+
+def _apply_motion(ir: dict[str, Any], body: str) -> None:
+    """
+    Record movement direction and speed, keeping kilometres per hour distinct from knots.
+
+    Parameters
+    ----------
+    ir : dict
+        Hazard intermediate representation being filled.
+    body : str
+        SIGMET or AIRMET body text.
+
+    Returns
+    -------
+    None
+        ``ir`` is updated in place when a movement group matches.
+    """
+    if ir.get("stationary"):
+        return
+    mov = _MOV.search(body)
+    if mov is None:
+        return
+    ir["motion_dir_deg"] = _DIR_DEG[mov.group("dir").upper()]
+    speed = int(mov.group("spd"))
+    unit = mov.group("unit").upper()
+    if unit == "MPS":
+        ir["motion_speed_kmh"] = round(speed * 3.6)
+    elif unit == "KMH":
+        ir["motion_speed_kmh"] = speed
+    else:
+        ir["motion_speed_kt"] = speed
 
 
 def _detect_phenomenon(body: str, table: tuple[tuple[str, str], ...]) -> str:
@@ -508,16 +550,10 @@ def _enrich_hazard_body(ir: dict[str, Any], body: str) -> None:
         if "lower_fl" in first:
             ir["lower_fl"] = first["lower_fl"]
             ir["upper_fl"] = first["upper_fl"]
-        mov = _MOV.search(body)
-        if mov is not None and not ir["stationary"]:
-            ir["motion_dir_deg"] = _DIR_DEG[mov.group("dir").upper()]
-            ir["motion_speed_kt"] = int(mov.group("spd"))
+        _apply_motion(ir, body)
         return
 
-    mov = _MOV.search(body)
-    if mov is not None and not ir["stationary"]:
-        ir["motion_dir_deg"] = _DIR_DEG[mov.group("dir").upper()]
-        ir["motion_speed_kt"] = int(mov.group("spd"))
+    _apply_motion(ir, body)
 
     top = _TOP_FL.search(body)
     if top is not None:
@@ -621,6 +657,10 @@ def _enrich_hazard_body(ir: dict[str, Any], body: str) -> None:
             pos_list = " ".join(f"{lat:.4f} {lon:.4f}" for lat, lon in pts)
             ir["geometry"] = {"kind": "polygon", "pos_list": pos_list}
             return
+
+    # An open LINE is a boundary, not a point and not a closed ring.
+    if re.search(r"\bLINE\b", body, re.IGNORECASE):
+        return
 
     point = _POINT.search(body)
     if point is not None:

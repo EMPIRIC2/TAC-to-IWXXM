@@ -643,6 +643,26 @@ def _sigmet_volcano_xml(ir: dict[str, Any]) -> str:
 """
 
 
+def _motion_deg_text(degrees: int | float) -> str:
+    """
+    Format a motion bearing, keeping half-degree compass points.
+
+    Parameters
+    ----------
+    degrees : int | float
+        Bearing from true north.
+
+    Returns
+    -------
+    str
+        Whole degrees as an integer, otherwise one decimal place.
+    """
+    number = float(degrees)
+    if number.is_integer():
+        return str(int(number))
+    return f"{number:.1f}"
+
+
 def _sigmet_motion_xml(ir: dict[str, Any]) -> str:
     """
     Internal helper ``_sigmet_motion_xml``.
@@ -661,9 +681,13 @@ def _sigmet_motion_xml(ir: dict[str, Any]) -> str:
         return """
               <iwxxm:directionOfMotion uom="deg" xsi:nil="true" nilReason="http://codes.wmo.int/common/nil/inapplicable"/>
               <iwxxm:speedOfMotion uom="[kn_i]">0</iwxxm:speedOfMotion>"""
+    if "motion_dir_deg" in ir and "motion_speed_kmh" in ir:
+        return f"""
+              <iwxxm:directionOfMotion uom="deg">{_motion_deg_text(ir["motion_dir_deg"])}</iwxxm:directionOfMotion>
+              <iwxxm:speedOfMotion uom="km/h">{int(ir["motion_speed_kmh"])}</iwxxm:speedOfMotion>"""
     if "motion_dir_deg" in ir and "motion_speed_kt" in ir:
         return f"""
-              <iwxxm:directionOfMotion uom="deg">{int(ir["motion_dir_deg"])}</iwxxm:directionOfMotion>
+              <iwxxm:directionOfMotion uom="deg">{_motion_deg_text(ir["motion_dir_deg"])}</iwxxm:directionOfMotion>
               <iwxxm:speedOfMotion uom="[kn_i]">{int(ir["motion_speed_kt"])}</iwxxm:speedOfMotion>"""
     return ""
 
