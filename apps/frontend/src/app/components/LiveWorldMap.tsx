@@ -140,11 +140,7 @@ function drawPlace(map: L.Map, place: LivePlace): L.Layer {
  * const _ = true;
  */
 function redrawCanvas(map: L.Map): void {
-  const update = (map as L.Map & { _renderer?: { _update?: () => void } })._renderer
-    ?._update;
-  if (update) {
-    update();
-  }
+  (map.options.renderer as unknown as { _update: () => void })._update();
 }
 
 /**
@@ -308,10 +304,13 @@ export function LiveWorldMap({
 
   useEffect(() => {
     const node = host.current as HTMLDivElement;
-    const map = L.map(node, { scrollWheelZoom: true, preferCanvas: true }).setView(
-      [20, 0],
-      2,
-    );
+    const vectors = L.canvas({ tolerance: 18 });
+    const map = L.map(node, {
+      scrollWheelZoom: true,
+      preferCanvas: true,
+      renderer: vectors,
+    }).setView([20, 0], 2);
+    map.options.renderer = vectors;
     mapRef.current = map;
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '© OpenStreetMap',

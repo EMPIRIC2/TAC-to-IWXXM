@@ -38,6 +38,7 @@ const map = {
     getEast: () => -70,
     getNorth: () => 41,
   }),
+  options: {} as { renderer?: { _update: () => void } },
   _renderer: undefined as { _update: () => void } | undefined,
 };
 map.setView.mockReturnValue(map);
@@ -80,6 +81,7 @@ vi.mock('leaflet', () => ({
     polygon: vi.fn(() => marker),
     polyline: vi.fn(() => marker),
     circle: vi.fn(() => marker),
+    canvas: vi.fn(() => ({ _update: canvasUpdate })),
     latLngBounds: vi.fn((points: unknown) => points),
   },
 }));
@@ -303,6 +305,7 @@ describe('LiveWorldMap', () => {
     expect(L.circle).toHaveBeenCalled();
     expect(L.circleMarker).toHaveBeenCalledWith([10, 20], expect.anything());
     expect(L.circleMarker).toHaveBeenCalledWith([1, 2], expect.anything());
+    expect(L.canvas).toHaveBeenCalledWith({ tolerance: 18 });
     expect(canvasUpdate).toHaveBeenCalled();
     await waitFor(() => expect(clicks.length).toBeGreaterThan(0));
     act(() => {
@@ -417,7 +420,6 @@ describe('LiveWorldMap', () => {
   });
 
   it('shows an error when the cache cannot be read', async () => {
-    map._renderer = undefined;
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: false }));
     render(<LiveWorldMap />);
     expect(await screen.findByTestId('live-map-error')).toBeInTheDocument();
