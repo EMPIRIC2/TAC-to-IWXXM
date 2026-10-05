@@ -104,7 +104,8 @@ export function previewIsIncomplete(
  */
 export function xmlLinesMatchingToken(xml: string, token: string): number[] {
   const needle = token.trim();
-  if (!needle || !xml.trim()) {
+  // One-character groups such as "-" or "S" occur throughout the preview.
+  if (needle.length < 2 || !xml.trim()) {
     return [];
   }
   const lines = xml.split('\n');

@@ -69,6 +69,8 @@ describe('liveConvertTrace', () => {
     expect(xmlLinesMatchingToken(xml, '   ')).toEqual([]);
     expect(xmlLinesMatchingToken('   ', 'TTPP')).toEqual([]);
     expect(xmlLinesMatchingToken(xml, 'ZZ')).toEqual([]);
+    expect(xmlLinesMatchingToken('<a>-</a>\n<b>-</b>', '-')).toEqual([]);
+    expect(xmlLinesMatchingToken('<a>S</a>\n<b>S</b>', 'S')).toEqual([]);
   });
 
   it('replaces overlapping issue marks with the selection', () => {

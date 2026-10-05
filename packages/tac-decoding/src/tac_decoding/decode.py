@@ -41,8 +41,10 @@ _TAF_PROB = re.compile(r"^PROB(?P<pct>\d{2})$")
 _TREND_TIME = re.compile(r"^(?P<kind>TL|AT|FM)(?P<hh>\d{2})(?P<mm>\d{2})$")
 _SIG_VALID = re.compile(r"^(?P<d1>\d{2})(?P<h1>\d{2})(?P<m1>\d{2})/(?P<d2>\d{2})(?P<h2>\d{2})(?P<m2>\d{2})$")
 _SIG_FL = re.compile(r"^FL(?P<fl>\d{2,3})$")
-# Vertical layer - ``SFC/FL550`` or ``FL250/370``.
+# Vertical layer - ``SFC/FL550``, ``FL250/370``, or ``9000FT/FL290``.
 _SIG_FL_LAYER = re.compile(r"^(?:SFC/FL(?P<sfc>\d{2,3})|FL(?P<a>\d{2,3})/(?:FL)?(?P<b>\d{2,3}))$")
+_SIG_FT_LAYER = re.compile(r"^(?P<alt>\d{3,4})(?P<unit>FT|M)/FL(?P<fl>\d{2,3})$")
+_LOOSE_AHL = re.compile(r"^(?P<ahl>[A-Z]{4}(?=[A-Z0-9]*\d)[A-Z0-9]{2})\s+(?P<cccc>[A-Z]{4})\s+(?P<yygggg>\d{6})\b")
 _SIG_SPEED = re.compile(r"^(?P<spd>\d{1,3})(?P<unit>KT|KM/H|KMH|MPS)$")
 _SIG_SPEED_UNIT = {
     "KT": "kt",
@@ -627,6 +629,9 @@ def _explain_sigmet_airmet(token: str, *, product: str, seen: dict[str, int]) ->
     if upper == "LINE":
         seen["line"] = 1
         return "Line of coordinates"
+    if m := _SIG_FT_LAYER.match(upper):
+        unit = "ft" if m.group("unit") == "FT" else "m"
+        return f"Altitude {int(m.group('alt'))} {unit} to flight level {int(m.group('fl'))}"
     if m := _SIG_FL_LAYER.match(upper):
         if m.group("sfc"):
             return f"Surface to flight level {int(m.group('sfc'))}"
@@ -1652,6 +1657,27 @@ def _decode_single_report(tac: str, *, product: str) -> DecodeResult:
     seen: dict[str, int] = {}
     segments: list[DecodeSegment] = []
     explained: set[int] = set()
+
+    if product in {"SIGMET", "AIRMET"}:
+        heading = _LOOSE_AHL.match(tac.lstrip("\ufeff"))
+        if heading is not None:
+            lead = len(tac) - len(tac.lstrip("\ufeff"))
+            start = lead + heading.start()
+            end = lead + heading.end()
+            segments.append(
+                DecodeSegment(
+                    start=start,
+                    end=end,
+                    code=tac[start:end],
+                    explanation=(
+                        f"Abbreviated heading {heading.group('ahl')} from "
+                        f"{heading.group('cccc')} at {heading.group('yygggg')}"
+                    ),
+                )
+            )
+            for idx, (token_start, token_end, _token) in enumerate(tokens):
+                if token_start >= start and token_end <= end:
+                    explained.add(idx)
 
     # Advisory products: structured LABEL: value fields first (EV-030 / EV-099).
     if product in _ADVISORY_STRUCTURED:
