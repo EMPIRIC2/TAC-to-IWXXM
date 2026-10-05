@@ -929,23 +929,55 @@ _ADVISORY_PHRASES: tuple[tuple[re.Pattern[str], str], ...] = (
 
 
 def _ordinal_day(day: int) -> str:
-    """Day of month as 'the 1st' or 'the 11th'."""
+    """Day of month with an ordinal, such as ``the 1st``.
+
+    Parameters
+    ----------
+    day : int
+        Day of the month.
+
+    Returns
+    -------
+    str
+        ``the`` plus the day and its suffix.
+    """
     suffix = "th" if 10 <= day % 100 <= 20 else {1: "st", 2: "nd", 3: "rd"}.get(day % 10, "th")
     return f"the {day}{suffix}"
 
 
 def _plain_advisory_value(value: str) -> str:
-    """
-    Read coded advisory values as plain language.
+    """Read coded advisory values as plain language.
 
     Dates, positions, speeds, distances, and a few fixed phrases are expanded.
     Surrounding words stay as written. [Corpus: product §F9]
+
+    Parameters
+    ----------
+    value : str
+        Text after an advisory field label.
+
+    Returns
+    -------
+    str
+        The same text with coded pieces expanded.
     """
     text = " ".join(value.split())
     if not text:
         return ""
 
     def _dtg(match: re.Match[str]) -> str:
+        """Expand ``YYYYMMDD/HHMMZ`` to a clock time and calendar date.
+
+        Parameters
+        ----------
+        match : re.Match[str]
+            Date and time groups.
+
+        Returns
+        -------
+        str
+            Plain time, or the original text when the date is impossible.
+        """
         raw, hhmm = match.group(1), match.group(2)
         month, day = int(raw[4:6]), int(raw[6:8])
         if not 1 <= month <= 12 or not 1 <= day <= 31:
@@ -953,6 +985,18 @@ def _plain_advisory_value(value: str) -> str:
         return f"{hhmm[:2]}:{hhmm[2:]} UTC on {day} {_MONTHS[month - 1]} {raw[:4]}"
 
     def _daytime(match: re.Match[str]) -> str:
+        """Expand ``DD/HHMMZ`` to a clock time on that day.
+
+        Parameters
+        ----------
+        match : re.Match[str]
+            Day and time groups.
+
+        Returns
+        -------
+        str
+            Plain time, or the original text when the day is impossible.
+        """
         day = int(match.group(1))
         hhmm = match.group(2)
         if not 1 <= day <= 31:
@@ -960,17 +1004,65 @@ def _plain_advisory_value(value: str) -> str:
         return f"{hhmm[:2]}:{hhmm[2:]} UTC on {_ordinal_day(day)}"
 
     def _lat(match: re.Match[str]) -> str:
+        """Expand a coded latitude.
+
+        Parameters
+        ----------
+        match : re.Match[str]
+            Hemisphere, degrees, and minutes.
+
+        Returns
+        -------
+        str
+            Degrees and minutes north or south.
+        """
         hemi = "north" if match.group(1) == "N" else "south"
         return f"{int(match.group(2))} degrees {match.group(3)} minutes {hemi}"
 
     def _lon(match: re.Match[str]) -> str:
+        """Expand a coded longitude.
+
+        Parameters
+        ----------
+        match : re.Match[str]
+            Hemisphere, degrees, and minutes.
+
+        Returns
+        -------
+        str
+            Degrees and minutes east or west.
+        """
         hemi = "east" if match.group(1) == "E" else "west"
         return f"{int(match.group(2))} degrees {match.group(3)} minutes {hemi}"
 
     def _move(match: re.Match[str]) -> str:
+        """Expand a compass direction and speed.
+
+        Parameters
+        ----------
+        match : re.Match[str]
+            Direction, speed, and unit.
+
+        Returns
+        -------
+        str
+            Direction, speed, and unit in words.
+        """
         return f"{_COMPASS[match.group(1)]} at {int(match.group(2))} {_SPEED_UNIT[match.group(3)]}"
 
     def _speed(match: re.Match[str]) -> str:
+        """Expand a bare speed.
+
+        Parameters
+        ----------
+        match : re.Match[str]
+            Speed and unit.
+
+        Returns
+        -------
+        str
+            Speed and unit in words.
+        """
         return f"{int(match.group(1))} {_SPEED_UNIT[match.group(2)]}"
 
     text = re.sub(r"\b(\d{8})/(\d{4})Z\b", _dtg, text)
