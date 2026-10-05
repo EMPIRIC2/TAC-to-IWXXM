@@ -8,7 +8,6 @@ import {
 } from 'react';
 import { stationFromReport } from '@/utils/decodeVisuals';
 import { publishDecodeVisuals } from '@/utils/decodeVisualsStore';
-import { DECODE_VISUALS_OPEN } from '@/utils/decodeVisualsCopy';
 import { LIVE_MAP_PANEL } from '@/utils/liveMap';
 import { Button } from './ui/button';
 import { Card } from './ui/card';
@@ -345,8 +344,6 @@ interface FileConverterProps {
     family?: 'conversion' | 'lint' | 'iwxxm' | 'decoding',
     code?: string,
   ) => void;
-  /** Open the Decode visuals tab for the station in this report. */
-  onOpenVisuals?: () => void;
 }
 
 /**
@@ -701,7 +698,6 @@ export function FileConverter({
   activeWorkSessionId,
   loadedWorkSession,
   onOpenCatalog,
-  onOpenVisuals,
 }: FileConverterProps) {
   const [pendingFiles, setPendingFiles] = useState<PendingFile[]>([]);
   const [queueFocusIndex, setQueueFocusIndex] = useState(0);
@@ -2902,25 +2898,6 @@ export function FileConverter({
                 className="flex min-h-[100dvh] flex-col"
                 data-testid="live-convert-stage"
               >
-                <Collapsible
-                  defaultOpen
-                  className="mb-4"
-                  data-testid="convert-weather-map"
-                >
-                  <CollapsibleTrigger asChild>
-                    <button
-                      type="button"
-                      className="flex items-center gap-1 text-left text-base font-medium text-gray-900 dark:text-white"
-                      data-testid="convert-weather-map-toggle"
-                    >
-                      <ChevronDown className="h-4 w-4" aria-hidden="true" />
-                      {LIVE_MAP_PANEL}
-                    </button>
-                  </CollapsibleTrigger>
-                  <CollapsibleContent data-testid="convert-weather-map-panel">
-                    <LiveWorldMap />
-                  </CollapsibleContent>
-                </Collapsible>
                 <div
                   className="mb-2 flex flex-col gap-2 xl:max-h-[18rem] xl:min-h-0 xl:shrink-0 xl:overflow-y-auto"
                   data-testid="convert-setup"
@@ -3614,16 +3591,6 @@ export function FileConverter({
                       className="flex min-h-[100dvh] min-w-0 flex-1 flex-col overflow-auto"
                       data-testid="decode-pane"
                     >
-                      {onOpenVisuals ? (
-                        <button
-                          type="button"
-                          className="mb-2 text-sm text-sky-800 underline dark:text-sky-200"
-                          data-testid="open-decode-visuals"
-                          onClick={onOpenVisuals}
-                        >
-                          {DECODE_VISUALS_OPEN}
-                        </button>
-                      ) : null}
                       <DecodePanel
                         segments={decodeSegments}
                         residuals={decodeResiduals}
@@ -3693,6 +3660,25 @@ export function FileConverter({
                     />
                   )}
                 </LiveConvertPaneGrid>
+                <Collapsible
+                  defaultOpen
+                  className="mt-6"
+                  data-testid="convert-weather-map"
+                >
+                  <CollapsibleTrigger asChild>
+                    <button
+                      type="button"
+                      className="flex items-center gap-1 text-left text-base font-medium text-gray-900 dark:text-white"
+                      data-testid="convert-weather-map-toggle"
+                    >
+                      <ChevronDown className="h-4 w-4" aria-hidden="true" />
+                      {LIVE_MAP_PANEL}
+                    </button>
+                  </CollapsibleTrigger>
+                  <CollapsibleContent data-testid="convert-weather-map-panel">
+                    <LiveWorldMap />
+                  </CollapsibleContent>
+                </Collapsible>
               </div>
               {inputMode !== 'validate_iwxxm' ? (
                 <OutputVersionCompare versions={outputVersions} />

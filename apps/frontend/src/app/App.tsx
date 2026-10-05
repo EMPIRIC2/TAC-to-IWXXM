@@ -4,7 +4,6 @@ import { MyMetarsPage } from './components/MyMetarsPage';
 import { QualityMetricsPage } from './components/QualityMetricsPage';
 import { LintValidationCatalogPage } from './components/LintValidationCatalogPage';
 import { DisseminationOpsPage } from './components/DisseminationOpsPage';
-import { DecodeVisualsPage } from './components/DecodeVisualsPage';
 import { AppShellNav, type ShellPrimaryView } from './components/AppShellNav';
 import { Login } from './components/auth/Login';
 import { Register } from './components/auth/Register';
@@ -69,7 +68,6 @@ function isPrimaryShellView(view: AppView): view is ShellPrimaryView {
     view === 'history' ||
     view === 'quality' ||
     view === 'catalog' ||
-    view === 'visuals' ||
     view === 'dissemination-ops'
   );
 }
@@ -373,7 +371,6 @@ function App() {
             currentView === 'history' ||
             currentView === 'quality' ||
             currentView === 'catalog' ||
-            currentView === 'visuals' ||
             currentView === 'dissemination-ops') && (
             <div hidden={currentView !== 'converter'}>
               <FileConverter
@@ -402,7 +399,6 @@ function App() {
                   }
                   setCurrentView('catalog');
                 }}
-                onOpenVisuals={() => setCurrentView('visuals')}
               />
             </div>
           )}
@@ -434,8 +430,6 @@ function App() {
               }}
             />
           )}
-
-          {currentView === 'visuals' && <DecodeVisualsPage />}
 
           {currentView === 'dissemination-ops' && (
             <DisseminationOpsPage
