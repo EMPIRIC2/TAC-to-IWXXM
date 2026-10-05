@@ -1774,12 +1774,17 @@
   SIGMET/AIRMET path the Annex 3 forms Russian and European bulletins already use. No new
   product id and no Russia-only profile. [Corpus: product §F9] [Corpus: product §F6]
 - **Plain language**: `(FZRA)` on severe icing is freezing rain. `LINE` is a line of
-  coordinates (`E OF LINE`, `N OF LINE`), not a closed polygon. Movement accepts `KMH`
-  (including a space before the unit), `KT`, and `MPS`, and the sixteen compass points.
+  coordinates (`E OF LINE`, `N OF LINE`). Movement accepts `KMH` and `KM/H` (including a
+  space before the unit), `KT`, and `MPS`, and the sixteen compass points. A direction
+  with no speed, such as `MOV NW`, is still a movement.
 - **Conversion**: `SEV ICE (FZRA)` maps to phenomenon `SEV_ICE_FZRA`. Kilometres per hour
   stay `km/h` on `speedOfMotion` (the schema allows `km/h` or `[kn_i]`). Metres per second
-  become kilometres per hour for that element. An open `LINE` is explained and is not
-  closed into an invented polygon. Knots and the existing eight-point directions stay.
+  become kilometres per hour for that element. A direction with no speed is emitted as
+  `directionOfMotion` alone. A line with a stated width becomes a corridor. A side of a
+  line, such as `E OF LINE`, becomes a thin ring on that side so the vertices are in the
+  horizontal projection; that ring is the boundary, not the whole flight information
+  region. Knots stay knots. Volcanic-ash cloud movement uses the same sixteen compass
+  points and the same speed units.
 
 ### F7.g deepen (S026 / EV-020 — WMO-passing examples only)
 

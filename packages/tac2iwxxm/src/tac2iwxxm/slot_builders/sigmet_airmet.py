@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import math
 import re
 from typing import Any, cast
 
@@ -53,8 +54,20 @@ _TC_OBS_PSN = re.compile(
 )
 _MOV = re.compile(
     r"\bMOV\s+(?P<dir>NNE|ENE|ESE|SSE|SSW|WSW|WNW|NNW|NE|SE|SW|NW|N|E|S|W)"
-    r"\s+(?P<spd>\d+)\s*(?P<unit>KT|KMH|MPS)\b",
+    r"(?:\s+(?P<spd>\d+)\s*(?P<unit>KT|KM/?H|MPS))?(?=\s|\Z|=)",
     re.IGNORECASE,
+)
+# A half-plane has no FIR outline. This offset keeps the boundary on the named
+# side so the mandatory surface can carry the line vertices.
+_LINE_SIDE_OFFSET_DEG = 0.05
+_LINE_SIDE = re.compile(
+    r"\b(?P<side>NNE|ENE|ESE|SSE|SSW|WSW|WNW|NNW|NE|SE|SW|NW|N|E|S|W)\s+OF\s+LINE\b",
+    re.IGNORECASE,
+)
+_LINE_WIDTH = re.compile(r"\b(?P<width>\d+)\s*(?P<unit>NM|KM)\s+WID\s+LINE\b", re.IGNORECASE)
+_LINE_SPAN = re.compile(
+    r"\bLINE\b(?P<body>.*?)(?=\bSFC/|\bFL\d|\bTOP\b|\bMOV\b|\bSTNR\b|\bNC\b|\bWKN\b|\bINTSF\b|=|$)",
+    re.IGNORECASE | re.DOTALL,
 )
 _AREA_TS_MOV = re.compile(
     r"\bAREA\s+TS\s+MOV\s+FROM\s+(?P<dir>\d{3})(?P<spd>\d{2,3})KT\b",
@@ -261,8 +274,10 @@ def _apply_motion(ir: dict[str, Any], body: str) -> None:
     if mov is None:
         return
     ir["motion_dir_deg"] = _DIR_DEG[mov.group("dir").upper()]
+    if mov.group("spd") is None:
+        return
     speed = int(mov.group("spd"))
-    unit = mov.group("unit").upper()
+    unit = mov.group("unit").upper().replace("/", "")
     if unit == "MPS":
         ir["motion_speed_kmh"] = round(speed * 3.6)
     elif unit == "KMH":
@@ -394,6 +409,165 @@ def _point_lat_lon(match: re.Match[str]) -> tuple[float, float]:
     if match.group("lon_hemi").upper() == "W":
         lon = -lon
     return lat, lon
+
+
+def _format_pos_list(points: list[tuple[float, float]]) -> str:
+    """
+    Join latitude and longitude pairs for a GML position list.
+
+    Parameters
+    ----------
+    points : list[tuple[float, float]]
+        Vertices in latitude, longitude order.
+
+    Returns
+    -------
+    str
+        Space-separated positions.
+    """
+    return " ".join(f"{lat:.4f} {lon:.4f}" for lat, lon in points)
+
+
+def _close_ring(points: list[tuple[float, float]]) -> list[tuple[float, float]]:
+    """
+    Repeat the first vertex so a GML linear ring is closed.
+
+    Parameters
+    ----------
+    points : list[tuple[float, float]]
+        Open vertex list.
+
+    Returns
+    -------
+    list[tuple[float, float]]
+        The same vertices with the first appended.
+    """
+    return [*points, points[0]]
+
+
+def _side_offset(side: str) -> tuple[float, float]:
+    """
+    Degree step toward a compass side.
+
+    Parameters
+    ----------
+    side : str
+        Sixteen-point compass token.
+
+    Returns
+    -------
+    tuple[float, float]
+        Latitude and longitude offsets in degrees.
+    """
+    bearing = math.radians(_DIR_DEG[side])
+    return (
+        _LINE_SIDE_OFFSET_DEG * math.cos(bearing),
+        _LINE_SIDE_OFFSET_DEG * math.sin(bearing),
+    )
+
+
+def _offset_vertices(
+    points: list[tuple[float, float]],
+    *,
+    half_width_deg: float,
+) -> list[tuple[float, float]]:
+    """
+    Build a corridor ring around a centreline.
+
+    Parameters
+    ----------
+    points : list[tuple[float, float]]
+        Line vertices, at least two.
+    half_width_deg : float
+        Half-width in degrees of latitude.
+
+    Returns
+    -------
+    list[tuple[float, float]]
+        Closed ring around the line.
+    """
+
+    def _normal(start: tuple[float, float], end: tuple[float, float]) -> tuple[float, float]:
+        """
+        Perpendicular step from one vertex to the next.
+
+        Parameters
+        ----------
+        start : tuple[float, float]
+            Segment start, latitude then longitude.
+        end : tuple[float, float]
+            Segment end, latitude then longitude.
+
+        Returns
+        -------
+        tuple[float, float]
+            Latitude and longitude offsets of half the corridor width.
+        """
+        dlat = end[0] - start[0]
+        dlon = end[1] - start[1]
+        length = math.hypot(dlat, dlon) or 1.0
+        return (-dlon / length * half_width_deg, dlat / length * half_width_deg)
+
+    left: list[tuple[float, float]] = []
+    right: list[tuple[float, float]] = []
+    last = len(points) - 1
+    for index, point in enumerate(points):
+        if index == 0:
+            north, east = _normal(points[0], points[1])
+        elif index == last:
+            north, east = _normal(points[-2], points[-1])
+        else:
+            first = _normal(points[index - 1], point)
+            second = _normal(point, points[index + 1])
+            north = (first[0] + second[0]) / 2
+            east = (first[1] + second[1]) / 2
+        left.append((point[0] + north, point[1] + east))
+        right.append((point[0] - north, point[1] - east))
+    return _close_ring(left + list(reversed(right)))
+
+
+def _apply_line_geometry(ir: dict[str, Any], body: str) -> bool:
+    """
+    Record a line of coordinates as a surface ring.
+
+    A stated width becomes a corridor. A compass side, such as ``E OF LINE``,
+    becomes a thin ring on that side. The ring is the line, not the whole FIR.
+
+    Parameters
+    ----------
+    ir : dict
+        Hazard intermediate representation being filled.
+    body : str
+        SIGMET or AIRMET body text.
+
+    Returns
+    -------
+    bool
+        True when a line was found, including a line with too few vertices.
+    """
+    if re.search(r"\bLINE\b", body, re.IGNORECASE) is None:
+        return False
+    span = _LINE_SPAN.search(body)
+    if span is None:  # pragma: no cover
+        return True
+    raw_points = [_point_lat_lon(match) for match in _POINT.finditer(span.group("body"))]
+    if len(raw_points) < 2:
+        return True
+    width = _LINE_WIDTH.search(body)
+    if width is not None:
+        amount = int(width.group("width"))
+        full_width_deg = amount / 111.195 if width.group("unit").upper() == "KM" else amount / 60.0
+        ring = _offset_vertices(raw_points, half_width_deg=full_width_deg / 2)
+    else:
+        side_match = _LINE_SIDE.search(body)
+        if side_match is None:
+            ring = _offset_vertices(raw_points, half_width_deg=_LINE_SIDE_OFFSET_DEG)
+        else:
+            dlat, dlon = _side_offset(side_match.group("side").upper())
+            offset = [(lat + dlat, lon + dlon) for lat, lon in raw_points]
+            ring = _close_ring([*raw_points, *reversed(offset)])
+    ir["geometry"] = {"kind": "polygon", "pos_list": _format_pos_list(ring)}
+    return True
 
 
 def _polygon_from_wi_body(wi_body: str) -> dict[str, Any] | None:
@@ -647,6 +821,9 @@ def _enrich_hazard_body(ir: dict[str, Any], body: str) -> None:
         }
         return
 
+    if _apply_line_geometry(ir, body):
+        return
+
     # Prefer VA CLD / hazard WI polygon over volcano PSN point (F23 V3 / #739).
     wi = _WI_BLOCK.search(body)
     if wi is not None:
@@ -657,10 +834,6 @@ def _enrich_hazard_body(ir: dict[str, Any], body: str) -> None:
             pos_list = " ".join(f"{lat:.4f} {lon:.4f}" for lat, lon in pts)
             ir["geometry"] = {"kind": "polygon", "pos_list": pos_list}
             return
-
-    # An open LINE is a boundary, not a point and not a closed ring.
-    if re.search(r"\bLINE\b", body, re.IGNORECASE):
-        return
 
     point = _POINT.search(body)
     if point is not None:
