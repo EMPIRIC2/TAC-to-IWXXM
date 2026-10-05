@@ -1768,6 +1768,19 @@
   OpenAIP) with a packaged YAML file as **overrides** only (E20-E2). Tests: **TC-F9-003/004**;
   journey deepen **UJ-020**. Policy: **ADR-032**.
 
+### F9 / F6 deepen (EV-sigmet-ru-forms — international SIGMET line, icing, speed)
+
+- **Status note**: F9 and F6 stay **Done** / **Implemented**. This cycle teaches the shared
+  SIGMET/AIRMET path the Annex 3 forms Russian and European bulletins already use. No new
+  product id and no Russia-only profile. [Corpus: product §F9] [Corpus: product §F6]
+- **Plain language**: `(FZRA)` on severe icing is freezing rain. `LINE` is a line of
+  coordinates (`E OF LINE`, `N OF LINE`), not a closed polygon. Movement accepts `KMH`
+  (including a space before the unit), `KT`, and `MPS`, and the sixteen compass points.
+- **Conversion**: `SEV ICE (FZRA)` maps to phenomenon `SEV_ICE_FZRA`. Kilometres per hour
+  stay `km/h` on `speedOfMotion` (the schema allows `km/h` or `[kn_i]`). Metres per second
+  become kilometres per hour for that element. An open `LINE` is explained and is not
+  closed into an invented polygon. Knots and the existing eight-point directions stay.
+
 ### F7.g deepen (S026 / EV-020 — WMO-passing examples only)
 
 - **Status note**: F7.g remains under F7 Planned; S026 replaced catalog bodies/policy so the

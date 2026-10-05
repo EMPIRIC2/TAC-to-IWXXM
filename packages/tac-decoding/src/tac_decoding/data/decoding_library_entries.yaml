@@ -111,6 +111,11 @@ entries:
   label: ISOL
   explanation: isolated
   source: decode_tac
+- id: DEC.LINE
+  token: LINE
+  label: LINE
+  explanation: line
+  source: decode_tac
 - id: DEC.MOD
   token: MOD
   label: MOD

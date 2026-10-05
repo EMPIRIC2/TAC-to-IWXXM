@@ -75,6 +75,7 @@ _OFFICIAL_TOKENS: dict[str, str] = {
     "TC": "tropical cyclone",
     "GR": "hail",
     "FZRA": "freezing rain",
+    "LINE": "line",
     "RDOACT": "radioactive",
     "CLD": "cloud",
     "CB": "cumulonimbus",

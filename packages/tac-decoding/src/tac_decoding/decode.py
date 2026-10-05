@@ -43,21 +43,53 @@ _SIG_VALID = re.compile(r"^(?P<d1>\d{2})(?P<h1>\d{2})(?P<m1>\d{2})/(?P<d2>\d{2})
 _SIG_FL = re.compile(r"^FL(?P<fl>\d{2,3})$")
 # Vertical layer - ``SFC/FL550`` or ``FL250/370``.
 _SIG_FL_LAYER = re.compile(r"^(?:SFC/FL(?P<sfc>\d{2,3})|FL(?P<a>\d{2,3})/(?:FL)?(?P<b>\d{2,3}))$")
-_SIG_SPEED_KT = re.compile(r"^(?P<spd>\d{1,3})KT$")
+_SIG_SPEED = re.compile(r"^(?P<spd>\d{1,3})(?P<unit>KT|KMH|MPS)$")
+_SIG_SPEED_UNIT = {
+    "KT": "kt",
+    "KMH": "kilometres per hour",
+    "MPS": "metres per second",
+}
 _SIG_LAT = re.compile(r"^(?P<hemi>[NS])(?P<deg>\d{1,2})(?P<min>\d{2})?$")
 _SIG_LON = re.compile(r"^(?P<hemi>[EW])(?P<deg>\d{1,3})(?P<min>\d{2})?$")
 # Observation/forecast clock ``1600Z`` (hhmmZ) - distinct from METAR ``ddhhmmZ``.
 _SIG_HHMMZ = re.compile(r"^(?P<hh>\d{2})(?P<mm>\d{2})Z$")
-_SIG_DIR = frozenset({"N", "NE", "E", "SE", "S", "SW", "W", "NW"})
+_SIG_DIR = frozenset(
+    {
+        "N",
+        "NNE",
+        "NE",
+        "ENE",
+        "E",
+        "ESE",
+        "SE",
+        "SSE",
+        "S",
+        "SSW",
+        "SW",
+        "WSW",
+        "W",
+        "WNW",
+        "NW",
+        "NNW",
+    }
+)
 _SIG_DIR_NAME = {
     "N": "North",
+    "NNE": "North-northeast",
     "NE": "Northeast",
+    "ENE": "East-northeast",
     "E": "East",
+    "ESE": "East-southeast",
     "SE": "Southeast",
+    "SSE": "South-southeast",
     "S": "South",
+    "SSW": "South-southwest",
     "SW": "Southwest",
+    "WSW": "West-southwest",
     "W": "West",
+    "WNW": "West-northwest",
     "NW": "Northwest",
+    "NNW": "North-northwest",
 }
 _CLOUD_TYPE = {"CB": "cumulonimbus", "TCU": "towering cumulus"}
 _TREND_TIME_LABEL = {
@@ -587,8 +619,13 @@ def _explain_sigmet_airmet(token: str, *, product: str, seen: dict[str, int]) ->
         return "At (observation / forecast time)"
     if upper == "WI":
         return "Within (area polygon)"
-    if upper == "-":
+    if upper in {"-", "\u2013", "\u2014"}:
+        if seen.get("line"):
+            return "Line vertex separator"
         return "Polygon vertex separator"
+    if upper == "LINE":
+        seen["line"] = 1
+        return "Line of coordinates"
     if m := _SIG_FL_LAYER.match(upper):
         if m.group("sfc"):
             return f"Surface to flight level {int(m.group('sfc'))}"
@@ -605,8 +642,15 @@ def _explain_sigmet_airmet(token: str, *, product: str, seen: dict[str, int]) ->
             seen["mov_dir"] = 1
             return f"Movement direction ({_SIG_DIR_NAME[upper]})"
         return _SIG_DIR_NAME[upper]
-    if m := _SIG_SPEED_KT.match(upper):
-        return f"Speed {int(m.group('spd'))} kt"
+    if m := _SIG_SPEED.match(upper):
+        unit = _SIG_SPEED_UNIT[m.group("unit")]
+        return f"Speed {int(m.group('spd'))} {unit}"
+    if upper.isdigit() and seen.get("mov_dir") and not seen.get("mov_spd") and len(upper) <= 3:
+        seen["mov_spd"] = 1
+        return f"Speed {int(upper)}"
+    if upper in _SIG_SPEED_UNIT and seen.get("mov_spd") and not seen.get("mov_unit"):
+        seen["mov_unit"] = 1
+        return _SIG_SPEED_UNIT[upper]
     if m := _SIG_LAT.match(upper):
         hemi = "North" if m.group("hemi") == "N" else "South"
         mins = m.group("min")
@@ -638,7 +682,13 @@ def _explain_sigmet_airmet(token: str, *, product: str, seen: dict[str, int]) ->
         return f"FIR name ({icao})"
 
     # Glossary-backed intensity / hazard / movement tokens (F9 deepen).
-    return explain_glossary_token(upper)
+    gloss = explain_glossary_token(upper)
+    if gloss:
+        return gloss
+    bare = upper.strip("()")
+    if bare and bare != upper:
+        return explain_glossary_token(bare)
+    return None
 
 
 def _explain_advisory(token: str, *, product: str, seen: dict[str, int]) -> str | None:
