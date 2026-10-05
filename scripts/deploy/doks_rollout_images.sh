@@ -47,6 +47,22 @@ if [[ "${NS}" == *staging* ]]; then
     | kubectl -n "${NS}" apply -f -
   kubectl -n "${NS}" set image "deploy/metar-map-translator" "translator=${API_IMG}"
   kubectl -n "${NS}" set env "deploy/metar-api" "LIVE_MAP_REFRESH=0"
+  # Image updates do not add env from the API manifest. Without this, the API
+  # keeps an empty in-memory cache while the translator writes DATABASE_URL.
+  kubectl -n "${NS}" patch "deploy/metar-api" --type strategic --patch "$(cat <<'EOF'
+spec:
+  template:
+    spec:
+      containers:
+        - name: api
+          env:
+            - name: LIVE_MAP_CACHE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: metar-api-secrets
+                  key: DATABASE_URL
+EOF
+)"
   kubectl -n "${NS}" rollout status "deploy/metar-map-translator" --timeout="${TIMEOUT}"
 fi
 

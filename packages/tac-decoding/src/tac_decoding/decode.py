@@ -870,11 +870,136 @@ def _iter_advisory_ahl(tac: str, *, product: str) -> list[tuple[int, int, str, s
     return _iter_ahl_heading(tac)
 
 
+_MONTHS = (
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+)
+
+_COMPASS = {
+    "N": "north",
+    "NNE": "north-northeast",
+    "NE": "northeast",
+    "ENE": "east-northeast",
+    "E": "east",
+    "ESE": "east-southeast",
+    "SE": "southeast",
+    "SSE": "south-southeast",
+    "S": "south",
+    "SSW": "south-southwest",
+    "SW": "southwest",
+    "WSW": "west-southwest",
+    "W": "west",
+    "WNW": "west-northwest",
+    "NW": "northwest",
+    "NNW": "north-northwest",
+}
+
+_SPEED_UNIT = {
+    "KMH": "kilometres per hour",
+    "KT": "knots",
+    "MPS": "metres per second",
+}
+
+_COMPASS_RE = "|".join(sorted(_COMPASS, key=len, reverse=True))
+
+_ADVISORY_PHRASES: tuple[tuple[re.Pattern[str], str], ...] = (
+    (re.compile(r"\bNO\s+VA\s+EXP\b"), "no volcanic ash expected"),
+    (re.compile(r"\bNO\s+MSG\s+EXP\b"), "no message expected"),
+    (re.compile(r"\bOF\s+TC\s+CENTRE\b"), "of the tropical cyclone centre,"),
+    (re.compile(r"\bAMSL\b"), "above mean sea level"),
+    (re.compile(r"\bINTSF\b"), "intensifying"),
+    (re.compile(r"\bINTST\b"), "intensifying"),
+    (re.compile(r"\bWKN\b"), "weakening"),
+    (re.compile(r"\bSTNR\b"), "stationary"),
+    (re.compile(r"\bNIL\b"), "none"),
+    (re.compile(r"\bNC\b"), "no change"),
+    (re.compile(r"\bWI\b"), "within"),
+    (re.compile(r"\bTOP\b"), "top"),
+)
+
+
+def _ordinal_day(day: int) -> str:
+    """Day of month as 'the 1st' or 'the 11th'."""
+    suffix = "th" if 10 <= day % 100 <= 20 else {1: "st", 2: "nd", 3: "rd"}.get(day % 10, "th")
+    return f"the {day}{suffix}"
+
+
+def _plain_advisory_value(value: str) -> str:
+    """
+    Read coded advisory values as plain language.
+
+    Dates, positions, speeds, distances, and a few fixed phrases are expanded.
+    Surrounding words stay as written. [Corpus: product §F9]
+    """
+    text = " ".join(value.split())
+    if not text:
+        return ""
+
+    def _dtg(match: re.Match[str]) -> str:
+        raw, hhmm = match.group(1), match.group(2)
+        month, day = int(raw[4:6]), int(raw[6:8])
+        if not 1 <= month <= 12 or not 1 <= day <= 31:
+            return match.group(0)
+        return f"{hhmm[:2]}:{hhmm[2:]} UTC on {day} {_MONTHS[month - 1]} {raw[:4]}"
+
+    def _daytime(match: re.Match[str]) -> str:
+        day = int(match.group(1))
+        hhmm = match.group(2)
+        if not 1 <= day <= 31:
+            return match.group(0)
+        return f"{hhmm[:2]}:{hhmm[2:]} UTC on {_ordinal_day(day)}"
+
+    def _lat(match: re.Match[str]) -> str:
+        hemi = "north" if match.group(1) == "N" else "south"
+        return f"{int(match.group(2))} degrees {match.group(3)} minutes {hemi}"
+
+    def _lon(match: re.Match[str]) -> str:
+        hemi = "east" if match.group(1) == "E" else "west"
+        return f"{int(match.group(2))} degrees {match.group(3)} minutes {hemi}"
+
+    def _move(match: re.Match[str]) -> str:
+        return f"{_COMPASS[match.group(1)]} at {int(match.group(2))} {_SPEED_UNIT[match.group(3)]}"
+
+    def _speed(match: re.Match[str]) -> str:
+        return f"{int(match.group(1))} {_SPEED_UNIT[match.group(2)]}"
+
+    text = re.sub(r"\b(\d{8})/(\d{4})Z\b", _dtg, text)
+    text = re.sub(r"\b(\d{2})/(\d{4})Z\b", _daytime, text)
+    text = re.sub(r"\b([NS])(\d{2})(\d{2})\b", _lat, text)
+    text = re.sub(r"\b([EW])(\d{2,3})(\d{2})\b", _lon, text)
+    text = re.sub(rf"\b({_COMPASS_RE})\s*(\d{{1,3}})\s*(KMH|KT|MPS)\b", _move, text)
+    text = re.sub(r"\bSFC/FL(\d+)\b", lambda m: f"surface to flight level {int(m.group(1))}", text)
+    text = re.sub(
+        r"\bFL(\d+)/(\d+)\b",
+        lambda m: f"flight level {int(m.group(1))} to {int(m.group(2))}",
+        text,
+    )
+    text = re.sub(r"\bFL(\d+)\b", lambda m: f"flight level {int(m.group(1))}", text)
+    text = re.sub(r"\b(\d+)(KMH|KT|MPS)\b", _speed, text)
+    text = re.sub(r"\b(\d+)HPA\b", lambda m: f"{int(m.group(1))} hectopascals", text)
+    text = re.sub(r"\b(\d+)NM\b", lambda m: f"{int(m.group(1))} nautical miles", text)
+    text = re.sub(r"\b(\d+)KM\b", lambda m: f"{int(m.group(1))} kilometres", text)
+    text = re.sub(r"\b(\d+)M\b", lambda m: f"{int(m.group(1))} metres", text)
+    for pattern, phrase in _ADVISORY_PHRASES:
+        text = pattern.sub(phrase, text)
+    return " ".join(text.split())
+
+
 def _iter_advisory_fields(
     tac: str,
     *,
     product: str,
-) -> list[tuple[int, int, str, str]]:
+) -> list[tuple[int, int, str, str, int]]:
     """
     Internal helper ``_iter_advisory_fields``.
 
@@ -915,13 +1040,19 @@ def _iter_advisory_fields(
     for i, (start, label_end, code, title_template, match) in enumerate(selected):
         value_start = label_end
         value_end = selected[i + 1][0] if i + 1 < len(selected) else len(tac)
-        value = tac[value_start:value_end]
-        trim = len(value.rstrip())
-        end = value_start + trim
-        value_text = " ".join(tac[value_start:end].split())
+        raw_value = tac[value_start:value_end]
+        trim = len(raw_value.rstrip())
+        body = raw_value[:trim]
+        lead = len(body) - len(body.lstrip())
+        value_text = " ".join(body.split())
+        plain = _plain_advisory_value(value_text)
         title = _advisory_field_title(code, title_template, match)
-        explanation = f"{title}: {value_text}" if value_text else title
-        out.append((start, end, code, explanation))
+        explanation = f"{title}: {plain}" if plain else title
+        mark_start = value_start + lead
+        mark_end = value_start + trim
+        if mark_end <= mark_start:
+            mark_start, mark_end = start, label_end
+        out.append((mark_start, mark_end, code, explanation, start))
     return out
 
 
@@ -1379,11 +1510,20 @@ def _decode_single_report(tac: str, *, product: str) -> DecodeResult:
     # Advisory products: structured LABEL: value fields first (EV-030 / EV-099).
     if product in _ADVISORY_STRUCTURED:
         field_spans: list[tuple[int, int]] = []
-        advisory_parts = _iter_advisory_ahl(tac, product=product) + _iter_advisory_fields(tac, product=product)
-        for start, end, code, explanation in advisory_parts:
+        for start, end, code, explanation in _iter_advisory_ahl(tac, product=product):
             segments.append(DecodeSegment(start=start, end=end, code=code, explanation=explanation))
             field_spans.append((start, end))
+        label_starts: list[int] = []
+        for mark_start, mark_end, code, explanation, label_start in _iter_advisory_fields(tac, product=product):
+            segments.append(DecodeSegment(start=mark_start, end=mark_end, code=code, explanation=explanation))
+            field_spans.append((label_start, mark_end))
+            label_starts.append(label_start)
         explained |= _token_indices_covering(tokens, field_spans)
+        if label_starts:
+            first_label = min(label_starts)
+            for idx, (_token_start, token_end, _token) in enumerate(tokens):
+                if token_end <= first_label:
+                    explained.add(idx)
 
     for idx, (start, end, token) in enumerate(tokens):
         if idx in explained:

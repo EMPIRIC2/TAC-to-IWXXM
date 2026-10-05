@@ -9,6 +9,7 @@ import {
 import { stationFromReport } from '@/utils/decodeVisuals';
 import { publishDecodeVisuals } from '@/utils/decodeVisualsStore';
 import { DECODE_VISUALS_OPEN } from '@/utils/decodeVisualsCopy';
+import { LIVE_MAP_PANEL } from '@/utils/liveMap';
 import { Button } from './ui/button';
 import { Card } from './ui/card';
 import { Input } from './ui/input';
@@ -26,6 +27,7 @@ import { PropagateResidualsControl } from './PropagateResidualsControl';
 import { LiveIwxxmToggle } from './LiveIwxxmToggle';
 import { BulletinReportList } from './BulletinReportList';
 import { LiveConvertPaneGrid } from './LiveConvertPaneGrid';
+import { LiveWorldMap } from './LiveWorldMap';
 import { LiveConvertStatusStrip } from './LiveConvertStatusStrip';
 import { TacLintJumps } from './TacLintJumps';
 import { OutputVersionCompare } from './OutputVersionCompare';
@@ -2897,9 +2899,28 @@ export function FileConverter({
                 </StatusBanner>
               )}
               <div
-                className="flex flex-col xl:h-[min(46rem,calc(100dvh-8rem))] xl:min-h-[28rem] xl:overflow-hidden"
+                className="flex min-h-[100dvh] flex-col"
                 data-testid="live-convert-stage"
               >
+                <Collapsible
+                  defaultOpen
+                  className="mb-4"
+                  data-testid="convert-weather-map"
+                >
+                  <CollapsibleTrigger asChild>
+                    <button
+                      type="button"
+                      className="flex items-center gap-1 text-left text-base font-medium text-gray-900 dark:text-white"
+                      data-testid="convert-weather-map-toggle"
+                    >
+                      <ChevronDown className="h-4 w-4" aria-hidden="true" />
+                      {LIVE_MAP_PANEL}
+                    </button>
+                  </CollapsibleTrigger>
+                  <CollapsibleContent data-testid="convert-weather-map-panel">
+                    <LiveWorldMap />
+                  </CollapsibleContent>
+                </Collapsible>
                 <div
                   className="mb-2 flex flex-col gap-2 xl:max-h-[18rem] xl:min-h-0 xl:shrink-0 xl:overflow-y-auto"
                   data-testid="convert-setup"
@@ -3458,7 +3479,7 @@ export function FileConverter({
                   onWidthsChange={(paneWidths) => updateLiveLayout({ paneWidths })}
                 >
                   <section
-                    className="flex min-h-[15rem] min-w-0 flex-1 flex-col overflow-auto xl:h-full xl:min-h-0"
+                    className="flex min-h-[100dvh] min-w-0 flex-1 flex-col overflow-auto"
                     aria-label={inputMode === 'validate_iwxxm' ? 'IWXXM' : 'TAC'}
                     onFocusCapture={() => setRecentWorkCollapsed(true)}
                     onKeyDown={(event) => {
@@ -3502,7 +3523,7 @@ export function FileConverter({
                           ? 'Enter IWXXM XML manually'
                           : 'Enter METAR data manually'
                       }
-                      className="min-h-[220px] flex-1 focus-within:ring-2 focus-within:ring-blue-500"
+                      className="min-h-[100dvh] flex-1 focus-within:ring-2 focus-within:ring-blue-500"
                       failedSpans={failedSpans}
                       issueSpans={editorSpans}
                       onSpanFix={applyLintFix}
@@ -3590,7 +3611,7 @@ export function FileConverter({
                   </section>
                   {inputMode === 'validate_iwxxm' ? null : (
                     <div
-                      className="flex min-h-[15rem] min-w-0 flex-1 flex-col overflow-auto xl:h-full xl:min-h-0"
+                      className="flex min-h-[100dvh] min-w-0 flex-1 flex-col overflow-auto"
                       data-testid="decode-pane"
                     >
                       {onOpenVisuals ? (
@@ -3627,7 +3648,7 @@ export function FileConverter({
                     <section
                       data-testid="validate-iwxxm-results"
                       aria-label="Validation results"
-                      className="flex min-h-[16rem] flex-1 flex-col rounded-md border border-gray-200 bg-white p-3 dark:border-gray-700 dark:bg-gray-900"
+                      className="flex min-h-[100dvh] flex-1 flex-col rounded-md border border-gray-200 bg-white p-3 dark:border-gray-700 dark:bg-gray-900"
                     >
                       <h3 className="mb-2 text-sm font-semibold text-gray-900 dark:text-white">
                         Validation results
@@ -3648,7 +3669,7 @@ export function FileConverter({
                     </section>
                   ) : (
                     <IwxxmPreviewPane
-                      className="min-w-0 xl:h-full xl:min-h-0"
+                      className="min-w-0"
                       xml={previewXml}
                       status={previewStatus}
                       mode={previewMode}

@@ -11,6 +11,10 @@ import {
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { FileConverter } from './FileConverter';
+
+vi.mock('./LiveWorldMap', () => ({
+  LiveWorldMap: () => <div data-testid="live-world-map" />,
+}));
 import { clearOverlayOnAuthLoss } from '@/app/utils/clearOverlayOnAuthLoss';
 import { operatorDisseminationUiConfig } from '/utils/operatorDisseminationUi';
 import { defaultLibraryId } from '@/utils/libraryIds';
@@ -1708,8 +1712,12 @@ describe('FileConverter Component', () => {
       );
       expect(panes).toHaveAttribute('data-fit', 'roomy');
       expect(screen.getByTestId('live-convert-stage').className).toContain(
-        'xl:overflow-hidden',
+        'min-h-[100dvh]',
       );
+      expect(screen.getByTestId('convert-weather-map-toggle')).toHaveTextContent(
+        'Weather map',
+      );
+      expect(screen.getByTestId('live-world-map')).toBeInTheDocument();
       expect(screen.getByTestId('convert-setup').className).toContain(
         'xl:max-h-[18rem]',
       );

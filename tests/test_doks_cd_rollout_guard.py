@@ -16,6 +16,8 @@ def test_doks_rollout_script_exists_and_targets_three_deploys() -> None:
     assert "deploy/metar-worker" in text
     assert "deploy/metar-map-translator" in text
     assert "LIVE_MAP_REFRESH=0" in text
+    assert "LIVE_MAP_CACHE_URL" in text
+    assert "metar-api-secrets" in text
     assert "rollout status" in text
 
 
@@ -32,6 +34,6 @@ def test_ci_cd_deploy_rolls_doks_with_kube_config() -> None:
 
 def test_ci_cd_render_hooks_are_optional_non_blocking() -> None:
     text = WORKFLOW.read_text(encoding="utf-8")
-    assert "Optional Render hooks (non-blocking)" in text
+    assert "Optional Render hooks (non-blocking, prod Deploy only)" in text
     assert "continue-on-error: true" in text
     assert "Enforce backend deploy hook presence" not in text
