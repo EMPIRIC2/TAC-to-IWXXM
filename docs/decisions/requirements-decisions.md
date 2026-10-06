@@ -1,6 +1,28 @@
 # Requirements Decisions Log
 
-> Stage: 01-requirements | Last updated: 2026-09-14 (EV-conversion-profile-ux-libraries)
+> Stage: 01-requirements | Last updated: 2026-10-06 (EV-map-product-layers)
+
+## EV-map-product-layers — Per-product live map layers
+
+| Topic | Decision | Notes | Status |
+|-------|----------|-------|--------|
+| Feature | Deepen F37 | No new feature id | confirmed |
+| Who | Guest on Decode visuals | Sign-in not required | confirmed |
+| Zoom | Keep continent then sub-region markers | Colors at the closer zoom | confirmed |
+| Layers | One layer and color per product, including G-AIRMET | Group headings stay | confirmed |
+| Colors | Fixed palette | Not editable | confirmed |
+| Hover | Product, issue time, station or Area, scrollable TAC | Right on wide screens, below on narrow | confirmed |
+| History | Newest plus two earlier | Card switches; click loads the copy showing | confirmed |
+| G-AIRMET | Feed rows are `gairmet` | Domestic SIGMET text stays `sigmet` | confirmed |
+| Click | Shape or card | Hover only opens the card | confirmed |
+| Overlap | Offset plus type chip | Both products stay clickable | confirmed |
+| API | Add `gairmet` to the existing product filter | No family query parameter. IWXXM stays off the map list | confirmed |
+| Privacy | No new personal data | | confirmed |
+| Ship | H4–H5 on staging | No production promotion. CORS unchanged | confirmed |
+| Docs | F37, spec, UJ-087, test plan, API, ADR-052 | Config, dependencies, and deploy docs skipped | confirmed |
+| Preview | Non-deployed local Vite | 2026-10-06, not staging | confirmed |
+
+[Corpus: product §F37] [Corpus: system-spec] [Corpus: api] [Corpus: journeys] [Corpus: tests] [Corpus: adr/ADR-052]
 
 ## EV-conversion-profile-ux-libraries — Profile Builder platform
 

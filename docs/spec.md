@@ -389,8 +389,10 @@ EV-922 session `reports/923-platform-package-layout.md`; EV-922-synthesis `repor
 - **Home**: `apps/frontend` Decode visuals and `apps/backend` live-map router plus the existing database. The F8 worker stays at 0 replicas.
 - **Read path**: `GET /api/v1/live-map` is public. It returns places already in the cache for the requested box and families. It does not call a feed.
 - **Write path**: About every 5 minutes the API process stores every fetched location and text. It translates and lints at most 40 reports. A stored place is drawn before IWXXM exists. Three reports per place, newest first.
-- **Map**: Leaflet. Lowest zoom shows every cached point and shape in the world view. Filters hide families. Space weather is a list, never a pin.
-- **Must not change**: Convert and validate response bodies, guest access, and station search.
+- **Map**: Leaflet with the current tiles. World zoom draws one marker per continent that has reports. The next zoom draws sub-region markers. A closer zoom draws each station and shape on its own product layer. Colors are fixed: METAR `#1d4ed8`, SPECI `#0369a1`, TAF `#0f766e`, AIRMET `#c2410c`, G-AIRMET `#a16207`, SIGMET `#b91c1c`, volcanic ash `#6d28d9`, tropical cyclone `#be185d`, volcano notice `#4338ca`. Fills and outlines differ. The newest report is solid. The two earlier reports are faded. Hover highlights the shape. Co-located airport reports are offset and each has a type chip. [Corpus: product §F37]
+- **Hover**: The card shows the product, issue time, and station, or Area when there is no airport. Scrollable TAC sits to the right on a wide screen and below the metadata on a narrow screen. The card opens on the newest stored report. A control selects an earlier copy. Clicking the shape or the card loads that copy into the converter above the map. Stored IWXXM stays off the map list.
+- **Filters**: Group headings stay. Each product is its own checkbox and layer, including `gairmet` under Hazards. Space weather is a list, never a pin. The list uses `#0e7490` when it has rows. This cycle does not add a space-weather feed.
+- **Must not change**: Convert and validate response bodies, guest access, station search, continent and sub-region zoom, and the tile source.
 
 ### Runtime configuration (`config/`)
 

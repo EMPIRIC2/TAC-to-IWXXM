@@ -44,3 +44,14 @@ The operator accepted a review of translation pace and clustering. The 40-report
 3. The page and the popup say: “These reports are not validated for operational use. They come from the Aviation Weather Center.”
 4. A new Deployment on the existing DigitalOcean Kubernetes cluster translates. It is not a public service. It has CPU and memory requests and a memory limit. Staging starts at one replica. It finishes one of the five refresh areas before it starts the next. The ingest poller stays at 0 replicas.
 5. The API stops running the translation timer once that Deployment owns it. The API and the translator use the same `LIVE_MAP_CACHE_URL`. That is the existing cache database, not a new database server. Convert and validate response bodies stay as they are. Staging only. Do not promote to production.
+
+## Amend — EV-map-product-layers (2026-10-06)
+
+The operator asked for one layer and one color per TAC product, a hover card, and a click that loads the converter. [Corpus: product §F37]
+
+1. Leaflet and the current tiles stay. Continent markers, then sub-region markers, stay. Per-product colors and shapes appear at the closer zoom. There is still no globe library and no pin-clustering package.
+2. Each product is its own layer: `metar` `#1d4ed8`, `speci` `#0369a1`, `taf` `#0f766e`, `airmet` `#c2410c`, `gairmet` `#a16207`, `sigmet` `#b91c1c`, `vaa` `#6d28d9`, `tca` `#be185d`, `vona` `#4338ca`. Colors are fixed. Fills and outlines differ. The newest report is solid. Two earlier reports are faded. Hover highlights the shape. Co-located airport reports are offset and each has a type chip.
+3. Rows from the G-AIRMET feed are stored as `gairmet`. A domestic row whose text is a SIGMET stays `sigmet`. `GET /api/v1/live-map` already filters by product id. This amend adds `gairmet` to the allowed set and the default. Family names are not a query parameter. The browser list stays `observed_at` and `tac`.
+4. The hover card shows the product, the issue time, and the station, or Area when there is no airport. Scrollable TAC sits to the right on a wide screen and below the metadata on a narrow screen. The card opens on the newest report. A control selects an earlier copy. Clicking the shape or the card loads that copy into the converter at the top of the page.
+5. Space weather stays off the map. The list uses `#0e7490` when it has rows. This amend does not add a space-weather feed.
+6. Convert and validate response bodies stay as they are. Guest access stays. Staging is the ship target. Do not promote to production.
