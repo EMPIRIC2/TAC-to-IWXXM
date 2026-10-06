@@ -247,7 +247,12 @@ export function TacEditor({
           id,
         }),
         EditorView.theme({
-          '&': { height: '100%', minHeight: '11rem', fontSize: '0.875rem' },
+          '&': {
+            height: 'auto',
+            maxHeight: '20rem',
+            minHeight: '11rem',
+            fontSize: '0.875rem',
+          },
           '.cm-scroller': { overflow: 'auto' },
           '.cm-content': {
             fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace',
