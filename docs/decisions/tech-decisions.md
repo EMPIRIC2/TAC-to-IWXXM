@@ -1,7 +1,21 @@
 # Technical Decision Log
 
 > Extends [product-decisions.md](product-decisions.md) with 05-verify-tech audit verdicts.
-> Last updated: 2026-09-06 (EV-m4-profiles-annex3-us-custom)
+> Last updated: 2026-10-06 (EV-map-product-layers)
+
+## EV-map-product-layers 05-verify-tech (2026-10-06)
+
+| ID | Date | Topic | Decision | Status |
+|----|------|-------|----------|--------|
+| VT1 | 2026-10-06 | Connectivity | Reuse TC-F37-006 for H4–H5. No new CORS task. Hosts stay as they are | confirmed |
+| VT2 | 2026-10-06 | Palette | T2 includes the cyan space-weather list token. No new feed | confirmed |
+| VT3 | 2026-10-06 | Dependencies | No new package. Leaflet and the current tiles stay | confirmed |
+| VT4 | 2026-10-06 | Plan order | T1 G-AIRMET id, T2 colors, T3 hover card, T4 readability. Test before code | confirmed |
+| D-EVMPL-05 | 2026-10-06 | Gate | Documenting verify still runs. Build gate stays closed until the operator opens it | confirmed |
+
+Session report: `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-map-product-layers/reports/05-verify-tech.md`.
+
+[Corpus: product §F37] [Corpus: tests] [Corpus: adr/ADR-052]
 
 ## EV-m4-profiles-annex3-us-custom 05-verify-tech (2026-09-06)
 

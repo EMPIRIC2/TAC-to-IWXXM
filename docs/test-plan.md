@@ -6921,7 +6921,7 @@ Engineering quality — multi-language inline documentation bar. H4–H5 **N/A**
 
 - **Level**: T0
 - **Objective**: At the closer zoom, METAR, SPECI, TAF, AIRMET, G-AIRMET, SIGMET, volcanic ash, tropical cyclone, and volcano notice are separate layers. Each uses the fixed color in the product row. Turning one checkbox off hides only that product.
-- **Pass criteria**: METAR and SPECI are not the same color. AIRMET and G-AIRMET are not the same color. Hiding G-AIRMET leaves AIRMET visible.
+- **Pass criteria**: METAR and SPECI are not the same color. AIRMET and G-AIRMET are not the same color. Hiding G-AIRMET leaves AIRMET visible. The space-weather list color token is cyan. This check does not add a space-weather feed.
 
 ### TC-F37-008: Hover card loads the converter
 
