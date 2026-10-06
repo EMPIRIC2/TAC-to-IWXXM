@@ -20,7 +20,8 @@ The popup timer measured the popup and called `map.panBy` with a negative Y,
 which moves the map content up. Cluster drawing replaced points and polygons
 until the zoom reached station level, so a region click only changed zoom.
 A later layer change opens the card on hover. That still must not call `panBy`.
-The converter panes were capped well below one viewport.
+The converter panes follow the report and can be hidden. The map itself stays at
+least 24rem tall.
 
 ## Repro test
 
