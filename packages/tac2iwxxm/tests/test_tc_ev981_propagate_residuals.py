@@ -93,6 +93,20 @@ def test_tc_ev981_002_flag_on_folds_residuals_into_iwxxm_us_hrt() -> None:
     assert "ZZZZ" in str(free)
 
 
+def test_tc_ev981_002_unexplained_remark_already_stored_is_not_appended() -> None:
+    """A remark that is still undecoded, and already stored, is not appended again."""
+    result = convert(
+        "METAR KJFK 231751Z 18012KT 10SM CLR 15/07 A3005 RMK AO2 SOG 01=",
+        product="METAR",
+        profile="iwxxm_us",
+        iwxxm_version="2025-2",
+        propagate_residuals_to_remarks=True,
+    )
+    assert result.ok
+    assert "RESIDUALS_PROPAGATED_TO_REMARKS" not in [i.code for i in result.issues]
+    assert str((result.ir or {}).get("remarks_free_text") or "").count("SOG 01") == 1
+
+
 def test_tc_ev981_002_dedup_skips_residual_already_in_remarks_free_text() -> None:
     """Residual text already present in remarks_free_text is not appended twice."""
     # VIRGA NE is RMK remainder → remarks_free_text; ensure flag-on does not duplicate.

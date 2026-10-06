@@ -267,6 +267,28 @@ def test_polygon_rows_keep_a_centroid_and_station_rows_stay_points() -> None:
     assert {report.geometry_kind for report in shapes} == {"line", "polygon", "point"}
 
 
+def test_convective_sigmet_on_the_airmet_feed_is_a_sigmet() -> None:
+    reports = reports_from_feed(
+        [
+            {
+                "_feed": "airsigmet",
+                "rawAirSigmet": "WSUS31 KKCI 051455\nCONVECTIVE SIGMET 27E\nVALID UNTIL 1655Z\n",
+                "lat": 42.0,
+                "lon": -75.0,
+                "validTimeFrom": "2026-10-05T14:55:00Z",
+            },
+            {
+                "_feed": "airsigmet",
+                "rawAirSigmet": "WAUS41 KKCI 051455\nAIRMET SIERRA FOR IFR\n",
+                "lat": 41.0,
+                "lon": -74.0,
+                "validTimeFrom": "2026-10-05T14:55:00Z",
+            },
+        ]
+    )
+    assert [report.product for report in reports] == ["sigmet", "airmet"]
+
+
 def test_import_limit_falls_back(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setenv("LIVE_MAP_IMPORT_LIMIT", "0")
     assert import_limit() == 1

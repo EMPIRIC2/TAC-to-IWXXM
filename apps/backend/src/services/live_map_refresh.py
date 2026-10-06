@@ -13,6 +13,7 @@ import hashlib
 import importlib
 import logging
 import os
+import re
 from collections.abc import Awaitable, Callable
 from datetime import UTC, datetime
 from typing import cast
@@ -233,6 +234,10 @@ def _product(feed: str, text: str) -> str:
     if feed == "taf":
         return "taf"
     if feed in {"airsigmet", "gairmet"}:
+        # The domestic feed mixes convective SIGMETs into the AIRMET path.
+        words = set(re.findall(r"[A-Z]+", text.upper()))
+        if "SIGMET" in words and "AIRMET" not in words:
+            return "sigmet"
         return "airmet"
     if feed == "isigmet":
         return "sigmet"

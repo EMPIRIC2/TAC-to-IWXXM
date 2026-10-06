@@ -1786,6 +1786,30 @@
   region. Knots stay knots. Volcanic-ash cloud movement uses the same sixteen compass
   points and the same speed units.
 
+### F9 / F15 deepen (EV-live-map-residuals — live METAR, SPECI, and SIGMET leftovers)
+
+- **Status note**: F9 and F15 stay **Done**. This cycle explains the groups that were still
+  residuals on a live map sample after the southern-polygon and convective-SIGMET decode
+  passes. No new product id, no map redesign, and no IWXXM shape change. [Corpus: product §F9]
+  [Corpus: product §F15]
+- **Plain language**, one regression each:
+  1. Pressure tendency `5appp` (for example `53002`).
+  2. Hourly precipitation `P####` and `PNO`.
+  3. Distant weather `DSNT` and a remark cumulonimbus `CB`.
+  4. Canadian remark cloud amounts (`SF8`, `SC7`, `AC1CI1`, `ST3CU1CI1`).
+  5. Density altitude `DENSITY ALT`.
+  6. Correction `CCA` on METAR or SPECI.
+  7. Combined `OBS/FCST`.
+  8. A short FIR name such as `LA PAZ`.
+  9. Convective area states (`LA TX`) and `REF INTL SIGMET … SERIES`.
+  10. A navaid-to-navaid segment with no distance, such as `TRV-PBI`.
+  The same sample also covers peak wind, Canadian remark prose, a longitude glued to
+  a hyphen, `SFC/6000FT`, a nautical-mile radius, a tropical-cyclone name, `RRA`,
+  Great Lakes codes on a convective area line, and whole miles before a fraction.
+- **Acceptance**: each family has a decode regression, the explanation is plain language,
+  and a fresh sample of the same live cache no longer lists that token as undecoded.
+  Already-explained METAR, TAF, and SIGMET groups stay explained.
+
 ### F7.g deepen (S026 / EV-020 — WMO-passing examples only)
 
 - **Status note**: F7.g remains under F7 Planned; S026 replaced catalog bodies/policy so the
