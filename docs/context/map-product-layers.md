@@ -40,6 +40,14 @@ Prior briefs: [globe-live-map.md](globe-live-map.md), [map-worker-cluster.md](ma
 | R11 | Ship checks | H4–H5 when the screen ships to staging. CORS stays. Production promotion is out |
 | R12 | Docs | Delta F37, system spec, API contract, test plan, and the live-map journey. Amend ADR-052 because per-product layers and the hover card change the accepted map decision |
 | R13 | Preview | Operator asked to see the non-deployed local UI. That view is reference only |
+| R14 | Colors | Fixed palette, one color per product, shown in the legend. Not editable |
+| R15 | Hover layout | TAC to the right of the metadata on a wide screen, and below it on a narrow screen |
+| R16 | History | Card opens on the newest of the three stored reports. A control switches to an earlier copy. Click loads the copy that is showing |
+| R17 | G-AIRMET | Rows from the G-AIRMET feed are product `gairmet`. A domestic row whose text is a SIGMET stays SIGMET |
+| R18 | Controls | Keep the group headings. Each product is its own checkbox, color, and map layer. G-AIRMET sits under Hazards |
+| R19 | Click | Hover only opens the card. Clicking the shape or the card loads the copy the card is showing into the converter |
+| R20 | No station | The station line says Area when the report has no airport, and the airport name when it has one |
+| R21 | Overlap | Co-located airport reports are offset slightly and carry a type chip so each product stays clickable |
 
 ## Memory
 
