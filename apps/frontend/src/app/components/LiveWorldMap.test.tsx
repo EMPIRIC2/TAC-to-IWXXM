@@ -153,6 +153,8 @@ describe('LiveWorldMap', () => {
   beforeEach(() => {
     vi.useRealTimers();
     map.getSize.mockReturnValue({ x: 800, y: 600 });
+    map.getZoom.mockReturnValue(8);
+    map.on.mockClear();
     marker.setStyle.mockClear();
     map._renderer = { _update: canvasUpdate };
     canvasUpdate.mockClear();
@@ -414,7 +416,8 @@ describe('LiveWorldMap', () => {
     await paintedPolygon();
     expect(L.polygon).toHaveBeenCalled();
     expect(L.circleMarker).toHaveBeenCalled();
-    expect(screen.getByTestId('live-map-canvas').className).toContain('min-h-[100dvh]');
+    expect(screen.getByTestId('live-map-canvas').className).toContain('rounded-2xl');
+    expect(screen.getByTestId('live-map-canvas').className).toContain('min-h-[24rem]');
     act(() => {
       clicks[1]?.();
     });
@@ -531,7 +534,19 @@ describe('LiveWorldMap', () => {
       }),
     );
     const onOpenPlace = vi.fn();
+    vi.mocked(L.divIcon).mockClear();
+    map.getZoom.mockReturnValue(2);
     render(<LiveWorldMap onOpenPlace={onOpenPlace} />);
+    await waitFor(() => expect(L.circleMarker).toHaveBeenCalled());
+    expect(map.getZoom()).toBe(2);
+    expect(L.divIcon).not.toHaveBeenCalled();
+    map.getZoom.mockReturnValue(8);
+    const onZoom = map.on.mock.calls
+      .filter((call) => call[0] === 'zoomend')
+      .at(-1)?.[1] as (() => void) | undefined;
+    act(() => {
+      onZoom?.();
+    });
     await waitFor(() => expect(L.divIcon).toHaveBeenCalled());
     expect(L.circleMarker).toHaveBeenCalledWith(
       [40.6, expect.closeTo(-73.74, 2)],

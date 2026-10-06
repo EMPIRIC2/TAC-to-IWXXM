@@ -28,7 +28,7 @@ const LABELS = [
  * Lay out TAC, decode, and IWXXM. Wide screens can drag the boundaries.
  *
  * @param props.wide - Side-by-side layout
- * @param props.roomy - Fill the window height
+ * @param props.roomy - Wider frame. Pane height follows the report.
  * @param props.widths - Pane shares
  * @param props.children - The three panes
  * @example
@@ -76,11 +76,7 @@ export function LiveConvertPaneGrid({
 
   const panes = Children.toArray(children);
 
-  const fitClass = wide
-    ? 'min-h-[100dvh] flex-1'
-    : roomy
-      ? 'min-h-[100dvh]'
-      : 'min-h-[18rem]';
+  const fitClass = 'min-h-0';
 
   if (!wide) {
     return (

@@ -23,7 +23,8 @@ describe('LiveConvertPaneGrid', () => {
       'data-fit',
       'roomy',
     );
-    expect(screen.getByTestId('live-convert-panes').className).toContain(
+    expect(screen.getByTestId('live-convert-panes').className).toContain('min-h-0');
+    expect(screen.getByTestId('live-convert-panes').className).not.toContain(
       'min-h-[100dvh]',
     );
     expect(screen.getByTestId('live-convert-panes').className).not.toContain('h-full');
@@ -66,7 +67,8 @@ describe('LiveConvertPaneGrid', () => {
       'data-fit',
       'tight',
     );
-    expect(screen.getByTestId('live-convert-panes').className).toContain(
+    expect(screen.getByTestId('live-convert-panes').className).toContain('min-h-0');
+    expect(screen.getByTestId('live-convert-panes').className).not.toContain(
       'min-h-[100dvh]',
     );
     const first = screen.getByRole('separator', {

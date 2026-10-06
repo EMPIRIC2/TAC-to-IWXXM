@@ -241,6 +241,11 @@ export function StationPopup({
       >
         <div className="flex min-w-0 flex-1 flex-col gap-1">
           <p className="text-base font-semibold" data-testid="live-map-product">
+            <span
+              aria-hidden="true"
+              className="mr-2 inline-block h-2.5 w-2.5 rounded-full align-middle"
+              style={{ backgroundColor: pinColor(place.product) }}
+            />
             {productLabel(place.product)}
           </p>
           <p data-testid="live-map-issued">{formatObservedAt(report.observed_at)}</p>
@@ -248,10 +253,10 @@ export function StationPopup({
             {station}
           </p>
           {place.reports.length > 1 ? (
-            <div className="flex gap-2">
+            <div className="mt-1 flex gap-1">
               <button
                 type="button"
-                className="text-xs underline"
+                className="rounded-full bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-800 hover:bg-gray-200"
                 data-testid="live-map-newer"
                 onClick={(event) => {
                   event.stopPropagation();
@@ -262,7 +267,7 @@ export function StationPopup({
               </button>
               <button
                 type="button"
-                className="text-xs underline"
+                className="rounded-full bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-800 hover:bg-gray-200"
                 data-testid="live-map-earlier"
                 onClick={(event) => {
                   event.stopPropagation();
@@ -279,7 +284,7 @@ export function StationPopup({
         <div className="flex min-w-0 flex-1 flex-col gap-1">
           <p className="text-xs font-medium">{LIVE_MAP_TAC}</p>
           <pre
-            className="max-h-32 overflow-y-auto whitespace-pre-wrap font-mono text-xs"
+            className="max-h-32 overflow-y-auto rounded-md bg-gray-50 p-2 whitespace-pre-wrap font-mono text-xs text-gray-800"
             data-testid="live-map-tac"
           >
             {report.tac}
@@ -368,6 +373,7 @@ export function LiveWorldMap({
   const [timePreset, setTimePreset] = useState<MapTimePreset>('all');
   const [phenomena, setPhenomena] = useState<ReadonlySet<string>>(new Set());
   const [bounds, setBounds] = useState<MapBounds | null>(null);
+  const [zoom, setZoom] = useState(2);
   const [places, setPlaces] = useState<LivePlace[]>([]);
   const [error, setError] = useState('');
   const [phase, setPhase] = useState<'loading' | 'ready' | 'refreshing'>('loading');
@@ -447,15 +453,15 @@ export function LiveWorldMap({
           );
         });
       }
-      if (at && group.length > 1) {
+      if (at && group.length > 1 && zoom >= 6) {
         layers.push(
           L.marker(at, {
             interactive: false,
             keyboard: false,
             icon: L.divIcon({
               className: 'live-map-type-chip',
-              html: productLabel(place.product),
-              iconSize: [72, 18],
+              html: `<span style="display:inline-flex;align-items:center;height:16px;padding:0 6px;border-radius:999px;background:#111827;color:#fff;font:600 10px/16px ui-sans-serif,system-ui,sans-serif">${productLabel(place.product)}</span>`,
+              iconSize: [72, 16],
             }),
           }).addTo(map),
         );
@@ -517,7 +523,7 @@ export function LiveWorldMap({
         });
       });
     };
-  }, [visible, focusStation]);
+  }, [visible, focusStation, zoom]);
 
   useEffect(() => {
     const node = host.current as HTMLDivElement;
@@ -541,6 +547,7 @@ export function LiveWorldMap({
     observer.observe(node);
     const publish = () => {
       setBounds(boundsOf(map));
+      setZoom(map.getZoom());
     };
     map.on('moveend', publish);
     map.on('zoomend', publish);
@@ -585,149 +592,190 @@ export function LiveWorldMap({
     return () => window.clearInterval(timer);
   }, [bounds, products]);
 
+  const filterSelect =
+    'h-9 min-w-[10rem] rounded-lg border border-gray-200 bg-white px-2.5 text-sm font-medium text-gray-900 shadow-sm outline-none focus:ring-2 focus:ring-sky-500 dark:border-gray-700 dark:bg-gray-900 dark:text-white';
+
   return (
     <div className="flex flex-col gap-3" data-testid="live-world-map">
-      <p className="text-sm text-gray-600 dark:text-gray-300">
-        <span data-testid="live-map-beta">{DECODE_VISUALS_BETA}</span>
-        {'. '}
-        <a href={DECODE_VISUALS_FEEDBACK_URL}>{DECODE_VISUALS_FEEDBACK}</a>
-      </p>
-      <p
-        id="live-map-notice"
-        className="text-sm text-gray-600 dark:text-gray-300"
-        data-testid="live-map-notice"
-      >
-        {LIVE_MAP_NOTICE}
-      </p>
-      {LIVE_MAP_VIEWS.map((view) => (
-        <div key={view.id} className="flex flex-wrap items-center gap-3">
-          <span className="text-sm font-medium">{view.label}</span>
-          {view.products.map((product) => (
-            <label key={product} className="flex items-center gap-1 text-sm">
-              <input
-                type="checkbox"
-                checked={!off.has(product)}
-                data-testid={`layer-${product}`}
-                onChange={() => {
-                  const next = new Set(off);
-                  if (next.has(product)) {
-                    next.delete(product);
-                  } else {
-                    next.add(product);
-                  }
-                  setOff(next);
-                }}
-              />
-              <span
-                aria-hidden="true"
-                data-testid={`swatch-${product}`}
-                className="inline-block h-3 w-3 rounded-sm border border-white"
-                style={{ backgroundColor: pinColor(product) }}
-              />
-              {productLabel(product)}
-            </label>
+      <div className="rounded-2xl border border-gray-200 bg-white p-3 shadow-sm dark:border-gray-800 dark:bg-gray-950">
+        <p className="mb-3 text-xs text-gray-500 dark:text-gray-400">
+          <span data-testid="live-map-beta">{DECODE_VISUALS_BETA}</span>
+          {'. '}
+          <a className="underline" href={DECODE_VISUALS_FEEDBACK_URL}>
+            {DECODE_VISUALS_FEEDBACK}
+          </a>
+        </p>
+        <p id="live-map-notice" className="sr-only" data-testid="live-map-notice">
+          {LIVE_MAP_NOTICE}
+        </p>
+        <div className="flex flex-col gap-2">
+          {LIVE_MAP_VIEWS.map((view) => (
+            <div key={view.id} className="flex flex-wrap items-center gap-2">
+              <span className="w-24 text-[11px] font-semibold tracking-wide text-gray-400 uppercase">
+                {view.label}
+              </span>
+              {view.products.map((product) => {
+                const on = !off.has(product);
+                const color = pinColor(product);
+                return (
+                  <label
+                    key={product}
+                    className={`inline-flex cursor-pointer items-center gap-2 rounded-full border px-3 py-1 text-sm font-medium transition ${
+                      on
+                        ? 'border-transparent text-white shadow-sm'
+                        : 'border-gray-200 bg-gray-50 text-gray-500 hover:border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-400'
+                    }`}
+                    style={on ? { backgroundColor: color } : undefined}
+                  >
+                    <input
+                      type="checkbox"
+                      className="sr-only"
+                      checked={on}
+                      data-testid={`layer-${product}`}
+                      onChange={() => {
+                        const next = new Set(off);
+                        if (next.has(product)) {
+                          next.delete(product);
+                        } else {
+                          next.add(product);
+                        }
+                        setOff(next);
+                      }}
+                    />
+                    <span
+                      aria-hidden="true"
+                      data-testid={`swatch-${product}`}
+                      className={`inline-block h-2 w-2 rounded-full ${on ? 'bg-white' : ''}`}
+                      style={on ? undefined : { backgroundColor: color }}
+                    />
+                    {productLabel(product)}
+                  </label>
+                );
+              })}
+            </div>
           ))}
         </div>
-      ))}
-      <div className="flex flex-wrap items-center gap-3">
-        <label className="flex items-center gap-1 text-sm">
-          {LIVE_MAP_FILTER_COUNTRY}
-          <select
-            value={country}
-            data-testid="live-map-country"
-            onChange={(event) => {
-              setCountry(event.target.value);
-            }}
-          >
-            <option value="all">{LIVE_MAP_ALL_COUNTRIES}</option>
-            {countries.map((name) => (
-              <option key={name} value={name}>
-                {name}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label className="flex items-center gap-1 text-sm">
-          {LIVE_MAP_FILTER_REGION}
-          <select
-            value={region}
-            data-testid="live-map-region"
-            onChange={(event) => {
-              setRegion(event.target.value);
-            }}
-          >
-            <option value="all">{LIVE_MAP_ALL_REGIONS}</option>
-            {regionFilterNames().map((name) => (
-              <option key={name} value={name}>
-                {name}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label className="flex items-center gap-1 text-sm">
-          {LIVE_MAP_FILTER_TIME}
-          <select
-            value={timePreset}
-            data-testid="live-map-time"
-            onChange={(event) => {
-              setTimePreset(event.target.value as MapTimePreset);
-            }}
-          >
-            <option value="all">{LIVE_MAP_ALL_TIMES}</option>
-            <option value="1h">{LIVE_MAP_LAST_HOUR}</option>
-            <option value="6h">{LIVE_MAP_LAST_6_HOURS}</option>
-            <option value="24h">{LIVE_MAP_LAST_24_HOURS}</option>
-          </select>
-        </label>
-      </div>
-      <div className="flex flex-wrap items-center gap-3">
-        <span className="text-sm font-medium">{LIVE_MAP_FILTER_PHENOMENON}</span>
-        {LIVE_MAP_PHENOMENA.map((item) => (
-          <label key={item.id} className="flex items-center gap-1 text-sm">
-            <input
-              type="checkbox"
-              checked={phenomena.has(item.id)}
-              data-testid={`phenomenon-${item.id}`}
-              onChange={() => {
-                const next = new Set(phenomena);
-                if (next.has(item.id)) {
-                  next.delete(item.id);
-                } else {
-                  next.add(item.id);
-                }
-                setPhenomena(next);
+        <div className="mt-3 flex flex-wrap items-end gap-2 border-t border-gray-100 pt-3 dark:border-gray-800">
+          <label className="flex flex-col gap-1 text-[11px] font-semibold tracking-wide text-gray-400 uppercase">
+            {LIVE_MAP_FILTER_COUNTRY}
+            <select
+              className={filterSelect}
+              value={country}
+              data-testid="live-map-country"
+              onChange={(event) => {
+                setCountry(event.target.value);
               }}
-            />
-            {item.label}
+            >
+              <option value="all">{LIVE_MAP_ALL_COUNTRIES}</option>
+              {countries.map((name) => (
+                <option key={name} value={name}>
+                  {name}
+                </option>
+              ))}
+            </select>
           </label>
-        ))}
+          <label className="flex flex-col gap-1 text-[11px] font-semibold tracking-wide text-gray-400 uppercase">
+            {LIVE_MAP_FILTER_REGION}
+            <select
+              className={filterSelect}
+              value={region}
+              data-testid="live-map-region"
+              onChange={(event) => {
+                setRegion(event.target.value);
+              }}
+            >
+              <option value="all">{LIVE_MAP_ALL_REGIONS}</option>
+              {regionFilterNames().map((name) => (
+                <option key={name} value={name}>
+                  {name}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label className="flex flex-col gap-1 text-[11px] font-semibold tracking-wide text-gray-400 uppercase">
+            {LIVE_MAP_FILTER_TIME}
+            <select
+              className={filterSelect}
+              value={timePreset}
+              data-testid="live-map-time"
+              onChange={(event) => {
+                setTimePreset(event.target.value as MapTimePreset);
+              }}
+            >
+              <option value="all">{LIVE_MAP_ALL_TIMES}</option>
+              <option value="1h">{LIVE_MAP_LAST_HOUR}</option>
+              <option value="6h">{LIVE_MAP_LAST_6_HOURS}</option>
+              <option value="24h">{LIVE_MAP_LAST_24_HOURS}</option>
+            </select>
+          </label>
+        </div>
+        <div className="mt-3 flex flex-wrap items-center gap-2">
+          <span className="text-[11px] font-semibold tracking-wide text-gray-400 uppercase">
+            {LIVE_MAP_FILTER_PHENOMENON}
+          </span>
+          {LIVE_MAP_PHENOMENA.map((item) => {
+            const on = phenomena.has(item.id);
+            return (
+              <label
+                key={item.id}
+                className={`inline-flex cursor-pointer items-center rounded-full border px-3 py-1 text-sm font-medium transition ${
+                  on
+                    ? 'border-gray-900 bg-gray-900 text-white dark:border-white dark:bg-white dark:text-gray-900'
+                    : 'border-gray-200 bg-white text-gray-600 hover:border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300'
+                }`}
+              >
+                <input
+                  type="checkbox"
+                  className="sr-only"
+                  checked={on}
+                  data-testid={`phenomenon-${item.id}`}
+                  onChange={() => {
+                    const next = new Set(phenomena);
+                    if (next.has(item.id)) {
+                      next.delete(item.id);
+                    } else {
+                      next.add(item.id);
+                    }
+                    setPhenomena(next);
+                  }}
+                />
+                {item.label}
+              </label>
+            );
+          })}
+        </div>
       </div>
-      <p
-        className="text-xs text-gray-600 dark:text-gray-300"
-        data-testid="live-map-space"
-        style={{ color: spaceWeatherListColor(0) }}
-      >
-        {LIVE_MAP_SPACE}
-      </p>
-      {message ? (
+      <div className="flex flex-wrap items-center justify-between gap-2 px-1">
         <p
-          className="text-sm text-gray-600 dark:text-gray-300"
-          data-testid="live-map-error"
+          className="text-xs text-gray-500 dark:text-gray-400"
+          data-testid="live-map-space"
+          style={{ color: spaceWeatherListColor(0) }}
         >
-          {message}
+          {LIVE_MAP_SPACE}
         </p>
-      ) : (
-        <p className="text-sm font-medium" data-testid="live-map-status">
-          {status}
-        </p>
-      )}
-      <p className="text-xs text-gray-500 dark:text-gray-400">{LIVE_MAP_ZOOM_HINT}</p>
+        {message ? (
+          <p
+            className="text-sm text-gray-600 dark:text-gray-300"
+            data-testid="live-map-error"
+          >
+            {message}
+          </p>
+        ) : (
+          <p
+            className="rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-700 dark:bg-gray-800 dark:text-gray-200"
+            data-testid="live-map-status"
+          >
+            {status}
+          </p>
+        )}
+      </div>
+      <p className="px-1 text-xs text-gray-400">{LIVE_MAP_ZOOM_HINT}</p>
       <div
         ref={host}
         role="region"
         aria-label={LIVE_MAP_CANVAS}
         aria-describedby="live-map-notice"
-        className="z-0 h-[100dvh] min-h-[100dvh] w-full overflow-hidden rounded border border-gray-200 dark:border-gray-700"
+        className="z-0 h-[min(70dvh,44rem)] min-h-[24rem] w-full overflow-hidden rounded-2xl border border-gray-200 shadow-sm dark:border-gray-800"
         data-testid="live-map-canvas"
       />
     </div>

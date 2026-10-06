@@ -87,7 +87,8 @@ describe('IwxxmPreviewPane', () => {
       <IwxxmPreviewPane xml={SAMPLE_XML} status="passed" mode="soft-preview" />,
     );
     const root = container.querySelector('[data-testid="iwxxm-preview-pane"]');
-    expect(root?.className).toContain('min-h-[100dvh]');
+    expect(root?.className).toContain('max-h-80');
+    expect(root?.className).not.toContain('min-h-[100dvh]');
   });
 
   it('numbers lines, names the conversion profile, and marks the selected group', () => {

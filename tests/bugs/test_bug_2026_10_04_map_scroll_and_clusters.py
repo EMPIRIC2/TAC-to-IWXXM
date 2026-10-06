@@ -33,5 +33,7 @@ def test_bug_2026_10_04_map_draws_features_without_clusters_or_upward_pan() -> N
     assert "onOpenPlace" in _CONVERTER
     assert "scrollIntoView" in _CONVERTER
     assert "convert-weather-map" in _CONVERTER
-    assert "min-h-[100dvh]" in _CONVERTER
-    assert "min-h-[100dvh]" in _PANES
+    assert "convert-panes-toggle" in _CONVERTER
+    assert "min-h-[100dvh]" not in _CONVERTER
+    assert "min-h-[100dvh]" not in _PANES
+    assert "min-h-[24rem]" in _MAP

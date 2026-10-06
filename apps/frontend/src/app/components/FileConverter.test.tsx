@@ -1764,9 +1764,17 @@ describe('FileConverter Component', () => {
         'true',
       );
       expect(panes).toHaveAttribute('data-fit', 'roomy');
-      expect(screen.getByTestId('live-convert-stage').className).toContain(
+      expect(screen.getByTestId('live-convert-stage').className).not.toContain(
         'min-h-[100dvh]',
       );
+      expect(screen.getByTestId('convert-body')).not.toHaveAttribute('hidden');
+      await user.click(screen.getByTestId('convert-panes-toggle'));
+      expect(screen.getByTestId('convert-body')).toHaveAttribute('hidden');
+      expect(screen.getByTestId('convert-panes-toggle')).toHaveTextContent(
+        'Show converter',
+      );
+      await user.click(screen.getByTestId('convert-panes-toggle'));
+      expect(screen.getByTestId('convert-body')).not.toHaveAttribute('hidden');
       expect(screen.getByTestId('convert-weather-map-toggle')).toHaveTextContent(
         'Weather map',
       );

@@ -92,7 +92,7 @@ export function IwxxmPreviewPane({
     <section
       data-testid="iwxxm-preview-pane"
       aria-label="IWXXM preview"
-      className={`flex min-h-[100dvh] flex-1 flex-col rounded-md border border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-900 ${className}`}
+      className={`flex max-h-80 min-h-0 flex-col overflow-hidden rounded-md border border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-900 ${className}`}
     >
       <header className="flex flex-wrap items-center gap-2 border-b border-gray-200 px-3 py-2 dark:border-gray-700">
         <h3 className="text-sm font-semibold text-gray-900 dark:text-white">
