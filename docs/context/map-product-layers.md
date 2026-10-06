@@ -32,7 +32,7 @@ The local map does not show this yet. Hover cards, per-product colors, the G-AIR
 | T4 | Tests, then faded older copies, hover highlight, offset dots, and a type chip | TC-F37-010 |
 | T5 | Tests, then country, region, time presets, and hazard phenomenon on the loaded view | TC-F37-011 |
 
-T5 is specified and not built. It starts only after the filter spec is approved. The live-map request stays the box and the product ids.
+T5 is on `evolve/EV-map-product-layers`. The live-map request stays the box and the product ids.
 
 Continent zoom, guest access, the current tiles, and convert and validate responses stay as they are. Space weather stays off the map.
 
