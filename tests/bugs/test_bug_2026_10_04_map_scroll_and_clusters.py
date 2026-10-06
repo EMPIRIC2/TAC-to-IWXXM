@@ -1,7 +1,7 @@
 """BUG-2026-10-04 - the live map scrolls upward and only draws continent chips.
 
 The converter map must draw points and polygons, skip the region chips, and
-must not pan the view when a report opens.
+must not pan the view when a report opens. Hover may open the card.
 """
 
 from __future__ import annotations
@@ -28,7 +28,7 @@ def test_bug_2026_10_04_map_draws_features_without_clusters_or_upward_pan() -> N
     assert "live-map-tac" in _MAP
     assert "live-map-station" in _MAP
     assert "decodeTac" not in _MAP
-    assert "mouseover" not in _MAP
+    assert "mouseover" in _MAP
     assert "onOpenPlace" in _MAP
     assert "onOpenPlace" in _CONVERTER
     assert "scrollIntoView" in _CONVERTER

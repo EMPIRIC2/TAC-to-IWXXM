@@ -85,6 +85,11 @@ export const LIVE_MAP_PHENOMENA = [
   { id: 'ts', label: 'Thunderstorms' },
 ] as const;
 
+/**
+ * How far back the map keeps reports. `all` does not apply a clock window.
+ * @example
+ * const _ = true;
+ */
 export type MapTimePreset = 'all' | '1h' | '6h' | '24h';
 export const LIVE_MAP_DECODE = 'Decode';
 export const LIVE_MAP_PANEL = 'Weather map';

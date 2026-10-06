@@ -14,7 +14,6 @@ const leaves: Array<() => void> = [];
 const keys: Array<
   (event: { originalEvent?: { key?: string; preventDefault?: () => void } }) => void
 > = [];
-const originalSetTimeout = window.setTimeout.bind(window);
 const popupEl = document.createElement('div');
 const mapPane = document.createElement('div');
 const canvasUpdate = vi.fn();
@@ -143,17 +142,6 @@ describe('LiveWorldMap', () => {
     marker.setStyle.mockClear();
     map._renderer = { _update: canvasUpdate };
     canvasUpdate.mockClear();
-    vi.spyOn(window, 'setTimeout').mockImplementation(((
-      handler: TimerHandler,
-      timeout?: number,
-      ...args: unknown[]
-    ) => {
-      if (timeout === 50 && typeof handler === 'function') {
-        handler();
-        return 0 as unknown as ReturnType<typeof setTimeout>;
-      }
-      return originalSetTimeout(handler, timeout, ...args);
-    }) as typeof setTimeout);
     vi.spyOn(window, 'setInterval').mockImplementation(((
       handler: TimerHandler,
       timeout?: number,
@@ -176,7 +164,6 @@ describe('LiveWorldMap', () => {
   });
 
   afterEach(() => {
-    vi.mocked(window.setTimeout).mockRestore();
     vi.mocked(window.setInterval).mockRestore();
     cleanup();
     document.querySelectorAll('[data-testid="live-map-detail"]').forEach((el) => {
