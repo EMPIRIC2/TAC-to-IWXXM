@@ -340,6 +340,7 @@ describe('live map helpers', () => {
       station('sigmet-storm', 'sigmet', '2026-10-06T11:00:00Z', 'SIGMET THUNDERSTORM'),
       station('sigmet-vc', 'sigmet', '2026-10-06T11:00:00Z', 'SIGMET VCTS AND +TSRA'),
       station('sigmet-note', 'sigmet', '2026-10-06T11:00:00Z', 'SIGMET NOTICE'),
+      station('sigmet-blank', 'sigmet', '2026-10-06T11:00:00Z', '---'),
       station('sigmet-old', 'sigmet', 'newest', 'SIGMET'),
     ];
     expect(filterPlaces(loaded, base).map((place) => place.place_key)).toEqual(
@@ -359,6 +360,7 @@ describe('live map helpers', () => {
       'sigmet-storm',
       'sigmet-vc',
       'sigmet-note',
+      'sigmet-blank',
       'sigmet-old',
     ]);
     expect(
@@ -387,6 +389,7 @@ describe('live map helpers', () => {
       'sigmet-storm',
       'sigmet-vc',
       'sigmet-note',
+      'sigmet-blank',
       'sigmet-old',
     ]);
     expect(
@@ -407,6 +410,7 @@ describe('live map helpers', () => {
     expect(storms.map((place) => place.place_key)).toContain('sigmet-storm');
     expect(storms.map((place) => place.place_key)).toContain('sigmet-vc');
     expect(storms.map((place) => place.place_key)).not.toContain('sigmet-ifr');
+    expect(storms.map((place) => place.place_key)).not.toContain('sigmet-blank');
     expect(
       filterPlaces(loaded, { ...base, phenomena: new Set(['ifr']) }).map(
         (place) => place.place_key,

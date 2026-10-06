@@ -430,8 +430,9 @@ export function LiveWorldMap({
       const group = cohorts.get(key) ?? [];
       const slot = Math.max(0, group.indexOf(place));
       const nudge = pointNudge(slot, group.length);
+      const moved = nudge.latitude !== 0 || nudge.longitude !== 0;
       const at: [number, number] | undefined =
-        draw.kind === 'point'
+        draw.kind === 'point' && (moved || place.reports.length > 1 || group.length > 1)
           ? [draw.latitude + nudge.latitude, draw.longitude + nudge.longitude]
           : undefined;
       const layer = drawPlace(map, place, at);

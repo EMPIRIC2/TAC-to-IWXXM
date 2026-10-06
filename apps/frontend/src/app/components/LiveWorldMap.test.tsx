@@ -8,6 +8,19 @@ import L from 'leaflet';
 import { boundsOf, LIVE_MAP_PRODUCTS, type LivePlace } from '@/utils/liveMap';
 import { LiveWorldMap, StationPopup } from './LiveWorldMap';
 
+async function paintedPolygon() {
+  for (let attempt = 0; attempt < 20; attempt += 1) {
+    if (vi.mocked(L.polygon).mock.calls.length > 0) {
+      return;
+    }
+    await act(async () => {
+      await new Promise((resolve) => {
+        setTimeout(resolve, 50);
+      });
+    });
+  }
+}
+
 const clicks: Array<() => void> = [];
 const hovers: Array<() => void> = [];
 const leaves: Array<() => void> = [];
@@ -138,6 +151,7 @@ const hazard = {
 
 describe('LiveWorldMap', () => {
   beforeEach(() => {
+    vi.useRealTimers();
     map.getSize.mockReturnValue({ x: 800, y: 600 });
     marker.setStyle.mockClear();
     map._renderer = { _update: canvasUpdate };
@@ -165,6 +179,7 @@ describe('LiveWorldMap', () => {
 
   afterEach(() => {
     vi.mocked(window.setInterval).mockRestore();
+    vi.useRealTimers();
     cleanup();
     document.querySelectorAll('[data-testid="live-map-detail"]').forEach((el) => {
       el.parentElement?.remove();
@@ -287,6 +302,21 @@ describe('LiveWorldMap', () => {
                   },
                 ],
               },
+              {
+                place_key: 'EGLL',
+                product: 'taf',
+                latitude: 51.5,
+                longitude: -0.45,
+                geometry: { kind: 'point' },
+                reports: [
+                  {
+                    observed_at: 'egll',
+                    tac: 'TAF EGLL',
+                    iwxxm: null,
+                    issues: [],
+                  },
+                ],
+              },
             ],
           }),
         };
@@ -295,7 +325,8 @@ describe('LiveWorldMap', () => {
     const onOpenPlace = vi.fn();
     render(<LiveWorldMap onOpenPlace={onOpenPlace} />);
     expect(screen.getByTestId('live-map-beta')).toHaveTextContent('Beta');
-    await waitFor(() => expect(L.polygon).toHaveBeenCalled());
+    await paintedPolygon();
+    expect(L.polygon).toHaveBeenCalled();
     expect(L.polyline).toHaveBeenCalled();
     expect(L.circle).toHaveBeenCalled();
     expect(L.circleMarker).toHaveBeenCalledWith([10, 20], expect.anything());
@@ -380,7 +411,8 @@ describe('LiveWorldMap', () => {
       }),
     );
     render(<LiveWorldMap />);
-    await waitFor(() => expect(L.polygon).toHaveBeenCalled());
+    await paintedPolygon();
+    expect(L.polygon).toHaveBeenCalled();
     expect(L.circleMarker).toHaveBeenCalled();
     expect(screen.getByTestId('live-map-canvas').className).toContain('min-h-[100dvh]');
     act(() => {
