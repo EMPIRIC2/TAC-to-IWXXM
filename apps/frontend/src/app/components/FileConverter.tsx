@@ -170,6 +170,7 @@ import {
 } from '/utils/operatorWorkQueue';
 import { useLiveWorkbenchAssist } from '@/hooks/useLiveWorkbenchAssist';
 import {
+  formFieldSpanInEditor,
   lintSummaryLabel,
   previewIsIncomplete,
   readGroupTrace,
@@ -2355,7 +2356,13 @@ export function FileConverter({
           response.results?.[0]?.xml ||
           response.results?.[0]?.content ||
           '';
-        setGroupTrace(readGroupTrace(response));
+        const posted = manualInput.trim();
+        setGroupTrace(
+          readGroupTrace(response).map((row) => ({
+            ...row,
+            ...formFieldSpanInEditor(manualInput, posted, row.start, row.end),
+          })),
+        );
         if (latestXml) {
           setPreviewXml(latestXml);
           setPreviewMode('live');
@@ -2363,8 +2370,7 @@ export function FileConverter({
         if (response.failed_spans?.length) {
           setFailedSpans(
             response.failed_spans.map((span) => ({
-              start: span.start,
-              end: span.end,
+              ...formFieldSpanInEditor(manualInput, posted, span.start, span.end),
               code: span.code ?? undefined,
               message: span.message ?? undefined,
             })),
