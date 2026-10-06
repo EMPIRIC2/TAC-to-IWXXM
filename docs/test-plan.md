@@ -6941,3 +6941,9 @@ Engineering quality — multi-language inline documentation bar. H4–H5 **N/A**
 - **Objective**: METAR and TAF at the same airport are both clickable. Each dot is offset and has a type chip. A polygon with no airport shows Area on the card.
 - **Pass criteria**: Both products can be selected. The card station line is Area when the report has no airport identifier.
 
+### TC-F37-011: Country, region, time, and hazard phenomenon
+
+- **Level**: T0
+- **Objective**: The loaded view can be narrowed by country, by the existing continent or sub-region, by an issue-time preset, and by hazard phenomenon. The live-map request stays the box and the product ids.
+- **Pass criteria**: A United States station stays and a station in another country hides when United States is chosen. An Area report stays under that country choice. A place outside Europe hides when Europe is chosen. A newest report older than one hour hides when the last hour is chosen. A SIGMET whose text contains TS hides when only IFR is checked, and stays when Thunderstorms is checked. A METAR stays while Thunderstorms is checked. The request URL has no country, region, time, or phenomenon parameter.
+

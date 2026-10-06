@@ -55,3 +55,13 @@ The operator asked for one layer and one color per TAC product, a hover card, an
 4. The hover card shows the product, the issue time, and the station, or Area when there is no airport. Scrollable TAC sits to the right on a wide screen and below the metadata on a narrow screen. The card opens on the newest report. A control selects an earlier copy. Clicking the shape or the card loads that copy into the converter at the top of the page.
 5. Space weather stays off the map. The list uses `#0e7490` when it has rows. This amend does not add a space-weather feed.
 6. Convert and validate response bodies stay as they are. Guest access stays. Staging is the ship target. Do not promote to production.
+
+## Amend — EV-map-product-layers filters (2026-10-06)
+
+The operator asked to narrow the same map by country, region, issue time, and hazard phenomenon. [Corpus: product §F37]
+
+1. These filters run in the browser on the places already returned for the current view. `GET /api/v1/live-map` stays `west`, `south`, `east`, `north`, and `products`.
+2. Country uses the existing airport table. It applies to ICAO stations. Area reports stay when a country is chosen.
+3. Region uses the continent and sub-region names already used for zoom markers, matched from the stored coordinate. Zoom markers stay. Clicking one still only zooms.
+4. Time presets are All, last hour, last 6 hours, and last 24 hours, compared with the newest report. A time that cannot be read stays visible.
+5. Phenomenon checkboxes are IFR, Turbulence, Icing, and Thunderstorms. They apply only to AIRMET, G-AIRMET, and SIGMET. Other products stay. There is no flight information region list and no custom from/to time.

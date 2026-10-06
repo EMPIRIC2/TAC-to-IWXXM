@@ -1,6 +1,20 @@
 # Requirements Decisions Log
 
-> Stage: 01-requirements | Last updated: 2026-10-06 (EV-map-product-layers)
+> Stage: 01-requirements | Last updated: 2026-10-06 (EV-map-product-layers filters)
+
+## EV-map-product-layers — Country, region, time, and phenomenon
+
+| Topic | Decision | Notes | Status |
+|-------|----------|-------|--------|
+| Where | Same F37 cycle | Spec delta before more code | confirmed |
+| Country | Airport country, plus All | Area reports stay | confirmed |
+| Region | Existing continent and sub-region names | Zoom markers still only zoom | confirmed |
+| Time | All, last hour, last 6 hours, last 24 hours | Newest report. Unreadable times stay | confirmed |
+| Phenomenon | IFR, Turbulence, Icing, Thunderstorms | AIRMET, G-AIRMET, and SIGMET only | confirmed |
+| Request | Unchanged | Filters are not query parameters | confirmed |
+| Out | FIR, custom from/to, phenomenon on METAR/TAF | | confirmed |
+
+[Corpus: product §F37] [Corpus: system-spec] [Corpus: api] [Corpus: journeys] [Corpus: tests] [Corpus: adr/ADR-052]
 
 ## EV-map-product-layers — Per-product live map layers
 

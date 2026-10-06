@@ -1428,6 +1428,6 @@ GET /api/v1/live-map?west=&south=&east=&north=&products=
 - `geometry.kind` is `point`, `polygon`, `line`, or `circle`. A polygon or line includes `coordinates`. A circle includes `radius_m`.
 - `space_weather` is the list of current products with no surface location. Those rows are never in `places`.
 
-**Amend (EV-map-product-layers)**: `gairmet` joins the allowed set and the default. Rows from the G-AIRMET feed use that id. A domestic row whose text is a SIGMET stays `sigmet`. The page groups ids under Observations, Forecasts, Hazards, and Advisories. Those group names are not query parameters. Hazards includes `airmet`, `gairmet`, and `sigmet`. [Corpus: product §F37] [Corpus: api]
+**Amend (EV-map-product-layers)**: `gairmet` joins the allowed set and the default. Rows from the G-AIRMET feed use that id. A domestic row whose text is a SIGMET stays `sigmet`. The page groups ids under Observations, Forecasts, Hazards, and Advisories. Those group names are not query parameters. Hazards includes `airmet`, `gairmet`, and `sigmet`. Country, region, issue time, and hazard phenomenon are chosen in the browser from the places already returned. They are not query parameters. [Corpus: product §F37] [Corpus: api]
 
 The route reads the cache. It does not call a vendor during the request.
