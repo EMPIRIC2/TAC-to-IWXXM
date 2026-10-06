@@ -328,6 +328,47 @@ export function cardLayout(viewWidth: number): 'side' | 'stack' {
 }
 
 /**
+ * Opacity for one stored copy. The newest is solid. Earlier copies fade.
+ *
+ * @param index - 0 is the newest report
+ * @returns Fill opacity
+ * @example
+ * const _ = true;
+ */
+export function copyOpacity(index: number): number {
+  if (index <= 0) {
+    return 1;
+  }
+  if (index === 1) {
+    return 0.45;
+  }
+  return 0.25;
+}
+
+/**
+ * Shift co-located airport dots sideways so each one stays clickable.
+ *
+ * @param slot - Index among dots at the same airport
+ * @param total - How many dots share that airport
+ * @returns Latitude and longitude deltas in degrees
+ * @example
+ * const _ = true;
+ */
+export function pointNudge(
+  slot: number,
+  total: number,
+): { latitude: number; longitude: number } {
+  if (total < 2) {
+    return { latitude: 0, longitude: 0 };
+  }
+  const step = 0.08;
+  return {
+    latitude: 0,
+    longitude: (slot - (total - 1) / 2) * step,
+  };
+}
+
+/**
  * Move the report the card is showing to the front of the list.
  *
  * @param place - Cached place

@@ -22,7 +22,9 @@ import {
   viewStatus,
   windFromTac,
   cardLayout,
+  copyOpacity,
   placeShowingReport,
+  pointNudge,
   LIVE_MAP_EMPTY,
   LIVE_MAP_LOADING,
   LIVE_MAP_NO_TIME,
@@ -127,6 +129,12 @@ describe('live map helpers', () => {
       reports: [{ observed_at: 'new', tac: 'NEW' }],
     };
     expect(placeShowingReport(newestFirst, 'MISSING')).toBe(newestFirst);
+    expect(pointNudge(0, 1)).toEqual({ latitude: 0, longitude: 0 });
+    expect(pointNudge(0, 2).longitude).toBeLessThan(0);
+    expect(pointNudge(1, 2).longitude).toBeGreaterThan(0);
+    expect(copyOpacity(0)).toBe(1);
+    expect(copyOpacity(1)).toBe(0.45);
+    expect(copyOpacity(2)).toBe(0.25);
     expect(productLabel('gairmet')).toBe('G-AIRMET');
     expect(productLabel('vaa')).toBe('Volcanic ash');
     expect(productLabel('other')).toBe('OTHER');

@@ -17,6 +17,7 @@ import { airports } from '@/utils/airportsData';
 import {
   boundsOf,
   cardLayout,
+  copyOpacity,
   fetchLivePlaces,
   formatObservedAt,
   LIVE_MAP_CANVAS,
@@ -33,6 +34,7 @@ import {
   pinColor,
   placeShowingReport,
   placeTitle,
+  pointNudge,
   popupWidth,
   productLabel,
   selectedLayerQuery,
@@ -117,7 +119,7 @@ function pointOf(place: LivePlace): [number, number] {
  * @example
  * const _ = true;
  */
-function drawPlace(map: L.Map, place: LivePlace): L.Layer {
+function drawPlace(map: L.Map, place: LivePlace, at?: [number, number]): L.Layer {
   const draw = drawForPlace(place);
   const paint = shapePaint(place.product);
   if (draw.kind === 'polygon') {
@@ -132,11 +134,29 @@ function drawPlace(map: L.Map, place: LivePlace): L.Layer {
       radius: draw.radiusM,
     }).addTo(map);
   }
-  return L.circleMarker([draw.latitude, draw.longitude], {
+  const [latitude, longitude] = at ?? [draw.latitude, draw.longitude];
+  return L.circleMarker([latitude, longitude], {
     radius: 6,
     ...paint,
-    fillOpacity: 1,
+    fillOpacity: copyOpacity(0),
   }).addTo(map);
+}
+
+/**
+ * Brighten a shape under the pointer, then put the resting paint back.
+ *
+ * @param layer - Drawn shape
+ * @param place - Cached place
+ * @param on - True while the pointer is over the shape
+ * @example
+ * const _ = true;
+ */
+function paintHover(layer: L.Layer, place: LivePlace, on: boolean) {
+  const path = layer as unknown as { setStyle: (style: L.PathOptions) => void };
+  const paint = shapePaint(place.product);
+  const point = drawForPlace(place).kind === 'point';
+  const resting = point ? { ...paint, fillOpacity: copyOpacity(0) } : paint;
+  path.setStyle(on ? { ...resting, weight: resting.weight + 2 } : resting);
 }
 
 /**
@@ -361,8 +381,51 @@ export function LiveWorldMap({
     const roots: Root[] = [];
     const layers: L.Layer[] = [];
     let focused = false;
+    const cohorts = new Map<string, LivePlace[]>();
     visible.forEach((place) => {
-      const layer = drawPlace(map, place);
+      if (drawForPlace(place).kind !== 'point') {
+        return;
+      }
+      const key = `${place.latitude.toFixed(3)},${place.longitude.toFixed(3)}`;
+      const group = cohorts.get(key) ?? [];
+      group.push(place);
+      cohorts.set(key, group);
+    });
+    visible.forEach((place) => {
+      const draw = drawForPlace(place);
+      const key = `${place.latitude.toFixed(3)},${place.longitude.toFixed(3)}`;
+      const group = cohorts.get(key) ?? [];
+      const slot = Math.max(0, group.indexOf(place));
+      const nudge = pointNudge(slot, group.length);
+      const at: [number, number] | undefined =
+        draw.kind === 'point'
+          ? [draw.latitude + nudge.latitude, draw.longitude + nudge.longitude]
+          : undefined;
+      const layer = drawPlace(map, place, at);
+      if (at && place.reports.length > 1) {
+        place.reports.slice(1).forEach((_, reportIndex) => {
+          layers.push(
+            L.circleMarker(at, {
+              radius: 4,
+              ...shapePaint(place.product),
+              fillOpacity: copyOpacity(reportIndex + 1),
+            }).addTo(map),
+          );
+        });
+      }
+      if (at && group.length > 1) {
+        layers.push(
+          L.marker(at, {
+            interactive: false,
+            keyboard: false,
+            icon: L.divIcon({
+              className: 'live-map-type-chip',
+              html: productLabel(place.product),
+              iconSize: [72, 18],
+            }),
+          }).addTo(map),
+        );
+      }
       let cardOpen = false;
       let showingTac = place.reports[0]?.tac ?? '';
       const remember = (tac: string) => {
@@ -379,9 +442,13 @@ export function LiveWorldMap({
         }
       };
       layer.on('mouseover', () => {
+        paintHover(layer, place, true);
         if (!cardOpen) {
           reveal();
         }
+      });
+      layer.on('mouseout', () => {
+        paintHover(layer, place, false);
       });
       layer.on('click', () => {
         if (cardOpen) {

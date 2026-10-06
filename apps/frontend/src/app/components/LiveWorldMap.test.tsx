@@ -45,6 +45,7 @@ const map = {
 map.setView.mockReturnValue(map);
 
 const marker = {
+  setStyle: vi.fn(),
   addTo: vi.fn(),
   on: vi.fn((event: string, handler: () => void) => {
     if (event === 'click') {
@@ -139,6 +140,7 @@ const hazard = {
 describe('LiveWorldMap', () => {
   beforeEach(() => {
     map.getSize.mockReturnValue({ x: 800, y: 600 });
+    marker.setStyle.mockClear();
     map._renderer = { _update: canvasUpdate };
     canvasUpdate.mockClear();
     vi.spyOn(window, 'setTimeout').mockImplementation(((
@@ -484,6 +486,71 @@ describe('LiveWorldMap', () => {
     expect(preventDefault).toHaveBeenCalled();
     expect(screen.getByTestId('live-map-station')).toHaveTextContent('Area');
     expect(onOpenPlace).toHaveBeenCalledTimes(1);
+  });
+
+  it('offsets shared airport dots, chips them, and fades earlier copies', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue({
+        ok: true,
+        json: async () => ({
+          places: [
+            place,
+            {
+              ...place,
+              product: 'taf',
+              reports: [{ observed_at: 'taf', tac: 'TAF KJFK' }],
+            },
+            hazard,
+          ],
+        }),
+      }),
+    );
+    const onOpenPlace = vi.fn();
+    render(<LiveWorldMap onOpenPlace={onOpenPlace} />);
+    await waitFor(() => expect(L.divIcon).toHaveBeenCalled());
+    expect(L.circleMarker).toHaveBeenCalledWith(
+      [40.6, expect.closeTo(-73.74, 2)],
+      expect.objectContaining({ fillOpacity: 0.45 }),
+    );
+    expect(L.circleMarker).toHaveBeenCalledWith(
+      [40.6, expect.closeTo(-73.66, 2)],
+      expect.anything(),
+    );
+    expect(L.divIcon).toHaveBeenCalledWith(
+      expect.objectContaining({ html: expect.stringContaining('METAR') }),
+    );
+    expect(L.divIcon).toHaveBeenCalledWith(
+      expect.objectContaining({ html: expect.stringContaining('TAF') }),
+    );
+    act(() => {
+      hovers[0]?.();
+    });
+    expect(marker.setStyle).toHaveBeenCalledWith(
+      expect.objectContaining({ weight: 4 }),
+    );
+    act(() => {
+      leaves[0]?.();
+    });
+    expect(marker.setStyle).toHaveBeenCalledWith(
+      expect.objectContaining({ weight: 2 }),
+    );
+    act(() => {
+      clicks[1]?.();
+    });
+    act(() => {
+      clicks[1]?.();
+    });
+    expect(onOpenPlace).toHaveBeenCalledWith(
+      expect.objectContaining({ product: 'taf' }),
+    );
+    act(() => {
+      hovers[2]?.();
+    });
+    act(() => {
+      leaves[2]?.();
+    });
+    expect(screen.getByTestId('live-map-station')).toHaveTextContent('Area');
   });
 
   it('shows an error when the cache cannot be read', async () => {
