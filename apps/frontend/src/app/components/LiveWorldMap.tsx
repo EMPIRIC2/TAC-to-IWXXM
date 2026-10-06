@@ -19,13 +19,25 @@ import {
   cardLayout,
   copyOpacity,
   fetchLivePlaces,
+  filterPlaces,
   formatObservedAt,
+  LIVE_MAP_ALL_COUNTRIES,
+  LIVE_MAP_ALL_REGIONS,
+  LIVE_MAP_ALL_TIMES,
   LIVE_MAP_CANVAS,
   LIVE_MAP_EARLIER,
   LIVE_MAP_ERROR,
+  LIVE_MAP_FILTER_COUNTRY,
+  LIVE_MAP_FILTER_PHENOMENON,
+  LIVE_MAP_FILTER_REGION,
+  LIVE_MAP_FILTER_TIME,
+  LIVE_MAP_LAST_24_HOURS,
+  LIVE_MAP_LAST_6_HOURS,
+  LIVE_MAP_LAST_HOUR,
   LIVE_MAP_LAYERS_OFF,
   LIVE_MAP_NEWER,
   LIVE_MAP_NOTICE,
+  LIVE_MAP_PHENOMENA,
   LIVE_MAP_REFRESH_MS,
   LIVE_MAP_SPACE,
   LIVE_MAP_TAC,
@@ -43,7 +55,9 @@ import {
   viewStatus,
   type LivePlace,
   type MapBounds,
+  type MapTimePreset,
 } from '@/utils/liveMap';
+import { placeRegion, regionFilterNames } from '@/utils/liveMapRegions';
 
 const EMPTY_PLACES: LivePlace[] = [];
 
@@ -349,17 +363,36 @@ export function LiveWorldMap({
     openPlaceRef.current = onOpenPlace;
   }, [onOpenPlace]);
   const [off, setOff] = useState<ReadonlySet<string>>(new Set());
+  const [country, setCountry] = useState('all');
+  const [region, setRegion] = useState('all');
+  const [timePreset, setTimePreset] = useState<MapTimePreset>('all');
+  const [phenomena, setPhenomena] = useState<ReadonlySet<string>>(new Set());
   const [bounds, setBounds] = useState<MapBounds | null>(null);
   const [places, setPlaces] = useState<LivePlace[]>([]);
   const [error, setError] = useState('');
   const [phase, setPhase] = useState<'loading' | 'ready' | 'refreshing'>('loading');
   const [refreshTick, setRefreshTick] = useState(0);
   const products = selectedLayerQuery(off);
-  const visible = bounds && products ? places : EMPTY_PLACES;
+  const loaded = bounds && products ? places : EMPTY_PLACES;
+  const countries = [
+    ...new Set(
+      loaded
+        .map((place) => airports.findWhere({ icao: place.place_key })?.country)
+        .filter((name): name is string => Boolean(name)),
+    ),
+  ].sort((left, right) => left.localeCompare(right));
+  const visible = filterPlaces(loaded, {
+    country,
+    region,
+    time: timePreset,
+    phenomena,
+    countryOf: (placeKey) => airports.findWhere({ icao: placeKey })?.country,
+    regionOf: (latitude, longitude) => placeRegion(latitude, longitude),
+  });
   const message = products ? error : '';
   const status = !products
     ? LIVE_MAP_LAYERS_OFF
-    : viewStatus(places, phase === 'loading', phase === 'refreshing');
+    : viewStatus(visible, phase === 'loading', phase === 'refreshing');
 
   useEffect(() => {
     const map = mapRef.current;
@@ -595,6 +628,79 @@ export function LiveWorldMap({
           ))}
         </div>
       ))}
+      <div className="flex flex-wrap items-center gap-3">
+        <label className="flex items-center gap-1 text-sm">
+          {LIVE_MAP_FILTER_COUNTRY}
+          <select
+            value={country}
+            data-testid="live-map-country"
+            onChange={(event) => {
+              setCountry(event.target.value);
+            }}
+          >
+            <option value="all">{LIVE_MAP_ALL_COUNTRIES}</option>
+            {countries.map((name) => (
+              <option key={name} value={name}>
+                {name}
+              </option>
+            ))}
+          </select>
+        </label>
+        <label className="flex items-center gap-1 text-sm">
+          {LIVE_MAP_FILTER_REGION}
+          <select
+            value={region}
+            data-testid="live-map-region"
+            onChange={(event) => {
+              setRegion(event.target.value);
+            }}
+          >
+            <option value="all">{LIVE_MAP_ALL_REGIONS}</option>
+            {regionFilterNames().map((name) => (
+              <option key={name} value={name}>
+                {name}
+              </option>
+            ))}
+          </select>
+        </label>
+        <label className="flex items-center gap-1 text-sm">
+          {LIVE_MAP_FILTER_TIME}
+          <select
+            value={timePreset}
+            data-testid="live-map-time"
+            onChange={(event) => {
+              setTimePreset(event.target.value as MapTimePreset);
+            }}
+          >
+            <option value="all">{LIVE_MAP_ALL_TIMES}</option>
+            <option value="1h">{LIVE_MAP_LAST_HOUR}</option>
+            <option value="6h">{LIVE_MAP_LAST_6_HOURS}</option>
+            <option value="24h">{LIVE_MAP_LAST_24_HOURS}</option>
+          </select>
+        </label>
+      </div>
+      <div className="flex flex-wrap items-center gap-3">
+        <span className="text-sm font-medium">{LIVE_MAP_FILTER_PHENOMENON}</span>
+        {LIVE_MAP_PHENOMENA.map((item) => (
+          <label key={item.id} className="flex items-center gap-1 text-sm">
+            <input
+              type="checkbox"
+              checked={phenomena.has(item.id)}
+              data-testid={`phenomenon-${item.id}`}
+              onChange={() => {
+                const next = new Set(phenomena);
+                if (next.has(item.id)) {
+                  next.delete(item.id);
+                } else {
+                  next.add(item.id);
+                }
+                setPhenomena(next);
+              }}
+            />
+            {item.label}
+          </label>
+        ))}
+      </div>
       <p
         className="text-xs text-gray-600 dark:text-gray-300"
         data-testid="live-map-space"

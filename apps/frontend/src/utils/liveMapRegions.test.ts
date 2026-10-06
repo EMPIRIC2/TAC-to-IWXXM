@@ -4,6 +4,7 @@ import {
   continentAnchor,
   placeRegion,
   plotLevel,
+  regionFilterNames,
   type MapCluster,
 } from './liveMapRegions';
 import type { LivePlace } from './liveMap';
@@ -35,6 +36,9 @@ describe('live map regions', () => {
     expect(plotLevel(6)).toBe('subregion');
     expect(plotLevel(7)).toBe('station');
     expect(plotLevel(8)).toBe('station');
+    expect(regionFilterNames()).toContain('Europe');
+    expect(regionFilterNames()).toContain('Caribbean');
+    expect(regionFilterNames()).toContain('Antarctica');
   });
 
   it('names continents and sub-regions', () => {

@@ -356,6 +356,11 @@ describe('LiveWorldMap', () => {
       await user.click(screen.getByTestId(`layer-${product}`));
     }
     await user.click(screen.getByTestId('layer-metar'));
+    await user.selectOptions(screen.getByTestId('live-map-country'), 'United States');
+    await user.selectOptions(screen.getByTestId('live-map-region'), 'Europe');
+    await user.selectOptions(screen.getByTestId('live-map-time'), '1h');
+    await user.click(screen.getByTestId('phenomenon-ifr'));
+    await user.click(screen.getByTestId('phenomenon-ifr'));
     expect(screen.queryByTestId('live-map-error')).not.toBeInTheDocument();
     act(() => {
       clicks[5]?.();
