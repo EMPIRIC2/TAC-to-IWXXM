@@ -1810,6 +1810,17 @@
   and a fresh sample of the same live cache no longer lists that token as undecoded.
   Already-explained METAR, TAF, and SIGMET groups stay explained.
 
+### F9 deepen (EV-qfe-rvr-families — runway state and QFE)
+
+- **Status note**: F9 stays **Done**. This cycle explains two groups that the live map
+  still left as residuals on SPECI ULOO (Pskov). No new product id. [Corpus: product §F9]
+- **Plain language**, one regression each:
+  1. Legacy runway state `R19/290052` (and the cleared form `R06L/CLRD62`). Four-digit
+     runway visual range stays on its existing pattern.
+  2. Aerodrome pressure `QFE747` and `QFE747/0996`.
+- **Acceptance**: each family has a decode regression, the explanation is plain language,
+  and an already-explained runway visual range group stays a visual range.
+
 ### F7.g deepen (S026 / EV-020 — WMO-passing examples only)
 
 - **Status note**: F7.g remains under F7 Planned; S026 replaced catalog bodies/policy so the

@@ -298,6 +298,40 @@ _WX = re.compile(
 )
 # Runway visual range - R{rw}/{vis}{U|D|N}? (e.g. R12/1000U).
 _RVR = re.compile(r"^R(?P<rw>\d{2}[LCR]?)/(?P<vis>[MP]?\d{4})(?P<trend>[UDN])?$")
+# Legacy runway state group: runway, deposit, extent, depth, friction (e.g. R19/290052).
+_RUNWAY_STATE = re.compile(
+    r"^R(?P<rw>\d{2}[LCR]?)/(?P<dep>[0-9/])(?P<ext>[1259/])(?P<depth>\d{2}|//)(?P<fric>\d{2}|//)$"
+)
+_RUNWAY_CLEARED = re.compile(r"^R(?P<rw>\d{2}[LCR]?)/CLRD(?P<fric>\d{2}|//)$")
+_QFE = re.compile(r"^QFE(?P<mm>\d{3})(?:/(?P<hpa>\d{4}))?$")
+_RUNWAY_DEPOSIT = {
+    "0": "clear and dry",
+    "1": "damp",
+    "2": "wet or water patches",
+    "3": "rime or frost",
+    "4": "dry snow",
+    "5": "wet snow",
+    "6": "slush",
+    "7": "ice",
+    "8": "compacted or rolled snow",
+    "9": "frozen ruts or ridges",
+    "/": "deposit not reported",
+}
+_RUNWAY_EXTENT = {
+    "1": "less than 10 percent covered",
+    "2": "11 to 25 percent covered",
+    "5": "26 to 50 percent covered",
+    "9": "51 to 100 percent covered",
+    "/": "coverage not reported",
+}
+_RUNWAY_DEPTH_CM = {92: 10, 93: 15, 94: 20, 95: 25, 96: 30, 97: 35, 98: 40}
+_RUNWAY_BRAKING = {
+    "91": "poor",
+    "92": "medium to poor",
+    "93": "medium",
+    "94": "medium to good",
+    "95": "good",
+}
 
 _WX_INTENSITY = {"+": "heavy", "-": "light", "VC": "in the vicinity"}
 _WX_DESCRIPTOR = {
@@ -742,6 +776,118 @@ def _varying_rvr(token: str) -> str | None:
     )
 
 
+def _depth_phrase(raw: str) -> str | None:
+    """Depth of the runway deposit from the runway state group.
+
+    Parameters
+    ----------
+    raw : str
+        Two digits, or ``//`` when the depth is not significant.
+
+    Returns
+    -------
+    str | None
+        The depth in plain language, or None when the code is unused.
+    """
+    if raw == "//":
+        return "depth not significant"
+    if raw == "00":
+        return "depth less than 1 mm"
+    if raw == "99":
+        return "runway not operational"
+    depth = int(raw)
+    if 1 <= depth <= 90:
+        return f"depth {depth} mm"
+    centimetres = _RUNWAY_DEPTH_CM.get(depth)
+    if centimetres is None:
+        return None
+    if depth == 98:
+        return f"depth {centimetres} cm or more"
+    return f"depth {centimetres} cm"
+
+
+def _friction_phrase(raw: str) -> str | None:
+    """Friction coefficient or braking action from the runway state group.
+
+    Parameters
+    ----------
+    raw : str
+        Two digits, or ``//`` when friction is not reported.
+
+    Returns
+    -------
+    str | None
+        The friction in plain language, or None when the code is unused.
+    """
+    if raw == "//":
+        return "friction not reported"
+    braking = _RUNWAY_BRAKING.get(raw)
+    if braking:
+        return f"braking action {braking}"
+    if raw == "99":
+        return "friction unreliable"
+    coefficient = int(raw)
+    if 0 <= coefficient <= 90:
+        return f"friction coefficient {coefficient / 100:.2f}"
+    return None
+
+
+def _runway_state(token: str) -> str | None:
+    """The legacy runway state group, including a cleared runway.
+
+    Parameters
+    ----------
+    token : str
+        One group such as ``R19/290052`` or ``R06L/CLRD62``.
+
+    Returns
+    -------
+    str | None
+        The runway state in plain language, or None when it is runway visual range.
+    """
+    cleared = _RUNWAY_CLEARED.match(token)
+    if cleared:
+        friction = _friction_phrase(cleared.group("fric"))
+        if friction is None:
+            return None
+        return f"Runway state runway {cleared.group('rw')}: contamination ceased, {friction}"
+    state = _RUNWAY_STATE.match(token)
+    if state is None:
+        return None
+    depth = _depth_phrase(state.group("depth"))
+    friction = _friction_phrase(state.group("fric"))
+    if depth is None or friction is None:
+        return None
+    return (
+        f"Runway state runway {state.group('rw')}: {_RUNWAY_DEPOSIT[state.group('dep')]}, "
+        f"{_RUNWAY_EXTENT[state.group('ext')]}, {depth}, {friction}"
+    )
+
+
+def _qfe(token: str) -> str | None:
+    """Aerodrome pressure in millimetres of mercury, with hectopascals when sent.
+
+    Parameters
+    ----------
+    token : str
+        One group such as ``QFE747`` or ``QFE747/0996``.
+
+    Returns
+    -------
+    str | None
+        The field pressure, or None when the group is not QFE.
+    """
+    match = _QFE.match(token)
+    if match is None:
+        return None
+    millimetres = int(match.group("mm"))
+    reported = match.group("hpa")
+    if reported:
+        return f"QFE {millimetres} mmHg ({int(reported)} hPa), the pressure at the aerodrome"
+    hectopascals = round(millimetres * 1013.25 / 760)
+    return f"QFE {millimetres} mmHg (about {hectopascals} hPa), the pressure at the aerodrome"
+
+
 def _wx_clock(raw: str) -> str:
     """Minutes past the hour, or an hour and minute when four digits are present.
 
@@ -1058,6 +1204,10 @@ def _explain_metar_speci(token: str, *, product: str, seen: dict[str, int]) -> s
         }.get(trend or "", "")
         return f"Runway visual range runway {m.group('rw')}: {m.group('vis')} m{trend_txt}"
     if phrase := _varying_rvr(upper):
+        return phrase
+    if phrase := _runway_state(upper):
+        return phrase
+    if phrase := _qfe(upper):
         return phrase
     if m := _VV.match(upper):
         if m.group("h") == "///":
