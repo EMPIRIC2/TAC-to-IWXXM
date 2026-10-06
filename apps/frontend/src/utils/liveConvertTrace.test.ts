@@ -4,6 +4,8 @@
 
 import { describe, expect, it } from 'vitest';
 import {
+  editorOffsetFromFormField,
+  formFieldSpanInEditor,
   lintErrorCount,
   lintSummaryLabel,
   lintWarningCount,
@@ -174,6 +176,29 @@ describe('liveConvertTrace', () => {
         'line',
       ),
     ).toEqual([1]);
+  });
+
+  it('maps multipart line breaks back onto the editor text', () => {
+    const editor = 'WSPSZ1 NZKL 050806\nNZZO SIGMET 2 VALID 050811/051211 NZKL-\nNZZO';
+    const wire = editor.replace(/\n/g, '\r\n');
+    const token = 'NZZO';
+    const wireStart = wire.lastIndexOf(token);
+    expect(editorOffsetFromFormField(editor, wireStart)).toBe(
+      editor.lastIndexOf(token),
+    );
+    expect(editorOffsetFromFormField(editor, wireStart + token.length)).toBe(
+      editor.lastIndexOf(token) + token.length,
+    );
+    expect(editorOffsetFromFormField(editor, 0)).toBe(0);
+    expect(editorOffsetFromFormField('AB\nC', 4)).toBe(3);
+    expect(editorOffsetFromFormField('AB\r\nC', 4)).toBe(4);
+    expect(editorOffsetFromFormField('AB\rC', 4)).toBe(3);
+    expect(formFieldSpanInEditor('  AB\nC', 'AB\nC', 0, 4)).toEqual({
+      start: 2,
+      end: 5,
+    });
+    expect(formFieldSpanInEditor('ABC', '', 0, 1)).toEqual({ start: 0, end: 0 });
+    expect(formFieldSpanInEditor('ABC', 'ZZ', 0, 1)).toEqual({ start: 0, end: 1 });
   });
 
   it('uses the pairing for the selected offsets and falls back otherwise', () => {

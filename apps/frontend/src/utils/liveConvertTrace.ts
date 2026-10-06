@@ -365,6 +365,70 @@ export function xmlLinesForGroup(xml: string, token: string): number[] {
 }
 
 /**
+ * Map a multipart form-field offset back onto editor text.
+ *
+ * Browsers send each line break as a carriage return plus a line feed. The
+ * decoder then numbers characters in that longer string. The editor keeps a
+ * single line feed, so those numbers land past the group they belong to.
+ *
+ * @param text - TAC as the editor stores it
+ * @param wireOffset - Start or end from a multipart decode, lint, or convert
+ * @returns The same point in ``text``
+ * @example
+ * const _ = true;
+ */
+export function editorOffsetFromFormField(text: string, wireOffset: number): number {
+  if (wireOffset <= 0) {
+    return 0;
+  }
+  let wire = 0;
+  let index = 0;
+  while (index < text.length) {
+    if (wire >= wireOffset) {
+      return index;
+    }
+    const char = text[index];
+    const pair = char === '\r' && text[index + 1] === '\n';
+    if (pair) {
+      wire += 2;
+      index += 2;
+    } else if (char === '\n' || char === '\r') {
+      wire += 2;
+      index += 1;
+    } else {
+      wire += 1;
+      index += 1;
+    }
+  }
+  return index;
+}
+
+/**
+ * Place a multipart span on the editor document.
+ *
+ * @param editor - Full editor text
+ * @param posted - Text sent in the form field, often a trimmed copy
+ * @param start - Wire start
+ * @param end - Wire end
+ * @returns Start and end in ``editor``
+ * @example
+ * const _ = true;
+ */
+export function formFieldSpanInEditor(
+  editor: string,
+  posted: string,
+  start: number,
+  end: number,
+): { start: number; end: number } {
+  const lead = posted.length > 0 ? editor.indexOf(posted) : 0;
+  const base = lead < 0 ? 0 : lead;
+  return {
+    start: base + editorOffsetFromFormField(posted, start),
+    end: base + editorOffsetFromFormField(posted, end),
+  };
+}
+
+/**
  * Drop issue marks that overlap the selection, then append the selection mark.
  * CodeMirror decorations cannot overlap.
  *

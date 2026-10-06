@@ -5390,6 +5390,16 @@ describe('FileConverter Component', () => {
           results: [{ iwxxm_xml: '<live-iwxxm/>' }],
           ok: true,
           failed_spans: [],
+          group_trace: [
+            {
+              start: 0,
+              end: 5,
+              token: 'METAR',
+              element: 'METAR',
+              occurrence: 0,
+              scope: 'line',
+            },
+          ],
         });
         fireEvent.change(screen.getByTestId('tac-editor'), {
           target: { value: 'METAR KJFK 121251Z' },

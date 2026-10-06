@@ -16,6 +16,7 @@ import {
   isAbortError,
   resolveLiveAssistDebounceMs,
 } from '/utils/liveAssist';
+import { formFieldSpanInEditor } from '/utils/liveConvertTrace';
 import type { TacSpanMark } from '/utils/tacEditorSpans';
 
 /**
@@ -151,8 +152,7 @@ export function useLiveWorkbenchAssist({
               typeof i.start === 'number' && typeof i.end === 'number',
           )
           .map((i) => ({
-            start: i.start,
-            end: i.end,
+            ...formFieldSpanInEditor(text, text, i.start, i.end),
             message: i.message,
             severity: i.severity,
             code: i.code,
@@ -173,8 +173,18 @@ export function useLiveWorkbenchAssist({
           return span;
         });
         setIssueSpans(spansWithFixes);
-        setDecodeSegments(decodeResult.segments);
-        setDecodeResiduals(decodeResult.residuals);
+        setDecodeSegments(
+          decodeResult.segments.map((segment) => ({
+            ...segment,
+            ...formFieldSpanInEditor(text, text, segment.start, segment.end),
+          })),
+        );
+        setDecodeResiduals(
+          decodeResult.residuals.map((residual) => ({
+            ...residual,
+            ...formFieldSpanInEditor(text, text, residual.start, residual.end),
+          })),
+        );
         setDecodeProduct(decodeResult.product);
         setDecodeSummary(decodeResult.summary ?? '');
 
