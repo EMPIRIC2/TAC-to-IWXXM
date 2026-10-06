@@ -591,7 +591,18 @@ def _tenths_c(raw: str) -> str:
 
 
 def _pressure_tendency(token: str) -> str | None:
-    """FMH-1 group ``5appp``: characteristic and 3-hour change in tenths of hPa."""
+    """FMH-1 group ``5appp``: characteristic and 3-hour change in tenths of hPa.
+
+    Parameters
+    ----------
+    token : str
+        One remarks group.
+
+    Returns
+    -------
+    str | None
+        The tendency in plain language, or None when the group is not ``5appp``.
+    """
     match = _PRESSURE_TENDENCY.match(token)
     if match is None:
         return None
@@ -600,7 +611,18 @@ def _pressure_tendency(token: str) -> str | None:
 
 
 def _precip_amount(token: str) -> str | None:
-    """Hourly precipitation ``P####`` in hundredths of an inch. ``P0000`` is a trace."""
+    """Hourly precipitation ``P####`` in hundredths of an inch. ``P0000`` is a trace.
+
+    Parameters
+    ----------
+    token : str
+        One remarks group.
+
+    Returns
+    -------
+    str | None
+        The amount in plain language, or None when the group is not ``P####``.
+    """
     match = _PRECIP_AMOUNT.match(token)
     if match is None:
         return None
@@ -611,14 +633,38 @@ def _precip_amount(token: str) -> str | None:
 
 
 def _okta_phrase(kind: str, amount: str) -> str:
-    """One Canadian remark cloud type and its coverage in oktas."""
+    """One Canadian remark cloud type and its coverage in oktas.
+
+    Parameters
+    ----------
+    kind : str
+        A two-letter cloud type, or ``TCU``.
+    amount : str
+        Coverage as a single digit of oktas.
+
+    Returns
+    -------
+    str
+        The type name and coverage.
+    """
     count = int(amount)
     unit = "okta" if count == 1 else "oktas"
     return f"{_CA_CLOUD_NAME[kind]} {count} {unit}"
 
 
 def _canadian_clouds(token: str) -> str | None:
-    """Canadian remark clouds, either ``SF8`` or a run such as ``ST3CU1CI1``."""
+    """Canadian remark clouds, either ``SF8`` or a run such as ``ST3CU1CI1``.
+
+    Parameters
+    ----------
+    token : str
+        One remarks group.
+
+    Returns
+    -------
+    str | None
+        The clouds in plain language, or None when the group is not a cloud run.
+    """
     if _CA_CLOUD_AMOUNTS.match(token):
         parts = re.findall(rf"({_CA_CLOUD_TYPE})(\d)", token)
         return "Clouds: " + ", ".join(_okta_phrase(kind, amount) for kind, amount in parts)
@@ -628,7 +674,20 @@ def _canadian_clouds(token: str) -> str | None:
 
 
 def _whole_miles(token: str, following: str) -> str | None:
-    """The whole miles that sit in front of a fractional statute-mile group."""
+    """The whole miles that sit in front of a fractional statute-mile group.
+
+    Parameters
+    ----------
+    token : str
+        A single digit from 1 to 9.
+    following : str
+        The next group, which must be a fractional mile.
+
+    Returns
+    -------
+    str | None
+        The whole-mile phrase, or None when the pair is not whole miles plus a fraction.
+    """
     if not re.fullmatch(r"[1-9]", token):
         return None
     following_upper = following.upper()
@@ -638,7 +697,18 @@ def _whole_miles(token: str, following: str) -> str | None:
 
 
 def _rvr_bound(raw: str) -> str:
-    """A runway visual range limit, including a greater-than or less-than mark."""
+    """A runway visual range limit, including a greater-than or less-than mark.
+
+    Parameters
+    ----------
+    raw : str
+        Digits, or the same digits with a leading ``P`` or ``M``.
+
+    Returns
+    -------
+    str
+        The limit, with ``more than`` or ``less than`` when marked.
+    """
     if raw.startswith("P"):
         return f"more than {int(raw[1:])}"
     if raw.startswith("M"):
@@ -647,7 +717,18 @@ def _rvr_bound(raw: str) -> str:
 
 
 def _varying_rvr(token: str) -> str | None:
-    """Runway visual range that varies, in metres or feet."""
+    """Runway visual range that varies, in metres or feet.
+
+    Parameters
+    ----------
+    token : str
+        One runway visual range group.
+
+    Returns
+    -------
+    str | None
+        The varying or unreported range, or None when the group is a single value.
+    """
     missing = _RVR_MISSING.match(token)
     if missing:
         return f"Runway visual range runway {missing.group('rw')}: not reported"
@@ -662,14 +743,36 @@ def _varying_rvr(token: str) -> str | None:
 
 
 def _wx_clock(raw: str) -> str:
-    """Minutes past the hour, or an hour and minute when four digits are present."""
+    """Minutes past the hour, or an hour and minute when four digits are present.
+
+    Parameters
+    ----------
+    raw : str
+        Two digits of minutes, or four digits of hour and minute.
+
+    Returns
+    -------
+    str
+        A clock phrase for that time.
+    """
     if len(raw) == 4:
         return f"at {raw[:2]}:{raw[2:]}"
     return f"at {raw} minutes past the hour"
 
 
 def _wx_began_or_ended(token: str) -> str | None:
-    """One weather type, or several glued together, with began and ended times."""
+    """One weather type, or several glued together, with began and ended times.
+
+    Parameters
+    ----------
+    token : str
+        A remarks group such as ``RAB19`` or ``RAE2055DZB08E10``.
+
+    Returns
+    -------
+    str | None
+        The begin and end times, or None when the group is not a weather-time chain.
+    """
     pos = 0
     clauses: list[str] = []
     while pos < len(token):
@@ -701,7 +804,20 @@ def _wx_began_or_ended(token: str) -> str | None:
 
 
 def _wx_four_digits(token: str, pos: int) -> bool:
-    """True when four digits end the token, or a new edge or weather type follows."""
+    """True when four digits end the token, or a new edge or weather type follows.
+
+    Parameters
+    ----------
+    token : str
+        The full weather-time group.
+    pos : int
+        Index of the first of the four digits.
+
+    Returns
+    -------
+    bool
+        Whether those four digits are an hour and minute.
+    """
     nxt = token[pos + 4 : pos + 6]
     if not nxt:
         return True
@@ -711,7 +827,18 @@ def _wx_four_digits(token: str, pos: int) -> bool:
 
 
 def _navaid_chain(token: str) -> str | None:
-    """A hyphenated run of navaids with no distance, such as ``TRV-PBI``."""
+    """A hyphenated run of navaids with no distance, such as ``TRV-PBI``.
+
+    Parameters
+    ----------
+    token : str
+        One group from a convective ``FROM`` line.
+
+    Returns
+    -------
+    str | None
+        The navaids in order, or None when a part is not a navaid name.
+    """
     parts = token.split("-")
     if len(parts) < 2 or any(part == "" for part in parts):
         return None
@@ -721,7 +848,18 @@ def _navaid_chain(token: str) -> str | None:
 
 
 def _in_convective_area(seen: dict[str, int]) -> bool:
-    """True on the convective area line, after validity and before ``FROM``."""
+    """True on the convective area line, after validity and before ``FROM``.
+
+    Parameters
+    ----------
+    seen : dict[str, int]
+        Tokens already accepted while decoding this report.
+
+    Returns
+    -------
+    bool
+        Whether a state or lake abbreviation is part of the area line.
+    """
     return bool(
         seen.get("convective")
         and seen.get("until")
@@ -732,7 +870,18 @@ def _in_convective_area(seen: dict[str, int]) -> bool:
 
 
 def _coord_token(token: str) -> str:
-    """Drop a polygon hyphen glued to a latitude or longitude."""
+    """Drop a polygon hyphen glued to a latitude or longitude.
+
+    Parameters
+    ----------
+    token : str
+        One coordinate group, with or without a trailing hyphen.
+
+    Returns
+    -------
+    str
+        The coordinate without a glued hyphen.
+    """
     if len(token) > 1 and token.endswith("-"):
         bare = token[:-1]
         if _SIG_LAT.match(bare) or _SIG_LON.match(bare) or _SIG_LATLON.match(bare):
@@ -948,7 +1097,20 @@ def _explain_metar_speci(token: str, *, product: str, seen: dict[str, int]) -> s
 
 
 def _explain_metar_remark(upper: str, seen: dict[str, int]) -> str | None:
-    """Groups that show up in the remarks, after ``RMK``."""
+    """Groups that show up in the remarks, after ``RMK``.
+
+    Parameters
+    ----------
+    upper : str
+        One remarks group, already uppercased.
+    seen : dict[str, int]
+        Tokens already accepted while decoding this report.
+
+    Returns
+    -------
+    str | None
+        The remark in plain language, or None when the group stays unexplained.
+    """
     if upper == "SLPNO":
         return "Sea-level pressure not available"
     if upper == "PNO":
