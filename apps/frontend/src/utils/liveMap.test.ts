@@ -21,6 +21,8 @@ import {
   viewById,
   viewStatus,
   windFromTac,
+  cardLayout,
+  placeShowingReport,
   LIVE_MAP_EMPTY,
   LIVE_MAP_LOADING,
   LIVE_MAP_NO_TIME,
@@ -88,6 +90,43 @@ describe('live map helpers', () => {
     expect(SPACE_WEATHER_LIST_COLOR).toBe('#0e7490');
     expect(spaceWeatherListColor(1)).toBe('#0e7490');
     expect(spaceWeatherListColor(0)).toBeUndefined();
+    expect(cardLayout(800)).toBe('side');
+    expect(cardLayout(767)).toBe('stack');
+    expect(
+      placeShowingReport(
+        {
+          place_key: 'KJFK',
+          product: 'metar',
+          latitude: 1,
+          longitude: 2,
+          reports: [
+            { observed_at: 'new', tac: 'NEW' },
+            { observed_at: 'old', tac: 'OLD' },
+          ],
+        },
+        'OLD',
+      ).reports.map((report) => report.tac),
+    ).toEqual(['OLD', 'NEW']);
+    expect(
+      placeShowingReport(
+        {
+          place_key: 'KJFK',
+          product: 'metar',
+          latitude: 1,
+          longitude: 2,
+          reports: [{ observed_at: 'new', tac: 'NEW' }],
+        },
+        'NEW',
+      ).reports[0]?.tac,
+    ).toBe('NEW');
+    const newestFirst = {
+      place_key: 'KJFK',
+      product: 'metar',
+      latitude: 1,
+      longitude: 2,
+      reports: [{ observed_at: 'new', tac: 'NEW' }],
+    };
+    expect(placeShowingReport(newestFirst, 'MISSING')).toBe(newestFirst);
     expect(productLabel('gairmet')).toBe('G-AIRMET');
     expect(productLabel('vaa')).toBe('Volcanic ash');
     expect(productLabel('other')).toBe('OTHER');

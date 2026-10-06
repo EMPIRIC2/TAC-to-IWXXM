@@ -9,6 +9,7 @@ import { boundsOf, LIVE_MAP_PRODUCTS, type LivePlace } from '@/utils/liveMap';
 import { LiveWorldMap, StationPopup } from './LiveWorldMap';
 
 const clicks: Array<() => void> = [];
+const hovers: Array<() => void> = [];
 const leaves: Array<() => void> = [];
 const keys: Array<
   (event: { originalEvent?: { key?: string; preventDefault?: () => void } }) => void
@@ -48,6 +49,9 @@ const marker = {
   on: vi.fn((event: string, handler: () => void) => {
     if (event === 'click') {
       clicks.push(handler);
+    }
+    if (event === 'mouseover') {
+      hovers.push(handler);
     }
     if (event === 'mouseout') {
       leaves.push(handler);
@@ -134,6 +138,7 @@ const hazard = {
 
 describe('LiveWorldMap', () => {
   beforeEach(() => {
+    map.getSize.mockReturnValue({ x: 800, y: 600 });
     map._renderer = { _update: canvasUpdate };
     canvasUpdate.mockClear();
     vi.spyOn(window, 'setTimeout').mockImplementation(((
@@ -176,6 +181,7 @@ describe('LiveWorldMap', () => {
       el.parentElement?.remove();
     });
     clicks.length = 0;
+    hovers.length = 0;
     map.panBy.mockClear();
     map.flyToBounds.mockClear();
     leaves.length = 0;
@@ -314,11 +320,18 @@ describe('LiveWorldMap', () => {
     expect(screen.getByTestId('live-map-notice')).toHaveTextContent(
       'not validated for operational use',
     );
-    expect(screen.getByTestId('live-map-station')).toHaveTextContent('KJFK');
+    expect(screen.getByTestId('live-map-product')).toHaveTextContent('METAR');
+    expect(screen.getByTestId('live-map-issued')).toHaveTextContent('newest');
+    expect(screen.getByTestId('live-map-station')).toHaveTextContent('Kennedy');
+    expect(screen.getByTestId('live-map-card')).toHaveAttribute('data-layout', 'side');
     expect(screen.getByTestId('live-map-detail')).toHaveTextContent('Kennedy');
     expect(screen.queryByTestId('live-map-decode')).not.toBeInTheDocument();
     expect(screen.queryByTestId('live-map-xml')).not.toBeInTheDocument();
     expect(screen.getByTestId('live-map-tac')).toHaveTextContent('18012KT');
+    expect(onOpenPlace).not.toHaveBeenCalled();
+    act(() => {
+      clicks[0]?.();
+    });
     expect(onOpenPlace).toHaveBeenCalledWith(place);
     expect(map.panBy).not.toHaveBeenCalled();
     expect(map.flyToBounds).not.toHaveBeenCalled();
@@ -327,6 +340,11 @@ describe('LiveWorldMap', () => {
       clicks[1]?.();
     });
     expect(screen.getByTestId('live-map-tac')).toHaveTextContent('SIGMET');
+    expect(screen.getByTestId('live-map-station')).toHaveTextContent('Area');
+    expect(onOpenPlace).toHaveBeenCalledTimes(1);
+    act(() => {
+      clicks[1]?.();
+    });
     expect(onOpenPlace).toHaveBeenCalledWith(hazard);
     act(() => {
       clicks[2]?.();
@@ -381,7 +399,7 @@ describe('LiveWorldMap', () => {
 
   it('shows the station and the TAC without a decode pane', () => {
     render(<StationPopup place={place} />);
-    expect(screen.getByTestId('live-map-station')).toHaveTextContent('KJFK');
+    expect(screen.getByTestId('live-map-station')).toHaveTextContent('Kennedy');
     expect(screen.getByTestId('live-map-tac')).toHaveTextContent('18012KT');
     expect(screen.queryByTestId('live-map-decode')).not.toBeInTheDocument();
   });
@@ -417,6 +435,55 @@ describe('LiveWorldMap', () => {
     map.flyTo.mockClear();
     view.rerender(<LiveWorldMap focusStation="NONE" />);
     expect(map.flyTo).not.toHaveBeenCalled();
+  });
+
+  it('opens the card on hover and loads the earlier copy from the card', async () => {
+    const user = userEvent.setup();
+    map.getSize.mockReturnValue({ x: 400, y: 600 });
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue({
+        ok: true,
+        json: async () => ({ places: [place, hazard] }),
+      }),
+    );
+    const onOpenPlace = vi.fn();
+    render(<LiveWorldMap onOpenPlace={onOpenPlace} />);
+    await waitFor(() => expect(hovers.length).toBeGreaterThan(1));
+    act(() => {
+      hovers[0]?.();
+    });
+    act(() => {
+      hovers[0]?.();
+    });
+    expect(screen.getByTestId('live-map-card')).toHaveAttribute('data-layout', 'stack');
+    expect(screen.getByTestId('live-map-product')).toHaveTextContent('METAR');
+    expect(screen.getByTestId('live-map-issued')).toHaveTextContent('newest');
+    expect(onOpenPlace).not.toHaveBeenCalled();
+    await user.click(screen.getByTestId('live-map-newer'));
+    await user.click(screen.getByTestId('live-map-earlier'));
+    await user.click(screen.getByTestId('live-map-earlier'));
+    expect(screen.getByTestId('live-map-tac')).toHaveTextContent('VRB03KT');
+    expect(onOpenPlace).not.toHaveBeenCalled();
+    await user.click(screen.getByTestId('live-map-newer'));
+    expect(screen.getByTestId('live-map-tac')).toHaveTextContent('18012KT');
+    await user.click(screen.getByTestId('live-map-earlier'));
+    await user.click(screen.getByTestId('live-map-card'));
+    expect(onOpenPlace).toHaveBeenCalledWith(
+      expect.objectContaining({
+        reports: [
+          expect.objectContaining({ tac: 'METAR KJFK 031100Z VRB03KT' }),
+          expect.objectContaining({ tac: 'METAR KJFK 031200Z 18012KT' }),
+        ],
+      }),
+    );
+    const preventDefault = vi.fn();
+    act(() => {
+      keys[1]?.({ originalEvent: { key: 'Enter', preventDefault } });
+    });
+    expect(preventDefault).toHaveBeenCalled();
+    expect(screen.getByTestId('live-map-station')).toHaveTextContent('Area');
+    expect(onOpenPlace).toHaveBeenCalledTimes(1);
   });
 
   it('shows an error when the cache cannot be read', async () => {

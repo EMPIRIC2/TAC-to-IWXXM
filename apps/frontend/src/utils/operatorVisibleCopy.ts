@@ -28,6 +28,8 @@ import {
   LIVE_MAP_EMPTY,
   LIVE_MAP_ERROR,
   LIVE_MAP_TAC,
+  LIVE_MAP_EARLIER,
+  LIVE_MAP_NEWER,
   LIVE_MAP_PANEL,
   LIVE_MAP_LAYERS_OFF,
   LIVE_MAP_LOADING,
@@ -429,6 +431,8 @@ export function collectOperatorVisibleCopy(): OperatorVisibleCopyEntry[] {
     { id: 'live-map.space', text: LIVE_MAP_SPACE },
     { id: 'live-map.error', text: LIVE_MAP_ERROR },
     { id: 'live-map.tac', text: LIVE_MAP_TAC },
+    { id: 'live-map.earlier', text: LIVE_MAP_EARLIER },
+    { id: 'live-map.newer', text: LIVE_MAP_NEWER },
     { id: 'live-map.panel', text: LIVE_MAP_PANEL },
     {
       id: 'shell.nav.dissemination-ops',

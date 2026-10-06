@@ -65,6 +65,8 @@ export const LIVE_MAP_AREA = 'Area';
 export const LIVE_MAP_LATEST = 'Latest';
 export const LIVE_MAP_IWXXM = 'IWXXM';
 export const LIVE_MAP_TAC = 'TAC';
+export const LIVE_MAP_EARLIER = 'Earlier copy';
+export const LIVE_MAP_NEWER = 'Newer copy';
 export const LIVE_MAP_DECODE = 'Decode';
 export const LIVE_MAP_PANEL = 'Weather map';
 export const LIVE_MAP_REFRESH_MS = 60_000;
@@ -308,6 +310,41 @@ export function viewStatus(
  */
 export function popupWidth(viewWidth: number): number {
   return Math.min(320, Math.max(180, viewWidth - 32));
+}
+
+/**
+ * Side-by-side card on a wide map, stacked on a narrow one.
+ *
+ * @param viewWidth - Map width in pixels
+ * @returns Card layout
+ * @example
+ * const _ = true;
+ */
+export function cardLayout(viewWidth: number): 'side' | 'stack' {
+  if (viewWidth >= 768) {
+    return 'side';
+  }
+  return 'stack';
+}
+
+/**
+ * Move the report the card is showing to the front of the list.
+ *
+ * @param place - Cached place
+ * @param tac - TAC text on the card
+ * @returns Place whose first report is that copy
+ * @example
+ * const _ = true;
+ */
+export function placeShowingReport(place: LivePlace, tac: string): LivePlace {
+  const chosen = place.reports.find((report) => report.tac === tac);
+  if (!chosen || place.reports[0] === chosen) {
+    return place;
+  }
+  return {
+    ...place,
+    reports: [chosen, ...place.reports.filter((report) => report !== chosen)],
+  };
 }
 
 /**

@@ -16,10 +16,14 @@ import {
 import { airports } from '@/utils/airportsData';
 import {
   boundsOf,
+  cardLayout,
   fetchLivePlaces,
+  formatObservedAt,
   LIVE_MAP_CANVAS,
+  LIVE_MAP_EARLIER,
   LIVE_MAP_ERROR,
   LIVE_MAP_LAYERS_OFF,
+  LIVE_MAP_NEWER,
   LIVE_MAP_NOTICE,
   LIVE_MAP_REFRESH_MS,
   LIVE_MAP_SPACE,
@@ -27,6 +31,8 @@ import {
   LIVE_MAP_VIEWS,
   LIVE_MAP_ZOOM_HINT,
   pinColor,
+  placeShowingReport,
+  placeTitle,
   popupWidth,
   productLabel,
   selectedLayerQuery,
@@ -151,34 +157,101 @@ function redrawCanvas(map: L.Map): void {
 }
 
 /**
- * Station text inside the map popup.
+ * Station text inside the map card.
  *
  * @param place - Cached place
+ * @param layout - Side by side on a wide map, stacked on a narrow one
+ * @param onShowing - Remembers the copy on the card
+ * @param onLoad - Loads that copy into the converter
  * @example
  * const _ = true;
  */
-export function StationPopup({ place }: { place: LivePlace }) {
-  const report = place.reports[0];
+export function StationPopup({
+  place,
+  layout = 'side',
+  onShowing,
+  onLoad,
+}: {
+  place: LivePlace;
+  layout?: 'side' | 'stack';
+  onShowing?: (tac: string) => void;
+  onLoad?: (tac: string) => void;
+}) {
+  const [index, setIndex] = useState(0);
+  const report = place.reports[index];
+  useEffect(() => {
+    if (report) {
+      onShowing?.(report.tac);
+    }
+  }, [onShowing, report]);
   if (!report) {
     return null;
   }
   const airportName = airports.findWhere({ icao: place.place_key })?.name;
+  const station = placeTitle(place.place_key, airportName);
   return (
     <div
       data-testid="live-map-detail"
-      className="flex max-h-40 flex-col gap-1 overflow-y-auto text-sm text-gray-900"
+      className="max-h-48 overflow-y-auto text-sm text-gray-900"
     >
-      <p className="text-base font-semibold" data-testid="live-map-station">
-        {place.place_key}
-      </p>
-      {airportName ? <p>{airportName}</p> : null}
-      <p className="text-xs font-medium">{LIVE_MAP_TAC}</p>
-      <pre
-        className="overflow-y-auto whitespace-pre-wrap font-mono text-xs"
-        data-testid="live-map-tac"
+      <div
+        data-testid="live-map-card"
+        data-layout={layout}
+        className={
+          layout === 'side' ? 'flex flex-row items-start gap-3' : 'flex flex-col gap-2'
+        }
+        onClick={(event) => {
+          event.stopPropagation();
+          onLoad?.(report.tac);
+        }}
       >
-        {report.tac}
-      </pre>
+        <div className="flex min-w-0 flex-1 flex-col gap-1">
+          <p className="text-base font-semibold" data-testid="live-map-product">
+            {productLabel(place.product)}
+          </p>
+          <p data-testid="live-map-issued">{formatObservedAt(report.observed_at)}</p>
+          <p className="font-medium" data-testid="live-map-station">
+            {station}
+          </p>
+          {place.reports.length > 1 ? (
+            <div className="flex gap-2">
+              <button
+                type="button"
+                className="text-xs underline"
+                data-testid="live-map-newer"
+                onClick={(event) => {
+                  event.stopPropagation();
+                  setIndex((current) => Math.max(0, current - 1));
+                }}
+              >
+                {LIVE_MAP_NEWER}
+              </button>
+              <button
+                type="button"
+                className="text-xs underline"
+                data-testid="live-map-earlier"
+                onClick={(event) => {
+                  event.stopPropagation();
+                  setIndex((current) =>
+                    Math.min(place.reports.length - 1, current + 1),
+                  );
+                }}
+              >
+                {LIVE_MAP_EARLIER}
+              </button>
+            </div>
+          ) : null}
+        </div>
+        <div className="flex min-w-0 flex-1 flex-col gap-1">
+          <p className="text-xs font-medium">{LIVE_MAP_TAC}</p>
+          <pre
+            className="max-h-32 overflow-y-auto whitespace-pre-wrap font-mono text-xs"
+            data-testid="live-map-tac"
+          >
+            {report.tac}
+          </pre>
+        </div>
+      </div>
     </div>
   );
 }
@@ -192,7 +265,14 @@ export function StationPopup({ place }: { place: LivePlace }) {
  * @example
  * const _ = true;
  */
-function showPopup(layer: L.Layer, place: LivePlace, roots: Root[], map: L.Map) {
+function showPopup(
+  layer: L.Layer,
+  place: LivePlace,
+  roots: Root[],
+  map: L.Map,
+  onShowing: (tac: string) => void,
+  onLoad: (tac: string) => void,
+) {
   if (place.reports.length === 0) {
     return;
   }
@@ -205,7 +285,14 @@ function showPopup(layer: L.Layer, place: LivePlace, roots: Root[], map: L.Map) 
   const node = document.createElement('div');
   const root = createRoot(node);
   flushSync(() => {
-    root.render(<StationPopup place={place} />);
+    root.render(
+      <StationPopup
+        place={place}
+        layout={cardLayout(map.getSize().x)}
+        onShowing={onShowing}
+        onLoad={onLoad}
+      />,
+    );
   });
   roots.push(root);
   const width = popupWidth(map.getSize().x);
@@ -276,24 +363,46 @@ export function LiveWorldMap({
     let focused = false;
     visible.forEach((place) => {
       const layer = drawPlace(map, place);
-      const open = (fromUser: boolean) => {
-        showPopup(layer, place, roots, map);
-        if (fromUser && place.reports[0]?.tac) {
-          openPlaceRef.current?.(place);
+      let cardOpen = false;
+      let showingTac = place.reports[0]?.tac ?? '';
+      const remember = (tac: string) => {
+        showingTac = tac;
+      };
+      const loadShowing = (tac: string) => {
+        showingTac = tac;
+        openPlaceRef.current?.(placeShowingReport(place, tac));
+      };
+      const reveal = () => {
+        showPopup(layer, place, roots, map, remember, loadShowing);
+        if (place.reports.length > 0) {
+          cardOpen = true;
         }
       };
+      layer.on('mouseover', () => {
+        if (!cardOpen) {
+          reveal();
+        }
+      });
       layer.on('click', () => {
-        open(true);
+        if (cardOpen) {
+          loadShowing(showingTac);
+        } else {
+          reveal();
+        }
       });
       layer.on('keydown', (event) => {
         openOnKey(event, () => {
-          open(true);
+          if (cardOpen) {
+            loadShowing(showingTac);
+          } else {
+            reveal();
+          }
         });
       });
       nameLayer(layer, `${place.place_key} ${productLabel(place.product)}`);
       if (!focused && focusStation && place.place_key === focusStation) {
         focused = true;
-        open(false);
+        reveal();
       }
       layers.push(layer);
     });
