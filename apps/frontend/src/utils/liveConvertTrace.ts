@@ -365,16 +365,6 @@ export function xmlLinesForGroup(xml: string, token: string): number[] {
 }
 
 /**
- * Drop issue marks that overlap the selection, then append the selection mark.
- * CodeMirror decorations cannot overlap.
- *
- * @param issues - Live lint spans
- * @param selected - Group the operator selected, if any
- * @returns Spans safe to paint together
- * @example
- * const _ = true;
- */
-/**
  * Map a multipart form-field offset back onto editor text.
  *
  * Browsers send each line break as a carriage return plus a line feed. The
@@ -438,6 +428,16 @@ export function formFieldSpanInEditor(
   };
 }
 
+/**
+ * Drop issue marks that overlap the selection, then append the selection mark.
+ * CodeMirror decorations cannot overlap.
+ *
+ * @param issues - Live lint spans
+ * @param selected - Group the operator selected, if any
+ * @returns Spans safe to paint together
+ * @example
+ * const _ = true;
+ */
 export function spansWithSelection(
   issues: TacSpanMark[],
   selected: LiveTraceTarget | null,

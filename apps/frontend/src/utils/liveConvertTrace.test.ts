@@ -5,6 +5,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   editorOffsetFromFormField,
+  formFieldSpanInEditor,
   lintErrorCount,
   lintSummaryLabel,
   lintWarningCount,
@@ -192,6 +193,12 @@ describe('liveConvertTrace', () => {
     expect(editorOffsetFromFormField('AB\nC', 4)).toBe(3);
     expect(editorOffsetFromFormField('AB\r\nC', 4)).toBe(4);
     expect(editorOffsetFromFormField('AB\rC', 4)).toBe(3);
+    expect(formFieldSpanInEditor('  AB\nC', 'AB\nC', 0, 4)).toEqual({
+      start: 2,
+      end: 5,
+    });
+    expect(formFieldSpanInEditor('ABC', '', 0, 1)).toEqual({ start: 0, end: 0 });
+    expect(formFieldSpanInEditor('ABC', 'ZZ', 0, 1)).toEqual({ start: 0, end: 1 });
   });
 
   it('uses the pairing for the selected offsets and falls back otherwise', () => {
