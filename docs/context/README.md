@@ -6,6 +6,7 @@ still land here so they are not appended to `docs/context-brief.md`.
 
 | Brief | Session | Status |
 |-------|---------|--------|
+| [map-product-layers.md](map-product-layers.md) | EV-map-product-layers | active |
 | [map-worker-cluster.md](map-worker-cluster.md) | EV-map-worker-cluster | active |
 | [globe-live-map.md](globe-live-map.md) | EV-globe-live-map | prior cycle |
 | [tac-live-map.md](tac-live-map.md) | EV-tac-map | prior cycle |
