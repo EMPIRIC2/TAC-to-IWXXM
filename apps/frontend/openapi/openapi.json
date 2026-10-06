@@ -8834,13 +8834,13 @@
             }
           },
           {
-            "description": "Comma-separated layers. Defaults to every geographically located family.",
+            "description": "Comma-separated product ids. Defaults to every geographically located product.",
             "in": "query",
             "name": "products",
             "required": false,
             "schema": {
-              "default": "metar,speci,taf,airmet,sigmet,vaa,tca,vona",
-              "description": "Comma-separated layers. Defaults to every geographically located family.",
+              "default": "metar,speci,taf,airmet,gairmet,sigmet,vaa,tca,vona",
+              "description": "Comma-separated product ids. Defaults to every geographically located product.",
               "title": "Products",
               "type": "string"
             }
