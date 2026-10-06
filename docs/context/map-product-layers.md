@@ -10,6 +10,29 @@ UI reference: **non-deployed** local Vite at `http://127.0.0.1:5173/` on 2026-10
 
 A guest can turn each TAC product on or off, see that product in its own color, read a short hover card (product, issue time, station, scrollable TAC), and click the card to load that report into the converter at the top of the page.
 
+## Index
+
+The local map does not show this yet. Hover cards, per-product colors, the G-AIRMET layer, and the type chips are specified below and are not on the running page. Build stays blocked until the spec gate opens. [Corpus: product §F37]
+
+| What | Where it is written | Later code |
+|------|---------------------|------------|
+| Product row, colors, hover, click | [feature-list.md §F37](../feature-list.md) amend EV-map-product-layers | — |
+| Hex colors, zoom, card layout | [spec.md §F37](../spec.md) | `apps/frontend/src/utils/liveMap.ts`, `apps/frontend/src/app/components/LiveWorldMap.tsx` |
+| Guest steps | [user-journeys.md §UJ-087](../user-journeys.md) | Frontend tests and Playwright when the screen ships |
+| Checks TC-F37-007..010 | [test-plan.md §F37](../test-plan.md) | Backend and frontend tests named in those rows |
+| `gairmet` on `GET /api/v1/live-map` | [api-contract.md §F37](../api-contract.md) | `apps/backend/src/routers/live_map.py`, `apps/backend/src/services/live_map_refresh.py` |
+| Locked architecture | [ADR-052](../adr/ADR-052-live-map-import-cache.md) amend EV-map-product-layers | No new library, tile source, or database |
+| Why | [requirements-decisions.md](../decisions/requirements-decisions.md) §EV-map-product-layers | — |
+
+| Task | Delivers | Spec |
+|------|----------|------|
+| T1 | Tests, then store G-AIRMET rows as `gairmet` and allow that id on the map route | TC-F37-009 |
+| T2 | Tests, then one fixed color and checkbox per product, including G-AIRMET under Hazards | TC-F37-007 |
+| T3 | Tests, then the hover card and a click that loads the showing copy into the converter | TC-F37-008 |
+| T4 | Tests, then faded older copies, hover highlight, offset dots, and a type chip | TC-F37-010 |
+
+Continent zoom, guest access, the current tiles, and convert and validate responses stay as they are. Space weather stays off the map.
+
 ## What the local screen does today
 
 Observed signed out, with the map able to draw:
