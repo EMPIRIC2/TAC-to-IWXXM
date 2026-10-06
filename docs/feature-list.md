@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
-> **Last updated**: 2026-10-03 (EV-tac-map live map spec; prior EV-1159 / #1159)
+> **Last updated**: 2026-10-06 (EV-map-product-layers live map layers; prior EV-tac-map)
 
 ## Summary
 
@@ -44,7 +44,7 @@
 | F34 | Contract + mutation quality gates | Done | Platform | S069 / EV-059; epic #841 CLOSED; #727 Schemathesis; #874 Stryker + pytest-gremlins; **deepen** S071 / EV-061 stricter stage→main required checks (#1015); promote held |
 | F35 | Semantic vs exchange profiles + canonical ID migration | Implemented | Product | EV-063 / PR #1026; #912 / #914; ADR-036 Accepted; alias cutover #1025 (2026-10-31); amends F6 wire; **deepen** EV-beta-ux-export-auth suppress operator-visible `DEPRECATED_PROFILE_ALIAS` notices; Conversion profiles UI marked **beta** (ADR-043) |
 | F36 | National semantic + regional exchange profile content | In progress | Product | EV-063 / #912; **#919 US closed (EV-085)**; **#916 CA_ECCC P1 closed (EV-078)**; **EV-098 CA_ECCC mining #1028–#1031 closed**; **#1032 closed (EV-075)**; **#1061 SIGMET emit (EV-076)**; VAA TAC validate-first (EV-077); VAA exchange emit waived; **EV-profile-validate-decode-deepen / #1221** AU/NZ → `implemented`; **deepen EV-1222 / #1222**: regional exchange overlays beyond COLLECT stubs (APAC_ROBEX first) |
-| F37 | Live TAC map on Decode visuals | In progress | Product | EV-globe-live-map deepens EV-tac-map; Leaflet; multi-feed cache; import-time translation |
+| F37 | Live TAC map on Decode visuals | In progress | Product | EV-map-product-layers: one color and layer per product, including G-AIRMET; hover card loads the converter; country, region, time presets, and hazard phenomena filter the loaded view |
 | M1 | Monorepo layout (`apps/` + `packages/` + `vendor/`) | Implemented | Platform | REQ-002–006 |
 | M2 | Vendor snapshot sync (wmo-im iwxxm-*) | Planned | Platform | REQ-002, REQ-010 |
 | M3 | GIFTs as in-repo package | Deprecated (ADR-014) | Platform | REQ-003; removed with F6 cutover |
@@ -3109,21 +3109,35 @@
   | METAR, SPECI | Airport point. SPECI shares that airport’s last three with METAR | Yes |
   | TAF | Airport point | Yes |
   | AIRMET | Polygon | When the report has a region |
+  | G-AIRMET | Polygon | When the report has a region. Its own layer, not AIRMET |
   | SIGMET (ordinary, VA, TC) | Polygon, line, or circle | When the report has a geometry |
   | Volcanic ash advisory | Volcano point plus ash polygon | When the report has a location |
   | Tropical cyclone advisory | Storm point and radius | When the report has a location |
   | Volcano observatory notice | Volcano point | When the report has a location |
   | Space weather (including SWSK and SWSX) | No surface location | List beside the map, never a pin |
 
-- **Popup**: Hover, and a tap on a phone, opens a scrolling popup on the station. The panel under the map is gone. The popup shows the place name, wind line, report times, TAC, and either the stored IWXXM, the issues, or “Translation is pending.” The page and the popup say: “These reports are not validated for operational use. They come from the Aviation Weather Center.”
-- **Filters**: One map of everything current. These filters start on. Turning one off hides that family. Space weather is the list, not a filter on the map.
+- **Popup**: See the EV-map-product-layers amend. Hover opens a card. A click loads the converter.
+- **Filters**: One map of everything current. Group headings stay. Each product is its own checkbox, color, and layer, and starts on. Turning one off hides that product only. Space weather is the list, not a map layer. Country, region, issue time, and hazard phenomenon are extra filters on the reports already loaded for the current view. They are not request parameters. All of them start at All, except phenomenon checkboxes, which start off. They combine so a place must pass every active filter. [Corpus: product §F37]
 
-  | Filter | Families |
-  |--------|----------|
-  | Observations | METAR, SPECI |
-  | Forecasts | TAF |
-  | Hazards | AIRMET, SIGMET |
-  | Advisories | Volcanic ash, tropical cyclone, volcano notice |
+  | Filter | Choices | What it hides |
+  |--------|---------|----------------|
+  | Country | All, then each country named on an airport in the current view | Airport reports whose country is not the one chosen. Area reports stay |
+  | Region | All, then each continent and sub-region the map already uses | Places whose coordinate is outside that continent or sub-region |
+  | Issue time | All, last hour, last 6 hours, last 24 hours | Places whose newest report is older than the window. A time that cannot be read stays visible |
+  | Phenomenon | IFR, Turbulence, Icing, Thunderstorms | AIRMET, G-AIRMET, and SIGMET whose newest TAC does not match a checked phenomenon. Other products stay |
+
+  | Group | Products | Color |
+  |-------|----------|-------|
+  | Observations | METAR | Blue |
+  | Observations | SPECI | Sky |
+  | Forecasts | TAF | Teal |
+  | Hazards | AIRMET | Orange |
+  | Hazards | G-AIRMET | Amber |
+  | Hazards | SIGMET | Red |
+  | Advisories | Volcanic ash | Purple |
+  | Advisories | Tropical cyclone | Pink |
+  | Advisories | Volcano notice | Indigo |
+  | List only | Space weather | Cyan |
 
 - **Station identifiers**: Search, decode, and this map resolve one ICAO to the same airport name and coordinate. The station field on Decode visuals stays. Clearing it leaves the field empty. A known identifier shows the airport name even when the live feed has not loaded.
 - **Refresh**: `metar-map-translator` on the existing cluster finishes one of the five refresh areas before the next. The API and the translator share `LIVE_MAP_CACHE_URL` (the product database). Staging runs one translator replica and turns the API timer off. The API timer, when it is on, still translates at most 40 reports. Each place keeps the latest report and two earlier ones. A stored place is drawn before its IWXXM exists. The ingest poller stays at **0** replicas. No new database server.
@@ -3132,6 +3146,8 @@
 - **Out of scope**: Browser calls to vendor feeds. A globe library. A pin-clustering library. Sign-in required to view. Pins for space weather. Credentialed feeds. A new database server or map vendor. Saving map history into work sessions. Changing Convert or validate responses. Turning on the ingest poller. Promoting staging to production.
 - **Amend (EV-map-renderer)**: The map list sent to the browser keeps the time and the TAC for each report. Stored IWXXM and issue notes stay in the cache and stay off that list. Station marks are canvas circles on Leaflet 1.9.4. The choice of point, line, polygon, or circle lives in `@metar/live-map-geometry`, which the app paints. A click still loads the report into the converter. The popup still shows the station id and the TAC. The map stays under the converter panes. [Corpus: product §F37] [Corpus: adr/ADR-052]
 - **Amend (EV-map-worker-cluster)**: World zoom shows one marker per continent that has reports. The next zoom shows sub-region markers. A closer zoom shows each station and shape. Those markers are Leaflet markers from a fixed list, not a clustering package. A region click only zooms. Hover, and a tap on a phone, opens a scrolling popup on the station and removes the panel under the map. The page and the popup say the reports are not validated for operational use and name the Aviation Weather Center. A separate Deployment on the existing cluster finishes one refresh area before the next. The API and that Deployment share `LIVE_MAP_CACHE_URL`. The ingest poller stays off. [Corpus: adr/ADR-052]
+- **Amend (EV-map-product-layers filters)**: Country, region, issue time, and hazard phenomenon filter the places already returned for the current view. The live-map request stays the box plus product ids. Country comes from the existing airport table and applies to ICAO stations. A chosen country does not remove Area reports. Region uses the continent and sub-region names the map already uses for zoom markers, matched from the stored coordinate. Choosing a region does not replace those zoom markers, and clicking a zoom marker still only zooms. Time presets are All, last hour, last 6 hours, and last 24 hours, compared with the newest report. Phenomenon checkboxes are IFR, Turbulence, Icing, and Thunderstorms. They apply only to AIRMET, G-AIRMET, and SIGMET, and a hazard stays when its newest TAC matches any checked phenomenon. IFR matches the word IFR. Turbulence matches TURB. Icing matches ICE or ICING as a word. Thunderstorms matches THUNDERSTORM or a weather token that is TS, including TSRA and VCTS. METAR, SPECI, TAF, and the advisories are not removed by a phenomenon checkbox. No flight information region list, no custom from/to time, and no new country outline dataset. [Corpus: product §F37]
+- **Amend (EV-map-product-layers)**: At the closer zoom, each product is its own Leaflet layer and its own color from the table above. Colors are fixed. G-AIRMET rows from that feed use product `gairmet`. A domestic row whose text is a SIGMET stays SIGMET. Continent and sub-region markers stay as they are. The hover card shows the product, the issue time, and the station, or Area when there is no airport. The TAC sits to the right of that block on a wide screen and below it on a narrow screen, in a scrollable area. The card opens on the newest of the three stored reports. A control switches to an earlier copy. Older copies are drawn faded. Hover highlights the shape. Clicking the shape or the card loads the copy the card is showing into the converter at the top. Co-located airport reports are offset and each has a type chip. The legend matches the checkboxes. Fills and outlines stay distinct. Space weather stays off the map. Its list, when it has rows, uses the cyan color. This cycle does not add a space-weather feed. The page still says the reports are not validated for operational use and names the Aviation Weather Center. [Corpus: product §F37] [Corpus: adr/ADR-052]
 - **Acceptance (Spec)**:
   1. This row is the product scope
   2. The geography table is the classification
@@ -3139,12 +3155,12 @@
 - **Acceptance (Build — after gate)**:
   1. A guest on Decode visuals sees the Leaflet world map and the Beta label
   2. World zoom draws one marker per continent, the next zoom draws sub-regions, and a closer zoom draws each station and shape. Space weather stays in the list
-  3. Hover or tap opens a scrolling station popup with TAC, stored IWXXM or a pending note, and the operational-use notice
+  3. Hover opens a card with the product, issue time, station or Area, and scrollable TAC. Clicking the shape or the card loads that copy into the converter. The operational-use notice stays on the page
   4. The same ICAO resolves to the same airport in search, decode, and the map
   5. Browser traffic for the map goes to this app’s API
   6. The translator finishes one refresh area before the next and does not stall Convert or validate
   7. Connectivity checks H4–H5 when the screen ships to staging
-- **Journeys / tests**: **UJ-087**; **TC-F37-001..006**
+- **Journeys / tests**: **UJ-087**; **TC-F37-001..010**
 - **Source**: EV-globe-live-map intake; [docs/context/globe-live-map.md](context/globe-live-map.md); prior EV-tac-map row in [docs/context/tac-live-map.md](context/tac-live-map.md)
 
 ## Planned Features (Post-Migration)

@@ -11,7 +11,7 @@ from src.services.live_map_cache import LiveMapCache, cache_from_env
 
 router = APIRouter(prefix="/api/v1/live-map", tags=["Live map"])
 
-MAP_PRODUCTS = frozenset({"metar", "speci", "taf", "airmet", "sigmet", "vaa", "tca", "vona"})
+MAP_PRODUCTS = frozenset({"metar", "speci", "taf", "airmet", "gairmet", "sigmet", "vaa", "tca", "vona"})
 
 _cache: LiveMapCache | None = None
 
@@ -63,8 +63,8 @@ def read_live_map(
     east: float = Query(..., description="East edge of the view, in degrees."),
     north: float = Query(..., description="North edge of the view, in degrees."),
     products: str = Query(
-        "metar,speci,taf,airmet,sigmet,vaa,tca,vona",
-        description="Comma-separated layers. Defaults to every geographically located family.",
+        "metar,speci,taf,airmet,gairmet,sigmet,vaa,tca,vona",
+        description="Comma-separated product ids. Defaults to every geographically located product.",
     ),
 ) -> dict[str, object]:
     """Reports cached for the area in view.
@@ -82,7 +82,7 @@ def read_live_map(
     north : float
         North edge of the view, in degrees.
     products : str
-        Comma-separated layers. Defaults to every geographically located family.
+        Comma-separated product ids. Defaults to every geographically located product.
 
     Returns
     -------
@@ -116,7 +116,7 @@ def read_live_map(
     if unknown:
         raise HTTPException(
             status_code=400,
-            detail="Choose map layers from METAR, SPECI, TAF, AIRMET, SIGMET, or an advisory.",
+            detail="Choose map layers from METAR, SPECI, TAF, AIRMET, G-AIRMET, SIGMET, or an advisory.",
         )
     return {
         "places": _places_for_browser(

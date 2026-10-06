@@ -1398,7 +1398,7 @@ GET /api/v1/live-map?west=&south=&east=&north=&products=
 | Query | Rule |
 |-------|------|
 | `west`, `south`, `east`, `north` | Degrees. West left of east. South below north. Outside −180..180 or −90..90 is 400 |
-| `products` | Comma-separated. Default is every geographically located family: `metar,speci,taf,airmet,sigmet,vaa,tca,vona`. Unknown token is 400. Space weather is not a product here |
+| `products` | Comma-separated product ids. Default is every geographically located product: `metar,speci,taf,airmet,gairmet,sigmet,vaa,tca,vona`. Unknown token is 400. Family names are not a query parameter. Space weather is not a product here |
 
 **Response**:
 
@@ -1414,9 +1414,7 @@ GET /api/v1/live-map?west=&south=&east=&north=&products=
       "reports": [
         {
           "observed_at": "2026-10-03T21:00:00Z",
-          "tac": "METAR KJFK ...=",
-          "iwxxm": "<iwxxm:METAR ...>",
-          "issues": []
+          "tac": "METAR KJFK ...="
         }
       ]
     }
@@ -1425,10 +1423,11 @@ GET /api/v1/live-map?west=&south=&east=&north=&products=
 }
 ```
 
-- `reports` has at most three items. The newest is first.
+- `reports` has at most three items. The newest is first. Each item on this route is `observed_at` and `tac`. Stored IWXXM and issue notes stay in the cache and stay off this list.
+- `product` is one id: `metar`, `speci`, `taf`, `airmet`, `gairmet`, `sigmet`, `vaa`, `tca`, or `vona`.
 - `geometry.kind` is `point`, `polygon`, `line`, or `circle`. A polygon or line includes `coordinates`. A circle includes `radius_m`.
-- `iwxxm` is the translation stored for that report, or null when translation has not run yet or failed. A failure is an entry in `issues`. Pending translation is not a failure.
-- `issues` lists lint and validation findings for that stored report. Empty when there are none.
 - `space_weather` is the list of current products with no surface location. Those rows are never in `places`.
+
+**Amend (EV-map-product-layers)**: `gairmet` joins the allowed set and the default. Rows from the G-AIRMET feed use that id. A domestic row whose text is a SIGMET stays `sigmet`. The page groups ids under Observations, Forecasts, Hazards, and Advisories. Those group names are not query parameters. Hazards includes `airmet`, `gairmet`, and `sigmet`. Country, region, issue time, and hazard phenomenon are chosen in the browser from the places already returned. They are not query parameters. [Corpus: product §F37] [Corpus: api]
 
 The route reads the cache. It does not call a vendor during the request.

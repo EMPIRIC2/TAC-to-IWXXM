@@ -294,4 +294,11 @@ def test_read_live_map_route(monkeypatch: pytest.MonkeyPatch) -> None:
         params={"west": -80, "south": 40, "east": -70, "north": 41, "products": "spacewx"},
     )
     assert bad_layer.status_code == 400
+    cache.store(_report(minutes=2, tac="G-AIRMET", product="gairmet", place_key="gairmet-1"))
+    gairmet = client.get(
+        "/api/v1/live-map",
+        params={"west": -80, "south": 40, "east": -70, "north": 41, "products": "gairmet"},
+    )
+    assert gairmet.status_code == 200
+    assert gairmet.json()["places"][0]["product"] == "gairmet"
     set_live_map_cache(None)

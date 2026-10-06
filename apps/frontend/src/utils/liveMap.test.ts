@@ -5,6 +5,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import {
   boundsOf,
   fetchLivePlaces,
+  filterPlaces,
   formatObservedAt,
   iwxxmForReport,
   layerQuery,
@@ -14,10 +15,17 @@ import {
   pinColor,
   popupWidth,
   productLabel,
+  shapePaint,
+  SPACE_WEATHER_LIST_COLOR,
+  spaceWeatherListColor,
   selectedLayerQuery,
   viewById,
   viewStatus,
   windFromTac,
+  cardLayout,
+  copyOpacity,
+  placeShowingReport,
+  pointNudge,
   LIVE_MAP_EMPTY,
   LIVE_MAP_LOADING,
   LIVE_MAP_NO_TIME,
@@ -56,18 +64,79 @@ describe('live map helpers', () => {
     expect(layerQuery('forecasts', new Set())).toBe('taf');
     expect(layerQuery('observations', new Set(['metar', 'speci']))).toBe('');
     expect(selectedLayerQuery(new Set())).toContain('metar');
+    expect(selectedLayerQuery(new Set())).toContain('gairmet');
     expect(selectedLayerQuery(new Set())).toContain('vona');
     expect(selectedLayerQuery(new Set(['metar']))).not.toContain('metar,');
+    expect(viewById('hazards').products).toEqual(['airmet', 'gairmet', 'sigmet']);
+    expect(layerQuery('hazards', new Set(['gairmet']))).toBe('airmet,sigmet');
   });
 
   it('names layers, times, and the current view', () => {
+    expect(pinColor('metar')).toBe('#1d4ed8');
+    expect(pinColor('speci')).toBe('#0369a1');
     expect(pinColor('taf')).toBe('#0f766e');
     expect(pinColor('airmet')).toBe('#c2410c');
-    expect(pinColor('sigmet')).toBe('#c2410c');
+    expect(pinColor('gairmet')).toBe('#a16207');
+    expect(pinColor('sigmet')).toBe('#b91c1c');
     expect(pinColor('vaa')).toBe('#6d28d9');
-    expect(pinColor('tca')).toBe('#6d28d9');
-    expect(pinColor('vona')).toBe('#6d28d9');
-    expect(pinColor('metar')).toBe('#1d4ed8');
+    expect(pinColor('tca')).toBe('#be185d');
+    expect(pinColor('vona')).toBe('#4338ca');
+    expect(pinColor('metar')).not.toBe(pinColor('speci'));
+    expect(pinColor('airmet')).not.toBe(pinColor('gairmet'));
+    expect(pinColor('other')).toBe('#1d4ed8');
+    expect(shapePaint('sigmet')).toEqual({
+      color: '#ffffff',
+      weight: 2,
+      fillColor: '#b91c1c',
+      fillOpacity: 0.45,
+    });
+    expect(SPACE_WEATHER_LIST_COLOR).toBe('#0e7490');
+    expect(spaceWeatherListColor(1)).toBe('#0e7490');
+    expect(spaceWeatherListColor(0)).toBeUndefined();
+    expect(cardLayout(800)).toBe('side');
+    expect(cardLayout(767)).toBe('stack');
+    expect(
+      placeShowingReport(
+        {
+          place_key: 'KJFK',
+          product: 'metar',
+          latitude: 1,
+          longitude: 2,
+          reports: [
+            { observed_at: 'new', tac: 'NEW' },
+            { observed_at: 'old', tac: 'OLD' },
+          ],
+        },
+        'OLD',
+      ).reports.map((report) => report.tac),
+    ).toEqual(['OLD', 'NEW']);
+    expect(
+      placeShowingReport(
+        {
+          place_key: 'KJFK',
+          product: 'metar',
+          latitude: 1,
+          longitude: 2,
+          reports: [{ observed_at: 'new', tac: 'NEW' }],
+        },
+        'NEW',
+      ).reports[0]?.tac,
+    ).toBe('NEW');
+    const newestFirst = {
+      place_key: 'KJFK',
+      product: 'metar',
+      latitude: 1,
+      longitude: 2,
+      reports: [{ observed_at: 'new', tac: 'NEW' }],
+    };
+    expect(placeShowingReport(newestFirst, 'MISSING')).toBe(newestFirst);
+    expect(pointNudge(0, 1)).toEqual({ latitude: 0, longitude: 0 });
+    expect(pointNudge(0, 2).longitude).toBeLessThan(0);
+    expect(pointNudge(1, 2).longitude).toBeGreaterThan(0);
+    expect(copyOpacity(0)).toBe(1);
+    expect(copyOpacity(1)).toBe(0.45);
+    expect(copyOpacity(2)).toBe(0.25);
+    expect(productLabel('gairmet')).toBe('G-AIRMET');
     expect(productLabel('vaa')).toBe('Volcanic ash');
     expect(productLabel('other')).toBe('OTHER');
     expect(placeTitle('KJFK', 'Kennedy')).toBe('Kennedy');
@@ -189,6 +258,8 @@ describe('live map helpers', () => {
     const places = await fetchLivePlaces(bounds, 'metar,speci', signal);
     expect(places).toHaveLength(1);
     expect(places[0]?.reports).toHaveLength(1);
+    expect(String(vi.mocked(fetch).mock.calls[0]?.[0])).not.toContain('country=');
+    expect(String(vi.mocked(fetch).mock.calls[0]?.[0])).not.toContain('phenomenon');
     await expect(fetchLivePlaces(bounds, 'metar', signal)).resolves.toEqual([]);
     await expect(fetchLivePlaces(bounds, 'metar', signal)).rejects.toThrow(
       'The live map could not be loaded.',
@@ -217,5 +288,153 @@ describe('live map helpers', () => {
     await expect(iwxxmForReport('METAR KJFK', 'taf', signal)).rejects.toThrow(
       'IWXXM is not available',
     );
+  });
+
+  it('filters country, region, time, and hazard phenomenon on the loaded view', () => {
+    const now = Date.parse('2026-10-06T12:00:00Z');
+    const europe = { name: 'Europe', continent: 'Europe' };
+    const caribbean = { name: 'Caribbean', continent: 'North America' };
+    const countryOf = (placeKey: string) =>
+      placeKey === 'KJFK'
+        ? 'United States'
+        : placeKey === 'EGLL'
+          ? 'United Kingdom'
+          : undefined;
+    const regionOf = (latitude: number) => (latitude > 40 ? europe : caribbean);
+    const base = {
+      country: 'all',
+      region: 'all',
+      time: 'all' as const,
+      phenomena: new Set<string>(),
+      now,
+      countryOf,
+      regionOf,
+    };
+    const station = (
+      placeKey: string,
+      product: string,
+      observedAt: string,
+      tac: string,
+      latitude = 50,
+    ) => ({
+      place_key: placeKey,
+      product,
+      latitude,
+      longitude: 0,
+      reports: [{ observed_at: observedAt, tac }],
+    });
+    const loaded = [
+      station('KJFK', 'metar', '2026-10-06T11:30:00Z', 'METAR KJFK TSRA'),
+      station('EGLL', 'metar', '2026-10-06T11:30:00Z', 'METAR EGLL'),
+      station('KZZZ', 'metar', '2026-10-06T11:30:00Z', 'METAR KZZZ'),
+      station('sigmet-1', 'sigmet', '2026-10-06T11:30:00Z', 'SIGMET FOR EMBD TS', 15),
+      station('sigmet-ifr', 'sigmet', '2026-10-06T09:00:00Z', 'SIGMET FOR IFR'),
+      station('airmet-turb', 'airmet', '2026-10-06T05:00:00Z', 'AIRMET TANGO FOR TURB'),
+      station(
+        'gairmet-ice',
+        'gairmet',
+        '2026-10-05T10:00:00Z',
+        'G-AIRMET ZULU FOR ICE',
+      ),
+      station('sigmet-icing', 'sigmet', '2026-10-06T11:00:00Z', 'SIGMET FOR ICING'),
+      station('sigmet-storm', 'sigmet', '2026-10-06T11:00:00Z', 'SIGMET THUNDERSTORM'),
+      station('sigmet-vc', 'sigmet', '2026-10-06T11:00:00Z', 'SIGMET VCTS AND +TSRA'),
+      station('sigmet-note', 'sigmet', '2026-10-06T11:00:00Z', 'SIGMET NOTICE'),
+      station('sigmet-blank', 'sigmet', '2026-10-06T11:00:00Z', '---'),
+      station('sigmet-old', 'sigmet', 'newest', 'SIGMET'),
+    ];
+    expect(filterPlaces(loaded, base).map((place) => place.place_key)).toEqual(
+      loaded.map((place) => place.place_key),
+    );
+    expect(
+      filterPlaces(loaded, { ...base, country: 'United States' }).map(
+        (place) => place.place_key,
+      ),
+    ).toEqual([
+      'KJFK',
+      'sigmet-1',
+      'sigmet-ifr',
+      'airmet-turb',
+      'gairmet-ice',
+      'sigmet-icing',
+      'sigmet-storm',
+      'sigmet-vc',
+      'sigmet-note',
+      'sigmet-blank',
+      'sigmet-old',
+    ]);
+    expect(
+      filterPlaces(loaded, { ...base, region: 'Europe' }).map(
+        (place) => place.place_key,
+      ),
+    ).not.toContain('sigmet-1');
+    expect(
+      filterPlaces(loaded, { ...base, region: 'Caribbean' }).map(
+        (place) => place.place_key,
+      ),
+    ).toContain('sigmet-1');
+    expect(
+      filterPlaces(loaded, { ...base, region: 'North America' }).map(
+        (place) => place.place_key,
+      ),
+    ).toContain('sigmet-1');
+    expect(
+      filterPlaces(loaded, { ...base, time: '1h' }).map((place) => place.place_key),
+    ).toEqual([
+      'KJFK',
+      'EGLL',
+      'KZZZ',
+      'sigmet-1',
+      'sigmet-icing',
+      'sigmet-storm',
+      'sigmet-vc',
+      'sigmet-note',
+      'sigmet-blank',
+      'sigmet-old',
+    ]);
+    expect(
+      filterPlaces(loaded, { ...base, time: '6h' }).map((place) => place.place_key),
+    ).toContain('sigmet-ifr');
+    expect(
+      filterPlaces(loaded, { ...base, time: '6h' }).map((place) => place.place_key),
+    ).not.toContain('airmet-turb');
+    expect(
+      filterPlaces(loaded, { ...base, time: '24h' }).map((place) => place.place_key),
+    ).toContain('airmet-turb');
+    expect(
+      filterPlaces(loaded, { ...base, time: '24h' }).map((place) => place.place_key),
+    ).not.toContain('gairmet-ice');
+    const storms = filterPlaces(loaded, { ...base, phenomena: new Set(['ts']) });
+    expect(storms.map((place) => place.place_key)).toContain('KJFK');
+    expect(storms.map((place) => place.place_key)).toContain('sigmet-1');
+    expect(storms.map((place) => place.place_key)).toContain('sigmet-storm');
+    expect(storms.map((place) => place.place_key)).toContain('sigmet-vc');
+    expect(storms.map((place) => place.place_key)).not.toContain('sigmet-ifr');
+    expect(storms.map((place) => place.place_key)).not.toContain('sigmet-blank');
+    expect(
+      filterPlaces(loaded, { ...base, phenomena: new Set(['ifr']) }).map(
+        (place) => place.place_key,
+      ),
+    ).toContain('sigmet-ifr');
+    expect(
+      filterPlaces(loaded, { ...base, phenomena: new Set(['turb']) }).map(
+        (place) => place.place_key,
+      ),
+    ).toContain('airmet-turb');
+    expect(
+      filterPlaces(loaded, { ...base, phenomena: new Set(['ice']) }).map(
+        (place) => place.place_key,
+      ),
+    ).toEqual(expect.arrayContaining(['gairmet-ice', 'sigmet-icing']));
+    expect(
+      filterPlaces(loaded, { ...base, phenomena: new Set(['ice']) }).map(
+        (place) => place.place_key,
+      ),
+    ).not.toContain('sigmet-note');
+    expect(
+      filterPlaces(loaded, { ...base, phenomena: new Set(['nope']) }).map(
+        (place) => place.place_key,
+      ),
+    ).not.toContain('sigmet-1');
   });
 });

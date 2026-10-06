@@ -289,6 +289,28 @@ def test_convective_sigmet_on_the_airmet_feed_is_a_sigmet() -> None:
     assert [report.product for report in reports] == ["sigmet", "airmet"]
 
 
+def test_gairmet_feed_is_its_own_product() -> None:
+    reports = reports_from_feed(
+        [
+            {
+                "_feed": "gairmet",
+                "rawAirSigmet": "G-AIRMET SIERRA FOR IFR",
+                "lat": 40.0,
+                "lon": -75.0,
+                "validTimeFrom": "2026-10-05T14:55:00Z",
+            },
+            {
+                "_feed": "airsigmet",
+                "rawAirSigmet": "WSUS31 KKCI 051455\nCONVECTIVE SIGMET 27E\n",
+                "lat": 42.0,
+                "lon": -75.0,
+                "validTimeFrom": "2026-10-05T14:55:00Z",
+            },
+        ]
+    )
+    assert [report.product for report in reports] == ["gairmet", "sigmet"]
+
+
 def test_import_limit_falls_back(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setenv("LIVE_MAP_IMPORT_LIMIT", "0")
     assert import_limit() == 1

@@ -19,6 +19,7 @@ low zoom replaced individual features with continent and sub-region chips.
 The popup timer measured the popup and called `map.panBy` with a negative Y,
 which moves the map content up. Cluster drawing replaced points and polygons
 until the zoom reached station level, so a region click only changed zoom.
+A later layer change opens the card on hover. That still must not call `panBy`.
 The converter panes were capped well below one viewport.
 
 ## Repro test

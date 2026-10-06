@@ -65,6 +65,32 @@ export const LIVE_MAP_AREA = 'Area';
 export const LIVE_MAP_LATEST = 'Latest';
 export const LIVE_MAP_IWXXM = 'IWXXM';
 export const LIVE_MAP_TAC = 'TAC';
+export const LIVE_MAP_EARLIER = 'Earlier copy';
+export const LIVE_MAP_NEWER = 'Newer copy';
+export const LIVE_MAP_ALL_COUNTRIES = 'All countries';
+export const LIVE_MAP_ALL_REGIONS = 'All regions';
+export const LIVE_MAP_ALL_TIMES = 'All times';
+export const LIVE_MAP_LAST_HOUR = 'Last hour';
+export const LIVE_MAP_LAST_6_HOURS = 'Last 6 hours';
+export const LIVE_MAP_LAST_24_HOURS = 'Last 24 hours';
+export const LIVE_MAP_FILTER_COUNTRY = 'Country';
+export const LIVE_MAP_FILTER_REGION = 'Region';
+export const LIVE_MAP_FILTER_TIME = 'Issue time';
+export const LIVE_MAP_FILTER_PHENOMENON = 'Phenomenon';
+
+export const LIVE_MAP_PHENOMENA = [
+  { id: 'ifr', label: 'IFR' },
+  { id: 'turb', label: 'Turbulence' },
+  { id: 'ice', label: 'Icing' },
+  { id: 'ts', label: 'Thunderstorms' },
+] as const;
+
+/**
+ * How far back the map keeps reports. `all` does not apply a clock window.
+ * @example
+ * const _ = true;
+ */
+export type MapTimePreset = 'all' | '1h' | '6h' | '24h';
 export const LIVE_MAP_DECODE = 'Decode';
 export const LIVE_MAP_PANEL = 'Weather map';
 export const LIVE_MAP_REFRESH_MS = 60_000;
@@ -74,11 +100,27 @@ const PRODUCT_LABELS: Record<string, string> = {
   speci: 'SPECI',
   taf: 'TAF',
   airmet: 'AIRMET',
+  gairmet: 'G-AIRMET',
   sigmet: 'SIGMET',
   vaa: 'Volcanic ash',
   tca: 'Tropical cyclone',
   vona: 'Volcano notice',
 };
+
+const PRODUCT_COLORS: Record<string, string> = {
+  metar: '#1d4ed8',
+  speci: '#0369a1',
+  taf: '#0f766e',
+  airmet: '#c2410c',
+  gairmet: '#a16207',
+  sigmet: '#b91c1c',
+  vaa: '#6d28d9',
+  tca: '#be185d',
+  vona: '#4338ca',
+};
+
+/** Cyan for the space-weather list when that list has rows. Not a map pin. */
+export const SPACE_WEATHER_LIST_COLOR = '#0e7490';
 
 const MONTHS = [
   'Jan',
@@ -108,7 +150,7 @@ export function productLabel(product: string): string {
 }
 
 /**
- * Pin color for a product family.
+ * Pin color for one product.
  *
  * @param product - Layer id
  * @returns CSS color
@@ -116,16 +158,44 @@ export function productLabel(product: string): string {
  * const _ = true;
  */
 export function pinColor(product: string): string {
-  if (product === 'taf') {
-    return '#0f766e';
+  return PRODUCT_COLORS[product] ?? '#1d4ed8';
+}
+
+/**
+ * Fill and outline for a product shape. The outline stays white so it is not the fill.
+ *
+ * @param product - Layer id
+ * @returns Leaflet path options
+ * @example
+ * const _ = true;
+ */
+export function shapePaint(product: string): {
+  color: string;
+  weight: number;
+  fillColor: string;
+  fillOpacity: number;
+} {
+  return {
+    color: '#ffffff',
+    weight: 2,
+    fillColor: pinColor(product),
+    fillOpacity: 0.45,
+  };
+}
+
+/**
+ * List color when space-weather rows exist. An empty list keeps the surrounding text color.
+ *
+ * @param rowCount - Rows in the side list
+ * @returns Cyan, or undefined when the list is empty
+ * @example
+ * const _ = true;
+ */
+export function spaceWeatherListColor(rowCount: number): string | undefined {
+  if (rowCount > 0) {
+    return SPACE_WEATHER_LIST_COLOR;
   }
-  if (product === 'airmet' || product === 'sigmet') {
-    return '#c2410c';
-  }
-  if (product === 'vaa' || product === 'tca' || product === 'vona') {
-    return '#6d28d9';
-  }
-  return '#1d4ed8';
+  return undefined;
 }
 
 /**
@@ -267,6 +337,256 @@ export function popupWidth(viewWidth: number): number {
 }
 
 /**
+ * Side-by-side card on a wide map, stacked on a narrow one.
+ *
+ * @param viewWidth - Map width in pixels
+ * @returns Card layout
+ * @example
+ * const _ = true;
+ */
+export function cardLayout(viewWidth: number): 'side' | 'stack' {
+  if (viewWidth >= 768) {
+    return 'side';
+  }
+  return 'stack';
+}
+
+/**
+ * Opacity for one stored copy. The newest is solid. Earlier copies fade.
+ *
+ * @param index - 0 is the newest report
+ * @returns Fill opacity
+ * @example
+ * const _ = true;
+ */
+export function copyOpacity(index: number): number {
+  if (index <= 0) {
+    return 1;
+  }
+  if (index === 1) {
+    return 0.45;
+  }
+  return 0.25;
+}
+
+/**
+ * Shift co-located airport dots sideways so each one stays clickable.
+ *
+ * @param slot - Index among dots at the same airport
+ * @param total - How many dots share that airport
+ * @returns Latitude and longitude deltas in degrees
+ * @example
+ * const _ = true;
+ */
+export function pointNudge(
+  slot: number,
+  total: number,
+): { latitude: number; longitude: number } {
+  if (total < 2) {
+    return { latitude: 0, longitude: 0 };
+  }
+  const step = 0.08;
+  return {
+    latitude: 0,
+    longitude: (slot - (total - 1) / 2) * step,
+  };
+}
+
+/**
+ * Move the report the card is showing to the front of the list.
+ *
+ * @param place - Cached place
+ * @param tac - TAC text on the card
+ * @returns Place whose first report is that copy
+ * @example
+ * const _ = true;
+ */
+export function placeShowingReport(place: LivePlace, tac: string): LivePlace {
+  const chosen = place.reports.find((report) => report.tac === tac);
+  if (!chosen || place.reports[0] === chosen) {
+    return place;
+  }
+  return {
+    ...place,
+    reports: [chosen, ...place.reports.filter((report) => report !== chosen)],
+  };
+}
+
+const HAZARD_PRODUCTS = new Set(['airmet', 'gairmet', 'sigmet']);
+
+/**
+ * Keep places that pass the country, region, time, and phenomenon choices.
+ *
+ * @param places - Places already loaded for the view
+ * @param filters - Current choices. Country and region use `all` for no narrowing
+ * @returns Places still drawn
+ * @example
+ * const _ = true;
+ */
+export function filterPlaces(
+  places: LivePlace[],
+  filters: {
+    country: string;
+    region: string;
+    time: MapTimePreset;
+    phenomena: ReadonlySet<string>;
+    now?: number;
+    countryOf: (placeKey: string) => string | undefined;
+    regionOf: (
+      latitude: number,
+      longitude: number,
+    ) => { name: string; continent: string };
+  },
+): LivePlace[] {
+  const now = filters.now ?? Date.now();
+  return places.filter((place) => {
+    if (!passesCountry(place.place_key, filters.country, filters.countryOf)) {
+      return false;
+    }
+    if (!passesRegion(place, filters.region, filters.regionOf)) {
+      return false;
+    }
+    if (!passesIssueWindow(place.reports[0]?.observed_at ?? '', filters.time, now)) {
+      return false;
+    }
+    return passesPhenomenon(
+      place.product,
+      place.reports[0]?.tac ?? '',
+      filters.phenomena,
+    );
+  });
+}
+
+/**
+ * Airport country filter. Area reports stay. An unknown station hides.
+ *
+ * @param placeKey - Station or area id
+ * @param country - `all` or a country name
+ * @param countryOf - Airport country lookup
+ * @returns Whether the place stays
+ * @example
+ * const _ = true;
+ */
+function passesCountry(
+  placeKey: string,
+  country: string,
+  countryOf: (placeKey: string) => string | undefined,
+): boolean {
+  if (country === 'all') {
+    return true;
+  }
+  if (!/^[A-Z][A-Z0-9]{3}$/.test(placeKey)) {
+    return true;
+  }
+  return countryOf(placeKey) === country;
+}
+
+/**
+ * Continent or sub-region filter from the place coordinate.
+ *
+ * @param place - Cached place
+ * @param region - `all` or a continent or sub-region name
+ * @param regionOf - Existing region lookup
+ * @returns Whether the place stays
+ * @example
+ * const _ = true;
+ */
+function passesRegion(
+  place: LivePlace,
+  region: string,
+  regionOf: (
+    latitude: number,
+    longitude: number,
+  ) => { name: string; continent: string },
+): boolean {
+  if (region === 'all') {
+    return true;
+  }
+  const found = regionOf(place.latitude, place.longitude);
+  return found.name === region || found.continent === region;
+}
+
+/**
+ * Issue-time preset against the newest report. An unreadable time stays.
+ *
+ * @param observedAt - Newest stamp
+ * @param time - Preset
+ * @param now - Clock
+ * @returns Whether the place stays
+ * @example
+ * const _ = true;
+ */
+function passesIssueWindow(
+  observedAt: string,
+  time: MapTimePreset,
+  now: number,
+): boolean {
+  if (time === 'all') {
+    return true;
+  }
+  const parsed = Date.parse(observedAt);
+  if (Number.isNaN(parsed)) {
+    return true;
+  }
+  let hours = 24;
+  if (time === '1h') {
+    hours = 1;
+  } else if (time === '6h') {
+    hours = 6;
+  }
+  return now - parsed <= hours * 3_600_000;
+}
+
+/**
+ * Hazard phenomenon filter. Other products stay. An empty set stays.
+ *
+ * @param product - Layer id
+ * @param tac - Newest TAC
+ * @param phenomena - Checked phenomenon ids
+ * @returns Whether the place stays
+ * @example
+ * const _ = true;
+ */
+function passesPhenomenon(
+  product: string,
+  tac: string,
+  phenomena: ReadonlySet<string>,
+): boolean {
+  if (phenomena.size === 0 || !HAZARD_PRODUCTS.has(product)) {
+    return true;
+  }
+  const tokens = tac.toUpperCase().match(/[A-Z0-9+]+/g) ?? [];
+  return [...phenomena].some((phenomenon) =>
+    tokens.some((token) => tokenMatches(token.replace(/^[+-]/, ''), phenomenon)),
+  );
+}
+
+/**
+ * One TAC token against one phenomenon id.
+ *
+ * @param bare - Token without a leading intensity mark
+ * @param phenomenon - Phenomenon id
+ * @returns Whether the token is that phenomenon
+ * @example
+ * const _ = true;
+ */
+function tokenMatches(bare: string, phenomenon: string): boolean {
+  if (phenomenon === 'ifr') {
+    return bare === 'IFR';
+  }
+  if (phenomenon === 'turb') {
+    return bare.startsWith('TURB');
+  }
+  if (phenomenon === 'ice') {
+    return bare === 'ICE' || bare === 'ICING';
+  }
+  if (phenomenon === 'ts') {
+    return bare === 'THUNDERSTORM' || /^(VC)?TS/.test(bare);
+  }
+  return false;
+}
+
+/**
  * Geographic edges of the current map view.
  * @example
  * const _ = true;
@@ -314,7 +634,7 @@ export function boundsOf(map: {
 export const LIVE_MAP_VIEWS = [
   { id: 'observations', label: 'Observations', products: ['metar', 'speci'] },
   { id: 'forecasts', label: 'Forecasts', products: ['taf'] },
-  { id: 'hazards', label: 'Hazards', products: ['airmet', 'sigmet'] },
+  { id: 'hazards', label: 'Hazards', products: ['airmet', 'gairmet', 'sigmet'] },
   { id: 'advisories', label: 'Advisories', products: ['vaa', 'tca', 'vona'] },
 ] as const;
 
@@ -323,6 +643,7 @@ const PRODUCT_FORM: Record<string, string> = {
   speci: 'SPECI',
   taf: 'TAF',
   airmet: 'AIRMET',
+  gairmet: 'AIRMET',
   sigmet: 'SIGMET',
   vaa: 'VAA',
   tca: 'TCA',

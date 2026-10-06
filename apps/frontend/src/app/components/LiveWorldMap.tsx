@@ -16,24 +16,48 @@ import {
 import { airports } from '@/utils/airportsData';
 import {
   boundsOf,
+  cardLayout,
+  copyOpacity,
   fetchLivePlaces,
+  filterPlaces,
+  formatObservedAt,
+  LIVE_MAP_ALL_COUNTRIES,
+  LIVE_MAP_ALL_REGIONS,
+  LIVE_MAP_ALL_TIMES,
   LIVE_MAP_CANVAS,
+  LIVE_MAP_EARLIER,
   LIVE_MAP_ERROR,
+  LIVE_MAP_FILTER_COUNTRY,
+  LIVE_MAP_FILTER_PHENOMENON,
+  LIVE_MAP_FILTER_REGION,
+  LIVE_MAP_FILTER_TIME,
+  LIVE_MAP_LAST_24_HOURS,
+  LIVE_MAP_LAST_6_HOURS,
+  LIVE_MAP_LAST_HOUR,
   LIVE_MAP_LAYERS_OFF,
+  LIVE_MAP_NEWER,
   LIVE_MAP_NOTICE,
+  LIVE_MAP_PHENOMENA,
   LIVE_MAP_REFRESH_MS,
   LIVE_MAP_SPACE,
   LIVE_MAP_TAC,
   LIVE_MAP_VIEWS,
   LIVE_MAP_ZOOM_HINT,
   pinColor,
+  placeShowingReport,
+  placeTitle,
+  pointNudge,
   popupWidth,
   productLabel,
   selectedLayerQuery,
+  shapePaint,
+  spaceWeatherListColor,
   viewStatus,
   type LivePlace,
   type MapBounds,
+  type MapTimePreset,
 } from '@/utils/liveMap';
+import { placeRegion, regionFilterNames } from '@/utils/liveMapRegions';
 
 const EMPTY_PLACES: LivePlace[] = [];
 
@@ -109,27 +133,44 @@ function pointOf(place: LivePlace): [number, number] {
  * @example
  * const _ = true;
  */
-function drawPlace(map: L.Map, place: LivePlace): L.Layer {
+function drawPlace(map: L.Map, place: LivePlace, at?: [number, number]): L.Layer {
   const draw = drawForPlace(place);
+  const paint = shapePaint(place.product);
   if (draw.kind === 'polygon') {
-    return L.polygon(draw.positions).addTo(map);
+    return L.polygon(draw.positions, paint).addTo(map);
   }
   if (draw.kind === 'line') {
-    return L.polyline(draw.positions).addTo(map);
+    return L.polyline(draw.positions, { color: paint.fillColor, weight: 3 }).addTo(map);
   }
   if (draw.kind === 'circle') {
-    return L.circle([draw.latitude, draw.longitude], { radius: draw.radiusM }).addTo(
-      map,
-    );
+    return L.circle([draw.latitude, draw.longitude], {
+      ...paint,
+      radius: draw.radiusM,
+    }).addTo(map);
   }
-  const color = pinColor(place.product);
-  return L.circleMarker([draw.latitude, draw.longitude], {
+  const [latitude, longitude] = at ?? [draw.latitude, draw.longitude];
+  return L.circleMarker([latitude, longitude], {
     radius: 6,
-    color: '#ffffff',
-    weight: 2,
-    fillColor: color,
-    fillOpacity: 1,
+    ...paint,
+    fillOpacity: copyOpacity(0),
   }).addTo(map);
+}
+
+/**
+ * Brighten a shape under the pointer, then put the resting paint back.
+ *
+ * @param layer - Drawn shape
+ * @param place - Cached place
+ * @param on - True while the pointer is over the shape
+ * @example
+ * const _ = true;
+ */
+function paintHover(layer: L.Layer, place: LivePlace, on: boolean) {
+  const path = layer as unknown as { setStyle: (style: L.PathOptions) => void };
+  const paint = shapePaint(place.product);
+  const point = drawForPlace(place).kind === 'point';
+  const resting = point ? { ...paint, fillOpacity: copyOpacity(0) } : paint;
+  path.setStyle(on ? { ...resting, weight: resting.weight + 2 } : resting);
 }
 
 /**
@@ -150,34 +191,101 @@ function redrawCanvas(map: L.Map): void {
 }
 
 /**
- * Station text inside the map popup.
+ * Station text inside the map card.
  *
  * @param place - Cached place
+ * @param layout - Side by side on a wide map, stacked on a narrow one
+ * @param onShowing - Remembers the copy on the card
+ * @param onLoad - Loads that copy into the converter
  * @example
  * const _ = true;
  */
-export function StationPopup({ place }: { place: LivePlace }) {
-  const report = place.reports[0];
+export function StationPopup({
+  place,
+  layout = 'side',
+  onShowing,
+  onLoad,
+}: {
+  place: LivePlace;
+  layout?: 'side' | 'stack';
+  onShowing?: (tac: string) => void;
+  onLoad?: (tac: string) => void;
+}) {
+  const [index, setIndex] = useState(0);
+  const report = place.reports[index];
+  useEffect(() => {
+    if (report) {
+      onShowing?.(report.tac);
+    }
+  }, [onShowing, report]);
   if (!report) {
     return null;
   }
   const airportName = airports.findWhere({ icao: place.place_key })?.name;
+  const station = placeTitle(place.place_key, airportName);
   return (
     <div
       data-testid="live-map-detail"
-      className="flex max-h-40 flex-col gap-1 overflow-y-auto text-sm text-gray-900"
+      className="max-h-48 overflow-y-auto text-sm text-gray-900"
     >
-      <p className="text-base font-semibold" data-testid="live-map-station">
-        {place.place_key}
-      </p>
-      {airportName ? <p>{airportName}</p> : null}
-      <p className="text-xs font-medium">{LIVE_MAP_TAC}</p>
-      <pre
-        className="overflow-y-auto whitespace-pre-wrap font-mono text-xs"
-        data-testid="live-map-tac"
+      <div
+        data-testid="live-map-card"
+        data-layout={layout}
+        className={
+          layout === 'side' ? 'flex flex-row items-start gap-3' : 'flex flex-col gap-2'
+        }
+        onClick={(event) => {
+          event.stopPropagation();
+          onLoad?.(report.tac);
+        }}
       >
-        {report.tac}
-      </pre>
+        <div className="flex min-w-0 flex-1 flex-col gap-1">
+          <p className="text-base font-semibold" data-testid="live-map-product">
+            {productLabel(place.product)}
+          </p>
+          <p data-testid="live-map-issued">{formatObservedAt(report.observed_at)}</p>
+          <p className="font-medium" data-testid="live-map-station">
+            {station}
+          </p>
+          {place.reports.length > 1 ? (
+            <div className="flex gap-2">
+              <button
+                type="button"
+                className="text-xs underline"
+                data-testid="live-map-newer"
+                onClick={(event) => {
+                  event.stopPropagation();
+                  setIndex((current) => Math.max(0, current - 1));
+                }}
+              >
+                {LIVE_MAP_NEWER}
+              </button>
+              <button
+                type="button"
+                className="text-xs underline"
+                data-testid="live-map-earlier"
+                onClick={(event) => {
+                  event.stopPropagation();
+                  setIndex((current) =>
+                    Math.min(place.reports.length - 1, current + 1),
+                  );
+                }}
+              >
+                {LIVE_MAP_EARLIER}
+              </button>
+            </div>
+          ) : null}
+        </div>
+        <div className="flex min-w-0 flex-1 flex-col gap-1">
+          <p className="text-xs font-medium">{LIVE_MAP_TAC}</p>
+          <pre
+            className="max-h-32 overflow-y-auto whitespace-pre-wrap font-mono text-xs"
+            data-testid="live-map-tac"
+          >
+            {report.tac}
+          </pre>
+        </div>
+      </div>
     </div>
   );
 }
@@ -191,7 +299,14 @@ export function StationPopup({ place }: { place: LivePlace }) {
  * @example
  * const _ = true;
  */
-function showPopup(layer: L.Layer, place: LivePlace, roots: Root[], map: L.Map) {
+function showPopup(
+  layer: L.Layer,
+  place: LivePlace,
+  roots: Root[],
+  map: L.Map,
+  onShowing: (tac: string) => void,
+  onLoad: (tac: string) => void,
+) {
   if (place.reports.length === 0) {
     return;
   }
@@ -204,7 +319,14 @@ function showPopup(layer: L.Layer, place: LivePlace, roots: Root[], map: L.Map) 
   const node = document.createElement('div');
   const root = createRoot(node);
   flushSync(() => {
-    root.render(<StationPopup place={place} />);
+    root.render(
+      <StationPopup
+        place={place}
+        layout={cardLayout(map.getSize().x)}
+        onShowing={onShowing}
+        onLoad={onLoad}
+      />,
+    );
   });
   roots.push(root);
   const width = popupWidth(map.getSize().x);
@@ -241,17 +363,36 @@ export function LiveWorldMap({
     openPlaceRef.current = onOpenPlace;
   }, [onOpenPlace]);
   const [off, setOff] = useState<ReadonlySet<string>>(new Set());
+  const [country, setCountry] = useState('all');
+  const [region, setRegion] = useState('all');
+  const [timePreset, setTimePreset] = useState<MapTimePreset>('all');
+  const [phenomena, setPhenomena] = useState<ReadonlySet<string>>(new Set());
   const [bounds, setBounds] = useState<MapBounds | null>(null);
   const [places, setPlaces] = useState<LivePlace[]>([]);
   const [error, setError] = useState('');
   const [phase, setPhase] = useState<'loading' | 'ready' | 'refreshing'>('loading');
   const [refreshTick, setRefreshTick] = useState(0);
   const products = selectedLayerQuery(off);
-  const visible = bounds && products ? places : EMPTY_PLACES;
+  const loaded = bounds && products ? places : EMPTY_PLACES;
+  const countries = [
+    ...new Set(
+      loaded
+        .map((place) => airports.findWhere({ icao: place.place_key })?.country)
+        .filter((name): name is string => Boolean(name)),
+    ),
+  ].sort((left, right) => left.localeCompare(right));
+  const visible = filterPlaces(loaded, {
+    country,
+    region,
+    time: timePreset,
+    phenomena,
+    countryOf: (placeKey) => airports.findWhere({ icao: placeKey })?.country,
+    regionOf: (latitude, longitude) => placeRegion(latitude, longitude),
+  });
   const message = products ? error : '';
   const status = !products
     ? LIVE_MAP_LAYERS_OFF
-    : viewStatus(places, phase === 'loading', phase === 'refreshing');
+    : viewStatus(visible, phase === 'loading', phase === 'refreshing');
 
   useEffect(() => {
     const map = mapRef.current;
@@ -273,26 +414,96 @@ export function LiveWorldMap({
     const roots: Root[] = [];
     const layers: L.Layer[] = [];
     let focused = false;
+    const cohorts = new Map<string, LivePlace[]>();
     visible.forEach((place) => {
-      const layer = drawPlace(map, place);
-      const open = (fromUser: boolean) => {
-        showPopup(layer, place, roots, map);
-        if (fromUser && place.reports[0]?.tac) {
-          openPlaceRef.current?.(place);
+      if (drawForPlace(place).kind !== 'point') {
+        return;
+      }
+      const key = `${place.latitude.toFixed(3)},${place.longitude.toFixed(3)}`;
+      const group = cohorts.get(key) ?? [];
+      group.push(place);
+      cohorts.set(key, group);
+    });
+    visible.forEach((place) => {
+      const draw = drawForPlace(place);
+      const key = `${place.latitude.toFixed(3)},${place.longitude.toFixed(3)}`;
+      const group = cohorts.get(key) ?? [];
+      const slot = Math.max(0, group.indexOf(place));
+      const nudge = pointNudge(slot, group.length);
+      const moved = nudge.latitude !== 0 || nudge.longitude !== 0;
+      const at: [number, number] | undefined =
+        draw.kind === 'point' && (moved || place.reports.length > 1 || group.length > 1)
+          ? [draw.latitude + nudge.latitude, draw.longitude + nudge.longitude]
+          : undefined;
+      const layer = drawPlace(map, place, at);
+      if (at && place.reports.length > 1) {
+        place.reports.slice(1).forEach((_, reportIndex) => {
+          layers.push(
+            L.circleMarker(at, {
+              radius: 4,
+              ...shapePaint(place.product),
+              fillOpacity: copyOpacity(reportIndex + 1),
+            }).addTo(map),
+          );
+        });
+      }
+      if (at && group.length > 1) {
+        layers.push(
+          L.marker(at, {
+            interactive: false,
+            keyboard: false,
+            icon: L.divIcon({
+              className: 'live-map-type-chip',
+              html: productLabel(place.product),
+              iconSize: [72, 18],
+            }),
+          }).addTo(map),
+        );
+      }
+      let cardOpen = false;
+      let showingTac = place.reports[0]?.tac ?? '';
+      const remember = (tac: string) => {
+        showingTac = tac;
+      };
+      const loadShowing = (tac: string) => {
+        showingTac = tac;
+        openPlaceRef.current?.(placeShowingReport(place, tac));
+      };
+      const reveal = () => {
+        showPopup(layer, place, roots, map, remember, loadShowing);
+        if (place.reports.length > 0) {
+          cardOpen = true;
         }
       };
+      layer.on('mouseover', () => {
+        paintHover(layer, place, true);
+        if (!cardOpen) {
+          reveal();
+        }
+      });
+      layer.on('mouseout', () => {
+        paintHover(layer, place, false);
+      });
       layer.on('click', () => {
-        open(true);
+        if (cardOpen) {
+          loadShowing(showingTac);
+        } else {
+          reveal();
+        }
       });
       layer.on('keydown', (event) => {
         openOnKey(event, () => {
-          open(true);
+          if (cardOpen) {
+            loadShowing(showingTac);
+          } else {
+            reveal();
+          }
         });
       });
       nameLayer(layer, `${place.place_key} ${productLabel(place.product)}`);
       if (!focused && focusStation && place.place_key === focusStation) {
         focused = true;
-        open(false);
+        reveal();
       }
       layers.push(layer);
     });
@@ -407,12 +618,97 @@ export function LiveWorldMap({
                   setOff(next);
                 }}
               />
+              <span
+                aria-hidden="true"
+                data-testid={`swatch-${product}`}
+                className="inline-block h-3 w-3 rounded-sm border border-white"
+                style={{ backgroundColor: pinColor(product) }}
+              />
               {productLabel(product)}
             </label>
           ))}
         </div>
       ))}
-      <p className="text-xs text-gray-600 dark:text-gray-300">{LIVE_MAP_SPACE}</p>
+      <div className="flex flex-wrap items-center gap-3">
+        <label className="flex items-center gap-1 text-sm">
+          {LIVE_MAP_FILTER_COUNTRY}
+          <select
+            value={country}
+            data-testid="live-map-country"
+            onChange={(event) => {
+              setCountry(event.target.value);
+            }}
+          >
+            <option value="all">{LIVE_MAP_ALL_COUNTRIES}</option>
+            {countries.map((name) => (
+              <option key={name} value={name}>
+                {name}
+              </option>
+            ))}
+          </select>
+        </label>
+        <label className="flex items-center gap-1 text-sm">
+          {LIVE_MAP_FILTER_REGION}
+          <select
+            value={region}
+            data-testid="live-map-region"
+            onChange={(event) => {
+              setRegion(event.target.value);
+            }}
+          >
+            <option value="all">{LIVE_MAP_ALL_REGIONS}</option>
+            {regionFilterNames().map((name) => (
+              <option key={name} value={name}>
+                {name}
+              </option>
+            ))}
+          </select>
+        </label>
+        <label className="flex items-center gap-1 text-sm">
+          {LIVE_MAP_FILTER_TIME}
+          <select
+            value={timePreset}
+            data-testid="live-map-time"
+            onChange={(event) => {
+              setTimePreset(event.target.value as MapTimePreset);
+            }}
+          >
+            <option value="all">{LIVE_MAP_ALL_TIMES}</option>
+            <option value="1h">{LIVE_MAP_LAST_HOUR}</option>
+            <option value="6h">{LIVE_MAP_LAST_6_HOURS}</option>
+            <option value="24h">{LIVE_MAP_LAST_24_HOURS}</option>
+          </select>
+        </label>
+      </div>
+      <div className="flex flex-wrap items-center gap-3">
+        <span className="text-sm font-medium">{LIVE_MAP_FILTER_PHENOMENON}</span>
+        {LIVE_MAP_PHENOMENA.map((item) => (
+          <label key={item.id} className="flex items-center gap-1 text-sm">
+            <input
+              type="checkbox"
+              checked={phenomena.has(item.id)}
+              data-testid={`phenomenon-${item.id}`}
+              onChange={() => {
+                const next = new Set(phenomena);
+                if (next.has(item.id)) {
+                  next.delete(item.id);
+                } else {
+                  next.add(item.id);
+                }
+                setPhenomena(next);
+              }}
+            />
+            {item.label}
+          </label>
+        ))}
+      </div>
+      <p
+        className="text-xs text-gray-600 dark:text-gray-300"
+        data-testid="live-map-space"
+        style={{ color: spaceWeatherListColor(0) }}
+      >
+        {LIVE_MAP_SPACE}
+      </p>
       {message ? (
         <p
           className="text-sm text-gray-600 dark:text-gray-300"

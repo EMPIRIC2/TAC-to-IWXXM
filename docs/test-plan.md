@@ -6917,3 +6917,33 @@ Engineering quality — multi-language inline documentation bar. H4–H5 **N/A**
 - **Objective**: A guest on the staging frontend loads the map from the staging API.
 - **Pass criteria**: The staging page’s map request hits the staging API and returns `places`. Convert on that API still succeeds.
 
+### TC-F37-007: One layer and one color per product
+
+- **Level**: T0
+- **Objective**: At the closer zoom, METAR, SPECI, TAF, AIRMET, G-AIRMET, SIGMET, volcanic ash, tropical cyclone, and volcano notice are separate layers. Each uses the fixed color in the product row. Turning one checkbox off hides only that product.
+- **Pass criteria**: METAR and SPECI are not the same color. AIRMET and G-AIRMET are not the same color. Hiding G-AIRMET leaves AIRMET visible. The space-weather list color token is cyan. This check does not add a space-weather feed.
+
+### TC-F37-008: Hover card loads the converter
+
+- **Level**: T0 / T2
+- **Objective**: Hover, and a tap on a phone, opens a card with the product, issue time, station or Area, and scrollable TAC. On a wide screen the TAC is beside the metadata. On a narrow screen it is below. The card starts on the newest of three reports. Choosing an earlier copy and clicking the shape or the card loads that copy into the converter. The map list still has only the time and the TAC.
+- **Pass criteria**: The converter receives the TAC of the copy that was showing. Stored IWXXM is not required in the map response.
+
+### TC-F37-009: G-AIRMET product id
+
+- **Level**: T0
+- **Objective**: A row from the G-AIRMET feed is stored as `gairmet`. A domestic AIRMET-path row whose text is a SIGMET stays `sigmet`. `gairmet` is allowed in `products` and is part of the default set. An unknown token is still 400.
+- **Pass criteria**: The map query returns `product` `gairmet` for that feed. A request with `products=gairmet` is 200. A request with an unknown token is 400.
+
+### TC-F37-010: Shared airport and missing station
+
+- **Level**: T0
+- **Objective**: METAR and TAF at the same airport are both clickable. Each dot is offset and has a type chip. A polygon with no airport shows Area on the card.
+- **Pass criteria**: Both products can be selected. The card station line is Area when the report has no airport identifier.
+
+### TC-F37-011: Country, region, time, and hazard phenomenon
+
+- **Level**: T0
+- **Objective**: The loaded view can be narrowed by country, by the existing continent or sub-region, by an issue-time preset, and by hazard phenomenon. The live-map request stays the box and the product ids.
+- **Pass criteria**: A United States station stays and a station in another country hides when United States is chosen. An Area report stays under that country choice. A place outside Europe hides when Europe is chosen. A newest report older than one hour hides when the last hour is chosen. A SIGMET whose text contains TS hides when only IFR is checked, and stays when Thunderstorms is checked. A METAR stays while Thunderstorms is checked. The request URL has no country, region, time, or phenomenon parameter.
+

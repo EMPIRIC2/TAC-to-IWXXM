@@ -3019,16 +3019,19 @@ lint-issue-catalog filters.
 
 **Goal**: A guest sees current aviation weather on Decode visuals, zooms from the world to a station, and opens one report.
 
-**Feature**: F37. EV-globe-live-map. [Corpus: product §F37] [Corpus: journeys]
+**Feature**: F37. EV-map-product-layers deepens EV-globe-live-map. [Corpus: product §F37] [Corpus: journeys]
 
 **Actors**: Guest. Sign-in is not required.
 
 **Steps**:
-1. Open Decode visuals. The screen shows a Beta label, a Leaflet world map, and filters that start on for observations, forecasts, hazards, and advisories.
-2. At the lowest zoom, every cached point and shape is drawn. Space weather is in a list beside the map and has no pin.
-3. Zoom in. The same reports stay individual points or shapes.
-4. Open one report. The newest of three is showing. The panel has the graphic or shape, the TAC, the stored IWXXM, and any lint or validation issues.
-5. Enter a known station identifier. Search, decode, and the map name the same airport.
-6. The browser calls this app’s API only. Convert and validate still answer as they do today.
+1. Open Decode visuals. The screen shows a Beta label, a Leaflet world map, and group headings. Each product has its own checkbox and legend color, including G-AIRMET under Hazards. They start on.
+2. At world zoom, one marker appears per continent that has reports. The next zoom shows sub-regions. A closer zoom draws each station and shape in its product color. Space weather is a list, not a pin.
+3. Hover a shape. The card shows the product, the issue time, and the station, or Area when there is no airport. The TAC is scrollable, to the right on a wide screen and below the metadata on a narrow screen. A control switches among the newest report and two earlier copies. Older copies look faded. The shape highlights.
+4. Click the shape or the card. The converter at the top loads the copy the card is showing.
+5. Where METAR and TAF share an airport, the dots are offset and each has a type chip.
+6. Enter a known station identifier. Search, decode, and the map name the same airport.
+7. Choose a country, a continent or sub-region, and a time preset. Airport reports outside that country disappear. Places outside that region disappear. Places whose newest report is older than the preset disappear. Area reports stay when only the country changes.
+8. Check Thunderstorms. AIRMET, G-AIRMET, and SIGMET whose newest text is not a thunderstorm disappear. METAR, SPECI, TAF, and the advisories stay.
+9. The browser calls this app’s API only. The map request is still the view box and the product ids. Convert and validate still answer as they do today.
 
-**Pass**: T0/T2 for the cache and the page. T3 and H4–H5 when the screen is on staging. Must not break Convert, validate, guest access, or station search.
+**Pass**: T0/T2 for the cache, the layers, and the card. T3 and H4–H5 when the screen is on staging. Must not break Convert, validate, guest access, station search, or continent and sub-region zoom.

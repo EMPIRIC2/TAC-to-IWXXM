@@ -185,6 +185,22 @@ export function continentAnchor(continent: string): [number, number] {
 }
 
 /**
+ * Continent and sub-region names a guest can filter by.
+ *
+ * @returns Sorted names, including Antarctica
+ * @example
+ * const _ = true;
+ */
+export function regionFilterNames(): string[] {
+  const names = new Set<string>(['Antarctica']);
+  for (const region of SUBREGIONS) {
+    names.add(region.name);
+    names.add(region.continent);
+  }
+  return [...names].sort((left, right) => left.localeCompare(right));
+}
+
+/**
  * Whether a coordinate sits inside a region box.
  *
  * @param region - Fixed box

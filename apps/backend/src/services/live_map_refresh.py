@@ -233,7 +233,9 @@ def _product(feed: str, text: str) -> str:
     """
     if feed == "taf":
         return "taf"
-    if feed in {"airsigmet", "gairmet"}:
+    if feed == "gairmet":
+        return "gairmet"
+    if feed == "airsigmet":
         # The domestic feed mixes convective SIGMETs into the AIRMET path.
         words = set(re.findall(r"[A-Z]+", text.upper()))
         if "SIGMET" in words and "AIRMET" not in words:
