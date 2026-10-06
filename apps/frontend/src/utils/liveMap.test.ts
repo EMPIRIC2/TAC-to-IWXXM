@@ -14,6 +14,9 @@ import {
   pinColor,
   popupWidth,
   productLabel,
+  shapePaint,
+  SPACE_WEATHER_LIST_COLOR,
+  spaceWeatherListColor,
   selectedLayerQuery,
   viewById,
   viewStatus,
@@ -56,18 +59,36 @@ describe('live map helpers', () => {
     expect(layerQuery('forecasts', new Set())).toBe('taf');
     expect(layerQuery('observations', new Set(['metar', 'speci']))).toBe('');
     expect(selectedLayerQuery(new Set())).toContain('metar');
+    expect(selectedLayerQuery(new Set())).toContain('gairmet');
     expect(selectedLayerQuery(new Set())).toContain('vona');
     expect(selectedLayerQuery(new Set(['metar']))).not.toContain('metar,');
+    expect(viewById('hazards').products).toEqual(['airmet', 'gairmet', 'sigmet']);
+    expect(layerQuery('hazards', new Set(['gairmet']))).toBe('airmet,sigmet');
   });
 
   it('names layers, times, and the current view', () => {
+    expect(pinColor('metar')).toBe('#1d4ed8');
+    expect(pinColor('speci')).toBe('#0369a1');
     expect(pinColor('taf')).toBe('#0f766e');
     expect(pinColor('airmet')).toBe('#c2410c');
-    expect(pinColor('sigmet')).toBe('#c2410c');
+    expect(pinColor('gairmet')).toBe('#a16207');
+    expect(pinColor('sigmet')).toBe('#b91c1c');
     expect(pinColor('vaa')).toBe('#6d28d9');
-    expect(pinColor('tca')).toBe('#6d28d9');
-    expect(pinColor('vona')).toBe('#6d28d9');
-    expect(pinColor('metar')).toBe('#1d4ed8');
+    expect(pinColor('tca')).toBe('#be185d');
+    expect(pinColor('vona')).toBe('#4338ca');
+    expect(pinColor('metar')).not.toBe(pinColor('speci'));
+    expect(pinColor('airmet')).not.toBe(pinColor('gairmet'));
+    expect(pinColor('other')).toBe('#1d4ed8');
+    expect(shapePaint('sigmet')).toEqual({
+      color: '#ffffff',
+      weight: 2,
+      fillColor: '#b91c1c',
+      fillOpacity: 0.45,
+    });
+    expect(SPACE_WEATHER_LIST_COLOR).toBe('#0e7490');
+    expect(spaceWeatherListColor(1)).toBe('#0e7490');
+    expect(spaceWeatherListColor(0)).toBeUndefined();
+    expect(productLabel('gairmet')).toBe('G-AIRMET');
     expect(productLabel('vaa')).toBe('Volcanic ash');
     expect(productLabel('other')).toBe('OTHER');
     expect(placeTitle('KJFK', 'Kennedy')).toBe('Kennedy');

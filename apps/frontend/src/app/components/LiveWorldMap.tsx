@@ -30,6 +30,8 @@ import {
   popupWidth,
   productLabel,
   selectedLayerQuery,
+  shapePaint,
+  spaceWeatherListColor,
   viewStatus,
   type LivePlace,
   type MapBounds,
@@ -111,23 +113,22 @@ function pointOf(place: LivePlace): [number, number] {
  */
 function drawPlace(map: L.Map, place: LivePlace): L.Layer {
   const draw = drawForPlace(place);
+  const paint = shapePaint(place.product);
   if (draw.kind === 'polygon') {
-    return L.polygon(draw.positions).addTo(map);
+    return L.polygon(draw.positions, paint).addTo(map);
   }
   if (draw.kind === 'line') {
-    return L.polyline(draw.positions).addTo(map);
+    return L.polyline(draw.positions, { color: paint.fillColor, weight: 3 }).addTo(map);
   }
   if (draw.kind === 'circle') {
-    return L.circle([draw.latitude, draw.longitude], { radius: draw.radiusM }).addTo(
-      map,
-    );
+    return L.circle([draw.latitude, draw.longitude], {
+      ...paint,
+      radius: draw.radiusM,
+    }).addTo(map);
   }
-  const color = pinColor(place.product);
   return L.circleMarker([draw.latitude, draw.longitude], {
     radius: 6,
-    color: '#ffffff',
-    weight: 2,
-    fillColor: color,
+    ...paint,
     fillOpacity: 1,
   }).addTo(map);
 }
@@ -407,12 +408,24 @@ export function LiveWorldMap({
                   setOff(next);
                 }}
               />
+              <span
+                aria-hidden="true"
+                data-testid={`swatch-${product}`}
+                className="inline-block h-3 w-3 rounded-sm border border-white"
+                style={{ backgroundColor: pinColor(product) }}
+              />
               {productLabel(product)}
             </label>
           ))}
         </div>
       ))}
-      <p className="text-xs text-gray-600 dark:text-gray-300">{LIVE_MAP_SPACE}</p>
+      <p
+        className="text-xs text-gray-600 dark:text-gray-300"
+        data-testid="live-map-space"
+        style={{ color: spaceWeatherListColor(0) }}
+      >
+        {LIVE_MAP_SPACE}
+      </p>
       {message ? (
         <p
           className="text-sm text-gray-600 dark:text-gray-300"

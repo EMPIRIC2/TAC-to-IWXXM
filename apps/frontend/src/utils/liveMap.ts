@@ -74,11 +74,27 @@ const PRODUCT_LABELS: Record<string, string> = {
   speci: 'SPECI',
   taf: 'TAF',
   airmet: 'AIRMET',
+  gairmet: 'G-AIRMET',
   sigmet: 'SIGMET',
   vaa: 'Volcanic ash',
   tca: 'Tropical cyclone',
   vona: 'Volcano notice',
 };
+
+const PRODUCT_COLORS: Record<string, string> = {
+  metar: '#1d4ed8',
+  speci: '#0369a1',
+  taf: '#0f766e',
+  airmet: '#c2410c',
+  gairmet: '#a16207',
+  sigmet: '#b91c1c',
+  vaa: '#6d28d9',
+  tca: '#be185d',
+  vona: '#4338ca',
+};
+
+/** Cyan for the space-weather list when that list has rows. Not a map pin. */
+export const SPACE_WEATHER_LIST_COLOR = '#0e7490';
 
 const MONTHS = [
   'Jan',
@@ -108,7 +124,7 @@ export function productLabel(product: string): string {
 }
 
 /**
- * Pin color for a product family.
+ * Pin color for one product.
  *
  * @param product - Layer id
  * @returns CSS color
@@ -116,16 +132,44 @@ export function productLabel(product: string): string {
  * const _ = true;
  */
 export function pinColor(product: string): string {
-  if (product === 'taf') {
-    return '#0f766e';
+  return PRODUCT_COLORS[product] ?? '#1d4ed8';
+}
+
+/**
+ * Fill and outline for a product shape. The outline stays white so it is not the fill.
+ *
+ * @param product - Layer id
+ * @returns Leaflet path options
+ * @example
+ * const _ = true;
+ */
+export function shapePaint(product: string): {
+  color: string;
+  weight: number;
+  fillColor: string;
+  fillOpacity: number;
+} {
+  return {
+    color: '#ffffff',
+    weight: 2,
+    fillColor: pinColor(product),
+    fillOpacity: 0.45,
+  };
+}
+
+/**
+ * List color when space-weather rows exist. An empty list keeps the surrounding text color.
+ *
+ * @param rowCount - Rows in the side list
+ * @returns Cyan, or undefined when the list is empty
+ * @example
+ * const _ = true;
+ */
+export function spaceWeatherListColor(rowCount: number): string | undefined {
+  if (rowCount > 0) {
+    return SPACE_WEATHER_LIST_COLOR;
   }
-  if (product === 'airmet' || product === 'sigmet') {
-    return '#c2410c';
-  }
-  if (product === 'vaa' || product === 'tca' || product === 'vona') {
-    return '#6d28d9';
-  }
-  return '#1d4ed8';
+  return undefined;
 }
 
 /**
@@ -314,7 +358,7 @@ export function boundsOf(map: {
 export const LIVE_MAP_VIEWS = [
   { id: 'observations', label: 'Observations', products: ['metar', 'speci'] },
   { id: 'forecasts', label: 'Forecasts', products: ['taf'] },
-  { id: 'hazards', label: 'Hazards', products: ['airmet', 'sigmet'] },
+  { id: 'hazards', label: 'Hazards', products: ['airmet', 'gairmet', 'sigmet'] },
   { id: 'advisories', label: 'Advisories', products: ['vaa', 'tca', 'vona'] },
 ] as const;
 
@@ -323,6 +367,7 @@ const PRODUCT_FORM: Record<string, string> = {
   speci: 'SPECI',
   taf: 'TAF',
   airmet: 'AIRMET',
+  gairmet: 'AIRMET',
   sigmet: 'SIGMET',
   vaa: 'VAA',
   tca: 'TCA',
