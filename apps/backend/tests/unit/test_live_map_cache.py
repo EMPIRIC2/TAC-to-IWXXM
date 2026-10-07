@@ -23,11 +23,16 @@ from src.services.live_map_cache import (
 @pytest.fixture(autouse=True)
 def _freeze_live_map_clock(monkeypatch: pytest.MonkeyPatch) -> None:
     """Keep fixture stamps from 2026-10-03 inside the 24-hour share window."""
-    monkeypatch.setattr(
-        live_map_cache_mod,
-        "_utc_now",
-        lambda: datetime(2026, 10, 3, 18, 0, tzinfo=UTC),
-    )
+    frozen = datetime(2026, 10, 3, 18, 0, tzinfo=UTC)
+
+    class _FrozenDateTime(datetime):
+        @classmethod
+        def now(cls, tz: object = None) -> datetime:
+            if tz is None:
+                return frozen.replace(tzinfo=None)
+            return frozen.astimezone(tz)  # type: ignore[arg-type]
+
+    monkeypatch.setattr(live_map_cache_mod, "datetime", _FrozenDateTime)
 
 
 def _cache() -> LiveMapCache:
@@ -55,6 +60,16 @@ def _report(
         iwxxm=iwxxm,
         issues=issues,
     )
+
+
+def test_retention_cutoff_rejects_naive_now() -> None:
+    with pytest.raises(ValueError, match="timezone"):
+        live_map_cache_mod.retention_cutoff(now=datetime(2026, 10, 3, 12, 0))
+
+
+def test_utc_now_uses_frozen_clock() -> None:
+    stamp = live_map_cache_mod._utc_now()
+    assert stamp == datetime(2026, 10, 3, 18, 0, tzinfo=UTC)
 
 
 def test_store_rejects_and_query_omits_reports_older_than_24h() -> None:

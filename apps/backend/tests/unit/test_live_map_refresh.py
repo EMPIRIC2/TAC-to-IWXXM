@@ -24,11 +24,16 @@ from src.services.live_map_refresh import (
 
 @pytest.fixture(autouse=True)
 def _freeze_live_map_clock(monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setattr(
-        live_map_cache_mod,
-        "_utc_now",
-        lambda: datetime(2026, 10, 3, 18, 0, tzinfo=UTC),
-    )
+    frozen = datetime(2026, 10, 3, 18, 0, tzinfo=UTC)
+
+    class _FrozenDateTime(datetime):
+        @classmethod
+        def now(cls, tz: object = None) -> datetime:
+            if tz is None:
+                return frozen.replace(tzinfo=None)
+            return frozen.astimezone(tz)  # type: ignore[arg-type]
+
+    monkeypatch.setattr(live_map_cache_mod, "datetime", _FrozenDateTime)
 
 
 def _cache() -> LiveMapCache:
@@ -45,6 +50,13 @@ def _row(**overrides: object) -> dict[str, object]:
     }
     row.update(overrides)
     return row
+
+
+def test_observed_at_accepts_unix_seconds() -> None:
+    from src.services.live_map_refresh import _observed_at
+
+    assert _observed_at(1_700_000_000) == datetime.fromtimestamp(1_700_000_000, UTC)
+    assert _observed_at(1_700_000_000.5) == datetime.fromtimestamp(1_700_000_000.5, UTC)
 
 
 def test_feed_rows_keep_metar_and_speci_and_drop_the_rest() -> None:
