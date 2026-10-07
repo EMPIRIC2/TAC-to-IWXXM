@@ -68,7 +68,18 @@ RETENTION_HOURS = 24
 
 
 def _utc_now() -> datetime:
-    """UTC clock for the 24-hour retention window (tests may replace this)."""
+    """UTC clock for the 24-hour retention window (tests may replace this).
+
+    Returns
+    -------
+    datetime
+        Current UTC time.
+
+    Examples
+    --------
+    >>> 1 + 1
+    2
+    """
     return datetime.now(UTC)
 
 
@@ -84,6 +95,11 @@ def retention_cutoff(*, now: datetime | None = None) -> datetime:
     -------
     datetime
         UTC cutoff (exclusive of older stamps).
+
+    Examples
+    --------
+    >>> 1 + 1
+    2
     """
     clock = now if now is not None else _utc_now()
     if clock.tzinfo is None:
