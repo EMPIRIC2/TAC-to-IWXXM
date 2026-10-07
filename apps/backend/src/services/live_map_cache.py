@@ -1,8 +1,8 @@
 """In-process cache of the last three live TAC reports per place.
 
-The refresh stores every fetched location. Translation of at most 40 reports
-happens after the rows are stored. One API replica shares this cache. A second
-refresh is skipped while one is running.
+The refresh stores every fetched location inside a rolling 24-hour window.
+Translation of at most 40 reports happens after the rows are stored. One API
+replica shares this cache. A second refresh is skipped while one is running.
 """
 
 from __future__ import annotations
@@ -10,7 +10,7 @@ from __future__ import annotations
 import json
 import os
 from dataclasses import dataclass, field
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 from typing import TypedDict, cast
 
 from sqlalchemy import (
@@ -64,6 +64,31 @@ live_map_reports = Table(
 )
 
 _KEEP = 3
+RETENTION_HOURS = 24
+
+
+def _utc_now() -> datetime:
+    """UTC clock for the 24-hour retention window (tests may replace this)."""
+    return datetime.now(UTC)
+
+
+def retention_cutoff(*, now: datetime | None = None) -> datetime:
+    """Earliest ``observed_at`` still kept for pull, store, and share.
+
+    Parameters
+    ----------
+    now : datetime | None
+        Clock. Default is ``_utc_now()``.
+
+    Returns
+    -------
+    datetime
+        UTC cutoff (exclusive of older stamps).
+    """
+    clock = now if now is not None else _utc_now()
+    if clock.tzinfo is None:
+        raise ValueError("now needs a timezone")
+    return clock.astimezone(UTC) - timedelta(hours=RETENTION_HOURS)
 
 
 @dataclass(frozen=True)
@@ -234,7 +259,10 @@ class LiveMapCache:
         return str(row[0])
 
     def store(self, report: LiveMapReport) -> None:
-        """Keep the newest three observations for this place and product.
+        """Keep the newest three in-window observations for this place and product.
+
+        Reports older than :data:`RETENTION_HOURS` are ignored. A successful
+        write also deletes any stored rows outside that window.
 
         Parameters
         ----------
@@ -246,7 +274,10 @@ class LiveMapCache:
         >>> 1 + 1
         2
         """
+        if report.observed_at.astimezone(UTC) < retention_cutoff():
+            return
         stamp = _stamp(report.observed_at)
+        cutoff_stamp = _stamp(retention_cutoff())
         with self._engine.begin() as conn:
             existing = conn.execute(
                 select(_tac, _iwxxm, _issues_json, _translation_status).where(
@@ -301,6 +332,7 @@ class LiveMapCache:
             extra = [row[0] for row in ids[_KEEP:]]
             if extra:
                 conn.execute(delete(live_map_reports).where(_id.in_(extra)))
+            conn.execute(delete(live_map_reports).where(_observed_at < cutoff_stamp))
 
     def set_translation(
         self,
@@ -351,7 +383,7 @@ class LiveMapCache:
         north: float,
         products: set[str],
     ) -> list[_PlaceJson]:
-        """Return up to three reports for each place inside the box.
+        """Return up to three in-window reports for each place inside the box.
 
         Parameters
         ----------
@@ -369,7 +401,8 @@ class LiveMapCache:
         Returns
         -------
         list[_PlaceJson]
-            Places inside the box, newest report first.
+            Places inside the box, newest report first. Reports older than
+            :data:`RETENTION_HOURS` are omitted.
 
         Examples
         --------
@@ -378,6 +411,7 @@ class LiveMapCache:
         """
         if not products:
             return []
+        cutoff_stamp = _stamp(retention_cutoff())
         with self._engine.connect() as conn:
             rows = conn.execute(
                 select(
@@ -401,6 +435,7 @@ class LiveMapCache:
                     _latitude <= north,
                     _longitude >= west,
                     _longitude <= east,
+                    _observed_at >= cutoff_stamp,
                 )
                 .order_by(
                     _place_key,

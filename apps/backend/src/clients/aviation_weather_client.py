@@ -368,7 +368,7 @@ class AviationWeatherClient:
         for path in ("metar", "taf", "airsigmet", "isigmet", "gairmet"):
             params: dict[str, str] = {"bbox": bbox_str, "format": "json"}
             if path == "metar":
-                params["hours"] = "2"
+                params["hours"] = "24"
             try:
                 response = await self._client.get(
                     f"{self.BASE_URL}/{path}",

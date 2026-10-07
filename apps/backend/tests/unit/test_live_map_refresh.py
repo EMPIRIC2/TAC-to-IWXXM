@@ -3,9 +3,11 @@
 from __future__ import annotations
 
 import asyncio
+from datetime import UTC, datetime
 
 import pytest
 from src.services import database
+from src.services import live_map_cache as live_map_cache_mod
 from src.services.live_map_cache import LiveMapCache, engine_for_url
 from src.services.live_map_refresh import (
     fetch_bbox,
@@ -20,6 +22,15 @@ from src.services.live_map_refresh import (
 )
 
 
+@pytest.fixture(autouse=True)
+def _freeze_live_map_clock(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(
+        live_map_cache_mod,
+        "_utc_now",
+        lambda: datetime(2026, 10, 3, 18, 0, tzinfo=UTC),
+    )
+
+
 def _cache() -> LiveMapCache:
     return LiveMapCache(engine_for_url(None))
 
@@ -30,7 +41,7 @@ def _row(**overrides: object) -> dict[str, object]:
         "rawOb": "METAR KJFK 031200Z 18012KT 10SM FEW040 15/07 A3005=",
         "lat": 40.64,
         "lon": -73.78,
-        "obsTime": 1_700_000_000,
+        "obsTime": "2026-10-03T12:00:00Z",
     }
     row.update(overrides)
     return row
@@ -60,7 +71,7 @@ def test_feed_rows_keep_metar_and_speci_and_drop_the_rest() -> None:
                 "raw_text": "METAR KORD 031200Z 18010KT",
                 "latitude": 41.97,
                 "longitude": -87.9,
-                "reportTime": 1_700_000_100,
+                "reportTime": "2026-10-03T12:01:40Z",
             },
             _row(icaoId="XX", rawOb="METAR XX"),
             _row(icaoId="KDEN", rawOb="  "),
@@ -205,7 +216,7 @@ def test_polygon_rows_keep_a_centroid_and_station_rows_stay_points() -> None:
                 "rawTAF": "TAF KJFK 031200Z 0312/0412 18010KT",
                 "lat": 40.64,
                 "lon": -73.78,
-                "issueTime": 1_700_000_000,
+                "issueTime": "2026-10-03T12:00:00Z",
             },
             {
                 "_feed": "airsigmet",

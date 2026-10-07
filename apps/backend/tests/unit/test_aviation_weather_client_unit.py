@@ -239,6 +239,7 @@ async def test_fetch_map_rows_tags_each_feed_and_skips_empty() -> None:
             assert "hours" not in params
             return _DummyResponse("", status_code=204)
         if url.endswith("/metar"):
+            assert params["hours"] == "24"
             return _DummyResponse(
                 "[]",
                 status_code=200,

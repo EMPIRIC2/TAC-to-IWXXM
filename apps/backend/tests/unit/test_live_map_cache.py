@@ -9,6 +9,7 @@ import pytest
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 from src.routers.live_map import get_live_map_cache, router, set_live_map_cache
+from src.services import live_map_cache as live_map_cache_mod
 from src.services.live_map_cache import (
     LiveMapCache,
     LiveMapReport,
@@ -17,6 +18,16 @@ from src.services.live_map_cache import (
     engine_for_url,
     live_map_reports,
 )
+
+
+@pytest.fixture(autouse=True)
+def _freeze_live_map_clock(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Keep fixture stamps from 2026-10-03 inside the 24-hour share window."""
+    monkeypatch.setattr(
+        live_map_cache_mod,
+        "_utc_now",
+        lambda: datetime(2026, 10, 3, 18, 0, tzinfo=UTC),
+    )
 
 
 def _cache() -> LiveMapCache:
@@ -44,6 +55,48 @@ def _report(
         iwxxm=iwxxm,
         issues=issues,
     )
+
+
+def test_store_rejects_and_query_omits_reports_older_than_24h() -> None:
+    cache = _cache()
+    old = LiveMapReport(
+        place_key="KJFK",
+        product="metar",
+        observed_at=datetime(2026, 10, 2, 17, 0, tzinfo=UTC),
+        tac="METAR OLD",
+        latitude=40.64,
+        longitude=-73.78,
+    )
+    fresh = _report(minutes=30, tac="METAR FRESH")
+    cache.store(old)
+    cache.store(fresh)
+    places = cache.query(west=-80, south=40, east=-70, north=41, products={"metar"})
+    assert len(places) == 1
+    assert places[0]["reports"][0]["tac"] == "METAR FRESH"
+
+
+def test_store_purges_stale_rows_on_write() -> None:
+    cache = _cache()
+    with cache._engine.begin() as conn:
+        conn.execute(
+            live_map_reports.insert().values(
+                place_key="KJFK",
+                product="metar",
+                observed_at=datetime(2026, 10, 2, 12, 0, tzinfo=UTC).isoformat(),
+                tac="METAR STALE",
+                latitude=40.64,
+                longitude=-73.78,
+                geometry_kind="point",
+                geometry_json=None,
+                radius_m=None,
+                iwxxm=None,
+                issues_json="[]",
+                translation_status="pending",
+            )
+        )
+    cache.store(_report(minutes=5, tac="METAR NEW"))
+    places = cache.query(west=-80, south=40, east=-70, north=41, products={"metar"})
+    assert [item["tac"] for item in places[0]["reports"]] == ["METAR NEW"]
 
 
 def test_naive_time_is_rejected() -> None:

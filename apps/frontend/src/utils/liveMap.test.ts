@@ -304,7 +304,7 @@ describe('live map helpers', () => {
     const base = {
       country: 'all',
       region: 'all',
-      time: 'all' as const,
+      time: 'full' as const,
       phenomena: new Set<string>(),
       now,
       countryOf,
@@ -344,7 +344,9 @@ describe('live map helpers', () => {
       station('sigmet-old', 'sigmet', 'newest', 'SIGMET'),
     ];
     expect(filterPlaces(loaded, base).map((place) => place.place_key)).toEqual(
-      loaded.map((place) => place.place_key),
+      loaded
+        .filter((place) => place.place_key !== 'gairmet-ice')
+        .map((place) => place.place_key),
     );
     expect(
       filterPlaces(loaded, { ...base, country: 'United States' }).map(
@@ -355,7 +357,6 @@ describe('live map helpers', () => {
       'sigmet-1',
       'sigmet-ifr',
       'airmet-turb',
-      'gairmet-ice',
       'sigmet-icing',
       'sigmet-storm',
       'sigmet-vc',
@@ -393,16 +394,25 @@ describe('live map helpers', () => {
       'sigmet-old',
     ]);
     expect(
+      filterPlaces(loaded, { ...base, time: '3h' }).map((place) => place.place_key),
+    ).toContain('sigmet-ifr');
+    expect(
+      filterPlaces(loaded, { ...base, time: '3h' }).map((place) => place.place_key),
+    ).not.toContain('airmet-turb');
+    expect(
       filterPlaces(loaded, { ...base, time: '6h' }).map((place) => place.place_key),
     ).toContain('sigmet-ifr');
     expect(
       filterPlaces(loaded, { ...base, time: '6h' }).map((place) => place.place_key),
     ).not.toContain('airmet-turb');
     expect(
-      filterPlaces(loaded, { ...base, time: '24h' }).map((place) => place.place_key),
+      filterPlaces(loaded, { ...base, time: '12h' }).map((place) => place.place_key),
     ).toContain('airmet-turb');
     expect(
-      filterPlaces(loaded, { ...base, time: '24h' }).map((place) => place.place_key),
+      filterPlaces(loaded, { ...base, time: 'full' }).map((place) => place.place_key),
+    ).toContain('airmet-turb');
+    expect(
+      filterPlaces(loaded, { ...base, time: 'full' }).map((place) => place.place_key),
     ).not.toContain('gairmet-ice');
     const storms = filterPlaces(loaded, { ...base, phenomena: new Set(['ts']) });
     expect(storms.map((place) => place.place_key)).toContain('KJFK');
@@ -425,7 +435,12 @@ describe('live map helpers', () => {
       filterPlaces(loaded, { ...base, phenomena: new Set(['ice']) }).map(
         (place) => place.place_key,
       ),
-    ).toEqual(expect.arrayContaining(['gairmet-ice', 'sigmet-icing']));
+    ).toEqual(expect.arrayContaining(['sigmet-icing']));
+    expect(
+      filterPlaces(loaded, { ...base, phenomena: new Set(['ice']) }).map(
+        (place) => place.place_key,
+      ),
+    ).not.toContain('gairmet-ice');
     expect(
       filterPlaces(loaded, { ...base, phenomena: new Set(['ice']) }).map(
         (place) => place.place_key,
