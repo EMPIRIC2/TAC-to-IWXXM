@@ -360,6 +360,8 @@ No new Render secrets required for P0/P1 library fixtures. Redeploy API before c
 | `LIVE_MAP_IMPORT_LIMIT` | `40` | Cap for the API timer only. The map translator finishes every stored report in the current area before the next area |
 | `LIVE_MAP_CACHE_URL` | The product `DATABASE_URL` | Shared by the API and the translator. Unset uses process memory |
 
+**Retention (EV-live-map-24h-window):** pull, store, and `GET /api/v1/live-map` share a fixed **24-hour** window versus UTC now. There is no env override in this cycle. METAR vendor requests use `hours=24`. [Corpus: product §F37] [Corpus: adr/ADR-052]
+
 Staging turns the API timer off and runs `metar-map-translator` at one replica. That Deployment is not a public service. The ingest poller stays at 0 replicas. [Corpus: product §F37] [Corpus: adr/ADR-052]
 
 ## References

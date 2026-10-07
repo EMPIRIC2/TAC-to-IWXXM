@@ -3030,8 +3030,8 @@ lint-issue-catalog filters.
 4. Click the shape or the card. The converter at the top loads the copy the card is showing.
 5. Where METAR and TAF share an airport, the dots are offset and each has a type chip.
 6. Enter a known station identifier. Search, decode, and the map name the same airport.
-7. Choose a country, a continent or sub-region, and a time preset. Airport reports outside that country disappear. Places outside that region disappear. Places whose newest report is older than the preset disappear. Area reports stay when only the country changes.
+7. Choose a country, a continent or sub-region, and an issue-time preset (1h, 3h, 6h, 12h, or full). Airport reports outside that country disappear. Places outside that region disappear. Places whose newest report is older than the preset versus UTC now disappear. Full shows the entire shared 24-hour set. Area reports stay when only the country changes.
 8. Check Thunderstorms. AIRMET, G-AIRMET, and SIGMET whose newest text is not a thunderstorm disappear. METAR, SPECI, TAF, and the advisories stay.
-9. The browser calls this app’s API only. The map request is still the view box and the product ids. Convert and validate still answer as they do today.
+9. The browser calls this app’s API only. The map request is still the view box and the product ids. The API does not return reports older than 24 hours. Convert and validate still answer as they do today.
 
-**Pass**: T0/T2 for the cache, the layers, and the card. T3 and H4–H5 when the screen is on staging. Must not break Convert, validate, guest access, station search, or continent and sub-region zoom.
+**Pass**: T0/T2 for the cache, the layers, the 24-hour share window, and the card. T3 and H4–H5 when the screen is on staging. Must not break Convert, validate, guest access, station search, or continent and sub-region zoom.
