@@ -1423,11 +1423,13 @@ GET /api/v1/live-map?west=&south=&east=&north=&products=
 }
 ```
 
-- `reports` has at most three items. The newest is first. Each item on this route is `observed_at` and `tac`. Stored IWXXM and issue notes stay in the cache and stay off this list.
+- `reports` has at most three items from the last **24 hours** (UTC now). The newest is first. Each item on this route is `observed_at` and `tac`. Stored IWXXM and issue notes stay in the cache and stay off this list.
 - `product` is one id: `metar`, `speci`, `taf`, `airmet`, `gairmet`, `sigmet`, `vaa`, `tca`, or `vona`.
 - `geometry.kind` is `point`, `polygon`, `line`, or `circle`. A polygon or line includes `coordinates`. A circle includes `radius_m`.
 - `space_weather` is the list of current products with no surface location. Those rows are never in `places`.
 
 **Amend (EV-map-product-layers)**: `gairmet` joins the allowed set and the default. Rows from the G-AIRMET feed use that id. A domestic row whose text is a SIGMET stays `sigmet`. The page groups ids under Observations, Forecasts, Hazards, and Advisories. Those group names are not query parameters. Hazards includes `airmet`, `gairmet`, and `sigmet`. Country, region, issue time, and hazard phenomenon are chosen in the browser from the places already returned. They are not query parameters. [Corpus: product §F37] [Corpus: api]
+
+**Amend (EV-live-map-24h-window)**: Every `observed_at` on this route is within the last 24 hours of UTC now. Places with no remaining in-window reports are omitted. Query parameters are unchanged. Client-only presets (1h / 3h / 6h / 12h / full) further narrow the loaded view and are not query parameters. [Corpus: product §F37] [Corpus: api] [Corpus: adr/ADR-052]
 
 The route reads the cache. It does not call a vendor during the request.

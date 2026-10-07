@@ -23,7 +23,6 @@ import {
   formatObservedAt,
   LIVE_MAP_ALL_COUNTRIES,
   LIVE_MAP_ALL_REGIONS,
-  LIVE_MAP_ALL_TIMES,
   LIVE_MAP_CANVAS,
   LIVE_MAP_EARLIER,
   LIVE_MAP_ERROR,
@@ -31,7 +30,9 @@ import {
   LIVE_MAP_FILTER_PHENOMENON,
   LIVE_MAP_FILTER_REGION,
   LIVE_MAP_FILTER_TIME,
-  LIVE_MAP_LAST_24_HOURS,
+  LIVE_MAP_FULL_WINDOW,
+  LIVE_MAP_LAST_12_HOURS,
+  LIVE_MAP_LAST_3_HOURS,
   LIVE_MAP_LAST_6_HOURS,
   LIVE_MAP_LAST_HOUR,
   LIVE_MAP_LAYERS_OFF,
@@ -370,7 +371,7 @@ export function LiveWorldMap({
   const [off, setOff] = useState<ReadonlySet<string>>(new Set());
   const [country, setCountry] = useState('all');
   const [region, setRegion] = useState('all');
-  const [timePreset, setTimePreset] = useState<MapTimePreset>('all');
+  const [timePreset, setTimePreset] = useState<MapTimePreset>('full');
   const [phenomena, setPhenomena] = useState<ReadonlySet<string>>(new Set());
   const [bounds, setBounds] = useState<MapBounds | null>(null);
   const [zoom, setZoom] = useState(2);
@@ -702,10 +703,11 @@ export function LiveWorldMap({
                 setTimePreset(event.target.value as MapTimePreset);
               }}
             >
-              <option value="all">{LIVE_MAP_ALL_TIMES}</option>
               <option value="1h">{LIVE_MAP_LAST_HOUR}</option>
+              <option value="3h">{LIVE_MAP_LAST_3_HOURS}</option>
               <option value="6h">{LIVE_MAP_LAST_6_HOURS}</option>
-              <option value="24h">{LIVE_MAP_LAST_24_HOURS}</option>
+              <option value="12h">{LIVE_MAP_LAST_12_HOURS}</option>
+              <option value="full">{LIVE_MAP_FULL_WINDOW}</option>
             </select>
           </label>
         </div>

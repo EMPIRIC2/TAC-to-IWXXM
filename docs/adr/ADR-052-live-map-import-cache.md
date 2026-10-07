@@ -63,5 +63,15 @@ The operator asked to narrow the same map by country, region, issue time, and ha
 1. These filters run in the browser on the places already returned for the current view. `GET /api/v1/live-map` stays `west`, `south`, `east`, `north`, and `products`.
 2. Country uses the existing airport table. It applies to ICAO stations. Area reports stay when a country is chosen.
 3. Region uses the continent and sub-region names already used for zoom markers, matched from the stored coordinate. Zoom markers stay. Clicking one still only zooms.
-4. Time presets are All, last hour, last 6 hours, and last 24 hours, compared with the newest report. A time that cannot be read stays visible.
+4. Time presets are last hour, last 3 hours, last 6 hours, last 12 hours, and full (24 hours), compared with UTC now. A time that cannot be read stays visible. Unbounded All is removed.
 5. Phenomenon checkboxes are IFR, Turbulence, Icing, and Thunderstorms. They apply only to AIRMET, G-AIRMET, and SIGMET. Other products stay. There is no flight information region list and no custom from/to time.
+
+## Amend — EV-live-map-24h-window (2026-10-07)
+
+The operator asked to pull, store, and share only the latest 24 hours, then filter that set in the browser. [Corpus: product §F37]
+
+1. Vendor ingest and cache upsert reject reports whose `observed_at` is older than 24 hours from UTC now. METAR vendor requests use `hours=24`. Other feeds keep their current request shape; age is enforced on ingest.
+2. The cache deletes rows older than 24 hours on the refresh/upsert path. At most three copies per place and product remain inside that window.
+3. `GET /api/v1/live-map` omits reports older than 24 hours (and places left with no reports). Query parameters stay `west`, `south`, `east`, `north`, and `products`.
+4. Browser issue-time presets are 1h, 3h, 6h, 12h, and full. Full means the entire shared 24-hour set. The default is full. Age uses UTC now.
+5. Convert and validate response bodies stay as they are. Staging is the ship target. Do not promote to production.

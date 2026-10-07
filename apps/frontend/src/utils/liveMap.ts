@@ -69,10 +69,11 @@ export const LIVE_MAP_EARLIER = 'Earlier copy';
 export const LIVE_MAP_NEWER = 'Newer copy';
 export const LIVE_MAP_ALL_COUNTRIES = 'All countries';
 export const LIVE_MAP_ALL_REGIONS = 'All regions';
-export const LIVE_MAP_ALL_TIMES = 'All times';
 export const LIVE_MAP_LAST_HOUR = 'Last hour';
+export const LIVE_MAP_LAST_3_HOURS = 'Last 3 hours';
 export const LIVE_MAP_LAST_6_HOURS = 'Last 6 hours';
-export const LIVE_MAP_LAST_24_HOURS = 'Last 24 hours';
+export const LIVE_MAP_LAST_12_HOURS = 'Last 12 hours';
+export const LIVE_MAP_FULL_WINDOW = 'Full';
 export const LIVE_MAP_FILTER_COUNTRY = 'Country';
 export const LIVE_MAP_FILTER_REGION = 'Region';
 export const LIVE_MAP_FILTER_TIME = 'Issue time';
@@ -86,11 +87,11 @@ export const LIVE_MAP_PHENOMENA = [
 ] as const;
 
 /**
- * How far back the map keeps reports. `all` does not apply a clock window.
+ * How far back the loaded view keeps reports. `full` is the shared 24-hour set.
  * @example
  * const _ = true;
  */
-export type MapTimePreset = 'all' | '1h' | '6h' | '24h';
+export type MapTimePreset = '1h' | '3h' | '6h' | '12h' | 'full';
 export const LIVE_MAP_DECODE = 'Decode';
 export const LIVE_MAP_PANEL = 'Weather map';
 export const LIVE_MAP_REFRESH_MS = 60_000;
@@ -521,20 +522,18 @@ function passesIssueWindow(
   time: MapTimePreset,
   now: number,
 ): boolean {
-  if (time === 'all') {
-    return true;
-  }
   const parsed = Date.parse(observedAt);
   if (Number.isNaN(parsed)) {
     return true;
   }
-  let hours = 24;
-  if (time === '1h') {
-    hours = 1;
-  } else if (time === '6h') {
-    hours = 6;
-  }
-  return now - parsed <= hours * 3_600_000;
+  const hoursByPreset: Record<MapTimePreset, number> = {
+    '1h': 1,
+    '3h': 3,
+    '6h': 6,
+    '12h': 12,
+    full: 24,
+  };
+  return now - parsed <= hoursByPreset[time] * 3_600_000;
 }
 
 /**
