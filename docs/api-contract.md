@@ -131,7 +131,7 @@ the same public convert path. Work history: guest → IndexedDB; logged-in → s
 | `issuing_center` | no | `""` | Optional issuing centre ICAO (4-letter) |
 | `include_nil_reasons` | no | `true` | Prefer emitting nilReason attributes (engine may still emit NIL shells) |
 | `log_level` | no | `INFO` | Minimum severity for process issues echoed to clients **and** backend/package logger verbosity (EV-060 / #1004). Must not log JWTs, passwords, or Authorization headers at DEBUG. |
-| `bulletin_date` | no | current UTC date | `YYYY-MM-DD`. Year and month for TAC day-of-month stamps. A day that cannot fall in that month is placed in the previous month that contains it. [Corpus: product §F6] |
+| `bulletin_date` | no | current UTC date | `YYYY-MM-DD`. Year and month for TAC day-of-month stamps. A day that cannot fall in that month fails conversion. The message names the day and the month. [Corpus: product §F6] |
 | `propagate_residuals_to_remarks` | no | *(profile default; annex3/ICAO_2025 → `false`)* | **EV-981 / #981**: when resolved `true` **and** the semantic profile already emits remarks / `humanReadableText` (`iwxxm_us`, `ca_eccc`, …), append decode residual token text (excluding spans already covered by remarks retain) into that emit path and emit info `ConvertIssue` `RESIDUALS_PROPAGATED_TO_REMARKS`. On **annex3**, there is no XML remarks/HRT target — do not invent free-text remarks; when flag is on and residuals exist, still emit info `RESIDUALS_PROPAGATED_TO_REMARKS` whose message documents **no XML target** (quality-metrics `residuals_propagated_to_remarks` remains false). When `false` or resolved off, residuals stay diagnostic-only (UJ-026 unchanged). Omitted → semantic-profile default (wire shipped; only annex3/ICAO_2025 defaults defined this cycle = off). Explicit `true`/`false` overrides profile default. Same field on `/convert-zip`. Operator UI: plain-language toggle (no planning ids). |
 
 \* At least one of `files` or `manual_text` required (unchanged).
@@ -320,7 +320,7 @@ TAC reports; split; convert each via `tac2iwxxm`. Single-report TAC stays on `/a
 | `profile` | no | `annex3` | `annex3` \| `iwxxm_us` — **legacy**; see [EV-063 / F35 proposed wire](#ev-063--f35-proposed-semantic--exchange-wire-not-implemented-until-build-gate) |
 | `iwxxm_version` | no | SoT default | Same enum as convert (`iwxxm_versions.json` / #851) |
 | `lint` | no | `true` | When true, run `tac-validate` before each report convert |
-| `bulletin_date` | no | current UTC date | Same calendar-date anchor as `/convert`. [Corpus: product §F6] |
+| `bulletin_date` | no | current UTC date | Same calendar-date anchor as `/convert`. An impossible day fails conversion with a message that names the day and the month. [Corpus: product §F6] |
 | `propagate_residuals_to_remarks` | no | *(profile default; annex3/ICAO_2025 → `false`)* | Same semantics as `/convert` (EV-981 / #981) |
 
 * At least one of `files` or `manual_text` required.

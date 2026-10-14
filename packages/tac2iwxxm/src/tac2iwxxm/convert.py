@@ -44,6 +44,7 @@ from tac2iwxxm.slot_builders.taf import parse_taf
 from tac2iwxxm.slot_builders.vaa_tca import parse_tca, parse_vaa
 from tac2iwxxm.slot_builders.vona import parse_vona
 from tac2iwxxm.time_anchor import (
+    ImpossibleTacDay,
     anchor_from_bulletin_date,
     pop_bulletin_anchor,
     push_bulletin_anchor,
@@ -1264,6 +1265,8 @@ def convert(
             xml = _emit(product_u, EMIT_IWXXM_US, ir, effective_iwxxm_version)
         else:
             xml = _emit(product_u, profile_l, ir, effective_iwxxm_version)
+    except ImpossibleTacDay as exc:
+        return _fail("IMPOSSIBLE_TAC_DAY", str(exc))
     except UnknownVOR as exc:
         return _fail("PARSE_ERROR", f"unknown VOR reference {exc}", span=True)
     except ValueError as exc:

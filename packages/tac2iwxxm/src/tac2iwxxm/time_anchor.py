@@ -1,14 +1,15 @@
 """Year and month for TAC day-of-month stamps.
 
 Example goldens keep a legacy prefix until a conversion passes ``bulletin_date``.
-An operator date is ``YYYY-MM``. Each TAC day is placed in that month, or in the
-previous month that contains the day.
+An operator date is ``YYYY-MM``. A TAC day that month does not contain fails
+conversion. The message names the day and the month.
 
 [Corpus: product §F6]
 """
 
 from __future__ import annotations
 
+import calendar
 import re
 from collections.abc import Mapping
 from contextvars import ContextVar, Token
@@ -19,28 +20,45 @@ _ANCHOR = re.compile(r"\d{4}-\d{2}")
 _bulletin_anchor: ContextVar[str | None] = ContextVar("tac2iwxxm_bulletin_anchor", default=None)
 
 
+class ImpossibleTacDay(Exception):
+    """The TAC day does not exist in the bulletin month.
+
+    Parameters
+    ----------
+    message : str
+        Names the TAC day and the bulletin month.
+
+    Examples
+    --------
+    >>> str(ImpossibleTacDay("Day 31 is not a day in June 2023"))
+    'Day 31 is not a day in June 2023'
+    """
+
+
 def fit_year_month(year: int, month: int, day: int) -> tuple[int, int]:
     """
-    Return a year and month that contain ``day``.
+    Return the bulletin year and month when ``day`` exists in that month.
 
     Parameters
     ----------
     year : int
-        Starting year.
+        Bulletin year.
     month : int
-        Starting month.
+        Bulletin month.
     day : int
         Day of month from the TAC.
 
     Returns
     -------
     tuple[int, int]
-        Year and month that can represent ``day``.
+        The same year and month when ``day`` is a real date there.
 
     Raises
     ------
     ValueError
-        If ``day`` is outside 1..31.
+        If ``day`` is outside 1..31 or ``month`` is outside 1..12.
+    ImpossibleTacDay
+        If ``day`` is not a day of that month.
 
     Examples
     --------
@@ -49,17 +67,13 @@ def fit_year_month(year: int, month: int, day: int) -> tuple[int, int]:
     """
     if day < 1 or day > 31:
         raise ValueError(f"TAC day {day} is not a calendar day")
-    for _ in range(48):
-        try:
-            date(year, month, day)
-        except ValueError:
-            month -= 1
-            if month < 1:
-                month = 12
-                year -= 1
-            continue
-        return year, month
-    raise ValueError(f"no month contains day {day}")
+    if month < 1 or month > 12:
+        raise ValueError(f"TAC month {month} is not a calendar month")
+    try:
+        date(year, month, day)
+    except ValueError as exc:
+        raise ImpossibleTacDay(f"Day {day} is not a day in {calendar.month_name[month]} {year}") from exc
+    return year, month
 
 
 def anchor_from_bulletin_date(value: str) -> str:
@@ -141,12 +155,17 @@ def anchored_prefix(ir: Mapping[str, Any], day: int) -> str | None:
     ir : Mapping[str, Any]
         Parsed report. ``time_anchor`` wins over the conversion-scoped anchor.
     day : int
-        TAC day used to avoid an impossible civil date.
+        TAC day. A day that month does not contain raises ``ImpossibleTacDay``.
 
     Returns
     -------
     str | None
-        Fitted year-month, or ``None`` when the caller should keep its example pin.
+        Bulletin year-month, or ``None`` when the caller should keep its example pin.
+
+    Raises
+    ------
+    ImpossibleTacDay
+        If ``day`` is not a day of the bulletin month.
 
     Examples
     --------

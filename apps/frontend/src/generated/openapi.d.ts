@@ -3508,7 +3508,7 @@ export interface components {
         Body_convert_api_v1_convert_post: {
             /**
              * Bulletin Date
-             * @description Optional calendar date (YYYY-MM-DD) used as the year and month for TAC day stamps. When omitted, the current UTC date is used. A day that cannot fall in that month is placed in the previous month that contains it.
+             * @description Optional calendar date (YYYY-MM-DD) used as the year and month for TAC day stamps. When omitted, the current UTC date is used. A day that cannot fall in that month fails conversion, and the message names the day and the month.
              * @default
              */
             bulletin_date: string;
@@ -3696,7 +3696,7 @@ export interface components {
         Body_convert_bulletin_api_v1_convert_bulletin_post: {
             /**
              * Bulletin Date
-             * @description Optional calendar date (YYYY-MM-DD) used as the year and month for TAC day stamps. When omitted, the current UTC date is used. A day that cannot fall in that month is placed in the previous month that contains it.
+             * @description Optional calendar date (YYYY-MM-DD) used as the year and month for TAC day stamps. When omitted, the current UTC date is used. A day that cannot fall in that month fails conversion, and the message names the day and the month.
              * @default
              */
             bulletin_date: string;
@@ -3771,7 +3771,7 @@ export interface components {
         Body_convert_zip_api_v1_convert_zip_post: {
             /**
              * Bulletin Date
-             * @description Optional calendar date (YYYY-MM-DD) used as the year and month for TAC day stamps. When omitted, the current UTC date is used. A day that cannot fall in that month is placed in the previous month that contains it.
+             * @description Optional calendar date (YYYY-MM-DD) used as the year and month for TAC day stamps. When omitted, the current UTC date is used. A day that cannot fall in that month fails conversion, and the message names the day and the month.
              * @default
              */
             bulletin_date: string;

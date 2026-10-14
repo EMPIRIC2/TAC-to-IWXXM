@@ -1656,7 +1656,7 @@ async def convert_bulletin(
         description=(
             "Optional calendar date (YYYY-MM-DD) used as the year and month for TAC day stamps. "
             "When omitted, the current UTC date is used. A day that cannot fall in that month "
-            "is placed in the previous month that contains it."
+            "fails conversion, and the message names the day and the month."
         ),
     ),
     auth_user: dict[str, Any] | None = Depends(verify_optional_supabase_token),
@@ -2110,7 +2110,7 @@ async def convert(
         description=(
             "Optional calendar date (YYYY-MM-DD) used as the year and month for TAC day stamps. "
             "When omitted, the current UTC date is used. A day that cannot fall in that month "
-            "is placed in the previous month that contains it."
+            "fails conversion, and the message names the day and the month."
         ),
     ),
     overlay_id: str = Form(
@@ -2972,7 +2972,7 @@ async def convert_zip(
         description=(
             "Optional calendar date (YYYY-MM-DD) used as the year and month for TAC day stamps. "
             "When omitted, the current UTC date is used. A day that cannot fall in that month "
-            "is placed in the previous month that contains it."
+            "fails conversion, and the message names the day and the month."
         ),
     ),
 ) -> StreamingResponse:

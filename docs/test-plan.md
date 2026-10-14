@@ -6334,6 +6334,19 @@ Manual signoff before release, not a PR merge gate. Developer runs `make test-li
 - **Out of scope**: New emitters. Live feeds. Reopening #970. Promoting `stage` to `main`.
 - **Source**: F6 deepen EV-1266 / #1266
 
+### TC-F6-044: Bulletin month rejects an impossible day
+
+- **Level**: T0 package. No browser journey.
+- **Objective**: Issue and validity times use the bulletin year and month. A day that cannot fall in that month fails closed. [Corpus: product §F6] [Corpus: api] [Corpus: tests]
+- **Steps**:
+  1. A METAR observed at 1200Z on day 08, with bulletin date 2026-10-08, has an issue time in October 2026.
+  2. A SIGMET valid period with that bulletin year is not in 2012.
+  3. Day 31 with bulletin month June fails conversion. The message names day 31 and June. The result does not use May.
+  4. Library convert with no bulletin date still uses the example pins.
+- **Pass criteria**: The four checks pass.
+- **Out of scope**: Changing the IWXXM version pin. TAF `T24:00:00Z`. Promoting `stage` to `main`.
+- **Source**: F6 deepen #1398
+
 
 ### TC-F4-001: Profile package pin
 
