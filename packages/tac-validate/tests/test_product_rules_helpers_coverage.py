@@ -17,6 +17,7 @@ from tac_validate.product_rules import (
     _weather_candidate_tokens,
     check_product_rules,
 )
+from tac_validate.product_rules_pkg._common import _consume_wx_descriptors
 from tac_validate.product_rules_pkg.swxa import _check_swxa_spacewx_membership
 from tac_validate.product_rules_pkg.taf import _check_us_faa_nws_taf
 from tac_validate.product_rules_pkg.tca import _check_us_faa_nws_swxa_overlay, _check_us_faa_nws_tca_overlay
@@ -48,6 +49,28 @@ def test_weather_token_edge_cases() -> None:
     assert _is_valid_weather_token("TS") is True
     assert _is_valid_weather_token("RASN") is True
     assert _is_valid_weather_token("FZDZ") is True
+
+
+def test_descriptor_consume_stops_when_one_character_remains() -> None:
+    assert _consume_wx_descriptors("VCA") == "A"
+
+
+def test_weather_token_rejects_a_bare_intensity_mark(monkeypatch: pytest.MonkeyPatch) -> None:
+    class _MatchAny:
+        @staticmethod
+        def fullmatch(_token: str) -> object:
+            return object()
+
+    monkeypatch.setattr("tac_validate.product_rules_pkg._common._WX_TOKEN_SHAPE", _MatchAny)
+    assert _is_valid_weather_token("+") is False
+
+
+def test_weather_token_rejects_descriptors_that_leave_nothing(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(
+        "tac_validate.product_rules_pkg._common._consume_wx_descriptors",
+        lambda _rest: "",
+    )
+    assert _is_valid_weather_token("TSRA") is False
 
 
 def test_vicinity_and_bare_thunderstorm_are_not_invalid_weather() -> None:

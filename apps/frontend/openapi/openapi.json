@@ -364,6 +364,12 @@
       },
       "Body_convert_api_v1_convert_post": {
         "properties": {
+          "bulletin_date": {
+            "default": "",
+            "description": "Optional calendar date (YYYY-MM-DD) used as the year and month for TAC day stamps. When omitted, the current UTC date is used. A day that cannot fall in that month is placed in the previous month that contains it.",
+            "title": "Bulletin Date",
+            "type": "string"
+          },
           "bulletin_id": {
             "default": "",
             "description": "Optional bulletin identifier",
@@ -559,6 +565,12 @@
       },
       "Body_convert_bulletin_api_v1_convert_bulletin_post": {
         "properties": {
+          "bulletin_date": {
+            "default": "",
+            "description": "Optional calendar date (YYYY-MM-DD) used as the year and month for TAC day stamps. When omitted, the current UTC date is used. A day that cannot fall in that month is placed in the previous month that contains it.",
+            "title": "Bulletin Date",
+            "type": "string"
+          },
           "conversion_library_id": {
             "default": "",
             "description": "Conversion library asset id (resolves engine profile when set)",
@@ -657,6 +669,12 @@
       },
       "Body_convert_zip_api_v1_convert_zip_post": {
         "properties": {
+          "bulletin_date": {
+            "default": "",
+            "description": "Optional calendar date (YYYY-MM-DD) used as the year and month for TAC day stamps. When omitted, the current UTC date is used. A day that cannot fall in that month is placed in the previous month that contains it.",
+            "title": "Bulletin Date",
+            "type": "string"
+          },
           "iwxxm_version": {
             "default": "2025-2",
             "description": "Target IWXXM version: 2025-2 (latest), 2023-1 (previous), or 2025-1 (auto-remaps to 2025-2)",
