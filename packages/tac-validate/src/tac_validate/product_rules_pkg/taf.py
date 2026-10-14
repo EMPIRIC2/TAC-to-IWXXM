@@ -8,6 +8,7 @@ import re
 
 from tac_validate.models import Issue
 from tac_validate.product_rules_pkg._common import *
+from tac_validate.taf_amd import amd_modifier_present
 
 
 def _check_taf(tac: str, *, profile: str = "annex3") -> list[Issue]:
@@ -59,7 +60,7 @@ def _check_taf(tac: str, *, profile: str = "annex3") -> list[Issue]:
 
     # T1 NIL: missing forecast ends the message (A5-1 #4) - skip validity body gates.
     if "NIL" in tokens:
-        if "AMD" in tokens:
+        if amd_modifier_present(tokens):
             _emit_token_info(
                 issues,
                 code="AMD_PRESENT",
@@ -113,7 +114,7 @@ def _check_taf(tac: str, *, profile: str = "annex3") -> list[Issue]:
             )
         )
 
-    if "AMD" in tokens:
+    if amd_modifier_present(tokens):
         _emit_token_info(
             issues,
             code="AMD_PRESENT",

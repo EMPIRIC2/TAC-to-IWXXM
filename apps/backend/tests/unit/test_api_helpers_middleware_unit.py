@@ -42,6 +42,20 @@ def test_split_manual_entries_vaa_tca_swxa_vona_keep_multiline() -> None:
     assert api_module.split_manual_entries(vona, product="vona") == [vona.strip()]
 
 
+def test_split_manual_entries_joins_taf_continuation_lines() -> None:
+    taf = "TAF MKJP 081700Z 0818/0918 09012KT 9999 SCT018\nBECMG 0902/0904 14008KT\nTEMPO 0906/0912 4000 -SHRA="
+    joined = api_module.split_manual_entries(taf, product="taf")
+    assert joined == [
+        "TAF MKJP 081700Z 0818/0918 09012KT 9999 SCT018 BECMG 0902/0904 14008KT TEMPO 0906/0912 4000 -SHRA="
+    ]
+    offsets = api_module.manual_entries_with_offsets(f"\n{taf}", product="TAF")
+    assert len(offsets) == 1
+    assert offsets[0][1] == 1
+    assert "BECMG 0902/0904 14008KT" in offsets[0][0]
+    noise = api_module.split_manual_entries("HELLO WORLD", product="TAF")
+    assert noise == ["HELLO WORLD"]
+
+
 def test_split_manual_entries_sigmet_airmet_keep_multiline() -> None:
     sigmet = (
         "YUDD SIGMET 2 VALID 101200/101600 YUSO-\n"
