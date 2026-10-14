@@ -21,7 +21,18 @@ _bulletin_anchor: ContextVar[str | None] = ContextVar("tac2iwxxm_bulletin_anchor
 
 
 class ImpossibleTacDay(Exception):
-    """The TAC day does not exist in the bulletin month."""
+    """The TAC day does not exist in the bulletin month.
+
+    Parameters
+    ----------
+    message : str
+        Names the TAC day and the bulletin month.
+
+    Examples
+    --------
+    >>> str(ImpossibleTacDay("Day 31 is not a day in June 2023"))
+    'Day 31 is not a day in June 2023'
+    """
 
 
 def fit_year_month(year: int, month: int, day: int) -> tuple[int, int]:
