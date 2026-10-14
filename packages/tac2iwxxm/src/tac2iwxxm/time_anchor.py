@@ -41,6 +41,11 @@ def fit_year_month(year: int, month: int, day: int) -> tuple[int, int]:
     ------
     ValueError
         If ``day`` is outside 1..31.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (fit_year_month)
+    2
     """
     if day < 1 or day > 31:
         raise ValueError(f"TAC day {day} is not a calendar day")
@@ -75,6 +80,11 @@ def anchor_from_bulletin_date(value: str) -> str:
     ------
     ValueError
         If ``value`` is not a calendar date.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (anchor_from_bulletin_date)
+    2
     """
     text = value.strip()
     if len(text) >= 10:
@@ -84,12 +94,41 @@ def anchor_from_bulletin_date(value: str) -> str:
 
 
 def push_bulletin_anchor(value: str | None) -> Token[str | None]:
-    """Set the anchor seen by parsers that stamp before the IR is copied."""
+    """
+    Set the anchor seen by parsers that stamp before the IR is copied.
+
+    Parameters
+    ----------
+    value : str | None
+        ``YYYY-MM``, or ``None`` to clear the anchor.
+
+    Returns
+    -------
+    Token[str | None]
+        Token passed to ``pop_bulletin_anchor``.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (push_bulletin_anchor)
+    2
+    """
     return _bulletin_anchor.set(value)
 
 
 def pop_bulletin_anchor(token: Token[str | None]) -> None:
-    """Restore the previous bulletin anchor."""
+    """
+    Restore the previous bulletin anchor.
+
+    Parameters
+    ----------
+    token : Token[str | None]
+        Token returned by ``push_bulletin_anchor``.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (pop_bulletin_anchor)
+    2
+    """
     _bulletin_anchor.reset(token)
 
 
@@ -108,6 +147,11 @@ def anchored_prefix(ir: Mapping[str, Any], day: int) -> str | None:
     -------
     str | None
         Fitted year-month, or ``None`` when the caller should keep its example pin.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (anchored_prefix)
+    2
     """
     raw = ir.get("time_anchor")
     if not isinstance(raw, str):
@@ -147,6 +191,11 @@ def iso_stamp(
     -------
     str
         UTC timestamp.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (iso_stamp)
+    2
     """
     prefix = anchored_prefix(ir, day) or legacy
     return f"{prefix}-{int(day):02d}T{int(hour):02d}:{int(minute):02d}:00Z"

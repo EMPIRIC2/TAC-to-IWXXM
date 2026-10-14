@@ -288,7 +288,19 @@ def _present_weather_block(ir: dict[str, Any]) -> str:
 
 
 def _recent_weather_block(ir: dict[str, Any]) -> str:
-    """ICAO recent-weather groups (RETS, RESHRA) on the default profile."""
+    """
+    ICAO recent-weather groups (RETS, RESHRA) on the default profile.
+
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Parsed report. ``recent_weather`` is a list of 4678 codes.
+
+    Returns
+    -------
+    str
+        ``iwxxm:recentWeather`` elements, or an empty string.
+    """
     codes_raw = ir.get("recent_weather")
     if not isinstance(codes_raw, list):
         return ""

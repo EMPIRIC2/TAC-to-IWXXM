@@ -237,7 +237,20 @@ def _apply_recent_weather_normalization(
 
 
 def _bulletin_date_arg(reference_time: str | None) -> str:
-    """Return YYYY-MM-DD for the library time anchor."""
+    """
+    Return YYYY-MM-DD for the library time anchor.
+
+    Parameters
+    ----------
+    reference_time : str | None
+        Operator timestamp. The first ten characters are the calendar date.
+        ``None`` or a blank string uses the current UTC date.
+
+    Returns
+    -------
+    str
+        Calendar date passed to ``convert`` as ``bulletin_date``.
+    """
     if reference_time is not None and reference_time.strip():
         text = reference_time.strip()
         return text[:10] if len(text) >= 10 else text
