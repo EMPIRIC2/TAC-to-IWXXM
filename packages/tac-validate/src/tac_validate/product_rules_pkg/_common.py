@@ -16,8 +16,13 @@ _OBS_TIME = re.compile(r"\b\d{6}Z\b")
 _WIND = re.compile(r"\b(?:(?:VRB|\d{3})\d{2,3}(?:G\d{2,3})?(?:KT|MPS)|CALM)\b")
 # Extreme direction variation group (Guidance: counter-clockwise then clockwise).
 _WIND_DIR_VAR = re.compile(r"^\d{3}V\d{3}$")
-# R2: CAVOK | statute miles (incl. fractions / M|P prefix) | 4-digit meters (9999).
-_VIS_OK = re.compile(r"\b(?:CAVOK|P?\d{1,2}SM|[MP]?\d{1,2}/\d{1,2}SM|\d{1,2}\s+[MP]?\d{1,2}/\d{1,2}SM|\d{4})\b")
+# R2: CAVOK | statute miles (incl. fractions / M|P prefix) | 4-digit meters (9999)
+# | unobserved visibility //// or ////SM. A word boundary does not match before
+# a solidus, and the first four slashes of ////// are not a visibility group.
+_VIS_NOT_OBS = r"(?<![A-Z0-9/])////(?:SM)?(?![A-Z0-9/])"
+_VIS_OK = re.compile(
+    rf"(?:\b(?:CAVOK|P?\d{{1,2}}SM|[MP]?\d{{1,2}}/\d{{1,2}}SM|\d{{1,2}}\s+[MP]?\d{{1,2}}/\d{{1,2}}SM|\d{{4}})\b|{_VIS_NOT_OBS})"
+)
 _VIS_BAD = re.compile(
     r"\b(\d+KM|\d+MILES|\d{5,})\b",
     re.IGNORECASE,

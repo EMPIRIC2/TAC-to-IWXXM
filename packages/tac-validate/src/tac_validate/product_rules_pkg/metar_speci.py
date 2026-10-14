@@ -4,6 +4,8 @@
 
 from __future__ import annotations
 
+import re
+
 from tac_validate.models import Issue
 from tac_validate.product_rules_pkg._common import *
 from tac_validate.theme_checks import (
@@ -166,6 +168,25 @@ def _check_metar_speci(tac: str, product: str, *, profile: str = "annex3") -> li
         lint_profile.reset(profile_token)
 
 
+def _observation_before_remark(core: str) -> str:
+    """Return the observation body, stopping at the RMK token.
+
+    Parameters
+    ----------
+    core : str
+        Uppercased report body.
+
+    Returns
+    -------
+    str
+        Text before ``RMK``, or the whole body when there is no remark.
+    """
+    remark = re.search(r"(?:^|\s)RMK(?:\s|$)", core)
+    if remark is None:
+        return core
+    return core[: remark.start()]
+
+
 def _check_s1_exceptional(
     tokens: list[str],
     *,
@@ -225,7 +246,7 @@ def _check_s1_exceptional(
             body_start=body_start,
             body_end=body_end,
         )
-    if "NCD" in tokens:
+    if re.search(r"(?<![A-Z0-9])NCD(?![A-Z0-9])", _observation_before_remark(core)):
         _emit_token_info(
             issues,
             code="NCD_PRESENT",

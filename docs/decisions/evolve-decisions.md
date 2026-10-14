@@ -1,5 +1,23 @@
 # Evolve Decisions
 
+## Cycle EV-1399-unobserved-visibility — //// is not a missing group (#1399)
+
+**Opened:** 2026-10-14 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-1399-unobserved-visibility`  
+**Issue:** [#1399](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1399)  
+**Documenting→Implementing gate:** open  
+**Scale:** micro
+
+| ID | Outcome |
+|----|---------|
+| D1 | `////` and `////SM` are a present visibility group that was not observed. Lint does not raise `MISSING_VISIBILITY`. A report that omits the visibility group still does. |
+| D2 | Convert keeps nil visibility with `http://codes.wmo.int/common/nil/notObservable`. Do not switch that reason to `missing`. |
+| D3 | `NCD` only after `RMK` does not raise `NCD_PRESENT`. `NCD` in the observation body still does. |
+| D4 | Encoding `//////` as a nil cloud layer stays out of this slice. |
+| D5 | Docs delta: feature-list unobserved-visibility note, test-plan TC-F15-006. No new feature id. No HTTP text change. |
+| F107 | Memory retrieve skipped. Neo4j at `bolt://localhost:7687` was unavailable. |
+
+[Corpus: product §F6] [Corpus: product §F15] [Corpus: tests]
+
 ## Cycle EV-1398-bulletin-year — impossible TAC day fails closed (#1398)
 
 **Opened:** 2026-10-14 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-1398-bulletin-year`  

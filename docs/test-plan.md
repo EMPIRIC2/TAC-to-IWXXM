@@ -735,6 +735,20 @@ treat TC-EV045-006 as **docs/script met; ops deferred**. [Corpus: tests] [Corpus
   paired fixtures keep per-report product identity; lint codes remain registry-backed
 - **Source**: F15; #732 known gap AHL+SPECI adjacency
 
+### TC-F15-006: Unobserved visibility is not a missing group
+
+- **Level**: T0 package. No browser journey.
+- **Objective**: `////` and `////SM` count as a visibility group that was not observed. Remark-only `NCD` is not a body cloud finding. [Corpus: product §F6] [Corpus: product §F15] [Corpus: tests]
+- **Steps**:
+  1. `METAR MKJP 072300Z 12012KT //// ////// 30/26 Q1013 RMK CLD FROM CEILOMETER RWY 30 NCD=` converts with visibility nil and reason `notObservable`.
+  2. That report does not raise `MISSING_VISIBILITY` or `NCD_PRESENT`.
+  3. `////SM` does not raise `MISSING_VISIBILITY`.
+  4. A METAR that omits the visibility group still raises `MISSING_VISIBILITY`.
+  5. `NCD` in the observation body still raises `NCD_PRESENT`.
+- **Pass criteria**: The five checks pass.
+- **Out of scope**: Encoding `//////` as a nil cloud layer. Remarks policy for the rest of the `RMK` text. Promoting `stage` to `main`.
+- **Source**: F15 deepen #1399
+
 ### F15 verify/deploy gate
 
 - [ ] TC-F15-001..005 green
