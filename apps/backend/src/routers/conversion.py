@@ -682,6 +682,7 @@ class _ConvertRuntime:
     translation_centre_designator: str
     translation_centre_name: str
     propagate_residuals_to_remarks: bool | None
+    bulletin_date: str
     validation_service: Any
     validation_orchestrator: Any
     finalize_exchange_xml: Callable[[str, str | None], str]
@@ -805,6 +806,7 @@ async def _process_json_metars(
                 iwxxm_content, _ = api_surface.convert_metar_tac_with_metadata(
                     normalized_metar_text,
                     iwxxm_version=runtime.iwxxm_version,
+                    reference_time=runtime.bulletin_date or None,
                     validate=False,
                     lenient=False,
                     product=runtime.product,
@@ -1089,6 +1091,7 @@ async def _process_manual_entries(
             xml_text, _ = api_surface.convert_metar_tac_with_metadata(
                 normalized_entry,
                 iwxxm_version=runtime.iwxxm_version,
+                reference_time=runtime.bulletin_date or None,
                 validate=False,
                 lenient=False,
                 product=runtime.product,
@@ -1365,6 +1368,7 @@ async def _process_uploaded_files(
             xml_text, _ = api_surface.convert_metar_tac_with_metadata(
                 data,
                 iwxxm_version=runtime.iwxxm_version,
+                reference_time=runtime.bulletin_date or None,
                 validate=False,
                 product=runtime.product,
                 profile=runtime.emit_profile,
@@ -1645,6 +1649,14 @@ async def convert_bulletin(
             "When true, append decode residual token text into remarks / humanReadableText "
             "when the profile supports that path; annex3 documents no XML target. "
             "Omitted uses the profile default (annex3 / ICAO_2025 off)."
+        ),
+    ),
+    bulletin_date: str = Form(
+        default="",
+        description=(
+            "Optional calendar date (YYYY-MM-DD) used as the year and month for TAC day stamps. "
+            "When omitted, the current UTC date is used. A day that cannot fall in that month "
+            "is placed in the previous month that contains it."
         ),
     ),
     auth_user: dict[str, Any] | None = Depends(verify_optional_supabase_token),
@@ -1929,6 +1941,7 @@ async def convert_bulletin(
                 xml_out, _ = api_surface.convert_metar_tac_with_metadata(
                     tac,
                     iwxxm_version=iwxxm_version,
+                    reference_time=bulletin_date or None,
                     validate=False,
                     product=product,
                     profile=emit_profile,
@@ -2090,6 +2103,14 @@ async def convert(
             "When true, append decode residual token text into remarks / humanReadableText "
             "when the profile supports that path; annex3 documents no XML target. "
             "Omitted uses the profile default (annex3 / ICAO_2025 off)."
+        ),
+    ),
+    bulletin_date: str = Form(
+        default="",
+        description=(
+            "Optional calendar date (YYYY-MM-DD) used as the year and month for TAC day stamps. "
+            "When omitted, the current UTC date is used. A day that cannot fall in that month "
+            "is placed in the previous month that contains it."
         ),
     ),
     overlay_id: str = Form(
@@ -2839,6 +2860,7 @@ async def convert(
         translation_centre_designator=translation_centre_designator,
         translation_centre_name=translation_centre_name,
         propagate_residuals_to_remarks=propagate_residuals_to_remarks,
+        bulletin_date=bulletin_date,
         validation_service=validation_service,
         validation_orchestrator=validation_orchestrator,
         finalize_exchange_xml=_finalize_exchange_xml,
@@ -2945,6 +2967,14 @@ async def convert_zip(
             "Omitted uses the profile default (annex3 / ICAO_2025 off)."
         ),
     ),
+    bulletin_date: str = Form(
+        default="",
+        description=(
+            "Optional calendar date (YYYY-MM-DD) used as the year and month for TAC day stamps. "
+            "When omitted, the current UTC date is used. A day that cannot fall in that month "
+            "is placed in the previous month that contains it."
+        ),
+    ),
 ) -> StreamingResponse:
     """
     Convert METAR/SPECI TAC inputs to a ZIP of IWXXM XML files.
@@ -3046,6 +3076,7 @@ async def convert_zip(
             xml_text, _ = api_surface.convert_metar_tac_with_metadata(
                 manual_entry,
                 iwxxm_version=iwxxm_version,
+                reference_time=bulletin_date or None,
                 propagate_residuals_to_remarks=propagate_residuals_to_remarks,
             )
             duration_ms = int((time.perf_counter() - start_time) * 1000)
@@ -3123,6 +3154,7 @@ async def convert_zip(
                 xml_text, _ = api_surface.convert_metar_tac_with_metadata(
                     data or "",
                     iwxxm_version=iwxxm_version,
+                    reference_time=bulletin_date or None,
                     propagate_residuals_to_remarks=propagate_residuals_to_remarks,
                 )
 
@@ -3272,6 +3304,7 @@ async def convert_zip(
             xml_text, _ = api_surface.convert_metar_tac_with_metadata(
                 metar_text.strip(),
                 iwxxm_version=iwxxm_version,
+                reference_time=bulletin_date or None,
                 propagate_residuals_to_remarks=propagate_residuals_to_remarks,
             )
 

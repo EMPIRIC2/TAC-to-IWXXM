@@ -62,7 +62,9 @@ _AHL_HEADING_LINE = re.compile(r"^[A-Z]{2}[A-Z]{2}\d{2}\s+[A-Z]{4}\s+\d{6}(?:\s+
 _WIND_TOKEN = re.compile(r"(?:KT|MPS)$|^CALM$")
 _CLOUD_START = re.compile(r"^(?:FEW|SCT|BKN|OVC|VV|NSC|NCD|SKC|CLR)")
 # R4: FEW|SCT|BKN|OVC + 3-digit height + optional CB|TCU; VV###|VV///; NSC|NCD|SKC|CLR.
-_CLOUD_OK = re.compile(r"^(?:(?:FEW|SCT|BKN|OVC)\d{3}(?:CB|TCU|///)?|VV(?:\d{3}|///)|NSC|NCD|SKC|CLR)$")
+_CLOUD_OK = re.compile(
+    r"^(?:(?:FEW|SCT|BKN|OVC)(?:\d{3}(?:CB|TCU|///)?|///(?:CB|TCU)?)|VV(?:\d{3}|///)|NSC|NCD|SKC|CLR)$"
+)
 _CLOUD_LIKE = re.compile(r"^(?:FEW|SCT|BKN|OVC|VV|NSC|NCD|SKC|CLR|[A-Z]{3}\d{3})")
 # Layered amounts only (NSC exclusivity / TC-EV023-001) - not VV/NSC/NCD/SKC/CLR.
 _LAYER_CLOUD_TOKEN = re.compile(r"^(?:FEW|SCT|BKN|OVC)\d{3}(?:CB|TCU)?$")
@@ -374,7 +376,7 @@ def _consume_wx_descriptors(rest: str) -> str:
     while len(rest) >= 2:
         matched = False
         for desc in _WX_DESCRIPTORS:
-            if rest.startswith(desc):
+            if rest.startswith(desc) and len(rest) > len(desc):
                 rest = rest[len(desc) :]
                 matched = True
                 break
@@ -410,6 +412,8 @@ def _is_valid_weather_token(token: str) -> bool:
         rest = rest[1:]
     if not rest:
         return False
+    if rest == "VCSH":
+        return True
     if rest.endswith(("+", "-")):
         return False
     rest = _consume_wx_descriptors(rest)

@@ -11,11 +11,13 @@ from tac_validate.models import Issue
 from tac_validate.product_rules import (
     _append_remark_issue,
     _body_span,
+    _is_valid_cloud_token,
     _is_valid_weather_token,
     _sigmet_validity_hours,
     _weather_candidate_tokens,
     check_product_rules,
 )
+from tac_validate.product_rules_pkg._common import _consume_wx_descriptors
 from tac_validate.product_rules_pkg.swxa import _check_swxa_spacewx_membership
 from tac_validate.product_rules_pkg.taf import _check_us_faa_nws_taf
 from tac_validate.product_rules_pkg.tca import _check_us_faa_nws_swxa_overlay, _check_us_faa_nws_tca_overlay
@@ -42,17 +44,56 @@ def test_weather_token_edge_cases() -> None:
     assert _is_valid_weather_token("-") is False
     # Descriptor-only residual → invalid; multi-phenomenon concatenation → valid.
     assert _is_valid_weather_token("SH") is False
+    assert _is_valid_weather_token("VCSH") is True
+    assert _is_valid_weather_token("VCTS") is True
+    assert _is_valid_weather_token("TS") is True
     assert _is_valid_weather_token("RASN") is True
     assert _is_valid_weather_token("FZDZ") is True
 
 
-def test_weather_token_rejects_sign_only_after_shape_gate(monkeypatch: pytest.MonkeyPatch) -> None:
-    from tac_validate.product_rules_pkg import _common
+def test_descriptor_consume_stops_when_one_character_remains() -> None:
+    assert _consume_wx_descriptors("VCA") == "A"
 
-    fake_shape = type("_Shape", (), {"fullmatch": staticmethod(lambda _token: True)})()
-    monkeypatch.setattr(_common, "_WX_TOKEN_SHAPE", fake_shape)
 
-    assert _common._is_valid_weather_token("+") is False
+def test_weather_token_rejects_a_bare_intensity_mark(monkeypatch: pytest.MonkeyPatch) -> None:
+    class _MatchAny:
+        @staticmethod
+        def fullmatch(_token: str) -> object:
+            return object()
+
+    monkeypatch.setattr("tac_validate.product_rules_pkg._common._WX_TOKEN_SHAPE", _MatchAny)
+    assert _is_valid_weather_token("+") is False
+
+
+def test_weather_token_rejects_descriptors_that_leave_nothing(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(
+        "tac_validate.product_rules_pkg._common._consume_wx_descriptors",
+        lambda _rest: "",
+    )
+    assert _is_valid_weather_token("TSRA") is False
+
+
+def test_vicinity_and_bare_thunderstorm_are_not_invalid_weather() -> None:
+    report = lint(
+        "METAR TNCM 081200Z 14006KT 9999 VCSH FEW020 28/24 Q1013=",
+        product="METAR",
+    )
+    assert not any(issue.code == "INVALID_WEATHER" for issue in report.issues)
+    bare = lint(
+        "METAR TNCM 081200Z 14006KT 9999 TS FEW020 28/24 Q1013=",
+        product="METAR",
+    )
+    assert not any(issue.code == "INVALID_WEATHER" for issue in bare.issues)
+
+
+def test_unknown_cloud_base_with_cumulonimbus_is_a_cloud_token() -> None:
+    assert _is_valid_cloud_token("FEW///CB") is True
+    assert _is_valid_cloud_token("SCT///TCU") is True
+    report = lint(
+        "METAR TNCM 081200Z 14006KT 9999 FEW///CB 28/24 Q1013=",
+        product="METAR",
+    )
+    assert not any(issue.code == "INVALID_CLOUD_TOKEN" for issue in report.issues)
 
 
 def test_weather_candidates_skip_without_wind() -> None:

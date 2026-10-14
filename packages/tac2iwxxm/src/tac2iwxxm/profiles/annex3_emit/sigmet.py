@@ -98,21 +98,29 @@ def _hazard_stamp(ir: dict[str, Any], prefix: str) -> tuple[str, str, str]:
     object
         Return value.
     """
+    from tac2iwxxm.time_anchor import iso_stamp
+
     if _is_wmo_sigmet_multi_location_va_yudd(ir) or _is_wmo_sigmet_va_eggx(ir):
         # Vendor VA-EGGX + multi-location-VA use 2018-07 (#809 / #856).
-        year_month = "2018-07"
+        legacy = "2018-07"
     elif ir["product"] == "SIGMET":
-        year_month = "2012-08"
+        legacy = "2012-08"
     else:
-        year_month = "2014-05"
-    issue = (
-        f"{year_month}-{int(ir['valid_from_day']):02d}T"
-        f"{int(ir['valid_from_hour']):02d}:{int(ir['valid_from_minute']):02d}:00Z"
+        legacy = "2014-05"
+    issue = iso_stamp(
+        ir,
+        int(ir["valid_from_day"]),
+        int(ir["valid_from_hour"]),
+        int(ir["valid_from_minute"]),
+        legacy=legacy,
     )
     begin = issue
-    end = (
-        f"{year_month}-{int(ir['valid_to_day']):02d}T"
-        f"{int(ir['valid_to_hour']):02d}:{int(ir['valid_to_minute']):02d}:00Z"
+    end = iso_stamp(
+        ir,
+        int(ir["valid_to_day"]),
+        int(ir["valid_to_hour"]),
+        int(ir["valid_to_minute"]),
+        legacy=legacy,
     )
     return issue, begin, end
 
@@ -789,7 +797,9 @@ def _sigmet_tc_forecast_xml(ir: dict[str, Any], *, fir: str, end: str) -> str:
     # Prefer VALID end day; vendor A6-2 uses end-of-validity forecast time.
     hour = int(hhmm[:2]) if len(hhmm) == 4 and hhmm.isdigit() else int(ir["valid_to_hour"])
     minute = int(hhmm[2:4]) if len(hhmm) == 4 and hhmm.isdigit() else int(ir["valid_to_minute"])
-    fcst_time = f"2012-08-{day:02d}T{hour:02d}:{minute:02d}:00Z"
+    from tac2iwxxm.time_anchor import iso_stamp
+
+    fcst_time = iso_stamp(ir, day, hour, minute, legacy="2012-08")
     if fcst_time > end:
         fcst_time = end
     return f"""
@@ -840,8 +850,14 @@ def emit_convective_sigmet_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> 
     mwo = str(ir["mwo"])
     issue, begin, end = _hazard_stamp(ir, "sigmet")
     gml_id = f"sigmet.conv.{fir.lower()}"
-    active_end = (
-        f"2012-08-{int(ir['valid_to_day']):02d}T{int(ir['valid_to_hour']):02d}:{int(ir['valid_to_minute']):02d}:00Z"
+    from tac2iwxxm.time_anchor import iso_stamp
+
+    active_end = iso_stamp(
+        ir,
+        int(ir["valid_to_day"]),
+        int(ir["valid_to_hour"]),
+        int(ir["valid_to_minute"]),
+        legacy="2012-08",
     )
     geometry = _sigmet_geometry_xml(ir, fir=fir)
     motion = _sigmet_motion_xml(ir)
@@ -980,13 +996,21 @@ def emit_sigmet_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
         gml_id = f"sigmet.basic.{fir.lower()}"
 
     if cancel:
-        c_begin = (
-            f"2012-08-{int(ir['cancelled_from_day']):02d}T"
-            f"{int(ir['cancelled_from_hour']):02d}:{int(ir['cancelled_from_minute']):02d}:00Z"
+        from tac2iwxxm.time_anchor import iso_stamp
+
+        c_begin = iso_stamp(
+            ir,
+            int(ir["cancelled_from_day"]),
+            int(ir["cancelled_from_hour"]),
+            int(ir["cancelled_from_minute"]),
+            legacy="2012-08",
         )
-        c_end = (
-            f"2012-08-{int(ir['cancelled_to_day']):02d}T"
-            f"{int(ir['cancelled_to_hour']):02d}:{int(ir['cancelled_to_minute']):02d}:00Z"
+        c_end = iso_stamp(
+            ir,
+            int(ir["cancelled_to_day"]),
+            int(ir["cancelled_to_hour"]),
+            int(ir["cancelled_to_minute"]),
+            legacy="2012-08",
         )
         head = _sigmet_header_units(ir, ns=ns, gml_id=gml_id, issue=issue).format(
             cancel_attr='\n    isCancelReport="true"'

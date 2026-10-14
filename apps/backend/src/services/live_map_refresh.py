@@ -379,7 +379,11 @@ def translate_report(tac: str, product: str) -> tuple[str | None, list[str]]:
         "vona": "VONA",
     }
     try:
-        result = convert_mod.convert(tac, product=wire.get(product, "METAR"))
+        result = convert_mod.convert(
+            tac,
+            product=wire.get(product, "METAR"),
+            bulletin_date=datetime.now(UTC).date().isoformat(),
+        )
     except Exception:
         return None, ["Translation failed."]
     if not result.ok or not result.xml:

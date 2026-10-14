@@ -359,6 +359,20 @@
      page issue list matches the unfiltered report.
 - **Source**: #1216; ADR-046 remainder; session EV-validation-policy-remainders.
 
+### F6 / F7 / F10 / F15 / F20 deepen (EV-1396 regional tester gaps)
+
+- **Status note**: No new feature. Seven shared mechanisms cover the October 2026 tester issues that still fail on staging ([#1396](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1396) and children [#1397](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1397)–[#1412](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1412)). The time anchor and the weather grammar are in. The other five mechanisms stay unbuilt. [Corpus: product §F6] [Corpus: product §F7] [Corpus: product §F10] [Corpus: product §F15] [Corpus: product §F20]
+- **Mechanisms**:
+  1. One weather and cloud grammar, shared by lint and convert. A descriptor is not consumed when it is the phenomenon, so vicinity showers, vicinity thunderstorms, and a bare thunderstorm stay valid. Recent weather is written as recent weather. A cloud base may be unknown (`///`) and still carry cumulonimbus or towering cumulus.
+  2. One time anchor for every product. Day and clock come from the TAC. Year and month come from optional `bulletin_date` (`YYYY-MM-DD`). HTTP convert uses that date, or the current UTC date when it is omitted. Library `convert()` without `bulletin_date` keeps the example pins (`2012-08`, `2023-06`, and the SIGMET specials). A day that cannot fall in the anchor month moves to the previous month that contains it.
+  3. One measure writer. Variable forecast wind keeps its speed and the TAC unit. Mixed statute-mile fractions use the existing fraction parser. `9999` and `10SM` both mean 10 km or more. When both an altimeter setting and a QNH group are present, the QNH group wins.
+  4. One report assembler. A pasted abbreviated heading uses bulletin convert. TAF continuation lines stay one forecast. `PROB30` and `PROB40` qualify the following change group. The report keyword is accepted in any case. Every forecast time link points at an id in the same document. `AMD NOT SKED` is a trailer.
+  5. A SIGMET body normalizer in front of the encoder that already keeps tops, movement, intensity, and a bare cancellation. It unwraps coordinates, keeps the flight-information-region name, accepts a compound direction, and ignores a remark on a cancellation.
+  6. Remarks on the default profile stay out of the international body. The plain-language decode explains them. The lint note does not tell every operator to switch to the US profile.
+  7. One convert result card. The page title is TAC to IWXXM. The newest result is first. Status is valid, valid with notes, or needs attention. An invalid result says do not publish.
+- **Out of this deepen**: correction status, METAR variable wind in knots, wind-direction variation, a clean abbreviated heading on the bulletin endpoint, and simple SIGMET tops, movement, and intensity. Those already pass on staging.
+- **Source**: #1396–#1412; session EV-1396-tester-gap-solutions; [docs/decisions/evolve-decisions.md](decisions/evolve-decisions.md).
+
 ### F2 / F6 / F9 / F15 deepen (EV-yaml-extension-header)
 
 - **Status note**: F2, F6, F9, and F15 stay as they are; this cycle does **not** add a new Fn.

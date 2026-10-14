@@ -206,13 +206,21 @@ def emit_airmet_annex3(
 """
 
     if cancel:
-        c_begin = (
-            f"2012-08-{int(ir['cancelled_from_day']):02d}T"
-            f"{int(ir['cancelled_from_hour']):02d}:{int(ir['cancelled_from_minute']):02d}:00Z"
+        from tac2iwxxm.time_anchor import iso_stamp
+
+        c_begin = iso_stamp(
+            ir,
+            int(ir["cancelled_from_day"]),
+            int(ir["cancelled_from_hour"]),
+            int(ir["cancelled_from_minute"]),
+            legacy="2012-08",
         )
-        c_end = (
-            f"2012-08-{int(ir['cancelled_to_day']):02d}T"
-            f"{int(ir['cancelled_to_hour']):02d}:{int(ir['cancelled_to_minute']):02d}:00Z"
+        c_end = iso_stamp(
+            ir,
+            int(ir["cancelled_to_day"]),
+            int(ir["cancelled_to_hour"]),
+            int(ir["cancelled_to_minute"]),
+            legacy="2012-08",
         )
         return (
             units.format(cancel_attr='\n    isCancelReport="true"')

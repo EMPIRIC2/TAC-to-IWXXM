@@ -75,7 +75,10 @@ def _peak_timestamp(ir: dict[str, Any]) -> str:
     day = int(ir["day"])
     hour = int(ir["peak_wind_hour"])
     minute = int(ir["peak_wind_minute"])
-    return f"2023-06-{day:02d}T{hour:02d}:{minute:02d}:00Z"
+    from tac2iwxxm.time_anchor import iso_stamp
+
+    legacy = "2012-08" if str(ir.get("station")) == "YUDO" else "2023-06"
+    return iso_stamp(ir, day, hour, minute, legacy=legacy)
 
 
 def _wind_shift_timestamp(ir: dict[str, Any]) -> str:
@@ -95,7 +98,10 @@ def _wind_shift_timestamp(ir: dict[str, Any]) -> str:
     day = int(ir["day"])
     hour = int(ir["wind_shift_hour"])
     minute = int(ir["wind_shift_minute"])
-    return f"2023-06-{day:02d}T{hour:02d}:{minute:02d}:00Z"
+    from tac2iwxxm.time_anchor import iso_stamp
+
+    legacy = "2012-08" if str(ir.get("station")) == "YUDO" else "2023-06"
+    return iso_stamp(ir, day, hour, minute, legacy=legacy)
 
 
 def _fmt_deg(value: float) -> str:
@@ -733,8 +739,11 @@ def _recent_weather_addendum_inner(ir: dict[str, Any]) -> str:
     rows_raw = ir.get("recent_weather_us")
     if not isinstance(rows_raw, list) or not rows_raw:
         return ""
+    from tac2iwxxm.time_anchor import iso_stamp
+
     day = int(ir["day"])
     obs_hour = int(ir["hour"])
+    legacy = "2012-08" if str(ir.get("station")) == "YUDO" else "2023-06"
     parts: list[str] = ["          <iwxxm-us:recentWeather>"]
     for idx, row_obj in enumerate(cast(list[object], rows_raw)):
         if not isinstance(row_obj, dict):
@@ -746,12 +755,12 @@ def _recent_weather_addendum_inner(ir: dict[str, Any]) -> str:
         begin_xml = ""
         end_xml = ""
         if row.get("begin_minute") is not None:
-            stamp = f"2023-06-{day:02d}T{b_hour:02d}:{int(str(row['begin_minute'])):02d}:00Z"
+            stamp = iso_stamp(ir, day, b_hour, int(str(row["begin_minute"])), legacy=legacy)
             begin_xml = f"<gml:beginPosition>{stamp}</gml:beginPosition>"
         else:
             begin_xml = '<gml:beginPosition indeterminatePosition="unknown"/>'
         if row.get("end_minute") is not None:
-            stamp = f"2023-06-{day:02d}T{e_hour:02d}:{int(str(row['end_minute'])):02d}:00Z"
+            stamp = iso_stamp(ir, day, e_hour, int(str(row["end_minute"])), legacy=legacy)
             end_xml = f"<gml:endPosition>{stamp}</gml:endPosition>"
         else:
             end_xml = '<gml:endPosition indeterminatePosition="unknown"/>'
@@ -1119,13 +1128,24 @@ def _airmet_subperiod_extension(parent_ir: dict[str, Any], outlook: dict[str, An
     object
         Return value.
     """
-    year_month = "2014-05"
+    from tac2iwxxm.time_anchor import iso_stamp
+
     from_day = int(outlook.get("valid_from_day", parent_ir["valid_from_day"]))
     to_day = int(outlook.get("valid_to_day", from_day))
-    begin = (
-        f"{year_month}-{from_day:02d}T{int(outlook['valid_from_hour']):02d}:{int(outlook['valid_from_minute']):02d}:00Z"
+    begin = iso_stamp(
+        parent_ir,
+        from_day,
+        int(outlook["valid_from_hour"]),
+        int(outlook["valid_from_minute"]),
+        legacy="2014-05",
     )
-    end = f"{year_month}-{to_day:02d}T{int(outlook['valid_to_hour']):02d}:{int(outlook['valid_to_minute']):02d}:00Z"
+    end = iso_stamp(
+        parent_ir,
+        to_day,
+        int(outlook["valid_to_hour"]),
+        int(outlook["valid_to_minute"]),
+        legacy="2014-05",
+    )
     freezing_levels = ""
     inline_lo = outlook.get("inline_frzlvl_lo")
     inline_hi = outlook.get("inline_frzlvl_hi")
@@ -1255,14 +1275,21 @@ def _airmet_freezing_level_forecast_extension(ir: dict[str, Any]) -> str:
     isopleths = section.get("isopleths")
     if not isinstance(isopleths, list) or not isopleths:
         return ""
-    year_month = "2014-05"
-    begin = (
-        f"{year_month}-{int(ir['valid_from_day']):02d}T"
-        f"{int(ir['valid_from_hour']):02d}:{int(ir['valid_from_minute']):02d}:00Z"
+    from tac2iwxxm.time_anchor import iso_stamp
+
+    begin = iso_stamp(
+        ir,
+        int(ir["valid_from_day"]),
+        int(ir["valid_from_hour"]),
+        int(ir["valid_from_minute"]),
+        legacy="2014-05",
     )
-    end = (
-        f"{year_month}-{int(ir['valid_to_day']):02d}T"
-        f"{int(ir['valid_to_hour']):02d}:{int(ir['valid_to_minute']):02d}:00Z"
+    end = iso_stamp(
+        ir,
+        int(ir["valid_to_day"]),
+        int(ir["valid_to_hour"]),
+        int(ir["valid_to_minute"]),
+        legacy="2014-05",
     )
     multiple = bool(section.get("multiple_levels"))
     typed_isopleths: list[dict[str, Any]] = []

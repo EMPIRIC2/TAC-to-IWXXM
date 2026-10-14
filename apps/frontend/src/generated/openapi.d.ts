@@ -3507,6 +3507,12 @@ export interface components {
         /** Body_convert_api_v1_convert_post */
         Body_convert_api_v1_convert_post: {
             /**
+             * Bulletin Date
+             * @description Optional calendar date (YYYY-MM-DD) used as the year and month for TAC day stamps. When omitted, the current UTC date is used. A day that cannot fall in that month is placed in the previous month that contains it.
+             * @default
+             */
+            bulletin_date: string;
+            /**
              * Bulletin Id
              * @description Optional bulletin identifier
              * @default
@@ -3689,6 +3695,12 @@ export interface components {
         /** Body_convert_bulletin_api_v1_convert_bulletin_post */
         Body_convert_bulletin_api_v1_convert_bulletin_post: {
             /**
+             * Bulletin Date
+             * @description Optional calendar date (YYYY-MM-DD) used as the year and month for TAC day stamps. When omitted, the current UTC date is used. A day that cannot fall in that month is placed in the previous month that contains it.
+             * @default
+             */
+            bulletin_date: string;
+            /**
              * Conversion Library Id
              * @description Conversion library asset id (resolves engine profile when set)
              * @default
@@ -3757,6 +3769,12 @@ export interface components {
         };
         /** Body_convert_zip_api_v1_convert_zip_post */
         Body_convert_zip_api_v1_convert_zip_post: {
+            /**
+             * Bulletin Date
+             * @description Optional calendar date (YYYY-MM-DD) used as the year and month for TAC day stamps. When omitted, the current UTC date is used. A day that cannot fall in that month is placed in the previous month that contains it.
+             * @default
+             */
+            bulletin_date: string;
             /**
              * Iwxxm Version
              * @description Target IWXXM version: 2025-2 (latest), 2023-1 (previous), or 2025-1 (auto-remaps to 2025-2)

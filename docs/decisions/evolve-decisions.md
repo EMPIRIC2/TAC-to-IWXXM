@@ -1,5 +1,28 @@
 # Evolve Decisions
 
+## Cycle EV-1396-tester-gap-solutions — seven shared fixes for regional tester gaps (#1396)
+
+**Opened:** 2026-10-14 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-1396-tester-gap-solutions`  
+**Issue:** [#1396](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1396)  
+**Documenting→Implementing gate:** open for the time anchor and the weather grammar  
+**Scale:** standard
+
+| ID | Outcome |
+|----|---------|
+| D1 | Design the seven mechanisms first. The time anchor and the weather grammar are in. The other five mechanisms stay unbuilt. |
+| D2 | Group #1397–#1412 into seven mechanisms, not sixteen one-off fixes. |
+| D3 | Weather grammar: do not consume TS or SH as a descriptor when that leaves an empty token. Share the grammar between lint and convert. Emit recent weather on the default profile. Allow cloud height `///` plus CB or TCU. |
+| D4 | One time anchor. Optional `bulletin_date` on convert (`YYYY-MM-DD`). The HTTP convert path uses that date, or the current UTC date when it is omitted. Library `convert()` without `bulletin_date` keeps example pins (`2023-06`, `2012-08`, and the SIGMET specials). A TAC day that cannot fall in the anchor month moves to the previous month that contains it. |
+| D5 | One measure writer for wind unit, statute-mile fractions, 10 km or more, and QNH-over-altimeter. |
+| D6 | One report assembler for headings, multiline TAF, probability, letter case, time-link ids, and `AMD NOT SKED`. |
+| D7 | SIGMET remainder is a body normalizer. Do not rebuild tops, movement speed, intensity, or a bare cancellation. |
+| D8 | Recommended remarks policy: default profile still omits RMK from the international body; decode explains the remark; stop directing every operator to the US profile. |
+| D9 | One result card: title TAC to IWXXM, newest first, three statuses, do not publish when invalid. |
+| D10 | No new dependency and no new feature id. |
+| F107 | Memory retrieve skipped. Docker and Neo4j were down. |
+
+[Corpus: product §F6] [Corpus: product §F7] [Corpus: product §F10] [Corpus: product §F15] [Corpus: product §F20] [Corpus: api] [Corpus: tests]
+
 ## Cycle EV-1252-residual-yaml — detector hatches, name table, emit plugins (#1252)
 
 **Opened:** 2026-09-23 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-1252-residual-yaml`  

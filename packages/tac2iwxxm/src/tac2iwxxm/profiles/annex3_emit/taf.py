@@ -10,7 +10,7 @@ from xml.sax.saxutils import escape
 from tac2iwxxm.profiles.annex3_emit._common import *
 
 
-def _taf_time_prefix(ir: dict[str, Any]) -> str:
+def _taf_time_prefix(ir: dict[str, Any], day: int | None = None) -> str:
     """
     Internal helper ``_taf_time_prefix``.
 
@@ -25,6 +25,12 @@ def _taf_time_prefix(ir: dict[str, Any]) -> str:
         Return value.
     """
     # ruff: noqa: F403, F405
+    from tac2iwxxm.time_anchor import anchored_prefix
+
+    day_value = int(ir.get("issue_day") or 1) if day is None else int(day)
+    anchored = anchored_prefix(ir, day_value)
+    if anchored is not None:
+        return anchored
     if ir.get("station") == "YUDO":
         return "2012-08"
     return "2023-06"
@@ -44,7 +50,7 @@ def _taf_issue_stamp(ir: dict[str, Any]) -> str:
     object
         Return value.
     """
-    prefix = _taf_time_prefix(ir)
+    prefix = _taf_time_prefix(ir, int(ir["issue_day"]))
     return f"{prefix}-{int(ir['issue_day']):02d}T{int(ir['issue_hour']):02d}:{int(ir['issue_minute']):02d}:00Z"
 
 
@@ -64,9 +70,10 @@ def _taf_period(ir: dict[str, Any], *, from_key: str = "valid") -> tuple[str, st
     object
         Return value.
     """
-    prefix = _taf_time_prefix(ir)
-    begin = f"{prefix}-{int(ir[f'{from_key}_from_day']):02d}T{int(ir[f'{from_key}_from_hour']):02d}:00:00Z"
-    end = f"{prefix}-{int(ir[f'{from_key}_to_day']):02d}T{int(ir[f'{from_key}_to_hour']):02d}:00:00Z"
+    begin_prefix = _taf_time_prefix(ir, int(ir[f"{from_key}_from_day"]))
+    end_prefix = _taf_time_prefix(ir, int(ir[f"{from_key}_to_day"]))
+    begin = f"{begin_prefix}-{int(ir[f'{from_key}_from_day']):02d}T{int(ir[f'{from_key}_from_hour']):02d}:00:00Z"
+    end = f"{end_prefix}-{int(ir[f'{from_key}_to_day']):02d}T{int(ir[f'{from_key}_to_hour']):02d}:00:00Z"
     return begin, end
 
 
@@ -211,11 +218,17 @@ def _taf_cloud_block(fcst: dict[str, Any], *, gml_id: str) -> str:
         if layer.get("cloud_type"):
             thref = escape(_CLOUD_TYPE_HREF.format(ctype=str(layer["cloud_type"])))
             ctype_xml = f'\n              <iwxxm:cloudType xlink:href="{thref}"/>'
+        if layer.get("base_not_observable"):
+            base_xml = (
+                '<iwxxm:base uom="N/A" xsi:nil="true" nilReason="http://codes.wmo.int/common/nil/notObservable"/>'
+            )
+        else:
+            base_xml = f'<iwxxm:base uom="[ft_i]">{layer["base_ft"]}</iwxxm:base>'
         layer_xml.append(
             f"""          <iwxxm:layer>
             <iwxxm:CloudLayer>
               <iwxxm:amount xlink:href="{escape(href)}"/>
-              <iwxxm:base uom="[ft_i]">{layer["base_ft"]}</iwxxm:base>{ctype_xml}
+              {base_xml}{ctype_xml}
             </iwxxm:CloudLayer>
           </iwxxm:layer>"""
         )

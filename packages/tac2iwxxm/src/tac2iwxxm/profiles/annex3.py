@@ -46,13 +46,14 @@ def obs_timestamp(ir: dict[str, Any]) -> str:
     object
         Return value.
     """
+    from tac2iwxxm.time_anchor import iso_stamp
+
     day = int(ir["day"])
     hour = int(ir["hour"])
     minute = int(ir["minute"])
     # WMO YUDO examples (NIL + A3-1 / A3-2) use 2012-08; other pack cases use 2023-06.
-    if ir.get("station") == "YUDO":
-        return f"2012-08-{day:02d}T{hour:02d}:{minute:02d}:00Z"
-    return f"2023-06-{day:02d}T{hour:02d}:{minute:02d}:00Z"
+    legacy = "2012-08" if ir.get("station") == "YUDO" else "2023-06"
+    return iso_stamp(ir, day, hour, minute, legacy=legacy)
 
 
 def _fmt_cel(value: object) -> str:
@@ -286,6 +287,30 @@ def _present_weather_block(ir: dict[str, Any]) -> str:
     return ("\n".join(parts) + "\n") if parts else ""
 
 
+def _recent_weather_block(ir: dict[str, Any]) -> str:
+    """
+    ICAO recent-weather groups (RETS, RESHRA) on the default profile.
+
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Parsed report. ``recent_weather`` is a list of 4678 codes.
+
+    Returns
+    -------
+    str
+        ``iwxxm:recentWeather`` elements, or an empty string.
+    """
+    codes_raw = ir.get("recent_weather")
+    if not isinstance(codes_raw, list):
+        return ""
+    parts: list[str] = []
+    for code in cast(list[Any], codes_raw):
+        href = escape(WX_HREF.format(code=str(code)))
+        parts.append(f'      <iwxxm:recentWeather xlink:href="{href}"/>')
+    return ("\n".join(parts) + "\n") if parts else ""
+
+
 def _cloud_block(ir: dict[str, Any], *, cloud_layer_extension: str = "") -> str:
     """
     Internal helper ``_cloud_block``.
@@ -339,11 +364,15 @@ def _cloud_block(ir: dict[str, Any], *, cloud_layer_extension: str = "") -> str:
         ext = ""
         if cloud_layer_extension and i == ceil_idx:
             ext = f"\n{cloud_layer_extension}"
+        if layer.get("base_not_observable"):
+            base_xml = f'<iwxxm:base uom="N/A" xsi:nil="true" nilReason="{NIL_NOT_OBS}"/>'
+        else:
+            base_xml = f'<iwxxm:base uom="[ft_i]">{layer["base_ft"]}</iwxxm:base>'
         layer_xml.append(
             f"""          <iwxxm:layer>
             <iwxxm:CloudLayer>
               <iwxxm:amount xlink:href="{escape(href)}"/>
-              <iwxxm:base uom="[ft_i]">{layer["base_ft"]}</iwxxm:base>{ctype_xml}{ext}
+              {base_xml}{ctype_xml}{ext}
             </iwxxm:CloudLayer>
           </iwxxm:layer>"""
         )
@@ -582,6 +611,7 @@ def build_observation_and_trends(
     rvr_block = ""
     wx_block = ""
     cloud = ""
+    recent = ""
     if ir.get("ca_minimal_observation"):
         cavok_attr = "false"
     elif not cavok:
@@ -589,6 +619,7 @@ def build_observation_and_trends(
         rvr_block = _rvr_block(ir, rvr_extension=rvr_extension)
         wx_block = _present_weather_block(ir)
         cloud = _cloud_block(ir, cloud_layer_extension=cloud_layer_extension)
+    recent = _recent_weather_block(ir)
 
     if ir.get("temp_not_observable"):
         temp_xml = f'      <iwxxm:airTemperature uom="N/A" xsi:nil="true" nilReason="{NIL_NOT_OBS}"/>\n'
@@ -607,7 +638,7 @@ def build_observation_and_trends(
 
     observation = f"""  <iwxxm:observation>
     <iwxxm:MeteorologicalAerodromeObservation gml:id="obs.1" cloudAndVisibilityOK="{cavok_attr}">
-{temp_xml}{dew_xml}{qnh_xml}{_surface_wind_inner(ir, peak_extension=peak_extension)}{vis_block}{rvr_block}{wx_block}{cloud}{addendum_extension}    </iwxxm:MeteorologicalAerodromeObservation>
+{temp_xml}{dew_xml}{qnh_xml}{_surface_wind_inner(ir, peak_extension=peak_extension)}{vis_block}{rvr_block}{wx_block}{cloud}{recent}{addendum_extension}    </iwxxm:MeteorologicalAerodromeObservation>
   </iwxxm:observation>
 """
     return observation, _trend_forecasts(ir)
