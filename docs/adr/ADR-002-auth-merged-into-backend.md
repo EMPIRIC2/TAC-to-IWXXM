@@ -8,7 +8,7 @@
 
 Authentication runs as a separate FastAPI service (`auth/`) proxying Supabase. Docker Compose
 and Render deploy three services (frontend, backend, auth). The user indicated auth does not
-need its own top-level directory as a deployable — it can be a **package** consumed by backend.
+need its own top-level directory as a deployable; it can be a **package** consumed by backend.
 
 ## Decision
 

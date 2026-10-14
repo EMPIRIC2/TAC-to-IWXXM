@@ -35,7 +35,7 @@
 ## Tech plan
 
 See [ev-yaml-engine-configurability-tech-plan.md](ev-yaml-engine-configurability-tech-plan.md) (TP-EVYEC-01..06).  
-Verify-tech: [ev-yaml-engine-configurability-verify-tech.md](ev-yaml-engine-configurability-verify-tech.md) — **Pass**.
+Verify-tech: [ev-yaml-engine-configurability-verify-tech.md](ev-yaml-engine-configurability-verify-tech.md) (**Pass**).
 
 ## Acceptance (mirror feature-list)
 

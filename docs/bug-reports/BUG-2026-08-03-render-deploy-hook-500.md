@@ -30,7 +30,7 @@ IMAGE_URL: `ghcr.io/empiric2/tac-to-iwxxm/backend:20260803151459-8bd111c`
 ## Investigation
 
 1. Failure is isolated to Render deploy-hook + `imgURL` (HTTP 500), not build/test.
-2. Docs-only follow-up commit `86c9722` Deploy later succeeded — intermittent/platform.
+2. Docs-only follow-up commit `86c9722` Deploy later succeeded: intermittent/platform.
 3. Manual REST with `imageUrl` for the same tag succeeded (deploy-smoke workaround).
 4. Root cause for CI redness: brittle one-liner with no retry/REST fallback.
 

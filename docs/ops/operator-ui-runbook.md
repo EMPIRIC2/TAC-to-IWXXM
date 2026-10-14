@@ -21,7 +21,7 @@ standards, schemas, and packages** underwrite that behavior.
 | Deploy credentials | Operator-owned env (BYO) — not pasted in-app | F7.a / #697; [Corpus: tech-spec] env-contract |
 
 **Journeys:** UJ-001/005 (convert), UJ-013/015–018 (workbench), UJ-020/021 (decode/preview),
-UJ-027–030 (dissemination when used) — [Corpus: journeys].
+UJ-027–030 (dissemination when used); [Corpus: journeys].
 
 ## EV-091 — Operator destinations restored (#898 / #1089)
 
@@ -45,7 +45,7 @@ S050 temporarily hid destinations; restored by EV-091 above.
 ## 2. What the tool implements (pipeline)
 
 End-to-end strategy for profile **`annex3`** (and overlay **`iwxxm_us`** where national
-REMARKS apply). Stages are separate — do not treat XSD success as “Annex 3 compliant TAC”.
+REMARKS apply). Stages are separate; do not treat XSD success as “Annex 3 compliant TAC”.
 
 | Stage | Proves | Strategy SoT | Engine |
 |-------|--------|--------------|--------|
@@ -117,7 +117,7 @@ Master URL catalog: [RULE_SOURCE_URLS.md](../domain/rules/RULE_SOURCE_URLS.md).
 - **UI:** mode switch + auto-detect (ADR-024 / UJ-025).  
 - **Sources:** AHL format from WMO community AHL page + WMO-No. 386 heading pattern
   (see PPT-02 mining notes §Exchange / AHL); COLLECT packing per OPMET IWXXM Exchange
-  Guidelines (public PDF — [RULE_SOURCE_URLS](../domain/rules/RULE_SOURCE_URLS.md)).  
+  Guidelines (public PDF: [RULE_SOURCE_URLS](../domain/rules/RULE_SOURCE_URLS.md)).  
 - **Engine:** bulletin helpers in `tac2iwxxm`; COLLECT member extract may still 501 for
   some paths (documented deferred).
 
@@ -126,12 +126,12 @@ Master URL catalog: [RULE_SOURCE_URLS.md](../domain/rules/RULE_SOURCE_URLS.md).
 - **UI:** live editor; highlights lint/validate `start`/`end`.  
 - **Sources:** F7.b/#702 spans; issue codes from [ISSUE_CATALOG](../domain/rules/ISSUE_CATALOG.md)
   (`packages/tac-validate`).  
-- **Stack:** CodeMirror 6 — [Corpus: tech-spec] dependency-inventory.
+- **Stack:** CodeMirror 6; [Corpus: tech-spec] dependency-inventory.
 
 ### 5.4 Decode panel (Code | Explanation) + plain-language summary
 
 - **UI:** token segments + F9 value-aware summary.  
-- **API:** `POST /api/v1/decode-tac` — [Corpus: api].  
+- **API:** `POST /api/v1/decode-tac`; [Corpus: api].  
 - **Sources:** explanations are **operator-facing paraphrases**, not Annex 3 reprints;
   residual undecoded tokens stay explicit (F7 G4). Normative templates remain Annex 3 /
   WMO-306 (cite only).
@@ -147,24 +147,24 @@ Master URL catalog: [RULE_SOURCE_URLS.md](../domain/rules/RULE_SOURCE_URLS.md).
 
 - **UI:** best-effort IWXXM + failed-span markers; distinct failure cue (F7.c / F10).  
 - **Sources:** translation-failure retention pattern (`translationFailedTAC`) described in
-  OPMET/IWXXM practice and informative PPT-02 slide 9 — prefer vendored `common.xsd`
+  OPMET/IWXXM practice and informative PPT-02 slide 9; prefer vendored `common.xsd`
   attribute names; [IWXXM_CONVERSION.md](../domain/IWXXM_CONVERSION.md).
 
 ### 5.7 Live IWXXM preview + Strict Validation
 
 - **UI:** debounced convert/validate; optional XSD+Schematron on hard Convert.  
-- **Sources:** vendored XSD + `rule/iwxxm.sch` + offline RDF — [IWXXM_VALIDATION.md](../domain/IWXXM_VALIDATION.md).
+- **Sources:** vendored XSD + `rule/iwxxm.sch` + offline RDF; [IWXXM_VALIDATION.md](../domain/IWXXM_VALIDATION.md).
 
 ### 5.8 Examples catalog (golden / official demos)
 
 - **UI:** load TAC, AHL, Collect, product goldens (F7.g; EV-040 official AHL/Collect).  
 - **Sources:** WMO example trees under pin (`examples/`); US fixtures where labeled;
-  catalog rows should show provenance — do not invent TAC.
+  catalog rows should show provenance; do not invent TAC.
 
 ### 5.9 Dissemination drawer (optional)
 
 - **UI:** one-shot BYOC destinations (memory-only credentials).  
-- **Sources:** [Corpus: product] F16–F19; ADR-029/030; egress allowlist — **not** F8 auto-push.
+- **Sources:** [Corpus: product] F16–F19; ADR-029/030; egress allowlist; **not** F8 auto-push.
 - **Ops:** see dissemination docs in tech-spec / feature-list; do not store pasted secrets.
 
 ### 5.10 Sessions / history
@@ -181,7 +181,7 @@ Master URL catalog: [RULE_SOURCE_URLS.md](../domain/rules/RULE_SOURCE_URLS.md).
 3. Follow links into [RULE_SOURCE_URLS.md](../domain/rules/RULE_SOURCE_URLS.md) and
    [PROVENANCE_MAP.md](../domain/rules/PROVENANCE_MAP.md).  
 4. For dig detail, open the matching file under [docs/domain/mining/](../domain/mining/).  
-5. If Access = **paywall**, obtain the official ICAO Store / WMO Library edition — the repo
+5. If Access = **paywall**, obtain the official ICAO Store / WMO Library edition; the repo
    will not contain the PDF prose.
 
 ---

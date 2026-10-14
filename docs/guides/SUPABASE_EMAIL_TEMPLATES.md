@@ -53,7 +53,7 @@ This template is used for:
 {{ .ConfirmationURL }}
 ```
 
-**Replace with (recommended — matches FE `/auth/confirm`):**
+**Replace with (recommended; matches FE `/auth/confirm`):**
 ```
 {{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=email
 ```
@@ -209,7 +209,7 @@ if (token_hash) {
 
 No additional frontend configuration is needed once templates are updated.
 
-## Best Practices
+## Practices
 
 1. **Keep templates consistent** - Use same token hash format across all templates
 2. **Test before production** - Send test emails to verify templates work

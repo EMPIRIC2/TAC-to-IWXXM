@@ -7,7 +7,7 @@
 
 ## Problem
 
-TAC lint codes live in a solid registry (ADR-028), but detectors are imperative Python and mined YAML catalogs are projections—not executable policy. IWXXM validation is Schematron/XSD with a mined assert inventory under `tac2iwxxm`. Decode packs (ADR-045) already show how declarative packs scale; lint/validate need the same *layering* without duplicating Schematron or merging packages.
+TAC lint codes live in a solid registry (ADR-028), but detectors are imperative Python and mined YAML catalogs are projections, not executable policy. IWXXM validation is Schematron/XSD with a mined assert inventory under `tac2iwxxm`. Decode packs (ADR-045) already show how declarative packs scale; lint/validate need the same *layering* without duplicating Schematron or merging packages.
 
 ## Locked solution shape
 
@@ -37,7 +37,7 @@ Four layers: **Registry → Detector → Policy → Runtime** (D-VPL lock).
 
 ## Memory
 
-Session-open: no strong matches. Historical retrieve: low-signal cross-project item only — **waive** (keep-local). Prior in-repo: ADR-045 pack cycles, ADR-028 registry, ADR-038 `validation.tac` / `outputValidation`.
+Session-open: no strong matches. Historical retrieve: low-signal cross-project item only: **waive** (keep-local). Prior in-repo: ADR-045 pack cycles, ADR-028 registry, ADR-038 `validation.tac` / `outputValidation`.
 
 ## Docs to delta (draft-docs)
 

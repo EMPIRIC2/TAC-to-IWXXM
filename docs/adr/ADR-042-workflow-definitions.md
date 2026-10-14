@@ -30,9 +30,9 @@ ADR-039 deferred unified PipelineResult **runtime** to #931. ADR-041 deferred Di
 
 Constraints:
 
-- ADR-037 Option C — no big-bang package renames; new package requires ADR (this ADR)
-- ADR-021/029 — no BYOC credentials in workflow definitions
-- Template purity — executor must not import FastAPI/Supabase
+- ADR-037 Option C: no big-bang package renames; new package requires ADR (this ADR)
+- ADR-021/029: no BYOC credentials in workflow definitions
+- Template purity: executor must not import FastAPI/Supabase
 - #931 spike = contract + documentation; runtime in follow-on build
 
 ## Decision
@@ -98,7 +98,7 @@ Constraints:
    | HTTP `/convert` | Library primitive | **Unchanged** — not replaced by execute |
    | Operator UI #934 | Workflow picker + run history | Blocked until this ADR |
 
-10. **MVP runtime scope (Planned build — not #931):**
+10. **MVP runtime scope (Planned build; not #931):**
 
     - Stages: `validate-tac` → `convert-iwxxm` → `validate-xsd` + `validate-schematron`
     - `onInvalid` → quarantine store only
@@ -162,13 +162,13 @@ onInvalid:
 
 ### Negative / follow-ups
 
-- New `packages/workflows` workspace member — update template registry + uv workspace on implementation
+- New `packages/workflows` workspace member; update template registry + uv workspace on implementation
 - F8 cutover requires regression against existing ingest tests
 - `normalize` / `validate-semantic` / `validate-codelists` stages need explicit implementations before full sketch is runnable
 - Async batch execute API not defined in v1
 
 ## References
 
-- Context: workflow-definitions-931 (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate)
+- Context: workflow-definitions-931 (archived; see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate)
 - EV-931 session `reports/931-workflow-definitions.md`
 - F8 reference: `apps/worker/src/metar_worker/pipeline.py`

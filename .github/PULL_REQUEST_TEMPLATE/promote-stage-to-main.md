@@ -13,8 +13,8 @@ See docs/deploy.md §Promote / §Release checklist. ADR-034.
 
 - [ ] Reviewed publishable package diffs since last `v*-deploy` tag
       (`tac2iwxxm` / `tac-validate` / `iwxxm-validate`)
-- [ ] CalVer bumps committed on `stage` (or explicit **none** for docs/infra-only)
-      — `YYYY.MM.DD` / `YYYY.MM.DD.N` (ADR-043)
+- [ ] CalVer bumps committed on `stage` (or explicit **none** for docs/infra-only):
+      `YYYY.MM.DD` / `YYYY.MM.DD.N` (ADR-043)
 - [ ] `docs/CHANGELOG.md` cut with dated section
 - [ ] After merge: tag `vYYYY.MM.DD-deploy` on `main` tip and push
 - [ ] If publishing: per-package PyPI tags after pypi-release-checklist
@@ -29,6 +29,6 @@ See docs/deploy.md §Promote / §Release checklist. ADR-034.
 - [ ] Staging smoke green for tip SHA
 - [ ] Staging gate green on this PR
 - [ ] **EV-061 / #1015:** full CI unit jobs (`Test (*)`), `Lint`, `Typecheck`, and
-      **`E2E Full (Playwright)`** (not smoke-only) green — see `docs/deploy.md` §Promote table
+      **`E2E Full (Playwright)`** (not smoke-only) green; see `docs/deploy.md` §Promote table
 - [ ] Post-merge: confirm tip CI on `main` green (**Deploy must not run** on bare main push);
       ship prod via `vYYYY.MM.DD-deploy` tag

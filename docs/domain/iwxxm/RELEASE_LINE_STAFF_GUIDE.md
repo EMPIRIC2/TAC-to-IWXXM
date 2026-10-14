@@ -40,7 +40,7 @@ You do **not** edit code or `vendor/` pins. You should:
 | API error for deprecated line | Message lists **supported** versions — share that with partners |
 
 If Examples or product pickers mention a product (e.g. VONA), that is separate from the
-**IWXXM version** picker — product = TAC type; version = XML edition year.
+**IWXXM version** picker: product = TAC type; version = XML edition year.
 
 ## Handoff: engineering → ops / product
 
@@ -94,4 +94,4 @@ When engineering finishes a sync/adopt PR (checklist in
 
 ---
 
-*Written 2026-08-04 — S040 / EV-032 T3.2. Engineering SoT remains #808 / RELEASE_LINE_ADOPTABILITY.*
+*Written 2026-08-04 (S040 / EV-032 T3.2). Engineering SoT remains #808 / RELEASE_LINE_ADOPTABILITY.*

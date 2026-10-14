@@ -2,7 +2,7 @@
 
 **Session:** EV-yaml-full-configurability  
 **Date:** 2026-09-21  
-**Verdict:** **Pass (Spec)** — ready for documenting verify CLI when angles run; Build gate remains closed
+**Verdict:** **Pass (Spec)**; ready for documenting verify CLI when angles run; Build gate remains closed
 
 [Corpus: adr/ADR-047] [Corpus: tests] [Corpus: decisions]
 
@@ -23,4 +23,4 @@
 
 1. Run `bin/verify --phase documenting` with **full** angles; record evidence.
 2. AskQuestion open Build gate (or Spec-only stop).
-3. Airport-enrichment vs decode `full` cell — confirm in first Build interview if needed.
+3. Airport-enrichment vs decode `full` cell: confirm in first Build interview if needed.

@@ -176,7 +176,7 @@ LABEL version=latest \
 
 ## Failure Scenarios
 
-### ❌ Backend fails coverage check
+### Backend fails coverage check
 ```
 Pipeline Blocks:
 - Coverage enforcement fails
@@ -186,7 +186,7 @@ Pipeline Blocks:
 
 **Fix:** Add tests to `backend/tests/` until coverage ≥ 95%
 
-### ❌ Auth service fails coverage check
+### Auth service fails coverage check
 ```
 Pipeline Blocks:
 - Coverage enforcement fails
@@ -196,7 +196,7 @@ Pipeline Blocks:
 
 **Fix:** Add tests to `auth/tests/test_supabase_proxy_api_database.py`
 
-### ❌ Frontend fails coverage check
+### Frontend fails coverage check
 ```
 Pipeline Blocks:
 - Coverage enforcement fails
@@ -206,7 +206,7 @@ Pipeline Blocks:
 
 **Fix:** Add tests to `frontend/src/` using Vitest
 
-### ⚠️ GIFTs fails coverage check
+### GIFTs fails coverage check
 ```
 Pipeline Continues:
 - Warning generated

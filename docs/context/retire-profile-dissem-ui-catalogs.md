@@ -30,7 +30,7 @@ the Decoding catalog extension surface.
 ## Problem / users
 
 Operators need to **trust** which rules run for lint, IWXXM validate, convert, disseminate,
-and decode — without maintaining a complex in-browser profile/dissemination authoring IDE.
+and decode, without maintaining a complex in-browser profile/dissemination authoring IDE.
 Prior cycles (EV-conversion-profile-ux-libraries → EV-profile-builder-workbench-edit / #1203)
 expanded five-library authoring; this cycle **reverses that UI investment** in favor of
 inspectable catalogs + pickers.
@@ -40,9 +40,9 @@ inspectable catalogs + pickers.
 - Workbench convert / lint / soft-preview / `POST /api/v1/decode-tac`
 - `GET /api/v1/lint-issue-catalog` (F7.v / F15) behavior for TAC (+ existing IWXXM merge)
 - Dissemination **send/preflight** + egress allowlist (F16–F19 / ADR-021/029/030)
-- Conversion runtime profiles (`annex3` / `iwxxm_us` / national) — selection may simplify;
+- Conversion runtime profiles (`annex3` / `iwxxm_us` / national): selection may simplify;
   encode path stays
-- Public unauthenticated operator app (F21) — no new auth requirement for catalogs
+- Public unauthenticated operator app (F21): no new auth requirement for catalogs
 
 ## Inventory (current code)
 

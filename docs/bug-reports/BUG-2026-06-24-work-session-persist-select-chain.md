@@ -111,7 +111,7 @@ in production after admin login. New findings:
 | Raw `.insert(data).execute()` on 2.31 | returns representation (list len 1) — no `.select()` needed |
 
 **Conclusion:** The merged fix is correct and verified end-to-end against the live
-Supabase. Production still 502s because the **fixed image is not deployed** — the
+Supabase. Production still 502s because the **fixed image is not deployed**: the
 `metar-to-iwxxm-api` Render service is serving a stale build from before `a79c86e`.
 This is a **deployment gap**, not an unresolved code defect.
 

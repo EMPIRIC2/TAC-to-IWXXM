@@ -37,7 +37,7 @@ All In-scope task IDs T1–T8 appear in tech-plan; Spec sources cited; TDD-frien
 
 ## Verdict
 
-**Pass** — proceed to documenting verify (`bin/verify --phase documenting`), then AskQuestion to open Build gate.
+**Pass**: proceed to documenting verify (`bin/verify --phase documenting`), then AskQuestion to open Build gate.
 
 ## Waivers recorded
 

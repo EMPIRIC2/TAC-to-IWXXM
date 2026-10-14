@@ -69,7 +69,7 @@ Standing dig: [PPT-02-IWXXM-Framework-WMO-mining-notes.md](../../domain/mining/P
 
 ## UI screenshots (slide 7)
 
-1. Start local frontend (non-deployed) — see [docs/ops/DEVELOPMENT.md](../../ops/DEVELOPMENT.md).  
+1. Start local frontend (non-deployed); see [docs/ops/DEVELOPMENT.md](../../ops/DEVELOPMENT.md).  
 2. Capture: (a) workbench with product picker + editor; (b) decode panel or lint console with source attribution.  
 3. Store under `.local/pptx-screenshots/` (create; keep gitignored) or insert straight into PPT.  
 4. Label slide: “Local non-deployed preview” if showing UI.
@@ -80,5 +80,5 @@ Standing dig: [PPT-02-IWXXM-Framework-WMO-mining-notes.md](../../domain/mining/P
 
 Prefer a **redrawn** 2-column table (2023-1 / 2025-2) from
 [VERSION_SUPPORT_POLICY.md](../../domain/iwxxm/VERSION_SUPPORT_POLICY.md) Appendix A
-(informative capture). Do not present PPT-02 p.5 as machine SoT — defer to vendored XSD
+(informative capture). Do not present PPT-02 p.5 as machine SoT; defer to vendored XSD
 `version=` attributes.

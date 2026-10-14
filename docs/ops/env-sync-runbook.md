@@ -81,7 +81,7 @@ Redeploy API. Confirm `GET /health` returns 200.
 Build must:
 
 1. Copy `config/prod.json` → `public/config.json`
-2. Inject `supabase.publishableKey` from `SUPABASE_PUBLISHABLE_KEY` build env (secret — dashboard only)
+2. Inject `supabase.publishableKey` from `SUPABASE_PUBLISHABLE_KEY` build env (secret, dashboard only)
 
 Remove deprecated build env after migration:
 
@@ -103,7 +103,7 @@ Set secrets and variables for CI (including `.github/workflows/supabase-sync.yml
 | `SUPABASE_PROJECT_REF` | Variable | Optional; defaults to `ktvxijislbtgqapllmuk` |
 
 **Supabase access token:** Dashboard → Account → Access Tokens → create token with deploy
-scope. Store as `SUPABASE_ACCESS_TOKEN` — do not commit.
+scope. Store as `SUPABASE_ACCESS_TOKEN`; do not commit.
 
 **Database password:** Project Settings → Database → reset or copy password. Required for
 `supabase link` in CI (migrations job).
@@ -142,7 +142,7 @@ Migrations live in **`supabase/migrations/`** (timestamp-ordered, per
 **Local:** `make supabase-reset` applies all migrations + `supabase/seed.sql`.
 
 **Production:** migrations **004–006 not yet applied** (S003-R3). Migrations **001–003** may
-already exist on the live database from earlier manual deploys — do **not** re-run
+already exist on the live database from earlier manual deploys; do **not** re-run
 `20250614000001`–`000003` on prod unless you have confirmed they are missing.
 
 Apply advisor migrations via:

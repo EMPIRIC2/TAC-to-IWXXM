@@ -36,7 +36,7 @@ User has work to do (any magnitude)
    Stages in approved routing-plan.md (docs/sessions/SNNN-slug/)
 ```
 
-**01-requirements** may be entry when project/scoped context already exists — agent still
+**01-requirements** may be entry when project/scoped context already exists; agent still
 requires `active_session` unless waived.
 
 ## Decision tree (existing app)
@@ -98,7 +98,7 @@ Does the repo already have docs/feature-list.md + deployable code?
 | **Large** | Multi-service, API redesign, migration | feature | 16-evolve (full routing plan) |
 | **General** | Scope/API change without clean Fn | feature | 16-evolve (`cycle_type: general`) |
 
-When magnitude is unclear, start **00-context** — it classifies and proposes routing plan.
+When magnitude is unclear, start **00-context**, which classifies and proposes routing plan.
 
 ## Active session
 

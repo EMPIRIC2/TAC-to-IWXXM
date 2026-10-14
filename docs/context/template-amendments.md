@@ -6,7 +6,7 @@ Session: EV-1274-template-catalog. Ticket: #1274. Scale: standard. Gate: open.
 
 ## Goal
 
-When ICAO or WMO changes a TAC template, record that change in a catalog next to the country profile catalog, and update conversion only where the template actually changed.
+When ICAO or WMO changes a TAC template, record that change in a catalog next to the country profile catalog, and update conversion only where the template changed.
 
 ## Out of scope
 

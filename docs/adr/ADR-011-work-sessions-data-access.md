@@ -6,7 +6,7 @@
 
 F5 requires per-user METAR work history in Supabase Postgres (`metar_work_sessions`) with
 RLS (`auth.uid() = user_id`) and admin read via `is_admin()`. ADR-010 reduced use of
-`SUPABASE_SECRET_KEY` — admin and user operations should run through the publishable key with
+`SUPABASE_SECRET_KEY`: admin and user operations should run through the publishable key with
 the caller's JWT so RLS enforces isolation.
 
 The backend already uses this pattern in `packages/auth/src/admin_api.py` (`_get_authed_client`
@@ -31,7 +31,7 @@ The backend already uses this pattern in `packages/auth/src/admin_api.py` (`_get
 
 - Consistent with ADR-010 and existing admin API patterns.
 - Integration tests need Supabase local stack or mocked PostgREST responses.
-- No SQLAlchemy ORM models for `metar_work_sessions` in v1 — keeps F5 isolated from
+- No SQLAlchemy ORM models for `metar_work_sessions` in v1; keeps F5 isolated from
   statistics SQLAlchemy path in `apps/backend/src/services/database.py`.
 
 ## Alternatives Considered

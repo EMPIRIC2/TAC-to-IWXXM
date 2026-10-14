@@ -10,7 +10,7 @@
 `make test-live-e2e` fails on `workflow-auth-admin-readiness.e2e.spec.ts` test
 "admin panel navigation loop remains stable across repeated transitions". Playwright
 cannot find a second heading named exactly `User Approvals` after clicking the User
-Approvals panel card — the panel content h2 is `Pending User Approvals`.
+Approvals panel card; the panel content h2 is `Pending User Approvals`.
 
 ## Error description
 
@@ -48,7 +48,7 @@ GET /admin/stats HTTP/1.1" 200 OK
 
 ## Remediation path
 
-local-first — no production deploy (test-only fix)
+local-first, no production deploy (test-only fix)
 
 ## Investigation
 
@@ -62,7 +62,7 @@ local-first — no production deploy (test-only fix)
 
 ## Root cause
 
-**Test bug (regression in E2E spec)** — assertion expects panel heading `User Approvals`
+**Test bug (regression in E2E spec)**: assertion expects panel heading `User Approvals`
 but UI intentionally renders `Pending User Approvals` in the panel body.
 
 ## Spec conformance
@@ -79,7 +79,7 @@ but UI intentionally renders `Pending User Approvals` in the panel body.
 |------|--------|
 | `apps/e2e/workflow-auth-admin-readiness.e2e.spec.ts:47` | RED (pre-fix) |
 
-No separate `tests/bugs/` pytest module — failure is Playwright-only; the spec is the repro/regression test.
+No separate `tests/bugs/` pytest module; failure is Playwright-only; the spec is the repro/regression test.
 
 ## TDD iteration log
 
@@ -105,7 +105,7 @@ No separate `tests/bugs/` pytest module — failure is Playwright-only; the spec
 
 ### Layer 2 — Reproduction
 
-- [x] Local Playwright with DISABLE_AUTH=false — pass
+- [x] Local Playwright with DISABLE_AUTH=false: pass
 
 ### CI
 

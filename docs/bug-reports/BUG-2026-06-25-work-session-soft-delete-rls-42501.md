@@ -10,7 +10,7 @@
 
 ## Error description
 
-`DELETE /api/v1/work-sessions/{id}` (soft-delete — UPDATE sets `deleted_at`)
+`DELETE /api/v1/work-sessions/{id}` (soft-delete: UPDATE sets `deleted_at`)
 returns 502 `Work session database error`. Discovered while verifying the auth
 hotfix (BUG-2026-06-25-prod-disable-auth-work-session-502); create (201) and
 update/PATCH (200) succeed for the same authenticated user.
@@ -46,7 +46,7 @@ postgrest.exceptions.APIError: {'message': 'new row violates row-level security 
 
 ### Confirmed root cause
 
-The live policies (queried via `pg_policy`) match the repo migration — the UPDATE
+The live policies (queried via `pg_policy`) match the repo migration: the UPDATE
 policy `WITH CHECK` is just `auth.uid() = user_id`, which a soft-delete satisfies.
 The blocker is the **SELECT** policy:
 
@@ -69,7 +69,7 @@ Verified with a rolled-back SQL experiment impersonating the owner
 | same, after `ALTER POLICY …_select_own USING(owner-only)` | **OK** |
 
 Also affected: `include_deleted=true` listing and getting/restoring already-deleted
-rows — the SELECT policy hid them from owners.
+rows; the SELECT policy hid them from owners.
 
 ### Fix
 
@@ -78,7 +78,7 @@ relaxes the SELECT policy to ownership-only
 (`auth.uid()=user_id OR is_admin()`), dropping the `deleted_at IS NULL` clause.
 `deleted_at` filtering already happens in the app/query layer
 (`WorkSessionService` applies `.is_("deleted_at","null")` unless `include_deleted`),
-so visibility of deleted rows is not widened across users — only the owner/admin
+so visibility of deleted rows is not widened across users; only the owner/admin
 can see their own soft-deleted rows (required for restore).
 
 ## Regression test

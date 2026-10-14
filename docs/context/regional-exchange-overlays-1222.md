@@ -52,7 +52,7 @@ remains `stub` and tests only assert COLLECT wrap equivalence.
 
 Pinned sources already in `catalog.yaml` + `docs/domain/profiles/exchange/*.md`.
 Mining notes: OPMET Guidelines 5th; APAC IWXXM FAQs 3rd. ROBEX HB PDF URL pinned
-but no dedicated mining-notes file yet — Spec→Build will create one from citations
+but no dedicated mining-notes file yet; Spec→Build will create one from citations
 only (no full annex prose).
 
 ## Prior closeout this session turn

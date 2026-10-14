@@ -37,7 +37,7 @@ authorization: Bearer
 Referrer: `https://metar-to-iwxxm-frontend-v4-web.onrender.com/`
 Body: `manual_text=fjgfjf`, `product=METAR`
 
-UI: `[lint-tac] 1 issue(s)` — not descriptive of the actual issue(s).
+UI: `[lint-tac] 1 issue(s)`, not descriptive of the actual issue(s).
 
 ## Interview record
 
@@ -102,7 +102,7 @@ UI: `[lint-tac] 1 issue(s)` — not descriptive of the actual issue(s).
 | api | lint-tac / decode-tac auth | 401 correct for missing creds; client now sends token |
 | M4 | Auth merged; tokens in localStorage | Drift fixed (aligned key + hydrate) |
 
-Spec conformance: **no blocking Contradiction** — code bug / UX drift.
+Spec conformance: **no blocking Contradiction**: code bug / UX drift.
 
 ## Root cause (confirmed)
 

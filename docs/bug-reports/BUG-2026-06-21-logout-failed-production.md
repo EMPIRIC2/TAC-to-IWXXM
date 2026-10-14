@@ -87,9 +87,9 @@ No blocking spec contradiction.
 
 **Branch:** uncommitted (local working tree)
 
-**Change:** `apps/frontend/src/utils/supabase/logout.ts` — import `getAccessToken`, send `Authorization: Bearer` on POST `/auth/logout`; early-return true when no token stored.
+**Change:** `apps/frontend/src/utils/supabase/logout.ts`: import `getAccessToken`, send `Authorization: Bearer` on POST `/auth/logout`; early-return true when no token stored.
 
-**Tests updated:** `apps/frontend/src/utils/supabase/logout.test.ts` — asserts Bearer header sent when token present.
+**Tests updated:** `apps/frontend/src/utils/supabase/logout.test.ts`: asserts Bearer header sent when token present.
 
 ### TDD iteration log
 
@@ -113,8 +113,8 @@ No blocking spec contradiction.
 
 - [x] Repro test red → green (2026-06-21)
 - [x] `logout.test.ts` — 4 passed
-- [x] FileConverter + AdminDashboard tests — 74 passed
-- [ ] Full CI parity (local) — pending before PR
+- [x] FileConverter + AdminDashboard tests: 74 passed
+- [ ] Full CI parity (local): pending before PR
 
 ### Layer 2 — Reproduction
 

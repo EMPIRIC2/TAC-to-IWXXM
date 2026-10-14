@@ -14,7 +14,7 @@ Single source of truth for **what** each layer owns and **which name** to use ev
 - **Optional Supabase Auth** for long-term work sessions only (JWT → `/api/v1/work-sessions*`).
 - **Guests**: IndexedDB + persistent loss-of-progress notice; F22 privacy gates.
 - **Product DB**: DigitalOcean Postgres via `DATABASE_URL` (sessions + F8).
-- **Supabase**: Auth URL + keys only — **not** product PostgREST / hosted app tables.
+- **Supabase**: Auth URL + keys only, **not** product PostgREST / hosted app tables.
 - **Compute**: DOKS primary after F30 cutover; Render **suspended** (T6.5 / `D-S038-t65-waive`).
 - **Dissemination** BYOC credentials remain **memory-only** (ADR-021/029).
 

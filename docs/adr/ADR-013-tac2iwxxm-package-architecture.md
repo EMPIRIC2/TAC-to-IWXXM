@@ -27,8 +27,8 @@ template `static+api` (library under `packages/`, not a new deployable).
 2. **R5 / R2 — Runtime**: Target is **CPython with optional C/Cython extensions** (NumPy pattern).
    Ship **pure Python v0** first; add Cython on the TAC lexer only after a batch benchmark harness
    proves need.
-3. **R3 — v1 product scope**: Support the full FAA five in v1 — **AIRMET, METAR, SIGMET, SPECI,
-   TAF** — each with Annex-3 body encoding plus IWXXM-US profile extensions where published.
+3. **R3 — v1 product scope**: Support the full FAA five in v1 (**AIRMET, METAR, SIGMET, SPECI,
+   TAF**), each with Annex-3 body encoding plus IWXXM-US profile extensions where published.
 4. **R4 — US schemas**: Pin IWXXM-US under `vendor/schemas/iwxxm-us` via `vendor/manifest.json`
    (same snapshot pattern as ADR-001 for wmo-im).
 
@@ -59,7 +59,7 @@ not replace).
 ### Negative / risks
 
 - **Scope risk**: gifts has no SIGMET/AIRMET encoders; US AIRMET/SIGMET modeling docs are thinner
-  than METAR/TAF in the provided corpus — 01/04 must phase delivery (shared IR first, then
+  than METAR/TAF in the provided corpus; 01/04 must phase delivery (shared IR first, then
   product plugins) without shrinking the accepted v1 *goal*
 - Larger vendor tree; need a reliable upstream URL/tag for iwxxm-us
 - Dual packages until API cutover; parity metrics vs gifts required for METAR/SPECI Annex-3
@@ -72,7 +72,7 @@ not replace).
 
 ## References
 
-- Context: general-tac-iwxxm-converter (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate)
+- Context: general-tac-iwxxm-converter (archived; see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate)
 - ADR-001 (vendor snapshots), ADR-004 (manual gifts sync)
 - [wmo-im/iwxxm](https://github.com/wmo-im/iwxxm)
 - [MDL Data Modeling / IWXXM-US](https://vlab.noaa.gov/web/mdl/data-modeling)

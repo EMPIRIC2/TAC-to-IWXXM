@@ -653,7 +653,7 @@
 
 ### Corpus
 
-[Corpus: decisions §EV-097] [Corpus: product] (process — no Fn)
+[Corpus: decisions §EV-097] [Corpus: product] (process; no Fn)
 
 Detail: [ev-097-deep-research-domain-handoff.md](ev-097-deep-research-domain-handoff.md)
 
@@ -717,7 +717,7 @@ Detail: [ev-097-deep-research-domain-handoff.md](ev-097-deep-research-domain-han
 
 **Opened:** 2026-08-31 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-094-thin-compat-national-deepen`  
 **Preset:** Standard · **Documenting→Implementing gate:** **open** · **Issue:** [#1098](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1098)  
-**Prior:** #920 closed (EV-089 / PR #1087) — do not reopen  
+**Prior:** #920 closed (EV-089 / PR #1087); do not reopen  
 **Build:** M1–M7 complete on stacked PRs (#1099–#1106 tip); catalog six packs `implemented`
 
 | ID | Outcome |
@@ -963,7 +963,7 @@ Detail: [ev-097-deep-research-domain-handoff.md](ev-097-deep-research-domain-han
 | M4 | Scripts py cov + bats-core | [#1082](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1082) |
 | M5 | Docs/ADR audit + sticky 100 + closeout | (same #1082) |
 
-**Issue:** [#1077](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1077) — close after #1082 merges to `stage`.
+**Issue:** [#1077](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1077); close after #1082 merges to `stage`.
 
 ### Milestones (planned)
 
@@ -1841,8 +1841,8 @@ Artifacts: `reports/04-tech-plan.md`, `reports/execution-plan.md`, `build-plan-c
 
 ### Dual Spec
 
-- verify-qa Spec: `reports/verify-qa-spec.md` — **completed**
-- uat Spec: `uat-script.md` — **completed** (Build sign-off pending)
+- verify-qa Spec: `reports/verify-qa-spec.md`; **completed**
+- uat Spec: `uat-script.md`; **completed** (Build sign-off pending)
 
 ### Spec→Build gate — OPEN (`D-S071-spec-build=1a`)
 
@@ -1869,7 +1869,7 @@ Artifacts: `reports/04-tech-plan.md`, `reports/execution-plan.md`, `build-plan-c
 **Session**: S070-converter-operator-bugs  
 **Features**: deepen **F7.t** (IWXXM product) + F6/F2/F10/F29/F31; no new top-level Fn  
 **Started**: 2026-08-17  
-**Status**: **in_progress** — 09-qa PASS (advisories); 10-e2e UJ-059..063 PASS; Auth logout T2 FAIL  
+**Status**: **in_progress**; 09-qa PASS (advisories); 10-e2e UJ-059..063 PASS; Auth logout T2 FAIL  
 **Branch**: `evolve/EV-060-converter-operator-bugs` (base `stage@8755ae87`)  
 **Issues**: epic [#1000](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1000) · [#1001](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1001) · [#1002](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1002) · [#1003](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1003) · [#1004](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1004) · [#1005](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1005) · [#1006](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1006)  
 **Milestone**: GitHub **M0 — Stabilize + operator trust + narrative**  
@@ -1959,12 +1959,12 @@ Artifacts: `reports/04-tech-plan.md`, `reports/execution-plan.md`, `build-plan-c
 ## Cycle EV-059 — CI Schemathesis + mutation quality gates (#841 / #727 / #874) (S069)
 
 **Session**: S069-ci-schemathesis-mutation  
-**Features**: **F34** — contract + mutation quality gates (**Done**)  
+**Features**: **F34**, contract + mutation quality gates (**Done**)  
 **Started**: 2026-08-17  
 **Closed**: 2026-08-17  
 **Branch**: `evolve/EV-059-ci-schemathesis-mutation` (base `stage@c458669e`)  
-**Status**: **completed** — `D-S069-close=1`; on `stage` @ `8755ae87`; promote held  
-**Issues**: [#841](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/841) · [#727](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/727) · [#874](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/874) — all **CLOSED** / Done  
+**Status**: **completed**; `D-S069-close=1`; on `stage` @ `8755ae87`; promote held  
+**Issues**: [#841](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/841) · [#727](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/727) · [#874](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/874); all **CLOSED** / Done  
 **PRs**: [#997](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/997) (M1) @ `c08bc30f` · [#998](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/998) (M2) @ `8755ae87`  
 **Tip CI**: [32054972352](https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/32054972352) SUCCESS  
 **Reports**: [evolve-report-EV-059.md](../evolve-report-EV-059.md) · [evolve-summary.md](../sessions/S069-ci-schemathesis-mutation/reports/evolve-summary.md) · [07-build-m1](../sessions/S069-ci-schemathesis-mutation/reports/07-build-m1.md) · [07-build-m2](../sessions/S069-ci-schemathesis-mutation/reports/07-build-m2.md) · [verification-report](../sessions/S069-ci-schemathesis-mutation/reports/verification-report.md)  
@@ -2025,8 +2025,8 @@ Artifacts: `reports/04-tech-plan.md`, `reports/execution-plan.md`, `build-plan-c
 **Started**: 2026-08-17  
 **Closed**: 2026-08-17  
 **Branch**: `evolve/EV-058-quality-metrics-diff-layout` (base `stage@c2ca9a3f`)  
-**Status**: **completed** — `D-S068-13=1` / `D-S068-close=1`; on `stage` @ `2c320c45`; promote held  
-**Issue**: [#983](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/983) — **CLOSED** · board **Done**  
+**Status**: **completed**; `D-S068-13=1` / `D-S068-close=1`; on `stage` @ `2c320c45`; promote held  
+**Issue**: [#983](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/983), **CLOSED** · board **Done**  
 **PR**: [#994](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/994) → `stage` @ `2c320c45`  
 **Staging CD**: [32038222032](https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/32038222032)  
 **Reports**: [evolve-report-EV-058.md](../evolve-report-EV-058.md) · [evolve-summary.md](../sessions/S068-quality-metrics-diff-layout/reports/evolve-summary.md)  
@@ -2072,8 +2072,8 @@ Artifacts: `reports/04-tech-plan.md`, `reports/execution-plan.md`, `build-plan-c
 **Features**: deepen **F7**; **F1**/**F6** (#903); **F2**/**F4** (#838); deploy hosts (#948)  
 **Started**: 2026-08-15  
 **Branch**: `evolve/EV-057-m0-ready-apex-accumulate-validate` (base `stage@b796882e`)  
-**Status**: **completed** — `D-S067-13=1a` / `D-S067-close=1a`; on `stage`; promote deferred (`D-S067-promote=2b`)  
-**Issues**: [#948](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/948), [#903](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/903), [#838](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/838) — board **Done**  
+**Status**: **completed**; `D-S067-13=1a` / `D-S067-close=1a`; on `stage`; promote deferred (`D-S067-promote=2b`)  
+**Issues**: [#948](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/948), [#903](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/903), [#838](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/838); board **Done**  
 **PRs**: [#991](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/991) @ `d7022f1f`; follow-up [#992](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/992) @ `3af364fb`  
 **Reports**: [evolve-report-EV-057.md](../evolve-report-EV-057.md) · [evolve-summary.md](../sessions/S067-m0-ready-apex-accumulate-validate/reports/evolve-summary.md)
 **Parent**: M0 Ready queue after S066 / EV-056  
@@ -2158,7 +2158,7 @@ Artifacts: `reports/04-tech-plan.md`, `reports/execution-plan.md`, `build-plan-c
 **Features**: deepen **F7.q** only  
 **Started**: 2026-08-11  
 **Branch**: `evolve/EV-056-quality-metrics-diff-page` (base `stage@340b3cf6`)  
-**Status**: **completed** — closed on stage (`D-S066-13=1` / `D-S066-close=1`; #989 @ `b4a63ab8`)  
+**Status**: **completed**; closed on stage (`D-S066-13=1` / `D-S066-close=1`; #989 @ `b4a63ab8`)  
 **Issues**: [#988](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/988)  
 **Parent**: S065 / #987 pretty-print hotfix; EV-054 / EV-055 Quality metrics  
 **Corpus**: [Corpus: product §F7.q] [Corpus: journeys §UJ-056] [Corpus: tests]
@@ -2201,7 +2201,7 @@ Artifacts: `reports/04-tech-plan.md`, `reports/execution-plan.md`, `build-plan-c
 **Features**: deepen **F7.q**; deepen **F2** / **F13** as needed for 2025-2 validate; **F4** only if messaging requires  
 **Started**: 2026-08-11  
 **Branch**: `evolve/EV-055-quality-metrics-2025-2-followups` (base `stage@4fd51e39`)  
-**Status**: **completed** — closed on stage (`D-S064-13=1` / `D-S064-close=1`; #985 @ `4b48c8d8`)
+**Status**: **completed**; closed on stage (`D-S064-13=1` / `D-S064-close=1`; #985 @ `4b48c8d8`)
 **Issues**: [#982](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/982), [#980](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/980), [#979](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/979)  
 **Parent**: EV-054 / S063 / [#836](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/836) (closed)  
 **Corpus**: [Corpus: product §F7] [Corpus: product §F2] [Corpus: product §F13]
@@ -2304,7 +2304,7 @@ Operator-facing consumer remains the Quality metrics tab; engine changes allowed
 
 ### Preset
 
-**Standard** — `00 → 16 → 01 → 02 → 04 → 05 → 07 → 08 → 09 → 10 → 11 → 12 → 13`
+**Standard**: `00 → 16 → 01 → 02 → 04 → 05 → 07 → 08 → 09 → 10 → 11 → 12 → 13`
 (skip `03`, `06`).
 
 ### Corpus cites / waivers
@@ -2341,7 +2341,7 @@ Operator-facing consumer remains the Quality metrics tab; engine changes allowed
 **Started**: 2026-08-10  
 **Completed**: 2026-08-11  
 **Branch**: `evolve/EV-054-quality-metrics-tab` (base `stage@f2926ac8`)  
-**Status**: **completed** (`D-S063-13=1` / `D-S063-close=1`) — [#977](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/977) → `stage` @ `4fd51e39`; [#836](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/836) closed; **no stage→main** (stay on stage)  
+**Status**: **completed** (`D-S063-13=1` / `D-S063-close=1`); [#977](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/977) → `stage` @ `4fd51e39`; [#836](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/836) closed; **no stage→main** (stay on stage)  
 **Issue**: [#836](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/836) (closed)  
 **Follow-ups**: [#979](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/979)–[#983](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/983)  
 **Corpus**: [Corpus: product §F7] [Corpus: product §F25] [Corpus: journeys]
@@ -2396,7 +2396,7 @@ replace them.
 
 ### Preset
 
-**Standard** — `00 → 16 → 01 → 02 → 04 → 05 → 07 → 08 → 09 → 10 → 11 → 12 → 13`.
+**Standard**: `00 → 16 → 01 → 02 → 04 → 05 → 07 → 08 → 09 → 10 → 11 → 12 → 13`.
 
 ### Corpus cites / waivers
 
@@ -2456,7 +2456,7 @@ Journey: **UJ-056**. API: [Corpus: api] `GET /api/v1/quality-metrics*`.
 **Features**: deepen **F29**, **M5** (no new Fn)  
 **Started**: 2026-08-10  
 **Branch**: `evolve/EV-053-vitest-branches-95` (base `stage@6f25c0b1`)  
-**Status**: **completed** (`D-S062-merge=1` / `D-S062-close=1`) — [#973](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/973) → `stage` @ `ef68ac67`; [#968](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/968) closed; no stage→main  
+**Status**: **completed** (`D-S062-merge=1` / `D-S062-close=1`); [#973](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/973) → `stage` @ `ef68ac67`; [#968](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/968) closed; no stage→main  
 **Corpus**: [Corpus: product §F29] [Corpus: product §M5] [Corpus: tests]
 [Corpus: adr/ADR-007] [Corpus: decisions §EV-052] [Corpus: decisions §EV-053]
 
@@ -2512,11 +2512,11 @@ Journey: **UJ-056**. API: [Corpus: api] `GET /api/v1/quality-metrics*`.
 
 ### Preset
 
-**Standard** — `00 → 16 → 01 → 02 → 04 → 07 → 08 → 09 → 11`.
+**Standard**: `00 → 16 → 01 → 02 → 04 → 07 → 08 → 09 → 11`.
 
 ### Parent waiver
 
-`D-S061-cov-branches=3` — EV-052 enforced lines/stmts/funcs ≥95; branches floor 84 +
+`D-S061-cov-branches=3`: EV-052 enforced lines/stmts/funcs ≥95; branches floor 84 +
 explicit child #968 (not silent). This cycle **closes** that waiver.
 
 ---
@@ -2527,7 +2527,7 @@ explicit child #968 (not silent). This cycle **closes** that waiver.
 **Features**: deepen **F29**, **F6**, **F21**, **F30**, **M5** (no new Fn)  
 **Started**: 2026-08-09  
 **Branch**: `evolve/EV-052-ci-polish-quality-pr-stats` (base `stage@80197a58`)  
-**Status**: **completed** (`D-S061-close=1`) — [#969](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/969) → `stage` @ `fd84c00a`; docs [#971](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/971) → `stage` @ `3e019b57`; no stage→main  
+**Status**: **completed** (`D-S061-close=1`); [#969](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/969) → `stage` @ `fd84c00a`; docs [#971](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/971) → `stage` @ `3e019b57`; no stage→main  
 **Corpus**: [Corpus: product §F29] [Corpus: product §F6] [Corpus: product §F21]
 [Corpus: product §F30] [Corpus: product §M5] [Corpus: tests] [Corpus: adr/ADR-007]
 [Corpus: adr/ADR-006] [Corpus: adr/ADR-031] [Corpus: tech-spec] [Corpus: deploy]
@@ -2579,7 +2579,7 @@ explicit child #968 (not silent). This cycle **closes** that waiver.
 
 ### Preset
 
-**Standard** — `00 → 16 → 01 → 02 → 04 → 05 → 07 → 08 → 09 → 11`.
+**Standard**: `00 → 16 → 01 → 02 → 04 → 05 → 07 → 08 → 09 → 11`.
 
 ### Infra note
 
@@ -2630,7 +2630,7 @@ See `docs/sessions/S061-ci-polish-quality-pr-stats/reports/infra-free-tier.md`.
 
 ### Preset
 
-**Lean+** — `00 → 16 → 01 → 02 → 03 → 07 → 08 → 09 → 11`.
+**Lean+**: `00 → 16 → 01 → 02 → 03 → 07 → 08 → 09 → 11`.
 
 ---
 
@@ -2643,7 +2643,7 @@ See `docs/sessions/S061-ci-polish-quality-pr-stats/reports/infra-free-tier.md`.
 **Branch**: `evolve/EV-050-codes-wmo-validated` (merged → `stage` @ `2815ffbe`)  
 **Status**: **completed** 2026-08-09 (`D-S059-merge=1` / `D-S059-close=1`; PR [#964](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/964))  
 **Issues**: [#959](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/959) (closed);
-parent [#889](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/889) (already CLOSED —
+parent [#889](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/889) (already CLOSED,
 Validated satisfied; residual Present/Cited depth defer+cite in session reports);
 epic [#846](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/846);
 compose [#859](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/859),
@@ -2663,8 +2663,8 @@ Exhaustive 402 weather + remaining register depth stay under #959/#889 per OOS.
 ### M3 close (T3.1–T3.4 — 2026-08-09)
 
 AC7 / TC-EV050-007: dual-profile harness + disposition
-(`reports/dual-profile-disposition.md`) — N/A for VAA/TCA/SWXA/VONA.
-AC8 / TC-EV050-008: true-error fix — `REMARK_US_EXTENSION` gated to `iwxxm_us` only;
+(`reports/dual-profile-disposition.md`); N/A for VAA/TCA/SWXA/VONA.
+AC8 / TC-EV050-008: true-error fix: `REMARK_US_EXTENSION` gated to `iwxxm_us` only;
 `INVALID_REMARK` remains under both. Tip after M3: `271efa49`.
 
 ### M4 / AC5 — #889 Validated satisfied (T4.2 — 2026-08-09)
@@ -2687,7 +2687,7 @@ URI drift; [#882](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/882) notificat
 exhaustive 402 weather / residual register depth under #959/#889 **defer+cite**.
 
 **Issue comments:** criteria above posted on #889 and #959 at T4.2.
-**Close:** #959 closed on merge; #889 was already CLOSED (Validated-only) — residuals stay
+**Close:** #959 closed on merge; #889 was already CLOSED (Validated-only); residuals stay
 defer+cite in `fixture-coverage-delta-t2.4.md` / this section (no reopen).
 
 ### Close (2026-08-09)
@@ -2764,12 +2764,12 @@ Report: `reports/05-verify-tech.md`. Advisories L1–L3 accepted. Next: **07-bui
 
 ### Preset
 
-**Standard** — `00 → 16 → 01 → 02 → 04 → 05 → 07 → 08 → 09 → 11`.  
+**Standard**: `00 → 16 → 01 → 02 → 04 → 05 → 07 → 08 → 09 → 11`.  
 Skip `03`, `06`, `10`, `12`, `13`.
 
 ### Gate A (02)
 
-Pass when AC1–AC6 + TC-EV050-* + feature-list deepen + this section are consistent — then 04.
+Pass when AC1–AC6 + TC-EV050-* + feature-list deepen + this section are consistent, then 04.
 
 ---
 
@@ -2937,11 +2937,11 @@ Validated follow-on [#959](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/959))
 
 ### Preset
 
-**Lean** — `00 → 16 → 01 → 02`; skip `03`–`13`.
+**Lean**: `00 → 16 → 01 → 02`; skip `03`–`13`.
 
 ### Gate A (02)
 
-Pass when Lean ACs + test-plan TC-EV046-* + this section committed — then Lean close (no 04/07).
+Pass when Lean ACs + test-plan TC-EV046-* + this section committed, then Lean close (no 04/07).
 
 ---
 
@@ -2986,7 +2986,7 @@ perf gates; browser E2E; staging/prod deploy.
 
 ### Preset
 
-**Standard** — skip 03/06/10/12/13 (tooling/deps/UI/deploy not in scope).
+**Standard**: skip 03/06/10/12/13 (tooling/deps/UI/deploy not in scope).
 
 ### Acceptance (F13/F14 deepen — TC-EV045-001..007) — confirmed D-S054-01-ac=1
 
@@ -3015,7 +3015,7 @@ Same class as EV-043 admin gap. [Corpus: tests] [Corpus: decisions]
 | Cache | `Swatinem/rust-cache` (or equivalent) |
 | Toolchain | `dtolnay/rust-toolchain@stable` + rustfmt,clippy |
 
-**Closed**: 2026-08-08 — `D-S054-11=1`; reports `evolve-summary.md` + `docs/evolve-report-EV-045.md`.  
+**Closed**: 2026-08-08; `D-S054-11=1`; reports `evolve-summary.md` + `docs/evolve-report-EV-045.md`.  
 PR #953 open → `stage` (merge separate). AC6 ops still deferred.
 
 ### Corpus cites / waivers
@@ -3065,15 +3065,15 @@ PR #953 open → `stage` (merge separate). AC6 ops still deferred.
 
 ### Preset
 
-**Standard** — include 03 for dual-cluster / project tooling; skip 06.
+**Standard**: include 03 for dual-cluster / project tooling; skip 06.
 
 ### Gate A (02)
 
-**PASS** 2026-08-08 — F30 deepen AC + ADR-034 amend + this section committed; proceed 03/04.
+**PASS** 2026-08-08: F30 deepen AC + ADR-034 amend + this section committed; proceed 03/04.
 
 ### Gate B (05)
 
-Pass when execution-plan tasks T2–T4 approved — proceed 07-build provision.
+Pass when execution-plan tasks T2–T4 approved; proceed 07-build provision.
 
 ---
 
@@ -3113,11 +3113,11 @@ Pass when execution-plan tasks T2–T4 approved — proceed 07-build provision.
 
 ### Preset
 
-**Standard** — include 03 for promote/env_role rule; skip 06.
+**Standard**: include 03 for promote/env_role rule; skip 06.
 
 ### Gate A (02)
 
-Pass when F30 deepen AC + test-plan smokes + this section committed — proceed 03/04.
+Pass when F30 deepen AC + test-plan smokes + this section committed; proceed 03/04.
 
 ---
 
@@ -3127,7 +3127,7 @@ Pass when F30 deepen AC + test-plan smokes + this section committed — proceed 
 **Features**: deepen **F7 / F16–F19**; new **F33**  
 **Started**: 2026-08-07  
 **Branch**: `evolve/EV-042-remove-db-tools-operator-throughput`  
-**Status**: in_progress — 01-requirements  
+**Status**: in_progress (01-requirements)  
 **Issues**: [#897](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/897) epic;
 [#898](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/898) follow-up (restore all destinations)  
 **Prior**: S049 / EV-041 completed (PR #895 merged @ `fa5b2140`)  
@@ -3162,7 +3162,7 @@ Pass when F30 deepen AC + test-plan smokes + this section committed — proceed 
 
 ### Preset
 
-**Standard** — `00→16→01→02→04→05→07→08→09→10→11→12→13` (skip 03/06 unless needed)
+**Standard**: `00→16→01→02→04→05→07→08→09→10→11→12→13` (skip 03/06 unless needed)
 
 ### Improvements pack (in scope)
 
@@ -3239,7 +3239,7 @@ Pass when F30 deepen AC + test-plan smokes + this section committed — proceed 
 **Features**: deepen **F7** narrative (no new Fn)  
 **Started**: 2026-08-06  
 **Branch**: `evolve/EV-041-operator-sources-briefing`  
-**Status**: **completed** — PR [#895](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/895) merged @ `fa5b2140`  
+**Status**: **completed**; PR [#895](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/895) merged @ `fa5b2140`  
 **Prior**: S048 / EV-040 completed  
 **Corpus**: [Corpus: product §F7], [Corpus: system-spec], [Corpus: tech-spec];
 path-cites [docs/domain/README.md], [docs/domain/rules/RULE_SOURCE_URLS.md],
@@ -3258,7 +3258,7 @@ path-cites [docs/domain/README.md], [docs/domain/rules/RULE_SOURCE_URLS.md],
 
 ### Preset
 
-**Lean (docs override)** — `00→16→01→02→07→08` (skip 03–06, 09–13)
+**Lean (docs override)**: `00→16→01→02→07→08` (skip 03–06, 09–13)
 
 ### Acceptance (locked — **D-S049-ac**)
 
@@ -3285,7 +3285,7 @@ path-cites [docs/domain/README.md], [docs/domain/rules/RULE_SOURCE_URLS.md],
 **Status**: completed  
 **PR**: [#893](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/893) **merged** @ `4be24994`  
 **Issues**: [#894](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/894) closed under [#840](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/840)  
-**Close**: **D-S048-close=1,1,1** — Merge #893; file+close #894 under #840; stop  
+**Close**: **D-S048-close=1,1,1**; Merge #893; file+close #894 under #840; stop  
 **Prior**: S047 / EV-039 completed  
 **Corpus**: [Corpus: product §F7/F10/F15], [Corpus: api], [Corpus: tests], [Corpus: journeys], [Corpus: adr/ADR-028]
 
@@ -3307,7 +3307,7 @@ path-cites [docs/domain/README.md], [docs/domain/rules/RULE_SOURCE_URLS.md],
 
 ### Preset
 
-**Standard** — `00→16→01→02→04→05→07→08→09→10→11→12→13` (skip 03, 06)
+**Standard**: `00→16→01→02→04→05→07→08→09→10→11→12→13` (skip 03, 06)
 
 ### Acceptance (locked from approved plan — **D-S048-ac**)
 
@@ -3327,7 +3327,7 @@ path-cites [docs/domain/README.md], [docs/domain/rules/RULE_SOURCE_URLS.md],
 **Features**: deepen **F16** (no new Fn expected)  
 **Started**: 2026-08-06  
 **Branch**: `evolve/EV-039-sql-ingest-live-e2e`  
-**Status**: **completed** (`D-S047-13=1` / `D-S047-close=1`) — 2026-08-08  
+**Status**: **completed** (`D-S047-13=1` / `D-S047-close=1`), 2026-08-08  
 **Completed**: 2026-08-08  
 **Prior**: S046 / EV-038 completed  
 **PR**: [#891](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/891) MERGED @ `fea30aba`  
@@ -3355,7 +3355,7 @@ path-cites [docs/domain/README.md], [docs/domain/rules/RULE_SOURCE_URLS.md],
 
 ### Preset
 
-**Standard** — `00→16→01→02→04→05→07→08→09→10→11→12→13` (skip 03, 06 unless later need)
+**Standard**: `00→16→01→02→04→05→07→08→09→10→11→12→13` (skip 03, 06 unless later need)
 
 ### Acceptance (locked 2026-08-06; chat `1` → **D-S047-ac**)
 
@@ -3369,7 +3369,7 @@ path-cites [docs/domain/README.md], [docs/domain/rules/RULE_SOURCE_URLS.md],
 | AC6 | Teardown audit gaps fixed or waived in session report |
 | AC7 | TC-F16-LIVE-* mapped; make/CI documents live suite (opt-in OK) |
 
-**01-requirements**: standing deltas written 2026-08-06 — feature-list §F16, user-journeys UJ-027, test-plan TC-F16-LIVE-*, tech-spec pointer, requirements-decisions EV-039 rows.
+**01-requirements**: standing deltas written 2026-08-06: feature-list §F16, user-journeys UJ-027, test-plan TC-F16-LIVE-*, tech-spec pointer, requirements-decisions EV-039 rows.
 
 ### Gate A (locked 2026-08-06; chat `2` → **D-S047-02-gate-a**)
 
@@ -3377,7 +3377,7 @@ path-cites [docs/domain/README.md], [docs/domain/rules/RULE_SOURCE_URLS.md],
 |----|----------|
 | D-S047-02-gate-a | **2** — PASS; add `spec.md` EV-039 deepen note in 02; S02.M1/M2/M4/M5 → 04/07 |
 
-**Status:** Gate A **PASS** — close 02 → **04-tech-plan**.
+**Status:** Gate A **PASS**; close 02 → **04-tech-plan**.
 
 ### 04-tech-plan (locked 2026-08-06; chat `Q1:1 Q2:1 Q3:1+3 Q4:1+2+3(local only)` → **D-S047-04**)
 
@@ -3397,7 +3397,7 @@ path-cites [docs/domain/README.md], [docs/domain/rules/RULE_SOURCE_URLS.md],
 |----|----------|
 | D-S047-04-plan | **1** — approve execution plan + Build Plan Card as written; close 04 → **05-verify-tech** |
 
-**Status:** 04 **COMPLETE** — handoff Gate B.
+**Status:** 04 **COMPLETE**; handoff Gate B.
 
 ### Gate B (locked 2026-08-06; chat `1` → **D-S047-05-gate-b**)
 
@@ -3405,7 +3405,7 @@ path-cites [docs/domain/README.md], [docs/domain/rules/RULE_SOURCE_URLS.md],
 |----|----------|
 | D-S047-05-gate-b | **1** — PASS; S05.M*/L1 as 07 work; close 05 → **07-build M1 T1.1** (06 skipped) |
 
-**Status:** Gate B **PASS** — Phase B complete; handoff **07-build**.
+**Status:** Gate B **PASS**; Phase B complete; handoff **07-build**.
 
 ### 07-build notes (T1.1–T1.2)
 
@@ -3449,13 +3449,13 @@ path-cites [docs/domain/README.md], [docs/domain/rules/RULE_SOURCE_URLS.md],
 ## Cycle EV-038 — Epic #846 corpus residuals #849–#861 (S046)
 
 **Session**: S046-iwxxm-corpus-residuals  
-**Features**: deepen **F2 / F4 / F6 / F7 / F32** (no new Fn expected — Q2 whole residual set)  
+**Features**: deepen **F2 / F4 / F6 / F7 / F32** (no new Fn expected; Q2 whole residual set)  
 **Started**: 2026-08-05  
 **Branch**: `evolve/EV-038-iwxxm-corpus-residuals`  
-**Status**: **completed** (`D-S046-13`=1) — PR [#890](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/890) MERGED @ `619a7ac3`; DOKS `20260806144346-619a7ac`; H1–H5 + UJ-050 PASS  
+**Status**: **completed** (`D-S046-13`=1); PR [#890](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/890) MERGED @ `619a7ac3`; DOKS `20260806144346-619a7ac`; H1–H5 + UJ-050 PASS  
 **Completed**: 2026-08-06  
 **Prior**: S045 / EV-037 completed  
-**Issues**: [#849](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/849)–[#861](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/861) under epic [#846](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/846) — **all closed**  
+**Issues**: [#849](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/849)–[#861](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/861) under epic [#846](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/846); **all closed**  
 **Epic**: [#846](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/846) **CLOSED**
 
 ### Scope (Phase 0 — locked 2026-08-05; AskQuestion unavailable — chat `Q1=1,Q2=5,Q3=2`)
@@ -3571,12 +3571,12 @@ See [RELEASE_LINE_ADOPTABILITY.md §codes.wmo.int URI drift](../domain/iwxxm/REL
 ## Cycle EV-037 — Matrix dispositions #869 / #870 / #872 (S045)
 
 **Session**: S045-matrix-disposition-residuals  
-**Features**: deepen **F2 / F6 / F32** only (no new Fn — Q2/Q3)  
+**Features**: deepen **F2 / F6 / F32** only (no new Fn; Q2/Q3)  
 **Started**: 2026-08-05  
 **Branch**: `evolve/EV-037-matrix-disposition-residuals`  
-**Status**: **completed** 2026-08-05 — 11 **APPROVED** (`D-S045-11`); 12/13 **WAIVED** (`D-S045-12-13-waive`); PR [#887](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/887) **MERGED** @ `b7302fe4` (`D-S045-merge=1`)
+**Status**: **completed** 2026-08-05; 11 **APPROVED** (`D-S045-11`); 12/13 **WAIVED** (`D-S045-12-13-waive`); PR [#887](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/887) **MERGED** @ `b7302fe4` (`D-S045-merge=1`)
 **Prior**: S044 / EV-036 completed
-**Issues**: [#869](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/869), [#870](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/870), [#872](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/872) under epic [#846](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/846) — **all closed** 2026-08-05 @ `c51e6e9b`
+**Issues**: [#869](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/869), [#870](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/870), [#872](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/872) under epic [#846](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/846); **all closed** 2026-08-05 @ `c51e6e9b`
 
 ### Scope (Phase 0 — locked 2026-08-05; AskQuestion unavailable — chat `Q1=1,Q2=1,Q3=1,Q4=1` + `G2=1`)
 
@@ -3668,10 +3668,10 @@ Skip: `03`, `04`, `05`, `06`, `09`, `10`, `12`, `13` (docs/matrix; no UI; waive 
 ## Cycle EV-036 — Local long jobs on pre-commit / slim CI (S044)
 
 **Session**: S044-local-precommit-long-jobs  
-**Features**: deepen **M5** only (no new Fn — B4=1)  
+**Features**: deepen **M5** only (no new Fn; B4=1)  
 **Started**: 2026-08-05  
 **Branch**: `evolve/EV-036-local-precommit-long-jobs`  
-**Status**: **completed** 2026-08-05 — 11 approved (`D-S044-11`); deploy 12/13 waived (`D-S044-12-13-waive`); push+PR (`D-S044-next`)  
+**Status**: **completed** 2026-08-05; 11 approved (`D-S044-11`); deploy 12/13 waived (`D-S044-12-13-waive`); push+PR (`D-S044-next`)  
 **Prior**: S043 / EV-035 completed
 
 ### Scope (Phase 0–02 — locked 2026-08-05; AskQuestion unavailable — chat)
@@ -3719,17 +3719,17 @@ Skip: `03`, `04`, `05`, `06`, `09`, `10`, `12`, `13` (docs/matrix; no UI; waive 
 ### Proposed Lean routing (B4=1)
 
 `00 → 16 → 01 → 02 → 07 → 08 → 09 → 11`  
-Skip: `03`, `04`, `05`, `06`, `10`, `12`, `13` (no UI; no runtime deploy; tooling-only — waive 12/13 at gate)
+Skip: `03`, `04`, `05`, `06`, `10`, `12`, `13` (no UI; no runtime deploy; tooling-only; waive 12/13 at gate)
 
 ---
 
 ## Cycle EV-035 — Rule-source traceability / provenance registry (S043)
 
 **Session**: S043-rule-source-traceability  
-**Features**: deepen **F6 / F12 / F15 / F2** (no new Fn — G1=2)  
+**Features**: deepen **F6 / F12 / F15 / F2** (no new Fn; G1=2)  
 **Started**: 2026-08-05  
 **Branch**: `evolve/EV-035-rule-source-traceability`  
-**Status**: **completed** 2026-08-05 — deploy 12/13 waived (`D-S043-12-13-waive`)  
+**Status**: **completed** 2026-08-05; deploy 12/13 waived (`D-S043-12-13-waive`)  
 **Prior**: S042 / EV-034 completed
 
 ### Scope (Phase 0 — locked 2026-08-05; AskQuestion unavailable — chat `Q1=3,Q2=4,Q3=1,Q4=2` + `G1=2,G2=1,G3=1,G4=1`)
@@ -3823,11 +3823,11 @@ Dig: `docs/domain/mining/vona-encode-remine-ev035-mining-notes.md` · report: `r
 ## Cycle EV-034 — Automate DOKS image rollout in CD (S042)
 
 **Session**: S042-doks-cd-rollout  
-**Features**: deepen **F30** (infra/CD — no new product Fn)  
+**Features**: deepen **F30** (infra/CD; no new product Fn)  
 **Started**: 2026-08-05  
 **Branch**: `evolve/EV-034-doks-cd-rollout`  
-**Status**: **completed** 2026-08-05 (`D-S042-13` = 1) — TC-F30-007 live @ `20260805115809-d3f4bb9`  
-**Prior**: S041 / EV-033 lean-closed (`D-S041-1+3`); S040 / EV-032 remains suspended (`resume_after` S042 — eligible to resume)
+**Status**: **completed** 2026-08-05 (`D-S042-13` = 1); TC-F30-007 live @ `20260805115809-d3f4bb9`  
+**Prior**: S041 / EV-033 lean-closed (`D-S041-1+3`); S040 / EV-032 remains suspended (`resume_after` S042; eligible to resume)
 
 ### Scope (Phase 0 — locked 2026-08-05; AskQuestion unavailable — chat `A,A,A,B,A`)
 
@@ -3896,11 +3896,11 @@ beyond the fixture URL; Prometheus operator install on DOKS.
 ## Cycle EV-032 — Official IWXXM corpus quality / WMO source parity (S040)
 
 **Session**: S040-iwxxm-corpus-quality  
-**Features**: **F32** (new — VONA quality bar) + deepen **F23** (#835) + **F4** / **F6** / **F2** / **F13** (#808 + corpus)  
+**Features**: **F32** (new: VONA quality bar) + deepen **F23** (#835) + **F4** / **F6** / **F2** / **F13** (#808 + corpus)  
 **Issues**: [#846](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/846) (epic), [#835](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/835), [#741](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/741), [#808](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/808)  
 **Started**: 2026-08-04  
 **Branch**: `evolve/EV-032-iwxxm-corpus-quality` (from `main`)  
-**Status**: **completed** 2026-08-05 (`D-S040-close` = 1) — T4.5 re-verified on `20260805115809-d3f4bb9`; #846 epic remains open for residual children
+**Status**: **completed** 2026-08-05 (`D-S040-close` = 1); T4.5 re-verified on `20260805115809-d3f4bb9`; #846 epic remains open for residual children
 
 ### Scope (Phase 0 — locked 2026-08-04 via 00-context)
 
@@ -3923,7 +3923,7 @@ children under #846 as discovered. Exclude #836 metrics UI / #840 workbench epic
 **Out of scope**: Metrics UI #836; hand-edit `vendor/schemas/*` outside sync PRs; ship a new
 IWXXM pin inside #808; unrelated platform/dissemination/DOKS work.
 
-**Parked**: `stash@{0}` — S039/EV-031 WIP (`S039-EV031-WIP park for S040/EV-032`).
+**Parked**: `stash@{0}`, S039/EV-031 WIP (`S039-EV031-WIP park for S040/EV-032`).
 
 ### Document Manifest (01 — locked 2026-08-04)
 
@@ -3975,7 +3975,7 @@ IWXXM pin inside #808; unrelated platform/dissemination/DOKS work.
 |----|----------|----------|----------|
 | E32-T9 | gate | Approve execution plan? | **PASS** — M0–M4 (28 tasks) → **07 @ T0.1** (`D-S040-04-plan`=1) |
 
-**Status**: **in_progress** — Phase C build (`07-build`); M1 #835 **closed**; next M2 F32 @ T2.1
+**Status**: **in_progress**; Phase C build (`07-build`); M1 #835 **closed**; next M2 F32 @ T2.1
 
 ## Cycle EV-031 — Platform independence #842 / #830 / #712 (S038)
 
@@ -3984,7 +3984,7 @@ IWXXM pin inside #808; unrelated platform/dissemination/DOKS work.
 **Issues**: [#842](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/842), [#830](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/830), [#712](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/712)  
 **Started**: 2026-08-03  
 **Branch**: `evolve/EV-031-platform-independence-842`  
-**Status**: **completed** — `D-S038-13` = 1 (2026-08-03); F30/F31 Done; public DNS live
+**Status**: **completed**; `D-S038-13` = 1 (2026-08-03); F30/F31 Done; public DNS live
 
 ### Scope (Phase 0 — locked 2026-08-03)
 
@@ -4037,11 +4037,11 @@ IWXXM pin inside #808; unrelated platform/dissemination/DOKS work.
 ## Cycle EV-030 — Quality residuals #831 / #829 / #820 (S037)
 
 **Session**: S037-quality-residuals-831  
-**Features**: **F29** (new — rule matrices) + deepen **F23** / **F12** / **F2** / **F13** / **F9** / **F26** / **F27**  
+**Features**: **F29** (new: rule matrices) + deepen **F23** / **F12** / **F2** / **F13** / **F9** / **F26** / **F27**  
 **Issues**: [#831](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/831), [#829](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/829), [#820](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/820)  
 **Started**: 2026-08-02  
 **Branch**: `evolve/EV-030-quality-residuals-831`  
-**Status**: **completed** — closed 2026-08-03 (`D-S037-13=1`); M4 done; #831/#829/#820 closed; #835 residual; live H1–H5 PASS (`8bd111c`)
+**Status**: **completed**; closed 2026-08-03 (`D-S037-13=1`); M4 done; #831/#829/#820 closed; #835 residual; live H1–H5 PASS (`8bd111c`)
 
 ### Scope (Phase 0 — locked 2026-08-02 via 00-context)
 
@@ -4107,7 +4107,7 @@ non-deployed UI preview this session (H4–H5 only if FE menu unlock ships).
 **Issues**: [#823](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/823) (umbrella); absorb [#738](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/738), [#820](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/820), [#740](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/740)  
 **Started**: 2026-08-01  
 **Branch**: `evolve/EV-029-eight-family-ahl-rules`  
-**Status**: **completed** (2026-08-02) — T12.7 closeout; #823/#740 closed; PR #828 @ `4e6577a`; smoke PASS
+**Status**: **completed** (2026-08-02); T12.7 closeout; #823/#740 closed; PR #828 @ `4e6577a`; smoke PASS
 
 ### Scope (Phase 0 — locked 2026-08-01)
 
@@ -4180,7 +4180,7 @@ hand-edits to `vendor/schemas/*`; GIFTs-as-normative.
 **Issues**: [#781](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/781)  
 **Started**: 2026-08-01  
 **Branch**: `evolve/EV-028-empiric2-ops-leftovers-781`  
-**Status**: **completed** (2026-08-01) — PR [#824](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/824) @ `70312dd`; #781 closed
+**Status**: **completed** (2026-08-01); PR [#824](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/824) @ `70312dd`; #781 closed
 
 ### Scope (Phase 0 — locked 2026-08-01)
 
@@ -4254,7 +4254,7 @@ Skip this cycle: Spec architecture rewrite, API contract, user-journeys (UJ-023 
 ## Cycle EV-027 — Official WMO decode residual matrix (#815) (S034)
 
 **Session**: S034-wmo-decode-residual-matrix  
-**Features**: Deepen **F25** / **F9** / **F7.g** — no new Fn  
+**Features**: Deepen **F25** / **F9** / **F7.g** (no new Fn)  
 **Issues**: [#815](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/815) (**closed**); child [#820](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/820) (**open**)  
 **Started**: 2026-07-31  
 **Completed**: 2026-07-31 (`D-S034-EV027-phase4-close`)  
@@ -4302,18 +4302,18 @@ issues for stems that cannot close in-cycle.
 new products beyond F6 seven; deferred SWX/VONA/WAFS/QVACI / TC-SIGMET A6-2 unless already
 catalogued.
 
-**Supersedes:** S029 / EV-022 (parked) narrow SIGMET A6-1a residual work — broadened by #815.
+**Supersedes:** S029 / EV-022 (parked) narrow SIGMET A6-1a residual work, broadened by #815.
 
 ---
 
 ## Cycle EV-026 — #809 VA multi-location ADR-032 equality / wmoPass (S033)
 
 **Session**: S033-va-multi-location-equality  
-**Features**: Deepen **F23** / **F6** / **F7.g** — no new Fn  
+**Features**: Deepen **F23** / **F6** / **F7.g** (no new Fn)  
 **Issues**: [#809](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/809)  
 **Started**: 2026-07-31  
 **Branch**: `evolve/EV-026-va-multi-location-equality`  
-**Status**: **completed** — #817 merged `101f555`; 13 PASS; closed 2026-07-31  
+**Status**: **completed**; #817 merged `101f555`; 13 PASS; closed 2026-07-31  
 **Closeout PR**: [#818](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/818)
 
 ### Scope (Phase 0 — locked 2026-07-31)
@@ -4369,13 +4369,13 @@ Lean+build + **13 when ships**: `00→16→01→02→04→07→08→10` (+ `13` 
 ## Cycle EV-025 — iwxxm-us REMARKS encode + VA multi-location (#810–#812 + #809) (S032)
 
 **Session**: S032-iwxxm-us-remarks-va  
-**Features**: Deepen **F6** / **F6.b** / **F12** / **F2** / **F13** + deepen **F23** (#809) — no new Fn  
+**Features**: Deepen **F6** / **F6.b** / **F12** / **F2** / **F13** + deepen **F23** (#809) (no new Fn)  
 **Issues**: [#810](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/810), [#811](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/811), [#812](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/812) **closed**; [#809](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/809) **open** (soft done)  
 **Started**: 2026-07-31  
 **Completed**: 2026-07-31  
 **Branch**: `evolve/EV-025-iwxxm-us-remarks-va`  
 **PR**: [#816](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/816) merged `2412312`  
-**Status**: **completed** — Phase 4 close (`D-S032-EV025-phase4-close`); #809 equality → next cycle
+**Status**: **completed**; Phase 4 close (`D-S032-EV025-phase4-close`); #809 equality → next cycle
 
 ### Phase 4 close (2026-07-31)
 
@@ -4445,11 +4445,11 @@ Lean+build + **13 when ships**: `00→16→01→02→04→07→08→10` (+ `13` 
 ## Cycle EV-024 — IWXXM domain mine (#804 + #807 + #773) (S031)
 
 **Session**: S031-iwxxm-domain-mine  
-**Features**: Deepen **F6** / **F2** / **F4** / **F12** / **F13** / **F25** (+ **F6.b** US map via #773) — no new Fn  
-**Issues**: [#804](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/804), [#807](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/807), [#773](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/773) — **exclude** [#806](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/806)  
+**Features**: Deepen **F6** / **F2** / **F4** / **F12** / **F13** / **F25** (+ **F6.b** US map via #773); no new Fn  
+**Issues**: [#804](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/804), [#807](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/807), [#773](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/773); **exclude** [#806](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/806)  
 **Started**: 2026-07-30  
 **Branch**: `evolve/EV-024-iwxxm-domain-mine`  
-**Status**: **completed** (2026-07-30) — PR #813 `864783e`; 13-deploy-smoke PASS; `D-S031-merge-close`
+**Status**: **completed** (2026-07-30); PR #813 `864783e`; 13-deploy-smoke PASS; `D-S031-merge-close`
 
 ### Scope (Phase 0 — locked 2026-07-30)
 
@@ -4528,7 +4528,7 @@ Build skills: `mine-domain-sources`, `extract-pdf-to-repo`.
 **Issues**: [#800](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/800) (supersedes #797 implementation backlog; continues optional QA from #798/#719)  
 **Started**: 2026-07-30  
 **Branch**: `evolve/EV-023-apac-encode-validate`  
-**Status**: **in_progress** (Phase A — **01-requirements**)
+**Status**: **in_progress** (Phase A: **01-requirements**)
 
 ### Scope (Phase 0 — locked 2026-07-30)
 
@@ -4595,7 +4595,7 @@ Lean+build + **13 when behavior ships**: `00→16→01→02→04→07→08→10`
 **Issues**: [#736](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/736) (VAA), [#737](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/737) (TCA)  
 **Started**: 2026-07-29  
 **Branch**: `evolve/EV-021-vaa-quality`  
-**Status**: **in_progress** (Phase C — **07-build** @ T1.1; M0 done)
+**Status**: **in_progress** (Phase C: **07-build** @ T1.1; M0 done)
 
 ### Scope (Batch 1 — locked 2026-07-29)
 
@@ -4677,7 +4677,7 @@ Execution plan: `docs/sessions/S027-vaa-quality/reports/execution-plan.md`.
 **Issues**: [#731](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/731) (AIRMET); deepen prior quality bars for vendor example parity  
 **Started**: 2026-07-29  
 **Branch**: `evolve/EV-020-airmet-quality`  
-**Status**: **in_progress** (Phase C — **07-build** @ T3.1; M0–M2 / A1–A4 done)
+**Status**: **in_progress** (Phase C: **07-build** @ T3.1; M0–M2 / A1–A4 done)
 
 ### Scope (locked 2026-07-29)
 
@@ -4829,7 +4829,7 @@ Report: `docs/sessions/S025-sigmet-quality/reports/02-verify-plan-audit.md`.
 | E19-17 | decision | FE / catalog UI? | **B** — Add SIGMET/VA tag filters (**amends E19-14**) |
 | E19-18 | decision | New deps? | **B** — AskQuestion per new dep (prefer none) |
 
-**E19-14 amend**: Prior “no new FE catalog filters” superseded by **E19-17=B** for this cycle — additive catalog panel filters/copy for SIGMET (+ VA) tags; H4–H5 required after FE deploy.
+**E19-14 amend**: Prior “no new FE catalog filters” superseded by **E19-17=B** for this cycle: additive catalog panel filters/copy for SIGMET (+ VA) tags; H4–H5 required after FE deploy.
 
 #### Batch 2 (locked 2026-07-29)
 
@@ -4840,7 +4840,7 @@ Report: `docs/sessions/S025-sigmet-quality/reports/02-verify-plan-audit.md`.
 | E19-21 | decision | Deploy/smoke M5? | **A** — redeploy; H1–H3 if API; H4–H5 required |
 | E19-22 | gate | Approve plan? | **A** — M0–M5 (~29 tasks); skip 05/06; B→C → **07 @ T0.1** (`D-S025-04-plan-approve-A`) |
 
-**04 COMPLETE** — 04-exit consistency PASS; handoff **07-build** @ T0.1.
+**04 COMPLETE**: 04-exit consistency PASS; handoff **07-build** @ T0.1.
 
 ### 07-build (in progress)
 
@@ -4849,7 +4849,7 @@ Report: `docs/sessions/S025-sigmet-quality/reports/02-verify-plan-audit.md`.
 | D-S025-16-continue | decision | Resume CONTINUE? | Resume @ T2.1 (2026-07-29) |
 | D-S025-T2.3-A | decision | F23 themes G1–G3 close? | **1 / A** — Close G1–G3 with documented residuals (TOP ABV/BLW light; OBS/FCST collections thin); continue M3 VA lint |
 
-**M2 complete** — T2.1 annex3 goldens + T2.2 exceptional convert + T2.3 matrix close (`D-S025-T2.3-A`).
+**M2 complete**: T2.1 annex3 goldens + T2.2 exceptional convert + T2.3 matrix close (`D-S025-T2.3-A`).
 
 ### Routing (`D-S025-E19-batch1` + Batch 2)
 
@@ -4939,7 +4939,7 @@ sources, no saved profiles in v1. Routing: **Lean+build**.
 |----|----------|----------|
 | D-S024-04-plan-approve-A | gate | **A** — Approve execution plan (M1–M4 / 14 tasks); skip 05/06 (Lean+build); start **07-build** @ T1.1 |
 
-**Execution plan artifact**: `docs/sessions/S024-dissemination-file-select/reports/execution-plan.md` (**approved** — D-S024-04-plan-approve-A).
+**Execution plan artifact**: `docs/sessions/S024-dissemination-file-select/reports/execution-plan.md` (**approved**; D-S024-04-plan-approve-A).
 
 ### Deploy gate (2026-07-29)
 
@@ -4947,7 +4947,7 @@ sources, no saved profiles in v1. Routing: **Lean+build**.
 |----|----------|----------|
 | D-S024-13-deploy-A | gate | **A** — Push + open PR #791; after merge run live H4–H5 + H6′ |
 
-**Deploy smoke**: `docs/sessions/S024-dissemination-file-select/reports/deploy-smoke.md` — **PASS** (2026-07-29). PR [#791](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/791) merged `2f552b9`; FE `dep-d9kkjj5bedkc73au0aeg` live; main CI [30411047349](https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/30411047349) success.
+**Deploy smoke**: `docs/sessions/S024-dissemination-file-select/reports/deploy-smoke.md`, **PASS** (2026-07-29). PR [#791](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/791) merged `2f552b9`; FE `dep-d9kkjj5bedkc73au0aeg` live; main CI [30411047349](https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/30411047349) success.
 
 ### Phase 4 close (2026-07-29)
 
@@ -4967,7 +4967,7 @@ sources, no saved profiles in v1. Routing: **Lean+build**.
 **Started**: 2026-07-27
 **Completed**: —
 **Branch**: `evolve/EV-017-public-app-privacy`
-**Status**: **in_progress** — Phase A (02-verify-plan)
+**Status**: **in_progress**; Phase A (02-verify-plan)
 
 ### Scope (Batch 1 — session open 2026-07-27)
 
@@ -5082,7 +5082,7 @@ Privacy: Solution A + one global preference center + GPC. Retire operator Auth U
 **Started**: 2026-07-22
 **Completed**: —
 **Branch**: `evolve/EV-016-golden-examples-ui`
-**Status**: **in_progress** — 11 approved (E16-19); minor PR → 13-deploy-smoke
+**Status**: **in_progress**; 11 approved (E16-19); minor PR → 13-deploy-smoke
 
 ### Scope (Batch 1 — locked 2026-07-22)
 
@@ -5144,7 +5144,7 @@ Examples control in FileConverter sets product/inputMode; copy from package gold
 
 **Completed**: 2026-07-27
 **Branch**: `evolve/EV-016-golden-examples-ui` → PR [#782](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/782) @ `c49f22b`
-**Status**: **completed** — #780 closed; live FE smoke owned by #781
+**Status**: **completed**; #780 closed; live FE smoke owned by #781
 
 ### Tech plan artifacts
 
@@ -5165,7 +5165,7 @@ Examples control in FileConverter sets product/inputMode; copy from package gold
 **Started**: 2026-07-22
 **Completed**: 2026-07-22 (`D-S020-EV015-phase4-close`)
 **Branch**: `evolve/EV-015-aerodrome-quality` → PR [#778](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/778) @ `eae8bdc`
-**Status**: **completed** — F20 Done; #735/#734 closed; Render live `…-eae8bdc`
+**Status**: **completed**; F20 Done; #735/#734 closed; Render live `…-eae8bdc`
 
 ### Phase 4 close (`D-S020-EV015-phase4-close`)
 
@@ -5194,7 +5194,7 @@ Examples control in FileConverter sets product/inputMode; copy from package gold
 | E15-7 | decision | Deploy / smoke (13)? | **A** — redeploy if API/FE changes; H1–H3 if API; H4–H5 workbench `taf`/`speci` |
 | E15-8 | decision | Proceed to F20 + 01? | **A** — lock Phase 0; hand off 01-requirements delta |
 
-**Phase 0 scope approved** — proceed to allocate F20 in `feature-list.md` and 01 delta.
+**Phase 0 scope approved**: proceed to allocate F20 in `feature-list.md` and 01 delta.
 
 ### Routing (`D-S020-EV015-route-1`)
 
@@ -5230,7 +5230,7 @@ Examples control in FileConverter sets product/inputMode; copy from package gold
 **Issues**: [#729](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/729), [#2](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/2), [#6](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/6)
 **Started**: 2026-07-20
 **Branch**: `main` @ `3c9ee81` (#753 MERGED); build branches `cursor/*-b45b` off main
-**Status**: Phase B **in progress** — **05-verify-tech PASS** (D-S019-EV014-Q35A-05); next **06-tech-tooling**
+**Status**: Phase B **in progress**; **05-verify-tech PASS** (D-S019-EV014-Q35A-05); next **06-tech-tooling**
 
 ### Intake (Batch 1 Assumed — AskQuestion waived / cloud written interview) — still locked (**amended Batch 5**)
 
@@ -5301,8 +5301,8 @@ Examples control in FileConverter sets product/inputMode; copy from package gold
 ### Resolved Batch 5
 
 - **I-S019-EV014-Q14r-extras-enum** — all four extras IN (Q20=A,B,C,D)
-- Batch 1 Schema require-existing-only — **superseded** by Q20=A
-- Batch 1 Q1=A convert-then-send-only — **amended** by Q20=B
+- Batch 1 Schema require-existing-only: **superseded** by Q20=A
+- Batch 1 Q1=A convert-then-send-only: **amended** by Q20=B
 
 ### Resolved Batch 4
 
@@ -5353,12 +5353,12 @@ template-conformance, api-contract Planned routes, dependency-inventory Planned 
 
 ### 04-tech-plan complete (Q34=A / D-S019-EV014-Q34A-04-approve)
 
-- Execution plan **approved** — M1–M6 + T0.1 (**29** tasks after 05 count fix; was mislabeled 32).
+- Execution plan **approved**: M1–M6 + T0.1 (**29** tasks after 05 count fix; was mislabeled 32).
 - 04-tech-plan stage **completed**; #753 MERGED to `main` @ `3c9ee81`.
 
 ### 05-verify-tech complete (D-S019-EV014-Q35A-05)
 
-- Audit **PASS** — 22 high auto-approved; S1–S8 Modify applied (task count, git strategy,
+- Audit **PASS**: 22 high auto-approved; S1–S8 Modify applied (task count, git strategy,
   secrets matrix allowlist, ADR-029/030 stale language, api-contract wording, rate-limit on
   T2.3/T2.4, F17 Compose/CI align). AskQuestion waived / cloud Assumed.
 - Report: `docs/sessions/S019-dissemination-upload/reports/05-verify-tech-audit.md`
@@ -5396,7 +5396,7 @@ template-conformance, api-contract Planned routes, dependency-inventory Planned 
 ### Notes
 
 - Prior: S018/EV-013 closed 2026-07-20 (Q0=A waive leftover 08/09/11/12); #750 remarks live
-- Phase 0 approved 2026-07-21 — F16–F19 in feature-list; Full routing; 01-requirements delta landed
+- Phase 0 approved 2026-07-21: F16–F19 in feature-list; Full routing; 01-requirements delta landed
 - **Close gate (Q15=A + Q8=C + Q21=A + Q16/Q17/Q18):** staging/test OK for merge; originally
   block cycle close until live BYOC demos green for **Postgres + WIS2 + EDIS**. F19
   (AMHS/SWIM/AFS) requires staging/test path green; live F19 demo optional with AskQuestion
@@ -5531,7 +5531,7 @@ template-conformance, api-contract Planned routes, dependency-inventory Planned 
 ### Scope (Phase 0–1 locked 2026-07-19)
 
 1. Maintainable METAR lint **issue registry** (`info` / `warning` / `error`), additive and documented
-2. Full [#732](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/732) METAR quality bar — lint, convert, IWXXM validate, API/UI path
+2. Full [#732](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/732) METAR quality bar: lint, convert, IWXXM validate, API/UI path
 3. Golden TAC → IWXXM → XSD+Schematron where fixtures exist or are expanded
 4. **Max research + validation/conversion expansion** — research catalog in 01 **and** aggressive encode of R1–R6 **and** registry/goldens **and** any other in-scope METAR quality wins (MetarCentral, AviationRef, iwxxmConverter)
 5. New **F15**; deepen **F6** (convert/goldens) and **F12** (tac-validate METAR pack)
@@ -5608,7 +5608,7 @@ template-conformance, api-contract Planned routes, dependency-inventory Planned 
 ## Cycle EV-010 — Package publish + validation stack (S014)
 
 **Session**: S014-package-publish-validation
-**Features**: F11–F14 (proposed — pending Phase 1 approval)
+**Features**: F11–F14 (proposed; pending Phase 1 approval)
 **Issues**: #703, #699, #698, #693
 **Started**: 2026-07-18
 **Branch**: `evolve/EV-010-package-publish-validation`
@@ -5744,7 +5744,7 @@ validation semantics or Schematron rules; F5 history surfaces.
 | 12–13 | 2026-07-17 | Checklist approved; PR #723 merged; live smokes PASS |
 | Close | 2026-07-18 | User approved deploy results (option 1); session closed |
 
-**Completed**: 2026-07-18 — PR [#723](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/723) merge `4660602`; F9/F10 Done in production.
+**Completed**: 2026-07-18; PR [#723](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/723) merge `4660602`; F9/F10 Done in production.
 
 ---
 
@@ -5773,7 +5773,7 @@ removal. Out: teaching CMS, paste-keys UI, AMHS/SWIM, quiet F5 parallel store.
 
 ### Execution plan
 
-`docs/sessions/S011-f7-operator-ui/reports/execution-plan.md` — M1–M6 / T1–T6 (pending approval).
+`docs/sessions/S011-f7-operator-ui/reports/execution-plan.md`: M1–M6 / T1–T6 (pending approval).
 
 ---
 
@@ -5837,8 +5837,8 @@ removal. Out: teaching CMS, paste-keys UI, AMHS/SWIM, quiet F5 parallel store.
 
 - Scheduled workflows: `e2e-tests.yml`, `load-tests.yml`, `vendor-sync.yml`
 - Legacy manual workflow `test-coverage-95.yml` (delete if still present; no behavior change)
-- Broken `smoke-tests-deploy.yml` (fix trigger reference or delete — not in PR/push path)
-- Path-filtered CI (P2) — deferred to future cycle
+- Broken `smoke-tests-deploy.yml` (fix trigger reference or delete; not in PR/push path)
+- Path-filtered CI (P2): deferred to future cycle
 - Coverage threshold changes (98% pytest `--cov-fail-under`, Codecov 95% per-service)
 - Product feature changes (F1–F4)
 
@@ -5888,7 +5888,7 @@ removal. Out: teaching CMS, paste-keys UI, AMHS/SWIM, quiet F5 parallel store.
 
 **Out of scope**
 
-- `=` terminator (reporter notes resolved — monitor only).
+- `=` terminator (reporter notes resolved; monitor only).
 - #555 siblings: auto-clear input, in-app error log preview.
 - TAF COR / `METAR AMD COR` unless reporter confirms.
 - REQ-016 migration rewrites.
@@ -5997,14 +5997,14 @@ removal. Out: teaching CMS, paste-keys UI, AMHS/SWIM, quiet F5 parallel store.
 - Rename the **batch ZIP archive** itself to `${base}.zip` when a custom name is set; otherwise keep
   `converted_files_<ts>.zip`.
 - **Persist** the custom name across reload for both guest (sessionStorage snapshot) and logged-in
-  users — carried inside the existing `conversion_params` JSONB blob (no schema/migration/API change).
+  users, carried inside the existing `conversion_params` JSONB blob (no schema/migration/API change).
 
 **Out of scope**
 
 - Dedicated `output_filename` DB column / typed API field (rejected in favor of `conversion_params`
-  carriage — keeps the build frontend-only; no Supabase migration, no API contract change).
+  carriage: keeps the build frontend-only; no Supabase migration, no API contract change).
 - Renaming **file-upload** outputs (only manual input).
-- New top-level feature ID — extends F1, lightly touches F5.
+- New top-level feature ID; extends F1, lightly touches F5.
 - REQ-016 unrelated rewrites.
 
 ### Decisions
@@ -6046,7 +6046,7 @@ removal. Out: teaching CMS, paste-keys UI, AMHS/SWIM, quiet F5 parallel store.
 
 **GitHub**: [#655](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/655)
 **Session**: S010-issue-655-tac-traceability
-**Feature**: F6 (general converter UI — input traceability delta)
+**Feature**: F6 (general converter UI: input traceability delta)
 **Approved**: 2026-07-12
 **Cycle type**: feature (UI-only delta on F6)
 
@@ -6081,7 +6081,7 @@ removal. Out: teaching CMS, paste-keys UI, AMHS/SWIM, quiet F5 parallel store.
 **Issues**: [#1120](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1120) · [#1121](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1121) · [#1122](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1122) · [#1123](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1123) · [#1145](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1145)  
 **Follow-ons**: [#1146](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1146) Phase B composable convert · [#1147](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1147) Phase C workflow authoring  
 **Started**: 2026-09-05  
-**Status**: **in_progress** — requirements locked; documenting band
+**Status**: **in_progress**; requirements locked; documenting band
 
 ### Scope lock
 
@@ -6111,7 +6111,7 @@ authoring deferred.
 **Features:** deepen **F7.w** / **F7.v** / **F9** (no new Fn)  
 **Prior:** EV-080 / #1146 / PR #1193 (templates phase-1)  
 **Branch:** `evolve/EV-conversion-profile-ux-libraries`  
-**Status:** Spec band — requirements locked; documenting in progress
+**Status:** Spec band: requirements locked; documenting in progress
 
 ### Scope lock
 
@@ -6143,7 +6143,7 @@ authoring deferred.
 **Features:** deepen **F2** / **F15** (no new Fn) · [#1216](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1216)  
 **Prior:** EV-validation-policy-layers M1–M6 merged to `stage` (PR #1217)  
 **Branch:** `evolve/EV-validation-policy-remainders`  
-**Status:** Implementing — MatchPort is opt-in; IWXXM policy apply is in product code
+**Status:** Implementing: MatchPort is opt-in; IWXXM policy apply is in product code
 
 ### Scope lock
 
@@ -6162,7 +6162,7 @@ authoring deferred.
 **Opened:** 2026-09-21 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-yaml-extension-header`  
 **Features:** deepen **F2** / **F6** / **F9** / **F15** (no new Fn)  
 **Prior:** #1216 closed after #1218 merged to `stage`  
-**Status:** Implemented — header loaders, Schematron pattern ids, convert policy id
+**Status:** Implemented: header loaders, Schematron pattern ids, convert policy id
 
 ### Scope lock
 

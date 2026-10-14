@@ -338,7 +338,7 @@ service.datum_map["datum_info"]["CGVD2013"] = {
 service.save_datum_mapping()
 ```
 
-## Best Practices
+## Practices
 
 1. **Always specify version explicitly** - Don't rely on defaults for production
 2. **Validate output against schema** - Ensure IWXXM compliance after formatting

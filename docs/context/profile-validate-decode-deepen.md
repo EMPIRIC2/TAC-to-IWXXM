@@ -15,7 +15,7 @@
 
 Close remaining national-profile / TAC-validate / IWXXM-validate / decode /
 operator-catalog spine so operators pick **deployed** profiles and see
-**profile-scoped** catalogs — without reopening retired Profile Builder authoring.
+**profile-scoped** catalogs, without reopening retired Profile Builder authoring.
 
 ## Locked intake
 

@@ -19,7 +19,7 @@ lint → convert → validate. Not a click tutorial.
 - For: State MET / ANSP / aviation authority leadership
 - Scope: convert Traditional Alphanumeric Code (TAC) to IWXXM XML and prove quality
 
-**Speaker notes:** Frame as **compliance enablement**. Obligations come from ICAO/WMO —
+**Speaker notes:** Frame as **compliance enablement**. Obligations come from ICAO/WMO;
 this system implements lint/convert/validate against published schemas.
 [citation-search-guide.md] [Corpus: product §F6/F7]
 
@@ -34,7 +34,7 @@ this system implements lint/convert/validate against published schemas.
 **Bullets:**
 - TAC remains widely used for **presentation** and local ops
 - International OPMET **exchange** increasingly requires **IWXXM** (XML/GML)
-- Annex 3 sets MET service / product SARPs (State-adopted edition) — *Access: paywall*
+- Annex 3 sets MET service / product SARPs (State-adopted edition). *Access: paywall*
 - Public **OPMET IWXXM Exchange Guidelines (5th Ed., 2023)** describe prep, translation, exchange over AFS/AMHS
 - Authorities need: **valid TAC → correct IWXXM → XSD + Schematron pass**
 
@@ -61,7 +61,7 @@ regional agreement states it. Workshop ~2030 talk is **informative** only (PPT-0
 | Overview only | TT-AvData workshop PPT-02 | Public **informative** |
 
 **Speaker notes:** Walk leaders through citation-search-guide §2–§3. Regional guides
-(e.g. EUR Doc 014) **complement** Annex 3 — they do not replace it.
+(e.g. EUR Doc 014) **complement** Annex 3; they do not replace it.
 
 ---
 
@@ -78,7 +78,7 @@ regional agreement states it. Workshop ~2030 talk is **informative** only (PPT-0
 6. Prefer official TAC↔XML example pairs for acceptance tests
 7. Translation metadata when translating for another centre; retain TAC on failure
 
-**Speaker notes:** Guidelines 5th §5.3.2 — schema **and** Schematron. Default pin **2025-2**.
+**Speaker notes:** Guidelines 5th §5.3.2: schema **and** Schematron. Default pin **2025-2**.
 Hub: docs/domain/README.md pipeline table.
 
 **Cite:** Guidelines 5th · schemas.wmo.int/2025-2 · IWXXM_VALIDATION.md
@@ -164,8 +164,8 @@ Hub: docs/domain/README.md pipeline table.
 **Title:** Industry briefing context (not SARPs)
 
 **Bullets:**
-- TT-AvData “IWXXM Framework” (ESAF, Oct 2025) — public download
-- Useful for landings map / messaging — label **INFORMATIVE**
+- TT-AvData “IWXXM Framework” (ESAF, Oct 2025), public download
+- Useful for landings map / messaging; label **INFORMATIVE**
 - Forward messages (e.g. TAC sunset discussions) → verify against **your** Annex 3 edition / Region
 
 **Cite:** https://www.icao.int/filebrowser/download/26741?fid=26741
@@ -177,12 +177,12 @@ Hub: docs/domain/README.md pipeline table.
 **Title:** Cite these landings
 
 **Bullets:**
-- Annex 3 — store.icao.int/en/annexes/annex-3
-- Doc 10003 — ICAO Store
-- OPMET IWXXM Guidelines 5th — icao.int METP PDF (public)
+- Annex 3: store.icao.int/en/annexes/annex-3
+- Doc 10003: ICAO Store
+- OPMET IWXXM Guidelines 5th: icao.int METP PDF (public)
 - schemas.wmo.int/iwxxm/2025-2/
 - codes.wmo.int
-- library.wmo.int — Manual on Codes I.3
+- library.wmo.int: Manual on Codes I.3
 - Full search steps: `docs/guides/operator-sources-pptx/citation-search-guide.md`
 
 ---

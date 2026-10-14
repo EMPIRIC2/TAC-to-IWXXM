@@ -16,7 +16,7 @@
 | Consistency issues found | 6 |
 | Consistency issues resolved | 6 |
 
-**Source documents updated**: 4 — `migration-plan.md`, `user-journeys.md`, `test-plan.md`, `config-spec-monorepo.md`
+**Source documents updated**: 4 (`migration-plan.md`, `user-journeys.md`, `test-plan.md`, `config-spec-monorepo.md`)
 
 ## Document Inventory
 
@@ -96,14 +96,14 @@
 
 ## Next Step
 
-**03-plan-tooling** — create scope-checking hooks, plan-adherence rules, and domain-specific skills.
+**03-plan-tooling**: create scope-checking hooks, plan-adherence rules, and domain-specific skills.
 
 ---
 
 ## S019 / EV-014 delta — Dissemination F16–F19 (2026-07-21)
 
 **Session report**: [`docs/sessions/S019-dissemination-upload/reports/02-verify-plan-audit.md`](../sessions/S019-dissemination-upload/reports/02-verify-plan-audit.md)  
-**Status**: **completed** — 28 high auto-approved; 6 user-approved (modified)
+**Status**: **completed**; 28 high auto-approved; 6 user-approved (modified)
 
 ### Delta inventory
 
@@ -131,7 +131,7 @@
 
 ### Auto-approved (high)
 
-28 statements — see session report (interview Q5–Q24 / requirements-decisions EV-014).
+28 statements; see session report (interview Q5–Q24 / requirements-decisions EV-014).
 
 ### User review (all resolved)
 
@@ -190,7 +190,7 @@ Phase A checkpoint → **04-tech-plan** (03 skipped per Standard routing).
 
 **Session**: S025-sigmet-quality  
 **Report**: `docs/sessions/S025-sigmet-quality/reports/02-verify-plan-audit.md`  
-**Status**: **PASS** — medium S1.M1 / S6.M1 / S9.M1 all option **1** (2026-07-29)
+**Status**: **PASS**; medium S1.M1 / S6.M1 / S9.M1 all option **1** (2026-07-29)
 
 | Metric | Count |
 |--------|-------|
@@ -219,7 +219,7 @@ Phase A checkpoint → **04-tech-plan** (Lean+build; 05 skipped per S9.M1).
 
 **Session**: S027-vaa-quality  
 **Report**: `docs/sessions/S027-vaa-quality/reports/02-verify-plan-audit.md`  
-**Status**: **PASS** — Batch F S02.M1/M2/L1 all option **1** (2026-07-29)
+**Status**: **PASS**; Batch F S02.M1/M2/L1 all option **1** (2026-07-29)
 
 | Metric | Count |
 |--------|-------|
@@ -247,7 +247,7 @@ Gate A PASS (Lean) → **04-tech-plan** (`D-S027-02-phase-a`).
 
 **Session**: S032-iwxxm-us-remarks-va  
 **Report**: `docs/sessions/S032-iwxxm-us-remarks-va/reports/02-verify-plan-audit.md`  
-**Status**: **PASS** — Batch F S02.M1/M2/L1 all option **1** (2026-07-31)
+**Status**: **PASS**; Batch F S02.M1/M2/L1 all option **1** (2026-07-31)
 
 | Metric | Count |
 |--------|-------|
@@ -276,7 +276,7 @@ Gate A PASS (Lean) → **04-tech-plan** (`D-S032-02-phase-a`).
 
 **Date**: 2026-08-04  
 **Mode**: delta  
-**Status**: **PASS** — Batch F S02.M1/M2/M3 all option **1**; Gate A → 04
+**Status**: **PASS**; Batch F S02.M1/M2/M3 all option **1**; Gate A → 04
 
 | Metric | Count |
 |--------|-------|

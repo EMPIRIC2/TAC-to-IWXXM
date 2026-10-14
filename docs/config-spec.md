@@ -8,7 +8,7 @@
 
 Configuration values resolve in this order (highest priority first):
 
-1. Environment variables (secrets + abuse-control knobs — see below)
+1. Environment variables (secrets + abuse-control knobs; see below)
 2. `config/{env}.json` selected by `METAR_CONFIG_ENV`
 3. Built-in defaults in `packages/shared`
 
@@ -19,7 +19,7 @@ Supabase **service-role must not** be used as the product data plane (ADR-033).
 ## BYO credentials (S011 / R6 / #697) — amended EV-031
 
 Operators may still BYO **their** Supabase **Auth** project (URL + publishable + JWT verify).
-Product Postgres is **DigitalOcean** (`DATABASE_URL`) — not Supabase hosted DB. F8 worker uses
+Product Postgres is **DigitalOcean** (`DATABASE_URL`), not Supabase hosted DB. F8 worker uses
 `DATABASE_URL` + poller env (ADR-018 amend).
 
 ## Configuration Files
@@ -63,7 +63,7 @@ Same schema as `prod.json` with local values:
 | `supabase.url`    | project URL                                |
 | `supabase.url`    | `https://ktvxijislbtgqapllmuk.supabase.co` |
 
-**Port standard (S003-R4):** Frontend `18000`, API `18001` everywhere — compose, config, and
+**Port standard (S003-R4):** Frontend `18000`, API `18001` everywhere: compose, config, and
 `start-dev-servers.sh`.
 
 ### Frontend runtime `/config.json`
@@ -72,7 +72,7 @@ Same schema as `prod.json` with local values:
 - **Location**: Served from static host at `/config.json` (copied from `config/prod.json` at build)
 - **Purpose**: Replace build-time `VITE_*` for URLs; fetch at app bootstrap (S003-R2)
 
-Injected at deploy time (`scripts/frontend/prepare-config.sh` — publishable key not committed):
+Injected at deploy time (`scripts/frontend/prepare-config.sh`; publishable key not committed):
 
 ```json
 {
@@ -98,7 +98,7 @@ committed `config/prod.json` (DOKS). Staging uses `config/staging.json`
 
 ## Environment Variables (secrets + abuse controls)
 
-Minimal `.env.example` — copy to repo-root `.env`. **Canonical names:** [env-contract.md](env-contract.md).
+Minimal `.env.example`: copy to repo-root `.env`. **Canonical names:** [env-contract.md](env-contract.md).
 
 | Variable                                            | Required      | Description                                                  | Source                    |
 | --------------------------------------------------- | ------------- | ------------------------------------------------------------ | ------------------------- |
@@ -166,10 +166,10 @@ No new CLI flags.
 
 - Rate-limit / body knobs must be positive integers when set (`RATE_LIMIT_*`, `MAX_REQUEST_BODY_BYTES`)
 - `config/*.json` must parse as valid JSON; `api.corsOrigins` must be a non-empty array in prod
-- `api.baseUrl` is the single API origin for `/api/v1/*` **and** `/auth/*` (F31 / ADR-033) — **no** `/admin`
+- `api.baseUrl` is the single API origin for `/api/v1/*` **and** `/auth/*` (F31 / ADR-033); **no** `/admin`
 - `make env-check` fails if Auth bootstrap is required without `supabase.url` / publishable key when Auth is enabled
 - Secret / service-role keys must never appear in frontend build env or committed files
-- Product DB writers use `DATABASE_URL` (DO Postgres) — not Supabase PostgREST service-role (F30)
+- Product DB writers use `DATABASE_URL` (DO Postgres), not Supabase PostgREST service-role (F30)
 - `DISSEMINATION_EGRESS_ALLOWLIST` empty ⇒ fail-closed (ADR-029)
 
 ## F6 — tac2iwxxm conversion (S008)
@@ -187,7 +187,7 @@ No new `config/*.json` keys and **no new environment variables** for F6.
 
 **Connectivity**: Frontend and API remain different origins on Render. Keep `api.corsOrigins`
 correct; redeploy **API before** frontend sign-off when CORS/API contract changes. F6 UI pickers
-use runtime `/config.json` — no new `VITE_*` required.
+use runtime `/config.json`; no new `VITE_*` required.
 
 **`.env.example`**: Unchanged for F6.
 
@@ -210,7 +210,7 @@ apply. Redeploy API before frontend when contract changes.
 ## F11–F14 — msgspec HTTP + PyPI publish (S014 / EV-010)
 
 No new `config/*.json` keys for msgspec response encoding. **PyPI publish uses GitHub
-OIDC trusted publishing** — no long-lived PyPI API token in repo secrets when OIDC is configured
+OIDC trusted publishing**: no long-lived PyPI API token in repo secrets when OIDC is configured
 ([Real Python](https://realpython.com/pypi-publish-python-package/)).
 
 | Concern                 | Where it lives                    | Notes                                                    |
@@ -223,7 +223,7 @@ OIDC trusted publishing** — no long-lived PyPI API token in repo secrets when 
 | Schema bundle size      | `iwxxm-validate` wheel build      | From `vendor/schemas/*` pins; not an env var             |
 | Render redeploy         | Existing API/static secrets       | When API contract changes; CORS unchanged                |
 
-**GitHub Actions (publish)** — configure in GitHub UI (not committed secrets):
+**GitHub Actions (publish)**: configure in GitHub UI (not committed secrets):
 
 | Setting                 | Purpose                                                                             |
 | ----------------------- | ----------------------------------------------------------------------------------- |
@@ -275,26 +275,26 @@ on DO Postgres while keeping public convert and abuse-control env knobs:
 
 ### Session changelog
 
-- S008 (2026-07-12): F6 — no new config/env; profile default in code; hard cutover
+- S008 (2026-07-12): F6; no new config/env; profile default in code; hard cutover
 - S011 / EV-008 (2026-07-13): BYO; deprecate `ADMIN_*` → `E2E_USER_*`; drop `/admin` from baseUrl docs
 - S014 / EV-010 (2026-07-18): PyPI OIDC trusted publishing notes; no new runtime secrets;
   matrix workflow clarification (05 S2.M1)
 - S019 / EV-014 (2026-07-21): `DISSEMINATION_EGRESS_ALLOWLIST` (E14-08=A); no config JSON for sinks
 - S019 / EV-014 T6.6 (2026-07-21): document local/CI recommended allowlist value; Render live value still operator-set (no `RENDER_API_KEY` in cloud agent)
-- S023 / EV-017 (2026-07-28): F21 — rate-limit + body env; retire `DISABLE_AUTH` / `E2E_USER_*` / FE Auth keys (ADR-031)
+- S023 / EV-017 (2026-07-28): F21: rate-limit + body env; retire `DISABLE_AUTH` / `E2E_USER_*` / FE Auth keys (ADR-031)
 - S026 / EV-020 (2026-07-29): F9 glossary package data + optional override; F3/OpenAIP reuse for
-  decode names (ADR-032) — see §F24/F25/F9 below
-- S027 / EV-021 (2026-07-29): F26/F27 VAA+TCA WMO goldens — **no new env vars**; see §F26/F27
-- S038 / EV-031 (2026-08-03): F30/F31 — `DATABASE_URL` required; Auth keys restored; DOKS live URLs;
+  decode names (ADR-032); see §F24/F25/F9 below
+- S027 / EV-021 (2026-07-29): F26/F27 VAA+TCA WMO goldens; **no new env vars**; see §F26/F27
+- S038 / EV-031 (2026-08-03): F30/F31: `DATABASE_URL` required; Auth keys restored; DOKS live URLs;
   F8 off Supabase DB (ADR-033)
 - EV-configurable-tac-decode-packs / #1210 (2026-09-19): optional `TAC_DECODING_PACK_DIR`;
   unset means built-in packs only. Not a required deploy secret (ADR-045).
 - EV-validation-policy-layers / #1216 (2026-09-20): optional `TAC_VALIDATE_POLICY_DIR`,
-  `TAC_VALIDATE_DETECTOR_DIR`, `IWXXM_VALIDATE_POLICY_DIR` — file/env overlays only (ADR-046).
+  `TAC_VALIDATE_DETECTOR_DIR`, `IWXXM_VALIDATE_POLICY_DIR`: file/env overlays only (ADR-046).
   Not required Render secrets.
-- EV-yaml-extension-header (2026-09-21): optional `TAC2IWXXM_PROFILE_DIR` — conversion profile
+- EV-yaml-extension-header (2026-09-21): optional `TAC2IWXXM_PROFILE_DIR` for conversion profile
   binding overlays. Not a required Render secret (ADR-045 / ADR-046).
-- EV-yaml-full-configurability / #1229 (2026-09-22): optional `TAC2IWXXM_EMIT_MAP_DIR` — convert
+- EV-yaml-full-configurability / #1229 (2026-09-22): optional `TAC2IWXXM_EMIT_MAP_DIR` for convert
   emit-map overlays (ADR-047). Not a required Render secret.
 
 ## F24 / F25 / F9 deepen — WMO goldens + glossary (S026 / EV-020)
@@ -326,7 +326,7 @@ decode-tac string behavior ships in API image.
 ## F26 / F27 — VAA + TCA quality (S027 / EV-021)
 
 No new Render secrets or env vars. Package-side goldens under ADR-032 defaults; FE Examples
-catalog remains static fixtures (WMO-passers only for VAA/TCA when F26/F27 green — E21-3).
+catalog remains static fixtures (WMO-passers only for VAA/TCA when F26/F27 green; E21-3).
 
 | Concern | Where it lives | Notes |
 |---------|----------------|-------|

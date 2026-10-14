@@ -21,7 +21,7 @@ ad-hoc FastAPI handlers, and multi-engine DDL/writer contracts need a single hom
    responses. Hold destination secrets in memory for the request / short-lived handle.
 3. **DB stack** — SQLAlchemy 2 **async** + dialect drivers:
    Postgres (`asyncpg` / existing stack), MySQL/MariaDB (`aiomysql`), SQL Server
-   (`aioodbc` + documented ODBC driver — E14-06=A), SQLite (`aiosqlite`). Versioned
+   (`aioodbc` + documented ODBC driver; E14-06=A), SQLite (`aiosqlite`). Versioned
    **writer-contract** DDL per engine; create-if-missing when preflight requests DDL (Q20=A).
 4. **HTTP API** — unified:
    - `POST /api/v1/dissemination/preflight`
@@ -47,7 +47,7 @@ ad-hoc FastAPI handlers, and multi-engine DDL/writer contracts need a single hom
 
 - Update `[Corpus: system-spec]` Component Overview, plan-adherence, template-conformance.
 - Back-add planned deps to `docs/dependency-inventory.md` (aiomysql, aiosqlite, **aioodbc**,
-  aiosmtplib — pins in M1 / T1.2).
+  aiosmtplib; pins in M1 / T1.2).
 - API sketch lands in `[Corpus: api]` as Planned; wire shapes finalized before 07-build.
 - Execution plan milestones: M1 package scaffold + SSRF; M2 F16 DB; M3 F17; M4 F18; M5 F19;
   M6 FE drawer + H4–H5 (**29** tasks after 05-verify-tech count fix).

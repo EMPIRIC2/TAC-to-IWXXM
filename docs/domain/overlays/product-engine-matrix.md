@@ -2,7 +2,7 @@
 
 **Ticket:** [#1226](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1226) (program) · baseline [#1224](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1224)  
 **Session:** `EV-yaml-full-configurability`  
-**Status:** M5 complete (#1231) — all matrix cells **full**; pin↔SCH CI lock (TC-EVYFC-001 / TC-EVYFC-004)  
+**Status:** M5 complete (#1231): all matrix cells **full**; pin↔SCH CI lock (TC-EVYFC-001 / TC-EVYFC-004)  
 **TC lock:** TC-EVYEC-001 · TC-EVYFC-001 · TC-EVYFC-004 · TC-EVYFC-005 · TC-EVYFC-002 · TC-EVYFC-006 · TC-EVYFC-007 · TC-EVYFC-008
 
 [Corpus: product §F2/F6/F9/F12/F15] [Corpus: adr/ADR-045] [Corpus: adr/ADR-046] [Corpus: adr/ADR-047] [Corpus: tests]
@@ -31,12 +31,12 @@ Program success: every in-scope cell becomes **full** with evidence (M2–M5).
 
 ## Notes
 
-- Mined catalogs under `tac2iwxxm/data/*.yaml` are **projections**, not executors — convert emit uses `data/emit_maps/` (ADR-047).
+- Mined catalogs under `tac2iwxxm/data/*.yaml` are **projections**, not executors; convert emit uses `data/emit_maps/` (ADR-047).
 - IWXXM **XSD/Schematron** remain vendor SoT; output policy only selects/ignores assert ids. Pin↔SCH must match (TC-EVYFC-004).
 - Airport name enrichment on decode is a **Python** resolver hook (`set_location_name_resolver`), not pack YAML. **M2 decision:** enrichment does **not** block decode `full` when the token-stream pack is YAML SoT (D-YFC / Build scope 2a). **ADR-049 / #1255:** `TAC_DECODING_LOCATION_NAMES_PATH` is the ICAO name source of truth when no hook is installed. An installed hook wins and does not fall through. No packaged name table ships with the library.
 - TAC detector **python residuals** (same class as decode enrichment): R1 field-order (`hatch_r1_order`), R3 WMO 4678 weather grammar (`hatch_r3`), R4 register membership (`hatch_r4_membership`), R5 multi-token PK WND (`hatch_r5_pk_and_extension`), plus `hatch_taf` / `hatch_sigmet` (`sigmet-core`) / `hatch_airmet` / `hatch_vaa` / `hatch_tca`. **M2/M4 decision:** these do **not** block detectors `full` when packs are YAML DSL SoT and residuals are named python hatches only. **ADR-049 / #1254:** those nine rules stay `kind: python`. Field order, WMO 4678 grammar, register membership, PK WND, and the product checklists are not expressible as `finditer`, `require_search`, or `token_scan`. TC-EVYRY-001 shows an overlay can replace `r3_python` with a declarative rule.
 - Convert emit **python builders** remain the XML constructors referenced by emit-map `plugin:` entrypoints. **M3/M4 decision:** YAML emit maps are the SoT for METAR/SPECI/TAF/SIGMET/AIRMET/VAA/TCA routing (`TAC2IWXXM_EMIT_MAP_DIR`); builders do **not** block emit `full` (ADR-047 / TC-EVYFC-002). **ADR-049 / #1252:** builders stay Python; a golden must show that swapping `plugin:` changes output.
-- Decode residuals: catch-all `token` on token-stream packs under `data/packs/`; VAA/TCA label packs keep free-text in label values — does **not** block decode `full`. Policies live under `tac_validate/data/policies/`.
+- Decode residuals: catch-all `token` on token-stream packs under `data/packs/`; VAA/TCA label packs keep free-text in label values, which does **not** block decode `full`. Policies live under `tac_validate/data/policies/`.
 
 ## Evidence (M2–M5)
 
@@ -53,8 +53,8 @@ DX smoke: `make overlay-preflight` · package CLIs `--check-overlay` · TC-EVYFC
 
 ## Program follow-ups (#1226)
 
-1. M1: templates + evidence — **done** (#1227 / #1234).
-2. M2: METAR+SPECI full (minus emit) — **done** (#1228).
-3. M3: emit YAML pilot METAR→SPECI — **done** (#1229).
-4. M4: remaining products → full — **done** (#1230).
-5. M5: all-full CI + pin↔SCH — **done** (#1231; TC-EVYFC-001 / TC-EVYFC-004).
+1. M1: templates + evidence, **done** (#1227 / #1234).
+2. M2: METAR+SPECI full (minus emit), **done** (#1228).
+3. M3: emit YAML pilot METAR→SPECI, **done** (#1229).
+4. M4: remaining products → full, **done** (#1230).
+5. M5: all-full CI + pin↔SCH, **done** (#1231; TC-EVYFC-001 / TC-EVYFC-004).

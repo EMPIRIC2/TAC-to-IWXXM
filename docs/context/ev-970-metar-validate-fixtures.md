@@ -29,7 +29,7 @@
 | Match meaning | Golden equal **or** `status: ready` inventory slot | `match_pass` vs official XML |
 | Audience | PR reviewers | Operators (`/quality`) |
 
-**Operator decision (2026-09-14):** clarify + normalize — keep pipelines separate; normalize Product keys; label inventory vs live; document relationship. Do **not** unify sticky onto `corpus_metrics.json` this cycle.
+**Operator decision (2026-09-14):** clarify + normalize: keep pipelines separate; normalize Product keys; label inventory vs live; document relationship. Do **not** unify sticky onto `corpus_metrics.json` this cycle.
 
 ## Opaque Product codes (repro)
 

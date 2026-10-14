@@ -17,18 +17,18 @@ Approved omits do not apply to these scripts themselves.
 
 ## Directory Structure
 
-### 📁 [launchers/](launchers/)
+### [launchers/](launchers/)
 Platform-specific launch scripts for starting the frontend (GUI) and backend (API) services.
 - Shell scripts for Linux/macOS (`.sh`)
 - PowerShell scripts for Windows (`.ps1`)
 - Batch scripts for Windows Command Prompt (`.bat`)
 
-### 📁 [db-setup/](db-setup/)
+### [db-setup/](db-setup/)
 Database table creation and setup scripts for Supabase.
 - `create_evaluation_tables.sql` - Evaluation jobs and results tables
 - `create_translation_statistics_tables.sql` - Translation statistics tables
 
-### 📁 [utilities/](utilities/)
+### [utilities/](utilities/)
 Active utility scripts for data processing and administration.
 - `parse_airports_csv.py` - Parse airport data from CSV files
 - `extract_email_templates.py` - Extract email templates from Supabase
@@ -36,7 +36,7 @@ Active utility scripts for data processing and administration.
 - `create_admin_user.py` - Create admin users in the database
 - `syntax_check.py` - Validate Python file syntax before committing changes
 
-### 📦 Archived Scripts
+### Archived Scripts
 Historical debug, fix, and diagnostic scripts have been moved to `/docs/ARCHIVE/scripts/db-debug-fixes/` to keep this directory focused on active tools.
 
 ---
@@ -204,10 +204,10 @@ All scripts require:
 
 ## What These Scripts Do
 
-1. ✅ Check if `apps/frontend` exists
-2. ✅ Install npm/pnpm dependencies if node_modules is missing
-3. ✅ Launch the Vite development server
-4. ✅ Server starts at `http://localhost:5173` (Vite default)
+1. Check if `apps/frontend` exists
+2. Install npm/pnpm dependencies if node_modules is missing
+3. Launch the Vite development server
+4. Server starts at `http://localhost:5173` (Vite default)
 
 The Vite dev server includes:
 - Hot Module Replacement (HMR) for instant updates

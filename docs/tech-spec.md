@@ -5,7 +5,7 @@
 > **Last updated:** 2026-08-12 (docs sync — Quality metrics on stage; prior membership harvest)
 
 This file is the **entry point** for runtime, configuration, deployment, and dependency
-truth. Detail lives in the satellites below — do not duplicate long tables here.
+truth. Detail lives in the satellites below; do not duplicate long tables here.
 
 ## Satellites
 
@@ -37,8 +37,8 @@ When changing runtime behavior or deploy/config:
 
 ## WMO membership harvest (F12 deepen — S059 / EV-050)
 
-Offline L3 token membership for `tac-validate` — **no** live `codes.wmo.int` HTML in PR CI
-([Corpus: product §F12], [Corpus: decisions §EV-050], `D-S059-04-adr=1` — no new ADR).
+Offline L3 token membership for `tac-validate`: **no** live `codes.wmo.int` HTML in PR CI
+([Corpus: product §F12], [Corpus: decisions §EV-050], `D-S059-04-adr=1`; no new ADR).
 
 | Surface | Location |
 |---------|----------|
@@ -69,12 +69,12 @@ Hot-path Rust lives under `packages/tac2iwxxm/rust` and `packages/iwxxm-validate
 | Test IDs | [test-plan.md](test-plan.md) §EV-045 / TC-EV045-*; journey UJ-DEV-006 |
 | Rulesets | `scripts/deploy/apply_gh_branch_rulesets.sh` (admin apply deferred — D-S054-ac6-waive=2) |
 
-No new runtime language deps for this deepen — toolchain already required for native builds.
+No new runtime language deps for this deepen; the toolchain is already required for native builds.
 Action cache helpers (e.g. `Swatinem/rust-cache`) are CI-only, not Python inventory.
 
 ## Local mock BYOC / live SQL e2e (F16 — S047 / EV-039)
 
-Disposable multi-DB destinations for operator dissemination tests live in Compose — **not**
+Disposable multi-DB destinations for operator dissemination tests live in Compose, **not**
 production or DOKS services:
 
 | Piece | Location |
@@ -113,7 +113,7 @@ SQL Server may be skipped in CI (opt-in / heavy image); **local close** still re
 dialects when the host can run SQL Server (AC2 / AC7 / `D-S047-04` Q4). On hosts where
 SQL Server cannot start (e.g. Apple Silicon QEMU VA layout), set
 `F16_SKIP_SQLSERVER=1` (or `F16_LIVE_SQL_SERVER=0`) so `compose-mock-byoc-up` omits
-`byoc-sqlserver` from `--wait` and LIVE-003 is skipped — record the waiver in the
+`byoc-sqlserver` from `--wait` and LIVE-003 is skipped; record the waiver in the
 session teardown audit.
 
 **API process env (required for LIVE PG/MySQL/SQL Server):** the running API must have

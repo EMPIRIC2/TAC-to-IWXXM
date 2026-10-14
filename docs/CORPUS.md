@@ -1,7 +1,7 @@
 # Canonical documentation corpus
 
 **Single source of truth for skills.** Before design, parity, scope, or hotfix triage work,
-read the rows below that apply — do not invent alternate doc sets.
+read the rows below that apply; do not invent alternate doc sets.
 
 > Skills and rules must cite paths from this file (e.g. `[Corpus: system-spec]`,
 > `[Corpus: adr/ADR-00N]`). Folder layout: [README.md](README.md).
@@ -61,7 +61,7 @@ When a skill says “check corpus parity” or “spec conformance”:
 2. **Design** — Does behavior match **system-spec** + **api** (+ **adr** if a decision exists)?
 3. **Runtime** — Do names/URLs/env match **tech-spec** (and its satellites)?
 4. **Verification** — Are assertions grounded in **tests** (`test-plan.md`) and **journeys**?
-5. **Decisions** — If code and corpus disagree, check **decisions/** + **adr/** before patching; raise `[Contradiction]` / `[Ambiguity]` via AskQuestion — do not silently “fix around” the corpus.
+5. **Decisions** — If code and corpus disagree, check **decisions/** + **adr/** before patching; raise `[Contradiction]` / `[Ambiguity]` via AskQuestion; do not silently “fix around” the corpus.
 
 Cite as: `[Corpus: <id>]` or `[Corpus: <path> §section]`.
 

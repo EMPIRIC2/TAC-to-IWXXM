@@ -22,8 +22,8 @@ XSD+Schematron path maps to those sources.
 
 Follow [ACCESS_AND_CITATION.md](../../domain/rules/ACCESS_AND_CITATION.md):
 
-- Titles, editions, section numbers, landing URLs — yes.
-- Multi-page Annex 3 / MoC / Doc 8896 paste — no.
+- Titles, editions, section numbers, landing URLs: yes.
+- Multi-page Annex 3 / MoC / Doc 8896 paste: no.
 - Label paywall / public / informative.
 - Schema SoT = `vendor/manifest.json` pin **v2025-2**.
 - Do not invent TAC sunset dates unless the State’s licensed SARPs edition says so.

@@ -2,13 +2,13 @@
 
 **Ticket:** [#1226](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1226) (M1 DX) · baseline [#1224](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1224)  
 **Audience:** SDK embedders and deployers (file/env overlays)  
-**Not for:** in-app YAML editing (retired — ADR-044)
+**Not for:** in-app YAML editing (retired; ADR-044)
 
 [Corpus: tech-spec] [Corpus: adr/ADR-044] [Corpus: adr/ADR-045] [Corpus: adr/ADR-046] [Corpus: adr/ADR-047] [Corpus: tests]
 
 ## Shared header
 
-Extension YAML always needs `id` and `profiles`. **`extends` shape depends on the package** — do not copy one form for all four:
+Extension YAML always needs `id` and `profiles`. **`extends` shape depends on the package**: do not copy one form for all four:
 
 ```yaml
 # tac-decoding pack overlay (string parent pack id)
@@ -67,7 +67,7 @@ make overlay-preflight
 
 After preflight succeeds, point the same env vars at your own overlay directory in deploy
 config (see [config-spec.md](../config-spec.md)). The HTTP API still does **not** accept
-YAML bodies — mount directories on the server.
+YAML bodies; mount directories on the server.
 
 ## Troubleshooting
 

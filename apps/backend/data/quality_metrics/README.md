@@ -22,7 +22,7 @@ encode/lint/validate engines change in a way that affects corpus diagnostics.
 CI verifies that the committed metrics content still matches a fresh local
 regeneration, while ignoring the timestamp-only `generated_at` field.
 
-Do **not** hand-edit match/residual/lint/validate fields — regenerate instead.
+Do **not** hand-edit match/residual/lint/validate fields; regenerate instead.
 
 ## Count honesty
 

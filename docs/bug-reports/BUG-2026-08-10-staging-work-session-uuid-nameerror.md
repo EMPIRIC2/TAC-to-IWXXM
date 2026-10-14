@@ -42,11 +42,11 @@ NameError: name 'UUID' is not defined
 1. Live: refreshed staging ConfigMap from current source + rollout restart (immediate).
 2. Git: removed `work-session-ssl-fix` volume/mount from
    `deploy/doks/base/deployment-api.yaml` (ssl rewrite is in-image).
-3. Docs: `deploy/doks/README.md` — ConfigMap no longer required.
+3. Docs: `deploy/doks/README.md`: ConfigMap no longer required.
 
 ## Interview record
 
-N/A — AskQuestion unavailable; user asked to promote with UJs green; failure caught
+N/A: AskQuestion unavailable; user asked to promote with UJs green; failure caught
 during staging UJ verification.
 
 ## Prevention & countermeasures
@@ -57,4 +57,4 @@ during staging UJ verification.
 
 ## Cursor rule
 
-Deferred — covered by bug regression test + README note.
+Deferred: covered by bug regression test + README note.

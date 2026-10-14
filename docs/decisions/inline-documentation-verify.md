@@ -1,6 +1,6 @@
 # Inline documentation verify bar
 
-**Status:** Active — **ADR-048** bar for evolve / verify twins  
+**Status:** Active: **ADR-048** bar for evolve / verify twins  
 **Related:** [Corpus: docstrings] [Corpus: adr/ADR-048] [Corpus: verifier] angle
 `inline-documentation`; `.cursor/rules/optional/api-documentation.mdc`
 
@@ -21,7 +21,7 @@ generated `*.d.ts`.
 
 **Symbol exemptions (PY/TS):** type-only `Protocol`/`TypedDict`/`Enum` stubs (doc the type);
 generated OpenAPI/client stubs; `__getattr__` shims; listed exemption globs only if
-unavoidable. **Rust `pub`:** no exemptions — runnable `# Examples` required on every `pub`
+unavoidable. **Rust `pub`:** no exemptions; runnable `# Examples` required on every `pub`
 item.
 
 Planning IDs must not appear in operator-facing OpenAPI copy ([Corpus: product §F7]).
@@ -42,7 +42,7 @@ ADR-048:
 5. **Example execution** — PY doctest; Rust doctest where present; TS `@example`
    executable.
 6. **Warnings/infos** — entire monorepo, all toolchains, treated as failures.
-   **No temporary suppressions** — fix or reconfigure toolchains. Coverage / security /
+   **No temporary suppressions**: fix or reconfigure toolchains. Coverage / security /
    typecheck thresholds unchanged by EV-adr048-doc-linters.
 7. **TS examples** — repo-owned harness (extract `@example` → vitest/node); fail closed.
 8. Delta `VERIFY_DOC_PATHS` remains valid only for **non-fill** evolves that do not claim
@@ -62,7 +62,7 @@ python3 ~/.cursor/skills/pack/bin/inline-doc-check.py .
 
 ### EV-087 … EV-091
 
-Full-tree WAIVE / delta `VERIFY_DOC_PATHS` — **historical**. Do not reuse as merge criteria
+Full-tree WAIVE / delta `VERIFY_DOC_PATHS`: **historical**. Do not reuse as merge criteria
 after ADR-048 for doc-fill cycles.
 
 ### EV-092 disposition

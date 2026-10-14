@@ -12,7 +12,7 @@ period per [VERSION_SUPPORT_POLICY](../../docs/domain/iwxxm/VERSION_SUPPORT_POLI
 §Deprecation Process.
 
 **Do not** use this template for routine latest/previous rotates that keep two supported
-lines — only when a line is scheduled to become **unsupported**.
+lines. Use it only when a line is scheduled to become **unsupported**.
 
 | Field | Value |
 |-------|-------|

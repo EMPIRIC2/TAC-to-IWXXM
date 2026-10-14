@@ -1,6 +1,6 @@
 # DOKS IaC (F30 / #712 / EV-043 #886 / EV-044)
 
-Kustomize **base** + **overlays** for DigitalOcean Kubernetes — API, static FE (nginx), and F8 worker.
+Kustomize **base** + **overlays** for DigitalOcean Kubernetes: API, static FE (nginx), and F8 worker.
 **Dual cluster** (EV-044): staging and prod are separate DOKS clusters + DO Projects.
 
 | Overlay | Namespace | Hosts |
@@ -13,7 +13,7 @@ Kustomize **base** + **overlays** for DigitalOcean Kubernetes — API, static FE
 | prod | `metar-iwxxm` | `168.144.12.70` |
 | staging | `metar-iwxxm-staging` (DO Project **Staging TAC-to-IWXXM**) | `143.244.202.13` |
 
-Staging DNS at Porkbun — see [docs/ops/doks-staging-dns-runbook.md](../../docs/ops/doks-staging-dns-runbook.md).
+Staging DNS at Porkbun; see [docs/ops/doks-staging-dns-runbook.md](../../docs/ops/doks-staging-dns-runbook.md).
 Promote path: [ADR-034](../../docs/adr/ADR-034-doks-staging-promote-from-stage.md).
 Apply overlays with the matching kube context (`do-nyc1-metar-iwxxm` vs `do-nyc1-metar-iwxxm-staging`).
 
@@ -46,7 +46,7 @@ kubectl --context do-nyc1-metar-iwxxm-staging -n metar-iwxxm-staging create secr
 
 Also copy `ghcr-pull` into the staging namespace. Do **not** remount
 `work_session_service.py` via ConfigMap (`work-session-ssl-fix` was a T7.1
-interim only — removed after BUG-2026-08-10; sslmode rewrite is in-image).
+interim only, removed after BUG-2026-08-10; sslmode rewrite is in-image).
 
 ## CD image rollout (EV-034 / EV-043 / EV-044)
 
@@ -55,7 +55,7 @@ interim only — removed after BUG-2026-08-10; sslmode rewrite is in-image).
 | `stage` | `metar-iwxxm-staging` | `metar-iwxxm-staging` | `DOKS_NAMESPACE=metar-iwxxm-staging` + staging kubeconfig |
 | `main` | `metar-iwxxm` | `metar-iwxxm` | default + prod kubeconfig |
 
-Promote to `main` only after Staging smoke green — see ADR-034 / `docs/deploy.md` §Promote.
+Promote to `main` only after Staging smoke green; see ADR-034 / `docs/deploy.md` §Promote.
 
 ```bash
 bash scripts/deploy/doks_rollout_images.sh 20260805003332-5245f8d

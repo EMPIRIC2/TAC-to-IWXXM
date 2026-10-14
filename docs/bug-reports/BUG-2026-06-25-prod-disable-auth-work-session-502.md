@@ -18,7 +18,7 @@ Production F5 autosave fails after admin login. Browser console:
 
 This symptom was previously attributed to the supabase-py `.select()` chain
 (BUG-2026-06-24, fixed by #690 / `a79c86e`). After that fix was confirmed
-deployed, the symptom persisted — this report records the **actual** root cause.
+deployed, the symptom persisted. This report records the **actual** root cause.
 
 ## Error logs
 
@@ -68,14 +68,14 @@ if DISABLE_AUTH or disable_auth_runtime:
 
 Consequences in production:
 
-1. **Security**: auth was bypassed for **every** endpoint — production was
+1. **Security**: auth was bypassed for **every** endpoint; production was
    effectively unauthenticated.
 2. **F5 persist**: `create_work_session` used `sub = "dev-user-12345"` as
    `user_id`. PostgREST rejected the non-UUID value (`22P02`), which
    `_handle_db_error` mapped to the opaque 502 `Work session database error`.
 
 The real authenticated path (auth enabled) resolves `sub` to the user's Supabase
-UUID and forwards the JWT to PostgREST — verified to return 201.
+UUID and forwards the JWT to PostgREST (verified to return 201).
 
 ### Spec conformance
 
@@ -120,7 +120,7 @@ User to confirm in-browser (autosave indicator no longer `error`).
 ## Follow-ups
 
 - **Soft-delete RLS (separate bug):** `DELETE /api/v1/work-sessions/{id}`
-  (soft_delete sets `deleted_at` via UPDATE) returns 502 —
+  (soft_delete sets `deleted_at` via UPDATE) returns 502:
   `new row violates row-level security policy for table "metar_work_sessions"`
   (`42501`). Pre-existing; not the reported autosave symptom. Needs a Supabase
   RLS policy fix (UPDATE `WITH CHECK` allowing `deleted_at` to be set). File as

@@ -9,7 +9,7 @@
 ## Error description
 
 Work-session `title` accepts raw HTML such as `<script>alert(1)</script>`. The UI
-renders the title as a text node (HTML-escaped — no XSS execution), but stored
+renders the title as a text node (HTML-escaped, no XSS execution), but stored
 markup is unnecessary and weaker defense-in-depth.
 
 ## Error logs

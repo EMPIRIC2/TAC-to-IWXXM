@@ -52,7 +52,7 @@ Validate IWXXM expects XML. Switching to Validate IWXXM now prefills the editor 
 
 ## Confirmed root cause (Build)
 
-Post-convert soft validation included `AIRPORT_ICAO` and `TAC_SYNTAX` (METAR/SPECI) on every product. SIGMET example TAC (e.g. YUDD) produced `UNKNOWN_ICAO`, `MISSING_KEYWORD`, `MISSING_TIMESTAMP` — three invisible findings behind one soft warn. **Fix:** exclude those input layers from post-convert orch layers (they already run only for METAR/SPECI before convert).
+Post-convert soft validation included `AIRPORT_ICAO` and `TAC_SYNTAX` (METAR/SPECI) on every product. SIGMET example TAC (e.g. YUDD) produced `UNKNOWN_ICAO`, `MISSING_KEYWORD`, `MISSING_TIMESTAMP`: three invisible findings behind one soft warn. **Fix:** exclude those input layers from post-convert orch layers (they already run only for METAR/SPECI before convert).
 
 ## Example matrix (convert + validate_output, 2026-09-29)
 

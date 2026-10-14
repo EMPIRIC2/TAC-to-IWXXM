@@ -5,13 +5,13 @@
 **Vendor pin:** `iwxxm` **v2025-2** · namespace `http://icao.int/iwxxm/2025-2`.
 
 Hub: [README.md](README.md) · Companions: [TAC_VALIDATION.md](TAC_VALIDATION.md) · [IWXXM_VALIDATION.md](IWXXM_VALIDATION.md).  
-Source digs (not SoT): [mining/](mining/) — especially Tier A, FM 205 ([2023](mining/WMO-306-vI-3-2023-mining-notes.md); historical [2019/upd-2021 **1–272 complete**](mining/WMO-306-vI-3-2019-upd-2021-mining-notes.md) · #798 — 3.0 nilReason + D-* landings corroborate Guidance below), OPMET Guidelines, modelling, [Annex 3](mining/icao-annex-3-mining-notes.md) (dual TAC+IWXXM **shall** obligation only — encoding still 306 I.3 / Doc 10003 / pin), [APAC IWXXM FAQs 3rd](mining/icao-apac-iwxxm-faqs-3rd-2025-mining-notes.md) (informative encode gotchas · #797).
+Source digs (not SoT): [mining/](mining/), especially Tier A, FM 205 ([2023](mining/WMO-306-vI-3-2023-mining-notes.md); historical [2019/upd-2021 **1–272 complete**](mining/WMO-306-vI-3-2019-upd-2021-mining-notes.md) · #798; 3.0 nilReason + D-* landings corroborate Guidance below), OPMET Guidelines, modelling, [Annex 3](mining/icao-annex-3-mining-notes.md) (dual TAC+IWXXM **shall** obligation only; encoding still 306 I.3 / Doc 10003 / pin), [APAC IWXXM FAQs 3rd](mining/icao-apac-iwxxm-faqs-3rd-2025-mining-notes.md) (informative encode gotchas · #797).
 
 ---
 
 ## SoT stack for encode (recommended order)
 
-1. **Official examples** for structure + product roots — `https://schemas.wmo.int/iwxxm/2025-2/examples/`
+1. **Official examples** for structure + product roots: `https://schemas.wmo.int/iwxxm/2025-2/examples/`
 2. **`TAC-to-XML-Guidance.txt`** for TAC token → nilReason / omission rules (vendor: `2025-2/IWXXM/examples/`)
 3. **codes.wmo.int** for `xlink:href` / `nilReason` enumerations (prefer URI family used in official example for that product: usually `common/nil` for classic F6; `iwxxm/nil` + `iwxxm/*` lists where XSD `vocabulary=` says so)
 4. **WMO-No. 306 Vol I.3 FM 205** — for package selection / requirements prose prefer pin `documentation/manual/FM205.adoc` (**FM 205-2025-2**) over 2023 PDF tables that stop at 2023-1
@@ -41,7 +41,7 @@ Output: IWXXM XML for the **vendored** year line, then [IWXXM_VALIDATION.md](IWX
    F6 nils; `iwxxm/*` when XSD `vocabulary=` says so).
 6. **Respect pin schema deletions** (e.g. no `runwayState` on 2025-2) even if Guidance lags.
 7. **On convert failure:** emit minimum quarantine shell + `@translationFailedTAC` (see
-   official `*-translation-failed` examples) — do not invent a half-valid product body.
+   official `*-translation-failed` examples); do not invent a half-valid product body.
 8. **Validate** with `iwxxm-validate` against vendor XSD+SCH before treating output as ready.
 
 ### Encode vs validate vs Annex 3
@@ -144,7 +144,7 @@ Local vendor mirrors: `vendor/schemas/iwxxm`, `iwxxm-modelling` (UML generators 
 | SWXA | `iwxxm:SpaceWeatherAdvisory` | `spaceWeatherAdvisory.xsd` | 3.1.0 | `spacewx-A7-3/4/5` (+ alt) — **F28 / EV-029 M11** |
 
 Annex 3 amendment ↔ older package lineage (FM 205-2023-1.2.4) is tabulated in the mining notes; **runtime encode/validate against v2025-2**.  
-ICAO Annex 3 (App 2/3/5/6) requires F6 products **shall** be exchanged in IWXXM GML **in addition to** TAC — it does **not** define nilReason / GML recipes ([mining/icao-annex-3-mining-notes.md](mining/icao-annex-3-mining-notes.md)). Table **A3-2** footnote (pass 2): temporarily missing TAC groups use `/` and must be marked missing in the IWXXM version — still resolve href/`nilReason` from Guidance + pin schemas.
+ICAO Annex 3 (App 2/3/5/6) requires F6 products **shall** be exchanged in IWXXM GML **in addition to** TAC; it does **not** define nilReason / GML recipes ([mining/icao-annex-3-mining-notes.md](mining/icao-annex-3-mining-notes.md)). Table **A3-2** footnote (pass 2): temporarily missing TAC groups use `/` and must be marked missing in the IWXXM version. Still resolve href/`nilReason` from Guidance + pin schemas.
 
 ---
 
@@ -152,7 +152,7 @@ ICAO Annex 3 (App 2/3/5/6) requires F6 products **shall** be exchanged in IWXXM 
 
 **SoT:** [AHLs for aviation data over ICAO AFS](https://community.wmo.int/site/knowledge-hub/programmes-and-initiatives/wmo-information-system-wis/about-manual-gts/ahls-aviation-data-over-icao-afs) **v1.0.1** (2025-08-11; fetched 2026-08-01) · OPMET Guidelines 5th (filename / COLLECT) · #823 B1–B3.  
 Session digs: [eight-family-remine-pass.md](../sessions/S036-eight-family-ahl-rules-823/reports/mining/eight-family-remine-pass.md) · design surface note **T0.5**.  
-Engine: `packages/tac2iwxxm` `bulletin.py` — **M1 closed** shared `parse_ahl` / `map_t1t2` /
+Engine: `packages/tac2iwxxm` `bulletin.py`; **M1 closed** shared `parse_ahl` / `map_t1t2` /
 BBB / `iwxxm_filename` (dissemination imports same API); body **`split_bulletin`** still
 METAR/SPECI until per-family milestones.
 
@@ -190,12 +190,12 @@ OOS converter: VONA (`WM`→`LM`) · QVACI · WAFS · SIGWX.
 
 ### IWXXM AMHS / FTBP filename
 
-`A_T1T2A1A2iiCCCCYYGGgg[BBB]_C_CCCC_yyyyMMddhhmmss[_ffffff].xml[.gz]` — use **IWXXM**
+`A_T1T2A1A2iiCCCCYYGGgg[BBB]_C_CCCC_yyyyMMddhhmmss[_ffffff].xml[.gz]`: use **IWXXM**
 `T1T2` (L*), not TAC `T1T2`, in the filename segment.
 
 **Canada (`CA_ECCC`):** MSC documents the same shape with a `{CCC}` placeholder for the
 repeated issuer; examples and ops samples use full **CCCC** (e.g. `CWAO`). Do not enforce
-width-3 — [RULE_SOURCE_URLS](rules/RULE_SOURCE_URLS.md) `CA-ECCC-FILENAME` · EV-098 / #1028.
+width-3 ([RULE_SOURCE_URLS](rules/RULE_SOURCE_URLS.md) `CA-ECCC-FILENAME` · EV-098 / #1028).
 
 ### Canada encode notes (`CA_ECCC`) — EV-098 / #1029–#1030
 
@@ -217,7 +217,7 @@ Dig: [mining/manobs-manair-ca-mining-notes.md](mining/manobs-manair-ca-mining-no
 ## Conversion highlights (all F6)
 
 Full tables: vendor `TAC-to-XML-Guidance.txt` + FM 205-2025-2 AsciiDoc. Summary below
-(paraphrase only — prefer official Guidance wording when implementing).
+(paraphrase only; prefer official Guidance wording when implementing).
 
 ### Shared (all reports)
 
@@ -252,7 +252,7 @@ Full tables: vendor `TAC-to-XML-Guidance.txt` + FM 205-2025-2 AsciiDoc. Summary 
 | Weather groups | prefer `http://codes.wmo.int/306/4678/{TAC}` hrefs |
 
 ⚠️ **Runway state** (`CLRD`, deposits, SNOCLO, R88/R99…): Guidance still mentions
-`AerodromeRunwayState`, but **IWXXM 2025-2 RC1 removed** runway-state types from METAR —
+`AerodromeRunwayState`, but **IWXXM 2025-2 RC1 removed** runway-state types from METAR;
 **do not encode** for the current pin until model/guidance re-align.
 
 ### TAF
@@ -310,7 +310,7 @@ Nil URI note: guidance/FM tables often use **`http://codes.wmo.int/common/nil/..
 | Vendor RDF | Offline snapshots for Schematron |
 | Backend helper | Optional online `codes.wmo.int` (`codelist_parser.py`) |
 
-**Known encode gaps vs guidance:** aviation nilReasons (NOSIG/NSC/NSW/NCD/notObservable) often stubbed as `missing` — see #719 comments / coverage matrix.
+**Known encode gaps vs guidance:** aviation nilReasons (NOSIG/NSC/NSW/NCD/notObservable) often stubbed as `missing`; see #719 comments / coverage matrix.
 
 ---
 
@@ -322,7 +322,7 @@ Nil URI note: guidance/FM tables often use **`http://codes.wmo.int/common/nil/..
 | US examples | https://nws.weather.gov/schemas/iwxxm-us/3.0/examples/ |
 | FMH-1 REMARKS | https://www.icams-portal.gov/resources/ofcm/fmh/FMH1/fmh1_2019.pdf · [mining](mining/fmh1-2019-mining-notes.md) |
 
-Encode national content in IWXXM **`extension`** blocks per MDL / iwxxm-us — do not invent elements in the ICAO namespace.
+Encode national content in IWXXM **`extension`** blocks per MDL / iwxxm-us; do not invent elements in the ICAO namespace.
 
 **FMH-1 encode hints (profile `iwxxm_us` only):**
 
@@ -366,13 +366,13 @@ GIFTs stripping REMARKS is a **historical gap**, not allowed behavior for `iwxxm
 When emitting translation-centre attributes, align with **published** Doc 10003 / project guide + pin schema:
 
 - **Machine SoT:** vendored `common.xsd` attrs on IWXXM **v2025-2**: `reportStatus`, `permissibleUsage` (+ optional `permissibleUsageReason` / `permissibleUsageSupplementary`), `translatedBulletinID`, `translatedBulletinReceptionTime`, `translationCentreDesignator`, `translationCentreName`, `translationTime`, `translationFailedTAC`
-- **Official quarantine goldens:** `vendor/schemas/iwxxm/IWXXM/examples/*-translation-failed.xml` (METAR/TAF/AIRMET/VAA/TCA/SWX + `sigmet-translation-failed-collect`) — each sets the full translation* attr set above with `@translationFailedTAC` holding the original TAC shell (no MET body). The examples keep fictional `YUZZ` / `TTAAiiCCCYYGGgg` as workshop placeholders. Converter output for a failed TAC with no parsed heading omits those placeholders ([Corpus: product §F6] / #1290).
+- **Official quarantine goldens:** `vendor/schemas/iwxxm/IWXXM/examples/*-translation-failed.xml` (METAR/TAF/AIRMET/VAA/TCA/SWX + `sigmet-translation-failed-collect`). Each sets the full translation* attr set above with `@translationFailedTAC` holding the original TAC shell (no MET body). The examples keep fictional `YUZZ` / `TTAAiiCCCYYGGgg` as workshop placeholders. Converter output for a failed TAC with no parsed heading omits those placeholders ([Corpus: product §F6] / #1290).
 - **Public ops SoT:** [OPMET IWXXM Exchange Guidelines 5th Ed.](mining/OPMET-IWXXM-Exchange-Guidelines-5th-mining-notes.md) — Translation Centre bulletin basis (§4.1.3 / §5.3); identify centre + translation time when translating; `permissibleUsage` TEST/EXERCISE rules; partial-translation shell + min fields (§5.3.3); COLLECT aggregation + UUIDv4 `gml:id` guidance (§5.2)
-- **APAC FAQ (informative, Mar 2025):** [mining/icao-apac-iwxxm-faqs-3rd-2025-mining-notes.md](mining/icao-apac-iwxxm-faqs-3rd-2025-mining-notes.md) — reinforce: do **not** put operational TAC in XML comments (§4.1); on unreliable convert use `@translationFailedTAC` (§8.6); emit `translationCentreDesignator` / `translationCentreName` only when translating **on behalf of another State** (§14.5) — omit for in-State producer self-translate; multi-version COLLECT must declare `http://icao.int/iwxxm/{version}` per group (§14.7). Engine/ops backlog: #797. Same no-partial-translate rule appears in Manual I.3 FM 205-16 (p.166) and FM 205-2018 Report (p.222) — [historical dig](mining/WMO-306-vI-3-2019-upd-2021-mining-notes.md) · #798.
-- In-repo ops guide: [ICAO_OPMET_COMPLIANCE.md](iwxxm/ICAO_OPMET_COMPLIANCE.md) (cites Doc 10003 §7 — **not** present in Advance 2014 draft; Guidelines §7 is ROC/RODB *exchange* stats — complementary)
+- **APAC FAQ (informative, Mar 2025):** [mining/icao-apac-iwxxm-faqs-3rd-2025-mining-notes.md](mining/icao-apac-iwxxm-faqs-3rd-2025-mining-notes.md) — reinforce: do **not** put operational TAC in XML comments (§4.1); on unreliable convert use `@translationFailedTAC` (§8.6); emit `translationCentreDesignator` / `translationCentreName` only when translating **on behalf of another State** (§14.5); omit for in-State producer self-translate; multi-version COLLECT must declare `http://icao.int/iwxxm/{version}` per group (§14.7). Engine/ops backlog: #797. Same no-partial-translate rule appears in Manual I.3 FM 205-16 (p.166) and FM 205-2018 Report (p.222); [historical dig](mining/WMO-306-vI-3-2019-upd-2021-mining-notes.md) · #798.
+- In-repo ops guide: [ICAO_OPMET_COMPLIANCE.md](iwxxm/ICAO_OPMET_COMPLIANCE.md) (cites Doc 10003 §7, **not** present in Advance 2014 draft; Guidelines §7 is ROC/RODB *exchange* stats, complementary)
 - Doc 10003 store: https://store.icao.int/en/manual-on-the-icao-meteorological-information-exchange-model-doc-10003 (**paywall**)
-- Lineage / FAQ only: [mining/ICAO-Doc-10003-draft-2014-mining-notes.md](mining/ICAO-Doc-10003-draft-2014-mining-notes.md) — early ROC convert-at-centre FAQ; Ch.5 metadata empty
-- Workshop reminder (informative): [PPT-02…](mining/PPT-02-IWXXM-Framework-WMO-mining-notes.md) — set translation attrs when a **third party / ROC** translates TAC→IWXXM; **omit** them when the producing organization translates itself. Slide 9 example retains failed TAC in `translationFailedTAC` (e.g. `METAR YUDO 221630Z INVALID`) and uses placeholder bulletin id `TTAAiiCCCYYGGgg`.
+- Lineage / FAQ only: [mining/ICAO-Doc-10003-draft-2014-mining-notes.md](mining/ICAO-Doc-10003-draft-2014-mining-notes.md) (early ROC convert-at-centre FAQ; Ch.5 metadata empty)
+- Workshop reminder (informative): [PPT-02…](mining/PPT-02-IWXXM-Framework-WMO-mining-notes.md): set translation attrs when a **third party / ROC** translates TAC→IWXXM; **omit** them when the producing organization translates itself. Slide 9 example retains failed TAC in `translationFailedTAC` (e.g. `METAR YUDO 221630Z INVALID`) and uses placeholder bulletin id `TTAAiiCCCYYGGgg`.
 
 ### Schema capacity vs TAC template (informative)
 
@@ -382,7 +382,7 @@ PPT-02 (2025-10-22) notes that some IWXXM reports can carry more than classic TA
 
 Official `examples/*.tac` + `*.xml` pairs and `TAC-to-XML-Guidance.txt` are **encode-direction** artifacts. There is **no** F6-wide WMO “XML-to-TAC Guidance” in the 2025-2 package. Do not invent a reverse SoT from AWC or GIFTs. Optional semantic compare of converter output against official XML is the supported regression path; any IWXXM→TAC round-trip remains **product-specific / out of domain release gate** until an authoritative reverse mapping is adopted.
 
-APAC FAQ §8.3 (informative): TAC→IWXXM translation under agreement is allowed; **IWXXM→TAC is not permitted** when the original TAC from the source is available — aligns with “no reverse SoT” above.
+APAC FAQ §8.3 (informative): TAC→IWXXM translation under agreement is allowed; **IWXXM→TAC is not permitted** when the original TAC from the source is available, which aligns with “no reverse SoT” above.
 
 ### Package versions on supported lines (informative)
 
@@ -402,5 +402,5 @@ Vocabulary: codes.wmo.int/{…}
 Validate output with: iwxxm-validate against vendor schemas (XSD + Schematron)
 ```
 
-**Out of SoT:** product-wide **IWXXM→TAC** round-trip — no F6 official reverse cookbook;
+**Out of SoT:** product-wide **IWXXM→TAC** round-trip; there is no F6 official reverse cookbook;
 some products are IWXXM-only (WAFS / QVA / VONA on the 2025-2 line).

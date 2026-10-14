@@ -91,7 +91,7 @@ Deploy triggered and reached `live`.
 | `test_local_still_allows_legacy_jwt_anon_fallback` | green |
 | `test_supabase_proxy_rejects_legacy_jwt_in_prod` | green |
 
-Production config repro: Render API had only `SUPABASE_ANON_KEY` (JWT) — confirmed via Render API.
+Production config repro: Render API had only `SUPABASE_ANON_KEY` (JWT), confirmed via Render API.
 
 ## Verification plan
 

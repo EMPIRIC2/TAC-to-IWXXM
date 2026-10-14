@@ -84,7 +84,7 @@ Populate `.env` from `.env.example` before `make test-live*`:
 | `LIVE_FRONTEND_URL` | `https://metar-to-iwxxm-frontend-v4-web.onrender.com` |
 | `PLAYWRIGHT_BASE_URL` | Same as `LIVE_FRONTEND_URL` |
 
-F21: no `E2E_USER_*` / `ADMIN_*` — public convert smoke + `TC-F21-auth-gone`.
+F21: no `E2E_USER_*` / `ADMIN_*`; public convert smoke + `TC-F21-auth-gone`.
 
 See [deploy.md](../deploy.md) §Live test harness and ADR-009 / ADR-031.
 

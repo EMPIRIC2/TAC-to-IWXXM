@@ -45,5 +45,5 @@ marker in RMK, forecast T/Q remarks, and AUTO METAR/SPECI tokens (`NCD`, `UP`, s
 
 ## Gaps
 
-- Native IWXXM `INTER` changeIndicator does not exist in `taf.xsd` — provenance via remarks.
+- Native IWXXM `INTER` changeIndicator does not exist in `taf.xsd`; provenance via remarks.
 - Category A/B issuance schedules optional deepen.

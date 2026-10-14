@@ -1,7 +1,7 @@
 # Tech plan — EV-yaml-engine-configurability (#1224)
 
 **Session:** `EV-yaml-engine-configurability`  
-**Locked:** 2026-09-21 (recommended tech choices — user: proceed with recommendations)  
+**Locked:** 2026-09-21 (recommended tech choices; user: proceed with recommendations)  
 **Gate:** documenting → implementing **closed** until Spec verify + AskQuestion  
 
 [Corpus: product §F2/F6/F9/F12/F15] [Corpus: adr/ADR-044] [Corpus: adr/ADR-045] [Corpus: adr/ADR-046] [Corpus: tech-spec] [Corpus: tests] [Corpus: decisions]
@@ -23,7 +23,7 @@ Reuse existing package overlay loaders. Add:
 
 ## Connectivity
 
-**N/A** — H4–H5 not in scope (D-EVYEC-07). No CORS/VITE tasks.
+**N/A**: H4–H5 not in scope (D-EVYEC-07). No CORS/VITE tasks.
 
 ## Deployment
 

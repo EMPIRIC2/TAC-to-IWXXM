@@ -55,7 +55,7 @@ This service has been suspended by its owner.
 ### Intake (Phase 0)
 
 - Intent: new production issue
-- Remediation: **A+D** — code-fix `apiBase` → runtime config **and** fix missing Supabase publishable key
+- Remediation: **A+D**: code-fix `apiBase` → runtime config **and** fix missing Supabase publishable key
 - Plan: Proceed
 - Verification (defaults; AskQuestion tool unavailable): live app must call `https://api.tac-to-iwxxm.com`; frontend vitest + H5 live smoke; user re-checks UI after deploy
 
@@ -130,4 +130,4 @@ This service has been suspended by its owner.
 
 ## Prevention
 
-*(pending Phase 5 — recommend: keep ConfigMap publishableKey in sync / document DOKS override)*
+*(pending Phase 5; recommend: keep ConfigMap publishableKey in sync / document DOKS override)*

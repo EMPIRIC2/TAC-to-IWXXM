@@ -74,7 +74,7 @@ On the pure-Python path, some Schematron dialects may be reported as skipped; th
 path evaluates Schematron in-process and does not emit that skip.
 
 When adding or changing METAR/SPECI Schematron-facing coverage in this monorepo, also
-update the F29 quality matrices — see
+update the F29 quality matrices. See
 [`tests/quality_matrices/AUTHORING.md`](../../tests/quality_matrices/AUTHORING.md)
 (TC-F29-007).
 

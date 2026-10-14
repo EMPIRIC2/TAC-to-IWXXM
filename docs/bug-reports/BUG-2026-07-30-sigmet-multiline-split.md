@@ -76,7 +76,7 @@ convert(..., product='SIGMET') → ok=True, issues=[], has posList
 
 Mirror: `apps/frontend/src/utils/tacProduct.ts` `MULTILINE_TEMPLATE_PRODUCTS` = VAA/TCA only.
 
-Related prior: BUG-2026-07-15 (span offsets for multi-line **METAR** batches) — different bug; same splitter.
+Related prior: BUG-2026-07-15 (span offsets for multi-line **METAR** batches): different bug, same splitter.
 
 ## Repro test
 
@@ -86,8 +86,8 @@ Related prior: BUG-2026-07-15 (span offsets for multi-line **METAR** batches) �
 
 TDD iteration log:
 
-1. Wrote split + soft-preview assertions for WMO A6-1a-TS — both fail as expected (line-split).
-2. Extended multiline product set with SIGMET+AIRMET (BE+FE) — both green.
+1. Wrote split + soft-preview assertions for WMO A6-1a-TS; both fail as expected (line-split).
+2. Extended multiline product set with SIGMET+AIRMET (BE+FE); both green.
 
 ## Fix
 

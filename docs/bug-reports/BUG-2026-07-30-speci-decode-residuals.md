@@ -22,7 +22,7 @@ Loading / decoding Annex 3 **SPECI A3-2** (`SPECI YUDO … 1200NE +TSRA BKN005CB
 
 Plain-language summary also mis-attributes trend visibility (`0600`, `8000`) as prevailing observation visibility because those tokens match the generic 4-digit vis explainer while trend keywords stay residual.
 
-Convert (`tac2iwxxm.convert`, profile `annex3`) succeeds with `minimumVisibility`, cloud CB, and both trend forecasts — **not** an IWXXM emit bug.
+Convert (`tac2iwxxm.convert`, profile `annex3`) succeeds with `minimumVisibility`, cloud CB, and both trend forecasts. It is **not** an IWXXM emit bug.
 
 ## Error logs
 
@@ -48,7 +48,7 @@ convert(..., product='SPECI', profile='annex3') → ok=True, issues=[]
   minimumVisibility / trendForecast present
 ```
 
-Note: lint lines referencing `R12/1000U` / `MISSING_PRODUCT_KEYWORD` look like cross-product UI noise — **out of scope** for this hotfix (decode-only).
+Note: lint lines referencing `R12/1000U` / `MISSING_PRODUCT_KEYWORD` look like cross-product UI noise and are **out of scope** for this hotfix (decode-only).
 
 ## Investigation
 
@@ -80,8 +80,8 @@ Note: lint lines referencing `R12/1000U` / `MISSING_PRODUCT_KEYWORD` look like c
 
 TDD iteration log:
 
-1. Asserted SPECI A3-2 explains `1200NE`, `BKN005CB`, `TEMPO`/`TL1200`, `BECMG`/`AT1200`, `NSW` and keeps them out of residuals — failed as expected.
-2. Extended `_explain_metar_speci` + cloud/min-vis/trend-time patterns — repro green; F9 decode suites (61) green.
+1. Asserted SPECI A3-2 explains `1200NE`, `BKN005CB`, `TEMPO`/`TL1200`, `BECMG`/`AT1200`, `NSW` and keeps them out of residuals; failed as expected.
+2. Extended `_explain_metar_speci` + cloud/min-vis/trend-time patterns; repro green; F9 decode suites (61) green.
 
 ## Fix
 

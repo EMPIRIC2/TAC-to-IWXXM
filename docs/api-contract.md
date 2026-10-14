@@ -78,7 +78,7 @@ GET  /auth/me
 via `packages/auth`. Convert/lint/validate/disseminate **do not** require JWT. Use **`GET /health`**
 for liveness (there is no live `/auth/health` route).
 
-**Prod skew (EV-docs-accuracy-audit R1):** Not a code omission — `create_auth_router` always
+**Prod skew (EV-docs-accuracy-audit R1):** Not a code omission; `create_auth_router` always
 registers `POST /auth/register` (unit: `test_auth_router_mount_unit`). Staging OpenAPI lists it
 and returns 422 on empty body; prod OpenAPI omits it and returns **404** until the next tag-driven
 DOKS prod rollout ([Corpus: deploy] §CD).
@@ -109,11 +109,11 @@ Auth Admin / bootstrap scripts only (ADR-010). Operator credentials are **BYO** 
 POST /api/v1/convert
 ```
 
-**Auth**: **None** (F21 Amended — public). Abuse controls: per-IP + global rate limits, body/batch
+**Auth**: **None** (F21 Amended; public). Abuse controls: per-IP + global rate limits, body/batch
 size, timeouts/concurrency (finalize numeric defaults in 04-tech-plan). Guests and operators share
 the same public convert path. Work history: guest → IndexedDB; logged-in → separate session APIs.
 
-**Request** (multipart/form-data **only** for product/profile — not read from JSON body):
+**Request** (multipart/form-data **only** for product/profile; not read from JSON body):
 
 | Field | Required | Default | Description |
 |-------|----------|---------|-------------|
@@ -190,7 +190,7 @@ the same public convert path. Work history: guest → IndexedDB; logged-in → s
 | Residuals → remarks | `propagate_residuals_to_remarks` | `propagate_residuals_to_remarks` |
 | Profile extensions | `extensions` | `extensions` |
 
-**Soft-preview (`preview=true`)** — S011 / #666:
+**Soft-preview (`preview=true`)** (S011 / #666):
 
 - HTTP **200** allowed when parse/convert is partial; response may include best-effort IWXXM,
   `ok: false`, and `failed_spans: [{ start, end, code?, message? }]`.
@@ -205,7 +205,7 @@ existing string fields.
 - No metrics object on the response (library/CI only).
 - **Single-report only**: WMO AHL **bulletins** use `POST /api/v1/convert-bulletin` (below).
 
-**Response**: `ConversionResponse` — see docs/guides/API.md (shape unchanged).
+**Response**: `ConversionResponse`; see docs/guides/API.md (shape unchanged).
 
 Each `ConversionResult` includes optional `tac_input` (original TAC echo) for input traceability ([#594](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/594)).
 
@@ -234,7 +234,7 @@ defaults (see env-contract).
 ids: `ICAO_2025`, `US_FAA_NWS`, `CA_ECCC`, `AU_BOM`, `NZ_CAA_MET` (EV-087), thin/compat
 `UK_METOFFICE`, `BR_DECEA`, `KR_KMA`, `JP_JMA`, `IN_IMD`, `HK_HKO` (EV-089 / #920; deepen EV-094 / #1098).
 **EV-094:** `KR_KMA` / `JP_JMA` convert allowlists gain **SPECI**; `IN_IMD` gains tac-validate lint
-profile `in_imd` (alias `IN_IMD`) for TAF TX/TN omission **info** awareness — convert stays core IWXXM.
+profile `in_imd` (alias `IN_IMD`) for TAF TX/TN omission **info** awareness; convert stays core IWXXM.
 Legacy aliases during deprecation window (until **2026-10-31**,
 [#1025](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1025)):
 
@@ -243,7 +243,7 @@ Legacy aliases during deprecation window (until **2026-10-31**,
 | `annex3` | `ICAO_2025` |
 | `iwxxm_us` | `US_FAA_NWS` |
 
-**Target request shape** (multipart field names TBD in 04-tech-plan — may be JSON body on
+**Target request shape** (multipart field names TBD in 04-tech-plan; may be JSON body on
 package-only routes):
 
 | Field | Required | Default | Description |
@@ -272,12 +272,12 @@ exchange:
 
 - Unknown semantic or exchange id → **400** (hard).
 - Alias use → same semantics as canonical id + deprecation signal (response header and/or
-  structured field — finalize in Build).
+  structured field; finalize in Build).
 - `report_variant` is only applicable where the selected semantic profile defines variant rows;
   otherwise omit it and expect no resolved-variant metadata.
 - Convert response metadata may include resolved `report_variant` when the profile defines
   variants, even if the client omitted the request field and runtime inferred it from TAC lead.
-- Exchange profile selects packaging rules only — **not** F16–F19 sink credentials.
+- Exchange profile selects packaging rules only, **not** F16–F19 sink credentials.
 - Milestone 4 follow-on scope includes supported IWXXM-line conversion framing
   ([#908](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/908)) and operator-sharing surfaces
   ([#1051](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1051)), but sharing must stay limited
@@ -286,7 +286,7 @@ exchange:
 - For `product=iwxxm`, convert response metadata may include `source_iwxxm_version`,
   `target_iwxxm_version`, and `migrated_iwxxm` to describe the pass-through or migration path.
 
-**Observability** (`GET /metrics`, Prometheus — TC-EV063-006):
+**Observability** (`GET /metrics`, Prometheus; TC-EV063-006):
 
 | Metric | Labels | When incremented |
 |--------|--------|------------------|
@@ -323,7 +323,7 @@ TAC reports; split; convert each via `tac2iwxxm`. Single-report TAC stays on `/a
 
 * At least one of `files` or `manual_text` required.
 
-**Response** (S008 04 — Q6=A, Q7=C):
+**Response** (S008 04: Q6=A, Q7=C):
 
 ```json
 {
@@ -400,16 +400,16 @@ POST /api/v1/lint-tac
 **Purpose**: Thin wrapper over `packages/tac-validate` (parse gate + shared rule pack).
 **Not** Schematron.
 
-**Auth**: **None** (F21 public) — same as convert.
+**Auth**: **None** (F21 public), same as convert.
 
-**Request** (**multipart/form-data only** — Q8=A):
+**Request** (**multipart/form-data only**; Q8=A):
 
 | Field | Required | Description |
 |-------|----------|-------------|
 | `manual_text` or `files` | yes | TAC text |
 | `product` | no | Hint when known; improves rule selection |
 
-**Response** (HTTP pydantic map of msgspec package issues — Q9=C):
+**Response** (HTTP pydantic map of msgspec package issues; Q9=C):
 
 ```json
 {
@@ -441,7 +441,7 @@ powers the UI one-click "Add `=`" quick fix (TC-F10-002).
 
 Must support TC-F6-031 and TC-F7-004 span highlight.
 
-**S015 / EV-011 (F15 / ADR-028)**: HTTP **wire shape unchanged** — clients still receive
+**S015 / EV-011 (F15 / ADR-028)**: HTTP **wire shape unchanged**; clients still receive
 `ok`, `issues[]` (`severity`, `code`, `message`, `location`, optional `start`/`end`), and
 optional `fixes[]`. New/migrated METAR/SPECI lint `code` values come from the
 `tac-validate` issue registry; no new response fields on this route.
@@ -457,7 +457,7 @@ GET /api/v1/rule-catalogs
 shell (TAC Validation, IWXXM Validation, Conversion, Dissemination, Decoding). Aggregates
 Python catalog APIs from owning packages. **Read-only**.
 
-**Auth**: **None** (F21 public) — same as `lint-issue-catalog`.
+**Auth**: **None** (F21 public), same as `lint-issue-catalog`.
 
 **Query**:
 
@@ -466,7 +466,7 @@ Python catalog APIs from owning packages. **Read-only**.
 | `family` | yes | `tac` | `iwxxm` | `conversion` | `dissemination` | `decoding` |
 | Product / profile filters | no | Family-specific additive filters (reuse lint-issue-catalog profile filters for `tac` / `iwxxm` where applicable) |
 
-**Response** (msgspec): `{ "family": "...", "items": [ … ] }` — operator strings EV-048 clean.
+**Response** (msgspec): `{ "family": "...", "items": [ … ] }`; operator strings EV-048 clean.
 Common item keys: `id`, `title`, `summary`, `tags?`. Additive optional keys (null/omit when
 unknown; clients **must not invent** defaults):
 
@@ -519,7 +519,7 @@ GET /api/v1/lint-issue-catalog
 **Purpose**: Export the `tac-validate` issue registry for operator UI tooltips and a
 lightweight catalog panel (F15). Does **not** change `POST /lint-tac` response shape.
 
-**Auth**: **None** (F21 public) — same as convert / lint-tac.
+**Auth**: **None** (F21 public), same as convert / lint-tac.
 
 **Query** (optional):
 
@@ -558,10 +558,10 @@ query param.
 
 **Additive (S048 / EV-040)**: optional `source_id`, `source_url`, `source_attribution` join
 provenance from `PROVENANCE_MAP` so the FE catalog spells out WMO/ICAO/IWXXM sources
-(citations/URLs only — no copyrighted Annex prose). Older clients may ignore the fields.
+(citations/URLs only, no copyrighted Annex prose). Older clients may ignore the fields.
 
 **Additive (S071 / EV-061 / #1014)**: optional fields for operator catalog + IWXXM validation
-rows (same route — **no** new endpoint). Older clients ignore extras.
+rows (same route, **no** new endpoint). Older clients ignore extras.
 
 | Field | Required | Notes |
 |-------|----------|-------|
@@ -598,11 +598,11 @@ public companion via `replacement_url`. Query params may add `issue_type` and
 ### Quality metrics corpus (S063 / EV-054 / #836 / F7.q)
 
 Public read API for the operator **Quality metrics** tab. Serves **precomputed** official
-WMO corpus quality data (match / residuals / lint / validate) generated at fixture/CI time —
+WMO corpus quality data (match / residuals / lint / validate) generated at fixture/CI time,
 not a live re-download of upstream WMO trees and not a per-request full convert pipeline
 for the default view (`D-S063-compute=1` + `D-S063-gateA=2`).
 
-**Auth**: **None** (F21 public) — same as convert / lint-issue-catalog.
+**Auth**: **None** (F21 public), same as convert / lint-issue-catalog.
 
 ```
 GET /api/v1/quality-metrics
@@ -616,7 +616,7 @@ GET /api/v1/quality-metrics
 |-------|----------|-------------|
 | `product` | no | Filter inventory to one product (e.g. `metar`, `taf`, `sigmet`) |
 
-**Response** (msgspec encode; pydantic OpenAPI alias) — minimum fields:
+**Response** (msgspec encode; pydantic OpenAPI alias), minimum fields:
 
 ```json
 {
@@ -657,12 +657,12 @@ match status, residuals, lint issues, validate issues). Unified XML diff is comp
 **client-side** from `official_xml` / `converted_xml` (no server `diff` field in v1;
 `D-S063-diff=2` + `D-S063-diff-impl`).
 
-**Match semantics (S064 / EV-055 / #982 — `D-S064-normalize=1` / `D-S064-c14n=1` /
+**Match semantics (S064 / EV-055 / #982; `D-S064-normalize=1` / `D-S064-c14n=1` /
 `D-S064-c14n-volatile=1`)**:
 `match_status` is equality of **W3C C14N** forms of `official_xml` and `converted_xml`
 **after** volatile-attribute strip (ADR-032 local-name / UUID-href / `codes.wmo.int` href
 rules), then whitespace-only text strip (both sides; shared helper used by the metrics
-generator and the FE unified diff — `D-S064-gateA-M1=1`; [Corpus: adr/ADR-035]). Raw
+generator and the FE unified diff; `D-S064-gateA-M1=1`; [Corpus: adr/ADR-035]). Raw
 pretty-print or `gml:id` / UUID churn alone must not yield `match_status` fail. Client
 unified diff uses the same C14N peers. Precomputed `corpus_metrics` is regenerated to match
 (`D-S064-regen=1`). Detail responses may expose both raw and normalized XML (or the UI
@@ -671,7 +671,7 @@ to un-normalized (`D-S064-gateA-M2=override`). Operator-facing `detail` / chip c
 free of internal doc refs (EV-048). Cycle hard requirements: Schematron enabled for 2025-2
 (`D-S064-sch-hard=1`) and `SCHEMA_IMPORT_WARNING` fixed (`D-S064-xsd-hard=1`).
 
-**Path**: `stem` — catalog / fixture stem (e.g. `metar-A3-1`).
+**Path**: `stem`: catalog / fixture stem (e.g. `metar-A3-1`).
 
 **Response** (msgspec; minimum fields):
 
@@ -698,7 +698,7 @@ Operator residuals panel must describe fold status in plain language (no plannin
 Does not imply live WMO fetch.
 
 **Errors**: `404` when stem unknown; `503` when precomputed artifact missing at runtime
-(misconfigured deploy) — operator-facing `detail` must stay free of internal doc refs
+(misconfigured deploy); operator-facing `detail` must stay free of internal doc refs
 (EV-048).
 
 **Non-goals**: Live upstream WMO fetch; replacing CI matrix jobs; JWT/Supabase for this route.
@@ -711,7 +711,7 @@ POST /api/v1/decode-tac
 
 **Purpose**: Ordered TAC decode/annotate segments for the Code \| Explanation panel.
 
-**Auth**: **None** (F21 public) — same as convert.
+**Auth**: **None** (F21 public), same as convert.
 
 **Request** (multipart/form-data; JSON body alternative deferred to 04 if needed):
 
@@ -738,9 +738,9 @@ POST /api/v1/decode-tac
 
 **S013 / EV-009 (F9)**: `segments[].explanation` is **value-aware** (parsed values, not only
 group labels) and `summary` is an additive **deterministic plain-language paragraph** built
-from decoded values — present for all seven products (best-effort / "partial decode" wording
+from decoded values, present for all seven products (best-effort / "partial decode" wording
 for sparse products); when residuals exist the summary ends with a "Not decoded: …" clause.
-No offset or field removals — response stays backward-compatible (TC-F9-001/002).
+No offset or field removals; response stays backward-compatible (TC-F9-001/002).
 
 **S026 / EV-020 (F9 deepen / ADR-032)**: `segments[].explanation` strings deepen to
 **registry-backed English token meanings** (all seven products) plus optional OpenAIP/F3
@@ -767,7 +767,7 @@ POST /api/v1/validate
 `iwxxm_us`). When US, validation uses combined WMO + iwxxm-us catalogs.
 
 **Response**: Pass/fail + messages; each issue may include optional integer `start` / `end`
-(S011) when the validator can map to TAC or XML offsets — otherwise omit.
+(S011) when the validator can map to TAC or XML offsets; otherwise omit.
 
 **Additive (S071 / EV-061 / #1010)**: optional `segments` / `summary` using the same F9
 shape as `POST /decode-tac` when Validate IWXXM still produces a readable decode. Omitted
@@ -796,7 +796,7 @@ GET      /api/v1/eval/jobs/{job_id}
 GET      /api/v1/eval/jobs/{job_id}/results
 ```
 
-Corpus / quality evaluation surfaces — not part of the public convert happy path. Prefer OpenAPI.
+Corpus / quality evaluation surfaces, not part of the public convert happy path. Prefer OpenAPI.
 
 ### Work sessions (F5+F7+F31 — **restored HTTP**; hybrid storage — S038 / EV-031)
 
@@ -843,7 +843,7 @@ Frontend and API may be different origins on DOKS; configure `corsOrigins` accor
 > **Status**: Shipped EV-014 (#771/#772). **EV-018 / #785**: UI multi-file selection — **no**
 > new batch endpoint; existing single-payload routes reused via N sequential client calls.
 
-Auth: **None** (F21 public — same as other `/api/v1/*`). Destination credentials are
+Auth: **None** (F21 public, same as other `/api/v1/*`). Destination credentials are
 **memory-only** (never persisted; never returned in responses). Egress subject to ADR-029
 allowlist. Abuse controls apply (rate limits / body size).
 
@@ -881,7 +881,7 @@ aliases only (E14-07=A / ADR-026). CORS: no new origins; reuse existing
 ### EV-936 / #936 — Dissemination ops + Gateway hooks (JWT)
 
 Public `POST /dissemination/preflight` + `/send` **unchanged** (F21; memory-only BYOC).
-New **authenticated** routes (Bearer JWT — same posture as work-sessions):
+New **authenticated** routes (Bearer JWT, same posture as work-sessions):
 
 | Method | Path | Notes |
 |--------|------|-------|
@@ -893,14 +893,14 @@ New **authenticated** routes (Bearer JWT — same posture as work-sessions):
 | `GET` | `/api/v1/dissemination/gateways/health` | Per-kind `GatewayHealth` (`ok`, `gateway`, `connectivity_ok`, `detail`) |
 
 **Auth**: JWT required → 401/403 without. **Storage**: audit + saved plans/mappings on product
-Postgres (`DATABASE_URL`) — not Supabase PostgREST. **Egress**: ADR-029 allowlist still applies
+Postgres (`DATABASE_URL`), not Supabase PostgREST. **Egress**: ADR-029 allowlist still applies
 when execute triggers send.
 
 ### EV-933 / #933 — ConversionProfile editor + overlays (JWT)
 
 First-party catalog remains fail-closed (ADR-038). New **authenticated** routes for
-operator-scoped overlays and rule packs (Bearer JWT — same posture as work-sessions /
-dissemination ops). **Storage**: product Postgres (`DATABASE_URL`) with ownership filters —
+operator-scoped overlays and rule packs (Bearer JWT, same posture as work-sessions /
+dissemination ops). **Storage**: product Postgres (`DATABASE_URL`) with ownership filters,
 not Supabase PostgREST product writes (F30). Auth identity from Supabase JWT.
 
 | Method | Path | Notes |
@@ -1040,7 +1040,7 @@ uses **200** with structured partial failure when `preview=true`.
 Public OpenAPI (path/operation summaries, parameter and schema `description` fields that
 feed `/docs` / Redoc) and client-facing `detail` / error messages MUST describe controls and
 failures in plain operator language. They MUST NOT cite internal engineering documents or
-planning IDs — including `[Corpus:…]`, `ADR-NNN`, `EV-NNN`, `S0NN`, `docs/sessions/`,
+planning IDs, including `[Corpus:…]`, `ADR-NNN`, `EV-NNN`, `S0NN`, `docs/sessions/`,
 `docs/feature-list`, or UJ/TC/GitHub issue numbers used as planning vocabulary.
 
 Developer source comments, test names/docstrings, and standing `docs/` remain free to cite
@@ -1060,7 +1060,7 @@ Auth key injected from `SUPABASE_PUBLISHABLE_KEY`).
 Guest history remains IndexedDB; logged-in history uses work-sessions APIs.
 
 **Deprecated**: `VITE_API_BASE_URL`, `VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY`,
-`VITE_APP_URL` — prefer runtime `/config.json`.
+`VITE_APP_URL`; prefer runtime `/config.json`.
 
 **Breaking changes (F6 cutover)**:
 - Health: `gifts_available` → `tac2iwxxm_available`
@@ -1073,7 +1073,7 @@ Guest history remains IndexedDB; logged-in history uses work-sessions APIs.
 - `preview` on `/convert`; optional `start`/`end` on lint/validate issues
 - Work sessions: top-level `product`; storage shape from ADR-020
 
-**Breaking (F21 / S023 / EV-017)** — historical:
+**Breaking (F21 / S023 / EV-017)** (historical):
 - Operator Auth / `/auth/*` / JWT gates removed; server sessions → IndexedDB
 
 **Breaking / additive (F30/F31 / S038 / EV-031)**:
@@ -1086,27 +1086,27 @@ OpenAPI / shared TS codegen remains planned (P1); this contract is the requireme
 
 ## References
 
-- docs/guides/API.md (detailed examples — update paths during implementation)
+- docs/guides/API.md (detailed examples; update paths during implementation)
 - docs/deploy.md §Integration
 - ADR-014; [ADR-015](adr/ADR-015-validate-packages-bulletin-api-f7-f8.md); [ADR-020](adr/ADR-020-unified-tac-work-sessions.md); [ADR-033](adr/ADR-033-platform-independence-auth-do-doks.md)
 
 ### Session changelog
 
-- EV-981 (2026-08-31): #981 — additive convert / convert-bulletin
+- EV-981 (2026-08-31): #981: additive convert / convert-bulletin
   `propagate_residuals_to_remarks`; quality-metrics detail
   `residuals_propagated_to_remarks`; info issue `RESIDUALS_PROPAGATED_TO_REMARKS`.
-- EV-configurable-tac-decode-packs (2026-09-19): #1210 — **no HTTP contract change**
+- EV-configurable-tac-decode-packs (2026-09-19): #1210: **no HTTP contract change**
   on `/decode-tac`, `/convert`, or `/convert-bulletin`. See endpoint review at file end.
-- S066 / EV-056 (2026-08-11): F7.q #988 — **no HTTP contract change**. FE shareable route
+- S066 / EV-056 (2026-08-11): F7.q #988: **no HTTP contract change**. FE shareable route
   `/quality/:stem` + collapsible equal-context hunks consume existing
   `GET /api/v1/quality-metrics` + `/{stem}` (pretty C14N panes from S065).
-- S064 / EV-055 (2026-08-11): F7.q #982 — `match_status` = **W3C C14N** equality of official
+- S064 / EV-055 (2026-08-11): F7.q #982: `match_status` = **W3C C14N** equality of official
   vs converted XML; shared generator+FE helper; panes default normalized with override;
   regen corpus metrics; **hard** Schematron enable (#980) + SCHEMA_IMPORT fix (#979).
-- S063 / EV-054 (2026-08-10): F7.q #836 — additive public `GET /api/v1/quality-metrics` +
+- S063 / EV-054 (2026-08-10): F7.q #836: additive public `GET /api/v1/quality-metrics` +
   `GET /api/v1/quality-metrics/{stem}` (precomputed corpus quality; msgspec). Gate A M1
   override (`D-S063-gateA=2`).
-- S038 / EV-031 (2026-08-03): F30/F31 — `/auth/*` + work-sessions restored; convert public;
+- S038 / EV-031 (2026-08-03): F30/F31: `/auth/*` + work-sessions restored; convert public;
   DO Postgres; ADR-033; amend TC-F21-auth-gone semantics
 - S008 (2026-07-12): product required; profile; tac2iwxxm_available; validate profile; error codes
 - S008 amend (2026-07-12): validate → iwxxm-validate; `POST /api/v1/lint-tac`;
@@ -1119,26 +1119,26 @@ OpenAPI / shared TS codegen remains planned (P1); this contract is the requireme
   lint-tac `info` severity + MISSING_TERMINATOR advisory (F10); ADR-025
 - S014 / EV-010 (2026-07-18): high-churn routes msgspec runtime (ADR-026); pydantic OpenAPI
   aliases; PyPI packages `tac-validate` / `iwxxm-validate` / `tac2iwxxm` `0.1.0` (F12–F14)
-- S015 / EV-011 (2026-07-19): F15 registry — lint-tac **wire shape unchanged**; codes from
+- S015 / EV-011 (2026-07-19): F15 registry; lint-tac **wire shape unchanged**; codes from
   `tac-validate` registry (ADR-028); METAR+SPECI adjacency in UJ-024 / TC-F15;
   **additive** `GET /api/v1/lint-issue-catalog` (E11-31) for FE tooltips/catalog panel
 - S019 / EV-014 (2026-07-21): Planned `POST /api/v1/dissemination/preflight` + `/send`
   (ADR-030); F16–F19 sinks; Batch 1 architecture locked (Q32=A)
 - EV-936 / #936 (2026-09-03): Additive JWT routes for plans/execute/audit/mappings/gateway
   health; public preflight/send unchanged; audit on `DATABASE_URL`
-- S020 / EV-015 (2026-07-22): F20 TAF+SPECI quality — **full endpoint review**; no new routes;
+- S020 / EV-015 (2026-07-22): F20 TAF+SPECI quality: **full endpoint review**; no new routes;
   wire shapes unchanged. `product` enum already includes `taf` \| `speci` on convert /
   convert-bulletin / lint-tac / decode-tac. Registry codes for TAF (+ SPECI deepen) flow through
   existing `lint-tac` + `GET /lint-issue-catalog`. Convert roots `iwxxm:TAF` / `iwxxm:SPECI`
   asserted in goldens (UJ-031 / TC-F20-*). Dissemination routes unchanged (OOS).
-- S024 / EV-018 (2026-07-28): F16 multi-file selection deepen (#785) — **no new routes**;
+- S024 / EV-018 (2026-07-28): F16 multi-file selection deepen (#785): **no new routes**;
   document client N-sequential preflight/send + ≤20 selection cap; single-payload request
   shape unchanged (E18-5/E18-6).
-- S025 / EV-019 (2026-07-29): F23 SIGMET + VA SIGMET quality — **full endpoint review**; no
+- S025 / EV-019 (2026-07-29): F23 SIGMET + VA SIGMET quality: **full endpoint review**; no
   new routes; wire shapes unchanged. `product=sigmet` selects root `iwxxm:SIGMET` vs
   `iwxxm:VolcanicAshSIGMET` from TAC content (E19-13=A). Registry codes flow through existing
   `lint-tac` + `GET /lint-issue-catalog`. Dissemination routes unchanged (OOS).
-- S030 / EV-023 (2026-07-30): #800 APAC/codes encode deepen — **no new routes**;
+- S030 / EV-023 (2026-07-30): #800 APAC/codes encode deepen: **no new routes**;
   package-side NSC/nils/`translationFailedTAC`/dual-register/informative translation suite.
   Convert multipart Form (E23-T2): `emit_translation_centre` (bool, default false) + optional
   `translation_centre_designator` / `translation_centre_name` when emit true. Dissemination
@@ -1191,7 +1191,7 @@ documented code enums (prefer additive).
 
 **Breaking changes**: None. FE Examples catalog is static (no new API).
 
-- S026 / EV-020 (2026-07-29): F24/F25 WMO default goldens + F9 glossary deepen — wire shapes
+- S026 / EV-020 (2026-07-29): F24/F25 WMO default goldens + F9 glossary deepen; wire shapes
   unchanged; ADR-032.
 
 ## S027 / EV-021 — Endpoint review (F26 / F27)
@@ -1210,9 +1210,9 @@ documented code enums (prefer additive).
 **Breaking changes**: None expected. FE Examples catalog is static (no new API). FE OpenAPI
 types update only if catalog/issue content requires new documented code enums (prefer additive).
 
-- S027 / EV-021 (2026-07-30): T6.1 — VAA/TCA `manual_text` multi-line keep-whole for convert
+- S027 / EV-021 (2026-07-30): T6.1: VAA/TCA `manual_text` multi-line keep-whole for convert
   (TC-F26-005 / TC-F27-005); FE `splitManualEntries` aligned.
-- S027 / EV-021 (2026-07-29): F26/F27 VAA+TCA quality — **full endpoint review**; no new
+- S027 / EV-021 (2026-07-29): F26/F27 VAA+TCA quality: **full endpoint review**; no new
   routes; wire shapes unchanged. ADR-028 deepen (codes only); ADR-032 golden bar.
 
 ## S036 / EV-029 — Endpoint review (F28 + eight-family / #823)
@@ -1228,12 +1228,12 @@ types update only if catalog/issue content requires new documented code enums (p
 | `POST /api/v1/dissemination/*` | **Consume AHL helpers** | No new routes; shared AHL/`T1T2`/filename model for sinks (drawer UI OOS) |
 | `/auth/*`, work-sessions | **None** | Historical (F21 public era — pre–EV-031); restored F31 |
 
-**Breaking changes**: None — additive `swxa` only. FE OpenAPI / product pickers must add
+**Breaking changes**: None; additive `swxa` only. FE OpenAPI / product pickers must add
 `swxa` when F28 unlocks Examples. Runtime enum enforcement lands in 07-build (backend +
 packages); until then docs lead.
 
 - S036 / EV-029 (2026-08-01): F28 SWXA `product=swxa` + TC SIGMET under `sigmet`; eight-family
-  AHL/COM deepen — **endpoint review**; additive enum; no new routes (`D-S036-E29-M` Q1=2).
+  AHL/COM deepen: **endpoint review**; additive enum; no new routes (`D-S036-E29-M` Q1=2).
 
 ## S037 / EV-030 — Endpoint review (F29 + #829/#820 residuals)
 
@@ -1251,7 +1251,7 @@ packages); until then docs lead.
 **Breaking changes**: None. No new product enum. Catalog/menu unlock is FE static data + ADR-032
 tier decision (TC-EV030-005); document deferral if unlock does not ship this cycle.
 
-- S037 / EV-030 (2026-08-02): F29 matrices + #829 TC deepen + #820 decode — **endpoint review**;
+- S037 / EV-030 (2026-08-02): F29 matrices + #829 TC deepen + #820 decode: **endpoint review**;
   lean + API/catalog note (`D-S037-E30-M` Q1=2).
 
 ## S040 / EV-032 — Endpoint review (F32 VONA + #835/#808/corpus)
@@ -1267,7 +1267,7 @@ tier decision (TC-EV030-005); document deferral if unlock does not ship this cyc
 | FE product picker / Examples | **Full F7 surface** | Add **VONA** to picker; unlock Examples when F32 golden greens (`D-S040-E32-M` Q2=3). #835 may promote A6-2-TC → `wmoPass` (static catalog). H4–H5 when FE ships |
 | Dissemination / auth / sessions | **None** | Unchanged |
 
-**Breaking changes**: None — additive `vona` only. FE OpenAPI / product pickers must add
+**Breaking changes**: None; additive `vona` only. FE OpenAPI / product pickers must add
 `vona` when F32 ships. Runtime enum enforcement lands in 07-build (backend + packages);
 until then docs lead. #808 is docs/checklist only (no wire change).
 
@@ -1321,7 +1321,7 @@ until then docs lead. #808 is docs/checklist only (no wire change).
 
 **Breaking changes**: None. Library import `tac2iwxxm.decode` stays. Legacy parsers, validation, and the pin compares stay (ADR-045).
 
-- EV-configurable-tac-decode-packs (2026-09-19): #1210 — no HTTP contract change. [Corpus: api] [Corpus: adr/ADR-045]
+- EV-configurable-tac-decode-packs (2026-09-19): #1210: no HTTP contract change. [Corpus: api] [Corpus: adr/ADR-045]
 
 ## EV-pack-ir-convert-wire — Endpoint review (ADR-045 deepen)
 
@@ -1334,7 +1334,7 @@ until then docs lead. #808 is docs/checklist only (no wire change).
 
 **Breaking changes**: None. `products/metar_speci.py` remains until a later delete-gate evolve.
 
-- EV-pack-ir-convert-wire (2026-09-20): deepen #1210 — no HTTP contract change. [Corpus: api] [Corpus: adr/ADR-045]
+- EV-pack-ir-convert-wire (2026-09-20): deepen #1210: no HTTP contract change. [Corpus: api] [Corpus: adr/ADR-045]
 
 ## EV-pack-fill-delete-gate — Endpoint review (#1214 / ADR-045)
 
@@ -1347,7 +1347,7 @@ until then docs lead. #808 is docs/checklist only (no wire change).
 
 **Breaking changes**: None on HTTP. Library: selective removal of `products/*.py` when byte-identical (all-or-nothing per shared file); `pack_ir_map` must not import deleted parsers.
 
-- EV-pack-fill-delete-gate (2026-09-20): #1214 — no HTTP contract change. [Corpus: api] [Corpus: adr/ADR-045]
+- EV-pack-fill-delete-gate (2026-09-20): #1214: no HTTP contract change. [Corpus: api] [Corpus: adr/ADR-045]
 
 ## EV-profile-validate-decode-deepen — Endpoint review (#1221)
 
@@ -1361,7 +1361,7 @@ until then docs lead. #808 is docs/checklist only (no wire change).
 
 **Breaking changes**: None on HTTP. FE removes Profile Builder authoring surfaces (ADR-044).
 
-- EV-profile-validate-decode-deepen (2026-09-21): #1221 — no HTTP shape change. [Corpus: api] [Corpus: adr/ADR-044]
+- EV-profile-validate-decode-deepen (2026-09-21): #1221: no HTTP shape change. [Corpus: api] [Corpus: adr/ADR-044]
 
 ## EV-yaml-engine-configurability — Endpoint review (#1224)
 
@@ -1373,7 +1373,7 @@ until then docs lead. #808 is docs/checklist only (no wire change).
 
 **Breaking changes**: None on HTTP.
 
-- EV-yaml-engine-configurability (2026-09-21): #1224 — no HTTP shape change. [Corpus: api] [Corpus: adr/ADR-044]
+- EV-yaml-engine-configurability (2026-09-21): #1224: no HTTP shape change. [Corpus: api] [Corpus: adr/ADR-044]
 
 ## EV-yaml-full-configurability — Endpoint review (#1226)
 
@@ -1385,7 +1385,7 @@ until then docs lead. #808 is docs/checklist only (no wire change).
 
 **Breaking changes**: None on HTTP.
 
-- EV-yaml-full-configurability (2026-09-21): #1226 / ADR-047 Proposed — no HTTP shape change in Spec. [Corpus: api] [Corpus: adr/ADR-047]
+- EV-yaml-full-configurability (2026-09-21): #1226 / ADR-047 Proposed: no HTTP shape change in Spec. [Corpus: api] [Corpus: adr/ADR-047]
 
 ## F37 live map — EV-globe-live-map
 

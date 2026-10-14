@@ -520,7 +520,7 @@ This tab is the one people find most interesting and most easily misread, so lea
 
 It takes the official WMO example products and shows what this prototype produces for the same input, with a match status and counts for residuals, lint and validation. Open a row and you get official and converted XML side by side with a readable diff; identical regions collapse.
 
-It is genuinely useful here, because it shows you what a difference between two IWXXM documents looks like, which is exactly the skill you need for the accuracy assessment on your own reports.
+It is useful here, because it shows you what a difference between two IWXXM documents looks like, which is exactly the skill you need for the accuracy assessment on your own reports.
 
 Two honest points. A difference is not automatically a fault; some examples are not scored yet. And a good score here says nothing about the file on your screen. Only Validate does that.
 

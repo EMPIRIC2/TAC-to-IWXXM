@@ -8,7 +8,7 @@
 
 ## Goal
 
-IDE-style Profile Builder workbench with full create/edit across five libraries, Overview compare + product enablement, YAML↔UI round-trip — fixing staging gaps after #1197 Phase A.
+IDE-style Profile Builder workbench with full create/edit across five libraries, Overview compare + product enablement, YAML↔UI round-trip, fixing staging gaps after #1197 Phase A.
 
 ## Locked intake
 
@@ -61,7 +61,7 @@ See session `routing-plan.md` (D1–D28). Highlights: remove DnD; full authoring
 
 ## F107 / memory
 
-Sparse retrieve — **waive** cross-project hits; keep-local prior #1196 lineage only.
+Sparse retrieve: **waive** cross-project hits; keep-local prior #1196 lineage only.
 
 ## Out of scope
 

@@ -76,10 +76,10 @@ launch_api.bat
 ## Common Features
 
 All scripts:
-- ✅ Check for required dependencies
-- ✅ Provide helpful error messages
-- ✅ Support development mode with hot reloading
-- ✅ Include troubleshooting information
+- Check for required dependencies
+- Provide helpful error messages
+- Support development mode with hot reloading
+- Include troubleshooting information
 
 ## Troubleshooting
 

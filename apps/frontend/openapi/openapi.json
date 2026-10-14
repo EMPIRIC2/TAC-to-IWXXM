@@ -10532,7 +10532,7 @@
     },
     "/api/v1/schema-status": {
       "get": {
-        "description": "Get comprehensive schema status including RC versions and mirroring info.\n\nExamples\n--------\n>>> 1 + 1  # docstring smoke (get_schema_status)\n2\n\nReturns\n-------\nobject\n    Return value.",
+        "description": "Get schema status, including RC versions and mirroring info.\n\nExamples\n--------\n>>> 1 + 1  # docstring smoke (get_schema_status)\n2\n\nReturns\n-------\nobject\n    Return value.",
         "operationId": "get_schema_status_api_v1_schema_status_get",
         "responses": {
           "200": {

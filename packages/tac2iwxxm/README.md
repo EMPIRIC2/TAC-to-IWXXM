@@ -65,7 +65,7 @@ make test-tac2iwxxm-native
 ```
 
 When adding or changing a METAR/SPECI encode theme in this monorepo, also update the F29
-quality matrices — see [`tests/quality_matrices/AUTHORING.md`](../../tests/quality_matrices/AUTHORING.md)
+quality matrices. See [`tests/quality_matrices/AUTHORING.md`](../../tests/quality_matrices/AUTHORING.md)
 (TC-F29-007).
 
 ## Convert allowlist
@@ -120,7 +120,7 @@ validate + convert bindings in one shot:
 make overlay-preflight
 ```
 
-Emit-map overlays use `TAC2IWXXM_EMIT_MAP_DIR`. HTTP APIs do not accept YAML bodies —
+Emit-map overlays use `TAC2IWXXM_EMIT_MAP_DIR`. HTTP APIs do not accept YAML bodies;
 mount directories in deploy config.
 
 Decode glossary SoT is [`tac-decoding`](https://pypi.org/project/tac-decoding/)

@@ -8,5 +8,5 @@
 make test-bats
 ```
 
-Helpers/stubs: `tests/bats/helpers/bin/` (no live credentials — NFR-EV080-006).  
+Helpers/stubs: `tests/bats/helpers/bin/` (no live credentials; NFR-EV080-006).  
 Manifest: `tests/bats/MANIFEST.md` (TC-EV080-008).

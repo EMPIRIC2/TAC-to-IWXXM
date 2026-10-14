@@ -52,7 +52,7 @@ def get_supported_versions() -> object:
 @router.get("/schema-status")
 def get_schema_status() -> object:
     """
-    Get comprehensive schema status including RC versions and mirroring info.
+    Get schema status, including RC versions and mirroring info.
 
     Examples
     --------

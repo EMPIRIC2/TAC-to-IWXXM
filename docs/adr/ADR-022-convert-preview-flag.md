@@ -22,7 +22,7 @@ dedicated `/preview-convert` route vs a flag on the existing convert endpoint.
 3. Default (`preview` omitted/false) keeps hard-fail HTTP semantics for non-quarantine
    failures. **EV-023 amend:** product-shaped unreliable TAC returns HTTP 200 with a
    `@translationFailedTAC` quarantine shell (successful convert of the quarantine
-   document) — distinct from soft-preview `ok:false` + `failed_spans`.
+   document), distinct from soft-preview `ok:false` + `failed_spans`.
 4. Preview does **not** mean Schematron-passed publish.
 
 ## Alternatives Considered

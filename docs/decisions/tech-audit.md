@@ -138,7 +138,7 @@ Full statement walk: `docs/sessions/S014-package-publish-validation/reports/05-v
 | Consistency issues found | 14 |
 | Consistency issues resolved | 14 |
 
-**Source documents updated**: 3 — `execution-plan-monorepo.md`, `test-plan.md`, `connectivity-gates.md`
+**Source documents updated**: 3 (`execution-plan-monorepo.md`, `test-plan.md`, `connectivity-gates.md`)
 
 ## Document Inventory
 
@@ -237,12 +237,12 @@ Derived from 04-tech-plan user decisions (TECH-001–TECH-012) and approved ADRs
 ## Phase B Gate Check (Partial)
 
 - [x] Execution plan audited
-- [x] Consistency check complete — all 14 issues resolved
+- [x] Consistency check complete; all 14 issues resolved
 - [ ] Technical tooling pending (next step: 06-tech-tooling)
 
 ## Next Step
 
-**06-tech-tooling** — development hooks for lint, format, typecheck, and test enforcement.
+**06-tech-tooling**: development hooks for lint, format, typecheck, and test enforcement.
 
 ---
 

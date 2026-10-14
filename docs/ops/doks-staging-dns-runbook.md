@@ -21,11 +21,11 @@ kubectl --context <staging> -n ingress-nginx get svc ingress-nginx-controller \
 | A | `app.staging` | `143.244.202.13` | 300 |
 | A | `staging` | `143.244.202.13` | 300 |
 
-(`$STAGING_LB_IP` as of EV-044 provision 2026-08-08 — re-check if LB is replaced.)
+(`$STAGING_LB_IP` as of EV-044 provision 2026-08-08; re-check if LB is replaced.)
 
 Host `staging` is the short redirect host (`staging.tac-to-iwxxm.com` →
 `app.staging.tac-to-iwxxm.com` via Ingress `metar-frontend-staging-short`).
-**Required** when a prod wildcard `*.tac-to-iwxxm.com` points at the prod LB — otherwise
+**Required** when a prod wildcard `*.tac-to-iwxxm.com` points at the prod LB; otherwise
 `staging` incorrectly resolves to prod.
 
 (Or CNAME both to the same LB hostname if preferred.)
@@ -96,7 +96,7 @@ Create Environments + rulesets in the GitHub UI (or as a repo admin):
        tac2iwxxm/iwxxm-validate/tac-validate/dissemination/worker/bugs + alembic),
        `Lint`, `Typecheck`, Rust crates / maturin / Converter perf
      - **`main` only (promote):** also `Staging gate` and `E2E Full (Playwright)`
-       (not `E2E Smoke (Playwright)` — smoke-only is insufficient for EV-061 / #1015)
+       (not `E2E Smoke (Playwright)`; smoke-only is insufficient for EV-061 / #1015)
 4. Re-apply after #1015 / EV-061 so live rulesets match the script (admin token required).
 
 Script (admin token): `bash scripts/deploy/apply_gh_branch_rulesets.sh`
