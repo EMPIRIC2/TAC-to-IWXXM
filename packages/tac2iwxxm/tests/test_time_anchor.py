@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import pytest
-from tac2iwxxm.time_anchor import fit_year_month, iso_stamp
+from tac2iwxxm.time_anchor import anchor_from_bulletin_date, fit_year_month, iso_stamp
 
 from tac2iwxxm import convert
 
@@ -11,6 +11,34 @@ from tac2iwxxm import convert
 def test_fit_year_month_steps_back_until_the_day_exists() -> None:
     assert fit_year_month(2023, 6, 31) == (2023, 5)
     assert fit_year_month(2026, 10, 8) == (2026, 10)
+
+
+def test_fit_year_month_steps_into_the_previous_year() -> None:
+    assert fit_year_month(2026, 0, 15) == (2025, 12)
+
+
+def test_fit_year_month_stops_when_every_candidate_month_rejects_the_day(monkeypatch: pytest.MonkeyPatch) -> None:
+    def _reject(*_args: object) -> None:
+        raise ValueError("nope")
+
+    monkeypatch.setattr("tac2iwxxm.time_anchor.date", _reject)
+    with pytest.raises(ValueError, match="no month contains"):
+        fit_year_month(2026, 10, 15)
+
+
+def test_anchor_from_a_year_month_does_not_slice_the_text() -> None:
+    assert anchor_from_bulletin_date("20261013") == "2026-10"
+
+
+def test_taf_bulletin_date_sets_the_issue_month() -> None:
+    result = convert(
+        "TAF TNCM 081200Z 0812/0912 14006KT 9999 FEW020=",
+        product="TAF",
+        bulletin_date="2026-10-13",
+    )
+    assert result.ok
+    assert result.xml is not None
+    assert "2026-10-08T12:00:00Z" in result.xml
 
 
 def test_fit_year_month_rejects_a_day_outside_1_to_31() -> None:
