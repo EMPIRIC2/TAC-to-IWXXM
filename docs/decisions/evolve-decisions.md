@@ -1,5 +1,22 @@
 # Evolve Decisions
 
+## Cycle EV-1400-taf-vrb-knots — forecast VRB keeps knots (#1400)
+
+**Opened:** 2026-10-14 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-1400-taf-vrb-knots`  
+**Issue:** [#1400](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1400)  
+**Documenting→Implementing gate:** open  
+**Scale:** micro
+
+| ID | Outcome |
+|----|---------|
+| D1 | A TAF `VRB` group keeps `variableWindDirection` true and writes the parsed speed in the TAC unit. `VRB03KT` is 3 knots. |
+| D2 | A gust on that group is kept. `VRB10G20KT` is a 10-knot mean and a 20-knot gust. |
+| D3 | METAR variable wind stays as it is. Numbered wind directions keep their current unit path. |
+| D4 | Docs delta: feature-list forecast-wind note, test-plan TC-F6-045. No new feature id. |
+| F107 | Memory retrieve skipped. Neo4j was left down from the previous slice. |
+
+[Corpus: product §F6] [Corpus: tests]
+
 ## Cycle EV-1399-unobserved-visibility — //// is not a missing group (#1399)
 
 **Opened:** 2026-10-14 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-1399-unobserved-visibility`  
