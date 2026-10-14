@@ -6362,6 +6362,23 @@ Manual signoff before release, not a PR merge gate. Developer runs `make test-li
 - **Source**: F6 deepen #1398
 
 
+### TC-F6-045: TAF variable wind keeps knots
+
+- **Level**: T0 package. No browser journey.
+- **Objective**: A TAF `VRB` group keeps the variable-direction flag and writes speed and gust in the TAC unit. [Corpus: product §F6] [Corpus: tests]
+- **Steps**:
+  1. `TAF TNCM 081200Z 0812/0912 VRB03KT 9999 FEW020=` has mean wind speed 3 knots.
+  2. `VRB10G20KT` keeps a 10-knot mean and a 20-knot gust.
+  3. Both results set `variableWindDirection` true and omit a mean direction.
+  4. `VRB03MPS` on the base forecast is 3.0 m/s.
+  5. A `TEMPO` `VRB10G20KT` keeps knots beside the numbered base wind.
+  6. A `TEMPO` `VRB05G10MPS` uses a bare integer speed and gust. The base forecast keeps one decimal.
+  7. A numbered `18012G22KT` keeps direction 180, speed 12 knots, and gust 22 knots.
+  8. `CAVOK` omits the wind block.
+- **Pass criteria**: The eight checks pass.
+- **Out of scope**: METAR variable wind. Unit conversion for a numbered wind direction. Promoting `stage` to `main`.
+- **Source**: F6 deepen #1400
+
 ### TC-F4-001: Profile package pin
 
 - **Level**: T0 package. No browser journey.

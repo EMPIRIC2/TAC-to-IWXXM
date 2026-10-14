@@ -156,15 +156,9 @@ def _taf_wind_block(fcst: dict[str, Any]) -> str:
     object
         Return value.
     """
-    if fcst.get("wind_variable"):
-        return """      <iwxxm:surfaceWind>
-        <iwxxm:AerodromeSurfaceWindForecast variableWindDirection="true">
-          <iwxxm:meanWindSpeed uom="m/s">0.0</iwxxm:meanWindSpeed>
-        </iwxxm:AerodromeSurfaceWindForecast>
-      </iwxxm:surfaceWind>
-"""
     if fcst.get("wind_speed_mps") is None and fcst.get("wind_speed_kt") is None:
         return ""
+    variable = bool(fcst.get("wind_variable"))
     if fcst.get("wind_speed_mps") is not None:
         # WMO A5-1 baseForecast uses one decimal on 5.0; change groups use bare ints.
         spd_raw = float(fcst["wind_speed_mps"])
@@ -178,9 +172,11 @@ def _taf_wind_block(fcst: dict[str, Any]) -> str:
     gust_xml = ""
     if gust is not None:
         gust_xml = f'\n          <iwxxm:windGustSpeed uom="{uom}">{_fmt_taf_speed(gust)}</iwxxm:windGustSpeed>'
+    direction = ""
+    if not variable:
+        direction = f'\n          <iwxxm:meanWindDirection uom="deg">{fcst["wind_dir_deg"]}</iwxxm:meanWindDirection>'
     return f"""      <iwxxm:surfaceWind>
-        <iwxxm:AerodromeSurfaceWindForecast variableWindDirection="false">
-          <iwxxm:meanWindDirection uom="deg">{fcst["wind_dir_deg"]}</iwxxm:meanWindDirection>
+        <iwxxm:AerodromeSurfaceWindForecast variableWindDirection="{str(variable).lower()}">{direction}
           <iwxxm:meanWindSpeed uom="{uom}">{spd}</iwxxm:meanWindSpeed>{gust_xml}
         </iwxxm:AerodromeSurfaceWindForecast>
       </iwxxm:surfaceWind>
