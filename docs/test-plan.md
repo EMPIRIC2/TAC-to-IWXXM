@@ -6379,6 +6379,20 @@ Manual signoff before release, not a PR merge gate. Developer runs `make test-li
 - **Out of scope**: METAR variable wind. Unit conversion for a numbered wind direction. Promoting `stage` to `main`.
 - **Source**: F6 deepen #1400
 
+### TC-F6-046: Multi-line TAF stays one forecast
+
+- **Level**: T0 package. No browser journey.
+- **Objective**: Continuation lines join one TAF, and `AMD NOT SKED` does not mark an amendment. [Corpus: product §F6] [Corpus: product §F20] [Corpus: tests]
+- **Steps**:
+  1. The three-line MKJP TAF converts as one forecast, and the change groups are present.
+  2. A second station on its own line stays a second forecast.
+  3. `AMD NOT SKED` leaves `reportStatus` as `NORMAL` and does not raise `AMD_PRESENT`.
+  4. `TAF AMD` still sets `AMENDMENT` and still raises `AMD_PRESENT` when the trailer is also present.
+  5. A line that is not a TAF fails with `unable to parse TAF header`.
+- **Pass criteria**: The five checks pass.
+- **Out of scope**: Probability groups. Operator result stacking. Promoting `stage` to `main`.
+- **Source**: F6 / F20 deepen #1401
+
 ### TC-F4-001: Profile package pin
 
 - **Level**: T0 package. No browser journey.

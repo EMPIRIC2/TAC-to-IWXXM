@@ -34,6 +34,7 @@ except ImportError:  # pragma: no cover - Docker/local import path mirror
     from utilities.profile_wire import WireProfileSelection, resolve_route_profiles
 
 from iwxxm_validate.models import ValidationReport
+from tac2iwxxm.taf_lines import join_taf_entries, join_taf_lines
 
 from tac2iwxxm import BulletinSplitError
 
@@ -614,7 +615,10 @@ def split_manual_entries(manual_text: str, product: str | None = None) -> list[s
     if _is_multiline_template_product(product):
         text = manual_text.strip()
         return [text] if text else []
-    return [line.strip() for line in manual_text.splitlines() if line.strip()]
+    lines = [line.strip() for line in manual_text.splitlines() if line.strip()]
+    if (product or "").strip().upper() == "TAF":
+        return join_taf_lines(lines)
+    return lines
 
 
 def manual_entries_with_offsets(manual_text: str, product: str | None = None) -> list[tuple[str, int]]:
@@ -663,6 +667,8 @@ def manual_entries_with_offsets(manual_text: str, product: str | None = None) ->
             lead = len(raw) - len(raw.lstrip())
             out.append((stripped, offset + lead))
         offset += len(line)
+    if (product or "").strip().upper() == "TAF":
+        return join_taf_entries(out)
     return out
 
 

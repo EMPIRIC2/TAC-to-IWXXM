@@ -1,5 +1,23 @@
 # Evolve Decisions
 
+## Cycle EV-1401-taf-continuation — one forecast, trailer is not an amendment (#1401)
+
+**Opened:** 2026-10-14 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-1401-taf-continuation`  
+**Issue:** [#1401](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1401)  
+**Documenting→Implementing gate:** open  
+**Scale:** micro
+
+| ID | Outcome |
+|----|---------|
+| D1 | TAF continuation lines join the forecast that opened them. A second station stays a second forecast. |
+| D2 | `AMD NOT SKED` does not set `reportStatus` to `AMENDMENT` and does not raise `AMD_PRESENT`. |
+| D3 | `TAF AMD` still sets the amendment status and still raises `AMD_PRESENT`. |
+| D4 | A line that is not a TAF still fails with `unable to parse TAF header`. |
+| D5 | Docs delta: feature-list multi-line note, test-plan TC-F6-046. No new feature id. |
+| F107 | Memory retrieve skipped. Neo4j was left down from the previous slice. |
+
+[Corpus: product §F6] [Corpus: product §F20] [Corpus: tests]
+
 ## Cycle EV-1400-taf-vrb-knots — forecast VRB keeps knots (#1400)
 
 **Opened:** 2026-10-14 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-1400-taf-vrb-knots`  
