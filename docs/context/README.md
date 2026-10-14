@@ -6,6 +6,8 @@ still land here so they are not appended to `docs/context-brief.md`.
 
 | Brief | Session | Status |
 |-------|---------|--------|
+| [bulletin-year.md](bulletin-year.md) | EV-1398-bulletin-year | active |
+| [vicinity-present-weather.md](vicinity-present-weather.md) | EV-1396-regional-tester-gaps | closed — satisfied by #1413 |
 | [map-product-layers.md](map-product-layers.md) | EV-map-product-layers | active |
 | [map-worker-cluster.md](map-worker-cluster.md) | EV-map-worker-cluster | active |
 | [globe-live-map.md](globe-live-map.md) | EV-globe-live-map | prior cycle |

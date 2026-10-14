@@ -1,5 +1,21 @@
 # Evolve Decisions
 
+## Cycle EV-1398-bulletin-year — impossible TAC day fails closed (#1398)
+
+**Opened:** 2026-10-14 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-1398-bulletin-year`  
+**Issue:** [#1398](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1398)  
+**Documenting→Implementing gate:** closed  
+**Scale:** standard
+
+| ID | Outcome |
+|----|---------|
+| D1 | Amend the last sentence of EV-1396-tester-gap-solutions D4. A TAC day that cannot fall in the bulletin month fails conversion. The message names the day and the month. Do not move that day into the previous month. |
+| D2 | Year and month still come from `bulletin_date`. HTTP uses that date, or the current UTC date when it is omitted. Library `convert()` without `bulletin_date` keeps the example pins. |
+| D3 | Docs delta: feature-list mechanism 2, api-contract `bulletin_date`, test-plan TC-F6-044. No new feature id. |
+| F107 | Memory retrieve skipped. Docker and Neo4j were down. |
+
+[Corpus: product §F6] [Corpus: api] [Corpus: tests]
+
 ## Cycle EV-1396-tester-gap-solutions — seven shared fixes for regional tester gaps (#1396)
 
 **Opened:** 2026-10-14 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-1396-tester-gap-solutions`  

@@ -366,7 +366,7 @@
         "properties": {
           "bulletin_date": {
             "default": "",
-            "description": "Optional calendar date (YYYY-MM-DD) used as the year and month for TAC day stamps. When omitted, the current UTC date is used. A day that cannot fall in that month is placed in the previous month that contains it.",
+            "description": "Optional calendar date (YYYY-MM-DD) used as the year and month for TAC day stamps. When omitted, the current UTC date is used. A day that cannot fall in that month fails conversion, and the message names the day and the month.",
             "title": "Bulletin Date",
             "type": "string"
           },
@@ -567,7 +567,7 @@
         "properties": {
           "bulletin_date": {
             "default": "",
-            "description": "Optional calendar date (YYYY-MM-DD) used as the year and month for TAC day stamps. When omitted, the current UTC date is used. A day that cannot fall in that month is placed in the previous month that contains it.",
+            "description": "Optional calendar date (YYYY-MM-DD) used as the year and month for TAC day stamps. When omitted, the current UTC date is used. A day that cannot fall in that month fails conversion, and the message names the day and the month.",
             "title": "Bulletin Date",
             "type": "string"
           },
@@ -671,7 +671,7 @@
         "properties": {
           "bulletin_date": {
             "default": "",
-            "description": "Optional calendar date (YYYY-MM-DD) used as the year and month for TAC day stamps. When omitted, the current UTC date is used. A day that cannot fall in that month is placed in the previous month that contains it.",
+            "description": "Optional calendar date (YYYY-MM-DD) used as the year and month for TAC day stamps. When omitted, the current UTC date is used. A day that cannot fall in that month fails conversion, and the message names the day and the month.",
             "title": "Bulletin Date",
             "type": "string"
           },
