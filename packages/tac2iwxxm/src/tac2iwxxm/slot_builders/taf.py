@@ -5,6 +5,8 @@ from __future__ import annotations
 import re
 from typing import Any
 
+from tac2iwxxm.time_anchor import iso_stamp
+
 _TAF = re.compile(
     r"^(?:TAF\s+)?(?:AMD\s+|COR\s+)?(?P<station>[A-Z][A-Z0-9]{3})\s+"
     r"(?P<issue>\d{6})Z\s+"
@@ -20,7 +22,7 @@ _WIND = re.compile(r"\b(?P<dir>\d{3}|VRB)(?P<spd>\d{2,3})(?:G(?P<gust>\d{2,3}))?
 _VIS_M = re.compile(r"\b(?P<vis>\d{4})\b")
 _VIS_SM = re.compile(r"\b(?P<mod>P)?(?P<vis>\d{1,2})SM\b")
 _NCLWS = re.compile(r"\bWS(?P<height>\d{3})/(?P<dir>\d{3})(?P<spd>\d{2,3})KT\b")
-_CLOUD = re.compile(r"\b(?P<amt>FEW|SCT|BKN|OVC)(?P<base>\d{3})(?P<ctype>CB|TCU)?\b")
+_CLOUD = re.compile(r"\b(?P<amt>FEW|SCT|BKN|OVC)(?P<base>\d{3}|///)(?P<ctype>CB|TCU)?\b")
 _ALT_INHG = re.compile(r"\bA(?P<alt>\d{4})\b")
 _NIL = re.compile(r"\bNIL\b")
 _CNL = re.compile(r"\bCNL\b")
@@ -46,7 +48,8 @@ _WX_TOKEN = re.compile(
     r"(?<![A-Z0-9/])(?P<wx>"
     r"(?:\+|-|VC)?"
     r"(?:MI|PR|BC|DR|BL|SH|TS|FZ)?"
-    r"(?:DZ|RA|SN|SG|PL|GR|GS|UP|BR|FG|FU|VA|DU|SA|HZ|PY|PO|SQ|FC|SS|DS|IC)+"
+    r"(?:DZ|RA|SN|SG|PL|GR|GS|UP|BR|FG|FU|VA|DU|SA|HZ|PY|PO|SQ|FC|SS|DS|IC|TS)+"
+    r"|VCSH"
     r")(?![A-Z0-9/])"
 )
 _CHANGE_TOKEN = r"(?:BECMG\s+\d{4}/\d{4}|(?:TEMPO|EMPO)\s+\d{4}/\d{4}|INTER\s+\d{4}/\d{4}|FM\d{6})"
@@ -100,10 +103,12 @@ def _parse_clouds(text: str) -> list[dict[str, Any]]:
     """
     layers: list[dict[str, Any]] = []
     for c in _CLOUD.finditer(text):
-        layer: dict[str, Any] = {
-            "amount": c.group("amt"),
-            "base_ft": int(c.group("base")) * 100,
-        }
+        layer: dict[str, Any] = {"amount": c.group("amt")}
+        base = c.group("base")
+        if base == "///":
+            layer["base_not_observable"] = True
+        else:
+            layer["base_ft"] = int(base) * 100
         if c.group("ctype"):
             layer["cloud_type"] = c.group("ctype")
         layers.append(layer)
@@ -245,7 +250,8 @@ def _parse_forecast_body(text: str, *, cavok_ok: bool = True) -> dict[str, Any]:
     if clouds:
         out["clouds"] = clouds
         out["cloud_amount"] = clouds[0]["amount"]
-        out["cloud_base_ft"] = clouds[0]["base_ft"]
+        if "base_ft" in clouds[0]:
+            out["cloud_base_ft"] = clouds[0]["base_ft"]
     wx = _parse_wx(text)
     if wx:
         out["weather"] = wx
@@ -270,10 +276,10 @@ def _taf_day_hour_stamp(ir: dict[str, Any], ddhh: str, *, minute: int = 0) -> st
     object
         Return value.
     """
-    prefix = "2012-08" if ir.get("station") == "YUDO" else "2023-06"
+    legacy = "2012-08" if ir.get("station") == "YUDO" else "2023-06"
     day = int(ddhh[0:2])
     hour = int(ddhh[2:4])
-    return f"{prefix}-{day:02d}T{hour:02d}:{minute:02d}:00Z"
+    return iso_stamp(ir, day, hour, minute, legacy=legacy)
 
 
 def _taf_valid_end_stamp(ir: dict[str, Any]) -> str:
@@ -290,8 +296,14 @@ def _taf_valid_end_stamp(ir: dict[str, Any]) -> str:
     object
         Return value.
     """
-    prefix = "2012-08" if ir.get("station") == "YUDO" else "2023-06"
-    return f"{prefix}-{int(ir['valid_to_day']):02d}T{int(ir['valid_to_hour']):02d}:00:00Z"
+    legacy = "2012-08" if ir.get("station") == "YUDO" else "2023-06"
+    return iso_stamp(
+        ir,
+        int(ir["valid_to_day"]),
+        int(ir["valid_to_hour"]),
+        0,
+        legacy=legacy,
+    )
 
 
 def _parse_change_groups(ir: dict[str, Any], body: str) -> list[dict[str, Any]]:
@@ -351,9 +363,16 @@ def _parse_change_groups(ir: dict[str, Any], body: str) -> list[dict[str, Any]]:
         fm = _FM.match(chunk)
         if fm is not None:
             stamp = fm.group("stamp")
+            legacy = "2012-08" if ir.get("station") == "YUDO" else "2023-06"
             change = {
                 "change_indicator": "FROM",
-                "phenomenon_begin": (f"2012-08-{int(stamp[0:2]):02d}T{int(stamp[2:4]):02d}:{int(stamp[4:6]):02d}:00Z"),
+                "phenomenon_begin": iso_stamp(
+                    ir,
+                    int(stamp[0:2]),
+                    int(stamp[2:4]),
+                    int(stamp[4:6]),
+                    legacy=legacy,
+                ),
                 "phenomenon_end": _taf_valid_end_stamp(ir),
             }
             change.update(_parse_forecast_body(fm.group("body")))

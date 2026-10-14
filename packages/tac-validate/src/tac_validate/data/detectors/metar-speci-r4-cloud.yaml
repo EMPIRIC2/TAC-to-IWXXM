@@ -14,7 +14,7 @@ rules:
       exclude_ahl_lines: true
       strip_terminator: true
     select: '^(?:FEW|SCT|BKN|OVC|VV|NSC|NCD|SKC|CLR|[A-Z]{3}\d{3})\S*$'
-    ok: '^(?:(?:FEW|SCT|BKN|OVC)\d{3}(?:CB|TCU|///)?|VV(?:\d{3}|///)|NSC|NCD|SKC|CLR)$'
+    ok: '^(?:(?:FEW|SCT|BKN|OVC)(?:\d{3}(?:CB|TCU|///)?|///(?:CB|TCU)?)|VV(?:\d{3}|///)|NSC|NCD|SKC|CLR)$'
     on_fail:
       code: INVALID_CLOUD_TOKEN
       location: cloud

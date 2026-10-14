@@ -43,6 +43,11 @@ from tac2iwxxm.slot_builders.swxa import parse_swxa
 from tac2iwxxm.slot_builders.taf import parse_taf
 from tac2iwxxm.slot_builders.vaa_tca import parse_tca, parse_vaa
 from tac2iwxxm.slot_builders.vona import parse_vona
+from tac2iwxxm.time_anchor import (
+    anchor_from_bulletin_date,
+    pop_bulletin_anchor,
+    push_bulletin_anchor,
+)
 
 
 def _ir_source_is_explicit_pack(ir_source: str | None) -> bool:
@@ -1004,6 +1009,7 @@ def convert(
     report_variant: str | None = None,
     propagate_residuals_to_remarks: bool | None = None,
     ir_source: str | None = None,
+    bulletin_date: str | None = None,
 ) -> ConvertResult:
     """
     Convert a TAC report to IWXXM XML.
@@ -1043,6 +1049,10 @@ def convert(
         ``legacy``, ``pack``, or ``auto`` (default). ``auto`` uses pack IR for
         METAR/SPECI and legacy parsers for other products. Override with
         ``TAC2IWXXM_CONVERT_IR_SOURCE`` when omitted.
+    bulletin_date :
+        Optional ``YYYY-MM-DD`` (or a timestamp with that prefix) used as the
+        year and month for TAC day stamps. Omitted conversions keep example
+        pins such as ``2023-06`` and ``2012-08``.
 
     Returns
     -------
@@ -1208,6 +1218,14 @@ def convert(
                 f"report_status {report_status!r} must be one of {sorted(_REPORT_STATUSES)}",
             )
 
+    time_anchor: str | None = None
+    if bulletin_date is not None and str(bulletin_date).strip():
+        try:
+            time_anchor = anchor_from_bulletin_date(str(bulletin_date))
+        except ValueError:
+            return _fail("INVALID_BULLETIN_DATE", "bulletin_date must be a calendar date (YYYY-MM-DD)")
+
+    anchor_token = push_bulletin_anchor(time_anchor)
     propagate_issue: ConvertIssue | None = None
     try:
         if _UNRELIABLE_TAC.search(tac):
@@ -1224,6 +1242,8 @@ def convert(
             profile=profile_l,
             ir_source_explicit=_ir_source_is_explicit_pack(ir_source),
         )
+        if time_anchor is not None:
+            ir = {**ir, "time_anchor": time_anchor}
         if resolved_report_variant is not None and profile_l == EMIT_CA_ECCC and product_u == "METAR":
             ir = {**ir, "ca_iwxxm_root": resolved_report_variant}
         if status_override is not None:
@@ -1281,6 +1301,8 @@ def convert(
                 ],
             )
         return _fail("PARSE_ERROR", message, span=True)
+    finally:
+        pop_bulletin_anchor(anchor_token)
 
     issues: list[ConvertIssue] = []
     # Alias resolution remains server-side; do not surface DEPRECATED_PROFILE_ALIAS

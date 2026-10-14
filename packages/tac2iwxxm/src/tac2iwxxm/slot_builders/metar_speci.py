@@ -29,7 +29,7 @@ _ALT_INHG = re.compile(r"\bA(?P<alt>\d{4})\b")
 _ALT_NOT_OBS = re.compile(r"(?<![A-Z0-9])A////(?![A-Z0-9/])")
 _QNH_HPA = re.compile(r"\bQ(?P<qnh>\d{3,4})\b")
 _QNH_NOT_OBS = re.compile(r"(?<![A-Z0-9])Q////(?![A-Z0-9/])")
-_CLOUD = re.compile(r"\b(?P<amt>FEW|SCT|BKN|OVC)(?P<base>\d{3})(?P<ctype>CB|TCU)?\b")
+_CLOUD = re.compile(r"\b(?P<amt>FEW|SCT|BKN|OVC)(?P<base>\d{3}|///)(?P<ctype>CB|TCU)?\b")
 _NIL = re.compile(r"\bNIL\b")
 _AUTO = re.compile(r"\bAUTO\b")
 # NOISG is an observed operator typo for NOSIG (CMO Week 1 corpus); accept as alias.
@@ -65,7 +65,8 @@ _WX_TOKEN = re.compile(
     r"(?<![A-Z0-9/])(?P<wx>//|"
     r"(?:\+|-|VC)?"
     r"(?:MI|PR|BC|DR|BL|SH|TS|FZ)?"
-    r"(?:DZ|RA|SN|SG|PL|GR|GS|UP|BR|FG|FU|VA|DU|SA|HZ|PY|PO|SQ|FC|SS|DS)+"
+    r"(?:DZ|RA|SN|SG|PL|GR|GS|UP|BR|FG|FU|VA|DU|SA|HZ|PY|PO|SQ|FC|SS|DS|TS)+"
+    r"|VCSH"
     r")(?![A-Z0-9/])"
 )
 _TREND_GROUP = re.compile(
@@ -107,6 +108,7 @@ _RECENT_WX = re.compile(
     r"\b(?P<wx>FZRA|FZDZ|SHRA|SHSN|SHGR|SHGS|TS|DZ|RA|SN|SG|IC|PL|GR|GS|UP)"
     r"(?:B(?P<b>\d{2,4})(?:E(?P<e>\d{2,4}))?|E(?P<e_only>\d{2,4}))\b"
 )
+_RECENT_BODY = re.compile(r"(?<![A-Z0-9])(?P<wx>RE[A-Z]{2,8})(?![A-Z0-9])")
 _LTG_FREQ_CODES = {"OCNL": "OCCASIONAL", "FRQ": "FREQUENT", "CONS": "CONTINUOUS"}
 _LTG_DIST_CODES = {"DSNT": "DISTANT", "VC": "VICINITY"}
 # 8-point compass for lightning sector extremes (true north = 0°).
@@ -371,13 +373,14 @@ def _hhmm_to_stamp(ir: dict[str, Any], hhmm: str) -> str:
     object
         Return value.
     """
+    from tac2iwxxm.time_anchor import iso_stamp
+
     hour = int(hhmm[0:2])
     minute = int(hhmm[2:4])
     day = int(ir["day"])
     # Match annex3 emit stamp month/year for YUDO WMO examples.
-    if str(ir.get("station")) == "YUDO":
-        return f"2012-08-{day:02d}T{hour:02d}:{minute:02d}:00Z"
-    return f"2023-06-{day:02d}T{hour:02d}:{minute:02d}:00Z"
+    legacy = "2012-08" if str(ir.get("station")) == "YUDO" else "2023-06"
+    return iso_stamp(ir, day, hour, minute, legacy=legacy)
 
 
 def _obs_stamp(ir: dict[str, Any]) -> str:
@@ -394,12 +397,13 @@ def _obs_stamp(ir: dict[str, Any]) -> str:
     object
         Return value.
     """
+    from tac2iwxxm.time_anchor import iso_stamp
+
     day = int(ir["day"])
     hour = int(ir["hour"])
     minute = int(ir["minute"])
-    if str(ir.get("station")) == "YUDO":
-        return f"2012-08-{day:02d}T{hour:02d}:{minute:02d}:00Z"
-    return f"2023-06-{day:02d}T{hour:02d}:{minute:02d}:00Z"
+    legacy = "2012-08" if str(ir.get("station")) == "YUDO" else "2023-06"
+    return iso_stamp(ir, day, hour, minute, legacy=legacy)
 
 
 def _parse_trend_group(ir: dict[str, Any], kind: str, body: str) -> dict[str, Any] | None:
@@ -1561,10 +1565,12 @@ def parse_metar_speci(tac: str, *, product: str) -> dict[str, Any]:
 
     cloud_layers: list[dict[str, Any]] = []
     for c in _CLOUD.finditer(obs_body):
-        layer: dict[str, Any] = {
-            "amount": c.group("amt"),
-            "base_ft": int(c.group("base")) * 100,
-        }
+        layer: dict[str, Any] = {"amount": c.group("amt")}
+        base = c.group("base")
+        if base == "///":
+            layer["base_not_observable"] = True
+        else:
+            layer["base_ft"] = int(base) * 100
         ctype = c.group("ctype")
         if ctype:
             layer["cloud_type"] = ctype
@@ -1572,7 +1578,8 @@ def parse_metar_speci(tac: str, *, product: str) -> dict[str, Any]:
     ir["clouds"] = cloud_layers
     if cloud_layers:
         ir["cloud_amount"] = cloud_layers[0]["amount"]
-        ir["cloud_base_ft"] = cloud_layers[0]["base_ft"]
+        if "base_ft" in cloud_layers[0]:
+            ir["cloud_base_ft"] = cloud_layers[0]["base_ft"]
 
     nosig_m = _NOSIG.search(body_for_wx)
     if nosig_m is not None:
@@ -1639,6 +1646,9 @@ def parse_metar_speci(tac: str, *, product: str) -> dict[str, Any]:
         ir["present_weather_not_observable"] = True
     if present:
         ir["present_weather"] = present
+    recent = [m.group("wx")[2:] for m in _RECENT_BODY.finditer(obs_body) if _WX_TOKEN.fullmatch(m.group("wx")[2:])]
+    if recent:
+        ir["recent_weather"] = recent
 
     trends: list[dict[str, Any]] = []
     for tm in trend_matches:

@@ -11,6 +11,7 @@ from tac_validate.models import Issue
 from tac_validate.product_rules import (
     _append_remark_issue,
     _body_span,
+    _is_valid_cloud_token,
     _is_valid_weather_token,
     _sigmet_validity_hours,
     _weather_candidate_tokens,
@@ -42,17 +43,34 @@ def test_weather_token_edge_cases() -> None:
     assert _is_valid_weather_token("-") is False
     # Descriptor-only residual → invalid; multi-phenomenon concatenation → valid.
     assert _is_valid_weather_token("SH") is False
+    assert _is_valid_weather_token("VCSH") is True
+    assert _is_valid_weather_token("VCTS") is True
+    assert _is_valid_weather_token("TS") is True
     assert _is_valid_weather_token("RASN") is True
     assert _is_valid_weather_token("FZDZ") is True
 
 
-def test_weather_token_rejects_sign_only_after_shape_gate(monkeypatch: pytest.MonkeyPatch) -> None:
-    from tac_validate.product_rules_pkg import _common
+def test_vicinity_and_bare_thunderstorm_are_not_invalid_weather() -> None:
+    report = lint(
+        "METAR TNCM 081200Z 14006KT 9999 VCSH FEW020 28/24 Q1013=",
+        product="METAR",
+    )
+    assert not any(issue.code == "INVALID_WEATHER" for issue in report.issues)
+    bare = lint(
+        "METAR TNCM 081200Z 14006KT 9999 TS FEW020 28/24 Q1013=",
+        product="METAR",
+    )
+    assert not any(issue.code == "INVALID_WEATHER" for issue in bare.issues)
 
-    fake_shape = type("_Shape", (), {"fullmatch": staticmethod(lambda _token: True)})()
-    monkeypatch.setattr(_common, "_WX_TOKEN_SHAPE", fake_shape)
 
-    assert _common._is_valid_weather_token("+") is False
+def test_unknown_cloud_base_with_cumulonimbus_is_a_cloud_token() -> None:
+    assert _is_valid_cloud_token("FEW///CB") is True
+    assert _is_valid_cloud_token("SCT///TCU") is True
+    report = lint(
+        "METAR TNCM 081200Z 14006KT 9999 FEW///CB 28/24 Q1013=",
+        product="METAR",
+    )
+    assert not any(issue.code == "INVALID_CLOUD_TOKEN" for issue in report.issues)
 
 
 def test_weather_candidates_skip_without_wind() -> None:

@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import logging
 import re
+from datetime import UTC, datetime
 from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
@@ -235,6 +236,14 @@ def _apply_recent_weather_normalization(
     return normalized_tac
 
 
+def _bulletin_date_arg(reference_time: str | None) -> str:
+    """Return YYYY-MM-DD for the library time anchor."""
+    if reference_time is not None and reference_time.strip():
+        text = reference_time.strip()
+        return text[:10] if len(text) >= 10 else text
+    return datetime.now(UTC).date().isoformat()
+
+
 def convert_metar_tac_with_metadata(
     tac_text: str,
     iwxxm_version: str | None = None,
@@ -265,7 +274,9 @@ def convert_metar_tac_with_metadata(
     iwxxm_version :
         Target IWXXM release line (default ``2025-2``).
     reference_time :
-        Reserved (historical date patching was gifts-specific); ignored.
+        Bulletin date (``YYYY-MM-DD`` or a timestamp with that prefix). When
+        omitted, the current UTC date is used so operator conversions are not
+        pinned to example months.
     use_test_overrides :
         Reserved; ignored after gifts cutover.
     validate :
@@ -315,7 +326,8 @@ def convert_metar_tac_with_metadata(
     >>> 1 + 1  # docstring smoke (convert_metar_tac_with_metadata)
     2
     """
-    _ = (reference_time, use_test_overrides)  # gifts-era knobs; no-op after cutover
+    _ = use_test_overrides  # gifts-era knob; no-op after cutover
+    bulletin_date = _bulletin_date_arg(reference_time)
 
     try:
         from tac2iwxxm import convert as tac2iwxxm_convert
@@ -340,6 +352,7 @@ def convert_metar_tac_with_metadata(
         report_status=report_status,
         report_variant=report_variant,
         propagate_residuals_to_remarks=propagate_residuals_to_remarks,
+        bulletin_date=bulletin_date,
     )
     if not result.ok or not result.xml:
         msgs = "; ".join(f"{i.code}: {i.message}" for i in result.issues) or "unknown convert failure"

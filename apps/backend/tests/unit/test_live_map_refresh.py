@@ -352,7 +352,7 @@ def test_translate_report_records_success_and_failure(monkeypatch: pytest.Monkey
         ok = False
         xml = None
 
-    def convert(_tac: str, *, product: str) -> object:
+    def convert(_tac: str, *, product: str, **_kwargs: object) -> object:
         if product == "VAA":
             raise RuntimeError("down")
         if product == "METAR":
