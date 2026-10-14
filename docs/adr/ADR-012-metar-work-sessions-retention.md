@@ -42,7 +42,7 @@ left the exact schedule expression open for 04-tech-plan.
 ## Consequences
 
 - Predictable off-peak purge; no per-hour load.
-- DB rejects second WIP insert/update with unique violation — backend maps to HTTP 409.
+- DB rejects second WIP insert/update with unique violation; backend maps to HTTP 409.
 - Cron requires manual verification on METAR Supabase project (MCP not linked per ADR-010).
 
 ## Alternatives Considered
@@ -55,5 +55,5 @@ left the exact schedule expression open for 04-tech-plan.
 
 ## References
 
-- metar-work-history.md (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate) — R12, R17
+- metar-work-history.md (archived; see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate) — R12, R17
 - [requirements-decisions.md §F5-R8, F5-R11](../decisions/requirements-decisions.md)

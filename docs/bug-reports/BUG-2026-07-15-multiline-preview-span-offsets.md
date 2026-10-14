@@ -41,7 +41,7 @@ n_spans 1
 
 ## Interview record
 
-AskQuestion UI unavailable; user invoked **19-address-pr-review** for PRR-019 blockers/advisories — treated as confirm of repro + root cause.
+AskQuestion UI unavailable; user invoked **19-address-pr-review** for PRR-019 blockers/advisories; treated as confirm of repro + root cause.
 
 ## Fix
 

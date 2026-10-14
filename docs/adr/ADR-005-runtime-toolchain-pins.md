@@ -27,11 +27,11 @@ Pin the following for all workspace members:
 - Frontend Dockerfile must update from Node 20 to Node 22.
 - CI jobs using Python 3.11 (gifts, integration) unify to 3.12.
 - One-time effort to migrate gifts lint tooling and npm → pnpm.
-- basedpyright may surface latent type issues — budget fix time in Phase 1.
+- basedpyright may surface latent type issues; budget fix time in Phase 1.
 
 ## Alternatives Considered
 
-- **Python 3.11 everywhere**: Rejected — backend CI/Docker already on 3.12.
-- **Keep flake8 in gifts**: Rejected — inconsistent with backend/auth ruff setup.
-- **Defer pnpm**: Rejected — REQ-005 requires pnpm workspaces in target layout.
-- **Defer typechecker**: Rejected — user chose basedpyright for migration PR.
+- **Python 3.11 everywhere**: Rejected; backend CI/Docker already on 3.12.
+- **Keep flake8 in gifts**: Rejected; inconsistent with backend/auth ruff setup.
+- **Defer pnpm**: Rejected; REQ-005 requires pnpm workspaces in target layout.
+- **Defer typechecker**: Rejected; user chose basedpyright for migration PR.

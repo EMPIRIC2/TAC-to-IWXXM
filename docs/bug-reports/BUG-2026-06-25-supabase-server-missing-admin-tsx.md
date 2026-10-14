@@ -87,7 +87,7 @@ The failure is **latent since T6.2**; it triggers whenever Supabase Sync deploy 
 
 ### Production impact
 
-Per `apps/frontend/ARCHITECTURE.md` and `docs/deploy.md` workflow comments, the **active** legacy upload path uses `make-server-2e3cda33` (see `apps/frontend/src/utils/supabase/info.ts` — `edgeServerSlug = 'make-server-2e3cda33'`). The `server` function appears to be a duplicate/legacy copy. CI failure blocks **full** edge deploy, not necessarily the function the frontend calls today.
+Per `apps/frontend/ARCHITECTURE.md` and `docs/deploy.md` workflow comments, the **active** legacy upload path uses `make-server-2e3cda33` (see `apps/frontend/src/utils/supabase/info.ts`, `edgeServerSlug = 'make-server-2e3cda33'`). The `server` function appears to be a duplicate/legacy copy. CI failure blocks **full** edge deploy, not necessarily the function the frontend calls today.
 
 ## Spec conformance
 

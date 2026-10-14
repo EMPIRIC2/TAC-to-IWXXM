@@ -1,12 +1,12 @@
 # METAR Converter - Architecture Documentation
 
-## 🎯 Overview
+## Overview
 
 This application uses a **simplified, frontend-first architecture** where the frontend talks directly to Supabase for all authentication and user management operations. The backend is minimal and only handles operations that require elevated privileges or complex business logic.
 
 ---
 
-## 🏗️ Architecture Diagram
+## Architecture Diagram
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
@@ -41,7 +41,7 @@ This application uses a **simplified, frontend-first architecture** where the fr
 
 ---
 
-## 📦 Data Storage Strategy
+## Data Storage Strategy
 
 ### **Frontend → Supabase Direct**
 
@@ -77,7 +77,7 @@ This application uses a **simplified, frontend-first architecture** where the fr
 
 ---
 
-## 🔐 Authentication Flow
+## Authentication Flow
 
 ### **Registration** (`Register.tsx`)
 
@@ -206,7 +206,7 @@ const { error } = await supabase
 
 ---
 
-## 🔒 Security: Row Level Security (RLS)
+## Security: Row Level Security (RLS)
 
 The `user_profiles` table uses **Postgres Row Level Security** to control access:
 
@@ -258,7 +258,7 @@ CREATE POLICY "Admins can update any profile"
 
 ---
 
-## 🖥️ Backend (Minimal)
+## Backend (Minimal)
 
 The backend (`/supabase/functions/server/`) is **optional** and only used for:
 
@@ -277,7 +277,7 @@ The backend (`/supabase/functions/server/`) is **optional** and only used for:
 
 ---
 
-## 📊 Database Schema
+## Database Schema
 
 ### **`auth.users` (Supabase Built-in)**
 
@@ -335,7 +335,7 @@ CREATE TRIGGER on_auth_user_created
 
 ---
 
-## 🚀 Benefits of This Architecture
+## Benefits of This Architecture
 
 ### **1. Simpler**
 
@@ -369,7 +369,7 @@ CREATE TRIGGER on_auth_user_created
 
 ---
 
-## 📝 Environment Variables
+## Environment Variables
 
 ```bash
 # Supabase Configuration
@@ -383,7 +383,7 @@ SUPABASE_SERVICE_ROLE_KEY=your-service-key-here  # Backend only
 
 ---
 
-## 🛠️ Setup Instructions
+## Setup Instructions
 
 ### **1. Run Migration**
 
@@ -416,7 +416,7 @@ WHERE email = 'admin@example.com';
 
 ---
 
-## 🔍 Debugging
+## Debugging
 
 ### **Check User Status**
 
@@ -450,7 +450,7 @@ SELECT * FROM user_profiles;
 
 ---
 
-## 📚 Key Files
+## Key Files
 
 | File                                                | Purpose                           |
 | --------------------------------------------------- | --------------------------------- |
@@ -463,7 +463,7 @@ SELECT * FROM user_profiles;
 
 ---
 
-## 🎓 Learning Resources
+## Learning Resources
 
 - [Supabase Auth Docs](https://supabase.com/docs/guides/auth)
 - [Row Level Security Guide](https://supabase.com/docs/guides/auth/row-level-security)

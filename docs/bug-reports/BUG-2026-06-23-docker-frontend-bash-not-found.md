@@ -26,7 +26,7 @@ ERROR: failed to build: process "/bin/sh -c npm run build" did not complete succ
 
 ## Symptoms & reproduction
 
-- **Where:** GitHub Actions `ci-cd.yml` — `Build and push frontend Docker image`
+- **Where:** GitHub Actions `ci-cd.yml`, `Build and push frontend Docker image`
 - **Frequency:** Every deploy run
 - **Trigger:** `docker/build-push-action` with `context: ./apps/frontend`, `target: production`
 
@@ -39,7 +39,7 @@ ERROR: failed to build: process "/bin/sh -c npm run build" did not complete succ
 | 2026-06-23 | Docker build context is `./apps/frontend` only — `prepare-config.sh` path would be missing even with bash |
 | 2026-06-23 | CI already passes `VITE_*` build-args; runtime-config falls back to baked Vite env if `/config.json` absent |
 
-**Root cause (proposed):** Config/infra mismatch — production Docker build reuses the monorepo
+**Root cause (proposed):** Config/infra mismatch: production Docker build reuses the monorepo
 `npm run build` script designed for hosts with bash and full repo checkout.
 
 ## Spec conformance
@@ -76,7 +76,7 @@ Replaced bash-dependent `RUN npm run build` with:
 `scripts/` and `config/` needed by `prepare-config.sh`. CI already supplies all values
 via build-args.
 
-**Local Docker verify:** `docker build --target builder` — exit 0, vite built in ~21s.
+**Local Docker verify:** `docker build --target builder`: exit 0, vite built in ~21s.
 
 ## Verification plan
 
@@ -87,9 +87,9 @@ via build-args.
 ## Interview record
 
 - Intent: New CI deploy failure
-- Symptom: Error / crash — bash not found
+- Symptom: Error / crash (bash not found)
 - Where: CI deploy job
-- Severity: Critical — blocks frontend image
+- Severity: Critical (blocks frontend image)
 - Remediation: Local-first fix + PR
 
 ## Verification

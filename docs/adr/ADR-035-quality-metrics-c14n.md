@@ -29,7 +29,7 @@ volatile attributes.
    - stripping whitespace-only text nodes
    (so pretty vs compact IWXXM compare equal, and UUID / `gml:id` churn does not dominate
    match chips). FE peers use `apps/frontend/src/utils/c14nXml.ts` with the same strip order.
-2. Host Python helper in **`packages/iwxxm-validate`** (lxml already declared) — not
+2. Host Python helper in **`packages/iwxxm-validate`** (lxml already declared), not
    `packages/shared` (`D-S064-c14n-host=1`). Do **not** import `metar_shared` from the
    validate package; duplicate the volatile rules next to C14N (parity tests cover both).
 3. **ADR-032 `canonicalize_xml` remains** for comparative / WMO golden / other CI paths
@@ -37,7 +37,7 @@ volatile attributes.
    part of Quality-metrics equality (C14N preserves document order).
 4. Detail panes default to C14N XML (post–volatile-strip) with operator override to raw
    (`D-S064-gateA-M2`).
-5. **Volatile policy** (`D-S064-c14n-volatile=1`): **C14N after volatile-attr strip** —
+5. **Volatile policy** (`D-S064-c14n-volatile=1`): **C14N after volatile-attr strip**,
    not pure C14N alone, and not “C14N of ADR-032 `canonicalize_xml` output”.
 
 ## Consequences
@@ -51,9 +51,9 @@ volatile attributes.
 
 ## Alternatives considered
 
-- Overload ADR-032 canonicalize for Quality metrics — rejected (different contract).
-- Add lxml to `packages/shared` — rejected at Gate B (`D-S064-c14n-host=1`).
-- New npm C14N package — rejected (no new npm in v1).
+- Overload ADR-032 canonicalize for Quality metrics: rejected (different contract).
+- Add lxml to `packages/shared`: rejected at Gate B (`D-S064-c14n-host=1`).
+- New npm C14N package: rejected (no new npm in v1).
 - **Pure C14N only** (no volatile strip) — rejected (`D-S064-c14n-volatile=1`); trial regen
   made every stem `unequal` due to `gml:id` / UUID noise.
 - **C14N of ADR-032 `canonicalize_xml` string output** — rejected; that string is a

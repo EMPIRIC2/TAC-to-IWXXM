@@ -1,7 +1,7 @@
 # Design lock — Registry / Detector / Policy / Runtime (pre-evolve)
 
 **Locked:** 2026-09-20  
-**Status:** Design locked — awaiting evolve intake (ADR-046 draft + ADR-028/038 amends in Spec band)  
+**Status:** Design locked; awaiting evolve intake (ADR-046 draft + ADR-028/038 amends in Spec band)  
 **Corpus:** [Corpus: product §F15] [Corpus: product §F2] [Corpus: adr/ADR-028] [Corpus: adr/ADR-038] [Corpus: adr/ADR-044] [Corpus: adr/ADR-045] [Corpus: system-spec] [Corpus: api] [Corpus: decisions]
 
 Pre-implementation lock for TAC lint + IWXXM output validation configuration. Does **not** authorize Build. Evolve must open Spec→gate before code.
@@ -151,6 +151,6 @@ Session `EV-validation-policy-remainders`. M1–M6 are merged. These locks were 
 
 ## Supersedes / relates
 
-- Does not replace ADR-028 registry home — deepens authoring + policy.
+- Does not replace ADR-028 registry home; deepens authoring + policy.
 - Composes with ADR-038 conversion profile as policy owner.
 - Complements ADR-045 (decode/convert packs); lint detectors may consume MatchPort without merging packages.

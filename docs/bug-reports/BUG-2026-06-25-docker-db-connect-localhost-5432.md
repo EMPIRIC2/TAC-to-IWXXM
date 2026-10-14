@@ -18,10 +18,10 @@ A user following the README "Quick Start with Docker Compose" reports the backen
 The backend resolves its database URL via `get_database_url()`, which falls back to
 `postgresql+asyncpg://postgres:@localhost:5432/postgres` when `DATABASE_URL` (and
 `SUPABASE_DB_URL` / `POSTGRES_*`) are unset. In `docker-compose.yml` the backend receives
-`DATABASE_URL=${DATABASE_URL:-}` — an **empty string**, which is falsy in Python, so it falls
+`DATABASE_URL=${DATABASE_URL:-}`, an **empty string**, which is falsy in Python, so it falls
 through to the localhost default. There is **no Postgres listener inside the backend container**,
 so the connect call is refused. `create_tables()` catches and does not re-raise the error, so
-the app still reaches `Application startup complete` and `/health` returns 200 — but the
+the app still reaches `Application startup complete` and `/health` returns 200, but the
 alarming traceback reads as a hard failure and DB-backed features (statistics/evaluation) do
 not work.
 
@@ -49,7 +49,7 @@ metar-iwxxm-backend  | {"level": "ERROR", "logger": "src.services.database", "me
 | 2026-06-25 | No `db`/postgres service exists in `docker-compose.yml`; project uses managed Supabase in prod |
 | 2026-06-25 | `create_tables()` logs but does not raise (L259–262), so the traceback is non-fatal but alarming |
 
-**Root cause:** Config/infra — the local-dev Docker Compose stack ships no database and passes an
+**Root cause:** Config/infra. The local-dev Docker Compose stack ships no database and passes an
 empty `DATABASE_URL`, so the backend falls back to `localhost:5432` where nothing listens. The
 empty-string env is also not normalized in `get_database_url`.
 
@@ -84,7 +84,7 @@ empty-string env is also not normalized in `get_database_url`.
 1. Add a `db` (`postgres:16`) service with `pg_isready` healthcheck + named volume on `metar-network`.
 2. Default backend `DATABASE_URL` to `postgresql+asyncpg://postgres:postgres@db:5432/postgres`
    (still `${DATABASE_URL:-...}` overridable); add `depends_on: db: condition: service_healthy`.
-3. Normalize `DATABASE_URL` / `SUPABASE_DB_URL` in `get_database_url` — treat blank/whitespace as
+3. Normalize `DATABASE_URL` / `SUPABASE_DB_URL` in `get_database_url`: treat blank/whitespace as
    unset and emit an actionable warning naming the variable.
 4. Docs: compose now ships a DB; Supabase still required for auth + F5 work-history (R3).
 
@@ -101,17 +101,17 @@ empty-string env is also not normalized in `get_database_url`.
 
 - [x] Repro test red (7 failed) → green (8 passed)
 - [x] `make test-bugs` — 37 passed, 1 deselected
-- [x] Backend unit suite — 1154 passed @ 98.04% coverage (`database.py` 100%)
+- [x] Backend unit suite: 1154 passed @ 98.04% coverage (`database.py` 100%)
 - [x] CI parity (local): ruff format-check, ruff lint-py, prettier, yamllint, actionlint, gitleaks, basedpyright (0 errors)
-- [x] PR branch CI green — [run 28194159287](https://github.com/joseph-c-mcguire/metar-to-IWXXM/actions/runs/28194159287) `success` on `2ff9a42` (PR #692)
+- [x] PR branch CI green: [run 28194159287](https://github.com/joseph-c-mcguire/metar-to-IWXXM/actions/runs/28194159287) `success` on `2ff9a42` (PR #692)
 
 ### Layer 2 — Reproduction
 
 - [x] `docker compose up -d db` → healthy; bundled Postgres reachable via `db:5432`
   with default `postgres:postgres` creds; DDL round-trip (CREATE/INSERT/SELECT/DROP)
-  succeeds from a container on `metar-network` — proves backend default
+  succeeds from a container on `metar-network`, which proves backend default
   `DATABASE_URL=postgresql+asyncpg://postgres:postgres@db:5432/postgres` resolves #671.
-- [ ] Full backend image `docker compose up --build` end-to-end — not run; local `.env`
+- [ ] Full backend image `docker compose up --build` end-to-end: not run; local `.env`
   carries a real Supabase `DATABASE_URL` that overrides the bundled default, so the
   bundled-DB path is verified via the db-only smoke above. Reporter to confirm on re-pull.
 

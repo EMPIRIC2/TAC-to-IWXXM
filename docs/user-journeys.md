@@ -169,7 +169,7 @@ must pass annex3 convert via UI (UJ-005 parametrize) and API smoke (UJ-006). US 
 
 ### UJ-001: Convert METAR via UI (shorthand)
 
-**Actor**: Anyone (public convert — F21 Amended; login optional for long-term storage only)
+**Actor**: Anyone (public convert, F21 Amended; login optional for long-term storage only)
 
 **Goal**: Upload or paste METAR TAC and receive IWXXM XML (default product/profile).
 
@@ -194,7 +194,7 @@ must pass annex3 convert via UI (UJ-005 parametrize) and API smoke (UJ-006). US 
    distinct member names when basenames would collide (e.g. five `test.xml` → five files);
    Conversion/Validation log chrome stays neutral when only `info` issues are present;
    operators never see internal profile-alias deprecation notices.
-8. On convert failure after F6 cutover: structured error only — **no gifts rollback**.
+8. On convert failure after F6 cutover: structured error only; **no gifts rollback**.
 9. If guest: work may auto-save to IndexedDB (UJ-004/045) with loss-of-progress notice.
    If logged in: may sync to DO Postgres sessions (UJ-046).
 
@@ -247,7 +247,7 @@ still works without JWT.
 
 **EV-060 / #1006 UAT**: Facilitated UAT plus Playwright covering **register, login, logout,
 and logged-in session persist**. Guest/public convert (F21 / UJ-001) still works without an
-account. Test accounts only — no production PII in fixtures. [Corpus: product §F31]
+account. Test accounts only; no production PII in fixtures. [Corpus: product §F31]
 [Corpus: tests]
 
 **EV-beta-ux-export-auth**: Backend must expose `POST /auth/register` (Supabase GoTrue
@@ -261,7 +261,7 @@ sign-up via `packages/auth` proxy) so FE `register()` succeeds. Verify login + r
 **Actor**: Guest (same browser) or logged-in operator
 
 **Goal**: Resume Draft/WIP and browse Finished/Failed METAR/SPECI work from **hybrid** storage
-(F5 / F7.i / F31 — S038): IndexedDB when guest; DO Postgres when logged in.
+(F5 / F7.i / F31; S038): IndexedDB when guest; DO Postgres when logged in.
 
 **Deepen**: Guest path + notice = **UJ-045**; login + auto-upload = **UJ-046**.
 
@@ -270,7 +270,7 @@ sign-up via `packages/auth` proxy) so FE `register()` succeeds. Verify login + r
 1. Open converter (no login).
 2. Open converter sidebar (**5 recent**) and/or **My METARs** (`/history`).
 3. My METARs lists local rows with `product IN (metar, speci)`.
-4. Open a Draft — editor restores TAC + `conversion_params`; auto-save (~3s) continues locally.
+4. Open a Draft; editor restores TAC + `conversion_params`; auto-save (~3s) continues locally.
 5. Use **Export workspace** / **Import workspace** (JSON) for backup or device move.
 6. Finished sessions open read-only; soft-deleted sessions appear in local trash.
 7. **No** admin cross-user browse (UJ-019); **no** `/api/v1/work-sessions` calls.
@@ -302,7 +302,7 @@ unless exported.
    TAC lint and convert errors via #555 panel.
 8. Optionally validate via UJ-002 (`iwxxm-validate`).
 
-**Acceptance (F6 v1 / T3)**: Parametrized Playwright (or 7 cases) — each product with
+**Acceptance (F6 v1 / T3)**: Parametrized Playwright (or 7 cases): each product with
 `profile=annex3` and golden TAC fixture converts successfully and shows XML. Additional
 `iwxxm_us` cases for METAR/SPECI/TAF where US schemas apply.
 
@@ -379,7 +379,7 @@ US extension XML (profile isolation). See also UJ-026 for annex3 exclusion messa
 **Tier**: T0 / T2 primarily.
 
 **Deepen (S032 / EV-025)**: New structured REMARKS codecs (#810–#812 + adjacent) must not
-weaken malformed-path diagnostics — unknown / broken US remark tokens still surface issues;
+weaken malformed-path diagnostics; unknown / broken US remark tokens still surface issues;
 partial success may encode recognized elements and retain remainder (UJ-026).
 
 ---
@@ -401,7 +401,7 @@ expands to those types; any still-unparsed tokens remain in `humanReadableText` 
 
 **Fence (EV-981 / #981)**: With `propagate_residuals_to_remarks` **off** (default / annex3
 profile default), decode residuals must **not** appear in remarks / HRT solely because they
-were undecoded — UJ-026 and goldens stay unchanged. Flag-on behavior is **UJ-070**.
+were undecoded; UJ-026 and goldens stay unchanged. Flag-on behavior is **UJ-070**.
 
 **Automated tests**:
 - Package: `packages/tac2iwxxm/tests/test_issue_667_metar_remarks.py`
@@ -451,7 +451,7 @@ opts in.
 
 **Automated tests**: TC-EV981-001..005 (see test-plan)
 
-**Source**: EV-981 / #981; Context: propagate-residuals-to-remarks (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate)
+**Source**: EV-981 / #981; Context: propagate-residuals-to-remarks (archived; see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate)
 
 ---
 
@@ -460,7 +460,7 @@ opts in.
 **Actor**: Authenticated meteorological operator (JWT)
 
 **Goal**: Configure DisseminationPlan + SQL MappingConfig, inspect redacted delivery audit,
-and check gateway health — without replacing one-shot destinations drawer send (UJ-027–030).
+and check gateway health without replacing one-shot destinations drawer send (UJ-027–030).
 
 **Feature**: F16–F19 deepen (EV-936)
 
@@ -474,7 +474,7 @@ and check gateway health — without replacing one-shot destinations drawer send
    UI never shows BYOC secrets or connection URIs.
 5. **Audit list/detail**: filter by product/station/profile/status; open detail.
 6. **Gateway health**: view per-kind `GatewayHealth` (ok / connectivity_ok / operator-safe detail).
-7. Optionally complete one-shot Disseminate in the destinations drawer (UJ-027) — unchanged.
+7. Optionally complete one-shot Disseminate in the destinations drawer (UJ-027), unchanged.
 
 **Acceptance**:
 1. Ops surface complements drawer; UJ-027–030 remain green.
@@ -489,7 +489,7 @@ and check gateway health — without replacing one-shot destinations drawer send
 
 **Automated tests**: TC-F16-OPS-001..006 (see test-plan)
 
-**Source**: EV-936 / #936; ADR-041; ADR-040; Context: dissemination-ops-936 (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate)
+**Source**: EV-936 / #936; ADR-041; ADR-040; Context: dissemination-ops-936 (archived; see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate)
 
 ---
 
@@ -508,7 +508,7 @@ the light picker (#1024) or putting credentials in the profile.
 
 1. Sign in (F31). Open **Profiles / ConversionProfile** editor (operator + admin).
 2. **Inspect**: select a first-party catalog id (e.g. `ICAO_2025`, `US_FAA_NWS`); view
-   ADR-038 staged settings read-only (grammar, validation refs, exchange default — no secrets).
+   ADR-038 staged settings read-only (grammar, validation refs, exchange default; no secrets).
 3. **Rule-pack (M1)**: create/edit pack fields (id, profile, product, stage, severity, when,
    message, standardReference); export/share as downloadable YAML/JSON.
 4. **Overlay (M2)**: save signed operator-scoped overlay to product Postgres (JWT ownership;
@@ -536,7 +536,7 @@ the light picker (#1024) or putting credentials in the profile.
 
 **Automated tests**: TC-EV933-001..006 (see test-plan)
 
-**Source**: EV-933 / #933; ADR-038 (amend overlays); Context: conversion-profile-editor-933 (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate)
+**Source**: EV-933 / #933; ADR-038 (amend overlays); Context: conversion-profile-editor-933 (archived; see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate)
 
 ---
 
@@ -635,7 +635,7 @@ ids out of operator-facing chrome.
 **Goal**: Use Profile builder’s five library sub-tabs (defaults pre-loaded from former
 national semantic profiles), fork-on-edit defaults, select five libraries on Convert with
 Product + IWXXM version only, and see the TAC → template → IWXXM Mapping bridge on Convert
-and Profile — without Semantic profile / Exchange / preset / overlay / Signed overlays /
+and Profile without Semantic profile / Exchange / preset / overlay / Signed overlays /
 Dissemination-template chrome.
 
 **Feature**: F7.w deepen (EV-bridge-ux-canvas-align)
@@ -643,7 +643,7 @@ Dissemination-template chrome.
 **Steps**:
 
 1. Sign in. Open Profile builder (**Beta**). Confirm five sub-tabs: Conversion, TAC
-   validation, IWXXM validation, Dissemination, Decoding — each pre-loaded with first-party
+   validation, IWXXM validation, Dissemination, Decoding, each pre-loaded with first-party
    defaults for every former national semantic profile line.
 2. Edit a default Conversion (or other) asset; confirm an **auto-fork** is created for the
    user; original default unchanged and non-deletable. Delete own fork succeeds; delete
@@ -785,7 +785,7 @@ confirm Conversion has **no DnD**; tooltips on tabs/controls; foundation assets 
 1. Sign in → Profile builder (**Beta**). Confirm five library tabs + Overview tab.
 2. Open Conversion: catalog list + item editor; no drag handles / reorder UI.
 3. Toggle IWXXM preview and validation issues preview on an item (default off).
-4. Hover tabs/controls — tooltips present; no planning vocabulary (EV-048).
+4. Hover tabs/controls; tooltips present; no planning vocabulary (EV-048).
 
 **Acceptance**: P0; TC-EVWB-001..003; H4–H5 after stage FE.
 
@@ -940,18 +940,18 @@ template attempts to persist secret-bearing fields.
 **Goal**: See at a glance what the selected semantic profile means; load a
 profile-appropriate example; keep Validation Issues Catalog aligned with Profile.
 
-**Feature**: F7.w (EV-1120 Phase A) — **Done** (#1145 closed; Profiles-page steps waived ADR-044)
+**Feature**: F7.w (EV-1120 Phase A): **Done** (#1145 closed; Profiles-page steps waived ADR-044)
 
 **Steps**:
 
-1. Open convert workbench — Profile control shows **compact twin** (name, ≤3 vs-ICAO deltas,
+1. Open convert workbench; Profile control shows **compact twin** (name, ≤3 vs-ICAO deltas,
    products, IWXXM line; pack/overlay counts show an unavailable placeholder until signed in).
-2. Change Profile — twin + Validation Issues Catalog (#1123) refresh without full reload, and
+2. Change Profile; twin + Validation Issues Catalog (#1123) refresh without full reload, and
    unrelated in-progress editing state stays intact unless a profile-dependent control becomes
    invalid.
-3. ~~Sign in; open Conversion profiles summary~~ — **Waived** (ADR-044 unmounted Conversion
+3. ~~Sign in; open Conversion profiles summary~~: **Waived** (ADR-044 unmounted Conversion
    Profiles page). Signed-in operators see pack/overlay counts on the workbench twin instead.
-4. ~~Compare on Conversion Profiles~~ — **Waived** (same ADR-044 unmount).
+4. ~~Compare on Conversion Profiles~~: **Waived** (same ADR-044 unmount).
 5. Use Convert examples / trust copy as the profile-aware example surface (thin packs may reuse
    ICAO guidance).
 
@@ -976,8 +976,8 @@ codes appear only under the matching semantic profile.
 
 **Steps**:
 
-1. Open Validation Issues Catalog with Profile = `ICAO_2025` — shared/ICAO rows; no US/CA-only demo codes.
-2. Switch Profile to `US_FAA_NWS` (or `CA_ECCC`) — shared ∪ that profile’s national-only rows appear.
+1. Open Validation Issues Catalog with Profile = `ICAO_2025`; shared/ICAO rows; no US/CA-only demo codes.
+2. Switch Profile to `US_FAA_NWS` (or `CA_ECCC`); shared ∪ that profile’s national-only rows appear.
 3. When packaging UI exposes Exchange, catalog also respects `exchange_profile` filter.
 4. Confirm omit-param API clients unchanged; unknown profile query → 400.
 
@@ -1002,11 +1002,11 @@ selected semantic or exchange profile, hiding unrestricted / all-profiles rows.
 
 **Steps**:
 
-1. Open Rule catalogs; leave **Only rules that list this profile** unchecked — shared ∪
+1. Open Rule catalogs; leave **Only rules that list this profile** unchecked: shared ∪
    matching behavior when Profile/Exchange filters are set (UJ-073).
-2. Select a Profile (e.g. `US_FAA_NWS`) and check the checkbox — unrestricted (empty
+2. Select a Profile (e.g. `US_FAA_NWS`) and check the checkbox; unrestricted (empty
    `semantic_profiles`) rows disappear; profile-listed rows remain.
-3. Uncheck — prior shared ∪ matching returns.
+3. Uncheck; prior shared ∪ matching returns.
 4. With both Profile and Exchange = All, checkbox has no effect.
 5. Conversion / Dissemination / Decoding families: checkbox disabled with Profile/Exchange.
 
@@ -1066,16 +1066,16 @@ contract (04). **Tier: T2**.
 
 ### UJ-013: Multi-Product Operator Entry / Workbench Shell (F7)
 
-**Actor**: Anyone (public app — F21; no login)
+**Actor**: Anyone (public app; F21; no login)
 
 **Goal**: Use the F7 workbench shell for any of the seven F6 products (editor + product/profile/
 version + convert path), as the umbrella entry for F7 UI.
 
-**Feature**: F7 (S011 / EV-008; public + IndexedDB — S023 / F21 / F7.h)
+**Feature**: F7 (S011 / EV-008; public + IndexedDB; S023 / F21 / F7.h)
 
 **Steps**:
 
-1. Open frontend converter / workbench (CodeMirror 6 editor replaces plain textarea) — **no login**.
+1. Open frontend converter / workbench (CodeMirror 6 editor replaces plain textarea); **no login**.
 2. Select or auto-detect **product**; set **profile** and **version**.
 3. Paste or upload TAC; observe product-aware chrome (not METAR-only copy).
 4. Run **Convert** (hard path) and view IWXXM / Source TAC / downloads (UJ-001/005 behaviors).
@@ -1094,7 +1094,7 @@ no `/admin` or `/auth` dependency; sessions persist locally without JWT.
 
 ### UJ-014: Near-Realtime Ingest + Quarantine (F8)
 
-**Status**: **Implemented** (S008 / ADR-018/019); **amended S038 / EV-031 / F30** — store/
+**Status**: **Implemented** (S008 / ADR-018/019); **amended S038 / EV-031 / F30**: store/
 quarantine on **DigitalOcean Postgres** via `DATABASE_URL` (not Supabase PostgREST).
 Worker ingest → pipeline → DO store or separate quarantine on Schematron/convert fail.
 No push sinks in v1. Deployable moves Render → **DOKS** with F30.
@@ -1108,7 +1108,7 @@ Live: T7.4 / Phase 6 gate (may remain deferred); TC-F30-003 covers DO write path
 
 ### UJ-015: TAC Decode Panel (Code | Explanation)
 
-**Actor**: Anyone (public — F21)
+**Actor**: Anyone (public; F21)
 
 **Goal**: See ordered decode segments for the current TAC with short explanations and explicit
 residuals (#702).
@@ -1117,9 +1117,9 @@ residuals (#702).
 
 1. Enter TAC for any of the seven products in the workbench (no login).
 2. Open **Decode** panel (collapsible Code | Explanation).
-3. UI calls `POST /api/v1/decode-tac` (**no JWT** — F21 public).
+3. UI calls `POST /api/v1/decode-tac` (**no JWT**; F21 public).
 4. Segments show `start`/`end`; clicking/hovering highlights spans in the editor when offsets exist.
-5. Undecoded material appears as explicit **residuals** (esp. VAA/TCA — G4).
+5. Undecoded material appears as explicit **residuals** (esp. VAA/TCA; G4).
 
 **Acceptance**: At least METAR/SPECI/TAF show non-empty segment lists for golden fixtures; all
 seven products return a well-formed decode response (may be residual-heavy).
@@ -1138,7 +1138,7 @@ seven products return a well-formed decode response (may be residual-heavy).
 
 1. Enter malformed or partially valid TAC.
 2. Observe distinct **Failed-TAC** visual cue in editor/results (not only generic error toast).
-3. Trigger **soft-preview** path (exact control: flag vs button — 04-tech-plan).
+3. Trigger **soft-preview** path (exact control: flag vs button; 04-tech-plan).
 4. Response includes best-effort XML (when any) and failed-span markers aligned to editor spans.
 5. Hard convert may still 4xx/structured-fail per api-contract; preview must not be confused with
    a successful Schematron-passed publish.
@@ -1154,7 +1154,7 @@ safe if in-flight.
 
 **Actor**: Operator
 
-**Goal**: Edit TAC with live assist — debounced lint/decode, span highlight, hover, optional live
+**Goal**: Edit TAC with live assist: debounced lint/decode, span highlight, hover, optional live
 IWXXM, pull-up console (#694).
 
 **Steps**:
@@ -1170,14 +1170,14 @@ fixture; console captures errors without crashing the editor.
 
 **Automated tests**: Vitest debounce helpers; Playwright live-edit smoke (T2); live T3 light.
 
-**Browser wiring**: Multiple public API calls to lint/decode/validate/preview — H4–H5 required
-(no JWT — F21).
+**Browser wiring**: Multiple public API calls to lint/decode/validate/preview; H4–H5 required
+(no JWT; F21).
 
 ---
 
 ### UJ-018: Unified Local Sessions Persist/Resume (IndexedDB)
 
-**Actor**: Anyone (same browser — F21)
+**Actor**: Anyone (same browser; F21)
 
 **Goal**: Persist/resume work for any of seven products in **IndexedDB** (F7.h / S023); My METARs
 filters METAR/SPECI locally.
@@ -1185,9 +1185,9 @@ filters METAR/SPECI locally.
 **Steps**:
 
 1. Create Draft for a non-METAR product (e.g. TAF); wait for local autosave.
-2. Reload — session restores TAC + product/profile from IndexedDB.
+2. Reload; session restores TAC + product/profile from IndexedDB.
 3. Convert to WIP/Finished per status rules (one WIP per browser workspace).
-4. Open My METARs — non-METAR draft **not** listed; workbench history **does** list it.
+4. Open My METARs; non-METAR draft **not** listed; workbench history **does** list it.
 5. Export workspace JSON; import on another profile/browser to restore (no server sync).
 
 **Acceptance**: Local CRUD for seven products; product filter correct; **no** `/api/v1/work-sessions`;
@@ -1205,10 +1205,10 @@ legacy Supabase rows not exposed.
 
 **Steps**:
 
-1. Navigate to `/admin` and legacy admin deep links — expect **404** / not found (no dashboard).
+1. Navigate to `/admin` and legacy admin deep links; expect **404** / not found (no dashboard).
 2. Confirm no UI for approval queue, toggle-admin, or cross-user session browse.
 3. Public user can convert and use local sessions (UJ-013/018) **without** login (F21).
-4. Operator deploy docs/env describe remaining infra secrets (F8 / dissemination allowlist) —
+4. Operator deploy docs/env describe remaining infra secrets (F8 / dissemination allowlist);
    no paste of Supabase **Auth** keys; no operator Auth required after F21.
 
 **Acceptance**: Admin UI/routes absent; public convert works; E2E admin suite remains negative.
@@ -1221,8 +1221,8 @@ legacy Supabase rows not exposed.
 
 **Actor**: Operator (including non-specialist readers of a report)
 
-**Goal**: Read what the TAC actually says — decoded values per token and a natural-language
-description of the whole report — updating live while typing.
+**Goal**: Read what the TAC actually says: decoded values per token and a natural-language
+description of the whole report, updating live while typing.
 
 **Steps**:
 
@@ -1247,14 +1247,14 @@ TC-EVPVD-004..005.
 **Automated tests**: `decode_tac` unit tests (T0); decode-tac API contract + Vitest panel
 (T0/T2); Playwright live-typing smoke (T2); live T3 sample.
 
-**Browser wiring**: Same public decode-tac call as UJ-015 — no new origins (H4–H5 unchanged).
+**Browser wiring**: Same public decode-tac call as UJ-015; no new origins (H4–H5 unchanged).
 
 **S026 / EV-020 deepen**: Explanations use **glossary registry** English meanings for all seven
 products (e.g. `OBSC` → “Obscured”, `TS` → “Thunderstorm”); optional OpenAIP/F3 **names** when
 available. Tests: TC-F9-003/004; ADR-032.
 
 **S034 / EV-027 deepen**: Official WMO textbook TAC peers must leave **no unexpected
-residuals** after decode — see **UJ-042** / TC-EV027 residual matrix (allowlist + child issue
+residuals** after decode; see **UJ-042** / TC-EV027 residual matrix (allowlist + child issue
 when not fixable in-cycle).
 
 ---
@@ -1270,16 +1270,16 @@ means; fix a missing `=` terminator in one click.
 
 1. Enable **Soft-preview** and/or **Live IWXXM** in the workbench.
 2. A **side-by-side IWXXM preview pane** (stacked below the editor under `lg`) shows the
-   most recent pretty-printed IWXXM, a status badge — **Soft preview — not for publish**
-   (plain-language soft-fail copy replacing raw `LAYER12_SOFT_FAIL`) or **Passed** — and a
+   most recent pretty-printed IWXXM, a status badge, **Soft preview — not for publish**
+   (plain-language soft-fail copy replacing raw `LAYER12_SOFT_FAIL`) or **Passed**, and a
    failed-span count linked to editor highlights.
 3. Paste a single report without `=`: lint shows an **info-level** hint ("Reports in
    bulletins end with '=' — add it before publishing"); lint `ok` stays true when no error
    issues remain.
-4. Click **"Add `=`"** on the console line (or the editor affordance on the hint span) —
+4. Click **"Add `=`"** on the console line (or the editor affordance on the hint span);
    terminator appended; hint clears on next live pass.
 
-**Acceptance**: Preview output never appears "somewhere unclear" — pane is the single
+**Acceptance**: Preview output never appears "somewhere unclear"; the pane is the single
 anchored destination with status; terminator hint is info-level with working one-click fix.
 
 **Automated tests**: Vitest pane/status/quick-fix units (T0); Playwright preview + quick-fix
@@ -1298,9 +1298,9 @@ move to msgspec (ADR-026); any breaking JSON shapes are reflected in the FE.
 
 **Steps**:
 
-1. Open the workbench (no login — F21).
-2. Convert a golden METAR (product/profile as today) — result card / preview pane populate.
-3. Run validate on produced IWXXM — pass/fail + issues render.
+1. Open the workbench (no login; F21).
+2. Convert a golden METAR (product/profile as today); result card / preview pane populate.
+3. Run validate on produced IWXXM; pass/fail + issues render.
 4. Lint and decode update live (debounce) without Auth regressions.
 
 **Acceptance**: Functional parity with pre-msgspec operator paths; TypeScript types match
@@ -1397,7 +1397,7 @@ Extended: sync may include **iwxxm-us** pin updates via manifest (in addition to
 2. `pip install tac2iwxxm==0.1.0` — convert a sample METAR string to IWXXM.
 3. `pip install tac-validate==0.1.0` — lint the same TAC; structured issues.
 4. `pip install iwxxm-validate==0.1.0` — validate produced XML (schemas bundled).
-5. Optionally `pip install 'tac2iwxxm[validate]'` — extras pull both validators.
+5. Optionally `pip install 'tac2iwxxm[validate]'`; extras pull both validators.
 
 **Acceptance**: All install+smoke steps succeed offline for schema-bundled validate.
 **Tier: T0 / CI**.
@@ -1435,8 +1435,8 @@ merge-strength gates.
 **Steps**:
 
 1. `make install-hooks`.
-2. Make a trivial lint-clean change; `git commit` — only lint/format hooks run.
-3. `git push` — only the agreed fast unit subset runs (not typecheck / validate-ci / Compose).
+2. Make a trivial lint-clean change; `git commit`: only lint/format hooks run.
+3. `git push`; only the agreed fast unit subset runs (not typecheck / validate-ci / Compose).
 4. Confirm heavier targets still available via `make` and enforced in PR CI.
 
 **Acceptance**: TC-EV047-001..004. **Tier: T0**.
@@ -1492,7 +1492,7 @@ representative privacy/auth empty-state copy without seeing internal planning vo
 1. Open the operator app (non-deployed or deployed). Confirm soft-preview helper text
    describes best-effort IWXXM / failed spans in plain language (no ADR/Corpus/session IDs).
 2. Open public API `/docs` (or Redoc). Spot-check convert `preview` / nilReason / plain-language
-   field descriptions — operator meaning only.
+   field descriptions: operator meaning only.
 3. Spot-check privacy/auth empty-state or helper copy for the same constraint.
 
 **Acceptance**: No `[Corpus:…]`, `ADR-NNN`, `EV-NNN`, `S0NN`, `FNN` product ids, or
@@ -1506,26 +1506,26 @@ representative privacy/auth empty-state copy without seeing internal planning vo
 
 **Actor**: Meteorological operator / maintainer / demo presenter
 
-**Goal**: Open a **dedicated Quality metrics tab** (primary shell navigation — not inside
+**Goal**: Open a **dedicated Quality metrics tab** (primary shell navigation, not inside
 the convert workbench) and explore official WMO IWXXM example quality by product: match,
 residuals, lint, validate, with a unified XML diff vs our conversion.
 
 **Steps**:
 
 1. From the operator app, open the **Quality metrics** primary tab (peer to Convert /
-   History — not a sub-panel of the convert workbench).
+   History, not a sub-panel of the convert workbench).
 2. See product-level summary counts (match / residual / lint / validate) loaded from
-   public **`GET /api/v1/quality-metrics`** (precomputed fixture-backed — not live WMO fetch).
+   public **`GET /api/v1/quality-metrics`** (precomputed fixture-backed, not live WMO fetch).
 3. Filter to one product (e.g. METAR); open a known passer stem
    (`GET /api/v1/quality-metrics/{stem}`).
 4. **EV-056**: selecting a row **navigates** to shareable **`/quality/:stem`** with
    back-to-list (`D-S066-route-shape=1` / `D-S066-list=1`). Detail remains Official /
    Converted / TAC panes (normalized = pretty C14N by default with override) plus
    **GitHub-style** unified diff with collapsible equal-context hunks (default **3**
-   context lines; expand hunk / expand all — `D-S066-context-n=1`). C14N /
+   context lines; expand hunk / expand all; `D-S066-context-n=1`). C14N /
    `match_status` semantics unchanged from EV-055.
-5. **EV-058 / #983**: on the detail page, use a **segmented control** —
-   **Inline (unified)** | **Side-by-side** — to switch XML diff layout without reload
+5. **EV-058 / #983**: on the detail page, use a **segmented control**
+   (**Inline (unified)** | **Side-by-side**) to switch XML diff layout without reload
    (`D-S068-01-control=3a`). Default is **Inline**. Side-by-side reuses existing
    line-diff helpers (no new npm `diff`). Preference persists in **localStorage**.
    Synced scroll between panes is **best-effort** (`D-S068-01-ac=2b`). Raw TAC /
@@ -1546,7 +1546,7 @@ evolve-decisions §EV-056 (detail route + collapsible diffs) **and** AC1–AC5 i
 evolve-decisions §EV-058 (side-by-side vs inline) **and** EV-981 QM hook (`D-EV981-qm`);
 TC-EV054-001..008 + TC-EV055-001..007 + TC-EV056-001..005 + TC-EV058-001..005 +
 TC-EV981-004. Default view needs no
-Supabase and no live upstream WMO fetch — metrics come from public
+Supabase and no live upstream WMO fetch; metrics come from public
 `GET /api/v1/quality-metrics*` backed by precomputed fixtures (`D-S063-gateA=2`;
 regen under `D-S064-regen=1`).
 **Tier: T0 / T2 / T3 / H4–H5**.
@@ -1566,13 +1566,13 @@ workbench, and download them together as **one ZIP** with a content-derived defa
 **Steps**:
 
 1. Open the convert workbench; leave custom output basename empty (or clear it).
-2. Convert report A successfully — result card visible.
-3. Convert report B (and optionally C) without clearing the batch — prior successes remain.
-4. Optionally trigger a failed convert — prior successes stay; failure is shown for the attempt.
-5. Choose **Download all** / ZIP — receive one archive containing each accumulated IWXXM.
+2. Convert report A successfully; result card visible.
+3. Convert report B (and optionally C) without clearing the batch; prior successes remain.
+4. Optionally trigger a failed convert; prior successes stay; failure is shown for the attempt.
+5. Choose **Download all** / ZIP; receive one archive containing each accumulated IWXXM.
 6. Confirm default ZIP name is `{stem}_{yyyyMMddHHmmss}.zip` where `stem` is ≈ first 8
    sanitized characters of the **first** successful conversion’s TAC.
-7. Set a custom output basename and Download all — archive is `{base}.zip` (#664).
+7. Set a custom output basename and Download all; archive is `{base}.zip` (#664).
 8. Clear / reset the accumulated set; confirm the batch is empty.
 
 **Acceptance**: AC1–AC8 in evolve-decisions / feature-list §F7.r EV-057; TC-EV057-903-*.
@@ -1585,18 +1585,18 @@ Soft accumulate cap **≤200** (`D-S067-903-cap=1c`).
 
 ### UJ-058: Validate Existing IWXXM Without TAC Convert (F7.s / #838)
 
-**Actor**: Meteorological operator (guest OK — no Supabase required)
+**Actor**: Meteorological operator (guest OK; no Supabase required)
 
 **Goal**: Paste or upload an existing IWXXM document and run F2 XSD + Schematron validation
 without performing TAC→IWXXM conversion.
 
 **Steps**:
 
-1. Open the operator UI **Validate** mode (dedicated validate-only intake — not Quality metrics).
+1. Open the operator UI **Validate** mode (dedicated validate-only intake, not Quality metrics).
 2. Paste a known-good IWXXM fixture; select version/profile with the same F4 controls used on
-   convert/validate elsewhere; run validate — pass (or expected clean diagnostics).
-3. Upload one `.xml` IWXXM file; run validate — F2 issue list / pass-fail shown.
-4. Paste broken / non-IWXXM XML — structured fail (no opaque 5xx).
+   convert/validate elsewhere; run validate: pass (or expected clean diagnostics).
+3. Upload one `.xml` IWXXM file; run validate: F2 issue list / pass-fail shown.
+4. Paste broken / non-IWXXM XML; structured fail (no opaque 5xx).
 5. Confirm no TAC convert was required and no Supabase login was needed for the happy path.
 
 **Acceptance**: AC1–AC6 in feature-list §F7.s EV-057; TC-EV057-838-*. Multi-file/zip deferred.
@@ -1617,8 +1617,8 @@ Does not replace UJ-056 Quality metrics corpus browse.
 
 1. Set input mode to AHL bulletin (or `POST /api/v1/convert-bulletin` / lint equivalent).
 2. Paste a well-formed AHL METAR bulletin.
-3. Run lint/validate — heading is bulletin COM; contained METARs are checked as METAR.
-4. Optionally paste malformed AHL — one bulletin-level error; still try to split reports.
+3. Run lint/validate; heading is bulletin COM; contained METARs are checked as METAR.
+4. Optionally paste malformed AHL; one bulletin-level error; still try to split reports.
 
 **Acceptance**: feature-list EV-060 / #1001; TC-EV060-1001-*. FileConverter same behavior.
 **Tier: T0 / T2 / T3 / H4–H5**. Related: UJ-011 / UJ-025.
@@ -1635,8 +1635,8 @@ Does not replace UJ-056 Quality metrics corpus browse.
 **Steps**:
 
 1. Choose product IWXXM (workbench, FileConverter, accumulate, Quality metrics honor).
-2. Paste valid IWXXM XML; run lint+validate — F2 result; no TAC convert.
-3. Paste TAC text — structured not-XML error (not METAR lint).
+2. Paste valid IWXXM XML; run lint+validate: F2 result; no TAC convert.
+3. Paste TAC text; structured not-XML error (not METAR lint).
 4. Confirm Convert is disabled or no-ops with a clear operator message.
 5. F7.s Validate-only mode still exists.
 
@@ -1654,8 +1654,8 @@ Does not replace UJ-056 Quality metrics corpus browse.
 
 **Steps**:
 
-1. Open converter — Profile control is labeled at the top (not only inside conversion parameters).
-2. Change profile; run convert/lint/validate — requests use the selected `profile`.
+1. Open converter; Profile control is labeled at the top (not only inside conversion parameters).
+2. Change profile; run convert/lint/validate: requests use the selected `profile`.
 3. Keyboard: visible label + accessible name.
 4. FileConverter / accumulate / Quality metrics honor the same profile.
 
@@ -1673,9 +1673,9 @@ Does not replace UJ-056 Quality metrics corpus browse.
 
 **Steps**:
 
-1. Fill Bulletin ID and Issuing Center; convert — output/API payload uses those values.
-2. Leave empty — discover-from-AHL or existing defaults.
-3. Invalid CCCC/ID — one operator-visible field error, not a silent drop.
+1. Fill Bulletin ID and Issuing Center; convert: output/API payload uses those values.
+2. Leave empty; discover-from-AHL or existing defaults.
+3. Invalid CCCC/ID; one operator-visible field error, not a silent drop.
 
 **Acceptance**: feature-list EV-060 / #1005; TC-EV060-1005-*.
 **Tier: T0 / T2 / T3 / H4–H5**. Related: UJ-011.
@@ -1731,8 +1731,8 @@ product/profile; optional Bulletin ID / Issuing Center. Golden: `SAUS31 KZNY` mu
 
 1. Paste golden multi-report AHL METAR bulletin in AHL / auto-detect mode.
 2. Observe decode: bulletin framing + item-by-item readable rows per report.
-3. Convert — per-report IWXXM results (convert-bulletin).
-4. Paste malformed AHL — clear `INVALID_AHL` / empty_bulletin (no silent success).
+3. Convert; per-report IWXXM results (convert-bulletin).
+4. Paste malformed AHL; clear `INVALID_AHL` / empty_bulletin (no silent success).
 
 **Acceptance**: feature-list F6 deepen EV-061 / #1012; TC-EV061-1012-*. Distinct from #1011 harness.
 **Tier: T0 / T2 / T3 / H4–H5**. [Corpus: product §F6] [Corpus: product §F7] [Corpus: domain/IWXXM_CONVERSION §AHL]
@@ -1750,7 +1750,7 @@ product/profile; optional Bulletin ID / Issuing Center. Golden: `SAUS31 KZNY` mu
 1. Open converter at viewport ≥1024px.
 2. Confirm Product Type + Profile stay on one visual bar without wrap.
 3. Confirm mode selects share one aligned row.
-4. Resize below 1024px — stacking OK.
+4. Resize below 1024px; stacking OK.
 
 **Acceptance**: feature-list F7.u / #1013; TC-EV061-1013-*.
 **Tier: T0 / T2 / T3 / H4–H5**. [Corpus: product §F7] [Corpus: journeys]
@@ -1926,22 +1926,22 @@ scope unless free with the same change.
 
 **Goal**: Lint **METAR and SPECI** TAC with stable registry issue codes; convert accept
 fixtures to IWXXM; validate with XSD+Schematron; see useful diagnostics on negative fixtures.
-SPECI shares the METAR/SPECI rule pack and `metarSpeci` IWXXM schemas — adjacency is explicit
+SPECI shares the METAR/SPECI rule pack and `metarSpeci` IWXXM schemas; adjacency is explicit
 (product hint `speci`, Auto-detect, and AHL bulletin METAR/SPECI neighbors).
 
-**Steps (operator — T2/T3)**:
+**Steps (operator, T2/T3)**:
 
 1. Open workbench; set Product = **METAR** (or Auto-detect when unambiguous).
-2. Paste a valid METAR accept fixture; run lint — `ok: true` or only `info` (e.g. terminator);
+2. Paste a valid METAR accept fixture; run lint: `ok: true` or only `info` (e.g. terminator);
    all issue `code` values exist in the `tac-validate` registry catalog
-   (`GET /api/v1/lint-issue-catalog` powers tooltips / catalog panel — E11-31).
-3. Convert → Strict Validation — XSD+Schematron pass for pinned `iwxxm_version`.
-4. Paste a known-bad METAR negative fixture — lint returns registry codes with useful messages
+   (`GET /api/v1/lint-issue-catalog` powers tooltips / catalog panel; E11-31).
+3. Convert → Strict Validation; XSD+Schematron pass for pinned `iwxxm_version`.
+4. Paste a known-bad METAR negative fixture; lint returns registry codes with useful messages
    (no silent success); hover/code tooltip resolves via catalog endpoint.
 5. Repeat steps 1–4 with Product = **SPECI** (and at least one SPECI accept + one SPECI
    negative fixture); confirm Auto-detect chooses SPECI when the TAC starts with `SPECI`.
 
-**Steps (CI — T0)**:
+**Steps (CI, T0)**:
 
 1. Registry CI: every emitted METAR/SPECI code is registered; catalog export in sync.
 2. Golden pack: METAR **and** SPECI TAC → `tac2iwxxm` → `iwxxm-validate` (M-xsd / M-sch) green.
@@ -1950,7 +1950,7 @@ SPECI shares the METAR/SPECI rule pack and `metarSpeci` IWXXM schemas — adjace
    product selection or silent-pass lint.
 
 **Acceptance**: F15 criteria 1–6 (METAR + SPECI); coverage-matrix METAR/SPECI **R1–R8** closed
-this cycle (HARD — E11-23/28); non–R-theme gaps only may defer with rationale + AskQuestion.
+this cycle (HARD; E11-23/28); non–R-theme gaps only may defer with rationale + AskQuestion.
 **Remainder (EV-validation-policy-remainders):** the default annex3 validate issue list stays
 the same because empty policy select means all asserts. A narrower policy is proved by a unit
 or API test, not by a new page control. `/lint-tac` omits MatchPort and keeps today's
@@ -1968,17 +1968,17 @@ fixtures to IWXXM (`iwxxm:TAF` / `iwxxm:SPECI`); validate with XSD+Schematron; u
 diagnostics on negative fixtures. SPECI full quality bar (#734) is parallel to TAF (#735),
 including Auto-detect / product-hint never mis-classifying SPECI↔METAR.
 
-**Steps (operator — T2/T3)**:
+**Steps (operator, T2/T3)**:
 
 1. Open workbench; set Product = **TAF** (or Auto-detect when unambiguous).
-2. Paste a valid TAF accept fixture; run lint — registry codes only
+2. Paste a valid TAF accept fixture; run lint: registry codes only
    (`GET /api/v1/lint-issue-catalog` for tooltips).
-3. Convert → Strict Validation — XSD+Schematron pass for pinned `iwxxm_version`; root `iwxxm:TAF`.
-4. Paste a known-bad TAF negative fixture — lint returns registry codes (no silent success).
+3. Convert → Strict Validation; XSD+Schematron pass for pinned `iwxxm_version`; root `iwxxm:TAF`.
+4. Paste a known-bad TAF negative fixture; lint returns registry codes (no silent success).
 5. Repeat with Product = **SPECI** (accept + negative); confirm Auto-detect chooses SPECI for
    TAC starting with `SPECI`; root `iwxxm:SPECI`.
 
-**Steps (CI — T0)**:
+**Steps (CI, T0)**:
 
 1. Registry CI: every emitted TAF/SPECI code is registered; catalog export in sync.
 2. Golden pack: TAF **and** SPECI TAC → `tac2iwxxm` → `iwxxm-validate` (M-xsd / M-sch) green.
@@ -1994,11 +1994,11 @@ including Auto-detect / product-hint never mis-classifying SPECI↔METAR.
 
 **Actor**: Operator
 
-**Goal**: Use FileConverter **Manual TAC Input** modes correctly — TAC report convert,
-AHL bulletin → `/convert-bulletin`, IWXXM COLLECT → `/ingest-collect` **501** placeholder —
+**Goal**: Use FileConverter **Manual TAC Input** modes correctly: TAC report convert,
+AHL bulletin → `/convert-bulletin`, IWXXM COLLECT → `/ingest-collect` **501** placeholder,
 with honest UX and required paste/upload auto-switch (ADR-024 / [#730](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/730)).
 
-**Feature**: F7 (validation deepen; status remains Planned) — S016 / EV-012
+**Feature**: F7 (validation deepen; status remains Planned); S016 / EV-012
 
 **Relationship**: UI surface that routes operators onto UJ-011 (bulletin API) and the COLLECT
 placeholder; does **not** replace H7 API gate design.
@@ -2012,7 +2012,7 @@ placeholder; does **not** replace H7 API gate design.
    (no silent fall-through to single `/convert`).
 4. **T3 — Auto-switch**: With Mode = TAC, paste AHL-looking bulletin (or COLLECT XML) → mode
    switches to AHL (or COLLECT) with toast (“Detected AHL bulletin…” / “Detected IWXXM
-   COLLECT…”). **Required** — fail if missing (E12-3).
+   COLLECT…”). **Required**; fail if missing (E12-3).
 5. **T4 — IWXXM COLLECT**: Mode = COLLECT; paste/upload COLLECT (`.xml` / `.gz` if supported)
    → `POST /api/v1/ingest-collect` → **501** surfaces as placeholder notice / warning toast
    (not success, not silent fail).
@@ -2040,10 +2040,10 @@ placeholder; does **not** replace H7 API gate design.
 **Actor**: Operator
 
 **Goal**: One-click load a curated **demo / non-operational** TAC, AHL bulletin, or
-happy-path IWXXM sample into the workbench — no paste — then convert or validate using
+happy-path IWXXM sample into the workbench (no paste), then convert or validate using
 existing APIs.
 
-**Feature**: F7 deepen (F7.g) — S021 / EV-016; status remains **Planned**
+**Feature**: F7 deepen (F7.g); S021 / EV-016; status remains **Planned**
 
 **Relationship**: Complements UJ-025 input modes and UJ-005/UJ-002 convert/validate paths;
 does **not** add backend fixture APIs.
@@ -2059,7 +2059,7 @@ does **not** add backend fixture APIs.
 6. Select IWXXM COLLECT/XML example → `inputMode` = `collect_iwxxm` (or validate path);
    body is happy-path IWXXM (soft-fail examples **out of v1**).
 7. Repeat for remaining products; where only one in-repo fixture exists
-   (SIGMET/AIRMET/VAA/TCA), catalog documents the gap — do not invent TAC.
+   (SIGMET/AIRMET/VAA/TCA), catalog documents the gap; do not invent TAC.
 
 **Acceptance**:
 
@@ -2068,7 +2068,7 @@ does **not** add backend fixture APIs.
 3. Load sets body + product + inputMode when relevant
 4. Vitest TC-F7-008 green (catalog completeness + click-to-load)
 5. No backend / env / DB changes; examples are static FE assets
-6. H4–H5 smoke when frontend deploys (optional Playwright smoke — Vitest is hard gate)
+6. H4–H5 smoke when frontend deploys (optional Playwright smoke; Vitest is hard gate)
 
 **Automated tests**: Vitest catalog + FileConverter Examples UX (TC-F7-008); staging H4–H5
 
@@ -2081,13 +2081,13 @@ does **not** add backend fixture APIs.
 **Goal**: See a short first-visit privacy notice; open **Privacy settings** from the footer;
 manage versioned preferences; confirm GPC is honored when present.
 
-**Feature**: F22 — Solution A (no non-essential tracking)
+**Feature**: F22: Solution A (no non-essential tracking)
 
 **Steps**:
 
-1. First visit (or after preference schema bump) — short notice with link to Privacy settings;
+1. First visit (or after preference schema bump); short notice with link to Privacy settings;
    equally clear dismiss / open settings (no dark patterns).
-2. Open footer **Privacy settings** — see categories actually in use (at minimum: necessary +
+2. Open footer **Privacy settings**; see categories actually in use (at minimum: necessary +
    disclosure of IndexedDB work history / preference storage).
 3. Non-essential categories (if present) default off; reject as easy as accept.
 4. With `navigator.globalPrivacyControl === true`, sale/sharing / targeted-advertising opt-outs
@@ -2111,29 +2111,29 @@ convert accept fixtures to IWXXM (`iwxxm:SIGMET` / `iwxxm:VolcanicAshSIGMET`); v
 XSD+Schematron; useful diagnostics on negative fixtures. VA path stays on API
 `product=sigmet` with content-selected root (not a separate enum; not VAA).
 
-**Feature**: F23 (+ deepen F6.d / F12) — S025 / EV-019
+**Feature**: F23 (+ deepen F6.d / F12); S025 / EV-019
 
-**Steps (operator — T2/T3)**:
+**Steps (operator, T2/T3)**:
 
 1. Open workbench; set Product = **SIGMET** (or Auto-detect when unambiguous).
-2. Paste a valid general SIGMET accept fixture; run lint — registry codes only
+2. Paste a valid general SIGMET accept fixture; run lint: registry codes only
    (`GET /api/v1/lint-issue-catalog` for tooltips).
-3. Convert → Strict Validation — XSD+Schematron pass for pinned `iwxxm_version`; root
+3. Convert → Strict Validation; XSD+Schematron pass for pinned `iwxxm_version`; root
    `iwxxm:SIGMET`.
-4. Paste a known-bad SIGMET negative fixture — lint returns registry codes (no silent success).
-5. Paste a valid **VA SIGMET** accept fixture (still Product = SIGMET) — convert root
+4. Paste a known-bad SIGMET negative fixture; lint returns registry codes (no silent success).
+5. Paste a valid **VA SIGMET** accept fixture (still Product = SIGMET); convert root
    `iwxxm:VolcanicAshSIGMET`; never emit VAA advisory root.
 6. Confirm adjacency: VA phenomenon / WV-shaped TAC does not silent-succeed as general
    `iwxxm:SIGMET`; VAA advisory TAC is not treated as VA SIGMET.
 
-**Deepen (S032 / EV-025)**: #809 multi-location VA stem — soft-compare golden shipped
+**Deepen (S032 / EV-025)**: #809 multi-location VA stem: soft-compare golden shipped
 (**UJ-041** / TC-EV025-008 soft). Does not change product enum (still `product=sigmet`
 content-selected root).
 
 **Deepen (S033 / EV-026)**: ADR-032 equality under defaults → strict TC-EV025-008 + catalog
 `wmoPass` (TC-EV025-009); close #809.
 
-**Steps (CI — T0)**:
+**Steps (CI, T0)**:
 
 1. Registry CI: every emitted SIGMET / VA SIGMET code is registered; catalog export in sync.
 2. Golden pack: general + VA SIGMET TAC → `tac2iwxxm` → `iwxxm-validate` (M-xsd / M-sch) green.
@@ -2146,7 +2146,7 @@ content-selected root).
 1. TC-F23-001..006 green (or deferred with rationale in matrix)
 2. Roots match `iwxxm:SIGMET` / `iwxxm:VolcanicAshSIGMET` for pinned versions (esp. 2025-2)
 3. No new HTTP product enum / routes (E19-13=A)
-4. F7 remains Planned — smoke only for product path under F23; **additive FE catalog
+4. F7 remains Planned; smoke only for product path under F23; **additive FE catalog
    filters/copy for SIGMET (+ VA) tags** (E19-17=B amends E19-14)
 5. H1–H3 if API ships; **H4–H5 required** when FE touched (E19-7 / E19-17)
 
@@ -2164,17 +2164,17 @@ staging H4–H5 when FE redeployed.
 IWXXM example **under default convert settings** (`profile=annex3`, default pinned
 `iwxxm_version`); XSD+Schematron pass; useful diagnostics on negatives.
 
-**Feature**: F24 (+ deepen F6 / F12) — S026 / EV-020
+**Feature**: F24 (+ deepen F6 / F12); S026 / EV-020
 
-**Steps (operator — T2/T3)**:
+**Steps (operator, T2/T3)**:
 
 1. Open workbench; Product = **AIRMET** (or Auto-detect).
-2. Load / paste WMO AIRMET accept TAC; lint — registry codes only.
-3. Convert → Strict Validation — pass; root `iwxxm:AIRMET`; geometry present (not nil-only).
-4. Paste a known-bad AIRMET negative — lint returns registry codes (no silent success).
-5. Optionally open decode (UJ-020) — token meanings from glossary (not category-only labels).
+2. Load / paste WMO AIRMET accept TAC; lint: registry codes only.
+3. Convert → Strict Validation; pass; root `iwxxm:AIRMET`; geometry present (not nil-only).
+4. Paste a known-bad AIRMET negative; lint returns registry codes (no silent success).
+5. Optionally open decode (UJ-020); token meanings from glossary (not category-only labels).
 
-**Steps (CI — T0)**:
+**Steps (CI, T0)**:
 
 1. Registry completeness for AIRMET codes.
 2. Golden: vendor `airmet-A6-1a-TS.tac` → convert (defaults) → `canonicalize_xml` == vendor XML.
@@ -2193,16 +2193,16 @@ IWXXM example **under default convert settings** (`profile=annex3`, default pinn
 **Goal**: METAR/SPECI/TAF convert matches WMO vendor XML under **default** settings; workbench
 **Examples** marks **strict passers** (`wmoPass`) for demos that pass that bar (plus SIGMET
 keepers from F23; AIRMET when F24 passes). **EV-024 deepen**: official WMO stems that are not
-yet equal may still appear as **WMO reference** samples — see **UJ-039** / ADR-032 amend.
+yet equal may still appear as **WMO reference** samples; see **UJ-039** / ADR-032 amend.
 Translation-failed fixtures remain excluded from happy-path Examples.
 
-**Feature**: F25 (+ deepen F6 / F7.g / F15 / F20) — S026 / EV-020; catalog tiers S031 / EV-024
+**Feature**: F25 (+ deepen F6 / F7.g / F15 / F20); S026 / EV-020; catalog tiers S031 / EV-024
 
 **Steps (operator)**:
 
-1. Open **Examples** — strict passers and (when EV-024 ships) WMO reference samples for
+1. Open **Examples**; strict passers and (when EV-024 ships) WMO reference samples for
    in-scope products; UI distinguishes the two.
-2. Load METAR / SPECI / TAF / SIGMET / AIRMET (when ready) WMO example — editor + product set;
+2. Load METAR / SPECI / TAF / SIGMET / AIRMET (when ready) WMO example; editor + product set;
    demo banner shows non-operational provenance pointing at vendor (or mirrored fixture).
 3. For strict passers: Convert → Strict Validation succeeds; decode shows glossary English
    (UJ-020 deepen). Reference samples may not convert-equal yet.
@@ -2227,19 +2227,19 @@ Translation-failed fixtures remain excluded from happy-path Examples.
 stems with TAC peers) are available from the workbench **Examples / sample menu** and load
 into the editor. Operators can try the real WMO corpus without waiting for encode parity.
 Strict passers remain badged; non-equal official stems load as **WMO reference** samples.
-Encode/lint/SCH gaps are tracked as child issues — not blocked by menu listing.
+Encode/lint/SCH gaps are tracked as child issues, not blocked by menu listing.
 
-**Feature**: Deepen F25 / F7.g (+ F6/F2 wiring) — S031 / EV-024 · Issues #804 / #807 / #773
+**Feature**: Deepen F25 / F7.g (+ F6/F2 wiring); S031 / EV-024 · Issues #804 / #807 / #773
 (exclude #806)
 
 **Steps (operator)**:
 
-1. Open **Examples / sample menu** — see official WMO stems for in-scope products (beyond the
+1. Open **Examples / sample menu**; see official WMO stems for in-scope products (beyond the
    prior subset), each with provenance to vendor / mirrored fixture paths.
 2. Distinguish **strict passer** vs **WMO reference** (badge or equivalent copy).
 3. Select a stem → TAC loads into the editor; product/profile set appropriately; banner shows
    non-operational / WMO-example provenance.
-4. Optionally convert / validate — reference samples need not be `canonicalize_xml`-equal yet.
+4. Optionally convert / validate; reference samples need not be `canonicalize_xml`-equal yet.
 5. Confirm translation-failed / quarantine examples are **not** offered as happy-path samples.
 6. Confirm IWXXM-US examples are **not** mixed into the WMO sample list.
 
@@ -2255,10 +2255,10 @@ Encode/lint/SCH gaps are tracked as child issues — not blocked by menu listing
 accurate; ADR-032 amend honored.
 
 **Deepen (S032 / EV-025)**: New US REMARKS goldens / fixtures (**UJ-040**) remain **out** of
-the WMO sample menu — regression assert in TC-EV025-005.
+the WMO sample menu; regression assert in TC-EV025-005.
 
 **Deepen (S034 / EV-027)**: Inventory completeness for official WMO TAC peers is gated with
-decode residual emptiness (**UJ-042** / TC-EV027-001..003) — listing alone is not enough.
+decode residual emptiness (**UJ-042** / TC-EV027-001..003); listing alone is not enough.
 
 **Automated tests**: TC-EV024-*; TC-F25-003 deepen; examplesCatalog Vitest; TC-EV025-005;
 TC-EV027-001..003.
@@ -2273,9 +2273,9 @@ TC-EV027-001..003.
 encode to the corresponding `iwxxm-us` elements (pin XSD 3.0), with goldens and combined-catalog
 validate smoke. Named tickets #810 / #811 / #812 plus all remaining dig ❌ types.
 
-**Feature**: Deepen F6.b / F12 / F2·F13 — S032 / EV-025
+**Feature**: Deepen F6.b / F12 / F2·F13; S032 / EV-025
 
-**Steps (CI — T0)**:
+**Steps (CI, T0)**:
 
 1. For each dig ❌ type (or fixture pack): TAC with REMARKS → `tac2iwxxm` convert `iwxxm_us`.
 2. Assert extension element(s) present per PDF/XSD (e.g. Variable RVR, ObservedLightning,
@@ -2285,13 +2285,13 @@ validate smoke. Named tickets #810 / #811 / #812 plus all remaining dig ❌ type
    `humanReadableText` (**UJ-026**).
 5. Confirm annex3 profile still excludes US extension XML (`REMARKS_EXCLUDED` path).
 
-**Steps (API — T2 / optional T3)**:
+**Steps (API, T2 / optional T3)**:
 
 1. `POST /api/v1/convert` with `profile=iwxxm_us` and a US REMARKS accept fixture.
 2. Response XML contains expected extension blocks; optional validate round-trip.
 
 **Acceptance**: TC-EV025-001..007 green. Dig ❌ encode residuals **block Gate C**
-(E25-T5=3 — supersedes soft child-issue deferral from S02.M2).
+(E25-T5=3; supersedes soft child-issue deferral from S02.M2).
 
 **Automated tests**: TC-EV025-001..007; package annex3/`iwxxm_us` goldens.
 
@@ -2308,20 +2308,20 @@ XML under ADR-032 defaults (`canonicalize_xml`), root `iwxxm:VolcanicAshSIGMET`,
 OBS/FCST collections per Guidance. Catalog tier is `wmoPass` (strict passer). Soft-compare
 path already shipped in EV-025 / #816; **EV-026** completes equality + promote.
 
-**Feature**: Deepen F23 / F6 / F7.g — S033 / EV-026 · Issue [#809](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/809)
+**Feature**: Deepen F23 / F6 / F7.g; S033 / EV-026 · Issue [#809](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/809)
 
-**Steps (CI — T0)**:
+**Steps (CI, T0)**:
 
 1. Convert vendor TAC peer under annex3 + default pin → `canonicalize_xml` **equals** vendor XML.
 2. Flip catalog tier `wmoReference` → `wmoPass`; Vitest/catalog assert; clear FIXTURE_GAPS note.
-3. Sample-menu listing remains (now as passer) — UJ-039 deepen.
+3. Sample-menu listing remains (now as passer); UJ-039 deepen.
 
 **Acceptance**: TC-EV025-008..009 green under **strict** semantics (EV-026); deepen UJ-034 /
 TC-F23-003 adjacency; #809 closable.
 
-**Automated tests**: TC-EV025-008..009 (reused ids — `E26-TC=1`); FIXTURE_GAPS / catalog row.
+**Automated tests**: TC-EV025-008..009 (reused ids; `E26-TC=1`); FIXTURE_GAPS / catalog row.
 
-**Source**: #809 · Context: va-multi-location-809 (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate) · ADR-032
+**Source**: #809 · Context: va-multi-location-809 (archived; see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate) · ADR-032
 
 ---
 
@@ -2332,11 +2332,11 @@ TC-F23-003 adjacency; #809 closable.
 **Goal**: Every in-scope official WMO IWXXM TAC peer (vendor pin) is either loadable from the
 workbench sample menu or explicitly deferred in `FIXTURE_GAPS`, and after `decode_tac` the
 report has **empty residuals** unless listed on a documented expected-residual allowlist.
-Unexpected leftovers are defects (fix decode or file a child issue — no silent leftovers).
+Unexpected leftovers are defects (fix decode or file a child issue; no silent leftovers).
 
-**Feature**: Deepen F25 / F9 / F7.g — S034 / EV-027 · Issue [#815](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/815)
+**Feature**: Deepen F25 / F9 / F7.g; S034 / EV-027 · Issue [#815](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/815)
 
-**Steps (CI — T0)**:
+**Steps (CI, T0)**:
 
 1. Inventory official WMO stems with TAC peers under the current vendor pin; assert the set
    equals catalog registrations ∪ `FIXTURE_GAPS` rows (no silent omissions).
@@ -2346,11 +2346,11 @@ Unexpected leftovers are defects (fix decode or file a child issue — no silent
 3. Parametrized tests fail CI on unexpected residuals.
 4. Catalog Vitest: every in-scope vendor TAC peer is registered or gap-documented.
 
-**Steps (operator — T2 / T3 / H4–H5 when FE ships)**:
+**Steps (operator, T2 / T3 / H4–H5 when FE ships)**:
 
-1. Open **Examples / sample menu** — select a registered official WMO stem (UJ-039 path).
+1. Open **Examples / sample menu**; select a registered official WMO stem (UJ-039 path).
 2. Confirm TAC loads with correct product + provenance banner (`wmoPass` vs `wmoReference`).
-3. Open decode panel (UJ-020) — no unexpected residual chrome / “Not decoded: …” for
+3. Open decode panel (UJ-020); no unexpected residual chrome / “Not decoded: …” for
    happy-path textbook peers (allowlisted stems may show named residuals).
 
 **Acceptance**: TC-EV027-001..005 green; #815 closable; child issues for in-cycle deferrals.
@@ -2358,10 +2358,10 @@ Unexpected leftovers are defects (fix decode or file a child issue — no silent
 **Automated tests**: TC-EV027-001..005; deepen TC-EV024-004..006; examplesCatalog Vitest;
 `decode_tac` residual matrix pytest.
 
-**Browser wiring**: Same public decode-tac + static catalog as UJ-039 / UJ-020 — no new
+**Browser wiring**: Same public decode-tac + static catalog as UJ-039 / UJ-020; no new
 origins (H4–H5 when FE ships).
 
-**Source**: #815 · ADR-025 · ADR-032 · Context: wmo-decode-residual-matrix (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate)
+**Source**: #815 · ADR-025 · ADR-032 · Context: wmo-decode-residual-matrix (archived; see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate)
 
 ---
 
@@ -2371,16 +2371,16 @@ origins (H4–H5 when FE ships).
 
 **Goal**: For every TAC→IWXXM product family in scope (METAR, SPECI, TAF, SIGMET general/VA/TC
 + CNL, AIRMET, VAA, TCA, SWXA), rules for **lint**, **conversion**, and **IWXXM validation**
-are documented and exercised — including bulletin/AHL framing and report states — with no
+are documented and exercised (including bulletin/AHL framing and report states) with no
 silent coverage gaps. SWXA reaches the same quality bar as peer products (**F28**).
 
-**Feature**: **F28** + deepen F6/F6.bulletin/F12/F2/F13/F15/F20/F23/F24/F26/F27 — S036 / EV-029 ·
+**Feature**: **F28** + deepen F6/F6.bulletin/F12/F2/F13/F15/F20/F23/F24/F26/F27; S036 / EV-029 ·
 Issues [#823](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/823),
 [#738](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/738),
 [#820](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/820),
 [#740](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/740)
 
-**Steps (CI — T0 / T2)**:
+**Steps (CI, T0 / T2)**:
 
 1. Phase A: coverage matrix + canonical domain docs have a cell (pass / defer+child) for each
    family × role × report-state × TAC input shape (standalone / AHL / multi-report).
@@ -2390,7 +2390,7 @@ Issues [#823](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/823),
 4. Example inventory: official IWXXM peers + TAC shapes wired or gap-documented.
 5. Negatives / residual allowlists linked to child issues (no silent leftovers).
 
-**Steps (operator — T2; H4–H5 only if FE Examples unlock)**:
+**Steps (operator, T2; H4–H5 only if FE Examples unlock)**:
 
 1. Load a fixture per family (API or workbench when catalog ships SWXA / TC SIGMET passers).
 2. Confirm lint codes, convert root, and validate pass (or documented soft-fail).
@@ -2403,7 +2403,7 @@ Issues [#823](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/823),
 **Browser wiring**: No new origins. H4–H5 only if FE catalog/Examples change ships.
 
 **Source**: #823 · ADR-014 · ADR-028 · ADR-032 ·
-Context: eight-family-ahl-rules-823 (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate)
+Context: eight-family-ahl-rules-823 (archived; see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate)
 
 ---
 
@@ -2415,12 +2415,12 @@ Context: eight-family-ahl-rules-823 (archived — see session-store `~/.cursor/w
 explicit `needs-fixture` slot); TC SIGMET lint pack + STNR/geometry (or OOS) and A6-2-TC
 catalog tier are decided; VAA/TCA decode residuals shrink beyond F9 G4 best-effort.
 
-**Feature**: **F29** + deepen F23/F12/F2/F13/F9/F26/F27 — S037 / EV-030 ·
+**Feature**: **F29** + deepen F23/F12/F2/F13/F9/F26/F27; S037 / EV-030 ·
 Issues [#831](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/831),
 [#829](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/829),
 [#820](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/820)
 
-**Steps (CI — T0 / T2)**:
+**Steps (CI, T0 / T2)**:
 
 1. Design note answers #831 evaluation questions; runners load `RuleCase`-style fixtures.
 2. Pilot METAR/SPECI (lint+encode+validate) matrices green or inventory-gated TODOs.
@@ -2428,7 +2428,7 @@ Issues [#831](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/831),
 4. Official VAA/TCA peers: decode residual spans shrink; allowlist/matrix updated.
 5. Pytest node ids include `rule_id` / bucket / case; PR-smoke subset in CI.
 
-**Steps (operator — T2; H4–H5 only if FE menu unlock)**:
+**Steps (operator, T2; H4–H5 only if FE menu unlock)**:
 
 1. If catalog unlocks `sigmet-A6-2-TC`: load from Examples → lint/convert/validate pass per ADR-032.
 2. Otherwise: catalog decision recorded; no FE change this cycle.
@@ -2441,7 +2441,7 @@ or split with links.
 **Browser wiring**: No new origins. H4–H5 only if FE catalog/Examples change ships.
 
 **Source**: #831 · #829 · #820 · ADR-028 · ADR-032 ·
-Context: quality-residuals-831 (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate)
+Context: quality-residuals-831 (archived; see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate)
 
 ---
 
@@ -2456,7 +2456,7 @@ without login.
 
 **Steps**:
 
-1. Open workbench without logging in (privacy prefs allow local storage if required — UJ-047).
+1. Open workbench without logging in (privacy prefs allow local storage if required; UJ-047).
 2. See a **persistent banner/callout** while guest and local/unsaved work exists: progress may be
    lost unless logged in (`D-S038-uj` Q2=1).
 3. Paste/convert TAC (UJ-001); history saves to IndexedDB only.
@@ -2470,7 +2470,7 @@ session writes; TC-F31-001/002.
 
 **Browser wiring**: Same API origin rules as UJ-001; no Auth required.
 
-**Source**: E31-*; Context: platform-independence-842 (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate)
+**Source**: E31-*; Context: platform-independence-842 (archived; see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate)
 
 ---
 
@@ -2487,7 +2487,7 @@ session writes; TC-F31-001/002.
 1. As guest, create one or more local drafts (UJ-045).
 2. Open login (`/auth` UI or equivalent); authenticate with Supabase Auth.
 3. Client receives JWT; **auto-uploads** all eligible local drafts to
-   `POST /api/v1/work-sessions*` (no merge prompt — `D-S038-guest-merge`=2).
+   `POST /api/v1/work-sessions*` (no merge prompt; `D-S038-guest-merge`=2).
 4. Sidebar / My METARs shows server sessions; further edits sync to DO Postgres.
 5. Logout returns to guest mode; notice returns; new work is local-only unless login again.
 
@@ -2559,11 +2559,11 @@ Auth session cookies when login is used.
 **Goal**: Lint VONA TAC with registry codes; convert accept fixtures (esp. official
 `vona-A7-1` peer when available) to `iwxxm:VolcanoObservatoryNoticeForAviation` that
 passes XSD+Schematron under default convert settings; ADR-032 golden equality when a
-vendor peer exists; full F7 workbench surface — product picker includes **VONA**, Examples
+vendor peer exists; full F7 workbench surface: product picker includes **VONA**, Examples
 lists VONA passers when unlocked. Encode authority is XSD+SCH+example+PANS-MET (guidance
 file silent).
 
-**Feature**: **F32** (+ deepen F6 / F7 / F12 / F2 / F13 / F9) — S040 / EV-032 ·
+**Feature**: **F32** (+ deepen F6 / F7 / F12 / F2 / F13 / F9); S040 / EV-032 ·
 Issues [#741](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/741),
 [#846](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/846)
 
@@ -2571,18 +2571,18 @@ Issues [#741](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/741),
 
 - [#835](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/835) — A6-2-TC ADR-032 → `wmoPass` (deepen UJ-034/039)
 - [#808](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/808) — release-line adoptability docs (no operator UJ)
-- Corpus children under #846 — deepen UJ-039/042 as filed
+- Corpus children under #846; deepen UJ-039/042 as filed
 
-**Steps (operator — T2/T3; H4–H5 when FE ships)**:
+**Steps (operator, T2/T3; H4–H5 when FE ships)**:
 
-1. Open workbench; Product = **VONA** (picker present — full F7 surface).
-2. Load / paste VONA accept TAC; lint — registry codes only.
-3. Convert → Strict Validation — pass; root `iwxxm:VolcanoObservatoryNoticeForAviation`.
-4. Paste a known-bad VONA negative — lint returns registry codes (no silent success).
+1. Open workbench; Product = **VONA** (picker present: full F7 surface).
+2. Load / paste VONA accept TAC; lint: registry codes only.
+3. Convert → Strict Validation; pass; root `iwxxm:VolcanoObservatoryNoticeForAviation`.
+4. Paste a known-bad VONA negative; lint returns registry codes (no silent success).
 5. Examples control lists VONA **strict passers** when they pass the golden bar; official
    WMO VONA stems may also load as **reference** per UJ-039 / ADR-032.
 
-**Steps (CI — T0 / T2)**:
+**Steps (CI, T0 / T2)**:
 
 1. Registry completeness + accept/negative packs (**TC-F32-001..004**).
 2. API accepts `product=vona`; unknown aliases → `unknown_product` 400 (**TC-F32-006**).
@@ -2597,7 +2597,7 @@ with links; H4–H5 when FE picker/Examples ship.
 required when FE ships (`D-S040-E32-M` Q2=3).
 
 **Source**: #741 · #846 · ADR-028 · ADR-032 ·
-Context: iwxxm-corpus-quality-846 (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate)
+Context: iwxxm-corpus-quality-846 (archived; see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate)
 
 ---
 
@@ -2609,16 +2609,16 @@ Context: iwxxm-corpus-quality-846 (archived — see session-store `~/.cursor/wor
 without reading domain policy docs; labels stay aligned with the shared version SoT
 (#851) when lines rotate. Convert semantics unchanged.
 
-**Feature**: **F4** + **F7** deepen — S046 / EV-038 ·
+**Feature**: **F4** + **F7** deepen; S046 / EV-038 ·
 Issue [#854](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/854) · parent
 [#846](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/846)
 
-**Steps (operator — T2/T3; H4–H5 when FE ships)**:
+**Steps (operator, T2/T3; H4–H5 when FE ships)**:
 
 1. Open workbench; open the IWXXM **version** control.
 2. Confirm options indicate **Latest** / **Previous** (label, badge, or adjacent help)
    matching `VERSION_SUPPORT_POLICY` / SoT roles.
-3. Select Previous vs Latest — convert still uses the chosen year line (no remap surprise).
+3. Select Previous vs Latest; convert still uses the chosen year line (no remap surprise).
 4. After a line rotation (staging/local SoT change), labels still match roles.
 
 **Acceptance**: **TC-EV038-007** green; SoT drift CI (#851 / TC-EV038-004) keeps options
@@ -2630,7 +2630,7 @@ aligned; local non-deployed UI preview at M2 (`D-S046-mplan` Q2=1).
 
 **Source**: #854 · #851 ·
 [RELEASE_LINE_STAFF_GUIDE.md](domain/iwxxm/RELEASE_LINE_STAFF_GUIDE.md) ·
-Context: iwxxm-corpus-residuals-846 (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate)
+Context: iwxxm-corpus-residuals-846 (archived; see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate)
 
 ---
 
@@ -2641,7 +2641,7 @@ Context: iwxxm-corpus-residuals-846 (archived — see session-store `~/.cursor/w
 **Goal**: Upload many TAC text files via multi-select and folder/zip, with progress and
 per-file errors, under auth + size/count caps + sniff/zip-bomb guards.
 
-**Feature**: **F33** — [#897](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/897)
+**Feature**: **F33**; [#897](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/897)
 
 **Steps**:
 
@@ -2664,7 +2664,7 @@ per-file errors, under auth + size/count caps + sniff/zip-bomb guards.
 **Goal**: Churn through reports quickly via queue navigation and batch convert/validate
 (no dissemination destinations this cycle).
 
-**Feature**: **F7** deepen — EV-042 / #897
+**Feature**: **F7** deepen; EV-042 / #897
 
 **Steps**:
 
@@ -2687,7 +2687,7 @@ per-file errors, under auth + size/count caps + sniff/zip-bomb guards.
 (EV-beta-ux-export-auth). Drawer includes **Exchange profile** overlay (#1089).
 Connection-first preflight remains required. Backend APIs continue for harness.
 
-**Feature**: **F16–F19** deepen — EV-091 / #898 / #1089 (supersedes EV-042 hide)
+**Feature**: **F16–F19** deepen; EV-091 / #898 / #1089 (supersedes EV-042 hide)
 
 **Steps**:
 
@@ -2709,18 +2709,18 @@ Connection-first preflight remains required. Backend APIs continue for harness.
 vendor IWXXM example **under default convert settings**; XSD+Schematron pass; useful
 diagnostics on negatives. Never confuse with VA SIGMET (`iwxxm:VolcanicAshSIGMET`).
 
-**Feature**: F26 (+ deepen F6.f / F12 / F7.g) — S027 / EV-021
+**Feature**: F26 (+ deepen F6.f / F12 / F7.g); S027 / EV-021
 
-**Steps (operator — T2/T3)**:
+**Steps (operator, T2/T3)**:
 
 1. Open workbench; Product = **VAA** (or Auto-detect).
-2. Load / paste WMO VAA accept TAC; lint — registry codes only.
-3. Convert → Strict Validation — pass; root `iwxxm:VolcanicAshAdvisory`.
-4. Paste a known-bad VAA negative — lint returns registry codes (no silent success).
+2. Load / paste WMO VAA accept TAC; lint: registry codes only.
+3. Convert → Strict Validation; pass; root `iwxxm:VolcanicAshAdvisory`.
+4. Paste a known-bad VAA negative; lint returns registry codes (no silent success).
 5. Examples control lists VAA **strict passers** when they pass the golden bar (E21-3);
    additional official WMO VAA stems may load as **reference** samples per **UJ-039** / ADR-032 amend.
 
-**Steps (CI — T0)**:
+**Steps (CI, T0)**:
 
 1. Registry completeness for VAA codes.
 2. Golden: vendor `va-advisory-A7-2.tac` → convert (defaults) → `canonicalize_xml` == vendor XML.
@@ -2741,18 +2741,18 @@ diagnostics on negatives. Never confuse with VA SIGMET (`iwxxm:VolcanicAshSIGMET
 under defaults; XSD+Schematron pass; negatives diagnostic. Never confuse with TC SIGMET
 (`iwxxm:TropicalCycloneSIGMET`).
 
-**Feature**: F27 (+ deepen F6.f / F12 / F7.g) — S027 / EV-021
+**Feature**: F27 (+ deepen F6.f / F12 / F7.g); S027 / EV-021
 
-**Steps (operator — T2/T3)**:
+**Steps (operator, T2/T3)**:
 
 1. Open workbench; Product = **TCA** (or Auto-detect).
-2. Load / paste WMO TCA accept TAC; lint — registry codes only.
-3. Convert → Strict Validation — pass; root `iwxxm:TropicalCycloneAdvisory`.
-4. Paste a known-bad TCA negative — lint returns registry codes.
+2. Load / paste WMO TCA accept TAC; lint: registry codes only.
+3. Convert → Strict Validation; pass; root `iwxxm:TropicalCycloneAdvisory`.
+4. Paste a known-bad TCA negative; lint returns registry codes.
 5. Examples control lists TCA **strict passers** when they pass the golden bar (E21-3);
    additional official WMO TCA stems may load as **reference** samples per **UJ-039** / ADR-032 amend.
 
-**Steps (CI — T0)**:
+**Steps (CI, T0)**:
 
 1. Registry completeness for TCA codes.
 2. Golden: vendor `tc-advisory-A2-2.tac` → convert (defaults) → `canonicalize_xml` == vendor XML.
@@ -2766,14 +2766,14 @@ under defaults; XSD+Schematron pass; negatives diagnostic. Never confuse with TC
 
 ### UJ-027: Dissemination drawer — multi-DB upload (F16 / #729; multi-select #785)
 
-**Actor**: Anyone (public — F21; no login)
+**Actor**: Anyone (public, F21; no login)
 **Goal**: Convert (or drag-drop IWXXM/TAC) and send **selected** file(s) to a user-supplied
 database via one-shot URI.
 
 **Steps**:
 1. Convert TAC → IWXXM **or** drag-drop existing IWXXM/TAC into the workbench/drawer (no login).
    Multiple conversion/drop results may appear as **export candidates** (current-session +
-   drops only — not Finished IndexedDB history).
+   drops only, not Finished IndexedDB history).
 2. Open **Dissemination** drawer; choose DB sink (Postgres / MySQL|MariaDB / SQL Server / SQLite).
 3. In **Export selection**, review candidates (name, product, size/status, source); select
    subset (checkboxes / select-all / clear). Empty selection keeps Disseminate / Preflight-only
@@ -2788,16 +2788,16 @@ database via one-shot URI.
    confirm) then continue Disseminate for remaining green files.
 7. On success, local session may mark Finished with send ref (no secrets stored; IndexedDB only).
 
-**Errors**: Auth/SSL/allowlist/private-IP/schema mismatch — actionable drawer messages; Send
+**Errors**: Auth/SSL/allowlist/private-IP/schema mismatch: actionable drawer messages; Send
 blocked for non-green files; over-cap (>20) shows clear error.
 **Tier**: T2 / T3 / H6′. **Tests**: TC-F16-001..005 (mocked H6′); **TC-F16-LIVE-001..004**
-(live local Compose — S047 / EV-039).
+(live local Compose; S047 / EV-039).
 
-**Live local path (S047 / EV-039 — deepen F16)**:
+**Live local path (S047 / EV-039; deepen F16)**:
 1. Start disposable engines: `make compose-mock-byoc-up` (Postgres, MySQL, SQL Server via
    `docker-compose.mock-byoc.yml` profile `mock-byoc`). SQLite uses a disposable file URI.
 2. Configure API allowlist for local compose hosts (`DISSEMINATION_EGRESS_ALLOWLIST` includes
-   `127.0.0.1` / `localhost` and documented compose hostnames — [Corpus: adr/ADR-029]).
+   `127.0.0.1` / `localhost` and documented compose hostnames; [Corpus: adr/ADR-029]).
 3. Run Playwright **without** mocking `/api/v1/dissemination/preflight` or `/send`: for each
    sink type (postgres, mysql, sqlserver, sqlite), paste the local URI, preflight (DDL if
    needed), Disseminate, assert UI success **and** a DB write (or writer-contract equivalent).
@@ -2810,7 +2810,7 @@ live suite is a **separate** target (may be opt-in in CI if SQL Server is heavy)
 
 ### UJ-028: Dissemination drawer — WIS2 publish (F17 / #2)
 
-**Actor**: Anyone (public — F21; no login)
+**Actor**: Anyone (public, F21; no login)
 **Goal**: Publish **selected** IWXXM file(s) to WIS2 (MQTT notify + HTTP dataset).
 
 **Steps**:
@@ -2825,7 +2825,7 @@ live suite is a **separate** target (may be opt-in in CI if SQL Server is heavy)
 
 ### UJ-029: Dissemination drawer — EDIS → RTH Washington (F18 / #6)
 
-**Actor**: Anyone (public — F21; no login) with BYOC gateway credentials
+**Actor**: Anyone (public, F21; no login) with BYOC gateway credentials
 **Goal**: Submit **selected** EDIS-compliant ASCII + WMO headers to RTH Washington.
 
 **Steps**:
@@ -2839,7 +2839,7 @@ live suite is a **separate** target (may be opt-in in CI if SQL Server is heavy)
 
 ### UJ-030: Dissemination drawer — AMHS / SWIM / AFS (F19)
 
-**Actor**: Anyone (public — F21; no login)
+**Actor**: Anyone (public, F21; no login)
 **Goal**: Send **selected** file(s) via AMHS, SWIM, or AFS adapter using BYOC params in the
 same drawer (same export selection contract as UJ-027).
 
@@ -2853,7 +2853,7 @@ preflight → send (SSRF/allowlist; N sequential when multi-selected).
 
 ### UJ-OPS-001: Deploy stack (API + static + F8 worker)
 
-**Historical**: Render Blueprint (`render.yaml`) — API + static + Background Worker (ADR-018).
+**Historical**: Render Blueprint (`render.yaml`): API + static + Background Worker (ADR-018).
 
 **S038 / EV-031**: Primary topology becomes **DOKS** (F30 / UJ-048). Render remains until soak
 completes, then decommissioned. Redeploy API before frontend when CORS/API contract changes.
@@ -2920,7 +2920,7 @@ Dissemination, and Decoding in a tabbed catalog shell (trust / transparency).
 (`GET /api/v1/selection-options`). Dissemination selection lives on the **Send drawer**,
 not the Convert bar. Profile Builder / library authoring UI is absent (deleted).
 
-**Feature**: F7 / F9 / F16–F19 — ADR-044; deepen EV-yaml-config-light-ux / #1251.
+**Feature**: F7 / F9 / F16–F19; ADR-044; deepen EV-yaml-config-light-ux / #1251.
 
 **Steps**:
 1. Open Convert; confirm exactly four library selects (no Dissemination on this bar).
@@ -2942,13 +2942,13 @@ not the Convert bar. Profile Builder / library authoring UI is absent (deleted).
 
 ### UJ-078: Profile / validate / decode deepen (#1221)
 
-**Feature**: F7.v residual + F36 + F9 (#724) — EV-profile-validate-decode-deepen.
+**Feature**: F7.v residual + F36 + F9 (#724); EV-profile-validate-decode-deepen.
 
 **Goal**: Operator uses dropdowns + five trust catalogs (no Profile Builder authoring);
 AU/NZ profiles convert with goldens; decode shows airport names when known.
 
 **Steps**:
-1. Open Conversion Profiles / workbench — authoring IDE absent; catalogs + pickers present.
+1. Open Conversion Profiles / workbench; authoring IDE absent; catalogs + pickers present.
 2. Select `AU_BOM` or `NZ_CAA_MET`; convert METAR/SPECI/TAF sample → IWXXM succeeds.
 3. Paste METAR with known ICAO; decode explanation/summary includes aerodrome name.
 4. Issues catalog follows Profile for national-only rows (UJ-073 residual).
@@ -2961,7 +2961,7 @@ AU/NZ profiles convert with goldens; decode shows airport names when known.
 
 **Goal**: An operator pastes TAC and still sees the same Code | Explanation panel and the same converted XML bytes. The pack engine is not a new screen.
 
-**Feature**: F6 and F9 deepen — #1210 / ADR-045.
+**Feature**: F6 and F9 deepen; #1210 / ADR-045.
 
 **Steps**:
 1. Paste a pinned vendor TAC peer (METAR, TAF, SIGMET, AIRMET, VAA, TCA, SWXA, or VONA).
@@ -2995,10 +2995,10 @@ TC-EV-PFDG-001..005.
 ### UJ-080: Browse enriched Decoding & Conversion catalog rows
 
 **Goal**: An operator inspecting the Validation Issues Catalog trusts Decoding and
-Conversion rows the same way as TAC/IWXXM — type and/or level, source/conform when known,
+Conversion rows the same way as TAC/IWXXM: type and/or level, source/conform when known,
 and readable Conversion profile descriptions (not bare profile ids).
 
-**Feature**: F7.v / F9 — EV-1307 / #1308 (extends UJ-068 / UJ-076).
+**Feature**: F7.v / F9; EV-1307 / #1308 (extends UJ-068 / UJ-076).
 
 **Actors**: Public operator (F21).
 

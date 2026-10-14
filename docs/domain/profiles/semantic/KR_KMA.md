@@ -4,7 +4,7 @@
 > **Path**: compat · **ADR**: [ADR-036](../../../adr/ADR-036-semantic-vs-exchange-profiles.md)
 
 Compat pack: Korean AIP-aligned METAR/SPECI/TAF/SIGMET/AIRMET under `ICAO_2025` emit.
-Research (EV-094): KMA states no significant Annex 3 differences — empty overrides expected.
+Research (EV-094): KMA states no significant Annex 3 differences; empty overrides expected.
 **SPECI** on convert allowlist (EV-094 M3 / D-EV094-speci-expand). No invented KR XSD.
 
 ## Owns (target)
@@ -18,7 +18,7 @@ Research (EV-094): KMA states no significant Annex 3 differences — empty overr
 ## Gaps
 
 - [x] SPECI fixture + allowlist wire (Build M3)
-- [x] Attributed real METAR/TAF corpora (AWC RKSI) — EV-094 / #1098
+- [x] Attributed real METAR/TAF corpora (AWC RKSI; EV-094 / #1098)
 - [x] Catalog `status: implemented` (EV-094 M7 / #1098)
 - [ ] Attributed real SPECI / FIR SIGMET / AIRMET corpora (synthetic_ev089 gaps)
 - [ ] AIP GEN 3.5 durable URL

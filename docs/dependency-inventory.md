@@ -207,10 +207,10 @@ poller/store writers via `DATABASE_URL`. Rust toolchain in API (and worker if li
 
 ## License Notes
 
-- wmo-im schema repos: WMO terms — read-only vendor copies.
+- wmo-im schema repos: WMO terms; read-only vendor copies.
 - iwxxm-us: cite NOAA/MDL upstream notices in vendor README at pin time.
 - `packages/tac2iwxxm`, `packages/tac-validate`, `packages/iwxxm-validate`: **MIT**.
-- GIFTs: package removed — no longer ship its LICENSE in-tree.
+- GIFTs: package removed; no longer ship its LICENSE in-tree.
 - Run audit-licenses skill before adding new PyPI/npm deps (including PyO3 extras; tac-validate
   pydantic/msgspec choice in 04).
 
@@ -224,7 +224,7 @@ New dependencies require `[Decision]` + back-add to this file per plan-adherence
   for every `scripts/**/*.sh`; scripts Python coverage harness (`D-EV080-bats`)
 - S069 / EV-059 (2026-08-17): **schemathesis==4.24.3** (MIT) pinned in workspace `dev`;
   **pytest-gremlins==1.9.0** (MIT) + **@stryker-mutator/{core,vitest-runner,typescript-checker}@10.0.0**
-  (Apache-2.0) pinned for #874 — F34 quality gates (`D-S069-tool`); mutation not a every-PR
+  (Apache-2.0) pinned for #874 (F34 quality gates `D-S069-tool`); mutation not a every-PR
   required gate; workflow `.github/workflows/mutation.yml` (schedule + workflow_dispatch)
 - S008 (2026-07-12): tac2iwxxm MIT; gifts removed; iwxxm-us; optional PyO3; IR lib TBD in 04
 - S008 amend (2026-07-12): tac-validate + iwxxm-validate MIT; lxml for Schematron; tac-validate
@@ -236,20 +236,20 @@ New dependencies require `[Decision]` + back-add to this file per plan-adherence
 - S014 / EV-010 (2026-07-18): backend msgspec high-churn (ADR-026); iwxxm-validate Rust+bundle;
   PyPI publish deps (maturin/OIDC); **xsdata + xsdata-pydantic** for XSD codegen (ADR-027);
   **xmloxide 0.4.x** native XSD+Schematron (D-S014-T33-crates / E10-46)
-- S015 / EV-011 (2026-07-19): F15 issue registry — **no new runtime deps**; catalog HTTP + docs
+- S015 / EV-011 (2026-07-19): F15 issue registry: **no new runtime deps**; catalog HTTP + docs
   export from existing `tac-validate` / msgspec stack (E11-30)
-- S019 / EV-014 (2026-07-21): Planned `packages/dissemination` — SQLAlchemy async + aiomysql /
+- S019 / EV-014 (2026-07-21): Planned `packages/dissemination`: SQLAlchemy async + aiomysql /
   aiosqlite / **aioodbc** (E14-06=A) + aiosmtplib; msgspec HTTP (E14-07=A); pins in M1
-- S019 / EV-014 T2.5 (2026-07-21): **testcontainers[mysql,postgres]≥4.8** — multi-DB writer-contract
+- S019 / EV-014 T2.5 (2026-07-21): **testcontainers[mysql,postgres]≥4.8** for multi-DB writer-contract
   integration (TC-F16-003 / E14-09); SQLite in-process; PG/MySQL skip without Docker
 - S019 / EV-014 T2.6 (2026-07-21): SQL Server via **aioodbc** + Testcontainers; integration
   tests **skip when no ODBC driver** (E14-06)
 - S019 / EV-014 T2.7 (2026-07-21): ODBC driver install/verify notes in `docs/deploy.md` +
   `packages/dissemination/README.md` (E14-06); stock API image still omits `msodbcsql18`
-- S019 / EV-014 T3.3 (2026-07-21): wis2box Compose harness — **lightweight MQTT+HTTP image**
+- S019 / EV-014 T3.3 (2026-07-21): wis2box Compose harness: **lightweight MQTT+HTTP image**
   (`python:3.12.11-slim-bookworm` + Debian `mosquitto`); reject full WMO wis2box release stack
   for CI cost (E14-04 / Q17); not a Render service
-- S019 / EV-014 T3.4 (2026-07-21): **httpx** + **aiomqtt≥2.3,<3** — concrete WIS2 transports
+- S019 / EV-014 T3.4 (2026-07-21): **httpx** + **aiomqtt≥2.3,<3** as concrete WIS2 transports
   for TC-F17-001 harness publish (D-S019-EV014-T34-transports); reject aiomqtt 3.x alpha
 - S026 / EV-020 (2026-07-29): **PyYAML≥6.0** on `tac2iwxxm` for decode glossary YAML overlays
   (F9 / ADR-032; E20-F5)

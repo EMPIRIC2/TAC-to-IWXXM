@@ -2073,7 +2073,7 @@ export interface paths {
         };
         /**
          * Get Schema Status
-         * @description Get comprehensive schema status including RC versions and mirroring info.
+         * @description Get schema status, including RC versions and mirroring info.
          *
          *     Examples
          *     --------

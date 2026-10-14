@@ -44,7 +44,7 @@ Local repro via `convert_tac_to_iwxxm` (2026-06-22):
 
 ### Root cause (preliminary)
 
-GIFTs `metarDecoder` TPG grammar: `METAR -> Type Cor? Ident ITime (NIL|Report)` — COR only allowed **before** station ID. ICAO-standard `METAR STID ddHHmmZ COR ...` places COR **after** the time group; parser fails → encoder emits `translationFailedTAC`.
+GIFTs `metarDecoder` TPG grammar: `METAR -> Type Cor? Ident ITime (NIL|Report)`: COR only allowed **before** station ID. ICAO-standard `METAR STID ddHHmmZ COR ...` places COR **after** the time group; parser fails → encoder emits `translationFailedTAC`.
 
 Traceability: `ConversionResult` has no `tac_input` field; `FileConverter` stores `originalContent` client-side but only renders `originalName` and IWXXM XML in the results card.
 
@@ -82,6 +82,6 @@ Traceability: `ConversionResult` has no `tac_input` field; `FileConverter` store
 - [x] Repro test RED → GREEN
 - [x] GIFTs `test_cor`, `test_cor_after_time`, `test_failModes`
 - [x] Frontend `FileConverter.test.tsx` (71 tests)
-- [x] Full CI unit parity (local) — format, lint, typecheck, unit matrix pass
-- [ ] Integration tests — blocked by port 18001 conflict (vecinita-embedding-dev)
-- [ ] PR branch CI — pending
+- [x] Full CI unit parity (local): format, lint, typecheck, unit matrix pass
+- [ ] Integration tests: blocked by port 18001 conflict (vecinita-embedding-dev)
+- [ ] PR branch CI: pending

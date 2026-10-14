@@ -177,7 +177,7 @@ const handleMagicLink = async (email: string) => {
    </p>
    ```
 
-## Security Best Practices
+## Security practices
 
 - ✅ Link is unique and disposable
 - ✅ Expires after 15 minutes

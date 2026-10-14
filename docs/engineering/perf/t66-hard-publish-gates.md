@@ -57,7 +57,7 @@ keep `hard=False` for this row. **T6.6 hard path** asserts XSD + combined only
 
 ## PyPI tags (UJ-023)
 
-Still **BLOCKED** — Trusted Publisher ×3 not configured (operator). Perf hard gates no longer block tagging.
+Still **BLOCKED**: Trusted Publisher ×3 not configured (operator). Perf hard gates no longer block tagging.
 
 ## Verdict
 

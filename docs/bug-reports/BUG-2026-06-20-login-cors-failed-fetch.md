@@ -118,7 +118,7 @@ No blocking spec contradiction.
 ### Layer 1 — Automated
 
 - [x] Repro test red → green (2026-06-21)
-- [ ] CI parity local (pending — config-only hotfix)
+- [ ] CI parity local (pending; config-only hotfix)
 
 ### Layer 2 — Reproduction
 
@@ -157,8 +157,8 @@ See Phase 0 AskQuestion batches (hotfix_intent=new_issue, remediation=local_firs
 
 **Applied 2026-06-21 via Render API:**
 
-1. Set `METAR_CORS_ORIGINS` and `FRONTEND_URL` on `metar-to-iwxxm-api` (`srv-d69v688gjchc73cn9kg0`) — deploy `dep-d8s0psvavr4c73f6175g`
-2. Set `SUPABASE_URL` and `SUPABASE_ANON_KEY` (were missing) — deploy `dep-d8s0q9kvikkc7393s580`
+1. Set `METAR_CORS_ORIGINS` and `FRONTEND_URL` on `metar-to-iwxxm-api` (`srv-d69v688gjchc73cn9kg0`); deploy `dep-d8s0psvavr4c73f6175g`
+2. Set `SUPABASE_URL` and `SUPABASE_ANON_KEY` (were missing); deploy `dep-d8s0q9kvikkc7393s580`
 
 **Automation:** `scripts/deploy/apply_render_cors_env.sh` (loads `RENDER_API_KEY` from `.env`)
 

@@ -19,7 +19,7 @@ surface observations, MANAIR aviation forecasts, and Canadian IWXXM extension sc
 
 Canada defines **four** surface-report TAC leads. Only two are ICAO-standard; LWIS is
 defined in MANOBS §11.3; SAWR is a **Canadian national product** modeled in
-`metar-speci-ca.xsd` (EV-098 / #1029: no MANOBS code-form match — cite schema, not MANOBS).
+`metar-speci-ca.xsd` (EV-098 / #1029: no MANOBS code-form match; cite schema, not MANOBS).
 
 | TAC lead | What it is | API `product` | IWXXM root | Fixture `rule_id` |
 |----------|------------|---------------|------------|-------------------|
@@ -41,7 +41,7 @@ Per [ADR-036](../../../adr/ADR-036-semantic-vs-exchange-profiles.md), three laye
 4. **`ca_iwxxm_root`** (IR) — resolved TAC lead / variant preserved into IR; selects IWXXM root
    element and observing-system vocabulary at emit time.
 
-So LWIS/SAWR are **not** “METAR with a different label” — they are distinct MANOBS report types
+So LWIS/SAWR are **not** “METAR with a different label”; they are distinct MANOBS report types
 and distinct `metar-speci-ca.xsd` roots. The API routes them through `product=METAR` because
 they are aerodrome **surface observation** reports, not because they encode as `iwxxm:METAR`.
 
@@ -88,7 +88,7 @@ free-text-only RMK). Catalogued in [`catalog.yaml`](../catalog.yaml) under
 ## IWXXM version line
 
 MSC operational practice pins **IWXXM 3.0.0** core (`http://icao.int/iwxxm/3.0`) plus CA
-extensions — independent of the app default **2025-2** SoT line ([ADR-036](../../../adr/ADR-036-semantic-vs-exchange-profiles.md)).
+extensions, independent of the app default **2025-2** SoT line ([ADR-036](../../../adr/ADR-036-semantic-vs-exchange-profiles.md)).
 
 ## Implementation
 
@@ -108,7 +108,7 @@ extensions — independent of the app default **2025-2** SoT line ([ADR-036](../
 - Layered `ca_eccc` validation: WMO 3.0.0 XSD+SCH + product `*-ca.xsd` (TC-EV068-002/003)
 - Profile-pinned 3.0.0 manifest (`vendor/manifest.json`; TC-EV068-001)
 - API/CLI `extensions: [IWXXM_CA]` wire + `package_stages` on `/validate` (TC-EV068-004)
-- EV-067 golden XSD gate (`metar_lwis`, `metar_sawr`, `metar_rmk_icing`) — **TC-EV068-003**
+- EV-067 golden XSD gate (`metar_lwis`, `metar_sawr`, `metar_rmk_icing`), **TC-EV068-003**
 
 ### EV-069 delivered (#1033 + #1032 + TAF gate)
 
@@ -125,7 +125,7 @@ extensions — independent of the app default **2025-2** SoT line ([ADR-036](../
 
 ### EV-071 M1 delivered (#1038 — lint pack)
 
-- **M1 (#1038):** Full `ca_eccc` tac-validate rule pack — 12 promoted MANOBS/MANAIR rules with
+- **M1 (#1038):** Full `ca_eccc` tac-validate rule pack; 12 promoted MANOBS/MANAIR rules with
   fixtures, profile isolation vs `US_FAA_NWS`, lint catalog + quality matrix rows (TC-EV071-001..004)
 
 ### EV-071 M2 delivered (#1032 + #1040 — exchange output METAR)
@@ -145,7 +145,7 @@ extensions — independent of the app default **2025-2** SoT line ([ADR-036](../
 
 ### EV-072 M2 delivered (#1036 — ops corpus)
 
-- **M2:** MSC datamart ops fixture corpus — pin-date harvest script, `ops_manifest.json`,
+- **M2:** MSC datamart ops fixture corpus: pin-date harvest script, `ops_manifest.json`,
   ≥5 METAR + ≥2 each SPECI/TAF/AIRMET `wmoReference` tier; layer-6 packaging checks
   (TC-EV072-007..010)
 - **Note:** METAR/SPECI IWXXM not published on MSC datamart at pin_date 2026-08-24;
@@ -158,41 +158,41 @@ extensions — independent of the app default **2025-2** SoT line ([ADR-036](../
 ### EV-073 M1 complete (#1032 residual — COLLECT envelope)
 
 - **M1:** `wrap_ca_eccc_collect` + convert `exchange_output` hook; MSC `bulletinIdentifier`;
-  ops-fixture shell parity (TC-EV073-001..005) — **implemented** EV-073
+  ops-fixture shell parity (TC-EV073-001..005); **implemented** EV-073
 
 ### EV-073 M2 complete (#1042 — profile + extension wiring)
 
 - **M2:** FE auto-wire `IWXXM_CA` when `CA_ECCC` selected; profile metadata surfacing;
-  fail-closed missing vendor pin; E2E convert+validate (TC-EV073-006..009) — **implemented** EV-073
+  fail-closed missing vendor pin; E2E convert+validate (TC-EV073-006..009); **implemented** EV-073
 
 Reusable artifact per [#1044](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1044) playbook §5 + §8.
 
 ### EV-074 delivered (#1043 — SIGMET validate-first ops)
 
 - **M1:** ≥2 SIGMET ops IWXXM from MSC datamart (`czeg`, `czqm`); `sigmet_kind` in `ops_manifest.json`
-- **M2:** Layered validate — WMO 3.0.0 XSD+SCH; `ca_xsd` / exchange skipped as not-applicable for SIGMET/VAA
+- **M2:** Layered validate: WMO 3.0.0 XSD+SCH; `ca_xsd` / exchange skipped as not-applicable for SIGMET/VAA
 - **M3:** COLLECT unwrap for SIGMET / VA SIGMET / TC SIGMET / VAA roots
-- **Deferred:** VAA ops harvest — datamart `vaa/` absent; **EV-077:** Montreal VAAC TAC validate-first (`D-EV074-vaa-waiver-tac`, 1 live at pin; target ≥2)
+- **Deferred:** VAA ops harvest (datamart `vaa/` absent); **EV-077:** Montreal VAAC TAC validate-first (`D-EV074-vaa-waiver-tac`, 1 live at pin; target ≥2)
 - Tests: TC-EV074-001..010
 
 ### EV-076 delivered (#1061 — SIGMET exchange output emit)
 
 - **M1:** SIGMET MSC filename + WMO header (`A_LSCN` / VA `A_LVCN` / TC `A_LYCN` via `sigmet_kind`); ops output spec from datamart filename
 - **M2:** Layer-6 exchange packaging on SIGMET ops fixtures; catalog `ev076_slice: [SIGMET]`
-- **Deferred:** VAA exchange emit — inherits `D-EV074-vaa-follow`
+- **Deferred:** VAA exchange emit; inherits `D-EV074-vaa-follow`
 - Tests: TC-EV1061-001..004
 
 ### EV-077 delivered (ops corpus deepen + VAAC TAC VAA)
 
 - **M1:** +2 AIRMET ops fixtures (`czwg`, `czeg` GFA SFC_VIS); manifest pin 2026-08-24
 - **M2:** Montreal VAAC TAC harvest (`harvest_ca_eccc_vaac_tac.py`); 1 live FVCN at pin (target ≥2)
-- **Deferred:** VAA exchange emit — inherits `D-EV074-vaa-follow` (datamart `vaa/` absent)
+- **Deferred:** VAA exchange emit; inherits `D-EV074-vaa-follow` (datamart `vaa/` absent)
 - Tests: TC-EV074-005, TC-EV074-011
 
 ### EV-078 closeout (#916 P1 audit)
 
-- **Verified:** #916 P1 build AC met on `stage` — EV-064..077 delivered; SIGMET exchange emit (#1061) closed
-- **Waived:** VAA exchange *emit* — datamart `vaa/` HTTP 404 at probe 2026-08-24; follow `D-EV074-vaa-follow`
+- **Verified:** #916 P1 build AC met on `stage`: EV-064..077 delivered; SIGMET exchange emit (#1061) closed
+- **Waived:** VAA exchange *emit*; datamart `vaa/` HTTP 404 at probe 2026-08-24; follow `D-EV074-vaa-follow`
 - **Residual:** Re-harvest VAAC TAC when 31-day index publishes ≥2 bulletins
 - Docs aligned: `feature-list.md`, `COVERAGE_MATRIX.md`, `test-plan.md` §EV-078
 
@@ -206,9 +206,9 @@ Reusable artifact per [#1044](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/10
 
 ### EV-075 closeout (#1032 umbrella audit)
 
-- **Verified:** #1032 GitHub close correct — aerodrome exchange output (EV-071..072), COLLECT (EV-073), ops corpus (#1036), translation metadata (#1040) met on `stage`
-- **Waived:** SIGMET/VAA exchange *emit* — remains validate-first; follow-on [#1061](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1061) (split from #1032)
-- **Waived:** VAA ops IWXXM harvest — datamart `vaa/` absent; **EV-077** Montreal VAAC TAC validate-first instead
+- **Verified:** #1032 GitHub close correct: aerodrome exchange output (EV-071..072), COLLECT (EV-073), ops corpus (#1036), translation metadata (#1040) met on `stage`
+- **Waived:** SIGMET/VAA exchange *emit*, which remains validate-first; follow-on [#1061](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1061) (split from #1032)
+- **Waived:** VAA ops IWXXM harvest (datamart `vaa/` absent); **EV-077** Montreal VAAC TAC validate-first instead
 - Docs aligned: `catalog.yaml`, `COVERAGE_MATRIX.md`, `test-plan.md` §EV-075
 
 ### Out of scope (EV-068 / backlog)
@@ -217,7 +217,7 @@ Reusable artifact per [#1044](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/10
 - `AerodromeVariableRVR` / `ObservedLightning` (P2 / #1039)
 - LWIS/SAWR/density/icing tac-validate codes beyond EV-071 M1 slice (if not promoted)
 - `#1050` `reportVariant` wire / UI (#1024)
-- SIGMET/VAA TAC convert overlay — out of EV-074; **validate-first ops** EV-074 / #1043
-- SIGMET exchange *emit* — **EV-076 / #1061** closed; VAA exchange emit deferred (`D-EV074-vaa-follow`)
-- `#1033` SIGMET `code-ca` semantics — note-only in EV-074 (do not ship rules)
+- SIGMET/VAA TAC convert overlay: out of EV-074; **validate-first ops** EV-074 / #1043
+- SIGMET exchange *emit*: **EV-076 / #1061** closed; VAA exchange emit deferred (`D-EV074-vaa-follow`)
+- `#1033` SIGMET `code-ca` semantics: note-only in EV-074 (do not ship rules)
 - Global app default migration from 2025-2 to 3.0.0

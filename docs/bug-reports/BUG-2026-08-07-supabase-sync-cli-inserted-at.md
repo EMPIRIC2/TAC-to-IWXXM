@@ -42,8 +42,8 @@ Annotation warning (non-fatal): Node.js 20 deprecated for `supabase/setup-cli@v1
 ### Hypotheses
 
 1. **Primary (confirmed):** `version: latest` pulled CLI 2.112.0; generated API-keys schema requires `Z` suffix; Management API returns `+00:00` → `link` aborts.
-2. Secrets missing — rejected (token/password present; fail is schema decode).
-3. Project paused / network — rejected (same credentials work on 2.111.0).
+2. Secrets missing: rejected (token/password present; fail is schema decode).
+3. Project paused / network: rejected (same credentials work on 2.111.0).
 
 ### Onrender callback / CORS leftovers (same hotfix)
 
@@ -83,4 +83,4 @@ User also asked to strip callbacks to `https://metar-to-iwxxm-frontend-v4-web.on
 
 ## Cursor rule
 
-- Deferred — existing CI pin + bug test sufficient; revisit if `latest` is reintroduced elsewhere.
+- Deferred: existing CI pin + bug test sufficient; revisit if `latest` is reintroduced elsewhere.

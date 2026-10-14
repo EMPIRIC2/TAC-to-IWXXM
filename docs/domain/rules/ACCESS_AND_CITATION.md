@@ -1,7 +1,7 @@
 # Access friction & citation rules
 
 **Ticket:** [#719](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/719)  
-**Policy:** URLs and paraphrased citations only — **never** commit full Annex 3 / Manual on Codes / Doc 8896 PDF text.
+**Policy:** URLs and paraphrased citations only; **never** commit full Annex 3 / Manual on Codes / Doc 8896 PDF text.
 
 ---
 
@@ -39,8 +39,8 @@ Schema: https://schemas.wmo.int/iwxxm/2025-2/metarSpeci.xsd
 - Use vendored mirrors for offline CI (`vendor/schemas/*`)
 - On **contradictory** claims across mined sources, **defer to the latest**
   published/effective edition (or vendor pin for runtime schemas) and caveat the
-  older cite — mining skill: `.cursor/skills/mine-domain-sources/SKILL.md`
-  §Conflict resolution
+  older cite (mining skill: `.cursor/skills/mine-domain-sources/SKILL.md`
+  §Conflict resolution)
 
 ### Do not
 
@@ -71,7 +71,7 @@ When a rule needs Annex 3 prose and only a store URL exists:
 
 1. Catalog row labeled **normative** + **Access: paywall**
 2. Implementer cites section when licensed copy available
-3. For CI/fixtures, prefer **public** equivalents: official TAC examples, codes.wmo.int, Schematron — not bootleg Annex text
+3. For CI/fixtures, prefer **public** equivalents: official TAC examples, codes.wmo.int, Schematron, not bootleg Annex text
 4. Operator-facing errors (#702) may say “per ICAO Annex 3” without quoting long passages
 
 ---

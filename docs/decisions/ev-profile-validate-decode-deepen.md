@@ -18,7 +18,7 @@
 ### M5 outcome (2026-09-21)
 
 AC5 satisfied by **existing** EV-098 promotions already in-tree (e.g. `CA_METAR_LWIS`,
-`CA.METAR.VIS.SM`, `CA_TAF_NCLWS` provenance rows — see
+`CA.METAR.VIS.SM`, `CA_TAF_NCLWS` provenance rows; see
 `docs/domain/mining/manobs-manair-ca-mining-notes.md`). Residual MANOBS/MANAIR digs stay
 open on [#1029](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1029) /
 [#1030](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1030); no new fixture promote this
@@ -59,10 +59,10 @@ cycle beyond the documented bar.
 
 ### Excluded
 
-- Config Spec — no new env
-- Deploy Plan — stage-first PRs only; no platform change
-- Data Management — mining uses existing public sources
-- New ADR — ADR-044/036 sufficient; no new architecture decision
+- Config Spec: no new env
+- Deploy Plan: stage-first PRs only; no platform change
+- Data Management: mining uses existing public sources
+- New ADR: ADR-044/036 sufficient; no new architecture decision
 
 ## Build order (intent)
 

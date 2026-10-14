@@ -39,7 +39,7 @@ N/A — UI QoL; no server traceback. Symptom is downloaded filename vs current f
 ### Hypotheses
 
 1. **Primary:** On convert, `originalName` is set via `manualOutputName(outputFilename, …)` and never updated; download reads baked `originalName` → stale after rename. Preview uses live `sanitizeOutputFilename(outputFilename)`.
-2. Upload/file-queue results incorrectly renamed — out of scope per #904 (manual only).
+2. Upload/file-queue results incorrectly renamed: out of scope per #904 (manual only).
 
 ## Repro test
 

@@ -62,7 +62,7 @@ IWXXM 2023-1 conversions were failing for specific airports due to incorrect air
 
 ## Verification
 
-### ✅ Test Results
+### Test Results
 ```bash
 ✅ ENFB: FORNEBU AIRPORT [FBU]
    - Previous: "Statfjord B" (wrong by 501km)

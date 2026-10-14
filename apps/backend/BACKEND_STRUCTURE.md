@@ -85,7 +85,7 @@ Main Python application source code, including utilities, services, API routes, 
 
 ### tests/
 
-Comprehensive test suite with 1,090+ tests organized by functionality:
+Test suite with 1,090+ tests organized by functionality:
 
 - API endpoint tests
 - Conversion logic tests
@@ -274,7 +274,7 @@ These files are kept as reference but should not be used.
 - ✅ Moved utility scripts to `scripts/`
 - ✅ Reorganized tests into 12 categories
 - ✅ Archived deprecated root-level files
-- ✅ Created comprehensive documentation
+- ✅ Created documentation
 
 ---
 

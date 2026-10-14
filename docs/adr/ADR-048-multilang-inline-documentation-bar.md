@@ -1,6 +1,6 @@
 # ADR-048: Multi-language inline documentation bar
 
-**Status:** Accepted (amended 2026-09-22 — EV-adr048-doc-linters)  
+**Status:** Accepted (amended 2026-09-22, EV-adr048-doc-linters)  
 **Date:** 2026-09-22  
 **Session:** EV-docstring-multilang-bar; amend EV-adr048-doc-linters  
 **Corpus:** [Corpus: docstrings] [Corpus: decisions/inline-documentation-verify] [Corpus: tests] [Corpus: tech-spec]
@@ -36,7 +36,7 @@ Examples. EV-092 made public presence (`inline-doc-check`) blocking for merges, 
 4. **Symbols:** Same bar for nested functions, methods, React components/hooks, Rust
    `impl` methods. **Exempt (PY/TS only):** type-only `Protocol`/`TypedDict`/`Enum` stubs
    (document the type); generated OpenAPI/client stubs; `__getattr__` shims; listed
-   exemption globs only if unavoidable. **Rust:** no exemptions for `pub` items — every
+   exemption globs only if unavoidable. **Rust:** no exemptions for `pub` items; every
    `pub` item must have runnable `# Examples` (verified at verify-plan S14).
 
 5. **Checkers (product repo):** Makefile targets + tests under `tests/` and/or
@@ -60,7 +60,7 @@ Examples. EV-092 made public presence (`inline-doc-check`) blocking for merges, 
 
 8. **Quality pass:** Lint + format + typecheck + unit for the **entire monorepo / all
    toolchains** treat **warnings and infos as failures**, delivered in **one PR** with the
-   doc bar work. **No temporary suppressions** — fix or reconfigure toolchains (verify-plan
+   doc bar work. **No temporary suppressions**: fix or reconfigure toolchains (verify-plan
    S12). Coverage / security / typecheck **thresholds** are unchanged by the
    EV-adr048-doc-linters amend (tooling deepen only).
 

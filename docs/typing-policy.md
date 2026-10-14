@@ -22,9 +22,9 @@
 | PT | pytest-style (raises match, assert layout) |
 | ANN | annotations on `apps/` + `packages/` **src** (`**/tests/**` ignores ANN) |
 
-Per-package `pyproject.toml` files **extend** root `ruff.toml` (line-length 120 where noted) — do not reintroduce thin `E,W,F,I`-only overrides.
+Per-package `pyproject.toml` files **extend** root `ruff.toml` (line-length 120 where noted); do not reintroduce thin `E,W,F,I`-only overrides.
 
-**ANN401 waivers:** lxml / PyO3 boundary modules in `packages/iwxxm-validate` (`c14n`, `native`, `schematron`, `xsd`) — third-party handles without complete stubs.
+**ANN401 waivers:** lxml / PyO3 boundary modules in `packages/iwxxm-validate` (`c14n`, `native`, `schematron`, `xsd`): third-party handles without complete stubs.
 
 ### basedpyright
 
@@ -41,7 +41,7 @@ Use typed JSON/XML boundaries (`cast`, `TypedDict`, `XmlElement` protocol in `ap
 
 - Public functions and methods require explicit parameter and return types.
 - Prefer `TypedDict`, `Protocol`, and concrete collections over untyped `dict`.
-- Use `object` instead of `Any` when the shape is genuinely unknown; justify `Any` in code review.
+- Use `object` instead of `Any` when the shape is unknown; justify `Any` in code review.
 - Third-party stubs: `reportMissingTypeStubs = false` in `pyproject.toml` / `pyrightconfig.json`.
 
 ### Commands
@@ -98,14 +98,14 @@ cd apps/frontend && pnpm exec tsc --noEmit
 
 ## Coverage gate (ADR-007 / EV-080 / #1077)
 
-**100%** line and branch coverage on all workspace members — pytest for Python, Vitest for
+**100%** line and branch coverage on all workspace members: pytest for Python, Vitest for
 frontend/shared. Configured in root `pyproject.toml` `[tool.coverage.report]` and
 per-package overrides (`fail_under = 100`, `branch = true`). **Per-file ≥100%** via
 `scripts/ci/check_per_file_coverage.py --min-pct 100` after package unit jobs.
 
 **Scripts (EV-080):** all `scripts/**/*.py` under a dedicated coverage job (≥100%); every
 `scripts/**/*.sh` exercised by ≥1 **bats-core** test in CI. Approved omits only:
-`vendor/**`, generated XSD/codegen, non-executable fixtures — see ADR-007.
+`vendor/**`, generated XSD/codegen, non-executable fixtures (see ADR-007).
 
 ## References
 

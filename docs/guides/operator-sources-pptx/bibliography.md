@@ -7,7 +7,7 @@ cites. Labels: **normative** | **normative-schema** | **normative-vocabulary** |
 **Audience:** national MET / aviation authority leadership (compliance).
 **Search walkthrough:** [citation-search-guide.md](./citation-search-guide.md).
 
-Vendor pin (runtime): IWXXM **v2025-2**, codelists **49-2**, iwxxm-us **3.0** —
+Vendor pin (runtime): IWXXM **v2025-2**, codelists **49-2**, iwxxm-us **3.0**:
 [`vendor/manifest.json`](../../../vendor/manifest.json).
 
 ---

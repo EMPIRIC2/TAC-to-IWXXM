@@ -5,7 +5,7 @@ Print this page (one sheet). For more detail, see the [Operator handbook](operat
 ## What this app does
 
 Turn Traditional Alphanumeric Code (METAR, SPECI, TAF, and related products) into
-IWXXM XML you can download, validate, and — when your site enables it — send onward.
+IWXXM XML you can download, validate, and (when your site enables it) send onward.
 
 ## Five steps
 
@@ -18,7 +18,7 @@ IWXXM XML you can download, validate, and — when your site enables it — send
 ## Soft preview (plain language)
 
 While you type or edit TAC, the workbench may show a **soft preview**: a best-effort
-decode and IWXXM sketch that updates as you go. It is for guidance only — it is **not**
+decode and IWXXM sketch that updates as you go. It is for guidance only; it is **not**
 the official converted product. Always use **Convert** (and **Validate**) for the file
 you will archive or distribute.
 
@@ -32,7 +32,7 @@ line). If you are unsure, ask your aviation MET supervisor before changing the d
 Open the **Quality metrics** tab to compare the app’s converted IWXXM against official
 WMO example products. Pick a row to open a detail view with Official / Converted panes
 and a readable unified diff (unchanged sections can be collapsed). Use this for training
-and parity checks — not as a substitute for Validate on your live product.
+and parity checks, not as a substitute for Validate on your live product.
 
 ## Dissemination (when available)
 

@@ -38,7 +38,7 @@ local storage. Abuse controls are required once APIs are public.
    **60 req/min/IP** on convert+lint+decode (+ related public convert paths);
    **10/min/IP** dissemination; **2 MB** max body (env-tunable). Keep ADR-029 allowlist.
 5. **Cutover** — **Single deploy**: IndexedDB FE live and BE Auth/work-sessions gone in
-   the same release train (IndexedDB implemented before Auth strip within the PR train —
+   the same release train (IndexedDB implemented before Auth strip within the PR train;
    E17-10 / E17-18).
 6. **`packages/auth`** — **Delete entirely** this cycle (E17-22=B). Inline any residual
    helpers into `apps/backend` / `apps/worker` if required; F8 continues on service-role
@@ -77,7 +77,7 @@ local storage. Abuse controls are required once APIs are public.
 ## Amendment — EV-052 / S061 (2026-08-09)
 
 **Decision 4 (abuse controls)** is amended: when `REDIS_URL` (or approved Upstash env) is
-set, **slowapi** uses a **shared Redis-compatible store** (Upstash free tier —
+set, **slowapi** uses a **shared Redis-compatible store** (Upstash free tier;
 `D-S061-redis=1`) so multi-replica DOKS API pods share one counter. When unset (local
 dev), keep **in-memory** limiter. Defaults in the table above are unchanged. No new
 in-cluster Redis Deployment. See [Corpus: decisions §EV-052] and

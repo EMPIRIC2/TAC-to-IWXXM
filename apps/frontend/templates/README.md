@@ -52,7 +52,7 @@ See `VARIABLES.md` for complete documentation.
    - Copy/paste your custom content
    - Save and send test email
 
-## Security Best Practices
+## Security practices
 
 - Never expose tokens in plain links
 - Always use `{{ .TokenHash }}` for secure links

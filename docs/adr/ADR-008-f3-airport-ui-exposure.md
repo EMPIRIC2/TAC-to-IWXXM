@@ -7,7 +7,7 @@
 ## Context
 
 During implementation verification, F3 (Airport Data Services) was flagged for fuller UI
-exposure. The feature matrix marked Web UI as "Partial" — ICAO autocomplete used static
+exposure. The feature matrix marked Web UI as "Partial": ICAO autocomplete used static
 local data only, without surfacing backend airport-region lookup.
 
 REQ-016 normally excludes product feature rewrites during migration; user explicitly approved

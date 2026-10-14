@@ -20,7 +20,7 @@ summaries, LLM-generated text, and keeping terminator severity as-is.
 ## Decision
 
 1. **Backend deterministic summary (F9)**: `packages/tac2iwxxm` `decode_tac` builds a
-   plain-language `summary` paragraph from parsed token values — no LLM, fully unit-testable.
+   plain-language `summary` paragraph from parsed token values: no LLM, fully unit-testable.
    `POST /api/v1/decode-tac` returns it additively. Explanations become value-aware for all
    seven products (sparse products best-effort with "partial decode" wording); residuals are
    named in a trailing "Not decoded: …" clause.

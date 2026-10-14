@@ -2,7 +2,7 @@
 
 ## Overview
 
-The METAR-to-IWXXM backend implements a **7-layer comprehensive validation system** that validates IWXXM XML documents against multiple official WMO sources including XSD schemas, Schematron business rules, and RDF code lists.
+The METAR-to-IWXXM backend implements a **7-layer validation system** that validates IWXXM XML documents against multiple official WMO sources including XSD schemas, Schematron business rules, and RDF code lists.
 
 **Status**: ✅ Fully Implemented (Phase 2 Complete)
 
@@ -56,7 +56,7 @@ The system implements all 7 validation layers defined in the IWXXM specification
 | 7 | WMO_CODELISTS | Non-blocking / SCH-overlap | Offline RDF / optional live codes.wmo.int | `…/rule/*.rdf` |
 
 \*Domain SoT / OPMET Guidelines: fail release if SCH does not run successfully. Engine may still
-return soft failures during transitional `xslt2` skip — do not treat skip warnings as a pass.
+return soft failures during transitional `xslt2` skip; do not treat skip warnings as a pass.
 
 ### Execution Model
 
@@ -94,7 +94,7 @@ Layer result dataclasses (`XSDValidationResult`, `SchematronValidationResult`,
 
 Detects available IWXXM versions from vendored schema snapshots and identifies upgrade opportunities.
 
-**Key Features**:
+**Features**:
 - Scans the local IWXXM schema tree and, when available, repository tags for known versions
 - Reads `LATEST_VERSION` file for current WMO release
 - Compares against configured versions in `iwxxm_versions.py`
@@ -147,13 +147,13 @@ gml_ok, gml_issues = validate_gml_references(xml_content, version="2025-2")
 
 `utilities/xsd_validator.py`, `utilities/schematron_validator.py`, and
 `utilities/gml_validator.py` were removed in EV-037 TD-1. Do not reintroduce duplicate
-IWXXM layer logic in `apps/backend` — extend `packages/iwxxm-validate` instead.
+IWXXM layer logic in `apps/backend`; extend `packages/iwxxm-validate` instead.
 
 ### 4. Code List Parser (`codelist_parser.py`) — TAC / RDF utilities
 
 Validates code list references against official WMO RDF codelists.
 
-**Key Features**:
+**Features**:
 - Parses RDF/XML codelist files using SKOS vocabulary
 - Per-version codelist caching
 - Extracts xlink:href references from XML
@@ -181,11 +181,11 @@ result = parser.validate_xml_codelists(xml_content)
 
 Coordinates all 7 validation layers with proper sequencing and error handling.
 
-**Key Features**:
+**Features**:
 - Sequential execution of blocking layers (1-4)
 - Parallel execution of non-blocking layers (5-7) using ThreadPoolExecutor
 - Configurable stop-on-error behavior
-- Comprehensive result aggregation
+- Result aggregation
 - Layer-specific issue tracking
 
 **Usage**:
@@ -219,7 +219,7 @@ for layer, issues in result.issues_by_layer.items():
 
 ### POST /api/v1/validate
 
-Comprehensive 7-layer validation endpoint.
+7-layer validation endpoint.
 
 **Request**:
 ```bash
@@ -456,4 +456,4 @@ Ensure `get_codelists_dir()` returns valid path with `.rdf` files.
 
 **Last Updated**: 2026-08-26  
 **Implementation Version**: EV-037 TD-1 (validation stack consolidation)  
-**Status**: ✅ Production Ready — layers 3–7 in `packages/iwxxm-validate`
+**Status**: ✅ Production Ready (layers 3–7 in `packages/iwxxm-validate`)

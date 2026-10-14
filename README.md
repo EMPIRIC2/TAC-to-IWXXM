@@ -6,7 +6,7 @@
 [![Unit coverage gate](https://img.shields.io/badge/unit_coverage-%E2%89%A595%25-success)](docs/test-plan.md)
 
 Convert aviation TAC (METAR, SPECI, TAF, SIGMET family, and related products) to WMO IWXXM
-XML. React frontend, FastAPI backend, near-RT ingest worker, and publishable Python packages —
+XML. React frontend, FastAPI backend, near-RT ingest worker, and publishable Python packages,
 all in a single git monorepo (no submodules).
 
 ## Features
@@ -19,7 +19,7 @@ all in a single git monorepo (no submodules).
 - TAC lint ([`tac-validate`](packages/tac-validate/)) and IWXXM XSD + Schematron
   ([`iwxxm-validate`](packages/iwxxm-validate/))
 - Soft preview / decode summaries and workbench lint UX
-- **Quality metrics** tab — compare converted IWXXM to the official WMO example corpus
+- **Quality metrics** tab: compare converted IWXXM to the official WMO example corpus
   (`/quality`, shareable `/quality/:stem`)
 - Near-real-time ingest worker
 - **Dissemination / Send (beta)** — operator destinations restored; label as beta in the UI.
@@ -159,7 +159,7 @@ See [docs/deploy.md](docs/deploy.md) §Live test harness.
 Quality metrics on staging: https://app.staging.tac-to-iwxxm.com/quality
 
 **Profile API (staging):** multipart `semantic_profile` / `exchange_profile` (flat `profile` alias
-during deprecation window until 2026-10-31 — [#1025](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1025)).
+during deprecation window until 2026-10-31, [#1025](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1025)).
 See [api-contract.md](docs/api-contract.md) EV-063 section.
 
 ## Documentation
@@ -178,4 +178,4 @@ See [api-contract.md](docs/api-contract.md) EV-063 section.
 
 ## License
 
-MIT — see [LICENSE](LICENSE).
+MIT. See [LICENSE](LICENSE).

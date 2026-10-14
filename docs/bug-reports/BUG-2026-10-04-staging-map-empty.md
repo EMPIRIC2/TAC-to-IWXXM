@@ -29,7 +29,7 @@ translator: live map region 0 stored 920
 
 ## Repro test
 
-`tests/bugs/test_bug_2026_10_04_staging_map_empty.py` — red before the rollout script names `LIVE_MAP_CACHE_URL` and `metar-api-secrets`.
+`tests/bugs/test_bug_2026_10_04_staging_map_empty.py`: red before the rollout script names `LIVE_MAP_CACHE_URL` and `metar-api-secrets`.
 
 ## Fix
 

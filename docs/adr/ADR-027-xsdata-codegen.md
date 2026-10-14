@@ -19,17 +19,17 @@ not by full Python bind-on-validate.
 2. Keep **validate hot path** on Rust well-formed + XSD + Schematron (`packages/iwxxm-validate/rust`);
    do **not** require xsdata object graphs for `/validate` latency.
 3. In-cycle **follow-on tasks** adapt generated models toward msgspec Structs and/or Rust types
-   where convert builders benefit — adaptation is explicit tasks, not a silent rewrite of xsdata output.
+   where convert builders benefit; adaptation is explicit tasks, not a silent rewrite of xsdata output.
 4. Codegen runs in CI when `vendor/manifest.json` pins change; outputs committed or regenerated
    in the same PR as pin bumps (execution plan M1/M3).
 
 ## Consequences
 
-- New **dev/codegen** dependencies: `xsdata`, `xsdata-pydantic` (MIT) — listed in
+- New **dev/codegen** dependencies: `xsdata`, `xsdata-pydantic` (MIT), listed in
   `docs/dependency-inventory.md`.
 - Generated pydantic models coexist with ADR-026 msgspec HTTP responses and package msgspec IR;
   dual model families are intentional until adaptation tasks land.
-- Wheel size / schema subset (E10-34) remains independent of codegen — runtime bundle ≠ modelling tree.
+- Wheel size / schema subset (E10-34) remains independent of codegen; runtime bundle ≠ modelling tree.
 
 ## Alternatives Considered
 
@@ -41,5 +41,5 @@ not by full Python bind-on-validate.
 
 ## References
 
-- E10-23, E10-40; F11; (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate) R3
+- E10-23, E10-40; F11; (archived; see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate) R3
 - ADR-026 (msgspec HTTP); ADR-016 (package msgspec)

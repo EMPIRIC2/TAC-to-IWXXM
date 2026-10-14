@@ -37,7 +37,7 @@ visible and isolated in the DigitalOcean control plane.
    (`168.144.12.70` until rotated).
 5. **Promote path** — Only PRs from `stage` → `main`. CI job `staging-gate` requires green
    **Staging smoke** for the tip SHA. Merge to `main` lands code + runs CI; **prod Deploy**
-   waits for a deploy tag (or dispatch) — see (6)/(7).
+   waits for a deploy tag (or dispatch); see (6)/(7).
 6. **Release on promote (required for prod cutover)** — Treat each prod ship as a release:
    on `stage` before the promote PR, bump publishable package semver when those packages
    changed and cut `docs/CHANGELOG.md`; after merge to `main` and green CI, push
@@ -56,7 +56,7 @@ visible and isolated in the DigitalOcean control plane.
 - Skills 12/13/15/16 and ci-after-push must distinguish `env_role: staging | prod` **and**
   cluster/project (not only namespace); prod Deploy is tag/dispatch-gated, not `main` push.
 - Promote PRs should include release prep (semver + CHANGELOG); agents follow
-  `.cursor/rules/optional/doks-promote-from-stage.mdc` §Release on promote — **tag push is
+  `.cursor/rules/optional/doks-promote-from-stage.mdc` §Release on promote; **tag push is
   what rolls prod**.
 - Staging and prod no longer share node-pool memory; staging worker may run at 1 replica
   without starving prod.
@@ -65,8 +65,8 @@ visible and isolated in the DigitalOcean control plane.
 
 ## Alternatives considered
 
-- App Platform dual apps — rejected (diverges from F30 DOKS).
-- Environment approval for prod — rejected for solo-dev friction (EV-051 uses tag/dispatch).
-- Auto Deploy on every `main` push — superseded by EV-051 (CI on `main`; Deploy on tag).
-- Same-cluster two namespaces (EV-043) — superseded for DO Project visibility / isolation
+- App Platform dual apps: rejected (diverges from F30 DOKS).
+- Environment approval for prod: rejected for solo-dev friction (EV-051 uses tag/dispatch).
+- Auto Deploy on every `main` push: superseded by EV-051 (CI on `main`; Deploy on tag).
+- Same-cluster two namespaces (EV-043): superseded for DO Project visibility / isolation
   (EV-044); promote CD path retained with tag-driven prod.

@@ -54,7 +54,7 @@ Examples
 | Class attributes | `Attributes` section (and/or `__init__` `Parameters`) |
 | Tests / fixtures / generated / vendor | Exempt |
 
-**Comments:** explain *why*, fail-closed behavior, or non-obvious invariants — not the next
+**Comments:** explain *why*, fail-closed behavior, or non-obvious invariants, not the next
 line of code.
 
 ## TypeScript (TSDoc)
@@ -75,7 +75,7 @@ equivalent crate lint) on in-scope crates.
 - **Exempt (PY/TS only):** type-only `Protocol` / `TypedDict` / `Enum` stubs (document the
   type); generated OpenAPI/client stubs; `__getattr__` shims; listed exemption globs only
   if unavoidable.
-- **Rust:** no `pub` exemptions — every `pub` item needs runnable `# Examples`.
+- **Rust:** no `pub` exemptions; every `pub` item needs runnable `# Examples`.
 
 ## Enforcement
 
@@ -92,7 +92,7 @@ equivalent crate lint) on in-scope crates.
 4. Public PY `Examples` via doctest; Rust `pub` doctests all runnable; TS `@example` via
    repo-owned harness (vitest/node), fail closed if missing or failing.
 5. Lint + format + typecheck + unit across the **entire monorepo / all toolchains** treat
-   **warnings and infos as failures**. **No suppressions** — fix or reconfigure
+   **warnings and infos as failures**. **No suppressions**: fix or reconfigure
    toolchains. Coverage / security / typecheck thresholds are unchanged by the
    EV-adr048-doc-linters amend.
 

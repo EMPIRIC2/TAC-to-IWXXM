@@ -188,7 +188,7 @@ const handlePasswordUpdate = async (newPassword: string) => {
    </p>
    ```
 
-## Security Best Practices
+## Security practices
 
 - ✅ Reset link expires after 1 hour
 - ✅ Each link can only be used once

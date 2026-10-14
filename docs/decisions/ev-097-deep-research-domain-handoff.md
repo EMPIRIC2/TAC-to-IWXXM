@@ -22,4 +22,4 @@ See session `EV-097-deep-research-domain-handoff` (`reports/requirements.md` REQ
 - `docs/domain/README.md` (hub; non-minimal corpus)
 - EV-096 pattern: skill/rule harden via evolve (`docs/decisions/ev-096-ci-rules-skills-harden.md`)
 
-[Corpus: decisions] [Corpus: product] (process — no Fn)
+[Corpus: decisions] [Corpus: product] (process; no Fn)

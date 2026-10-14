@@ -47,10 +47,10 @@ firstDiffPreview: "-<iwxxm:SIGMET reportStatus=\"NORMAL\" xmlns:aixm=..."
 ## Interview record
 
 - Intent: `/14-hotfix` staging Quality metrics long-line diffs
-- Scope: `D-S065-scope=4` — hotfix readability now; evolve later for separate page + GitHub hunks
+- Scope: `D-S065-scope=4`: hotfix readability now; evolve later for separate page + GitHub hunks
 - Products: all stems
 - Page: keep inline detail for now
-- AskQuestion tool unavailable — numbered options; user chose “Proceed with recommended”
+- AskQuestion tool unavailable; numbered options; user chose “Proceed with recommended”
 - Repro/root-cause confirmation: waived by “Proceed with recommended” after staging probe + red tests
 
 ## Fix

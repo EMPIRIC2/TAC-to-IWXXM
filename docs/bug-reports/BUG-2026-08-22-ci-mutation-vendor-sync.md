@@ -9,7 +9,7 @@
 ## Error description
 
 1. **Mutation** (nightly on `main`): `pnpm/action-setup` fails with
-   `Multiple versions of pnpm specified` — workflow `version: 9` vs
+   `Multiple versions of pnpm specified`: workflow `version: 9` vs
    `packageManager: pnpm@9.15.4` in `package.json`.
 2. **Vendor Schema Sync** (weekly on `main`): after `check_upstream --update`,
    sync replaces `vendor/schemas/iwxxm` with GitHub tag tip `v2025-2` at commit
@@ -46,7 +46,7 @@ FAILED tests/vendor/test_schema_presence.py::... - missing vendored schema path:
 ## Repro test
 
 - `tests/bugs/test_bug_2026_08_22_ci_mutation_vendor_sync.py` — green after fix.
-- Updated `tests/bugs/test_bug_2026_07_20_actions_dead_workflows.py` — tag-change
+- Updated `tests/bugs/test_bug_2026_07_20_actions_dead_workflows.py`: tag-change
   update still clears `tree_sha256`.
 
 ## Fix

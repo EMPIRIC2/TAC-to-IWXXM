@@ -52,7 +52,7 @@ Error loading monitoring data: Error: Failed to load monitoring data
 Frontend now uses `adminUrl()` → `VITE_API_BASE_URL/admin/*`; backend mounts
 `/admin/*` routes.
 
-**Phase 2 (open — production still broken):** Live probe after merge shows admin
+**Phase 2 (open; production still broken):** Live probe after merge shows admin
 routes exist but return **503** with authenticated admin token:
 
 ```

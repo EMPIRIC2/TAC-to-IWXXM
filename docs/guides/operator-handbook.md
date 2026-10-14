@@ -10,7 +10,7 @@ Start with the [Operator one-pager](operator-one-pager.md) for a single printed 
   require an account.
 - Use the email and password issued by your organisation. If sign-in fails, check that
   you are on the correct site URL and that caps lock is off; then contact your local
-  IT or MET systems contact — do not share passwords in chat or email.
+  IT or MET systems contact; do not share passwords in chat or email.
 
 ## Convert and validate
 
@@ -31,7 +31,7 @@ the converter’s output compares (match chip, residuals, lint, and validate sum
 1. Open **Quality metrics** in the app shell.
 2. Filter or scan the list; open a row to open a **detail** page for that example.
 3. Review Official vs Converted XML and the unified diff. Equal (unchanged) regions may
-   be collapsed — expand a hunk or expand all when you need full context.
+   be collapsed; expand a hunk or expand all when you need full context.
 4. Use Validate on your own conversions for operational readiness; Quality metrics is for
    corpus parity and operator training.
 
@@ -42,7 +42,7 @@ Staging URL shape: `/quality` (list) and `/quality/<example-id>` (detail).
 - When signed in, recent sessions appear in the work-history sidebar / history page.
 - Open a past session to restore TAC and prior outputs for rework.
 - Guests: use download promptly; clearing the browser may remove local drafts.
-- Privacy settings (footer) control optional local storage — review them if you share a workstation.
+- Privacy settings (footer) control optional local storage; review them if you share a workstation.
 
 ## Dissemination destinations (high level)
 
@@ -55,7 +55,7 @@ dissemination tools. Never paste secret connection strings into shared tickets o
 
 When your site runs **automated near-real-time ingest** (poller / worker feeding the
 store), treat that pipeline as the primary path for routine traffic. Manual paste and
-convert remain available for ad-hoc fixes, training, and recovery — but **do not rely
+convert remain available for ad-hoc fixes, training, and recovery, but **do not rely
 on manual updates alone** for continuous operations if ingest is available. Confirm
 with your systems contact whether ingest is active for your centre.
 

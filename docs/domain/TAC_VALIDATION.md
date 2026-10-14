@@ -84,8 +84,8 @@ App 3 §2.3 (not this table).
 | 13 | TREND | O | `NOSIG` / `BECMG` / `TEMPO` + FM/TL/AT (≤2 h; App 5 §2) |
 
 \*Cloud mandatory when not CAVOK / NSC/NCD path. Footnote: TAC `/` missing → mark
-**missing in IWXXM** (Guidance nilReasons — not defined in Annex 3).  
-**NSC exclusivity (encode + optional lint):** do not combine `NSC` with FEW/SCT/BKN/OVC cloud layers in the same observation/forecast group — IWXXM expects NSC as empty-cloud + `nothingOfOperationalSignificance`, not layered cloud (APAC FAQ §14.3 · #797 · [IWXXM_CONVERSION](IWXXM_CONVERSION.md)). Lint may warn before convert.
+**missing in IWXXM** (Guidance nilReasons; not defined in Annex 3).  
+**NSC exclusivity (encode + optional lint):** do not combine `NSC` with FEW/SCT/BKN/OVC cloud layers in the same observation/forecast group. IWXXM expects NSC as empty-cloud + `nothingOfOperationalSignificance`, not layered cloud (APAC FAQ §14.3 · #797 · [IWXXM_CONVERSION](IWXXM_CONVERSION.md)). Lint may warn before convert.
 
 **Shall IWXXM:** App 3 §**2.1.3** (dual TAC + IWXXM GML).
 
@@ -164,7 +164,7 @@ M/C/O = mandatory / conditional / optional. Encode recipes stay in
 §5.3.2: validate TAC against **Annex 3 / WMO-No. 306 Vol I.1** before / as part of translation
 compliance; IWXXM against the **most recent** official schema + Schematron unless bilaterally
 agreed otherwise. Domain CI without licensed Annex 3 still follows L1+L3+official `.tac`
-above — do not scrape SARP prose into fixtures.
+above; do not scrape SARP prose into fixtures.
 
 ---
 
@@ -185,16 +185,16 @@ above — do not scrape SARP prose into fixtures.
 
 **Use for validation rules that are not “XML encoding”:**
 
-- Report types and issue criteria (e.g. SPECI thresholds — App 3 §2.3; Ch.4 §4.4)
+- Report types and issue criteria (e.g. SPECI thresholds: App 3 §2.3; Ch.4 §4.4)
 - Contents / element order of aerodrome observations (Ch.4 §4.5; Table **A3-2**)
 - TAF change groups / AMD / NIL / CNL (App 5 · Table **A5-1**)
 - SIGMET / AIRMET templates and one-phenomenon rule (App 6 · Table **A6-1A**)
 - VAA / TCA advisory templates (App 2 · Tables **A2-1** / **A2-2**)
 - Observing and reporting obligations that FM 205 / IWXXM XSD **do not** redefine
 
-**IWXXM dual exchange (obligation only):** Annex 3 requires F6 products **shall** be disseminated in IWXXM GML **in addition to** TAC/plain language, with encoding deferred to WMO-No. **306 Vol I.3 Part D** and Doc **10003**. Runtime encode/validate still follows `vendor/manifest.json` pin — not Annex 3 tables.
+**IWXXM dual exchange (obligation only):** Annex 3 requires F6 products **shall** be disseminated in IWXXM GML **in addition to** TAC/plain language, with encoding deferred to WMO-No. **306 Vol I.3 Part D** and Doc **10003**. Runtime encode/validate still follows `vendor/manifest.json` pin, not Annex 3 tables.
 
-**Rule citation map** (paraphrase only; numeric engines need licensed PDF — dig pass 2):
+**Rule citation map** (paraphrase only; numeric engines need licensed PDF; dig pass 2):
 
 | Lint / rule family | Primary cite | Notes |
 |--------------------|--------------|-------|
@@ -214,9 +214,9 @@ above — do not scrape SARP prose into fixtures.
 | TCA issue gate · template · IWXXM shall | App 2 §**5.1.1** (≥34 kt) · §**5.1.3** · Table **A2-2** | Dual TAC/plain + IWXXM |
 | SWX advisory (optional) | App 2 §**6.1.2** · Table **A2-3** | shall IWXXM; beyond F6 core unless enabled |
 
-Do **not** merge SPECI and TAF threshold tables — Annex 3 keeps parallel but distinct lists ([mining dig](mining/icao-annex-3-mining-notes.md) §10).
+Do **not** merge SPECI and TAF threshold tables; Annex 3 keeps parallel but distinct lists ([mining dig](mining/icao-annex-3-mining-notes.md) §10).
 
-**WMO-No. 49 Vol II note:** Parts I–II discontinued 31 Dec 2023 — use Annex 3 instead  
+**WMO-No. 49 Vol II note:** Parts I–II discontinued 31 Dec 2023; use Annex 3 instead  
 https://community.wmo.int/site/knowledge-hub/programmes-and-initiatives/aviation/two-stage-discontinuation-of-technical-regulations-wmo-no-49-volume-ii-meteorological-service
 
 ### ICAO Doc 8896
@@ -288,7 +288,7 @@ Offline RDF (pin-aligned): `vendor/schemas/iwxxm/2025-2/IWXXM/rule/codes.wmo.int
 
 ### Offline membership harvest (EV-050 / #959 Validated)
 
-L3 token membership for CI uses a **generated** artifact — never live `codes.wmo.int` HTML in PR CI:
+L3 token membership for CI uses a **generated** artifact, never live `codes.wmo.int` HTML in PR CI:
 
 | Item | Path / command |
 |------|----------------|
@@ -301,7 +301,7 @@ L3 token membership for CI uses a **generated** artifact — never live `codes.w
 
 **Cadence:** regenerate when `vendor/manifest.json` bumps `iwxxm-codelists` (same vendor sync PRs as [#859](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/859) URI drift). Standing tech entry: [tech-spec.md](../tech-spec.md) §WMO membership harvest. See [RULE_SOURCE_URLS.md](rules/RULE_SOURCE_URLS.md) §codes.wmo.int.
 
-**Fixture∩ coverage (AC4):** post-M2 register hit rates + residual defer+cite —
+**Fixture∩ coverage (AC4):** post-M2 register hit rates + residual defer+cite:
 [fixture-coverage-delta-t2.4.md](../sessions/S059-codes-wmo-validated/reports/fixture-coverage-delta-t2.4.md);
 matrix summary [COVERAGE_MATRIX.md](rules/COVERAGE_MATRIX.md) §codes.wmo.int fixture coverage.
 
@@ -309,7 +309,7 @@ matrix summary [COVERAGE_MATRIX.md](rules/COVERAGE_MATRIX.md) §codes.wmo.int fi
 
 ## Official TAC fixtures (accept / reject shapes)
 
-Use WMO official examples as golden TAC for gates — not proprietary corpora:
+Use WMO official examples as golden TAC for gates (not proprietary corpora):
 
 | Product | Example TAC prefix (`schemas.wmo.int/iwxxm/2025-2/examples/`) |
 |---------|----------------------------------------------------------------|
@@ -322,18 +322,18 @@ Use WMO official examples as golden TAC for gates — not proprietary corpora:
 | TCA | `tc-advisory-A2-2.tac` |
 | SWXA | `spacewx-A7-3/4/5.tac` (+ translation-failed) — **F28 / EV-029 M11** |
 
-AHL data type designators (TAC vs IWXXM) — page **v1.0.1** (2025-08-11):  
+AHL data type designators (TAC vs IWXXM): page **v1.0.1** (2025-08-11):  
 https://community.wmo.int/en/activity-areas/wis/iwxxm/ahl-icao-data  
-(**301 →** https://community.wmo.int/site/knowledge-hub/programmes-and-initiatives/wmo-information-system-wis/about-manual-gts/ahls-aviation-data-over-icao-afs — live 200 as of 2026-07-14; **re-confirmed 2026-08-01**).  
+(**301 →** https://community.wmo.int/site/knowledge-hub/programmes-and-initiatives/wmo-information-system-wis/about-manual-gts/ahls-aviation-data-over-icao-afs (live 200 as of 2026-07-14; **re-confirmed 2026-08-01**)).  
 Canonical `T1T2` / BBB / filename: [IWXXM_CONVERSION.md §AHL / bulletin](IWXXM_CONVERSION.md#ahl--bulletin-canonical-ev-029).
 
-Additional (informative) pairs: https://github.com/wmo-im/iwxxm-translation — Amd79-80-2023 trees cover **METAR / TAF / VAA / TCA** only (no SIGMET/AIRMET dirs). Prefer official `iwxxm` examples for F6 gates. Local Tier A mine: [mining/wmo-im-tier-a-mining-notes.md](mining/wmo-im-tier-a-mining-notes.md).
+Additional (informative) pairs: https://github.com/wmo-im/iwxxm-translation (Amd79-80-2023 trees cover **METAR / TAF / VAA / TCA** only, no SIGMET/AIRMET dirs). Prefer official `iwxxm` examples for F6 gates. Local Tier A mine: [mining/wmo-im-tier-a-mining-notes.md](mining/wmo-im-tier-a-mining-notes.md).
 
 ---
 
 ## US profile (`iwxxm_us`) — Annex 3 differences
 
-**Dual-profile disposition (EV-050 / AC7):** all-F6 lint compare + N/A rows —
+**Dual-profile disposition (EV-050 / AC7):** all-F6 lint compare + N/A rows:
 [dual-profile-disposition.md](../sessions/S059-codes-wmo-validated/reports/dual-profile-disposition.md)
 (`tac_validate.dual_profile` / TC-EV050-007).
 
@@ -345,7 +345,7 @@ Additional (informative) pairs: https://github.com/wmo-im/iwxxm-translation — 
 | iwxxm-us 3.0 | https://nws.weather.gov/schemas/iwxxm-us/3.0/ | National encode/validate surface |
 | MDL data modeling | https://vlab.noaa.gov/web/mdl/data-modeling | Context for US extensions |
 
-GIFTs historically stripped REMARKS — **US profile validation is a first-class gap** this catalog fills.
+GIFTs historically stripped REMARKS; **US profile validation is a first-class gap** this catalog fills.
 
 ### US METAR/SPECI strategy (FMH-1)
 
@@ -378,7 +378,7 @@ Lint: retain the full `RMK` string and known structured tokens. Encode maps into
 | `$` maintenance | `maintenanceIndicator` |
 | Unparsed plain language | `Remarks/freeText` or `humanReadableText` — **never drop** |
 
-NWS machine tables may be unreachable (`codes.nws.noaa.gov/FMH-1` timeout 2026-07-14) —
+NWS machine tables may be unreachable (`codes.nws.noaa.gov/FMH-1` timeout 2026-07-14);
 keep URL cites; do not invent concept URIs.
 
 #### US SPECI issue criteria (FMH-1 §2.5.2.a — paraphrase)
@@ -452,4 +452,4 @@ If paywalled prose is unavailable in CI, gate on **public vocab + official TAC e
 - Implementation layers (post-convert IWXXM): [COMPREHENSIVE_VALIDATION.md](validation/COMPREHENSIVE_VALIDATION.md)
 - Failure taxonomy: [FAILURE_TAXONOMY.md](validation/FAILURE_TAXONOMY.md)
 - IWXXM creation (encode): [IWXXM_CONVERSION.md](IWXXM_CONVERSION.md)
-- Informative workshop framing (TAC still used for **presentation**; plans for TAC sunset ~2030; AHL bulletin heading): [mining/PPT-02-IWXXM-Framework-WMO-mining-notes.md](mining/PPT-02-IWXXM-Framework-WMO-mining-notes.md) — **not** a TAC SARP substitute; classic TAC template limits (e.g. ≤4 RVR) do **not** cap IWXXM encode capacity
+- Informative workshop framing (TAC still used for **presentation**; plans for TAC sunset ~2030; AHL bulletin heading): [mining/PPT-02-IWXXM-Framework-WMO-mining-notes.md](mining/PPT-02-IWXXM-Framework-WMO-mining-notes.md); **not** a TAC SARP substitute; classic TAC template limits (e.g. ≤4 RVR) do **not** cap IWXXM encode capacity

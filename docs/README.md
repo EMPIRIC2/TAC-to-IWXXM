@@ -1,8 +1,8 @@
 # Documentation
 
-**Canonical design / parity set:** [`CORPUS.md`](CORPUS.md) — skills cite this, not ad-hoc doc lists.
+**Canonical design / parity set:** [`CORPUS.md`](CORPUS.md); skills cite this, not ad-hoc doc lists.
 
-**Session work:** [`sessions/`](sessions/) — see [skill-routing.md](skill-routing.md).
+**Session work:** [`sessions/`](sessions/); see [skill-routing.md](skill-routing.md).
 
 **Current deploy tips:** [`deploy-state.md`](deploy-state.md) (staging has Quality metrics;
 prod last promote 2026-08-10).

@@ -4,7 +4,7 @@ Library helpers for publishing IWXXM / bulletin payloads to operator destination
 multi-database writer-contract DDL, WIS2 and EDIS sinks, AMHS/SWIM/AFS staging stubs, and
 egress host allowlisting. MIT licensed.
 
-**Not yet on PyPI** — install from this monorepo (a public `iwxxm-dissemination` release is
+**Not yet on PyPI**: install from this monorepo (a public `iwxxm-dissemination` release is
 planned separately). Import path remains `dissemination`.
 
 This package has **no** FastAPI or Supabase imports. HTTP APIs that call it live in the
@@ -34,7 +34,7 @@ allow = load_allowlist_from_env()  # DISSEMINATION_EGRESS_ALLOWLIST
 validate_egress_host("broker.example.org", allow)
 ```
 
-One-shot destination credentials are **caller-owned and memory-only** — do not persist
+One-shot destination credentials are **caller-owned and memory-only**; do not persist
 them in this library.
 
 ## Writer contract

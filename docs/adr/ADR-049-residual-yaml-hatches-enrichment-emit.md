@@ -8,7 +8,7 @@
 
 ## Context
 
-[#1226](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1226) rated every core product × engine cell **full**. Three named Python residuals remain and must stay honest in the product-engine matrix: TAC detector hatches, decode airport-name enrichment, and convert emit-map `plugin:` builders. [#1252](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1252) deepens those residuals without Schematron-as-YAML, HTTP YAML bodies, or in-app authoring (ADR-044).
+[#1226](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1226) rated every core product × engine cell **full**. Three named Python residuals remain and must stay accurately reported in the product-engine matrix: TAC detector hatches, decode airport-name enrichment, and convert emit-map `plugin:` builders. [#1252](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1252) deepens those residuals without Schematron-as-YAML, HTTP YAML bodies, or in-app authoring (ADR-044).
 
 ## Decision
 

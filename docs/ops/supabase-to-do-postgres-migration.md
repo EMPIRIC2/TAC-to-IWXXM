@@ -11,7 +11,7 @@
 
 One-time migration of legacy **product** rows from Supabase hosted Postgres into the single
 DigitalOcean Postgres instance used by API sessions + F8 (`DATABASE_URL`). After cutover,
-Supabase is **Auth/JWT only** — no product PostgREST reads/writes on the default path.
+Supabase is **Auth/JWT only**: no product PostgREST reads/writes on the default path.
 
 ## Target schema (DO / Alembic head)
 
@@ -24,7 +24,7 @@ Apply `alembic upgrade head` on DO **before** data load (**TC-EV031-002**). Revi
 | `iwxxm_ingest_results` | F8 successful ingest store |
 | `iwxxm_ingest_quarantine` | F8 quarantine |
 
-**Do not** recreate Supabase RLS, `auth.users` FKs, or `pg_cron` purge jobs on DO — ownership
+**Do not** recreate Supabase RLS, `auth.users` FKs, or `pg_cron` purge jobs on DO; ownership
 is enforced by API JWT (`user_id` claim), not Postgres RLS.
 
 ## Table / column map (T5.1)
@@ -49,7 +49,7 @@ is enforced by API JWT (`user_id` claim), not Postgres RLS.
 | `created_at` | TIMESTAMPTZ | TIMESTAMPTZ | Copy |
 | `updated_at` | TIMESTAMPTZ | TIMESTAMPTZ | Copy |
 
-**Indexes (recreated by Alembic — do not dump):**
+**Indexes (recreated by Alembic; do not dump):**
 `idx_tac_work_sessions_user_updated`, `idx_tac_work_sessions_user_product`,
 `tac_work_sessions_one_wip_per_user`.
 
@@ -166,4 +166,4 @@ N=100) over the T5.1 fingerprint columns. Exit `0` = match; `1` = mismatch; `2` 
 ## Soak / cutover note
 
 Data migrate (M5) is independent of the **7-day** DOKS dual-traffic soak (M6 / `D-S038-04-b2`).
-Render decommission follows soak checklist — not this data move alone.
+Render decommission follows soak checklist, not this data move alone.

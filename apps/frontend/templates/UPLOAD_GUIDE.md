@@ -1,6 +1,6 @@
 # Email Templates Upload Guide
 
-This directory contains 14 professional email templates ready for Supabase.
+This directory contains 14 email templates ready for Supabase.
 
 ## Quick Upload Instructions
 
@@ -93,16 +93,16 @@ Email address changed
 
 These templates require custom implementation via your application:
 
-- ✉️ Welcome email (04-welcome.md)
-- 🚨 Suspicious activity alert (06-suspicious-activity.md)
-- 🔐 MFA enabled (security/01-mfa-enabled.md)
-- ⏰ Session timeout warning (security/02-session-timeout.md)
-- 👤 Permission revoked (security/03-permission-revoked.md)
-- 💻 New device login (security/04-new-device.md)
-- 🔑 Password changed (security/05-password-changed.md)
-- 🔒 Account locked (security/06-account-locked.md)
-- 🌍 IP mismatch (security/07-ip-mismatch.md)
-- 📦 Data export ready (security/08-data-export.md)
+- Welcome email (04-welcome.md)
+- Suspicious activity alert (06-suspicious-activity.md)
+- MFA enabled (security/01-mfa-enabled.md)
+- Session timeout warning (security/02-session-timeout.md)
+- Permission revoked (security/03-permission-revoked.md)
+- New device login (security/04-new-device.md)
+- Password changed (security/05-password-changed.md)
+- Account locked (security/06-account-locked.md)
+- IP mismatch (security/07-ip-mismatch.md)
+- Data export ready (security/08-data-export.md)
 
 These can be sent via your backend using Supabase's email service or a service like SendGrid/Mailgun.
 

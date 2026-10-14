@@ -14,7 +14,7 @@ This implementation addresses critical failures in METAR-to-IWXXM conversion whe
 
 ✅ **Phase 1: OpenAIP Infrastructure**
 - Created `fetch_openaip_airports.py` - Script to fetch and cache airport data from OpenAIP API
-- Created `openaip_service.py` - Service for intelligent caching with live API fallback
+- Created `openaip_service.py` - Service for caching with live API fallback
 - Created `airport_record_builder.py` - Data merger from multiple sources (OpenAIP, vertical_datum_map, airports.json)
 - Created `closed_airports.json` - Registry of closed/deprecated airports for transparency
 
@@ -38,7 +38,7 @@ When building an airport record, sources are checked in this priority order:
    └─ CWFD: Complete record with proper designator
    
 2. OpenAIP API/Cache (primary source for accuracy)
-   └─ ~5000 airports with comprehensive metadata
+   └─ ~5000 airports with full metadata
    └─ Hybrid mode: Local cache for speed, live API fallback for missing airports
    
 3. airports.json (legacy fallback from OurAirports)

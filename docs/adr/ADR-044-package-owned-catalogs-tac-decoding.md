@@ -1,6 +1,6 @@
 # ADR-044: Package-owned rule catalogs, UI hard cutover, `tac-decoding`
 
-**Status:** Accepted (requirements lock — EV-retire-profile-dissem-ui-catalogs, 2026-09-17)  
+**Status:** Accepted (requirements lock, EV-retire-profile-dissem-ui-catalogs, 2026-09-17)  
 **Date:** 2026-09-17  
 **Corpus:** [Corpus: product §F7.v] [Corpus: product §F7.w] [Corpus: product §F9]
 [Corpus: product §F16–F19] [Corpus: system-spec] [Corpus: api] [Corpus: adr/ADR-028]
@@ -22,7 +22,7 @@ can extend decoding without carrying the full converter.
    escape hatch.
 2. **Dropdowns only for selection** — Conversion / validation / dissemination / decoding
    selection uses dropdowns (or equivalent simple pickers) fed by deployed backend lists.
-   Adding options requires package code + backend deploy — not browser-only add-ons.
+   Adding options requires package code + backend deploy, not browser-only add-ons.
 3. **Five trust catalogs** — Operator UI exposes five tabs (or a tabbed catalog shell):
    TAC Validation, IWXXM Validation, Conversion, Dissemination, Decoding. Catalogs are
    **read-only** inspect surfaces for trust/transparency.

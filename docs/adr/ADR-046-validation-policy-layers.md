@@ -1,6 +1,6 @@
 # ADR-046: Registry / Detector / Policy / Runtime for TAC and IWXXM validation
 
-**Status:** Accepted (requirements lock — EV-validation-policy-layers / #1216, 2026-09-20)  
+**Status:** Accepted (requirements lock, EV-validation-policy-layers / #1216, 2026-09-20)  
 **Date:** 2026-09-20  
 **Corpus:** [Corpus: product §F15] [Corpus: product §F2] [Corpus: adr/ADR-028] [Corpus: adr/ADR-038] [Corpus: adr/ADR-039] [Corpus: adr/ADR-044] [Corpus: adr/ADR-045] [Corpus: system-spec] [Corpus: api] [Corpus: decisions]
 

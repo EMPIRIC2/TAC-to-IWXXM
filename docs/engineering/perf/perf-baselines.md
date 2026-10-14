@@ -38,7 +38,7 @@ Values taken from the committed layer-cost matrix **mean p95 by layer**
 
 ## Machine-readable copy
 
-See [`perf-baselines.yaml`](./perf-baselines.yaml) — import from T3.5 / T5.3 / T6.6 tests.
+See [`perf-baselines.yaml`](./perf-baselines.yaml) (import from T3.5 / T5.3 / T6.6 tests).
 
 ## Soft benches (T3.5)
 
@@ -48,12 +48,12 @@ See [`perf-baselines.yaml`](./perf-baselines.yaml) — import from T3.5 / T5.3 /
 | Native validate vs committed `lib_path_lxml` ceiling | Soft warn | same env flip |
 | Helpers | `scripts/bench/perf_gates.py` | `tests/perf/test_t35_native_validate_soft_benches.py` |
 
-Native Schematron is **real evaluation**; lxml may still `SCHEMATRON_SKIPPED` — soft
+Native Schematron is **real evaluation**; lxml may still `SCHEMATRON_SKIPPED`. Soft
 warnings on Schematron ratio are expected until publish re-baseline.
 
 **2026-07-18 T3.5 local run (maturin `dev` / unoptimized):** native XSD+combined
 soft-warned at ~50–60× same-run lxml (debug build + full Schematron vs skip path).
-Treat as wiring proof only — **re-bench release wheels** before T6.6 hard-fail.
+Treat as wiring proof only; **re-bench release wheels** before T6.6 hard-fail.
 
 ## Caveats (must carry into hard gates)
 

@@ -3,7 +3,7 @@
 **Ticket:** [#1198](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1198)  
 **Dates:** Stage 0 2026-09-16 · **Stage 1 live web re-verify 2026-09-16**  
 **Session:** `EV-1198-stage1-national-xsd-web-reverify`  
-**Status:** Stage 1 complete — **#1198 stays blocked for Conversion mining**; **AU = partial candidate (license + scope gate)**; no M6 vendor-sync PR opened this pass  
+**Status:** Stage 1 complete: **#1198 stays blocked for Conversion mining**; **AU = partial candidate (license + scope gate)**; no M6 vendor-sync PR opened this pass  
 **Corpus:** [Corpus: product §F7.w] [Corpus: product §M6] [Corpus: adr/ADR-038] [Corpus: domain-profiles]
 
 ## Bottom line
@@ -13,8 +13,8 @@
 Live web verification (2026-09-16) confirms:
 
 1. **No full national extension tree** analogous to US `iwxxm-us` / CA `iwxxm-ca` was found for BR/HK/IN/JP/KR/NZ/UK.
-2. **Australia (BOM) publishes a real, downloadable TAF-only national extension** (`AU-TAF` / `iwxxm-au` 1.0) via the ICAO WG-MIE / EUR DMG Global Extension Repository — **not** a multi-product national schema tree.
-3. **UK Met Office** lists an experimental Colour State extension in its codes registry, but the **canonical XSD URL returns HTTP 404** — not pin-ready.
+2. **Australia (BOM) publishes a real, downloadable TAF-only national extension** (`AU-TAF` / `iwxxm-au` 1.0) via the ICAO WG-MIE / EUR DMG Global Extension Repository, **not** a multi-product national schema tree.
+3. **UK Met Office** lists an experimental Colour State extension in its codes registry, but the **canonical XSD URL returns HTTP 404**; not pin-ready.
 4. Keep emitting WMO core `national_lines: ["*"]` and `national_residuals.awaiting_vendor_pins` for all eight lines until a licensed, version-aligned M6 pin is approved.
 5. Do **not** invent pins or stub XSDs. Stage 3 national-office outreach remains out of scope for the operator this cycle.
 
@@ -58,9 +58,9 @@ Evidence (session): `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-1198-s
 
 ## Key findings
 
-1. **Global Extension Repository is the right index.** WG-MIE-backed EUR DMG page hosts downloadable State extensions. As of Stage 1 it contains only France + Australia — confirming national XSDs are rare and catalogued centrally when shared.
+1. **Global Extension Repository is the right index.** WG-MIE-backed EUR DMG page hosts downloadable State extensions. As of Stage 1 it contains only France + Australia, confirming national XSDs are rare and catalogued centrally when shared.
 
-2. **AU-TAF is real but narrow.** Namespace `http://www.bom.gov.au/aviation/iwxxm-au/1.0`, prefix `iwxxm-au`, zip sha256 `5b16e2d09d1854c27f51abdb62b791a4d15ff5199cd47108bee4add5855cea32`. Covers INTER/TEMPO interpretation, QNH, remarks-related TAF extension types — **not** METAR/SPECI/SIGMET national packs. Related IWXXM leaf version **3.0.1**.
+2. **AU-TAF is real but narrow.** Namespace `http://www.bom.gov.au/aviation/iwxxm-au/1.0`, prefix `iwxxm-au`, zip sha256 `5b16e2d09d1854c27f51abdb62b791a4d15ff5199cd47108bee4add5855cea32`. Covers INTER/TEMPO interpretation, QNH, remarks-related TAF extension types, **not** METAR/SPECI/SIGMET national packs. Related IWXXM leaf version **3.0.1**.
 
 3. **UK is a registry ghost.** Met Office Codes Registry documents Colour State (military aerodrome) as experimental; the delegated XSD resource does not resolve. Cannot pin a 404.
 
@@ -125,7 +125,7 @@ Live re-verify complete; report + decisions + issue updated.
 Open Build **only after** AskQuestion covering:
 
 1. Accept **TAF-only** national extension (not full `iwxxm-us`-class tree) for mining / Profile Builder?
-2. License / redistribution into MIT monorepo (BOM / Austro Control hosting — confirm terms)?
+2. License / redistribution into MIT monorepo (BOM / Austro Control hosting; confirm terms)?
 3. Pin under which local path/version (real **1.0**, not guessed `3.0`)?
 4. Align miner `NATIONAL_VENDOR_EXPECTATIONS` to BOM namespace vs keep awaiting fuller pack?
 
@@ -133,15 +133,15 @@ Default recommendation until those are answered: **do not open M6 PR**.
 
 ### Stage 3 — outreach
 
-Still the path for BR/HK/IN/JP/KR/NZ/UK (and UK XSD repair). **Operator cannot perform outreach this cycle** — leave deferred.
+Still the path for BR/HK/IN/JP/KR/NZ/UK (and UK XSD repair). **Operator cannot perform outreach this cycle**; leave deferred.
 
-**WMO-only forever:** still requires Stage 1 clean negative **and** Stage 3 confirmation — not declared.
+**WMO-only forever:** still requires Stage 1 clean negative **and** Stage 3 confirmation; not declared.
 
 ---
 
 ## Caveats
 
-- AU zip is a **single** `taf.xsd` (name collides conceptually with WMO `taf.xsd` — vendor path must disambiguate).
+- AU zip is a **single** `taf.xsd` (name collides conceptually with WMO `taf.xsd`; vendor path must disambiguate).
 - No Schematron shipped in the AU zip.
 - UK registry ≠ downloadable schema.
 - License silence ≠ permission to vendor.

@@ -84,7 +84,7 @@ Not flaky. Two coupled bugs:
 1. **Stale pin vs moved tag tip.** Manifest pins `iwxxm` / `iwxxm-modelling` at
    tag `v2025-2` with commit `35180cbe…` / `ec099bfd…`. GitHub
    `releases/latest` for the same tag name now resolves to different SHAs
-   (`2c4db03d…` / `4c7fbbfc…`) — confirmed via API vs `vendor/manifest.json`.
+   (`2c4db03d…` / `4c7fbbfc…`), confirmed via API vs `vendor/manifest.json`.
 2. **Workflow step order.** `vendor-sync.yml` runs:
    - `check_upstream.py --update` → writes new `commit_sha`, **leaves old
      `tree_sha256`**

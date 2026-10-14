@@ -54,7 +54,7 @@ Package merge; WAFS/QVACI full grammars; in-app pack editor; new WMO fetches; so
 
 ## F107 checkpoint
 
-Session-open retrieve: `no_matches`. Historical retrieve: generic FailureMode `fm-recurring-arch` (session-store drift) — **adopt** (already using session-store). Spec question on RAG gates — **waive** (wrong domain).
+Session-open retrieve: `no_matches`. Historical retrieve: generic FailureMode `fm-recurring-arch` (session-store drift): **adopt** (already using session-store). Spec question on RAG gates: **waive** (wrong domain).
 
 ## Downstream docs to delta
 

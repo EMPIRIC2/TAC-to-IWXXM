@@ -18,7 +18,7 @@
 | prod | `main` | **TAC-to-IWXXM** | `metar-iwxxm` | `metar-iwxxm` | `https://api.tac-to-iwxxm.com`, `https://app.tac-to-iwxxm.com` |
 
 **IaC (T6.1 / #712 / EV-043 / EV-044):** Kustomize overlays at
-[`deploy/doks/overlays/{staging,prod}`](../deploy/doks/) —
+[`deploy/doks/overlays/{staging,prod}`](../deploy/doks/):
 `kubectl apply -k deploy/doks/overlays/staging` (or `prod`) against the **matching** cluster.
 Secrets create out-of-band.
 Staging DNS: [ops/doks-staging-dns-runbook.md](ops/doks-staging-dns-runbook.md). Promote path:
@@ -28,7 +28,7 @@ Staging DNS: [ops/doks-staging-dns-runbook.md](ops/doks-staging-dns-runbook.md).
 `alembic upgrade head` (same as `make db-migrate` / CI). Optional Job:
 `deploy/doks/base/job-alembic-upgrade.yaml`.
 
-**Product DB**: DigitalOcean Postgres (`DATABASE_URL`) — sessions + F8 store/quarantine + F37 live-map cache.  
+**Product DB**: DigitalOcean Postgres (`DATABASE_URL`) for sessions + F8 store/quarantine + F37 live-map cache.  
 **Auth**: Supabase Auth only (**JWKS**). No Supabase product DB on default path (ADR-033).
 
 **F37 live map**: Staging runs `metar-map-translator` (backend image, `from src.map_translator import main`) at one replica. It is not a public Service. The API timer is off on staging (`LIVE_MAP_REFRESH=0`). Both processes use `LIVE_MAP_CACHE_URL` from the product `DATABASE_URL`. `metar-worker` stays at 0 replicas. Production promotion is a separate step. [Corpus: product §F37] [Corpus: adr/ADR-052] [Corpus: deploy]
@@ -177,7 +177,7 @@ services without failing (see BUG-2026-08-03). GHCR push continues; DOKS is the 
 6. **Ship prod:** on the merged `main` tip, `git tag vYYYY.MM.DD-deploy` &&
    `git push origin <tag>` (triggers prod Deploy after CI). Optional escape hatch:
    Actions → CI/CD Pipeline → **Run workflow** (`workflow_dispatch`, production).
-7. PyPI package tags (F12–F14) when publishing — separate from the deploy tag.
+7. PyPI package tags (F12–F14) when publishing, separate from the deploy tag.
 
 Solo-dev gates: (1) PR `stage`→`main`, (2) deploy tag or dispatch. No Environment reviewers.
 Do **not** promote while Staging smoke or Staging gate is red/missing. See
@@ -195,7 +195,7 @@ Treat every prod cutover as a release:
 - [ ] Cut `docs/CHANGELOG.md` (dated section; link the promote PR when known)
 - [ ] Open/update PR `stage` → `main`; Staging smoke + Staging gate green
 - [ ] **EV-061 / #1015:** required checks for full CI unit + lint + typecheck + full E2E green
-      on the promote PR (stricter than smoke-only) — contexts in the table above
+      on the promote PR (stricter than smoke-only); contexts in the table above
 - [ ] Merge to `main`; wait for tip CI green (**Deploy must not run** on that push)
 - [ ] `git tag vYYYY.MM.DD-deploy` on `main` tip; `git push origin <tag>` → prod Deploy
 - [ ] If publishing to PyPI: per-package tags (`tac2iwxxm-v*`, `tac-validate-v*`,
@@ -255,7 +255,7 @@ F8 worker runs on DOKS.
 | `INGEST_POLLER_URL` | Yes | HTTPS JSON feed (or object-prefix listing). **Must** be `https://` — never `REPLACE_ME_*` |
 | `INGEST_POLL_INTERVAL_SEC` | Yes | Poll interval (seconds) |
 
-**Non-prod fixture URL (EV-033 — pin this when no operational feed):**
+**Non-prod fixture URL (EV-033; pin this when no operational feed):**
 
 ```
 https://raw.githubusercontent.com/EMPIRIC2/TAC-to-IWXXM/main/apps/worker/tests/fixtures/ingest_feed.json
@@ -314,7 +314,7 @@ Operator sync: [env-sync-runbook.md](ops/env-sync-runbook.md). Verify: `make env
 3. Rebuild **metar-frontend** with `/config.json` + publishable Auth key.
 4. Deploy **metar-worker** with `DATABASE_URL` + poller env.
 5. Run **H0–H5** (H4–H5 required) + H6 public + Auth session smoke + F8 store smoke.
-6. Soak + Render decommission (TC-F30-005) — **done** under `D-S038-t65-waive` (see archive).
+6. Soak + Render decommission (TC-F30-005): **done** under `D-S038-t65-waive` (see archive).
 
 See `.cursor/skills/connectivity-gates.md` for H-tier definitions.
 
@@ -333,7 +333,7 @@ Post-migration compose: **backend + frontend** (two services). Worker may run vi
 ### SQL Server ODBC (F16 / E14-06)
 
 BYOC SQL Server sinks use SQLAlchemy async + **aioodbc** (`mssql+aioodbc://`). A **system
-ODBC SQL Server driver** must be registered with the host ODBC manager — Python wheels alone
+ODBC SQL Server driver** must be registered with the host ODBC manager; Python wheels alone
 are not enough. Preferred driver: **Microsoft ODBC Driver 18 for SQL Server** (then 17);
 **FreeTDS** is accepted as a fallback. Probe helpers live in
 `packages/dissemination` (`dissemination.odbc`).
@@ -344,7 +344,7 @@ are not enough. Preferred driver: **Microsoft ODBC Driver 18 for SQL Server** (t
 uv run python -c "from dissemination.odbc import list_sqlserver_odbc_drivers, odbc_sqlserver_available; print(list_sqlserver_odbc_drivers()); print(odbc_sqlserver_available())"
 ```
 
-**Debian / Ubuntu (Microsoft Driver 18)** — follow current Microsoft docs for the distro
+**Debian / Ubuntu (Microsoft Driver 18)**: follow current Microsoft docs for the distro
 codename; typical shape:
 
 ```bash
@@ -365,7 +365,7 @@ mssql+aioodbc://USER:PASS@HOST:1433/DB?driver=ODBC+Driver+18+for+SQL+Server
 
 **CI / tests**: `make test-integration-dissemination` runs SQL Server cases only when Docker
 **and** an ODBC SQL Server driver are present; otherwise those cases **skip** (TC-F16-003 /
-E14-06). Default CI images may omit ODBC — that is expected.
+E14-06). Default CI images may omit ODBC; that is expected.
 
 **API Docker image**: `apps/backend/docker/Dockerfile` does **not** currently install
 `msodbcsql18`. Stock Render **metar-api** cannot open SQL Server BYOC URIs until the image
@@ -374,7 +374,7 @@ ODBC. Package README: [`packages/dissemination/README.md`](../packages/dissemina
 
 ### wis2box Compose harness (F17 / E14-04)
 
-Staging WIS2 uses a **Docker Compose / CI harness** — not a Render web service. Image build
+Staging WIS2 uses a **Docker Compose / CI harness**, not a Render web service. Image build
 context: `packages/dissemination/docker/wis2box-harness` (MQTT `:1883` + HTTP dataset
 `:8080` / host `:9080`). Overlay: `docker-compose.wis2box.yml` (profile `wis2box`).
 
@@ -395,7 +395,7 @@ DISSEMINATION_EGRESS_ALLOWLIST=wis2box,127.0.0.1,127.0.0.0/8,localhost
 
 **Render / prod:** leave empty (fail-closed) when not demoing. For live BYOC close-gate
 demos (TC-F17-002 / TC-F18-002), set only the exact operator Postgres / WIS2 / EDIS SMTP
-hostnames — never wildcards or destination secrets. Live WIS2 acceptance remains operator
+hostnames, never wildcards or destination secrets. Live WIS2 acceptance remains operator
 BYOC.
 
 ## Docker Build Context
@@ -432,7 +432,7 @@ Supabase migrations live in `supabase/migrations/` and are applied externally (n
 
 Server `tac_work_sessions` + Auth/RLS path is **retired** for the operator product (F21 /
 ADR-031). Work history is browser IndexedDB. Legacy rows may be archived ~30 days (ops note
-from T5.5) — not a product API.
+from T5.5); not a product API.
 
 Historical apply steps (archive only):
 
@@ -449,7 +449,7 @@ Operator reference: [env-sync-runbook.md](ops/env-sync-runbook.md), ADR-011, ADR
 `.github/workflows/supabase-sync.yml` applies schema changes and deploys legacy edge
 functions to project `ktvxijislbtgqapllmuk` on every push to `main` or `stage` (and via
 manual dispatch). Pull requests against `main`/`stage` run a read-only migration dry-run
-and list local edge functions — they never write to the project.
+and list local edge functions; they never write to the project.
 
 | Job | What | Source path |
 |-----|------|-------------|
@@ -596,7 +596,7 @@ Environments exist on `EMPIRIC2/TAC-to-IWXXM`. Workflows need `id-token: write`
 (see config-spec §F11–F14).
 
 **Public landing pages**: Package `README.md` (and `pyproject.toml` `description`) are the
-PyPI long/short description — write for library consumers; do not require internal ADR /
+PyPI long/short description. Write for library consumers; do not require internal ADR /
 feature-id / execution-plan identifiers. Monorepo tracing stays in corpus / session docs.
 
 **Render / DOKS**: PyPI publish does not replace app smokes. When msgspec **response** shapes

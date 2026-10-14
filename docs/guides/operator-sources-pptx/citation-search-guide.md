@@ -48,7 +48,7 @@ Repo digs (help find section numbers; not SoT):
 
 1. ICAO Store → search **“Annex 3”** → open the **edition your State has adopted**.  
 2. In-PDF search: `IWXXM`, `XML`, `digital`, `dissemination`, `METAR`, `TAF`, `SIGMET`.  
-3. Record **chapter / appendix / table** numbers on slides — not paragraphs.  
+3. Record **chapter / appendix / table** numbers on slides, not paragraphs.  
 4. Download **OPMET IWXXM Exchange Guidelines 5th** (table #3) → search `translation`, `Schematron`, `AMHS`, `FTBP`.  
 5. Store search **“Doc 10003”** → use the **published** edition (not the 2014 advance draft).
 
@@ -60,7 +60,7 @@ Repo digs (help find section numbers; not SoT):
 
 ### C. “How do we prove a bulletin is exchange-ready?”
 
-1. Guidelines 5th → generation / translation / validation (repo dig: §5.3 — XSD **and** Schematron).  
+1. Guidelines 5th → generation / translation / validation (repo dig: §5.3, XSD **and** Schematron).  
 2. Pipeline: TAC lint → convert → XSD → Schematron.  
 3. Official examples: `…/2025-2/examples/` and `vendor/schemas/iwxxm/`.
 
@@ -117,11 +117,11 @@ Ops notes: [ICAO_OPMET_COMPLIANCE.md](../../domain/iwxxm/ICAO_OPMET_COMPLIANCE.m
 
 ## 6. Leave-behind one-pager
 
-1. Annex 3 (Store) — SARPs  
-2. Doc 10003 (Store) — exchange model  
-3. OPMET IWXXM Guidelines 5th (public PDF) — how to implement exchange  
-4. schemas.wmo.int/iwxxm/2025-2 — validate here  
-5. codes.wmo.int — vocabularies  
+1. Annex 3 (Store): SARPs  
+2. Doc 10003 (Store): exchange model  
+3. OPMET IWXXM Guidelines 5th (public PDF): how to implement exchange  
+4. schemas.wmo.int/iwxxm/2025-2: validate here  
+5. codes.wmo.int: vocabularies  
 6. This system: lint → convert → XSD+SCH against pin v2025-2  
 
 [Corpus: product §F6/F7] [docs/domain/rules/ACCESS_AND_CITATION.md]

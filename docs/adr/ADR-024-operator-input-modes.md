@@ -26,7 +26,7 @@ ADR-023 wired dormant Convert params but deferred AHL bulletin UI, COLLECT/`.gz`
    input and output (Conversion log + workbench console). Also sent as multipart `log_level`
    (accepted/logged by API). Not server env `LOG_LEVEL`.
 5. **Include Nil Reasons** → multipart `include_nil_reasons` (accepted; engine may still emit
-   NIL shells until tac2iwxxm honors the flag — logged as placeholder behavior).
+   NIL shells until tac2iwxxm honors the flag; logged as placeholder behavior).
 
 ## Alternatives Considered
 

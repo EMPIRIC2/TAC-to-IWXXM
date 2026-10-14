@@ -225,7 +225,7 @@ These interfaces allow you to:
 All responses are validated using Pydantic models, ensuring:
 - Type safety and correctness
 - Automatic OpenAPI schema generation
-- Rich IDE autocomplete support
+- IDE autocomplete support
 - Runtime validation of all fields
 
 ---

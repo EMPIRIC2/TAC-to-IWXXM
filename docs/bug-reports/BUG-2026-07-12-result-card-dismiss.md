@@ -78,7 +78,7 @@ Spec conformance: **no blocking Contradiction**; fix is code bug / UX drift vs F
 
 ## Root cause (proposed)
 
-1. **Clear** (`handleClear`) clears pending files + manual input only — leaves `convertedFiles` / results Card.
+1. **Clear** (`handleClear`) clears pending files + manual input only and leaves `convertedFiles` / results Card.
 2. **Remove** updates local state, but any later `loadedWorkSession` change (stale autosave/`onSessionSaved`) re-runs hydrate `useLayoutEffect` and restores `converted_results`.
 
 ## Repro test
@@ -120,10 +120,10 @@ Spec conformance: **no blocking Contradiction**; fix is code bug / UX drift vs F
 
 ### Layer checklist (to fill during verify)
 
-- [x] Layer 1 — Automated (bug repro green 2/2; FileConverter 93/93; main CI green post-merge)
-- [x] Layer 2 — Reproduction (Vitest `bug-2026-07-12-result-card-dismiss.test.tsx` — Clear + stale rehydrate)
-- [x] Layer 3 — Pre-deploy smoke (frontend unit suite green on PR branch + main)
-- [x] Layer 4 — Production (Playwright prod smoke 2026-07-12: Clear + Remove dismiss results region after draft saved; deploy `dep-d9a1tql7vvec738evhmg` live `b20158b`)
+- [x] Layer 1: Automated (bug repro green 2/2; FileConverter 93/93; main CI green post-merge)
+- [x] Layer 2: Reproduction (Vitest `bug-2026-07-12-result-card-dismiss.test.tsx`: Clear + stale rehydrate)
+- [x] Layer 3: Pre-deploy smoke (frontend unit suite green on PR branch + main)
+- [x] Layer 4: Production (Playwright prod smoke 2026-07-12: Clear + Remove dismiss results region after draft saved; deploy `dep-d9a1tql7vvec738evhmg` live `b20158b`)
 
 **PR:** [#713](https://github.com/joseph-c-mcguire/metar-to-IWXXM/pull/713) merged → `b20158b7b29d5e5b68d3cd80c9618454743713e1`
 
@@ -154,4 +154,4 @@ Spec conformance: **no blocking Contradiction**; fix is code bug / UX drift vs F
 
 ## Cursor rule
 
-`.cursor/rules/optional/fileconverter-f5-hydrate.mdc` — hydrate-on-id-change, Clear scope, autosave deps.
+`.cursor/rules/optional/fileconverter-f5-hydrate.mdc`: hydrate-on-id-change, Clear scope, autosave deps.

@@ -17,7 +17,7 @@ the link does not confirm the account. Login then fails with Supabase
 
 ## Error logs
 
-Auth logs (2026-09-17) — signup succeeds, then password grant fails:
+Auth logs (2026-09-17): signup succeeds, then password grant fails:
 
 ```
 path=/signup status=200 action=user_confirmation_requested

@@ -10,7 +10,7 @@
 “Conversion” = TAC → IWXXM mapping / nilReason / href.  
 “IWXXM val” = XSD + Schematron + offline RDF for produced XML.
 
-Profiles: **`annex3`** (ICAO/WMO core) · **`iwxxm_us`** (US national extensions) · **`ca_eccc`** (Canada MSC — IWXXM 3.0.0 + `iwxxm-ca`).
+Profiles: **`annex3`** (ICAO/WMO core) · **`iwxxm_us`** (US national extensions) · **`ca_eccc`** (Canada MSC: IWXXM 3.0.0 + `iwxxm-ca`).
 
 **Strategies (how to apply these cells):** [../README.md](../README.md) §End-to-end strategy ·
 [../TAC_VALIDATION.md](../TAC_VALIDATION.md) §Validation strategy ·
@@ -33,7 +33,7 @@ Profiles: **`annex3`** (ICAO/WMO core) · **`iwxxm_us`** (US national extensions
 | **G7 Bulletin** (when packed) | bulletin | OPMET Guidelines 5th + COLLECT / AHL | Aggregated message ops-ready |
 
 **Release:** G4 **and** G5 on the document’s year line. AWC / iwxxm-translation = smoke only
-(translation suite: TAC→**2025-2** encode + SCH; **no** byte-match to suite **2023-1** XML — #797).  
+(translation suite: TAC→**2025-2** encode + SCH; **no** byte-match to suite **2023-1** XML; #797).  
 **IWXXM→TAC round-trip:** not a domain gate (APAC FAQ §8.3: reverse translate not permitted when source TAC exists).
 
 ### Product × strategy cite (quick)
@@ -112,7 +112,7 @@ documented). Full table + gaps:
 
 **Validated (S059 / EV-050 / #959):** offline harvest + `tac-validate` membership CI shipped
 (M1–M2). Aggressive gap packs (`RE*`, AIRMET `_`, SpaceWx composed, TCU) closed; residual
-depth **defer+cite** — post-M2 table:
+depth **defer+cite**; post-M2 table:
 [fixture-coverage-delta-t2.4.md](../../sessions/S059-codes-wmo-validated/reports/fixture-coverage-delta-t2.4.md).
 
 | Family | Primary register | Fixture ∩ % (Lean EV-046) | Post-M2 (EV-050) |
@@ -149,8 +149,8 @@ depth **defer+cite** — post-M2 table:
 
 Failed convert path: `*-translation-failed.*` → `@translationFailedTAC` quarantine shape.
 Inventory + soft-path status (S046 / #860 / **TC-EV038-009**):
-[t3.2-translation-failed-inventory.md](../../sessions/S046-iwxxm-corpus-residuals/reports/t3.2-translation-failed-inventory.md)
-— METAR/TAF convert covered (TC-EV023-003); other product convert quarantine **deferred**.
+[t3.2-translation-failed-inventory.md](../../sessions/S046-iwxxm-corpus-residuals/reports/t3.2-translation-failed-inventory.md);
+METAR/TAF convert covered (TC-EV023-003); other product convert quarantine **deferred**.
 
 **Sample-menu tiers (UJ-039 / ADR-032 amend · S031):** `wmoPass` = default-golden equality; `wmoReference` = loadable official TAC (may not equal encoder). **VONA** `vona-A7-1` is **`wmoPass`** (EV-032 / #741 / F32). **QVACI / WAFS / SIGWX** stay OOS (durable table below). **TC SIGMET** `sigmet-A6-2-TC` is **`wmoPass`** (EV-032 / #835); **VA-EGGX** `sigmet-VA-EGGX` is **`wmoPass`** (S046 / EV-038 / #856); **SWXA** `spacewx-A7-3/4/5` are **`wmoReference`** (#740 + S046/#857). Shape inventory: [example-inventory.md](../../sessions/S036-eight-family-ahl-rules-823/reports/mining/example-inventory.md).
 
@@ -236,7 +236,7 @@ TAF NCLWS, AIRMET GFA). Codes live in [ISSUE_CATALOG.md](./ISSUE_CATALOG.md) /
 | **C7** API pre-convert lint wire | `semantic_profile=CA_ECCC` on `/convert` | — | — | ✅ closed M1 (TC-EV071-003) |
 | **C8** Quality matrix + catalog links | `tests/quality_matrices/inventory/ca_eccc_lint.yml` | — | — | ✅ closed M1 (TC-EV071-004) |
 
-Residual MANOBS book rules (CONTRAILS/AURORA; variable RVR / VIS.VAR stubs from #1029; LTG TAC↔XML mapping) remain P2 / #1039 — not silent omission. **Held:** monolithic Addendum TAC rule; invented code-ca URIs; new goldens until local `taf-ca`/`airmet-ca` QName parse.
+Residual MANOBS book rules (CONTRAILS/AURORA; variable RVR / VIS.VAR stubs from #1029; LTG TAC↔XML mapping) remain P2 / #1039, not silent omission. **Held:** monolithic Addendum TAC rule; invented code-ca URIs; new goldens until local `taf-ca`/`airmet-ca` QName parse.
 
 Exchange-output packaging for aerodrome products is **closed** ([#1032](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1032) / EV-071..073). See table below.
 
@@ -244,7 +244,7 @@ Exchange-output packaging for aerodrome products is **closed** ([#1032](https://
 
 ## CA_ECCC exchange output + COLLECT (EV-071..073 / #1032)
 
-Profile-driven MSC operational packaging — reusable contract per playbook [#1044](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1044) type F.
+Profile-driven MSC operational packaging: reusable contract per playbook [#1044](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1044) type F.
 
 | Theme | Convert (F6) | Validate layer 6 | Status |
 |-------|--------------|------------------|--------|
@@ -281,7 +281,7 @@ validate-first slice before convert investment).
 
 Hard themes from [taf-speci-research-catalog.md](../../sessions/S020-aerodrome-quality/reports/taf-speci-research-catalog.md)
 (E15-13; #735 / #734 exceptional-rule tables + WMO `TAC-to-XML-Guidance.txt` + 2025-2
-corrections — no `runwayState`). Paywalled Annex 3 / FMH / FM 205 prose: **cite-only** via
+corrections; no `runwayState`). Paywalled Annex 3 / FMH / FM 205 prose: **cite-only** via
 mining notes (see catalog Sources). Codes extend [ISSUE_CATALOG.md](./ISSUE_CATALOG.md) /
 ADR-028 registry.
 
@@ -296,7 +296,7 @@ ADR-028 registry.
 | **S3** SPECI golden convert + SCH | — | Expand annex3 / iwxxm_us | M-xsd / M-sch | ✅ closed (annex3 + `iwxxm_us` goldens T3.5–T3.6; TC-F20-003) |
 | **C1** Common rules (reportStatus, nilReasons, CRS, one-report) | ✅ where TAC tokens (AMD/COR/NIL/NSC + `MULTI_REPORT_BULLETIN`); **convert-only** (lint N/A): 2-D CRS (`srsName`/`srsDimension`/`axisLabels`), `translationFailedTAC`, COLLECT packing, code-list URIs — no TAC surface; catalog §C1 | Guidance common table | Round-trip | ✅ lint closed (T4.2); **deferred** convert-only CRS / `translationFailedTAC` / COLLECT / code-list URIs (no TAC lint surface) |
 
-HARD themes closed or explicitly deferred above (E15-5). Residual convert deepen (T2 changeForecast goldens; extra T4 `iwxxm_us` TAF; C1 CRS convert) is follow-on — not silent omission.
+HARD themes closed or explicitly deferred above (E15-5). Residual convert deepen (T2 changeForecast goldens; extra T4 `iwxxm_us` TAF; C1 CRS convert) is follow-on, not silent omission.
 
 ---
 
@@ -325,7 +325,7 @@ API: `product=sigmet`; root `iwxxm:SIGMET` vs `iwxxm:VolcanicAshSIGMET` from TAC
 | **C1** Common rules (reportStatus, nilReasons, CRS, one-report, translationFailedTAC) | ✅ where TAC tokens (CNL/STNR/`NO VA EXP`/COR ban + `MULTI_REPORT_BULLETIN`); **convert-only** (lint N/A): 2-D CRS (`srsName`/`srsDimension`/`axisLabels`), `translationFailedTAC`, COLLECT packing, code-list URIs — no TAC surface; catalog §C1 | Guidance common table | Round-trip | ✅ lint closed (T4.4); **deferred** convert-only CRS / `translationFailedTAC` / COLLECT / code-list URIs (no TAC lint surface; F20 C1 pattern) |
 
 HARD themes close or explicitly defer during build (E19-5). Residual convert-only items
-without TAC lint surface follow F20 C1 pattern — not silent omission.
+without TAC lint surface follow F20 C1 pattern, not silent omission.
 
 ---
 
@@ -336,19 +336,19 @@ without TAC lint surface follow F20 C1 pattern — not silent omission.
 - [x] Labels: normative vs informative vs historical-GIFTs
 - [x] Cross-links to #698 / #699 in [RULE_SOURCE_URLS.md](./RULE_SOURCE_URLS.md)
 - [x] No secrets or scraped copyrighted full-text in-repo
-- [x] F15 acc3 — METAR/SPECI rows + R1–R8 closed (S015 / EV-011; see table above)
-- [x] F20 acc — TAF + SPECI themes T1–T4 / S1–S3 / C1 closed or deferred (S020 / EV-015; see table above)
-- [x] F23 acc — SIGMET + VA SIGMET themes G1–G3 / V1–V3 / C1 closed or deferred (S025 / EV-019)
-- [x] F24 acc — AIRMET WMO default golden + registry (S026 / EV-020; #731)
-- [x] F25 acc — METAR/SPECI/TAF WMO default goldens + Examples catalog gate (S026 / EV-020)
-- [x] F26 acc — VAA WMO default golden + registry themes V1–V3/C1 (S027 / EV-021; #736)
-- [x] F27 acc — TCA WMO default golden + registry themes T1–T3/C1 (S027 / EV-021; #737)
-- [x] F32 acc — VONA themes N1–N4 / C1 closed or deferred to children (S040 / EV-032; #741)
-- [x] F36 acc — CA_ECCC lint pack METAR/TAF/AIRMET themes C1–C8 closed (EV-071 M1 / #1038; see table above)
-- [x] F36 acc — CA_ECCC exchange output + COLLECT themes X1–X5 closed; #1032 umbrella verified EV-075
-- [x] F36 acc — CA_ECCC SIGMET validate-first ops S1–S6 closed or waived (EV-074 / #1043)
-- [x] F36 acc — CA_ECCC SIGMET exchange emit closed (EV-076 / #1061); VAA exchange emit waived (D-EV074-vaa-follow); VAA TAC validate-first (EV-077)
-- [x] F36 acc — CA_ECCC #916 P1 closeout verified (EV-078)
+- [x] F15 acc3: METAR/SPECI rows + R1–R8 closed (S015 / EV-011; see table above)
+- [x] F20 acc: TAF + SPECI themes T1–T4 / S1–S3 / C1 closed or deferred (S020 / EV-015; see table above)
+- [x] F23 acc: SIGMET + VA SIGMET themes G1–G3 / V1–V3 / C1 closed or deferred (S025 / EV-019)
+- [x] F24 acc: AIRMET WMO default golden + registry (S026 / EV-020; #731)
+- [x] F25 acc: METAR/SPECI/TAF WMO default goldens + Examples catalog gate (S026 / EV-020)
+- [x] F26 acc: VAA WMO default golden + registry themes V1–V3/C1 (S027 / EV-021; #736)
+- [x] F27 acc: TCA WMO default golden + registry themes T1–T3/C1 (S027 / EV-021; #737)
+- [x] F32 acc: VONA themes N1–N4 / C1 closed or deferred to children (S040 / EV-032; #741)
+- [x] F36 acc: CA_ECCC lint pack METAR/TAF/AIRMET themes C1–C8 closed (EV-071 M1 / #1038; see table above)
+- [x] F36 acc: CA_ECCC exchange output + COLLECT themes X1–X5 closed; #1032 umbrella verified EV-075
+- [x] F36 acc: CA_ECCC SIGMET validate-first ops S1–S6 closed or waived (EV-074 / #1043)
+- [x] F36 acc: CA_ECCC SIGMET exchange emit closed (EV-076 / #1061); VAA exchange emit waived (D-EV074-vaa-follow); VAA TAC validate-first (EV-077)
+- [x] F36 acc: CA_ECCC #916 P1 closeout verified (EV-078)
 
 ---
 
@@ -365,12 +365,12 @@ Hard themes from #731 + WMO `TAC-to-XML-Guidance.txt` + vendor `airmet-A6-1a-TS`
 | **A4** Negatives + translation-failed adjacency | Negatives | Not happy-path | — | ✅ Closed (S026 T2.4) — TC-F24-004 registry codes + translation-failed root guard |
 | **C1** Common rules (shared with SIGMET family) | ✅ where TAC | Deferred convert-only per F23 C1 pattern | — | Cite F23 |
 
-**A3 residuals (documented, not deferred themes):** vendor XML labels MWO as `YUDD` while TAC uses `YUSO` — encoder follows TAC; STNR encodes `#731` shared motion nils (vendor omits motion). Golden is encoder-shaped under `canonicalize_xml` (ADR-032 / F23 pattern), not byte-identical vendor UUIDs.
+**A3 residuals (documented, not deferred themes):** vendor XML labels MWO as `YUDD` while TAC uses `YUSO`; encoder follows TAC; STNR encodes `#731` shared motion nils (vendor omits motion). Golden is encoder-shaped under `canonicalize_xml` (ADR-032 / F23 pattern), not byte-identical vendor UUIDs.
 
 ## METAR / SPECI / TAF — F25 WMO official example parity (S026 / EV-020)
 
 **Research catalog:** [wmo-quality-research-catalog.md](../../sessions/S026-airmet-quality-wmo-examples/reports/wmo-quality-research-catalog.md) (T0.1).  
-Paywalled Annex 3 / FMH: cite mining notes only — do not copy prose into wheels.
+Paywalled Annex 3 / FMH: cite mining notes only; do not copy prose into wheels.
 
 | Theme | Convert / golden (defaults) | UI catalog | Status |
 |-------|------------------------------|------------|--------|
@@ -419,7 +419,7 @@ Hard themes from #737 + guidance §Tropical Cyclone Advisory + vendor `tc-adviso
 ## VONA — F32 quality themes (S040 / EV-032)
 
 Hard themes from [#741](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/741) + 2025-2 `vona.xsd` /
-SCH + vendor `vona-A7-1` (defaults). **WMO `TAC-to-XML-Guidance.txt` has no VONA section** —
+SCH + vendor `vona-A7-1` (defaults). **WMO `TAC-to-XML-Guidance.txt` has no VONA section**, a
 **non-blocking** upstream gap ([#869](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/869) /
 S045/EV-037). Encode **SoT** = ICAO → FM205 → XSD/SCH → AHL → A7-1 →
 [cookbook](../../sessions/S040-iwxxm-corpus-quality/reports/t2.1-vona-encode-cookbook.md)
@@ -496,7 +496,7 @@ re-mine [eight-family-remine-pass.md](../../sessions/S036-eight-family-ahl-rules
 shapes [example-inventory.md](../../sessions/S036-eight-family-ahl-rules-823/reports/mining/example-inventory.md).
 
 **AHL page pin:** community AHLs for aviation data over ICAO AFS **v1.0.1** (2025-08-11),
-fetched **2026-08-01** — see [RULE_SOURCE_URLS §IWXXM AHL](./RULE_SOURCE_URLS.md) and
+fetched **2026-08-01**; see [RULE_SOURCE_URLS §IWXXM AHL](./RULE_SOURCE_URLS.md) and
 [IWXXM_CONVERSION §AHL / bulletin](../IWXXM_CONVERSION.md#ahl--bulletin-canonical-ev-029).
 
 ### Family × role (Phase A statuses) — S045 / EV-037 AHL redesign
@@ -539,13 +539,13 @@ source-availability trackers.
 ### Shape coverage (TC-EV029-002) — summary
 
 Standalone peers exist for all eight families (+ SWXA + VONA vendor). **Multi-report** and
-non-METAR **body splitter** residual deepen may remain — see impl columns above (not AHL
+non-METAR **body splitter** residual deepen may remain; see impl columns above (not AHL
 **source** gaps). OOS: QVACI · WAFS · SIGWX.
 
 ### Child-issue residuals (S02.M3) — #823 closed (T12.7)
 
 Umbrella [#823](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/823) **closed** 2026-08-02
-(S036/EV-029 T12.7). Do **not** silently blank matrix cells — residuals stay on children:
+(S036/EV-029 T12.7). Do **not** silently blank matrix cells; residuals stay on children:
 
 | Residual | Track | Status |
 |----------|-------|--------|

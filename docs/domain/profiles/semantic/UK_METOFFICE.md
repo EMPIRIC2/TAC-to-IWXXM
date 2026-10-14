@@ -4,7 +4,7 @@
 > **Catalog row**: [`catalog.yaml`](../catalog.yaml) · **Path**: thin · **ADR**: [ADR-036](../../../adr/ADR-036-semantic-vs-exchange-profiles.md)
 
 UK national semantic overlay extending `ICAO_2025`: CAP 746 aerodrome MET conventions for
-METAR/SPECI/TAF. Core IWXXM only — no published UK extension XSD.
+METAR/SPECI/TAF. Core IWXXM only; no published UK extension XSD.
 
 ## Owns (target)
 
@@ -33,7 +33,7 @@ METAR/SPECI/TAF. Core IWXXM only — no published UK extension XSD.
 
 ## Fixtures
 
-`packages/tac2iwxxm/tests/fixtures/profiles/UK_METOFFICE/` — EV-094 M1 attributed EGLL METAR/TAF;
+`packages/tac2iwxxm/tests/fixtures/profiles/UK_METOFFICE/`: EV-094 M1 attributed EGLL METAR/TAF;
 SPECI remains labeled `synthetic_ev089` until a real corpus is harvested.
 
 ## Gaps

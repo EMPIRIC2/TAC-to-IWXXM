@@ -5,7 +5,7 @@
 > **Feature**: [Corpus: product §F36]
 
 Repeatable, country-agnostic process for adding a **semantic** national profile.
-Exchange overlays (#921) are a separate kind — see §Exchange boundary below.
+Exchange overlays (#921) are a separate kind; see §Exchange boundary below.
 
 ## Design principle
 
@@ -136,7 +136,7 @@ Profile / catalog fields (national fills values; engine reads config):
 | `translation_centre_metadata_policy` | Translator metadata on convert |
 
 **#924 cross-check:** these map to `ConversionProfile.dissemination` / output packaging
-fields on the executable-profile spike — **not** F16–F19 BYOC destination credentials.
+fields on the executable-profile spike, **not** F16–F19 BYOC destination credentials.
 Custom operator overlays remain #924 trust-model OOS for this playbook.
 
 ---
@@ -173,8 +173,8 @@ Spawn the **same stack** per P1+ national; swap sources only.
 ## 9. Locale / issuing-body metadata
 
 - Document primary mining locale per source; note translation pairs.
-- Operator-visible strings: plain language only — no internal doc refs ([Corpus: product] EV-048).
-- Put `issuing_body` / jurisdiction in catalog — not hardcoded string tables in emitters.
+- Operator-visible strings: plain language only; no internal doc refs ([Corpus: product] EV-048).
+- Put `issuing_body` / jurisdiction in catalog, not hardcoded string tables in emitters.
 - No separate locale profiles without documented TAC/IWXXM divergence (#912 non-goals).
 
 ---
@@ -190,7 +190,7 @@ Spawn the **same stack** per P1+ national; swap sources only.
 | Contract smoke | Templates exist; catalog parses (EV-088) |
 
 Exchange packaging tests: copy parameterized pattern in
-`packages/dissemination/tests/test_tc_ev086_exchange_profiles.py` — do not fork per region.
+`packages/dissemination/tests/test_tc_ev086_exchange_profiles.py`; do not fork per region.
 
 ---
 
@@ -220,7 +220,7 @@ a default `exchange.profile` in catalog metadata; packaging deepen stays on #921
 **Operator UI:** light **Exchange profile** picker shipped EV-090/091; **semantic** Profile
 canonical deepen is [#1024](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1024) / EV-093
 (uppercase `semantic_profile` + all registered ids + aliases).
-(EV-090) — separate from semantic Type N wiring. Dissemination drawer overlay selection is
+(EV-090), separate from semantic Type N wiring. Dissemination drawer overlay selection is
 [#1089](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1089) (EV-091; shipped with #898 restore).
 
 ---
