@@ -1333,10 +1333,7 @@ def convert(
             ConvertIssue(
                 severity="info",
                 code="REMARKS_EXCLUDED",
-                message=(
-                    "REMARKS (RMK) present in TAC but excluded from annex3 IWXXM output; "
-                    "use profile=iwxxm_us to retain US remarks"
-                ),
+                message="Remarks after RMK stay out of the international report.",
                 location="remarks",
                 start=rmk_match.start() if rmk_match else None,
                 end=rmk_match.end() if rmk_match else None,

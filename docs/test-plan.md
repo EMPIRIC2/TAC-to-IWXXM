@@ -6420,6 +6420,19 @@ Manual signoff before release, not a PR merge gate. Developer runs `make test-li
 - **Out of scope**: Remarks after `RMK`. Promoting `stage` to `main`.
 - **Source**: F6 deepen #1403
 
+### TC-F6-049: Default remarks stay out of the international report
+
+- **Level**: T0 package. No browser journey.
+- **Objective**: Remarks after RMK stay out of the international body, and the plain-language decode explains vicinity showers and a kilometre visibility. [Corpus: product §F6] [Corpus: tests]
+- **Steps**:
+  1. `METAR MKJP 081200Z 14006KT 9999 FEW020 28/24 Q1013 RMK VCSH S=` converts on the default profile with bulletin date 2026-10-08.
+  2. The same report with `RMK VIS16KM=` converts the same way.
+  3. The info note `REMARKS_EXCLUDED` does not name `iwxxm_us`. The XML has no present weather and does not invent 16000 m.
+  4. Decode explains `VCSH` and `VIS16KM`, and still explains `S` as South.
+- **Pass criteria**: The four checks pass.
+- **Out of scope**: A full US remarks pack. A new national profile. Promoting `stage` to `main`.
+- **Source**: F6 deepen #1404
+
 ### TC-F4-001: Profile package pin
 
 - **Level**: T0 package. No browser journey.
