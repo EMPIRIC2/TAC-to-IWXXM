@@ -6433,7 +6433,7 @@ Manual signoff before release, not a PR merge gate. Developer runs `make test-li
 - **Out of scope**: A full US remarks pack. A new national profile. Promoting `stage` to `main`.
 - **Source**: F6 deepen #1404
 
-### TC-F6-049: Unknown cloud base with convective type
+### TC-F6-050: Unknown cloud base with convective type
 
 - **Level**: T0 package. No browser journey.
 - **Objective**: `FEW///CB`, `SCT///CB`, and `BKN///TCU` are valid cloud groups. Lint does not raise `CLOUD_CB_OR_TCU` for an unknown base. [Corpus: product §F6] [Corpus: product §F15] [Corpus: tests]

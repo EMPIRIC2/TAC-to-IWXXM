@@ -12,7 +12,7 @@
 | D1 | `FEW///CB`, `SCT///CB`, and `BKN///TCU` are valid cloud groups. Lint does not raise `CLOUD_CB_OR_TCU` or `INVALID_CLOUD_TOKEN`. |
 | D2 | A three-digit base with `CB` or `TCU` still raises `CLOUD_CB_OR_TCU`. `SCT(0)45` still raises `INVALID_CLOUD_TOKEN`. `FEW020///` still raises `CLOUD_TYPE_NOT_OBSERVABLE`. |
 | D3 | Convert encoding of these groups stays as it is. Encoding `//////` stays out of this slice. |
-| D4 | Docs delta: feature-list unknown-base note, test-plan TC-F6-049. No new feature id. |
+| D4 | Docs delta: feature-list unknown-base note, test-plan TC-F6-050. No new feature id. |
 | F107 | Memory retrieve skipped. Neo4j was left down from the previous slice. |
 
 [Corpus: product §F6] [Corpus: product §F15] [Corpus: tests]

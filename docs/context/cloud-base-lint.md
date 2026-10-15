@@ -4,7 +4,7 @@
 **Date:** 2026-10-15
 **Mode:** micro evolve
 **Ticket:** [#1407](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1407)
-**Corpus:** [Corpus: product §F6] [Corpus: product §F15] [Corpus: tests]
+**Corpus:** [Corpus: product §F6] [Corpus: product §F15] [Corpus: tests §TC-F6-050]
 
 ## Goal
 

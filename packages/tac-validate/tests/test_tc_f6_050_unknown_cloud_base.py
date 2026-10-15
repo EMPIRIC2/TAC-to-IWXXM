@@ -1,6 +1,6 @@
-"""TC-F6-049: an unknown cloud base with CB or TCU is a valid group.
+"""TC-F6-050: an unknown cloud base with CB or TCU is a valid group.
 
-Spec: docs/test-plan.md TC-F6-049. Issue #1407.
+Spec: docs/test-plan.md TC-F6-050. Issue #1407.
 """
 
 from __future__ import annotations
