@@ -11,6 +11,7 @@ from __future__ import annotations
 import contextvars
 
 from tac_validate import membership
+from tac_validate.cloud_amount import known_base_convective_cloud
 from tac_validate.models import Issue
 from tac_validate.product_rules_pkg._common import (
     _LAYER_CLOUD_PARTS,
@@ -269,7 +270,7 @@ def r4_cloud(tac_text: str, product: str) -> list[Issue]:
                         location="cloud",
                     )
                 )
-        if cloud_tok.endswith(("CB", "TCU")):
+        if known_base_convective_cloud(cloud_tok):
             issues.append(
                 _issue(
                     "CLOUD_CB_OR_TCU",
