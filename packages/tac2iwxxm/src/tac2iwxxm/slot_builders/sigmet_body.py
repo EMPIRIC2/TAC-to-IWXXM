@@ -62,6 +62,11 @@ def direction_midpoint(left: float, right: float) -> float:
     -------
     float
         Midpoint in the range 0 to 360.
+
+    Examples
+    --------
+    >>> direction_midpoint(270.0, 315.0)
+    292.5
     """
     clockwise = (right - left) % _FULL_CIRCLE
     if clockwise > _HALF_CIRCLE:
@@ -88,6 +93,13 @@ def compound_movement_degrees(body: str) -> float | None:
     -------
     float or None
         Midpoint bearing, or ``None`` when the body has no compound group.
+
+    Examples
+    --------
+    >>> compound_movement_degrees("MOV W-NW")
+    292.5
+    >>> compound_movement_degrees("MOV NW") is None
+    True
     """
     match = _COMPOUND_MOVEMENT.search(body)
     if match is None:
@@ -115,6 +127,13 @@ def use_volcanic_ash_locations(phenomenon: str, body: str) -> bool:
     -------
     bool
         True for volcanic ash, including a cloud or an eruption mention.
+
+    Examples
+    --------
+    >>> use_volcanic_ash_locations("VA", "EMBD TS")
+    True
+    >>> use_volcanic_ash_locations("TS", "EMBD TS")
+    False
     """
     if phenomenon.upper() == "VA":
         return True
@@ -137,6 +156,13 @@ def without_cancellation_remark(body: str) -> str:
     -------
     str
         Body with a cancellation remark removed, or the original text.
+
+    Examples
+    --------
+    >>> without_cancellation_remark("CNL SIGMET A3 RMK: NOTE")
+    'CNL SIGMET A3'
+    >>> without_cancellation_remark("EMBD TS RMK: NOTE")
+    'EMBD TS RMK: NOTE'
     """
     upper = body.upper()
     has_sigmet = "CNL SIGMET" in upper
@@ -169,6 +195,11 @@ def flight_information_region_name(body: str, designator: str, watch_office: str
     -------
     str
         Name ending in ``FIR`` or ``FIR/UIR``, or the designator when no name is present.
+
+    Examples
+    --------
+    >>> flight_information_region_name("SYGC GEORGETOWN FIR ISOL TS", "SYGC")
+    'GEORGETOWN FIR'
     """
     compact = " ".join(body.upper().split())
     match = _FIR_LABEL.search(compact)
@@ -204,6 +235,11 @@ def unwrap_wrapped_coordinates(text: str) -> str:
     -------
     str
         Text with a split latitude and longitude on one line.
+
+    Examples
+    --------
+    >>> unwrap_wrapped_coordinates("N0829 -" + chr(10) + "W05925")
+    'N0829 W05925'
     """
     lines = [line.strip() for line in text.splitlines()]
     pieces: list[str] = []
@@ -236,6 +272,13 @@ def is_latitude_token(token: str) -> bool:
     -------
     bool
         True when the token is ``N`` or ``S`` plus 4 to 6 digits.
+
+    Examples
+    --------
+    >>> is_latitude_token("N0829")
+    True
+    >>> is_latitude_token("W05925")
+    False
     """
     cleaned = _clean_token(token)
     if cleaned == "":
@@ -263,6 +306,13 @@ def is_longitude_token(token: str) -> bool:
     -------
     bool
         True when the token is ``E`` or ``W`` plus 5 to 7 digits.
+
+    Examples
+    --------
+    >>> is_longitude_token("W05925")
+    True
+    >>> is_longitude_token("N0829")
+    False
     """
     cleaned = _clean_token(token)
     if cleaned == "":
@@ -278,12 +328,34 @@ def is_longitude_token(token: str) -> bool:
 
 
 def _clean_token(token: str) -> str:
-    """Drop punctuation stuck to a coordinate token."""
+    """Drop punctuation stuck to a coordinate token.
+
+    Parameters
+    ----------
+    token : str
+        One whitespace-separated token.
+
+    Returns
+    -------
+    str
+        Token with leading and trailing punctuation removed.
+    """
     return token.strip(".,;:")
 
 
 def _trailing_latitude(line: str) -> str | None:
-    """Return a latitude that ends the line, ignoring a glued hyphen."""
+    """Return a latitude that ends the line, ignoring a glued hyphen.
+
+    Parameters
+    ----------
+    line : str
+        One physical line of SIGMET text.
+
+    Returns
+    -------
+    str or None
+        Latitude token, or ``None`` when the line does not end with one.
+    """
     stripped = line.rstrip()
     if stripped.endswith("-"):
         stripped = stripped[:-1].rstrip()
@@ -296,7 +368,18 @@ def _trailing_latitude(line: str) -> str | None:
 
 
 def _leading_latitude(line: str) -> str | None:
-    """Return a latitude that starts the line."""
+    """Return a latitude that starts the line.
+
+    Parameters
+    ----------
+    line : str
+        One physical line of SIGMET text.
+
+    Returns
+    -------
+    str or None
+        Latitude token, or ``None`` when the line does not start with one.
+    """
     parts = line.split()
     token = _clean_token(parts[0])
     if is_latitude_token(token):
@@ -305,7 +388,20 @@ def _leading_latitude(line: str) -> str | None:
 
 
 def _join_coordinate_lines(current: str, nxt: str) -> str | None:
-    """Join two physical lines when they are one coordinate pair or one vertex list."""
+    """Join two physical lines when they are one coordinate pair or one vertex list.
+
+    Parameters
+    ----------
+    current : str
+        Line that may end with a latitude or a hyphen.
+    nxt : str
+        Following line that may start with a longitude or a latitude.
+
+    Returns
+    -------
+    str or None
+        Joined text, or ``None`` when the lines are not one coordinate group.
+    """
     lat = _trailing_latitude(current)
     parts = nxt.split()
     lon_token = _clean_token(parts[0])

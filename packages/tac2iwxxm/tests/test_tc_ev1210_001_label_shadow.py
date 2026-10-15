@@ -7,7 +7,9 @@ Vendor copies that are not on disk stay absent. [Corpus: tests] [Corpus: adr/ADR
 
 from __future__ import annotations
 
+import importlib
 import json
+from datetime import UTC, datetime
 from pathlib import Path
 
 import pytest
@@ -150,7 +152,14 @@ def test_ca_eccc_does_not_take_these_products(
     assert any(issue.code == "UNSUPPORTED_PROFILE" for issue in legacy.issues)
 
 
-def test_ca_eccc_converts_vaa_the_same_way() -> None:
+def test_ca_eccc_converts_vaa_the_same_way(monkeypatch: pytest.MonkeyPatch) -> None:
+    frozen = datetime(2024, 9, 23, 1, 30, tzinfo=UTC)
+
+    def _now(_tz: object = None) -> datetime:
+        return frozen
+
+    convert_module = importlib.import_module("tac2iwxxm.convert")
+    monkeypatch.setattr(convert_module, "datetime", type("Clock", (), {"now": staticmethod(_now)}))
     tac = _tac("vaa_a7_2")
     legacy = convert(tac, product="VAA", profile="ca_eccc", iwxxm_version="3.0.0")
     shadow = convert_shadow(tac, product="VAA", profile="ca_eccc", iwxxm_version="3.0.0")
