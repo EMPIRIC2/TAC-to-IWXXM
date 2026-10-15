@@ -6447,6 +6447,19 @@ Manual signoff before release, not a PR merge gate. Developer runs `make test-li
 - **Out of scope**: Convert encoding of `FEW///CB` and `TCU`. Encoding `//////`. Promoting `stage` to `main`.
 - **Source**: F6 / F15 deepen #1407
 
+### TC-F6-051: TAF forecast time links
+
+- **Level**: T0 package. No browser journey.
+- **Objective**: Every TAF forecast time link points at an id in the same document, the issue catalog lists `OUTPUT_VALIDATION_WARNING`, and a failed TAF preview uses a nil base forecast. [Corpus: product §F6] [Corpus: api] [Corpus: tests]
+- **Steps**:
+  1. `TAF TNCM 081200Z 0812/0912 VRB03KT 9999 FEW020=` links the base forecast phenomenon time to `t.valid`, and that id is in the document.
+  2. `TAF MZBZ 081200Z 0812/0912 12010KT 9999 FEW020 PROB40 TEMPO 0818/0822 4000 TSRA=` keeps the same in-document link, and the temporary group keeps its own time id.
+  3. The issue catalog row for `OUTPUT_VALIDATION_WARNING` is plain language, with no planning ids in the operator attribution.
+  4. A failed TAF preview emits `baseForecast` with a nil reason and does not emit an observation element.
+- **Pass criteria**: The four checks pass.
+- **Out of scope**: Continuation lines. Probability wording. Promoting `stage` to `main`.
+- **Source**: F6 deepen #1408
+
 ### TC-F4-001: Profile package pin
 
 - **Level**: T0 package. No browser journey.

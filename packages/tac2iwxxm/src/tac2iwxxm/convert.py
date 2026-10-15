@@ -43,6 +43,7 @@ from tac2iwxxm.slot_builders.swxa import parse_swxa
 from tac2iwxxm.slot_builders.taf import parse_taf
 from tac2iwxxm.slot_builders.vaa_tca import parse_tca, parse_vaa
 from tac2iwxxm.slot_builders.vona import parse_vona
+from tac2iwxxm.taf_time_links import failed_preview_nil_element
 from tac2iwxxm.time_anchor import (
     ImpossibleTacDay,
     anchor_from_bulletin_date,
@@ -306,7 +307,7 @@ def _preview_stub_xml(product: str, iwxxm_version: str, reason: str) -> str:
     Returns
     -------
     str
-        IWXXM-looking XML document with a nil observation.
+        IWXXM-looking XML document with a nil body element.
     """
     from xml.sax.saxutils import escape
 
@@ -315,12 +316,13 @@ def _preview_stub_xml(product: str, iwxxm_version: str, reason: str) -> str:
     ns = _PREVIEW_NS.get(iwxxm_version, _PREVIEW_NS["2025-2"])
     gml_id = f"{root.lower()}.preview.failed"
     note = escape(reason[:240])
+    nil_element = failed_preview_nil_element(product_u)
     return (
         '<?xml version="1.0" encoding="UTF-8"?>\n'
         f'<iwxxm:{root} xmlns:iwxxm="{ns}" xmlns:gml="http://www.opengis.net/gml/3.2" '
         f'gml:id="{gml_id}" reportStatus="NORMAL">\n'
         f"  <!-- soft-preview: {note} -->\n"
-        '  <iwxxm:observation nilReason="http://codes.wmo.int/common/nil/missing"/>\n'
+        f'  <iwxxm:{nil_element} nilReason="http://codes.wmo.int/common/nil/missing"/>\n'
         f"</iwxxm:{root}>\n"
     )
 

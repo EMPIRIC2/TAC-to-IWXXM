@@ -40,7 +40,7 @@
   </iwxxm:validPeriod>
   <iwxxm:baseForecast>
     <iwxxm:MeteorologicalAerodromeForecast gml:id="fcst.base.yudo" cloudAndVisibilityOK="false">
-      <iwxxm:phenomenonTime xlink:href="#uuid.00000000-0000-4000-8000-000000000001"/>
+      <iwxxm:phenomenonTime xlink:href="#t.valid"/>
       <iwxxm:prevailingVisibility uom="m">9000</iwxxm:prevailingVisibility>
       <iwxxm:surfaceWind>
         <iwxxm:AerodromeSurfaceWindForecast variableWindDirection="false">
