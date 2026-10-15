@@ -9,6 +9,7 @@ import re
 from tac_validate.models import Issue
 from tac_validate.product_rules_pkg._common import *
 from tac_validate.taf_amd import amd_modifier_present
+from tac_validate.taf_prob import probability_group_valid
 
 
 def _check_taf(tac: str, *, profile: str = "annex3") -> list[Issue]:
@@ -494,10 +495,7 @@ def _check_taf_change_groups(
         m = _TAF_PROB.fullmatch(tok)
         if m is None:
             continue
-        pct = m.group(1)
-        nxt = tokens[i + 1] if i + 1 < len(tokens) else ""
-        qualifies_forbidden = nxt == "BECMG" or bool(_TAF_FM.fullmatch(nxt))
-        if pct not in {"30", "40"} or qualifies_forbidden:
+        if not probability_group_valid(tokens, i):
             _emit_token_info(
                 issues,
                 code="INVALID_PROB",

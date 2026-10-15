@@ -5,6 +5,7 @@ from __future__ import annotations
 import re
 from typing import Any
 
+from tac2iwxxm.taf_prob import is_unqualified_probability, probability_tempo_parts
 from tac2iwxxm.time_anchor import iso_stamp
 
 _TAF = re.compile(
@@ -52,7 +53,15 @@ _WX_TOKEN = re.compile(
     r"|VCSH"
     r")(?![A-Z0-9/])"
 )
-_CHANGE_TOKEN = r"(?:BECMG\s+\d{4}/\d{4}|(?:TEMPO|EMPO)\s+\d{4}/\d{4}|INTER\s+\d{4}/\d{4}|FM\d{6})"
+_CHANGE_TOKEN = (
+    r"(?:"
+    r"(?:PROB(?:30|40)\s+)?(?:TEMPO|EMPO)\s+\d{4}/\d{4}"
+    r"|BECMG\s+\d{4}/\d{4}"
+    r"|INTER\s+\d{4}/\d{4}"
+    r"|FM\d{6}"
+    r"|PROB(?:30|40)(?:\s+\d{4}/\d{4})?"
+    r")"
+)
 _CHANGE_GROUP = re.compile(
     rf"\b{_CHANGE_TOKEN}\b.*?(?=\b{_CHANGE_TOKEN}\b|$)",
     re.DOTALL,
@@ -334,6 +343,21 @@ def _parse_change_groups(ir: dict[str, Any], body: str) -> list[dict[str, Any]]:
             }
             change.update(_parse_forecast_body(becmg.group("body")))
             changes.append(change)
+            continue
+        probable = probability_tempo_parts(chunk)
+        if probable is not None:
+            indicator, kind, begin, end, forecast_body = probable
+            change = {
+                "change_indicator": indicator,
+                "phenomenon_begin": _taf_day_hour_stamp(ir, begin),
+                "phenomenon_end": _taf_day_hour_stamp(ir, end),
+            }
+            if kind == "EMPO":
+                change["tac_change_indicator"] = "EMPO"
+            change.update(_parse_forecast_body(forecast_body))
+            changes.append(change)
+            continue
+        if is_unqualified_probability(chunk):
             continue
         tempo = _TEMPO.match(chunk)
         if tempo is not None:

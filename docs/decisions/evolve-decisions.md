@@ -1,5 +1,23 @@
 # Evolve Decisions
 
+## Cycle EV-1402-taf-prob-tempo — probability stays on the temporary group (#1402)
+
+**Opened:** 2026-10-14 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-1402-taf-prob-tempo`  
+**Issue:** [#1402](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1402)  
+**Documenting→Implementing gate:** open  
+**Scale:** micro
+
+| ID | Outcome |
+|----|---------|
+| D1 | `PROB40 TEMPO` with a time period uses `PROBABILITY_40_TEMPORARY_FLUCTUATIONS`. `PROB30 TEMPO` uses `PROBABILITY_30_TEMPORARY_FLUCTUATIONS`. |
+| D2 | Weather from that temporary group stays off the preceding `BECMG` group. |
+| D3 | `PROB30` or `PROB40` without `TEMPO`, and `PROB` `TEMPO` without a time period, raise `INVALID_PROB`. Their weather is not copied onto the previous forecast. |
+| D4 | The info-level `PROB_PRESENT` wording stays as it is. |
+| D5 | Docs delta: feature-list probability note, test-plan TC-F6-047. No new feature id. |
+| F107 | Memory retrieve skipped. Neo4j was left down from the previous slice. |
+
+[Corpus: product §F6] [Corpus: product §F20] [Corpus: tests]
+
 ## Cycle EV-1401-taf-continuation — one forecast, trailer is not an amendment (#1401)
 
 **Opened:** 2026-10-14 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-1401-taf-continuation`  

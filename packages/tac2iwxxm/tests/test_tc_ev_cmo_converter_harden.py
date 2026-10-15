@@ -46,7 +46,8 @@ def test_empo_alias_parses_as_tempo() -> None:
     tac = "TAF MWCR 081100Z 0812/0912 08009KT 9999 FEW018 PROB30 EMPO 0906/0909 12010G20KT 5000 TSRA SCT012CB BKN016"
     ir = parse_taf(tac, product="TAF")
     changes = ir.get("change_forecasts") or []
-    assert any(c.get("change_indicator") == "TEMPORARY_FLUCTUATIONS" for c in changes)
+    assert any(c.get("change_indicator") == "PROBABILITY_30_TEMPORARY_FLUCTUATIONS" for c in changes)
+    assert any(c.get("tac_change_indicator") == "EMPO" for c in changes)
     assert convert(tac, product="TAF", profile="annex3", iwxxm_version="2025-2").ok
 
 
