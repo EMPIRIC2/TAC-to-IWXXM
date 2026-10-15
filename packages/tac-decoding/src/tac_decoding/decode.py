@@ -18,6 +18,7 @@ from tac_decoding.glossary import (
     meaning_for,
     resolve_location_name,
 )
+from tac_decoding.remark_plain import explain_remark_plain
 
 _SUPPORTED = frozenset({"AIRMET", "METAR", "SIGMET", "SPECI", "TAF", "VAA", "TCA", "SWXA", "VONA"})
 _ADVISORY_STRUCTURED = frozenset({"VAA", "TCA", "SWXA", "VONA"})
@@ -1297,6 +1298,8 @@ def _explain_metar_remark(upper: str, seen: dict[str, int]) -> str | None:
     sector = re.fullmatch(rf"({_BEARING})-({_BEARING})", upper)
     if sector:
         return f"From {_SIG_DIR_NAME[sector.group(1)]} to {_SIG_DIR_NAME[sector.group(2)]}"
+    if phrase := explain_remark_plain(upper):
+        return phrase
     return None
 
 

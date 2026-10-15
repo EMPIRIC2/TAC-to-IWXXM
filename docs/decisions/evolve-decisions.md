@@ -1,5 +1,23 @@
 # Evolve Decisions
 
+## Cycle EV-1404-default-remarks: remarks stay out of the international report (#1404)
+
+**Opened:** 2026-10-15 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-1404-default-remarks`  
+**Issue:** [#1404](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1404)  
+**Documenting→Implementing gate:** open  
+**Scale:** micro
+
+| ID | Outcome |
+|----|---------|
+| D1 | Remarks after RMK stay out of the international body on the default profile. |
+| D2 | The convert note is "Remarks after RMK stay out of the international report." It does not name a national profile. |
+| D3 | Plain-language decode explains VCSH as showers in the vicinity, VIS16KM as visibility 16 kilometres, and VIS1KM as visibility 1 kilometre. VIS100KM stays unexplained. Direction S stays South. |
+| D4 | The remark is not encoded as present weather and is not turned into 16000 m. |
+| D5 | Docs delta: feature-list default-remarks note, test-plan TC-F6-049. No new feature id. A full US remarks pack and a new national profile stay out. |
+| F107 | Memory retrieve skipped. Neo4j was left down from the previous slice. |
+
+[Corpus: product §F6] [Corpus: tests]
+
 ## Cycle EV-1403-recent-weather — bare showers stay SH (#1403)
 
 **Opened:** 2026-10-14 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-1403-recent-weather`  
