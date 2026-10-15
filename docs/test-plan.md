@@ -6393,6 +6393,20 @@ Manual signoff before release, not a PR merge gate. Developer runs `make test-li
 - **Out of scope**: Probability groups. Operator result stacking. Promoting `stage` to `main`.
 - **Source**: F6 / F20 deepen #1401
 
+### TC-F6-047: Probability stays on the temporary group
+
+- **Level**: T0 package. No browser journey.
+- **Objective**: `PROB40 TEMPO` keeps a 40 percent indicator on that temporary group, and a probability token without `TEMPO` is an error. [Corpus: product §F6] [Corpus: product §F20] [Corpus: tests]
+- **Steps**:
+  1. `TAF MZBZ 081200Z 0812/0912 12010KT 9999 FEW020 BECMG 0814/0816 14012KT 7000 PROB40 TEMPO 0818/0822 4000 TSRA=` sets `PROBABILITY_40_TEMPORARY_FLUCTUATIONS` on the 18Z–22Z group.
+  2. That group's thunderstorm and 4000 m visibility stay off the `BECMG` group.
+  3. `PROB30` without `TEMPO` raises `INVALID_PROB` and does not copy its weather onto the base forecast or the preceding `BECMG` group.
+  4. `PROB40 TEMPO` without a `ddhh/ddhh` period raises `INVALID_PROB` and does not copy its weather onto the base forecast.
+  5. A plain `TEMPO` group stays `TEMPORARY_FLUCTUATIONS`.
+- **Pass criteria**: The five checks pass.
+- **Out of scope**: The wording of the info-level `PROB_PRESENT` note. Promoting `stage` to `main`.
+- **Source**: F6 / F20 deepen #1402
+
 ### TC-F4-001: Profile package pin
 
 - **Level**: T0 package. No browser journey.
