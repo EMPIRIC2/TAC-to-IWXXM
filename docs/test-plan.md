@@ -6460,6 +6460,20 @@ Manual signoff before release, not a PR merge gate. Developer runs `make test-li
 - **Out of scope**: Continuation lines. Probability wording. Promoting `stage` to `main`.
 - **Source**: F6 deepen #1408
 
+### TC-F6-052: SIGMET body keeps the region name and a compound direction
+
+- **Level**: T0 package. No browser journey.
+- **Objective**: Wrapped coordinates, a named flight information region, a compound direction, a lettered sequence, and a cancellation remark convert without treating the remark as the phenomenon. [Corpus: product §F6] [Corpus: tests]
+- **Steps**:
+  1. `TTZP SIGMET A4` that cancels `A3` and then carries a remark converts as a cancellation. The remark is not a phenomenon.
+  2. The Guyana SIGMET whose coordinates continue on the next line converts as one polygon, sequence A1.
+  3. `MOV W-NW` is direction 292.5 degrees.
+  4. The flight information region name is Georgetown FIR. It is not left as an unexplained residual, and the air traffic services unit is not an aerodrome.
+  5. The simple one-line sample still keeps FL310, northwest at 15 knots, and weakening. A bare cancellation still converts as a cancellation.
+- **Pass criteria**: The five checks pass.
+- **Out of scope**: Operator pages. The 2012 year bug. Promoting `stage` to `main`.
+- **Source**: F6 deepen #1410
+
 ### TC-F4-001: Profile package pin
 
 - **Level**: T0 package. No browser journey.

@@ -6,6 +6,7 @@ still land here so they are not appended to `docs/context-brief.md`.
 
 | Brief | Session | Status |
 |-------|---------|--------|
+| [sigmet-body.md](sigmet-body.md) | EV-1410-sigmet-body | active |
 | [default-remarks.md](default-remarks.md) | EV-1404-default-remarks | active |
 | [cloud-base-lint.md](cloud-base-lint.md) | EV-1407-cloud-cb-lint | active |
 | [taf-time-links.md](taf-time-links.md) | EV-1408-taf-time-links | active |

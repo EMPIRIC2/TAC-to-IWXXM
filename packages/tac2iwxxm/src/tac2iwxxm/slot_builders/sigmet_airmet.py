@@ -7,6 +7,13 @@ import re
 from typing import Any, cast
 
 from tac2iwxxm.geometry.reference_point import parse_vor_reference_geometry
+from tac2iwxxm.slot_builders.sigmet_body import (
+    compound_movement_degrees,
+    flight_information_region_name,
+    unwrap_wrapped_coordinates,
+    use_volcanic_ash_locations,
+    without_cancellation_remark,
+)
 
 _SIGMET = re.compile(
     r"^(?P<fir>[A-Z]{4})(?:\s+(?P<fir_extra>(?:[A-Z]{4}\s+)+))?\s*SIGMET\s+"
@@ -276,6 +283,10 @@ def _apply_motion(ir: dict[str, Any], body: str) -> None:
         return
     mov = _MOV.search(body)
     if mov is None:
+        degrees = compound_movement_degrees(body)
+        if degrees is None:
+            return
+        ir["motion_dir_deg"] = degrees
         return
     ir["motion_dir_deg"] = _DIR_DEG[mov.group("dir").upper()]
     if mov.group("spd") is None:
@@ -718,7 +729,7 @@ def _enrich_hazard_body(ir: dict[str, Any], body: str) -> None:
         ir["volcano"] = volcano
 
     # Multi-location VA (AND-joined OBS/FCST) or single OBS(+FCST) VA cloud (#809 / #856).
-    locations = _parse_va_locations(body)
+    locations = _parse_va_locations(body) if use_volcanic_ash_locations(str(ir.get("phenomenon", "")), body) else []
     if locations:
         ir["locations"] = locations
         first = locations[0]
@@ -1336,6 +1347,7 @@ def parse_sigmet(tac: str, *, product: str = "SIGMET") -> dict[str, Any]:
         body_tac = raw_in[ahl_match.end() :]
 
     body_tac = _strip_siga0_heading(body_tac)
+    body_tac = unwrap_wrapped_coordinates(body_tac)
     text = _normalize(body_tac)
     issue_day = int(ahl_match.group("yygggg")[:2]) if ahl_match is not None else None
     office = ahl_match.group("cccc") if ahl_match is not None else None
@@ -1348,7 +1360,7 @@ def parse_sigmet(tac: str, *, product: str = "SIGMET") -> dict[str, Any]:
     if match is None:
         raise ValueError("unable to parse SIGMET header")
 
-    body = match.group("body")
+    body = without_cancellation_remark(match.group("body"))
     from_d, from_h, from_m = _parse_valid(match.group("from"))
     to_d, to_h, to_m = _parse_valid(match.group("to"))
     seq_num, seq_label = _parse_sequence_token(match.group("seq"))
@@ -1360,7 +1372,11 @@ def parse_sigmet(tac: str, *, product: str = "SIGMET") -> dict[str, Any]:
     elif "SHANWICK OCEANIC FIR" in upper_body:
         fir_name = "SHANWICK OCEANIC FIR"
     else:
-        fir_name = match.group("fir").upper()
+        fir_name = flight_information_region_name(
+            body,
+            match.group("fir"),
+            watch_office=match.group("mwo"),
+        )
     ir: dict[str, Any] = {
         "ir_version": 1,
         "product": "SIGMET",
