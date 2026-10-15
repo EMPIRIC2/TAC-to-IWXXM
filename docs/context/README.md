@@ -6,7 +6,8 @@ still land here so they are not appended to `docs/context-brief.md`.
 
 | Brief | Session | Status |
 |-------|---------|--------|
-| [taf-probability.md](taf-probability.md) | EV-1402-taf-prob-tempo | active |
+| [recent-weather.md](recent-weather.md) | EV-1403-recent-weather | active |
+| [taf-probability.md](taf-probability.md) | EV-1402-taf-prob-tempo | closed — satisfied by #1418 |
 | [taf-continuation.md](taf-continuation.md) | EV-1401-taf-continuation | closed — satisfied by #1417 |
 | [taf-variable-wind.md](taf-variable-wind.md) | EV-1400-taf-vrb-knots | closed — satisfied by #1416 |
 | [unobserved-visibility.md](unobserved-visibility.md) | EV-1399-unobserved-visibility | closed — satisfied by #1415 |

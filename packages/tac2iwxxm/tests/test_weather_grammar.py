@@ -42,7 +42,7 @@ def test_convert_writes_recent_weather_on_the_default_profile() -> None:
     assert 'presentWeather xlink:href="http://codes.wmo.int/306/4678/VCSH"' in result.xml
 
 
-def test_convert_writes_recent_thunderstorm_and_skips_a_bare_resh() -> None:
+def test_convert_writes_recent_thunderstorm_and_bare_showers() -> None:
     recent = convert(
         "METAR TNCM 081200Z 14006KT 9999 FEW020 28/24 Q1013 RETS=",
         product="METAR",
@@ -57,7 +57,8 @@ def test_convert_writes_recent_thunderstorm_and_skips_a_bare_resh() -> None:
     )
     assert bare.ok
     assert bare.xml is not None
-    assert "recentWeather" not in bare.xml
+    assert 'recentWeather xlink:href="http://codes.wmo.int/306/4678/SH"' in bare.xml
+    assert "SHUP" not in bare.xml
 
 
 def test_taf_keeps_an_unknown_cloud_base_with_cumulonimbus() -> None:

@@ -6407,6 +6407,19 @@ Manual signoff before release, not a PR merge gate. Developer runs `make test-li
 - **Out of scope**: The wording of the info-level `PROB_PRESENT` note. Promoting `stage` to `main`.
 - **Source**: F6 / F20 deepen #1402
 
+### TC-F6-048: Recent weather keeps showers and thunderstorms
+
+- **Level**: T0 package. No browser journey.
+- **Objective**: `RESHRA`, bare `RESH`, and `RETS` are recent weather, and bare `RESH` stays `SH`. [Corpus: product §F6] [Corpus: tests]
+- **Steps**:
+  1. `SPECI TNCM 081200Z 14006KT 9999 -SHRA FEW020 28/24 Q1013 RESHRA=` keeps present weather `-SHRA` and recent weather `SHRA`.
+  2. Bare `RESH` is recent weather `SH`.
+  3. The recent-weather code is not `SHUP`.
+  4. `RETS` is recent weather `TS`.
+- **Pass criteria**: The four checks pass.
+- **Out of scope**: Remarks after `RMK`. Promoting `stage` to `main`.
+- **Source**: F6 deepen #1403
+
 ### TC-F4-001: Profile package pin
 
 - **Level**: T0 package. No browser journey.

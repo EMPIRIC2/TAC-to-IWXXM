@@ -1,5 +1,22 @@
 # Evolve Decisions
 
+## Cycle EV-1403-recent-weather — bare showers stay SH (#1403)
+
+**Opened:** 2026-10-14 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-1403-recent-weather`  
+**Issue:** [#1403](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1403)  
+**Documenting→Implementing gate:** open  
+**Scale:** micro
+
+| ID | Outcome |
+|----|---------|
+| D1 | `RESHRA` is recent weather `SHRA`. Present weather in the same report stays present weather. |
+| D2 | Bare `RESH` is recent weather `SH`. It is not rewritten to `SHUP`. |
+| D3 | `RETS` is recent weather `TS`. |
+| D4 | Docs delta: feature-list recent-weather note, test-plan TC-F6-048. No new feature id. |
+| F107 | Memory retrieve skipped. Neo4j was left down from the previous slice. |
+
+[Corpus: product §F6] [Corpus: tests]
+
 ## Cycle EV-1402-taf-prob-tempo — probability stays on the temporary group (#1402)
 
 **Opened:** 2026-10-14 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-1402-taf-prob-tempo`  
