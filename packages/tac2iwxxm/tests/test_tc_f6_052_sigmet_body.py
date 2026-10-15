@@ -1,6 +1,6 @@
 """TC-F6-052: SIGMET body normalizer for wrapped coordinates and cancellations.
 
-[Corpus: product §F6] [Corpus: tests]
+[Corpus: product §F6] [Corpus: tests §TC-F6-052]
 """
 
 from __future__ import annotations
