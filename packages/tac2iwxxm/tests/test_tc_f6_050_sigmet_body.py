@@ -242,3 +242,14 @@ def test_coordinate_token_bounds() -> None:
     assert unwrap_wrapped_coordinates("HDR\nN2853-\nW05650\nMOV N") == "HDR N2853 W05650 MOV N"
     assert unwrap_wrapped_coordinates("  MOV W-NW  ") == "MOV W-NW"
     assert unwrap_wrapped_coordinates("") == ""
+
+
+def test_ash_location_without_a_polygon_is_skipped() -> None:
+    tac = (
+        "WVXX01 YUSO 101200\n"
+        "YUDD SIGMET 2 VALID 101200/101600 YUSO-\n"
+        "YUDD SHANLON FIR/UIR VA CLD OBS AT 1200Z WI NONE NC="
+    )
+    ir = parse_sigmet(tac, product="SIGMET")
+    assert ir["phenomenon"] == "VA"
+    assert "locations" not in ir
