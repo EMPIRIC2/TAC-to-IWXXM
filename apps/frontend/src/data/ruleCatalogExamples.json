@@ -335,6 +335,10 @@
     "fail": "SPECI 232045Z KJFK 20015G25KT 8SM -SN BKN020 OVC040 12/06 A3001=",
     "pass": "METAR KJFK 021851Z 31008KT 9999 FEW250 22/14 Q1015="
   },
+  "OUTPUT_VALIDATION_WARNING": {
+    "fail": "<iwxxm:TAF xmlns:iwxxm=\"http://icao.int/iwxxm/2025-2\" gml:id=\"t1\"><iwxxm:baseForecast><iwxxm:MeteorologicalAerodromeForecast gml:id=\"f1\"><iwxxm:phenomenonTime xlink:href=\"#missing\"/></iwxxm:MeteorologicalAerodromeForecast></iwxxm:baseForecast></iwxxm:TAF>",
+    "pass": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<iwxxm:TAF xmlns:iwxxm=\"http://icao.int/iwxxm/2025-2\" gml:id=\"t1\"><iwxxm:validPeriod><gml:TimePeriod gml:id=\"t.valid\"><gml:beginPosition>2012-08-16T00:00:00Z</gml:beginPosition><gml:endPosition>2012-08-16T18:00:00Z</gml:endPosition></gml:TimePeriod></iwxxm:validPeriod><iwxxm:baseForecast><iwxxm:MeteorologicalAerodromeForecast gml:id=\"f1\"><iwxxm:phenomenonTime xlink:href=\"#t.valid\"/></iwxxm:MeteorologicalAerodromeForecast></iwxxm:baseForecast></iwxxm:TAF>"
+  },
   "POINT_LOCATION": {
     "fail": "EGGX SIGMET 5 VALID 251800/252200 EGRR-\nEGGX SHANWICK OCEANIC FIR VA ERUPTION MT HEKLA PSN N6359 W01940\nNO VA EXP=",
     "pass": "YUDD SIGMET 2 VALID 101200/101600 YUSO-\nYUDD SHANLON FIR/UIR OBSC TS FCST S OF N54 AND E OF W012 TOP FL390 MOV E 20KT WKN="

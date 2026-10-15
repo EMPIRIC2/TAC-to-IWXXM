@@ -8,6 +8,7 @@ from typing import Any, cast
 from xml.sax.saxutils import escape
 
 from tac2iwxxm.profiles.annex3_emit._common import *
+from tac2iwxxm.taf_time_links import base_forecast_phenomenon_href
 
 
 def _taf_time_prefix(ir: dict[str, Any], day: int | None = None) -> str:
@@ -452,7 +453,7 @@ def emit_taf_annex3(
             cloud = _taf_cloud_block(ir, gml_id=f"cloud.base.{station.lower()}")
         base_fcst = f"""  <iwxxm:baseForecast>
     <iwxxm:MeteorologicalAerodromeForecast gml:id="fcst.base.{station.lower()}" cloudAndVisibilityOK="{cavok}">
-      <iwxxm:phenomenonTime xlink:href="#uuid.00000000-0000-4000-8000-000000000001"/>
+      <iwxxm:phenomenonTime xlink:href="{base_forecast_phenomenon_href()}"/>
 {vis}{wind}{cloud}{forecast_extension}    </iwxxm:MeteorologicalAerodromeForecast>
   </iwxxm:baseForecast>
 """

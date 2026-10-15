@@ -1,5 +1,22 @@
 # Evolve Decisions
 
+## Cycle EV-1408-taf-time-links: forecast times stay in the document (#1408)
+
+**Opened:** 2026-10-15 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-1408-taf-time-links`  
+**Issue:** [#1408](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1408)  
+**Documenting→Implementing gate:** open  
+**Scale:** standard
+
+| ID | Outcome |
+|----|---------|
+| D1 | The base forecast phenomenon time links to `t.valid`, the valid period id in the same document. |
+| D2 | Change-group times stay inline on their own `gml:id`. A one-line VRB TAF and a one-line PROB TAF have no broken internal time link. |
+| D3 | `OUTPUT_VALIDATION_WARNING` is an operator catalog row. The description and attribution are plain language. |
+| D4 | A failed TAF preview emits a nil `baseForecast`. METAR and SPECI previews keep `observation`. |
+| D5 | Docs delta: feature-list forecast-time note, test-plan TC-F6-051. No new feature id. |
+
+[Corpus: product §F6] [Corpus: api] [Corpus: tests]
+
 ## Cycle EV-1407-cloud-cb-lint: unknown cloud base stays valid (#1407)
 
 **Opened:** 2026-10-15 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-1407-cloud-cb-lint`  

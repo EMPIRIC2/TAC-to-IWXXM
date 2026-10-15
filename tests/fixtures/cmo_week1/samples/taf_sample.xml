@@ -32,7 +32,7 @@
   </iwxxm:validPeriod>
   <iwxxm:baseForecast>
     <iwxxm:MeteorologicalAerodromeForecast gml:id="fcst.base.ttpp" cloudAndVisibilityOK="false">
-      <iwxxm:phenomenonTime xlink:href="#uuid.00000000-0000-4000-8000-000000000001"/>
+      <iwxxm:phenomenonTime xlink:href="#t.valid"/>
       <iwxxm:prevailingVisibility uom="m">10000</iwxxm:prevailingVisibility>
       <iwxxm:prevailingVisibilityOperator>ABOVE</iwxxm:prevailingVisibilityOperator>
       <iwxxm:surfaceWind>

@@ -254,6 +254,32 @@ def iwxxm_validation_catalog_rows() -> list[dict[str, Any]]:
             "source_access": "public",
             "source_locator": "ECCC aviation IWXXM code-ca directory",
         },
+        {
+            "code": "OUTPUT_VALIDATION_WARNING",
+            "severity": "warning",
+            "message_template": (
+                "The report converted, and IWXXM validation still reported issues. "
+                "Warning: read the listed validation details before publishing. "
+                "A converted document with these issues is not ready to publish."
+            ),
+            "product": None,
+            "tags": ["iwxxm", "output", "warning"],
+            "family": "iwxxm",
+            "source_id": "wmo-im-iwxxm",
+            "source_url": _WMO_IM,
+            "source_attribution": (
+                "wmo-im-iwxxm - https://github.com/wmo-im/iwxxm "
+                "- Converted IWXXM is checked against the schema and business rules"
+            ),
+            "source_type": "tier1",
+            "status": "verified",
+            "semantic_identifier": None,
+            "last_verified": _LAST_VERIFIED,
+            "replacement_url": None,
+            "issue_type": "iwxxm_schema",
+            "source_access": "public",
+            "source_locator": "WMO IWXXM repository - validation of a converted document",
+        },
     ]
 
 

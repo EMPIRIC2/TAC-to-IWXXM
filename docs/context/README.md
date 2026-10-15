@@ -8,6 +8,7 @@ still land here so they are not appended to `docs/context-brief.md`.
 |-------|---------|--------|
 | [default-remarks.md](default-remarks.md) | EV-1404-default-remarks | active |
 | [cloud-base-lint.md](cloud-base-lint.md) | EV-1407-cloud-cb-lint | active |
+| [taf-time-links.md](taf-time-links.md) | EV-1408-taf-time-links | active |
 | [recent-weather.md](recent-weather.md) | EV-1403-recent-weather | active |
 | [taf-probability.md](taf-probability.md) | EV-1402-taf-prob-tempo | closed — satisfied by #1418 |
 | [taf-continuation.md](taf-continuation.md) | EV-1401-taf-continuation | closed — satisfied by #1417 |
