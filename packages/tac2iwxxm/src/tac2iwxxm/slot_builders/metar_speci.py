@@ -5,6 +5,8 @@ from __future__ import annotations
 import re
 from typing import Any
 
+from tac2iwxxm.recent_weather import accept_recent_code
+
 _CA_SURFACE_TYPES = frozenset({"METAR", "SPECI", "LWIS", "SAWR"})
 _REPORT = re.compile(
     r"^(?P<rtype>LWIS|SAWR|METAR|SPECI)\s+(?:(?P<cor_pre>COR)\s+)?(?P<station>[A-Z][A-Z0-9]{3})\s+"
@@ -1646,7 +1648,11 @@ def parse_metar_speci(tac: str, *, product: str) -> dict[str, Any]:
         ir["present_weather_not_observable"] = True
     if present:
         ir["present_weather"] = present
-    recent = [m.group("wx")[2:] for m in _RECENT_BODY.finditer(obs_body) if _WX_TOKEN.fullmatch(m.group("wx")[2:])]
+    recent: list[str] = []
+    for recent_match in _RECENT_BODY.finditer(obs_body):
+        code = accept_recent_code(recent_match.group("wx")[2:], weather_token=_WX_TOKEN)
+        if code is not None:
+            recent.append(code)
     if recent:
         ir["recent_weather"] = recent
 
