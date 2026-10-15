@@ -1,5 +1,24 @@
 # Evolve Decisions
 
+## Cycle EV-1410-sigmet-body: SIGMET body normalizer (#1410)
+
+**Opened:** 2026-10-15 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-1410-sigmet-body`  
+**Issue:** [#1410](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1410)  
+**Documenting→Implementing gate:** open  
+**Scale:** micro
+
+| ID | Outcome |
+|----|---------|
+| D1 | Coordinates continued on the next line stay one polygon. A latitude glued to a hyphen joins the longitude on the following line. |
+| D2 | The flight information region keeps its name. The air traffic services unit stays a flight information centre, not an aerodrome. |
+| D3 | `W-NW` is the shorter-arc midpoint, 292.5 degrees. A single direction such as `NW` stays on the existing movement rule. |
+| D4 | A remark on a cancellation is dropped before phenomenon detection. A bare cancellation is unchanged. |
+| D5 | Volcanic-ash location lists stay on ash reports. Ordinary thunderstorm text uses the encoder that already keeps tops, movement, and intensity. |
+| D6 | Docs delta: feature-list SIGMET body note, test-plan TC-F6-052. No new feature id. TC-F6-050 is the unknown-cloud-base case. TC-F6-051 is the forecast-time-links case. |
+| F107 | Memory retrieve skipped. Neo4j was left down from the previous slice. |
+
+[Corpus: product §F6] [Corpus: tests]
+
 ## Cycle EV-1408-taf-time-links: forecast times stay in the document (#1408)
 
 **Opened:** 2026-10-15 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-1408-taf-time-links`  
