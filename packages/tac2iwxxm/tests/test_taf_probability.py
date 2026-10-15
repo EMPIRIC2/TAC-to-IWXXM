@@ -61,6 +61,11 @@ def test_plain_tempo_stays_a_temporary_fluctuation() -> None:
     tac = "TAF MZBZ 081200Z 0812/0912 12010KT 9999 TEMPO 0818/0822 4000 TSRA="
     ir = parse_taf(tac, product="TAF")
     assert ir["change_forecasts"][0]["change_indicator"] == "TEMPORARY_FLUCTUATIONS"
+    empo = "TAF MWCR 081100Z 0812/0912 08009KT 9999 FEW018 EMPO 0906/0909 12010G20KT 5000 TSRA"
+    empo_ir = parse_taf(empo, product="TAF")
+    empo_change = empo_ir["change_forecasts"][0]
+    assert empo_change["change_indicator"] == "TEMPORARY_FLUCTUATIONS"
+    assert empo_change["tac_change_indicator"] == "EMPO"
 
 
 def test_probability_helper_edges() -> None:
