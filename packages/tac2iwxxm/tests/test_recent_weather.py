@@ -5,6 +5,7 @@ from __future__ import annotations
 import re
 
 from tac2iwxxm.recent_weather import accept_recent_code
+from tac2iwxxm.slot_builders.metar_speci import parse_metar_speci
 
 from tac2iwxxm import convert
 
@@ -35,7 +36,12 @@ def test_bare_resh_is_recent_showers_and_rets_is_a_recent_thunderstorm() -> None
     assert 'recentWeather xlink:href="http://codes.wmo.int/306/4678/TS"' in storm.xml
 
 
-def test_accept_recent_code_edges() -> None:
+def test_an_unknown_recent_token_is_left_out() -> None:
+    ir = parse_metar_speci(
+        "METAR TNCM 081200Z 14006KT 9999 FEW020 28/24 Q1013 REFOO=",
+        product="METAR",
+    )
+    assert "recent_weather" not in ir
     assert accept_recent_code("SH", weather_token=_TOKEN) == "SH"
     assert accept_recent_code("SHRA", weather_token=_TOKEN) == "SHRA"
     assert accept_recent_code("TS", weather_token=_TOKEN) == "TS"
