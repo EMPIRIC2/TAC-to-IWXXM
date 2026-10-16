@@ -6474,6 +6474,19 @@ Manual signoff before release, not a PR merge gate. Developer runs `make test-li
 - **Out of scope**: Operator pages. The 2012 year bug. Promoting `stage` to `main`.
 - **Source**: F6 deepen #1410
 
+### TC-F6-053: Statute-mile fractions and 10 km visibility
+
+- **Level**: T0 package. No browser journey.
+- **Objective**: `1 1/2SM` is about 2400 m, and `10SM` and `9999` share one 10 km convention on METAR and TAF. [Corpus: product §F6] [Corpus: tests]
+- **Steps**:
+  1. `METAR TJSJ 081200Z 14006KT 1 1/2SM FEW020 28/24 A2992=` encodes prevailing visibility as 2414 m, about 2400 m, not 3219 m.
+  2. METAR `10SM` and METAR `9999` both emit 10000 m with operator ABOVE.
+  3. TAF `10SM` and TAF `9999` emit that same 10000 m with operator ABOVE.
+  4. TAF `6SM` stays a statute-mile group without a metre value. TAF `P6SM` stays above without a metre value.
+- **Pass criteria**: The four checks pass.
+- **Out of scope**: Remark visibility such as `VIS16KM`. Unobserved `////` visibility. QNH over an altimeter setting. METAR variable wind. Promoting `stage` to `main`.
+- **Source**: F6 deepen #1406
+
 ### TC-F4-001: Profile package pin
 
 - **Level**: T0 package. No browser journey.

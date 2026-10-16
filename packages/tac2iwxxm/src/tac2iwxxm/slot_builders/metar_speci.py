@@ -6,6 +6,11 @@ import re
 from typing import Any
 
 from tac2iwxxm.recent_weather import accept_recent_code
+from tac2iwxxm.visibility_measure import (
+    METAR_STATUTE_MILE_GROUP,
+    prevailing_from_metre_group,
+    prevailing_from_statute_miles,
+)
 
 _CA_SURFACE_TYPES = frozenset({"METAR", "SPECI", "LWIS", "SAWR"})
 _REPORT = re.compile(
@@ -17,7 +22,8 @@ _CA_DENSITY_ALT = re.compile(r"\bDENSITY\s+ALT(?:ITUDE)?\s+(?P<ft>\d{3,5})FT\b",
 _CA_DENSITY_ALT_MISG = re.compile(r"\bDENSITY\s+ALT(?:ITUDE)?\s+MISG\b", re.I)
 _CA_ICE_REMARK = re.compile(r"\bICE\s+(?P<intensity>TRC|LGT|MOD|SEV|HVY)\b", re.I)
 _WIND = re.compile(r"\b(?P<dir>\d{3}|VRB)(?P<spd>\d{2,3})(?:G(?P<gust>\d{2,3}))?(?P<uom>KT|MPS)\b")
-_VIS_SM = re.compile(r"\b(?P<vis>\d{1,2})SM\b")
+# Mixed fractions share this pattern so ``1 1/2SM`` is not read as ``2SM``.
+_VIS_SM = METAR_STATUTE_MILE_GROUP
 _VIS_M = re.compile(r"\b(?P<vis>\d{4})\b")
 # AUTO missing visibility: ////SM (statute) or //// (metres); avoid matching ////SM as ////.
 # Note: ``\b`` does not fire before ``/`` (non-word), so use explicit lookarounds.
@@ -278,24 +284,47 @@ def _inhg_to_hpa(alt_token: str) -> float:
     return round(inhg * 33.8639, 1)
 
 
-def _sm_to_m(sm: int) -> tuple[int, bool]:
+def _assign_statute_visibility(target: dict[str, Any], token: str) -> None:
     """
-    Internal helper ``_sm_to_m``.
+    Store a statute-mile group, including a mixed fraction.
 
     Parameters
     ----------
-    sm : object
-        Argument ``sm``.
+    target :
+        Observation map to update.
+    token :
+        Miles without the ``SM`` suffix. ``1 1/2`` is one and a half.
 
     Returns
     -------
-    object
-        Return value.
+    None
     """
-    metres = round(sm * 1609.344)
-    if sm >= 10:
-        return 10000, True
-    return metres, False
+    sm = _parse_sm_fraction(token)
+    whole = int(sm)
+    target["visibility_sm"] = whole if sm == whole else sm
+    metres, above = prevailing_from_statute_miles(sm)
+    target["visibility_m"] = metres
+    target["visibility_above"] = above
+
+
+def _assign_metre_visibility(target: dict[str, Any], metres: int) -> None:
+    """
+    Store a metre visibility group on the shared 10 km rule.
+
+    Parameters
+    ----------
+    target :
+        Observation or trend map to update.
+    metres :
+        The four-digit visibility group.
+
+    Returns
+    -------
+    None
+    """
+    value, above = prevailing_from_metre_group(metres)
+    target["visibility_m"] = value
+    target["visibility_above"] = above
 
 
 def _slp_code_to_hpa(code: int) -> float:
@@ -448,14 +477,11 @@ def _parse_trend_group(ir: dict[str, Any], kind: str, body: str) -> dict[str, An
 
     # Visibility: prefer 9999 / 4-digit metres; SM uncommon in ICAO trends.
     if re.search(r"\b9999\b", body):
-        trend["visibility_m"] = 10000
-        trend["visibility_above"] = True
+        _assign_metre_visibility(trend, 9999)
     else:
         vis_m = _VIS_M.search(body)
         if vis_m is not None:
-            metres = int(vis_m.group("vis"))
-            trend["visibility_m"] = metres
-            trend["visibility_above"] = metres >= 9999
+            _assign_metre_visibility(trend, int(vis_m.group("vis")))
 
     if re.search(r"\bNSW\b", body):
         trend["weather_nsw"] = True
@@ -621,6 +647,30 @@ def _parse_sm_fraction(token: str) -> float:
     if len(parts) == 1 and "/" in parts[0]:
         return _frac_to_inches(parts[0])
     return float(int(parts[0]))
+
+
+def parse_statute_mile_fraction(token: str) -> float:
+    """
+    Parse a statute-mile token with the existing fraction parser.
+
+    Parameters
+    ----------
+    token :
+        Miles without the ``SM`` suffix. ``1 1/2`` is one and a half.
+
+    Returns
+    -------
+    float
+        Statute miles.
+
+    Examples
+    --------
+    >>> parse_statute_mile_fraction("1 1/2")
+    1.5
+    >>> parse_statute_mile_fraction("10")
+    10.0
+    """
+    return _parse_sm_fraction(token)
 
 
 def _sm_float_to_m(sm: float) -> int:
@@ -1485,19 +1535,12 @@ def parse_metar_speci(tac: str, *, product: str) -> dict[str, Any]:
     else:
         vis_sm = _VIS_SM.search(rest)
         if vis_sm is not None:
-            sm = int(vis_sm.group("vis"))
-            ir["visibility_sm"] = sm
-            metres, above = _sm_to_m(sm)
-            ir["visibility_m"] = metres
-            ir["visibility_above"] = above
+            _assign_statute_visibility(ir, vis_sm.group("vis"))
         else:
             vis_m = _VIS_M.search(rest)
             if vis_m is None:
                 raise ValueError("missing visibility (SM/m/CAVOK) group")
-            metres = int(vis_m.group("vis"))
-            ir["visibility_m"] = metres
-            # ICAO 9999 means 10 km or more.
-            ir["visibility_above"] = metres >= 9999
+            _assign_metre_visibility(ir, int(vis_m.group("vis")))
 
     if _TEMP_NOT_OBS.search(rest):
         ir["temp_not_observable"] = True
@@ -1548,17 +1591,11 @@ def parse_metar_speci(tac: str, *, product: str) -> dict[str, Any]:
         else:
             vis_sm = _VIS_SM.search(obs_body)
             if vis_sm is not None:
-                sm = int(vis_sm.group("vis"))
-                ir["visibility_sm"] = sm
-                metres, above = _sm_to_m(sm)
-                ir["visibility_m"] = metres
-                ir["visibility_above"] = above
+                _assign_statute_visibility(ir, vis_sm.group("vis"))
             else:
                 vis_m = _VIS_M.search(obs_body)
                 if vis_m is not None:
-                    metres = int(vis_m.group("vis"))
-                    ir["visibility_m"] = metres
-                    ir["visibility_above"] = metres >= 9999
+                    _assign_metre_visibility(ir, int(vis_m.group("vis")))
 
     min_vis = _VIS_MIN.search(obs_body)
     if min_vis is not None:
