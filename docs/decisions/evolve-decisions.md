@@ -1,5 +1,23 @@
 # Evolve Decisions
 
+## Cycle EV-1409-heading-convert: abbreviated heading in the main convert path (#1409)
+
+**Opened:** 2026-10-16 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-1409-heading-convert`  
+**Issue:** [#1409](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1409)  
+**Documenting→Implementing gate:** open  
+**Scale:** micro
+
+| ID | Outcome |
+|----|---------|
+| D1 | A paste that opens with an abbreviated heading uses the existing bulletin split, then the main convert path encodes those reports. |
+| D2 | `SAXX31 TNCM 081200` plus a METAR TNCM converts from `POST /api/v1/convert`. SPECI, TAF, and SIGMET headings do the same. |
+| D3 | A heading with no report fails with "No TAC reports found after the abbreviated heading." A malformed heading fails with the existing abbreviated-heading message. |
+| D4 | The bulletin endpoint success path stays as it is. Visibility, QNH, remarks, the SIGMET body, and TAF time links stay as they are. |
+| D5 | Docs delta: feature-list heading note, test-plan TC-F6-054. No new feature id. |
+| F107 | Memory retrieve skipped. Neo4j was left down from the previous slice. |
+
+[Corpus: product §F6] [Corpus: api] [Corpus: tests]
+
 ## Cycle EV-1406-visibility-10km: 10 km visibility (#1406)
 
 **Opened:** 2026-10-16 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-1406-visibility-10km`  

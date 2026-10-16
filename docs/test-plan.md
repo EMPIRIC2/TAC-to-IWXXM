@@ -6487,6 +6487,20 @@ Manual signoff before release, not a PR merge gate. Developer runs `make test-li
 - **Out of scope**: Remark visibility such as `VIS16KM`. Unobserved `////` visibility. QNH over an altimeter setting. METAR variable wind. Promoting `stage` to `main`.
 - **Source**: F6 deepen #1406
 
+### TC-F6-054: Abbreviated heading converts from the main convert path
+
+- **Level**: T0 package plus T2 API. No browser journey.
+- **Objective**: The abbreviated heading that already converts on the bulletin endpoint also converts when pasted into the main convert path. [Corpus: product §F6] [Corpus: api] [Corpus: tests]
+- **Steps**:
+  1. `SAXX31 TNCM 081200` plus `METAR TNCM 081200Z 10010KT 9999 FEW018 30/24 Q1017 NOSIG=` converts on `POST /api/v1/convert` and on `POST /api/v1/convert-bulletin`.
+  2. SPECI, TAF, and SIGMET headings peel to the report, and that report converts.
+  3. A heading with no report fails with "No TAC reports found after the abbreviated heading."
+  4. A malformed heading fails with a message that the abbreviated heading is not valid.
+  5. A paste that does not open with a heading stays on the existing line split.
+- **Pass criteria**: The five checks pass.
+- **Out of scope**: Rebuilding abbreviated-heading parsing. Visibility, QNH, remarks, the SIGMET body, and TAF time links. Promoting `stage` to `main`.
+- **Source**: F6 deepen #1409
+
 ### TC-F4-001: Profile package pin
 
 - **Level**: T0 package. No browser journey.

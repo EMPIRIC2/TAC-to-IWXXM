@@ -17,6 +17,7 @@ from dissemination.packaging import apply_exchange_packaging
 from fastapi import APIRouter, Depends, File, Form, HTTPException, Request, UploadFile
 from fastapi.responses import Response, StreamingResponse
 from tac2iwxxm.group_trace import trace_entries
+from tac2iwxxm.heading_paste import HeadingPasteError, http_status_for_heading_error, reports_for_convert
 from tac2iwxxm.profile_registry import supported_report_variants_for_profile
 from tac2iwxxm.profile_resolve import resolve_validation_policies
 from tac2iwxxm.profiles.ca_eccc import CA_IWXXM_VERSION
@@ -2784,7 +2785,17 @@ async def convert(
     if request_body is not None and request_body.metars:
         metars_list = request_body.metars
 
-    manual_with_offsets = api_surface.manual_entries_with_offsets(manual_text or "", product=product)
+    try:
+        pasted_heading = reports_for_convert(manual_text or "", product)
+    except HeadingPasteError as exc:
+        raise HTTPException(
+            status_code=http_status_for_heading_error(exc.code),
+            detail={"code": exc.code, "message": exc.message},
+        ) from exc
+    if pasted_heading is None:
+        manual_with_offsets = api_surface.manual_entries_with_offsets(manual_text or "", product=product)
+    else:
+        manual_with_offsets = list(pasted_heading.reports)
     manual_entries = [entry for entry, _ in manual_with_offsets]
 
     sample_for_output_spec = manual_text.strip() if manual_text else ""
