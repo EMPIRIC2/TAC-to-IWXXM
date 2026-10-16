@@ -662,6 +662,13 @@ def parse_statute_mile_fraction(token: str) -> float:
     -------
     float
         Statute miles.
+
+    Examples
+    --------
+    >>> parse_statute_mile_fraction("1 1/2")
+    1.5
+    >>> parse_statute_mile_fraction("10")
+    10.0
     """
     return _parse_sm_fraction(token)
 

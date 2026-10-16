@@ -27,6 +27,13 @@ def prevailing_from_statute_miles(statute_miles: float) -> tuple[int, bool]:
     -------
     tuple[int, bool]
         Metres, and whether the reading is 10 km or more.
+
+    Examples
+    --------
+    >>> prevailing_from_statute_miles(10)
+    (10000, True)
+    >>> prevailing_from_statute_miles(1.5)
+    (2414, False)
     """
     if statute_miles >= 10:
         return 10000, True
@@ -48,6 +55,13 @@ def prevailing_from_metre_group(metres: int) -> tuple[int, bool]:
     -------
     tuple[int, bool]
         Metres, and whether the reading is 10 km or more.
+
+    Examples
+    --------
+    >>> prevailing_from_metre_group(9999)
+    (10000, True)
+    >>> prevailing_from_metre_group(8000)
+    (8000, False)
     """
     if metres >= 9999:
         return 10000, True
