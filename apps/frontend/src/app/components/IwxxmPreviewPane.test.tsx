@@ -36,9 +36,21 @@ describe('IwxxmPreviewPane', () => {
     );
   });
 
-  it('shows Passed badge when preview succeeds', () => {
+  it('shows Valid when the preview succeeds', () => {
     render(<IwxxmPreviewPane xml={SAMPLE_XML} status="passed" mode="live" />);
-    expect(screen.getByTestId('iwxxm-preview-badge')).toHaveTextContent(/^Passed$/);
+    expect(screen.getByTestId('iwxxm-preview-badge')).toHaveTextContent(/^Valid$/);
+    expect(screen.queryByText('Passed')).not.toBeInTheDocument();
+  });
+
+  it('does not say Passed when the preview is incomplete', () => {
+    render(
+      <IwxxmPreviewPane xml={SAMPLE_XML} status="passed" mode="live" incomplete />,
+    );
+    expect(screen.queryByText('Passed')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('iwxxm-preview-badge')).not.toBeInTheDocument();
+    expect(screen.getByTestId('iwxxm-preview-incomplete')).toHaveTextContent(
+      'Needs attention. Do not publish. Fix the TAC errors first.',
+    );
   });
 
   it('links failed-span count to onFailedSpanFocus callback', async () => {
@@ -107,7 +119,7 @@ describe('IwxxmPreviewPane', () => {
       'Conversion profile: ICAO Annex 3',
     );
     expect(screen.getByTestId('iwxxm-preview-incomplete')).toHaveTextContent(
-      'Incomplete: fix TAC errors',
+      'Needs attention. Do not publish. Fix the TAC errors first.',
     );
     expect(screen.getByTestId('iwxxm-preview-line-hit')).toHaveTextContent('TTPP');
   });

@@ -40,6 +40,12 @@ describe('ErrorLogPanel', () => {
 
     expect(screen.getByLabelText(/conversion error log/i)).toBeInTheDocument();
     expect(screen.getByText('Invalid METAR syntax')).toBeInTheDocument();
+    expect(screen.getByRole('region', { name: 'Errors' })).toHaveTextContent(
+      'Invalid METAR syntax',
+    );
+    expect(screen.getByRole('region', { name: 'Notes' })).toHaveTextContent(
+      'Unexpected token',
+    );
     expect(screen.getByText(/Unexpected token/)).toBeInTheDocument();
     expect(screen.getByText(/Check TAC format/)).toBeInTheDocument();
     expect(screen.getByText(/Code: E001/)).toBeInTheDocument();
@@ -65,9 +71,10 @@ describe('ErrorLogPanel', () => {
       />,
     );
 
-    expect(
-      screen.getByText(/\[error\] parser: Missing severity field/),
-    ).toBeInTheDocument();
+    expect(screen.getByRole('region', { name: 'Errors' })).toHaveTextContent(
+      'Missing severity field',
+    );
+    expect(screen.queryByRole('region', { name: 'Notes' })).not.toBeInTheDocument();
   });
 
   it('hides sub-critical issues when the operator log level is CRITICAL', () => {

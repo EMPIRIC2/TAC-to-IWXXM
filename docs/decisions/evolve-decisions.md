@@ -1,5 +1,24 @@
 # Evolve Decisions
 
+## Cycle EV-1411-result-card: one convert result card (#1411)
+
+**Opened:** 2026-10-16 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-1411-result-card`  
+**Issue:** [#1411](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1411)  
+**Documenting→Implementing gate:** open  
+**Scale:** micro
+
+| ID | Outcome |
+|----|---------|
+| D1 | The page title is TAC to IWXXM. |
+| D2 | The newest convert result is first. |
+| D3 | Status is valid, valid with notes, or needs attention. An invalid result says do not publish. |
+| D4 | Errors and notes are separate. The status leads. The issue code stays under the message. |
+| D5 | Frontend only. No converter library change and no new dependency. |
+| D6 | Docs delta: feature-list result-card note, test-plan TC-F7-1411, this log, docs/context/result-card.md. No new feature id. |
+| F107 | Memory retrieve skipped. Neo4j at `bolt://localhost:7687` was unavailable. |
+
+[Corpus: product §F7] [Corpus: tests]
+
 ## Cycle EV-1409-heading-convert: abbreviated heading in the main convert path (#1409)
 
 **Opened:** 2026-10-16 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-1409-heading-convert`  

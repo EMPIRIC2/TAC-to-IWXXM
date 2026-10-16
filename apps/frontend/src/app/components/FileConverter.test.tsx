@@ -668,7 +668,7 @@ describe('FileConverter Component', () => {
       const bar = screen.getByTestId('workbench-top-bar');
       expect(bar).toHaveClass('sticky', 'top-0', 'w-full');
       expect(bar).toContainElement(
-        screen.getByRole('heading', { name: 'METAR → IWXXM Converter' }),
+        screen.getByRole('heading', { name: 'TAC to IWXXM' }),
       );
       expect(bar).toContainElement(screen.getByTestId('operator-help-link'));
       expect(bar).toContainElement(
@@ -676,12 +676,13 @@ describe('FileConverter Component', () => {
       );
       expect(bar).toContainElement(screen.getByTestId('theme-toggle'));
       expect(bar).toContainElement(screen.getByTestId('sign-in-button'));
+      expect(document.title).toBe('TAC to IWXXM');
     });
 
     it('keeps the Convert title on the same inset as the page body', async () => {
       const user = userEvent.setup();
       render(<FileConverter {...defaultProps} />);
-      const heading = screen.getByRole('heading', { name: 'METAR → IWXXM Converter' });
+      const heading = screen.getByRole('heading', { name: 'TAC to IWXXM' });
       const titleRow = heading.parentElement as HTMLElement;
       const frame = screen.getByTestId('workbench-frame');
       const bar = screen.getByTestId('workbench-top-bar');
@@ -851,7 +852,7 @@ describe('FileConverter Component', () => {
       render(<FileConverter {...defaultProps} />);
       // User email is passed to UserPreferencesDialog but not directly displayed
       // Check that component renders without errors instead
-      expect(screen.getByText(/metar.*iwxxm converter/i)).toBeInTheDocument();
+      expect(screen.getByRole('heading', { name: 'TAC to IWXXM' })).toBeInTheDocument();
     });
 
     it('should display theme toggle', () => {
@@ -1550,7 +1551,7 @@ describe('FileConverter Component', () => {
       render(<FileConverter {...defaultProps} />);
       // Copy button only appears when there are converted files,
       // so we just check the component renders without errors
-      expect(screen.getByText(/metar.*iwxxm converter/i)).toBeInTheDocument();
+      expect(screen.getByRole('heading', { name: 'TAC to IWXXM' })).toBeInTheDocument();
     });
 
     it('should have download button for results', async () => {
@@ -3430,6 +3431,58 @@ describe('FileConverter Component', () => {
       ).toBeInTheDocument();
       expect(screen.getByTestId('download-zip-button')).toHaveAccessibleName(
         /download all 2 converted files as zip/i,
+      );
+      const region = screen.getByRole('region', { name: /conversion results/i });
+      const newest = within(region).getByText('<iwxxm>second-batch</iwxxm>');
+      const older = within(region).getByText('<iwxxm>first-batch</iwxxm>');
+      expect(
+        newest.compareDocumentPosition(older) & Node.DOCUMENT_POSITION_FOLLOWING,
+      ).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
+    });
+
+    it('says do not publish on an invalid result and separates errors from notes', async () => {
+      const user = userEvent.setup({ delay: null });
+      mockConvertMetarToIwxxm.mockResolvedValueOnce({
+        ok: false,
+        results: [{ iwxxm_xml: '<iwxxm>not-closed', name: 'bad.txt' }],
+        errors: ['XML is not valid'],
+        issues: [
+          {
+            source: 'manual_input',
+            message: 'Schema check failed',
+            severity: 'error',
+            code: 'XML_SCHEMA',
+          },
+          {
+            source: 'manual_input',
+            message: 'Remark stays in the decode',
+            severity: 'info',
+            code: 'RMK_NOTE',
+          },
+        ],
+      });
+
+      const { container } = render(<FileConverter {...defaultProps} />);
+      const textarea = container.querySelector('textarea') as HTMLTextAreaElement;
+      fireEvent.change(textarea, { target: { value: 'METAR BAD XML' } });
+      await user.click(screen.getByTestId('convert-button'));
+
+      const card = await screen.findByTestId('result-card-status');
+      expect(within(card).getByTestId('result-status-label')).toHaveTextContent(
+        'Needs attention',
+      );
+      expect(within(card).getByTestId('result-do-not-publish')).toHaveTextContent(
+        'Do not publish',
+      );
+      expect(within(card).queryByText('Passed')).not.toBeInTheDocument();
+      const errors = within(card).getByRole('region', { name: 'Errors' });
+      const notes = within(card).getByRole('region', { name: 'Notes' });
+      expect(errors).toHaveTextContent('Schema check failed');
+      expect(errors).toHaveTextContent('Code: XML_SCHEMA');
+      expect(notes).toHaveTextContent('Remark stays in the decode');
+      expect(notes).not.toHaveTextContent('Schema check failed');
+      expect(card.textContent?.indexOf('Needs attention')).toBeLessThan(
+        card.textContent?.indexOf('Schema check failed') ?? -1,
       );
     });
 
@@ -6382,9 +6435,7 @@ describe('FileConverter Component', () => {
       expect(screen.getByText('Drop one XML file or select')).toBeInTheDocument();
 
       await user.click(screen.getByTestId('input-mode-tac'));
-      expect(
-        screen.getByRole('heading', { name: 'METAR → IWXXM Converter' }),
-      ).toBeInTheDocument();
+      expect(screen.getByRole('heading', { name: 'TAC to IWXXM' })).toBeInTheDocument();
       expect(screen.getByTestId('library-pickers-bar')).toBeInTheDocument();
       expect(screen.getByTestId('soft-preview-toggle')).toBeInTheDocument();
     });

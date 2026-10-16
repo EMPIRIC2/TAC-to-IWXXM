@@ -6,6 +6,7 @@ still land here so they are not appended to `docs/context-brief.md`.
 
 | Brief | Session | Status |
 |-------|---------|--------|
+| [result-card.md](result-card.md) | EV-1411-result-card | active |
 | [heading-in-convert.md](heading-in-convert.md) | EV-1409-heading-convert | active |
 | [visibility-10km.md](visibility-10km.md) | EV-1406-visibility-10km | active |
 | [sigmet-body.md](sigmet-body.md) | EV-1410-sigmet-body | active |

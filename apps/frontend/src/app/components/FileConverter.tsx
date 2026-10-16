@@ -231,6 +231,7 @@ import {
   CONVERT_AND_SEND_UPLOAD_OPTIONS,
   uploadConvertedFiles,
 } from '/utils/databaseUpload';
+import { ConvertResultStatus } from './ConvertResultStatus';
 import { ErrorLogPanel, type ConversionLog } from './ErrorLogPanel';
 import { WorkHistorySidebar } from './WorkHistorySidebar';
 import type { WorkSession } from '@metar/shared';
@@ -242,6 +243,11 @@ import {
 } from '/utils/workSessionPayload';
 import { readGuestConverterState } from '/utils/guestConverterState';
 import { OPERATOR_ONE_PAGER_URL } from '/utils/operatorHelp';
+import {
+  assessConvertedFile,
+  PAGE_TITLE,
+  type ResultIssueInput,
+} from '/utils/resultCard';
 import {
   ACCUMULATE_RESULT_CAP,
   appendConvertedWithinCap,
@@ -314,6 +320,12 @@ interface ConvertedFile {
   liveOutputSlot?: { index: number; total: number };
   /** Convert-time snapshot for export metadata sidecars. */
   exportContext?: ConversionExportContext;
+  /** Issues captured for this result. Older saved cards omit it. */
+  resultCard?: {
+    errors: string[];
+    issues: ResultIssueInput[];
+    ok?: boolean;
+  };
 }
 
 interface PendingFile {
@@ -806,6 +818,10 @@ export function FileConverter({
   const updateConversionLog = useCallback((next: ConversionLog | null) => {
     conversionLogRef.current = next;
     setConversionLog(next);
+  }, []);
+
+  useEffect(() => {
+    document.title = PAGE_TITLE;
   }, []);
 
   const applyWmoLibraryDefaultsSync = useCallback((sync: WmoLibraryDefaultsSync) => {
@@ -1539,6 +1555,11 @@ export function FileConverter({
               convertedContent: result.xml,
               timestamp: Date.now(),
               exportContext: snapshotExportContext(conversionParams, resolvedProduct),
+              resultCard: {
+                errors: [],
+                issues: result.issues,
+                ok: result.ok,
+              },
             });
           }
         });
@@ -1659,6 +1680,15 @@ export function FileConverter({
 
       if (softFail) {
         setFailedSpans(spans);
+      }
+
+      const resultOk = response.ok !== false;
+      for (const file of newConvertedFiles) {
+        file.resultCard = {
+          errors: responseErrors,
+          issues: responseIssues,
+          ok: resultOk,
+        };
       }
 
       if (newConvertedFiles.length === 0) {
@@ -2499,9 +2529,7 @@ export function FileConverter({
           className={`mx-auto flex w-full flex-wrap items-center justify-between gap-3 px-4 ${shellFrameClass(liveLayout.span)}`}
         >
           <h1 className="text-2xl font-semibold text-gray-900 dark:text-white sm:text-3xl">
-            {inputMode === 'validate_iwxxm'
-              ? VALIDATE_IWXXM_HEADING
-              : 'METAR → IWXXM Converter'}
+            {inputMode === 'validate_iwxxm' ? VALIDATE_IWXXM_HEADING : PAGE_TITLE}
           </h1>
           <div
             className="flex flex-wrap items-center gap-2 sm:gap-3"
@@ -4461,6 +4489,7 @@ export function FileConverter({
                           </Button>
                         </div>
                       </div>
+                      <ConvertResultStatus assessment={assessConvertedFile(file)} />
                       <CollapsibleContent className="px-4 pb-4">
                         {file.originalContent.length > 60 &&
                         file.displayTitle !==
