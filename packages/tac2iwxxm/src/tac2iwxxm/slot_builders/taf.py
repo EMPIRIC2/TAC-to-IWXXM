@@ -5,8 +5,14 @@ from __future__ import annotations
 import re
 from typing import Any
 
+from tac2iwxxm.slot_builders.metar_speci import parse_statute_mile_fraction
 from tac2iwxxm.taf_prob import is_unqualified_probability, probability_tempo_parts
 from tac2iwxxm.time_anchor import iso_stamp
+from tac2iwxxm.visibility_measure import (
+    TAF_STATUTE_MILE_GROUP,
+    prevailing_from_metre_group,
+    prevailing_from_statute_miles,
+)
 
 _TAF = re.compile(
     r"^(?:TAF\s+)?(?:AMD\s+|COR\s+)?(?P<station>[A-Z][A-Z0-9]{3})\s+"
@@ -21,7 +27,7 @@ _TAF_NIL_ONLY = re.compile(
 )
 _WIND = re.compile(r"\b(?P<dir>\d{3}|VRB)(?P<spd>\d{2,3})(?:G(?P<gust>\d{2,3}))?(?P<uom>KT|MPS)\b")
 _VIS_M = re.compile(r"\b(?P<vis>\d{4})\b")
-_VIS_SM = re.compile(r"\b(?P<mod>P)?(?P<vis>\d{1,2})SM\b")
+_VIS_SM = TAF_STATUTE_MILE_GROUP
 _NCLWS = re.compile(r"\bWS(?P<height>\d{3})/(?P<dir>\d{3})(?P<spd>\d{2,3})KT\b")
 _CLOUD = re.compile(r"\b(?P<amt>FEW|SCT|BKN|OVC)(?P<base>\d{3}|///)(?P<ctype>CB|TCU)?\b")
 _ALT_INHG = re.compile(r"\bA(?P<alt>\d{4})\b")
@@ -238,8 +244,16 @@ def _parse_forecast_body(text: str, *, cavok_ok: bool = True) -> dict[str, Any]:
     _parse_wind(text, out)
     vis_sm = _VIS_SM.search(text)
     if vis_sm is not None:
-        out["visibility_sm"] = int(vis_sm.group("vis"))
-        out["visibility_above"] = vis_sm.group("mod") == "P"
+        sm = parse_statute_mile_fraction(vis_sm.group("vis"))
+        whole = int(sm)
+        out["visibility_sm"] = whole if sm == whole else sm
+        if vis_sm.group("mod") == "P":
+            out["visibility_above"] = True
+        else:
+            metres, above = prevailing_from_statute_miles(sm)
+            out["visibility_above"] = above
+            if above or sm != whole:
+                out["visibility_m"] = metres
     else:
         vis_km = _VIS_KM.search(text)
         if vis_km is not None:
@@ -252,9 +266,9 @@ def _parse_forecast_body(text: str, *, cavok_ok: bool = True) -> dict[str, Any]:
         else:
             vis = _VIS_M.search(text)
             if vis is not None:
-                metres = int(vis.group("vis"))
-                out["visibility_m"] = 10000 if metres >= 9999 else metres
-                out["visibility_above"] = metres >= 9999
+                metres, above = prevailing_from_metre_group(int(vis.group("vis")))
+                out["visibility_m"] = metres
+                out["visibility_above"] = above
     clouds = _parse_clouds(text)
     if clouds:
         out["clouds"] = clouds

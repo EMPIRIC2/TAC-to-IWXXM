@@ -1,5 +1,22 @@
 # Evolve Decisions
 
+## Cycle EV-1406-visibility-10km: 10 km visibility (#1406)
+
+**Opened:** 2026-10-16 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-1406-visibility-10km`  
+**Issue:** [#1406](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1406)  
+**Documenting→Implementing gate:** open  
+**Scale:** micro
+
+| ID | Outcome |
+|----|---------|
+| D1 | Mixed statute-mile groups use the existing fraction parser. `1 1/2SM` is 2414 m, about 2400 m, not 3219 m. |
+| D2 | `9999` and `10SM` both mean 10 km or more on METAR and on TAF. Both emit 10000 m with operator ABOVE. |
+| D3 | TAF miles below 10, including `P6SM`, keep the existing statute-mile record. |
+| D4 | Docs delta: feature-list visibility note, test-plan TC-F6-053. No new feature id. |
+| F107 | Memory retrieve skipped. Neo4j was left down from the previous slice. |
+
+[Corpus: product §F6] [Corpus: tests]
+
 ## Cycle EV-1410-sigmet-body: SIGMET body normalizer (#1410)
 
 **Opened:** 2026-10-15 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-1410-sigmet-body`  
