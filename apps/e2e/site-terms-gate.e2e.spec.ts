@@ -15,21 +15,15 @@ test.describe('Site terms gate', () => {
     await page.goto('/');
     await expect(page.getByTestId('site-terms-gate')).toBeVisible();
     await expect(page.getByTestId('site-terms-continue')).toBeDisabled();
-    await expect(
-      page.getByRole('heading', { name: /METAR.*IWXXM.*Converter/i }),
-    ).toHaveCount(0);
+    await expect(page.getByRole('heading', { name: /^TAC to IWXXM$/ })).toHaveCount(0);
 
     await page.getByTestId('site-terms-ack').check();
     await page.getByTestId('site-terms-continue').click();
-    await expect(
-      page.getByRole('heading', { name: /METAR.*IWXXM.*Converter/i }),
-    ).toBeVisible();
+    await expect(page.getByRole('heading', { name: /^TAC to IWXXM$/ })).toBeVisible();
 
     await page.evaluate(() => sessionStorage.setItem('e2e-keep-site-terms', '1'));
     await page.reload();
     await expect(page.getByTestId('site-terms-gate')).toHaveCount(0);
-    await expect(
-      page.getByRole('heading', { name: /METAR.*IWXXM.*Converter/i }),
-    ).toBeVisible();
+    await expect(page.getByRole('heading', { name: /^TAC to IWXXM$/ })).toBeVisible();
   });
 });

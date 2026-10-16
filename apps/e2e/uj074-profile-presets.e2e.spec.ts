@@ -336,9 +336,7 @@ test.describe('UJ-074: semantic presets + dissemination templates (EV-1051)', ()
     await expect(page.getByTestId('conversion-profiles-preset-slug')).toHaveCount(0);
 
     await page.getByTestId('shell-nav-converter').click();
-    await expect(
-      page.getByRole('heading', { name: /METAR.*IWXXM.*Converter/i }),
-    ).toBeVisible();
+    await expect(page.getByRole('heading', { name: /^TAC to IWXXM$/ })).toBeVisible();
     await dismissPrivacyNoticeIfPresent(page);
 
     await expect(page.getByTestId('library-pickers-bar')).toBeVisible({

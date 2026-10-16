@@ -168,9 +168,7 @@ test.describe('T7.1 — F31 hybrid sessions (UJ-045..047)', () => {
     await page
       .getByRole('button', { name: /continue to converter without signing in/i })
       .click();
-    await expect(
-      page.getByRole('heading', { name: /METAR.*IWXXM.*Converter/i }),
-    ).toBeVisible();
+    await expect(page.getByRole('heading', { name: /^TAC to IWXXM$/ })).toBeVisible();
     await dismissPrivacyNoticeIfPresent(page);
   });
 });

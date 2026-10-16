@@ -279,9 +279,7 @@ test.describe('UJ-071: Dissemination ops H6′ (EV-936)', () => {
     await expect(page.getByTestId('dissemination-ops-page')).toBeVisible();
 
     await page.getByTestId('shell-nav-converter').click();
-    await expect(
-      page.getByRole('heading', { name: /METAR.*IWXXM.*Converter/i }),
-    ).toBeVisible();
+    await expect(page.getByRole('heading', { name: /^TAC to IWXXM$/ })).toBeVisible();
     await dismissPrivacyNoticeIfPresent(page);
     await expect(page.getByTestId('open-dissemination-drawer')).toBeVisible();
   });

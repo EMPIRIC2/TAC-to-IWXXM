@@ -406,9 +406,7 @@ test.describe('UJ-072: ConversionProfile editor (EV-933 / TC-EV933-006)', () => 
     await expect(page.getByTestId('conversion-profiles-overlay-slug')).toHaveCount(0);
 
     await page.getByTestId('shell-nav-converter').click();
-    await expect(
-      page.getByRole('heading', { name: /METAR.*IWXXM.*Converter/i }),
-    ).toBeVisible();
+    await expect(page.getByRole('heading', { name: /^TAC to IWXXM$/ })).toBeVisible();
     await dismissPrivacyNoticeIfPresent(page);
 
     await expect(page.getByTestId('library-pickers-bar')).toBeVisible();

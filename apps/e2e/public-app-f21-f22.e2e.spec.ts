@@ -60,9 +60,9 @@ test.describe('T7.1 — Public app + privacy (F21/F22)', () => {
       );
     });
     await page.reload();
-    await expect(
-      page.getByRole('heading', { name: /METAR.*IWXXM.*Converter/i }),
-    ).toBeVisible({ timeout: 10_000 });
+    await expect(page.getByRole('heading', { name: /^TAC to IWXXM$/ })).toBeVisible({
+      timeout: 10_000,
+    });
 
     const notice = page.getByTestId('privacy-notice');
     await expect(notice).toBeVisible();
@@ -72,9 +72,7 @@ test.describe('T7.1 — Public app + privacy (F21/F22)', () => {
     await expect(notice).toHaveCount(0);
 
     await page.reload();
-    await expect(
-      page.getByRole('heading', { name: /METAR.*IWXXM.*Converter/i }),
-    ).toBeVisible();
+    await expect(page.getByRole('heading', { name: /^TAC to IWXXM$/ })).toBeVisible();
     await expect(page.getByTestId('privacy-notice')).toHaveCount(0);
   });
 
@@ -107,9 +105,9 @@ test.describe('T7.1 — Public app + privacy (F21/F22)', () => {
     });
 
     await page.goto('/');
-    await expect(
-      page.getByRole('heading', { name: /METAR.*IWXXM.*Converter/i }),
-    ).toBeVisible({ timeout: 10_000 });
+    await expect(page.getByRole('heading', { name: /^TAC to IWXXM$/ })).toBeVisible({
+      timeout: 10_000,
+    });
     await dismissPrivacyNoticeIfPresent(page);
     await expect(page.getByTestId('privacy-notice')).toHaveCount(0);
 
