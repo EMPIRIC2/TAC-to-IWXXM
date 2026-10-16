@@ -467,6 +467,19 @@ EV-059.
 - **Out of scope**: Weakening Schematron/XSD; new products; dissemination; promoting `stage` to `main`.
 - **Source**: F7 deepen EV-1159 / #1159; deepen UJ-032 / TC-F7-008
 
+### TC-F7-1411: Convert result card
+
+- **Level**: T0 frontend Vitest. No browser journey required for this slice.
+- **Objective**: The converter page is titled TAC to IWXXM. The newest convert result is first. Status is valid, valid with notes, or needs attention. An invalid result says do not publish. Errors and notes are separate. [Corpus: product §F7] [Corpus: tests]
+- **Steps**:
+  1. The page heading and browser title read TAC to IWXXM.
+  2. After two converts, the second result is above the first.
+  3. A result with an error does not read as Passed. It reads Needs attention and Do not publish.
+  4. Error text and note text are in separate lists. The status is above the code.
+- **Pass criteria**: The four checks pass in frontend unit tests.
+- **Out of scope**: Converter libraries. Backend response changes. A redesign of session filters, the colour legend, or try-an-example. Promoting `stage` to `main`.
+- **Source**: F7 deepen #1411
+
 ### F7 UI↔API connection integration
 
 Cross-layer coverage for workbench connection points (not only isolated unit/TC modules):

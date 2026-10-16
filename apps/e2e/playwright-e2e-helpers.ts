@@ -96,7 +96,7 @@ export async function dismissPrivacyNoticeIfPresent(page: Page): Promise<void> {
 
 /** Open the public converter shell (F21 — no login / JWT). */
 export async function openPublicConverter(page: Page): Promise<void> {
-  const heading = page.getByRole('heading', { name: /METAR.*IWXXM.*Converter/i });
+  const heading = page.getByRole('heading', { name: /^TAC to IWXXM$/ });
   await page.goto('/', { waitUntil: 'domcontentloaded' });
   try {
     await expect(heading).toBeVisible({ timeout: 10000 });
@@ -140,9 +140,9 @@ export async function loginAsE2EUser(page: Page): Promise<void> {
   await page.locator('#email').fill(E2E_USER_EMAIL);
   await page.locator('#password').fill(E2E_USER_PASSWORD);
   await page.getByRole('button', { name: /sign in to account/i }).click();
-  await expect(
-    page.getByRole('heading', { name: /METAR.*IWXXM.*Converter/i }),
-  ).toBeVisible({ timeout: 30_000 });
+  await expect(page.getByRole('heading', { name: /^TAC to IWXXM$/ })).toBeVisible({
+    timeout: 30_000,
+  });
   await expect(page.getByTestId('logout-button')).toBeVisible({ timeout: 20_000 });
   await expect(page.getByTestId('guest-loss-notice')).toHaveCount(0);
 }
@@ -154,9 +154,9 @@ export async function loginAsAdmin(page: Page): Promise<void> {
 
 /** @deprecated Admin dashboard removed — assert converter heading only. */
 export async function openConverterFromAdmin(page: Page): Promise<void> {
-  await expect(
-    page.getByRole('heading', { name: /METAR.*IWXXM.*Converter/i }),
-  ).toBeVisible({ timeout: 10000 });
+  await expect(page.getByRole('heading', { name: /^TAC to IWXXM$/ })).toBeVisible({
+    timeout: 10000,
+  });
 }
 
 /** @deprecated F21 — use {@link openPublicConverter}. */

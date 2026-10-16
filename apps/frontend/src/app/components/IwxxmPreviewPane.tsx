@@ -4,6 +4,11 @@
 
 import { prettyPrintXml } from '/utils/prettyXml';
 import { xmlLinesForSelection, type GroupTrace } from '/utils/liveConvertTrace';
+import {
+  DO_NOT_PUBLISH_LABEL,
+  RESULT_STATUS_ATTENTION,
+  RESULT_STATUS_VALID,
+} from '/utils/resultCard';
 
 /**
  * Type `IwxxmPreviewStatus`.
@@ -98,12 +103,12 @@ export function IwxxmPreviewPane({
         <h3 className="text-sm font-semibold text-gray-900 dark:text-white">
           Live IWXXM
         </h3>
-        {status === 'passed' ? (
+        {status === 'passed' && !incomplete ? (
           <span
             data-testid="iwxxm-preview-badge"
             className="rounded-full bg-emerald-100 px-2 py-0.5 text-xs font-medium text-emerald-900 dark:bg-emerald-950 dark:text-emerald-100"
           >
-            Passed
+            {RESULT_STATUS_VALID}
           </span>
         ) : null}
         {showSoftBadge && status !== 'passed' ? (
@@ -143,7 +148,7 @@ export function IwxxmPreviewPane({
           className="border-b border-gray-200 px-3 py-2 text-xs font-medium text-gray-900 dark:border-gray-700 dark:text-gray-100"
           role="status"
         >
-          Incomplete: fix TAC errors
+          {RESULT_STATUS_ATTENTION}. {DO_NOT_PUBLISH_LABEL}. Fix the TAC errors first.
         </p>
       ) : null}
 

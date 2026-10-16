@@ -14,6 +14,7 @@ import {
   issueSeverityRank,
   type ConvertLogLevel,
 } from '/utils/convertParams';
+import { isErrorSeverity } from '/utils/resultCard';
 
 /**
  * Type `ConversionLog`.
@@ -154,6 +155,13 @@ export function ErrorLogPanel({
     }
   }
 
+  const errorIssueRows = filteredIssues.flatMap((issue, index) =>
+    isErrorSeverity(issue.severity) ? [{ issue, index }] : [],
+  );
+  const noteIssueRows = filteredIssues.flatMap((issue, index) =>
+    isErrorSeverity(issue.severity) ? [] : [{ issue, index }],
+  );
+
   const shell =
     tone === 'alert'
       ? 'mb-8 rounded-lg border-2 border-amber-300 bg-amber-50 dark:border-amber-700 dark:bg-amber-900/20'
@@ -186,6 +194,40 @@ export function ErrorLogPanel({
     tone === 'alert'
       ? 'mt-1 text-xs text-amber-700 dark:text-amber-300'
       : 'mt-1 text-xs text-gray-500 dark:text-gray-400';
+
+  const renderIssueRow = (issue: ConversionIssue, index: number) => (
+    <li key={`issue-${index}`} className={issueCard}>
+      <button
+        type="button"
+        className="w-full text-left"
+        data-testid={`issue-detail-open-${index}`}
+        aria-label={ISSUE_DETAIL_OPEN}
+        onClick={() =>
+          setDetail(
+            buildIssueDetail({
+              code: issue.code,
+              severity: issue.severity,
+              message: issue.message,
+              hint: issue.hint,
+              location: issue.location,
+              start: issue.start,
+              end: issue.end,
+              catalog: issue.code ? catalogByCode?.get(issue.code) : null,
+            }),
+          )
+        }
+      >
+        <p className="font-medium">{issue.message}</p>
+        {issue.hint && <p className={hintClass}>{issue.hint}</p>}
+      </button>
+      <LogIssueCode
+        code={issue.code}
+        className={codeClass}
+        catalogByCode={catalogByCode}
+        onOpenCatalog={onOpenCatalog}
+      />
+    </li>
+  );
 
   return (
     <section
@@ -220,58 +262,33 @@ export function ErrorLogPanel({
               info/warnings.
             </p>
           ) : null}
-          {visibleErrors.length > 0 && (
-            <div>
+          {(visibleErrors.length > 0 || errorIssueRows.length > 0) && (
+            <section aria-label="Errors">
               <h3 className={headingClass}>Errors</h3>
-              <ul className={`list-disc space-y-1 pl-5 ${textClass}`}>
-                {visibleErrors.map((error, index) => (
-                  <li key={`error-${index}`}>{error}</li>
-                ))}
-              </ul>
-            </div>
+              {visibleErrors.length > 0 ? (
+                <ul className={`list-disc space-y-1 pl-5 ${textClass}`}>
+                  {visibleErrors.map((error, index) => (
+                    <li key={`error-${index}`}>{error}</li>
+                  ))}
+                </ul>
+              ) : null}
+              {errorIssueRows.length > 0 ? (
+                <ul className={`mt-2 space-y-2 ${textClass}`}>
+                  {errorIssueRows.map(({ issue, index }) =>
+                    renderIssueRow(issue, index),
+                  )}
+                </ul>
+              ) : null}
+            </section>
           )}
-          {filteredIssues.length > 0 && (
-            <div>
-              <h3 className={headingClass}>Issues</h3>
+          {noteIssueRows.length > 0 ? (
+            <section aria-label="Notes">
+              <h3 className={headingClass}>Notes</h3>
               <ul className={`space-y-2 ${textClass}`}>
-                {filteredIssues.map((issue, index) => (
-                  <li key={`issue-${index}`} className={issueCard}>
-                    <button
-                      type="button"
-                      className="w-full text-left"
-                      data-testid={`issue-detail-open-${index}`}
-                      aria-label={ISSUE_DETAIL_OPEN}
-                      onClick={() =>
-                        setDetail(
-                          buildIssueDetail({
-                            code: issue.code,
-                            severity: issue.severity,
-                            message: issue.message,
-                            hint: issue.hint,
-                            location: issue.location,
-                            start: issue.start,
-                            end: issue.end,
-                            catalog: issue.code ? catalogByCode?.get(issue.code) : null,
-                          }),
-                        )
-                      }
-                    >
-                      <p className="font-medium">
-                        [{issue.severity ?? 'error'}] {issue.source}: {issue.message}
-                      </p>
-                      {issue.hint && <p className={hintClass}>{issue.hint}</p>}
-                    </button>
-                    <LogIssueCode
-                      code={issue.code}
-                      className={codeClass}
-                      catalogByCode={catalogByCode}
-                      onOpenCatalog={onOpenCatalog}
-                    />
-                  </li>
-                ))}
+                {noteIssueRows.map(({ issue, index }) => renderIssueRow(issue, index))}
               </ul>
-            </div>
-          )}
+            </section>
+          ) : null}
         </div>
       )}
       <IssueDetailDialog detail={detail} onClose={() => setDetail(null)} />

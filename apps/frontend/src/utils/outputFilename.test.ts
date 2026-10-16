@@ -159,9 +159,9 @@ describe('ACCUMULATE_RESULT_CAP', () => {
 });
 
 describe('appendConvertedWithinCap', () => {
-  it('appends under the cap and rejects over-cap batches', () => {
+  it('places the newest batch first and rejects over-cap batches', () => {
     expect(appendConvertedWithinCap([1], [2], 3)).toEqual({
-      files: [1, 2],
+      files: [2, 1],
       overCap: false,
     });
     expect(appendConvertedWithinCap([1, 2], [3], 2)).toEqual({

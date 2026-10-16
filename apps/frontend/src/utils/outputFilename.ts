@@ -16,9 +16,9 @@ export const DEFAULT_OUTPUT_BASENAME = 'manual_input';
 export const ACCUMULATE_RESULT_CAP = 200;
 
 /**
- * Append converted results when under the accumulate cap.
+ * Place a new convert batch in front of older results, under the accumulate cap.
  *
- * @returns overCap true when the append would exceed the cap (prev unchanged)
+ * @returns overCap true when the batch would exceed the cap (prev unchanged)
  * @example
  * const _ = true;
  */
@@ -30,7 +30,7 @@ export function appendConvertedWithinCap<T>(
   if (prev.length + next.length > cap) {
     return { files: prev, overCap: true };
   }
-  return { files: [...prev, ...next], overCap: false };
+  return { files: [...next, ...prev], overCap: false };
 }
 
 /**

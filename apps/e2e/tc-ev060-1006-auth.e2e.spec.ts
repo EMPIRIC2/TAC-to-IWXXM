@@ -56,9 +56,9 @@ test.describe('TC-EV060-1006 — Auth UAT Playwright', () => {
 
     await loginAsE2EUser(page);
     await page.reload();
-    await expect(
-      page.getByRole('heading', { name: /METAR.*IWXXM.*Converter/i }),
-    ).toBeVisible({ timeout: 15_000 });
+    await expect(page.getByRole('heading', { name: /^TAC to IWXXM$/ })).toBeVisible({
+      timeout: 15_000,
+    });
     await expect(page.getByTestId('logout-button')).toBeVisible({ timeout: 20_000 });
     await expect(page.getByTestId('sign-in-button')).toHaveCount(0);
   });
