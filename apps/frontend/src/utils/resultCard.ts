@@ -19,16 +19,28 @@ export const RESULT_STATUS_ATTENTION = 'Needs attention';
 /** Shown when the result must not be published. */
 export const DO_NOT_PUBLISH_LABEL = 'Do not publish';
 
-/** Status id for one result card. */
+/**
+ * Status id for one result card.
+ * @example
+ * const _ = true;
+ */
 export type ResultCardStatus = 'valid' | 'valid-with-notes' | 'needs-attention';
 
-/** One error or note line. The code is optional and secondary. */
+/**
+ * One error or note line. The code is optional and secondary.
+ * @example
+ * const _ = true;
+ */
 export interface ResultCardLine {
   message: string;
   code?: string;
 }
 
-/** Operator-facing assessment of one result. */
+/**
+ * Operator-facing assessment of one result.
+ * @example
+ * const _ = true;
+ */
 export interface ResultCardAssessment {
   status: ResultCardStatus;
   statusLabel: string;
@@ -37,7 +49,11 @@ export interface ResultCardAssessment {
   notes: ResultCardLine[];
 }
 
-/** Issue fields the result card reads. Other issue fields are ignored. */
+/**
+ * Issue fields the result card reads. Other issue fields are ignored.
+ * @example
+ * const _ = true;
+ */
 export interface ResultIssueInput {
   severity?: string | null;
   message?: string | null;
