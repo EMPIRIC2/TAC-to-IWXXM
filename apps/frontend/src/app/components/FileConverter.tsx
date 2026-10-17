@@ -122,6 +122,7 @@ import { optionalFormField } from '@/utils/optionalFormField';
 import { UserPreferencesDialog } from './UserPreferencesDialog';
 import { PrivacyNotice } from './PrivacyNotice';
 import { PrivacySettingsDialog } from './PrivacySettingsDialog';
+import { OperatorFooter } from './OperatorFooter';
 import { SiteTermsDialog } from './SiteTermsDialog';
 import {
   acknowledgePrivacyNotice,
@@ -4532,36 +4533,10 @@ export function FileConverter({
               </div>
             )}
 
-            {/* Footer */}
-            <div className="mt-12 text-center text-sm text-gray-500 dark:text-gray-400">
-              <p>
-                TAC → IWXXM conversion powered by{' '}
-                <code className="text-xs">tac2iwxxm</code>, with{' '}
-                <code className="text-xs">tac-validate</code> and{' '}
-                <code className="text-xs">iwxxm-validate</code>. Downloads are IWXXM{' '}
-                <code className="text-xs">.xml</code> files.
-              </p>
-              <p className="mt-2">
-                <button
-                  type="button"
-                  className="underline underline-offset-2 hover:text-gray-700 dark:hover:text-gray-200"
-                  onClick={() => setIsPrivacySettingsOpen(true)}
-                  aria-label="Open privacy settings"
-                >
-                  Privacy settings
-                </button>
-              </p>
-              <p className="mt-2">
-                <button
-                  type="button"
-                  className="underline underline-offset-2 hover:text-gray-700 dark:hover:text-gray-200"
-                  onClick={() => setIsSiteTermsOpen(true)}
-                  aria-label="Open terms of service"
-                >
-                  Terms of service
-                </button>
-              </p>
-            </div>
+            <OperatorFooter
+              onOpenPrivacy={() => setIsPrivacySettingsOpen(true)}
+              onOpenTerms={() => setIsSiteTermsOpen(true)}
+            />
           </div>
           {onLoadWorkSession && (
             <aside
