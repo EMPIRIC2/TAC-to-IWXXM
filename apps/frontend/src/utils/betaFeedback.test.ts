@@ -72,4 +72,27 @@ describe('betaFeedback', () => {
       href.startsWith('https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/new?'),
     ).toBe(true);
   });
+
+  it('omits contact and page when they are absent and includes them when set', () => {
+    const omitted = new URL(
+      buildBetaFeedbackIssueUrl({
+        category: 'other',
+        message: '  A note  ',
+      }),
+    );
+    expect(omitted.searchParams.get('title')).toBe('Beta feedback: Other');
+    expect(omitted.searchParams.get('body')).toBe('Category: Other\n\nA note');
+
+    const filled = new URL(
+      buildBetaFeedbackIssueUrl({
+        category: 'feature',
+        message: 'Add this',
+        contact: ' ada@example.com ',
+        page: ' https://example.test/convert ',
+      }),
+    );
+    expect(filled.searchParams.get('body')).toBe(
+      'Category: Feature\n\nAdd this\n\nContact: ada@example.com\n\nPage: https://example.test/convert',
+    );
+  });
 });
