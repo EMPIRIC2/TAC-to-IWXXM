@@ -5,7 +5,7 @@
  */
 
 import { describe, expect, it, vi, beforeEach } from 'vitest';
-import { render, screen, within } from '@testing-library/react';
+import { fireEvent, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { toast } from 'sonner';
 
@@ -94,6 +94,38 @@ describe('OperatorFooter feedback', () => {
     expect(body).not.toMatch(/METAR|<\?xml/);
     expect(toast.error).toHaveBeenCalledWith(FEEDBACK_POPUP_BLOCKED);
     expect(screen.getByTestId('feedback-dialog')).toBeInTheDocument();
+    open.mockRestore();
+  });
+
+  it('closes feedback when the dialog close control is used', async () => {
+    const user = userEvent.setup();
+    render(<OperatorFooter onOpenPrivacy={vi.fn()} onOpenTerms={vi.fn()} />);
+
+    await user.click(screen.getByRole('button', { name: 'Open feedback' }));
+    expect(screen.getByTestId('feedback-dialog')).toBeInTheDocument();
+
+    fireEvent.change(screen.getByLabelText('Category'), {
+      target: { value: 'not-a-category' },
+    });
+    expect(screen.getByLabelText('Category')).toHaveValue('bug');
+
+    await user.click(screen.getByRole('button', { name: 'Close' }));
+    expect(screen.queryByTestId('feedback-dialog')).not.toBeInTheDocument();
+  });
+
+  it('submits the feedback form and opens the issue', async () => {
+    const user = userEvent.setup();
+    const open = vi.spyOn(window, 'open').mockReturnValue({} as Window);
+    render(<OperatorFooter onOpenPrivacy={vi.fn()} onOpenTerms={vi.fn()} />);
+
+    await user.click(screen.getByRole('button', { name: 'Open feedback' }));
+    await user.type(screen.getByLabelText('Message'), 'Form submit path');
+    const form = screen.getByTestId('feedback-dialog').querySelector('form');
+    expect(form).toBeInstanceOf(HTMLFormElement);
+    fireEvent.submit(form as HTMLFormElement);
+
+    expect(open).toHaveBeenCalled();
+    expect(screen.queryByTestId('feedback-dialog')).not.toBeInTheDocument();
     open.mockRestore();
   });
 });

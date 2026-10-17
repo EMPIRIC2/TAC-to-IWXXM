@@ -59,8 +59,8 @@ export function FeedbackDialog({ isOpen, onClose }: FeedbackDialogProps) {
   return (
     <Dialog
       open={isOpen}
-      onOpenChange={(open) => {
-        if (!open) onClose();
+      onOpenChange={() => {
+        onClose();
       }}
     >
       <DialogContent className="sm:max-w-lg" data-testid="feedback-dialog">
