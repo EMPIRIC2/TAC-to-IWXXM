@@ -1556,14 +1556,18 @@ def parse_metar_speci(tac: str, *, product: str) -> dict[str, Any]:
         ir["qnh_not_observable"] = True
     else:
         alt = _ALT_INHG.search(rest)
-        if alt is not None:
+        qnh = _QNH_HPA.search(rest)
+        if qnh is not None:
+            # #1412: a reported Q group is already hectopascals. Prefer it when an
+            # altimeter (A) group is also present; Q-only stays the reported value.
+            ir["qnh_hpa"] = float(qnh.group("qnh"))
+            if alt is not None:
+                ir["altimeter_inhg"] = int(alt.group("alt")) / 100.0
+        elif alt is not None:
             ir["altimeter_inhg"] = int(alt.group("alt")) / 100.0
             ir["qnh_hpa"] = _inhg_to_hpa(alt.group("alt"))
         else:
-            qnh = _QNH_HPA.search(rest)
-            if qnh is None:
-                raise ValueError("missing altimeter (Axxxx/Qxxxx) group")
-            ir["qnh_hpa"] = float(qnh.group("qnh"))
+            raise ValueError("missing altimeter (Axxxx/Qxxxx) group")
 
     # Strip REMARKS; split observation vs trend groups before exceptional tokens.
     body_for_wx = _RMK.split(rest, maxsplit=1)[0]
