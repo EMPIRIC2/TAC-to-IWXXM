@@ -1439,8 +1439,6 @@ def fold_observation_case(tac: str) -> str:
     cursor = 0
     for match in _OBS_KEYWORD.finditer(tac):
         start = match.start()
-        if start < cursor:
-            continue
         rest_from = match.end()
         end = len(tac)
         equals_at = tac.find("=", rest_from)

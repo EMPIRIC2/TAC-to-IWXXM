@@ -62,6 +62,22 @@ def test_fold_leaves_a_following_taf_line_unchanged() -> None:
     assert "\ntaf tncm 081200z" in folded
 
 
+def test_fold_returns_empty_text() -> None:
+    assert fold_observation_case("") == ""
+
+
+def test_fold_skips_a_keyword_already_inside_the_span() -> None:
+    folded = fold_observation_case("metar tncm 081200z remark metar embedded=")
+    assert folded == "METAR TNCM 081200Z REMARK METAR EMBEDDED="
+
+
+def test_fold_stops_before_a_taf_when_the_observation_has_no_equals() -> None:
+    mixed = "metar tncm 081200z 14006kt\ntaf tncm 081200z 0812/0912"
+    folded = fold_observation_case(mixed)
+    assert folded.startswith("METAR TNCM 081200Z 14006KT")
+    assert folded.endswith("\ntaf tncm 081200z 0812/0912")
+
+
 def test_bulletin_split_finds_a_lowercase_metar() -> None:
     text = "SAXX31 TNCM 081200\n" + _LOWER
     split = split_bulletin(text, product="METAR")
