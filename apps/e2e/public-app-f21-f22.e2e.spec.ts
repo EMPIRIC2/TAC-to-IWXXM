@@ -7,8 +7,8 @@
 import { expect, test } from '@playwright/test';
 import {
   convertManualMetar,
-  dismissPrivacyNoticeIfPresent,
   openPublicConverter,
+  openSignInFormThenReturn,
   playwrightApiFetch,
 } from './playwright-e2e-helpers';
 
@@ -28,6 +28,8 @@ test.describe('T7.1 — Public app + privacy (F21/F22)', () => {
     });
 
     await openPublicConverter(page);
+    await openSignInFormThenReturn(page);
+    // Opposite state: the email field is on the sign-in form.
     await expect(page.locator('#email')).toHaveCount(0);
 
     await convertManualMetar(page, SAMPLE_METAR);
@@ -81,10 +83,12 @@ test.describe('T7.1 — Public app + privacy (F21/F22)', () => {
     await expect(notice).toContainText(/IndexedDB/i);
 
     await page.getByRole('button', { name: /dismiss privacy notice/i }).click();
+    // Opposite state: the notice is visible before dismiss.
     await expect(notice).toHaveCount(0);
 
     await page.reload();
     await expect(page.getByRole('heading', { name: /^TAC to IWXXM$/ })).toBeVisible();
+    // Opposite state: the same notice was visible before dismiss.
     await expect(page.getByTestId('privacy-notice')).toHaveCount(0);
   });
 
@@ -103,6 +107,7 @@ test.describe('T7.1 — Public app + privacy (F21/F22)', () => {
 
     // Footer Cancel can sit below the viewport on provisional DOKS layouts.
     await page.keyboard.press('Escape');
+    // Opposite state: the dialog is open before Escape.
     await expect(page.getByTestId('privacy-settings-dialog')).toHaveCount(0);
   });
 
@@ -120,8 +125,11 @@ test.describe('T7.1 — Public app + privacy (F21/F22)', () => {
     await expect(page.getByRole('heading', { name: /^TAC to IWXXM$/ })).toBeVisible({
       timeout: 10_000,
     });
-    await dismissPrivacyNoticeIfPresent(page);
-    await expect(page.getByTestId('privacy-notice')).toHaveCount(0);
+    const notice = page.getByTestId('privacy-notice');
+    await expect(notice).toBeVisible();
+    await page.getByRole('button', { name: /dismiss privacy notice/i }).click();
+    // Opposite state: the notice is visible on first visit before dismiss.
+    await expect(notice).toHaveCount(0);
 
     await page
       .getByRole('button', { name: 'Open privacy settings', exact: true })

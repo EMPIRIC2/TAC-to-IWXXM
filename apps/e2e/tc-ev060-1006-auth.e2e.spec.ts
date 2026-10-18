@@ -60,6 +60,7 @@ test.describe('TC-EV060-1006 — Auth UAT Playwright', () => {
       timeout: 15_000,
     });
     await expect(page.getByTestId('logout-button')).toBeVisible({ timeout: 20_000 });
+    // Opposite state: sign-in is clicked before the session is established.
     await expect(page.getByTestId('sign-in-button')).toHaveCount(0);
   });
 
@@ -99,6 +100,7 @@ test.describe('TC-EV060-1006 — Auth UAT Playwright', () => {
         `POST /auth/logout returned ${loggedOut.status()}`,
       ).toBeTruthy();
       await expect(page.getByTestId('sign-in-button')).toBeVisible({ timeout: 20_000 });
+      // Opposite state: the logout button is visible and clicked before sign-out.
       await expect(page.getByTestId('logout-button')).toHaveCount(0);
     } else {
       await openPublicConverter(page);
