@@ -471,7 +471,11 @@ test.describe('UJ-072: ConversionProfile editor (EV-933 / TC-EV933-006)', () => 
     await expect(page.getByTestId('conversion-profiles-summary-compare')).toContainText(
       /US_FAA_NWS/i,
     );
-    await expect(page.getByText(/Different from US_FAA_NWS/i).first()).toBeVisible();
+    await expect(
+      page
+        .getByTestId('conversion-profiles-summary')
+        .getByText(/Different from US_FAA_NWS/i),
+    ).toBeVisible();
     await expect(page.getByTestId('conversion-profiles-summary')).toContainText(
       /Difference notes compared with ICAO_2025/i,
     );

@@ -22,7 +22,7 @@ test.describe('UJ-079 reference lookup', () => {
 
     await convertManualMetar(page, SRQ_TAC);
 
-    const xmlOutput = page.locator('pre').filter({ hasText: /iwxxm/i }).first();
+    const xmlOutput = page.getByRole('region', { name: /Converted XML content/i });
     await expect(xmlOutput).toBeVisible({ timeout: 30000 });
     await expect(xmlOutput).toContainText('27.3978');
   });

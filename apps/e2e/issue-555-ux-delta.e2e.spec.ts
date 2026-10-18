@@ -24,8 +24,18 @@ test.describe('UJ-001 delta — accumulate results + error log', () => {
     const resultsRegion = page.getByRole('region', { name: /conversion results/i });
     await expect(resultsRegion).toBeVisible({ timeout: 10000 });
     // F7.r / #903 — accumulate (do not replace) across successful converts.
-    await expect(resultsRegion.getByText(/KJFK/i).first()).toBeVisible();
-    await expect(resultsRegion.getByText(/KDEN/i).first()).toBeVisible();
+    await expect(
+      resultsRegion.getByRole('button', {
+        name: 'Toggle details for METAR KJFK 121251Z',
+        exact: true,
+      }),
+    ).toBeVisible();
+    await expect(
+      resultsRegion.getByRole('button', {
+        name: 'Toggle details for METAR KDEN 121653Z',
+        exact: true,
+      }),
+    ).toBeVisible();
     await expect(page.getByTestId('download-zip-button')).toHaveAccessibleName(
       /download all 2 converted files as zip/i,
     );
