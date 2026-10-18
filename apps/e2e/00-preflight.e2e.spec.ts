@@ -5,7 +5,11 @@
  * converter shell loads without Auth login.
  */
 import { expect, test } from '@playwright/test';
-import { openPublicConverter, playwrightApiBaseUrl } from './playwright-e2e-helpers';
+import {
+  openPublicConverter,
+  openSignInFormThenReturn,
+  playwrightApiBaseUrl,
+} from './playwright-e2e-helpers';
 
 const LIVE_API_URL =
   process.env.LIVE_API_URL?.replace(/\/$/, '') ??
@@ -54,6 +58,8 @@ test.describe('Preflight: Public app readiness (F21)', () => {
     ).toBe(true);
 
     await openPublicConverter(page);
+    await openSignInFormThenReturn(page);
+    // Opposite state: the email field and Sign in to account button are on the sign-in form.
     await expect(page.locator('#email')).toHaveCount(0);
     await expect(
       page.getByRole('button', { name: 'Sign in to account', exact: true }),

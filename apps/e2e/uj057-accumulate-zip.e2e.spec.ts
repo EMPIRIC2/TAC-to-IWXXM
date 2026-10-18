@@ -52,6 +52,7 @@ test.describe('UJ-057: Accumulate conversions → Download ZIP (TC-EV057-903)', 
     expect(download.suggestedFilename()).toMatch(/^METARKJF_\d{14}\.zip$/);
 
     await page.getByTestId('clear-queue-button').click();
+    // Opposite state: the conversion results region is visible before Clear.
     await expect(
       page.getByRole('region', { name: 'Conversion results', exact: true }),
     ).toHaveCount(0);

@@ -332,8 +332,6 @@ test.describe('UJ-074: semantic presets + dissemination templates (EV-1051)', ()
     await openProfiles(page);
     await expect(page.getByTestId('profile-builder-libraries')).toBeVisible();
     await expect(page.getByTestId('profile-library-tab-conversion')).toBeVisible();
-    await expect(page.getByTestId('conversion-profiles-presets')).toHaveCount(0);
-    await expect(page.getByTestId('conversion-profiles-preset-slug')).toHaveCount(0);
 
     await page.getByTestId('shell-nav-converter').click();
     await expect(page.getByRole('heading', { name: /^TAC to IWXXM$/ })).toBeVisible();
@@ -342,7 +340,6 @@ test.describe('UJ-074: semantic presets + dissemination templates (EV-1051)', ()
     await expect(page.getByTestId('library-pickers-bar')).toBeVisible({
       timeout: 15_000,
     });
-    await expect(page.getByTestId('semantic-preset-select')).toHaveCount(0);
     await page
       .getByTestId('conversion-library-select')
       .selectOption('LIB.CONVERSION.CA_ECCC');

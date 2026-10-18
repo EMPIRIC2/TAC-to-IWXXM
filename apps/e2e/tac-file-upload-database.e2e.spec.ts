@@ -85,14 +85,15 @@ test.describe('TAC convert + Disseminate (Upload to Database removed)', () => {
   }) => {
     await loginAndOpenConverter(page);
 
+    await expect(page.getByTestId('open-dissemination-drawer')).toBeVisible();
+    await expect(page.getByTestId('convert-and-send-button')).toBeVisible();
+    // Opposite state: Disseminate and Convert & Send are on the page.
     await expect(page.getByTestId('upload-to-database-button')).toHaveCount(0);
     // Removed upload button. Its name was "Upload N converted files to database";
     // the file count is the only part that changed.
     await expect(
       page.getByRole('button', { name: /^Upload \d+ converted files to database$/ }),
     ).toHaveCount(0);
-    await expect(page.getByTestId('open-dissemination-drawer')).toBeVisible();
-    await expect(page.getByTestId('convert-and-send-button')).toBeVisible();
   });
 
   test('single TAC file can be converted and sent with one click', async ({ page }) => {
@@ -149,9 +150,8 @@ test.describe('TAC convert + Disseminate (Upload to Database removed)', () => {
       exact: true,
     });
     await expect(resultsRegion).toBeVisible({ timeout: 10000 });
-    // Source TAC is the first <pre>; IWXXM XML is a later block in the same result.
     await expect(
-      resultsRegion.locator('pre').filter({ hasText: /iwxxm/i }).first(),
+      resultsRegion.getByRole('region', { name: /^Converted XML content for .+$/ }),
     ).toBeVisible({
       timeout: 10000,
     });
@@ -183,7 +183,6 @@ test.describe('TAC convert + Disseminate (Upload to Database removed)', () => {
     });
     // Each converted file renders Source TAC + IWXXM blocks (2 <pre> per result).
     await expect(resultsRegion.locator('pre')).toHaveCount(4);
-    await expect(page.getByTestId('upload-to-database-button')).toHaveCount(0);
     await expect(page.getByTestId('open-dissemination-drawer')).toBeEnabled();
   });
 

@@ -23,10 +23,7 @@ test.describe('Workflow: Conversion Parameters And Preferences', () => {
       page.getByRole('region', { name: 'Conversion results', exact: true }),
     ).toBeVisible({ timeout: 10000 });
     await expect(
-      page
-        .locator('pre')
-        .filter({ hasText: /iwxxm|metar:/i })
-        .first(),
+      page.getByRole('region', { name: /^Converted XML content for .+$/ }),
     ).toBeVisible();
   });
 
@@ -48,11 +45,19 @@ test.describe('Workflow: Conversion Parameters And Preferences', () => {
       .getByRole('button', { name: 'Save preferences', exact: true })
       .click();
 
-    await expect(page.getByText(/Preferences saved successfully/i).first()).toBeVisible(
-      { timeout: 5000 },
-    );
+    await expect(
+      page
+        .getByRole('dialog', { name: 'User Preferences', exact: true })
+        .getByText('Preferences saved successfully', { exact: true }),
+    ).toBeVisible({ timeout: 5000 });
+    await expect(
+      page.locator('[data-sonner-toast] [data-title]', {
+        hasText: /^Preferences saved successfully$/,
+      }),
+    ).toBeVisible();
     // Dialog stays open after save — close before reopening.
     await page.getByRole('button', { name: /^Cancel$/i }).click();
+    // Opposite state: the User Preferences heading is visible before Cancel.
     await expect(
       page.getByRole('heading', { name: 'User Preferences', exact: true }),
     ).toHaveCount(0);

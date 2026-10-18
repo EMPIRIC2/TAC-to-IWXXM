@@ -156,6 +156,68 @@ def test_main_with_rows(tmp_path: Path, capsys: pytest.CaptureFixture[str]) -> N
     assert "75.00%" in out
 
 
+def _write_cobertura(path: Path, line_rate: str) -> None:
+    xml = Element("coverage", {"line-rate": line_rate, "branch-rate": "1.0"})
+    SubElement(xml, "packages")
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_bytes(tostring(xml))
+
+
+def test_require_four_packages_at_100(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    root = tmp_path / "artifacts"
+    for label in ("tac2iwxxm", "tac-validate", "auth", "workflows"):
+        _write_cobertura(root / "packages" / label / "coverage.xml", "1.0")
+    code = mod.main(
+        [
+            "script",
+            str(root),
+            "--require",
+            "tac2iwxxm,tac-validate,auth,workflows",
+        ]
+    )
+    out = capsys.readouterr().out
+    assert code == 0
+    for label in ("tac2iwxxm", "tac-validate", "auth", "workflows"):
+        assert f"`{label}` | 100.00%" in out
+
+
+def test_require_missing_or_short_package_fails(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    root = tmp_path / "artifacts"
+    _write_cobertura(root / "packages" / "auth" / "coverage.xml", "0.5")
+    code = mod.main(["script", str(root), "--require", "auth,workflows"])
+    err = capsys.readouterr().err
+    assert code == 1
+    assert "auth" in err
+    assert "workflows" in err
+
+
+def test_require_flag_needs_a_value(capsys: pytest.CaptureFixture[str]) -> None:
+    code = mod.main(["script", "--require"])
+    err = capsys.readouterr().err
+    assert code == 2
+    assert "--require" in err
+
+
+def test_require_blank_tokens_are_ignored(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    code = mod.main(["script", str(tmp_path), "--require", ","])
+    assert code == 0
+    assert "no coverage artifacts" in capsys.readouterr().out
+
+
+def test_coverage_comment_job_requires_four_packages() -> None:
+    """The PR comment step fails when one required package is omitted or short."""
+    workflow = (ROOT / ".github/workflows/ci-cd.yml").read_text(encoding="utf-8")
+    assert "--require tac2iwxxm,tac-validate,auth,workflows" in workflow
+    assert "packages/workflows/coverage.xml" in workflow
+    assert '"workflows"' in workflow
+
+
 def test_main_entrypoint_subprocess(tmp_path: Path) -> None:
 
     proc = subprocess.run(

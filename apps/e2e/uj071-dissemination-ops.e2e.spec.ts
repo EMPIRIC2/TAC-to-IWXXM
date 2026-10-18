@@ -204,11 +204,33 @@ function expectBearer(req: Request): void {
 
 test.describe('UJ-071: Dissemination ops H6′ (EV-936)', () => {
   test('guest: Dissemination ops prompts for sign-in', async ({ page }) => {
+    await stubWorkbenchNoise(page);
+    await stubOpsApis(page);
     await openDisseminationOps(page);
     await expect(page.getByTestId('dissemination-ops-sign-in')).toBeVisible();
     await expect(page.getByTestId('dissemination-ops-page')).toContainText(
       /Sign in to view dissemination plans/i,
     );
+
+    await page.evaluate((token) => {
+      const expiresAt = String(Math.floor(Date.now() / 1000) + 3600);
+      localStorage.setItem('access_token', token);
+      localStorage.setItem('refresh_token', 'e2e-mock-refresh');
+      localStorage.setItem('expires_at', expiresAt);
+    }, MOCK_TOKEN);
+    await page.reload();
+    await dismissPrivacyNoticeIfPresent(page);
+    await expect(page.getByTestId('dissemination-ops-health')).toBeVisible();
+
+    await page.evaluate(() => {
+      localStorage.removeItem('access_token');
+      localStorage.removeItem('refresh_token');
+      localStorage.removeItem('expires_at');
+    });
+    await page.reload();
+    await dismissPrivacyNoticeIfPresent(page);
+    await expect(page.getByTestId('dissemination-ops-sign-in')).toBeVisible();
+    // Opposite state: the health card is visible while a session token is stored.
     await expect(page.getByTestId('dissemination-ops-health')).toHaveCount(0);
   });
 

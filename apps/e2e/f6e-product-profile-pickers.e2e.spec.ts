@@ -53,10 +53,7 @@ test.describe('H6 / T8.4: F6.e product + Conversion library pickers', () => {
       timeout: 30000,
     });
     await expect(
-      page
-        .locator('pre')
-        .filter({ hasText: /iwxxm|metar:/i })
-        .first(),
+      page.getByRole('region', { name: /^Converted XML content for .+$/ }),
     ).toBeVisible({ timeout: 15000 });
   });
 
