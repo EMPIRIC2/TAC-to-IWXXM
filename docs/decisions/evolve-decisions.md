@@ -4,7 +4,7 @@
 
 **Opened:** 2026-10-17 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-1405-tester-packet-tests`  
 **Issue:** [#1405](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1405) under [#1396](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1396)  
-**Documenting→Implementing gate:** closed  
+**Documenting→Implementing gate:** open  
 **Scale:** standard
 
 | ID | Outcome |

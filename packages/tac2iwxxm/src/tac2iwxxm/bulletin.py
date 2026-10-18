@@ -43,7 +43,7 @@ _BBB_VALID = re.compile(r"^(?:AA|CC|RR)[A-X]$")
 # gifts METAR.re_TAC - report starts at METAR|SPECI and ends at '='
 _TAC_METAR_SPECI = re.compile(
     r"^(?:METAR|SPECI)\s+(?:COR\s+)?[A-Z][A-Z0-9]{3}\s.+?=",
-    re.MULTILINE | re.DOTALL,
+    re.MULTILINE | re.DOTALL | re.IGNORECASE,
 )
 
 # TAF body - optional AMD/COR after TAF; ends at '=' (design-note §3.2)
@@ -441,9 +441,9 @@ def split_bulletin(text: str, *, product: str = "METAR") -> BulletinSplit:
         )
 
     if product_key == "SPECI":
-        reports = [r for r in reports if r.startswith("SPECI")]
+        reports = [r for r in reports if r.upper().startswith("SPECI")]
     elif product_key == "METAR":
-        reports = [r for r in reports if r.startswith("METAR")]
+        reports = [r for r in reports if r.upper().startswith("METAR")]
     elif product_key == "TAF":
         reports = [r for r in reports if r.startswith("TAF")]
     elif product_key == "SIGMET":

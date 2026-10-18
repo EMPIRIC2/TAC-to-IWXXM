@@ -37,7 +37,7 @@ from tac2iwxxm.profiles.annex3_products import (
     emit_vona_annex3,
 )
 from tac2iwxxm.profiles.ca_eccc import CA_IWXXM_VERSION
-from tac2iwxxm.slot_builders.metar_speci import parse_metar_speci
+from tac2iwxxm.slot_builders.metar_speci import fold_observation_case, parse_metar_speci
 from tac2iwxxm.slot_builders.sigmet_airmet import parse_airmet, parse_sigmet
 from tac2iwxxm.slot_builders.swxa import parse_swxa
 from tac2iwxxm.slot_builders.taf import parse_taf
@@ -1068,6 +1068,8 @@ def convert(
     2
     """
     product_u = product.upper()
+    if product_u in {"METAR", "SPECI"}:
+        tac = fold_observation_case(tac)
     requested_iwxxm_version = iwxxm_version or "2025-2"
     resolved = resolve_semantic_profile(profile)
     if resolved is None:
