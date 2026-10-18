@@ -144,9 +144,8 @@ test.describe('TAC convert + Disseminate (Upload to Database removed)', () => {
 
     const resultsRegion = page.getByRole('region', { name: /conversion results/i });
     await expect(resultsRegion).toBeVisible({ timeout: 10000 });
-    // Source TAC is the first <pre>; IWXXM XML is a later block in the same result.
     await expect(
-      resultsRegion.locator('pre').filter({ hasText: /iwxxm/i }).first(),
+      resultsRegion.getByRole('region', { name: /Converted XML content/i }),
     ).toBeVisible({
       timeout: 10000,
     });

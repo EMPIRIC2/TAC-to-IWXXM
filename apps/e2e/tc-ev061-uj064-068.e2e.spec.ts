@@ -132,11 +132,15 @@ test.describe('EV-061 T2 — UJ-068 Lint & validation catalog', () => {
     });
     const list = page.getByTestId('lint-validation-catalog-list');
     await expect(list).toBeVisible({ timeout: 45_000 });
-    const links = list.getByRole('link');
-    await expect(links.first()).toBeVisible({ timeout: 30_000 });
-    const href = await links.first().getAttribute('href');
-    expect(href).toMatch(/^https?:\/\//);
-    expect(href).not.toMatch(/codes\.wmo\.int\/49-2/);
+    const links = list.locator('a[href]');
+    await expect(links).not.toHaveCount(0);
+    const hrefs = await links.evaluateAll((nodes) =>
+      nodes.map((node) => node.getAttribute('href') ?? ''),
+    );
+    for (const href of hrefs) {
+      expect(href).toMatch(/^https?:\/\//);
+      expect(href).not.toMatch(/codes\.wmo\.int\/49-2/);
+    }
     // Operator copy must not leak planning ids (EV-048).
     const pageText = await page.getByTestId('lint-validation-catalog-page').innerText();
     expect(pageText).not.toMatch(/\[Corpus:|EV-061|UJ-068|ADR-|TC-EV061/);

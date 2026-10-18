@@ -19,10 +19,7 @@ test.describe('TAC File Conversion', () => {
       { timeout: 10000 },
     );
     await expect(
-      page
-        .locator('pre')
-        .filter({ hasText: /iwxxm|metar:/i })
-        .first(),
+      page.getByRole('region', { name: /Converted XML content/i }),
     ).toBeVisible();
   });
 
@@ -34,10 +31,7 @@ test.describe('TAC File Conversion', () => {
       'METAR COR FAOR 101200Z 12012KT 9999 FEW020 22/14 Q1018',
     );
 
-    const xmlOutput = page
-      .locator('pre')
-      .filter({ hasText: /iwxxm|metar:/i })
-      .first();
+    const xmlOutput = page.getByRole('region', { name: /Converted XML content/i });
     await expect(xmlOutput).toBeVisible({ timeout: 10000 });
     await expect(xmlOutput).toContainText('reportStatus="CORRECTION"');
   });
@@ -52,10 +46,7 @@ test.describe('TAC File Conversion', () => {
       'METAR FAOR 101200Z COR 12012KT 9999 FEW020 22/14 Q1018',
     );
 
-    const xmlOutput = page
-      .locator('pre')
-      .filter({ hasText: /iwxxm|metar:/i })
-      .first();
+    const xmlOutput = page.getByRole('region', { name: /Converted XML content/i });
     await expect(xmlOutput).toBeVisible({ timeout: 10000 });
     await expect(xmlOutput).toContainText('reportStatus="CORRECTION"');
   });
@@ -182,10 +173,17 @@ test.describe('TAC File Conversion', () => {
     await openConverterWithMockSession(page);
     await convertManualMetar(page, 'METAR EMPTY RESULTS CASE');
 
-    await expect(page.getByText(/No files were converted/i).first()).toBeVisible({
+    await expect(page.getByText('Conversion Error', { exact: true })).toBeVisible({
       timeout: 10000,
     });
-    await expect(page.getByText(/Conversion Error/i).first()).toBeVisible();
+    await expect(
+      page.locator('p', { hasText: /^No files were converted$/ }),
+    ).toBeVisible();
+    await expect(
+      page.locator('[data-sonner-toast] [data-title]', {
+        hasText: /^No files were converted$/,
+      }),
+    ).toBeVisible();
   });
 
   test('mocked unauthorized conversion shows authentication notification', async ({
@@ -208,11 +206,18 @@ test.describe('TAC File Conversion', () => {
       'METAR KDEN 121653Z 02006KT 10SM SCT050 21/08 A3010',
     );
 
+    await expect(page.getByText('Conversion Error', { exact: true })).toBeVisible({
+      timeout: 10000,
+    });
     await expect(
-      page
-        .getByText(/Authentication failed\. Please ensure you are logged in\./i)
-        .first(),
-    ).toBeVisible({ timeout: 10000 });
-    await expect(page.getByText(/Conversion Error/i).first()).toBeVisible();
+      page.locator('p', {
+        hasText: /^Authentication failed\. Please ensure you are logged in\.$/,
+      }),
+    ).toBeVisible();
+    await expect(
+      page.locator('[data-sonner-toast] [data-title]', {
+        hasText: /^Authentication failed\. Please ensure you are logged in\.$/,
+      }),
+    ).toBeVisible();
   });
 });
