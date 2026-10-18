@@ -174,8 +174,8 @@ surfaces:
     kind: scripts_pytest_cov
     target_min: 100
     enforced: true
-    script_py_file_count: 64
-    ci_job_or_make: "make test-coverage-scripts + CI job scripts-coverage"
+    script_py_file_count: 65
+    ci_job_or_make: "make test-coverage-scripts + make check-openapi-contract + CI job scripts-coverage"
 
   - id: scripts-shell-bats
     config_path: tests/bats/README.md

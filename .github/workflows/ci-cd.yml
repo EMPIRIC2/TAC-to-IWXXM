@@ -477,6 +477,9 @@ jobs:
             -o APT::Get::List-Cleanup="0"
           sudo apt-get install -y bats
 
+      - name: OpenAPI status and required-field contract
+        run: make check-openapi-contract
+
       - name: Scripts Python coverage (fail_under 100)
         run: make test-coverage-scripts
 
