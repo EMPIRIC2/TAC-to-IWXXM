@@ -57,11 +57,11 @@ test.describe('EV-061 T2 — UJ-064 Validate IWXXM decode', () => {
     await openPublicConverter(page);
     await page.getByTestId('input-mode-validate_iwxxm').click();
     await expect(page.getByTestId('validate-iwxxm-help')).toBeVisible();
-    const editor = page.getByLabel(/Enter IWXXM XML manually/i);
+    const editor = page.getByLabel('Enter IWXXM XML manually', { exact: true });
     await editor.click();
     await page.keyboard.press(process.platform === 'darwin' ? 'Meta+A' : 'Control+A');
     await page.keyboard.insertText(MINIMAL_IWXXM);
-    await page.getByRole('button', { name: /validate iwxxm xml/i }).click();
+    await page.getByRole('button', { name: 'Validate IWXXM XML', exact: true }).click();
     await expect(page.getByTestId('validate-iwxxm-report')).toBeVisible({
       timeout: 60_000,
     });
@@ -132,7 +132,7 @@ test.describe('EV-061 T2 — UJ-068 Lint & validation catalog', () => {
     const list = page.getByTestId('lint-validation-catalog-list');
     await expect(list).toBeVisible({ timeout: 45_000 });
     const links = list.locator('a[href]');
-    await expect(links).not.toHaveCount(0);
+    expect(await links.count()).toBeGreaterThan(0);
     const hrefs = await links.evaluateAll((nodes) =>
       nodes.map((node) => node.getAttribute('href') ?? ''),
     );

@@ -148,7 +148,7 @@ test.describe('EV-bridge — UJ-072g Libraries + hard cut', () => {
     });
 
     await openPublicConverter(page);
-    await page.getByLabel(/Expand parameters/i).click();
+    await page.getByLabel('Expand parameters', { exact: true }).click();
     await expect(page.getByTestId('library-pickers-bar')).toBeVisible();
     await expect(page.getByTestId('conversion-library-select')).toBeVisible();
     await expect(page.getByTestId('tac-validation-library-select')).toBeVisible();
@@ -168,11 +168,11 @@ test.describe('EV-bridge — UJ-072g Libraries + hard cut', () => {
     await page.keyboard.press(process.platform === 'darwin' ? 'Meta+A' : 'Control+A');
     await page.keyboard.insertText(METAR_TAC);
     await page.getByTestId('convert-button').click();
-    await expect(page.getByRole('region', { name: /conversion results/i })).toBeVisible(
-      {
-        timeout: 30_000,
-      },
-    );
+    await expect(
+      page.getByRole('region', { name: 'Conversion results', exact: true }),
+    ).toBeVisible({
+      timeout: 30_000,
+    });
     expect(postedConversionLibrary).toBe('LIB.CONVERSION.US_FAA_NWS');
     expect(postedSemantic).toBeNull();
   });

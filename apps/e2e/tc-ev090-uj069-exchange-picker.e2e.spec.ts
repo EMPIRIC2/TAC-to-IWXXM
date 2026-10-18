@@ -52,7 +52,7 @@ test.describe('EV-090 / EV-bridge — UJ-069 Dissemination library picker', () =
     });
 
     await openPublicConverter(page);
-    await page.getByLabel(/Expand parameters/i).click();
+    await page.getByLabel('Expand parameters', { exact: true }).click();
     await expect(page.getByTestId('library-pickers-bar')).toBeVisible();
     page.once('dialog', (dialog) => dialog.accept());
     await page

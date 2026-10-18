@@ -45,11 +45,11 @@ test.describe('T7.1 — F31 hybrid sessions (UJ-045..047)', () => {
     );
 
     await convertManualMetar(page, SAMPLE_METAR);
-    await expect(page.getByRole('region', { name: /conversion results/i })).toBeVisible(
-      {
-        timeout: 45_000,
-      },
-    );
+    await expect(
+      page.getByRole('region', { name: 'Conversion results', exact: true }),
+    ).toBeVisible({
+      timeout: 45_000,
+    });
     expect(authHeaders).toEqual([]);
     await expect(page.getByTestId('guest-loss-notice')).toBeVisible();
   });
@@ -147,7 +147,9 @@ test.describe('T7.1 — F31 hybrid sessions (UJ-045..047)', () => {
       page.getByText(/Guest work history and converter sessions/i),
     ).toBeVisible();
 
-    const workHistory = page.getByLabel(/store guest work history in this browser/i);
+    const workHistory = page.getByLabel('Store guest work history in this browser', {
+      exact: true,
+    });
     await expect(workHistory).toBeVisible();
     // Disclosure + toggle presence is the live gate; footer Save can sit off-viewport.
     await expect(workHistory).toBeEnabled();
@@ -164,11 +166,14 @@ test.describe('T7.1 — F31 hybrid sessions (UJ-045..047)', () => {
     await expect(page.getByTestId('guest-loss-notice')).toBeVisible();
     await page
       .getByTestId('guest-loss-notice')
-      .getByRole('button', { name: /sign in/i })
+      .getByRole('button', { name: 'Sign in', exact: true })
       .click();
     await expect(page.getByTestId('login-view')).toBeVisible();
     await page
-      .getByRole('button', { name: /continue to converter without signing in/i })
+      .getByRole('button', {
+        name: 'Continue to converter without signing in',
+        exact: true,
+      })
       .click();
     await expect(page.getByRole('heading', { name: /^TAC to IWXXM$/ })).toBeVisible();
     await dismissPrivacyNoticeIfPresent(page);

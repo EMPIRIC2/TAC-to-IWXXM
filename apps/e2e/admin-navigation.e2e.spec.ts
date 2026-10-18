@@ -9,5 +9,10 @@ test.describe('Admin routes removed', () => {
     await expect(page.getByRole('heading', { name: /^TAC to IWXXM$/ })).toBeVisible({
       timeout: 10_000,
     });
+    // Opposite state: the converter heading is visible, so these admin controls are absent.
+    await expect(
+      page.getByRole('heading', { name: 'Admin Dashboard', exact: true }),
+    ).toHaveCount(0);
+    await expect(page.getByLabel('Switch view', { exact: true })).toHaveCount(0);
   });
 });
