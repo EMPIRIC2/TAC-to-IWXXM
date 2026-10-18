@@ -2903,8 +2903,8 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
 
 - **Level**: T2 / T3
 - **Objective**: Logout returns to guest convert
-- **Pass criteria**: Convert still works without JWT
-- **Source**: #1006; F21
+- **Pass criteria**: Click logout, `POST /auth/logout` succeeds, sign-in is shown, and the logout control is gone. Convert still works without a JWT. Default CI uses the committed non-production fixture and fails when that fixture is missing.
+- **Source**: #1006; F21; #1437
 
 ### TC-EV060-1006-004: Facilitated UAT sign-off
 
