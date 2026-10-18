@@ -123,7 +123,9 @@ async function openDisseminationDrawer(page: Page): Promise<void> {
   await expect(openBtn).toBeEnabled({ timeout: 15000 });
   await openBtn.click();
   await expect(page.getByTestId('dissemination-drawer')).toBeVisible();
-  await expect(page.getByRole('heading', { name: /dissemination/i })).toBeVisible();
+  await expect(
+    page.getByRole('heading', { name: 'Dissemination', exact: true }),
+  ).toBeVisible();
 }
 
 async function prepareWorkbench(page: Page): Promise<void> {

@@ -13,7 +13,7 @@ test.describe('UJ-079 reference lookup', () => {
     page,
   }) => {
     await openConverterForE2e(page);
-    await page.getByLabel(/Expand parameters/i).click();
+    await page.getByLabel('Expand parameters', { exact: true }).click();
     await page.locator('#param-product').selectOption('SIGMET');
     await page
       .getByTestId('conversion-library-select')

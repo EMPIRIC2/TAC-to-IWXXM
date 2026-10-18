@@ -56,7 +56,7 @@ test.describe('UJ-026: METAR REMARKS retain / exclusion', () => {
     const product = page.locator('#param-product');
     if (!(await product.isVisible().catch(() => false))) {
       await page
-        .getByLabel(/Expand parameters/i)
+        .getByLabel('Expand parameters', { exact: true })
         .click()
         .catch(() => undefined);
     }
@@ -66,10 +66,10 @@ test.describe('UJ-026: METAR REMARKS retain / exclusion', () => {
       await conversionLib.selectOption('LIB.CONVERSION.ICAO_2025');
     }
     await convertManualMetar(page, TAC_RMK);
-    await expect(page.getByRole('region', { name: /conversion results/i })).toBeVisible(
-      {
-        timeout: 30000,
-      },
-    );
+    await expect(
+      page.getByRole('region', { name: 'Conversion results', exact: true }),
+    ).toBeVisible({
+      timeout: 30000,
+    });
   });
 });

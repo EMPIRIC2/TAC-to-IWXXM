@@ -157,11 +157,11 @@ test.describe('TC-F7-007 / UJ-025: Manual TAC Input modes', () => {
     await fillManualTac(page, METAR_TAC);
     await page.getByTestId('convert-button').click();
 
-    await expect(page.getByRole('region', { name: /conversion results/i })).toBeVisible(
-      {
-        timeout: 10000,
-      },
-    );
+    await expect(
+      page.getByRole('region', { name: 'Conversion results', exact: true }),
+    ).toBeVisible({
+      timeout: 10000,
+    });
     expect(captured.convert.length).toBeGreaterThanOrEqual(1);
     expect(captured.convertBulletin).toHaveLength(0);
     expect(captured.ingestCollect).toHaveLength(0);
@@ -283,11 +283,13 @@ test.describe('TC-F7-007 / UJ-025: Manual TAC Input modes', () => {
     await page.reload();
     await openConverterForE2e(page);
     await expect(
-      page.getByRole('button', { name: /KJFK finished modes/i }),
+      page.getByRole('button', { name: 'KJFK finished modes Finished', exact: true }),
     ).toBeVisible({
       timeout: 15000,
     });
-    await page.getByRole('button', { name: /KJFK finished modes/i }).click();
+    await page
+      .getByRole('button', { name: 'KJFK finished modes Finished', exact: true })
+      .click();
 
     await expect(page.getByTestId('input-mode-tac')).toBeDisabled({ timeout: 10000 });
     await expect(page.getByTestId('input-mode-ahl_bulletin')).toBeDisabled();

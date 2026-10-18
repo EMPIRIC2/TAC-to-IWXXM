@@ -516,11 +516,15 @@ test.describe('UJ-072: ConversionProfile editor (EV-933 / TC-EV933-006)', () => 
     await page.getByTestId('examples-select').click();
     await expect(
       page.getByRole('option', {
-        name: /METAR WMO A3-1 \(annex3\).*Reused for United States \(FAA\/NWS\)/i,
+        name: 'METAR WMO A3-1 (annex3) · WMO passer · metar-A3-1 · Reused for United States (FAA/NWS)',
+        exact: true,
       }),
     ).toBeVisible();
     await expect(
-      page.getByRole('option', { name: /TC SIGMET WMO A6-2-TC/i }),
+      page.getByRole('option', {
+        name: 'TC SIGMET WMO A6-2-TC (passer) · WMO passer · sigmet-A6-2-TC · Reused for United States (FAA/NWS)',
+        exact: true,
+      }),
     ).toHaveCount(0);
   });
 });

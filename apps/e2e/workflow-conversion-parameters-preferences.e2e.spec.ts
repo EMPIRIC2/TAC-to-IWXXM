@@ -10,7 +10,7 @@ test.describe('Workflow: Conversion Parameters And Preferences', () => {
   }) => {
     await openPublicConverter(page);
 
-    await page.getByLabel(/Expand parameters/i).click();
+    await page.getByLabel('Expand parameters', { exact: true }).click();
     await page.locator('#param-iwxxm-version').selectOption('2023-1');
     await page.locator('#param-on-error').selectOption('warn');
 
@@ -19,9 +19,9 @@ test.describe('Workflow: Conversion Parameters And Preferences', () => {
       'METAR KJFK 121251Z 24016G28KT 3SM -RA BR BKN020 OVC040 14/11 A2990',
     );
 
-    await expect(page.getByRole('region', { name: /conversion results/i })).toBeVisible(
-      { timeout: 10000 },
-    );
+    await expect(
+      page.getByRole('region', { name: 'Conversion results', exact: true }),
+    ).toBeVisible({ timeout: 10000 });
     await expect(
       page
         .locator('pre')
@@ -33,25 +33,33 @@ test.describe('Workflow: Conversion Parameters And Preferences', () => {
   test('preferences save display name and output extension', async ({ page }) => {
     await openPublicConverter(page);
 
-    await page.getByRole('button', { name: /Open user preferences/i }).click();
+    await page
+      .getByRole('button', { name: 'Open user preferences', exact: true })
+      .click();
     await expect(
-      page.getByRole('heading', { name: /User Preferences/i }),
+      page.getByRole('heading', { name: 'User Preferences', exact: true }),
     ).toBeVisible();
 
     await page.locator('#display-name').fill('E2E Operator');
     await page.locator('#output-extension').selectOption('.iwxxm');
-    await page.getByRole('button', { name: /Save preferences/i }).click();
+    // Privacy settings uses the same button name, so this stays inside the dialog.
+    await page
+      .getByRole('dialog', { name: 'User Preferences', exact: true })
+      .getByRole('button', { name: 'Save preferences', exact: true })
+      .click();
 
     await expect(page.getByText(/Preferences saved successfully/i).first()).toBeVisible(
       { timeout: 5000 },
     );
     // Dialog stays open after save — close before reopening.
     await page.getByRole('button', { name: /^Cancel$/i }).click();
-    await expect(page.getByRole('heading', { name: /User Preferences/i })).toHaveCount(
-      0,
-    );
+    await expect(
+      page.getByRole('heading', { name: 'User Preferences', exact: true }),
+    ).toHaveCount(0);
 
-    await page.getByRole('button', { name: /Open user preferences/i }).click();
+    await page
+      .getByRole('button', { name: 'Open user preferences', exact: true })
+      .click();
     await expect(page.locator('#display-name')).toHaveValue('E2E Operator');
     await expect(page.locator('#output-extension')).toHaveValue('.iwxxm');
   });

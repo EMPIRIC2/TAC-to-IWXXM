@@ -86,8 +86,10 @@ test.describe('TAC convert + Disseminate (Upload to Database removed)', () => {
     await loginAndOpenConverter(page);
 
     await expect(page.getByTestId('upload-to-database-button')).toHaveCount(0);
+    // Removed upload button. Its name was "Upload N converted files to database";
+    // the file count is the only part that changed.
     await expect(
-      page.getByRole('button', { name: /Upload .* converted files to database/i }),
+      page.getByRole('button', { name: /^Upload \d+ converted files to database$/ }),
     ).toHaveCount(0);
     await expect(page.getByTestId('open-dissemination-drawer')).toBeVisible();
     await expect(page.getByTestId('convert-and-send-button')).toBeVisible();
@@ -135,14 +137,17 @@ test.describe('TAC convert + Disseminate (Upload to Database removed)', () => {
     });
 
     // Prefer aria-label — mass-ingest folder/zip inputs also match input[type=file].
-    await page.getByLabel('Select TAC files to upload').setInputFiles({
+    await page.getByLabel('Select TAC files to upload', { exact: true }).setInputFiles({
       name: 'kjfk-clean.tac',
       mimeType: 'text/plain',
       buffer: Buffer.from(`${cleanMetar}\n`, 'utf-8'),
     });
     await page.getByTestId('convert-and-send-button').click();
 
-    const resultsRegion = page.getByRole('region', { name: /conversion results/i });
+    const resultsRegion = page.getByRole('region', {
+      name: 'Conversion results',
+      exact: true,
+    });
     await expect(resultsRegion).toBeVisible({ timeout: 10000 });
     // Source TAC is the first <pre>; IWXXM XML is a later block in the same result.
     await expect(
@@ -165,14 +170,17 @@ test.describe('TAC convert + Disseminate (Upload to Database removed)', () => {
     await loginAndOpenConverter(page);
 
     await page
-      .getByLabel('Select TAC files to upload')
+      .getByLabel('Select TAC files to upload', { exact: true })
       .setInputFiles(tacFiles.slice(0, 2).map((file) => file.path));
     await page.getByTestId('convert-button').click();
 
-    await expect(page.getByRole('region', { name: /conversion results/i })).toBeVisible(
-      { timeout: 10000 },
-    );
-    const resultsRegion = page.getByRole('region', { name: /conversion results/i });
+    await expect(
+      page.getByRole('region', { name: 'Conversion results', exact: true }),
+    ).toBeVisible({ timeout: 10000 });
+    const resultsRegion = page.getByRole('region', {
+      name: 'Conversion results',
+      exact: true,
+    });
     // Each converted file renders Source TAC + IWXXM blocks (2 <pre> per result).
     await expect(resultsRegion.locator('pre')).toHaveCount(4);
     await expect(page.getByTestId('upload-to-database-button')).toHaveCount(0);
@@ -182,7 +190,9 @@ test.describe('TAC convert + Disseminate (Upload to Database removed)', () => {
   test('invalid manual TAC shows an error state', async ({ page }) => {
     await loginAndOpenConverter(page);
 
-    await page.getByLabel(/Enter METAR data manually/i).fill('INVALID TAC FORMAT');
+    await page
+      .getByLabel('Enter METAR data manually', { exact: true })
+      .fill('INVALID TAC FORMAT');
     await page.getByTestId('convert-button').click();
 
     await expect(page.getByTestId('conversion-error-log')).toBeVisible({

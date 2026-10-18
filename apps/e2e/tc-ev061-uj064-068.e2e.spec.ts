@@ -57,11 +57,11 @@ test.describe('EV-061 T2 — UJ-064 Validate IWXXM decode', () => {
     await openPublicConverter(page);
     await page.getByTestId('input-mode-validate_iwxxm').click();
     await expect(page.getByTestId('validate-iwxxm-help')).toBeVisible();
-    const editor = page.getByLabel(/Enter IWXXM XML manually/i);
+    const editor = page.getByLabel('Enter IWXXM XML manually', { exact: true });
     await editor.click();
     await page.keyboard.press(process.platform === 'darwin' ? 'Meta+A' : 'Control+A');
     await page.keyboard.insertText(MINIMAL_IWXXM);
-    await page.getByRole('button', { name: /validate iwxxm xml/i }).click();
+    await page.getByRole('button', { name: 'Validate IWXXM XML', exact: true }).click();
     await expect(page.getByTestId('validate-iwxxm-report')).toBeVisible({
       timeout: 60_000,
     });

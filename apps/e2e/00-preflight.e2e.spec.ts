@@ -55,9 +55,9 @@ test.describe('Preflight: Public app readiness (F21)', () => {
 
     await openPublicConverter(page);
     await expect(page.locator('#email')).toHaveCount(0);
-    await expect(page.getByRole('button', { name: /sign in to account/i })).toHaveCount(
-      0,
-    );
+    await expect(
+      page.getByRole('button', { name: 'Sign in to account', exact: true }),
+    ).toHaveCount(0);
     await expect(page.getByTestId('convert-button')).toBeVisible();
   });
 });

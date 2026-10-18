@@ -84,7 +84,9 @@ export async function dismissPrivacyNoticeIfPresent(page: Page): Promise<void> {
     return;
   }
   try {
-    await page.getByRole('button', { name: /dismiss privacy notice/i }).click();
+    await page
+      .getByRole('button', { name: 'Dismiss privacy notice', exact: true })
+      .click();
   } catch (error) {
     if ((await notice.count()) === 0) {
       return;
@@ -121,7 +123,9 @@ export async function gotoLogin(page: Page): Promise<void> {
 /** Open the optional register view from the public converter (F31 / UJ-003). */
 export async function gotoRegister(page: Page): Promise<void> {
   await gotoLogin(page);
-  await page.getByRole('button', { name: /go to registration page/i }).click();
+  await page
+    .getByRole('button', { name: 'Go to registration page', exact: true })
+    .click();
   await expect(page.getByTestId('register-view')).toBeVisible({ timeout: 10_000 });
 }
 
@@ -139,7 +143,7 @@ export async function loginAsE2EUser(page: Page): Promise<void> {
   await gotoLogin(page);
   await page.locator('#email').fill(E2E_USER_EMAIL);
   await page.locator('#password').fill(E2E_USER_PASSWORD);
-  await page.getByRole('button', { name: /sign in to account/i }).click();
+  await page.getByRole('button', { name: 'Sign in to account', exact: true }).click();
   await expect(page.getByRole('heading', { name: /^TAC to IWXXM$/ })).toBeVisible({
     timeout: 30_000,
   });
@@ -181,7 +185,7 @@ export async function openConverterForE2e(page: Page): Promise<void> {
  * @param metar - TAC string to insert.
  */
 export async function fillManualTac(page: Page, metar: string): Promise<void> {
-  const editor = page.getByLabel(/Enter METAR data manually/i);
+  const editor = page.getByLabel('Enter METAR data manually', { exact: true });
   await editor.click();
   await page.keyboard.press(process.platform === 'darwin' ? 'Meta+A' : 'Control+A');
   await page.keyboard.insertText(metar);

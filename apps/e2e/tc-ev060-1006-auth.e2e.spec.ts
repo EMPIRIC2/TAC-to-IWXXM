@@ -42,8 +42,8 @@ test.describe('TC-EV060-1006 — Auth UAT Playwright', () => {
     await page.locator('#email').fill(email);
     await page.locator('#password').fill('Test-pass-1');
     await page.locator('#confirmPassword').fill('Test-pass-1');
-    await page.getByLabel(/accept terms and conditions/i).check();
-    await page.getByRole('button', { name: /create account/i }).click();
+    await page.getByLabel('Accept terms and conditions', { exact: true }).check();
+    await page.getByRole('button', { name: 'Create account', exact: true }).click();
 
     await expect(page.getByText(/account created/i)).toBeVisible({ timeout: 15_000 });
   });
@@ -83,7 +83,8 @@ test.describe('TC-EV060-1006 — Auth UAT Playwright', () => {
       await expect(page.getByTestId('logout-button')).toBeVisible();
       await page.getByTestId('logout-button').click();
       const localSignOut = page.getByRole('button', {
-        name: /sign out from this device only/i,
+        name: 'Sign out from this device only',
+        exact: true,
       });
       await expect(localSignOut).toBeVisible();
       const logoutResponse = page.waitForResponse(
@@ -106,10 +107,10 @@ test.describe('TC-EV060-1006 — Auth UAT Playwright', () => {
     }
 
     await convertManualMetar(page, SAMPLE_METAR);
-    await expect(page.getByRole('region', { name: /conversion results/i })).toBeVisible(
-      {
-        timeout: 45_000,
-      },
-    );
+    await expect(
+      page.getByRole('region', { name: 'Conversion results', exact: true }),
+    ).toBeVisible({
+      timeout: 45_000,
+    });
   });
 });

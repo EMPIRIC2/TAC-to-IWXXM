@@ -32,12 +32,12 @@ test.describe('UJ-058: Validate existing IWXXM (TC-EV057-838)', () => {
     await page.getByTestId('input-mode-validate_iwxxm').click();
     await expect(page.getByTestId('validate-iwxxm-help')).toBeVisible();
 
-    const editor = page.getByLabel(/Enter IWXXM XML manually/i);
+    const editor = page.getByLabel('Enter IWXXM XML manually', { exact: true });
     await editor.click();
     await page.keyboard.press(process.platform === 'darwin' ? 'Meta+A' : 'Control+A');
     await page.keyboard.insertText(BROKEN_XML);
 
-    await page.getByRole('button', { name: /Validate IWXXM XML/i }).click();
+    await page.getByRole('button', { name: 'Validate IWXXM XML', exact: true }).click();
 
     await expect(page.getByTestId('validate-iwxxm-report')).toBeVisible({
       timeout: 60_000,
@@ -50,12 +50,12 @@ test.describe('UJ-058: Validate existing IWXXM (TC-EV057-838)', () => {
     await dismissPrivacyNoticeIfPresent(page);
 
     await page.getByTestId('input-mode-validate_iwxxm').click();
-    const editor = page.getByLabel(/Enter IWXXM XML manually/i);
+    const editor = page.getByLabel('Enter IWXXM XML manually', { exact: true });
     await editor.click();
     await page.keyboard.press(process.platform === 'darwin' ? 'Meta+A' : 'Control+A');
     await page.keyboard.insertText(GOOD_XML);
 
-    await page.getByRole('button', { name: /Validate IWXXM XML/i }).click();
+    await page.getByRole('button', { name: 'Validate IWXXM XML', exact: true }).click();
 
     await expect(page.getByTestId('validate-iwxxm-report')).toBeVisible({
       timeout: 60_000,

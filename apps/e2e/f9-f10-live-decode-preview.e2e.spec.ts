@@ -93,7 +93,7 @@ test.describe('T3.7 / UJ-020 + UJ-021: live decode summary + preview UX', () => 
     await stubF9F10Apis(page);
     await openConverterForE2e(page);
 
-    const editor = page.getByLabel(/Enter METAR data manually/i);
+    const editor = page.getByLabel('Enter METAR data manually', { exact: true });
     await editor.click();
     await editor.fill(METAR_NO_EQ);
 
@@ -114,7 +114,7 @@ test.describe('T3.7 / UJ-020 + UJ-021: live decode summary + preview UX', () => 
     await expect(page.getByTestId('iwxxm-preview-pane')).toBeVisible();
     await expect(page.getByTestId('iwxxm-preview-empty')).toBeVisible();
 
-    const editor = page.getByLabel(/Enter METAR data manually/i);
+    const editor = page.getByLabel('Enter METAR data manually', { exact: true });
     await editor.click();
     await editor.fill(METAR_NO_EQ);
 

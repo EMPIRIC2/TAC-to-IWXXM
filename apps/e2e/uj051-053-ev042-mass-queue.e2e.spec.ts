@@ -87,11 +87,11 @@ test.describe('T4.1 — UJ-051..053 EV-042 mass ingest + queue + restored destin
     await expect(page.getByTestId('mass-ingest-zip-button')).toBeVisible();
 
     await convertManualMetar(page, SAMPLE_METAR);
-    await expect(page.getByRole('region', { name: /conversion results/i })).toBeVisible(
-      {
-        timeout: 45_000,
-      },
-    );
+    await expect(
+      page.getByRole('region', { name: 'Conversion results', exact: true }),
+    ).toBeVisible({
+      timeout: 45_000,
+    });
     await expect(page.getByTestId('upload-to-database-button')).toHaveCount(0);
   });
 
@@ -207,11 +207,11 @@ test.describe('T4.1 — UJ-051..053 EV-042 mass ingest + queue + restored destin
     await expect(page.getByTestId('batch-validate-button')).toBeEnabled();
 
     await page.getByTestId('batch-convert-button').click();
-    await expect(page.getByRole('region', { name: /conversion results/i })).toBeVisible(
-      {
-        timeout: 45_000,
-      },
-    );
+    await expect(
+      page.getByRole('region', { name: 'Conversion results', exact: true }),
+    ).toBeVisible({
+      timeout: 45_000,
+    });
   });
 
   test('UJ-052 companion: fixture TAC file still queues via Select Files', async ({
