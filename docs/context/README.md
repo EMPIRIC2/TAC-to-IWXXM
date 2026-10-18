@@ -6,6 +6,7 @@ still land here so they are not appended to `docs/context-brief.md`.
 
 | Brief | Session | Status |
 |-------|---------|--------|
+| [lowercase-keyword-packet-tests.md](lowercase-keyword-packet-tests.md) | EV-1405-tester-packet-tests | active |
 | [result-card.md](result-card.md) | EV-1411-result-card | active |
 | [heading-in-convert.md](heading-in-convert.md) | EV-1409-heading-convert | active |
 | [visibility-10km.md](visibility-10km.md) | EV-1406-visibility-10km | active |

@@ -6514,6 +6514,31 @@ Manual signoff before release, not a PR merge gate. Developer runs `make test-li
 - **Out of scope**: Rebuilding abbreviated-heading parsing. Visibility, QNH, remarks, the SIGMET body, and TAF time links. Promoting `stage` to `main`.
 - **Source**: F6 deepen #1409
 
+### TC-F6-055: Lowercase METAR and SPECI match the uppercase twin
+
+- **Level**: T0 package, plus one local browser check on the public convert page. Staging API check after the fix is on staging. No new CORS tier.
+- **Objective**: A lowercase METAR or SPECI converts the same way as the same report in capitals. [Corpus: product §F6] [Corpus: tests]
+- **Steps**:
+  1. `metar tncm 081200z 14006kt 9999 few020 28/24 q1013=` converts. Station is TNCM, wind is 140 degrees at 6 knots, visibility is 9999, cloud is FEW020, temperature is 28/24, and QNH is 1013 hPa. Those groups match `METAR TNCM 081200Z 14006KT 9999 FEW020 28/24 Q1013=`.
+  2. A lowercase SPECI keyword converts the same way as that SPECI in capitals.
+  3. A lowercase TAF keyword and a lowercase SIGMET keyword keep today's failure.
+  4. The public convert page shows a conversion result for the St Maarten sample.
+- **Pass criteria**: The four checks pass.
+- **Out of scope**: Case-folding weather tokens on a report whose keyword is already uppercase, as a separate rule. Reopening closed tester children. Promoting `stage` to `main`.
+- **Source**: F6 deepen #1405
+
+### TC-F6-056: October 2026 regional tester packet fixtures
+
+- **Level**: T0 package. No browser journey.
+- **Objective**: Every unique full TAC report in the October 2026 regional tester packet is a fixture. [Corpus: product §F6] [Corpus: tests]
+- **Steps**:
+  1. The fixture set has the 755 unique reports counted in the session context brief: 600 METAR, 70 TAF, 65 SPECI, and 20 SIGMET.
+  2. A report that converts today still converts.
+  3. A report that fails today fails with the same error. This cycle does not fix that error.
+- **Pass criteria**: The fixture count matches, and each report keeps today's convert result.
+- **Out of scope**: Jamaica rows that record only a station code. Schema validation of every report. The lowercase St Maarten sample, which is TC-F6-055.
+- **Source**: F6 deepen #1396 / #1405
+
 ### TC-F4-001: Profile package pin
 
 - **Level**: T0 package. No browser journey.
