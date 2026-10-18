@@ -210,6 +210,14 @@ def test_require_blank_tokens_are_ignored(
     assert "no coverage artifacts" in capsys.readouterr().out
 
 
+def test_coverage_comment_job_requires_four_packages() -> None:
+    """The PR comment step fails when one required package is omitted or short."""
+    workflow = (ROOT / ".github/workflows/ci-cd.yml").read_text(encoding="utf-8")
+    assert "--require tac2iwxxm,tac-validate,auth,workflows" in workflow
+    assert "packages/workflows/coverage.xml" in workflow
+    assert '"workflows"' in workflow
+
+
 def test_main_entrypoint_subprocess(tmp_path: Path) -> None:
 
     proc = subprocess.run(
