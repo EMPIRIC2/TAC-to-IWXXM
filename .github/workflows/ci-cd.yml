@@ -385,7 +385,7 @@ jobs:
         run: uv run pytest tests/bugs -m "not live and not live_api" --no-cov -v
 
       - name: Upload package coverage XML artifact
-        if: always() && contains(fromJSON('["shared","auth","backend","tac2iwxxm","iwxxm-validate","tac-validate"]'), matrix.package)
+        if: always() && contains(fromJSON('["shared","auth","backend","tac2iwxxm","iwxxm-validate","tac-validate","workflows"]'), matrix.package)
         uses: actions/upload-artifact@v4
         with:
           name: coverage-xml-${{ matrix.package }}
@@ -396,6 +396,7 @@ jobs:
             packages/tac2iwxxm/coverage.xml
             packages/iwxxm-validate/coverage.xml
             packages/tac-validate/coverage.xml
+            packages/workflows/coverage.xml
           if-no-files-found: ignore
 
       - name: Upload frontend coverage artifact
@@ -477,6 +478,9 @@ jobs:
             -o APT::Get::List-Cleanup="0"
           sudo apt-get install -y bats
 
+      - name: OpenAPI status and required-field contract
+        run: make check-openapi-contract
+
       - name: Scripts Python coverage (fail_under 100)
         run: make test-coverage-scripts
 
@@ -520,6 +524,7 @@ jobs:
         id: cov
         run: |
           python3 scripts/ci/format_coverage_pr_comment.py coverage-artifacts \
+            --require tac2iwxxm,tac-validate,auth,workflows \
             > coverage-pr-comment.md
           {
             echo "body<<EOF"
@@ -875,11 +880,16 @@ jobs:
     name: E2E Smoke (Playwright)
     env:
       METAR_CONFIG_ENV: local
+      # Non-production logout fixture. The require step fails if this file is missing.
+      E2E_LOGOUT_FIXTURE: apps/e2e/fixtures/ci-logout.json
 
     steps:
       - uses: actions/checkout@v5
         with:
           submodules: false
+
+      - name: Require non-production logout fixture
+        run: python3 scripts/ci/check_e2e_logout_fixture.py
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -935,11 +945,16 @@ jobs:
       METAR_CONFIG_ENV: local
       # Auth routes need URL (F31). Publishable key already set at workflow env.
       SUPABASE_URL: ${{ secrets.FRONTEND_VITE_SUPABASE_URL }}
+      # Non-production logout fixture. The require step fails if this file is missing.
+      E2E_LOGOUT_FIXTURE: apps/e2e/fixtures/ci-logout.json
 
     steps:
       - uses: actions/checkout@v5
         with:
           submodules: false
+
+      - name: Require non-production logout fixture
+        run: python3 scripts/ci/check_e2e_logout_fixture.py
 
       - name: Set up Python
         uses: actions/setup-python@v5

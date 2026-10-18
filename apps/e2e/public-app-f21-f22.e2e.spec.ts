@@ -7,8 +7,8 @@
 import { expect, test } from '@playwright/test';
 import {
   convertManualMetar,
-  dismissPrivacyNoticeIfPresent,
   openPublicConverter,
+  openSignInFormThenReturn,
   playwrightApiFetch,
 } from './playwright-e2e-helpers';
 
@@ -28,14 +28,16 @@ test.describe('T7.1 — Public app + privacy (F21/F22)', () => {
     });
 
     await openPublicConverter(page);
+    await openSignInFormThenReturn(page);
+    // Opposite state: the email field is on the sign-in form.
     await expect(page.locator('#email')).toHaveCount(0);
 
     await convertManualMetar(page, SAMPLE_METAR);
-    await expect(page.getByRole('region', { name: /conversion results/i })).toBeVisible(
-      {
-        timeout: 15_000,
-      },
-    );
+    await expect(
+      page.getByRole('region', { name: 'Conversion results', exact: true }),
+    ).toBeVisible({
+      timeout: 15_000,
+    });
     expect(authHeaders).toEqual([]);
   });
 
@@ -44,7 +46,10 @@ test.describe('T7.1 — Public app + privacy (F21/F22)', () => {
   }) => {
     await openPublicConverter(page);
     await convertManualMetar(page, LOWER_ST_MAARTEN);
-    const results = page.getByRole('region', { name: /conversion results/i });
+    const results = page.getByRole('region', {
+      name: 'Conversion results',
+      exact: true,
+    });
     await expect(results).toBeVisible({ timeout: 15_000 });
     await expect(results).not.toContainText(/no METAR\/SPECI report found/i);
     await expect(results).toContainText(/TNCM/i);
@@ -80,11 +85,15 @@ test.describe('T7.1 — Public app + privacy (F21/F22)', () => {
     await expect(notice).toBeVisible();
     await expect(notice).toContainText(/IndexedDB/i);
 
-    await page.getByRole('button', { name: /dismiss privacy notice/i }).click();
+    await page
+      .getByRole('button', { name: 'Dismiss privacy notice', exact: true })
+      .click();
+    // Opposite state: the notice is visible before dismiss.
     await expect(notice).toHaveCount(0);
 
     await page.reload();
     await expect(page.getByRole('heading', { name: /^TAC to IWXXM$/ })).toBeVisible();
+    // Opposite state: the same notice was visible before dismiss.
     await expect(page.getByTestId('privacy-notice')).toHaveCount(0);
   });
 
@@ -99,10 +108,13 @@ test.describe('T7.1 — Public app + privacy (F21/F22)', () => {
       .click();
     await expect(page.getByTestId('privacy-settings-dialog')).toBeVisible();
     await expect(page.getByText(/Work history and converter sessions/i)).toBeVisible();
-    await expect(page.getByLabel(/necessary storage always enabled/i)).toBeDisabled();
+    await expect(
+      page.getByLabel('Necessary storage always enabled', { exact: true }),
+    ).toBeDisabled();
 
     // Footer Cancel can sit below the viewport on provisional DOKS layouts.
     await page.keyboard.press('Escape');
+    // Opposite state: the dialog is open before Escape.
     await expect(page.getByTestId('privacy-settings-dialog')).toHaveCount(0);
   });
 
@@ -120,8 +132,13 @@ test.describe('T7.1 — Public app + privacy (F21/F22)', () => {
     await expect(page.getByRole('heading', { name: /^TAC to IWXXM$/ })).toBeVisible({
       timeout: 10_000,
     });
-    await dismissPrivacyNoticeIfPresent(page);
-    await expect(page.getByTestId('privacy-notice')).toHaveCount(0);
+    const notice = page.getByTestId('privacy-notice');
+    await expect(notice).toBeVisible();
+    await page
+      .getByRole('button', { name: 'Dismiss privacy notice', exact: true })
+      .click();
+    // Opposite state: the notice is visible on first visit before dismiss.
+    await expect(notice).toHaveCount(0);
 
     await page
       .getByRole('button', { name: 'Open privacy settings', exact: true })

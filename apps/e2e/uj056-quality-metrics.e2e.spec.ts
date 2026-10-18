@@ -49,6 +49,7 @@ test.describe('UJ-056 Quality metrics tab (TC-EV054-007 / TC-EV055-007 / TC-EV05
     });
     await expect(page.getByTestId('quality-metrics-file-list')).toBeVisible();
     await expect(page.getByTestId(`quality-metrics-row-${PASSER_STEM}`)).toBeVisible();
+    await expect(page.getByTestId('quality-metrics-row-taf-A5-1')).toBeVisible();
 
     await page.getByTestId('quality-metrics-product-filter').selectOption('metar');
 
@@ -61,7 +62,7 @@ test.describe('UJ-056 Quality metrics tab (TC-EV054-007 / TC-EV055-007 / TC-EV05
     await expect(
       page.getByTestId(`quality-metrics-deferred-${DEFERRED_STEM}`),
     ).toBeVisible();
-    // TAF passer should leave the list when filtered to METAR.
+    // Opposite state: the TAF row is in the unfiltered list before the METAR filter.
     await expect(page.getByTestId('quality-metrics-row-taf-A5-1')).toHaveCount(0);
 
     await page.getByTestId(`quality-metrics-row-${PASSER_STEM}`).click();

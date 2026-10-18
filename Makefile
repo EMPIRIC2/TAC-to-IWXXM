@@ -65,7 +65,7 @@ PY_LINT := apps/backend/src apps/backend/tests \
 	test-e2e-playwright test-e2e-playwright-smoke test-e2e-t2-product \
 	test-e2e-f16-live-sql \
 	test-live-connectivity test-live-connectivity-doks-provisional test-live-topology-doks-provisional test-live-api test-live-integration test-live-e2e test-live-e2e-doks-provisional test-live-bulletin test-live-feeds test-live-profile test-live \
-	test-integration test-coverage-scripts test-bats \
+	test-integration test-coverage-scripts test-bats check-openapi-contract \
 	coverage coverage-backend coverage-frontend coverage-shared \
 	coverage-dissemination coverage-modules coverage-all ci acci badge-audit audit-frontend \
 	validate-fast validate-yaml secrets-check security-scan config-guard validate-ci env-check \
@@ -589,7 +589,9 @@ test-unit-dissemination:
 test-unit-workflows:
 	$(UV) run pytest packages/workflows/tests -m unit \
 		--cov=workflows --cov-config=packages/workflows/pyproject.toml --cov-branch \
-		--cov-report=term-missing --cov-report=json:packages/workflows/coverage.json \
+		--cov-report=term-missing \
+		--cov-report=xml:packages/workflows/coverage.xml \
+		--cov-report=json:packages/workflows/coverage.json \
 		--cov-fail-under=100 -v
 	@if [ -f scripts/ci/check_per_file_coverage.py ]; then \
 		$(UV) run python scripts/ci/check_per_file_coverage.py packages/workflows/coverage.json; \
@@ -666,6 +668,13 @@ test-coverage-scripts:
 		--cov-fail-under=100 -v; \
 	$(UV) run python scripts/ci/check_per_file_coverage.py scripts/coverage.json --min-pct 100
 
+# Local OpenAPI consumer contract: status codes and required JSON fields.
+# [Corpus: tests] [Corpus: api] [Corpus: product]
+check-openapi-contract:
+	$(UV) run python scripts/ci/check_openapi_contract.py \
+		--spec apps/frontend/openapi/openapi.json \
+		--interactions tests/contracts/openapi-interactions.json
+
 # EV-080 / #1077 — bats-core for every scripts/**/*.sh (D-TP080-2).
 test-bats:
 	@set -e; \
@@ -720,7 +729,8 @@ test-e2e-playwright-smoke:
 	cd apps/e2e && METAR_CONFIG_ENV=local $(PNPM) exec playwright test \
 		tac-file-conversion.e2e.spec.ts \
 		uj079-reference-lookup.e2e.spec.ts \
-		site-terms-gate.e2e.spec.ts
+		site-terms-gate.e2e.spec.ts \
+		tc-ev060-1006-auth.e2e.spec.ts
 	cd apps/e2e && METAR_CONFIG_ENV=local $(PNPM) exec playwright test \
 		tc-ev061-uj064-068.e2e.spec.ts --grep "required decode rows"
 

@@ -72,7 +72,7 @@ test.describe('T4.4 / TC-F7-001 + TC-F7-004: live workbench', () => {
     await expect(page.getByTestId('workbench-console')).toBeVisible();
     await expect(page.getByTestId('live-iwxxm-toggle')).not.toBeChecked();
 
-    await page.getByLabel(/Expand parameters/i).click();
+    await page.getByLabel('Expand parameters', { exact: true }).click();
     const product = page.locator('#param-product');
     await expect(product).toBeVisible();
     for (const value of [
@@ -95,7 +95,7 @@ test.describe('T4.4 / TC-F7-001 + TC-F7-004: live workbench', () => {
     const { lintCalls, decodeCalls } = await stubLiveAssistApis(page);
     await openConverterForE2e(page);
 
-    const editor = page.getByLabel(/Enter METAR data manually/i);
+    const editor = page.getByLabel('Enter METAR data manually', { exact: true });
     await editor.click();
     await editor.fill('M');
     await editor.fill('ME');
