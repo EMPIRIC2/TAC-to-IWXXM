@@ -385,7 +385,7 @@ jobs:
         run: uv run pytest tests/bugs -m "not live and not live_api" --no-cov -v
 
       - name: Upload package coverage XML artifact
-        if: always() && contains(fromJSON('["shared","auth","backend","tac2iwxxm","iwxxm-validate","tac-validate"]'), matrix.package)
+        if: always() && contains(fromJSON('["shared","auth","backend","tac2iwxxm","iwxxm-validate","tac-validate","workflows"]'), matrix.package)
         uses: actions/upload-artifact@v4
         with:
           name: coverage-xml-${{ matrix.package }}
@@ -396,6 +396,7 @@ jobs:
             packages/tac2iwxxm/coverage.xml
             packages/iwxxm-validate/coverage.xml
             packages/tac-validate/coverage.xml
+            packages/workflows/coverage.xml
           if-no-files-found: ignore
 
       - name: Upload frontend coverage artifact
@@ -523,6 +524,7 @@ jobs:
         id: cov
         run: |
           python3 scripts/ci/format_coverage_pr_comment.py coverage-artifacts \
+            --require tac2iwxxm,tac-validate,auth,workflows \
             > coverage-pr-comment.md
           {
             echo "body<<EOF"

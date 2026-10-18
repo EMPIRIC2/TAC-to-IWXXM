@@ -6673,7 +6673,7 @@ wired). Scheduled workflows (`vendor-sync`, load/e2e) unchanged.
 | husky pre-commit      | lint/format only                 | ruff / prettier / eslint — **no** tsc/basedpyright/catalog/registry/actionlint/yamllint/medium validate on default path |
 | husky pre-push        | fast unit subset                 | explicit Makefile/pytest target — **not** full `ci-prepush` / Compose                                                   |
 | Opt-in local          | `make validate-*` / `ci-prepush` | full parity when contributor chooses                                                                                    |
-| Remote PR coverage    | `coverage-pr-comment`            | sticky PR comment from unit coverage artifacts                                                                          |
+| Remote PR coverage    | `coverage-pr-comment`            | sticky PR comment from unit coverage artifacts. `#1433`: `coverage-xml-*` includes `tac2iwxxm`, `tac-validate`, `auth`, and `workflows` (`coverage.xml`); the comment requires a 100% line rate for those four. Floors stay `--cov-fail-under=100` and `check_per_file_coverage.py` default 100. |
 | Remote converter perf | hard gate job                    | EV-047 / #834 — fail on convert p95 regression                                                                          |
 
 Family `test-*-quality` packs stay path-filtered / opt-in, **not** on every commit/push.

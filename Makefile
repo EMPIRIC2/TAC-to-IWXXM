@@ -589,7 +589,9 @@ test-unit-dissemination:
 test-unit-workflows:
 	$(UV) run pytest packages/workflows/tests -m unit \
 		--cov=workflows --cov-config=packages/workflows/pyproject.toml --cov-branch \
-		--cov-report=term-missing --cov-report=json:packages/workflows/coverage.json \
+		--cov-report=term-missing \
+		--cov-report=xml:packages/workflows/coverage.xml \
+		--cov-report=json:packages/workflows/coverage.json \
 		--cov-fail-under=100 -v
 	@if [ -f scripts/ci/check_per_file_coverage.py ]; then \
 		$(UV) run python scripts/ci/check_per_file_coverage.py packages/workflows/coverage.json; \
