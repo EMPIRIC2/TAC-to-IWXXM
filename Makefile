@@ -730,7 +730,9 @@ test-e2e-playwright-smoke:
 		tac-file-conversion.e2e.spec.ts \
 		uj079-reference-lookup.e2e.spec.ts \
 		site-terms-gate.e2e.spec.ts \
-		tc-ev060-1006-auth.e2e.spec.ts
+		site-terms-gate.e2e.spec.ts \
+		tc-ev060-1006-auth.e2e.spec.ts \
+		f6e-product-profile-pickers.e2e.spec.ts
 	cd apps/e2e && METAR_CONFIG_ENV=local $(PNPM) exec playwright test \
 		tc-ev061-uj064-068.e2e.spec.ts --grep "required decode rows"
 

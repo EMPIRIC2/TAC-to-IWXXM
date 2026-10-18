@@ -15,19 +15,11 @@ import {
 const METAR_TAC = 'METAR KJFK 121251Z 24016G28KT 3SM -RA BR BKN020 OVC040 14/11 A2990';
 const SPECI_TAC = 'SPECI KJFK 122045Z 18012KT 5SM 15/07 A3005=';
 
-async function requireF6ePickers(
-  page: import('@playwright/test').Page,
-): Promise<boolean> {
+async function requireF6ePickers(page: import('@playwright/test').Page): Promise<void> {
   await page.getByLabel('Expand parameters', { exact: true }).click();
-  const product = page.locator('#param-product');
-  const present = await product.isVisible().catch(() => false);
-  if (!present) {
-    test.skip(true, 'F6.e product pickers not deployed yet');
-    return false;
-  }
+  await expect(page.locator('#param-product')).toBeVisible();
   await expect(page.getByTestId('conversion-library-select')).toBeVisible();
   await expect(page.locator('#param-iwxxm-version')).toBeVisible();
-  return true;
 }
 
 test.describe('H6 / T8.4: F6.e product + Conversion library pickers', () => {
@@ -35,9 +27,7 @@ test.describe('H6 / T8.4: F6.e product + Conversion library pickers', () => {
     page,
   }) => {
     await openPublicConverter(page);
-    if (!(await requireF6ePickers(page))) {
-      return;
-    }
+    await requireF6ePickers(page);
 
     await page.locator('#param-product').selectOption('METAR');
     await page
@@ -61,9 +51,7 @@ test.describe('H6 / T8.4: F6.e product + Conversion library pickers', () => {
     page,
   }) => {
     await openPublicConverter(page);
-    if (!(await requireF6ePickers(page))) {
-      return;
-    }
+    await requireF6ePickers(page);
 
     await page.locator('#param-product').selectOption('SPECI');
     await page
@@ -81,9 +69,7 @@ test.describe('H6 / T8.4: F6.e product + Conversion library pickers', () => {
 
   test('UJ-005: US Conversion library selectable with METAR', async ({ page }) => {
     await openPublicConverter(page);
-    if (!(await requireF6ePickers(page))) {
-      return;
-    }
+    await requireF6ePickers(page);
 
     await page.locator('#param-product').selectOption('METAR');
     await page
@@ -103,9 +89,7 @@ test.describe('H6 / T8.4: F6.e product + Conversion library pickers', () => {
     page,
   }) => {
     await openPublicConverter(page);
-    if (!(await requireF6ePickers(page))) {
-      return;
-    }
+    await requireF6ePickers(page);
     const api = playwrightApiBaseUrl();
     let hit = false;
     await page.route(`${api}/api/v1/convert`, async (route) => {
