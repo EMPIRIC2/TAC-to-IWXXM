@@ -14,18 +14,31 @@ test.describe('UJ-001 delta — accumulate results + error log', () => {
     const metarB = 'METAR KDEN 121653Z 02006KT 10SM SCT050 21/08 A3010';
 
     await convertManualMetar(page, metarA);
-    await expect(page.getByRole('region', { name: /conversion results/i })).toBeVisible(
-      {
-        timeout: 10000,
-      },
-    );
+    await expect(
+      page.getByRole('region', { name: 'Conversion results', exact: true }),
+    ).toBeVisible({
+      timeout: 10000,
+    });
 
     await convertManualMetar(page, metarB);
-    const resultsRegion = page.getByRole('region', { name: /conversion results/i });
+    const resultsRegion = page.getByRole('region', {
+      name: 'Conversion results',
+      exact: true,
+    });
     await expect(resultsRegion).toBeVisible({ timeout: 10000 });
     // F7.r / #903 — accumulate (do not replace) across successful converts.
-    await expect(resultsRegion.getByText(/KJFK/i).first()).toBeVisible();
-    await expect(resultsRegion.getByText(/KDEN/i).first()).toBeVisible();
+    await expect(
+      resultsRegion.getByRole('button', {
+        name: 'Toggle details for METAR KJFK 121251Z',
+        exact: true,
+      }),
+    ).toBeVisible();
+    await expect(
+      resultsRegion.getByRole('button', {
+        name: 'Toggle details for METAR KDEN 121653Z',
+        exact: true,
+      }),
+    ).toBeVisible();
     await expect(page.getByTestId('download-zip-button')).toHaveAccessibleName(
       /download all 2 converted files as zip/i,
     );
@@ -35,7 +48,7 @@ test.describe('UJ-001 delta — accumulate results + error log', () => {
     await openConverterForE2e(page);
     await convertManualMetar(page, 'METAR NOT A VALID');
 
-    const errorLog = page.getByLabel(/conversion error log/i);
+    const errorLog = page.getByLabel('Conversion error log', { exact: true });
     await expect(errorLog).toBeVisible({
       timeout: 10000,
     });

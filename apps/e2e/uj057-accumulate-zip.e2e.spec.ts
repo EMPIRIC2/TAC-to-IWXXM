@@ -24,18 +24,18 @@ test.describe('UJ-057: Accumulate conversions → Download ZIP (TC-EV057-903)', 
     const product = page.locator('#param-product');
     if (!(await product.isVisible().catch(() => false))) {
       await page
-        .getByLabel(/Expand parameters/i)
+        .getByLabel('Expand parameters', { exact: true })
         .click()
         .catch(() => undefined);
     }
     await page.locator('#param-product').selectOption('METAR');
 
     await convertManualMetar(page, TAC_A);
-    await expect(page.getByRole('region', { name: /conversion results/i })).toBeVisible(
-      {
-        timeout: 30_000,
-      },
-    );
+    await expect(
+      page.getByRole('region', { name: 'Conversion results', exact: true }),
+    ).toBeVisible({
+      timeout: 30_000,
+    });
     await expect(page.getByTestId('download-zip-button')).toHaveAccessibleName(
       /download all 1 converted files as zip/i,
     );
@@ -52,8 +52,9 @@ test.describe('UJ-057: Accumulate conversions → Download ZIP (TC-EV057-903)', 
     expect(download.suggestedFilename()).toMatch(/^METARKJF_\d{14}\.zip$/);
 
     await page.getByTestId('clear-queue-button').click();
-    await expect(page.getByRole('region', { name: /conversion results/i })).toHaveCount(
-      0,
-    );
+    // Opposite state: the conversion results region is visible before Clear.
+    await expect(
+      page.getByRole('region', { name: 'Conversion results', exact: true }),
+    ).toHaveCount(0);
   });
 });

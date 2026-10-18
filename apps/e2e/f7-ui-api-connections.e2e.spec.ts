@@ -140,10 +140,10 @@ test.describe('F7 UI↔API connection points', () => {
     const captured = await wireF7ApiStubs(page);
     await openConverterForE2e(page);
 
-    await page.getByLabel(/Expand parameters/i).click();
+    await page.getByLabel('Expand parameters', { exact: true }).click();
     await page.locator('#param-product').selectOption('METAR');
 
-    const editor = page.getByLabel(/Enter METAR data manually/i);
+    const editor = page.getByLabel('Enter METAR data manually', { exact: true });
     await editor.click();
     await editor.fill(METAR_TAC);
 
@@ -177,7 +177,7 @@ test.describe('F7 UI↔API connection points', () => {
 
     await page.getByTestId('soft-preview-toggle').check();
 
-    const editor = page.getByLabel(/Enter METAR data manually/i);
+    const editor = page.getByLabel('Enter METAR data manually', { exact: true });
     await editor.fill(BAD_TAC);
     await page.getByTestId('convert-button').click();
 
@@ -198,7 +198,7 @@ test.describe('F7 UI↔API connection points', () => {
     const captured = await wireF7ApiStubs(page);
     await openConverterForE2e(page);
 
-    const editor = page.getByLabel(/Enter METAR data manually/i);
+    const editor = page.getByLabel('Enter METAR data manually', { exact: true });
     await editor.fill(METAR_TAC);
 
     await expect(page.getByTestId('autosave-indicator')).toContainText(/saved/i, {

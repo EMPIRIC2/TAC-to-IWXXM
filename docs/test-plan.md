@@ -2903,8 +2903,8 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
 
 - **Level**: T2 / T3
 - **Objective**: Logout returns to guest convert
-- **Pass criteria**: Convert still works without JWT
-- **Source**: #1006; F21
+- **Pass criteria**: Click logout, `POST /auth/logout` succeeds, sign-in is shown, and the logout control is gone. Convert still works without a JWT. Default CI uses the committed non-production fixture and fails when that fixture is missing.
+- **Source**: #1006; F21; #1437
 
 ### TC-EV060-1006-004: Facilitated UAT sign-off
 
@@ -6673,7 +6673,7 @@ wired). Scheduled workflows (`vendor-sync`, load/e2e) unchanged.
 | husky pre-commit      | lint/format only                 | ruff / prettier / eslint — **no** tsc/basedpyright/catalog/registry/actionlint/yamllint/medium validate on default path |
 | husky pre-push        | fast unit subset                 | explicit Makefile/pytest target — **not** full `ci-prepush` / Compose                                                   |
 | Opt-in local          | `make validate-*` / `ci-prepush` | full parity when contributor chooses                                                                                    |
-| Remote PR coverage    | `coverage-pr-comment`            | sticky PR comment from unit coverage artifacts                                                                          |
+| Remote PR coverage    | `coverage-pr-comment`            | sticky PR comment from unit coverage artifacts. `#1433`: `coverage-xml-*` includes `tac2iwxxm`, `tac-validate`, `auth`, and `workflows` (`coverage.xml`); the comment requires a 100% line rate for those four. Floors stay `--cov-fail-under=100` and `check_per_file_coverage.py` default 100. |
 | Remote converter perf | hard gate job                    | EV-047 / #834 — fail on convert p95 regression                                                                          |
 
 Family `test-*-quality` packs stay path-filtered / opt-in, **not** on every commit/push.

@@ -123,7 +123,9 @@ async function openDisseminationDrawer(page: Page): Promise<void> {
   await expect(openBtn).toBeEnabled({ timeout: 15000 });
   await openBtn.click();
   await expect(page.getByTestId('dissemination-drawer')).toBeVisible();
-  await expect(page.getByRole('heading', { name: /dissemination/i })).toBeVisible();
+  await expect(
+    page.getByRole('heading', { name: 'Dissemination', exact: true }),
+  ).toBeVisible();
 }
 
 async function prepareWorkbench(page: Page): Promise<void> {
@@ -205,7 +207,7 @@ test.describe('T6.3 / UJ-027–030: dissemination drawer H6′ smokes', () => {
 
     await sendBtn.click();
     await expect(
-      page.locator('[data-testid^="dissemination-progress-row-"]').first(),
+      page.getByTestId('dissemination-progress-row-session-primary'),
     ).toHaveAttribute('data-status', 'failed');
     expect(captured.send.length).toBe(0);
 
@@ -217,7 +219,7 @@ test.describe('T6.3 / UJ-027–030: dissemination drawer H6′ smokes', () => {
 
     await expect(page.getByTestId('dissemination-send-success')).toBeVisible();
     await expect(
-      page.locator('[data-testid^="dissemination-progress-row-"]').first(),
+      page.getByTestId('dissemination-progress-row-session-primary'),
     ).toHaveAttribute('data-status', 'success');
 
     expect(captured.preflight.length).toBe(2);
@@ -354,9 +356,9 @@ test.describe('T6.3 / UJ-027–030: dissemination drawer H6′ smokes', () => {
     await expect(page.getByTestId('dissemination-send-success')).toContainText(
       /1 file/,
     );
-    const failRow = page
-      .locator('[data-testid^="dissemination-progress-row-"][data-status="failed"]')
-      .first();
+    const failRow = page.locator(
+      '[data-testid^="dissemination-progress-row-"][data-status="failed"]',
+    );
     await expect(failRow).toBeVisible();
     await expect(failRow.getByTestId(/dissemination-progress-fail-/)).toBeVisible();
 
@@ -382,8 +384,10 @@ test.describe('T6.3 / UJ-027–030: dissemination drawer H6′ smokes', () => {
     });
 
     await openDisseminationDrawer(page);
+    await expect(page.getByTestId('dissemination-uri-input')).toBeVisible();
     await page.getByTestId('dissemination-sink-chooser').selectOption('wis2');
     await expect(page.getByTestId('dissemination-byoc-params')).toBeVisible();
+    // Opposite state: the URI field is visible for the default database sink.
     await expect(page.getByTestId('dissemination-uri-input')).toHaveCount(0);
     await expect(page.getByTestId('dissemination-non-db-hint')).toBeVisible();
 
@@ -479,6 +483,7 @@ test.describe('T6.3 / UJ-027–030: dissemination drawer H6′ smokes', () => {
       expect(body.sink_type).toBe(sink);
 
       await page.getByTestId('dissemination-drawer-close').click();
+      // Opposite state: the drawer is open before close.
       await expect(page.getByTestId('dissemination-drawer')).toHaveCount(0);
 
       await page.unroute('**/api/v1/dissemination/preflight');

@@ -174,7 +174,9 @@ async function liveDisseminate(
     timeout: 60_000,
   });
   await expect(
-    page.locator('[data-testid^="dissemination-progress-row-"]').first(),
+    page
+      .locator('[data-testid^="dissemination-progress-row-"]')
+      .filter({ hasText: 'live-metar.xml' }),
   ).toHaveAttribute('data-status', 'success', { timeout: 60_000 });
 
   // Allow response handler to settle
