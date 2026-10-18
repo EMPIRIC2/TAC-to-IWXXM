@@ -14,6 +14,7 @@ import {
 
 const SAMPLE_METAR =
   'METAR KJFK 121251Z 24016G28KT 3SM -RA BR BKN020 OVC040 14/11 A2990';
+const LOWER_ST_MAARTEN = 'metar tncm 081200z 14006kt 9999 few020 28/24 q1013=';
 
 test.describe('T7.1 — Public app + privacy (F21/F22)', () => {
   test('UJ-001: public convert without JWT (optional Sign in OK)', async ({ page }) => {
@@ -36,6 +37,17 @@ test.describe('T7.1 — Public app + privacy (F21/F22)', () => {
       },
     );
     expect(authHeaders).toEqual([]);
+  });
+
+  test('TC-F6-055: lowercase St Maarten METAR converts on the public page', async ({
+    page,
+  }) => {
+    await openPublicConverter(page);
+    await convertManualMetar(page, LOWER_ST_MAARTEN);
+    const results = page.getByRole('region', { name: /conversion results/i });
+    await expect(results).toBeVisible({ timeout: 15_000 });
+    await expect(results).not.toContainText(/no METAR\/SPECI report found/i);
+    await expect(results).toContainText(/TNCM/i);
   });
 
   test('TC-F22-001: first-visit privacy notice discloses IndexedDB', async ({

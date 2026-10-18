@@ -1,5 +1,24 @@
 # Evolve Decisions
 
+## Cycle EV-1405-tester-packet-tests — lowercase METAR and SPECI (#1405)
+
+**Opened:** 2026-10-17 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-1405-tester-packet-tests`  
+**Issue:** [#1405](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1405) under [#1396](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1396)  
+**Documenting→Implementing gate:** open  
+**Scale:** standard
+
+| ID | Outcome |
+|----|---------|
+| D1 | Uppercase a METAR or SPECI report before the existing parsers. Do not add a separate lowercase-weather rule. |
+| D2 | `metar tncm 081200z 14006kt 9999 few020 28/24 q1013=` matches its uppercase twin. A lowercase SPECI keyword does the same. |
+| D3 | TAF and SIGMET stay case-sensitive. |
+| D4 | The 755 unique full reports in the October 2026 tester packet are fixtures. A report keeps today's convert result. A current failure is not fixed here. |
+| D5 | One local Playwright check on the public convert page. A staging API check runs after the fix is on staging. No deploy in this cycle. |
+| D6 | Docs delta: feature-list lowercase note, test-plan TC-F6-055 and TC-F6-056. No new feature id. No API contract edit. |
+| F107 | Memory retrieve skipped. Neo4j at `bolt://localhost:7687` was unavailable. |
+
+[Corpus: product §F6] [Corpus: tests]
+
 ## Cycle EV-1411-result-card: one convert result card (#1411)
 
 **Opened:** 2026-10-16 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-1411-result-card`  

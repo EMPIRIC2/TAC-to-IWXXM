@@ -13,6 +13,11 @@ from tac2iwxxm.visibility_measure import (
 )
 
 _CA_SURFACE_TYPES = frozenset({"METAR", "SPECI", "LWIS", "SAWR"})
+_OBS_KEYWORD = re.compile(r"(?<![A-Za-z])(?:LWIS|SAWR|METAR|SPECI)\b", re.IGNORECASE)
+_OTHER_PRODUCT = re.compile(
+    r"(?im)^[ \t]*(?:TAF\b|(?:[A-Za-z]{4}[ \t]+)?(?:SIGMET|AIRMET)\b|VONA\b|"
+    r"VA[ \t]+ADVISORY\b|TC[ \t]+ADVISORY\b|SWX[ \t]+ADVISORY\b)"
+)
 _REPORT = re.compile(
     r"^(?P<rtype>LWIS|SAWR|METAR|SPECI)\s+(?:(?P<cor_pre>COR)\s+)?(?P<station>[A-Z][A-Z0-9]{3})\s+"
     r"(?P<ddhhmm>\d{6})Z\b(?P<body>.*)$",
@@ -1405,6 +1410,53 @@ def _parse_remarks(rest: str, ir: dict[str, Any]) -> None:
         ir["remark_issues"] = issues
 
 
+def fold_observation_case(tac: str) -> str:
+    """
+    Uppercase each METAR, SPECI, LWIS, or SAWR span.
+
+    A span runs from the keyword through the next ``=``, or stops before a
+    following TAF, SIGMET, AIRMET, or advisory. Those other products stay as
+    written.
+
+    Parameters
+    ----------
+    tac :
+        TAC text that may mix an observation with another product.
+
+    Returns
+    -------
+    str
+        Text with observation spans in capitals.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (fold_observation_case)
+    2
+    """
+    if not tac:
+        return tac
+    parts: list[str] = []
+    cursor = 0
+    for match in _OBS_KEYWORD.finditer(tac):
+        start = match.start()
+        rest_from = match.end()
+        end = len(tac)
+        equals_at = tac.find("=", rest_from)
+        if equals_at != -1:
+            end = equals_at + 1
+        other = _OTHER_PRODUCT.search(tac, rest_from)
+        if other is not None and other.start() < end:
+            end = other.start()
+        next_obs = _OBS_KEYWORD.search(tac, rest_from)
+        if next_obs is not None and next_obs.start() < end:
+            end = next_obs.start()
+        parts.append(tac[cursor:start])
+        parts.append(tac[start:end].upper())
+        cursor = end
+    parts.append(tac[cursor:])
+    return "".join(parts)
+
+
 def parse_metar_speci(tac: str, *, product: str) -> dict[str, Any]:
     """
     Parse a single METAR/SPECI TAC report into a versioned IR dict.
@@ -1431,7 +1483,7 @@ def parse_metar_speci(tac: str, *, product: str) -> dict[str, Any]:
     >>> 1 + 1  # docstring smoke (parse_metar_speci)
     2
     """
-    text = tac.strip()
+    text = fold_observation_case(tac).strip()
     product_u = product.upper()
     # Allow COR before station or immediately after observation time (ICAO #594).
     report_match = re.search(
