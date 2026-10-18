@@ -23,16 +23,61 @@ const AHL_MALFORMED = `QQUS31 KZNY 121200
 METAR KJFK 121151Z 18008KT 10SM FEW250 22/14 A3012=
 `;
 
-/** Minimal well-formed IWXXM — decode segments may be empty; report UI must appear. */
-const MINIMAL_IWXXM = `<?xml version="1.0" encoding="UTF-8"?>
+/**
+ * IWXXM METAR with aerodrome, wind, and temperature.
+ * Must produce decode segments on every validate run. Zero segments fail this spec.
+ * The document still starts with an XML declaration so a raw dump fails the row check.
+ */
+const DECODE_ROWS_IWXXM = `<?xml version="1.0" encoding="UTF-8"?>
 <iwxxm:METAR xmlns:iwxxm="http://icao.int/iwxxm/2025-2"
-  xmlns:gml="http://www.opengis.net/gml/3.2"
-  gml:id="metar-uj064">
+    xmlns:xlink="http://www.w3.org/1999/xlink"
+    xmlns:gml="http://www.opengis.net/gml/3.2"
+    xmlns:aixm="http://www.aixm.aero/schema/5.1.1"
+    gml:id="metar.basic.kjfk"
+    reportStatus="NORMAL"
+    permissibleUsage="OPERATIONAL"
+    automatedStation="false">
+  <iwxxm:issueTime>
+    <gml:TimeInstant gml:id="t.issue">
+      <gml:timePosition>2023-06-23T17:51:00Z</gml:timePosition>
+    </gml:TimeInstant>
+  </iwxxm:issueTime>
+  <iwxxm:aerodrome>
+    <aixm:AirportHeliport gml:id="ad.kjfk">
+      <aixm:timeSlice>
+        <aixm:AirportHeliportTimeSlice gml:id="ad.ts.kjfk">
+          <gml:validTime/>
+          <aixm:interpretation>SNAPSHOT</aixm:interpretation>
+          <aixm:designator>KJFK</aixm:designator>
+          <aixm:locationIndicatorICAO>KJFK</aixm:locationIndicatorICAO>
+        </aixm:AirportHeliportTimeSlice>
+      </aixm:timeSlice>
+    </aixm:AirportHeliport>
+  </iwxxm:aerodrome>
   <iwxxm:observationTime>
-    <gml:TimeInstant gml:id="t0">
-      <gml:timePosition>2026-08-20T12:00:00Z</gml:timePosition>
+    <gml:TimeInstant gml:id="t.obs">
+      <gml:timePosition>2023-06-23T17:51:00Z</gml:timePosition>
     </gml:TimeInstant>
   </iwxxm:observationTime>
+  <iwxxm:observation>
+    <iwxxm:MeteorologicalAerodromeObservation gml:id="obs.1" cloudAndVisibilityOK="false">
+      <iwxxm:airTemperature uom="Cel">15.0</iwxxm:airTemperature>
+      <iwxxm:dewpointTemperature uom="Cel">7.0</iwxxm:dewpointTemperature>
+      <iwxxm:qnh uom="hPa">1017.6</iwxxm:qnh>
+      <iwxxm:surfaceWind>
+        <iwxxm:AerodromeSurfaceWind variableWindDirection="false">
+          <iwxxm:meanWindDirection uom="deg">180</iwxxm:meanWindDirection>
+          <iwxxm:meanWindSpeed uom="[kn_i]">12</iwxxm:meanWindSpeed>
+        </iwxxm:AerodromeSurfaceWind>
+      </iwxxm:surfaceWind>
+      <iwxxm:visibility>
+        <iwxxm:AerodromeHorizontalVisibility>
+          <iwxxm:prevailingVisibility uom="m">10000</iwxxm:prevailingVisibility>
+          <iwxxm:prevailingVisibilityOperator>ABOVE</iwxxm:prevailingVisibilityOperator>
+        </iwxxm:AerodromeHorizontalVisibility>
+      </iwxxm:visibility>
+    </iwxxm:MeteorologicalAerodromeObservation>
+  </iwxxm:observation>
 </iwxxm:METAR>`;
 
 async function convertBulletin(
@@ -51,7 +96,7 @@ async function convertBulletin(
 }
 
 test.describe('EV-061 T2 — UJ-064 Validate IWXXM decode', () => {
-  test('UJ-064: validate mode shows report (decode when segments exist)', async ({
+  test('UJ-064: validate mode shows report and required decode rows', async ({
     page,
   }) => {
     await openPublicConverter(page);
@@ -60,17 +105,14 @@ test.describe('EV-061 T2 — UJ-064 Validate IWXXM decode', () => {
     const editor = page.getByLabel('Enter IWXXM XML manually', { exact: true });
     await editor.click();
     await page.keyboard.press(process.platform === 'darwin' ? 'Meta+A' : 'Control+A');
-    await page.keyboard.insertText(MINIMAL_IWXXM);
+    await page.keyboard.insertText(DECODE_ROWS_IWXXM);
     await page.getByRole('button', { name: 'Validate IWXXM XML', exact: true }).click();
     await expect(page.getByTestId('validate-iwxxm-report')).toBeVisible({
       timeout: 60_000,
     });
-    // When the API returns F9 segments, item-by-item rows appear; otherwise status alone.
     const segments = page.getByTestId('decode-segments');
-    if (await segments.count()) {
-      await expect(segments).toBeVisible();
-      await expect(segments).not.toContainText('<?xml');
-    }
+    await expect(segments).toBeVisible();
+    await expect(segments).not.toContainText('<?xml');
   });
 });
 
