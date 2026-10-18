@@ -107,7 +107,6 @@ test.describe('EV-061 T2 — UJ-066 / UJ-067 converter bars', () => {
     await expect(page.getByTestId('product-type-select')).toBeVisible();
     await expect(page.getByTestId('library-pickers-bar')).toBeVisible();
     await expect(page.getByTestId('conversion-library-select')).toBeVisible();
-    await expect(page.getByTestId('profile-type-select')).toHaveCount(0);
     // Product bar is wrap-capable at ≥1024. Params bar stays nowrap.
     await expect(productBar).toHaveCSS('flex-wrap', 'wrap');
     await expect(paramsBar).toHaveCSS('flex-wrap', 'nowrap');

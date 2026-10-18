@@ -91,6 +91,7 @@ export async function dismissPrivacyNoticeIfPresent(page: Page): Promise<void> {
     }
     throw error;
   }
+  // Opposite state: the notice was on the page before dismiss.
   await expect(notice).toHaveCount(0);
 }
 
@@ -118,6 +119,23 @@ export async function gotoLogin(page: Page): Promise<void> {
   await expect(page.getByTestId('login-view')).toBeVisible({ timeout: 10_000 });
 }
 
+/**
+ * Open the sign-in form, where the email field and account button exist, then
+ * return to the public converter.
+ */
+export async function openSignInFormThenReturn(page: Page): Promise<void> {
+  await page.getByTestId('sign-in-button').click();
+  await expect(page.getByTestId('login-view')).toBeVisible({ timeout: 10_000 });
+  await expect(page.locator('#email')).toBeVisible();
+  await expect(page.getByRole('button', { name: /sign in to account/i })).toBeVisible();
+  await page
+    .getByRole('button', { name: /continue to converter without signing in/i })
+    .click();
+  await expect(page.getByRole('heading', { name: /^TAC to IWXXM$/ })).toBeVisible({
+    timeout: 10_000,
+  });
+}
+
 /** Open the optional register view from the public converter (F31 / UJ-003). */
 export async function gotoRegister(page: Page): Promise<void> {
   await gotoLogin(page);
@@ -136,6 +154,10 @@ export async function loginAsE2EUser(page: Page): Promise<void> {
       'loginAsE2EUser requires E2E_USER_EMAIL/E2E_USER_PASSWORD (or ADMIN_*).',
     );
   }
+  await openPublicConverter(page);
+  await fillManualTac(page, 'METAR KJFK');
+  const guestNotice = page.getByTestId('guest-loss-notice');
+  await expect(guestNotice).toBeVisible();
   await gotoLogin(page);
   await page.locator('#email').fill(E2E_USER_EMAIL);
   await page.locator('#password').fill(E2E_USER_PASSWORD);
@@ -144,7 +166,8 @@ export async function loginAsE2EUser(page: Page): Promise<void> {
     timeout: 30_000,
   });
   await expect(page.getByTestId('logout-button')).toBeVisible({ timeout: 20_000 });
-  await expect(page.getByTestId('guest-loss-notice')).toHaveCount(0);
+  // Opposite state: the guest loss notice is visible when unsaved TAC is present.
+  await expect(guestNotice).toHaveCount(0);
 }
 
 /** Alias for {@link loginAsE2EUser}. */

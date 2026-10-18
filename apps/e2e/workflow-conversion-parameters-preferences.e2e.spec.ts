@@ -47,6 +47,7 @@ test.describe('Workflow: Conversion Parameters And Preferences', () => {
     );
     // Dialog stays open after save — close before reopening.
     await page.getByRole('button', { name: /^Cancel$/i }).click();
+    // Opposite state: the User Preferences heading is visible before Cancel.
     await expect(page.getByRole('heading', { name: /User Preferences/i })).toHaveCount(
       0,
     );

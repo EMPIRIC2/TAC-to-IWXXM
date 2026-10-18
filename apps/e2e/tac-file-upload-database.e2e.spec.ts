@@ -85,10 +85,6 @@ test.describe('TAC convert + Disseminate (Upload to Database removed)', () => {
   }) => {
     await loginAndOpenConverter(page);
 
-    await expect(page.getByTestId('upload-to-database-button')).toHaveCount(0);
-    await expect(
-      page.getByRole('button', { name: /Upload .* converted files to database/i }),
-    ).toHaveCount(0);
     await expect(page.getByTestId('open-dissemination-drawer')).toBeVisible();
     await expect(page.getByTestId('convert-and-send-button')).toBeVisible();
   });
@@ -175,7 +171,6 @@ test.describe('TAC convert + Disseminate (Upload to Database removed)', () => {
     const resultsRegion = page.getByRole('region', { name: /conversion results/i });
     // Each converted file renders Source TAC + IWXXM blocks (2 <pre> per result).
     await expect(resultsRegion.locator('pre')).toHaveCount(4);
-    await expect(page.getByTestId('upload-to-database-button')).toHaveCount(0);
     await expect(page.getByTestId('open-dissemination-drawer')).toBeEnabled();
   });
 

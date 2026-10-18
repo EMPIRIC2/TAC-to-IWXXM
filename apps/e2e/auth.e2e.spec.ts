@@ -5,13 +5,19 @@
  * Supersedes S023 TC-F21-auth-gone negatives (Auth routes restored).
  */
 import { expect, test } from '@playwright/test';
-import { openPublicConverter, playwrightApiFetch } from './playwright-e2e-helpers';
+import {
+  openPublicConverter,
+  openSignInFormThenReturn,
+  playwrightApiFetch,
+} from './playwright-e2e-helpers';
 
 test.describe('F31 — optional Auth + public convert', () => {
   test('converter boots as guest with optional Sign in chrome', async ({ page }) => {
     await openPublicConverter(page);
+    await openSignInFormThenReturn(page);
 
     await expect(page.getByTestId('sign-in-button')).toBeVisible();
+    // Opposite state: the email field and login view are on the sign-in form.
     await expect(page.locator('#email')).toHaveCount(0);
     await expect(page.getByTestId('login-view')).toHaveCount(0);
   });

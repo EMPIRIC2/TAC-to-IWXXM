@@ -35,6 +35,7 @@ test.describe('T7.1 — F31 hybrid sessions (UJ-045..047)', () => {
 
     await openPublicConverter(page);
     await expect(page.getByTestId('sign-in-button')).toBeVisible();
+    // Opposite state: the notice is visible after unsaved guest TAC.
     await expect(page.getByTestId('guest-loss-notice')).toHaveCount(0);
 
     await fillManualTac(page, 'METAR KJFK');
@@ -151,6 +152,7 @@ test.describe('T7.1 — F31 hybrid sessions (UJ-045..047)', () => {
     // Disclosure + toggle presence is the live gate; footer Save can sit off-viewport.
     await expect(workHistory).toBeEnabled();
     await page.keyboard.press('Escape');
+    // Opposite state: the dialog is open before Escape.
     await expect(page.getByTestId('privacy-settings-dialog')).toHaveCount(0);
   });
 

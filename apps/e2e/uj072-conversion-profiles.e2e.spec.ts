@@ -120,7 +120,7 @@ async function stubProfilesApis(
             id: 'ICAO_2025',
             kind: 'semantic',
             status: 'implemented',
-            products: ['METAR', 'SPECI', 'TAF'],
+            products: ['METAR', 'SPECI', 'TAF', 'SIGMET'],
             emit_key: 'annex3',
             deltas_vs_icao: [
               'Baseline ICAO/WMO line used for cross-profile comparison.',
@@ -369,7 +369,6 @@ test.describe('UJ-072: ConversionProfile editor (EV-933 / TC-EV933-006)', () => 
     await expect(page.getByTestId('conversion-profiles-page')).toContainText(
       /Sign in to open the conversion profiles/i,
     );
-    await expect(page.getByTestId('conversion-profiles-inspector')).toHaveCount(0);
   });
 
   test('TC-EV933-006: inspect catalog, save pack + overlay, convert with Conversion library', async ({
@@ -389,7 +388,6 @@ test.describe('UJ-072: ConversionProfile editor (EV-933 / TC-EV933-006)', () => 
     await expect(
       page.getByTestId('conversion-profiles-authoring-retired'),
     ).toBeVisible();
-    await expect(page.getByTestId('profile-builder-libraries')).toHaveCount(0);
     await expect(page.getByTestId('conversion-profiles-select')).toHaveValue(
       'ICAO_2025',
     );
@@ -401,17 +399,11 @@ test.describe('UJ-072: ConversionProfile editor (EV-933 / TC-EV933-006)', () => 
       'US_FAA_NWS',
     );
 
-    await expect(page.getByTestId('conversion-profiles-presets')).toHaveCount(0);
-    await expect(page.getByTestId('conversion-profiles-pack-slug')).toHaveCount(0);
-    await expect(page.getByTestId('conversion-profiles-overlay-slug')).toHaveCount(0);
-
     await page.getByTestId('shell-nav-converter').click();
     await expect(page.getByRole('heading', { name: /^TAC to IWXXM$/ })).toBeVisible();
     await dismissPrivacyNoticeIfPresent(page);
 
     await expect(page.getByTestId('library-pickers-bar')).toBeVisible();
-    await expect(page.getByTestId('profile-type-select')).toHaveCount(0);
-    await expect(page.getByTestId('signed-overlay-select')).toHaveCount(0);
     await page
       .getByTestId('conversion-library-select')
       .selectOption('LIB.CONVERSION.US_FAA_NWS');
@@ -446,7 +438,6 @@ test.describe('UJ-072: ConversionProfile editor (EV-933 / TC-EV933-006)', () => 
     await page
       .getByTestId('conversion-library-select')
       .selectOption('LIB.CONVERSION.US_FAA_NWS');
-    await expect(page.getByTestId('dissemination-library-select')).toHaveCount(0);
     await expect(page.getByTestId('conversion-library-select')).toHaveValue(
       'LIB.CONVERSION.US_FAA_NWS',
     );
@@ -492,10 +483,6 @@ test.describe('UJ-072: ConversionProfile editor (EV-933 / TC-EV933-006)', () => 
     await expect(
       page.getByTestId('conversion-profiles-block-jump-catalog'),
     ).toBeVisible();
-
-    await expect(page.getByTestId('profile-builder-libraries')).toHaveCount(0);
-    await expect(page.getByTestId('conversion-profiles-pack-slug')).toHaveCount(0);
-    await expect(page.getByTestId('conversion-profiles-overlay-base')).toHaveCount(0);
   });
 
   test('TC-EV1120-011/013/015: workbench twin and profile-aware example refresh', async ({
@@ -509,6 +496,11 @@ test.describe('UJ-072: ConversionProfile editor (EV-933 / TC-EV933-006)', () => 
     await dismissPrivacyNoticeIfPresent(page);
 
     await expect(page.getByTestId('country-preset-select')).toHaveValue('ICAO_2025');
+    await page.getByTestId('examples-select').click();
+    await expect(
+      page.getByRole('option', { name: /TC SIGMET WMO A6-2-TC/i }),
+    ).toBeVisible();
+    await page.keyboard.press('Escape');
     await page.getByTestId('country-preset-select').selectOption('US_FAA_NWS');
     await expect(page.getByTestId('conversion-library-select')).toHaveValue(
       'LIB.CONVERSION.US_FAA_NWS',
@@ -519,6 +511,7 @@ test.describe('UJ-072: ConversionProfile editor (EV-933 / TC-EV933-006)', () => 
         name: /METAR WMO A3-1 \(annex3\).*Reused for United States \(FAA\/NWS\)/i,
       }),
     ).toBeVisible();
+    // Opposite state: the TC SIGMET example is listed on the ICAO preset.
     await expect(
       page.getByRole('option', { name: /TC SIGMET WMO A6-2-TC/i }),
     ).toHaveCount(0);

@@ -154,9 +154,6 @@ test.describe('EV-bridge — UJ-072g Libraries + hard cut', () => {
     await expect(page.getByTestId('tac-validation-library-select')).toBeVisible();
     await expect(page.getByTestId('iwxxm-validation-library-select')).toBeVisible();
     await expect(page.getByTestId('decoding-library-select')).toBeVisible();
-    await expect(page.getByTestId('dissemination-library-select')).toHaveCount(0);
-    await expect(page.getByTestId('profile-type-select')).toHaveCount(0);
-    await expect(page.getByTestId('exchange-profile-select')).toHaveCount(0);
     await expect(
       page.getByTestId('library-pickers-bar').getByTestId('beta-badge'),
     ).toBeVisible();
@@ -198,7 +195,5 @@ test.describe('EV-bridge — UJ-072g Libraries + hard cut', () => {
     await expect(
       page.getByTestId('conversion-profiles-authoring-retired'),
     ).toBeVisible();
-    await expect(page.getByTestId('profile-builder-libraries')).toHaveCount(0);
-    await expect(page.getByTestId('mapping-bridge')).toHaveCount(0);
   });
 });

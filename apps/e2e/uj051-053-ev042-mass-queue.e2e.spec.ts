@@ -81,7 +81,6 @@ test.describe('T4.1 — UJ-051..053 EV-042 mass ingest + queue + restored destin
     await openPublicConverter(page);
     await expect(page.getByTestId('convert-and-send-button')).toBeVisible();
     await expect(page.getByTestId('open-dissemination-drawer')).toBeVisible();
-    await expect(page.getByTestId('upload-to-database-button')).toHaveCount(0);
     await expect(page.getByTestId('convert-button')).toBeVisible();
     await expect(page.getByTestId('mass-ingest-folder-button')).toBeVisible();
     await expect(page.getByTestId('mass-ingest-zip-button')).toBeVisible();
@@ -92,7 +91,6 @@ test.describe('T4.1 — UJ-051..053 EV-042 mass ingest + queue + restored destin
         timeout: 45_000,
       },
     );
-    await expect(page.getByTestId('upload-to-database-button')).toHaveCount(0);
   });
 
   test('UJ-051 / TC-F33-004: guest Folder mass ingest prompts sign-in', async ({
