@@ -19,6 +19,7 @@ test.describe('TAC File Conversion', () => {
       page.getByRole('region', { name: 'Conversion results', exact: true }),
     ).toBeVisible({ timeout: 10000 });
     await expect(
+      // targets the converted XML content region for this result
       page.getByRole('region', { name: /^Converted XML content for .+$/ }),
     ).toBeVisible();
   });
@@ -32,6 +33,7 @@ test.describe('TAC File Conversion', () => {
     );
 
     const xmlOutput = page.getByRole('region', {
+      // targets the converted XML content region for this result
       name: /^Converted XML content for .+$/,
     });
     await expect(xmlOutput).toBeVisible({ timeout: 10000 });
@@ -49,6 +51,7 @@ test.describe('TAC File Conversion', () => {
     );
 
     const xmlOutput = page.getByRole('region', {
+      // targets the converted XML content region for this result
       name: /^Converted XML content for .+$/,
     });
     await expect(xmlOutput).toBeVisible({ timeout: 10000 });

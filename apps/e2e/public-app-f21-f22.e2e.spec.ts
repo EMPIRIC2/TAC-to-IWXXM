@@ -77,6 +77,7 @@ test.describe('T7.1 — Public app + privacy (F21/F22)', () => {
       );
     });
     await page.reload();
+    // targets the TAC to IWXXM heading
     await expect(page.getByRole('heading', { name: /^TAC to IWXXM$/ })).toBeVisible({
       timeout: 10_000,
     });
@@ -92,6 +93,7 @@ test.describe('T7.1 — Public app + privacy (F21/F22)', () => {
     await expect(notice).toHaveCount(0);
 
     await page.reload();
+    // targets the TAC to IWXXM heading
     await expect(page.getByRole('heading', { name: /^TAC to IWXXM$/ })).toBeVisible();
     // Opposite state: the same notice was visible before dismiss.
     await expect(page.getByTestId('privacy-notice')).toHaveCount(0);
@@ -129,6 +131,7 @@ test.describe('T7.1 — Public app + privacy (F21/F22)', () => {
     });
 
     await page.goto('/');
+    // targets the TAC to IWXXM heading
     await expect(page.getByRole('heading', { name: /^TAC to IWXXM$/ })).toBeVisible({
       timeout: 10_000,
     });

@@ -175,6 +175,7 @@ test.describe('T7.1 — F31 hybrid sessions (UJ-045..047)', () => {
         exact: true,
       })
       .click();
+    // targets the TAC to IWXXM heading
     await expect(page.getByRole('heading', { name: /^TAC to IWXXM$/ })).toBeVisible();
     await dismissPrivacyNoticeIfPresent(page);
   });

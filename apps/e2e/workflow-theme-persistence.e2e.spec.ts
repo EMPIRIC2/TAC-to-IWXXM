@@ -12,6 +12,7 @@ test.describe('Workflow: Theme Behavior And Persistence', () => {
 
     // Theme switch name is "Switch to light mode" or "Switch to dark mode".
     const themeSwitch = page.getByRole('switch', {
+      // targets the theme mode switch
       name: /^Switch to (light|dark) mode$/,
     });
     await expect(themeSwitch).toBeVisible();
@@ -30,6 +31,7 @@ test.describe('Workflow: Theme Behavior And Persistence', () => {
 
     // Same theme switch after reload; the name still depends on the saved theme.
     const afterReload = page.getByRole('switch', {
+      // targets the theme mode switch
       name: /^Switch to (light|dark) mode$/,
     });
     await expect(afterReload).toHaveAttribute('aria-checked', toggledState ?? '');

@@ -334,6 +334,7 @@ test.describe('UJ-074: semantic presets + dissemination templates (EV-1051)', ()
     await expect(page.getByTestId('profile-library-tab-conversion')).toBeVisible();
 
     await page.getByTestId('shell-nav-converter').click();
+    // targets the TAC to IWXXM heading
     await expect(page.getByRole('heading', { name: /^TAC to IWXXM$/ })).toBeVisible();
     await dismissPrivacyNoticeIfPresent(page);
 
