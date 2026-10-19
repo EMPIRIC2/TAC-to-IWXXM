@@ -7157,3 +7157,37 @@ Engineering quality: multi-language inline documentation bar. H4–H5 **N/A**.
 - **Objective**: Ingest, cache, and `GET /api/v1/live-map` keep only reports whose `observed_at` is within the last 24 hours of UTC now.
 - **Pass criteria**: A row older than 24 hours is not stored (or is purged on refresh). The live-map response omits that row. A row inside 24 hours is returned (subject to bbox and products). METAR vendor requests use `hours=24`.
 
+## Playwright fail-closed regressions (EV-100 / #1434 #1437 #1438 #1439)
+
+[Corpus: tests] [Corpus: product]
+
+Source checks for these four issues already pass on `stage`. CI still does not
+collect a regression for them. The existing `bugs` job runs
+`pytest tests/bugs -m "not live and not live_api"`. This cycle adds only these
+four cases to that job. Sibling epic checks (#1432, #1433, #1435, #1436, #1448)
+stay out of the new module.
+
+### TC-EV100-001: Absence locators (#1434)
+
+- **Level**: T0 in the bugs job. T2 for the edited Playwright specs.
+- **Objective**: Every in-scope `toHaveCount(0)` in `apps/e2e` shares its test with a proof the locator can match, or the check is a positive assertion.
+- **Pass criteria**: The bugs job fails if a `toHaveCount(0)` has no same-test proof. A locator that matches nothing in both states fails the Playwright spec. The edited specs pass when the controls behave as the tests describe.
+
+### TC-EV100-002: Logout fixture (#1437)
+
+- **Level**: T0 in the bugs job. T2 in CI E2E.
+- **Objective**: Logout in `apps/e2e/tc-ev060-1006-auth.e2e.spec.ts` runs against a non-production fixture and does not pass by skipping.
+- **Pass criteria**: The bugs job fails if that logout block calls `test.skip`. CI E2E runs the logout steps. A missing fixture fails the job. The workflow and the test contain no production password or email. The login-persist skip stays unchanged.
+
+### TC-EV100-003: Validate-IWXXM decode rows (#1438)
+
+- **Level**: T0 in the bugs job. T2 for the UJ-064 spec.
+- **Objective**: `apps/e2e/tc-ev061-uj064-068.e2e.spec.ts` always requires decode rows for the fixture that must produce them.
+- **Pass criteria**: The bugs job fails if the UJ-064 block guards on `segments.count()`, or if it does not require `decode-segments` to be visible and free of `<?xml`. A response with zero segments fails that spec. The validate report region is still required to be visible.
+
+### TC-EV100-004: Product picker absence (#1439)
+
+- **Level**: T0 in the bugs job. T2 for `apps/e2e/f6e-product-profile-pickers.e2e.spec.ts`.
+- **Objective**: A missing product picker fails the spec.
+- **Pass criteria**: The bugs job fails if `requireF6ePickers` calls `test.skip`. A run where `#param-product` or `conversion-library-select` never appears fails. When the pickers are present, the METAR, SPECI, US library, and convert-route tests still pass. `apps/e2e/tc-ev060-uj059-063.e2e.spec.ts` is unchanged.
+
