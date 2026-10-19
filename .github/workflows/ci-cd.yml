@@ -380,6 +380,21 @@ jobs:
         if: matrix.package == 'frontend'
         run: pnpm --filter @metar/frontend run test:coverage
 
+      - name: Set up Node.js
+        if: matrix.package == 'bugs'
+        uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+          package-manager-cache: false
+
+      - name: Collect Playwright suite coverage
+        if: matrix.package == 'bugs'
+        run: node scripts/ci/collect_e2e_coverage.mjs
+
+      - name: Check OpenAPI status and required-field contracts
+        if: matrix.package == 'bugs'
+        run: uv run python scripts/ci/check_openapi_contract.py
+
       - name: Run bug regression tests (tests/bugs)
         if: matrix.package == 'bugs'
         run: uv run pytest tests/bugs -m "not live and not live_api" --no-cov -v

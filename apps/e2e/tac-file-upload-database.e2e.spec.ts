@@ -92,6 +92,7 @@ test.describe('TAC convert + Disseminate (Upload to Database removed)', () => {
     // Removed upload button. Its name was "Upload N converted files to database";
     // the file count is the only part that changed.
     await expect(
+      // targets the upload converted files button
       page.getByRole('button', { name: /^Upload \d+ converted files to database$/ }),
     ).toHaveCount(0);
   });
@@ -151,6 +152,7 @@ test.describe('TAC convert + Disseminate (Upload to Database removed)', () => {
     });
     await expect(resultsRegion).toBeVisible({ timeout: 10000 });
     await expect(
+      // targets the converted XML content region for this result
       resultsRegion.getByRole('region', { name: /^Converted XML content for .+$/ }),
     ).toBeVisible({
       timeout: 10000,

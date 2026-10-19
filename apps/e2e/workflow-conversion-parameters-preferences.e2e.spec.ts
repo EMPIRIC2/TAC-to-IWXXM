@@ -23,6 +23,7 @@ test.describe('Workflow: Conversion Parameters And Preferences', () => {
       page.getByRole('region', { name: 'Conversion results', exact: true }),
     ).toBeVisible({ timeout: 10000 });
     await expect(
+      // targets the converted XML content region for this result
       page.getByRole('region', { name: /^Converted XML content for .+$/ }),
     ).toBeVisible();
   });
@@ -56,6 +57,7 @@ test.describe('Workflow: Conversion Parameters And Preferences', () => {
       }),
     ).toBeVisible();
     // Dialog stays open after save — close before reopening.
+    // targets the Cancel button in preferences
     await page.getByRole('button', { name: /^Cancel$/i }).click();
     // Opposite state: the User Preferences heading is visible before Cancel.
     await expect(

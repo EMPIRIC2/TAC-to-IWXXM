@@ -28,6 +28,7 @@ HTTP_METHODS = frozenset(
 )
 DEFAULT_EXCLUDE_CODES = frozenset({"500", "501", "502", "503"})
 _STATUS_RE = re.compile(r"[24]\d\d")
+ROOT = Path(__file__).resolve().parents[2]
 
 
 def _resolve_node(
@@ -707,8 +708,18 @@ def main(argv: list[str] | None = None) -> int:
         when a file cannot be read.
     """
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--spec", required=True, type=Path)
-    parser.add_argument("--interactions", required=True, type=Path)
+    parser.add_argument(
+        "--spec",
+        type=Path,
+        default=ROOT / "apps" / "frontend" / "openapi" / "openapi.json",
+        help="OpenAPI document (default: apps/frontend/openapi/openapi.json)",
+    )
+    parser.add_argument(
+        "--interactions",
+        type=Path,
+        default=ROOT / "tests" / "contracts" / "openapi-interactions.json",
+        help="Interaction file (default: tests/contracts/openapi-interactions.json)",
+    )
     parser.add_argument("--json", action="store_true", dest="as_json")
     parser.add_argument("--exclude-codes", nargs="*", default=None)
     args = parser.parse_args(argv)

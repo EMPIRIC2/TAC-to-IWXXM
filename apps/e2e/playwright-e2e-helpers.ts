@@ -99,6 +99,7 @@ export async function dismissPrivacyNoticeIfPresent(page: Page): Promise<void> {
 
 /** Open the public converter shell (F21 — no login / JWT). */
 export async function openPublicConverter(page: Page): Promise<void> {
+  // targets the TAC to IWXXM heading
   const heading = page.getByRole('heading', { name: /^TAC to IWXXM$/ });
   await page.goto('/', { waitUntil: 'domcontentloaded' });
   try {
@@ -138,6 +139,7 @@ export async function openSignInFormThenReturn(page: Page): Promise<void> {
       exact: true,
     })
     .click();
+  // targets the TAC to IWXXM heading
   await expect(page.getByRole('heading', { name: /^TAC to IWXXM$/ })).toBeVisible({
     timeout: 10_000,
   });
@@ -171,6 +173,7 @@ export async function loginAsE2EUser(page: Page): Promise<void> {
   await page.locator('#email').fill(E2E_USER_EMAIL);
   await page.locator('#password').fill(E2E_USER_PASSWORD);
   await page.getByRole('button', { name: 'Sign in to account', exact: true }).click();
+  // targets the TAC to IWXXM heading
   await expect(page.getByRole('heading', { name: /^TAC to IWXXM$/ })).toBeVisible({
     timeout: 30_000,
   });
@@ -186,6 +189,7 @@ export async function loginAsAdmin(page: Page): Promise<void> {
 
 /** @deprecated Admin dashboard removed — assert converter heading only. */
 export async function openConverterFromAdmin(page: Page): Promise<void> {
+  // targets the TAC to IWXXM heading
   await expect(page.getByRole('heading', { name: /^TAC to IWXXM$/ })).toBeVisible({
     timeout: 10000,
   });

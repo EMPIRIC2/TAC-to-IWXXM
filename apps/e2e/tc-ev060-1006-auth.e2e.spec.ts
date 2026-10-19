@@ -107,6 +107,7 @@ async function signOutWithFixture(page: Page, fixture: CiLogoutFixture): Promise
   await page.locator('#email').fill(fixture.email);
   await page.locator('#password').fill(fixture.password);
   await page.getByRole('button', { name: 'Sign in to account', exact: true }).click();
+  // targets the TAC to IWXXM heading
   await expect(page.getByRole('heading', { name: /^TAC to IWXXM$/ })).toBeVisible({
     timeout: 30_000,
   });
@@ -167,6 +168,7 @@ test.describe('TC-EV060-1006 — Auth UAT Playwright', () => {
 
     await loginAsE2EUser(page);
     await page.reload();
+    // targets the TAC to IWXXM heading
     await expect(page.getByRole('heading', { name: /^TAC to IWXXM$/ })).toBeVisible({
       timeout: 15_000,
     });

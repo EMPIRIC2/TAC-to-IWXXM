@@ -43,6 +43,7 @@ test.describe('H6 / T8.4: F6.e product + Conversion library pickers', () => {
       timeout: 30000,
     });
     await expect(
+      // targets the converted XML content region for this result
       page.getByRole('region', { name: /^Converted XML content for .+$/ }),
     ).toBeVisible({ timeout: 15000 });
   });

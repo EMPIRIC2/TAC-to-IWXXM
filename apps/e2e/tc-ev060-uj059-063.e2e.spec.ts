@@ -159,6 +159,7 @@ test.describe('EV-060 T2 — UJ-061 Conversion library at converter top', () => 
     const captured = await convertReq;
     expect(postBody(captured)).toContain('LIB.CONVERSION.US_FAA_NWS');
     expect(postBody(captured)).not.toContain('name="semantic_profile"');
+    // targets the conversion results region
     await expect(page.getByRole('region', { name: /conversion results/i })).toBeVisible(
       {
         timeout: 60_000,
@@ -190,6 +191,7 @@ test.describe('EV-060 T2 — UJ-062 bulletin fields', () => {
     const body = postBody(captured);
     expect(body).toContain('SAAA00');
     expect(body).toContain('KWBC');
+    // targets the conversion results region
     await expect(page.getByRole('region', { name: /conversion results/i })).toBeVisible(
       {
         timeout: 60_000,

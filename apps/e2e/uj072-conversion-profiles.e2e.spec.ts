@@ -400,6 +400,7 @@ test.describe('UJ-072: ConversionProfile editor (EV-933 / TC-EV933-006)', () => 
     );
 
     await page.getByTestId('shell-nav-converter').click();
+    // targets the TAC to IWXXM heading
     await expect(page.getByRole('heading', { name: /^TAC to IWXXM$/ })).toBeVisible();
     await dismissPrivacyNoticeIfPresent(page);
 
