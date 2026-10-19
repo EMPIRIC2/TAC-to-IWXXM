@@ -32,8 +32,8 @@ test.describe('TAC File Conversion', () => {
       'METAR COR FAOR 101200Z 12012KT 9999 FEW020 22/14 Q1018',
     );
 
+    // targets the converted XML content region for this result
     const xmlOutput = page.getByRole('region', {
-      // targets the converted XML content region for this result
       name: /^Converted XML content for .+$/,
     });
     await expect(xmlOutput).toBeVisible({ timeout: 10000 });
@@ -50,8 +50,8 @@ test.describe('TAC File Conversion', () => {
       'METAR FAOR 101200Z COR 12012KT 9999 FEW020 22/14 Q1018',
     );
 
+    // targets the converted XML content region for this result
     const xmlOutput = page.getByRole('region', {
-      // targets the converted XML content region for this result
       name: /^Converted XML content for .+$/,
     });
     await expect(xmlOutput).toBeVisible({ timeout: 10000 });

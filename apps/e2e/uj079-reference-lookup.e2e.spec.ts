@@ -22,8 +22,8 @@ test.describe('UJ-079 reference lookup', () => {
 
     await convertManualMetar(page, SRQ_TAC);
 
+    // targets the converted XML content region for this result
     const xmlOutput = page.getByRole('region', {
-      // targets the converted XML content region for this result
       name: /^Converted XML content for .+$/,
     });
     await expect(xmlOutput).toBeVisible({ timeout: 30000 });
