@@ -63,7 +63,10 @@ function coveredLineSet(source, functions) {
   );
   for (const range of ranges) {
     const first = lineForOffset(starts, range.startOffset);
-    const last = lineForOffset(starts, Math.max(range.startOffset, range.endOffset - 1));
+    const last = lineForOffset(
+      starts,
+      Math.max(range.startOffset, range.endOffset - 1),
+    );
     for (let line = first; line <= last; line += 1) {
       hits.set(line, range.count ?? 0);
     }
@@ -80,7 +83,12 @@ function istanbulForFile(filePath, functions) {
   let statementId = 0;
   for (let index = 0; index < lines.length; index += 1) {
     const text = lines[index].trim();
-    if (!text || text.startsWith('//') || text.startsWith('*') || text.startsWith('/*')) {
+    if (
+      !text ||
+      text.startsWith('//') ||
+      text.startsWith('*') ||
+      text.startsWith('/*')
+    ) {
       continue;
     }
     const startColumn = lines[index].length - lines[index].trimStart().length;

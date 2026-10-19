@@ -73,12 +73,4 @@ const devices = new Proxy(
   },
 );
 
-export {
-  APIRequestContext,
-  Page,
-  Request,
-  defineConfig,
-  devices,
-  expect,
-  test,
-};
+export { APIRequestContext, Page, Request, defineConfig, devices, expect, test };

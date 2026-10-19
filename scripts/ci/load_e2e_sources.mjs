@@ -15,9 +15,7 @@ const e2eDir = path.resolve(
 const skip = new Set(['playwright.config.ts', 'playwright.global-setup.ts']);
 
 const entries = await readdir(e2eDir);
-const sources = entries.filter(
-  (name) => name.endsWith('.ts') && !skip.has(name),
-);
+const sources = entries.filter((name) => name.endsWith('.ts') && !skip.has(name));
 
 let loaded = 0;
 const failures = [];

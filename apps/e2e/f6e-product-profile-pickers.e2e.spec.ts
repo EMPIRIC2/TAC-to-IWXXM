@@ -15,9 +15,7 @@ import {
 const METAR_TAC = 'METAR KJFK 121251Z 24016G28KT 3SM -RA BR BKN020 OVC040 14/11 A2990';
 const SPECI_TAC = 'SPECI KJFK 122045Z 18012KT 5SM 15/07 A3005=';
 
-async function requireF6ePickers(
-  page: import('@playwright/test').Page,
-): Promise<void> {
+async function requireF6ePickers(page: import('@playwright/test').Page): Promise<void> {
   await page.getByLabel('Expand parameters', { exact: true }).click();
   await expect(page.locator('#param-product')).toBeVisible();
   await expect(page.getByTestId('conversion-library-select')).toBeVisible();
