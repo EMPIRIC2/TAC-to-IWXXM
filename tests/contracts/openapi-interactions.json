@@ -6,84 +6,96 @@
       "path": "/api/v1/profiles/conversion-templates/{template_id}",
       "status": 204,
       "request_fields": [],
-      "response_fields": []
+      "response_fields": [],
+      "covered_by": "tests/bugs/test_qa_gap_2026_10_19_openapi_path_templates.py"
     },
     {
       "method": "DELETE",
       "path": "/api/v1/profiles/conversion-templates/{template_id}",
       "status": 422,
       "request_fields": [],
-      "response_fields": []
+      "response_fields": [],
+      "covered_by": "tests/bugs/test_qa_gap_2026_10_19_openapi_path_templates.py"
     },
     {
       "method": "DELETE",
       "path": "/api/v1/profiles/library-assets/{asset_id}",
       "status": 204,
       "request_fields": [],
-      "response_fields": []
+      "response_fields": [],
+      "covered_by": "tests/bugs/test_qa_gap_2026_10_19_openapi_path_templates.py"
     },
     {
       "method": "DELETE",
       "path": "/api/v1/profiles/library-assets/{asset_id}",
       "status": 422,
       "request_fields": [],
-      "response_fields": []
+      "response_fields": [],
+      "covered_by": "tests/bugs/test_qa_gap_2026_10_19_openapi_path_templates.py"
     },
     {
       "method": "DELETE",
       "path": "/api/v1/profiles/overlays/{overlay_id}",
       "status": 204,
       "request_fields": [],
-      "response_fields": []
+      "response_fields": [],
+      "covered_by": "tests/bugs/test_qa_gap_2026_10_19_openapi_path_templates.py"
     },
     {
       "method": "DELETE",
       "path": "/api/v1/profiles/overlays/{overlay_id}",
       "status": 422,
       "request_fields": [],
-      "response_fields": []
+      "response_fields": [],
+      "covered_by": "tests/bugs/test_qa_gap_2026_10_19_openapi_path_templates.py"
     },
     {
       "method": "DELETE",
       "path": "/api/v1/profiles/presets/{preset_id}",
       "status": 204,
       "request_fields": [],
-      "response_fields": []
+      "response_fields": [],
+      "covered_by": "tests/bugs/test_qa_gap_2026_10_19_openapi_path_templates.py"
     },
     {
       "method": "DELETE",
       "path": "/api/v1/profiles/presets/{preset_id}",
       "status": 422,
       "request_fields": [],
-      "response_fields": []
+      "response_fields": [],
+      "covered_by": "tests/bugs/test_qa_gap_2026_10_19_openapi_path_templates.py"
     },
     {
       "method": "DELETE",
       "path": "/api/v1/profiles/rule-packs/{pack_id}",
       "status": 204,
       "request_fields": [],
-      "response_fields": []
+      "response_fields": [],
+      "covered_by": "tests/bugs/test_qa_gap_2026_10_19_openapi_path_templates.py"
     },
     {
       "method": "DELETE",
       "path": "/api/v1/profiles/rule-packs/{pack_id}",
       "status": 422,
       "request_fields": [],
-      "response_fields": []
+      "response_fields": [],
+      "covered_by": "tests/bugs/test_qa_gap_2026_10_19_openapi_path_templates.py"
     },
     {
       "method": "DELETE",
       "path": "/api/v1/profiles/templates/{template_id}",
       "status": 204,
       "request_fields": [],
-      "response_fields": []
+      "response_fields": [],
+      "covered_by": "tests/bugs/test_qa_gap_2026_10_19_openapi_path_templates.py"
     },
     {
       "method": "DELETE",
       "path": "/api/v1/profiles/templates/{template_id}",
       "status": 422,
       "request_fields": [],
-      "response_fields": []
+      "response_fields": [],
+      "covered_by": "tests/bugs/test_qa_gap_2026_10_19_openapi_path_templates.py"
     },
     {
       "method": "DELETE",
@@ -98,14 +110,16 @@
         "title",
         "updated_at",
         "user_id"
-      ]
+      ],
+      "covered_by": "tests/bugs/test_qa_gap_2026_10_19_openapi_path_templates.py"
     },
     {
       "method": "DELETE",
       "path": "/api/v1/work-sessions/{session_id}",
       "status": 422,
       "request_fields": [],
-      "response_fields": []
+      "response_fields": [],
+      "covered_by": "tests/bugs/test_qa_gap_2026_10_19_openapi_path_templates.py"
     },
     {
       "method": "GET",
@@ -117,14 +131,16 @@
         "limit",
         "page",
         "total"
-      ]
+      ],
+      "covered_by": "apps/backend/tests/unit/test_dissemination_ops_router.py"
     },
     {
       "method": "GET",
       "path": "/api/v1/dissemination/audit",
       "status": 422,
       "request_fields": [],
-      "response_fields": []
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/unit/test_dissemination_ops_router.py"
     },
     {
       "method": "GET",
@@ -137,14 +153,16 @@
         "id",
         "status",
         "user_id"
-      ]
+      ],
+      "covered_by": "apps/backend/tests/unit/test_dissemination_ops_router.py"
     },
     {
       "method": "GET",
       "path": "/api/v1/dissemination/audit/{audit_id}",
       "status": 422,
       "request_fields": [],
-      "response_fields": []
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/unit/test_dissemination_ops_router.py"
     },
     {
       "method": "GET",
@@ -153,7 +171,8 @@
       "request_fields": [],
       "response_fields": [
         "items"
-      ]
+      ],
+      "covered_by": "apps/backend/tests/unit/test_dissemination_ops_router.py"
     },
     {
       "method": "GET",
@@ -168,14 +187,16 @@
         "name",
         "updated_at",
         "user_id"
-      ]
+      ],
+      "covered_by": "tests/bugs/test_qa_gap_2026_10_19_openapi_path_templates.py"
     },
     {
       "method": "GET",
       "path": "/api/v1/dissemination/mappings/{mapping_id}",
       "status": 422,
       "request_fields": [],
-      "response_fields": []
+      "response_fields": [],
+      "covered_by": "tests/bugs/test_qa_gap_2026_10_19_openapi_path_templates.py"
     },
     {
       "method": "GET",
@@ -191,14 +212,16 @@
         "updated_at",
         "user_id",
         "validity_policy"
-      ]
+      ],
+      "covered_by": "tests/bugs/test_qa_gap_2026_10_19_openapi_path_templates.py"
     },
     {
       "method": "GET",
       "path": "/api/v1/dissemination/plans/{plan_id}",
       "status": 422,
       "request_fields": [],
-      "response_fields": []
+      "response_fields": [],
+      "covered_by": "tests/bugs/test_qa_gap_2026_10_19_openapi_path_templates.py"
     },
     {
       "method": "GET",
@@ -210,14 +233,16 @@
         "page",
         "per_page",
         "total"
-      ]
+      ],
+      "covered_by": "apps/backend/tests/integration/test_e2e_full_stack.py"
     },
     {
       "method": "GET",
       "path": "/api/v1/eval/jobs",
       "status": 422,
       "request_fields": [],
-      "response_fields": []
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/integration/test_e2e_full_stack.py"
     },
     {
       "method": "GET",
@@ -230,14 +255,16 @@
         "progress",
         "status",
         "total"
-      ]
+      ],
+      "covered_by": "apps/backend/tests/integration/test_e2e_full_stack.py"
     },
     {
       "method": "GET",
       "path": "/api/v1/eval/jobs/{job_id}",
       "status": 422,
       "request_fields": [],
-      "response_fields": []
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/integration/test_e2e_full_stack.py"
     },
     {
       "method": "GET",
@@ -251,42 +278,48 @@
         "results",
         "total_pages",
         "total_results"
-      ]
+      ],
+      "covered_by": "apps/backend/tests/integration/test_e2e_full_stack.py"
     },
     {
       "method": "GET",
       "path": "/api/v1/eval/jobs/{job_id}/results",
       "status": 422,
       "request_fields": [],
-      "response_fields": []
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/integration/test_e2e_full_stack.py"
     },
     {
       "method": "GET",
       "path": "/api/v1/lint-issue-catalog",
       "status": 200,
       "request_fields": [],
-      "response_fields": []
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/unit/test_td3b_router_extraction_unit.py"
     },
     {
       "method": "GET",
       "path": "/api/v1/lint-issue-catalog",
       "status": 422,
       "request_fields": [],
-      "response_fields": []
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/unit/test_td3b_router_extraction_unit.py"
     },
     {
       "method": "GET",
       "path": "/api/v1/live-map",
       "status": 200,
       "request_fields": [],
-      "response_fields": []
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/unit/test_live_map_cache.py"
     },
     {
       "method": "GET",
       "path": "/api/v1/live-map",
       "status": 422,
       "request_fields": [],
-      "response_fields": []
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/unit/test_live_map_cache.py"
     },
     {
       "method": "GET",
@@ -295,7 +328,8 @@
       "request_fields": [],
       "response_fields": [
         "profiles"
-      ]
+      ],
+      "covered_by": "apps/backend/tests/unit/test_conversion_profiles_router.py"
     },
     {
       "method": "GET",
@@ -304,7 +338,8 @@
       "request_fields": [],
       "response_fields": [
         "items"
-      ]
+      ],
+      "covered_by": "apps/backend/tests/unit/test_tc_ev080_conversion_templates_api.py"
     },
     {
       "method": "GET",
@@ -317,14 +352,16 @@
         "iwxxmBlock",
         "name",
         "slug"
-      ]
+      ],
+      "covered_by": "tests/bugs/test_qa_gap_2026_10_19_openapi_path_templates.py"
     },
     {
       "method": "GET",
       "path": "/api/v1/profiles/conversion-templates/{template_id}",
       "status": 422,
       "request_fields": [],
-      "response_fields": []
+      "response_fields": [],
+      "covered_by": "tests/bugs/test_qa_gap_2026_10_19_openapi_path_templates.py"
     },
     {
       "method": "GET",
@@ -333,14 +370,16 @@
       "request_fields": [],
       "response_fields": [
         "items"
-      ]
+      ],
+      "covered_by": "apps/backend/tests/unit/test_tc_evrpc_rule_catalogs.py"
     },
     {
       "method": "GET",
       "path": "/api/v1/profiles/library-assets",
       "status": 422,
       "request_fields": [],
-      "response_fields": []
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/unit/test_tc_evrpc_rule_catalogs.py"
     },
     {
       "method": "GET",
@@ -354,14 +393,16 @@
         "id",
         "kind",
         "name"
-      ]
+      ],
+      "covered_by": "tests/bugs/test_qa_gap_2026_10_19_openapi_path_templates.py"
     },
     {
       "method": "GET",
       "path": "/api/v1/profiles/library-assets/{asset_id}",
       "status": 422,
       "request_fields": [],
-      "response_fields": []
+      "response_fields": [],
+      "covered_by": "tests/bugs/test_qa_gap_2026_10_19_openapi_path_templates.py"
     },
     {
       "method": "GET",
@@ -370,7 +411,8 @@
       "request_fields": [],
       "response_fields": [
         "items"
-      ]
+      ],
+      "covered_by": "apps/backend/tests/unit/test_conversion_profiles_router.py"
     },
     {
       "method": "GET",
@@ -387,14 +429,16 @@
         "slug",
         "updated_at",
         "user_id"
-      ]
+      ],
+      "covered_by": "tests/bugs/test_qa_gap_2026_10_19_openapi_path_templates.py"
     },
     {
       "method": "GET",
       "path": "/api/v1/profiles/overlays/{overlay_id}",
       "status": 422,
       "request_fields": [],
-      "response_fields": []
+      "response_fields": [],
+      "covered_by": "tests/bugs/test_qa_gap_2026_10_19_openapi_path_templates.py"
     },
     {
       "method": "GET",
@@ -403,7 +447,8 @@
       "request_fields": [],
       "response_fields": [
         "items"
-      ]
+      ],
+      "covered_by": "apps/backend/tests/unit/test_conversion_profiles_router.py"
     },
     {
       "method": "GET",
@@ -420,14 +465,16 @@
         "slug",
         "updated_at",
         "user_id"
-      ]
+      ],
+      "covered_by": "tests/bugs/test_qa_gap_2026_10_19_openapi_path_templates.py"
     },
     {
       "method": "GET",
       "path": "/api/v1/profiles/presets/{preset_id}",
       "status": 422,
       "request_fields": [],
-      "response_fields": []
+      "response_fields": [],
+      "covered_by": "tests/bugs/test_qa_gap_2026_10_19_openapi_path_templates.py"
     },
     {
       "method": "GET",
@@ -436,7 +483,8 @@
       "request_fields": [],
       "response_fields": [
         "items"
-      ]
+      ],
+      "covered_by": "apps/backend/tests/unit/test_conversion_profiles_router.py"
     },
     {
       "method": "GET",
@@ -456,14 +504,16 @@
         "updated_at",
         "user_id",
         "when"
-      ]
+      ],
+      "covered_by": "tests/bugs/test_qa_gap_2026_10_19_openapi_path_templates.py"
     },
     {
       "method": "GET",
       "path": "/api/v1/profiles/rule-packs/{pack_id}",
       "status": 422,
       "request_fields": [],
-      "response_fields": []
+      "response_fields": [],
+      "covered_by": "tests/bugs/test_qa_gap_2026_10_19_openapi_path_templates.py"
     },
     {
       "method": "GET",
@@ -472,7 +522,8 @@
       "request_fields": [],
       "response_fields": [
         "items"
-      ]
+      ],
+      "covered_by": "apps/backend/tests/unit/test_conversion_profiles_router.py"
     },
     {
       "method": "GET",
@@ -489,14 +540,16 @@
         "slug",
         "updated_at",
         "user_id"
-      ]
+      ],
+      "covered_by": "tests/bugs/test_qa_gap_2026_10_19_openapi_path_templates.py"
     },
     {
       "method": "GET",
       "path": "/api/v1/profiles/templates/{template_id}",
       "status": 422,
       "request_fields": [],
-      "response_fields": []
+      "response_fields": [],
+      "covered_by": "tests/bugs/test_qa_gap_2026_10_19_openapi_path_templates.py"
     },
     {
       "method": "GET",
@@ -506,14 +559,16 @@
       "response_fields": [
         "generated_at",
         "iwxxm_pin"
-      ]
+      ],
+      "covered_by": "apps/backend/tests/unit/test_tc_ev054_008_quality_metrics_api.py"
     },
     {
       "method": "GET",
       "path": "/api/v1/quality-metrics",
       "status": 422,
       "request_fields": [],
-      "response_fields": []
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/unit/test_tc_ev054_008_quality_metrics_api.py"
     },
     {
       "method": "GET",
@@ -525,14 +580,16 @@
         "product",
         "stem",
         "tier"
-      ]
+      ],
+      "covered_by": "tests/bugs/test_qa_gap_2026_10_19_openapi_path_templates.py"
     },
     {
       "method": "GET",
       "path": "/api/v1/quality-metrics/{stem}",
       "status": 422,
       "request_fields": [],
-      "response_fields": []
+      "response_fields": [],
+      "covered_by": "tests/bugs/test_qa_gap_2026_10_19_openapi_path_templates.py"
     },
     {
       "method": "GET",
@@ -542,21 +599,24 @@
       "response_fields": [
         "family",
         "items"
-      ]
+      ],
+      "covered_by": "apps/backend/tests/unit/test_tc_evrpc_rule_catalogs.py"
     },
     {
       "method": "GET",
       "path": "/api/v1/rule-catalogs",
       "status": 422,
       "request_fields": [],
-      "response_fields": []
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/unit/test_tc_evrpc_rule_catalogs.py"
     },
     {
       "method": "GET",
       "path": "/api/v1/schema-status",
       "status": 200,
       "request_fields": [],
-      "response_fields": []
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/unit/test_api_routes_validation_unit.py"
     },
     {
       "method": "GET",
@@ -566,42 +626,48 @@
       "response_fields": [
         "kind",
         "options"
-      ]
+      ],
+      "covered_by": "apps/backend/tests/unit/test_tc_evrpc_rule_catalogs.py"
     },
     {
       "method": "GET",
       "path": "/api/v1/selection-options",
       "status": 422,
       "request_fields": [],
-      "response_fields": []
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/unit/test_tc_evrpc_rule_catalogs.py"
     },
     {
       "method": "GET",
       "path": "/api/v1/stations/{icao}",
       "status": 200,
       "request_fields": [],
-      "response_fields": []
+      "response_fields": [],
+      "covered_by": "tests/bugs/test_qa_gap_2026_10_19_openapi_path_templates.py"
     },
     {
       "method": "GET",
       "path": "/api/v1/stations/{icao}",
       "status": 422,
       "request_fields": [],
-      "response_fields": []
+      "response_fields": [],
+      "covered_by": "tests/bugs/test_qa_gap_2026_10_19_openapi_path_templates.py"
     },
     {
       "method": "GET",
       "path": "/api/v1/translation/airport-region/{airport_code}",
       "status": 200,
       "request_fields": [],
-      "response_fields": []
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/integration/test_e2e_full_stack.py"
     },
     {
       "method": "GET",
       "path": "/api/v1/translation/airport-region/{airport_code}",
       "status": 422,
       "request_fields": [],
-      "response_fields": []
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/integration/test_e2e_full_stack.py"
     },
     {
       "method": "GET",
@@ -610,28 +676,32 @@
       "request_fields": [],
       "response_fields": [
         "supported_iwxxm_versions"
-      ]
+      ],
+      "covered_by": "tests/bugs/test_bug_2026_06_25_icao_centre_info_crlf_env.py"
     },
     {
       "method": "GET",
       "path": "/api/v1/translation/health",
       "status": 200,
       "request_fields": [],
-      "response_fields": []
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/integration/test_e2e_full_stack.py"
     },
     {
       "method": "GET",
       "path": "/api/v1/translation/statistics/by-region",
       "status": 200,
       "request_fields": [],
-      "response_fields": []
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/integration/test_e2e_full_stack.py"
     },
     {
       "method": "GET",
       "path": "/api/v1/translation/statistics/by-region",
       "status": 422,
       "request_fields": [],
-      "response_fields": []
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/integration/test_e2e_full_stack.py"
     },
     {
       "method": "GET",
@@ -646,14 +716,16 @@
         "success_rate",
         "successful_translations",
         "total_translations"
-      ]
+      ],
+      "covered_by": "apps/backend/tests/integration/test_e2e_full_stack.py"
     },
     {
       "method": "GET",
       "path": "/api/v1/translation/statistics/recent",
       "status": 422,
       "request_fields": [],
-      "response_fields": []
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/integration/test_e2e_full_stack.py"
     },
     {
       "method": "GET",
@@ -662,14 +734,16 @@
       "request_fields": [],
       "response_fields": [
         "layers"
-      ]
+      ],
+      "covered_by": "apps/backend/tests/integration/test_e2e_full_stack.py"
     },
     {
       "method": "GET",
       "path": "/api/v1/versions",
       "status": 200,
       "request_fields": [],
-      "response_fields": []
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/unit/test_api_routes_validation_unit.py"
     },
     {
       "method": "GET",
@@ -681,14 +755,16 @@
         "limit",
         "page",
         "total"
-      ]
+      ],
+      "covered_by": "apps/backend/tests/unit/test_tc_f21_auth_gone_unit.py"
     },
     {
       "method": "GET",
       "path": "/api/v1/work-sessions",
       "status": 422,
       "request_fields": [],
-      "response_fields": []
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/unit/test_tc_f21_auth_gone_unit.py"
     },
     {
       "method": "GET",
@@ -703,14 +779,16 @@
         "title",
         "updated_at",
         "user_id"
-      ]
+      ],
+      "covered_by": "tests/bugs/test_qa_gap_2026_10_19_openapi_path_templates.py"
     },
     {
       "method": "GET",
       "path": "/api/v1/work-sessions/{session_id}",
       "status": 422,
       "request_fields": [],
-      "response_fields": []
+      "response_fields": [],
+      "covered_by": "tests/bugs/test_qa_gap_2026_10_19_openapi_path_templates.py"
     },
     {
       "method": "GET",
@@ -720,14 +798,16 @@
       "response_fields": [
         "email",
         "id"
-      ]
+      ],
+      "covered_by": "apps/backend/tests/unit/test_tc_f21_auth_gone_unit.py"
     },
     {
       "method": "GET",
       "path": "/auth/me",
       "status": 422,
       "request_fields": [],
-      "response_fields": []
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/unit/test_tc_f21_auth_gone_unit.py"
     },
     {
       "method": "GET",
@@ -738,7 +818,8 @@
         "status",
         "tac2iwxxm_available",
         "version"
-      ]
+      ],
+      "covered_by": "apps/backend/tests/unit/test_dissemination_ops_router.py"
     },
     {
       "method": "PATCH",
@@ -753,14 +834,16 @@
         "name",
         "updated_at",
         "user_id"
-      ]
+      ],
+      "covered_by": "tests/bugs/test_qa_gap_2026_10_19_openapi_path_templates.py"
     },
     {
       "method": "PATCH",
       "path": "/api/v1/dissemination/mappings/{mapping_id}",
       "status": 422,
       "request_fields": [],
-      "response_fields": []
+      "response_fields": [],
+      "covered_by": "tests/bugs/test_qa_gap_2026_10_19_openapi_path_templates.py"
     },
     {
       "method": "PATCH",
@@ -776,14 +859,16 @@
         "updated_at",
         "user_id",
         "validity_policy"
-      ]
+      ],
+      "covered_by": "tests/bugs/test_qa_gap_2026_10_19_openapi_path_templates.py"
     },
     {
       "method": "PATCH",
       "path": "/api/v1/dissemination/plans/{plan_id}",
       "status": 422,
       "request_fields": [],
-      "response_fields": []
+      "response_fields": [],
+      "covered_by": "tests/bugs/test_qa_gap_2026_10_19_openapi_path_templates.py"
     },
     {
       "method": "PATCH",
@@ -796,14 +881,16 @@
         "iwxxmBlock",
         "name",
         "slug"
-      ]
+      ],
+      "covered_by": "tests/bugs/test_qa_gap_2026_10_19_openapi_path_templates.py"
     },
     {
       "method": "PATCH",
       "path": "/api/v1/profiles/conversion-templates/{template_id}",
       "status": 422,
       "request_fields": [],
-      "response_fields": []
+      "response_fields": [],
+      "covered_by": "tests/bugs/test_qa_gap_2026_10_19_openapi_path_templates.py"
     },
     {
       "method": "PATCH",
@@ -817,14 +904,16 @@
         "id",
         "kind",
         "name"
-      ]
+      ],
+      "covered_by": "tests/bugs/test_qa_gap_2026_10_19_openapi_path_templates.py"
     },
     {
       "method": "PATCH",
       "path": "/api/v1/profiles/library-assets/{asset_id}",
       "status": 422,
       "request_fields": [],
-      "response_fields": []
+      "response_fields": [],
+      "covered_by": "tests/bugs/test_qa_gap_2026_10_19_openapi_path_templates.py"
     },
     {
       "method": "PATCH",
@@ -841,14 +930,16 @@
         "slug",
         "updated_at",
         "user_id"
-      ]
+      ],
+      "covered_by": "tests/bugs/test_qa_gap_2026_10_19_openapi_path_templates.py"
     },
     {
       "method": "PATCH",
       "path": "/api/v1/profiles/overlays/{overlay_id}",
       "status": 422,
       "request_fields": [],
-      "response_fields": []
+      "response_fields": [],
+      "covered_by": "tests/bugs/test_qa_gap_2026_10_19_openapi_path_templates.py"
     },
     {
       "method": "PATCH",
@@ -865,14 +956,16 @@
         "slug",
         "updated_at",
         "user_id"
-      ]
+      ],
+      "covered_by": "tests/bugs/test_qa_gap_2026_10_19_openapi_path_templates.py"
     },
     {
       "method": "PATCH",
       "path": "/api/v1/profiles/presets/{preset_id}",
       "status": 422,
       "request_fields": [],
-      "response_fields": []
+      "response_fields": [],
+      "covered_by": "tests/bugs/test_qa_gap_2026_10_19_openapi_path_templates.py"
     },
     {
       "method": "PATCH",
@@ -892,14 +985,16 @@
         "updated_at",
         "user_id",
         "when"
-      ]
+      ],
+      "covered_by": "tests/bugs/test_qa_gap_2026_10_19_openapi_path_templates.py"
     },
     {
       "method": "PATCH",
       "path": "/api/v1/profiles/rule-packs/{pack_id}",
       "status": 422,
       "request_fields": [],
-      "response_fields": []
+      "response_fields": [],
+      "covered_by": "tests/bugs/test_qa_gap_2026_10_19_openapi_path_templates.py"
     },
     {
       "method": "PATCH",
@@ -916,14 +1011,16 @@
         "slug",
         "updated_at",
         "user_id"
-      ]
+      ],
+      "covered_by": "tests/bugs/test_qa_gap_2026_10_19_openapi_path_templates.py"
     },
     {
       "method": "PATCH",
       "path": "/api/v1/profiles/templates/{template_id}",
       "status": 422,
       "request_fields": [],
-      "response_fields": []
+      "response_fields": [],
+      "covered_by": "tests/bugs/test_qa_gap_2026_10_19_openapi_path_templates.py"
     },
     {
       "method": "PATCH",
@@ -938,14 +1035,16 @@
         "title",
         "updated_at",
         "user_id"
-      ]
+      ],
+      "covered_by": "tests/bugs/test_qa_gap_2026_10_19_openapi_path_templates.py"
     },
     {
       "method": "PATCH",
       "path": "/api/v1/work-sessions/{session_id}",
       "status": 422,
       "request_fields": [],
-      "response_fields": []
+      "response_fields": [],
+      "covered_by": "tests/bugs/test_qa_gap_2026_10_19_openapi_path_templates.py"
     },
     {
       "method": "POST",
@@ -956,14 +1055,16 @@
         "failed",
         "successful",
         "total_processed"
-      ]
+      ],
+      "covered_by": "apps/backend/tests/unit/test_api_endpoint_unit.py"
     },
     {
       "method": "POST",
       "path": "/api/v1/convert",
       "status": 422,
       "request_fields": [],
-      "response_fields": []
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/unit/test_api_endpoint_unit.py"
     },
     {
       "method": "POST",
@@ -972,42 +1073,48 @@
       "request_fields": [],
       "response_fields": [
         "bulletin_meta"
-      ]
+      ],
+      "covered_by": "apps/backend/tests/unit/test_tc_ev063_exchange_api.py"
     },
     {
       "method": "POST",
       "path": "/api/v1/convert-bulletin",
       "status": 400,
       "request_fields": [],
-      "response_fields": []
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/unit/test_tc_ev063_exchange_api.py"
     },
     {
       "method": "POST",
       "path": "/api/v1/convert-bulletin",
       "status": 415,
       "request_fields": [],
-      "response_fields": []
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/unit/test_tc_ev063_exchange_api.py"
     },
     {
       "method": "POST",
       "path": "/api/v1/convert-bulletin",
       "status": 422,
       "request_fields": [],
-      "response_fields": []
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/unit/test_tc_ev063_exchange_api.py"
     },
     {
       "method": "POST",
       "path": "/api/v1/convert-zip",
       "status": 200,
       "request_fields": [],
-      "response_fields": []
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/unit/test_api_async_coverage_unit.py"
     },
     {
       "method": "POST",
       "path": "/api/v1/convert-zip",
       "status": 422,
       "request_fields": [],
-      "response_fields": []
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/unit/test_api_async_coverage_unit.py"
     },
     {
       "method": "POST",
@@ -1016,21 +1123,24 @@
       "request_fields": [],
       "response_fields": [
         "product"
-      ]
+      ],
+      "covered_by": "apps/backend/tests/unit/test_ev080_m2b_coverage_gaps.py"
     },
     {
       "method": "POST",
       "path": "/api/v1/decode-tac",
       "status": 415,
       "request_fields": [],
-      "response_fields": []
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/unit/test_ev080_m2b_coverage_gaps.py"
     },
     {
       "method": "POST",
       "path": "/api/v1/decode-tac",
       "status": 422,
       "request_fields": [],
-      "response_fields": []
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/unit/test_ev080_m2b_coverage_gaps.py"
     },
     {
       "method": "POST",
@@ -1040,28 +1150,32 @@
       "response_fields": [
         "plan_id",
         "receipts"
-      ]
+      ],
+      "covered_by": "tests/bugs/test_qa_gap_2026_10_19_openapi_path_templates.py"
     },
     {
       "method": "POST",
       "path": "/api/v1/dissemination/plans/{plan_id}/execute",
       "status": 422,
       "request_fields": [],
-      "response_fields": []
+      "response_fields": [],
+      "covered_by": "tests/bugs/test_qa_gap_2026_10_19_openapi_path_templates.py"
     },
     {
       "method": "POST",
       "path": "/api/v1/dissemination/preflight",
       "status": 200,
       "request_fields": [],
-      "response_fields": []
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/unit/test_dissemination_api.py"
     },
     {
       "method": "POST",
       "path": "/api/v1/dissemination/send",
       "status": 200,
       "request_fields": [],
-      "response_fields": []
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/unit/test_dissemination_api.py"
     },
     {
       "method": "POST",
@@ -1075,7 +1189,8 @@
         "job_id",
         "station_count",
         "status"
-      ]
+      ],
+      "covered_by": "apps/backend/tests/integration/test_e2e_full_stack.py"
     },
     {
       "method": "POST",
@@ -1084,35 +1199,40 @@
       "request_fields": [
         "mode"
       ],
-      "response_fields": []
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/integration/test_e2e_full_stack.py"
     },
     {
       "method": "POST",
       "path": "/api/v1/ingest-collect",
       "status": 200,
       "request_fields": [],
-      "response_fields": []
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/unit/test_ingest_collect_unit.py"
     },
     {
       "method": "POST",
       "path": "/api/v1/ingest-collect",
       "status": 422,
       "request_fields": [],
-      "response_fields": []
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/unit/test_ingest_collect_unit.py"
     },
     {
       "method": "POST",
       "path": "/api/v1/ingest/mass",
       "status": 200,
       "request_fields": [],
-      "response_fields": []
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/unit/test_ev080_m2b_coverage_gaps.py"
     },
     {
       "method": "POST",
       "path": "/api/v1/ingest/mass",
       "status": 422,
       "request_fields": [],
-      "response_fields": []
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/unit/test_ev080_m2b_coverage_gaps.py"
     },
     {
       "method": "POST",
@@ -1121,21 +1241,24 @@
       "request_fields": [],
       "response_fields": [
         "ok"
-      ]
+      ],
+      "covered_by": "apps/backend/tests/unit/test_tc_f21_auth_gone_unit.py"
     },
     {
       "method": "POST",
       "path": "/api/v1/lint-tac",
       "status": 415,
       "request_fields": [],
-      "response_fields": []
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/unit/test_tc_f21_auth_gone_unit.py"
     },
     {
       "method": "POST",
       "path": "/api/v1/lint-tac",
       "status": 422,
       "request_fields": [],
-      "response_fields": []
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/unit/test_tc_f21_auth_gone_unit.py"
     },
     {
       "method": "POST",
@@ -1152,7 +1275,8 @@
         "iwxxmBlock",
         "name",
         "slug"
-      ]
+      ],
+      "covered_by": "apps/backend/tests/unit/test_tc_ev080_conversion_templates_api.py"
     },
     {
       "method": "POST",
@@ -1163,7 +1287,8 @@
         "name",
         "slug"
       ],
-      "response_fields": []
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/unit/test_tc_ev080_conversion_templates_api.py"
     },
     {
       "method": "POST",
@@ -1176,7 +1301,8 @@
         "focusGroup",
         "matched",
         "templateId"
-      ]
+      ],
+      "covered_by": "apps/backend/tests/unit/test_tc_ev080_conversion_templates_api.py"
     },
     {
       "method": "POST",
@@ -1185,7 +1311,8 @@
       "request_fields": [
         "templateId"
       ],
-      "response_fields": []
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/unit/test_tc_ev080_conversion_templates_api.py"
     },
     {
       "method": "POST",
@@ -1205,7 +1332,8 @@
         "id",
         "kind",
         "name"
-      ]
+      ],
+      "covered_by": "apps/backend/tests/unit/test_tc_evrpc_rule_catalogs.py"
     },
     {
       "method": "POST",
@@ -1218,7 +1346,8 @@
         "name",
         "slug"
       ],
-      "response_fields": []
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/unit/test_tc_evrpc_rule_catalogs.py"
     },
     {
       "method": "POST",
@@ -1233,7 +1362,8 @@
         "libraryId",
         "ruleId",
         "ruleName"
-      ]
+      ],
+      "covered_by": "apps/backend/tests/unit/test_tc_evbridge_library_assets_api.py"
     },
     {
       "method": "POST",
@@ -1243,7 +1373,8 @@
         "focusGroup",
         "libraryId"
       ],
-      "response_fields": []
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/unit/test_tc_evbridge_library_assets_api.py"
     },
     {
       "method": "POST",
@@ -1255,7 +1386,8 @@
       ],
       "response_fields": [
         "valid_yaml"
-      ]
+      ],
+      "covered_by": "apps/backend/tests/unit/test_tc_evbridge_library_assets_api.py"
     },
     {
       "method": "POST",
@@ -1265,7 +1397,8 @@
         "kind",
         "yamlBody"
       ],
-      "response_fields": []
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/unit/test_tc_evbridge_library_assets_api.py"
     },
     {
       "method": "POST",
@@ -1285,7 +1418,8 @@
         "slug",
         "updated_at",
         "user_id"
-      ]
+      ],
+      "covered_by": "apps/backend/tests/unit/test_conversion_profiles_router.py"
     },
     {
       "method": "POST",
@@ -1295,7 +1429,8 @@
         "baseProfileId",
         "slug"
       ],
-      "response_fields": []
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/unit/test_conversion_profiles_router.py"
     },
     {
       "method": "POST",
@@ -1317,7 +1452,8 @@
         "slug",
         "updated_at",
         "user_id"
-      ]
+      ],
+      "covered_by": "apps/backend/tests/unit/test_conversion_profiles_router.py"
     },
     {
       "method": "POST",
@@ -1329,7 +1465,8 @@
         "semanticProfile",
         "slug"
       ],
-      "response_fields": []
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/unit/test_conversion_profiles_router.py"
     },
     {
       "method": "POST",
@@ -1355,7 +1492,8 @@
         "updated_at",
         "user_id",
         "when"
-      ]
+      ],
+      "covered_by": "apps/backend/tests/unit/test_conversion_profiles_router.py"
     },
     {
       "method": "POST",
@@ -1368,7 +1506,8 @@
         "slug",
         "stage"
       ],
-      "response_fields": []
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/unit/test_conversion_profiles_router.py"
     },
     {
       "method": "POST",
@@ -1389,7 +1528,8 @@
         "slug",
         "updated_at",
         "user_id"
-      ]
+      ],
+      "covered_by": "apps/backend/tests/unit/test_conversion_profiles_router.py"
     },
     {
       "method": "POST",
@@ -1400,7 +1540,8 @@
         "sinkType",
         "slug"
       ],
-      "response_fields": []
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/unit/test_conversion_profiles_router.py"
     },
     {
       "method": "POST",
@@ -1418,7 +1559,8 @@
         "success_rate",
         "successful_translations",
         "total_translations"
-      ]
+      ],
+      "covered_by": "apps/backend/tests/integration/test_e2e_full_stack.py"
     },
     {
       "method": "POST",
@@ -1428,7 +1570,8 @@
         "end_date",
         "start_date"
       ],
-      "response_fields": []
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/integration/test_e2e_full_stack.py"
     },
     {
       "method": "POST",
@@ -1438,14 +1581,16 @@
       "response_fields": [
         "is_valid",
         "version"
-      ]
+      ],
+      "covered_by": "apps/backend/tests/unit/test_tc_ev063_profile_wire.py"
     },
     {
       "method": "POST",
       "path": "/api/v1/validate",
       "status": 422,
       "request_fields": [],
-      "response_fields": []
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/unit/test_tc_ev063_profile_wire.py"
     },
     {
       "method": "POST",
@@ -1457,7 +1602,8 @@
       "response_fields": [
         "layers_validated",
         "passed"
-      ]
+      ],
+      "covered_by": "tests/integration/test_live_stack.py"
     },
     {
       "method": "POST",
@@ -1466,7 +1612,8 @@
       "request_fields": [
         "content"
       ],
-      "response_fields": []
+      "response_fields": [],
+      "covered_by": "tests/integration/test_live_stack.py"
     },
     {
       "method": "POST",
@@ -1481,7 +1628,8 @@
         "results",
         "total_execution_time_ms",
         "total_items"
-      ]
+      ],
+      "covered_by": "apps/backend/tests/integration/test_e2e_full_stack.py"
     },
     {
       "method": "POST",
@@ -1490,7 +1638,8 @@
       "request_fields": [
         "items"
       ],
-      "response_fields": []
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/integration/test_e2e_full_stack.py"
     },
     {
       "method": "POST",
@@ -1507,7 +1656,8 @@
         "title",
         "updated_at",
         "user_id"
-      ]
+      ],
+      "covered_by": "apps/backend/tests/unit/test_tc_f21_auth_gone_unit.py"
     },
     {
       "method": "POST",
@@ -1516,7 +1666,8 @@
       "request_fields": [
         "product"
       ],
-      "response_fields": []
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/unit/test_tc_f21_auth_gone_unit.py"
     },
     {
       "method": "POST",
@@ -1531,14 +1682,16 @@
         "title",
         "updated_at",
         "user_id"
-      ]
+      ],
+      "covered_by": "tests/bugs/test_qa_gap_2026_10_19_openapi_path_templates.py"
     },
     {
       "method": "POST",
       "path": "/api/v1/work-sessions/{session_id}/restore",
       "status": 422,
       "request_fields": [],
-      "response_fields": []
+      "response_fields": [],
+      "covered_by": "tests/bugs/test_qa_gap_2026_10_19_openapi_path_templates.py"
     },
     {
       "method": "POST",
@@ -1549,7 +1702,8 @@
       ],
       "response_fields": [
         "user"
-      ]
+      ],
+      "covered_by": "apps/backend/tests/unit/test_auth_router_mount_unit.py"
     },
     {
       "method": "POST",
@@ -1558,7 +1712,8 @@
       "request_fields": [
         "token_hash"
       ],
-      "response_fields": []
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/unit/test_auth_router_mount_unit.py"
     },
     {
       "method": "POST",
@@ -1570,7 +1725,8 @@
       ],
       "response_fields": [
         "user"
-      ]
+      ],
+      "covered_by": "apps/backend/tests/unit/test_tc_f21_auth_gone_unit.py"
     },
     {
       "method": "POST",
@@ -1580,7 +1736,8 @@
         "email",
         "password"
       ],
-      "response_fields": []
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/unit/test_tc_f21_auth_gone_unit.py"
     },
     {
       "method": "POST",
@@ -1589,14 +1746,16 @@
       "request_fields": [],
       "response_fields": [
         "message"
-      ]
+      ],
+      "covered_by": "apps/backend/tests/unit/test_auth_router_mount_unit.py"
     },
     {
       "method": "POST",
       "path": "/auth/logout",
       "status": 422,
       "request_fields": [],
-      "response_fields": []
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/unit/test_auth_router_mount_unit.py"
     },
     {
       "method": "POST",
@@ -1608,7 +1767,8 @@
       ],
       "response_fields": [
         "user"
-      ]
+      ],
+      "covered_by": "apps/backend/tests/unit/test_auth_router_mount_unit.py"
     },
     {
       "method": "POST",
@@ -1618,7 +1778,8 @@
         "email",
         "password"
       ],
-      "response_fields": []
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/unit/test_auth_router_mount_unit.py"
     },
     {
       "method": "PUT",
@@ -1636,7 +1797,8 @@
         "name",
         "updated_at",
         "user_id"
-      ]
+      ],
+      "covered_by": "tests/bugs/test_qa_gap_2026_10_19_openapi_path_templates.py"
     },
     {
       "method": "PUT",
@@ -1646,7 +1808,8 @@
         "mode",
         "name"
       ],
-      "response_fields": []
+      "response_fields": [],
+      "covered_by": "tests/bugs/test_qa_gap_2026_10_19_openapi_path_templates.py"
     },
     {
       "method": "PUT",
@@ -1664,7 +1827,8 @@
         "updated_at",
         "user_id",
         "validity_policy"
-      ]
+      ],
+      "covered_by": "tests/bugs/test_qa_gap_2026_10_19_openapi_path_templates.py"
     },
     {
       "method": "PUT",
@@ -1673,7 +1837,9 @@
       "request_fields": [
         "slug"
       ],
-      "response_fields": []
+      "response_fields": [],
+      "covered_by": "tests/bugs/test_qa_gap_2026_10_19_openapi_path_templates.py"
     }
-  ]
+  ],
+  "source": "consumer-tests"
 }

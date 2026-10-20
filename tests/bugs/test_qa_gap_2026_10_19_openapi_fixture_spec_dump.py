@@ -12,7 +12,7 @@ import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-FIXTURE = ROOT / "scripts" / "ci" / "fixtures" / "openapi_contract_interactions.json"
+FIXTURE = ROOT / "tests" / "contracts" / "openapi-interactions.json"
 GENERATOR_SOURCE = "apps/frontend/openapi/openapi.json"
 
 

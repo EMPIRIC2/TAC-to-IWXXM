@@ -671,7 +671,9 @@ test-coverage-scripts:
 # Local OpenAPI consumer contract: status codes and required JSON fields.
 # [Corpus: tests] [Corpus: api] [Corpus: product]
 check-openapi-contract:
-	$(UV) run python scripts/ci/check_openapi_contract.py
+	$(UV) run python scripts/ci/check_openapi_contract.py \
+		--spec apps/frontend/openapi/openapi.json \
+		--interactions tests/contracts/openapi-interactions.json
 
 # EV-080 / #1077 — bats-core for every scripts/**/*.sh (D-TP080-2).
 test-bats:

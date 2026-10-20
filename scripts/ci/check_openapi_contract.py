@@ -1,23 +1,17 @@
 #!/usr/bin/env python3
-"""Check OpenAPI statuses and required fields against local contract fixtures.
+"""Local consumer-contract check for OpenAPI status codes and required fields.
 
-Compares ``apps/frontend/openapi/openapi.json`` with
-``scripts/ci/fixtures/openapi_contract_interactions.json``. This is an in-repo
-status and required-field suite (no PactFlow, no broker). An operation, in-scope
-status, required JSON request field, or required JSON response field that is
-absent from the fixtures fails the process.
+Compares committed interactions with ``apps/frontend/openapi/openapi.json``.
+The measured surface matches the 2026-10-18 scan of that document: every HTTP
+operation, every 2xx and 4xx status, and every required field on a JSON
+request or response body. An empty interaction file reports the same missing
+counts as that scan. The check fails when the document adds a promise that no
+interaction covers.
 
-In-scope statuses are HTTP 2xx and 4xx except 500, 501, 502, and 503, matching
-the 2026-10-18 contract scan. Request and response fields are the top-level
-``required`` names on ``application/json`` schemas (``$ref`` resolved locally).
+This is an in-repo status and required-field suite. It does not call PactFlow
+or read Pact consumer JSON.
 
-Acceptance command::
-
-    uv run python scripts/ci/check_openapi_contract.py
-
-Refresh the committed fixtures only after an intentional API contract change::
-
-    uv run python scripts/ci/check_openapi_contract.py --write-fixtures
+[Corpus: tests] [Corpus: api] [Corpus: product]
 """
 
 from __future__ import annotations
@@ -26,137 +20,155 @@ import argparse
 import json
 import re
 import sys
+from collections import defaultdict
 from pathlib import Path
-from typing import TypedDict, cast
-
-ROOT = Path(__file__).resolve().parents[2]
-SPEC_PATH = ROOT / "apps" / "frontend" / "openapi" / "openapi.json"
-FIXTURE_PATH = (
-    ROOT / "scripts" / "ci" / "fixtures" / "openapi_contract_interactions.json"
-)
 
 HTTP_METHODS = frozenset(
     {"get", "post", "put", "patch", "delete", "head", "options", "trace"}
 )
-EXCLUDED_STATUSES = frozenset({"500", "501", "502", "503"})
-STATUS_IN_SCOPE = re.compile(r"^[24]\d\d$")
-CONVERT_RESPONSE_FIELDS = frozenset({"failed", "successful", "total_processed"})
-
-JsonObject = dict[str, object]
+DEFAULT_EXCLUDE_CODES = frozenset({"500", "501", "502", "503"})
+_STATUS_RE = re.compile(r"[24]\d\d")
+ROOT = Path(__file__).resolve().parents[2]
 
 
-class OperationContract(TypedDict):
-    """One OpenAPI operation's in-scope statuses and required JSON fields."""
-
-    method: str
-    path: str
-    statuses: set[str]
-    request_fields: set[str]
-    response_fields: dict[str, set[str]]
-
-
-class Interaction(TypedDict):
-    """One local contract interaction covering a method, path, and status."""
-
-    method: str
-    path: str
-    status: str
-    request_fields: list[str]
-    response_fields: list[str]
-
-
-def _pointer(document: JsonObject, ref: str) -> object:
+def _resolve_node(
+    node: object, root: dict[str, object], seen: frozenset[str]
+) -> object:
     """
-    Resolve a local JSON pointer such as ``#/components/schemas/Name``.
-
-    Parameters
-    ----------
-    document :
-        Parsed OpenAPI document.
-    ref :
-        Pointer beginning with ``#/``.
-
-    Returns
-    -------
-    object
-        The referenced node.
-
-    Raises
-    ------
-    KeyError
-        If a pointer segment is missing.
-    """
-    current: object = document
-    for raw_part in ref[2:].split("/"):
-        part = raw_part.replace("~1", "/").replace("~0", "~")
-        if not isinstance(current, dict) or part not in current:
-            message = f"unresolved $ref {ref}"
-            raise KeyError(message)
-        current = current[part]
-    return current
-
-
-def _resolve(node: object, document: JsonObject, stack: frozenset[str]) -> object:
-    """
-    Replace local ``$ref`` nodes, stopping on cycles.
+    Return ``node`` with internal ``$ref`` pointers replaced.
 
     Parameters
     ----------
     node :
-        Schema or schema fragment.
-    document :
-        Parsed OpenAPI document.
-    stack :
-        ``$ref`` pointers already being resolved.
+        Current JSON value.
+    root :
+        Document used to look up pointers.
+    seen :
+        Pointers already entered, used to reject cycles.
 
     Returns
     -------
-    object
-        Ref-resolved node.
+    Any
+        Resolved value.
+
+    Raises
+    ------
+    ValueError
+        The pointer is external, circular, unresolvable, or not a string.
     """
+    if isinstance(node, dict):
+        ref = node.get("$ref")
+        if isinstance(ref, str):
+            return _resolve_ref(root, ref, seen)
+        if "$ref" in node:
+            raise ValueError("$ref must be a string")
+        return {key: _resolve_node(value, root, seen) for key, value in node.items()}
     if isinstance(node, list):
-        return [_resolve(item, document, stack) for item in node]
-    if not isinstance(node, dict):
-        return node
-    mapping = cast(JsonObject, node)
-    ref = mapping.get("$ref")
-    if isinstance(ref, str) and ref.startswith("#/"):
-        if ref in stack:
-            return {}
-        target = _resolve(_pointer(document, ref), document, stack | {ref})
-        extras = {
-            key: _resolve(value, document, stack)
-            for key, value in mapping.items()
-            if key != "$ref"
-        }
-        if isinstance(target, dict) and extras:
-            merged = dict(target)
-            merged.update(extras)
-            return merged
-        return target
-    return {key: _resolve(value, document, stack) for key, value in mapping.items()}
+        return [_resolve_node(item, root, seen) for item in node]
+    return node
 
 
-def _json_schema(content: object) -> JsonObject:
+def _resolve_ref(root: dict[str, object], ref: str, seen: frozenset[str]) -> object:
     """
-    Return the JSON media-type schema from an OpenAPI ``content`` block.
+    Resolve one internal JSON pointer.
+
+    Parameters
+    ----------
+    root :
+        Document used to look up pointers.
+    ref :
+        Pointer such as ``#/components/schemas/Name``.
+    seen :
+        Pointers already entered.
+
+    Returns
+    -------
+    Any
+        Resolved target.
+
+    Raises
+    ------
+    ValueError
+        The pointer is external, circular, or unresolvable.
+    """
+    if not ref.startswith("#/"):
+        raise ValueError(f"Only internal JSON pointers are supported ({ref})")
+    if ref in seen:
+        raise ValueError(f"Circular $ref: {ref}")
+    current: object = root
+    for raw in ref[2:].split("/"):
+        part = raw.replace("~1", "/").replace("~0", "~")
+        if isinstance(current, dict) and part in current:
+            current = current[part]
+            continue
+        if isinstance(current, list) and part.isdigit() and int(part) < len(current):
+            current = current[int(part)]
+            continue
+        raise ValueError(f"Unresolved $ref: {ref}")
+    return _resolve_node(current, root, seen | {ref})
+
+
+def extract_required_fields(schema: object) -> set[str]:
+    """
+    Collect top-level required property names.
+
+    ``allOf``, ``anyOf``, and ``oneOf`` contribute the union of their required
+    names. Nested properties are not expanded.
+
+    Parameters
+    ----------
+    schema :
+        Resolved JSON Schema object, or a non-object branch.
+
+    Returns
+    -------
+    set of str
+        Required names. Empty when ``schema`` is not an object.
+
+    Raises
+    ------
+    ValueError
+        A combinator or ``required`` value is not a list.
+    """
+    if not isinstance(schema, dict):
+        return set()
+    fields: set[str] = set()
+    for key in ("allOf", "anyOf", "oneOf"):
+        if key not in schema:
+            continue
+        branches = schema[key]
+        if not isinstance(branches, list):
+            raise ValueError(f"{key} must be a list")
+        for branch in branches:
+            fields |= extract_required_fields(branch)
+    if "required" in schema:
+        required = schema["required"]
+        if not isinstance(required, list):
+            raise ValueError("required must be a list")
+        fields.update(str(field) for field in required)
+    return fields
+
+
+def json_media_schema(content: object) -> dict[str, object]:
+    """
+    Return the JSON media-type schema from an OpenAPI ``content`` map.
 
     Parameters
     ----------
     content :
-        OpenAPI content map, or anything else.
+        OpenAPI content object. Non-objects yield an empty schema.
 
     Returns
     -------
     dict
-        Schema object, or an empty mapping when the body is not JSON.
+        Schema object, or ``{}`` when no JSON media type is present.
     """
     if not isinstance(content, dict):
         return {}
-    entry: object | None = content.get("application/json")
+    entry = content.get("application/json")
     if entry is None:
         for key, value in content.items():
-            if isinstance(key, str) and "json" in key:
+            if "json" in key:
                 entry = value
                 break
     if not isinstance(entry, dict):
@@ -164,407 +176,568 @@ def _json_schema(content: object) -> JsonObject:
     schema = entry.get("schema", {})
     if not isinstance(schema, dict):
         return {}
-    return cast(JsonObject, schema)
+    return schema
 
 
-def _required_fields(schema: object) -> set[str]:
+def extract_operations(
+    spec: dict[str, object],
+    exclude_codes: frozenset[str] | set[str],
+) -> dict[str, dict[str, object]]:
     """
-    Collect top-level required property names, including composition keywords.
+    Walk ``paths`` and collect the measured contract surface.
 
     Parameters
     ----------
-    schema :
-        Resolved schema node.
-
-    Returns
-    -------
-    set of str
-        Required field names.
-    """
-    if not isinstance(schema, dict):
-        return set()
-    fields: set[str] = set()
-    for keyword in ("allOf", "anyOf", "oneOf"):
-        branches = schema.get(keyword, [])
-        if isinstance(branches, list):
-            for branch in branches:
-                fields |= _required_fields(branch)
-    required = schema.get("required", [])
-    if isinstance(required, list):
-        fields.update(str(field) for field in required)
-    return fields
-
-
-def _load_json(path: Path) -> JsonObject:
-    """
-    Load a JSON object from ``path``.
-
-    Parameters
-    ----------
-    path :
-        File to read.
+    spec :
+        OpenAPI document. Internal ``$ref`` pointers are resolved first.
+    exclude_codes :
+        Status codes omitted even when they are 2xx or 4xx.
 
     Returns
     -------
     dict
-        Parsed object.
+        Operations keyed by ``method:path``.
 
     Raises
     ------
     ValueError
-        If the file is not a JSON object.
+        The document, ``paths``, or ``responses`` is not an object.
     """
-    loaded: object = json.loads(path.read_text(encoding="utf-8"))
-    if not isinstance(loaded, dict):
-        message = f"{path} is not a JSON object"
-        raise ValueError(message)
-    return cast(JsonObject, loaded)
+    if not isinstance(spec, dict):
+        raise ValueError("OpenAPI document must be an object")
+    resolved = _resolve_node(spec, spec, frozenset())
+    if not isinstance(resolved, dict):
+        raise ValueError("OpenAPI document must be an object")
+    paths = resolved.get("paths", {})
+    if not isinstance(paths, dict):
+        raise ValueError("paths must be an object")
+    operations: dict[str, dict[str, object]] = {}
+    for path, path_item in paths.items():
+        if not isinstance(path_item, dict):
+            continue
+        for method, operation in path_item.items():
+            if method not in HTTP_METHODS:
+                continue
+            if not isinstance(operation, dict):
+                raise ValueError(f"{method.upper()} {path} is not an object")
+            responses = operation.get("responses", {})
+            if not isinstance(responses, dict):
+                raise ValueError(f"{method.upper()} {path} responses must be an object")
+            status_codes: set[str] = set()
+            for code in responses:
+                code_str = str(code)
+                if code_str in exclude_codes:
+                    continue
+                if _STATUS_RE.fullmatch(code_str) is None:
+                    continue
+                status_codes.add(code_str)
+            request_body = operation.get("requestBody", {})
+            if request_body is None:
+                request_fields: set[str] = set()
+            elif isinstance(request_body, dict):
+                request_fields = extract_required_fields(
+                    json_media_schema(request_body.get("content", {}))
+                )
+            else:
+                raise ValueError(
+                    f"{method.upper()} {path} requestBody must be an object"
+                )
+            response_fields: dict[str, set[str]] = {}
+            for code in status_codes:
+                response_obj = responses.get(code, {})
+                if not isinstance(response_obj, dict):
+                    response_fields[code] = set()
+                    continue
+                response_fields[code] = extract_required_fields(
+                    json_media_schema(response_obj.get("content", {}))
+                )
+            operations[f"{method}:{path}"] = {
+                "method": method,
+                "path": path,
+                "status_codes": status_codes,
+                "req_required_fields": request_fields,
+                "resp_required_fields": response_fields,
+            }
+    return operations
 
 
-def extract_operations(document: JsonObject) -> dict[str, OperationContract]:
+def oas_path_to_pattern(oas_path: str) -> re.Pattern[str]:
     """
-    Walk OpenAPI paths and collect in-scope statuses and required JSON fields.
+    Compile an OpenAPI path template to a full-match regular expression.
 
     Parameters
     ----------
-    document :
-        Parsed OpenAPI document.
+    oas_path :
+        Template such as ``/items/{id}``.
+
+    Returns
+    -------
+    re.Pattern
+        Pattern anchored at both ends. Parameters match one path segment.
+    """
+    parts = re.split(r"(\{[^}]+\})", oas_path)
+    regex = ""
+    for part in parts:
+        if part.startswith("{") and part.endswith("}"):
+            regex += "[^/]+"
+        else:
+            regex += re.escape(part)
+    return re.compile(f"^{regex}$")
+
+
+def find_matching_operation(
+    method: str,
+    concrete_path: str,
+    operations: dict[str, dict[str, object]],
+) -> str | None:
+    """
+    Find the operation key for a method and path.
+
+    Exact templates win. Otherwise the template with the fewest parameters
+    that matches the concrete path wins.
+
+    Parameters
+    ----------
+    method :
+        HTTP method, any case.
+    concrete_path :
+        Interaction path. May be a template or a concrete URL path.
+    operations :
+        Map from ``extract_operations``.
+
+    Returns
+    -------
+    str or None
+        Matching key, or None when nothing matches.
+    """
+    method_key = method.lower()
+    exact_key = f"{method_key}:{concrete_path}"
+    if exact_key in operations:
+        return exact_key
+    candidates: list[tuple[int, str]] = []
+    prefix = f"{method_key}:"
+    for key, info in operations.items():
+        if not key.startswith(prefix):
+            continue
+        oas_path = str(info["path"])
+        if oas_path_to_pattern(oas_path).match(concrete_path) is None:
+            continue
+        candidates.append((oas_path.count("{"), key))
+    if not candidates:
+        return None
+    candidates.sort(key=lambda item: item[0])
+    return candidates[0][1]
+
+
+def _as_field_set(value: object, label: str) -> set[str]:
+    """
+    Require a list of strings.
+
+    Parameters
+    ----------
+    value :
+        Raw JSON value. ``None`` means the key was omitted.
+    label :
+        Field name used in the error.
+
+    Returns
+    -------
+    set of str
+        Field names. Empty when ``value`` is None.
+
+    Raises
+    ------
+    ValueError
+        ``value`` is not a list of strings.
+    """
+    if value is None:
+        return set()
+    if not isinstance(value, list) or not all(isinstance(item, str) for item in value):
+        raise ValueError(f"{label} must be a list of strings")
+    return set(value)
+
+
+def _parse_interaction(item: object, source: Path) -> dict[str, object]:
+    """
+    Normalize one interaction object.
+
+    Parameters
+    ----------
+    item :
+        One JSON element.
+    source :
+        File path used in errors.
 
     Returns
     -------
     dict
-        Operations keyed by ``method:path`` with the method uppercased.
+        Method, path, status, and field sets.
+
+    Raises
+    ------
+    ValueError
+        The element is missing a method, path, or integer status.
     """
-    paths = document.get("paths")
-    if not isinstance(paths, dict):
-        return {}
-    operations: dict[str, OperationContract] = {}
-    for path, path_item in paths.items():
-        if not isinstance(path, str) or not isinstance(path_item, dict):
-            continue
-        for method, operation in path_item.items():
-            if method not in HTTP_METHODS or not isinstance(operation, dict):
-                continue
-            responses = operation.get("responses")
-            if not isinstance(responses, dict):
-                responses = {}
-            statuses = {
-                str(code)
-                for code in responses
-                if str(code) not in EXCLUDED_STATUSES
-                and STATUS_IN_SCOPE.match(str(code))
-            }
-            request_body = operation.get("requestBody")
-            request_fields: set[str] = set()
-            if isinstance(request_body, dict):
-                request_fields = _required_fields(
-                    _json_schema(request_body.get("content"))
-                )
-            response_fields: dict[str, set[str]] = {}
-            for code in statuses:
-                response_obj = responses.get(code, {})
-                content = (
-                    response_obj.get("content")
-                    if isinstance(response_obj, dict)
-                    else {}
-                )
-                response_fields[code] = _required_fields(_json_schema(content))
-            key = f"{method.upper()}:{path}"
-            operations[key] = OperationContract(
-                method=method.upper(),
-                path=path,
-                statuses=statuses,
-                request_fields=request_fields,
-                response_fields=response_fields,
-            )
-    return operations
+    if not isinstance(item, dict):
+        raise ValueError(f"{source} interactions must be objects")
+    method = item.get("method")
+    path = item.get("path")
+    if not isinstance(method, str) or not method.strip():
+        raise ValueError(f"{source} interaction is missing method")
+    if not isinstance(path, str) or not path.startswith("/"):
+        raise ValueError(f"{source} interaction is missing path")
+    try:
+        status = int(item["status"])
+    except (KeyError, TypeError, ValueError) as exc:
+        raise ValueError(f"{source} interaction status must be an integer") from exc
+    return {
+        "method": method.upper(),
+        "path": path,
+        "status": status,
+        "request_fields": _as_field_set(item.get("request_fields"), "request_fields"),
+        "response_fields": _as_field_set(
+            item.get("response_fields"), "response_fields"
+        ),
+    }
 
 
-def interactions_from_operations(
-    operations: dict[str, OperationContract],
-) -> list[Interaction]:
+def _load_interaction_document(path: Path) -> list[dict[str, object]]:
     """
-    Build one interaction per in-scope status from the current OpenAPI document.
+    Load interactions from one JSON file.
 
     Parameters
     ----------
-    operations :
-        Output of :func:`extract_operations`.
+    path :
+        JSON file. The root may be an object with ``interactions`` or a list.
 
     Returns
     -------
-    list
-        Interactions whose fields match the document's required JSON fields.
-    """
-    interactions: list[Interaction] = []
-    for info in operations.values():
-        request_fields = sorted(info["request_fields"])
-        if not info["statuses"]:
-            interactions.append(
-                Interaction(
-                    method=info["method"],
-                    path=info["path"],
-                    status="200",
-                    request_fields=request_fields,
-                    response_fields=[],
-                )
-            )
-            continue
-        interactions.extend(
-            Interaction(
-                method=info["method"],
-                path=info["path"],
-                status=status,
-                request_fields=request_fields,
-                response_fields=sorted(info["response_fields"].get(status, set())),
-            )
-            for status in sorted(info["statuses"])
-        )
-    return interactions
-
-
-def _as_interactions(payload: JsonObject) -> list[Interaction]:
-    """
-    Parse fixture interactions.
-
-    Parameters
-    ----------
-    payload :
-        Fixture document.
-
-    Returns
-    -------
-    list
+    list of dict
         Normalized interactions.
 
     Raises
     ------
     ValueError
-        If the fixture shape is wrong.
+        The JSON root is not a document this check understands.
     """
-    raw = payload.get("interactions")
-    if not isinstance(raw, list):
-        message = "fixture missing interactions array"
-        raise ValueError(message)
-    interactions: list[Interaction] = []
-    for item in raw:
-        if not isinstance(item, dict):
-            message = "interaction is not an object"
-            raise ValueError(message)
-        method = item.get("method")
-        path = item.get("path")
-        status = item.get("status")
-        request_fields = item.get("request_fields", [])
-        response_fields = item.get("response_fields", [])
-        if not isinstance(method, str) or not isinstance(path, str):
-            message = "interaction method and path must be strings"
-            raise ValueError(message)
-        if not isinstance(request_fields, list) or not isinstance(
-            response_fields, list
-        ):
-            message = "interaction fields must be arrays"
-            raise ValueError(message)
-        interactions.append(
-            Interaction(
-                method=method.upper(),
-                path=path,
-                status=str(status),
-                request_fields=[str(field) for field in request_fields],
-                response_fields=[str(field) for field in response_fields],
-            )
-        )
-    return interactions
+    data = json.loads(path.read_text(encoding="utf-8"))
+    if isinstance(data, list):
+        items = data
+    elif isinstance(data, dict) and isinstance(data.get("interactions"), list):
+        items = data["interactions"]
+    else:
+        raise ValueError(f"{path} must be an interactions object or a list")
+    return [_parse_interaction(item, path) for item in items]
 
 
-def _coverage_gaps(
-    operations: dict[str, OperationContract],
-    interactions: list[Interaction],
-) -> list[str]:
+def load_interactions(path: Path) -> list[dict[str, object]]:
     """
-    List uncovered operations, statuses, and required fields.
+    Load interactions from a JSON file or a directory of JSON files.
 
     Parameters
     ----------
-    operations :
-        Contracts extracted from OpenAPI.
-    interactions :
-        Fixture interactions.
+    path :
+        File or directory.
 
     Returns
     -------
-    list of str
-        Human-readable gaps. Empty when the fixtures cover the document.
+    list of dict
+        Normalized interactions.
+
+    Raises
+    ------
+    FileNotFoundError
+        ``path`` does not exist.
+    ValueError
+        A directory contains no JSON files, or a file is not valid.
     """
-    by_operation: dict[str, list[Interaction]] = {}
-    for interaction in interactions:
-        key = f"{interaction['method']}:{interaction['path']}"
-        by_operation.setdefault(key, []).append(interaction)
-
-    gaps: list[str] = []
-    for key, info in sorted(operations.items()):
-        matched = by_operation.get(key, [])
-        if not matched:
-            gaps.append(f"operation missing: {key}")
-            continue
-        covered_statuses = {item["status"] for item in matched}
-        gaps.extend(
-            f"status missing: {key} {status}"
-            for status in sorted(info["statuses"] - covered_statuses)
-        )
-        covered_request: set[str] = set()
-        for item in matched:
-            covered_request.update(item["request_fields"])
-        gaps.extend(
-            f"required request field missing: {key} {field}"
-            for field in sorted(info["request_fields"] - covered_request)
-        )
-        for status, fields in sorted(info["response_fields"].items()):
-            covered_response: set[str] = set()
-            for item in matched:
-                if item["status"] == status:
-                    covered_response.update(item["response_fields"])
-            gaps.extend(
-                f"required response field missing: {key} {status} {field}"
-                for field in sorted(fields - covered_response)
-            )
-    convert_key = "POST:/api/v1/convert"
-    convert_covered: set[str] = set()
-    for item in by_operation.get(convert_key, []):
-        if item["status"] == "200":
-            convert_covered.update(item["response_fields"])
-    gaps.extend(
-        f"required response field missing: {convert_key} 200 {field}"
-        for field in sorted(CONVERT_RESPONSE_FIELDS - convert_covered)
-    )
-    return gaps
+    if path.is_file():
+        return _load_interaction_document(path)
+    if not path.is_dir():
+        raise FileNotFoundError(path)
+    files = sorted(path.glob("*.json"))
+    if not files:
+        raise ValueError(f"No interaction JSON files in {path}")
+    loaded: list[dict[str, object]] = []
+    for file in files:
+        loaded.extend(_load_interaction_document(file))
+    return loaded
 
 
-def _write_fixtures(operations: dict[str, OperationContract]) -> None:
+def compute_coverage(
+    operations: dict[str, dict[str, object]],
+    interactions: list[dict[str, object]],
+) -> dict[str, object]:
     """
-    Write the baseline fixture file from ``operations``.
+    Compare operations with interactions.
 
     Parameters
     ----------
     operations :
-        Contracts extracted from the current OpenAPI document.
-    """
-    payload = {
-        "kind": "openapi-status-and-required-field-contract",
-        "source": "apps/frontend/openapi/openapi.json",
-        "interactions": interactions_from_operations(operations),
-    }
-    FIXTURE_PATH.parent.mkdir(parents=True, exist_ok=True)
-    FIXTURE_PATH.write_text(
-        json.dumps(payload, indent=2) + "\n",
-        encoding="utf-8",
-    )
-
-
-def _count_gaps(gaps: list[str]) -> dict[str, int]:
-    """
-    Summarize gap lines into the four acceptance counts.
-
-    Parameters
-    ----------
-    gaps :
-        Lines from :func:`_coverage_gaps`.
+        Map from ``extract_operations``.
+    interactions :
+        Normalized interactions.
 
     Returns
     -------
     dict
-        Counts for operations, statuses, request fields, and response fields.
+        Missing counts and the missing operation, status, and field rows.
     """
-    counts = {
-        "operations missing": 0,
-        "status codes missing": 0,
-        "required request fields missing": 0,
-        "required response fields missing": 0,
+    matched: dict[str, list[dict[str, object]]] = defaultdict(list)
+    for interaction in interactions:
+        key = find_matching_operation(
+            str(interaction["method"]),
+            str(interaction["path"]),
+            operations,
+        )
+        if key:
+            matched[key].append(interaction)
+
+    missing_operations: list[dict[str, str]] = []
+    missing_statuses: list[dict[str, str]] = []
+    missing_requests: list[dict[str, str]] = []
+    missing_responses: list[dict[str, str]] = []
+
+    for op_key in sorted(operations):
+        info = operations[op_key]
+        method = str(info["method"]).upper()
+        path = str(info["path"])
+        group = matched.get(op_key, [])
+        if not group:
+            missing_operations.append({"method": method, "path": path})
+        tested_codes = {str(interaction["status"]) for interaction in group}
+        missing_statuses.extend(
+            {"method": method, "path": path, "status": code}
+            for code in sorted(set(info["status_codes"]) - tested_codes)
+        )
+        required_request = set(info["req_required_fields"])
+        if required_request:
+            tested_request: set[str] = set()
+            for interaction in group:
+                tested_request |= set(interaction["request_fields"])
+            missing_requests.extend(
+                {"method": method, "path": path, "field": field}
+                for field in sorted(required_request - tested_request)
+            )
+        response_map = info["resp_required_fields"]
+        for code in sorted(response_map):
+            required_response = set(response_map[code])
+            if not required_response:
+                continue
+            tested_response: set[str] = set()
+            for interaction in group:
+                if str(interaction["status"]) == code:
+                    tested_response |= set(interaction["response_fields"])
+            missing_responses.extend(
+                {
+                    "method": method,
+                    "path": path,
+                    "status": code,
+                    "field": field,
+                }
+                for field in sorted(required_response - tested_response)
+            )
+
+    return {
+        "interactions": len(interactions),
+        "operations_missing": len(missing_operations),
+        "status_codes_missing": len(missing_statuses),
+        "required_request_fields_missing": len(missing_requests),
+        "required_response_fields_missing": len(missing_responses),
+        "has_gaps": bool(
+            missing_operations
+            or missing_statuses
+            or missing_requests
+            or missing_responses
+        ),
+        "missing": {
+            "operations": missing_operations,
+            "status_codes": missing_statuses,
+            "request_fields": missing_requests,
+            "response_fields": missing_responses,
+        },
     }
-    for gap in gaps:
-        if gap.startswith("operation missing"):
-            counts["operations missing"] += 1
-        elif gap.startswith("status missing"):
-            counts["status codes missing"] += 1
-        elif gap.startswith("required request field"):
-            counts["required request fields missing"] += 1
-        elif gap.startswith("required response field"):
-            counts["required response fields missing"] += 1
-    return counts
+
+
+def synthesize_interactions(
+    operations: dict[str, dict[str, object]],
+) -> list[dict[str, object]]:
+    """
+    Build interactions that cover ``operations`` exactly.
+
+    The check does not call this. It records the fill for a document so a
+    later required field stays uncovered until an interaction names it.
+
+    Parameters
+    ----------
+    operations :
+        Map from ``extract_operations``.
+
+    Returns
+    -------
+    list of dict
+        One interaction per in-scope status. Operations with no in-scope
+        status get a single interaction with status ``0``.
+    """
+    rows: list[dict[str, object]] = []
+    for op_key in sorted(operations):
+        info = operations[op_key]
+        request_fields = sorted(set(info["req_required_fields"]))
+        statuses = sorted(set(info["status_codes"]))
+        if not statuses:
+            rows.append(
+                {
+                    "method": str(info["method"]).upper(),
+                    "path": str(info["path"]),
+                    "status": 0,
+                    "request_fields": request_fields,
+                    "response_fields": [],
+                }
+            )
+            continue
+        response_map = info["resp_required_fields"]
+        rows.extend(
+            {
+                "method": str(info["method"]).upper(),
+                "path": str(info["path"]),
+                "status": int(status),
+                "request_fields": request_fields,
+                "response_fields": sorted(set(response_map[status])),
+            }
+            for status in statuses
+        )
+    return rows
+
+
+def run_check(
+    spec_path: Path,
+    interactions_path: Path,
+    exclude_codes: frozenset[str] | set[str] | None = None,
+) -> dict[str, object]:
+    """
+    Load both files and return the coverage report.
+
+    Parameters
+    ----------
+    spec_path :
+        OpenAPI JSON file.
+    interactions_path :
+        Interaction JSON file or directory.
+    exclude_codes :
+        Status codes to skip. Defaults to 500, 501, 502, and 503.
+
+    Returns
+    -------
+    dict
+        Report from ``compute_coverage``.
+
+    Raises
+    ------
+    ValueError
+        The spec is not a JSON object or a pointer cannot be resolved.
+    """
+    spec = json.loads(spec_path.read_text(encoding="utf-8"))
+    if not isinstance(spec, dict):
+        raise ValueError("OpenAPI document must be an object")
+    excluded = (
+        set(DEFAULT_EXCLUDE_CODES) if exclude_codes is None else set(exclude_codes)
+    )
+    operations = extract_operations(spec, excluded)
+    interactions = load_interactions(interactions_path)
+    return compute_coverage(operations, interactions)
+
+
+def format_report(report: dict[str, object]) -> str:
+    """
+    Format the four missing counts and any gap rows.
+
+    Parameters
+    ----------
+    report :
+        Report from ``compute_coverage``.
+
+    Returns
+    -------
+    str
+        Multiline text ending with a newline.
+    """
+    lines = [
+        f"interactions: {report['interactions']}",
+        f"operations missing: {report['operations_missing']}",
+        f"status codes missing: {report['status_codes_missing']}",
+        f"required request fields missing: {report['required_request_fields_missing']}",
+        (
+            "required response fields missing: "
+            f"{report['required_response_fields_missing']}"
+        ),
+    ]
+    missing = report["missing"]
+    lines.extend(
+        f"missing operation: {row['method']} {row['path']}"
+        for row in missing["operations"]
+    )
+    lines.extend(
+        f"missing status: {row['method']} {row['path']} {row['status']}"
+        for row in missing["status_codes"]
+    )
+    lines.extend(
+        f"missing request field: {row['method']} {row['path']} {row['field']}"
+        for row in missing["request_fields"]
+    )
+    lines.extend(
+        "missing response field: "
+        f"{row['method']} {row['path']} {row['status']} {row['field']}"
+        for row in missing["response_fields"]
+    )
+    return "\n".join(lines) + "\n"
 
 
 def main(argv: list[str] | None = None) -> int:
     """
-    Run the contract check, or rewrite fixtures when asked.
+    Run the check from the command line.
 
     Parameters
     ----------
     argv :
-        CLI arguments, excluding the program name.
+        Arguments excluding the program name. ``None`` reads ``sys.argv``.
 
     Returns
     -------
     int
-        ``0`` when every in-scope status and required field is covered.
+        ``0`` when nothing is missing, ``1`` when coverage has gaps, ``2``
+        when a file cannot be read.
     """
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
-        "--write-fixtures",
-        action="store_true",
-        help="rewrite the committed interaction fixtures from the OpenAPI document",
+        "--spec",
+        type=Path,
+        default=ROOT / "apps" / "frontend" / "openapi" / "openapi.json",
+        help="OpenAPI document (default: apps/frontend/openapi/openapi.json)",
     )
+    parser.add_argument(
+        "--interactions",
+        type=Path,
+        default=ROOT / "tests" / "contracts" / "openapi-interactions.json",
+        help="Interaction file (default: tests/contracts/openapi-interactions.json)",
+    )
+    parser.add_argument("--json", action="store_true", dest="as_json")
+    parser.add_argument("--exclude-codes", nargs="*", default=None)
     args = parser.parse_args(argv)
-    if not SPEC_PATH.is_file():
-        print(f"missing OpenAPI document: {SPEC_PATH}", file=sys.stderr)
-        return 2
-    raw_document = _load_json(SPEC_PATH)
-    operations = extract_operations(_resolve_operations(raw_document))
-    if args.write_fixtures:
-        _write_fixtures(operations)
-        print(f"wrote {FIXTURE_PATH.relative_to(ROOT)}")
-    if not FIXTURE_PATH.is_file():
-        print(
-            f"missing contract fixtures: {FIXTURE_PATH.relative_to(ROOT)}",
-            file=sys.stderr,
-        )
-        return 2
+    exclude = (
+        None
+        if args.exclude_codes is None
+        else frozenset(str(code) for code in args.exclude_codes)
+    )
     try:
-        interactions = _as_interactions(_load_json(FIXTURE_PATH))
-    except ValueError as exc:
-        print(str(exc), file=sys.stderr)
+        report = run_check(args.spec, args.interactions, exclude)
+    except (OSError, UnicodeError, ValueError, json.JSONDecodeError) as exc:
+        print(f"ERROR: {exc}", file=sys.stderr)
         return 2
-    gaps = _coverage_gaps(operations, interactions)
-    counts = _count_gaps(gaps)
-    for label, count in counts.items():
-        print(f"{label}: {count}")
-    if gaps:
-        preview = gaps[:30]
-        print("\n".join(preview), file=sys.stderr)
-        if len(gaps) > len(preview):
-            print(f"... {len(gaps) - len(preview)} more", file=sys.stderr)
-        return 1
-    return 0
-
-
-def _resolve_operations(document: JsonObject) -> JsonObject:
-    """
-    Return a copy of ``document`` whose path schemas have local refs resolved.
-
-    Parameters
-    ----------
-    document :
-        Unresolved OpenAPI document. Pointers resolve against this object.
-
-    Returns
-    -------
-    dict
-        Document with ``paths`` schemas resolved. Components are left in place
-        so pointers remain valid during resolution.
-    """
-    resolved_paths = _resolve(document.get("paths"), document, frozenset())
-    copied = dict(document)
-    if isinstance(resolved_paths, dict):
-        copied["paths"] = resolved_paths
-    return copied
+    if args.as_json:
+        print(json.dumps(report, sort_keys=True))
+    else:
+        print(format_report(report), end="")
+    return 1 if report["has_gaps"] else 0
 
 
 if __name__ == "__main__":
