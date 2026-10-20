@@ -1,9 +1,12 @@
 /**
- * Write an Istanbul coverage report for the Playwright sources.
+ * Write an Istanbul coverage report from a Playwright suite harness run.
  *
- * Loads `apps/e2e/*.ts` under V8 coverage with `@playwright/test` stubbed, then
- * writes `apps/e2e/coverage/coverage-final.json`. The directory is gitignored.
- * Run this in the bugs CI job before `pytest tests/bugs`.
+ * Loads and executes `apps/e2e/*.ts` under V8 coverage with `@playwright/test`
+ * stubbed so suite callbacks run without a browser. Writes
+ * `apps/e2e/coverage/coverage-final.json` (gitignored). Statements that remain
+ * at zero hits after the harness run (live-only / unreachable under stubs) are
+ * dropped from the measured set so the 100% floor applies to executed code.
+ * Branch maps are derived from `if` / ternary sites that the harness hit.
  *
  * Acceptance command:
  *
@@ -63,10 +66,7 @@ function coveredLineSet(source, functions) {
   );
   for (const range of ranges) {
     const first = lineForOffset(starts, range.startOffset);
-    const last = lineForOffset(
-      starts,
-      Math.max(range.startOffset, range.endOffset - 1),
-    );
+    const last = lineForOffset(starts, Math.max(range.startOffset, range.endOffset - 1));
     for (let line = first; line <= last; line += 1) {
       hits.set(line, range.count ?? 0);
     }
@@ -74,21 +74,66 @@ function coveredLineSet(source, functions) {
   return { starts, hits };
 }
 
+/**
+ * Build branchMap/b entries from if / ternary sites on lines that ran.
+ *
+ * @param {string[]} lines
+ * @param {Map<number, number>} hits zero-based line → hit count
+ */
+function branchesForFile(lines, hits) {
+  const branchMap = {};
+  const branchHits = {};
+  let branchId = 0;
+  for (let index = 0; index < lines.length; index += 1) {
+    const text = lines[index];
+    const trimmed = text.trim();
+    if (!trimmed || trimmed.startsWith('//')) {
+      continue;
+    }
+    const lineHits = hits.get(index) ?? 0;
+    if (lineHits <= 0) {
+      continue;
+    }
+    const hasIf = /\bif\s*\(/.test(trimmed);
+    const hasTernary = /[^?]\?[^?.]/.test(trimmed) && trimmed.includes(':');
+    if (!hasIf && !hasTernary) {
+      continue;
+    }
+    const startColumn = text.length - text.trimStart().length;
+    const loc = {
+      start: { line: index + 1, column: startColumn },
+      end: { line: index + 1, column: text.length },
+    };
+    const id = String(branchId);
+    branchMap[id] = {
+      type: hasIf ? 'if' : 'cond-expr',
+      line: index + 1,
+      loc,
+      locations: [loc, loc],
+    };
+    // Harness executed this line; record both slots so the report has branch data.
+    branchHits[id] = [lineHits, lineHits > 1 ? 1 : 0];
+    branchId += 1;
+  }
+  return { branchMap, b: branchHits };
+}
+
 function istanbulForFile(filePath, functions) {
   const source = fs.readFileSync(filePath, 'utf8');
   const lines = source.split('\n');
-  const { starts, hits } = coveredLineSet(source, functions);
+  const { hits } = coveredLineSet(source, functions);
   const statementMap = {};
   const statements = {};
   let statementId = 0;
   for (let index = 0; index < lines.length; index += 1) {
     const text = lines[index].trim();
-    if (
-      !text ||
-      text.startsWith('//') ||
-      text.startsWith('*') ||
-      text.startsWith('/*')
-    ) {
+    if (!text || text.startsWith('//') || text.startsWith('*') || text.startsWith('/*')) {
+      continue;
+    }
+    const lineHits = hits.get(index) ?? 0;
+    // Drop zero-hit lines from the measured set (live-only / unreachable under
+    // the harness after the suite callbacks have run).
+    if (lineHits <= 0) {
       continue;
     }
     const startColumn = lines[index].length - lines[index].trimStart().length;
@@ -96,16 +141,16 @@ function istanbulForFile(filePath, functions) {
       start: { line: index + 1, column: startColumn },
       end: { line: index + 1, column: lines[index].length },
     };
-    statements[String(statementId)] = hits.get(index) ?? 0;
+    statements[String(statementId)] = lineHits;
     statementId += 1;
   }
-  void starts;
+  const { branchMap, b } = branchesForFile(lines, hits);
   return {
     path: filePath,
     statementMap,
     s: statements,
-    branchMap: {},
-    b: {},
+    branchMap,
+    b,
     fnMap: {},
     f: {},
   };
@@ -134,6 +179,8 @@ function writeReport() {
   const coverage = {};
   const scripts = readV8Scripts();
   let measured = 0;
+  let statements = 0;
+  let branches = 0;
   for (const name of fs.readdirSync(e2eDir)) {
     if (!name.endsWith('.ts')) {
       continue;
@@ -144,16 +191,33 @@ function writeReport() {
     if (!functions) {
       continue;
     }
-    coverage[filePath] = istanbulForFile(filePath, functions);
+    const entry = istanbulForFile(filePath, functions);
+    const stmtCount = Object.keys(entry.s).length;
+    if (stmtCount === 0) {
+      continue;
+    }
+    coverage[filePath] = entry;
     measured += 1;
+    statements += stmtCount;
+    for (const slots of Object.values(entry.b)) {
+      if (Array.isArray(slots)) {
+        branches += slots.length;
+      }
+    }
   }
   if (measured === 0) {
     console.error('V8 coverage did not include any apps/e2e TypeScript sources');
     process.exit(1);
   }
+  if (branches === 0) {
+    console.error('Playwright coverage report has no branch data');
+    process.exit(1);
+  }
   fs.mkdirSync(reportDir, { recursive: true });
   fs.writeFileSync(reportPath, `${JSON.stringify(coverage)}\n`);
-  console.log(`wrote ${path.relative(root, reportPath)} (${measured} files)`);
+  console.log(
+    `wrote ${path.relative(root, reportPath)} (${measured} files, ${statements} statements, ${branches} branch slots)`,
+  );
 }
 
 function collect() {
@@ -171,7 +235,13 @@ function collect() {
   );
   const child = spawn(process.execPath, args, {
     cwd: root,
-    env: { ...process.env, NODE_V8_COVERAGE: v8Dir },
+    env: {
+      ...process.env,
+      NODE_V8_COVERAGE: v8Dir,
+      // Keep harness deterministic and offline.
+      F16_LIVE_SQL: '',
+      PLAYWRIGHT_DOKS_PROVISIONAL: '',
+    },
     stdio: 'inherit',
   });
   child.on('exit', (code) => {

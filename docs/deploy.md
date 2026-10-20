@@ -481,13 +481,16 @@ from `apps/frontend` (after copying `supabase/config.toml` as CI does).
 
 ## Rollback
 
-Redeploy previous Render deploy from dashboard or revert git tag on main.
+Roll the previous image tag on the DOKS cluster for the target env
+(`https://api.staging.tac-to-iwxxm.com` / `https://app.staging.tac-to-iwxxm.com`,
+or `https://api.tac-to-iwxxm.com` / `https://app.tac-to-iwxxm.com`), or revert
+the git tag on `main` and push a new `vYYYY.MM.DD-deploy` tag. See §Promote.
 
 ## Checklist (pre-deploy)
 
 - [ ] CI green on main
 - [ ] E2E T2 pass locally
-- [ ] Env vars set on Render
+- [ ] Env vars set on the DOKS staging or prod cluster
 - [ ] CORS origins include production frontend URL
 - [ ] Frontend rebuilt after API URL known
 - [ ] F5: Supabase migrations through `20250623000007` applied (staging/prod)
@@ -511,7 +514,8 @@ make test-live-e2e            # H6 Playwright UJ-001–003
 make test-live                # H4–H5 → H3 → H6
 ```
 
-**Cold-start**: Live tests retry up to 3 times with 30s backoff when Render services are spun down.
+**Cold-start**: Live tests retry up to 3 times with 30s backoff when the DOKS
+API or frontend pod is not ready yet.
 
 **Rate limits**: Live API tests use exponential backoff on HTTP 429.
 
@@ -532,8 +536,8 @@ make test-live                # H4–H5 → H3 → H6
 2. Run connectivity + live signoff:
 
    ```bash
-   export LIVE_API_URL="https://metar-to-iwxxm-api.onrender.com"
-   export LIVE_FRONTEND_URL="https://metar-to-iwxxm-frontend-v4-web.onrender.com"
+   export LIVE_API_URL="https://api.staging.tac-to-iwxxm.com"
+   export LIVE_FRONTEND_URL="https://app.staging.tac-to-iwxxm.com"
    export PLAYWRIGHT_BASE_URL="${LIVE_FRONTEND_URL}"
    export VITE_API_BASE_URL="${LIVE_API_URL}"
    # F21: no E2E_USER_* — public convert

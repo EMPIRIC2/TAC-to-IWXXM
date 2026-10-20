@@ -1435,3 +1435,11 @@ GET /api/v1/live-map?west=&south=&east=&north=&products=
 **Amend (EV-live-map-24h-window)**: Every `observed_at` on this route is within the last 24 hours of UTC now. Places with no remaining in-window reports are omitted. Query parameters are unchanged. Client-only presets (1h / 3h / 6h / 12h / full) further narrow the loaded view and are not query parameters. [Corpus: product §F37] [Corpus: api] [Corpus: adr/ADR-052]
 
 The route reads the cache. It does not call a vendor during the request.
+
+## Local OpenAPI status and required-field check (EV-101 / #1432)
+
+[Corpus: api] [Corpus: tests] [Corpus: product]
+
+This check does not change any request or response. Operator-facing behavior stays as the sections above describe. `POST /api/v1/convert` status 200 still includes `failed`, `successful`, and `total_processed`.
+
+The committed OpenAPI snapshot `apps/frontend/openapi/openapi.json` is compared with local interactions in the repository. The bugs job runs `uv run python scripts/ci/check_openapi_contract.py` with no PactFlow credentials and no broker. The check fails when an operation, an in-scope status, a required JSON request field, or a required JSON response field has no interaction. Path-only tests do not satisfy the check. Acceptance is **TC-EV101-005**. The implementation is already on `origin/stage` (pull requests #1447 and #1449).

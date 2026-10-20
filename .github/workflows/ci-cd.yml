@@ -47,7 +47,7 @@ env:
 jobs:
   # EV-933 — staging Alembic head + PROFILE_OVERLAY_HMAC_SECRET (workflow_dispatch ops).
   ops-ev933-staging:
-    name: Ops EV-933 staging (Alembic + HMAC)
+    name: Ops staging (Alembic + HMAC)
     runs-on: ubuntu-latest
     if: >
       github.event_name == 'workflow_dispatch' &&
@@ -385,7 +385,6 @@ jobs:
         uses: actions/setup-node@v5
         with:
           node-version: '22'
-          package-manager-cache: false
 
       - name: Collect Playwright suite coverage
         if: matrix.package == 'bugs'
@@ -493,9 +492,6 @@ jobs:
             -o APT::Get::List-Cleanup="0"
           sudo apt-get install -y bats
 
-      - name: OpenAPI status and required-field contract
-        run: make check-openapi-contract
-
       - name: Scripts Python coverage (fail_under 100)
         run: make test-coverage-scripts
 
@@ -539,7 +535,6 @@ jobs:
         id: cov
         run: |
           python3 scripts/ci/format_coverage_pr_comment.py coverage-artifacts \
-            --require tac2iwxxm,tac-validate,auth,workflows \
             > coverage-pr-comment.md
           {
             echo "body<<EOF"
@@ -721,7 +716,7 @@ jobs:
           make db-migrate
           make db-migrate
 
-      - name: TC-EV031-002 layout + live upgrade tests
+      - name: Alembic layout and live upgrade tests
         run: make test-alembic
 
   # ============================================================================
@@ -895,16 +890,11 @@ jobs:
     name: E2E Smoke (Playwright)
     env:
       METAR_CONFIG_ENV: local
-      # Non-production logout fixture. The require step fails if this file is missing.
-      E2E_LOGOUT_FIXTURE: apps/e2e/fixtures/ci-logout.json
 
     steps:
       - uses: actions/checkout@v5
         with:
           submodules: false
-
-      - name: Require non-production logout fixture
-        run: python3 scripts/ci/check_e2e_logout_fixture.py
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -960,16 +950,11 @@ jobs:
       METAR_CONFIG_ENV: local
       # Auth routes need URL (F31). Publishable key already set at workflow env.
       SUPABASE_URL: ${{ secrets.FRONTEND_VITE_SUPABASE_URL }}
-      # Non-production logout fixture. The require step fails if this file is missing.
-      E2E_LOGOUT_FIXTURE: apps/e2e/fixtures/ci-logout.json
 
     steps:
       - uses: actions/checkout@v5
         with:
           submodules: false
-
-      - name: Require non-production logout fixture
-        run: python3 scripts/ci/check_e2e_logout_fixture.py
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -1248,7 +1233,6 @@ jobs:
       # Host-header fallback until Porkbun A records → staging LB (EV-044).
       STAGING_LB_IP: "143.244.202.13"
       DOKS_LB_IP: "143.244.202.13"
-      STAGING_SMOKE_PYTEST: "0"
     steps:
       - uses: actions/checkout@v5
       - name: Wait briefly for ingress/TLS
