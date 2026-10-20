@@ -80,13 +80,14 @@ if [[ "$method" == "OPTIONS" ]]; then
     "HTTP/1.1 204 No Content"
     "Access-Control-Allow-Origin: ${origin}"
   )
+  # Only emit response headers when the caller asked for -D/--dump-header.
+  # Otherwise they pollute stdout and break -w '%{http_code}' captures.
   if [[ "$header_file" == "-" ]]; then
     printf '%s\n' "${headers_out[@]}"
   elif [[ -n "$header_file" ]]; then
     printf '%s\n' "${headers_out[@]}" >"$header_file"
-  else
-    printf '%s\n' "${headers_out[@]}"
   fi
+  write_body "$output_file"
   if [[ -n "$write_out" && "$write_out" == *http_code* ]]; then
     echo "204"
   fi
