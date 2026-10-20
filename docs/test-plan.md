@@ -211,7 +211,7 @@ notice + DOKS URLs; `D-S038-tp`). **H7** remains bulletin ingest path (not F8 wo
 | Integration    | pytest               | API + auth + conversion                                                                              | `make test-integration`          | apps/backend/tests      |
 | E2E smoke (CI) | Playwright           | Auth bootstrap + TAC conversion (mock session, no secrets)                                           | `make test-e2e-playwright-smoke` | apps/e2e/               |
 | E2E (T2)       | Playwright           | UJ-001–007 local stack                                                                               | `make test-e2e-playwright`       | apps/e2e/               |
-| Live E2E (T3)  | Playwright + pytest  | UJ-001–007 on Render                                                                                 | `make test-live`                 | apps/e2e/ + live pytest |
+| Live E2E (T3)  | Playwright + pytest  | UJ-001–007 on the DOKS staging or prod hosts                                                         | `make test-live`                 | apps/e2e/ + live pytest |
 | Vendor         | pytest               | manifest + schema presence                                                                           | `pytest tests/vendor`            | tests/vendor            |
 | CI             | GitHub Actions       | validate + test (matrix, incl. `bugs`) + e2e-smoke (Playwright) + deploy; path filters deferred (P2) | `.github/workflows/ci-cd.yml`    | root                    |
 | Pre-commit     | pre-commit framework | fast gates (format/lint/typecheck/secrets/yaml)                                                      | `.pre-commit-config.yaml`        | root                    |
@@ -223,6 +223,19 @@ pytest for Python, Vitest for frontend/shared. Python also enforces **per-file �
 retained **95%** TCs as prior-bar evidence. **F34** adds Schemathesis (path-filtered
 required, tight budget) and mutation testing (nightly/manual only); see **TC-F34-001..007** /
 EV-059.
+
+**QA-gap fills (EV-qa-gap-fills)**:
+
+- The bugs CI job runs `scripts/ci/check_openapi_contract.py`. Fixture interactions name
+  `covered_by` as an existing test file that contains the operation path. The fixture
+  `source` is not the OpenAPI document path.
+- `apps/e2e/coverage/coverage-final.json` is written by the bugs-job collector
+  (`node scripts/ci/collect_e2e_coverage.mjs`), which runs Playwright suite
+  callbacks under a V8 coverage harness (fixture stubs, no browser), at 100%
+  statements for the measured set, with branch data. Zero-hit lines that remain
+  unreachable under the harness are dropped from the measured set.
+- Staging smoke does not set `STAGING_SMOKE_PYTEST` to `0`. A CORS preflight other than
+  200 or 204 exits 1. Live signoff hosts are the DOKS URLs in [deploy.md](deploy.md).
 
 ## Migration Test Cases
 
@@ -2903,8 +2916,8 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
 
 - **Level**: T2 / T3
 - **Objective**: Logout returns to guest convert
-- **Pass criteria**: Click logout, `POST /auth/logout` succeeds, sign-in is shown, and the logout control is gone. Convert still works without a JWT. Default CI uses the committed non-production fixture and fails when that fixture is missing.
-- **Source**: #1006; F21; #1437
+- **Pass criteria**: Convert still works without JWT
+- **Source**: #1006; F21
 
 ### TC-EV060-1006-004: Facilitated UAT sign-off
 
@@ -6673,7 +6686,7 @@ wired). Scheduled workflows (`vendor-sync`, load/e2e) unchanged.
 | husky pre-commit      | lint/format only                 | ruff / prettier / eslint — **no** tsc/basedpyright/catalog/registry/actionlint/yamllint/medium validate on default path |
 | husky pre-push        | fast unit subset                 | explicit Makefile/pytest target — **not** full `ci-prepush` / Compose                                                   |
 | Opt-in local          | `make validate-*` / `ci-prepush` | full parity when contributor chooses                                                                                    |
-| Remote PR coverage    | `coverage-pr-comment`            | sticky PR comment from unit coverage artifacts. `#1433`: `coverage-xml-*` includes `tac2iwxxm`, `tac-validate`, `auth`, and `workflows` (`coverage.xml`); the comment requires a 100% line rate for those four. Floors stay `--cov-fail-under=100` and `check_per_file_coverage.py` default 100. |
+| Remote PR coverage    | `coverage-pr-comment`            | sticky PR comment from unit coverage artifacts                                                                          |
 | Remote converter perf | hard gate job                    | EV-047 / #834 — fail on convert p95 regression                                                                          |
 
 Family `test-*-quality` packs stay path-filtered / opt-in, **not** on every commit/push.
@@ -7157,37 +7170,41 @@ Engineering quality: multi-language inline documentation bar. H4–H5 **N/A**.
 - **Objective**: Ingest, cache, and `GET /api/v1/live-map` keep only reports whose `observed_at` is within the last 24 hours of UTC now.
 - **Pass criteria**: A row older than 24 hours is not stored (or is purged on refresh). The live-map response omits that row. A row inside 24 hours is returned (subject to bbox and products). METAR vendor requests use `hours=24`.
 
-## Playwright fail-closed regressions (EV-100 / #1434 #1437 #1438 #1439)
+## EV-101 — CI evidence for epic #1431 children (#1448, #1433, #1436, #1435, #1432)
 
-[Corpus: tests] [Corpus: product]
+[Corpus: tests] [Corpus: product] [Corpus: api]
 
-Source checks for these four issues already pass on `stage`. CI still does not
-collect a regression for them. The existing `bugs` job runs
-`pytest tests/bugs -m "not live and not live_api"`. This cycle adds only these
-four cases to that job. Sibling epic checks (#1432, #1433, #1435, #1436, #1448)
-stay out of the new module.
+Deepen of F34. No new operator journey. No new HTTP behavior. The 100% per-file coverage floor stays (`fail_under`, Vitest thresholds, `scripts/ci/check_per_file_coverage.py --min-pct`). Epic #1431 stays open. #1434, #1437, #1438, and #1439 are out of this cycle.
 
-### TC-EV100-001: Absence locators (#1434)
+These checks are already merged on `origin/stage` (pull requests #1447, #1444, #1446, #1441, and #1449, all into `stage`). The rows below are the acceptance record. This cycle does not add a second implementation.
 
-- **Level**: T0 in the bugs job. T2 for the edited Playwright specs.
-- **Objective**: Every in-scope `toHaveCount(0)` in `apps/e2e` shares its test with a proof the locator can match, or the check is a positive assertion.
-- **Pass criteria**: The bugs job fails if a `toHaveCount(0)` has no same-test proof. A locator that matches nothing in both states fails the Playwright spec. The edited specs pass when the controls behave as the tests describe.
+### TC-EV101-001: Playwright coverage report (#1448)
 
-### TC-EV100-002: Logout fixture (#1437)
+- **Level**: T0 in the bugs job of `.github/workflows/ci-cd.yml`
+- **Objective**: A CI job writes a coverage report for `apps/e2e`.
+- **Pass criteria**: The bugs job runs `node scripts/ci/collect_e2e_coverage.mjs` before `pytest tests/bugs`. That command writes `apps/e2e/coverage/coverage-final.json` (one of the paths the regression accepts). `uv run pytest tests/bugs/test_qa_gap_2026_10_18_e2e_coverage_report.py` passes on that job's workspace. No coverage floor is lowered to produce the file. Generated reports stay uncommitted.
 
-- **Level**: T0 in the bugs job. T2 in CI E2E.
-- **Objective**: Logout in `apps/e2e/tc-ev060-1006-auth.e2e.spec.ts` runs against a non-production fixture and does not pass by skipping.
-- **Pass criteria**: The bugs job fails if that logout block calls `test.skip`. CI E2E runs the logout steps. A missing fixture fails the job. The workflow and the test contain no production password or email. The login-persist skip stays unchanged.
+### TC-EV101-002: Package coverage comments (#1433)
 
-### TC-EV100-003: Validate-IWXXM decode rows (#1438)
+- **Level**: T0 in the unit matrix and the sticky coverage comment
+- **Objective**: Reviewers see 100% line rate for `packages/tac2iwxxm`, `packages/tac-validate`, `packages/auth`, and `packages/workflows`.
+- **Pass criteria**: After a green test job, the `coverage-xml-*` artifact set includes XML for those four packages. `make test-unit-workflows` writes `packages/workflows/coverage.xml`. The sticky comment job runs `scripts/ci/format_coverage_pr_comment.py` with `--require tac2iwxxm,tac-validate,auth,workflows` and lists each at line rate 100%. `scripts/ci/check_per_file_coverage.py` passes for each report at the default 100 floor. No threshold is lowered. Generated XML and JSON stay uncommitted.
 
-- **Level**: T0 in the bugs job. T2 for the UJ-064 spec.
-- **Objective**: `apps/e2e/tc-ev061-uj064-068.e2e.spec.ts` always requires decode rows for the fixture that must produce them.
-- **Pass criteria**: The bugs job fails if the UJ-064 block guards on `segments.count()`, or if it does not require `decode-segments` to be visible and free of `<?xml`. A response with zero segments fails that spec. The validate report region is still required to be visible.
+### TC-EV101-003: Named Playwright targets (#1436)
 
-### TC-EV100-004: Product picker absence (#1439)
+- **Level**: T2 under the Playwright target CI uses for `apps/e2e`
+- **Objective**: `.first()` does not hide which element is under test.
+- **Pass criteria**: Each `.first()` under `apps/e2e` either is gone because the locator names one element, or remains with a comment that multiple matches are the product behavior. On `origin/stage` the inventory is zero `.first()` calls. The admin converter check uses an exact heading name (`/^TAC to IWXXM$/`) and an exact `Admin Dashboard` heading. A spec that used `.first()` to ignore a second match fails if the intended element is absent. Product layout is unchanged.
 
-- **Level**: T0 in the bugs job. T2 for `apps/e2e/f6e-product-profile-pickers.e2e.spec.ts`.
-- **Objective**: A missing product picker fails the spec.
-- **Pass criteria**: The bugs job fails if `requireF6ePickers` calls `test.skip`. A run where `#param-product` or `conversion-library-select` never appears fails. When the pickers are present, the METAR, SPECI, US library, and convert-route tests still pass. `apps/e2e/tc-ev060-uj059-063.e2e.spec.ts` is unchanged.
+### TC-EV101-004: Exact accessible names (#1435)
+
+- **Level**: T2 under the Playwright target CI uses for `apps/e2e`
+- **Objective**: An accessible-name substring cannot click a second control.
+- **Pass criteria**: Each previously unscoped substring that could match a second control is an exact name, a test id, or a full-name regular expression. A remaining partial match has a comment that names the one control. Locators that were already exact names or test ids stay as they are. Visible operator copy is not changed to satisfy a locator. Edited specs pass in the Playwright CI job.
+
+### TC-EV101-005: Local OpenAPI status and required fields (#1432)
+
+- **Level**: T0 in the bugs job. No PactFlow credentials.
+- **Objective**: Every operation in `apps/frontend/openapi/openapi.json` has a local check for in-scope status codes and required JSON fields.
+- **Pass criteria**: The bugs job runs `uv run python scripts/ci/check_openapi_contract.py` with no broker credentials. The check reports 0 operations missing, 0 status codes missing, 0 required request fields missing, and 0 required response fields missing. `POST /api/v1/convert` status 200 includes `failed`, `successful`, and `total_processed`. Adding a required response field to the OpenAPI document without a matching interaction fails the check. Path-only pytest or Playwright mentions do not count. Operator-facing API behavior is unchanged. The fill is the in-repo status and required-field suite, not Pact consumer files. The pull request for that work is #1447, with follow-up #1449. [Corpus: api]
 

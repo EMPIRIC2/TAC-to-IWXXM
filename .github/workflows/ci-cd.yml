@@ -1248,7 +1248,6 @@ jobs:
       # Host-header fallback until Porkbun A records → staging LB (EV-044).
       STAGING_LB_IP: "143.244.202.13"
       DOKS_LB_IP: "143.244.202.13"
-      STAGING_SMOKE_PYTEST: "0"
     steps:
       - uses: actions/checkout@v5
       - name: Wait briefly for ingress/TLS

@@ -41,7 +41,7 @@
 | F31 | Hybrid operator sessions (guest local + Auth long-term) | Done | Product | S038 / EV-031; amends F5/F7/F21/F22; **deepen** EV-beta-ux-export-auth restore working `/auth/register` + login verify (local + staging) |
 | F32 | VONA quality bar (VolcanoObservatoryNoticeForAviation) | Done | Product | S040 / EV-032; #741 closed; **deepen** S055 / EV-046 #889; prior S046 / EV-038; epic #846 |
 | F33 | Secure mass file/folder ingest | Implemented | Product | S050 / EV-042; #897; auth + caps + sniff/zip-bomb; multi-file + folder/zip; 11 approved |
-| F34 | Contract + mutation quality gates | Done | Platform | S069 / EV-059; epic #841 CLOSED; #727 Schemathesis; #874 Stryker + pytest-gremlins; **deepen** S071 / EV-061 stricter stage→main required checks (#1015); promote held |
+| F34 | Contract + mutation quality gates | Done | Platform | S069 / EV-059; epic #841 CLOSED; #727 Schemathesis; #874 Stryker + pytest-gremlins; **deepen** S071 / EV-061 stricter stage→main required checks (#1015); promote held; **deepen EV-101 / #1431**: local OpenAPI status and required-field check, coverage reports for tac2iwxxm, tac-validate, auth, and workflows, a Playwright coverage report, and named Playwright locators (#1448, #1433, #1436, #1435, #1432). Those five checks are already merged on `stage`. Epic #1431 stays open. [Corpus: tests] [Corpus: product] [Corpus: api] |
 | F35 | Semantic vs exchange profiles + canonical ID migration | Implemented | Product | EV-063 / PR #1026; #912 / #914; ADR-036 Accepted; alias cutover #1025 (2026-10-31); amends F6 wire; **deepen** EV-beta-ux-export-auth suppress operator-visible `DEPRECATED_PROFILE_ALIAS` notices; Conversion profiles UI marked **beta** (ADR-043) |
 | F36 | National semantic + regional exchange profile content | In progress | Product | EV-063 / #912; **#919 US closed (EV-085)**; **#916 CA_ECCC P1 closed (EV-078)**; **EV-098 CA_ECCC mining #1028–#1031 closed**; **#1032 closed (EV-075)**; **#1061 SIGMET emit (EV-076)**; VAA TAC validate-first (EV-077); VAA exchange emit waived; **EV-profile-validate-decode-deepen / #1221** AU/NZ → `implemented`; **deepen EV-1222 / #1222**: regional exchange overlays beyond COLLECT stubs (APAC_ROBEX first) |
 | F37 | Live TAC map on Decode visuals | In progress | Product | EV-live-map-24h-window: pull/store/share last 24h only; browser time presets 1h/3h/6h/12h/full; prior layers + country/region/phenomenon filters |
@@ -2468,6 +2468,14 @@
   Staging gate alone: **full CI** (unit suites), **lint**, **typecheck**, and **full E2E**
   (not smoke-only) as required status checks before merge. Documented in deploy.md; GitHub
   branch protection / required checks as needed. No new app secrets. UJ-DEV-009 (doc/CI).
+- **EV-101 / #1431 deepen** (CI evidence only; no new operator feature): local OpenAPI
+  status and required-field check (#1432, [Corpus: api]), coverage artifacts and the sticky
+  coverage comment for `tac2iwxxm`, `tac-validate`, `auth`, and `workflows` (#1433),
+  named Playwright locators (#1436, #1435), and a Playwright coverage report under
+  `apps/e2e` (#1448). Test rows: **TC-EV101-001..005**. The 100% coverage floor stays.
+  Epic #1431 stays open. Implementation is already on `origin/stage` (PRs #1447, #1444,
+  #1446, #1441, #1449). This deepen records the corpus rows. It does not add a second
+  implementation. [Corpus: tests] [Corpus: product] [Corpus: api]
 - **Source**: E0–E8 / 01 intake; [evolve-decisions.md](decisions/evolve-decisions.md) §EV-059;
   #841 / #727 / #874; [Corpus: tests] [Corpus: tech-spec] [Corpus: api]; S071 / EV-061 #1015
 
