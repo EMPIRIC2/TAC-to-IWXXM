@@ -16,11 +16,13 @@ from tac2iwxxm.slot_builders.sigmet_body import (
 )
 
 _SIGMET = re.compile(
-    r"^(?P<fir>[A-Z]{4})(?:\s+(?P<fir_extra>(?:[A-Z]{4}\s+)+))?\s*SIGMET\s+"
+    r"^(?:(?P<fir>[A-Z]{4})(?:\s+(?P<fir_extra>(?:[A-Z]{4}\s+)+))?\s*)?"
+    r"SIGMET\s+"
     r"(?P<seq>(?:[A-Z]+\s+\d+|[A-Z]?\d+))\s+VALID\s+"
     r"(?P<from>\d{6})/(?P<to>\d{6})\s+(?P<mwo>[A-Z]{4})\s*-\s*(?P<body>.*)$",
     re.DOTALL | re.IGNORECASE,
 )
+_BODY_FIR = re.compile(r"\b(?P<fir>[A-Z]{4})\b(?=\s+\S+\s+FIR\b)", re.IGNORECASE)
 _AIRMET = re.compile(
     r"^(?P<fir>[A-Z]{4})\s+AIRMET\s+"
     r"(?P<seq>(?:[A-Z]+\s+\d+|[A-Z]?\d+))\s+VALID\s+"
@@ -193,6 +195,7 @@ _DIR_DEG = {
 }
 _INTENSITY = {
     "WKN": "WEAKEN",
+    "DECR": "WEAKEN",
     "INTSF": "INTENSIFY",
     "NC": "NO_CHANGE",
 }
@@ -1314,6 +1317,31 @@ def _parse_convective_sigmet(
     return ir
 
 
+def _sigmet_region_indicator(match: re.Match[str], body: str) -> str:
+    """
+    Return the flight information region indicator for a SIGMET header.
+
+    Parameters
+    ----------
+    match :
+        Header match. The leading indicator may be absent.
+    body :
+        SIGMET body after the watch-office hyphen.
+
+    Returns
+    -------
+    str
+        Leading indicator, else the four-letter token before ``FIR``, else the watch office.
+    """
+    raw = match.group("fir")
+    if raw:
+        return raw.upper()
+    named = _BODY_FIR.search(body.upper())
+    if named is not None:
+        return named.group("fir")
+    return match.group("mwo").upper()
+
+
 def parse_sigmet(tac: str, *, product: str = "SIGMET") -> dict[str, Any]:
     """
     Parse a SIGMET TAC into IR.
@@ -1364,6 +1392,7 @@ def parse_sigmet(tac: str, *, product: str = "SIGMET") -> dict[str, Any]:
     from_d, from_h, from_m = _parse_valid(match.group("from"))
     to_d, to_h, to_m = _parse_valid(match.group("to"))
     seq_num, seq_label = _parse_sequence_token(match.group("seq"))
+    fir = _sigmet_region_indicator(match, body)
     upper_body = body.upper()
     if "AMSWELL" in upper_body:
         fir_name = "AMSWELL FIR"
@@ -1374,13 +1403,13 @@ def parse_sigmet(tac: str, *, product: str = "SIGMET") -> dict[str, Any]:
     else:
         fir_name = flight_information_region_name(
             body,
-            match.group("fir"),
+            fir,
             watch_office=match.group("mwo"),
         )
     ir: dict[str, Any] = {
         "ir_version": 1,
         "product": "SIGMET",
-        "fir": match.group("fir").upper(),
+        "fir": fir,
         "mwo": match.group("mwo").upper(),
         "sequence": seq_num,
         "valid_from_day": from_d,

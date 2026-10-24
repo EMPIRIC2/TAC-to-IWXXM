@@ -6547,10 +6547,27 @@ Manual signoff before release, not a PR merge gate. Developer runs `make test-li
 - **Steps**:
   1. The fixture set has the 755 unique reports counted in the session context brief: 600 METAR, 70 TAF, 65 SPECI, and 20 SIGMET.
   2. A report that converts today still converts.
-  3. A report that fails today fails with the same error. This cycle does not fix that error.
-- **Pass criteria**: The fixture count matches, and each report keeps today's convert result.
+  3. A report that is still invalid TAC fails with the same error. Directional visibility and a SIGMET that omits the leading region indicator are TC-F6-057, and their fixture rows follow that result.
+- **Pass criteria**: The fixture count matches, and each report keeps the convert result recorded in the fixture.
 - **Out of scope**: Jamaica rows that record only a station code. Schema validation of every report. The lowercase St Maarten sample, which is TC-F6-055.
 - **Source**: F6 deepen #1396 / #1405
+
+### TC-F6-057: Remaining October 2026 tester reports
+
+- **Level**: T0 package, plus the Tester regression workflow. No browser journey beyond the result card already covered by TC-F6 for #1411.
+- **Objective**: Directional visibility and a SIGMET copied without its leading region indicator convert. Incomplete TAC from the same packet still fails closed. [Corpus: product §F6] [Corpus: product §F15] [Corpus: tests]
+- **Steps**:
+  1. `SPECI TNCM 061126Z 09008KT 2000E SHRA BKN016 27/24 Q1016 TEMPO SHRA=` encodes prevailing visibility 2000 m and minimum visibility 2000 m at 90 degrees. Lint does not raise `MISSING_VISIBILITY`.
+  2. `9999 1200NE` stays 10 km or more, with minimum visibility 1200 m at 45 degrees.
+  3. `SIGMET 3 VALID 251435/251835 TTPP- TTZP PIARCO FIR ... STNR DECR=` converts. The region name is PIARCO FIR. Intensity change is WEAKEN.
+  4. The same message with a leading `TTZP` still names PIARCO FIR. `WKN` stays WEAKEN.
+  5. A SIGMET with a watch office and no named region uses that watch office.
+  6. `SIGMET 1 VALID 261150/261550 TTPP` still fails with "unable to parse SIGMET header".
+  7. A TAF with no validity period, `VBR02KT`, `1100(3)KT`, a temperature with no dewpoint, and a METAR that omits visibility still fail closed.
+  8. `.github/workflows/tester-regression.yml` runs this module, the October packet fixture, and the earlier tester-finding modules on every pull request to `stage` and `main`.
+- **Pass criteria**: The eight checks pass.
+- **Out of scope**: Repairing tester spreadsheets. A recorded onboarding walkthrough. Folding TAF or SIGMET letter case. Treating `VBR` as `VRB`.
+- **Source**: F6 deepen #1396
 
 ### TC-F4-001: Profile package pin
 

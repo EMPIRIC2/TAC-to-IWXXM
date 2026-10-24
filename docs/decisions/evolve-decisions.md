@@ -1,5 +1,23 @@
 # Evolve Decisions
 
+## Cycle EV-1396-tester-regression-kit — directional visibility and SIGMET header (#1396)
+
+**Opened:** 2026-10-24 · **Session:** continuation of the October 2026 regional tester pack  
+**Issue:** [#1396](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1396)  
+**Documenting→Implementing gate:** open for this delta  
+**Scale:** micro
+
+| ID | Outcome |
+|----|---------|
+| D1 | `2000E` is a visibility group: 2000 metres prevailing and 2000 metres minimum at 90 degrees. Lint does not call it missing. |
+| D2 | A SIGMET that starts at `SIGMET` converts when the validity line has the watch office, a hyphen, and a body. The region comes from the body, or from the watch office when the body names none. |
+| D3 | `DECR` is weaken, the same change as `WKN`. |
+| D4 | Incomplete TAC stays a failure: no TAF period, `VBR02KT`, `1100(3)KT`, a bare `27/`, a METAR with no visibility group, and a SIGMET validity line with no body. |
+| D5 | The 755-report fixture keeps those new results. Other rows keep the result they already had. |
+| D6 | `.github/workflows/tester-regression.yml` runs the tester finding modules on pull requests to `stage` and `main`. No new feature id. |
+
+[Corpus: product §F6] [Corpus: product §F15] [Corpus: tests]
+
 ## Cycle EV-1405-tester-packet-tests — lowercase METAR and SPECI (#1405)
 
 **Opened:** 2026-10-17 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-1405-tester-packet-tests`  

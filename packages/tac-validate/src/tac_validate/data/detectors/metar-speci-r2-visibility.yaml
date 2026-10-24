@@ -29,7 +29,7 @@ rules:
       strip_terminator: true
     skip_if_codes:
       - INVALID_VISIBILITY
-    pattern: '(?:\b(?:CAVOK|P?\d{1,2}SM|[MP]?\d{1,2}/\d{1,2}SM|\d{1,2}\s+[MP]?\d{1,2}/\d{1,2}SM|\d{4})\b|(?<![A-Z0-9/])////(?:SM)?(?![A-Z0-9/]))'
+    pattern: '(?:\b(?:CAVOK|P?\d{1,2}SM|[MP]?\d{1,2}/\d{1,2}SM|\d{1,2}\s+[MP]?\d{1,2}/\d{1,2}SM|\d{4}(?:NE|SE|SW|NW|N|E|S|W)?)\b|(?<![A-Z0-9/])////(?:SM)?(?![A-Z0-9/]))'
     on_fail:
       code: MISSING_VISIBILITY
       location: visibility

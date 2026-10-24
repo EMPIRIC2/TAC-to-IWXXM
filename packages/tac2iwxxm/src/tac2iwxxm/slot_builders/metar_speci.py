@@ -332,6 +332,40 @@ def _assign_metre_visibility(target: dict[str, Any], metres: int) -> None:
     target["visibility_above"] = above
 
 
+def _assign_reported_visibility(target: dict[str, Any], text: str) -> bool:
+    """
+    Store prevailing visibility from the observation text.
+
+    A compass group such as ``2000E`` is the visibility when no bare metre
+    group or statute-mile group is present.
+
+    Parameters
+    ----------
+    target :
+        Observation map to update.
+    text :
+        Observation text that may include a trend.
+
+    Returns
+    -------
+    bool
+        True when a visibility group was stored.
+    """
+    vis_sm = _VIS_SM.search(text)
+    if vis_sm is not None:
+        _assign_statute_visibility(target, vis_sm.group("vis"))
+        return True
+    vis_m = _VIS_M.search(text)
+    if vis_m is not None:
+        _assign_metre_visibility(target, int(vis_m.group("vis")))
+        return True
+    vis_dir = _VIS_MIN.search(text)
+    if vis_dir is not None:
+        _assign_metre_visibility(target, int(vis_dir.group("vis")))
+        return True
+    return False
+
+
 def _slp_code_to_hpa(code: int) -> float:
     """
     Internal helper ``_slp_code_to_hpa``.
@@ -1585,14 +1619,8 @@ def parse_metar_speci(tac: str, *, product: str) -> dict[str, Any]:
         # Guidance / TC-EV023-002: AUTO missing vis → common/nil/notObservable.
         ir["visibility_not_observable"] = True
     else:
-        vis_sm = _VIS_SM.search(rest)
-        if vis_sm is not None:
-            _assign_statute_visibility(ir, vis_sm.group("vis"))
-        else:
-            vis_m = _VIS_M.search(rest)
-            if vis_m is None:
-                raise ValueError("missing visibility (SM/m/CAVOK) group")
-            _assign_metre_visibility(ir, int(vis_m.group("vis")))
+        if not _assign_reported_visibility(ir, rest):
+            raise ValueError("missing visibility (SM/m/CAVOK) group")
 
     if _TEMP_NOT_OBS.search(rest):
         ir["temp_not_observable"] = True
@@ -1645,13 +1673,7 @@ def parse_metar_speci(tac: str, *, product: str) -> dict[str, Any]:
             ir.pop("visibility_sm", None)
             ir.pop("visibility_above", None)
         else:
-            vis_sm = _VIS_SM.search(obs_body)
-            if vis_sm is not None:
-                _assign_statute_visibility(ir, vis_sm.group("vis"))
-            else:
-                vis_m = _VIS_M.search(obs_body)
-                if vis_m is not None:
-                    _assign_metre_visibility(ir, int(vis_m.group("vis")))
+            _assign_reported_visibility(ir, obs_body)
 
     min_vis = _VIS_MIN.search(obs_body)
     if min_vis is not None:
