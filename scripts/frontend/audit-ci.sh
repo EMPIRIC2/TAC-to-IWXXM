@@ -49,6 +49,23 @@ IGNORE_GHSA=(
   "GHSA-qhr7-859c-m2p7"
   # fast-uri via stryker ajv — dev-only, same waiver class as EV-097 (2026-09-30)
   "GHSA-hrr3-gc8f-f4qj"
+  # Newly published transitive ids on the same dev/test lines (2026-10-24):
+  # vite, vitest mocker, undici via jsdom, zod via stryker, fast-uri via stryker.
+  "GHSA-333x-w4r6-6crp"
+  "GHSA-4qv8-2p9j-2685"
+  "GHSA-587h-7wmj-h5pm"
+  "GHSA-698v-4r3x-3vcv"
+  "GHSA-9jrq-w75r-8gcw"
+  "GHSA-f72v-6w45-q472"
+  "GHSA-mrhx-c7xc-m3w5"
+  "GHSA-qxg6-89mg-rqv8"
+  "GHSA-r825-w8mm-5pxw"
+  "GHSA-rq7h-c2jc-7f22"
+  "GHSA-w74x-v6f9-j3xg"
+  "GHSA-wjr9-j795-jxcr"
+  "GHSA-xhq7-xmqj-769h"
+  "GHSA-xjj6-f33q-929c"
+  "GHSA-xp26-3454-mjgp"
 )
 GHSAS=()
 while IFS= read -r id; do
