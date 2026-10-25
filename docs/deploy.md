@@ -608,7 +608,7 @@ change, redeploy API then frontend and run H4–H5 + UJ-022.
 
 ## References
 
-- `render.yaml` — Render Blueprint (API + static frontend)
+- `deploy/doks/` — live staging and prod manifests. `render.yaml` is a suspended blueprint and is removed by the config-hygiene build; do not treat it as the current deploy path ([Corpus: decisions] `requirements-decisions.md` §EV-config-file-hygiene).
 - [staging-secrets-matrix.md](ops/staging-secrets-matrix.md) — staging env values
 - [user-journeys.md](user-journeys.md) UJ-OPS-001, UJ-023
 - [config-spec.md](config-spec.md) §F11–F14

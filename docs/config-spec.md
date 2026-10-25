@@ -1,7 +1,7 @@
 # Configuration Specification
 
 > **Project**: METAR to IWXXM Converter  
-> **Last updated**: 2026-08-03 (S038 / EV-031 — F30/F31 Auth-only Supabase + DO Postgres + DOKS)  
+> **Last updated**: 2026-10-25 (config hygiene target — decisions log §EV-config-file-hygiene)  
 > **Session**: S003-supabase-keys-config (base); S008; S011; S023-public-app-privacy; **S038**
 
 ## Precedence Order
@@ -161,6 +161,22 @@ admin dashboard; prefer documenting operator Supabase Auth invite policy.
 | `make test-integration` | Requires secrets in `.env` + local config                        |
 
 No new CLI flags.
+
+## Config hygiene target (2026-10-25)
+
+[Corpus: product §M5] [Corpus: adr/ADR-053] [Corpus: decisions] `requirements-decisions.md` §EV-config-file-hygiene.
+
+The build that follows this spec keeps CI, deploy, and local-setup behavior, and makes these file moves:
+
+| Change | Target |
+|--------|--------|
+| `render.yaml` | Delete. Live deploy stays `deploy/doks/`. Update every doc and map that still cites the blueprint, including `docs/ops/render-decommission-archive.md`. |
+| `apps/backend/scripts/start_dev.sh`, `scripts/launchers/launch_api.sh`, `scripts/launchers/launch_gui.sh` | Delete. Update their READMEs and `tests/bats/launchers/`. The local launcher stays `start-dev-servers.sh` (API port `18001`). |
+| Root `ruff.toml` | Move its settings into root `pyproject.toml` `[tool.ruff]`, merging the small exclude block already there. Point package `extend` lines at `../../pyproject.toml`. |
+| `docker-compose.wis2box.yml`, `docker-compose.mock-byoc.yml` | Move those services into `docker-compose.yml` under profiles `wis2box` and `mock-byoc`. Update `-f` callers, then delete the overlay files. Default `docker compose up` must not start them. |
+| Product-family quality workflows | One reusable workflow. Keep each thin `.github/workflows/*-quality.yml` so the GitHub check name stays the same. |
+
+`Brewfile`, `config/local.json`, `config/prod.json`, `config/staging.json`, `config/e2e.json`, and the DOKS staging/prod overlays stay. They are separate owners, not duplicates.
 
 ## Validation Rules
 
