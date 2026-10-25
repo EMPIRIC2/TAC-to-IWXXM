@@ -3152,7 +3152,7 @@
   | Volcano observatory notice | Volcano point | When the report has a location |
   | Space weather (including SWSK and SWSX) | No surface location | List beside the map, never a pin |
 
-- **Popup**: See the EV-map-product-layers amend. Hover opens a card. A click loads the converter.
+- **Popup**: See the EV-map-product-layers amend. Hover opens a card. A click loads the converter. The pointer target hugs the station dot and a narrow band around a line, polygon, or circle. It does not add a wide halo, and the inside of a polygon or circle does not take the pointer, so the map stays easy to move. [Corpus: product §F37]
 - **Filters**: One map of everything current within the shared 24-hour window. Group headings stay. Each product is its own checkbox, color, and layer, and starts on. Turning one off hides that product only. Space weather is the list, not a map layer. Country, region, issue time, and hazard phenomenon are extra filters on the reports already loaded for the current view. They are not request parameters. Country and region start at All. Issue time starts at full (24 hours). Phenomenon checkboxes start off. They combine so a place must pass every active filter. [Corpus: product §F37]
 
   | Filter | Choices | What it hides |

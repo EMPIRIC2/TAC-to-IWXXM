@@ -24,6 +24,7 @@ import {
   LIVE_MAP_ALL_COUNTRIES,
   LIVE_MAP_ALL_REGIONS,
   LIVE_MAP_CANVAS,
+  LIVE_MAP_CANVAS_TOLERANCE,
   LIVE_MAP_EARLIER,
   LIVE_MAP_ERROR,
   LIVE_MAP_FILTER_COUNTRY,
@@ -47,6 +48,7 @@ import {
   pinColor,
   placeShowingReport,
   placeTitle,
+  pointerSlack,
   pointNudge,
   popupWidth,
   productLabel,
@@ -125,6 +127,55 @@ function pointOf(place: LivePlace): [number, number] {
   return [place.latitude, place.longitude];
 }
 
+type PointerPath = {
+  _clickTolerance?: () => number;
+  _containsPoint?: (point: L.Point, closed?: boolean) => boolean;
+  _point?: L.Point;
+  _radius?: number;
+};
+
+/**
+ * Keep the pointer on the dot or along the edge. [Corpus: product §F37]
+ *
+ * A wide halo opened the card while the pointer was still on empty map.
+ * The inside of a polygon or circle stays free so the map can still be moved.
+ *
+ * @param layer - Drawn shape
+ * @param kind - Point, line, polygon, or circle
+ * @example
+ * const _ = true;
+ */
+function fitPointerTarget(
+  layer: L.Layer,
+  kind: 'point' | 'polygon' | 'line' | 'circle',
+) {
+  const path = layer as PointerPath;
+  path._clickTolerance = () => pointerSlack(kind);
+  if (kind === 'polygon') {
+    const stroke = (
+      L.Polyline.prototype as unknown as {
+        _containsPoint: (point: L.Point, closed?: boolean) => boolean;
+      }
+    )._containsPoint;
+    path._containsPoint = function (point: L.Point) {
+      return stroke.call(this, point, true);
+    };
+    return;
+  }
+  if (kind === 'circle') {
+    path._containsPoint = function (point: L.Point) {
+      const shape = this as PointerPath;
+      if (!shape._point || shape._radius === undefined) {
+        return false;
+      }
+      return (
+        Math.abs(point.distanceTo(shape._point) - shape._radius) <=
+        pointerSlack('circle')
+      );
+    };
+  }
+}
+
 /**
  * Draw one place as a point, polygon, line, or circle.
  *
@@ -138,23 +189,31 @@ function drawPlace(map: L.Map, place: LivePlace, at?: [number, number]): L.Layer
   const draw = drawForPlace(place);
   const paint = shapePaint(place.product);
   if (draw.kind === 'polygon') {
-    return L.polygon(draw.positions, paint).addTo(map);
+    const layer = L.polygon(draw.positions, paint);
+    fitPointerTarget(layer, draw.kind);
+    return layer.addTo(map);
   }
   if (draw.kind === 'line') {
-    return L.polyline(draw.positions, { color: paint.fillColor, weight: 3 }).addTo(map);
+    const layer = L.polyline(draw.positions, { color: paint.fillColor, weight: 3 });
+    fitPointerTarget(layer, draw.kind);
+    return layer.addTo(map);
   }
   if (draw.kind === 'circle') {
-    return L.circle([draw.latitude, draw.longitude], {
+    const layer = L.circle([draw.latitude, draw.longitude], {
       ...paint,
       radius: draw.radiusM,
-    }).addTo(map);
+    });
+    fitPointerTarget(layer, draw.kind);
+    return layer.addTo(map);
   }
   const [latitude, longitude] = at ?? [draw.latitude, draw.longitude];
-  return L.circleMarker([latitude, longitude], {
+  const layer = L.circleMarker([latitude, longitude], {
     radius: 6,
     ...paint,
     fillOpacity: copyOpacity(0),
-  }).addTo(map);
+  });
+  fitPointerTarget(layer, 'point');
+  return layer.addTo(map);
 }
 
 /**
@@ -450,6 +509,7 @@ export function LiveWorldMap({
               radius: 4,
               ...shapePaint(place.product),
               fillOpacity: copyOpacity(reportIndex + 1),
+              interactive: false,
             }).addTo(map),
           );
         });
@@ -528,7 +588,7 @@ export function LiveWorldMap({
 
   useEffect(() => {
     const node = host.current as HTMLDivElement;
-    const vectors = L.canvas({ tolerance: 18 });
+    const vectors = L.canvas({ tolerance: LIVE_MAP_CANVAS_TOLERANCE });
     const map = L.map(node, {
       scrollWheelZoom: true,
       preferCanvas: true,
