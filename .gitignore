@@ -204,3 +204,8 @@ tmp/
 
 # EV-088 profile scaffold working copies (merge into catalog.yaml by hand)
 docs/domain/profiles/_scaffold_out/
+
+# Local scratch: hook adapter, quality-run output, fetched QA plugin
+.claude/hooks/
+artifacts/
+third_party/
