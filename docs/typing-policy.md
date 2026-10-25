@@ -12,7 +12,7 @@
 | Typechecker | **basedpyright** (`strict` on `apps/backend`, `packages/*`) |
 | Linter / formatter | **Ruff** (all Python packages including `packages/gifts`) |
 
-### Ruff rule sets (monorepo root `ruff.toml`)
+### Ruff rule sets (monorepo root `pyproject.toml` `[tool.ruff]`)
 
 | Code | Purpose |
 |------|---------|
@@ -22,7 +22,7 @@
 | PT | pytest-style (raises match, assert layout) |
 | ANN | annotations on `apps/` + `packages/` **src** (`**/tests/**` ignores ANN) |
 
-Per-package `pyproject.toml` files **extend** root `ruff.toml` (line-length 120 where noted); do not reintroduce thin `E,W,F,I`-only overrides.
+Per-package `pyproject.toml` files **extend** the root `pyproject.toml` (line-length 120 where noted); do not reintroduce thin `E,W,F,I`-only overrides.
 
 **ANN401 waivers:** lxml / PyO3 boundary modules in `packages/iwxxm-validate` (`c14n`, `native`, `schematron`, `xsd`): third-party handles without complete stubs.
 

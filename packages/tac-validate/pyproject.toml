@@ -41,5 +41,5 @@ fail_under = 100
 show_missing = true
 
 [tool.ruff]
-extend = "../../ruff.toml"
+extend = "../../pyproject.toml"
 line-length = 120

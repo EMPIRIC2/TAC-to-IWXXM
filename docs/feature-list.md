@@ -1459,7 +1459,7 @@
      hide graphic and show text-only status (E18-14).
   7. F17–F19 **reuse the same selection contract** in the drawer (E18-2).
 - **EV-039 deepen (S047) — live local SQL ingest + teardown**:
-  1. Reuse **`docker-compose.mock-byoc.yml`** profile `mock-byoc` for disposable Postgres,
+  1. Reuse **`docker-compose.yml`** profile `mock-byoc` for disposable Postgres,
      MySQL, and SQL Server; SQLite uses a disposable file path (not a long-lived service).
   2. Playwright **live** (no HTTP route mocks) exercises drawer preflight→send against those
      local URIs for **all four** dialects and asserts a successful write (row / writer-contract

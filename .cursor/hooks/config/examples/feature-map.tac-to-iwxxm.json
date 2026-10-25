@@ -145,12 +145,8 @@
       "label": "M4 \u2014 Deploy topology"
     },
     {
-      "prefix": "docker-compose.wis2box.yml",
-      "label": "F17 \u2014 wis2box Compose/CI harness overlay (E14-04; not Render)"
-    },
-    {
-      "prefix": "render.yaml",
-      "label": "M4, F16\u2013F19, UJ-OPS-001 \u2014 Render deploy (+ allowlist env; no wis2box service)"
+      "prefix": "deploy/doks/",
+      "label": "M4 \u2014 DOKS staging and prod manifests"
     }
   ]
 }

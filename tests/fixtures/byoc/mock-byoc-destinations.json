@@ -19,14 +19,14 @@
     "uri": "postgresql+asyncpg://byoc:byoc-mock-password-not-real@127.0.0.1:25432/byoc",
     "ddl": true,
     "product": "metar",
-    "note": "docker-compose.mock-byoc.yml service byoc-postgres (host port BYOC_POSTGRES_HOST_PORT, default 25432)."
+    "note": "docker-compose.yml mock-byoc profile service byoc-postgres (host port BYOC_POSTGRES_HOST_PORT, default 25432)."
   },
   "mysql_compose": {
     "sink_type": "mysql",
     "uri": "mysql+aiomysql://byoc:byoc-mock-password-not-real@127.0.0.1:13306/byoc",
     "ddl": true,
     "product": "metar",
-    "note": "docker-compose.mock-byoc.yml service byoc-mysql (host port BYOC_MYSQL_HOST_PORT)."
+    "note": "docker-compose.yml mock-byoc profile service byoc-mysql (host port BYOC_MYSQL_HOST_PORT)."
   },
   "sqlserver_compose": {
     "sink_type": "sqlserver",
@@ -93,7 +93,7 @@
       "cccc": "KXXX",
       "yygggg": "211200"
     },
-    "note": "docker-compose.mock-byoc.yml byoc-mailhog (SMTP 11025, UI http://127.0.0.1:18025). Omit username/password — MailHog has no AUTH."
+    "note": "docker-compose.yml mock-byoc profile byoc-mailhog (SMTP 11025, UI http://127.0.0.1:18025). Omit username/password — MailHog has no AUTH."
   },
   "f19_stubs": {
     "sink_types": ["amhs", "swim", "afs"],

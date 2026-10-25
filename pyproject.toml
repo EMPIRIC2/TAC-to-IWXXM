@@ -151,8 +151,70 @@ report = ["console", "json"]
 workers = 2
 cache = true
 
+# Ruff configuration — root workspace (ADR-005, ADR-053).
+# ADR-048: pydocstyle (D) fail-closed with NumPy convention.
 [tool.ruff]
+target-version = "py312"
+line-length = 88
+src = [
+  "apps",
+  "packages",
+  "tests",
+  "backend",
+  "auth",
+  "GIFTs",
+]
 extend-exclude = [
-  # ADR-027 xsdata output (T3.6+) — regenerate via make codegen-iwxxm-xsd
+  # ADR-027 xsdata output — regenerate via make codegen-iwxxm-xsd
+  "packages/shared/src/metar_shared/iwxxm_xsd",
   "packages/shared/src/metar_shared/iwxxm_xsd/v*",
 ]
+
+[tool.ruff.lint]
+select = [
+  "E",     # pycodestyle errors
+  "F",     # pyflakes
+  "I",     # isort
+  "UP",    # pyupgrade
+  "B",     # flake8-bugbear
+  "SIM",   # flake8-simplify
+  "RUF",   # ruff-specific
+  "PERF",  # perflint
+  "ASYNC", # flake8-async
+  "PT",    # flake8-pytest-style
+  "ANN",   # flake8-annotations (src only; tests ignored below)
+  "D",     # pydocstyle — ADR-048 / TC-EVDOC-008
+]
+ignore = [
+  "E501", # line length handled by formatter
+  # NumPy / ADR-048 backfill style: summary on second line; D203 conflicts with D211
+  "D203",
+  "D212",
+  # Descriptive summaries (not imperative verbs) are intentional in this corpus
+  "D401",
+  "D404",
+  # One-line vs multi-line & blank-after-summary fight Examples sections
+  "D200",
+  "D205",
+  "D400",
+  "D415",
+]
+
+[tool.ruff.lint.pydocstyle]
+convention = "numpy"
+
+[tool.ruff.lint.per-file-ignores]
+"**/tests/**" = ["ANN", "D"]
+"**/test_*.py" = ["ANN", "D"]
+"**/conftest.py" = ["ANN", "D"]
+# lxml / PyO3 boundaries — third-party handles without complete stubs (typing-policy)
+"packages/iwxxm-validate/src/iwxxm_validate/{c14n,native,schematron,xsd}.py" = ["ANN401"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["gifts", "auth", "shared", "metar_shared"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"

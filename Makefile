@@ -604,11 +604,11 @@ test-integration-dissemination:
 
 # F17 / E14-04 — wis2box Compose harness (MQTT + HTTP dataset overlay; T3.3).
 compose-wis2box-up:
-	$(COMPOSE) -f docker-compose.yml -f docker-compose.wis2box.yml --profile wis2box up -d --build --wait wis2box
+	$(COMPOSE) -f docker-compose.yml --profile wis2box up -d --build --wait wis2box
 
 compose-wis2box-down:
-	@$(COMPOSE) -f docker-compose.yml -f docker-compose.wis2box.yml --profile wis2box stop wis2box || true
-	@$(COMPOSE) -f docker-compose.yml -f docker-compose.wis2box.yml --profile wis2box rm -f wis2box || true
+	@$(COMPOSE) -f docker-compose.yml --profile wis2box stop wis2box || true
+	@$(COMPOSE) -f docker-compose.yml --profile wis2box rm -f wis2box || true
 
 compose-wis2box-harness:
 	bash scripts/ci/run_wis2box_harness.sh
@@ -617,7 +617,7 @@ compose-wis2box-harness:
 # Use a dedicated compose project so `down -v` cannot tear down backend/frontend (EV-039 / AC4).
 BYOC_COMPOSE_PROJECT := metar-iwxxm-mock-byoc
 BYOC_COMPOSE := $(COMPOSE) -p $(BYOC_COMPOSE_PROJECT) \
-	-f docker-compose.yml -f docker-compose.mock-byoc.yml --profile mock-byoc
+	-f docker-compose.yml --profile mock-byoc
 
 compose-mock-byoc-up:
 	@set -e; \
@@ -631,7 +631,7 @@ compose-mock-byoc-down:
 	@$(BYOC_COMPOSE) down -v --remove-orphans || true
 
 compose-mock-byoc-full-up:
-	$(COMPOSE) -p $(BYOC_COMPOSE_PROJECT) -f docker-compose.yml -f docker-compose.mock-byoc.yml -f docker-compose.wis2box.yml \
+	$(COMPOSE) -p $(BYOC_COMPOSE_PROJECT) -f docker-compose.yml \
 		--profile mock-byoc --profile wis2box up -d --build --wait \
 		byoc-postgres byoc-mysql byoc-sqlserver byoc-mailhog byoc-f19 wis2box
 

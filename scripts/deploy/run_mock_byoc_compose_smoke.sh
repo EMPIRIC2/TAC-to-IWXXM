@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Preflight smoke against docker-compose.mock-byoc.yml destinations (local API or package engines).
+# Preflight smoke against docker-compose.yml mock-byoc profile destinations (local API or package engines).
 # Requires: make compose-mock-byoc-up (and optionally compose-wis2box-up).
 set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"

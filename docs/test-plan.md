@@ -6009,7 +6009,7 @@ No live `codes.wmo.int` HTML in PR CI.
 
 - **Level**: T2 / staging
 - **Objective**: Publish IWXXM to project wis2box Compose harness (E14-04; not Render)
-- **Harness (T3.3)**: `docker-compose.wis2box.yml` profile `wis2box`: MQTT + HTTP dataset
+- **Harness (T3.3)**: `docker-compose.yml` profile `wis2box`: MQTT + HTTP dataset
   stand-in; CI hook `scripts/ci/run_wis2box_harness.sh` (up + health + PUT/GET smoke)
 - **Pass criteria**: MQTT notify + HTTP dataset retrievable (publish path = T3.4:
   `packages/dissemination/tests/test_wis2_harness_publish.py` via
@@ -6838,7 +6838,7 @@ All must pass before merging migration PR:
 - [ ] H0c CORS unit tests
 - [ ] H4 CORS preflight + H5 bundle verification on staging
 - [ ] CI green on PR branch
-- [ ] render.yaml updated for two-service topology
+- [x] Render blueprint removed; live topology is `deploy/doks/`
 
 ## EV-retire-profile-dissem-ui-catalogs / ADR-044
 

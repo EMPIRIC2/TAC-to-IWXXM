@@ -14,14 +14,16 @@ class TestRuffConfig:
     """Root linter config per execution plan §Tech Stack."""
 
     def test_ruff_toml_exists(self) -> None:
-        assert (ROOT / "ruff.toml").exists()
+        text = (ROOT / "pyproject.toml").read_text(encoding="utf-8")
+        assert "[tool.ruff]" in text
+        assert not (ROOT / "ruff.toml").exists()
 
     def test_ruff_targets_python_3_12(self) -> None:
-        content = (ROOT / "ruff.toml").read_text(encoding="utf-8")
+        content = (ROOT / "pyproject.toml").read_text(encoding="utf-8")
         assert 'target-version = "py312"' in content
 
     def test_ruff_includes_monorepo_src_paths(self) -> None:
-        content = (ROOT / "ruff.toml").read_text(encoding="utf-8")
+        content = (ROOT / "pyproject.toml").read_text(encoding="utf-8")
         assert '"apps"' in content
         assert '"packages"' in content
         assert '"tests"' in content

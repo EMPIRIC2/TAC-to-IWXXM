@@ -516,7 +516,7 @@ EV-922 session `reports/923-platform-package-layout.md`; EV-922-synthesis `repor
   **≤20**; Finished IndexedDB history and batched multi-payload API **out of scope** v1.
   F17–F19 reuse the same selection UI contract.
 - **F16 deepen (S047 / EV-039)**: Live local multi-DB SQL ingest via Playwright against
-  `docker-compose.mock-byoc.yml` (Postgres / MySQL / SQL Server + disposable SQLite); separate
+  `docker-compose.yml` profile `mock-byoc` (Postgres / MySQL / SQL Server + disposable SQLite); separate
   from mocked H6′; mandatory teardown across integration / e2e / local Compose. No new
   components; test/harness deepen of existing drawer + `packages/dissemination`.
   [Corpus: product §F16] [Corpus: tests]
