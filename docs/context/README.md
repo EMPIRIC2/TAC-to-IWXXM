@@ -6,6 +6,7 @@ still land here so they are not appended to `docs/context-brief.md`.
 
 | Brief | Session | Status |
 |-------|---------|--------|
+| [config-file-hygiene.md](config-file-hygiene.md) | EV-config-file-hygiene | active |
 | [four-playwright-bugs.md](four-playwright-bugs.md) | EV-100-four-playwright-bugs | active |
 | [lowercase-keyword-packet-tests.md](lowercase-keyword-packet-tests.md) | EV-1405-tester-packet-tests | active |
 | [result-card.md](result-card.md) | EV-1411-result-card | active |

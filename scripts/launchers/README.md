@@ -2,24 +2,9 @@
 
 Platform-specific scripts for starting the METAR to IWXXM Converter services.
 
+macOS and Linux use the repo-root `start-dev-servers.sh` launcher (API port 18001). This folder keeps the Windows scripts.
+
 ## Frontend (GUI) Scripts
-
-### launch_gui.sh (Linux/macOS)
-Bash script for launching the frontend development server.
-
-```bash
-# Make executable (first time only)
-chmod +x launch_gui.sh
-
-# Launch
-./launch_gui.sh
-```
-
-**Features:**
-- Checks for Node.js and npm installation
-- Verifies the monorepo frontend workspace exists at `apps/frontend`
-- Auto-installs dependencies if needed
-- Starts Vite dev server on http://localhost:5173
 
 ### launch_gui.ps1 (Windows PowerShell)
 PowerShell script with the same functionality as the bash version.
@@ -40,23 +25,6 @@ launch_gui.bat
 ```
 
 ## Backend (API) Scripts
-
-### launch_api.sh (Linux/macOS)
-Bash script for launching the FastAPI backend server.
-
-```bash
-# Make executable (first time only)
-chmod +x launch_api.sh
-
-# Launch
-./launch_api.sh
-```
-
-**Features:**
-- Checks for Python 3.7+
-- Verifies virtual environment exists
-- Auto-installs dependencies if needed
-- Starts uvicorn server on http://localhost:8001
 
 ### launch_api.ps1 (Windows PowerShell)
 PowerShell script with the same functionality.
@@ -89,14 +57,8 @@ If you see "cannot be loaded because running scripts is disabled":
 Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
 ```
 
-### Bash Permission Denied
-```bash
-chmod +x launch_*.sh
-```
-
 ### Port Already in Use
-- Frontend (Vite): Default port 5173, auto-increments if busy (5174, 5175, etc.)
-- Backend (uvicorn): Default port 8001, can be changed in the script
+- Local macOS/Linux stack: `start-dev-servers.sh` uses API port 18001 and the frontend port from that script.
 
 ## Production Deployment
 

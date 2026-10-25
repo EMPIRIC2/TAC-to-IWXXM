@@ -9,9 +9,6 @@ Run scripts from the backend directory:
 ```bash
 cd backend
 
-# Development server
-./scripts/start_dev.sh
-
 # Data operations
 python scripts/generate_test_data.py
 python scripts/update_airports_db.py
@@ -24,24 +21,6 @@ python scripts/analyze_version_comparisons.py
 ```
 
 ## Available Scripts
-
-### Development
-
-#### start_dev.sh
-
-Start the development server with auto-reload.
-
-**Usage:**
-
-```bash
-./scripts/start_dev.sh
-```
-
-**What it does:**
-
-- Starts FastAPI development server on port 8000
-- Enables auto-reload on code changes
-- Loads environment from `.env`
 
 ### Data & Airport Management
 
@@ -202,15 +181,8 @@ Shell script for comparing IWXXM version outputs.
 ### Setup Development Environment
 
 ```bash
-# 1. Clone and setup
-git clone <repo>
-cd backend
-
-# 2. Start development server
-./scripts/start_dev.sh
-
-# 3. In another terminal, run tests
-pytest tests/smoke.py -v
+# From the repo root
+./start-dev-servers.sh
 ```
 
 ### Update Data

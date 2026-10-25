@@ -19,7 +19,7 @@ Approved omits do not apply to these scripts themselves.
 
 ### [launchers/](launchers/)
 Platform-specific launch scripts for starting the frontend (GUI) and backend (API) services.
-- Shell scripts for Linux/macOS (`.sh`)
+- macOS and Linux: repo-root `start-dev-servers.sh`
 - PowerShell scripts for Windows (`.ps1`)
 - Batch scripts for Windows Command Prompt (`.bat`)
 
@@ -58,15 +58,11 @@ Platform-specific scripts for starting services are located in [launchers/](laun
 .\launchers\launch_gui.ps1
 ```
 
-#### Bash (Linux/macOS)
-**File**: `launchers/launch_gui.sh`
+#### macOS and Linux
+Use the repo-root launcher:
 
 ```bash
-# Make executable (first time only)
-chmod +x launchers/launch_gui.sh
-
-# Launch frontend dev server
-./launchers/launch_gui.sh
+./start-dev-servers.sh
 ```
 
 #### Command Prompt (Windows)
@@ -81,8 +77,8 @@ launchers\launch_gui.bat
 
 Similar launch scripts are available for the backend API:
 - `launchers/launch_api.ps1` (PowerShell)
-- `launchers/launch_api.sh` (Bash)
 - `launchers/launch_api.bat` (Command Prompt)
+- macOS and Linux: `./start-dev-servers.sh` from the repo root
 
 ---
 
@@ -222,11 +218,14 @@ The Vite dev server includes:
 # PowerShell
 .\launch_gui.ps1
 
-# Bash
-./launch_gui.sh
-
 # Batch
 launch_gui.bat
+```
+
+macOS and Linux:
+
+```bash
+./start-dev-servers.sh
 ```
 
 The Vite development server automatically includes hot reloading and watches for file changes.
@@ -250,7 +249,7 @@ Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
 ### Bash Permission Denied
 If you see "Permission denied":
 ```bash
-chmod +x launch_gui.sh
+chmod +x start-dev-servers.sh
 ```
 
 ### Virtual Environment Not Found

@@ -1,6 +1,27 @@
 # Requirements Decisions Log
 
-> Stage: 01-requirements | Last updated: 2026-10-06 (EV-map-product-layers filters)
+> Stage: 01-requirements | Last updated: 2026-10-25 (EV-config-file-hygiene)
+
+## EV-config-file-hygiene — Config file review
+
+No new feature id. Tooling hygiene under [Corpus: product §M5] and [Corpus: tech-spec].
+
+| ID | Topic | Decision | Status |
+|----|-------|----------|--------|
+| EV-CFG-1 | Fence | 176 tooling and runtime files. Out: `.tools`, coverage, fixtures, domain YAML, vendor schemas, lockfiles, generated OpenAPI, secrets, `.cursor`, `.claude` | confirmed |
+| EV-CFG-2 | Docs | Delta `config-spec`, `deploy`, and `dependency-inventory` when a path changes. Also edit every reference that would dangle after `render.yaml` or the retired launchers go away | confirmed |
+| EV-CFG-3 | Behavior | CI, deploy, and local setup stay compatible, except the explicit deletions and moves below | confirmed |
+| EV-CFG-4 | `render.yaml` | Remove the file this cycle. Expand doc edits to every dangling reference, including the decommission note that told us to keep it | confirmed |
+| EV-CFG-5 | Launchers | Delete `apps/backend/scripts/start_dev.sh`, `scripts/launchers/launch_api.sh`, and `scripts/launchers/launch_gui.sh`. Update their READMEs and bats references in the same change. Documented launcher remains `start-dev-servers.sh` | confirmed |
+| EV-CFG-6 | Quality workflows | One reusable workflow. Keep the thin per-family workflow files so GitHub check names stay stable | confirmed |
+| EV-CFG-7 | Ruff | Move root `ruff.toml` settings into root `pyproject.toml` `[tool.ruff]`. Retarget package `extend = "../../ruff.toml"` to the root `pyproject.toml`. Do not inline the rules into each package | confirmed |
+| EV-CFG-8 | Compose | Move wis2box and mock-BYOC services into `docker-compose.yml` under the same profiles. Update `-f` callers. Delete `docker-compose.wis2box.yml` and `docker-compose.mock-byoc.yml` | confirmed |
+| EV-CFG-9 | Default | Every other in-scope file that is the only owner of its settings and still has callers stays. Do not merge DOKS overlays | confirmed |
+| EV-CFG-10 | Deploy | If deploy YAML changes, staging smoke before any promote. No PII change. No UI. No H4–H5 | confirmed |
+| EV-CFG-11 | ADR | Ownership decisions recorded in [Corpus: adr/ADR-053] | confirmed |
+| EV-CFG-12 | Proof | Full local CI before each commit, plus the targeted search checks in the tech plan | confirmed |
+
+[Corpus: tech-spec] [Corpus: deploy] [Corpus: product §M5]
 
 ## EV-map-product-layers — Country, region, time, and phenomenon
 
