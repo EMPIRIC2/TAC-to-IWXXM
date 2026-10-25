@@ -8,6 +8,12 @@ import L from 'leaflet';
 import { boundsOf, LIVE_MAP_PRODUCTS, type LivePlace } from '@/utils/liveMap';
 import { LiveWorldMap, StationPopup } from './LiveWorldMap';
 
+/**
+ * Wait until a polygon has been drawn.
+ *
+ * @example
+ * const _ = true;
+ */
 async function paintedPolygon() {
   for (let attempt = 0; attempt < 20; attempt += 1) {
     if (vi.mocked(L.polygon).mock.calls.length > 0) {
@@ -88,18 +94,42 @@ const marker = {
 };
 marker.addTo.mockReturnValue(marker);
 
+/**
+ * One drawn layer the tests can tell apart from the others.
+ *
+ * @returns Layer whose events still land on the shared marker
+ * @example
+ * const _ = true;
+ */
+function mapLayer() {
+  return {
+    setStyle: marker.setStyle,
+    addTo() {
+      return this;
+    },
+    on: marker.on,
+    remove: marker.remove,
+    bindPopup: marker.bindPopup,
+    openPopup: marker.openPopup,
+    closePopup: marker.closePopup,
+    getPopup: marker.getPopup,
+    getElement: marker.getElement,
+  };
+}
+
 vi.mock('leaflet', () => ({
   default: {
     map: vi.fn(() => map),
     tileLayer: vi.fn(() => ({ addTo: vi.fn() })),
-    marker: vi.fn(() => marker),
-    circleMarker: vi.fn(() => marker),
+    marker: vi.fn(() => mapLayer()),
+    circleMarker: vi.fn(() => mapLayer()),
     divIcon: vi.fn(() => ({})),
-    polygon: vi.fn(() => marker),
-    polyline: vi.fn(() => marker),
-    circle: vi.fn(() => marker),
+    polygon: vi.fn(() => mapLayer()),
+    polyline: vi.fn(() => mapLayer()),
+    circle: vi.fn(() => mapLayer()),
     canvas: vi.fn(() => ({ _update: canvasUpdate, _map: map })),
     latLngBounds: vi.fn((points: unknown) => points),
+    Polyline: { prototype: { _containsPoint: vi.fn(() => false) } },
   },
 }));
 
@@ -333,7 +363,42 @@ describe('LiveWorldMap', () => {
     expect(L.circle).toHaveBeenCalled();
     expect(L.circleMarker).toHaveBeenCalledWith([10, 20], expect.anything());
     expect(L.circleMarker).toHaveBeenCalledWith([1, 2], expect.anything());
-    expect(L.canvas).toHaveBeenCalledWith({ tolerance: 18 });
+    expect(L.canvas).toHaveBeenCalledWith({ tolerance: 0 });
+    const pointLayer = vi.mocked(L.circleMarker).mock.results.at(-1)?.value as {
+      _clickTolerance: () => number;
+    };
+    expect(pointLayer._clickTolerance()).toBe(6);
+    const lineLayer = vi.mocked(L.polyline).mock.results.at(-1)?.value as {
+      _clickTolerance: () => number;
+    };
+    expect(lineLayer._clickTolerance()).toBe(12);
+    const polygonLayer = vi.mocked(L.polygon).mock.results.at(-1)?.value as {
+      _clickTolerance: () => number;
+      _containsPoint: (point: L.Point) => boolean;
+    };
+    expect(polygonLayer._clickTolerance()).toBe(12);
+    polygonLayer._containsPoint({ x: 1, y: 2 } as L.Point);
+    const stroke = L.Polyline.prototype as unknown as {
+      _containsPoint: ReturnType<typeof vi.fn>;
+    };
+    expect(stroke._containsPoint).toHaveBeenCalledWith({ x: 1, y: 2 }, true);
+    const circleLayer = vi.mocked(L.circle).mock.results.at(-1)?.value as {
+      _point?: L.Point;
+      _radius?: number;
+      _containsPoint: (point: L.Point) => boolean;
+    };
+    circleLayer._radius = 10;
+    expect(circleLayer._containsPoint({ distanceTo: () => 0 } as never)).toBe(false);
+    circleLayer._point = { x: 0, y: 0 } as L.Point;
+    circleLayer._radius = undefined;
+    expect(circleLayer._containsPoint({ distanceTo: () => 0 } as never)).toBe(false);
+    circleLayer._radius = 10;
+    expect(circleLayer._containsPoint({ distanceTo: () => 10 } as never)).toBe(true);
+    expect(circleLayer._containsPoint({ distanceTo: () => 40 } as never)).toBe(false);
+    expect(L.circleMarker).toHaveBeenCalledWith(
+      expect.any(Array),
+      expect.objectContaining({ interactive: false, radius: 4 }),
+    );
     expect(canvasUpdate).toHaveBeenCalled();
     await waitFor(() => expect(clicks.length).toBeGreaterThan(0));
     act(() => {

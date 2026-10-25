@@ -13,6 +13,7 @@ import {
   observationAge,
   placeTitle,
   pinColor,
+  pointerSlack,
   popupWidth,
   productLabel,
   shapePaint,
@@ -90,6 +91,10 @@ describe('live map helpers', () => {
       fillColor: '#b91c1c',
       fillOpacity: 0.45,
     });
+    expect(pointerSlack('point')).toBe(6);
+    expect(pointerSlack('line')).toBe(12);
+    expect(pointerSlack('polygon')).toBe(12);
+    expect(pointerSlack('circle')).toBe(12);
     expect(SPACE_WEATHER_LIST_COLOR).toBe('#0e7490');
     expect(spaceWeatherListColor(1)).toBe('#0e7490');
     expect(spaceWeatherListColor(0)).toBeUndefined();

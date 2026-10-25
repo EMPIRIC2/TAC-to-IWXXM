@@ -96,6 +96,41 @@ export const LIVE_MAP_DECODE = 'Decode';
 export const LIVE_MAP_PANEL = 'Weather map';
 export const LIVE_MAP_REFRESH_MS = 60_000;
 
+/** Canvas padding. Shapes bring their own slack, so this stays at zero. */
+export const LIVE_MAP_CANVAS_TOLERANCE = 0;
+
+/**
+ * Extra pixels on a station dot.
+ *
+ * The dot radius is 6, so the pointer target is 24 pixels across.
+ */
+export const LIVE_MAP_POINT_SLACK = 6;
+
+/**
+ * Pixels from a line, polygon edge, or circle outline that still count.
+ *
+ * The band is 24 pixels thick.
+ */
+export const LIVE_MAP_EDGE_SLACK = 12;
+
+/**
+ * Pointer slack for one drawn shape.
+ *
+ * A station dot stays a small target. A line, polygon, or circle uses a band
+ * along its edge so the shaded inside does not take the pointer.
+ *
+ * @param kind - Point, line, polygon, or circle
+ * @returns Slack in pixels
+ * @example
+ * const _ = true;
+ */
+export function pointerSlack(kind: 'point' | 'line' | 'polygon' | 'circle'): number {
+  if (kind === 'point') {
+    return LIVE_MAP_POINT_SLACK;
+  }
+  return LIVE_MAP_EDGE_SLACK;
+}
+
 const PRODUCT_LABELS: Record<string, string> = {
   metar: 'METAR',
   speci: 'SPECI',
