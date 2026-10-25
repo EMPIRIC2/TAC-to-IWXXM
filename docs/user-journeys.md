@@ -137,7 +137,7 @@ describe monorepo workflows introduced by migration features M1–M6 and F6.
 | UJ-DEV-006 | Rust crate CI (fmt/clippy/test + maturin) | `make rust-check` / CI | F13, F14 | T0 / CI |
 | UJ-DEV-007 | Slim husky — lint commit + fast-unit push | husky / make install-hooks | M5 deepen (EV-047 / #833) | T0 |
 | UJ-DEV-008 | Converter perf regression blocks PR | CI perf gate | F6 deepen (EV-047 / #834) | T0 / CI |
-| UJ-OPS-001 | Deploy Render stack (API + static + worker) | render.yaml | M4, F8 | T3 (staging) |
+| UJ-OPS-001 | Deploy DOKS stack (API + static + worker) | deploy/doks | M4, F8 | T3 (staging) |
 
 **E2E tiers**:
 
@@ -2795,7 +2795,7 @@ blocked for non-green files; over-cap (>20) shows clear error.
 
 **Live local path (S047 / EV-039; deepen F16)**:
 1. Start disposable engines: `make compose-mock-byoc-up` (Postgres, MySQL, SQL Server via
-   `docker-compose.mock-byoc.yml` profile `mock-byoc`). SQLite uses a disposable file URI.
+   `docker-compose.yml` profile `mock-byoc`). SQLite uses a disposable file URI.
 2. Configure API allowlist for local compose hosts (`DISSEMINATION_EGRESS_ALLOWLIST` includes
    `127.0.0.1` / `localhost` and documented compose hostnames; [Corpus: adr/ADR-029]).
 3. Run Playwright **without** mocking `/api/v1/dissemination/preflight` or `/send`: for each

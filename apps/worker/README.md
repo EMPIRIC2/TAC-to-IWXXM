@@ -23,7 +23,7 @@ Tests: `make test-unit-worker`
 
 ## Deploy
 
-Blueprint service `metar-to-iwxxm-worker` in `render.yaml` (Docker context repo root).
+Worker deploy is `deploy/doks/` (Docker context repo root). The Render blueprint is removed.
 Required secrets: `DATABASE_URL`, `INGEST_POLLER_URL`. Product schema from
 `apps/backend` Alembic (`make db-migrate` / CI `alembic upgrade head`).
 

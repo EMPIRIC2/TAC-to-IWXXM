@@ -1,18 +1,18 @@
 #!/usr/bin/env bash
 # S019 / EV-014 T3.3 — CI Compose hook for F17 wis2box harness (E14-04).
 #
-# Overlay: docker-compose.wis2box.yml (profile wis2box). Brings up the harness,
+# Profile wis2box in docker-compose.yml. Brings up the harness,
 # probes MQTT + HTTP, optionally runs wis2* pytest (T3.4 fills publish cases).
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
-COMPOSE_FILE="${ROOT}/docker-compose.wis2box.yml"
-COMPOSE=(docker compose -f "${ROOT}/docker-compose.yml" -f "${COMPOSE_FILE}")
+COMPOSE_FILE="${ROOT}/docker-compose.yml"
+COMPOSE=(docker compose -f "${COMPOSE_FILE}")
 HTTP_PORT="${WIS2BOX_HTTP_HOST_PORT:-9080}"
 MQTT_PORT="${WIS2BOX_MQTT_HOST_PORT:-1883}"
 
 if [[ ! -f "${COMPOSE_FILE}" ]]; then
-  echo "[wis2box-harness] error — docker-compose.wis2box.yml missing." >&2
+  echo "[wis2box-harness] error — docker-compose.yml missing." >&2
   exit 1
 fi
 

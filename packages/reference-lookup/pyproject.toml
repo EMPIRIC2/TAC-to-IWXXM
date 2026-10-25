@@ -41,5 +41,5 @@ exclude_lines = [
 ]
 
 [tool.ruff]
-extend = "../../ruff.toml"
+extend = "../../pyproject.toml"
 line-length = 120

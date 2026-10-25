@@ -258,4 +258,4 @@ $7/month            →   $14/month          →   $25+/month
 For more details, see:
 - [docs/ARCHIVE/pre-monorepo-deploy/ENVIRONMENT_VARIABLES.md → SCHEMATRON_USE_DOCKER](../../ARCHIVE/pre-monorepo-deploy/ENVIRONMENT_VARIABLES.md#schematron_use_docker)
 - [docs/ARCHIVE/pre-monorepo-deploy/RENDER_DEPLOYMENT.md](../../ARCHIVE/pre-monorepo-deploy/RENDER_DEPLOYMENT.md)
-- [render.yaml](../../../render.yaml)
+- Live deploy is `deploy/doks/`. The Render blueprint `render.yaml` is removed.

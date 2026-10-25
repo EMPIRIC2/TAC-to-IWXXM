@@ -118,11 +118,11 @@ exclude_lines = [
 precision = 2
 
 [tool.ruff]
-extend = "../../ruff.toml"
+extend = "../../pyproject.toml"
 line-length = 120
 
 [tool.ruff.lint]
-# Append only — do not replace root ruff.toml ignore (ADR-048 D ignores).
+# Append only — do not replace the root pyproject ignore list (ADR-048 D ignores).
 extend-ignore = ["E741"]
 
 [tool.ruff.lint.per-file-ignores]

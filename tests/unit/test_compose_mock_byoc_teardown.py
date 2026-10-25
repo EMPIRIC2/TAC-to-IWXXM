@@ -84,7 +84,7 @@ def test_compose_mock_byoc_down_uses_down_v_remove_orphans() -> None:
     )
     assert project == BYOC_PROJECT
     assert "-p $(BYOC_COMPOSE_PROJECT)" in byoc or f"-p {BYOC_PROJECT}" in byoc
-    assert "docker-compose.mock-byoc.yml" in byoc
+    assert "docker-compose.yml" in byoc
     assert "--profile mock-byoc" in byoc
 
 
@@ -101,9 +101,13 @@ def test_compose_mock_byoc_up_uses_same_project_as_down() -> None:
 
 def test_byoc_container_name_prefix_documented() -> None:
     """Orphan assert name prefix matches Compose container_name values."""
-    overlay = (ROOT / "docker-compose.mock-byoc.yml").read_text(encoding="utf-8")
-    names = re.findall(r"container_name:\s*(\S+)", overlay)
-    assert names, "expected container_name entries in mock-byoc overlay"
+    overlay = (ROOT / "docker-compose.yml").read_text(encoding="utf-8")
+    names = [
+        name
+        for name in re.findall(r"container_name:\s*(\S+)", overlay)
+        if "byoc" in name
+    ]
+    assert names, "expected byoc container_name entries in docker-compose.yml"
     for name in names:
         assert name.startswith(BYOC_CONTAINER_PREFIX), (
             f"{name} must use prefix {BYOC_CONTAINER_PREFIX} for orphan asserts"

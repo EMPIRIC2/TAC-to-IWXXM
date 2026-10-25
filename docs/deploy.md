@@ -376,7 +376,7 @@ ODBC. Package README: [`packages/dissemination/README.md`](../packages/dissemina
 
 Staging WIS2 uses a **Docker Compose / CI harness**, not a Render web service. Image build
 context: `packages/dissemination/docker/wis2box-harness` (MQTT `:1883` + HTTP dataset
-`:8080` / host `:9080`). Overlay: `docker-compose.wis2box.yml` (profile `wis2box`).
+`:8080` / host `:9080`). Profile `wis2box` in `docker-compose.yml`.
 
 ```bash
 make compose-wis2box-up

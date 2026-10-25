@@ -99,13 +99,12 @@
   ],
   "exact_paths": {
     "Makefile": "Monorepo infrastructure (M1, M5)",
-    "docker-compose.wis2box.yml": "Monorepo infrastructure (M1, M5)",
+    "deploy/doks": "Monorepo infrastructure (M1, M5)",
     "docker-compose.yml": "Monorepo infrastructure (M1, M5)",
     "package.json": "Monorepo infrastructure (M1, M5)",
     "pnpm-lock.yaml": "Monorepo infrastructure (M1, M5)",
     "pnpm-workspace.yaml": "Monorepo infrastructure (M1, M5)",
     "pyproject.toml": "Monorepo infrastructure (M1, M5)",
-    "render.yaml": "Monorepo infrastructure (M1, M5)",
     "uv.lock": "Monorepo infrastructure (M1, M5)"
   }
 }

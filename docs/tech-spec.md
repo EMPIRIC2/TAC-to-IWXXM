@@ -79,7 +79,7 @@ production or DOKS services:
 
 | Piece | Location |
 |-------|----------|
-| Overlay | `docker-compose.mock-byoc.yml` (profile `mock-byoc`) — Postgres, MySQL, SQL Server (+ MailHog / F19 harness) |
+| Overlay | `docker-compose.yml` profile `mock-byoc` — Postgres, MySQL, SQL Server (+ MailHog / F19 harness) |
 | Compose project | `-p metar-iwxxm-mock-byoc` (via `BYOC_COMPOSE`) so `down -v` cannot tear down backend/frontend |
 | Make | `compose-mock-byoc-up` / `compose-mock-byoc-down` (`down -v --remove-orphans`); `*-all-*` with wis2box |
 | Live suite | `make test-e2e-f16-live-sql` — up → Playwright `uj027-f16-live-sql.e2e.spec.ts` → always down |
