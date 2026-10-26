@@ -30,6 +30,8 @@ import {
   LINT_VALIDATION_CATALOG_EXAMPLE_NOTE,
   LINT_VALIDATION_CATALOG_EXAMPLE_PASS,
   LINT_VALIDATION_CATALOG_EXAMPLE_PASS_UNAVAILABLE,
+  LINT_VALIDATION_CATALOG_EXAMPLES,
+  LINT_VALIDATION_CATALOG_EXAMPLES_UNAVAILABLE,
   LINT_VALIDATION_CATALOG_EMPTY,
   LINT_VALIDATION_CATALOG_FAMILY_ALL,
   LINT_VALIDATION_CATALOG_LOAD_ERROR,
@@ -53,7 +55,11 @@ import {
   type CatalogView,
 } from '@/utils/catalogView';
 import { catalogLevelLabel } from '@/utils/readableStatus';
-import { ruleExamplePair } from '@/utils/ruleCatalogExamples';
+import {
+  isInfoCatalogLevel,
+  plainInfoExample,
+  ruleExamplePair,
+} from '@/utils/ruleCatalogExamples';
 
 type FamilyFilter =
   | 'all'
@@ -367,14 +373,49 @@ function SelectedRuleFacts({ entry }: { entry: LintIssueCatalogEntry }) {
 }
 
 /**
- * Pass and fail reports for the selected rule, or a note when that side is not on file.
+ * Reports for the selected rule.
+ *
+ * Info rules use one unlabeled sample. Other levels keep pass and fail headings.
  *
  * @param props.code - Selected catalog rule code
+ * @param props.severity - Catalog level token
  * @example
  * const _ = true;
  */
-function RuleExamples({ code }: { code: string }) {
+function RuleExamples({ code, severity }: { code: string; severity?: string | null }) {
   const examples = ruleExamplePair(code);
+  if (isInfoCatalogLevel(severity)) {
+    const sample = plainInfoExample(examples);
+    return (
+      <section className="mt-4 space-y-3" aria-label={LINT_VALIDATION_CATALOG_EXAMPLES}>
+        <p className="text-sm text-gray-600 dark:text-gray-400">
+          {LINT_VALIDATION_CATALOG_EXAMPLE_NOTE}
+        </p>
+        <div>
+          <h3 className="text-sm font-semibold text-gray-800 dark:text-gray-200">
+            {LINT_VALIDATION_CATALOG_EXAMPLES}
+          </h3>
+          {sample ? (
+            <pre
+              data-testid="catalog-rule-example"
+              data-tone="example"
+              className="mt-1 overflow-x-auto rounded-md border border-gray-300 bg-gray-50 p-2 font-mono text-xs whitespace-pre-wrap text-gray-950 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-100"
+            >
+              {sample}
+            </pre>
+          ) : (
+            <p
+              data-testid="catalog-rule-example"
+              data-tone="unavailable"
+              className="mt-1 text-sm text-gray-600 dark:text-gray-400"
+            >
+              {LINT_VALIDATION_CATALOG_EXAMPLES_UNAVAILABLE}
+            </p>
+          )}
+        </div>
+      </section>
+    );
+  }
   return (
     <section className="mt-4 space-y-3" aria-label="Passing and failing examples">
       <p className="text-sm text-gray-600 dark:text-gray-400">
@@ -877,7 +918,7 @@ export function LintValidationCatalogPage({
                   {catalogView === 'detailed' ? (
                     <SelectedRuleFacts entry={detail} />
                   ) : null}
-                  <RuleExamples code={detail.code} />
+                  <RuleExamples code={detail.code} severity={detail.severity} />
                 </aside>
               ) : null}
             </div>

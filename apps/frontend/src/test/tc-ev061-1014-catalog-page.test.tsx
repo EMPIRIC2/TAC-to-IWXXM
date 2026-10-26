@@ -837,17 +837,58 @@ describe('LintValidationCatalogPage', () => {
           semantic_profiles: [],
           exchange_profiles: [],
         },
+        {
+          code: 'AT_PRESENT',
+          severity: 'info',
+          message_template: 'AT change group noted',
+          product: 'taf',
+          tags: ['change'],
+          family: 'lint',
+          issue_type: 'presence',
+          source_access: 'public',
+          status: 'verified',
+          semantic_profiles: [],
+          exchange_profiles: [],
+        },
+        {
+          code: 'INFO_NO_SAMPLE',
+          severity: 'info',
+          message_template: 'Info rule with no packaged report',
+          product: 'taf',
+          tags: ['time'],
+          family: 'lint',
+          issue_type: 'presence',
+          source_access: 'public',
+          status: 'verified',
+          semantic_profiles: [],
+          exchange_profiles: [],
+        },
       ],
     });
     render(<LintValidationCatalogPage />);
-    expect(await screen.findByTestId('catalog-rule-example-pass')).toHaveAttribute(
-      'data-tone',
-      'pass',
-    );
-    expect(screen.getByTestId('catalog-rule-example-fail')).toHaveAttribute(
-      'data-tone',
-      'fail',
-    );
+    const infoDetail = await screen.findByTestId('lint-validation-catalog-detail');
+    const infoExample = within(infoDetail).getByTestId('catalog-rule-example');
+    expect(infoExample).toHaveAttribute('data-tone', 'example');
+    expect(infoExample).toHaveTextContent('TAF KJFK');
+    expect(infoExample).not.toHaveTextContent('YUDO');
+    expect(
+      within(infoDetail).getByRole('heading', { name: /^Examples$/ }),
+    ).toBeInTheDocument();
+    expect(
+      within(infoDetail).queryByRole('heading', { name: 'Passing example' }),
+    ).not.toBeInTheDocument();
+    expect(
+      within(infoDetail).queryByRole('heading', { name: 'Failing example' }),
+    ).not.toBeInTheDocument();
+    expect(
+      within(infoDetail).queryByText(/passing|failing|succeeding/i),
+    ).not.toBeInTheDocument();
+    expect(
+      within(infoDetail).queryByTestId('catalog-rule-example-fail'),
+    ).not.toBeInTheDocument();
+    expect(
+      within(infoDetail).queryByTestId('catalog-rule-example-pass'),
+    ).not.toBeInTheDocument();
 
     await user.click(
       within(
@@ -884,6 +925,61 @@ describe('LintValidationCatalogPage', () => {
     expect(screen.getByTestId('catalog-rule-example-fail')).toHaveTextContent(
       'VA ADVISORY',
     );
+
+    await user.click(
+      within(screen.getByTestId('lint-validation-catalog-entry-AT_PRESENT')).getByRole(
+        'button',
+      ),
+    );
+    const atPresent = screen.getByTestId('lint-validation-catalog-detail');
+    expect(within(atPresent).getByTestId('catalog-rule-example')).toHaveTextContent(
+      'TAF KJFK',
+    );
+    expect(within(atPresent).getByTestId('catalog-rule-example')).not.toHaveTextContent(
+      'BECMG',
+    );
+    expect(
+      within(atPresent).getByRole('heading', { name: /^Examples$/ }),
+    ).toBeInTheDocument();
+    expect(
+      within(atPresent).queryByRole('heading', { name: 'Failing example' }),
+    ).not.toBeInTheDocument();
+
+    await user.click(
+      within(
+        screen.getByTestId('lint-validation-catalog-entry-INFO_NO_SAMPLE'),
+      ).getByRole('button'),
+    );
+    const emptyInfo = screen.getByTestId('lint-validation-catalog-detail');
+    expect(within(emptyInfo).getByTestId('catalog-rule-example')).toHaveAttribute(
+      'data-tone',
+      'unavailable',
+    );
+    expect(within(emptyInfo).getByTestId('catalog-rule-example')).toHaveTextContent(
+      'No example is available for this rule yet.',
+    );
+    expect(
+      within(emptyInfo).queryByText(/passing|failing|succeeding/i),
+    ).not.toBeInTheDocument();
+
+    await user.click(
+      within(screen.getByTestId('lint-validation-catalog-entry-VENDOR_ONLY')).getByRole(
+        'button',
+      ),
+    );
+    const warningDetail = screen.getByTestId('lint-validation-catalog-detail');
+    expect(
+      within(warningDetail).getByRole('heading', { name: /^Passing example$/ }),
+    ).toBeInTheDocument();
+    expect(
+      within(warningDetail).getByRole('heading', { name: /^Failing example$/ }),
+    ).toBeInTheDocument();
+    expect(
+      within(warningDetail).getByTestId('catalog-rule-example-pass'),
+    ).toHaveAttribute('data-tone', 'unavailable');
+    expect(
+      within(warningDetail).getByTestId('catalog-rule-example-fail'),
+    ).toHaveAttribute('data-tone', 'unavailable');
   });
 
   it('switches between compact and detailed and keeps search and the selected rule', async () => {

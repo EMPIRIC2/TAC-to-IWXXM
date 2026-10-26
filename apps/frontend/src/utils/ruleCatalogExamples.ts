@@ -72,3 +72,35 @@ export function ruleExamplePair(code: string): {
 } {
   return ruleExamplePairFrom(code, examples);
 }
+
+/**
+ * Whether a catalog level is info.
+ *
+ * Info rules show samples without pass or fail labels.
+ *
+ * @param severity - Catalog level token
+ * @returns True when the level is info
+ * @example
+ * const _ = true;
+ */
+export function isInfoCatalogLevel(severity: string | null | undefined): boolean {
+  return (severity ?? '').trim().toLowerCase() === 'info';
+}
+
+/**
+ * Sample text for an info-level rule.
+ *
+ * Prefer the report that does not raise the rule. When that side is not on
+ * file, keep the other report without calling it a failure.
+ *
+ * @param pair - Packaged reports for the rule
+ * @returns Report text, or null when neither side is on file
+ * @example
+ * const _ = true;
+ */
+export function plainInfoExample(pair: {
+  pass: RuleExampleText;
+  fail: RuleExampleText;
+}): RuleExampleText {
+  return pair.pass ?? pair.fail;
+}

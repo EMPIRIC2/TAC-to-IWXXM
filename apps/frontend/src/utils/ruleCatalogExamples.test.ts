@@ -1,5 +1,10 @@
 import { describe, expect, it } from 'vitest';
-import { ruleExamplePair, ruleExamplePairFrom } from './ruleCatalogExamples';
+import {
+  isInfoCatalogLevel,
+  plainInfoExample,
+  ruleExamplePair,
+  ruleExamplePairFrom,
+} from './ruleCatalogExamples';
 
 describe('ruleCatalogExamples', () => {
   it('returns packaged reports and treats a missing or blank side as unavailable', () => {
@@ -20,5 +25,21 @@ describe('ruleCatalogExamples', () => {
       }),
     ).toEqual({ pass: null, fail: null });
     expect(ruleExamplePairFrom('ABSENT', {})).toEqual({ pass: null, fail: null });
+  });
+
+  it('shows info samples without a pass or fail label and keeps a lone report', () => {
+    expect(isInfoCatalogLevel('info')).toBe(true);
+    expect(isInfoCatalogLevel(' INFO ')).toBe(true);
+    expect(isInfoCatalogLevel('warning')).toBe(false);
+    expect(isInfoCatalogLevel('error')).toBe(false);
+    expect(isInfoCatalogLevel('warn')).toBe(false);
+    expect(isInfoCatalogLevel('')).toBe(false);
+    expect(isInfoCatalogLevel(null)).toBe(false);
+    expect(isInfoCatalogLevel(undefined)).toBe(false);
+
+    expect(plainInfoExample({ pass: 'TAF OK=', fail: 'TAF BAD=' })).toBe('TAF OK=');
+    expect(plainInfoExample({ pass: null, fail: 'TAF BAD=' })).toBe('TAF BAD=');
+    expect(plainInfoExample({ pass: 'TAF OK=', fail: null })).toBe('TAF OK=');
+    expect(plainInfoExample({ pass: null, fail: null })).toBeNull();
   });
 });
