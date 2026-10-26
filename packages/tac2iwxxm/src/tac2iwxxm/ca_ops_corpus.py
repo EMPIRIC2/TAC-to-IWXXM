@@ -43,7 +43,7 @@ def extract_iwxxm_from_collect(xml_content: str) -> str | None:
 
     Parameters
     ----------
-    xml_content :
+    xml_content : str
         Full datamart file (COLLECT-wrapped or standalone IWXXM).
 
     Returns
@@ -86,7 +86,7 @@ def msc_filename_from_url(url: str) -> str | None:
 
     Parameters
     ----------
-    url :
+    url : str
         HTTPS URL ending with ``A_….xml``.
 
     Returns
@@ -111,7 +111,7 @@ def load_ops_manifest(path: Path) -> dict[str, Any]:
 
     Parameters
     ----------
-    path :
+    path : Path
         Path to ``ops_manifest.json``.
 
     Returns
@@ -136,7 +136,7 @@ def manifest_checksum(manifest: dict[str, Any]) -> str:
 
     Parameters
     ----------
-    manifest :
+    manifest : dict[str, Any]
         Ops manifest dict.
 
     Returns
@@ -161,7 +161,7 @@ def ops_fixture_root(repo_root: Path | None = None) -> Path:
 
     Parameters
     ----------
-    repo_root :
+    repo_root : Path | None, optional
         Repository root; defaults to four parents above this module.
 
     Returns

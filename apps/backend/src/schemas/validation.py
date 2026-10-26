@@ -39,6 +39,7 @@ class ValidationIssue(BaseModel):
     """
     Single validation issue with context.
 
+
     Attributes
     ----------
     _ : object
@@ -68,6 +69,7 @@ class ValidationIssue(BaseModel):
 class ValidationResult(BaseModel):
     """
     Result from a validation operation.
+
 
     Attributes
     ----------
@@ -140,6 +142,7 @@ class XSDValidationResult:
     """
     Result of XSD schema validation (layer 4).
 
+
     Attributes
     ----------
     _ : object
@@ -155,6 +158,7 @@ class XSDValidationResult:
 class SchematronValidationResult:
     """
     Result of Schematron validation (layer 5).
+
 
     Attributes
     ----------
@@ -172,6 +176,7 @@ class SchematronValidationResult:
 class GMLValidationResult:
     """
     Result of GML reference validation (layer 6).
+
 
     Attributes
     ----------
@@ -191,6 +196,7 @@ class CodelistValidationResult:
     """
     Result of WMO codelist validation (layer 7).
 
+
     Attributes
     ----------
     _ : object
@@ -206,6 +212,7 @@ class CodelistValidationResult:
 class AggregatedValidationResult(BaseModel):
     """
     Combined results from multiple validation layers.
+
 
     Attributes
     ----------
@@ -303,6 +310,7 @@ class ValidationTask(BaseModel):
     """
     Async validation task tracking.
 
+
     Attributes
     ----------
     _ : object
@@ -321,6 +329,7 @@ class ValidationTask(BaseModel):
 class ValidationRequest(BaseModel):
     """
     Request for validation operation.
+
 
     Attributes
     ----------
@@ -357,6 +366,7 @@ class ValidationRequest(BaseModel):
 class ValidateRequest(BaseModel):
     """
     Request for IWXXM validation via JSON body.
+
 
     Attributes
     ----------
@@ -421,6 +431,7 @@ class LintIssueModel(BaseModel):
     """
     HTTP DTO for a tac-validate issue (msgspec → pydantic).
 
+
     Attributes
     ----------
     _ : object
@@ -439,6 +450,7 @@ class LintFixModel(BaseModel):
     """
     HTTP DTO for an optional tac-validate fix suggestion.
 
+
     Attributes
     ----------
     _ : object
@@ -453,6 +465,7 @@ class LintFixModel(BaseModel):
 class LintTacResponse(BaseModel):
     """
     Response for POST /api/v1/lint-tac.
+
 
     Attributes
     ----------
@@ -469,6 +482,7 @@ class LintTacResponse(BaseModel):
 class LintIssueCatalogEntryModel(BaseModel):
     """
     One registry row exported by GET /api/v1/lint-issue-catalog.
+
 
     Attributes
     ----------
@@ -537,6 +551,7 @@ class LintIssueCatalogResponse(BaseModel):
     """
     Response for GET /api/v1/lint-issue-catalog.
 
+
     Attributes
     ----------
     _ : object
@@ -549,6 +564,7 @@ class LintIssueCatalogResponse(BaseModel):
 class DecodeSegmentModel(BaseModel):
     """
     HTTP DTO for one TAC decode/annotate segment.
+
 
     Attributes
     ----------
@@ -566,6 +582,7 @@ class DecodeResidualModel(BaseModel):
     """
     HTTP DTO for an undecoded TAC span (explicit residuals - G4).
 
+
     Attributes
     ----------
     _ : object
@@ -580,6 +597,7 @@ class DecodeResidualModel(BaseModel):
 class DecodeTacResponse(BaseModel):
     """
     Response for POST /api/v1/decode-tac.
+
 
     Attributes
     ----------
@@ -600,6 +618,7 @@ class PackageIssueModel(BaseModel):
     """
     HTTP DTO for an iwxxm-validate package finding (additive on /validate).
 
+
     Attributes
     ----------
     _ : object
@@ -619,6 +638,7 @@ class PackageStageModel(BaseModel):
     """
     Per-stage CA_ECCC validation outcome (additive on /validate).
 
+
     Attributes
     ----------
     _ : object
@@ -634,6 +654,7 @@ class PackageStageModel(BaseModel):
 class ValidateIssueModel(BaseModel):
     """
     HTTP DTO for a validation orchestrator finding on /validate.
+
 
     Attributes
     ----------
@@ -654,6 +675,7 @@ class ValidateLayerIssueModel(BaseModel):
     """
     Per-layer issue entry nested under ``issues_by_layer``.
 
+
     Attributes
     ----------
     _ : object
@@ -669,6 +691,7 @@ class ValidateLayerIssueModel(BaseModel):
 class ValidateResponse(BaseModel):
     """
     Response for POST /api/v1/validate (validation layers + package_* extras).
+
 
     Attributes
     ----------
@@ -716,7 +739,8 @@ class ValidateResponse(BaseModel):
 
 class BulletinMetaModel(BaseModel):
     """
-    HTTP DTO for WMO AHL metadata on convert-bulletin (api-contract Q6/Q7).
+    Abbreviated heading fields for one converted bulletin.
+
 
     Attributes
     ----------
@@ -738,6 +762,7 @@ class BulletinReportResultModel(BaseModel):
     """
     Per-report convert-bulletin result (partial success allowed).
 
+
     Attributes
     ----------
     _ : object
@@ -755,6 +780,7 @@ class BulletinReportResultModel(BaseModel):
 class ConvertBulletinResponse(BaseModel):
     """
     Response for POST /api/v1/convert-bulletin.
+
 
     Attributes
     ----------

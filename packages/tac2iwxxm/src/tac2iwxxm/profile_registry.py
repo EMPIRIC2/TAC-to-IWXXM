@@ -84,8 +84,12 @@ class ResolvedSemanticProfile:
 
     Attributes
     ----------
-    _ : object
-        See implementation.
+    canonical : str
+        Canonical.
+    emit_key : str
+        Emit key.
+    alias_used : bool
+        Alias used.
     """
 
     canonical: str
@@ -99,7 +103,7 @@ def normalize_profile_id(profile: str) -> str:
 
     Parameters
     ----------
-    profile :
+    profile : str
         Profile id (e.g. ``ICAO_2025``, ``annex3``).
 
     Returns
@@ -121,7 +125,7 @@ def resolve_semantic_profile(profile: str) -> ResolvedSemanticProfile | None:
 
     Parameters
     ----------
-    profile :
+    profile : str
         Canonical id or legacy alias.
 
     Returns
@@ -155,15 +159,15 @@ def known_semantic_profile_ids() -> frozenset[str]:
     """
     Return all accepted semantic profile wire ids (canonical + aliases).
 
+    Returns
+    -------
+    frozenset[str]
+        All accepted semantic profile wire ids (canonical + aliases).
+
     Examples
     --------
     >>> 1 + 1  # docstring smoke (known_semantic_profile_ids)
     2
-
-    Returns
-    -------
-    object
-        Return value.
     """
     return _KNOWN_WIRE_IDS
 
@@ -189,20 +193,20 @@ def supported_iwxxm_versions_for_profile(profile: str) -> frozenset[str]:
     """
     Return the supported IWXXM lines for a semantic profile id or emit key.
 
+    Parameters
+    ----------
+    profile : str
+        Semantic profile id.
+
+    Returns
+    -------
+    frozenset[str]
+        The supported IWXXM lines for a semantic profile id or emit key.
+
     Examples
     --------
     >>> 1 + 1  # docstring smoke (supported_iwxxm_versions_for_profile)
     2
-
-    Parameters
-    ----------
-    profile : object
-        Argument ``profile``.
-
-    Returns
-    -------
-    object
-        Return value.
     """
     resolved = resolve_semantic_profile(profile)
     emit_key = resolved.emit_key if resolved is not None else normalize_profile_id(profile)
@@ -213,22 +217,23 @@ def supported_report_variants_for_profile(profile: str, product: str) -> frozens
     """
     Return allowed report-variant ids for a semantic profile + API product.
 
+    Parameters
+    ----------
+    profile : str
+        Semantic profile id.
+
+    product : str
+        Product name.
+
+    Returns
+    -------
+    frozenset[str]
+        Allowed report-variant ids for a semantic profile + API product.
+
     Examples
     --------
     >>> 1 + 1  # docstring smoke (supported_report_variants_for_profile)
     2
-
-    Parameters
-    ----------
-    profile : object
-        Argument ``profile``.
-    product : object
-        Argument ``product``.
-
-    Returns
-    -------
-    object
-        Return value.
     """
     resolved = resolve_semantic_profile(profile)
     emit_key = resolved.emit_key if resolved is not None else normalize_profile_id(profile)

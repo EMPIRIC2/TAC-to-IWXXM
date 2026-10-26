@@ -14,8 +14,8 @@ class RateLimitExceeded(PermissionError):
 
     Attributes
     ----------
-    _ : object
-        See implementation.
+    args : tuple
+        Arguments passed to the exception constructor.
     """
 
 
@@ -25,8 +25,8 @@ class DisseminationRateLimiter:
 
     Attributes
     ----------
-    _ : object
-        See implementation.
+    max_per_minute : int or None
+        Maximum requests in a one-minute window.
     """
 
     def __init__(self, *, max_per_minute: int | None = None) -> None:
@@ -35,8 +35,8 @@ class DisseminationRateLimiter:
 
         Parameters
         ----------
-        max_per_minute : object
-            Argument ``max_per_minute``.
+        max_per_minute : int or None, optional
+            Maximum requests in a one-minute window. By default ``None``.
         """
         env = os.environ.get("DISSEMINATION_RATE_LIMIT_PER_MIN", "").strip()
         if max_per_minute is not None:
@@ -54,10 +54,10 @@ class DisseminationRateLimiter:
 
         Parameters
         ----------
-        user_id :
+        user_id : str
             Authenticated subject id.
-        now :
-            Optional monotonic/unix timestamp override for tests.
+        now : float or None, optional
+            Optional monotonic/unix timestamp override for tests. By default ``None``.
 
         Raises
         ------
@@ -90,8 +90,8 @@ class DisseminationRateLimiter:
 
         Parameters
         ----------
-        user_id : object
-            Argument ``user_id``.
+        user_id : str or None, optional
+            User id to clear. ``None`` clears every user. By default ``None``.
         """
         with self._lock:
             if user_id is None:

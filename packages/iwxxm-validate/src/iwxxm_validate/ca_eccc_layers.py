@@ -78,8 +78,8 @@ def ca_iwxxm_core_xsd_path() -> Path | None:
 
     Returns
     -------
-    object
-        Return value.
+    Path or None
+        Vendored IWXXM 3.0.0 core ``iwxxm.xsd`` when present.
     """
     from iwxxm_validate.ca_eccc_bundle import resolve_ca_eccc_bundle
 
@@ -98,13 +98,13 @@ def ca_product_has_national_xsd(product: str) -> bool:
 
     Parameters
     ----------
-    product : object
-        Argument ``product``.
+    product : str
+        Product id.
 
     Returns
     -------
-    object
-        Return value.
+    bool
+        Whether ``product`` has a published ``*-ca`` XSD mapping.
     """
     return product.strip().upper() in CA_PRODUCT_XSD
 
@@ -120,13 +120,13 @@ def ca_product_has_exchange_output(product: str) -> bool:
 
     Parameters
     ----------
-    product : object
-        Argument ``product``.
+    product : str
+        Product id.
 
     Returns
     -------
-    object
-        Return value.
+    bool
+        Whether ``product`` has an MSC exchange-output contract (filename + WMO header).
     """
     return product.strip().upper() in CA_EXCHANGE_OUTPUT_PRODUCTS
 
@@ -137,9 +137,9 @@ def ca_product_xsd_path(product: str, *, tag: str = CA_EXTENSION_TAG) -> Path | 
 
     Parameters
     ----------
-    product :
+    product : str
         API product enum (``METAR``, ``SPECI``, ``TAF``, ``AIRMET``).
-    tag :
+    tag : str, optional
         MSC pin subdirectory (default ``3.0``).
 
     Examples
@@ -149,8 +149,8 @@ def ca_product_xsd_path(product: str, *, tag: str = CA_EXTENSION_TAG) -> Path | 
 
     Returns
     -------
-    object
-        Return value.
+    Path or None
+        Resolve product-specific Canadian extension XSD for layer 4.
     """
     xsd_name = CA_PRODUCT_XSD.get(product.upper())
     if xsd_name is None:
@@ -174,8 +174,8 @@ def pending_ca_stages() -> tuple[str, ...]:
 
     Returns
     -------
-    object
-        Return value.
+    tuple[str, ...]
+        CA validation stages not yet implemented in the layered pipeline.
     """
     return tuple(stage for stage in CA_VALIDATION_STAGES if stage not in IMPLEMENTED_CA_STAGES)
 

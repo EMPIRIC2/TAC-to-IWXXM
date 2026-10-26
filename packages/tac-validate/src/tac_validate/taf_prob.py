@@ -14,9 +14,9 @@ def probability_group_valid(tokens: list[str], index: int) -> bool:
 
     Parameters
     ----------
-    tokens :
+    tokens : list[str]
         Uppercase TAC tokens.
-    index :
+    index : int
         Position of a ``PROBnn`` token.
 
     Returns

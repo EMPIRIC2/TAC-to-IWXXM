@@ -36,8 +36,8 @@ class AllowlistError(ValueError):
 
     Attributes
     ----------
-    _ : object
-        See implementation.
+    args : tuple
+        Arguments passed to the exception constructor.
     """
 
 
@@ -47,8 +47,8 @@ class EgressDenied(PermissionError):
 
     Attributes
     ----------
-    _ : object
-        See implementation.
+    args : tuple
+        Arguments passed to the exception constructor.
     """
 
 
@@ -59,8 +59,10 @@ class Allowlist:
 
     Attributes
     ----------
-    _ : object
-        See implementation.
+    hostnames : frozenset[str]
+        Allowed host names.
+    networks : tuple[ipaddress.IPv4Network or ipaddress.IPv6Network, ...]
+        Allowed IP networks.
     """
 
     hostnames: frozenset[str]
@@ -78,8 +80,8 @@ class Allowlist:
 
         Returns
         -------
-        object
-            Return value.
+        bool
+            ``True`` when no hostnames or CIDR networks are configured.
         """
         return not self.hostnames and not self.networks
 
@@ -95,8 +97,8 @@ class Allowlist:
 
         Returns
         -------
-        object
-            Return value.
+        tuple[str, ...]
+            Sorted hostnames followed by CIDR strings for display/logging.
         """
         hosts = sorted(self.hostnames)
         nets = [str(n) for n in self.networks]
@@ -109,7 +111,7 @@ def parse_allowlist(raw: str | None) -> Allowlist:
 
     Parameters
     ----------
-    raw :
+    raw : str or None
         Allowlist text, or ``None`` / blank for an empty (fail-closed) list.
 
     Returns
@@ -163,15 +165,15 @@ def load_allowlist_from_env(
 
     Parameters
     ----------
-    env_var : object
-        Argument ``env_var``.
-    environ : object
-        Argument ``environ``.
+    env_var : str, optional
+        Env var. By default ``ENV_ALLOWLIST``.
+    environ : os._Environ[str] or None, optional
+        Environ. By default ``None``.
 
     Returns
     -------
-    object
-        Return value.
+    Allowlist
+        Load and parse ``DISSEMINATION_EGRESS_ALLOWLIST`` from the process environment.
     """
     env = environ if environ is not None else os.environ
     return parse_allowlist(env.get(env_var))
@@ -192,10 +194,10 @@ def validate_egress_host(
 
     Parameters
     ----------
-    host :
+    host : str
         Destination hostname or literal IP.
-    allowlist :
-        Parsed allowlist; when ``None``, loaded from the environment.
+    allowlist : Allowlist or None, optional
+        Parsed allowlist; when ``None``, loaded from the environment. By default ``None``.
 
     Raises
     ------
@@ -355,12 +357,12 @@ def iter_allowlist_entries(allowlist: Allowlist) -> Iterable[str]:
 
     Parameters
     ----------
-    allowlist : object
-        Argument ``allowlist``.
+    allowlist : Allowlist
+        Allowlist.
 
     Returns
     -------
-    object
-        Return value.
+    Iterable[str]
+        Yield human-readable allowlist entries (hosts then CIDRs).
     """
     yield from allowlist.entries

@@ -35,6 +35,7 @@ class EvaluationRequest(BaseModel):
     """
     Request to create an evaluation job.
 
+
     Attributes
     ----------
     _ : object
@@ -80,6 +81,7 @@ class EvaluationJobResponse(BaseModel):
     """
     Response when creating an evaluation job.
 
+
     Attributes
     ----------
     _ : object
@@ -108,6 +110,7 @@ class EvaluationJobResponse(BaseModel):
 class ComparisonDetail(BaseModel):
     """
     Detailed comparison result between our and reference IWXXM.
+
 
     Attributes
     ----------
@@ -148,6 +151,7 @@ class EvaluationResultDetail(BaseModel):
     """
     Detailed result for a single station evaluation.
 
+
     Attributes
     ----------
     _ : object
@@ -187,6 +191,7 @@ class JobSummaryStats(BaseModel):
     """
     Summary statistics for a job.
 
+
     Attributes
     ----------
     _ : object
@@ -221,6 +226,7 @@ class JobSummaryStats(BaseModel):
 class EvaluationJobStatus(BaseModel):
     """
     Current status of an evaluation job.
+
 
     Attributes
     ----------
@@ -259,6 +265,7 @@ class EvaluationResultsResponse(BaseModel):
     """
     Response with paginated evaluation results.
 
+
     Attributes
     ----------
     _ : object
@@ -295,6 +302,7 @@ class EvaluationResultsResponse(BaseModel):
 class JobListItem(BaseModel):
     """
     Summary item for job list.
+
 
     Attributes
     ----------
@@ -334,6 +342,7 @@ class JobListItem(BaseModel):
 class JobListResponse(BaseModel):
     """
     Response with list of jobs.
+
 
     Attributes
     ----------

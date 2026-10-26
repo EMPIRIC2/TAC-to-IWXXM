@@ -43,18 +43,13 @@ class CoordinateSource(Protocol):
 
         Parameters
         ----------
-        ident :
+        ident : str
             3-letter navaid id or 4-letter ICAO indicator.
 
         Returns
         -------
         tuple[float, float]
             Latitude and longitude in decimal degrees.
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (CoordinateSource.lookup)
-        2
         """
         ...
 
@@ -68,7 +63,7 @@ class _Unavailable:
 
         Parameters
         ----------
-        ident :
+        ident : str
             Requested identifier.
 
         Returns
@@ -83,7 +78,7 @@ class _Unavailable:
 
         Examples
         --------
-        >>> 1 + 1  # docstring smoke (_Unavailable.lookup)
+        >>> 1 + 1  # docstring smoke (lookup)
         2
         """
         raise SourceUnavailable(ident)
@@ -107,15 +102,11 @@ class CsvCoordinateSource:
 
         Parameters
         ----------
-        navaids_csv :
-            CSV text with an ``ident`` column.
-        airports_csv :
+        navaids_csv : str
             CSV text with an ``ident`` column.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (CsvCoordinateSource)
-        2
+        airports_csv : str
+            CSV text with an ``ident`` column.
         """
         self._navaids = _index(navaids_csv)
         self._airports = _index(airports_csv)
@@ -126,7 +117,7 @@ class CsvCoordinateSource:
 
         Parameters
         ----------
-        ident :
+        ident : str
             3-letter navaid id or 4-letter ICAO indicator.
 
         Returns
@@ -141,7 +132,7 @@ class CsvCoordinateSource:
 
         Examples
         --------
-        >>> 1 + 1  # docstring smoke (CsvCoordinateSource.lookup)
+        >>> 1 + 1  # docstring smoke (lookup)
         2
         """
         key = ident.strip().upper()
@@ -171,15 +162,12 @@ class LiveOurAirportsSource:
 
     def __init__(self, client: httpx.Client | None = None) -> None:
         """
+        __init__.
+
         Parameters
         ----------
-        client :
+        client : httpx.Client | None, optional
             Optional HTTP client. The default client uses a 10-second timeout.
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (LiveOurAirportsSource)
-        2
         """
         self._client = client
         self._parsed: CsvCoordinateSource | None = None
@@ -190,7 +178,7 @@ class LiveOurAirportsSource:
 
         Parameters
         ----------
-        ident :
+        ident : str
             3-letter navaid id or 4-letter ICAO indicator.
 
         Returns
@@ -200,7 +188,7 @@ class LiveOurAirportsSource:
 
         Examples
         --------
-        >>> 1 + 1  # docstring smoke (LiveOurAirportsSource.lookup)
+        >>> 1 + 1  # docstring smoke (lookup)
         2
         """
         if self._parsed is None:
@@ -233,7 +221,7 @@ def _index(csv_text: str) -> dict[str, list[tuple[float, float]]]:
 
     Parameters
     ----------
-    csv_text :
+    csv_text : str
         OurAirports CSV text.
 
     Returns
@@ -268,7 +256,7 @@ def _read(client: httpx.Client) -> CsvCoordinateSource:
 
     Parameters
     ----------
-    client :
+    client : httpx.Client
         HTTP client.
 
     Returns
@@ -298,7 +286,7 @@ def set_coordinate_source(source: CoordinateSource | None) -> None:
 
     Parameters
     ----------
-    source :
+    source : CoordinateSource | None
         Injected source, or ``None`` to clear it.
 
     Examples
@@ -358,7 +346,7 @@ def lookup_coordinate(ident: str) -> tuple[float, float]:
 
     Parameters
     ----------
-    ident :
+    ident : str
         A 3-letter navaid id or a 4-letter ICAO location indicator.
 
     Returns

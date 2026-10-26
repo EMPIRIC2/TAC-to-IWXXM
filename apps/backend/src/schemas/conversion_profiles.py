@@ -13,6 +13,7 @@ class MetarFamilyVariant(BaseModel):
     """
     Read-only METAR-family variant row projected from the profile catalog.
 
+
     Attributes
     ----------
     _ : object
@@ -34,6 +35,7 @@ class MetarFamilyVariant(BaseModel):
 class ProfileCatalogEntry(BaseModel):
     """
     Read-only ConversionProfile catalog entry for the inspector.
+
 
     Attributes
     ----------
@@ -63,6 +65,7 @@ class ProfileCatalogResponse(BaseModel):
     """
     Catalog list response.
 
+
     Attributes
     ----------
     _ : object
@@ -76,6 +79,7 @@ class ProfileCatalogResponse(BaseModel):
 class RulePackCreate(BaseModel):
     """
     Create body for a rule pack.
+
 
     Attributes
     ----------
@@ -99,6 +103,7 @@ class RulePackUpdate(BaseModel):
     """
     Partial update for a rule pack.
 
+
     Attributes
     ----------
     _ : object
@@ -120,6 +125,7 @@ class RulePackUpdate(BaseModel):
 class RulePackOut(BaseModel):
     """
     Persisted rule pack (owner-scoped).
+
 
     Attributes
     ----------
@@ -147,6 +153,7 @@ class RulePackListResponse(BaseModel):
     """
     List of rule packs for the caller.
 
+
     Attributes
     ----------
     _ : object
@@ -159,6 +166,7 @@ class RulePackListResponse(BaseModel):
 class OverlayCreate(BaseModel):
     """
     Create body for a signed overlay (server issues the signature).
+
 
     Attributes
     ----------
@@ -178,6 +186,7 @@ class OverlayUpdate(BaseModel):
     """
     Partial update for an overlay (re-signed on write).
 
+
     Attributes
     ----------
     _ : object
@@ -195,6 +204,7 @@ class OverlayUpdate(BaseModel):
 class OverlayOut(BaseModel):
     """
     Persisted signed overlay (owner-scoped).
+
 
     Attributes
     ----------
@@ -219,6 +229,7 @@ class OverlayListResponse(BaseModel):
     """
     List of overlays for the caller.
 
+
     Attributes
     ----------
     _ : object
@@ -231,6 +242,7 @@ class OverlayListResponse(BaseModel):
 class PresetCreate(BaseModel):
     """
     Create body for a saved semantic preset.
+
 
     Attributes
     ----------
@@ -254,6 +266,7 @@ class PresetUpdate(BaseModel):
     """
     Partial update for a saved semantic preset.
 
+
     Attributes
     ----------
     _ : object
@@ -275,6 +288,7 @@ class PresetUpdate(BaseModel):
 class PresetOut(BaseModel):
     """
     Persisted saved semantic preset.
+
 
     Attributes
     ----------
@@ -302,6 +316,7 @@ class PresetListResponse(BaseModel):
     """
     List of semantic presets for the caller.
 
+
     Attributes
     ----------
     _ : object
@@ -314,6 +329,7 @@ class PresetListResponse(BaseModel):
 class DisseminationTemplateCreate(BaseModel):
     """
     Create body for a saved dissemination template.
+
 
     Attributes
     ----------
@@ -336,6 +352,7 @@ class DisseminationTemplateUpdate(BaseModel):
     """
     Partial update for a saved dissemination template.
 
+
     Attributes
     ----------
     _ : object
@@ -356,6 +373,7 @@ class DisseminationTemplateUpdate(BaseModel):
 class DisseminationTemplateOut(BaseModel):
     """
     Persisted saved dissemination template.
+
 
     Attributes
     ----------
@@ -382,6 +400,7 @@ class DisseminationTemplateListResponse(BaseModel):
     """
     List of saved dissemination templates for the caller.
 
+
     Attributes
     ----------
     _ : object
@@ -394,6 +413,7 @@ class DisseminationTemplateListResponse(BaseModel):
 class ConversionTemplateSlot(BaseModel):
     """
     One ordered slot in a parameterizable conversion template.
+
 
     Attributes
     ----------
@@ -419,6 +439,7 @@ class ConversionTemplateCreate(BaseModel):
     """
     Create body for a custom conversion template.
 
+
     Attributes
     ----------
     _ : object
@@ -441,6 +462,7 @@ class ConversionTemplateUpdate(BaseModel):
     """
     Partial update for a custom conversion template.
 
+
     Attributes
     ----------
     _ : object
@@ -461,6 +483,7 @@ class ConversionTemplateUpdate(BaseModel):
 class ConversionTemplateOut(BaseModel):
     """
     Persisted or first-party conversion template projection.
+
 
     Attributes
     ----------
@@ -490,6 +513,7 @@ class ConversionTemplateListResponse(BaseModel):
     """
     First-party + custom conversion templates visible to the caller.
 
+
     Attributes
     ----------
     _ : object
@@ -502,6 +526,7 @@ class ConversionTemplateListResponse(BaseModel):
 class ConversionTemplatePreviewRequest(BaseModel):
     """
     Bridge preview request.
+
 
     Attributes
     ----------
@@ -521,6 +546,7 @@ class ConversionTemplatePreviewRequest(BaseModel):
 class ConversionTemplatePreviewResponse(BaseModel):
     """
     Bridge preview response.
+
 
     Attributes
     ----------
@@ -552,6 +578,7 @@ class LibraryAssetOut(BaseModel):
     """
     First-party or custom library asset (five Libraries).
 
+
     Attributes
     ----------
     _ : object
@@ -582,6 +609,7 @@ class LibraryAssetListResponse(BaseModel):
     """
     Library assets visible to the caller.
 
+
     Attributes
     ----------
     _ : object
@@ -594,6 +622,7 @@ class LibraryAssetListResponse(BaseModel):
 class LibraryAssetCreate(BaseModel):
     """
     Create a custom library asset (optionally forked).
+
 
     Attributes
     ----------
@@ -620,6 +649,7 @@ class LibraryAssetUpdate(BaseModel):
     """
     Partial update for a custom library asset (or fork-on-edit first-party).
 
+
     Attributes
     ----------
     _ : object
@@ -641,6 +671,7 @@ class LibraryYamlValidateRequest(BaseModel):
     """
     Validate library YAML without persisting.
 
+
     Attributes
     ----------
     _ : object
@@ -657,6 +688,7 @@ class LibraryYamlValidateRequest(BaseModel):
 class LibraryYamlValidateResponse(BaseModel):
     """
     Regex + schema diagnostics for a library YAML document.
+
 
     Attributes
     ----------
@@ -679,6 +711,7 @@ class LibraryRulePreviewRequest(BaseModel):
     """
     AC11 rule association preview for a TAC group.
 
+
     Attributes
     ----------
     _ : object
@@ -694,6 +727,7 @@ class LibraryRulePreviewRequest(BaseModel):
 class LibraryRulePreviewResponse(BaseModel):
     """
     Matched conversion rule for a TAC group.
+
 
     Attributes
     ----------

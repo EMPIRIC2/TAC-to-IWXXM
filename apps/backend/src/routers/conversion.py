@@ -1588,6 +1588,7 @@ def _append_pre_convert_lint_issues(
 @router.post(
     "/convert-bulletin",
     tags=["Conversion"],
+    summary="Convert a WMO bulletin",
     response_model=ConvertBulletinResponse,
     responses={
         400: {"description": "Empty bulletin - no TAC reports after the abbreviated heading"},
@@ -1618,7 +1619,7 @@ async def convert_bulletin(
     semantic_profile: str = Form(
         default="",
         description=(
-            "Deprecated on Convert & Send — prefer conversion_library_id. "
+            "Deprecated on Convert & Send. Prefer conversion_library_id. "
             "Still accepted on convert-bulletin until Dissemination library packaging lands."
         ),
     ),
@@ -1667,6 +1668,7 @@ async def convert_bulletin(
 
     Partial success is allowed: HTTP 200 when split succeeds even if some reports fail.
     Per-report ``issues`` / ``fixes`` follow lint-style identity.
+
 
     Examples
     --------
@@ -2019,6 +2021,7 @@ async def convert_bulletin(
     "/convert",
     response_model=ConversionResponse,
     tags=["Conversion"],
+    summary="Convert TAC to IWXXM",
     responses={},
 )
 async def convert(
@@ -2036,24 +2039,24 @@ async def convert(
     stop_on_error: bool = Form(default=False, description="Stop processing remaining inputs after first error"),
     bulletin_id: str = Form(default="", description="Optional bulletin identifier"),
     issuing_center: str = Form(default="", description="Optional issuing centre ICAO code"),
-    lint: bool = Form(default=True, description="Run tac-validate before convert (Q14=C; default on)"),
+    lint: bool = Form(default=True, description="Run TAC validation before conversion. On by default."),
     product: str = Form(
         default="METAR",
         description=("TAC product type, or iwxxm for XML pass-through (default METAR for legacy clients)"),
     ),
     profile: str = Form(
         default="",
-        description="Rejected — use conversion_library_id.",
+        description="Rejected. Use conversion_library_id.",
         include_in_schema=False,
     ),
     semantic_profile: str = Form(
         default="",
-        description="Rejected — use conversion_library_id.",
+        description="Rejected. Use conversion_library_id.",
         include_in_schema=False,
     ),
     exchange_profile: str = Form(
         default="",
-        description="Rejected — use dissemination_library_id for packaging transforms.",
+        description="Rejected. Use dissemination_library_id for packaging transforms.",
         include_in_schema=False,
     ),
     report_variant: str = Form(
@@ -2116,12 +2119,12 @@ async def convert(
     ),
     overlay_id: str = Form(
         default="",
-        description="Rejected — overlays removed from Convert; use conversion_library_id.",
+        description="Rejected. Overlays are not accepted on convert. Use conversion_library_id.",
         include_in_schema=False,
     ),
     preset_id: str = Form(
         default="",
-        description="Rejected — presets removed from Convert; use conversion_library_id.",
+        description="Rejected. Presets are not accepted on convert. Use conversion_library_id.",
         include_in_schema=False,
     ),
     conversion_template_id: str = Form(
@@ -2156,6 +2159,7 @@ async def convert(
 ) -> Response:
     """
     Convert METAR/SPECI TAC text to IWXXM XML.
+
 
     Examples
     --------
@@ -2960,6 +2964,7 @@ async def convert(
     "/convert-zip",
     response_class=StreamingResponse,
     tags=["Conversion"],
+    summary="Convert TAC to a ZIP of IWXXM files",
     responses={},
 )
 async def convert_zip(
@@ -2989,6 +2994,7 @@ async def convert_zip(
 ) -> StreamingResponse:
     """
     Convert METAR/SPECI TAC inputs to a ZIP of IWXXM XML files.
+
 
     Examples
     --------

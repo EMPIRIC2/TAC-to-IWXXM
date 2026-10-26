@@ -258,12 +258,12 @@ def _celsius(token: str) -> int:
 
     Parameters
     ----------
-    token : object
+    token : str
         Argument ``token``.
 
     Returns
     -------
-    object
+    int
         Return value.
     """
     if token.startswith("M"):
@@ -277,12 +277,12 @@ def _inhg_to_hpa(alt_token: str) -> float:
 
     Parameters
     ----------
-    alt_token : object
+    alt_token : str
         Argument ``alt_token``.
 
     Returns
     -------
-    object
+    float
         Return value.
     """
     inhg = int(alt_token) / 100.0
@@ -295,9 +295,10 @@ def _assign_statute_visibility(target: dict[str, Any], token: str) -> None:
 
     Parameters
     ----------
-    target :
+    target : dict[str, Any]
         Observation map to update.
-    token :
+
+    token : str
         Miles without the ``SM`` suffix. ``1 1/2`` is one and a half.
 
     Returns
@@ -318,9 +319,10 @@ def _assign_metre_visibility(target: dict[str, Any], metres: int) -> None:
 
     Parameters
     ----------
-    target :
+    target : dict[str, Any]
         Observation or trend map to update.
-    metres :
+
+    metres : int
         The four-digit visibility group.
 
     Returns
@@ -341,9 +343,10 @@ def _assign_reported_visibility(target: dict[str, Any], text: str) -> bool:
 
     Parameters
     ----------
-    target :
+    target : dict[str, Any]
         Observation map to update.
-    text :
+
+    text : str
         Observation text that may include a trend.
 
     Returns
@@ -372,12 +375,12 @@ def _slp_code_to_hpa(code: int) -> float:
 
     Parameters
     ----------
-    code : object
+    code : int
         Argument ``code``.
 
     Returns
     -------
-    object
+    float
         Return value.
     """
     if code < 500:
@@ -391,14 +394,15 @@ def _tenths_celsius(sign: str, digits: str) -> float:
 
     Parameters
     ----------
-    sign : object
+    sign : str
         Argument ``sign``.
-    digits : object
+
+    digits : str
         Argument ``digits``.
 
     Returns
     -------
-    object
+    float
         Return value.
     """
     value = int(digits) / 10.0
@@ -411,12 +415,12 @@ def _split_obs_and_trends(body: str) -> tuple[str, list[re.Match[str]]]:
 
     Parameters
     ----------
-    body : object
+    body : str
         Argument ``body``.
 
     Returns
     -------
-    object
+    tuple[str, list[re.Match[str]]]
         Return value.
     """
     first = re.search(r"\b(?:BECMG|TEMPO|NOSIG)\b", body)
@@ -433,14 +437,15 @@ def _hhmm_to_stamp(ir: dict[str, Any], hhmm: str) -> str:
 
     Parameters
     ----------
-    ir : object
+    ir : dict[str, Any]
         Argument ``ir``.
-    hhmm : object
+
+    hhmm : str
         Argument ``hhmm``.
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     from tac2iwxxm.time_anchor import iso_stamp
@@ -459,12 +464,12 @@ def _obs_stamp(ir: dict[str, Any]) -> str:
 
     Parameters
     ----------
-    ir : object
+    ir : dict[str, Any]
         Argument ``ir``.
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     from tac2iwxxm.time_anchor import iso_stamp
@@ -482,16 +487,18 @@ def _parse_trend_group(ir: dict[str, Any], kind: str, body: str) -> dict[str, An
 
     Parameters
     ----------
-    ir : object
+    ir : dict[str, Any]
         Argument ``ir``.
-    kind : object
+
+    kind : str
         Argument ``kind``.
-    body : object
+
+    body : str
         Argument ``body``.
 
     Returns
     -------
-    object
+    dict[str, Any] | None
         Return value.
     """
     if kind == "NOSIG":
@@ -547,12 +554,12 @@ def _lightning_type_code(raw: str) -> str | None:
 
     Parameters
     ----------
-    raw : object
+    raw : str
         Argument ``raw``.
 
     Returns
     -------
-    object
+    str | None
         Return value.
     """
     if not raw:
@@ -591,12 +598,12 @@ def _lightning_sector(sector_tok: str | None) -> dict[str, Any] | None:
 
     Parameters
     ----------
-    sector_tok : object
+    sector_tok : str | None
         Argument ``sector_tok``.
 
     Returns
     -------
-    object
+    dict[str, Any] | None
         Return value.
     """
     if not sector_tok:
@@ -621,12 +628,12 @@ def _parse_lightning_remark(remarks: str) -> dict[str, Any] | None:
 
     Parameters
     ----------
-    remarks : object
+    remarks : str
         Argument ``remarks``.
 
     Returns
     -------
-    object
+    dict[str, Any] | None
         Return value.
     """
     m = _LTG_REMARK.search(remarks)
@@ -654,12 +661,12 @@ def _frac_to_inches(frac: str) -> float:
 
     Parameters
     ----------
-    frac : object
+    frac : str
         Argument ``frac``.
 
     Returns
     -------
-    object
+    float
         Return value.
     """
     num_s, den_s = frac.split("/", 1)
@@ -672,12 +679,12 @@ def _parse_sm_fraction(token: str) -> float:
 
     Parameters
     ----------
-    token : object
+    token : str
         Argument ``token``.
 
     Returns
     -------
-    object
+    float
         Return value.
     """
     parts = token.split()
@@ -694,7 +701,7 @@ def parse_statute_mile_fraction(token: str) -> float:
 
     Parameters
     ----------
-    token :
+    token : str
         Miles without the ``SM`` suffix. ``1 1/2`` is one and a half.
 
     Returns
@@ -718,12 +725,12 @@ def _sm_float_to_m(sm: float) -> int:
 
     Parameters
     ----------
-    sm : object
+    sm : float
         Argument ``sm``.
 
     Returns
     -------
-    object
+    int
         Return value.
     """
     return round(sm * 1609.344)
@@ -735,12 +742,12 @@ def _sm_float_to_ft(sm: float) -> int:
 
     Parameters
     ----------
-    sm : object
+    sm : float
         Argument ``sm``.
 
     Returns
     -------
-    object
+    int
         Return value.
     """
     return round(sm * 5280.0)
@@ -752,12 +759,12 @@ def _rwy_location_description(loc: str) -> str:
 
     Parameters
     ----------
-    loc : object
+    loc : str
         Argument ``loc``.
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     m = re.match(r"RWY(?P<rwy>\d{2}[LCR]?)(?:\s+(?P<tdz>TDZ))?$", loc.strip())
@@ -775,12 +782,12 @@ def _parse_second_location_remark(remarks: str) -> dict[str, Any] | None:
 
     Parameters
     ----------
-    remarks : object
+    remarks : str
         Argument ``remarks``.
 
     Returns
     -------
-    object
+    dict[str, Any] | None
         Return value.
     """
     m = _SECOND_LOC.search(remarks)
@@ -807,12 +814,12 @@ def _parse_tower_visibility_remark(remarks: str) -> dict[str, Any] | None:
 
     Parameters
     ----------
-    remarks : object
+    remarks : str
         Argument ``remarks``.
 
     Returns
     -------
-    object
+    dict[str, Any] | None
         Return value.
     """
     m = _TWR_VIS.search(remarks)
@@ -831,12 +838,12 @@ def _parse_sector_visibility_remark(remarks: str) -> dict[str, Any] | None:
 
     Parameters
     ----------
-    remarks : object
+    remarks : str
         Argument ``remarks``.
 
     Returns
     -------
-    object
+    dict[str, Any] | None
         Return value.
     """
     m = _SECTOR_VIS.search(remarks)
@@ -858,12 +865,12 @@ def _parse_obscuration_remark(remarks: str) -> dict[str, Any] | None:
 
     Parameters
     ----------
-    remarks : object
+    remarks : str
         Argument ``remarks``.
 
     Returns
     -------
-    object
+    dict[str, Any] | None
         Return value.
     """
     m = _OBSCURATION.search(remarks)
@@ -882,12 +889,12 @@ def _parse_variable_ceiling_remark(remarks: str) -> dict[str, Any] | None:
 
     Parameters
     ----------
-    remarks : object
+    remarks : str
         Argument ``remarks``.
 
     Returns
     -------
-    object
+    dict[str, Any] | None
         Return value.
     """
     m = _CIG_VAR.search(remarks)
@@ -905,12 +912,12 @@ def _parse_variable_sky_remark(remarks: str) -> dict[str, Any] | None:
 
     Parameters
     ----------
-    remarks : object
+    remarks : str
         Argument ``remarks``.
 
     Returns
     -------
-    object
+    dict[str, Any] | None
         Return value.
     """
     m = _SKY_VAR.search(remarks)
@@ -928,12 +935,12 @@ def _parse_variable_visibility_remark(remarks: str) -> dict[str, Any] | None:
 
     Parameters
     ----------
-    remarks : object
+    remarks : str
         Argument ``remarks``.
 
     Returns
     -------
-    object
+    dict[str, Any] | None
         Return value.
     """
     m = _VIS_VAR.search(remarks)
@@ -954,14 +961,15 @@ def _sky_level_field(token: str, base: int) -> dict[str, str]:
 
     Parameters
     ----------
-    token : object
+    token : str
         Argument ``token``.
-    base : object
+
+    base : int
         Argument ``base``.
 
     Returns
     -------
-    object
+    dict[str, str]
         Return value.
     """
     if token == "/":
@@ -976,12 +984,12 @@ def _parse_sky_types_remark(remarks: str) -> dict[str, Any] | None:
 
     Parameters
     ----------
-    remarks : object
+    remarks : str
         Argument ``remarks``.
 
     Returns
     -------
-    object
+    dict[str, Any] | None
         Return value.
     """
     m = _SKY_TYPES.search(remarks)
@@ -1012,12 +1020,12 @@ def _parse_convective_remark(remarks: str) -> dict[str, Any] | None:
 
     Parameters
     ----------
-    remarks : object
+    remarks : str
         Argument ``remarks``.
 
     Returns
     -------
-    object
+    dict[str, Any] | None
         Return value.
     """
     m = _CONVECTIVE.search(remarks)
@@ -1048,12 +1056,12 @@ def _parse_hail_size_remark(remarks: str) -> dict[str, Any] | None:
 
     Parameters
     ----------
-    remarks : object
+    remarks : str
         Argument ``remarks``.
 
     Returns
     -------
-    object
+    dict[str, Any] | None
         Return value.
     """
     m = _HAIL_SIZE.search(remarks)
@@ -1078,12 +1086,12 @@ def _precip_6_period(hour: int) -> str:
 
     Parameters
     ----------
-    hour : object
+    hour : int
         Argument ``hour``.
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     if hour % 6 == 0:
@@ -1097,12 +1105,12 @@ def _parse_max_min_temperatures(remarks: str) -> list[dict[str, Any]]:
 
     Parameters
     ----------
-    remarks : object
+    remarks : str
         Argument ``remarks``.
 
     Returns
     -------
-    object
+    list[dict[str, Any]]
         Return value.
     """
     rows: list[dict[str, Any]] = []
@@ -1133,14 +1141,15 @@ def _precip_quantity(hundredths: int, *, period: str) -> dict[str, Any]:
 
     Parameters
     ----------
-    hundredths : object
+    hundredths : int
         Argument ``hundredths``.
-    period : object
+
+    period : str
         Argument ``period``.
 
     Returns
     -------
-    object
+    dict[str, Any]
         Return value.
     """
     row: dict[str, Any] = {
@@ -1164,12 +1173,12 @@ def _parse_recent_weather_remarks(remarks: str) -> list[dict[str, Any]]:
 
     Parameters
     ----------
-    remarks : object
+    remarks : str
         Argument ``remarks``.
 
     Returns
     -------
-    object
+    list[dict[str, Any]]
         Return value.
     """
     rows: list[dict[str, Any]] = []
@@ -1199,14 +1208,15 @@ def _parse_processed_precip(remarks: str, hour: int) -> list[dict[str, Any]]:
 
     Parameters
     ----------
-    remarks : object
+    remarks : str
         Argument ``remarks``.
-    hour : object
+
+    hour : int
         Argument ``hour``.
 
     Returns
     -------
-    object
+    list[dict[str, Any]]
         Return value.
     """
     qty: list[dict[str, Any]] = []
@@ -1228,14 +1238,15 @@ def _product_matches_rtype(product: str, rtype: str) -> bool:
 
     Parameters
     ----------
-    product : object
+    product : str
         Argument ``product``.
-    rtype : object
+
+    rtype : str
         Argument ``rtype``.
 
     Returns
     -------
-    object
+    bool
         Return value.
     """
     product_u = product.upper()
@@ -1252,9 +1263,10 @@ def _parse_ca_remarks(remarks: str, ir: dict[str, Any]) -> None:
 
     Parameters
     ----------
-    remarks : object
+    remarks : str
         Argument ``remarks``.
-    ir : object
+
+    ir : dict[str, Any]
         Argument ``ir``.
     """
     density = _CA_DENSITY_ALT.search(remarks)
@@ -1275,12 +1287,12 @@ def _remarks_free_text(remarks: str) -> str:
 
     Parameters
     ----------
-    remarks : object
+    remarks : str
         Argument ``remarks``.
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     leftover = _CONSUMED_REMARK.sub(" ", remarks)
@@ -1294,9 +1306,10 @@ def _parse_remarks(rest: str, ir: dict[str, Any]) -> None:
 
     Parameters
     ----------
-    rest : object
+    rest : str
         Argument ``rest``.
-    ir : object
+
+    ir : dict[str, Any]
         Argument ``ir``.
     """
     rmk = _RMK.search(rest)
@@ -1454,7 +1467,7 @@ def fold_observation_case(tac: str) -> str:
 
     Parameters
     ----------
-    tac :
+    tac : str
         TAC text that may mix an observation with another product.
 
     Returns
@@ -1497,9 +1510,10 @@ def parse_metar_speci(tac: str, *, product: str) -> dict[str, Any]:
 
     Parameters
     ----------
-    tac :
+    tac : str
         TAC text (optional AHL line ignored; first METAR/SPECI…= used).
-    product :
+
+    product : str
         Expected ``METAR`` or ``SPECI``.
 
     Returns

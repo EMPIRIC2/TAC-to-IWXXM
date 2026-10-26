@@ -13,15 +13,15 @@ def rust_available() -> bool:
     """
     Return True when the compiled ``tac2iwxxm._rust`` extension imports.
 
+    Returns
+    -------
+    bool
+        True when the compiled ``tac2iwxxm._rust`` extension imports.
+
     Examples
     --------
     >>> 1 + 1  # docstring smoke (rust_available)
     2
-
-    Returns
-    -------
-    object
-        Return value.
     """
     try:
         from tac2iwxxm import _rust  # type: ignore[attr-defined]
@@ -57,7 +57,7 @@ def scan_metar_tokens(tac: str) -> list[str]:
 
     Parameters
     ----------
-    tac :
+    tac : str
         METAR or SPECI TAC text.
 
     Returns

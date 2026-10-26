@@ -16,9 +16,10 @@ def check_pack_overlay_dir(directory: Path | str, *, profile: str = "annex3") ->
 
     Parameters
     ----------
-    directory :
+    directory : Path | str
         Directory of pack YAML overlays.
-    profile :
+
+    profile : str, optional
         Conversion profile id used when loading packs.
 
     Raises

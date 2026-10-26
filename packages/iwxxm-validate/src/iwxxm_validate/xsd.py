@@ -173,16 +173,16 @@ def validate_xsd_at_path(
 
     Parameters
     ----------
-    xml_content :
+    xml_content : str
         XML document text.
-    xsd_file :
+    xsd_file : Path or str
         Absolute or relative path to the XSD schema file.
-    layer :
-        Issue ``layer`` / stage id for findings (e.g. ``ca_xsd``).
+    layer : str, optional
+        Issue ``layer`` / stage id for findings (e.g. ``ca_xsd``). By default ``_XSD_LAYER_DEFAULT``.
 
     Returns
     -------
-    list of Issue
+    list[Issue]
         Empty on success; otherwise schema / parse findings.
 
     Examples
@@ -229,14 +229,14 @@ def validate_xsd(xml_content: str, iwxxm_version: str) -> list[Issue]:
 
     Parameters
     ----------
-    xml_content :
+    xml_content : str
         XML document text.
-    iwxxm_version :
+    iwxxm_version : str
         IWXXM release line.
 
     Returns
     -------
-    list of Issue
+    list[Issue]
         Empty on success; otherwise schema / parse findings.
 
     Examples

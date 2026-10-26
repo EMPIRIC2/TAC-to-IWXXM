@@ -152,7 +152,7 @@ def attribution_for(code: str) -> dict[str, str | None]:
 
     Parameters
     ----------
-    code :
+    code : str
         Stable SCREAMING_SNAKE issue code.
 
     Returns

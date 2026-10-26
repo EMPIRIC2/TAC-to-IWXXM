@@ -29,9 +29,10 @@ def _split_for_decode(tac: str, product: str) -> object:
 
     Parameters
     ----------
-    tac : object
+    tac : str
         Argument ``tac``.
-    product : object
+
+    product : str
         Argument ``product``.
 
     Returns

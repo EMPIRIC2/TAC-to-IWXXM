@@ -54,15 +54,15 @@ def repo_root() -> Path:
 
     Honours ``TAC2IWXXM_REPO_ROOT`` when set.
 
+    Returns
+    -------
+    Path
+        Monorepo root containing ``vendor/schemas``.
+
     Examples
     --------
     >>> 1 + 1  # docstring smoke (repo_root)
     2
-
-    Returns
-    -------
-    object
-        Return value.
     """
     env = os.environ.get("TAC2IWXXM_REPO_ROOT")
     if env:
@@ -76,12 +76,12 @@ def _rule_dir(iwxxm_version: str) -> Path:
 
     Parameters
     ----------
-    iwxxm_version : object
+    iwxxm_version : str
         Argument ``iwxxm_version``.
 
     Returns
     -------
-    object
+    Path
         Return value.
     """
     path = repo_root() / "vendor" / "schemas" / "iwxxm" / iwxxm_version / "IWXXM" / "rule"
@@ -96,14 +96,15 @@ def _rdf_concept_members(path: Path, *, register_uri: str) -> frozenset[str]:
 
     Parameters
     ----------
-    path : object
+    path : Path
         Argument ``path``.
-    register_uri : object
+
+    register_uri : str
         Argument ``register_uri``.
 
     Returns
     -------
-    object
+    frozenset[str]
         Return value.
     """
     text = path.read_text(encoding="utf-8")
@@ -130,6 +131,7 @@ def load_aviation_colour_members(
     ----------
     register : {"iwxxm", "49-2"}
         Colour register family.
+
     iwxxm_version : str, optional
         Vendor pin line (default ``2025-2``).
 
@@ -172,6 +174,7 @@ def load_nil_members(
     ----------
     family : {"common", "iwxxm"}
         Nil register family.
+
     iwxxm_version : str, optional
         Vendor pin line (default ``2025-2``).
 
@@ -200,12 +203,12 @@ def _normalize_colour_token(token: str) -> str:
 
     Parameters
     ----------
-    token : object
+    token : str
         Argument ``token``.
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     cleaned = " ".join(token.strip().upper().split())
@@ -231,8 +234,10 @@ def aviation_colour_href(
     ----------
     token : str
         Colour token (e.g. ``RED``, ``NOT GIVEN``).
+
     iwxxm_version : str, optional
         Vendor pin line.
+
     register : {"iwxxm", "49-2"}, optional
         Override register; default ``iwxxm`` for ``2025-2``, else ``49-2``.
 
@@ -280,8 +285,10 @@ def nil_reason_href(
     ----------
     notation : str
         Nil concept notation (e.g. ``missing``, ``notObservable``).
+
     family : {"common", "iwxxm"}, optional
         Register family (default ``common`` for aerodrome Guidance nils).
+
     iwxxm_version : str, optional
         Vendor pin line.
 

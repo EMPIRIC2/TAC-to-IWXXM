@@ -30,8 +30,22 @@ class ShadowResult:
 
     Attributes
     ----------
-    _ : object
-        See implementation.
+    ok : bool
+        Ok.
+    xml : str | None
+        XML text.
+    iwxxm_version : str
+        IWXXM release line.
+    profile : str
+        Semantic profile id.
+    match : MatchResult | None
+        Match.
+    pack_id : str | None
+        Pack ID.
+    pack_ir : dict[str, object] | None
+        Pack ir.
+    legacy_ir : dict[str, Any] | None
+        Legacy ir.
     """
 
     ok: bool
@@ -56,15 +70,18 @@ def convert_shadow(
 
     Parameters
     ----------
-    tac :
+    tac : str
         TAC text.
-    product :
+
+    product : str
         Product id. METAR, SPECI, TAF, AIRMET, SIGMET, VAA, TCA, SWXA, and VONA
         run the pack. SIGMET stays one id; the legacy parse selects the ordinary,
         volcanic-ash, or tropical-cyclone pack.
-    profile :
+
+    profile : str, optional
         Caller profile. The pack does not select this.
-    iwxxm_version :
+
+    iwxxm_version : str | None, optional
         Caller pin. The pack does not select this.
 
     Returns
@@ -119,14 +136,15 @@ def _pack_id(product: str, ir: dict[str, object] | None) -> str:
 
     Parameters
     ----------
-    product : object
+    product : str
         Argument ``product``.
-    ir : object
+
+    ir : dict[str, object] | None
         Argument ``ir``.
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     if product != "SIGMET":

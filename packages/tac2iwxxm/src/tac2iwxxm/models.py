@@ -13,23 +13,31 @@ class AhlParts(msgspec.Struct, frozen=True):
 
     Parameters
     ----------
-    ahl :
+    ahl : str
         Full AHL line (e.g. ``SAUS31 KZNY 121200``).
-    tt :
+
+    tt : str
         TAC ``T1T2`` designator as parsed (e.g. ``SA``, ``FN``).
-    aa :
+
+    aa : str
         Geographical designator ``A1A2``.
-    ii :
+
+    ii : str
         Bulletin number ``ii`` (2 digits).
-    cccc :
+
+    cccc : str
         Originating centre CCCC.
-    yygggg :
+
+    yygggg : str
         Day-hour-minute group (YYGGgg).
-    bbb :
+
+    bbb : str | None
         Optional BBB indicator (``AAx`` / ``CCx`` / ``RRx``, x ∈ A…X).
-    iwxxm_tt :
+
+    iwxxm_tt : str
         Mapped IWXXM ``T1T2`` (L*).
-    report_status :
+
+    report_status : str
         ``NORMAL``, ``AMENDMENT``, or ``CORRECTION`` from BBB rules.
     """
 
@@ -50,23 +58,31 @@ class BulletinMeta(msgspec.Struct, frozen=True):
 
     Parameters
     ----------
-    ahl :
+    ahl : str
         Full AHL line (e.g. ``SAUS31 KZNY 121200``).
-    report_count :
+
+    report_count : int
         Number of TAC reports extracted from the bulletin body.
-    tt :
+
+    tt : str
         T1T2 designator (e.g. ``SA``, ``SP``).
-    aa :
+
+    aa : str
         Geographical designator (e.g. ``US``).
-    cccc :
+
+    cccc : str
         Originating centre CCCC.
-    yygggg :
+
+    yygggg : str
         Day-hour-minute group (YYGGgg).
-    bbb :
+
+    bbb : str | None
         Optional BBB amendment indicator (e.g. ``CCA``).
-    ii :
+
+    ii : str | None
         Optional bulletin number ``ii`` (additive; EV-029).
-    report_status :
+
+    report_status : str
         Derived IWXXM ``reportStatus`` from BBB (``NORMAL`` / ``AMENDMENT`` /
         ``CORRECTION``); additive EV-029 M2.
     """
@@ -88,9 +104,10 @@ class BulletinSplit(msgspec.Struct, frozen=True):
 
     Parameters
     ----------
-    meta :
+    meta : BulletinMeta
         Parsed AHL metadata including ``report_count``.
-    reports :
+
+    reports : list[str]
         Ordered TAC report strings (each typically ending with ``=``).
     """
 
@@ -104,17 +121,22 @@ class ConvertIssue(msgspec.Struct, frozen=True):
 
     Parameters
     ----------
-    severity :
+    severity : str
         ``error``, ``warning``, or ``info``.
-    code :
+
+    code : str
         Machine-readable issue id.
-    message :
+
+    message : str
         Human-readable description.
-    location :
+
+    location : str | None
         Optional field / token hint.
-    start :
+
+    start : int | None
         Optional inclusive character offset into the source TAC.
-    end :
+
+    end : int | None
         Optional exclusive character offset into the source TAC.
     """
 
@@ -132,28 +154,38 @@ class ConvertResult(msgspec.Struct, frozen=True):
 
     Parameters
     ----------
-    ok :
+    ok : bool
         ``True`` when conversion produced IWXXM without fatal parse errors.
-    product :
+
+    product : str
         Product id (e.g. ``METAR``, ``SPECI``).
-    profile :
+
+    profile : str
         Internal emitter key (``annex3`` or ``iwxxm_us``).
-    semantic_profile :
+
+    semantic_profile : str
         Canonical semantic id (``icao_2025`` or ``us_faa_nws``).
-    deprecated_alias_used :
+
+    deprecated_alias_used : bool
         ``True`` when a legacy alias id was supplied on input.
-    iwxxm_version :
+
+    iwxxm_version : str
         Target IWXXM release line.
-    xml :
+
+    xml : str | None
         Serialized IWXXM document, or ``None`` on fatal failure.
-    ir :
+
+    ir : dict[str, Any] | None
         Versioned intermediate representation (dict) for M-field checks.
-    issues :
+
+    issues : list[ConvertIssue]
         Structured findings.
-    suggested_filename :
+
+    suggested_filename : str | None
         Guideline ``A_…xml.gz`` name when the input has an abbreviated heading.
         ``None`` when there is no heading, and for the Canada datamart name.
-    xml_gzip :
+
+    xml_gzip : bytes | None
         Gzip of ``xml`` when ``suggested_filename`` ends in ``.xml.gz``.
         ``None`` when the name is absent or ends in ``.xml``.
     """

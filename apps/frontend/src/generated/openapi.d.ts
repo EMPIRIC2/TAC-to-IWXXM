@@ -14,87 +14,8 @@ export interface paths {
         get?: never;
         put?: never;
         /**
-         * Convert
+         * Convert TAC to IWXXM
          * @description Convert METAR/SPECI TAC text to IWXXM XML.
-         *
-         *     Examples
-         *     --------
-         *     >>> 1 + 1  # docstring smoke (convert)
-         *     2
-         *
-         *     Parameters
-         *     ----------
-         *     request : object
-         *         Argument ``request``.
-         *     files : object
-         *         Argument ``files``.
-         *     manual_text : object
-         *         Argument ``manual_text``.
-         *     iwxxm_version : object
-         *         Argument ``iwxxm_version``.
-         *     validate_output : object
-         *         Argument ``validate_output``.
-         *     validation_level : object
-         *         Argument ``validation_level``.
-         *     stop_on_error : object
-         *         Argument ``stop_on_error``.
-         *     bulletin_id : object
-         *         Argument ``bulletin_id``.
-         *     issuing_center : object
-         *         Argument ``issuing_center``.
-         *     lint : object
-         *         Argument ``lint``.
-         *     product : object
-         *         Argument ``product``.
-         *     profile : object
-         *         Argument ``profile``.
-         *     semantic_profile : object
-         *         Argument ``semantic_profile``.
-         *     exchange_profile : object
-         *         Argument ``exchange_profile``.
-         *     report_variant : object
-         *         Argument ``report_variant``.
-         *     exchange_output : object
-         *         Argument ``exchange_output``.
-         *     extensions : object
-         *         Argument ``extensions``.
-         *     preview : object
-         *         Argument ``preview``.
-         *     include_nil_reasons : object
-         *         Argument ``include_nil_reasons``.
-         *     emit_translation_centre : object
-         *         Argument ``emit_translation_centre``.
-         *     translation_centre_designator : object
-         *         Argument ``translation_centre_designator``.
-         *     translation_centre_name : object
-         *         Argument ``translation_centre_name``.
-         *     log_level : object
-         *         Argument ``log_level``.
-         *     propagate_residuals_to_remarks : object
-         *         Argument ``propagate_residuals_to_remarks``.
-         *     overlay_id : object
-         *         Argument ``overlay_id``.
-         *     preset_id : object
-         *         Argument ``preset_id``.
-         *     conversion_template_id : object
-         *         Argument ``conversion_template_id``.
-         *     conversion_library_id : object
-         *         Argument ``conversion_library_id``.
-         *     tac_validation_library_id : object
-         *         Argument ``tac_validation_library_id``.
-         *     iwxxm_validation_library_id : object
-         *         Argument ``iwxxm_validation_library_id``.
-         *     dissemination_library_id : object
-         *         Argument ``dissemination_library_id``.
-         *     decoding_library_id : object
-         *         Argument ``decoding_library_id``.
-         *     auth_user : object
-         *         Argument ``auth_user``.
-         *
-         *     Returns
-         *     -------
-         *     object
-         *         Return value.
          */
         post: operations["convert_api_v1_convert_post"];
         delete?: never;
@@ -113,52 +34,11 @@ export interface paths {
         get?: never;
         put?: never;
         /**
-         * Convert Bulletin
+         * Convert a WMO bulletin
          * @description Split a WMO AHL bulletin and convert each TAC report.
          *
          *     Partial success is allowed: HTTP 200 when split succeeds even if some reports fail.
          *     Per-report ``issues`` / ``fixes`` follow lint-style identity.
-         *
-         *     Examples
-         *     --------
-         *     >>> 1 + 1  # docstring smoke (convert_bulletin)
-         *     2
-         *
-         *     Parameters
-         *     ----------
-         *     request : object
-         *         Argument ``request``.
-         *     product : object
-         *         Argument ``product``.
-         *     files : object
-         *         Argument ``files``.
-         *     manual_text : object
-         *         Argument ``manual_text``.
-         *     profile : object
-         *         Argument ``profile``.
-         *     semantic_profile : object
-         *         Argument ``semantic_profile``.
-         *     exchange_profile : object
-         *         Argument ``exchange_profile``.
-         *     conversion_library_id : object
-         *         Argument ``conversion_library_id``.
-         *     dissemination_library_id : object
-         *         Argument ``dissemination_library_id``.
-         *     iwxxm_version : object
-         *         Argument ``iwxxm_version``.
-         *     lint : object
-         *         Argument ``lint``.
-         *     extensions : object
-         *         Argument ``extensions``.
-         *     propagate_residuals_to_remarks : object
-         *         Argument ``propagate_residuals_to_remarks``.
-         *     auth_user : object
-         *         Argument ``auth_user``.
-         *
-         *     Returns
-         *     -------
-         *     object
-         *         Return value.
          */
         post: operations["convert_bulletin_api_v1_convert_bulletin_post"];
         delete?: never;
@@ -177,31 +57,8 @@ export interface paths {
         get?: never;
         put?: never;
         /**
-         * Convert Zip
+         * Convert TAC to a ZIP of IWXXM files
          * @description Convert METAR/SPECI TAC inputs to a ZIP of IWXXM XML files.
-         *
-         *     Examples
-         *     --------
-         *     >>> 1 + 1  # docstring smoke (convert_zip)
-         *     2
-         *
-         *     Parameters
-         *     ----------
-         *     request : object
-         *         Argument ``request``.
-         *     files : object
-         *         Argument ``files``.
-         *     manual_text : object
-         *         Argument ``manual_text``.
-         *     iwxxm_version : object
-         *         Argument ``iwxxm_version``.
-         *     propagate_residuals_to_remarks : object
-         *         Argument ``propagate_residuals_to_remarks``.
-         *
-         *     Returns
-         *     -------
-         *     object
-         *         Return value.
          */
         post: operations["convert_zip_api_v1_convert_zip_post"];
         delete?: never;
@@ -220,29 +77,8 @@ export interface paths {
         get?: never;
         put?: never;
         /**
-         * Decode Tac Endpoint
+         * Decode TAC
          * @description Decode TAC into annotated segments and a plain-language summary.
-         *
-         *     Examples
-         *     --------
-         *     >>> 1 + 1  # docstring smoke (decode_tac_endpoint)
-         *     2
-         *
-         *     Parameters
-         *     ----------
-         *     request : object
-         *         Argument ``request``.
-         *     product : object
-         *         Argument ``product``.
-         *     manual_text : object
-         *         Argument ``manual_text``.
-         *     files : object
-         *         Argument ``files``.
-         *
-         *     Returns
-         *     -------
-         *     object
-         *         Return value.
          */
         post: operations["decode_tac_endpoint_api_v1_decode_tac_post"];
         delete?: never;
@@ -261,33 +97,6 @@ export interface paths {
         /**
          * List Audit
          * @description List redacted delivery audit rows for the caller.
-         *
-         *     Examples
-         *     --------
-         *     >>> 1 + 1  # docstring smoke (list_audit)
-         *     2
-         *
-         *     Parameters
-         *     ----------
-         *     product : object
-         *         Argument ``product``.
-         *     station : object
-         *         Argument ``station``.
-         *     profile : object
-         *         Argument ``profile``.
-         *     status_filter : object
-         *         Argument ``status_filter``.
-         *     page : object
-         *         Argument ``page``.
-         *     limit : object
-         *         Argument ``limit``.
-         *     service : object
-         *         Argument ``service``.
-         *
-         *     Returns
-         *     -------
-         *     object
-         *         Return value.
          */
         get: operations["list_audit_api_v1_dissemination_audit_get"];
         put?: never;
@@ -308,23 +117,6 @@ export interface paths {
         /**
          * Get Audit
          * @description Fetch one audit row (owner-scoped).
-         *
-         *     Examples
-         *     --------
-         *     >>> 1 + 1  # docstring smoke (get_audit)
-         *     2
-         *
-         *     Parameters
-         *     ----------
-         *     audit_id : object
-         *         Argument ``audit_id``.
-         *     service : object
-         *         Argument ``service``.
-         *
-         *     Returns
-         *     -------
-         *     object
-         *         Return value.
          */
         get: operations["get_audit_api_v1_dissemination_audit__audit_id__get"];
         put?: never;
@@ -343,26 +135,11 @@ export interface paths {
             cookie?: never;
         };
         /**
-         * Gateways Health
-         * @description Connectivity-only health for known drawer gateway kinds.
+         * Gateway connectivity
+         * @description Connectivity checks for known gateway kinds.
          *
-         *     AMHS, SWIM, and AFS kinds are staging-honest; others report no live probe
-         *     until registered.
-         *
-         *     Examples
-         *     --------
-         *     >>> 1 + 1  # docstring smoke (gateways_health)
-         *     2
-         *
-         *     Parameters
-         *     ----------
-         *     _user : object
-         *         Argument ``_user``.
-         *
-         *     Returns
-         *     -------
-         *     object
-         *         Return value.
+         *     AMHS, SWIM, and AFS stay unsuccessful until a live pathway is configured.
+         *     Other kinds report that no live probe is configured.
          */
         get: operations["gateways_health_api_v1_dissemination_gateways_health_get"];
         put?: never;
@@ -383,23 +160,6 @@ export interface paths {
         /**
          * Get Mapping
          * @description Fetch MappingConfig by id.
-         *
-         *     Examples
-         *     --------
-         *     >>> 1 + 1  # docstring smoke (get_mapping)
-         *     2
-         *
-         *     Parameters
-         *     ----------
-         *     mapping_id : object
-         *         Argument ``mapping_id``.
-         *     service : object
-         *         Argument ``service``.
-         *
-         *     Returns
-         *     -------
-         *     object
-         *         Return value.
          */
         get: operations["get_mapping_api_v1_dissemination_mappings__mapping_id__get"];
         put?: never;
@@ -410,25 +170,6 @@ export interface paths {
         /**
          * Patch Mapping
          * @description Update MappingConfig fields.
-         *
-         *     Examples
-         *     --------
-         *     >>> 1 + 1  # docstring smoke (patch_mapping)
-         *     2
-         *
-         *     Parameters
-         *     ----------
-         *     mapping_id : object
-         *         Argument ``mapping_id``.
-         *     payload : object
-         *         Argument ``payload``.
-         *     service : object
-         *         Argument ``service``.
-         *
-         *     Returns
-         *     -------
-         *     object
-         *         Return value.
          */
         patch: operations["patch_mapping_api_v1_dissemination_mappings__mapping_id__patch"];
         trace?: never;
@@ -444,25 +185,6 @@ export interface paths {
         /**
          * Upsert Mapping
          * @description Create MappingConfig by name (unique per user).
-         *
-         *     Examples
-         *     --------
-         *     >>> 1 + 1  # docstring smoke (upsert_mapping)
-         *     2
-         *
-         *     Parameters
-         *     ----------
-         *     name : object
-         *         Argument ``name``.
-         *     payload : object
-         *         Argument ``payload``.
-         *     service : object
-         *         Argument ``service``.
-         *
-         *     Returns
-         *     -------
-         *     object
-         *         Return value.
          */
         put: operations["upsert_mapping_api_v1_dissemination_mappings__name__put"];
         post?: never;
@@ -482,23 +204,6 @@ export interface paths {
         /**
          * Get Plan
          * @description Fetch one plan by id (owner-scoped).
-         *
-         *     Examples
-         *     --------
-         *     >>> 1 + 1  # docstring smoke (get_plan)
-         *     2
-         *
-         *     Parameters
-         *     ----------
-         *     plan_id : object
-         *         Argument ``plan_id``.
-         *     service : object
-         *         Argument ``service``.
-         *
-         *     Returns
-         *     -------
-         *     object
-         *         Return value.
          */
         get: operations["get_plan_api_v1_dissemination_plans__plan_id__get"];
         put?: never;
@@ -509,25 +214,6 @@ export interface paths {
         /**
          * Patch Plan
          * @description Update plan fields (no secrets).
-         *
-         *     Examples
-         *     --------
-         *     >>> 1 + 1  # docstring smoke (patch_plan)
-         *     2
-         *
-         *     Parameters
-         *     ----------
-         *     plan_id : object
-         *         Argument ``plan_id``.
-         *     payload : object
-         *         Argument ``payload``.
-         *     service : object
-         *         Argument ``service``.
-         *
-         *     Returns
-         *     -------
-         *     object
-         *         Return value.
          */
         patch: operations["patch_plan_api_v1_dissemination_plans__plan_id__patch"];
         trace?: never;
@@ -542,29 +228,10 @@ export interface paths {
         get?: never;
         put?: never;
         /**
-         * Execute Plan Route
+         * Execute or dry-run a plan
          * @description Execute or dry-run a plan; persist redacted audit rows per receipt.
          *
          *     Default ``dry_run=true`` so operators can exercise audit without egress.
-         *
-         *     Examples
-         *     --------
-         *     >>> 1 + 1  # docstring smoke (execute_plan_route)
-         *     2
-         *
-         *     Parameters
-         *     ----------
-         *     plan_id : object
-         *         Argument ``plan_id``.
-         *     body : object
-         *         Argument ``body``.
-         *     service : object
-         *         Argument ``service``.
-         *
-         *     Returns
-         *     -------
-         *     object
-         *         Return value.
          */
         post: operations["execute_plan_route_api_v1_dissemination_plans__plan_id__execute_post"];
         delete?: never;
@@ -582,29 +249,10 @@ export interface paths {
         };
         get?: never;
         /**
-         * Upsert Plan By Slug
+         * Create a dissemination plan
          * @description Create a plan under ``slug`` (unique per user).
          *
          *     Path slug wins over body.slug when they differ.
-         *
-         *     Examples
-         *     --------
-         *     >>> 1 + 1  # docstring smoke (upsert_plan_by_slug)
-         *     2
-         *
-         *     Parameters
-         *     ----------
-         *     slug : object
-         *         Argument ``slug``.
-         *     payload : object
-         *         Argument ``payload``.
-         *     service : object
-         *         Argument ``service``.
-         *
-         *     Returns
-         *     -------
-         *     object
-         *         Return value.
          */
         put: operations["upsert_plan_by_slug_api_v1_dissemination_plans__slug__put"];
         post?: never;
@@ -626,23 +274,6 @@ export interface paths {
         /**
          * Dissemination Preflight
          * @description Run sink preflight; return schema diffs and optional memory-only handle.
-         *
-         *     Examples
-         *     --------
-         *     >>> 1 + 1  # docstring smoke (dissemination_preflight)
-         *     2
-         *
-         *     Parameters
-         *     ----------
-         *     request : object
-         *         Argument ``request``.
-         *     auth_user : object
-         *         Argument ``auth_user``.
-         *
-         *     Returns
-         *     -------
-         *     object
-         *         Return value.
          */
         post: operations["dissemination_preflight_api_v1_dissemination_preflight_post"];
         delete?: never;
@@ -663,23 +294,6 @@ export interface paths {
         /**
          * Dissemination Send
          * @description Send IWXXM via a green preflight handle or inline sink params.
-         *
-         *     Examples
-         *     --------
-         *     >>> 1 + 1  # docstring smoke (dissemination_send)
-         *     2
-         *
-         *     Parameters
-         *     ----------
-         *     request : object
-         *         Argument ``request``.
-         *     auth_user : object
-         *         Argument ``auth_user``.
-         *
-         *     Returns
-         *     -------
-         *     object
-         *         Return value.
          */
         post: operations["dissemination_send_api_v1_dissemination_send_post"];
         delete?: never;
@@ -696,48 +310,14 @@ export interface paths {
             cookie?: never;
         };
         /**
-         * List User Jobs
+         * List evaluation jobs
          * @description List all evaluation jobs for the current user.
-         *
-         *     Examples
-         *     --------
-         *     >>> 1 + 1  # docstring smoke (list_user_jobs)
-         *     2
-         *
-         *     Parameters
-         *     ----------
-         *     page : object
-         *         Argument ``page``.
-         *     per_page : object
-         *         Argument ``per_page``.
-         *
-         *     Returns
-         *     -------
-         *     object
-         *         Return value.
          */
         get: operations["list_user_jobs_api_v1_eval_jobs_get"];
         put?: never;
         /**
-         * Create Evaluation Job
+         * Create an evaluation job
          * @description Create a new evaluation job.
-         *
-         *     Examples
-         *     --------
-         *     >>> 1 + 1  # docstring smoke (create_evaluation_job)
-         *     2
-         *
-         *     Parameters
-         *     ----------
-         *     request : object
-         *         Argument ``request``.
-         *     background_tasks : object
-         *         Argument ``background_tasks``.
-         *
-         *     Returns
-         *     -------
-         *     object
-         *         Return value.
          */
         post: operations["create_evaluation_job_api_v1_eval_jobs_post"];
         delete?: never;
@@ -754,23 +334,8 @@ export interface paths {
             cookie?: never;
         };
         /**
-         * Get Job Status
+         * Evaluation job status
          * @description Get the status of an evaluation job.
-         *
-         *     Examples
-         *     --------
-         *     >>> 1 + 1  # docstring smoke (get_job_status)
-         *     2
-         *
-         *     Parameters
-         *     ----------
-         *     job_id : object
-         *         Argument ``job_id``.
-         *
-         *     Returns
-         *     -------
-         *     object
-         *         Return value.
          */
         get: operations["get_job_status_api_v1_eval_jobs__job_id__get"];
         put?: never;
@@ -789,29 +354,8 @@ export interface paths {
             cookie?: never;
         };
         /**
-         * Get Job Results
+         * Evaluation job results
          * @description Get evaluation results for a job (paginated).
-         *
-         *     Examples
-         *     --------
-         *     >>> 1 + 1  # docstring smoke (get_job_results)
-         *     2
-         *
-         *     Parameters
-         *     ----------
-         *     job_id : object
-         *         Argument ``job_id``.
-         *     page : object
-         *         Argument ``page``.
-         *     per_page : object
-         *         Argument ``per_page``.
-         *     status_filter : object
-         *         Argument ``status_filter``.
-         *
-         *     Returns
-         *     -------
-         *     object
-         *         Return value.
          */
         get: operations["get_job_results_api_v1_eval_jobs__job_id__results_get"];
         put?: never;
@@ -832,34 +376,10 @@ export interface paths {
         get?: never;
         put?: never;
         /**
-         * Ingest Collect
-         * @description Placeholder for IWXXM COLLECT / FTBP ingest.
+         * COLLECT ingest
+         * @description Accept a COLLECT upload, including gzip text, and return HTTP 501.
          *
-         *     Accepts uploads (including ``.gz`` via ``read_upload_files_text``) so the operator UI
-         *     can exercise the path; returns HTTP 501 until member extraction + validate is shipped.
-         *
-         *     Examples
-         *     --------
-         *     >>> 1 + 1  # docstring smoke (ingest_collect)
-         *     2
-         *
-         *     Parameters
-         *     ----------
-         *     request : object
-         *         Argument ``request``.
-         *     files : object
-         *         Argument ``files``.
-         *     manual_text : object
-         *         Argument ``manual_text``.
-         *     profile : object
-         *         Argument ``profile``.
-         *     iwxxm_version : object
-         *         Argument ``iwxxm_version``.
-         *
-         *     Returns
-         *     -------
-         *     object
-         *         Return value.
+         *     Member extraction is not available.
          */
         post: operations["ingest_collect_api_v1_ingest_collect_post"];
         delete?: never;
@@ -878,27 +398,8 @@ export interface paths {
         get?: never;
         put?: never;
         /**
-         * Mass Ingest
+         * Ingest files or a zip
          * @description Authenticated multi-file / zip ingest with caps, sniff, and zip-bomb guards.
-         *
-         *     Parameters
-         *     ----------
-         *     request : Request
-         *         Incoming request (slowapi).
-         *     files : list[UploadFile] | None
-         *         Multipart files and/or ``.zip`` archives.
-         *     _user : dict[str, Any]
-         *         Verified JWT claims (must include ``sub``).
-         *
-         *     Returns
-         *     -------
-         *     JSONResponse
-         *         Per-file accept/reject list and summary counts.
-         *
-         *     Examples
-         *     --------
-         *     >>> 1 + 1  # docstring smoke (mass_ingest)
-         *     2
          */
         post: operations["mass_ingest_api_v1_ingest_mass_post"];
         delete?: never;
@@ -915,33 +416,8 @@ export interface paths {
             cookie?: never;
         };
         /**
-         * Lint Issue Catalog
-         * @description Export TAC lint + IWXXM validation catalog for FE tooltips / catalog page.
-         *
-         *     Examples
-         *     --------
-         *     >>> 1 + 1  # docstring smoke (lint_issue_catalog)
-         *     2
-         *
-         *     Parameters
-         *     ----------
-         *     product : object
-         *         Argument ``product``.
-         *     family : object
-         *         Argument ``family``.
-         *     issue_type : object
-         *         Argument ``issue_type``.
-         *     source_access : object
-         *         Argument ``source_access``.
-         *     semantic_profile : object
-         *         Argument ``semantic_profile``.
-         *     exchange_profile : object
-         *         Argument ``exchange_profile``.
-         *
-         *     Returns
-         *     -------
-         *     object
-         *         Return value.
+         * Lint and validation catalog
+         * @description Return the TAC lint and IWXXM validation issue catalog.
          */
         get: operations["lint_issue_catalog_api_v1_lint_issue_catalog_get"];
         put?: never;
@@ -962,29 +438,8 @@ export interface paths {
         get?: never;
         put?: never;
         /**
-         * Lint Tac
-         * @description Thin wrapper over ``packages/tac-validate`` (multipart/form-data only - Q8=A).
-         *
-         *     Examples
-         *     --------
-         *     >>> 1 + 1  # docstring smoke (lint_tac)
-         *     2
-         *
-         *     Parameters
-         *     ----------
-         *     request : object
-         *         Argument ``request``.
-         *     manual_text : object
-         *         Argument ``manual_text``.
-         *     product : object
-         *         Argument ``product``.
-         *     files : object
-         *         Argument ``files``.
-         *
-         *     Returns
-         *     -------
-         *     object
-         *         Return value.
+         * Lint TAC or IWXXM
+         * @description Lint TAC or IWXXM XML. The body must be multipart form data.
          */
         post: operations["lint_tac_api_v1_lint_tac_post"];
         delete?: never;
@@ -1025,23 +480,6 @@ export interface paths {
          * @description Read-only ConversionProfile catalog for the authenticated Profiles inspector.
          *
          *     Requires JWT so the inspector stays on the authenticated Profiles surface.
-         *
-         *     Examples
-         *     --------
-         *     >>> 1 + 1  # docstring smoke (get_catalog)
-         *     2
-         *
-         *     Parameters
-         *     ----------
-         *     _user : object
-         *         Argument ``_user``.
-         *     service : object
-         *         Argument ``service``.
-         *
-         *     Returns
-         *     -------
-         *     object
-         *         Return value.
          */
         get: operations["get_catalog_api_v1_profiles_catalog_get"];
         put?: never;
@@ -1062,44 +500,12 @@ export interface paths {
         /**
          * List Conversion Templates
          * @description List first-party and custom conversion templates.
-         *
-         *     Examples
-         *     --------
-         *     >>> 1 + 1  # docstring smoke (list_conversion_templates)
-         *     2
-         *
-         *     Parameters
-         *     ----------
-         *     service : object
-         *         Argument ``service``.
-         *
-         *     Returns
-         *     -------
-         *     object
-         *         Return value.
          */
         get: operations["list_conversion_templates_api_v1_profiles_conversion_templates_get"];
         put?: never;
         /**
          * Create Conversion Template
          * @description Create a custom conversion template (optionally forked from first-party).
-         *
-         *     Examples
-         *     --------
-         *     >>> 1 + 1  # docstring smoke (create_conversion_template)
-         *     2
-         *
-         *     Parameters
-         *     ----------
-         *     payload : object
-         *         Argument ``payload``.
-         *     service : object
-         *         Argument ``service``.
-         *
-         *     Returns
-         *     -------
-         *     object
-         *         Return value.
          */
         post: operations["create_conversion_template_api_v1_profiles_conversion_templates_post"];
         delete?: never;
@@ -1120,23 +526,6 @@ export interface paths {
         /**
          * Preview Conversion Template
          * @description TAC to template to IWXXM bridge preview.
-         *
-         *     Examples
-         *     --------
-         *     >>> 1 + 1  # docstring smoke (preview_conversion_template)
-         *     2
-         *
-         *     Parameters
-         *     ----------
-         *     payload : object
-         *         Argument ``payload``.
-         *     service : object
-         *         Argument ``service``.
-         *
-         *     Returns
-         *     -------
-         *     object
-         *         Return value.
          */
         post: operations["preview_conversion_template_api_v1_profiles_conversion_templates_preview_post"];
         delete?: never;
@@ -1155,23 +544,6 @@ export interface paths {
         /**
          * Get Conversion Template
          * @description Fetch one conversion template (first-party id or custom UUID).
-         *
-         *     Examples
-         *     --------
-         *     >>> 1 + 1  # docstring smoke (get_conversion_template)
-         *     2
-         *
-         *     Parameters
-         *     ----------
-         *     template_id : object
-         *         Argument ``template_id``.
-         *     service : object
-         *         Argument ``service``.
-         *
-         *     Returns
-         *     -------
-         *     object
-         *         Return value.
          */
         get: operations["get_conversion_template_api_v1_profiles_conversion_templates__template_id__get"];
         put?: never;
@@ -1179,18 +551,6 @@ export interface paths {
         /**
          * Delete Conversion Template
          * @description Delete an owned custom conversion template.
-         *
-         *     Examples
-         *     --------
-         *     >>> 1 + 1  # docstring smoke (delete_conversion_template)
-         *     2
-         *
-         *     Parameters
-         *     ----------
-         *     template_id : object
-         *         Argument ``template_id``.
-         *     service : object
-         *         Argument ``service``.
          */
         delete: operations["delete_conversion_template_api_v1_profiles_conversion_templates__template_id__delete"];
         options?: never;
@@ -1198,25 +558,6 @@ export interface paths {
         /**
          * Patch Conversion Template
          * @description Update an owned custom conversion template.
-         *
-         *     Examples
-         *     --------
-         *     >>> 1 + 1  # docstring smoke (patch_conversion_template)
-         *     2
-         *
-         *     Parameters
-         *     ----------
-         *     template_id : object
-         *         Argument ``template_id``.
-         *     payload : object
-         *         Argument ``payload``.
-         *     service : object
-         *         Argument ``service``.
-         *
-         *     Returns
-         *     -------
-         *     object
-         *         Return value.
          */
         patch: operations["patch_conversion_template_api_v1_profiles_conversion_templates__template_id__patch"];
         trace?: never;
@@ -1231,46 +572,12 @@ export interface paths {
         /**
          * List Library Assets
          * @description List first-party and custom five-Libraries assets.
-         *
-         *     Examples
-         *     --------
-         *     >>> 1 + 1  # docstring smoke (list_library_assets)
-         *     2
-         *
-         *     Parameters
-         *     ----------
-         *     kind : object
-         *         Argument ``kind``.
-         *     service : object
-         *         Argument ``service``.
-         *
-         *     Returns
-         *     -------
-         *     object
-         *         Return value.
          */
         get: operations["list_library_assets_api_v1_profiles_library_assets_get"];
         put?: never;
         /**
          * Create Library Asset
-         * @description Retired — library authoring is no longer available.
-         *
-         *     Examples
-         *     --------
-         *     >>> 1 + 1  # docstring smoke (create_library_asset)
-         *     2
-         *
-         *     Parameters
-         *     ----------
-         *     payload : object
-         *         Argument ``payload``.
-         *     service : object
-         *         Argument ``service``.
-         *
-         *     Returns
-         *     -------
-         *     object
-         *         Return value.
+         * @description Library authoring is no longer available.
          */
         post: operations["create_library_asset_api_v1_profiles_library_assets_post"];
         delete?: never;
@@ -1290,24 +597,7 @@ export interface paths {
         put?: never;
         /**
          * Preview Library Rule
-         * @description Retired — library authoring is no longer available.
-         *
-         *     Examples
-         *     --------
-         *     >>> 1 + 1  # docstring smoke (preview_library_rule)
-         *     2
-         *
-         *     Parameters
-         *     ----------
-         *     payload : object
-         *         Argument ``payload``.
-         *     service : object
-         *         Argument ``service``.
-         *
-         *     Returns
-         *     -------
-         *     object
-         *         Return value.
+         * @description Library authoring is no longer available.
          */
         post: operations["preview_library_rule_api_v1_profiles_library_assets_preview_rule_post"];
         delete?: never;
@@ -1327,24 +617,7 @@ export interface paths {
         put?: never;
         /**
          * Validate Library Yaml
-         * @description Retired — library authoring is no longer available.
-         *
-         *     Examples
-         *     --------
-         *     >>> 1 + 1  # docstring smoke (validate_library_yaml)
-         *     2
-         *
-         *     Parameters
-         *     ----------
-         *     payload : object
-         *         Argument ``payload``.
-         *     service : object
-         *         Argument ``service``.
-         *
-         *     Returns
-         *     -------
-         *     object
-         *         Return value.
+         * @description Library authoring is no longer available.
          */
         post: operations["validate_library_yaml_api_v1_profiles_library_assets_validate_yaml_post"];
         delete?: never;
@@ -1363,68 +636,20 @@ export interface paths {
         /**
          * Get Library Asset
          * @description Fetch one library asset (first-party id or custom UUID).
-         *
-         *     Examples
-         *     --------
-         *     >>> 1 + 1  # docstring smoke (get_library_asset)
-         *     2
-         *
-         *     Parameters
-         *     ----------
-         *     asset_id : object
-         *         Argument ``asset_id``.
-         *     service : object
-         *         Argument ``service``.
-         *
-         *     Returns
-         *     -------
-         *     object
-         *         Return value.
          */
         get: operations["get_library_asset_api_v1_profiles_library_assets__asset_id__get"];
         put?: never;
         post?: never;
         /**
          * Delete Library Asset
-         * @description Retired — library authoring is no longer available.
-         *
-         *     Examples
-         *     --------
-         *     >>> 1 + 1  # docstring smoke (delete_library_asset)
-         *     2
-         *
-         *     Parameters
-         *     ----------
-         *     asset_id : object
-         *         Argument ``asset_id``.
-         *     service : object
-         *         Argument ``service``.
+         * @description Library authoring is no longer available.
          */
         delete: operations["delete_library_asset_api_v1_profiles_library_assets__asset_id__delete"];
         options?: never;
         head?: never;
         /**
          * Update Library Asset
-         * @description Retired — library authoring is no longer available.
-         *
-         *     Examples
-         *     --------
-         *     >>> 1 + 1  # docstring smoke (update_library_asset)
-         *     2
-         *
-         *     Parameters
-         *     ----------
-         *     asset_id : object
-         *         Argument ``asset_id``.
-         *     payload : object
-         *         Argument ``payload``.
-         *     service : object
-         *         Argument ``service``.
-         *
-         *     Returns
-         *     -------
-         *     object
-         *         Return value.
+         * @description Library authoring is no longer available.
          */
         patch: operations["update_library_asset_api_v1_profiles_library_assets__asset_id__patch"];
         trace?: never;
@@ -1439,44 +664,12 @@ export interface paths {
         /**
          * List Overlays
          * @description List overlays owned by the caller (and shared overlays).
-         *
-         *     Examples
-         *     --------
-         *     >>> 1 + 1  # docstring smoke (list_overlays)
-         *     2
-         *
-         *     Parameters
-         *     ----------
-         *     service : object
-         *         Argument ``service``.
-         *
-         *     Returns
-         *     -------
-         *     object
-         *         Return value.
          */
         get: operations["list_overlays_api_v1_profiles_overlays_get"];
         put?: never;
         /**
          * Create Overlay
          * @description Create a server-signed overlay.
-         *
-         *     Examples
-         *     --------
-         *     >>> 1 + 1  # docstring smoke (create_overlay)
-         *     2
-         *
-         *     Parameters
-         *     ----------
-         *     payload : object
-         *         Argument ``payload``.
-         *     service : object
-         *         Argument ``service``.
-         *
-         *     Returns
-         *     -------
-         *     object
-         *         Return value.
          */
         post: operations["create_overlay_api_v1_profiles_overlays_post"];
         delete?: never;
@@ -1495,23 +688,6 @@ export interface paths {
         /**
          * Get Overlay
          * @description Fetch one overlay.
-         *
-         *     Examples
-         *     --------
-         *     >>> 1 + 1  # docstring smoke (get_overlay)
-         *     2
-         *
-         *     Parameters
-         *     ----------
-         *     overlay_id : object
-         *         Argument ``overlay_id``.
-         *     service : object
-         *         Argument ``service``.
-         *
-         *     Returns
-         *     -------
-         *     object
-         *         Return value.
          */
         get: operations["get_overlay_api_v1_profiles_overlays__overlay_id__get"];
         put?: never;
@@ -1519,18 +695,6 @@ export interface paths {
         /**
          * Delete Overlay
          * @description Delete an owned overlay.
-         *
-         *     Examples
-         *     --------
-         *     >>> 1 + 1  # docstring smoke (delete_overlay)
-         *     2
-         *
-         *     Parameters
-         *     ----------
-         *     overlay_id : object
-         *         Argument ``overlay_id``.
-         *     service : object
-         *         Argument ``service``.
          */
         delete: operations["delete_overlay_api_v1_profiles_overlays__overlay_id__delete"];
         options?: never;
@@ -1538,25 +702,6 @@ export interface paths {
         /**
          * Patch Overlay
          * @description Update an owned overlay (re-signed server-side).
-         *
-         *     Examples
-         *     --------
-         *     >>> 1 + 1  # docstring smoke (patch_overlay)
-         *     2
-         *
-         *     Parameters
-         *     ----------
-         *     overlay_id : object
-         *         Argument ``overlay_id``.
-         *     payload : object
-         *         Argument ``payload``.
-         *     service : object
-         *         Argument ``service``.
-         *
-         *     Returns
-         *     -------
-         *     object
-         *         Return value.
          */
         patch: operations["patch_overlay_api_v1_profiles_overlays__overlay_id__patch"];
         trace?: never;
@@ -1571,44 +716,12 @@ export interface paths {
         /**
          * List Presets
          * @description List semantic presets owned by the caller (and shared presets).
-         *
-         *     Examples
-         *     --------
-         *     >>> 1 + 1  # docstring smoke (list_presets)
-         *     2
-         *
-         *     Parameters
-         *     ----------
-         *     service : object
-         *         Argument ``service``.
-         *
-         *     Returns
-         *     -------
-         *     object
-         *         Return value.
          */
         get: operations["list_presets_api_v1_profiles_presets_get"];
         put?: never;
         /**
          * Create Preset
          * @description Create a semantic preset.
-         *
-         *     Examples
-         *     --------
-         *     >>> 1 + 1  # docstring smoke (create_preset)
-         *     2
-         *
-         *     Parameters
-         *     ----------
-         *     payload : object
-         *         Argument ``payload``.
-         *     service : object
-         *         Argument ``service``.
-         *
-         *     Returns
-         *     -------
-         *     object
-         *         Return value.
          */
         post: operations["create_preset_api_v1_profiles_presets_post"];
         delete?: never;
@@ -1627,23 +740,6 @@ export interface paths {
         /**
          * Get Preset
          * @description Fetch one semantic preset.
-         *
-         *     Examples
-         *     --------
-         *     >>> 1 + 1  # docstring smoke (get_preset)
-         *     2
-         *
-         *     Parameters
-         *     ----------
-         *     preset_id : object
-         *         Argument ``preset_id``.
-         *     service : object
-         *         Argument ``service``.
-         *
-         *     Returns
-         *     -------
-         *     object
-         *         Return value.
          */
         get: operations["get_preset_api_v1_profiles_presets__preset_id__get"];
         put?: never;
@@ -1651,18 +747,6 @@ export interface paths {
         /**
          * Delete Preset
          * @description Delete a semantic preset.
-         *
-         *     Examples
-         *     --------
-         *     >>> 1 + 1  # docstring smoke (delete_preset)
-         *     2
-         *
-         *     Parameters
-         *     ----------
-         *     preset_id : object
-         *         Argument ``preset_id``.
-         *     service : object
-         *         Argument ``service``.
          */
         delete: operations["delete_preset_api_v1_profiles_presets__preset_id__delete"];
         options?: never;
@@ -1670,25 +754,6 @@ export interface paths {
         /**
          * Patch Preset
          * @description Update a semantic preset.
-         *
-         *     Examples
-         *     --------
-         *     >>> 1 + 1  # docstring smoke (patch_preset)
-         *     2
-         *
-         *     Parameters
-         *     ----------
-         *     preset_id : object
-         *         Argument ``preset_id``.
-         *     payload : object
-         *         Argument ``payload``.
-         *     service : object
-         *         Argument ``service``.
-         *
-         *     Returns
-         *     -------
-         *     object
-         *         Return value.
          */
         patch: operations["patch_preset_api_v1_profiles_presets__preset_id__patch"];
         trace?: never;
@@ -1703,44 +768,12 @@ export interface paths {
         /**
          * List Rule Packs
          * @description List rule packs owned by the caller.
-         *
-         *     Examples
-         *     --------
-         *     >>> 1 + 1  # docstring smoke (list_rule_packs)
-         *     2
-         *
-         *     Parameters
-         *     ----------
-         *     service : object
-         *         Argument ``service``.
-         *
-         *     Returns
-         *     -------
-         *     object
-         *         Return value.
          */
         get: operations["list_rule_packs_api_v1_profiles_rule_packs_get"];
         put?: never;
         /**
          * Create Rule Pack
          * @description Create a rule pack.
-         *
-         *     Examples
-         *     --------
-         *     >>> 1 + 1  # docstring smoke (create_rule_pack)
-         *     2
-         *
-         *     Parameters
-         *     ----------
-         *     payload : object
-         *         Argument ``payload``.
-         *     service : object
-         *         Argument ``service``.
-         *
-         *     Returns
-         *     -------
-         *     object
-         *         Return value.
          */
         post: operations["create_rule_pack_api_v1_profiles_rule_packs_post"];
         delete?: never;
@@ -1759,23 +792,6 @@ export interface paths {
         /**
          * Get Rule Pack
          * @description Fetch one rule pack.
-         *
-         *     Examples
-         *     --------
-         *     >>> 1 + 1  # docstring smoke (get_rule_pack)
-         *     2
-         *
-         *     Parameters
-         *     ----------
-         *     pack_id : object
-         *         Argument ``pack_id``.
-         *     service : object
-         *         Argument ``service``.
-         *
-         *     Returns
-         *     -------
-         *     object
-         *         Return value.
          */
         get: operations["get_rule_pack_api_v1_profiles_rule_packs__pack_id__get"];
         put?: never;
@@ -1783,18 +799,6 @@ export interface paths {
         /**
          * Delete Rule Pack
          * @description Delete a rule pack.
-         *
-         *     Examples
-         *     --------
-         *     >>> 1 + 1  # docstring smoke (delete_rule_pack)
-         *     2
-         *
-         *     Parameters
-         *     ----------
-         *     pack_id : object
-         *         Argument ``pack_id``.
-         *     service : object
-         *         Argument ``service``.
          */
         delete: operations["delete_rule_pack_api_v1_profiles_rule_packs__pack_id__delete"];
         options?: never;
@@ -1802,25 +806,6 @@ export interface paths {
         /**
          * Patch Rule Pack
          * @description Update a rule pack.
-         *
-         *     Examples
-         *     --------
-         *     >>> 1 + 1  # docstring smoke (patch_rule_pack)
-         *     2
-         *
-         *     Parameters
-         *     ----------
-         *     pack_id : object
-         *         Argument ``pack_id``.
-         *     payload : object
-         *         Argument ``payload``.
-         *     service : object
-         *         Argument ``service``.
-         *
-         *     Returns
-         *     -------
-         *     object
-         *         Return value.
          */
         patch: operations["patch_rule_pack_api_v1_profiles_rule_packs__pack_id__patch"];
         trace?: never;
@@ -1835,44 +820,12 @@ export interface paths {
         /**
          * List Templates
          * @description List dissemination templates owned by the caller (and shared templates).
-         *
-         *     Examples
-         *     --------
-         *     >>> 1 + 1  # docstring smoke (list_templates)
-         *     2
-         *
-         *     Parameters
-         *     ----------
-         *     service : object
-         *         Argument ``service``.
-         *
-         *     Returns
-         *     -------
-         *     object
-         *         Return value.
          */
         get: operations["list_templates_api_v1_profiles_templates_get"];
         put?: never;
         /**
          * Create Template
          * @description Create a dissemination template.
-         *
-         *     Examples
-         *     --------
-         *     >>> 1 + 1  # docstring smoke (create_template)
-         *     2
-         *
-         *     Parameters
-         *     ----------
-         *     payload : object
-         *         Argument ``payload``.
-         *     service : object
-         *         Argument ``service``.
-         *
-         *     Returns
-         *     -------
-         *     object
-         *         Return value.
          */
         post: operations["create_template_api_v1_profiles_templates_post"];
         delete?: never;
@@ -1891,23 +844,6 @@ export interface paths {
         /**
          * Get Template
          * @description Fetch one dissemination template.
-         *
-         *     Examples
-         *     --------
-         *     >>> 1 + 1  # docstring smoke (get_template)
-         *     2
-         *
-         *     Parameters
-         *     ----------
-         *     template_id : object
-         *         Argument ``template_id``.
-         *     service : object
-         *         Argument ``service``.
-         *
-         *     Returns
-         *     -------
-         *     object
-         *         Return value.
          */
         get: operations["get_template_api_v1_profiles_templates__template_id__get"];
         put?: never;
@@ -1915,18 +851,6 @@ export interface paths {
         /**
          * Delete Template
          * @description Delete an owned dissemination template.
-         *
-         *     Examples
-         *     --------
-         *     >>> 1 + 1  # docstring smoke (delete_template)
-         *     2
-         *
-         *     Parameters
-         *     ----------
-         *     template_id : object
-         *         Argument ``template_id``.
-         *     service : object
-         *         Argument ``service``.
          */
         delete: operations["delete_template_api_v1_profiles_templates__template_id__delete"];
         options?: never;
@@ -1934,25 +858,6 @@ export interface paths {
         /**
          * Patch Template
          * @description Update a dissemination template.
-         *
-         *     Examples
-         *     --------
-         *     >>> 1 + 1  # docstring smoke (patch_template)
-         *     2
-         *
-         *     Parameters
-         *     ----------
-         *     template_id : object
-         *         Argument ``template_id``.
-         *     payload : object
-         *         Argument ``payload``.
-         *     service : object
-         *         Argument ``service``.
-         *
-         *     Returns
-         *     -------
-         *     object
-         *         Return value.
          */
         patch: operations["patch_template_api_v1_profiles_templates__template_id__patch"];
         trace?: never;
@@ -1967,21 +872,6 @@ export interface paths {
         /**
          * List corpus quality metrics
          * @description Serve product summaries and file inventory from the precomputed artifact.
-         *
-         *     Examples
-         *     --------
-         *     >>> 1 + 1  # docstring smoke (list_quality_metrics)
-         *     2
-         *
-         *     Parameters
-         *     ----------
-         *     product : object
-         *         Argument ``product``.
-         *
-         *     Returns
-         *     -------
-         *     object
-         *         Return value.
          */
         get: operations["list_quality_metrics_api_v1_quality_metrics_get"];
         put?: never;
@@ -2002,21 +892,6 @@ export interface paths {
         /**
          * Corpus quality metrics for one stem
          * @description Serve per-stem TAC / XML / match / residual / lint / validate detail.
-         *
-         *     Examples
-         *     --------
-         *     >>> 1 + 1  # docstring smoke (get_quality_metrics_detail)
-         *     2
-         *
-         *     Parameters
-         *     ----------
-         *     stem : object
-         *         Argument ``stem``.
-         *
-         *     Returns
-         *     -------
-         *     object
-         *         Return value.
          */
         get: operations["get_quality_metrics_detail_api_v1_quality_metrics__stem__get"];
         put?: never;
@@ -2037,23 +912,6 @@ export interface paths {
         /**
          * Get Rule Catalogs
          * @description Export a package-owned trust catalog by family.
-         *
-         *     Examples
-         *     --------
-         *     >>> 1 + 1  # docstring smoke (get_rule_catalogs)
-         *     2
-         *
-         *     Parameters
-         *     ----------
-         *     family : object
-         *         Argument ``family``.
-         *     product : object
-         *         Argument ``product``.
-         *
-         *     Returns
-         *     -------
-         *     object
-         *         Return value.
          */
         get: operations["get_rule_catalogs_api_v1_rule_catalogs_get"];
         put?: never;
@@ -2072,18 +930,8 @@ export interface paths {
             cookie?: never;
         };
         /**
-         * Get Schema Status
-         * @description Get schema status, including RC versions and mirroring info.
-         *
-         *     Examples
-         *     --------
-         *     >>> 1 + 1  # docstring smoke (get_schema_status)
-         *     2
-         *
-         *     Returns
-         *     -------
-         *     object
-         *         Return value.
+         * Schema status
+         * @description Return schema status, including release-candidate versions and mirror state.
          */
         get: operations["get_schema_status_api_v1_schema_status_get"];
         put?: never;
@@ -2104,21 +952,6 @@ export interface paths {
         /**
          * Get Selection Options
          * @description List deployed registry ids for workbench / dissemination dropdowns.
-         *
-         *     Examples
-         *     --------
-         *     >>> 1 + 1  # docstring smoke (get_selection_options)
-         *     2
-         *
-         *     Parameters
-         *     ----------
-         *     kind : object
-         *         Argument ``kind``.
-         *
-         *     Returns
-         *     -------
-         *     object
-         *         Return value.
          */
         get: operations["get_selection_options_api_v1_selection_options_get"];
         put?: never;
@@ -2142,22 +975,6 @@ export interface paths {
          *
          *     The airport catalog is already loaded for ICAO checks. This reads that
          *     one record. It does not call an external map service.
-         *
-         *     Parameters
-         *     ----------
-         *     icao :
-         *         Four-character station location indicator.
-         *
-         *     Returns
-         *     -------
-         *     dict[str, Any]
-         *         ICAO code, name, and decimal degrees. Unknown codes return null
-         *         coordinates so a map lookup is a normal miss, not an error response.
-         *
-         *     Examples
-         *     --------
-         *     >>> 1 + 1  # docstring smoke (station_point)
-         *     2
          */
         get: operations["station_point_api_v1_stations__icao__get"];
         put?: never;
@@ -2176,43 +993,10 @@ export interface paths {
             cookie?: never;
         };
         /**
-         * Get Airport Region
-         * @description Determine ICAO region for a given airport code.
+         * ICAO region for an airport
+         * @description Return the ICAO region for a four-letter airport code.
          *
-         *     Utility endpoint for testing ICAO region mapping.
-         *     This endpoint is public and does not require authentication.
-         *
-         *     **Path Parameters**:
-         *     - **airport_code**: 4-letter ICAO airport identifier
-         *
-         *     **Returns**:
-         *     ```json
-         *     {
-         *         "airport_code": "KJFK",
-         *         "icao_region": "NAM",
-         *         "region_name": "North American"
-         *     }
-         *     ```
-         *
-         *     **Example**:
-         *     - `GET /api/v1/translation/airport-region/KJFK` → `{"icao_region": "NAM"}`
-         *     - `GET /api/v1/translation/airport-region/EGLL` → `{"icao_region": "EUR"}`
-         *     - `GET /api/v1/translation/airport-region/RJAA` → `{"icao_region": "APAC"}`
-         *
-         *     Parameters
-         *     ----------
-         *     airport_code : object
-         *         Argument ``airport_code``.
-         *
-         *     Returns
-         *     -------
-         *     object
-         *         Return value.
-         *
-         *     Examples
-         *     --------
-         *     >>> 1 + 1  # docstring smoke (get_airport_region)
-         *     2
+         *     No login is required.
          */
         get: operations["get_airport_region_api_v1_translation_airport_region__airport_code__get"];
         put?: never;
@@ -2231,28 +1015,10 @@ export interface paths {
             cookie?: never;
         };
         /**
-         * Get Centre Info
-         * @description Get Translation Centre identification and capabilities.
+         * Translation centre information
+         * @description Return this translation centre's name, designator, location, supported IWXXM versions, and products.
          *
-         *     Returns metadata about this Translation Centre as per ICAO OPMET guidelines.
-         *     This endpoint is public and does not require authentication.
-         *
-         *     **Returns**:
-         *     - Translation centre name and designator
-         *     - ICAO location indicator
-         *     - Supported IWXXM versions
-         *     - Supported aviation product types
-         *     - Service online date
-         *
-         *     Returns
-         *     -------
-         *     object
-         *         Return value.
-         *
-         *     Examples
-         *     --------
-         *     >>> 1 + 1  # docstring smoke (get_centre_info)
-         *     2
+         *     No login is required.
          */
         get: operations["get_centre_info_api_v1_translation_centre_info_get"];
         put?: never;
@@ -2271,21 +1037,10 @@ export interface paths {
             cookie?: never;
         };
         /**
-         * Statistics Health
-         * @description Translation statistics service health check.
+         * Translation statistics health
+         * @description Return translation statistics service status.
          *
-         *     Returns service status and configuration.
-         *     Public endpoint (no authentication required).
-         *
-         *     Returns
-         *     -------
-         *     object
-         *         Return value.
-         *
-         *     Examples
-         *     --------
-         *     >>> 1 + 1  # docstring smoke (statistics_health)
-         *     2
+         *     No login is required.
          */
         get: operations["statistics_health_api_v1_translation_health_get"];
         put?: never;
@@ -2306,58 +1061,10 @@ export interface paths {
         get?: never;
         put?: never;
         /**
-         * Get Translation Statistics
-         * @description Query aggregated translation statistics.
+         * Translation statistics
+         * @description Return aggregated translation statistics for a time range.
          *
-         *     Retrieves translation centre statistics for a specified time period with optional filters.
-         *     Implements ICAO OPMET Data Exchange Guidelines Section 7 reporting requirements.
-         *
-         *     **Authentication**: Public (no login required).
-         *
-         *     **Request Parameters**:
-         *     - **start_date** (required): Statistics period start (ISO 8601)
-         *     - **end_date** (required): Statistics period end (ISO 8601)
-         *     - **icao_region** (optional): Filter by ICAO region (AFI, APAC, EUR, MID, NAM, SAM)
-         *     - **iwxxm_version** (optional): Filter by IWXXM version (2025-2, 2023-1)
-         *     - **airport_code** (optional): Filter by specific ICAO airport code
-         *     - **include_airport_breakdown** (optional): Include per-airport statistics (default: false)
-         *     - **include_error_details** (optional): Include detailed error analysis (default: false)
-         *
-         *     **Returns**:
-         *     - Aggregated translation statistics including:
-         *       - Total, successful, and failed translation counts
-         *       - Success rate percentage
-         *       - Average and median processing duration
-         *       - Breakdown by ICAO region
-         *       - Breakdown by IWXXM version
-         *       - Validation layer success rates
-         *       - Optional airport-level details
-         *       - Optional error frequency analysis
-         *
-         *     **Example**:
-         *     ```json
-         *     {
-         *         "start_date": "2026-02-01T00:00:00Z",
-         *         "end_date": "2026-02-13T23:59:59Z",
-         *         "icao_region": "NAM",
-         *         "include_airport_breakdown": true
-         *     }
-         *     ```
-         *
-         *     Parameters
-         *     ----------
-         *     request : object
-         *         Argument ``request``.
-         *
-         *     Returns
-         *     -------
-         *     object
-         *         Return value.
-         *
-         *     Examples
-         *     --------
-         *     >>> 1 + 1  # docstring smoke (get_translation_statistics)
-         *     2
+         *     Optional filters are ICAO region, IWXXM version, and airport. No login is required.
          */
         post: operations["get_translation_statistics_api_v1_translation_statistics_post"];
         delete?: never;
@@ -2374,44 +1081,10 @@ export interface paths {
             cookie?: never;
         };
         /**
-         * Get Statistics By Region
-         * @description Get translation statistics grouped by ICAO region.
+         * Translation statistics by ICAO region
+         * @description Return translation counts grouped by ICAO region for a time range.
          *
-         *     Returns translation activity summary for all ICAO regions.
-         *     Useful for identifying regional distribution and capacity planning.
-         *
-         *     **Authentication**: Public (no login required).
-         *
-         *     **Query Parameters**:
-         *     - **start_date**: Statistics period start (ISO 8601)
-         *     - **end_date**: Statistics period end (ISO 8601)
-         *
-         *     **Returns**:
-         *     Dictionary mapping ICAO region codes to statistics:
-         *     ```json
-         *     {
-         *         "NAM": {"total": 1500, "success_rate": 98.5},
-         *         "EUR": {"total": 890, "success_rate": 97.2},
-         *         "APAC": {"total": 456, "success_rate": 99.1}
-         *     }
-         *     ```
-         *
-         *     Parameters
-         *     ----------
-         *     start_date : object
-         *         Argument ``start_date``.
-         *     end_date : object
-         *         Argument ``end_date``.
-         *
-         *     Returns
-         *     -------
-         *     object
-         *         Return value.
-         *
-         *     Examples
-         *     --------
-         *     >>> 1 + 1  # docstring smoke (get_statistics_by_region)
-         *     2
+         *     No login is required.
          */
         get: operations["get_statistics_by_region_api_v1_translation_statistics_by_region_get"];
         put?: never;
@@ -2430,39 +1103,10 @@ export interface paths {
             cookie?: never;
         };
         /**
-         * Get Recent Statistics
-         * @description Get recent translation statistics (last N hours).
+         * Recent translation statistics
+         * @description Return translation statistics for the last N hours.
          *
-         *     Convenience endpoint for querying recent activity without specifying exact dates.
-         *
-         *     **Authentication**: Public (no login required).
-         *
-         *     **Query Parameters**:
-         *     - **hours**: Number of hours to look back (1-168, default: 24)
-         *     - **icao_region**: Optional ICAO region filter
-         *     - **iwxxm_version**: Optional IWXXM version filter
-         *
-         *     **Returns**:
-         *     Aggregated translation statistics for the specified time window.
-         *
-         *     Parameters
-         *     ----------
-         *     hours : object
-         *         Argument ``hours``.
-         *     icao_region : object
-         *         Argument ``icao_region``.
-         *     iwxxm_version : object
-         *         Argument ``iwxxm_version``.
-         *
-         *     Returns
-         *     -------
-         *     object
-         *         Return value.
-         *
-         *     Examples
-         *     --------
-         *     >>> 1 + 1  # docstring smoke (get_recent_statistics)
-         *     2
+         *     No login is required.
          */
         get: operations["get_recent_statistics_api_v1_translation_statistics_recent_get"];
         put?: never;
@@ -2483,78 +1127,12 @@ export interface paths {
         get?: never;
         put?: never;
         /**
-         * Validate Comprehensive
-         * @description Perform comprehensive 7-layer IWXXM validation.
+         * Validate TAC or IWXXM
+         * @description Validate TAC or IWXXM XML.
          *
-         *     Validates METAR TAC input through all 7 validation layers:
-         *
-         *     1. **Layer 1 (AIRPORT_ICAO)**: Validates ICAO airport code against database
-         *     2. **Layer 2 (TAC_SYNTAX)**: Validates TAC/METAR syntax basics
-         *     3. **Layer 3 (XML_WELLFORMED)**: Checks XML is well-formed
-         *     4. **Layer 4 (XML_SCHEMA)**: Validates against official IWXXM XSD schemas
-         *     5. **Layer 5 (SCHEMATRON)**: Validates business rules from official Schematron
-         *     6. **Layer 6 (GML_REFERENCES)**: Validates GML internal references
-         *     7. **Layer 7 (WMO_CODELISTS)**: Validates against official WMO RDF codelists
-         *
-         *     **Authentication**: Public (no login required)
-         *
-         *     **Request Parameters**:
-         *     - **manual_text** (required): METAR TAC text to validate
-         *     - **xml_content** (optional): Pre-converted XML to validate (if omitted, TAC will be converted)
-         *     - **iwxxm_version**: Target IWXXM version (default: "2025-2")
-         *     - **layers**: Validation layers to run (default: ["ALL"])
-         *       - "ALL": Run all 7 layers
-         *       - Or specify: ["AIRPORT_ICAO", "TAC_SYNTAX", "XML_SCHEMA", "SCHEMATRON", ...]
-         *     - **stop_on_error**: Stop at first blocking layer failure (default: true)
-         *
-         *     **Response**:
-         *     ```json
-         *     {
-         *       "is_valid": true,
-         *       "version": "2025-2",
-         *       "layers_run": ["AIRPORT_ICAO", "TAC_SYNTAX", "XML_WELLFORMED", "XML_SCHEMA", "SCHEMATRON", "GML_REFERENCES", "WMO_CODELISTS"],
-         *       "layers_passed": ["AIRPORT_ICAO", "TAC_SYNTAX", "XML_WELLFORMED", "XML_SCHEMA", "SCHEMATRON", "GML_REFERENCES", "WMO_CODELISTS"],
-         *       "layers_failed": [],
-         *       "total_issues": 0,
-         *       "issues_by_layer": {},
-         *       "stopped_at_layer": null
-         *     }
-         *     ```
-         *
-         *     Parameters
-         *     ----------
-         *     request_body : object
-         *         Argument ``request_body``.
-         *     manual_text : object
-         *         Argument ``manual_text``.
-         *     xml_content : object
-         *         Argument ``xml_content``.
-         *     iwxxm_version : object
-         *         Argument ``iwxxm_version``.
-         *     layers : object
-         *         Argument ``layers``.
-         *     stop_on_error : object
-         *         Argument ``stop_on_error``.
-         *     profile : object
-         *         Argument ``profile``.
-         *     semantic_profile : object
-         *         Argument ``semantic_profile``.
-         *     exchange_profile : object
-         *         Argument ``exchange_profile``.
-         *     extensions : object
-         *         Argument ``extensions``.
-         *     product : object
-         *         Argument ``product``.
-         *
-         *     Returns
-         *     -------
-         *     object
-         *         Return value.
-         *
-         *     Examples
-         *     --------
-         *     >>> 1 + 1  # docstring smoke (validate_comprehensive)
-         *     2
+         *     With the default layer list, the check runs airport code, TAC syntax,
+         *     well-formed XML, XSD, Schematron, GML references, and WMO code lists.
+         *     No login is required.
          */
         post: operations["validate_comprehensive_api_v1_validate_post"];
         delete?: never;
@@ -2571,57 +1149,10 @@ export interface paths {
             cookie?: never;
         };
         /**
-         * Get available validation layers
-         * @description Get information about available validation layers.
+         * List validation layers
+         * @description List the validation layers.
          *
-         *     Each layer validates specific aspects of METAR TAC or IWXXM XML content.
-         *     Layers marked as blocking will stop further validation if they fail.
-         *
-         *     ## Response
-         *     Returns list of validation layers with:
-         *     - **layer**: Layer identifier
-         *     - **description**: What this layer validates
-         *     - **blocking**: Whether it blocks further layers on failure
-         *     - **supported_content_types**: Content types this layer supports ("tac" or "xml")
-         *
-         *     ## Available Layers
-         *     1. **airport_icao**: Extract and validate ICAO code against airport database
-         *     2. **tac_syntax**: Parse and validate METAR TAC syntax
-         *     3. **xml_wellformed**: Check if output XML is well-formed
-         *     4. **xml_schema**: Validate against XSD schema
-         *     5. **schematron**: SCHEMATRON rules validation
-         *     6. **gml_references**: GML reference checks
-         *     7. **wmo_codelists**: WMO code list validation
-         *
-         *     ## Example Response
-         *     ```json
-         *     {
-         *       "layers": [
-         *         {
-         *           "layer": "airport_icao",
-         *           "description": "Extract and validate ICAO code against airport database",
-         *           "blocking": true,
-         *           "supported_content_types": ["tac"]
-         *         },
-         *         {
-         *           "layer": "tac_syntax",
-         *           "description": "Parse and validate METAR TAC syntax",
-         *           "blocking": true,
-         *           "supported_content_types": ["tac"]
-         *         }
-         *       ]
-         *     }
-         *     ```
-         *
-         *     Returns
-         *     -------
-         *     object
-         *         Return value.
-         *
-         *     Examples
-         *     --------
-         *     >>> 1 + 1  # docstring smoke (get_validation_layers)
-         *     2
+         *     A blocking layer stops later layers when it fails.
          */
         get: operations["get_validation_layers_api_v1_validation_layers_get"];
         put?: never;
@@ -2643,82 +1174,7 @@ export interface paths {
         put?: never;
         /**
          * Validate METAR TAC or IWXXM XML content
-         * @description Validate METAR TAC or IWXXM XML content through multiple validation layers.
-         *
-         *     ## Request Body
-         *     - **content** (string, required): The METAR TAC or IWXXM XML content to validate
-         *     - **content_type** (string, default="tac"): ``tac``, ``xml``, or ``iwxxm`` (alias of xml)
-         *     - **layers** (array, optional): Specific validation layers to run.
-         *       - TAC (``content_type=tac``): ``airport_icao``, ``tac_syntax`` (default both)
-         *       - XML (``content_type=xml|iwxxm``): ``xml_wellformed``, ``xml_schema``,
-         *         ``schematron``, ``gml_references``, ``wmo_codelists`` (default all XML layers)
-         *     - **iwxxm_version** (string, optional): IWXXM version for XML layers (e.g., "2025-2")
-         *
-         *     ## Response
-         *     Returns aggregated validation results with:
-         *     - **passed** (boolean): Whether all requested layers passed
-         *     - **layers_validated** (array): Layers that were run
-         *     - **total_issues** (integer): Total validation issues found
-         *     - **results** (array): Per-layer validation details
-         *     - **execution_time_ms** (float): Total execution time
-         *
-         *     ## Example Success Response
-         *     ```json
-         *     {
-         *       "passed": true,
-         *       "layers_validated": ["airport_icao", "tac_syntax"],
-         *       "total_issues": 0,
-         *       "results": [
-         *         {
-         *           "passed": true,
-         *           "layer": "airport_icao",
-         *           "issues": [],
-         *           "execution_time_ms": 5.2
-         *         }
-         *       ],
-         *       "execution_time_ms": 10.5
-         *     }
-         *     ```
-         *
-         *     ## Example Failure Response
-         *     ```json
-         *     {
-         *       "passed": false,
-         *       "layers_validated": ["airport_icao", "tac_syntax"],
-         *       "total_issues": 1,
-         *       "results": [
-         *         {
-         *           "passed": false,
-         *           "layer": "tac_syntax",
-         *           "issues": [
-         *             {
-         *               "layer": "tac_syntax",
-         *               "level": "error",
-         *               "message": "Invalid TAC format",
-         *               "code": "INVALID_TAC_FORMAT"
-         *             }
-         *           ],
-         *           "execution_time_ms": 8.3
-         *         }
-         *       ],
-         *       "execution_time_ms": 8.3
-         *     }
-         *     ```
-         *
-         *     Parameters
-         *     ----------
-         *     request : object
-         *         Argument ``request``.
-         *
-         *     Returns
-         *     -------
-         *     object
-         *         Return value.
-         *
-         *     Examples
-         *     --------
-         *     >>> 1 + 1  # docstring smoke (validate_content)
-         *     2
+         * @description Validate one METAR TAC or IWXXM XML document through the selected layers.
          */
         post: operations["validate_content_api_v1_validation_validate_post"];
         delete?: never;
@@ -2737,82 +1193,10 @@ export interface paths {
         get?: never;
         put?: never;
         /**
-         * Validate multiple METAR TAC or IWXXM XML inputs
-         * @description Validate multiple METAR TAC or IWXXM XML inputs in a single request.
+         * Validate a batch of TAC or IWXXM inputs
+         * @description Validate up to 100 TAC or IWXXM documents in one request.
          *
-         *     Useful for batch validation of multiple entries. Each item is validated
-         *     independently and can have different content types.
-         *
-         *     ## Request Body
-         *     - **items** (array, required): Array of validation requests (1-100 items)
-         *       - Each item has: content, content_type, layers (optional), iwxxm_version (optional)
-         *     - **layers** (array, optional): Default layers to apply to all items that omit layers
-         *
-         *     ## Response
-         *     Returns batch validation results with:
-         *     - **results** (array): Aggregated validation result for each item
-         *     - **total_items** (integer): Total items requested
-         *     - **passed_items** (integer): Items that passed all layers
-         *     - **failed_items** (integer): Items that failed at least one layer
-         *     - **total_execution_time_ms** (float): Total execution time for all items
-         *
-         *     ## Example Request
-         *     ```json
-         *     {
-         *       "items": [
-         *         {
-         *           "content": "METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005",
-         *           "content_type": "tac"
-         *         },
-         *         {
-         *           "content": "METAR EGLL 231750Z 17008KT 9999 SCT035 12/08 Q1007",
-         *           "content_type": "tac"
-         *         }
-         *       ],
-         *       "layers": ["airport_icao", "tac_syntax"]
-         *     }
-         *     ```
-         *
-         *     ## Example Response
-         *     ```json
-         *     {
-         *       "results": [
-         *         {
-         *           "passed": true,
-         *           "layers_validated": ["airport_icao", "tac_syntax"],
-         *           "total_issues": 0,
-         *           "results": [],
-         *           "execution_time_ms": 12.3
-         *         },
-         *         {
-         *           "passed": false,
-         *           "layers_validated": ["airport_icao", "tac_syntax"],
-         *           "total_issues": 1,
-         *           "results": [],
-         *           "execution_time_ms": 8.5
-         *         }
-         *       ],
-         *       "total_items": 2,
-         *       "passed_items": 1,
-         *       "failed_items": 1,
-         *       "total_execution_time_ms": 20.8
-         *     }
-         *     ```
-         *
-         *     Parameters
-         *     ----------
-         *     request : object
-         *         Argument ``request``.
-         *
-         *     Returns
-         *     -------
-         *     object
-         *         Return value.
-         *
-         *     Examples
-         *     --------
-         *     >>> 1 + 1  # docstring smoke (validate_multiple)
-         *     2
+         *     Each document is checked on its own.
          */
         post: operations["validate_multiple_api_v1_validation_validate_multi_post"];
         delete?: never;
@@ -2829,18 +1213,8 @@ export interface paths {
             cookie?: never;
         };
         /**
-         * Get Supported Versions
+         * Supported IWXXM versions
          * @description Get list of supported IWXXM versions.
-         *
-         *     Examples
-         *     --------
-         *     >>> 1 + 1  # docstring smoke (get_supported_versions)
-         *     2
-         *
-         *     Returns
-         *     -------
-         *     object
-         *         Return value.
          */
         get: operations["get_supported_versions_api_v1_versions_get"];
         put?: never;
@@ -2861,60 +1235,12 @@ export interface paths {
         /**
          * List Work Sessions
          * @description List work sessions for the authenticated user with optional filters.
-         *
-         *     Examples
-         *     --------
-         *     >>> 1 + 1  # docstring smoke (list_work_sessions)
-         *     2
-         *
-         *     Parameters
-         *     ----------
-         *     status_filter : object
-         *         Argument ``status_filter``.
-         *     product : object
-         *         Argument ``product``.
-         *     from_dt : object
-         *         Argument ``from_dt``.
-         *     to_dt : object
-         *         Argument ``to_dt``.
-         *     include_deleted : object
-         *         Argument ``include_deleted``.
-         *     page : object
-         *         Argument ``page``.
-         *     limit : object
-         *         Argument ``limit``.
-         *     service : object
-         *         Argument ``service``.
-         *
-         *     Returns
-         *     -------
-         *     object
-         *         Return value.
          */
         get: operations["list_work_sessions_api_v1_work_sessions_get"];
         put?: never;
         /**
          * Create Work Session
          * @description Create a new work session owned by the authenticated user.
-         *
-         *     Examples
-         *     --------
-         *     >>> 1 + 1  # docstring smoke (create_work_session)
-         *     2
-         *
-         *     Parameters
-         *     ----------
-         *     payload : object
-         *         Argument ``payload``.
-         *     user : object
-         *         Argument ``user``.
-         *     service : object
-         *         Argument ``service``.
-         *
-         *     Returns
-         *     -------
-         *     object
-         *         Return value.
          */
         post: operations["create_work_session_api_v1_work_sessions_post"];
         delete?: never;
@@ -2933,23 +1259,6 @@ export interface paths {
         /**
          * Get Work Session
          * @description Return a single work session by id.
-         *
-         *     Examples
-         *     --------
-         *     >>> 1 + 1  # docstring smoke (get_work_session)
-         *     2
-         *
-         *     Parameters
-         *     ----------
-         *     session_id : object
-         *         Argument ``session_id``.
-         *     service : object
-         *         Argument ``service``.
-         *
-         *     Returns
-         *     -------
-         *     object
-         *         Return value.
          */
         get: operations["get_work_session_api_v1_work_sessions__session_id__get"];
         put?: never;
@@ -2957,23 +1266,6 @@ export interface paths {
         /**
          * Delete Work Session
          * @description Soft-delete a work session (sets ``deleted_at``).
-         *
-         *     Examples
-         *     --------
-         *     >>> 1 + 1  # docstring smoke (delete_work_session)
-         *     2
-         *
-         *     Parameters
-         *     ----------
-         *     session_id : object
-         *         Argument ``session_id``.
-         *     service : object
-         *         Argument ``service``.
-         *
-         *     Returns
-         *     -------
-         *     object
-         *         Return value.
          */
         delete: operations["delete_work_session_api_v1_work_sessions__session_id__delete"];
         options?: never;
@@ -2981,25 +1273,6 @@ export interface paths {
         /**
          * Update Work Session
          * @description Update mutable fields on an existing work session.
-         *
-         *     Examples
-         *     --------
-         *     >>> 1 + 1  # docstring smoke (update_work_session)
-         *     2
-         *
-         *     Parameters
-         *     ----------
-         *     session_id : object
-         *         Argument ``session_id``.
-         *     payload : object
-         *         Argument ``payload``.
-         *     service : object
-         *         Argument ``service``.
-         *
-         *     Returns
-         *     -------
-         *     object
-         *         Return value.
          */
         patch: operations["update_work_session_api_v1_work_sessions__session_id__patch"];
         trace?: never;
@@ -3016,23 +1289,6 @@ export interface paths {
         /**
          * Restore Work Session
          * @description Restore a previously soft-deleted work session.
-         *
-         *     Examples
-         *     --------
-         *     >>> 1 + 1  # docstring smoke (restore_work_session)
-         *     2
-         *
-         *     Parameters
-         *     ----------
-         *     session_id : object
-         *         Argument ``session_id``.
-         *     service : object
-         *         Argument ``service``.
-         *
-         *     Returns
-         *     -------
-         *     object
-         *         Return value.
          */
         post: operations["restore_work_session_api_v1_work_sessions__session_id__restore_post"];
         delete?: never;
@@ -3053,23 +1309,6 @@ export interface paths {
         /**
          * Confirm
          * @description Confirm email (or related) via GoTrue token_hash verify.
-         *
-         *     Examples
-         *     --------
-         *     >>> 1 + 1  # docstring smoke (confirm)
-         *     2
-         *
-         *     Parameters
-         *     ----------
-         *     request : object
-         *         Argument ``request``.
-         *     client : object
-         *         Argument ``client``.
-         *
-         *     Returns
-         *     -------
-         *     object
-         *         Return value.
          */
         post: operations["confirm_auth_confirm_post"];
         delete?: never;
@@ -3090,23 +1329,6 @@ export interface paths {
         /**
          * Login
          * @description Authenticate via Supabase Auth password grant.
-         *
-         *     Examples
-         *     --------
-         *     >>> 1 + 1  # docstring smoke (login)
-         *     2
-         *
-         *     Parameters
-         *     ----------
-         *     request : object
-         *         Argument ``request``.
-         *     client : object
-         *         Argument ``client``.
-         *
-         *     Returns
-         *     -------
-         *     object
-         *         Return value.
          */
         post: operations["login_auth_login_post"];
         delete?: never;
@@ -3127,25 +1349,6 @@ export interface paths {
         /**
          * Logout
          * @description Sign out via GoTrue; optional body ``{scope}`` for local/global/others.
-         *
-         *     Examples
-         *     --------
-         *     >>> 1 + 1  # docstring smoke (logout)
-         *     2
-         *
-         *     Parameters
-         *     ----------
-         *     request : object
-         *         Argument ``request``.
-         *     token : object
-         *         Argument ``token``.
-         *     client : object
-         *         Argument ``client``.
-         *
-         *     Returns
-         *     -------
-         *     object
-         *         Return value.
          */
         post: operations["logout_auth_logout_post"];
         delete?: never;
@@ -3164,23 +1367,6 @@ export interface paths {
         /**
          * Me
          * @description Return the current user after JWKS verification.
-         *
-         *     Examples
-         *     --------
-         *     >>> 1 + 1  # docstring smoke (me)
-         *     2
-         *
-         *     Parameters
-         *     ----------
-         *     token : object
-         *         Argument ``token``.
-         *     client : object
-         *         Argument ``client``.
-         *
-         *     Returns
-         *     -------
-         *     object
-         *         Return value.
          */
         get: operations["me_auth_me_get"];
         put?: never;
@@ -3203,23 +1389,6 @@ export interface paths {
         /**
          * Register
          * @description Create an account via Supabase Auth signup.
-         *
-         *     Examples
-         *     --------
-         *     >>> 1 + 1  # docstring smoke (register)
-         *     2
-         *
-         *     Parameters
-         *     ----------
-         *     request : object
-         *         Argument ``request``.
-         *     client : object
-         *         Argument ``client``.
-         *
-         *     Returns
-         *     -------
-         *     object
-         *         Return value.
          */
         post: operations["register_auth_register_post"];
         delete?: never;
@@ -3236,18 +1405,8 @@ export interface paths {
             cookie?: never;
         };
         /**
-         * Health
+         * API health
          * @description Check API health and conversion availability.
-         *
-         *     Examples
-         *     --------
-         *     >>> 1 + 1  # docstring smoke (health)
-         *     2
-         *
-         *     Returns
-         *     -------
-         *     object
-         *         Return value.
          */
         get: operations["health_health_get"];
         put?: never;
@@ -3265,11 +1424,6 @@ export interface components {
         /**
          * AggregatedValidationResult
          * @description Combined results from multiple validation layers.
-         *
-         *     Attributes
-         *     ----------
-         *     _ : object
-         *         See implementation.
          * @example {
          *       "execution_time_ms": 13.5,
          *       "layers_validated": [
@@ -3338,11 +1492,6 @@ export interface components {
         /**
          * AuditListResponse
          * @description Paginated audit list.
-         *
-         *     Attributes
-         *     ----------
-         *     _ : object
-         *         See implementation.
          */
         AuditListResponse: {
             /** Items */
@@ -3356,12 +1505,7 @@ export interface components {
         };
         /**
          * AuditRecordOut
-         * @description Persisted audit row — never includes BYOC secrets or URIs.
-         *
-         *     Attributes
-         *     ----------
-         *     _ : object
-         *         See implementation.
+         * @description Persisted delivery audit row. BYOC secrets and URIs are omitted.
          */
         AuditRecordOut: {
             /**
@@ -3403,11 +1547,6 @@ export interface components {
         /**
          * AuthResponse
          * @description Login response.
-         *
-         *     Attributes
-         *     ----------
-         *     _ : object
-         *         See implementation.
          */
         AuthResponse: {
             session?: components["schemas"]["SessionResponse"] | null;
@@ -3416,11 +1555,6 @@ export interface components {
         /**
          * BatchValidationRequest
          * @description Request to validate multiple inputs.
-         *
-         *     Attributes
-         *     ----------
-         *     _ : object
-         *         See implementation.
          * @example {
          *       "items": [
          *         {
@@ -3453,11 +1587,6 @@ export interface components {
         /**
          * BatchValidationResponse
          * @description Response from batch validation.
-         *
-         *     Attributes
-         *     ----------
-         *     _ : object
-         *         See implementation.
          * @example {
          *       "failed_items": 1,
          *       "passed_items": 1,
@@ -3556,7 +1685,7 @@ export interface components {
             exchange_output: boolean;
             /**
              * Exchange Profile
-             * @description Rejected — use dissemination_library_id for packaging transforms.
+             * @description Rejected. Use dissemination_library_id for packaging transforms.
              * @default
              */
             exchange_profile: string;
@@ -3592,7 +1721,7 @@ export interface components {
             iwxxm_version: string;
             /**
              * Lint
-             * @description Run tac-validate before convert (Q14=C; default on)
+             * @description Run TAC validation before conversion. On by default.
              * @default true
              */
             lint: boolean;
@@ -3610,13 +1739,13 @@ export interface components {
             manual_text: string;
             /**
              * Overlay Id
-             * @description Rejected — overlays removed from Convert; use conversion_library_id.
+             * @description Rejected. Overlays are not accepted on convert. Use conversion_library_id.
              * @default
              */
             overlay_id: string;
             /**
              * Preset Id
-             * @description Rejected — presets removed from Convert; use conversion_library_id.
+             * @description Rejected. Presets are not accepted on convert. Use conversion_library_id.
              * @default
              */
             preset_id: string;
@@ -3634,7 +1763,7 @@ export interface components {
             product: string;
             /**
              * Profile
-             * @description Rejected — use conversion_library_id.
+             * @description Rejected. Use conversion_library_id.
              * @default
              */
             profile: string;
@@ -3651,7 +1780,7 @@ export interface components {
             report_variant: string;
             /**
              * Semantic Profile
-             * @description Rejected — use conversion_library_id.
+             * @description Rejected. Use conversion_library_id.
              * @default
              */
             semantic_profile: string;
@@ -3762,7 +1891,7 @@ export interface components {
             propagate_residuals_to_remarks?: boolean | null;
             /**
              * Semantic Profile
-             * @description Deprecated on Convert & Send — prefer conversion_library_id. Still accepted on convert-bulletin until Dissemination library packaging lands.
+             * @description Deprecated on Convert & Send. Prefer conversion_library_id. Still accepted on convert-bulletin until Dissemination library packaging lands.
              * @default
              */
             semantic_profile: string;
@@ -3920,12 +2049,7 @@ export interface components {
         };
         /**
          * BulletinMetaModel
-         * @description HTTP DTO for WMO AHL metadata on convert-bulletin (api-contract Q6/Q7).
-         *
-         *     Attributes
-         *     ----------
-         *     _ : object
-         *         See implementation.
+         * @description Abbreviated heading fields for one converted bulletin.
          */
         BulletinMetaModel: {
             /** Aa */
@@ -3948,11 +2072,6 @@ export interface components {
         /**
          * BulletinReportResultModel
          * @description Per-report convert-bulletin result (partial success allowed).
-         *
-         *     Attributes
-         *     ----------
-         *     _ : object
-         *         See implementation.
          */
         BulletinReportResultModel: {
             /** Fixes */
@@ -3971,11 +2090,6 @@ export interface components {
         /**
          * ComparisonDetail
          * @description Detailed comparison result between our and reference IWXXM.
-         *
-         *     Attributes
-         *     ----------
-         *     _ : object
-         *         See implementation.
          * @example {
          *       "extra_elements": [],
          *       "missing_elements": [],
@@ -4033,11 +2147,6 @@ export interface components {
         /**
          * ConfirmRequest
          * @description Email confirmation via GoTrue ``token_hash`` (Auth email link).
-         *
-         *     Attributes
-         *     ----------
-         *     _ : object
-         *         See implementation.
          */
         ConfirmRequest: {
             /** Token Hash */
@@ -4051,11 +2160,6 @@ export interface components {
         /**
          * ConversionIssue
          * @description Structured issue for a single conversion input item.
-         *
-         *     Attributes
-         *     ----------
-         *     _ : object
-         *         See implementation.
          */
         ConversionIssue: {
             /**
@@ -4121,11 +2225,6 @@ export interface components {
         /**
          * ConversionResponse
          * @description Response from conversion endpoint with results and errors.
-         *
-         *     Attributes
-         *     ----------
-         *     _ : object
-         *         See implementation.
          * @example {
          *       "errors": [],
          *       "failed": 0,
@@ -4211,11 +2310,6 @@ export interface components {
         /**
          * ConversionResult
          * @description Individual conversion result for a single METAR input.
-         *
-         *     Attributes
-         *     ----------
-         *     _ : object
-         *         See implementation.
          * @example {
          *       "content": "<?xml version='1.0' encoding='utf-8'?>\n<iwxxm:METAR gml:id='METAR_KJFK_231751Z'>\n  <iwxxm:issueTime>\n    <gml:TimeInstant gml:id='TP1'>\n      <gml:timePosition>2023-09-23T17:51:00Z</gml:timePosition>\n    </gml:TimeInstant>\n  </iwxxm:issueTime>\n</iwxxm:METAR>",
          *       "name": "KJFK_231751Z.txt",
@@ -4260,11 +2354,6 @@ export interface components {
         /**
          * ConversionTemplateCreate
          * @description Create body for a custom conversion template.
-         *
-         *     Attributes
-         *     ----------
-         *     _ : object
-         *         See implementation.
          */
         ConversionTemplateCreate: {
             /** Comments */
@@ -4293,11 +2382,6 @@ export interface components {
         /**
          * ConversionTemplateListResponse
          * @description First-party + custom conversion templates visible to the caller.
-         *
-         *     Attributes
-         *     ----------
-         *     _ : object
-         *         See implementation.
          */
         ConversionTemplateListResponse: {
             /** Items */
@@ -4306,11 +2390,6 @@ export interface components {
         /**
          * ConversionTemplateOut
          * @description Persisted or first-party conversion template projection.
-         *
-         *     Attributes
-         *     ----------
-         *     _ : object
-         *         See implementation.
          */
         ConversionTemplateOut: {
             /** Access */
@@ -4351,11 +2430,6 @@ export interface components {
         /**
          * ConversionTemplatePreviewRequest
          * @description Bridge preview request.
-         *
-         *     Attributes
-         *     ----------
-         *     _ : object
-         *         See implementation.
          */
         ConversionTemplatePreviewRequest: {
             /**
@@ -4375,11 +2449,6 @@ export interface components {
         /**
          * ConversionTemplatePreviewResponse
          * @description Bridge preview response.
-         *
-         *     Attributes
-         *     ----------
-         *     _ : object
-         *         See implementation.
          */
         ConversionTemplatePreviewResponse: {
             /** Captures */
@@ -4410,11 +2479,6 @@ export interface components {
         /**
          * ConversionTemplateSlot
          * @description One ordered slot in a parameterizable conversion template.
-         *
-         *     Attributes
-         *     ----------
-         *     _ : object
-         *         See implementation.
          */
         ConversionTemplateSlot: {
             /** Digits */
@@ -4453,11 +2517,6 @@ export interface components {
         /**
          * ConversionTemplateUpdate
          * @description Partial update for a custom conversion template.
-         *
-         *     Attributes
-         *     ----------
-         *     _ : object
-         *         See implementation.
          */
         ConversionTemplateUpdate: {
             /** Comments */
@@ -4478,11 +2537,6 @@ export interface components {
         /**
          * ConvertBulletinResponse
          * @description Response for POST /api/v1/convert-bulletin.
-         *
-         *     Attributes
-         *     ----------
-         *     _ : object
-         *         See implementation.
          */
         ConvertBulletinResponse: {
             bulletin_meta: components["schemas"]["BulletinMetaModel"];
@@ -4497,11 +2551,6 @@ export interface components {
         /**
          * DecodeResidualModel
          * @description HTTP DTO for an undecoded TAC span (explicit residuals - G4).
-         *
-         *     Attributes
-         *     ----------
-         *     _ : object
-         *         See implementation.
          */
         DecodeResidualModel: {
             /** End */
@@ -4514,11 +2563,6 @@ export interface components {
         /**
          * DecodeSegmentModel
          * @description HTTP DTO for one TAC decode/annotate segment.
-         *
-         *     Attributes
-         *     ----------
-         *     _ : object
-         *         See implementation.
          */
         DecodeSegmentModel: {
             /** Code */
@@ -4533,11 +2577,6 @@ export interface components {
         /**
          * DecodeTacResponse
          * @description Response for POST /api/v1/decode-tac.
-         *
-         *     Attributes
-         *     ----------
-         *     _ : object
-         *         See implementation.
          */
         DecodeTacResponse: {
             /** Product */
@@ -4556,11 +2595,6 @@ export interface components {
         /**
          * DeliveryReceiptOut
          * @description Redacted delivery receipt (API).
-         *
-         *     Attributes
-         *     ----------
-         *     _ : object
-         *         See implementation.
          */
         DeliveryReceiptOut: {
             /**
@@ -4583,11 +2617,6 @@ export interface components {
         /**
          * DisseminationPlanCreate
          * @description Body to create a DisseminationPlan (no secrets).
-         *
-         *     Attributes
-         *     ----------
-         *     _ : object
-         *         See implementation.
          */
         DisseminationPlanCreate: {
             /** Destination Refs */
@@ -4610,11 +2639,6 @@ export interface components {
         /**
          * DisseminationPlanOut
          * @description Persisted plan row.
-         *
-         *     Attributes
-         *     ----------
-         *     _ : object
-         *         See implementation.
          */
         DisseminationPlanOut: {
             /**
@@ -4653,11 +2677,6 @@ export interface components {
         /**
          * DisseminationPlanUpdate
          * @description Partial update for a DisseminationPlan.
-         *
-         *     Attributes
-         *     ----------
-         *     _ : object
-         *         See implementation.
          */
         DisseminationPlanUpdate: {
             /** Destination Refs */
@@ -4674,11 +2693,6 @@ export interface components {
         /**
          * DisseminationTemplateCreate
          * @description Create body for a saved dissemination template.
-         *
-         *     Attributes
-         *     ----------
-         *     _ : object
-         *         See implementation.
          */
         DisseminationTemplateCreate: {
             /**
@@ -4707,11 +2721,6 @@ export interface components {
         /**
          * DisseminationTemplateListResponse
          * @description List of saved dissemination templates for the caller.
-         *
-         *     Attributes
-         *     ----------
-         *     _ : object
-         *         See implementation.
          */
         DisseminationTemplateListResponse: {
             /** Items */
@@ -4720,11 +2729,6 @@ export interface components {
         /**
          * DisseminationTemplateOut
          * @description Persisted saved dissemination template.
-         *
-         *     Attributes
-         *     ----------
-         *     _ : object
-         *         See implementation.
          */
         DisseminationTemplateOut: {
             /**
@@ -4767,11 +2771,6 @@ export interface components {
         /**
          * DisseminationTemplateUpdate
          * @description Partial update for a saved dissemination template.
-         *
-         *     Attributes
-         *     ----------
-         *     _ : object
-         *         See implementation.
          */
         DisseminationTemplateUpdate: {
             /** Ddl */
@@ -4794,11 +2793,6 @@ export interface components {
         /**
          * EvaluationJobResponse
          * @description Response when creating an evaluation job.
-         *
-         *     Attributes
-         *     ----------
-         *     _ : object
-         *         See implementation.
          * @example {
          *       "created_at": "2026-02-10T14:30:45.123456+00:00",
          *       "job_id": "job_550e8400e29b41d4a71662f7d6e6b1c0",
@@ -4830,11 +2824,6 @@ export interface components {
         /**
          * EvaluationJobStatus
          * @description Current status of an evaluation job.
-         *
-         *     Attributes
-         *     ----------
-         *     _ : object
-         *         See implementation.
          * @example {
          *       "created_at": "2026-02-10T14:30:45.123456+00:00",
          *       "job_id": "job_550e8400e29b41d4a71662f7d6e6b1c0",
@@ -4889,11 +2878,6 @@ export interface components {
         /**
          * EvaluationRequest
          * @description Request to create an evaluation job.
-         *
-         *     Attributes
-         *     ----------
-         *     _ : object
-         *         See implementation.
          * @example {
          *       "hours": 1.5,
          *       "large_airports_only": true,
@@ -4949,11 +2933,6 @@ export interface components {
         /**
          * EvaluationResultDetail
          * @description Detailed result for a single station evaluation.
-         *
-         *     Attributes
-         *     ----------
-         *     _ : object
-         *         See implementation.
          * @example {
          *       "comparison": {
          *         "our_elements": 28,
@@ -5011,11 +2990,6 @@ export interface components {
         /**
          * EvaluationResultsResponse
          * @description Response with paginated evaluation results.
-         *
-         *     Attributes
-         *     ----------
-         *     _ : object
-         *         See implementation.
          * @example {
          *       "job_id": "job_550e8400e29b41d4a71662f7d6e6b1c0",
          *       "page": 1,
@@ -5066,11 +3040,6 @@ export interface components {
         /**
          * FailedSpan
          * @description Character span marking a soft-preview failure.
-         *
-         *     Attributes
-         *     ----------
-         *     _ : object
-         *         See implementation.
          */
         FailedSpan: {
             /**
@@ -5097,11 +3066,6 @@ export interface components {
         /**
          * GatewayHealthListResponse
          * @description Health for registered gateway kinds.
-         *
-         *     Attributes
-         *     ----------
-         *     _ : object
-         *         See implementation.
          */
         GatewayHealthListResponse: {
             /** Items */
@@ -5110,11 +3074,6 @@ export interface components {
         /**
          * GatewayHealthOut
          * @description Operator-safe gateway health row.
-         *
-         *     Attributes
-         *     ----------
-         *     _ : object
-         *         See implementation.
          */
         GatewayHealthOut: {
             /** Connectivity Ok */
@@ -5129,11 +3088,6 @@ export interface components {
         /**
          * GroupTrace
          * @description TAC group that produced one IWXXM element in a preview.
-         *
-         *     Attributes
-         *     ----------
-         *     _ : object
-         *         See implementation.
          */
         GroupTrace: {
             /**
@@ -5176,11 +3130,6 @@ export interface components {
         /**
          * HealthResponse
          * @description Health check response.
-         *
-         *     Attributes
-         *     ----------
-         *     _ : object
-         *         See implementation.
          */
         HealthResponse: {
             /**
@@ -5209,11 +3158,6 @@ export interface components {
         /**
          * JobListItem
          * @description Summary item for job list.
-         *
-         *     Attributes
-         *     ----------
-         *     _ : object
-         *         See implementation.
          * @example {
          *       "completed_at": "2026-02-10T15:45:30.123456+00:00",
          *       "created_at": "2026-02-10T14:30:45.123456+00:00",
@@ -5265,11 +3209,6 @@ export interface components {
         /**
          * JobListResponse
          * @description Response with list of jobs.
-         *
-         *     Attributes
-         *     ----------
-         *     _ : object
-         *         See implementation.
          * @example {
          *       "jobs": [
          *         {
@@ -5316,11 +3255,6 @@ export interface components {
         /**
          * JobSummaryStats
          * @description Summary statistics for a job.
-         *
-         *     Attributes
-         *     ----------
-         *     _ : object
-         *         See implementation.
          * @example {
          *       "avg_elements_our": 28.5,
          *       "avg_elements_their": 26.8,
@@ -5371,11 +3305,6 @@ export interface components {
         /**
          * LibraryAssetCreate
          * @description Create a custom library asset (optionally forked).
-         *
-         *     Attributes
-         *     ----------
-         *     _ : object
-         *         See implementation.
          */
         LibraryAssetCreate: {
             /** Attachednationalline */
@@ -5419,11 +3348,6 @@ export interface components {
         /**
          * LibraryAssetListResponse
          * @description Library assets visible to the caller.
-         *
-         *     Attributes
-         *     ----------
-         *     _ : object
-         *         See implementation.
          */
         LibraryAssetListResponse: {
             /** Items */
@@ -5432,11 +3356,6 @@ export interface components {
         /**
          * LibraryAssetOut
          * @description First-party or custom library asset (five Libraries).
-         *
-         *     Attributes
-         *     ----------
-         *     _ : object
-         *         See implementation.
          */
         LibraryAssetOut: {
             /**
@@ -5493,11 +3412,6 @@ export interface components {
         /**
          * LibraryAssetUpdate
          * @description Partial update for a custom library asset (or fork-on-edit first-party).
-         *
-         *     Attributes
-         *     ----------
-         *     _ : object
-         *         See implementation.
          */
         LibraryAssetUpdate: {
             /** Body */
@@ -5520,11 +3434,6 @@ export interface components {
         /**
          * LibraryRulePreviewRequest
          * @description AC11 rule association preview for a TAC group.
-         *
-         *     Attributes
-         *     ----------
-         *     _ : object
-         *         See implementation.
          */
         LibraryRulePreviewRequest: {
             /** Focusgroup */
@@ -5535,11 +3444,6 @@ export interface components {
         /**
          * LibraryRulePreviewResponse
          * @description Matched conversion rule for a TAC group.
-         *
-         *     Attributes
-         *     ----------
-         *     _ : object
-         *         See implementation.
          */
         LibraryRulePreviewResponse: {
             /** Focusgroup */
@@ -5559,11 +3463,6 @@ export interface components {
         /**
          * LibraryYamlValidateRequest
          * @description Validate library YAML without persisting.
-         *
-         *     Attributes
-         *     ----------
-         *     _ : object
-         *         See implementation.
          */
         LibraryYamlValidateRequest: {
             /**
@@ -5583,11 +3482,6 @@ export interface components {
         /**
          * LibraryYamlValidateResponse
          * @description Regex + schema diagnostics for a library YAML document.
-         *
-         *     Attributes
-         *     ----------
-         *     _ : object
-         *         See implementation.
          */
         LibraryYamlValidateResponse: {
             /**
@@ -5627,11 +3521,6 @@ export interface components {
         /**
          * LintFixModel
          * @description HTTP DTO for an optional tac-validate fix suggestion.
-         *
-         *     Attributes
-         *     ----------
-         *     _ : object
-         *         See implementation.
          */
         LintFixModel: {
             /** Code */
@@ -5644,11 +3533,6 @@ export interface components {
         /**
          * LintIssueCatalogEntryModel
          * @description One registry row exported by GET /api/v1/lint-issue-catalog.
-         *
-         *     Attributes
-         *     ----------
-         *     _ : object
-         *         See implementation.
          */
         LintIssueCatalogEntryModel: {
             /** Code */
@@ -5726,11 +3610,6 @@ export interface components {
         /**
          * LintIssueCatalogResponse
          * @description Response for GET /api/v1/lint-issue-catalog.
-         *
-         *     Attributes
-         *     ----------
-         *     _ : object
-         *         See implementation.
          */
         LintIssueCatalogResponse: {
             /** Issues */
@@ -5739,11 +3618,6 @@ export interface components {
         /**
          * LintIssueModel
          * @description HTTP DTO for a tac-validate issue (msgspec → pydantic).
-         *
-         *     Attributes
-         *     ----------
-         *     _ : object
-         *         See implementation.
          */
         LintIssueModel: {
             /** Code */
@@ -5768,11 +3642,6 @@ export interface components {
         /**
          * LintTacResponse
          * @description Response for POST /api/v1/lint-tac.
-         *
-         *     Attributes
-         *     ----------
-         *     _ : object
-         *         See implementation.
          */
         LintTacResponse: {
             /** Fixes */
@@ -5787,11 +3656,6 @@ export interface components {
         /**
          * LoginRequest
          * @description Login credentials.
-         *
-         *     Attributes
-         *     ----------
-         *     _ : object
-         *         See implementation.
          */
         LoginRequest: {
             /** Email */
@@ -5802,11 +3666,6 @@ export interface components {
         /**
          * LogoutRequest
          * @description Optional scoped logout body (FileConverter / AdminDashboard).
-         *
-         *     Attributes
-         *     ----------
-         *     _ : object
-         *         See implementation.
          */
         LogoutRequest: {
             /**
@@ -5817,12 +3676,7 @@ export interface components {
         };
         /**
          * MappingConfigCreate
-         * @description Create a field mapping — no connection secrets.
-         *
-         *     Attributes
-         *     ----------
-         *     _ : object
-         *         See implementation.
+         * @description Create a field mapping. Connection secrets are not stored.
          */
         MappingConfigCreate: {
             /** Config */
@@ -5840,11 +3694,6 @@ export interface components {
         /**
          * MappingConfigOut
          * @description Persisted MappingConfig row.
-         *
-         *     Attributes
-         *     ----------
-         *     _ : object
-         *         See implementation.
          */
         MappingConfigOut: {
             /** Config */
@@ -5879,11 +3728,6 @@ export interface components {
         /**
          * MappingConfigUpdate
          * @description Partial MappingConfig update.
-         *
-         *     Attributes
-         *     ----------
-         *     _ : object
-         *         See implementation.
          */
         MappingConfigUpdate: {
             /** Config */
@@ -5896,11 +3740,6 @@ export interface components {
         /**
          * Message
          * @description Simple success message.
-         *
-         *     Attributes
-         *     ----------
-         *     _ : object
-         *         See implementation.
          */
         Message: {
             /** Message */
@@ -5909,11 +3748,6 @@ export interface components {
         /**
          * MetarFamilyVariant
          * @description Read-only METAR-family variant row projected from the profile catalog.
-         *
-         *     Attributes
-         *     ----------
-         *     _ : object
-         *         See implementation.
          */
         MetarFamilyVariant: {
             /** Api Product */
@@ -5936,11 +3770,6 @@ export interface components {
         /**
          * OverlayCreate
          * @description Create body for a signed overlay (server issues the signature).
-         *
-         *     Attributes
-         *     ----------
-         *     _ : object
-         *         See implementation.
          */
         OverlayCreate: {
             /** Baseprofileid */
@@ -5960,11 +3789,6 @@ export interface components {
         /**
          * OverlayListResponse
          * @description List of overlays for the caller.
-         *
-         *     Attributes
-         *     ----------
-         *     _ : object
-         *         See implementation.
          */
         OverlayListResponse: {
             /** Items */
@@ -5973,11 +3797,6 @@ export interface components {
         /**
          * OverlayOut
          * @description Persisted signed overlay (owner-scoped).
-         *
-         *     Attributes
-         *     ----------
-         *     _ : object
-         *         See implementation.
          */
         OverlayOut: {
             /** Baseprofileid */
@@ -6016,11 +3835,6 @@ export interface components {
         /**
          * OverlayUpdate
          * @description Partial update for an overlay (re-signed on write).
-         *
-         *     Attributes
-         *     ----------
-         *     _ : object
-         *         See implementation.
          */
         OverlayUpdate: {
             /** Baseprofileid */
@@ -6037,11 +3851,6 @@ export interface components {
         /**
          * PackageIssueModel
          * @description HTTP DTO for an iwxxm-validate package finding (additive on /validate).
-         *
-         *     Attributes
-         *     ----------
-         *     _ : object
-         *         See implementation.
          */
         PackageIssueModel: {
             /** Code */
@@ -6068,11 +3877,6 @@ export interface components {
         /**
          * PackageStageModel
          * @description Per-stage CA_ECCC validation outcome (additive on /validate).
-         *
-         *     Attributes
-         *     ----------
-         *     _ : object
-         *         See implementation.
          */
         PackageStageModel: {
             /** Issues */
@@ -6087,11 +3891,6 @@ export interface components {
         /**
          * PendingFilePayload
          * @description Queued file content stored inline on the session row.
-         *
-         *     Attributes
-         *     ----------
-         *     _ : object
-         *         See implementation.
          */
         PendingFilePayload: {
             /**
@@ -6105,11 +3904,6 @@ export interface components {
         /**
          * PlanExecuteRequest
          * @description Execute or dry-run a plan for a sample message.
-         *
-         *     Attributes
-         *     ----------
-         *     _ : object
-         *         See implementation.
          */
         PlanExecuteRequest: {
             /**
@@ -6135,11 +3929,6 @@ export interface components {
         /**
          * PlanExecuteResponse
          * @description Execute outcome with receipts.
-         *
-         *     Attributes
-         *     ----------
-         *     _ : object
-         *         See implementation.
          */
         PlanExecuteResponse: {
             /**
@@ -6153,11 +3942,6 @@ export interface components {
         /**
          * PresetCreate
          * @description Create body for a saved semantic preset.
-         *
-         *     Attributes
-         *     ----------
-         *     _ : object
-         *         See implementation.
          */
         PresetCreate: {
             /** Extensions */
@@ -6183,11 +3967,6 @@ export interface components {
         /**
          * PresetListResponse
          * @description List of semantic presets for the caller.
-         *
-         *     Attributes
-         *     ----------
-         *     _ : object
-         *         See implementation.
          */
         PresetListResponse: {
             /** Items */
@@ -6196,11 +3975,6 @@ export interface components {
         /**
          * PresetOut
          * @description Persisted saved semantic preset.
-         *
-         *     Attributes
-         *     ----------
-         *     _ : object
-         *         See implementation.
          */
         PresetOut: {
             /**
@@ -6243,11 +4017,6 @@ export interface components {
         /**
          * PresetUpdate
          * @description Partial update for a saved semantic preset.
-         *
-         *     Attributes
-         *     ----------
-         *     _ : object
-         *         See implementation.
          */
         PresetUpdate: {
             /** Extensions */
@@ -6270,11 +4039,6 @@ export interface components {
         /**
          * ProfileCatalogEntry
          * @description Read-only ConversionProfile catalog entry for the inspector.
-         *
-         *     Attributes
-         *     ----------
-         *     _ : object
-         *         See implementation.
          */
         ProfileCatalogEntry: {
             /** Deltas Vs Icao */
@@ -6313,11 +4077,6 @@ export interface components {
         /**
          * ProfileCatalogResponse
          * @description Catalog list response.
-         *
-         *     Attributes
-         *     ----------
-         *     _ : object
-         *         See implementation.
          */
         ProfileCatalogResponse: {
             /** Profiles */
@@ -6328,11 +4087,6 @@ export interface components {
         /**
          * QualityMetricsDetailResponse
          * @description Response for GET /api/v1/quality-metrics/{stem}.
-         *
-         *     Attributes
-         *     ----------
-         *     _ : object
-         *         See implementation.
          */
         QualityMetricsDetailResponse: {
             /**
@@ -6386,11 +4140,6 @@ export interface components {
         /**
          * QualityMetricsFileRowModel
          * @description Slim inventory row for the corpus file list.
-         *
-         *     Attributes
-         *     ----------
-         *     _ : object
-         *         See implementation.
          */
         QualityMetricsFileRowModel: {
             /**
@@ -6430,11 +4179,6 @@ export interface components {
         /**
          * QualityMetricsListResponse
          * @description Response for GET /api/v1/quality-metrics.
-         *
-         *     Attributes
-         *     ----------
-         *     _ : object
-         *         See implementation.
          */
         QualityMetricsListResponse: {
             /** Files */
@@ -6449,11 +4193,6 @@ export interface components {
         /**
          * QualityMetricsSummaryModel
          * @description Per-product aggregate counts for the corpus browser.
-         *
-         *     Attributes
-         *     ----------
-         *     _ : object
-         *         See implementation.
          */
         QualityMetricsSummaryModel: {
             /**
@@ -6502,11 +4241,6 @@ export interface components {
         /**
          * RegisterRequest
          * @description Registration credentials (Supabase GoTrue signup).
-         *
-         *     Attributes
-         *     ----------
-         *     _ : object
-         *         See implementation.
          */
         RegisterRequest: {
             /** Email */
@@ -6520,11 +4254,6 @@ export interface components {
          *
          *     Optional additive metadata: ``issue_type``, ``source_*``, ``conform_note``.
          *     Null or omitted when unknown; clients must not invent defaults.
-         *
-         *     Attributes
-         *     ----------
-         *     _ : object
-         *         See implementation.
          */
         RuleCatalogItem: {
             /** Conform Note */
@@ -6556,11 +4285,6 @@ export interface components {
         /**
          * RuleCatalogResponse
          * @description Response for GET /rule-catalogs.
-         *
-         *     Attributes
-         *     ----------
-         *     _ : object
-         *         See implementation.
          */
         RuleCatalogResponse: {
             /** Family */
@@ -6571,11 +4295,6 @@ export interface components {
         /**
          * RulePackCreate
          * @description Create body for a rule pack.
-         *
-         *     Attributes
-         *     ----------
-         *     _ : object
-         *         See implementation.
          */
         RulePackCreate: {
             /**
@@ -6607,11 +4326,6 @@ export interface components {
         /**
          * RulePackListResponse
          * @description List of rule packs for the caller.
-         *
-         *     Attributes
-         *     ----------
-         *     _ : object
-         *         See implementation.
          */
         RulePackListResponse: {
             /** Items */
@@ -6620,11 +4334,6 @@ export interface components {
         /**
          * RulePackOut
          * @description Persisted rule pack (owner-scoped).
-         *
-         *     Attributes
-         *     ----------
-         *     _ : object
-         *         See implementation.
          */
         RulePackOut: {
             /**
@@ -6667,11 +4376,6 @@ export interface components {
         /**
          * RulePackUpdate
          * @description Partial update for a rule pack.
-         *
-         *     Attributes
-         *     ----------
-         *     _ : object
-         *         See implementation.
          */
         RulePackUpdate: {
             /** Message */
@@ -6694,11 +4398,6 @@ export interface components {
         /**
          * SelectionOption
          * @description Dropdown option from a deployed registry.
-         *
-         *     Attributes
-         *     ----------
-         *     _ : object
-         *         See implementation.
          */
         SelectionOption: {
             /** Id */
@@ -6709,11 +4408,6 @@ export interface components {
         /**
          * SelectionOptionsResponse
          * @description Response for GET /selection-options.
-         *
-         *     Attributes
-         *     ----------
-         *     _ : object
-         *         See implementation.
          */
         SelectionOptionsResponse: {
             /** Kind */
@@ -6724,11 +4418,6 @@ export interface components {
         /**
          * SessionResponse
          * @description Session tokens.
-         *
-         *     Attributes
-         *     ----------
-         *     _ : object
-         *         See implementation.
          */
         SessionResponse: {
             /** Access Token */
@@ -6741,11 +4430,6 @@ export interface components {
         /**
          * TranslationCentreInfo
          * @description Translation Centre identification metadata.
-         *
-         *     Attributes
-         *     ----------
-         *     _ : object
-         *         See implementation.
          * @example {
          *       "centre_designator": "NOAA-MDL",
          *       "centre_name": "NOAA Meteorological Development Laboratory",
@@ -6807,11 +4491,6 @@ export interface components {
          * @description Aggregated translation statistics for ICAO OPMET compliance.
          *
          *     Provides summary metrics for a given time period and optional filters.
-         *
-         *     Attributes
-         *     ----------
-         *     _ : object
-         *         See implementation.
          * @example {
          *       "average_duration_ms": 237,
          *       "failed_translations": 24,
@@ -6919,11 +4598,6 @@ export interface components {
         /**
          * TranslationStatisticsRequest
          * @description Request parameters for translation statistics query.
-         *
-         *     Attributes
-         *     ----------
-         *     _ : object
-         *         See implementation.
          * @example {
          *       "end_date": "2026-02-13T23:59:59Z",
          *       "icao_region": "NAM",
@@ -6973,11 +4647,6 @@ export interface components {
         /**
          * UserResponse
          * @description Auth user projection.
-         *
-         *     Attributes
-         *     ----------
-         *     _ : object
-         *         See implementation.
          */
         UserResponse: {
             /** Email */
@@ -6992,11 +4661,6 @@ export interface components {
         /**
          * ValidateIssueModel
          * @description HTTP DTO for a validation orchestrator finding on /validate.
-         *
-         *     Attributes
-         *     ----------
-         *     _ : object
-         *         See implementation.
          */
         ValidateIssueModel: {
             /** Code */
@@ -7023,11 +4687,6 @@ export interface components {
         /**
          * ValidateLayerIssueModel
          * @description Per-layer issue entry nested under ``issues_by_layer``.
-         *
-         *     Attributes
-         *     ----------
-         *     _ : object
-         *         See implementation.
          */
         ValidateLayerIssueModel: {
             /** Code */
@@ -7042,11 +4701,6 @@ export interface components {
         /**
          * ValidateRequest
          * @description Request for IWXXM validation via JSON body.
-         *
-         *     Attributes
-         *     ----------
-         *     _ : object
-         *         See implementation.
          * @example {
          *       "iwxxm_xml": "<?xml version='1.0'?><iwxxm:METAR>...</iwxxm:METAR>",
          *       "stop_on_error": false,
@@ -7124,11 +4778,6 @@ export interface components {
         /**
          * ValidateResponse
          * @description Response for POST /api/v1/validate (validation layers + package_* extras).
-         *
-         *     Attributes
-         *     ----------
-         *     _ : object
-         *         See implementation.
          */
         ValidateResponse: {
             /**
@@ -7203,11 +4852,6 @@ export interface components {
         /**
          * ValidationIssue
          * @description Single validation issue with context.
-         *
-         *     Attributes
-         *     ----------
-         *     _ : object
-         *         See implementation.
          * @example {
          *       "code": "INVALID_ICAO",
          *       "layer": "airport_icao",
@@ -7251,11 +4895,6 @@ export interface components {
         /**
          * ValidationLayerInfo
          * @description Information about a validation layer.
-         *
-         *     Attributes
-         *     ----------
-         *     _ : object
-         *         See implementation.
          * @example {
          *       "blocking": true,
          *       "description": "Parse and validate METAR TAC syntax",
@@ -7287,11 +4926,6 @@ export interface components {
         /**
          * ValidationLayersResponse
          * @description List of available validation layers with configurations.
-         *
-         *     Attributes
-         *     ----------
-         *     _ : object
-         *         See implementation.
          * @example {
          *       "layers": [
          *         {
@@ -7329,11 +4963,6 @@ export interface components {
         /**
          * ValidationRequest
          * @description Request for validation operation.
-         *
-         *     Attributes
-         *     ----------
-         *     _ : object
-         *         See implementation.
          * @example {
          *       "content": "METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005 RMK AO2",
          *       "content_type": "tac",
@@ -7375,11 +5004,6 @@ export interface components {
         /**
          * ValidationResult
          * @description Result from a validation operation.
-         *
-         *     Attributes
-         *     ----------
-         *     _ : object
-         *         See implementation.
          * @example {
          *       "execution_time_ms": 12.5,
          *       "issues": [],
@@ -7421,11 +5045,6 @@ export interface components {
         /**
          * WorkSession
          * @description Persisted work session returned by the API.
-         *
-         *     Attributes
-         *     ----------
-         *     _ : object
-         *         See implementation.
          */
         WorkSession: {
             /** Conversion Params */
@@ -7481,11 +5100,6 @@ export interface components {
         /**
          * WorkSessionCreate
          * @description Body for POST /api/v1/work-sessions.
-         *
-         *     Attributes
-         *     ----------
-         *     _ : object
-         *         See implementation.
          */
         WorkSessionCreate: {
             /** Conversion Params */
@@ -7519,11 +5133,6 @@ export interface components {
         /**
          * WorkSessionListResponse
          * @description Paginated list of work sessions.
-         *
-         *     Attributes
-         *     ----------
-         *     _ : object
-         *         See implementation.
          */
         WorkSessionListResponse: {
             /** Items */
@@ -7550,11 +5159,6 @@ export interface components {
         /**
          * WorkSessionUpdate
          * @description Body for PATCH /api/v1/work-sessions/{id}.
-         *
-         *     Attributes
-         *     ----------
-         *     _ : object
-         *         See implementation.
          */
         WorkSessionUpdate: {
             /** Conversion Params */
@@ -8281,7 +5885,7 @@ export interface operations {
                     "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
-            /** @description COLLECT / FTBP ingest not implemented yet (placeholder) */
+            /** @description COLLECT member extraction is not available. */
             501: {
                 headers: {
                     [name: string]: unknown;

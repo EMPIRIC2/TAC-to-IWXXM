@@ -43,16 +43,18 @@ def _swxa_region_xml(loc: str, *, slug: str, idx: int) -> str:
 
     Parameters
     ----------
-    loc : object
+    loc : str
         Argument ``loc``.
-    slug : object
+
+    slug : str
         Argument ``slug``.
-    idx : object
+
+    idx : int
         Argument ``idx``.
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     code = loc.upper()
@@ -126,18 +128,21 @@ def _swxa_analysis_xml(
 
     Parameters
     ----------
-    block : object
+    block : dict[str, Any]
         Argument ``block``.
-    time_indicator : object
+
+    time_indicator : str
         Argument ``time_indicator``.
-    slug : object
+
+    slug : str
         Argument ``slug``.
-    idx : object
+
+    idx : int
         Argument ``idx``.
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     time_iso = block.get("time") or "9999-01-01T00:00:00Z"
@@ -212,22 +217,23 @@ def emit_swxa_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
     Geometry for SpaceWxLocation bands is approximate (S02.L1 may use
     ``wmoReference`` vs vendor golden equality).
 
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Parsed product fields.
+
+    iwxxm_version : str
+        IWXXM release line.
+
+    Returns
+    -------
+    str
+        An IWXXM ``SpaceWeatherAdvisory`` document (F28 / EV-029 M11).
+
     Examples
     --------
     >>> 1 + 1  # docstring smoke (emit_swxa_annex3)
     2
-
-    Parameters
-    ----------
-    ir : object
-        Argument ``ir``.
-    iwxxm_version : object
-        Argument ``iwxxm_version``.
-
-    Returns
-    -------
-    object
-        Return value.
     """
     product = str(ir.get("product", "SWXA")).upper()
     if product != "SWXA":
@@ -321,12 +327,12 @@ def _assert_swxa_advisory_xml(xml: str) -> str:
 
     Parameters
     ----------
-    xml : object
+    xml : str
         Argument ``xml``.
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     if "<iwxxm:SpaceWeatherAdvisory " not in xml:

@@ -51,8 +51,8 @@ class UnknownVOR(KeyError):
 
     Attributes
     ----------
-    _ : object
-        See implementation.
+    args : tuple
+        Arguments passed to the exception constructor.
     """
 
 
@@ -62,7 +62,7 @@ def _vor_table_path() -> Path:
 
     Returns
     -------
-    object
+    Path
         Return value.
     """
     return Path(__file__).resolve().parent.parent / "data" / "vor_reference_points.json"
@@ -72,15 +72,15 @@ def load_vor_reference_points() -> dict[str, dict[str, Any]]:
     """
     Load bundled VOR reference coordinates.
 
+    Returns
+    -------
+    dict[str, dict[str, Any]]
+        Bundled VOR reference coordinates.
+
     Examples
     --------
     >>> 1 + 1  # docstring smoke (load_vor_reference_points)
     2
-
-    Returns
-    -------
-    object
-        Return value.
     """
     data = json.loads(_vor_table_path().read_text(encoding="utf-8"))
     return {k.upper(): v for k, v in data.get("points", {}).items()}
@@ -92,9 +92,10 @@ def resolve_vor(vor_id: str, table: dict[str, dict[str, Any]] | None = None) -> 
 
     Parameters
     ----------
-    vor_id :
+    vor_id : str
         Three-letter VOR/VORTAC identifier.
-    table :
+
+    table : dict[str, dict[str, Any]] | None, optional
         Optional override table for tests.
 
     Returns
@@ -129,26 +130,29 @@ def offset_nm(lat: float, lon: float, distance_nm: float, cardinal: str) -> tupl
 
     Uses a spherical Earth model (aviation NM radius).
 
+    Parameters
+    ----------
+    lat : float
+        Latitude in decimal degrees.
+
+    lon : float
+        Longitude in decimal degrees.
+
+    distance_nm : float
+        Offset distance in nautical miles.
+
+    cardinal : str
+        Cardinal direction.
+
+    Returns
+    -------
+    tuple[float, float]
+        A point ``distance_nm`` along ``cardinal`` from ``(lat, lon)``.
+
     Examples
     --------
     >>> 1 + 1  # docstring smoke (offset_nm)
     2
-
-    Parameters
-    ----------
-    lat : object
-        Argument ``lat``.
-    lon : object
-        Argument ``lon``.
-    distance_nm : object
-        Argument ``distance_nm``.
-    cardinal : object
-        Argument ``cardinal``.
-
-    Returns
-    -------
-    object
-        Return value.
     """
     bearing_deg = _CARDINAL_BEARING_DEG.get(cardinal.upper())
     if bearing_deg is None:
@@ -171,18 +175,18 @@ class ReferencePointGeometryParser:
 
     Attributes
     ----------
-    _ : object
-        See implementation.
+    _vor_table : dict[str, dict[str, Any]] | None
+        Optional VOR coordinate table. ``None`` loads the bundled table.
     """
 
     def __init__(self, vor_table: dict[str, dict[str, Any]] | None = None) -> None:
         """
-        Internal helper ``__init__``.
+        Store ``vor_table``.
 
         Parameters
         ----------
-        vor_table : object
-            Argument ``vor_table``.
+        vor_table : dict[str, dict[str, Any]] | None, optional
+            VOR identifier to coordinate rows. ``None`` uses the bundled table.
         """
         self._vor_table = vor_table
 
@@ -190,20 +194,20 @@ class ReferencePointGeometryParser:
         """
         Return geometry IR dict when a ``FROM`` chain is present, else ``None``.
 
+        Parameters
+        ----------
+        body : str
+            TAC body text.
+
+        Returns
+        -------
+        dict[str, Any] | None
+            Geometry IR dict when a ``FROM`` chain is present, else ``None``.
+
         Examples
         --------
         >>> 1 + 1  # docstring smoke (parse_from_body)
         2
-
-        Parameters
-        ----------
-        body : object
-            Argument ``body``.
-
-        Returns
-        -------
-        object
-            Return value.
         """
         match = _FROM_CHAIN.search(body)
         if match is None:
@@ -258,19 +262,19 @@ def parse_vor_reference_geometry(body: str) -> dict[str, Any] | None:
     """
     Convenience wrapper using the default bundled VOR table.
 
+    Parameters
+    ----------
+    body : str
+        TAC body text.
+
+    Returns
+    -------
+    dict[str, Any] | None
+        Geometry IR when a ``FROM`` chain is present, else ``None``.
+
     Examples
     --------
     >>> 1 + 1  # docstring smoke (parse_vor_reference_geometry)
     2
-
-    Parameters
-    ----------
-    body : object
-        Argument ``body``.
-
-    Returns
-    -------
-    object
-        Return value.
     """
     return ReferencePointGeometryParser().parse_from_body(body)

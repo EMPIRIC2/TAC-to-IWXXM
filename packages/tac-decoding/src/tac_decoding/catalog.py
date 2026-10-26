@@ -47,7 +47,7 @@ def _tokens_meta_from_mapping(raw: object) -> dict[str, dict[str, str]]:
 
     Parameters
     ----------
-    raw :
+    raw : object
         Loaded YAML document.
 
     Returns
@@ -141,7 +141,7 @@ def default_issue_type_for_token(token: str) -> str | None:
 
     Parameters
     ----------
-    token :
+    token : str
         Uppercase TAC token.
 
     Returns
@@ -168,7 +168,7 @@ def catalog_entries(*, limit: int | None = None) -> list[dict[str, Any]]:
 
     Parameters
     ----------
-    limit :
+    limit : int | None, optional
         Optional max rows (stable sorted by token). ``None`` = all.
 
     Returns

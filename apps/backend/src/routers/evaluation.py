@@ -154,6 +154,7 @@ async def run_evaluation_job(job_id: str, request: EvaluationRequest) -> None:
     "/jobs",
     response_model=EvaluationJobResponse,
     tags=["Evaluation"],
+    summary="Create an evaluation job",
     responses={},
 )
 async def create_evaluation_job(
@@ -162,6 +163,7 @@ async def create_evaluation_job(
 ) -> object:
     """
     Create a new evaluation job.
+
 
     Examples
     --------
@@ -214,6 +216,7 @@ async def create_evaluation_job(
     "/jobs/{job_id}",
     response_model=EvaluationJobStatus,
     tags=["Evaluation"],
+    summary="Evaluation job status",
     responses={},
 )
 async def get_job_status(
@@ -221,6 +224,7 @@ async def get_job_status(
 ) -> object:
     """
     Get the status of an evaluation job.
+
 
     Examples
     --------
@@ -266,6 +270,7 @@ async def get_job_status(
     "/jobs/{job_id}/results",
     response_model=EvaluationResultsResponse,
     tags=["Evaluation"],
+    summary="Evaluation job results",
     responses={},
 )
 async def get_job_results(
@@ -276,6 +281,7 @@ async def get_job_results(
 ) -> object:
     """
     Get evaluation results for a job (paginated).
+
 
     Examples
     --------
@@ -340,11 +346,13 @@ async def get_job_results(
     "/jobs",
     response_model=JobListResponse,
     tags=["Evaluation"],
+    summary="List evaluation jobs",
     responses={},
 )
 async def list_user_jobs(page: int = Query(1, ge=1), per_page: int = Query(20, ge=1, le=100)) -> object:
     """
     List all evaluation jobs for the current user.
+
 
     Examples
     --------

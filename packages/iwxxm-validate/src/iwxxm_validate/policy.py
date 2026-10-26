@@ -31,8 +31,8 @@ class PolicyError(ValueError):
 
     Attributes
     ----------
-    _ : object
-        See implementation.
+    args : tuple
+        Arguments passed to the exception constructor.
     """
 
 
@@ -42,8 +42,8 @@ class PolicyActivationError(PolicyError):
 
     Attributes
     ----------
-    _ : object
-        See implementation.
+    args : tuple
+        Arguments passed to the exception constructor.
     """
 
 
@@ -54,8 +54,24 @@ class OutputPolicyDocument:
 
     Attributes
     ----------
-    _ : object
-        See implementation.
+    schema_version : int
+        Schema version.
+    id : str
+        ID.
+    lifecycle : PolicyLifecycle
+        Lifecycle.
+    pin : str
+        Pin.
+    extends : tuple[str, ...]
+        Extends.
+    select : tuple[str, ...]
+        Select.
+    ignore : tuple[str, ...]
+        Ignore.
+    profiles : tuple[str, ...], optional
+        Profiles.
+    source_path : str or None, optional
+        Source path. By default ``None``.
     """
 
     schema_version: int
@@ -76,8 +92,16 @@ class ResolvedOutputPolicy:
 
     Attributes
     ----------
-    _ : object
-        See implementation.
+    id : str
+        ID.
+    pin : str
+        Pin.
+    lifecycle : PolicyLifecycle
+        Lifecycle.
+    enabled : frozenset[str]
+        Enabled.
+    warnings : tuple[str, ...]
+        Warnings.
     """
 
     id: str
@@ -197,13 +221,13 @@ def load_output_policy(path: Path | str) -> OutputPolicyDocument:
 
     Parameters
     ----------
-    path : object
-        Argument ``path``.
+    path : Path or str
+        Path.
 
     Returns
     -------
-    object
-        Return value.
+    OutputPolicyDocument
+        Load one IWXXM output policy YAML file.
     """
     file_path = Path(path)
     return _load_yaml_mapping(file_path.read_text(encoding="utf-8"), source_path=str(file_path))
@@ -304,13 +328,13 @@ def load_output_policy_catalog(profile: str | None = None) -> dict[str, OutputPo
 
     Parameters
     ----------
-    profile : object
-        Argument ``profile``.
+    profile : str or None, optional
+        Profile id. By default ``None``.
 
     Returns
     -------
-    object
-        Return value.
+    dict[str, OutputPolicyDocument]
+        Load builtin output policies plus optional ``IWXXM_VALIDATE_POLICY_DIR``.
     """
     catalog: dict[str, OutputPolicyDocument] = {}
     root = resources.files("iwxxm_validate").joinpath("data", "policies")
@@ -358,12 +382,20 @@ def _merged_lists(
 
     def walk(current: OutputPolicyDocument) -> None:
         """
-        Call ``walk``.
+        Fold ``current`` and its parents into ``select`` and ``ignore``.
+
+        A non-empty ``select`` replaces the list gathered so far. ``ignore``
+        entries are appended.
 
         Parameters
         ----------
-        current : object
-            Argument ``current``.
+        current : OutputPolicyDocument
+            Policy document to fold in.
+
+        Raises
+        ------
+        PolicyError
+            When ``extends`` cycles or names an unknown parent.
 
         Examples
         --------
@@ -401,14 +433,14 @@ def resolve_output_policy(
 
     Parameters
     ----------
-    doc :
+    doc : OutputPolicyDocument
         Policy to resolve.
-    policies :
+    policies : Mapping[str, OutputPolicyDocument] or None, optional
         Catalog used for ``extends``. Defaults to the loaded catalog.
-    inventory :
+    inventory : frozenset[str] or None, optional
         Assert ids for ``doc.pin``. Defaults to the vendor pin inventory.
-    activate :
-        When true (or lifecycle is activated), unknown ids fail closed.
+    activate : bool or None, optional
+        When true (or lifecycle is activated), unknown ids fail closed. By default ``None``.
 
     Examples
     --------
@@ -417,8 +449,8 @@ def resolve_output_policy(
 
     Returns
     -------
-    object
-        Return value.
+    ResolvedOutputPolicy
+        Resolve select/ignore against the pin assert inventory.
     """
     catalog = policies if policies is not None else load_output_policy_catalog()
     select, ignore = _merged_lists(doc, catalog)
@@ -463,17 +495,17 @@ def apply_output_policy_to_report(
 
     Parameters
     ----------
-    report : object
-        Argument ``report``.
-    policy_id : object
-        Argument ``policy_id``.
-    profile : object
-        Argument ``profile``.
+    report : ValidationReport
+        Report.
+    policy_id : str
+        Policy ID.
+    profile : str or None, optional
+        Profile id. By default ``None``.
 
     Returns
     -------
-    object
-        Return value.
+    ValidationReport
+        Drop disabled Schematron assert ids. Other issue codes stay on the report.
     """
     catalog = load_output_policy_catalog(profile)
     doc = catalog.get(policy_id)
@@ -485,17 +517,20 @@ def apply_output_policy_to_report(
 
     def keep(issue: Issue) -> bool:
         """
-        Call ``keep``.
+        Return whether ``issue`` stays on the report.
+
+        Schematron issues whose code is in the pin inventory are kept only
+        when that code is enabled. Other layers and unknown codes stay.
 
         Parameters
         ----------
-        issue : object
-            Argument ``issue``.
+        issue : Issue
+            Finding from the validation report.
 
         Returns
         -------
-        object
-            Return value.
+        bool
+            True when the issue is kept.
 
         Examples
         --------

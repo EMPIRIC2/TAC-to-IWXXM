@@ -41,6 +41,18 @@ function postBody(req: Request): string {
   return req.postData() ?? '';
 }
 
+function issuesFromLintBody(body: { issues?: unknown }): Array<{
+  code?: string;
+  location?: string;
+  severity?: string;
+}> {
+  const issues = body.issues as
+    | Array<{ code?: string; location?: string; severity?: string }>
+    | null
+    | undefined;
+  return issues ?? [];
+}
+
 async function lintTac(
   request: APIRequestContext,
   text: string,
@@ -58,6 +70,14 @@ async function lintTac(
 }
 
 test.describe('EV-060 T2 — UJ-059 AHL bulletin', () => {
+  test('lint body with no issues list is an empty list', () => {
+    expect(issuesFromLintBody({})).toEqual([]);
+    expect(issuesFromLintBody({ issues: null })).toEqual([]);
+    expect(issuesFromLintBody({ issues: [{ code: 'NOT_XML' }] })).toEqual([
+      { code: 'NOT_XML' },
+    ]);
+  });
+
   test('UJ-059: AHL mode convert shows bulletin summary', async ({ page }) => {
     await openPublicConverter(page);
     await page.getByTestId('input-mode-ahl_bulletin').click();
@@ -72,7 +92,7 @@ test.describe('EV-060 T2 — UJ-059 AHL bulletin', () => {
   }) => {
     const { status, body } = await lintTac(request, AHL_WELL_FORMED, 'METAR');
     expect(status).toBe(200);
-    const issues = (body.issues as Array<{ code?: string }>) ?? [];
+    const issues = issuesFromLintBody(body);
     const codes = issues.map((issue) => issue.code);
     expect(codes).not.toContain('MISSING_PRODUCT_KEYWORD');
     expect(codes).not.toContain('MULTI_REPORT_BULLETIN');
@@ -84,9 +104,7 @@ test.describe('EV-060 T2 — UJ-059 AHL bulletin', () => {
     const { status, body } = await lintTac(request, AHL_MALFORMED, 'METAR');
     expect(status).toBe(200);
     expect(body.ok).toBe(false);
-    const issues =
-      (body.issues as Array<{ code?: string; location?: string; severity?: string }>) ??
-      [];
+    const issues = issuesFromLintBody(body);
     const bulletin = issues.filter(
       (issue) => issue.location === 'bulletin' && issue.severity === 'error',
     );
@@ -118,9 +136,7 @@ test.describe('EV-060 T2 — UJ-060 IWXXM product pass-through', () => {
     const { status, body } = await lintTac(request, METAR_TAC, 'iwxxm');
     expect(status).toBe(200);
     expect(body.ok).toBe(false);
-    const codes = ((body.issues as Array<{ code?: string }>) ?? []).map(
-      (issue) => issue.code,
-    );
+    const codes = issuesFromLintBody(body).map((issue) => issue.code);
     expect(codes).toContain('NOT_XML');
     expect(codes).not.toContain('MISSING_PRODUCT_KEYWORD');
   });
@@ -130,9 +146,7 @@ test.describe('EV-060 T2 — UJ-060 IWXXM product pass-through', () => {
   }) => {
     const { status, body } = await lintTac(request, MINIMAL_IWXXM, 'iwxxm');
     expect(status).toBe(200);
-    const codes = ((body.issues as Array<{ code?: string }>) ?? []).map(
-      (issue) => issue.code,
-    );
+    const codes = issuesFromLintBody(body).map((issue) => issue.code);
     expect(codes).not.toContain('MISSING_PRODUCT_KEYWORD');
     expect(codes).not.toContain('NOT_XML');
   });

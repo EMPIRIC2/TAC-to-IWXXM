@@ -1,0 +1,895 @@
+{
+  "consumer": {
+    "name": "operator-app"
+  },
+  "provider": {
+    "name": "tac-to-iwxxm-api"
+  },
+  "interactions": [
+    {
+      "description": "DELETE /api/v1/profiles/conversion-templates/{template_id}",
+      "request": {
+        "method": "DELETE",
+        "path": "/api/v1/profiles/conversion-templates/{template_id}"
+      },
+      "response": {
+        "status": 204
+      }
+    },
+    {
+      "description": "DELETE /api/v1/profiles/library-assets/{asset_id}",
+      "request": {
+        "method": "DELETE",
+        "path": "/api/v1/profiles/library-assets/{asset_id}"
+      },
+      "response": {
+        "status": 204
+      }
+    },
+    {
+      "description": "DELETE /api/v1/profiles/overlays/{overlay_id}",
+      "request": {
+        "method": "DELETE",
+        "path": "/api/v1/profiles/overlays/{overlay_id}"
+      },
+      "response": {
+        "status": 204
+      }
+    },
+    {
+      "description": "DELETE /api/v1/profiles/presets/{preset_id}",
+      "request": {
+        "method": "DELETE",
+        "path": "/api/v1/profiles/presets/{preset_id}"
+      },
+      "response": {
+        "status": 204
+      }
+    },
+    {
+      "description": "DELETE /api/v1/profiles/rule-packs/{pack_id}",
+      "request": {
+        "method": "DELETE",
+        "path": "/api/v1/profiles/rule-packs/{pack_id}"
+      },
+      "response": {
+        "status": 204
+      }
+    },
+    {
+      "description": "DELETE /api/v1/profiles/templates/{template_id}",
+      "request": {
+        "method": "DELETE",
+        "path": "/api/v1/profiles/templates/{template_id}"
+      },
+      "response": {
+        "status": 204
+      }
+    },
+    {
+      "description": "DELETE /api/v1/work-sessions/{session_id}",
+      "request": {
+        "method": "DELETE",
+        "path": "/api/v1/work-sessions/{session_id}"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "GET /api/v1/dissemination/audit",
+      "request": {
+        "method": "GET",
+        "path": "/api/v1/dissemination/audit"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "GET /api/v1/dissemination/audit/{audit_id}",
+      "request": {
+        "method": "GET",
+        "path": "/api/v1/dissemination/audit/{audit_id}"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "GET /api/v1/dissemination/gateways/health",
+      "request": {
+        "method": "GET",
+        "path": "/api/v1/dissemination/gateways/health"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "GET /api/v1/dissemination/mappings/{mapping_id}",
+      "request": {
+        "method": "GET",
+        "path": "/api/v1/dissemination/mappings/{mapping_id}"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "GET /api/v1/dissemination/plans/{plan_id}",
+      "request": {
+        "method": "GET",
+        "path": "/api/v1/dissemination/plans/{plan_id}"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "GET /api/v1/eval/jobs",
+      "request": {
+        "method": "GET",
+        "path": "/api/v1/eval/jobs"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "GET /api/v1/eval/jobs/{job_id}",
+      "request": {
+        "method": "GET",
+        "path": "/api/v1/eval/jobs/{job_id}"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "GET /api/v1/eval/jobs/{job_id}/results",
+      "request": {
+        "method": "GET",
+        "path": "/api/v1/eval/jobs/{job_id}/results"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "GET /api/v1/lint-issue-catalog",
+      "request": {
+        "method": "GET",
+        "path": "/api/v1/lint-issue-catalog"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "GET /api/v1/live-map",
+      "request": {
+        "method": "GET",
+        "path": "/api/v1/live-map"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "GET /api/v1/profiles/catalog",
+      "request": {
+        "method": "GET",
+        "path": "/api/v1/profiles/catalog"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "GET /api/v1/profiles/conversion-templates",
+      "request": {
+        "method": "GET",
+        "path": "/api/v1/profiles/conversion-templates"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "GET /api/v1/profiles/conversion-templates/{template_id}",
+      "request": {
+        "method": "GET",
+        "path": "/api/v1/profiles/conversion-templates/{template_id}"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "GET /api/v1/profiles/library-assets",
+      "request": {
+        "method": "GET",
+        "path": "/api/v1/profiles/library-assets"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "GET /api/v1/profiles/library-assets/{asset_id}",
+      "request": {
+        "method": "GET",
+        "path": "/api/v1/profiles/library-assets/{asset_id}"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "GET /api/v1/profiles/overlays",
+      "request": {
+        "method": "GET",
+        "path": "/api/v1/profiles/overlays"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "GET /api/v1/profiles/overlays/{overlay_id}",
+      "request": {
+        "method": "GET",
+        "path": "/api/v1/profiles/overlays/{overlay_id}"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "GET /api/v1/profiles/presets",
+      "request": {
+        "method": "GET",
+        "path": "/api/v1/profiles/presets"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "GET /api/v1/profiles/presets/{preset_id}",
+      "request": {
+        "method": "GET",
+        "path": "/api/v1/profiles/presets/{preset_id}"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "GET /api/v1/profiles/rule-packs",
+      "request": {
+        "method": "GET",
+        "path": "/api/v1/profiles/rule-packs"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "GET /api/v1/profiles/rule-packs/{pack_id}",
+      "request": {
+        "method": "GET",
+        "path": "/api/v1/profiles/rule-packs/{pack_id}"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "GET /api/v1/profiles/templates",
+      "request": {
+        "method": "GET",
+        "path": "/api/v1/profiles/templates"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "GET /api/v1/profiles/templates/{template_id}",
+      "request": {
+        "method": "GET",
+        "path": "/api/v1/profiles/templates/{template_id}"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "GET /api/v1/quality-metrics",
+      "request": {
+        "method": "GET",
+        "path": "/api/v1/quality-metrics"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "GET /api/v1/quality-metrics/{stem}",
+      "request": {
+        "method": "GET",
+        "path": "/api/v1/quality-metrics/{stem}"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "GET /api/v1/rule-catalogs",
+      "request": {
+        "method": "GET",
+        "path": "/api/v1/rule-catalogs"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "GET /api/v1/schema-status",
+      "request": {
+        "method": "GET",
+        "path": "/api/v1/schema-status"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "GET /api/v1/selection-options",
+      "request": {
+        "method": "GET",
+        "path": "/api/v1/selection-options"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "GET /api/v1/stations/{icao}",
+      "request": {
+        "method": "GET",
+        "path": "/api/v1/stations/{icao}"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "GET /api/v1/translation/airport-region/{airport_code}",
+      "request": {
+        "method": "GET",
+        "path": "/api/v1/translation/airport-region/{airport_code}"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "GET /api/v1/translation/centre-info",
+      "request": {
+        "method": "GET",
+        "path": "/api/v1/translation/centre-info"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "GET /api/v1/translation/health",
+      "request": {
+        "method": "GET",
+        "path": "/api/v1/translation/health"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "GET /api/v1/translation/statistics/by-region",
+      "request": {
+        "method": "GET",
+        "path": "/api/v1/translation/statistics/by-region"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "GET /api/v1/translation/statistics/recent",
+      "request": {
+        "method": "GET",
+        "path": "/api/v1/translation/statistics/recent"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "GET /api/v1/validation/layers",
+      "request": {
+        "method": "GET",
+        "path": "/api/v1/validation/layers"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "GET /api/v1/versions",
+      "request": {
+        "method": "GET",
+        "path": "/api/v1/versions"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "GET /api/v1/work-sessions",
+      "request": {
+        "method": "GET",
+        "path": "/api/v1/work-sessions"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "GET /api/v1/work-sessions/{session_id}",
+      "request": {
+        "method": "GET",
+        "path": "/api/v1/work-sessions/{session_id}"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "GET /auth/me",
+      "request": {
+        "method": "GET",
+        "path": "/auth/me"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "GET /health",
+      "request": {
+        "method": "GET",
+        "path": "/health"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "PATCH /api/v1/dissemination/mappings/{mapping_id}",
+      "request": {
+        "method": "PATCH",
+        "path": "/api/v1/dissemination/mappings/{mapping_id}"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "PATCH /api/v1/dissemination/plans/{plan_id}",
+      "request": {
+        "method": "PATCH",
+        "path": "/api/v1/dissemination/plans/{plan_id}"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "PATCH /api/v1/profiles/conversion-templates/{template_id}",
+      "request": {
+        "method": "PATCH",
+        "path": "/api/v1/profiles/conversion-templates/{template_id}"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "PATCH /api/v1/profiles/library-assets/{asset_id}",
+      "request": {
+        "method": "PATCH",
+        "path": "/api/v1/profiles/library-assets/{asset_id}"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "PATCH /api/v1/profiles/overlays/{overlay_id}",
+      "request": {
+        "method": "PATCH",
+        "path": "/api/v1/profiles/overlays/{overlay_id}"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "PATCH /api/v1/profiles/presets/{preset_id}",
+      "request": {
+        "method": "PATCH",
+        "path": "/api/v1/profiles/presets/{preset_id}"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "PATCH /api/v1/profiles/rule-packs/{pack_id}",
+      "request": {
+        "method": "PATCH",
+        "path": "/api/v1/profiles/rule-packs/{pack_id}"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "PATCH /api/v1/profiles/templates/{template_id}",
+      "request": {
+        "method": "PATCH",
+        "path": "/api/v1/profiles/templates/{template_id}"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "PATCH /api/v1/work-sessions/{session_id}",
+      "request": {
+        "method": "PATCH",
+        "path": "/api/v1/work-sessions/{session_id}"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "POST /api/v1/convert",
+      "request": {
+        "method": "POST",
+        "path": "/api/v1/convert"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "POST /api/v1/convert-bulletin",
+      "request": {
+        "method": "POST",
+        "path": "/api/v1/convert-bulletin"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "POST /api/v1/convert-zip",
+      "request": {
+        "method": "POST",
+        "path": "/api/v1/convert-zip"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "POST /api/v1/decode-tac",
+      "request": {
+        "method": "POST",
+        "path": "/api/v1/decode-tac"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "POST /api/v1/dissemination/plans/{plan_id}/execute",
+      "request": {
+        "method": "POST",
+        "path": "/api/v1/dissemination/plans/{plan_id}/execute"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "POST /api/v1/dissemination/preflight",
+      "request": {
+        "method": "POST",
+        "path": "/api/v1/dissemination/preflight"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "POST /api/v1/dissemination/send",
+      "request": {
+        "method": "POST",
+        "path": "/api/v1/dissemination/send"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "POST /api/v1/eval/jobs",
+      "request": {
+        "method": "POST",
+        "path": "/api/v1/eval/jobs"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "POST /api/v1/ingest-collect",
+      "request": {
+        "method": "POST",
+        "path": "/api/v1/ingest-collect"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "POST /api/v1/ingest/mass",
+      "request": {
+        "method": "POST",
+        "path": "/api/v1/ingest/mass"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "POST /api/v1/lint-tac",
+      "request": {
+        "method": "POST",
+        "path": "/api/v1/lint-tac"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "POST /api/v1/profiles/conversion-templates",
+      "request": {
+        "method": "POST",
+        "path": "/api/v1/profiles/conversion-templates"
+      },
+      "response": {
+        "status": 201
+      }
+    },
+    {
+      "description": "POST /api/v1/profiles/conversion-templates/preview",
+      "request": {
+        "method": "POST",
+        "path": "/api/v1/profiles/conversion-templates/preview"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "POST /api/v1/profiles/library-assets",
+      "request": {
+        "method": "POST",
+        "path": "/api/v1/profiles/library-assets"
+      },
+      "response": {
+        "status": 201
+      }
+    },
+    {
+      "description": "POST /api/v1/profiles/library-assets/preview-rule",
+      "request": {
+        "method": "POST",
+        "path": "/api/v1/profiles/library-assets/preview-rule"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "POST /api/v1/profiles/library-assets/validate-yaml",
+      "request": {
+        "method": "POST",
+        "path": "/api/v1/profiles/library-assets/validate-yaml"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "POST /api/v1/profiles/overlays",
+      "request": {
+        "method": "POST",
+        "path": "/api/v1/profiles/overlays"
+      },
+      "response": {
+        "status": 201
+      }
+    },
+    {
+      "description": "POST /api/v1/profiles/presets",
+      "request": {
+        "method": "POST",
+        "path": "/api/v1/profiles/presets"
+      },
+      "response": {
+        "status": 201
+      }
+    },
+    {
+      "description": "POST /api/v1/profiles/rule-packs",
+      "request": {
+        "method": "POST",
+        "path": "/api/v1/profiles/rule-packs"
+      },
+      "response": {
+        "status": 201
+      }
+    },
+    {
+      "description": "POST /api/v1/profiles/templates",
+      "request": {
+        "method": "POST",
+        "path": "/api/v1/profiles/templates"
+      },
+      "response": {
+        "status": 201
+      }
+    },
+    {
+      "description": "POST /api/v1/translation/statistics",
+      "request": {
+        "method": "POST",
+        "path": "/api/v1/translation/statistics"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "POST /api/v1/validate",
+      "request": {
+        "method": "POST",
+        "path": "/api/v1/validate"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "POST /api/v1/validation/validate",
+      "request": {
+        "method": "POST",
+        "path": "/api/v1/validation/validate"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "POST /api/v1/validation/validate-multi",
+      "request": {
+        "method": "POST",
+        "path": "/api/v1/validation/validate-multi"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "POST /api/v1/work-sessions",
+      "request": {
+        "method": "POST",
+        "path": "/api/v1/work-sessions"
+      },
+      "response": {
+        "status": 201
+      }
+    },
+    {
+      "description": "POST /api/v1/work-sessions/{session_id}/restore",
+      "request": {
+        "method": "POST",
+        "path": "/api/v1/work-sessions/{session_id}/restore"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "POST /auth/confirm",
+      "request": {
+        "method": "POST",
+        "path": "/auth/confirm"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "POST /auth/login",
+      "request": {
+        "method": "POST",
+        "path": "/auth/login"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "POST /auth/logout",
+      "request": {
+        "method": "POST",
+        "path": "/auth/logout"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "POST /auth/register",
+      "request": {
+        "method": "POST",
+        "path": "/auth/register"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "PUT /api/v1/dissemination/mappings/{name}",
+      "request": {
+        "method": "PUT",
+        "path": "/api/v1/dissemination/mappings/{name}"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "PUT /api/v1/dissemination/plans/{slug}",
+      "request": {
+        "method": "PUT",
+        "path": "/api/v1/dissemination/plans/{slug}"
+      },
+      "response": {
+        "status": 200
+      }
+    }
+  ],
+  "metadata": {
+    "pactSpecification": {
+      "version": "2.0.0"
+    }
+  }
+}

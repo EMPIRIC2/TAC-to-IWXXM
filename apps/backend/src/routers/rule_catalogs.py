@@ -19,6 +19,7 @@ class RuleCatalogItem(BaseModel):
     Optional additive metadata: ``issue_type``, ``source_*``, ``conform_note``.
     Null or omitted when unknown; clients must not invent defaults.
 
+
     Attributes
     ----------
     _ : object
@@ -42,6 +43,7 @@ class RuleCatalogResponse(BaseModel):
     """
     Response for GET /rule-catalogs.
 
+
     Attributes
     ----------
     _ : object
@@ -56,6 +58,7 @@ class SelectionOption(BaseModel):
     """
     Dropdown option from a deployed registry.
 
+
     Attributes
     ----------
     _ : object
@@ -69,6 +72,7 @@ class SelectionOption(BaseModel):
 class SelectionOptionsResponse(BaseModel):
     """
     Response for GET /selection-options.
+
 
     Attributes
     ----------
@@ -87,6 +91,7 @@ async def get_rule_catalogs(
 ) -> Response:
     """
     Export a package-owned trust catalog by family.
+
 
     Examples
     --------
@@ -133,6 +138,7 @@ async def get_selection_options(
 ) -> Response:
     """
     List deployed registry ids for workbench / dissemination dropdowns.
+
 
     Examples
     --------

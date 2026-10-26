@@ -59,8 +59,22 @@ class LibraryAsset:
 
     Attributes
     ----------
-    _ : object
-        See implementation.
+    id : str
+        ID.
+    kind : LibraryKind
+        Kind.
+    name : str
+        Asset name.
+    access : Access
+        Access.
+    engine_profile_id : str
+        Engine profile ID.
+    attached_national_line : str
+        Attached national line.
+    body : dict[str, Any]
+        Library document mapping.
+    fork_of : str | None
+        Fork of. Default ``None``.
     """
 
     id: str
@@ -76,15 +90,15 @@ class LibraryAsset:
         """
         Serialize for JSON / API responses.
 
+        Returns
+        -------
+        dict[str, Any]
+            Serialized form for JSON / API responses.
+
         Examples
         --------
         >>> 1 + 1  # docstring smoke (to_dict)
         2
-
-        Returns
-        -------
-        object
-            Return value.
         """
         return {
             "id": self.id,
@@ -104,12 +118,12 @@ def _kind_label(kind: LibraryKind) -> str:
 
     Parameters
     ----------
-    kind : object
+    kind : LibraryKind
         Argument ``kind``.
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     return {
@@ -127,14 +141,15 @@ def _seed_body(kind: LibraryKind, national_line: str) -> dict[str, Any]:
 
     Parameters
     ----------
-    kind : object
+    kind : LibraryKind
         Argument ``kind``.
-    national_line : object
+
+    national_line : str
         Argument ``national_line``.
 
     Returns
     -------
-    object
+    dict[str, Any]
         Return value.
     """
     if kind == "conversion":
@@ -190,9 +205,10 @@ def first_party_library_id(kind: LibraryKind, national_line: str) -> str:
 
     Parameters
     ----------
-    kind :
+    kind : LibraryKind
         Library kind.
-    national_line :
+
+    national_line : str
         Uppercase wire id (e.g. ``ICAO_2025``).
 
     Returns
@@ -244,7 +260,7 @@ def get_first_party_library_asset(asset_id: str) -> LibraryAsset | None:
 
     Parameters
     ----------
-    asset_id :
+    asset_id : str
         Stable ``LIB.*`` id.
 
     Returns
@@ -274,11 +290,13 @@ def fork_first_party_library(
 
     Parameters
     ----------
-    asset_id :
+    asset_id : str
         First-party id to fork.
-    new_id :
+
+    new_id : str
         Id for the custom fork.
-    name :
+
+    name : str | None, optional
         Optional display name; defaults to ``"{name} (fork)"``.
 
     Returns
@@ -320,9 +338,10 @@ def assert_first_party_immutable(asset: LibraryAsset, *, mutating: bool) -> None
 
     Parameters
     ----------
-    asset :
+    asset : LibraryAsset
         Asset under consideration.
-    mutating :
+
+    mutating : bool
         ``True`` for update/delete of the builtin itself.
 
     Raises
@@ -346,7 +365,7 @@ def conversion_rules_for_asset(asset: LibraryAsset) -> tuple[ConversionTemplate,
 
     Parameters
     ----------
-    asset :
+    asset : LibraryAsset
         Conversion-kind library asset.
 
     Returns
@@ -381,9 +400,10 @@ def require_rule_for_group(
 
     Parameters
     ----------
-    asset :
+    asset : LibraryAsset
         Conversion library asset.
-    focus_group :
+
+    focus_group : str
         TAC group token (e.g. ``18012G20KT``).
 
     Returns

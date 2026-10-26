@@ -14,9 +14,10 @@ def check_profile_overlay_dir(directory: Path | str, *, profile: str = "annex3")
 
     Parameters
     ----------
-    directory :
+    directory : Path | str
         Directory of profile → policy binding YAML overlays.
-    profile :
+
+    profile : str, optional
         Conversion profile id to resolve (default ``annex3``).
 
     Raises

@@ -27,8 +27,18 @@ class F19Params:
 
     Attributes
     ----------
-    _ : object
-        See implementation.
+    sink_type : F19SinkName
+        Sink type id.
+    host : str
+        Destination host.
+    port : int, optional
+        Destination port. By default ``0``.
+    username : str or None, optional
+        User name. By default ``None``.
+    password : str or None, optional
+        Password. By default ``None``.
+    endpoint : str or None, optional
+        Service endpoint. By default ``None``.
     """
 
     sink_type: F19SinkName
@@ -128,8 +138,8 @@ class StagingSinkAdapter:
 
     Attributes
     ----------
-    _ : object
-        See implementation.
+    mode : Final[str]
+        Adapter mode. Value is ``'staging'``.
     """
 
     mode: Final[str] = "staging"
@@ -140,8 +150,8 @@ class StagingSinkAdapter:
 
         Parameters
         ----------
-        sink_type : object
-            Argument ``sink_type``.
+        sink_type : F19SinkName
+            Sink type id.
         """
         if sink_type not in F19_SINK_TYPES:
             raise ValueError(f"sink_type {sink_type!r} is not an F19 staging adapter")
@@ -159,8 +169,8 @@ class StagingSinkAdapter:
 
         Returns
         -------
-        object
-            Return value.
+        SinkType
+            Drawer / API sink discriminator for this F19 staging adapter.
         """
         return self._sink_type
 
@@ -187,15 +197,15 @@ class StagingSinkAdapter:
 
         Parameters
         ----------
-        params : object
-            Argument ``params``.
-        allowlist : object
-            Argument ``allowlist``.
+        params : F19Params
+            Sink parameters.
+        allowlist : Allowlist
+            Allowlist.
 
         Returns
         -------
-        object
-            Return value.
+        PreflightResponse
+            Allowlist-only preflight for the F19 staging stub.
         """
         if params.sink_type != self._sink_type:
             raise ValueError(f"params.sink_type {params.sink_type!r} does not match adapter {self._sink_type!r}")
@@ -232,19 +242,19 @@ class StagingSinkAdapter:
 
         Parameters
         ----------
-        params : object
-            Argument ``params``.
-        allowlist : object
-            Argument ``allowlist``.
-        iwxxm_xml : object
-            Argument ``iwxxm_xml``.
-        tac_text : object
-            Argument ``tac_text``.
+        params : F19Params
+            Sink parameters.
+        allowlist : Allowlist
+            Allowlist.
+        iwxxm_xml : str or bytes or None, optional
+            IWXXM XML text. By default ``None``.
+        tac_text : str or None, optional
+            TAC text. By default ``None``.
 
         Returns
         -------
-        object
-            Return value.
+        SendResponse
+            Record a staging delivery marker after allowlist + payload checks.
         """
         if params.sink_type != self._sink_type:
             raise ValueError(f"params.sink_type {params.sink_type!r} does not match adapter {self._sink_type!r}")
@@ -265,7 +275,7 @@ def get_staging_sink(sink_type: F19SinkName | str) -> StagingSinkAdapter:
 
     Parameters
     ----------
-    sink_type :
+    sink_type : F19SinkName or str
         One of ``amhs``, ``swim``, ``afs``.
 
     Returns

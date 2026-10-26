@@ -30,13 +30,13 @@ def validate_for_quality_metrics(
 
     Parameters
     ----------
-    xml_content :
+    xml_content : str
         IWXXM XML document.
-    iwxxm_version :
+    iwxxm_version : str
         Release line (e.g. ``2025-2``).
-    profile :
-        ``annex3`` or ``iwxxm_us``.
-    levels :
+    profile : str, optional
+        ``annex3`` or ``iwxxm_us``. By default ``'annex3'``.
+    levels : Sequence[str] or None, optional
         Subset of ``xsd`` / ``schematron``. Default runs both.
 
     Returns

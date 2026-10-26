@@ -15,12 +15,12 @@ def _load_yaml(name: str) -> dict[str, Any]:
 
     Parameters
     ----------
-    name : object
+    name : str
         Argument ``name``.
 
     Returns
     -------
-    object
+    dict[str, Any]
         Return value.
     """
     raw = resources.files("tac2iwxxm.data").joinpath(name).read_text(encoding="utf-8")
@@ -35,15 +35,15 @@ def load_tac_validation_rules() -> dict[str, Any]:
     """
     Return mined TAC validation rules catalog.
 
+    Returns
+    -------
+    dict[str, Any]
+        Mined TAC validation rules catalog.
+
     Examples
     --------
     >>> 1 + 1  # docstring smoke (load_tac_validation_rules)
     2
-
-    Returns
-    -------
-    object
-        Return value.
     """
     data = _load_yaml("tac_validation_rules.yaml")
     if "rules" not in data:
@@ -56,15 +56,15 @@ def load_iwxxm_validation_asserts() -> dict[str, Any]:
     """
     Return mined IWXXM Schematron assert catalog.
 
+    Returns
+    -------
+    dict[str, Any]
+        Mined IWXXM Schematron assert catalog.
+
     Examples
     --------
     >>> 1 + 1  # docstring smoke (load_iwxxm_validation_asserts)
     2
-
-    Returns
-    -------
-    object
-        Return value.
     """
     data = _load_yaml("iwxxm_validation_asserts.yaml")
     if "asserts" not in data:

@@ -11,20 +11,20 @@ class Issue(msgspec.Struct, frozen=True):
 
     Parameters
     ----------
-    severity :
+    severity : str
         ``error``, ``warning``, or ``info``.
-    code :
+    code : str
         Machine-readable issue code (e.g. ``XML_SYNTAX_ERROR``).
-    message :
+    message : str
         Human-readable description.
-    layer :
+    layer : str
         Validation layer (``xsd``, ``schematron``, ``wellformed``).
-    location :
-        Optional document location hint.
-    start :
-        Optional inclusive character / document offset when known.
-    end :
-        Optional exclusive character / document offset when known.
+    location : str or None, optional
+        Document location hint. By default ``None``.
+    start : int or None, optional
+        Inclusive character or document offset. By default ``None``.
+    end : int or None, optional
+        Exclusive character or document offset. By default ``None``.
     """
 
     severity: str
@@ -42,13 +42,13 @@ class StageResult(msgspec.Struct, frozen=True):
 
     Parameters
     ----------
-    stage :
+    stage : str
         Stage id aligned with ``catalog.yaml`` ``validation_stages`` (e.g. ``wmo_xsd``).
-    label :
+    label : str
         Operator-readable stage label (EV-048 - no planning tokens).
-    ok :
+    ok : bool
         ``True`` when the stage has no error-severity issues.
-    issues :
+    issues : list[Issue]
         Findings for this stage only.
     """
 
@@ -64,15 +64,15 @@ class ValidationReport(msgspec.Struct, frozen=True):
 
     Parameters
     ----------
-    ok :
+    ok : bool
         ``True`` when no blocking (error-severity) issues remain.
-    iwxxm_version :
+    iwxxm_version : str
         Requested IWXXM release line.
-    profile :
+    profile : str
         ``annex3``, ``iwxxm_us``, or ``ca_eccc``.
-    issues :
+    issues : list[Issue]
         Ordered list of findings (may include non-blocking warnings).
-    stages :
+    stages : list[StageResult]
         Per-stage breakdown when ``profile=ca_eccc`` layered validation runs.
     """
 

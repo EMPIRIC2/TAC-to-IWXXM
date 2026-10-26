@@ -37,12 +37,12 @@ def apply_exchange_packaging(
 
     Parameters
     ----------
-    xml :
+    xml : str
         Converted IWXXM document (one product root).
-    exchange_profile :
+    exchange_profile : str
         Exchange profile wire id (e.g. ``GLOBAL_AFS``).
-    bulletin_identifier :
-        Optional FTBP ``collect:bulletinIdentifier`` value.
+    bulletin_identifier : str or None, optional
+        Optional FTBP ``collect:bulletinIdentifier`` value. By default ``None``.
 
     Returns
     -------
@@ -91,9 +91,9 @@ def wrap_global_afs_collect(
 
     Parameters
     ----------
-    xml :
+    xml : str
         Single-report IWXXM XML.
-    bulletin_identifier :
+    bulletin_identifier : str or None, optional
         Optional ``collect:bulletinIdentifier`` (defaults to placeholder).
 
     Returns

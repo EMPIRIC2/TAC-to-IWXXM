@@ -237,12 +237,12 @@ def _normalize(tac: str) -> str:
 
     Parameters
     ----------
-    tac : object
+    tac : str
         Argument ``tac``.
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     lines = [ln.strip() for ln in tac.strip().rstrip("=").splitlines() if ln.strip()]
@@ -255,12 +255,12 @@ def _parse_valid(token: str) -> tuple[int, int, int]:
 
     Parameters
     ----------
-    token : object
+    token : str
         Argument ``token``.
 
     Returns
     -------
-    object
+    tuple[int, int, int]
         Return value.
     """
     return int(token[0:2]), int(token[2:4]), int(token[4:6])
@@ -310,14 +310,15 @@ def _detect_phenomenon(body: str, table: tuple[tuple[str, str], ...]) -> str:
 
     Parameters
     ----------
-    body : object
+    body : str
         Argument ``body``.
-    table : object
+
+    table : tuple[tuple[str, str], ...]
         Argument ``table``.
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     upper = body.upper()
@@ -333,12 +334,12 @@ def _detect_ca_gfa_phenomenon(body: str) -> str | None:
 
     Parameters
     ----------
-    body : object
+    body : str
         Argument ``body``.
 
     Returns
     -------
-    object
+    str | None
         Return value.
     """
     upper = body.upper()
@@ -354,14 +355,15 @@ def _parse_ca_gfa_structured(body: str, gfa_code: str) -> dict[str, Any] | None:
 
     Parameters
     ----------
-    body : object
+    body : str
         Argument ``body``.
-    gfa_code : object
+
+    gfa_code : str
         Argument ``gfa_code``.
 
     Returns
     -------
-    object
+    dict[str, Any] | None
         Return value.
     """
     if gfa_code not in {"SFC_VIS_and_BKN_CLD", "SFC_VIS_and_OVC_CLD"}:
@@ -393,12 +395,12 @@ def _detect_intensity(body: str) -> str:
 
     Parameters
     ----------
-    body : object
+    body : str
         Argument ``body``.
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     upper = body.upper()
@@ -414,12 +416,12 @@ def _point_lat_lon(match: re.Match[str]) -> tuple[float, float]:
 
     Parameters
     ----------
-    match : object
+    match : re.Match[str]
         Argument ``match``.
 
     Returns
     -------
-    object
+    tuple[float, float]
         Return value.
     """
     lat = int(match.group("lat_deg")) + int(match.group("lat_min")) / 60.0
@@ -597,12 +599,12 @@ def _polygon_from_wi_body(wi_body: str) -> dict[str, Any] | None:
 
     Parameters
     ----------
-    wi_body : object
+    wi_body : str
         Argument ``wi_body``.
 
     Returns
     -------
-    object
+    dict[str, Any] | None
         Return value.
     """
     pts = [_point_lat_lon(m) for m in _POINT.finditer(wi_body)]
@@ -620,12 +622,12 @@ def _parse_va_eruption(body: str) -> dict[str, Any] | None:
 
     Parameters
     ----------
-    body : object
+    body : str
         Argument ``body``.
 
     Returns
     -------
-    object
+    dict[str, Any] | None
         Return value.
     """
     match = _VA_ERUPTION.search(body)
@@ -641,12 +643,12 @@ def _parse_va_locations(body: str) -> list[dict[str, Any]]:
 
     Parameters
     ----------
-    body : object
+    body : str
         Argument ``body``.
 
     Returns
     -------
-    object
+    list[dict[str, Any]]
         Return value.
     """
     locations: list[dict[str, Any]] = []
@@ -689,9 +691,10 @@ def _enrich_hazard_body(ir: dict[str, Any], body: str) -> None:
 
     Parameters
     ----------
-    ir : object
+    ir : dict[str, Any]
         Argument ``ir``.
-    body : object
+
+    body : str
         Argument ``body``.
     """
     upper = body.upper()
@@ -873,9 +876,10 @@ def _enrich_sigmet_body(ir: dict[str, Any], body: str) -> None:
 
     Parameters
     ----------
-    ir : object
+    ir : dict[str, Any]
         Argument ``ir``.
-    body : object
+
+    body : str
         Argument ``body``.
     """
     _enrich_hazard_body(ir, body)
@@ -887,14 +891,15 @@ def _parse_until_token(until: str, *, issue_day: int | None = None) -> tuple[int
 
     Parameters
     ----------
-    until : object
+    until : str
         Argument ``until``.
-    issue_day : object
+
+    issue_day : int | None, optional
         Day of month from the bulletin heading when ``until`` is ``hhmm``.
 
     Returns
     -------
-    object
+    tuple[int, int, int]
         Return value.
     """
     if len(until) >= 6:
@@ -910,7 +915,7 @@ def _attach_us_airmet_hazard(ir: dict[str, Any]) -> None:
 
     Parameters
     ----------
-    ir : object
+    ir : dict[str, Any]
         Argument ``ir``.
     """
     phen = ir.get("phenomenon")
@@ -927,12 +932,12 @@ def _split_airmet_main_and_outlook(body: str) -> tuple[str, str | None]:
 
     Parameters
     ----------
-    body : object
+    body : str
         Argument ``body``.
 
     Returns
     -------
-    object
+    tuple[str, str | None]
         Return value.
     """
     match = re.search(r"\bOTLK\b", body, flags=re.IGNORECASE)
@@ -947,12 +952,12 @@ def _split_frzlvl_section(body: str) -> tuple[str, str | None]:
 
     Parameters
     ----------
-    body : object
+    body : str
         Argument ``body``.
 
     Returns
     -------
-    object
+    tuple[str, str | None]
         Return value.
     """
     match = _FRZLVL_SECTION.search(body)
@@ -967,12 +972,12 @@ def _strip_conus_airmet_lead(body: str) -> str:
 
     Parameters
     ----------
-    body : object
+    body : str
         Argument ``body``.
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     if not _CONUS_AIR_LEAD.match(body):
@@ -995,12 +1000,12 @@ def _phenomenon_from_conus_for_text(for_text: str) -> str:
 
     Parameters
     ----------
-    for_text : object
+    for_text : str
         Argument ``for_text``.
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     upper = for_text.upper()
@@ -1021,12 +1026,12 @@ def _parse_frzlvl_section(text: str) -> dict[str, Any]:
 
     Parameters
     ----------
-    text : object
+    text : str
         Argument ``text``.
 
     Returns
     -------
-    object
+    dict[str, Any]
         Return value.
     """
     section: dict[str, Any] = {"isopleths": []}
@@ -1057,12 +1062,12 @@ def _try_parse_conus_airmet(text: str) -> dict[str, Any] | None:
 
     Parameters
     ----------
-    text : object
+    text : str
         Argument ``text``.
 
     Returns
     -------
-    object
+    dict[str, Any] | None
         Return value.
     """
     match = _CONUS_AIRMET.match(text)
@@ -1103,12 +1108,12 @@ def _split_airmet_areas(body: str) -> list[str]:
 
     Parameters
     ----------
-    body : object
+    body : str
         Argument ``body``.
 
     Returns
     -------
-    object
+    list[str]
         Return value.
     """
     segments = [segment.strip() for segment in _AIR_AREA_BOUNDARY.split(body) if segment.strip()]
@@ -1121,14 +1126,15 @@ def _airmet_area_ir(segment: str, *, default_phenomenon: str | None = None) -> d
 
     Parameters
     ----------
-    segment : object
+    segment : str
         Argument ``segment``.
-    default_phenomenon : object
+
+    default_phenomenon : str | None, optional
         Argument ``default_phenomenon``.
 
     Returns
     -------
-    object
+    dict[str, Any]
         Return value.
     """
     area: dict[str, Any] = {
@@ -1144,14 +1150,15 @@ def _parse_airmet_outlook(outlook_text: str, *, default_phenomenon: str) -> dict
 
     Parameters
     ----------
-    outlook_text : object
+    outlook_text : str
         Argument ``outlook_text``.
-    default_phenomenon : object
+
+    default_phenomenon : str
         Argument ``default_phenomenon``.
 
     Returns
     -------
-    object
+    dict[str, Any]
         Return value.
     """
     match = _OTLK_VALID.search(outlook_text)
@@ -1176,9 +1183,10 @@ def _apply_airmet_area_to_ir(ir: dict[str, Any], area: dict[str, Any]) -> None:
 
     Parameters
     ----------
-    ir : object
+    ir : dict[str, Any]
         Argument ``ir``.
-    area : object
+
+    area : dict[str, Any]
         Argument ``area``.
     """
     ir.update(area)
@@ -1190,12 +1198,12 @@ def _parse_sequence_token(raw: str) -> tuple[int, str]:
 
     Parameters
     ----------
-    raw : object
+    raw : str
         Argument ``raw``.
 
     Returns
     -------
-    object
+    tuple[int, str]
         Return value.
     """
     token = " ".join(raw.upper().split())
@@ -1217,12 +1225,12 @@ def _strip_siga0_heading(text: str) -> str:
 
     Parameters
     ----------
-    text : object
+    text : str
         Argument ``text``.
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     lines = [ln for ln in text.splitlines() if not _SIGA0_LINE.match(ln.strip())]
@@ -1240,16 +1248,18 @@ def _parse_convective_sigmet(
 
     Parameters
     ----------
-    text : object
+    text : str
         Argument ``text``.
-    issue_day : object
+
+    issue_day : int | None, optional
         Day of month used when ``VALID UNTIL`` has no day.
-    office : object
+
+    office : str | None, optional
         Issuing office from the heading when the body has no unit id.
 
     Returns
     -------
-    object
+    dict[str, Any] | None
         Return value.
     """
     match = _CONVECTIVE_SIGMET.match(text)
@@ -1323,9 +1333,10 @@ def _sigmet_region_indicator(match: re.Match[str], body: str) -> str:
 
     Parameters
     ----------
-    match :
+    match : re.Match[str]
         Header match. The leading indicator may be absent.
-    body :
+
+    body : str
         SIGMET body after the watch-office hyphen.
 
     Returns
@@ -1348,9 +1359,10 @@ def parse_sigmet(tac: str, *, product: str = "SIGMET") -> dict[str, Any]:
 
     Parameters
     ----------
-    tac :
+    tac : str
         SIGMET TAC text.
-    product :
+
+    product : str, optional
         Expected ``SIGMET``.
 
     Returns
@@ -1446,9 +1458,10 @@ def parse_airmet(tac: str, *, product: str = "AIRMET") -> dict[str, Any]:
 
     Parameters
     ----------
-    tac :
+    tac : str
         AIRMET TAC text.
-    product :
+
+    product : str, optional
         Expected ``AIRMET``.
 
     Returns

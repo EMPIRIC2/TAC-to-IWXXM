@@ -20,8 +20,8 @@ def rust_available() -> bool:
 
     Returns
     -------
-    object
-        Return value.
+    bool
+        True when the compiled ``iwxxm_validate._rust`` extension imports.
     """
     try:
         from iwxxm_validate import _rust  # type: ignore[attr-defined]

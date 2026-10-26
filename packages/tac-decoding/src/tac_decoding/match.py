@@ -23,8 +23,8 @@ class MatchBudgetError(ValueError):
 
     Attributes
     ----------
-    _ : object
-        See implementation.
+    args : tuple
+        Arguments passed to the exception constructor.
     """
 
 
@@ -35,8 +35,10 @@ class MatchContext:
 
     Attributes
     ----------
-    _ : object
-        See implementation.
+    iwxxm_version : str | None
+        IWXXM release line. Default ``None``.
+    profile : str | None
+        Semantic profile id. Default ``None``.
     """
 
     iwxxm_version: str | None = None
@@ -50,8 +52,16 @@ class MatchSpan:
 
     Attributes
     ----------
-    _ : object
-        See implementation.
+    start : int
+        Start.
+    end : int
+        End.
+    code : str
+        Machine-readable error code.
+    explanation : str
+        Explanation.
+    rule_id : str
+        Rule id.
     """
 
     start: int
@@ -68,8 +78,16 @@ class MatchResult:
 
     Attributes
     ----------
-    _ : object
-        See implementation.
+    spans : tuple[MatchSpan, ...]
+        Spans.
+    residuals : tuple[MatchSpan, ...]
+        Residuals.
+    steps : int
+        Steps.
+    iwxxm_version : str | None
+        IWXXM release line.
+    profile : str | None
+        Semantic profile id.
     """
 
     spans: tuple[MatchSpan, ...]
@@ -91,30 +109,35 @@ def match_tac(
     """
     Match ``tac`` with ``pack``. The same text explains the same way on every pin.
 
+    Parameters
+    ----------
+    tac : str
+        TAC text.
+
+    pack : Pack
+        Decode pack.
+
+    context : MatchContext | None, optional
+        Match context.
+
+    max_steps : int, optional
+        Maximum match steps.
+
+    locale : str, optional
+        Locale code.
+
+    hook : ExplanationHook | None, optional
+        Explanation hook.
+
+    Returns
+    -------
+    MatchResult
+        Match ``tac`` with ``pack``.
+
     Examples
     --------
     >>> 1 + 1  # docstring smoke (match_tac)
     2
-
-    Parameters
-    ----------
-    tac : object
-        Argument ``tac``.
-    pack : object
-        Argument ``pack``.
-    context : object
-        Argument ``context``.
-    max_steps : object
-        Argument ``max_steps``.
-    locale : object
-        Argument ``locale``.
-    hook : object
-        Argument ``hook``.
-
-    Returns
-    -------
-    object
-        Return value.
     """
     require_locale(locale)
     ctx = context or MatchContext()
@@ -139,16 +162,18 @@ class _Explain:
 
         Parameters
         ----------
-        rule : object
+        rule : Rule
             Argument ``rule``.
-        groups : object
+
+        groups : tuple[str, ...], optional
             Argument ``groups``.
-        value : object
+
+        value : str | None, optional
             Argument ``value``.
 
         Returns
         -------
-        object
+        str
             Return value.
         """
         template = self.hook.template_for(rule.id, rule.explain)
@@ -166,18 +191,21 @@ def _result(
 
     Parameters
     ----------
-    ctx : object
+    ctx : MatchContext
         Argument ``ctx``.
-    spans : object
+
+    spans : list[MatchSpan]
         Argument ``spans``.
-    residuals : object
+
+    residuals : list[MatchSpan]
         Argument ``residuals``.
-    steps : object
+
+    steps : int
         Argument ``steps``.
 
     Returns
     -------
-    object
+    MatchResult
         Return value.
     """
     return MatchResult(tuple(spans), tuple(residuals), steps, ctx.iwxxm_version, ctx.profile)
@@ -189,14 +217,15 @@ def _stub(tac: str, ctx: MatchContext) -> MatchResult:
 
     Parameters
     ----------
-    tac : object
+    tac : str
         Argument ``tac``.
-    ctx : object
+
+    ctx : MatchContext
         Argument ``ctx``.
 
     Returns
     -------
-    object
+    MatchResult
         Return value.
     """
     if not tac:
@@ -211,14 +240,15 @@ def _bump(steps: int, max_steps: int) -> int:
 
     Parameters
     ----------
-    steps : object
+    steps : int
         Argument ``steps``.
-    max_steps : object
+
+    max_steps : int
         Argument ``max_steps``.
 
     Returns
     -------
-    object
+    int
         Return value.
     """
     steps += 1
@@ -240,20 +270,24 @@ def _match_tokens(
 
     Parameters
     ----------
-    tac : object
+    tac : str
         Argument ``tac``.
-    pack : object
+
+    pack : Pack
         Argument ``pack``.
-    ctx : object
+
+    ctx : MatchContext
         Argument ``ctx``.
-    max_steps : object
+
+    max_steps : int
         Argument ``max_steps``.
-    explain : object
+
+    explain : _Explain
         Argument ``explain``.
 
     Returns
     -------
-    object
+    MatchResult
         Return value.
     """
     tokens = list(_TOKEN.finditer(tac))
@@ -287,24 +321,30 @@ def _take_tokens(
 
     Parameters
     ----------
-    tac : object
+    tac : str
         Argument ``tac``.
-    tokens : object
+
+    tokens : list[re.Match[str]]
         Argument ``tokens``.
-    index : object
+
+    index : int
         Argument ``index``.
-    rules : object
+
+    rules : tuple[Rule, ...]
         Argument ``rules``.
-    steps : object
+
+    steps : int
         Argument ``steps``.
-    max_steps : object
+
+    max_steps : int
         Argument ``max_steps``.
-    explain : object
+
+    explain : _Explain
         Argument ``explain``.
 
     Returns
     -------
-    object
+    tuple[MatchSpan | None, int, int]
         Return value.
     """
     for rule in rules:
@@ -335,20 +375,24 @@ def _match_labels(
 
     Parameters
     ----------
-    tac : object
+    tac : str
         Argument ``tac``.
-    pack : object
+
+    pack : Pack
         Argument ``pack``.
-    ctx : object
+
+    ctx : MatchContext
         Argument ``ctx``.
-    max_steps : object
+
+    max_steps : int
         Argument ``max_steps``.
-    explain : object
+
+    explain : _Explain
         Argument ``explain``.
 
     Returns
     -------
-    object
+    MatchResult
         Return value.
     """
     rules = tuple(sorted(pack.rules, key=lambda rule: len(rule.label), reverse=True))
@@ -381,22 +425,27 @@ def _take_label(
 
     Parameters
     ----------
-    content : object
+    content : str
         Argument ``content``.
-    offset : object
+
+    offset : int
         Argument ``offset``.
-    rules : object
+
+    rules : tuple[Rule, ...]
         Argument ``rules``.
-    steps : object
+
+    steps : int
         Argument ``steps``.
-    max_steps : object
+
+    max_steps : int
         Argument ``max_steps``.
-    explain : object
+
+    explain : _Explain
         Argument ``explain``.
 
     Returns
     -------
-    object
+    tuple[MatchSpan | None, int]
         Return value.
     """
     for rule in rules:

@@ -22,12 +22,12 @@ def _is_wmo_sigmet_multi_location_va_yudd(ir: dict[str, Any]) -> bool:
 
     Parameters
     ----------
-    ir : object
+    ir : dict[str, Any]
         Argument ``ir``.
 
     Returns
     -------
-    object
+    bool
         Return value.
     """
     # ruff: noqa: F403, F405
@@ -48,12 +48,12 @@ def _is_wmo_sigmet_va_eggx(ir: dict[str, Any]) -> bool:
 
     Parameters
     ----------
-    ir : object
+    ir : dict[str, Any]
         Argument ``ir``.
 
     Returns
     -------
-    object
+    bool
         Return value.
     """
     if ir.get("product") != "SIGMET" or ir.get("phenomenon") != "VA":
@@ -88,14 +88,15 @@ def _hazard_stamp(ir: dict[str, Any], prefix: str) -> tuple[str, str, str]:
 
     Parameters
     ----------
-    ir : object
+    ir : dict[str, Any]
         Argument ``ir``.
-    prefix : object
+
+    prefix : str
         Argument ``prefix``.
 
     Returns
     -------
-    object
+    tuple[str, str, str]
         Return value.
     """
     from tac2iwxxm.time_anchor import iso_stamp
@@ -131,12 +132,12 @@ def _sigmet_root_local(ir: dict[str, Any]) -> str:
 
     Parameters
     ----------
-    ir : object
+    ir : dict[str, Any]
         Argument ``ir``.
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     if ir.get("phenomenon") == "TC" or ir.get("iwxxm_root") == "TropicalCycloneSIGMET":
@@ -159,20 +160,24 @@ def _sigmet_header_units(
 
     Parameters
     ----------
-    ir : object
+    ir : dict[str, Any]
         Argument ``ir``.
-    ns : object
+
+    ns : str
         Argument ``ns``.
-    gml_id : object
+
+    gml_id : str
         Argument ``gml_id``.
-    issue : object
+
+    issue : str
         Argument ``issue``.
-    extra_xmlns : object
+
+    extra_xmlns : str, optional
         Argument ``extra_xmlns``.
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     fir = str(ir["fir"])
@@ -255,12 +260,12 @@ def _wmo_multi_location_va_pos_list(pos_list: str) -> str:
 
     Parameters
     ----------
-    pos_list : object
+    pos_list : str
         Argument ``pos_list``.
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     toks = pos_list.split()
@@ -284,14 +289,15 @@ def _sigmet_tc_format_pos(lat: float, lon: float) -> str:
 
     Parameters
     ----------
-    lat : object
+    lat : float
         Argument ``lat``.
-    lon : object
+
+    lon : float
         Argument ``lon``.
 
     Returns
     -------
-    object
+    str
         Return value.
     """
 
@@ -301,12 +307,12 @@ def _sigmet_tc_format_pos(lat: float, lon: float) -> str:
 
         Parameters
         ----------
-        value : object
+        value : float
             Argument ``value``.
 
         Returns
         -------
-        object
+        str
             Return value.
         """
         two = f"{value:.2f}"
@@ -331,22 +337,27 @@ def _sigmet_geometry_xml(
 
     Parameters
     ----------
-    ir : object
+    ir : dict[str, Any]
         Argument ``ir``.
-    fir : object
+
+    fir : str
         Argument ``fir``.
-    gid : object
+
+    gid : str | None, optional
         Argument ``gid``.
-    geometry : object
+
+    geometry : dict[str, Any] | None, optional
         Argument ``geometry``.
-    include_limits : object
+
+    include_limits : bool, optional
         Argument ``include_limits``.
-    wmo_multi_location_va_ring : object
+
+    wmo_multi_location_va_ring : bool, optional
         Argument ``wmo_multi_location_va_ring``.
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     if ir.get("no_va_exp") and geometry is None:
@@ -496,26 +507,33 @@ def _sigmet_location_analysis_xml(
 
     Parameters
     ----------
-    loc : object
+    loc : dict[str, Any]
         Argument ``loc``.
-    fir : object
+
+    fir : str
         Argument ``fir``.
-    index : object
+
+    index : int
         Argument ``index``.
-    issue : object
+
+    issue : str
         Argument ``issue``.
-    begin : object
+
+    begin : str
         Argument ``begin``.
-    end : object
+
+    end : str
         Argument ``end``.
-    wmo_multi_location_va_ring : object
+
+    wmo_multi_location_va_ring : bool, optional
         Argument ``wmo_multi_location_va_ring``.
-    wmo_va_eggx_ring : object
+
+    wmo_va_eggx_ring : bool, optional
         Argument ``wmo_va_eggx_ring``.
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     suffix = f"{fir.lower()}.{index}"
@@ -622,12 +640,12 @@ def _sigmet_volcano_xml(ir: dict[str, Any]) -> str:
 
     Parameters
     ----------
-    ir : object
+    ir : dict[str, Any]
         Argument ``ir``.
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     volcano_raw = ir.get("volcano")
@@ -684,12 +702,12 @@ def _sigmet_motion_xml(ir: dict[str, Any]) -> str:
 
     Parameters
     ----------
-    ir : object
+    ir : dict[str, Any]
         Argument ``ir``.
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     if ir.get("stationary"):
@@ -716,12 +734,12 @@ def _sigmet_tropical_cyclone_xml(ir: dict[str, Any]) -> str:
 
     Parameters
     ----------
-    ir : object
+    ir : dict[str, Any]
         Argument ``ir``.
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     name = ir.get("tropical_cyclone_name")
@@ -743,14 +761,15 @@ def _sigmet_tc_position_xml(ir: dict[str, Any], *, gid: str) -> str:
 
     Parameters
     ----------
-    ir : object
+    ir : dict[str, Any]
         Argument ``ir``.
-    gid : object
+
+    gid : str
         Argument ``gid``.
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     pos = ir.get("tropical_cyclone_position")
@@ -773,16 +792,18 @@ def _sigmet_tc_forecast_xml(ir: dict[str, Any], *, fir: str, end: str) -> str:
 
     Parameters
     ----------
-    ir : object
+    ir : dict[str, Any]
         Argument ``ir``.
-    fir : object
+
+    fir : str
         Argument ``fir``.
-    end : object
+
+    end : str
         Argument ``end``.
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     fcst = ir.get("tropical_cyclone_forecast")
@@ -828,22 +849,23 @@ def emit_convective_sigmet_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> 
     """
     Emit US ``CONVECTIVE SIGMET`` (WST) with iwxxm-us analysis shape (#919 M11).
 
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Parsed product fields.
+
+    iwxxm_version : str
+        IWXXM release line.
+
+    Returns
+    -------
+    str
+        US ``CONVECTIVE SIGMET`` (WST) with iwxxm-us analysis shape (#919 M11).
+
     Examples
     --------
     >>> 1 + 1  # docstring smoke (emit_convective_sigmet_annex3)
     2
-
-    Parameters
-    ----------
-    ir : object
-        Argument ``ir``.
-    iwxxm_version : object
-        Argument ``iwxxm_version``.
-
-    Returns
-    -------
-    object
-        Return value.
     """
     ns = _ns(iwxxm_version)
     fir = str(ir["fir"])
@@ -962,22 +984,23 @@ def emit_sigmet_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
     """
     Emit an IWXXM SIGMET / VolcanicAshSIGMET / TropicalCycloneSIGMET document.
 
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Parsed product fields.
+
+    iwxxm_version : str
+        IWXXM release line.
+
+    Returns
+    -------
+    str
+        An IWXXM SIGMET / VolcanicAshSIGMET / TropicalCycloneSIGMET document.
+
     Examples
     --------
     >>> 1 + 1  # docstring smoke (emit_sigmet_annex3)
     2
-
-    Parameters
-    ----------
-    ir : object
-        Argument ``ir``.
-    iwxxm_version : object
-        Argument ``iwxxm_version``.
-
-    Returns
-    -------
-    object
-        Return value.
     """
     if ir.get("convective"):
         return emit_convective_sigmet_annex3(ir, iwxxm_version=iwxxm_version)

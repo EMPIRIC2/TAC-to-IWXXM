@@ -64,14 +64,16 @@ def check_parse_gate(
 
     Parameters
     ----------
-    tac_text :
+    tac_text : str
         Raw TAC text.
-    product :
+    product : str
         F6 product id.
+    profile : str, optional
+        Profile id. By default ``'annex3'``.
 
     Returns
     -------
-    issues, fixes
+    tuple[list[Issue], list[Fix]]
         Structured findings and optional repairs. Issues include ``start``/``end``
         character offsets when the rule can locate a span in ``tac_text``.
 
@@ -167,17 +169,17 @@ def check_product_rules(
 
     Parameters
     ----------
-    tac_text : object
-        Argument ``tac_text``.
-    product : object
-        Argument ``product``.
-    profile : object
-        Argument ``profile``.
+    tac_text : str
+        TAC text.
+    product : str
+        Product id.
+    profile : str, optional
+        Profile id. By default ``'annex3'``.
 
     Returns
     -------
-    object
-        Return value.
+    list[Issue]
+        Issues from the product checklist.
     """
     from tac_validate.product_rules import check_product_rules as _impl
 

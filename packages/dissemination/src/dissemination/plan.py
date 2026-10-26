@@ -24,8 +24,10 @@ class RetryPolicy:
 
     Attributes
     ----------
-    _ : object
-        See implementation.
+    max_attempts : int, optional
+        Max attempts. By default ``1``.
+    backoff_seconds : float, optional
+        Backoff seconds. By default ``0.0``.
     """
 
     max_attempts: int = 1
@@ -39,18 +41,18 @@ class DisseminationPlan:
 
     Parameters
     ----------
-    plan_id :
+    plan_id : str
         Stable plan identifier.
-    validity_policy :
+    validity_policy : str
         ``valid-only`` requires green validate before send; ``warn-ok`` sends anyway.
-    destination_refs :
+    destination_refs : list[str]
         Gateway kinds (or destination ids resolved by the caller) to send to.
-    transforms :
-        Optional exchange packaging refs.
-    retry :
-        Optional retry policy.
-    dry_run :
-        When true, produce ``SKIPPED`` receipts without calling send.
+    transforms : list[str], optional
+        Optional exchange packaging refs. By default an empty list.
+    retry : RetryPolicy or None, optional
+        Optional retry policy. By default ``None``.
+    dry_run : bool, optional
+        When true, produce ``SKIPPED`` receipts without calling send. By default ``False``.
     """
 
     plan_id: str
@@ -76,18 +78,18 @@ async def execute_plan(
 
     Parameters
     ----------
-    plan :
+    plan : DisseminationPlan
         Plan document (no BYOC secrets).
-    message :
+    message : DisseminationMessage
         Base message; ``gateway_kind`` is replaced per destination ref.
-    gateway :
+    gateway : DisseminationGateway
         Façade used for validate/send.
-    audit_sink :
-        Optional async callback per receipt (e.g. persist redacted audit).
+    audit_sink : AuditSink or None, optional
+        Optional async callback per receipt (e.g. persist redacted audit). By default ``None``.
 
     Returns
     -------
-    list of DeliveryReceipt
+    list[DeliveryReceipt]
         One receipt per destination ref.
 
     Examples

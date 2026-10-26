@@ -186,9 +186,11 @@ def flight_information_region_name(body: str, designator: str, watch_office: str
     ----------
     body : str
         SIGMET body text.
+
     designator : str
         Four-letter region indicator.
-    watch_office : str
+
+    watch_office : str, optional
         Originating meteorological watch office, when the header has one.
 
     Returns

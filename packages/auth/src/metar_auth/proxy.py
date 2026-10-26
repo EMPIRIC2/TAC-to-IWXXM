@@ -20,8 +20,8 @@ class AuthProxyError(Exception):
 
     Attributes
     ----------
-    _ : object
-        See implementation.
+    status_code : int
+        HTTP status code.
     """
 
     def __init__(self, message: str, *, status_code: int = 400) -> None:
@@ -30,10 +30,10 @@ class AuthProxyError(Exception):
 
         Parameters
         ----------
-        message : object
-            Argument ``message``.
-        status_code : object
-            Argument ``status_code``.
+        message : str
+            Message text.
+        status_code : int, optional
+            HTTP status code. By default ``400``.
         """
         super().__init__(message)
         self.status_code = status_code
@@ -45,8 +45,10 @@ class SupabaseAuthProxy:
 
     Attributes
     ----------
-    _ : object
-        See implementation.
+    supabase_url : str or None
+        Supabase project URL.
+    publishable_key : str or None
+        Supabase publishable key.
     """
 
     def __init__(
@@ -62,12 +64,12 @@ class SupabaseAuthProxy:
 
         Parameters
         ----------
-        supabase_url : object
-            Argument ``supabase_url``.
-        publishable_key : object
-            Argument ``publishable_key``.
-        client : object
-            Argument ``client``.
+        supabase_url : str or None, optional
+            Supabase project URL. By default ``None``.
+        publishable_key : str or None, optional
+            Supabase publishable key. By default ``None``.
+        client : httpx.Client or None, optional
+            HTTP client. By default ``None``.
         """
         if supabase_url is not None:
             self.supabase_url = supabase_url.rstrip("/")
@@ -180,8 +182,8 @@ class SupabaseAuthProxy:
         ----------
         token_hash : str
             ``token_hash`` from the Auth email link query string.
-        type_ : str
-            GoTrue verify type (``email``, ``signup``, ``recovery``, …).
+        type_ : str, optional
+            GoTrue verify type (``email``, ``signup``, ``recovery``, …). By default ``'email'``.
 
         Returns
         -------
@@ -255,8 +257,8 @@ class SupabaseAuthProxy:
         ----------
         access_token : str
             User access token (Bearer).
-        scope : str or None
-            Optional GoTrue logout scope: ``global``, ``local``, or ``others``.
+        scope : str or None, optional
+            Optional GoTrue logout scope: ``global``, ``local``, or ``others``. By default ``None``.
 
         Returns
         -------

@@ -42,16 +42,16 @@ def validate_ca_exchange_packaging(
 
     Parameters
     ----------
-    xml_content :
+    xml_content : str
         IWXXM XML document.
-    product :
-        API product enum used to cross-check an optional AHL header.
-    ahl_header :
-        Optional WMO AHL header (``A_LACN31…``) supplied by the caller.
-    expected_filename :
-        Optional MSC filename to validate against the datamart pattern.
-    require_translation_centre :
-        When ``True``, require ``translationCentre*`` attrs on the document root.
+    product : str or None, optional
+        API product enum used to cross-check an optional AHL header. By default ``None``.
+    ahl_header : str or None, optional
+        Optional WMO AHL header (``A_LACN31…``) supplied by the caller. By default ``None``.
+    expected_filename : str or None, optional
+        Optional MSC filename to validate against the datamart pattern. By default ``None``.
+    require_translation_centre : bool, optional
+        When ``True``, require ``translationCentre*`` attrs on the document root. By default ``False``.
 
     Returns
     -------

@@ -45,8 +45,8 @@ class PackIrMapError(ValueError):
 
     Attributes
     ----------
-    _ : object
-        See implementation.
+    args : tuple
+        Arguments passed to the exception constructor.
     """
 
 
@@ -56,9 +56,10 @@ def pack_id_for_product(product: str, tac: str) -> str:
 
     Parameters
     ----------
-    product :
+    product : str
         Convert product id (for example ``SIGMET``).
-    tac :
+
+    tac : str
         TAC text used to distinguish VA / TC SIGMET packs.
 
     Returns
@@ -96,11 +97,13 @@ def map_spans_to_convert_ir(
 
     Parameters
     ----------
-    match :
+    match : MatchResult
         Result of ``tac_decoding.match.match_tac``.
-    tac :
+
+    tac : str
         Original TAC.
-    product :
+
+    product : str
         Convert product id.
 
     Returns

@@ -33,8 +33,10 @@ class ResolvedExchangeProfile:
 
     Attributes
     ----------
-    _ : object
-        See implementation.
+    canonical : str
+        Canonical.
+    wire_id : str
+        Wire ID.
     """
 
     canonical: str
@@ -47,7 +49,7 @@ def normalize_exchange_id(profile: str) -> str:
 
     Parameters
     ----------
-    profile :
+    profile : str
         Exchange profile id (e.g. ``GLOBAL_AFS``).
 
     Returns
@@ -74,13 +76,13 @@ def normalize_exchange_id_key(profile: str) -> str:
 
     Parameters
     ----------
-    profile : object
-        Argument ``profile``.
+    profile : str
+        Profile id.
 
     Returns
     -------
-    object
-        Return value.
+    str
+        Lowercase registry lookup key for an exchange profile id.
     """
     return profile.strip().lower().replace("-", "_")
 
@@ -91,7 +93,7 @@ def resolve_exchange_profile(profile: str) -> ResolvedExchangeProfile | None:
 
     Parameters
     ----------
-    profile :
+    profile : str
         Canonical or wire exchange profile id.
 
     Returns
@@ -128,8 +130,8 @@ def known_exchange_profile_ids() -> frozenset[str]:
 
     Returns
     -------
-    object
-        Return value.
+    frozenset[str]
+        All accepted exchange profile wire ids.
     """
     return _KNOWN_WIRE_IDS
 

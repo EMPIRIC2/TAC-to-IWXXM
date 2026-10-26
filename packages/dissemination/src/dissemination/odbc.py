@@ -63,8 +63,8 @@ def odbc_sqlserver_available() -> bool:
 
     Returns
     -------
-    object
-        Return value.
+    bool
+        True when at least one SQL Server ODBC driver is installed.
     """
     return bool(list_sqlserver_odbc_drivers())
 

@@ -95,7 +95,7 @@ def member_iwxxm_namespace_uris(xml: str) -> list[str]:
 
     Returns
     -------
-    list of str
+    list[str]
         Unique namespace URIs in document order of first appearance.
 
     Examples
@@ -124,7 +124,7 @@ def collect_namespace_issues(xml: str) -> list[str]:
 
     Returns
     -------
-    list of str
+    list[str]
         Empty when the document is a COLLECT bulletin and every IWXXM member
         declaration uses ``http://icao.int/iwxxm/{version}``. Non-empty when
         the root is not COLLECT, COLLECT has no IWXXM member NS, or a

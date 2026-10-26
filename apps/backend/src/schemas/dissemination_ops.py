@@ -17,6 +17,7 @@ class DisseminationPlanCreate(BaseModel):
     """
     Body to create a DisseminationPlan (no secrets).
 
+
     Attributes
     ----------
     _ : object
@@ -34,6 +35,7 @@ class DisseminationPlanUpdate(BaseModel):
     """
     Partial update for a DisseminationPlan.
 
+
     Attributes
     ----------
     _ : object
@@ -49,6 +51,7 @@ class DisseminationPlanUpdate(BaseModel):
 class DisseminationPlanOut(BaseModel):
     """
     Persisted plan row.
+
 
     Attributes
     ----------
@@ -71,6 +74,7 @@ class PlanExecuteRequest(BaseModel):
     """
     Execute or dry-run a plan for a sample message.
 
+
     Attributes
     ----------
     _ : object
@@ -91,6 +95,7 @@ class DeliveryReceiptOut(BaseModel):
     """
     Redacted delivery receipt (API).
 
+
     Attributes
     ----------
     _ : object
@@ -108,6 +113,7 @@ class PlanExecuteResponse(BaseModel):
     """
     Execute outcome with receipts.
 
+
     Attributes
     ----------
     _ : object
@@ -120,7 +126,8 @@ class PlanExecuteResponse(BaseModel):
 
 class AuditRecordOut(BaseModel):
     """
-    Persisted audit row — never includes BYOC secrets or URIs.
+    Persisted delivery audit row. BYOC secrets and URIs are omitted.
+
 
     Attributes
     ----------
@@ -146,6 +153,7 @@ class AuditListResponse(BaseModel):
     """
     Paginated audit list.
 
+
     Attributes
     ----------
     _ : object
@@ -160,7 +168,8 @@ class AuditListResponse(BaseModel):
 
 class MappingConfigCreate(BaseModel):
     """
-    Create a field mapping — no connection secrets.
+    Create a field mapping. Connection secrets are not stored.
+
 
     Attributes
     ----------
@@ -177,6 +186,7 @@ class MappingConfigUpdate(BaseModel):
     """
     Partial MappingConfig update.
 
+
     Attributes
     ----------
     _ : object
@@ -190,6 +200,7 @@ class MappingConfigUpdate(BaseModel):
 class MappingConfigOut(BaseModel):
     """
     Persisted MappingConfig row.
+
 
     Attributes
     ----------
@@ -210,6 +221,7 @@ class GatewayHealthOut(BaseModel):
     """
     Operator-safe gateway health row.
 
+
     Attributes
     ----------
     _ : object
@@ -225,6 +237,7 @@ class GatewayHealthOut(BaseModel):
 class GatewayHealthListResponse(BaseModel):
     """
     Health for registered gateway kinds.
+
 
     Attributes
     ----------

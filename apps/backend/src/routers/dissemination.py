@@ -194,6 +194,7 @@ async def dissemination_preflight(
     """
     Run sink preflight; return schema diffs and optional memory-only handle.
 
+
     Examples
     --------
     >>> 1 + 1  # docstring smoke (dissemination_preflight)
@@ -291,6 +292,7 @@ async def dissemination_send(
 ) -> object:
     """
     Send IWXXM via a green preflight handle or inline sink params.
+
 
     Examples
     --------

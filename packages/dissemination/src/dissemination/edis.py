@@ -44,8 +44,34 @@ class EdisParams:
 
     Attributes
     ----------
-    _ : object
-        See implementation.
+    smtp_host : str
+        SMTP host.
+    mail_from : str
+        Mail from.
+    mail_to : str
+        Mail to.
+    tt : str
+        Tt.
+    aa : str
+        Aa.
+    ii : str
+        Ii.
+    cccc : str
+        Cccc.
+    yygggg : str
+        Yygggg.
+    smtp_port : int, optional
+        SMTP port. By default ``587``.
+    username : str or None, optional
+        User name. By default ``None``.
+    password : str or None, optional
+        Password. By default ``None``.
+    use_tls : bool, optional
+        Use tls. By default ``True``.
+    bbb : str or None, optional
+        Bbb. By default ``None``.
+    subject : str or None, optional
+        Subject. By default ``None``.
     """
 
     smtp_host: str
@@ -71,8 +97,12 @@ class EdisSubmitResult:
 
     Attributes
     ----------
-    _ : object
-        See implementation.
+    ok : bool
+        True when the result succeeded.
+    ahl : str
+        AHL.
+    detail : str or None, optional
+        Detail text. By default ``None``.
     """
 
     ok: bool
@@ -118,23 +148,23 @@ def format_wmo_ahl(
 
     Parameters
     ----------
-    tt : object
-        Argument ``tt``.
-    aa : object
-        Argument ``aa``.
-    ii : object
-        Argument ``ii``.
-    cccc : object
-        Argument ``cccc``.
-    yygggg : object
-        Argument ``yygggg``.
-    bbb : object
-        Argument ``bbb``.
+    tt : str
+        Tt.
+    aa : str
+        Aa.
+    ii : str
+        Ii.
+    cccc : str
+        Cccc.
+    yygggg : str
+        Yygggg.
+    bbb : str or None, optional
+        Bbb. By default ``None``.
 
     Returns
     -------
-    object
-        Return value.
+    str
+        Format a WMO abbreviated heading line (Manual on the GTS / WMO-No. 386 shape).
 
     Examples
     --------
@@ -190,15 +220,15 @@ def build_edis_message(params: EdisParams, *, tac_body: str) -> str:
 
     Parameters
     ----------
-    params : object
-        Argument ``params``.
-    tac_body : object
-        Argument ``tac_body``.
+    params : EdisParams
+        Sink parameters.
+    tac_body : str
+        TAC body.
 
     Returns
     -------
-    object
-        Return value.
+    str
+        Build an ASCII EDIS bulletin body: AHL line, blank line, TAC text.
 
     Examples
     --------
@@ -275,17 +305,17 @@ async def edis_preflight(
 
     Parameters
     ----------
-    params : object
-        Argument ``params``.
-    allowlist : object
-        Argument ``allowlist``.
-    smtp : object
-        Argument ``smtp``.
+    params : EdisParams
+        Sink parameters.
+    allowlist : Allowlist
+        Allowlist.
+    smtp : SmtpClient
+        SMTP.
 
     Returns
     -------
-    object
-        Return value.
+    PreflightResponse
+        Check allowlist + SMTP connect/login (no message send).
 
     Examples
     --------
@@ -329,19 +359,19 @@ async def edis_submit(
 
     Parameters
     ----------
-    params : object
-        Argument ``params``.
-    tac_body : object
-        Argument ``tac_body``.
-    allowlist : object
-        Argument ``allowlist``.
-    smtp : object
-        Argument ``smtp``.
+    params : EdisParams
+        Sink parameters.
+    tac_body : str
+        TAC body.
+    allowlist : Allowlist
+        Allowlist.
+    smtp : SmtpClient
+        SMTP.
 
     Returns
     -------
-    object
-        Return value.
+    EdisSubmitResult
+        Format an ASCII EDIS message and submit via SMTP.
 
     Examples
     --------

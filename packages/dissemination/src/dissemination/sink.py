@@ -33,8 +33,8 @@ class SinkAdapter(Protocol):
 
         Returns
         -------
-        object
-            Return value.
+        SinkType
+            Drawer / API sink discriminator.
         """
 
     async def preflight(
@@ -61,14 +61,14 @@ class SinkAdapter(Protocol):
         Parameters
         ----------
         params : object
-            Argument ``params``.
-        allowlist : object
-            Argument ``allowlist``.
+            Sink parameters.
+        allowlist : Allowlist
+            Allowlist.
 
         Returns
         -------
-        object
-            Return value.
+        PreflightResponse
+            Connectivity / schema preflight without committing the payload.
         """
 
     async def send(
@@ -97,18 +97,18 @@ class SinkAdapter(Protocol):
         Parameters
         ----------
         params : object
-            Argument ``params``.
-        allowlist : object
-            Argument ``allowlist``.
-        iwxxm_xml : object
-            Argument ``iwxxm_xml``.
-        tac_text : object
-            Argument ``tac_text``.
+            Sink parameters.
+        allowlist : Allowlist
+            Allowlist.
+        iwxxm_xml : str or bytes or None, optional
+            IWXXM XML text. By default ``None``.
+        tac_text : str or None, optional
+            TAC text. By default ``None``.
 
         Returns
         -------
-        object
-            Return value.
+        SendResponse
+            Deliver IWXXM and/or TAC to the sink after allowlist checks.
         """
 
 

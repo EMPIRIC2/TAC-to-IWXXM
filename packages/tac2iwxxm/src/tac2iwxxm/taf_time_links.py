@@ -16,7 +16,7 @@ def forecast_time_href(target_id: str) -> str:
 
     Parameters
     ----------
-    target_id :
+    target_id : str
         ``gml:id`` of a time object in the same TAF document.
 
     Returns
@@ -62,7 +62,7 @@ def unresolved_internal_hrefs(xml: str) -> tuple[str, ...]:
 
     Parameters
     ----------
-    xml :
+    xml : str
         IWXXM document text.
 
     Returns
@@ -86,7 +86,7 @@ def failed_preview_nil_element(product: str) -> str:
 
     Parameters
     ----------
-    product :
+    product : str
         Product code such as ``TAF`` or ``METAR``.
 
     Returns

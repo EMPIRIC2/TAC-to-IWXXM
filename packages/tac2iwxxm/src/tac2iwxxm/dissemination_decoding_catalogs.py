@@ -15,12 +15,12 @@ def _load_yaml(name: str) -> dict[str, Any]:
 
     Parameters
     ----------
-    name : object
+    name : str
         Argument ``name``.
 
     Returns
     -------
-    object
+    dict[str, Any]
         Return value.
     """
     raw = resources.files("tac2iwxxm.data").joinpath(name).read_text(encoding="utf-8")
@@ -35,15 +35,15 @@ def load_dissemination_transforms() -> dict[str, Any]:
     """
     Return mined dissemination transform catalog.
 
+    Returns
+    -------
+    dict[str, Any]
+        Mined dissemination transform catalog.
+
     Examples
     --------
     >>> 1 + 1  # docstring smoke (load_dissemination_transforms)
     2
-
-    Returns
-    -------
-    object
-        Return value.
     """
     data = _load_yaml("dissemination_transforms.yaml")
     if "transforms" not in data:
@@ -56,15 +56,15 @@ def load_decoding_library_entries() -> dict[str, Any]:
     """
     Return mined decoding library entries catalog.
 
+    Returns
+    -------
+    dict[str, Any]
+        Mined decoding library entries catalog.
+
     Examples
     --------
     >>> 1 + 1  # docstring smoke (load_decoding_library_entries)
     2
-
-    Returns
-    -------
-    object
-        Return value.
     """
     data = _load_yaml("decoding_library_entries.yaml")
     if "entries" not in data:

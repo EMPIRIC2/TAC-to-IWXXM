@@ -42,12 +42,12 @@ def _fields(text: str) -> dict[str, str]:
 
     Parameters
     ----------
-    text : object
+    text : str
         Argument ``text``.
 
     Returns
     -------
-    object
+    dict[str, str]
         Return value.
     """
     out: dict[str, str] = {}
@@ -75,12 +75,12 @@ def _parse_dtg(token: str) -> str | None:
 
     Parameters
     ----------
-    token : object
+    token : str
         Argument ``token``.
 
     Returns
     -------
-    object
+    str | None
         Return value.
     """
     token = token.strip().replace(" ", "")
@@ -96,14 +96,15 @@ def _latlon(token: str, *, ndigits: int = 2) -> tuple[float, float] | None:
 
     Parameters
     ----------
-    token : object
+    token : str
         Argument ``token``.
-    ndigits : object
+
+    ndigits : int, optional
         Argument ``ndigits``.
 
     Returns
     -------
-    object
+    tuple[float, float] | None
         Return value.
     """
     m = _PSN.search(token)
@@ -132,12 +133,12 @@ def _strip_optional_ahl(tac: str) -> str:
 
     Parameters
     ----------
-    tac : object
+    tac : str
         Argument ``tac``.
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     lines = tac.splitlines()
@@ -195,12 +196,12 @@ def _parse_elevation_m(token: str) -> float | None:
 
     Parameters
     ----------
-    token : object
+    token : str
         Argument ``token``.
 
     Returns
     -------
-    object
+    float | None
         Return value.
     """
     m = _ELEV.search(token.replace(",", ""))
@@ -221,12 +222,12 @@ def _parse_volcano(token: str) -> tuple[str, str | None]:
 
     Parameters
     ----------
-    token : object
+    token : str
         Argument ``token``.
 
     Returns
     -------
-    object
+    tuple[str, str | None]
         Return value.
     """
     parts = token.strip().split()
@@ -243,12 +244,12 @@ def _map_activity(token: str) -> str:
 
     Parameters
     ----------
-    token : object
+    token : str
         Argument ``token``.
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     cleaned = re.sub(r"\s+", " ", token.strip().upper())
@@ -266,12 +267,12 @@ def _nilish(token: str) -> bool:
 
     Parameters
     ----------
-    token : object
+    token : str
         Argument ``token``.
 
     Returns
     -------
-    object
+    bool
         Return value.
     """
     return token.strip().upper() in {"", "NIL", "NONE"}
@@ -283,9 +284,10 @@ def parse_vona(tac: str, *, product: str = "VONA") -> dict[str, Any]:
 
     Parameters
     ----------
-    tac :
+    tac : str
         Standalone labeled VONA report (optional WM AHL line).
-    product :
+
+    product : str, optional
         Must be ``VONA``.
 
     Returns

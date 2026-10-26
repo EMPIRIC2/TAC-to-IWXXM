@@ -45,8 +45,12 @@ class RelativeConstraint:
 
     Attributes
     ----------
-    _ : object
-        See implementation.
+    axis : Literal['lat', 'lon']
+        Axis.
+    value : float
+        Boundary value on ``axis``.
+    keep : KeepSide
+        Keep.
     """
 
     axis: Literal["lat", "lon"]
@@ -61,8 +65,10 @@ class RelativeGeometryPhrase:
 
     Attributes
     ----------
-    _ : object
-        See implementation.
+    kind : Literal['relative', 'entire_fir']
+        Kind.
+    constraints : tuple[RelativeConstraint, ...]
+        Constraints.
     """
 
     kind: Literal["relative", "entire_fir"]
@@ -75,12 +81,12 @@ def _point_lat_lon(match: re.Match[str]) -> tuple[float, float]:
 
     Parameters
     ----------
-    match : object
+    match : re.Match[str]
         Argument ``match``.
 
     Returns
     -------
-    object
+    tuple[float, float]
         Return value.
     """
     lat = int(match.group("lat_deg")) + int(match.group("lat_min")) / 60.0
@@ -98,12 +104,12 @@ def _wi_points(body: str) -> list[tuple[float, float]]:
 
     Parameters
     ----------
-    body : object
+    body : str
         Argument ``body``.
 
     Returns
     -------
-    object
+    list[tuple[float, float]]
         Return value.
     """
     wi = _WI_BLOCK.search(body)
@@ -149,12 +155,12 @@ def _constraint_from_half(match: re.Match[str]) -> RelativeConstraint:
 
     Parameters
     ----------
-    match : object
+    match : re.Match[str]
         Argument ``match``.
 
     Returns
     -------
-    object
+    RelativeConstraint
         Return value.
     """
     side = match.group("side").upper()
@@ -217,14 +223,15 @@ def _inside(point: tuple[float, float], constraint: RelativeConstraint) -> bool:
 
     Parameters
     ----------
-    point : object
+    point : tuple[float, float]
         Argument ``point``.
-    constraint : object
+
+    constraint : RelativeConstraint
         Argument ``constraint``.
 
     Returns
     -------
-    object
+    bool
         Return value.
     """
     lat, lon = point
@@ -247,16 +254,18 @@ def _intersect(
 
     Parameters
     ----------
-    a : object
+    a : tuple[float, float]
         Argument ``a``.
-    b : object
+
+    b : tuple[float, float]
         Argument ``b``.
-    constraint : object
+
+    constraint : RelativeConstraint
         Argument ``constraint``.
 
     Returns
     -------
-    object
+    tuple[float, float]
         Return value.
     """
     ax, ay = a  # lat, lon
@@ -282,14 +291,15 @@ def _clip_ring_one(
 
     Parameters
     ----------
-    ring : object
+    ring : Sequence[tuple[float, float]]
         Argument ``ring``.
-    constraint : object
+
+    constraint : RelativeConstraint
         Argument ``constraint``.
 
     Returns
     -------
-    object
+    list[tuple[float, float]]
         Return value.
     """
     if not ring:
@@ -319,12 +329,12 @@ def _ensure_closed_ring(output: list[tuple[float, float]]) -> list[tuple[float, 
 
     Parameters
     ----------
-    output : object
+    output : list[tuple[float, float]]
         Argument ``output``.
 
     Returns
     -------
-    object
+    list[tuple[float, float]]
         Return value.
     """
     if not output:
@@ -371,6 +381,7 @@ def ring_to_pos_list(points: Sequence[tuple[float, float]], *, precision: int = 
     ----------
     points : sequence of (lat, lon)
         Ring vertices (will be closed if needed).
+
     precision : int, optional
         Decimal places (default 4).
 
@@ -399,6 +410,7 @@ def clip_ring_to_relative(
     ----------
     fir_boundary : sequence of (lat, lon)
         Closed or open FIR polygon ring (injected; not looked up by ICAO).
+
     phrase : RelativeGeometryPhrase
         Parsed relative / ENTIRE FIR phrase.
 
@@ -439,6 +451,7 @@ def resolve_fir_relative_polygon(
     ----------
     body : str
         SIGMET/AIRMET body text.
+
     fir_boundary : sequence of (lat, lon) or None
         Injected FIR polygon for clipping / ENTIRE FIR.
 

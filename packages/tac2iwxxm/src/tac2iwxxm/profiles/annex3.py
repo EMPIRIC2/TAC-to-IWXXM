@@ -31,20 +31,20 @@ def obs_timestamp(ir: dict[str, Any]) -> str:
     """
     Build observation/issue time matching annex3 golden fixtures.
 
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Parsed product fields.
+
+    Returns
+    -------
+    str
+        Observation/issue time matching annex3 golden fixtures.
+
     Examples
     --------
     >>> 1 + 1  # docstring smoke (obs_timestamp)
     2
-
-    Parameters
-    ----------
-    ir : object
-        Argument ``ir``.
-
-    Returns
-    -------
-    object
-        Return value.
     """
     from tac2iwxxm.time_anchor import iso_stamp
 
@@ -67,7 +67,7 @@ def _fmt_cel(value: object) -> str:
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     return f"{float(str(value)):.1f}"
@@ -84,7 +84,7 @@ def _fmt_hpa(value: object) -> str:
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     fval = float(str(value))
@@ -101,12 +101,13 @@ def _fmt_speed(value: object, *, force_one_decimal: bool = False) -> str:
     ----------
     value : object
         Argument ``value``.
-    force_one_decimal : object
+
+    force_one_decimal : bool, optional
         Argument ``force_one_decimal``.
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     fval = float(str(value))
@@ -121,14 +122,15 @@ def _annex3_gml_id(ir: dict[str, Any], product: str) -> str:
 
     Parameters
     ----------
-    ir : object
+    ir : dict[str, Any]
         Argument ``ir``.
-    product : object
+
+    product : str
         Argument ``product``.
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     root = product.lower()
@@ -165,14 +167,15 @@ def _visibility_block(ir: dict[str, Any], *, visibility_extension: str = "") -> 
 
     Parameters
     ----------
-    ir : object
+    ir : dict[str, Any]
         Argument ``ir``.
-    visibility_extension : object
+
+    visibility_extension : str, optional
         Argument ``visibility_extension``.
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     if ir.get("visibility_not_observable"):
@@ -205,14 +208,15 @@ def _rvr_block(ir: dict[str, Any], *, rvr_extension: str = "") -> str:
 
     Parameters
     ----------
-    ir : object
+    ir : dict[str, Any]
         Argument ``ir``.
-    rvr_extension : object
+
+    rvr_extension : str, optional
         Argument ``rvr_extension``.
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     rvr_raw = ir.get("rvr")
@@ -266,12 +270,12 @@ def _present_weather_block(ir: dict[str, Any]) -> str:
 
     Parameters
     ----------
-    ir : object
+    ir : dict[str, Any]
         Argument ``ir``.
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     if ir.get("present_weather_not_observable"):
@@ -317,14 +321,15 @@ def _cloud_block(ir: dict[str, Any], *, cloud_layer_extension: str = "") -> str:
 
     Parameters
     ----------
-    ir : object
+    ir : dict[str, Any]
         Argument ``ir``.
-    cloud_layer_extension : object
+
+    cloud_layer_extension : str, optional
         Argument ``cloud_layer_extension``.
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     if ir.get("nsc"):
@@ -391,14 +396,15 @@ def _surface_wind_inner(ir: dict[str, Any], *, peak_extension: str = "") -> str:
 
     Parameters
     ----------
-    ir : object
+    ir : dict[str, Any]
         Argument ``ir``.
-    peak_extension : object
+
+    peak_extension : str, optional
         Argument ``peak_extension``.
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     variable = bool(ir.get("wind_variable"))
@@ -445,14 +451,15 @@ def _trend_phenomenon_time(trend: dict[str, Any], idx: int) -> str:
 
     Parameters
     ----------
-    trend : object
+    trend : dict[str, Any]
         Argument ``trend``.
-    idx : object
+
+    idx : int
         Argument ``idx``.
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     if trend.get("phenomenon_begin") and trend.get("phenomenon_end"):
@@ -477,12 +484,12 @@ def _trend_weather_block(trend: dict[str, Any]) -> str:
 
     Parameters
     ----------
-    trend : object
+    trend : dict[str, Any]
         Argument ``trend``.
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     if trend.get("weather_nsw"):
@@ -503,12 +510,12 @@ def _trend_forecasts(ir: dict[str, Any]) -> str:
 
     Parameters
     ----------
-    ir : object
+    ir : dict[str, Any]
         Argument ``ir``.
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     parts: list[str] = []
@@ -579,17 +586,22 @@ def build_observation_and_trends(
 
     Parameters
     ----------
-    ir :
+    ir : dict[str, Any]
         Parsed METAR/SPECI IR.
-    addendum_extension :
+
+    addendum_extension : str, optional
         Optional observation-level extension XML (iwxxm_us Addendum).
-    peak_extension :
+
+    peak_extension : str, optional
         Optional surface-wind extension XML (iwxxm_us peak wind).
-    rvr_extension :
+
+    rvr_extension : str, optional
         Optional RVR extension XML (iwxxm_us AerodromeVariableRVR).
-    visibility_extension :
+
+    visibility_extension : str, optional
         Optional horizontal-visibility extension XML (SectorVisibility / TowerVisibility).
-    cloud_layer_extension :
+
+    cloud_layer_extension : str, optional
         Optional CloudLayer extension XML (VariableCeilingHeight / VariableSkyCondition).
 
     Returns
@@ -650,12 +662,12 @@ def _aerodrome_block(station: str) -> str:
 
     Parameters
     ----------
-    station : object
+    station : str
         Argument ``station``.
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     if station == "YUDO":
@@ -709,11 +721,13 @@ def emit_metar_speci_annex3(
 
     Parameters
     ----------
-    ir :
+    ir : dict[str, Any]
         Parsed METAR/SPECI IR.
-    product :
+
+    product : str
         ``METAR`` or ``SPECI``.
-    iwxxm_version :
+
+    iwxxm_version : str
         Release line (namespace selection).
 
     Returns

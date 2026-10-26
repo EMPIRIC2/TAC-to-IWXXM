@@ -18,14 +18,15 @@ def _us_gml_id(ir: dict[str, Any], product: str) -> str:
 
     Parameters
     ----------
-    ir : object
+    ir : dict[str, Any]
         Argument ``ir``.
-    product : object
+
+    product : str
         Argument ``product``.
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     root = product.lower()
@@ -64,12 +65,12 @@ def _peak_timestamp(ir: dict[str, Any]) -> str:
 
     Parameters
     ----------
-    ir : object
+    ir : dict[str, Any]
         Argument ``ir``.
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     day = int(ir["day"])
@@ -87,12 +88,12 @@ def _wind_shift_timestamp(ir: dict[str, Any]) -> str:
 
     Parameters
     ----------
-    ir : object
+    ir : dict[str, Any]
         Argument ``ir``.
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     day = int(ir["day"])
@@ -110,12 +111,12 @@ def _fmt_deg(value: float) -> str:
 
     Parameters
     ----------
-    value : object
+    value : float
         Argument ``value``.
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     if float(value).is_integer():
@@ -129,12 +130,12 @@ def _observed_lightning_xml(lightning: dict[str, Any]) -> str:
 
     Parameters
     ----------
-    lightning : object
+    lightning : dict[str, Any]
         Argument ``lightning``.
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     parts: list[str] = ["              <iwxxm-us:ObservedLightning>"]
@@ -177,16 +178,18 @@ def _cloud_character_elem(tag: str, href: str | None, nil_reason: str | None) ->
 
     Parameters
     ----------
-    tag : object
+    tag : str
         Argument ``tag``.
-    href : object
+
+    href : str | None
         Argument ``href``.
-    nil_reason : object
+
+    nil_reason : str | None
         Argument ``nil_reason``.
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     if href:
@@ -202,12 +205,12 @@ def _character_of_the_sky_xml(sky: dict[str, Any]) -> str:
 
     Parameters
     ----------
-    sky : object
+    sky : dict[str, Any]
         Argument ``sky``.
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     low = _cloud_character_elem(
@@ -238,12 +241,12 @@ def _convective_cloud_xml(conv: dict[str, Any]) -> str:
 
     Parameters
     ----------
-    conv : object
+    conv : dict[str, Any]
         Argument ``conv``.
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     parts: list[str] = ["              <iwxxm-us:ConvectiveCloudLocation>"]
@@ -287,12 +290,12 @@ def _vop_addendum_inner(ir: dict[str, Any]) -> str:
 
     Parameters
     ----------
-    ir : object
+    ir : dict[str, Any]
         Argument ``ir``.
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     lightning_raw = ir.get("observed_lightning")
@@ -357,12 +360,12 @@ def _hailstone_size_addendum_inner(ir: dict[str, Any]) -> str:
 
     Parameters
     ----------
-    ir : object
+    ir : dict[str, Any]
         Argument ``ir``.
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     hail_raw = ir.get("hailstone_size")
@@ -389,12 +392,12 @@ def _snow_increase_addendum_inner(ir: dict[str, Any]) -> str:
 
     Parameters
     ----------
-    ir : object
+    ir : dict[str, Any]
         Argument ``ir``.
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     snow_raw = ir.get("snow_increase")
@@ -428,12 +431,12 @@ def _inoperative_sensors_extension(ir: dict[str, Any]) -> str:
 
     Parameters
     ----------
-    ir : object
+    ir : dict[str, Any]
         Argument ``ir``.
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     hrefs_raw = ir.get("inoperative_sensor_hrefs")
@@ -466,12 +469,12 @@ def _second_location_addendum_inner(ir: dict[str, Any]) -> str:
 
     Parameters
     ----------
-    ir : object
+    ir : dict[str, Any]
         Argument ``ir``.
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     second_raw = ir.get("observed_at_second_location")
@@ -515,12 +518,12 @@ def _visibility_us_extension(ir: dict[str, Any]) -> str:
 
     Parameters
     ----------
-    ir : object
+    ir : dict[str, Any]
         Argument ``ir``.
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     chunks: list[str] = []
@@ -574,12 +577,12 @@ def _cloud_layer_us_extension(ir: dict[str, Any]) -> str:
 
     Parameters
     ----------
-    ir : object
+    ir : dict[str, Any]
         Argument ``ir``.
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     chunks: list[str] = []
@@ -618,12 +621,12 @@ def _max_min_temperatures_addendum_inner(ir: dict[str, Any]) -> str:
 
     Parameters
     ----------
-    ir : object
+    ir : dict[str, Any]
         Argument ``ir``.
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     rows_raw = ir.get("max_min_temperatures")
@@ -656,16 +659,18 @@ def _measure_or_nil(tag: str, value: object, *, uom: str) -> str:
 
     Parameters
     ----------
-    tag : object
+    tag : str
         Argument ``tag``.
+
     value : object
         Argument ``value``.
-    uom : object
+
+    uom : str
         Argument ``uom``.
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     if value is None:
@@ -680,12 +685,12 @@ def _processed_quantity_addendum_inner(ir: dict[str, Any]) -> str:
 
     Parameters
     ----------
-    ir : object
+    ir : dict[str, Any]
         Argument ``ir``.
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     qty_raw = ir.get("processed_quantities")
@@ -728,12 +733,12 @@ def _recent_weather_addendum_inner(ir: dict[str, Any]) -> str:
 
     Parameters
     ----------
-    ir : object
+    ir : dict[str, Any]
         Argument ``ir``.
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     rows_raw = ir.get("recent_weather_us")
@@ -787,12 +792,12 @@ def _addendum_extension(ir: dict[str, Any]) -> str:
 
     Parameters
     ----------
-    ir : object
+    ir : dict[str, Any]
         Argument ``ir``.
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     free_text = str(ir.get("remarks_free_text") or "").strip()
@@ -881,12 +886,12 @@ def _peak_wind_extension(ir: dict[str, Any]) -> str:
 
     Parameters
     ----------
-    ir : object
+    ir : dict[str, Any]
         Argument ``ir``.
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     if ir.get("peak_wind_dir_deg") is None:
@@ -912,12 +917,12 @@ def _wind_shift_extension(ir: dict[str, Any]) -> str:
 
     Parameters
     ----------
-    ir : object
+    ir : dict[str, Any]
         Argument ``ir``.
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     if ir.get("wind_shift_hour") is None:
@@ -942,12 +947,12 @@ def _variable_rvr_extension(ir: dict[str, Any]) -> str:
 
     Parameters
     ----------
-    ir : object
+    ir : dict[str, Any]
         Argument ``ir``.
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     rvr_raw = ir.get("rvr")
@@ -982,11 +987,13 @@ def emit_metar_speci_iwxxm_us(
 
     Parameters
     ----------
-    ir :
+    ir : dict[str, Any]
         Parsed METAR/SPECI IR (including optional REMARKS fields).
-    product :
+
+    product : str
         ``METAR`` or ``SPECI``.
-    iwxxm_version :
+
+    iwxxm_version : str
         Release line (namespace selection).
 
     Returns
@@ -1076,12 +1083,12 @@ def _with_us_namespace(xml: str) -> str:
 
     Parameters
     ----------
-    xml : object
+    xml : str
         Argument ``xml``.
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     if "xmlns:iwxxm-us=" in xml:
@@ -1095,16 +1102,18 @@ def _inject_evolving_extension(xml: str, extension: str, closing_tag: str) -> st
 
     Parameters
     ----------
-    xml : object
+    xml : str
         Argument ``xml``.
-    extension : object
+
+    extension : str
         Argument ``extension``.
-    closing_tag : object
+
+    closing_tag : str
         Argument ``closing_tag``.
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     if not extension or closing_tag not in xml:
@@ -1118,14 +1127,15 @@ def _airmet_subperiod_extension(parent_ir: dict[str, Any], outlook: dict[str, An
 
     Parameters
     ----------
-    parent_ir : object
+    parent_ir : dict[str, Any]
         Argument ``parent_ir``.
-    outlook : object
+
+    outlook : dict[str, Any]
         Argument ``outlook``.
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     from tac2iwxxm.time_anchor import iso_stamp
@@ -1170,14 +1180,15 @@ def _flight_level_layer_xml(alt: str, gml_id: str) -> str:
 
     Parameters
     ----------
-    alt : object
+    alt : str
         Argument ``alt``.
-    gml_id : object
+
+    gml_id : str
         Argument ``gml_id``.
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     if alt.upper() == "SFC":
@@ -1198,16 +1209,18 @@ def _inline_freezing_levels_xml(lo: int, hi: int, *, prefix: str) -> str:
 
     Parameters
     ----------
-    lo : object
+    lo : int
         Argument ``lo``.
-    hi : object
+
+    hi : int
         Argument ``hi``.
-    prefix : object
+
+    prefix : str
         Argument ``prefix``.
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     return f"""
@@ -1231,16 +1244,18 @@ def _freezing_level_isopleth_xml(isopleth: dict[str, Any], idx: int, *, multiple
 
     Parameters
     ----------
-    isopleth : object
+    isopleth : dict[str, Any]
         Argument ``isopleth``.
-    idx : object
+
+    idx : int
         Argument ``idx``.
-    multiple : object
+
+    multiple : bool
         Argument ``multiple``.
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     alt = str(isopleth["alt"])
@@ -1260,12 +1275,12 @@ def _airmet_freezing_level_forecast_extension(ir: dict[str, Any]) -> str:
 
     Parameters
     ----------
-    ir : object
+    ir : dict[str, Any]
         Argument ``ir``.
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     section_raw = ir.get("frzlvl_section")
@@ -1317,14 +1332,15 @@ def _inject_first_evolving_extension(xml: str, inner: str) -> str:
 
     Parameters
     ----------
-    xml : object
+    xml : str
         Argument ``xml``.
-    inner : object
+
+    inner : str
         Argument ``inner``.
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     if not inner:
@@ -1347,12 +1363,12 @@ def _airmet_weather_hazards_extension(ir: dict[str, Any]) -> str:
 
     Parameters
     ----------
-    ir : object
+    ir : dict[str, Any]
         Argument ``ir``.
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     hazard_raw = ir.get("us_airmet_hazard")
@@ -1382,12 +1398,12 @@ def _sigmet_weather_hazards_extension(ir: dict[str, Any]) -> str:
 
     Parameters
     ----------
-    ir : object
+    ir : dict[str, Any]
         Argument ``ir``.
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     hazard_raw = ir.get("us_sigmet_hazard")
@@ -1418,20 +1434,21 @@ def emit_taf_iwxxm_us(ir: dict[str, Any], *, iwxxm_version: str) -> str:
 
     Parameters
     ----------
-    ir :
+    ir : dict[str, Any]
         Parsed TAF IR (optional ``forecast_altimeter_inhg``).
-    iwxxm_version :
+
+    iwxxm_version : str
         Release line.
+
+    Returns
+    -------
+    str
+        TAF annex3 body plus optional ``MeteorologicalAerodromeForecastExtension``.
 
     Examples
     --------
     >>> 1 + 1  # docstring smoke (emit_taf_iwxxm_us)
     2
-
-    Returns
-    -------
-    object
-        Return value.
     """
     from tac2iwxxm.profiles.annex3_products import emit_taf_annex3
 
@@ -1459,22 +1476,23 @@ def emit_sigmet_iwxxm_us(ir: dict[str, Any], *, iwxxm_version: str) -> str:
     """
     Emit SIGMET annex3 body with IWXXM-US namespace and weather-hazard extensions.
 
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Parsed product fields.
+
+    iwxxm_version : str
+        IWXXM release line.
+
+    Returns
+    -------
+    str
+        SIGMET annex3 body with IWXXM-US namespace and weather-hazard extensions.
+
     Examples
     --------
     >>> 1 + 1  # docstring smoke (emit_sigmet_iwxxm_us)
     2
-
-    Parameters
-    ----------
-    ir : object
-        Argument ``ir``.
-    iwxxm_version : object
-        Argument ``iwxxm_version``.
-
-    Returns
-    -------
-    object
-        Return value.
     """
     from tac2iwxxm.profiles.annex3_products import emit_sigmet_annex3
 
@@ -1490,22 +1508,23 @@ def emit_airmet_iwxxm_us(ir: dict[str, Any], *, iwxxm_version: str) -> str:
     """
     Emit AIRMET annex3 body with IWXXM-US namespace and weather-hazard extensions.
 
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Parsed product fields.
+
+    iwxxm_version : str
+        IWXXM release line.
+
+    Returns
+    -------
+    str
+        AIRMET annex3 body with IWXXM-US namespace and weather-hazard extensions.
+
     Examples
     --------
     >>> 1 + 1  # docstring smoke (emit_airmet_iwxxm_us)
     2
-
-    Parameters
-    ----------
-    ir : object
-        Argument ``ir``.
-    iwxxm_version : object
-        Argument ``iwxxm_version``.
-
-    Returns
-    -------
-    object
-        Return value.
     """
     from tac2iwxxm.profiles.annex3_products import emit_airmet_annex3
 

@@ -43,8 +43,10 @@ def fit_year_month(year: int, month: int, day: int) -> tuple[int, int]:
     ----------
     year : int
         Bulletin year.
+
     month : int
         Bulletin month.
+
     day : int
         Day of month from the TAC.
 
@@ -154,6 +156,7 @@ def anchored_prefix(ir: Mapping[str, Any], day: int) -> str | None:
     ----------
     ir : Mapping[str, Any]
         Parsed report. ``time_anchor`` wins over the conversion-scoped anchor.
+
     day : int
         TAC day. A day that month does not contain raises ``ImpossibleTacDay``.
 
@@ -197,12 +200,16 @@ def iso_stamp(
     ----------
     ir : Mapping[str, Any]
         Parsed report.
+
     day : int
         TAC day.
+
     hour : int
         Hour.
+
     minute : int
         Minute.
+
     legacy : str
         Example pin such as ``2023-06`` or ``2012-08`` used when no anchor is set.
 

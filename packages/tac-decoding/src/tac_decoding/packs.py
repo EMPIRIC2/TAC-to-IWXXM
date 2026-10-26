@@ -50,8 +50,8 @@ class PackSchemaError(ValueError):
 
     Attributes
     ----------
-    _ : object
-        See implementation.
+    args : tuple
+        Arguments passed to the exception constructor.
     """
 
 
@@ -62,8 +62,14 @@ class Rule:
 
     Attributes
     ----------
-    _ : object
-        See implementation.
+    id : str
+        ID.
+    explain : str
+        Explain.
+    patterns : tuple[re.Pattern[str], ...]
+        Patterns.
+    label : str
+        Label. Default ``''``.
     """
 
     id: str
@@ -79,8 +85,12 @@ class Pack:
 
     Attributes
     ----------
-    _ : object
-        See implementation.
+    id : str
+        ID.
+    layout : str
+        Layout.
+    rules : tuple[Rule, ...]
+        Rules.
     """
 
     id: str
@@ -95,20 +105,20 @@ def load_packs(profile: str | None = None) -> tuple[Pack, ...]:
     An overlay file with ``extends`` applies only when ``profile`` is one of its
     ``profiles``. Omitting ``profile`` leaves those overlays off the result.
 
+    Parameters
+    ----------
+    profile : str | None, optional
+        Semantic profile id.
+
+    Returns
+    -------
+    tuple[Pack, ...]
+        Built-in packs, with ``TAC_DECODING_PACK_DIR`` applied for ``profile``.
+
     Examples
     --------
     >>> 1 + 1  # docstring smoke (load_packs)
     2
-
-    Parameters
-    ----------
-    profile : object
-        Argument ``profile``.
-
-    Returns
-    -------
-    object
-        Return value.
     """
     overlay = os.environ.get(PACK_DIR_ENV, "").strip()
     if not overlay:
@@ -136,7 +146,7 @@ def _load_builtins_cached() -> tuple[Pack, ...]:
 
     Returns
     -------
-    object
+    tuple[Pack, ...]
         Return value.
     """
     return _merge_packs("")
@@ -148,14 +158,15 @@ def _merge_packs(overlay: str, profile: str | None = None) -> tuple[Pack, ...]:
 
     Parameters
     ----------
-    overlay : object
+    overlay : str
         Argument ``overlay``.
-    profile : object
+
+    profile : str | None, optional
         Argument ``profile``.
 
     Returns
     -------
-    object
+    tuple[Pack, ...]
         Return value.
     """
     merged = {pack_id: Pack(pack_id, layout) for pack_id, layout in _BUILTINS}
@@ -174,11 +185,13 @@ def _apply_extension_dir(merged: dict[str, Pack], directory: Path, profile: str 
 
     Parameters
     ----------
-    merged : object
+    merged : dict[str, Pack]
         Argument ``merged``.
-    directory : object
+
+    directory : Path
         Argument ``directory``.
-    profile : object
+
+    profile : str | None
         Argument ``profile``.
     """
     if not directory.is_dir():
@@ -209,14 +222,15 @@ def _read_extension(path: Path, merged: dict[str, Pack]) -> tuple[tuple[str, ...
 
     Parameters
     ----------
-    path : object
+    path : Path
         Argument ``path``.
-    merged : object
+
+    merged : dict[str, Pack]
         Argument ``merged``.
 
     Returns
     -------
-    object
+    tuple[tuple[str, ...], Pack, bool]
         Return value.
     """
     mapping = _load_mapping(path)
@@ -260,14 +274,15 @@ def _merge_rules(base: tuple[Rule, ...], extra: tuple[Rule, ...]) -> tuple[Rule,
 
     Parameters
     ----------
-    base : object
+    base : tuple[Rule, ...]
         Argument ``base``.
-    extra : object
+
+    extra : tuple[Rule, ...]
         Argument ``extra``.
 
     Returns
     -------
-    object
+    tuple[Rule, ...]
         Return value.
     """
     replacement = {rule.id: rule for rule in extra}
@@ -283,12 +298,12 @@ def _load_mapping(path: Path) -> dict[str, object]:
 
     Parameters
     ----------
-    path : object
+    path : Path
         Argument ``path``.
 
     Returns
     -------
-    object
+    dict[str, object]
         Return value.
     """
     text = path.read_text(encoding="utf-8")
@@ -317,12 +332,12 @@ def _read_overlay(directory: Path) -> tuple[Pack, ...]:
 
     Parameters
     ----------
-    directory : object
+    directory : Path
         Argument ``directory``.
 
     Returns
     -------
-    object
+    tuple[Pack, ...]
         Return value.
     """
     found: list[Pack] = []
@@ -339,12 +354,12 @@ def _read_file(path: Path) -> Pack:
 
     Parameters
     ----------
-    path : object
+    path : Path
         Argument ``path``.
 
     Returns
     -------
-    object
+    Pack
         Return value.
     """
     mapping = _load_mapping(path)
@@ -365,16 +380,18 @@ def _parse_rules(data: dict[str, object], layout: str, name: str) -> tuple[Rule,
 
     Parameters
     ----------
-    data : object
+    data : dict[str, object]
         Argument ``data``.
-    layout : object
+
+    layout : str
         Argument ``layout``.
-    name : object
+
+    name : str
         Argument ``name``.
 
     Returns
     -------
-    object
+    tuple[Rule, ...]
         Return value.
     """
     raw = data.get("rules", [])
@@ -397,16 +414,19 @@ def _parse_rule(item: object, layout: str, name: str, seen: set[str]) -> Rule:
     ----------
     item : object
         Argument ``item``.
-    layout : object
+
+    layout : str
         Argument ``layout``.
-    name : object
+
+    name : str
         Argument ``name``.
-    seen : object
+
+    seen : set[str]
         Argument ``seen``.
 
     Returns
     -------
-    object
+    Rule
         Return value.
     """
     if not isinstance(item, dict):
@@ -441,18 +461,21 @@ def _token_rule(item: dict[str, object], rule_id: str, explain: str, name: str) 
 
     Parameters
     ----------
-    item : object
+    item : dict[str, object]
         Argument ``item``.
-    rule_id : object
+
+    rule_id : str
         Argument ``rule_id``.
-    explain : object
+
+    explain : str
         Argument ``explain``.
-    name : object
+
+    name : str
         Argument ``name``.
 
     Returns
     -------
-    object
+    Rule
         Return value.
     """
     if "label" in item:
@@ -489,18 +512,21 @@ def _label_rule(item: dict[str, object], rule_id: str, explain: str, name: str) 
 
     Parameters
     ----------
-    item : object
+    item : dict[str, object]
         Argument ``item``.
-    rule_id : object
+
+    rule_id : str
         Argument ``rule_id``.
-    explain : object
+
+    explain : str
         Argument ``explain``.
-    name : object
+
+    name : str
         Argument ``name``.
 
     Returns
     -------
-    object
+    Rule
         Return value.
     """
     if "pattern" in item:

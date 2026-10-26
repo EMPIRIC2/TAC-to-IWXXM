@@ -56,8 +56,22 @@ class Wis2Params:
 
     Attributes
     ----------
-    _ : object
-        See implementation.
+    mqtt_host : str
+        Mqtt host.
+    mqtt_topic : str
+        Mqtt topic.
+    dataset_url : str
+        Dataset URL.
+    mqtt_port : int, optional
+        Mqtt port. By default ``8883``.
+    centre_id : str or None, optional
+        Centre ID. By default ``None``.
+    mqtt_username : str or None, optional
+        Mqtt username. By default ``None``.
+    mqtt_password : str or None, optional
+        Mqtt password. By default ``None``.
+    use_tls : bool, optional
+        Use tls. By default ``True``.
     """
 
     mqtt_host: str
@@ -77,8 +91,14 @@ class Wis2PublishResult:
 
     Attributes
     ----------
-    _ : object
-        See implementation.
+    ok : bool
+        True when the result succeeded.
+    dataset_url : str
+        Dataset URL.
+    mqtt_topic : str
+        Mqtt topic.
+    detail : str or None, optional
+        Detail text. By default ``None``.
     """
 
     ok: bool
@@ -156,15 +176,15 @@ def build_wis2_notification(
 
     Parameters
     ----------
-    params : object
-        Argument ``params``.
-    content_type : object
-        Argument ``content_type``.
+    params : Wis2Params
+        Sink parameters.
+    content_type : str, optional
+        Content type. By default ``'application/xml'``.
 
     Returns
     -------
-    object
-        Return value.
+    dict[str, object]
+        Build a minimal WIS Notification Message-shaped JSON dict.
 
     Examples
     --------
@@ -209,19 +229,19 @@ async def wis2_preflight(
 
     Parameters
     ----------
-    params : object
-        Argument ``params``.
-    allowlist : object
-        Argument ``allowlist``.
-    mqtt : object
-        Argument ``mqtt``.
-    http : object
-        Argument ``http``.
+    params : Wis2Params
+        Sink parameters.
+    allowlist : Allowlist
+        Allowlist.
+    mqtt : MqttClient
+        Mqtt.
+    http : HttpDatasetClient
+        HTTP.
 
     Returns
     -------
-    object
-        Return value.
+    PreflightResponse
+        Check allowlist + MQTT connect + HTTP dataset reachability.
 
     Examples
     --------
@@ -274,23 +294,23 @@ async def wis2_publish(
 
     Parameters
     ----------
-    params : object
-        Argument ``params``.
-    iwxxm_xml : object
-        Argument ``iwxxm_xml``.
-    allowlist : object
-        Argument ``allowlist``.
-    mqtt : object
-        Argument ``mqtt``.
-    http : object
-        Argument ``http``.
-    content_type : object
-        Argument ``content_type``.
+    params : Wis2Params
+        Sink parameters.
+    iwxxm_xml : bytes or str
+        IWXXM XML text.
+    allowlist : Allowlist
+        Allowlist.
+    mqtt : MqttClient
+        Mqtt.
+    http : HttpDatasetClient
+        HTTP.
+    content_type : str, optional
+        Content type. By default ``'application/xml'``.
 
     Returns
     -------
-    object
-        Return value.
+    Wis2PublishResult
+        PUT IWXXM dataset over HTTP, then publish MQTT notification with canonical link.
 
     Examples
     --------

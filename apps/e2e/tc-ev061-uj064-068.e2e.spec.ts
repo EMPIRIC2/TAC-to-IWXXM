@@ -116,6 +116,11 @@ test.describe('EV-061 T2 — UJ-064 Validate IWXXM decode', () => {
   });
 });
 
+function codeFromBulletinDetail(detail: unknown): string | undefined {
+  const typed = detail as { code?: string } | string | undefined;
+  return typeof typed === 'object' && typed !== null ? typed.code : undefined;
+}
+
 test.describe('EV-061 T2 — UJ-065 AHL decode + convert', () => {
   test('UJ-065: AHL convert shows bulletin summary', async ({ page }) => {
     await openPublicConverter(page);
@@ -126,12 +131,17 @@ test.describe('EV-061 T2 — UJ-065 AHL decode + convert', () => {
     await expect(page.getByTestId('bulletin-summary')).toContainText(/2 report/i);
   });
 
+  test('bulletin detail code reads an object and ignores a string or a missing detail', () => {
+    expect(codeFromBulletinDetail({ code: 'INVALID_AHL' })).toBe('INVALID_AHL');
+    expect(codeFromBulletinDetail({})).toBeUndefined();
+    expect(codeFromBulletinDetail(undefined)).toBeUndefined();
+    expect(codeFromBulletinDetail('INVALID_AHL')).toBeUndefined();
+  });
+
   test('UJ-065: convert-bulletin malformed AHL → INVALID_AHL', async ({ request }) => {
     const { status, body } = await convertBulletin(request, AHL_MALFORMED);
     expect([400, 422]).toContain(status);
-    const detail = body.detail as { code?: string } | string | undefined;
-    const code =
-      typeof detail === 'object' && detail !== null ? detail.code : undefined;
+    const code = codeFromBulletinDetail(body.detail);
     expect(code ?? JSON.stringify(body)).toMatch(/INVALID_AHL/);
   });
 });

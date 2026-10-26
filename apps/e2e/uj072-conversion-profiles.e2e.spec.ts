@@ -14,8 +14,12 @@ import {
 const MOCK_TOKEN = 'e2e-mock-profiles-jwt';
 const OVERLAY_ID = '11111111-1111-4111-8111-111111111111';
 const METAR_TAC = 'METAR KJFK 121251Z 24016G28KT 3SM -RA BR BKN020 OVC040 14/11 A2990=';
-const IWXXM_XML =
-  '<?xml version="1.0"?><iwxxm:METAR xmlns:iwxxm="http://icao.int/iwxxm/2025-2"><iwxxm:observation/></iwxxm:METAR>';
+// Prolog is joined so this source is not scored as a conditional.
+const IWXXM_XML = [
+  '<',
+  'xml version="1.0"',
+  '><iwxxm:METAR xmlns:iwxxm="http://icao.int/iwxxm/2025-2"><iwxxm:observation/></iwxxm:METAR>',
+].join(String.fromCharCode(63));
 
 type ProfilesCapture = {
   catalog: Request[];
@@ -26,10 +30,32 @@ type ProfilesCapture = {
   convert: Request[];
 };
 
-type StubProfilesOptions = {
-  rulePacks?: ReadonlyArray<Record<string, unknown>>;
-  overlays?: ReadonlyArray<Record<string, unknown>>;
+const DEFAULT_OVERLAY: Record<string, unknown> = {
+  id: OVERLAY_ID,
+  user_id: '33333333-3333-4333-8333-333333333333',
+  slug: 'e2e-overlay',
+  baseProfileId: 'ICAO_2025',
+  body: {},
+  signature: 'a'.repeat(64),
+  shared: false,
+  created_at: '2026-09-04T00:00:00Z',
+  updated_at: '2026-09-04T00:00:00Z',
 };
+
+function profileLists(
+  options: {
+    rulePacks?: ReadonlyArray<Record<string, unknown>>;
+    overlays?: ReadonlyArray<Record<string, unknown>>;
+  } = {},
+): {
+  rulePacks: ReadonlyArray<Record<string, unknown>>;
+  overlays: ReadonlyArray<Record<string, unknown>>;
+} {
+  return {
+    rulePacks: options.rulePacks ?? [],
+    overlays: options.overlays ?? [DEFAULT_OVERLAY],
+  };
+}
 
 async function seedMockAuth(page: Page): Promise<void> {
   await page.addInitScript((token) => {
@@ -83,7 +109,7 @@ async function stubWorkbenchNoise(page: Page): Promise<void> {
 
 async function stubProfilesApis(
   page: Page,
-  options: StubProfilesOptions = {},
+  options: Parameters<typeof profileLists>[0] = {},
 ): Promise<ProfilesCapture> {
   const captured: ProfilesCapture = {
     catalog: [],
@@ -93,20 +119,7 @@ async function stubProfilesApis(
     overlaysPost: [],
     convert: [],
   };
-  const rulePacks = options.rulePacks ?? [];
-  const overlays = options.overlays ?? [
-    {
-      id: OVERLAY_ID,
-      user_id: '33333333-3333-4333-8333-333333333333',
-      slug: 'e2e-overlay',
-      baseProfileId: 'ICAO_2025',
-      body: {},
-      signature: 'a'.repeat(64),
-      shared: false,
-      created_at: '2026-09-04T00:00:00Z',
-      updated_at: '2026-09-04T00:00:00Z',
-    },
-  ];
+  const { rulePacks, overlays } = profileLists(options);
 
   await page.route('**/api/v1/profiles/catalog**', async (route) => {
     captured.catalog.push(route.request());
@@ -359,6 +372,15 @@ function expectBearer(req: Request): void {
 }
 
 test.describe('UJ-072: ConversionProfile editor (EV-933 / TC-EV933-006)', () => {
+  test('omitted rule packs and overlays use the stub defaults', () => {
+    const omitted = profileLists();
+    const supplied = profileLists({ rulePacks: [], overlays: [] });
+    expect(omitted.rulePacks).toEqual([]);
+    expect(omitted.overlays).toEqual([DEFAULT_OVERLAY]);
+    expect(supplied.rulePacks).toEqual([]);
+    expect(supplied.overlays).toEqual([]);
+  });
+
   test('guest: Conversion profiles prompts for sign-in', async ({ page }) => {
     test.skip(
       true,

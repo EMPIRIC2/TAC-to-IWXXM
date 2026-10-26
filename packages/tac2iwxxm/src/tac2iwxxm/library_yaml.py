@@ -33,8 +33,10 @@ class CaptureSummary:
 
     Attributes
     ----------
-    _ : object
-        See implementation.
+    index : int
+        Index.
+    name : str
+        Capture name.
     """
 
     index: int
@@ -48,8 +50,18 @@ class RegexDiagnostic:
 
     Attributes
     ----------
-    _ : object
-        See implementation.
+    path : str
+        Location of this pattern in the library document.
+    pattern : str
+        Regular expression text.
+    severity : RegexSeverity
+        Severity.
+    message : str
+        Human-readable message.
+    captures : tuple[CaptureSummary, ...]
+        Captures.
+    sample_matched : bool | None
+        Sample matched. Default ``None``.
     """
 
     path: str
@@ -67,8 +79,26 @@ class LibraryYamlReport:
 
     Attributes
     ----------
-    _ : object
-        See implementation.
+    valid_yaml : bool
+        Valid YAML.
+    yaml_error : str | None
+        YAML error.
+    kind : LibraryKind | None
+        Kind.
+    name : str | None
+        Library name, or ``None``.
+    lifecycle : LibraryLifecycle
+        Library lifecycle value.
+    diagnostics : tuple[RegexDiagnostic, ...]
+        Diagnostics.
+    fail_count : int
+        Fail count.
+    warn_count : int
+        Warn count.
+    can_activate : bool
+        Can activate.
+    data : dict[str, Any]
+        Data.
     """
 
     valid_yaml: bool
@@ -86,15 +116,15 @@ class LibraryYamlReport:
         """
         Serialize for JSON / API responses.
 
+        Returns
+        -------
+        dict[str, Any]
+            Serialized form for JSON / API responses.
+
         Examples
         --------
         >>> 1 + 1  # docstring smoke (to_dict)
         2
-
-        Returns
-        -------
-        object
-            Return value.
         """
         return {
             "valid_yaml": self.valid_yaml,
@@ -131,7 +161,7 @@ def _as_str(value: object) -> str | None:
 
     Returns
     -------
-    object
+    str | None
         Return value.
     """
     if isinstance(value, str) and value.strip():
@@ -150,7 +180,7 @@ def _as_mapping(value: object) -> dict[str, Any]:
 
     Returns
     -------
-    object
+    dict[str, Any]
         Return value.
     """
     if not isinstance(value, dict):
@@ -172,7 +202,7 @@ def _as_list(value: object) -> list[object]:
 
     Returns
     -------
-    object
+    list[object]
         Return value.
     """
     if not isinstance(value, list):
@@ -186,14 +216,15 @@ def _extract_patterns(kind: LibraryKind, data: dict[str, Any]) -> list[tuple[str
 
     Parameters
     ----------
-    kind : object
+    kind : LibraryKind
         Argument ``kind``.
-    data : object
+
+    data : dict[str, Any]
         Argument ``data``.
 
     Returns
     -------
-    object
+    list[tuple[str, str, str | None]]
         Return value.
     """
     found: list[tuple[str, str, str | None]] = []
@@ -247,14 +278,15 @@ def _rule_rows_for_checks(kind: LibraryKind, data: dict[str, Any]) -> list[tuple
 
     Parameters
     ----------
-    kind : object
+    kind : LibraryKind
         Argument ``kind``.
-    data : object
+
+    data : dict[str, Any]
         Argument ``data``.
 
     Returns
     -------
-    object
+    list[tuple[str, dict[str, Any]]]
         Return value.
     """
     found: list[tuple[str, dict[str, Any]]] = []
@@ -284,14 +316,15 @@ def _numeric_check_diagnostics(
 
     Parameters
     ----------
-    kind : object
+    kind : LibraryKind
         Argument ``kind``.
-    data : object
+
+    data : dict[str, Any]
         Argument ``data``.
 
     Returns
     -------
-    object
+    tuple[RegexDiagnostic, ...]
         Return value.
     """
     out: list[RegexDiagnostic] = []
@@ -348,24 +381,26 @@ def diagnose_regex(pattern: str, *, sample: str | None = None, path: str = "patt
     """
     Compile one pattern and classify ok / warn / fail.
 
+    Parameters
+    ----------
+    pattern : str
+        Regular expression to compile.
+
+    sample : str | None, optional
+        Sample TAC or text to try.
+
+    path : str, optional
+        Path recorded on the diagnostic.
+
+    Returns
+    -------
+    RegexDiagnostic
+        One pattern and classify ok / warn / fail.
+
     Examples
     --------
     >>> 1 + 1  # docstring smoke (diagnose_regex)
     2
-
-    Parameters
-    ----------
-    pattern : object
-        Argument ``pattern``.
-    sample : object
-        Argument ``sample``.
-    path : object
-        Argument ``path``.
-
-    Returns
-    -------
-    object
-        Return value.
     """
     try:
         compiled = re.compile(pattern)
@@ -422,12 +457,12 @@ def _secret_violation(data: dict[str, Any]) -> str | None:
 
     Parameters
     ----------
-    data : object
+    data : dict[str, Any]
         Argument ``data``.
 
     Returns
     -------
-    object
+    str | None
         Return value.
     """
     blob = yaml.safe_dump(data, sort_keys=False)
@@ -445,24 +480,26 @@ def validate_library_yaml(
     """
     Parse YAML, enforce kind/name, and collect regex diagnostics.
 
+    Parameters
+    ----------
+    raw : str
+        Library YAML mapping.
+
+    expected_kind : LibraryKind | None, optional
+        Expected library kind.
+
+    lifecycle : LibraryLifecycle, optional
+        Library lifecycle value.
+
+    Returns
+    -------
+    LibraryYamlReport
+        YAML, enforce kind/name, and collect regex diagnostics.
+
     Examples
     --------
     >>> 1 + 1  # docstring smoke (validate_library_yaml)
     2
-
-    Parameters
-    ----------
-    raw : object
-        Argument ``raw``.
-    expected_kind : object
-        Argument ``expected_kind``.
-    lifecycle : object
-        Argument ``lifecycle``.
-
-    Returns
-    -------
-    object
-        Return value.
     """
     stripped = raw.strip()
     if not stripped:

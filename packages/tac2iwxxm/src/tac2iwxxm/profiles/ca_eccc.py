@@ -47,14 +47,15 @@ def _ca_gml_id(ir: dict[str, Any], product: str) -> str:
 
     Parameters
     ----------
-    ir : object
+    ir : dict[str, Any]
         Argument ``ir``.
-    product : object
+
+    product : str
         Argument ``product``.
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     ca_root = str(ir.get("ca_iwxxm_root") or product).lower()
@@ -81,12 +82,12 @@ def _prepare_ca_ir(ir: dict[str, Any]) -> dict[str, Any]:
 
     Parameters
     ----------
-    ir : object
+    ir : dict[str, Any]
         Argument ``ir``.
 
     Returns
     -------
-    object
+    dict[str, Any]
         Return value.
     """
     out = dict(ir)
@@ -105,12 +106,12 @@ def _ca_pressure_change_href(ir: dict[str, Any]) -> str | None:
 
     Parameters
     ----------
-    ir : object
+    ir : dict[str, Any]
         Argument ``ir``.
 
     Returns
     -------
-    object
+    str | None
         Return value.
     """
     href = ir.get("pressure_change_href")
@@ -129,12 +130,12 @@ def _ca_observing_system_href(ir: dict[str, Any]) -> str | None:
 
     Parameters
     ----------
-    ir : object
+    ir : dict[str, Any]
         Argument ``ir``.
 
     Returns
     -------
-    object
+    str | None
         Return value.
     """
     explicit = ir.get("ca_observing_system_href")
@@ -156,14 +157,15 @@ def _ca_iwxxm_root_tag(ir: dict[str, Any], product: str) -> tuple[str, str]:
 
     Parameters
     ----------
-    ir : object
+    ir : dict[str, Any]
         Argument ``ir``.
-    product : object
+
+    product : str
         Argument ``product``.
 
     Returns
     -------
-    object
+    tuple[str, str]
         Return value.
     """
     ca_root = str(ir.get("ca_iwxxm_root") or product).upper()
@@ -178,12 +180,12 @@ def _density_altitude_xml(ir: dict[str, Any]) -> str:
 
     Parameters
     ----------
-    ir : object
+    ir : dict[str, Any]
         Argument ``ir``.
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     if ir.get("density_altitude_missing"):
@@ -200,12 +202,12 @@ def _icing_addendum_xml(ir: dict[str, Any]) -> str:
 
     Parameters
     ----------
-    ir : object
+    ir : dict[str, Any]
         Argument ``ir``.
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     href = ir.get("ca_icing_href")
@@ -220,12 +222,12 @@ def _processed_quantity_addendum_inner(ir: dict[str, Any]) -> str:
 
     Parameters
     ----------
-    ir : object
+    ir : dict[str, Any]
         Argument ``ir``.
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     qty_raw = ir.get("processed_quantities")
@@ -262,12 +264,12 @@ def _addendum_extension(ir: dict[str, Any]) -> str:
 
     Parameters
     ----------
-    ir : object
+    ir : dict[str, Any]
         Argument ``ir``.
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     free_text = str(ir.get("remarks_free_text") or "").strip()
@@ -315,12 +317,12 @@ def _ca_taf_gml_id(ir: dict[str, Any]) -> str:
 
     Parameters
     ----------
-    ir : object
+    ir : dict[str, Any]
         Argument ``ir``.
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     station = str(ir["station"]).lower()
@@ -340,12 +342,12 @@ def _prepare_ca_taf_ir(ir: dict[str, Any]) -> dict[str, Any]:
 
     Parameters
     ----------
-    ir : object
+    ir : dict[str, Any]
         Argument ``ir``.
 
     Returns
     -------
-    object
+    dict[str, Any]
         Return value.
     """
     out = dict(ir)
@@ -364,12 +366,12 @@ def _nclws_extension_inner(ir: dict[str, Any]) -> str:
 
     Parameters
     ----------
-    ir : object
+    ir : dict[str, Any]
         Argument ``ir``.
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     nclws = ir.get("nclws")
@@ -400,12 +402,12 @@ def _ca_taf_weather_extension_inner(ir: dict[str, Any]) -> str:
 
     Parameters
     ----------
-    ir : object
+    ir : dict[str, Any]
         Argument ``ir``.
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     hrefs = ir.get("ca_forecast_weather_hrefs")
@@ -425,12 +427,12 @@ def _taf_forecast_extension(ir: dict[str, Any]) -> str:
 
     Parameters
     ----------
-    ir : object
+    ir : dict[str, Any]
         Argument ``ir``.
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     inner = "\n".join(
@@ -459,12 +461,12 @@ def _nclws_extension(ir: dict[str, Any]) -> str:
 
     Parameters
     ----------
-    ir : object
+    ir : dict[str, Any]
         Argument ``ir``.
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     return _taf_forecast_extension(ir)
@@ -476,14 +478,15 @@ def _inject_ca_taf_namespace(xml: str, *, iwxxm_version: str) -> str:
 
     Parameters
     ----------
-    xml : object
+    xml : str
         Argument ``xml``.
-    iwxxm_version : object
+
+    iwxxm_version : str
         Argument ``iwxxm_version``.
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     needle = f'<iwxxm:TAF xmlns:iwxxm="{NS[iwxxm_version]}"'
@@ -502,14 +505,15 @@ def _inject_ca_taf_gml_id(xml: str, *, gml_id: str) -> str:
 
     Parameters
     ----------
-    xml : object
+    xml : str
         Argument ``xml``.
-    gml_id : object
+
+    gml_id : str
         Argument ``gml_id``.
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     return re.sub(r'gml:id="taf\.[^"]+"', f'gml:id="{gml_id}"', xml, count=1)
@@ -521,12 +525,12 @@ def _gfa_structured_extension(ir: dict[str, Any]) -> str:
 
     Parameters
     ----------
-    ir : object
+    ir : dict[str, Any]
         Argument ``ir``.
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     structured = ir.get("ca_gfa_structured")
@@ -586,14 +590,15 @@ def _inject_airmet_gfa_extension(xml: str, extension: str) -> str:
 
     Parameters
     ----------
-    xml : object
+    xml : str
         Argument ``xml``.
-    extension : object
+
+    extension : str
         Argument ``extension``.
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     if not extension:
@@ -610,12 +615,12 @@ def _ca_airmet_gml_id(ir: dict[str, Any]) -> str:
 
     Parameters
     ----------
-    ir : object
+    ir : dict[str, Any]
         Argument ``ir``.
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     fir = str(ir["fir"]).lower()
@@ -632,12 +637,12 @@ def _ca_airmet_phenomenon_href(ir: dict[str, Any]) -> str | None:
 
     Parameters
     ----------
-    ir : object
+    ir : dict[str, Any]
         Argument ``ir``.
 
     Returns
     -------
-    object
+    str | None
         Return value.
     """
     code = ir.get("ca_gfa_phenomenon")
@@ -652,14 +657,15 @@ def _inject_ca_airmet_namespace(xml: str, *, iwxxm_version: str) -> str:
 
     Parameters
     ----------
-    xml : object
+    xml : str
         Argument ``xml``.
-    iwxxm_version : object
+
+    iwxxm_version : str
         Argument ``iwxxm_version``.
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     needle = f'<iwxxm:AIRMET xmlns:iwxxm="{NS[iwxxm_version]}"'
@@ -678,14 +684,15 @@ def _inject_ca_airmet_gml_id(xml: str, *, gml_id: str) -> str:
 
     Parameters
     ----------
-    xml : object
+    xml : str
         Argument ``xml``.
-    gml_id : object
+
+    gml_id : str
         Argument ``gml_id``.
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     return re.sub(r'gml:id="airmet\.[^"]+"', f'gml:id="{gml_id}"', xml, count=1)
@@ -718,9 +725,10 @@ def emit_sigmet_ca_eccc(ir: dict[str, Any], *, iwxxm_version: str) -> str:
 
     Parameters
     ----------
-    ir :
+    ir : dict[str, Any]
         Parsed intermediate representation from ``parse_sigmet``.
-    iwxxm_version :
+
+    iwxxm_version : str
         Must be ``3.0.0``.
 
     Returns
@@ -743,9 +751,10 @@ def emit_vaa_ca_eccc(ir: dict[str, Any], *, iwxxm_version: str) -> str:
 
     Parameters
     ----------
-    ir :
+    ir : dict[str, Any]
         Parsed intermediate representation from ``parse_vaa``.
-    iwxxm_version :
+
+    iwxxm_version : str
         Must be ``3.0.0``.
 
     Returns
@@ -768,9 +777,10 @@ def emit_airmet_ca_eccc(ir: dict[str, Any], *, iwxxm_version: str) -> str:
 
     Parameters
     ----------
-    ir :
+    ir : dict[str, Any]
         Parsed intermediate representation from ``parse_airmet``.
-    iwxxm_version :
+
+    iwxxm_version : str
         Must be ``3.0.0`` (MSC operational line).
 
     Returns
@@ -807,9 +817,10 @@ def emit_taf_ca_eccc(ir: dict[str, Any], *, iwxxm_version: str) -> str:
 
     Parameters
     ----------
-    ir :
+    ir : dict[str, Any]
         Parsed intermediate representation from ``parse_taf``.
-    iwxxm_version :
+
+    iwxxm_version : str
         Must be ``3.0.0`` (MSC operational line).
 
     Returns
@@ -848,11 +859,13 @@ def emit_metar_speci_ca_eccc(
 
     Parameters
     ----------
-    ir :
+    ir : dict[str, Any]
         Parsed intermediate representation from ``parse_metar_speci``.
-    product :
+
+    product : str
         ``METAR`` or ``SPECI``.
-    iwxxm_version :
+
+    iwxxm_version : str
         Must be ``3.0.0`` (MSC operational line).
 
     Returns

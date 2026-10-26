@@ -29,7 +29,7 @@ def _tokens_from_mapping(raw: object) -> dict[str, str]:
 
     Returns
     -------
-    object
+    dict[str, str]
         Return value.
     """
     if not isinstance(raw, dict):
@@ -124,7 +124,7 @@ def set_location_name_resolver(resolver: LocationNameResolver | None) -> None:
 
     Parameters
     ----------
-    resolver :
+    resolver : LocationNameResolver | None
         Callable returning a place name for an ICAO designator, or ``None`` on
         miss. ``None`` clears the resolver (designator-only explanations).
 
@@ -144,11 +144,6 @@ def _load_location_name_table() -> dict[str, str]:
     The file is a mapping of designator to place name. There is no packaged
     default. A missing path, unreadable file, or non-mapping document yields
     an empty table. Never raises.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (_load_location_name_table)
-    2
 
     Returns
     -------
@@ -189,6 +184,11 @@ def resolve_location_name(icao: str) -> str | None:
     to the table. With no hook, ``TAC_DECODING_LOCATION_NAMES_PATH`` supplies
     names. A miss returns ``None`` (designator-only copy). Never raises.
 
+    Parameters
+    ----------
+    icao : str
+        ICAO location indicator.
+
     Returns
     -------
     str | None
@@ -198,11 +198,6 @@ def resolve_location_name(icao: str) -> str | None:
     --------
     >>> 1 + 1  # docstring smoke (resolve_location_name)
     2
-
-    Parameters
-    ----------
-    icao : object
-        Argument ``icao``.
     """
     designator = icao.strip().upper()
     if _location_name_resolver is not None:
@@ -219,7 +214,7 @@ def _packaged_overlay_tokens() -> dict[str, str]:
 
     Returns
     -------
-    object
+    dict[str, str]
         Return value.
     """
     try:
@@ -241,12 +236,12 @@ def _load_yaml_tokens(path: Path) -> dict[str, str]:
 
     Parameters
     ----------
-    path : object
+    path : Path
         Argument ``path``.
 
     Returns
     -------
-    object
+    dict[str, str]
         Return value.
     """
     if not path.is_file():
@@ -260,14 +255,15 @@ def _merge_tables(official: dict[str, str], overlay: dict[str, str]) -> dict[str
 
     Parameters
     ----------
-    official : object
+    official : dict[str, str]
         Argument ``official``.
-    overlay : object
+
+    overlay : dict[str, str]
         Argument ``overlay``.
 
     Returns
     -------
-    object
+    dict[str, str]
         Return value.
     """
     merged = dict(official)
@@ -302,15 +298,15 @@ def reload_glossary() -> dict[str, str]:
     """
     Clear the glossary cache and reload (tests / hot reload).
 
+    Returns
+    -------
+    dict[str, str]
+        Clear the glossary cache and reload (tests / hot reload).
+
     Examples
     --------
     >>> 1 + 1  # docstring smoke (reload_glossary)
     2
-
-    Returns
-    -------
-    object
-        Return value.
     """
     load_glossary.cache_clear()
     return load_glossary()
@@ -322,7 +318,7 @@ def meaning_for(token: str) -> str:
 
     Parameters
     ----------
-    token :
+    token : str
         TAC token (case-insensitive).
 
     Returns
@@ -344,9 +340,10 @@ def explain_glossary_token(token: str, *, fallback: str | None = None) -> str | 
 
     Parameters
     ----------
-    token :
+    token : str
         TAC token.
-    fallback :
+
+    fallback : str | None, optional
         Category-style label when the token is not in the glossary.
 
     Returns

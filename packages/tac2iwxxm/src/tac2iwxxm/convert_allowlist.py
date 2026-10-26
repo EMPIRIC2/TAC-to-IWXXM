@@ -24,7 +24,7 @@ def compose_allowlist(overrides: Sequence[str] = ()) -> dict[str, frozenset[str]
 
     Parameters
     ----------
-    overrides :
+    overrides : Sequence[str], optional
         Hydra override strings, such as ``profiles.au_bom=[METAR,TAF]``.
 
     Returns
@@ -112,7 +112,7 @@ def format_allowlist(loaded: dict[str, frozenset[str]]) -> str:
 
     Parameters
     ----------
-    loaded :
+    loaded : dict[str, frozenset[str]]
         Emit key to product codes.
 
     Returns

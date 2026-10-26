@@ -86,12 +86,12 @@ def _modifier_flags(joined: str) -> dict[str, bool]:
 
     Parameters
     ----------
-    joined : object
+    joined : str
         Argument ``joined``.
 
     Returns
     -------
-    object
+    dict[str, bool]
         Return value.
     """
     upper = joined.upper()
@@ -108,12 +108,12 @@ def _parse_clouds(text: str) -> list[dict[str, Any]]:
 
     Parameters
     ----------
-    text : object
+    text : str
         Argument ``text``.
 
     Returns
     -------
-    object
+    list[dict[str, Any]]
         Return value.
     """
     layers: list[dict[str, Any]] = []
@@ -136,9 +136,10 @@ def _parse_wind(text: str, target: dict[str, Any]) -> None:
 
     Parameters
     ----------
-    text : object
+    text : str
         Argument ``text``.
-    target : object
+
+    target : dict[str, Any]
         Argument ``target``.
     """
     wind = _WIND.search(text)
@@ -164,12 +165,12 @@ def _parse_wx(text: str) -> list[str]:
 
     Parameters
     ----------
-    text : object
+    text : str
         Argument ``text``.
 
     Returns
     -------
-    object
+    list[str]
         Return value.
     """
     return [m.group("wx") for m in _WX_TOKEN.finditer(text)]
@@ -184,12 +185,12 @@ def _ca_forecast_weather_hrefs(wx_tokens: list[str]) -> list[str]:
 
     Parameters
     ----------
-    wx_tokens : object
+    wx_tokens : list[str]
         Argument ``wx_tokens``.
 
     Returns
     -------
-    object
+    list[str]
         Return value.
     """
     hrefs: list[str] = []
@@ -203,12 +204,12 @@ def _parse_nclws(text: str) -> dict[str, Any] | None:
 
     Parameters
     ----------
-    text : object
+    text : str
         Argument ``text``.
 
     Returns
     -------
-    object
+    dict[str, Any] | None
         Return value.
     """
     match = _NCLWS.search(text)
@@ -227,14 +228,15 @@ def _parse_forecast_body(text: str, *, cavok_ok: bool = True) -> dict[str, Any]:
 
     Parameters
     ----------
-    text : object
+    text : str
         Argument ``text``.
-    cavok_ok : object
+
+    cavok_ok : bool, optional
         Argument ``cavok_ok``.
 
     Returns
     -------
-    object
+    dict[str, Any]
         Return value.
     """
     out: dict[str, Any] = {}
@@ -287,16 +289,18 @@ def _taf_day_hour_stamp(ir: dict[str, Any], ddhh: str, *, minute: int = 0) -> st
 
     Parameters
     ----------
-    ir : object
+    ir : dict[str, Any]
         Argument ``ir``.
-    ddhh : object
+
+    ddhh : str
         Argument ``ddhh``.
-    minute : object
+
+    minute : int, optional
         Argument ``minute``.
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     legacy = "2012-08" if ir.get("station") == "YUDO" else "2023-06"
@@ -311,12 +315,12 @@ def _taf_valid_end_stamp(ir: dict[str, Any]) -> str:
 
     Parameters
     ----------
-    ir : object
+    ir : dict[str, Any]
         Argument ``ir``.
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     legacy = "2012-08" if ir.get("station") == "YUDO" else "2023-06"
@@ -335,14 +339,15 @@ def _parse_change_groups(ir: dict[str, Any], body: str) -> list[dict[str, Any]]:
 
     Parameters
     ----------
-    ir : object
+    ir : dict[str, Any]
         Argument ``ir``.
-    body : object
+
+    body : str
         Argument ``body``.
 
     Returns
     -------
-    object
+    list[dict[str, Any]]
         Return value.
     """
     changes: list[dict[str, Any]] = []
@@ -424,9 +429,10 @@ def parse_taf(tac: str, *, product: str = "TAF") -> dict[str, Any]:
 
     Parameters
     ----------
-    tac :
+    tac : str
         TAC text (optional leading ``TAF`` keyword).
-    product :
+
+    product : str, optional
         Expected ``TAF``.
 
     Returns

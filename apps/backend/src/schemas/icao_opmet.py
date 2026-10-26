@@ -54,6 +54,7 @@ class TranslationRecord(BaseModel):
     Captures metadata about each TAC→IWXXM translation performed by the centre.
     Supports indefinite retention as per user decision 1.
 
+
     Attributes
     ----------
     _ : object
@@ -120,6 +121,7 @@ class TranslationStatistics(BaseModel):
 
     Provides summary metrics for a given time period and optional filters.
 
+
     Attributes
     ----------
     _ : object
@@ -183,6 +185,7 @@ class TranslationStatisticsRequest(BaseModel):
     """
     Request parameters for translation statistics query.
 
+
     Attributes
     ----------
     _ : object
@@ -215,6 +218,7 @@ class TranslationStatisticsRequest(BaseModel):
 class TranslationCentreInfo(BaseModel):
     """
     Translation Centre identification metadata.
+
 
     Attributes
     ----------

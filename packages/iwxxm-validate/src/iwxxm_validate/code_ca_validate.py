@@ -20,7 +20,7 @@ def validate_code_ca_membership(xml_content: str) -> list[Issue]:
 
     Parameters
     ----------
-    xml_content :
+    xml_content : str
         IWXXM XML document.
 
     Returns

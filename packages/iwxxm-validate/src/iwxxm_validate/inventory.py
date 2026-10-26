@@ -21,8 +21,8 @@ class InventoryError(ValueError):
 
     Attributes
     ----------
-    _ : object
-        See implementation.
+    args : tuple
+        Arguments passed to the exception constructor.
     """
 
 
@@ -54,7 +54,7 @@ def load_assert_inventory(pin: str) -> frozenset[str]:
 
     Parameters
     ----------
-    pin :
+    pin : str
         IWXXM release directory name under the schema root.
 
     Examples
@@ -64,8 +64,8 @@ def load_assert_inventory(pin: str) -> frozenset[str]:
 
     Returns
     -------
-    object
-        Return value.
+    frozenset[str]
+        Schematron pattern ids for ``pin`` (for example ``2025-2``).
     """
     pin_root = vendor_iwxxm_root() / pin
     if not pin_root.is_dir():
@@ -89,13 +89,13 @@ def load_assert_inventory_from(pin_root: Path) -> frozenset[str]:
 
     Parameters
     ----------
-    pin_root : object
-        Argument ``pin_root``.
+    pin_root : Path
+        Pin root.
 
     Returns
     -------
-    object
-        Return value.
+    frozenset[str]
+        Load pattern ids from an explicit pin directory (tests and overlays).
     """
     if not pin_root.is_dir():
         msg = f"IWXXM pin directory not found: {pin_root}"

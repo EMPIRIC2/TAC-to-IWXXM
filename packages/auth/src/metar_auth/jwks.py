@@ -18,8 +18,8 @@ class JwtVerificationError(Exception):
 
     Attributes
     ----------
-    _ : object
-        See implementation.
+    args : tuple
+        Arguments passed to the exception constructor.
     """
 
 
@@ -60,9 +60,9 @@ def resolve_jwks_url(
 
     Parameters
     ----------
-    jwks_url : str or None
-        Explicit JWKS endpoint.
-    supabase_url : str or None
+    jwks_url : str or None, optional
+        Explicit JWKS endpoint. By default ``None``.
+    supabase_url : str or None, optional
         Auth project URL used to derive the default JWKS path.
 
     Returns
@@ -148,14 +148,14 @@ def verify_access_token(
     ----------
     token : str
         Bearer JWT.
-    jwks_url : str or None
-        JWKS endpoint override.
-    supabase_url : str or None
-        Used to derive JWKS URL when ``jwks_url`` unset.
-    audience : str or None
-        Optional ``aud`` claim to enforce.
-    issuer : str or None
-        Optional ``iss`` claim to enforce.
+    jwks_url : str or None, optional
+        JWKS endpoint override. By default ``None``.
+    supabase_url : str or None, optional
+        Used to derive JWKS URL when ``jwks_url`` unset. By default ``None``.
+    audience : str or None, optional
+        Optional ``aud`` claim to enforce. By default ``None``.
+    issuer : str or None, optional
+        Optional ``iss`` claim to enforce. By default ``None``.
 
     Returns
     -------

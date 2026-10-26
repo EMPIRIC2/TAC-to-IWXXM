@@ -22,7 +22,7 @@ def _build_parser() -> argparse.ArgumentParser:
 
     Returns
     -------
-    object
+    argparse.ArgumentParser
         Return value.
     """
     parser = argparse.ArgumentParser(
@@ -56,7 +56,7 @@ def main(argv: Sequence[str] | None = None) -> int:
 
     Parameters
     ----------
-    argv :
+    argv : Sequence[str] | None, optional
         Argument vector (defaults to ``sys.argv[1:]``).
 
     Returns

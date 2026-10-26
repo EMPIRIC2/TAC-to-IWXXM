@@ -463,23 +463,23 @@ def validate_iwxxm(
 
     Parameters
     ----------
-    xml_content : object
-        Argument ``xml_content``.
-    iwxxm_version : object
-        Argument ``iwxxm_version``.
-    profile : object
-        Argument ``profile``.
-    levels : object
-        Argument ``levels``.
-    product : object
-        Argument ``product``.
-    output_policy_id : object
-        Argument ``output_policy_id``.
+    xml_content : str
+        XML text.
+    iwxxm_version : str
+        IWXXM release line.
+    profile : str, optional
+        Profile id. By default ``'annex3'``.
+    levels : Sequence[str] or None, optional
+        Levels. By default ``None``.
+    product : str or None, optional
+        Product id. By default ``None``.
+    output_policy_id : str or None, optional
+        Output policy ID. By default ``None``.
 
     Returns
     -------
-    object
-        Return value.
+    ValidationReport
+        Validate IWXXM XML, then apply an output policy when ``output_policy_id`` is set.
     """
     report = _validate_iwxxm(
         xml_content,

@@ -1,5 +1,6 @@
 import { expect, test } from '@playwright/test';
 import * as fs from 'fs';
+import * as os from 'os';
 import * as path from 'path';
 import { loginAndOpenConverter } from './playwright-e2e-helpers';
 
@@ -11,7 +12,7 @@ const DEFAULT_TAC_RELATIVE_CANDIDATES = [
 const REQUIRE_TAC_FIXTURES =
   process.env.PLAYWRIGHT_REQUIRE_TAC_FIXTURES === '1' || process.env.CI === 'true';
 
-function resolveTacFilesDir(): string | null {
+function resolveTacFilesDir(searchFrom: string = process.cwd()): string | null {
   const configured = process.env.PLAYWRIGHT_TAC_FIXTURES_DIR;
   if (configured) {
     if (!fs.existsSync(configured)) {
@@ -24,9 +25,9 @@ function resolveTacFilesDir(): string | null {
 
   // playwright.config / make test-e2e-* run with cwd = apps/e2e
   const searchRoots = [
-    process.cwd(),
-    path.resolve(process.cwd(), '..'),
-    path.resolve(process.cwd(), '../..'),
+    searchFrom,
+    path.resolve(searchFrom, '..'),
+    path.resolve(searchFrom, '../..'),
   ];
   const checked: string[] = [];
   for (const root of searchRoots) {
@@ -79,7 +80,41 @@ function getTacFiles(): TacFixture[] {
   );
 }
 
+/** Search a directory that is not the repo, so missing fixture paths are visited. */
+function missingFixtureSearch(): string {
+  const previous = process.env.PLAYWRIGHT_TAC_FIXTURES_DIR;
+  delete process.env.PLAYWRIGHT_TAC_FIXTURES_DIR;
+  const scratch = fs.mkdtempSync(path.join(os.tmpdir(), 'tac-e2e-'));
+  try {
+    const found = resolveTacFilesDir(scratch);
+    return found ?? '';
+  } catch (error) {
+    return String(error);
+  } finally {
+    if (previous === undefined) {
+      delete process.env.PLAYWRIGHT_TAC_FIXTURES_DIR;
+    } else {
+      process.env.PLAYWRIGHT_TAC_FIXTURES_DIR = previous;
+    }
+    fs.rmSync(scratch, { recursive: true, force: true });
+  }
+}
+
 test.describe('TAC convert + Disseminate (Upload to Database removed)', () => {
+  test('missing TAC fixture candidates are skipped', () => {
+    const first = missingFixtureSearch();
+    const second = missingFixtureSearch();
+    const located = resolveTacFilesDir();
+    const locatedAgain = resolveTacFilesDir();
+    expect(first === '' || first.includes('No TAC fixtures directory found')).toBe(
+      true,
+    );
+    expect(second === '' || second.includes('No TAC fixtures directory found')).toBe(
+      true,
+    );
+    expect(located).toBe(locatedAgain);
+  });
+
   test('Upload to Database button is absent (EV-beta-ux-export-auth)', async ({
     page,
   }) => {

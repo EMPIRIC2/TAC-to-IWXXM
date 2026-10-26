@@ -40,12 +40,12 @@ def _fields(text: str) -> dict[str, str]:
 
     Parameters
     ----------
-    text : object
+    text : str
         Argument ``text``.
 
     Returns
     -------
-    object
+    dict[str, str]
         Return value.
     """
     out: dict[str, str] = {}
@@ -73,12 +73,12 @@ def _parse_dtg(token: str) -> str | None:
 
     Parameters
     ----------
-    token : object
+    token : str
         Argument ``token``.
 
     Returns
     -------
-    object
+    str | None
         Return value.
     """
     token = token.strip().replace(" ", "")
@@ -94,14 +94,15 @@ def _day_hhmm_to_iso(token: str, *, issue_iso: str) -> str | None:
 
     Parameters
     ----------
-    token : object
+    token : str
         Argument ``token``.
-    issue_iso : object
+
+    issue_iso : str
         Argument ``issue_iso``.
 
     Returns
     -------
-    object
+    str | None
         Return value.
     """
     m = _DAY_HHMM.search(token.replace(" ", ""))
@@ -116,12 +117,12 @@ def _normalize_location(tok: str) -> str:
 
     Parameters
     ----------
-    tok : object
+    tok : str
         Argument ``tok``.
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     upper = tok.upper()
@@ -136,12 +137,12 @@ def _parse_intensity_regions(body: str) -> list[dict[str, Any]]:
 
     Parameters
     ----------
-    body : object
+    body : str
         Argument ``body``.
 
     Returns
     -------
-    object
+    list[dict[str, Any]]
         Return value.
     """
     tokens = body.split()
@@ -172,14 +173,15 @@ def _parse_obs_or_fcst(raw: str, *, issue_iso: str) -> dict[str, Any] | None:
 
     Parameters
     ----------
-    raw : object
+    raw : str
         Argument ``raw``.
-    issue_iso : object
+
+    issue_iso : str
         Argument ``issue_iso``.
 
     Returns
     -------
-    object
+    dict[str, Any] | None
         Return value.
     """
     text = raw.strip()
@@ -201,9 +203,10 @@ def parse_swxa(tac: str, *, product: str = "SWXA") -> dict[str, Any]:
 
     Parameters
     ----------
-    tac :
+    tac : str
         SWX ADVISORY text.
-    product :
+
+    product : str, optional
         Must be ``SWXA``.
 
     Returns

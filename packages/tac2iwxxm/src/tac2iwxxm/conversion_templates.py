@@ -22,8 +22,26 @@ class Slot:
 
     Attributes
     ----------
-    _ : object
-        See implementation.
+    id : str
+        Slot id.
+    label : str
+        Slot label.
+    type : SlotType
+        Capture kind.
+    optional : bool
+        Whether the slot may be absent. Default ``False``.
+    digits : int | None
+        Digit width, or ``None``.
+    enum_values : str | None
+        Allowed values, or ``None``.
+    literal : str | None
+        Literal text, or ``None``.
+    iwxxm_field : str
+        IWXXM field name. Default ``''``.
+    mode : SlotMode
+        ``convert``, ``decode_only``, or ``skip``. Default ``'convert'``.
+    gloss : str
+        Gloss text. Default ``''``.
     """
 
     id: str
@@ -41,15 +59,15 @@ class Slot:
         """
         Serialize for JSON persistence / API.
 
+        Returns
+        -------
+        dict[str, Any]
+            Serialized form for JSON persistence / API.
+
         Examples
         --------
         >>> 1 + 1  # docstring smoke (to_dict)
         2
-
-        Returns
-        -------
-        object
-            Return value.
         """
         data = asdict(self)
         return {k: v for k, v in data.items() if v is not None and v != ""}
@@ -62,8 +80,24 @@ class ConversionTemplate:
 
     Attributes
     ----------
-    _ : object
-        See implementation.
+    id : str
+        ID.
+    name : str
+        Template name.
+    access : Literal['first_party', 'custom']
+        Access.
+    iwxxm_block : str
+        IWXXM block.
+    slots : tuple[Slot, ...]
+        Ordered template slots.
+    sample : str
+        Sample text. Default ``''``.
+    profiles : tuple[str, ...]
+        Profiles.
+    comments : str
+        Comments. Default ``''``.
+    fork_of : str | None
+        Fork of. Default ``None``.
     """
 
     id: str
@@ -80,15 +114,15 @@ class ConversionTemplate:
         """
         Serialize for JSON / API responses.
 
+        Returns
+        -------
+        dict[str, Any]
+            Serialized form for JSON / API responses.
+
         Examples
         --------
         >>> 1 + 1  # docstring smoke (to_dict)
         2
-
-        Returns
-        -------
-        object
-            Return value.
         """
         return {
             "id": self.id,
@@ -107,20 +141,20 @@ def slot_from_dict(raw: dict[str, Any]) -> Slot:
     """
     Build a :class:`Slot` from a JSON-like mapping.
 
+    Parameters
+    ----------
+    raw : dict[str, Any]
+        JSON-like slot mapping.
+
+    Returns
+    -------
+    Slot
+        A :class:`Slot` from a JSON-like mapping.
+
     Examples
     --------
     >>> 1 + 1  # docstring smoke (slot_from_dict)
     2
-
-    Parameters
-    ----------
-    raw : object
-        Argument ``raw``.
-
-    Returns
-    -------
-    object
-        Return value.
     """
     mode_raw = str(raw.get("mode") or "convert")
     mode: SlotMode = (
@@ -148,20 +182,20 @@ def template_from_dict(raw: dict[str, Any]) -> ConversionTemplate:
     """
     Build a :class:`ConversionTemplate` from a JSON-like mapping.
 
+    Parameters
+    ----------
+    raw : dict[str, Any]
+        JSON-like template mapping.
+
+    Returns
+    -------
+    ConversionTemplate
+        A :class:`ConversionTemplate` from a JSON-like mapping.
+
     Examples
     --------
     >>> 1 + 1  # docstring smoke (template_from_dict)
     2
-
-    Parameters
-    ----------
-    raw : object
-        Argument ``raw``.
-
-    Returns
-    -------
-    object
-        Return value.
     """
     slots_raw: list[Any] = list(raw.get("slots") or [])
     parsed_slots: list[Slot] = []
@@ -193,20 +227,20 @@ def compile_pattern(slots: list[Slot] | tuple[Slot, ...]) -> str:
     """
     Compile slots to a secondary pattern string (not the default authoring UI).
 
+    Parameters
+    ----------
+    slots : list[Slot] | tuple[Slot, ...]
+        Ordered template slots.
+
+    Returns
+    -------
+    str
+        Secondary pattern string.
+
     Examples
     --------
     >>> 1 + 1  # docstring smoke (compile_pattern)
     2
-
-    Parameters
-    ----------
-    slots : object
-        Argument ``slots``.
-
-    Returns
-    -------
-    object
-        Return value.
     """
     parts: list[str] = []
     for s in slots:
@@ -234,24 +268,26 @@ def reorder_slots(
     """
     Reorder slots by moving ``from_id`` onto ``to_id``'s index.
 
+    Parameters
+    ----------
+    slots : list[Slot] | tuple[Slot, ...]
+        Ordered template slots.
+
+    from_id : str
+        Slot id to move.
+
+    to_id : str
+        Slot id whose index is the destination.
+
+    Returns
+    -------
+    tuple[Slot, ...]
+        Slots with ``from_id`` placed at ``to_id``'s index.
+
     Examples
     --------
     >>> 1 + 1  # docstring smoke (reorder_slots)
     2
-
-    Parameters
-    ----------
-    slots : object
-        Argument ``slots``.
-    from_id : object
-        Argument ``from_id``.
-    to_id : object
-        Argument ``to_id``.
-
-    Returns
-    -------
-    object
-        Return value.
     """
     items = list(slots)
     from_i = next((i for i, s in enumerate(items) if s.id == from_id), -1)
@@ -273,8 +309,20 @@ class BridgePreview:
 
     Attributes
     ----------
-    _ : object
-        See implementation.
+    template_id : str
+        Template id.
+    focus_group : str
+        TAC group to preview.
+    matched : bool
+        Matched.
+    captures : list[dict[str, str]]
+        Captures.
+    xml_block : str
+        XML block. Default ``''``.
+    compiled_pattern : str
+        Compiled pattern. Default ``''``.
+    skipped : list[dict[str, str]]
+        Skipped.
     """
 
     template_id: str
@@ -298,22 +346,23 @@ def preview_bridge(
     return structure-only previews with ``matched=False`` when the focus group does
     not fit the wind shape. Skip-mode slots surface as ``skipped`` chips (never silent).
 
+    Parameters
+    ----------
+    template : ConversionTemplate
+        Conversion template.
+
+    focus_group : str
+        TAC group to preview.
+
+    Returns
+    -------
+    BridgePreview
+        Captures and an IWXXM-shaped XML sketch for a focused TAC group.
+
     Examples
     --------
     >>> 1 + 1  # docstring smoke (preview_bridge)
     2
-
-    Parameters
-    ----------
-    template : object
-        Argument ``template``.
-    focus_group : object
-        Argument ``focus_group``.
-
-    Returns
-    -------
-    object
-        Return value.
     """
     pattern = compile_pattern(template.slots)
     skipped = [
@@ -378,7 +427,7 @@ def _builtin_catalog() -> dict[str, ConversionTemplate]:
 
     Returns
     -------
-    object
+    dict[str, ConversionTemplate]
         Return value.
     """
     wind = ConversionTemplate(
@@ -461,15 +510,15 @@ def list_first_party_templates() -> list[ConversionTemplate]:
     """
     Return built-in first-party conversion templates.
 
+    Returns
+    -------
+    list[ConversionTemplate]
+        Built-in first-party conversion templates.
+
     Examples
     --------
     >>> 1 + 1  # docstring smoke (list_first_party_templates)
     2
-
-    Returns
-    -------
-    object
-        Return value.
     """
     return list(FIRST_PARTY_TEMPLATES.values())
 
@@ -478,20 +527,20 @@ def get_first_party_template(template_id: str) -> ConversionTemplate | None:
     """
     Return a first-party template by id, or ``None``.
 
+    Parameters
+    ----------
+    template_id : str
+        Template id.
+
+    Returns
+    -------
+    ConversionTemplate | None
+        A first-party template by id, or ``None``.
+
     Examples
     --------
     >>> 1 + 1  # docstring smoke (get_first_party_template)
     2
-
-    Parameters
-    ----------
-    template_id : object
-        Argument ``template_id``.
-
-    Returns
-    -------
-    object
-        Return value.
     """
     return FIRST_PARTY_TEMPLATES.get(template_id)
 
@@ -499,6 +548,22 @@ def get_first_party_template(template_id: str) -> ConversionTemplate | None:
 def fork_first_party(template_id: str, *, new_id: str, name: str | None = None) -> ConversionTemplate:
     """
     Fork a first-party template into a custom template object (not persisted).
+
+    Parameters
+    ----------
+    template_id : str
+        Template id.
+
+    new_id : str
+        Id for the forked template.
+
+    name : str | None, optional
+        Display name. ``None`` keeps the source name.
+
+    Returns
+    -------
+    ConversionTemplate
+        A first-party template into a custom template object (not persisted).
 
     Raises
     ------
@@ -509,20 +574,6 @@ def fork_first_party(template_id: str, *, new_id: str, name: str | None = None) 
     --------
     >>> 1 + 1  # docstring smoke (fork_first_party)
     2
-
-    Parameters
-    ----------
-    template_id : object
-        Argument ``template_id``.
-    new_id : object
-        Argument ``new_id``.
-    name : object
-        Argument ``name``.
-
-    Returns
-    -------
-    object
-        Return value.
     """
     base = FIRST_PARTY_TEMPLATES.get(template_id)
     if base is None:

@@ -45,8 +45,8 @@ class ProfileResolveError(ValueError):
 
     Attributes
     ----------
-    _ : object
-        See implementation.
+    args : tuple
+        Arguments passed to the exception constructor.
     """
 
 
@@ -57,8 +57,14 @@ class ResolvedValidationPolicies:
 
     Attributes
     ----------
-    _ : object
-        See implementation.
+    canonical : str
+        Canonical.
+    emit_key : str
+        Emit key.
+    tac_quality_policy_id : str
+        TAC quality policy ID.
+    iwxxm_output_policy_id : str
+        IWXXM output policy ID.
     """
 
     canonical: str
@@ -85,12 +91,13 @@ def _string_list(value: object, *, label: str) -> tuple[str, ...]:
     ----------
     value : object
         Argument ``value``.
-    label : object
+
+    label : str
         Argument ``label``.
 
     Returns
     -------
-    object
+    tuple[str, ...]
         Return value.
     """
     if not isinstance(value, list) or not value:
@@ -113,12 +120,13 @@ def _optional_id(value: object, *, field: str) -> str | None:
     ----------
     value : object
         Argument ``value``.
-    field : object
+
+    field : str
         Argument ``field``.
 
     Returns
     -------
-    object
+    str | None
         Return value.
     """
     if value is None:
@@ -135,7 +143,7 @@ def _load_profile_overlays() -> tuple[_ProfileOverlay, ...]:
 
     Returns
     -------
-    object
+    tuple[_ProfileOverlay, ...]
         Return value.
     """
     raw_dir = os.environ.get(ENV_PROFILE_DIR, "").strip()
@@ -196,25 +204,28 @@ def resolve_validation_policies(
 
     Parameters
     ----------
-    profile :
+    profile : str
         Canonical conversion profile id or legacy alias (``ICAO_2025``, ``annex3``).
-    product :
+
+    product : str | None, optional
         Optional F6 product id. When ``TAF`` / ``SIGMET`` and the emit key still
         binds the METAR quality document, swap to the product quality id (M4 / #1230).
-    tac_policy :
+
+    tac_policy : str | None, optional
         Optional override for the TAC quality policy id (CLI ``--policy``).
-    iwxxm_policy :
+
+    iwxxm_policy : str | None, optional
         Optional override for the IWXXM output policy id (CLI ``--policy``).
+
+    Returns
+    -------
+    ResolvedValidationPolicies
+        ``profile`` to TAC quality and IWXXM output policy ids.
 
     Examples
     --------
     >>> 1 + 1  # docstring smoke (resolve_validation_policies)
     2
-
-    Returns
-    -------
-    object
-        Return value.
     """
     resolved = resolve_semantic_profile(profile)
     if resolved is None:

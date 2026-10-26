@@ -23,8 +23,8 @@ class WorkflowLoadError(ValueError):
 
     Attributes
     ----------
-    _ : object
-        See implementation.
+    args : tuple
+        Arguments passed to the exception constructor.
     """
 
 
@@ -64,8 +64,8 @@ def default_workflows_dir() -> Path:
 
     Returns
     -------
-    object
-        Return value.
+    Path
+        Resolve the git-managed ``workflows/`` directory.
     """
     env = os.environ.get("WORKFLOWS_DIR")
     if env:
@@ -94,14 +94,14 @@ def resolve_env_refs(
     Parameters
     ----------
     value : object
-        Argument ``value``.
-    environ : object
-        Argument ``environ``.
+        Value.
+    environ : dict[str, str] or None, optional
+        Environ. By default ``None``.
 
     Returns
     -------
     object
-        Return value.
+        Recursively replace ``${ENV:NAME}`` in strings.
     """
     env = environ if environ is not None else dict(os.environ)
     if isinstance(value, str):
@@ -138,10 +138,10 @@ def assert_no_embedded_credentials(value: object, *, path: str = "$") -> None:
 
     Parameters
     ----------
-    value :
+    value : object
         Nested YAML structure after env resolve.
-    path :
-        JSON-pointer-like path for error messages.
+    path : str, optional
+        JSON-pointer-like path for error messages. By default ``'$'``.
 
     Examples
     --------
@@ -211,13 +211,13 @@ def parse_workflow_mapping(data: dict[str, object]) -> WorkflowDefinition:
 
     Parameters
     ----------
-    data : object
-        Argument ``data``.
+    data : dict[str, object]
+        Data.
 
     Returns
     -------
-    object
-        Return value.
+    WorkflowDefinition
+        Build a :class:`WorkflowDefinition` from a resolved YAML mapping.
     """
     assert_no_embedded_credentials(data)
     wid = data.get("id")
@@ -270,11 +270,11 @@ def load_workflow(
 
     Parameters
     ----------
-    workflow_id :
+    workflow_id : str
         File stem / workflow id.
-    workflows_dir :
-        Override search directory.
-    environ :
+    workflows_dir : Path or None, optional
+        Override search directory. By default ``None``.
+    environ : dict[str, str] or None, optional
         Optional env map for ``${ENV:}`` resolution (defaults to ``os.environ``).
 
     Examples
@@ -284,8 +284,8 @@ def load_workflow(
 
     Returns
     -------
-    object
-        Return value.
+    WorkflowDefinition
+        Load ``{workflows_dir}/{workflow_id}.yaml``.
     """
     root = workflows_dir or default_workflows_dir()
     path = root / f"{workflow_id}.yaml"

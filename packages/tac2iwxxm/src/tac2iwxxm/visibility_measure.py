@@ -20,7 +20,7 @@ def prevailing_from_statute_miles(statute_miles: float) -> tuple[int, bool]:
 
     Parameters
     ----------
-    statute_miles :
+    statute_miles : float
         Parsed statute miles, including a mixed fraction such as 1.5.
 
     Returns
@@ -48,7 +48,7 @@ def prevailing_from_metre_group(metres: int) -> tuple[int, bool]:
 
     Parameters
     ----------
-    metres :
+    metres : int
         The four-digit visibility group.
 
     Returns
