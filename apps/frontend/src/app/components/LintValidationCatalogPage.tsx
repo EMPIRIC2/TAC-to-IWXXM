@@ -28,6 +28,7 @@ import {
   LINT_VALIDATION_CATALOG_EXAMPLE_FAIL,
   LINT_VALIDATION_CATALOG_EXAMPLE_FAIL_UNAVAILABLE,
   LINT_VALIDATION_CATALOG_EXAMPLE_NOTE,
+  LINT_VALIDATION_CATALOG_ISSUES_URL,
   LINT_VALIDATION_CATALOG_EXAMPLE_PASS,
   LINT_VALIDATION_CATALOG_EXAMPLE_PASS_UNAVAILABLE,
   LINT_VALIDATION_CATALOG_EXAMPLES,
@@ -35,6 +36,8 @@ import {
   LINT_VALIDATION_CATALOG_EMPTY,
   LINT_VALIDATION_CATALOG_FAMILY_ALL,
   LINT_VALIDATION_CATALOG_LOAD_ERROR,
+  LINT_VALIDATION_CATALOG_MISSING_RULE_LEAD,
+  LINT_VALIDATION_CATALOG_MISSING_RULE_LINK,
   LINT_VALIDATION_CATALOG_RETRY,
   catalogFilterLabel,
   LINT_VALIDATION_CATALOG_FAMILY_LABEL,
@@ -896,7 +899,7 @@ export function LintValidationCatalogPage({
               </div>
               {detail ? (
                 <aside
-                  className="rounded-md border border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-gray-950"
+                  className="rounded-md border border-gray-200 bg-white p-4 lg:sticky lg:top-4 lg:max-h-[calc(100dvh-2rem)] lg:self-start lg:overflow-y-auto dark:border-gray-700 dark:bg-gray-950"
                   data-testid="lint-validation-catalog-detail"
                   aria-label={LINT_VALIDATION_CATALOG_DETAIL}
                 >
@@ -919,6 +922,19 @@ export function LintValidationCatalogPage({
                     <SelectedRuleFacts entry={detail} />
                   ) : null}
                   <RuleExamples code={detail.code} severity={detail.severity} />
+                  <p className="mt-4 border-t border-gray-200 pt-3 text-sm text-gray-600 dark:border-gray-700 dark:text-gray-400">
+                    {LINT_VALIDATION_CATALOG_MISSING_RULE_LEAD}
+                    <a
+                      href={LINT_VALIDATION_CATALOG_ISSUES_URL}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      data-testid="lint-validation-catalog-issues-link"
+                      className="text-blue-700 underline hover:text-blue-900 dark:text-blue-400"
+                    >
+                      {LINT_VALIDATION_CATALOG_MISSING_RULE_LINK}
+                    </a>
+                    .
+                  </p>
                 </aside>
               ) : null}
             </div>

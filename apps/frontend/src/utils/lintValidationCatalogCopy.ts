@@ -66,6 +66,17 @@ export const LINT_VALIDATION_CATALOG_EXAMPLES_UNAVAILABLE =
 export const LINT_VALIDATION_CATALOG_EXAMPLE_NOTE =
   'Only a report already on file is shown here.';
 
+/** Lead-in when the catalog does not include a rule the operator needs. */
+export const LINT_VALIDATION_CATALOG_MISSING_RULE_LEAD =
+  'If a rule you need is not listed, ';
+
+/** Link text for creating a catalog request. */
+export const LINT_VALIDATION_CATALOG_MISSING_RULE_LINK = 'open an issue';
+
+/** New-issue form for a validation rule that is not in the catalog. */
+export const LINT_VALIDATION_CATALOG_ISSUES_URL =
+  'https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/new?template=validation_rule_request.md';
+
 /** Group label for compact and detailed catalog layout. */
 export const LINT_VALIDATION_CATALOG_VIEW_LABEL = 'Catalog view';
 
