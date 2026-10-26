@@ -1033,4 +1033,28 @@ describe('LintValidationCatalogPage', () => {
       await screen.findByTestId('lint-validation-catalog-view-compact'),
     ).toHaveAttribute('aria-pressed', 'true');
   });
+
+  it('keeps the selected rule in view on wide screens and links to the issues list', async () => {
+    render(<LintValidationCatalogPage />);
+    const detail = await screen.findByTestId('lint-validation-catalog-detail');
+    expect(detail.className).toContain('lg:sticky');
+    expect(detail.className).toContain('lg:top-4');
+    expect(detail.className).toContain('lg:self-start');
+    expect(detail.className).toContain('lg:max-h-[calc(100dvh-2rem)]');
+    expect(detail.className).toContain('lg:overflow-y-auto');
+    expect(detail.className).not.toMatch(/(^|\s)sticky(\s|$)/);
+
+    const link = within(detail).getByTestId('lint-validation-catalog-issues-link');
+    expect(link).toHaveAttribute(
+      'href',
+      'https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/new?template=validation_rule_request.md',
+    );
+    expect(link).toHaveAttribute('target', '_blank');
+    expect(link).toHaveAttribute('rel', 'noopener noreferrer');
+    expect(link).toHaveTextContent('open an issue');
+    expect(detail).toHaveTextContent(
+      'If a rule you need is not listed, open an issue.',
+    );
+    expect(detail.lastElementChild).toContainElement(link);
+  });
 });

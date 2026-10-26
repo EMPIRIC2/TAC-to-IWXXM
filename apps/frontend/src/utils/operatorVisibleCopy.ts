@@ -148,6 +148,8 @@ import {
   LINT_VALIDATION_CATALOG_EXAMPLES,
   LINT_VALIDATION_CATALOG_EXAMPLES_UNAVAILABLE,
   LINT_VALIDATION_CATALOG_LOADING,
+  LINT_VALIDATION_CATALOG_MISSING_RULE_LEAD,
+  LINT_VALIDATION_CATALOG_MISSING_RULE_LINK,
   LINT_VALIDATION_CATALOG_SEARCH,
   LINT_VALIDATION_CATALOG_PAGE_SUBTITLE,
   LINT_VALIDATION_CATALOG_PAGE_TITLE,
@@ -478,6 +480,14 @@ export function collectOperatorVisibleCopy(): OperatorVisibleCopyEntry[] {
     {
       id: 'lint-validation-catalog.examples-unavailable',
       text: LINT_VALIDATION_CATALOG_EXAMPLES_UNAVAILABLE,
+    },
+    {
+      id: 'lint-validation-catalog.missing-rule-lead',
+      text: LINT_VALIDATION_CATALOG_MISSING_RULE_LEAD,
+    },
+    {
+      id: 'lint-validation-catalog.missing-rule-link',
+      text: LINT_VALIDATION_CATALOG_MISSING_RULE_LINK,
     },
     {
       id: 'lint-validation-catalog.view',
