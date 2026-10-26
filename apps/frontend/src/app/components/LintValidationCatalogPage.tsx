@@ -22,7 +22,6 @@ import {
   LINT_VALIDATION_CATALOG_COL_CODE,
   LINT_VALIDATION_CATALOG_COL_DESCRIPTION,
   LINT_VALIDATION_CATALOG_COL_LEVEL,
-  LINT_VALIDATION_CATALOG_COL_PROFILES,
   LINT_VALIDATION_CATALOG_COL_SOURCE,
   LINT_VALIDATION_CATALOG_COL_TYPE,
   LINT_VALIDATION_CATALOG_DETAIL,
@@ -32,11 +31,7 @@ import {
   LINT_VALIDATION_CATALOG_EXAMPLE_PASS,
   LINT_VALIDATION_CATALOG_EXAMPLE_PASS_UNAVAILABLE,
   LINT_VALIDATION_CATALOG_EMPTY,
-  LINT_VALIDATION_CATALOG_EXCHANGE_ALL,
-  LINT_VALIDATION_CATALOG_EXCHANGE_LABEL,
   LINT_VALIDATION_CATALOG_FAMILY_ALL,
-  LINT_VALIDATION_CATALOG_LISTED_PROFILE_NEEDS_PROFILE,
-  LINT_VALIDATION_CATALOG_LISTED_PROFILE_ONLY,
   LINT_VALIDATION_CATALOG_LOAD_ERROR,
   LINT_VALIDATION_CATALOG_RETRY,
   catalogFilterLabel,
@@ -45,8 +40,6 @@ import {
   LINT_VALIDATION_CATALOG_LOADING,
   LINT_VALIDATION_CATALOG_PAGE_SUBTITLE,
   LINT_VALIDATION_CATALOG_PAGE_TITLE,
-  LINT_VALIDATION_CATALOG_PROFILE_ALL,
-  LINT_VALIDATION_CATALOG_PROFILE_LABEL,
   LINT_VALIDATION_CATALOG_SEARCH,
   LINT_VALIDATION_CATALOG_SORT_LABEL,
   LINT_VALIDATION_CATALOG_TYPE_LABEL,
@@ -61,11 +54,6 @@ import {
 } from '@/utils/catalogView';
 import { catalogLevelLabel } from '@/utils/readableStatus';
 import { ruleExamplePair } from '@/utils/ruleCatalogExamples';
-import { SEMANTIC_PROFILE_OPTIONS, type IwxxmProfile } from '@/utils/semanticProfile';
-import {
-  EXCHANGE_PROFILE_OPTIONS,
-  type ExchangeProfileId,
-} from '@/utils/exchangeProfile';
 
 type FamilyFilter =
   | 'all'
@@ -172,106 +160,6 @@ function isClickableSource(entry: LintIssueCatalogEntry): boolean {
 }
 
 /**
- * Function `profileList`.
- */
-function profileList(value: string[] | null | undefined): string[] {
-  if (!Array.isArray(value)) {
-    return [];
-  }
-  return value.filter(
-    (item): item is string => typeof item === 'string' && item.trim().length > 0,
-  );
-}
-
-const PROFILE_NAME_ALIASES: Record<string, string> = {
-  iwxxm_us: 'us_faa_nws',
-  manobs: 'ca_eccc',
-  manair: 'ca_eccc',
-};
-
-/**
- * Compare stored catalog ids with the profile the operator selected.
- *
- * @param id - Stored id or select value
- * @returns Lowercase id, with known aliases folded in
- * @example
- * const _ = true;
- */
-function profileMatchKey(id: string): string {
-  const key = id.trim().toLowerCase();
-  return PROFILE_NAME_ALIASES[key] ?? key;
-}
-
-/**
- * Operator name for a stored profile id.
- *
- * @param id - Stored catalog id
- * @param options - Select labels
- * @returns The profile name, or the stored id when it has no label
- * @example
- * const _ = true;
- */
-function profileDisplayName(
-  id: string,
-  options: readonly { value: string; label: string }[],
-): string {
-  const key = profileMatchKey(id);
-  const match = options.find((option) => profileMatchKey(option.value) === key);
-  return match?.label ?? id;
-}
-
-/**
- * Whether a stored list names the selected profile.
- *
- * @param value - Stored profile ids
- * @param selected - Profile the operator chose
- * @returns True when the list includes that profile
- * @example
- * const _ = true;
- */
-function profileListIncludes(
-  value: string[] | null | undefined,
-  selected: string | undefined,
-): boolean {
-  const listed = profileList(value);
-  if (!selected) {
-    return listed.length > 0;
-  }
-  const want = profileMatchKey(selected);
-  return listed.some((item) => profileMatchKey(item) === want);
-}
-
-/**
- * Human-readable semantic/exchange profile lists for a catalog entry.
- *
- * @param entry - Lint issue catalog row
- * @returns Display strings (comma-joined or “All … profiles”)
- * @example
- * const _ = true;
- */
-export function formatApplicableProfiles(entry: LintIssueCatalogEntry): {
-  semantic: string;
-  exchange: string;
-} {
-  const semantic = profileList(entry.semantic_profiles);
-  const exchange = profileList(entry.exchange_profiles);
-  return {
-    semantic:
-      semantic.length > 0
-        ? semantic
-            .map((id) => profileDisplayName(id, SEMANTIC_PROFILE_OPTIONS))
-            .join(', ')
-        : 'All semantic profiles',
-    exchange:
-      exchange.length > 0
-        ? exchange
-            .map((id) => profileDisplayName(id, EXCHANGE_PROFILE_OPTIONS))
-            .join(', ')
-        : 'All exchange profiles',
-  };
-}
-
-/**
  * Read a sortable string field from a catalog row (non-level sorts).
  * @example
  * const _ = true;
@@ -356,37 +244,6 @@ export function entryMatchesTypeFilter(
   }
   const issueType = (entry.issue_type || '').toLowerCase();
   return issueType.length > 0 && issueType === typeKey;
-}
-
-/**
- * When listed-only is on and a profile axis is selected, require a non-empty
- * applicability list on that axis (empty = unrestricted / all profiles).
- *
- * @example
- * const _ = true;
- */
-export function entryMatchesListedProfileFilter(
-  entry: LintIssueCatalogEntry,
-  options: {
-    listedOnly: boolean;
-    semanticSelected: boolean;
-    exchangeSelected: boolean;
-    semanticId?: string;
-    exchangeId?: string;
-  },
-): boolean {
-  const { listedOnly, semanticSelected, exchangeSelected, semanticId, exchangeId } =
-    options;
-  if (!listedOnly || (!semanticSelected && !exchangeSelected)) {
-    return true;
-  }
-  if (semanticSelected && !profileListIncludes(entry.semantic_profiles, semanticId)) {
-    return false;
-  }
-  if (exchangeSelected && !profileListIncludes(entry.exchange_profiles, exchangeId)) {
-    return false;
-  }
-  return true;
 }
 
 /**
@@ -494,7 +351,6 @@ export function mapRuleCatalogItem(
  * const _ = true;
  */
 function SelectedRuleFacts({ entry }: { entry: LintIssueCatalogEntry }) {
-  const profiles = formatApplicableProfiles(entry);
   return (
     <div
       className="mt-3 space-y-1 text-sm text-gray-700 dark:text-gray-300"
@@ -503,10 +359,6 @@ function SelectedRuleFacts({ entry }: { entry: LintIssueCatalogEntry }) {
       <p>
         {LINT_VALIDATION_CATALOG_COL_TYPE}: {entry.issue_type ?? '—'}
       </p>
-      <p>
-        {LINT_VALIDATION_CATALOG_COL_PROFILES}: {profiles.semantic}
-      </p>
-      <p>Exchange: {profiles.exchange}</p>
       <p>
         {LINT_VALIDATION_CATALOG_COL_SOURCE}: {entry.source_locator ?? '—'}
       </p>
@@ -598,13 +450,6 @@ export function LintValidationCatalogPage({
   const [levelFilter, setLevelFilter] = useState<(typeof LEVEL_OPTIONS)[number]>('all');
   const [sourceAccessFilter, setSourceAccessFilter] =
     useState<(typeof ACCESS_OPTIONS)[number]>('all');
-  const [semanticProfileFilter, setSemanticProfileFilter] = useState<
-    'all' | IwxxmProfile
-  >('all');
-  const [exchangeProfileFilter, setExchangeProfileFilter] = useState<
-    'all' | ExchangeProfileId
-  >('all');
-  const [listedProfileOnly, setListedProfileOnly] = useState(false);
   const [sortBy, setSortBy] = useState<SortKey>('code');
   const [query, setQuery] = useState('');
   const [catalogView, setCatalogView] = useState<CatalogView>(() => readCatalogView());
@@ -616,16 +461,6 @@ export function LintValidationCatalogPage({
   const focusHandledRef = useRef<string | null>(null);
 
   const typeOptions = useMemo(() => typeOptionsForFamily(familyFilter), [familyFilter]);
-
-  const usesLintIssueCatalog =
-    familyFilter === 'all' || familyFilter === 'lint' || familyFilter === 'iwxxm';
-  const listedProfileNeedsChoice =
-    usesLintIssueCatalog &&
-    semanticProfileFilter === 'all' &&
-    exchangeProfileFilter === 'all';
-  const listedProfileLabel = listedProfileNeedsChoice
-    ? LINT_VALIDATION_CATALOG_LISTED_PROFILE_NEEDS_PROFILE
-    : LINT_VALIDATION_CATALOG_LISTED_PROFILE_ONLY;
 
   const loadCatalog = useCallback(async () => {
     setLoading(true);
@@ -647,8 +482,6 @@ export function LintValidationCatalogPage({
         family?: string;
         issue_type?: string;
         source_access?: string;
-        semantic_profile?: string;
-        exchange_profile?: string;
       } = {};
       if (familyFilter !== 'all') {
         params.family = familyFilter;
@@ -659,12 +492,6 @@ export function LintValidationCatalogPage({
       if (sourceAccessFilter !== 'all') {
         params.source_access = sourceAccessFilter;
       }
-      if (semanticProfileFilter !== 'all') {
-        params.semantic_profile = semanticProfileFilter;
-      }
-      if (exchangeProfileFilter !== 'all') {
-        params.exchange_profile = exchangeProfileFilter;
-      }
       const response = await fetchLintIssueCatalog(params);
       setEntries(response.issues ?? []);
     } catch {
@@ -673,13 +500,7 @@ export function LintValidationCatalogPage({
     } finally {
       setLoading(false);
     }
-  }, [
-    familyFilter,
-    issueTypeFilter,
-    sourceAccessFilter,
-    semanticProfileFilter,
-    exchangeProfileFilter,
-  ]);
+  }, [familyFilter, issueTypeFilter, sourceAccessFilter]);
 
   /* eslint-disable react-hooks/set-state-in-effect -- refetch when filters change */
   useEffect(() => {
@@ -691,34 +512,15 @@ export function LintValidationCatalogPage({
     const levelKey = levelFilter === 'all' ? null : levelFilter;
     const typeKey = issueTypeFilter === 'all' ? null : issueTypeFilter;
     const accessKey = sourceAccessFilter === 'all' ? null : sourceAccessFilter;
-    const semanticSelected = semanticProfileFilter !== 'all';
-    const exchangeSelected = exchangeProfileFilter !== 'all';
     const filtered = entries.filter(
       (entry) =>
         entryMatchesLevelFilter(entry, levelKey) &&
         entryMatchesTypeFilter(entry, typeKey) &&
         entryMatchesAccessFilter(entry, accessKey) &&
-        entryMatchesListedProfileFilter(entry, {
-          listedOnly: listedProfileOnly,
-          semanticSelected,
-          exchangeSelected,
-          semanticId: semanticSelected ? semanticProfileFilter : undefined,
-          exchangeId: exchangeSelected ? exchangeProfileFilter : undefined,
-        }) &&
         catalogEntryMatchesQuery(entry.code, entry.message_template, query),
     );
     return [...filtered].sort((a, b) => compareEntries(a, b, sortBy));
-  }, [
-    entries,
-    levelFilter,
-    issueTypeFilter,
-    sourceAccessFilter,
-    listedProfileOnly,
-    semanticProfileFilter,
-    exchangeProfileFilter,
-    sortBy,
-    query,
-  ]);
+  }, [entries, levelFilter, issueTypeFilter, sourceAccessFilter, sortBy, query]);
 
   const activeCode = selectedCatalogCode(
     sorted.map((entry) => entry.code),
@@ -849,70 +651,6 @@ export function LintValidationCatalogPage({
               </select>
             </label>
             <label className="text-sm text-gray-700 dark:text-gray-300">
-              {LINT_VALIDATION_CATALOG_PROFILE_LABEL}
-              <select
-                className="ml-2 rounded border px-2 py-1 text-sm dark:bg-gray-800"
-                value={semanticProfileFilter}
-                data-testid="lint-validation-catalog-profile-filter"
-                aria-label="Filter by profile"
-                disabled={!usesLintIssueCatalog}
-                onChange={(e) => {
-                  const next =
-                    e.target.value === 'all' ? 'all' : (e.target.value as IwxxmProfile);
-                  setSemanticProfileFilter(next);
-                  if (next === 'all' && exchangeProfileFilter === 'all') {
-                    setListedProfileOnly(false);
-                  }
-                }}
-              >
-                <option value="all">{LINT_VALIDATION_CATALOG_PROFILE_ALL}</option>
-                {SEMANTIC_PROFILE_OPTIONS.map((opt) => (
-                  <option key={opt.value} value={opt.value}>
-                    {opt.label}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <label className="text-sm text-gray-700 dark:text-gray-300">
-              {LINT_VALIDATION_CATALOG_EXCHANGE_LABEL}
-              <select
-                className="ml-2 rounded border px-2 py-1 text-sm dark:bg-gray-800"
-                value={exchangeProfileFilter}
-                data-testid="lint-validation-catalog-exchange-filter"
-                aria-label="Filter by exchange profile"
-                disabled={!usesLintIssueCatalog}
-                onChange={(e) => {
-                  const next =
-                    e.target.value === 'all'
-                      ? 'all'
-                      : (e.target.value as ExchangeProfileId);
-                  setExchangeProfileFilter(next);
-                  if (next === 'all' && semanticProfileFilter === 'all') {
-                    setListedProfileOnly(false);
-                  }
-                }}
-              >
-                <option value="all">{LINT_VALIDATION_CATALOG_EXCHANGE_ALL}</option>
-                {EXCHANGE_PROFILE_OPTIONS.map((opt) => (
-                  <option key={opt.value} value={opt.value}>
-                    {opt.label}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <label className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
-              <input
-                type="checkbox"
-                className="rounded border"
-                checked={listedProfileOnly}
-                disabled={!usesLintIssueCatalog || listedProfileNeedsChoice}
-                data-testid="lint-validation-catalog-listed-profile-only"
-                aria-label={listedProfileLabel}
-                onChange={(e) => setListedProfileOnly(e.target.checked)}
-              />
-              {listedProfileLabel}
-            </label>
-            <label className="text-sm text-gray-700 dark:text-gray-300">
               {LINT_VALIDATION_CATALOG_SEARCH}
               <input
                 type="search"
@@ -1014,7 +752,6 @@ export function LintValidationCatalogPage({
                 ) : (
                   <ul className={catalogView === 'compact' ? 'space-y-1' : 'space-y-2'}>
                     {sorted.map((entry) => {
-                      const profiles = formatApplicableProfiles(entry);
                       const selected = entry.code === activeCode;
                       return (
                         <li key={`${entry.family ?? 'lint'}-${entry.code}`}>
@@ -1072,13 +809,6 @@ export function LintValidationCatalogPage({
                                   {LINT_VALIDATION_CATALOG_COL_LEVEL}:{' '}
                                   {catalogLevelLabel(entry.severity)}
                                 </p>
-                                <p>
-                                  <span className="font-medium">
-                                    {LINT_VALIDATION_CATALOG_COL_PROFILES}:
-                                  </span>{' '}
-                                  Semantic: {profiles.semantic}
-                                </p>
-                                <p>Exchange: {profiles.exchange}</p>
                                 <p className="text-gray-800 dark:text-gray-200">
                                   {LINT_VALIDATION_CATALOG_COL_DESCRIPTION}:{' '}
                                   {entry.message_template}

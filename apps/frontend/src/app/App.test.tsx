@@ -340,31 +340,6 @@ vi.mock('./components/MyMetarsPage', () => ({
   ),
 }));
 
-vi.mock('./components/QualityMetricsPage', () => ({
-  QualityMetricsPage: ({
-    routeStem,
-    onOpenDetailRoute,
-    onBackToList,
-  }: {
-    routeStem: string | null;
-    onOpenDetailRoute: (stem: string) => void;
-    onBackToList: () => void;
-  }) => (
-    <div data-testid="quality-metrics-page" data-stem={routeStem ?? ''}>
-      <button
-        type="button"
-        data-testid="open-quality-detail"
-        onClick={() => onOpenDetailRoute('stem-1')}
-      >
-        Detail
-      </button>
-      <button type="button" data-testid="back-quality-list" onClick={onBackToList}>
-        List
-      </button>
-    </div>
-  ),
-}));
-
 vi.mock('./components/LintValidationCatalogPage', () => ({
   LintValidationCatalogPage: ({
     focusCode,
@@ -523,11 +498,12 @@ describe('App Component (F31 optional Auth)', () => {
     expect(screen.getByTestId('file-converter')).toBeInTheDocument();
   });
 
-  it('reaches Quality metrics via primary shell nav (TC-EV054-001)', async () => {
+  it('reaches catalog and history from the primary shell nav', async () => {
     const user = userEvent.setup();
     render(<App />);
 
     expect(screen.getByTestId('app-shell-nav')).toBeInTheDocument();
+    expect(screen.queryByTestId('shell-nav-quality')).not.toBeInTheDocument();
     expect(screen.queryByTestId('shell-nav-visuals')).not.toBeInTheDocument();
     await user.click(screen.getByTestId('shell-nav-converter'));
     expect(screen.getByTestId('shell-nav-converter')).toHaveAttribute(
@@ -535,22 +511,23 @@ describe('App Component (F31 optional Auth)', () => {
       'true',
     );
 
-    await user.click(screen.getByTestId('shell-nav-quality'));
-    expect(screen.getByTestId('quality-metrics-page')).toBeInTheDocument();
+    await user.click(screen.getByTestId('shell-nav-catalog'));
+    expect(screen.getByTestId('lint-validation-catalog-page')).toBeInTheDocument();
     expect(screen.getByTestId('file-converter')).not.toBeVisible();
-    expect(screen.getByTestId('shell-nav-quality')).toHaveAttribute(
+    expect(screen.getByTestId('shell-nav-catalog')).toHaveAttribute(
       'aria-selected',
       'true',
     );
 
     await user.click(screen.getByTestId('shell-nav-history'));
     expect(screen.getByTestId('history-view')).toBeInTheDocument();
-    expect(screen.queryByTestId('quality-metrics-page')).not.toBeInTheDocument();
+    expect(
+      screen.queryByTestId('lint-validation-catalog-page'),
+    ).not.toBeInTheDocument();
   });
 
-  it('opens catalog via shell nav and quality detail/list routes', async () => {
+  it('opens catalog and dissemination ops from the shell nav', async () => {
     const user = userEvent.setup();
-    const pushSpy = vi.spyOn(window.history, 'pushState');
     render(<App />);
 
     await user.click(screen.getByTestId('shell-nav-catalog'));
@@ -561,17 +538,6 @@ describe('App Component (F31 optional Auth)', () => {
       'data-authed',
       '0',
     );
-
-    await user.click(screen.getByTestId('shell-nav-quality'));
-    await user.click(screen.getByTestId('open-quality-detail'));
-    expect(screen.getByTestId('quality-metrics-page')).toHaveAttribute(
-      'data-stem',
-      'stem-1',
-    );
-    expect(pushSpy).toHaveBeenCalled();
-
-    await user.click(screen.getByTestId('back-quality-list'));
-    expect(screen.getByTestId('quality-metrics-page')).toHaveAttribute('data-stem', '');
 
     await user.click(screen.getByTestId('shell-nav-converter'));
     expect(screen.getByTestId('file-converter')).toBeInTheDocument();
@@ -590,39 +556,15 @@ describe('App Component (F31 optional Auth)', () => {
     );
   });
 
-  it('boots on quality detail path from location', () => {
+  it('stays on the converter when the location is /quality', () => {
     window.history.replaceState({}, '', '/quality/foo-stem');
     render(<App />);
-    expect(screen.getByTestId('quality-metrics-page')).toHaveAttribute(
-      'data-stem',
-      'foo-stem',
-    );
+    expect(screen.queryByTestId('shell-nav-quality')).not.toBeInTheDocument();
+    expect(screen.getByTestId('file-converter')).toBeInTheDocument();
   });
 
-  it('handles popstate for quality and auth callback paths', async () => {
+  it('handles popstate for auth callback paths', async () => {
     render(<App />);
-    act(() => {
-      window.history.pushState({}, '', '/quality/pop-stem');
-      window.dispatchEvent(new PopStateEvent('popstate'));
-    });
-    await waitFor(() => {
-      expect(screen.getByTestId('quality-metrics-page')).toHaveAttribute(
-        'data-stem',
-        'pop-stem',
-      );
-    });
-
-    act(() => {
-      window.history.pushState({}, '', '/quality');
-      window.dispatchEvent(new PopStateEvent('popstate'));
-    });
-    await waitFor(() => {
-      expect(screen.getByTestId('quality-metrics-page')).toHaveAttribute(
-        'data-stem',
-        '',
-      );
-    });
-
     act(() => {
       window.history.pushState({}, '', '/auth/callback');
       window.dispatchEvent(new PopStateEvent('popstate'));
@@ -958,22 +900,6 @@ describe('App Component (F31 optional Auth)', () => {
     });
   });
 
-  it('navigates quality when already on list/detail paths without push', async () => {
-    const user = userEvent.setup();
-    window.history.replaceState({}, '', '/quality');
-    const pushSpy = vi.spyOn(window.history, 'pushState');
-    render(<App />);
-    await user.click(screen.getByTestId('shell-nav-quality'));
-    // already on list path — pushState for list should be skipped
-    const listPushes = pushSpy.mock.calls.filter((c) => c[2] === '/quality');
-    expect(listPushes.length).toBeLessThanOrEqual(1);
-
-    await user.click(screen.getByTestId('open-quality-detail'));
-    pushSpy.mockClear();
-    await user.click(screen.getByTestId('open-quality-detail'));
-    // second open of same stem should skip push when path already matches
-  });
-
   it('history view shows Operator email when authenticated with empty email', async () => {
     const user = userEvent.setup();
     authMocks.isLoggedIn.mockReturnValue(true);
@@ -984,16 +910,5 @@ describe('App Component (F31 optional Auth)', () => {
     });
     await user.click(screen.getByTestId('open-history'));
     expect(screen.getByTestId('history-view')).toBeInTheDocument();
-  });
-
-  it('skips quality-list pushState when already on the list path', async () => {
-    const user = userEvent.setup();
-    window.history.replaceState({}, '', '/quality');
-    const pushSpy = vi.spyOn(window.history, 'pushState');
-    render(<App />);
-    await user.click(screen.getByTestId('shell-nav-quality'));
-    pushSpy.mockClear();
-    await user.click(screen.getByTestId('back-quality-list'));
-    expect(pushSpy.mock.calls.some((c) => c[2] === '/quality')).toBe(false);
   });
 });

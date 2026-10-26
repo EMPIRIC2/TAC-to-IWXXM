@@ -226,7 +226,7 @@ function jsonFallback(item: Record<string, unknown>): string {
 }
 
 /**
- * Detail for a quality-metrics or validate diagnostic object.
+ * Detail for a validate diagnostic object.
  *
  * @param value - Issue string, object, or empty
  * @param catalog - Catalog index

@@ -10,13 +10,8 @@ import {
   entryMatchesLevelFilter,
   sortFieldValue,
 } from '@/app/components/LintValidationCatalogPage';
-import {
-  shouldSkipSideBySideScroll,
-  toggleKeyInSet,
-} from '@/app/components/QualityMetricsDetail';
 import { emailLocalPart } from '@/app/components/UserPreferencesDialog';
 import { SystemSettingsPanel } from '@/app/components/admin/SystemSettingsPanel';
-import { c14nXml } from '@/utils/c14nXml';
 import type { LintIssueCatalogEntry } from '@/utils/openapiTypes';
 
 const mockToast = vi.hoisted(() => ({
@@ -33,23 +28,6 @@ describe('EV-080 emailLocalPart', () => {
   it('returns local-part or empty when missing', () => {
     expect(emailLocalPart('ops@example.com')).toBe('ops');
     expect(emailLocalPart('@example.com')).toBe('');
-  });
-});
-
-describe('EV-080 QualityMetricsDetail helpers', () => {
-  it('toggles keys in the expanded set', () => {
-    const added = toggleKeyInSet(new Set(), 'k1');
-    expect(added.has('k1')).toBe(true);
-    const removed = toggleKeyInSet(added, 'k1');
-    expect(removed.has('k1')).toBe(false);
-  });
-
-  it('skips scroll sync when syncing or missing panes', () => {
-    const el = document.createElement('pre');
-    expect(shouldSkipSideBySideScroll(true, el, el)).toBe(true);
-    expect(shouldSkipSideBySideScroll(false, null, el)).toBe(true);
-    expect(shouldSkipSideBySideScroll(false, el, null)).toBe(true);
-    expect(shouldSkipSideBySideScroll(false, el, el)).toBe(false);
   });
 });
 
@@ -140,37 +118,6 @@ describe('EV-080 LintValidationCatalog sort helpers', () => {
       ),
     ).toBe(false);
     expect(entryMatchesLevelFilter({ ...base, severity: '' }, 'error')).toBe(false);
-  });
-});
-
-describe('EV-080 c14nXml remaining branches', () => {
-  it('sorts attributes lexicographically when DOM order is reverse', () => {
-    const out = c14nXml('<r z="1" a="2"/>');
-    expect(out.indexOf('a=')).toBeLessThan(out.indexOf('z='));
-  });
-
-  it('treats null textContent as empty in strip and serialize', () => {
-    const proto = Object.getOwnPropertyDescriptor(Node.prototype, 'textContent');
-    Object.defineProperty(Node.prototype, 'textContent', {
-      configurable: true,
-      get(this: Node) {
-        if (this.nodeType === Node.TEXT_NODE) {
-          return null;
-        }
-        return proto?.get?.call(this) ?? null;
-      },
-      set(this: Node, v: string | null) {
-        proto?.set?.call(this, v);
-      },
-    });
-    try {
-      expect(c14nXml('<r>   <c>keep</c>   </r>')).toContain('<c>');
-      expect(c14nXml('<r>text</r>')).toBe('<r></r>');
-    } finally {
-      if (proto) {
-        Object.defineProperty(Node.prototype, 'textContent', proto);
-      }
-    }
   });
 });
 

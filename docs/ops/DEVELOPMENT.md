@@ -72,7 +72,7 @@ credentials in `.env`.
 
 ```
 apps/backend/            FastAPI — conversion, validation, /auth/*, dissemination
-apps/frontend/           React operator UI (incl. Quality metrics /quality)
+apps/frontend/           React operator UI
 apps/worker/             near-RT ingest poller
 apps/e2e/                Playwright tests
 packages/auth/           Supabase Auth JWT middleware (library, not a deployable)

@@ -284,7 +284,7 @@ This outline lists slide text only; the UI panels on each slide are named in `SC
 
 - DAY TO DAY
 
-- The operator handbook covers sign-in, history, Quality metrics and troubleshooting.
+- The operator handbook covers sign-in, history, and troubleshooting.
 
 - Never put passwords, connection strings or destination addresses into a Test Log, an Error Report or a chat message.
 

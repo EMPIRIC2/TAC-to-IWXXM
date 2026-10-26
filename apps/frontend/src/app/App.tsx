@@ -1,7 +1,6 @@
 import { useState, useEffect, useLayoutEffect, useRef, useCallback } from 'react';
 import { FileConverter } from './components/FileConverter';
 import { MyMetarsPage } from './components/MyMetarsPage';
-import { QualityMetricsPage } from './components/QualityMetricsPage';
 import { LintValidationCatalogPage } from './components/LintValidationCatalogPage';
 import { DisseminationOpsPage } from './components/DisseminationOpsPage';
 import { AppShellNav, type ShellPrimaryView } from './components/AppShellNav';
@@ -23,11 +22,6 @@ import {
   listLocalWorkSessions,
   migrateGuestSessionStorageToIndexedDb,
 } from '@/utils/localWorkSessionStore';
-import {
-  parseQualityMetricsPath,
-  QUALITY_METRICS_LIST_PATH,
-  qualityMetricsDetailPath,
-} from '@/utils/qualityMetricsPath';
 import { listWorkSessions } from '@/utils/workSessionApi';
 import {
   acknowledgeSiteTerms,
@@ -66,7 +60,6 @@ function isPrimaryShellView(view: AppView): view is ShellPrimaryView {
   return (
     view === 'converter' ||
     view === 'history' ||
-    view === 'quality' ||
     view === 'catalog' ||
     view === 'dissemination-ops'
   );
@@ -78,13 +71,7 @@ function isPrimaryShellView(view: AppView): view is ShellPrimaryView {
  */
 function App() {
   const initiallyLoggedIn = isLoggedIn();
-  const initialQuality = parseQualityMetricsPath(window.location.pathname);
-  const [currentView, setCurrentView] = useState<AppView>(() =>
-    initialQuality ? 'quality' : 'converter',
-  );
-  const [qualityStem, setQualityStem] = useState<string | null>(() =>
-    initialQuality?.kind === 'detail' ? initialQuality.stem : null,
-  );
+  const [currentView, setCurrentView] = useState<AppView>('converter');
   const [catalogFocusCode, setCatalogFocusCode] = useState<string | null>(null);
   const [catalogFocusFamily, setCatalogFocusFamily] = useState<'lint' | 'iwxxm' | null>(
     null,
@@ -105,12 +92,6 @@ function App() {
 
   useEffect(() => {
     const onPopState = () => {
-      const parsed = parseQualityMetricsPath(window.location.pathname);
-      if (parsed) {
-        setCurrentView('quality');
-        setQualityStem(parsed.kind === 'detail' ? parsed.stem : null);
-        return;
-      }
       if (
         window.location.pathname.includes('/auth/callback') ||
         window.location.pathname.includes('/auth/confirm')
@@ -265,36 +246,6 @@ function App() {
 
   const handleShellNavigate = (view: ShellPrimaryView) => {
     setCurrentView(view);
-    if (view === 'quality') {
-      setQualityStem(null);
-      if (window.location.pathname !== QUALITY_METRICS_LIST_PATH) {
-        window.history.pushState({}, '', QUALITY_METRICS_LIST_PATH);
-      }
-      return;
-    }
-    if (
-      window.location.pathname === QUALITY_METRICS_LIST_PATH ||
-      window.location.pathname.startsWith(`${QUALITY_METRICS_LIST_PATH}/`)
-    ) {
-      window.history.pushState({}, '', '/');
-    }
-  };
-
-  const handleOpenQualityDetail = (stem: string) => {
-    setCurrentView('quality');
-    setQualityStem(stem);
-    const path = qualityMetricsDetailPath(stem);
-    if (window.location.pathname !== path) {
-      window.history.pushState({}, '', path);
-    }
-  };
-
-  const handleBackToQualityList = () => {
-    setCurrentView('quality');
-    setQualityStem(null);
-    if (window.location.pathname !== QUALITY_METRICS_LIST_PATH) {
-      window.history.pushState({}, '', QUALITY_METRICS_LIST_PATH);
-    }
   };
 
   const handleRequestLogin = () => {
@@ -369,7 +320,6 @@ function App() {
 
           {(currentView === 'converter' ||
             currentView === 'history' ||
-            currentView === 'quality' ||
             currentView === 'catalog' ||
             currentView === 'dissemination-ops') && (
             <div hidden={currentView !== 'converter'}>
@@ -409,14 +359,6 @@ function App() {
               userEmail={isAuthenticated ? userEmail || 'Operator' : 'Local history'}
               onBack={handleSwitchToConverter}
               onOpenSession={handleLoadWorkSession}
-            />
-          )}
-
-          {currentView === 'quality' && (
-            <QualityMetricsPage
-              routeStem={qualityStem}
-              onOpenDetailRoute={handleOpenQualityDetail}
-              onBackToList={handleBackToQualityList}
             />
           )}
 

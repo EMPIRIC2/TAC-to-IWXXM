@@ -29,26 +29,15 @@ export const LINT_VALIDATION_CATALOG_FAMILY_ALL = 'All rules';
 export const LINT_VALIDATION_CATALOG_LOAD_ERROR = 'The catalog could not be loaded.';
 /** Button that runs the catalog request again. */
 export const LINT_VALIDATION_CATALOG_RETRY = 'Try again';
-/** Checkbox copy when Profile and Exchange are still All. */
-export const LINT_VALIDATION_CATALOG_LISTED_PROFILE_NEEDS_PROFILE =
-  'Choose a profile to show only rules that list it.';
 export const LINT_VALIDATION_CATALOG_TYPE_LABEL = 'Type';
 export const LINT_VALIDATION_CATALOG_LEVEL_LABEL = 'Level';
 export const LINT_VALIDATION_CATALOG_ACCESS_LABEL = 'Access';
 export const LINT_VALIDATION_CATALOG_SORT_LABEL = 'Sort';
-export const LINT_VALIDATION_CATALOG_PROFILE_LABEL = 'Profile';
-export const LINT_VALIDATION_CATALOG_EXCHANGE_LABEL = 'Exchange';
-export const LINT_VALIDATION_CATALOG_PROFILE_ALL = 'All profiles';
-export const LINT_VALIDATION_CATALOG_EXCHANGE_ALL = 'All exchange profiles';
-/** Optional filter: hide unrestricted (all-profiles) rows when a profile is selected. */
-export const LINT_VALIDATION_CATALOG_LISTED_PROFILE_ONLY =
-  'Only rules that list this profile';
 
 /** Column headers (table / list). */
 export const LINT_VALIDATION_CATALOG_COL_CODE = 'Code';
 export const LINT_VALIDATION_CATALOG_COL_TYPE = 'Type';
 export const LINT_VALIDATION_CATALOG_COL_LEVEL = 'Level';
-export const LINT_VALIDATION_CATALOG_COL_PROFILES = 'Profiles';
 export const LINT_VALIDATION_CATALOG_COL_DESCRIPTION = 'Description';
 export const LINT_VALIDATION_CATALOG_COL_SOURCE = 'Source';
 

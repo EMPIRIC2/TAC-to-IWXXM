@@ -291,21 +291,23 @@ describe('LintValidationCatalogPage', () => {
     expect(row).toHaveTextContent(/Access: public/i);
   });
 
-  it('shows applicable semantic and exchange profiles in the catalog', async () => {
+  it('shows the rule text without semantic or exchange profile lines', async () => {
     render(<LintValidationCatalogPage />);
     const xmlSchema = await screen.findByTestId(
       'lint-validation-catalog-entry-XML_SCHEMA',
     );
     expect(xmlSchema).toHaveTextContent(
-      'Semantic: ICAO / WMO Annex 3 (2025), Canada (ECCC)',
+      'IWXXM document must validate against the pinned XSD schema',
     );
-    expect(xmlSchema).toHaveTextContent('Exchange: All exchange profiles');
-
-    const terminator = screen.getByTestId(
-      'lint-validation-catalog-entry-MISSING_TERMINATOR',
-    );
-    expect(terminator).toHaveTextContent('Semantic: All semantic profiles');
-    expect(terminator).toHaveTextContent('Exchange: Global AFS (default)');
+    expect(xmlSchema).not.toHaveTextContent(/semantic profile/i);
+    expect(xmlSchema).not.toHaveTextContent(/exchange profile/i);
+    expect(xmlSchema).not.toHaveTextContent(/^Profiles:/m);
+    expect(
+      screen.queryByTestId('lint-validation-catalog-profile-filter'),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByTestId('lint-validation-catalog-exchange-filter'),
+    ).not.toBeInTheDocument();
   });
 
   it('filters by level client-side (TC-EV062-004)', async () => {
@@ -657,89 +659,12 @@ describe('LintValidationCatalogPage', () => {
     ).toBeInTheDocument();
   });
 
-  it('TC-EV1120-009: refetches with Profile and Exchange filters', async () => {
-    const user = userEvent.setup();
+  it('keeps catalog copy free of planning ids', async () => {
     render(<LintValidationCatalogPage />);
     await screen.findByTestId('lint-validation-catalog-list');
-
-    fetchLintIssueCatalog.mockResolvedValueOnce({
-      issues: [
-        BASE_ISSUES[0],
-        {
-          ...BASE_ISSUES[1],
-          code: 'US_TAF_BECMG_FORBIDDEN',
-          semantic_profiles: ['US_FAA_NWS'],
-        },
-      ],
-    });
-    await user.selectOptions(
-      screen.getByTestId('lint-validation-catalog-profile-filter'),
-      'US_FAA_NWS',
-    );
-    expect(fetchLintIssueCatalog).toHaveBeenLastCalledWith({
-      semantic_profile: 'US_FAA_NWS',
-    });
-
-    fetchLintIssueCatalog.mockResolvedValueOnce({
-      issues: [BASE_ISSUES[0]],
-    });
-    await user.selectOptions(
-      screen.getByTestId('lint-validation-catalog-exchange-filter'),
-      'EUR_RODEX',
-    );
-    expect(fetchLintIssueCatalog).toHaveBeenLastCalledWith({
-      semantic_profile: 'US_FAA_NWS',
-      exchange_profile: 'EUR_RODEX',
-    });
-
-    fetchLintIssueCatalog.mockResolvedValueOnce({ issues: BASE_ISSUES });
-    await user.selectOptions(
-      screen.getByTestId('lint-validation-catalog-profile-filter'),
-      'all',
-    );
-    expect(fetchLintIssueCatalog).toHaveBeenLastCalledWith({
-      exchange_profile: 'EUR_RODEX',
-    });
-
-    fetchLintIssueCatalog.mockResolvedValueOnce({ issues: BASE_ISSUES });
-    await user.selectOptions(
-      screen.getByTestId('lint-validation-catalog-exchange-filter'),
-      'all',
-    );
-    expect(fetchLintIssueCatalog).toHaveBeenLastCalledWith({});
-  });
-
-  it('TC-EV1120-009: Profile and Exchange filters disabled for rule-catalog families', async () => {
-    const user = userEvent.setup();
-    render(<LintValidationCatalogPage />);
-    await screen.findByTestId('lint-validation-catalog-list');
-
-    expect(
-      screen.getByTestId('lint-validation-catalog-profile-filter'),
-    ).not.toBeDisabled();
-    expect(
-      screen.getByTestId('lint-validation-catalog-exchange-filter'),
-    ).not.toBeDisabled();
-
-    await user.selectOptions(
-      screen.getByTestId('lint-validation-catalog-family-filter'),
-      'conversion',
-    );
-    expect(
-      await screen.findByTestId('lint-validation-catalog-entry-ICAO_2025'),
-    ).toBeInTheDocument();
-    expect(screen.getByTestId('lint-validation-catalog-profile-filter')).toBeDisabled();
-    expect(
-      screen.getByTestId('lint-validation-catalog-exchange-filter'),
-    ).toBeDisabled();
-  });
-
-  it('TC-EV1120-009: operator Profile/Exchange filter labels stay plain language', async () => {
-    render(<LintValidationCatalogPage />);
-    await screen.findByTestId('lint-validation-catalog-list');
-    expect(screen.getByLabelText('Filter by profile')).toBeInTheDocument();
-    expect(screen.getByLabelText('Filter by exchange profile')).toBeInTheDocument();
     expect(screen.queryByText(/EV-1120|TC-EV|#1123|ADR-/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/All semantic profiles/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/All exchange profiles/i)).not.toBeInTheDocument();
   });
 
   const RULE_FAMILIES = ['conversion', 'dissemination', 'decoding'] as const;
