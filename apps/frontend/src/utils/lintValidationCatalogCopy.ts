@@ -55,6 +55,13 @@ export const LINT_VALIDATION_CATALOG_EXAMPLE_PASS_UNAVAILABLE =
 export const LINT_VALIDATION_CATALOG_EXAMPLE_FAIL_UNAVAILABLE =
   'No failing example is available for this rule yet.';
 
+/** Heading for samples on an info-level rule. */
+export const LINT_VALIDATION_CATALOG_EXAMPLES = 'Examples';
+
+/** Shown when an info-level rule has no packaged report on file. */
+export const LINT_VALIDATION_CATALOG_EXAMPLES_UNAVAILABLE =
+  'No example is available for this rule yet.';
+
 /** Note that the samples are existing reports, not ones written for the screen. */
 export const LINT_VALIDATION_CATALOG_EXAMPLE_NOTE =
   'Only a report already on file is shown here.';
