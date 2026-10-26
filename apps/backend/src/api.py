@@ -8,7 +8,7 @@ import pathlib
 import re
 import sys
 from collections.abc import Awaitable, Callable
-from typing import Any
+from typing import Any, cast
 
 from starlette.types import Message, Receive, Scope, Send
 
@@ -396,15 +396,17 @@ def _trim_operator_descriptions(node: object) -> None:
         OpenAPI object, array, or scalar.
     """
     if isinstance(node, dict):
-        description = node.get("description")
+        mapping = cast(dict[str, Any], node)
+        description = mapping.get("description")
         if isinstance(description, str):
             trimmed = _operator_description(description)
             if trimmed != description:
-                node["description"] = trimmed
-        for value in node.values():
+                mapping["description"] = trimmed
+        for value in mapping.values():
             _trim_operator_descriptions(value)
     elif isinstance(node, list):
-        for item in node:
+        items = cast(list[Any], node)
+        for item in items:
             _trim_operator_descriptions(item)
 
 
