@@ -22,13 +22,13 @@ def validate_email_permissive(email: str) -> str:
 
     Parameters
     ----------
-    email : object
-        Argument ``email``.
+    email : str
+        Email address.
 
     Returns
     -------
-    object
-        Return value.
+    str
+        Normalized email address.
     """
     if not email or "@" not in email:
         raise ValueError("Invalid email format")
@@ -52,8 +52,10 @@ class LoginRequest(BaseModel):
 
     Attributes
     ----------
-    _ : object
-        See implementation.
+    email : str
+        Email address.
+    password : str
+        Password.
     """
 
     email: str
@@ -84,8 +86,10 @@ class RegisterRequest(BaseModel):
 
     Attributes
     ----------
-    _ : object
-        See implementation.
+    email : str
+        Email address.
+    password : str
+        Password.
     """
 
     email: str
@@ -116,8 +120,10 @@ class ConfirmRequest(BaseModel):
 
     Attributes
     ----------
-    _ : object
-        See implementation.
+    token_hash : str
+        GoTrue email confirmation token hash.
+    type : str, optional
+        GoTrue confirmation type (``email``, ``signup``, ``invite``, ``magiclink``, ``recovery``, or ``email_change``). By default ``"email"``.
     """
 
     token_hash: str = Field(min_length=1)
@@ -159,8 +165,12 @@ class UserResponse(BaseModel):
 
     Attributes
     ----------
-    _ : object
-        See implementation.
+    id : str
+        ID.
+    email : str
+        Email address.
+    metadata : dict[str, Any], optional
+        User metadata. By default an empty dict.
     """
 
     id: str
@@ -174,8 +184,12 @@ class SessionResponse(BaseModel):
 
     Attributes
     ----------
-    _ : object
-        See implementation.
+    access_token : str
+        Access token.
+    refresh_token : str
+        Refresh token.
+    expires_at : int
+        Expiry time.
     """
 
     access_token: str
@@ -189,8 +203,10 @@ class AuthResponse(BaseModel):
 
     Attributes
     ----------
-    _ : object
-        See implementation.
+    user : UserResponse
+        User.
+    session : SessionResponse or None, optional
+        Session.
     """
 
     user: UserResponse
@@ -203,8 +219,8 @@ class LogoutRequest(BaseModel):
 
     Attributes
     ----------
-    _ : object
-        See implementation.
+    scope : str or None, optional
+        GoTrue logout scope: ``global``, ``local``, or ``others``. By default ``None``.
     """
 
     scope: str | None = Field(
@@ -242,8 +258,8 @@ class Message(BaseModel):
 
     Attributes
     ----------
-    _ : object
-        See implementation.
+    message : str
+        Message text.
     """
 
     message: str
@@ -262,13 +278,13 @@ def get_token_from_header(
 
     Parameters
     ----------
-    authorization : object
-        Argument ``authorization``.
+    authorization : str or None, optional
+        Authorization header value. By default ``None``.
 
     Returns
     -------
-    object
-        Return value.
+    str
+        Bearer token.
     """
     if not authorization:
         raise HTTPException(
@@ -295,11 +311,11 @@ def create_auth_router(
 
     Parameters
     ----------
-    proxy : SupabaseAuthProxy or None
-        Optional injected proxy (tests).
-    jwks_url : str or None
-        JWKS endpoint override for ``/auth/me``.
-    supabase_url : str or None
+    proxy : SupabaseAuthProxy or None, optional
+        Optional injected proxy (tests). By default ``None``.
+    jwks_url : str or None, optional
+        JWKS endpoint override for ``/auth/me``. By default ``None``.
+    supabase_url : str or None, optional
         Auth project URL for JWKS derivation / proxy default.
 
     Returns
@@ -341,15 +357,15 @@ def create_auth_router(
 
         Parameters
         ----------
-        request : object
-            Argument ``request``.
-        client : object
-            Argument ``client``.
+        request : RegisterRequest
+            Request.
+        client : SupabaseAuthProxy, optional
+            Auth proxy for this route.
 
         Returns
         -------
-        object
-            Return value.
+        dict[str, Any]
+            Signup payload from the auth proxy.
         """
         try:
             return client.sign_up(request.email, request.password)
@@ -374,15 +390,15 @@ def create_auth_router(
 
         Parameters
         ----------
-        request : object
-            Argument ``request``.
-        client : object
-            Argument ``client``.
+        request : ConfirmRequest
+            Request.
+        client : SupabaseAuthProxy, optional
+            Auth proxy for this route.
 
         Returns
         -------
-        object
-            Return value.
+        dict[str, Any]
+            Verify payload from the auth proxy.
         """
         try:
             return client.verify_email(request.token_hash, request.type)
@@ -407,15 +423,15 @@ def create_auth_router(
 
         Parameters
         ----------
-        request : object
-            Argument ``request``.
-        client : object
-            Argument ``client``.
+        request : LoginRequest
+            Request.
+        client : SupabaseAuthProxy, optional
+            Auth proxy for this route.
 
         Returns
         -------
-        object
-            Return value.
+        dict[str, Any]
+            Sign-in payload from the auth proxy.
         """
         try:
             return client.sign_in(request.email, request.password)
@@ -441,17 +457,17 @@ def create_auth_router(
 
         Parameters
         ----------
-        request : object
-            Argument ``request``.
-        token : object
-            Argument ``token``.
-        client : object
-            Argument ``client``.
+        request : LogoutRequest or None, optional
+            Request.
+        token : str, optional
+            Token.
+        client : SupabaseAuthProxy, optional
+            Auth proxy for this route.
 
         Returns
         -------
-        object
-            Return value.
+        dict[str, str]
+            Success message after sign-out.
         """
         body = request or LogoutRequest()
         try:
@@ -477,15 +493,15 @@ def create_auth_router(
 
         Parameters
         ----------
-        token : object
-            Argument ``token``.
-        client : object
-            Argument ``client``.
+        token : str, optional
+            Token.
+        client : SupabaseAuthProxy, optional
+            Auth proxy for this route.
 
         Returns
         -------
-        object
-            Return value.
+        dict[str, Any]
+            The current user after JWKS verification.
         """
         try:
             claims = verify_access_token(

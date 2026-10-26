@@ -14,14 +14,14 @@ class GatewayHealth:
 
     Parameters
     ----------
-    ok :
+    ok : bool
         Overall operator-facing health (never implies message delivery).
-    gateway :
+    gateway : str
         Gateway kind discriminator (``postgres``, ``wis2``, ``amhs``, …).
-    connectivity_ok :
+    connectivity_ok : bool
         Whether a live probe succeeded.
-    detail :
-        Operator-safe detail — never BYOC secrets or raw URIs.
+    detail : str or None, optional
+        Operator-safe detail — never BYOC secrets or raw URIs. By default ``None``.
     """
 
     ok: bool
@@ -39,7 +39,7 @@ def default_health_for_kind(gateway_kind: str) -> GatewayHealth:
 
     Parameters
     ----------
-    gateway_kind :
+    gateway_kind : str
         Sink / gateway discriminator.
 
     Returns

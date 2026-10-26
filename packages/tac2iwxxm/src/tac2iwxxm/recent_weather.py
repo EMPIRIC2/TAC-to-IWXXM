@@ -11,9 +11,10 @@ def accept_recent_code(code: str, *, weather_token: Pattern[str]) -> str | None:
 
     Parameters
     ----------
-    code :
+    code : str
         The token after the ``RE`` prefix.
-    weather_token :
+
+    weather_token : Pattern[str]
         Present-weather pattern. A match means the code is a complete weather group.
 
     Returns

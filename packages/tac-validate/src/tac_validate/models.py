@@ -11,18 +11,18 @@ class Issue(msgspec.Struct, frozen=True):
 
     Parameters
     ----------
-    severity :
+    severity : str
         ``error``, ``warning``, or ``info``.
-    code :
+    code : str
         Machine-readable rule id.
-    message :
+    message : str
         Human-readable description.
-    location :
-        Optional token / field hint (e.g. ``wind``).
-    start :
-        Optional inclusive character offset into the TAC string.
-    end :
-        Optional exclusive character offset into the TAC string.
+    location : str or None, optional
+        Token or field hint (for example ``wind``). By default ``None``.
+    start : int or None, optional
+        Inclusive character offset into the TAC string. By default ``None``.
+    end : int or None, optional
+        Exclusive character offset into the TAC string. By default ``None``.
     """
 
     severity: str
@@ -39,11 +39,11 @@ class Fix(msgspec.Struct, frozen=True):
 
     Parameters
     ----------
-    code :
+    code : str
         Fix identifier (e.g. ``add_terminator``).
-    message :
+    message : str
         Human-readable description.
-    replacement :
+    replacement : str
         Suggested replacement fragment or full TAC.
     """
 
@@ -58,16 +58,16 @@ class LintReport(msgspec.Struct, frozen=True):
 
     Parameters
     ----------
-    ok :
+    ok : bool
         ``True`` when no error-severity issues.
-    product :
+    product : str
         Product id used for rule selection.
-    issues :
+    issues : list[Issue]
         Structured findings.
-    fixes :
-        Optional repair suggestions.
-    profile :
-        Semantic profile the findings were judged under.
+    fixes : list[Fix], optional
+        Repair suggestions. By default an empty list.
+    profile : str, optional
+        Semantic profile the findings were judged under. By default ``"annex3"``.
     """
 
     ok: bool

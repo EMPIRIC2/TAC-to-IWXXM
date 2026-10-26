@@ -58,12 +58,12 @@ def _ir_source_is_explicit_pack(ir_source: str | None) -> bool:
 
     Parameters
     ----------
-    ir_source : object
+    ir_source : str | None
         Argument ``ir_source``.
 
     Returns
     -------
-    object
+    bool
         Return value.
     """
     if ir_source is not None:
@@ -145,9 +145,10 @@ def resolve_propagate_residuals_to_remarks(
 
     Parameters
     ----------
-    profile :
+    profile : str
         Emit key or semantic profile id (case-insensitive).
-    value :
+
+    value : bool | None
         Explicit override, or ``None`` to use the profile default table.
 
     Returns
@@ -182,14 +183,15 @@ def _residual_texts_to_append(
 
     Parameters
     ----------
-    residual_texts : object
+    residual_texts : list[str]
         Argument ``residual_texts``.
-    remarks_free_text : object
+
+    remarks_free_text : str
         Argument ``remarks_free_text``.
 
     Returns
     -------
-    object
+    list[str]
         Return value.
     """
     existing = remarks_free_text.strip()
@@ -217,18 +219,21 @@ def _apply_propagate_residuals(
 
     Parameters
     ----------
-    tac : object
+    tac : str
         Argument ``tac``.
-    product : object
+
+    product : str
         Argument ``product``.
-    profile_l : object
+
+    profile_l : str
         Argument ``profile_l``.
-    ir : object
+
+    ir : dict[str, Any]
         Argument ``ir``.
 
     Returns
     -------
-    object
+    tuple[dict[str, Any], ConvertIssue | None]
         Return value.
     """
     decoded = decode_tac(tac, product=product)
@@ -276,12 +281,12 @@ def _content_bounds(tac: str) -> tuple[int, int]:
 
     Parameters
     ----------
-    tac : object
+    tac : str
         Argument ``tac``.
 
     Returns
     -------
-    object
+    tuple[int, int]
         Return value.
     """
     stripped = tac.strip()
@@ -297,11 +302,13 @@ def _preview_stub_xml(product: str, iwxxm_version: str, reason: str) -> str:
 
     Parameters
     ----------
-    product :
+    product : str
         Product root element name (e.g. ``METAR``).
-    iwxxm_version :
+
+    iwxxm_version : str
         Release line used to pick the IWXXM namespace.
-    reason :
+
+    reason : str
         Short human-readable failure note embedded as an XML comment.
 
     Returns
@@ -333,14 +340,15 @@ def _tac_looks_like_product(tac: str, product: str) -> bool:
 
     Parameters
     ----------
-    tac : object
+    tac : str
         Argument ``tac``.
-    product : object
+
+    product : str
         Argument ``product``.
 
     Returns
     -------
-    object
+    bool
         Return value.
     """
     pattern = _PRODUCT_LEAD.get(product)
@@ -355,14 +363,15 @@ def _should_quarantine(tac: str, product: str) -> bool:
 
     Parameters
     ----------
-    tac : object
+    tac : str
         Argument ``tac``.
-    product : object
+
+    product : str
         Argument ``product``.
 
     Returns
     -------
-    object
+    bool
         Return value.
     """
     if _UNRELIABLE_TAC.search(tac):
@@ -376,7 +385,7 @@ def _heading_from_tac(tac: str) -> AhlParts | None:
 
     Parameters
     ----------
-    tac :
+    tac : str
         Bulletin or single-report text.
 
     Returns
@@ -396,7 +405,7 @@ def _compact_bulletin_id(parts: AhlParts) -> str:
 
     Parameters
     ----------
-    parts :
+    parts : AhlParts
         Parsed abbreviated heading.
 
     Returns
@@ -421,7 +430,7 @@ def _remark_text(tac: str) -> str | None:
 
     Parameters
     ----------
-    tac :
+    tac : str
         Original TAC text.
 
     Returns
@@ -454,7 +463,7 @@ def _permissible_usage_attrs(tac: str) -> str:
 
     Parameters
     ----------
-    tac :
+    tac : str
         Original TAC text.
 
     Returns
@@ -488,9 +497,10 @@ def _apply_permissible_usage(xml: str, tac: str) -> str:
 
     Parameters
     ----------
-    xml :
+    xml : str
         Successful convert document.
-    tac :
+
+    tac : str
         Original TAC text.
 
     Returns
@@ -521,9 +531,10 @@ def _valid_period_xml(tac: str, now: str) -> str:
 
     Parameters
     ----------
-    tac :
+    tac : str
         Original TAC text.
-    now :
+
+    now : str
         Issue timestamp ``YYYY-MM-DDTHH:MM:SSZ`` used for the year and month.
 
     Returns
@@ -561,11 +572,13 @@ def _unit_xml(tag: str, name: str | None, *, unit_type: str) -> str:
 
     Parameters
     ----------
-    tag :
+    tag : str
         IWXXM element local name.
-    name :
+
+    name : str | None
         Centre or unit token recovered from the TAC, or ``None``.
-    unit_type :
+
+    unit_type : str
         AIXM unit type.
 
     Returns
@@ -601,9 +614,10 @@ def _advisory_centre(tac: str, label: str) -> str | None:
 
     Parameters
     ----------
-    tac :
+    tac : str
         Original TAC text.
-    label :
+
+    label : str
         One of ``VAAC``, ``TCAC``, or ``SWXC``.
 
     Returns
@@ -621,11 +635,13 @@ def _quarantine_identity(product: str, tac: str, now: str) -> str:
 
     Parameters
     ----------
-    product :
+    product : str
         F6 product code.
-    tac :
+
+    tac : str
         Original TAC text.
-    now :
+
+    now : str
         Issue timestamp.
 
     Returns
@@ -665,11 +681,13 @@ def _quarantine_xml(
 
     Parameters
     ----------
-    product :
+    product : str
         F6 product code.
-    tac :
+
+    tac : str
         Original TAC text (stored on translationFailedTAC).
-    iwxxm_version :
+
+    iwxxm_version : str
         IWXXM release line for namespace.
 
     Returns
@@ -748,14 +766,15 @@ def _remark_span(tac: str, message: str) -> tuple[int | None, int | None]:
 
     Parameters
     ----------
-    tac : object
+    tac : str
         Argument ``tac``.
-    message : object
+
+    message : str
         Argument ``message``.
 
     Returns
     -------
-    object
+    tuple[int | None, int | None]
         Return value.
     """
     for needle, pattern in _REMARK_SPAN_PATTERNS:
@@ -772,18 +791,18 @@ class ConvertError(ValueError):
 
     Parameters
     ----------
-    message :
+    message : str
         Human-readable description.
     """
 
     def __init__(self, message: str) -> None:
         """
-        Internal helper ``__init__``.
+        Store ``message``.
 
         Parameters
         ----------
-        message : object
-            Argument ``message``.
+        message : str
+            Human-readable message.
         """
         super().__init__(message)
 
@@ -794,14 +813,15 @@ def _parse(product: str, tac: str) -> dict[str, Any]:
 
     Parameters
     ----------
-    product : object
+    product : str
         Argument ``product``.
-    tac : object
+
+    tac : str
         Argument ``tac``.
 
     Returns
     -------
-    object
+    dict[str, Any]
         Return value.
     """
     parsers: dict[str, Callable[..., dict[str, Any]]] = {
@@ -830,18 +850,21 @@ def _parse_pack_ir(
 
     Parameters
     ----------
-    product : object
+    product : str
         Argument ``product``.
-    tac : object
+
+    tac : str
         Argument ``tac``.
-    iwxxm_version : object
+
+    iwxxm_version : str
         Argument ``iwxxm_version``.
-    profile : object
+
+    profile : str
         Argument ``profile``.
 
     Returns
     -------
-    object
+    dict[str, Any]
         Return value.
     """
     packs = {item.id: item for item in load_packs(profile)}
@@ -872,22 +895,27 @@ def _parse_for_convert(
 
     Parameters
     ----------
-    product : object
+    product : str
         Argument ``product``.
-    tac : object
+
+    tac : str
         Argument ``tac``.
-    ir_source : object
+
+    ir_source : str
         Argument ``ir_source``.
-    iwxxm_version : object
+
+    iwxxm_version : str
         Argument ``iwxxm_version``.
-    profile : object
+
+    profile : str
         Argument ``profile``.
-    ir_source_explicit : object
+
+    ir_source_explicit : bool
         Argument ``ir_source_explicit``.
 
     Returns
     -------
-    object
+    dict[str, Any]
         Return value.
     """
     if ir_source == "pack":
@@ -907,18 +935,21 @@ def _emit(product: str, profile: str, ir: dict[str, Any], iwxxm_version: str) ->
 
     Parameters
     ----------
-    product : object
+    product : str
         Argument ``product``.
-    profile : object
+
+    profile : str
         Argument ``profile``.
-    ir : object
+
+    ir : dict[str, Any]
         Argument ``ir``.
-    iwxxm_version : object
+
+    iwxxm_version : str
         Argument ``iwxxm_version``.
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     if product in {"METAR", "SPECI", "TAF", "SIGMET", "AIRMET", "VAA", "TCA"}:
@@ -978,9 +1009,10 @@ def _xml_gzip(xml: str | None, suggested_filename: str | None) -> bytes | None:
 
     Parameters
     ----------
-    xml :
+    xml : str | None
         IWXXM document text.
-    suggested_filename :
+
+    suggested_filename : str | None
         Guideline filename, or ``None``.
 
     Returns
@@ -1019,40 +1051,51 @@ def convert(
 
     Parameters
     ----------
-    tac :
+    tac : str
         TAC text (single report or bulletin containing one report).
-    product :
+
+    product : str
         One of the F6 products or ``SWXA`` (F28).
-    profile :
+
+    profile : str, optional
         ``annex3`` (default) or ``iwxxm_us`` (METAR/SPECI US extensions; others T5.4-T5.5).
-    iwxxm_version :
+
+    iwxxm_version : str | None, optional
         Target IWXXM release line.
-    preview :
+
+    preview : bool, optional
         When ``True``, fatal parse/profile failures still return best-effort stub XML
         (soft-preview / ADR-022). Does not imply Schematron-passed publish.
-    emit_translation_centre :
+
+    emit_translation_centre : bool, optional
         When ``True``, emit ``translationCentreDesignator`` / ``translationCentreName``
         on successful convert (cross-State / Translation Centre mode; FAQ §14.5).
         Default ``False`` omits them for in-State convert. Quarantine shells always
         include centre attrs (official ``*-translation-failed`` model).
-    translation_centre_designator :
+
+    translation_centre_designator : str, optional
         Designator when ``emit_translation_centre`` is true.
-    translation_centre_name :
+
+    translation_centre_name : str, optional
         Human-readable centre name when ``emit_translation_centre`` is true.
-    report_status :
+
+    report_status : str | None, optional
         Optional IWXXM ``reportStatus`` override (``NORMAL`` / ``AMENDMENT`` /
         ``CORRECTION``). Used for AHL BBB→reportStatus when the TAC body has no
         COR/AMD keyword (EV-029 M2 / #823 B3). When omitted, emitters keep
         body-derived COR → CORRECTION behavior.
-    propagate_residuals_to_remarks :
+
+    propagate_residuals_to_remarks : bool | None, optional
         When ``True``, fold decode residual token text into the profile remarks /
         ``humanReadableText`` path (or document no XML target on annex3). When
         ``None``, use the semantic-profile default (annex3 / ICAO_2025 → off).
-    ir_source :
+
+    ir_source : str | None, optional
         ``legacy``, ``pack``, or ``auto`` (default). ``auto`` uses pack IR for
         METAR/SPECI and legacy parsers for other products. Override with
         ``TAC2IWXXM_CONVERT_IR_SOURCE`` when omitted.
-    bulletin_date :
+
+    bulletin_date : str | None, optional
         Optional ``YYYY-MM-DD`` (or a timestamp with that prefix) used as the
         year and month for TAC day stamps. Omitted conversions keep example
         pins such as ``2023-06`` and ``2012-08``.
@@ -1127,16 +1170,18 @@ def convert(
 
         Parameters
         ----------
-        code : object
+        code : str
             Argument ``code``.
-        message : object
+
+        message : str
             Argument ``message``.
-        span : object
+
+        span : bool, optional
             Argument ``span``.
 
         Returns
         -------
-        object
+        ConvertResult
             Return value.
         """
         span_start = span_end = None

@@ -26,8 +26,8 @@ class PinSchError(ValueError):
 
     Attributes
     ----------
-    _ : object
-        See implementation.
+    args : tuple
+        Arguments passed to the exception constructor.
     """
 
 
@@ -38,8 +38,16 @@ class PinSchBundle:
 
     Attributes
     ----------
-    _ : object
-        See implementation.
+    pin : str
+        Pin.
+    version_root : Path
+        Version root.
+    xsd : Path
+        XSD.
+    schematron : Path
+        Schematron.
+    namespace_uri : str
+        Namespace URI.
     """
 
     pin: str
@@ -77,13 +85,13 @@ def expected_iwxxm_namespace(iwxxm_version: str) -> str:
 
     Parameters
     ----------
-    iwxxm_version : object
-        Argument ``iwxxm_version``.
+    iwxxm_version : str
+        IWXXM release line.
 
     Returns
     -------
-    object
-        Return value.
+    str
+        The ICAO IWXXM namespace URI expected for ``iwxxm_version``.
     """
     fragment = _PIN_NS_FRAGMENT.get(iwxxm_version.strip())
     if fragment is None:
@@ -99,7 +107,7 @@ def assert_pin_schematron_match(iwxxm_version: str) -> PinSchBundle:
 
     Parameters
     ----------
-    iwxxm_version :
+    iwxxm_version : str
         Release pin (``2023-1``, ``2025-2``, ``3.0.0``).
 
     Returns

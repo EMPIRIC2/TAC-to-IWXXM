@@ -12,14 +12,14 @@ class WorkflowMessage:
 
     Parameters
     ----------
-    tac :
+    tac : str
         TAC text (or bulletin fragment).
-    product :
+    product : str
         Product id (e.g. ``METAR``).
-    job_id :
-        Caller correlation id (F8 ingest job id).
-    meta :
-        Optional opaque caller metadata.
+    job_id : str, optional
+        Caller correlation id (F8 ingest job id). By default ``''``.
+    meta : dict[str, object], optional
+        Optional opaque caller metadata. By default an empty dict.
     """
 
     tac: str
@@ -35,24 +35,24 @@ class WorkflowDefinition:
 
     Parameters
     ----------
-    id :
+    id : str
         Stable workflow id.
-    version :
+    version : str
         Semver pin for DSL changes.
-    pipeline :
+    pipeline : list[str]
         Ordered stage ids.
-    profile_id :
-        Conversion profile id (may be env-resolved).
-    iwxxm_version :
-        IWXXM version string.
-    description :
-        Optional human description.
-    on_valid_store :
-        Sink refs from ``onValid.store``.
-    on_invalid_store :
-        Sink refs from ``onInvalid.store``.
-    raw :
-        Original mapping after env resolve (debug).
+    profile_id : str, optional
+        Conversion profile id (may be env-resolved). By default ``'annex3'``.
+    iwxxm_version : str, optional
+        IWXXM version string. By default ``'2025-2'``.
+    description : str, optional
+        Optional human description. By default ``''``.
+    on_valid_store : list[str], optional
+        Sink refs from ``onValid.store``. By default an empty list.
+    on_invalid_store : list[str], optional
+        Sink refs from ``onInvalid.store``. By default an empty list.
+    raw : dict[str, object], optional
+        Original mapping after env resolve (debug). By default an empty dict.
     """
 
     id: str
@@ -73,8 +73,14 @@ class StageIssue:
 
     Attributes
     ----------
-    _ : object
-        See implementation.
+    stage : str
+        Stage.
+    severity : str
+        Severity.
+    code : str
+        Code.
+    message : str
+        Message text.
     """
 
     stage: str
@@ -90,22 +96,22 @@ class WorkflowResult:
 
     Parameters
     ----------
-    ok :
+    ok : bool
         True when all stages passed (soft-pass rules applied).
-    workflow_id :
+    workflow_id : str
         Resolved workflow id.
-    product :
+    product : str
         Product used.
-    profile :
+    profile : str
         Profile used.
-    xml :
-        IWXXM XML when convert succeeded.
-    issues :
-        Aggregated diagnostics.
-    stage_failed :
-        First failing stage id, if any.
-    job_id :
-        Echo of message job_id.
+    xml : str or None, optional
+        IWXXM XML when convert succeeded. By default ``None``.
+    issues : list[StageIssue], optional
+        Aggregated diagnostics. By default an empty list.
+    stage_failed : str or None, optional
+        First failing stage id, if any. By default ``None``.
+    job_id : str, optional
+        Echo of message job_id. By default ``''``.
     """
 
     ok: bool

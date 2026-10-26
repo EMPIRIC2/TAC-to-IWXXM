@@ -37,7 +37,7 @@ def schema_blocks_for_national_line(national_line: str) -> list[dict[str, Any]]:
 
     Parameters
     ----------
-    national_line :
+    national_line : str
         Uppercase wire id such as ``ICAO_2025`` or ``US_FAA_NWS``.
 
     Returns

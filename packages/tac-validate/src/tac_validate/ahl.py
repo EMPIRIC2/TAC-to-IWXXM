@@ -40,13 +40,13 @@ def looks_like_ahl(text: str) -> bool:
 
     Parameters
     ----------
-    text : object
-        Argument ``text``.
+    text : str
+        Text.
 
     Returns
     -------
-    object
-        Return value.
+    bool
+        True when the first non-empty line looks like a WMO AHL.
     """
     line = _first_nonempty_line(text)
     if line is None:
@@ -218,13 +218,13 @@ def lint_ahl_bulletin(
 
     Parameters
     ----------
-    text :
+    text : str
         Full bulletin including AHL line.
-    product :
+    product : str
         TAC product for contained reports.
-    profile :
+    profile : str
         ``annex3`` or ``iwxxm_us``.
-    lint_report :
+    lint_report : LintReportFn
         Inner lint for a single TAC report (must not re-enter AHL split).
 
     Returns

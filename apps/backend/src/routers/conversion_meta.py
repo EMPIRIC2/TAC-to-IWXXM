@@ -9,10 +9,11 @@ from fastapi import APIRouter
 router = APIRouter(prefix="/api/v1", tags=["Conversion"])
 
 
-@router.get("/versions")
+@router.get("/versions", summary="Supported IWXXM versions")
 def get_supported_versions() -> object:
     """
     Get list of supported IWXXM versions.
+
 
     Examples
     --------
@@ -49,10 +50,11 @@ def get_supported_versions() -> object:
     }
 
 
-@router.get("/schema-status")
+@router.get("/schema-status", summary="Schema status")
 def get_schema_status() -> object:
     """
-    Get schema status, including RC versions and mirroring info.
+    Return schema status, including release-candidate versions and mirror state.
+
 
     Examples
     --------

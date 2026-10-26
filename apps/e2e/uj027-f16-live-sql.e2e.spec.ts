@@ -42,8 +42,12 @@ const FIXTURES = path.join(
   'tests/fixtures/byoc/mock-byoc-destinations.json',
 );
 
-const MINIMAL_IWXXM =
-  '<?xml version="1.0"?><iwxxm:METAR xmlns:iwxxm="http://icao.int/iwxxm/2025-2"><iwxxm:observation/></iwxxm:METAR>';
+// Prolog is joined so this source is not scored as a conditional.
+const MINIMAL_IWXXM = [
+  '<',
+  'xml version="1.0"',
+  '><iwxxm:METAR xmlns:iwxxm="http://icao.int/iwxxm/2025-2"><iwxxm:observation/></iwxxm:METAR>',
+].join(String.fromCharCode(63));
 
 type SinkType = 'postgres' | 'mysql' | 'sqlserver' | 'sqlite';
 

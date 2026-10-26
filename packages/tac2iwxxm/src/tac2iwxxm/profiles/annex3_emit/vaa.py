@@ -47,14 +47,15 @@ def _vaa_cloud_extent_xml(cloud: dict[str, Any], *, gid: str) -> str:
 
     Parameters
     ----------
-    cloud : object
+    cloud : dict[str, Any]
         Argument ``cloud``.
-    gid : object
+
+    gid : str
         Argument ``gid``.
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     # ruff: noqa: F403, F405
@@ -109,22 +110,23 @@ def emit_vaa_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
     (or other SIGMET-family / TCA roots). Rejects IR that claims a forbidden
     ``iwxxm_root`` or non-VAA ``product``.
 
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Parsed product fields.
+
+    iwxxm_version : str
+        IWXXM release line.
+
+    Returns
+    -------
+    str
+        An IWXXM ``VolcanicAshAdvisory`` document (F6.f / F26 themes V2-V3).
+
     Examples
     --------
     >>> 1 + 1  # docstring smoke (emit_vaa_annex3)
     2
-
-    Parameters
-    ----------
-    ir : object
-        Argument ``ir``.
-    iwxxm_version : object
-        Argument ``iwxxm_version``.
-
-    Returns
-    -------
-    object
-        Return value.
     """
     product = str(ir.get("product", "VAA")).upper()
     if product != "VAA":
@@ -291,12 +293,12 @@ def _assert_vaa_advisory_xml(xml: str) -> str:
 
     Parameters
     ----------
-    xml : object
+    xml : str
         Argument ``xml``.
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     if "<iwxxm:VolcanicAshAdvisory " not in xml:

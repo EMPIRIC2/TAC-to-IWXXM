@@ -108,9 +108,9 @@ def validate_codelist_references(
 
     Parameters
     ----------
-    xml_content :
+    xml_content : str
         IWXXM XML document.
-    codelists_dir :
+    codelists_dir : Path
         Directory containing bundled ``codes.wmo.int-*.rdf`` files.
 
     Returns

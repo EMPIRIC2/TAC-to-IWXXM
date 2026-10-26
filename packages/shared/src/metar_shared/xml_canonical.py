@@ -42,23 +42,23 @@ _UUID_VALUE = re.compile(
 
 
 def local_name(tag: str) -> str:
-    """Return the local part of a Clark-notation tag.
+    """
+    Return the local part of a Clark-notation tag.
+
+    Parameters
+    ----------
+    tag : str
+        Clark-notation or prefixed tag.
+
+    Returns
+    -------
+    str
+        The local part of a Clark-notation tag.
 
     Examples
     --------
     >>> 1 + 1  # docstring smoke (local_name)
     2
-
-    Parameters
-    ----------
-    tag : object
-        Argument ``tag``.
-
-    Returns
-    -------
-    object
-        Return value.
-
     """
     if tag.startswith("{"):
         return tag.rsplit("}", 1)[-1]
@@ -73,12 +73,12 @@ def _norm_text(value: str | None) -> str:
 
     Parameters
     ----------
-    value : object
+    value : str | None
         Argument ``value``.
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     if value is None:
@@ -92,12 +92,12 @@ def _filter_volatile_attrs(attrib: dict[str, str]) -> dict[str, str]:
 
     Parameters
     ----------
-    attrib : object
+    attrib : dict[str, str]
         Argument ``attrib``.
 
     Returns
     -------
-    object
+    dict[str, str]
         Return value.
     """
     filtered: dict[str, str] = {}
@@ -123,12 +123,12 @@ def _canonicalize_element(elem: ET.Element) -> CanonicalNode:
 
     Parameters
     ----------
-    elem : object
+    elem : ET.Element
         Argument ``elem``.
 
     Returns
     -------
-    object
+    CanonicalNode
         Return value.
     """
     tag = local_name(elem.tag)
@@ -158,12 +158,12 @@ def _parse_root_element(xml_content: str) -> ET.Element:
 
     Parameters
     ----------
-    xml_content : object
+    xml_content : str
         Argument ``xml_content``.
 
     Returns
     -------
-    object
+    ET.Element
         Return value.
     """
     stripped = xml_content.strip()
@@ -194,13 +194,13 @@ def _raise_parse_error(last_error: Exception | None) -> NoReturn:
 
     Parameters
     ----------
-    last_error : object
+    last_error : Exception | None
         Argument ``last_error``.
 
     Returns
     -------
-    object
-        Return value.
+    NoReturn
+        Always raises ``ValueError``.
     """
     if last_error is not None:
         raise ValueError(
@@ -210,27 +210,23 @@ def _raise_parse_error(last_error: Exception | None) -> NoReturn:
 
 
 def canonicalize_xml(xml_content: str) -> str:
-    """Normalize XML to a canonical string for diffing.
-
-    Returns
-    -------
-        Deterministic canonical representa
+    """
+    Normalize XML to a canonical string for diffing.
 
     Parameters
     ----------
-    xml_content : object
+    xml_content : str
         Raw or prettified XML.
 
     Returns
     -------
-    object
+    str
         Deterministic canonical representation.
 
     Examples
     --------
     >>> 1 + 1  # docstring smoke (canonicalize_xml)
     2
-
     """
     root = _parse_root_element(xml_content)
     canonical = _canonicalize_element(root)
@@ -238,49 +234,51 @@ def canonicalize_xml(xml_content: str) -> str:
 
 
 def compare_canonical_xml(expected: str, actual: str) -> bool:
-    """Return True when two XML documents match after canonicalization.
+    """
+    Return True when two XML documents match after canonicalization.
+
+    Parameters
+    ----------
+    expected : str
+        Expected XML text.
+
+    actual : str
+        Actual XML text.
+
+    Returns
+    -------
+    bool
+        True when two XML documents match after canonicalization.
 
     Examples
     --------
     >>> 1 + 1  # docstring smoke (compare_canonical_xml)
     2
-
-    Parameters
-    ----------
-    expected : object
-        Argument ``expected``.
-    actual : object
-        Argument ``actual``.
-
-    Returns
-    -------
-    object
-        Return value.
-
     """
     return canonicalize_xml(expected) == canonicalize_xml(actual)
 
 
 def diff_canonical_xml(expected: str, actual: str) -> str | None:
-    """Return a short diff summary when canonical forms differ.
+    """
+    Return a short diff summary when canonical forms differ.
+
+    Parameters
+    ----------
+    expected : str
+        Expected XML text.
+
+    actual : str
+        Actual XML text.
+
+    Returns
+    -------
+    str | None
+        A short diff summary when canonical forms differ.
 
     Examples
     --------
     >>> 1 + 1  # docstring smoke (diff_canonical_xml)
     2
-
-    Parameters
-    ----------
-    expected : object
-        Argument ``expected``.
-    actual : object
-        Argument ``actual``.
-
-    Returns
-    -------
-    object
-        Return value.
-
     """
     exp = canonicalize_xml(expected)
     act = canonicalize_xml(actual)
@@ -292,18 +290,18 @@ def diff_canonical_xml(expected: str, actual: str) -> str | None:
 
 
 def strip_volatile_attributes(elem: ET.Element) -> None:
-    """Remove volatile attributes from an element tree in place.
+    """
+    Remove volatile attributes from an element tree in place.
+
+    Parameters
+    ----------
+    elem : ET.Element
+        XML element.
 
     Examples
     --------
     >>> 1 + 1  # docstring smoke (strip_volatile_attributes)
     2
-
-    Parameters
-    ----------
-    elem : object
-        Argument ``elem``.
-
     """
     for key in list(elem.attrib):
         if local_name(key) in VOLATILE_ATTRS or (
@@ -320,23 +318,23 @@ def strip_volatile_attributes(elem: ET.Element) -> None:
 
 
 def iter_local_names(elem: ET.Element) -> Iterable[str]:
-    """Yield local tag names in document order (testing helper).
+    """
+    Yield local tag names in document order (testing helper).
+
+    Parameters
+    ----------
+    elem : ET.Element
+        XML element.
+
+    Returns
+    -------
+    Iterable[str]
+        Local tag names in document order (testing helper).
 
     Examples
     --------
     >>> 1 + 1  # docstring smoke (iter_local_names)
     2
-
-    Parameters
-    ----------
-    elem : object
-        Argument ``elem``.
-
-    Returns
-    -------
-    object
-        Return value.
-
     """
     yield local_name(elem.tag)
     for child in elem:

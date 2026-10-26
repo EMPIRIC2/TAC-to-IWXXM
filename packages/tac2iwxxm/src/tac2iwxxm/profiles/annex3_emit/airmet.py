@@ -27,18 +27,21 @@ def _airmet_evolving_member_xml(
 
     Parameters
     ----------
-    area_ir : object
+    area_ir : dict[str, Any]
         Argument ``area_ir``.
-    fir : object
+
+    fir : str
         Argument ``fir``.
-    member_suffix : object
+
+    member_suffix : str
         Argument ``member_suffix``.
-    inner_extension : object
+
+    inner_extension : str, optional
         Argument ``inner_extension``.
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     # ruff: noqa: F403, F405
@@ -69,22 +72,27 @@ def _airmet_analysis_collection_xml(
 
     Parameters
     ----------
-    ir : object
+    ir : dict[str, Any]
         Argument ``ir``.
-    fir : object
+
+    fir : str
         Argument ``fir``.
-    collection_suffix : object
+
+    collection_suffix : str
         Argument ``collection_suffix``.
-    time_indicator : object
+
+    time_indicator : str
         Argument ``time_indicator``.
-    areas : object
+
+    areas : list[dict[str, Any]]
         Argument ``areas``.
-    member_extension_for : object
+
+    member_extension_for : dict[str, str] | None, optional
         Argument ``member_extension_for``.
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     member_extension_for = member_extension_for or {}
@@ -115,24 +123,26 @@ def emit_airmet_annex3(
     """
     Emit an IWXXM AIRMET document (F6.d / F24 A3 geometry fidelity / #731).
 
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Parsed product fields.
+
+    iwxxm_version : str
+        IWXXM release line.
+
+    phenomenon_href : str | None, optional
+        Phenomenon codelist href.
+
+    Returns
+    -------
+    str
+        An IWXXM AIRMET document (F6.d / F24 A3 geometry fidelity / #731).
+
     Examples
     --------
     >>> 1 + 1  # docstring smoke (emit_airmet_annex3)
     2
-
-    Parameters
-    ----------
-    ir : object
-        Argument ``ir``.
-    iwxxm_version : object
-        Argument ``iwxxm_version``.
-    phenomenon_href : object
-        Argument ``phenomenon_href``.
-
-    Returns
-    -------
-    object
-        Return value.
     """
     ns = _ns(iwxxm_version)
     fir = str(ir["fir"])

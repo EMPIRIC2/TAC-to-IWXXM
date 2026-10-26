@@ -27,14 +27,15 @@ def _tca_format_pos(lat: float, lon: float) -> str:
 
     Parameters
     ----------
-    lat : object
+    lat : float
         Argument ``lat``.
-    lon : object
+
+    lon : float
         Argument ``lon``.
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     # ruff: noqa: F403, F405
@@ -45,12 +46,12 @@ def _tca_format_pos(lat: float, lon: float) -> str:
 
         Parameters
         ----------
-        value : object
+        value : float
             Argument ``value``.
 
         Returns
         -------
-        object
+        str
             Return value.
         """
         s = f"{value:.5f}".rstrip("0")
@@ -73,22 +74,23 @@ def emit_tca_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
     Vendor fidelity (TC-F27-002 / A2-2): observation + forecasts + RMK NIL →
     ``remarks`` with ``nilReason=inapplicable``.
 
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Parsed product fields.
+
+    iwxxm_version : str
+        IWXXM release line.
+
+    Returns
+    -------
+    str
+        An IWXXM ``TropicalCycloneAdvisory`` document (F6.f / F27 themes T2-T3).
+
     Examples
     --------
     >>> 1 + 1  # docstring smoke (emit_tca_annex3)
     2
-
-    Parameters
-    ----------
-    ir : object
-        Argument ``ir``.
-    iwxxm_version : object
-        Argument ``iwxxm_version``.
-
-    Returns
-    -------
-    object
-        Return value.
     """
     product = str(ir.get("product", "TCA")).upper()
     if product != "TCA":
@@ -322,12 +324,12 @@ def _assert_tca_advisory_xml(xml: str) -> str:
 
     Parameters
     ----------
-    xml : object
+    xml : str
         Argument ``xml``.
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     if "<iwxxm:TropicalCycloneAdvisory " not in xml:

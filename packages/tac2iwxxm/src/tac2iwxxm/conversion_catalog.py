@@ -35,7 +35,7 @@ def _profiles_meta_from_mapping(raw: object) -> dict[str, dict[str, str]]:
 
     Parameters
     ----------
-    raw :
+    raw : object
         Loaded YAML document.
 
     Returns
@@ -126,7 +126,7 @@ def catalog_entries(*, limit: int | None = None) -> list[dict[str, Any]]:
 
     Parameters
     ----------
-    limit :
+    limit : int | None, optional
         Optional max rows (sorted by id).
 
     Returns

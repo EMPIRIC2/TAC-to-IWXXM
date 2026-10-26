@@ -19,10 +19,10 @@ class HttpxDatasetClient:
     """
     ``HttpDatasetClient`` backed by httpx (async).
 
-    Attributes
+    Parameters
     ----------
-    _ : object
-        See implementation.
+    timeout_s : float, optional
+        Timeout in seconds. By default ``30.0``.
     """
 
     def __init__(self, *, timeout_s: float = 30.0) -> None:
@@ -31,8 +31,8 @@ class HttpxDatasetClient:
 
         Parameters
         ----------
-        timeout_s : object
-            Argument ``timeout_s``.
+        timeout_s : float, optional
+            Timeout in seconds. By default ``30.0``.
         """
         self._timeout = timeout_s
 
@@ -49,13 +49,13 @@ class HttpxDatasetClient:
 
         Parameters
         ----------
-        url : object
-            Argument ``url``.
+        url : str
+            URL.
 
         Returns
         -------
-        object
-            Return value.
+        bool
+            True when the dataset URL is reachable (2xx/3xx/404/405 accepted).
         """
         try:
             async with httpx.AsyncClient(timeout=self._timeout, follow_redirects=True) as client:
@@ -77,17 +77,17 @@ class HttpxDatasetClient:
 
         Parameters
         ----------
-        url : object
-            Argument ``url``.
-        body : object
-            Argument ``body``.
-        content_type : object
-            Argument ``content_type``.
+        url : str
+            URL.
+        body : bytes
+            Body.
+        content_type : str
+            Content type.
 
         Returns
         -------
-        object
-            Return value.
+        int
+            PUT dataset bytes; return HTTP status code.
         """
         async with httpx.AsyncClient(timeout=self._timeout, follow_redirects=True) as client:
             resp = await client.put(url, content=body, headers={"Content-Type": content_type})
@@ -104,13 +104,13 @@ class HttpxDatasetClient:
 
         Parameters
         ----------
-        url : object
-            Argument ``url``.
+        url : str
+            URL.
 
         Returns
         -------
-        object
-            Return value.
+        bytes
+            GET dataset bytes; raise on non-2xx.
         """
         async with httpx.AsyncClient(timeout=self._timeout, follow_redirects=True) as client:
             resp = await client.get(url)
@@ -122,10 +122,16 @@ class AiomqttClient:
     """
     ``MqttClient`` (+ subscribe helper) backed by aiomqtt 2.x.
 
-    Attributes
+    Parameters
     ----------
-    _ : object
-        See implementation.
+    host : str
+        Destination host.
+    port : int, optional
+        Destination port. By default ``1883``.
+    username : str or None, optional
+        User name. By default ``None``.
+    password : str or None, optional
+        Password. By default ``None``.
     """
 
     def __init__(
@@ -141,14 +147,14 @@ class AiomqttClient:
 
         Parameters
         ----------
-        host : object
-            Argument ``host``.
-        port : object
-            Argument ``port``.
-        username : object
-            Argument ``username``.
-        password : object
-            Argument ``password``.
+        host : str
+            Destination host.
+        port : int, optional
+            Destination port. By default ``1883``.
+        username : str or None, optional
+            User name. By default ``None``.
+        password : str or None, optional
+            Password. By default ``None``.
         """
         self._host = host
         self._port = port
@@ -191,10 +197,10 @@ class AiomqttClient:
 
         Parameters
         ----------
-        topic : object
-            Argument ``topic``.
-        payload : object
-            Argument ``payload``.
+        topic : str
+            Topic.
+        payload : bytes
+            Payload.
         """
         if self._client is None:
             raise RuntimeError("mqtt client is not connected")
@@ -211,8 +217,8 @@ class AiomqttClient:
 
         Parameters
         ----------
-        topic : object
-            Argument ``topic``.
+        topic : str
+            Topic.
         """
         if self._client is None:
             raise RuntimeError("mqtt client is not connected")
@@ -224,8 +230,8 @@ class AiomqttClient:
 
         Parameters
         ----------
-        timeout_s :
-            Seconds to wait before raising ``TimeoutError``.
+        timeout_s : float, optional
+            Seconds to wait before raising ``TimeoutError``. By default ``15.0``.
 
         Examples
         --------
@@ -234,8 +240,8 @@ class AiomqttClient:
 
         Returns
         -------
-        object
-            Return value.
+        bytes
+            Wait for the next subscribed message payload.
         """
         if self._client is None:
             raise RuntimeError("mqtt client is not connected")
@@ -309,10 +315,16 @@ class AiosmtpClient:
 
     Prefers STARTTLS on submission ports (e.g. 587); uses implicit TLS on 465.
 
-    Attributes
+    Parameters
     ----------
-    _ : object
-        See implementation.
+    hostname : str
+        Hostname.
+    port : int, optional
+        Destination port. By default ``587``.
+    use_tls : bool, optional
+        Use tls. By default ``True``.
+    timeout : float, optional
+        Timeout. By default ``30.0``.
     """
 
     def __init__(
@@ -328,14 +340,14 @@ class AiosmtpClient:
 
         Parameters
         ----------
-        hostname : object
-            Argument ``hostname``.
-        port : object
-            Argument ``port``.
-        use_tls : object
-            Argument ``use_tls``.
-        timeout : object
-            Argument ``timeout``.
+        hostname : str
+            Hostname.
+        port : int, optional
+            Destination port. By default ``587``.
+        use_tls : bool, optional
+            Use tls. By default ``True``.
+        timeout : float, optional
+            Timeout. By default ``30.0``.
         """
         self._hostname = hostname
         self._port = port
@@ -389,10 +401,10 @@ class AiosmtpClient:
 
         Parameters
         ----------
-        username : object
-            Argument ``username``.
-        password : object
-            Argument ``password``.
+        username : str
+            User name.
+        password : str
+            Password.
         """
         if self._client is None:
             raise RuntimeError("smtp client is not connected")
@@ -409,13 +421,13 @@ class AiosmtpClient:
 
         Parameters
         ----------
-        message : object
-            Argument ``message``.
+        message : EmailMessage
+            Message text.
 
         Returns
         -------
         object
-            Return value.
+            Submit ``message`` via SMTP DATA.
         """
         if self._client is None:
             raise RuntimeError("smtp client is not connected")

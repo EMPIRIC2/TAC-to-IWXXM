@@ -13,7 +13,7 @@ def explain_remark_plain(token: str) -> str | None:
 
     Parameters
     ----------
-    token :
+    token : str
         One uppercased group from after ``RMK``.
 
     Returns

@@ -42,8 +42,14 @@ class SchemaDiff(msgspec.Struct, frozen=True):
 
     Attributes
     ----------
-    _ : object
-        See implementation.
+    kind : DiffKind
+        Difference kind.
+    table : str
+        Table name.
+    detail : str
+        Detail text.
+    column : str or None, optional
+        Column name.
     """
 
     kind: DiffKind
@@ -58,7 +64,7 @@ def writer_contract_ddl(dialect: str) -> str:
 
     Parameters
     ----------
-    dialect :
+    dialect : str
         ``postgresql``, ``mysql``, ``sqlite``, or ``mssql`` / ``sqlserver`` (aioodbc).
 
     Returns
@@ -93,9 +99,9 @@ async def diff_writer_contract(
 
     Parameters
     ----------
-    engine :
+    engine : AsyncEngine
         SQLAlchemy async engine.
-    dialect :
+    dialect : str or None, optional
         Optional override; defaults to ``engine.dialect.name``.
 
     Returns
@@ -131,10 +137,10 @@ async def apply_writer_contract(
 
     Parameters
     ----------
-    engine : object
-        Argument ``engine``.
-    dialect : object
-        Argument ``dialect``.
+    engine : AsyncEngine
+        Engine.
+    dialect : str or None, optional
+        Dialect. By default ``None``.
     """
     name = (dialect or engine.dialect.name).lower()
     if name == "postgres":

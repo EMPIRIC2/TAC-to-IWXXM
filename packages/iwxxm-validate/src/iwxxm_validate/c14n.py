@@ -157,7 +157,7 @@ def c14n_xml(xml_content: str) -> str:
 
     Parameters
     ----------
-    xml_content :
+    xml_content : str
         Well-formed XML document text.
 
     Returns
@@ -195,15 +195,15 @@ def c14n_equal(left: str, right: str) -> bool:
 
     Parameters
     ----------
-    left : object
-        Argument ``left``.
-    right : object
-        Argument ``right``.
+    left : str
+        Left.
+    right : str
+        Right.
 
     Returns
     -------
-    object
-        Return value.
+    bool
+        True when C14N forms of ``left`` and ``right`` are identical.
     """
     return c14n_xml(left) == c14n_xml(right)
 

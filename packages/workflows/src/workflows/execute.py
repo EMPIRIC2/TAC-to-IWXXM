@@ -16,8 +16,8 @@ class WorkflowExecuteError(ValueError):
 
     Attributes
     ----------
-    _ : object
-        See implementation.
+    args : tuple
+        Arguments passed to the exception constructor.
     """
 
 
@@ -35,18 +35,18 @@ def execute(
 
     Parameters
     ----------
-    message :
+    message : WorkflowMessage
         TAC + product (+ optional job_id).
-    workflow :
+    workflow : str or WorkflowDefinition
         Workflow id string or already-parsed definition.
-    workflows_dir :
-        Override YAML search path.
-    store_valid :
-        Optional ``onValid.store`` callback.
-    store_invalid :
-        Optional ``onInvalid.store`` callback.
-    skip_stages :
-        Stage ids to omit (F8 ``skip_lint`` maps to ``validate-tac``).
+    workflows_dir : Path or None, optional
+        Override YAML search path. By default ``None``.
+    store_valid : StorePort or None, optional
+        Optional ``onValid.store`` callback. By default ``None``.
+    store_invalid : StorePort or None, optional
+        Optional ``onInvalid.store`` callback. By default ``None``.
+    skip_stages : frozenset[str] or None, optional
+        Stage ids to omit (F8 ``skip_lint`` maps to ``validate-tac``). By default ``None``.
 
     Returns
     -------

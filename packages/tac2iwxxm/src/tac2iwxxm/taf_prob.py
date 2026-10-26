@@ -23,7 +23,7 @@ def temporary_probability_indicator(percent: str) -> str | None:
 
     Parameters
     ----------
-    percent :
+    percent : str
         The two digits after ``PROB``.
 
     Returns
@@ -48,7 +48,7 @@ def probability_tempo_parts(chunk: str) -> tuple[str, str, str, str, str] | None
 
     Parameters
     ----------
-    chunk :
+    chunk : str
         One change-group chunk, starting at the probability token.
 
     Returns
@@ -75,7 +75,7 @@ def is_unqualified_probability(chunk: str) -> bool:
 
     Parameters
     ----------
-    chunk :
+    chunk : str
         One change-group chunk.
 
     Returns

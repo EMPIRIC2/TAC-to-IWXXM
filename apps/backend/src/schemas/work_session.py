@@ -40,6 +40,7 @@ class PendingFilePayload(BaseModel):
     """
     Queued file content stored inline on the session row.
 
+
     Attributes
     ----------
     _ : object
@@ -100,6 +101,7 @@ class WorkSessionPayload(BaseModel):
     """
     Shared optional fields for create/update payloads (product declared on subclasses).
 
+
     Attributes
     ----------
     _ : object
@@ -139,6 +141,7 @@ class WorkSessionCreate(WorkSessionPayload):
     """
     Body for POST /api/v1/work-sessions.
 
+
     Attributes
     ----------
     _ : object
@@ -170,6 +173,7 @@ class WorkSessionUpdate(WorkSessionPayload):
     """
     Body for PATCH /api/v1/work-sessions/{id}.
 
+
     Attributes
     ----------
     _ : object
@@ -200,6 +204,7 @@ class WorkSessionUpdate(WorkSessionPayload):
 class WorkSession(BaseModel):
     """
     Persisted work session returned by the API.
+
 
     Attributes
     ----------
@@ -265,6 +270,7 @@ class WorkSessionListResponse(BaseModel):
     """
     Paginated list of work sessions.
 
+
     Attributes
     ----------
     _ : object
@@ -280,6 +286,7 @@ class WorkSessionListResponse(BaseModel):
 class AdminWorkSession(WorkSession):
     """
     Deprecated admin list row (routes removed - schema retained for typing only).
+
 
     Attributes
     ----------

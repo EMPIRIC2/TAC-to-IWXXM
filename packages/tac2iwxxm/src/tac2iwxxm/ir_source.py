@@ -25,9 +25,10 @@ def resolve_ir_source(
 
     Parameters
     ----------
-    product :
+    product : str
         Convert product id.
-    ir_source :
+
+    ir_source : str | None, optional
         Explicit ``legacy``, ``pack``, or ``auto``. ``None`` reads the env
         (default ``auto``).
 

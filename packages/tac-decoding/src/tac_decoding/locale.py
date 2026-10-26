@@ -22,8 +22,8 @@ class LocaleError(ValueError):
 
     Attributes
     ----------
-    _ : object
-        See implementation.
+    args : tuple
+        Arguments passed to the exception constructor.
     """
 
 
@@ -33,7 +33,7 @@ def _empty_phrases() -> dict[str, str]:
 
     Returns
     -------
-    object
+    dict[str, str]
         Return value.
     """
     return {}
@@ -46,8 +46,8 @@ class ExplanationHook:
 
     Attributes
     ----------
-    _ : object
-        See implementation.
+    phrases : Mapping[str, str]
+        Phrases.
     """
 
     phrases: Mapping[str, str] = field(default_factory=_empty_phrases)
@@ -56,22 +56,23 @@ class ExplanationHook:
         """
         Return the hook phrase for ``rule_id``, or the pack template.
 
+        Parameters
+        ----------
+        rule_id : str
+            Rule id.
+
+        pack_template : str
+            Pack explanation template.
+
+        Returns
+        -------
+        str
+            The hook phrase for ``rule_id``, or the pack template.
+
         Examples
         --------
         >>> 1 + 1  # docstring smoke (template_for)
         2
-
-        Parameters
-        ----------
-        rule_id : object
-            Argument ``rule_id``.
-        pack_template : object
-            Argument ``pack_template``.
-
-        Returns
-        -------
-        object
-            Return value.
         """
         phrase = self.phrases.get(rule_id)
         if phrase is None:
@@ -83,15 +84,15 @@ def require_locale(locale: str) -> None:
     """
     Reject every locale except English.
 
+    Parameters
+    ----------
+    locale : str
+        Locale code.
+
     Examples
     --------
     >>> 1 + 1  # docstring smoke (require_locale)
     2
-
-    Parameters
-    ----------
-    locale : object
-        Argument ``locale``.
     """
     if locale != ENGLISH:
         msg = f"Locale {locale!r} is not available"
@@ -108,26 +109,29 @@ def render_template(
     """
     Fill an English template. Placeholders cannot reach into objects.
 
+    Parameters
+    ----------
+    template : str
+        Explanation template text.
+
+    groups : tuple[str, ...]
+        Placeholder values.
+
+    value : str | None, optional
+        Token value passed to the template.
+
+    locale : str, optional
+        Locale code.
+
+    Returns
+    -------
+    str
+        Fill an English template.
+
     Examples
     --------
     >>> 1 + 1  # docstring smoke (render_template)
     2
-
-    Parameters
-    ----------
-    template : object
-        Argument ``template``.
-    groups : object
-        Argument ``groups``.
-    value : object
-        Argument ``value``.
-    locale : object
-        Argument ``locale``.
-
-    Returns
-    -------
-    object
-        Return value.
     """
     require_locale(locale)
     kwargs: dict[str, str] = {}
@@ -149,24 +153,26 @@ class _SafeFormatter(string.Formatter):
         """
         Resolve a placeholder only when its name is on the allowlist.
 
+        Parameters
+        ----------
+        field_name : str
+            Format field name.
+
+        args : Sequence[Any]
+            Positional arguments from ``str.format``.
+
+        kwargs : Mapping[str, Any]
+            Keyword arguments from ``str.format``.
+
+        Returns
+        -------
+        tuple[Any, Any]
+            A placeholder only when its name is on the allowlist.
+
         Examples
         --------
         >>> 1 + 1  # docstring smoke (get_field)
         2
-
-        Parameters
-        ----------
-        field_name : object
-            Argument ``field_name``.
-        args : object
-            Argument ``args``.
-        kwargs : object
-            Argument ``kwargs``.
-
-        Returns
-        -------
-        object
-            Return value.
         """
         if _FIELD.fullmatch(field_name) is None:
             msg = "Explanation placeholder is not allowed"
@@ -177,22 +183,23 @@ class _SafeFormatter(string.Formatter):
         """
         Format a value; reject non-empty format specs.
 
+        Parameters
+        ----------
+        value : object
+            Value to format.
+
+        format_spec : str
+            Format specification.
+
+        Returns
+        -------
+        str
+            Format a value; reject non-empty format specs.
+
         Examples
         --------
         >>> 1 + 1  # docstring smoke (format_field)
         2
-
-        Parameters
-        ----------
-        value : object
-            Argument ``value``.
-        format_spec : object
-            Argument ``format_spec``.
-
-        Returns
-        -------
-        object
-            Return value.
         """
         if format_spec:
             msg = "Explanation format is not allowed"
@@ -203,22 +210,23 @@ class _SafeFormatter(string.Formatter):
         """
         Return a value; reject conversion flags.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (convert_field)
-        2
-
         Parameters
         ----------
         value : object
-            Argument ``value``.
-        conversion : object
-            Argument ``conversion``.
+            Value to convert.
+
+        conversion : str | None
+            Conversion flag. ``None`` means no conversion.
 
         Returns
         -------
         object
-            Return value.
+            A value; reject conversion flags.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (convert_field)
+        2
         """
         if conversion:
             msg = "Explanation conversion is not allowed"

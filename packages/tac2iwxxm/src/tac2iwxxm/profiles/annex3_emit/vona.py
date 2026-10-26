@@ -35,12 +35,12 @@ def _fmt_coord(value: float) -> str:
 
     Parameters
     ----------
-    value : object
+    value : float
         Argument ``value``.
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     text = f"{value:.2f}"
@@ -64,12 +64,12 @@ def _vona_a7_1_peer(ir: dict[str, Any]) -> bool:
 
     Parameters
     ----------
-    ir : object
+    ir : dict[str, Any]
         Argument ``ir``.
 
     Returns
     -------
-    object
+    bool
         Return value.
     """
     # ruff: noqa: F403, F405
@@ -105,12 +105,12 @@ def _vona_ash_movement_token(raw: str | None) -> str | None:
 
     Parameters
     ----------
-    raw : object
+    raw : str | None
         Argument ``raw``.
 
     Returns
     -------
-    object
+    str | None
         Return value.
     """
     if raw is None:
@@ -134,16 +134,18 @@ def _vona_ash_phenomenon_property(
 
     Parameters
     ----------
-    ir : object
+    ir : dict[str, Any]
         Argument ``ir``.
-    peer : object
+
+    peer : bool
         Argument ``peer``.
-    vol_slug : object
+
+    vol_slug : str
         Argument ``vol_slug``.
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     height_source = ir.get("height_source")
@@ -179,22 +181,23 @@ def emit_vona_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
     TAC with ``HGT SOURCE`` / ``MOV`` encodes ``VolcanicAshCloudVerticalExtent``
     (G-VONA-1 / TC-EV038-011 / #849).
 
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Parsed product fields.
+
+    iwxxm_version : str
+        IWXXM release line.
+
+    Returns
+    -------
+    str
+        An IWXXM ``VolcanoObservatoryNoticeForAviation`` document (F32 / EV-032).
+
     Examples
     --------
     >>> 1 + 1  # docstring smoke (emit_vona_annex3)
     2
-
-    Parameters
-    ----------
-    ir : object
-        Argument ``ir``.
-    iwxxm_version : object
-        Argument ``iwxxm_version``.
-
-    Returns
-    -------
-    object
-        Return value.
     """
     from tac2iwxxm.codelists import aviation_colour_href
 
@@ -394,12 +397,12 @@ def _assert_vona_xml(xml: str) -> str:
 
     Parameters
     ----------
-    xml : object
+    xml : str
         Argument ``xml``.
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     if "<iwxxm:VolcanoObservatoryNoticeForAviation " not in xml:

@@ -60,7 +60,7 @@ def ops_service(
     return DisseminationOpsService(str(user.get("sub") or user.get("user_id")))
 
 
-@router.put("/plans/{slug}", response_model=DisseminationPlanOut)
+@router.put("/plans/{slug}", response_model=DisseminationPlanOut, summary="Create a dissemination plan")
 def upsert_plan_by_slug(
     slug: str,
     payload: DisseminationPlanCreate,
@@ -70,6 +70,7 @@ def upsert_plan_by_slug(
     Create a plan under ``slug`` (unique per user).
 
     Path slug wins over body.slug when they differ.
+
 
     Examples
     --------
@@ -102,6 +103,7 @@ def get_plan(
     """
     Fetch one plan by id (owner-scoped).
 
+
     Examples
     --------
     >>> 1 + 1  # docstring smoke (get_plan)
@@ -131,6 +133,7 @@ def patch_plan(
     """
     Update plan fields (no secrets).
 
+
     Examples
     --------
     >>> 1 + 1  # docstring smoke (patch_plan)
@@ -153,7 +156,11 @@ def patch_plan(
     return service.update_plan(plan_id, payload)
 
 
-@router.post("/plans/{plan_id}/execute", response_model=PlanExecuteResponse)
+@router.post(
+    "/plans/{plan_id}/execute",
+    response_model=PlanExecuteResponse,
+    summary="Execute or dry-run a plan",
+)
 async def execute_plan_route(
     plan_id: UUID,
     body: PlanExecuteRequest,
@@ -163,6 +170,7 @@ async def execute_plan_route(
     Execute or dry-run a plan; persist redacted audit rows per receipt.
 
     Default ``dry_run=true`` so operators can exercise audit without egress.
+
 
     Examples
     --------
@@ -242,6 +250,7 @@ def list_audit(
     """
     List redacted delivery audit rows for the caller.
 
+
     Examples
     --------
     >>> 1 + 1  # docstring smoke (list_audit)
@@ -288,6 +297,7 @@ def get_audit(
     """
     Fetch one audit row (owner-scoped).
 
+
     Examples
     --------
     >>> 1 + 1  # docstring smoke (get_audit)
@@ -316,6 +326,7 @@ def upsert_mapping(
 ) -> MappingConfigOut:
     """
     Create MappingConfig by name (unique per user).
+
 
     Examples
     --------
@@ -348,6 +359,7 @@ def get_mapping(
     """
     Fetch MappingConfig by id.
 
+
     Examples
     --------
     >>> 1 + 1  # docstring smoke (get_mapping)
@@ -377,6 +389,7 @@ def patch_mapping(
     """
     Update MappingConfig fields.
 
+
     Examples
     --------
     >>> 1 + 1  # docstring smoke (patch_mapping)
@@ -399,15 +412,20 @@ def patch_mapping(
     return service.update_mapping(mapping_id, payload)
 
 
-@router.get("/gateways/health", response_model=GatewayHealthListResponse)
+@router.get(
+    "/gateways/health",
+    response_model=GatewayHealthListResponse,
+    summary="Gateway connectivity",
+)
 async def gateways_health(
     _user: dict[str, Any] = Depends(verify_supabase_token),
 ) -> GatewayHealthListResponse:
     """
-    Connectivity-only health for known drawer gateway kinds.
+    Connectivity checks for known gateway kinds.
 
-    AMHS, SWIM, and AFS kinds are staging-honest; others report no live probe
-    until registered.
+    AMHS, SWIM, and AFS stay unsuccessful until a live pathway is configured.
+    Other kinds report that no live probe is configured.
+
 
     Examples
     --------

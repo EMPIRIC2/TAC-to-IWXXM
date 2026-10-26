@@ -103,6 +103,7 @@ def get_catalog(
 
     Requires JWT so the inspector stays on the authenticated Profiles surface.
 
+
     Examples
     --------
     >>> 1 + 1  # docstring smoke (get_catalog)
@@ -154,6 +155,7 @@ def list_rule_packs(
     """
     List rule packs owned by the caller.
 
+
     Examples
     --------
     >>> 1 + 1  # docstring smoke (list_rule_packs)
@@ -179,6 +181,7 @@ def create_rule_pack(
 ) -> RulePackOut:
     """
     Create a rule pack.
+
 
     Examples
     --------
@@ -208,6 +211,7 @@ def get_rule_pack(
     """
     Fetch one rule pack.
 
+
     Examples
     --------
     >>> 1 + 1  # docstring smoke (get_rule_pack)
@@ -236,6 +240,7 @@ def patch_rule_pack(
 ) -> RulePackOut:
     """
     Update a rule pack.
+
 
     Examples
     --------
@@ -267,6 +272,7 @@ def delete_rule_pack(
     """
     Delete a rule pack.
 
+
     Examples
     --------
     >>> 1 + 1  # docstring smoke (delete_rule_pack)
@@ -288,6 +294,7 @@ def list_presets(
 ) -> PresetListResponse:
     """
     List semantic presets owned by the caller (and shared presets).
+
 
     Examples
     --------
@@ -314,6 +321,7 @@ def create_preset(
 ) -> PresetOut:
     """
     Create a semantic preset.
+
 
     Examples
     --------
@@ -343,6 +351,7 @@ def get_preset(
     """
     Fetch one semantic preset.
 
+
     Examples
     --------
     >>> 1 + 1  # docstring smoke (get_preset)
@@ -371,6 +380,7 @@ def patch_preset(
 ) -> PresetOut:
     """
     Update a semantic preset.
+
 
     Examples
     --------
@@ -402,6 +412,7 @@ def delete_preset(
     """
     Delete a semantic preset.
 
+
     Examples
     --------
     >>> 1 + 1  # docstring smoke (delete_preset)
@@ -423,6 +434,7 @@ def list_templates(
 ) -> DisseminationTemplateListResponse:
     """
     List dissemination templates owned by the caller (and shared templates).
+
 
     Examples
     --------
@@ -449,6 +461,7 @@ def create_template(
 ) -> DisseminationTemplateOut:
     """
     Create a dissemination template.
+
 
     Examples
     --------
@@ -478,6 +491,7 @@ def get_template(
     """
     Fetch one dissemination template.
 
+
     Examples
     --------
     >>> 1 + 1  # docstring smoke (get_template)
@@ -506,6 +520,7 @@ def patch_template(
 ) -> DisseminationTemplateOut:
     """
     Update a dissemination template.
+
 
     Examples
     --------
@@ -537,6 +552,7 @@ def delete_template(
     """
     Delete an owned dissemination template.
 
+
     Examples
     --------
     >>> 1 + 1  # docstring smoke (delete_template)
@@ -558,6 +574,7 @@ def list_overlays(
 ) -> OverlayListResponse:
     """
     List overlays owned by the caller (and shared overlays).
+
 
     Examples
     --------
@@ -584,6 +601,7 @@ def create_overlay(
 ) -> OverlayOut:
     """
     Create a server-signed overlay.
+
 
     Examples
     --------
@@ -613,6 +631,7 @@ def get_overlay(
     """
     Fetch one overlay.
 
+
     Examples
     --------
     >>> 1 + 1  # docstring smoke (get_overlay)
@@ -641,6 +660,7 @@ def patch_overlay(
 ) -> OverlayOut:
     """
     Update an owned overlay (re-signed server-side).
+
 
     Examples
     --------
@@ -672,6 +692,7 @@ def delete_overlay(
     """
     Delete an owned overlay.
 
+
     Examples
     --------
     >>> 1 + 1  # docstring smoke (delete_overlay)
@@ -693,6 +714,7 @@ def list_conversion_templates(
 ) -> ConversionTemplateListResponse:
     """
     List first-party and custom conversion templates.
+
 
     Examples
     --------
@@ -719,6 +741,7 @@ def create_conversion_template(
 ) -> ConversionTemplateOut:
     """
     Create a custom conversion template (optionally forked from first-party).
+
 
     Examples
     --------
@@ -750,6 +773,7 @@ def preview_conversion_template(
 ) -> ConversionTemplatePreviewResponse:
     """
     TAC to template to IWXXM bridge preview.
+
 
     Examples
     --------
@@ -806,6 +830,7 @@ def get_conversion_template(
     """
     Fetch one conversion template (first-party id or custom UUID).
 
+
     Examples
     --------
     >>> 1 + 1  # docstring smoke (get_conversion_template)
@@ -834,6 +859,7 @@ def patch_conversion_template(
 ) -> ConversionTemplateOut:
     """
     Update an owned custom conversion template.
+
 
     Examples
     --------
@@ -865,6 +891,7 @@ def delete_conversion_template(
     """
     Delete an owned custom conversion template.
 
+
     Examples
     --------
     >>> 1 + 1  # docstring smoke (delete_conversion_template)
@@ -887,6 +914,7 @@ def list_library_assets(
 ) -> LibraryAssetListResponse:
     """
     List first-party and custom five-Libraries assets.
+
 
     Examples
     --------
@@ -914,7 +942,8 @@ def create_library_asset(
     service: ConversionProfilesService = Depends(profiles_service),
 ) -> LibraryAssetOut:
     """
-    Retired — library authoring is no longer available.
+    Library authoring is no longer available.
+
 
     Examples
     --------
@@ -942,7 +971,8 @@ def validate_library_yaml(
     service: ConversionProfilesService = Depends(profiles_service),
 ) -> LibraryYamlValidateResponse:
     """
-    Retired — library authoring is no longer available.
+    Library authoring is no longer available.
+
 
     Examples
     --------
@@ -970,7 +1000,8 @@ def preview_library_rule(
     service: ConversionProfilesService = Depends(profiles_service),
 ) -> LibraryRulePreviewResponse:
     """
-    Retired — library authoring is no longer available.
+    Library authoring is no longer available.
+
 
     Examples
     --------
@@ -1000,6 +1031,7 @@ def get_library_asset(
     """
     Fetch one library asset (first-party id or custom UUID).
 
+
     Examples
     --------
     >>> 1 + 1  # docstring smoke (get_library_asset)
@@ -1027,7 +1059,8 @@ def update_library_asset(
     service: ConversionProfilesService = Depends(profiles_service),
 ) -> LibraryAssetOut:
     """
-    Retired — library authoring is no longer available.
+    Library authoring is no longer available.
+
 
     Examples
     --------
@@ -1057,7 +1090,8 @@ def delete_library_asset(
     service: ConversionProfilesService = Depends(profiles_service),
 ) -> None:
     """
-    Retired — library authoring is no longer available.
+    Library authoring is no longer available.
+
 
     Examples
     --------

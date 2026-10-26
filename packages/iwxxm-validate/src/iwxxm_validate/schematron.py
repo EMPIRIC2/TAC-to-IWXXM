@@ -114,15 +114,15 @@ def validate_schematron(xml_content: str, iwxxm_version: str) -> list[Issue]:
 
     Parameters
     ----------
-    xml_content : object
-        Argument ``xml_content``.
-    iwxxm_version : object
-        Argument ``iwxxm_version``.
+    xml_content : str
+        XML text.
+    iwxxm_version : str
+        IWXXM release line.
 
     Returns
     -------
-    object
-        Return value.
+    list[Issue]
+        Validate IWXXM XML against vendored Schematron rules.
     """
     if os.environ.get("IWXXM_VALIDATE_SCHEMATRON_DOCKER", "").strip() in {"1", "true", "True"}:
         # Soft/separate gate - Docker path is optional; fall through to lxml/skip

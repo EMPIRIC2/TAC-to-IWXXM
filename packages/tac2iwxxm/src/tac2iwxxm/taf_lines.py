@@ -16,7 +16,7 @@ def starts_taf_report(line: str) -> bool:
 
     Parameters
     ----------
-    line :
+    line : str
         One non-empty TAC line.
 
     Returns
@@ -40,7 +40,7 @@ def join_taf_lines(lines: list[str]) -> list[str]:
 
     Parameters
     ----------
-    lines :
+    lines : list[str]
         Non-empty lines in paste order.
 
     Returns
@@ -71,7 +71,7 @@ def join_taf_entries(entries: list[tuple[str, int]]) -> list[tuple[str, int]]:
 
     Parameters
     ----------
-    entries :
+    entries : list[tuple[str, int]]
         ``(line, offset)`` pairs. Offsets point at the first character of each line.
 
     Returns

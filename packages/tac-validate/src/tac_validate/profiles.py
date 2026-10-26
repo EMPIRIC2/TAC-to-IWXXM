@@ -66,13 +66,13 @@ def normalize_profile(profile: str) -> str:
 
     Parameters
     ----------
-    profile : object
-        Argument ``profile``.
+    profile : str
+        Profile id.
 
     Returns
     -------
-    object
-        Return value.
+    str
+        Lowercased profile id.
     """
     key = profile.strip().lower()
     if key not in SUPPORTED_PROFILES:
@@ -91,13 +91,13 @@ def ca_eccc_applicable(product: str) -> bool:
 
     Parameters
     ----------
-    product : object
-        Argument ``product``.
+    product : str
+        Product id.
 
     Returns
     -------
-    object
-        Return value.
+    bool
+        True when ``profile=ca_eccc`` is defined for ``product``.
     """
     return product.upper() in CA_ECCC_PRODUCTS
 
@@ -113,13 +113,13 @@ def in_imd_applicable(product: str) -> bool:
 
     Parameters
     ----------
-    product : object
-        Argument ``product``.
+    product : str
+        Product id.
 
     Returns
     -------
-    object
-        Return value.
+    bool
+        True when ``profile=in_imd`` is defined for ``product``.
     """
     return product.upper() in IN_IMD_PRODUCTS
 
@@ -135,13 +135,13 @@ def iwxxm_us_applicable(product: str) -> bool:
 
     Parameters
     ----------
-    product : object
-        Argument ``product``.
+    product : str
+        Product id.
 
     Returns
     -------
-    object
-        Return value.
+    bool
+        True when ``profile=iwxxm_us`` is defined for ``product``.
     """
     return product.upper() in IWXXM_US_PRODUCTS
 
@@ -157,13 +157,13 @@ def iwxxm_us_lint_applicable(product: str) -> bool:
 
     Parameters
     ----------
-    product : object
-        Argument ``product``.
+    product : str
+        Product id.
 
     Returns
     -------
-    object
-        Return value.
+    bool
+        True when ``lint(..., profile=iwxxm_us)`` is allowed for ``product``.
     """
     return product.upper() in IWXXM_US_LINT_PRODUCTS
 

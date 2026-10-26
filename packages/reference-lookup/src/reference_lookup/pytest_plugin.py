@@ -16,11 +16,13 @@ def _guarded_create_connection(address: object, *args: object, **kwargs: object)
 
     Parameters
     ----------
-    address :
+    address : object
         Socket address passed to ``create_connection``.
-    args :
+
+    args : object
         Remaining positional arguments.
-    kwargs :
+
+    kwargs : object
         Keyword arguments.
 
     Returns
@@ -43,7 +45,7 @@ def pytest_configure(config: object) -> None:
 
     Parameters
     ----------
-    config :
+    config : object
         Pytest config object. Unused.
 
     Examples

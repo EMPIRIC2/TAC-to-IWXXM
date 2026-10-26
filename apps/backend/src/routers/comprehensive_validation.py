@@ -20,6 +20,7 @@ router = APIRouter(prefix="/api/v1", tags=["Validation"])
 @router.post(
     "/validate",
     tags=["Validation"],
+    summary="Validate TAC or IWXXM",
     response_model=ValidateResponse,
     responses={},
 )
@@ -54,42 +55,12 @@ async def validate_comprehensive(
     ),
 ) -> object:
     """
-    Perform comprehensive 7-layer IWXXM validation.
+    Validate TAC or IWXXM XML.
 
-    Validates METAR TAC input through all 7 validation layers:
+    With the default layer list, the check runs airport code, TAC syntax,
+    well-formed XML, XSD, Schematron, GML references, and WMO code lists.
+    No login is required.
 
-    1. **Layer 1 (AIRPORT_ICAO)**: Validates ICAO airport code against database
-    2. **Layer 2 (TAC_SYNTAX)**: Validates TAC/METAR syntax basics
-    3. **Layer 3 (XML_WELLFORMED)**: Checks XML is well-formed
-    4. **Layer 4 (XML_SCHEMA)**: Validates against official IWXXM XSD schemas
-    5. **Layer 5 (SCHEMATRON)**: Validates business rules from official Schematron
-    6. **Layer 6 (GML_REFERENCES)**: Validates GML internal references
-    7. **Layer 7 (WMO_CODELISTS)**: Validates against official WMO RDF codelists
-
-    **Authentication**: Public (no login required)
-
-    **Request Parameters**:
-    - **manual_text** (required): METAR TAC text to validate
-    - **xml_content** (optional): Pre-converted XML to validate (if omitted, TAC will be converted)
-    - **iwxxm_version**: Target IWXXM version (default: "2025-2")
-    - **layers**: Validation layers to run (default: ["ALL"])
-      - "ALL": Run all 7 layers
-      - Or specify: ["AIRPORT_ICAO", "TAC_SYNTAX", "XML_SCHEMA", "SCHEMATRON", ...]
-    - **stop_on_error**: Stop at first blocking layer failure (default: true)
-
-    **Response**:
-    ```json
-    {
-      "is_valid": true,
-      "version": "2025-2",
-      "layers_run": ["AIRPORT_ICAO", "TAC_SYNTAX", "XML_WELLFORMED", "XML_SCHEMA", "SCHEMATRON", "GML_REFERENCES", "WMO_CODELISTS"],
-      "layers_passed": ["AIRPORT_ICAO", "TAC_SYNTAX", "XML_WELLFORMED", "XML_SCHEMA", "SCHEMATRON", "GML_REFERENCES", "WMO_CODELISTS"],
-      "layers_failed": [],
-      "total_issues": 0,
-      "issues_by_layer": {},
-      "stopped_at_layer": null
-    }
-    ```
 
     Parameters
     ----------

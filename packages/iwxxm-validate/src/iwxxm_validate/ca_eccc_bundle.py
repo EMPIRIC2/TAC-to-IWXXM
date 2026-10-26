@@ -31,8 +31,16 @@ class CaEcccSchemaBundle:
 
     Attributes
     ----------
-    _ : object
-        See implementation.
+    iwxxm_version : str
+        IWXXM release line.
+    core_xsd : Path
+        Core XSD.
+    schematron : Path
+        Schematron.
+    extension_root : Path
+        Extension root.
+    aggregate_ca_xsd : Path or None
+        Aggregate CA XSD.
     """
 
     iwxxm_version: str
@@ -52,9 +60,9 @@ def resolve_ca_eccc_bundle(
 
     Parameters
     ----------
-    iwxxm_version :
+    iwxxm_version : str, optional
         Profile-pinned IWXXM release line (default ``3.0.0``).
-    extension_tag :
+    extension_tag : str, optional
         MSC ``iwxxm-ca`` pin subdirectory (default ``3.0``).
 
     Returns
@@ -100,10 +108,10 @@ def ca_eccc_catalog_roots(
 
     Parameters
     ----------
-    iwxxm_version :
-        Profile-pinned IWXXM release line.
-    extension_tag :
-        MSC pin subdirectory under ``iwxxm-ca``.
+    iwxxm_version : str, optional
+        Profile-pinned IWXXM release line. By default ``CA_ECCC_IWXXM_VERSION``.
+    extension_tag : str, optional
+        MSC pin subdirectory under ``iwxxm-ca``. By default ``CA_ECCC_EXTENSION_TAG``.
 
     Returns
     -------
@@ -151,15 +159,15 @@ def ca_eccc_bundle_available(
 
     Parameters
     ----------
-    iwxxm_version : object
-        Argument ``iwxxm_version``.
-    extension_tag : object
-        Argument ``extension_tag``.
+    iwxxm_version : str, optional
+        IWXXM release line. By default ``CA_ECCC_IWXXM_VERSION``.
+    extension_tag : str, optional
+        Extension tag. By default ``CA_ECCC_EXTENSION_TAG``.
 
     Returns
     -------
-    object
-        Return value.
+    bool
+        Whether ``resolve_ca_eccc_bundle`` would succeed.
     """
     return resolve_ca_eccc_bundle(iwxxm_version=iwxxm_version, extension_tag=extension_tag) is not None
 

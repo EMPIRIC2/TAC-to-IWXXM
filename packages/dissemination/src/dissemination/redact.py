@@ -15,7 +15,7 @@ def redact_uri(uri: str) -> str:
 
     Parameters
     ----------
-    uri :
+    uri : str
         Possibly secret-bearing URI.
 
     Returns
@@ -54,13 +54,13 @@ def redact_secrets(text: str) -> str:
 
     Parameters
     ----------
-    text : object
-        Argument ``text``.
+    text : str
+        Text.
 
     Returns
     -------
-    object
-        Return value.
+    str
+        Redact URI passwords and common secret JSON/key patterns from ``text``.
     """
     out = redact_uri(text)
     return _PASSWORD_JSON.sub(r"\1***\3", out)

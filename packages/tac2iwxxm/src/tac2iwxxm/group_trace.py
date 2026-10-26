@@ -212,17 +212,22 @@ class GroupTraceRow(TypedDict):
 
     Attributes
     ----------
-    start :
+    start : int
         Inclusive offset into the TAC that was matched.
-    end :
+
+    end : int
         Exclusive offset into that TAC.
-    token :
+
+    token : str
         The TAC text of the group.
-    element :
+
+    element : str
         Local element name, without a namespace prefix.
-    occurrence :
+
+    occurrence : int
         How many earlier groups used this element name.
-    scope :
+
+    scope : str
         ``line`` marks the opening tag. ``block`` marks through the closing tag.
     """
 
@@ -240,22 +245,19 @@ def _emits_for(pack_id: str, rule_id: str, token: str) -> tuple[_Emit, ...]:
 
     Parameters
     ----------
-    pack_id :
+    pack_id : str
         Builtin pack id.
-    rule_id :
+
+    rule_id : str
         Pack rule that matched the group.
-    token :
+
+    token : str
         TAC text of the group.
 
     Returns
     -------
     tuple[_Emit, ...]
         Element, scope, and whether it opens a new element or shares one.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (_emits_for)
-    2
     """
     if pack_id == "taf" and rule_id == "visibility" and token.strip().upper() == "CAVOK":
         return (("MeteorologicalAerodromeForecast", "line", "emit"),)
@@ -276,24 +278,22 @@ def _body_emits(pack_id: str, rule_id: str, token: str, *, past_header: bool) ->
 
     Parameters
     ----------
-    pack_id :
+    pack_id : str
         Builtin pack id.
-    rule_id :
+
+    rule_id : str
         Pack rule that matched the group.
-    token :
+
+    token : str
         TAC text of the group.
-    past_header :
+
+    past_header : bool
         True after the validity period has been matched.
 
     Returns
     -------
     tuple[_Emit, ...]
         Element rows, or empty when the group is not a body token.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (_body_emits)
-    2
     """
     if pack_id not in _SIGMET_PACKS:
         return ()
@@ -325,11 +325,13 @@ def _occurrence(counts: dict[str, int], name: str, mode: str) -> int:
 
     Parameters
     ----------
-    counts :
+    counts : dict[str, int]
         Elements already opened, by local name.
-    name :
+
+    name : str
         Element local name.
-    mode :
+
+    mode : str
         ``emit`` opens one. ``next`` and ``previous`` share an open element.
         ``second`` marks the second element of that name.
 
@@ -337,11 +339,6 @@ def _occurrence(counts: dict[str, int], name: str, mode: str) -> int:
     -------
     int
         Zero-based occurrence the preview should mark.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (_occurrence)
-    2
     """
     if mode == "next":
         return counts.get(name, 0)
@@ -364,9 +361,10 @@ def trace_emitted_groups(tac: str, product: str) -> list[GroupTraceRow]:
 
     Parameters
     ----------
-    tac :
+    tac : str
         One TAC report.
-    product :
+
+    product : str
         Convert product id.
 
     Returns
@@ -424,9 +422,10 @@ def trace_entries(entries: list[tuple[str, int]], product: str) -> list[GroupTra
 
     Parameters
     ----------
-    entries :
+    entries : list[tuple[str, int]]
         ``(report text, offset into the editor text)`` pairs.
-    product :
+
+    product : str
         Convert product id.
 
     Returns

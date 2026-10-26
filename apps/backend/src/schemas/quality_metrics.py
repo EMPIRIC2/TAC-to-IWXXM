@@ -11,6 +11,7 @@ class QualityMetricsSummaryModel(BaseModel):
     """
     Per-product aggregate counts for the corpus browser.
 
+
     Attributes
     ----------
     _ : object
@@ -31,6 +32,7 @@ class QualityMetricsSummaryModel(BaseModel):
 class QualityMetricsFileRowModel(BaseModel):
     """
     Slim inventory row for the corpus file list.
+
 
     Attributes
     ----------
@@ -53,6 +55,7 @@ class QualityMetricsListResponse(BaseModel):
     """
     Response for GET /api/v1/quality-metrics.
 
+
     Attributes
     ----------
     _ : object
@@ -68,6 +71,7 @@ class QualityMetricsListResponse(BaseModel):
 class QualityMetricsDetailResponse(BaseModel):
     """
     Response for GET /api/v1/quality-metrics/{stem}.
+
 
     Attributes
     ----------

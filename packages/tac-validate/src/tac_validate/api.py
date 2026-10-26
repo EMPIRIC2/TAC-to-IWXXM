@@ -68,19 +68,21 @@ def lint(
 
     Parameters
     ----------
-    tac_text :
+    tac_text : str
         TAC report, fragment, or WMO AHL bulletin.
-    product :
-        One of AIRMET, METAR, SIGMET, SPECI, TAF, VAA, TCA, SWXA, VONA.
-    profile :
+
+    product : str, optional
+        One of AIRMET, METAR, SIGMET, SPECI, TAF, VAA, TCA, SWXA, VONA. By default ``'METAR'``.
+
+    profile : str, optional
         ``annex3`` (default), ``iwxxm_us``, ``ca_eccc``, ``in_imd``, or another
         id in the lint profile catalog. Profiles that do not differ run the
         Annex 3 rules and keep the requested profile on the report. Calling a
         profile for a product it does not list raises ``ValueError``.
 
-    match_port :
+    match_port : MatchPort or Sequence[DecodeMatch] or None, optional
         Optional decode spans. ``None`` keeps the TAC scan. An empty sequence
-        makes annex3 METAR theme packs emit ``MISSING_DECODE_MATCH``.
+        makes annex3 METAR theme packs emit ``MISSING_DECODE_MATCH``. By default ``None``.
 
     Returns
     -------

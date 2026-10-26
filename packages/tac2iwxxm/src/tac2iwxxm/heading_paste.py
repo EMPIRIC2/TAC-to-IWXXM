@@ -29,9 +29,10 @@ class HeadingPasteError(Exception):
 
         Parameters
         ----------
-        code :
+        code : str
             Stable error code.
-        message :
+
+        message : str
             Operator-facing explanation.
         """
         self.code = code
@@ -64,7 +65,7 @@ def http_status_for_heading_error(code: str) -> int:
 
     Parameters
     ----------
-    code :
+    code : str
         ``empty_bulletin`` or ``INVALID_AHL``.
 
     Returns
@@ -90,7 +91,7 @@ def _opening_line(text: str) -> tuple[str, int]:
 
     Parameters
     ----------
-    text :
+    text : str
         Paste buffer.
 
     Returns
@@ -115,7 +116,7 @@ def _has_leading_blank(text: str) -> bool:
 
     Parameters
     ----------
-    text :
+    text : str
         Paste buffer.
 
     Returns
@@ -137,7 +138,7 @@ def _classify_opening(line: str) -> str:
 
     Parameters
     ----------
-    line :
+    line : str
         First non-empty line.
 
     Returns
@@ -166,9 +167,10 @@ def reports_for_convert(text: str, product: str) -> PastedHeading | None:
 
     Parameters
     ----------
-    text :
+    text : str
         Operator paste, heading line first, then one or more TAC reports.
-    product :
+
+    product : str
         Convert product, such as ``METAR``, ``SPECI``, ``TAF``, or ``SIGMET``.
 
     Returns

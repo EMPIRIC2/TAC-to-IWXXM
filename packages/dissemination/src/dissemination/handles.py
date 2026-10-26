@@ -16,8 +16,16 @@ class HandleRecord:
 
     Attributes
     ----------
-    _ : object
-        See implementation.
+    user_id : str
+        Caller id.
+    sink_type : str
+        Sink type id.
+    uri : str or None
+        Destination URI.
+    params : dict[str, Any]
+        Sink parameters.
+    expires_at : float
+        Expiry time.
     """
 
     user_id: str
@@ -33,8 +41,8 @@ class HandleStore:
 
     Attributes
     ----------
-    _ : object
-        See implementation.
+    ttl_seconds : float
+        Handle lifetime in seconds.
     """
 
     def __init__(self, *, ttl_seconds: float = 300.0) -> None:
@@ -43,8 +51,8 @@ class HandleStore:
 
         Parameters
         ----------
-        ttl_seconds : object
-            Argument ``ttl_seconds``.
+        ttl_seconds : float, optional
+            Handle lifetime in seconds. By default ``300.0``.
         """
         self.ttl_seconds = ttl_seconds
         self._items: dict[str, HandleRecord] = {}
@@ -64,15 +72,15 @@ class HandleStore:
 
         Parameters
         ----------
-        user_id :
+        user_id : str
             Authenticated caller id; handles are scoped per user.
-        sink_type :
+        sink_type : str
             Drawer / API sink discriminator.
-        uri :
+        uri : str or None
             Destination URI captured at preflight time, if any.
-        params :
-            Non-secret sink parameters to replay on send.
-        now :
+        params : dict[str, Any] or None, optional
+            Non-secret sink parameters to replay on send. By default ``None``.
+        now : float or None, optional
             Optional epoch seconds for tests; defaults to ``time.time()``.
 
         Returns
@@ -111,12 +119,12 @@ class HandleStore:
 
         Parameters
         ----------
-        handle :
+        handle : str
             Opaque token from ``create``.
-        user_id :
+        user_id : str
             Caller id; must match the record owner.
-        now :
-            Optional epoch seconds for expiry checks.
+        now : float or None, optional
+            Optional epoch seconds for expiry checks. By default ``None``.
 
         Returns
         -------
@@ -147,9 +155,9 @@ class HandleStore:
 
         Parameters
         ----------
-        handle :
+        handle : str
             Opaque token from ``create``.
-        user_id :
+        user_id : str
             Caller id; must match the record owner.
 
         Returns

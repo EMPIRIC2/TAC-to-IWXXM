@@ -5,9 +5,10 @@ from __future__ import annotations
 import logging
 import os
 import pathlib
+import re
 import sys
 from collections.abc import Awaitable, Callable
-from typing import Any
+from typing import Any, cast
 
 from starlette.types import Message, Receive, Scope, Send
 
@@ -162,7 +163,7 @@ except ImportError:
 app = FastAPI(
     title="METAR to IWXXM Backend API",
     version="0.1.0",
-    description="Convert METAR/SPECI TAC messages to IWXXM XML format with comprehensive validation",
+    description="Convert TAC messages to IWXXM XML and validate the result.",
     lifespan=database_lifespan,
     openapi_tags=[
         {
@@ -171,7 +172,7 @@ app = FastAPI(
         },
         {
             "name": "Conversion",
-            "description": "Convert METAR TAC to IWXXM XML format",
+            "description": "Convert TAC to IWXXM XML.",
         },
         {
             "name": "Validation",
@@ -361,6 +362,54 @@ async def add_translation_centre_headers(
     return response
 
 
+_NUMPY_SECTION = re.compile(
+    "\n(?:Examples|Parameters|Returns|Raises|Attributes|Notes|Warnings|See Also|References)\n-+"
+)
+
+
+def _operator_description(text: str) -> str:
+    """Keep the prose before a NumPy section or a form feed.
+
+    Parameters
+    ----------
+    text : str
+        OpenAPI description copied from a docstring.
+
+    Returns
+    -------
+    str
+        Operator-facing description.
+    """
+    head = text.split("\f", 1)[0]
+    match = _NUMPY_SECTION.search(head)
+    if match:
+        head = head[: match.start()]
+    return head.strip()
+
+
+def _trim_operator_descriptions(node: object) -> None:
+    """Apply :func:`_operator_description` to every OpenAPI description.
+
+    Parameters
+    ----------
+    node : object
+        OpenAPI object, array, or scalar.
+    """
+    if isinstance(node, dict):
+        mapping = cast(dict[str, Any], node)
+        description = mapping.get("description")
+        if isinstance(description, str):
+            trimmed = _operator_description(description)
+            if trimmed != description:
+                mapping["description"] = trimmed
+        for value in mapping.values():
+            _trim_operator_descriptions(value)
+    elif isinstance(node, list):
+        items = cast(list[Any], node)
+        for item in items:
+            _trim_operator_descriptions(item)
+
+
 def custom_openapi() -> dict[str, Any]:
     """
     Build OpenAPI schema without security schemes for public API docs.
@@ -387,6 +436,7 @@ def custom_openapi() -> dict[str, Any]:
         routes=app.routes,
         tags=app.openapi_tags,
     )
+    _trim_operator_descriptions(openapi_schema)
     components = openapi_schema.setdefault("components", {})
     components.pop("securitySchemes", None)
     openapi_schema.pop("security", None)

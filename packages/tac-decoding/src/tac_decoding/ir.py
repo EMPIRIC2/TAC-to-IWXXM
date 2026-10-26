@@ -20,11 +20,13 @@ def project_ir(
 
     Parameters
     ----------
-    match :
+    match : MatchResult
         Result of :func:`tac_decoding.match.match_tac`.
-    product :
+
+    product : str
         Convert product id (for example ``METAR`` or ``SIGMET``).
-    pack_id :
+
+    pack_id : str
         Pack that produced the match (``sigmet``, ``va_sigmet``, or ``tc_sigmet``
         for SIGMET).
 

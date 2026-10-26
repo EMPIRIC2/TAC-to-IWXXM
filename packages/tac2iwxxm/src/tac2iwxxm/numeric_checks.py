@@ -22,7 +22,7 @@ def _as_number(value: object) -> float | None:
 
     Returns
     -------
-    object
+    float | None
         Return value.
     """
     if isinstance(value, bool):
@@ -46,20 +46,20 @@ def validate_numeric_check_shape(check: object) -> str | None:
         {op: min|max|eq, value: number}
         {op: in, values: [number, ...]}  # non-empty
 
+    Parameters
+    ----------
+    check : object
+        Numeric check definition.
+
+    Returns
+    -------
+    str | None
+        An error message when ``check`` is malformed, else ``None``.
+
     Examples
     --------
     >>> 1 + 1  # docstring smoke (validate_numeric_check_shape)
     2
-
-    Parameters
-    ----------
-    check : object
-        Argument ``check``.
-
-    Returns
-    -------
-    object
-        Return value.
     """
     if check is None:
         return None
@@ -97,6 +97,14 @@ def evaluate_numeric_check(check: dict[str, Any], candidate: object) -> bool | N
     """
     Evaluate ``candidate`` against a validated check mapping.
 
+    Parameters
+    ----------
+    check : dict[str, Any]
+        Numeric check definition.
+
+    candidate : object
+        Value checked against ``check``.
+
     Returns
     -------
     bool | None
@@ -107,13 +115,6 @@ def evaluate_numeric_check(check: dict[str, Any], candidate: object) -> bool | N
     --------
     >>> 1 + 1  # docstring smoke (evaluate_numeric_check)
     2
-
-    Parameters
-    ----------
-    check : object
-        Argument ``check``.
-    candidate : object
-        Argument ``candidate``.
     """
     shape_error = validate_numeric_check_shape(check)
     if shape_error is not None:

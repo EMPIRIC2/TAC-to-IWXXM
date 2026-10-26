@@ -125,23 +125,25 @@ class BulletinSplitError(ValueError):
 
     Parameters
     ----------
-    code :
+    code : str
         Machine-readable error (``bulletin_split_failed``, ``empty_bulletin``,
         or ``invalid_bbb``).
-    message :
+
+    message : str
         Human-readable description.
     """
 
     def __init__(self, code: str, message: str) -> None:
         """
-        Internal helper ``__init__``.
+        Store ``code`` and ``message``.
 
         Parameters
         ----------
-        code : object
-            Argument ``code``.
-        message : object
-            Argument ``message``.
+        code : str
+            Machine-readable error code.
+
+        message : str
+            Human-readable message.
         """
         self.code = code
         self.message = message
@@ -154,7 +156,7 @@ def map_t1t2(tac_tt: str) -> str:
 
     Parameters
     ----------
-    tac_tt :
+    tac_tt : str
         Two-letter TAC data type designator (e.g. ``SA``, ``FN``).
 
     Returns
@@ -185,7 +187,7 @@ def bbb_to_report_status(bbb: str | None) -> ReportStatus:
 
     Parameters
     ----------
-    bbb :
+    bbb : str | None
         BBB indicator (``AAx`` / ``CCx`` / ``RRx`` with x ∈ A…X), or ``None``.
 
     Returns
@@ -224,7 +226,7 @@ def parse_ahl(line_or_text: str) -> AhlParts:
 
     Parameters
     ----------
-    line_or_text :
+    line_or_text : str
         A single AHL line, or text whose first non-empty line is the AHL.
 
     Returns
@@ -288,7 +290,7 @@ def format_ahl(parts: AhlParts) -> str:
 
     Parameters
     ----------
-    parts :
+    parts : AhlParts
         Parsed or constructed AHL parts.
 
     Returns
@@ -341,13 +343,16 @@ def iwxxm_filename(
 
     Parameters
     ----------
-    parts :
+    parts : AhlParts
         AHL parts (must include ``iwxxm_tt``).
-    issued_at :
+
+    issued_at : datetime
         UTC (or aware) issue timestamp for the ``_C_CCCC_yyyyMMddhhmmss`` segment.
-    gzip :
+
+    gzip : bool, optional
         When ``True``, append ``.gz``.
-    fractional :
+
+    fractional : str | None, optional
         Optional fractional-second / sequence suffix ``ffffff``.
 
     Returns
@@ -376,9 +381,10 @@ def split_bulletin(text: str, *, product: str = "METAR") -> BulletinSplit:
 
     Parameters
     ----------
-    text :
+    text : str
         Full bulletin text including the AHL line and one or more TAC reports.
-    product :
+
+    product : str, optional
         Product hint selecting the AHL dialect (``METAR``, ``SPECI``, ``TAF``,
         ``SIGMET`` for WS/WV/WC, ``AIRMET`` for WA, ``VAA`` for FV, ``TCA``
         for FK, or ``SWXA`` for FN).

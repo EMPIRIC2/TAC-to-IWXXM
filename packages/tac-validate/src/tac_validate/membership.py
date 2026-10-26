@@ -75,8 +75,8 @@ def repo_root() -> Path:
 
     Returns
     -------
-    object
-        Return value.
+    Path
+        Monorepo root containing ``vendor/schemas``.
     """
     env = os.environ.get("TAC_VALIDATE_REPO_ROOT")
     if env:
@@ -95,8 +95,8 @@ def membership_artifact_path() -> Path:
 
     Returns
     -------
-    object
-        Return value.
+    Path
+        Path to the committed generated membership JSON artifact.
     """
     return _ARTIFACT
 
@@ -170,10 +170,10 @@ def harvest_membership(
 
     Parameters
     ----------
-    root : Path, optional
+    root : Path or None, optional
         Monorepo root; default :func:`repo_root`.
     iwxxm_version : str, optional
-        IWXXM pin line for RDF under ``vendor/schemas/iwxxm/{version}/IWXXM/rule``.
+        IWXXM pin line for RDF under ``vendor/schemas/iwxxm/{version}/IWXXM/rule``. By default ``'2025-2'``.
 
     Returns
     -------
@@ -218,14 +218,14 @@ def write_membership_artifact(
 
     Parameters
     ----------
-    sets : object
-        Argument ``sets``.
-    root : object
-        Argument ``root``.
-    iwxxm_version : object
-        Argument ``iwxxm_version``.
-    dest : object
-        Argument ``dest``.
+    sets : dict[str, frozenset[str]] or None, optional
+        Sets. By default ``None``.
+    root : Path or None, optional
+        Root. By default ``None``.
+    iwxxm_version : str, optional
+        IWXXM release line. By default ``'2025-2'``.
+    dest : Path or None, optional
+        Dest. By default ``None``.
     """
     harvested = sets if sets is not None else harvest_membership(root=root, iwxxm_version=iwxxm_version)
     path = dest if dest is not None else membership_artifact_path()
@@ -283,17 +283,17 @@ def is_member(family: str, notation: str, *, sets: dict[str, frozenset[str]] | N
 
     Parameters
     ----------
-    family : object
-        Argument ``family``.
-    notation : object
-        Argument ``notation``.
-    sets : object
-        Argument ``sets``.
+    family : str
+        Family.
+    notation : str
+        Notation.
+    sets : dict[str, frozenset[str]] or None, optional
+        Sets. By default ``None``.
 
     Returns
     -------
-    object
-        Return value.
+    bool
+        True if ``notation`` is in the named family set.
     """
     table = sets if sets is not None else load_membership_sets()
     members = table.get(family)
@@ -343,17 +343,17 @@ def is_member_normalized(
 
     Parameters
     ----------
-    family : object
-        Argument ``family``.
-    notation : object
-        Argument ``notation``.
-    sets : object
-        Argument ``sets``.
+    family : str
+        Family.
+    notation : str
+        Notation.
+    sets : dict[str, frozenset[str]] or None, optional
+        Sets. By default ``None``.
 
     Returns
     -------
-    object
-        Return value.
+    bool
+        True if ``notation`` or its underscore-normalized form is in ``family``.
     """
     table = sets if sets is not None else load_membership_sets()
     if is_member(family, notation, sets=table):

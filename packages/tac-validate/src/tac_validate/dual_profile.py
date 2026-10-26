@@ -34,8 +34,22 @@ class ProfileLintCompare:
 
     Attributes
     ----------
-    _ : object
-        See implementation.
+    product : str
+        Product id.
+    disposition : str
+        Disposition.
+    annex3_codes : frozenset[str]
+        Annex3 codes.
+    iwxxm_us_codes : frozenset[str] or None
+        IWXXM US codes.
+    divergent_codes : frozenset[str]
+        Divergent codes.
+    unclassified_divergent : frozenset[str]
+        Unclassified divergent.
+    ok : bool
+        False only when the product is dual-applicable and unclassified codes diverge.
+    note : str, optional
+        Note. By default ``''``.
     """
 
     product: str
@@ -76,9 +90,9 @@ def compare_lint_profiles(tac_text: str, *, product: str) -> ProfileLintCompare:
 
     Parameters
     ----------
-    tac_text :
+    tac_text : str
         TAC report text.
-    product :
+    product : str
         F6 / deepen product id.
 
     Returns

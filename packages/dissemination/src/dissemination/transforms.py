@@ -33,8 +33,12 @@ class TransformStep:
 
     Attributes
     ----------
-    _ : object
-        See implementation.
+    id : str
+        ID.
+    type : str
+        Type.
+    params : dict[str, Any], optional
+        Parameters for this step. By default an empty dict.
     """
 
     id: str
@@ -49,8 +53,12 @@ class TransformResult:
 
     Attributes
     ----------
-    _ : object
-        See implementation.
+    xml : str
+        XML text.
+    applied : tuple[str, ...]
+        Applied.
+    annotations : tuple[str, ...], optional
+        Annotations.
     """
 
     xml: str
@@ -73,12 +81,12 @@ def normalize_transform_steps(raw: object) -> list[TransformStep]:
     Parameters
     ----------
     raw : object
-        Argument ``raw``.
+        Raw.
 
     Returns
     -------
-    object
-        Return value.
+    list[TransformStep]
+        Normalize library ``transforms`` JSON into ordered steps.
     """
     if raw is None:
         return []
@@ -121,14 +129,14 @@ def apply_dissemination_transforms(
 
     Parameters
     ----------
-    xml :
+    xml : str
         IWXXM (or already-COLLECT) document.
-    transforms :
+    transforms : object
         Library body ``transforms`` list (dicts or type strings).
-    bulletin_identifier :
-        Optional COLLECT bulletin id / topic filename.
-    topic :
-        Alias for bulletin_identifier when the latter is omitted.
+    bulletin_identifier : str or None, optional
+        Optional COLLECT bulletin id / topic filename. By default ``None``.
+    topic : str or None, optional
+        Alias for bulletin_identifier when the latter is omitted. By default ``None``.
 
     Returns
     -------

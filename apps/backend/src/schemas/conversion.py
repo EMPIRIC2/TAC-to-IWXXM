@@ -19,6 +19,7 @@ class ConversionIssue(BaseModel):
     """
     Structured issue for a single conversion input item.
 
+
     Attributes
     ----------
     _ : object
@@ -69,7 +70,8 @@ class ConversionIssue(BaseModel):
 
 class ProfileOutputSpecModel(BaseModel):
     """
-    Operator-visible CA_ECCC exchange output contract (EV-071 M2).
+    CA_ECCC exchange output fields for a converted report.
+
 
     Attributes
     ----------
@@ -108,6 +110,7 @@ class GroupTrace(BaseModel):
     """
     TAC group that produced one IWXXM element in a preview.
 
+
     Attributes
     ----------
     _ : object
@@ -133,6 +136,7 @@ class FailedSpan(BaseModel):
     """
     Character span marking a soft-preview failure.
 
+
     Attributes
     ----------
     _ : object
@@ -148,6 +152,7 @@ class FailedSpan(BaseModel):
 class ConversionResult(BaseModel):
     """
     Individual conversion result for a single METAR input.
+
 
     Attributes
     ----------
@@ -190,6 +195,7 @@ class ConversionResult(BaseModel):
 class ConversionResponse(BaseModel):
     """
     Response from conversion endpoint with results and errors.
+
 
     Attributes
     ----------
@@ -261,6 +267,7 @@ class ErrorDetail(BaseModel):
     """
     Detailed error response.
 
+
     Attributes
     ----------
     _ : object
@@ -276,6 +283,7 @@ class ErrorDetail(BaseModel):
 class HealthResponse(BaseModel):
     """
     Health check response.
+
 
     Attributes
     ----------
@@ -293,6 +301,7 @@ class HealthResponse(BaseModel):
 class ConversionRequest(BaseModel):
     """
     Request for METAR to IWXXM conversion via JSON body.
+
 
     Attributes
     ----------
@@ -368,11 +377,11 @@ class ConversionRequest(BaseModel):
     )
     preset_id: str | None = Field(
         default=None,
-        description="Deprecated on Convert — rejected after library hard cut; use conversion_library_id",
+        description="Deprecated on convert. Rejected. Use conversion_library_id.",
     )
     overlay_id: str | None = Field(
         default=None,
-        description="Deprecated on Convert — rejected after library hard cut",
+        description="Deprecated on convert. Rejected.",
     )
     conversion_library_id: str | None = Field(
         default=None,

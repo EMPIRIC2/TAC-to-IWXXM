@@ -88,15 +88,15 @@ def r1_identity_order(tac_text: str, product: str) -> list[Issue]:
 
     Parameters
     ----------
-    tac_text : object
-        Argument ``tac_text``.
-    product : object
-        Argument ``product``.
+    tac_text : str
+        TAC text.
+    product : str
+        Product id.
 
     Returns
     -------
-    object
-        Return value.
+    list[Issue]
+        R1: CCCC, observation time, field order.
     """
     start, end, core, tokens = _tokens(tac_text)
     issues: list[Issue] = []
@@ -137,15 +137,15 @@ def r3_weather(tac_text: str, product: str) -> list[Issue]:
 
     Parameters
     ----------
-    tac_text : object
-        Argument ``tac_text``.
-    product : object
-        Argument ``product``.
+    tac_text : str
+        TAC text.
+    product : str
+        Product id.
 
     Returns
     -------
-    object
-        Return value.
+    list[Issue]
+        R3: present / recent weather token validity + membership.
     """
     start, end, core, tokens = _tokens(tac_text)
     issues: list[Issue] = []
@@ -206,15 +206,15 @@ def r4_cloud(tac_text: str, product: str) -> list[Issue]:
 
     Parameters
     ----------
-    tac_text : object
-        Argument ``tac_text``.
-    product : object
-        Argument ``product``.
+    tac_text : str
+        TAC text.
+    product : str
+        Product id.
 
     Returns
     -------
-    object
-        Return value.
+    list[Issue]
+        R4: cloud / VV tokens + CB/TCU info.
     """
     start, end, core, tokens = _tokens(tac_text)
     issues: list[Issue] = []
@@ -294,15 +294,15 @@ def r5_remarks(tac_text: str, product: str) -> list[Issue]:
 
     Parameters
     ----------
-    tac_text : object
-        Argument ``tac_text``.
-    product : object
-        Argument ``product``.
+    tac_text : str
+        TAC text.
+    product : str
+        Product id.
 
     Returns
     -------
-    object
-        Return value.
+    list[Issue]
+        R5: US REMARKS malformed + iwxxm_us extension awareness.
     """
     start, end, core, tokens = _tokens(tac_text)
     return _check_us_remarks(
@@ -326,15 +326,15 @@ def r8_nil_gate(tac_text: str, product: str) -> list[Issue] | None:
 
     Parameters
     ----------
-    tac_text : object
-        Argument ``tac_text``.
-    product : object
-        Argument ``product``.
+    tac_text : str
+        TAC text.
+    product : str
+        Product id.
 
     Returns
     -------
-    object
-        Return value.
+    list[Issue] or None
+        If NIL is report content, return R8 NIL issues; else ``None`` (continue body).
     """
     start, end, core, tokens = _tokens(tac_text)
     if "NIL" not in tokens:
@@ -395,15 +395,15 @@ def r8_modifiers(tac_text: str, product: str) -> list[Issue]:
 
     Parameters
     ----------
-    tac_text : object
-        Argument ``tac_text``.
-    product : object
-        Argument ``product``.
+    tac_text : str
+        TAC text.
+    product : str
+        Product id.
 
     Returns
     -------
-    object
-        Return value.
+    list[Issue]
+        R8 non-NIL: AUTO/COR/NOSIG/TEMPO/RVR/wind diagnostics.
     """
     start, end, core, tokens = _tokens(tac_text)
     if "NIL" in tokens:
@@ -428,15 +428,15 @@ def hatch_r1(tac_text: str, product: str) -> list[Issue]:
 
     Parameters
     ----------
-    tac_text : object
-        Argument ``tac_text``.
-    product : object
-        Argument ``product``.
+    tac_text : str
+        TAC text.
+    product : str
+        Product id.
 
     Returns
     -------
-    object
-        Return value.
+    list[Issue]
+        Detector hatch for R1 pack.
     """
     return r1_identity_order(tac_text, product)
 
@@ -452,15 +452,15 @@ def hatch_r1_order(tac_text: str, product: str) -> list[Issue]:
 
     Parameters
     ----------
-    tac_text : object
-        Argument ``tac_text``.
-    product : object
-        Argument ``product``.
+    tac_text : str
+        TAC text.
+    product : str
+        Product id.
 
     Returns
     -------
-    object
-        Return value.
+    list[Issue]
+        Declarative R1 residual: field-order only (CCCC / time via YAML).
     """
     start, end, _core, tokens = _tokens(tac_text)
     order_issue = _check_metar_speci_field_order(tokens, product=product, start=start, end=end)
@@ -478,15 +478,15 @@ def hatch_r3(tac_text: str, product: str) -> list[Issue]:
 
     Parameters
     ----------
-    tac_text : object
-        Argument ``tac_text``.
-    product : object
-        Argument ``product``.
+    tac_text : str
+        TAC text.
+    product : str
+        Product id.
 
     Returns
     -------
-    object
-        Return value.
+    list[Issue]
+        Detector hatch for R3 pack.
     """
     return r3_weather(tac_text, product)
 
@@ -502,15 +502,15 @@ def hatch_r4(tac_text: str, product: str) -> list[Issue]:
 
     Parameters
     ----------
-    tac_text : object
-        Argument ``tac_text``.
-    product : object
-        Argument ``product``.
+    tac_text : str
+        TAC text.
+    product : str
+        Product id.
 
     Returns
     -------
-    object
-        Return value.
+    list[Issue]
+        Detector hatch for R4 pack.
     """
     return r4_cloud(tac_text, product)
 
@@ -526,15 +526,15 @@ def hatch_r4_membership(tac_text: str, product: str) -> list[Issue]:
 
     Parameters
     ----------
-    tac_text : object
-        Argument ``tac_text``.
-    product : object
-        Argument ``product``.
+    tac_text : str
+        TAC text.
+    product : str
+        Product id.
 
     Returns
     -------
-    object
-        Return value.
+    list[Issue]
+        Declarative R4 residual: WMO membership only (shape/CB via YAML).
     """
     start, end, core, tokens = _tokens(tac_text)
     issues: list[Issue] = []
@@ -586,15 +586,15 @@ def hatch_r5(tac_text: str, product: str) -> list[Issue]:
 
     Parameters
     ----------
-    tac_text : object
-        Argument ``tac_text``.
-    product : object
-        Argument ``product``.
+    tac_text : str
+        TAC text.
+    product : str
+        Product id.
 
     Returns
     -------
-    object
-        Return value.
+    list[Issue]
+        Detector hatch for R5 pack.
     """
     return r5_remarks(tac_text, product)
 
@@ -610,15 +610,15 @@ def hatch_r5_pk_and_extension(tac_text: str, product: str) -> list[Issue]:
 
     Parameters
     ----------
-    tac_text : object
-        Argument ``tac_text``.
-    product : object
-        Argument ``product``.
+    tac_text : str
+        TAC text.
+    product : str
+        Product id.
 
     Returns
     -------
-    object
-        Return value.
+    list[Issue]
+        Declarative R5 residual: PK WND + iwxxm_us extension (SLP/P/T shape via YAML).
     """
     start, end, core, tokens = _tokens(tac_text)
     if "RMK" not in tokens:
@@ -713,15 +713,15 @@ def hatch_r8(tac_text: str, product: str) -> list[Issue]:
 
     Parameters
     ----------
-    tac_text : object
-        Argument ``tac_text``.
-    product : object
-        Argument ``product``.
+    tac_text : str
+        TAC text.
+    product : str
+        Product id.
 
     Returns
     -------
-    object
-        Return value.
+    list[Issue]
+        Detector hatch for R8 pack (NIL gate + modifiers).
     """
     nil = r8_nil_gate(tac_text, product)
     if nil is not None:
@@ -740,15 +740,15 @@ def hatch_taf(tac_text: str, product: str) -> list[Issue]:
 
     Parameters
     ----------
-    tac_text : object
-        Argument ``tac_text``.
-    product : object
-        Argument ``product``.
+    tac_text : str
+        TAC text.
+    product : str
+        Product id.
 
     Returns
     -------
-    object
-        Return value.
+    list[Issue]
+        Detector hatch for TAF core checklist (A5-1 + F20 gates).
     """
     del product  # pack products: [TAF]; profile via lint_profile contextvar
     from tac_validate.product_rules_pkg.taf import _check_taf
@@ -767,15 +767,15 @@ def hatch_sigmet(tac_text: str, product: str) -> list[Issue]:
 
     Parameters
     ----------
-    tac_text : object
-        Argument ``tac_text``.
-    product : object
-        Argument ``product``.
+    tac_text : str
+        TAC text.
+    product : str
+        Product id.
 
     Returns
     -------
-    object
-        Return value.
+    list[Issue]
+        Detector hatch for SIGMET A6 / F23 checklist.
     """
     from tac_validate.product_rules_pkg.sigmet_airmet import _check_sigmet_airmet
 
@@ -793,15 +793,15 @@ def hatch_airmet(tac_text: str, product: str) -> list[Issue]:
 
     Parameters
     ----------
-    tac_text : object
-        Argument ``tac_text``.
-    product : object
-        Argument ``product``.
+    tac_text : str
+        TAC text.
+    product : str
+        Product id.
 
     Returns
     -------
-    object
-        Return value.
+    list[Issue]
+        Detector hatch for AIRMET A6 / F24 checklist.
     """
     from tac_validate.product_rules_pkg.sigmet_airmet import _check_sigmet_airmet
 
@@ -819,15 +819,15 @@ def hatch_vaa(tac_text: str, product: str) -> list[Issue]:
 
     Parameters
     ----------
-    tac_text : object
-        Argument ``tac_text``.
-    product : object
-        Argument ``product``.
+    tac_text : str
+        TAC text.
+    product : str
+        Product id.
 
     Returns
     -------
-    object
-        Return value.
+    list[Issue]
+        Detector hatch for VAA checklist.
     """
     del product
     from tac_validate.product_rules_pkg.vaa import _check_vaa
@@ -846,15 +846,15 @@ def hatch_tca(tac_text: str, product: str) -> list[Issue]:
 
     Parameters
     ----------
-    tac_text : object
-        Argument ``tac_text``.
-    product : object
-        Argument ``product``.
+    tac_text : str
+        TAC text.
+    product : str
+        Product id.
 
     Returns
     -------
-    object
-        Return value.
+    list[Issue]
+        Detector hatch for TCA checklist.
     """
     del product
     from tac_validate.product_rules_pkg.tca import _check_tca

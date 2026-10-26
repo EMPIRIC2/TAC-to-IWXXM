@@ -9,7 +9,7 @@ def amd_modifier_present(tokens: list[str]) -> bool:
 
     Parameters
     ----------
-    tokens :
+    tokens : list[str]
         Uppercase TAC tokens with the end-of-message mark already removed.
 
     Returns

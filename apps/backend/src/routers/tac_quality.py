@@ -255,6 +255,7 @@ def _enrich_advisory_decode(
 @router.get(
     "/lint-issue-catalog",
     response_model=LintIssueCatalogResponse,
+    summary="Lint and validation catalog",
     responses={},
 )
 async def lint_issue_catalog(
@@ -266,7 +267,8 @@ async def lint_issue_catalog(
     exchange_profile: str | None = None,
 ) -> Response:
     """
-    Export TAC lint + IWXXM validation catalog for FE tooltips / catalog page.
+    Return the TAC lint and IWXXM validation issue catalog.
+
 
     Examples
     --------
@@ -414,6 +416,7 @@ async def lint_issue_catalog(
 @router.post(
     "/lint-tac",
     response_model=LintTacResponse,
+    summary="Lint TAC or IWXXM",
     responses={
         415: {"description": "Unsupported Media Type - multipart/form-data required"},
     },
@@ -428,7 +431,8 @@ async def lint_tac(
     files: list[UploadFile] | None = File(None),
 ) -> Response:
     """
-    Thin wrapper over ``packages/tac-validate`` (multipart/form-data only - Q8=A).
+    Lint TAC or IWXXM XML. The body must be multipart form data.
+
 
     Examples
     --------
@@ -511,6 +515,7 @@ async def lint_tac(
 @router.post(
     "/decode-tac",
     tags=["Conversion"],
+    summary="Decode TAC",
     response_model=DecodeTacResponse,
     responses={
         415: {"description": "Unsupported Media Type - multipart/form-data required"},
@@ -525,6 +530,7 @@ async def decode_tac_endpoint(
 ) -> Response:
     """
     Decode TAC into annotated segments and a plain-language summary.
+
 
     Examples
     --------
@@ -597,6 +603,7 @@ def station_point(icao: str) -> dict[str, Any]:
 
     The airport catalog is already loaded for ICAO checks. This reads that
     one record. It does not call an external map service.
+
 
     Parameters
     ----------

@@ -118,7 +118,7 @@ def main(argv: Sequence[str] | None = None) -> int:
 
     Parameters
     ----------
-    argv :
+    argv : Sequence[str] or None, optional
         Argument vector (defaults to ``sys.argv[1:]``).
 
     Returns

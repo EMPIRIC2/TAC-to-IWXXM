@@ -106,10 +106,10 @@ def validate_gml_references(
 
     Parameters
     ----------
-    xml_content :
+    xml_content : str
         IWXXM XML document.
-    codelists_dir :
-        Directory containing bundled ``codes.wmo.int-*.rdf`` files.
+    codelists_dir : Path or None, optional
+        Directory containing bundled ``codes.wmo.int-*.rdf`` files. By default ``None``.
 
     Returns
     -------

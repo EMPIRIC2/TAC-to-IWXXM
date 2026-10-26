@@ -44,13 +44,13 @@ def normalize_code_ca_href(href: str) -> str:
 
     Parameters
     ----------
-    href : object
-        Argument ``href``.
+    href : str
+        Href.
 
     Returns
     -------
-    object
-        Return value.
+    str
+        Strip fragment/query and trailing slash for stable membership lookup.
     """
     value = href.strip()
     if "#" in value:
@@ -71,13 +71,13 @@ def is_code_ca_href(href: str) -> bool:
 
     Parameters
     ----------
-    href : object
-        Argument ``href``.
+    href : str
+        Href.
 
     Returns
     -------
-    object
-        Return value.
+    bool
+        True when ``href`` targets the MSC code-ca vocabulary tree.
     """
     return normalize_code_ca_href(href).startswith(CODE_CA_BASE)
 
@@ -88,7 +88,7 @@ def code_ca_membership_ok(href: str) -> bool:
 
     Parameters
     ----------
-    href :
+    href : str
         ``xlink:href`` value from an IWXXM document.
 
     Examples
@@ -98,8 +98,8 @@ def code_ca_membership_ok(href: str) -> bool:
 
     Returns
     -------
-    object
-        Return value.
+    bool
+        True when ``href`` is a known MSC code-ca member URI.
     """
     return normalize_code_ca_href(href) in KNOWN_CODE_CA_HREFS
 

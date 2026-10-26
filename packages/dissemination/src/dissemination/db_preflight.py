@@ -26,13 +26,13 @@ def uri_hostname(uri: str) -> str | None:
 
     Parameters
     ----------
-    uri : object
-        Argument ``uri``.
+    uri : str
+        Destination URI.
 
     Returns
     -------
-    object
-        Return value.
+    str or None
+        Hostname from ``uri``, or ``None`` for hostless schemes (e.g. sqlite memory).
     """
     parsed = urlparse(uri)
     return parsed.hostname
@@ -44,7 +44,7 @@ def dialect_for_sink(sink_type: str) -> str:
 
     Parameters
     ----------
-    sink_type :
+    sink_type : str
         One of ``postgres``, ``mysql``, ``sqlserver``, or ``sqlite``.
 
     Returns
@@ -84,15 +84,15 @@ def normalize_sqlalchemy_uri(uri: str, sink_type: str) -> str:
 
     Parameters
     ----------
-    uri : object
-        Argument ``uri``.
-    sink_type : object
-        Argument ``sink_type``.
+    uri : str
+        Destination URI.
+    sink_type : str
+        Sink type id.
 
     Returns
     -------
-    object
-        Return value.
+    str
+        Ensure async driver prefix for SQLAlchemy.
     """
     if sink_type == "postgres" and uri.startswith("postgresql://"):
         return "postgresql+asyncpg://" + uri.removeprefix("postgresql://")
@@ -130,13 +130,13 @@ async def run_db_preflight(req: PreflightRequest) -> PreflightResponse:
 
     Parameters
     ----------
-    req : object
-        Argument ``req``.
+    req : PreflightRequest
+        Req.
 
     Returns
     -------
-    object
-        Return value.
+    PreflightResponse
+        Validate egress + optional writer-contract against a DB URI.
     """
     if not req.uri:
         raise ValueError("uri is required for DB sink preflight")

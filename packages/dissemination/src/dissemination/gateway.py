@@ -30,16 +30,16 @@ class DisseminationMessage:
 
     Parameters
     ----------
-    gateway_kind :
+    gateway_kind : str
         Registry key (usually a ``SinkType`` string).
-    params :
+    params : object
         Sink-specific connection params (memory-only; never logged raw).
-    allowlist :
+    allowlist : Allowlist
         Egress allowlist for adapter checks.
-    iwxxm_xml :
-        Optional IWXXM payload.
-    tac_text :
-        Optional TAC payload (e.g. EDIS).
+    iwxxm_xml : str or bytes or None, optional
+        Optional IWXXM payload. By default ``None``.
+    tac_text : str or None, optional
+        Optional TAC payload (e.g. EDIS). By default ``None``.
     """
 
     gateway_kind: str
@@ -56,8 +56,16 @@ class ValidationResult:
 
     Attributes
     ----------
-    _ : object
-        See implementation.
+    ok : bool
+        True when the result succeeded.
+    connectivity_ok : bool
+        True when connectivity succeeded.
+    diffs : list[SchemaDiffItem]
+        Schema differences.
+    detail : str or None, optional
+        Detail text. By default ``None``.
+    handle : str or None, optional
+        Preflight handle. By default ``None``.
     """
 
     ok: bool
@@ -74,18 +82,18 @@ class DeliveryReceipt:
 
     Parameters
     ----------
-    status :
+    status : DeliveryStatus
         ``DELIVERED`` | ``FAILED`` | ``SKIPPED``.
-    gateway :
+    gateway : str
         Gateway kind used for the attempt.
-    detail :
-        Operator-safe detail.
-    idempotency_key :
-        Optional idempotency token.
-    attempt :
-        Attempt number (1-based).
-    completed_at :
-        UTC completion timestamp.
+    detail : str or None, optional
+        Operator-safe detail. By default ``None``.
+    idempotency_key : str or None, optional
+        Optional idempotency token. By default ``None``.
+    attempt : int, optional
+        Attempt number (1-based). By default ``1``.
+    completed_at : datetime or None, optional
+        UTC completion timestamp. By default ``None``.
     """
 
     status: DeliveryStatus
@@ -142,10 +150,10 @@ class DisseminationGateway:
 
         Parameters
         ----------
-        adapters : object
-            Argument ``adapters``.
-        health_probe : object
-            Argument ``health_probe``.
+        adapters : Mapping[str, SinkAdapter]
+            Adapters.
+        health_probe : HealthProbe or None, optional
+            Health probe. By default ``None``.
         """
         self._adapters = dict(adapters)
         self._health_probe = health_probe
@@ -175,7 +183,7 @@ class DisseminationGateway:
 
         Parameters
         ----------
-        message :
+        message : DisseminationMessage
             Envelope with params and allowlist.
 
         Returns
@@ -206,7 +214,7 @@ class DisseminationGateway:
 
         Parameters
         ----------
-        message :
+        message : DisseminationMessage
             Envelope with optional payloads.
 
         Returns
@@ -256,12 +264,12 @@ class DisseminationGateway:
 
         Parameters
         ----------
-        gateway_kind :
-            Optional single kind; when omitted, all registered adapters.
+        gateway_kind : str or None, optional
+            Optional single kind; when omitted, all registered adapters. By default ``None``.
 
         Returns
         -------
-        list of GatewayHealth
+        list[GatewayHealth]
             One row per kind.
 
         Examples

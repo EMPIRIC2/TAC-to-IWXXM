@@ -27,13 +27,13 @@ class LintDelta:
 
     Parameters
     ----------
-    rule_id :
+    rule_id : str
         Stable id for this country difference.
-    products :
+    products : frozenset[str]
         Products the suppression applies to.
-    suppress_codes :
+    suppress_codes : frozenset[str]
         Engine issue codes to drop when the token matches.
-    token_pattern :
+    token_pattern : re.Pattern[str]
         Compiled match against the quoted token in the issue message.
     """
 
@@ -50,17 +50,17 @@ class LintProfileSpec:
 
     Parameters
     ----------
-    profile_id :
+    profile_id : str
         Profile id accepted by ``lint``.
-    engine :
+    engine : str
         Existing rule pack that runs before deltas.
-    products :
+    products : frozenset[str]
         Products this profile may lint.
-    differs :
+    differs : bool
         True when the profile is not identical to its engine.
-    deltas :
+    deltas : tuple[LintDelta, ...]
         Suppressions applied after the engine.
-    recorded :
+    recorded : tuple[str, ...]
         Difference ids that are noted and not yet suppressions.
     """
 

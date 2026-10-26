@@ -33,8 +33,8 @@ def packaged_schemas_root() -> Path | None:
 
     Returns
     -------
-    object
-        Return value.
+    Path or None
+        The packaged schema subset root when materialised.
     """
     iwxxm = _PACKAGE_SCHEMAS / "iwxxm"
     if iwxxm.is_dir() and any(iwxxm.iterdir()) and any((iwxxm / child).is_dir() for child in iwxxm.iterdir()):
@@ -56,8 +56,8 @@ def repo_root() -> Path:
 
     Returns
     -------
-    object
-        Return value.
+    Path
+        The monorepo root containing ``vendor/schemas``.
     """
     env = os.environ.get("IWXXM_VALIDATE_REPO_ROOT")
     if env:
@@ -83,8 +83,8 @@ def vendor_iwxxm_root() -> Path:
 
     Returns
     -------
-    object
-        Return value.
+    Path
+        ``iwxxm`` schema root (packaged subset or ``vendor/schemas/iwxxm``).
     """
     packaged = packaged_schemas_root()
     if packaged is not None:
@@ -103,8 +103,8 @@ def vendor_iwxxm_us_root() -> Path:
 
     Returns
     -------
-    object
-        Return value.
+    Path
+        ``iwxxm-us`` schema root (packaged subset or vendor pin).
     """
     packaged = packaged_schemas_root()
     if packaged is not None:
@@ -123,8 +123,8 @@ def vendor_iwxxm_ca_root() -> Path:
 
     Returns
     -------
-    object
-        Return value.
+    Path
+        ``iwxxm-ca`` schema root (packaged subset or vendor pin).
     """
     packaged = packaged_schemas_root()
     if packaged is not None:
@@ -138,7 +138,7 @@ def ca_xsd_path(*, tag: str = "3.0") -> Path | None:
 
     Parameters
     ----------
-    tag :
+    tag : str, optional
         Pin subdirectory (default ``3.0`` per ``vendor/manifest.json``).
 
     Examples
@@ -148,8 +148,8 @@ def ca_xsd_path(*, tag: str = "3.0") -> Path | None:
 
     Returns
     -------
-    object
-        Return value.
+    Path or None
+        MSC ``iwxxm-ca.xsd`` aggregate when the vendor pin is present.
     """
     root = vendor_iwxxm_ca_root()
     candidates = [
@@ -169,7 +169,7 @@ def version_dir(iwxxm_version: str) -> Path:
 
     Parameters
     ----------
-    iwxxm_version :
+    iwxxm_version : str
         Release line such as ``2023-1`` or ``2025-2``.
 
     Examples
@@ -179,8 +179,8 @@ def version_dir(iwxxm_version: str) -> Path:
 
     Returns
     -------
-    object
-        Return value.
+    Path
+        The IWXXM version tree (contains ``IWXXM/``).
     """
     path = vendor_iwxxm_root() / iwxxm_version
     if not path.is_dir():
@@ -199,13 +199,13 @@ def xsd_path(iwxxm_version: str) -> Path:
 
     Parameters
     ----------
-    iwxxm_version : object
-        Argument ``iwxxm_version``.
+    iwxxm_version : str
+        IWXXM release line.
 
     Returns
     -------
-    object
-        Return value.
+    Path
+        Path to ``iwxxm.xsd`` for ``iwxxm_version``.
     """
     path = version_dir(iwxxm_version) / "IWXXM" / "iwxxm.xsd"
     if not path.is_file():
@@ -224,13 +224,13 @@ def schematron_path(iwxxm_version: str) -> Path:
 
     Parameters
     ----------
-    iwxxm_version : object
-        Argument ``iwxxm_version``.
+    iwxxm_version : str
+        IWXXM release line.
 
     Returns
     -------
-    object
-        Return value.
+    Path
+        Path to ``rule/iwxxm.sch`` for ``iwxxm_version``.
     """
     path = version_dir(iwxxm_version) / "IWXXM" / "rule" / "iwxxm.sch"
     if not path.is_file():
@@ -249,13 +249,13 @@ def codelists_dir(iwxxm_version: str) -> Path:
 
     Parameters
     ----------
-    iwxxm_version : object
-        Argument ``iwxxm_version``.
+    iwxxm_version : str
+        IWXXM release line.
 
     Returns
     -------
-    object
-        Return value.
+    Path
+        Directory of bundled RDF codelists for Schematron ``document()``.
     """
     path = version_dir(iwxxm_version) / "IWXXM" / "rule"
     if not path.is_dir():
@@ -276,8 +276,8 @@ def us_catalog_path() -> Path | None:
 
     Returns
     -------
-    object
-        Return value.
+    Path or None
+        IWXXM-US catalog path when present.
     """
     root = vendor_iwxxm_us_root()
     candidates = [

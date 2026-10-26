@@ -59,8 +59,26 @@ class ProfileOutputSpec:
 
     Attributes
     ----------
-    _ : object
-        See implementation.
+    semantic_profile : str
+        Semantic profile.
+    file_naming_pattern : str
+        File naming pattern.
+    wmo_header_designator : str
+        Wmo header designator.
+    distribution_path_template : str
+        Distribution path template.
+    iwxxm_version_pin : str
+        IWXXM version pin.
+    suggested_filename : str | None
+        Suggested filename. Default ``None``.
+    wmo_ahl_header : str | None
+        Wmo AHL header. Default ``None``.
+    distribution_path : str | None
+        Distribution path. Default ``None``.
+    translation_centre_designator : str | None
+        Translation centre designator. Default ``None``.
+    translation_centre_name : str | None
+        Translation centre name. Default ``None``.
     """
 
     semantic_profile: str
@@ -81,14 +99,15 @@ def _clean_env(name: str, default: str) -> str:
 
     Parameters
     ----------
-    name : object
+    name : str
         Argument ``name``.
-    default : object
+
+    default : str
         Argument ``default``.
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     value = os.getenv(name)
@@ -122,22 +141,23 @@ def ca_wmo_header_designator(product: str, *, sigmet_kind: str | None = None) ->
     """
     Return MSC WMO AHL designator prefix for a product (e.g. ``A_LACN`` for METAR).
 
+    Parameters
+    ----------
+    product : str
+        Product name.
+
+    sigmet_kind : str | None, optional
+        SIGMET variant.
+
+    Returns
+    -------
+    str
+        MSC WMO AHL designator prefix for a product (e.g.
+
     Examples
     --------
     >>> 1 + 1  # docstring smoke (ca_wmo_header_designator)
     2
-
-    Parameters
-    ----------
-    product : object
-        Argument ``product``.
-    sigmet_kind : object
-        Argument ``sigmet_kind``.
-
-    Returns
-    -------
-    object
-        Return value.
     """
     key = product.strip().upper()
     if key == "SIGMET" and sigmet_kind:
@@ -156,9 +176,10 @@ def format_ca_wmo_ahl(parts: AhlParts, *, product: str, sigmet_kind: str | None 
 
     Parameters
     ----------
-    parts :
+    parts : AhlParts
         Parsed bulletin AHL parts (TAC ``T1T2`` on ``parts.tt``; filename uses ``iwxxm_tt``).
-    product :
+
+    product : str
         API product enum (``METAR``, ``SPECI``, …).
 
     Returns
@@ -184,9 +205,10 @@ def issued_at_from_yygggg(yygggg: str, *, reference: datetime | None = None) -> 
 
     Parameters
     ----------
-    yygggg :
+    yygggg : str
         Six-digit AHL time group ``YYGGgg``.
-    reference :
+
+    reference : datetime | None, optional
         Reference instant for calendar year/month (defaults to now UTC).
 
     Returns
@@ -217,11 +239,13 @@ def ca_msc_filename(
 
     Parameters
     ----------
-    parts :
+    parts : AhlParts
         Parsed AHL parts (``iwxxm_tt`` used in the ``TT`` segment).
-    issued_at :
+
+    issued_at : datetime
         Issue timestamp for the ``_C_CCCC_yyyyMMddhhmmss`` segment.
-    gzip :
+
+    gzip : bool, optional
         When ``True``, append ``.gz`` (MSC distribution uses plain ``.xml`` by default).
 
     Returns
@@ -241,24 +265,26 @@ def ca_distribution_path(product: str, *, issuer_code: str, hour: int) -> str:
     """
     Expand MSC HTTPS distribution path for a product and issuer.
 
+    Parameters
+    ----------
+    product : str
+        Product name.
+
+    issuer_code : str
+        Issuer code used in the path.
+
+    hour : int
+        Hour used in the path.
+
+    Returns
+    -------
+    str
+        MSC HTTPS distribution path for a product and issuer.
+
     Examples
     --------
     >>> 1 + 1  # docstring smoke (ca_distribution_path)
     2
-
-    Parameters
-    ----------
-    product : object
-        Argument ``product``.
-    issuer_code : object
-        Argument ``issuer_code``.
-    hour : object
-        Argument ``hour``.
-
-    Returns
-    -------
-    object
-        Return value.
     """
     segment = _DATAMART_PRODUCT_SEGMENT.get(product.strip().upper())
     if segment is None:
@@ -271,20 +297,20 @@ def msc_filename_matches_pattern(filename: str) -> bool:
     """
     Return whether ``filename`` matches the MSC IWXXM exchange pattern.
 
+    Parameters
+    ----------
+    filename : str
+        Filename to test or parse.
+
+    Returns
+    -------
+    bool
+        Whether ``filename`` matches the MSC IWXXM exchange pattern.
+
     Examples
     --------
     >>> 1 + 1  # docstring smoke (msc_filename_matches_pattern)
     2
-
-    Parameters
-    ----------
-    filename : object
-        Argument ``filename``.
-
-    Returns
-    -------
-    object
-        Return value.
     """
     return bool(_MSC_FILENAME_RE.match(filename.strip()))
 
@@ -292,6 +318,11 @@ def msc_filename_matches_pattern(filename: str) -> bool:
 def parse_msc_exchange_filename(filename: str) -> tuple[AhlParts, datetime] | None:
     """
     Parse an MSC datamart filename into AHL parts and issue timestamp.
+
+    Parameters
+    ----------
+    filename : str
+        Filename to test or parse.
 
     Returns
     -------
@@ -302,11 +333,6 @@ def parse_msc_exchange_filename(filename: str) -> tuple[AhlParts, datetime] | No
     --------
     >>> 1 + 1  # docstring smoke (parse_msc_exchange_filename)
     2
-
-    Parameters
-    ----------
-    filename : object
-        Argument ``filename``.
     """
     match = _MSC_FILENAME_PARTS_RE.match(filename.strip())
     if not match:
@@ -351,22 +377,24 @@ def build_ca_eccc_output_spec_from_msc_filename(
 
     Parameters
     ----------
-    product :
+    product : str
         API product enum.
-    source_filename :
+
+    source_filename : str
         MSC filename such as ``A_LSCN22CWAO241540_C_CWAO_20260824154038.xml``.
-    sigmet_kind :
+
+    sigmet_kind : str | None, optional
         Optional SIGMET variant hint when product is ``SIGMET``.
+
+    Returns
+    -------
+    ProfileOutputSpec | None
+        Output spec from an MSC datamart filename (ops corpus / validate-first path).
 
     Examples
     --------
     >>> 1 + 1  # docstring smoke (build_ca_eccc_output_spec_from_msc_filename)
     2
-
-    Returns
-    -------
-    object
-        Return value.
     """
     parsed = parse_msc_exchange_filename(source_filename)
     if parsed is None:
@@ -394,13 +422,16 @@ def build_ca_eccc_output_spec(
 
     Parameters
     ----------
-    product :
+    product : str
         API product enum (``METAR``, ``SPECI``, ``TAF``, ``AIRMET``, ``SIGMET``, ``VAA``).
-    parts :
+
+    parts : AhlParts | None, optional
         Optional parsed AHL parts for filename/header expansion.
-    issued_at :
+
+    issued_at : datetime | None, optional
         Optional issue time for filename/path expansion.
-    include_translation_centre :
+
+    include_translation_centre : bool, optional
         When ``True``, include configured translation centre ids (#1040).
 
     Returns
@@ -445,20 +476,20 @@ def profile_output_spec_to_dict(spec: ProfileOutputSpec) -> dict[str, str | None
     """
     Serialize ``ProfileOutputSpec`` for HTTP metadata (omit nulls).
 
+    Parameters
+    ----------
+    spec : ProfileOutputSpec
+        Exchange output spec.
+
+    Returns
+    -------
+    dict[str, str | None]
+        Serialized ``ProfileOutputSpec`` for HTTP metadata (omit nulls).
+
     Examples
     --------
     >>> 1 + 1  # docstring smoke (profile_output_spec_to_dict)
     2
-
-    Parameters
-    ----------
-    spec : object
-        Argument ``spec``.
-
-    Returns
-    -------
-    object
-        Return value.
     """
     raw = {
         "semantic_profile": spec.semantic_profile,

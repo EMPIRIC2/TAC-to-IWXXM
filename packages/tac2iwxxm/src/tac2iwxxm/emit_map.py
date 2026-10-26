@@ -30,8 +30,8 @@ class EmitMapError(ValueError):
 
     Attributes
     ----------
-    _ : object
-        See implementation.
+    args : tuple
+        Arguments passed to the exception constructor.
     """
 
 
@@ -42,8 +42,22 @@ class EmitMap:
 
     Attributes
     ----------
-    _ : object
-        See implementation.
+    id : str
+        ID.
+    profiles : tuple[str, ...]
+        Profiles.
+    products : tuple[str, ...]
+        Products.
+    iwxxm_versions : tuple[str, ...] | None
+        IWXXM versions.
+    kind : str
+        Kind.
+    plugin : str
+        Plugin.
+    source_path : str
+        Source path.
+    pass_product : bool
+        When ``True``, the plugin is called with ``product``. Default ``True``.
     """
 
     id: str
@@ -64,12 +78,13 @@ def _optional_string_list(value: object, *, label: str) -> tuple[str, ...] | Non
     ----------
     value : object
         Argument ``value``.
-    label : object
+
+    label : str
         Argument ``label``.
 
     Returns
     -------
-    object
+    tuple[str, ...] | None
         Return value.
     """
     if value is None:
@@ -94,12 +109,13 @@ def _require_string_list(value: object, *, label: str) -> tuple[str, ...]:
     ----------
     value : object
         Argument ``value``.
-    label : object
+
+    label : str
         Argument ``label``.
 
     Returns
     -------
-    object
+    tuple[str, ...]
         Return value.
     """
     got = _optional_string_list(value, label=label)
@@ -117,14 +133,16 @@ def _parse_emit_map(raw: object, *, source_path: str, partial: bool = False) -> 
     ----------
     raw : object
         Argument ``raw``.
-    source_path : object
+
+    source_path : str
         Argument ``source_path``.
-    partial : object
+
+    partial : bool, optional
         Argument ``partial``.
 
     Returns
     -------
-    object
+    EmitMap
         Return value.
     """
     if not isinstance(raw, dict):
@@ -181,12 +199,12 @@ def _resolve_python_plugin(ref: str) -> EmitFn:
 
     Parameters
     ----------
-    ref : object
+    ref : str
         Argument ``ref``.
 
     Returns
     -------
-    object
+    EmitFn
         Return value.
     """
     cached = _PLUGIN_CACHE.get(ref)
@@ -219,16 +237,18 @@ def _layer_overlay(raw: dict[str, object], mapped: EmitMap, catalog: dict[str, E
 
     Parameters
     ----------
-    raw : object
+    raw : dict[str, object]
         Argument ``raw``.
-    mapped : object
+
+    mapped : EmitMap
         Argument ``mapped``.
-    catalog : object
+
+    catalog : dict[str, EmitMap]
         Argument ``catalog``.
 
     Returns
     -------
-    object
+    EmitMap
         Return value.
     """
     extends = raw.get("extends")
@@ -261,15 +281,15 @@ def load_emit_map_catalog() -> dict[str, EmitMap]:
     """
     Load builtin emit maps plus optional ``TAC2IWXXM_EMIT_MAP_DIR`` overlays.
 
+    Returns
+    -------
+    dict[str, EmitMap]
+        Built-in emit maps, plus overlays from ``TAC2IWXXM_EMIT_MAP_DIR`` when that directory is set.
+
     Examples
     --------
     >>> 1 + 1  # docstring smoke (load_emit_map_catalog)
     2
-
-    Returns
-    -------
-    object
-        Return value.
     """
     overlay_key = os.environ.get(ENV_EMIT_MAP_DIR, "").strip()
     cached = _CATALOG_CACHE.get(overlay_key)
@@ -313,26 +333,29 @@ def resolve_emit_map(
     """
     Return the emit map matching profile x product x pin.
 
+    Parameters
+    ----------
+    profile : str
+        Semantic profile id.
+
+    product : str
+        Product name.
+
+    iwxxm_version : str
+        IWXXM release line.
+
+    catalog : dict[str, EmitMap] | None, optional
+        Catalog to search. ``None`` loads the default.
+
+    Returns
+    -------
+    EmitMap
+        The emit map matching profile x product x pin.
+
     Examples
     --------
     >>> 1 + 1  # docstring smoke (resolve_emit_map)
     2
-
-    Parameters
-    ----------
-    profile : object
-        Argument ``profile``.
-    product : object
-        Argument ``product``.
-    iwxxm_version : object
-        Argument ``iwxxm_version``.
-    catalog : object
-        Argument ``catalog``.
-
-    Returns
-    -------
-    object
-        Return value.
     """
     maps = catalog if catalog is not None else load_emit_map_catalog()
     product_u = product.upper()
@@ -366,24 +389,26 @@ def emit_plugin_sentinel(
     Used by TC-EVYRY-003 to prove a ``plugin:`` swap changes output. Not a
     product builder.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (emit_plugin_sentinel)
-    2
-
     Parameters
     ----------
     ir : dict
         Ignored.
+
     iwxxm_version : str
         Pin copied into the marker.
-    product : str
+
+    product : str, optional
         Product copied into the marker when the map sets ``pass_product``.
 
     Returns
     -------
     str
         Marker text that is not an IWXXM document.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (emit_plugin_sentinel)
+    2
     """
     del ir
     return f"sentinel:{product}:{iwxxm_version}"
@@ -400,28 +425,32 @@ def emit_with_map(
     """
     Resolve emit map and invoke its python plugin.
 
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Parsed product fields.
+
+    product : str
+        Product name.
+
+    profile : str
+        Semantic profile id.
+
+    iwxxm_version : str
+        IWXXM release line.
+
+    catalog : dict[str, EmitMap] | None, optional
+        Catalog to search. ``None`` loads the default.
+
+    Returns
+    -------
+    str
+        XML returned by the mapped plugin.
+
     Examples
     --------
     >>> 1 + 1  # docstring smoke (emit_with_map)
     2
-
-    Parameters
-    ----------
-    ir : object
-        Argument ``ir``.
-    product : object
-        Argument ``product``.
-    profile : object
-        Argument ``profile``.
-    iwxxm_version : object
-        Argument ``iwxxm_version``.
-    catalog : object
-        Argument ``catalog``.
-
-    Returns
-    -------
-    object
-        Return value.
     """
     mapped = resolve_emit_map(
         profile=profile,
@@ -452,15 +481,15 @@ def check_emit_map_overlay_dir(directory: Path | str) -> None:
     """
     Fail-closed load of emit-map YAML overlays in ``directory``.
 
+    Parameters
+    ----------
+    directory : Path | str
+        Directory of overlay files.
+
     Examples
     --------
     >>> 1 + 1  # docstring smoke (check_emit_map_overlay_dir)
     2
-
-    Parameters
-    ----------
-    directory : object
-        Argument ``directory``.
     """
     path = Path(directory)
     if not path.is_dir():

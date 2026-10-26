@@ -30,17 +30,17 @@ def validate(
 
     Parameters
     ----------
-    xml_content :
+    xml_content : str
         IWXXM XML document.
-    iwxxm_version :
+    iwxxm_version : str
         Release line (e.g. ``2023-1``).
-    profile :
+    profile : str, optional
         ``annex3`` (default), ``iwxxm_us`` (requires vendored US catalog), or
         ``ca_eccc`` (requires vendored ``iwxxm-ca`` pin; IWXXM version ``3.0.0``).
-    levels :
+    levels : Sequence[str] or None, optional
         Subset of ``xsd`` / ``schematron``. Default runs both.
-    product :
-        API product enum for Canadian extension XSD when ``profile=ca_eccc``.
+    product : str or None, optional
+        API product enum for Canadian extension XSD when ``profile=ca_eccc``. By default ``None``.
 
     Returns
     -------

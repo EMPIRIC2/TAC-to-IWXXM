@@ -10,10 +10,11 @@ from src.schemas.conversion import HealthResponse
 router = APIRouter(tags=["Health"])
 
 
-@router.get("/health", response_model=HealthResponse)
+@router.get("/health", response_model=HealthResponse, summary="API health")
 def health() -> HealthResponse:
     """
     Check API health and conversion availability.
+
 
     Examples
     --------

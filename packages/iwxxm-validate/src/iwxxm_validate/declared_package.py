@@ -36,7 +36,7 @@ def declared_release_line(xml_content: str) -> str | None:
 
     Parameters
     ----------
-    xml_content :
+    xml_content : str
         IWXXM XML document.
 
     Returns
@@ -64,11 +64,11 @@ def apply_declared_package(
 
     Parameters
     ----------
-    xml_content :
+    xml_content : str
         IWXXM XML document.
-    profile :
+    profile : str
         ``annex3``, ``iwxxm_us``, or ``ca_eccc``.
-    iwxxm_version :
+    iwxxm_version : str
         Release line requested by the caller.
 
     Returns

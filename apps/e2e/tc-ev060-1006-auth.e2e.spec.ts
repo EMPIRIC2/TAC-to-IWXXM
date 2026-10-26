@@ -10,6 +10,7 @@
  * login plus POST /auth/logout. [Corpus: tests]
  */
 import fs from 'node:fs';
+import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { expect, test, type Page } from '@playwright/test';
@@ -63,6 +64,23 @@ function readCiLogoutFixture(): CiLogoutFixture {
     throw new Error('Logout fixture password is not the non-production sentinel');
   }
   return { email: data.email, password: data.password };
+}
+
+function assignLogoutFixtureEnv(value: string | undefined): void {
+  if (value === undefined) {
+    delete process.env.E2E_LOGOUT_FIXTURE;
+    return;
+  }
+  process.env.E2E_LOGOUT_FIXTURE = value;
+}
+
+function unsetLogoutFixtureResult(): string {
+  assignLogoutFixtureEnv(undefined);
+  try {
+    return resolveLogoutFixtureFile();
+  } catch (error) {
+    return String(error);
+  }
 }
 
 async function signOutWithFixture(page: Page, fixture: CiLogoutFixture): Promise<void> {
@@ -135,6 +153,55 @@ async function signOutWithFixture(page: Page, fixture: CiLogoutFixture): Promise
 }
 
 test.describe('TC-EV060-1006 — Auth UAT Playwright', () => {
+  test('logout fixture uses E2E_LOGOUT_FIXTURE and rejects omitted email or password', () => {
+    const previous = process.env.E2E_LOGOUT_FIXTURE;
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'logout-fixture-'));
+    try {
+      const unsetFirst = unsetLogoutFixtureResult();
+      const unsetSecond = unsetLogoutFixtureResult();
+      assignLogoutFixtureEnv('apps/e2e/fixtures/ci-logout.json');
+      const relativePath = resolveLogoutFixtureFile();
+      assignLogoutFixtureEnv(DEFAULT_LOGOUT_FIXTURE);
+      const absolutePath = resolveLogoutFixtureFile();
+      expect(relativePath).toBe(absolutePath);
+      expect(
+        unsetFirst.endsWith('ci-logout.json') ||
+          unsetFirst.includes('E2E_LOGOUT_FIXTURE is unset'),
+      ).toBe(true);
+      expect(unsetSecond).toBe(unsetFirst);
+
+      const okPath = path.join(dir, 'ok.json');
+      fs.writeFileSync(
+        okPath,
+        JSON.stringify({
+          email: 'logout@example.invalid',
+          password: 'ci-logout-fixture',
+        }),
+      );
+      assignLogoutFixtureEnv(okPath);
+      expect(readCiLogoutFixture()).toEqual({
+        email: 'logout@example.invalid',
+        password: 'ci-logout-fixture',
+      });
+
+      const noEmailPath = path.join(dir, 'no-email.json');
+      fs.writeFileSync(noEmailPath, JSON.stringify({ password: 'ci-logout-fixture' }));
+      assignLogoutFixtureEnv(noEmailPath);
+      expect(() => readCiLogoutFixture()).toThrow(/example\.invalid/);
+
+      const noPasswordPath = path.join(dir, 'no-password.json');
+      fs.writeFileSync(
+        noPasswordPath,
+        JSON.stringify({ email: 'logout@example.invalid' }),
+      );
+      assignLogoutFixtureEnv(noPasswordPath);
+      expect(() => readCiLogoutFixture()).toThrow(/password/);
+    } finally {
+      assignLogoutFixtureEnv(previous);
+      fs.rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
   test('TC-EV060-1006-001: register happy path (stubbed, no production PII)', async ({
     page,
   }) => {

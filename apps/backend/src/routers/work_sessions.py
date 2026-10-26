@@ -118,6 +118,7 @@ def list_work_sessions(
     """
     List work sessions for the authenticated user with optional filters.
 
+
     Examples
     --------
     >>> 1 + 1  # docstring smoke (list_work_sessions)
@@ -168,6 +169,7 @@ def create_work_session(
     """
     Create a new work session owned by the authenticated user.
 
+
     Examples
     --------
     >>> 1 + 1  # docstring smoke (create_work_session)
@@ -198,6 +200,7 @@ def get_work_session(
     """
     Return a single work session by id.
 
+
     Examples
     --------
     >>> 1 + 1  # docstring smoke (get_work_session)
@@ -226,6 +229,7 @@ def update_work_session(
 ) -> WorkSession:
     """
     Update mutable fields on an existing work session.
+
 
     Examples
     --------
@@ -257,6 +261,7 @@ def delete_work_session(
     """
     Soft-delete a work session (sets ``deleted_at``).
 
+
     Examples
     --------
     >>> 1 + 1  # docstring smoke (delete_work_session)
@@ -284,6 +289,7 @@ def restore_work_session(
 ) -> WorkSession:
     """
     Restore a previously soft-deleted work session.
+
 
     Examples
     --------

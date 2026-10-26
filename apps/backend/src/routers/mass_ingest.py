@@ -73,7 +73,7 @@ def _result_payload(item: MassIngestFileResult) -> dict[str, Any]:
     }
 
 
-@router.post("/ingest/mass")
+@router.post("/ingest/mass", summary="Ingest files or a zip")
 @mass_ingest_limit(_limiter)
 async def mass_ingest(
     request: Request,
@@ -82,6 +82,7 @@ async def mass_ingest(
 ) -> JSONResponse:
     """
     Authenticated multi-file / zip ingest with caps, sniff, and zip-bomb guards.
+
 
     Parameters
     ----------
@@ -158,8 +159,9 @@ async def mass_ingest(
 @router.post(
     "/ingest-collect",
     tags=["Conversion"],
+    summary="COLLECT ingest",
     responses={
-        501: {"description": "COLLECT / FTBP ingest not implemented yet (placeholder)"},
+        501: {"description": "COLLECT member extraction is not available."},
     },
 )
 async def ingest_collect(
@@ -170,10 +172,10 @@ async def ingest_collect(
     iwxxm_version: str = Form(default="2025-2"),
 ) -> dict[str, Any]:
     """
-    Placeholder for IWXXM COLLECT / FTBP ingest.
+    Accept a COLLECT upload, including gzip text, and return HTTP 501.
 
-    Accepts uploads (including ``.gz`` via ``read_upload_files_text``) so the operator UI
-    can exercise the path; returns HTTP 501 until member extraction + validate is shipped.
+    Member extraction is not available.
+
 
     Examples
     --------

@@ -18,15 +18,15 @@ class IssueSpec(msgspec.Struct, frozen=True):
 
     Parameters
     ----------
-    code :
+    code : str
         Stable SCREAMING_SNAKE public id.
-    severity :
+    severity : str
         Default ``error``, ``warning``, or ``info``.
-    message_template :
+    message_template : str
         Human message; may include ``str.format`` placeholders (e.g. ``{product}``).
-    product :
+    product : str or None
         Optional product tag for catalog filtering (``None`` = shared / multi-product).
-    tags :
+    tags : tuple[str, ...]
         Optional catalog / FE tags (not part of the public code string).
     """
 
@@ -909,10 +909,10 @@ def catalog_entries(*, product: str | None = None) -> tuple[IssueSpec, ...]:
 
     Parameters
     ----------
-    product :
+    product : str or None, optional
         Optional product filter (case-insensitive). When set, include rows whose
         ``product`` field matches or whose ``tags`` contain that product id
-        (e.g. ``metar``, ``speci``). When omitted, return the full registry.
+        (e.g. ``metar``, ``speci``). When omitted, return the full registry. By default ``None``.
 
     Returns
     -------
@@ -943,7 +943,7 @@ def by_code(code: str) -> IssueSpec:
 
     Parameters
     ----------
-    code :
+    code : str
         Public issue code.
 
     Returns
@@ -981,16 +981,20 @@ def issue_from(
 
     Parameters
     ----------
-    code :
+    code : str
         Registered public code.
-    message :
-        Optional full message override (skips template formatting).
-    location :
+    message : str or None, optional
+        Optional full message override (skips template formatting). By default ``None``.
+    location : str or None, optional
         Optional token / field hint.
-    start, end :
-        Optional character offsets into the TAC string.
-    **kwargs :
+        start, end :
+        Optional character offsets into the TAC string. By default ``None``.
+    **kwargs : object
         Passed to ``message_template.format`` when ``message`` is omitted.
+    start : int or None, optional
+        Start. By default ``None``.
+    end : int or None, optional
+        End. By default ``None``.
 
     Returns
     -------

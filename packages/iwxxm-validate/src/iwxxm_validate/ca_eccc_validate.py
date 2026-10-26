@@ -486,15 +486,15 @@ def validate_ca_eccc_layered(
 
     Parameters
     ----------
-    xml_content :
+    xml_content : str
         IWXXM XML document.
-    iwxxm_version :
-        Profile-pinned release line (must be ``3.0.0``).
-    product :
-        API product enum for layer 4 product XSD selection (``METAR``, ``TAF``, …).
-    levels :
+    iwxxm_version : str, optional
+        Profile-pinned release line (must be ``3.0.0``). By default ``CA_ECCC_IWXXM_VERSION``.
+    product : str or None, optional
+        API product enum for layer 4 product XSD selection (``METAR``, ``TAF``, …). By default ``None``.
+    levels : Sequence[str] or None, optional
         Legacy subset of ``xsd`` / ``schematron``. ``xsd`` runs well-formed + XSD stages;
-        ``schematron`` runs WMO Schematron.
+        ``schematron`` runs WMO Schematron. By default ``None``.
 
     Returns
     -------
@@ -547,10 +547,10 @@ def validate_ca_eccc_layered(
 
         Parameters
         ----------
-        stage_id : object
-            Argument ``stage_id``.
-        issues : object
-            Argument ``issues``.
+        stage_id : str
+            Stage ID.
+        issues : list[Issue]
+            Issues.
         """
         stages.append(_stage_result(stage_id, issues))
         all_issues.extend(issues)

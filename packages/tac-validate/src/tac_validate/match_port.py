@@ -21,8 +21,10 @@ class DecodeMatch:
 
     Attributes
     ----------
-    _ : object
-        See implementation.
+    start : int
+        Start.
+    end : int
+        End.
     """
 
     start: int
@@ -43,8 +45,8 @@ class MatchPort(Protocol):
 
         Returns
         -------
-        object
-            Return value.
+        Sequence[DecodeMatch]
+            Decode spans for the current report. Empty means none were found.
         """
         ...
 
@@ -66,13 +68,13 @@ def spans_from_port(port: MatchPort | Sequence[DecodeMatch] | None) -> tuple[Dec
 
     Parameters
     ----------
-    port : object
-        Argument ``port``.
+    port : MatchPort or Sequence[DecodeMatch] or None
+        Destination port.
 
     Returns
     -------
-    object
-        Return value.
+    tuple[DecodeMatch, ...] or None
+        Normalize a port, a span sequence, or omission (``None``).
     """
     if port is None:
         return None

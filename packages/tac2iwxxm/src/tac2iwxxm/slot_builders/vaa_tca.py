@@ -92,12 +92,12 @@ def _fields(text: str) -> dict[str, str]:
 
     Parameters
     ----------
-    text : object
+    text : str
         Argument ``text``.
 
     Returns
     -------
-    object
+    dict[str, str]
         Return value.
     """
     out: dict[str, str] = {}
@@ -125,12 +125,12 @@ def _parse_dtg(token: str) -> str | None:
 
     Parameters
     ----------
-    token : object
+    token : str
         Argument ``token``.
 
     Returns
     -------
-    object
+    str | None
         Return value.
     """
     token = token.strip()
@@ -146,14 +146,15 @@ def _day_hhmm_to_iso(token: str, *, issue_iso: str) -> str | None:
 
     Parameters
     ----------
-    token : object
+    token : str
         Argument ``token``.
-    issue_iso : object
+
+    issue_iso : str
         Argument ``issue_iso``.
 
     Returns
     -------
-    object
+    str | None
         Return value.
     """
     m = _DAY_HHMM.search(token.replace(" ", ""))
@@ -170,14 +171,15 @@ def _latlon(token: str, *, ndigits: int | None = 2) -> tuple[float, float] | Non
 
     Parameters
     ----------
-    token : object
+    token : str
         Argument ``token``.
-    ndigits : object
+
+    ndigits : int | None, optional
         Argument ``ndigits``.
 
     Returns
     -------
-    object
+    tuple[float, float] | None
         Return value.
     """
     m = _PSN.search(token)
@@ -210,18 +212,21 @@ def _point_to_pair(ns: str, lat: str, ew: str, lon: str) -> tuple[float, float]:
 
     Parameters
     ----------
-    ns : object
+    ns : str
         Argument ``ns``.
-    lat : object
+
+    lat : str
         Argument ``lat``.
-    ew : object
+
+    ew : str
         Argument ``ew``.
-    lon : object
+
+    lon : str
         Argument ``lon``.
 
     Returns
     -------
-    object
+    tuple[float, float]
         Return value.
     """
     lat_f = int(lat[0:2]) + int(lat[2:4]) / 60.0
@@ -239,12 +244,12 @@ def _pos_list(points: list[tuple[float, float]]) -> str:
 
     Parameters
     ----------
-    points : object
+    points : list[tuple[float, float]]
         Argument ``points``.
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     if not points:
@@ -261,12 +266,12 @@ def _parse_ash_clouds(blob: str) -> list[dict[str, Any]]:
 
     Parameters
     ----------
-    blob : object
+    blob : str
         Argument ``blob``.
 
     Returns
     -------
-    object
+    list[dict[str, Any]]
         Return value.
     """
     upper = " ".join(blob.split())
@@ -307,12 +312,12 @@ def _parse_eruption(details: str) -> tuple[str | None, str]:
 
     Parameters
     ----------
-    details : object
+    details : str
         Argument ``details``.
 
     Returns
     -------
-    object
+    tuple[str | None, str]
         Return value.
     """
     text = " ".join(details.split())
@@ -328,20 +333,21 @@ def parse_vaa(tac: str, *, product: str = "VAA") -> dict[str, Any]:
 
     Parameters
     ----------
-    tac :
+    tac : str
         VAA TAC text.
-    product :
+
+    product : str, optional
         Expected ``VAA``.
+
+    Returns
+    -------
+    dict[str, Any]
+        A Volcanic Ash Advisory TAC into IR.
 
     Examples
     --------
     >>> 1 + 1  # docstring smoke (parse_vaa)
     2
-
-    Returns
-    -------
-    object
-        Return value.
     """
     if product.upper() != "VAA":
         raise ValueError(f"product mismatch: expected VAA, found {product}")
@@ -434,20 +440,21 @@ def parse_tca(tac: str, *, product: str = "TCA") -> dict[str, Any]:
 
     Parameters
     ----------
-    tac :
+    tac : str
         TCA TAC text.
-    product :
+
+    product : str, optional
         Expected ``TCA``.
+
+    Returns
+    -------
+    dict[str, Any]
+        A Tropical Cyclone Advisory TAC into IR.
 
     Examples
     --------
     >>> 1 + 1  # docstring smoke (parse_tca)
     2
-
-    Returns
-    -------
-    object
-        Return value.
     """
     if product.upper() != "TCA":
         raise ValueError(f"product mismatch: expected TCA, found {product}")

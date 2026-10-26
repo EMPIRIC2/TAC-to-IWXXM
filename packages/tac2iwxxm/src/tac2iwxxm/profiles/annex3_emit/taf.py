@@ -17,12 +17,12 @@ def _taf_time_prefix(ir: dict[str, Any], day: int | None = None) -> str:
 
     Parameters
     ----------
-    ir : object
+    ir : dict[str, Any]
         Argument ``ir``.
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     # ruff: noqa: F403, F405
@@ -43,12 +43,12 @@ def _taf_issue_stamp(ir: dict[str, Any]) -> str:
 
     Parameters
     ----------
-    ir : object
+    ir : dict[str, Any]
         Argument ``ir``.
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     prefix = _taf_time_prefix(ir, int(ir["issue_day"]))
@@ -61,14 +61,15 @@ def _taf_period(ir: dict[str, Any], *, from_key: str = "valid") -> tuple[str, st
 
     Parameters
     ----------
-    ir : object
+    ir : dict[str, Any]
         Argument ``ir``.
-    from_key : object
+
+    from_key : str, optional
         Argument ``from_key``.
 
     Returns
     -------
-    object
+    tuple[str, str]
         Return value.
     """
     begin_prefix = _taf_time_prefix(ir, int(ir[f"{from_key}_from_day"]))
@@ -84,14 +85,15 @@ def _taf_aerodrome_block(station: str, *, include_arp: bool) -> str:
 
     Parameters
     ----------
-    station : object
+    station : str
         Argument ``station``.
-    include_arp : object
+
+    include_arp : bool
         Argument ``include_arp``.
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     name = ""
@@ -133,7 +135,7 @@ def _fmt_taf_speed(value: object) -> str:
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     fval = float(str(value))
@@ -149,12 +151,12 @@ def _taf_wind_block(fcst: dict[str, Any]) -> str:
 
     Parameters
     ----------
-    fcst : object
+    fcst : dict[str, Any]
         Argument ``fcst``.
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     if fcst.get("wind_speed_mps") is None and fcst.get("wind_speed_kt") is None:
@@ -190,14 +192,15 @@ def _taf_cloud_block(fcst: dict[str, Any], *, gml_id: str) -> str:
 
     Parameters
     ----------
-    fcst : object
+    fcst : dict[str, Any]
         Argument ``fcst``.
-    gml_id : object
+
+    gml_id : str
         Argument ``gml_id``.
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     clouds_raw = fcst.get("clouds")
@@ -244,12 +247,12 @@ def _taf_weather_block(fcst: dict[str, Any]) -> str:
 
     Parameters
     ----------
-    fcst : object
+    fcst : dict[str, Any]
         Argument ``fcst``.
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     codes = fcst.get("weather")
@@ -268,14 +271,15 @@ def _taf_change_forecasts(ir: dict[str, Any], station: str) -> str:
 
     Parameters
     ----------
-    ir : object
+    ir : dict[str, Any]
         Argument ``ir``.
-    station : object
+
+    station : str
         Argument ``station``.
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     changes_raw = ir.get("change_forecasts")
@@ -317,12 +321,12 @@ def _taf_visibility_block(fcst: dict[str, Any]) -> str:
 
     Parameters
     ----------
-    fcst : object
+    fcst : dict[str, Any]
         Argument ``fcst``.
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     display_uom = fcst.get("visibility_display_uom")
@@ -348,24 +352,26 @@ def emit_taf_annex3(
     """
     Emit a minimal IWXXM TAF document for the annex3 profile.
 
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Parsed product fields.
+
+    iwxxm_version : str
+        IWXXM release line.
+
+    forecast_extension : str, optional
+        Forecast extension XML.
+
+    Returns
+    -------
+    str
+        A minimal IWXXM TAF document for the annex3 profile.
+
     Examples
     --------
     >>> 1 + 1  # docstring smoke (emit_taf_annex3)
     2
-
-    Parameters
-    ----------
-    ir : object
-        Argument ``ir``.
-    iwxxm_version : object
-        Argument ``iwxxm_version``.
-    forecast_extension : object
-        Argument ``forecast_extension``.
-
-    Returns
-    -------
-    object
-        Return value.
     """
     ns = _ns(iwxxm_version)
     station = str(ir["station"])

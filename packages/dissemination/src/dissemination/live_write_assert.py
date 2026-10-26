@@ -31,10 +31,10 @@ async def count_iwxxm_rows(
 
     Parameters
     ----------
-    engine :
+    engine : AsyncEngine
         Async SQLAlchemy engine pointed at the destination DB.
-    upload_key :
-        When set, count only rows with this ``upload_key``.
+    upload_key : str or None, optional
+        When set, count only rows with this ``upload_key``. By default ``None``.
 
     Returns
     -------
@@ -69,13 +69,13 @@ async def assert_live_write(
 
     Parameters
     ----------
-    sink_type :
+    sink_type : str
         ``postgres`` / ``mysql`` / ``sqlserver`` / ``sqlite``.
-    uri :
+    uri : str
         Destination URI (sync or async driver prefix accepted).
-    upload_key :
-        Optional ``kv_upload_key`` from the send response.
-    min_rows :
+    upload_key : str or None, optional
+        Optional ``kv_upload_key`` from the send response. By default ``None``.
+    min_rows : int, optional
         Minimum expected row count (default 1).
 
     Returns
@@ -143,13 +143,13 @@ def main(argv: list[str] | None = None) -> int:
 
     Parameters
     ----------
-    argv : object
-        Argument ``argv``.
+    argv : list[str] or None, optional
+        Command-line arguments. By default ``None``.
 
     Returns
     -------
-    object
-        Return value.
+    int
+        CLI entry - exit 0 on success, 1 on assertion failure, 2 on usage/error.
     """
     args = _build_parser().parse_args(argv)
     try:

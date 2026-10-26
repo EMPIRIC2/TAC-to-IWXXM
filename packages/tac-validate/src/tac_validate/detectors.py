@@ -45,8 +45,8 @@ class DetectorError(ValueError):
 
     Attributes
     ----------
-    _ : object
-        See implementation.
+    args : tuple
+        Arguments passed to the exception constructor.
     """
 
 
@@ -57,8 +57,14 @@ class PreprocessSpec:
 
     Attributes
     ----------
-    _ : object
-        See implementation.
+    before : str or None, optional
+        When this marker is found, keep only the text before it. By default ``None``.
+    after : str or None, optional
+        When this marker is found, keep only the text after it. By default ``None``.
+    exclude_ahl_lines : bool, optional
+        Drop lines that match an AHL heading. By default ``False``.
+    strip_terminator : bool, optional
+        Drop a trailing ``=``. By default ``True``.
     """
 
     before: str | None = None
@@ -74,8 +80,16 @@ class EmitSpec:
 
     Attributes
     ----------
-    _ : object
-        See implementation.
+    code : str
+        Code.
+    location : str or None
+        Location.
+    message_template : str
+        Message template.
+    capture_group : int, optional
+        Capture group. By default ``0``.
+    span : Literal['match', 'body'], optional
+        Span. By default ``'match'``.
     """
 
     code: str
@@ -92,8 +106,34 @@ class DetectorRule:
 
     Attributes
     ----------
-    _ : object
-        See implementation.
+    id : str
+        ID.
+    kind : DetectorKind
+        ``finditer``, ``require_search``, ``python``, or ``token_scan``.
+    preprocess : PreprocessSpec
+        Preprocess.
+    pattern : str or None
+        Pattern.
+    flags : int
+        Flags.
+    skip_if_codes : tuple[str, ...]
+        Skip if codes.
+    on_match : EmitSpec or None
+        On match.
+    on_fail : EmitSpec or None
+        On fail.
+    python_ref : str or None
+        Python ref.
+    skip_if_match : str or None, optional
+        Skip if match. By default ``None``.
+    select_pattern : str or None, optional
+        Select pattern. By default ``None``.
+    ok_pattern : str or None, optional
+        OK pattern. By default ``None``.
+    on_ok : EmitSpec or None, optional
+        On OK. By default ``None``.
+    max_emits : int or None, optional
+        Max emits. By default ``None``.
     """
 
     id: str
@@ -119,8 +159,16 @@ class DetectorPack:
 
     Attributes
     ----------
-    _ : object
-        See implementation.
+    id : str
+        ID.
+    stage : DetectorStage
+        Stage.
+    products : frozenset[str]
+        Products.
+    rules : tuple[DetectorRule, ...]
+        Rules.
+    source_path : str or None, optional
+        Source path. By default ``None``.
     """
 
     id: str
@@ -137,8 +185,12 @@ class ShadowCompareResult:
 
     Attributes
     ----------
-    _ : object
-        See implementation.
+    matched : bool
+        Matched.
+    legacy_keys : frozenset[tuple[str, int or None, int or None]]
+        Legacy keys.
+    detector_keys : frozenset[tuple[str, int or None, int or None]]
+        Detector keys.
     """
 
     matched: bool
@@ -456,13 +508,13 @@ def load_detector_pack(path: Path | str) -> DetectorPack:
 
     Parameters
     ----------
-    path : object
-        Argument ``path``.
+    path : Path or str
+        Path.
 
     Returns
     -------
-    object
-        Return value.
+    DetectorPack
+        Load one detector pack YAML file.
     """
     file_path = Path(path)
     raw = yaml.safe_load(file_path.read_text(encoding="utf-8"))
@@ -626,13 +678,13 @@ def load_detector_catalog(profile: str | None = None) -> dict[str, DetectorPack]
 
     Parameters
     ----------
-    profile : object
-        Argument ``profile``.
+    profile : str or None, optional
+        Profile id. By default ``None``.
 
     Returns
     -------
-    object
-        Return value.
+    dict[str, DetectorPack]
+        Load builtin detector packs plus optional ``TAC_VALIDATE_DETECTOR_DIR``.
     """
     catalog: dict[str, DetectorPack] = {}
     root = resources.files("tac_validate").joinpath("data", "detectors")
@@ -667,8 +719,8 @@ def detector_mode() -> Literal["legacy", "shadow", "detector"]:
 
     Returns
     -------
-    object
-        Return value.
+    Literal['legacy', 'shadow', 'detector']
+        Effective detector mode (default ``detector`` after R2 flip).
     """
     raw = os.environ.get(ENV_DETECTOR_MODE, "detector").strip().lower()
     if raw == "legacy":
@@ -843,14 +895,14 @@ def run_detector_pack(
 
     Parameters
     ----------
-    pack :
+    pack : DetectorPack
         Loaded detector pack.
-    tac_text :
+    tac_text : str
         Raw TAC.
-    product :
+    product : str
         Product id (METAR / SPECI / …).
-    budget :
-        Max regex match steps across finditer rules; fail closed when exceeded.
+    budget : int, optional
+        Max regex match steps across finditer rules; fail closed when exceeded. By default ``DEFAULT_LINT_BUDGET``.
 
     Examples
     --------
@@ -859,8 +911,8 @@ def run_detector_pack(
 
     Returns
     -------
-    object
-        Return value.
+    list[Issue]
+        Run all rules in ``pack`` for ``product``.
     """
     product_u = product.upper()
     if product_u not in pack.products:
@@ -971,13 +1023,13 @@ def issue_keys(issues: Sequence[Issue]) -> frozenset[tuple[str, int | None, int 
 
     Parameters
     ----------
-    issues : object
-        Argument ``issues``.
+    issues : Sequence[Issue]
+        Issues.
 
     Returns
     -------
-    object
-        Return value.
+    frozenset[tuple[str, int or None, int or None]]
+        Shadow-compare keys: code + span.
     """
     return frozenset((i.code, i.start, i.end) for i in issues)
 
@@ -998,17 +1050,17 @@ def compare_shadow(
 
     Parameters
     ----------
-    legacy : object
-        Argument ``legacy``.
-    detector : object
-        Argument ``detector``.
-    codes : object
-        Argument ``codes``.
+    legacy : Sequence[Issue]
+        Legacy.
+    detector : Sequence[Issue]
+        Detector.
+    codes : frozenset[str]
+        Codes.
 
     Returns
     -------
-    object
-        Return value.
+    ShadowCompareResult
+        Compare legacy vs detector issues filtered to ``codes``.
     """
     leg = issue_keys([i for i in legacy if i.code in codes])
     det = issue_keys([i for i in detector if i.code in codes])
@@ -1026,15 +1078,15 @@ def run_r2_visibility_detectors(tac_text: str, product: str) -> list[Issue]:
 
     Parameters
     ----------
-    tac_text : object
-        Argument ``tac_text``.
-    product : object
-        Argument ``product``.
+    tac_text : str
+        TAC text.
+    product : str
+        Product id.
 
     Returns
     -------
-    object
-        Return value.
+    list[Issue]
+        Convenience: run builtin R2 visibility pack.
     """
     return run_theme_pack("metar-speci-r2-visibility", tac_text, product)
 
@@ -1062,17 +1114,17 @@ def run_theme_pack(pack_id: str, tac_text: str, product: str) -> list[Issue]:
 
     Parameters
     ----------
-    pack_id : object
-        Argument ``pack_id``.
-    tac_text : object
-        Argument ``tac_text``.
-    product : object
-        Argument ``product``.
+    pack_id : str
+        Pack ID.
+    tac_text : str
+        TAC text.
+    product : str
+        Product id.
 
     Returns
     -------
-    object
-        Return value.
+    list[Issue]
+        Run one builtin/overlay detector pack by id (empty if missing or product mismatch).
     """
     spans = match_port_spans.get()
     strict = (
@@ -1124,15 +1176,15 @@ def example_python_hatch(tac_text: str, product: str) -> list[Issue]:
 
     Parameters
     ----------
-    tac_text : object
-        Argument ``tac_text``.
-    product : object
-        Argument ``product``.
+    tac_text : str
+        TAC text.
+    product : str
+        Product id.
 
     Returns
     -------
-    object
-        Return value.
+    list[Issue]
+        No-op python hatch used by unit tests.
     """
     _ = (tac_text, product)
     return []
@@ -1149,15 +1201,15 @@ def example_python_hatch_emit(tac_text: str, product: str) -> list[Issue]:
 
     Parameters
     ----------
-    tac_text : object
-        Argument ``tac_text``.
-    product : object
-        Argument ``product``.
+    tac_text : str
+        TAC text.
+    product : str
+        Product id.
 
     Returns
     -------
-    object
-        Return value.
+    list[Issue]
+        Python hatch that emits INVALID_VISIBILITY for skip_if / emitted_codes coverage.
     """
     _ = tac_text
     return [

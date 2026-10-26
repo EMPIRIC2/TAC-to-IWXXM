@@ -387,12 +387,12 @@ def _signed_temp(raw: str) -> int:
 
     Parameters
     ----------
-    raw : object
+    raw : str
         Argument ``raw``.
 
     Returns
     -------
-    object
+    int
         Return value.
     """
     return -int(raw[1:]) if raw.startswith("M") else int(raw)
@@ -421,14 +421,15 @@ def _fmt_wind(m: re.Match[str], *, label: str) -> str:
 
     Parameters
     ----------
-    m : object
+    m : re.Match[str]
         Argument ``m``.
-    label : object
+
+    label : str
         Argument ``label``.
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     direction = m.group("dir")
@@ -448,14 +449,15 @@ def _fmt_time(m: re.Match[str], *, label: str) -> str:
 
     Parameters
     ----------
-    m : object
+    m : re.Match[str]
         Argument ``m``.
-    label : object
+
+    label : str
         Argument ``label``.
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     return f"{label} on day {int(m.group('dd'))} at {m.group('hh')}:{m.group('mm')} UTC"
@@ -467,14 +469,15 @@ def _fmt_vis_sm(m: re.Match[str], *, label: str) -> str:
 
     Parameters
     ----------
-    m : object
+    m : re.Match[str]
         Argument ``m``.
-    label : object
+
+    label : str
         Argument ``label``.
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     value = int(m.group("val"))
@@ -489,14 +492,15 @@ def _fmt_cloud(m: re.Match[str], *, forecast: bool) -> str:
 
     Parameters
     ----------
-    m : object
+    m : re.Match[str]
         Argument ``m``.
-    forecast : object
+
+    forecast : bool
         Argument ``forecast``.
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     amount = _CLOUD_AMOUNT[m.group("amt")]
@@ -518,14 +522,15 @@ def _fmt_wx(m: re.Match[str], *, forecast: bool) -> str:
 
     Parameters
     ----------
-    m : object
+    m : re.Match[str]
         Argument ``m``.
-    forecast : object
+
+    forecast : bool
         Argument ``forecast``.
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     parts: list[str] = []
@@ -550,8 +555,14 @@ class DecodeSegment(msgspec.Struct, frozen=True):
 
     Attributes
     ----------
-    _ : object
-        See implementation.
+    start : int
+        Start.
+    end : int
+        End.
+    code : str
+        Machine-readable error code.
+    explanation : str
+        Explanation.
     """
 
     start: int
@@ -566,8 +577,12 @@ class DecodeResidual(msgspec.Struct, frozen=True):
 
     Attributes
     ----------
-    _ : object
-        See implementation.
+    start : int
+        Start.
+    end : int
+        End.
+    text : str
+        Input text.
     """
 
     start: int
@@ -581,8 +596,14 @@ class DecodeResult(msgspec.Struct, frozen=True):
 
     Attributes
     ----------
-    _ : object
-        See implementation.
+    product : str
+        Product name.
+    segments : list[DecodeSegment]
+        Segments.
+    residuals : list[DecodeResidual]
+        Residuals.
+    summary : str
+        Summary. Default ``''``.
     """
 
     product: str
@@ -597,12 +618,12 @@ def _iter_tokens(tac: str) -> list[tuple[int, int, str]]:
 
     Parameters
     ----------
-    tac : object
+    tac : str
         Argument ``tac``.
 
     Returns
     -------
-    object
+    list[tuple[int, int, str]]
         Return value.
     """
     return [(m.start(), m.end(), m.group(0)) for m in re.finditer(r"=|[^\s=]+", tac)]
@@ -1107,16 +1128,18 @@ def _explain_metar_speci(token: str, *, product: str, seen: dict[str, int]) -> s
 
     Parameters
     ----------
-    token : object
+    token : str
         Argument ``token``.
-    product : object
+
+    product : str
         Argument ``product``.
-    seen : object
+
+    seen : dict[str, int]
         Argument ``seen``.
 
     Returns
     -------
-    object
+    str | None
         Return value.
     """
     upper = token.upper()
@@ -1309,14 +1332,15 @@ def _explain_taf(token: str, *, seen: dict[str, int]) -> str | None:
 
     Parameters
     ----------
-    token : object
+    token : str
         Argument ``token``.
-    seen : object
+
+    seen : dict[str, int]
         Argument ``seen``.
 
     Returns
     -------
-    object
+    str | None
         Return value.
     """
     upper = token.upper()
@@ -1379,16 +1403,18 @@ def _explain_sigmet_airmet(token: str, *, product: str, seen: dict[str, int]) ->
 
     Parameters
     ----------
-    token : object
+    token : str
         Argument ``token``.
-    product : object
+
+    product : str
         Argument ``product``.
-    seen : object
+
+    seen : dict[str, int]
         Argument ``seen``.
 
     Returns
     -------
-    object
+    str | None
         Return value.
     """
     upper = token.upper().rstrip(".")
@@ -1632,16 +1658,18 @@ def _explain_advisory(token: str, *, product: str, seen: dict[str, int]) -> str 
 
     Parameters
     ----------
-    token : object
+    token : str
         Argument ``token``.
-    product : object
+
+    product : str
         Argument ``product``.
-    seen : object
+
+    seen : dict[str, int]
         Argument ``seen``.
 
     Returns
     -------
-    object
+    str | None
         Return value.
     """
     upper = token.upper().rstrip(":")
@@ -1760,12 +1788,12 @@ def _advisory_field_finder(product: str) -> list[tuple[re.Pattern[str], str]]:
 
     Parameters
     ----------
-    product : object
+    product : str
         Argument ``product``.
 
     Returns
     -------
-    object
+    list[tuple[re.Pattern[str], str]]
         Return value.
     """
     specs = _FIELD_SPECS_BY_PRODUCT.get(product)
@@ -1780,16 +1808,18 @@ def _advisory_field_title(label: str, title_template: str, match: re.Match[str])
 
     Parameters
     ----------
-    label : object
+    label : str
         Argument ``label``.
-    title_template : object
+
+    title_template : str
         Argument ``title_template``.
-    match : object
+
+    match : re.Match[str]
         Argument ``match``.
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     hours = match.groupdict().get("hours")
@@ -1810,12 +1840,12 @@ def _iter_ahl_heading(tac: str) -> list[tuple[int, int, str, str]]:
 
     Parameters
     ----------
-    tac : object
+    tac : str
         Argument ``tac``.
 
     Returns
     -------
-    object
+    list[tuple[int, int, str, str]]
         Return value.
     """
     m = _AHL_LINE.match(tac.lstrip("\ufeff"))
@@ -1840,14 +1870,15 @@ def _iter_advisory_ahl(tac: str, *, product: str) -> list[tuple[int, int, str, s
 
     Parameters
     ----------
-    tac : object
+    tac : str
         Argument ``tac``.
-    product : object
+
+    product : str
         Argument ``product``.
 
     Returns
     -------
-    object
+    list[tuple[int, int, str, str]]
         Return value.
     """
     if product not in _ADVISORY_STRUCTURED:
@@ -2085,14 +2116,15 @@ def _iter_advisory_fields(
 
     Parameters
     ----------
-    tac : object
+    tac : str
         Argument ``tac``.
-    product : object
+
+    product : str
         Argument ``product``.
 
     Returns
     -------
-    object
+    list[tuple[int, int, str, str, int]]
         Return value.
     """
     if product not in _ADVISORY_STRUCTURED:
@@ -2145,14 +2177,15 @@ def _token_indices_covering(
 
     Parameters
     ----------
-    tokens : object
+    tokens : list[tuple[int, int, str]]
         Argument ``tokens``.
-    spans : object
+
+    spans : list[tuple[int, int]]
         Argument ``spans``.
 
     Returns
     -------
-    object
+    set[int]
         Return value.
     """
     covered: set[int] = set()
@@ -2172,12 +2205,12 @@ def _classify(
 
     Parameters
     ----------
-    product : object
+    product : str
         Argument ``product``.
 
     Returns
     -------
-    object
+    Callable[[str, dict[str, int]], str | None]
         Return value.
     """
     if product in {"METAR", "SPECI"}:
@@ -2188,14 +2221,15 @@ def _classify(
 
             Parameters
             ----------
-            tok : object
+            tok : str
                 Argument ``tok``.
-            seen : object
+
+            seen : dict[str, int]
                 Argument ``seen``.
 
             Returns
             -------
-            object
+            str | None
                 Return value.
             """
             return _explain_metar_speci(tok, product=product, seen=seen)
@@ -2209,14 +2243,15 @@ def _classify(
 
             Parameters
             ----------
-            tok : object
+            tok : str
                 Argument ``tok``.
-            seen : object
+
+            seen : dict[str, int]
                 Argument ``seen``.
 
             Returns
             -------
-            object
+            str | None
                 Return value.
             """
             return _explain_taf(tok, seen=seen)
@@ -2230,14 +2265,15 @@ def _classify(
 
             Parameters
             ----------
-            tok : object
+            tok : str
                 Argument ``tok``.
-            seen : object
+
+            seen : dict[str, int]
                 Argument ``seen``.
 
             Returns
             -------
-            object
+            str | None
                 Return value.
             """
             return _explain_sigmet_airmet(tok, product=product, seen=seen)
@@ -2251,14 +2287,15 @@ def _classify(
 
             Parameters
             ----------
-            tok : object
+            tok : str
                 Argument ``tok``.
-            seen : object
+
+            seen : dict[str, int]
                 Argument ``seen``.
 
             Returns
             -------
-            object
+            str | None
                 Return value.
             """
             return _explain_advisory(tok, product=product, seen=seen)
@@ -2271,14 +2308,15 @@ def _classify(
 
         Parameters
         ----------
-        _tok : object
+        _tok : str
             Argument ``_tok``.
-        _seen : object
+
+        _seen : dict[str, int]
             Argument ``_seen``.
 
         Returns
         -------
-        object
+        str | None
             Return value.
         """
         return None
@@ -2296,16 +2334,18 @@ def _coalesce_residuals(
 
     Parameters
     ----------
-    tokens : object
+    tokens : list[tuple[int, int, str]]
         Argument ``tokens``.
-    explained : object
+
+    explained : set[int]
         Argument ``explained``.
-    tac : object
+
+    tac : str
         Argument ``tac``.
 
     Returns
     -------
-    object
+    list[DecodeResidual]
         Return value.
     """
     residuals: list[DecodeResidual] = []
@@ -2335,12 +2375,12 @@ def _sentence_from_segment(seg: DecodeSegment) -> str | None:
 
     Parameters
     ----------
-    seg : object
+    seg : DecodeSegment
         Argument ``seg``.
 
     Returns
     -------
-    object
+    str | None
         Return value.
     """
     if seg.code == "=" or seg.explanation.lower().startswith("report terminator"):
@@ -2378,11 +2418,13 @@ def _build_summary(
 
     Parameters
     ----------
-    product :
+    product : str
         Uppercase product id.
-    segments :
+
+    segments : list[DecodeSegment]
         Value-aware decode segments.
-    residuals :
+
+    residuals : list[DecodeResidual]
         Undecoded spans; named in a trailing "Not decoded: …" clause.
 
     Returns
@@ -2422,12 +2464,12 @@ def _looks_like_ahl_bulletin(text: str) -> bool:
 
     Parameters
     ----------
-    text : object
+    text : str
         Argument ``text``.
 
     Returns
     -------
-    object
+    bool
         Return value.
     """
     for line in text.splitlines():
@@ -2444,14 +2486,15 @@ def _shift_decode(result: DecodeResult, offset: int) -> DecodeResult:
 
     Parameters
     ----------
-    result : object
+    result : DecodeResult
         Argument ``result``.
-    offset : object
+
+    offset : int
         Argument ``offset``.
 
     Returns
     -------
-    object
+    DecodeResult
         Return value.
     """
     return DecodeResult(
@@ -2499,15 +2542,15 @@ def set_bulletin_splitter(splitter: Callable[[str, str], object] | None) -> None
     """
     Inject WMO bulletin splitting. Unset means bulletins are not split.
 
+    Parameters
+    ----------
+    splitter : Callable[[str, str], object] | None
+        Callable that splits a bulletin into TAC reports.
+
     Examples
     --------
     >>> 1 + 1  # docstring smoke (set_bulletin_splitter)
     2
-
-    Parameters
-    ----------
-    splitter : object
-        Argument ``splitter``.
     """
     global _bulletin_splitter
     _bulletin_splitter = splitter
@@ -2519,14 +2562,15 @@ def _decode_bulletin(tac: str, *, product: str) -> DecodeResult | None:
 
     Parameters
     ----------
-    tac : object
+    tac : str
         Argument ``tac``.
-    product : object
+
+    product : str
         Argument ``product``.
 
     Returns
     -------
-    object
+    DecodeResult | None
         Return value.
     """
     if not _looks_like_ahl_bulletin(tac):
@@ -2571,14 +2615,15 @@ def _decode_single_report(tac: str, *, product: str) -> DecodeResult:
 
     Parameters
     ----------
-    tac : object
+    tac : str
         Argument ``tac``.
-    product : object
+
+    product : str
         Argument ``product``.
 
     Returns
     -------
-    object
+    DecodeResult
         Return value.
     """
     tokens = _iter_tokens(tac)
@@ -2655,22 +2700,23 @@ def decode_single_report(tac: str, *, product: str) -> DecodeResult:
     """
     Decode one TAC report without bulletin or COLLECT dispatch.
 
+    Parameters
+    ----------
+    tac : str
+        TAC text.
+
+    product : str
+        Product name.
+
+    Returns
+    -------
+    DecodeResult
+        Decode one TAC report without bulletin or COLLECT dispatch.
+
     Examples
     --------
     >>> 1 + 1  # docstring smoke (decode_single_report)
     2
-
-    Parameters
-    ----------
-    tac : object
-        Argument ``tac``.
-    product : object
-        Argument ``product``.
-
-    Returns
-    -------
-    object
-        Return value.
     """
     return _decode_single_report(tac, product=product)
 
@@ -2679,22 +2725,23 @@ def shift_decode(result: DecodeResult, offset: int) -> DecodeResult:
     """
     Translate segment offsets into a parent document string.
 
+    Parameters
+    ----------
+    result : DecodeResult
+        Decode result whose spans are shifted.
+
+    offset : int
+        Character offset added to spans.
+
+    Returns
+    -------
+    DecodeResult
+        Translate segment offsets into a parent document string.
+
     Examples
     --------
     >>> 1 + 1  # docstring smoke (shift_decode)
     2
-
-    Parameters
-    ----------
-    result : object
-        Argument ``result``.
-    offset : object
-        Argument ``offset``.
-
-    Returns
-    -------
-    object
-        Return value.
     """
     return _shift_decode(result, offset)
 
@@ -2730,10 +2777,11 @@ def decode_tac(tac: str, *, product: str) -> DecodeResult:
 
     Parameters
     ----------
-    tac :
+    tac : str
         Raw TAC report text, a WMO AHL bulletin, or COLLECT / IWXXM XML with
         contained TAC or leaf fields.
-    product :
+
+    product : str
         One of the F6 product ids or ``SWXA`` (case-insensitive).
 
     Returns

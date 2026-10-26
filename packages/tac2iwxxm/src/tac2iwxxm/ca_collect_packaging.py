@@ -33,7 +33,7 @@ def is_ca_collect_bulletin(xml: str) -> bool:
 
     Parameters
     ----------
-    xml :
+    xml : str
         Document text.
 
     Returns
@@ -64,9 +64,10 @@ def wrap_ca_eccc_collect(
 
     Parameters
     ----------
-    xml :
+    xml : str
         Inner IWXXM product XML (one root element).
-    bulletin_identifier :
+
+    bulletin_identifier : str
         MSC datamart filename for ``collect:bulletinIdentifier``.
 
     Returns

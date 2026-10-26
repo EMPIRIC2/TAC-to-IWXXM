@@ -14,6 +14,7 @@ class AirportCoordinates(BaseModel):
     """
     Geographic coordinates for an airport.
 
+
     Attributes
     ----------
     _ : object
@@ -40,6 +41,7 @@ class AirportCoordinates(BaseModel):
 class Airport(BaseModel):
     """
     Airport data model with ICAO and metadata.
+
 
     Attributes
     ----------
@@ -147,6 +149,7 @@ class AirportValidator:
     Singleton validator for airport ICAO codes.
 
     Loads airport data from airports.json and provides validation methods.
+
 
     Attributes
     ----------

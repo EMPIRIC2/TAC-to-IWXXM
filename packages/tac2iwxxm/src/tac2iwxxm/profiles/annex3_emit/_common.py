@@ -29,12 +29,12 @@ def _ns(iwxxm_version: str) -> str:
 
     Parameters
     ----------
-    iwxxm_version : object
+    iwxxm_version : str
         Argument ``iwxxm_version``.
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     ns = _NS.get(iwxxm_version)
@@ -49,12 +49,12 @@ def _fmt_coord(value: float) -> str:
 
     Parameters
     ----------
-    value : object
+    value : float
         Argument ``value``.
 
     Returns
     -------
-    object
+    str
         Return value.
     """
     text = f"{value:.2f}"

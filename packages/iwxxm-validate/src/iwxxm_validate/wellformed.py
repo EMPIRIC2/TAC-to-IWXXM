@@ -25,13 +25,13 @@ def run_wellformed_lxml(xml_content: str) -> list[Issue]:
 
     Parameters
     ----------
-    xml_content : object
-        Argument ``xml_content``.
+    xml_content : str
+        XML text.
 
     Returns
     -------
-    object
-        Return value.
+    list[Issue]
+        Issues when ``xml_content`` is not well-formed XML.
     """
     try:
         etree.fromstring(xml_content.encode("utf-8"))
