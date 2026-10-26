@@ -56,9 +56,35 @@ _TAC_TAF = re.compile(
 # digits (ALPHA 02), then one optional letter plus digits (A02 or 3).
 _TAC_SEQUENCE = r"(?:[A-Z]+\s+\d+|[A-Z]?\d+)"
 
-# SIGMET body - FIR SIGMET seq VALID … MWO- … (= preferred; single block may omit)
+# Stop before the next bulletin/report when ``=`` is omitted (multi-paste).
+_SIGMET_BODY_STOP = (
+    r"(?="
+    r"=\s*$"
+    r"|(?:^|\n)(?:WS|WV|WC)[A-Z]{2}\d{2}\s+[A-Z]{4}\s+\d{6}\b"
+    r"|(?:^|\n)(?:[A-Z]{4}\s+)+SIGMET\s+"
+    r"|(?:^|\n)CONVECTIVE\s+SIGMET\s+"
+    r"|\Z"
+    r")"
+)
+
+# Paste sometimes glues the next AHL onto the previous line (``FL330.WSUS32``).
+_GLUED_SIGMET_AHL = re.compile(
+    r"(?<=\S)(?=(?:WS|WV|WC)[A-Z]{2}\d{2}\s+[A-Z]{4}\s+\d{6}\b)",
+)
+
+# SIGMET body - one or more FIR ids, then SIGMET seq VALID … MWO- …
+# (= preferred; single block may omit; stop at next AHL / report).
 _TAC_SIGMET = re.compile(
-    r"^[A-Z]{4}\s+SIGMET\s+" + _TAC_SEQUENCE + r"\s+VALID\s+\d{6}/\d{6}\s+[A-Z]{4}-\s*.+?(?:=\s*$|\Z)",
+    r"^(?:[A-Z]{4}\s+)+SIGMET\s+" + _TAC_SEQUENCE + r"\s+VALID\s+\d{6}/\d{6}\s+[A-Z]{4}-\s*.+?" + _SIGMET_BODY_STOP,
+    re.MULTILINE | re.DOTALL | re.IGNORECASE,
+)
+
+# US CONVECTIVE SIGMET (WST) — optional WST / SIGx preamble lines.
+_TAC_CONVECTIVE_SIGMET = re.compile(
+    r"^(?:(?:[A-Z]{4}\s+WST\s+\d{6}|SIG(?!MET)[A-Z0-9]*)\s*\n+)*"
+    r"CONVECTIVE\s+SIGMET\s+\S+\s+"
+    r"VALID\s+UNTIL\s+\d{4,6}Z\b"
+    r".+?" + _SIGMET_BODY_STOP,
     re.MULTILINE | re.DOTALL | re.IGNORECASE,
 )
 
@@ -148,6 +174,98 @@ class BulletinSplitError(ValueError):
         self.code = code
         self.message = message
         super().__init__(message)
+
+
+def _unglue_sigmet_ahl(text: str) -> str:
+    """
+    Insert a newline before an AHL glued onto the previous token.
+
+    Parameters
+    ----------
+    text : str
+        Bulletin body after the first heading.
+
+    Returns
+    -------
+    str
+        Body with glued ``…FL330.WSUS32…`` boundaries separated.
+    """
+    return _GLUED_SIGMET_AHL.sub("\n", text)
+
+
+def _is_kept_sigmet_report(report: str) -> bool:
+    """
+    Return True when a candidate body is a FIR or CONVECTIVE SIGMET report.
+
+    Parameters
+    ----------
+    report : str
+        Candidate TAC report text.
+
+    Returns
+    -------
+    bool
+        True for multi-FIR / FIR ``SIGMET`` or US ``CONVECTIVE SIGMET`` bodies.
+    """
+    return bool(
+        re.match(r"^(?:[A-Z]{4}\s+)+SIGMET\s+", report, re.IGNORECASE)
+        or re.search(r"(?i)(?:^|\n)CONVECTIVE\s+SIGMET\s+", report)
+    )
+
+
+def _span_overlaps_prior(start: int, last_end: int) -> bool:
+    """
+    Return True when a candidate span starts inside a prior exclusive-end span.
+
+    Abutting spans (``start == last_end``) are not overlaps and must both be kept
+    so consecutive SIGMET reports in one paste stay distinct.
+
+    Parameters
+    ----------
+    start : int
+        Candidate match start offset.
+
+    last_end : int
+        Exclusive end of the last accepted match (``-1`` before any accept).
+
+    Returns
+    -------
+    bool
+        True when the candidate overlaps the prior span.
+    """
+    return start < last_end
+
+
+def _find_sigmet_reports(body_text: str) -> list[str]:
+    """
+    Find ordinary and CONVECTIVE SIGMET report strings in a bulletin body.
+
+    Parameters
+    ----------
+    body_text : str
+        Text after the first WMO abbreviated heading.
+
+    Returns
+    -------
+    list[str]
+        Ordered, non-overlapping report strings.
+    """
+    normalized = _unglue_sigmet_ahl(body_text)
+    spans: list[tuple[int, int, str]] = [
+        (match.start(), match.end(), match.group(0).strip())
+        for pattern in (_TAC_SIGMET, _TAC_CONVECTIVE_SIGMET)
+        for match in pattern.finditer(normalized)
+    ]
+    spans.sort(key=lambda item: (item[0], item[1]))
+    reports: list[str] = []
+    last_end = -1
+    for start, end, report in spans:
+        if _span_overlaps_prior(start, last_end):
+            continue
+        if report:
+            reports.append(report)
+            last_end = end
+    return reports
 
 
 def map_t1t2(tac_tt: str) -> str:
@@ -439,7 +557,10 @@ def split_bulletin(text: str, *, product: str = "METAR") -> BulletinSplit:
     # Only scan TAC reports after the AHL so pre-header noise cannot inflate the bulletin
     ahl_pos = text.find(ahl_match)
     body_text = text[ahl_pos + len(ahl_match) :]
-    reports = [m.group(0).strip() for m in body_re.finditer(body_text)]
+    if product_key == "SIGMET":
+        reports = _find_sigmet_reports(body_text)
+    else:
+        reports = [m.group(0).strip() for m in body_re.finditer(body_text)]
     if not reports:
         raise BulletinSplitError(
             "empty_bulletin",
@@ -453,8 +574,8 @@ def split_bulletin(text: str, *, product: str = "METAR") -> BulletinSplit:
     elif product_key == "TAF":
         reports = [r for r in reports if r.startswith("TAF")]
     elif product_key == "SIGMET":
-        # Keep FIR SIGMET…= only (reject VAA/TCA advisory blocks misrouted under WS/WV/WC).
-        reports = [r for r in reports if re.match(r"^[A-Z]{4}\s+SIGMET\s+", r, re.IGNORECASE)]
+        # Keep FIR / multi-FIR SIGMET and US CONVECTIVE SIGMET; reject misrouted advisories.
+        reports = [r for r in reports if _is_kept_sigmet_report(r)]
     elif product_key == "AIRMET":
         reports = [r for r in reports if re.match(r"^[A-Z]{4}\s+AIRMET\s+", r, re.IGNORECASE)]
     elif product_key == "VAA":
