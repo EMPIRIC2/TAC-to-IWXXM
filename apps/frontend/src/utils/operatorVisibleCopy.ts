@@ -55,29 +55,6 @@ import {
   productLabel,
 } from '@/utils/liveMap';
 import {
-  QUALITY_METRICS_DIFF_EMPTY_LABEL,
-  QUALITY_METRICS_DIFF_EXPAND_ALL,
-  QUALITY_METRICS_DIFF_COLLAPSE_ALL,
-  QUALITY_METRICS_DIFF_HEADING,
-  QUALITY_METRICS_EMPTY_DIAGNOSTICS,
-  QUALITY_METRICS_LINT_HELP,
-  QUALITY_METRICS_RESIDUALS_FOLDED,
-  QUALITY_METRICS_RESIDUALS_HELP,
-  QUALITY_METRICS_RESIDUALS_NOT_FOLDED,
-  QUALITY_METRICS_VALIDATE_HELP,
-  QUALITY_METRICS_XML_VIEW_HELP,
-  QUALITY_METRICS_XML_VIEW_NORMALIZED,
-  QUALITY_METRICS_XML_VIEW_RAW,
-} from '@/app/components/QualityMetricsDetail';
-import {
-  QUALITY_METRICS_DEFERRED_LABEL,
-  QUALITY_METRICS_DETAIL_LOAD_FAILED,
-  QUALITY_METRICS_DETAIL_LOADING,
-  QUALITY_METRICS_EMPTY_LIST,
-  QUALITY_METRICS_PAGE_SUBTITLE,
-  QUALITY_METRICS_PAGE_TITLE,
-} from '@/utils/qualityMetricsCopy';
-import {
   IWXXM_PRODUCT_CONVERT_ARIA,
   IWXXM_PRODUCT_CONVERT_LABEL,
   IWXXM_PRODUCT_HELP,
@@ -97,12 +74,6 @@ import {
 import { GUEST_LOSS_OF_PROGRESS_MESSAGE } from '@/utils/guestLossNotice';
 import { OPERATOR_HANDBOOK_URL, OPERATOR_ONE_PAGER_URL } from '@/utils/operatorHelp';
 import { STORAGE_INVENTORY } from '@/utils/privacyPreferences';
-import {
-  QUALITY_METRICS_SCHEMA_IMPORT_RESOLVED,
-  QUALITY_METRICS_SCHEMA_IMPORT_WARNING,
-  QUALITY_METRICS_SCHEMATRON_EVALUATED,
-  QUALITY_METRICS_SCHEMATRON_SKIPPED,
-} from '@/utils/validateDispositionChips';
 import {
   BETA_BADGE_LABEL,
   BETA_FEEDBACK_HELP,
@@ -158,21 +129,16 @@ import {
   LINT_VALIDATION_CATALOG_COL_CODE,
   LINT_VALIDATION_CATALOG_COL_DESCRIPTION,
   LINT_VALIDATION_CATALOG_COL_LEVEL,
-  LINT_VALIDATION_CATALOG_COL_PROFILES,
   LINT_VALIDATION_CATALOG_COL_SOURCE,
   LINT_VALIDATION_CATALOG_COL_TYPE,
   LINT_VALIDATION_CATALOG_EMPTY,
-  LINT_VALIDATION_CATALOG_EXCHANGE_ALL,
-  LINT_VALIDATION_CATALOG_EXCHANGE_LABEL,
   LINT_VALIDATION_CATALOG_ACCESS_LABELS,
   LINT_VALIDATION_CATALOG_FAMILY_ALL,
   LINT_VALIDATION_CATALOG_FAMILY_LABEL,
-  LINT_VALIDATION_CATALOG_LISTED_PROFILE_NEEDS_PROFILE,
   LINT_VALIDATION_CATALOG_LOAD_ERROR,
   LINT_VALIDATION_CATALOG_RETRY,
   LINT_VALIDATION_CATALOG_TYPE_LABELS,
   LINT_VALIDATION_CATALOG_LEVEL_LABEL,
-  LINT_VALIDATION_CATALOG_LISTED_PROFILE_ONLY,
   LINT_VALIDATION_CATALOG_DETAIL,
   LINT_VALIDATION_CATALOG_EXAMPLE_FAIL,
   LINT_VALIDATION_CATALOG_EXAMPLE_FAIL_UNAVAILABLE,
@@ -183,8 +149,6 @@ import {
   LINT_VALIDATION_CATALOG_SEARCH,
   LINT_VALIDATION_CATALOG_PAGE_SUBTITLE,
   LINT_VALIDATION_CATALOG_PAGE_TITLE,
-  LINT_VALIDATION_CATALOG_PROFILE_ALL,
-  LINT_VALIDATION_CATALOG_PROFILE_LABEL,
   LINT_VALIDATION_CATALOG_SORT_LABEL,
   LINT_VALIDATION_CATALOG_TYPE_LABEL,
   LINT_VALIDATION_CATALOG_VIEW_COMPACT,
@@ -405,7 +369,6 @@ export function collectOperatorVisibleCopy(): OperatorVisibleCopyEntry[] {
     { id: 'help.handbook-url', text: OPERATOR_HANDBOOK_URL },
     { id: 'shell.nav.convert', text: SHELL_NAV_LABELS.converter },
     { id: 'shell.nav.history', text: SHELL_NAV_LABELS.history },
-    { id: 'shell.nav.quality', text: SHELL_NAV_LABELS.quality },
     { id: 'shell.nav.catalog', text: SHELL_NAV_LABELS.catalog },
     { id: 'decode-visuals.title', text: DECODE_VISUALS_TITLE },
     { id: 'decode-visuals.intro', text: DECODE_VISUALS_INTRO },
@@ -534,10 +497,6 @@ export function collectOperatorVisibleCopy(): OperatorVisibleCopyEntry[] {
       id: 'lint-validation-catalog.retry',
       text: LINT_VALIDATION_CATALOG_RETRY,
     },
-    {
-      id: 'lint-validation-catalog.listed-profile-needs-profile',
-      text: LINT_VALIDATION_CATALOG_LISTED_PROFILE_NEEDS_PROFILE,
-    },
     ...Object.entries(LINT_VALIDATION_CATALOG_TYPE_LABELS).map(([value, text]) => ({
       id: `lint-validation-catalog.type.${value}`,
       text,
@@ -577,26 +536,6 @@ export function collectOperatorVisibleCopy(): OperatorVisibleCopyEntry[] {
       text: LINT_VALIDATION_CATALOG_SORT_LABEL,
     },
     {
-      id: 'lint-validation-catalog.profile',
-      text: LINT_VALIDATION_CATALOG_PROFILE_LABEL,
-    },
-    {
-      id: 'lint-validation-catalog.exchange',
-      text: LINT_VALIDATION_CATALOG_EXCHANGE_LABEL,
-    },
-    {
-      id: 'lint-validation-catalog.profile-all',
-      text: LINT_VALIDATION_CATALOG_PROFILE_ALL,
-    },
-    {
-      id: 'lint-validation-catalog.exchange-all',
-      text: LINT_VALIDATION_CATALOG_EXCHANGE_ALL,
-    },
-    {
-      id: 'lint-validation-catalog.listed-profile-only',
-      text: LINT_VALIDATION_CATALOG_LISTED_PROFILE_ONLY,
-    },
-    {
       id: 'site-terms.title',
       text: SITE_TERMS_TITLE,
     },
@@ -623,10 +562,6 @@ export function collectOperatorVisibleCopy(): OperatorVisibleCopyEntry[] {
     {
       id: 'lint-validation-catalog.col-level',
       text: LINT_VALIDATION_CATALOG_COL_LEVEL,
-    },
-    {
-      id: 'lint-validation-catalog.col-profiles',
-      text: LINT_VALIDATION_CATALOG_COL_PROFILES,
     },
     {
       id: 'lint-validation-catalog.col-description',
@@ -1060,65 +995,6 @@ export function collectOperatorVisibleCopy(): OperatorVisibleCopyEntry[] {
     {
       id: 'dissemination-ops.error-prefix',
       text: DISSEMINATION_OPS_ERROR_PREFIX,
-    },
-    { id: 'quality-metrics.title', text: QUALITY_METRICS_PAGE_TITLE },
-    { id: 'quality-metrics.subtitle', text: QUALITY_METRICS_PAGE_SUBTITLE },
-    { id: 'quality-metrics.deferred-label', text: QUALITY_METRICS_DEFERRED_LABEL },
-    { id: 'quality-metrics.empty-list', text: QUALITY_METRICS_EMPTY_LIST },
-    {
-      id: 'quality-metrics.detail-load-failed',
-      text: QUALITY_METRICS_DETAIL_LOAD_FAILED,
-    },
-    {
-      id: 'quality-metrics.detail-loading',
-      text: QUALITY_METRICS_DETAIL_LOADING,
-    },
-    { id: 'quality-metrics.diff-empty', text: QUALITY_METRICS_DIFF_EMPTY_LABEL },
-    { id: 'quality-metrics.diff-heading', text: QUALITY_METRICS_DIFF_HEADING },
-    {
-      id: 'quality-metrics.diff-expand-all',
-      text: QUALITY_METRICS_DIFF_EXPAND_ALL,
-    },
-    {
-      id: 'quality-metrics.diff-collapse-all',
-      text: QUALITY_METRICS_DIFF_COLLAPSE_ALL,
-    },
-    {
-      id: 'quality-metrics.empty-diagnostics',
-      text: QUALITY_METRICS_EMPTY_DIAGNOSTICS,
-    },
-    { id: 'quality-metrics.residuals-help', text: QUALITY_METRICS_RESIDUALS_HELP },
-    {
-      id: 'quality-metrics.residuals-folded',
-      text: QUALITY_METRICS_RESIDUALS_FOLDED,
-    },
-    {
-      id: 'quality-metrics.residuals-not-folded',
-      text: QUALITY_METRICS_RESIDUALS_NOT_FOLDED,
-    },
-    { id: 'quality-metrics.lint-help', text: QUALITY_METRICS_LINT_HELP },
-    { id: 'quality-metrics.validate-help', text: QUALITY_METRICS_VALIDATE_HELP },
-    {
-      id: 'quality-metrics.xml-view-normalized',
-      text: QUALITY_METRICS_XML_VIEW_NORMALIZED,
-    },
-    { id: 'quality-metrics.xml-view-raw', text: QUALITY_METRICS_XML_VIEW_RAW },
-    { id: 'quality-metrics.xml-view-help', text: QUALITY_METRICS_XML_VIEW_HELP },
-    {
-      id: 'quality-metrics.schematron-evaluated',
-      text: QUALITY_METRICS_SCHEMATRON_EVALUATED,
-    },
-    {
-      id: 'quality-metrics.schematron-skipped',
-      text: QUALITY_METRICS_SCHEMATRON_SKIPPED,
-    },
-    {
-      id: 'quality-metrics.schema-import-resolved',
-      text: QUALITY_METRICS_SCHEMA_IMPORT_RESOLVED,
-    },
-    {
-      id: 'quality-metrics.schema-import-warning',
-      text: QUALITY_METRICS_SCHEMA_IMPORT_WARNING,
     },
   ];
 

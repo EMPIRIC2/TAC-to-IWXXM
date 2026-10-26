@@ -1,5 +1,5 @@
 /**
- * Client-side unified line diff for Quality metrics XML panes (F7.q / EV-054).
+ * Client-side unified line diff for XML panes.
  *
  * No external npm dependency — LCS over split lines (`D-S063-diff-impl`).
  * @example

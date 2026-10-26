@@ -253,11 +253,7 @@ On accounts: use the credentials your Service issued. If sign-in fails, check th
 
 - My METARs: your drafts and finished work.
 
-- Quality metrics
-
-- Compare output against official WMO examples.
-
-- Validation Issues Catalog
+- Rule catalogs
 
 - Look up what a validation or lint message means.
 
@@ -265,19 +261,15 @@ On accounts: use the credentials your Service issued. If sign-in fails, check th
 
 - Sending. Not used during this evaluation.
 
-- Conversion profiles
-
-- What each profile encodes, at a glance.
-
 - Header, right-hand side: HELP · PREFERENCES · Theme · SIGN IN
 
 ### Speaker notes
 
-Six tabs along the top. For this evaluation, only the first three matter much.
+The top bar is Convert, History, Rule catalogs, and Dissemination ops. For this evaluation, Convert and History are the ones you will use.
 
-Convert is where you will spend your time. History is your own work, and it is where you will go back to find a test you want to write up. Quality metrics compares the app against official WMO example products, and we will come back to it.
+Convert is where you will spend your time. History is your own work, and it is where you will go back to find a test you want to write up.
 
-The Validation Issues Catalog is a lookup for messages you do not recognise. Dissemination ops we are not using. Conversion profiles shows what each profile does.
+Rule catalogs is a lookup for messages you do not recognise. Dissemination ops we are not using. Conversion profiles shows what each profile does.
 
 Top right: HELP opens the operator one-pager, PREFERENCES holds your options including privacy, Theme is light and dark, SIGN IN on the far right.
 
@@ -503,30 +495,6 @@ The most common support question is "my history is empty". Almost always guest m
 ---
 
 <!-- Slide 16 -->
-`PART B: WHAT YOU CAN DO`
-## Quality metrics
-
-- Browses official WMO IWXXM example products and shows how this prototype’s output compares.
-- Each row carries a match status plus residual, lint and validation counts.
-- Open a row for a detail view: Official and Converted side by side, with a readable diff.
-- Unchanged sections collapse; expand a hunk, or expand all, when you need context.
-- Filter by product to reach the four families in scope.
-
-- Useful for training and for understanding accuracy. It is not a substitute for running Validate on your own conversions.
-
-### Speaker notes
-
-This tab is the one people find most interesting and most easily misread, so lead with what it is for.
-
-It takes the official WMO example products and shows what this prototype produces for the same input, with a match status and counts for residuals, lint and validation. Open a row and you get official and converted XML side by side with a readable diff; identical regions collapse.
-
-It is useful here, because it shows you what a difference between two IWXXM documents looks like, which is exactly the skill you need for the accuracy assessment on your own reports.
-
-Two honest points. A difference is not automatically a fault; some examples are not scored yet. And a good score here says nothing about the file on your screen. Only Validate does that.
-
----
-
-<!-- Slide 17 -->
 `PART B: WHAT YOU CAN DO`
 ## The picker offers more than we are testing
 
@@ -811,10 +779,6 @@ From there CMO pools every Service's results and works with Brown to set priorit
 
 - Expected. They are not used in this evaluation, so download instead.
 
-- Quality metrics empty or error
-
-- Check your network, retry, and note the example name if one row fails.
-
 - Slow or timing out
 
 - Retry once. If it persists, note the time and the product and log it.
@@ -839,7 +803,7 @@ Everything here is also in the operator handbook, so testers have it in writing.
 
 - HELP in the converter header opens the operator one-pager, the short version of today.
 
-- The operator handbook: sign-in, convert and validate, history, Quality metrics, troubleshooting.
+- The operator handbook: sign-in, convert and validate, history, troubleshooting.
 
 - DAY TO DAY
 

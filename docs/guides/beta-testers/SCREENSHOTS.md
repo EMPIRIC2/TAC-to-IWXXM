@@ -51,8 +51,6 @@ folder. Either way works.
 | `06-convert-result.png` | After Convert: the `Conversion / validation log` showing Issues and Results with the download link | Convert, Validate, Five-steps slides |
 | `07-action-bar.png` | The button row: `NEW TAC` `CONVERT` `CONVERT&SEND` `UPLOAD TO DATABASE` `DISSEMINATE` `DOWNLOAD ZIP` `CLEAR` | Five steps, Download |
 | `08-history.png` | History tab: `My METARs`, the `Local history` label, the status filters | Work history |
-| `09-quality-metrics.png` | Quality metrics list with the count tiles and a few example rows | Quality metrics |
-| `10-quality-detail.png` | One Quality metrics example opened: Official / Converted panes and the diff | Quality metrics |
 | `11-upload-zone.png` | The drop zone: "Drop TAC files or select" with `SELECT FILES` / `FOLDER` / `ZIP` | Three ways in |
 | `12-privacy-settings.png` | The header close-up (`HELP`, `PREFERENCES`, Theme, `SIGN IN`) or the Privacy settings panel | Where to get help |
 

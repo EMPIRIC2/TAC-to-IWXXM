@@ -63,10 +63,6 @@ vi.mock('../app/components/MyMetarsPage', () => ({
   MyMetarsPage: () => <div data-testid="history-view" />,
 }));
 
-vi.mock('../app/components/QualityMetricsPage', () => ({
-  QualityMetricsPage: () => <div data-testid="quality-metrics-page" />,
-}));
-
 vi.mock('../app/components/auth/Login', () => ({
   Login: () => <div data-testid="login-view" />,
 }));
