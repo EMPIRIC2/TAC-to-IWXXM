@@ -8,7 +8,10 @@ paths in ``bulletin.py`` / convective WST parsing.
 
 from __future__ import annotations
 
+from collections.abc import Iterator
+
 import pytest
+import tac2iwxxm.bulletin as bulletin_mod
 from tac2iwxxm.bulletin import (
     _find_sigmet_reports,
     _is_kept_sigmet_report,
@@ -18,6 +21,35 @@ from tac2iwxxm.bulletin import (
 from tac2iwxxm.slot_builders.sigmet_airmet import _parse_convective_sigmet
 
 from tac2iwxxm import BulletinSplitError, split_bulletin
+
+
+class _FakeMatch:
+    """Minimal re.Match stand-in for overlap / empty-report coverage."""
+
+    def __init__(self, start: int, end: int, text: str) -> None:
+        self._start = start
+        self._end = end
+        self._text = text
+
+    def start(self) -> int:
+        return self._start
+
+    def end(self) -> int:
+        return self._end
+
+    def group(self, _n: int = 0) -> str:
+        return self._text
+
+
+class _FakePattern:
+    """finditer stand-in returning fixed spans."""
+
+    def __init__(self, matches: list[_FakeMatch]) -> None:
+        self._matches = matches
+
+    def finditer(self, _text: str) -> Iterator[_FakeMatch]:
+        return iter(self._matches)
+
 
 _OCEANIC = """\
 WSNT04 KKCI 260210
@@ -162,6 +194,31 @@ def test_find_sigmet_reports_glued_ahl_yields_two() -> None:
     assert "8E" in reports[0].upper()
     assert "41C" in reports[1].upper()
     assert "WSUS32 KKCI 261355" not in reports[0]
+
+
+def test_find_sigmet_reports_skips_overlap_and_blank(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Cover continue-on-overlap and empty strip branches in _find_sigmet_reports."""
+    monkeypatch.setattr(bulletin_mod, "_unglue_sigmet_ahl", lambda text: text)
+    monkeypatch.setattr(
+        bulletin_mod,
+        "_TAC_SIGMET",
+        _FakePattern([_FakeMatch(0, 10, "KEEP-FIR")]),
+    )
+    monkeypatch.setattr(
+        bulletin_mod,
+        "_TAC_CONVECTIVE_SIGMET",
+        _FakePattern(
+            [
+                _FakeMatch(5, 15, "OVERLAP"),
+                _FakeMatch(20, 25, "   "),
+                _FakeMatch(30, 40, "KEEP-CV"),
+            ]
+        ),
+    )
+    reports = bulletin_mod._find_sigmet_reports("unused")
+    assert reports == ["KEEP-FIR", "KEEP-CV"]
 
 
 def test_split_oceanic_multi_fir_product_and_ahl() -> None:
