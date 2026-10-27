@@ -115,6 +115,7 @@ describe monorepo workflows introduced by migration features M1–M6 and F6.
 | UJ-085 | Quality metrics subtitle, overflow, and count honesty | apps/frontend / API | F7.q (EV-1316 / #1316) | T0; existing quality-metrics routes |
 | UJ-086 | Browse enriched Dissemination catalog rows | apps/frontend / API | F7.v / F16–F19 (EV-1317 / #1317) | T0; existing rule-catalogs route |
 | UJ-087 | Open the live weather map, zoom, and read a report | apps/frontend / API | F37 (EV-globe-live-map) | T0 / T2 / **T3** / H4–H5 |
+| UJ-088 | Calmer Convert empty → convert → download + Help checklist | apps/frontend | F7 deepen (EV-calmer-convert-tutorial-caribbean) | T0 / T2 / **T3** / H4–H5 |
 | UJ-076 | Five package-owned trust catalogs (tabbed) | apps/frontend / API | F7.v (ADR-044) | T0 / T2 / **T3** / H4–H5 |
 | UJ-076a | Convert four-engine light selects + Send-drawer dissem (#1251) | apps/frontend / API | F7 / F9 / F16–F19 (ADR-044; EV-yaml-config-light-ux) | T0 / T2 / **T3** / H4–H5 |
 | UJ-076b | Decode via `tac-decoding` parity | apps/frontend / API | F9 (ADR-044) | T0 / T2 / H4–H5 |
@@ -3035,3 +3036,20 @@ lint-issue-catalog filters.
 9. The browser calls this app’s API only. The map request is still the view box and the product ids. The API does not return reports older than 24 hours. Convert and validate still answer as they do today.
 
 **Pass**: T0/T2 for the cache, the layers, the 24-hour share window, and the card. T3 and H4–H5 when the screen is on staging. Must not break Convert, validate, guest access, station search, or continent and sub-region zoom.
+
+### UJ-088: Calmer Convert empty → convert → download + Help checklist
+
+**Goal**: A guest lands on a calm empty Convert screen, pastes or picks an example, converts once, and downloads IWXXM — with Help replaying a short checklist anytime.
+
+**Feature**: F7 deepen (EV-calmer-convert-tutorial-caribbean). [Corpus: product §F7] [Corpus: tests]
+
+**Actors**: Guest (after terms/privacy). Sign-in optional.
+
+**Steps**:
+1. With empty TAC, Convert shows a centered empty hero (title + short subcopy), one input, drop/browse, primary **Convert & validate**, example chips (METAR / TAF / SIGMET / VAA), quiet other-task links, and a muted profile footer + Change.
+2. Paste or load an example. Live preview may show IWXXM / plain language / notes; schema/Schematron remain deferred until convert. Primary stays **Convert & validate**. Tertiary actions sit under ⋯.
+3. Convert & validate succeeds. Primary flips to **Download IWXXM**; **Send…** is secondary; a green validity strip lists decoded / schema / Schematron. TAC is read-only until Edit.
+4. Profile Change opens a drawer (national presets first; step overrides and output options progressive). Apply is the drawer primary.
+5. Help (?) opens an in-app checklist (paste → optional example → Convert & validate → Download); dismissible and reopenable. Depth still links to the operator one-pager (UJ-054).
+
+**Pass**: TC-UX-CALM-001..010 green; H4–H5 Convert smoke. Must-not-break UJ-013, UJ-032, UJ-033, UJ-054, UJ-055. EV-048 clean on new copy.
