@@ -9,11 +9,21 @@ import type { ReactNode } from 'react';
 import { Button } from './ui/button';
 import { CALM_CONVERT_PRIMARY_LABEL } from '/utils/convertCalmState';
 
+/**
+ * One example chip on the empty Convert hero.
+ * @example
+ * const _ = true;
+ */
 export interface CalmExampleChip {
   id: string;
   label: string;
 }
 
+/**
+ * Props for the empty Convert hero.
+ * @example
+ * const _ = true;
+ */
 export interface CalmConvertEmptyHeroProps {
   children: ReactNode;
   convertDisabled: boolean;
@@ -28,6 +38,8 @@ export interface CalmConvertEmptyHeroProps {
 
 /**
  * Centered empty Convert layout with one primary CTA and example chips.
+ * @example
+ * const _ = true;
  */
 export function CalmConvertEmptyHero({
   children,

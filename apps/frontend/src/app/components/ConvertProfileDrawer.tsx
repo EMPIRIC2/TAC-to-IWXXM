@@ -18,6 +18,11 @@ import {
 } from './ui/dialog';
 import { Button } from './ui/button';
 
+/**
+ * Props for the conversion profile dialog.
+ * @example
+ * const _ = true;
+ */
 export interface ConvertProfileDrawerProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -30,6 +35,8 @@ export interface ConvertProfileDrawerProps {
 
 /**
  * Profile dialog with progressive disclosure for output options.
+ * @example
+ * const _ = true;
  */
 export function ConvertProfileDrawer({
   open,

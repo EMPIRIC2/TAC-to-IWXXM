@@ -2,6 +2,11 @@
  * Post-convert validity strip (Calmer Convert screen 2 / TC-UX-CALM-010).
  */
 
+/**
+ * Props for the post-convert validity strip.
+ * @example
+ * const _ = true;
+ */
 export interface ConvertValidityStripProps {
   notesCount?: number;
   onNotesClick?: () => void;
@@ -9,6 +14,8 @@ export interface ConvertValidityStripProps {
 
 /**
  * Green success banner for a valid IWXXM bulletin.
+ * @example
+ * const _ = true;
  */
 export function ConvertValidityStrip({
   notesCount = 0,

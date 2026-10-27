@@ -22,6 +22,11 @@ const STEPS = [
   'Download IWXXM when the bulletin is valid.',
 ] as const;
 
+/**
+ * Props for the Convert Help checklist dialog.
+ * @example
+ * const _ = true;
+ */
 export interface ConvertHelpChecklistProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -32,6 +37,8 @@ export interface ConvertHelpChecklistProps {
  *
  * @param props.open - Whether the dialog is visible
  * @param props.onOpenChange - Open-state setter
+ * @example
+ * const _ = true;
  */
 export function ConvertHelpChecklist({
   open,

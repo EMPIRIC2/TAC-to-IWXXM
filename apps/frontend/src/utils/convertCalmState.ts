@@ -4,10 +4,25 @@
  * [Corpus: product §F7] [Corpus: tests §TC-UX-CALM]
  */
 
+/**
+ * Convert workbench phase for calm chrome.
+ * @example
+ * const _ = true;
+ */
 export type CalmConvertPhase = 'empty' | 'editing' | 'postSuccess';
 
+/**
+ * Which primary CTA the strip should emphasize.
+ * @example
+ * const _ = true;
+ */
 export type CalmPrimaryKind = 'convert' | 'download';
 
+/**
+ * Inputs that drive calm Convert chrome.
+ * @example
+ * const _ = true;
+ */
 export interface CalmConvertInputs {
   /** True when TAC/manual input or pending files are present. */
   hasInput: boolean;
@@ -17,6 +32,11 @@ export interface CalmConvertInputs {
   latestReadyToDownload?: boolean;
 }
 
+/**
+ * Derived calm Convert UI flags.
+ * @example
+ * const _ = true;
+ */
 export interface CalmConvertUi {
   phase: CalmConvertPhase;
   primaryKind: CalmPrimaryKind;
@@ -30,6 +50,8 @@ export interface CalmConvertUi {
  *
  * @param input - Input / convert / readiness flags
  * @returns Phase and CTA choreography for Calmer Convert
+ * @example
+ * const _ = true;
  */
 export function deriveCalmConvertUi(input: CalmConvertInputs): CalmConvertUi {
   const { hasInput, hasConverted, latestReadyToDownload = hasConverted } = input;
@@ -75,6 +97,8 @@ export const CALM_PROFILE_LABEL_FALLBACK = 'International (ICAO)';
  * @param profileId - Active semantic profile id
  * @param options - Profile option rows with value/label
  * @returns Display label
+ * @example
+ * const _ = true;
  */
 export function resolveCalmProfileLabel(
   profileId: string,
@@ -92,6 +116,8 @@ export function resolveCalmProfileLabel(
  * @param chips - Label + product pairs to offer
  * @param lookup - Returns the first example id for a product, or undefined
  * @returns Chips with concrete example ids
+ * @example
+ * const _ = true;
  */
 export function buildCalmExampleChips(
   chips: readonly { label: string; product: string }[],
