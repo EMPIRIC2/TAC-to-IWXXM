@@ -3039,7 +3039,7 @@ export function FileConverter({
                   }}
                 >
                   <TacEditor
-                    id={showCalmEmptyHero ? 'manual-input' : undefined}
+                    id="manual-input"
                     value={manualInput}
                     onReportLoaded={applyLoadedReportName}
                     onChange={(value) => {
