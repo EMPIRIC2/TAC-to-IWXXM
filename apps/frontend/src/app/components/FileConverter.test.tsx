@@ -670,7 +670,7 @@ describe('FileConverter Component', () => {
       expect(bar).toContainElement(
         screen.getByRole('heading', { name: 'TAC to IWXXM' }),
       );
-      expect(bar).toContainElement(screen.getByTestId('operator-help-link'));
+      expect(bar).toContainElement(screen.getByTestId('convert-help-open'));
       expect(bar).toContainElement(
         screen.getByRole('button', { name: 'Open user preferences' }),
       );
@@ -699,9 +699,13 @@ describe('FileConverter Component', () => {
       expect(frame.className).toContain('px-4');
     });
 
-    it('exposes Help link to the operator one-pager (UJ-054 / TC-EV047-011)', () => {
+    it('exposes Help checklist with one-pager link (UJ-054 / TC-EV047-011 / UJ-088)', async () => {
+      const user = userEvent.setup();
       render(<FileConverter {...defaultProps} />);
-      const help = screen.getByTestId('operator-help-link');
+      await user.click(screen.getByTestId('convert-help-open'));
+      const help = within(screen.getByTestId('convert-help-checklist')).getByTestId(
+        'operator-help-link',
+      );
       expect(help).toHaveAttribute(
         'href',
         expect.stringContaining('docs/guides/operator-one-pager.md'),
@@ -3516,6 +3520,7 @@ describe('FileConverter Component', () => {
         expect(screen.getByText('<iwxxm>kept</iwxxm>')).toBeInTheDocument();
       });
 
+      await user.click(screen.getByTestId('convert-tac-edit'));
       await user.clear(textarea);
       fireEvent.change(textarea, { target: { value: 'BAD INPUT' } });
       await user.click(screen.getByTestId('convert-button'));
