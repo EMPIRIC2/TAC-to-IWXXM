@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import re
 from typing import Any
 
 import lxml.etree as _lxml_etree
@@ -12,6 +13,8 @@ from iwxxm_validate.models import Issue
 etree: Any = _lxml_etree
 
 _LAYER = "wellformed"
+_TAC_PRODUCT = re.compile(r"^(?:METAR|SPECI|TAF|SIGMET|AIRMET)\b")
+_AHL_LINE = re.compile(r"^[A-Z]{4}\d{2}\s+[A-Z]{4}\s+\d{6}")
 
 
 def run_wellformed_lxml(xml_content: str) -> list[Issue]:
@@ -33,6 +36,22 @@ def run_wellformed_lxml(xml_content: str) -> list[Issue]:
     list[Issue]
         Issues when ``xml_content`` is not well-formed XML.
     """
+    stripped = xml_content.lstrip()
+    if stripped and not stripped.startswith("<"):
+        head = stripped[:80].upper()
+        if _TAC_PRODUCT.match(head) or _AHL_LINE.match(head):
+            return [
+                Issue(
+                    severity="error",
+                    code="XML_SYNTAX_ERROR",
+                    message=(
+                        "This looks like TAC text, not IWXXM XML. Convert the TAC first, "
+                        "then validate the XML output (not the original TAC)."
+                    ),
+                    layer=_LAYER,
+                    location="line 1",
+                )
+            ]
     try:
         etree.fromstring(xml_content.encode("utf-8"))
         return []

@@ -5,6 +5,7 @@ from __future__ import annotations
 import re
 from typing import Any
 
+from tac2iwxxm.bulletin import BulletinSplitError, parse_ahl
 from tac2iwxxm.slot_builders.metar_speci import parse_statute_mile_fraction
 from tac2iwxxm.taf_prob import is_unqualified_probability, probability_tempo_parts
 from tac2iwxxm.time_anchor import iso_stamp
@@ -453,8 +454,17 @@ def parse_taf(tac: str, *, product: str = "TAF") -> dict[str, Any]:
     if product.upper() != "TAF":
         raise ValueError(f"product mismatch: expected TAF, found {product}")
 
-    text = tac.strip().rstrip("=").strip()
-    # Drop bulletin AHL if present (first line without TAF/station pattern).
+    text = tac.strip()
+    # Drop a leading abbreviated heading (FT/FC…) so GTS paste matches METAR/SPECI.
+    lines = [ln.strip() for ln in text.splitlines() if ln.strip()]
+    if len(lines) >= 2:
+        try:
+            parse_ahl(lines[0])
+        except BulletinSplitError:
+            pass
+        else:
+            lines = lines[1:]
+    text = "\n".join(lines).strip().rstrip("=").strip()
     lines = [ln.strip() for ln in text.splitlines() if ln.strip()]
     joined = " ".join(lines)
     if not joined.upper().startswith("TAF"):

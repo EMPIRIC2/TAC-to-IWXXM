@@ -549,6 +549,36 @@ def _fmt_wx(m: re.Match[str], *, forecast: bool) -> str:
     return f"{label}: {phrase[0].upper()}{phrase[1:]}"
 
 
+def _explain_recent_weather(body: str) -> str | None:
+    """
+    Plain language for a recent-weather group after the ``RE`` prefix.
+
+    Parameters
+    ----------
+    body : str
+        Weather codes after ``RE`` (for example ``TS``, ``SH``, ``SHRA``).
+
+    Returns
+    -------
+    str | None
+        Explanation, or ``None`` when the body is not recent weather.
+    """
+    if body == "TS":
+        return "Recent weather: Thunderstorm"
+    if body == "SH":
+        return "Recent weather: Showers"
+    if body == "VCSH":
+        return "Recent weather: Showers in the vicinity"
+    if body == "VCTS":
+        return "Recent weather: Thunderstorm in the vicinity"
+    if m := _WX.match(body):
+        phrase = _fmt_wx(m, forecast=False)
+        if phrase.startswith("Weather: "):
+            return f"Recent weather: {phrase.removeprefix('Weather: ')}"
+        return f"Recent weather: {phrase}"
+    return None
+
+
 class DecodeSegment(msgspec.Struct, frozen=True):
     """
     One annotated TAC span for the Code | Explanation panel.
@@ -1256,6 +1286,14 @@ def _explain_metar_speci(token: str, *, product: str, seen: dict[str, int]) -> s
         return "Missing data"
     if upper == "TS":
         return "Thunderstorm"
+    if upper == "VCSH":
+        return "Showers in the vicinity"
+    if upper == "VCTS":
+        return "Thunderstorm in the vicinity"
+    if upper.startswith("RE") and len(upper) > 2 and not seen.get("rmk"):
+        recent = _explain_recent_weather(upper[2:])
+        if recent is not None:
+            return recent
     if m := _WIND_VAR.match(upper):
         return f"Wind direction varying from {int(m.group('a'))}° to {int(m.group('b'))}°"
     if m := _VIS_FRAC.match(upper):
@@ -1392,6 +1430,12 @@ def _explain_taf(token: str, *, seen: dict[str, int]) -> str | None:
         return f"{int(m.group('pct'))}% probability of the following conditions"
     if upper.startswith(("FM", "TEMPO", "BECMG", "PROB")):
         return "Change / probability group"
+    if upper == "TS":
+        return "Forecast weather: Thunderstorm"
+    if upper == "VCSH":
+        return "Forecast weather: Showers in the vicinity"
+    if upper == "VCTS":
+        return "Forecast weather: Thunderstorm in the vicinity"
     if m := _WX.match(upper):
         return _fmt_wx(m, forecast=True)
     return None

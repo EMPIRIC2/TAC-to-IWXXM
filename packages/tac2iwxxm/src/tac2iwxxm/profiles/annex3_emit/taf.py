@@ -452,6 +452,7 @@ def emit_taf_annex3(
         base_wind_src = dict(ir)
         base_wind_src["_base_wind_decimal"] = True
         wind = "" if ir.get("cavok") else _taf_wind_block(base_wind_src)
+        weather = "" if ir.get("cavok") else _taf_weather_block(ir)
         vis = ""
         cloud = ""
         if not ir.get("cavok"):
@@ -460,7 +461,7 @@ def emit_taf_annex3(
         base_fcst = f"""  <iwxxm:baseForecast>
     <iwxxm:MeteorologicalAerodromeForecast gml:id="fcst.base.{station.lower()}" cloudAndVisibilityOK="{cavok}">
       <iwxxm:phenomenonTime xlink:href="{base_forecast_phenomenon_href()}"/>
-{vis}{wind}{cloud}{forecast_extension}    </iwxxm:MeteorologicalAerodromeForecast>
+{vis}{wind}{weather}{cloud}{forecast_extension}    </iwxxm:MeteorologicalAerodromeForecast>
   </iwxxm:baseForecast>
 """
         changes = _taf_change_forecasts(ir, station)
