@@ -26,7 +26,7 @@ describe('deriveCalmConvertUi (TC-UX-CALM)', () => {
     expect(ui.showEmptyHero).toBe(false);
   });
 
-  it('TC-UX-CALM-002/010: post-success → download primary + validity strip', () => {
+  it('TC-UX-CALM-002/010: post-success → download primary; no persistent validity strip', () => {
     const ui = deriveCalmConvertUi({
       hasInput: true,
       hasConverted: true,
@@ -34,7 +34,7 @@ describe('deriveCalmConvertUi (TC-UX-CALM)', () => {
     });
     expect(ui.phase).toBe('postSuccess');
     expect(ui.primaryKind).toBe('download');
-    expect(ui.showValidityStrip).toBe(true);
+    expect(ui.showValidityStrip).toBe(false);
   });
 
   it('keeps convert primary when converted but not ready to download', () => {

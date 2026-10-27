@@ -904,29 +904,18 @@ describe('FileConverter Component', () => {
       expect(editable).not.toHaveAttribute('readOnly');
     });
 
-    it('keeps decode and live IWXXM in one row on a wide window', () => {
+    it('TC-UX-DECLUTTER: TAC stays in panes; decode and IWXXM live in results drawer', () => {
       seedLiveConvertChrome();
-
-      const original = window.matchMedia;
-      window.matchMedia = ((query: string) => ({
-        matches: query.includes('1280'),
-        media: query,
-        onchange: null,
-        addListener: () => undefined,
-        removeListener: () => undefined,
-        addEventListener: () => undefined,
-        removeEventListener: () => undefined,
-        dispatchEvent: () => true,
-      })) as typeof window.matchMedia;
       render(<FileConverter {...defaultProps} />);
       const panes = screen.getByTestId('live-convert-panes');
-      const decodePane = within(panes).getByTestId('decode-pane');
-      expect(decodePane).toContainElement(
-        within(panes).getByTestId('decode-panel-mock'),
+      expect(within(panes).queryByTestId('decode-pane')).not.toBeInTheDocument();
+      expect(within(panes).queryByTestId('iwxxm-preview-pane')).not.toBeInTheDocument();
+      expect(screen.getByTestId('convert-results-drawer')).toBeInTheDocument();
+      expect(screen.getByTestId('decode-pane')).toContainElement(
+        screen.getByTestId('decode-panel-mock'),
       );
-      expect(within(panes).getByTestId('iwxxm-preview-pane')).toBeInTheDocument();
-      expect(within(panes).getAllByRole('separator')).toHaveLength(2);
-      window.matchMedia = original;
+      expect(screen.getByTestId('iwxxm-preview-pane')).toBeInTheDocument();
+      expect(screen.queryAllByRole('separator')).toHaveLength(0);
     });
 
     it('shows Sign in for guests and guest loss notice when local work exists', async () => {
@@ -1436,7 +1425,7 @@ describe('FileConverter Component', () => {
           fixes: [],
         });
         render(<FileConverter {...defaultProps} />);
-        const tac = screen.getByRole('region', { name: 'TAC' });
+        const tac = screen.getByTestId('live-convert-panes');
         fireEvent.keyDown(tac, { key: 'ArrowDown', altKey: true });
         fireEvent.change(screen.getByTestId('tac-editor'), {
           target: { value: 'METAR XX' },
@@ -1743,8 +1732,7 @@ describe('FileConverter Component', () => {
 
     it('should have download button for results', async () => {
       render(<FileConverter {...defaultProps} />);
-      const downloadBtn = await screen.findByText(/download/i, { selector: 'button' });
-      expect(downloadBtn).toBeInTheDocument();
+      expect(await screen.findByTestId('download-zip-button')).toBeInTheDocument();
     });
   });
 
@@ -1967,9 +1955,8 @@ describe('FileConverter Component', () => {
       );
       await user.click(screen.getByTestId('convert-panes-toggle'));
       expect(screen.getByTestId('convert-body')).not.toHaveAttribute('hidden');
-      expect(screen.getByTestId('convert-weather-map-toggle')).toHaveTextContent(
-        'Weather map',
-      );
+      expect(screen.getByTestId('convert-results-tab-map')).toHaveTextContent('Map');
+      await user.click(screen.getByTestId('convert-results-tab-map'));
       expect(screen.getByTestId('live-world-map')).toBeInTheDocument();
       expect(
         screen
@@ -2006,6 +1993,7 @@ describe('FileConverter Component', () => {
       const originalScroll = HTMLElement.prototype.scrollIntoView;
       HTMLElement.prototype.scrollIntoView = scroll;
       render(<FileConverter {...defaultProps} />);
+      await user.click(screen.getByTestId('convert-results-tab-map'));
       await user.click(screen.getByTestId('live-map-load-empty'));
       await user.click(screen.getByTestId('live-map-load-blank'));
       expect(screen.getByLabelText('Enter METAR data manually')).toHaveValue('');
@@ -2020,35 +2008,16 @@ describe('FileConverter Component', () => {
       HTMLElement.prototype.scrollIntoView = originalScroll;
     });
 
-    it('nudges pane widths on a wide screen', () => {
+    it('TC-UX-DECLUTTER: no peer-pane resize separators (drawer replaces grid)', () => {
       seedLiveConvertChrome();
-
-      const original = window.matchMedia;
-      window.matchMedia = ((query: string) => ({
-        matches: query.includes('1280'),
-        media: query,
-        onchange: null,
-        addListener: () => {},
-        removeListener: () => {},
-        addEventListener: () => {},
-        removeEventListener: () => {},
-        dispatchEvent: () => false,
-      })) as typeof window.matchMedia;
-      try {
-        render(<FileConverter {...defaultProps} />);
-        fireEvent.keyDown(
-          screen.getByRole('separator', { name: 'Resize TAC and decode panes' }),
-          { key: 'ArrowRight' },
-        );
-        expect(
-          window.localStorage.getItem('tac-to-iwxxm.live-convert.layout'),
-        ).toContain('"paneWidths":[36,25,39]');
-      } finally {
-        window.matchMedia = original;
-      }
+      render(<FileConverter {...defaultProps} />);
+      expect(
+        screen.queryByRole('separator', { name: 'Resize TAC and decode panes' }),
+      ).not.toBeInTheDocument();
+      expect(screen.getByTestId('convert-results-drawer')).toBeInTheDocument();
     });
 
-    it('keeps a version on each successful convert and diffs the latest pair', async () => {
+    it('TC-UX-DECLUTTER-007: Convert has no Compare versions chrome after converts', async () => {
       const user = userEvent.setup({ delay: null });
       mockConvertMetarToIwxxm
         .mockResolvedValueOnce({
@@ -2066,19 +2035,12 @@ describe('FileConverter Component', () => {
       const textarea = container.querySelector('textarea') as HTMLTextAreaElement;
       fireEvent.change(textarea, { target: { value: 'METAR TTPP 301400Z' } });
       await user.click(screen.getByTestId('convert-button'));
-      await waitFor(() => {
-        expect(screen.queryByTestId('output-version-compare')).not.toBeInTheDocument();
-      });
       await user.click(screen.getByTestId('convert-button'));
-      const compare = await screen.findByTestId('output-version-compare');
-      expect(compare).toHaveTextContent('Version 2 against version 1');
-      expect(compare).toHaveTextContent('Removed');
-      expect(compare).toHaveTextContent('<a/>');
-      expect(compare).toHaveTextContent('Added');
-      expect(compare).toHaveTextContent('<b/>');
+      expect(screen.queryByTestId('output-version-compare')).not.toBeInTheDocument();
+      expect(screen.queryByLabelText(/Compare versions/i)).not.toBeInTheDocument();
     });
 
-    it('restores convert versions from a session and clears them when the session closes', async () => {
+    it('TC-UX-DECLUTTER-007: session output_versions do not restore Compare versions UI', async () => {
       const session = {
         id: 'versions-1',
         status: 'draft',
@@ -2106,9 +2068,7 @@ describe('FileConverter Component', () => {
       const { rerender } = render(
         <FileConverter {...defaultProps} loadedWorkSession={session} />,
       );
-      expect(await screen.findByTestId('output-version-compare')).toHaveTextContent(
-        'Version 2 against version 1',
-      );
+      expect(screen.queryByTestId('output-version-compare')).not.toBeInTheDocument();
 
       rerender(<FileConverter {...defaultProps} />);
       expect(screen.queryByTestId('output-version-compare')).not.toBeInTheDocument();
@@ -5051,10 +5011,10 @@ describe('FileConverter Component', () => {
       );
 
       expect(await screen.findByText('queued.tac')).toBeInTheDocument();
-      expect(screen.getByText('result-1')).toBeInTheDocument();
+      expect(screen.getAllByText('result-1').length).toBeGreaterThan(0);
       expect(
-        screen.getByText('Original TAC unavailable for this result.'),
-      ).toBeInTheDocument();
+        screen.getAllByText('Original TAC unavailable for this result.').length,
+      ).toBeGreaterThan(0);
     });
 
     it('keeps a result card when the API provides no XML field', async () => {
@@ -6314,7 +6274,7 @@ describe('FileConverter Component', () => {
       await user.click(screen.getByTestId('convert-button'));
 
       await waitFor(() => {
-        expect(screen.getByText(/extra-from-api\.tac/i)).toBeInTheDocument();
+        expect(screen.getAllByText(/extra-from-api\.tac/i).length).toBeGreaterThan(0);
       });
     });
 
@@ -6666,13 +6626,21 @@ describe('FileConverter Component', () => {
 
       const user = userEvent.setup({ delay: null });
       render(<FileConverter {...defaultProps} />);
-      expect(screen.getByRole('region', { name: 'TAC' })).toBeInTheDocument();
+      expect(screen.getByTestId('live-convert-panes')).toHaveAttribute(
+        'aria-label',
+        'TAC',
+      );
       await user.click(screen.getByTestId('input-mode-validate_iwxxm'));
-      expect(screen.getByRole('region', { name: 'IWXXM' })).toBeInTheDocument();
-      expect(screen.queryByRole('region', { name: 'TAC' })).not.toBeInTheDocument();
+      expect(screen.getByTestId('live-convert-panes')).toHaveAttribute(
+        'aria-label',
+        'IWXXM',
+      );
       expect(screen.queryByTestId('decode-panel-mock')).not.toBeInTheDocument();
       await user.click(screen.getByTestId('input-mode-tac'));
-      expect(screen.getByRole('region', { name: 'TAC' })).toBeInTheDocument();
+      expect(screen.getByTestId('live-convert-panes')).toHaveAttribute(
+        'aria-label',
+        'TAC',
+      );
       expect(screen.getByTestId('decode-panel-mock')).toBeInTheDocument();
     });
 
