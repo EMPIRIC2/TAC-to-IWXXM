@@ -84,7 +84,7 @@ _AREA_TS_MOV = re.compile(
 )
 _CONVECTIVE_SIGMET = re.compile(
     r"^(?:SIG(?!MET)[A-Z0-9]*\s+)?"
-    r"(?:(?P<unit>(?!SIG)[A-Z]{4})\s+)?"
+    r"(?:(?P<unit>(?!SIG)[A-Z]{4})\s+(?:WST\s+\d{6}\s+)?)?"
     r"CONVECTIVE\s+SIGMET\s+(?P<tag>\S+)\s+"
     r"VALID\s+UNTIL\s+(?P<until>\d{4,6})Z\s+(?P<states>.+?)\s+FROM\s+(?P<body>.*)$",
     re.DOTALL | re.IGNORECASE,
