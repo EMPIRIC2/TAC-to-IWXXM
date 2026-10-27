@@ -6784,6 +6784,70 @@ Do **not** rewrite source TAC (typos and oddities are intentional). Runner:
 
 Full IWXXM XML for the matrix lives in session evidence (not all committed); one sample per product under `tests/fixtures/cmo_week1/samples/`.
 
+### Caribbean tester media coverage (EV-calmer-convert-tutorial-caribbean)
+
+[Corpus: product §F7] [Corpus: journeys §UJ-088]
+
+Regression root: `tests/regression/caribbean_tester/`. Map: `fixtures/PACKET_ITEM_MAP.json`
+(+ `PACKET_ITEM_MAP.md`). Image review: `fixtures/IMAGE_REVIEW.md`.
+Inventory: `fixtures/source_file_inventory.json` (124 Downloads files).
+
+**Suite status (2026-10-27):** `uv run pytest tests/regression/caribbean_tester/ -q` → **434 passed**.
+Map: 235 items; covered 226; deferred 5; `missing_tests_non_deferred` **0**.
+Broader kit (+ related package Caribbean tests): **483 passed** (audit evidence).
+
+| Family | Count | In git? | Map status | Primary tests | Status |
+|--------|------:|---------|------------|---------------|--------|
+| Jamaica PNG (`fixtures/images/jamaica/`) | 15 | yes | COVERED 15/15 | class + **TC-CARIB-009** existence | **PASS** |
+| Country XLSX (`raw/**/*.xlsx`) | 6 | yes | COVERED 6/6 | `test_xlsx_tac_rows.py` | **PASS** |
+| DOCX (questionnaires / week datasets) | 24 | no (TAC → JSONL) | COVERED 24/24 | harvest locks + **TC-CARIB-011** allowlist | **PASS** (11 harvest / 13 `questionnaire_only`) |
+| Guyana JPEG screenshots | 50 files / 100 map rows | no (Downloads) | COVERED | matrix + interop + lint | **PASS** (class; off-disk) |
+
+**Policy:** Jamaica PNGs copied into fixtures; Guyana JPEGs + DOCX binaries stay out of git
+(`binary_evidence_skipped` / `tac_extracted_to_jsonl`). Do not require git LFS for JPEG/DOCX.
+
+**DOCX `questionnaire_only` (13 — [Corpus: tests] TC-CARIB-011 / `docx_sourcing_allowlist.json`):**
+Belize METAR/TAF error + translation reports; WEEK 1 METAR TTCP/TUPJ/TTPP; WEEK 1 TAF dataset;
+WEEK 2 METAR; BVI WMO Testing docx; St Maarten questionnaire/error/checklist; TT questionnaire.
+
+**Deferred non-media (stay deferred unless reopened):** Q19/Q20; N1a auth; N1c empty validation
+pop-up (no repro); N15 low priority.
+
+**This evolve closes UX map rows:** Busy UI / results stacking (Calmer Convert); Walkthrough
+product → first-visit empty + Help checklist (UJ-088) — not offline PPTX.
+
+### TC-CARIB — Caribbean Met Services tester regression
+
+| ID | Assert | Evidence / test | Status |
+|----|--------|-----------------|--------|
+| TC-CARIB-001 | Inventory has 124 files; every row has allowed `ingested` | `test_source_inventory.py` | PASS |
+| TC-CARIB-002 | All `raw_copy` paths exist under `raw/` | `test_source_inventory` / raw copy check | PASS |
+| TC-CARIB-003 | Raw `.tac` / `.xml` convert or wellformed gates | `test_raw_files.py` | PASS |
+| TC-CARIB-004 | All 6 XLSX open; extracted TAC convert or empty-OK | `test_xlsx_tac_rows.py` | PASS |
+| TC-CARIB-005 | Harvest extra locks stable | `test_harvest_extra_locks.py` | PASS |
+| TC-CARIB-006 | Cross-product matrix (VCSH/GTS/VRB/CNL/…) | `test_cross_product_matrix.py` | PASS |
+| TC-CARIB-007 | Interop soft-preview / RMK / CNL≠DECR | `test_interop_policies.py` | PASS |
+| TC-CARIB-008 | PACKET_ITEM_MAP `pct_with_tests` ≥ 97; non-deferred missing = [] | `test_packet_item_map.py` | PASS |
+| TC-CARIB-009 | 15 Jamaica PNGs exist under `fixtures/images/jamaica/` matching inventory basenames | `test_source_inventory.py` (existence) | PASS |
+| TC-CARIB-010 | Guyana 50 JPEGs accounted as `binary_evidence_skipped` + IMAGE_REVIEW themes | inventory + `IMAGE_REVIEW.md` | PASS (doc) |
+| TC-CARIB-011 | Every inventory DOCX is harvest-sourced **or** explicit `questionnaire_only` / deferred | `test_docx_sourcing.py` + `docx_sourcing_allowlist.json` | PASS |
+| TC-CARIB-012 | Deferred packet items only {Q19,Q20,N1a,N1c,N15} | map + HF inventory | PASS |
+
+### TC-UX-CALM — Calmer Convert UX principles (UJ-088)
+
+| ID | Assert | Tier |
+|----|--------|------|
+| TC-UX-CALM-001 | Exactly one primary Convert CTA per view state | T0 |
+| TC-UX-CALM-002 | After success, primary is Download IWXXM | T0 / T2 |
+| TC-UX-CALM-003 | Empty TAC hides advanced profile/engines until drawer/Advanced | T0 |
+| TC-UX-CALM-004 | Empty hero + clear next action (Convert or example chips) | T0 |
+| TC-UX-CALM-005 | Profile drawer: Output options default collapsed; Apply primary | T0 |
+| TC-UX-CALM-006 | Post-convert TAC read-only until Edit | T0 |
+| TC-UX-CALM-007 | Tertiary actions under ⋯ (no third filled button) | T0 |
+| TC-UX-CALM-008 | Help checklist open / dismiss / reopen | T0 / T2 |
+| TC-UX-CALM-009 | New calm copy passes EV-048 / internalDocRefGuard | T0 |
+| TC-UX-CALM-010 | Validity strip only on success; empty hero only when TAC empty | T0 / T2 |
+
 ### TC-EV-beta — Beta UX + export/auth (EV-beta-ux-export-auth)
 
 | ID | Assert | Tier |

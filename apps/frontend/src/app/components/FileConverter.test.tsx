@@ -670,7 +670,7 @@ describe('FileConverter Component', () => {
       expect(bar).toContainElement(
         screen.getByRole('heading', { name: 'TAC to IWXXM' }),
       );
-      expect(bar).toContainElement(screen.getByTestId('operator-help-link'));
+      expect(bar).toContainElement(screen.getByTestId('convert-help-open'));
       expect(bar).toContainElement(
         screen.getByRole('button', { name: 'Open user preferences' }),
       );
@@ -699,14 +699,153 @@ describe('FileConverter Component', () => {
       expect(frame.className).toContain('px-4');
     });
 
-    it('exposes Help link to the operator one-pager (UJ-054 / TC-EV047-011)', () => {
+    it('exposes Help checklist with one-pager link (UJ-054 / TC-EV047-011 / UJ-088)', async () => {
+      const user = userEvent.setup();
       render(<FileConverter {...defaultProps} />);
-      const help = screen.getByTestId('operator-help-link');
+      await user.click(screen.getByTestId('convert-help-open'));
+      const help = within(screen.getByTestId('convert-help-checklist')).getByTestId(
+        'operator-help-link',
+      );
       expect(help).toHaveAttribute(
         'href',
         expect.stringContaining('docs/guides/operator-one-pager.md'),
       );
       expect(help).toHaveAttribute('target', '_blank');
+    });
+
+    it('UJ-088: empty hero other-task links switch input mode', async () => {
+      const user = userEvent.setup();
+      render(<FileConverter {...defaultProps} />);
+      expect(screen.getByTestId('convert-empty-hero')).toBeInTheDocument();
+      await user.click(
+        screen.getByRole('button', { name: 'Convert full bulletin (AHL)' }),
+      );
+      expect(screen.getByTestId('input-mode-ahl_bulletin')).toHaveClass('bg-blue-600');
+      await user.click(screen.getByTestId('input-mode-tac'));
+      await waitFor(() => {
+        expect(screen.getByTestId('convert-empty-hero')).toBeInTheDocument();
+      });
+      await user.click(screen.getByRole('button', { name: 'Validate existing IWXXM' }));
+      expect(screen.getByTestId('input-mode-validate_iwxxm')).toHaveClass(
+        'bg-blue-600',
+      );
+      await user.click(screen.getByTestId('input-mode-tac'));
+      await waitFor(() => {
+        expect(screen.getByTestId('convert-empty-hero')).toBeInTheDocument();
+      });
+      await user.click(screen.getByRole('button', { name: 'Build COLLECT bundle' }));
+      expect(screen.getByTestId('input-mode-collect_iwxxm')).toHaveClass('bg-blue-600');
+    });
+
+    it('UJ-088: profile Change opens drawer; radio Apply/Reset update profile', async () => {
+      const user = userEvent.setup();
+      render(<FileConverter {...defaultProps} />);
+      await user.click(screen.getByTestId('convert-profile-change'));
+      const drawer = await screen.findByTestId('convert-profile-drawer');
+      expect(drawer).toBeInTheDocument();
+      const radios = within(drawer).getAllByRole('radio');
+      expect(radios.length).toBeGreaterThan(1);
+      const other = radios.find((radio) => !(radio as HTMLInputElement).checked);
+      expect(other).toBeTruthy();
+      await user.click(other as HTMLElement);
+      await user.click(screen.getByTestId('convert-profile-apply'));
+      await waitFor(() => {
+        expect(screen.queryByTestId('convert-profile-drawer')).not.toBeInTheDocument();
+      });
+      await user.click(screen.getByTestId('convert-profile-change'));
+      await screen.findByTestId('convert-profile-drawer');
+      await user.click(screen.getByRole('button', { name: 'Reset to WMO defaults' }));
+      await user.click(screen.getByTestId('convert-profile-apply'));
+    });
+
+    it('UJ-088: example chip loads TAC; Download IWXXM primary works', async () => {
+      const user = userEvent.setup({ delay: null });
+      mockConvertMetarToIwxxm.mockResolvedValue({
+        results: [
+          {
+            name: 'manual_input.txt',
+            content: '<iwxxm:METAR>ok</iwxxm:METAR>',
+            iwxxm_xml: '<iwxxm:METAR>ok</iwxxm:METAR>',
+            tac_input:
+              'METAR KJFK 121251Z 24016G28KT 3SM -RA BR BKN020 OVC040 14/11 A2990=',
+            source: 'manual_input',
+            size_bytes: 30,
+          },
+        ],
+        errors: [],
+        issues: [],
+        total_processed: 1,
+        successful: 1,
+        failed: 0,
+      });
+      const createUrlSpy = vi
+        .spyOn(URL, 'createObjectURL')
+        .mockReturnValue('blob:calm-download');
+      const revokeUrlSpy = vi
+        .spyOn(URL, 'revokeObjectURL')
+        .mockImplementation(() => undefined);
+      const clickSpy = vi
+        .spyOn(HTMLAnchorElement.prototype, 'click')
+        .mockImplementation(() => undefined);
+
+      const { container } = render(<FileConverter {...defaultProps} />);
+      const hero = screen.getByTestId('convert-empty-hero');
+      const chips = within(hero).getAllByTestId(/convert-example-chip-/);
+      expect(chips[0]).toBeTruthy();
+      await user.click(chips[0]!);
+      await waitFor(() => {
+        expect(screen.queryByTestId('convert-empty-hero')).not.toBeInTheDocument();
+      });
+      const textarea = container.querySelector('textarea') as HTMLTextAreaElement;
+      expect(textarea.value.length).toBeGreaterThan(0);
+      await user.click(screen.getByTestId('convert-button'));
+      await waitFor(() => {
+        expect(screen.getByTestId('convert-download-iwxxm')).toBeInTheDocument();
+      });
+      await user.click(screen.getByTestId('convert-download-iwxxm'));
+      expect(createUrlSpy).toHaveBeenCalled();
+      expect(clickSpy).toHaveBeenCalled();
+
+      createUrlSpy.mockRestore();
+      revokeUrlSpy.mockRestore();
+      clickSpy.mockRestore();
+    });
+
+    it('TC-UX-CALM-006: post-convert TAC is read-only until Edit', async () => {
+      const user = userEvent.setup({ delay: null });
+      mockConvertMetarToIwxxm.mockResolvedValueOnce({
+        results: [
+          {
+            name: 'manual_input.txt',
+            content: '<iwxxm:METAR>ok</iwxxm:METAR>',
+            iwxxm_xml: '<iwxxm:METAR>ok</iwxxm:METAR>',
+            source: 'manual_input',
+            size_bytes: 30,
+          },
+        ],
+        errors: [],
+        issues: [],
+        total_processed: 1,
+        successful: 1,
+        failed: 0,
+      });
+
+      const { container } = render(<FileConverter {...defaultProps} />);
+      const textarea = container.querySelector('textarea') as HTMLTextAreaElement;
+      fireEvent.change(textarea, {
+        target: {
+          value: 'METAR KJFK 121251Z 24016G28KT 3SM -RA BR BKN020 OVC040 14/11 A2990=',
+        },
+      });
+      await user.click(screen.getByTestId('convert-button'));
+      await waitFor(() => {
+        expect(screen.getByTestId('convert-tac-readonly')).toBeInTheDocument();
+      });
+      expect(screen.getByTestId('convert-tac-edit')).toBeInTheDocument();
+      expect(textarea).toHaveAttribute('readOnly');
+      await user.click(screen.getByTestId('convert-tac-edit'));
+      expect(screen.getByTestId('convert-tac-editable')).toBeInTheDocument();
+      expect(textarea).not.toHaveAttribute('readOnly');
     });
 
     it('keeps decode and live IWXXM in one row on a wide window', () => {
@@ -3516,6 +3655,7 @@ describe('FileConverter Component', () => {
         expect(screen.getByText('<iwxxm>kept</iwxxm>')).toBeInTheDocument();
       });
 
+      await user.click(screen.getByTestId('convert-tac-edit'));
       await user.clear(textarea);
       fireEvent.change(textarea, { target: { value: 'BAD INPUT' } });
       await user.click(screen.getByTestId('convert-button'));

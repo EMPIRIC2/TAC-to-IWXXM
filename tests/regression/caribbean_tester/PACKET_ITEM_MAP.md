@@ -4,6 +4,8 @@ Machine-readable twin: `fixtures/PACKET_ITEM_MAP.json`.
 
 Every questionnaire row, N-series item, Downloads file, and screenshot maps to at least one test node (or an explicit DEFERRED status).
 
+Inventory **DOCX** rows must be harvest-linked in `caribbean_tester_*.jsonl` **or** listed in `fixtures/docx_sourcing_allowlist.json` (`questionnaire_only`) with matching `docx_sourcing=questionnaire_only` notes on their FILE-* map rows (`test_docx_sourcing.py`, TC-CARIB-011).
+
 ## Completeness
 
 See JSON `pct_with_tests` (**97.9%** with tests; 5 deferred walkthrough/auth/empty-popup items). Non-deferred items without tests: **0**.
@@ -27,9 +29,9 @@ See JSON `pct_with_tests` (**97.9%** with tests; 5 deferred walkthrough/auth/emp
 | Validate-on-TAC message | Addressed (wellformed TAC detect) |
 | New TAC mode reset / top bar | Addressed in FileConverter diff |
 | Operator instructions | One-pager updated |
-| Busy UI / results stacking | Partial — mockup-aligned status card exists; full redesign deferred |
+| Busy UI / results stacking | **In progress** — EV-calmer-convert-tutorial-caribbean (Calmer Convert) |
 | Empty validation pop-up | Deferred — no stable repro |
-| Walkthrough product | Deferred |
+| Walkthrough product | **In progress** — UJ-088 empty-state + Help checklist (not offline PPTX) |
 | Internal EV-/ADR ids in UI | Guarded (EV-048); screenshots of older builds showed ids — current FE guards |
 
 ## Image review

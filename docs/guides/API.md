@@ -1,4 +1,4 @@
-# API
+# API guide
 
 The HTTP API is the FastAPI app in `apps/backend`.
 

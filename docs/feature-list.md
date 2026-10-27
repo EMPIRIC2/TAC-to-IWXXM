@@ -589,6 +589,19 @@
   2. No operator-visible UI string matches guard patterns (see test-plan TC-EV048).
   3. Automated guard covers FE string catalogs; comments/tests excluded.
   4. UJ-055 / TC-EV048-003 green.
+- **EV-calmer-convert-tutorial-caribbean deepen (Calmer Convert + first-visit tutorial)**:
+  Progressive-disclosure Convert chrome matching Calmer Convert screens (empty hero → live
+  preview → post-convert Download primary → profile drawer). First-visit tutorial is the empty
+  state plus Help checklist replay (not a blocking wizard; does not replace F22/F31 gates).
+  UX principles encoded as TC-UX-CALM-001..010. Caribbean tester images/DOCX/XLSX coverage
+  tracked in `[Corpus: tests]`. Does **not** flip F7 → Implemented; no new Fn.
+- **Acceptance (EV-calmer-convert-tutorial-caribbean — F7 calm UX)**:
+  1. Empty TAC: one hero + one primary Convert CTA + example chips; advanced profile in drawer.
+  2. After successful convert/validate: primary is Download IWXXM; Send… secondary; validity strip.
+  3. Help opens short in-app checklist; reopenable; EV-048 clean.
+  4. TC-UX-CALM-001..010 + UJ-088 green (Vitest + H4–H5 smoke).
+  5. Caribbean media table in test-plan: every PNG/XLSX on disk + map DOCX/JPEG addressed PASS
+     (or explicit DEFERRED/WAIVE).
 - **S063 / EV-054 deepen (F7.q / #836 — Quality metrics tab)**: Primary **app shell tab**
   (peer to Convert / History, not a panel inside the convert workbench) that browses the
   official WMO IWXXM example corpus by product/file type and surfaces **precomputed** match,
