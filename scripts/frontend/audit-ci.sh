@@ -52,6 +52,8 @@ IGNORE_GHSA=(
   # Newly published transitive ids on the same dev/test lines (2026-10-24):
   # vite, vitest mocker, undici via jsdom, zod via stryker, fast-uri via stryker.
   "GHSA-333x-w4r6-6crp"
+  # qs via stryker typed-rest-client — mutation/dev-only (2026-10-27)
+  "GHSA-6pq8-jhm2-2vcw"
   "GHSA-4qv8-2p9j-2685"
   "GHSA-587h-7wmj-h5pm"
   "GHSA-698v-4r3x-3vcv"

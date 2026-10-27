@@ -764,6 +764,27 @@ describe('FileConverter Component', () => {
       ).toBeInTheDocument();
     });
 
+    it('TC-UX-CALM: empty browse triggers the hidden file input', async () => {
+      mockReadGuestConverterState.mockReturnValue(null);
+      const user = userEvent.setup({ delay: null });
+      const { container } = render(<FileConverter {...defaultProps} />);
+      const fileInput = container.querySelector(
+        'input[type="file"]',
+      ) as HTMLInputElement;
+      const clickSpy = vi.spyOn(fileInput, 'click').mockImplementation(() => undefined);
+      await user.click(screen.getByTestId('convert-empty-browse'));
+      expect(clickSpy).toHaveBeenCalled();
+      clickSpy.mockRestore();
+    });
+
+    it('TC-UX-CALM: live profile Change opens the profile drawer', async () => {
+      seedLiveConvertChrome();
+      const user = userEvent.setup({ delay: null });
+      render(<FileConverter {...defaultProps} />);
+      await user.click(screen.getByTestId('convert-profile-change-live'));
+      expect(await screen.findByTestId('convert-profile-drawer')).toBeInTheDocument();
+    });
+
     it('UJ-088: profile Change opens drawer; radio Apply/Reset update profile', async () => {
       mockReadGuestConverterState.mockReturnValue(null);
       const user = userEvent.setup();
@@ -6990,6 +7011,7 @@ describe('FileConverter Component', () => {
     });
 
     it('live IWXXM ignores AbortError and post-abort resolves', async () => {
+      seedLiveConvertChrome();
       vi.useFakeTimers();
       try {
         render(<FileConverter {...defaultProps} />);
@@ -7030,6 +7052,47 @@ describe('FileConverter Component', () => {
           resolveFirst?.({ results: [{ iwxxm_xml: '<stale/>' }], ok: true });
           await Promise.resolve();
         });
+      } finally {
+        vi.useRealTimers();
+      }
+    });
+
+    it('live IWXXM catch ignores non-AbortError when signal already aborted', async () => {
+      seedLiveConvertChrome();
+      vi.useFakeTimers();
+      try {
+        render(<FileConverter {...defaultProps} />);
+        const textarea = screen.getByTestId('tac-editor');
+
+        mockConvertMetarToIwxxm.mockImplementationOnce(
+          ({ signal }: { signal?: AbortSignal }) =>
+            new Promise((_resolve, reject) => {
+              signal?.addEventListener('abort', () => {
+                reject(new Error('network reset after abort'));
+              });
+            }),
+        );
+
+        fireEvent.change(textarea, { target: { value: 'METAR ABORT-NET1=' } });
+        await act(async () => {
+          await vi.advanceTimersByTimeAsync(350);
+        });
+
+        mockConvertMetarToIwxxm.mockResolvedValueOnce({
+          results: [{ iwxxm_xml: '<ok/>' }],
+          ok: true,
+          failed_spans: [],
+        });
+        fireEvent.change(textarea, { target: { value: 'METAR ABORT-NET2=' } });
+        await act(async () => {
+          await vi.advanceTimersByTimeAsync(350);
+          await Promise.resolve();
+          await Promise.resolve();
+        });
+
+        expect(
+          screen.queryByText(/network reset after abort/i),
+        ).not.toBeInTheDocument();
       } finally {
         vi.useRealTimers();
       }
