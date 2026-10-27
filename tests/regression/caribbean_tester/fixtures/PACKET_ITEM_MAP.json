@@ -289,7 +289,7 @@
       "source_file": "TT/regional N-series",
       "test_node_ids": [],
       "status": "DEFERRED",
-      "notes": "Empty validation pop-up \u2014 no repro",
+      "notes": "Empty validation pop-up — no repro",
       "products": [],
       "interop_policy": null
     },
@@ -356,7 +356,7 @@
         "packages/tac2iwxxm/tests/test_default_remarks.py"
       ],
       "status": "COVERED",
-      "notes": "RMK annex3 vs US profile \u2014 interop locked",
+      "notes": "RMK annex3 vs US profile — interop locked",
       "products": [],
       "interop_policy": "annex3: REMARKS_EXCLUDED. iwxxm_us may retain. No contradiction."
     },
@@ -467,7 +467,7 @@
         "packages/tac2iwxxm/tests/test_caribbean_tester_round2.py::test_sigmet_decr_weakens_and_keeps_top_flight_level"
       ],
       "status": "COVERED",
-      "notes": "DECR\u2192WEAKEN",
+      "notes": "DECR→WEAKEN",
       "products": [],
       "interop_policy": null
     },
@@ -674,7 +674,7 @@
       "status": "COVERED",
       "notes": "Soft preview must not claim Valid; OUTPUT_VALIDATION_WARNING blocks download",
       "products": [],
-      "interop_policy": "Soft preview badge \u2260 Valid. Publish requires hard convert without blocking codes."
+      "interop_policy": "Soft preview badge ≠ Valid. Publish requires hard convert without blocking codes."
     },
     {
       "packet_item_id": "INTEROP-RMK-ANNEX3-VS-US",
@@ -705,7 +705,7 @@
         "packages/tac2iwxxm/tests/test_caribbean_tester_round2.py::test_sigmet_cancellation_is_cancel_report"
       ],
       "status": "COVERED",
-      "notes": "CNL \u2192 isCancelReport=true",
+      "notes": "CNL → isCancelReport=true",
       "products": [],
       "interop_policy": "CNL emits cancel report; phenomenon body omitted when cancelled."
     },
@@ -1396,10 +1396,10 @@
       "packet_item_id": "FILE-TAC to IWXXM Test-METAR Error Report.docx",
       "source_file": "BELIZE-TAC TO IWXXM COMPLETED TESTING RESULTS/TAC TO IWXXM COMPLETED/TAC to IWXXM Test-METAR Error Report.docx",
       "test_node_ids": [
-        "tests/regression/caribbean_tester/test_harvest_extra_locks.py"
+        "tests/regression/caribbean_tester/test_docx_sourcing.py::test_every_inventory_docx_is_harvest_linked_or_allowlisted"
       ],
       "status": "COVERED",
-      "notes": "ingest=tac_extracted_to_jsonl",
+      "notes": "ingest=tac_extracted_to_jsonl; docx_sourcing=questionnaire_only; no_harvest_jsonl_row",
       "products": [],
       "interop_policy": null
     },
@@ -1407,10 +1407,10 @@
       "packet_item_id": "FILE-TAC to IWXXM Test-TAF PARSE Error Report.docx",
       "source_file": "BELIZE-TAC TO IWXXM COMPLETED TESTING RESULTS/TAC TO IWXXM COMPLETED/TAC to IWXXM Test-TAF PARSE Error Report.docx",
       "test_node_ids": [
-        "tests/regression/caribbean_tester/test_harvest_extra_locks.py"
+        "tests/regression/caribbean_tester/test_docx_sourcing.py::test_every_inventory_docx_is_harvest_linked_or_allowlisted"
       ],
       "status": "COVERED",
-      "notes": "ingest=tac_extracted_to_jsonl",
+      "notes": "ingest=tac_extracted_to_jsonl; docx_sourcing=questionnaire_only; no_harvest_jsonl_row",
       "products": [],
       "interop_policy": null
     },
@@ -1418,10 +1418,10 @@
       "packet_item_id": "FILE-TAC to IWXXM Test-TAF TRANSLATION Error Report.docx",
       "source_file": "BELIZE-TAC TO IWXXM COMPLETED TESTING RESULTS/TAC TO IWXXM COMPLETED/TAC to IWXXM Test-TAF TRANSLATION Error Report.docx",
       "test_node_ids": [
-        "tests/regression/caribbean_tester/test_harvest_extra_locks.py"
+        "tests/regression/caribbean_tester/test_docx_sourcing.py::test_every_inventory_docx_is_harvest_linked_or_allowlisted"
       ],
       "status": "COVERED",
-      "notes": "ingest=tac_extracted_to_jsonl",
+      "notes": "ingest=tac_extracted_to_jsonl; docx_sourcing=questionnaire_only; no_harvest_jsonl_row",
       "products": [],
       "interop_policy": null
     },
@@ -1473,10 +1473,10 @@
       "packet_item_id": "FILE-WEEK 1 METAR DATASET TTCP.docx",
       "source_file": "BELIZE-TAC TO IWXXM COMPLETED TESTING RESULTS/TAC TO IWXXM COMPLETED/WEEK 1/METAR/WEEK 1 METAR DATASET TTCP.docx",
       "test_node_ids": [
-        "tests/regression/caribbean_tester/test_harvest_extra_locks.py"
+        "tests/regression/caribbean_tester/test_docx_sourcing.py::test_every_inventory_docx_is_harvest_linked_or_allowlisted"
       ],
       "status": "COVERED",
-      "notes": "ingest=tac_extracted_to_jsonl",
+      "notes": "ingest=tac_extracted_to_jsonl; docx_sourcing=questionnaire_only; no_harvest_jsonl_row",
       "products": [],
       "interop_policy": null
     },
@@ -1484,10 +1484,10 @@
       "packet_item_id": "FILE-WEEK 1 METAR DATASET TUPJ.docx",
       "source_file": "BELIZE-TAC TO IWXXM COMPLETED TESTING RESULTS/TAC TO IWXXM COMPLETED/WEEK 1/METAR/WEEK 1 METAR DATASET TUPJ.docx",
       "test_node_ids": [
-        "tests/regression/caribbean_tester/test_harvest_extra_locks.py"
+        "tests/regression/caribbean_tester/test_docx_sourcing.py::test_every_inventory_docx_is_harvest_linked_or_allowlisted"
       ],
       "status": "COVERED",
-      "notes": "ingest=tac_extracted_to_jsonl",
+      "notes": "ingest=tac_extracted_to_jsonl; docx_sourcing=questionnaire_only; no_harvest_jsonl_row",
       "products": [],
       "interop_policy": null
     },
@@ -1495,10 +1495,10 @@
       "packet_item_id": "FILE-Week 1 METAR DATASET TTPP.docx",
       "source_file": "BELIZE-TAC TO IWXXM COMPLETED TESTING RESULTS/TAC TO IWXXM COMPLETED/WEEK 1/METAR/Week 1 METAR DATASET TTPP.docx",
       "test_node_ids": [
-        "tests/regression/caribbean_tester/test_harvest_extra_locks.py"
+        "tests/regression/caribbean_tester/test_docx_sourcing.py::test_every_inventory_docx_is_harvest_linked_or_allowlisted"
       ],
       "status": "COVERED",
-      "notes": "ingest=tac_extracted_to_jsonl",
+      "notes": "ingest=tac_extracted_to_jsonl; docx_sourcing=questionnaire_only; no_harvest_jsonl_row",
       "products": [],
       "interop_policy": null
     },
@@ -1525,8 +1525,8 @@
       "interop_policy": null
     },
     {
-      "packet_item_id": "FILE-Week 1 \u2013 SIGMET Testing Dataset_4.docx",
-      "source_file": "BELIZE-TAC TO IWXXM COMPLETED TESTING RESULTS/TAC TO IWXXM COMPLETED/WEEK 1/N_A/Week 1 \u2013 SIGMET Testing Dataset_4.docx",
+      "packet_item_id": "FILE-Week 1 – SIGMET Testing Dataset_4.docx",
+      "source_file": "BELIZE-TAC TO IWXXM COMPLETED TESTING RESULTS/TAC TO IWXXM COMPLETED/WEEK 1/N_A/Week 1 – SIGMET Testing Dataset_4.docx",
       "test_node_ids": [
         "tests/regression/caribbean_tester/test_harvest_extra_locks.py"
       ],
@@ -1547,8 +1547,8 @@
       "interop_policy": null
     },
     {
-      "packet_item_id": "FILE-Week 1 \u2013 SPECI Testing Dataset-V1.docx",
-      "source_file": "BELIZE-TAC TO IWXXM COMPLETED TESTING RESULTS/TAC TO IWXXM COMPLETED/WEEK 1/SPECI/Week 1 \u2013 SPECI Testing Dataset-V1.docx",
+      "packet_item_id": "FILE-Week 1 – SPECI Testing Dataset-V1.docx",
+      "source_file": "BELIZE-TAC TO IWXXM COMPLETED TESTING RESULTS/TAC TO IWXXM COMPLETED/WEEK 1/SPECI/Week 1 – SPECI Testing Dataset-V1.docx",
       "test_node_ids": [
         "tests/regression/caribbean_tester/test_harvest_extra_locks.py"
       ],
@@ -1569,13 +1569,13 @@
       "interop_policy": null
     },
     {
-      "packet_item_id": "FILE-Week 1 \u2013 TAF Testing Dataset_2.docx",
-      "source_file": "BELIZE-TAC TO IWXXM COMPLETED TESTING RESULTS/TAC TO IWXXM COMPLETED/WEEK 1/TAF/Week 1 \u2013 TAF Testing Dataset_2.docx",
+      "packet_item_id": "FILE-Week 1 – TAF Testing Dataset_2.docx",
+      "source_file": "BELIZE-TAC TO IWXXM COMPLETED TESTING RESULTS/TAC TO IWXXM COMPLETED/WEEK 1/TAF/Week 1 – TAF Testing Dataset_2.docx",
       "test_node_ids": [
-        "tests/regression/caribbean_tester/test_harvest_extra_locks.py"
+        "tests/regression/caribbean_tester/test_docx_sourcing.py::test_every_inventory_docx_is_harvest_linked_or_allowlisted"
       ],
       "status": "COVERED",
-      "notes": "ingest=tac_extracted_to_jsonl",
+      "notes": "ingest=tac_extracted_to_jsonl; docx_sourcing=questionnaire_only; no_harvest_jsonl_row",
       "products": [],
       "interop_policy": null
     },
@@ -1583,10 +1583,10 @@
       "packet_item_id": "FILE-METAR WEEK 2.docx",
       "source_file": "BELIZE-TAC TO IWXXM COMPLETED TESTING RESULTS/TAC TO IWXXM COMPLETED/WEEK 2/METAR_SPECI/METAR WEEK 2.docx",
       "test_node_ids": [
-        "tests/regression/caribbean_tester/test_harvest_extra_locks.py"
+        "tests/regression/caribbean_tester/test_docx_sourcing.py::test_every_inventory_docx_is_harvest_linked_or_allowlisted"
       ],
       "status": "COVERED",
-      "notes": "ingest=tac_extracted_to_jsonl",
+      "notes": "ingest=tac_extracted_to_jsonl; docx_sourcing=questionnaire_only; no_harvest_jsonl_row",
       "products": [],
       "interop_policy": null
     },
@@ -1638,10 +1638,10 @@
       "packet_item_id": "FILE-WMO TAC - IWXXM Testing  (1).docx",
       "source_file": "BRITISH VIRGIN ISLANDS/WMO TAC - IWXXM Testing  (1).docx",
       "test_node_ids": [
-        "tests/regression/caribbean_tester/test_harvest_extra_locks.py"
+        "tests/regression/caribbean_tester/test_docx_sourcing.py::test_every_inventory_docx_is_harvest_linked_or_allowlisted"
       ],
       "status": "COVERED",
-      "notes": "ingest=tac_extracted_to_jsonl",
+      "notes": "ingest=tac_extracted_to_jsonl; docx_sourcing=questionnaire_only; no_harvest_jsonl_row",
       "products": [],
       "interop_policy": null
     },
@@ -2683,10 +2683,10 @@
       "packet_item_id": "FILE-NMHS TAC-IWXXM User Evaluation Questionnaire.docx",
       "source_file": "St Maarten IWXXM TESTING RESULTS/NMHS TAC-IWXXM User Evaluation Questionnaire.docx",
       "test_node_ids": [
-        "tests/regression/caribbean_tester/test_harvest_extra_locks.py"
+        "tests/regression/caribbean_tester/test_docx_sourcing.py::test_every_inventory_docx_is_harvest_linked_or_allowlisted"
       ],
       "status": "COVERED",
-      "notes": "ingest=tac_extracted_to_jsonl",
+      "notes": "ingest=tac_extracted_to_jsonl; docx_sourcing=questionnaire_only; no_harvest_jsonl_row",
       "products": [],
       "interop_policy": null
     },
@@ -2694,10 +2694,10 @@
       "packet_item_id": "FILE-TAC to IWXXM Test-Error Report.docx",
       "source_file": "St Maarten IWXXM TESTING RESULTS/TAC to IWXXM Test-Error Report.docx",
       "test_node_ids": [
-        "tests/regression/caribbean_tester/test_harvest_extra_locks.py"
+        "tests/regression/caribbean_tester/test_docx_sourcing.py::test_every_inventory_docx_is_harvest_linked_or_allowlisted"
       ],
       "status": "COVERED",
-      "notes": "ingest=tac_extracted_to_jsonl",
+      "notes": "ingest=tac_extracted_to_jsonl; docx_sourcing=questionnaire_only; no_harvest_jsonl_row",
       "products": [],
       "interop_policy": null
     },
@@ -2705,10 +2705,10 @@
       "packet_item_id": "FILE-TAC-IWXXM-Comparison Checklist.docx",
       "source_file": "St Maarten IWXXM TESTING RESULTS/TAC-IWXXM-Comparison Checklist.docx",
       "test_node_ids": [
-        "tests/regression/caribbean_tester/test_harvest_extra_locks.py"
+        "tests/regression/caribbean_tester/test_docx_sourcing.py::test_every_inventory_docx_is_harvest_linked_or_allowlisted"
       ],
       "status": "COVERED",
-      "notes": "ingest=tac_extracted_to_jsonl",
+      "notes": "ingest=tac_extracted_to_jsonl; docx_sourcing=questionnaire_only; no_harvest_jsonl_row",
       "products": [],
       "interop_policy": null
     },
@@ -2727,10 +2727,10 @@
       "packet_item_id": "FILE-NMHS TAC-IWXXM User Evaluation Questionnaire_TTPPFeedback.do",
       "source_file": "TRINIDAD AND TOBAGO -TAC-TO-IWXXM TESTING RESULTS/NMHS TAC-IWXXM User Evaluation Questionnaire_TTPPFeedback.docx",
       "test_node_ids": [
-        "tests/regression/caribbean_tester/test_harvest_extra_locks.py"
+        "tests/regression/caribbean_tester/test_docx_sourcing.py::test_every_inventory_docx_is_harvest_linked_or_allowlisted"
       ],
       "status": "COVERED",
-      "notes": "ingest=tac_extracted_to_jsonl",
+      "notes": "ingest=tac_extracted_to_jsonl; docx_sourcing=questionnaire_only; no_harvest_jsonl_row",
       "products": [],
       "interop_policy": null
     }

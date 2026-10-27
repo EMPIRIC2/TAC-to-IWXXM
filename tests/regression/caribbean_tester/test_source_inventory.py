@@ -6,8 +6,11 @@
 from __future__ import annotations
 
 import json
+from pathlib import Path
 
 from .conftest import FIX, RAW
+
+_JAMAICA_PNG_DIR = FIX / "images" / "jamaica"
 
 _INVENTORY = json.loads(
     (FIX / "source_file_inventory.json").read_text(encoding="utf-8")
@@ -45,3 +48,18 @@ def test_raw_copied_paths_exist_on_disk() -> None:
             continue
         path = RAW / str(row["path"])
         assert path.is_file(), path
+
+
+def test_jamaica_png_fixtures_exist_tc_carib_009() -> None:
+    """TC-CARIB-009: Jamaica PNG basenames from inventory exist under fixtures."""
+    png_rows = [
+        row
+        for row in _INVENTORY["files"]
+        if str(row["suffix"]).lower() == ".png"
+        and str(row["path"]).startswith("JAMAICA IWXXM TESTING RESULTS/")
+    ]
+    assert len(png_rows) == 15
+    for row in png_rows:
+        basename = Path(str(row["path"])).name
+        fixture_path = _JAMAICA_PNG_DIR / basename
+        assert fixture_path.exists(), fixture_path
