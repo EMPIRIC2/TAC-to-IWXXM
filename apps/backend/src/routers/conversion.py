@@ -38,6 +38,7 @@ from src.schemas.conversion import (
 from src.schemas.icao_opmet import TranslationStatus
 from src.schemas.iwxxm_validation import get_namespace_version
 from src.schemas.validation import (
+    AggregatedValidationResult,
     BulletinMetaModel,
     BulletinReportResultModel,
     ConvertBulletinResponse,
@@ -125,7 +126,65 @@ def _initial_layers_passed(product: str | None) -> list[str]:
     """
     if api_surface._product_uses_metar_tac_layers(product):
         return [ValidationLayer.AIRPORT_ICAO.value, ValidationLayer.TAC_SYNTAX.value]
+    if api_surface._product_uses_aerodrome_icao_layer(product):
+        return [ValidationLayer.AIRPORT_ICAO.value]
     return []
+
+
+def _pre_convert_tac_layers(product: str | None) -> list[ValidationLayer] | None:
+    """
+    TAC input layers to run before convert for the given product.
+
+    METAR/SPECI run airport ICAO + TAC syntax. TAF runs airport ICAO only
+    (syntax differs from METAR Layer 2). Unknown ICAO soft-warns and does not
+    block convert.
+
+    Parameters
+    ----------
+    product : str | None
+        Wire product id.
+
+    Returns
+    -------
+    list[ValidationLayer] | None
+        Layers to validate, or None when the product has no aerodrome gate.
+    """
+    if api_surface._product_uses_metar_tac_layers(product):
+        return [ValidationLayer.AIRPORT_ICAO, ValidationLayer.TAC_SYNTAX]
+    if api_surface._product_uses_aerodrome_icao_layer(product):
+        return [ValidationLayer.AIRPORT_ICAO]
+    return None
+
+
+def _run_pre_convert_validation(
+    validation_service: object, tac_text: str, layers: list[ValidationLayer]
+) -> AggregatedValidationResult:
+    """
+    Run Layer 1-2 (or ICAO-only) validation, tolerating stubs without ``layers``.
+
+    Parameters
+    ----------
+    validation_service : object
+        Validation service or unit-test double.
+    tac_text : str
+        TAC input.
+    layers : list[ValidationLayer]
+        Layers to request when the service supports ``layers``.
+
+    Returns
+    -------
+    AggregatedValidationResult
+        Aggregated validation result.
+    """
+    validate = cast(
+        Callable[..., AggregatedValidationResult],
+        validation_service.validate_all_layers,  # type: ignore[attr-defined]
+    )
+    try:
+        return validate(tac_text, layers=layers)
+    except TypeError:
+        # Unit-test doubles often accept only ``tac_text``.
+        return validate(tac_text)
 
 
 router = APIRouter(prefix="/api/v1", tags=["Conversion"])
@@ -720,8 +779,11 @@ async def _process_json_metars(
         try:
             layer12_abort = False
             try:
-                if api_surface._product_uses_metar_tac_layers(runtime.product):
-                    validation_result = runtime.validation_service.validate_all_layers(normalized_metar_text)
+                pre_layers = _pre_convert_tac_layers(runtime.product)
+                if pre_layers is not None:
+                    validation_result = _run_pre_convert_validation(
+                        runtime.validation_service, normalized_metar_text, pre_layers
+                    )
                     if not validation_result.passed:
                         validation_summary = f"{validation_result.total_issues} validation issue(s) found"
                         acc.add_issue(
@@ -759,6 +821,9 @@ async def _process_json_metars(
                             except Exception as log_err:
                                 logger.error(f"Failed to log failed translation: {log_err}")
                             layer12_abort = True
+                    else:
+                        # Soft warnings (e.g. UNKNOWN_ICAO) must surface without aborting.
+                        acc.add_aggregated_validation_issues(metar_name, validation_result)
             except ValidationServiceError as ve:
                 acc.add_issue(
                     source=metar_name,
@@ -1006,8 +1071,11 @@ async def _process_manual_entries(
 
         try:
             try:
-                if api_surface._product_uses_metar_tac_layers(runtime.product):
-                    validation_result = runtime.validation_service.validate_all_layers(normalized_entry)
+                pre_layers = _pre_convert_tac_layers(runtime.product)
+                if pre_layers is not None:
+                    validation_result = _run_pre_convert_validation(
+                        runtime.validation_service, normalized_entry, pre_layers
+                    )
                     if not validation_result.passed:
                         validation_summary = f"{validation_result.total_issues} validation issue(s) found"
                         acc.add_issue(
@@ -1048,6 +1116,9 @@ async def _process_manual_entries(
                             if runtime.stop_on_error:
                                 break
                             continue
+                    else:
+                        # Soft warnings (e.g. UNKNOWN_ICAO) must surface without aborting.
+                        acc.add_aggregated_validation_issues(manual_source, validation_result)
             except ValidationServiceError as ve:
                 acc.add_issue(
                     source=manual_source,
@@ -1288,8 +1359,11 @@ async def _process_uploaded_files(
                 continue
 
             try:
-                if api_surface._product_uses_metar_tac_layers(runtime.product):
-                    validation_result = runtime.validation_service.validate_all_layers(data.strip())
+                pre_layers = _pre_convert_tac_layers(runtime.product)
+                if pre_layers is not None:
+                    validation_result = _run_pre_convert_validation(
+                        runtime.validation_service, data.strip(), pre_layers
+                    )
                     if not validation_result.passed:
                         validation_summary = f"{validation_result.total_issues} validation issue(s) found"
                         acc.add_issue(
@@ -1327,6 +1401,9 @@ async def _process_uploaded_files(
                             except Exception as log_err:
                                 logger.error(f"Failed to log failed translation: {log_err}")
                             continue
+                    else:
+                        # Soft warnings (e.g. UNKNOWN_ICAO) must surface without aborting.
+                        acc.add_aggregated_validation_issues(source_name, validation_result)
             except ValidationServiceError as ve:
                 acc.add_issue(
                     source=source_name,

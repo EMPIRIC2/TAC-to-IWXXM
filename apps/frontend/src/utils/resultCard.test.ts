@@ -67,6 +67,30 @@ describe('result card status', () => {
     ]);
   });
 
+  it('keeps download allowed when only UNKNOWN_ICAO warning is present', () => {
+    // [Corpus: product §F3] unknown aerodrome soft-warn does not alone block publish.
+    const card = assessResultCard({
+      xml: '<iwxxm:METAR>ok</iwxxm:METAR>',
+      ok: true,
+      issues: [
+        {
+          severity: 'warning',
+          message: 'Station ABCD is not in the aerodrome registry',
+          code: 'UNKNOWN_ICAO',
+        },
+      ],
+    });
+    expect(card.statusLabel).toBe(RESULT_STATUS_NOTES);
+    expect(card.publishBlocked).toBe(false);
+    expect(card.errors).toEqual([]);
+    expect(card.notes).toEqual([
+      {
+        message: 'Station ABCD is not in the aerodrome registry',
+        code: 'UNKNOWN_ICAO',
+      },
+    ]);
+  });
+
   it('blocks publish when output validation warned even if severity is warning', () => {
     const card = assessResultCard({
       xml: '<iwxxm>ok</iwxxm>',

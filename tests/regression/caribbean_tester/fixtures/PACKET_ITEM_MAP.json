@@ -456,9 +456,9 @@
         "packages/tac2iwxxm/tests/test_regional_tester_feedback.py::test_incomplete_tac_from_the_packet_still_fails_closed"
       ],
       "status": "PARTIAL",
-      "notes": "COR without visibility fails closed. Unknown ICAO (ABCD) still converts \u2014 Decision: registry gate (F3) not blocking convert yet.",
+      "notes": "COR without visibility fails closed. Unknown ICAO (ABCD) converts with UNKNOWN_ICAO warning (F3 Decision: warn, do not hard-gate).",
       "products": [],
-      "interop_policy": "COR keyword accepted; missing groups still fail. Full aerodrome registry reject deferred to Decision."
+      "interop_policy": "COR keyword accepted; missing groups still fail. Unknown aerodrome ICAO soft-warns via UNKNOWN_ICAO; convert continues."
     },
     {
       "packet_item_id": "N11",

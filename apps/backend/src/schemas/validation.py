@@ -50,10 +50,10 @@ class ValidationIssue(BaseModel):
         json_schema_extra={
             "example": {
                 "layer": "airport_icao",
-                "level": "error",
-                "message": "Unknown ICAO code: ZZZZ",
+                "level": "warning",
+                "message": "Station ZZZZ is not in the aerodrome registry",
                 "location": "line 1, column 12",
-                "code": "INVALID_ICAO",
+                "code": "UNKNOWN_ICAO",
             }
         }
     )
