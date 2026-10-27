@@ -338,6 +338,7 @@ def test_api_module_top_level_fallback_imports(monkeypatch):
             parse_optional_issuing_center=lambda _v: None,
             normalize_validation_level=lambda v: v,
             _product_uses_metar_tac_layers=lambda _p: True,
+            _product_uses_aerodrome_icao_layer=lambda _p: True,
             parse_optional_files=lambda files: files,
             bulletin_split_http_error=lambda *_a, **_k: None,
             MAX_BULLETIN_REPORTS=100,

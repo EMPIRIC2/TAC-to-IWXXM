@@ -6,8 +6,15 @@ or alone block publish/download (severity=warning).
 
 from __future__ import annotations
 
+from io import BytesIO
+from pathlib import Path
+from types import SimpleNamespace
+
 import pytest
 from fastapi.testclient import TestClient
+from src.api_wire import _product_uses_aerodrome_icao_layer, _product_uses_metar_tac_layers
+from src.routers.conversion import _pre_convert_tac_layers, _run_pre_convert_validation
+from src.schemas.validation import ValidationLayer
 
 _KNOWN_METAR = "METAR KJFK 010000Z 00000KT CAVOK 10/08 Q1013="
 _UNKNOWN_ABCD = "METAR ABCD 010000Z 00000KT CAVOK 10/08 Q1013="
@@ -99,3 +106,73 @@ def test_tc_f3_unk_004_json_metars_unknown_icao_surfaces_warning(client: TestCli
     issue = _issue_by_code(payload, "UNKNOWN_ICAO")
     assert issue is not None
     assert issue.get("severity") == "warning"
+
+
+def test_tc_f3_unk_005_product_layer_helpers() -> None:
+    """METAR/SPECI use both layers; TAF uses ICAO only; SIGMET uses neither."""
+    assert _product_uses_metar_tac_layers("METAR") is True
+    assert _product_uses_metar_tac_layers("TAF") is False
+    assert _product_uses_aerodrome_icao_layer("TAF") is True
+    assert _product_uses_aerodrome_icao_layer("SIGMET") is False
+    assert _pre_convert_tac_layers("METAR") == [
+        ValidationLayer.AIRPORT_ICAO,
+        ValidationLayer.TAC_SYNTAX,
+    ]
+    assert _pre_convert_tac_layers("TAF") == [ValidationLayer.AIRPORT_ICAO]
+    assert _pre_convert_tac_layers("SIGMET") is None
+
+
+def test_tc_f3_unk_006_run_pre_convert_tolerates_stub_without_layers() -> None:
+    """Unit doubles that omit ``layers`` still return a result."""
+
+    class _Stub:
+        def validate_all_layers(self, _tac: str) -> SimpleNamespace:
+            return SimpleNamespace(passed=True, total_issues=0, results=[])
+
+    result = _run_pre_convert_validation(
+        _Stub(),
+        _KNOWN_METAR,
+        [ValidationLayer.AIRPORT_ICAO],
+    )
+    assert result.passed is True
+
+
+def test_tc_f3_unk_007_sigmet_skips_aerodrome_icao_gate(client: TestClient) -> None:
+    """Non-aerodrome products do not run Layer 1 (no UNKNOWN_ICAO from ABCD-like tokens)."""
+    # Use a known SIGMET fixture body; gate skip is the coverage target.
+    sigmet = Path(__file__).resolve().parents[4] / "apps/frontend/src/fixtures/examples/bodies/sigmet_a6_1a_ts.tac"
+    tac = (
+        sigmet.read_text(encoding="utf-8")
+        if sigmet.is_file()
+        else (
+            "WSSS SIGMET A01 VALID 010000/010400 WSJC-\n"
+            "WSJC SINGAPORE FIR EMBD TS OBS AT 0000Z N0112 E10351 TOP FL360 MOV W 10KT NC="
+        )
+    )
+    payload = _convert(client, tac=tac, product="SIGMET")
+    assert _issue_by_code(payload, "UNKNOWN_ICAO") is None
+    # JSON + upload paths also skip when product has no aerodrome ICAO layer.
+    response = client.post(
+        "/api/v1/convert",
+        json={
+            "metars": [tac],
+            "product": "SIGMET",
+            "conversion_library_id": "LIB.CONVERSION.ICAO_2025",
+            "iwxxm_version": "2025-2",
+        },
+    )
+    assert response.status_code == 200, response.text
+    assert _issue_by_code(response.json(), "UNKNOWN_ICAO") is None
+
+    files = {"files": ("sigmet.tac", BytesIO(tac.encode("utf-8")), "text/plain")}
+    upload = client.post(
+        "/api/v1/convert",
+        data={
+            "product": "SIGMET",
+            "conversion_library_id": "LIB.CONVERSION.ICAO_2025",
+            "iwxxm_version": "2025-2",
+        },
+        files=files,
+    )
+    assert upload.status_code == 200, upload.text
+    assert _issue_by_code(upload.json(), "UNKNOWN_ICAO") is None
