@@ -66,6 +66,23 @@ describe('result card status', () => {
     ]);
   });
 
+  it('blocks publish when output validation warned even if severity is warning', () => {
+    const card = assessResultCard({
+      xml: '<iwxxm>ok</iwxxm>',
+      ok: true,
+      issues: [
+        {
+          severity: 'warning',
+          message: 'IWXXM checks reported problems',
+          code: 'OUTPUT_VALIDATION_WARNING',
+        },
+      ],
+    });
+    expect(card.statusLabel).toBe(RESULT_STATUS_ATTENTION);
+    expect(card.publishBlocked).toBe(true);
+    expect(card.errors.map((line) => line.code)).toEqual(['OUTPUT_VALIDATION_WARNING']);
+  });
+
   it('says needs attention and blocks publish when an error or invalid XML is present', () => {
     const fromError = assessResultCard({
       xml: '<iwxxm>ok</iwxxm>',

@@ -19,8 +19,19 @@ IWXXM XML you can download, validate, and (when your site enables it) send onwar
 
 While you type or edit TAC, the workbench may show a **soft preview**: a best-effort
 decode and IWXXM sketch that updates as you go. It is for guidance only; it is **not**
-the official converted product. Always use **Convert** (and **Validate**) for the file
-you will archive or distribute.
+the official converted product. Soft preview never means “ready to publish.” Always use
+**Convert**, then **Validate IWXXM** on the **XML output** (not the original TAC), for
+the file you will archive or distribute.
+
+## Paste tips
+
+- You can paste a WMO abbreviated heading above the report (for example
+  `SAXX31 TNCM 081200` before a METAR, or `FTXX31 …` before a TAF); the converter
+  strips it when it can.
+- **Validate IWXXM** needs XML that starts with `<`. If you paste TAC there, the app
+  asks you to convert first.
+- Result status **Needs attention** / **Do not publish** means do not distribute that
+  file until you fix the listed problems.
 
 ## Version
 

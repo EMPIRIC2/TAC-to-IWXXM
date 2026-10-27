@@ -62,6 +62,9 @@ export interface ResultIssueInput {
 
 const NOTE_SEVERITIES = new Set(['info', 'warning', 'warn', 'note']);
 
+/** Soft schema/Schematron failure on convert — must not be published. */
+const PUBLISH_BLOCKING_CODES = new Set(['OUTPUT_VALIDATION_WARNING']);
+
 /**
  * Error severity blocks publish. Missing severity is an error. Info and warnings are notes.
  *
@@ -73,6 +76,19 @@ const NOTE_SEVERITIES = new Set(['info', 'warning', 'warn', 'note']);
 export function isErrorSeverity(severity: string | null | undefined): boolean {
   const token = (severity ?? '').trim().toLowerCase();
   return !NOTE_SEVERITIES.has(token);
+}
+
+/**
+ * True when an issue code means the XML must not be published.
+ *
+ * @param code - Issue code from convert/validate
+ * @returns Whether this code alone blocks publish
+ * @example
+ * const _ = true;
+ */
+export function codeBlocksPublish(code: string | null | undefined): boolean {
+  const token = (code ?? '').trim().toUpperCase();
+  return PUBLISH_BLOCKING_CODES.has(token);
 }
 
 /**
@@ -122,6 +138,7 @@ export function assessResultCard(input: {
     }
   }
 
+  let blockingCode = false;
   for (const issue of input.issues ?? []) {
     const message = issue.message?.trim() ?? '';
     if (!message) {
@@ -129,7 +146,10 @@ export function assessResultCard(input: {
     }
     const code = issue.code?.trim();
     const line: ResultCardLine = code ? { message, code } : { message };
-    if (isErrorSeverity(issue.severity)) {
+    if (codeBlocksPublish(code)) {
+      blockingCode = true;
+      errors.push(line);
+    } else if (isErrorSeverity(issue.severity)) {
       errors.push(line);
     } else {
       notes.push(line);
@@ -137,7 +157,10 @@ export function assessResultCard(input: {
   }
 
   const publishBlocked =
-    errors.length > 0 || input.ok === false || xmlBlocksPublish(input.xml);
+    errors.length > 0 ||
+    blockingCode ||
+    input.ok === false ||
+    xmlBlocksPublish(input.xml);
 
   if (publishBlocked) {
     return {

@@ -282,6 +282,7 @@ import {
   kindToMode,
   looksLikeAhlBulletin,
   looksLikeCollectIwxxm,
+  looksLikeTacNotXml,
   type OperatorInputMode,
 } from '/utils/inputKind';
 import { inflateGzipToText, isGzipFileName } from '/utils/gunzip';
@@ -1806,6 +1807,12 @@ export function FileConverter({
       toast.error('Paste IWXXM XML or upload one .xml file to validate.');
       return;
     }
+    if (looksLikeTacNotXml(xmlContent)) {
+      toast.error(
+        'That looks like TAC, not IWXXM XML. Convert first, then validate the XML output.',
+      );
+      return;
+    }
     setIsConverting(true);
     setValidateReport(null);
     setConversionStatus({ type: 'loading', message: 'Validating IWXXM…' });
@@ -1964,6 +1971,13 @@ export function FileConverter({
     setValidateReport(null);
     updateConversionLog(null);
     setConversionStatus({ type: 'idle' });
+    setInputMode('tac');
+    setConversionParams((prev) => ({ ...prev, product: 'auto' }));
+    setFailedSpans([]);
+    setPreviewXml('');
+    setPreviewStatus('empty');
+    setPreviewMode('idle');
+    setPreviewSoftFailDetail(undefined);
     onActiveSessionIdChange?.(null);
     onNewMetar?.();
     toast.info(isReadOnly ? 'Starting a new TAC session' : 'Starting a new TAC draft');
@@ -2523,7 +2537,7 @@ export function FileConverter({
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors">
       <header
-        className="sticky top-0 z-30 w-full border-b border-gray-200 bg-gray-50 py-3 dark:border-gray-700 dark:bg-gray-900"
+        className="sticky top-0 z-30 w-full border-b border-gray-300 bg-white py-3 shadow-sm dark:border-gray-600 dark:bg-gray-950"
         data-testid="workbench-top-bar"
       >
         <div
@@ -4414,121 +4428,133 @@ export function FileConverter({
                   Results
                 </h2>
                 <div className="space-y-4">
-                  {convertedFiles.map((file) => (
-                    <Collapsible
-                      key={file.id}
-                      defaultOpen
-                      className="rounded-lg border border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800"
-                      data-testid={`result-item-${file.id}`}
-                    >
-                      <div className="flex items-center justify-between gap-2 p-4 flex-wrap">
-                        <CollapsibleTrigger asChild>
-                          <button
-                            type="button"
-                            className="min-w-0 flex-1 text-left group"
-                            aria-label={`Toggle details for ${file.displayTitle}`}
-                            data-testid={`result-toggle-${file.id}`}
-                          >
-                            <div className="flex flex-wrap items-center gap-2">
-                              <ChevronDown
-                                className="h-4 w-4 shrink-0 text-gray-500 transition-transform group-data-[state=closed]:-rotate-90"
+                  {convertedFiles.map((file) => {
+                    const resultAssessment = assessConvertedFile(file);
+                    return (
+                      <Collapsible
+                        key={file.id}
+                        defaultOpen
+                        className="rounded-lg border border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800"
+                        data-testid={`result-item-${file.id}`}
+                      >
+                        <div className="flex items-center justify-between gap-2 p-4 flex-wrap">
+                          <CollapsibleTrigger asChild>
+                            <button
+                              type="button"
+                              className="min-w-0 flex-1 text-left group"
+                              aria-label={`Toggle details for ${file.displayTitle}`}
+                              data-testid={`result-toggle-${file.id}`}
+                            >
+                              <div className="flex flex-wrap items-center gap-2">
+                                <ChevronDown
+                                  className="h-4 w-4 shrink-0 text-gray-500 transition-transform group-data-[state=closed]:-rotate-90"
+                                  aria-hidden="true"
+                                />
+                                <p className="text-base font-medium text-gray-900 dark:text-white">
+                                  {file.displayTitle}
+                                </p>
+                                {file.manualLineIndex != null &&
+                                file.manualLineTotal != null ? (
+                                  <span className="inline-flex items-center rounded-full bg-blue-100 px-2 py-0.5 text-xs font-medium text-blue-800 dark:bg-blue-900/40 dark:text-blue-200">
+                                    Line {file.manualLineIndex} of{' '}
+                                    {file.manualLineTotal}
+                                  </span>
+                                ) : null}
+                              </div>
+                              {file.displayTitle !== file.originalName ? (
+                                <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5 ml-6">
+                                  Download: {file.originalName}
+                                </p>
+                              ) : null}
+                            </button>
+                          </CollapsibleTrigger>
+                          <div className="flex gap-2">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              disabled={resultAssessment.publishBlocked}
+                              title={
+                                resultAssessment.publishBlocked
+                                  ? 'Do not publish — download disabled until issues are fixed'
+                                  : undefined
+                              }
+                              onClick={() => void handleDownloadSingle(file)}
+                              className="bg-blue-500 text-white hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700 text-sm border-0 focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
+                              aria-label={
+                                resultAssessment.publishBlocked
+                                  ? `Do not publish — download disabled for ${file.originalName}`
+                                  : includeConversionMetadata
+                                    ? `Download ${file.originalName} as ZIP with metadata`
+                                    : `Download ${file.originalName} as XML`
+                              }
+                            >
+                              <Download className="w-4 h-4 mr-1" aria-hidden="true" />
+                              Download
+                            </Button>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => handleCopy(file.convertedContent)}
+                              className="bg-blue-500 text-white hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700 text-sm border-0 focus:ring-2 focus:ring-blue-500"
+                              aria-label={`Copy ${file.originalName} content to clipboard`}
+                            >
+                              <Copy className="w-4 h-4 mr-1" aria-hidden="true" />
+                              Copy
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => removeConvertedFile(file.id)}
+                              className="hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-2 focus:ring-red-500"
+                              aria-label={`Remove ${file.originalName} from results`}
+                            >
+                              <X
+                                className="w-4 h-4 text-gray-600 dark:text-gray-400"
                                 aria-hidden="true"
                               />
-                              <p className="text-base font-medium text-gray-900 dark:text-white">
-                                {file.displayTitle}
-                              </p>
-                              {file.manualLineIndex != null &&
-                              file.manualLineTotal != null ? (
-                                <span className="inline-flex items-center rounded-full bg-blue-100 px-2 py-0.5 text-xs font-medium text-blue-800 dark:bg-blue-900/40 dark:text-blue-200">
-                                  Line {file.manualLineIndex} of {file.manualLineTotal}
-                                </span>
-                              ) : null}
-                            </div>
-                            {file.displayTitle !== file.originalName ? (
-                              <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5 ml-6">
-                                Download: {file.originalName}
-                              </p>
-                            ) : null}
-                          </button>
-                        </CollapsibleTrigger>
-                        <div className="flex gap-2">
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => void handleDownloadSingle(file)}
-                            className="bg-blue-500 text-white hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700 text-sm border-0 focus:ring-2 focus:ring-blue-500"
-                            aria-label={
-                              includeConversionMetadata
-                                ? `Download ${file.originalName} as ZIP with metadata`
-                                : `Download ${file.originalName} as XML`
-                            }
-                          >
-                            <Download className="w-4 h-4 mr-1" aria-hidden="true" />
-                            Download
-                          </Button>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => handleCopy(file.convertedContent)}
-                            className="bg-blue-500 text-white hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700 text-sm border-0 focus:ring-2 focus:ring-blue-500"
-                            aria-label={`Copy ${file.originalName} content to clipboard`}
-                          >
-                            <Copy className="w-4 h-4 mr-1" aria-hidden="true" />
-                            Copy
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => removeConvertedFile(file.id)}
-                            className="hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-2 focus:ring-red-500"
-                            aria-label={`Remove ${file.originalName} from results`}
-                          >
-                            <X
-                              className="w-4 h-4 text-gray-600 dark:text-gray-400"
-                              aria-hidden="true"
-                            />
-                          </Button>
+                            </Button>
+                          </div>
                         </div>
-                      </div>
-                      <ConvertResultStatus assessment={assessConvertedFile(file)} />
-                      <CollapsibleContent className="px-4 pb-4">
-                        {file.originalContent.length > 60 &&
-                        file.displayTitle !==
-                          file.originalContent.trim().replace(/\s+/g, ' ') ? (
-                          <p className="text-xs font-mono text-gray-600 dark:text-gray-400 mb-3 break-all">
-                            {truncateTacSnippet(file.originalContent)}
-                          </p>
-                        ) : null}
-                        <div
-                          className="bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-200 p-4 rounded text-sm overflow-x-auto mb-3 border border-gray-200 dark:border-gray-700"
-                          role="region"
-                          aria-label={`Original TAC input for ${file.displayTitle}`}
-                        >
-                          <p className="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400 mb-2">
-                            Source TAC
-                          </p>
-                          {file.originalContent ? (
-                            <pre className="whitespace-pre-wrap break-all font-mono">
-                              {file.originalContent}
-                            </pre>
-                          ) : (
-                            <p className="text-sm italic text-gray-500 dark:text-gray-400">
-                              Original TAC unavailable for this result.
+                        <ConvertResultStatus assessment={resultAssessment} />
+                        <CollapsibleContent className="px-4 pb-4">
+                          {file.originalContent.length > 60 &&
+                          file.displayTitle !==
+                            file.originalContent.trim().replace(/\s+/g, ' ') ? (
+                            <p className="text-xs font-mono text-gray-600 dark:text-gray-400 mb-3 break-all">
+                              {truncateTacSnippet(file.originalContent)}
                             </p>
-                          )}
-                        </div>
-                        <div
-                          className="bg-gray-900 dark:bg-gray-950 text-green-400 dark:text-green-300 p-4 rounded text-sm overflow-x-auto"
-                          role="region"
-                          aria-label={`Converted XML content for ${file.originalName}`}
-                        >
-                          <pre className="whitespace-pre-wrap break-all font-mono">
-                            {file.convertedContent}
-                          </pre>
-                        </div>
-                      </CollapsibleContent>
-                    </Collapsible>
-                  ))}
+                          ) : null}
+                          <div
+                            className="bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-200 p-4 rounded text-sm overflow-x-auto mb-3 border border-gray-200 dark:border-gray-700"
+                            role="region"
+                            aria-label={`Original TAC input for ${file.displayTitle}`}
+                          >
+                            <p className="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400 mb-2">
+                              Source TAC
+                            </p>
+                            {file.originalContent ? (
+                              <pre className="whitespace-pre-wrap break-all font-mono">
+                                {file.originalContent}
+                              </pre>
+                            ) : (
+                              <p className="text-sm italic text-gray-500 dark:text-gray-400">
+                                Original TAC unavailable for this result.
+                              </p>
+                            )}
+                          </div>
+                          <div
+                            className="bg-gray-900 dark:bg-gray-950 text-green-400 dark:text-green-300 p-4 rounded text-sm overflow-x-auto"
+                            role="region"
+                            aria-label={`Converted XML content for ${file.originalName}`}
+                          >
+                            <pre className="whitespace-pre-wrap break-all font-mono">
+                              {file.convertedContent}
+                            </pre>
+                          </div>
+                        </CollapsibleContent>
+                      </Collapsible>
+                    );
+                  })}
                 </div>
               </div>
             )}

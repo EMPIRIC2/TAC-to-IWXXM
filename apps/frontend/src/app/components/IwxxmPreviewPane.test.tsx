@@ -42,6 +42,15 @@ describe('IwxxmPreviewPane', () => {
     expect(screen.queryByText('Passed')).not.toBeInTheDocument();
   });
 
+  it('never shows Valid on soft-preview even when status is passed', () => {
+    render(<IwxxmPreviewPane xml={SAMPLE_XML} status="passed" mode="soft-preview" />);
+    expect(screen.getByTestId('iwxxm-preview-badge')).toHaveTextContent(
+      /Soft preview, not for publishing/i,
+    );
+    expect(screen.queryByText(/^Valid$/)).not.toBeInTheDocument();
+    expect(screen.queryByText('Passed')).not.toBeInTheDocument();
+  });
+
   it('does not say Passed when the preview is incomplete', () => {
     render(
       <IwxxmPreviewPane xml={SAMPLE_XML} status="passed" mode="live" incomplete />,

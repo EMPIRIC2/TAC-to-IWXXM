@@ -103,7 +103,7 @@ export function IwxxmPreviewPane({
         <h3 className="text-sm font-semibold text-gray-900 dark:text-white">
           Live IWXXM
         </h3>
-        {status === 'passed' && !incomplete ? (
+        {status === 'passed' && !incomplete && mode !== 'soft-preview' ? (
           <span
             data-testid="iwxxm-preview-badge"
             className="rounded-full bg-emerald-100 px-2 py-0.5 text-xs font-medium text-emerald-900 dark:bg-emerald-950 dark:text-emerald-100"
@@ -111,16 +111,13 @@ export function IwxxmPreviewPane({
             {RESULT_STATUS_VALID}
           </span>
         ) : null}
-        {showSoftBadge && status !== 'passed' ? (
+        {showSoftBadge ? (
           <span
             data-testid="iwxxm-preview-badge"
             className="rounded-full bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-950 dark:bg-amber-950 dark:text-amber-100"
           >
             Soft preview, not for publishing
           </span>
-        ) : null}
-        {showSoftBadge && status === 'passed' ? (
-          <span className="text-xs text-gray-500 dark:text-gray-400">Soft preview</span>
         ) : null}
         {conversionProfile ? (
           <span

@@ -78,6 +78,30 @@ export function looksLikeIwxxmDocument(text: string): boolean {
   return head.includes('iwxxm');
 }
 
+const TAC_PRODUCT_LINE = /^(?:METAR|SPECI|TAF|SIGMET|AIRMET)\b/i;
+
+/**
+ * True when pasted text is TAC (or an AHL+TAC bulletin), not IWXXM XML.
+ *
+ * Used to stop Validate IWXXM from sending TAC and returning a cryptic
+ * well-formedness error.
+ *
+ * @param text - Operator paste
+ * @returns Whether this should be converted first
+ * @example
+ * const _ = true;
+ */
+export function looksLikeTacNotXml(text: string): boolean {
+  const trimmed = text.trim();
+  if (!trimmed || trimmed.startsWith('<')) {
+    return false;
+  }
+  if (looksLikeAhlBulletin(trimmed)) {
+    return true;
+  }
+  return TAC_PRODUCT_LINE.test(trimmed);
+}
+
 /**
  * Guess kind from filename extension and optional content.
  *
