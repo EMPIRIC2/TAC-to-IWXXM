@@ -65,3 +65,44 @@ export const CALM_CONVERT_PRIMARY_LABEL = 'Convert & validate';
 
 /** Primary button label after successful convert. */
 export const CALM_DOWNLOAD_PRIMARY_LABEL = 'Download IWXXM';
+
+/** Fallback when the active profile id is not in the semantic options list. */
+export const CALM_PROFILE_LABEL_FALLBACK = 'International (ICAO)';
+
+/**
+ * Resolve a human profile label for the empty-hero footer.
+ *
+ * @param profileId - Active semantic profile id
+ * @param options - Profile option rows with value/label
+ * @returns Display label
+ */
+export function resolveCalmProfileLabel(
+  profileId: string,
+  options: readonly { value: string; label: string }[],
+): string {
+  return (
+    options.find((option) => option.value === profileId)?.label ??
+    CALM_PROFILE_LABEL_FALLBACK
+  );
+}
+
+/**
+ * Build empty-hero example chips from a product→example lookup.
+ *
+ * @param chips - Label + product pairs to offer
+ * @param lookup - Returns the first example id for a product, or undefined
+ * @returns Chips with concrete example ids
+ */
+export function buildCalmExampleChips(
+  chips: readonly { label: string; product: string }[],
+  lookup: (product: string) => { id: string } | undefined,
+): { id: string; label: string }[] {
+  const out: { id: string; label: string }[] = [];
+  for (const chip of chips) {
+    const example = lookup(chip.product);
+    if (example) {
+      out.push({ id: example.id, label: chip.label });
+    }
+  }
+  return out;
+}

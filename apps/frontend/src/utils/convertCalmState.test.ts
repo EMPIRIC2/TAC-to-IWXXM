@@ -3,7 +3,10 @@ import { describe, expect, it } from 'vitest';
 import {
   CALM_CONVERT_PRIMARY_LABEL,
   CALM_DOWNLOAD_PRIMARY_LABEL,
+  CALM_PROFILE_LABEL_FALLBACK,
+  buildCalmExampleChips,
   deriveCalmConvertUi,
+  resolveCalmProfileLabel,
 } from './convertCalmState';
 
 describe('deriveCalmConvertUi (TC-UX-CALM)', () => {
@@ -48,5 +51,26 @@ describe('deriveCalmConvertUi (TC-UX-CALM)', () => {
     expect(CALM_CONVERT_PRIMARY_LABEL).toBe('Convert & validate');
     expect(CALM_DOWNLOAD_PRIMARY_LABEL).toBe('Download IWXXM');
     expect(CALM_CONVERT_PRIMARY_LABEL).not.toMatch(/EV-|UJ-|TC-|Corpus/);
+  });
+
+  it('resolveCalmProfileLabel uses option label or fallback', () => {
+    expect(
+      resolveCalmProfileLabel('US', [{ value: 'US', label: 'United States' }]),
+    ).toBe('United States');
+    expect(
+      resolveCalmProfileLabel('MISSING', [{ value: 'US', label: 'United States' }]),
+    ).toBe(CALM_PROFILE_LABEL_FALLBACK);
+  });
+
+  it('buildCalmExampleChips skips products with no example', () => {
+    expect(
+      buildCalmExampleChips(
+        [
+          { label: 'METAR', product: 'METAR' },
+          { label: 'TAF', product: 'TAF' },
+        ],
+        (product) => (product === 'METAR' ? { id: 'metar-1' } : undefined),
+      ),
+    ).toEqual([{ id: 'metar-1', label: 'METAR' }]);
   });
 });

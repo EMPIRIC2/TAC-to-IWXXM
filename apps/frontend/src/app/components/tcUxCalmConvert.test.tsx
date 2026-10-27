@@ -24,19 +24,25 @@ describe('TC-UX-CALM leaf components', () => {
     vi.clearAllMocks();
   });
 
-  it('TC-UX-CALM-004: empty hero exposes one primary CTA and example chips', () => {
+  it('TC-UX-CALM-004: empty hero exposes one primary CTA and example chips', async () => {
+    const user = userEvent.setup();
+    const onExampleChip = vi.fn();
+    const onChangeProfile = vi.fn();
+    const onOtherTask = vi.fn();
+    const onConvert = vi.fn();
     render(
       <CalmConvertEmptyHero
         convertDisabled={false}
         isConverting={false}
-        onConvert={() => undefined}
+        onConvert={onConvert}
         exampleChips={[
           { id: 'm', label: 'METAR' },
           { id: 't', label: 'TAF' },
         ]}
-        onExampleChip={() => undefined}
+        onExampleChip={onExampleChip}
         profileLabel="United States (FAA/NWS)"
-        onChangeProfile={() => undefined}
+        onChangeProfile={onChangeProfile}
+        onOtherTask={onOtherTask}
       >
         <textarea aria-label="TAC" />
       </CalmConvertEmptyHero>,
@@ -46,6 +52,20 @@ describe('TC-UX-CALM leaf components', () => {
       'Convert & validate',
     );
     expect(screen.getByTestId('convert-example-chips')).toBeInTheDocument();
+    await user.click(screen.getByTestId('convert-example-chip-m'));
+    expect(onExampleChip).toHaveBeenCalledWith('m');
+    await user.click(screen.getByTestId('convert-primary-cta'));
+    expect(onConvert).toHaveBeenCalled();
+    await user.click(screen.getByTestId('convert-profile-change'));
+    expect(onChangeProfile).toHaveBeenCalled();
+    await user.click(
+      screen.getByRole('button', { name: 'Convert full bulletin (AHL)' }),
+    );
+    expect(onOtherTask).toHaveBeenCalledWith('ahl');
+    await user.click(screen.getByRole('button', { name: 'Validate existing IWXXM' }));
+    expect(onOtherTask).toHaveBeenCalledWith('validate_iwxxm');
+    await user.click(screen.getByRole('button', { name: 'Build COLLECT bundle' }));
+    expect(onOtherTask).toHaveBeenCalledWith('collect');
   });
 
   it('TC-UX-CALM-008: Help checklist opens, dismisses, and keeps one-pager link', async () => {
@@ -66,15 +86,20 @@ describe('TC-UX-CALM leaf components', () => {
     expect(screen.queryByTestId('convert-help-checklist')).not.toBeInTheDocument();
   });
 
-  it('TC-UX-CALM-005: profile drawer has Apply and collapsed output options', () => {
+  it('TC-UX-CALM-005: profile drawer has Apply and collapsed output options', async () => {
+    const user = userEvent.setup();
+    const onApply = vi.fn();
+    const onOpenChange = vi.fn();
+    const onReset = vi.fn();
     render(
       <ConvertProfileDrawer
         open
-        onOpenChange={() => undefined}
+        onOpenChange={onOpenChange}
         nationalSection={<div>national</div>}
         customizeSection={<div>customize</div>}
         outputSection={<div data-testid="output-body">output</div>}
-        onApply={() => undefined}
+        onApply={onApply}
+        onReset={onReset}
       />,
     );
     const drawer = screen.getByTestId('convert-profile-drawer');
@@ -82,6 +107,11 @@ describe('TC-UX-CALM leaf components', () => {
     expect(screen.getByTestId('convert-profile-apply')).toBeInTheDocument();
     const outputDetails = screen.getByText('Output options').closest('details');
     expect(outputDetails).not.toHaveAttribute('open');
+    await user.click(screen.getByRole('button', { name: 'Reset to WMO defaults' }));
+    expect(onReset).toHaveBeenCalled();
+    await user.click(screen.getByTestId('convert-profile-apply'));
+    expect(onApply).toHaveBeenCalled();
+    expect(onOpenChange).toHaveBeenCalledWith(false);
   });
 
   it('TC-UX-CALM-010: validity strip is present for success', () => {
@@ -89,6 +119,39 @@ describe('TC-UX-CALM leaf components', () => {
     expect(screen.getByTestId('convert-validity-strip')).toHaveTextContent(
       'Valid IWXXM bulletin, ready to send',
     );
+  });
+
+  it('covers optional hero/drawer branches without other-task or reset', () => {
+    render(
+      <CalmConvertEmptyHero
+        convertDisabled
+        isConverting
+        onConvert={() => undefined}
+        exampleChips={[]}
+        onExampleChip={() => undefined}
+        profileLabel="WMO"
+        onChangeProfile={() => undefined}
+      >
+        <span>input</span>
+      </CalmConvertEmptyHero>,
+    );
+    expect(
+      screen.queryByRole('button', { name: 'Convert full bulletin (AHL)' }),
+    ).not.toBeInTheDocument();
+
+    render(
+      <ConvertProfileDrawer
+        open
+        onOpenChange={() => undefined}
+        nationalSection={<div>n</div>}
+        customizeSection={<div>c</div>}
+        outputSection={<div>o</div>}
+        onApply={() => undefined}
+      />,
+    );
+    expect(
+      screen.queryByRole('button', { name: 'Reset to WMO defaults' }),
+    ).not.toBeInTheDocument();
   });
 
   it('TC-UX-CALM-009: calm copy has no internal planning vocabulary', () => {

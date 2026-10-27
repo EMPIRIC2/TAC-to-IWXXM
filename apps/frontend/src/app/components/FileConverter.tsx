@@ -49,7 +49,6 @@ import {
   XCircle,
   LogOut,
   CircleHelp,
-  MoreHorizontal,
 } from 'lucide-react';
 import JSZip from 'jszip';
 import { toast } from 'sonner';
@@ -251,7 +250,9 @@ import { readGuestConverterState } from '/utils/guestConverterState';
 import {
   CALM_CONVERT_PRIMARY_LABEL,
   CALM_DOWNLOAD_PRIMARY_LABEL,
+  buildCalmExampleChips,
   deriveCalmConvertUi,
+  resolveCalmProfileLabel,
 } from '/utils/convertCalmState';
 import {
   assessConvertedFile,
@@ -259,12 +260,6 @@ import {
   type ResultIssueInput,
 } from '/utils/resultCard';
 import { getTacExamplesForProduct } from '@/fixtures/examples/examplesCatalog';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from './ui/dropdown-menu';
 import {
   ACCUMULATE_RESULT_CAP,
   appendConvertedWithinCap,
@@ -2402,21 +2397,19 @@ export function FileConverter({
   /** Empty hero is Convert TAC only — not validate-IWXXM / collect modes. */
   const showCalmEmptyHero =
     calmUi.showEmptyHero && inputMode === 'tac' && conversionParams.product !== 'IWXXM';
-  const calmProfileLabel =
-    SEMANTIC_PROFILE_OPTIONS.find((option) => option.value === conversionParams.profile)
-      ?.label ?? String(conversionParams.profile);
-  const calmExampleChips: { id: string; label: string }[] = [];
-  for (const chip of [
-    { label: 'METAR', product: 'METAR' as const },
-    { label: 'TAF', product: 'TAF' as const },
-    { label: 'SIGMET', product: 'SIGMET' as const },
-    { label: 'Volcanic ash advisory', product: 'VAA' as const },
-  ]) {
-    const example = getTacExamplesForProduct(chip.product)[0];
-    if (example) {
-      calmExampleChips.push({ id: example.id, label: chip.label });
-    }
-  }
+  const calmProfileLabel = resolveCalmProfileLabel(
+    conversionParams.profile,
+    SEMANTIC_PROFILE_OPTIONS,
+  );
+  const calmExampleChips = buildCalmExampleChips(
+    [
+      { label: 'METAR', product: 'METAR' },
+      { label: 'TAF', product: 'TAF' },
+      { label: 'SIGMET', product: 'SIGMET' },
+      { label: 'Volcanic ash advisory', product: 'VAA' },
+    ],
+    (product) => getTacExamplesForProduct(product as 'METAR')[0],
+  );
   const caProfileBlocked =
     isCaEcccProfile(conversionParams.profile) && caExtensionBundleAvailable === false;
   const convertDisabled = isBusy || !hasInput || isReadOnly || caProfileBlocked;
@@ -2765,8 +2758,8 @@ export function FileConverter({
               <span className="sr-only">Autosave idle</span>
             )}
           </div>
-          {calmUi.showValidityStrip ? (
-            <ConvertValidityStrip notesCount={latestAssessment?.notes.length ?? 0} />
+          {calmUi.showValidityStrip && latestAssessment ? (
+            <ConvertValidityStrip notesCount={latestAssessment.notes.length} />
           ) : null}
           <div className="flex min-h-10 flex-wrap items-center gap-2 sm:gap-3">
             <Button
@@ -2784,10 +2777,13 @@ export function FileConverter({
               <span data-testid="convert-primary-cta">
                 <Button
                   variant="default"
-                  onClick={() => void handleDownloadSingle(latestConverted)}
+                  onClick={() => {
+                    void handleDownloadSingle(latestConverted);
+                  }}
                   disabled={isBusy}
                   className="min-w-[11rem] text-base"
                   aria-label={CALM_DOWNLOAD_PRIMARY_LABEL}
+                  data-testid="convert-download-iwxxm"
                 >
                   <Download className="mr-2 h-4 w-4" aria-hidden="true" />
                   {CALM_DOWNLOAD_PRIMARY_LABEL}
@@ -2865,29 +2861,6 @@ export function FileConverter({
                 <BetaBadge className="ml-1 inline-flex" />
               </Button>
             ) : null}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="icon"
-                  data-testid="convert-overflow-menu"
-                  aria-label="More convert actions"
-                  disabled={isBusy}
-                >
-                  <MoreHorizontal className="h-4 w-4" aria-hidden="true" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="start">
-                <DropdownMenuItem
-                  disabled={isBusy || !hasConverted}
-                  onClick={() => void handleDownloadAll()}
-                >
-                  Download ZIP ({convertedFiles.length})
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={handleClear}>Clear queue</DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
             <div
               className="flex min-w-[12rem] flex-col gap-1 rounded-md border border-gray-200 bg-gray-50 px-3 py-2 dark:border-gray-700 dark:bg-gray-900/40"
               data-testid="conversion-metadata-export-panel"
@@ -3040,9 +3013,9 @@ export function FileConverter({
                 <CalmConvertEmptyHero
                   convertDisabled={convertDisabled}
                   isConverting={isConverting}
-                  onConvert={() => void handleConvert()}
+                  onConvert={handleConvert}
                   exampleChips={calmExampleChips}
-                  onExampleChip={(id) => handleLoadGoldenExample(id)}
+                  onExampleChip={handleLoadGoldenExample}
                   profileLabel={calmProfileLabel}
                   onChangeProfile={() => setProfileDrawerOpen(true)}
                   onOtherTask={(task) => {

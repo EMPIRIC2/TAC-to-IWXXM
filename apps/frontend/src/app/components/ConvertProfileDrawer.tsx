@@ -1,5 +1,7 @@
 /**
- * Conversion profile drawer (Calmer Convert screen 3 / TC-UX-CALM-005).
+ * Conversion profile panel (Calmer Convert screen 3 / TC-UX-CALM-005).
+ *
+ * Uses Dialog (not vaul Drawer) so jsdom unit coverage stays deterministic.
  *
  * [Corpus: product §F7]
  */
@@ -7,13 +9,13 @@
 import type { ReactNode } from 'react';
 
 import {
-  Drawer,
-  DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerTitle,
-} from './ui/drawer';
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from './ui/dialog';
 import { Button } from './ui/button';
 
 export interface ConvertProfileDrawerProps {
@@ -27,7 +29,7 @@ export interface ConvertProfileDrawerProps {
 }
 
 /**
- * Right-side profile drawer with progressive disclosure for output options.
+ * Profile dialog with progressive disclosure for output options.
  */
 export function ConvertProfileDrawer({
   open,
@@ -39,19 +41,19 @@ export function ConvertProfileDrawer({
   onReset,
 }: ConvertProfileDrawerProps) {
   return (
-    <Drawer open={open} onOpenChange={onOpenChange} direction="right">
-      <DrawerContent
-        className="ml-auto flex h-full w-full max-w-md flex-col"
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent
+        className="flex max-h-[90vh] max-w-md flex-col gap-0 overflow-hidden p-0"
         data-testid="convert-profile-drawer"
       >
-        <DrawerHeader>
-          <DrawerTitle>Conversion profile</DrawerTitle>
-          <DrawerDescription>
+        <DialogHeader className="space-y-1 px-6 pt-6">
+          <DialogTitle>Conversion profile</DialogTitle>
+          <DialogDescription>
             Choose national rules first. Customize steps and output options only when
             you need them.
-          </DrawerDescription>
-        </DrawerHeader>
-        <div className="flex-1 space-y-4 overflow-y-auto px-4 pb-4">
+          </DialogDescription>
+        </DialogHeader>
+        <div className="flex-1 space-y-4 overflow-y-auto px-6 py-4">
           <section className="space-y-2" data-testid="convert-profile-national">
             <h3 className="text-sm font-semibold text-gray-900 dark:text-white">
               National rules
@@ -78,7 +80,7 @@ export function ConvertProfileDrawer({
             </div>
           </details>
         </div>
-        <DrawerFooter className="flex flex-row justify-between gap-2 border-t border-gray-200 dark:border-gray-700">
+        <DialogFooter className="flex flex-row justify-between gap-2 border-t border-gray-200 px-6 py-4 dark:border-gray-700 sm:justify-between">
           {onReset ? (
             <Button type="button" variant="ghost" onClick={onReset}>
               Reset to WMO defaults
@@ -96,8 +98,8 @@ export function ConvertProfileDrawer({
           >
             Apply
           </Button>
-        </DrawerFooter>
-      </DrawerContent>
-    </Drawer>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }
