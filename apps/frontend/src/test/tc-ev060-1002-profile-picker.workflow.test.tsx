@@ -132,6 +132,17 @@ describe('T3.1 / TC-EV060-1002: Conversion library at converter top', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     localStorage.clear();
+    sessionStorage.clear();
+    sessionStorage.setItem(
+      'metar_guest_converter_state',
+      JSON.stringify({
+        manualInput: 'METAR KJFK 121251Z 18004KT=',
+        pendingFiles: [],
+        convertedFiles: [],
+        conversionLog: null,
+        conversionParams: {},
+      }),
+    );
     vi.stubGlobal(
       'confirm',
       vi.fn(() => true),
@@ -140,6 +151,7 @@ describe('T3.1 / TC-EV060-1002: Conversion library at converter top', () => {
 
   it('shows Product + Conversion library at the converter top without expanding parameters (TC-EV060-1002-001)', () => {
     render(<FileConverter {...defaultProps} />);
+    screen.getByTestId('convert-advanced-engines').setAttribute('open', '');
 
     const product = screen.getByTestId('product-type-select');
     const conversion = screen.getByTestId(
@@ -167,6 +179,7 @@ describe('T3.1 / TC-EV060-1002: Conversion library at converter top', () => {
 
   it('exposes a keyboard-accessible Conversion name, not icon-only (TC-EV060-1002-002)', () => {
     render(<FileConverter {...defaultProps} />);
+    screen.getByTestId('convert-advanced-engines').setAttribute('open', '');
 
     const product = screen.getByTestId('product-type-select');
     const conversion = screen.getByTestId('conversion-library-select');
@@ -178,6 +191,7 @@ describe('T3.1 / TC-EV060-1002: Conversion library at converter top', () => {
   it('sends selected conversionLibraryId on convert without opening Conversion Parameters (TC-EV060-1002-001)', async () => {
     const user = userEvent.setup();
     render(<FileConverter {...defaultProps} />);
+    screen.getByTestId('convert-advanced-engines').setAttribute('open', '');
     fireEvent.click(screen.getByTestId('live-iwxxm-toggle'));
 
     const conversion = screen.getByTestId('conversion-library-select');
@@ -201,6 +215,7 @@ describe('T3.1 / TC-EV060-1002: Conversion library at converter top', () => {
   it('sends selected profile on Validate IWXXM after Conversion library change (TC-EV060-1002-001)', async () => {
     const user = userEvent.setup();
     render(<FileConverter {...defaultProps} />);
+    screen.getByTestId('convert-advanced-engines').setAttribute('open', '');
 
     await user.selectOptions(
       screen.getByTestId('conversion-library-select'),
@@ -231,11 +246,13 @@ describe('T3.1 / TC-EV060-1002: Conversion library at converter top', () => {
           {
             id: 'sess-profile',
             status: 'wip',
+            manual_tac: 'TAF KJFK 121200Z 1212/1312 18010KT=',
             conversion_params: { product: 'TAF', profile: 'iwxxm_us' },
           } as any
         }
       />,
     );
+    screen.getByTestId('convert-advanced-engines').setAttribute('open', '');
 
     expect(screen.getByTestId('product-type-select')).toHaveValue('TAF');
     expect(screen.getByTestId('conversion-library-select')).toBeVisible();

@@ -736,7 +736,10 @@ export function FileConverter({
   const [firstAccumulatedTac, setFirstAccumulatedTac] = useState<string | null>(null);
   /** F7.s validate-only report (POST /api/v1/validate with xml_content). */
   const [validateReport, setValidateReport] = useState<ValidateResponse | null>(null);
-  const [manualInput, setManualInput] = useState('');
+  const [manualInput, setManualInput] = useState(() => {
+    const saved = readGuestConverterState()?.manualInput;
+    return typeof saved === 'string' ? saved : '';
+  });
   const [decodeError, setDecodeError] = useState<string | null>(null);
   const [softPreview, setSoftPreview] = useState(false);
   const [propagateResiduals, setPropagateResiduals] = useState(false);
@@ -2744,7 +2747,11 @@ export function FileConverter({
         </div>
 
         {/* Action Buttons — fixed strip; status lives outside so busy/save text cannot reflow */}
-        <div className="mb-4" data-testid="action-button-strip">
+        <div
+          className="mb-4"
+          data-testid="action-button-strip"
+          hidden={showCalmEmptyHero}
+        >
           <div
             className="mb-2 flex h-5 items-center"
             aria-live="polite"
@@ -3018,6 +3025,7 @@ export function FileConverter({
                   onExampleChip={handleLoadGoldenExample}
                   profileLabel={calmProfileLabel}
                   onChangeProfile={() => setProfileDrawerOpen(true)}
+                  onBrowseFiles={() => fileInputRef.current?.click()}
                   onOtherTask={(task) => {
                     if (task === 'validate_iwxxm') {
                       setInputMode('validate_iwxxm');
@@ -3030,12 +3038,30 @@ export function FileConverter({
                     setInputMode('collect_iwxxm');
                   }}
                 >
-                  <p className="text-center text-sm text-gray-500 dark:text-gray-400">
-                    Use the TAC editor below, or try an example chip.
-                  </p>
+                  <TacEditor
+                    id={showCalmEmptyHero ? 'manual-input' : undefined}
+                    value={manualInput}
+                    onReportLoaded={applyLoadedReportName}
+                    onChange={(value) => {
+                      setManualInput(value);
+                      setSelectedTrace(null);
+                      setLintJump(null);
+                      setLintFocusOffset(null);
+                    }}
+                    readOnly={isReadOnly}
+                    placeholder={
+                      'WSAZ31 LPMG 251142\nLPPO SIGMET T04 VALID 251145/251545 LPPT- …'
+                    }
+                    aria-label="Enter METAR data manually"
+                    className="min-h-44 border-0 shadow-none focus-within:ring-0"
+                  />
                 </CalmConvertEmptyHero>
               ) : null}
-              <div className="flex flex-col" data-testid="live-convert-stage">
+              <div
+                className="flex flex-col"
+                data-testid="live-convert-stage"
+                hidden={showCalmEmptyHero}
+              >
                 <button
                   type="button"
                   data-testid="convert-panes-toggle"
@@ -3049,6 +3075,7 @@ export function FileConverter({
                   <div
                     className="mb-2 flex flex-col gap-2 xl:max-h-[18rem] xl:min-h-0 xl:shrink-0 xl:overflow-y-auto"
                     data-testid="convert-setup"
+                    hidden={calmUi.hideAdvancedSetup}
                   >
                     <div className="flex flex-col gap-2 lg:flex-row lg:items-end lg:justify-between">
                       <label
@@ -3152,103 +3179,134 @@ export function FileConverter({
                           <option value="VONA">VONA</option>
                           <option value="IWXXM">IWXXM</option>
                         </select>
+                        <div className="flex min-w-0 flex-wrap items-center gap-2">
+                          <span className="text-sm text-gray-600 dark:text-gray-400">
+                            Profile:{' '}
+                            <span className="font-medium text-gray-900 dark:text-gray-100">
+                              {calmProfileLabel}
+                            </span>
+                          </span>
+                          <button
+                            type="button"
+                            className="text-sm font-medium text-blue-700 underline-offset-2 hover:underline dark:text-blue-300"
+                            data-testid="convert-profile-change-live"
+                            onClick={() => setProfileDrawerOpen(true)}
+                          >
+                            Change
+                          </button>
+                        </div>
                         {inputMode !== 'validate_iwxxm' ? (
                           <>
-                            <LibraryPickersBar
-                              disabled={isReadOnly}
-                              values={{
-                                conversionLibraryId:
-                                  conversionParams.conversionLibraryId,
-                                tacValidationLibraryId:
-                                  conversionParams.tacValidationLibraryId,
-                                iwxxmValidationLibraryId:
-                                  conversionParams.iwxxmValidationLibraryId,
-                                disseminationLibraryId:
-                                  conversionParams.disseminationLibraryId,
-                                decodingLibraryId: conversionParams.decodingLibraryId,
-                              }}
-                              onOpenCatalog={onOpenCatalog}
-                              onChange={(next, conversionEngineProfileId) => {
-                                setConversionParams((prev) => {
-                                  if (!conversionEngineProfileId) {
-                                    return { ...prev, ...next };
-                                  }
-                                  const lineChanging = isSemanticProfileLineChange(
-                                    prev.profile,
-                                    conversionEngineProfileId,
-                                  );
-                                  if (lineChanging) {
-                                    if (
-                                      !confirmLibraryResetForProfile(
+                            <details
+                              className="order-2 w-full rounded-md border border-gray-200 bg-white px-2 py-1.5 dark:border-gray-700 dark:bg-gray-800"
+                              data-testid="convert-advanced-engines"
+                            >
+                              <summary className="cursor-pointer select-none text-sm font-medium text-gray-700 dark:text-gray-200">
+                                Customize each step
+                              </summary>
+                              <div className="mt-2 space-y-2 border-t border-gray-100 pt-2 dark:border-gray-700">
+                                <LibraryPickersBar
+                                  disabled={isReadOnly}
+                                  values={{
+                                    conversionLibraryId:
+                                      conversionParams.conversionLibraryId,
+                                    tacValidationLibraryId:
+                                      conversionParams.tacValidationLibraryId,
+                                    iwxxmValidationLibraryId:
+                                      conversionParams.iwxxmValidationLibraryId,
+                                    disseminationLibraryId:
+                                      conversionParams.disseminationLibraryId,
+                                    decodingLibraryId:
+                                      conversionParams.decodingLibraryId,
+                                  }}
+                                  onOpenCatalog={onOpenCatalog}
+                                  onChange={(next, conversionEngineProfileId) => {
+                                    setConversionParams((prev) => {
+                                      if (!conversionEngineProfileId) {
+                                        return { ...prev, ...next };
+                                      }
+                                      const lineChanging = isSemanticProfileLineChange(
+                                        prev.profile,
                                         conversionEngineProfileId,
-                                      )
-                                    ) {
-                                      return prev;
-                                    }
-                                    const { profile, libraryIds } =
-                                      libraryResetForProfile(conversionEngineProfileId);
-                                    return {
-                                      ...prev,
-                                      ...libraryIds,
-                                      profile,
-                                      reportVariant: '',
-                                      iwxxmVersion: coerceIwxxmVersionForProfile(
+                                      );
+                                      if (lineChanging) {
+                                        if (
+                                          !confirmLibraryResetForProfile(
+                                            conversionEngineProfileId,
+                                          )
+                                        ) {
+                                          return prev;
+                                        }
+                                        const { profile, libraryIds } =
+                                          libraryResetForProfile(
+                                            conversionEngineProfileId,
+                                          );
+                                        return {
+                                          ...prev,
+                                          ...libraryIds,
+                                          profile,
+                                          reportVariant: '',
+                                          iwxxmVersion: coerceIwxxmVersionForProfile(
+                                            profile,
+                                            prev.iwxxmVersion,
+                                          ),
+                                        };
+                                      }
+                                      const profile = coerceIwxxmProfile(
+                                        conversionEngineProfileId,
+                                      );
+                                      return {
+                                        ...prev,
+                                        ...next,
                                         profile,
-                                        prev.iwxxmVersion,
-                                      ),
-                                    };
-                                  }
-                                  const profile = coerceIwxxmProfile(
-                                    conversionEngineProfileId,
-                                  );
-                                  return {
-                                    ...prev,
-                                    ...next,
-                                    profile,
-                                    reportVariant: '',
-                                    iwxxmVersion: coerceIwxxmVersionForProfile(
-                                      profile,
-                                      prev.iwxxmVersion,
-                                    ),
-                                  };
-                                });
-                              }}
-                            />
-                            <div className="order-1 flex shrink-0 items-center gap-1">
-                              <Button
-                                type="button"
-                                variant="ghost"
-                                size="sm"
-                                disabled={isReadOnly}
-                                data-testid="reset-wmo-library-defaults"
-                                className="text-xs text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800"
-                                onClick={() => {
-                                  const sync = resetWmoLibraryDefaultsSync();
-                                  applyWmoLibraryDefaultsSync(sync);
-                                }}
-                              >
-                                {CONVERT_RESET_WMO_LIBRARY_DEFAULTS}
-                              </Button>
-                              <Tooltip>
-                                <TooltipTrigger asChild>
-                                  <button
+                                        reportVariant: '',
+                                        iwxxmVersion: coerceIwxxmVersionForProfile(
+                                          profile,
+                                          prev.iwxxmVersion,
+                                        ),
+                                      };
+                                    });
+                                  }}
+                                />
+                                <div className="flex shrink-0 items-center gap-1">
+                                  <Button
                                     type="button"
-                                    className="inline-flex h-6 w-6 items-center justify-center rounded text-gray-500 hover:text-gray-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:text-gray-400 dark:hover:text-gray-100"
-                                    aria-label="About reset to WMO defaults"
-                                    data-testid="reset-wmo-library-defaults-help"
+                                    variant="ghost"
+                                    size="sm"
+                                    disabled={isReadOnly}
+                                    data-testid="reset-wmo-library-defaults"
+                                    className="text-xs text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800"
+                                    onClick={() => {
+                                      const sync = resetWmoLibraryDefaultsSync();
+                                      applyWmoLibraryDefaultsSync(sync);
+                                    }}
                                   >
-                                    <CircleHelp className="h-3.5 w-3.5" aria-hidden />
-                                  </button>
-                                </TooltipTrigger>
-                                <TooltipContent
-                                  side="bottom"
-                                  className="max-w-xs text-balance"
-                                >
-                                  {CONVERT_RESET_WMO_LIBRARY_DEFAULTS_HELP}
-                                </TooltipContent>
-                              </Tooltip>
-                            </div>
-
+                                    {CONVERT_RESET_WMO_LIBRARY_DEFAULTS}
+                                  </Button>
+                                  <Tooltip>
+                                    <TooltipTrigger asChild>
+                                      <button
+                                        type="button"
+                                        className="inline-flex h-6 w-6 items-center justify-center rounded text-gray-500 hover:text-gray-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:text-gray-400 dark:hover:text-gray-100"
+                                        aria-label="About reset to WMO defaults"
+                                        data-testid="reset-wmo-library-defaults-help"
+                                      >
+                                        <CircleHelp
+                                          className="h-3.5 w-3.5"
+                                          aria-hidden
+                                        />
+                                      </button>
+                                    </TooltipTrigger>
+                                    <TooltipContent
+                                      side="bottom"
+                                      className="max-w-xs text-balance"
+                                    >
+                                      {CONVERT_RESET_WMO_LIBRARY_DEFAULTS_HELP}
+                                    </TooltipContent>
+                                  </Tooltip>
+                                </div>
+                              </div>
+                            </details>
                             {reportVariantOptions.length > 0 &&
                               inputMode !== 'ahl_bulletin' && (
                                 <>
@@ -3331,10 +3389,10 @@ export function FileConverter({
                       </div>
                       {inputMode !== 'validate_iwxxm' ? (
                         <>
-                          <div className="flex flex-wrap items-center justify-between gap-2">
+                          <div className="flex flex-wrap items-center justify-end gap-2">
                             <p
                               id="product-profile-bar-summary"
-                              className="text-xs text-gray-600 dark:text-gray-400"
+                              className="sr-only"
                               data-testid="product-profile-bar-summary"
                             >
                               Encoding and packaging rules only. This does not set
@@ -3361,7 +3419,8 @@ export function FileConverter({
                             </details>
                           </div>
                           <div
-                            className="flex flex-wrap items-center gap-2"
+                            className="hidden flex-wrap items-center gap-2"
+                            aria-hidden="true"
                             data-testid="country-preset"
                           >
                             <label
@@ -3642,47 +3701,49 @@ export function FileConverter({
                               : 'convert-tac-editable'
                           }
                         >
-                          <TacEditor
-                            id="manual-input"
-                            value={manualInput}
-                            onReportLoaded={applyLoadedReportName}
-                            onChange={(value) => {
-                              setManualInput(value);
-                              setSelectedTrace(null);
-                              setLintJump(null);
-                              setLintFocusOffset(null);
-                              if (inputMode !== 'ahl_bulletin') {
-                                return;
+                          {!showCalmEmptyHero ? (
+                            <TacEditor
+                              id="manual-input"
+                              value={manualInput}
+                              onReportLoaded={applyLoadedReportName}
+                              onChange={(value) => {
+                                setManualInput(value);
+                                setSelectedTrace(null);
+                                setLintJump(null);
+                                setLintFocusOffset(null);
+                                if (inputMode !== 'ahl_bulletin') {
+                                  return;
+                                }
+                                if (focusedBulletinReport === null) {
+                                  setBulletinSource(value);
+                                  return;
+                                }
+                                setBulletinSource((current) =>
+                                  replaceBulletinReport(
+                                    current,
+                                    focusedBulletinReport,
+                                    value,
+                                  ),
+                                );
+                              }}
+                              readOnly={calmTacReadOnly}
+                              placeholder={
+                                inputMode === 'validate_iwxxm'
+                                  ? '<iwxxm:METAR>...</iwxxm:METAR>'
+                                  : 'SPECI BGSF 282350Z 10RMF50MT 9999 SCT110 BKN130 0RN130 NN7/N11 Q1021'
                               }
-                              if (focusedBulletinReport === null) {
-                                setBulletinSource(value);
-                                return;
+                              aria-label={
+                                inputMode === 'validate_iwxxm'
+                                  ? 'Enter IWXXM XML manually'
+                                  : 'Enter METAR data manually'
                               }
-                              setBulletinSource((current) =>
-                                replaceBulletinReport(
-                                  current,
-                                  focusedBulletinReport,
-                                  value,
-                                ),
-                              );
-                            }}
-                            readOnly={calmTacReadOnly}
-                            placeholder={
-                              inputMode === 'validate_iwxxm'
-                                ? '<iwxxm:METAR>...</iwxxm:METAR>'
-                                : 'SPECI BGSF 282350Z 10RMF50MT 9999 SCT110 BKN130 0RN130 NN7/N11 Q1021'
-                            }
-                            aria-label={
-                              inputMode === 'validate_iwxxm'
-                                ? 'Enter IWXXM XML manually'
-                                : 'Enter METAR data manually'
-                            }
-                            className="max-h-80 min-h-44 focus-within:ring-2 focus-within:ring-blue-500"
-                            failedSpans={failedSpans}
-                            issueSpans={editorSpans}
-                            onSpanFix={applyLintFix}
-                            focusOffset={lintFocusOffset}
-                          />
+                              className="max-h-80 min-h-44 focus-within:ring-2 focus-within:ring-blue-500"
+                              failedSpans={failedSpans}
+                              issueSpans={editorSpans}
+                              onSpanFix={applyLintFix}
+                              focusOffset={lintFocusOffset}
+                            />
+                          ) : null}
                         </div>
                         {inputMode !== 'validate_iwxxm' ? (
                           <>
@@ -4767,14 +4828,18 @@ export function FileConverter({
         }
         customizeSection={
           <p className="text-sm text-gray-600 dark:text-gray-400">
-            Decoding, TAC checks, IWXXM mapping, and IWXXM checks follow this national
-            profile. Open Advanced setup on the Convert page to override libraries.
+            Only needed when one step must follow a different rule set. Expand{' '}
+            <span className="font-medium text-gray-800 dark:text-gray-200">
+              Customize each step
+            </span>{' '}
+            on the Convert page to override Decoding, TAC checks, IWXXM mapping, or
+            IWXXM checks.
           </p>
         }
         outputSection={
           <p className="text-sm text-gray-600 dark:text-gray-400">
-            Bulletin id, issuing centre, output filename, soft preview, and leftover TAC
-            in remarks stay under Advanced setup when you are editing a report.
+            Bulletin ID, issuing centre, file name, conversion metadata, soft preview,
+            and leftover TAC in remarks.
           </p>
         }
         onApply={() => {

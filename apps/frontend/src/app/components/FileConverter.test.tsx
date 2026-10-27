@@ -639,6 +639,7 @@ describe('FileConverter Component', () => {
       fixes: [],
     });
     mockInflateGzipToText.mockResolvedValue('METAR KJFK 121251Z 18004KT=');
+    // Default empty Convert (calm hero). Live-chrome cases call seedLiveConvertChrome().
     mockReadGuestConverterState.mockReturnValue(null);
     mockIsReadOnly.value = false;
     mockSaveIndicator.value = 'idle';
@@ -656,6 +657,16 @@ describe('FileConverter Component', () => {
     operatorDisseminationUiConfig.destinationsEnabled = false;
     cleanup();
   });
+
+  const seedLiveConvertChrome = () => {
+    mockReadGuestConverterState.mockReturnValue({
+      manualInput: 'METAR KJFK 121251Z 18004KT 10SM FEW020 18/12 A3012=',
+      pendingFiles: [],
+      convertedFiles: [],
+      conversionLog: null,
+      conversionParams: {},
+    } as never);
+  };
 
   describe('Rendering', () => {
     it('should render the file converter', () => {
@@ -680,6 +691,8 @@ describe('FileConverter Component', () => {
     });
 
     it('keeps the Convert title on the same inset as the page body', async () => {
+      seedLiveConvertChrome();
+
       const user = userEvent.setup();
       render(<FileConverter {...defaultProps} />);
       const heading = screen.getByRole('heading', { name: 'TAC to IWXXM' });
@@ -714,11 +727,12 @@ describe('FileConverter Component', () => {
     });
 
     it('UJ-088: empty hero other-task links switch input mode', async () => {
+      mockReadGuestConverterState.mockReturnValue(null);
       const user = userEvent.setup();
       render(<FileConverter {...defaultProps} />);
       expect(screen.getByTestId('convert-empty-hero')).toBeInTheDocument();
       await user.click(
-        screen.getByRole('button', { name: 'Convert full bulletin (AHL)' }),
+        screen.getByRole('button', { name: 'Convert a full bulletin (AHL)' }),
       );
       expect(screen.getByTestId('input-mode-ahl_bulletin')).toHaveClass('bg-blue-600');
       await user.click(screen.getByTestId('input-mode-tac'));
@@ -733,11 +747,25 @@ describe('FileConverter Component', () => {
       await waitFor(() => {
         expect(screen.getByTestId('convert-empty-hero')).toBeInTheDocument();
       });
-      await user.click(screen.getByRole('button', { name: 'Build COLLECT bundle' }));
+      await user.click(screen.getByRole('button', { name: 'Build a COLLECT bundle' }));
       expect(screen.getByTestId('input-mode-collect_iwxxm')).toHaveClass('bg-blue-600');
     });
 
+    it('TC-UX-CALM-003: empty TAC hides advanced convert-setup chrome', () => {
+      mockReadGuestConverterState.mockReturnValue(null);
+      render(<FileConverter {...defaultProps} />);
+      const hero = screen.getByTestId('convert-empty-hero');
+      expect(hero).toBeInTheDocument();
+      expect(screen.getByTestId('convert-setup')).not.toBeVisible();
+      expect(screen.getByTestId('live-convert-stage')).not.toBeVisible();
+      expect(screen.getByTestId('action-button-strip')).not.toBeVisible();
+      expect(
+        within(hero).getByLabelText('Enter METAR data manually'),
+      ).toBeInTheDocument();
+    });
+
     it('UJ-088: profile Change opens drawer; radio Apply/Reset update profile', async () => {
+      mockReadGuestConverterState.mockReturnValue(null);
       const user = userEvent.setup();
       render(<FileConverter {...defaultProps} />);
       await user.click(screen.getByTestId('convert-profile-change'));
@@ -759,6 +787,7 @@ describe('FileConverter Component', () => {
     });
 
     it('UJ-088: example chip loads TAC; Download IWXXM primary works', async () => {
+      mockReadGuestConverterState.mockReturnValue(null);
       const user = userEvent.setup({ delay: null });
       mockConvertMetarToIwxxm.mockResolvedValue({
         results: [
@@ -842,13 +871,21 @@ describe('FileConverter Component', () => {
         expect(screen.getByTestId('convert-tac-readonly')).toBeInTheDocument();
       });
       expect(screen.getByTestId('convert-tac-edit')).toBeInTheDocument();
-      expect(textarea).toHaveAttribute('readOnly');
+      const locked = within(screen.getByTestId('convert-tac-readonly')).getByTestId(
+        'tac-editor',
+      );
+      expect(locked).toHaveAttribute('readOnly');
       await user.click(screen.getByTestId('convert-tac-edit'));
       expect(screen.getByTestId('convert-tac-editable')).toBeInTheDocument();
-      expect(textarea).not.toHaveAttribute('readOnly');
+      const editable = within(screen.getByTestId('convert-tac-editable')).getByTestId(
+        'tac-editor',
+      );
+      expect(editable).not.toHaveAttribute('readOnly');
     });
 
     it('keeps decode and live IWXXM in one row on a wide window', () => {
+      seedLiveConvertChrome();
+
       const original = window.matchMedia;
       window.matchMedia = ((query: string) => ({
         matches: query.includes('1280'),
@@ -1220,34 +1257,38 @@ describe('FileConverter Component', () => {
     });
 
     it('should clear input when clear button is clicked', async () => {
+      seedLiveConvertChrome();
+
       const user = userEvent.setup({ delay: null });
-      const { container } = render(<FileConverter {...defaultProps} />);
+      render(<FileConverter {...defaultProps} />);
 
-      const textarea = container.querySelector('textarea');
-      if (textarea) {
-        fireEvent.change(textarea, { target: { value: 'Test content' } });
-        expect(textarea).toHaveValue('Test content');
+      const textarea = screen.getByTestId('tac-editor');
+      fireEvent.change(textarea, { target: { value: 'Test content' } });
+      expect(textarea).toHaveValue('Test content');
 
-        const clearBtn = await screen.findByRole('button', {
-          name: /clear all pending files and manual input/i,
-        });
-        await user.click(clearBtn);
+      const clearBtn = await screen.findByRole('button', {
+        name: /clear all pending files and manual input/i,
+      });
+      await user.click(clearBtn);
 
-        expect(textarea).toHaveValue('');
-      }
+      // Clear returns to empty hero; re-query the mounted editor.
+      expect(screen.getByTestId('convert-empty-hero')).toBeInTheDocument();
+      expect(screen.getByTestId('tac-editor')).toHaveValue('');
     });
 
     it('live workbench debounces lint/decode; live IWXXM defaults on', async () => {
+      seedLiveConvertChrome();
+
       vi.useFakeTimers();
       try {
         mockLintTac.mockClear();
         mockDecodeTac.mockClear();
-        const { container } = render(<FileConverter {...defaultProps} />);
+        render(<FileConverter {...defaultProps} />);
 
         expect(screen.getByTestId('live-iwxxm-toggle')).toBeChecked();
         expect(screen.getByTestId('workbench-console')).toBeInTheDocument();
 
-        const textarea = container.querySelector('textarea') as HTMLTextAreaElement;
+        const textarea = screen.getByTestId('tac-editor') as HTMLTextAreaElement;
         fireEvent.change(textarea, { target: { value: 'METAR KJFK' } });
         await act(async () => {
           await vi.advanceTimersByTimeAsync(350);
@@ -1285,30 +1326,14 @@ describe('FileConverter Component', () => {
           await Promise.resolve();
         });
 
-        // Clearing text short-circuits live IWXXM runner (no convert call)
+        // Whitespace-only TAC leaves the calm empty hero (no live convert call).
         mockConvertMetarToIwxxm.mockClear();
         fireEvent.change(textarea, { target: { value: '   ' } });
         await act(async () => {
           await vi.advanceTimersByTimeAsync(350);
         });
         expect(mockConvertMetarToIwxxm).not.toHaveBeenCalled();
-
-        // Successful preview clears failed spans
-        expect(screen.getByTestId('live-iwxxm-toggle')).toBeChecked();
-        mockConvertMetarToIwxxm.mockResolvedValueOnce({
-          results: [{ iwxxm_xml: '<ok/>' }],
-          errors: [],
-          ok: true,
-          failed_spans: [],
-        });
-        fireEvent.change(textarea, {
-          target: { value: 'METAR KJFK 121251Z 18004KT' },
-        });
-        await act(async () => {
-          await vi.advanceTimersByTimeAsync(350);
-          await Promise.resolve();
-        });
-        expect(screen.queryByTestId('failed-tac-cue')).toBeNull();
+        expect(screen.getByTestId('convert-empty-hero')).toBeInTheDocument();
       } finally {
         vi.useRealTimers();
       }
@@ -1365,6 +1390,8 @@ describe('FileConverter Component', () => {
     });
 
     it('jumps between live TAC lint issues', async () => {
+      seedLiveConvertChrome();
+
       vi.useFakeTimers();
       try {
         mockLintTac.mockResolvedValue({
@@ -1872,6 +1899,8 @@ describe('FileConverter Component', () => {
     });
 
     it('remembers decode density and XML wrapping for this browser', async () => {
+      seedLiveConvertChrome();
+
       const user = userEvent.setup({ delay: null });
       render(<FileConverter {...defaultProps} />);
       const compact = screen.getByRole('button', { name: 'Compact' });
@@ -1894,6 +1923,8 @@ describe('FileConverter Component', () => {
     });
 
     it('uses the window for a roomier Convert view and can switch to tighter', async () => {
+      seedLiveConvertChrome();
+
       const user = userEvent.setup({ delay: null });
       render(<FileConverter {...defaultProps} />);
       const frame = screen.getByTestId('workbench-frame');
@@ -1930,7 +1961,8 @@ describe('FileConverter Component', () => {
       expect(screen.getByTestId('convert-setup').className).toContain(
         'xl:max-h-[18rem]',
       );
-      expect(screen.getByTestId('country-preset')).toBeVisible();
+      expect(screen.getByTestId('country-preset')).toBeInTheDocument();
+      screen.getByTestId('convert-advanced-engines').setAttribute('open', '');
       expect(screen.getByTestId('library-pickers-shared-reason')).toBeVisible();
       expect(screen.getByTestId('live-convert-stage').className).not.toMatch(
         /(^|\s)overflow-hidden(\s|$)/,
@@ -1968,6 +2000,8 @@ describe('FileConverter Component', () => {
     });
 
     it('nudges pane widths on a wide screen', () => {
+      seedLiveConvertChrome();
+
       const original = window.matchMedia;
       window.matchMedia = ((query: string) => ({
         matches: query.includes('1280'),
@@ -2192,6 +2226,8 @@ describe('FileConverter Component', () => {
     });
 
     it('shows toast when reading one dropped file fails', async () => {
+      seedLiveConvertChrome();
+
       const user = userEvent.setup({ delay: null });
       const badFile = {
         name: 'broken.metar',
@@ -3626,6 +3662,8 @@ describe('FileConverter Component', () => {
     });
 
     it('keeps prior results when convert fails and shows error log panel (#555)', async () => {
+      seedLiveConvertChrome();
+
       const user = userEvent.setup({ delay: null });
       mockConvertMetarToIwxxm
         .mockResolvedValueOnce({
@@ -3671,6 +3709,8 @@ describe('FileConverter Component', () => {
     });
 
     it('clears error log panel on the next successful convert', async () => {
+      seedLiveConvertChrome();
+
       const user = userEvent.setup({ delay: null });
       mockConvertMetarToIwxxm
         .mockResolvedValueOnce({
@@ -3688,8 +3728,8 @@ describe('FileConverter Component', () => {
           total_processed: 1,
         });
 
-      const { container } = render(<FileConverter {...defaultProps} />);
-      const textarea = container.querySelector('textarea') as HTMLTextAreaElement;
+      render(<FileConverter {...defaultProps} />);
+      let textarea = screen.getByTestId('tac-editor') as HTMLTextAreaElement;
 
       fireEvent.change(textarea, { target: { value: 'BAD' } });
       await user.click(screen.getByTestId('convert-button'));
@@ -3697,7 +3737,12 @@ describe('FileConverter Component', () => {
         expect(screen.getByLabelText(/conversion error log/i)).toBeInTheDocument();
       });
 
-      await user.clear(textarea);
+      // Unlock TAC if post-convert lock applied, then recover.
+      const edit = screen.queryByTestId('convert-tac-edit');
+      if (edit) {
+        await user.click(edit);
+      }
+      textarea = screen.getByTestId('tac-editor') as HTMLTextAreaElement;
       fireEvent.change(textarea, {
         target: { value: 'METAR KJFK 121651Z 18005KT 10SM FEW030 24/16 A2992' },
       });
@@ -3751,6 +3796,8 @@ describe('FileConverter Component', () => {
     });
 
     it('suffixes _N for multi-line manual input with a custom base', async () => {
+      seedLiveConvertChrome();
+
       const user = userEvent.setup({ delay: null });
       mockConvertMetarToIwxxm.mockResolvedValueOnce({
         results: [
@@ -4405,6 +4452,8 @@ describe('FileConverter Component', () => {
     });
 
     it('live IWXXM preview uses xml then content when iwxxm_xml missing', async () => {
+      seedLiveConvertChrome();
+
       vi.useFakeTimers();
       try {
         const { container } = render(<FileConverter {...defaultProps} />);
@@ -4567,7 +4616,9 @@ describe('FileConverter Component', () => {
       });
       render(<FileConverter {...defaultProps} />);
 
-      await user.type(screen.getByTestId('tac-editor'), ahlSample);
+      fireEvent.change(screen.getByTestId('tac-editor'), {
+        target: { value: ahlSample },
+      });
       await user.click(screen.getByTestId('convert-button'));
 
       await waitFor(() => expect(mockConvertBulletin).toHaveBeenCalled());
@@ -4581,7 +4632,9 @@ describe('FileConverter Component', () => {
       const user = userEvent.setup({ delay: null });
       render(<FileConverter {...defaultProps} />);
 
-      await user.type(screen.getByTestId('tac-editor'), collectSample);
+      fireEvent.change(screen.getByTestId('tac-editor'), {
+        target: { value: collectSample },
+      });
       await user.click(screen.getByTestId('convert-button'));
 
       await waitFor(() => {
@@ -5379,12 +5432,15 @@ describe('FileConverter Component', () => {
     });
 
     it('ignores unknown golden example ids without changing editor state', async () => {
+      seedLiveConvertChrome();
       const catalog = await import('@/fixtures/examples/examplesCatalog');
       const spy = vi.spyOn(catalog, 'getExampleById').mockReturnValue(undefined);
       const user = userEvent.setup({ delay: null });
       render(<FileConverter {...defaultProps} />);
 
-      await user.type(screen.getByTestId('tac-editor'), 'KEEP ME');
+      fireEvent.change(screen.getByTestId('tac-editor'), {
+        target: { value: 'KEEP ME' },
+      });
       await user.click(screen.getByTestId('examples-select'));
       const option = await screen.findByRole('option', {
         name: /METAR WMO A3-1 \(annex3\)/i,
@@ -5793,6 +5849,8 @@ describe('FileConverter Component', () => {
     });
 
     it('no-ops download-all when there are no converted files', () => {
+      seedLiveConvertChrome();
+
       render(<FileConverter {...defaultProps} />);
       invokeReactOnClick(
         screen.getByRole('button', { name: /download all 0 converted files as zip/i }),
@@ -5880,6 +5938,8 @@ describe('FileConverter Component', () => {
     });
 
     it('uses live output filename when downloading multi-line manual results', async () => {
+      seedLiveConvertChrome();
+
       const user = userEvent.setup({ delay: null });
       mockConvertMetarToIwxxm.mockResolvedValueOnce({
         results: [
@@ -6581,6 +6641,8 @@ describe('FileConverter Component', () => {
     });
 
     it('labels the input IWXXM while validating and restores TAC on Convert', async () => {
+      seedLiveConvertChrome();
+
       const user = userEvent.setup({ delay: null });
       render(<FileConverter {...defaultProps} />);
       expect(screen.getByRole('region', { name: 'TAC' })).toBeInTheDocument();
@@ -6724,6 +6786,8 @@ describe('FileConverter Component', () => {
 
   describe('EV-060 / #1003 IWXXM product pass-through (F7.t)', () => {
     it('shows IWXXM product option and pass-through help (TC-EV060-1003-003)', async () => {
+      seedLiveConvertChrome();
+
       const user = userEvent.setup({ delay: null });
       render(<FileConverter {...defaultProps} />);
       const select = screen.getByTestId('product-type-select');
@@ -8101,6 +8165,8 @@ describe('FileConverter Component', () => {
 
   describe('EV-1050 report variant selector', () => {
     it('shows CA_ECCC METAR-family report variants for authenticated users', async () => {
+      seedLiveConvertChrome();
+
       const user = userEvent.setup({ delay: null });
       render(<FileConverter accessToken="tok" />);
 

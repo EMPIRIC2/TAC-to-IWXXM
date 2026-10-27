@@ -1,6 +1,9 @@
 /**
  * First-visit / empty Convert hero (Calmer Convert screen 4 / UJ-088).
  *
+ * Layout tracks the Calmer Convert empty mockup: left-aligned title, TAC card with
+ * primary CTA in the card footer, example chips, quiet other-task links, profile Change.
+ *
  * [Corpus: product §F7] [Corpus: journeys §UJ-088]
  */
 
@@ -34,6 +37,7 @@ export interface CalmConvertEmptyHeroProps {
   profileLabel: string;
   onChangeProfile: () => void;
   onOtherTask?: (task: 'ahl' | 'validate_iwxxm' | 'collect') => void;
+  onBrowseFiles?: () => void;
 }
 
 /**
@@ -51,88 +55,111 @@ export function CalmConvertEmptyHero({
   profileLabel,
   onChangeProfile,
   onOtherTask,
+  onBrowseFiles,
 }: CalmConvertEmptyHeroProps) {
   return (
     <section
-      className="mx-auto flex w-full max-w-2xl flex-col items-stretch gap-6 py-8"
+      className="mx-auto flex w-full max-w-3xl flex-col items-stretch gap-7 py-10"
       data-testid="convert-empty-hero"
     >
-      <div className="space-y-2 text-center">
-        <h2 className="text-2xl font-semibold tracking-tight text-gray-900 dark:text-white">
+      <div className="space-y-2.5">
+        <h2 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">
           Convert a TAC report to IWXXM
         </h2>
-        <p className="text-sm text-gray-600 dark:text-gray-400">
-          Paste a report, auto-detect the product, and preview IWXXM before you convert.
+        <p className="max-w-prose text-base text-gray-600 dark:text-gray-400">
+          Paste a METAR, TAF, SIGMET, AIRMET or advisory. The report type is detected
+          for you, and the IWXXM preview updates as you type.
         </p>
       </div>
 
-      <div className="space-y-3">{children}</div>
-
-      <div className="flex flex-wrap items-center justify-center gap-2">
-        <Button
-          type="button"
-          variant="default"
-          data-testid="convert-primary-cta"
-          disabled={convertDisabled}
-          aria-busy={isConverting}
-          onClick={onConvert}
-          className="min-w-[11rem]"
-        >
-          {CALM_CONVERT_PRIMARY_LABEL}
-        </Button>
-      </div>
-
-      <div className="space-y-2" data-testid="convert-example-chips">
-        <p className="text-center text-xs font-medium uppercase tracking-wide text-gray-500">
-          Try an example
-        </p>
-        <div className="flex flex-wrap justify-center gap-2">
-          {exampleChips.map((chip) => (
+      <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-900">
+        <div className="px-1 pt-1">{children}</div>
+        <div className="flex flex-wrap items-center gap-3 border-t border-dashed border-gray-200 bg-gray-50 px-4 py-3 dark:border-gray-700 dark:bg-gray-950/60">
+          <p className="text-sm text-gray-600 dark:text-gray-400">
+            Or drop .tac, .txt, .xml or .zip files
+            {onBrowseFiles ? (
+              <>
+                {' · '}
+                <button
+                  type="button"
+                  className="font-medium text-blue-700 underline-offset-2 hover:underline dark:text-blue-300"
+                  data-testid="convert-empty-browse"
+                  onClick={onBrowseFiles}
+                >
+                  browse
+                </button>
+              </>
+            ) : null}
+          </p>
+          <div className="ml-auto">
             <Button
-              key={chip.id}
               type="button"
-              variant="outline"
-              size="sm"
-              data-testid={`convert-example-chip-${chip.id}`}
-              onClick={() => onExampleChip(chip.id)}
+              variant="default"
+              data-testid="convert-primary-cta"
+              disabled={convertDisabled}
+              aria-busy={isConverting}
+              onClick={onConvert}
+              className="min-w-[11rem]"
             >
-              {chip.label}
+              {CALM_CONVERT_PRIMARY_LABEL}
             </Button>
-          ))}
+          </div>
         </div>
       </div>
 
+      <div
+        className="flex flex-wrap items-center gap-2.5"
+        data-testid="convert-example-chips"
+      >
+        <span className="mr-1 text-sm text-gray-600 dark:text-gray-400">
+          Try an example
+        </span>
+        {exampleChips.map((chip) => (
+          <Button
+            key={chip.id}
+            type="button"
+            variant="outline"
+            size="sm"
+            data-testid={`convert-example-chip-${chip.id}`}
+            onClick={() => onExampleChip(chip.id)}
+            className="rounded-full"
+          >
+            {chip.label}
+          </Button>
+        ))}
+      </div>
+
       {onOtherTask ? (
-        <div className="flex flex-wrap justify-center gap-x-4 gap-y-1 text-sm text-gray-600 dark:text-gray-400">
+        <div className="flex flex-wrap items-center gap-x-6 gap-y-2 border-t border-gray-200 pt-5 text-sm dark:border-gray-700">
+          <span className="text-gray-500 dark:text-gray-400">Other tasks</span>
           <button
             type="button"
-            className="underline-offset-2 hover:underline"
+            className="text-blue-700 underline-offset-2 hover:underline dark:text-blue-300"
             onClick={() => onOtherTask('ahl')}
           >
-            Convert full bulletin (AHL)
+            Convert a full bulletin (AHL)
           </button>
           <button
             type="button"
-            className="underline-offset-2 hover:underline"
+            className="text-blue-700 underline-offset-2 hover:underline dark:text-blue-300"
             onClick={() => onOtherTask('validate_iwxxm')}
           >
             Validate existing IWXXM
           </button>
           <button
             type="button"
-            className="underline-offset-2 hover:underline"
+            className="text-blue-700 underline-offset-2 hover:underline dark:text-blue-300"
             onClick={() => onOtherTask('collect')}
           >
-            Build COLLECT bundle
+            Build a COLLECT bundle
           </button>
         </div>
       ) : null}
 
-      <footer className="flex items-center justify-center gap-2 text-sm text-gray-500 dark:text-gray-400">
-        <span>
-          Profile:{' '}
-          <span className="text-gray-800 dark:text-gray-200">{profileLabel}</span>
-        </span>
+      <footer className="text-sm text-gray-600 dark:text-gray-400">
+        Profile:{' '}
+        <span className="text-gray-900 dark:text-gray-100">{profileLabel}</span>
+        {' · '}
         <button
           type="button"
           className="font-medium text-blue-700 underline-offset-2 hover:underline dark:text-blue-300"

@@ -121,6 +121,17 @@ describe('TC-EV090: Dissemination library picker (Convert chrome)', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     localStorage.clear();
+    sessionStorage.clear();
+    sessionStorage.setItem(
+      'metar_guest_converter_state',
+      JSON.stringify({
+        manualInput: 'METAR KJFK 121251Z 18004KT=',
+        pendingFiles: [],
+        convertedFiles: [],
+        conversionLog: null,
+        conversionParams: {},
+      }),
+    );
     vi.stubGlobal(
       'confirm',
       vi.fn(() => true),
@@ -131,6 +142,7 @@ describe('TC-EV090: Dissemination library picker (Convert chrome)', () => {
     render(
       <FileConverter accessToken="tok" isGuest={false} userEmail="op@example.com" />,
     );
+    screen.getByTestId('convert-advanced-engines').setAttribute('open', '');
     expect(screen.getByTestId('library-pickers-bar')).toBeVisible();
     expect(
       screen.queryByTestId('dissemination-library-select'),
@@ -145,6 +157,7 @@ describe('TC-EV090: Dissemination library picker (Convert chrome)', () => {
     render(
       <FileConverter accessToken="tok" isGuest={false} userEmail="op@example.com" />,
     );
+    screen.getByTestId('convert-advanced-engines').setAttribute('open', '');
 
     await user.click(screen.getByTestId('input-mode-ahl_bulletin'));
     fireEvent.change(screen.getByTestId('tac-editor'), {
@@ -201,6 +214,7 @@ describe('TC-EV090: Dissemination library picker (Convert chrome)', () => {
           {
             id: 'sess-ex-camel',
             status: 'wip',
+            manual_tac: 'METAR KJFK 121251Z 18004KT=',
             conversion_params: {
               product: 'METAR',
               profile: 'annex3',
@@ -210,6 +224,7 @@ describe('TC-EV090: Dissemination library picker (Convert chrome)', () => {
         }
       />,
     );
+    screen.getByTestId('convert-advanced-engines').setAttribute('open', '');
     expect(screen.getByTestId('conversion-library-select')).toBeVisible();
     expect(screen.queryByTestId('exchange-profile-select')).not.toBeInTheDocument();
   });

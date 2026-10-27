@@ -59,12 +59,12 @@ describe('TC-UX-CALM leaf components', () => {
     await user.click(screen.getByTestId('convert-profile-change'));
     expect(onChangeProfile).toHaveBeenCalled();
     await user.click(
-      screen.getByRole('button', { name: 'Convert full bulletin (AHL)' }),
+      screen.getByRole('button', { name: 'Convert a full bulletin (AHL)' }),
     );
     expect(onOtherTask).toHaveBeenCalledWith('ahl');
     await user.click(screen.getByRole('button', { name: 'Validate existing IWXXM' }));
     expect(onOtherTask).toHaveBeenCalledWith('validate_iwxxm');
-    await user.click(screen.getByRole('button', { name: 'Build COLLECT bundle' }));
+    await user.click(screen.getByRole('button', { name: 'Build a COLLECT bundle' }));
     expect(onOtherTask).toHaveBeenCalledWith('collect');
   });
 
@@ -136,7 +136,7 @@ describe('TC-UX-CALM leaf components', () => {
       </CalmConvertEmptyHero>,
     );
     expect(
-      screen.queryByRole('button', { name: 'Convert full bulletin (AHL)' }),
+      screen.queryByRole('button', { name: 'Convert a full bulletin (AHL)' }),
     ).not.toBeInTheDocument();
 
     render(
