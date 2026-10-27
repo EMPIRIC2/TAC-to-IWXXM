@@ -8,11 +8,12 @@ from __future__ import annotations
 import re
 from pathlib import Path
 
-import openpyxl
 import pytest
 from tac2iwxxm.convert import convert
 
 from .conftest import RAW, guess_product, strip_gts
+
+openpyxl = pytest.importorskip("openpyxl")
 
 _XLSX = sorted(RAW.rglob("*.xlsx"))
 _TAC_LINE = re.compile(

@@ -66,6 +66,13 @@ def test_recent_thunderstorm_and_showers_are_explained() -> None:
     reshra = "METAR TAPA 071700Z 10010KT 060V140 9999 BKN018 29/25 Q1016 RESHRA NOSIG="
     assert "RESHRA" in _explanations(reshra)
 
+    revcsh = "METAR TNCM 081200Z 14006KT 9999 FEW020 28/24 Q1013 REVCSH="
+    assert _explanations(revcsh)["REVCSH"] == "Recent weather: Showers in the vicinity"
+    revcts = "METAR TNCM 081200Z 14006KT 9999 FEW020 28/24 Q1013 REVCTS="
+    assert _explanations(revcts)["REVCTS"] == "Recent weather: Thunderstorm in the vicinity"
+    # Unknown RE body is not recent weather (falls through without explaining as RE*).
+    assert "REZZ" not in _explanations("METAR TNCM 081200Z 14006KT 9999 FEW020 28/24 Q1013 REZZ=")
+
 
 def test_compound_remark_vicinity_showers_with_direction() -> None:
     assert explain_remark_plain("VCSH-N") == "Showers in the vicinity, North"
@@ -87,3 +94,10 @@ def test_taf_change_group_weather_is_not_left_as_residual() -> None:
     residuals = _residual_texts(tac, product="TAF")
     assert "TS" not in residuals
     assert "VCSH" not in residuals
+
+
+def test_taf_base_vicinity_weather_tokens_are_explained() -> None:
+    vcsh = "TAF TNCM 081200Z 0812/0912 14006KT 9999 VCSH FEW020="
+    assert _explanations(vcsh, product="TAF")["VCSH"] == "Forecast weather: Showers in the vicinity"
+    vcts = "TAF TNCM 081200Z 0812/0912 14006KT 9999 VCTS FEW018CB="
+    assert _explanations(vcts, product="TAF")["VCTS"] == "Forecast weather: Thunderstorm in the vicinity"

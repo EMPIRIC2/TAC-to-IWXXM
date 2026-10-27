@@ -107,8 +107,13 @@ export function xmlBlocksPublish(xml: string | null | undefined): boolean {
   if (!trimmed) {
     return true;
   }
-  const doc = new DOMParser().parseFromString(trimmed, 'application/xml');
-  return doc.getElementsByTagName('parsererror').length > 0;
+  // Require a tag-shaped payload. Do not use DOMParser here: prefixed IWXXM
+  // without xmlns (common in stubs) is still downloadable; schema failures
+  // arrive as OUTPUT_VALIDATION_WARNING / ok=false instead.
+  if (!trimmed.includes('<') || !trimmed.includes('>')) {
+    return true;
+  }
+  return false;
 }
 
 /**

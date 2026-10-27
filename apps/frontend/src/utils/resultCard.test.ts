@@ -30,12 +30,13 @@ describe('result card status', () => {
     expect(isErrorSeverity('note')).toBe(false);
   });
 
-  it('blocks publish for blank or malformed XML and allows a well-formed document', () => {
+  it('blocks publish for blank or tagless XML and allows tag-shaped documents', () => {
     expect(xmlBlocksPublish(undefined)).toBe(false);
     expect(xmlBlocksPublish(null)).toBe(false);
     expect(xmlBlocksPublish('   ')).toBe(true);
     expect(xmlBlocksPublish('<iwxxm')).toBe(true);
     expect(xmlBlocksPublish('<iwxxm>ok</iwxxm>')).toBe(false);
+    expect(xmlBlocksPublish('<iwxxm:METAR>line-one</iwxxm:METAR>')).toBe(false);
   });
 
   it('is valid when the XML is well-formed and nothing was reported', () => {

@@ -38,3 +38,10 @@ def test_speci_taf_sigmet_paste_explains_that_tac_is_not_xml(tac: str) -> None:
     assert issues[0].code == "XML_SYNTAX_ERROR"
     assert "TAC" in issues[0].message
     assert "Convert" in issues[0].message
+
+
+def test_non_tac_plain_text_still_uses_xml_syntax_path() -> None:
+    """Branch coverage: non-< text that is not TAC/AHL falls through to lxml."""
+    issues = run_wellformed_lxml("NOT XML AT ALL")
+    assert issues[0].code == "XML_SYNTAX_ERROR"
+    assert "well-formed" in issues[0].message.lower() or "Start tag" in issues[0].message

@@ -573,9 +573,8 @@ def _explain_recent_weather(body: str) -> str | None:
         return "Recent weather: Thunderstorm in the vicinity"
     if m := _WX.match(body):
         phrase = _fmt_wx(m, forecast=False)
-        if phrase.startswith("Weather: "):
-            return f"Recent weather: {phrase.removeprefix('Weather: ')}"
-        return f"Recent weather: {phrase}"
+        detail = phrase.removeprefix("Weather: ").removeprefix("Weather ")
+        return f"Recent weather: {detail}"
     return None
 
 

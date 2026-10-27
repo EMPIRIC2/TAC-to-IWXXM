@@ -6488,6 +6488,24 @@ describe('FileConverter Component', () => {
       );
     });
 
+    it('refuses TAC paste in Validate IWXXM and asks to convert first', async () => {
+      const user = userEvent.setup({ delay: null });
+      render(<FileConverter {...defaultProps} />);
+      await user.click(screen.getByTestId('input-mode-validate_iwxxm'));
+      fireEvent.change(screen.getByTestId('tac-editor'), {
+        target: {
+          value: 'METAR TKPK 181400Z 08010KT 9999 SCT020 31/25 Q1017=',
+        },
+      });
+      await user.click(screen.getByRole('button', { name: /validate iwxxm xml/i }));
+      await waitFor(() => {
+        expect(mockToast.error).toHaveBeenCalledWith(
+          expect.stringMatching(/looks like TAC, not IWXXM XML/i),
+        );
+      });
+      expect(mockValidateIwxxm).not.toHaveBeenCalled();
+    });
+
     it('shows structured fail for invalid XML validate response', async () => {
       const user = userEvent.setup({ delay: null });
       mockValidateIwxxm.mockResolvedValueOnce({
