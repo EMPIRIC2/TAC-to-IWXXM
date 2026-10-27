@@ -5,6 +5,7 @@ import {
   looksLikeAhlBulletin,
   looksLikeCollectIwxxm,
   looksLikeIwxxmDocument,
+  looksLikeTacNotXml,
 } from './inputKind';
 
 describe('inputKind', () => {
@@ -59,6 +60,19 @@ describe('inputKind', () => {
 
   it('returns false for non-XML text in looksLikeIwxxmDocument', () => {
     expect(looksLikeIwxxmDocument('METAR KJFK')).toBe(false);
+  });
+
+  it('flags TAC paste so Validate IWXXM can refuse it', () => {
+    expect(
+      looksLikeTacNotXml('METAR TKPK 181400Z 08010KT 9999 SCT020 31/25 Q1017='),
+    ).toBe(true);
+    expect(
+      looksLikeTacNotXml(
+        'SAXX31 TNCM 081200\nMETAR TNCM 081200Z 14006KT 9999 FEW020 28/24 Q1013=',
+      ),
+    ).toBe(true);
+    expect(looksLikeTacNotXml('<iwxxm:METAR xmlns:iwxxm="x"/>')).toBe(false);
+    expect(looksLikeTacNotXml('')).toBe(false);
   });
 
   it('handles alternative headers, compressed extensions, and IWXXM XML without COLLECT', () => {

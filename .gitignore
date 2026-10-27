@@ -218,6 +218,10 @@ third_party/
 /docs/bug-reports/
 /docs/reports/
 /docs/engineering/
+# Coverage inventories stay tracked (unit gate EV-052 / EV-080).
+!/docs/engineering/
+!/docs/engineering/coverage-surface-inventory.yaml
+!/docs/engineering/coverage-surface-inventory-s061.yaml
 /docs/ARCHIVE/
 /docs/domain/mining/
 /docs/evolve-report-*.md

@@ -38,10 +38,11 @@ def test_decode_explains_sixteen_kilometre_visibility_after_rmk() -> None:
     assert explanations["VIS16KM"] == "Visibility 16 kilometres"
 
 
-def test_body_vicinity_showers_stay_a_residual() -> None:
+def test_body_vicinity_showers_are_explained() -> None:
     result = decode_tac(
         "METAR MKJP 081200Z 14006KT 9999 VCSH FEW020 28/24 Q1013=",
         product="METAR",
     )
-    assert all(segment.code != "VCSH" for segment in result.segments)
-    assert any(residual.text == "VCSH" for residual in result.residuals)
+    explanations = {segment.code: segment.explanation for segment in result.segments}
+    assert explanations["VCSH"] == "Showers in the vicinity"
+    assert all(residual.text != "VCSH" for residual in result.residuals)

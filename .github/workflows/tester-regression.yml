@@ -33,10 +33,15 @@ jobs:
       - name: Run tester regression tests
         run: |
           uv run pytest \
+            tests/regression/caribbean_tester \
             packages/tac2iwxxm/tests/test_regional_tester_feedback.py \
             packages/tac2iwxxm/tests/test_tc_f6_055_lowercase_keyword.py \
             packages/tac2iwxxm/tests/test_tc_f6_056_regional_packet.py \
             packages/tac2iwxxm/tests/test_weather_grammar.py \
+            packages/tac2iwxxm/tests/test_caribbean_tester_round2.py \
+            packages/tac-decoding/tests/test_caribbean_present_recent_decode.py \
+            packages/tac-validate/tests/test_caribbean_weather_lint.py \
+            packages/iwxxm-validate/tests/test_tac_paste_not_xml.py \
             packages/tac2iwxxm/tests/test_time_anchor.py \
             packages/tac2iwxxm/tests/test_taf_variable_wind_knots.py \
             packages/tac2iwxxm/tests/test_taf_continuation_lines.py \
@@ -79,6 +84,9 @@ jobs:
       - name: Run result-card tests
         run: |
           pnpm --filter @metar/frontend exec vitest run \
+            src/utils/resultCard.test.ts \
+            src/utils/inputKind.test.ts \
+            src/app/components/IwxxmPreviewPane.test.tsx \
             src/app/components/ConvertResultStatus.test.tsx \
             src/app/components/FileConverter.test.tsx \
-            -t "says do not publish|accumulates prior result cards|keeps Help, Preferences"
+            -t "says do not publish|accumulates prior result cards|keeps Help, Preferences|blocks publish when output validation|flags TAC paste|never shows Valid on soft-preview"

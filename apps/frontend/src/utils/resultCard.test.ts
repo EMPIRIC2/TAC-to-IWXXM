@@ -30,12 +30,13 @@ describe('result card status', () => {
     expect(isErrorSeverity('note')).toBe(false);
   });
 
-  it('blocks publish for blank or malformed XML and allows a well-formed document', () => {
+  it('blocks publish for blank or tagless XML and allows tag-shaped documents', () => {
     expect(xmlBlocksPublish(undefined)).toBe(false);
     expect(xmlBlocksPublish(null)).toBe(false);
     expect(xmlBlocksPublish('   ')).toBe(true);
     expect(xmlBlocksPublish('<iwxxm')).toBe(true);
     expect(xmlBlocksPublish('<iwxxm>ok</iwxxm>')).toBe(false);
+    expect(xmlBlocksPublish('<iwxxm:METAR>line-one</iwxxm:METAR>')).toBe(false);
   });
 
   it('is valid when the XML is well-formed and nothing was reported', () => {
@@ -64,6 +65,23 @@ describe('result card status', () => {
       { message: 'Remark stays in the decode', code: 'RMK_NOTE' },
       { message: 'Check the cloud group' },
     ]);
+  });
+
+  it('blocks publish when output validation warned even if severity is warning', () => {
+    const card = assessResultCard({
+      xml: '<iwxxm>ok</iwxxm>',
+      ok: true,
+      issues: [
+        {
+          severity: 'warning',
+          message: 'IWXXM checks reported problems',
+          code: 'OUTPUT_VALIDATION_WARNING',
+        },
+      ],
+    });
+    expect(card.statusLabel).toBe(RESULT_STATUS_ATTENTION);
+    expect(card.publishBlocked).toBe(true);
+    expect(card.errors.map((line) => line.code)).toEqual(['OUTPUT_VALIDATION_WARNING']);
   });
 
   it('says needs attention and blocks publish when an error or invalid XML is present', () => {

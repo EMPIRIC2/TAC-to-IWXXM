@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<collect:MeteorologicalBulletin
+    xmlns:collect="http://def.wmo.int/collect/2014"
+    xmlns:gml="http://www.opengis.net/gml/3.2"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    gml:id="uuid.cf6a3405-1cb7-486a-84f3-b65f40cb7328">
+    <collect:meteorologicalInformation>
+<iwxxm:SIGMET xmlns:iwxxm="http://icao.int/iwxxm/2025-2"
+    xmlns:xlink="http://www.w3.org/1999/xlink"
+    xmlns:gml="http://www.opengis.net/gml/3.2"
+    xmlns:aixm="http://www.aixm.aero/schema/5.1.1"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    gml:id="sigmet.basic.ttzp"
+    reportStatus="NORMAL"
+    permissibleUsage="OPERATIONAL">
+  <iwxxm:issueTime>
+    <gml:TimeInstant gml:id="t.issue">
+      <gml:timePosition>2012-08-26T11:50:00Z</gml:timePosition>
+    </gml:TimeInstant>
+  </iwxxm:issueTime>
+  <iwxxm:issuingAirTrafficServicesUnit>
+    <aixm:Unit gml:id="unit.atsu.ttzp">
+      <aixm:timeSlice>
+        <aixm:UnitTimeSlice gml:id="unit.atsu.ts.ttzp">
+          <gml:validTime/>
+          <aixm:interpretation>SNAPSHOT</aixm:interpretation>
+          <aixm:name>TTZP FIC</aixm:name>
+          <aixm:type>FIC</aixm:type>
+          <aixm:designator>TTZP</aixm:designator>
+        </aixm:UnitTimeSlice>
+      </aixm:timeSlice>
+    </aixm:Unit>
+  </iwxxm:issuingAirTrafficServicesUnit>
+  <iwxxm:originatingMeteorologicalWatchOffice>
+    <aixm:Unit gml:id="unit.mwo.ttpp">
+      <aixm:timeSlice>
+        <aixm:UnitTimeSlice gml:id="unit.mwo.ts.ttpp">
+          <gml:validTime/>
+          <aixm:interpretation>SNAPSHOT</aixm:interpretation>
+          <aixm:name>TTPP MWO</aixm:name>
+          <aixm:type>MWO</aixm:type>
+          <aixm:designator>TTPP</aixm:designator>
+        </aixm:UnitTimeSlice>
+      </aixm:timeSlice>
+    </aixm:Unit>
+  </iwxxm:originatingMeteorologicalWatchOffice>
+  <iwxxm:issuingAirTrafficServicesRegion>
+    <aixm:Airspace gml:id="as.ttzp">
+      <aixm:timeSlice>
+        <aixm:AirspaceTimeSlice gml:id="as.ts.ttzp">
+          <gml:validTime/>
+          <aixm:interpretation>SNAPSHOT</aixm:interpretation>
+          <aixm:type>OTHER:FIR_UIR</aixm:type>
+          <aixm:designator>TTZP</aixm:designator>
+          <aixm:name>TTZP</aixm:name>
+        </aixm:AirspaceTimeSlice>
+      </aixm:timeSlice>
+    </aixm:Airspace>
+  </iwxxm:issuingAirTrafficServicesRegion>
+  <iwxxm:sequenceNumber>1</iwxxm:sequenceNumber>
+  <iwxxm:validPeriod>
+    <gml:TimePeriod gml:id="t.valid">
+      <gml:beginPosition>2012-08-26T11:50:00Z</gml:beginPosition>
+      <gml:endPosition>2012-08-26T15:50:00Z</gml:endPosition>
+    </gml:TimePeriod>
+  </iwxxm:validPeriod>
+  <iwxxm:phenomenon xlink:href="http://codes.wmo.int/49-2/SigWxPhenomena/EMBD_TS"/>
+  <iwxxm:analysisCollection>
+    <iwxxm:analysisAndForecastPositionAnalysis gml:id="analysis.ttzp.0">
+      <iwxxm:analysis>
+        <iwxxm:SIGMETEvolvingConditionCollection gml:id="evolving.ttzp.0" timeIndicator="OBSERVATION">
+          <iwxxm:phenomenonTime>
+            <gml:TimeInstant gml:id="t.obs.ttzp.0">
+              <gml:timePosition>2012-08-26T11:45:00Z</gml:timePosition>
+            </gml:TimeInstant>
+          </iwxxm:phenomenonTime>
+          <iwxxm:member>
+            <iwxxm:SIGMETEvolvingCondition gml:id="cond.ttzp.0" intensityChange="WEAKEN">
+              <iwxxm:geometry>
+                <aixm:AirspaceVolume gml:id="vol.ttzp.0">
+                  <aixm:horizontalProjection>
+                    <aixm:Surface gml:id="sfc.ttzp.0" srsDimension="2" axisLabels="Lat Long" srsName="http://www.opengis.net/def/crs/EPSG/0/4326">
+                      <gml:patches>
+                        <gml:PolygonPatch>
+                          <gml:exterior>
+                            <gml:LinearRing>
+                              <gml:posList>18.0000 -58.6500 18.0000 -54.8333 16.5833 -54.8333 16.5833 -58.6500 18.0000 -58.6500</gml:posList>
+                            </gml:LinearRing>
+                          </gml:exterior>
+                        </gml:PolygonPatch>
+                      </gml:patches>
+                    </aixm:Surface>
+                  </aixm:horizontalProjection>
+                </aixm:AirspaceVolume>
+              </iwxxm:geometry>
+            </iwxxm:SIGMETEvolvingCondition>
+          </iwxxm:member>
+        </iwxxm:SIGMETEvolvingConditionCollection>
+      </iwxxm:analysis>
+    </iwxxm:analysisAndForecastPositionAnalysis>
+  </iwxxm:analysisCollection>
+</iwxxm:SIGMET>
+    </collect:meteorologicalInformation>
+    <collect:bulletinIdentifier>A_LSCA31TTPP261150_C_TTPP_20260926115000.xml</collect:bulletinIdentifier>
+</collect:MeteorologicalBulletin>

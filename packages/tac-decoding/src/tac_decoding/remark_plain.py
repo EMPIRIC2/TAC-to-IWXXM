@@ -5,6 +5,17 @@ from __future__ import annotations
 import re
 
 _VIS_KM = re.compile(r"^VIS(?P<km>[1-9]\d?)KM$")
+_VCSH_DIR = re.compile(r"^VCSH(?:-(?P<dir>N|NE|E|SE|S|SW|W|NW))?$")
+_DIR_NAME = {
+    "N": "North",
+    "NE": "Northeast",
+    "E": "East",
+    "SE": "Southeast",
+    "S": "South",
+    "SW": "Southwest",
+    "W": "West",
+    "NW": "Northwest",
+}
 
 
 def explain_remark_plain(token: str) -> str | None:
@@ -25,6 +36,8 @@ def explain_remark_plain(token: str) -> str | None:
     --------
     >>> explain_remark_plain("VCSH")
     'Showers in the vicinity'
+    >>> explain_remark_plain("VCSH-N")
+    'Showers in the vicinity, North'
     >>> explain_remark_plain("VIS1KM")
     'Visibility 1 kilometre'
     >>> explain_remark_plain("VIS16KM")
@@ -32,7 +45,11 @@ def explain_remark_plain(token: str) -> str | None:
     >>> explain_remark_plain("VIS100KM") is None
     True
     """
-    if token == "VCSH":
+    vcsh = _VCSH_DIR.fullmatch(token)
+    if vcsh is not None:
+        direction = vcsh.group("dir")
+        if direction:
+            return f"Showers in the vicinity, {_DIR_NAME[direction]}"
         return "Showers in the vicinity"
     match = _VIS_KM.fullmatch(token)
     if match is None:

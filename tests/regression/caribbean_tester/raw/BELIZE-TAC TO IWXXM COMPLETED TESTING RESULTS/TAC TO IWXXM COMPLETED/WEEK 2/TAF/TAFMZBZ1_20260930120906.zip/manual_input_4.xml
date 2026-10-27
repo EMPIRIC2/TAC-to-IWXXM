@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<iwxxm:TAF xmlns:iwxxm="http://icao.int/iwxxm/2025-2" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:aixm="http://www.aixm.aero/schema/5.1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" gml:id="taf.translation.failed" reportStatus="NORMAL" permissibleUsage="OPERATIONAL" translatedBulletinID="TTAAiiCCCYYGGgg" translatedBulletinReceptionTime="2026-09-30T17:23:29Z" translationCentreDesignator="YUZZ" translationCentreName="Fictional translation centre" translationTime="2026-09-30T17:23:29Z" translationFailedTAC="TAF MZBZ 15055Z 1512/1612 07009KT 9999 SCT023 PROB30 TEMPO 1609/1612 5000 SHRA BKN014=">
+  <iwxxm:issueTime>
+    <gml:TimeInstant gml:id="t.issue">
+      <gml:timePosition>2026-09-30T17:23:29Z</gml:timePosition>
+    </gml:TimeInstant>
+  </iwxxm:issueTime>
+  <iwxxm:aerodrome>
+    <aixm:AirportHeliport gml:id="ad.mzbz">
+      <aixm:timeSlice>
+        <aixm:AirportHeliportTimeSlice gml:id="ad.ts.mzbz">
+          <gml:validTime/>
+          <aixm:interpretation>SNAPSHOT</aixm:interpretation>
+          <aixm:designator>MZBZ</aixm:designator>
+          <aixm:locationIndicatorICAO>MZBZ</aixm:locationIndicatorICAO>
+        </aixm:AirportHeliportTimeSlice>
+      </aixm:timeSlice>
+    </aixm:AirportHeliport>
+  </iwxxm:aerodrome>
+</iwxxm:TAF>

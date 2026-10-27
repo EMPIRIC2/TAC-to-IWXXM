@@ -258,10 +258,17 @@ def _taf_weather_block(fcst: dict[str, Any]) -> str:
     codes = fcst.get("weather")
     if not isinstance(codes, list) or not codes:
         return ""
+    # CA national forecast weather (e.g. IC) is emitted only via iwxxm-ca extension.
+    skip_national = bool(fcst.get("ca_forecast_weather_hrefs"))
     parts: list[str] = []
     for raw_code in cast(list[Any], codes):
-        href = escape(_WX_HREF.format(code=str(raw_code)))
+        token = str(raw_code)
+        if skip_national and token.upper() == "IC":
+            continue
+        href = escape(_WX_HREF.format(code=token))
         parts.append(f'      <iwxxm:weather xlink:href="{href}"/>')
+    if not parts:
+        return ""
     return "\n".join(parts) + "\n"
 
 
@@ -452,6 +459,7 @@ def emit_taf_annex3(
         base_wind_src = dict(ir)
         base_wind_src["_base_wind_decimal"] = True
         wind = "" if ir.get("cavok") else _taf_wind_block(base_wind_src)
+        weather = "" if ir.get("cavok") else _taf_weather_block(ir)
         vis = ""
         cloud = ""
         if not ir.get("cavok"):
@@ -460,7 +468,7 @@ def emit_taf_annex3(
         base_fcst = f"""  <iwxxm:baseForecast>
     <iwxxm:MeteorologicalAerodromeForecast gml:id="fcst.base.{station.lower()}" cloudAndVisibilityOK="{cavok}">
       <iwxxm:phenomenonTime xlink:href="{base_forecast_phenomenon_href()}"/>
-{vis}{wind}{cloud}{forecast_extension}    </iwxxm:MeteorologicalAerodromeForecast>
+{vis}{wind}{weather}{cloud}{forecast_extension}    </iwxxm:MeteorologicalAerodromeForecast>
   </iwxxm:baseForecast>
 """
         changes = _taf_change_forecasts(ir, station)
