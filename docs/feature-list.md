@@ -113,6 +113,11 @@
 - **What it does**: Enriches station metadata via OpenAIP and reconciliation across sources.
 - **Inputs**: ICAO station identifiers, optional bbox queries.
 - **Outputs**: Airport coordinates, elevation, reconciled metadata.
+- **Convert policy (unknown ICAO)**: An aerodrome designator missing from the local
+  registry (e.g. fictional `ABCD` / unlisted `SWWW`) **does not block** METAR/SPECI/TAF
+  convert. Layer 1 emits warning code `UNKNOWN_ICAO` on the convert `issues[]` list;
+  severity is warning (notes on the result card) and does **not** alone block download
+  or publish. Missing or malformed ICAO remain blocking.
 - **Limitations**: External API availability and cache TTL.
 - **Source**: docs/guides/OPENAIP_INTEGRATION_PLAN.md, backend services
 

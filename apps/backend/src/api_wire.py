@@ -1049,6 +1049,24 @@ def _product_uses_metar_tac_layers(product: str | None) -> bool:
     return product_u in {"METAR", "SPECI"}
 
 
+def _product_uses_aerodrome_icao_layer(product: str | None) -> bool:
+    """
+    True when the product carries an aerodrome ICAO designator (METAR/SPECI/TAF).
+
+    Parameters
+    ----------
+    product : str | None
+        Wire product id.
+
+    Returns
+    -------
+    bool
+        Whether Layer 1 AIRPORT_ICAO applies.
+    """
+    product_u = (product or "METAR").strip().upper()
+    return product_u in {"METAR", "SPECI", "TAF"}
+
+
 async def parse_optional_files(request: Request) -> list[UploadFile]:
     """
     Parse optional file uploads, filtering out empty strings from form data.

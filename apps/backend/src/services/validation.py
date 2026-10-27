@@ -101,17 +101,17 @@ class ValidationService:
                 )
                 raise ValidationError(f"Invalid ICAO code format: {icao}")
 
-            # Check if ICAO exists in database. Unknown codes are soft-fail (WARNING)
-            # so WMO fictional stations (YUDO) and offline demos still convert (UJ-036 /
-            # ADR-032). Missing / malformed ICAO remain blocking.
+            # Unknown ICAO soft-warns (WARNING) and does not block convert — aerodrome
+            # registry enrich is advisory [Corpus: product §F3]. Missing / malformed
+            # ICAO remain blocking.
             if not self.airport_validator.validate_icao(icao):
                 result.add_issue(
                     level=ValidationLevel.WARNING,
-                    message=f"Unknown ICAO code: {icao}",
+                    message=f"Station {icao} is not in the aerodrome registry",
                     code="UNKNOWN_ICAO",
                     suggestion=(
-                        f"ICAO code '{icao}' not found in airport database; "
-                        "conversion continues (demo / fictional stations allowed)"
+                        f"Designator '{icao}' was not found in the local airport catalog; "
+                        "conversion continues, but coordinates and airport name may be incomplete"
                     ),
                 )
                 result.metadata = {"icao": icao, "airport_known": False}

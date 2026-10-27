@@ -86,3 +86,9 @@ class TestExtractAirportCode:
         """Test extraction from corrected reports with mixed casing and spacing."""
         tac = "  metar   cor   faor 101200Z 12012KT 9999 FEW020 22/14 Q1018"
         assert extract_airport_code(tac) == "FAOR"
+
+    def test_taf_standard_and_amd(self):
+        """TAF and TAF AMD carry an aerodrome ICAO like METAR/SPECI."""
+        assert extract_airport_code("TAF KJFK 010000Z 0100/0206 00000KT CAVOK=") == "KJFK"
+        assert extract_airport_code("TAF AMD ABCD 010000Z 0100/0206 00000KT CAVOK=") == "ABCD"
+        assert extract_airport_code("taf abcd 010000Z 0100/0206 00000KT CAVOK=") == "ABCD"

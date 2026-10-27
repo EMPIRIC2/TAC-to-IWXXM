@@ -95,6 +95,7 @@ parse_optional_bulletin_id = api_wire.parse_optional_bulletin_id
 parse_optional_issuing_center = api_wire.parse_optional_issuing_center
 normalize_validation_level = api_wire.normalize_validation_level
 _product_uses_metar_tac_layers = api_wire._product_uses_metar_tac_layers  # pyright: ignore[reportPrivateUsage]
+_product_uses_aerodrome_icao_layer = api_wire._product_uses_aerodrome_icao_layer  # pyright: ignore[reportPrivateUsage]
 parse_optional_files = api_wire.parse_optional_files
 bulletin_split_http_error = api_wire.bulletin_split_http_error
 MAX_BULLETIN_REPORTS = api_wire.MAX_BULLETIN_REPORTS
