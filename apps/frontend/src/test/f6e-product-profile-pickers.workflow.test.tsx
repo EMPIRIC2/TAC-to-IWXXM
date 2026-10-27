@@ -143,11 +143,23 @@ describe('T8.1 / TC-F6-001: F6.e product + Conversion library + version pickers'
   beforeEach(() => {
     vi.clearAllMocks();
     localStorage.clear();
+    sessionStorage.clear();
+    sessionStorage.setItem(
+      'metar_guest_converter_state',
+      JSON.stringify({
+        manualInput: 'METAR KJFK 121251Z 18004KT=',
+        pendingFiles: [],
+        convertedFiles: [],
+        conversionLog: null,
+        conversionParams: {},
+      }),
+    );
   });
 
   it('renders product type next to TAC; Conversion library and version when parameters are expanded', async () => {
     const user = userEvent.setup();
     render(<FileConverter {...defaultProps} />);
+    screen.getByTestId('convert-advanced-engines').setAttribute('open', '');
 
     const product = screen.getByTestId('product-type-select') as HTMLSelectElement;
     expect(product).toBeInTheDocument();
@@ -188,6 +200,8 @@ describe('T8.1 / TC-F6-001: F6.e product + Conversion library + version pickers'
   it('sends selected product, conversionLibraryId, and version on convert (ICAO METAR)', async () => {
     const user = userEvent.setup();
     const { container } = render(<FileConverter {...defaultProps} />);
+    screen.getByTestId('convert-advanced-engines').setAttribute('open', '');
+    screen.getByTestId('convert-advanced-engines').setAttribute('open', '');
     fireEvent.click(screen.getByTestId('live-iwxxm-toggle'));
 
     await user.click(screen.getByLabelText(/expand parameters/i));
@@ -231,6 +245,8 @@ describe('T8.1 / TC-F6-001: F6.e product + Conversion library + version pickers'
   it('sends US_FAA_NWS conversionLibraryId when selected', async () => {
     const user = userEvent.setup();
     const { container } = render(<FileConverter {...defaultProps} />);
+    screen.getByTestId('convert-advanced-engines').setAttribute('open', '');
+    screen.getByTestId('convert-advanced-engines').setAttribute('open', '');
     fireEvent.click(screen.getByTestId('live-iwxxm-toggle'));
 
     await user.click(screen.getByLabelText(/expand parameters/i));
@@ -268,6 +284,8 @@ describe('T8.1 / TC-F6-001: F6.e product + Conversion library + version pickers'
   it('auto product resolves to detected keyword before API call', async () => {
     const user = userEvent.setup();
     const { container } = render(<FileConverter {...defaultProps} />);
+    screen.getByTestId('convert-advanced-engines').setAttribute('open', '');
+    screen.getByTestId('convert-advanced-engines').setAttribute('open', '');
     fireEvent.click(screen.getByTestId('live-iwxxm-toggle'));
 
     await user.click(screen.getByLabelText(/expand parameters/i));
@@ -299,6 +317,8 @@ describe('T8.1 / TC-F6-001: F6.e product + Conversion library + version pickers'
   it('warns when explicit product differs from auto-detect but still converts', async () => {
     const user = userEvent.setup();
     const { container } = render(<FileConverter {...defaultProps} />);
+    screen.getByTestId('convert-advanced-engines').setAttribute('open', '');
+    screen.getByTestId('convert-advanced-engines').setAttribute('open', '');
     fireEvent.click(screen.getByTestId('live-iwxxm-toggle'));
 
     await user.click(screen.getByLabelText(/expand parameters/i));

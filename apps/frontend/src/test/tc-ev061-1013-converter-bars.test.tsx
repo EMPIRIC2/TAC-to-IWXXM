@@ -110,10 +110,22 @@ describe('T4.1 / TC-EV061-1013: converter chrome bars', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     localStorage.clear();
+    sessionStorage.clear();
+    sessionStorage.setItem(
+      'metar_guest_converter_state',
+      JSON.stringify({
+        manualInput: 'METAR KJFK 121251Z 18004KT=',
+        pendingFiles: [],
+        convertedFiles: [],
+        conversionLog: null,
+        conversionParams: {},
+      }),
+    );
   });
 
   it('keeps Product Type + library pickers on one wrap-capable bar at ≥1024px (TC-EV061-1013-001)', () => {
     render(<FileConverter {...defaultProps} />);
+    screen.getByTestId('convert-advanced-engines').setAttribute('open', '');
 
     const bar = screen.getByTestId('product-profile-bar');
     const product = screen.getByTestId('product-type-select');
@@ -142,6 +154,7 @@ describe('T4.1 / TC-EV061-1013: converter chrome bars', () => {
 
   it('keeps mode selects on one aligned no-wrap row at ≥1024px (TC-EV061-1013-002)', () => {
     render(<FileConverter {...defaultProps} />);
+    screen.getByTestId('convert-advanced-engines').setAttribute('open', '');
 
     const modeBar = screen.getByTestId('input-mode-bar');
     const modeGroup = screen.getByTestId('input-mode-group');
