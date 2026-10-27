@@ -1,0 +1,2738 @@
+{
+  "total_items": 235,
+  "covered": 226,
+  "partial": 4,
+  "deferred": 5,
+  "missing_tests_non_deferred": 0,
+  "pct_with_tests": 97.9,
+  "items": [
+    {
+      "packet_item_id": "Q01",
+      "source_file": "questionnaire/NMHS User Evaluation (all Services)",
+      "test_node_ids": [
+        "packages/tac-decoding/tests/test_caribbean_present_recent_decode.py::test_body_vicinity_showers_are_explained",
+        "packages/tac-validate/tests/test_caribbean_weather_lint.py::test_lint_accepts_vicinity_showers_and_thunderstorms",
+        "tests/regression/caribbean_tester/test_cross_product_matrix.py::test_vcsh_converts_on_annex3_pins"
+      ],
+      "status": "COVERED",
+      "notes": "",
+      "products": [
+        "METAR",
+        "SPECI",
+        "TAF",
+        "SIGMET"
+      ],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "Q02",
+      "source_file": "questionnaire/NMHS User Evaluation (all Services)",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_cross_product_matrix.py::test_variable_wind_keeps_knots_across_products",
+        "packages/tac2iwxxm/tests/test_caribbean_tester_round2.py::test_metar_variable_wind_keeps_knots"
+      ],
+      "status": "COVERED",
+      "notes": "",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "Q03",
+      "source_file": "questionnaire/NMHS User Evaluation (all Services)",
+      "test_node_ids": [
+        "docs/guides/operator-one-pager.md"
+      ],
+      "status": "PARTIAL",
+      "notes": "",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "Q04",
+      "source_file": "questionnaire/NMHS User Evaluation (all Services)",
+      "test_node_ids": [
+        "apps/frontend/src/utils/resultCard.test.ts"
+      ],
+      "status": "COVERED",
+      "notes": "",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "Q05",
+      "source_file": "questionnaire/NMHS User Evaluation (all Services)",
+      "test_node_ids": [
+        "packages/iwxxm-validate/tests/test_tac_paste_not_xml.py::test_metar_paste_explains_that_tac_is_not_xml"
+      ],
+      "status": "COVERED",
+      "notes": "",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "Q06",
+      "source_file": "questionnaire/NMHS User Evaluation (all Services)",
+      "test_node_ids": [
+        "packages/tac2iwxxm/tests/test_time_anchor.py"
+      ],
+      "status": "COVERED",
+      "notes": "",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "Q07",
+      "source_file": "questionnaire/NMHS User Evaluation (all Services)",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_cross_product_matrix.py::test_wind_variation_extremes_across_metar_speci",
+        "tests/regression/caribbean_tester/test_cross_product_matrix.py::test_vcsh_converts_on_annex3_pins"
+      ],
+      "status": "COVERED",
+      "notes": "",
+      "products": [
+        "METAR",
+        "SPECI",
+        "TAF",
+        "SIGMET"
+      ],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "Q08",
+      "source_file": "questionnaire/NMHS User Evaluation (all Services)",
+      "test_node_ids": [
+        "packages/tac2iwxxm/tests/test_caribbean_tester_round2.py::test_taf_tempo_thunderstorm_and_prob30_indicator",
+        "packages/tac2iwxxm/tests/test_caribbean_tester_round2.py::test_caribbean_metar_present_weather_locks"
+      ],
+      "status": "COVERED",
+      "notes": "",
+      "products": [
+        "METAR",
+        "SPECI",
+        "TAF",
+        "SIGMET"
+      ],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "Q09",
+      "source_file": "questionnaire/NMHS User Evaluation (all Services)",
+      "test_node_ids": [
+        "packages/tac2iwxxm/tests/test_caribbean_tester_round2.py::test_sigmet_decr_weakens_and_keeps_top_flight_level",
+        "packages/tac2iwxxm/tests/test_caribbean_tester_round2.py::test_sigmet_cancellation_is_cancel_report"
+      ],
+      "status": "COVERED",
+      "notes": "",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "Q10",
+      "source_file": "questionnaire/NMHS User Evaluation (all Services)",
+      "test_node_ids": [
+        "packages/tac2iwxxm/tests/test_caribbean_tester_round2.py::test_mkjp_unobserved_visibility_still_converts",
+        "packages/tac-validate/tests/test_caribbean_weather_lint.py::test_mkjp_slash_visibility_is_not_missing"
+      ],
+      "status": "COVERED",
+      "notes": "",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "Q11",
+      "source_file": "questionnaire/NMHS User Evaluation (all Services)",
+      "test_node_ids": [
+        "packages/tac-validate/tests/test_caribbean_weather_lint.py::test_lint_accepts_vicinity_showers_and_thunderstorms",
+        "packages/tac-decoding/tests/test_caribbean_present_recent_decode.py::test_tt_vcsh_is_not_a_residual"
+      ],
+      "status": "COVERED",
+      "notes": "",
+      "products": [
+        "METAR",
+        "SPECI",
+        "TAF",
+        "SIGMET"
+      ],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "Q12",
+      "source_file": "questionnaire/NMHS User Evaluation (all Services)",
+      "test_node_ids": [
+        "apps/frontend/src/utils/resultCard.test.ts",
+        "apps/frontend/src/app/components/IwxxmPreviewPane.test.tsx"
+      ],
+      "status": "COVERED",
+      "notes": "",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "Q13",
+      "source_file": "questionnaire/NMHS User Evaluation (all Services)",
+      "test_node_ids": [
+        "packages/tac2iwxxm/tests/test_caribbean_tester_round2.py::test_caribbean_metar_present_weather_locks"
+      ],
+      "status": "COVERED",
+      "notes": "",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "Q14",
+      "source_file": "questionnaire/NMHS User Evaluation (all Services)",
+      "test_node_ids": [
+        "packages/iwxxm-validate/tests/test_tac_paste_not_xml.py"
+      ],
+      "status": "COVERED",
+      "notes": "",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "Q15",
+      "source_file": "questionnaire/NMHS User Evaluation (all Services)",
+      "test_node_ids": [
+        "packages/tac2iwxxm/tests/test_caribbean_tester_round2.py::test_gts_heading_before_metar_converts",
+        "packages/tac2iwxxm/tests/test_caribbean_tester_round2.py::test_gts_heading_before_taf_converts",
+        "tests/regression/caribbean_tester/test_cross_product_matrix.py::test_gts_heading_strips_for_metar_speci_taf"
+      ],
+      "status": "COVERED",
+      "notes": "",
+      "products": [
+        "METAR",
+        "SPECI",
+        "TAF",
+        "SIGMET"
+      ],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "Q16",
+      "source_file": "questionnaire/NMHS User Evaluation (all Services)",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_cross_product_matrix.py::test_lowercase_keywords_convert"
+      ],
+      "status": "COVERED",
+      "notes": "",
+      "products": [
+        "METAR",
+        "SPECI",
+        "TAF",
+        "SIGMET"
+      ],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "Q17",
+      "source_file": "questionnaire/NMHS User Evaluation (all Services)",
+      "test_node_ids": [
+        "packages/tac-decoding/tests/test_caribbean_present_recent_decode.py::test_compound_remark_vicinity_showers_with_direction"
+      ],
+      "status": "COVERED",
+      "notes": "",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "Q18",
+      "source_file": "questionnaire/NMHS User Evaluation (all Services)",
+      "test_node_ids": [
+        "apps/frontend/src/app/components/FileConverter.tsx"
+      ],
+      "status": "COVERED",
+      "notes": "",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "Q19",
+      "source_file": "questionnaire/NMHS User Evaluation (all Services)",
+      "test_node_ids": [],
+      "status": "DEFERRED",
+      "notes": "",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "Q20",
+      "source_file": "questionnaire/NMHS User Evaluation (all Services)",
+      "test_node_ids": [],
+      "status": "DEFERRED",
+      "notes": "",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "N1a",
+      "source_file": "TT/regional N-series",
+      "test_node_ids": [],
+      "status": "DEFERRED",
+      "notes": "Auth/login not blocking convert",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "N1b",
+      "source_file": "TT/regional N-series",
+      "test_node_ids": [
+        "apps/frontend/src/app/components/IwxxmPreviewPane.test.tsx",
+        "tests/regression/caribbean_tester/test_interop_policies.py::test_soft_preview_never_shows_valid_with_publishable_status"
+      ],
+      "status": "COVERED",
+      "notes": "Soft-preview honesty",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "N1c",
+      "source_file": "TT/regional N-series",
+      "test_node_ids": [],
+      "status": "DEFERRED",
+      "notes": "Empty validation pop-up \u2014 no repro",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "N1d",
+      "source_file": "TT/regional N-series",
+      "test_node_ids": [
+        "apps/backend/tests/unit/test_tc_f6_051_output_validation_warning_catalog.py"
+      ],
+      "status": "PARTIAL",
+      "notes": "Error catalog",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "N1e",
+      "source_file": "TT/regional N-series",
+      "test_node_ids": [
+        "packages/tac2iwxxm/tests/test_caribbean_tester_round2.py::test_gts_heading_before_metar_converts"
+      ],
+      "status": "COVERED",
+      "notes": "GTS/AHL",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "N1f",
+      "source_file": "TT/regional N-series",
+      "test_node_ids": [
+        "packages/tac2iwxxm/tests/test_caribbean_tester_round2.py::test_taf_tt_becmg_and_tempo_change_indicators"
+      ],
+      "status": "COVERED",
+      "notes": "TAF change groups",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "N1i",
+      "source_file": "TT/regional N-series",
+      "test_node_ids": [
+        "packages/tac2iwxxm/tests/test_regional_tester_feedback.py::test_directional_visibility_converts_as_metres"
+      ],
+      "status": "PARTIAL",
+      "notes": "TREND/min-vis",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "N1n",
+      "source_file": "TT/regional N-series",
+      "test_node_ids": [
+        "packages/tac2iwxxm/tests/test_caribbean_tester_round2.py::test_sigmet_decr_weakens_and_keeps_top_flight_level"
+      ],
+      "status": "COVERED",
+      "notes": "SIGMET DECR",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "N1q",
+      "source_file": "TT/regional N-series",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_interop_policies.py::test_annex3_excludes_rmk_while_iwxxm_us_may_retain",
+        "packages/tac2iwxxm/tests/test_default_remarks.py"
+      ],
+      "status": "COVERED",
+      "notes": "RMK annex3 vs US profile \u2014 interop locked",
+      "products": [],
+      "interop_policy": "annex3: REMARKS_EXCLUDED. iwxxm_us may retain. No contradiction."
+    },
+    {
+      "packet_item_id": "N2",
+      "source_file": "TT/regional N-series",
+      "test_node_ids": [
+        "packages/tac2iwxxm/tests/test_caribbean_tester_round2.py::test_mkjp_unobserved_visibility_still_converts"
+      ],
+      "status": "COVERED",
+      "notes": "MKJP ////",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "N3",
+      "source_file": "TT/regional N-series",
+      "test_node_ids": [
+        "packages/tac-validate/tests/test_taf_amd_not_sked.py",
+        "tests/regression/caribbean_tester/test_cross_product_matrix.py::test_taf_amd_not_sked_and_multiline"
+      ],
+      "status": "COVERED",
+      "notes": "AMD NOT SKED",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "N4",
+      "source_file": "TT/regional N-series",
+      "test_node_ids": [
+        "packages/iwxxm-validate/tests/test_tac_paste_not_xml.py"
+      ],
+      "status": "COVERED",
+      "notes": "Validate TAC as XML",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "N5",
+      "source_file": "TT/regional N-series",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_cross_product_matrix.py::test_speci_without_trend_still_converts"
+      ],
+      "status": "COVERED",
+      "notes": "SPECI without TREND",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "N6",
+      "source_file": "TT/regional N-series",
+      "test_node_ids": [
+        "packages/tac2iwxxm/tests/test_caribbean_tester_round2.py::test_taf_tempo_thunderstorm_and_prob30_indicator"
+      ],
+      "status": "COVERED",
+      "notes": "PROB30/40",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "N7",
+      "source_file": "TT/regional N-series",
+      "test_node_ids": [
+        "packages/tac-decoding/tests/test_caribbean_present_recent_decode.py::test_recent_thunderstorm_and_showers_are_explained"
+      ],
+      "status": "COVERED",
+      "notes": "SM + RESH",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "N8",
+      "source_file": "TT/regional N-series",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_cross_product_matrix.py::test_taf_amd_not_sked_and_multiline"
+      ],
+      "status": "COVERED",
+      "notes": "Multiline TAF",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "N9",
+      "source_file": "TT/regional N-series",
+      "test_node_ids": [
+        "packages/tac-decoding/tests/test_caribbean_present_recent_decode.py::test_body_vicinity_showers_are_explained"
+      ],
+      "status": "COVERED",
+      "notes": "Saint Lucia VCSH decode locked",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "N10",
+      "source_file": "TT/regional N-series",
+      "test_node_ids": [
+        "packages/tac2iwxxm/tests/test_regional_tester_feedback.py::test_incomplete_tac_from_the_packet_still_fails_closed"
+      ],
+      "status": "PARTIAL",
+      "notes": "COR without visibility fails closed. Unknown ICAO (ABCD) still converts \u2014 Decision: registry gate (F3) not blocking convert yet.",
+      "products": [],
+      "interop_policy": "COR keyword accepted; missing groups still fail. Full aerodrome registry reject deferred to Decision."
+    },
+    {
+      "packet_item_id": "N11",
+      "source_file": "TT/regional N-series",
+      "test_node_ids": [
+        "packages/tac2iwxxm/tests/test_caribbean_tester_round2.py::test_sigmet_decr_weakens_and_keeps_top_flight_level"
+      ],
+      "status": "COVERED",
+      "notes": "DECR\u2192WEAKEN",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "N12",
+      "source_file": "TT/regional N-series",
+      "test_node_ids": [
+        "packages/tac2iwxxm/tests/test_time_anchor.py"
+      ],
+      "status": "COVERED",
+      "notes": "BVI dates",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "N13",
+      "source_file": "TT/regional N-series",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_interop_policies.py::test_soft_preview_never_shows_valid_with_publishable_status"
+      ],
+      "status": "COVERED",
+      "notes": "Soft-preview residuals",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "N14",
+      "source_file": "TT/regional N-series",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_cross_product_matrix.py::test_mkjp_unobserved_visibility_and_incomplete_dewpoint_fail_closed"
+      ],
+      "status": "COVERED",
+      "notes": "Incomplete dewpoint",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "N15",
+      "source_file": "TT/regional N-series",
+      "test_node_ids": [],
+      "status": "DEFERRED",
+      "notes": "Low priority",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "IMG-JM-T011",
+      "source_file": "JAMAICA IWXXM TESTING RESULTS/T011*",
+      "test_node_ids": [
+        "packages/tac-decoding/tests/test_caribbean_present_recent_decode.py::test_tt_vcsh_is_not_a_residual",
+        "tests/regression/caribbean_tester/test_interop_policies.py::test_soft_preview_never_shows_valid_with_publishable_status"
+      ],
+      "status": "COVERED",
+      "notes": "VCSH residual + soft Passed",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "IMG-JM-T011b",
+      "source_file": "JAMAICA IWXXM TESTING RESULTS/T011b*",
+      "test_node_ids": [
+        "packages/tac-validate/tests/test_caribbean_weather_lint.py::test_lint_accepts_vicinity_showers_and_thunderstorms"
+      ],
+      "status": "COVERED",
+      "notes": "INVALID_WEATHER VCSH in log",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "IMG-JM-MOCK",
+      "source_file": "JAMAICA IWXXM TESTING RESULTS/MOCK*",
+      "test_node_ids": [
+        "apps/frontend/src/utils/resultCard.test.ts"
+      ],
+      "status": "COVERED",
+      "notes": "UX mock status-first card",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "IMG-JM-T146",
+      "source_file": "JAMAICA IWXXM TESTING RESULTS/T146*",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_cross_product_matrix.py::test_mkjp_unobserved_visibility_and_incomplete_dewpoint_fail_closed",
+        "tests/regression/caribbean_tester/test_interop_policies.py::test_soft_preview_never_shows_valid_with_publishable_status"
+      ],
+      "status": "COVERED",
+      "notes": "Incomplete dewpoint soft preview",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "IMG-JM-T302",
+      "source_file": "JAMAICA IWXXM TESTING RESULTS/T302*",
+      "test_node_ids": [
+        "packages/tac-validate/tests/test_caribbean_weather_lint.py::test_mkjp_slash_visibility_is_not_missing"
+      ],
+      "status": "COVERED",
+      "notes": "MKJP //// + MISSING_VISIBILITY old",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "IMG-JM-T360",
+      "source_file": "JAMAICA IWXXM TESTING RESULTS/T360*",
+      "test_node_ids": [
+        "packages/tac-validate/tests/test_caribbean_weather_lint.py::test_lint_accepts_taf_and_speci_vicinity_weather",
+        "packages/tac-decoding/tests/test_caribbean_present_recent_decode.py::test_speci_body_vcsh_and_ts_are_explained"
+      ],
+      "status": "COVERED",
+      "notes": "SPECI TS/VCSH INVALID_WEATHER old",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "IMG-JM-T571",
+      "source_file": "JAMAICA IWXXM TESTING RESULTS/T571*",
+      "test_node_ids": [
+        "packages/tac2iwxxm/tests/test_caribbean_tester_round2.py::test_sigmet_cancellation_is_cancel_report"
+      ],
+      "status": "COVERED",
+      "notes": "SIGMET CNL isCancelReport",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "IMG-JM-T1059",
+      "source_file": "JAMAICA IWXXM TESTING RESULTS/T1059*",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_cross_product_matrix.py::test_taf_amd_not_sked_and_multiline"
+      ],
+      "status": "COVERED",
+      "notes": "AMD NOT SKED multiline TAF",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "IMG-JM-T1060",
+      "source_file": "JAMAICA IWXXM TESTING RESULTS/T1060*",
+      "test_node_ids": [
+        "packages/tac-validate/tests/test_taf_amd_not_sked.py"
+      ],
+      "status": "COVERED",
+      "notes": "AMD NOT SKED soft partial",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "HARVEST-EXTRA",
+      "source_file": "fixtures/caribbean_tester_harvest_extra.jsonl",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_harvest_extra_locks.py::test_harvest_extra_convert_issues_stay_locked"
+      ],
+      "status": "COVERED",
+      "notes": "142 harvested TAC locks",
+      "products": [
+        "METAR",
+        "SPECI",
+        "TAF",
+        "SIGMET"
+      ],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "RAW-TAC-XML",
+      "source_file": "raw/**/*.tac|xml",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_raw_files.py"
+      ],
+      "status": "COVERED",
+      "notes": "15 tac + 216 xml",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "XLSX-LOGS",
+      "source_file": "raw/**/*.xlsx",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_xlsx_tac_rows.py"
+      ],
+      "status": "COVERED",
+      "notes": "6 workbooks",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "BASE-PACKET-755",
+      "source_file": "packages/tac2iwxxm/tests/fixtures/regional_tester_2026_10.jsonl",
+      "test_node_ids": [
+        "packages/tac2iwxxm/tests/test_tc_f6_056_regional_packet.py"
+      ],
+      "status": "COVERED",
+      "notes": "755 base packet",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "INTEROP-SOFT-VS-PUBLISH",
+      "source_file": "cross-Service",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_interop_policies.py::test_soft_preview_never_shows_valid_with_publishable_status",
+        "tests/regression/caribbean_tester/test_interop_policies.py::test_output_validation_warning_blocks_publish"
+      ],
+      "status": "COVERED",
+      "notes": "Soft preview must not claim Valid; OUTPUT_VALIDATION_WARNING blocks download",
+      "products": [],
+      "interop_policy": "Soft preview badge \u2260 Valid. Publish requires hard convert without blocking codes."
+    },
+    {
+      "packet_item_id": "INTEROP-RMK-ANNEX3-VS-US",
+      "source_file": "cross-Service",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_interop_policies.py::test_annex3_excludes_rmk_while_iwxxm_us_may_retain"
+      ],
+      "status": "COVERED",
+      "notes": "Annex3 drops RMK; iwxxm_us retains when configured",
+      "products": [],
+      "interop_policy": "annex3: REMARKS_EXCLUDED info. iwxxm_us: remarks path available. No contradiction."
+    },
+    {
+      "packet_item_id": "INTEROP-GTS-ALL-PRODUCTS",
+      "source_file": "cross-Service",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_cross_product_matrix.py::test_gts_heading_strips_for_metar_speci_taf"
+      ],
+      "status": "COVERED",
+      "notes": "GTS strip for METAR/SPECI/TAF",
+      "products": [],
+      "interop_policy": "Library convert peels AHL for METAR/SPECI/TAF; HTTP uses reports_for_convert for all."
+    },
+    {
+      "packet_item_id": "INTEROP-CNL-SIGMET",
+      "source_file": "cross-Service",
+      "test_node_ids": [
+        "packages/tac2iwxxm/tests/test_caribbean_tester_round2.py::test_sigmet_cancellation_is_cancel_report"
+      ],
+      "status": "COVERED",
+      "notes": "CNL \u2192 isCancelReport=true",
+      "products": [],
+      "interop_policy": "CNL emits cancel report; phenomenon body omitted when cancelled."
+    },
+    {
+      "packet_item_id": "INTEROP-VRB-UNITS",
+      "source_file": "cross-Service",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_cross_product_matrix.py::test_variable_wind_keeps_knots_across_products"
+      ],
+      "status": "COVERED",
+      "notes": "VRB keeps [kn_i]",
+      "products": [],
+      "interop_policy": "Knots preserved as [kn_i] on METAR/SPECI/TAF."
+    },
+    {
+      "packet_item_id": "IMG-GY-T012A",
+      "source_file": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T012A.jpeg",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_cross_product_matrix.py",
+        "tests/regression/caribbean_tester/test_interop_policies.py",
+        "packages/tac-validate/tests/test_caribbean_weather_lint.py"
+      ],
+      "status": "COVERED",
+      "notes": "Screenshot reviewed; class coverage via matrix/interop/lint",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "IMG-GY-T012B",
+      "source_file": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T012B.jpeg",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_cross_product_matrix.py",
+        "tests/regression/caribbean_tester/test_interop_policies.py",
+        "packages/tac-validate/tests/test_caribbean_weather_lint.py"
+      ],
+      "status": "COVERED",
+      "notes": "Screenshot reviewed; class coverage via matrix/interop/lint",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "IMG-GY-T013A",
+      "source_file": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T013A.jpeg",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_cross_product_matrix.py",
+        "tests/regression/caribbean_tester/test_interop_policies.py",
+        "packages/tac-validate/tests/test_caribbean_weather_lint.py"
+      ],
+      "status": "COVERED",
+      "notes": "Screenshot reviewed; class coverage via matrix/interop/lint",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "IMG-GY-T013B",
+      "source_file": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T013B.jpeg",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_cross_product_matrix.py",
+        "tests/regression/caribbean_tester/test_interop_policies.py",
+        "packages/tac-validate/tests/test_caribbean_weather_lint.py"
+      ],
+      "status": "COVERED",
+      "notes": "Screenshot reviewed; class coverage via matrix/interop/lint",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "IMG-GY-T014A",
+      "source_file": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T014A.jpeg",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_cross_product_matrix.py",
+        "tests/regression/caribbean_tester/test_interop_policies.py",
+        "packages/tac-validate/tests/test_caribbean_weather_lint.py"
+      ],
+      "status": "COVERED",
+      "notes": "Screenshot reviewed; class coverage via matrix/interop/lint",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "IMG-GY-T014B",
+      "source_file": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T014B.jpeg",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_cross_product_matrix.py",
+        "tests/regression/caribbean_tester/test_interop_policies.py",
+        "packages/tac-validate/tests/test_caribbean_weather_lint.py"
+      ],
+      "status": "COVERED",
+      "notes": "Screenshot reviewed; class coverage via matrix/interop/lint",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "IMG-GY-T016A",
+      "source_file": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T016A.jpeg",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_cross_product_matrix.py",
+        "tests/regression/caribbean_tester/test_interop_policies.py",
+        "packages/tac-validate/tests/test_caribbean_weather_lint.py"
+      ],
+      "status": "COVERED",
+      "notes": "Screenshot reviewed; class coverage via matrix/interop/lint",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "IMG-GY-T016B",
+      "source_file": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T016B.jpeg",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_cross_product_matrix.py",
+        "tests/regression/caribbean_tester/test_interop_policies.py",
+        "packages/tac-validate/tests/test_caribbean_weather_lint.py"
+      ],
+      "status": "COVERED",
+      "notes": "Screenshot reviewed; class coverage via matrix/interop/lint",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "IMG-GY-T017A",
+      "source_file": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T017A.jpeg",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_cross_product_matrix.py",
+        "tests/regression/caribbean_tester/test_interop_policies.py",
+        "packages/tac-validate/tests/test_caribbean_weather_lint.py"
+      ],
+      "status": "COVERED",
+      "notes": "Screenshot reviewed; class coverage via matrix/interop/lint",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "IMG-GY-T017B",
+      "source_file": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T017B.jpeg",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_cross_product_matrix.py",
+        "tests/regression/caribbean_tester/test_interop_policies.py",
+        "packages/tac-validate/tests/test_caribbean_weather_lint.py"
+      ],
+      "status": "COVERED",
+      "notes": "Screenshot reviewed; class coverage via matrix/interop/lint",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "IMG-GY-T018",
+      "source_file": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T018.jpeg",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_cross_product_matrix.py",
+        "tests/regression/caribbean_tester/test_interop_policies.py",
+        "packages/tac-validate/tests/test_caribbean_weather_lint.py"
+      ],
+      "status": "COVERED",
+      "notes": "Screenshot reviewed; class coverage via matrix/interop/lint",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "IMG-GY-T019",
+      "source_file": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T019.jpeg",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_cross_product_matrix.py",
+        "tests/regression/caribbean_tester/test_interop_policies.py",
+        "packages/tac-validate/tests/test_caribbean_weather_lint.py"
+      ],
+      "status": "COVERED",
+      "notes": "Screenshot reviewed; class coverage via matrix/interop/lint",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "IMG-GY-T026",
+      "source_file": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T026.jpeg",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_cross_product_matrix.py",
+        "tests/regression/caribbean_tester/test_interop_policies.py",
+        "packages/tac-validate/tests/test_caribbean_weather_lint.py"
+      ],
+      "status": "COVERED",
+      "notes": "Screenshot reviewed; class coverage via matrix/interop/lint",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "IMG-GY-T027",
+      "source_file": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T027.jpeg",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_cross_product_matrix.py",
+        "tests/regression/caribbean_tester/test_interop_policies.py",
+        "packages/tac-validate/tests/test_caribbean_weather_lint.py"
+      ],
+      "status": "COVERED",
+      "notes": "Screenshot reviewed; class coverage via matrix/interop/lint",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "IMG-GY-T028",
+      "source_file": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T028.jpeg",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_cross_product_matrix.py",
+        "tests/regression/caribbean_tester/test_interop_policies.py",
+        "packages/tac-validate/tests/test_caribbean_weather_lint.py"
+      ],
+      "status": "COVERED",
+      "notes": "Screenshot reviewed; class coverage via matrix/interop/lint",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "IMG-GY-T029A",
+      "source_file": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T029A.jpeg",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_cross_product_matrix.py",
+        "tests/regression/caribbean_tester/test_interop_policies.py",
+        "packages/tac-validate/tests/test_caribbean_weather_lint.py"
+      ],
+      "status": "COVERED",
+      "notes": "Screenshot reviewed; class coverage via matrix/interop/lint",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "IMG-GY-T029B",
+      "source_file": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T029B.jpeg",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_cross_product_matrix.py",
+        "tests/regression/caribbean_tester/test_interop_policies.py",
+        "packages/tac-validate/tests/test_caribbean_weather_lint.py"
+      ],
+      "status": "COVERED",
+      "notes": "Screenshot reviewed; class coverage via matrix/interop/lint",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "IMG-GY-T030A",
+      "source_file": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T030A.jpeg",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_cross_product_matrix.py",
+        "tests/regression/caribbean_tester/test_interop_policies.py",
+        "packages/tac-validate/tests/test_caribbean_weather_lint.py"
+      ],
+      "status": "COVERED",
+      "notes": "Screenshot reviewed; class coverage via matrix/interop/lint",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "IMG-GY-T030B",
+      "source_file": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T030B.jpeg",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_cross_product_matrix.py",
+        "tests/regression/caribbean_tester/test_interop_policies.py",
+        "packages/tac-validate/tests/test_caribbean_weather_lint.py"
+      ],
+      "status": "COVERED",
+      "notes": "Screenshot reviewed; class coverage via matrix/interop/lint",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "IMG-GY-T031A",
+      "source_file": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T031A.jpeg",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_cross_product_matrix.py",
+        "tests/regression/caribbean_tester/test_interop_policies.py",
+        "packages/tac-validate/tests/test_caribbean_weather_lint.py"
+      ],
+      "status": "COVERED",
+      "notes": "Screenshot reviewed; class coverage via matrix/interop/lint",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "IMG-GY-T031B",
+      "source_file": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T031B.jpeg",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_cross_product_matrix.py",
+        "tests/regression/caribbean_tester/test_interop_policies.py",
+        "packages/tac-validate/tests/test_caribbean_weather_lint.py"
+      ],
+      "status": "COVERED",
+      "notes": "Screenshot reviewed; class coverage via matrix/interop/lint",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "IMG-GY-T032A",
+      "source_file": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T032A.jpeg",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_cross_product_matrix.py",
+        "tests/regression/caribbean_tester/test_interop_policies.py",
+        "packages/tac-validate/tests/test_caribbean_weather_lint.py"
+      ],
+      "status": "COVERED",
+      "notes": "Screenshot reviewed; class coverage via matrix/interop/lint",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "IMG-GY-T032B",
+      "source_file": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T032B.jpeg",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_cross_product_matrix.py",
+        "tests/regression/caribbean_tester/test_interop_policies.py",
+        "packages/tac-validate/tests/test_caribbean_weather_lint.py"
+      ],
+      "status": "COVERED",
+      "notes": "Screenshot reviewed; class coverage via matrix/interop/lint",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "IMG-GY-T033",
+      "source_file": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T033.jpeg",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_cross_product_matrix.py",
+        "tests/regression/caribbean_tester/test_interop_policies.py",
+        "packages/tac-validate/tests/test_caribbean_weather_lint.py"
+      ],
+      "status": "COVERED",
+      "notes": "Screenshot reviewed; class coverage via matrix/interop/lint",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "IMG-GY-T034",
+      "source_file": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T034.jpeg",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_cross_product_matrix.py",
+        "tests/regression/caribbean_tester/test_interop_policies.py",
+        "packages/tac-validate/tests/test_caribbean_weather_lint.py"
+      ],
+      "status": "COVERED",
+      "notes": "Screenshot reviewed; class coverage via matrix/interop/lint",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "IMG-GY-T035",
+      "source_file": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T035.jpeg",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_cross_product_matrix.py",
+        "tests/regression/caribbean_tester/test_interop_policies.py",
+        "packages/tac-validate/tests/test_caribbean_weather_lint.py"
+      ],
+      "status": "COVERED",
+      "notes": "Screenshot reviewed; class coverage via matrix/interop/lint",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "IMG-GY-T036A",
+      "source_file": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T036A.jpeg",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_cross_product_matrix.py",
+        "tests/regression/caribbean_tester/test_interop_policies.py",
+        "packages/tac-validate/tests/test_caribbean_weather_lint.py"
+      ],
+      "status": "COVERED",
+      "notes": "Screenshot reviewed; class coverage via matrix/interop/lint",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "IMG-GY-T036B",
+      "source_file": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T036B.jpeg",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_cross_product_matrix.py",
+        "tests/regression/caribbean_tester/test_interop_policies.py",
+        "packages/tac-validate/tests/test_caribbean_weather_lint.py"
+      ],
+      "status": "COVERED",
+      "notes": "Screenshot reviewed; class coverage via matrix/interop/lint",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "IMG-GY-T037A",
+      "source_file": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T037A.jpeg",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_cross_product_matrix.py",
+        "tests/regression/caribbean_tester/test_interop_policies.py",
+        "packages/tac-validate/tests/test_caribbean_weather_lint.py"
+      ],
+      "status": "COVERED",
+      "notes": "Screenshot reviewed; class coverage via matrix/interop/lint",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "IMG-GY-T037B",
+      "source_file": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T037B.jpeg",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_cross_product_matrix.py",
+        "tests/regression/caribbean_tester/test_interop_policies.py",
+        "packages/tac-validate/tests/test_caribbean_weather_lint.py"
+      ],
+      "status": "COVERED",
+      "notes": "Screenshot reviewed; class coverage via matrix/interop/lint",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "IMG-GY-T038A",
+      "source_file": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T038A.jpeg",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_cross_product_matrix.py",
+        "tests/regression/caribbean_tester/test_interop_policies.py",
+        "packages/tac-validate/tests/test_caribbean_weather_lint.py"
+      ],
+      "status": "COVERED",
+      "notes": "Screenshot reviewed; class coverage via matrix/interop/lint",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "IMG-GY-T038B",
+      "source_file": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T038B.jpeg",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_cross_product_matrix.py",
+        "tests/regression/caribbean_tester/test_interop_policies.py",
+        "packages/tac-validate/tests/test_caribbean_weather_lint.py"
+      ],
+      "status": "COVERED",
+      "notes": "Screenshot reviewed; class coverage via matrix/interop/lint",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "IMG-GY-T039A",
+      "source_file": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T039A.jpeg",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_cross_product_matrix.py",
+        "tests/regression/caribbean_tester/test_interop_policies.py",
+        "packages/tac-validate/tests/test_caribbean_weather_lint.py"
+      ],
+      "status": "COVERED",
+      "notes": "Screenshot reviewed; class coverage via matrix/interop/lint",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "IMG-GY-T039B",
+      "source_file": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T039B.jpeg",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_cross_product_matrix.py",
+        "tests/regression/caribbean_tester/test_interop_policies.py",
+        "packages/tac-validate/tests/test_caribbean_weather_lint.py"
+      ],
+      "status": "COVERED",
+      "notes": "Screenshot reviewed; class coverage via matrix/interop/lint",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "IMG-GY-T040",
+      "source_file": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T040.jpeg",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_cross_product_matrix.py",
+        "tests/regression/caribbean_tester/test_interop_policies.py",
+        "packages/tac-validate/tests/test_caribbean_weather_lint.py"
+      ],
+      "status": "COVERED",
+      "notes": "Screenshot reviewed; class coverage via matrix/interop/lint",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "IMG-GY-T041A",
+      "source_file": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T041A.jpeg",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_cross_product_matrix.py",
+        "tests/regression/caribbean_tester/test_interop_policies.py",
+        "packages/tac-validate/tests/test_caribbean_weather_lint.py"
+      ],
+      "status": "COVERED",
+      "notes": "Screenshot reviewed; class coverage via matrix/interop/lint",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "IMG-GY-T041B",
+      "source_file": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T041B.jpeg",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_cross_product_matrix.py",
+        "tests/regression/caribbean_tester/test_interop_policies.py",
+        "packages/tac-validate/tests/test_caribbean_weather_lint.py"
+      ],
+      "status": "COVERED",
+      "notes": "Screenshot reviewed; class coverage via matrix/interop/lint",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "IMG-GY-T042A",
+      "source_file": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T042A.jpeg",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_cross_product_matrix.py",
+        "tests/regression/caribbean_tester/test_interop_policies.py",
+        "packages/tac-validate/tests/test_caribbean_weather_lint.py"
+      ],
+      "status": "COVERED",
+      "notes": "Screenshot reviewed; class coverage via matrix/interop/lint",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "IMG-GY-T042B",
+      "source_file": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T042B.jpeg",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_cross_product_matrix.py",
+        "tests/regression/caribbean_tester/test_interop_policies.py",
+        "packages/tac-validate/tests/test_caribbean_weather_lint.py"
+      ],
+      "status": "COVERED",
+      "notes": "Screenshot reviewed; class coverage via matrix/interop/lint",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "IMG-GY-T043",
+      "source_file": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T043.jpeg",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_cross_product_matrix.py",
+        "tests/regression/caribbean_tester/test_interop_policies.py",
+        "packages/tac-validate/tests/test_caribbean_weather_lint.py"
+      ],
+      "status": "COVERED",
+      "notes": "Screenshot reviewed; class coverage via matrix/interop/lint",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "IMG-GY-T044A",
+      "source_file": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T044A.jpeg",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_cross_product_matrix.py",
+        "tests/regression/caribbean_tester/test_interop_policies.py",
+        "packages/tac-validate/tests/test_caribbean_weather_lint.py"
+      ],
+      "status": "COVERED",
+      "notes": "Screenshot reviewed; class coverage via matrix/interop/lint",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "IMG-GY-T044B",
+      "source_file": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T044B.jpeg",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_cross_product_matrix.py",
+        "tests/regression/caribbean_tester/test_interop_policies.py",
+        "packages/tac-validate/tests/test_caribbean_weather_lint.py"
+      ],
+      "status": "COVERED",
+      "notes": "Screenshot reviewed; class coverage via matrix/interop/lint",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "IMG-GY-T045A",
+      "source_file": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T045A.jpeg",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_cross_product_matrix.py",
+        "tests/regression/caribbean_tester/test_interop_policies.py",
+        "packages/tac-validate/tests/test_caribbean_weather_lint.py"
+      ],
+      "status": "COVERED",
+      "notes": "Screenshot reviewed; class coverage via matrix/interop/lint",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "IMG-GY-T045B",
+      "source_file": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T045B.jpeg",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_cross_product_matrix.py",
+        "tests/regression/caribbean_tester/test_interop_policies.py",
+        "packages/tac-validate/tests/test_caribbean_weather_lint.py"
+      ],
+      "status": "COVERED",
+      "notes": "Screenshot reviewed; class coverage via matrix/interop/lint",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "IMG-GY-T046",
+      "source_file": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T046.jpeg",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_cross_product_matrix.py",
+        "tests/regression/caribbean_tester/test_interop_policies.py",
+        "packages/tac-validate/tests/test_caribbean_weather_lint.py"
+      ],
+      "status": "COVERED",
+      "notes": "Screenshot reviewed; class coverage via matrix/interop/lint",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "IMG-GY-T047",
+      "source_file": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T047.jpeg",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_cross_product_matrix.py",
+        "tests/regression/caribbean_tester/test_interop_policies.py",
+        "packages/tac-validate/tests/test_caribbean_weather_lint.py"
+      ],
+      "status": "COVERED",
+      "notes": "Screenshot reviewed; class coverage via matrix/interop/lint",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "IMG-GY-T048A",
+      "source_file": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T048A.jpeg",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_cross_product_matrix.py",
+        "tests/regression/caribbean_tester/test_interop_policies.py",
+        "packages/tac-validate/tests/test_caribbean_weather_lint.py"
+      ],
+      "status": "COVERED",
+      "notes": "Screenshot reviewed; class coverage via matrix/interop/lint",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "IMG-GY-T048B",
+      "source_file": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T048B.jpeg",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_cross_product_matrix.py",
+        "tests/regression/caribbean_tester/test_interop_policies.py",
+        "packages/tac-validate/tests/test_caribbean_weather_lint.py"
+      ],
+      "status": "COVERED",
+      "notes": "Screenshot reviewed; class coverage via matrix/interop/lint",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "IMG-GY-T049A",
+      "source_file": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T049A.jpeg",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_cross_product_matrix.py",
+        "tests/regression/caribbean_tester/test_interop_policies.py",
+        "packages/tac-validate/tests/test_caribbean_weather_lint.py"
+      ],
+      "status": "COVERED",
+      "notes": "Screenshot reviewed; class coverage via matrix/interop/lint",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "IMG-GY-T049B",
+      "source_file": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T049B.jpeg",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_cross_product_matrix.py",
+        "tests/regression/caribbean_tester/test_interop_policies.py",
+        "packages/tac-validate/tests/test_caribbean_weather_lint.py"
+      ],
+      "status": "COVERED",
+      "notes": "Screenshot reviewed; class coverage via matrix/interop/lint",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "FILE-2-WeekTest-Log TAC-IWXXM  SEP 09 2026.xlsx",
+      "source_file": "BELIZE-TAC TO IWXXM COMPLETED TESTING RESULTS/TAC TO IWXXM COMPLETED/2-WeekTest-Log TAC-IWXXM  SEP 09 2026.xlsx",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_xlsx_tac_rows.py"
+      ],
+      "status": "COVERED",
+      "notes": "ingest=raw_copy",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "FILE-NMHS TAC-IWXXM User Evaluation Questionnaire.docx",
+      "source_file": "BELIZE-TAC TO IWXXM COMPLETED TESTING RESULTS/TAC TO IWXXM COMPLETED/NMHS TAC-IWXXM User Evaluation Questionnaire.docx",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_harvest_extra_locks.py"
+      ],
+      "status": "COVERED",
+      "notes": "ingest=tac_extracted_to_jsonl",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "FILE-TAC to IWXXM Test-METAR Error Report.docx",
+      "source_file": "BELIZE-TAC TO IWXXM COMPLETED TESTING RESULTS/TAC TO IWXXM COMPLETED/TAC to IWXXM Test-METAR Error Report.docx",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_harvest_extra_locks.py"
+      ],
+      "status": "COVERED",
+      "notes": "ingest=tac_extracted_to_jsonl",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "FILE-TAC to IWXXM Test-TAF PARSE Error Report.docx",
+      "source_file": "BELIZE-TAC TO IWXXM COMPLETED TESTING RESULTS/TAC TO IWXXM COMPLETED/TAC to IWXXM Test-TAF PARSE Error Report.docx",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_harvest_extra_locks.py"
+      ],
+      "status": "COVERED",
+      "notes": "ingest=tac_extracted_to_jsonl",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "FILE-TAC to IWXXM Test-TAF TRANSLATION Error Report.docx",
+      "source_file": "BELIZE-TAC TO IWXXM COMPLETED TESTING RESULTS/TAC TO IWXXM COMPLETED/TAC to IWXXM Test-TAF TRANSLATION Error Report.docx",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_harvest_extra_locks.py"
+      ],
+      "status": "COVERED",
+      "notes": "ingest=tac_extracted_to_jsonl",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "FILE-TAC-IWXXM-Comparison Checklist.docx",
+      "source_file": "BELIZE-TAC TO IWXXM COMPLETED TESTING RESULTS/TAC TO IWXXM COMPLETED/TAC-IWXXM-Comparison Checklist.docx",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_harvest_extra_locks.py"
+      ],
+      "status": "COVERED",
+      "notes": "ingest=tac_extracted_to_jsonl",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "FILE-METARTTC_20260929052820.zip",
+      "source_file": "BELIZE-TAC TO IWXXM COMPLETED TESTING RESULTS/TAC TO IWXXM COMPLETED/WEEK 1/METAR/METARTTC_20260929052820.zip",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_raw_files.py"
+      ],
+      "status": "COVERED",
+      "notes": "ingest=zip_text_extracted",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "FILE-METARTTP_20260930124244.zip",
+      "source_file": "BELIZE-TAC TO IWXXM COMPLETED TESTING RESULTS/TAC TO IWXXM COMPLETED/WEEK 1/METAR/METARTTP_20260930124244.zip",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_raw_files.py"
+      ],
+      "status": "COVERED",
+      "notes": "ingest=zip_text_extracted",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "FILE-METARTUP_20260929063041.zip",
+      "source_file": "BELIZE-TAC TO IWXXM COMPLETED TESTING RESULTS/TAC TO IWXXM COMPLETED/WEEK 1/METAR/METARTUP_20260929063041.zip",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_raw_files.py"
+      ],
+      "status": "COVERED",
+      "notes": "ingest=zip_text_extracted",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "FILE-WEEK 1 METAR DATASET TTCP.docx",
+      "source_file": "BELIZE-TAC TO IWXXM COMPLETED TESTING RESULTS/TAC TO IWXXM COMPLETED/WEEK 1/METAR/WEEK 1 METAR DATASET TTCP.docx",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_harvest_extra_locks.py"
+      ],
+      "status": "COVERED",
+      "notes": "ingest=tac_extracted_to_jsonl",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "FILE-WEEK 1 METAR DATASET TUPJ.docx",
+      "source_file": "BELIZE-TAC TO IWXXM COMPLETED TESTING RESULTS/TAC TO IWXXM COMPLETED/WEEK 1/METAR/WEEK 1 METAR DATASET TUPJ.docx",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_harvest_extra_locks.py"
+      ],
+      "status": "COVERED",
+      "notes": "ingest=tac_extracted_to_jsonl",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "FILE-Week 1 METAR DATASET TTPP.docx",
+      "source_file": "BELIZE-TAC TO IWXXM COMPLETED TESTING RESULTS/TAC TO IWXXM COMPLETED/WEEK 1/METAR/Week 1 METAR DATASET TTPP.docx",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_harvest_extra_locks.py"
+      ],
+      "status": "COVERED",
+      "notes": "ingest=tac_extracted_to_jsonl",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "FILE-METARTTP_20260926161113.zip",
+      "source_file": "BELIZE-TAC TO IWXXM COMPLETED TESTING RESULTS/TAC TO IWXXM COMPLETED/WEEK 1/N_A/METARTTP_20260926161113.zip",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_raw_files.py"
+      ],
+      "status": "COVERED",
+      "notes": "ingest=zip_text_extracted",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "FILE-Week 1 METAR Testing Dataset_1.docx",
+      "source_file": "BELIZE-TAC TO IWXXM COMPLETED TESTING RESULTS/TAC TO IWXXM COMPLETED/WEEK 1/N_A/Week 1 METAR Testing Dataset_1.docx",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_harvest_extra_locks.py"
+      ],
+      "status": "COVERED",
+      "notes": "ingest=tac_extracted_to_jsonl",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "FILE-Week 1 \u2013 SIGMET Testing Dataset_4.docx",
+      "source_file": "BELIZE-TAC TO IWXXM COMPLETED TESTING RESULTS/TAC TO IWXXM COMPLETED/WEEK 1/N_A/Week 1 \u2013 SIGMET Testing Dataset_4.docx",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_harvest_extra_locks.py"
+      ],
+      "status": "COVERED",
+      "notes": "ingest=tac_extracted_to_jsonl",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "FILE-SPECITTP_20260929001859.zip",
+      "source_file": "BELIZE-TAC TO IWXXM COMPLETED TESTING RESULTS/TAC TO IWXXM COMPLETED/WEEK 1/SPECI/SPECITTP_20260929001859.zip",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_raw_files.py"
+      ],
+      "status": "COVERED",
+      "notes": "ingest=zip_text_extracted",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "FILE-Week 1 \u2013 SPECI Testing Dataset-V1.docx",
+      "source_file": "BELIZE-TAC TO IWXXM COMPLETED TESTING RESULTS/TAC TO IWXXM COMPLETED/WEEK 1/SPECI/Week 1 \u2013 SPECI Testing Dataset-V1.docx",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_harvest_extra_locks.py"
+      ],
+      "status": "COVERED",
+      "notes": "ingest=tac_extracted_to_jsonl",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "FILE-TAFTTPP0_20260928223215.zip",
+      "source_file": "BELIZE-TAC TO IWXXM COMPLETED TESTING RESULTS/TAC TO IWXXM COMPLETED/WEEK 1/TAF/TAFTTPP0_20260928223215.zip",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_raw_files.py"
+      ],
+      "status": "COVERED",
+      "notes": "ingest=zip_text_extracted",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "FILE-Week 1 \u2013 TAF Testing Dataset_2.docx",
+      "source_file": "BELIZE-TAC TO IWXXM COMPLETED TESTING RESULTS/TAC TO IWXXM COMPLETED/WEEK 1/TAF/Week 1 \u2013 TAF Testing Dataset_2.docx",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_harvest_extra_locks.py"
+      ],
+      "status": "COVERED",
+      "notes": "ingest=tac_extracted_to_jsonl",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "FILE-METAR WEEK 2.docx",
+      "source_file": "BELIZE-TAC TO IWXXM COMPLETED TESTING RESULTS/TAC TO IWXXM COMPLETED/WEEK 2/METAR_SPECI/METAR WEEK 2.docx",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_harvest_extra_locks.py"
+      ],
+      "status": "COVERED",
+      "notes": "ingest=tac_extracted_to_jsonl",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "FILE-METARMZB_20260929074709.zip",
+      "source_file": "BELIZE-TAC TO IWXXM COMPLETED TESTING RESULTS/TAC TO IWXXM COMPLETED/WEEK 2/METAR_SPECI/METARMZB_20260929074709.zip",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_raw_files.py"
+      ],
+      "status": "COVERED",
+      "notes": "ingest=zip_text_extracted",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "FILE-TAF MZBZ WEEK2.docx",
+      "source_file": "BELIZE-TAC TO IWXXM COMPLETED TESTING RESULTS/TAC TO IWXXM COMPLETED/WEEK 2/TAF/TAF MZBZ WEEK2.docx",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_harvest_extra_locks.py"
+      ],
+      "status": "COVERED",
+      "notes": "ingest=tac_extracted_to_jsonl",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "FILE-TAFMZBZ1_20260930120906.zip",
+      "source_file": "BELIZE-TAC TO IWXXM COMPLETED TESTING RESULTS/TAC TO IWXXM COMPLETED/WEEK 2/TAF/TAFMZBZ1_20260930120906.zip",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_raw_files.py"
+      ],
+      "status": "COVERED",
+      "notes": "ingest=zip_text_extracted",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "FILE-2-WeekTest-Log TAC-IWXXM  SEP 09 2026 (1).xlsx",
+      "source_file": "BRITISH VIRGIN ISLANDS/2-WeekTest-Log TAC-IWXXM  SEP 09 2026 (1).xlsx",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_xlsx_tac_rows.py"
+      ],
+      "status": "COVERED",
+      "notes": "ingest=raw_copy",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "FILE-WMO TAC - IWXXM Testing  (1).docx",
+      "source_file": "BRITISH VIRGIN ISLANDS/WMO TAC - IWXXM Testing  (1).docx",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_harvest_extra_locks.py"
+      ],
+      "status": "COVERED",
+      "notes": "ingest=tac_extracted_to_jsonl",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "FILE-2-WeekTest-Log TAC-IWXXM  SEP 09 2026.xlsx",
+      "source_file": "GUYANA-TAC-IWXXM-TEST-EVALUATION/2-WeekTest-Log TAC-IWXXM  SEP 09 2026.xlsx",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_xlsx_tac_rows.py"
+      ],
+      "status": "COVERED",
+      "notes": "ingest=raw_copy",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "FILE-NMHS_TAC-IWXXM_User_Evaluation.docx",
+      "source_file": "GUYANA-TAC-IWXXM-TEST-EVALUATION/NMHS_TAC-IWXXM_User_Evaluation.docx",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_harvest_extra_locks.py"
+      ],
+      "status": "COVERED",
+      "notes": "ingest=tac_extracted_to_jsonl",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "FILE-TAC-IWXXM_Comparison_Checklist.docx",
+      "source_file": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TAC-IWXXM_Comparison_Checklist.docx",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_harvest_extra_locks.py"
+      ],
+      "status": "COVERED",
+      "notes": "ingest=tac_extracted_to_jsonl",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "FILE-TAC_to_IWXXM_Test-Error_Report.docx",
+      "source_file": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TAC_to_IWXXM_Test-Error_Report.docx",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_harvest_extra_locks.py"
+      ],
+      "status": "COVERED",
+      "notes": "ingest=tac_extracted_to_jsonl",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "FILE-T012A.jpeg",
+      "source_file": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T012A.jpeg",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_interop_policies.py"
+      ],
+      "status": "COVERED",
+      "notes": "ingest=binary_evidence_skipped",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "FILE-T012B.jpeg",
+      "source_file": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T012B.jpeg",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_interop_policies.py"
+      ],
+      "status": "COVERED",
+      "notes": "ingest=binary_evidence_skipped",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "FILE-T013A.jpeg",
+      "source_file": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T013A.jpeg",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_interop_policies.py"
+      ],
+      "status": "COVERED",
+      "notes": "ingest=binary_evidence_skipped",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "FILE-T013B.jpeg",
+      "source_file": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T013B.jpeg",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_interop_policies.py"
+      ],
+      "status": "COVERED",
+      "notes": "ingest=binary_evidence_skipped",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "FILE-T014A.jpeg",
+      "source_file": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T014A.jpeg",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_interop_policies.py"
+      ],
+      "status": "COVERED",
+      "notes": "ingest=binary_evidence_skipped",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "FILE-T014B.jpeg",
+      "source_file": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T014B.jpeg",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_interop_policies.py"
+      ],
+      "status": "COVERED",
+      "notes": "ingest=binary_evidence_skipped",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "FILE-T016A.jpeg",
+      "source_file": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T016A.jpeg",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_interop_policies.py"
+      ],
+      "status": "COVERED",
+      "notes": "ingest=binary_evidence_skipped",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "FILE-T016B.jpeg",
+      "source_file": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T016B.jpeg",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_interop_policies.py"
+      ],
+      "status": "COVERED",
+      "notes": "ingest=binary_evidence_skipped",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "FILE-T017A.jpeg",
+      "source_file": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T017A.jpeg",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_interop_policies.py"
+      ],
+      "status": "COVERED",
+      "notes": "ingest=binary_evidence_skipped",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "FILE-T017B.jpeg",
+      "source_file": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T017B.jpeg",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_interop_policies.py"
+      ],
+      "status": "COVERED",
+      "notes": "ingest=binary_evidence_skipped",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "FILE-T018.jpeg",
+      "source_file": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T018.jpeg",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_interop_policies.py"
+      ],
+      "status": "COVERED",
+      "notes": "ingest=binary_evidence_skipped",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "FILE-T019.jpeg",
+      "source_file": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T019.jpeg",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_interop_policies.py"
+      ],
+      "status": "COVERED",
+      "notes": "ingest=binary_evidence_skipped",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "FILE-T026.jpeg",
+      "source_file": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T026.jpeg",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_interop_policies.py"
+      ],
+      "status": "COVERED",
+      "notes": "ingest=binary_evidence_skipped",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "FILE-T027.jpeg",
+      "source_file": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T027.jpeg",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_interop_policies.py"
+      ],
+      "status": "COVERED",
+      "notes": "ingest=binary_evidence_skipped",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "FILE-T028.jpeg",
+      "source_file": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T028.jpeg",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_interop_policies.py"
+      ],
+      "status": "COVERED",
+      "notes": "ingest=binary_evidence_skipped",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "FILE-T029A.jpeg",
+      "source_file": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T029A.jpeg",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_interop_policies.py"
+      ],
+      "status": "COVERED",
+      "notes": "ingest=binary_evidence_skipped",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "FILE-T029B.jpeg",
+      "source_file": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T029B.jpeg",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_interop_policies.py"
+      ],
+      "status": "COVERED",
+      "notes": "ingest=binary_evidence_skipped",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "FILE-T030A.jpeg",
+      "source_file": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T030A.jpeg",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_interop_policies.py"
+      ],
+      "status": "COVERED",
+      "notes": "ingest=binary_evidence_skipped",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "FILE-T030B.jpeg",
+      "source_file": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T030B.jpeg",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_interop_policies.py"
+      ],
+      "status": "COVERED",
+      "notes": "ingest=binary_evidence_skipped",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "FILE-T031A.jpeg",
+      "source_file": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T031A.jpeg",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_interop_policies.py"
+      ],
+      "status": "COVERED",
+      "notes": "ingest=binary_evidence_skipped",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "FILE-T031B.jpeg",
+      "source_file": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T031B.jpeg",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_interop_policies.py"
+      ],
+      "status": "COVERED",
+      "notes": "ingest=binary_evidence_skipped",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "FILE-T032A.jpeg",
+      "source_file": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T032A.jpeg",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_interop_policies.py"
+      ],
+      "status": "COVERED",
+      "notes": "ingest=binary_evidence_skipped",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "FILE-T032B.jpeg",
+      "source_file": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T032B.jpeg",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_interop_policies.py"
+      ],
+      "status": "COVERED",
+      "notes": "ingest=binary_evidence_skipped",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "FILE-T033.jpeg",
+      "source_file": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T033.jpeg",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_interop_policies.py"
+      ],
+      "status": "COVERED",
+      "notes": "ingest=binary_evidence_skipped",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "FILE-T034.jpeg",
+      "source_file": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T034.jpeg",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_interop_policies.py"
+      ],
+      "status": "COVERED",
+      "notes": "ingest=binary_evidence_skipped",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "FILE-T035.jpeg",
+      "source_file": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T035.jpeg",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_interop_policies.py"
+      ],
+      "status": "COVERED",
+      "notes": "ingest=binary_evidence_skipped",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "FILE-T036A.jpeg",
+      "source_file": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T036A.jpeg",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_interop_policies.py"
+      ],
+      "status": "COVERED",
+      "notes": "ingest=binary_evidence_skipped",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "FILE-T036B.jpeg",
+      "source_file": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T036B.jpeg",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_interop_policies.py"
+      ],
+      "status": "COVERED",
+      "notes": "ingest=binary_evidence_skipped",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "FILE-T037A.jpeg",
+      "source_file": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T037A.jpeg",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_interop_policies.py"
+      ],
+      "status": "COVERED",
+      "notes": "ingest=binary_evidence_skipped",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "FILE-T037B.jpeg",
+      "source_file": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T037B.jpeg",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_interop_policies.py"
+      ],
+      "status": "COVERED",
+      "notes": "ingest=binary_evidence_skipped",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "FILE-T038A.jpeg",
+      "source_file": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T038A.jpeg",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_interop_policies.py"
+      ],
+      "status": "COVERED",
+      "notes": "ingest=binary_evidence_skipped",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "FILE-T038B.jpeg",
+      "source_file": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T038B.jpeg",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_interop_policies.py"
+      ],
+      "status": "COVERED",
+      "notes": "ingest=binary_evidence_skipped",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "FILE-T039A.jpeg",
+      "source_file": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T039A.jpeg",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_interop_policies.py"
+      ],
+      "status": "COVERED",
+      "notes": "ingest=binary_evidence_skipped",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "FILE-T039B.jpeg",
+      "source_file": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T039B.jpeg",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_interop_policies.py"
+      ],
+      "status": "COVERED",
+      "notes": "ingest=binary_evidence_skipped",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "FILE-T040.jpeg",
+      "source_file": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T040.jpeg",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_interop_policies.py"
+      ],
+      "status": "COVERED",
+      "notes": "ingest=binary_evidence_skipped",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "FILE-T041A.jpeg",
+      "source_file": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T041A.jpeg",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_interop_policies.py"
+      ],
+      "status": "COVERED",
+      "notes": "ingest=binary_evidence_skipped",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "FILE-T041B.jpeg",
+      "source_file": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T041B.jpeg",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_interop_policies.py"
+      ],
+      "status": "COVERED",
+      "notes": "ingest=binary_evidence_skipped",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "FILE-T042A.jpeg",
+      "source_file": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T042A.jpeg",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_interop_policies.py"
+      ],
+      "status": "COVERED",
+      "notes": "ingest=binary_evidence_skipped",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "FILE-T042B.jpeg",
+      "source_file": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T042B.jpeg",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_interop_policies.py"
+      ],
+      "status": "COVERED",
+      "notes": "ingest=binary_evidence_skipped",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "FILE-T043.jpeg",
+      "source_file": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T043.jpeg",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_interop_policies.py"
+      ],
+      "status": "COVERED",
+      "notes": "ingest=binary_evidence_skipped",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "FILE-T044A.jpeg",
+      "source_file": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T044A.jpeg",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_interop_policies.py"
+      ],
+      "status": "COVERED",
+      "notes": "ingest=binary_evidence_skipped",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "FILE-T044B.jpeg",
+      "source_file": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T044B.jpeg",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_interop_policies.py"
+      ],
+      "status": "COVERED",
+      "notes": "ingest=binary_evidence_skipped",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "FILE-T045A.jpeg",
+      "source_file": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T045A.jpeg",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_interop_policies.py"
+      ],
+      "status": "COVERED",
+      "notes": "ingest=binary_evidence_skipped",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "FILE-T045B.jpeg",
+      "source_file": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T045B.jpeg",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_interop_policies.py"
+      ],
+      "status": "COVERED",
+      "notes": "ingest=binary_evidence_skipped",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "FILE-T046.jpeg",
+      "source_file": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T046.jpeg",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_interop_policies.py"
+      ],
+      "status": "COVERED",
+      "notes": "ingest=binary_evidence_skipped",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "FILE-T047.jpeg",
+      "source_file": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T047.jpeg",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_interop_policies.py"
+      ],
+      "status": "COVERED",
+      "notes": "ingest=binary_evidence_skipped",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "FILE-T048A.jpeg",
+      "source_file": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T048A.jpeg",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_interop_policies.py"
+      ],
+      "status": "COVERED",
+      "notes": "ingest=binary_evidence_skipped",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "FILE-T048B.jpeg",
+      "source_file": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T048B.jpeg",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_interop_policies.py"
+      ],
+      "status": "COVERED",
+      "notes": "ingest=binary_evidence_skipped",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "FILE-T049A.jpeg",
+      "source_file": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T049A.jpeg",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_interop_policies.py"
+      ],
+      "status": "COVERED",
+      "notes": "ingest=binary_evidence_skipped",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "FILE-T049B.jpeg",
+      "source_file": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T049B.jpeg",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_interop_policies.py"
+      ],
+      "status": "COVERED",
+      "notes": "ingest=binary_evidence_skipped",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "FILE-bulletin_report_12.tac",
+      "source_file": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/bulletin_report_12.tac",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_raw_files.py"
+      ],
+      "status": "COVERED",
+      "notes": "ingest=raw_copy",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "FILE-bulletin_report_13.tac",
+      "source_file": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/bulletin_report_13.tac",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_raw_files.py"
+      ],
+      "status": "COVERED",
+      "notes": "ingest=raw_copy",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "FILE-bulletin_report_14.tac",
+      "source_file": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/bulletin_report_14.tac",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_raw_files.py"
+      ],
+      "status": "COVERED",
+      "notes": "ingest=raw_copy",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "FILE-bulletin_report_16.tac",
+      "source_file": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/bulletin_report_16.tac",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_raw_files.py"
+      ],
+      "status": "COVERED",
+      "notes": "ingest=raw_copy",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "FILE-bulletin_report_17.tac",
+      "source_file": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/bulletin_report_17.tac",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_raw_files.py"
+      ],
+      "status": "COVERED",
+      "notes": "ingest=raw_copy",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "FILE-bulletin_report_29.tac",
+      "source_file": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/bulletin_report_29.tac",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_raw_files.py"
+      ],
+      "status": "COVERED",
+      "notes": "ingest=raw_copy",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "FILE-bulletin_report_30.tac",
+      "source_file": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/bulletin_report_30.tac",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_raw_files.py"
+      ],
+      "status": "COVERED",
+      "notes": "ingest=raw_copy",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "FILE-bulletin_report_31.tac",
+      "source_file": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/bulletin_report_31.tac",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_raw_files.py"
+      ],
+      "status": "COVERED",
+      "notes": "ingest=raw_copy",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "FILE-bulletin_report_32.tac",
+      "source_file": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/bulletin_report_32.tac",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_raw_files.py"
+      ],
+      "status": "COVERED",
+      "notes": "ingest=raw_copy",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "FILE-bulletin_report_36.tac",
+      "source_file": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/bulletin_report_36.tac",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_raw_files.py"
+      ],
+      "status": "COVERED",
+      "notes": "ingest=raw_copy",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "FILE-bulletin_report_37.tac",
+      "source_file": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/bulletin_report_37.tac",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_raw_files.py"
+      ],
+      "status": "COVERED",
+      "notes": "ingest=raw_copy",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "FILE-bulletin_report_38.tac",
+      "source_file": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/bulletin_report_38.tac",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_raw_files.py"
+      ],
+      "status": "COVERED",
+      "notes": "ingest=raw_copy",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "FILE-bulletin_report_39.tac",
+      "source_file": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/bulletin_report_39.tac",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_raw_files.py"
+      ],
+      "status": "COVERED",
+      "notes": "ingest=raw_copy",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "FILE-bulletin_report_41.tac",
+      "source_file": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/bulletin_report_41.tac",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_raw_files.py"
+      ],
+      "status": "COVERED",
+      "notes": "ingest=raw_copy",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "FILE-bulletin_report_42.tac",
+      "source_file": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/bulletin_report_42.tac",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_raw_files.py"
+      ],
+      "status": "COVERED",
+      "notes": "ingest=raw_copy",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "FILE-manual_input_44.xml",
+      "source_file": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/manual_input_44.xml",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_raw_files.py"
+      ],
+      "status": "COVERED",
+      "notes": "ingest=raw_copy",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "FILE-manual_input_45.xml",
+      "source_file": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/manual_input_45.xml",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_raw_files.py"
+      ],
+      "status": "COVERED",
+      "notes": "ingest=raw_copy",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "FILE-manual_input_48.xml",
+      "source_file": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/manual_input_48.xml",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_raw_files.py"
+      ],
+      "status": "COVERED",
+      "notes": "ingest=raw_copy",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "FILE-manual_input_49.xml",
+      "source_file": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/manual_input_49.xml",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_raw_files.py"
+      ],
+      "status": "COVERED",
+      "notes": "ingest=raw_copy",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "FILE-2-WeekTest-Log TAC-IWXXM  SEP 09 2026.xlsx",
+      "source_file": "JAMAICA IWXXM TESTING RESULTS/2-WeekTest-Log TAC-IWXXM  SEP 09 2026.xlsx",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_xlsx_tac_rows.py"
+      ],
+      "status": "COVERED",
+      "notes": "ingest=raw_copy",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "FILE-Recommended_UX_Mockup.png",
+      "source_file": "JAMAICA IWXXM TESTING RESULTS/Recommended_UX_Mockup.png",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_interop_policies.py"
+      ],
+      "status": "COVERED",
+      "notes": "ingest=binary_evidence_skipped",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "FILE-T011-a.png",
+      "source_file": "JAMAICA IWXXM TESTING RESULTS/T011-a.png",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_interop_policies.py"
+      ],
+      "status": "COVERED",
+      "notes": "ingest=binary_evidence_skipped",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "FILE-T011-b.png",
+      "source_file": "JAMAICA IWXXM TESTING RESULTS/T011-b.png",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_interop_policies.py"
+      ],
+      "status": "COVERED",
+      "notes": "ingest=binary_evidence_skipped",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "FILE-T1059-b.png",
+      "source_file": "JAMAICA IWXXM TESTING RESULTS/T1059-b.png",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_interop_policies.py"
+      ],
+      "status": "COVERED",
+      "notes": "ingest=binary_evidence_skipped",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "FILE-T1059.png",
+      "source_file": "JAMAICA IWXXM TESTING RESULTS/T1059.png",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_interop_policies.py"
+      ],
+      "status": "COVERED",
+      "notes": "ingest=binary_evidence_skipped",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "FILE-T1060-a.png",
+      "source_file": "JAMAICA IWXXM TESTING RESULTS/T1060-a.png",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_interop_policies.py"
+      ],
+      "status": "COVERED",
+      "notes": "ingest=binary_evidence_skipped",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "FILE-T1060-b.png",
+      "source_file": "JAMAICA IWXXM TESTING RESULTS/T1060-b.png",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_interop_policies.py"
+      ],
+      "status": "COVERED",
+      "notes": "ingest=binary_evidence_skipped",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "FILE-T146-a.png",
+      "source_file": "JAMAICA IWXXM TESTING RESULTS/T146-a.png",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_interop_policies.py"
+      ],
+      "status": "COVERED",
+      "notes": "ingest=binary_evidence_skipped",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "FILE-T146-b.png",
+      "source_file": "JAMAICA IWXXM TESTING RESULTS/T146-b.png",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_interop_policies.py"
+      ],
+      "status": "COVERED",
+      "notes": "ingest=binary_evidence_skipped",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "FILE-T302-a.png",
+      "source_file": "JAMAICA IWXXM TESTING RESULTS/T302-a.png",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_interop_policies.py"
+      ],
+      "status": "COVERED",
+      "notes": "ingest=binary_evidence_skipped",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "FILE-T302-b.png",
+      "source_file": "JAMAICA IWXXM TESTING RESULTS/T302-b.png",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_interop_policies.py"
+      ],
+      "status": "COVERED",
+      "notes": "ingest=binary_evidence_skipped",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "FILE-T360-a.png",
+      "source_file": "JAMAICA IWXXM TESTING RESULTS/T360-a.png",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_interop_policies.py"
+      ],
+      "status": "COVERED",
+      "notes": "ingest=binary_evidence_skipped",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "FILE-T360-b.png",
+      "source_file": "JAMAICA IWXXM TESTING RESULTS/T360-b.png",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_interop_policies.py"
+      ],
+      "status": "COVERED",
+      "notes": "ingest=binary_evidence_skipped",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "FILE-T571-a.png",
+      "source_file": "JAMAICA IWXXM TESTING RESULTS/T571-a.png",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_interop_policies.py"
+      ],
+      "status": "COVERED",
+      "notes": "ingest=binary_evidence_skipped",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "FILE-T571-b.png",
+      "source_file": "JAMAICA IWXXM TESTING RESULTS/T571-b.png",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_interop_policies.py"
+      ],
+      "status": "COVERED",
+      "notes": "ingest=binary_evidence_skipped",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "FILE-TAC-IWXXM_Test_and_UX_Report.docx",
+      "source_file": "JAMAICA IWXXM TESTING RESULTS/TAC-IWXXM_Test_and_UX_Report.docx",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_harvest_extra_locks.py"
+      ],
+      "status": "COVERED",
+      "notes": "ingest=tac_extracted_to_jsonl",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "FILE-METAR TUPJ 071900Z 14006KT 10SM VCSH FEW012CB SCT017 28.docx",
+      "source_file": "SAINT LUCIA - TAC-IWXXM TESTING RESULT/METAR TUPJ 071900Z 14006KT 10SM VCSH FEW012CB SCT017 28.docx",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_harvest_extra_locks.py"
+      ],
+      "status": "COVERED",
+      "notes": "ingest=tac_extracted_to_jsonl",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "FILE-SAINT LUCIA EMAIL.pdf",
+      "source_file": "SAINT LUCIA - TAC-IWXXM TESTING RESULT/SAINT LUCIA EMAIL.pdf",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_source_inventory.py"
+      ],
+      "status": "COVERED",
+      "notes": "ingest=binary_evidence_skipped",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "FILE-IWXXMTestFiles.xlsx",
+      "source_file": "ST KITTS and NEVIS-TAC-IWXXM-TEST-EVALUATIONS/IWXXMTestFiles.xlsx",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_xlsx_tac_rows.py"
+      ],
+      "status": "COVERED",
+      "notes": "ingest=raw_copy",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "FILE-St Kitts and Nevis Results-Testing and Evaluation Regional T",
+      "source_file": "ST KITTS and NEVIS-TAC-IWXXM-TEST-EVALUATIONS/St Kitts and Nevis Results-Testing and Evaluation Regional TAC-IWXXM Translator prototype.pdf",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_source_inventory.py"
+      ],
+      "status": "COVERED",
+      "notes": "ingest=binary_evidence_skipped",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "FILE-NMHS TAC-IWXXM User Evaluation Questionnaire.docx",
+      "source_file": "St Maarten IWXXM TESTING RESULTS/NMHS TAC-IWXXM User Evaluation Questionnaire.docx",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_harvest_extra_locks.py"
+      ],
+      "status": "COVERED",
+      "notes": "ingest=tac_extracted_to_jsonl",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "FILE-TAC to IWXXM Test-Error Report.docx",
+      "source_file": "St Maarten IWXXM TESTING RESULTS/TAC to IWXXM Test-Error Report.docx",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_harvest_extra_locks.py"
+      ],
+      "status": "COVERED",
+      "notes": "ingest=tac_extracted_to_jsonl",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "FILE-TAC-IWXXM-Comparison Checklist.docx",
+      "source_file": "St Maarten IWXXM TESTING RESULTS/TAC-IWXXM-Comparison Checklist.docx",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_harvest_extra_locks.py"
+      ],
+      "status": "COVERED",
+      "notes": "ingest=tac_extracted_to_jsonl",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "FILE-2-WeekTest-Log TAC-IWXXM  SEP 09 2026.TTMS.xlsx",
+      "source_file": "TRINIDAD AND TOBAGO -TAC-TO-IWXXM TESTING RESULTS/2-WeekTest-Log TAC-IWXXM  SEP 09 2026.TTMS.xlsx",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_xlsx_tac_rows.py"
+      ],
+      "status": "COVERED",
+      "notes": "ingest=raw_copy",
+      "products": [],
+      "interop_policy": null
+    },
+    {
+      "packet_item_id": "FILE-NMHS TAC-IWXXM User Evaluation Questionnaire_TTPPFeedback.do",
+      "source_file": "TRINIDAD AND TOBAGO -TAC-TO-IWXXM TESTING RESULTS/NMHS TAC-IWXXM User Evaluation Questionnaire_TTPPFeedback.docx",
+      "test_node_ids": [
+        "tests/regression/caribbean_tester/test_harvest_extra_locks.py"
+      ],
+      "status": "COVERED",
+      "notes": "ingest=tac_extracted_to_jsonl",
+      "products": [],
+      "interop_policy": null
+    }
+  ]
+}

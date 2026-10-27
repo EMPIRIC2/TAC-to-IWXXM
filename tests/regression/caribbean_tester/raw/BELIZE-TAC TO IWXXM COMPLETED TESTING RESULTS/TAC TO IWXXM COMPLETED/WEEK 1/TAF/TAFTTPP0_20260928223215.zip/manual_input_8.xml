@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<iwxxm:TAF xmlns:iwxxm="http://icao.int/iwxxm/2025-2"
+    xmlns:xlink="http://www.w3.org/1999/xlink"
+    xmlns:gml="http://www.opengis.net/gml/3.2"
+    xmlns:aixm="http://www.aixm.aero/schema/5.1.1"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    gml:id="taf.basic.trpg"
+    reportStatus="NORMAL"
+    permissibleUsage="OPERATIONAL">
+  <iwxxm:issueTime>
+    <gml:TimeInstant gml:id="t.issue">
+      <gml:timePosition>2023-06-08T11:00:00Z</gml:timePosition>
+    </gml:TimeInstant>
+  </iwxxm:issueTime>
+  <iwxxm:aerodrome>
+    <aixm:AirportHeliport gml:id="ad.trpg">
+      <aixm:timeSlice>
+        <aixm:AirportHeliportTimeSlice gml:id="ad.ts.trpg">
+          <gml:validTime/>
+          <aixm:interpretation>SNAPSHOT</aixm:interpretation>
+          <aixm:designator>TRPG</aixm:designator>
+          <aixm:locationIndicatorICAO>TRPG</aixm:locationIndicatorICAO>
+        </aixm:AirportHeliportTimeSlice>
+      </aixm:timeSlice>
+    </aixm:AirportHeliport>
+  </iwxxm:aerodrome>
+  <iwxxm:validPeriod>
+    <gml:TimePeriod gml:id="t.valid">
+      <gml:beginPosition>2023-06-08T12:00:00Z</gml:beginPosition>
+      <gml:endPosition>2023-06-09T12:00:00Z</gml:endPosition>
+    </gml:TimePeriod>
+  </iwxxm:validPeriod>
+  <iwxxm:baseForecast>
+    <iwxxm:MeteorologicalAerodromeForecast gml:id="fcst.base.trpg" cloudAndVisibilityOK="false">
+      <iwxxm:phenomenonTime xlink:href="#uuid.00000000-0000-4000-8000-000000000001"/>
+      <iwxxm:prevailingVisibility uom="m">10000</iwxxm:prevailingVisibility>
+      <iwxxm:prevailingVisibilityOperator>ABOVE</iwxxm:prevailingVisibilityOperator>
+      <iwxxm:surfaceWind>
+        <iwxxm:AerodromeSurfaceWindForecast variableWindDirection="false">
+          <iwxxm:meanWindDirection uom="deg">90</iwxxm:meanWindDirection>
+          <iwxxm:meanWindSpeed uom="[kn_i]">14</iwxxm:meanWindSpeed>
+        </iwxxm:AerodromeSurfaceWindForecast>
+      </iwxxm:surfaceWind>
+      <iwxxm:cloud>
+        <iwxxm:AerodromeCloudForecast gml:id="cloud.base.trpg">
+          <iwxxm:layer>
+            <iwxxm:CloudLayer>
+              <iwxxm:amount xlink:href="http://codes.wmo.int/49-2/CloudAmountReportedAtAerodrome/SCT"/>
+              <iwxxm:base uom="[ft_i]">1900</iwxxm:base>
+            </iwxxm:CloudLayer>
+          </iwxxm:layer>
+        </iwxxm:AerodromeCloudForecast>
+      </iwxxm:cloud>
+    </iwxxm:MeteorologicalAerodromeForecast>
+  </iwxxm:baseForecast>
+  <iwxxm:changeForecast>
+    <iwxxm:MeteorologicalAerodromeForecast gml:id="fcst.chg.1.trpg" changeIndicator="TEMPORARY_FLUCTUATIONS" cloudAndVisibilityOK="false">
+      <iwxxm:phenomenonTime>
+        <gml:TimePeriod gml:id="t.chg.1">
+          <gml:beginPosition>2023-06-08T20:00:00Z</gml:beginPosition>
+          <gml:endPosition>2023-06-09T12:00:00Z</gml:endPosition>
+        </gml:TimePeriod>
+      </iwxxm:phenomenonTime>
+      <iwxxm:weather xlink:href="http://codes.wmo.int/306/4678/SHRA"/>
+      <iwxxm:cloud>
+        <iwxxm:AerodromeCloudForecast gml:id="cloud.chg.1.trpg">
+          <iwxxm:layer>
+            <iwxxm:CloudLayer>
+              <iwxxm:amount xlink:href="http://codes.wmo.int/49-2/CloudAmountReportedAtAerodrome/FEW"/>
+              <iwxxm:base uom="[ft_i]">1200</iwxxm:base>
+              <iwxxm:cloudType xlink:href="http://codes.wmo.int/49-2/SigConvectiveCloudType/CB"/>
+            </iwxxm:CloudLayer>
+          </iwxxm:layer>
+          <iwxxm:layer>
+            <iwxxm:CloudLayer>
+              <iwxxm:amount xlink:href="http://codes.wmo.int/49-2/CloudAmountReportedAtAerodrome/BKN"/>
+              <iwxxm:base uom="[ft_i]">1400</iwxxm:base>
+            </iwxxm:CloudLayer>
+          </iwxxm:layer>
+          <iwxxm:layer>
+            <iwxxm:CloudLayer>
+              <iwxxm:amount xlink:href="http://codes.wmo.int/49-2/CloudAmountReportedAtAerodrome/BKN"/>
+              <iwxxm:base uom="[ft_i]">3500</iwxxm:base>
+            </iwxxm:CloudLayer>
+          </iwxxm:layer>
+        </iwxxm:AerodromeCloudForecast>
+      </iwxxm:cloud>
+    </iwxxm:MeteorologicalAerodromeForecast>
+  </iwxxm:changeForecast>
+  <iwxxm:changeForecast>
+    <iwxxm:MeteorologicalAerodromeForecast gml:id="fcst.chg.2.trpg" changeIndicator="TEMPORARY_FLUCTUATIONS" cloudAndVisibilityOK="false">
+      <iwxxm:phenomenonTime>
+        <gml:TimePeriod gml:id="t.chg.2">
+          <gml:beginPosition>2023-06-08T22:00:00Z</gml:beginPosition>
+          <gml:endPosition>2023-06-09T06:00:00Z</gml:endPosition>
+        </gml:TimePeriod>
+      </iwxxm:phenomenonTime>
+      <iwxxm:prevailingVisibility uom="m">4500</iwxxm:prevailingVisibility>
+      <iwxxm:weather xlink:href="http://codes.wmo.int/306/4678/TSRA"/>
+    </iwxxm:MeteorologicalAerodromeForecast>
+  </iwxxm:changeForecast>
+</iwxxm:TAF>

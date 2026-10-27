@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<iwxxm:TAF xmlns:iwxxm="http://icao.int/iwxxm/2025-2" xmlns:gml="http://www.opengis.net/gml/3.2" gml:id="taf.preview.failed" reportStatus="NORMAL">
+  <!-- soft-preview: PARSE_ERROR: unable to parse TAF header -->
+  <iwxxm:observation nilReason="http://codes.wmo.int/common/nil/missing"/>
+</iwxxm:TAF>

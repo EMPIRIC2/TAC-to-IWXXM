@@ -399,6 +399,10 @@ jobs:
         if: matrix.package == 'bugs'
         run: uv run pytest tests/bugs -m "not live and not live_api" --no-cov -v
 
+      - name: Run Caribbean tester regression kit
+        if: matrix.package == 'bugs'
+        run: uv run pytest tests/regression/caribbean_tester --no-cov -q
+
       - name: Upload package coverage XML artifact
         if: always() && contains(fromJSON('["shared","auth","backend","tac2iwxxm","iwxxm-validate","tac-validate","workflows"]'), matrix.package)
         uses: actions/upload-artifact@v4
