@@ -4853,11 +4853,11 @@ export interface components {
          * ValidationIssue
          * @description Single validation issue with context.
          * @example {
-         *       "code": "INVALID_ICAO",
+         *       "code": "UNKNOWN_ICAO",
          *       "layer": "airport_icao",
-         *       "level": "error",
+         *       "level": "warning",
          *       "location": "line 1, column 12",
-         *       "message": "Unknown ICAO code: ZZZZ"
+         *       "message": "Station ZZZZ is not in the aerodrome registry"
          *     }
          */
         ValidationIssue: {

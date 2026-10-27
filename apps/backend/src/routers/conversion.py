@@ -38,6 +38,7 @@ from src.schemas.conversion import (
 from src.schemas.icao_opmet import TranslationStatus
 from src.schemas.iwxxm_validation import get_namespace_version
 from src.schemas.validation import (
+    AggregatedValidationResult,
     BulletinMetaModel,
     BulletinReportResultModel,
     ConvertBulletinResponse,
@@ -153,6 +154,37 @@ def _pre_convert_tac_layers(product: str | None) -> list[ValidationLayer] | None
     if api_surface._product_uses_aerodrome_icao_layer(product):
         return [ValidationLayer.AIRPORT_ICAO]
     return None
+
+
+def _run_pre_convert_validation(
+    validation_service: object, tac_text: str, layers: list[ValidationLayer]
+) -> AggregatedValidationResult:
+    """
+    Run Layer 1-2 (or ICAO-only) validation, tolerating stubs without ``layers``.
+
+    Parameters
+    ----------
+    validation_service : object
+        Validation service or unit-test double.
+    tac_text : str
+        TAC input.
+    layers : list[ValidationLayer]
+        Layers to request when the service supports ``layers``.
+
+    Returns
+    -------
+    AggregatedValidationResult
+        Aggregated validation result.
+    """
+    validate = cast(
+        Callable[..., AggregatedValidationResult],
+        validation_service.validate_all_layers,  # type: ignore[attr-defined]
+    )
+    try:
+        return validate(tac_text, layers=layers)
+    except TypeError:
+        # Unit-test doubles often accept only ``tac_text``.
+        return validate(tac_text)
 
 
 router = APIRouter(prefix="/api/v1", tags=["Conversion"])
@@ -749,8 +781,8 @@ async def _process_json_metars(
             try:
                 pre_layers = _pre_convert_tac_layers(runtime.product)
                 if pre_layers is not None:
-                    validation_result = runtime.validation_service.validate_all_layers(
-                        normalized_metar_text, layers=pre_layers
+                    validation_result = _run_pre_convert_validation(
+                        runtime.validation_service, normalized_metar_text, pre_layers
                     )
                     if not validation_result.passed:
                         validation_summary = f"{validation_result.total_issues} validation issue(s) found"
@@ -1041,8 +1073,8 @@ async def _process_manual_entries(
             try:
                 pre_layers = _pre_convert_tac_layers(runtime.product)
                 if pre_layers is not None:
-                    validation_result = runtime.validation_service.validate_all_layers(
-                        normalized_entry, layers=pre_layers
+                    validation_result = _run_pre_convert_validation(
+                        runtime.validation_service, normalized_entry, pre_layers
                     )
                     if not validation_result.passed:
                         validation_summary = f"{validation_result.total_issues} validation issue(s) found"
@@ -1329,7 +1361,9 @@ async def _process_uploaded_files(
             try:
                 pre_layers = _pre_convert_tac_layers(runtime.product)
                 if pre_layers is not None:
-                    validation_result = runtime.validation_service.validate_all_layers(data.strip(), layers=pre_layers)
+                    validation_result = _run_pre_convert_validation(
+                        runtime.validation_service, data.strip(), pre_layers
+                    )
                     if not validation_result.passed:
                         validation_summary = f"{validation_result.total_issues} validation issue(s) found"
                         acc.add_issue(
