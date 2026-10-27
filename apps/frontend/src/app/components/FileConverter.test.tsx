@@ -811,6 +811,43 @@ describe('FileConverter Component', () => {
       clickSpy.mockRestore();
     });
 
+    it('TC-UX-CALM-006: post-convert TAC is read-only until Edit', async () => {
+      const user = userEvent.setup({ delay: null });
+      mockConvertMetarToIwxxm.mockResolvedValueOnce({
+        results: [
+          {
+            name: 'manual_input.txt',
+            content: '<iwxxm:METAR>ok</iwxxm:METAR>',
+            iwxxm_xml: '<iwxxm:METAR>ok</iwxxm:METAR>',
+            source: 'manual_input',
+            size_bytes: 30,
+          },
+        ],
+        errors: [],
+        issues: [],
+        total_processed: 1,
+        successful: 1,
+        failed: 0,
+      });
+
+      const { container } = render(<FileConverter {...defaultProps} />);
+      const textarea = container.querySelector('textarea') as HTMLTextAreaElement;
+      fireEvent.change(textarea, {
+        target: {
+          value: 'METAR KJFK 121251Z 24016G28KT 3SM -RA BR BKN020 OVC040 14/11 A2990=',
+        },
+      });
+      await user.click(screen.getByTestId('convert-button'));
+      await waitFor(() => {
+        expect(screen.getByTestId('convert-tac-readonly')).toBeInTheDocument();
+      });
+      expect(screen.getByTestId('convert-tac-edit')).toBeInTheDocument();
+      expect(textarea).toHaveAttribute('readOnly');
+      await user.click(screen.getByTestId('convert-tac-edit'));
+      expect(screen.getByTestId('convert-tac-editable')).toBeInTheDocument();
+      expect(textarea).not.toHaveAttribute('readOnly');
+    });
+
     it('keeps decode and live IWXXM in one row on a wide window', () => {
       const original = window.matchMedia;
       window.matchMedia = ((query: string) => ({

@@ -78,6 +78,13 @@ test.describe('UJ-088 — Calmer Convert + Help checklist', () => {
     await expect(page.getByTestId('convert-example-chips')).toBeVisible();
     await expect(page.getByTestId('convert-help-open')).toBeVisible();
 
+    // G4 — profile Change opens drawer; Apply dismisses (TC-UX-CALM-005 H4–H5).
+    await page.getByTestId('convert-profile-change').click();
+    await expect(page.getByTestId('convert-profile-drawer')).toBeVisible();
+    await page.getByTestId('convert-profile-apply').click();
+    // Opposite state: drawer visible before Apply.
+    await expect(page.getByTestId('convert-profile-drawer')).toHaveCount(0);
+
     await page.getByTestId('convert-help-open').click();
     await expect(page.getByTestId('convert-help-checklist')).toBeVisible();
     await expect(page.getByTestId('operator-help-link')).toBeVisible();
@@ -91,6 +98,16 @@ test.describe('UJ-088 — Calmer Convert + Help checklist', () => {
     // Opposite state: the checklist dialog is visible before the second Escape.
     await expect(page.getByTestId('convert-help-checklist')).toHaveCount(0);
 
+    // G5 — example chip loads TAC and dismisses empty hero.
+    const exampleChip = page
+      .getByTestId('convert-example-chips')
+      .getByRole('button', { name: 'METAR', exact: true });
+    await expect(exampleChip).toBeVisible();
+    await exampleChip.click();
+    await expect(page.getByTestId('convert-empty-hero')).toHaveCount(0);
+    const editor = page.getByLabel('Enter METAR data manually', { exact: true });
+    await expect(editor).not.toHaveValue('');
+
     await convertManualMetar(page, METAR_TAC);
 
     await expect(
@@ -102,6 +119,10 @@ test.describe('UJ-088 — Calmer Convert + Help checklist', () => {
     await expect(
       page.getByRole('button', { name: 'Download IWXXM', exact: true }),
     ).toBeVisible();
+    // G2 — TC-UX-CALM-006: TAC locked until Edit.
+    await expect(page.getByTestId('convert-tac-readonly')).toBeVisible();
     await expect(page.getByTestId('convert-tac-edit')).toBeVisible();
+    await page.getByTestId('convert-tac-edit').click();
+    await expect(page.getByTestId('convert-tac-editable')).toBeVisible();
   });
 });
