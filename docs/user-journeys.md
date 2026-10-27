@@ -116,6 +116,7 @@ describe monorepo workflows introduced by migration features M1–M6 and F6.
 | UJ-086 | Browse enriched Dissemination catalog rows | apps/frontend / API | F7.v / F16–F19 (EV-1317 / #1317) | T0; existing rule-catalogs route |
 | UJ-087 | Open the live weather map, zoom, and read a report | apps/frontend / API | F37 (EV-globe-live-map) | T0 / T2 / **T3** / H4–H5 |
 | UJ-088 | Calmer Convert empty → convert → download + Help checklist | apps/frontend | F7 deepen (EV-calmer-convert-tutorial-caribbean) | T0 / T2 / **T3** / H4–H5 |
+| UJ-089 | Convert declutter — results drawer + spine + Settings | apps/frontend | F7 deepen (EV-convert-declutter-drawer) | T0 / T2 / **T3** / H4–H5 |
 | UJ-076 | Five package-owned trust catalogs (tabbed) | apps/frontend / API | F7.v (ADR-044) | T0 / T2 / **T3** / H4–H5 |
 | UJ-076a | Convert four-engine light selects + Send-drawer dissem (#1251) | apps/frontend / API | F7 / F9 / F16–F19 (ADR-044; EV-yaml-config-light-ux) | T0 / T2 / **T3** / H4–H5 |
 | UJ-076b | Decode via `tac-decoding` parity | apps/frontend / API | F9 (ADR-044) | T0 / T2 / H4–H5 |
@@ -3048,8 +3049,25 @@ lint-issue-catalog filters.
 **Steps**:
 1. With empty TAC, Convert shows a centered empty hero (title + short subcopy), one input, drop/browse, primary **Convert & validate**, example chips (METAR / TAF / SIGMET / VAA), quiet other-task links, and a muted profile footer + Change.
 2. Paste or load an example. Live preview may show IWXXM / plain language / notes; schema/Schematron remain deferred until convert. Primary stays **Convert & validate**. Tertiary actions sit under ⋯.
-3. Convert & validate succeeds. Primary flips to **Download IWXXM**; **Send…** is secondary; a green validity strip lists decoded / schema / Schematron. TAC is read-only until Edit.
+3. Convert & validate succeeds. Primary flips to **Download IWXXM**; **Send…** is secondary. Validity / engine notes live in the results drawer **Console** tab (see UJ-089; no persistent validity strip). TAC is read-only until Edit.
 4. Profile Change opens a drawer (national presets first; step overrides and output options progressive). Apply is the drawer primary.
 5. Help (?) opens an in-app checklist (paste → optional example → Convert & validate → Download); dismissible and reopenable. Depth still links to the operator one-pager (UJ-054).
 
-**Pass**: TC-UX-CALM-001..010 green; H4–H5 Convert smoke. Must-not-break UJ-013, UJ-032, UJ-033, UJ-054, UJ-055. EV-048 clean on new copy.
+**Pass**: TC-UX-CALM-001..009 green; TC-UX-CALM-010 amended under declutter (no persistent validity strip). H4–H5 Convert smoke. Must-not-break UJ-013, UJ-032, UJ-033, UJ-054, UJ-055. EV-048 clean on new copy. Prefer UJ-089 for drawer/spine layout.
+
+### UJ-089: Convert declutter — results drawer + spine + Settings
+
+**Goal**: An operator converts TAC without seeing decode, map, console, and results all at once — secondary surfaces open from a bottom drawer; actions sit on a spine; settings behind a cog.
+
+**Feature**: F7 deepen (EV-convert-declutter-drawer). [Corpus: product §F7] [Corpus: tests] [Corpus: decisions]
+
+**Actors**: Guest (after terms/privacy). Sign-in optional.
+
+**Steps**:
+1. Open Convert. Default chrome: tiny upload above the editor, TAC editor, vertical spine (New TAC / Convert / Validate as applicable), Settings cog (tooltip “Settings”). Decode, map, console, and IWXXM results are not peer panels.
+2. Optionally open Settings for manual TAC / advanced / lint color preset (Default or Colorblind-safe). Confirm lint spans remain readable on dark theme.
+3. Paste or load TAC; Convert & validate. Results drawer opens on **IWXXM**. Switch tabs: Console · Decoder · Map · Downloads (download/zip only — no Disseminate here).
+4. Confirm Compare versions control is absent on Convert. Download from Downloads tab or primary Download CTA.
+5. Close drawer; reopen and switch tabs — only one panel visible at a time.
+
+**Pass**: TC-UX-DECLUTTER-001..008 green; H4–H5 Convert smoke. Must-not-break UJ-088 (calm CTAs/help), UJ-013, UJ-027–030 (Send drawer), UJ-087 (map data), UJ-032, UJ-033, UJ-054, UJ-055. EV-048 clean.

@@ -6846,7 +6846,22 @@ product → first-visit empty + Help checklist (UJ-088) — not offline PPTX.
 | TC-UX-CALM-007 | Tertiary actions under ⋯ (no third filled button) | T0 |
 | TC-UX-CALM-008 | Help checklist open / dismiss / reopen | T0 / T2 |
 | TC-UX-CALM-009 | New calm copy passes EV-048 / internalDocRefGuard | T0 |
-| TC-UX-CALM-010 | Validity strip only on success; empty hero only when TAC empty | T0 / T2 |
+| TC-UX-CALM-010 | *(Amended EV-convert-declutter-drawer)* Empty hero only when TAC empty; validity notes in Console tab — **no** persistent Convert validity strip | T0 / T2 |
+
+### TC-UX-DECLUTTER — Convert results drawer (UJ-089 / EV-convert-declutter-drawer)
+
+[Corpus: product §F7] [Corpus: journeys §UJ-089]
+
+| ID | Assert | Tier |
+|----|--------|------|
+| TC-UX-DECLUTTER-001 | Default Convert does not co-mount decode + map + console + IWXXM results as peer panels | T0 |
+| TC-UX-DECLUTTER-002 | Results drawer exposes tabs IWXXM · Console · Decoder · Map · Downloads; one panel at a time | T0 / T2 |
+| TC-UX-DECLUTTER-003 | Successful convert/validate auto-opens drawer on IWXXM | T0 / T2 |
+| TC-UX-DECLUTTER-004 | Downloads tab offers queue/zip download only (no Disseminate/Send entry) | T0 |
+| TC-UX-DECLUTTER-005 | Settings cog has accessible name/tooltip “Settings”; holds lint color preset + advanced/manual options | T0 |
+| TC-UX-DECLUTTER-006 | Primary Convert actions live on vertical spine (not a competing filled horizontal strip) | T0 |
+| TC-UX-DECLUTTER-007 | Convert surface has no Compare versions / `OutputVersionCompare` chrome | T0 |
+| TC-UX-DECLUTTER-008 | Lint span Default readable on dark; Colorblind-safe preset switches token set; EV-048 clean | T0 / T2 |
 
 ### TC-EV-beta — Beta UX + export/auth (EV-beta-ux-export-auth)
 

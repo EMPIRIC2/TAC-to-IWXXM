@@ -602,6 +602,20 @@
   4. TC-UX-CALM-001..010 + UJ-088 green (Vitest + H4–H5 smoke).
   5. Caribbean media table in test-plan: every PNG/XLSX on disk + map DOCX/JPEG addressed PASS
      (or explicit DEFERRED/WAIVE).
+- **EV-convert-declutter-drawer deepen (Convert results drawer + 20/80 chrome)**:
+  Progressive disclosure beyond Calmer Convert: default Convert shows editor + vertical spine
+  actions + tiny upload + Settings cog; IWXXM results, Console, Decoder, Map, and Downloads live
+  in a bottom results drawer (one tab at a time). Drop Compare versions on Convert. Lint span
+  colors use theme tokens with Default + Colorblind-safe presets. Post-convert validity strip
+  moves into Console (no persistent strip). Does **not** flip F7 → Implemented; no new Fn.
+  See `docs/decisions/ev-convert-declutter-drawer.md`.
+- **Acceptance (EV-convert-declutter-drawer — F7 declutter UX)**:
+  1. Default Convert does not co-display decode + map + console + results as peer panels.
+  2. Results drawer tabs: IWXXM · Console · Decoder · Map · Downloads (queue/zip only).
+  3. Successful convert auto-opens drawer on IWXXM; Settings cog holds advanced/manual/lint colors.
+  4. Convert Compare versions gone; History compare may remain.
+  5. Lint highlights readable on dark + Colorblind-safe preset; EV-048 clean.
+  6. TC-UX-DECLUTTER + UJ-089 green (Vitest + H4–H5); UJ-088 still green where not superseded.
 - **S063 / EV-054 deepen (F7.q / #836 — Quality metrics tab)**: Primary **app shell tab**
   (peer to Convert / History, not a panel inside the convert workbench) that browses the
   official WMO IWXXM example corpus by product/file type and surfaces **precomputed** match,
