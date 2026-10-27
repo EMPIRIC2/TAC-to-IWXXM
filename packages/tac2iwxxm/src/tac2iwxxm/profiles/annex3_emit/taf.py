@@ -258,10 +258,17 @@ def _taf_weather_block(fcst: dict[str, Any]) -> str:
     codes = fcst.get("weather")
     if not isinstance(codes, list) or not codes:
         return ""
+    # CA national forecast weather (e.g. IC) is emitted only via iwxxm-ca extension.
+    skip_national = bool(fcst.get("ca_forecast_weather_hrefs"))
     parts: list[str] = []
     for raw_code in cast(list[Any], codes):
-        href = escape(_WX_HREF.format(code=str(raw_code)))
+        token = str(raw_code)
+        if skip_national and token.upper() == "IC":
+            continue
+        href = escape(_WX_HREF.format(code=token))
         parts.append(f'      <iwxxm:weather xlink:href="{href}"/>')
+    if not parts:
+        return ""
     return "\n".join(parts) + "\n"
 
 
