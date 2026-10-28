@@ -78,6 +78,7 @@ test.describe('UJ-089 — Convert results drawer declutter', () => {
       'aria-label',
       'Settings',
     );
-    await expect(page.getByLabel(/Compare versions/i)).toHaveCount(0);
+    // Opposite state: Compare versions chrome used to render after convert (removed).
+    await expect(page.getByTestId('output-version-compare')).toHaveCount(0);
   });
 });

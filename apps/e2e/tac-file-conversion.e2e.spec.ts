@@ -151,6 +151,7 @@ test.describe('TAC File Conversion', () => {
     });
 
     await openConverterWithMockSession(page);
+    await page.getByTestId('convert-settings-cog').click();
     await page
       .getByLabel('Output filename for manually entered METAR downloads', {
         exact: true,
