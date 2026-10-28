@@ -151,13 +151,14 @@ test.describe('TAC File Conversion', () => {
     });
 
     await openConverterWithMockSession(page);
+    // Leave empty-hero so Settings (live-convert-stage) is visible.
+    await fillManualTac(page, 'METAR KJFK LINE ONE\nMETAR KDEN LINE TWO');
     await page.getByTestId('convert-settings-cog').click();
     await page
       .getByLabel('Output filename for manually entered METAR downloads', {
         exact: true,
       })
       .fill('report');
-    await fillManualTac(page, 'METAR KJFK LINE ONE\nMETAR KDEN LINE TWO');
     await page.getByTestId('convert-button').click();
 
     await expect(
