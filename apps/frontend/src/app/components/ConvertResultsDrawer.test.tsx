@@ -57,4 +57,24 @@ describe('ConvertResultsDrawer', () => {
     );
     expect(screen.getByTestId('convert-results-tabs')).not.toBeVisible();
   });
+
+  it('toggles open via Hide/Show control', async () => {
+    const user = userEvent.setup();
+    const onOpenChange = vi.fn();
+    render(
+      <ConvertResultsDrawer
+        open
+        onOpenChange={onOpenChange}
+        tab="iwxxm"
+        onTabChange={() => undefined}
+        iwxxm={<div>iwxxm-body</div>}
+        console={<div>console-body</div>}
+        decoder={<div>decoder-body</div>}
+        map={<div>map-body</div>}
+        downloads={<div>downloads-body</div>}
+      />,
+    );
+    await user.click(screen.getByTestId('convert-results-drawer-toggle'));
+    expect(onOpenChange).toHaveBeenCalledWith(false);
+  });
 });

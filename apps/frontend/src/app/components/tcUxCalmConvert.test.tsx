@@ -114,11 +114,22 @@ describe('TC-UX-CALM leaf components', () => {
     expect(onOpenChange).toHaveBeenCalledWith(false);
   });
 
-  it('TC-UX-CALM-010: validity strip is present for success', () => {
-    render(<ConvertValidityStrip notesCount={6} onNotesClick={() => undefined} />);
+  it('TC-UX-CALM-010: validity strip is present for success', async () => {
+    const user = userEvent.setup();
+    const onNotesClick = vi.fn();
+    render(<ConvertValidityStrip notesCount={6} onNotesClick={onNotesClick} />);
     expect(screen.getByTestId('convert-validity-strip')).toHaveTextContent(
       'Valid IWXXM bulletin, ready to send',
     );
+    await user.click(screen.getByRole('button', { name: '6 notes' }));
+    expect(onNotesClick).toHaveBeenCalled();
+  });
+
+  it('TC-UX-CALM-010: omits notes control without handler or zero notes', () => {
+    const { rerender } = render(<ConvertValidityStrip notesCount={3} />);
+    expect(screen.queryByRole('button', { name: /notes/i })).not.toBeInTheDocument();
+    rerender(<ConvertValidityStrip notesCount={0} onNotesClick={() => undefined} />);
+    expect(screen.queryByRole('button', { name: /notes/i })).not.toBeInTheDocument();
   });
 
   it('covers optional hero/drawer branches without other-task or reset', () => {

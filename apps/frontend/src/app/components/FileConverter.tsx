@@ -243,7 +243,6 @@ import { ConvertResultStatus } from './ConvertResultStatus';
 import { CalmConvertEmptyHero } from './CalmConvertEmptyHero';
 import { ConvertHelpChecklist } from './ConvertHelpChecklist';
 import { ConvertProfileDrawer } from './ConvertProfileDrawer';
-import { ConvertValidityStrip } from './ConvertValidityStrip';
 import { ErrorLogPanel, type ConversionLog } from './ErrorLogPanel';
 import { WorkHistorySidebar } from './WorkHistorySidebar';
 import type { WorkSession } from '@metar/shared';
@@ -2800,9 +2799,6 @@ export function FileConverter({
               <span className="sr-only">Autosave idle</span>
             )}
           </div>
-          {calmUi.showValidityStrip && latestAssessment ? (
-            <ConvertValidityStrip notesCount={latestAssessment.notes.length} />
-          ) : null}
           <div className="flex min-h-10 flex-wrap items-center gap-2 sm:gap-3">
             <Button
               type="button"

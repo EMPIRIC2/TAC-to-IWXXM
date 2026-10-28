@@ -2040,6 +2040,67 @@ describe('FileConverter Component', () => {
       expect(screen.queryByLabelText(/Compare versions/i)).not.toBeInTheDocument();
     });
 
+    it('TC-UX-DECLUTTER: Settings lint preset + Downloads tab actions', async () => {
+      const user = userEvent.setup({ delay: null });
+      mockConvertMetarToIwxxm
+        .mockResolvedValueOnce({
+          results: [
+            {
+              name: 'a.txt',
+              content: '<a/>',
+              source: 'manual_input',
+              tac_input: 'METAR A=',
+            },
+            {
+              name: 'b.txt',
+              content: '<b/>',
+              source: 'manual_input',
+              tac_input: 'METAR B=',
+            },
+          ],
+        })
+        .mockResolvedValueOnce({
+          results: [
+            {
+              name: 'a.txt',
+              content: '<a/>',
+              source: 'manual_input',
+              tac_input: 'METAR A=',
+            },
+            {
+              name: 'b.txt',
+              content: '<b/>',
+              source: 'manual_input',
+              tac_input: 'METAR B=',
+            },
+          ],
+        });
+      const { container } = render(<FileConverter {...defaultProps} />);
+      await user.selectOptions(
+        screen.getByTestId('lint-highlight-preset-select'),
+        'colorblind',
+      );
+      expect(screen.getByTestId('lint-highlight-preset-select')).toHaveValue(
+        'colorblind',
+      );
+      const textarea = container.querySelector('textarea') as HTMLTextAreaElement;
+      fireEvent.change(textarea, {
+        target: { value: 'METAR A=\nMETAR B=' },
+      });
+      await user.click(screen.getByTestId('convert-button'));
+      await waitFor(() => {
+        expect(screen.getByTestId('convert-results-drawer')).toHaveAttribute(
+          'data-open',
+          'true',
+        );
+      });
+      await user.click(screen.getByTestId('convert-results-tab-downloads'));
+      const downloadItems = await screen.findAllByTestId(/convert-download-item-/);
+      expect(downloadItems.length).toBeGreaterThan(0);
+      await user.click(downloadItems[0] as HTMLElement);
+      await user.click(screen.getByTestId('convert-downloads-zip'));
+    });
+
     it('TC-UX-DECLUTTER-007: session output_versions do not restore Compare versions UI', async () => {
       const session = {
         id: 'versions-1',

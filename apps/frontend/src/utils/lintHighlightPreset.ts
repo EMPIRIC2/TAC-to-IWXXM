@@ -59,14 +59,31 @@ export function lintHighlightTokens(preset: LintHighlightPreset): LintHighlightT
 }
 
 /**
+ * Whether a browser `window` is available (SSR-safe).
+ *
+ * @param g - Global-like object to inspect
+ * @returns True when `window` is defined
+ * @example
+ * const _ = true;
+ */
+export function isBrowserEnv(
+  g: { window?: unknown } = globalThis as { window?: unknown },
+): boolean {
+  return typeof g.window !== 'undefined';
+}
+
+/**
  * Read a stored preset from localStorage.
  *
+ * @param browser - Override browser detection (tests)
  * @returns Preset id
  * @example
  * const _ = true;
  */
-export function readLintHighlightPreset(): LintHighlightPreset {
-  if (typeof window === 'undefined') {
+export function readLintHighlightPreset(
+  browser: boolean = isBrowserEnv(),
+): LintHighlightPreset {
+  if (!browser) {
     return 'default';
   }
   try {
@@ -84,11 +101,15 @@ export function readLintHighlightPreset(): LintHighlightPreset {
  * Persist a lint highlight preset.
  *
  * @param preset - Preset to store
+ * @param browser - Override browser detection (tests)
  * @example
  * const _ = true;
  */
-export function writeLintHighlightPreset(preset: LintHighlightPreset): void {
-  if (typeof window === 'undefined') {
+export function writeLintHighlightPreset(
+  preset: LintHighlightPreset,
+  browser: boolean = isBrowserEnv(),
+): void {
+  if (!browser) {
     return;
   }
   try {
