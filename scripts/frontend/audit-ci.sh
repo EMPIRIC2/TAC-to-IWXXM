@@ -68,6 +68,13 @@ IGNORE_GHSA=(
   "GHSA-xhq7-xmqj-769h"
   "GHSA-xjj6-f33q-929c"
   "GHSA-xp26-3454-mjgp"
+  # Newly published transitive ids (2026-10-27) — undici via jsdom, fast-uri via
+  # stryker, vite; same waiver class as EV-097 / 2026-10-24 undici+vite pins.
+  "GHSA-2m5v-pch6-74hx"
+  "GHSA-4w7w-5xrc-9h26"
+  "GHSA-55wc-3pg8-jfw6"
+  "GHSA-9fm3-97px-rjf6"
+  "GHSA-qrxm-fqhp-jwvm"
 )
 GHSAS=()
 while IFS= read -r id; do
