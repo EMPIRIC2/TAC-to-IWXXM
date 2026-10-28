@@ -69,7 +69,8 @@ export function deriveCalmConvertUi(input: CalmConvertInputs): CalmConvertUi {
       phase: 'postSuccess',
       primaryKind: 'download',
       showEmptyHero: false,
-      showValidityStrip: true,
+      // Validity notes live in the results Console tab (UJ-089).
+      showValidityStrip: false,
       hideAdvancedSetup: false,
     };
   }

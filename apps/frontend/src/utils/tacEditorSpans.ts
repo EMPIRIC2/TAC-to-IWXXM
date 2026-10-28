@@ -172,16 +172,16 @@ export function tacSpanExtensions(): Extension[] {
     hoverTooltip(spanTooltip, { hoverTime: 200 }),
     EditorView.baseTheme({
       '.cm-tac-issue': {
-        backgroundColor: 'rgba(251, 191, 36, 0.35)',
-        borderBottom: '2px wavy #d97706',
+        backgroundColor: 'var(--tac-lint-issue-bg, rgba(251, 191, 36, 0.45))',
+        borderBottom: '2px wavy var(--tac-lint-issue-border, #f59e0b)',
       },
       '.cm-tac-issue-info': {
-        backgroundColor: 'rgba(56, 189, 248, 0.28)',
-        borderBottom: '2px wavy #0284c7',
+        backgroundColor: 'var(--tac-lint-info-bg, rgba(249, 115, 22, 0.35))',
+        borderBottom: '2px wavy var(--tac-lint-info-border, #ea580c)',
       },
       '.cm-tac-selected': {
-        backgroundColor: 'rgba(14, 165, 233, 0.35)',
-        borderBottom: '3px solid #0f172a',
+        backgroundColor: 'var(--tac-lint-selected-bg, rgba(234, 179, 8, 0.5))',
+        borderBottom: '3px solid var(--tac-lint-selected-border, #ca8a04)',
         fontWeight: '600',
       },
       '.cm-tac-issue-tooltip': {

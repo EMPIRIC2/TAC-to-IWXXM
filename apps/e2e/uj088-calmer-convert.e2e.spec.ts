@@ -66,7 +66,7 @@ async function stubCalmConvertApis(page: Page): Promise<void> {
 }
 
 test.describe('UJ-088 — Calmer Convert + Help checklist', () => {
-  test('empty hero, Help checklist, convert → Download + validity strip', async ({
+  test('empty hero, Help checklist, convert → Download + results drawer', async ({
     page,
   }) => {
     await stubCalmConvertApis(page);
@@ -115,7 +115,8 @@ test.describe('UJ-088 — Calmer Convert + Help checklist', () => {
     ).toBeVisible({ timeout: 15_000 });
     // Opposite state: the empty hero is visible before convert fills TAC.
     await expect(page.getByTestId('convert-empty-hero')).toHaveCount(0);
-    await expect(page.getByTestId('convert-validity-strip')).toBeVisible();
+    await expect(page.getByTestId('convert-results-drawer')).toBeVisible();
+    await expect(page.getByTestId('convert-results-tab-iwxxm')).toBeVisible();
     await expect(
       page.getByRole('button', { name: 'Download IWXXM', exact: true }),
     ).toBeVisible();
