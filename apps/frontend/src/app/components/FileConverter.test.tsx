@@ -734,21 +734,21 @@ describe('FileConverter Component', () => {
       await user.click(
         screen.getByRole('button', { name: 'Convert a full bulletin (AHL)' }),
       );
-      expect(screen.getByTestId('input-mode-ahl_bulletin')).toHaveClass('bg-blue-600');
+      expect(screen.getByTestId('input-mode-ahl_bulletin')).toHaveClass('bg-blue-700');
       await user.click(screen.getByTestId('input-mode-tac'));
       await waitFor(() => {
         expect(screen.getByTestId('convert-empty-hero')).toBeInTheDocument();
       });
       await user.click(screen.getByRole('button', { name: 'Validate existing IWXXM' }));
       expect(screen.getByTestId('input-mode-validate_iwxxm')).toHaveClass(
-        'bg-blue-600',
+        'bg-blue-700',
       );
       await user.click(screen.getByTestId('input-mode-tac'));
       await waitFor(() => {
         expect(screen.getByTestId('convert-empty-hero')).toBeInTheDocument();
       });
       await user.click(screen.getByRole('button', { name: 'Build a COLLECT bundle' }));
-      expect(screen.getByTestId('input-mode-collect_iwxxm')).toHaveClass('bg-blue-600');
+      expect(screen.getByTestId('input-mode-collect_iwxxm')).toHaveClass('bg-blue-700');
     });
 
     it('TC-UX-CALM-003: empty TAC hides advanced convert-setup chrome', () => {
@@ -915,7 +915,11 @@ describe('FileConverter Component', () => {
         screen.getByTestId('decode-panel-mock'),
       );
       expect(screen.getByTestId('iwxxm-preview-pane')).toBeInTheDocument();
-      expect(screen.queryAllByRole('separator')).toHaveLength(0);
+      expect(screen.getByTestId('converter-vertical-resize')).toBeInTheDocument();
+      expect(screen.getByTestId('iwxxm-vertical-resize')).toBeInTheDocument();
+      expect(
+        screen.getAllByRole('separator', { name: /Resize (converter|IWXXM)/ }),
+      ).toHaveLength(2);
     });
 
     it('shows Sign in for guests and guest loss notice when local work exists', async () => {
@@ -1371,6 +1375,8 @@ describe('FileConverter Component', () => {
           await vi.advanceTimersByTimeAsync(350);
           await Promise.resolve();
         });
+        // Status strip lives in Results → Console (force-mounted; not under converter).
+        fireEvent.click(screen.getByTestId('convert-results-tab-console'));
         expect(screen.getByTestId('convert-status-strip')).toHaveTextContent(
           'Report: entered in the text area below',
         );
@@ -1967,7 +1973,7 @@ describe('FileConverter Component', () => {
         screen.queryByRole('tab', { name: 'Decode visuals' }),
       ).not.toBeInTheDocument();
       expect(screen.getByTestId('convert-setup').className).toContain(
-        'xl:max-h-[18rem]',
+        'xl:max-h-[14rem]',
       );
       expect(screen.getByTestId('country-preset')).toBeInTheDocument();
       screen.getByTestId('convert-advanced-engines').setAttribute('open', '');
@@ -3997,7 +4003,7 @@ describe('FileConverter Component', () => {
 
       await selectGoldenExample(/AHL METAR multi-report/i);
 
-      expect(screen.getByTestId('input-mode-ahl_bulletin')).toHaveClass('bg-blue-600');
+      expect(screen.getByTestId('input-mode-ahl_bulletin')).toHaveClass('bg-blue-700');
       const editor = screen.getByTestId('tac-editor') as HTMLTextAreaElement;
       expect(editor.value).toMatch(/SAUS31/);
       expect(editor.value).toContain('METAR KJFK');
@@ -4028,7 +4034,7 @@ describe('FileConverter Component', () => {
 
       await selectGoldenExample(/IWXXM Collect METAR NIL/i);
 
-      expect(screen.getByTestId('input-mode-collect_iwxxm')).toHaveClass('bg-blue-600');
+      expect(screen.getByTestId('input-mode-collect_iwxxm')).toHaveClass('bg-blue-700');
       const editor = screen.getByTestId('tac-editor') as HTMLTextAreaElement;
       expect(editor.value).toMatch(/MeteorologicalBulletin|iwxxm|METAR/i);
     });
@@ -4083,7 +4089,7 @@ describe('FileConverter Component', () => {
       await selectGoldenExample(/AHL METAR multi-report/i);
 
       expect(screen.getByTestId('product-type-select')).toHaveValue('METAR');
-      expect(screen.getByTestId('input-mode-ahl_bulletin')).toHaveClass('bg-blue-600');
+      expect(screen.getByTestId('input-mode-ahl_bulletin')).toHaveClass('bg-blue-700');
     });
 
     it('clears the demo banner when Clear is clicked', async () => {
@@ -4457,7 +4463,7 @@ describe('FileConverter Component', () => {
       });
       await waitFor(() => {
         expect(screen.getByTestId('input-mode-ahl_bulletin')).toHaveClass(
-          'bg-blue-600',
+          'bg-blue-700',
         );
       });
       expect(mockToast.info).toHaveBeenCalledWith(
@@ -4485,7 +4491,7 @@ describe('FileConverter Component', () => {
       });
       await waitFor(() => {
         expect(screen.getByTestId('input-mode-collect_iwxxm')).toHaveClass(
-          'bg-blue-600',
+          'bg-blue-700',
         );
       });
       expect(mockToast.info).toHaveBeenCalledWith(
@@ -4667,7 +4673,7 @@ describe('FileConverter Component', () => {
       expect(mockToast.info).toHaveBeenCalledWith(
         'Detected an AHL bulletin. Switched input mode.',
       );
-      expect(screen.getByTestId('input-mode-ahl_bulletin')).toHaveClass('bg-blue-600');
+      expect(screen.getByTestId('input-mode-ahl_bulletin')).toHaveClass('bg-blue-700');
     });
 
     it('shows the COLLECT placeholder notice for an auto-detected pasted bulletin', async () => {
@@ -4864,7 +4870,7 @@ describe('FileConverter Component', () => {
         expect(screen.getByText('bulletin.TAC')).toBeInTheDocument();
       });
       expect(mockToast.info).toHaveBeenCalledWith('Decompressed bulletin.TAC.GZ');
-      expect(screen.getByTestId('input-mode-ahl_bulletin')).toHaveClass('bg-blue-600');
+      expect(screen.getByTestId('input-mode-ahl_bulletin')).toHaveClass('bg-blue-700');
     });
 
     it('reports a gzip inflate error without adding a pending file', async () => {
@@ -5270,7 +5276,7 @@ describe('FileConverter Component', () => {
       await waitFor(() => {
         expect(mockToast.info).toHaveBeenCalledWith('Switched to TAC report mode');
       });
-      expect(screen.getByTestId('input-mode-tac')).toHaveClass('bg-blue-600');
+      expect(screen.getByTestId('input-mode-tac')).toHaveClass('bg-blue-700');
     });
 
     it('sets webkitdirectory on the mass-ingest folder input', () => {
