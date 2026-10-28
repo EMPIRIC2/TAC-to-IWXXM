@@ -32,6 +32,7 @@ import { StatusBanner } from './StatusBanner';
 import { WorkbenchConsole } from './WorkbenchConsole';
 import { ConvertResultsDrawer } from './ConvertResultsDrawer';
 import { ConvertSettingsCog } from './ConvertSettingsCog';
+import { VerticalResizeHandle } from './VerticalResizeHandle';
 import {
   defaultTabAfterConvert,
   shouldAutoOpenResultsDrawer,
@@ -786,6 +787,11 @@ export function FileConverter({
   const [tacLockedAfterConvert, setTacLockedAfterConvert] = useState(false);
   const [resultsDrawerOpen, setResultsDrawerOpen] = useState(true);
   const [resultsTab, setResultsTab] = useState<ConvertResultsTab>('iwxxm');
+  const [converterPaneHeight, setConverterPaneHeight] = useState(280);
+  const [iwxxmPaneHeight, setIwxxmPaneHeight] = useState(320);
+  const [lastUploadAction, setLastUploadAction] = useState<
+    'files' | 'folder' | 'zip' | null
+  >(null);
   const [lintHighlightPreset, setLintHighlightPreset] = useState<LintHighlightPreset>(
     () => readLintHighlightPreset(),
   );
@@ -3088,111 +3094,351 @@ export function FileConverter({
                   />
                 </CalmConvertEmptyHero>
               ) : null}
+              {/* Compact upload card sits above the convert box (UJ-089). */}
+              <Card
+                className={`mb-1 border-2 border-dashed p-2 shadow-none transition-colors ${
+                  isDragging
+                    ? 'border-blue-500 bg-blue-50 dark:border-blue-400 dark:bg-blue-950'
+                    : 'border-gray-300 bg-white dark:border-gray-700 dark:bg-gray-800'
+                }`}
+                onDrop={handleDrop}
+                onDragOver={handleDragOver}
+                onDragLeave={handleDragLeave}
+                role="button"
+                aria-label={
+                  inputMode === 'validate_iwxxm'
+                    ? 'XML file drop zone - Drop one XML file or click to select it'
+                    : 'File drop zone - Drop files here or click to select files'
+                }
+                tabIndex={0}
+                data-testid="compact-file-drop-zone"
+                onKeyDown={(e) => {
+                  if (isDropZoneActivateKey(e.key)) {
+                    e.preventDefault();
+                    fileInputRef.current?.click();
+                  }
+                }}
+              >
+                <div className="flex flex-col items-stretch gap-2 sm:flex-row sm:items-center sm:justify-between">
+                  <div className="flex min-w-0 items-center gap-2">
+                    <Upload
+                      className="h-4 w-4 shrink-0 text-gray-400 dark:text-gray-500"
+                      aria-hidden="true"
+                    />
+                    <div className="min-w-0 text-left">
+                      <p className="text-sm font-medium text-gray-900 dark:text-white">
+                        {inputMode === 'validate_iwxxm'
+                          ? VALIDATE_IWXXM_DROP_TITLE
+                          : 'Drop TAC files or select'}
+                      </p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400">
+                        {inputMode === 'validate_iwxxm'
+                          ? VALIDATE_IWXXM_DROP_HELP
+                          : 'Multiple files · Folder/Zip mass ingest (signed in) · .txt, .metar, .tac, .xml, .gz, .zip'}
+                      </p>
+                    </div>
+                  </div>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    multiple
+                    accept=".txt,.metar,.tac,.xml,.gz,text/plain,application/gzip,application/xml,text/xml"
+                    className="hidden"
+                    onChange={(e) => handleFileSelect(e.target.files)}
+                    aria-label={
+                      inputMode === 'validate_iwxxm'
+                        ? 'Select one XML file to validate'
+                        : 'Select TAC files to upload'
+                    }
+                  />
+                  <div className="flex flex-wrap items-center gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setLastUploadAction('files');
+                        fileInputRef.current?.click();
+                      }}
+                      disabled={isBusy || isReadOnly}
+                      data-selected={lastUploadAction === 'files' ? 'true' : 'false'}
+                      className={`shrink-0 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
+                        lastUploadAction === 'files'
+                          ? 'border-blue-500 bg-blue-100 text-blue-950 hover:bg-blue-100 dark:border-blue-400 dark:bg-blue-950 dark:text-blue-50'
+                          : 'dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600'
+                      }`}
+                      aria-label="Browse and select files"
+                    >
+                      Select Files
+                    </Button>
+                    {inputMode !== 'validate_iwxxm' ? (
+                      <>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          data-testid="mass-ingest-folder-button"
+                          data-selected={
+                            lastUploadAction === 'folder' ? 'true' : 'false'
+                          }
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setLastUploadAction('folder');
+                            requestMassFolder();
+                          }}
+                          disabled={isBusy || isReadOnly}
+                          className={`shrink-0 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
+                            lastUploadAction === 'folder'
+                              ? 'border-blue-500 bg-blue-100 text-blue-950 hover:bg-blue-100 dark:border-blue-400 dark:bg-blue-950 dark:text-blue-50'
+                              : 'dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600'
+                          }`}
+                          aria-label="Mass ingest a folder of TAC files (sign-in required)"
+                          aria-busy={isMassIngesting}
+                        >
+                          <FolderOpen className="h-4 w-4" aria-hidden="true" />
+                          Folder
+                        </Button>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          data-testid="mass-ingest-zip-button"
+                          data-selected={lastUploadAction === 'zip' ? 'true' : 'false'}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setLastUploadAction('zip');
+                            requestMassZip();
+                          }}
+                          disabled={isBusy || isReadOnly}
+                          className={`shrink-0 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
+                            lastUploadAction === 'zip'
+                              ? 'border-blue-500 bg-blue-100 text-blue-950 hover:bg-blue-100 dark:border-blue-400 dark:bg-blue-950 dark:text-blue-50'
+                              : 'dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600'
+                          }`}
+                          aria-label="Mass ingest a zip archive of TAC files (sign-in required)"
+                          aria-busy={isMassIngesting}
+                        >
+                          <Archive className="h-4 w-4" aria-hidden="true" />
+                          Zip
+                        </Button>
+                      </>
+                    ) : null}
+                  </div>
+                  <input
+                    ref={massFolderInputRef}
+                    type="file"
+                    multiple
+                    className="hidden"
+                    data-testid="mass-ingest-folder-input"
+                    onChange={(e) => {
+                      void handleMassIngest(e.target.files);
+                    }}
+                    aria-label="Select folder for mass ingest"
+                  />
+                  <input
+                    ref={massZipInputRef}
+                    type="file"
+                    accept=".zip,application/zip"
+                    className="hidden"
+                    data-testid="mass-ingest-zip-input"
+                    onChange={(e) => {
+                      void handleMassIngest(e.target.files);
+                    }}
+                    aria-label="Select zip archive for mass ingest"
+                  />
+                </div>
+              </Card>
               <div
-                className="flex flex-col"
+                className="flex flex-col gap-1"
                 data-testid="live-convert-stage"
                 hidden={showCalmEmptyHero}
               >
-                <div className="mb-3 flex flex-wrap items-center gap-2">
-                  <button
-                    type="button"
-                    data-testid="convert-panes-toggle"
-                    aria-expanded={converterOpen}
-                    className="inline-flex w-fit items-center rounded-full border border-gray-200 bg-white px-3 py-1.5 text-sm font-medium text-gray-800 shadow-sm hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100"
-                    onClick={() => setConverterOpen((open) => !open)}
+                <div
+                  className="rounded-lg border border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-900"
+                  data-testid="convert-shell"
+                >
+                  <div
+                    className="flex flex-col gap-1.5 border-b border-gray-200 px-2 py-1.5 dark:border-gray-700 lg:flex-row lg:items-center lg:justify-between"
+                    data-testid="convert-chrome-toolbar"
                   >
-                    {converterOpen ? 'Hide converter' : 'Show converter'}
-                  </button>
-                  <ConvertSettingsCog>
-                    {inputMode !== 'validate_iwxxm' ? (
-                      <>
-                        <div data-testid="output-filename-near-convert">
+                    <div className="flex min-w-0 flex-wrap items-center gap-1.5">
+                      <button
+                        type="button"
+                        data-testid="convert-panes-toggle"
+                        aria-expanded={converterOpen}
+                        className="inline-flex h-8 w-fit items-center rounded-md border border-gray-200 bg-white px-2.5 text-sm font-medium text-gray-800 shadow-sm hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100"
+                        onClick={() => setConverterOpen((open) => !open)}
+                      >
+                        {converterOpen ? 'Hide converter' : 'Show converter'}
+                      </button>
+                      <ConvertSettingsCog>
+                        {inputMode !== 'validate_iwxxm' ? (
+                          <>
+                            <div data-testid="output-filename-near-convert">
+                              <Label
+                                htmlFor="output-filename"
+                                className="mb-1 block text-sm font-medium text-gray-900 dark:text-white"
+                              >
+                                Output filename (optional)
+                              </Label>
+                              <Input
+                                id="output-filename"
+                                data-testid="output-filename-input"
+                                value={outputFilename}
+                                onChange={(e) => {
+                                  const value = e.target.value;
+                                  outputFilenameOwned.current = value.trim() !== '';
+                                  setOutputFilename(value);
+                                }}
+                                readOnly={isReadOnly}
+                                placeholder="manual_input"
+                                className="text-sm dark:border-gray-700 dark:bg-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500"
+                                aria-label="Output filename for manually entered METAR downloads"
+                              />
+                              <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                                Saves as{' '}
+                                <code data-testid="output-filename-preview">
+                                  {sanitizeOutputFilename(outputFilename)}.xml
+                                </code>
+                                .
+                              </p>
+                            </div>
+                            <SoftPreviewControl
+                              checked={softPreview}
+                              onChange={setSoftPreview}
+                              disabled={isReadOnly || isBusy}
+                            />
+                            <PropagateResidualsControl
+                              checked={propagateResiduals}
+                              onChange={setPropagateResiduals}
+                              disabled={isReadOnly || isBusy}
+                            />
+                            <LiveIwxxmToggle
+                              checked={liveIwxxm}
+                              onChange={setLiveIwxxm}
+                              disabled={isReadOnly || isBusy}
+                            />
+                            <div
+                              className="flex flex-wrap items-center gap-3"
+                              data-testid="convert-layout-controls"
+                            >
+                              <div
+                                className="flex rounded-md bg-gray-100 p-0.5 dark:bg-gray-800"
+                                role="group"
+                                aria-label="Decode density"
+                              >
+                                <button
+                                  type="button"
+                                  aria-pressed={liveLayout.density === 'detailed'}
+                                  className={`rounded px-2 py-1 text-xs font-medium ${
+                                    liveLayout.density === 'detailed'
+                                      ? 'bg-gray-300 text-gray-950 dark:bg-gray-600 dark:text-white'
+                                      : 'text-gray-900 dark:text-gray-100'
+                                  }`}
+                                  onClick={() =>
+                                    updateLiveLayout({ density: 'detailed' })
+                                  }
+                                >
+                                  Detailed
+                                </button>
+                                <button
+                                  type="button"
+                                  aria-pressed={liveLayout.density === 'compact'}
+                                  className={`rounded px-2 py-1 text-xs font-medium ${
+                                    liveLayout.density === 'compact'
+                                      ? 'bg-gray-300 text-gray-950 dark:bg-gray-600 dark:text-white'
+                                      : 'text-gray-900 dark:text-gray-100'
+                                  }`}
+                                  onClick={() =>
+                                    updateLiveLayout({ density: 'compact' })
+                                  }
+                                >
+                                  Compact
+                                </button>
+                              </div>
+                              <div
+                                className="flex rounded-md bg-gray-100 p-0.5 dark:bg-gray-800"
+                                role="group"
+                                aria-label="Convert layout"
+                              >
+                                <button
+                                  type="button"
+                                  aria-pressed={liveLayout.span === 'roomy'}
+                                  className={`rounded px-2 py-1 text-xs font-medium ${
+                                    liveLayout.span === 'roomy'
+                                      ? 'bg-gray-300 text-gray-950 dark:bg-gray-600 dark:text-white'
+                                      : 'text-gray-900 dark:text-gray-100'
+                                  }`}
+                                  onClick={() => updateLiveLayout({ span: 'roomy' })}
+                                >
+                                  Roomier
+                                </button>
+                                <button
+                                  type="button"
+                                  aria-pressed={liveLayout.span === 'tight'}
+                                  className={`rounded px-2 py-1 text-xs font-medium ${
+                                    liveLayout.span === 'tight'
+                                      ? 'bg-gray-300 text-gray-950 dark:bg-gray-600 dark:text-white'
+                                      : 'text-gray-900 dark:text-gray-100'
+                                  }`}
+                                  onClick={() => updateLiveLayout({ span: 'tight' })}
+                                >
+                                  Tighter
+                                </button>
+                              </div>
+                              <label className="flex items-center gap-2 text-xs text-gray-800 dark:text-gray-200">
+                                <input
+                                  type="checkbox"
+                                  data-testid="wrap-xml-lines"
+                                  checked={liveLayout.wrapXml}
+                                  onChange={(event) =>
+                                    updateLiveLayout({
+                                      wrapXml: event.target.checked,
+                                    })
+                                  }
+                                />
+                                Wrap XML lines
+                              </label>
+                            </div>
+                          </>
+                        ) : null}
+                        <div data-testid="lint-highlight-preset">
                           <Label
-                            htmlFor="output-filename"
+                            htmlFor="lint-highlight-preset"
                             className="mb-1 block text-sm font-medium text-gray-900 dark:text-white"
                           >
-                            Output filename (optional)
+                            Lint highlight colors
                           </Label>
-                          <Input
-                            id="output-filename"
-                            data-testid="output-filename-input"
-                            value={outputFilename}
-                            onChange={(e) => {
-                              const value = e.target.value;
-                              outputFilenameOwned.current = value.trim() !== '';
-                              setOutputFilename(value);
-                            }}
-                            readOnly={isReadOnly}
-                            placeholder="manual_input"
-                            className="text-sm dark:border-gray-700 dark:bg-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500"
-                            aria-label="Output filename for manually entered METAR downloads"
-                          />
-                          <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                            Saves as{' '}
-                            <code data-testid="output-filename-preview">
-                              {sanitizeOutputFilename(outputFilename)}.xml
-                            </code>
-                            .
-                          </p>
+                          <select
+                            id="lint-highlight-preset"
+                            data-testid="lint-highlight-preset-select"
+                            className="w-full rounded-md border border-gray-300 bg-white px-2 py-1.5 text-sm dark:border-gray-600 dark:bg-gray-800 dark:text-white"
+                            value={lintHighlightPreset}
+                            onChange={(event) =>
+                              setLintHighlightPreset(
+                                event.target.value as LintHighlightPreset,
+                              )
+                            }
+                          >
+                            <option value="default">Default</option>
+                            <option value="colorblind">Colorblind-safe</option>
+                          </select>
                         </div>
-                        <SoftPreviewControl
-                          checked={softPreview}
-                          onChange={setSoftPreview}
-                          disabled={isReadOnly || isBusy}
-                        />
-                        <PropagateResidualsControl
-                          checked={propagateResiduals}
-                          onChange={setPropagateResiduals}
-                          disabled={isReadOnly || isBusy}
-                        />
-                        <LiveIwxxmToggle
-                          checked={liveIwxxm}
-                          onChange={setLiveIwxxm}
-                          disabled={isReadOnly || isBusy}
-                        />
-                      </>
-                    ) : null}
-                    <div data-testid="lint-highlight-preset">
-                      <Label
-                        htmlFor="lint-highlight-preset"
-                        className="mb-1 block text-sm font-medium text-gray-900 dark:text-white"
-                      >
-                        Lint highlight colors
-                      </Label>
-                      <select
-                        id="lint-highlight-preset"
-                        data-testid="lint-highlight-preset-select"
-                        className="w-full rounded-md border border-gray-300 bg-white px-2 py-1.5 text-sm dark:border-gray-600 dark:bg-gray-800 dark:text-white"
-                        value={lintHighlightPreset}
-                        onChange={(event) =>
-                          setLintHighlightPreset(
-                            event.target.value as LintHighlightPreset,
-                          )
-                        }
-                      >
-                        <option value="default">Default</option>
-                        <option value="colorblind">Colorblind-safe</option>
-                      </select>
+                      </ConvertSettingsCog>
+                      {converterOpen ? (
+                        <label
+                          htmlFor="manual-input"
+                          className="text-sm font-semibold text-gray-900 dark:text-white"
+                        >
+                          {inputMode === 'validate_iwxxm'
+                            ? 'Manual IWXXM Input'
+                            : 'Manual TAC Input'}
+                        </label>
+                      ) : null}
                     </div>
-                  </ConvertSettingsCog>
-                </div>
-                <div hidden={!converterOpen} data-testid="convert-body">
-                  <div
-                    className="mb-2 flex flex-col gap-2 xl:max-h-[18rem] xl:min-h-0 xl:shrink-0 xl:overflow-y-auto"
-                    data-testid="convert-setup"
-                    hidden={calmUi.hideAdvancedSetup}
-                  >
-                    <div className="flex flex-col gap-2 lg:flex-row lg:items-end lg:justify-between">
-                      <label
-                        htmlFor="manual-input"
-                        className="block text-base font-medium text-gray-900 dark:text-white"
-                      >
-                        {inputMode === 'validate_iwxxm'
-                          ? 'Manual IWXXM Input'
-                          : 'Manual TAC Input'}
-                      </label>
+                    {converterOpen ? (
                       <div
-                        className="flex min-w-0 max-w-full flex-col gap-2 lg:flex-row lg:flex-nowrap lg:items-center"
+                        className="flex min-w-0 max-w-full flex-col gap-1.5 lg:flex-row lg:flex-nowrap lg:items-center"
                         data-testid="input-mode-bar"
                       >
                         <div
@@ -3236,7 +3482,7 @@ export function FileConverter({
                               }}
                               className={`px-2 py-1 text-xs whitespace-nowrap ${
                                 inputMode === value
-                                  ? 'bg-blue-600 text-white'
+                                  ? 'bg-blue-700 text-white dark:bg-blue-600'
                                   : 'bg-white text-gray-700 dark:bg-gray-800 dark:text-gray-200'
                               }`}
                             >
@@ -3245,110 +3491,136 @@ export function FileConverter({
                           ))}
                         </div>
                       </div>
-                    </div>
-                    <div className="flex flex-col gap-1.5">
-                      <div
-                        className="flex min-w-0 flex-col gap-2 rounded-md border border-gray-300 bg-white px-2 py-2 dark:border-gray-600 dark:bg-gray-800 lg:flex-row lg:flex-wrap lg:items-center"
-                        data-testid="product-profile-bar"
-                      >
-                        <Label
-                          htmlFor="param-product"
-                          className="shrink-0 text-sm text-gray-700 dark:text-gray-300"
+                    ) : null}
+                  </div>
+                  <div
+                    hidden={!converterOpen}
+                    data-testid="convert-body"
+                    className="p-2"
+                  >
+                    <div
+                      className="mb-1.5 flex flex-col gap-1.5 xl:max-h-[14rem] xl:min-h-0 xl:shrink-0 xl:overflow-y-auto"
+                      data-testid="convert-setup"
+                      hidden={calmUi.hideAdvancedSetup}
+                    >
+                      <div className="flex flex-col gap-1.5">
+                        <div
+                          className="flex min-w-0 flex-col gap-1.5 rounded-md border border-gray-300 bg-white px-2 py-1.5 dark:border-gray-600 dark:bg-gray-800 lg:flex-row lg:flex-wrap lg:items-center"
+                          data-testid="product-profile-bar"
                         >
-                          Product type
-                        </Label>
-                        <select
-                          id="param-product"
-                          aria-label="Product"
-                          data-testid="product-type-select"
-                          value={conversionParams.product}
-                          disabled={isReadOnly}
-                          onChange={(e) =>
-                            setConversionParams((prev) => ({
-                              ...prev,
-                              product: e.target.value as TacProductSelection,
-                              reportVariant: '',
-                            }))
-                          }
-                          className="min-w-[9.5rem] shrink-0 rounded-md border border-gray-300 bg-white px-2 py-1.5 text-sm text-gray-900 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
-                        >
-                          <option value="auto">Auto-detect</option>
-                          <option value="AIRMET">AIRMET</option>
-                          <option value="METAR">METAR</option>
-                          <option value="SIGMET">SIGMET</option>
-                          <option value="SPECI">SPECI</option>
-                          <option value="TAF">TAF</option>
-                          <option value="VAA">VAA</option>
-                          <option value="TCA">TCA</option>
-                          <option value="SWXA">SWXA</option>
-                          <option value="VONA">VONA</option>
-                          <option value="IWXXM">IWXXM</option>
-                        </select>
-                        <div className="flex min-w-0 flex-wrap items-center gap-2">
-                          <span className="text-sm text-gray-600 dark:text-gray-400">
-                            Profile:{' '}
-                            <span className="font-medium text-gray-900 dark:text-gray-100">
-                              {calmProfileLabel}
-                            </span>
-                          </span>
-                          <button
-                            type="button"
-                            className="text-sm font-medium text-blue-700 underline-offset-2 hover:underline dark:text-blue-300"
-                            data-testid="convert-profile-change-live"
-                            onClick={() => setProfileDrawerOpen(true)}
+                          <Label
+                            htmlFor="param-product"
+                            className="shrink-0 text-sm text-gray-700 dark:text-gray-300"
                           >
-                            Change
-                          </button>
-                        </div>
-                        {inputMode !== 'validate_iwxxm' ? (
-                          <>
-                            <details
-                              className="order-2 w-full rounded-md border border-gray-200 bg-white px-2 py-1.5 dark:border-gray-700 dark:bg-gray-800"
-                              data-testid="convert-advanced-engines"
+                            Product type
+                          </Label>
+                          <select
+                            id="param-product"
+                            aria-label="Product"
+                            data-testid="product-type-select"
+                            value={conversionParams.product}
+                            disabled={isReadOnly}
+                            onChange={(e) =>
+                              setConversionParams((prev) => ({
+                                ...prev,
+                                product: e.target.value as TacProductSelection,
+                                reportVariant: '',
+                              }))
+                            }
+                            className="min-w-[9.5rem] shrink-0 rounded-md border border-gray-300 bg-white px-2 py-1.5 text-sm text-gray-900 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+                          >
+                            <option value="auto">Auto-detect</option>
+                            <option value="AIRMET">AIRMET</option>
+                            <option value="METAR">METAR</option>
+                            <option value="SIGMET">SIGMET</option>
+                            <option value="SPECI">SPECI</option>
+                            <option value="TAF">TAF</option>
+                            <option value="VAA">VAA</option>
+                            <option value="TCA">TCA</option>
+                            <option value="SWXA">SWXA</option>
+                            <option value="VONA">VONA</option>
+                            <option value="IWXXM">IWXXM</option>
+                          </select>
+                          <div className="flex min-w-0 flex-wrap items-center gap-2">
+                            <span className="text-sm text-gray-600 dark:text-gray-400">
+                              Profile:{' '}
+                              <span className="font-medium text-gray-900 dark:text-gray-100">
+                                {calmProfileLabel}
+                              </span>
+                            </span>
+                            <button
+                              type="button"
+                              className="text-sm font-medium text-blue-700 underline-offset-2 hover:underline dark:text-blue-300"
+                              data-testid="convert-profile-change-live"
+                              onClick={() => setProfileDrawerOpen(true)}
                             >
-                              <summary className="cursor-pointer select-none text-sm font-medium text-gray-700 dark:text-gray-200">
-                                Customize each step
-                              </summary>
-                              <div className="mt-2 space-y-2 border-t border-gray-100 pt-2 dark:border-gray-700">
-                                <LibraryPickersBar
-                                  disabled={isReadOnly}
-                                  values={{
-                                    conversionLibraryId:
-                                      conversionParams.conversionLibraryId,
-                                    tacValidationLibraryId:
-                                      conversionParams.tacValidationLibraryId,
-                                    iwxxmValidationLibraryId:
-                                      conversionParams.iwxxmValidationLibraryId,
-                                    disseminationLibraryId:
-                                      conversionParams.disseminationLibraryId,
-                                    decodingLibraryId:
-                                      conversionParams.decodingLibraryId,
-                                  }}
-                                  onOpenCatalog={onOpenCatalog}
-                                  onChange={(next, conversionEngineProfileId) => {
-                                    setConversionParams((prev) => {
-                                      if (!conversionEngineProfileId) {
-                                        return { ...prev, ...next };
-                                      }
-                                      const lineChanging = isSemanticProfileLineChange(
-                                        prev.profile,
-                                        conversionEngineProfileId,
-                                      );
-                                      if (lineChanging) {
-                                        if (
-                                          !confirmLibraryResetForProfile(
-                                            conversionEngineProfileId,
-                                          )
-                                        ) {
-                                          return prev;
+                              Change
+                            </button>
+                          </div>
+                          {inputMode !== 'validate_iwxxm' ? (
+                            <>
+                              <details
+                                className="order-2 w-full rounded-md border border-gray-200 bg-white px-2 py-1.5 dark:border-gray-700 dark:bg-gray-800"
+                                data-testid="convert-advanced-engines"
+                              >
+                                <summary className="cursor-pointer select-none text-sm font-medium text-gray-700 dark:text-gray-200">
+                                  Customize each step
+                                </summary>
+                                <div className="mt-2 space-y-2 border-t border-gray-100 pt-2 dark:border-gray-700">
+                                  <LibraryPickersBar
+                                    disabled={isReadOnly}
+                                    values={{
+                                      conversionLibraryId:
+                                        conversionParams.conversionLibraryId,
+                                      tacValidationLibraryId:
+                                        conversionParams.tacValidationLibraryId,
+                                      iwxxmValidationLibraryId:
+                                        conversionParams.iwxxmValidationLibraryId,
+                                      disseminationLibraryId:
+                                        conversionParams.disseminationLibraryId,
+                                      decodingLibraryId:
+                                        conversionParams.decodingLibraryId,
+                                    }}
+                                    onOpenCatalog={onOpenCatalog}
+                                    onChange={(next, conversionEngineProfileId) => {
+                                      setConversionParams((prev) => {
+                                        if (!conversionEngineProfileId) {
+                                          return { ...prev, ...next };
                                         }
-                                        const { profile, libraryIds } =
-                                          libraryResetForProfile(
+                                        const lineChanging =
+                                          isSemanticProfileLineChange(
+                                            prev.profile,
                                             conversionEngineProfileId,
                                           );
+                                        if (lineChanging) {
+                                          if (
+                                            !confirmLibraryResetForProfile(
+                                              conversionEngineProfileId,
+                                            )
+                                          ) {
+                                            return prev;
+                                          }
+                                          const { profile, libraryIds } =
+                                            libraryResetForProfile(
+                                              conversionEngineProfileId,
+                                            );
+                                          return {
+                                            ...prev,
+                                            ...libraryIds,
+                                            profile,
+                                            reportVariant: '',
+                                            iwxxmVersion: coerceIwxxmVersionForProfile(
+                                              profile,
+                                              prev.iwxxmVersion,
+                                            ),
+                                          };
+                                        }
+                                        const profile = coerceIwxxmProfile(
+                                          conversionEngineProfileId,
+                                        );
                                         return {
                                           ...prev,
-                                          ...libraryIds,
+                                          ...next,
                                           profile,
                                           reportVariant: '',
                                           iwxxmVersion: coerceIwxxmVersionForProfile(
@@ -3356,79 +3628,31 @@ export function FileConverter({
                                             prev.iwxxmVersion,
                                           ),
                                         };
-                                      }
-                                      const profile = coerceIwxxmProfile(
-                                        conversionEngineProfileId,
-                                      );
-                                      return {
-                                        ...prev,
-                                        ...next,
-                                        profile,
-                                        reportVariant: '',
-                                        iwxxmVersion: coerceIwxxmVersionForProfile(
-                                          profile,
-                                          prev.iwxxmVersion,
-                                        ),
-                                      };
-                                    });
-                                  }}
-                                />
-                                <div className="flex shrink-0 items-center gap-1">
-                                  <Button
-                                    type="button"
-                                    variant="ghost"
-                                    size="sm"
-                                    disabled={isReadOnly}
-                                    data-testid="reset-wmo-library-defaults"
-                                    className="text-xs text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800"
-                                    onClick={() => {
-                                      const sync = resetWmoLibraryDefaultsSync();
-                                      applyWmoLibraryDefaultsSync(sync);
+                                      });
                                     }}
-                                  >
-                                    {CONVERT_RESET_WMO_LIBRARY_DEFAULTS}
-                                  </Button>
-                                  <Tooltip>
-                                    <TooltipTrigger asChild>
-                                      <button
-                                        type="button"
-                                        className="inline-flex h-6 w-6 items-center justify-center rounded text-gray-500 hover:text-gray-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:text-gray-400 dark:hover:text-gray-100"
-                                        aria-label="About reset to WMO defaults"
-                                        data-testid="reset-wmo-library-defaults-help"
-                                      >
-                                        <CircleHelp
-                                          className="h-3.5 w-3.5"
-                                          aria-hidden
-                                        />
-                                      </button>
-                                    </TooltipTrigger>
-                                    <TooltipContent
-                                      side="bottom"
-                                      className="max-w-xs text-balance"
+                                  />
+                                  <div className="flex shrink-0 items-center gap-1">
+                                    <Button
+                                      type="button"
+                                      variant="ghost"
+                                      size="sm"
+                                      disabled={isReadOnly}
+                                      data-testid="reset-wmo-library-defaults"
+                                      className="text-xs text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800"
+                                      onClick={() => {
+                                        const sync = resetWmoLibraryDefaultsSync();
+                                        applyWmoLibraryDefaultsSync(sync);
+                                      }}
                                     >
-                                      {CONVERT_RESET_WMO_LIBRARY_DEFAULTS_HELP}
-                                    </TooltipContent>
-                                  </Tooltip>
-                                </div>
-                              </div>
-                            </details>
-                            {reportVariantOptions.length > 0 &&
-                              inputMode !== 'ahl_bulletin' && (
-                                <>
-                                  <div className="order-1 flex shrink-0 items-center gap-1">
-                                    <Label
-                                      htmlFor="param-report-variant"
-                                      className="shrink-0 text-sm text-gray-700 dark:text-gray-300"
-                                    >
-                                      Report variant
-                                    </Label>
+                                      {CONVERT_RESET_WMO_LIBRARY_DEFAULTS}
+                                    </Button>
                                     <Tooltip>
                                       <TooltipTrigger asChild>
                                         <button
                                           type="button"
                                           className="inline-flex h-6 w-6 items-center justify-center rounded text-gray-500 hover:text-gray-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:text-gray-400 dark:hover:text-gray-100"
-                                          aria-label="About Report variant"
-                                          data-testid="report-variant-help-icon"
+                                          aria-label="About reset to WMO defaults"
+                                          data-testid="reset-wmo-library-defaults-help"
                                         >
                                           <CircleHelp
                                             className="h-3.5 w-3.5"
@@ -3440,492 +3664,454 @@ export function FileConverter({
                                         side="bottom"
                                         className="max-w-xs text-balance"
                                       >
-                                        Optional profile-scoped IWXXM root inside the
-                                        selected product family. Leave on Auto-detect to
-                                        infer from the TAC lead.
+                                        {CONVERT_RESET_WMO_LIBRARY_DEFAULTS_HELP}
                                       </TooltipContent>
                                     </Tooltip>
                                   </div>
-                                  <select
-                                    id="param-report-variant"
-                                    aria-label="Report variant"
-                                    data-testid="report-variant-select"
-                                    value={activeReportVariant}
-                                    disabled={isReadOnly}
-                                    onChange={(e) => {
-                                      setConversionParams((prev) => ({
-                                        ...prev,
-                                        reportVariant: e.target.value,
-                                      }));
-                                    }}
-                                    className="order-1 min-w-[10rem] shrink-0 rounded-md border border-gray-300 bg-white px-2 py-1.5 text-sm text-gray-900 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
-                                  >
-                                    <option value="">Auto-detect from TAC</option>
-                                    {reportVariantOptions.map((variant) => (
-                                      <option
-                                        key={variant.tac_lead}
-                                        value={variant.tac_lead}
+                                </div>
+                              </details>
+                              {reportVariantOptions.length > 0 &&
+                                inputMode !== 'ahl_bulletin' && (
+                                  <>
+                                    <div className="order-1 flex shrink-0 items-center gap-1">
+                                      <Label
+                                        htmlFor="param-report-variant"
+                                        className="shrink-0 text-sm text-gray-700 dark:text-gray-300"
                                       >
-                                        {variant.tac_lead}
-                                        {variant.minimal_observation
-                                          ? ' (minimal)'
-                                          : ''}
-                                      </option>
-                                    ))}
-                                  </select>
-                                </>
-                              )}
+                                        Report variant
+                                      </Label>
+                                      <Tooltip>
+                                        <TooltipTrigger asChild>
+                                          <button
+                                            type="button"
+                                            className="inline-flex h-6 w-6 items-center justify-center rounded text-gray-500 hover:text-gray-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:text-gray-400 dark:hover:text-gray-100"
+                                            aria-label="About Report variant"
+                                            data-testid="report-variant-help-icon"
+                                          >
+                                            <CircleHelp
+                                              className="h-3.5 w-3.5"
+                                              aria-hidden
+                                            />
+                                          </button>
+                                        </TooltipTrigger>
+                                        <TooltipContent
+                                          side="bottom"
+                                          className="max-w-xs text-balance"
+                                        >
+                                          Optional profile-scoped IWXXM root inside the
+                                          selected product family. Leave on Auto-detect
+                                          to infer from the TAC lead.
+                                        </TooltipContent>
+                                      </Tooltip>
+                                    </div>
+                                    <select
+                                      id="param-report-variant"
+                                      aria-label="Report variant"
+                                      data-testid="report-variant-select"
+                                      value={activeReportVariant}
+                                      disabled={isReadOnly}
+                                      onChange={(e) => {
+                                        setConversionParams((prev) => ({
+                                          ...prev,
+                                          reportVariant: e.target.value,
+                                        }));
+                                      }}
+                                      className="order-1 min-w-[10rem] shrink-0 rounded-md border border-gray-300 bg-white px-2 py-1.5 text-sm text-gray-900 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+                                    >
+                                      <option value="">Auto-detect from TAC</option>
+                                      {reportVariantOptions.map((variant) => (
+                                        <option
+                                          key={variant.tac_lead}
+                                          value={variant.tac_lead}
+                                        >
+                                          {variant.tac_lead}
+                                          {variant.minimal_observation
+                                            ? ' (minimal)'
+                                            : ''}
+                                        </option>
+                                      ))}
+                                    </select>
+                                  </>
+                                )}
 
-                            <div className="order-1">
-                              <GoldenExamplesSelect
-                                applicableProducts={activeProfileExampleProducts}
-                                disabled={isReadOnly}
-                                semanticProfile={conversionParams.profile}
-                                onSelectExample={handleLoadGoldenExample}
-                                onOpenChange={(open) => {
-                                  if (open) {
-                                    setRecentWorkCollapsed(true);
-                                  }
-                                }}
-                              />
+                              <div className="order-1">
+                                <GoldenExamplesSelect
+                                  applicableProducts={activeProfileExampleProducts}
+                                  disabled={isReadOnly}
+                                  semanticProfile={conversionParams.profile}
+                                  onSelectExample={handleLoadGoldenExample}
+                                  onOpenChange={(open) => {
+                                    if (open) {
+                                      setRecentWorkCollapsed(true);
+                                    }
+                                  }}
+                                />
+                              </div>
+                            </>
+                          ) : null}
+                        </div>
+                        {inputMode !== 'validate_iwxxm' ? (
+                          <>
+                            <div className="flex flex-wrap items-center justify-end gap-2">
+                              <p
+                                id="product-profile-bar-summary"
+                                className="sr-only"
+                                data-testid="product-profile-bar-summary"
+                              >
+                                Encoding and packaging rules only. This does not set
+                                destinations, credentials, or editable overlays.
+                              </p>
+                              <details
+                                className="rounded-md border border-gray-200 bg-white px-2 py-1 text-xs text-gray-600 open:pb-2 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400"
+                                data-testid="product-profile-trust-details"
+                              >
+                                <summary className="cursor-pointer select-none font-medium text-gray-700 dark:text-gray-300">
+                                  What&apos;s this?
+                                </summary>
+                                <div className="mt-1.5 space-y-1.5 border-t border-gray-100 pt-1.5 dark:border-gray-700">
+                                  <p data-testid="semantic-profile-help">
+                                    Profile selects encoding rules for conversion. Does
+                                    not set destinations or credentials, and does not
+                                    make national overlays editable.
+                                  </p>
+                                  <p data-testid="exchange-profile-help">
+                                    Exchange profile is used when packaging bulletins.
+                                    Does not choose destinations or credentials.
+                                  </p>
+                                </div>
+                              </details>
                             </div>
+                            <div
+                              className="hidden flex-wrap items-center gap-2"
+                              aria-hidden="true"
+                              data-testid="country-preset"
+                            >
+                              <label
+                                className="flex items-center gap-2"
+                                htmlFor="country-preset-select"
+                              >
+                                <span className="text-xs font-medium text-gray-500">
+                                  {COUNTRY_PRESET_LABEL}
+                                </span>
+                                <select
+                                  id="country-preset-select"
+                                  data-testid="country-preset-select"
+                                  aria-label={COUNTRY_PRESET_LABEL}
+                                  title={COUNTRY_PRESET_HELP}
+                                  className="min-w-[10rem] rounded-md border border-gray-300 bg-white px-2 py-1.5 text-sm text-gray-900 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+                                  value={countryPresetLineForLibraries(
+                                    conversionParams,
+                                  )}
+                                  disabled={isReadOnly}
+                                  onChange={(event) => {
+                                    const line = event.target.value;
+                                    if (line === '') {
+                                      return;
+                                    }
+                                    const { profile, libraryIds } =
+                                      libraryResetForProfile(line);
+                                    setConversionParams((prev) => ({
+                                      ...prev,
+                                      ...libraryIds,
+                                      profile,
+                                      reportVariant: '',
+                                      iwxxmVersion: coerceIwxxmVersionForProfile(
+                                        profile,
+                                        prev.iwxxmVersion,
+                                      ),
+                                    }));
+                                  }}
+                                >
+                                  <option value="">{COUNTRY_PRESET_CUSTOM}</option>
+                                  {SEMANTIC_PROFILE_OPTIONS.filter((option) =>
+                                    (
+                                      COUNTRY_PRESET_LINES as readonly string[]
+                                    ).includes(option.value),
+                                  ).map((option) => (
+                                    <option key={option.value} value={option.value}>
+                                      {option.label}
+                                    </option>
+                                  ))}
+                                </select>
+                              </label>
+                              <p className="sr-only" data-testid="country-preset-help">
+                                {COUNTRY_PRESET_HELP}
+                              </p>
+                            </div>
+                            {isCaEcccProfile(conversionParams.profile) && (
+                              <div
+                                className="rounded border border-sky-200 bg-sky-50 px-2 py-1.5 text-xs text-sky-950 dark:border-sky-900 dark:bg-sky-950/40 dark:text-sky-100"
+                                data-testid="ca-eccc-profile-metadata"
+                                role="status"
+                              >
+                                <p>
+                                  IWXXM {CA_ECCC_IWXXM_VERSION} (MSC operational line)
+                                </p>
+                                <p>{CA_ECCC_EXTENSION_LABEL}</p>
+                                <p>
+                                  Supported products:{' '}
+                                  {CA_ECCC_SUPPORTED_PRODUCTS.join(', ')}
+                                </p>
+                                {caProfileBlocked && (
+                                  <p className="mt-1 font-medium text-amber-900 dark:text-amber-200">
+                                    Canadian extension schemas are not available on this
+                                    deployment. Conversion is blocked until the vendor
+                                    bundle is installed.
+                                  </p>
+                                )}
+                              </div>
+                            )}
                           </>
                         ) : null}
                       </div>
-                      {inputMode !== 'validate_iwxxm' ? (
-                        <>
-                          <div className="flex flex-wrap items-center justify-end gap-2">
-                            <p
-                              id="product-profile-bar-summary"
-                              className="sr-only"
-                              data-testid="product-profile-bar-summary"
-                            >
-                              Encoding and packaging rules only. This does not set
-                              destinations, credentials, or editable overlays.
-                            </p>
-                            <details
-                              className="rounded-md border border-gray-200 bg-white px-2 py-1 text-xs text-gray-600 open:pb-2 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400"
-                              data-testid="product-profile-trust-details"
-                            >
-                              <summary className="cursor-pointer select-none font-medium text-gray-700 dark:text-gray-300">
-                                What&apos;s this?
-                              </summary>
-                              <div className="mt-1.5 space-y-1.5 border-t border-gray-100 pt-1.5 dark:border-gray-700">
-                                <p data-testid="semantic-profile-help">
-                                  Profile selects encoding rules for conversion. Does
-                                  not set destinations or credentials, and does not make
-                                  national overlays editable.
-                                </p>
-                                <p data-testid="exchange-profile-help">
-                                  Exchange profile is used when packaging bulletins.
-                                  Does not choose destinations or credentials.
-                                </p>
-                              </div>
-                            </details>
-                          </div>
-                          <div
-                            className="hidden flex-wrap items-center gap-2"
-                            aria-hidden="true"
-                            data-testid="country-preset"
-                          >
-                            <label
-                              className="flex items-center gap-2"
-                              htmlFor="country-preset-select"
-                            >
-                              <span className="text-xs font-medium text-gray-500">
-                                {COUNTRY_PRESET_LABEL}
-                              </span>
-                              <select
-                                id="country-preset-select"
-                                data-testid="country-preset-select"
-                                aria-label={COUNTRY_PRESET_LABEL}
-                                title={COUNTRY_PRESET_HELP}
-                                className="min-w-[10rem] rounded-md border border-gray-300 bg-white px-2 py-1.5 text-sm text-gray-900 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
-                                value={countryPresetLineForLibraries(conversionParams)}
-                                disabled={isReadOnly}
-                                onChange={(event) => {
-                                  const line = event.target.value;
-                                  if (line === '') {
-                                    return;
-                                  }
-                                  const { profile, libraryIds } =
-                                    libraryResetForProfile(line);
-                                  setConversionParams((prev) => ({
-                                    ...prev,
-                                    ...libraryIds,
-                                    profile,
-                                    reportVariant: '',
-                                    iwxxmVersion: coerceIwxxmVersionForProfile(
-                                      profile,
-                                      prev.iwxxmVersion,
-                                    ),
-                                  }));
-                                }}
-                              >
-                                <option value="">{COUNTRY_PRESET_CUSTOM}</option>
-                                {SEMANTIC_PROFILE_OPTIONS.filter((option) =>
-                                  (COUNTRY_PRESET_LINES as readonly string[]).includes(
-                                    option.value,
-                                  ),
-                                ).map((option) => (
-                                  <option key={option.value} value={option.value}>
-                                    {option.label}
-                                  </option>
-                                ))}
-                              </select>
-                            </label>
-                            <p className="sr-only" data-testid="country-preset-help">
-                              {COUNTRY_PRESET_HELP}
-                            </p>
-                          </div>
-                          {isCaEcccProfile(conversionParams.profile) && (
-                            <div
-                              className="rounded border border-sky-200 bg-sky-50 px-2 py-1.5 text-xs text-sky-950 dark:border-sky-900 dark:bg-sky-950/40 dark:text-sky-100"
-                              data-testid="ca-eccc-profile-metadata"
-                              role="status"
-                            >
-                              <p>
-                                IWXXM {CA_ECCC_IWXXM_VERSION} (MSC operational line)
-                              </p>
-                              <p>{CA_ECCC_EXTENSION_LABEL}</p>
-                              <p>
-                                Supported products:{' '}
-                                {CA_ECCC_SUPPORTED_PRODUCTS.join(', ')}
-                              </p>
-                              {caProfileBlocked && (
-                                <p className="mt-1 font-medium text-amber-900 dark:text-amber-200">
-                                  Canadian extension schemas are not available on this
-                                  deployment. Conversion is blocked until the vendor
-                                  bundle is installed.
-                                </p>
-                              )}
-                            </div>
-                          )}
-                        </>
-                      ) : null}
                     </div>
-                  </div>
-                  {inputMode !== 'validate_iwxxm' && demoExampleLabel && (
-                    <StatusBanner
-                      tone="info"
-                      className="mb-2 text-xs"
-                      data-testid="demo-example-banner"
-                    >
-                      Demo / non-operational example: {demoExampleLabel}
-                    </StatusBanner>
-                  )}
-                  {inputMode === 'ahl_bulletin' && (
-                    <p className="mb-2 text-xs text-gray-600 dark:text-gray-400">
-                      AHL bulletins are split and converted via{' '}
-                      <code>POST /api/v1/convert-bulletin</code>.
-                    </p>
-                  )}
-                  {inputMode === 'collect_iwxxm' && (
-                    <p className="mb-2 text-xs text-amber-800 dark:text-amber-200">
-                      IWXXM COLLECT / FTBP path uses{' '}
-                      <code>POST /api/v1/ingest-collect</code> (not available yet; the
-                      request returns 501 until member extract ships).
-                    </p>
-                  )}
-                  {inputMode === 'validate_iwxxm' && (
-                    <p
-                      className="mb-2 text-xs text-gray-600 dark:text-gray-400"
-                      data-testid="validate-iwxxm-help"
-                    >
-                      Paste IWXXM XML or upload one <code>.xml</code> file. This checks
-                      the XML only. It does not convert TAC.
-                    </p>
-                  )}
-                  {conversionParams.product === 'IWXXM' &&
-                    inputMode !== 'validate_iwxxm' && (
-                      <p
-                        className="mb-2 text-xs text-gray-600 dark:text-gray-400"
-                        data-testid="iwxxm-product-help"
-                        role="status"
+                    {inputMode !== 'validate_iwxxm' && demoExampleLabel && (
+                      <StatusBanner
+                        tone="info"
+                        className="mb-2 text-xs"
+                        data-testid="demo-example-banner"
                       >
-                        {IWXXM_PRODUCT_HELP}
+                        Demo / non-operational example: {demoExampleLabel}
+                      </StatusBanner>
+                    )}
+                    {inputMode === 'ahl_bulletin' && (
+                      <p className="mb-2 text-xs text-gray-600 dark:text-gray-400">
+                        AHL bulletins are split and converted via{' '}
+                        <code>POST /api/v1/convert-bulletin</code>.
                       </p>
                     )}
-                  {bulletinSummary && (
-                    <StatusBanner
-                      tone="info"
-                      className="mb-2 text-xs"
-                      data-testid="bulletin-summary"
-                    >
-                      {bulletinSummary}
-                    </StatusBanner>
-                  )}
-                  {placeholderNotice && (
-                    <StatusBanner
-                      tone="caution"
-                      className="mb-2 text-xs"
-                      data-testid="placeholder-notice"
-                    >
-                      {placeholderNotice}
-                    </StatusBanner>
-                  )}
-                  {inputMode !== 'validate_iwxxm' ? (
-                    <FailedTacCue failedSpans={failedSpans} />
-                  ) : null}
-                  {bulletinReports.length >= 2 ? (
-                    <BulletinReportList
-                      reports={bulletinReports}
-                      selectedIndex={focusedBulletinReport}
-                      onShowAll={() => {
-                        setFocusedBulletinReport(null);
-                        setManualInput(bulletinSource || manualInput);
-                      }}
-                      onSelect={(index, tac) => {
-                        const source = bulletinSource || manualInput;
-                        setBulletinSource(source);
-                        setFocusedBulletinReport(index);
-                        setManualInput(tac);
-                        setSelectedTrace(null);
-                      }}
-                    />
-                  ) : null}
-                  {inputMode !== 'validate_iwxxm' ? (
-                    <LiveConvertStatusStrip
-                      hasTac={manualInput.trim().length > 0}
-                      decodeReady={decodeSegments.length > 0}
-                      decodeLoading={decodeLoading}
-                      previewState={
-                        !previewXml.trim()
-                          ? 'waiting'
-                          : previewIncomplete
-                            ? 'incomplete'
-                            : 'current'
-                      }
-                      lintStatus={tacLintLayerStatus({
-                        hasTac: manualInput.trim().length > 0,
-                        loading: decodeLoading,
-                        errorCount: lintCounts.errorCount,
-                        warningCount: lintCounts.warningCount,
-                        issueCount: lintCounts.issueCount,
-                      })}
-                      schemaStatus="not run"
-                      schematronStatus="not run"
-                    />
-                  ) : null}
-                  {inputMode !== 'validate_iwxxm' ? (
-                    <div className="mb-2 flex flex-wrap items-center gap-3">
-                      <div
-                        className="flex rounded-md bg-gray-100 p-0.5 dark:bg-gray-800"
-                        role="group"
-                        aria-label="Decode density"
+                    {inputMode === 'collect_iwxxm' && (
+                      <p className="mb-2 text-xs text-amber-800 dark:text-amber-200">
+                        IWXXM COLLECT / FTBP path uses{' '}
+                        <code>POST /api/v1/ingest-collect</code> (not available yet; the
+                        request returns 501 until member extract ships).
+                      </p>
+                    )}
+                    {inputMode === 'validate_iwxxm' && (
+                      <p
+                        className="mb-2 text-xs text-gray-600 dark:text-gray-400"
+                        data-testid="validate-iwxxm-help"
                       >
-                        <button
-                          type="button"
-                          aria-pressed={liveLayout.density === 'detailed'}
-                          className="rounded px-2 py-1 text-xs font-medium text-gray-900 dark:text-gray-100"
-                          onClick={() => updateLiveLayout({ density: 'detailed' })}
+                        Paste IWXXM XML or upload one <code>.xml</code> file. This
+                        checks the XML only. It does not convert TAC.
+                      </p>
+                    )}
+                    {conversionParams.product === 'IWXXM' &&
+                      inputMode !== 'validate_iwxxm' && (
+                        <p
+                          className="mb-2 text-xs text-gray-600 dark:text-gray-400"
+                          data-testid="iwxxm-product-help"
+                          role="status"
                         >
-                          Detailed
-                        </button>
-                        <button
-                          type="button"
-                          aria-pressed={liveLayout.density === 'compact'}
-                          className="rounded px-2 py-1 text-xs font-medium text-gray-900 dark:text-gray-100"
-                          onClick={() => updateLiveLayout({ density: 'compact' })}
-                        >
-                          Compact
-                        </button>
-                      </div>
-                      <div
-                        className="flex rounded-md bg-gray-100 p-0.5 dark:bg-gray-800"
-                        role="group"
-                        aria-label="Convert layout"
+                          {IWXXM_PRODUCT_HELP}
+                        </p>
+                      )}
+                    {bulletinSummary && (
+                      <StatusBanner
+                        tone="info"
+                        className="mb-2 text-xs"
+                        data-testid="bulletin-summary"
                       >
-                        <button
-                          type="button"
-                          aria-pressed={liveLayout.span === 'roomy'}
-                          className="rounded px-2 py-1 text-xs font-medium text-gray-900 dark:text-gray-100"
-                          onClick={() => updateLiveLayout({ span: 'roomy' })}
-                        >
-                          Roomier
-                        </button>
-                        <button
-                          type="button"
-                          aria-pressed={liveLayout.span === 'tight'}
-                          className="rounded px-2 py-1 text-xs font-medium text-gray-900 dark:text-gray-100"
-                          onClick={() => updateLiveLayout({ span: 'tight' })}
-                        >
-                          Tighter
-                        </button>
-                      </div>
-                      <label className="flex items-center gap-2 text-xs text-gray-800 dark:text-gray-200">
-                        <input
-                          type="checkbox"
-                          data-testid="wrap-xml-lines"
-                          checked={liveLayout.wrapXml}
-                          onChange={(event) =>
-                            updateLiveLayout({ wrapXml: event.target.checked })
-                          }
-                        />
-                        Wrap XML lines
-                      </label>
-                    </div>
-                  ) : null}
-                  <div data-testid="convert-panes-slot">
-                    <div
-                      className="flex min-h-0 min-w-0 flex-col overflow-auto"
-                      data-testid="live-convert-panes"
-                      data-fit={liveLayout.span === 'roomy' ? 'roomy' : 'tight'}
-                      role="region"
-                      aria-label={inputMode === 'validate_iwxxm' ? 'IWXXM' : 'TAC'}
-                      onFocusCapture={() => setRecentWorkCollapsed(true)}
-                      onKeyDown={(event) => {
-                        const issue = lintIssueFromKey(event, jumpIssues, lintJump);
-                        if (!issue) return;
-                        event.preventDefault();
-                        applyLintJump(issue);
-                      }}
-                    >
-                      <div className="mb-2 flex items-center justify-between gap-2">
-                        <h2 className="text-sm font-semibold text-gray-900 dark:text-white">
-                          {inputMode === 'validate_iwxxm' ? 'IWXXM' : 'TAC'}
-                        </h2>
-                        {calmTacReadOnly && !isReadOnly ? (
-                          <button
-                            type="button"
-                            className="text-sm font-medium text-blue-700 underline-offset-2 hover:underline dark:text-blue-300"
-                            data-testid="convert-tac-edit"
-                            onClick={() => setTacLockedAfterConvert(false)}
-                          >
-                            Edit
-                          </button>
-                        ) : null}
-                      </div>
-                      <div
-                        data-testid={
-                          calmTacReadOnly
-                            ? 'convert-tac-readonly'
-                            : 'convert-tac-editable'
-                        }
+                        {bulletinSummary}
+                      </StatusBanner>
+                    )}
+                    {placeholderNotice && (
+                      <StatusBanner
+                        tone="caution"
+                        className="mb-2 text-xs"
+                        data-testid="placeholder-notice"
                       >
-                        {!showCalmEmptyHero ? (
-                          <TacEditor
-                            id="manual-input"
-                            value={manualInput}
-                            onReportLoaded={applyLoadedReportName}
-                            onChange={(value) => {
-                              setManualInput(value);
-                              setSelectedTrace(null);
-                              setLintJump(null);
-                              setLintFocusOffset(null);
-                              if (inputMode !== 'ahl_bulletin') {
-                                return;
-                              }
-                              if (focusedBulletinReport === null) {
-                                setBulletinSource(value);
-                                return;
-                              }
-                              setBulletinSource((current) =>
-                                replaceBulletinReport(
-                                  current,
-                                  focusedBulletinReport,
-                                  value,
-                                ),
-                              );
-                            }}
-                            readOnly={calmTacReadOnly}
-                            placeholder={
-                              inputMode === 'validate_iwxxm'
-                                ? '<iwxxm:METAR>...</iwxxm:METAR>'
-                                : 'SPECI BGSF 282350Z 10RMF50MT 9999 SCT110 BKN130 0RN130 NN7/N11 Q1021'
-                            }
-                            aria-label={
-                              inputMode === 'validate_iwxxm'
-                                ? 'Enter IWXXM XML manually'
-                                : 'Enter METAR data manually'
-                            }
-                            className="max-h-80 min-h-44 focus-within:ring-2 focus-within:ring-blue-500"
-                            failedSpans={failedSpans}
-                            issueSpans={editorSpans}
-                            onSpanFix={applyLintFix}
-                            focusOffset={lintFocusOffset}
-                          />
-                        ) : null}
-                      </div>
-                      {inputMode !== 'validate_iwxxm' ? (
-                        <>
-                          {decodeSegments.length + decodeResiduals.length > 0 ? (
-                            <div className="mt-2" data-testid="tac-group-chips">
-                              <p className="mb-1 text-xs text-gray-500 dark:text-gray-400">
-                                Groups
-                              </p>
-                              <div
-                                className="flex gap-1 overflow-x-auto"
-                                aria-label="Recognised groups"
-                              >
-                                {decodeSegments.map((segment) => {
-                                  const selected =
-                                    selectedTrace?.start === segment.start &&
-                                    selectedTrace?.end === segment.end;
-                                  return (
-                                    <button
-                                      key={`chip-${segment.start}-${segment.end}-${segment.code}`}
-                                      type="button"
-                                      aria-pressed={selected}
-                                      className={`rounded px-2 py-0.5 font-mono text-xs ${
-                                        selected
-                                          ? 'bg-sky-200 text-sky-950 ring-1 ring-sky-800 dark:bg-sky-900 dark:text-sky-50'
-                                          : 'bg-gray-100 text-gray-900 dark:bg-gray-800 dark:text-gray-100'
-                                      }`}
-                                      onClick={() =>
-                                        setSelectedTrace({
-                                          start: segment.start,
-                                          end: segment.end,
-                                          code: segment.code,
-                                        })
-                                      }
-                                    >
-                                      {segment.code}
-                                    </button>
-                                  );
-                                })}
-                                {decodeResiduals.map((residual) => {
-                                  const selected =
-                                    selectedTrace?.start === residual.start &&
-                                    selectedTrace?.end === residual.end;
-                                  return (
-                                    <button
-                                      key={`chip-res-${residual.start}-${residual.end}`}
-                                      type="button"
-                                      aria-pressed={selected}
-                                      className={`rounded px-2 py-0.5 font-mono text-xs ${
-                                        selected
-                                          ? 'bg-sky-200 text-sky-950 ring-1 ring-sky-800'
-                                          : 'bg-amber-100 text-amber-950 dark:bg-amber-950 dark:text-amber-100'
-                                      }`}
-                                      onClick={() =>
-                                        setSelectedTrace({
-                                          start: residual.start,
-                                          end: residual.end,
-                                          code: residual.text,
-                                        })
-                                      }
-                                    >
-                                      Error {residual.text}
-                                    </button>
-                                  );
-                                })}
-                              </div>
-                            </div>
+                        {placeholderNotice}
+                      </StatusBanner>
+                    )}
+                    {inputMode !== 'validate_iwxxm' ? (
+                      <FailedTacCue failedSpans={failedSpans} />
+                    ) : null}
+                    {bulletinReports.length >= 2 ? (
+                      <BulletinReportList
+                        reports={bulletinReports}
+                        selectedIndex={focusedBulletinReport}
+                        onShowAll={() => {
+                          setFocusedBulletinReport(null);
+                          setManualInput(bulletinSource || manualInput);
+                        }}
+                        onSelect={(index, tac) => {
+                          const source = bulletinSource || manualInput;
+                          setBulletinSource(source);
+                          setFocusedBulletinReport(index);
+                          setManualInput(tac);
+                          setSelectedTrace(null);
+                        }}
+                      />
+                    ) : null}
+                    <div data-testid="convert-panes-slot">
+                      <div
+                        className="flex min-h-0 min-w-0 flex-col overflow-auto rounded-md border border-gray-200 bg-white p-2 dark:border-gray-700 dark:bg-gray-900"
+                        data-testid="live-convert-panes"
+                        data-fit={liveLayout.span === 'roomy' ? 'roomy' : 'tight'}
+                        role="region"
+                        aria-label={inputMode === 'validate_iwxxm' ? 'IWXXM' : 'TAC'}
+                        style={{ height: converterPaneHeight }}
+                        onFocusCapture={() => setRecentWorkCollapsed(true)}
+                        onKeyDown={(event) => {
+                          const issue = lintIssueFromKey(event, jumpIssues, lintJump);
+                          if (!issue) return;
+                          event.preventDefault();
+                          applyLintJump(issue);
+                        }}
+                      >
+                        <div className="mb-2 flex items-center justify-between gap-2">
+                          <h2 className="text-sm font-semibold text-gray-900 dark:text-white">
+                            {inputMode === 'validate_iwxxm' ? 'IWXXM' : 'TAC'}
+                          </h2>
+                          {calmTacReadOnly && !isReadOnly ? (
+                            <button
+                              type="button"
+                              className="text-sm font-medium text-blue-700 underline-offset-2 hover:underline dark:text-blue-300"
+                              data-testid="convert-tac-edit"
+                              onClick={() => setTacLockedAfterConvert(false)}
+                            >
+                              Edit
+                            </button>
                           ) : null}
-                          <p
-                            className="mt-2 text-xs text-gray-700 dark:text-gray-200"
-                            data-testid="tac-lint-summary"
-                          >
-                            {tacLintSummary}
-                          </p>
-                          <TacLintJumps
-                            issues={jumpIssues}
-                            activeIndex={lintJump}
-                            onSelect={applyLintJump}
-                          />
-                        </>
-                      ) : null}
+                        </div>
+                        <div
+                          data-testid={
+                            calmTacReadOnly
+                              ? 'convert-tac-readonly'
+                              : 'convert-tac-editable'
+                          }
+                        >
+                          {!showCalmEmptyHero ? (
+                            <TacEditor
+                              id="manual-input"
+                              value={manualInput}
+                              onReportLoaded={applyLoadedReportName}
+                              onChange={(value) => {
+                                setManualInput(value);
+                                setSelectedTrace(null);
+                                setLintJump(null);
+                                setLintFocusOffset(null);
+                                if (inputMode !== 'ahl_bulletin') {
+                                  return;
+                                }
+                                if (focusedBulletinReport === null) {
+                                  setBulletinSource(value);
+                                  return;
+                                }
+                                setBulletinSource((current) =>
+                                  replaceBulletinReport(
+                                    current,
+                                    focusedBulletinReport,
+                                    value,
+                                  ),
+                                );
+                              }}
+                              readOnly={calmTacReadOnly}
+                              placeholder={
+                                inputMode === 'validate_iwxxm'
+                                  ? '<iwxxm:METAR>...</iwxxm:METAR>'
+                                  : 'SPECI BGSF 282350Z 10RMF50MT 9999 SCT110 BKN130 0RN130 NN7/N11 Q1021'
+                              }
+                              aria-label={
+                                inputMode === 'validate_iwxxm'
+                                  ? 'Enter IWXXM XML manually'
+                                  : 'Enter METAR data manually'
+                              }
+                              className="max-h-80 min-h-44 focus-within:ring-2 focus-within:ring-blue-500"
+                              failedSpans={failedSpans}
+                              issueSpans={editorSpans}
+                              onSpanFix={applyLintFix}
+                              focusOffset={lintFocusOffset}
+                            />
+                          ) : null}
+                        </div>
+                        {inputMode !== 'validate_iwxxm' ? (
+                          <>
+                            {decodeSegments.length + decodeResiduals.length > 0 ? (
+                              <div className="mt-2" data-testid="tac-group-chips">
+                                <p className="mb-1 text-xs text-gray-500 dark:text-gray-400">
+                                  Groups
+                                </p>
+                                <div
+                                  className="flex gap-1 overflow-x-auto"
+                                  aria-label="Recognised groups"
+                                >
+                                  {decodeSegments.map((segment) => {
+                                    const selected =
+                                      selectedTrace?.start === segment.start &&
+                                      selectedTrace?.end === segment.end;
+                                    return (
+                                      <button
+                                        key={`chip-${segment.start}-${segment.end}-${segment.code}`}
+                                        type="button"
+                                        aria-pressed={selected}
+                                        className={`rounded px-2 py-0.5 font-mono text-xs ${
+                                          selected
+                                            ? 'bg-sky-200 text-sky-950 ring-1 ring-sky-800 dark:bg-sky-900 dark:text-sky-50'
+                                            : 'bg-gray-100 text-gray-900 dark:bg-gray-800 dark:text-gray-100'
+                                        }`}
+                                        onClick={() =>
+                                          setSelectedTrace({
+                                            start: segment.start,
+                                            end: segment.end,
+                                            code: segment.code,
+                                          })
+                                        }
+                                      >
+                                        {segment.code}
+                                      </button>
+                                    );
+                                  })}
+                                  {decodeResiduals.map((residual) => {
+                                    const selected =
+                                      selectedTrace?.start === residual.start &&
+                                      selectedTrace?.end === residual.end;
+                                    return (
+                                      <button
+                                        key={`chip-res-${residual.start}-${residual.end}`}
+                                        type="button"
+                                        aria-pressed={selected}
+                                        className={`rounded px-2 py-0.5 font-mono text-xs ${
+                                          selected
+                                            ? 'bg-sky-200 text-sky-950 ring-1 ring-sky-800'
+                                            : 'bg-amber-100 text-amber-950 dark:bg-amber-950 dark:text-amber-100'
+                                        }`}
+                                        onClick={() =>
+                                          setSelectedTrace({
+                                            start: residual.start,
+                                            end: residual.end,
+                                            code: residual.text,
+                                          })
+                                        }
+                                      >
+                                        Error {residual.text}
+                                      </button>
+                                    );
+                                  })}
+                                </div>
+                              </div>
+                            ) : null}
+                            <p
+                              className="mt-2 text-xs text-gray-700 dark:text-gray-200"
+                              data-testid="tac-lint-summary"
+                            >
+                              {tacLintSummary}
+                            </p>
+                            <TacLintJumps
+                              issues={jumpIssues}
+                              activeIndex={lintJump}
+                              onSelect={applyLintJump}
+                            />
+                          </>
+                        ) : null}
+                      </div>
+                      <VerticalResizeHandle
+                        height={converterPaneHeight}
+                        onHeightChange={setConverterPaneHeight}
+                        label="Resize converter box"
+                        testId="converter-vertical-resize"
+                      />
                     </div>
                   </div>
                 </div>
@@ -3935,76 +4121,124 @@ export function FileConverter({
                   tab={resultsTab}
                   onTabChange={setResultsTab}
                   iwxxm={
-                    inputMode === 'validate_iwxxm' ? (
-                      <section
-                        data-testid="validate-iwxxm-results"
-                        aria-label="Validation results"
-                        className="flex max-h-96 min-h-0 flex-col overflow-auto rounded-md border border-gray-200 bg-white p-3 dark:border-gray-700 dark:bg-gray-900"
+                    <div data-testid="iwxxm-resize-pane">
+                      <div
+                        style={{ height: iwxxmPaneHeight }}
+                        className="min-h-0 overflow-auto"
                       >
-                        <h3 className="mb-2 text-sm font-semibold text-gray-900 dark:text-white">
-                          Validation results
-                        </h3>
-                        {validateReport ? (
-                          <ValidateIwxxmReport
-                            report={validateReport}
-                            catalogByCode={lintCatalogByCode}
-                          />
-                        ) : (
-                          <p
-                            data-testid="validate-iwxxm-empty"
-                            className="text-sm text-gray-500 dark:text-gray-400"
+                        {inputMode === 'validate_iwxxm' ? (
+                          <section
+                            data-testid="validate-iwxxm-results"
+                            aria-label="Validation results"
+                            className="flex min-h-0 flex-col overflow-auto rounded-md border border-gray-200 bg-white p-3 dark:border-gray-700 dark:bg-gray-900"
                           >
-                            {VALIDATE_IWXXM_EMPTY_RESULTS}
-                          </p>
+                            <h3 className="mb-2 text-sm font-semibold text-gray-900 dark:text-white">
+                              Validation results
+                            </h3>
+                            {validateReport ? (
+                              <ValidateIwxxmReport
+                                report={validateReport}
+                                catalogByCode={lintCatalogByCode}
+                              />
+                            ) : (
+                              <p
+                                data-testid="validate-iwxxm-empty"
+                                className="text-sm text-gray-500 dark:text-gray-400"
+                              >
+                                {VALIDATE_IWXXM_EMPTY_RESULTS}
+                              </p>
+                            )}
+                          </section>
+                        ) : (
+                          <IwxxmPreviewPane
+                            className="min-w-0"
+                            xml={previewXml}
+                            status={previewStatus}
+                            mode={previewMode}
+                            softFailDetail={previewSoftFailDetail}
+                            failedSpanCount={failedSpans.length}
+                            numbered
+                            highlightToken={selectedTrace?.code ?? ''}
+                            highlightStart={selectedTrace?.start}
+                            highlightEnd={selectedTrace?.end}
+                            groupTrace={groupTrace}
+                            incomplete={
+                              previewIncomplete && previewXml.trim().length > 0
+                            }
+                            conversionProfile={
+                              conversionParams.conversionLibraryId ||
+                              conversionParams.profile
+                            }
+                            wrapXml={liveLayout.wrapXml}
+                            onFailedSpanFocus={() => {
+                              document
+                                .querySelector('[data-testid="failed-tac-cue"]')
+                                ?.scrollIntoView({
+                                  behavior: 'smooth',
+                                  block: 'nearest',
+                                });
+                            }}
+                          />
                         )}
-                      </section>
-                    ) : (
-                      <IwxxmPreviewPane
-                        className="min-w-0"
-                        xml={previewXml}
-                        status={previewStatus}
-                        mode={previewMode}
-                        softFailDetail={previewSoftFailDetail}
-                        failedSpanCount={failedSpans.length}
-                        numbered
-                        highlightToken={selectedTrace?.code ?? ''}
-                        highlightStart={selectedTrace?.start}
-                        highlightEnd={selectedTrace?.end}
-                        groupTrace={groupTrace}
-                        incomplete={previewIncomplete && previewXml.trim().length > 0}
-                        conversionProfile={
-                          conversionParams.conversionLibraryId ||
-                          conversionParams.profile
-                        }
-                        wrapXml={liveLayout.wrapXml}
-                        onFailedSpanFocus={() => {
-                          document
-                            .querySelector('[data-testid="failed-tac-cue"]')
-                            ?.scrollIntoView({
-                              behavior: 'smooth',
-                              block: 'nearest',
-                            });
-                        }}
+                      </div>
+                      <VerticalResizeHandle
+                        height={iwxxmPaneHeight}
+                        onHeightChange={setIwxxmPaneHeight}
+                        label="Resize IWXXM results box"
+                        testId="iwxxm-vertical-resize"
                       />
-                    )
+                    </div>
                   }
                   console={
-                    <WorkbenchConsole
-                      lines={consoleLines}
-                      minLogLevel={conversionParams.logLevel as ConvertLogLevel}
-                      onLineAction={applyLintFix}
-                      catalogByCode={lintCatalogByCode}
-                      catalogEntries={lintCatalogEntries}
-                      onOpenCatalog={onOpenCatalog}
-                      onClear={() => {
-                        clearConsole();
-                        appendConsole({
-                          level: 'info',
-                          source: 'console',
-                          message: 'cleared',
-                        });
-                      }}
-                    />
+                    <div className="space-y-3" data-testid="convert-console-panel">
+                      {inputMode !== 'validate_iwxxm' ? (
+                        <LiveConvertStatusStrip
+                          hasTac={manualInput.trim().length > 0}
+                          decodeReady={decodeSegments.length > 0}
+                          decodeLoading={decodeLoading}
+                          previewState={
+                            !previewXml.trim()
+                              ? 'waiting'
+                              : previewIncomplete
+                                ? 'incomplete'
+                                : 'current'
+                          }
+                          lintStatus={tacLintLayerStatus({
+                            hasTac: manualInput.trim().length > 0,
+                            loading: decodeLoading,
+                            errorCount: lintCounts.errorCount,
+                            warningCount: lintCounts.warningCount,
+                            issueCount: lintCounts.issueCount,
+                          })}
+                          schemaStatus="not run"
+                          schematronStatus="not run"
+                        />
+                      ) : null}
+                      {conversionLog ? (
+                        <ErrorLogPanel
+                          log={conversionLog}
+                          minLogLevel={conversionParams.logLevel as ConvertLogLevel}
+                          catalogByCode={lintCatalogByCode}
+                          onOpenCatalog={onOpenCatalog}
+                        />
+                      ) : null}
+                      <WorkbenchConsole
+                        lines={consoleLines}
+                        minLogLevel={conversionParams.logLevel as ConvertLogLevel}
+                        onLineAction={applyLintFix}
+                        catalogByCode={lintCatalogByCode}
+                        catalogEntries={lintCatalogEntries}
+                        onOpenCatalog={onOpenCatalog}
+                        onClear={() => {
+                          clearConsole();
+                          appendConsole({
+                            level: 'info',
+                            source: 'console',
+                            message: 'cleared',
+                          });
+                        }}
+                      />
+                    </div>
                   }
                   decoder={
                     inputMode === 'validate_iwxxm' ? (
@@ -4113,145 +4347,12 @@ export function FileConverter({
                   }
                 />
               </div>
-
-              {/* Compact file upload — secondary to the TAC console */}
-              <Card
-                className={`mt-4 border-2 border-dashed p-3 shadow-none transition-colors ${
-                  isDragging
-                    ? 'border-blue-500 bg-blue-50 dark:border-blue-400 dark:bg-blue-950'
-                    : 'border-gray-300 bg-white dark:border-gray-700 dark:bg-gray-800'
-                }`}
-                onDrop={handleDrop}
-                onDragOver={handleDragOver}
-                onDragLeave={handleDragLeave}
-                role="button"
-                aria-label={
-                  inputMode === 'validate_iwxxm'
-                    ? 'XML file drop zone - Drop one XML file or click to select it'
-                    : 'File drop zone - Drop files here or click to select files'
-                }
-                tabIndex={0}
-                data-testid="compact-file-drop-zone"
-                onKeyDown={(e) => {
-                  if (isDropZoneActivateKey(e.key)) {
-                    e.preventDefault();
-                    fileInputRef.current?.click();
-                  }
-                }}
-              >
-                <div className="flex flex-col items-stretch gap-2 sm:flex-row sm:items-center sm:justify-between">
-                  <div className="flex min-w-0 items-center gap-2">
-                    <Upload
-                      className="h-5 w-5 shrink-0 text-gray-400 dark:text-gray-500"
-                      aria-hidden="true"
-                    />
-                    <div className="min-w-0 text-left">
-                      <p className="text-sm text-gray-900 dark:text-white">
-                        {inputMode === 'validate_iwxxm'
-                          ? VALIDATE_IWXXM_DROP_TITLE
-                          : 'Drop TAC files or select'}
-                      </p>
-                      <p className="text-xs text-gray-500 dark:text-gray-400">
-                        {inputMode === 'validate_iwxxm'
-                          ? VALIDATE_IWXXM_DROP_HELP
-                          : 'Multiple files · Folder/Zip mass ingest (signed in) · .txt, .metar, .tac, .xml, .gz, .zip'}
-                      </p>
-                    </div>
-                  </div>
-                  <input
-                    ref={fileInputRef}
-                    type="file"
-                    multiple
-                    accept=".txt,.metar,.tac,.xml,.gz,text/plain,application/gzip,application/xml,text/xml"
-                    className="hidden"
-                    onChange={(e) => handleFileSelect(e.target.files)}
-                    aria-label={
-                      inputMode === 'validate_iwxxm'
-                        ? 'Select one XML file to validate'
-                        : 'Select TAC files to upload'
-                    }
-                  />
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      fileInputRef.current?.click();
-                    }}
-                    disabled={isBusy || isReadOnly}
-                    className="shrink-0 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-                    aria-label="Browse and select files"
-                  >
-                    Select Files
-                  </Button>
-                  {inputMode !== 'validate_iwxxm' ? (
-                    <>
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                        data-testid="mass-ingest-folder-button"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          requestMassFolder();
-                        }}
-                        disabled={isBusy || isReadOnly}
-                        className="shrink-0 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-                        aria-label="Mass ingest a folder of TAC files (sign-in required)"
-                        aria-busy={isMassIngesting}
-                      >
-                        <FolderOpen className="h-4 w-4" aria-hidden="true" />
-                        Folder
-                      </Button>
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                        data-testid="mass-ingest-zip-button"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          requestMassZip();
-                        }}
-                        disabled={isBusy || isReadOnly}
-                        className="shrink-0 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-                        aria-label="Mass ingest a zip archive of TAC files (sign-in required)"
-                        aria-busy={isMassIngesting}
-                      >
-                        <Archive className="h-4 w-4" aria-hidden="true" />
-                        Zip
-                      </Button>
-                    </>
-                  ) : null}
-                  <input
-                    ref={massFolderInputRef}
-                    type="file"
-                    multiple
-                    className="hidden"
-                    data-testid="mass-ingest-folder-input"
-                    onChange={(e) => {
-                      void handleMassIngest(e.target.files);
-                    }}
-                    aria-label="Select folder for mass ingest"
-                  />
-                  <input
-                    ref={massZipInputRef}
-                    type="file"
-                    accept=".zip,application/zip"
-                    className="hidden"
-                    data-testid="mass-ingest-zip-input"
-                    onChange={(e) => {
-                      void handleMassIngest(e.target.files);
-                    }}
-                    aria-label="Select zip archive for mass ingest"
-                  />
-                </div>
-              </Card>
             </div>
 
             {inputMode !== 'validate_iwxxm' ? (
-              <Card className="mb-6 p-6 bg-white dark:bg-gray-800 dark:border-gray-700">
-                <div className="flex items-center justify-between">
-                  <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white">
+              <Card className="mb-4 border border-gray-200 bg-white p-3 dark:border-gray-700 dark:bg-gray-800">
+                <div className="mb-2 flex items-center justify-between gap-2">
+                  <h3 className="text-sm font-semibold text-gray-900 dark:text-white">
                     Conversion Parameters
                   </h3>
                   <Button
@@ -4265,23 +4366,26 @@ export function FileConverter({
                   >
                     {isParamsExpanded ? (
                       <ChevronUp
-                        className="w-4 h-4 text-gray-600 dark:text-gray-400"
+                        className="h-4 w-4 text-gray-600 dark:text-gray-400"
                         aria-hidden="true"
                       />
                     ) : (
                       <ChevronDown
-                        className="w-4 h-4 text-gray-600 dark:text-gray-400"
+                        className="h-4 w-4 text-gray-600 dark:text-gray-400"
                         aria-hidden="true"
                       />
                     )}
                   </Button>
                 </div>
                 <div
-                  className="flex flex-col gap-4 overflow-x-auto lg:flex-row lg:flex-nowrap lg:items-end"
+                  className="flex flex-col gap-3 overflow-x-auto lg:flex-row lg:flex-nowrap lg:items-start"
                   data-testid="conversion-params-bar"
                 >
                   <div className="min-w-[14rem] shrink-0">
-                    <Label htmlFor="param-bulletin-id" className="dark:text-white mb-2">
+                    <Label
+                      htmlFor="param-bulletin-id"
+                      className="mb-1 block text-xs font-medium text-gray-700 dark:text-gray-200"
+                    >
                       Bulletin ID
                     </Label>
                     <Input
@@ -4499,14 +4603,7 @@ export function FileConverter({
               </Card>
             ) : null}
 
-            {conversionLog && (
-              <ErrorLogPanel
-                log={conversionLog}
-                minLogLevel={conversionParams.logLevel as ConvertLogLevel}
-                catalogByCode={lintCatalogByCode}
-                onOpenCatalog={onOpenCatalog}
-              />
-            )}
+            {/* Conversion / validation log lives in Results → Console (no duplicate panel). */}
 
             {/* Conversion Status Display */}
             {conversionStatus.type !== 'idle' && (
