@@ -1,12 +1,8 @@
 /**
- * Previous, next, and direct jumps for live TAC lint issues.
+ * Direct jumps for live TAC lint issues (list under the TAC pane).
  */
 
-import {
-  lintSeverityLabel,
-  stepLintIssue,
-  type JumpableLintIssue,
-} from '/utils/lintIssueJump';
+import { lintSeverityLabel, type JumpableLintIssue } from '/utils/lintIssueJump';
 
 /**
  * Type `TacLintJumpsProps`.
@@ -64,34 +60,9 @@ function lintJumpItems(
  */
 export function TacLintJumps({ issues, activeIndex, onSelect }: TacLintJumpsProps) {
   if (issues.length === 0) return null;
-  const step = (delta: number) => {
-    const index = stepLintIssue(issues.length, activeIndex, delta);
-    const issue = issues[index];
-    if (!issue) return;
-    onSelect(issue);
-  };
   return (
     <div className="mt-2" role="group" aria-label="TAC lint issues">
-      <div className="flex flex-wrap gap-2">
-        <button
-          type="button"
-          className="rounded border border-gray-300 px-2 py-0.5 text-xs text-gray-900 dark:border-gray-600 dark:text-gray-100"
-          onClick={() => step(-1)}
-        >
-          Previous TAC issue
-        </button>
-        <button
-          type="button"
-          className="rounded border border-gray-300 px-2 py-0.5 text-xs text-gray-900 dark:border-gray-600 dark:text-gray-100"
-          onClick={() => step(1)}
-        >
-          Next TAC issue
-        </button>
-      </div>
-      <p className="mt-1 text-xs text-gray-700 dark:text-gray-200">
-        Alt+Down next issue. Alt+Up previous issue.
-      </p>
-      <ol className="mt-1 space-y-1">{lintJumpItems(issues, activeIndex, onSelect)}</ol>
+      <ol className="space-y-1">{lintJumpItems(issues, activeIndex, onSelect)}</ol>
     </div>
   );
 }

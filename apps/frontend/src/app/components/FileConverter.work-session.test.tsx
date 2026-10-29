@@ -86,9 +86,15 @@ vi.mock('sonner', () => ({
 
 vi.mock('jszip', () => ({
   default: class JSZip {
+    /**
+     *
+     */
     file() {
       return this;
     }
+    /**
+     *
+     */
     generateAsync() {
       return Promise.resolve(new Blob(['test']));
     }

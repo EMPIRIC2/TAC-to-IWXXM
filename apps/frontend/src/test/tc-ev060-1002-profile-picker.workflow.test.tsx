@@ -149,8 +149,10 @@ describe('T3.1 / TC-EV060-1002: Conversion library at converter top', () => {
     );
   });
 
-  it('shows Product + Conversion library at the converter top without expanding parameters (TC-EV060-1002-001)', () => {
+  it('shows Product + Conversion library in Settings without expanding parameters (TC-EV060-1002-001)', async () => {
+    const user = userEvent.setup();
     render(<FileConverter {...defaultProps} />);
+    await user.click(screen.getByTestId('convert-settings-cog'));
     screen.getByTestId('convert-advanced-engines').setAttribute('open', '');
 
     const product = screen.getByTestId('product-type-select');
@@ -158,6 +160,7 @@ describe('T3.1 / TC-EV060-1002: Conversion library at converter top', () => {
       'conversion-library-select',
     ) as HTMLSelectElement;
 
+    expect(screen.getByTestId('convert-settings-dialog')).toContainElement(product);
     expect(product).toBeVisible();
     expect(screen.getByTestId('library-pickers-bar')).toBeVisible();
     expect(conversion).toBeVisible();
@@ -177,8 +180,10 @@ describe('T3.1 / TC-EV060-1002: Conversion library at converter top', () => {
     expect(screen.queryByTestId('profile-type-select')).not.toBeInTheDocument();
   });
 
-  it('exposes a keyboard-accessible Conversion name, not icon-only (TC-EV060-1002-002)', () => {
+  it('exposes a keyboard-accessible Conversion name, not icon-only (TC-EV060-1002-002)', async () => {
+    const user = userEvent.setup();
     render(<FileConverter {...defaultProps} />);
+    await user.click(screen.getByTestId('convert-settings-cog'));
     screen.getByTestId('convert-advanced-engines').setAttribute('open', '');
 
     const product = screen.getByTestId('product-type-select');
@@ -191,6 +196,7 @@ describe('T3.1 / TC-EV060-1002: Conversion library at converter top', () => {
   it('sends selected conversionLibraryId on convert without opening Conversion Parameters (TC-EV060-1002-001)', async () => {
     const user = userEvent.setup();
     render(<FileConverter {...defaultProps} />);
+    await user.click(screen.getByTestId('convert-settings-cog'));
     screen.getByTestId('convert-advanced-engines').setAttribute('open', '');
     fireEvent.click(screen.getByTestId('live-iwxxm-toggle'));
 
@@ -215,6 +221,7 @@ describe('T3.1 / TC-EV060-1002: Conversion library at converter top', () => {
   it('sends selected profile on Validate IWXXM after Conversion library change (TC-EV060-1002-001)', async () => {
     const user = userEvent.setup();
     render(<FileConverter {...defaultProps} />);
+    await user.click(screen.getByTestId('convert-settings-cog'));
     screen.getByTestId('convert-advanced-engines').setAttribute('open', '');
 
     await user.selectOptions(
@@ -238,7 +245,8 @@ describe('T3.1 / TC-EV060-1002: Conversion library at converter top', () => {
     );
   });
 
-  it('hydrates FileConverter product from a stored session (TC-EV060-1002-003)', () => {
+  it('hydrates FileConverter product from a stored session (TC-EV060-1002-003)', async () => {
+    const user = userEvent.setup();
     render(
       <FileConverter
         {...defaultProps}
@@ -252,6 +260,7 @@ describe('T3.1 / TC-EV060-1002: Conversion library at converter top', () => {
         }
       />,
     );
+    await user.click(screen.getByTestId('convert-settings-cog'));
     screen.getByTestId('convert-advanced-engines').setAttribute('open', '');
 
     expect(screen.getByTestId('product-type-select')).toHaveValue('TAF');

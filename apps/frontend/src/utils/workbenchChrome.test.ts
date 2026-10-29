@@ -10,6 +10,9 @@ import {
   WORKBENCH_NARROW_MQ,
 } from './workbenchChrome';
 
+/**
+ *
+ */
 function stubMatchMedia(initialMatches: boolean) {
   let matches = initialMatches;
   const listeners = new Set<() => void>();

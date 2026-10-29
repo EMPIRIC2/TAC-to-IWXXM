@@ -16,6 +16,9 @@ const editorMocks = vi.hoisted(() => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let lastView: any = null;
 
+  /**
+   *
+   */
   class FakeEditorView {
     static lineWrapping = {};
     static updateListener = {
@@ -28,6 +31,9 @@ const editorMocks = vi.hoisted(() => {
     static contentAttributes = { of: () => ({}) };
     static theme = () => ({});
     static decorations = { from: () => ({}) };
+    /**
+     *
+     */
     static scrollIntoView(pos: number) {
       return { scroll: pos };
     }
@@ -61,6 +67,9 @@ const editorMocks = vi.hoisted(() => {
 
     lastDispatch: { selection?: { anchor: number } } | null = null;
 
+    /**
+     *
+     */
     dispatch(spec?: {
       changes?: { from: number; to: number; insert: string };
       effects?: unknown;
@@ -82,6 +91,9 @@ const editorMocks = vi.hoisted(() => {
       }
     }
 
+    /**
+     *
+     */
     destroy() {
       lastView = null;
     }
@@ -173,6 +185,9 @@ describe('TacEditor', () => {
   });
 
   it('syncs contentDOM aria-label when the prop changes (UJ-058 / EV-057)', () => {
+    /**
+     *
+     */
     function Harness() {
       const [label, setLabel] = useState('Enter METAR data manually');
       return (

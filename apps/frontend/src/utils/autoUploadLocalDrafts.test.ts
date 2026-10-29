@@ -16,6 +16,9 @@ const createWorkSessionMock = vi.mocked(createWorkSession);
 const deleteLocalWorkSessionMock = vi.mocked(deleteLocalWorkSession);
 const listLocalWorkSessionsMock = vi.mocked(listLocalWorkSessions);
 
+/**
+ *
+ */
 function session(
   id: string,
   status: WorkSession['status'],

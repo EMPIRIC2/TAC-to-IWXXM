@@ -48,8 +48,8 @@ describe('deriveCalmConvertUi (TC-UX-CALM)', () => {
   });
 
   it('exports calm labels without internal planning ids', () => {
-    expect(CALM_CONVERT_PRIMARY_LABEL).toBe('Convert & validate');
-    expect(CALM_DOWNLOAD_PRIMARY_LABEL).toBe('Download IWXXM');
+    expect(CALM_CONVERT_PRIMARY_LABEL).toBe('Convert');
+    expect(CALM_DOWNLOAD_PRIMARY_LABEL).toBe('Download latest');
     expect(CALM_CONVERT_PRIMARY_LABEL).not.toMatch(/EV-|UJ-|TC-|Corpus/);
   });
 

@@ -2,12 +2,13 @@ import { authUrl } from '../apiBase';
 import { getAccessToken } from '../authService';
 
 /**
- * Sign out user with specified scope
- * Delegates to merged API auth routes for session management
+ * Sign out the user with the requested Supabase scope.
+ *
+ * Delegates to merged API auth routes for session management.
+ *
  * @example
  * const _ = true;
  */
-
 export async function signOutWithScope(
   scope: 'global' | 'local' | 'others',
 ): Promise<boolean> {

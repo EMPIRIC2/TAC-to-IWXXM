@@ -108,10 +108,16 @@ vi.mock('@/app/components/WorkHistorySidebar', () => ({
 
 vi.mock('jszip', () => ({
   default: class JSZip {
+    /**
+     *
+     */
     file(name: string) {
       zipEntries.push(name);
       return this;
     }
+    /**
+     *
+     */
     generateAsync() {
       return Promise.resolve(new Blob(['zip']));
     }
@@ -189,6 +195,14 @@ describe('BUG-2026-08-07 output filename download stale (#904)', () => {
     await user.click(screen.getByTestId('convert-button'));
 
     await waitFor(() => {
+      expect(screen.getByTestId('convert-results-drawer')).toHaveAttribute(
+        'data-open',
+        'true',
+      );
+    });
+    await user.click(screen.getByTestId('convert-results-tab-downloads'));
+
+    await waitFor(() => {
       expect(
         screen.getByRole('button', {
           name: /download first_name\.txt as xml/i,
@@ -241,7 +255,20 @@ describe('BUG-2026-08-07 output filename download stale (#904)', () => {
     await user.click(screen.getByTestId('convert-button'));
 
     await waitFor(() => {
-      expect(screen.getByText(/first_name\.txt/)).toBeInTheDocument();
+      expect(screen.getByTestId('convert-results-drawer')).toHaveAttribute(
+        'data-open',
+        'true',
+      );
+    });
+    // ZIP for a single result lives under Settings → More actions.
+    await user.click(screen.getByTestId('convert-settings-cog'));
+
+    await waitFor(() => {
+      expect(
+        screen.getByRole('button', {
+          name: /download all 1 converted files as zip/i,
+        }),
+      ).toBeInTheDocument();
     });
 
     await setInputValue(filenameInput, 'second_name');

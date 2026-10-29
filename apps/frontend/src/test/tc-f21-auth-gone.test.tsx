@@ -105,6 +105,9 @@ import App from '@/app/App';
 import { acknowledgeSiteTerms } from '@/utils/privacyPreferences';
 import userEvent from '@testing-library/user-event';
 
+/**
+ *
+ */
 function authHeaderFromFetchCall(): string | undefined {
   const call = (global.fetch as ReturnType<typeof vi.fn>).mock.calls[0];
   const init = call?.[1] as RequestInit | undefined;

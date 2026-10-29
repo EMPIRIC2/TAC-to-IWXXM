@@ -12,6 +12,7 @@ import {
 } from '/utils/convertResultsDrawer';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
 import { Button } from './ui/button';
+import { VerticalResizeHandle } from './VerticalResizeHandle';
 
 /**
  * Props for {@link ConvertResultsDrawer}.
@@ -23,6 +24,9 @@ export interface ConvertResultsDrawerProps {
   onOpenChange: (open: boolean) => void;
   tab: ConvertResultsTab;
   onTabChange: (tab: ConvertResultsTab) => void;
+  /** Open body height in pixels (drag-resized like Convert panes). */
+  height: number;
+  onHeightChange: (height: number) => void;
   iwxxm: ReactNode;
   console: ReactNode;
   decoder: ReactNode;
@@ -44,7 +48,7 @@ const PANEL: Record<
 /**
  * Collapsible results host with IWXXM / Console / Decoder / Map / Downloads tabs.
  *
- * @param props - Open state, active tab, and tab bodies
+ * @param props - Open state, active tab, height, and tab bodies
  * @returns Drawer chrome for Convert secondary surfaces
  * @example
  * const _ = true;
@@ -54,6 +58,8 @@ export function ConvertResultsDrawer({
   onOpenChange,
   tab,
   onTabChange,
+  height,
+  onHeightChange,
   iwxxm,
   console: consolePanel,
   decoder,
@@ -88,41 +94,56 @@ export function ConvertResultsDrawer({
           {open ? 'Hide' : 'Show'}
         </Button>
       </div>
-      <Tabs
-        value={tab}
-        onValueChange={(value) => onTabChange(value as ConvertResultsTab)}
-        className={`gap-0 p-3 ${open ? '' : 'hidden'}`}
-        data-testid="convert-results-tabs"
+      <div
+        className={`min-h-0 overflow-auto p-3 ${open ? '' : 'hidden'}`}
+        style={open ? { height } : undefined}
+        data-testid="convert-results-drawer-body"
         hidden={!open}
       >
-        <TabsList
-          className="mb-3 flex h-auto w-full flex-wrap justify-start gap-1"
-          aria-label="Results panels"
-          data-testid="convert-results-tablist"
+        <Tabs
+          value={tab}
+          onValueChange={(value) => onTabChange(value as ConvertResultsTab)}
+          className="gap-0"
+          data-testid="convert-results-tabs"
+          hidden={!open}
         >
-          {CONVERT_RESULTS_TABS.map((entry) => (
-            <TabsTrigger
-              key={entry.id}
-              value={entry.id}
-              data-testid={`convert-results-tab-${entry.id}`}
-            >
-              {entry.label}
-            </TabsTrigger>
-          ))}
-        </TabsList>
-        {(Object.keys(PANEL) as ConvertResultsTab[]).map((id) => (
-          <TabsContent
-            key={id}
-            value={id}
-            forceMount
-            hidden={tab !== id}
-            data-testid={`convert-results-panel-${id}`}
-            className={tab === id ? undefined : 'hidden'}
+          <TabsList
+            className="mb-3 flex h-auto w-full flex-wrap justify-start gap-1"
+            aria-label="Results panels"
+            data-testid="convert-results-tablist"
           >
-            {bodies[id]}
-          </TabsContent>
-        ))}
-      </Tabs>
+            {CONVERT_RESULTS_TABS.map((entry) => (
+              <TabsTrigger
+                key={entry.id}
+                value={entry.id}
+                data-testid={`convert-results-tab-${entry.id}`}
+              >
+                {entry.label}
+              </TabsTrigger>
+            ))}
+          </TabsList>
+          {(Object.keys(PANEL) as ConvertResultsTab[]).map((id) => (
+            <TabsContent
+              key={id}
+              value={id}
+              forceMount
+              hidden={tab !== id}
+              data-testid={`convert-results-panel-${id}`}
+              className={tab === id ? undefined : 'hidden'}
+            >
+              {bodies[id]}
+            </TabsContent>
+          ))}
+        </Tabs>
+      </div>
+      {open ? (
+        <VerticalResizeHandle
+          height={height}
+          onHeightChange={onHeightChange}
+          label="Resize results drawer"
+          testId="results-drawer-vertical-resize"
+        />
+      ) : null}
     </section>
   );
 }

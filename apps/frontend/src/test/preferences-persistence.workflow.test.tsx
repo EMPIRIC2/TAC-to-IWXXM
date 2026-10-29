@@ -75,6 +75,18 @@ vi.mock('../app/components/IcaoAutocomplete', () => ({
   ),
 }));
 
+const TAC_SEED = 'METAR KJFK 121251Z 18004KT=';
+
+/**
+ * Open Settings then expand Conversion parameters (UJ-089 declutter).
+ */
+async function openExpandedParameters(
+  user: ReturnType<typeof userEvent.setup>,
+): Promise<void> {
+  await user.click(screen.getByTestId('convert-settings-cog'));
+  await user.click(screen.getByLabelText(/expand parameters/i));
+}
+
 describe('UI Workflow: Preferences Persistence', () => {
   const defaultProps = {
     onLogout: vi.fn(),
@@ -86,6 +98,17 @@ describe('UI Workflow: Preferences Persistence', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     localStorage.clear();
+    sessionStorage.clear();
+    sessionStorage.setItem(
+      'metar_guest_converter_state',
+      JSON.stringify({
+        manualInput: TAC_SEED,
+        pendingFiles: [],
+        convertedFiles: [],
+        conversionLog: null,
+        conversionParams: {},
+      }),
+    );
   });
 
   it('loads persisted preferences into converter controls on initial mount', async () => {
@@ -105,7 +128,7 @@ describe('UI Workflow: Preferences Persistence', () => {
     const user = userEvent.setup();
     const { container } = render(<FileConverter {...defaultProps} />);
 
-    await user.click(screen.getByLabelText(/expand parameters/i));
+    await openExpandedParameters(user);
 
     const iwxxmVersion = container.querySelector(
       '#param-iwxxm-version',
@@ -128,7 +151,7 @@ describe('UI Workflow: Preferences Persistence', () => {
     const user = userEvent.setup();
     const { container } = render(<FileConverter {...defaultProps} />);
 
-    await user.click(screen.getByLabelText(/expand parameters/i));
+    await openExpandedParameters(user);
 
     const iwxxmVersion = container.querySelector(
       '#param-iwxxm-version',
@@ -163,7 +186,7 @@ describe('UI Workflow: Preferences Persistence', () => {
     const user = userEvent.setup();
     const { container } = render(<FileConverter {...defaultProps} />);
 
-    await user.click(screen.getByLabelText(/expand parameters/i));
+    await openExpandedParameters(user);
 
     localStorage.setItem(
       'metar_converter_preferences',

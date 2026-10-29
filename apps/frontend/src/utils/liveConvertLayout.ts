@@ -1,9 +1,13 @@
 /**
  * Operator layout for the live Convert panes.
- * Stored in this browser: decode density, XML wrapping, and pane widths.
+ * Stored in this browser: decode density (compact omits plain-language summary
+ * only; Code | Explanation always show), XML wrapping, pane widths, and the
+ * results drawer height.
  */
 
 import { useEffect, useState } from 'react';
+
+import { VERTICAL_RESIZE_MAX_PX, VERTICAL_RESIZE_MIN_PX } from './verticalResize';
 
 export const LIVE_CONVERT_LAYOUT_STORAGE_KEY = 'tac-to-iwxxm.live-convert.layout';
 
@@ -12,6 +16,8 @@ export const LIVE_CONVERT_LAYOUT_EVENT = 'tac-live-convert-layout';
 
 const MIN_PANE = 18;
 const DEFAULT_WIDTHS: [number, number, number] = [34, 27, 39];
+/** Default open height for the Convert results drawer (px). */
+export const DEFAULT_RESULTS_DRAWER_HEIGHT_PX = 320;
 
 /**
  * Type `LiveConvertDensity`.
@@ -48,6 +54,7 @@ export interface LiveConvertLayout {
   wrapXml: boolean;
   paneWidths: [number, number, number];
   span: LiveConvertSpan;
+  resultsDrawerHeight: number;
 }
 
 const DEFAULT_LAYOUT: LiveConvertLayout = {
@@ -55,7 +62,26 @@ const DEFAULT_LAYOUT: LiveConvertLayout = {
   wrapXml: true,
   paneWidths: DEFAULT_WIDTHS,
   span: 'roomy',
+  resultsDrawerHeight: DEFAULT_RESULTS_DRAWER_HEIGHT_PX,
 };
+
+/**
+ * Keep the results drawer height within the Convert vertical resize bounds.
+ *
+ * @param raw - Stored or dragged height
+ * @returns Clamped height in pixels
+ * @example
+ * const _ = true;
+ */
+export function normalizeResultsDrawerHeight(raw: unknown): number {
+  if (typeof raw !== 'number' || !Number.isFinite(raw)) {
+    return DEFAULT_RESULTS_DRAWER_HEIGHT_PX;
+  }
+  return Math.min(
+    VERTICAL_RESIZE_MAX_PX,
+    Math.max(VERTICAL_RESIZE_MIN_PX, Math.round(raw)),
+  );
+}
 
 /**
  * Keep three pane shares that each stay large enough to read.
@@ -133,12 +159,14 @@ export function parseLiveConvertLayout(
       wrapXml?: unknown;
       paneWidths?: unknown;
       span?: unknown;
+      resultsDrawerHeight?: unknown;
     };
     return {
       density: parsed.density === 'compact' ? 'compact' : 'detailed',
       wrapXml: parsed.wrapXml === false ? false : true,
       paneWidths: normalizePaneWidths(parsed.paneWidths),
       span: parsed.span === 'tight' ? 'tight' : 'roomy',
+      resultsDrawerHeight: normalizeResultsDrawerHeight(parsed.resultsDrawerHeight),
     };
   } catch {
     return DEFAULT_LAYOUT;

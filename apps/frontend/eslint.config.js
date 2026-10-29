@@ -5,7 +5,15 @@ import reactRefresh from "eslint-plugin-react-refresh";
 import jsdoc from "eslint-plugin-jsdoc";
 
 export default tseslint.config(
-  { ignores: ["dist/", "coverage/", "playwright-report/", "node_modules/"] },
+  {
+    ignores: [
+      "dist/",
+      "coverage/",
+      "playwright-report/",
+      "node_modules/",
+      "src/generated/**",
+    ],
+  },
   {
     extends: [js.configs.recommended, ...tseslint.configs.recommended],
     files: ["**/*.{ts,tsx}"],
@@ -64,6 +72,13 @@ export default tseslint.config(
           contexts: ["any"],
         },
       ],
+    },
+  },
+  {
+    files: ["**/*.test.{ts,tsx}", "src/test/**/*.{ts,tsx}"],
+    rules: {
+      "jsdoc/require-jsdoc": "off",
+      "jsdoc/require-description": "off",
     },
   },
 );

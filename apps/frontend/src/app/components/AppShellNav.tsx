@@ -1,29 +1,22 @@
 /**
- * Primary operator shell navigation — Convert, History, Rule catalogs,
- * and Dissemination ops.
+ * Primary operator shell navigation — Convert, History, and Rule catalogs.
  *
  * Peer tabs for the operator shell; not a FileConverter panel.
  */
 
 import { shellFrameClass, useLiveConvertLayout } from '/utils/liveConvertLayout';
-import { BetaBadge } from './BetaBadge';
 
 /**
  * Type `ShellPrimaryView`.
  * @example
  * const _ = true;
  */
-export type ShellPrimaryView =
-  | 'converter'
-  | 'history'
-  | 'catalog'
-  | 'dissemination-ops';
+export type ShellPrimaryView = 'converter' | 'history' | 'catalog';
 
 export const SHELL_NAV_LABELS = {
   converter: 'Convert',
   history: 'History',
   catalog: 'Rule catalogs',
-  'dissemination-ops': 'Dissemination ops',
 } as const;
 
 interface AppShellNavProps {
@@ -33,15 +26,10 @@ interface AppShellNavProps {
   onNavigate: (view: ShellPrimaryView) => void;
 }
 
-const TABS: ShellPrimaryView[] = [
-  'converter',
-  'history',
-  'catalog',
-  'dissemination-ops',
-];
+const TABS: ShellPrimaryView[] = ['converter', 'history', 'catalog'];
 
 /**
- * Render Convert, History, Rule catalogs, and Dissemination ops.
+ * Render Convert, History, and Rule catalogs.
  *
  * @param props.activeView - Currently selected shell view
  * @param props.onNavigate - View change handler
@@ -75,9 +63,6 @@ export function AppShellNav({ activeView, onNavigate }: AppShellNavProps) {
               onClick={() => onNavigate(view)}
             >
               {SHELL_NAV_LABELS[view]}
-              {view === 'dissemination-ops' ? (
-                <BetaBadge className="inline-flex" />
-              ) : null}
             </button>
           );
         })}

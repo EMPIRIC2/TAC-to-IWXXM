@@ -41,7 +41,11 @@ export function getSupabaseClient(): SupabaseClient {
   return client;
 }
 
-/** @deprecated Prefer ``getSupabaseClient()`` — kept for existing imports. */
+/**
+ * Lazy Supabase client proxy for legacy imports.
+ *
+ * @deprecated Prefer ``getSupabaseClient()`` — kept for existing imports.
+ */
 export const supabase = new Proxy({} as SupabaseClient, {
   get(_target, prop) {
     const value = (getSupabaseClient() as unknown as Record<string | symbol, unknown>)[

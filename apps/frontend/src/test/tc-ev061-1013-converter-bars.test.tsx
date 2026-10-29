@@ -88,6 +88,9 @@ vi.mock('../app/components/IcaoAutocomplete', () => ({
   ),
 }));
 
+/**
+ *
+ */
 function desktopRowContract(el: HTMLElement, wrap: 'nowrap' | 'wrap'): void {
   if (wrap === 'nowrap') {
     expect(el.className).toMatch(/\blg:flex-nowrap\b/);
@@ -123,15 +126,21 @@ describe('T4.1 / TC-EV061-1013: converter chrome bars', () => {
     );
   });
 
-  it('keeps Product Type + library pickers on one wrap-capable bar at ≥1024px (TC-EV061-1013-001)', () => {
+  it('keeps Product Type + library pickers in Settings on one wrap-capable bar (TC-EV061-1013-001)', async () => {
+    const user = userEvent.setup();
     render(<FileConverter {...defaultProps} />);
     screen.getByTestId('convert-advanced-engines').setAttribute('open', '');
 
+    await user.click(screen.getByTestId('convert-settings-cog'));
+    const settings = screen.getByTestId('convert-settings-dialog');
     const bar = screen.getByTestId('product-profile-bar');
     const product = screen.getByTestId('product-type-select');
     const conversion = screen.getByTestId('conversion-library-select');
     const libraries = screen.getByTestId('library-pickers-bar');
 
+    expect(settings).toContainElement(bar);
+    expect(settings).toContainElement(screen.getByTestId('convert-setup'));
+    expect(screen.getByTestId('convert-body')).not.toContainElement(bar);
     expect(bar).toContainElement(product);
     expect(bar).toContainElement(libraries);
     expect(bar).toContainElement(conversion);
@@ -152,19 +161,23 @@ describe('T4.1 / TC-EV061-1013: converter chrome bars', () => {
     expect(screen.getByLabelText(/^conversion$/i)).toBe(conversion);
   });
 
-  it('keeps mode selects on one aligned no-wrap row at ≥1024px (TC-EV061-1013-002)', () => {
+  it('keeps mode selects in Settings (not chrome toolbar) (TC-EV061-1013-002)', async () => {
+    const user = userEvent.setup();
     render(<FileConverter {...defaultProps} />);
     screen.getByTestId('convert-advanced-engines').setAttribute('open', '');
 
-    const modeBar = screen.getByTestId('input-mode-bar');
+    expect(screen.queryByTestId('input-mode-bar')).not.toBeInTheDocument();
+
+    await user.click(screen.getByTestId('convert-settings-cog'));
+    const settings = screen.getByTestId('convert-settings-dialog');
     const modeGroup = screen.getByTestId('input-mode-group');
 
-    expect(modeBar).toContainElement(modeGroup);
-    expect(modeBar).not.toContainElement(screen.getByTestId('product-type-select'));
-    expect(modeBar).not.toContainElement(
+    // Mode group lives under Settings (Settings itself sits in the chrome toolbar).
+    expect(settings).toContainElement(modeGroup);
+    expect(modeGroup).not.toContainElement(screen.getByTestId('product-type-select'));
+    expect(modeGroup).not.toContainElement(
       screen.getByTestId('conversion-library-select'),
     );
-    desktopRowContract(modeBar, 'nowrap');
 
     expect(modeGroup).toHaveAccessibleName(/^input mode$/i);
     expect(screen.getByTestId('input-mode-tac')).toBeVisible();
@@ -173,14 +186,14 @@ describe('T4.1 / TC-EV061-1013: converter chrome bars', () => {
     expect(screen.getByTestId('input-mode-validate_iwxxm')).toBeVisible();
   });
 
-  it('keeps conversion parameters on one bar and stacks below 1024px (TC-EV061-1013-003)', async () => {
+  it('keeps conversion parameters in Settings (TC-EV061-1013-003)', async () => {
     const user = userEvent.setup();
     render(<FileConverter {...defaultProps} />);
 
     const paramBar = screen.getByTestId('conversion-params-bar');
     expect(paramBar).toContainElement(screen.getByTestId('bulletin-id-input'));
     expect(paramBar).toContainElement(screen.getByTestId('issuing-center-input'));
-    desktopRowContract(paramBar, 'nowrap');
+    expect(paramBar.className).toMatch(/flex-col|space-y/);
 
     await user.click(screen.getByLabelText(/expand parameters/i));
     expect(paramBar).toContainElement(

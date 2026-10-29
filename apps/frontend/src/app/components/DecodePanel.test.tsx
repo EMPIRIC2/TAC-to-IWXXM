@@ -294,7 +294,7 @@ describe('DecodePanel', () => {
     expect(onSelect).toHaveBeenCalledWith({ start: 6, end: 8, code: 'XX' });
   });
 
-  it('compact density keeps the group and hides the explanation', () => {
+  it('compact density keeps Code | Explanation and omits plain language', () => {
     render(
       <DecodePanel
         pinned
@@ -305,8 +305,8 @@ describe('DecodePanel', () => {
       />,
     );
     expect(screen.getByText('METAR')).toBeInTheDocument();
-    expect(screen.queryByText('Report type')).not.toBeInTheDocument();
-    expect(screen.queryByText('Explanation')).not.toBeInTheDocument();
+    expect(screen.getByText('Report type')).toBeInTheDocument();
+    expect(screen.getByText('Explanation')).toBeInTheDocument();
     expect(screen.queryByTestId('decode-plain-language')).not.toBeInTheDocument();
   });
 });

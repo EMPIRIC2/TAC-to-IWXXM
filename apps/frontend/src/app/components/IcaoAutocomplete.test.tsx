@@ -17,6 +17,9 @@ vi.mock('../../utils/airportsData', () => ({
 
 describe('IcaoAutocomplete', () => {
   const renderHarness = (onChangeSpy?: (value: string) => void) => {
+    /**
+     *
+     */
     function Harness() {
       const [value, setValue] = useState('');
 
@@ -138,6 +141,9 @@ describe('IcaoAutocomplete', () => {
     const user = userEvent.setup();
     mockSearchByIcao.mockReturnValue([{ icao: 'KJFK', name: 'John F Kennedy' }]);
 
+    /**
+     *
+     */
     function Wrapper() {
       const [value, setValue] = useState('');
 
@@ -242,6 +248,9 @@ describe('IcaoAutocomplete', () => {
       { icao: 'KORD', name: 'Chicago O Hare', city: 'Chicago' },
     ]);
 
+    /**
+     *
+     */
     function Wrapper() {
       const [value, setValue] = useState('');
       return <IcaoAutocomplete label="Station" value={value} onChange={setValue} />;
@@ -267,6 +276,9 @@ describe('IcaoAutocomplete', () => {
 
   it('uses formatOnly regex path for valid ICAO', async () => {
     const user = userEvent.setup();
+    /**
+     *
+     */
     function Harness() {
       const [value, setValue] = useState('');
       return (

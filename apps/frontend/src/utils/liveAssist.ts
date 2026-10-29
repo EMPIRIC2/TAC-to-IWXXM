@@ -109,6 +109,8 @@ export class LiveAssistScheduler {
 }
 
 /**
+ * Whether a caught error represents an aborted fetch or runner.
+ *
  * @param err - Caught rejection from fetch/runner
  * @returns True when the error is an abort
  * @example

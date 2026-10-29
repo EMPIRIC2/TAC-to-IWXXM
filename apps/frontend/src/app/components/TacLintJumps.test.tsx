@@ -16,22 +16,31 @@ describe('TacLintJumps', () => {
     expect(container).toBeEmptyDOMElement();
   });
 
-  it('steps and selects issues', () => {
+  it('lists jumpable issues and skips empty slots', () => {
     const onSelect = vi.fn();
     const hole = [...issues];
     delete (hole as unknown[])[0];
-    const { rerender } = render(
-      <TacLintJumps issues={hole} activeIndex={null} onSelect={onSelect} />,
-    );
-    fireEvent.click(screen.getByRole('button', { name: 'Next TAC issue' }));
-    expect(onSelect).not.toHaveBeenCalled();
-
-    rerender(<TacLintJumps issues={issues} activeIndex={null} onSelect={onSelect} />);
-    fireEvent.click(screen.getByRole('button', { name: 'Next TAC issue' }));
-    expect(onSelect).toHaveBeenCalledWith(issues[0]);
-    fireEvent.click(screen.getByRole('button', { name: 'Previous TAC issue' }));
-    expect(onSelect).toHaveBeenCalledWith(issues[1]);
+    render(<TacLintJumps issues={hole} activeIndex={null} onSelect={onSelect} />);
+    expect(
+      screen.queryByRole('button', { name: 'Error: Wind group is incomplete' }),
+    ).not.toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: 'Warning: Unknown group' }));
-    expect(onSelect).toHaveBeenLastCalledWith(issues[1]);
+    expect(onSelect).toHaveBeenCalledWith(issues[1]);
+  });
+
+  it('selects an issue from the list', () => {
+    const onSelect = vi.fn();
+    render(<TacLintJumps issues={issues} activeIndex={0} onSelect={onSelect} />);
+    expect(
+      screen.getByRole('button', { name: 'Error: Wind group is incomplete' }),
+    ).toHaveAttribute('aria-pressed', 'true');
+    fireEvent.click(screen.getByRole('button', { name: 'Warning: Unknown group' }));
+    expect(onSelect).toHaveBeenCalledWith(issues[1]);
+    expect(
+      screen.queryByRole('button', { name: 'Next TAC issue' }),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('button', { name: 'Previous TAC issue' }),
+    ).not.toBeInTheDocument();
   });
 });
