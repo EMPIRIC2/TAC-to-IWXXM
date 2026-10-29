@@ -111,6 +111,9 @@ const GUEST_CONVERSION_IDS = [
   defaultLibraryId('conversion', 'CA_ECCC'),
 ] as const;
 
+/**
+ *
+ */
 function seedLiveConvertChrome(): void {
   sessionStorage.setItem(
     'metar_guest_converter_state',
@@ -124,7 +127,12 @@ function seedLiveConvertChrome(): void {
   );
 }
 
+/**
+ *
+ */
 function openAdvancedEngines(): void {
+  // Libraries live under Settings → Advanced engines (UJ-089).
+  screen.getByTestId('convert-settings').setAttribute('open', '');
   screen.getByTestId('convert-advanced-engines').setAttribute('open', '');
 }
 

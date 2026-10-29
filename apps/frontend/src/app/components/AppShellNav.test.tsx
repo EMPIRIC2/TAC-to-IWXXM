@@ -4,22 +4,21 @@ import userEvent from '@testing-library/user-event';
 import { AppShellNav, SHELL_NAV_LABELS } from './AppShellNav';
 
 describe('AppShellNav', () => {
-  it('renders Dissemination ops and Rule catalogs tabs without Profile builder', async () => {
+  it('renders Convert, History, and Rule catalogs without Dissemination ops', async () => {
     const user = userEvent.setup();
     const onNavigate = vi.fn();
     render(<AppShellNav activeView="converter" onNavigate={onNavigate} />);
 
-    expect(screen.getByTestId('shell-nav-dissemination-ops')).toHaveTextContent(
-      SHELL_NAV_LABELS['dissemination-ops'],
+    expect(screen.getByTestId('shell-nav-converter')).toHaveTextContent(
+      SHELL_NAV_LABELS.converter,
     );
-    expect(
-      screen
-        .getByTestId('shell-nav-dissemination-ops')
-        .querySelector('[data-testid="beta-badge"]'),
-    ).toHaveTextContent('Beta');
+    expect(screen.getByTestId('shell-nav-history')).toHaveTextContent(
+      SHELL_NAV_LABELS.history,
+    );
     expect(screen.getByTestId('shell-nav-catalog')).toHaveTextContent(
       SHELL_NAV_LABELS.catalog,
     );
+    expect(screen.queryByTestId('shell-nav-dissemination-ops')).not.toBeInTheDocument();
     expect(screen.queryByTestId('shell-nav-profiles')).not.toBeInTheDocument();
     expect(screen.queryByTestId('shell-nav-visuals')).not.toBeInTheDocument();
     await user.click(screen.getByTestId('shell-nav-catalog'));

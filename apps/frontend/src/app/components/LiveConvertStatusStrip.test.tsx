@@ -6,6 +6,9 @@ import { describe, expect, it } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { LiveConvertStatusStrip } from './LiveConvertStatusStrip';
 
+/**
+ *
+ */
 function tones(): Record<string, string> {
   const strip = screen.getByTestId('convert-status-strip');
   return Object.fromEntries(

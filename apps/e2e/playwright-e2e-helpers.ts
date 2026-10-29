@@ -210,6 +210,56 @@ export async function openConverterForE2e(page: Page): Promise<void> {
   await openPublicConverter(page);
 }
 
+/** Operator input-mode button suffixes (`data-testid="input-mode-…"`). */
+export type E2eInputMode = 'tac' | 'ahl_bulletin' | 'collect_iwxxm' | 'validate_iwxxm';
+
+const EMPTY_HERO_OTHER_TASK: Record<Exclude<E2eInputMode, 'tac'>, string> = {
+  ahl_bulletin: 'Convert a full bulletin (AHL)',
+  validate_iwxxm: 'Validate existing IWXXM',
+  collect_iwxxm: 'Build a COLLECT bundle',
+};
+
+/**
+ * Switch Convert input mode via empty-hero other-task links or Settings.
+ *
+ * Calm empty chrome hides the Settings cog; use Other tasks there. Once the
+ * converter shell is open, modes live under the Settings cog (not the toolbar).
+ *
+ * @param page - Playwright page hosting the converter.
+ * @param mode - Target operator input mode.
+ */
+/**
+ * Open the Convert Settings cog (secondary actions: Send, ZIP, Clear, …).
+ *
+ * Requires the converter shell (not the calm empty hero). Call after TAC is
+ * present or after leaving empty chrome.
+ *
+ * @param page - Playwright page hosting the converter.
+ */
+export async function openConvertSettings(page: Page): Promise<void> {
+  const settings = page.getByTestId('convert-settings');
+  await expect(page.getByTestId('convert-settings-cog')).toBeVisible();
+  if ((await settings.getAttribute('open')) === null) {
+    await page.getByTestId('convert-settings-cog').click();
+  }
+  await expect(settings).toHaveAttribute('open', '');
+}
+
+export async function selectInputMode(page: Page, mode: E2eInputMode): Promise<void> {
+  const hero = page.getByTestId('convert-empty-hero');
+  if (await hero.isVisible()) {
+    if (mode === 'tac') {
+      return;
+    }
+    await page.getByRole('button', { name: EMPTY_HERO_OTHER_TASK[mode] }).click();
+    return;
+  }
+
+  await openConvertSettings(page);
+  await expect(page.getByTestId('input-mode-group')).toBeVisible();
+  await page.getByTestId(`input-mode-${mode}`).click();
+}
+
 /**
  * Replace the manual TAC editor contents with the given METAR/SPECI text.
  *
@@ -232,6 +282,54 @@ export async function fillManualTac(page: Page, metar: string): Promise<void> {
 export async function convertManualMetar(page: Page, metar: string): Promise<void> {
   await fillManualTac(page, metar);
   await page.getByTestId('convert-button').click();
+}
+
+/**
+ * Open the Results drawer Downloads tab (per-file Conversion results cards).
+ *
+ * After convert the drawer defaults to IWXXM preview; download cards and the
+ * `Conversion results` / `Converted XML content for …` regions live under Downloads.
+ *
+ * @param page - Playwright page hosting the converter.
+ * @param timeoutMs - Max wait for the drawer after convert.
+ */
+export async function openConvertDownloadsTab(
+  page: Page,
+  timeoutMs = 45_000,
+): Promise<void> {
+  const drawer = page.getByTestId('convert-results-drawer');
+  await expect(drawer).toBeVisible({ timeout: timeoutMs });
+  if ((await drawer.getAttribute('data-open')) !== 'true') {
+    await page.getByTestId('convert-results-drawer-toggle').click();
+    await expect(drawer).toHaveAttribute('data-open', 'true');
+  }
+  // Wait for convert to finish before selecting Downloads. Result cards are
+  // force-mounted (often hidden under the default IWXXM tab). Selecting
+  // Downloads too early races auto-switch back to IWXXM after convert lands.
+  await expect
+    .poll(async () => page.locator('[data-testid^="result-item-"]').count(), {
+      timeout: timeoutMs,
+    })
+    .toBeGreaterThan(0);
+  await page.getByTestId('convert-results-tab-downloads').click();
+  await expect(
+    page.getByRole('region', { name: 'Conversion results', exact: true }),
+  ).toBeVisible({ timeout: 15_000 });
+}
+
+/**
+ * Clear pending files and manual TAC via Settings (Clear is no longer top-bar).
+ *
+ * @param page - Playwright page hosting the converter.
+ */
+export async function clearConvertWorkbench(page: Page): Promise<void> {
+  await openConvertSettings(page);
+  await page
+    .getByRole('button', {
+      name: 'Clear all pending files and manual input',
+      exact: true,
+    })
+    .click();
 }
 
 /**

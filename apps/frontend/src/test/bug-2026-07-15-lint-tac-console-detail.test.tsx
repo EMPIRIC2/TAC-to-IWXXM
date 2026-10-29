@@ -43,6 +43,9 @@ vi.mock('/utils/api', () => ({
 
 import { useLiveWorkbenchAssist } from '@/hooks/useLiveWorkbenchAssist';
 
+/**
+ *
+ */
 async function flushDebouncedAssist(): Promise<void> {
   await act(async () => {
     await vi.advanceTimersByTimeAsync(LIVE_ASSIST_DEBOUNCE_MS + 5);

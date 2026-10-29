@@ -84,11 +84,10 @@ export function deriveCalmConvertUi(input: CalmConvertInputs): CalmConvertUi {
 }
 
 /** Primary button label for Convert modes (not IWXXM validate-only). */
-export const CALM_CONVERT_PRIMARY_LABEL = 'Convert & validate';
+export const CALM_CONVERT_PRIMARY_LABEL = 'Convert';
 
-/** Primary button label after successful convert. */
-export const CALM_DOWNLOAD_PRIMARY_LABEL = 'Download IWXXM';
-
+/** Primary button label after successful convert (latest single result). */
+export const CALM_DOWNLOAD_PRIMARY_LABEL = 'Download latest';
 /** Fallback when the active profile id is not in the semantic options list. */
 export const CALM_PROFILE_LABEL_FALLBACK = 'International (ICAO)';
 

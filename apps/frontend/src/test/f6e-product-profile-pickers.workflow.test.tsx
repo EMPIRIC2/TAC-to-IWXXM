@@ -156,13 +156,15 @@ describe('T8.1 / TC-F6-001: F6.e product + Conversion library + version pickers'
     );
   });
 
-  it('renders product type next to TAC; Conversion library and version when parameters are expanded', async () => {
+  it('renders product type in Settings; Conversion library and version when parameters are expanded', async () => {
     const user = userEvent.setup();
     render(<FileConverter {...defaultProps} />);
+    await user.click(screen.getByTestId('convert-settings-cog'));
     screen.getByTestId('convert-advanced-engines').setAttribute('open', '');
 
     const product = screen.getByTestId('product-type-select') as HTMLSelectElement;
-    expect(product).toBeInTheDocument();
+    expect(screen.getByTestId('convert-settings-dialog')).toContainElement(product);
+    expect(screen.getByTestId('convert-body')).not.toContainElement(product);
 
     const productValues = Array.from(product.options).map((o) => o.value);
     for (const p of PRODUCTS) {

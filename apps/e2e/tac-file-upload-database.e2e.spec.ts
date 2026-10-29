@@ -2,7 +2,11 @@ import { expect, test } from '@playwright/test';
 import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
-import { loginAndOpenConverter } from './playwright-e2e-helpers';
+import {
+  fillManualTac,
+  loginAndOpenConverter,
+  openConvertSettings,
+} from './playwright-e2e-helpers';
 
 /** Legacy layout (pre-monorepo) plus vendor pin path after M2. */
 const DEFAULT_TAC_RELATIVE_CANDIDATES = [
@@ -119,6 +123,8 @@ test.describe('TAC convert + Disseminate (Upload to Database removed)', () => {
     page,
   }) => {
     await loginAndOpenConverter(page);
+    await fillManualTac(page, 'METAR KJFK 121251Z 24008KT 10SM FEW250 18/M03 A3016=');
+    await openConvertSettings(page);
 
     await expect(page.getByTestId('open-dissemination-drawer')).toBeVisible();
     await expect(page.getByTestId('convert-and-send-button')).toBeVisible();
@@ -179,6 +185,7 @@ test.describe('TAC convert + Disseminate (Upload to Database removed)', () => {
       mimeType: 'text/plain',
       buffer: Buffer.from(`${cleanMetar}\n`, 'utf-8'),
     });
+    await openConvertSettings(page);
     await page.getByTestId('convert-and-send-button').click();
 
     const resultsRegion = page.getByRole('region', {

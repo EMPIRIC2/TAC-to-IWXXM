@@ -39,12 +39,13 @@ export function ConvertSettingsCog({ children }: ConvertSettingsCogProps) {
         <Settings className="h-4 w-4" aria-hidden="true" />
       </summary>
       <div
-        className="absolute left-0 z-20 mt-2 w-80 space-y-4 rounded-md border border-gray-200 bg-white p-4 shadow-lg dark:border-gray-700 dark:bg-gray-900"
+        className="absolute left-0 z-20 mt-2 max-h-[min(70vh,36rem)] w-96 space-y-4 overflow-y-auto rounded-md border border-gray-200 bg-white p-4 shadow-lg dark:border-gray-700 dark:bg-gray-900"
         data-testid="convert-settings-dialog"
       >
         <p className="text-sm font-semibold text-gray-900 dark:text-white">Settings</p>
         <p className="text-xs text-gray-500 dark:text-gray-400">
-          Manual TAC options, output filename, and preview controls.
+          Product, profile, examples, input mode, conversion parameters, layout, preview
+          controls, and conversion metadata.
         </p>
         {children}
       </div>

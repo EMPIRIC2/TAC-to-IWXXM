@@ -9,7 +9,7 @@
  * Spec: docs/test-plan.md TC-F7-001–005; docs/api-contract.md; F21 IndexedDB (UJ-018).
  */
 import { expect, test, type Page, type Request } from '@playwright/test';
-import { openConverterForE2e } from './playwright-e2e-helpers';
+import { openConvertSettings, openConverterForE2e } from './playwright-e2e-helpers';
 
 const METAR_TAC = 'METAR KJFK 121251Z 24016G28KT 3SM -RA BR BKN020 OVC040 14/11 A2990';
 const BAD_TAC = 'METAR XXXX NOT_A_REAL_REPORT GARBAGE=';
@@ -139,8 +139,7 @@ test.describe('F7 UI↔API connection points', () => {
   }) => {
     const captured = await wireF7ApiStubs(page);
     await openConverterForE2e(page);
-
-    await page.getByLabel('Expand parameters', { exact: true }).click();
+    await openConvertSettings(page);
     await page.locator('#param-product').selectOption('METAR');
 
     const editor = page.getByLabel('Enter METAR data manually', { exact: true });
@@ -174,7 +173,7 @@ test.describe('F7 UI↔API connection points', () => {
   }) => {
     const captured = await wireF7ApiStubs(page);
     await openConverterForE2e(page);
-
+    await openConvertSettings(page);
     await page.getByTestId('soft-preview-toggle').check();
 
     const editor = page.getByLabel('Enter METAR data manually', { exact: true });

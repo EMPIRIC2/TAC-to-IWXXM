@@ -10,6 +10,7 @@
 import { expect, test, type APIRequestContext } from '@playwright/test';
 import {
   fillManualTac,
+  openConvertSettings,
   openPublicConverter,
   playwrightApiFetch,
 } from './playwright-e2e-helpers';
@@ -153,26 +154,31 @@ test.describe('EV-061 T2 — UJ-065 AHL decode + convert', () => {
 });
 
 test.describe('EV-061 T2 — UJ-066 / UJ-067 converter bars', () => {
-  test('UJ-066/067: product-profile + params bars visible at 1280px', async ({
+  test('UJ-066/067: product-profile + params bars visible in Settings at 1280px', async ({
     page,
   }) => {
     await page.setViewportSize({ width: 1280, height: 800 });
     await openPublicConverter(page);
+    await fillManualTac(page, 'METAR KJFK');
+    await openConvertSettings(page);
     const productBar = page.getByTestId('product-profile-bar');
     const paramsBar = page.getByTestId('conversion-params-bar');
     await expect(productBar).toBeVisible();
     await expect(paramsBar).toBeVisible();
     await expect(page.getByTestId('product-type-select')).toBeVisible();
+    await page.getByTestId('convert-advanced-engines').locator('summary').click();
     await expect(page.getByTestId('library-pickers-bar')).toBeVisible();
     await expect(page.getByTestId('conversion-library-select')).toBeVisible();
-    // Product bar is wrap-capable at ≥1024. Params bar stays nowrap.
+    // Product bar is wrap-capable at ≥1024. Params bar stacks in Settings.
     await expect(productBar).toHaveCSS('flex-wrap', 'wrap');
     await expect(paramsBar).toHaveCSS('flex-wrap', 'nowrap');
   });
 
-  test('UJ-066: bars may wrap below 1024px', async ({ page }) => {
+  test('UJ-066: Settings bars remain usable below 1024px', async ({ page }) => {
     await page.setViewportSize({ width: 800, height: 800 });
     await openPublicConverter(page);
+    await fillManualTac(page, 'METAR KJFK');
+    await openConvertSettings(page);
     await expect(page.getByTestId('product-profile-bar')).toBeVisible();
     await expect(page.getByTestId('conversion-params-bar')).toBeVisible();
   });

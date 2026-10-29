@@ -51,7 +51,7 @@ export const CONVERT_AND_SEND_UPLOAD_OPTIONS: DatabaseUploadOptions = {
  */
 export interface UploadConvertedFilesParams {
   files: ConvertedFileUpload[];
-  /** @deprecated F21 public — ignored when present */
+  /** Deprecated: ignored on F21 public surfaces when present. */
   accessToken?: string;
   options: DatabaseUploadOptions;
 }

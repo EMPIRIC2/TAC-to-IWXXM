@@ -12,6 +12,9 @@ import {
 } from './disseminationQueue';
 import type { PreflightResponse, SendResponse } from './dissemination';
 
+/**
+ *
+ */
 function cand(id: string): ExportCandidate {
   return {
     id,
@@ -29,6 +32,9 @@ const sink: QueueSinkContext = {
   product: 'metar',
 };
 
+/**
+ *
+ */
 function greenPre(handle: string): PreflightResponse {
   return {
     ok: true,

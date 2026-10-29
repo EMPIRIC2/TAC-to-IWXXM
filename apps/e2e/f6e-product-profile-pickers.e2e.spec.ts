@@ -9,6 +9,8 @@ import { expect, test } from '@playwright/test';
 import {
   convertManualMetar,
   fillManualTac,
+  openConvertDownloadsTab,
+  openConvertSettings,
   openPublicConverter,
   playwrightApiBaseUrl,
 } from './playwright-e2e-helpers';
@@ -17,8 +19,9 @@ const METAR_TAC = 'METAR KJFK 121251Z 24016G28KT 3SM -RA BR BKN020 OVC040 14/11 
 const SPECI_TAC = 'SPECI KJFK 122045Z 18012KT 5SM 15/07 A3005=';
 
 async function requireF6ePickers(page: import('@playwright/test').Page): Promise<void> {
-  // Empty calm chrome hides convert-setup; seed TAC so product/library appear.
+  // Product / library / params live in Settings; seed TAC so the shell is open.
   await fillManualTac(page, 'METAR');
+  await openConvertSettings(page);
   await expect(page.getByTestId('convert-setup')).toBeVisible();
   await expect(page.locator('#param-product')).toBeVisible();
   await page.getByTestId('convert-advanced-engines').locator('summary').click();
@@ -42,11 +45,7 @@ test.describe('H6 / T8.4: F6.e product + Conversion library pickers', () => {
 
     await convertManualMetar(page, METAR_TAC);
 
-    await expect(
-      page.getByRole('region', { name: 'Conversion results', exact: true }),
-    ).toBeVisible({
-      timeout: 30000,
-    });
+    await openConvertDownloadsTab(page, 30_000);
     await expect(
       // targets the converted XML content region for this result
       page.getByRole('region', { name: /^Converted XML content for .+$/ }),
@@ -66,11 +65,7 @@ test.describe('H6 / T8.4: F6.e product + Conversion library pickers', () => {
 
     await convertManualMetar(page, SPECI_TAC);
 
-    await expect(
-      page.getByRole('region', { name: 'Conversion results', exact: true }),
-    ).toBeVisible({
-      timeout: 30000,
-    });
+    await openConvertDownloadsTab(page, 30_000);
   });
 
   test('UJ-005: US Conversion library selectable with METAR', async ({ page }) => {
@@ -84,11 +79,7 @@ test.describe('H6 / T8.4: F6.e product + Conversion library pickers', () => {
 
     await convertManualMetar(page, METAR_TAC);
 
-    await expect(
-      page.getByRole('region', { name: 'Conversion results', exact: true }),
-    ).toBeVisible({
-      timeout: 30000,
-    });
+    await openConvertDownloadsTab(page, 30_000);
   });
 
   test('UJ-008: convert still reaches API after picker interaction', async ({
@@ -106,11 +97,7 @@ test.describe('H6 / T8.4: F6.e product + Conversion library pickers', () => {
       .getByTestId('conversion-library-select')
       .selectOption('LIB.CONVERSION.ICAO_2025');
     await convertManualMetar(page, METAR_TAC);
-    await expect(
-      page.getByRole('region', { name: 'Conversion results', exact: true }),
-    ).toBeVisible({
-      timeout: 30000,
-    });
+    await openConvertDownloadsTab(page, 30_000);
     expect(hit).toBe(true);
   });
 });

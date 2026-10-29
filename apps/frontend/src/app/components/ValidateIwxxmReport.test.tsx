@@ -8,6 +8,9 @@ import { ValidateIwxxmReport } from './ValidateIwxxmReport';
 import type { LintIssueCatalogEntry } from '@/utils/api';
 import type { ValidateResponse } from '/utils/openapiTypes';
 
+/**
+ *
+ */
 function report(partial: {
   is_valid: boolean;
   version?: string;

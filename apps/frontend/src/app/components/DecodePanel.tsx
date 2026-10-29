@@ -50,7 +50,10 @@ export interface DecodePanelProps {
   selectedStart?: number;
   selectedEnd?: number;
   onSelect?: (target: { start: number; end: number; code: string }) => void;
-  /** Detailed shows the explanation. Compact shows the TAC group only. */
+  /**
+   * Detailed includes the plain-language summary. Compact keeps Code |
+   * Explanation rows but omits the summary block (tighter for small panes).
+   */
   density?: 'detailed' | 'compact';
 }
 
@@ -171,12 +174,15 @@ export function DecodePanel({
               ) : null}
               <div className="mb-2 grid grid-cols-[minmax(0,1fr)_minmax(0,1.4fr)] gap-2 text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
                 <div>Code</div>
-                {density === 'detailed' ? <div>Explanation</div> : null}
+                <div>Explanation</div>
               </div>
               {segments.length === 0 && residuals.length === 0 ? (
                 <p className="text-sm text-gray-500">No decode segments yet.</p>
               ) : (
-                <ul className="space-y-1" data-testid="decode-segments">
+                <ul
+                  className={density === 'compact' ? 'space-y-0.5' : 'space-y-1'}
+                  data-testid="decode-segments"
+                >
                   {segments.map((seg) => {
                     const selected =
                       selectedStart === seg.start && selectedEnd === seg.end;
@@ -189,10 +195,8 @@ export function DecodePanel({
                         <button
                           type="button"
                           aria-pressed={selected}
-                          className={`grid w-full gap-2 rounded px-1 py-1 text-left text-sm hover:bg-gray-50 dark:hover:bg-gray-800/80 ${
-                            density === 'detailed'
-                              ? 'grid-cols-[minmax(0,1fr)_minmax(0,1.4fr)]'
-                              : 'grid-cols-1'
+                          className={`grid w-full grid-cols-[minmax(0,1fr)_minmax(0,1.4fr)] gap-2 rounded px-1 text-left text-sm hover:bg-gray-50 dark:hover:bg-gray-800/80 ${
+                            density === 'compact' ? 'py-0.5' : 'py-1'
                           } ${
                             selected
                               ? 'bg-sky-100 ring-1 ring-sky-700 dark:bg-sky-950 dark:ring-sky-300'
@@ -209,11 +213,9 @@ export function DecodePanel({
                           <code className="truncate font-mono text-gray-900 dark:text-gray-100">
                             {seg.code}
                           </code>
-                          {density === 'detailed' ? (
-                            <span className="text-gray-700 dark:text-gray-300">
-                              {seg.explanation}
-                            </span>
-                          ) : null}
+                          <span className="text-gray-700 dark:text-gray-300">
+                            {seg.explanation}
+                          </span>
                         </button>
                       </li>
                     );

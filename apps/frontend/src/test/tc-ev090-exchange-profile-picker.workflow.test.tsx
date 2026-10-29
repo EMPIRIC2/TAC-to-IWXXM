@@ -142,6 +142,7 @@ describe('TC-EV090: Dissemination library picker (Convert chrome)', () => {
     render(
       <FileConverter accessToken="tok" isGuest={false} userEmail="op@example.com" />,
     );
+    screen.getByTestId('convert-settings').setAttribute('open', '');
     screen.getByTestId('convert-advanced-engines').setAttribute('open', '');
     expect(screen.getByTestId('library-pickers-bar')).toBeVisible();
     expect(
@@ -157,6 +158,7 @@ describe('TC-EV090: Dissemination library picker (Convert chrome)', () => {
     render(
       <FileConverter accessToken="tok" isGuest={false} userEmail="op@example.com" />,
     );
+    screen.getByTestId('convert-settings').setAttribute('open', '');
     screen.getByTestId('convert-advanced-engines').setAttribute('open', '');
 
     await user.click(screen.getByTestId('input-mode-ahl_bulletin'));
@@ -224,6 +226,7 @@ describe('TC-EV090: Dissemination library picker (Convert chrome)', () => {
         }
       />,
     );
+    screen.getByTestId('convert-settings').setAttribute('open', '');
     screen.getByTestId('convert-advanced-engines').setAttribute('open', '');
     expect(screen.getByTestId('conversion-library-select')).toBeVisible();
     expect(screen.queryByTestId('exchange-profile-select')).not.toBeInTheDocument();

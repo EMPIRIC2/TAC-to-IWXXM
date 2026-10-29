@@ -88,9 +88,15 @@ vi.mock('@/app/components/WorkHistorySidebar', () => ({
 
 vi.mock('jszip', () => ({
   default: class JSZip {
+    /**
+     *
+     */
     file() {
       return this;
     }
+    /**
+     *
+     */
     generateAsync() {
       return Promise.resolve(new Blob(['test']));
     }
@@ -150,6 +156,8 @@ describe('BUG-2026-07-12 result card dismiss', () => {
       expect(screen.getByText('METAR FAOR 101200Z')).toBeInTheDocument();
     });
 
+    // Clear lives in Settings after UJ-089 declutter.
+    await user.click(screen.getByTestId('convert-settings-cog'));
     await user.click(
       screen.getByRole('button', {
         name: /clear all pending files and manual input/i,
@@ -201,6 +209,7 @@ describe('BUG-2026-07-12 result card dismiss', () => {
     await user.click(
       screen.getByRole('button', {
         name: /remove manual_input\.txt from results/i,
+        hidden: true,
       }),
     );
 

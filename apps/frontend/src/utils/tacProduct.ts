@@ -53,7 +53,11 @@ export function isConvertProductSelection(value: string): value is TacProductSel
   return value === 'auto' || (CONVERT_PRODUCTS as readonly string[]).includes(value);
 }
 
-/** @deprecated Prefer importing from `@/utils/semanticProfile` (EV-093). */
+/**
+ * Semantic profile type alias (legacy import path).
+ *
+ * @deprecated Prefer importing from `@/utils/semanticProfile` (EV-093).
+ */
 export type { IwxxmProfile } from '@/utils/semanticProfile';
 
 export {

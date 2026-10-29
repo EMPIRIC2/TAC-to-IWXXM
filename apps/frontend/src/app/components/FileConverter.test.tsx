@@ -439,9 +439,15 @@ vi.mock('./WorkHistorySidebar', () => ({
 
 vi.mock('jszip', () => ({
   default: class JSZip {
+    /**
+     *
+     */
     file() {
       return this;
     }
+    /**
+     *
+     */
     generateAsync() {
       return Promise.resolve(new Blob(['test']));
     }
@@ -497,6 +503,15 @@ vi.mock('./ui/sonner', () => ({
 }));
 
 describe('FileConverter Component', () => {
+  /**
+   *
+   */
+  async function openConvertDownloadsTab(user: {
+    click: (el: Element) => Promise<void>;
+  }) {
+    await user.click(screen.getByTestId('convert-results-tab-downloads'));
+  }
+
   const defaultProps = {};
 
   it('clears overlays on auth loss only when one is selected', () => {
@@ -734,12 +749,15 @@ describe('FileConverter Component', () => {
       await user.click(
         screen.getByRole('button', { name: 'Convert a full bulletin (AHL)' }),
       );
+      // Mode tabs live in Settings; empty hero hides until mode leaves TAC.
+      await user.click(screen.getByTestId('convert-settings-cog'));
       expect(screen.getByTestId('input-mode-ahl_bulletin')).toHaveClass('bg-blue-700');
       await user.click(screen.getByTestId('input-mode-tac'));
       await waitFor(() => {
         expect(screen.getByTestId('convert-empty-hero')).toBeInTheDocument();
       });
       await user.click(screen.getByRole('button', { name: 'Validate existing IWXXM' }));
+      await user.click(screen.getByTestId('convert-settings-cog'));
       expect(screen.getByTestId('input-mode-validate_iwxxm')).toHaveClass(
         'bg-blue-700',
       );
@@ -748,6 +766,7 @@ describe('FileConverter Component', () => {
         expect(screen.getByTestId('convert-empty-hero')).toBeInTheDocument();
       });
       await user.click(screen.getByRole('button', { name: 'Build a COLLECT bundle' }));
+      await user.click(screen.getByTestId('convert-settings-cog'));
       expect(screen.getByTestId('input-mode-collect_iwxxm')).toHaveClass('bg-blue-700');
     });
 
@@ -762,6 +781,39 @@ describe('FileConverter Component', () => {
       expect(
         within(hero).getByLabelText('Enter METAR data manually'),
       ).toBeInTheDocument();
+    });
+
+    it('primary action strip exposes only New TAC, Convert, and Download latest', () => {
+      operatorDisseminationUiConfig.destinationsEnabled = true;
+      mockReadGuestConverterState.mockReturnValue(null);
+      render(<FileConverter {...defaultProps} />);
+      const strip = screen.getByTestId('convert-primary-actions');
+      expect(within(strip).getByTestId('new-tac-button')).toHaveTextContent('New TAC');
+      expect(within(strip).getByTestId('convert-button')).toHaveTextContent('Convert');
+      const downloadLatest = within(strip).getByTestId('convert-download-iwxxm');
+      expect(downloadLatest).toHaveTextContent('Download latest');
+      expect(downloadLatest).toBeDisabled();
+      // Cover onClick early return when no converted result exists yet.
+      const reactPropsKey = Object.keys(downloadLatest).find((key) =>
+        key.startsWith('__reactProps'),
+      );
+      const onClick = reactPropsKey
+        ? (
+            downloadLatest as unknown as Record<
+              string,
+              { onClick?: (event: MouseEvent) => void }
+            >
+          )[reactPropsKey]?.onClick
+        : undefined;
+      expect(onClick).toBeTypeOf('function');
+      onClick?.(new MouseEvent('click'));
+      expect(within(strip).queryByTestId('convert-and-send-button')).toBeNull();
+      expect(within(strip).queryByTestId('open-dissemination-drawer')).toBeNull();
+      expect(within(strip).queryByTestId('download-zip-button')).toBeNull();
+      expect(within(strip).queryByTestId('clear-queue-button')).toBeNull();
+      expect(screen.getByTestId('convert-and-send-button')).toBeInTheDocument();
+      expect(screen.getByTestId('download-zip-button')).toBeInTheDocument();
+      expect(screen.getByTestId('clear-queue-button')).toBeInTheDocument();
     });
 
     it('TC-UX-CALM: empty browse triggers the hidden file input', async () => {
@@ -807,7 +859,7 @@ describe('FileConverter Component', () => {
       await user.click(screen.getByTestId('convert-profile-apply'));
     });
 
-    it('UJ-088: example chip loads TAC; Download IWXXM primary works', async () => {
+    it('UJ-088: example chip loads TAC; Download latest primary works', async () => {
       mockReadGuestConverterState.mockReturnValue(null);
       const user = userEvent.setup({ delay: null });
       mockConvertMetarToIwxxm.mockResolvedValue({
@@ -916,10 +968,20 @@ describe('FileConverter Component', () => {
       );
       expect(screen.getByTestId('iwxxm-preview-pane')).toBeInTheDocument();
       expect(screen.getByTestId('converter-vertical-resize')).toBeInTheDocument();
-      expect(screen.getByTestId('iwxxm-vertical-resize')).toBeInTheDocument();
+      expect(screen.getByTestId('results-drawer-vertical-resize')).toBeInTheDocument();
       expect(
-        screen.getAllByRole('separator', { name: /Resize (converter|IWXXM)/ }),
+        screen.getAllByRole('separator', {
+          name: /Resize (converter|results drawer)/,
+        }),
       ).toHaveLength(2);
+
+      // Cover results-drawer onHeightChange → updateLiveLayout({ resultsDrawerHeight }).
+      fireEvent.keyDown(screen.getByTestId('results-drawer-vertical-resize'), {
+        key: 'ArrowDown',
+      });
+      expect(localStorage.getItem('tac-to-iwxxm.live-convert.layout')).toContain(
+        '"resultsDrawerHeight":336',
+      );
     });
 
     it('shows Sign in for guests and guest loss notice when local work exists', async () => {
@@ -1001,20 +1063,30 @@ describe('FileConverter Component', () => {
 
       expect(screen.getByTestId('privacy-notice')).toBeInTheDocument();
       await user.click(screen.getByRole('button', { name: /dismiss privacy notice/i }));
-      expect(screen.queryByTestId('privacy-notice')).not.toBeInTheDocument();
+      await waitFor(() => {
+        expect(screen.queryByTestId('privacy-notice')).not.toBeInTheDocument();
+      });
 
       await user.click(screen.getByRole('button', { name: /open privacy settings/i }));
-      expect(screen.getByTestId('privacy-settings-dialog')).toBeInTheDocument();
-      await user.click(screen.getByRole('button', { name: /^close$/i }));
-      expect(screen.queryByTestId('privacy-settings-dialog')).not.toBeInTheDocument();
+      const privacyDialog = await screen.findByTestId('privacy-settings-dialog');
+      // Prefer Cancel over the shared dialog "Close" control — multiple dialogs
+      // can expose Close and make getByRole ambiguous under suite load.
+      await user.click(
+        within(privacyDialog).getByRole('button', { name: /^cancel$/i }),
+      );
+      await waitFor(() => {
+        expect(screen.queryByTestId('privacy-settings-dialog')).not.toBeInTheDocument();
+      });
 
       await user.click(screen.getByRole('button', { name: /open terms of service/i }));
-      expect(screen.getByTestId('site-terms-dialog')).toBeInTheDocument();
+      expect(await screen.findByTestId('site-terms-dialog')).toBeInTheDocument();
       expect(
         screen.getByText(/results can be incomplete or wrong/i),
       ).toBeInTheDocument();
       await user.click(screen.getByRole('button', { name: /close terms of service/i }));
-      expect(screen.queryByTestId('site-terms-dialog')).not.toBeInTheDocument();
+      await waitFor(() => {
+        expect(screen.queryByTestId('site-terms-dialog')).not.toBeInTheDocument();
+      });
     });
 
     it('opens privacy settings from the first-visit notice CTA', async () => {
@@ -1155,14 +1227,23 @@ describe('FileConverter Component', () => {
       expect(screen.getByTestId('compact-file-drop-zone')).toBeInTheDocument();
       expect(screen.getByTestId('product-type-select')).toBeInTheDocument();
       expect(screen.getByTestId('input-mode-group')).toBeInTheDocument();
+      expect(screen.getByTestId('convert-settings')).toContainElement(
+        screen.getByTestId('input-mode-group'),
+      );
+      // Settings cog lives in the chrome toolbar; input mode is nested under it.
+      expect(screen.queryByTestId('input-mode-bar')).not.toBeInTheDocument();
       expect(screen.getByTestId('workbench-console')).toBeInTheDocument();
       expect(
         screen.queryByText(/drop files here or click to select/i),
       ).not.toBeInTheDocument();
-      expect(screen.getByText(/drop tac files or select/i)).toBeInTheDocument();
+      expect(screen.getByText(/drop tac files here/i)).toBeInTheDocument();
       expect(
         screen.getByText(/\.txt, \.metar, \.tac, \.xml, \.gz/i),
       ).toBeInTheDocument();
+      expect(screen.getByTestId('select-files-button')).toBeInTheDocument();
+      expect(screen.getByTestId('mass-ingest-actions')).toHaveTextContent(
+        /mass ingest/i,
+      );
     });
   });
 
@@ -1331,6 +1412,14 @@ describe('FileConverter Component', () => {
           expect.objectContaining({ preview: true }),
         );
         expect(screen.getByTestId('failed-tac-cue')).toBeInTheDocument();
+        expect(screen.getByTestId('convert-error-cues')).toContainElement(
+          screen.getByTestId('failed-tac-cue'),
+        );
+        expect(
+          screen
+            .getByTestId('live-convert-panes')
+            .compareDocumentPosition(screen.getByTestId('failed-tac-cue')),
+        ).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
 
         // Error path (non-abort) is exercised without hanging fake timers
         mockConvertMetarToIwxxm.mockRejectedValueOnce(new Error('Live IWXXM failed'));
@@ -1441,7 +1530,9 @@ describe('FileConverter Component', () => {
           await Promise.resolve();
         });
         fireEvent.keyDown(tac, { key: 'ArrowDown' });
-        fireEvent.click(screen.getByRole('button', { name: 'Next TAC issue' }));
+        fireEvent.click(
+          screen.getByRole('button', { name: 'Error: Wind group is incomplete' }),
+        );
         expect(
           screen.getByRole('button', { name: 'Error: Wind group is incomplete' }),
         ).toHaveAttribute('aria-pressed', 'true');
@@ -1834,7 +1925,7 @@ describe('FileConverter Component', () => {
       });
 
       expect(
-        screen.getByRole('region', { name: /conversion results/i }),
+        screen.getByRole('region', { name: /conversion results/i, hidden: true }),
       ).toBeInTheDocument();
       expect(screen.getByText(/manual_input\.txt/)).toBeInTheDocument();
       expect(mockToast.success).toHaveBeenCalledWith(
@@ -1898,11 +1989,19 @@ describe('FileConverter Component', () => {
       const textarea = container.querySelector('textarea') as HTMLTextAreaElement;
       fireEvent.change(textarea, { target: { value: tac } });
       await user.click(screen.getByTestId('convert-button'));
+      await waitFor(() => {
+        expect(screen.getByTestId('convert-results-drawer')).toHaveAttribute(
+          'data-open',
+          'true',
+        );
+      });
+      await openConvertDownloadsTab(user);
 
       await waitFor(() => {
         expect(
           screen.getByRole('region', {
             name: /original tac input for metar faor 101200z/i,
+            hidden: true,
           }),
         ).toBeInTheDocument();
       });
@@ -1972,10 +2071,15 @@ describe('FileConverter Component', () => {
       expect(
         screen.queryByRole('tab', { name: 'Decode visuals' }),
       ).not.toBeInTheDocument();
-      expect(screen.getByTestId('convert-setup').className).toContain(
-        'xl:max-h-[14rem]',
+      expect(screen.getByTestId('convert-settings-dialog')).toContainElement(
+        screen.getByTestId('convert-setup'),
+      );
+      expect(screen.getByTestId('convert-setup').className).toContain('space-y-3');
+      expect(screen.getByTestId('convert-body')).not.toContainElement(
+        screen.getByTestId('product-profile-bar'),
       );
       expect(screen.getByTestId('country-preset')).toBeInTheDocument();
+      screen.getByTestId('convert-settings').setAttribute('open', '');
       screen.getByTestId('convert-advanced-engines').setAttribute('open', '');
       expect(screen.getByTestId('library-pickers-shared-reason')).toBeVisible();
       expect(screen.getByTestId('live-convert-stage').className).not.toMatch(
@@ -2347,6 +2451,7 @@ describe('FileConverter Component', () => {
       await user.click(
         screen.getByRole('button', {
           name: /copy manual_input\.txt content to clipboard/i,
+          hidden: true,
         }),
       );
 
@@ -2386,7 +2491,10 @@ describe('FileConverter Component', () => {
       });
 
       await user.click(
-        screen.getByRole('button', { name: /remove pending\.txt from queue/i }),
+        screen.getByRole('button', {
+          name: /remove pending\.txt from queue/i,
+          hidden: true,
+        }),
       );
       await waitFor(() => {
         expect(screen.queryByText('pending.txt')).not.toBeInTheDocument();
@@ -2401,7 +2509,10 @@ describe('FileConverter Component', () => {
       });
 
       await user.click(
-        screen.getByRole('button', { name: /remove manual_input\.txt from results/i }),
+        screen.getByRole('button', {
+          name: /remove manual_input\.txt from results/i,
+          hidden: true,
+        }),
       );
       await waitFor(() => {
         expect(screen.queryByText(/manual_input\.txt/)).not.toBeInTheDocument();
@@ -2921,12 +3032,15 @@ describe('FileConverter Component', () => {
 
       await waitFor(() => {
         expect(
-          screen.getByRole('region', { name: /conversion results/i }),
+          screen.getByRole('region', { name: /conversion results/i, hidden: true }),
         ).toBeInTheDocument();
       });
 
       expect(
-        screen.getByRole('region', { name: /original tac input for metar one/i }),
+        screen.getByRole('region', {
+          name: /original tac input for metar one/i,
+          hidden: true,
+        }),
       ).toBeInTheDocument();
       expect(screen.getByText(/Download: first\.txt/)).toBeInTheDocument();
       expect(screen.queryByText('second.txt')).not.toBeInTheDocument();
@@ -3136,6 +3250,7 @@ describe('FileConverter Component', () => {
       await user.click(
         screen.getByRole('button', {
           name: /copy manual_input\.txt content to clipboard/i,
+          hidden: true,
         }),
       );
 
@@ -3172,6 +3287,7 @@ describe('FileConverter Component', () => {
       await user.click(
         screen.getByRole('button', {
           name: /copy manual_input\.txt content to clipboard/i,
+          hidden: true,
         }),
       );
 
@@ -3208,7 +3324,10 @@ describe('FileConverter Component', () => {
       });
 
       await user.click(
-        screen.getByRole('button', { name: /download manual_input\.txt as xml/i }),
+        screen.getByRole('button', {
+          name: /download manual_input\.txt as xml/i,
+          hidden: true,
+        }),
       );
 
       expect(createUrlSpy).toHaveBeenCalled();
@@ -3394,6 +3513,7 @@ describe('FileConverter Component', () => {
       await user.click(
         screen.getByRole('button', {
           name: /copy manual_input\.txt content to clipboard/i,
+          hidden: true,
         }),
       );
 
@@ -3434,6 +3554,7 @@ describe('FileConverter Component', () => {
       await user.click(
         screen.getByRole('button', {
           name: /copy manual_input\.txt content to clipboard/i,
+          hidden: true,
         }),
       );
 
@@ -3642,20 +3763,23 @@ describe('FileConverter Component', () => {
       await user.click(screen.getByTestId('convert-button'));
       await waitFor(() => {
         expect(
-          within(screen.getByRole('region', { name: /conversion results/i })).getByText(
-            '<iwxxm>second-batch</iwxxm>',
-          ),
+          within(
+            screen.getByRole('region', { name: /conversion results/i, hidden: true }),
+          ).getByText('<iwxxm>second-batch</iwxxm>'),
         ).toBeInTheDocument();
       });
       expect(
-        within(screen.getByRole('region', { name: /conversion results/i })).getByText(
-          '<iwxxm>first-batch</iwxxm>',
-        ),
+        within(
+          screen.getByRole('region', { name: /conversion results/i, hidden: true }),
+        ).getByText('<iwxxm>first-batch</iwxxm>'),
       ).toBeInTheDocument();
       expect(screen.getByTestId('download-zip-button')).toHaveAccessibleName(
         /download all 2 converted files as zip/i,
       );
-      const region = screen.getByRole('region', { name: /conversion results/i });
+      const region = screen.getByRole('region', {
+        name: /conversion results/i,
+        hidden: true,
+      });
       const newest = within(region).getByText('<iwxxm>second-batch</iwxxm>');
       const older = within(region).getByText('<iwxxm>first-batch</iwxxm>');
       expect(
@@ -3698,8 +3822,8 @@ describe('FileConverter Component', () => {
         'Do not publish',
       );
       expect(within(card).queryByText('Passed')).not.toBeInTheDocument();
-      const errors = within(card).getByRole('region', { name: 'Errors' });
-      const notes = within(card).getByRole('region', { name: 'Notes' });
+      const errors = within(card).getByRole('region', { name: 'Errors', hidden: true });
+      const notes = within(card).getByRole('region', { name: 'Notes', hidden: true });
       expect(errors).toHaveTextContent('Schema check failed');
       expect(errors).toHaveTextContent('Code: XML_SCHEMA');
       expect(notes).toHaveTextContent('Remark stays in the decode');
@@ -3839,7 +3963,10 @@ describe('FileConverter Component', () => {
         expect(screen.getByText(/report\.txt/)).toBeInTheDocument();
       });
       expect(
-        screen.getByRole('button', { name: /download report\.txt as xml/i }),
+        screen.getByRole('button', {
+          name: /download report\.txt as xml/i,
+          hidden: true,
+        }),
       ).toBeInTheDocument();
     });
 
@@ -3974,6 +4101,9 @@ describe('FileConverter Component', () => {
       localStorage.clear();
     });
 
+    /**
+     *
+     */
     async function selectGoldenExample(label: RegExp) {
       const user = userEvent.setup({ delay: null });
       await user.click(screen.getByTestId('examples-select'));
@@ -4066,14 +4196,14 @@ describe('FileConverter Component', () => {
 
       await waitFor(() => {
         expect(
-          screen.getByRole('region', { name: /conversion results/i }),
+          screen.getByRole('region', { name: /conversion results/i, hidden: true }),
         ).toBeInTheDocument();
       });
 
       await selectGoldenExample(/METAR WMO A3-1 \(annex3\)/i);
 
       expect(
-        screen.queryByRole('region', { name: /conversion results/i }),
+        screen.queryByRole('region', { name: /conversion results/i, hidden: true }),
       ).not.toBeInTheDocument();
       expect(screen.queryByText(/stale-prior/i)).not.toBeInTheDocument();
       expect(screen.getByTestId('demo-example-banner')).toBeInTheDocument();
@@ -4156,6 +4286,9 @@ describe('FileConverter Component', () => {
     const collectSample =
       '<?xml version="1.0"?>\n<collect:MeteorologicalBulletin xmlns:collect="http://def.wmo.int/collect/1.2" xmlns:iwxxm="http://icao.int/iwxxm/3.0">';
 
+    /**
+     *
+     */
     function invokeReactOnClick(element: HTMLElement) {
       const propsKey = Object.keys(element).find((key) =>
         key.startsWith('__reactProps$'),
@@ -4167,6 +4300,9 @@ describe('FileConverter Component', () => {
       onClick?.();
     }
 
+    /**
+     *
+     */
     async function addQueueFile(container: HTMLElement, name: string, content: string) {
       const fileInput = container.querySelector(
         'input[type="file"]:not([data-testid])',
@@ -4218,7 +4354,7 @@ describe('FileConverter Component', () => {
         expect.stringMatching(/Bulletin:\s*1 report/i),
       );
       expect(
-        screen.getByRole('region', { name: /conversion results/i }),
+        screen.getByRole('region', { name: /conversion results/i, hidden: true }),
       ).toBeInTheDocument();
       expect(screen.getByText('<iwxxm>bulletin</iwxxm>')).toBeInTheDocument();
     });
@@ -5094,7 +5230,7 @@ describe('FileConverter Component', () => {
 
       await waitFor(() => {
         expect(
-          screen.getByRole('region', { name: /conversion results/i }),
+          screen.getByRole('region', { name: /conversion results/i, hidden: true }),
         ).toBeInTheDocument();
       });
     });
@@ -5901,7 +6037,10 @@ describe('FileConverter Component', () => {
 
       render(<FileConverter {...defaultProps} />);
       invokeReactOnClick(
-        screen.getByRole('button', { name: /download all 0 converted files as zip/i }),
+        screen.getByRole('button', {
+          name: /download all 0 converted files as zip/i,
+          hidden: true,
+        }),
       );
       expect(mockToast.success).not.toHaveBeenCalledWith('All files downloaded as ZIP');
     });
@@ -6011,6 +6150,7 @@ describe('FileConverter Component', () => {
 
       const downloadBtn = await screen.findByRole('button', {
         name: /download out_1\.txt as xml/i,
+        hidden: true,
       });
       await user.click(downloadBtn);
 
@@ -6026,7 +6166,10 @@ describe('FileConverter Component', () => {
       await user.click(screen.getByTestId('queue-select-0'));
 
       await user.click(
-        screen.getByRole('button', { name: /remove remove-me\.tac from queue/i }),
+        screen.getByRole('button', {
+          name: /remove remove-me\.tac from queue/i,
+          hidden: true,
+        }),
       );
 
       expect(screen.queryByTestId('operator-work-queue')).not.toBeInTheDocument();
@@ -6253,7 +6396,7 @@ describe('FileConverter Component', () => {
       await user.click(screen.getByTestId('workbench-console-clear'));
 
       expect(screen.getByTestId('workbench-console-lines')).toHaveTextContent(
-        /cleared/i,
+        /no messages yet/i,
       );
     });
 
@@ -6365,6 +6508,7 @@ describe('FileConverter Component', () => {
 
       const downloadBtn = await screen.findByRole('button', {
         name: /download report\.metar as xml/i,
+        hidden: true,
       });
       await user.click(downloadBtn);
 
@@ -6455,7 +6599,7 @@ describe('FileConverter Component', () => {
 
       await waitFor(() => {
         expect(
-          screen.getByRole('region', { name: /conversion results/i }),
+          screen.getByRole('region', { name: /conversion results/i, hidden: true }),
         ).toBeInTheDocument();
       });
 
@@ -6471,7 +6615,7 @@ describe('FileConverter Component', () => {
 
       await user.click(screen.getByTestId('clear-queue-button'));
       expect(
-        screen.queryByRole('region', { name: /conversion results/i }),
+        screen.queryByRole('region', { name: /conversion results/i, hidden: true }),
       ).not.toBeInTheDocument();
     });
 
@@ -6497,7 +6641,7 @@ describe('FileConverter Component', () => {
       await user.click(screen.getByTestId('convert-button'));
       await waitFor(() => {
         expect(
-          screen.getByRole('region', { name: /conversion results/i }),
+          screen.getByRole('region', { name: /conversion results/i, hidden: true }),
         ).toBeInTheDocument();
       });
 
@@ -6676,10 +6820,9 @@ describe('FileConverter Component', () => {
       expect(screen.queryByTestId('soft-preview-toggle')).not.toBeInTheDocument();
       expect(screen.queryByTestId('live-iwxxm-toggle')).not.toBeInTheDocument();
       expect(screen.queryByTestId('output-filename-input')).not.toBeInTheDocument();
-      expect(
-        screen.queryByRole('heading', { name: 'Conversion Parameters' }),
-      ).not.toBeInTheDocument();
-      expect(screen.queryByText('Drop TAC files or select')).not.toBeInTheDocument();
+      expect(screen.queryByTestId('conversion-params-bar')).not.toBeInTheDocument();
+      expect(screen.queryByText('Drop TAC files here')).not.toBeInTheDocument();
+      expect(screen.queryByTestId('mass-ingest-actions')).not.toBeInTheDocument();
       expect(screen.getByText('Drop one XML file or select')).toBeInTheDocument();
 
       await user.click(screen.getByTestId('input-mode-tac'));
@@ -6830,7 +6973,7 @@ describe('FileConverter Component', () => {
       await user.click(screen.getByTestId('convert-button'));
       await waitFor(() => {
         expect(
-          screen.getByRole('region', { name: /conversion results/i }),
+          screen.getByRole('region', { name: /conversion results/i, hidden: true }),
         ).toBeInTheDocument();
       });
       await user.click(screen.getByTestId('input-mode-validate_iwxxm'));
@@ -8342,9 +8485,14 @@ describe('FileConverter Component', () => {
       const user = userEvent.setup({ delay: null });
       render(<FileConverter isGuest />);
 
-      expect(
-        screen.getByTestId('conversion-metadata-export-panel'),
-      ).toBeInTheDocument();
+      // Native <details> keeps Settings children in the DOM when collapsed.
+      const settingsDialog = screen.getByTestId('convert-settings-dialog');
+      const metadataPanel = screen.getByTestId('conversion-metadata-export-panel');
+      expect(settingsDialog).toContainElement(metadataPanel);
+      expect(screen.getByTestId('convert-primary-actions')).not.toContainElement(
+        metadataPanel,
+      );
+
       await user.click(screen.getByTestId('conversion-metadata-toggle'));
       expect(readConversionMetadataPrefs().enabled).toBe(true);
 
@@ -8466,6 +8614,7 @@ describe('FileConverter Component', () => {
 
       const downloadOne = await screen.findByRole('button', {
         name: /download .+ as zip with metadata/i,
+        hidden: true,
       });
       await user.click(downloadOne);
       expect(mockToast.success).toHaveBeenCalledWith('File downloaded with metadata');
@@ -8628,6 +8777,7 @@ describe('FileConverter Component', () => {
       await user.click(screen.getByTestId('conversion-metadata-toggle'));
       const downloadButtons = await screen.findAllByRole('button', {
         name: /download .+ as zip with metadata/i,
+        hidden: true,
       });
       for (const btn of downloadButtons) {
         await user.click(btn);
@@ -8668,6 +8818,7 @@ describe('FileConverter Component', () => {
       await user.click(
         await screen.findByRole('button', {
           name: /download .+ as zip with metadata/i,
+          hidden: true,
         }),
       );
       expect(mockToast.success).toHaveBeenCalledWith('File downloaded with metadata');
@@ -8734,6 +8885,7 @@ describe('FileConverter Component', () => {
       await user.click(
         await screen.findByRole('button', {
           name: /download .+ as zip with metadata/i,
+          hidden: true,
         }),
       );
       expect(mockToast.success).toHaveBeenCalledWith('File downloaded with metadata');

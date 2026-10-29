@@ -14,6 +14,7 @@ import {
   E2E_USER_EMAIL,
   E2E_USER_PASSWORD,
   loginAsE2EUser,
+  openConvertSettings,
   openPublicConverter,
   playwrightApiFetch,
 } from './playwright-e2e-helpers';
@@ -79,13 +80,14 @@ test.describe('T4.1 — UJ-051..053 EV-042 mass ingest + queue + restored destin
     page,
   }) => {
     await openPublicConverter(page);
-    await expect(page.getByTestId('convert-and-send-button')).toBeVisible();
-    await expect(page.getByTestId('open-dissemination-drawer')).toBeVisible();
     await expect(page.getByTestId('convert-button')).toBeVisible();
     await expect(page.getByTestId('mass-ingest-folder-button')).toBeVisible();
     await expect(page.getByTestId('mass-ingest-zip-button')).toBeVisible();
 
     await convertManualMetar(page, SAMPLE_METAR);
+    await openConvertSettings(page);
+    await expect(page.getByTestId('convert-and-send-button')).toBeVisible();
+    await expect(page.getByTestId('open-dissemination-drawer')).toBeVisible();
     await expect(
       page.getByRole('region', { name: 'Conversion results', exact: true }),
     ).toBeVisible({

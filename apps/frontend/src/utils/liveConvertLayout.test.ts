@@ -5,8 +5,10 @@
 import { act, renderHook } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import {
+  DEFAULT_RESULTS_DRAWER_HEIGHT_PX,
   LIVE_CONVERT_LAYOUT_STORAGE_KEY,
   normalizePaneWidths,
+  normalizeResultsDrawerHeight,
   parseLiveConvertLayout,
   readLiveConvertLayout,
   resizePanePair,
@@ -15,6 +17,7 @@ import {
   useWideConvertPanes,
   writeLiveConvertLayout,
 } from './liveConvertLayout';
+import { VERTICAL_RESIZE_MAX_PX, VERTICAL_RESIZE_MIN_PX } from './verticalResize';
 
 describe('liveConvertLayout', () => {
   it('matches the nav column to the chosen span', () => {
@@ -43,6 +46,7 @@ describe('liveConvertLayout', () => {
     expect(parseLiveConvertLayout(null)).toMatchObject({
       density: 'detailed',
       wrapXml: true,
+      resultsDrawerHeight: DEFAULT_RESULTS_DRAWER_HEIGHT_PX,
     });
     expect(parseLiveConvertLayout('{')).toMatchObject({ density: 'detailed' });
     expect(parseLiveConvertLayout('{"density":"other","wrapXml":true}')).toMatchObject({
@@ -55,6 +59,7 @@ describe('liveConvertLayout', () => {
           density: 'compact',
           wrapXml: false,
           paneWidths: [40, 30, 30],
+          resultsDrawerHeight: 400,
         }),
       ),
     ).toEqual({
@@ -62,15 +67,21 @@ describe('liveConvertLayout', () => {
       wrapXml: false,
       paneWidths: [40, 30, 30],
       span: 'roomy',
+      resultsDrawerHeight: 400,
     });
     expect(parseLiveConvertLayout('{"span":"tight"}').span).toBe('tight');
+    expect(normalizeResultsDrawerHeight('x')).toBe(DEFAULT_RESULTS_DRAWER_HEIGHT_PX);
+    expect(normalizeResultsDrawerHeight(40)).toBe(VERTICAL_RESIZE_MIN_PX);
+    expect(normalizeResultsDrawerHeight(900)).toBe(VERTICAL_RESIZE_MAX_PX);
     writeLiveConvertLayout({
       density: 'compact',
       wrapXml: false,
       paneWidths: [40, 30, 30],
       span: 'roomy',
+      resultsDrawerHeight: 400,
     });
     expect(readLiveConvertLayout().density).toBe('compact');
+    expect(readLiveConvertLayout().resultsDrawerHeight).toBe(400);
     expect(window.localStorage.getItem(LIVE_CONVERT_LAYOUT_STORAGE_KEY)).toContain(
       'compact',
     );
@@ -88,6 +99,7 @@ describe('liveConvertLayout', () => {
       wrapXml: true,
       paneWidths: [34, 27, 39],
       span: 'roomy',
+      resultsDrawerHeight: DEFAULT_RESULTS_DRAWER_HEIGHT_PX,
     });
     Object.defineProperty(window, 'localStorage', {
       configurable: true,
@@ -106,6 +118,7 @@ describe('liveConvertLayout', () => {
       wrapXml: true,
       paneWidths: [34, 27, 39],
       span: 'roomy',
+      resultsDrawerHeight: DEFAULT_RESULTS_DRAWER_HEIGHT_PX,
     });
     vi.restoreAllMocks();
   });

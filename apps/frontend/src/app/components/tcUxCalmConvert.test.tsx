@@ -48,9 +48,7 @@ describe('TC-UX-CALM leaf components', () => {
       </CalmConvertEmptyHero>,
     );
     expect(screen.getByTestId('convert-empty-hero')).toBeInTheDocument();
-    expect(screen.getByTestId('convert-primary-cta')).toHaveTextContent(
-      'Convert & validate',
-    );
+    expect(screen.getByTestId('convert-primary-cta')).toHaveTextContent('Convert');
     expect(screen.getByTestId('convert-example-chips')).toBeInTheDocument();
     await user.click(screen.getByTestId('convert-example-chip-m'));
     expect(onExampleChip).toHaveBeenCalledWith('m');
@@ -168,8 +166,8 @@ describe('TC-UX-CALM leaf components', () => {
   it('TC-UX-CALM-009: calm copy has no internal planning vocabulary', () => {
     const copy = [
       'Convert a TAC report to IWXXM',
-      'Convert & validate',
-      'Download IWXXM',
+      'Convert',
+      'Download latest',
       'Convert checklist',
       'Valid IWXXM bulletin, ready to send',
     ];

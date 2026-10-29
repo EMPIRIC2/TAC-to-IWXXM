@@ -100,14 +100,18 @@ export function useLiveWorkbenchAssist({
   }
 
   const liveIwxxmRunnerRef = useRef(liveIwxxmRunner);
-  liveIwxxmRunnerRef.current = liveIwxxmRunner;
+  useEffect(() => {
+    liveIwxxmRunnerRef.current = liveIwxxmRunner;
+  }, [liveIwxxmRunner]);
 
   const appendConsole = useCallback((line: Omit<LiveWorkbenchConsoleLine, 'at'>) => {
-    setConsoleLines((prev) => [...prev.slice(-199), { ...line, at: Date.now() }]);
+    // Ephemeral operator notes replace the board (console is current issues only).
+    setConsoleLines([{ ...line, at: Date.now() }]);
   }, []);
 
   const clearConsole = useCallback(() => setConsoleLines([]), []);
 
+  /* eslint-disable react-hooks/set-state-in-effect -- reset/schedule live lint+decode when editor text/product changes */
   useEffect(() => {
     const scheduler = schedulerRef.current!;
 
@@ -120,6 +124,7 @@ export function useLiveWorkbenchAssist({
       setDecodeResiduals([]);
       setDecodeProduct(undefined);
       setDecodeSummary('');
+      setConsoleLines([]);
       setLoading(false);
       return;
     }
@@ -225,10 +230,8 @@ export function useLiveWorkbenchAssist({
             });
           }
         }
-        setConsoleLines((prev) => [
-          ...prev.slice(-200 + nextLines.length),
-          ...nextLines,
-        ]);
+        // Replace — Console shows the current lint pass only (no running history).
+        setConsoleLines(nextLines);
 
         if (liveIwxxm && liveIwxxmRunnerRef.current) {
           await liveIwxxmRunnerRef.current(signal);
@@ -237,8 +240,7 @@ export function useLiveWorkbenchAssist({
         if (isAbortError(err) || signal.aborted) {
           return;
         }
-        setConsoleLines((prev) => [
-          ...prev.slice(-198),
+        setConsoleLines([
           {
             level: 'error',
             source: 'live-assist',
@@ -257,6 +259,7 @@ export function useLiveWorkbenchAssist({
       scheduler.cancel();
     };
   }, [text, product, accessToken, enabled, liveIwxxm]);
+  /* eslint-enable react-hooks/set-state-in-effect */
 
   return {
     issueSpans,

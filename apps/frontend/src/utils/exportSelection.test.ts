@@ -18,6 +18,9 @@ import {
   type ExportCandidateInput,
 } from './exportSelection';
 
+/**
+ *
+ */
 function candidate(
   partial: Partial<ExportCandidateInput> &
     Pick<ExportCandidateInput, 'id' | 'name' | 'source'>,

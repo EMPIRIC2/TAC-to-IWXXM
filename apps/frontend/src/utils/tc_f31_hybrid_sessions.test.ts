@@ -28,6 +28,9 @@ vi.mock('./workSessionApi', () => ({
 import { deleteLocalWorkSession, listLocalWorkSessions } from './localWorkSessionStore';
 import { createWorkSession } from './workSessionApi';
 
+/**
+ *
+ */
 function makeLocalSession(
   overrides: Partial<WorkSession> & Pick<WorkSession, 'id' | 'status'>,
 ): WorkSession {

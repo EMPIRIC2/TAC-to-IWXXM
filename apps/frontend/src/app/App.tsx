@@ -2,7 +2,6 @@ import { useState, useEffect, useLayoutEffect, useRef, useCallback } from 'react
 import { FileConverter } from './components/FileConverter';
 import { MyMetarsPage } from './components/MyMetarsPage';
 import { LintValidationCatalogPage } from './components/LintValidationCatalogPage';
-import { DisseminationOpsPage } from './components/DisseminationOpsPage';
 import { AppShellNav, type ShellPrimaryView } from './components/AppShellNav';
 import { Login } from './components/auth/Login';
 import { Register } from './components/auth/Register';
@@ -57,12 +56,7 @@ type AppView =
  * Function `isPrimaryShellView`.
  */
 function isPrimaryShellView(view: AppView): view is ShellPrimaryView {
-  return (
-    view === 'converter' ||
-    view === 'history' ||
-    view === 'catalog' ||
-    view === 'dissemination-ops'
-  );
+  return view === 'converter' || view === 'history' || view === 'catalog';
 }
 
 /**
@@ -320,8 +314,7 @@ function App() {
 
           {(currentView === 'converter' ||
             currentView === 'history' ||
-            currentView === 'catalog' ||
-            currentView === 'dissemination-ops') && (
+            currentView === 'catalog') && (
             <div hidden={currentView !== 'converter'}>
               <FileConverter
                 onLogout={handleLogout}
@@ -370,13 +363,6 @@ function App() {
                 setCatalogFocusCode(null);
                 setCatalogFocusFamily(null);
               }}
-            />
-          )}
-
-          {currentView === 'dissemination-ops' && (
-            <DisseminationOpsPage
-              accessToken={isAuthenticated ? accessToken : undefined}
-              onRequestLogin={handleRequestLogin}
             />
           )}
 

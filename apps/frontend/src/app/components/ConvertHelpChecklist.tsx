@@ -18,8 +18,8 @@ import { OPERATOR_ONE_PAGER_URL } from '/utils/operatorHelp';
 const STEPS = [
   'Paste a TAC report (or drop a file).',
   'Optional: try an example chip for METAR, TAF, SIGMET, or volcanic ash.',
-  'Select Convert & validate when the preview looks right.',
-  'Download IWXXM when the bulletin is valid.',
+  'Select Convert when the preview looks right.',
+  'Download latest when the bulletin is valid.',
 ] as const;
 
 /**

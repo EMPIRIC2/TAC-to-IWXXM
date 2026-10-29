@@ -21,6 +21,7 @@ import {
   gotoLogin,
   gotoRegister,
   loginAsE2EUser,
+  openConvertDownloadsTab,
   playwrightApiFetch,
 } from './playwright-e2e-helpers';
 
@@ -288,10 +289,6 @@ test.describe('TC-EV060-1006 — Auth UAT Playwright', () => {
     }
 
     await convertManualMetar(page, SAMPLE_METAR);
-    await expect(
-      page.getByRole('region', { name: 'Conversion results', exact: true }),
-    ).toBeVisible({
-      timeout: 45_000,
-    });
+    await openConvertDownloadsTab(page, 45_000);
   });
 });
