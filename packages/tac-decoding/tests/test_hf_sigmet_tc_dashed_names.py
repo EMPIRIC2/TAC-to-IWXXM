@@ -34,3 +34,14 @@ def test_hyphenated_tc_name_choi_wan_still_decodes() -> None:
         "RJJJ SIGMET F04 VALID 051909/060109 RJTD- RJJJ FUKUOKA FIR TC CHOI-WAN OBS=",
     )
     assert codes["CHOI-WAN"] == "Tropical cyclone (CHOI-WAN)"
+
+
+def test_tc_center_spelling_is_not_cyclone_name() -> None:
+    """US spelling after ``TC`` must stay a centre cue, not a cyclone name."""
+    codes = _codes(
+        "YUCC SIGMET 1 VALID 251600/252200 YUDO- "
+        "YUCC AMSWELL FIR TC GLORIA PSN N2706 W07306 "
+        "CB WI 30NM OF TC CENTER MOV W 10KT NC=",
+    )
+    assert codes["GLORIA"] == "Tropical cyclone (GLORIA)"
+    assert codes["CENTER"] == "Center"
