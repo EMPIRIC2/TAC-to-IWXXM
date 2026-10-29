@@ -52,8 +52,7 @@ async function stubWorkbenchNoise(page: Page): Promise<void> {
 }
 
 async function queueTwoTacFiles(page: Page): Promise<void> {
-  const fileInput = page.locator('input[type="file"]').first();
-  await fileInput.setInputFiles([
+  await page.getByLabel('Select TAC files to upload', { exact: true }).setInputFiles([
     {
       name: 'first.tac',
       mimeType: 'text/plain',
@@ -79,8 +78,11 @@ test.describe('T4.1 — UJ-051..053 EV-042 mass ingest + queue + restored destin
     await openPublicConverter(page);
     await expect(page.getByTestId('convert-button')).toBeVisible();
     await expect(page.getByTestId('select-files-button')).toBeVisible();
+    // Opposite state: Select files / Convert remain; Mass Ingest chrome was removed.
     await expect(page.getByTestId('mass-ingest-actions')).toHaveCount(0);
+    // Opposite state: select-files-button is the file entry path, not Mass Ingest Folder.
     await expect(page.getByTestId('mass-ingest-folder-button')).toHaveCount(0);
+    // Opposite state: select-files-button is visible; Mass Ingest ZIP is gone.
     await expect(page.getByTestId('mass-ingest-zip-button')).toHaveCount(0);
 
     await convertManualMetar(page, SAMPLE_METAR);
@@ -92,6 +94,7 @@ test.describe('T4.1 — UJ-051..053 EV-042 mass ingest + queue + restored destin
     ).toBeVisible({
       timeout: 45_000,
     });
+    // Opposite state: Disseminate / Convert & Send replace Upload to Database.
     await expect(page.getByTestId('upload-to-database-button')).toHaveCount(0);
   });
 
@@ -99,7 +102,10 @@ test.describe('T4.1 — UJ-051..053 EV-042 mass ingest + queue + restored destin
     page,
   }) => {
     await openPublicConverter(page);
+    // Opposite state: Select files is the only folder/file entry control.
+    await expect(page.getByTestId('select-files-button')).toBeVisible();
     await expect(page.getByTestId('mass-ingest-folder-button')).toHaveCount(0);
+    // Opposite state: Convert heading and Select files label are present without Mass Ingest copy.
     await expect(page.getByText(/mass ingest/i)).toHaveCount(0);
   });
 
@@ -172,8 +178,9 @@ test.describe('T4.1 — UJ-051..053 EV-042 mass ingest + queue + restored destin
     page,
   }) => {
     await openPublicConverter(page);
-    const fileInput = page.locator('input[type="file"]').first();
-    await fileInput.setInputFiles(FIXTURE_TAC);
+    await page
+      .getByLabel('Select TAC files to upload', { exact: true })
+      .setInputFiles(FIXTURE_TAC);
     await expect(page.getByTestId('operator-work-queue')).toBeVisible({
       timeout: 15_000,
     });

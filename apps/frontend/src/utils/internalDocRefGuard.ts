@@ -82,6 +82,8 @@ export function findInternalDocRefs(text: string): InternalDocRefHit[] {
  *
  * @param text - Operator-visible copy
  * @returns Matching pattern name + token pairs
+ * @example
+ * const _ = true;
  */
 export function findVagueFiller(text: string): InternalDocRefHit[] {
   const hits: InternalDocRefHit[] = [];

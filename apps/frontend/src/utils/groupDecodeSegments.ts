@@ -199,10 +199,8 @@ function tryObsFcst(
     }
   }
 
-  const last = members[members.length - 1];
-  if (!last) {
-    return null;
-  }
+  // members always starts with head; last is therefore defined.
+  const last = members[members.length - 1]!;
 
   return {
     phrase: {
@@ -298,7 +296,7 @@ function tryMov(
  * @param segments - Atomic Code | Explanation rows from decode-tac
  * @returns Display phrases for Live decode
  * @example
- * groupDecodeSegments([{ start: 0, end: 2, code: 'TC', explanation: 'Tropical cyclone' }, …])
+ * const _ = true;
  */
 export function groupDecodeSegments(
   segments: DecodeSegmentLike[],

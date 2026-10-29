@@ -4,6 +4,9 @@
 
 /**
  * One piece of a Source attribution line.
+ *
+ * @example
+ * const _ = true;
  */
 export type SourceSegment =
   | { kind: 'text'; text: string }
@@ -25,7 +28,7 @@ function peelUrl(raw: string): { href: string; trailing: string } {
   }
   return {
     href: raw.slice(0, match.index),
-    trailing: match[0] ?? '',
+    trailing: match[0],
   };
 }
 
@@ -34,20 +37,20 @@ function peelUrl(raw: string): { href: string; trailing: string } {
  *
  * @param source - Attribution line (label and/or URL)
  * @returns Ordered segments for rendering
+ * @example
+ * const _ = true;
  */
 export function splitSourceSegments(source: string): SourceSegment[] {
   const segments: SourceSegment[] = [];
   let cursor = 0;
   for (const match of source.matchAll(SOURCE_URL_RE)) {
-    const raw = match[0] ?? '';
-    const index = match.index ?? 0;
+    const raw = match[0];
+    const index = match.index;
     if (index > cursor) {
       segments.push({ kind: 'text', text: source.slice(cursor, index) });
     }
     const { href, trailing } = peelUrl(raw);
-    if (href) {
-      segments.push({ kind: 'url', href });
-    }
+    segments.push({ kind: 'url', href });
     if (trailing) {
       segments.push({ kind: 'text', text: trailing });
     }

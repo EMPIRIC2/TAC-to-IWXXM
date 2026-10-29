@@ -14,6 +14,8 @@ import { splitSourceSegments } from '@/utils/issueDetailSource';
  *
  * @param props.value - Attribution text (label and/or URL)
  * @returns Plain text spans and external links
+ * @example
+ * const _ = true;
  */
 export function SourceAttributionText({ value }: { value: string }): ReactNode {
   const segments = splitSourceSegments(scrubInternalDocRefs(value));

@@ -48,4 +48,11 @@ describe('CalmConvertEmptyAffordances', () => {
     expect(screen.getByTestId('convert-example-chips')).toBeInTheDocument();
     expect(screen.queryByText('Other tasks')).not.toBeInTheDocument();
   });
+
+  it('renders nothing when there are no chips, other tasks, or profile', () => {
+    const { container } = render(
+      <CalmConvertEmptyAffordances exampleChips={[]} onExampleChip={() => undefined} />,
+    );
+    expect(container).toBeEmptyDOMElement();
+  });
 });

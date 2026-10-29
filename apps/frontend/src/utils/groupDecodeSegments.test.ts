@@ -168,6 +168,52 @@ describe('groupDecodeSegments', () => {
     expect(groupDecodeSegments(input)).toEqual(input);
   });
 
+  it('does not group CB when the next token is not Top', () => {
+    const input = [
+      seg(0, 2, 'CB', 'Cumulonimbus'),
+      seg(3, 5, 'NC', 'No change'),
+      seg(6, 11, 'FL510', 'Flight level 510'),
+    ];
+    expect(groupDecodeSegments(input)).toEqual(input);
+  });
+
+  it('does not group CB TOP when trailing segments are missing', () => {
+    expect(
+      groupDecodeSegments([seg(0, 2, 'CB', 'Cumulonimbus'), seg(3, 6, 'TOP', 'Top')]),
+    ).toEqual([seg(0, 2, 'CB', 'Cumulonimbus'), seg(3, 6, 'TOP', 'Top')]);
+  });
+
+  it('does not group Moving without a valid direction or speed', () => {
+    expect(
+      groupDecodeSegments([
+        seg(0, 3, 'MOV', 'Moving'),
+        seg(4, 5, 'X', 'Unknown token'),
+        seg(6, 10, '15KT', 'Speed 15 kt'),
+      ]),
+    ).toEqual([
+      seg(0, 3, 'MOV', 'Moving'),
+      seg(4, 5, 'X', 'Unknown token'),
+      seg(6, 10, '15KT', 'Speed 15 kt'),
+    ]);
+    expect(
+      groupDecodeSegments([
+        seg(0, 3, 'MOV', 'Moving'),
+        seg(4, 5, 'W', 'Movement direction (West)'),
+        seg(6, 8, 'NC', 'No change'),
+      ]),
+    ).toEqual([
+      seg(0, 3, 'MOV', 'Moving'),
+      seg(4, 5, 'W', 'Movement direction (West)'),
+      seg(6, 8, 'NC', 'No change'),
+    ]);
+  });
+
+  it('skips sparse undefined holes without throwing', () => {
+    const sparse: DecodeSegmentLike[] = [];
+    sparse.length = 1;
+    expect(groupDecodeSegments(sparse)).toEqual([]);
+  });
+
   it('does not group TC without a named cyclone follow-on', () => {
     const input = [seg(0, 2, 'TC', 'Tropical cyclone'), seg(3, 6, 'OBS', 'Observed')];
     expect(groupDecodeSegments(input)).toEqual(input);

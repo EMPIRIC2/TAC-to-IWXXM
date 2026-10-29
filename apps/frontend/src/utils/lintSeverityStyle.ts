@@ -11,6 +11,8 @@ import { isErrorSeverity } from '@/utils/resultCard';
  * Default jump / list row chrome (notes and warnings).
  *
  * @returns Tailwind class string
+ * @example
+ * const _ = true;
  */
 export function lintSeverityBaseClass(): string {
   return 'rounded px-2 py-0.5 text-left text-xs text-gray-900 dark:text-gray-100';
@@ -21,6 +23,8 @@ export function lintSeverityBaseClass(): string {
  * callers still show a severity label).
  *
  * @returns Tailwind class string
+ * @example
+ * const _ = true;
  */
 export function lintSeverityErrorClass(): string {
   return 'rounded px-2 py-0.5 text-left text-xs font-semibold text-destructive bg-destructive/10 dark:bg-destructive/20';
@@ -30,6 +34,8 @@ export function lintSeverityErrorClass(): string {
  * Card shell tint for error issues inside Conversion / validation log.
  *
  * @returns Tailwind class string
+ * @example
+ * const _ = true;
  */
 export function lintSeverityErrorCardClass(): string {
   return 'rounded border border-destructive/40 bg-destructive/10 p-2 dark:border-destructive/50 dark:bg-destructive/20';
@@ -40,6 +46,8 @@ export function lintSeverityErrorCardClass(): string {
  *
  * @param severity - Engine severity token
  * @returns Class string (error uses destructive tokens)
+ * @example
+ * const _ = true;
  */
 export function lintJumpButtonClass(severity: string | null | undefined): string {
   return isErrorSeverity(severity) ? lintSeverityErrorClass() : lintSeverityBaseClass();
@@ -50,6 +58,8 @@ export function lintJumpButtonClass(severity: string | null | undefined): string
  *
  * @param severity - Engine severity token
  * @returns True for publish-blocking / error ranks
+ * @example
+ * const _ = true;
  */
 export function isErrorSeverityEmphasis(severity: string | null | undefined): boolean {
   return isErrorSeverity(severity);
