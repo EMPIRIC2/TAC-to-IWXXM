@@ -90,6 +90,49 @@ describe('groupDecodeSegments', () => {
     ]);
   });
 
+  it('does not group FIR name without a Flight information region follow-on', () => {
+    const input = [
+      seg(0, 7, 'FUKUOKA', 'FIR name (FUKUOKA)'),
+      seg(8, 11, 'OBS', 'Observed'),
+    ];
+    expect(groupDecodeSegments(input)).toEqual(input);
+  });
+
+  it('skips latitude-shaped tokens that do not match the compact regex', () => {
+    const phrases = groupDecodeSegments([
+      seg(0, 3, 'OBS', 'Observed'),
+      seg(4, 9, '1800Z', 'Time 18:00 UTC'),
+      seg(10, 14, 'LATX', 'Not a latitude'),
+    ]);
+    expect(phrases).toEqual([
+      {
+        start: 0,
+        end: 9,
+        code: 'OBS 1800Z',
+        explanation: 'Observed at 18:00 UTC',
+      },
+      seg(10, 14, 'LATX', 'Not a latitude'),
+    ]);
+  });
+
+  it('keeps latitude when the next token is not a longitude', () => {
+    const phrases = groupDecodeSegments([
+      seg(0, 3, 'OBS', 'Observed'),
+      seg(4, 9, '1800Z', 'Time 18:00 UTC'),
+      seg(10, 15, 'N1540', "Latitude 15°40' N"),
+      seg(16, 18, 'CB', 'Cumulonimbus'),
+    ]);
+    expect(phrases).toEqual([
+      {
+        start: 0,
+        end: 15,
+        code: 'OBS 1800Z N1540',
+        explanation: "Observed at 18:00 UTC near 15°40'N",
+      },
+      seg(16, 18, 'CB', 'Cumulonimbus'),
+    ]);
+  });
+
   it('groups FIR name + FIR marker', () => {
     const phrases = groupDecodeSegments([
       seg(66, 73, 'FUKUOKA', 'FIR name (FUKUOKA)'),

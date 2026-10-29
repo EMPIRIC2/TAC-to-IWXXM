@@ -9,9 +9,11 @@ import pytest
 from tac_validate.profiles import (
     PROFILE_ANNEX3,
     PROFILE_CA_ECCC,
+    PROFILE_CA_MSC_SIGMET,
     PROFILE_IN_IMD,
     PROFILE_IWXXM_US,
     PROFILE_US_NWS_CONVECTIVE_SIGMET,
+    PROFILE_US_NWS_G_AIRMET,
     effective_lint_profile,
     iwxxm_us_lint_applicable,
 )
@@ -32,6 +34,9 @@ from tac_validate.profiles import (
         (PROFILE_US_NWS_CONVECTIVE_SIGMET, "VAA", PROFILE_ANNEX3),
         (PROFILE_US_NWS_CONVECTIVE_SIGMET, "METAR", PROFILE_ANNEX3),
         (PROFILE_US_NWS_CONVECTIVE_SIGMET, "SIGMET", PROFILE_US_NWS_CONVECTIVE_SIGMET),
+        # Catalog overlays outside the hard-coded national trio fall back when N/A.
+        (PROFILE_US_NWS_G_AIRMET, "METAR", PROFILE_ANNEX3),
+        (PROFILE_CA_MSC_SIGMET, "TAF", PROFILE_ANNEX3),
         ("not-a-real-profile", "METAR", PROFILE_ANNEX3),
         ("IWXXM_US", "vaa", PROFILE_ANNEX3),
     ],

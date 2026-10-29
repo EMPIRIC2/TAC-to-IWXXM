@@ -182,19 +182,17 @@ function tryObsFcst(
 
   let near = '';
   const latSeg = segments[j];
-  if (latSeg && RE_LAT.test(latSeg.explanation)) {
-    const lat = compactLat(latSeg.explanation);
+  const lat = latSeg ? compactLat(latSeg.explanation) : null;
+  if (latSeg && lat) {
     members.push(latSeg);
     j += 1;
     const lonSeg = segments[j];
-    if (lonSeg && RE_LON.test(lonSeg.explanation)) {
-      const lon = compactLon(lonSeg.explanation);
+    const lon = lonSeg ? compactLon(lonSeg.explanation) : null;
+    if (lonSeg && lon) {
       members.push(lonSeg);
       j += 1;
-      if (lat && lon) {
-        near = ` near ${lat} ${lon}`;
-      }
-    } else if (lat) {
+      near = ` near ${lat} ${lon}`;
+    } else {
       near = ` near ${lat}`;
     }
   }
