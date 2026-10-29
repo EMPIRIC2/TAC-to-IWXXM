@@ -5,6 +5,7 @@ import { expect, test } from '@playwright/test';
 import {
   convertManualMetar,
   fillManualTac,
+  openConvertSettings,
   openConverterForE2e,
 } from './playwright-e2e-helpers';
 
@@ -17,8 +18,9 @@ test.describe('UJ-079 reference lookup', () => {
     page,
   }) => {
     await openConverterForE2e(page);
-    // Empty calm chrome hides convert-setup; seed TAC so product/library appear.
+    // Product / library live in Settings; seed TAC so the shell is open.
     await fillManualTac(page, 'SIGMET');
+    await openConvertSettings(page);
     await expect(page.getByTestId('convert-setup')).toBeVisible();
     await page.locator('#param-product').selectOption('SIGMET');
     await page.getByTestId('convert-advanced-engines').locator('summary').click();

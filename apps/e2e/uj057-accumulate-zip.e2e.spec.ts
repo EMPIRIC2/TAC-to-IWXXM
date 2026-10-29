@@ -8,6 +8,7 @@ import { expect, test } from '@playwright/test';
 import {
   convertManualMetar,
   dismissPrivacyNoticeIfPresent,
+  openConvertSettings,
   openPublicConverter,
 } from './playwright-e2e-helpers';
 
@@ -20,14 +21,7 @@ test.describe('UJ-057: Accumulate conversions → Download ZIP (TC-EV057-903)', 
   }) => {
     await openPublicConverter(page);
     await dismissPrivacyNoticeIfPresent(page);
-
-    const product = page.locator('#param-product');
-    if (!(await product.isVisible().catch(() => false))) {
-      await page
-        .getByLabel('Expand parameters', { exact: true })
-        .click()
-        .catch(() => undefined);
-    }
+    await openConvertSettings(page);
     await page.locator('#param-product').selectOption('METAR');
 
     await convertManualMetar(page, TAC_A);
@@ -36,11 +30,13 @@ test.describe('UJ-057: Accumulate conversions → Download ZIP (TC-EV057-903)', 
     ).toBeVisible({
       timeout: 30_000,
     });
+    await openConvertSettings(page);
     await expect(page.getByTestId('download-zip-button')).toHaveAccessibleName(
       /download all 1 converted files as zip/i,
     );
 
     await convertManualMetar(page, TAC_B);
+    await openConvertSettings(page);
     await expect(page.getByTestId('download-zip-button')).toHaveAccessibleName(
       /download all 2 converted files as zip/i,
       { timeout: 30_000 },
@@ -51,6 +47,7 @@ test.describe('UJ-057: Accumulate conversions → Download ZIP (TC-EV057-903)', 
     const download = await downloadPromise;
     expect(download.suggestedFilename()).toMatch(/^METARKJF_\d{14}\.zip$/);
 
+    await openConvertSettings(page);
     await page.getByTestId('clear-queue-button').click();
     // Opposite state: the conversion results region is visible before Clear.
     await expect(

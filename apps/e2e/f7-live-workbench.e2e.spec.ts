@@ -4,7 +4,7 @@
  * Spec: docs/test-plan.md TC-F7-001, TC-F7-004; execution-plan T4.4.
  */
 import { expect, test } from '@playwright/test';
-import { openConverterForE2e } from './playwright-e2e-helpers';
+import { openConvertSettings, openConverterForE2e } from './playwright-e2e-helpers';
 
 const METAR_TAC = 'METAR KJFK 121251Z 24016G28KT 3SM -RA BR BKN020 OVC040 14/11 A2990';
 
@@ -70,9 +70,9 @@ test.describe('T4.4 / TC-F7-001 + TC-F7-004: live workbench', () => {
     await expect(page.getByTestId('tac-editor')).toBeVisible();
     await expect(page.getByTestId('decode-panel')).toBeVisible();
     await expect(page.getByTestId('workbench-console')).toBeVisible();
+    await openConvertSettings(page);
     await expect(page.getByTestId('live-iwxxm-toggle')).not.toBeChecked();
 
-    await page.getByLabel('Expand parameters', { exact: true }).click();
     const product = page.locator('#param-product');
     await expect(product).toBeVisible();
     for (const value of [

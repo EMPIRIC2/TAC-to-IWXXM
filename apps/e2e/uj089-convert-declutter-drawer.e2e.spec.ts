@@ -78,6 +78,12 @@ test.describe('UJ-089 — Convert results drawer declutter', () => {
       'aria-label',
       'Settings',
     );
+    await page.getByTestId('convert-settings-cog').click();
+    await expect(page.getByTestId('convert-setup')).toBeVisible();
+    await expect(page.getByTestId('product-type-select')).toBeVisible();
+    await expect(page.getByTestId('examples-select')).toBeVisible();
+    // Opposite state: product/examples are not mid-stack above the TAC panes.
+    await expect(page.getByTestId('convert-body')).not.toContainText('Product type');
     // Opposite state: Compare versions chrome used to render after convert (removed).
     await expect(page.getByTestId('output-version-compare')).toHaveCount(0);
   });

@@ -118,7 +118,7 @@ test.describe('UJ-088 — Calmer Convert + Help checklist', () => {
     await expect(page.getByTestId('convert-results-drawer')).toBeVisible();
     await expect(page.getByTestId('convert-results-tab-iwxxm')).toBeVisible();
     await expect(
-      page.getByRole('button', { name: 'Download IWXXM', exact: true }),
+      page.getByRole('button', { name: 'Download latest', exact: true }),
     ).toBeVisible();
     // G2 — TC-UX-CALM-006: TAC locked until Edit.
     await expect(page.getByTestId('convert-tac-readonly')).toBeVisible();

@@ -8,6 +8,8 @@
 import { expect, test, type Page, type Request } from '@playwright/test';
 import {
   dismissPrivacyNoticeIfPresent,
+  fillManualTac,
+  openConvertSettings,
   openPublicConverter,
 } from './playwright-e2e-helpers';
 
@@ -521,6 +523,8 @@ test.describe('UJ-072: ConversionProfile editor (EV-933 / TC-EV933-006)', () => 
 
     await openPublicConverter(page);
     await dismissPrivacyNoticeIfPresent(page);
+    await fillManualTac(page, 'METAR');
+    await openConvertSettings(page);
 
     await expect(page.getByTestId('country-preset-select')).toHaveValue('ICAO_2025');
     await page.getByTestId('examples-select').click();

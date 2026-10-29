@@ -13,6 +13,7 @@ import {
   fillManualTac,
   openPublicConverter,
   playwrightApiFetch,
+  selectInputMode,
 } from './playwright-e2e-helpers';
 
 const AHL_WELL_FORMED = `SAUS31 KZNY 121200
@@ -80,7 +81,7 @@ test.describe('EV-060 T2 — UJ-059 AHL bulletin', () => {
 
   test('UJ-059: AHL mode convert shows bulletin summary', async ({ page }) => {
     await openPublicConverter(page);
-    await page.getByTestId('input-mode-ahl_bulletin').click();
+    await selectInputMode(page, 'ahl_bulletin');
     await fillManualTac(page, AHL_WELL_FORMED);
     await page.getByTestId('convert-button').click();
     await expect(page.getByTestId('bulletin-summary')).toBeVisible({ timeout: 60_000 });
@@ -125,8 +126,10 @@ test.describe('EV-060 T2 — UJ-060 IWXXM product pass-through', () => {
       /Lint and validate IWXXM XML/i,
     );
     await expect(page.getByTestId('convert-button')).toHaveText(/Lint & validate/i);
-    await expect(page.getByTestId('input-mode-validate_iwxxm')).toBeEnabled();
-    await page.getByTestId('input-mode-validate_iwxxm').click();
+    await selectInputMode(page, 'validate_iwxxm');
+    await expect(page.getByTestId('input-mode-validate_iwxxm')).toHaveClass(
+      /bg-blue-700|bg-blue-600/,
+    );
     await expect(page.getByTestId('validate-iwxxm-help')).toBeVisible();
   });
 

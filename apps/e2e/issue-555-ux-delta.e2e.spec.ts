@@ -2,7 +2,11 @@
  * UJ-001 delta — error log + accumulate results (F7.r / #903 supersedes #555 replace).
  */
 import { expect, test } from '@playwright/test';
-import { convertManualMetar, openConverterForE2e } from './playwright-e2e-helpers';
+import {
+  convertManualMetar,
+  openConverterForE2e,
+  openConvertSettings,
+} from './playwright-e2e-helpers';
 
 test.describe('UJ-001 delta — accumulate results + error log', () => {
   test('second successful convert accumulates with first result card', async ({
@@ -39,6 +43,7 @@ test.describe('UJ-001 delta — accumulate results + error log', () => {
         exact: true,
       }),
     ).toBeVisible();
+    await openConvertSettings(page);
     await expect(page.getByTestId('download-zip-button')).toHaveAccessibleName(
       /download all 2 converted files as zip/i,
     );

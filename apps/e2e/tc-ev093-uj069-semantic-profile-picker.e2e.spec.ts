@@ -5,7 +5,7 @@
  * [Corpus: product §F7.w] [Corpus: journeys] [Corpus: tests]
  */
 import { expect, test } from '@playwright/test';
-import { openPublicConverter } from './playwright-e2e-helpers';
+import { openPublicConverter, selectInputMode } from './playwright-e2e-helpers';
 
 const AHL_WELL_FORMED = `SAUS31 KZNY 121200
 METAR KJFK 121151Z 18008KT 10SM FEW250 22/14 A3012=
@@ -63,7 +63,7 @@ test.describe('EV-bridge — Convert library pickers (AHL)', () => {
       .getByTestId('conversion-library-select')
       .selectOption('LIB.CONVERSION.US_FAA_NWS');
 
-    await page.getByTestId('input-mode-ahl_bulletin').click();
+    await selectInputMode(page, 'ahl_bulletin');
     const editor = page.getByTestId('tac-editor');
     await editor.click();
     await page.keyboard.press(process.platform === 'darwin' ? 'Meta+A' : 'Control+A');

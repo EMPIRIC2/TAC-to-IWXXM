@@ -7,6 +7,7 @@ import { expect, test } from '@playwright/test';
 import {
   dismissPrivacyNoticeIfPresent,
   openPublicConverter,
+  selectInputMode,
 } from './playwright-e2e-helpers';
 
 const GOOD_XML = `<?xml version="1.0" encoding="UTF-8"?>
@@ -29,7 +30,7 @@ test.describe('UJ-058: Validate existing IWXXM (TC-EV057-838)', () => {
     await openPublicConverter(page);
     await dismissPrivacyNoticeIfPresent(page);
 
-    await page.getByTestId('input-mode-validate_iwxxm').click();
+    await selectInputMode(page, 'validate_iwxxm');
     await expect(page.getByTestId('validate-iwxxm-help')).toBeVisible();
 
     const editor = page.getByLabel('Enter IWXXM XML manually', { exact: true });
@@ -49,7 +50,7 @@ test.describe('UJ-058: Validate existing IWXXM (TC-EV057-838)', () => {
     await openPublicConverter(page);
     await dismissPrivacyNoticeIfPresent(page);
 
-    await page.getByTestId('input-mode-validate_iwxxm').click();
+    await selectInputMode(page, 'validate_iwxxm');
     const editor = page.getByLabel('Enter IWXXM XML manually', { exact: true });
     await editor.click();
     await page.keyboard.press(process.platform === 'darwin' ? 'Meta+A' : 'Control+A');
