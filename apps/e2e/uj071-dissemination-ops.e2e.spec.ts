@@ -19,6 +19,8 @@ test.describe('Dissemination ops shell tab', () => {
     await expect(page.getByTestId('shell-nav-converter')).toBeVisible();
     await expect(page.getByTestId('shell-nav-history')).toBeVisible();
     await expect(page.getByTestId('shell-nav-catalog')).toBeVisible();
+    // Opposite state: Convert/History/Catalog nav is visible; Diss ops tab/page are gone.
+    // Locators can match only if the removed Dissemination ops shell surface returns.
     await expect(page.getByTestId('shell-nav-dissemination-ops')).toHaveCount(0);
     await expect(page.getByTestId('dissemination-ops-page')).toHaveCount(0);
   });
