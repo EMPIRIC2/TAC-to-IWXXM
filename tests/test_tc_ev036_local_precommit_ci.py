@@ -199,7 +199,16 @@ class TestTcEv036003RemoteUnitsCoverageNoValidate:
     def test_coverage_pr_comment_job_shape(self, workflow_doc: dict) -> None:
         job = workflow_doc["jobs"]["coverage-pr-comment"]
         assert job["needs"] == ["test"] or job["needs"] == "test"
-        assert job.get("if") == "github.event_name == 'pull_request'"
+        assert "pull_request" in str(job.get("if"))
+        assert "refs/heads/stage" in str(job.get("if"))
+        sticky = [
+            s
+            for s in job.get("steps", [])
+            if "sticky" in (s.get("name") or "").lower()
+            or "Post or update" in (s.get("name") or "")
+        ]
+        assert sticky
+        assert sticky[0].get("if") == "github.event_name == 'pull_request'"
         perms = job.get("permissions") or {}
         assert perms.get("pull-requests") == "write"
         step_names = [s.get("name", "") for s in job.get("steps", [])]

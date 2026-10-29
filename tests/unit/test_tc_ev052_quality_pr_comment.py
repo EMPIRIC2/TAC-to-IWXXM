@@ -38,13 +38,24 @@ class TestTcEv052004QualityStickyJob:
 
     def test_job_shape_parity_with_coverage(self, workflow_doc: dict) -> None:
         job = workflow_doc["jobs"]["quality-pr-comment"]
-        assert job.get("if") == "github.event_name == 'pull_request'"
+        cov = workflow_doc["jobs"]["coverage-pr-comment"]
+        # Stage pushes share the job; sticky comment step stays PR-only.
+        assert "pull_request" in str(job.get("if"))
+        assert "refs/heads/stage" in str(job.get("if"))
+        assert str(job.get("if")).strip() == str(cov.get("if")).strip()
         perms = job.get("permissions") or {}
         assert perms.get("pull-requests") == "write"
         step_names = [s.get("name", "") for s in job.get("steps", [])]
         assert any("Collect quality" in n for n in step_names)
         assert any("Format quality" in n for n in step_names)
-        assert any("sticky" in n.lower() or "Post or update" in n for n in step_names)
+        sticky = [
+            s
+            for s in job.get("steps", [])
+            if "sticky" in (s.get("name") or "").lower()
+            or "Post or update" in (s.get("name") or "")
+        ]
+        assert sticky
+        assert sticky[0].get("if") == "github.event_name == 'pull_request'"
 
     def test_scripts_exist(self) -> None:
         assert FORMAT_SCRIPT.is_file()
