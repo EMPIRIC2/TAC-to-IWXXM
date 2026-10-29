@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 # Fail PRs to main unless head is stage and tip has a green Staging smoke run.
+# Also re-check Staging smoke + /health on pushes to stage (same tip gate).
 # Traces: F30 AC12 / TC-F30-012 / ADR-034 / #886 / EV-044 (staging LB Host-header)
 set -euo pipefail
 
@@ -7,6 +8,7 @@ REPO="${GITHUB_REPOSITORY:?}"
 EVENT_NAME="${GITHUB_EVENT_NAME:?}"
 BASE_REF="${GITHUB_BASE_REF:-}"
 HEAD_REF="${GITHUB_HEAD_REF:-}"
+REF="${GITHUB_REF:-}"
 SHA="${GITHUB_SHA:?}"
 if [[ -n "${GITHUB_EVENT_PATH:-}" && -f "${GITHUB_EVENT_PATH}" ]]; then
   PR_SHA="$(python3 -c 'import json,sys; d=json.load(open(sys.argv[1])); print(d.get("pull_request",{}).get("head",{}).get("sha",""))' "${GITHUB_EVENT_PATH}" || true)"
@@ -15,22 +17,22 @@ if [[ -n "${GITHUB_EVENT_PATH:-}" && -f "${GITHUB_EVENT_PATH}" ]]; then
   fi
 fi
 
-if [[ "${EVENT_NAME}" != "pull_request" ]]; then
-  echo "staging-gate: skip (event=${EVENT_NAME})"
+if [[ "${EVENT_NAME}" == "pull_request" ]]; then
+  if [[ "${BASE_REF}" != "main" ]]; then
+    echo "staging-gate: skip (base=${BASE_REF})"
+    exit 0
+  fi
+  if [[ "${HEAD_REF}" != "stage" ]]; then
+    echo "::error::PRs to main must come from branch 'stage' (got '${HEAD_REF}'). Promote via stage→main only (ADR-034)."
+    exit 1
+  fi
+  echo "staging-gate: promote PR head=stage sha=${SHA}"
+elif [[ "${EVENT_NAME}" == "push" && "${REF}" == "refs/heads/stage" ]]; then
+  echo "staging-gate: stage push sha=${SHA}"
+else
+  echo "staging-gate: skip (event=${EVENT_NAME} ref=${REF})"
   exit 0
 fi
-
-if [[ "${BASE_REF}" != "main" ]]; then
-  echo "staging-gate: skip (base=${BASE_REF})"
-  exit 0
-fi
-
-if [[ "${HEAD_REF}" != "stage" ]]; then
-  echo "::error::PRs to main must come from branch 'stage' (got '${HEAD_REF}'). Promote via stage→main only (ADR-034)."
-  exit 1
-fi
-
-echo "staging-gate: head=stage sha=${SHA}"
 
 api() {
   local path="$1"
@@ -43,7 +45,7 @@ api() {
 
 TMP="$(mktemp)"
 trap 'rm -f "${TMP}"' EXIT
-# PR synchronize often races the stage-push Staging smoke job — poll up to ~12 minutes.
+# PR synchronize / stage Deploy often races Staging smoke — poll up to ~12 minutes.
 DEADLINE=$((SECONDS + 720))
 ok_count=0
 while true; do
@@ -73,7 +75,7 @@ with open(sys.argv[1], encoding="utf-8") as f:
     data = json.load(f)
 runs = data.get("check_runs") or []
 names = sorted({r.get("name") for r in runs if r.get("conclusion") == "success"})
-print("::error::No successful 'Staging smoke' check-run for this SHA after waiting. Merge to stage, wait for Deploy + Staging smoke, then open/update the PR.")
+print("::error::No successful 'Staging smoke' check-run for this SHA after waiting. Wait for Deploy + Staging smoke on stage, then re-run / update the promote PR.")
 print("successful check names sample:", ", ".join(names[:30]))
 sys.exit(1)
 PY

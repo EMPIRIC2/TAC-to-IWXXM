@@ -25,7 +25,8 @@ DOKS clusters** (not only namespaces). Use env-scoped kubeconfigs.
 1. Feature → PR → `stage` (required CI).
 2. Merge to `stage` → auto Deploy **staging cluster** after full Deploy `needs` (incl.
    `e2e-smoke`) + **Staging smoke** (HTTPS or Host-header via staging LB
-   `143.244.202.13` / `STAGING_LB_IP`).
+   `143.244.202.13` / `STAGING_LB_IP`). Stage pushes also run **E2E Full**, **Staging
+   gate**, **Ops EV-933**, and coverage/quality job summaries.
 3. **Release prep on `stage` (recommended before every promote):** bump publishable
    package **CalVer** (`YYYY.MM.DD` / `.N` per ADR-043) when those packages changed, cut
    `docs/CHANGELOG.md`, commit on

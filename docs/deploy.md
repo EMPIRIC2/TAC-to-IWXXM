@@ -164,12 +164,14 @@ services without failing (see BUG-2026-08-03). GHCR push continues; DOKS is the 
    | `Test (alembic / TC-EV031-002)` | Alembic idempotency |
    | `Lint` | ruff + eslint (`make lint`) |
    | `Typecheck` | basedpyright + tsc (`make typecheck`) |
-   | `E2E Full (Playwright)` | Full Playwright suite on promote PRs only — **not** smoke-only |
-   | `Staging gate` | Head=`stage` + tip Staging smoke (existing) |
+   | `E2E Full (Playwright)` | Full Playwright suite on **stage pushes** and on promote PRs — **not** smoke-only |
+   | `Staging gate` | Head=`stage` + tip Staging smoke (promote PRs); also re-checks tip smoke + `/health` on **stage pushes** |
    | Also retained | `Rust crates (fmt/clippy/test)`, `tac2iwxxm PyO3 (maturin)`, `iwxxm-validate PyO3 (maturin)`, `Converter perf (tac2iwxxm)` |
 
    `E2E Smoke (Playwright)` remains for Deploy `needs` on `stage` pushes; smoke-only is
-   **insufficient** as the promote E2E bar (#1015).
+   **insufficient** as the promote E2E bar (#1015). Stage pushes also run **E2E Full**,
+   **Ops EV-933**, and coverage/quality summaries (job summary; sticky comments stay
+   PR-only). [Corpus: deploy] [Corpus: tests]
 
    Apply / refresh rulesets (admin): `bash scripts/deploy/apply_gh_branch_rulesets.sh`
    (see [ops/doks-staging-dns-runbook.md](ops/doks-staging-dns-runbook.md) §GitHub admin).

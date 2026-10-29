@@ -2090,14 +2090,16 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
 - **Pass criteria**: `gh api` rulesets/protection show required PR + block force push
 - **Source**: F30 AC11; D-S052-gh
 
-### TC-F30-012: staging-gate on PRs to main
+### TC-F30-012: staging-gate on PRs to main (and stage pushes)
 
 - **Level**: CI
 - **Objective**: PRs targeting `main` fail unless head branch is `stage` and tip has green
-  **Staging smoke** (H0c/H1 + H4–H5 against staging DNS)
-- **Pass criteria**: `staging-gate` job fails for non-`stage` heads; passes when Staging smoke
-  succeeded for the SHA; documented in deploy.md
-- **Source**: F30 AC12; D-S052-promote
+  **Staging smoke** (H0c/H1 + H4–H5 against staging DNS). Pushes to `stage` re-run the same
+  tip smoke + `/health` check after Deploy.
+- **Pass criteria**: `staging-gate` job fails for non-`stage` heads on promote PRs; passes when
+  Staging smoke succeeded for the SHA; also runs (not skipped) on `refs/heads/stage` pushes;
+  documented in deploy.md
+- **Source**: F30 AC12; D-S052-promote; [Corpus: deploy] [Corpus: tests]
 
 ### TC-F30-013: Shared-cluster staging ns teardown (EV-044)
 

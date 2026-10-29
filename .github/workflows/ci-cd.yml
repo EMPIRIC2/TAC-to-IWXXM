@@ -45,13 +45,15 @@ env:
   FRONTEND_VITE_API_BASE_URL: https://api.tac-to-iwxxm.com
 
 jobs:
-  # EV-933 — staging Alembic head + PROFILE_OVERLAY_HMAC_SECRET (workflow_dispatch ops).
+  # EV-933 — staging Alembic head + PROFILE_OVERLAY_HMAC_SECRET.
+  # Runs on stage pushes and on workflow_dispatch ops=ev933-staging.
   ops-ev933-staging:
     name: Ops EV-933 staging (Alembic + HMAC)
     runs-on: ubuntu-latest
     if: >
-      github.event_name == 'workflow_dispatch' &&
-      github.event.inputs.ops == 'ev933-staging'
+      (github.event_name == 'workflow_dispatch' &&
+       github.event.inputs.ops == 'ev933-staging') ||
+      (github.event_name == 'push' && github.ref == 'refs/heads/stage')
     environment: staging
     permissions:
       contents: read
@@ -83,10 +85,13 @@ jobs:
         run: bash scripts/deploy/doks_staging_ev933_ops.sh
 
   # EV-043 / TC-F30-012 — PRs to main must promote from stage after Staging smoke.
+  # Also re-validates tip Staging smoke + /health on every push to stage.
   staging-gate:
     runs-on: ubuntu-latest
     name: Staging gate
-    if: github.event_name == 'pull_request' && github.base_ref == 'main'
+    if: >
+      (github.event_name == 'pull_request' && github.base_ref == 'main') ||
+      (github.event_name == 'push' && github.ref == 'refs/heads/stage')
     permissions:
       contents: read
       checks: read
@@ -507,11 +512,14 @@ jobs:
         run: make test-bats
 
   # EV-036 — sticky PR comment with coverage summary (no Codecov; local artifacts only).
+  # On stage pushes: same report → Actions job summary (no PR to comment on).
   coverage-pr-comment:
     runs-on: ubuntu-latest
     name: Coverage PR comment
     needs: [test]
-    if: github.event_name == 'pull_request'
+    if: >
+      github.event_name == 'pull_request' ||
+      (github.event_name == 'push' && github.ref == 'refs/heads/stage')
     permissions:
       contents: read
       pull-requests: write
@@ -550,8 +558,13 @@ jobs:
             cat coverage-pr-comment.md
             echo "EOF"
           } >> "$GITHUB_OUTPUT"
+          {
+            echo "## Coverage summary"
+            cat coverage-pr-comment.md
+          } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Post or update sticky PR comment
+        if: github.event_name == 'pull_request'
         uses: actions/github-script@v7
         with:
           script: |
@@ -598,10 +611,13 @@ jobs:
             }
 
   # EV-052 / TC-EV052-004 — sticky PR comment #2: quality-matrix + golden outcomes.
+  # On stage pushes: same report → Actions job summary (no PR to comment on).
   quality-pr-comment:
     runs-on: ubuntu-latest
     name: Quality PR comment
-    if: github.event_name == 'pull_request'
+    if: >
+      github.event_name == 'pull_request' ||
+      (github.event_name == 'push' && github.ref == 'refs/heads/stage')
     permissions:
       contents: read
       pull-requests: write
@@ -631,8 +647,13 @@ jobs:
         run: |
           python3 scripts/ci/format_quality_pr_comment.py quality-artifacts \
             > quality-pr-comment.md
+          {
+            echo "## Quality / golden summary"
+            cat quality-pr-comment.md
+          } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Post or update sticky quality PR comment
+        if: github.event_name == 'pull_request'
         uses: actions/github-script@v7
         with:
           script: |
@@ -953,13 +974,16 @@ jobs:
           retention-days: 7
 
   # ============================================================================
-  # E2E FULL — Playwright full suite on stage→main promote PRs only (EV-061 / #1015).
+  # E2E FULL — Playwright full suite (EV-061 / #1015).
+  # Runs on stage pushes and on stage→main promote PRs.
   # Distinct from e2e-smoke (Deploy needs). Required check context: E2E Full (Playwright).
   # ============================================================================
   e2e-full:
     runs-on: ubuntu-latest
     name: E2E Full (Playwright)
-    if: github.event_name == 'pull_request' && github.base_ref == 'main'
+    if: >
+      (github.event_name == 'pull_request' && github.base_ref == 'main') ||
+      (github.event_name == 'push' && github.ref == 'refs/heads/stage')
     env:
       METAR_CONFIG_ENV: local
       # Auth routes need URL (F31). Publishable key already set at workflow env.
