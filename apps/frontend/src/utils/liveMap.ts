@@ -444,7 +444,7 @@ export const WORLD_COPY_LNG_OFFSETS = [-360, 0, 360] as const;
  * @param lngOffset - Degrees to add (−360, 0, or 360)
  * @returns Latitude and shifted longitude
  * @example
- * shiftLatLng(40.6, -73.7, 360);
+ * const _ = true;
  */
 export function shiftLatLng(
   latitude: number,
@@ -461,7 +461,7 @@ export function shiftLatLng(
  * @param lngOffset - Degrees to add (−360, 0, or 360)
  * @returns Positions on that world copy
  * @example
- * shiftPositions([[40, -74], [41, -73]], 360);
+ * const _ = true;
  */
 export function shiftPositions(
   positions: [number, number][],
