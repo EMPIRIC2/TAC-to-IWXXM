@@ -3,6 +3,7 @@
  */
 import { describe, expect, it } from 'vitest';
 import type { LintIssueCatalogEntry } from '@/utils/api';
+import { findInternalDocRefs } from '@/utils/internalDocRefGuard';
 import { ISSUE_DETAIL_EMPTY } from '@/utils/issueDetailCopy';
 import {
   buildIssueDetail,
@@ -83,6 +84,53 @@ describe('buildIssueDetail', () => {
     expect(empty.product).toBe(ISSUE_DETAIL_EMPTY);
     expect(empty.tags).toBe(ISSUE_DETAIL_EMPTY);
     expect(buildIssueDetail({ start: 1 }).location).toBe(ISSUE_DETAIL_EMPTY);
+  });
+
+  it('scrubs EV / ticket / TC-EV planning tokens from message and tags', () => {
+    const detail = buildIssueDetail({
+      code: 'MISSING_TC_IDENTITY',
+      severity: 'error',
+      message: 'TC SIGMET missing cyclone identity (TC … PSN) - #829 / TC-EV030-004',
+      catalog: {
+        code: 'MISSING_TC_IDENTITY',
+        severity: 'error',
+        message_template:
+          'TC SIGMET missing cyclone identity (TC … PSN). Error: correct the TAC.',
+        product: 'sigmet',
+        tags: ['tc', 'cyclone', 'sigmet', 'ev030'],
+        source_attribution: 'EUR Doc 014 public',
+      },
+    });
+    expect(detail.code).toBe('MISSING_TC_IDENTITY');
+    expect(detail.message).toBe('TC SIGMET missing cyclone identity (TC … PSN)');
+    expect(detail.tags).toBe('tc, cyclone, sigmet');
+    expect(findInternalDocRefs(detail.message)).toEqual([]);
+    expect(findInternalDocRefs(detail.tags)).toEqual([]);
+    expect(detail.tags.toLowerCase()).not.toContain('ev030');
+  });
+
+  it('scrubs F26 theme crumbs and feature/theme tags from VAA issue detail', () => {
+    const detail = buildIssueDetail({
+      code: 'VAA_FCST_NO_VA_EXP',
+      severity: 'info',
+      message:
+        'VAA forecast NO VA EXP - status NO_VOLCANIC_ASH_EXPECTED (F26 theme V1)',
+      catalog: {
+        code: 'VAA_FCST_NO_VA_EXP',
+        severity: 'info',
+        message_template:
+          'VAA forecast NO VA EXP - status NO_VOLCANIC_ASH_EXPECTED (F26 theme V1)',
+        product: 'vaa',
+        tags: ['forecast', 'no_va_exp', 'vaa', 'v1', 'f26'],
+        source_attribution: 'icao-annex-3',
+      },
+    });
+    expect(detail.message).toBe(
+      'VAA forecast NO VA EXP - status NO_VOLCANIC_ASH_EXPECTED',
+    );
+    expect(detail.tags).toBe('forecast, no_va_exp, vaa');
+    expect(detail.message).not.toMatch(/F26|theme V1/i);
+    expect(detail.tags.toLowerCase()).not.toMatch(/\bf26\b|\bv1\b/);
   });
 });
 

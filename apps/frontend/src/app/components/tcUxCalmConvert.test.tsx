@@ -66,6 +66,36 @@ describe('TC-UX-CALM leaf components', () => {
     expect(onOtherTask).toHaveBeenCalledWith('collect');
   });
 
+  it('UX-2026-10-29-convert-one-interface-examples: example chips bar sits above TAC inside the card', () => {
+    render(
+      <CalmConvertEmptyHero
+        convertDisabled={false}
+        isConverting={false}
+        onConvert={() => undefined}
+        exampleChips={[
+          { id: 'm', label: 'METAR' },
+          { id: 't', label: 'TAF' },
+        ]}
+        onExampleChip={() => undefined}
+        profileLabel="WMO"
+        onChangeProfile={() => undefined}
+        onOtherTask={() => undefined}
+      >
+        <textarea aria-label="TAC" />
+      </CalmConvertEmptyHero>,
+    );
+    const card = screen.getByTestId('convert-empty-card');
+    const bar = within(card).getByTestId('convert-examples-bar');
+    expect(within(bar).getByTestId('convert-example-chips')).toBeInTheDocument();
+    expect(within(card).getByTestId('convert-primary-cta')).toBeInTheDocument();
+    expect(within(card).queryByText('Other tasks')).not.toBeInTheDocument();
+    expect(screen.getByText('Other tasks')).toBeInTheDocument();
+    const tac = within(card).getByLabelText('TAC');
+    expect(
+      Boolean(bar.compareDocumentPosition(tac) & Node.DOCUMENT_POSITION_FOLLOWING),
+    ).toBe(true);
+  });
+
   it('TC-UX-CALM-008: Help checklist opens, dismisses, and keeps one-pager link', async () => {
     const user = userEvent.setup();
     const onOpenChange = vi.fn();

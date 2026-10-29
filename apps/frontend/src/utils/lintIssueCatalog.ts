@@ -6,6 +6,7 @@
  */
 
 import type { LintIssueCatalogEntry } from './api';
+import { isPlanningEvolveTag, scrubInternalDocRefs } from './internalDocRefGuard';
 
 /**
  * Index catalog rows by stable public code.
@@ -47,7 +48,7 @@ export function resolveLintIssueTooltip(
   if (!entry) {
     return `${code} (not in loaded catalog)`;
   }
-  return `${entry.severity}: ${entry.message_template}`;
+  return scrubInternalDocRefs(`${entry.severity}: ${entry.message_template}`);
 }
 
 /**
@@ -85,7 +86,10 @@ export function filterCatalogByTag(
  */
 export function formatCatalogEntryCopy(entry: LintIssueCatalogEntry): string {
   const parts = [`${entry.code} (${entry.severity})`];
-  const tags = (entry.tags ?? []).join(', ');
+  const tags = (entry.tags ?? [])
+    .map((tag) => tag.trim())
+    .filter((tag) => tag && !isPlanningEvolveTag(tag))
+    .join(', ');
   if (tags) {
     parts.push(`tags: ${tags}`);
   }
@@ -93,10 +97,10 @@ export function formatCatalogEntryCopy(entry: LintIssueCatalogEntry): string {
     parts.push(`product: ${entry.product}`);
   }
   if (entry.source_attribution) {
-    parts.push(`source: ${entry.source_attribution}`);
+    parts.push(`source: ${scrubInternalDocRefs(entry.source_attribution)}`);
   } else if (entry.source_id) {
     const url = entry.source_url ? ` (${entry.source_url})` : '';
-    parts.push(`source: ${entry.source_id}${url}`);
+    parts.push(`source: ${scrubInternalDocRefs(entry.source_id)}${url}`);
   }
   return parts.join(' ');
 }

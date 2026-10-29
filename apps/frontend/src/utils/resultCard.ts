@@ -4,6 +4,8 @@
  * Valid, valid with notes, or needs attention. An invalid result must not be published.
  */
 
+import { scrubInternalDocRefs } from '@/utils/internalDocRefGuard';
+
 /** Browser and page title for the converter. */
 export const PAGE_TITLE = 'TAC to IWXXM';
 
@@ -137,7 +139,7 @@ export function assessResultCard(input: {
   const notes: ResultCardLine[] = [];
 
   for (const error of input.errors ?? []) {
-    const message = error.trim();
+    const message = scrubInternalDocRefs(error.trim());
     if (message) {
       errors.push({ message });
     }
@@ -145,7 +147,7 @@ export function assessResultCard(input: {
 
   let blockingCode = false;
   for (const issue of input.issues ?? []) {
-    const message = issue.message?.trim() ?? '';
+    const message = scrubInternalDocRefs(issue.message?.trim() ?? '');
     if (!message) {
       continue;
     }

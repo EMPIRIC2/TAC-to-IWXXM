@@ -44,8 +44,8 @@ export function ConvertSettingsCog({ children }: ConvertSettingsCogProps) {
       >
         <p className="text-sm font-semibold text-gray-900 dark:text-white">Settings</p>
         <p className="text-xs text-gray-500 dark:text-gray-400">
-          Product, profile, examples, input mode, conversion parameters, layout, preview
-          controls, and conversion metadata.
+          Product, profile, input mode, conversion parameters, layout, preview controls,
+          and conversion metadata.
         </p>
         {children}
       </div>

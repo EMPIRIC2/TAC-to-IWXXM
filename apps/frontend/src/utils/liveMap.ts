@@ -675,10 +675,47 @@ export type MapBounds = {
 };
 
 /**
+ * World box used when Leaflet reports a collapsed or inverted view
+ * (common on first paint before the map host has a non-zero size).
+ * @example
+ * const _ = true;
+ */
+export const DEFAULT_LIVE_MAP_BOUNDS: MapBounds = {
+  west: -180,
+  south: -80,
+  east: 180,
+  north: 80,
+};
+
+/**
+ * Whether west is left of east and south is below north (positive area).
+ *
+ * @param bounds - Candidate edges
+ * @returns True when the API will accept the box
+ * @example
+ * const _ = true;
+ */
+export function isUsableMapBounds(bounds: MapBounds): boolean {
+  return bounds.west < bounds.east && bounds.south < bounds.north;
+}
+
+/**
+ * Keep a positive-area box; otherwise use the default world view.
+ *
+ * @param bounds - Candidate edges
+ * @returns Edges safe to send to `/api/v1/live-map`
+ * @example
+ * const _ = true;
+ */
+export function sanitizeMapBounds(bounds: MapBounds): MapBounds {
+  return isUsableMapBounds(bounds) ? bounds : DEFAULT_LIVE_MAP_BOUNDS;
+}
+
+/**
  * Read the edges of a Leaflet map.
  *
  * @param map - Map with a geographic bounds box
- * @returns West, south, east, and north
+ * @returns West, south, east, and north (never a zero-area box)
  * @example
  * const _ = true;
  */
@@ -699,7 +736,7 @@ export function boundsOf(map: {
     west = -180;
     east = 180;
   }
-  return { west, south, east, north };
+  return sanitizeMapBounds({ west, south, east, north });
 }
 
 /**
@@ -829,11 +866,12 @@ export async function fetchLivePlaces(
   products: string,
   signal: AbortSignal,
 ): Promise<LivePlace[]> {
+  const box = sanitizeMapBounds(bounds);
   const params = new URLSearchParams({
-    west: String(bounds.west),
-    south: String(bounds.south),
-    east: String(bounds.east),
-    north: String(bounds.north),
+    west: String(box.west),
+    south: String(box.south),
+    east: String(box.east),
+    north: String(box.north),
     products,
   });
   const response = await fetch(apiUrl(`/api/v1/live-map?${params.toString()}`), {

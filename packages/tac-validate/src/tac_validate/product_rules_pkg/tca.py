@@ -139,7 +139,7 @@ def _check_tca(tac: str, *, profile: str = "annex3") -> list[Issue]:
         issues.append(
             _issue(
                 "MISSING_TC",
-                "TCA missing TC: template field - F27 theme T1 / A2-2",
+                "TCA missing TC: template field - A2-2",
                 start=start,
                 end=end,
                 location="tropical_cyclone",
@@ -152,7 +152,7 @@ def _check_tca(tac: str, *, profile: str = "annex3") -> list[Issue]:
             issues.append(
                 _issue(
                     "MISSING_TC",
-                    "TCA missing TC: template field - F27 theme T1 / A2-2",
+                    "TCA missing TC: template field - A2-2",
                     start=tc_m.start(),
                     end=tc_m.end(),
                     location="tropical_cyclone",
@@ -162,7 +162,7 @@ def _check_tca(tac: str, *, profile: str = "annex3") -> list[Issue]:
             issues.append(
                 _issue(
                     "TCA_CYCLONE_UNNAMED",
-                    "TCA TC UNNAMED - exceptional name allowed (F27 theme T1)",
+                    "TCA TC UNNAMED - exceptional name allowed",
                     start=t_start,
                     end=t_end,
                     location="tropical_cyclone",
@@ -175,7 +175,7 @@ def _check_tca(tac: str, *, profile: str = "annex3") -> list[Issue]:
             issues.append(
                 _issue(
                     "TCA_CB_NIL",
-                    "TCA CB NIL - CB missing (F27 theme T1)",
+                    "TCA CB NIL - CB missing",
                     start=cb_m.start(1),
                     end=cb_m.end(1),
                     location="cb",
@@ -188,7 +188,7 @@ def _check_tca(tac: str, *, profile: str = "annex3") -> list[Issue]:
             issues.append(
                 _issue(
                     "TCA_RMK_NIL",
-                    "TCA RMK NIL - remarks inapplicable (F27 theme T1)",
+                    "TCA RMK NIL - remarks inapplicable",
                     start=rmk_m.start(1),
                     end=rmk_m.end(1),
                     location="remarks",
@@ -199,7 +199,7 @@ def _check_tca(tac: str, *, profile: str = "annex3") -> list[Issue]:
         issues.append(
             _issue(
                 "TCA_NO_MSG_EXP",
-                "TCA NXT MSG NO MSG EXP - next time inapplicable (F27 theme T1)",
+                "TCA NXT MSG NO MSG EXP - next time inapplicable",
                 start=nxt_m.start(1),
                 end=nxt_m.end(1),
                 location="next_advisory",

@@ -12,6 +12,7 @@ import type { LiveWorkbenchConsoleLine } from '@/hooks/useLiveWorkbenchAssist';
 import type { LintIssueCatalogEntry } from '@/utils/api';
 import { issueDetailFromConsoleLine, type IssueDetailModel } from '@/utils/issueDetail';
 import { ISSUE_DETAIL_BUTTON, ISSUE_DETAIL_OPEN } from '@/utils/issueDetailCopy';
+import { isPlanningEvolveTag, scrubInternalDocRefs } from '@/utils/internalDocRefGuard';
 import {
   filterCatalogByTag,
   formatCatalogEntryCopy,
@@ -37,7 +38,9 @@ const PREFERRED_CATALOG_TAGS = [
  */
 function catalogTagOptionsFromEntries(entries: LintIssueCatalogEntry[]): string[] {
   const present = new Set(
-    entries.flatMap((entry) => (entry.tags ?? []).map((t) => t.toLowerCase())),
+    entries
+      .flatMap((entry) => (entry.tags ?? []).map((t) => t.toLowerCase()))
+      .filter((tag) => !isPlanningEvolveTag(tag)),
   );
   const preferred = PREFERRED_CATALOG_TAGS.filter((tag) => present.has(tag));
   const rest = [...present]
@@ -85,10 +88,11 @@ function messageWithCodeTooltips(
   catalogByCode: Map<string, LintIssueCatalogEntry> | undefined,
   onOpenCatalogCode?: (code: string) => void,
 ): ReactNode {
+  const visible = scrubInternalDocRefs(message);
   if (!catalogByCode || catalogByCode.size === 0) {
-    return message;
+    return visible;
   }
-  const parts = message.split(CODE_TOKEN);
+  const parts = visible.split(CODE_TOKEN);
   return parts.map((part, index) => {
     const match = /^\[([A-Z][A-Z0-9_]*)\]$/.exec(part);
     if (!match) {

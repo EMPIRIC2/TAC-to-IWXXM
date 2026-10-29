@@ -51,7 +51,7 @@ def _check_vaa(tac: str) -> list[Issue]:
         issues.append(
             _issue(
                 "MISSING_VOLCANO",
-                "VAA missing VOLCANO: template field - F26 theme V1 / A2-1",
+                "VAA missing VOLCANO: template field - A2-1",
                 start=start,
                 end=end,
                 location="volcano",
@@ -64,7 +64,7 @@ def _check_vaa(tac: str) -> list[Issue]:
             issues.append(
                 _issue(
                     "MISSING_VOLCANO",
-                    "VAA missing VOLCANO: template field - F26 theme V1 / A2-1",
+                    "VAA missing VOLCANO: template field - A2-1",
                     start=volcano_m.start(),
                     end=volcano_m.end(),
                     location="volcano",
@@ -74,7 +74,7 @@ def _check_vaa(tac: str) -> list[Issue]:
             issues.append(
                 _issue(
                     "VAA_VOLCANO_UNKNOWN",
-                    "VAA VOLCANO UNKNOWN - exceptional name allowed (F26 theme V1)",
+                    "VAA VOLCANO UNKNOWN - exceptional name allowed",
                     start=v_start,
                     end=v_end,
                     location="volcano",
@@ -84,7 +84,7 @@ def _check_vaa(tac: str) -> list[Issue]:
             issues.append(
                 _issue(
                     "VAA_VOLCANO_UNNAMED",
-                    "VAA VOLCANO UNNAMED - exceptional name allowed (F26 theme V1)",
+                    "VAA VOLCANO UNNAMED - exceptional name allowed",
                     start=v_start,
                     end=v_end,
                     location="volcano",
@@ -97,7 +97,7 @@ def _check_vaa(tac: str) -> list[Issue]:
             issues.append(
                 _issue(
                     "VAA_RMK_NIL",
-                    "VAA RMK NIL - remarks inapplicable (F26 theme V1)",
+                    "VAA RMK NIL - remarks inapplicable",
                     start=rmk_m.start(1),
                     end=rmk_m.end(1),
                     location="remarks",
@@ -108,7 +108,7 @@ def _check_vaa(tac: str) -> list[Issue]:
         issues.append(
             _issue(
                 "VAA_FCST_NO_VA_EXP",
-                "VAA forecast NO VA EXP - status NO_VOLCANIC_ASH_EXPECTED (F26 theme V1)",
+                "VAA forecast NO VA EXP - status NO_VOLCANIC_ASH_EXPECTED",
                 start=no_va.start(),
                 end=no_va.end(),
                 location="forecast",
@@ -119,7 +119,7 @@ def _check_vaa(tac: str) -> list[Issue]:
         issues.append(
             _issue(
                 "VAA_NO_FURTHER_ADVISORIES",
-                "VAA NXT ADVISORY NO FURTHER ADVISORIES - next time inapplicable (F26 theme V1)",
+                "VAA NXT ADVISORY NO FURTHER ADVISORIES - next time inapplicable",
                 start=nxt_m.start(1),
                 end=nxt_m.end(1),
                 location="next_advisory",

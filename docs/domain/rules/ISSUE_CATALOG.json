@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "source": "generated from tac_validate.issue_registry + PROVENANCE_MAP",
-  "generated": "2026-09-29",
+  "generated": "2026-10-29",
   "issues": [
     {
       "code": "AMD_PRESENT",
@@ -10,9 +10,7 @@
       "product": "taf",
       "tags": [
         "modifier",
-        "taf",
-        "t1",
-        "c1"
+        "taf"
       ],
       "source_id": "icao-annex-3",
       "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
@@ -26,7 +24,6 @@
       "tags": [
         "change",
         "taf",
-        "t2",
         "at"
       ],
       "source_id": "icao-annex-3",
@@ -41,8 +38,7 @@
       "tags": [
         "modifier",
         "metar",
-        "speci",
-        "r8"
+        "speci"
       ],
       "source_id": "icao-annex-3",
       "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
@@ -56,7 +52,6 @@
       "tags": [
         "change",
         "taf",
-        "t2",
         "becmg"
       ],
       "source_id": "icao-annex-3",
@@ -72,9 +67,7 @@
         "cavok",
         "metar",
         "speci",
-        "taf",
-        "t3",
-        "s1"
+        "taf"
       ],
       "source_id": "icao-annex-3",
       "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
@@ -298,7 +291,6 @@
         "cloud",
         "metar",
         "speci",
-        "r4",
         "cb",
         "tcu"
       ],
@@ -315,7 +307,6 @@
         "cloud",
         "metar",
         "speci",
-        "r4",
         "auto"
       ],
       "source_id": "codes-wmo-int",
@@ -329,8 +320,7 @@
       "product": "taf",
       "tags": [
         "cnl",
-        "taf",
-        "t1"
+        "taf"
       ],
       "source_id": "icao-annex-3",
       "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
@@ -345,10 +335,7 @@
         "modifier",
         "metar",
         "speci",
-        "taf",
-        "r8",
-        "t1",
-        "c1"
+        "taf"
       ],
       "source_id": "icao-annex-3",
       "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
@@ -375,8 +362,7 @@
       "tags": [
         "fir",
         "cta",
-        "sigmet",
-        "g2"
+        "sigmet"
       ],
       "source_id": "icao-eur-doc-014",
       "source_url": "https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf",
@@ -390,7 +376,6 @@
       "tags": [
         "change",
         "taf",
-        "t2",
         "fm"
       ],
       "source_id": "icao-annex-3",
@@ -405,9 +390,7 @@
       "tags": [
         "intensity",
         "sigmet",
-        "airmet",
-        "g2",
-        "a2"
+        "airmet"
       ],
       "source_id": "icao-eur-doc-014",
       "source_url": "https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf",
@@ -435,8 +418,7 @@
       "tags": [
         "cloud",
         "metar",
-        "speci",
-        "r4"
+        "speci"
       ],
       "source_id": "codes-wmo-int",
       "source_url": "https://codes.wmo.int/ui/resources/WMO-Codes-Registry_user-guide-v1.0.pdf",
@@ -449,8 +431,7 @@
       "product": "taf",
       "tags": [
         "cnl",
-        "taf",
-        "t1"
+        "taf"
       ],
       "source_id": "icao-annex-3",
       "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
@@ -465,10 +446,7 @@
         "nil",
         "metar",
         "speci",
-        "taf",
-        "r8",
-        "t1",
-        "c1"
+        "taf"
       ],
       "source_id": "icao-annex-3",
       "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
@@ -482,8 +460,7 @@
       "tags": [
         "va",
         "no_va_exp",
-        "sigmet",
-        "v1"
+        "sigmet"
       ],
       "source_id": "icao-eur-doc-014",
       "source_url": "https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf",
@@ -497,7 +474,6 @@
       "tags": [
         "change",
         "taf",
-        "t2",
         "prob"
       ],
       "source_id": "icao-annex-3",
@@ -513,7 +489,6 @@
         "remark",
         "metar",
         "speci",
-        "r5",
         "iwxxm_us"
       ],
       "source_id": "fmh-1",
@@ -528,8 +503,7 @@
       "tags": [
         "rvr",
         "metar",
-        "speci",
-        "r8"
+        "speci"
       ],
       "source_id": "codes-wmo-int",
       "source_url": "https://codes.wmo.int/ui/resources/WMO-Codes-Registry_user-guide-v1.0.pdf",
@@ -542,8 +516,7 @@
       "product": "sigmet",
       "tags": [
         "cnl",
-        "sigmet",
-        "g1"
+        "sigmet"
       ],
       "source_id": "icao-eur-doc-014",
       "source_url": "https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf",
@@ -556,9 +529,7 @@
       "product": "sigmet",
       "tags": [
         "cor",
-        "sigmet",
-        "g1",
-        "c1"
+        "sigmet"
       ],
       "source_id": "icao-eur-doc-014",
       "source_url": "https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf",
@@ -573,9 +544,7 @@
         "stnr",
         "movement",
         "sigmet",
-        "airmet",
-        "g1",
-        "a2"
+        "airmet"
       ],
       "source_id": "icao-eur-doc-014",
       "source_url": "https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf",
@@ -588,8 +557,7 @@
       "product": "taf",
       "tags": [
         "temperature",
-        "taf",
-        "t3"
+        "taf"
       ],
       "source_id": "icao-annex-3",
       "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
@@ -602,8 +570,7 @@
       "product": "sigmet",
       "tags": [
         "valid",
-        "sigmet",
-        "g2"
+        "sigmet"
       ],
       "source_id": "icao-eur-doc-014",
       "source_url": "https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf",
@@ -617,8 +584,7 @@
       "tags": [
         "visibility",
         "metar",
-        "speci",
-        "r2"
+        "speci"
       ],
       "source_id": "codes-wmo-int",
       "source_url": "https://codes.wmo.int/ui/resources/WMO-Codes-Registry_user-guide-v1.0.pdf",
@@ -632,8 +598,7 @@
       "tags": [
         "weather",
         "metar",
-        "speci",
-        "r3"
+        "speci"
       ],
       "source_id": "codes-wmo-int",
       "source_url": "https://codes.wmo.int/ui/resources/WMO-Codes-Registry_user-guide-v1.0.pdf",
@@ -647,8 +612,7 @@
       "tags": [
         "wind",
         "metar",
-        "speci",
-        "r8"
+        "speci"
       ],
       "source_id": "codes-wmo-int",
       "source_url": "https://codes.wmo.int/ui/resources/WMO-Codes-Registry_user-guide-v1.0.pdf",
@@ -722,9 +686,7 @@
         "fir",
         "cta",
         "sigmet",
-        "airmet",
-        "g2",
-        "a1"
+        "airmet"
       ],
       "source_id": "icao-eur-doc-014",
       "source_url": "https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf",
@@ -765,9 +727,7 @@
         "obs",
         "fcst",
         "sigmet",
-        "airmet",
-        "g2",
-        "a2"
+        "airmet"
       ],
       "source_id": "icao-eur-doc-014",
       "source_url": "https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf",
@@ -822,9 +782,7 @@
       "tags": [
         "sequence",
         "sigmet",
-        "airmet",
-        "g2",
-        "a1"
+        "airmet"
       ],
       "source_id": "icao-eur-doc-014",
       "source_url": "https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf",
@@ -833,13 +791,11 @@
     {
       "code": "MISSING_SVO",
       "severity": "error",
-      "message_template": "VONA missing SVO: template field - F32 theme V1 / A7-1",
+      "message_template": "VONA missing SVO: template field - A7-1",
       "product": "vona",
       "tags": [
         "svo",
-        "vona",
-        "v1",
-        "f32"
+        "vona"
       ],
       "source_id": "vona-ahl-fm205",
       "source_url": "vendor:documentation/webpages/AHL.asciidoc",
@@ -848,13 +804,11 @@
     {
       "code": "MISSING_SWXC",
       "severity": "error",
-      "message_template": "SWXA missing SWXC: template field - F28 theme SX1 / A2-3",
+      "message_template": "SWXA missing SWXC: template field - A2-3",
       "product": "swxa",
       "tags": [
         "swxc",
-        "swxa",
-        "sx1",
-        "f28"
+        "swxa"
       ],
       "source_id": "icao-annex-3",
       "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
@@ -863,13 +817,11 @@
     {
       "code": "MISSING_TC",
       "severity": "error",
-      "message_template": "TCA missing TC: template field - F27 theme T1 / A2-2",
+      "message_template": "TCA missing TC: template field - A2-2",
       "product": "tca",
       "tags": [
         "tropical_cyclone",
-        "tca",
-        "t1",
-        "f27"
+        "tca"
       ],
       "source_id": "icao-annex-3",
       "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
@@ -883,8 +835,7 @@
       "tags": [
         "tc",
         "cyclone",
-        "sigmet",
-        "ev030"
+        "sigmet"
       ],
       "source_id": "icao-eur-doc-014",
       "source_url": "https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf",
@@ -967,8 +918,7 @@
       "tags": [
         "va",
         "volcano",
-        "sigmet",
-        "v1"
+        "sigmet"
       ],
       "source_id": "icao-eur-doc-014",
       "source_url": "https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf",
@@ -991,13 +941,11 @@
     {
       "code": "MISSING_VOLCANO",
       "severity": "error",
-      "message_template": "VAA missing VOLCANO: template field - F26 theme V1 / A2-1",
+      "message_template": "VAA missing VOLCANO: template field - A2-1",
       "product": "vaa",
       "tags": [
         "volcano",
-        "vaa",
-        "v1",
-        "f26"
+        "vaa"
       ],
       "source_id": "icao-annex-3",
       "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
@@ -1006,13 +954,11 @@
     {
       "code": "MISSING_VONA_VOLCANO",
       "severity": "error",
-      "message_template": "VONA missing VOLCANO: template field - F32 theme V1 / A7-1",
+      "message_template": "VONA missing VOLCANO: template field - A7-1",
       "product": "vona",
       "tags": [
         "volcano",
-        "vona",
-        "v1",
-        "f32"
+        "vona"
       ],
       "source_id": "vona-ahl-fm205",
       "source_url": "vendor:documentation/webpages/AHL.asciidoc",
@@ -1058,7 +1004,6 @@
         "taf",
         "sigmet",
         "airmet",
-        "c1",
         "one_report"
       ],
       "source_id": "icao-eur-doc-014",
@@ -1074,7 +1019,6 @@
         "cloud",
         "metar",
         "speci",
-        "s1",
         "auto"
       ],
       "source_id": "codes-wmo-int",
@@ -1090,10 +1034,7 @@
         "nil",
         "metar",
         "speci",
-        "taf",
-        "r8",
-        "t1",
-        "c1"
+        "taf"
       ],
       "source_id": "icao-annex-3",
       "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
@@ -1107,8 +1048,7 @@
       "tags": [
         "trend",
         "metar",
-        "speci",
-        "r8"
+        "speci"
       ],
       "source_id": "icao-annex-3",
       "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
@@ -1122,9 +1062,7 @@
       "tags": [
         "va",
         "no_va_exp",
-        "sigmet",
-        "v1",
-        "c1"
+        "sigmet"
       ],
       "source_id": "icao-eur-doc-014",
       "source_url": "https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf",
@@ -1139,10 +1077,7 @@
         "cloud",
         "metar",
         "speci",
-        "taf",
-        "t3",
-        "s1",
-        "c1"
+        "taf"
       ],
       "source_id": "icao-annex-3",
       "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
@@ -1157,11 +1092,7 @@
         "cloud",
         "metar",
         "speci",
-        "taf",
-        "t3",
-        "s1",
-        "c1",
-        "ev023"
+        "taf"
       ],
       "source_id": "icao-annex-3",
       "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
@@ -1176,9 +1107,7 @@
         "weather",
         "metar",
         "speci",
-        "taf",
-        "t3",
-        "s1"
+        "taf"
       ],
       "source_id": "icao-annex-3",
       "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
@@ -1193,9 +1122,7 @@
         "obs",
         "fcst",
         "sigmet",
-        "airmet",
-        "g2",
-        "a2"
+        "airmet"
       ],
       "source_id": "icao-eur-doc-014",
       "source_url": "https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf",
@@ -1211,8 +1138,7 @@
         "station",
         "time",
         "metar",
-        "speci",
-        "r1"
+        "speci"
       ],
       "source_id": "icao-annex-3",
       "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
@@ -1226,8 +1152,7 @@
       "tags": [
         "geometry",
         "point",
-        "sigmet",
-        "g1"
+        "sigmet"
       ],
       "source_id": "icao-eur-doc-014",
       "source_url": "https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf",
@@ -1241,8 +1166,7 @@
       "tags": [
         "geometry",
         "polygon",
-        "sigmet",
-        "g1"
+        "sigmet"
       ],
       "source_id": "icao-eur-doc-014",
       "source_url": "https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf",
@@ -1256,7 +1180,6 @@
       "tags": [
         "change",
         "taf",
-        "t2",
         "prob"
       ],
       "source_id": "icao-annex-3",
@@ -1272,7 +1195,6 @@
         "remark",
         "metar",
         "speci",
-        "r5",
         "iwxxm_us"
       ],
       "source_id": "fmh-1",
@@ -1287,8 +1209,7 @@
       "tags": [
         "rvr",
         "metar",
-        "speci",
-        "r8"
+        "speci"
       ],
       "source_id": "icao-annex-3",
       "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
@@ -1301,9 +1222,7 @@
       "product": "sigmet",
       "tags": [
         "cnl",
-        "sigmet",
-        "g1",
-        "c1"
+        "sigmet"
       ],
       "source_id": "icao-eur-doc-014",
       "source_url": "https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf",
@@ -1316,8 +1235,7 @@
       "product": "sigmet",
       "tags": [
         "sequence",
-        "sigmet",
-        "g2"
+        "sigmet"
       ],
       "source_id": "icao-eur-doc-014",
       "source_url": "https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf",
@@ -1330,8 +1248,7 @@
       "product": "sigmet",
       "tags": [
         "altitude",
-        "sigmet",
-        "g1"
+        "sigmet"
       ],
       "source_id": "icao-eur-doc-014",
       "source_url": "https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf",
@@ -1346,10 +1263,7 @@
         "stnr",
         "movement",
         "sigmet",
-        "airmet",
-        "g1",
-        "c1",
-        "a2"
+        "airmet"
       ],
       "source_id": "icao-eur-doc-014",
       "source_url": "https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf",
@@ -1358,14 +1272,12 @@
     {
       "code": "SWXA_FCST_NO_SWX_EXP",
       "severity": "info",
-      "message_template": "SWXA forecast NO SWX EXP - no space weather expected (F28 theme SX1)",
+      "message_template": "SWXA forecast NO SWX EXP - no space weather expected",
       "product": "swxa",
       "tags": [
         "forecast",
         "no_swx_exp",
-        "swxa",
-        "sx1",
-        "f28"
+        "swxa"
       ],
       "source_id": "icao-annex-3",
       "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
@@ -1374,13 +1286,11 @@
     {
       "code": "SWXA_NO_FURTHER_ADVISORIES",
       "severity": "info",
-      "message_template": "SWXA NXT ADVISORY NO FURTHER ADVISORIES - next time inapplicable (F28 theme SX1)",
+      "message_template": "SWXA NXT ADVISORY NO FURTHER ADVISORIES - next time inapplicable",
       "product": "swxa",
       "tags": [
         "next_advisory",
-        "swxa",
-        "sx1",
-        "f28"
+        "swxa"
       ],
       "source_id": "icao-annex-3",
       "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
@@ -1389,14 +1299,12 @@
     {
       "code": "SWXA_RMK_NIL",
       "severity": "info",
-      "message_template": "SWXA RMK NIL - remarks inapplicable (F28 theme SX1)",
+      "message_template": "SWXA RMK NIL - remarks inapplicable",
       "product": "swxa",
       "tags": [
         "remarks",
         "nil",
-        "swxa",
-        "sx1",
-        "f28"
+        "swxa"
       ],
       "source_id": "icao-annex-3",
       "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
@@ -1405,14 +1313,12 @@
     {
       "code": "TCA_CB_NIL",
       "severity": "info",
-      "message_template": "TCA CB NIL - CB missing (F27 theme T1)",
+      "message_template": "TCA CB NIL - CB missing",
       "product": "tca",
       "tags": [
         "cb",
         "nil",
-        "tca",
-        "t1",
-        "f27"
+        "tca"
       ],
       "source_id": "icao-annex-3",
       "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
@@ -1421,14 +1327,12 @@
     {
       "code": "TCA_CYCLONE_UNNAMED",
       "severity": "info",
-      "message_template": "TCA TC UNNAMED - exceptional name allowed (F27 theme T1)",
+      "message_template": "TCA TC UNNAMED - exceptional name allowed",
       "product": "tca",
       "tags": [
         "tropical_cyclone",
         "unnamed",
-        "tca",
-        "t1",
-        "f27"
+        "tca"
       ],
       "source_id": "icao-annex-3",
       "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
@@ -1437,13 +1341,11 @@
     {
       "code": "TCA_NO_MSG_EXP",
       "severity": "info",
-      "message_template": "TCA NXT MSG NO MSG EXP - next time inapplicable (F27 theme T1)",
+      "message_template": "TCA NXT MSG NO MSG EXP - next time inapplicable",
       "product": "tca",
       "tags": [
         "next_advisory",
-        "tca",
-        "t1",
-        "f27"
+        "tca"
       ],
       "source_id": "icao-annex-3",
       "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
@@ -1452,14 +1354,12 @@
     {
       "code": "TCA_RMK_NIL",
       "severity": "info",
-      "message_template": "TCA RMK NIL - remarks inapplicable (F27 theme T1)",
+      "message_template": "TCA RMK NIL - remarks inapplicable",
       "product": "tca",
       "tags": [
         "remarks",
         "nil",
-        "tca",
-        "t1",
-        "f27"
+        "tca"
       ],
       "source_id": "icao-annex-3",
       "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
@@ -1473,8 +1373,7 @@
       "tags": [
         "tc",
         "geometry",
-        "sigmet",
-        "ev030"
+        "sigmet"
       ],
       "source_id": "icao-eur-doc-014",
       "source_url": "https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf",
@@ -1488,8 +1387,7 @@
       "tags": [
         "tc",
         "cyclone",
-        "sigmet",
-        "ev030"
+        "sigmet"
       ],
       "source_id": "icao-eur-doc-014",
       "source_url": "https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf",
@@ -1505,9 +1403,7 @@
         "change",
         "metar",
         "speci",
-        "taf",
-        "r8",
-        "t2"
+        "taf"
       ],
       "source_id": "icao-annex-3",
       "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
@@ -1521,7 +1417,6 @@
       "tags": [
         "change",
         "taf",
-        "t2",
         "tl"
       ],
       "source_id": "icao-annex-3",
@@ -1537,9 +1432,7 @@
         "altitude",
         "top",
         "sigmet",
-        "airmet",
-        "g1",
-        "a2"
+        "airmet"
       ],
       "source_id": "icao-eur-doc-014",
       "source_url": "https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf",
@@ -1552,8 +1445,7 @@
       "product": "taf",
       "tags": [
         "temperature",
-        "taf",
-        "t3"
+        "taf"
       ],
       "source_id": "icao-annex-3",
       "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
@@ -1579,7 +1471,6 @@
       "tags": [
         "membership",
         "wmo",
-        "ev050",
         "weather",
         "cloud",
         "phenomenon"
@@ -1696,14 +1587,12 @@
     {
       "code": "VAA_FCST_NO_VA_EXP",
       "severity": "info",
-      "message_template": "VAA forecast NO VA EXP - status NO_VOLCANIC_ASH_EXPECTED (F26 theme V1)",
+      "message_template": "VAA forecast NO VA EXP - status NO_VOLCANIC_ASH_EXPECTED",
       "product": "vaa",
       "tags": [
         "forecast",
         "no_va_exp",
-        "vaa",
-        "v1",
-        "f26"
+        "vaa"
       ],
       "source_id": "icao-annex-3",
       "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
@@ -1712,13 +1601,11 @@
     {
       "code": "VAA_NO_FURTHER_ADVISORIES",
       "severity": "info",
-      "message_template": "VAA NXT ADVISORY NO FURTHER ADVISORIES - next time inapplicable (F26 theme V1)",
+      "message_template": "VAA NXT ADVISORY NO FURTHER ADVISORIES - next time inapplicable",
       "product": "vaa",
       "tags": [
         "next_advisory",
-        "vaa",
-        "v1",
-        "f26"
+        "vaa"
       ],
       "source_id": "icao-annex-3",
       "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
@@ -1727,14 +1614,12 @@
     {
       "code": "VAA_RMK_NIL",
       "severity": "info",
-      "message_template": "VAA RMK NIL - remarks inapplicable (F26 theme V1)",
+      "message_template": "VAA RMK NIL - remarks inapplicable",
       "product": "vaa",
       "tags": [
         "remarks",
         "nil",
-        "vaa",
-        "v1",
-        "f26"
+        "vaa"
       ],
       "source_id": "icao-annex-3",
       "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
@@ -1743,14 +1628,12 @@
     {
       "code": "VAA_VOLCANO_UNKNOWN",
       "severity": "info",
-      "message_template": "VAA VOLCANO UNKNOWN - exceptional name allowed (F26 theme V1)",
+      "message_template": "VAA VOLCANO UNKNOWN - exceptional name allowed",
       "product": "vaa",
       "tags": [
         "volcano",
         "unknown",
-        "vaa",
-        "v1",
-        "f26"
+        "vaa"
       ],
       "source_id": "icao-annex-3",
       "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
@@ -1759,14 +1642,12 @@
     {
       "code": "VAA_VOLCANO_UNNAMED",
       "severity": "info",
-      "message_template": "VAA VOLCANO UNNAMED - exceptional name allowed (F26 theme V1)",
+      "message_template": "VAA VOLCANO UNNAMED - exceptional name allowed",
       "product": "vaa",
       "tags": [
         "volcano",
         "unnamed",
-        "vaa",
-        "v1",
-        "f26"
+        "vaa"
       ],
       "source_id": "icao-annex-3",
       "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
@@ -1780,8 +1661,7 @@
       "tags": [
         "va",
         "geometry",
-        "sigmet",
-        "v1"
+        "sigmet"
       ],
       "source_id": "icao-eur-doc-014",
       "source_url": "https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf",
@@ -1796,9 +1676,7 @@
         "va",
         "cnl",
         "fir",
-        "sigmet",
-        "v1",
-        "c1"
+        "sigmet"
       ],
       "source_id": "icao-eur-doc-014",
       "source_url": "https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf",
@@ -1812,8 +1690,7 @@
       "tags": [
         "va",
         "volcano",
-        "sigmet",
-        "v1"
+        "sigmet"
       ],
       "source_id": "icao-eur-doc-014",
       "source_url": "https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf",
@@ -1822,14 +1699,12 @@
     {
       "code": "VONA_DUR_NIL",
       "severity": "info",
-      "message_template": "VONA DUR NIL - duration omitted (F32 theme V1)",
+      "message_template": "VONA DUR NIL - duration omitted",
       "product": "vona",
       "tags": [
         "duration",
         "nil",
-        "vona",
-        "v1",
-        "f32"
+        "vona"
       ],
       "source_id": "vona-ahl-fm205",
       "source_url": "vendor:documentation/webpages/AHL.asciidoc",
@@ -1838,14 +1713,12 @@
     {
       "code": "VONA_ONSET_NIL",
       "severity": "info",
-      "message_template": "VONA ONSET NIL - onsetTime omitted (F32 theme V1)",
+      "message_template": "VONA ONSET NIL - onsetTime omitted",
       "product": "vona",
       "tags": [
         "onset",
         "nil",
-        "vona",
-        "v1",
-        "f32"
+        "vona"
       ],
       "source_id": "vona-ahl-fm205",
       "source_url": "vendor:documentation/webpages/AHL.asciidoc",
@@ -1860,7 +1733,6 @@
         "cloud",
         "metar",
         "speci",
-        "s1",
         "vv"
       ],
       "source_id": "codes-wmo-int",
@@ -1875,7 +1747,6 @@
       "tags": [
         "cloud",
         "taf",
-        "t3",
         "vv"
       ],
       "source_id": "icao-annex-3",
@@ -1890,8 +1761,7 @@
       "tags": [
         "wind",
         "metar",
-        "speci",
-        "s1"
+        "speci"
       ],
       "source_id": "icao-annex-3",
       "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
@@ -1905,8 +1775,7 @@
       "tags": [
         "wind",
         "metar",
-        "speci",
-        "r8"
+        "speci"
       ],
       "source_id": "icao-annex-3",
       "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
@@ -1920,8 +1789,7 @@
       "tags": [
         "weather",
         "metar",
-        "speci",
-        "s1"
+        "speci"
       ],
       "source_id": "codes-wmo-int",
       "source_url": "https://github.com/wmo-im/iwxxm/blob/master/IWXXM/ReleaseNotes-IWXXM.txt",

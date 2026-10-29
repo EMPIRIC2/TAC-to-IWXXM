@@ -4,9 +4,11 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import {
   boundsOf,
+  DEFAULT_LIVE_MAP_BOUNDS,
   fetchLivePlaces,
   filterPlaces,
   formatObservedAt,
+  isUsableMapBounds,
   iwxxmForReport,
   layerQuery,
   newestObservedAt,
@@ -16,6 +18,7 @@ import {
   pointerSlack,
   popupWidth,
   productLabel,
+  sanitizeMapBounds,
   shapePaint,
   SPACE_WEATHER_LIST_COLOR,
   spaceWeatherListColor,
@@ -73,6 +76,28 @@ describe('live map helpers', () => {
     expect(selectedLayerQuery(new Set(['metar']))).not.toContain('metar,');
     expect(viewById('hazards').products).toEqual(['airmet', 'gairmet', 'sigmet']);
     expect(layerQuery('hazards', new Set(['gairmet']))).toBe('airmet,sigmet');
+  });
+
+  it('replaces collapsed Leaflet bounds with a default world box', () => {
+    // Staging empty/initial map: west==east==0, south==north≈center lat.
+    const collapsed = boundsOf({
+      getBounds: () => ({
+        getWest: () => 0,
+        getSouth: () => 19.973348786110602,
+        getEast: () => 0,
+        getNorth: () => 19.973348786110602,
+      }),
+    });
+    expect(isUsableMapBounds(collapsed)).toBe(true);
+    expect(collapsed).toEqual(DEFAULT_LIVE_MAP_BOUNDS);
+    expect(sanitizeMapBounds({ west: 10, south: 20, east: 10, north: 21 })).toEqual(
+      DEFAULT_LIVE_MAP_BOUNDS,
+    );
+    expect(sanitizeMapBounds({ west: -80, south: 41, east: -70, north: 40 })).toEqual(
+      DEFAULT_LIVE_MAP_BOUNDS,
+    );
+    expect(isUsableMapBounds(bounds)).toBe(true);
+    expect(sanitizeMapBounds(bounds)).toEqual(bounds);
   });
 
   it('names layers, times, and the current view', () => {
@@ -288,6 +313,25 @@ describe('live map helpers', () => {
     await expect(fetchLivePlaces(bounds, 'metar', signal)).rejects.toThrow(
       'The live map could not be loaded.',
     );
+  });
+
+  it('never requests live-map with a zero-area bbox', async () => {
+    const signal = new AbortController().signal;
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue({ ok: true, json: async () => ({ places: [] }) }),
+    );
+    await fetchLivePlaces(
+      { west: 0, south: 19.973348786110602, east: 0, north: 19.973348786110602 },
+      'metar,speci,taf,airmet,gairmet,sigmet,vaa,tca,vona',
+      signal,
+    );
+    const url = String(vi.mocked(fetch).mock.calls[0]?.[0]);
+    expect(url).toContain(`west=${DEFAULT_LIVE_MAP_BOUNDS.west}`);
+    expect(url).toContain(`east=${DEFAULT_LIVE_MAP_BOUNDS.east}`);
+    expect(url).toContain(`south=${DEFAULT_LIVE_MAP_BOUNDS.south}`);
+    expect(url).toContain(`north=${DEFAULT_LIVE_MAP_BOUNDS.north}`);
+    expect(url).not.toMatch(/west=0&south=19/);
   });
 
   it('returns converted XML or says it is unavailable', async () => {

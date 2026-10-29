@@ -364,7 +364,7 @@ def _check_airmet_a1(*, start: int, end: int, upper: str) -> list[Issue]:
         _emit_token_info(
             issues,
             code="SIGMET_SEQUENCE",
-            message="AIRMET sequence number present - F24 theme A1",
+            message="AIRMET sequence number present",
             core=core,
             body_start=start,
             body_end=end,
@@ -374,7 +374,7 @@ def _check_airmet_a1(*, start: int, end: int, upper: str) -> list[Issue]:
         _emit_token_info(
             issues,
             code="MISSING_SEQUENCE",
-            message="AIRMET missing sequence number after AIRMET - F24 theme A1",
+            message="AIRMET missing sequence number after AIRMET",
             core=core,
             body_start=start,
             body_end=end,
@@ -386,7 +386,7 @@ def _check_airmet_a1(*, start: int, end: int, upper: str) -> list[Issue]:
         _emit_token_info(
             issues,
             code="FIR_OR_CTA",
-            message="AIRMET FIR/CTA/UIR airspace identity - F24 theme A1",
+            message="AIRMET FIR/CTA/UIR airspace identity",
             core=core,
             body_start=start,
             body_end=end,
@@ -396,7 +396,7 @@ def _check_airmet_a1(*, start: int, end: int, upper: str) -> list[Issue]:
         _emit_token_info(
             issues,
             code="MISSING_FIR_OR_CTA",
-            message="AIRMET missing FIR/CTA/UIR airspace identity - F24 theme A1",
+            message="AIRMET missing FIR/CTA/UIR airspace identity",
             core=core,
             body_start=start,
             body_end=end,
@@ -432,7 +432,7 @@ def _check_airmet_a2(*, start: int, end: int, upper: str) -> list[Issue]:
             _emit_token_info(
                 issues,
                 code="INVALID_STNR_MOVEMENT",
-                message="AIRMET STNR conflicts with MOV - F24 theme A2",
+                message="AIRMET STNR conflicts with MOV",
                 core=core,
                 body_start=start,
                 body_end=end,
@@ -442,7 +442,7 @@ def _check_airmet_a2(*, start: int, end: int, upper: str) -> list[Issue]:
             _emit_token_info(
                 issues,
                 code="STNR_MOVEMENT",
-                message="AIRMET STNR stationary movement - F24 theme A2",
+                message="AIRMET STNR stationary movement",
                 core=core,
                 body_start=start,
                 body_end=end,
@@ -453,7 +453,7 @@ def _check_airmet_a2(*, start: int, end: int, upper: str) -> list[Issue]:
         _emit_token_info(
             issues,
             code="TOP_ABV_OR_BLW",
-            message="AIRMET TOP ABV/BLW level grammar - F24 theme A2",
+            message="AIRMET TOP ABV/BLW level grammar",
             core=core,
             body_start=start,
             body_end=end,
@@ -465,7 +465,7 @@ def _check_airmet_a2(*, start: int, end: int, upper: str) -> list[Issue]:
         _emit_token_info(
             issues,
             code="OBS_OR_FCST",
-            message="AIRMET OBS or FCST analysis - F24 theme A2",
+            message="AIRMET OBS or FCST analysis",
             core=core,
             body_start=start,
             body_end=end,
@@ -475,7 +475,7 @@ def _check_airmet_a2(*, start: int, end: int, upper: str) -> list[Issue]:
         _emit_token_info(
             issues,
             code="MISSING_OBS_OR_FCST",
-            message="AIRMET missing OBS or FCST - F24 theme A2",
+            message="AIRMET missing OBS or FCST",
             core=core,
             body_start=start,
             body_end=end,
@@ -487,7 +487,7 @@ def _check_airmet_a2(*, start: int, end: int, upper: str) -> list[Issue]:
         _emit_token_info(
             issues,
             code="INTENSITY_CHANGE",
-            message="AIRMET intensity change INTSF/WKN/NC - F24 theme A2",
+            message="AIRMET intensity change INTSF/WKN/NC",
             core=core,
             body_start=start,
             body_end=end,
@@ -611,7 +611,7 @@ def _check_sigmet_tc(*, start: int, end: int, upper: str) -> list[Issue]:
         _emit_token_info(
             issues,
             code="TC_CYCLONE_IDENTITY",
-            message="TC SIGMET tropical cyclone identity (TC … PSN) - #829 / TC-EV030-004",
+            message="TC SIGMET tropical cyclone identity (TC … PSN)",
             core=core,
             body_start=start,
             body_end=end,
@@ -621,7 +621,7 @@ def _check_sigmet_tc(*, start: int, end: int, upper: str) -> list[Issue]:
         _emit_token_info(
             issues,
             code="MISSING_TC_IDENTITY",
-            message="TC SIGMET missing cyclone identity (TC … PSN) - #829 / TC-EV030-004",
+            message="TC SIGMET missing cyclone identity (TC … PSN)",
             core=core,
             body_start=start,
             body_end=end,
@@ -632,7 +632,7 @@ def _check_sigmet_tc(*, start: int, end: int, upper: str) -> list[Issue]:
         _emit_token_info(
             issues,
             code="TC_CB_GEOMETRY",
-            message="TC SIGMET CB geometry WI … OF TC CENTRE - #829 / TC-EV030-004",
+            message="TC SIGMET CB geometry WI … OF TC CENTRE",
             core=core,
             body_start=start,
             body_end=end,

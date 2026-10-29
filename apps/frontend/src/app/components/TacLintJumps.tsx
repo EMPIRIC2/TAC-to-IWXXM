@@ -2,6 +2,8 @@
  * Direct jumps for live TAC lint issues (list under the TAC pane).
  */
 
+import { scrubInternalDocRefs } from '@/utils/internalDocRefGuard';
+import { lintJumpButtonClass } from '@/utils/lintSeverityStyle';
 import { lintSeverityLabel, type JumpableLintIssue } from '/utils/lintIssueJump';
 
 /**
@@ -38,10 +40,10 @@ function lintJumpItems(
         <button
           type="button"
           aria-pressed={activeIndex === index}
-          className="rounded px-2 py-0.5 text-left text-xs text-gray-900 dark:text-gray-100"
+          className={lintJumpButtonClass(issue.severity)}
           onClick={() => onSelect(issue)}
         >
-          {lintSeverityLabel(issue.severity)}: {issue.message}
+          {lintSeverityLabel(issue.severity)}: {scrubInternalDocRefs(issue.message)}
         </button>
       </li>,
     );
@@ -50,7 +52,8 @@ function lintJumpItems(
 }
 
 /**
- * Issue list under the TAC pane. Severity is written out, not colour alone.
+ * Issue list under the TAC pane. Severity is written out; errors also use
+ * destructive text, semibold, and a light tint (not colour alone).
  *
  * @param props.issues - Jumpable lint issues
  * @param props.activeIndex - Selected index, or null

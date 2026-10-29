@@ -5,6 +5,7 @@
  */
 
 import type { LintIssueCatalogEntry } from '@/utils/api';
+import { isPlanningEvolveTag, scrubInternalDocRefs } from '@/utils/internalDocRefGuard';
 import { ISSUE_DETAIL_EMPTY } from '@/utils/issueDetailCopy';
 
 /**
@@ -49,7 +50,7 @@ export type IssueDetailInput = {
  * const _ = true;
  */
 function filled(value: string | null | undefined): string {
-  const trimmed = (value ?? '').trim();
+  const trimmed = scrubInternalDocRefs((value ?? '').trim());
   return trimmed || ISSUE_DETAIL_EMPTY;
 }
 
@@ -65,11 +66,11 @@ function sourceLabel(catalog: LintIssueCatalogEntry | null | undefined): string 
   if (!catalog) {
     return ISSUE_DETAIL_EMPTY;
   }
-  const attribution = (catalog.source_attribution ?? '').trim();
+  const attribution = scrubInternalDocRefs((catalog.source_attribution ?? '').trim());
   if (attribution) {
     return attribution;
   }
-  const sourceId = (catalog.source_id ?? '').trim();
+  const sourceId = scrubInternalDocRefs((catalog.source_id ?? '').trim());
   if (!sourceId) {
     return ISSUE_DETAIL_EMPTY;
   }
@@ -113,10 +114,14 @@ function locationLabel(
 export function buildIssueDetail(input: IssueDetailInput): IssueDetailModel {
   const catalog = input.catalog ?? null;
   const message = filled(input.message);
-  const ruleRaw = (catalog?.message_template ?? '').trim();
+  const ruleRaw = scrubInternalDocRefs((catalog?.message_template ?? '').trim());
   const rule =
-    ruleRaw && ruleRaw !== (input.message ?? '').trim() ? ruleRaw : ISSUE_DETAIL_EMPTY;
-  const tags = (catalog?.tags ?? []).map((tag) => tag.trim()).filter(Boolean);
+    ruleRaw && ruleRaw !== scrubInternalDocRefs((input.message ?? '').trim())
+      ? ruleRaw
+      : ISSUE_DETAIL_EMPTY;
+  const tags = (catalog?.tags ?? [])
+    .map((tag) => tag.trim())
+    .filter((tag) => tag && !isPlanningEvolveTag(tag));
   return {
     code: filled(input.code ?? catalog?.code),
     severity: filled(input.severity ?? catalog?.severity),

@@ -23,6 +23,7 @@ from tac2iwxxm.profile_resolve import resolve_validation_policies
 from tac2iwxxm.profiles.ca_eccc import CA_IWXXM_VERSION
 from tac_validate import lint as tac_lint_fn
 from tac_validate.models import LintReport
+from tac_validate.profiles import effective_lint_profile
 
 from src import api as api_surface
 from src.schemas.conversion import (
@@ -1998,7 +1999,11 @@ async def convert_bulletin(
         ok = True
 
         if lint:
-            lint_report = tac_lint_fn(tac, product=product, profile=profile)
+            lint_report = tac_lint_fn(
+                tac,
+                product=product,
+                profile=effective_lint_profile(profile, product),
+            )
             issues.extend(
                 LintIssueModel(
                     severity=i.severity,
@@ -2825,13 +2830,19 @@ async def convert(
         )
 
     # Q14=C: lint default on - echo tac-validate issues on the convert response (FR-L6).
+    # National emit profiles that are N/A for this product fall back to annex3 lint
+    # (e.g. US_FAA_NWS / iwxxm_us + VAA) so convert does not opaque-500.
     pre_convert_lint_report = None
     if lint:
         sample = manual_text.strip() if manual_text else ""
         if request_body is not None and getattr(request_body, "metars", None):
             sample = (request_body.metars[0] or "").strip() if request_body.metars else sample
         if sample:
-            pre_convert_lint_report = tac_lint_fn(sample, product=product, profile=profile)
+            pre_convert_lint_report = tac_lint_fn(
+                sample,
+                product=product,
+                profile=effective_lint_profile(profile, product),
+            )
 
     validation_level = api_surface.normalize_validation_level(validation_level)
     validate_output = bool(validate_output) or validation_level in [

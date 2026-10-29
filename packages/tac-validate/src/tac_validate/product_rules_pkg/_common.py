@@ -213,25 +213,53 @@ _RESEARCH_REF_RE = re.compile(
     r"(?:\s*/\s*(?:[A-Za-z]?\d+|#\d+|iwxxm_us))*",
     re.IGNORECASE,
 )
+# Compound feature+theme crumbs first (e.g. ``F26 theme V1``, ``F28 theme SX1``).
+_FN_THEME_RE = re.compile(
+    r"\(?\bF\d+\s+theme\s+[A-Za-z]{0,2}\d+\)?",
+    re.IGNORECASE,
+)
+# Leftover theme crumbs after Fn scrub (``theme V1``).
+_THEME_CRUMB_RE = re.compile(r"\btheme\s+[A-Za-z]{0,2}\d+\b", re.IGNORECASE)
+# Operator-facing messages must not carry evolve / ticket / test ids (EV-048).
+# Keep short Annex-style ``#8`` cites; only strip ``#`` + 3+ digits.
+_PLANNING_REF_RE = re.compile(
+    r"(?:\bTC-[A-Z0-9-]+\b|\bEV-\d+\b|\bADR-\d+\b|\bS0\d+\b|\bUJ-\d+\b|"
+    r"\bE\d{2}-\d+\b|(?<!\w)#\d{3,}\b|\bF\d+\b)",
+    re.IGNORECASE,
+)
+_VAGUE_FILLER_RE = re.compile(r"\bstuff\b", re.IGNORECASE)
+_EMPTY_PARENS_RE = re.compile(r"\(\s*\)")
+_TRAILING_SEP_RE = re.compile(r"\s*[-" + "\u2013\u2014" + r";/]+\s*$")
+_DANGLING_SEP_RE = re.compile(r"\s*[-" + "\u2013\u2014" + r";/]\s*(?:/\s*)+$")
 
 
 def _strip_research_refs(message: str) -> str:
     """
-    Internal helper ``_strip_research_refs``.
+    Strip research milestone and planning vocabulary from operator lint messages.
 
     Parameters
     ----------
-    message : object
-        Argument ``message``.
+    message : str
+        Raw issue message (may include research or ticket suffixes).
 
     Returns
     -------
-    object
-        Return value.
+    str
+        Operator-safe message; returns ``message`` unchanged when scrubbing would
+        empty the string.
     """
     cleaned = _RESEARCH_REF_RE.sub("", message)
+    cleaned = _FN_THEME_RE.sub("", cleaned)
+    cleaned = _THEME_CRUMB_RE.sub("", cleaned)
+    cleaned = _PLANNING_REF_RE.sub("", cleaned)
+    cleaned = _VAGUE_FILLER_RE.sub("", cleaned)
+    cleaned = _EMPTY_PARENS_RE.sub("", cleaned)
+    cleaned = re.sub(r"\s*/\s*/+", " ", cleaned)
+    # Collapse `` - / `` left after removing a middle planning crumb.
+    cleaned = re.sub(r"\s+/\s+", " ", cleaned)
     cleaned = re.sub(r"\s{2,}", " ", cleaned)
-    cleaned = re.sub(r"\s*[-" + "\u2013\u2014" + r";/]+\s*$", "", cleaned).strip()
+    cleaned = _DANGLING_SEP_RE.sub("", cleaned)
+    cleaned = _TRAILING_SEP_RE.sub("", cleaned).strip()
     return cleaned if cleaned else message
 
 
@@ -1250,7 +1278,7 @@ def _emit_nsc_layer_exclusivity(
         issues.append(
             _issue(
                 "NSC_WITH_CLOUD_LAYERS",
-                f"{product} NSC with FEW/SCT/BKN/OVC in same group - FAQ §14.3 exclusivity (TC-EV023-001)",
+                f"{product} NSC with FEW/SCT/BKN/OVC in same group - FAQ §14.3 exclusivity",
                 start=start,
                 end=end,
                 location="cloud",

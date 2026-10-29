@@ -69,11 +69,12 @@ def test_f23_c1_manifest_sections_present() -> None:
     for case in _C1_ERRORS:
         assert case["expected_codes"][0] == "INVALID_SIGMET_COR"
     assert by_code("MULTI_REPORT_BULLETIN").severity == "info"
-    assert "c1" in by_code("MULTI_REPORT_BULLETIN").tags
+    assert "one_report" in by_code("MULTI_REPORT_BULLETIN").tags
     assert "sigmet" in by_code("MULTI_REPORT_BULLETIN").tags
     for code in _INFO_CODES - {"MULTI_REPORT_BULLETIN"}:
-        assert "c1" in by_code(code).tags
-    assert "c1" in by_code("INVALID_SIGMET_COR").tags
+        assert "sigmet" in by_code(code).tags
+    assert "cor" in by_code("INVALID_SIGMET_COR").tags
+    assert "sigmet" in by_code("INVALID_SIGMET_COR").tags
     assert len(_C1_CONVERT_ONLY) >= 3
 
 

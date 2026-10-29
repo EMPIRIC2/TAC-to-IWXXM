@@ -4,6 +4,7 @@
 
 import { useState } from 'react';
 import { ChevronDown, ChevronRight } from 'lucide-react';
+import { groupDecodeSegments } from '../../utils/groupDecodeSegments';
 
 /**
  * Type `DecodeSegmentView`.
@@ -183,14 +184,18 @@ export function DecodePanel({
                   className={density === 'compact' ? 'space-y-0.5' : 'space-y-1'}
                   data-testid="decode-segments"
                 >
-                  {segments.map((seg) => {
+                  {groupDecodeSegments(segments).map((seg) => {
                     const selected =
-                      selectedStart === seg.start && selectedEnd === seg.end;
+                      selectedStart != null &&
+                      selectedEnd != null &&
+                      selectedStart < seg.end &&
+                      selectedEnd > seg.start;
                     return (
                       <li
                         key={`seg-${seg.start}-${seg.end}-${seg.code}`}
                         data-start={seg.start}
                         data-end={seg.end}
+                        data-testid="decode-phrase-row"
                       >
                         <button
                           type="button"

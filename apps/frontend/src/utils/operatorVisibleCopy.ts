@@ -68,6 +68,10 @@ import {
   SOFT_PREVIEW_LABEL,
 } from '@/app/components/SoftPreviewControl';
 import {
+  COLLAPSE_PREVIEW_LABEL,
+  EXPAND_PREVIEW_LABEL,
+} from '@/app/components/IwxxmPreviewPane';
+import {
   PROPAGATE_RESIDUALS_HELP,
   PROPAGATE_RESIDUALS_LABEL,
 } from '@/app/components/PropagateResidualsControl';
@@ -338,6 +342,8 @@ export function collectOperatorVisibleCopy(): OperatorVisibleCopyEntry[] {
   const entries: OperatorVisibleCopyEntry[] = [
     { id: 'soft-preview.label', text: SOFT_PREVIEW_LABEL },
     { id: 'soft-preview.help', text: SOFT_PREVIEW_HELP },
+    { id: 'iwxxm-preview.expand', text: EXPAND_PREVIEW_LABEL },
+    { id: 'iwxxm-preview.collapse', text: COLLAPSE_PREVIEW_LABEL },
     { id: 'propagate-residuals.label', text: PROPAGATE_RESIDUALS_LABEL },
     { id: 'propagate-residuals.help', text: PROPAGATE_RESIDUALS_HELP },
     { id: 'iwxxm-product.help', text: IWXXM_PRODUCT_HELP },

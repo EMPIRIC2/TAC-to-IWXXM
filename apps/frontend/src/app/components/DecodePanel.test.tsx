@@ -309,4 +309,105 @@ describe('DecodePanel', () => {
     expect(screen.getByText('Explanation')).toBeInTheDocument();
     expect(screen.queryByTestId('decode-plain-language')).not.toBeInTheDocument();
   });
+
+  // UX-2026-10-29-live-decode-phrases — grouped natural-language Live decode rows
+  it('groups adjacent SIGMET tokens into natural-language phrase rows', async () => {
+    const user = userEvent.setup();
+    const onSelect = vi.fn();
+    render(
+      <DecodePanel
+        pinned
+        product="SIGMET"
+        onSelect={onSelect}
+        segments={[
+          {
+            start: 78,
+            end: 80,
+            code: 'TC',
+            explanation: 'Tropical cyclone',
+          },
+          {
+            start: 81,
+            end: 86,
+            code: 'IN-FA',
+            explanation: 'Tropical cyclone (IN-FA)',
+          },
+          {
+            start: 87,
+            end: 90,
+            code: 'OBS',
+            explanation: 'Observed',
+          },
+          {
+            start: 91,
+            end: 93,
+            code: 'AT',
+            explanation: 'At (observation / forecast time)',
+          },
+          {
+            start: 94,
+            end: 99,
+            code: '1800Z',
+            explanation: 'Time 18:00 UTC',
+          },
+          {
+            start: 100,
+            end: 105,
+            code: 'N1540',
+            explanation: "Latitude 15°40' N",
+          },
+          {
+            start: 106,
+            end: 112,
+            code: 'E15620',
+            explanation: "Longitude 156°20' E",
+          },
+          {
+            start: 113,
+            end: 115,
+            code: 'CB',
+            explanation: 'Cumulonimbus',
+          },
+          {
+            start: 116,
+            end: 119,
+            code: 'TOP',
+            explanation: 'Top',
+          },
+          {
+            start: 120,
+            end: 125,
+            code: 'FL510',
+            explanation: 'Flight level 510',
+          },
+        ]}
+        residuals={[]}
+      />,
+    );
+
+    const rows = screen.getAllByTestId('decode-phrase-row');
+    expect(rows).toHaveLength(3);
+    expect(screen.getByText('TC IN-FA')).toBeInTheDocument();
+    expect(screen.getByText('Tropical cyclone IN-FA')).toBeInTheDocument();
+    expect(screen.getByText('OBS AT 1800Z N1540 E15620')).toBeInTheDocument();
+    expect(
+      screen.getByText("Observed at 18:00 UTC near 15°40'N 156°20'E"),
+    ).toBeInTheDocument();
+    expect(screen.getByText('CB TOP FL510')).toBeInTheDocument();
+    expect(
+      screen.getByText('Cumulonimbus top at flight level 510'),
+    ).toBeInTheDocument();
+    // Atomic gloss rows must not remain as separate list items.
+    expect(
+      screen.queryByText('At (observation / forecast time)'),
+    ).not.toBeInTheDocument();
+    expect(screen.queryByText('Top')).not.toBeInTheDocument();
+
+    await user.click(screen.getByRole('button', { name: /CB TOP FL510/i }));
+    expect(onSelect).toHaveBeenCalledWith({
+      start: 113,
+      end: 125,
+      code: 'CB TOP FL510',
+    });
+  });
 });

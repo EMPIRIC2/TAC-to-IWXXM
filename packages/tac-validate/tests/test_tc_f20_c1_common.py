@@ -61,7 +61,8 @@ def test_c1_manifest_sections_present() -> None:
     for case in _C1_ERRORS:
         assert case["expected_codes"][0] == "INVALID_NIL"
     assert by_code("MULTI_REPORT_BULLETIN").severity == "info"
-    assert "c1" in by_code("MULTI_REPORT_BULLETIN").tags
+    assert "one_report" in by_code("MULTI_REPORT_BULLETIN").tags
+    assert "bulletin" in by_code("MULTI_REPORT_BULLETIN").tags
 
 
 @pytest.mark.parametrize("case", _C1_ACCEPT, ids=_case_ids(_C1_ACCEPT))

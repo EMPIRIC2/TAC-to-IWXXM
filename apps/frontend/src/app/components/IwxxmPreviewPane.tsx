@@ -2,6 +2,9 @@
  * Side-by-side IWXXM preview pane for Soft-preview / Live IWXXM (F10 / UJ-021).
  */
 
+import { useState } from 'react';
+import { ChevronDown, ChevronUp } from 'lucide-react';
+
 import { prettyPrintXml } from '/utils/prettyXml';
 import { xmlLinesForSelection, type GroupTrace } from '/utils/liveConvertTrace';
 import {
@@ -9,6 +12,15 @@ import {
   RESULT_STATUS_ATTENTION,
   RESULT_STATUS_VALID,
 } from '/utils/resultCard';
+import { Button } from './ui/button';
+
+/** Operator-facing expand control label (collapsed → grow preview). */
+export const EXPAND_PREVIEW_LABEL = 'Expand preview';
+/** Operator-facing expand control label (expanded → restore squat clamp). */
+export const COLLAPSE_PREVIEW_LABEL = 'Collapse preview';
+
+const COMPACT_HEIGHT_CLASS = 'max-h-80';
+const EXPANDED_HEIGHT_CLASS = 'max-h-[min(70dvh,40rem)]';
 
 /**
  * Type `IwxxmPreviewStatus`.
@@ -80,6 +92,7 @@ export function IwxxmPreviewPane({
   conversionProfile,
   wrapXml = true,
 }: IwxxmPreviewPaneProps) {
+  const [expanded, setExpanded] = useState(false);
   const pretty = xml.trim() ? prettyPrintXml(xml) : '';
   const showSoftBadge = mode === 'soft-preview' || status === 'soft-fail';
   const highlighted = new Set(
@@ -92,12 +105,15 @@ export function IwxxmPreviewPane({
     ),
   );
   const lines = pretty ? pretty.split('\n') : [];
+  const heightClass = expanded ? EXPANDED_HEIGHT_CLASS : COMPACT_HEIGHT_CLASS;
+  const expandLabel = expanded ? COLLAPSE_PREVIEW_LABEL : EXPAND_PREVIEW_LABEL;
 
   return (
     <section
       data-testid="iwxxm-preview-pane"
+      data-expanded={expanded ? 'true' : 'false'}
       aria-label="IWXXM preview"
-      className={`flex max-h-80 min-h-0 flex-col overflow-hidden rounded-md border border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-900 ${className}`}
+      className={`flex min-h-0 flex-col overflow-hidden rounded-md border border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-900 ${heightClass} ${className}`}
     >
       <header className="flex flex-wrap items-center gap-2 border-b border-gray-200 px-3 py-2 dark:border-gray-700">
         <h3 className="text-sm font-semibold text-gray-900 dark:text-white">
@@ -127,16 +143,43 @@ export function IwxxmPreviewPane({
             Conversion profile: {conversionProfile}
           </span>
         ) : null}
-        {failedSpanCount > 0 ? (
-          <button
+        <div className="ml-auto flex items-center gap-2">
+          {failedSpanCount > 0 ? (
+            <button
+              type="button"
+              data-testid="iwxxm-preview-failed-count"
+              className="text-xs font-medium text-rose-700 underline-offset-2 hover:underline dark:text-rose-300"
+              onClick={onFailedSpanFocus}
+            >
+              {failedSpanCount} failed span{failedSpanCount === 1 ? '' : 's'}
+            </button>
+          ) : null}
+          <Button
             type="button"
-            data-testid="iwxxm-preview-failed-count"
-            className="ml-auto text-xs font-medium text-rose-700 underline-offset-2 hover:underline dark:text-rose-300"
-            onClick={onFailedSpanFocus}
+            variant="ghost"
+            size="sm"
+            data-testid="iwxxm-preview-expand"
+            aria-expanded={expanded}
+            aria-label={expandLabel}
+            onClick={() => setExpanded((prev) => !prev)}
+            className="hover:bg-gray-100 dark:hover:bg-gray-700"
           >
-            {failedSpanCount} failed span{failedSpanCount === 1 ? '' : 's'}
-          </button>
-        ) : null}
+            {expanded ? (
+              <ChevronUp
+                className="h-4 w-4 text-gray-600 dark:text-gray-400"
+                aria-hidden="true"
+              />
+            ) : (
+              <ChevronDown
+                className="h-4 w-4 text-gray-600 dark:text-gray-400"
+                aria-hidden="true"
+              />
+            )}
+            <span className="text-xs font-medium normal-case tracking-normal">
+              {expandLabel}
+            </span>
+          </Button>
+        </div>
       </header>
 
       {incomplete ? (

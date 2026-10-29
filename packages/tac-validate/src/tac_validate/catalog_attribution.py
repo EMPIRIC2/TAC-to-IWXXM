@@ -25,7 +25,9 @@ _DATA = Path(__file__).resolve().parent / "data" / "catalog_attribution.json"
 # Notes appended to operator-facing source_attribution (EV-048) - omit planning ids.
 _INTERNAL_DOC_REF_IN_NOTE = re.compile(
     r"(?:\[Corpus:|\bADR-\d+\b|\bEV-\d+\b|\bS0\d+\b|\bTC-[A-Z0-9-]+\b|"
-    r"\bE\d{2}-\d+\b|(?<!\w)#\d{3,}\b|\bF\d+\b|docs/sessions/|docs/feature-list)"
+    r"\bUJ-\d+\b|\bE\d{2}-\d+\b|(?<!\w)#\d{3,}\b|\bF\d+\b|"
+    r"docs/sessions/|docs/feature-list)",
+    re.IGNORECASE,
 )
 
 # Crawl date for operator-verified HTTP landings (EV-061 catalog crawl; EV-062 retarget).

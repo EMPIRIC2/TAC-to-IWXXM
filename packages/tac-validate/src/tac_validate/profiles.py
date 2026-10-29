@@ -8,7 +8,7 @@ from __future__ import annotations
 
 from typing import Final
 
-from tac_validate.lint_profile_catalog import load_lint_profiles
+from tac_validate.lint_profile_catalog import lint_profile_spec, load_lint_profiles
 
 PROFILE_ANNEX3: Final[str] = "annex3"
 PROFILE_IWXXM_US: Final[str] = "iwxxm_us"
@@ -168,6 +168,56 @@ def iwxxm_us_lint_applicable(product: str) -> bool:
     return product.upper() in IWXXM_US_LINT_PRODUCTS
 
 
+def effective_lint_profile(profile: str, product: str) -> str:
+    """
+    Return a lint profile applicable to ``product``, falling back to annex3.
+
+    Convert pre-lint uses the conversion emit profile. National overlays that
+    are N/A for a product (for example ``iwxxm_us`` + VAA) must not raise —
+    Annex 3 rules still apply. Explicit ``lint()`` / ``/lint-tac`` callers that
+    need fail-closed N/A behavior should keep calling ``lint`` directly.
+
+    Parameters
+    ----------
+    profile : str
+        Requested emit / lint profile id (alias or catalog key).
+    product : str
+        Product id (for example ``VAA``).
+
+    Returns
+    -------
+    str
+        Lowercased applicable lint profile (``annex3`` when the requested
+        profile does not list ``product``).
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (effective_lint_profile)
+    2
+    """
+    product_u = product.upper()
+    try:
+        profile_l = normalize_profile(profile)
+    except ValueError:
+        return PROFILE_ANNEX3
+
+    if profile_l == PROFILE_ANNEX3:
+        return PROFILE_ANNEX3
+    if profile_l == PROFILE_IWXXM_US and not iwxxm_us_lint_applicable(product_u):
+        return PROFILE_ANNEX3
+    if profile_l == PROFILE_CA_ECCC and not ca_eccc_applicable(product_u):
+        return PROFILE_ANNEX3
+    if profile_l == PROFILE_IN_IMD and not in_imd_applicable(product_u):
+        return PROFILE_ANNEX3
+    if profile_l == PROFILE_US_NWS_CONVECTIVE_SIGMET and product_u != "SIGMET":
+        return PROFILE_ANNEX3
+    if profile_l not in {PROFILE_IWXXM_US, PROFILE_CA_ECCC, PROFILE_IN_IMD}:
+        spec = lint_profile_spec(profile_l)
+        if spec is None or product_u not in spec.products:
+            return PROFILE_ANNEX3
+    return profile_l
+
+
 __all__ = [
     "CA_ECCC_PRODUCTS",
     "F6_DUAL_PROFILE_PRODUCTS",
@@ -185,6 +235,7 @@ __all__ = [
     "PROFILE_US_NWS_VONA",
     "SUPPORTED_PROFILES",
     "ca_eccc_applicable",
+    "effective_lint_profile",
     "in_imd_applicable",
     "iwxxm_us_applicable",
     "iwxxm_us_lint_applicable",

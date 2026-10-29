@@ -106,7 +106,7 @@ def _check_swxa(tac: str, *, profile: str = "annex3") -> list[Issue]:
         issues.append(
             _issue(
                 "MISSING_SWXC",
-                "SWXA missing SWXC: template field - F28 theme SX1 / A2-3",
+                "SWXA missing SWXC: template field - A2-3",
                 start=start,
                 end=end,
                 location="swxc",
@@ -121,7 +121,7 @@ def _check_swxa(tac: str, *, profile: str = "annex3") -> list[Issue]:
             issues.append(
                 _issue(
                     "SWXA_RMK_NIL",
-                    "SWXA RMK NIL - remarks inapplicable (F28 theme SX1)",
+                    "SWXA RMK NIL - remarks inapplicable",
                     start=rmk_m.start(1),
                     end=rmk_m.end(1),
                     location="remarks",
@@ -132,7 +132,7 @@ def _check_swxa(tac: str, *, profile: str = "annex3") -> list[Issue]:
         issues.append(
             _issue(
                 "SWXA_FCST_NO_SWX_EXP",
-                "SWXA forecast NO SWX EXP - no space weather expected (F28 theme SX1)",
+                "SWXA forecast NO SWX EXP - no space weather expected",
                 start=no_swx.start(),
                 end=no_swx.end(),
                 location="forecast",
@@ -143,7 +143,7 @@ def _check_swxa(tac: str, *, profile: str = "annex3") -> list[Issue]:
         issues.append(
             _issue(
                 "SWXA_NO_FURTHER_ADVISORIES",
-                "SWXA NXT ADVISORY NO FURTHER ADVISORIES - next time inapplicable (F28 theme SX1)",
+                "SWXA NXT ADVISORY NO FURTHER ADVISORIES - next time inapplicable",
                 start=nxt_m.start(1),
                 end=nxt_m.end(1),
                 location="next_advisory",

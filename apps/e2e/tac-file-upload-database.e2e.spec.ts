@@ -179,7 +179,7 @@ test.describe('TAC convert + Disseminate (Upload to Database removed)', () => {
       });
     });
 
-    // Prefer aria-label — mass-ingest folder/zip inputs also match input[type=file].
+    // Prefer aria-label so the compact drop-zone file input is unambiguous.
     await page.getByLabel('Select TAC files to upload', { exact: true }).setInputFiles({
       name: 'kjfk-clean.tac',
       mimeType: 'text/plain',

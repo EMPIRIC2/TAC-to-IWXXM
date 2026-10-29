@@ -5,10 +5,15 @@ import type { LintIssueCatalogEntry } from '@/utils/api';
 import { IssueDetailDialog } from '@/app/components/IssueDetailDialog';
 import { buildIssueDetail, type IssueDetailModel } from '@/utils/issueDetail';
 import { ISSUE_DETAIL_OPEN } from '@/utils/issueDetailCopy';
+import { scrubInternalDocRefs } from '@/utils/internalDocRefGuard';
 import {
   catalogJumpTarget,
   maybeOpenCatalogForLintCode,
 } from '@/utils/lintIssueCatalog';
+import {
+  isErrorSeverityEmphasis,
+  lintSeverityErrorCardClass,
+} from '@/utils/lintSeverityStyle';
 import {
   issueLevelPasses,
   issueSeverityRank,
@@ -195,39 +200,52 @@ export function ErrorLogPanel({
       ? 'mt-1 text-xs text-amber-700 dark:text-amber-300'
       : 'mt-1 text-xs text-gray-500 dark:text-gray-400';
 
-  const renderIssueRow = (issue: ConversionIssue, index: number) => (
-    <li key={`issue-${index}`} className={issueCard}>
-      <button
-        type="button"
-        className="w-full text-left"
-        data-testid={`issue-detail-open-${index}`}
-        aria-label={ISSUE_DETAIL_OPEN}
-        onClick={() =>
-          setDetail(
-            buildIssueDetail({
-              code: issue.code,
-              severity: issue.severity,
-              message: issue.message,
-              hint: issue.hint,
-              location: issue.location,
-              start: issue.start,
-              end: issue.end,
-              catalog: issue.code ? catalogByCode?.get(issue.code) : null,
-            }),
-          )
-        }
+  const renderIssueRow = (issue: ConversionIssue, index: number) => {
+    const emphasizeError = isErrorSeverityEmphasis(issue.severity);
+    const rowCard = emphasizeError ? lintSeverityErrorCardClass() : issueCard;
+    const messageClass = emphasizeError
+      ? 'font-semibold text-destructive'
+      : 'font-medium';
+    return (
+      <li
+        key={`issue-${index}`}
+        className={rowCard}
+        data-error-emphasis={emphasizeError}
       >
-        <p className="font-medium">{issue.message}</p>
-        {issue.hint && <p className={hintClass}>{issue.hint}</p>}
-      </button>
-      <LogIssueCode
-        code={issue.code}
-        className={codeClass}
-        catalogByCode={catalogByCode}
-        onOpenCatalog={onOpenCatalog}
-      />
-    </li>
-  );
+        <button
+          type="button"
+          className="w-full text-left"
+          data-testid={`issue-detail-open-${index}`}
+          aria-label={ISSUE_DETAIL_OPEN}
+          onClick={() =>
+            setDetail(
+              buildIssueDetail({
+                code: issue.code,
+                severity: issue.severity,
+                message: issue.message,
+                hint: issue.hint,
+                location: issue.location,
+                start: issue.start,
+                end: issue.end,
+                catalog: issue.code ? catalogByCode?.get(issue.code) : null,
+              }),
+            )
+          }
+        >
+          <p className={messageClass}>{scrubInternalDocRefs(issue.message)}</p>
+          {issue.hint && (
+            <p className={hintClass}>{scrubInternalDocRefs(issue.hint)}</p>
+          )}
+        </button>
+        <LogIssueCode
+          code={issue.code}
+          className={codeClass}
+          catalogByCode={catalogByCode}
+          onOpenCatalog={onOpenCatalog}
+        />
+      </li>
+    );
+  };
 
   return (
     <section
@@ -268,7 +286,12 @@ export function ErrorLogPanel({
               {visibleErrors.length > 0 ? (
                 <ul className={`list-disc space-y-1 pl-5 ${textClass}`}>
                   {visibleErrors.map((error, index) => (
-                    <li key={`error-${index}`}>{error}</li>
+                    <li
+                      key={`error-${index}`}
+                      className="font-semibold text-destructive"
+                    >
+                      {scrubInternalDocRefs(error)}
+                    </li>
                   ))}
                 </ul>
               ) : null}
