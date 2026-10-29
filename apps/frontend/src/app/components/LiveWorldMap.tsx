@@ -54,8 +54,11 @@ import {
   productLabel,
   selectedLayerQuery,
   shapePaint,
+  shiftLatLng,
+  shiftPositions,
   spaceWeatherListColor,
   viewStatus,
+  WORLD_COPY_LNG_OFFSETS,
   type LivePlace,
   type MapBounds,
   type MapTimePreset,
@@ -181,25 +184,35 @@ function fitPointerTarget(
  *
  * @param map - Leaflet map
  * @param place - Cached place
+ * @param at - Optional nudged station coordinates on the primary copy
+ * @param lngOffset - World-copy longitude shift (−360, 0, or 360)
  * @returns The layer that was added
  * @example
  * const _ = true;
  */
-function drawPlace(map: L.Map, place: LivePlace, at?: [number, number]): L.Layer {
+function drawPlace(
+  map: L.Map,
+  place: LivePlace,
+  at?: [number, number],
+  lngOffset = 0,
+): L.Layer {
   const draw = drawForPlace(place);
   const paint = shapePaint(place.product);
   if (draw.kind === 'polygon') {
-    const layer = L.polygon(draw.positions, paint);
+    const layer = L.polygon(shiftPositions(draw.positions, lngOffset), paint);
     fitPointerTarget(layer, draw.kind);
     return layer.addTo(map);
   }
   if (draw.kind === 'line') {
-    const layer = L.polyline(draw.positions, { color: paint.fillColor, weight: 3 });
+    const layer = L.polyline(shiftPositions(draw.positions, lngOffset), {
+      color: paint.fillColor,
+      weight: 3,
+    });
     fitPointerTarget(layer, draw.kind);
     return layer.addTo(map);
   }
   if (draw.kind === 'circle') {
-    const layer = L.circle([draw.latitude, draw.longitude], {
+    const layer = L.circle(shiftLatLng(draw.latitude, draw.longitude, lngOffset), {
       ...paint,
       radius: draw.radiusM,
     });
@@ -207,7 +220,7 @@ function drawPlace(map: L.Map, place: LivePlace, at?: [number, number]): L.Layer
     return layer.addTo(map);
   }
   const [latitude, longitude] = at ?? [draw.latitude, draw.longitude];
-  const layer = L.circleMarker([latitude, longitude], {
+  const layer = L.circleMarker(shiftLatLng(latitude, longitude, lngOffset), {
     radius: 6,
     ...paint,
     fillOpacity: copyOpacity(0),
@@ -490,89 +503,97 @@ export function LiveWorldMap({
       group.push(place);
       cohorts.set(key, group);
     });
-    visible.forEach((place) => {
-      const draw = drawForPlace(place);
-      const key = `${place.latitude.toFixed(3)},${place.longitude.toFixed(3)}`;
-      const group = cohorts.get(key) ?? [];
-      const slot = Math.max(0, group.indexOf(place));
-      const nudge = pointNudge(slot, group.length);
-      const moved = nudge.latitude !== 0 || nudge.longitude !== 0;
-      const at: [number, number] | undefined =
-        draw.kind === 'point' && (moved || place.reports.length > 1 || group.length > 1)
-          ? [draw.latitude + nudge.latitude, draw.longitude + nudge.longitude]
-          : undefined;
-      const layer = drawPlace(map, place, at);
-      if (at && place.reports.length > 1) {
-        place.reports.slice(1).forEach((_, reportIndex) => {
+    WORLD_COPY_LNG_OFFSETS.forEach((lngOffset) => {
+      visible.forEach((place) => {
+        const draw = drawForPlace(place);
+        const key = `${place.latitude.toFixed(3)},${place.longitude.toFixed(3)}`;
+        const group = cohorts.get(key) ?? [];
+        const slot = Math.max(0, group.indexOf(place));
+        const nudge = pointNudge(slot, group.length);
+        const moved = nudge.latitude !== 0 || nudge.longitude !== 0;
+        const at: [number, number] | undefined =
+          draw.kind === 'point' &&
+          (moved || place.reports.length > 1 || group.length > 1)
+            ? [draw.latitude + nudge.latitude, draw.longitude + nudge.longitude]
+            : undefined;
+        const layer = drawPlace(map, place, at, lngOffset);
+        if (at && place.reports.length > 1) {
+          place.reports.slice(1).forEach((_, reportIndex) => {
+            layers.push(
+              L.circleMarker(shiftLatLng(at[0], at[1], lngOffset), {
+                radius: 4,
+                ...shapePaint(place.product),
+                fillOpacity: copyOpacity(reportIndex + 1),
+                interactive: false,
+              }).addTo(map),
+            );
+          });
+        }
+        if (at && group.length > 1 && zoom >= 6) {
           layers.push(
-            L.circleMarker(at, {
-              radius: 4,
-              ...shapePaint(place.product),
-              fillOpacity: copyOpacity(reportIndex + 1),
+            L.marker(shiftLatLng(at[0], at[1], lngOffset), {
               interactive: false,
+              keyboard: false,
+              icon: L.divIcon({
+                className: 'live-map-type-chip',
+                html: `<span style="display:inline-flex;align-items:center;height:16px;padding:0 6px;border-radius:999px;background:#111827;color:#fff;font:600 10px/16px ui-sans-serif,system-ui,sans-serif">${productLabel(place.product)}</span>`,
+                iconSize: [72, 16],
+              }),
             }).addTo(map),
           );
+        }
+        let cardOpen = false;
+        let showingTac = place.reports[0]?.tac ?? '';
+        const remember = (tac: string) => {
+          showingTac = tac;
+        };
+        const loadShowing = (tac: string) => {
+          showingTac = tac;
+          openPlaceRef.current?.(placeShowingReport(place, tac));
+        };
+        const reveal = () => {
+          showPopup(layer, place, roots, map, remember, loadShowing);
+          if (place.reports.length > 0) {
+            cardOpen = true;
+          }
+        };
+        layer.on('mouseover', () => {
+          paintHover(layer, place, true);
+          if (!cardOpen) {
+            reveal();
+          }
         });
-      }
-      if (at && group.length > 1 && zoom >= 6) {
-        layers.push(
-          L.marker(at, {
-            interactive: false,
-            keyboard: false,
-            icon: L.divIcon({
-              className: 'live-map-type-chip',
-              html: `<span style="display:inline-flex;align-items:center;height:16px;padding:0 6px;border-radius:999px;background:#111827;color:#fff;font:600 10px/16px ui-sans-serif,system-ui,sans-serif">${productLabel(place.product)}</span>`,
-              iconSize: [72, 16],
-            }),
-          }).addTo(map),
-        );
-      }
-      let cardOpen = false;
-      let showingTac = place.reports[0]?.tac ?? '';
-      const remember = (tac: string) => {
-        showingTac = tac;
-      };
-      const loadShowing = (tac: string) => {
-        showingTac = tac;
-        openPlaceRef.current?.(placeShowingReport(place, tac));
-      };
-      const reveal = () => {
-        showPopup(layer, place, roots, map, remember, loadShowing);
-        if (place.reports.length > 0) {
-          cardOpen = true;
-        }
-      };
-      layer.on('mouseover', () => {
-        paintHover(layer, place, true);
-        if (!cardOpen) {
-          reveal();
-        }
-      });
-      layer.on('mouseout', () => {
-        paintHover(layer, place, false);
-      });
-      layer.on('click', () => {
-        if (cardOpen) {
-          loadShowing(showingTac);
-        } else {
-          reveal();
-        }
-      });
-      layer.on('keydown', (event) => {
-        openOnKey(event, () => {
+        layer.on('mouseout', () => {
+          paintHover(layer, place, false);
+        });
+        layer.on('click', () => {
           if (cardOpen) {
             loadShowing(showingTac);
           } else {
             reveal();
           }
         });
+        layer.on('keydown', (event) => {
+          openOnKey(event, () => {
+            if (cardOpen) {
+              loadShowing(showingTac);
+            } else {
+              reveal();
+            }
+          });
+        });
+        nameLayer(layer, `${place.place_key} ${productLabel(place.product)}`);
+        if (
+          lngOffset === 0 &&
+          !focused &&
+          focusStation &&
+          place.place_key === focusStation
+        ) {
+          focused = true;
+          reveal();
+        }
+        layers.push(layer);
       });
-      nameLayer(layer, `${place.place_key} ${productLabel(place.product)}`);
-      if (!focused && focusStation && place.place_key === focusStation) {
-        focused = true;
-        reveal();
-      }
-      layers.push(layer);
     });
     redrawCanvas(map);
     return () => {

@@ -32,15 +32,15 @@ describe('liveConvertTrace', () => {
     expect(lintSummaryLabel([{ severity: 'error' }, { severity: 'error' }])).toBe(
       '2 errors in the TAC',
     );
-    expect(lintSummaryLabel([{ severity: 'warning' }])).toBe('TAC lint: 1 warning');
+    expect(lintSummaryLabel([{ severity: 'warning' }])).toBe('1 warning on TAC input');
     expect(lintSummaryLabel([{ severity: 'warn' }, { severity: 'warning' }])).toBe(
-      'TAC lint: 2 warnings',
+      '2 warnings on TAC input',
     );
-    expect(lintSummaryLabel([{ severity: 'info' }])).toBe('TAC lint: 1 note');
+    expect(lintSummaryLabel([{ severity: 'info' }])).toBe('1 note on TAC input');
     expect(lintSummaryLabel([{ severity: 'info' }, { severity: 'info' }])).toBe(
-      'TAC lint: 2 notes',
+      '2 notes on TAC input',
     );
-    expect(lintSummaryLabel([])).toBe('TAC lint: passed');
+    expect(lintSummaryLabel([])).toBe('TAC input: clear');
   });
 
   it('marks the preview incomplete when TAC still has a problem', () => {

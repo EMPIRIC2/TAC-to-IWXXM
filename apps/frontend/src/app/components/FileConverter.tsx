@@ -2561,7 +2561,7 @@ export function FileConverter({
 
   const tacLintSummary =
     manualInput.trim().length === 0
-      ? 'TAC lint: not run yet'
+      ? 'TAC input: not checked yet'
       : lintSummaryLabel(lintIssues);
   const bulletinReports =
     inputMode === 'ahl_bulletin'

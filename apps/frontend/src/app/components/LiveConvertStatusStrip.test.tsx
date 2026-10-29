@@ -35,14 +35,14 @@ describe('LiveConvertStatusStrip', () => {
     const strip = screen.getByTestId('convert-status-strip');
     expect(strip).toHaveTextContent('text area below');
     expect(strip).toHaveTextContent('Report: entered in the text area below');
-    expect(strip).toHaveTextContent('TAC lint: failed');
+    expect(strip).toHaveTextContent('TAC input: failed');
     expect(strip).toHaveTextContent('Decode: running');
     expect(strip).toHaveTextContent('Preview: incomplete');
     expect(strip).toHaveTextContent('XML schema: not run yet');
     expect(strip).toHaveTextContent('Schematron: not run yet');
     expect(strip).not.toHaveTextContent('It runs when you validate.');
     const byTone = tones();
-    expect(byTone['TAC lint: failed']).toBe('problem');
+    expect(byTone['TAC input: failed']).toBe('problem');
     expect(byTone['Preview: incomplete']).toBe('caution');
     expect(byTone['XML schema: not run yet']).toBe('idle');
     expect(screen.getByText('XML schema: not run yet')).toHaveAttribute(
@@ -66,13 +66,13 @@ describe('LiveConvertStatusStrip', () => {
     );
     const strip = screen.getByTestId('convert-status-strip');
     expect(strip).toHaveTextContent('Report: the text area below is empty');
-    expect(strip).toHaveTextContent('TAC lint: passed');
+    expect(strip).toHaveTextContent('TAC input: clear');
     expect(strip).toHaveTextContent('Decode: ready');
     expect(strip).toHaveTextContent('Preview: up to date');
     expect(strip).toHaveTextContent('XML schema: passed');
     expect(strip).toHaveTextContent('Schematron: failed');
     const byTone = tones();
-    expect(byTone['TAC lint: passed']).toBe('ready');
+    expect(byTone['TAC input: clear']).toBe('ready');
     expect(byTone['Schematron: failed']).toBe('problem');
     expect(byTone['XML schema: passed']).toBe('ready');
   });
@@ -92,9 +92,9 @@ describe('LiveConvertStatusStrip', () => {
     const strip = screen.getByTestId('convert-status-strip');
     expect(strip).toHaveTextContent('Preview: not run yet');
     expect(strip).toHaveTextContent('Decode: not run yet');
-    expect(strip).toHaveTextContent('TAC lint: not run yet');
+    expect(strip).toHaveTextContent('TAC input: not checked yet');
     expect(strip).toHaveTextContent('Schematron: passed');
-    expect(tones()['TAC lint: not run yet']).toBe('idle');
+    expect(tones()['TAC input: not checked yet']).toBe('idle');
   });
 
   it('shows lint warnings and a schema failure as different from a check in progress', () => {
@@ -110,7 +110,7 @@ describe('LiveConvertStatusStrip', () => {
       />,
     );
     const byTone = tones();
-    expect(byTone['TAC lint: warnings']).toBe('caution');
+    expect(byTone['warnings on TAC input']).toBe('caution');
     expect(byTone['XML schema: failed']).toBe('problem');
     expect(byTone['Schematron: not run yet']).toBe('idle');
     expect(screen.getByText('Schematron: not run yet')).toHaveAttribute(
@@ -131,10 +131,10 @@ describe('LiveConvertStatusStrip', () => {
         schematronStatus="not run"
       />,
     );
-    expect(tones()['TAC lint: notes']).toBe('caution');
+    expect(tones()['notes on TAC input']).toBe('idle');
   });
 
-  it('says when TAC lint is still checking the report', () => {
+  it('says when TAC input is still being checked', () => {
     render(
       <LiveConvertStatusStrip
         hasTac
@@ -146,6 +146,6 @@ describe('LiveConvertStatusStrip', () => {
         schematronStatus="not run"
       />,
     );
-    expect(tones()['TAC lint: checking the report']).toBe('idle');
+    expect(tones()['checking TAC input']).toBe('idle');
   });
 });
