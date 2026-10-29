@@ -85,24 +85,24 @@ function reportItem(hasTac: boolean): StatusItem {
   return { label: 'Report: the text area below is empty', tone: 'idle' };
 }
 
-/** TAC lint note and its color. */
+/** TAC input awareness note and its color. */
 function lintItem(status: LiveConvertStatusStripProps['lintStatus']): StatusItem {
   if (status === 'passed') {
-    return { label: 'TAC lint: passed', tone: 'ready' };
+    return { label: 'TAC input: clear', tone: 'ready' };
   }
   if (status === 'warnings') {
-    return { label: 'TAC lint: warnings', tone: 'caution' };
+    return { label: 'warnings on TAC input', tone: 'caution' };
   }
   if (status === 'notes') {
-    return { label: 'TAC lint: notes', tone: 'caution' };
+    return { label: 'notes on TAC input', tone: 'idle' };
   }
   if (status === 'failed') {
-    return { label: 'TAC lint: failed', tone: 'problem' };
+    return { label: 'TAC input: failed', tone: 'problem' };
   }
   if (status === 'running') {
-    return { label: 'TAC lint: checking the report', tone: 'idle' };
+    return { label: 'checking TAC input', tone: 'idle' };
   }
-  return { label: 'TAC lint: not run yet', tone: 'idle' };
+  return { label: 'TAC input: not checked yet', tone: 'idle' };
 }
 
 /** Decode note and its color. */

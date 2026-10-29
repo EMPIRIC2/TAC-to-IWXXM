@@ -1470,7 +1470,7 @@ describe('FileConverter Component', () => {
           'Report: entered in the text area below',
         );
         expect(screen.getByTestId('convert-status-strip')).toHaveTextContent(
-          'TAC lint: failed',
+          'TAC input: failed',
         );
         expect(screen.getByTestId('convert-status-strip')).toHaveTextContent(
           'XML schema: not run yet',
@@ -1560,15 +1560,15 @@ describe('FileConverter Component', () => {
       }
     });
 
-    it('keeps the TAC lint summary aligned with the status chip', async () => {
+    it('keeps the TAC input notes summary aligned with the status chip', async () => {
       vi.useFakeTimers();
       try {
         render(<FileConverter {...defaultProps} />);
         expect(screen.getByTestId('tac-lint-summary')).toHaveTextContent(
-          'TAC lint: not run yet',
+          'TAC input: not checked yet',
         );
         expect(screen.getByTestId('convert-status-strip')).toHaveTextContent(
-          'TAC lint: not run yet',
+          'TAC input: not checked yet',
         );
 
         mockLintTac.mockResolvedValue({
@@ -1592,16 +1592,16 @@ describe('FileConverter Component', () => {
           await Promise.resolve();
         });
         expect(screen.getByTestId('tac-lint-summary')).toHaveTextContent(
-          'TAC lint: 1 note',
+          '1 note on TAC input',
         );
         expect(screen.getByTestId('convert-status-strip')).toHaveTextContent(
-          'TAC lint: notes',
+          'notes on TAC input',
         );
         expect(screen.getByTestId('tac-lint-summary')).not.toHaveTextContent(
-          'TAC lint: passed',
+          'TAC input: clear',
         );
         expect(screen.getByTestId('convert-status-strip')).not.toHaveTextContent(
-          'TAC lint: warnings',
+          'warnings on TAC input',
         );
       } finally {
         vi.useRealTimers();

@@ -77,7 +77,7 @@ Cite as: `[Corpus: <id>]` or `[Corpus: <path> §section]`.
 | Build band | product, system-spec, api, tests, journeys, docstrings (when touching public APIs) |
 | Deploy | tech-spec, deploy, env-contract |
 | `hotfix` | product + system-spec; then tech-spec / api / tests as symptom requires |
-| `ui-ux-tweak` | **ui-style** + product + journeys (+ tests); opt-in **ui-ux-tweaks/** for the active log |
+| `ui-ux-tweak` | **ui-style** + product + journeys (+ tests); three artifacts: `docs/ui-ux-tweaks/UX-*.md` log, regression Vitest/Playwright, **Changelog of norms** row in ui-style-guide |
 | Domain mining | **domain** opt-in + product |
 | `evolve` / `brownfield` / `greenfield` | CORPUS rows for **touched features only**; every change cites `[Corpus: …]`; missing coverage → AskQuestion doc-add |
 

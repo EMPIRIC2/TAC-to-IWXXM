@@ -429,6 +429,48 @@ export function pointNudge(
 }
 
 /**
+ * Longitude offsets for Leaflet world copies when tiles wrap (±360°).
+ *
+ * Vector layers project once; tiles repeat. Paint the same overlay at these
+ * offsets so SIGMET polygons and station markers appear on looped globe copies.
+ */
+export const WORLD_COPY_LNG_OFFSETS = [-360, 0, 360] as const;
+
+/**
+ * Shift a point by a world-copy longitude offset.
+ *
+ * @param latitude - Degrees north
+ * @param longitude - Degrees east on the primary copy
+ * @param lngOffset - Degrees to add (−360, 0, or 360)
+ * @returns Latitude and shifted longitude
+ * @example
+ * const _ = true;
+ */
+export function shiftLatLng(
+  latitude: number,
+  longitude: number,
+  lngOffset: number,
+): [number, number] {
+  return [latitude, longitude + lngOffset];
+}
+
+/**
+ * Shift every vertex of a line or polygon by a world-copy longitude offset.
+ *
+ * @param positions - Latitude/longitude pairs on the primary copy
+ * @param lngOffset - Degrees to add (−360, 0, or 360)
+ * @returns Positions on that world copy
+ * @example
+ * const _ = true;
+ */
+export function shiftPositions(
+  positions: [number, number][],
+  lngOffset: number,
+): [number, number][] {
+  return positions.map(([latitude, longitude]) => [latitude, longitude + lngOffset]);
+}
+
+/**
  * Move the report the card is showing to the front of the list.
  *
  * @param place - Cached place

@@ -27,6 +27,9 @@ import {
   copyOpacity,
   placeShowingReport,
   pointNudge,
+  shiftLatLng,
+  shiftPositions,
+  WORLD_COPY_LNG_OFFSETS,
   LIVE_MAP_EMPTY,
   LIVE_MAP_LOADING,
   LIVE_MAP_NO_TIME,
@@ -138,6 +141,22 @@ describe('live map helpers', () => {
     expect(pointNudge(0, 1)).toEqual({ latitude: 0, longitude: 0 });
     expect(pointNudge(0, 2).longitude).toBeLessThan(0);
     expect(pointNudge(1, 2).longitude).toBeGreaterThan(0);
+    expect(WORLD_COPY_LNG_OFFSETS).toEqual([-360, 0, 360]);
+    expect(shiftLatLng(40.6, -73.7, 0)).toEqual([40.6, -73.7]);
+    expect(shiftLatLng(40.6, -73.7, 360)).toEqual([40.6, 286.3]);
+    expect(shiftLatLng(40.6, -73.7, -360)).toEqual([40.6, -433.7]);
+    expect(
+      shiftPositions(
+        [
+          [40, -74],
+          [41, -73],
+        ],
+        360,
+      ),
+    ).toEqual([
+      [40, 286],
+      [41, 287],
+    ]);
     expect(copyOpacity(0)).toBe(1);
     expect(copyOpacity(1)).toBe(0.45);
     expect(copyOpacity(2)).toBe(0.25);

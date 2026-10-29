@@ -61,7 +61,7 @@ function lintJumpItems(
 export function TacLintJumps({ issues, activeIndex, onSelect }: TacLintJumpsProps) {
   if (issues.length === 0) return null;
   return (
-    <div className="mt-2" role="group" aria-label="TAC lint issues">
+    <div className="mt-2" role="group" aria-label="notes on TAC input">
       <ol className="space-y-1">{lintJumpItems(issues, activeIndex, onSelect)}</ol>
     </div>
   );

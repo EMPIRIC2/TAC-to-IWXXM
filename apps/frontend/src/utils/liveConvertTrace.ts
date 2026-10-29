@@ -52,7 +52,7 @@ export function lintWarningCount(issues: LintSeverityCount[]): number {
 }
 
 /**
- * Plain-language TAC lint summary. The words Error and Warning are in the text.
+ * Plain-language TAC input summary for the operator pane.
  *
  * @param issues - Lint issues from the live assist hook
  * @returns One-line summary for the TAC pane
@@ -66,12 +66,14 @@ export function lintSummaryLabel(issues: LintSeverityCount[]): string {
   }
   const warnings = lintWarningCount(issues);
   if (warnings > 0) {
-    return warnings === 1 ? 'TAC lint: 1 warning' : `TAC lint: ${warnings} warnings`;
+    return warnings === 1
+      ? '1 warning on TAC input'
+      : `${warnings} warnings on TAC input`;
   }
   const notes = issues.filter((issue) => issue.severity === 'info').length;
-  if (notes === 1) return 'TAC lint: 1 note';
-  if (notes > 1) return `TAC lint: ${notes} notes`;
-  return 'TAC lint: passed';
+  if (notes === 1) return '1 note on TAC input';
+  if (notes > 1) return `${notes} notes on TAC input`;
+  return 'TAC input: clear';
 }
 
 /**

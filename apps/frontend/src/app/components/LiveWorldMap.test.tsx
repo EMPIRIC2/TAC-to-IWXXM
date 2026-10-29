@@ -657,6 +657,57 @@ describe('LiveWorldMap', () => {
     expect(screen.getByTestId('live-map-station')).toHaveTextContent('Area');
   });
 
+  it('draws markers and alert polygons on wrapped world copies', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue({
+        ok: true,
+        json: async () => ({
+          places: [
+            {
+              place_key: 'KJFK',
+              product: 'metar',
+              latitude: 40.6,
+              longitude: -73.7,
+              geometry: { kind: 'point' },
+              reports: [{ observed_at: 'now', tac: 'METAR KJFK', iwxxm: null }],
+            },
+            hazard,
+          ],
+        }),
+      }),
+    );
+    render(<LiveWorldMap />);
+    await paintedPolygon();
+    expect(L.circleMarker).toHaveBeenCalledWith([40.6, -73.7], expect.anything());
+    expect(L.circleMarker).toHaveBeenCalledWith([40.6, 286.3], expect.anything());
+    expect(L.circleMarker).toHaveBeenCalledWith([40.6, -433.7], expect.anything());
+    expect(L.polygon).toHaveBeenCalledWith(
+      [
+        [40, -74],
+        [41, -73],
+        [40, -72],
+      ],
+      expect.anything(),
+    );
+    expect(L.polygon).toHaveBeenCalledWith(
+      [
+        [40, 286],
+        [41, 287],
+        [40, 288],
+      ],
+      expect.anything(),
+    );
+    expect(L.polygon).toHaveBeenCalledWith(
+      [
+        [40, -434],
+        [41, -433],
+        [40, -432],
+      ],
+      expect.anything(),
+    );
+  });
+
   it('shows an error when the cache cannot be read', async () => {
     vi.mocked(L.canvas).mockReturnValueOnce({ _update: canvasUpdate } as never);
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: false }));

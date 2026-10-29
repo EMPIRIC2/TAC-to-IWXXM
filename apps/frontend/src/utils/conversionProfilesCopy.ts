@@ -91,7 +91,7 @@ export const MAPPING_BRIDGE_UNMATCHED_HINT =
 export const MAPPING_BRIDGE_EMPTY_IWXXM = 'Run preview to see the IWXXM block.';
 export const PROFILES_GLOSSARY_HEADING = 'What these options mean';
 export const PROFILES_GLOSSARY_PROFILE =
-  'Base profile chooses the operational rule set and national extensions used for TAC lint, conversion, and IWXXM validation.';
+  'Base profile chooses the operational rule set and national extensions used for TAC input checks, conversion, and IWXXM validation.';
 export const PROFILES_GLOSSARY_EXCHANGE =
   'Exchange packaging describes how output is bundled for bulletin exchange. It does not select destinations or credentials.';
 export const PROFILES_GLOSSARY_OVERLAY =
@@ -133,7 +133,7 @@ export const CONVERT_RESET_WMO_LIBRARY_DEFAULTS_HELP =
 export const CONVERT_LIBRARY_HELP_DECODING =
   'Controls how TAC tokens are explained in the decode panel.';
 export const CONVERT_LIBRARY_HELP_TAC_VALIDATION =
-  'Controls TAC lint checks run before and with conversion.';
+  'Controls TAC input checks run before and with conversion.';
 export const CONVERT_LIBRARY_HELP_IWXXM_VALIDATION =
   'Controls IWXXM output checks after conversion.';
 export const CONVERT_LIBRARY_HELP_CONVERSION =
@@ -257,7 +257,7 @@ export const PROFILES_TOOLTIP_LIBRARIES =
 export const PROFILES_TOOLTIP_LIBRARY_TAB_CONVERSION =
   'Map TAC groups to IWXXM blocks with typed slots and optional decode-only or skip modes.';
 export const PROFILES_TOOLTIP_LIBRARY_TAB_TAC_VALIDATION =
-  'TAC lint rules that run before or alongside conversion for the selected profile line.';
+  'TAC input check rules that run before or alongside conversion for the selected profile line.';
 export const PROFILES_TOOLTIP_LIBRARY_TAB_IWXXM_VALIDATION =
   'IWXXM schema and Schematron checks applied to converted output.';
 export const PROFILES_TOOLTIP_LIBRARY_TAB_DISSEMINATION =

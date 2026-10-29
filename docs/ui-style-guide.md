@@ -6,6 +6,10 @@ Living norms for the operator UI (`apps/frontend`). Grown by the **ui-ux-tweak**
 each closed tweak appends a row under **Changelog of norms**. Consolidation PRs may rewrite
 sections when norms conflict—cite the UX log ids retired or merged.
 
+**Required artifacts (every ui-ux-tweak):** (1) UX log under `docs/ui-ux-tweaks/` from
+`_template.md`, (2) regression test (Vitest or Playwright), (3) minimal FE change plus a
+**Changelog of norms** row here linking that UX log id. Cite `[Corpus: ui-style]`.
+
 **Not for operators:** this file is engineering corpus. Do not put planning ids (`EV-`, `UJ-`,
 `ADR-`, `docs/…`) into user-visible copy (see no-internal-doc-refs / EV-048).
 
@@ -55,4 +59,5 @@ Record the test path and red/green dates on `docs/ui-ux-tweaks/UX-YYYY-MM-DD-*.m
 
 | Date | UX log | Norm (one line) |
 |------|--------|-----------------|
-| — | — | _(seed — no tweaks closed yet)_ |
+| 2026-10-29 | [UX-2026-10-29-convert-polish](ui-ux-tweaks/UX-2026-10-29-convert-polish.md) | Frame TAC INFO / severity feedback as notes on TAC input (not “lint failures” / “TAC lint: …”). |
+| 2026-10-29 | [UX-2026-10-29-map-wrap-overlays](ui-ux-tweaks/UX-2026-10-29-map-wrap-overlays.md) | Live map overlays that must survive tile wrap paint at world-copy longitude offsets (−360 / 0 / +360). |
