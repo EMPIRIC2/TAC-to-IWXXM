@@ -306,10 +306,11 @@ export async function openConvertDownloadsTab(
   // Wait for convert to finish before selecting Downloads. Result cards are
   // force-mounted (often hidden under the default IWXXM tab). Selecting
   // Downloads too early races auto-switch back to IWXXM after convert lands.
-  // multiple matches: any result card proves convert finished.
-  await expect(page.locator('[data-testid^="result-item-"]').first()).toBeAttached({
-    timeout: timeoutMs,
-  });
+  await expect
+    .poll(async () => page.locator('[data-testid^="result-item-"]').count(), {
+      timeout: timeoutMs,
+    })
+    .toBeGreaterThan(0);
   await page.getByTestId('convert-results-tab-downloads').click();
   await expect(
     page.getByRole('region', { name: 'Conversion results', exact: true }),
