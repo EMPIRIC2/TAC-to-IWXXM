@@ -61,7 +61,9 @@ _WX_TIME_NAME = {
     "UP": "Unknown precipitation",
     "TS": "Thunderstorm",
 }
-_CYCLONE_NAME = re.compile(r"^[A-Z]{3,}(?:-[A-Z]{2,})*$")
+# Unhyphenated names need ≥3 letters; hyphenated runs may start at 2 (e.g. IN-FA).
+_CYCLONE_NAME = re.compile(r"^(?:[A-Z]{3,}|[A-Z]{2,}(?:-[A-Z]{2,})+)$")
+_CYCLONE_NAME_RESERVED = frozenset({"CENTRE", "CENTER"})
 _TEMP = re.compile(r"^(?P<t>M?\d{2})/(?P<td>M?\d{2})$")
 _ALT = re.compile(r"^A(?P<val>\d{4})$")
 _QNH = re.compile(r"^Q(?P<val>\d{3,4})$")
@@ -1533,8 +1535,12 @@ def _explain_sigmet_airmet(token: str, *, product: str, seen: dict[str, int]) ->
         return f"Lake ({_US_LAKE[upper]})"
     if seen.get("tc_next"):
         seen["tc_next"] = 0
-        if _CYCLONE_NAME.match(upper) and not meaning_for(upper.split("-")[0]):
+        if upper not in _CYCLONE_NAME_RESERVED and _CYCLONE_NAME.match(upper) and not meaning_for(upper.split("-")[0]):
             return f"Tropical cyclone ({upper})"
+        if upper == "CENTRE":
+            return "Centre"
+        if upper == "CENTER":
+            return "Center"
     if upper == "REF":
         seen["ref"] = 1
         return "Reference"
