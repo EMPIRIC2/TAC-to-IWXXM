@@ -102,8 +102,8 @@ export function Login({
         <Card className="p-8 bg-card border-border" data-testid="login-view">
           {/* Header */}
           <div className="mb-8 border-b border-border pb-6">
-            <h1 className="text-xl font-semibold text-foreground mb-1 tracking-tight uppercase">
-              METAR Converter
+            <h1 className="text-xl font-semibold text-foreground mb-1 tracking-tight">
+              TAC-to-IWXXM
             </h1>
             <p className="text-sm text-muted-foreground font-mono">
               Optional sign-in for long-term work history

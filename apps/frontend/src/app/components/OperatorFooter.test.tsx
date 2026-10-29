@@ -19,6 +19,29 @@ vi.mock('sonner', () => ({
   toast: { error: vi.fn() },
 }));
 
+describe('OperatorFooter layout', () => {
+  it('groups Privacy, Feedback, and Terms in one horizontal row', () => {
+    render(<OperatorFooter onOpenPrivacy={vi.fn()} onOpenTerms={vi.fn()} />);
+
+    const group = screen.getByRole('group', { name: 'Site links' });
+    expect(group.className).toMatch(/\bflex\b/);
+    expect(group.className).toMatch(/\bflex-row\b/);
+    expect(group.className).toMatch(/\bflex-wrap\b/);
+
+    expect(
+      within(group).getByRole('button', { name: 'Open privacy settings' }),
+    ).toHaveTextContent('Privacy settings');
+    const feedback = within(group).getByTestId('footer-feedback');
+    expect(feedback).toHaveTextContent('Feedback');
+    const beta = within(group).getByTestId('beta-badge');
+    expect(beta).toHaveTextContent('Beta');
+    expect(feedback.parentElement).toContainElement(beta);
+    expect(
+      within(group).getByRole('button', { name: 'Open terms of service' }),
+    ).toHaveTextContent('Terms of service');
+  });
+});
+
 describe('OperatorFooter feedback', () => {
   beforeEach(() => {
     vi.mocked(toast.error).mockClear();

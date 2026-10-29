@@ -77,6 +77,49 @@ describe('ErrorLogPanel', () => {
     expect(screen.queryByRole('region', { name: 'Notes' })).not.toBeInTheDocument();
   });
 
+  it('scrubs planning ids and emphasizes error rows with destructive chrome', () => {
+    render(
+      <ErrorLogPanel
+        log={{
+          errors: ['Fatal convert EV-048 #702'],
+          issues: [
+            {
+              source: 'parser',
+              message: 'Schema failed - TC-F7-002 / EV-040',
+              severity: 'error',
+              hint: 'See ADR-022',
+              code: 'XML_SCHEMA',
+            },
+            {
+              source: 'parser',
+              message: 'Cloud group unusual EV-011',
+              severity: 'warning',
+            },
+          ],
+        }}
+      />,
+    );
+
+    expect(screen.getByText('Fatal convert')).toBeInTheDocument();
+    expect(screen.queryByText(/EV-048/)).not.toBeInTheDocument();
+    expect(screen.queryByText(/#702/)).not.toBeInTheDocument();
+
+    const errorOpen = screen.getByTestId('issue-detail-open-0');
+    expect(errorOpen).toHaveTextContent('Schema failed');
+    expect(errorOpen).not.toHaveTextContent('TC-F7-002');
+    expect(errorOpen).not.toHaveTextContent('EV-040');
+    expect(errorOpen.querySelector('p')?.className).toMatch(/text-destructive/);
+
+    const errorCard = errorOpen.closest('li');
+    expect(errorCard).toHaveAttribute('data-error-emphasis', 'true');
+    expect(errorCard?.className).toMatch(/bg-destructive\//);
+
+    const noteOpen = screen.getByTestId('issue-detail-open-1');
+    expect(noteOpen).toHaveTextContent('Cloud group unusual');
+    expect(noteOpen).not.toHaveTextContent('EV-011');
+    expect(noteOpen.closest('li')).toHaveAttribute('data-error-emphasis', 'false');
+  });
+
   it('hides sub-critical issues when the operator log level is CRITICAL', () => {
     render(
       <ErrorLogPanel

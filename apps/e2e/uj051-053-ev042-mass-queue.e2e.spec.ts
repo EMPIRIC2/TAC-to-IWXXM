@@ -4,16 +4,16 @@
  * Spec: docs/user-journeys.md UJ-051..053; docs/test-plan.md TC-F33-* + TC-EV042-*;
  * connectivity-gates H4–H5 (mass route CORS covered in pytest; this file is browser UJ).
  *
- * [Corpus: journeys §UJ-051..053] [Corpus: tests] [Corpus: product §F33]
+ * UX-2026-10-29-drop-mass-ingest: Convert toolbar no longer shows Mass Ingest chrome;
+ * API auth gate remains. Queue journeys use Select files / drop.
+ *
+ * [Corpus: journeys §UJ-051..053] [Corpus: tests] [Corpus: product §F33] [Corpus: ui-style]
  */
 import { expect, test, type Page } from '@playwright/test';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
   convertManualMetar,
-  E2E_USER_EMAIL,
-  E2E_USER_PASSWORD,
-  loginAsE2EUser,
   openConvertSettings,
   openPublicConverter,
   playwrightApiFetch,
@@ -52,10 +52,7 @@ async function stubWorkbenchNoise(page: Page): Promise<void> {
 }
 
 async function queueTwoTacFiles(page: Page): Promise<void> {
-  // Prefer the compact drop-zone file input (not mass-ingest hidden inputs).
-  const fileInput = page.locator(
-    'input[type="file"]:not([data-testid="mass-ingest-folder-input"]):not([data-testid="mass-ingest-zip-input"])',
-  );
+  const fileInput = page.locator('input[type="file"]').first();
   await fileInput.setInputFiles([
     {
       name: 'first.tac',
@@ -76,13 +73,15 @@ async function queueTwoTacFiles(page: Page): Promise<void> {
 }
 
 test.describe('T4.1 — UJ-051..053 EV-042 mass ingest + queue + restored destinations', () => {
-  test('UJ-053 / TC-EV091-001: Convert&Send + Disseminate visible; Upload to Database absent; convert remains', async ({
+  test('UJ-053 / TC-EV091-001: Convert&Send + Disseminate visible; Mass Ingest absent; Upload to Database absent', async ({
     page,
   }) => {
     await openPublicConverter(page);
     await expect(page.getByTestId('convert-button')).toBeVisible();
-    await expect(page.getByTestId('mass-ingest-folder-button')).toBeVisible();
-    await expect(page.getByTestId('mass-ingest-zip-button')).toBeVisible();
+    await expect(page.getByTestId('select-files-button')).toBeVisible();
+    await expect(page.getByTestId('mass-ingest-actions')).toHaveCount(0);
+    await expect(page.getByTestId('mass-ingest-folder-button')).toHaveCount(0);
+    await expect(page.getByTestId('mass-ingest-zip-button')).toHaveCount(0);
 
     await convertManualMetar(page, SAMPLE_METAR);
     await openConvertSettings(page);
@@ -93,19 +92,15 @@ test.describe('T4.1 — UJ-051..053 EV-042 mass ingest + queue + restored destin
     ).toBeVisible({
       timeout: 45_000,
     });
-    // Opposite state: conversion results are visible, and Upload to Database is not.
     await expect(page.getByTestId('upload-to-database-button')).toHaveCount(0);
   });
 
-  test('UJ-051 / TC-F33-004: guest Folder mass ingest prompts sign-in', async ({
+  test('UJ-051 / TC-F33-004: Convert chrome has no Mass Ingest Folder control', async ({
     page,
   }) => {
     await openPublicConverter(page);
-    // Sign-in chrome is always visible for guests — assert the toast specifically.
-    await page.getByTestId('mass-ingest-folder-button').click();
-    await expect(
-      page.getByText(/Sign in required for mass folder or zip ingest/i),
-    ).toBeVisible({ timeout: 10_000 });
+    await expect(page.getByTestId('mass-ingest-folder-button')).toHaveCount(0);
+    await expect(page.getByText(/mass ingest/i)).toHaveCount(0);
   });
 
   test('UJ-051 / TC-F33-005: unauthenticated POST /ingest/mass is denied', async ({
@@ -123,49 +118,6 @@ test.describe('T4.1 — UJ-051..053 EV-042 mass ingest + queue + restored destin
       timeout: 30_000,
     });
     expect([401, 403]).toContain(response.status());
-  });
-
-  test('UJ-051 / TC-F33-001: signed-in zip mass ingest fills work queue', async ({
-    page,
-  }) => {
-    test.skip(
-      !E2E_USER_EMAIL || !E2E_USER_PASSWORD,
-      'E2E_USER_* / ADMIN_* required for authenticated mass ingest',
-    );
-
-    await stubWorkbenchNoise(page);
-    await page.route('**/api/v1/ingest/mass', async (route) => {
-      await route.fulfill({
-        status: 200,
-        contentType: 'application/json',
-        body: JSON.stringify({
-          accepted_count: 1,
-          rejected_count: 0,
-          results: [
-            {
-              name: 'from-zip.tac',
-              accepted: true,
-              reason: null,
-              size_bytes: SAMPLE_METAR.length,
-              content: SAMPLE_METAR,
-            },
-          ],
-        }),
-      });
-    });
-
-    await loginAsE2EUser(page);
-    const zipInput = page.getByTestId('mass-ingest-zip-input');
-    await zipInput.setInputFiles({
-      name: 'batch.zip',
-      mimeType: 'application/zip',
-      buffer: Buffer.from('PK fake zip for UI smoke'),
-    });
-
-    await expect(page.getByTestId('operator-work-queue')).toBeVisible({
-      timeout: 20_000,
-    });
-    await expect(page.getByTestId('queue-item-0')).toContainText(/from-zip\.tac/i);
   });
 
   test('UJ-052 / TC-EV042-003: work queue keyboard + batch convert controls', async ({
@@ -220,9 +172,7 @@ test.describe('T4.1 — UJ-051..053 EV-042 mass ingest + queue + restored destin
     page,
   }) => {
     await openPublicConverter(page);
-    const fileInput = page.locator(
-      'input[type="file"]:not([data-testid="mass-ingest-folder-input"]):not([data-testid="mass-ingest-zip-input"])',
-    );
+    const fileInput = page.locator('input[type="file"]').first();
     await fileInput.setInputFiles(FIXTURE_TAC);
     await expect(page.getByTestId('operator-work-queue')).toBeVisible({
       timeout: 15_000,

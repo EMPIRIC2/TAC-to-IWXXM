@@ -1241,9 +1241,10 @@ describe('FileConverter Component', () => {
         screen.getByText(/\.txt, \.metar, \.tac, \.xml, \.gz/i),
       ).toBeInTheDocument();
       expect(screen.getByTestId('select-files-button')).toBeInTheDocument();
-      expect(screen.getByTestId('mass-ingest-actions')).toHaveTextContent(
-        /mass ingest/i,
-      );
+      expect(screen.queryByTestId('mass-ingest-actions')).not.toBeInTheDocument();
+      expect(screen.queryByText(/mass ingest/i)).not.toBeInTheDocument();
+      expect(screen.queryByTestId('mass-ingest-folder-button')).not.toBeInTheDocument();
+      expect(screen.queryByTestId('mass-ingest-zip-button')).not.toBeInTheDocument();
     });
   });
 
@@ -1442,7 +1443,8 @@ describe('FileConverter Component', () => {
       }
     });
 
-    it('selects a recognised group and an undecoded group in the live panes', async () => {
+    it('omits the Groups chip strip under TAC notes after live decode', async () => {
+      // UX-2026-10-29-drop-groups-chips: no horizontal Groups chips above notes summary.
       vi.useFakeTimers();
       try {
         mockDecodeTac.mockResolvedValue({
@@ -1482,12 +1484,10 @@ describe('FileConverter Component', () => {
         expect(screen.getByTestId('convert-status-strip')).toHaveTextContent(
           'Schematron: not run yet',
         );
-        const group = screen.getByRole('button', { name: 'METAR' });
-        fireEvent.click(group);
-        expect(group).toHaveAttribute('aria-pressed', 'true');
-        const unknown = screen.getByRole('button', { name: 'Error XX' });
-        fireEvent.click(unknown);
-        expect(unknown).toHaveAttribute('aria-pressed', 'true');
+        expect(screen.queryByTestId('tac-group-chips')).not.toBeInTheDocument();
+        expect(screen.queryByLabelText('Recognised groups')).not.toBeInTheDocument();
+        expect(screen.queryByText('Groups')).not.toBeInTheDocument();
+        expect(screen.queryByRole('button', { name: 'METAR' })).not.toBeInTheDocument();
         expect(screen.getByTestId('tac-lint-summary')).toHaveTextContent(/error/i);
       } finally {
         vi.useRealTimers();
@@ -2558,6 +2558,23 @@ describe('FileConverter Component', () => {
       expect(disseminate).toHaveClass('bg-background');
     });
 
+    it('centers More actions button label clusters (UX-2026-10-29-center-more-actions-buttons)', () => {
+      operatorDisseminationUiConfig.destinationsEnabled = true;
+      render(<FileConverter {...defaultProps} />);
+      const panel = screen.getByTestId('convert-settings-secondary-actions');
+      const buttons = [
+        within(panel).getByTestId('convert-and-send-button'),
+        within(panel).getByTestId('open-dissemination-drawer'),
+        within(panel).getByTestId('download-zip-button'),
+        within(panel).getByTestId('clear-queue-button'),
+      ];
+      for (const button of buttons) {
+        const classes = button.className.split(/\s+/);
+        expect(classes).toContain('justify-center');
+        expect(classes).not.toContain('justify-start');
+      }
+    });
+
     it.skip('contains product-profile bar in main column beside Recent work (TC-UX-RW-001)', () => {
       render(<FileConverter {...defaultProps} onLoadWorkSession={vi.fn()} />);
       const main = screen.getByTestId('workbench-main-column');
@@ -2583,53 +2600,6 @@ describe('FileConverter Component', () => {
         }),
       ).not.toBeInTheDocument();
       expect(screen.getByTestId('convert-button')).toBeInTheDocument();
-    });
-
-    it('mass ingest Folder button prompts login when guest (TC-F33-004 / UJ-051)', async () => {
-      const user = userEvent.setup({ delay: null });
-      const onRequestLogin = vi.fn();
-      render(
-        <FileConverter {...defaultProps} isGuest onRequestLogin={onRequestLogin} />,
-      );
-
-      await user.click(screen.getByTestId('mass-ingest-folder-button'));
-
-      expect(onRequestLogin).toHaveBeenCalled();
-      expect(mockToast.error).toHaveBeenCalledWith(
-        'Sign in required for mass folder or zip ingest',
-      );
-      expect(mockMassIngestFiles).not.toHaveBeenCalled();
-    });
-
-    it('mass ingest Zip hands accepted files into pending queue (TC-F33-001 / UJ-051)', async () => {
-      const user = userEvent.setup({ delay: null });
-      render(<FileConverter {...defaultProps} accessToken="jwt-f33" />);
-
-      const zipInput = screen.getByTestId('mass-ingest-zip-input') as HTMLInputElement;
-      const zipFile = new File(['PK fake'], 'batch.zip', { type: 'application/zip' });
-      await user.upload(zipInput, zipFile);
-
-      await waitFor(() => {
-        expect(mockMassIngestFiles).toHaveBeenCalledWith(
-          expect.objectContaining({
-            accessToken: 'jwt-f33',
-            files: expect.arrayContaining([
-              expect.objectContaining({ name: 'batch.zip' }),
-            ]),
-          }),
-        );
-      });
-
-      await waitFor(() => {
-        expect(
-          screen.getByRole('region', { name: /pending files queue/i }),
-        ).toBeInTheDocument();
-      });
-      expect(mockToast.loading).toHaveBeenCalled();
-      expect(mockToast.success).toHaveBeenCalledWith(
-        'Mass ingest: 1 accepted, 0 rejected',
-        expect.anything(),
-      );
     });
 
     it('work queue keyboard next + Enter converts focused item (TC-EV042-003)', async () => {
@@ -2774,15 +2744,6 @@ describe('FileConverter Component', () => {
       );
     });
 
-    it('mass ingest Zip button triggers file chooser when signed in', async () => {
-      const user = userEvent.setup({ delay: null });
-      render(<FileConverter {...defaultProps} accessToken="jwt-f33" />);
-      const zipInput = screen.getByTestId('mass-ingest-zip-input') as HTMLInputElement;
-      const clickSpy = vi.spyOn(zipInput, 'click');
-      await user.click(screen.getByTestId('mass-ingest-zip-button'));
-      expect(clickSpy).toHaveBeenCalled();
-    });
-
     it('queue item click focuses and loads TAC into editor', async () => {
       const user = userEvent.setup({ delay: null });
       const { container } = render(<FileConverter {...defaultProps} />);
@@ -2824,26 +2785,6 @@ describe('FileConverter Component', () => {
       ).toBeInTheDocument();
     });
 
-    it('mass ingest Folder input hands accepted files into queue when signed in', async () => {
-      const user = userEvent.setup({ delay: null });
-      render(<FileConverter {...defaultProps} accessToken="jwt-f33" />);
-
-      const folderInput = screen.getByTestId(
-        'mass-ingest-folder-input',
-      ) as HTMLInputElement;
-      const tac = new File(['METAR KJFK=\n'], 'folder.tac', { type: 'text/plain' });
-      await user.upload(folderInput, tac);
-
-      await waitFor(() => {
-        expect(mockMassIngestFiles).toHaveBeenCalled();
-      });
-      await waitFor(() => {
-        expect(
-          screen.getByRole('region', { name: /pending files queue/i }),
-        ).toBeInTheDocument();
-      });
-    });
-
     it('batch convert with no selection shows error toast', async () => {
       const user = userEvent.setup({ delay: null });
       const { container } = render(<FileConverter {...defaultProps} />);
@@ -2864,78 +2805,6 @@ describe('FileConverter Component', () => {
       expect(btn).toBeDisabled();
       await user.click(screen.getByTestId('batch-validate-button'));
       expect(screen.getByTestId('batch-validate-button')).toBeDisabled();
-    });
-
-    it('mass ingest surfaces API rejection toast', async () => {
-      mockMassIngestFiles.mockRejectedValueOnce(new Error('zip bomb'));
-      render(<FileConverter {...defaultProps} accessToken="jwt-f33" />);
-      const zipInput = screen.getByTestId('mass-ingest-zip-input') as HTMLInputElement;
-      const zipFile = new File(['PK'], 'bad.zip', { type: 'application/zip' });
-      await userEvent.setup({ delay: null }).upload(zipInput, zipFile);
-      await waitFor(() => {
-        expect(mockToast.error).toHaveBeenCalledWith('zip bomb', expect.anything());
-      });
-    });
-
-    it('mass ingest Zip button prompts login when guest', async () => {
-      const user = userEvent.setup({ delay: null });
-      const onRequestLogin = vi.fn();
-      render(
-        <FileConverter {...defaultProps} isGuest onRequestLogin={onRequestLogin} />,
-      );
-      await user.click(screen.getByTestId('mass-ingest-zip-button'));
-      expect(onRequestLogin).toHaveBeenCalled();
-      expect(mockToast.error).toHaveBeenCalledWith(
-        'Sign in required for mass folder or zip ingest',
-      );
-    });
-
-    it('mass ingest Folder button opens chooser when signed in', async () => {
-      const user = userEvent.setup({ delay: null });
-      render(<FileConverter {...defaultProps} accessToken="jwt-f33" />);
-      const folderInput = screen.getByTestId(
-        'mass-ingest-folder-input',
-      ) as HTMLInputElement;
-      const clickSpy = vi.spyOn(folderInput, 'click');
-      await user.click(screen.getByTestId('mass-ingest-folder-button'));
-      expect(clickSpy).toHaveBeenCalled();
-    });
-
-    it('mass ingest queues accepted files and toasts rejects', async () => {
-      mockMassIngestFiles.mockResolvedValueOnce({
-        accepted_count: 1,
-        rejected_count: 1,
-        results: [
-          {
-            name: 'ok.tac',
-            accepted: true,
-            reason: null,
-            size_bytes: 10,
-            content: 'METAR OK=\n',
-          },
-          {
-            name: 'bad.tac',
-            accepted: false,
-            reason: 'binary',
-            size_bytes: 4,
-            content: null,
-          },
-        ],
-      });
-      render(<FileConverter {...defaultProps} accessToken="jwt-f33" />);
-      const zipInput = screen.getByTestId('mass-ingest-zip-input') as HTMLInputElement;
-      await userEvent
-        .setup()
-        .upload(zipInput, new File(['PK'], 'mix.zip', { type: 'application/zip' }));
-      await waitFor(() => {
-        expect(mockToast.success).toHaveBeenCalledWith(
-          'Mass ingest: 1 accepted, 1 rejected',
-          expect.anything(),
-        );
-      });
-      expect(
-        screen.getByRole('region', { name: /pending files queue/i }),
-      ).toBeInTheDocument();
     });
 
     it('removes a pending file from the work queue', async () => {
@@ -4112,6 +3981,27 @@ describe('FileConverter Component', () => {
       return user;
     }
 
+    it('places catalog Examples in a bar above the TAC editor, not in Settings (UX-2026-10-29-examples-bar-above-tac)', () => {
+      seedLiveConvertChrome();
+      render(<FileConverter {...defaultProps} />);
+
+      const bar = screen.getByTestId('convert-examples-bar');
+      const select = screen.getByTestId('examples-select');
+      const panes = screen.getByTestId('live-convert-panes');
+      const editor = screen.getByTestId('tac-editor');
+      const profileBar = screen.getByTestId('product-profile-bar');
+
+      expect(bar).toContainElement(select);
+      expect(panes).toContainElement(bar);
+      expect(profileBar).not.toContainElement(select);
+      expect(screen.getByTestId('convert-settings-dialog')).not.toContainElement(
+        select,
+      );
+      expect(
+        bar.compareDocumentPosition(editor) & Node.DOCUMENT_POSITION_FOLLOWING,
+      ).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
+    });
+
     it('loads a TAC example into the editor and sets product (C2)', async () => {
       render(<FileConverter {...defaultProps} />);
 
@@ -4940,52 +4830,6 @@ describe('FileConverter Component', () => {
       expect(clickSpy).toHaveBeenCalledOnce();
     });
 
-    it('reports mass-ingest results that accept no usable content', async () => {
-      const user = userEvent.setup({ delay: null });
-      mockMassIngestFiles.mockResolvedValueOnce({
-        accepted_count: 1,
-        rejected_count: 0,
-        results: [
-          {
-            name: 'empty.tac',
-            accepted: true,
-            reason: null,
-            size_bytes: 0,
-            content: null,
-          },
-        ],
-      });
-      render(<FileConverter {...defaultProps} accessToken="jwt-f33" />);
-
-      await user.upload(
-        screen.getByTestId('mass-ingest-zip-input') as HTMLInputElement,
-        new File(['PK'], 'empty.zip', { type: 'application/zip' }),
-      );
-
-      await waitFor(() => {
-        expect(mockToast.success).toHaveBeenCalledWith(
-          'Mass ingest: 1 accepted, 0 rejected',
-          expect.anything(),
-        );
-      });
-      expect(screen.queryByTestId('operator-work-queue')).not.toBeInTheDocument();
-    });
-
-    it('prompts guests to sign in before opening the mass-ingest folder chooser', async () => {
-      const user = userEvent.setup({ delay: null });
-      const onRequestLogin = vi.fn();
-      render(
-        <FileConverter {...defaultProps} isGuest onRequestLogin={onRequestLogin} />,
-      );
-
-      await user.click(screen.getByTestId('mass-ingest-folder-button'));
-
-      expect(onRequestLogin).toHaveBeenCalledOnce();
-      expect(mockToast.error).toHaveBeenCalledWith(
-        'Sign in required for mass folder or zip ingest',
-      );
-    });
-
     it('inflates a gzip drop, removes its extension, and detects AHL mode', async () => {
       const user = userEvent.setup({ delay: null });
       mockInflateGzipToText.mockResolvedValueOnce(ahlSample);
@@ -5029,58 +4873,6 @@ describe('FileConverter Component', () => {
         expect(mockToast.error).toHaveBeenCalledWith('invalid gzip');
       });
       expect(screen.queryByTestId('operator-work-queue')).not.toBeInTheDocument();
-    });
-
-    it('limits mass-ingest rejection samples and defaults blank reasons', async () => {
-      const rejected = Array.from({ length: 6 }, (_, index) => ({
-        name: `bad-${index}.tac`,
-        accepted: false,
-        reason: index === 0 ? '' : null,
-        size_bytes: 1,
-        content: null,
-      }));
-      mockMassIngestFiles.mockResolvedValueOnce({
-        accepted_count: 0,
-        rejected_count: 6,
-        results: rejected,
-      });
-      render(<FileConverter {...defaultProps} accessToken="jwt-f33" />);
-
-      await userEvent
-        .setup()
-        .upload(
-          screen.getByTestId('mass-ingest-zip-input') as HTMLInputElement,
-          new File(['PK'], 'rejected.zip', { type: 'application/zip' }),
-        );
-
-      await waitFor(() => {
-        expect(mockToast.success).toHaveBeenCalledWith(
-          'Mass ingest: 0 accepted, 6 rejected',
-          expect.anything(),
-        );
-      });
-      expect(mockToast.error).toHaveBeenCalledWith('bad-0.tac: rejected');
-      expect(mockToast.error).toHaveBeenCalledWith('bad-4.tac: rejected');
-      expect(mockToast.error).not.toHaveBeenCalledWith('bad-5.tac: rejected');
-    });
-
-    it('uses the generic mass-ingest failure message for non-Error rejections', async () => {
-      mockMassIngestFiles.mockRejectedValueOnce('offline');
-      render(<FileConverter {...defaultProps} accessToken="jwt-f33" />);
-
-      await userEvent
-        .setup()
-        .upload(
-          screen.getByTestId('mass-ingest-zip-input') as HTMLInputElement,
-          new File(['PK'], 'offline.zip', { type: 'application/zip' }),
-        );
-
-      await waitFor(() => {
-        expect(mockToast.error).toHaveBeenCalledWith(
-          'Mass ingest failed',
-          expect.anything(),
-        );
-      });
     });
 
     it('uses xml and content fallbacks for hard conversion result cards', async () => {
@@ -5413,22 +5205,6 @@ describe('FileConverter Component', () => {
         expect(mockToast.info).toHaveBeenCalledWith('Switched to TAC report mode');
       });
       expect(screen.getByTestId('input-mode-tac')).toHaveClass('bg-blue-700');
-    });
-
-    it('sets webkitdirectory on the mass-ingest folder input', () => {
-      render(<FileConverter {...defaultProps} accessToken="jwt-f33" />);
-      const folderInput = screen.getByTestId('mass-ingest-folder-input');
-      expect(folderInput).toHaveAttribute('webkitdirectory');
-      expect(folderInput).toHaveAttribute('directory');
-    });
-
-    it('ignores empty mass-ingest file lists', async () => {
-      render(<FileConverter {...defaultProps} accessToken="jwt-f33" />);
-      const zipInput = screen.getByTestId('mass-ingest-zip-input') as HTMLInputElement;
-
-      fireEvent.change(zipInput, { target: { files: null } });
-
-      expect(mockMassIngestFiles).not.toHaveBeenCalled();
     });
 
     it('uses custom output filename for manual multi-line convert results', async () => {
@@ -6045,25 +5821,6 @@ describe('FileConverter Component', () => {
       expect(mockToast.success).not.toHaveBeenCalledWith('All files downloaded as ZIP');
     });
 
-    it('blocks mass ingest file input when signed out', async () => {
-      const onRequestLogin = vi.fn();
-      render(
-        <FileConverter {...defaultProps} isGuest onRequestLogin={onRequestLogin} />,
-      );
-      const zipInput = screen.getByTestId('mass-ingest-zip-input') as HTMLInputElement;
-      fireEvent.change(zipInput, {
-        target: {
-          files: [new File(['PK'], 'guest.zip', { type: 'application/zip' })],
-        },
-      });
-
-      expect(onRequestLogin).toHaveBeenCalled();
-      expect(mockToast.error).toHaveBeenCalledWith(
-        'Sign in required for mass folder or zip ingest',
-      );
-      expect(mockMassIngestFiles).not.toHaveBeenCalled();
-    });
-
     it('renders autosave indicator labels for each save state', () => {
       const labels: Array<[typeof mockSaveIndicator.value, RegExp]> = [
         ['pending', /unsaved changes/i],
@@ -6416,24 +6173,6 @@ describe('FileConverter Component', () => {
 
       expect(screen.getByTestId('product-type-select')).toHaveValue('auto');
       spy.mockRestore();
-    });
-
-    it('clears mass-ingest inputs after a successful folder upload', async () => {
-      const user = userEvent.setup({ delay: null });
-      render(<FileConverter {...defaultProps} accessToken="jwt-f33" />);
-      const folderInput = screen.getByTestId(
-        'mass-ingest-folder-input',
-      ) as HTMLInputElement;
-
-      await user.upload(
-        folderInput,
-        new File(['METAR KJFK='], 'one.tac', { type: 'text/plain' }),
-      );
-
-      await waitFor(() => {
-        expect(mockMassIngestFiles).toHaveBeenCalled();
-        expect(folderInput.value).toBe('');
-      });
     });
 
     it('ignores preference reload when nothing is stored on save', async () => {

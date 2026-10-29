@@ -112,6 +112,25 @@ describe('IwxxmPreviewPane', () => {
     expect(root?.className).not.toContain('min-h-[100dvh]');
   });
 
+  it('offers Expand preview and grows past the squat max-height when expanded', async () => {
+    const user = userEvent.setup();
+    render(<IwxxmPreviewPane xml={SAMPLE_XML} status="passed" mode="live" />);
+    const root = screen.getByTestId('iwxxm-preview-pane');
+    const expand = screen.getByTestId('iwxxm-preview-expand');
+    expect(expand).toHaveAttribute('aria-expanded', 'false');
+    expect(expand).toHaveAccessibleName(/expand preview/i);
+    expect(root.className).toContain('max-h-80');
+    expect(root).toHaveAttribute('data-expanded', 'false');
+
+    await user.click(expand);
+
+    expect(expand).toHaveAttribute('aria-expanded', 'true');
+    expect(expand).toHaveAccessibleName(/collapse preview/i);
+    expect(root).toHaveAttribute('data-expanded', 'true');
+    expect(root.className).not.toContain('max-h-80');
+    expect(root.className).toMatch(/max-h-\[min\(70dvh/);
+  });
+
   it('numbers lines, names the conversion profile, and marks the selected group', () => {
     render(
       <IwxxmPreviewPane

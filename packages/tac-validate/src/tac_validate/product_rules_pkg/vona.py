@@ -39,7 +39,7 @@ def _check_vona(tac: str) -> list[Issue]:
         issues.append(
             _issue(
                 "MISSING_SVO",
-                "VONA missing SVO: template field - F32 theme V1 / A7-1",
+                "VONA missing SVO: template field - A7-1",
                 start=start,
                 end=end,
                 location="svo",
@@ -50,7 +50,7 @@ def _check_vona(tac: str) -> list[Issue]:
         issues.append(
             _issue(
                 "MISSING_VONA_VOLCANO",
-                "VONA missing VOLCANO: template field - F32 theme V1 / A7-1",
+                "VONA missing VOLCANO: template field - A7-1",
                 start=start,
                 end=end,
                 location="volcano",
@@ -61,7 +61,7 @@ def _check_vona(tac: str) -> list[Issue]:
         issues.append(
             _issue(
                 "VONA_ONSET_NIL",
-                "VONA ONSET NIL - onsetTime omitted (F32 theme V1)",
+                "VONA ONSET NIL - onsetTime omitted",
                 start=onset_m.start(1),
                 end=onset_m.end(1),
                 location="onset",
@@ -72,7 +72,7 @@ def _check_vona(tac: str) -> list[Issue]:
         issues.append(
             _issue(
                 "VONA_DUR_NIL",
-                "VONA DUR NIL - duration omitted (F32 theme V1)",
+                "VONA DUR NIL - duration omitted",
                 start=dur_m.start(1),
                 end=dur_m.end(1),
                 location="duration",

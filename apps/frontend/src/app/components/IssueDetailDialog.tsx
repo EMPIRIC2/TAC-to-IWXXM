@@ -3,6 +3,7 @@
  */
 
 import { useEffect, type ReactNode } from 'react';
+import { SourceAttributionText } from '@/app/components/SourceAttributionText';
 import type { IssueDetailModel } from '@/utils/issueDetail';
 import {
   ISSUE_DETAIL_CLOSE,
@@ -32,16 +33,30 @@ type IssueDetailDialogProps = {
  * One labeled row in the issue dialog.
  *
  * @param props.label - Field name
- * @param props.value - Field text
+ * @param props.value - Field text or rich content
+ * @param props.valueTestId - Optional test id on the value cell
  * @returns A definition row
  * @example
  * const _ = true;
  */
-function DetailRow({ label, value }: { label: string; value: string }): ReactNode {
+function DetailRow({
+  label,
+  value,
+  valueTestId,
+}: {
+  label: string;
+  value: ReactNode;
+  valueTestId?: string;
+}): ReactNode {
   return (
-    <div className="grid grid-cols-[7rem_1fr] gap-2 text-sm">
+    <div className="grid grid-cols-[7rem_minmax(0,1fr)] gap-2 text-sm">
       <dt className="text-gray-500 dark:text-gray-400">{label}</dt>
-      <dd className="text-gray-900 dark:text-gray-100">{value}</dd>
+      <dd
+        data-testid={valueTestId}
+        className="min-w-0 break-words text-gray-900 dark:text-gray-100"
+      >
+        {value}
+      </dd>
     </div>
   );
 }
@@ -86,7 +101,7 @@ export function IssueDetailDialog({ detail, onClose }: IssueDetailDialogProps) {
         aria-modal="true"
         aria-labelledby="issue-detail-title"
         data-testid="issue-detail-dialog"
-        className="max-h-[80vh] w-full max-w-lg overflow-y-auto rounded-md border border-gray-200 bg-white p-4 shadow-lg dark:border-gray-700 dark:bg-gray-900"
+        className="max-h-[80vh] w-full max-w-lg overflow-x-hidden overflow-y-auto rounded-md border border-gray-200 bg-white p-4 shadow-lg dark:border-gray-700 dark:bg-gray-900"
         onClick={(event) => event.stopPropagation()}
       >
         <div className="mb-3 flex items-center justify-between gap-3">
@@ -111,7 +126,11 @@ export function IssueDetailDialog({ detail, onClose }: IssueDetailDialogProps) {
           <DetailRow label={ISSUE_DETAIL_MESSAGE} value={detail.message} />
           <DetailRow label={ISSUE_DETAIL_RULE} value={detail.rule} />
           <DetailRow label={ISSUE_DETAIL_HINT} value={detail.hint} />
-          <DetailRow label={ISSUE_DETAIL_SOURCE} value={detail.source} />
+          <DetailRow
+            label={ISSUE_DETAIL_SOURCE}
+            valueTestId="issue-detail-source-value"
+            value={<SourceAttributionText value={detail.source} />}
+          />
           <DetailRow label={ISSUE_DETAIL_PRODUCT} value={detail.product} />
           <DetailRow label={ISSUE_DETAIL_TAGS} value={detail.tags} />
           <DetailRow label={ISSUE_DETAIL_LOCATION} value={detail.location} />

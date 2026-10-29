@@ -51,8 +51,6 @@ import {
   Download,
   Copy,
   FileText,
-  FolderOpen,
-  Archive,
   Loader2,
   Settings,
   ChevronDown,
@@ -61,7 +59,6 @@ import {
   XCircle,
   LogOut,
   CircleHelp,
-  Lock,
 } from 'lucide-react';
 import JSZip from 'jszip';
 import { toast } from 'sonner';
@@ -166,7 +163,6 @@ import {
   convertMetarToIwxxm as callBackendConversion,
   convertBulletin,
   ingestCollect,
-  massIngestFiles,
   lintTac,
   validateIwxxm,
   fetchSchemaStatus,
@@ -306,11 +302,9 @@ import {
 } from '/utils/inputKind';
 import { inflateGzipToText, isGzipFileName } from '/utils/gunzip';
 import {
-  applyWebkitDirectoryAttrs,
   applyFocusedQueueContent,
   ariaInvalidFromError,
   caExtensionBundleAvailableFromStatus,
-  clearFileInputValue,
   coalescePreviewXml,
   firstTacForArchive,
   focusedValidateErrorMessage,
@@ -802,7 +796,6 @@ export function FileConverter({
   /** Packaging-drawer Exchange for catalog filter while Disseminate is open (AC-UI Exchange). */
   const [packagingExchangeProfile, setPackagingExchangeProfile] =
     useState<ExchangeProfileId | null>(null);
-  const [isMassIngesting, setIsMassIngesting] = useState(false);
   const [isPreferencesDialogOpen, setIsPreferencesDialogOpen] = useState(false);
   const [isPrivacySettingsOpen, setIsPrivacySettingsOpen] = useState(false);
   const [isSiteTermsOpen, setIsSiteTermsOpen] = useState(false);
@@ -835,8 +828,6 @@ export function FileConverter({
   );
   const [isMetadataChecklistOpen, setIsMetadataChecklistOpen] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const massFolderInputRef = useRef<HTMLInputElement>(null);
-  const massZipInputRef = useRef<HTMLInputElement>(null);
   const hydratedWorkSessionIdRef = useRef<string | null>(null);
   const outputVersionsRef = useRef<OutputVersion[]>([]);
   const [, setOutputVersions] = useState<OutputVersion[]>([]);
@@ -927,10 +918,6 @@ export function FileConverter({
   useEffect(() => {
     conversionLogRef.current = conversionLog;
   }, [conversionLog]);
-
-  useEffect(() => {
-    applyWebkitDirectoryAttrs(massFolderInputRef.current);
-  }, []);
 
   useEffect(() => {
     return subscribeNarrowWorkbenchChrome(() => {
@@ -1350,88 +1337,6 @@ export function FileConverter({
 
   const handleDragLeave = () => {
     setIsDragging(false);
-  };
-
-  /**
-   * Auth-gated mass ingest (F33): upload folder/zip via ``POST /api/v1/ingest/mass``,
-   * then hand accepted text into the pending convert queue.
-   */
-  const handleMassIngest = async (files: FileList | null) => {
-    if (!files || files.length === 0) return;
-
-    const token = accessToken?.trim();
-    if (!token) {
-      toast.error('Sign in required for mass folder or zip ingest');
-      onRequestLogin?.();
-      return;
-    }
-
-    const fileList = Array.from(files);
-    setIsMassIngesting(true);
-    const progressId = toast.loading(`Mass ingesting ${fileList.length} file(s)…`);
-
-    try {
-      const response = await massIngestFiles({
-        files: fileList,
-        accessToken: token,
-      });
-
-      const accepted: PendingFile[] = [];
-      const rejectSamples: string[] = [];
-      for (const [index, item] of response.results.entries()) {
-        if (item.accepted && item.content != null) {
-          accepted.push({
-            id: `mass-${item.name}-${Date.now()}-${index}`,
-            name: item.name,
-            content: item.content,
-          });
-        } else if (!item.accepted) {
-          if (rejectSamples.length < 5) {
-            rejectSamples.push(`${item.name}: ${item.reason || 'rejected'}`);
-          }
-        }
-      }
-
-      if (accepted.length > 0) {
-        setPendingFiles((prev) => [...prev, ...accepted]);
-      }
-
-      for (const sample of rejectSamples) {
-        toast.error(sample);
-      }
-
-      toast.success(
-        `Mass ingest: ${response.accepted_count} accepted, ${response.rejected_count} rejected`,
-        { id: progressId },
-      );
-    } catch (error) {
-      console.error('[FileConverter] Mass ingest error:', error);
-      toast.error(error instanceof Error ? error.message : 'Mass ingest failed', {
-        id: progressId,
-      });
-    } finally {
-      setIsMassIngesting(false);
-      clearFileInputValue(massFolderInputRef.current);
-      clearFileInputValue(massZipInputRef.current);
-    }
-  };
-
-  const requestMassFolder = () => {
-    if (!accessToken?.trim()) {
-      toast.error('Sign in required for mass folder or zip ingest');
-      onRequestLogin?.();
-      return;
-    }
-    massFolderInputRef.current?.click();
-  };
-
-  const requestMassZip = () => {
-    if (!accessToken?.trim()) {
-      toast.error('Sign in required for mass folder or zip ingest');
-      onRequestLogin?.();
-      return;
-    }
-    massZipInputRef.current?.click();
   };
 
   const performConversion = async (opts?: {
@@ -2413,8 +2318,7 @@ export function FileConverter({
     toast.info('Queue cleared');
   };
 
-  const isBusy =
-    isConverting || isConvertAndSending || isMassIngesting || isBatchValidating;
+  const isBusy = isConverting || isConvertAndSending || isBatchValidating;
   const hasInput = pendingFiles.length > 0 || !!manualInput.trim();
   const hasConverted = convertedFiles.length > 0;
   const latestConverted = convertedFiles[0];
@@ -2988,90 +2892,7 @@ export function FileConverter({
                       <FileText className="h-4 w-4" aria-hidden="true" />
                       Select files
                     </Button>
-                    {inputMode !== 'validate_iwxxm' ? (
-                      <div
-                        className="flex flex-wrap items-center gap-1.5 rounded-md border border-gray-200 bg-gray-50 px-2 py-1 dark:border-gray-600 dark:bg-gray-900/60"
-                        data-testid="mass-ingest-actions"
-                        role="group"
-                        aria-label={
-                          isGuest ? 'Mass ingest — sign in required' : 'Mass ingest'
-                        }
-                      >
-                        <span className="inline-flex items-center gap-1 pr-1 text-[10px] font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
-                          {isGuest ? (
-                            <Lock className="h-3 w-3" aria-hidden="true" />
-                          ) : null}
-                          Mass ingest
-                        </span>
-                        <Button
-                          type="button"
-                          variant="outline"
-                          size="sm"
-                          data-testid="mass-ingest-folder-button"
-                          title={
-                            isGuest
-                              ? 'Sign in to upload a whole folder of TAC files'
-                              : 'Upload a whole folder of TAC files'
-                          }
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            requestMassFolder();
-                          }}
-                          disabled={isBusy || isReadOnly}
-                          className="shrink-0 border-gray-300 bg-white text-gray-800 hover:bg-gray-100 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:border-gray-500 dark:bg-gray-800 dark:text-gray-100 dark:hover:bg-gray-700"
-                          aria-label="Mass ingest a folder of TAC files (sign-in required)"
-                          aria-busy={isMassIngesting}
-                        >
-                          <FolderOpen className="h-4 w-4" aria-hidden="true" />
-                          Folder
-                        </Button>
-                        <Button
-                          type="button"
-                          variant="outline"
-                          size="sm"
-                          data-testid="mass-ingest-zip-button"
-                          title={
-                            isGuest
-                              ? 'Sign in to upload a zip of TAC files'
-                              : 'Upload a zip archive of TAC files'
-                          }
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            requestMassZip();
-                          }}
-                          disabled={isBusy || isReadOnly}
-                          className="shrink-0 border-gray-300 bg-white text-gray-800 hover:bg-gray-100 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:border-gray-500 dark:bg-gray-800 dark:text-gray-100 dark:hover:bg-gray-700"
-                          aria-label="Mass ingest a zip archive of TAC files (sign-in required)"
-                          aria-busy={isMassIngesting}
-                        >
-                          <Archive className="h-4 w-4" aria-hidden="true" />
-                          Zip
-                        </Button>
-                      </div>
-                    ) : null}
                   </div>
-                  <input
-                    ref={massFolderInputRef}
-                    type="file"
-                    multiple
-                    className="hidden"
-                    data-testid="mass-ingest-folder-input"
-                    onChange={(e) => {
-                      void handleMassIngest(e.target.files);
-                    }}
-                    aria-label="Select folder for mass ingest"
-                  />
-                  <input
-                    ref={massZipInputRef}
-                    type="file"
-                    accept=".zip,application/zip"
-                    className="hidden"
-                    data-testid="mass-ingest-zip-input"
-                    onChange={(e) => {
-                      void handleMassIngest(e.target.files);
-                    }}
-                    aria-label="Select zip archive for mass ingest"
-                  />
                 </div>
               </Card>
               <div
@@ -3383,20 +3204,6 @@ export function FileConverter({
                                         </select>
                                       </>
                                     )}
-
-                                  <div className="order-1">
-                                    <GoldenExamplesSelect
-                                      applicableProducts={activeProfileExampleProducts}
-                                      disabled={isReadOnly}
-                                      semanticProfile={conversionParams.profile}
-                                      onSelectExample={handleLoadGoldenExample}
-                                      onOpenChange={(open) => {
-                                        if (open) {
-                                          setRecentWorkCollapsed(true);
-                                        }
-                                      }}
-                                    />
-                                  </div>
                                 </>
                               ) : null}
                             </div>
@@ -4086,7 +3893,7 @@ export function FileConverter({
                               variant="outline"
                               onClick={handleConvertAndSend}
                               disabled={convertDisabled}
-                              className="w-full justify-start text-base disabled:opacity-50 disabled:cursor-not-allowed"
+                              className="w-full justify-center text-base disabled:opacity-50 disabled:cursor-not-allowed"
                               aria-busy={isConvertAndSending}
                               aria-label={
                                 isConvertAndSending
@@ -4116,7 +3923,7 @@ export function FileConverter({
                               }}
                               disabled={isBusy || isReadOnly}
                               variant="outline"
-                              className="w-full justify-start text-base disabled:opacity-40 disabled:cursor-not-allowed"
+                              className="w-full justify-center text-base disabled:opacity-40 disabled:cursor-not-allowed"
                               aria-label="Open dissemination drawer for BYOC upload or publish (beta)"
                             >
                               {calmUi.primaryKind === 'download'
@@ -4130,7 +3937,7 @@ export function FileConverter({
                             onClick={() => void handleDownloadAll()}
                             disabled={isBusy || !hasConverted}
                             variant="outline"
-                            className="w-full justify-start text-base disabled:opacity-40 disabled:cursor-not-allowed"
+                            className="w-full justify-center text-base disabled:opacity-40 disabled:cursor-not-allowed"
                             aria-label={`Download all ${convertedFiles.length} converted files as ZIP`}
                           >
                             Download ZIP
@@ -4142,7 +3949,7 @@ export function FileConverter({
                             data-testid="clear-queue-button"
                             onClick={handleClear}
                             variant="ghost"
-                            className="w-full justify-start text-base text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-800"
+                            className="w-full justify-center text-base text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-800"
                             aria-label="Clear all pending files and manual input"
                           >
                             Clear
@@ -4263,6 +4070,24 @@ export function FileConverter({
                             </button>
                           ) : null}
                         </div>
+                        {inputMode !== 'validate_iwxxm' ? (
+                          <div
+                            className="mb-2 flex min-w-0 flex-wrap items-center gap-2"
+                            data-testid="convert-examples-bar"
+                          >
+                            <GoldenExamplesSelect
+                              applicableProducts={activeProfileExampleProducts}
+                              disabled={isReadOnly}
+                              semanticProfile={conversionParams.profile}
+                              onSelectExample={handleLoadGoldenExample}
+                              onOpenChange={(open) => {
+                                if (open) {
+                                  setRecentWorkCollapsed(true);
+                                }
+                              }}
+                            />
+                          </div>
+                        ) : null}
                         <div
                           data-testid={
                             calmTacReadOnly
@@ -4316,70 +4141,6 @@ export function FileConverter({
                         </div>
                         {inputMode !== 'validate_iwxxm' ? (
                           <>
-                            {decodeSegments.length + decodeResiduals.length > 0 ? (
-                              <div className="mt-2" data-testid="tac-group-chips">
-                                <p className="mb-1 text-xs text-gray-500 dark:text-gray-400">
-                                  Groups
-                                </p>
-                                <div
-                                  className="flex gap-1 overflow-x-auto"
-                                  aria-label="Recognised groups"
-                                >
-                                  {decodeSegments.map((segment) => {
-                                    const selected =
-                                      selectedTrace?.start === segment.start &&
-                                      selectedTrace?.end === segment.end;
-                                    return (
-                                      <button
-                                        key={`chip-${segment.start}-${segment.end}-${segment.code}`}
-                                        type="button"
-                                        aria-pressed={selected}
-                                        className={`rounded px-2 py-0.5 font-mono text-xs ${
-                                          selected
-                                            ? 'bg-sky-200 text-sky-950 ring-1 ring-sky-800 dark:bg-sky-900 dark:text-sky-50'
-                                            : 'bg-gray-100 text-gray-900 dark:bg-gray-800 dark:text-gray-100'
-                                        }`}
-                                        onClick={() =>
-                                          setSelectedTrace({
-                                            start: segment.start,
-                                            end: segment.end,
-                                            code: segment.code,
-                                          })
-                                        }
-                                      >
-                                        {segment.code}
-                                      </button>
-                                    );
-                                  })}
-                                  {decodeResiduals.map((residual) => {
-                                    const selected =
-                                      selectedTrace?.start === residual.start &&
-                                      selectedTrace?.end === residual.end;
-                                    return (
-                                      <button
-                                        key={`chip-res-${residual.start}-${residual.end}`}
-                                        type="button"
-                                        aria-pressed={selected}
-                                        className={`rounded px-2 py-0.5 font-mono text-xs ${
-                                          selected
-                                            ? 'bg-sky-200 text-sky-950 ring-1 ring-sky-800'
-                                            : 'bg-amber-100 text-amber-950 dark:bg-amber-950 dark:text-amber-100'
-                                        }`}
-                                        onClick={() =>
-                                          setSelectedTrace({
-                                            start: residual.start,
-                                            end: residual.end,
-                                            code: residual.text,
-                                          })
-                                        }
-                                      >
-                                        Error {residual.text}
-                                      </button>
-                                    );
-                                  })}
-                                </div>
-                              </div>
-                            ) : null}
                             <p
                               className="mt-2 text-xs text-gray-700 dark:text-gray-200"
                               data-testid="tac-lint-summary"

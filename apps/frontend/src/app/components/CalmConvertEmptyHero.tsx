@@ -1,26 +1,22 @@
 /**
  * First-visit / empty Convert hero (Calmer Convert screen 4 / UJ-088).
  *
- * Layout tracks the Calmer Convert empty mockup: left-aligned title, TAC card with
- * primary CTA in the card footer, example chips, quiet other-task links, profile Change.
+ * Layout: title, one TAC card with example chips as a bar above the editor, then
+ * drop/browse + Convert; tight Other tasks / profile under the card.
  *
- * [Corpus: product §F7] [Corpus: journeys §UJ-088]
+ * [Corpus: product §F7] [Corpus: journeys §UJ-088] [Corpus: ui-style]
  */
 
 import type { ReactNode } from 'react';
 
+import {
+  CalmConvertEmptyAffordances,
+  type CalmExampleChip,
+} from './CalmConvertEmptyAffordances';
 import { Button } from './ui/button';
 import { CALM_CONVERT_PRIMARY_LABEL } from '/utils/convertCalmState';
 
-/**
- * One example chip on the empty Convert hero.
- * @example
- * const _ = true;
- */
-export interface CalmExampleChip {
-  id: string;
-  label: string;
-}
+export type { CalmExampleChip };
 
 /**
  * Props for the empty Convert hero.
@@ -41,7 +37,7 @@ export interface CalmConvertEmptyHeroProps {
 }
 
 /**
- * Centered empty Convert layout with one primary CTA and example chips.
+ * Empty Convert layout: examples bar above TAC; Other tasks tight below the card.
  * @example
  * const _ = true;
  */
@@ -59,7 +55,7 @@ export function CalmConvertEmptyHero({
 }: CalmConvertEmptyHeroProps) {
   return (
     <section
-      className="mx-auto flex w-full max-w-3xl flex-col items-stretch gap-7 py-10"
+      className="mx-auto flex w-full max-w-3xl flex-col items-stretch gap-3 py-10"
       data-testid="convert-empty-hero"
     >
       <div className="space-y-2.5">
@@ -72,7 +68,21 @@ export function CalmConvertEmptyHero({
         </p>
       </div>
 
-      <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-900">
+      <div
+        className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-900"
+        data-testid="convert-empty-card"
+      >
+        {exampleChips.length > 0 ? (
+          <div
+            className="border-b border-gray-100 px-4 py-2.5 dark:border-gray-800"
+            data-testid="convert-examples-bar"
+          >
+            <CalmConvertEmptyAffordances
+              exampleChips={exampleChips}
+              onExampleChip={onExampleChip}
+            />
+          </div>
+        ) : null}
         <div className="px-1 pt-1">{children}</div>
         <div className="flex flex-wrap items-center gap-3 border-t border-dashed border-gray-200 bg-gray-50 px-4 py-3 dark:border-gray-700 dark:bg-gray-950/60">
           <p className="text-sm text-gray-600 dark:text-gray-400">
@@ -107,68 +117,13 @@ export function CalmConvertEmptyHero({
         </div>
       </div>
 
-      <div
-        className="flex flex-wrap items-center gap-2.5"
-        data-testid="convert-example-chips"
-      >
-        <span className="mr-1 text-sm text-gray-600 dark:text-gray-400">
-          Try an example
-        </span>
-        {exampleChips.map((chip) => (
-          <Button
-            key={chip.id}
-            type="button"
-            variant="outline"
-            size="sm"
-            data-testid={`convert-example-chip-${chip.id}`}
-            onClick={() => onExampleChip(chip.id)}
-            className="rounded-full"
-          >
-            {chip.label}
-          </Button>
-        ))}
-      </div>
-
-      {onOtherTask ? (
-        <div className="flex flex-wrap items-center gap-x-6 gap-y-2 border-t border-gray-200 pt-5 text-sm dark:border-gray-700">
-          <span className="text-gray-500 dark:text-gray-400">Other tasks</span>
-          <button
-            type="button"
-            className="text-blue-700 underline-offset-2 hover:underline dark:text-blue-300"
-            onClick={() => onOtherTask('ahl')}
-          >
-            Convert a full bulletin (AHL)
-          </button>
-          <button
-            type="button"
-            className="text-blue-700 underline-offset-2 hover:underline dark:text-blue-300"
-            onClick={() => onOtherTask('validate_iwxxm')}
-          >
-            Validate existing IWXXM
-          </button>
-          <button
-            type="button"
-            className="text-blue-700 underline-offset-2 hover:underline dark:text-blue-300"
-            onClick={() => onOtherTask('collect')}
-          >
-            Build a COLLECT bundle
-          </button>
-        </div>
-      ) : null}
-
-      <footer className="text-sm text-gray-600 dark:text-gray-400">
-        Profile:{' '}
-        <span className="text-gray-900 dark:text-gray-100">{profileLabel}</span>
-        {' · '}
-        <button
-          type="button"
-          className="font-medium text-blue-700 underline-offset-2 hover:underline dark:text-blue-300"
-          data-testid="convert-profile-change"
-          onClick={onChangeProfile}
-        >
-          Change
-        </button>
-      </footer>
+      <CalmConvertEmptyAffordances
+        exampleChips={[]}
+        onExampleChip={onExampleChip}
+        onOtherTask={onOtherTask}
+        profileLabel={profileLabel}
+        onChangeProfile={onChangeProfile}
+      />
     </section>
   );
 }
