@@ -17,6 +17,7 @@ read the rows below that apply; do not invent alternate doc sets.
 | **now** | Ticket-tuned eng index | [engineering/NOW.md](engineering/NOW.md) | Current open epics / priority work |
 | **docstrings** | In-code documentation bar | [engineering/docstrings.md](engineering/docstrings.md) | NumPy / TSDoc / comment policy |
 | **journeys** | End-user journeys | [user-journeys.md](user-journeys.md) | E2E / verify-impl sign-off (UJ-*) |
+| **ui-style** | Living operator UI style guide | [ui-style-guide.md](ui-style-guide.md) | UI/UX tweak norms; cite when polishing FE |
 | **system-spec** | Architecture, components, constraints | [spec.md](spec.md) | Design parity vs `apps/` + `packages/` + `vendor/` |
 | **tech-spec** | Runtime / config / deploy / deps hub | [tech-spec.md](tech-spec.md) | Config names, env, deploy topology, dependency pins |
 | **api** | HTTP contract | [api-contract.md](api-contract.md) (+ OpenAPI as truth) | Request/response/error shapes |
@@ -40,6 +41,7 @@ read the rows below that apply; do not invent alternate doc sets.
 | [domain/](domain/) (incl. profiles) | Domain mining, national/exchange profiles (e.g. CA_ECCC, F35/F36) |
 | [guides/](guides/), [ops/](ops/) | Operator runbooks / narrative how-tos — **not** design gates; treat GIFTs-era `guides/API.md` + `guides/ARCHITECTURE.md` as obsolete |
 | [bug-reports/](bug-reports/) | Active hotfix investigation |
+| [ui-ux-tweaks/](ui-ux-tweaks/) | Per-tweak logs from `ui-ux-tweak` (template + `UX-YYYY-MM-DD-*`) |
 | [skill-routing.md](skill-routing.md), [typing-policy.md](typing-policy.md), [hotfix-log.md](hotfix-log.md) | Tooling / process satellites |
 | [project-board.md](project-board.md) | GitHub Project #7 Status / Size / Iteration / velocity / auto-import (`[Corpus: project-board]`) |
 
@@ -75,6 +77,7 @@ Cite as: `[Corpus: <id>]` or `[Corpus: <path> §section]`.
 | Build band | product, system-spec, api, tests, journeys, docstrings (when touching public APIs) |
 | Deploy | tech-spec, deploy, env-contract |
 | `hotfix` | product + system-spec; then tech-spec / api / tests as symptom requires |
+| `ui-ux-tweak` | **ui-style** + product + journeys (+ tests); opt-in **ui-ux-tweaks/** for the active log |
 | Domain mining | **domain** opt-in + product |
 | `evolve` / `brownfield` / `greenfield` | CORPUS rows for **touched features only**; every change cites `[Corpus: …]`; missing coverage → AskQuestion doc-add |
 
