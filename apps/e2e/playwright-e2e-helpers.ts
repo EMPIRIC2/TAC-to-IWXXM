@@ -303,6 +303,12 @@ export async function openConvertDownloadsTab(
     await page.getByTestId('convert-results-drawer-toggle').click();
     await expect(drawer).toHaveAttribute('data-open', 'true');
   }
+  // Wait for convert to finish before selecting Downloads. Result cards are
+  // force-mounted (often hidden under the default IWXXM tab). Selecting
+  // Downloads too early races auto-switch back to IWXXM after convert lands.
+  await expect(page.locator('[data-testid^="result-item-"]').first()).toBeAttached({
+    timeout: timeoutMs,
+  });
   await page.getByTestId('convert-results-tab-downloads').click();
   await expect(
     page.getByRole('region', { name: 'Conversion results', exact: true }),
