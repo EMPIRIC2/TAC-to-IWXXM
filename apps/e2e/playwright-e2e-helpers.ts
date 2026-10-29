@@ -285,6 +285,46 @@ export async function convertManualMetar(page: Page, metar: string): Promise<voi
 }
 
 /**
+ * Open the Results drawer Downloads tab (per-file Conversion results cards).
+ *
+ * After convert the drawer defaults to IWXXM preview; download cards and the
+ * `Conversion results` / `Converted XML content for …` regions live under Downloads.
+ *
+ * @param page - Playwright page hosting the converter.
+ * @param timeoutMs - Max wait for the drawer after convert.
+ */
+export async function openConvertDownloadsTab(
+  page: Page,
+  timeoutMs = 45_000,
+): Promise<void> {
+  const drawer = page.getByTestId('convert-results-drawer');
+  await expect(drawer).toBeVisible({ timeout: timeoutMs });
+  if ((await drawer.getAttribute('data-open')) !== 'true') {
+    await page.getByTestId('convert-results-drawer-toggle').click();
+    await expect(drawer).toHaveAttribute('data-open', 'true');
+  }
+  await page.getByTestId('convert-results-tab-downloads').click();
+  await expect(
+    page.getByRole('region', { name: 'Conversion results', exact: true }),
+  ).toBeVisible({ timeout: 15_000 });
+}
+
+/**
+ * Clear pending files and manual TAC via Settings (Clear is no longer top-bar).
+ *
+ * @param page - Playwright page hosting the converter.
+ */
+export async function clearConvertWorkbench(page: Page): Promise<void> {
+  await openConvertSettings(page);
+  await page
+    .getByRole('button', {
+      name: 'Clear all pending files and manual input',
+      exact: true,
+    })
+    .click();
+}
+
+/**
  * Seed a work session into the F21 IndexedDB store (`tac-work-sessions`).
  *
  * Must run after the origin is loaded (same origin as the app).

@@ -5,6 +5,7 @@ import { expect, test } from '@playwright/test';
 import {
   convertManualMetar,
   fillManualTac,
+  openConvertDownloadsTab,
   openConvertSettings,
   openConverterForE2e,
 } from './playwright-e2e-helpers';
@@ -32,6 +33,7 @@ test.describe('UJ-079 reference lookup', () => {
 
     await convertManualMetar(page, SRQ_TAC);
 
+    await openConvertDownloadsTab(page, 30_000);
     // targets the converted XML content region for this result
     const xmlOutput = page.getByRole('region', {
       name: /^Converted XML content for .+$/,

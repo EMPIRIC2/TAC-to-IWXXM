@@ -1,7 +1,9 @@
 import { expect, test } from '@playwright/test';
 import {
+  clearConvertWorkbench,
   convertManualMetar,
   fillManualTac,
+  openConvertDownloadsTab,
   openConverterForE2e,
   openConverterWithMockSession,
 } from './playwright-e2e-helpers';
@@ -15,9 +17,7 @@ test.describe('TAC File Conversion', () => {
       'METAR KJFK 121251Z 24016G28KT 3SM -RA BR BKN020 OVC040 14/11 A2990',
     );
 
-    await expect(
-      page.getByRole('region', { name: 'Conversion results', exact: true }),
-    ).toBeVisible({ timeout: 10000 });
+    await openConvertDownloadsTab(page, 10_000);
     await expect(
       // targets the converted XML content region for this result
       page.getByRole('region', { name: /^Converted XML content for .+$/ }),
@@ -32,6 +32,7 @@ test.describe('TAC File Conversion', () => {
       'METAR COR FAOR 101200Z 12012KT 9999 FEW020 22/14 Q1018',
     );
 
+    await openConvertDownloadsTab(page, 10_000);
     // targets the converted XML content region for this result
     const xmlOutput = page.getByRole('region', {
       name: /^Converted XML content for .+$/,
@@ -50,6 +51,7 @@ test.describe('TAC File Conversion', () => {
       'METAR FAOR 101200Z COR 12012KT 9999 FEW020 22/14 Q1018',
     );
 
+    await openConvertDownloadsTab(page, 10_000);
     // targets the converted XML content region for this result
     const xmlOutput = page.getByRole('region', {
       name: /^Converted XML content for .+$/,
@@ -62,12 +64,7 @@ test.describe('TAC File Conversion', () => {
     await openConverterForE2e(page);
 
     await fillManualTac(page, 'METAR KDEN 121653Z 02006KT 10SM SCT050 21/08 A3010');
-    await page
-      .getByRole('button', {
-        name: 'Clear all pending files and manual input',
-        exact: true,
-      })
-      .click();
+    await clearConvertWorkbench(page);
 
     await expect(
       page.getByLabel('Enter METAR data manually', { exact: true }),
@@ -110,9 +107,7 @@ test.describe('TAC File Conversion', () => {
     await expect(page.getByText(/Successfully converted 1 file\(s\)/i)).toBeVisible({
       timeout: 10000,
     });
-    await expect(
-      page.getByRole('region', { name: 'Conversion results', exact: true }),
-    ).toBeVisible();
+    await openConvertDownloadsTab(page, 10_000);
     await expect(page.getByText(/Download: manual_input\.txt/)).toBeVisible();
     await expect(page.getByText('Source TAC')).toBeVisible();
     await expect(
@@ -161,9 +156,7 @@ test.describe('TAC File Conversion', () => {
       .fill('report');
     await page.getByTestId('convert-button').click();
 
-    await expect(
-      page.getByRole('region', { name: 'Conversion results', exact: true }),
-    ).toBeVisible({ timeout: 10000 });
+    await openConvertDownloadsTab(page, 10_000);
     await expect(page.getByText('report_1.txt')).toBeVisible();
     await expect(page.getByText('report_2.txt')).toBeVisible();
     await expect(
