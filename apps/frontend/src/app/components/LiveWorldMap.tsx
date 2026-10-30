@@ -14,6 +14,7 @@ import {
   DECODE_VISUALS_FEEDBACK_URL,
 } from '@/utils/decodeVisualsCopy';
 import { airports } from '@/utils/airportsData';
+import { OSM_TILE_ATTRIBUTION, OSM_TILE_URL } from '@/utils/mapTileAttribution';
 import {
   boundsOf,
   cardLayout,
@@ -617,8 +618,8 @@ export function LiveWorldMap({
     }).setView([20, 0], 2);
     map.options.renderer = vectors;
     mapRef.current = map;
-    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '© OpenStreetMap',
+    L.tileLayer(OSM_TILE_URL, {
+      attribution: OSM_TILE_ATTRIBUTION,
       maxZoom: 16,
     }).addTo(map);
     const fit = () => {

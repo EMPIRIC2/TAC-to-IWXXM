@@ -4,6 +4,7 @@
 
 import L from 'leaflet';
 import { apiUrl } from '@/utils/apiBase';
+import { OSM_TILE_ATTRIBUTION, OSM_TILE_URL } from '@/utils/mapTileAttribution';
 
 /**
  * Type `StationPoint`.
@@ -69,8 +70,8 @@ export function bindStationMap(
     [point.latitude, point.longitude],
     8,
   );
-  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '© OpenStreetMap',
+  L.tileLayer(OSM_TILE_URL, {
+    attribution: OSM_TILE_ATTRIBUTION,
     maxZoom: 16,
   }).addTo(map);
   const icon = L.divIcon({

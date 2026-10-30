@@ -14,6 +14,7 @@ import {
   isErrorSeverityEmphasis,
   lintSeverityErrorCardClass,
 } from '@/utils/lintSeverityStyle';
+import { resolveConversionLogHint } from '@/utils/conversionLogEnrichment';
 import {
   issueLevelPasses,
   issueSeverityRank,
@@ -206,6 +207,8 @@ export function ErrorLogPanel({
     const messageClass = emphasizeError
       ? 'font-semibold text-destructive'
       : 'font-medium';
+    const catalog = issue.code ? catalogByCode?.get(issue.code) : null;
+    const displayHint = resolveConversionLogHint(issue, catalog);
     return (
       <li
         key={`issue-${index}`}
@@ -223,19 +226,17 @@ export function ErrorLogPanel({
                 code: issue.code,
                 severity: issue.severity,
                 message: issue.message,
-                hint: issue.hint,
+                hint: displayHint,
                 location: issue.location,
                 start: issue.start,
                 end: issue.end,
-                catalog: issue.code ? catalogByCode?.get(issue.code) : null,
+                catalog,
               }),
             )
           }
         >
           <p className={messageClass}>{scrubInternalDocRefs(issue.message)}</p>
-          {issue.hint && (
-            <p className={hintClass}>{scrubInternalDocRefs(issue.hint)}</p>
-          )}
+          {displayHint ? <p className={hintClass}>{displayHint}</p> : null}
         </button>
         <LogIssueCode
           code={issue.code}
