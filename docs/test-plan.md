@@ -296,11 +296,11 @@ EV-059.
 - **Input**: `METAR STID ddHHmmZ COR ...` manual TAC; multi-line manual input
 - **Pass criteria**:
   - IWXXM contains `reportStatus="CORRECTION"` (no `translationFailedTAC`)
-  - Results UI shows **Source TAC** panel with original input per result (always visible;
-    client fallback when API omits `tac_input`)
-  - Card title uses TAC-derived headline (e.g. `METAR KJFK 121251Z`); download name shown as
-    subtitle when it differs (#664 preserved)
-  - Multi-line manual input shows `Line N of M` chip per result
+  - Results → IWXXM shows converted XML after convert; editor keeps original TAC (client
+    fallback when API omits `tac_input`)
+  - Results → Downloads file row title uses TAC-derived headline (e.g. `METAR KJFK 121251Z`);
+    download name shown as subtitle when it differs (#664 preserved)
+  - Multi-line manual input shows `Line N of M` chip per Downloads row
   - API `ConversionResult.tac_input` populated for manual and file conversions
 - **Source**: `tests/bugs/test_bug_2026_06_22_issue_594_cor_after_time.py`, `packages/gifts/tests/test_metar_encoding.py::test_cor_after_time`, `apps/e2e/tac-file-conversion.e2e.spec.ts`, `apps/frontend/src/app/components/FileConverter.test.tsx`, `apps/frontend/src/utils/resultTraceability.test.ts`
 

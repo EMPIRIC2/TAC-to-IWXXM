@@ -5,7 +5,7 @@ import { expect, test } from '@playwright/test';
 import {
   convertManualMetar,
   fillManualTac,
-  openConvertDownloadsTab,
+  openConvertIwxxmTab,
   openConvertSettings,
   openConverterForE2e,
 } from './playwright-e2e-helpers';
@@ -33,12 +33,7 @@ test.describe('UJ-079 reference lookup', () => {
 
     await convertManualMetar(page, SRQ_TAC);
 
-    await openConvertDownloadsTab(page, 30_000);
-    // targets the converted XML content region for this result
-    const xmlOutput = page.getByRole('region', {
-      name: /^Converted XML content for .+$/,
-    });
-    await expect(xmlOutput).toBeVisible({ timeout: 30000 });
-    await expect(xmlOutput).toContainText('27.3978');
+    await openConvertIwxxmTab(page, 30_000);
+    await expect(page.getByTestId('iwxxm-preview-xml')).toContainText('27.3978');
   });
 });

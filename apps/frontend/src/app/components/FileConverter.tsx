@@ -275,11 +275,7 @@ import {
   uniquifyZipMemberNames,
 } from '/utils/outputFilename';
 import { ConvertResultStatus } from './ConvertResultStatus';
-import {
-  deriveTacDisplayTitle,
-  resolveOriginalTac,
-  truncateTacSnippet,
-} from '/utils/resultTraceability';
+import { deriveTacDisplayTitle, resolveOriginalTac } from '/utils/resultTraceability';
 import {
   convertFieldsFromParamsBar,
   isValidBulletinId,
@@ -757,6 +753,8 @@ export function FileConverter({
   const [previewSoftFailDetail, setPreviewSoftFailDetail] = useState<
     string | undefined
   >();
+  /** Which converted file the IWXXM tab is showing (Downloads selects into this). */
+  const [focusedConvertedId, setFocusedConvertedId] = useState<string | null>(null);
   const [inputMode, setInputMode] = useState<OperatorInputMode>('tac');
   const [demoExampleLabel, setDemoExampleLabel] = useState<string | null>(null);
   const [bulletinSummary, setBulletinSummary] = useState<string | null>(null);
@@ -1121,43 +1119,50 @@ export function FileConverter({
       const resultNames = loadedWorkSession.converted_results.map((result, index) =>
         hydratedResultName(result.name as string | undefined, index),
       );
-      setConvertedFiles(
-        loadedWorkSession.converted_results.map((result, index) => {
-          const originalName = resultNames[index] as string;
-          const originalContent = String(result.tac_input ?? '');
-          const lineMeta = resolveManualLineMetaFromResult(
-            originalName,
-            result,
-            resultNames,
-          );
-          return {
-            id: `loaded-result-${index}`,
-            originalName,
-            originalContent,
-            displayTitle: deriveTacDisplayTitle(originalContent, originalName),
-            manualLineIndex: lineMeta.manualLineIndex,
-            manualLineTotal: lineMeta.manualLineTotal,
-            convertedContent: String(
-              result.iwxxm_xml ?? result.xml ?? result.content ?? '',
-            ),
-            timestamp:
-              typeof result.converted_at === 'number'
-                ? result.converted_at
-                : Date.now(),
-            ...(result.export_context &&
-            typeof result.export_context === 'object' &&
-            !Array.isArray(result.export_context)
-              ? {
-                  exportContext: result.export_context as ConversionExportContext,
-                }
-              : {}),
-          };
-        }),
-      );
+      const hydratedFiles = loadedWorkSession.converted_results.map((result, index) => {
+        const originalName = resultNames[index] as string;
+        const originalContent = String(result.tac_input ?? '');
+        const lineMeta = resolveManualLineMetaFromResult(
+          originalName,
+          result,
+          resultNames,
+        );
+        return {
+          id: `loaded-result-${index}`,
+          originalName,
+          originalContent,
+          displayTitle: deriveTacDisplayTitle(originalContent, originalName),
+          manualLineIndex: lineMeta.manualLineIndex,
+          manualLineTotal: lineMeta.manualLineTotal,
+          convertedContent: String(
+            result.iwxxm_xml ?? result.xml ?? result.content ?? '',
+          ),
+          timestamp:
+            typeof result.converted_at === 'number' ? result.converted_at : Date.now(),
+          ...(result.export_context &&
+          typeof result.export_context === 'object' &&
+          !Array.isArray(result.export_context)
+            ? {
+                exportContext: result.export_context as ConversionExportContext,
+              }
+            : {}),
+        };
+      });
+      setConvertedFiles(hydratedFiles);
+      const latestHydrated = hydratedFiles[hydratedFiles.length - 1]!;
+      setFocusedConvertedId(latestHydrated.id);
+      const hydratedXml = coalescePreviewXml(latestHydrated.convertedContent);
+      if (hydratedXml) {
+        setPreviewXml(hydratedXml);
+        setPreviewMode('live');
+        setPreviewStatus('passed');
+        setPreviewSoftFailDetail(undefined);
+      }
       const firstTac = String(loadedWorkSession.converted_results[0]?.tac_input ?? '');
       setFirstAccumulatedTac(firstTac || null);
     } else {
       setConvertedFiles([]);
+      setFocusedConvertedId(null);
       setFirstAccumulatedTac(null);
     }
     const hasLog =
@@ -1542,6 +1547,12 @@ export function FileConverter({
             );
             rememberHardConvert(newConvertedFiles);
           }
+          const latestBulletin = newConvertedFiles[newConvertedFiles.length - 1]!;
+          setFocusedConvertedId(latestBulletin.id);
+          setPreviewXml(latestBulletin.convertedContent);
+          setPreviewMode('live');
+          setPreviewStatus('passed');
+          setPreviewSoftFailDetail(undefined);
         }
         clearConvertedFromQueue();
         // EV-040: keep manual TAC input after convert (do not clear).
@@ -1662,19 +1673,25 @@ export function FileConverter({
         return null;
       }
 
-      const latestPreviewXml = coalescePreviewXml(
-        newConvertedFiles[newConvertedFiles.length - 1]?.convertedContent,
-      );
-      if (latestPreviewXml && (softPreview || softFail)) {
+      const latestFile = newConvertedFiles[newConvertedFiles.length - 1]!;
+      const latestPreviewXml = coalescePreviewXml(latestFile.convertedContent);
+      if (latestPreviewXml) {
         setPreviewXml(latestPreviewXml);
-        setPreviewMode('soft-preview');
-        if (softFail) {
-          setPreviewStatus('soft-fail');
-          setPreviewSoftFailDetail(
-            'Some groups could not be converted. Fix the highlighted spans in the editor, then retry the preview. This output is not for publishing.',
-          );
+        setFocusedConvertedId(latestFile.id);
+        if (softPreview || softFail) {
+          setPreviewMode('soft-preview');
+          if (softFail) {
+            setPreviewStatus('soft-fail');
+            setPreviewSoftFailDetail(
+              'Some groups could not be converted. Fix the highlighted spans in the editor, then retry the preview. This output is not for publishing.',
+            );
+          } else {
+            setPreviewStatus('passed');
+            setPreviewSoftFailDetail(undefined);
+          }
         } else {
-          setPreviewStatus('passed');
+          setPreviewMode('live');
+          setPreviewStatus(resultOk ? 'passed' : 'soft-fail');
           setPreviewSoftFailDetail(undefined);
         }
       }
@@ -2289,7 +2306,40 @@ export function FileConverter({
   };
 
   const removeConvertedFile = (id: string) => {
-    setConvertedFiles((prev) => prev.filter((f) => f.id !== id));
+    setConvertedFiles((prev) => {
+      const next = prev.filter((f) => f.id !== id);
+      if (focusedConvertedId === id) {
+        const fallback = next[next.length - 1];
+        setFocusedConvertedId(fallback?.id ?? null);
+        if (fallback?.convertedContent) {
+          setPreviewXml(fallback.convertedContent);
+        } else {
+          setPreviewXml('');
+          setPreviewStatus('empty');
+          setPreviewMode('idle');
+        }
+      }
+      return next;
+    });
+  };
+
+  /**
+   * Show one converted file on the IWXXM tab (Downloads is manage-only).
+   *
+   * @param file - Converted batch entry to preview
+   */
+  const focusConvertedForPreview = (file: ConvertedFile) => {
+    setFocusedConvertedId(file.id);
+    const xml = coalescePreviewXml(file.convertedContent);
+    if (xml) {
+      setPreviewXml(xml);
+      setPreviewMode('live');
+      const assessment = assessConvertedFile(file);
+      setPreviewStatus(assessment.publishBlocked ? 'soft-fail' : 'passed');
+      setPreviewSoftFailDetail(undefined);
+    }
+    setResultsTab('iwxxm');
+    setResultsDrawerOpen(true);
   };
 
   const handleClear = () => {
@@ -2301,6 +2351,7 @@ export function FileConverter({
     outputFilenameOwned.current = false;
     setOutputFilename('');
     setConvertedFiles([]);
+    setFocusedConvertedId(null);
     setTacLockedAfterConvert(false);
     setFirstAccumulatedTac(null);
     setValidateReport(null);
@@ -2322,6 +2373,13 @@ export function FileConverter({
   const hasInput = pendingFiles.length > 0 || !!manualInput.trim();
   const hasConverted = convertedFiles.length > 0;
   const latestConverted = convertedFiles[0];
+  const focusedConverted =
+    convertedFiles.find((file) => file.id === focusedConvertedId) ??
+    convertedFiles[convertedFiles.length - 1] ??
+    null;
+  const focusedAssessment = focusedConverted
+    ? assessConvertedFile(focusedConverted)
+    : null;
   const latestAssessment = latestConverted
     ? assessConvertedFile(latestConverted)
     : null;
@@ -4190,7 +4248,13 @@ export function FileConverter({
                     updateLiveLayout({ resultsDrawerHeight: next })
                   }
                   iwxxm={
-                    <div data-testid="iwxxm-resize-pane" className="min-h-0">
+                    <div
+                      data-testid="iwxxm-resize-pane"
+                      className="flex min-h-0 flex-col gap-3"
+                    >
+                      {inputMode !== 'validate_iwxxm' && focusedAssessment ? (
+                        <ConvertResultStatus assessment={focusedAssessment} />
+                      ) : null}
                       {inputMode === 'validate_iwxxm' ? (
                         <section
                           data-testid="validate-iwxxm-results"
@@ -4364,44 +4428,51 @@ export function FileConverter({
                         >
                           {convertedFiles.map((file) => {
                             const resultAssessment = assessConvertedFile(file);
+                            const isFocused =
+                              (focusedConvertedId ?? focusedConverted?.id) === file.id;
                             return (
-                              <Collapsible
+                              <div
                                 key={file.id}
-                                defaultOpen
-                                className="rounded-lg border border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800"
+                                className={`rounded-lg border bg-white p-3 dark:bg-gray-800 ${
+                                  isFocused
+                                    ? 'border-blue-400 dark:border-blue-500'
+                                    : 'border-gray-200 dark:border-gray-700'
+                                }`}
                                 data-testid={`result-item-${file.id}`}
                               >
-                                <div className="flex flex-wrap items-center justify-between gap-2 p-3">
-                                  <CollapsibleTrigger asChild>
-                                    <button
-                                      type="button"
-                                      className="group min-w-0 flex-1 text-left"
-                                      aria-label={`Toggle details for ${file.displayTitle}`}
-                                      data-testid={`result-toggle-${file.id}`}
-                                    >
-                                      <div className="flex flex-wrap items-center gap-2">
-                                        <ChevronDown
-                                          className="h-4 w-4 shrink-0 text-gray-500 transition-transform group-data-[state=closed]:-rotate-90"
-                                          aria-hidden="true"
-                                        />
-                                        <p className="text-sm font-medium text-gray-900 dark:text-white">
-                                          {file.displayTitle}
-                                        </p>
-                                        {file.manualLineIndex != null &&
-                                        file.manualLineTotal != null ? (
-                                          <span className="inline-flex items-center rounded-full bg-blue-100 px-2 py-0.5 text-xs font-medium text-blue-800 dark:bg-blue-900/40 dark:text-blue-200">
-                                            Line {file.manualLineIndex} of{' '}
-                                            {file.manualLineTotal}
-                                          </span>
-                                        ) : null}
-                                      </div>
-                                      {file.displayTitle !== file.originalName ? (
-                                        <p className="ml-6 mt-0.5 text-xs text-gray-500 dark:text-gray-400">
-                                          Download: {file.originalName}
-                                        </p>
+                                <div className="flex flex-wrap items-center justify-between gap-2">
+                                  <button
+                                    type="button"
+                                    className="min-w-0 flex-1 text-left"
+                                    aria-label={`Show ${file.displayTitle} on IWXXM tab`}
+                                    aria-pressed={isFocused}
+                                    data-testid={`convert-download-select-${file.id}`}
+                                    onClick={() => focusConvertedForPreview(file)}
+                                  >
+                                    <div className="flex flex-wrap items-center gap-2">
+                                      <p className="text-sm font-medium text-gray-900 dark:text-white">
+                                        {file.displayTitle}
+                                      </p>
+                                      <span
+                                        className="inline-flex items-center rounded-full bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-800 dark:bg-gray-700 dark:text-gray-100"
+                                        data-testid={`convert-download-status-${file.id}`}
+                                      >
+                                        {resultAssessment.statusLabel}
+                                      </span>
+                                      {file.manualLineIndex != null &&
+                                      file.manualLineTotal != null ? (
+                                        <span className="inline-flex items-center rounded-full bg-blue-100 px-2 py-0.5 text-xs font-medium text-blue-800 dark:bg-blue-900/40 dark:text-blue-200">
+                                          Line {file.manualLineIndex} of{' '}
+                                          {file.manualLineTotal}
+                                        </span>
                                       ) : null}
-                                    </button>
-                                  </CollapsibleTrigger>
+                                    </div>
+                                    {file.displayTitle !== file.originalName ? (
+                                      <p className="mt-0.5 text-xs text-gray-500 dark:text-gray-400">
+                                        Download: {file.originalName}
+                                      </p>
+                                    ) : null}
+                                  </button>
                                   <div className="flex gap-1.5">
                                     <Button
                                       variant="outline"
@@ -4456,44 +4527,7 @@ export function FileConverter({
                                     </Button>
                                   </div>
                                 </div>
-                                <ConvertResultStatus assessment={resultAssessment} />
-                                <CollapsibleContent className="px-3 pb-3">
-                                  {file.originalContent.length > 60 &&
-                                  file.displayTitle !==
-                                    file.originalContent.trim().replace(/\s+/g, ' ') ? (
-                                    <p className="mb-2 break-all font-mono text-xs text-gray-600 dark:text-gray-400">
-                                      {truncateTacSnippet(file.originalContent)}
-                                    </p>
-                                  ) : null}
-                                  <div
-                                    className="mb-2 overflow-x-auto rounded border border-gray-200 bg-gray-100 p-3 text-sm text-gray-800 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200"
-                                    role="region"
-                                    aria-label={`Original TAC input for ${file.displayTitle}`}
-                                  >
-                                    <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
-                                      Source TAC
-                                    </p>
-                                    {file.originalContent ? (
-                                      <pre className="whitespace-pre-wrap break-all font-mono">
-                                        {file.originalContent}
-                                      </pre>
-                                    ) : (
-                                      <p className="text-sm italic text-gray-500 dark:text-gray-400">
-                                        Original TAC unavailable for this result.
-                                      </p>
-                                    )}
-                                  </div>
-                                  <div
-                                    className="overflow-x-auto rounded bg-gray-900 p-3 font-mono text-sm text-green-400 dark:bg-gray-950 dark:text-green-300"
-                                    role="region"
-                                    aria-label={`Converted XML content for ${file.originalName}`}
-                                  >
-                                    <pre className="whitespace-pre-wrap break-all">
-                                      {file.convertedContent}
-                                    </pre>
-                                  </div>
-                                </CollapsibleContent>
-                              </Collapsible>
+                              </div>
                             );
                           })}
                         </div>

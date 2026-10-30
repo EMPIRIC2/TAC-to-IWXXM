@@ -4,6 +4,7 @@ import {
   convertManualMetar,
   fillManualTac,
   openConvertDownloadsTab,
+  openConvertIwxxmTab,
   openConverterForE2e,
   openConverterWithMockSession,
 } from './playwright-e2e-helpers';
@@ -17,11 +18,8 @@ test.describe('TAC File Conversion', () => {
       'METAR KJFK 121251Z 24016G28KT 3SM -RA BR BKN020 OVC040 14/11 A2990',
     );
 
-    await openConvertDownloadsTab(page, 10_000);
-    await expect(
-      // targets the converted XML content region for this result
-      page.getByRole('region', { name: /^Converted XML content for .+$/ }),
-    ).toBeVisible();
+    await openConvertIwxxmTab(page, 10_000);
+    await expect(page.getByTestId('iwxxm-preview-xml')).toBeVisible();
   });
 
   test('COR METAR input produces correction output', async ({ page }) => {
@@ -32,13 +30,10 @@ test.describe('TAC File Conversion', () => {
       'METAR COR FAOR 101200Z 12012KT 9999 FEW020 22/14 Q1018',
     );
 
-    await openConvertDownloadsTab(page, 10_000);
-    // targets the converted XML content region for this result
-    const xmlOutput = page.getByRole('region', {
-      name: /^Converted XML content for .+$/,
-    });
-    await expect(xmlOutput).toBeVisible({ timeout: 10000 });
-    await expect(xmlOutput).toContainText('reportStatus="CORRECTION"');
+    await openConvertIwxxmTab(page, 10_000);
+    await expect(page.getByTestId('iwxxm-preview-xml')).toContainText(
+      'reportStatus="CORRECTION"',
+    );
   });
 
   test('ICAO COR-after-time METAR input produces correction output', async ({
@@ -51,13 +46,10 @@ test.describe('TAC File Conversion', () => {
       'METAR FAOR 101200Z COR 12012KT 9999 FEW020 22/14 Q1018',
     );
 
-    await openConvertDownloadsTab(page, 10_000);
-    // targets the converted XML content region for this result
-    const xmlOutput = page.getByRole('region', {
-      name: /^Converted XML content for .+$/,
-    });
-    await expect(xmlOutput).toBeVisible({ timeout: 10000 });
-    await expect(xmlOutput).toContainText('reportStatus="CORRECTION"');
+    await openConvertIwxxmTab(page, 10_000);
+    await expect(page.getByTestId('iwxxm-preview-xml')).toContainText(
+      'reportStatus="CORRECTION"',
+    );
   });
 
   test('clear removes manual input', async ({ page }) => {
@@ -107,15 +99,12 @@ test.describe('TAC File Conversion', () => {
     await expect(page.getByText(/Successfully converted 1 file\(s\)/i)).toBeVisible({
       timeout: 10000,
     });
+    await openConvertIwxxmTab(page, 10_000);
+    await expect(page.getByTestId('iwxxm-preview-xml')).toContainText('mock-success');
     await openConvertDownloadsTab(page, 10_000);
     await expect(page.getByText(/Download: manual_input\.txt/)).toBeVisible();
-    await expect(page.getByText('Source TAC')).toBeVisible();
-    await expect(
-      page.getByRole('region', {
-        name: 'Original TAC input for METAR KJFK 121251Z',
-        exact: true,
-      }),
-    ).toBeVisible();
+    // Downloads is file management only — conversion XML stays on the IWXXM tab.
+    await expect(page.getByTestId('convert-downloads-panel')).toBeVisible();
   });
 
   test('custom output filename names manual results (#664)', async ({ page }) => {

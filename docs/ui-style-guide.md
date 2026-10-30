@@ -26,6 +26,7 @@ sections when norms conflict—cite the UX log ids retired or merged.
 - Convert TAC notes: no Groups chip strip under the editor; group selection lives in Decoder, not as horizontal chips above the notes summary.
 - Convert empty state: example chips sit in a bar above the TAC editor inside the main convert card; Other tasks sit in one tight row under that card — not a separate far strip.
 - Convert catalog Examples sit in a compact bar above the TAC editor — not inside the Settings product/profile panel.
+- Results → Downloads is file management only; conversion XML and result assessment details belong on Results → IWXXM.
 
 ## Copy / tone
 
@@ -76,6 +77,7 @@ Record the test path and red/green dates on `docs/ui-ux-tweaks/UX-YYYY-MM-DD-*.m
 | 2026-10-29 | [UX-2026-10-29-drop-groups-chips](ui-ux-tweaks/UX-2026-10-29-drop-groups-chips.md) | Convert TAC notes: no Groups chip strip under the editor; group selection lives in Decoder, not as horizontal chips above the notes summary. |
 | 2026-10-29 | [UX-2026-10-29-convert-one-interface-examples](ui-ux-tweaks/UX-2026-10-29-convert-one-interface-examples.md) | Convert empty state: example chips sit in a bar above the TAC editor inside the main convert card; Other tasks sit in one tight row under that card — not a separate far strip. |
 | 2026-10-29 | [UX-2026-10-29-drop-mass-ingest](ui-ux-tweaks/UX-2026-10-29-drop-mass-ingest.md) | Convert drop-zone chrome keeps Select files; do not show Mass Ingest beside it. |
+| 2026-10-29 | [UX-2026-10-29-downloads-file-mgmt](ui-ux-tweaks/UX-2026-10-29-downloads-file-mgmt.md) | Results → Downloads is file management only (title, status chip, download/copy/remove). Conversion XML and assessment details belong on Results → IWXXM; picking a Downloads row focuses that file on IWXXM. |
 | 2026-10-29 | [UX-2026-10-29-scrub-ev-operator-copy](ui-ux-tweaks/UX-2026-10-29-scrub-ev-operator-copy.md) | Lint issue list, Issue details, and tags show operator language only — never evolve ids, test ids, or ticket shorthand. |
 | 2026-10-29 | [UX-2026-10-29-live-decode-phrases](ui-ux-tweaks/UX-2026-10-29-live-decode-phrases.md) | Live decode may group adjacent TAC tokens into natural-language phrase rows (joined Code, one Explanation); do not change the decode wire contract. |
 | 2026-10-29 | [UX-2026-10-29-examples-bar-above-tac](ui-ux-tweaks/UX-2026-10-29-examples-bar-above-tac.md) | Convert catalog Examples sit in a compact bar above the TAC editor — not inside the Settings product/profile panel. |

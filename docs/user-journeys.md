@@ -189,13 +189,14 @@ must pass annex3 convert via UI (UJ-005 parametrize) and API smoke (UJ-006). US 
    destinations are shown. **Upload to Database** is removed (EV-beta-ux-export-auth).
 6. Confirm **Recent work** (when expanded) does not cover Product / Profile / Exchange profile
    controls. Collapse or scroll as needed; expand control remains available.
-7. View output; each result card shows **TAC-derived title**, optional **Line N of M** for
-   multi-line manual input, prominent **Source TAC** panel, and download filename when it
-   differs (#655 / EV-007). #555 replace-on-success and error log panel behavior unchanged.
-   **EV-beta-ux-export-auth**: result cards are **collapsible**; **Download all (zip)** yields
-   distinct member names when basenames would collide (e.g. five `test.xml` → five files);
-   Conversion/Validation log chrome stays neutral when only `info` issues are present;
-   operators never see internal profile-alias deprecation notices.
+7. View output on Results → IWXXM (XML + assessment). Results → Downloads lists files with
+   **TAC-derived title**, optional **Line N of M**, status chip, and download filename when it
+   differs (#655 / EV-007; UX-2026-10-29-downloads-file-mgmt). Editor keeps TAC after convert.
+   #555 replace-on-success and error log panel behavior unchanged.
+   **EV-beta-ux-export-auth**: **Download all (zip)** yields distinct member names when basenames
+   would collide (e.g. five `test.xml` → five files); Conversion/Validation log chrome stays
+   neutral when only `info` issues are present; operators never see internal profile-alias
+   deprecation notices.
 8. On convert failure after F6 cutover: structured error only; **no gifts rollback**.
 9. If guest: work may auto-save to IndexedDB (UJ-004/045) with loss-of-progress notice.
    If logged in: may sync to DO Postgres sessions (UJ-046).
@@ -1080,7 +1081,7 @@ version + convert path), as the umbrella entry for F7 UI.
 1. Open frontend converter / workbench (CodeMirror 6 editor replaces plain textarea); **no login**.
 2. Select or auto-detect **product**; set **profile** and **version**.
 3. Paste or upload TAC; observe product-aware chrome (not METAR-only copy).
-4. Run **Convert** (hard path) and view IWXXM / Source TAC / downloads (UJ-001/005 behaviors).
+4. Run **Convert** (hard path) and view IWXXM results plus Downloads file list (UJ-001/005).
 5. Optionally open decode (UJ-015), exercise Failed-TAC/preview (UJ-016), live assist (UJ-017),
    or save/resume **local** session (UJ-018 / IndexedDB).
 
