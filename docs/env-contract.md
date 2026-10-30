@@ -131,6 +131,7 @@ Do not point `LIVE_*` or `config/prod.json` at onrender.com.
 | Postgres + Alembic | Service container `DATABASE_URL`; **`alembic upgrade head`** before schema tests (idempotent) |
 | F8 / dissemination | `DATABASE_URL` + allowlist fixtures |
 | OpenAIP station names | `OPENAIP_API_KEY` on the OpenAIP station lookup job; a missing key fails that job |
+| Weekly validation catalog | Workflow `weekly-validation-catalog.yml` on Environment **`staging`**. Vars: optional `LIVE_API_URL` / `STAGING_API_URL` / `STAGING_LB_IP`. Secrets: optional `STAGING_API_BEARER_TOKEN` (or `STAGING_API_TOKEN`). Defaults match [Corpus: deploy] staging hosts. Not a merge gate. |
 
 ## Verification
 

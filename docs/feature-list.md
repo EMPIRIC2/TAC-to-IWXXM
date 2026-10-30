@@ -102,6 +102,10 @@
   `D-S064-xsd-hard=1`): enable Schematron evaluation for 2025-2 xslt2 (prefer native) and
   fix `SCHEMA_IMPORT_WARNING` import resolution. Quality metrics consume outcomes. See F7.q
   EV-055 AC4–AC6 and F13.
+- **Weekly staging validation catalog (CI deepen)**: Scheduled GHA Sunday 00:00 UTC probes
+  staging lint/validate catalogs + accept fixtures and uploads a severity/code report
+  artifact. **No new Fn**; public API shapes unchanged. See [Corpus: deploy] §Weekly
+  validation catalog and TC-WEEKLY-VAL-001.
 - **Source**: `apps/backend` validation routers; Context: realtime-tac-ingest (archived; see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate);
   Context: package-publish-validation (archived; see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate);
   **S043 / EV-035** · Context: rule-source-traceability (archived; see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate);
@@ -618,6 +622,17 @@
   4. Convert Compare versions gone; History compare may remain.
   5. Lint highlights readable on dark + Colorblind-safe preset; EV-048 clean.
   6. TC-UX-DECLUTTER + UJ-089 green (Vitest + H4–H5); UJ-088 still green where not superseded.
+- **EV-console-validate-status-strip deepen (Console XSD/Schematron pills)**: After hard
+  Convert with Strict Validation, Console status strip reflects in-band XML schema and
+  Schematron (passed/failed). Soft-preview and live IWXXM keep pills idle ("not run yet").
+  Does **not** flip F7 → Implemented; no new Fn. See
+  `docs/decisions/ev-console-validate-status-strip.md`.
+- **Acceptance (EV-console-validate-status-strip — F7/F10 Console strip)**:
+  1. Soft-preview Convert leaves schema/Schematron idle (`validate_output` off).
+  2. Hard Convert + Strict Validation flips Console schema/Schematron off idle when convert
+     finishes without error status.
+  3. Layer failures from conversion log issues (or validate report) show failed.
+  4. TC-EV-CONSOLE-STRIP + Vitest `qg-iwxxm-schematron-status-strip` green; EV-048 clean.
 - **S063 / EV-054 deepen (F7.q / #836 — Quality metrics tab)**: Primary **app shell tab**
   (peer to Convert / History, not a panel inside the convert workbench) that browses the
   official WMO IWXXM example corpus by product/file type and surfaces **precomputed** match,
@@ -1646,6 +1661,13 @@
 - **Source**: #735/#734; E15-1..E15-8; context/aerodrome-quality.md (archived; see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate);
   ADR-028; `docs/domain/rules/COVERAGE_MATRIX.md`; predecessor F15 / EV-011
 
+### F20 deepen (EV-us-military-taf-tx-tn — end-of-TAF TX/TN)
+
+- **Status note**: F20 remains **Done**. Lint profile `us_military` accepts TX/TN after
+  BECMG/TEMPO/FM/PROB as `TX_TN_PRESENT` (info). Annex3 still emits `INVALID_TX_TN` for that
+  placement. Convert emit stays core IWXXM. [Corpus: product §F20] [Corpus: product §F36]
+  [Corpus: decisions]
+
 ### F6 deepen (S020 / EV-015 — TAF + SPECI)
 
 - **Status note**: F6 remains **Implemented**; this cycle **deepens TAF (F6.c) and SPECI (F6.b)**
@@ -2605,6 +2627,9 @@
      for TAF TX/TN omission awareness (convert stays core IWXXM); GAMET parse-only reaffirm;
      UK-first PRs; catalog `status: implemented` for six packs; **close #1098** on land
      (**do not reopen #920**).
+  22b. **EV-us-military-taf-tx-tn:** `US_MILITARY` / `us_military` lint overlay — end-of-TAF
+     TX/TN after change groups → `TX_TN_PRESENT` (info); annex3 keeps `INVALID_TX_TN`; emit
+     annex3; not `US_FAA_NWS` (BECMG forbidden there).
   23. **EV-098 / #1028–#1031:** CA_ECCC deep mining: datamart triage (#1028); MSC `doc/` PDFs
      (#1031); MANOBS P0 TAC rules + fixtures (#1029); MANAIR TAF/AIRMET/GFA (#1030). Research via
      deep-research-domain-handoff (EV-097); promote via mine-domain-sources after gate C.
@@ -2987,7 +3012,7 @@
 - **Issue**: [#1272](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1272)
 - **What it does**: One local command pulls the public feeds that worked on 2026-09-23, takes one report per feed and product that feed actually carries, and runs that report under every **implemented** semantic profile that lists the product. International SIGMET skips a bulletin whose VALID period is longer than the Annex 3 maximum (4 hours, or 6 hours for VA or TC) and takes the next one. When every bulletin in that feed exceeds the maximum, the first is kept. It writes a pass/fail summary and exits non-zero when any check fails.
 - **Feeds**: Aviation Weather Center METAR, TAF, international SIGMET, and convective SIGMET; NOAA tgftp raw VAA (`FV`), TCA (`FK`), AIRMET (`WA`), VONA (`WM`, newest notice that still has an `SVO:` line), and space-weather files (`FN` names beginning `fnxx`); JMA Tokyo VAAC text.
-- **Profiles**: Implemented semantic profiles only (`ICAO_2025`, `US_FAA_NWS`, `CA_ECCC`, `AU_BOM`, `NZ_CAA_MET`, `UK_METOFFICE`, `BR_DECEA`, `KR_KMA`, `JP_JMA`, `IN_IMD`, `HK_HKO`). Exchange profiles, including implemented `GLOBAL_AFS` and the stub overlays, stay out.
+- **Profiles**: Implemented semantic profiles only (`ICAO_2025`, `US_FAA_NWS`, `CA_ECCC`, `AU_BOM`, `NZ_CAA_MET`, `UK_METOFFICE`, `BR_DECEA`, `KR_KMA`, `JP_JMA`, `IN_IMD`, `HK_HKO`, `US_MILITARY`). Exchange profiles, including implemented `GLOBAL_AFS` and the stub overlays, stay out.
 - **Checks**: convert, IWXXM schema validation, lint, and decode. A fetch that cannot be completed fails the command and appears in the summary.
 - **Fail closed**: Non-zero exit on convert failure, document schema failure (`XSD_VALIDATION_ERROR`), lint **error**, or decode failure. `SCHEMA_PARSE_ERROR` is also non-zero and is printed on its own line, separate from document errors. Lint warnings do not fail the command.
 - **Misses**: The command does not edit the lint catalog or convert allowlists. A person adds a catalog row for a stable national lint difference, and an allowlist row for a stable convert miss. No new lint module.
@@ -3218,6 +3243,7 @@
 - **Amend (EV-map-worker-cluster)**: World zoom shows one marker per continent that has reports. The next zoom shows sub-region markers. A closer zoom shows each station and shape. Those markers are Leaflet markers from a fixed list, not a clustering package. A region click only zooms. Hover, and a tap on a phone, opens a scrolling popup on the station and removes the panel under the map. The page and the popup say the reports are not validated for operational use and name the Aviation Weather Center. A separate Deployment on the existing cluster finishes one refresh area before the next. The API and that Deployment share `LIVE_MAP_CACHE_URL`. The ingest poller stays off. [Corpus: adr/ADR-052]
 - **Amend (EV-map-product-layers filters)**: Country, region, issue time, and hazard phenomenon filter the places already returned for the current view. The live-map request stays the box plus product ids. Country comes from the existing airport table and applies to ICAO stations. A chosen country does not remove Area reports. Region uses the continent and sub-region names the map already uses for zoom markers, matched from the stored coordinate. Choosing a region does not replace those zoom markers, and clicking a zoom marker still only zooms. Time presets are last hour, last 3 hours, last 6 hours, last 12 hours, and full (24 hours), compared with UTC now (see EV-live-map-24h-window). Phenomenon checkboxes are IFR, Turbulence, Icing, and Thunderstorms. They apply only to AIRMET, G-AIRMET, and SIGMET, and a hazard stays when its newest TAC matches any checked phenomenon. IFR matches the word IFR. Turbulence matches TURB. Icing matches ICE or ICING as a word. Thunderstorms matches THUNDERSTORM or a weather token that is TS, including TSRA and VCTS. METAR, SPECI, TAF, and the advisories are not removed by a phenomenon checkbox. No flight information region list, no custom from/to time, and no new country outline dataset. [Corpus: product §F37]
 - **Amend (EV-live-map-24h-window)**: Pull, store, and share only reports whose `observed_at` is within the last 24 hours of UTC now. METAR vendor requests use `hours=24`; other feeds keep their request shape and are age-filtered on ingest. The cache purges older rows on refresh/upsert. `GET /api/v1/live-map` never returns reports outside that window. Browser issue-time presets are 1h, 3h, 6h, 12h, and full (default full). Unbounded All is removed. Convert and validate bodies stay as they are. Staging ship only. [Corpus: product §F37] [Corpus: adr/ADR-052]
+- **Amend (EV-map-results-qa)**: Cross-product QA matrix of map outcomes (ok / error / residual) for every current pin layer plus convert-only SWXA fixtures. Does not add space-weather pins or a space-weather feed. Documents that `space_weather` may be an empty list until a later feed cycle. TC-F37-013 locks FE/BE pin-product parity. [Corpus: product §F37] [Corpus: decisions] `ev-map-results-qa.md`
 - **Amend (EV-map-product-layers)**: At the closer zoom, each product is its own Leaflet layer and its own color from the table above. Colors are fixed. G-AIRMET rows from that feed use product `gairmet`. A domestic row whose text is a SIGMET stays SIGMET. Continent and sub-region markers stay as they are. The hover card shows the product, the issue time, and the station, or Area when there is no airport. The TAC sits to the right of that block on a wide screen and below it on a narrow screen, in a scrollable area. The card opens on the newest of the three stored reports. A control switches to an earlier copy. Older copies are drawn faded. Hover highlights the shape. Clicking the shape or the card loads the copy the card is showing into the converter at the top. Co-located airport reports are offset and each has a type chip. The legend matches the checkboxes. Fills and outlines stay distinct. Space weather stays off the map. Its list, when it has rows, uses the cyan color. This cycle does not add a space-weather feed. The page still says the reports are not validated for operational use and names the Aviation Weather Center. [Corpus: product §F37] [Corpus: adr/ADR-052]
 - **Acceptance (Spec)**:
   1. This row is the product scope

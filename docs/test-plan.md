@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
-> **Last updated**: 2026-09-25 (EV-1292 / #1292 — TC-F6-041 failed-shell minimum fields; prior EV-1291 / #1291 — TC-F6-040)
+> **Last updated**: 2026-10-30 (TC-WEEKLY-VAL-001 weekly staging validation catalog GHA)
 
 ## Scope
 
@@ -24,10 +24,12 @@ VAA + TCA quality (UJ-037/038; #736/#737); **UJ-045–048** guest notice / login
 privacy / DOKS cutover.
 
 **Out of scope**: Performance/load testing; wmo-im / IWXXM-US schema correctness beyond our fixtures;
-scheduled CI live jobs (manual/Makefile only); **convert-response metrics fields** (F6-R11);
-teaching CMS; saved/encrypted destination profiles; in-app paste of **Supabase auth** keys
-(destination BYOC paste is **in scope** for F16–F19); long-lived dual production hosts after
-DOKS soak; Supabase hosted Postgres / PostgREST as product data plane.
+**convert-response metrics fields** (F6-R11); teaching CMS; saved/encrypted destination
+profiles; in-app paste of **Supabase auth** keys (destination BYOC paste is **in scope** for
+F16–F19); long-lived dual production hosts after DOKS soak; Supabase hosted Postgres /
+PostgREST as product data plane. **Exception:** Sunday weekly staging validation catalog
+(`weekly-validation-catalog.yml` / TC-WEEKLY-VAL-001) is a scheduled live staging probe —
+**not** a PR merge gate; other live signoff remains Makefile / Staging smoke.
 
 ### Live harness (delta 2026-06-22; H7 2026-07-12; **DOKS target S038 / EV-031**)
 
@@ -3253,6 +3255,19 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
 - **Automated**: `convertParams.test.ts`; `conversion-parameters-mapping.workflow.test.tsx`;
   `api.test.ts`
 
+### TC-EV-CONSOLE-STRIP-001: Console schema/Schematron status strip
+
+- **Level**: T0
+- **Objective**: Convert Console pills for XML schema and Schematron stay idle on
+  soft-preview / live IWXXM (`validate_output` off). After hard Convert with Strict
+  Validation they leave "not run yet" (passed or failed from layers / issues).
+- **Pass criteria**: Soft-preview strip idle; hard + Strict flips off idle; helpers
+  `strictConvertRan` / `outputLayerStatus` / `errorLayerNames` drive the strip; no
+  planning ids in operator copy
+- **Source**: F7/F10 deepen; ADR-023; qa-gap QG-iwxxm-schematron-not-run G2;
+  `docs/decisions/ev-console-validate-status-strip.md`
+- **Automated**: `qg-iwxxm-schematron-status-strip.test.tsx`; `checkLayers.test.ts`
+
 ### TC-EV1315-001: Site terms gate
 
 - **Level**: T0
@@ -5022,6 +5037,13 @@ wiring unchanged fail-closed.
 - **Pass criteria**: Registry row + fixture test; convert still core IWXXM; no national XSD
 - **Source**: D-EV094-in-taf; FR-EV094-04
 
+### TC-EV-USMIL-TX-TN-001: US military end-of-TAF TX/TN (Build)
+
+- **Level**: T0 / T2
+- **Objective**: KBIX-style TAF with TX/TN after BECMG/TEMPO under `us_military` does not emit `INVALID_TX_TN`; annex3 still does
+- **Pass criteria**: `us_military` → no `INVALID_TX_TN` (may emit `TX_TN_PRESENT`); `annex3` → `INVALID_TX_TN` error; base-only TX/TN unchanged
+- **Source**: HF-live-map-warn-error-campaign AskQ-2; [Corpus: product §F20] [Corpus: product §F36]
+
 ### TC-EV094-005: GAMET parse-only held
 
 - **Level**: T0 / Docs
@@ -5280,6 +5302,26 @@ wiring unchanged fail-closed.
 
 CI **Staging smoke** sets `LIVE_API_URL` / `LIVE_FRONTEND_URL` to staging hosts after Deploy
 staging. Prod smokes remain Makefile / 13-deploy-smoke against prod hosts.
+
+### TC-WEEKLY-VAL-001: Weekly staging validation catalog probe
+
+- **Level**: Scheduled live (Sunday 00:00 UTC) + `workflow_dispatch`; offline unit helpers in
+  `tests/ci/test_weekly_validation_catalog.py`
+- **Objective**: Aggregate "what validation issues are raised now" from staging catalogs and
+  fixture lint/validate probes; upload JSON + Markdown artifact
+- **Pass criteria**:
+  - Workflow `.github/workflows/weekly-validation-catalog.yml` uses Environment `staging`
+  - `GET /health` → 200 (HTTPS or Host-header LB fallback)
+  - Catalog GETs (`lint-issue-catalog`, `rule-catalogs`) return 2xx; report includes severity
+    counts (critical/error/warning/info/unknown/total)
+  - Sample probes for METAR/SPECI/TAF/SIGMET/AIRMET `*_basic.tac` run lint-tac + validate;
+    report includes **Raised validation issues** line items (one row per distinct code +
+    severity with counts + total) from sample probes, not only catalog registry rollups
+  - No hardcoded credentials; optional `STAGING_API_BEARER_TOKEN` only via Environment secrets
+  - Offline unit tests for severity/code aggregation, raised line items, + fake-client probe green
+- **Not a merge gate**: failure does not block PR CI; operators triage the artifact
+- **Source**: [Corpus: deploy] §Weekly validation catalog; [Corpus: decisions]
+  `ev-weekly-validation-catalog-gha.md`; [Corpus: product §F2] [Corpus: product §F15]
 
 ## S043 / EV-035 — Rule-source provenance (deepen F6 / F12 / F15 / F2)
 
@@ -7265,6 +7307,12 @@ Engineering quality: multi-language inline documentation bar. H4–H5 **N/A**.
 - **Level**: T0 / T2
 - **Objective**: Ingest, cache, and `GET /api/v1/live-map` keep only reports whose `observed_at` is within the last 24 hours of UTC now.
 - **Pass criteria**: A row older than 24 hours is not stored (or is purged on refresh). The live-map response omits that row. A row inside 24 hours is returned (subject to bbox and products). METAR vendor requests use `hours=24`.
+
+### TC-F37-013: Cross-product map results inventory (EV-map-results-qa)
+
+- **Level**: T0
+- **Objective**: Pin-layer product ids stay aligned between the live-map API and the Decode visuals layer list. Space weather remains convert-capable with fixtures but is not a pin layer. The live-map response keeps a `space_weather` list key (may be empty until a feed ships).
+- **Pass criteria**: `MAP_PRODUCTS` equals the FE `LIVE_MAP_PRODUCTS` set (`metar`, `speci`, `taf`, `airmet`, `gairmet`, `sigmet`, `vaa`, `tca`, `vona`). `swxa` is absent from that set. A world-box live-map response includes `"space_weather"` as a list. Session matrix `reports/map-results-matrix.md` under EV-map-results-qa records ok/error/residual per product. [Corpus: decisions] `ev-map-results-qa.md`
 
 ## EV-101 — CI evidence for epic #1431 children (#1448, #1433, #1436, #1435, #1432)
 

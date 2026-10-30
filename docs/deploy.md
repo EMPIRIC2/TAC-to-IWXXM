@@ -559,6 +559,35 @@ API or frontend pod is not ready yet.
 
 See [staging-secrets-matrix.md](ops/staging-secrets-matrix.md) for staging values.
 
+### Weekly validation catalog (scheduled quality window)
+
+GitHub Actions workflow [`.github/workflows/weekly-validation-catalog.yml`](../.github/workflows/weekly-validation-catalog.yml)
+runs **Sunday 00:00 UTC** (`0 0 * * 0`) and on `workflow_dispatch`. GHA runners call the
+DOKS **staging** API over HTTPS (Environment `staging` — same snapshot window as Deploy /
+Staging smoke). This is **not** a PR merge gate and does **not** spawn DigitalOcean App
+Platform jobs. Probe script: [`scripts/ci/weekly_validation_catalog.py`](../scripts/ci/weekly_validation_catalog.py)
+with fixture manifest [`scripts/ci/weekly_validation_catalog_manifest.json`](../scripts/ci/weekly_validation_catalog_manifest.json).
+
+| Step | Endpoint / action |
+|------|-------------------|
+| Health | `GET /health` (HTTPS, then Host-header via staging LB) |
+| Catalogs | `GET /api/v1/lint-issue-catalog` (+ `family=` filters); `GET /api/v1/rule-catalogs?family=tac\|iwxxm` |
+| Samples | `POST /api/v1/lint-tac` and `POST /api/v1/validate` for METAR/SPECI/TAF/SIGMET/AIRMET `*_basic.tac` accept fixtures |
+| Artifact | `weekly-validation-catalog-{run_id}` — JSON + Markdown: catalog severity totals, sample probes, and **Raised validation issues** (one row per distinct code+severity + total; 90-day retention) |
+
+**GitHub Environment `staging` configuration** (Settings → Environments → staging):
+
+| Kind | Name | Required | Purpose |
+|------|------|----------|---------|
+| Variable | `LIVE_API_URL` / `STAGING_API_URL` | No | Override API origin; default `https://api.staging.tac-to-iwxxm.com` |
+| Variable | `STAGING_LB_IP` | No | Host-header fallback; default `143.244.202.13` |
+| Secret | `STAGING_API_BEARER_TOKEN` | No | Optional `Authorization: Bearer …` for probes; **omit** for anonymous F21 public routes |
+| Secret | `STAGING_API_TOKEN` | No | Optional alias read by the probe script if Bearer secret unset |
+
+Do **not** commit real tokens. Public convert/lint/validate/catalog routes need no Bearer
+([Corpus: api] F21). Decision log: [decisions/ev-weekly-validation-catalog-gha.md](decisions/ev-weekly-validation-catalog-gha.md).
+Test id: [test-plan.md](test-plan.md) TC-WEEKLY-VAL-001.
+
 ## PyPI package publish (S014 / EV-010 / F12–F14; EMPIRIC2 cutover EV-028 / #781; EV-1150 / ADR-043)
 
 Library packages publish **independently** of app Deploy via GitHub Actions **OIDC trusted

@@ -2,7 +2,7 @@
 
 > **Corpus ID:** `tech-spec` — see [CORPUS.md](CORPUS.md).  
 > **Architecture / components:** [spec.md](spec.md) (`system-spec`).  
-> **Last updated:** 2026-08-12 (docs sync — Quality metrics on stage; prior membership harvest)
+> **Last updated:** 2026-10-30 (weekly staging validation catalog GHA — deploy/env satellites)
 
 This file is the **entry point** for runtime, configuration, deployment, and dependency
 truth. Detail lives in the satellites below; do not duplicate long tables here.
@@ -34,6 +34,14 @@ When changing runtime behavior or deploy/config:
 3. New library appears in **dependency-inventory** (or AskQuestion before adding).
 4. Component boundaries still match **spec.md** §Component Overview.
 5. If the change is a non-obvious trade-off, add or cite an **ADR**.
+
+## Weekly staging validation catalog (CI quality window)
+
+Scheduled GHA (Sunday 00:00 UTC) probes staging catalogs + fixture lint/validate and uploads
+a report artifact. Detail: [deploy.md](deploy.md) §Weekly validation catalog;
+[env-contract.md](env-contract.md) §CI; decision
+[decisions/ev-weekly-validation-catalog-gha.md](decisions/ev-weekly-validation-catalog-gha.md).
+No new runtime dependency. [Corpus: product §F2] [Corpus: product §F15]
 
 ## WMO membership harvest (F12 deepen — S059 / EV-050)
 
