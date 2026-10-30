@@ -225,7 +225,7 @@ third_party/
 /docs/ARCHIVE/
 /docs/domain/mining/
 /docs/evolve-report-*.md
-/docs/project-board.md
+# project-board.md is a CORPUS standing doc — track it (was ignored by mistake).
 /docs/hotfix-log.md
 /docs/skill-routing.md
 /.cursor/artifacts/execution-plan-live-e2e.md

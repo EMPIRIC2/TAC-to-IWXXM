@@ -2,7 +2,8 @@
 # Requires repo secret PROJECT_TOKEN: fine-grained PAT for a dedicated bot user —
 # Organization Projects (read & write) + this repo Issues (read-only). Do not use a
 # classic PAT with blanket `repo` scope.
-# Preferred complement: Project → Workflows → Auto-add to project (is:issue).
+# When PROJECT_TOKEN is unset, skip with a warning (do not fail the job red) —
+# prefer Project → Workflows → Auto-add to project (is:issue) as the complement.
 # [Corpus: project-board]
 
 name: Project auto-add
@@ -19,7 +20,20 @@ jobs:
   add-to-project:
     runs-on: ubuntu-latest
     steps:
+      - name: Require PROJECT_TOKEN or skip
+        id: token
+        env:
+          PROJECT_TOKEN: ${{ secrets.PROJECT_TOKEN }}
+        run: |
+          if [ -z "${PROJECT_TOKEN}" ]; then
+            echo "has_token=false" >> "${GITHUB_OUTPUT}"
+            echo "::warning::PROJECT_TOKEN repo secret is unset; skipping Project auto-add. Add a fine-grained PAT (org Projects R/W + Issues R) as PROJECT_TOKEN, or enable Project → Workflows → Auto-add to project."
+          else
+            echo "has_token=true" >> "${GITHUB_OUTPUT}"
+          fi
+
       - name: Add issue to EMPIRIC2 Project #7
+        if: steps.token.outputs.has_token == 'true'
         uses: actions/add-to-project@v1.0.2
         with:
           project-url: https://github.com/orgs/EMPIRIC2/projects/7
