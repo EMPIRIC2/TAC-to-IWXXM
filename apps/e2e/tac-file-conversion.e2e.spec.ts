@@ -103,7 +103,8 @@ test.describe('TAC File Conversion', () => {
     await expect(page.getByTestId('iwxxm-preview-xml')).toContainText('mock-success');
     await openConvertDownloadsTab(page, 10_000);
     await expect(page.getByText(/Download: manual_input\.txt/)).toBeVisible();
-    await expect(page.getByText('Source TAC')).toHaveCount(0);
+    // Downloads is file management only — conversion XML stays on the IWXXM tab.
+    await expect(page.getByTestId('convert-downloads-panel')).toBeVisible();
   });
 
   test('custom output filename names manual results (#664)', async ({ page }) => {
