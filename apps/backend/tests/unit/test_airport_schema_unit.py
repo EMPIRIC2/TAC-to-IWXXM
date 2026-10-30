@@ -304,6 +304,39 @@ def test_airport_validator_tolerates_corrupt_supplements(tmp_path, monkeypatch):
     assert validator.validate_icao("KJFK") is True
 
 
+def test_airport_validator_ignores_non_list_supplement_stations(tmp_path, monkeypatch):
+    airports_path = tmp_path / "backend" / "src" / "data"
+    airports_path.mkdir(parents=True)
+    (airports_path / "airports.json").write_text(
+        json.dumps(
+            [
+                {
+                    "icao": "KJFK",
+                    "name": "John F Kennedy International Airport",
+                    "type": "large_airport",
+                },
+            ]
+        ),
+        encoding="utf-8",
+    )
+    (airports_path / "airport_registry_supplements.json").write_text(
+        json.dumps({"stations": {"icao": "CWDQ"}}),
+        encoding="utf-8",
+    )
+
+    fake_file = tmp_path / "backend" / "src" / "schemas" / "airport.py"
+    fake_file.parent.mkdir(parents=True)
+    fake_file.write_text("# test")
+    monkeypatch.setattr(airport_schema, "__file__", str(fake_file))
+
+    validator = airport_schema.AirportValidator()
+    validator._loaded = False
+    validator.load_airports()
+
+    assert validator.validate_icao("KJFK") is True
+    assert validator.validate_icao("CWDQ") is False
+
+
 def test_airport_validator_load_raises_when_airports_file_missing(tmp_path, monkeypatch):
     fake_file = tmp_path / "backend" / "src" / "schemas" / "airport.py"
     fake_file.parent.mkdir(parents=True)
