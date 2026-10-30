@@ -72,10 +72,11 @@ _GLUED_SIGMET_AHL = re.compile(
     r"(?<=\S)(?=(?:WS|WV|WC)[A-Z]{2}\d{2}\s+[A-Z]{4}\s+\d{6}\b)",
 )
 
-# SIGMET body - one or more FIR ids, then SIGMET seq VALID … MWO- …
+# SIGMET body - one or more FIR ids, then SIGMET seq VALID … MWO[-] …
+# Live TAC often spaces before the MWO hyphen (``OEJN -``) or omits it.
 # (= preferred; single block may omit; stop at next AHL / report).
 _TAC_SIGMET = re.compile(
-    r"^(?:[A-Z]{4}\s+)+SIGMET\s+" + _TAC_SEQUENCE + r"\s+VALID\s+\d{6}/\d{6}\s+[A-Z]{4}-\s*.+?" + _SIGMET_BODY_STOP,
+    r"^(?:[A-Z]{4}\s+)+SIGMET\s+" + _TAC_SEQUENCE + r"\s+VALID\s+\d{6}/\d{6}\s+[A-Z]{4}\s*-?\s*.+?" + _SIGMET_BODY_STOP,
     re.MULTILINE | re.DOTALL | re.IGNORECASE,
 )
 
