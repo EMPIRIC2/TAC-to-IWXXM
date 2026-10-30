@@ -2,7 +2,11 @@
  * Conversion parameters + slim user preferences (EV-040 / EV-061).
  */
 import { expect, test } from '@playwright/test';
-import { convertManualMetar, openPublicConverter } from './playwright-e2e-helpers';
+import {
+  convertManualMetar,
+  openConvertIwxxmTab,
+  openPublicConverter,
+} from './playwright-e2e-helpers';
 
 test.describe('Workflow: Conversion Parameters And Preferences', () => {
   test('changing parameters before manual conversion produces conversion output', async ({
@@ -19,13 +23,8 @@ test.describe('Workflow: Conversion Parameters And Preferences', () => {
       'METAR KJFK 121251Z 24016G28KT 3SM -RA BR BKN020 OVC040 14/11 A2990',
     );
 
-    await expect(
-      page.getByRole('region', { name: 'Conversion results', exact: true }),
-    ).toBeVisible({ timeout: 10000 });
-    await expect(
-      // targets the converted XML content region for this result
-      page.getByRole('region', { name: /^Converted XML content for .+$/ }),
-    ).toBeVisible();
+    await openConvertIwxxmTab(page, 10_000);
+    await expect(page.getByTestId('iwxxm-preview-xml')).toBeVisible();
   });
 
   test('preferences save display name and output extension', async ({ page }) => {

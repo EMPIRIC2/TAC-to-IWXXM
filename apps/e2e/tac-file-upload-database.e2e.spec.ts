@@ -5,6 +5,8 @@ import * as path from 'path';
 import {
   fillManualTac,
   loginAndOpenConverter,
+  openConvertDownloadsTab,
+  openConvertIwxxmTab,
   openConvertSettings,
 } from './playwright-e2e-helpers';
 
@@ -188,15 +190,8 @@ test.describe('TAC convert + Disseminate (Upload to Database removed)', () => {
     await openConvertSettings(page);
     await page.getByTestId('convert-and-send-button').click();
 
-    const resultsRegion = page.getByRole('region', {
-      name: 'Conversion results',
-      exact: true,
-    });
-    await expect(resultsRegion).toBeVisible({ timeout: 10000 });
-    await expect(
-      // targets the converted XML content region for this result
-      resultsRegion.getByRole('region', { name: /^Converted XML content for .+$/ }),
-    ).toBeVisible({
+    await openConvertIwxxmTab(page, 10_000);
+    await expect(page.getByTestId('iwxxm-preview-xml')).toBeVisible({
       timeout: 10000,
     });
     await expect(page.getByText(/Files converted and sent successfully/i)).toBeVisible({
@@ -218,15 +213,10 @@ test.describe('TAC convert + Disseminate (Upload to Database removed)', () => {
       .setInputFiles(tacFiles.slice(0, 2).map((file) => file.path));
     await page.getByTestId('convert-button').click();
 
-    await expect(
-      page.getByRole('region', { name: 'Conversion results', exact: true }),
-    ).toBeVisible({ timeout: 10000 });
-    const resultsRegion = page.getByRole('region', {
-      name: 'Conversion results',
-      exact: true,
-    });
-    // Each converted file renders Source TAC + IWXXM blocks (2 <pre> per result).
-    await expect(resultsRegion.locator('pre')).toHaveCount(4);
+    await openConvertDownloadsTab(page, 10_000);
+    await expect(page.locator('[data-testid^="result-item-"]')).toHaveCount(2);
+    await openConvertIwxxmTab(page, 10_000);
+    await expect(page.getByTestId('iwxxm-preview-xml')).toBeVisible();
     await expect(page.getByTestId('open-dissemination-drawer')).toBeEnabled();
   });
 

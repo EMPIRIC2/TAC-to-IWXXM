@@ -1966,11 +1966,13 @@ describe('FileConverter Component', () => {
       await user.click(screen.getByTestId('convert-button'));
 
       await waitFor(() => {
-        expect(screen.getByText('<iwxxm>blank-source</iwxxm>')).toBeInTheDocument();
+        expect(screen.getByTestId('iwxxm-preview-xml')).toHaveTextContent(
+          '<iwxxm>blank-source</iwxxm>',
+        );
       });
     });
 
-    it('displays source TAC alongside converted XML when API returns tac_input', async () => {
+    it('keeps TAC in the editor and shows XML on IWXXM; Downloads stays file-only', async () => {
       const user = userEvent.setup({ delay: null });
       const tac = 'METAR FAOR 101200Z COR 12012KT 9999 FEW020 22/14 Q1018';
       mockConvertMetarToIwxxm.mockResolvedValueOnce({
@@ -1995,20 +1997,24 @@ describe('FileConverter Component', () => {
           'true',
         );
       });
-      await openConvertDownloadsTab(user);
-
       await waitFor(() => {
-        expect(
-          screen.getByRole('region', {
-            name: /original tac input for metar faor 101200z/i,
-            hidden: true,
-          }),
-        ).toBeInTheDocument();
+        expect(screen.getByTestId('iwxxm-preview-xml')).toHaveTextContent(
+          '<iwxxm:METAR>converted</iwxxm:METAR>',
+        );
       });
-      expect(screen.getByText('Source TAC')).toBeInTheDocument();
-      // EV-040: TAC remains in the editor after convert, so it appears twice.
-      expect(screen.getAllByText(tac).length).toBeGreaterThanOrEqual(2);
+      expect(screen.queryByText('Source TAC')).not.toBeInTheDocument();
+      expect(textarea).toHaveValue(tac);
       expect(screen.getByText('METAR FAOR 101200Z')).toBeInTheDocument();
+
+      await openConvertDownloadsTab(user);
+      expect(screen.getByTestId('convert-downloads-panel')).toBeInTheDocument();
+      expect(screen.queryByText('Source TAC')).not.toBeInTheDocument();
+      expect(
+        screen.queryByRole('region', {
+          name: /original tac input/i,
+          hidden: true,
+        }),
+      ).not.toBeInTheDocument();
       expect(screen.getByText(/Download: manual_input\.txt/)).toBeInTheDocument();
     });
 
@@ -2257,7 +2263,7 @@ describe('FileConverter Component', () => {
       expect(screen.queryByTestId('output-version-compare')).not.toBeInTheDocument();
     });
 
-    it('shows Source TAC from manual input when API omits tac_input (#655)', async () => {
+    it('keeps manual TAC when API omits tac_input and still fills IWXXM (#655)', async () => {
       const user = userEvent.setup({ delay: null });
       const tac = 'METAR KJFK 121251Z 18012KT 10SM FEW030 24/16 A2992';
       mockConvertMetarToIwxxm.mockResolvedValueOnce({
@@ -2277,10 +2283,12 @@ describe('FileConverter Component', () => {
       await user.click(screen.getByTestId('convert-button'));
 
       await waitFor(() => {
-        expect(screen.getByText('Source TAC')).toBeInTheDocument();
+        expect(screen.getByTestId('iwxxm-preview-xml')).toHaveTextContent(
+          '<iwxxm:METAR>converted</iwxxm:METAR>',
+        );
       });
-      // EV-040: editor keeps input; Source TAC panel also shows it.
-      expect(screen.getAllByText(tac).length).toBeGreaterThanOrEqual(2);
+      expect(textarea).toHaveValue(tac);
+      expect(screen.queryByText('Source TAC')).not.toBeInTheDocument();
       expect(screen.getByText('METAR KJFK 121251Z')).toBeInTheDocument();
     });
 
@@ -2905,15 +2913,12 @@ describe('FileConverter Component', () => {
         ).toBeInTheDocument();
       });
 
-      expect(
-        screen.getByRole('region', {
-          name: /original tac input for metar one/i,
-          hidden: true,
-        }),
-      ).toBeInTheDocument();
+      expect(screen.queryByText('Source TAC')).not.toBeInTheDocument();
       expect(screen.getByText(/Download: first\.txt/)).toBeInTheDocument();
       expect(screen.queryByText('second.txt')).not.toBeInTheDocument();
-      expect(screen.getByText('<iwxxm>first</iwxxm>')).toBeInTheDocument();
+      expect(screen.getByTestId('iwxxm-preview-xml')).toHaveTextContent(
+        '<iwxxm>first</iwxxm>',
+      );
     });
 
     it('shows no-files-converted status when response results is empty', async () => {
@@ -3625,35 +3630,38 @@ describe('FileConverter Component', () => {
       fireEvent.change(textarea, { target: { value: 'METAR FIRST BATCH' } });
       await user.click(screen.getByTestId('convert-button'));
       await waitFor(() => {
-        expect(screen.getByText('<iwxxm>first-batch</iwxxm>')).toBeInTheDocument();
+        expect(screen.getByTestId('iwxxm-preview-xml')).toHaveTextContent(
+          '<iwxxm>first-batch</iwxxm>',
+        );
       });
 
       fireEvent.change(textarea, { target: { value: 'METAR SECOND BATCH' } });
       await user.click(screen.getByTestId('convert-button'));
       await waitFor(() => {
-        expect(
-          within(
-            screen.getByRole('region', { name: /conversion results/i, hidden: true }),
-          ).getByText('<iwxxm>second-batch</iwxxm>'),
-        ).toBeInTheDocument();
+        expect(screen.getByTestId('iwxxm-preview-xml')).toHaveTextContent(
+          '<iwxxm>second-batch</iwxxm>',
+        );
       });
-      expect(
-        within(
-          screen.getByRole('region', { name: /conversion results/i, hidden: true }),
-        ).getByText('<iwxxm>first-batch</iwxxm>'),
-      ).toBeInTheDocument();
-      expect(screen.getByTestId('download-zip-button')).toHaveAccessibleName(
-        /download all 2 converted files as zip/i,
-      );
       const region = screen.getByRole('region', {
         name: /conversion results/i,
         hidden: true,
       });
-      const newest = within(region).getByText('<iwxxm>second-batch</iwxxm>');
-      const older = within(region).getByText('<iwxxm>first-batch</iwxxm>');
+      const items = within(region).getAllByTestId(/^result-item-/);
+      expect(items).toHaveLength(2);
+      expect(within(region).getAllByTestId(/convert-download-select-/)).toHaveLength(2);
+      expect(screen.getByTestId('download-zip-button')).toHaveAccessibleName(
+        /download all 2 converted files as zip/i,
+      );
       expect(
-        newest.compareDocumentPosition(older) & Node.DOCUMENT_POSITION_FOLLOWING,
+        items[0]!.compareDocumentPosition(items[1]!) & Node.DOCUMENT_POSITION_FOLLOWING,
       ).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
+      // Newest batch is focused on IWXXM; selecting the older row restores first-batch XML.
+      await user.click(within(items[1]!).getByTestId(/convert-download-select-/));
+      await waitFor(() => {
+        expect(screen.getByTestId('iwxxm-preview-xml')).toHaveTextContent(
+          '<iwxxm>first-batch</iwxxm>',
+        );
+      });
     });
 
     it('says do not publish on an invalid result and separates errors from notes', async () => {
@@ -4246,7 +4254,9 @@ describe('FileConverter Component', () => {
       expect(
         screen.getByRole('region', { name: /conversion results/i, hidden: true }),
       ).toBeInTheDocument();
-      expect(screen.getByText('<iwxxm>bulletin</iwxxm>')).toBeInTheDocument();
+      expect(screen.getByTestId('iwxxm-preview-xml')).toHaveTextContent(
+        '<iwxxm>bulletin</iwxxm>',
+      );
     });
 
     it('converts the whole bulletin while one report is open in the panes', async () => {
@@ -4597,6 +4607,7 @@ describe('FileConverter Component', () => {
     });
 
     it('hydrate converted_results via xml and content fallbacks', async () => {
+      const user = userEvent.setup({ delay: null });
       render(
         <FileConverter
           {...defaultProps}
@@ -4618,8 +4629,17 @@ describe('FileConverter Component', () => {
       );
 
       await waitFor(() => {
-        expect(screen.getByText(/from-xml/)).toBeInTheDocument();
-        expect(screen.getByText(/from-content/)).toBeInTheDocument();
+        expect(screen.getByTestId('iwxxm-preview-xml')).toHaveTextContent(
+          '<from-content/>',
+        );
+      });
+      const selectButtons = screen.getAllByTestId(/convert-download-select-/);
+      expect(selectButtons).toHaveLength(2);
+      await user.click(selectButtons[0] as HTMLElement);
+      await waitFor(() => {
+        expect(screen.getByTestId('iwxxm-preview-xml')).toHaveTextContent(
+          '<from-xml/>',
+        );
       });
     });
 
@@ -4894,8 +4914,17 @@ describe('FileConverter Component', () => {
       await user.click(screen.getByTestId('convert-button'));
 
       await waitFor(() => {
-        expect(screen.getByText('<hard-xml/>')).toBeInTheDocument();
-        expect(screen.getByText('<hard-content/>')).toBeInTheDocument();
+        expect(screen.getByTestId('iwxxm-preview-xml')).toHaveTextContent(
+          '<hard-content/>',
+        );
+      });
+      const selectButtons = screen.getAllByTestId(/convert-download-select-/);
+      expect(selectButtons).toHaveLength(2);
+      await user.click(selectButtons[0] as HTMLElement);
+      await waitFor(() => {
+        expect(screen.getByTestId('iwxxm-preview-xml')).toHaveTextContent(
+          '<hard-xml/>',
+        );
       });
     });
 
@@ -4958,12 +4987,14 @@ describe('FileConverter Component', () => {
       await user.click(screen.getByTestId('convert-button'));
 
       await waitFor(() => {
-        expect(screen.getByText('<bulletin-ok/>')).toBeInTheDocument();
+        expect(screen.getByTestId('iwxxm-preview-xml')).toHaveTextContent(
+          '<bulletin-ok/>',
+        );
         expect(mockToast.warning).toHaveBeenCalledWith('Bulletin: 1 ok, 1 failed');
       });
     });
 
-    it('renders a hydrated result without source TAC as unavailable', async () => {
+    it('renders a hydrated result without source TAC using the download name', async () => {
       render(
         <FileConverter
           {...defaultProps}
@@ -4977,9 +5008,9 @@ describe('FileConverter Component', () => {
         />,
       );
 
-      expect(
-        await screen.findByText('Original TAC unavailable for this result.'),
-      ).toBeInTheDocument();
+      expect(await screen.findByText('no-source.xml')).toBeInTheDocument();
+      expect(screen.getByTestId('iwxxm-preview-xml')).toHaveTextContent('<xml/>');
+      expect(screen.queryByText('Source TAC')).not.toBeInTheDocument();
     });
 
     it('hydrates partial session fields with safe queue, result, log, and parameter fallbacks', async () => {
@@ -5007,9 +5038,7 @@ describe('FileConverter Component', () => {
 
       expect(await screen.findByText('queued.tac')).toBeInTheDocument();
       expect(screen.getAllByText('result-1').length).toBeGreaterThan(0);
-      expect(
-        screen.getAllByText('Original TAC unavailable for this result.').length,
-      ).toBeGreaterThan(0);
+      expect(screen.queryByText('Source TAC')).not.toBeInTheDocument();
     });
 
     it('keeps a result card when the API provides no XML field', async () => {
@@ -5224,8 +5253,19 @@ describe('FileConverter Component', () => {
       await user.click(screen.getByTestId('convert-button'));
 
       await waitFor(() => {
-        expect(screen.getByText('<line1/>')).toBeInTheDocument();
-        expect(screen.getByText('<line2/>')).toBeInTheDocument();
+        expect(screen.getByTestId('iwxxm-preview-xml')).toHaveTextContent('<line2/>');
+      });
+      const selectButtons = screen.getAllByTestId(/convert-download-select-/);
+      expect(selectButtons).toHaveLength(2);
+      expect(
+        screen.getAllByRole('button', {
+          name: /download .+ as xml/i,
+          hidden: true,
+        }).length,
+      ).toBeGreaterThanOrEqual(2);
+      await user.click(selectButtons[0] as HTMLElement);
+      await waitFor(() => {
+        expect(screen.getByTestId('iwxxm-preview-xml')).toHaveTextContent('<line1/>');
       });
     });
 
@@ -8348,7 +8388,9 @@ describe('FileConverter Component', () => {
       });
       await user.click(screen.getByTestId('convert-button'));
       await waitFor(() => {
-        expect(screen.getByText('<iwxxm>meta</iwxxm>')).toBeInTheDocument();
+        expect(screen.getByTestId('iwxxm-preview-xml')).toHaveTextContent(
+          '<iwxxm>meta</iwxxm>',
+        );
       });
 
       const downloadOne = await screen.findByRole('button', {
@@ -8511,8 +8553,11 @@ describe('FileConverter Component', () => {
       );
 
       await waitFor(() => {
-        expect(screen.getByText('<iwxxm>hydrated</iwxxm>')).toBeInTheDocument();
+        expect(screen.getByTestId('iwxxm-preview-xml')).toHaveTextContent(
+          '<iwxxm>bad-ctx</iwxxm>',
+        );
       });
+      expect(screen.getAllByTestId(/convert-download-select-/)).toHaveLength(3);
       await user.click(screen.getByTestId('conversion-metadata-toggle'));
       const downloadButtons = await screen.findAllByRole('button', {
         name: /download .+ as zip with metadata/i,
@@ -8552,7 +8597,9 @@ describe('FileConverter Component', () => {
       });
       await user.click(screen.getByTestId('convert-button'));
       await waitFor(() => {
-        expect(screen.getByText('<iwxxm>variant</iwxxm>')).toBeInTheDocument();
+        expect(screen.getByTestId('iwxxm-preview-xml')).toHaveTextContent(
+          '<iwxxm>variant</iwxxm>',
+        );
       });
       await user.click(
         await screen.findByRole('button', {
@@ -8618,7 +8665,9 @@ describe('FileConverter Component', () => {
       );
 
       await waitFor(() => {
-        expect(screen.getByText('<iwxxm>partial-ctx</iwxxm>')).toBeInTheDocument();
+        expect(screen.getByTestId('iwxxm-preview-xml')).toHaveTextContent(
+          '<iwxxm>partial-ctx</iwxxm>',
+        );
       });
       await user.click(screen.getByTestId('conversion-metadata-toggle'));
       await user.click(
@@ -8649,6 +8698,271 @@ describe('FileConverter Component', () => {
           defaultLibraryId('conversion', 'US_FAA_NWS'),
         );
       });
+    });
+  });
+
+  describe('UX-2026-10-29-downloads-file-mgmt', () => {
+    it('removing the focused Downloads row keeps IWXXM on the remaining file', async () => {
+      const user = userEvent.setup({ delay: null });
+      mockConvertMetarToIwxxm.mockResolvedValueOnce({
+        results: [
+          {
+            name: 'a.txt',
+            content: '<iwxxm>keep-me</iwxxm>',
+            tac_input: 'METAR A=',
+            source: 'manual_input',
+          },
+          {
+            name: 'b.txt',
+            content: '<iwxxm>remove-me</iwxxm>',
+            tac_input: 'METAR B=',
+            source: 'manual_input',
+          },
+        ],
+      });
+
+      const { container } = render(<FileConverter {...defaultProps} />);
+      fireEvent.change(container.querySelector('textarea') as HTMLTextAreaElement, {
+        target: { value: 'METAR A=\nMETAR B=' },
+      });
+      await user.click(screen.getByTestId('convert-button'));
+      await waitFor(() => {
+        expect(screen.getByTestId('iwxxm-preview-xml')).toHaveTextContent(
+          '<iwxxm>remove-me</iwxxm>',
+        );
+      });
+
+      const items = screen.getAllByTestId(/^result-item-/);
+      const focusedItem = items.find((el) => el.className.includes('border-blue-400'));
+      expect(focusedItem).toBeTruthy();
+      await user.click(
+        within(focusedItem as HTMLElement).getByLabelText(/remove .+ from results/i),
+      );
+      await waitFor(() => {
+        expect(screen.getByTestId('iwxxm-preview-xml')).toHaveTextContent(
+          '<iwxxm>keep-me</iwxxm>',
+        );
+      });
+      expect(screen.getAllByTestId(/^result-item-/)).toHaveLength(1);
+    });
+
+    it('removing a non-focused Downloads row leaves IWXXM preview unchanged', async () => {
+      const user = userEvent.setup({ delay: null });
+      mockConvertMetarToIwxxm.mockResolvedValueOnce({
+        results: [
+          {
+            name: 'a.txt',
+            content: '<iwxxm>keep-preview</iwxxm>',
+            tac_input: 'METAR A=',
+            source: 'manual_input',
+          },
+          {
+            name: 'b.txt',
+            content: '<iwxxm>drop-row</iwxxm>',
+            tac_input: 'METAR B=',
+            source: 'manual_input',
+          },
+        ],
+      });
+
+      const { container } = render(<FileConverter {...defaultProps} />);
+      fireEvent.change(container.querySelector('textarea') as HTMLTextAreaElement, {
+        target: { value: 'METAR A=\nMETAR B=' },
+      });
+      await user.click(screen.getByTestId('convert-button'));
+      await waitFor(() => {
+        expect(screen.getByTestId('iwxxm-preview-xml')).toHaveTextContent(
+          '<iwxxm>drop-row</iwxxm>',
+        );
+      });
+
+      const items = screen.getAllByTestId(/^result-item-/);
+      const unfocused = items.find((el) => !el.className.includes('border-blue-400'));
+      expect(unfocused).toBeTruthy();
+      await user.click(
+        within(unfocused as HTMLElement).getByLabelText(/remove .+ from results/i),
+      );
+      await waitFor(() => {
+        expect(screen.getAllByTestId(/^result-item-/)).toHaveLength(1);
+      });
+      expect(screen.getByTestId('iwxxm-preview-xml')).toHaveTextContent(
+        '<iwxxm>drop-row</iwxxm>',
+      );
+    });
+
+    it('removing the last Downloads row clears Live IWXXM', async () => {
+      const user = userEvent.setup({ delay: null });
+      mockConvertMetarToIwxxm.mockResolvedValueOnce({
+        results: [
+          {
+            name: 'only.txt',
+            content: '<iwxxm>solo</iwxxm>',
+            tac_input: 'METAR ONLY=',
+            source: 'manual_input',
+          },
+        ],
+      });
+
+      const { container } = render(<FileConverter {...defaultProps} />);
+      fireEvent.change(container.querySelector('textarea') as HTMLTextAreaElement, {
+        target: { value: 'METAR ONLY=' },
+      });
+      await user.click(screen.getByTestId('convert-button'));
+      await waitFor(() => {
+        expect(screen.getByTestId('iwxxm-preview-xml')).toHaveTextContent(
+          '<iwxxm>solo</iwxxm>',
+        );
+      });
+      await user.click(screen.getByLabelText(/remove .+ from results/i));
+      await waitFor(() => {
+        expect(screen.queryByTestId(/^result-item-/)).not.toBeInTheDocument();
+      });
+      expect(screen.getByTestId('iwxxm-preview-empty')).toBeInTheDocument();
+    });
+
+    it('selecting a publish-blocked Downloads row marks IWXXM soft-fail', async () => {
+      const user = userEvent.setup({ delay: null });
+      mockConvertMetarToIwxxm.mockResolvedValueOnce({
+        ok: false,
+        results: [
+          {
+            name: 'ok.txt',
+            content: '<iwxxm>ok</iwxxm>',
+            tac_input: 'METAR OK=',
+            source: 'manual_input',
+          },
+          {
+            name: 'bad.txt',
+            content: '<iwxxm>bad',
+            tac_input: 'METAR BAD=',
+            source: 'manual_input',
+          },
+        ],
+        errors: ['XML is not valid'],
+        issues: [
+          {
+            source: 'manual_input',
+            message: 'Schema check failed',
+            severity: 'error',
+            code: 'XML_SCHEMA',
+          },
+        ],
+      });
+
+      const { container } = render(<FileConverter {...defaultProps} />);
+      fireEvent.change(container.querySelector('textarea') as HTMLTextAreaElement, {
+        target: { value: 'METAR OK=\nMETAR BAD=' },
+      });
+      await user.click(screen.getByTestId('convert-button'));
+      await waitFor(() => {
+        expect(screen.getAllByTestId(/convert-download-select-/)).toHaveLength(2);
+      });
+      const selectButtons = screen.getAllByTestId(/convert-download-select-/);
+      await user.click(selectButtons[0] as HTMLElement);
+      await waitFor(() => {
+        expect(screen.getByTestId('iwxxm-preview-xml')).toBeInTheDocument();
+      });
+      await user.click(selectButtons[1] as HTMLElement);
+      await waitFor(() => {
+        expect(screen.getByTestId('result-do-not-publish')).toBeInTheDocument();
+      });
+    });
+
+    it('selecting a Downloads row with empty XML does not wipe a prior preview', async () => {
+      const user = userEvent.setup({ delay: null });
+      render(
+        <FileConverter
+          {...defaultProps}
+          loadedWorkSession={
+            {
+              id: 'ux-empty-xml-row',
+              status: 'draft',
+              converted_results: [
+                {
+                  name: 'empty.txt',
+                  tac_input: 'METAR EMPTY=',
+                  iwxxm_xml: '',
+                },
+                {
+                  name: 'full.txt',
+                  tac_input: 'METAR FULL=',
+                  iwxxm_xml: '<iwxxm>full</iwxxm>',
+                },
+              ],
+            } as any
+          }
+        />,
+      );
+      await waitFor(() => {
+        expect(screen.getByTestId('iwxxm-preview-xml')).toHaveTextContent(
+          '<iwxxm>full</iwxxm>',
+        );
+      });
+      const selectButtons = screen.getAllByTestId(/convert-download-select-/);
+      await user.click(selectButtons[0] as HTMLElement);
+      expect(screen.getByTestId('iwxxm-preview-xml')).toHaveTextContent(
+        '<iwxxm>full</iwxxm>',
+      );
+    });
+
+    it('Downloads is file management only; IWXXM always shows convert XML', async () => {
+      const user = userEvent.setup({ delay: null });
+      mockConvertMetarToIwxxm.mockResolvedValueOnce({
+        results: [
+          {
+            name: 'a.txt',
+            content: '<iwxxm>alpha</iwxxm>',
+            tac_input: 'METAR A=',
+            source: 'manual_input',
+          },
+          {
+            name: 'b.txt',
+            content: '<iwxxm>bravo</iwxxm>',
+            tac_input: 'METAR B=',
+            source: 'manual_input',
+          },
+        ],
+      });
+
+      const { container } = render(<FileConverter {...defaultProps} />);
+      const textarea = container.querySelector('textarea') as HTMLTextAreaElement;
+      fireEvent.change(textarea, { target: { value: 'METAR A=\nMETAR B=' } });
+      await user.click(screen.getByTestId('convert-button'));
+
+      await waitFor(() => {
+        expect(screen.getByTestId('convert-results-panel-iwxxm')).not.toHaveAttribute(
+          'hidden',
+        );
+      });
+      await waitFor(() => {
+        expect(screen.getByTestId('iwxxm-preview-xml')).toHaveTextContent(
+          '<iwxxm>bravo</iwxxm>',
+        );
+      });
+
+      await openConvertDownloadsTab(user);
+      const downloads = screen.getByTestId('convert-downloads-panel');
+      expect(within(downloads).queryByText('Source TAC')).not.toBeInTheDocument();
+      expect(
+        within(downloads).queryByText('<iwxxm>bravo</iwxxm>'),
+      ).not.toBeInTheDocument();
+      expect(
+        within(downloads).queryByTestId('result-card-status'),
+      ).not.toBeInTheDocument();
+
+      const selectButtons = screen.getAllByTestId(/convert-download-select-/);
+      expect(selectButtons.length).toBe(2);
+      await user.click(selectButtons[0] as HTMLElement);
+
+      await waitFor(() => {
+        expect(screen.getByTestId('convert-results-panel-iwxxm')).not.toHaveAttribute(
+          'hidden',
+        );
+      });
+      expect(screen.getByTestId('iwxxm-preview-xml')).toHaveTextContent(
+        '<iwxxm>alpha</iwxxm>',
+      );
+      expect(screen.getByTestId('result-card-status')).toBeInTheDocument();
     });
   });
 });

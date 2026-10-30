@@ -285,15 +285,12 @@ export async function convertManualMetar(page: Page, metar: string): Promise<voi
 }
 
 /**
- * Open the Results drawer Downloads tab (per-file Conversion results cards).
- *
- * After convert the drawer defaults to IWXXM preview; download cards and the
- * `Conversion results` / `Converted XML content for …` regions live under Downloads.
+ * Ensure the Results drawer is open after convert.
  *
  * @param page - Playwright page hosting the converter.
  * @param timeoutMs - Max wait for the drawer after convert.
  */
-export async function openConvertDownloadsTab(
+export async function ensureConvertResultsDrawerOpen(
   page: Page,
   timeoutMs = 45_000,
 ): Promise<void> {
@@ -303,7 +300,45 @@ export async function openConvertDownloadsTab(
     await page.getByTestId('convert-results-drawer-toggle').click();
     await expect(drawer).toHaveAttribute('data-open', 'true');
   }
-  // Wait for convert to finish before selecting Downloads. Result cards are
+}
+
+/**
+ * Open the Results → IWXXM tab and wait for Live IWXXM XML (conversion output).
+ *
+ * @param page - Playwright page hosting the converter.
+ * @param timeoutMs - Max wait for preview XML after convert.
+ */
+export async function openConvertIwxxmTab(
+  page: Page,
+  timeoutMs = 45_000,
+): Promise<void> {
+  await ensureConvertResultsDrawerOpen(page, timeoutMs);
+  await expect
+    .poll(async () => page.locator('[data-testid^="result-item-"]').count(), {
+      timeout: timeoutMs,
+    })
+    .toBeGreaterThan(0);
+  await page.getByTestId('convert-results-tab-iwxxm').click();
+  await expect(page.getByTestId('iwxxm-preview-xml')).toBeVisible({
+    timeout: 15_000,
+  });
+}
+
+/**
+ * Open the Results drawer Downloads tab (file management rows only).
+ *
+ * After convert the drawer defaults to IWXXM preview; Downloads lists files for
+ * download/copy/remove. Conversion XML lives on the IWXXM tab.
+ *
+ * @param page - Playwright page hosting the converter.
+ * @param timeoutMs - Max wait for the drawer after convert.
+ */
+export async function openConvertDownloadsTab(
+  page: Page,
+  timeoutMs = 45_000,
+): Promise<void> {
+  await ensureConvertResultsDrawerOpen(page, timeoutMs);
+  // Wait for convert to finish before selecting Downloads. Result rows are
   // force-mounted (often hidden under the default IWXXM tab). Selecting
   // Downloads too early races auto-switch back to IWXXM after convert lands.
   await expect

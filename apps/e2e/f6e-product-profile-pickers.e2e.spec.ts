@@ -10,6 +10,7 @@ import {
   convertManualMetar,
   fillManualTac,
   openConvertDownloadsTab,
+  openConvertIwxxmTab,
   openConvertSettings,
   openPublicConverter,
   playwrightApiBaseUrl,
@@ -45,11 +46,10 @@ test.describe('H6 / T8.4: F6.e product + Conversion library pickers', () => {
 
     await convertManualMetar(page, METAR_TAC);
 
-    await openConvertDownloadsTab(page, 30_000);
-    await expect(
-      // targets the converted XML content region for this result
-      page.getByRole('region', { name: /^Converted XML content for .+$/ }),
-    ).toBeVisible({ timeout: 15000 });
+    await openConvertIwxxmTab(page, 30_000);
+    await expect(page.getByTestId('iwxxm-preview-xml')).toBeVisible({
+      timeout: 15000,
+    });
   });
 
   test('UJ-005: SPECI via explicit product + ICAO Conversion library', async ({
