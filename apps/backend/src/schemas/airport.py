@@ -5,7 +5,7 @@ from __future__ import annotations
 import json
 import re
 from pathlib import Path
-from typing import ClassVar
+from typing import Any, ClassVar, cast
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
@@ -183,6 +183,9 @@ class AirportValidator:
         """
         Load airports from airports.json into memory.
 
+        Also merges ``airport_registry_supplements.json`` (F3 deepen for METAR
+        stations missing from the OurAirports ``icao_code`` export).
+
         Examples
         --------
         >>> 1 + 1  # docstring smoke (load_airports)
@@ -190,7 +193,9 @@ class AirportValidator:
         """
         # Determine path to airports.json relative to this file
         current_file = Path(__file__)
-        data_path = current_file.parent.parent / "data" / "airports.json"
+        data_dir = current_file.parent.parent / "data"
+        data_path = data_dir / "airports.json"
+        supplements_path = data_dir / "airport_registry_supplements.json"
 
         if not data_path.exists():
             raise FileNotFoundError(
@@ -210,6 +215,27 @@ class AirportValidator:
                 # Skip invalid airport entries
                 print(f"Warning: Failed to load airport {airport_data.get('icao', 'UNKNOWN')}: {e}")
                 continue
+
+        if supplements_path.exists():
+            try:
+                with open(supplements_path, encoding="utf-8") as f:
+                    supplement_payload = cast(dict[str, Any], json.load(f))
+                stations_raw = supplement_payload.get("stations")
+                stations: list[dict[str, Any]] = []
+                if isinstance(stations_raw, list):
+                    stations.extend(
+                        cast(dict[str, Any], item) for item in cast(list[Any], stations_raw) if isinstance(item, dict)
+                    )
+                for airport_data in stations:
+                    try:
+                        airport = Airport(**airport_data)
+                        # Supplements fill gaps; do not overwrite a main-catalog hit.
+                        self._airports.setdefault(airport.icao.upper(), airport)
+                    except Exception as e:
+                        icao_label = airport_data.get("icao", "UNKNOWN")
+                        print(f"Warning: Failed to load supplement airport {icao_label}: {e}")
+            except Exception as e:
+                print(f"Warning: Failed to load airport supplements: {e}")
 
         self._loaded = True
         print(f"Loaded {len(self._airports)} airports for validation")
@@ -239,8 +265,8 @@ class AirportValidator:
         """
         if not icao_code:
             return False
-        # Validate format: exactly 4 uppercase letters
-        if len(icao_code) != 4 or not icao_code.isalpha():
+        # Match Airport.icao / Layer-1 extract: 4 alphanumeric characters.
+        if not re.match(r"^[A-Z0-9]{4}$", icao_code.upper()):
             return False
         return icao_code.upper() in self._airports
 

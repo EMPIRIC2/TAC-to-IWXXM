@@ -1,0 +1,636 @@
+{
+  "_comment": "F3 aerodrome registry supplements for METAR stations missing from OurAirports icao_code export. Coords from NOAA AWC stations.cache.json and/or OurAirports ident rows. Do not invent coordinates.",
+  "_sources": [
+    "https://aviationweather.gov/data/cache/stations.cache.json",
+    "https://davidmegginson.github.io/ourairports-data/airports.csv"
+  ],
+  "_retrieved_utc": "2026-10-30",
+  "stations": [
+    {
+      "icao": "CWDQ",
+      "name": "La Tuque Arpt",
+      "type": "small_airport",
+      "coordinates": {
+        "latitude": 47.415,
+        "longitude": -72.788,
+        "vertical_datum": "OTHER:CGVD2013",
+        "elevation_ft": 571
+      },
+      "city": "QC",
+      "country": "CA"
+    },
+    {
+      "icao": "CWDV",
+      "name": "Upsala",
+      "type": "small_airport",
+      "coordinates": {
+        "latitude": 49.033,
+        "longitude": -90.467,
+        "vertical_datum": "OTHER:CGVD2013",
+        "elevation_ft": 1598
+      },
+      "city": "ON",
+      "country": "CA"
+    },
+    {
+      "icao": "CWEH",
+      "name": "Eastend Cypress",
+      "type": "small_airport",
+      "coordinates": {
+        "latitude": 49.438,
+        "longitude": -108.989,
+        "vertical_datum": "OTHER:CGVD2013",
+        "elevation_ft": 3533
+      },
+      "city": "SK",
+      "country": "CA"
+    },
+    {
+      "icao": "CWGD",
+      "name": "Goderich Muni",
+      "type": "small_airport",
+      "coordinates": {
+        "latitude": 43.765,
+        "longitude": -81.712,
+        "vertical_datum": "OTHER:CGVD2013",
+        "elevation_ft": 702
+      },
+      "city": "ON",
+      "country": "CA"
+    },
+    {
+      "icao": "CWGM",
+      "name": "Waterton Park Gate",
+      "type": "small_airport",
+      "coordinates": {
+        "latitude": 49.133,
+        "longitude": -113.806,
+        "vertical_datum": "OTHER:CGVD2013",
+        "elevation_ft": 4239
+      },
+      "city": "AB",
+      "country": "CA"
+    },
+    {
+      "icao": "CWKO",
+      "name": "Rockglen",
+      "type": "small_airport",
+      "coordinates": {
+        "latitude": 49.168,
+        "longitude": -105.979,
+        "vertical_datum": "OTHER:CGVD2013",
+        "elevation_ft": 2999
+      },
+      "city": "SK",
+      "country": "CA"
+    },
+    {
+      "icao": "CWMJ",
+      "name": "Maniwaki Arpt",
+      "type": "small_airport",
+      "coordinates": {
+        "latitude": 46.275,
+        "longitude": -75.992,
+        "vertical_datum": "OTHER:CGVD2013",
+        "elevation_ft": 650
+      },
+      "city": "QC",
+      "country": "CA"
+    },
+    {
+      "icao": "CWNH",
+      "name": "Riviere Du Loup",
+      "type": "small_airport",
+      "coordinates": {
+        "latitude": 47.806,
+        "longitude": -69.548,
+        "vertical_datum": "OTHER:CGVD2013",
+        "elevation_ft": 482
+      },
+      "city": "QC",
+      "country": "CA"
+    },
+    {
+      "icao": "CWNZ",
+      "name": "Nagagami",
+      "type": "small_airport",
+      "coordinates": {
+        "latitude": 49.747,
+        "longitude": -84.164,
+        "vertical_datum": "OTHER:CGVD2013",
+        "elevation_ft": 856
+      },
+      "city": "ON",
+      "country": "CA"
+    },
+    {
+      "icao": "CWOD",
+      "name": "Normandin",
+      "type": "small_airport",
+      "coordinates": {
+        "latitude": 48.842,
+        "longitude": -72.546,
+        "vertical_datum": "OTHER:CGVD2013",
+        "elevation_ft": 492
+      },
+      "city": "QC",
+      "country": "CA"
+    },
+    {
+      "icao": "CWPK",
+      "name": "Parent",
+      "type": "small_airport",
+      "coordinates": {
+        "latitude": 47.922,
+        "longitude": -74.624,
+        "vertical_datum": "OTHER:CGVD2013",
+        "elevation_ft": 1453
+      },
+      "city": "QC",
+      "country": "CA"
+    },
+    {
+      "icao": "CWSG",
+      "name": "Cap Chat",
+      "type": "small_airport",
+      "coordinates": {
+        "latitude": 49.109,
+        "longitude": -66.655,
+        "vertical_datum": "OTHER:CGVD2013",
+        "elevation_ft": 16
+      },
+      "city": "QC",
+      "country": "CA"
+    },
+    {
+      "icao": "CZCR",
+      "name": "Charlo Arpt",
+      "type": "small_airport",
+      "coordinates": {
+        "latitude": 47.99,
+        "longitude": -66.334,
+        "vertical_datum": "OTHER:CGVD2013",
+        "elevation_ft": 128
+      },
+      "city": "NB",
+      "country": "CA"
+    },
+    {
+      "icao": "ENHE",
+      "name": "Heidrun A Helipad",
+      "type": "heliport",
+      "coordinates": {
+        "latitude": 65.32556,
+        "longitude": 7.31583,
+        "vertical_datum": "OTHER:NN2000"
+      },
+      "city": "Norwegian Sea",
+      "country": "NO"
+    },
+    {
+      "icao": "ENNE",
+      "name": "Norne A Helipad",
+      "type": "heliport",
+      "coordinates": {
+        "latitude": 66.03333,
+        "longitude": 8.08333,
+        "vertical_datum": "OTHER:NN2000"
+      },
+      "city": "Norwegian Sea",
+      "country": "NO"
+    },
+    {
+      "icao": "K05U",
+      "name": "Eureka Airport",
+      "type": "small_airport",
+      "coordinates": {
+        "latitude": 39.604198455799995,
+        "longitude": -116.004997253,
+        "vertical_datum": "NAVD88",
+        "elevation_ft": 5954
+      },
+      "iata": "EUE",
+      "city": "Eureka",
+      "country": "US"
+    },
+    {
+      "icao": "K10U",
+      "name": "Owyhee Airport",
+      "type": "small_airport",
+      "coordinates": {
+        "latitude": 41.953604,
+        "longitude": -116.182155,
+        "vertical_datum": "NAVD88",
+        "elevation_ft": 5374
+      },
+      "city": "Owyhee",
+      "country": "US"
+    },
+    {
+      "icao": "K18H",
+      "name": "Lucius",
+      "type": "small_airport",
+      "coordinates": {
+        "latitude": 26.1283,
+        "longitude": -92.0333,
+        "vertical_datum": "NAVD88",
+        "elevation_ft": 98
+      },
+      "city": "LA",
+      "country": "US"
+    },
+    {
+      "icao": "K1F0",
+      "name": "Ardmore Downtown Executive Airport",
+      "type": "small_airport",
+      "coordinates": {
+        "latitude": 34.1469993591,
+        "longitude": -97.1227035522,
+        "vertical_datum": "NAVD88",
+        "elevation_ft": 844
+      },
+      "iata": "AHD",
+      "city": "Ardmore",
+      "country": "US"
+    },
+    {
+      "icao": "K2WX",
+      "name": "Buffalo/Harding Cnty",
+      "type": "small_airport",
+      "coordinates": {
+        "latitude": 45.60427,
+        "longitude": -103.54698,
+        "vertical_datum": "NAVD88",
+        "elevation_ft": 3035
+      },
+      "city": "SD",
+      "country": "US"
+    },
+    {
+      "icao": "K40B",
+      "name": "Clayton Lake",
+      "type": "small_airport",
+      "coordinates": {
+        "latitude": 46.616,
+        "longitude": -69.533,
+        "vertical_datum": "NAVD88",
+        "elevation_ft": 1129
+      },
+      "city": "ME",
+      "country": "US"
+    },
+    {
+      "icao": "K6R6",
+      "name": "Terrell County Airport",
+      "type": "small_airport",
+      "coordinates": {
+        "latitude": 30.046,
+        "longitude": -102.212997,
+        "vertical_datum": "NAVD88",
+        "elevation_ft": 2322
+      },
+      "city": "Dryden",
+      "country": "US"
+    },
+    {
+      "icao": "KAGI",
+      "name": "Garden Banks 426",
+      "type": "small_airport",
+      "coordinates": {
+        "latitude": 27.5461,
+        "longitude": -92.4434,
+        "vertical_datum": "NAVD88",
+        "elevation_ft": 135
+      },
+      "city": "LA",
+      "country": "US"
+    },
+    {
+      "icao": "KANJ",
+      "name": "Sault Ste Marie Municipal Airport Sanderson Field",
+      "type": "small_airport",
+      "coordinates": {
+        "latitude": 46.479198,
+        "longitude": -84.368401,
+        "vertical_datum": "NAVD88",
+        "elevation_ft": 716
+      },
+      "city": "Sault Ste Marie",
+      "country": "US"
+    },
+    {
+      "icao": "KATP",
+      "name": "Green Canyon 787",
+      "type": "small_airport",
+      "coordinates": {
+        "latitude": 27.1956,
+        "longitude": -90.0269,
+        "vertical_datum": "NAVD88",
+        "elevation_ft": 164
+      },
+      "city": "LA",
+      "country": "US"
+    },
+    {
+      "icao": "KAVC",
+      "name": "Mecklenburg Brunswick Regional Airport",
+      "type": "small_airport",
+      "coordinates": {
+        "latitude": 36.688301,
+        "longitude": -78.054497,
+        "vertical_datum": "NAVD88",
+        "elevation_ft": 441
+      },
+      "city": "Brodnax",
+      "country": "US"
+    },
+    {
+      "icao": "KDJT",
+      "name": "President Donald J. Trump International Airport",
+      "type": "large_airport",
+      "coordinates": {
+        "latitude": 26.683201,
+        "longitude": -80.095596,
+        "vertical_datum": "NAVD88",
+        "elevation_ft": 19
+      },
+      "iata": "DJT",
+      "city": "West Palm Beach",
+      "country": "US"
+    },
+    {
+      "icao": "KEHA",
+      "name": "Elkhart Morton County Airport",
+      "type": "small_airport",
+      "coordinates": {
+        "latitude": 37.000702,
+        "longitude": -101.879997,
+        "vertical_datum": "NAVD88",
+        "elevation_ft": 3622
+      },
+      "city": "Elkhart",
+      "country": "US"
+    },
+    {
+      "icao": "KERY",
+      "name": "Luce County Airport",
+      "type": "small_airport",
+      "coordinates": {
+        "latitude": 46.311199,
+        "longitude": -85.457298,
+        "vertical_datum": "NAVD88",
+        "elevation_ft": 869
+      },
+      "city": "Newberry",
+      "country": "US"
+    },
+    {
+      "icao": "KEZP",
+      "name": "E Cameron 321A",
+      "type": "small_airport",
+      "coordinates": {
+        "latitude": 28.2198,
+        "longitude": -92.7944,
+        "vertical_datum": "NAVD88",
+        "elevation_ft": 98
+      },
+      "city": "LA",
+      "country": "US"
+    },
+    {
+      "icao": "KFNB",
+      "name": "Brenner Field",
+      "type": "small_airport",
+      "coordinates": {
+        "latitude": 40.0788,
+        "longitude": -95.592003,
+        "vertical_datum": "NAVD88",
+        "elevation_ft": 984
+      },
+      "city": "Falls City",
+      "country": "US"
+    },
+    {
+      "icao": "KGLX",
+      "name": "Mississippi Canyon 724",
+      "type": "small_airport",
+      "coordinates": {
+        "latitude": 28.2347,
+        "longitude": -88.9843,
+        "vertical_datum": "NAVD88",
+        "elevation_ft": 105
+      },
+      "city": "LA",
+      "country": "US"
+    },
+    {
+      "icao": "KGVW",
+      "name": "Galveston 209B",
+      "type": "small_airport",
+      "coordinates": {
+        "latitude": 29.1303,
+        "longitude": -94.5466,
+        "vertical_datum": "NAVD88",
+        "elevation_ft": 121
+      },
+      "city": "TX",
+      "country": "US"
+    },
+    {
+      "icao": "KGXF",
+      "name": "Gila Bend",
+      "type": "small_airport",
+      "coordinates": {
+        "latitude": 32.885,
+        "longitude": -112.721,
+        "vertical_datum": "NAVD88",
+        "elevation_ft": 856
+      },
+      "city": "AZ",
+      "country": "US"
+    },
+    {
+      "icao": "KHUF",
+      "name": "Terre Haute Regional Airport, Hulman Field",
+      "type": "medium_airport",
+      "coordinates": {
+        "latitude": 39.4515,
+        "longitude": -87.307602,
+        "vertical_datum": "NAVD88",
+        "elevation_ft": 589
+      },
+      "iata": "HUF",
+      "city": "Terre Haute",
+      "country": "US"
+    },
+    {
+      "icao": "KJKL",
+      "name": "Julian Carroll Airport",
+      "type": "medium_airport",
+      "coordinates": {
+        "latitude": 37.59389877319336,
+        "longitude": -83.31729888916016,
+        "vertical_datum": "NAVD88",
+        "elevation_ft": 1381
+      },
+      "city": "Jackson",
+      "country": "US"
+    },
+    {
+      "icao": "KLWD",
+      "name": "Lamoni Muni",
+      "type": "small_airport",
+      "coordinates": {
+        "latitude": 40.63064,
+        "longitude": -93.9005,
+        "vertical_datum": "NAVD88",
+        "elevation_ft": 1132
+      },
+      "city": "IA",
+      "country": "US"
+    },
+    {
+      "icao": "KMHS",
+      "name": "Mount Shasta",
+      "type": "small_airport",
+      "coordinates": {
+        "latitude": 41.31493,
+        "longitude": -122.31711,
+        "vertical_datum": "NAVD88",
+        "elevation_ft": 3543
+      },
+      "city": "CA",
+      "country": "US"
+    },
+    {
+      "icao": "KMLP",
+      "name": "Mullan Pass",
+      "type": "small_airport",
+      "coordinates": {
+        "latitude": 47.4548,
+        "longitude": -115.67109,
+        "vertical_datum": "NAVD88",
+        "elevation_ft": 6027
+      },
+      "city": "ID",
+      "country": "US"
+    },
+    {
+      "icao": "KMZM",
+      "name": "Main Pass Blk 69P",
+      "type": "small_airport",
+      "coordinates": {
+        "latitude": 26.9608,
+        "longitude": -89.0303,
+        "vertical_datum": "NAVD88",
+        "elevation_ft": 131
+      },
+      "city": "LA",
+      "country": "US"
+    },
+    {
+      "icao": "KNID",
+      "name": "China Lake Naws (Armitage Field) Airport",
+      "type": "medium_airport",
+      "coordinates": {
+        "latitude": 35.6853981,
+        "longitude": -117.6920013,
+        "vertical_datum": "NAVD88",
+        "elevation_ft": 2283
+      },
+      "city": "China Lake",
+      "country": "US"
+    },
+    {
+      "icao": "KSDB",
+      "name": "Sandberg",
+      "type": "small_airport",
+      "coordinates": {
+        "latitude": 34.7433,
+        "longitude": -118.7252,
+        "vertical_datum": "NAVD88",
+        "elevation_ft": 4518
+      },
+      "city": "CA",
+      "country": "US"
+    },
+    {
+      "icao": "KT89",
+      "name": "Lajitas Intl",
+      "type": "small_airport",
+      "coordinates": {
+        "latitude": 29.2774,
+        "longitude": -103.69121,
+        "vertical_datum": "NAVD88",
+        "elevation_ft": 2628
+      },
+      "city": "TX",
+      "country": "US"
+    },
+    {
+      "icao": "KUNO",
+      "name": "West Plains Regional Airport",
+      "type": "small_airport",
+      "coordinates": {
+        "latitude": 36.878399,
+        "longitude": -91.902702,
+        "vertical_datum": "NAVD88",
+        "elevation_ft": 1228
+      },
+      "city": "Pomona",
+      "country": "US"
+    },
+    {
+      "icao": "KVOA",
+      "name": "Viosca Knoll 786A",
+      "type": "small_airport",
+      "coordinates": {
+        "latitude": 29.2289,
+        "longitude": -87.7808,
+        "vertical_datum": "NAVD88",
+        "elevation_ft": 174
+      },
+      "city": "AL",
+      "country": "US"
+    },
+    {
+      "icao": "PKMR",
+      "name": "Majuro Atoll",
+      "type": "small_airport",
+      "coordinates": {
+        "latitude": 7.09,
+        "longitude": 171.383,
+        "vertical_datum": "EGM_96",
+        "elevation_ft": 23
+      },
+      "city": "T",
+      "country": "MH"
+    },
+    {
+      "icao": "PTTP",
+      "name": "Pohnpei",
+      "type": "small_airport",
+      "coordinates": {
+        "latitude": 6.96,
+        "longitude": 158.21,
+        "vertical_datum": "EGM_96",
+        "elevation_ft": 118
+      },
+      "city": "PN",
+      "country": "FM"
+    },
+    {
+      "icao": "SCIR",
+      "name": "Robinson Crusoe Airport",
+      "type": "small_airport",
+      "coordinates": {
+        "latitude": -33.6650009155,
+        "longitude": -78.9297027588,
+        "vertical_datum": "EGM_96",
+        "elevation_ft": 433
+      },
+      "city": "Isla Robinson Crusoe",
+      "country": "CL"
+    }
+  ]
+}
