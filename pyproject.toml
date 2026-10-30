@@ -114,9 +114,13 @@ markers = [
 ]
 # ADR-048 / TC-EVDOC-007: warnings are errors. Narrow third-party-only ignore for
 # passlib's crypt deprecation (stdlib path; not a product suppression).
+# pytest-gremlins (F34 / mutation.yml): empty coverage pre-scan is advisory
+# (https://github.com/mikelane/pytest-gremlins/issues/113). Also passed via -W in
+# scripts/ci/run_mutation_python.sh so local/CI chunks do not abort.
 filterwarnings = [
   "error",
   "ignore:'crypt' is deprecated and slated for removal in Python 3.13:DeprecationWarning:passlib.utils",
+  "ignore:Coverage collection returned no data:UserWarning",
 ]
 
 [tool.coverage.run]

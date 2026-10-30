@@ -1881,6 +1881,7 @@ _AHL_LINE = re.compile(
     r"^(?P<ahl>[A-Z]{4}\d{2})\s+(?P<cccc>[A-Z]{4})\s+(?P<yygggg>\d{6})\b",
     re.MULTILINE,
 )
+_AHL_BBB_TOKEN = re.compile(r"^(?:AA|CC|RR)[A-X]\b")
 
 
 def _iter_ahl_heading(tac: str) -> list[tuple[int, int, str, str]]:
@@ -1910,7 +1911,24 @@ def _iter_ahl_heading(tac: str) -> list[tuple[int, int, str, str]]:
         start, end = m.start(), m.end()
     code = tac[start:end]
     explanation = f"Abbreviated heading {m.group('ahl')} from {m.group('cccc')} at {m.group('yygggg')}"
-    return [(start, end, code, explanation)]
+    segments: list[tuple[int, int, str, str]] = [(start, end, code, explanation)]
+    # Optional WMO BBB after YYGGgg (CCx / RRx / AAx). Bulletin split consumes the
+    # heading line including BBB, so decode must emit the BBB token explicitly.
+    rest = tac[end:]
+    space = len(rest) - len(rest.lstrip(" \t"))
+    bbb_at = end + space
+    bbb_m = _AHL_BBB_TOKEN.match(tac[bbb_at:])
+    if bbb_m is not None:
+        bbb = bbb_m.group(0)
+        bbb_end = bbb_at + len(bbb)
+        if bbb.startswith("RR"):
+            bbb_explanation = f"Delayed report ({bbb})"
+        elif bbb.startswith("CC"):
+            bbb_explanation = f"Correction ({bbb})"
+        else:
+            bbb_explanation = f"Amendment ({bbb})"
+        segments.append((bbb_at, bbb_end, bbb, bbb_explanation))
+    return segments
 
 
 def _iter_advisory_ahl(tac: str, *, product: str) -> list[tuple[int, int, str, str]]:
