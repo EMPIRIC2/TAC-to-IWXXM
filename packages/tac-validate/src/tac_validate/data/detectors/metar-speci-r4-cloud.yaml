@@ -13,7 +13,8 @@ rules:
       before: RMK
       exclude_ahl_lines: true
       strip_terminator: true
-    select: '^(?:FEW|SCT|BKN|OVC|VV|NSC|NCD|SKC|CLR|[A-Z]{3}\d{3})\S*$'
+    # FEW|SCT|BKN|OVC must not be followed by a letter (avoids ICAO SCTE as SCT+E).
+    select: '^(?:(?:FEW|SCT|BKN|OVC)(?![A-Z])\S*|VV\S+|NSC|NCD|SKC|CLR|[A-Z]{3}\d{3})$'
     ok: '^(?:(?:FEW|SCT|BKN|OVC)(?:\d{3}(?:CB|TCU|///)?|///(?:CB|TCU)?)|VV(?:\d{3}|///)|NSC|NCD|SKC|CLR)$'
     on_fail:
       code: INVALID_CLOUD_TOKEN

@@ -685,7 +685,7 @@ ISSUES: tuple[IssueSpec, ...] = (
     _row(
         "VA_VOLCANO_IDENTITY",
         "info",
-        "VA SIGMET erupting volcano identity (MT/PSN). Informational: noted for operator awareness; does not by itself block conversion. Source: EUR Doc 014 public; Annex 3 paywall companion.",
+        "VA SIGMET erupting volcano identity (name/MT PSN). Informational: noted for operator awareness; does not by itself block conversion. Source: EUR Doc 014 public; Annex 3 paywall companion.",
         product="sigmet",
         tags=("va", "volcano", "sigmet"),
     ),
@@ -713,7 +713,7 @@ ISSUES: tuple[IssueSpec, ...] = (
     _row(
         "MISSING_VA_VOLCANO",
         "error",
-        "VA SIGMET missing volcano identity (MT … PSN). Error: the TAC does not meet a required format or product rule and should be corrected. Source: EUR Doc 014 public; Annex 3 paywall companion.",
+        "VA SIGMET missing volcano identity (name/MT … PSN). Error: the TAC does not meet a required format or product rule and should be corrected. Source: EUR Doc 014 public; Annex 3 paywall companion.",
         product="sigmet",
         tags=("va", "volcano", "sigmet"),
     ),
