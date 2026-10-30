@@ -23,6 +23,7 @@ ENV_PROFILE_DIR = "TAC2IWXXM_PROFILE_DIR"
 _POLICY_BY_EMIT: dict[str, tuple[str, str]] = {
     "annex3": _ANNEX3_POLICIES,
     "iwxxm_us": _ANNEX3_POLICIES,
+    "us_military": _ANNEX3_POLICIES,
     "ca_eccc": _ANNEX3_POLICIES,
     "au_bom": _ANNEX3_POLICIES,
     "nz_caa_met": _ANNEX3_POLICIES,

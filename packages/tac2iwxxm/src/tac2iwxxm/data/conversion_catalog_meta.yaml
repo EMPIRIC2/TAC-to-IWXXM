@@ -93,6 +93,11 @@ profiles:
       India IMD conversion profile for national IWXXM encoding conventions
       applied to supported TAC products.
     source_access: public
+  us_military:
+    summary: >-
+      United States military TAF lint overlay that accepts end-of-forecast TX/TN
+      after change groups; convert uses core IWXXM.
+    source_access: public
   hk_hko:
     summary: >-
       Hong Kong Observatory conversion profile for national IWXXM encoding

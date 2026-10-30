@@ -4,6 +4,7 @@
 schema_version: 1
 profiles:
   iwxxm_us: [METAR, SPECI, TAF, SIGMET, AIRMET, TCA, SWXA, VONA, VAA]
+  us_military: [TAF]
   ca_eccc: [METAR, SPECI, TAF, AIRMET, SIGMET, VAA]
   au_bom: [METAR, SPECI, TAF, VAA, SIGMET, TCA, SWXA]
   nz_caa_met: [METAR, SPECI, TAF, VAA, VONA]
