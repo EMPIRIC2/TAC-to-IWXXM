@@ -1,41 +1,11 @@
 {
   "schema_version": 1,
-  "description": "CONUS VOR/VORTAC and airport reference points for US SIGMET FROM-chain geometry. The original points are from FAA NASR / AirNav navaid publications. Points added on 2026-09-23 cover live NWS convective SIGMET FROM-chains: OurAirports navaids (public domain), plus MMB, CLE, and TRV from published navaid coordinates and MIA from the OurAirports airport list.",
+  "description": "CONUS VOR/VORTAC and airport reference points for US SIGMET FROM-chain geometry. The original points are from FAA NASR / AirNav navaid publications. Points added on 2026-09-23 cover live NWS convective SIGMET FROM-chains: OurAirports navaids (public domain), plus MMB, CLE, and TRV from published navaid coordinates and MIA from the OurAirports airport list. Points added on 2026-10-30 cover additional live convective misses: chart-id aliases absent from OurAirports (PHX\u2192Phoenix/PXR coords, AMA), unique US VORTAC rows when OurAirports is multi-country ambiguous, and common CONUS VORs needed offline under the pytest closed source.",
   "points": {
-    "BZA": {
-      "lat": 32.768108,
-      "lon": -114.602946,
-      "name": "BARD VORTAC"
-    },
-    "EED": {
-      "lat": 34.766004,
-      "lon": -114.47326,
-      "name": "NEEDLES VORTAC"
-    },
-    "TRM": {
-      "lat": 33.627431,
-      "lon": -116.160194,
-      "name": "THERMAL VORTAC"
-    },
-    "FSD": {
-      "lat": 43.582,
-      "lon": -96.7419,
-      "name": "Sioux Falls Regional"
-    },
-    "OBH": {
-      "lat": 42.4708,
-      "lon": -98.6887,
-      "name": "O'Neill Municipal"
-    },
-    "SNY": {
-      "lat": 41.1013,
-      "lon": -102.9852,
-      "name": "Sidney-Richland Municipal"
-    },
-    "ANW": {
-      "lat": 42.5793,
-      "lon": -99.9931,
-      "name": "Ainsworth Regional"
+    "ABI": {
+      "lat": 32.4813,
+      "lon": -99.863503,
+      "name": "Abilene"
     },
     "ABQ": {
       "lat": 35.0438,
@@ -47,10 +17,30 @@
       "lon": -98.368698,
       "name": "Aberdeen"
     },
+    "ACT": {
+      "lat": 31.6623,
+      "lon": -97.268997,
+      "name": "Waco"
+    },
+    "ADM": {
+      "lat": 34.211601,
+      "lon": -97.168297,
+      "name": "Ardmore"
+    },
     "AIR": {
       "lat": 40.016998,
       "lon": -80.817299,
       "name": "Bellaire"
+    },
+    "AMA": {
+      "lat": 35.239547,
+      "lon": -101.831706,
+      "name": "Amarillo VORTAC"
+    },
+    "ANW": {
+      "lat": 42.5793,
+      "lon": -99.9931,
+      "name": "Ainsworth Regional"
     },
     "APE": {
       "lat": 40.1511,
@@ -61,6 +51,26 @@
       "lat": 33.629101,
       "lon": -84.435097,
       "name": "Atlanta"
+    },
+    "AXC": {
+      "lat": 39.737521,
+      "lon": -88.856431,
+      "name": "Decatur"
+    },
+    "BAM": {
+      "lat": 40.569199,
+      "lon": -116.921997,
+      "name": "Battle Mountain"
+    },
+    "BCE": {
+      "lat": 37.689201,
+      "lon": -112.304001,
+      "name": "Bryce Canyon"
+    },
+    "BDF": {
+      "lat": 41.159698,
+      "lon": -89.587898,
+      "name": "Bradford"
     },
     "BIL": {
       "lat": 45.808601,
@@ -82,10 +92,30 @@
       "lon": -108.300003,
       "name": "Boysen Reservoir"
     },
+    "BTY": {
+      "lat": 36.800598,
+      "lon": -116.748001,
+      "name": "Beatty"
+    },
+    "BUM": {
+      "lat": 38.272099,
+      "lon": -94.488197,
+      "name": "Butler"
+    },
+    "BVL": {
+      "lat": 40.726101,
+      "lon": -113.757004,
+      "name": "Bonneville"
+    },
     "BWG": {
       "lat": 36.928699,
       "lon": -86.443398,
       "name": "Bowling Green"
+    },
+    "BZA": {
+      "lat": 32.768108,
+      "lon": -114.602946,
+      "name": "BARD VORTAC"
     },
     "CDS": {
       "lat": 34.369099,
@@ -97,15 +127,40 @@
       "lon": -107.305,
       "name": "Hayden"
     },
+    "CHS": {
+      "lat": 32.894299,
+      "lon": -80.037804,
+      "name": "Charleston"
+    },
+    "CIM": {
+      "lat": 36.491402,
+      "lon": -104.872002,
+      "name": "Cimarron"
+    },
+    "CLE": {
+      "lat": 41.418956,
+      "lon": -81.850071,
+      "name": "CLEVELAND VORTAC"
+    },
     "CME": {
       "lat": 33.337502,
       "lon": -104.621002,
       "name": "Chisum"
     },
+    "COU": {
+      "lat": 38.810799,
+      "lon": -92.2183,
+      "name": "Columbia"
+    },
     "CRG": {
       "lat": 30.3389,
       "lon": -81.509903,
       "name": "Craig"
+    },
+    "CRP": {
+      "lat": 27.903799,
+      "lon": -97.444901,
+      "name": "Corpus Christi"
     },
     "CTY": {
       "lat": 29.599001,
@@ -117,10 +172,20 @@
       "lon": -84.7033,
       "name": "Cincinnati"
     },
+    "DBQ": {
+      "lat": 42.401501,
+      "lon": -90.709099,
+      "name": "Dubuque"
+    },
     "DIK": {
       "lat": 46.860001,
       "lon": -102.774002,
       "name": "Dickinson"
+    },
+    "DLF": {
+      "lat": 29.360901,
+      "lon": -100.772003,
+      "name": "Laughlin"
     },
     "DMN": {
       "lat": 32.2756,
@@ -132,10 +197,30 @@
       "lon": -101.714996,
       "name": "Dupree"
     },
+    "DRK": {
+      "lat": 34.702599,
+      "lon": -112.480003,
+      "name": "Drake"
+    },
+    "DSM": {
+      "lat": 41.437,
+      "lon": -93.648697,
+      "name": "Des Moines"
+    },
+    "DTA": {
+      "lat": 39.302299,
+      "lon": -112.505997,
+      "name": "Delta"
+    },
     "ECG": {
       "lat": 36.257599,
       "lon": -76.175598,
       "name": "Elizabeth City"
+    },
+    "EED": {
+      "lat": 34.766004,
+      "lon": -114.47326,
+      "name": "NEEDLES VORTAC"
     },
     "EKN": {
       "lat": 38.914398,
@@ -147,10 +232,30 @@
       "lon": -106.281998,
       "name": "El Paso"
     },
+    "ELY": {
+      "lat": 39.2981,
+      "lon": -114.848,
+      "name": "Ely"
+    },
     "EYW": {
       "lat": 24.585899,
       "lon": -81.800499,
       "name": "Key West"
+    },
+    "FAM": {
+      "lat": 37.673401,
+      "lon": -90.234001,
+      "name": "Farmington"
+    },
+    "FOD": {
+      "lat": 42.611198,
+      "lon": -94.2948,
+      "name": "Fort Dodge"
+    },
+    "FSD": {
+      "lat": 43.582,
+      "lon": -96.7419,
+      "name": "Sioux Falls Regional"
     },
     "FST": {
       "lat": 30.952101,
@@ -161,6 +266,11 @@
       "lat": 35.6576,
       "lon": -105.136002,
       "name": "Fort Union"
+    },
+    "FWA": {
+      "lat": 40.979099,
+      "lon": -85.188103,
+      "name": "Fort Wayne"
     },
     "GCK": {
       "lat": 37.919102,
@@ -177,20 +287,70 @@
       "lon": -85.153397,
       "name": "Choo Choo"
     },
+    "HEC": {
+      "lat": 34.797001,
+      "lon": -116.462997,
+      "name": "Hector"
+    },
+    "HLC": {
+      "lat": 39.258701,
+      "lon": -100.225998,
+      "name": "Hill City"
+    },
     "HMV": {
       "lat": 36.437099,
       "lon": -82.129601,
       "name": "Holston Mountain"
+    },
+    "IAH": {
+      "lat": 29.9569,
+      "lon": -95.345703,
+      "name": "Humble"
+    },
+    "ICT": {
+      "lat": 37.7453,
+      "lon": -97.583801,
+      "name": "Wichita"
+    },
+    "ILC": {
+      "lat": 38.250198,
+      "lon": -114.393997,
+      "name": "Wilson Creek"
     },
     "ILM": {
       "lat": 34.3517,
       "lon": -77.874397,
       "name": "Wilmington"
     },
+    "INK": {
+      "lat": 31.8748,
+      "lon": -103.244003,
+      "name": "Wink"
+    },
+    "INW": {
+      "lat": 35.0616,
+      "lon": -110.794998,
+      "name": "Winslow"
+    },
+    "IOW": {
+      "lat": 41.519001,
+      "lon": -91.613297,
+      "name": "Iowa City"
+    },
+    "IRK": {
+      "lat": 40.134998,
+      "lon": -92.591698,
+      "name": "Kirksville"
+    },
     "ISN": {
       "lat": 48.2533,
       "lon": -103.750999,
       "name": "Williston"
+    },
+    "JCT": {
+      "lat": 30.598,
+      "lon": -99.817497,
+      "name": "Junction"
     },
     "JNC": {
       "lat": 39.059601,
@@ -202,15 +362,70 @@
       "lon": -102.688004,
       "name": "Lamar"
     },
+    "LAS": {
+      "lat": 36.0797,
+      "lon": -115.160004,
+      "name": "Las Vegas"
+    },
+    "LBB": {
+      "lat": 33.704899,
+      "lon": -101.914001,
+      "name": "Lubbock"
+    },
+    "LBL": {
+      "lat": 37.044399,
+      "lon": -100.971001,
+      "name": "Liberal"
+    },
+    "LCH": {
+      "lat": 30.1415,
+      "lon": -93.105598,
+      "name": "Lake Charles"
+    },
     "LOZ": {
       "lat": 37.0331,
       "lon": -84.1101,
       "name": "London"
     },
+    "LRD": {
+      "lat": 27.478701,
+      "lon": -99.417702,
+      "name": "Laredo"
+    },
     "LWT": {
       "lat": 47.053001,
       "lon": -109.606003,
       "name": "Lewistown"
+    },
+    "MAF": {
+      "lat": 32.0093,
+      "lon": -102.190002,
+      "name": "Midland"
+    },
+    "MCI": {
+      "lat": 39.285301,
+      "lon": -94.737099,
+      "name": "Kansas City"
+    },
+    "MCW": {
+      "lat": 43.0947,
+      "lon": -93.329903,
+      "name": "Mason City"
+    },
+    "MIA": {
+      "lat": 25.796011,
+      "lon": -80.289751,
+      "name": "Miami International Airport"
+    },
+    "MLC": {
+      "lat": 34.849499,
+      "lon": -95.782303,
+      "name": "Mc Alester"
+    },
+    "MMB": {
+      "lat": 36.343733,
+      "lon": -99.880122,
+      "name": "MITBEE VORTAC"
     },
     "MOT": {
       "lat": 48.2603,
@@ -227,15 +442,40 @@
       "lon": -87.491501,
       "name": "Muscle Shoals"
     },
+    "OAL": {
+      "lat": 38.0033,
+      "lon": -117.769997,
+      "name": "Coaldale"
+    },
+    "OBH": {
+      "lat": 42.4708,
+      "lon": -98.6887,
+      "name": "O'Neill Municipal"
+    },
+    "ODF": {
+      "lat": 34.6959,
+      "lon": -83.297699,
+      "name": "Foothills"
+    },
     "OMN": {
       "lat": 29.303301,
       "lon": -81.112701,
       "name": "Ormond Beach"
     },
+    "ONL": {
+      "lat": 42.470501,
+      "lon": -98.686897,
+      "name": "O'Neill"
+    },
     "ORF": {
       "lat": 36.891899,
       "lon": -76.200302,
       "name": "Norfolk"
+    },
+    "OSW": {
+      "lat": 37.157501,
+      "lon": -95.203598,
+      "name": "Oswego"
     },
     "OVR": {
       "lat": 41.167301,
@@ -247,15 +487,35 @@
       "lon": -80.086502,
       "name": "Palm Beach"
     },
+    "PGS": {
+      "lat": 35.624699,
+      "lon": -113.543999,
+      "name": "Peach Springs"
+    },
+    "PHX": {
+      "lat": 33.432999,
+      "lon": -111.970001,
+      "name": "Phoenix VORTAC (chart id PHX; OA PXR)"
+    },
     "PIE": {
       "lat": 27.907801,
       "lon": -82.684303,
       "name": "St Petersburg"
     },
+    "PSX": {
+      "lat": 28.7644,
+      "lon": -96.306198,
+      "name": "Palacios"
+    },
     "PWE": {
       "lat": 40.200401,
       "lon": -96.206299,
       "name": "Pawnee City"
+    },
+    "PXV": {
+      "lat": 37.928299,
+      "lon": -87.762398,
+      "name": "Pocket City"
     },
     "RAP": {
       "lat": 43.976002,
@@ -272,6 +532,11 @@
       "lon": -95.128304,
       "name": "Redwood Falls"
     },
+    "SAT": {
+      "lat": 29.643999,
+      "lon": -98.461304,
+      "name": "San Antonio"
+    },
     "SAV": {
       "lat": 32.146301,
       "lon": -81.199097,
@@ -287,15 +552,45 @@
       "lon": -109.143997,
       "name": "St Johns"
     },
+    "SJT": {
+      "lat": 31.375,
+      "lon": -100.455002,
+      "name": "San Angelo"
+    },
+    "SLC": {
+      "lat": 48.453201,
+      "lon": 19.1159,
+      "name": "Sliac"
+    },
+    "SLN": {
+      "lat": 38.925098,
+      "lon": -97.621399,
+      "name": "Salina"
+    },
+    "SNY": {
+      "lat": 41.1013,
+      "lon": -102.9852,
+      "name": "Sidney-Richland Municipal"
+    },
     "SPA": {
       "lat": 35.033699,
       "lon": -81.927101,
       "name": "Spartanburg"
     },
+    "SPS": {
+      "lat": 33.987301,
+      "lon": -98.593498,
+      "name": "Wichita Falls"
+    },
     "SSO": {
       "lat": 32.269199,
       "lon": -109.263,
       "name": "San Simon"
+    },
+    "STL": {
+      "lat": 38.860699,
+      "lon": -90.482399,
+      "name": "St Louis"
     },
     "TBC": {
       "lat": 36.1213,
@@ -312,6 +607,26 @@
       "lon": -103.598999,
       "name": "Tucumcari"
     },
+    "TCS": {
+      "lat": 33.282501,
+      "lon": -107.280998,
+      "name": "Truth Or Consequences"
+    },
+    "TRM": {
+      "lat": 33.627431,
+      "lon": -116.160194,
+      "name": "THERMAL VORTAC"
+    },
+    "TRV": {
+      "lat": 27.678417,
+      "lon": -80.489722,
+      "name": "TREASURE DME"
+    },
+    "TTH": {
+      "lat": 39.488998,
+      "lon": -87.249001,
+      "name": "Terre Haute"
+    },
     "TUS": {
       "lat": 32.0952,
       "lon": -110.915001,
@@ -321,41 +636,6 @@
       "lat": 34.495098,
       "lon": -102.839996,
       "name": "Texico"
-    },
-    "MMB": {
-      "lat": 36.343733,
-      "lon": -99.880122,
-      "name": "MITBEE VORTAC"
-    },
-    "CLE": {
-      "lat": 41.418956,
-      "lon": -81.850071,
-      "name": "CLEVELAND VORTAC"
-    },
-    "TRV": {
-      "lat": 27.678417,
-      "lon": -80.489722,
-      "name": "TREASURE DME"
-    },
-    "MIA": {
-      "lat": 25.796011,
-      "lon": -80.289751,
-      "name": "Miami International Airport"
-    },
-    "CHS": {
-      "lat": 32.894299,
-      "lon": -80.037804,
-      "name": "Charleston"
-    },
-    "INK": {
-      "lat": 31.8748,
-      "lon": -103.244003,
-      "name": "Wink"
-    },
-    "ODF": {
-      "lat": 34.6959,
-      "lon": -83.297699,
-      "name": "Foothills"
     }
   }
 }

@@ -14,6 +14,29 @@ _WX_HREF = "http://codes.wmo.int/306/4678/{code}"
 _SIG_PHENOM_HREF = "http://codes.wmo.int/49-2/SigWxPhenomena/{code}"
 _AIR_PHENOM_HREF = "http://codes.wmo.int/49-2/AirWxPhenomena/{code}"
 
+# WMO 49-2 SigWxPhenomena local names (IWXXM 2025-2 / 2023-1 rule RDF).
+_SIG_WX_PHENOMENA_CODES = frozenset(
+    {
+        "EMBD_TS",
+        "EMBD_TSGR",
+        "FRQ_TS",
+        "FRQ_TSGR",
+        "HVY_DS",
+        "HVY_SS",
+        "OBSC_TS",
+        "OBSC_TSGR",
+        "RDOACT_CLD",
+        "SEV_ICE",
+        "SEV_ICE_FZRA",
+        "SEV_MTW",
+        "SEV_TURB",
+        "SQL_TS",
+        "SQL_TSGR",
+        "TC",
+        "VA",
+    }
+)
+
 _YUDO_NAME = "DONLON/INTERNATIONAL"
 _YUDO_POS = "12.34 -12.34"
 _YUDO_ELEV_M = "12"
@@ -63,12 +86,37 @@ def _fmt_coord(value: float) -> str:
     return text
 
 
+def _sigmet_phenomenon_href(code: str) -> str:
+    """
+    Build the IWXXM phenomenon ``xlink:href`` for a SIGMET IR code.
+
+    Prefers SigWxPhenomena when the code is in that list. Otherwise uses
+    AirWxPhenomena so national SIGMET TAC that carries AIRMET vocabulary
+    (for example ``OCNL TS``) still emits a resolvable WMO codelist value.
+
+    Parameters
+    ----------
+    code : str
+        IR phenomenon local name (for example ``SEV_MTW`` or ``OCNL_TS``).
+
+    Returns
+    -------
+    str
+        Absolute ``codes.wmo.int`` href for the phenomenon.
+    """
+    token = str(code or "").strip()
+    if token in _SIG_WX_PHENOMENA_CODES:
+        return _SIG_PHENOM_HREF.format(code=token)
+    return _AIR_PHENOM_HREF.format(code=token)
+
+
 __all__ = [
     "_AIR_PHENOM_HREF",
     "_CLOUD_HREF",
     "_CLOUD_TYPE_HREF",
     "_NS",
     "_SIG_PHENOM_HREF",
+    "_SIG_WX_PHENOMENA_CODES",
     "_WMO_MULTI_VA_FCST_TIME_ID",
     "_WMO_MULTI_VA_OBS_TIME_ID",
     "_WX_HREF",
@@ -77,4 +125,5 @@ __all__ = [
     "_YUDO_POS",
     "_fmt_coord",
     "_ns",
+    "_sigmet_phenomenon_href",
 ]
