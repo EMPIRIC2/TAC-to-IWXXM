@@ -47,6 +47,9 @@ IGNORE_GHSA=(
   "GHSA-6j4f-fj2g-mc7p"
   "GHSA-q2hr-2g5m-vwhr"
   "GHSA-qhr7-859c-m2p7"
+  # minimatch globparts DoS (<11.0.1) — newly published 2026-10-30; same
+  # brace-expansion/minimatch waiver class (transitive openapi/jsdom/stryker lines)
+  "GHSA-g3hv-75wg-m249"
   # fast-uri via stryker ajv — dev-only, same waiver class as EV-097 (2026-09-30)
   "GHSA-hrr3-gc8f-f4qj"
   # Newly published transitive ids on the same dev/test lines (2026-10-24):
