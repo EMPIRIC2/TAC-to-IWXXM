@@ -95,8 +95,13 @@ profiles:
     source_access: public
   us_military:
     summary: >-
-      United States military TAF lint overlay that accepts end-of-forecast TX/TN
-      after change groups; convert uses core IWXXM.
+      US military TAF lint: TX/TN after change groups is info; convert uses core
+      IWXXM.
+    source_access: public
+  latam_taf:
+    summary: >-
+      Latin America TAF lint: TX/TN after change groups is info; convert uses
+      core IWXXM.
     source_access: public
   hk_hko:
     summary: >-

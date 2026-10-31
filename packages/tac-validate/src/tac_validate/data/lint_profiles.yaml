@@ -25,8 +25,17 @@ profiles:
     recorded:
       - id: US_MILITARY_END_TX_TN
         note: >-
-          End-of-TAF TX/TN after BECMG/TEMPO/FM/PROB is accepted in Python T3
-          (TX_TN_PRESENT), not via message-token deltas.
+          TX/TN after BECMG/TEMPO/FM/PROB → TX_TN_PRESENT in T3 (not token
+          deltas). Stations: KBIX, KCVS, KGRK, KNID, KNYL, KPOE, KSZL.
+  latam_taf:
+    engine: annex3
+    differs: true
+    products: [TAF]
+    recorded:
+      - id: LATAM_TAF_END_TX_TN
+        note: >-
+          TX/TN after change groups → TX_TN_PRESENT. Stations: SKBO, SEQM,
+          SKBQ, SVMI.
   ca_eccc:
     engine: ca_eccc
     differs: true

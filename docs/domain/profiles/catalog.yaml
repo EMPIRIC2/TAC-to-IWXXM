@@ -3,7 +3,7 @@
 # Human stubs: semantic/*.md · exchange/*.md
 schema_version: 2
 cycle: EV-M1-five-remaining
-updated: "2026-09-09"
+updated: "2026-10-31"
 
 priority_legend:
   P0: "Baseline — implemented or default exchange overlay (F35)"
@@ -115,19 +115,46 @@ profiles:
     implementation:
       package: packages/tac-validate
       validate_profile: us_military
-      cycle: EV-us-military-taf-tx-tn
+      cycle: EV-station-profile-tx-tn
+      policy: StationScopedLintPolicy / UsMilitaryLintPolicy
     products: [TAF]
+    stations: [KBIX, KCVS, KGRK, KNID, KNYL, KPOE, KSZL]
     sources:
       - url: https://www.aviationweather.gov/
         label: Live US military TAF samples (e.g. KBIX)
         access: public
-        proves: End-of-TAF TX/TN after BECMG/TEMPO with QNH####INS
+        proves: TX/TN after BECMG/TEMPO with QNH####INS
     stub: semantic/US_MILITARY.md
     gaps:
-      - Auto-select from station or QNH####INS
+      - Workbench does not auto-pick profile from station ICAO yet
       - FMH / military handbook mining beyond live TAC
     acceptance:
-      cycle: EV-us-military-taf-tx-tn
+      cycle: EV-station-profile-tx-tn
+      status: implemented
+
+  - id: LATAM_TAF
+    kind: semantic
+    priority: P2
+    status: implemented
+    emit_key: latam_taf
+    implementation:
+      package: packages/tac-validate
+      validate_profile: latam_taf
+      cycle: EV-station-profile-tx-tn
+      policy: StationScopedLintPolicy / LatAmTafLintPolicy
+    products: [TAF]
+    stations: [SKBO, SEQM, SKBQ, SVMI]
+    sources:
+      - url: https://www.aviationweather.gov/
+        label: Live LatAm TAF samples (SKBO, SEQM, SKBQ, SVMI)
+        access: public
+        proves: TX/TN after change groups
+    stub: semantic/LATAM_TAF.md
+    gaps:
+      - Workbench does not auto-pick profile from station ICAO yet
+      - National handbook mining beyond live TAC
+    acceptance:
+      cycle: EV-station-profile-tx-tn
       status: implemented
 
   - id: CA_ECCC

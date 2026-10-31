@@ -179,9 +179,14 @@ _DELTA_MAP: dict[str, list[str]] = {
         "Current product slice is METAR, SPECI, SIGMET, AIRMET, TCA, SWXA, and VONA.",
     ],
     "US_MILITARY": [
-        "Accepts end-of-TAF TX/TN after change groups (military bulletin practice).",
-        "Convert stays on the ICAO/WMO IWXXM line (no military XSD).",
+        "TX/TN after change groups is informational (military TAF practice).",
+        "Convert uses the ICAO/WMO IWXXM line (no military XSD).",
         "Does not reuse US_FAA_NWS BECMG rules.",
+    ],
+    "LATAM_TAF": [
+        "TX/TN after change groups is informational for the listed LatAm stations.",
+        "Convert uses the ICAO/WMO IWXXM line.",
+        "Not BR_DECEA (stations are in Colombia, Ecuador, and Venezuela).",
     ],
     "CA_ECCC": [
         "Adds Canadian MANOBS and MANAIR rules on top of the ICAO baseline.",

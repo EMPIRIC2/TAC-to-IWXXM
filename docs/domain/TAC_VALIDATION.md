@@ -102,7 +102,7 @@ App 3 §2.3 (not this table).
 | 11 | TX/TN | O | Max/min T with day-hour; **annex3** requires TX/TN on the base forecast only (before FM/BECMG/TEMPO/PROB) — else `INVALID_TX_TN` |
 | 12 | Change / PROB groups | C | `FM` / `BECMG` / `TEMPO` / `PROB30|40` [TEMPO]; NSW; App 5 §**1.3** shall vs Rec — **≠** SPECI lists |
 
-**Profile note (US military):** Some US military TAFs place TX/TN after change groups (often with `QNH####INS`). Lint profile `us_military` treats that placement as `TX_TN_PRESENT` (info), not `INVALID_TX_TN`. Annex 3 stays strict. [Corpus: product §F20] [Corpus: product §F36]
+**Profile note (TX/TN after change groups):** Under `us_military` (KBIX, KCVS, KGRK, KNID, KNYL, KPOE, KSZL) and `latam_taf` (SKBO, SEQM, SKBQ, SVMI), TX/TN after change groups is `TX_TN_PRESENT` (info), not `INVALID_TX_TN`. Station → profile mapping is `resolve_profile_for_station` on `StationScopedLintPolicy`. Annex 3 stays strict. [Corpus: product §F20] [Corpus: product §F36]
 
 **Shall IWXXM:** App 5 §**1.1.2**.
 

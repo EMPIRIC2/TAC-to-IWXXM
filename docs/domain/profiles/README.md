@@ -92,7 +92,7 @@ Runtime contract:
 |----------|----------|----------|
 | **P0** | `ICAO_2025`, `US_FAA_NWS` | `GLOBAL_AFS` (default) |
 | **P1** | `CA_ECCC`, `AU_BOM`, `NZ_CAA_MET` | — |
-| **P2** | `UK_METOFFICE`, `BR_DECEA`, `KR_KMA`, `JP_JMA`, `IN_IMD`, `HK_HKO` (#920 kickoff; **#1098** / EV-094 deepen → `implemented`) | `APAC_ROBEX`, `EUR_RODEX`, `AFI`, `CAR_SAM` |
+| **P2** | `UK_METOFFICE`, `BR_DECEA`, `KR_KMA`, `JP_JMA`, `IN_IMD`, `HK_HKO`, `US_MILITARY`, `LATAM_TAF` | `APAC_ROBEX`, `EUR_RODEX`, `AFI`, `CAR_SAM` |
 
 ## Open gaps (#913 deepen)
 
