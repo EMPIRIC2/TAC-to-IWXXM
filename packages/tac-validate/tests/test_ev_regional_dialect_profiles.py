@@ -72,3 +72,14 @@ def test_issue_count_preserved_annex3_vs_iwxxm_us() -> None:
     national = lint_with_profile(_PROB_PERIOD, product="TAF", profile="iwxxm_us")
     assert len(annex.issues) == len(national.issues)
     assert sorted(i.code for i in annex.issues) == sorted(i.code for i in national.issues)
+
+
+def test_lint_with_profile_keeps_parse_gate_outside_product_catalog() -> None:
+    empty = lint_with_profile("", product="METAR", profile="annex3")
+    assert any(i.code == "EMPTY_TAC" and i.severity == "error" for i in empty.issues)
+    malformed = lint_with_profile(
+        "QQUS31 KZNY 121200\nMETAR KJFK 121151Z 18008KT 10SM FEW250 22/14 A3012=\n",
+        product="METAR",
+        profile="annex3",
+    )
+    assert any(i.code == "INVALID_AHL" and i.severity == "error" for i in malformed.issues)

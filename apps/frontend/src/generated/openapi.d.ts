@@ -1964,6 +1964,12 @@ export interface components {
             /** Files */
             files?: string[] | null;
             /**
+             * Icao
+             * @description Optional station ICAO; TAF auto-detects when omitted
+             * @default
+             */
+            icao: string;
+            /**
              * Manual Text
              * @description TAC or IWXXM XML to lint
              * @default
@@ -1975,6 +1981,12 @@ export interface components {
              * @default METAR
              */
             product: string;
+            /**
+             * Semantic Profile
+             * @description Semantic / lint profile id (default annex3)
+             * @default annex3
+             */
+            semantic_profile: string;
         };
         /** Body_mass_ingest_api_v1_ingest_mass_post */
         Body_mass_ingest_api_v1_ingest_mass_post: {

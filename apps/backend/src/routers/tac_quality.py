@@ -500,8 +500,11 @@ async def lint_tac(
                 fixes=[],
             )
         )
-    profile = (semantic_profile or PROFILE_ANNEX3).strip() or PROFILE_ANNEX3
-    station = (icao or "").strip() or None
+    # Direct unit calls may leave FastAPI Form defaults unbound.
+    profile_raw = semantic_profile if type(semantic_profile) is str else PROFILE_ANNEX3
+    icao_raw = icao if type(icao) is str else ""
+    profile = (profile_raw or PROFILE_ANNEX3).strip() or PROFILE_ANNEX3
+    station = (icao_raw or "").strip() or None
     try:
         from tac2iwxxm.profile_registry import resolve_semantic_profile
 

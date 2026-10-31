@@ -59,6 +59,9 @@ from src.utilities.tac_parser import extract_airport_code
 from src.utilities.version_migration import migrate_xml
 from tac2iwxxm import BulletinSplitError, iwxxm_filename, parse_ahl
 
+# Monkeypatch seam for unit tests (EV-080 / TD-3b).
+tac_lint_fn = lint_with_profile
+
 logger = logging.getLogger(__name__)
 
 
@@ -1998,7 +2001,7 @@ async def convert_bulletin(
         ok = True
 
         if lint:
-            lint_report = lint_with_profile(
+            lint_report = tac_lint_fn(
                 tac,
                 product=product,
                 profile=profile,
@@ -2837,7 +2840,7 @@ async def convert(
         if request_body is not None and getattr(request_body, "metars", None):
             sample = (request_body.metars[0] or "").strip() if request_body.metars else sample
         if sample:
-            pre_convert_lint_report = lint_with_profile(
+            pre_convert_lint_report = tac_lint_fn(
                 sample,
                 product=product,
                 profile=profile,
