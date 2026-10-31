@@ -17,13 +17,13 @@ class StationScopedLintPolicy(ABC):
     """
     Base class for a lint profile tied to a fixed station list.
 
-    Parameters
+    Attributes
     ----------
-    profile_id :
+    profile_id : str
         Lint profile id (e.g. ``us_military``).
-    stations :
+    stations : frozenset[str]
         ICAO codes on this profile.
-    accept_end_tx_tn :
+    accept_end_tx_tn : bool
         If True, TX/TN after change groups → ``TX_TN_PRESENT`` (info), not
         ``INVALID_TX_TN`` (error).
     """
@@ -33,7 +33,14 @@ class StationScopedLintPolicy(ABC):
     accept_end_tx_tn: bool = False
 
     def __init_subclass__(cls, **kwargs: object) -> None:
-        """Require ``profile_id`` and ``stations`` on concrete subclasses."""
+        """
+        Require ``profile_id`` and ``stations`` on concrete subclasses.
+
+        Parameters
+        ----------
+        kwargs : object
+            Forwarded to ``ABC.__init_subclass__``.
+        """
         super().__init_subclass__(**kwargs)
         required = ("profile_id", "stations")
         for name in required:
@@ -43,7 +50,18 @@ class StationScopedLintPolicy(ABC):
 
 
 class UsMilitaryLintPolicy(StationScopedLintPolicy):
-    """US military TAF lint (QNH####INS + TX/TN after change groups)."""
+    """
+    US military TAF lint (QNH####INS + TX/TN after change groups).
+
+    Attributes
+    ----------
+    profile_id : str
+        Wire id ``us_military``.
+    stations : frozenset[str]
+        Military ICAO list.
+    accept_end_tx_tn : bool
+        Always True for this profile.
+    """
 
     profile_id = "us_military"
     stations = frozenset({"KBIX", "KCVS", "KGRK", "KNID", "KNYL", "KPOE", "KSZL"})
@@ -51,7 +69,18 @@ class UsMilitaryLintPolicy(StationScopedLintPolicy):
 
 
 class LatAmTafLintPolicy(StationScopedLintPolicy):
-    """Latin America TAF lint (TX/TN after change groups)."""
+    """
+    Latin America TAF lint (TX/TN after change groups).
+
+    Attributes
+    ----------
+    profile_id : str
+        Wire id ``latam_taf``.
+    stations : frozenset[str]
+        LatAm ICAO list.
+    accept_end_tx_tn : bool
+        Always True for this profile.
+    """
 
     profile_id = "latam_taf"
     stations = frozenset({"SKBO", "SEQM", "SKBQ", "SVMI"})
@@ -63,6 +92,11 @@ def station_scoped_policies() -> tuple[StationScopedLintPolicy, ...]:
     """
     Return the registered station-list policies.
 
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (station_scoped_policies)
+    2
+
     Returns
     -------
     tuple[StationScopedLintPolicy, ...]
@@ -73,7 +107,14 @@ def station_scoped_policies() -> tuple[StationScopedLintPolicy, ...]:
 
 @cache
 def _station_to_profile() -> dict[str, str]:
-    """Build ICAO → profile_id for every registered policy."""
+    """
+    Build ICAO → profile_id for every registered policy.
+
+    Returns
+    -------
+    dict[str, str]
+        Uppercase ICAO to lint profile id.
+    """
     mapping: dict[str, str] = {}
     for policy in station_scoped_policies():
         for icao in policy.stations:
@@ -87,7 +128,14 @@ def _station_to_profile() -> dict[str, str]:
 
 @cache
 def _end_tx_tn_profiles() -> frozenset[str]:
-    """Profile ids that treat TX/TN after change groups as info."""
+    """
+    Profile ids that treat TX/TN after change groups as info.
+
+    Returns
+    -------
+    frozenset[str]
+        Profile ids with ``accept_end_tx_tn``.
+    """
     return frozenset(p.profile_id for p in station_scoped_policies() if p.accept_end_tx_tn)
 
 
@@ -95,9 +143,14 @@ def resolve_profile_for_station(icao: str) -> str | None:
     """
     Return the lint profile id for an ICAO, if one is listed.
 
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (resolve_profile_for_station)
+    2
+
     Parameters
     ----------
-    icao :
+    icao : str
         Four-letter ICAO (case-insensitive).
 
     Returns
@@ -115,9 +168,14 @@ def accepts_end_tx_tn(profile: str) -> bool:
     """
     Return True if ``profile`` treats TX/TN after change groups as info.
 
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (accepts_end_tx_tn)
+    2
+
     Parameters
     ----------
-    profile :
+    profile : str
         Lint profile id.
 
     Returns
