@@ -37,8 +37,8 @@ _SEGMENT = re.compile(
 _BARE_VOR = re.compile(r"^(?P<vor>[A-Z]{3})$", re.IGNORECASE)
 _FROM_CHAIN = re.compile(
     r"\bFROM\s+(?P<chain>[A-Z0-9/\s-]+?)"
-    r"(?=\s+AREA\b|\s+MOV\b|\s+TOP\b|\s+TOPS\b|\s+STNR\b|\s+NC\b|\s+WKN\b|\s+INTSF\b"
-    r"|\s+MOD\b|\s+BTN\b|\s+CONDS\b|\s+OTLK\b|\s+FRZLVL\.\.\.|=|$)",
+    r"(?=\s+AREA\b|\s+DMSHG\b|\s+LINE\b|\s+MOV\b|\s+TOP\b|\s+TOPS\b|\s+STNR\b|\s+NC\b"
+    r"|\s+WKN\b|\s+INTSF\b|\s+MOD\b|\s+BTN\b|\s+CONDS\b|\s+OTLK\b|\s+FRZLVL\.\.\.|=|$)",
     re.IGNORECASE,
 )
 

@@ -4443,6 +4443,14 @@ wiring unchanged fail-closed.
 - **Pass criteria**: `test_tc_ev081_002_*`
 - **Source**: EV-081 REQ-EV081-002
 
+### TC-BUG-2026-10-31-WST: Live-map residual convective WST convert
+
+- **Level**: T1
+- **Objective**: Stage residual KKCI WST AREA and LINE / DMSHG LINE samples convert
+  (ambiguous OurAirports VOR table fallbacks + FROM-chain stops before LINE/DMSHG)
+- **Pass criteria**: `tests/bugs/test_bug_2026_10_31_wst_convective_sigmet_convert.py`
+- **Source**: EV-us-convective-sigmet-wst; [Corpus: product §F6] [Corpus: adr/ADR-051]
+
 ### TC-EV081-003: US TAF BECMG forbidden
 
 - **Level**: T1

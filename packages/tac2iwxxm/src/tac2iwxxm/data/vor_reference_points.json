@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "description": "CONUS VOR/VORTAC and airport reference points for US SIGMET FROM-chain geometry. The original points are from FAA NASR / AirNav navaid publications. Points added on 2026-09-23 cover live NWS convective SIGMET FROM-chains: OurAirports navaids (public domain), plus MMB, CLE, and TRV from published navaid coordinates and MIA from the OurAirports airport list. Points added on 2026-10-30 cover additional live convective misses: chart-id aliases absent from OurAirports (PHX\u2192Phoenix/PXR coords, AMA), unique US VORTAC rows when OurAirports is multi-country ambiguous, and common CONUS VORs needed offline under the pytest closed source.",
+  "description": "CONUS VOR/VORTAC and airport reference points for US SIGMET FROM-chain geometry. The original points are from FAA NASR / AirNav navaid publications. Points added on 2026-09-23 cover live NWS convective SIGMET FROM-chains: OurAirports navaids (public domain), plus MMB, CLE, and TRV from published navaid coordinates and MIA from the OurAirports airport list. Points added on 2026-10-30 cover additional live convective misses: chart-id aliases absent from OurAirports (PHX\u2192Phoenix/PXR coords, AMA), unique US VORTAC rows when OurAirports is multi-country ambiguous, and common CONUS VORs needed offline under the pytest closed source. Points added on 2026-10-31 cover Stage live-map WST residuals: ambiguous OurAirports multi-country idents (TOU, MTU, PIR, LEV) and offline peers (HQM, HVE, RSK, TUL) under the pytest closed source.",
   "points": {
     "ABI": {
       "lat": 32.4813,
@@ -302,6 +302,16 @@
       "lon": -82.129601,
       "name": "Holston Mountain"
     },
+    "HQM": {
+      "lat": 46.946999,
+      "lon": -124.149002,
+      "name": "Hoquiam VORTAC"
+    },
+    "HVE": {
+      "lat": 38.416801,
+      "lon": -110.699997,
+      "name": "Hanksville VORTAC"
+    },
     "IAH": {
       "lat": 29.9569,
       "lon": -95.345703,
@@ -382,6 +392,11 @@
       "lon": -93.105598,
       "name": "Lake Charles"
     },
+    "LEV": {
+      "lat": 29.1752,
+      "lon": -90.103996,
+      "name": "Leeville VORTAC"
+    },
     "LOZ": {
       "lat": 37.0331,
       "lon": -84.1101,
@@ -441,6 +456,11 @@
       "lat": 34.706902,
       "lon": -87.491501,
       "name": "Muscle Shoals"
+    },
+    "MTU": {
+      "lat": 40.1492,
+      "lon": -110.127998,
+      "name": "Myton VORTAC"
     },
     "OAL": {
       "lat": 38.0033,
@@ -502,6 +522,11 @@
       "lon": -82.684303,
       "name": "St Petersburg"
     },
+    "PIR": {
+      "lat": 44.394501,
+      "lon": -100.163002,
+      "name": "Pierre VORTAC"
+    },
     "PSX": {
       "lat": 28.7644,
       "lon": -96.306198,
@@ -526,6 +551,11 @@
       "lat": 40.2878,
       "lon": -84.043098,
       "name": "Rosewood"
+    },
+    "RSK": {
+      "lat": 36.748402,
+      "lon": -108.098999,
+      "name": "Rattlesnake VORTAC"
     },
     "RWF": {
       "lat": 44.467201,
@@ -612,6 +642,11 @@
       "lon": -107.280998,
       "name": "Truth Or Consequences"
     },
+    "TOU": {
+      "lat": 48.2999,
+      "lon": -124.626999,
+      "name": "Tatoosh VORTAC"
+    },
     "TRM": {
       "lat": 33.627431,
       "lon": -116.160194,
@@ -626,6 +661,11 @@
       "lat": 39.488998,
       "lon": -87.249001,
       "name": "Terre Haute"
+    },
+    "TUL": {
+      "lat": 36.196301,
+      "lon": -95.788101,
+      "name": "Tulsa VORTAC"
     },
     "TUS": {
       "lat": 32.0952,

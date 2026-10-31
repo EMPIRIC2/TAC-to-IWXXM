@@ -3094,6 +3094,13 @@
 - **Out of scope**: A live map; in-app profile authoring; folding these formats into the four existing profiles; vendoring partner bulletins; pull request #1269; AMHS; promoting `stage` to `main`.
 - **Corpus**: [Corpus: product §F6] [Corpus: product §F7] [Corpus: domain-profiles] [Corpus: adr/ADR-036]
 
+### F6 deepen (EV-us-convective-sigmet-wst — live-map WST convert residuals)
+
+- **Status note**: F6 remains **Implemented**. No new feature id. Clears the remaining Stage live-map quality fails for KKCI national convective SIGMET (WST).
+- **What it does**: Bundled VOR table gains US fallbacks for ambiguous OurAirports idents used on live WST FROM-chains (TOU, MTU, PIR, LEV, and offline peers). The FROM-chain parser stops before NWS `LINE` / `DMSHG` hazard lead-ins so LINE TS bulletins convert. HTTP `product=sigmet` is unchanged.
+- **Out of scope**: Soft lint noise; WAFS/QVACI; LINE width corridor geometry beyond convert success; promoting `stage` to `main`.
+- **Corpus**: [Corpus: product §F6] [Corpus: product §F37] [Corpus: adr/ADR-051] [Corpus: tests]
+
 ### F6 deepen (EV-1266 — operational TAC profile coverage delta / #1266)
 
 - **Status note**: F6 remains **Implemented**. Documentation only. No new feature id. No converter change.
