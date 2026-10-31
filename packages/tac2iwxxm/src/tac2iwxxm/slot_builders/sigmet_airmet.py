@@ -1336,7 +1336,14 @@ def _parse_convective_sigmet(
         if fl_m is not None:  # pragma: no branch — same regex as elif guard
             ir["top_fl"] = int(fl_m.group("fl"))
             ir["top_qualifier"] = "TO"
-    vor_geometry = parse_vor_reference_geometry(f"FROM {body.split('AREA', 1)[0]}")
+    # Isolate the FROM chain before AREA / LINE / DMSHG hazard lead-ins (NWS WST).
+    geom_src = re.split(
+        r"\b(?:AREA|DMSHG\s+LINE|LINE)\b",
+        body,
+        maxsplit=1,
+        flags=re.IGNORECASE,
+    )[0]
+    vor_geometry = parse_vor_reference_geometry(f"FROM {geom_src}")
     if vor_geometry is not None:
         ir["geometry"] = vor_geometry
     return ir
