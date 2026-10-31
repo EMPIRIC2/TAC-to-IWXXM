@@ -74,6 +74,7 @@ def test_classify_probability_group_edges() -> None:
     assert classify_probability_group(["PROB40", "TEMPO", "4000"], 0) is (ProbGroupKind.INVALID)
     assert classify_probability_group(["PROB30", "0108/0112", "1SM", "BR"], 0) is ProbGroupKind.PERIOD_WITHOUT_TEMPO
     assert classify_probability_group(["PROB30", "INTER", "3106/3112", "9000"], 0) is ProbGroupKind.INTER
+    assert classify_probability_group(["PROB30", "INTER", "9000"], 0) is ProbGroupKind.INVALID
 
 
 def test_probability_group_valid_compat() -> None:
