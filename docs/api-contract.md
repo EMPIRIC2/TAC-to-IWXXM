@@ -410,6 +410,8 @@ POST /api/v1/lint-tac
 |-------|----------|-------------|
 | `manual_text` or `files` | yes | TAC text |
 | `product` | no | Hint when known; improves rule selection |
+| `semantic_profile` | no | Semantic / lint profile id (default `annex3` / `ICAO_2025`) |
+| `icao` | no | Optional station ICAO; TAF auto-detects from TAC when omitted. When the caller profile is default annex3/ICAO and the station maps to a national leaf, that leaf is preferred; an explicit national profile wins. |
 
 **Response** (HTTP pydantic map of msgspec package issues; Q9=C):
 

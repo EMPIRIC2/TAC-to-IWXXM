@@ -66,3 +66,11 @@ Composes with the ADR-045 header. Does not add an HTTP field or turn MatchPort o
 3. A Schematron issue `code` is the pattern id when the engine has one. XSD, well-formed, and `SCHEMATRON_SKIPPED` codes stay. A failure with no pattern id stays `SCHEMATRON_ASSERT` and is not dropped. Empty select still lists every Schematron failure; the code text on a named row is the pattern id.
 4. Convert-time validation passes the same output policy id as `POST /api/v1/validate`.
 
+## Lint profile inherits (2026-10-31, EV-regional-dialect-profiles)
+
+Two-layer reuse only (no mixins):
+
+1. **Lint profile DAG** — `lint_profiles.yaml` may set a single `inherits` parent. Products may narrow; `stations` / `accept_end_tx_tn` stay on the leaf. Resolved specs drive engines and station maps.
+2. **Policy `extends`** — unchanged ADR-046 policy documents. Profile resolve walks the inherit chain and binds the first TAC quality / IWXXM output policy id found (child wins). Shared helper `lint_with_profile` runs lint then `apply_policy_to_report`.
+3. **HTTP / ICAO** — `/lint-tac` and convert pre-lint share that helper. When the caller profile is default `annex3` / `ICAO_2025` and the station maps to a national leaf, prefer the station profile; an explicit national profile wins.
+

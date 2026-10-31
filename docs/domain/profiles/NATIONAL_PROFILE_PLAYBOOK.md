@@ -41,6 +41,21 @@ Required fields: `id`, `kind: semantic`, `priority`, `status`, `products`, `sour
 
 Human stub: `semantic/<ID>.md` from [`_template/semantic-profile.md`](_template/semantic-profile.md).
 
+### Lint catalog + product matrix (EV-regional-dialect-profiles)
+
+Edit **once** in [`packages/tac-validate/.../lint_profiles.yaml`](../../../packages/tac-validate/src/tac_validate/data/lint_profiles.yaml):
+
+| Field | Role |
+|-------|------|
+| `inherits` | Single-parent DAG (no mixins). Child may narrow `products`. |
+| `stations` / `accept_end_tx_tn` | Leaf-only station dialect flags |
+| `recorded` | Durable notes without severity remaps |
+| `differs` | True when national lint diverges from annex3 |
+
+CI (`test_profile_product_matrix.py`) asserts lint products ⊆ convert allowlist for lintable products. Policy severity remaps stay in ADR-046 policy YAML (`extends`), not per-country Python subclasses.
+
+Shared runtime: `lint_with_profile` (convert pre-lint + `POST /lint-tac`).
+
 ---
 
 ## 1a. TAC template amendments

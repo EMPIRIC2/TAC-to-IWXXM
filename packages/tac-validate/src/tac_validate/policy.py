@@ -724,9 +724,11 @@ def apply_policy_to_report(
         msg = f"unknown TAC quality policy {policy_id!r}"
         raise PolicyError(msg)
     resolved = resolve_policy(doc, policies=catalog, activate=(doc.lifecycle == "activated"))
+    selectable = _default_codes_for_product(resolved.product) | resolved.preview_codes
     kept: list[Issue] = []
     for issue in report.issues:
-        if issue.code not in resolved.enabled_codes:
+        # Parse-gate / AHL codes outside the product catalog always pass.
+        if issue.code not in resolved.enabled_codes and issue.code in selectable:
             continue
         severity = resolved.severity_overrides.get(issue.code, issue.severity)
         if severity == issue.severity:

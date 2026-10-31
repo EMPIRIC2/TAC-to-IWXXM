@@ -1,10 +1,13 @@
 # UK_METOFFICE — UK Met Office / CAA thin overlay (P2)
 
-> **Profile id**: `UK_METOFFICE` · **Kind**: semantic · **Priority**: P2 · **Status**: implemented (EV-094 deepen / [#1098](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1098); prior EV-089 / #920 closed)  
-> **Catalog row**: [`catalog.yaml`](../catalog.yaml) · **Path**: thin · **ADR**: [ADR-036](../../../adr/ADR-036-semantic-vs-exchange-profiles.md)
+> **Profile id**: `UK_METOFFICE` · **Kind**: semantic · **Priority**: P2 · **Status**: implemented (EV-094 deepen / [#1098](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1098); EV-regional-dialect-profiles recorded)  
+> **Catalog row**: [`catalog.yaml`](../catalog.yaml) · **Path**: thin · **ADR**: [ADR-036](../../../adr/ADR-036-semantic-vs-exchange-profiles.md) · [ADR-046](../../../adr/ADR-046-validation-policy-layers.md)
 
 UK national semantic overlay extending `ICAO_2025`: CAP 746 aerodrome MET conventions for
 METAR/SPECI/TAF. Core IWXXM only; no published UK extension XSD.
+
+**Inheritance**: `inherits: annex3` in `lint_profiles.yaml`. VV-omit dialect is
+`recorded` only (no severity softens this cycle — civil ICAO stays strict).
 
 ## Owns (target)
 
@@ -13,7 +16,7 @@ METAR/SPECI/TAF. Core IWXXM only; no published UK extension XSD.
 | TAC parse / normalize | ICAO baseline; CAP 746 deltas via fixtures (± empty override list) |
 | IWXXM encode | **Core WMO only** |
 | Products | METAR, SPECI, TAF |
-| Overrides | **Empty** (civil ICAO; military colour OOS — D-EV094-uk-mil) |
+| Overrides | **Empty severity remaps** (civil ICAO; military colour OOS — D-EV094-uk-mil); VV omit noted under `recorded` |
 
 ## Standards hierarchy (L0–L6)
 

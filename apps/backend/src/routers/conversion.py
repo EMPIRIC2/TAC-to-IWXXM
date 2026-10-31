@@ -21,9 +21,8 @@ from tac2iwxxm.heading_paste import HeadingPasteError, http_status_for_heading_e
 from tac2iwxxm.profile_registry import supported_report_variants_for_profile
 from tac2iwxxm.profile_resolve import resolve_validation_policies
 from tac2iwxxm.profiles.ca_eccc import CA_IWXXM_VERSION
-from tac_validate import lint as tac_lint_fn
+from tac_validate.api import lint_with_profile
 from tac_validate.models import LintReport
-from tac_validate.profiles import effective_lint_profile
 
 from src import api as api_surface
 from src.schemas.conversion import (
@@ -59,6 +58,9 @@ from src.utilities.security import verify_optional_supabase_token
 from src.utilities.tac_parser import extract_airport_code
 from src.utilities.version_migration import migrate_xml
 from tac2iwxxm import BulletinSplitError, iwxxm_filename, parse_ahl
+
+# Monkeypatch seam for unit tests (EV-080 / TD-3b).
+tac_lint_fn = lint_with_profile
 
 logger = logging.getLogger(__name__)
 
@@ -2002,7 +2004,7 @@ async def convert_bulletin(
             lint_report = tac_lint_fn(
                 tac,
                 product=product,
-                profile=effective_lint_profile(profile, product),
+                profile=profile,
             )
             issues.extend(
                 LintIssueModel(
@@ -2841,7 +2843,7 @@ async def convert(
             pre_convert_lint_report = tac_lint_fn(
                 sample,
                 product=product,
-                profile=effective_lint_profile(profile, product),
+                profile=profile,
             )
 
     validation_level = api_surface.normalize_validation_level(validation_level)

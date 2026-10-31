@@ -18,6 +18,7 @@ from tac_validate.models import Issue, LintReport
 
 _CATALOG_PATH = Path(__file__).resolve().parent / "data" / "lint_profiles.yaml"
 _TOKEN_RE = re.compile(r"'([^']+)'")
+MAX_INHERIT_DEPTH = 8
 
 
 @dataclass(frozen=True, slots=True)
@@ -62,6 +63,12 @@ class LintProfileSpec:
         Suppressions applied after the engine.
     recorded : tuple[str, ...]
         Difference ids that are noted and not yet suppressions.
+    inherits : str or None
+        Optional parent profile id (single-parent DAG).
+    stations : frozenset[str]
+        ICAO list for station-scoped resolve (not inherited).
+    accept_end_tx_tn : bool
+        When True, TX/TN after change groups is informational.
     """
 
     profile_id: str
@@ -70,6 +77,9 @@ class LintProfileSpec:
     differs: bool
     deltas: tuple[LintDelta, ...]
     recorded: tuple[str, ...]
+    inherits: str | None = None
+    stations: frozenset[str] = frozenset()
+    accept_end_tx_tn: bool = False
 
 
 def _mapping(value: object, *, field: str) -> dict[str, object]:
@@ -246,6 +256,19 @@ def _specs_from_document(document_raw: object) -> dict[str, LintProfileSpec]:
         if not isinstance(differs, bool):
             msg = f"lint profile {profile_id} differs must be a boolean"
             raise ValueError(msg)
+        inherits_raw = body.get("inherits")
+        inherits: str | None = None
+        if inherits_raw is not None:
+            if not isinstance(inherits_raw, str) or not inherits_raw.strip():
+                msg = f"lint profile {profile_id} inherits must be a string"
+                raise ValueError(msg)
+            inherits = inherits_raw.strip().lower()
+        stations_raw = body.get("stations", [])
+        stations = frozenset(item.upper() for item in _string_list(stations_raw, field="stations"))
+        accept_end = body.get("accept_end_tx_tn", False)
+        if not isinstance(accept_end, bool):
+            msg = f"lint profile {profile_id} accept_end_tx_tn must be a boolean"
+            raise ValueError(msg)
         loaded[profile_id] = LintProfileSpec(
             profile_id=profile_id,
             engine=_required_str(body, "engine"),
@@ -253,8 +276,41 @@ def _specs_from_document(document_raw: object) -> dict[str, LintProfileSpec]:
             differs=differs,
             deltas=deltas,
             recorded=recorded,
+            inherits=inherits,
+            stations=stations,
+            accept_end_tx_tn=accept_end,
         )
+    _validate_inherits(loaded)
     return loaded
+
+
+def _validate_inherits(rows: dict[str, LintProfileSpec]) -> None:
+    """
+    Fail closed on unknown parents, cycles, and depth.
+
+    Parameters
+    ----------
+    rows : dict[str, LintProfileSpec]
+        Loaded catalog rows.
+    """
+    for profile_id, spec in rows.items():
+        if spec.inherits is None:
+            continue
+        if spec.inherits not in rows:
+            msg = f"lint profile {profile_id} inherits unknown parent {spec.inherits!r}"
+            raise ValueError(msg)
+        seen: list[str] = []
+        current: str | None = profile_id
+        while current is not None:
+            if current in seen:
+                msg = f"lint profile inherit cycle involving {profile_id!r}"
+                raise ValueError(msg)
+            seen.append(current)
+            if len(seen) > MAX_INHERIT_DEPTH:
+                msg = f"lint profile inherit depth exceeds {MAX_INHERIT_DEPTH} for {profile_id!r}"
+                raise ValueError(msg)
+            parent = rows[current].inherits
+            current = parent
 
 
 @cache
@@ -295,6 +351,109 @@ def lint_profile_spec(profile: str) -> LintProfileSpec | None:
     2
     """
     return load_lint_profiles().get(profile.strip().lower())
+
+
+def profile_inherit_chain(profile_id: str) -> tuple[str, ...]:
+    """
+    Return parent→…→leaf ids for ``profile_id`` (root first).
+
+    Parameters
+    ----------
+    profile_id : str
+        Leaf profile id.
+
+    Returns
+    -------
+    tuple[str, ...]
+        Inherit chain from root to leaf.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (profile_inherit_chain)
+    2
+    """
+    rows = load_lint_profiles()
+    leaf = profile_id.strip().lower()
+    if leaf not in rows:
+        return (leaf,)
+    chain: list[str] = []
+    current: str | None = leaf
+    while current is not None:
+        chain.append(current)
+        current = rows[current].inherits
+    chain.reverse()
+    return tuple(chain)
+
+
+@cache
+def resolved_lint_profile(profile_id: str) -> LintProfileSpec | None:
+    """
+    Return ``profile_id`` with parent deltas/recorded merged (child wins on id).
+
+    Stations and ``accept_end_tx_tn`` stay on the leaf only.
+
+    Parameters
+    ----------
+    profile_id : str
+        Leaf profile id.
+
+    Returns
+    -------
+    LintProfileSpec | None
+        Merged row, or ``None`` when absent.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (resolved_lint_profile)
+    2
+    """
+    rows = load_lint_profiles()
+    leaf = profile_id.strip().lower()
+    spec = rows.get(leaf)
+    if spec is None:
+        return None
+    chain = profile_inherit_chain(leaf)
+    deltas: list[LintDelta] = []
+    recorded: list[str] = []
+    seen_delta: set[str] = set()
+    seen_recorded: set[str] = set()
+    differs = False
+    for pid in chain:
+        row = rows[pid]
+        differs = differs or row.differs
+        for delta in row.deltas:
+            if delta.rule_id in seen_delta:
+                deltas = [item for item in deltas if item.rule_id != delta.rule_id]
+            seen_delta.add(delta.rule_id)
+            deltas.append(delta)
+        for rid in row.recorded:
+            if rid in seen_recorded:
+                recorded = [item for item in recorded if item != rid]
+            seen_recorded.add(rid)
+            recorded.append(rid)
+    return LintProfileSpec(
+        profile_id=leaf,
+        engine=spec.engine,
+        products=spec.products,
+        differs=differs,
+        deltas=tuple(deltas),
+        recorded=tuple(recorded),
+        inherits=spec.inherits,
+        stations=spec.stations,
+        accept_end_tx_tn=spec.accept_end_tx_tn,
+    )
+
+
+__all__ = [
+    "MAX_INHERIT_DEPTH",
+    "LintDelta",
+    "LintProfileSpec",
+    "apply_profile_deltas",
+    "lint_profile_spec",
+    "load_lint_profiles",
+    "profile_inherit_chain",
+    "resolved_lint_profile",
+]
 
 
 def _suppressed(issue: Issue, spec: LintProfileSpec, product: str) -> bool:
@@ -350,7 +509,7 @@ def apply_profile_deltas(report: LintReport, *, profile: str, product: str) -> L
     >>> 1 + 1  # docstring smoke (apply_profile_deltas)
     2
     """
-    spec = lint_profile_spec(profile)
+    spec = resolved_lint_profile(profile)
     issues = list(report.issues)
     if spec is not None and spec.deltas:
         issues = [issue for issue in issues if not _suppressed(issue, spec, product.upper())]

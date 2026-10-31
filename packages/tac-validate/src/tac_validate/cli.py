@@ -7,10 +7,10 @@ import sys
 from collections.abc import Sequence
 from pathlib import Path
 
-from tac_validate.api import lint
+from tac_validate.api import lint_with_profile
 from tac_validate.codec import json_encoder
 from tac_validate.overlay_check import check_tac_policy_overlay_dir
-from tac_validate.policy import PolicyError, apply_policy_to_report
+from tac_validate.policy import PolicyError
 from tac_validate.products import PRODUCTS
 from tac_validate.profiles import SUPPORTED_PROFILES
 
@@ -159,13 +159,16 @@ def main(argv: Sequence[str] | None = None) -> int:
         print(f"error: {exc}", file=sys.stderr)
         return 2
 
-    report = lint(text, product=args.product, profile=lint_profile)
-    if policy_id:
-        try:
-            report = apply_policy_to_report(report, policy_id, profile=lint_profile)
-        except PolicyError as exc:
-            print(f"error: {exc}", file=sys.stderr)
-            return 2
+    try:
+        report = lint_with_profile(
+            text,
+            product=args.product,
+            profile=lint_profile,
+            tac_policy=policy_id or None,
+        )
+    except PolicyError as exc:
+        print(f"error: {exc}", file=sys.stderr)
+        return 2
     if args.json:
         sys.stdout.write(json_encoder.encode(report).decode("utf-8"))
         sys.stdout.write("\n")

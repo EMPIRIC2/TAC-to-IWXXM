@@ -12,12 +12,14 @@ from tac_validate.lint_profile_catalog import (
     _string_list,
     apply_profile_deltas,
     load_lint_profiles,
+    profile_inherit_chain,
+    resolved_lint_profile,
 )
 from tac_validate.models import Issue, LintReport
 
 _NZ_AUTO = "METAR NZWN 231800Z AUTO 05003KT 9999 FEW010/// 06/02 Q1030="
 _BASIC = "METAR YSSY 231800Z 18008KT 9999 FEW040 22/18 Q1012="
-_SAME_AS_ANNEX3 = ("au_bom", "uk_metoffice", "br_decea", "kr_kma", "jp_jma", "hk_hko")
+_SAME_AS_ANNEX3 = ("br_decea", "kr_kma", "jp_jma", "hk_hko")
 
 
 def test_catalog_records_every_thin_profile() -> None:
@@ -28,7 +30,11 @@ def test_catalog_records_every_thin_profile() -> None:
         assert spec.differs is False
         assert spec.deltas == ()
     assert rows["nz_caa_met"].differs is True
+    assert rows["au_bom"].differs is True
+    assert rows["uk_metoffice"].differs is True
     assert rows["iwxxm_us"].recorded == ("US_CONVECTIVE_SIGMET_SHAPE",)
+    assert rows["us_military"].inherits == "iwxxm_us"
+    assert rows["us_military"].accept_end_tx_tn is True
 
 
 def test_new_zealand_unobserved_cloud_type_is_accepted_under_both_profiles() -> None:
@@ -135,7 +141,7 @@ def test_suppression_skips_other_products_and_codes() -> None:
     assert unknown.issues == [cloud]
 
 
-def test_catalog_rows_reject_malformed_nodes() -> None:
+def test_catalog_rows_reject_malformed_nodes(monkeypatch: pytest.MonkeyPatch) -> None:
     with pytest.raises(ValueError, match="mapping"):
         _mapping(["nope"], field="catalog")
     with pytest.raises(ValueError, match="string"):
@@ -160,3 +166,137 @@ def test_catalog_rows_reject_malformed_nodes() -> None:
                 }
             }
         )
+    with pytest.raises(ValueError, match="inherits must be a string"):
+        _specs_from_document(
+            {
+                "profiles": {
+                    "sample": {
+                        "engine": "annex3",
+                        "differs": False,
+                        "products": ["METAR"],
+                        "inherits": 1,
+                    }
+                }
+            }
+        )
+    with pytest.raises(ValueError, match="accept_end_tx_tn must be a boolean"):
+        _specs_from_document(
+            {
+                "profiles": {
+                    "sample": {
+                        "engine": "annex3",
+                        "differs": False,
+                        "products": ["METAR"],
+                        "accept_end_tx_tn": "yes",
+                    }
+                }
+            }
+        )
+    with pytest.raises(ValueError, match="unknown parent"):
+        _specs_from_document(
+            {
+                "profiles": {
+                    "sample": {
+                        "engine": "annex3",
+                        "differs": False,
+                        "products": ["METAR"],
+                        "inherits": "missing_parent",
+                    }
+                }
+            }
+        )
+    with pytest.raises(ValueError, match="inherit cycle"):
+        _specs_from_document(
+            {
+                "profiles": {
+                    "a": {
+                        "engine": "annex3",
+                        "differs": False,
+                        "products": ["METAR"],
+                        "inherits": "b",
+                    },
+                    "b": {
+                        "engine": "annex3",
+                        "differs": False,
+                        "products": ["METAR"],
+                        "inherits": "a",
+                    },
+                }
+            }
+        )
+    import tac_validate.lint_profile_catalog as catalog
+
+    monkeypatch.setattr(catalog, "MAX_INHERIT_DEPTH", 1)
+    with pytest.raises(ValueError, match="inherit depth exceeds"):
+        _specs_from_document(
+            {
+                "profiles": {
+                    "root": {
+                        "engine": "annex3",
+                        "differs": False,
+                        "products": ["METAR"],
+                    },
+                    "mid": {
+                        "engine": "annex3",
+                        "differs": False,
+                        "products": ["METAR"],
+                        "inherits": "root",
+                    },
+                    "leaf": {
+                        "engine": "annex3",
+                        "differs": False,
+                        "products": ["METAR"],
+                        "inherits": "mid",
+                    },
+                }
+            }
+        )
+
+
+def test_inherit_chain_and_resolved_overrides(monkeypatch: pytest.MonkeyPatch) -> None:
+    assert profile_inherit_chain("not_in_catalog") == ("not_in_catalog",)
+    assert resolved_lint_profile("not_in_catalog") is None
+
+    delta = {
+        "id": "R1",
+        "products": ["METAR"],
+        "suppress_codes": ["INVALID_CLOUD_TOKEN"],
+        "token_pattern": "x",
+    }
+    child_delta = {
+        "id": "R1",
+        "products": ["METAR"],
+        "suppress_codes": ["INVALID_CLOUD_TOKEN"],
+        "token_pattern": "child",
+    }
+    rows = _specs_from_document(
+        {
+            "profiles": {
+                "root": {
+                    "engine": "annex3",
+                    "differs": False,
+                    "products": ["METAR"],
+                    "deltas": [delta],
+                    "recorded": [{"id": "NOTE"}],
+                },
+                "child": {
+                    "engine": "annex3",
+                    "differs": True,
+                    "products": ["METAR"],
+                    "inherits": "root",
+                    "deltas": [child_delta],
+                    "recorded": [{"id": "NOTE"}],
+                },
+            }
+        }
+    )
+    monkeypatch.setattr(
+        "tac_validate.lint_profile_catalog.load_lint_profiles",
+        lambda: rows,
+    )
+    resolved = resolved_lint_profile("child")
+    assert resolved is not None
+    assert resolved.differs is True
+    assert len(resolved.deltas) == 1
+    assert resolved.deltas[0].token_pattern.pattern == "child"
+    assert resolved.recorded == ("NOTE",)

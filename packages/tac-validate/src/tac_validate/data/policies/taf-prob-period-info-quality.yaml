@@ -1,0 +1,16 @@
+# National TAF PROB-period acceptance (US / CA / UK bind).
+# PROB+period without TEMPO is dialect info, not a soft warning.
+# extends annex3-taf-quality so all other codes stay enabled.
+# [Corpus: product §F20] [Corpus: adr/ADR-046]
+schema_version: 1
+id: taf-prob-period-info-quality
+lifecycle: activated
+product: taf
+extends: [annex3-taf-quality]
+select: []
+ignore: []
+severity:
+  PROB_PERIOD_WITHOUT_TEMPO: info
+preview: []
+detectors:
+  - taf-core
