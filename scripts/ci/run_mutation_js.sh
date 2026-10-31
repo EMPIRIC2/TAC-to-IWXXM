@@ -28,6 +28,10 @@ esac
 LOG_FILE="${REPORT_DIR}/${TARGET}.log"
 echo "mutation_js target=${TARGET} cwd=${CWD} timeout_sec=${TIMEOUT_SEC}"
 
+# Abort leftover sandboxes make vitest pick up .stryker-tmp/** and blow past
+# dryRunTimeoutMinutes (5). Always start from a clean sandbox tree.
+rm -rf "${CWD}/.stryker-tmp"
+
 TIMEOUT_BIN=""
 if [[ "${TIMEOUT_SEC}" != "0" ]]; then
   if command -v timeout >/dev/null 2>&1; then
@@ -51,6 +55,9 @@ else
   rc=${PIPESTATUS[0]}
 fi
 set -e
+
+# Always scrub sandboxes after a run (incl. failures / timeouts).
+rm -rf "${CWD}/.stryker-tmp"
 
 # Copy reports if present
 if [[ -d "${CWD}/reports/mutation" ]]; then

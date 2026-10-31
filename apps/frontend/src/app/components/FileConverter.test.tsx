@@ -599,7 +599,8 @@ describe('FileConverter Component', () => {
         },
       ],
     });
-    localStorage.clear();
+    // Stryker / filtered vitest may omit jsdom localStorage (setup polyfills it).
+    globalThis.localStorage?.clear?.();
     mockSignOutWithScope.mockResolvedValue(true);
     mockPersistSession.mockResolvedValue(null);
     mockIngestCollect.mockImplementation(() => {
@@ -3975,7 +3976,7 @@ describe('FileConverter Component', () => {
     afterEach(() => {
       cleanup();
       vi.clearAllMocks();
-      localStorage.clear();
+      globalThis.localStorage?.clear?.();
     });
 
     /**

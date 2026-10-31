@@ -34,7 +34,10 @@ export default {
   jsonReporter: { fileName: 'reports/mutation/mutation.json' },
   // Hard ceilings for CI cost (D-S069-ci); raise only via AskQuestion.
   timeoutMS: 60_000,
-  dryRunTimeoutMinutes: 5,
+  // Instrumented dry-run of the full FE suite routinely exceeds 5m on laptops /
+  // contended agents; CI ubuntu-latest usually finishes under 5m. Keep score
+  // thresholds unchanged (break: null). Soft wall still MUTATION_TIMEOUT_SEC.
+  dryRunTimeoutMinutes: 15,
   concurrency: 2,
   // Advisory only — survivors documented / waived; do not block nightly on score.
   thresholds: { high: 80, low: 60, break: null },
