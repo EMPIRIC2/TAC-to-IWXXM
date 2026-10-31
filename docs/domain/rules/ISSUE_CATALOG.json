@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "source": "generated from tac_validate.issue_registry + PROVENANCE_MAP",
-  "generated": "2026-10-30",
+  "generated": "2026-10-31",
   "issues": [
     {
       "code": "AMD_PRESENT",
@@ -478,7 +478,7 @@
       ],
       "source_id": "icao-annex-3",
       "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
-      "source_attribution": "icao-annex-3 - access:paywall - https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 - App 5 / Table A5-1"
+      "source_attribution": "icao-annex-3 - access:paywall - https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 - App 5 / Table A5-1; true defects only (BECMG/FM, bad percent)"
     },
     {
       "code": "INVALID_REMARK",
@@ -1171,6 +1171,20 @@
       "source_id": "icao-eur-doc-014",
       "source_url": "https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf",
       "source_attribution": "icao-eur-doc-014 - https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf - EUR Doc 014 public; Annex 3 paywall companion"
+    },
+    {
+      "code": "PROB_PERIOD_WITHOUT_TEMPO",
+      "severity": "warning",
+      "message_template": "{product} has PROB30/PROB40 with a time period (or INTER) but without a TEMPO/EMPO qualifier. Warning: common in national TAF practice; review for profile policy. True defects (PROB on BECMG/FM, PROB50, truncated PROB) stay INVALID_PROB. Source: ICAO Annex 3 App 5 / Table A5-1 and live eval. Full normative text may require purchase.",
+      "product": "taf",
+      "tags": [
+        "change",
+        "taf",
+        "prob"
+      ],
+      "source_id": "icao-annex-3",
+      "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
+      "source_attribution": "icao-annex-3 - access:paywall - https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 - App 5 / Table A5-1; national PROB+period / PROB+INTER as warning"
     },
     {
       "code": "PROB_PRESENT",

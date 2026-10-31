@@ -1002,8 +1002,18 @@
       "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
       "consumer": "tac-validate",
       "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
-      "ticket": null,
-      "note": "App 5 / Table A5-1"
+      "ticket": "#1488",
+      "note": "App 5 / Table A5-1; true defects only (BECMG/FM, bad percent)"
+    },
+    {
+      "code": "PROB_PERIOD_WITHOUT_TEMPO",
+      "status": "paywall",
+      "source_id": "icao-annex-3",
+      "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
+      "ticket": "#1487",
+      "note": "App 5 / Table A5-1; national PROB+period / PROB+INTER as warning"
     },
     {
       "code": "INVALID_REMARK",

@@ -2008,6 +2008,19 @@
       "require_spans": true
     }
   ],
+  "t2_modifier_warnings": [
+    {
+      "id": "taf_t2_prob_period_warning",
+      "product": "TAF",
+      "theme": "T2",
+      "cite": "PROB+period without TEMPO \u2192 warning",
+      "tac": "accept/taf_t2_prob30_period.tac",
+      "ok": true,
+      "expected_codes": ["PROB_PERIOD_WITHOUT_TEMPO"],
+      "expected_severity": "warning",
+      "require_spans": true
+    }
+  ],
   "t2_errors": [
     {
       "id": "taf_prob50",
