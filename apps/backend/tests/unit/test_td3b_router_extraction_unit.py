@@ -92,6 +92,29 @@ async def test_tac_quality_lint_tac_branches(monkeypatch: pytest.MonkeyPatch) ->
     response_iwxxm = await tac_quality.lint_tac(request, manual_text="<xml/>", product="IWXXM", files=None)
     assert isinstance(response_iwxxm, Response)
 
+    def _boom(_profile: str):
+        raise RuntimeError("registry unavailable")
+
+    monkeypatch.setattr("tac2iwxxm.profile_registry.resolve_semantic_profile", _boom)
+    response_fallback = await tac_quality.lint_tac(
+        request,
+        manual_text=METAR_TAC,
+        product="METAR",
+        semantic_profile="annex3",
+        files=None,
+    )
+    assert isinstance(response_fallback, Response)
+
+    with pytest.raises(HTTPException) as bad_profile:
+        await tac_quality.lint_tac(
+            request,
+            manual_text=METAR_TAC,
+            product="METAR",
+            semantic_profile="+00:00",
+            files=None,
+        )
+    assert bad_profile.value.status_code == 400
+
     request.headers.get.return_value = "application/json"
     with pytest.raises(HTTPException) as exc:
         await tac_quality.lint_tac(request, manual_text=METAR_TAC, product="METAR", files=None)

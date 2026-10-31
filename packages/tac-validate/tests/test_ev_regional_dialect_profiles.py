@@ -83,3 +83,12 @@ def test_lint_with_profile_keeps_parse_gate_outside_product_catalog() -> None:
         profile="annex3",
     )
     assert any(i.code == "INVALID_AHL" and i.severity == "error" for i in malformed.issues)
+
+
+def test_extract_station_icao_rejects_non_matching_taf() -> None:
+    assert extract_station_icao("TAF without-station", "TAF") is None
+
+
+def test_lint_with_profile_can_skip_policy_apply() -> None:
+    report = lint_with_profile(_PROB_PERIOD, product="TAF", profile="iwxxm_us", apply_policy=False)
+    assert any(i.code == "PROB_PERIOD_WITHOUT_TEMPO" and i.severity == "warning" for i in report.issues)

@@ -149,3 +149,45 @@ def test_latam_inherits_annex3_not_br_decea() -> None:
     spec = lint_profile_spec("latam_taf")
     assert spec is not None
     assert spec.inherits == "annex3"
+
+
+def test_stations_for_unknown_profile_is_empty() -> None:
+    assert stations_for("not_a_profile") == frozenset()
+
+
+def test_station_map_conflict_raises(monkeypatch: pytest.MonkeyPatch) -> None:
+    from tac_validate import station_scoped_policy as ssp
+
+    monkeypatch.setattr(
+        ssp,
+        "station_scoped_policies",
+        lambda: (
+            ssp.StationScopedLintPolicy("us_military", frozenset({"KBIX"}), True),
+            ssp.StationScopedLintPolicy("latam_taf", frozenset({"KBIX"}), True),
+        ),
+    )
+    ssp._station_to_profile.cache_clear()
+    with pytest.raises(ValueError, match="mapped to both"):
+        ssp._station_to_profile()
+    ssp._station_to_profile.cache_clear()
+
+
+def test_accept_end_without_stations_skipped(monkeypatch: pytest.MonkeyPatch) -> None:
+    from tac_validate import station_scoped_policy as ssp
+    from tac_validate.lint_profile_catalog import LintProfileSpec
+
+    fake = {
+        "orphan_flag": LintProfileSpec(
+            profile_id="orphan_flag",
+            products=frozenset({"TAF"}),
+            engine="annex3",
+            differs=True,
+            deltas=(),
+            recorded=(),
+            accept_end_tx_tn=True,
+        )
+    }
+    monkeypatch.setattr(ssp, "load_lint_profiles", lambda: fake)
+    ssp.station_scoped_policies.cache_clear()
+    assert ssp.station_scoped_policies() == ()
+    ssp.station_scoped_policies.cache_clear()

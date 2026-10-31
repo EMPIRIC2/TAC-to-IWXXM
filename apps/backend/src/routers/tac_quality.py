@@ -512,12 +512,18 @@ async def lint_tac(
         profile_key = resolved.emit_key if resolved is not None else profile
     except Exception:
         profile_key = profile
-    report = lint_with_profile(
-        tac_text,
-        product=product_u,
-        profile=profile_key,
-        icao=station,
-    )
+    try:
+        report = lint_with_profile(
+            tac_text,
+            product=product_u,
+            profile=profile_key,
+            icao=station,
+        )
+    except ValueError as exc:
+        raise HTTPException(
+            status_code=400,
+            detail={"code": "invalid_semantic_profile", "message": str(exc)},
+        ) from exc
     return api_surface.msgspec_json_response(
         LintTacResponse(
             ok=report.ok,
