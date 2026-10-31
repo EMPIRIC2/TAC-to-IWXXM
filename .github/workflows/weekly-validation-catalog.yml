@@ -1,0 +1,76 @@
+# Weekly staging validation catalog quality window.
+# Sunday 00:00 UTC — GHA runners call DOKS staging HTTPS API (Environment `staging`).
+# Not a PR merge gate. Report artifact = what validation issues are raised now.
+#
+# Secrets / vars: see docs/deploy.md §Weekly validation catalog
+# [Corpus: deploy] [Corpus: api] [Corpus: tests] [Corpus: product §F2] [Corpus: product §F15]
+name: Weekly Validation Catalog
+
+on:
+  schedule:
+    # Sunday 00:00 UTC
+    - cron: "0 0 * * 0"
+  workflow_dispatch:
+    inputs:
+      api_url:
+        description: Override staging API origin (blank = secret/var/default)
+        required: false
+        type: string
+        default: ""
+      fail_on_sample_error:
+        description: Fail the job when a sample lint/validate probe is non-2xx
+        required: false
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: weekly-validation-catalog
+  cancel-in-progress: false
+
+jobs:
+  weekly-validation-catalog:
+    name: Staging validation catalog probe
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment: staging
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Probe staging catalogs + fixtures
+        env:
+          # Prefer workflow_dispatch override, then Environment var, then CORPUS default.
+          # Schedule events have empty github.event.inputs — defaults still apply.
+          LIVE_API_URL: ${{ github.event.inputs.api_url || vars.LIVE_API_URL || 'https://api.staging.tac-to-iwxxm.com' }}
+          STAGING_API_URL: ${{ github.event.inputs.api_url || vars.STAGING_API_URL || vars.LIVE_API_URL || 'https://api.staging.tac-to-iwxxm.com' }}
+          STAGING_LB_IP: ${{ vars.STAGING_LB_IP || '143.244.202.13' }}
+          # Optional Bearer — public F21 catalog/convert/lint/validate do not require it.
+          # Set on GitHub Environment `staging` only; never commit real tokens.
+          STAGING_API_BEARER_TOKEN: ${{ secrets.STAGING_API_BEARER_TOKEN }}
+          STAGING_API_TOKEN: ${{ secrets.STAGING_API_TOKEN }}
+          WEEKLY_VALIDATION_OUT_DIR: artifacts/weekly-validation-catalog
+          WEEKLY_VALIDATION_FAIL_ON_SAMPLE_ERROR: ${{ github.event.inputs.fail_on_sample_error == 'true' && '1' || '0' }}
+        run: |
+          set -euo pipefail
+          python3 scripts/ci/weekly_validation_catalog.py
+          echo "## Weekly validation catalog" >> "$GITHUB_STEP_SUMMARY"
+          if [ -f artifacts/weekly-validation-catalog/weekly-validation-catalog.md ]; then
+            cat artifacts/weekly-validation-catalog/weekly-validation-catalog.md >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Upload report artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: weekly-validation-catalog-${{ github.run_id }}
+          path: artifacts/weekly-validation-catalog/
+          if-no-files-found: warn
+          retention-days: 90
