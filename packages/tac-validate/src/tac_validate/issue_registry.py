@@ -473,6 +473,13 @@ ISSUES: tuple[IssueSpec, ...] = (
         tags=("change", "taf", "prob"),
     ),
     _row(
+        "PROB_PERIOD_WITHOUT_TEMPO",
+        "warning",
+        "{product} has PROB30/PROB40 with a time period (or INTER) but without a TEMPO/EMPO qualifier. Warning: common in national TAF practice; review for profile policy. True defects (PROB on BECMG/FM, PROB50, truncated PROB) stay INVALID_PROB. Source: ICAO Annex 3 App 5 / Table A5-1 and live eval. Full normative text may require purchase.",
+        product="taf",
+        tags=("change", "taf", "prob"),
+    ),
+    _row(
         "TX_TN_PRESENT",
         "info",
         "{product} includes TX/TN temperature forecast groups on the base forecast. Informational: noted for operator awareness; does not by itself block conversion. Source: ICAO Annex 3 App 5 / Table A5-1. Full normative text may require purchase.",

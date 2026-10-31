@@ -9,7 +9,7 @@ import re
 from tac_validate.models import Issue
 from tac_validate.product_rules_pkg._common import *
 from tac_validate.taf_amd import amd_modifier_present
-from tac_validate.taf_prob import probability_group_valid
+from tac_validate.taf_prob import ProbGroupKind, classify_probability_group
 
 
 def _check_taf(tac: str, *, profile: str = "annex3") -> list[Issue]:
@@ -502,11 +502,35 @@ def _check_taf_change_groups(
         m = _TAF_PROB.fullmatch(tok)
         if m is None:
             continue
-        if not probability_group_valid(tokens, i):
+        kind = classify_probability_group(tokens, i)
+        if kind is ProbGroupKind.TEMPO_OK:
             _emit_token_info(
                 issues,
-                code="INVALID_PROB",
-                message=(f"{product} invalid PROB (only 30|40; must not qualify BECMG/FM) - App 5 §1.4 / research T2"),
+                code="PROB_PRESENT",
+                message=f"{product} PROB30/40 change group present - research T2",
+                core=core,
+                body_start=body_start,
+                body_end=body_end,
+                token=tok,
+            )
+        elif kind is ProbGroupKind.PERIOD_WITHOUT_TEMPO:
+            _emit_token_info(
+                issues,
+                code="PROB_PERIOD_WITHOUT_TEMPO",
+                message=(
+                    f"{product} PROB30/40 with a time period but no TEMPO/EMPO "
+                    f"qualifier - common national form; review (warning)"
+                ),
+                core=core,
+                body_start=body_start,
+                body_end=body_end,
+                token=tok,
+            )
+        elif kind is ProbGroupKind.INTER:
+            _emit_token_info(
+                issues,
+                code="PROB_PERIOD_WITHOUT_TEMPO",
+                message=(f"{product} PROB30/40 INTER group - national INTER form; review (warning)"),
                 core=core,
                 body_start=body_start,
                 body_end=body_end,
@@ -515,8 +539,8 @@ def _check_taf_change_groups(
         else:
             _emit_token_info(
                 issues,
-                code="PROB_PRESENT",
-                message=f"{product} PROB30/40 change group present - research T2",
+                code="INVALID_PROB",
+                message=(f"{product} invalid PROB (only 30|40; must not qualify BECMG/FM) - App 5 §1.4 / research T2"),
                 core=core,
                 body_start=body_start,
                 body_end=body_end,

@@ -125,6 +125,7 @@ def test_catalog_entries_filters_taf_and_speci() -> None:
     taf_codes = {spec.code for spec in catalog_entries(product="taf")}
     assert "MISSING_VALIDITY" in taf_codes
     assert "INVALID_PROB" in taf_codes
+    assert "PROB_PERIOD_WITHOUT_TEMPO" in taf_codes
     assert "MISSING_OBS_TIME" not in taf_codes
 
     speci_codes = {spec.code for spec in catalog_entries(product="SPECI")}

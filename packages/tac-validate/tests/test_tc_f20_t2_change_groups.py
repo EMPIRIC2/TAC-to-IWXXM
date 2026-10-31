@@ -46,6 +46,7 @@ def _case_ids(cases: list[dict[str, Any]]) -> list[str]:
 _MANIFEST = _load_manifest()
 _T2_ACCEPT = [c for c in _MANIFEST["accept"] if c.get("theme") == "T2"]
 _T2_INFO = list(_MANIFEST.get("t2_modifier_info", []))
+_T2_WARNINGS = list(_MANIFEST.get("t2_modifier_warnings", []))
 _T2_ERRORS = list(_MANIFEST.get("t2_errors", []))
 
 
@@ -53,11 +54,14 @@ def test_t2_manifest_sections_present() -> None:
     assert len(_T2_ACCEPT) >= 6
     assert {c["product"] for c in _T2_ACCEPT} == {"TAF"}
     assert len(_T2_INFO) >= 6
+    assert len(_T2_WARNINGS) >= 1
     assert len(_T2_ERRORS) >= 3
-    for case in _T2_ACCEPT + _T2_INFO + _T2_ERRORS:
+    for case in _T2_ACCEPT + _T2_INFO + _T2_WARNINGS + _T2_ERRORS:
         assert (_read_tac(case["tac"])).strip()
     codes = {c["expected_codes"][0] for c in _T2_INFO}
     assert codes == _INFO_CODES
+    warn_codes = {c["expected_codes"][0] for c in _T2_WARNINGS}
+    assert warn_codes == {"PROB_PERIOD_WITHOUT_TEMPO"}
     for case in _T2_ERRORS:
         assert case["expected_codes"] == ["INVALID_PROB"]
 
@@ -78,6 +82,19 @@ def test_t2_modifier_emits_info(case: dict[str, Any]) -> None:
     assert matched, f"expected info code {code}; got {[i.code for i in report.issues]}"
     assert all(i.severity == "info" for i in matched)
     assert by_code(code).severity == "info"
+    if case.get("require_spans"):
+        assert any(i.start is not None and i.end is not None and i.end > i.start for i in matched)
+
+
+@pytest.mark.parametrize("case", _T2_WARNINGS, ids=_case_ids(_T2_WARNINGS))
+def test_t2_modifier_emits_warning(case: dict[str, Any]) -> None:
+    code = case["expected_codes"][0]
+    report = lint(_read_tac(case["tac"]), product=case["product"])
+    assert report.ok is True
+    matched = [i for i in report.issues if i.code == code]
+    assert matched, f"expected warning code {code}; got {[i.code for i in report.issues]}"
+    assert all(i.severity == "warning" for i in matched)
+    assert by_code(code).severity == "warning"
     if case.get("require_spans"):
         assert any(i.start is not None and i.end is not None and i.end > i.start for i in matched)
 

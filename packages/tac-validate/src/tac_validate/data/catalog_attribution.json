@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated": "2026-10-30",
+  "generated": "2026-10-31",
   "source": "PROVENANCE_MAP.json catalog_codes",
   "codes": {
     "AMD_PRESENT": {
@@ -224,8 +224,8 @@
       "source_id": "icao-annex-3",
       "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
       "status": "paywall",
-      "note": "App 5 / Table A5-1",
-      "source_attribution": "icao-annex-3 - access:paywall - https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 - App 5 / Table A5-1"
+      "note": "App 5 / Table A5-1; true defects only (BECMG/FM, bad percent)",
+      "source_attribution": "icao-annex-3 - access:paywall - https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 - App 5 / Table A5-1; true defects only (BECMG/FM, bad percent)"
     },
     "INVALID_REMARK": {
       "source_id": "fmh-1",
@@ -569,6 +569,13 @@
       "status": "ok",
       "note": "EUR Doc 014 public; Annex 3 paywall companion",
       "source_attribution": "icao-eur-doc-014 - https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf - EUR Doc 014 public; Annex 3 paywall companion"
+    },
+    "PROB_PERIOD_WITHOUT_TEMPO": {
+      "source_id": "icao-annex-3",
+      "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
+      "status": "paywall",
+      "note": "App 5 / Table A5-1; national PROB+period / PROB+INTER as warning",
+      "source_attribution": "icao-annex-3 - access:paywall - https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 - App 5 / Table A5-1; national PROB+period / PROB+INTER as warning"
     },
     "PROB_PRESENT": {
       "source_id": "icao-annex-3",

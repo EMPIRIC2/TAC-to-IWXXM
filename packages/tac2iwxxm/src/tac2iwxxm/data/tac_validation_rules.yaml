@@ -908,6 +908,19 @@ rules:
   - geometry
   - polygon
   - sigmet
+- id: TAC.PROB_PERIOD_WITHOUT_TEMPO
+  code: PROB_PERIOD_WITHOUT_TEMPO
+  label: Prob Period Without Tempo
+  severity: warning
+  message_template: '{product} has PROB30/PROB40 with a time period (or INTER) but without a TEMPO/EMPO
+    qualifier. Warning: common in national TAF practice; review for profile policy. True defects (PROB
+    on BECMG/FM, PROB50, truncated PROB) stay INVALID_PROB. Source: ICAO Annex 3 App 5 / Table A5-1 and
+    live eval. Full normative text may require purchase.'
+  product: taf
+  tags:
+  - change
+  - taf
+  - prob
 - id: TAC.PROB_PRESENT
   code: PROB_PRESENT
   label: Prob Present
