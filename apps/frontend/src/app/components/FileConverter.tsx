@@ -193,7 +193,13 @@ import {
   lintIssueFromKey,
   type JumpableLintIssue,
 } from '/utils/lintIssueJump';
-import { lintIssueCounts, tacLintLayerStatus } from '/utils/checkLayers';
+import {
+  errorLayerNames,
+  lintIssueCounts,
+  outputLayerStatus,
+  strictConvertRan,
+  tacLintLayerStatus,
+} from '/utils/checkLayers';
 import {
   appendOutputVersion,
   readOutputVersions,
@@ -2546,6 +2552,25 @@ export function FileConverter({
     });
   };
   const lintCounts = lintIssueCounts(lintIssues);
+  const convertIssueLayers = errorLayerNames(conversionLog);
+  const strictLayersRan = strictConvertRan({
+    strict: conversionParams.strictValidation,
+    softPreview,
+    convertedCount: convertedFiles.length,
+    status: conversionStatus.type,
+  });
+  const consoleSchemaStatus = outputLayerStatus(
+    'schema',
+    validateReport,
+    convertIssueLayers,
+    strictLayersRan,
+  );
+  const consoleSchematronStatus = outputLayerStatus(
+    'schematron',
+    validateReport,
+    convertIssueLayers,
+    strictLayersRan,
+  );
 
   const { entries: lintCatalogEntries, byCode: lintCatalogByCode } =
     useLintIssueCatalog({
@@ -2759,7 +2784,7 @@ export function FileConverter({
             )}
           </div>
           <div
-            className="flex min-h-10 flex-wrap items-center gap-2 sm:gap-3"
+            className="grid min-h-10 w-full grid-cols-1 gap-2 sm:grid-cols-3 sm:gap-3"
             data-testid="convert-primary-actions"
           >
             <Button
@@ -2769,7 +2794,7 @@ export function FileConverter({
               disabled={isBusy}
               data-testid="new-tac-button"
               aria-label="Start a new TAC session"
-              className="min-w-[7.5rem]"
+              className="w-full"
             >
               New TAC
             </Button>
@@ -2778,7 +2803,7 @@ export function FileConverter({
               variant={calmUi.primaryKind === 'convert' ? 'default' : 'outline'}
               onClick={handleConvert}
               disabled={convertDisabled}
-              className="min-w-[11rem] text-base disabled:opacity-50 disabled:cursor-not-allowed"
+              className="relative w-full text-base disabled:opacity-50 disabled:cursor-not-allowed"
               aria-busy={isConverting}
               aria-label={
                 isConverting
@@ -2794,7 +2819,7 @@ export function FileConverter({
               }
             >
               <Loader2
-                className={`w-4 h-4 animate-spin ${isConverting ? '' : 'invisible'}`}
+                className={`absolute left-3 h-4 w-4 animate-spin ${isConverting ? '' : 'invisible'}`}
                 aria-hidden="true"
               />
               {inputMode === 'validate_iwxxm'
@@ -2804,6 +2829,7 @@ export function FileConverter({
                   : CALM_CONVERT_PRIMARY_LABEL}
             </Button>
             <span
+              className="min-w-0 w-full"
               data-testid={
                 calmUi.primaryKind === 'download' ? 'convert-primary-cta' : undefined
               }
@@ -2815,7 +2841,7 @@ export function FileConverter({
                   void handleDownloadSingle(latestConverted);
                 }}
                 disabled={isBusy || !latestConverted}
-                className="min-w-[11rem] text-base disabled:opacity-40 disabled:cursor-not-allowed"
+                className="w-full text-base disabled:opacity-40 disabled:cursor-not-allowed"
                 aria-label={CALM_DOWNLOAD_PRIMARY_LABEL}
                 data-testid="convert-download-iwxxm"
               >
@@ -4330,8 +4356,8 @@ export function FileConverter({
                             warningCount: lintCounts.warningCount,
                             issueCount: lintCounts.issueCount,
                           })}
-                          schemaStatus="not run"
-                          schematronStatus="not run"
+                          schemaStatus={consoleSchemaStatus}
+                          schematronStatus={consoleSchematronStatus}
                         />
                       ) : null}
                       {conversionLog ? (

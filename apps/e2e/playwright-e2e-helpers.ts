@@ -245,6 +245,12 @@ export async function openConvertSettings(page: Page): Promise<void> {
   await expect(settings).toHaveAttribute('open', '');
 }
 
+/**
+ * Choose TAC, file, or bulletin input mode on the converter.
+ *
+ * @param page - Playwright page hosting the converter.
+ * @param mode - Input mode id under test.
+ */
 export async function selectInputMode(page: Page, mode: E2eInputMode): Promise<void> {
   const hero = page.getByTestId('convert-empty-hero');
   if (await hero.isVisible()) {

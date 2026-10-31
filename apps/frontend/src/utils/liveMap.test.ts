@@ -37,6 +37,8 @@ import {
   LIVE_MAP_LOADING,
   LIVE_MAP_NO_TIME,
   LIVE_MAP_REFRESHING,
+  LIVE_MAP_PRODUCTS,
+  LIVE_MAP_VIEWS,
 } from './liveMap';
 
 const bounds = { west: -80, south: 40, east: -70, north: 41 };
@@ -126,6 +128,27 @@ describe('live map helpers', () => {
     expect(SPACE_WEATHER_LIST_COLOR).toBe('#0e7490');
     expect(spaceWeatherListColor(1)).toBe('#0e7490');
     expect(spaceWeatherListColor(0)).toBeUndefined();
+    // TC-F37-013 — pin layers exclude space weather (EV-map-results-qa)
+    expect([...LIVE_MAP_PRODUCTS].sort()).toEqual(
+      [
+        'metar',
+        'speci',
+        'taf',
+        'airmet',
+        'gairmet',
+        'sigmet',
+        'vaa',
+        'tca',
+        'vona',
+      ].sort(),
+    );
+    expect(LIVE_MAP_PRODUCTS).not.toContain('swxa');
+    expect(LIVE_MAP_VIEWS.map((view) => view.id)).toEqual([
+      'observations',
+      'forecasts',
+      'hazards',
+      'advisories',
+    ]);
     expect(cardLayout(800)).toBe('side');
     expect(cardLayout(767)).toBe('stack');
     expect(

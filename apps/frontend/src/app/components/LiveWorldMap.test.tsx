@@ -6,6 +6,7 @@ import { act, cleanup, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import L from 'leaflet';
 import { boundsOf, LIVE_MAP_PRODUCTS, type LivePlace } from '@/utils/liveMap';
+import { OSM_TILE_ATTRIBUTION, OSM_TILE_URL } from '@/utils/mapTileAttribution';
 import { LiveWorldMap, StationPopup } from './LiveWorldMap';
 
 /**
@@ -231,7 +232,26 @@ describe('LiveWorldMap', () => {
     vi.mocked(L.circle).mockClear();
     vi.mocked(L.circleMarker).mockClear();
     vi.mocked(L.marker).mockClear();
+    vi.mocked(L.tileLayer).mockClear();
     vi.unstubAllGlobals();
+  });
+
+  it('uses shared OSM tile attribution on the live world map (UX-2026-10-30-map-data-attribution)', () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue({
+        ok: true,
+        json: async () => ({ places: [] }),
+      }),
+    );
+    render(<LiveWorldMap />);
+    expect(L.tileLayer).toHaveBeenCalledWith(
+      OSM_TILE_URL,
+      expect.objectContaining({ attribution: OSM_TILE_ATTRIBUTION }),
+    );
+    expect(OSM_TILE_ATTRIBUTION).toMatch(/contributors/i);
+    expect(OSM_TILE_ATTRIBUTION).toMatch(/Open Database License|\bODbL\b/i);
+    expect(OSM_TILE_ATTRIBUTION).toContain('https://www.openstreetmap.org/copyright');
   });
 
   it('reads bounds from the map', () => {

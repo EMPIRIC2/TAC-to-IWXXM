@@ -98,6 +98,7 @@ export function errorLayerNames(
  * @param kind - Which publish check
  * @param report - Last validate result, or null
  * @param issueLayers - Error layers the engine already returned
+ * @param strictRan - Hard Convert finished with Strict Validation (in-band XSD/Schematron)
  * @returns Layer status word
  * @example
  * const _ = true;
@@ -109,12 +110,14 @@ export function outputLayerStatus(
     layers_failed?: readonly string[] | null;
   } | null,
   issueLayers: readonly string[],
+  strictRan = false,
 ): LayerRunStatus {
   const keys = kind === 'schema' ? SCHEMA_KEYS : SCHEMATRON_KEYS;
   const hit = (values: readonly string[] | null | undefined) =>
     (values ?? []).some((value) => keys.has(layerKey(value)));
   if (hit(report?.layers_failed) || hit(issueLayers)) return 'failed';
   if (hit(report?.layers_passed)) return 'passed';
+  if (strictRan) return 'passed';
   return 'not run';
 }
 

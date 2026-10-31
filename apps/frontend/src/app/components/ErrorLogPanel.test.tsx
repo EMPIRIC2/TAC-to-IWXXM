@@ -300,6 +300,101 @@ describe('ErrorLogPanel', () => {
     expect(screen.getByText(/Code: MISSING_TERMINATOR/).tagName).toBe('P');
   });
 
+  it('enriches sparse RVR_PRESENT and NSW_PRESENT notes with reason/consequence (UX-2026-10-30)', () => {
+    render(
+      <ErrorLogPanel
+        catalogByCode={
+          new Map([
+            [
+              'RVR_PRESENT',
+              {
+                code: 'RVR_PRESENT',
+                severity: 'info',
+                message_template:
+                  '{product} includes one or more runway visual range (RVR) groups. ' +
+                  'Informational: noted for operator awareness; does not by itself block conversion. ' +
+                  'Source: ICAO Annex 3. Full normative text may require purchase.',
+                product: null,
+                tags: ['rvr'],
+                family: 'lint',
+              },
+            ],
+            [
+              'NSW_PRESENT',
+              {
+                code: 'NSW_PRESENT',
+                severity: 'info',
+                message_template:
+                  '{product} includes NSW (nil significant weather). ' +
+                  'Informational: noted for operator awareness; does not by itself block conversion. ' +
+                  'Source: ICAO Annex 3. Full normative text may require purchase.',
+                product: null,
+                tags: ['weather'],
+                family: 'lint',
+              },
+            ],
+          ])
+        }
+        log={{
+          errors: [],
+          issues: [
+            {
+              source: 'lint',
+              message: "METAR RVR group 'R12/1000U' present",
+              severity: 'info',
+              code: 'RVR_PRESENT',
+            },
+            {
+              source: 'lint',
+              message: 'METAR NSW present',
+              severity: 'info',
+              code: 'NSW_PRESENT',
+            },
+            {
+              source: 'validation',
+              message: 'Station YUDO is not in the aerodrome registry',
+              severity: 'warning',
+              hint: "Designator 'YUDO' was not found in the local airport catalog; conversion continues, but coordinates and airport name may be incomplete",
+              code: 'UNKNOWN_ICAO',
+            },
+          ],
+        }}
+      />,
+    );
+
+    expect(screen.getByText(/runway visual range \(RVR\)/i)).toBeInTheDocument();
+    expect(screen.getByText(/NSW \(nil significant weather\)/i)).toBeInTheDocument();
+    expect(screen.getByText(/Designator 'YUDO'/)).toBeInTheDocument();
+    expect(screen.queryByText(/Source:/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/EV-|ADR-|UJ-/)).not.toBeInTheDocument();
+  });
+
+  it('uses plain-language RVR/NSW glosses when catalog is not loaded', () => {
+    render(
+      <ErrorLogPanel
+        log={{
+          errors: [],
+          issues: [
+            {
+              source: 'lint',
+              message: "METAR RVR group 'R12/1000U' present",
+              severity: 'info',
+              code: 'RVR_PRESENT',
+            },
+            {
+              source: 'lint',
+              message: 'METAR NSW present',
+              severity: 'info',
+              code: 'NSW_PRESENT',
+            },
+          ],
+        }}
+      />,
+    );
+    expect(screen.getByText(/Runway Visual Range/i)).toBeInTheDocument();
+    expect(screen.getByText(/No Significant Weather/i)).toBeInTheDocument();
+  });
+
   it('opens a fuller description for a lint issue and closes it', async () => {
     const user = userEvent.setup();
     render(

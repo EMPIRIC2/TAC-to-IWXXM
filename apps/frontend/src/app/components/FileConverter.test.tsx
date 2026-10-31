@@ -817,6 +817,28 @@ describe('FileConverter Component', () => {
       expect(screen.getByTestId('clear-queue-button')).toBeInTheDocument();
     });
 
+    it('UX-2026-10-30: primary actions keep Convert centered in equal columns', () => {
+      mockReadGuestConverterState.mockReturnValue(null);
+      render(<FileConverter {...defaultProps} />);
+      const strip = screen.getByTestId('convert-primary-actions');
+      expect(strip.className).toContain('grid');
+      expect(strip.className).toContain('w-full');
+      expect(strip.className).toMatch(/sm:grid-cols-3/);
+      expect(within(strip).getByTestId('new-tac-button').className).toContain('w-full');
+      const convertBtn = within(strip).getByTestId('convert-button');
+      expect(convertBtn.className).toContain('w-full');
+      expect(convertBtn.className).toContain('relative');
+      // Spinner is out-of-flow so the Convert label stays optically centered.
+      const spinner = convertBtn.querySelector('svg.absolute.left-3');
+      expect(spinner).not.toBeNull();
+      expect(spinner?.getAttribute('class') ?? '').toMatch(/invisible/);
+      const downloadLatest = within(strip).getByTestId('convert-download-iwxxm');
+      expect(downloadLatest.className).toContain('w-full');
+      expect(downloadLatest).toBeDisabled();
+      expect(downloadLatest.parentElement?.className).toContain('min-w-0');
+      expect(downloadLatest.parentElement?.className).toContain('w-full');
+    });
+
     it('TC-UX-CALM: empty browse triggers the hidden file input', async () => {
       mockReadGuestConverterState.mockReturnValue(null);
       const user = userEvent.setup({ delay: null });

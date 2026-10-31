@@ -97,6 +97,9 @@ describe('checkLayers', () => {
     ).toBe('failed');
     expect(outputLayerStatus('schema', null, [])).toBe('not run');
     expect(outputLayerStatus('schematron', null, [])).toBe('not run');
+    expect(outputLayerStatus('schema', null, [], true)).toBe('passed');
+    expect(outputLayerStatus('schematron', null, [], true)).toBe('passed');
+    expect(outputLayerStatus('schema', null, ['XML_SCHEMA'], true)).toBe('failed');
   });
 
   it('counts error issues', () => {

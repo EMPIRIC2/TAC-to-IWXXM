@@ -23,6 +23,7 @@ sections when norms conflict—cite the UX log ids retired or merged.
 - One job per panel/section; prefer calm empty states over stacked chrome.
 - Drawers and secondary actions should not compete with the primary convert path.
 - Convert drop-zone chrome keeps Select files; do not show Mass Ingest beside it.
+- Convert primary action strip (New TAC / Convert / Download latest): full-width three equal columns on `sm+` so Convert stays in the middle column. Do not left-pack unequal `min-w-*` widths.
 - Convert TAC notes: no Groups chip strip under the editor; group selection lives in Decoder, not as horizontal chips above the notes summary.
 - Convert empty state: example chips sit in a bar above the TAC editor inside the main convert card; Other tasks sit in one tight row under that card — not a separate far strip.
 - Convert catalog Examples sit in a compact bar above the TAC editor — not inside the Settings product/profile panel.
@@ -33,6 +34,8 @@ sections when norms conflict—cite the UX log ids retired or merged.
 - Plain-language operator copy; no planning vocabulary in labels, help, toasts, or `aria-label`.
 - No feature/journey/theme shorthand (`F26`, `UJ-…`, `theme V1`) and no vague filler (`stuff`) on operator surfaces; keep grammatical articles (`a` / `an` / `the`).
 - Prefer short, actionable empty-state and error text.
+- Conversion / validation log Notes: when a coded issue has no `hint`, show a scrubbed catalog reason/consequence line (acronym gloss when the template provides it); never leave title+Code-only for catalogued codes.
+- Live map / station minimap Leaflet corner credit must name OpenStreetMap contributors and the Open Database License (ODbL), with a link to the OSM copyright page, not a bare "© OpenStreetMap".
 
 ## Accessibility
 
@@ -82,3 +85,6 @@ Record the test path and red/green dates on `docs/ui-ux-tweaks/UX-YYYY-MM-DD-*.m
 | 2026-10-29 | [UX-2026-10-29-live-decode-phrases](ui-ux-tweaks/UX-2026-10-29-live-decode-phrases.md) | Live decode may group adjacent TAC tokens into natural-language phrase rows (joined Code, one Explanation); do not change the decode wire contract. |
 | 2026-10-29 | [UX-2026-10-29-examples-bar-above-tac](ui-ux-tweaks/UX-2026-10-29-examples-bar-above-tac.md) | Convert catalog Examples sit in a compact bar above the TAC editor — not inside the Settings product/profile panel. |
 | 2026-10-29 | [UX-2026-10-29-scrub-vague-jargon-operator-copy](ui-ux-tweaks/UX-2026-10-29-scrub-vague-jargon-operator-copy.md) | Operator copy stays concrete: no feature/journey/theme shorthand (`F26`, `UJ-…`, `theme V1`) and no vague filler (`stuff`); keep normal English articles. |
+| 2026-10-30 | [UX-2026-10-30-console-log-enrichment](ui-ux-tweaks/UX-2026-10-30-console-log-enrichment.md) | Conversion / validation log Notes: when a coded issue has no `hint`, show a scrubbed catalog reason/consequence line (acronym gloss when the template provides it); never leave title+Code-only for catalogued codes. |
+| 2026-10-30 | [UX-2026-10-30-map-data-attribution](ui-ux-tweaks/UX-2026-10-30-map-data-attribution.md) | Live map / station minimap Leaflet corner credit names OpenStreetMap contributors and ODbL (link OSM copyright page); not a bare "© OpenStreetMap". |
+| 2026-10-30 | [UX-2026-10-30-convert-button-center](ui-ux-tweaks/UX-2026-10-30-convert-button-center.md) | Convert primary action strip: full-width three equal columns (New TAC \| Convert \| Download latest); Convert stays in the middle column. Do not left-pack unequal min-widths. |
