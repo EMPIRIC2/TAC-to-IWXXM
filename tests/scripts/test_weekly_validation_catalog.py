@@ -5,6 +5,7 @@ Offline only — no live network. [Corpus: tests]
 
 from __future__ import annotations
 
+import io
 import json
 from pathlib import Path
 from typing import Any
@@ -290,3 +291,241 @@ def test_manifest_json_is_valid() -> None:
     data = json.loads(MANIFEST.read_text(encoding="utf-8"))
     assert "samples" in data
     assert "catalog_queries" in data
+
+
+def test_severity_bucket_aliases_and_non_dict_skips() -> None:
+    counts = count_severities(
+        [
+            {"severity": "err"},
+            {"severity": "warn"},
+            {"severity": "i"},
+            {"severity": "  "},
+            "not-a-dict",
+            {"code": "ONLY"},
+        ]
+    )
+    assert counts["error"] == 1
+    assert counts["warning"] == 1
+    assert counts["info"] == 1
+    assert counts["unknown"] >= 1
+    assert count_codes(["x", {"code": ""}, {"rule_id": "R1"}], limit=5) == [
+        {"code": "R1", "count": 1}
+    ]
+    assert count_raised_issue_line_items(["x", {"severity": "error"}]) == []
+    assert extract_issues({"issues": [{"code": "A"}, "skip"]}) == [{"code": "A"}]
+    assert extract_issues({"nope": []}) == []
+
+
+def test_render_markdown_empty_raised_section() -> None:
+    md = render_markdown(
+        {
+            "generated_at": "t",
+            "api_url": "https://example",
+            "health": {"status": 200},
+            "catalogs": [],
+            "samples": [],
+            "aggregate": {"raised_issue_line_items": [], "severity_counts": {}},
+        }
+    )
+    assert "_No raised validation issues recorded._" in md
+
+
+def test_render_markdown_raised_total_fallback() -> None:
+    md = render_markdown(
+        {
+            "generated_at": "t",
+            "api_url": "https://example",
+            "health": {"status": 200},
+            "catalogs": [],
+            "samples": [],
+            "aggregate": {
+                "raised_issue_line_items": [
+                    {"code": "A", "severity": "error", "count": 2},
+                    {"code": "B", "severity": "warning", "count": None},
+                ],
+                "severity_counts": {},
+            },
+        }
+    )
+    assert "**Total raised:** 2" in md
+
+
+def test_staging_client_request_paths(monkeypatch: Any, tmp_path: Path) -> None:
+    from scripts.ci import weekly_validation_catalog as mod
+
+    class _Resp:
+        def __init__(self, status: int, body: bytes) -> None:
+            self.status = status
+            self._body = body
+
+        def read(self) -> bytes:
+            return self._body
+
+        def __enter__(self) -> _Resp:
+            return self
+
+        def __exit__(self, *args: object) -> None:
+            return None
+
+    calls: list[Any] = []
+
+    def lb_fallback(req: Any, timeout: float = 0) -> _Resp:
+        del timeout
+        calls.append((req.full_url, dict(req.headers)))
+        if req.full_url.startswith("https://"):
+            raise OSError("tls-down")
+        assert req.headers.get("Host") == "api.example.com"
+        assert "Authorization" in req.headers
+        assert (
+            req.headers.get("Content-type") == "application/json"
+            or req.headers.get("Content-Type") == "application/json"
+        )
+        return _Resp(200, b'{"ok":true}')
+
+    monkeypatch.setattr(mod.urllib.request, "urlopen", lb_fallback)
+    client = mod.StagingClient(
+        "https://api.example.com", lb_ip="1.2.3.4", bearer_token=" tok "
+    )
+    status, body, _raw = client.request(
+        "POST", "health", data=b"{}", content_type="application/json"
+    )
+    assert status == 200
+    assert body == {"ok": True}
+    assert any("1.2.3.4" in u for u, _h in calls)
+
+    def bad_json_ok(req: Any, timeout: float = 0) -> _Resp:
+        del timeout
+        return _Resp(200, b"{")
+
+    monkeypatch.setattr(mod.urllib.request, "urlopen", bad_json_ok)
+    status_j, body_j, raw_j = client.request("GET", "/health")
+    assert status_j == 200
+    assert body_j is None
+    assert raw_j == "{"
+
+    def http_error(req: Any, timeout: float = 0) -> _Resp:
+        del timeout
+        raise mod.urllib.error.HTTPError(
+            req.full_url, 503, "nope", hdrs=None, fp=io.BytesIO(b"{")
+        )
+
+    monkeypatch.setattr(mod.urllib.request, "urlopen", http_error)
+    status2, body2, raw2 = client.request("GET", "/health")
+    assert status2 == 503
+    assert body2 is None
+    assert raw2 == "{"
+
+    def http_error_json(req: Any, timeout: float = 0) -> _Resp:
+        del timeout
+        raise mod.urllib.error.HTTPError(
+            req.full_url, 502, "bad", hdrs=None, fp=io.BytesIO(b'{"err":1}')
+        )
+
+    monkeypatch.setattr(mod.urllib.request, "urlopen", http_error_json)
+    status3, body3, raw3 = client.request("GET", "/health")
+    assert status3 == 502
+    assert body3 == {"err": 1}
+    assert "err" in raw3
+
+    def always_fail(req: Any, timeout: float = 0) -> _Resp:
+        del timeout
+        raise OSError(f"down:{req.full_url}")
+
+    monkeypatch.setattr(mod.urllib.request, "urlopen", always_fail)
+    status4, body4, raw4 = client.request("GET", "/health")
+    assert status4 == 0
+    assert body4 is None
+    assert "down:" in raw4
+
+    # No bearer / no content-type headers branch
+    bare = mod.StagingClient("https://api.example.com", lb_ip="9.9.9.9")
+    hdr = bare._headers()
+    assert "Authorization" not in hdr
+    assert "Content-Type" not in hdr
+    assert bare._headers(host_override=True)["Host"] == "api.example.com"
+
+
+def test_run_probe_sample_error_paths() -> None:
+    class Client(_FakeClient):
+        def request(
+            self, method: str, path: str, **kwargs: Any
+        ) -> tuple[int, Any, str]:
+            if path == "/health":
+                return 200, {"status": "ok"}, "{}"
+            if path.startswith("/api/v1/lint-issue-catalog"):
+                return 500, None, "catalog-down"
+            if path == "/api/v1/lint-tac":
+                return 500, None, "lint-down"
+            return 200, {"issues": []}, "{}"
+
+    report = run_probe(
+        client=Client(),  # type: ignore[arg-type]
+        manifest={
+            "catalog_queries": [{"path": "/api/v1/lint-issue-catalog", "label": "all"}],
+            "samples": [
+                {
+                    "id": "missing",
+                    "product": "METAR",
+                    "path": "does-not-exist.tac",
+                    "probes": ["lint-tac"],
+                },
+                {
+                    "id": "metar_basic",
+                    "product": "METAR",
+                    "path": "packages/tac-validate/tests/fixtures/accept/metar_basic.tac",
+                    "probes": ["lint-tac", "unknown-probe"],
+                },
+            ],
+        },
+        repo_root=REPO_ROOT,
+        fail_on_sample_error=True,
+    )
+    assert report["ok"] is False
+    assert report["catalogs"][0]["ok"] is False
+    probe_names = [p["name"] for s in report["samples"] for p in s["probes"]]
+    assert "load-fixture" in probe_names
+    assert "unknown-probe" in probe_names
+
+
+def test_main_writes_artifacts(monkeypatch: Any, tmp_path: Path) -> None:
+    from scripts.ci.weekly_validation_catalog import main
+
+    class Client(_FakeClient):
+        pass
+
+    monkeypatch.setattr(
+        "scripts.ci.weekly_validation_catalog.StagingClient",
+        lambda *a, **k: Client(),
+    )
+    out = tmp_path / "out"
+    rc = main(
+        [
+            "--manifest",
+            str(MANIFEST),
+            "--out-dir",
+            str(out),
+            "--api-url",
+            "https://api.staging.tac-to-iwxxm.com",
+            "--lb-ip",
+            "127.0.0.1",
+        ]
+    )
+    assert rc == 0
+    assert (out / "weekly-validation-catalog.json").is_file()
+    assert (out / "weekly-validation-catalog.md").is_file()
+
+    class Down(_FakeClient):
+        def request(
+            self, method: str, path: str, **kwargs: Any
+        ) -> tuple[int, Any, str]:
+            del method, kwargs
+            if path == "/health":
+                return 503, None, "down"
+            return 200, {}, "{}"
+
+    monkeypatch.setattr(
+        "scripts.ci.weekly_validation_catalog.StagingClient",
+        lambda *a, **k: Down(),
+    )
+    rc2 = main(["--manifest", str(MANIFEST), "--out-dir", str(tmp_path / "out2")])
+    assert rc2 == 1

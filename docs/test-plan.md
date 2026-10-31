@@ -5306,7 +5306,7 @@ staging. Prod smokes remain Makefile / 13-deploy-smoke against prod hosts.
 ### TC-WEEKLY-VAL-001: Weekly staging validation catalog probe
 
 - **Level**: Scheduled live (Sunday 00:00 UTC) + `workflow_dispatch`; offline unit helpers in
-  `tests/ci/test_weekly_validation_catalog.py`
+  `tests/scripts/test_weekly_validation_catalog.py`
 - **Objective**: Aggregate "what validation issues are raised now" from staging catalogs and
   fixture lint/validate probes; upload JSON + Markdown artifact
 - **Pass criteria**:
