@@ -9,7 +9,12 @@
 import type { LintIssueCatalogEntry } from '@/utils/api';
 import { scrubInternalDocRefs } from '@/utils/internalDocRefGuard';
 
-/** Wire fields needed to resolve a log hint. */
+/**
+ * Wire fields needed to resolve a log hint.
+ *
+ * @example
+ * const _ = true;
+ */
 export type ConversionLogIssueLike = {
   code?: string | null;
   message?: string | null;
