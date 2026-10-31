@@ -8,6 +8,7 @@ to the JSON format expected by the Airport validator.
 
 import csv
 import json
+import re
 import sys
 from pathlib import Path
 from typing import Any
@@ -71,9 +72,14 @@ def convert_csv_to_json(csv_path: Path, json_path: Path) -> None:
         reader = csv.DictReader(f)
 
         for row in reader:
-            # Skip airports without ICAO codes
-            icao = row.get("icao_code", "").strip()
-            if not icao or icao == "":
+            # Prefer icao_code; fall back to ident when it is a 4-char designator
+            # (aligns with ADR-051 reference-lookup matching on ident).
+            icao = row.get("icao_code", "").strip().upper()
+            if not icao:
+                ident = row.get("ident", "").strip().upper()
+                if re.fullmatch(r"[A-Z0-9]{4}", ident):
+                    icao = ident
+            if not icao:
                 skipped += 1
                 continue
 
@@ -138,6 +144,23 @@ def convert_csv_to_json(csv_path: Path, json_path: Path) -> None:
             airports.append(airport)
 
     print(f"Converted {len(airports)} airports (skipped {skipped} without ICAO codes)")
+
+    # Re-apply checked-in supplements so a full OurAirports refresh does not drop
+    # METAR stations that only appear in NOAA AWC (or OA ident-only rows).
+    supplements_path = json_path.parent / "airport_registry_supplements.json"
+    if supplements_path.exists():
+        with open(supplements_path, encoding="utf-8") as f:
+            supplement_payload = json.load(f)
+        existing = {a.get("icao", "").upper() for a in airports}
+        added = 0
+        for row in supplement_payload.get("stations") or []:
+            icao = (row.get("icao") or "").strip().upper()
+            if not icao or icao in existing:
+                continue
+            airports.append(row)
+            existing.add(icao)
+            added += 1
+        print(f"Merged {added} supplement stations from {supplements_path.name}")
 
     # Write JSON
     print(f"Writing to {json_path}...")

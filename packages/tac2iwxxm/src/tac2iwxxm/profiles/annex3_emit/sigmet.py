@@ -1057,7 +1057,7 @@ def emit_sigmet_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
 """
         )
 
-    phenom = _SIG_PHENOM_HREF.format(code=ir["phenomenon"])
+    phenom = _sigmet_phenomenon_href(str(ir["phenomenon"]))
     intensity = str(ir.get("intensity_change", "NO_CHANGE"))
     locations_raw = ir.get("locations")
     locations: list[dict[str, Any]] = []

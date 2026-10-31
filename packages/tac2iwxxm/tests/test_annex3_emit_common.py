@@ -3,7 +3,11 @@
 from __future__ import annotations
 
 import pytest
-from tac2iwxxm.profiles.annex3_emit._common import _fmt_coord, _ns
+from tac2iwxxm.profiles.annex3_emit._common import (
+    _fmt_coord,
+    _ns,
+    _sigmet_phenomenon_href,
+)
 
 
 def test_annex3_emit_ns_known_versions() -> None:
@@ -20,3 +24,10 @@ def test_annex3_emit_ns_unknown_version_raises() -> None:
 def test_annex3_emit_fmt_coord() -> None:
     assert _fmt_coord(12.0) == "12"
     assert _fmt_coord(12.34) == "12.34"
+
+
+def test_sigmet_phenomenon_href_sigwx_vs_airwx() -> None:
+    """SigWx codes stay on SigWxPhenomena; AIRMET vocab uses AirWxPhenomena."""
+    assert _sigmet_phenomenon_href("SEV_MTW").endswith("SigWxPhenomena/SEV_MTW")
+    assert _sigmet_phenomenon_href("OCNL_TS").endswith("AirWxPhenomena/OCNL_TS")
+    assert _sigmet_phenomenon_href("").endswith("AirWxPhenomena/")

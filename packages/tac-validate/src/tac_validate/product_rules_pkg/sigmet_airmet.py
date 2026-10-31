@@ -544,21 +544,22 @@ def _check_sigmet_v1(*, start: int, end: int, upper: str) -> list[Issue]:
         return issues
 
     # Volcano identity required for active VA (including NO VA EXP with volcano named).
+    # Accept MT…PSN or VA [ERUPTION] [MT] NAME PSN (operational MHTG omits MT).
     if _SIGMET_VA_VOLCANO.search(core):
         _emit_token_info(
             issues,
             code="VA_VOLCANO_IDENTITY",
-            message="VA SIGMET erupting volcano identity (MT/PSN) - research V1",
+            message="VA SIGMET erupting volcano identity (name/MT PSN) - research V1",
             core=core,
             body_start=start,
             body_end=end,
-            token="MT",
+            token="PSN",
         )
     elif not _SIGMET_CNL.search(core):
         _emit_token_info(
             issues,
             code="MISSING_VA_VOLCANO",
-            message="VA SIGMET missing volcano identity (MT … PSN) - research V1",
+            message="VA SIGMET missing volcano identity (name/MT … PSN) - research V1",
             core=core,
             body_start=start,
             body_end=end,

@@ -12,6 +12,7 @@ profiles:
   - jp_jma
   - in_imd
   - hk_hko
+  - us_military
 products:
   - TAF
 iwxxm_versions:

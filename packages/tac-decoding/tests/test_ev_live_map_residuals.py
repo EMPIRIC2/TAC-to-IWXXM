@@ -69,12 +69,21 @@ def test_correction_and_delayed_report() -> None:
     assert speci["CCA"] == "Correction (CCA)"
     assert _codes("METAR KJFK 052300Z RRA", "METAR")["RRA"] == "Delayed report (RRA)"
     assert _codes("YUDD SIGMET 2 VALID 101200/101600 YUSO- CCA=", "SIGMET")["CCA"] == "Correction (CCA)"
+    # SIGMET classify path for BBB (no AHL bulletin splitter).
+    assert _codes("YUDD SIGMET 2 VALID 101200/101600 YUSO- RRA=", "SIGMET")["RRA"] == "Delayed report (RRA)"
     assert _codes("YUDD SIGMET 2 VALID 101200/101600 YUSO- UNTIL 1600Z=", "SIGMET")["UNTIL"] == "Until"
     delayed = _codes(
         "WSCA31 TTPP 051430 RRA\nTTZP SIGMET 4 VALID 051430/051830 TTPP-",
         "SIGMET",
     )
     assert delayed["RRA"] == "Delayed report (RRA)"
+    # AHL BBB families via bulletin heading helper (CC / AA).
+    assert (
+        _codes("WSCA31 TTPP 051430 CCA\nTTZP SIGMET 4 VALID 051430/051830 TTPP-", "SIGMET")["CCA"] == "Correction (CCA)"
+    )
+    assert (
+        _codes("WSCA31 TTPP 051430 AAA\nTTZP SIGMET 4 VALID 051430/051830 TTPP-", "SIGMET")["AAA"] == "Amendment (AAA)"
+    )
 
 
 def test_observed_and_forecast_token() -> None:

@@ -18,6 +18,15 @@ profiles:
     recorded:
       - id: US_CONVECTIVE_SIGMET_SHAPE
         note: Convective SIGMET uses FROM and VOR lines. Annex 3 FIR and VALID checks still fire.
+  us_military:
+    engine: annex3
+    differs: true
+    products: [TAF]
+    recorded:
+      - id: US_MILITARY_END_TX_TN
+        note: >-
+          End-of-TAF TX/TN after BECMG/TEMPO/FM/PROB is accepted in Python T3
+          (TX_TN_PRESENT), not via message-token deltas.
   ca_eccc:
     engine: ca_eccc
     differs: true

@@ -171,7 +171,7 @@ def _check_taf(tac: str, *, profile: str = "annex3") -> list[Issue]:
         body_start=start,
         body_end=end,
     )
-    # T3 - TX/TN base-only; CAVOK / NSC / NSW / VV/// (Guidance exceptional).
+    # T3 - TX/TN base-only (annex3); us_military accepts end TX/TN.
     _check_taf_t3_elements(
         issues,
         tokens=tokens,
@@ -179,6 +179,7 @@ def _check_taf(tac: str, *, profile: str = "annex3") -> list[Issue]:
         core=core,
         body_start=start,
         body_end=end,
+        profile=profile,
     )
     issues.extend(
         _check_ca_manair(
@@ -314,6 +315,7 @@ def _check_taf_t3_elements(
     core: str,
     body_start: int,
     body_end: int,
+    profile: str = "annex3",
 ) -> None:
     """
     Internal helper ``_check_taf_t3_elements``.
@@ -332,13 +334,17 @@ def _check_taf_t3_elements(
         Argument ``body_start``.
     body_end : object
         Argument ``body_end``.
+    profile : str, optional
+        Lint profile id. ``us_military`` accepts TX/TN after change groups.
     """
     change_i = _taf_first_change_index(tokens)
     tx_tn_toks = [(i, t) for i, t in enumerate(tokens) if _TAF_TX_TN.fullmatch(t)]
     if tx_tn_toks:
         on_change = any(change_i is not None and i >= change_i for i, _t in tx_tn_toks)
         first_tok = tx_tn_toks[0][1]
-        if on_change:
+        # US military TAFs often trail TX/TN after BECMG/TEMPO (EV-us-military-taf-tx-tn).
+        accept_end_tx_tn = profile == "us_military"
+        if on_change and not accept_end_tx_tn:
             _emit_token_info(
                 issues,
                 code="INVALID_TX_TN",
@@ -349,10 +355,11 @@ def _check_taf_t3_elements(
                 token=first_tok,
             )
         else:
+            placement = "after change groups" if on_change else "on base"
             _emit_token_info(
                 issues,
                 code="TX_TN_PRESENT",
-                message=f"{product} TX/TN temperature forecasts on base - research T3",
+                message=f"{product} TX/TN temperature forecasts {placement} - research T3",
                 core=core,
                 body_start=body_start,
                 body_end=body_end,

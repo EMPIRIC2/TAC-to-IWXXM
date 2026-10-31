@@ -133,14 +133,29 @@ _VA_LOCATION = re.compile(
 )
 
 # Common phenomenon tokens → WMO codelist local name.
+# Longer needles first. SigWxPhenomena has no bare ``TS``; keep ``TS`` last only as a
+# parse fallback for unknown bodies (emit resolves href membership separately).
+# AIRMET-style tokens (OCNL/ISOL) appear in some national SIGMET bulletins.
 _SIG_PHENOMENA = (
+    ("OBSC TSGR", "OBSC_TSGR"),
+    ("EMBD TSGR", "EMBD_TSGR"),
+    ("FRQ TSGR", "FRQ_TSGR"),
+    ("SQL TSGR", "SQL_TSGR"),
     ("OBSC TS", "OBSC_TS"),
     ("EMBD TS", "EMBD_TS"),
     ("FRQ TS", "FRQ_TS"),
     ("SQL TS", "SQL_TS"),
+    ("OCNL TSGR", "OCNL_TSGR"),
+    ("ISOL TSGR", "ISOL_TSGR"),
+    ("OCNL TS", "OCNL_TS"),
+    ("ISOL TS", "ISOL_TS"),
     ("SEV TURB", "SEV_TURB"),
     ("SEV ICE (FZRA)", "SEV_ICE_FZRA"),
     ("SEV ICE", "SEV_ICE"),
+    ("SEV MTW", "SEV_MTW"),
+    ("HVY DS", "HVY_DS"),
+    ("HVY SS", "HVY_SS"),
+    ("RDOACT CLD", "RDOACT_CLD"),
     ("TC", "TC"),
     ("VA", "VA"),
     ("TS", "TS"),

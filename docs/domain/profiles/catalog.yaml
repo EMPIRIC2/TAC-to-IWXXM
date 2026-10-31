@@ -107,6 +107,29 @@ profiles:
         - M14 alias cutover (#1025 → 2026-10-31)
         - FMH-1 §12.7.2 full additive RMK matrix (no mined fixtures)
 
+  - id: US_MILITARY
+    kind: semantic
+    priority: P2
+    status: implemented
+    emit_key: us_military
+    implementation:
+      package: packages/tac-validate
+      validate_profile: us_military
+      cycle: EV-us-military-taf-tx-tn
+    products: [TAF]
+    sources:
+      - url: https://www.aviationweather.gov/
+        label: Live US military TAF samples (e.g. KBIX)
+        access: public
+        proves: End-of-TAF TX/TN after BECMG/TEMPO with QNH####INS
+    stub: semantic/US_MILITARY.md
+    gaps:
+      - Auto-select from station or QNH####INS
+      - FMH / military handbook mining beyond live TAC
+    acceptance:
+      cycle: EV-us-military-taf-tx-tn
+      status: implemented
+
   - id: CA_ECCC
     kind: semantic
     priority: P1

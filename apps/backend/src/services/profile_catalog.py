@@ -178,6 +178,11 @@ _DELTA_MAP: dict[str, list[str]] = {
         "Uses the iwxxm-us schema catalog for United States IWXXM extensions.",
         "Current product slice is METAR, SPECI, SIGMET, AIRMET, TCA, SWXA, and VONA.",
     ],
+    "US_MILITARY": [
+        "Accepts end-of-TAF TX/TN after change groups (military bulletin practice).",
+        "Convert stays on the ICAO/WMO IWXXM line (no military XSD).",
+        "Does not reuse US_FAA_NWS BECMG rules.",
+    ],
     "CA_ECCC": [
         "Adds Canadian MANOBS and MANAIR rules on top of the ICAO baseline.",
         "Pins the Canadian operational IWXXM 3.0.0 line with iwxxm-ca product schemas.",

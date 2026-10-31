@@ -701,8 +701,9 @@ rules:
   code: MISSING_VA_VOLCANO
   label: Missing Va Volcano
   severity: error
-  message_template: 'VA SIGMET missing volcano identity (MT … PSN). Error: the TAC does not meet a required
-    format or product rule and should be corrected. Source: EUR Doc 014 public; Annex 3 paywall companion.'
+  message_template: 'VA SIGMET missing volcano identity (name/MT … PSN). Error: the TAC does not meet
+    a required format or product rule and should be corrected. Source: EUR Doc 014 public; Annex 3 paywall
+    companion.'
   product: sigmet
   tags:
   - va
@@ -1298,8 +1299,8 @@ rules:
   code: VA_VOLCANO_IDENTITY
   label: Va Volcano Identity
   severity: info
-  message_template: 'VA SIGMET erupting volcano identity (MT/PSN). Informational: noted for operator awareness;
-    does not by itself block conversion. Source: EUR Doc 014 public; Annex 3 paywall companion.'
+  message_template: 'VA SIGMET erupting volcano identity (name/MT PSN). Informational: noted for operator
+    awareness; does not by itself block conversion. Source: EUR Doc 014 public; Annex 3 paywall companion.'
   product: sigmet
   tags:
   - va

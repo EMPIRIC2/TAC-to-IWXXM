@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "source": "generated from tac_validate.issue_registry + PROVENANCE_MAP",
-  "generated": "2026-10-29",
+  "generated": "2026-10-30",
   "issues": [
     {
       "code": "AMD_PRESENT",
@@ -913,7 +913,7 @@
     {
       "code": "MISSING_VA_VOLCANO",
       "severity": "error",
-      "message_template": "VA SIGMET missing volcano identity (MT \u2026 PSN). Error: the TAC does not meet a required format or product rule and should be corrected. Source: EUR Doc 014 public; Annex 3 paywall companion.",
+      "message_template": "VA SIGMET missing volcano identity (name/MT \u2026 PSN). Error: the TAC does not meet a required format or product rule and should be corrected. Source: EUR Doc 014 public; Annex 3 paywall companion.",
       "product": "sigmet",
       "tags": [
         "va",
@@ -1685,7 +1685,7 @@
     {
       "code": "VA_VOLCANO_IDENTITY",
       "severity": "info",
-      "message_template": "VA SIGMET erupting volcano identity (MT/PSN). Informational: noted for operator awareness; does not by itself block conversion. Source: EUR Doc 014 public; Annex 3 paywall companion.",
+      "message_template": "VA SIGMET erupting volcano identity (name/MT PSN). Informational: noted for operator awareness; does not by itself block conversion. Source: EUR Doc 014 public; Annex 3 paywall companion.",
       "product": "sigmet",
       "tags": [
         "va",

@@ -263,6 +263,28 @@ def test_split_rejects_vaa_under_sigmet_product() -> None:
     assert exc_info.value.code == "empty_bulletin"
 
 
+def test_split_mwo_space_or_omitted_dash() -> None:
+    """Live TAC often uses ``CCCC -`` or omits the MWO hyphen after VALID."""
+    spaced = (
+        "WSSD20 OEJD 301402\n"
+        "OEJD SIGMET 02 VALID 301400/301800 OEJN -\n"
+        "OEJD JEDDAH FIR EMBD TS OBS WI N2830 E04125 - N2748 E04407 "
+        "TOP ABV FL390 MOV E INTSF=\n"
+    )
+    omitted = (
+        "WSCA31 TTPP 301815\n"
+        "TTZP SIGMET 5 VALID 301815/302215 TTPP\n"
+        "TTZP PIARCO FIR EMBD TS OBS AT 1800Z WI N1226 W06323 "
+        "TOP ABV FL420 STNR WKN=\n"
+    )
+    spaced_result = split_bulletin(spaced, product="SIGMET")
+    assert spaced_result.meta.report_count == 1
+    assert spaced_result.reports[0].startswith("OEJD SIGMET")
+    omitted_result = split_bulletin(omitted, product="SIGMET")
+    assert omitted_result.meta.report_count == 1
+    assert omitted_result.reports[0].startswith("TTZP SIGMET")
+
+
 def test_parse_convective_sigmet_accepts_wst_preamble_line() -> None:
     """WST YYGGgg between unit and CONVECTIVE must still parse (slot builder)."""
     tac = (

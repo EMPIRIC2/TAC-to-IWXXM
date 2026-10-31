@@ -2713,7 +2713,7 @@
       "product": "SIGMET",
       "theme": "V1",
       "depth": "full_checklist",
-      "cite": "VA without MT/PSN; research V1",
+      "cite": "VA CLD without volcano name/PSN; research V1",
       "tac": "negative/sigmet/va_missing_volcano.tac",
       "ok": false,
       "expected_codes": ["MISSING_VA_VOLCANO"],

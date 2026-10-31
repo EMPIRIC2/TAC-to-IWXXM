@@ -11,7 +11,8 @@ from tac_validate import membership
 from tac_validate.issue_registry import issue_from
 from tac_validate.models import Issue
 
-_ICAO = re.compile(r"\b[A-Z]{4}\b")
+# Letter-first location indicator; digits allowed (US METAR e.g. K10U). #1476
+_ICAO = re.compile(r"\b[A-Z][A-Z0-9]{3}\b")
 _OBS_TIME = re.compile(r"\b\d{6}Z\b")
 _WIND = re.compile(r"\b(?:(?:VRB|\d{3})\d{2,3}(?:G\d{2,3})?(?:KT|MPS)|CALM)\b")
 # Extreme direction variation group (Guidance: counter-clockwise then clockwise).
@@ -23,8 +24,10 @@ _VIS_NOT_OBS = r"(?<![A-Z0-9/])////(?:SM)?(?![A-Z0-9/])"
 _VIS_OK = re.compile(
     rf"(?:\b(?:CAVOK|P?\d{{1,2}}SM|[MP]?\d{{1,2}}/\d{{1,2}}SM|\d{{1,2}}\s+[MP]?\d{{1,2}}/\d{{1,2}}SM|\d{{4}})\b|{_VIS_NOT_OBS})"
 )
+# Reject KM / MILES / 5+ digit metre runs. Lookbehind skips CIS runway-state
+# groups like R19/010060 so the six-digit field is not read as visibility.
 _VIS_BAD = re.compile(
-    r"\b(\d+KM|\d+MILES|\d{5,})\b",
+    r"(?<![A-Z0-9/])(\d+KM|\d+MILES|\d{5,})\b",
     re.IGNORECASE,
 )
 # R3: WMO 306 Table 4678 subset - intensity / descriptor / phenomenon grammar.
@@ -148,14 +151,22 @@ _SIGMET_OBS_FCST = re.compile(r"\b(?:OBS|FCST)\b")
 _SIGMET_INTENSITY = re.compile(r"\b(?:INTSF|WKN|NC)\b")
 _SIGMET_VA_TOKEN = re.compile(r"\bVA\b")
 _SIGMET_TC_TOKEN = re.compile(r"\bTC\b")
-_SIGMET_VA_VOLCANO = re.compile(r"\bMT\b.+\bPSN\b|\bPSN\b.+\bMT\b")
+# Volcano identity: Annex-3 ``MT … PSN``, or operational ``VA [ERUPTION] [MT] NAME PSN``
+# (MHTG live form omits ``MT`` / ``ERUPTION``). Do not treat ``VA CLD`` as a name.
+_SIGMET_VA_VOLCANO = re.compile(
+    r"\bMT\b.+\bPSN\b"
+    r"|\bPSN\b.+\bMT\b"
+    r"|\bVA(?:\s+ERUPTION)?(?:\s+MT)?\s+(?!CLD\b)[A-Z][A-Z0-9 \-]{0,40}?\bPSN\b"
+)
 _SIGMET_VA_CLD = re.compile(r"\bVA\s+CLD\b")
 _SIGMET_NO_VA_EXP = re.compile(r"\bNO\s+VA\s+EXP\b")
 _SIGMET_CNL_FIR_MOVED = re.compile(r"\b(?:AND|MOV)\s+TO\s+FIR\b")
 # TC SIGMET - name/PSN identity vs OF TC CENTRE geometry (#829).
-_SIGMET_TC_IDENTITY = re.compile(r"\bTC\s+(?!CENTRE\b)([A-Z][A-Z0-9-]*)\s+PSN\b")
+# Identity: ``TC name PSN`` (Annex 3) or ``TC name OBS AT`` (US WC without PSN).
+# Exclude CENTRE/CENTER so ``TC CENTRE PSN`` forecast lines are not names.
+_SIGMET_TC_IDENTITY = re.compile(r"\bTC\s+(?!CENTRE\b|CENTER\b)([A-Z][A-Z0-9-]*)\s+(?:PSN\b|OBS\s+AT\b)")
 _SIGMET_OF_TC_CENTRE = re.compile(r"\bOF\s+TC\s+CENTRE\b")
-_SIGMET_TC_NAME = re.compile(r"\bTC\s+(?!CENTRE\b)([A-Z][A-Z0-9-]*)\b")
+_SIGMET_TC_NAME = re.compile(r"\bTC\s+(?!CENTRE\b|CENTER\b)([A-Z][A-Z0-9-]*)\b")
 _WS_MAX_VALIDITY_HOURS = 4.0
 _WV_MAX_VALIDITY_HOURS = 6.0
 _WC_MAX_VALIDITY_HOURS = 6.0
@@ -1226,7 +1237,8 @@ def _forecast_or_obs_segments(tokens: list[str]) -> list[list[str]]:
     segments: list[list[str]] = []
     current: list[str] = []
     for tok in tokens:
-        if tok in {"TEMPO", "BECMG", "NOSIG"} or _TAF_FM.fullmatch(tok) or _TAF_PROB.fullmatch(tok):
+        # INTER is an AU change-group opener (FAQ §14.3 exclusivity is same-group only).
+        if tok in {"TEMPO", "BECMG", "NOSIG", "INTER"} or _TAF_FM.fullmatch(tok) or _TAF_PROB.fullmatch(tok):
             if current:
                 segments.append(current)
             current = [tok]
