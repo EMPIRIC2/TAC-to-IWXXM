@@ -5048,9 +5048,15 @@ wiring unchanged fail-closed.
 ### TC-EV-USMIL-TX-TN-001: US military end-of-TAF TX/TN (Build)
 
 - **Level**: T0 / T2
+- **Source**: HF-live-map-warn-error-campaign AskQ-2; [Corpus: product §F20] [Corpus: product §F36]
 - **Objective**: KBIX-style TAF with TX/TN after BECMG/TEMPO under `us_military` does not emit `INVALID_TX_TN`; annex3 still does
 - **Pass criteria**: `us_military` → no `INVALID_TX_TN` (may emit `TX_TN_PRESENT`); `annex3` → `INVALID_TX_TN` error; base-only TX/TN unchanged
-- **Source**: HF-live-map-warn-error-campaign AskQ-2; [Corpus: product §F20] [Corpus: product §F36]
+
+### TC-EV-STATION-TX-TN-001: Military and LatAm station TX/TN profiles
+
+- **Source**: EV-station-profile-tx-tn; [Corpus: product §F20] [Corpus: product §F36]
+- **Objective**: Listed ICAOs resolve to `us_military` or `latam_taf`; under that profile, TX/TN after change groups is `TX_TN_PRESENT` (info); annex3 still errors
+- **Pass criteria**: KBIX/KCVS/KGRK/KNID/KNYL/KPOE/KSZL → `us_military`; SKBO/SEQM/SKBQ/SVMI → `latam_taf`; lint under the mapped profile has no `INVALID_TX_TN`; annex3 has `INVALID_TX_TN`
 
 ### TC-EV094-005: GAMET parse-only held
 

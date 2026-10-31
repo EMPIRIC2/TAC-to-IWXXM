@@ -1663,10 +1663,10 @@
 
 ### F20 deepen (EV-us-military-taf-tx-tn — end-of-TAF TX/TN)
 
-- **Status note**: F20 remains **Done**. Lint profile `us_military` accepts TX/TN after
-  BECMG/TEMPO/FM/PROB as `TX_TN_PRESENT` (info). Annex3 still emits `INVALID_TX_TN` for that
-  placement. Convert emit stays core IWXXM. [Corpus: product §F20] [Corpus: product §F36]
-  [Corpus: decisions]
+- **Status note**: F20 remains **Done**. Under `us_military` and `latam_taf`, TX/TN
+  after BECMG/TEMPO/FM/PROB is `TX_TN_PRESENT` (info) for the stations listed on each
+  profile. Annex3 still emits `INVALID_TX_TN`. Convert stays core IWXXM.
+  [Corpus: product §F20] [Corpus: product §F36] [Corpus: decisions]
 
 ### F6 deepen (S020 / EV-015 — TAF + SPECI)
 
@@ -2627,9 +2627,10 @@
      for TAF TX/TN omission awareness (convert stays core IWXXM); GAMET parse-only reaffirm;
      UK-first PRs; catalog `status: implemented` for six packs; **close #1098** on land
      (**do not reopen #920**).
-  22b. **EV-us-military-taf-tx-tn:** `US_MILITARY` / `us_military` lint overlay — end-of-TAF
-     TX/TN after change groups → `TX_TN_PRESENT` (info); annex3 keeps `INVALID_TX_TN`; emit
-     annex3; not `US_FAA_NWS` (BECMG forbidden there).
+  22b. **EV-us-military-taf-tx-tn / EV-station-profile-tx-tn:** `US_MILITARY` and
+     `LATAM_TAF` map listed ICAOs; TX/TN after change groups → `TX_TN_PRESENT` (info);
+     `resolve_profile_for_station`; annex3 keeps `INVALID_TX_TN`; emit annex3; not
+     `US_FAA_NWS` (BECMG forbidden there).
   23. **EV-098 / #1028–#1031:** CA_ECCC deep mining: datamart triage (#1028); MSC `doc/` PDFs
      (#1031); MANOBS P0 TAC rules + fixtures (#1029); MANAIR TAF/AIRMET/GFA (#1030). Research via
      deep-research-domain-handoff (EV-097); promote via mine-domain-sources after gate C.
@@ -3012,7 +3013,7 @@
 - **Issue**: [#1272](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1272)
 - **What it does**: One local command pulls the public feeds that worked on 2026-09-23, takes one report per feed and product that feed actually carries, and runs that report under every **implemented** semantic profile that lists the product. International SIGMET skips a bulletin whose VALID period is longer than the Annex 3 maximum (4 hours, or 6 hours for VA or TC) and takes the next one. When every bulletin in that feed exceeds the maximum, the first is kept. It writes a pass/fail summary and exits non-zero when any check fails.
 - **Feeds**: Aviation Weather Center METAR, TAF, international SIGMET, and convective SIGMET; NOAA tgftp raw VAA (`FV`), TCA (`FK`), AIRMET (`WA`), VONA (`WM`, newest notice that still has an `SVO:` line), and space-weather files (`FN` names beginning `fnxx`); JMA Tokyo VAAC text.
-- **Profiles**: Implemented semantic profiles only (`ICAO_2025`, `US_FAA_NWS`, `CA_ECCC`, `AU_BOM`, `NZ_CAA_MET`, `UK_METOFFICE`, `BR_DECEA`, `KR_KMA`, `JP_JMA`, `IN_IMD`, `HK_HKO`, `US_MILITARY`). Exchange profiles, including implemented `GLOBAL_AFS` and the stub overlays, stay out.
+- **Profiles**: Implemented semantic profiles only (`ICAO_2025`, `US_FAA_NWS`, `CA_ECCC`, `AU_BOM`, `NZ_CAA_MET`, `UK_METOFFICE`, `BR_DECEA`, `KR_KMA`, `JP_JMA`, `IN_IMD`, `HK_HKO`, `US_MILITARY`, `LATAM_TAF`). Exchange profiles, including implemented `GLOBAL_AFS` and the stub overlays, stay out.
 - **Checks**: convert, IWXXM schema validation, lint, and decode. A fetch that cannot be completed fails the command and appears in the summary.
 - **Fail closed**: Non-zero exit on convert failure, document schema failure (`XSD_VALIDATION_ERROR`), lint **error**, or decode failure. `SCHEMA_PARSE_ERROR` is also non-zero and is printed on its own line, separate from document errors. Lint warnings do not fail the command.
 - **Misses**: The command does not edit the lint catalog or convert allowlists. A person adds a catalog row for a stable national lint difference, and an allowlist row for a stable convert miss. No new lint module.

@@ -8,6 +8,7 @@ import re
 
 from tac_validate.models import Issue
 from tac_validate.product_rules_pkg._common import *
+from tac_validate.station_scoped_policy import accepts_end_tx_tn
 from tac_validate.taf_amd import amd_modifier_present
 from tac_validate.taf_prob import ProbGroupKind, classify_probability_group
 
@@ -335,16 +336,16 @@ def _check_taf_t3_elements(
     body_end : object
         Argument ``body_end``.
     profile : str, optional
-        Lint profile id. ``us_military`` accepts TX/TN after change groups.
+        Lint profile id. ``us_military`` and ``latam_taf`` allow TX/TN after
+        change groups.
     """
     change_i = _taf_first_change_index(tokens)
     tx_tn_toks = [(i, t) for i, t in enumerate(tokens) if _TAF_TX_TN.fullmatch(t)]
     if tx_tn_toks:
         on_change = any(change_i is not None and i >= change_i for i, _t in tx_tn_toks)
         first_tok = tx_tn_toks[0][1]
-        # US military TAFs often trail TX/TN after BECMG/TEMPO (EV-us-military-taf-tx-tn).
-        accept_end_tx_tn = profile == "us_military"
-        if on_change and not accept_end_tx_tn:
+        # us_military / latam_taf: trailing TX/TN is info (EV-station-profile-tx-tn).
+        if on_change and not accepts_end_tx_tn(profile):
             _emit_token_info(
                 issues,
                 code="INVALID_TX_TN",

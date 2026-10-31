@@ -13,6 +13,7 @@ profiles:
   - in_imd
   - hk_hko
   - us_military
+  - latam_taf
 products:
   - TAF
 iwxxm_versions:
