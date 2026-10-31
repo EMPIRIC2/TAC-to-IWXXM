@@ -39,7 +39,7 @@ def test_cli_prints_issue_spans(tmp_path: Path, monkeypatch: pytest.MonkeyPatch)
             )
         ],
     )
-    monkeypatch.setattr("tac_validate.cli.lint", lambda *_a, **_k: report)
+    monkeypatch.setattr("tac_validate.cli.lint_with_profile", lambda *_a, **_k: report)
     out = io.StringIO()
     with redirect_stdout(out):
         code = main(["--product", "METAR", str(tac)])
@@ -63,7 +63,7 @@ def test_cli_omits_incomplete_issue_span(tmp_path: Path, monkeypatch: pytest.Mon
             )
         ],
     )
-    monkeypatch.setattr("tac_validate.cli.lint", lambda *_a, **_k: report)
+    monkeypatch.setattr("tac_validate.cli.lint_with_profile", lambda *_a, **_k: report)
     out = io.StringIO()
 
     with redirect_stdout(out):

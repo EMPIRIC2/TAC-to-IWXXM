@@ -278,24 +278,21 @@ def lint_with_profile(
     if not apply_policy:
         return report
     try:
-        from tac2iwxxm.profile_resolve import ProfileResolveError, resolve_validation_policies
+        from tac2iwxxm.profile_resolve import resolve_validation_policies
 
-        from tac_validate.policy import PolicyError, apply_policy_to_report
+        from tac_validate.policy import apply_policy_to_report
     except ImportError:
         return report
-    try:
-        policies = resolve_validation_policies(
-            profile_l,
-            product=product_u,
-            tac_policy=tac_policy,
-        )
-        return apply_policy_to_report(
-            report,
-            policies.tac_quality_policy_id,
-            profile=profile_l,
-        )
-    except (ProfileResolveError, PolicyError):
-        return report
+    policies = resolve_validation_policies(
+        profile_l,
+        product=product_u,
+        tac_policy=tac_policy,
+    )
+    return apply_policy_to_report(
+        report,
+        policies.tac_quality_policy_id,
+        profile=profile_l,
+    )
 
 
 __all__ = [
