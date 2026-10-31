@@ -1,96 +1,43 @@
-"""Lint policies keyed by station ICAO for end-of-TAF TX/TN (F20 / F36).
+"""Station-scoped lint flags loaded from ``lint_profiles.yaml``.
 
-``UsMilitaryLintPolicy`` and ``LatAmTafLintPolicy`` extend
-``StationScopedLintPolicy``. Wire ids stay in ``lint_profiles.yaml``; this
-module maps stations and whether TX/TN after change groups is informational.
+Profiles with ``stations`` and/or ``accept_end_tx_tn`` drive ICAO → profile
+resolve and end-of-TAF TX/TN info treatment. No per-country Python subclasses.
 
 [Corpus: product §F20] [Corpus: product §F36] [Corpus: domain-profiles]
 """
 
 from __future__ import annotations
 
-from abc import ABC
+from dataclasses import dataclass
 from functools import cache
 
+from tac_validate.lint_profile_catalog import load_lint_profiles
 
-class StationScopedLintPolicy(ABC):
+
+@dataclass(frozen=True, slots=True)
+class StationScopedLintPolicy:
     """
-    Base class for a lint profile tied to a fixed station list.
+    One catalog row that lists stations and/or end TX/TN acceptance.
 
     Attributes
     ----------
     profile_id : str
-        Lint profile id (e.g. ``us_military``).
+        Lint profile id.
     stations : frozenset[str]
         ICAO codes on this profile.
     accept_end_tx_tn : bool
-        If True, TX/TN after change groups → ``TX_TN_PRESENT`` (info), not
-        ``INVALID_TX_TN`` (error).
+        If True, TX/TN after change groups → ``TX_TN_PRESENT``.
     """
 
     profile_id: str
     stations: frozenset[str]
     accept_end_tx_tn: bool = False
 
-    def __init_subclass__(cls, **kwargs: object) -> None:
-        """
-        Require ``profile_id`` and ``stations`` on concrete subclasses.
-
-        Parameters
-        ----------
-        kwargs : object
-            Forwarded to ``ABC.__init_subclass__``.
-        """
-        super().__init_subclass__(**kwargs)
-        required = ("profile_id", "stations")
-        for name in required:
-            if not hasattr(cls, name):
-                msg = f"{cls.__name__} must define {name}"
-                raise TypeError(msg)
-
-
-class UsMilitaryLintPolicy(StationScopedLintPolicy):
-    """
-    US military TAF lint (QNH####INS + TX/TN after change groups).
-
-    Attributes
-    ----------
-    profile_id : str
-        Wire id ``us_military``.
-    stations : frozenset[str]
-        Military ICAO list.
-    accept_end_tx_tn : bool
-        Always True for this profile.
-    """
-
-    profile_id = "us_military"
-    stations = frozenset({"KBIX", "KCVS", "KGRK", "KNID", "KNYL", "KPOE", "KSZL"})
-    accept_end_tx_tn = True
-
-
-class LatAmTafLintPolicy(StationScopedLintPolicy):
-    """
-    Latin America TAF lint (TX/TN after change groups).
-
-    Attributes
-    ----------
-    profile_id : str
-        Wire id ``latam_taf``.
-    stations : frozenset[str]
-        LatAm ICAO list.
-    accept_end_tx_tn : bool
-        Always True for this profile.
-    """
-
-    profile_id = "latam_taf"
-    stations = frozenset({"SKBO", "SEQM", "SKBQ", "SVMI"})
-    accept_end_tx_tn = True
-
 
 @cache
 def station_scoped_policies() -> tuple[StationScopedLintPolicy, ...]:
     """
-    Return the registered station-list policies.
+    Return catalog profiles that declare stations.
 
     Examples
     --------
@@ -100,15 +47,28 @@ def station_scoped_policies() -> tuple[StationScopedLintPolicy, ...]:
     Returns
     -------
     tuple[StationScopedLintPolicy, ...]
-        Policies in registration order.
+        Policies in catalog order.
     """
-    return (UsMilitaryLintPolicy(), LatAmTafLintPolicy())
+    rows: list[StationScopedLintPolicy] = []
+    for profile_id, spec in load_lint_profiles().items():
+        if not spec.stations and not spec.accept_end_tx_tn:
+            continue
+        if not spec.stations:
+            continue
+        rows.append(
+            StationScopedLintPolicy(
+                profile_id=profile_id,
+                stations=spec.stations,
+                accept_end_tx_tn=spec.accept_end_tx_tn,
+            )
+        )
+    return tuple(rows)
 
 
 @cache
 def _station_to_profile() -> dict[str, str]:
     """
-    Build ICAO → profile_id for every registered policy.
+    Build ICAO → profile_id for every station-listed profile.
 
     Returns
     -------
@@ -124,19 +84,6 @@ def _station_to_profile() -> dict[str, str]:
                 raise ValueError(msg)
             mapping[key] = policy.profile_id
     return mapping
-
-
-@cache
-def _end_tx_tn_profiles() -> frozenset[str]:
-    """
-    Profile ids that treat TX/TN after change groups as info.
-
-    Returns
-    -------
-    frozenset[str]
-        Profile ids with ``accept_end_tx_tn``.
-    """
-    return frozenset(p.profile_id for p in station_scoped_policies() if p.accept_end_tx_tn)
 
 
 def resolve_profile_for_station(icao: str) -> str | None:
@@ -183,14 +130,39 @@ def accepts_end_tx_tn(profile: str) -> bool:
     bool
         True when end TX/TN should be ``TX_TN_PRESENT``.
     """
-    return profile.strip().lower() in _end_tx_tn_profiles()
+    spec = load_lint_profiles().get(profile.strip().lower())
+    return bool(spec is not None and spec.accept_end_tx_tn)
+
+
+def stations_for(profile: str) -> frozenset[str]:
+    """
+    Return ICAO stations listed on ``profile``.
+
+    Parameters
+    ----------
+    profile : str
+        Lint profile id.
+
+    Returns
+    -------
+    frozenset[str]
+        Station set (possibly empty).
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (stations_for)
+    2
+    """
+    spec = load_lint_profiles().get(profile.strip().lower())
+    if spec is None:
+        return frozenset()
+    return spec.stations
 
 
 __all__ = [
-    "LatAmTafLintPolicy",
     "StationScopedLintPolicy",
-    "UsMilitaryLintPolicy",
     "accepts_end_tx_tn",
     "resolve_profile_for_station",
     "station_scoped_policies",
+    "stations_for",
 ]

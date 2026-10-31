@@ -21,9 +21,8 @@ from tac2iwxxm.heading_paste import HeadingPasteError, http_status_for_heading_e
 from tac2iwxxm.profile_registry import supported_report_variants_for_profile
 from tac2iwxxm.profile_resolve import resolve_validation_policies
 from tac2iwxxm.profiles.ca_eccc import CA_IWXXM_VERSION
-from tac_validate import lint as tac_lint_fn
+from tac_validate.api import lint_with_profile
 from tac_validate.models import LintReport
-from tac_validate.profiles import effective_lint_profile
 
 from src import api as api_surface
 from src.schemas.conversion import (
@@ -1999,10 +1998,10 @@ async def convert_bulletin(
         ok = True
 
         if lint:
-            lint_report = tac_lint_fn(
+            lint_report = lint_with_profile(
                 tac,
                 product=product,
-                profile=effective_lint_profile(profile, product),
+                profile=profile,
             )
             issues.extend(
                 LintIssueModel(
@@ -2838,10 +2837,10 @@ async def convert(
         if request_body is not None and getattr(request_body, "metars", None):
             sample = (request_body.metars[0] or "").strip() if request_body.metars else sample
         if sample:
-            pre_convert_lint_report = tac_lint_fn(
+            pre_convert_lint_report = lint_with_profile(
                 sample,
                 product=product,
-                profile=effective_lint_profile(profile, product),
+                profile=profile,
             )
 
     validation_level = api_surface.normalize_validation_level(validation_level)

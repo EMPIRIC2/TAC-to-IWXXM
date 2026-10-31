@@ -19,6 +19,10 @@ from tac2iwxxm.profile_registry import resolve_semantic_profile
 _ANNEX3_POLICIES = ("annex3-metar-quality", "annex3-iwxxm-output")
 ENV_PROFILE_DIR = "TAC2IWXXM_PROFILE_DIR"
 
+# Shared TAF policy: PROB_PERIOD_WITHOUT_TEMPO → info (US / CA / UK + children).
+_TAF_PROB_PERIOD_INFO = "taf-prob-period-info-quality"
+_TAF_PROB_PERIOD_EMIT_KEYS = frozenset({"iwxxm_us", "ca_eccc", "uk_metoffice"})
+
 # National emit keys share the annex3 policy documents until a profile ships its own ids.
 _POLICY_BY_EMIT: dict[str, tuple[str, str]] = {
     "annex3": _ANNEX3_POLICIES,
@@ -39,6 +43,45 @@ _POLICY_BY_EMIT: dict[str, tuple[str, str]] = {
     "us_nws_vona": _ANNEX3_POLICIES,
     "ca_msc_sigmet": _ANNEX3_POLICIES,
 }
+
+
+def _emit_chain(emit_key: str) -> tuple[str, ...]:
+    """
+    Return lint-profile inherit chain for ``emit_key`` (root first).
+
+    Parameters
+    ----------
+    emit_key : str
+        Emit / lint profile id.
+
+    Returns
+    -------
+    tuple[str, ...]
+        Inherit chain.
+    """
+    try:
+        from tac_validate.lint_profile_catalog import profile_inherit_chain
+
+        return profile_inherit_chain(emit_key)
+    except Exception:
+        return (emit_key,)
+
+
+def _uses_taf_prob_period_info(emit_key: str) -> bool:
+    """
+    Return True when TAF should use the shared PROB-period info policy.
+
+    Parameters
+    ----------
+    emit_key : str
+        Emit / lint profile id.
+
+    Returns
+    -------
+    bool
+        True when the profile or an ancestor is US / CA / UK.
+    """
+    return bool(_TAF_PROB_PERIOD_EMIT_KEYS.intersection(_emit_chain(emit_key)))
 
 
 class ProfileResolveError(ValueError):
@@ -240,7 +283,7 @@ def resolve_validation_policies(
     tac_id, iwxxm_id = pair
     product_u = (product or "").strip().upper()
     if product_u == "TAF" and tac_id == "annex3-metar-quality":
-        tac_id = "annex3-taf-quality"
+        tac_id = _TAF_PROB_PERIOD_INFO if _uses_taf_prob_period_info(resolved.emit_key) else "annex3-taf-quality"
     elif product_u == "SIGMET" and tac_id == "annex3-metar-quality":
         tac_id = "annex3-sigmet-quality"
     elif product_u == "AIRMET" and tac_id == "annex3-metar-quality":

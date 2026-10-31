@@ -7,8 +7,9 @@ from typing import Any
 
 from fastapi import APIRouter, File, Form, HTTPException, Request, UploadFile
 from fastapi.responses import Response
-from tac_validate import lint as tac_lint_fn
+from tac_validate.api import lint_with_profile
 from tac_validate.issue_registry import catalog_entries as tac_catalog_entries
+from tac_validate.profiles import PROFILE_ANNEX3
 
 from src import api as api_surface
 from src.schemas.airport import get_airport_validator
@@ -428,6 +429,14 @@ async def lint_tac(
         default="METAR",
         description="Product type, or iwxxm for XML lint (default METAR)",
     ),
+    semantic_profile: str = Form(
+        default=PROFILE_ANNEX3,
+        description="Semantic / lint profile id (default annex3)",
+    ),
+    icao: str = Form(
+        default="",
+        description="Optional station ICAO; TAF auto-detects when omitted",
+    ),
     files: list[UploadFile] | None = File(None),
 ) -> Response:
     """
@@ -491,7 +500,21 @@ async def lint_tac(
                 fixes=[],
             )
         )
-    report = tac_lint_fn(tac_text, product=product_u)
+    profile = (semantic_profile or PROFILE_ANNEX3).strip() or PROFILE_ANNEX3
+    station = (icao or "").strip() or None
+    try:
+        from tac2iwxxm.profile_registry import resolve_semantic_profile
+
+        resolved = resolve_semantic_profile(profile)
+        profile_key = resolved.emit_key if resolved is not None else profile
+    except Exception:
+        profile_key = profile
+    report = lint_with_profile(
+        tac_text,
+        product=product_u,
+        profile=profile_key,
+        icao=station,
+    )
     return api_surface.msgspec_json_response(
         LintTacResponse(
             ok=report.ok,

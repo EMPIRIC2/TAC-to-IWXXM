@@ -17,7 +17,7 @@ from tac_validate.models import Issue, LintReport
 
 _NZ_AUTO = "METAR NZWN 231800Z AUTO 05003KT 9999 FEW010/// 06/02 Q1030="
 _BASIC = "METAR YSSY 231800Z 18008KT 9999 FEW040 22/18 Q1012="
-_SAME_AS_ANNEX3 = ("au_bom", "uk_metoffice", "br_decea", "kr_kma", "jp_jma", "hk_hko")
+_SAME_AS_ANNEX3 = ("br_decea", "kr_kma", "jp_jma", "hk_hko")
 
 
 def test_catalog_records_every_thin_profile() -> None:
@@ -28,7 +28,11 @@ def test_catalog_records_every_thin_profile() -> None:
         assert spec.differs is False
         assert spec.deltas == ()
     assert rows["nz_caa_met"].differs is True
+    assert rows["au_bom"].differs is True
+    assert rows["uk_metoffice"].differs is True
     assert rows["iwxxm_us"].recorded == ("US_CONVECTIVE_SIGMET_SHAPE",)
+    assert rows["us_military"].inherits == "iwxxm_us"
+    assert rows["us_military"].accept_end_tx_tn is True
 
 
 def test_new_zealand_unobserved_cloud_type_is_accepted_under_both_profiles() -> None:
