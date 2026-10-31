@@ -31,6 +31,12 @@ afterEach(() => {
  */
 const memoryStorageBags = new WeakMap<object, Map<string, string>>();
 
+/**
+ * Return the in-memory key/value bag for a Storage instance under test.
+ *
+ * @param storage - Storage object that owns the bag
+ * @returns Mutable map of string keys to values
+ */
 function bagFor(storage: object): Map<string, string> {
   let bag = memoryStorageBags.get(storage);
   if (!bag) {
@@ -40,6 +46,9 @@ function bagFor(storage: object): Map<string, string> {
   return bag;
 }
 
+/**
+ * Install Storage.prototype hooks so memory-backed bags intercept clear/get/set.
+ */
 function installMemoryStoragePrototypeHooks(): void {
   if (typeof Storage === 'undefined') {
     return;
@@ -96,6 +105,11 @@ function installMemoryStoragePrototypeHooks(): void {
   };
 }
 
+/**
+ * Ensure ``localStorage`` / ``sessionStorage`` exist with memory-backed behavior in jsdom.
+ *
+ * @param name - Which Web Storage global to install when missing
+ */
 function ensureWebStorage(name: 'localStorage' | 'sessionStorage'): void {
   const g = globalThis as typeof globalThis & {
     localStorage?: Storage;
