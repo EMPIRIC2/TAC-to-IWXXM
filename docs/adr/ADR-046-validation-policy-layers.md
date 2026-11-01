@@ -74,3 +74,16 @@ Two-layer reuse only (no mixins):
 2. **Policy `extends`** — unchanged ADR-046 policy documents. Profile resolve walks the inherit chain and binds the first TAC quality / IWXXM output policy id found (child wins). Shared helper `lint_with_profile` runs lint then `apply_policy_to_report`.
 3. **HTTP / ICAO** — `/lint-tac` and convert pre-lint share that helper. When the caller profile is default `annex3` / `ICAO_2025` and the station maps to a national leaf, prefer the station profile; an explicit national profile wins.
 
+### Amend (2026-11-01, EV-taf-national-prefer-prob)
+
+`lint_profiles.yaml` adds a leaf-only `station_prefixes` list alongside `stations`.
+ICAO prefer resolves **exact `stations` first, then the longest matching
+`station_prefix`**. US `K` prefixes to `iwxxm_us` and Canadian `CY` to `ca_eccc`, so
+default `annex3` TAF lint over K\*/CY\* stations binds the shared
+`taf-prob-period-info-quality` policy (PROB period → info; aligns with NWS 10-813 /
+FAA-H-8083-28 standalone PROB). Military K-stations stay exact-listed under
+`us_military` (engine `annex3`, BECMG allowed) and win over the `K` prefix. Prefer is
+TAF-only, so Canadian `CW*` auto stations keep annex3 METAR errors (`MISSING_VISIBILITY`
+/ `MISSING_QNH` — MANOBS expects VIS MISG / PRES MISG). PROB that qualifies BECMG/FM
+stays `INVALID_PROB` (Annex 3 App 5 §1.4) — e.g. HKJK, LGTS.
+
