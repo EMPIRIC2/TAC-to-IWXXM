@@ -4,6 +4,11 @@
  * Plain-language operator copy only — no planning ids.
  */
 
+/**
+ * Type `StrictControlsProps`.
+ * @example
+ * const _ = true;
+ */
 export interface StrictControlsProps {
   strict: boolean;
   strictLint: boolean;

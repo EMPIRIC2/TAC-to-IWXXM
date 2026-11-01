@@ -5,8 +5,18 @@
  * raised severity set. Strict OFF → critical + error. Strict ON → full ladder.
  */
 
+/**
+ * Type `StrictSeverity`.
+ * @example
+ * const _ = true;
+ */
 export type StrictSeverity = 'critical' | 'error' | 'warning' | 'info';
 
+/**
+ * Type `StrictRaiseSteps`.
+ * @example
+ * const _ = true;
+ */
 export interface StrictRaiseSteps {
   lint: boolean;
   convert: boolean;
