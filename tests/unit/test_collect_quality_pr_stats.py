@@ -158,6 +158,24 @@ def test_normalize_sticky_profile_maps_uppercase_to_catalog_case() -> None:
 
 
 @pytest.mark.unit
+def test_normalize_sticky_profile_fallback_when_canonical_raises(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Cover local lowercasing when lint_profile_ids helper is unavailable."""
+    mod = _load_module()
+
+    def _boom(_raw: str) -> str:
+        raise RuntimeError("canonical unavailable")
+
+    monkeypatch.setattr(
+        "tac_validate.lint_profile_ids.canonical_lint_profile_id",
+        _boom,
+    )
+    assert mod.normalize_sticky_profile("  IwXxM_Us ") == "iwxxm_us"
+    assert mod.normalize_sticky_profile(None) == ""  # type: ignore[arg-type]
+
+
+@pytest.mark.unit
 def test_collect_quality_matrix_inventory_normalizes_profile_case(
     tmp_path: Path,
 ) -> None:
