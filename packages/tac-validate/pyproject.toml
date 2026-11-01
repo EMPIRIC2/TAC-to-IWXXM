@@ -7,8 +7,12 @@ license = { text = "MIT" }
 requires-python = ">=3.12"
 dependencies = [
   "msgspec>=0.19",
+  "metar-shared",
   "pyyaml==6.0.3",
 ]
+
+[tool.uv.sources]
+metar-shared = { workspace = true }
 
 [project.scripts]
 tac-validate = "tac_validate.cli:main"

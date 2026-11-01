@@ -12,8 +12,10 @@ from __future__ import annotations
 from typing import Final
 
 # Legacy spellings that are not a pure casefold of a catalog id.
-# Empty today — casefold covers the known QM UPPERCASE leaves.
-PROFILE_ID_ALIASES: Final[dict[str, str]] = {}
+# Conversion alias ICAO_2025 → annex3 (lint catalog root / ADR-055 defaults).
+PROFILE_ID_ALIASES: Final[dict[str, str]] = {
+    "icao_2025": "annex3",
+}
 
 
 def canonical_lint_profile_id(raw: str) -> str:

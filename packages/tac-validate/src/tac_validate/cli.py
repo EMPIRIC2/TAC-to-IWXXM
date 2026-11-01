@@ -101,15 +101,22 @@ def _bound_policy(profile: str, policy: str | None, *, product: str | None = Non
     object
         Return value.
     """
+    from tac_validate.lint_profile_catalog import load_lint_profiles
+    from tac_validate.lint_profile_ids import canonical_lint_profile_id
+    from tac_validate.quality_policy_bind import resolve_tac_quality_policy_id
+
+    profile_l = canonical_lint_profile_id(profile)
+    if profile_l not in load_lint_profiles():
+        raise PolicyError(f"unknown conversion profile {profile!r}")
     try:
-        from tac2iwxxm.profile_resolve import ProfileResolveError, resolve_validation_policies
-    except ImportError:
-        return _lint_profile(profile), policy or ""
-    try:
-        resolved = resolve_validation_policies(profile, product=product, tac_policy=policy)
-    except ProfileResolveError as exc:
+        policy_id = resolve_tac_quality_policy_id(
+            profile_l,
+            product=product,
+            tac_policy=policy,
+        )
+    except Exception as exc:
         raise PolicyError(str(exc)) from exc
-    return _lint_profile(resolved.emit_key), resolved.tac_quality_policy_id
+    return _lint_profile(profile_l), policy_id
 
 
 def main(argv: Sequence[str] | None = None) -> int:
