@@ -15,7 +15,7 @@ from typing import Any, cast
 from xml.sax.saxutils import escape
 
 from tac2iwxxm.profiles.annex3 import NS, aerodrome_block, build_observation_and_trends, obs_timestamp
-from tac2iwxxm.profiles.annex3_products import (
+from tac2iwxxm.profiles.annex3_emit import (
     emit_airmet_annex3,
     emit_sigmet_annex3,
     emit_taf_annex3,

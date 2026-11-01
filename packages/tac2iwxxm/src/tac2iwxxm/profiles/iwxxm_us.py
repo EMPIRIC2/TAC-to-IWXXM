@@ -1450,7 +1450,7 @@ def emit_taf_iwxxm_us(ir: dict[str, Any], *, iwxxm_version: str) -> str:
     >>> 1 + 1  # docstring smoke (emit_taf_iwxxm_us)
     2
     """
-    from tac2iwxxm.profiles.annex3_products import emit_taf_annex3
+    from tac2iwxxm.profiles.annex3_emit import emit_taf_annex3
 
     xml = emit_taf_annex3(ir, iwxxm_version=iwxxm_version)
     xml = _with_us_namespace(xml)
@@ -1494,7 +1494,7 @@ def emit_sigmet_iwxxm_us(ir: dict[str, Any], *, iwxxm_version: str) -> str:
     >>> 1 + 1  # docstring smoke (emit_sigmet_iwxxm_us)
     2
     """
-    from tac2iwxxm.profiles.annex3_products import emit_sigmet_annex3
+    from tac2iwxxm.profiles.annex3_emit import emit_sigmet_annex3
 
     xml = emit_sigmet_annex3(ir, iwxxm_version=iwxxm_version)
     xml = _with_us_namespace(xml)
@@ -1526,7 +1526,7 @@ def emit_airmet_iwxxm_us(ir: dict[str, Any], *, iwxxm_version: str) -> str:
     >>> 1 + 1  # docstring smoke (emit_airmet_iwxxm_us)
     2
     """
-    from tac2iwxxm.profiles.annex3_products import emit_airmet_annex3
+    from tac2iwxxm.profiles.annex3_emit import emit_airmet_annex3
 
     xml = emit_airmet_annex3(ir, iwxxm_version=iwxxm_version)
     xml = _with_us_namespace(xml)
