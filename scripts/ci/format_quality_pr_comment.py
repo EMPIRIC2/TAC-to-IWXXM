@@ -51,7 +51,13 @@ def parse_summary(path: Path) -> tuple[str, list[tuple[RowKey, Counts]]]:
         if not isinstance(row, dict):
             continue
         product = str(row.get("product") or "").strip() or "?"
-        profile = str(row.get("profile") or "").strip() or "?"
+        profile_raw = str(row.get("profile") or "").strip() or "?"
+        try:
+            from tac_validate.lint_profile_ids import canonical_lint_profile_id
+
+            profile = canonical_lint_profile_id(profile_raw) or "?"
+        except Exception:
+            profile = profile_raw.strip().lower() or "?"
         counts: Counts = (
             _as_int(row.get("match")),
             _as_int(row.get("soft_diff")),
