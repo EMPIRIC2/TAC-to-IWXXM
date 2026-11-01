@@ -65,6 +65,11 @@ _RVR = re.compile(r"^R\d{2}")
 # ICAO tendency U|D|N may follow the value (and optional FT for US). EV-040: R12/1000U
 # from WMO A3-1 is valid - prior pattern only allowed bare N/FT, not U/D.
 _RVR_OK = re.compile(r"^R\d{2}[LCR]?/(?:[MP]?\d{4}(?:V[MP]?\d{4})?|////)(?:FT)?[UDN]?$")
+# CIS/Russian runway-state deposit group (Rxx/dddddd) is not ICAO RVR — skip R8.
+_RVR_RUNWAY_STATE = re.compile(r"^R\d{2}[LCR]?/\d{6}$")
+# BoM AUTO dewpoint-not-observable (temp present, dewpoint solidus).
+# Trailing solidi are non-word chars, so do not use a trailing \\b.
+_TEMP_DEWPOINT_NIL = re.compile(r"\bM?\d{2}///(?=\s|$|=)")
 # WMO AHL heading: T1T2A1A2ii CCCC YYGGgg [BBB] - YYGGgg must not be treated as visibility.
 _AHL_HEADING_LINE = re.compile(r"^[A-Z]{2}[A-Z]{2}\d{2}\s+[A-Z]{4}\s+\d{6}(?:\s+[A-Z]{3})?\s*$")
 _WIND_TOKEN = re.compile(r"(?:KT|MPS)$|^CALM$")
@@ -139,6 +144,12 @@ _SIGMET_TOP_ABV_BLW = re.compile(r"\bTOP\s+(?:ABV|BLW)\b")
 _SIGMET_WI = re.compile(r"\bWI\b")
 _SIGMET_STNR = re.compile(r"\bSTNR\b")
 _SIGMET_MOV = re.compile(r"\bMOV\b")
+# Habana-style idiom: MOV immediately followed by STNR (no direction/speed).
+_SIGMET_MOV_STNR_ADJACENT = re.compile(r"\bMOV\s+STNR\b")
+# Directional movement (compass) — conflicts with STNR when both appear.
+_SIGMET_MOV_DIR = re.compile(
+    r"\bMOV\s+(?:N|NE|E|SE|S|SW|W|NW)\b",
+)
 _SIGMET_CNL = re.compile(r"\bCNL\b")
 _SIGMET_COR = re.compile(r"\bCOR\b")
 _SIGMET_SEQ = re.compile(r"\bSIGMET\s+(\d{1,3})\b")
@@ -1373,6 +1384,8 @@ def _check_r8_pack(
     for tok in tokens:
         if not _RVR.match(tok):
             continue
+        if _RVR_RUNWAY_STATE.fullmatch(tok):
+            continue
         if _RVR_OK.fullmatch(tok):
             _emit_token_info(
                 issues,
@@ -1556,6 +1569,7 @@ __all__ = [
     "_RMK_T_OK",
     "_RVR",
     "_RVR_OK",
+    "_RVR_RUNWAY_STATE",
     "_SIGMET_CNL",
     "_SIGMET_CNL_FIR_MOVED",
     "_SIGMET_COR",
@@ -1564,6 +1578,8 @@ __all__ = [
     "_SIGMET_INTENSITY",
     "_SIGMET_LEVEL_RANGE",
     "_SIGMET_MOV",
+    "_SIGMET_MOV_DIR",
+    "_SIGMET_MOV_STNR_ADJACENT",
     "_SIGMET_NO_SEQ",
     "_SIGMET_NO_VA_EXP",
     "_SIGMET_OBS_FCST",
@@ -1596,6 +1612,7 @@ __all__ = [
     "_TAF_VIS_SM",
     "_TC_LINE",
     "_TEMP",
+    "_TEMP_DEWPOINT_NIL",
     "_VAAC_LINE",
     "_VALID_PERIOD",
     "_VIS_BAD",

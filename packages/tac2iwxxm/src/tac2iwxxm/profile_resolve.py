@@ -19,9 +19,10 @@ from tac2iwxxm.profile_registry import resolve_semantic_profile
 _ANNEX3_POLICIES = ("annex3-metar-quality", "annex3-iwxxm-output")
 ENV_PROFILE_DIR = "TAC2IWXXM_PROFILE_DIR"
 
-# Shared TAF policy: PROB_PERIOD_WITHOUT_TEMPO → info (US / CA / UK + children).
+# Shared TAF policy: PROB_PERIOD_WITHOUT_TEMPO → info (US / CA / UK / AU + children).
+# br_decea deferred until DECEA cite (EV-regional-profile-remainder C3).
 _TAF_PROB_PERIOD_INFO = "taf-prob-period-info-quality"
-_TAF_PROB_PERIOD_EMIT_KEYS = frozenset({"iwxxm_us", "ca_eccc", "uk_metoffice"})
+_TAF_PROB_PERIOD_EMIT_KEYS = frozenset({"iwxxm_us", "ca_eccc", "uk_metoffice", "au_bom"})
 
 # National emit keys share the annex3 policy documents until a profile ships its own ids.
 _POLICY_BY_EMIT: dict[str, tuple[str, str]] = {
@@ -79,7 +80,7 @@ def _uses_taf_prob_period_info(emit_key: str) -> bool:
     Returns
     -------
     bool
-        True when the profile or an ancestor is US / CA / UK.
+        True when the profile or an ancestor is US / CA / UK / AU.
     """
     return bool(_TAF_PROB_PERIOD_EMIT_KEYS.intersection(_emit_chain(emit_key)))
 

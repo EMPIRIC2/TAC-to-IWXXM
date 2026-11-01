@@ -898,6 +898,60 @@ treat TC-EV045-006 as **docs/script met; ops deferred**. [Corpus: tests] [Corpus
 - [ ] Coverage-matrix themes G1–G3 / V1–V3 / C1 updated; guidance gaps filed or closed
 - [ ] H1–H3 if API ships; H4–H5 when FE touched (E19-7)
 
+## EV-regional-profile-remainder Test Cases (F15 / F20 / F23 / F36)
+
+[Corpus: product §F15] [Corpus: product §F20] [Corpus: product §F23] [Corpus: product §F36]
+[Corpus: tests] [Corpus: adr/ADR-046]
+
+### TC-EV-RPR-001: PTRO/PTSA exact prefer → iwxxm_us PROB info (C1)
+
+- **Level**: T0 / CI
+- **Objective**: Exact stations `PTRO` / `PTSA` resolve to `iwxxm_us`; standalone TAF
+  `PROB`+period without TEMPO is **info** under prefer; no `PT*`/`P*` blanket
+- **Pass criteria**: `resolve_profile_for_station` + `lint_with_profile` fixtures green
+- **Source**: EV-regional-profile-remainder C1
+
+### TC-EV-RPR-002: Y* → au_bom + PROB emit-key (C2)
+
+- **Level**: T0 / CI
+- **Objective**: `station_prefixes: [Y]` on `au_bom`; `au_bom` ∈ `_TAF_PROB_PERIOD_EMIT_KEYS`;
+  Y* TAF PROB(+INTER) period without TEMPO → **info**
+- **Pass criteria**: prefer + policy bind fixtures; Europe / unmapped stay warning
+- **Source**: EV-regional-profile-remainder C2
+
+### TC-EV-RPR-004: BoM `tt///` dewpoint-not-observable (C4)
+
+- **Level**: T0 / CI
+- **Objective**: `M?\d{2}///` on Y*/YCFS METAR/SPECI → dewpoint-not-observable **info**;
+  full missing tt/td and FNUE all-solidus stay **error**
+- **Pass criteria**: YCFS sample green info; FNUE still `MISSING_TEMP_DEWPOINT`
+- **Source**: EV-regional-profile-remainder C4
+
+### TC-EV-RPR-005: CIS runway-state ≠ INVALID_RVR (C5)
+
+- **Level**: T0 / CI + bug repro
+- **Objective**: `Rxx/dddddd` runway-state (ULOO) does not emit `INVALID_RVR`; true ICAO
+  RVR malforms still error
+- **Pass criteria**: ULOO SPECI/METAR fixtures; sibling of #1479 visibility lookbehind
+- **Source**: EV-regional-profile-remainder C5
+
+### TC-EV-RPR-006: MOV STNR adjacency (C6)
+
+- **Level**: T0 / CI
+- **Objective**: `\bMOV\s+STNR\b` → `STNR_MOVEMENT:info`; `MOV N STNR` /
+  `MOV E … STNR` stay `INVALID_STNR_MOVEMENT:error`
+- **Pass criteria**: Habana + India fixtures
+- **Source**: EV-regional-profile-remainder C6
+
+### TC-EV-RPR-007: US domestic WS SIGMET shape gate (C7)
+
+- **Level**: T0 / CI
+- **Objective**: WSUS / phonetic series / `VALID UNTIL` (Z optional) skips international
+  `MISSING_VALID` / `MISSING_FIR_OR_CTA` / `MISSING_OBS_OR_FCST` triad
+- **Pass criteria**: YANKEE / NOVEMBER fixtures; convective path unchanged; international
+  Annex 3 still errors
+- **Source**: EV-regional-profile-remainder C7
+
 ## F24 Test Cases (S026 / EV-020) — AIRMET quality / WMO golden
 
 > Golden equality uses `canonicalize_xml` under **default** convert settings only

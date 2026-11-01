@@ -267,6 +267,17 @@ rules:
   - metar
   - speci
   - taf
+- id: TAC.DEWPOINT_NOT_OBSERVABLE
+  code: DEWPOINT_NOT_OBSERVABLE
+  label: Dewpoint Not Observable
+  severity: info
+  message_template: '{product} dewpoint not observable (tt///) - temperature present'
+  product: null
+  tags:
+  - temperature
+  - metar
+  - speci
+  - auto
 - id: TAC.EMPTY_TAC
   code: EMPTY_TAC
   label: Empty Tac

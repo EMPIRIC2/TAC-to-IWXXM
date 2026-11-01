@@ -18,6 +18,7 @@ profiles:
     differs: true
     products: [METAR, SPECI, TAF, SIGMET, AIRMET, TCA, SWXA, VONA]
     station_prefixes: [K]
+    stations: [PTRO, PTSA]
     recorded:
       - id: US_CONVECTIVE_SIGMET_SHAPE
         note: Convective SIGMET uses FROM and VOR lines. Annex 3 FIR and VALID checks still fire.
@@ -26,6 +27,10 @@ profiles:
           US K* TAF stations prefer iwxxm_us under ICAO prefer so
           PROB_PERIOD_WITHOUT_TEMPO is info (NWS 10-813 / FAA-H-8083-28 standalone
           PROB). Military K* stations are exact-listed under us_military and win.
+      - id: US_PACIFIC_PT_EXACT_TAF_PREFER
+        note: >-
+          Exact PTRO/PTSA (not PT* blanket) prefer iwxxm_us for standalone PROB-period
+          TAF lint (SM VIS / NWS dialect).
   us_military:
     inherits: iwxxm_us
     engine: annex3
@@ -71,11 +76,20 @@ profiles:
     engine: annex3
     differs: true
     products: [METAR, SPECI, TAF, VAA]
+    station_prefixes: [Y]
     recorded:
       - id: AU_WX_NOT_OBSERVABLE
         note: METAR/SPECI //// weather is WX_NOT_OBSERVABLE info under annex3 detectors.
       - id: AU_NATIONAL_TAC_PROVENANCE
         note: National / BoM heading provenance infos on AU and Pacific stations.
+      - id: AU_Y_PREFIX_TAF_PREFER
+        note: >-
+          Australian Y* TAF stations prefer au_bom under ICAO prefer so
+          PROB_PERIOD_WITHOUT_TEMPO is info via the shared PROB-period policy.
+      - id: AU_DEWPOINT_NIL
+        note: >-
+          BoM AUTO tt/// (dewpoint not observable) is DEWPOINT_NOT_OBSERVABLE info
+          under annex3 grammar; full missing tt/td stays MISSING_TEMP_DEWPOINT.
   nz_caa_met:
     inherits: annex3
     engine: annex3

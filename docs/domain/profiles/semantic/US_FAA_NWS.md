@@ -13,6 +13,10 @@ info via the shared `taf-prob-period-info-quality` policy (NWS 10-813 / FAA-H-80
 standalone PROB). Exact military `K*` stations (incl. `KDOV`) win via `us_military`. PROB
 qualifying `BECMG`/`FM` stays `INVALID_PROB`.
 
+**Exact Pacific stations** (EV-regional-profile-remainder): `PTRO` and `PTSA` are listed under
+`iwxxm_us` `stations` so standalone PROB-period TAF lint is info (SM VIS / NWS TAF dialect).
+No blanket `PT*` / `P*` prefix.
+
 ## Owns
 
 | Area | Scope |

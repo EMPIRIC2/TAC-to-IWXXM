@@ -162,6 +162,12 @@ ISSUES: tuple[IssueSpec, ...] = (
         tags=("temperature", "metar", "speci"),
     ),
     _row(
+        "DEWPOINT_NOT_OBSERVABLE",
+        "info",
+        "{product} dewpoint not observable (tt///) - temperature present",
+        tags=("temperature", "metar", "speci", "auto"),
+    ),
+    _row(
         "MISSING_QNH",
         "error",
         "{product} missing QNH/altimeter (Qnnnn/Annnn) - A3-2 #11",

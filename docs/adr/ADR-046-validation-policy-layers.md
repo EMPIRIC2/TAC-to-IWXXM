@@ -87,3 +87,10 @@ TAF-only, so Canadian `CW*` auto stations keep annex3 METAR errors (`MISSING_VIS
 / `MISSING_QNH` — MANOBS expects VIS MISG / PRES MISG). PROB that qualifies BECMG/FM
 stays `INVALID_PROB` (Annex 3 App 5 §1.4) — e.g. HKJK, LGTS.
 
+### Amend (2026-11-01, EV-regional-profile-remainder)
+
+`_TAF_PROB_PERIOD_EMIT_KEYS` may include **`au_bom`** (and later **`br_decea`** when a
+DECEA cite lands) alongside US / CA / UK. UK `EG*` prefer and exact Pacific
+`PTRO`/`PTSA` → `iwxxm_us` stations are in the same prefer + policy seam. Policy YAML
+header documents US/CA/UK/AU bind honesty; BR PROB emit remains deferred.
+
