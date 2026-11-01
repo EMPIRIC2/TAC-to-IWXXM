@@ -208,7 +208,7 @@ def test_more_coverage_edges() -> None:
     assert again.count("xmlns:iwxxm-us=") == 1
 
     # TAF US with altimeter but missing forecast needle → early return.
-    import tac2iwxxm.profiles.annex3_products as ap
+    import tac2iwxxm.profiles.annex3_emit as ap
 
     orig = ap.emit_taf_annex3
 
@@ -241,8 +241,8 @@ def test_more_coverage_edges() -> None:
     finally:
         ap.emit_taf_annex3 = orig
 
-    # annex3_products: unsupported version + NIL TAF base forecast.
-    from tac2iwxxm.profiles.annex3_products import emit_sigmet_annex3, emit_taf_annex3
+    # annex3_emit: unsupported version + NIL TAF base forecast.
+    from tac2iwxxm.profiles.annex3_emit import emit_sigmet_annex3, emit_taf_annex3
 
     with pytest.raises(ValueError, match="unsupported iwxxm_version"):
         emit_taf_annex3(

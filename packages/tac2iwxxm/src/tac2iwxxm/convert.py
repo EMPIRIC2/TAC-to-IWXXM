@@ -32,7 +32,7 @@ from tac2iwxxm.profile_registry import (
     supported_iwxxm_versions_for_profile,
     supported_report_variants_for_profile,
 )
-from tac2iwxxm.profiles.annex3_products import (
+from tac2iwxxm.profiles.annex3_emit import (
     emit_swxa_annex3,
     emit_vona_annex3,
 )

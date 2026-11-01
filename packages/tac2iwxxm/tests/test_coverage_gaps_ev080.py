@@ -889,7 +889,7 @@ def test_ev080_remaining_branch_fill(monkeypatch: pytest.MonkeyPatch) -> None:
             "valid_to_minute": 0,
         },
     }
-    import tac2iwxxm.profiles.annex3_products as ap_mod
+    import tac2iwxxm.profiles.annex3_emit as ap_mod
 
     real_airmet_emit = ap_mod.emit_airmet_annex3
 
