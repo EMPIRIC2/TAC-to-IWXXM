@@ -1417,7 +1417,6 @@ describe('FileConverter Component', () => {
 
         expect(screen.getByTestId('live-iwxxm-toggle')).toBeChecked();
 
-        fireEvent.click(screen.getByTestId('workbench-console-toggle'));
         expect(screen.getByTestId('workbench-console-lines')).toBeInTheDocument();
 
         // live IWXXM is on — soft-preview convert with failed spans
@@ -5813,7 +5812,6 @@ describe('FileConverter Component', () => {
           await Promise.resolve();
         });
 
-        fireEvent.click(screen.getByTestId('workbench-console-toggle'));
         fireEvent.click(screen.getByTestId('console-action-add_terminator'));
 
         expect(screen.getByTestId('tac-editor')).toHaveValue('METAR KJFK 121251Z');
@@ -5979,7 +5977,6 @@ describe('FileConverter Component', () => {
           await vi.advanceTimersByTimeAsync(350);
           await Promise.resolve();
         });
-        fireEvent.click(screen.getByTestId('workbench-console-toggle'));
         fireEvent.click(screen.getByTestId('console-action-add_terminator'));
 
         expect(screen.getByTestId('tac-editor')).toHaveValue('METAR KJFK 121251Z=');
@@ -6255,7 +6252,6 @@ describe('FileConverter Component', () => {
       render(<FileConverter {...defaultProps} />);
 
       await user.type(screen.getByTestId('tac-editor'), 'METAR KJFK=');
-      fireEvent.click(screen.getByTestId('workbench-console-toggle'));
       await screen.findByTestId('workbench-console-lines');
       await user.click(screen.getByTestId('workbench-console-clear'));
 

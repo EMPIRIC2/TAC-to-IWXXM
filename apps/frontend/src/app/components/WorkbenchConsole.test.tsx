@@ -8,8 +8,7 @@ import userEvent from '@testing-library/user-event';
 import { WorkbenchConsole } from './WorkbenchConsole';
 
 describe('WorkbenchConsole', () => {
-  it('shows line count and expands structured messages', async () => {
-    const user = userEvent.setup();
+  it('renders structured messages inline without a toggle', () => {
     render(
       <WorkbenchConsole
         lines={[
@@ -22,9 +21,7 @@ describe('WorkbenchConsole', () => {
         ]}
       />,
     );
-    expect(screen.getByTestId('workbench-console')).toHaveTextContent(/1/);
-    expect(screen.queryByTestId('workbench-console-lines')).toBeNull();
-    await user.click(screen.getByTestId('workbench-console-toggle'));
+    expect(screen.queryByTestId('workbench-console-toggle')).toBeNull();
     expect(screen.getByTestId('workbench-console-lines')).toHaveTextContent(/lint-tac/);
     expect(screen.getByTestId('workbench-console-lines')).toHaveTextContent(/1 issue/);
   });
@@ -32,7 +29,6 @@ describe('WorkbenchConsole', () => {
   it('filters lines below the operator log level', async () => {
     render(
       <WorkbenchConsole
-        defaultOpen
         minLogLevel="WARNING"
         lines={[
           { level: 'info', source: 'lint', message: 'ok', at: 1 },
@@ -41,7 +37,6 @@ describe('WorkbenchConsole', () => {
         ]}
       />,
     );
-    expect(screen.getByTestId('workbench-console')).toHaveTextContent(/2\/3/);
     expect(screen.getByTestId('workbench-console-lines')).toHaveTextContent(/watch/);
     expect(screen.getByTestId('workbench-console-lines')).toHaveTextContent(/bad/);
     expect(screen.getByTestId('workbench-console-lines')).not.toHaveTextContent(

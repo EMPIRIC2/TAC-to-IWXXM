@@ -6,7 +6,6 @@
  */
 
 import { useState, type ReactNode } from 'react';
-import { ChevronDown, ChevronUp, Terminal } from 'lucide-react';
 import { IssueDetailDialog } from '@/app/components/IssueDetailDialog';
 import type { LiveWorkbenchConsoleLine } from '@/hooks/useLiveWorkbenchAssist';
 import type { LintIssueCatalogEntry } from '@/utils/api';
@@ -64,6 +63,11 @@ export interface WorkbenchConsoleProps {
   onClear?: () => void;
   /** Invoked when a console line action button is clicked (e.g. add_terminator). */
   onLineAction?: (actionId: string) => void;
+  /**
+   * No-op; retained for call-site compatibility. Log lines always render
+   * inline now (there is no collapse).
+   * @deprecated The console no longer collapses.
+   */
   defaultOpen?: boolean;
   /** Minimum severity to show (operator Log Level). Default INFO. */
   minLogLevel?: ConvertLogLevel;
@@ -141,14 +145,12 @@ export function WorkbenchConsole({
   lines,
   onClear,
   onLineAction,
-  defaultOpen = false,
   minLogLevel = 'INFO',
   catalogByCode,
   catalogEntries = [],
   onOpenCatalogCode,
   onOpenCatalog,
 }: WorkbenchConsoleProps) {
-  const [open, setOpen] = useState(defaultOpen);
   const [catalogOpen, setCatalogOpen] = useState(false);
   const [tagFilter, setTagFilter] = useState('');
   const [detail, setDetail] = useState<IssueDetailModel | null>(null);
@@ -166,31 +168,12 @@ export function WorkbenchConsole({
 
   return (
     <section
-      className="mt-3 rounded-md border border-gray-300 bg-gray-50 dark:border-gray-700 dark:bg-gray-900/60"
-      aria-label="Workbench console"
+      className="mt-3 space-y-2"
+      aria-label="Conversion and validation log"
       data-testid="workbench-console"
     >
-      <div className="flex items-center gap-2 px-3 py-2">
-        <button
-          type="button"
-          className="flex flex-1 items-center gap-2 text-left text-sm font-medium text-gray-900 dark:text-white"
-          aria-expanded={open}
-          onClick={() => setOpen((v) => !v)}
-          data-testid="workbench-console-toggle"
-        >
-          {open ? (
-            <ChevronDown className="h-4 w-4 shrink-0" aria-hidden />
-          ) : (
-            <ChevronUp className="h-4 w-4 shrink-0" aria-hidden />
-          )}
-          <Terminal className="h-4 w-4 shrink-0" aria-hidden />
-          Console
-          <span className="font-normal text-gray-500 dark:text-gray-400">
-            ({visibleLines.length}
-            {visibleLines.length !== lines.length ? `/${lines.length}` : ''})
-          </span>
-        </button>
-        {onClear ? (
+      {onClear ? (
+        <div className="flex justify-end">
           <button
             type="button"
             className="text-xs text-gray-600 underline dark:text-gray-300"
@@ -199,67 +182,63 @@ export function WorkbenchConsole({
           >
             Clear log
           </button>
-        ) : null}
-      </div>
-      {open ? (
-        <ul
-          className="max-h-40 space-y-1 overflow-y-auto border-t border-gray-200 px-3 py-2 font-mono text-xs dark:border-gray-700"
-          data-testid="workbench-console-lines"
-        >
-          {visibleLines.length === 0 ? (
-            <li className="text-gray-500 dark:text-gray-400">
-              {lines.length === 0
-                ? 'No messages yet.'
-                : `No messages at ${minLogLevel} or above.`}
-            </li>
-          ) : (
-            visibleLines.map((line, index) => (
-              <li
-                key={`${line.at}-${index}`}
-                className={
-                  line.level === 'error'
-                    ? 'text-rose-700 dark:text-rose-300'
-                    : line.level === 'warn'
-                      ? 'text-amber-800 dark:text-amber-200'
-                      : line.level === 'info'
-                        ? 'text-sky-700 dark:text-sky-300'
-                        : 'text-gray-800 dark:text-gray-200'
+        </div>
+      ) : null}
+      <ul
+        className="max-h-40 space-y-1 overflow-y-auto rounded-md border border-gray-200 bg-gray-50 px-3 py-2 font-mono text-xs dark:border-gray-700 dark:bg-gray-900/60"
+        data-testid="workbench-console-lines"
+      >
+        {visibleLines.length === 0 ? (
+          <li className="text-gray-500 dark:text-gray-400">
+            {lines.length === 0
+              ? 'No messages yet.'
+              : `No messages at ${minLogLevel} or above.`}
+          </li>
+        ) : (
+          visibleLines.map((line, index) => (
+            <li
+              key={`${line.at}-${index}`}
+              className={
+                line.level === 'error'
+                  ? 'text-rose-700 dark:text-rose-300'
+                  : line.level === 'warn'
+                    ? 'text-amber-800 dark:text-amber-200'
+                    : line.level === 'info'
+                      ? 'text-sky-700 dark:text-sky-300'
+                      : 'text-gray-800 dark:text-gray-200'
+              }
+              data-level={line.level}
+            >
+              <span className="text-gray-500 dark:text-gray-400">[{line.source}]</span>{' '}
+              {messageWithCodeTooltips(line.message, catalogByCode, openCatalogCode)}
+              <button
+                type="button"
+                className="ml-2 font-sans underline"
+                data-testid={`issue-detail-open-${index}`}
+                aria-label={ISSUE_DETAIL_OPEN}
+                onClick={() =>
+                  setDetail(issueDetailFromConsoleLine(line, catalogByCode))
                 }
-                data-level={line.level}
               >
-                <span className="text-gray-500 dark:text-gray-400">
-                  [{line.source}]
-                </span>{' '}
-                {messageWithCodeTooltips(line.message, catalogByCode, openCatalogCode)}
+                {ISSUE_DETAIL_BUTTON}
+              </button>
+              {line.action && onLineAction ? (
                 <button
                   type="button"
-                  className="ml-2 font-sans underline"
-                  data-testid={`issue-detail-open-${index}`}
-                  aria-label={ISSUE_DETAIL_OPEN}
-                  onClick={() =>
-                    setDetail(issueDetailFromConsoleLine(line, catalogByCode))
-                  }
+                  className="ml-2 rounded border border-sky-400 px-1.5 py-0.5 text-[11px] font-sans text-sky-800 hover:bg-sky-100 dark:border-sky-600 dark:text-sky-200 dark:hover:bg-sky-950"
+                  data-testid={`console-action-${line.action.id}`}
+                  onClick={() => onLineAction(line.action!.id)}
                 >
-                  {ISSUE_DETAIL_BUTTON}
+                  {line.action.label}
                 </button>
-                {line.action && onLineAction ? (
-                  <button
-                    type="button"
-                    className="ml-2 rounded border border-sky-400 px-1.5 py-0.5 text-[11px] font-sans text-sky-800 hover:bg-sky-100 dark:border-sky-600 dark:text-sky-200 dark:hover:bg-sky-950"
-                    data-testid={`console-action-${line.action.id}`}
-                    onClick={() => onLineAction(line.action!.id)}
-                  >
-                    {line.action.label}
-                  </button>
-                ) : null}
-              </li>
-            ))
-          )}
-        </ul>
-      ) : null}
+              ) : null}
+            </li>
+          ))
+        )}
+      </ul>
       {catalogEntries.length > 0 ? (
         <div
-          className="border-t border-gray-200 px-3 py-2 dark:border-gray-700"
+          className="rounded-md border border-gray-200 px-3 py-2 dark:border-gray-700"
           data-testid="lint-issue-catalog-panel"
         >
           <button
