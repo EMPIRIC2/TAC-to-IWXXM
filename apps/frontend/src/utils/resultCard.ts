@@ -64,8 +64,8 @@ export interface ResultIssueInput {
 
 const NOTE_SEVERITIES = new Set(['info', 'warning', 'warn', 'note']);
 
-/** Soft schema/Schematron failure on convert — must not be published. */
-const PUBLISH_BLOCKING_CODES = new Set(['OUTPUT_VALIDATION_WARNING']);
+/** Codes that still force needs-attention without blocking download alone (empty: ADR-054). */
+const PUBLISH_BLOCKING_CODES = new Set<string>();
 
 /**
  * Error severity blocks publish. Missing severity is an error. Info and warnings are notes.
@@ -145,7 +145,6 @@ export function assessResultCard(input: {
     }
   }
 
-  let blockingCode = false;
   for (const issue of input.issues ?? []) {
     const message = scrubInternalDocRefs(issue.message?.trim() ?? '');
     if (!message) {
@@ -153,27 +152,40 @@ export function assessResultCard(input: {
     }
     const code = issue.code?.trim();
     const line: ResultCardLine = code ? { message, code } : { message };
-    if (codeBlocksPublish(code)) {
-      blockingCode = true;
-      errors.push(line);
-    } else if (isErrorSeverity(issue.severity)) {
+    // ADR-054: code alone never blocks download (PUBLISH_BLOCKING_CODES empty).
+    if (isErrorSeverity(issue.severity)) {
       errors.push(line);
     } else {
       notes.push(line);
     }
   }
 
+  const hasCritical = (input.issues ?? []).some(
+    (issue) => (issue.severity ?? '').trim().toLowerCase() === 'critical',
+  );
+  // ADR-054: IWXXM validation errors are raised but download is allowed with awareness.
+  // Only convert-critical findings, soft-preview ok=false, or unusable XML block download.
   const publishBlocked =
-    errors.length > 0 ||
-    blockingCode ||
+    hasCritical ||
     input.ok === false ||
-    xmlBlocksPublish(input.xml);
+    xmlBlocksPublish(input.xml) ||
+    ((input.errors?.length ?? 0) > 0 && !input.xml);
 
   if (publishBlocked) {
     return {
       status: 'needs-attention',
       statusLabel: RESULT_STATUS_ATTENTION,
       publishBlocked: true,
+      errors,
+      notes,
+    };
+  }
+  // Raised IWXXM validation errors: show attention but keep download enabled.
+  if (errors.length > 0) {
+    return {
+      status: 'needs-attention',
+      statusLabel: RESULT_STATUS_ATTENTION,
+      publishBlocked: false,
       errors,
       notes,
     };

@@ -6,6 +6,7 @@
  */
 
 import { isErrorSeverity } from '@/utils/resultCard';
+import { isSeverityRaised } from '@/utils/strictRaise';
 
 /**
  * Default jump / list row chrome (notes and warnings).
@@ -49,8 +50,13 @@ export function lintSeverityErrorCardClass(): string {
  * @example
  * const _ = true;
  */
-export function lintJumpButtonClass(severity: string | null | undefined): string {
-  return isErrorSeverity(severity) ? lintSeverityErrorClass() : lintSeverityBaseClass();
+export function lintJumpButtonClass(
+  severity: string | null | undefined,
+  strict = false,
+): string {
+  const raised = isSeverityRaised(severity, strict);
+  const emphasize = raised && isErrorSeverity(severity);
+  return emphasize ? lintSeverityErrorClass() : lintSeverityBaseClass();
 }
 
 /**

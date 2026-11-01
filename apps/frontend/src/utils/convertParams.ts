@@ -36,9 +36,9 @@ export interface ConvertValidationFlags {
 }
 
 /**
- * Soft-preview never runs post-convert Schematron/XSD; hard convert honors Strict Validation.
+ * Soft-preview never runs post-convert Schematron/XSD; hard convert honors Strict.
  *
- * @param strict - UI "Strict Validation" checkbox
+ * @param strict - UI Strict master checkbox
  * @param softPreview - Soft-preview / preview=true mode
  * @example
  * const _ = true;
@@ -87,6 +87,12 @@ export interface ConvertParamsBar {
   decodingLibraryId: string;
   iwxxmVersion: string;
   strictValidation: boolean;
+  /** When Strict is on, include TAC lint in the raised set (default true). */
+  strictLint?: boolean;
+  /** When Strict is on, include convert findings in the raised set (default true). */
+  strictConvert?: boolean;
+  /** When Strict is on, include IWXXM validate + drive validate_output (default true). */
+  strictValidate?: boolean;
   includeNilReasons: boolean;
   onError: ConvertOnError;
   logLevel: ConvertLogLevel;
@@ -135,8 +141,16 @@ export function convertFieldsFromParamsBar(
   logLevel: ConvertLogLevel;
   preview: boolean;
   propagateResidualsToRemarks: boolean;
+  strict: boolean;
+  strictLint: boolean;
+  strictConvert: boolean;
+  strictValidate: boolean;
 } {
-  const validation = mapStrictToValidation(bar.strictValidation, options.softPreview);
+  const strictValidate = bar.strictValidate !== false;
+  const validation = mapStrictToValidation(
+    bar.strictValidation && strictValidate,
+    options.softPreview,
+  );
   return {
     bulletinId: optionalTrim(bar.bulletinId),
     issuingCenter: optionalTrim(bar.issuingCenter),
@@ -157,6 +171,10 @@ export function convertFieldsFromParamsBar(
     logLevel: bar.logLevel,
     preview: options.softPreview,
     propagateResidualsToRemarks: options.propagateResidualsToRemarks,
+    strict: bar.strictValidation,
+    strictLint: bar.strictLint !== false,
+    strictConvert: bar.strictConvert !== false,
+    strictValidate,
   };
 }
 

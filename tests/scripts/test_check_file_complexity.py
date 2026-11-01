@@ -40,7 +40,7 @@ def test_main_invokes_ruff(
 ) -> None:
     """When config exists, main shells out to ``uv run ruff check``."""
     cfg = tmp_path / "ruff-complexity.toml"
-    cfg.write_text("[lint]\nselect = [\"C901\"]\n", encoding="utf-8")
+    cfg.write_text('[lint]\nselect = ["C901"]\n', encoding="utf-8")
     monkeypatch.setattr(complexity, "ROOT", tmp_path)
     monkeypatch.setattr(complexity, "CONFIG", cfg)
 

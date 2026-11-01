@@ -376,6 +376,10 @@ describe('API Utils', () => {
         stopOnError: true,
         bulletinId: 'saaa00',
         issuingCenter: 'kwbc',
+        strict: true,
+        strictLint: true,
+        strictConvert: true,
+        strictValidate: true,
       });
 
       const [, options] = (global.fetch as any).mock.calls[0];
@@ -385,6 +389,36 @@ describe('API Utils', () => {
       expect(body.get('stop_on_error')).toBe('true');
       expect(body.get('bulletin_id')).toBe('SAAA00');
       expect(body.get('issuing_center')).toBe('KWBC');
+      expect(body.get('strict')).toBe('true');
+      expect(body.get('strict_lint')).toBe('true');
+      expect(body.get('strict_convert')).toBe('true');
+      expect(body.get('strict_validate')).toBe('true');
+    });
+
+    it('appends Strict ADR-054 flags as false when toggles are off', async () => {
+      mockFetchResponse({
+        results: [],
+        errors: [],
+        total_processed: 0,
+        successful: 0,
+        failed: 0,
+      });
+
+      await convertMetarToIwxxm({
+        manualText: 'METAR KJFK 121251Z',
+        product: 'METAR',
+        strict: false,
+        strictLint: false,
+        strictConvert: false,
+        strictValidate: false,
+      });
+
+      const [, options] = (global.fetch as any).mock.calls[0];
+      const body = options.body as FormData;
+      expect(body.get('strict')).toBe('false');
+      expect(body.get('strict_lint')).toBe('false');
+      expect(body.get('strict_convert')).toBe('false');
+      expect(body.get('strict_validate')).toBe('false');
     });
 
     it('appends CA_ECCC extensions and exchange_output (EV-073)', async () => {

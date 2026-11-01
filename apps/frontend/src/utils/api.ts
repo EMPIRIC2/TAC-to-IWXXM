@@ -207,6 +207,10 @@ export async function convertMetarToIwxxm(params: {
   disseminationLibraryId?: string;
   decodingLibraryId?: string;
   iwxxmVersion?: string;
+  strict?: boolean;
+  strictLint?: boolean;
+  strictConvert?: boolean;
+  strictValidate?: boolean;
   validateOutput?: boolean;
   validationLevel?: string;
   stopOnError?: boolean;
@@ -280,6 +284,18 @@ export async function convertMetarToIwxxm(params: {
   // Add validation flag (default to false)
   formData.append('validate_output', params.validateOutput ? 'true' : 'false');
   formData.append('validation_level', params.validationLevel || 'basic');
+  if (params.strict !== undefined) {
+    formData.append('strict', params.strict ? 'true' : 'false');
+  }
+  if (params.strictLint !== undefined) {
+    formData.append('strict_lint', params.strictLint ? 'true' : 'false');
+  }
+  if (params.strictConvert !== undefined) {
+    formData.append('strict_convert', params.strictConvert ? 'true' : 'false');
+  }
+  if (params.strictValidate !== undefined) {
+    formData.append('strict_validate', params.strictValidate ? 'true' : 'false');
+  }
   formData.append('stop_on_error', params.stopOnError ? 'true' : 'false');
   formData.append(
     'include_nil_reasons',

@@ -529,6 +529,30 @@
             "title": "Stop On Error",
             "type": "boolean"
           },
+          "strict": {
+            "default": false,
+            "description": "When false, only critical and error findings are raised in the client. When true, the full severity set applies subject to step flags, and IWXXM output validation runs when the validate step is on.",
+            "title": "Strict",
+            "type": "boolean"
+          },
+          "strict_convert": {
+            "default": true,
+            "description": "When strict is true, include convert findings in the raised set.",
+            "title": "Strict Convert",
+            "type": "boolean"
+          },
+          "strict_lint": {
+            "default": true,
+            "description": "When strict is true, include TAC lint findings in the raised set.",
+            "title": "Strict Lint",
+            "type": "boolean"
+          },
+          "strict_validate": {
+            "default": true,
+            "description": "When strict is true, include IWXXM validation findings in the raised set and run post-convert validation on convert routes.",
+            "title": "Strict Validate",
+            "type": "boolean"
+          },
           "tac_validation_library_id": {
             "default": "",
             "description": "TAC validation library asset id.",
@@ -1260,6 +1284,7 @@
       "ConversionIssueSeverity": {
         "description": "Severity level for conversion and validation issues.",
         "enum": [
+          "critical",
           "error",
           "warning",
           "info"
@@ -1350,6 +1375,14 @@
             ],
             "description": "Soft-preview envelope flag; set when preview=true",
             "title": "Ok"
+          },
+          "raised_severities": {
+            "description": "Severities considered raised for this response given Strict and step flags. All issues remain in issues arrays.",
+            "items": {
+              "type": "string"
+            },
+            "title": "Raised Severities",
+            "type": "array"
           },
           "results": {
             "description": "Successfully converted IWXXM XML documents",

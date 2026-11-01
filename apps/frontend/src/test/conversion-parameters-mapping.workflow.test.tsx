@@ -159,8 +159,10 @@ describe('UI Workflow: Conversion Parameter Mapping', () => {
         manualText:
           'METAR KJFK 121251Z 24016G28KT 3SM -RA BR BKN020 OVC040 14/11 A2990',
         iwxxmVersion: '2023-1',
-        validateOutput: true,
-        validationLevel: 'comprehensive',
+        // ADR-054: Strict defaults OFF → no post-convert validate_output.
+        strict: false,
+        validateOutput: false,
+        validationLevel: 'basic',
         stopOnError: false,
         // EV-1051: signed-in convert always forwards Bearer (preset_id auth).
         accessToken: 'mapping-token',
