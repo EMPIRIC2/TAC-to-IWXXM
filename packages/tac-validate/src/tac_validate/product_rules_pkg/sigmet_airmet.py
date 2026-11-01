@@ -693,6 +693,12 @@ def _is_us_domestic_ws_sigmet(upper: str) -> bool:
     """
     if _CONVECTIVE_SIGMET_BULLETIN.search(upper):
         return False
+    # International A6 VALID ddhhmm/ddhhmm (incl. TC/VA phonetic series) stays
+    # on the Annex 3 path — do not treat as US domestic WS.
+    if _VALID_PERIOD.search(upper):
+        return False
+    if _SIGMET_TC_TOKEN.search(upper) or _SIGMET_VA_TOKEN.search(upper):
+        return False
     # Shape detect without requiring VALID UNTIL — missing time is checked below
     # (same pattern as convective SIGMET).
     return bool(_WSUS_TTAAII.search(upper) or _US_DOMESTIC_WS_SERIES.search(upper))

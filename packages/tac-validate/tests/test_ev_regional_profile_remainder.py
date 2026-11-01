@@ -117,3 +117,17 @@ def test_c7_international_still_needs_valid() -> None:
 def test_c7_international_valid_ok() -> None:
     report = lint(_INTL, product="SIGMET", profile="annex3")
     assert not any(i.code == "MISSING_VALID" for i in report.issues)
+
+
+def test_c7_tc_phonetic_series_with_icao_valid_not_domestic_gate() -> None:
+    """TC SIGMET TANGO + VALID ddhhmm/ddhhmm must not short-circuit to domestic WS."""
+    tac = (
+        "WCPA07 PHFO 300118\n\n"
+        "KZAK SIGMET TANGO 31 VALID 300120/300720 PHFO-\n"
+        "OAKLAND OCEANIC FIR TC IN-FA OBS AT 0000Z N1755 E14750. CB TOP FL520 "
+        "WI 160NM OF CENTER. MOV WNW 18KT. NC. FCST 0600Z TC CENTER N1840 E14610."
+    )
+    report = lint(tac, product="SIGMET")
+    codes = {i.code for i in report.issues}
+    assert "TC_CYCLONE_IDENTITY" in codes
+    assert "MISSING_VALID" not in codes
