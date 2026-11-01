@@ -96,7 +96,9 @@ def test_policies_register_expected_stations() -> None:
     assert accepts_end_tx_tn("us_military") is True
     assert accepts_end_tx_tn("latam_taf") is True
     ids = {p.profile_id for p in station_scoped_policies()}
-    assert ids == {"us_military", "latam_taf"}
+    # Exact-station profiles: TX/TN end maps + Pacific PTRO/PTSA on iwxxm_us.
+    assert ids == {"us_military", "latam_taf", "iwxxm_us"}
+    assert stations_for("iwxxm_us") == frozenset({"PTRO", "PTSA"})
 
 
 @pytest.mark.parametrize("icao", sorted(_MILITARY_END_TX_TN))

@@ -693,8 +693,8 @@ def _is_us_domestic_ws_sigmet(upper: str) -> bool:
     """
     if _CONVECTIVE_SIGMET_BULLETIN.search(upper):
         return False
-    if not _US_DOMESTIC_WS_VALID_UNTIL.search(upper):
-        return False
+    # Shape detect without requiring VALID UNTIL — missing time is checked below
+    # (same pattern as convective SIGMET).
     return bool(_WSUS_TTAAII.search(upper) or _US_DOMESTIC_WS_SERIES.search(upper))
 
 

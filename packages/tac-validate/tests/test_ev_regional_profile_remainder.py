@@ -100,6 +100,15 @@ def test_c7_us_domestic_ws_clears_triad() -> None:
         assert "MISSING_OBS_OR_FCST" not in codes
 
 
+def test_c7_us_domestic_ws_missing_valid_until() -> None:
+    tac = "WSUS06 KKCI 312208\nSFOY WS 312208\nSIGMET YANKEE 1\nWA OR CA CSTL WTRS\n"
+    report = lint(tac, product="SIGMET", profile="annex3")
+    assert any(i.code == "MISSING_VALID" for i in report.issues)
+    codes = {i.code for i in report.issues if i.severity == "error"}
+    assert "MISSING_FIR_OR_CTA" not in codes
+    assert "MISSING_OBS_OR_FCST" not in codes
+
+
 def test_c7_international_still_needs_valid() -> None:
     report = lint("SIGMET =", product="SIGMET", profile="annex3")
     assert any(i.code == "MISSING_VALID" for i in report.issues)
