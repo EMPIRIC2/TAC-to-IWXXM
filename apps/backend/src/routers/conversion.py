@@ -55,6 +55,11 @@ from src.utilities.iwxxm_pass_through import NOT_XML_CODE, lint_iwxxm_pass_throu
 from src.utilities.metar_normalizer import normalize_recent_weather_tokens
 from src.utilities.observability import set_request_log_level
 from src.utilities.security import verify_optional_supabase_token
+from src.utilities.strict_raise import (
+    apply_strict_validate_flags,
+    compute_raised_severities,
+    promote_convert_failure_severity,
+)
 from src.utilities.tac_parser import extract_airport_code
 from src.utilities.version_migration import migrate_xml
 from tac2iwxxm import BulletinSplitError, iwxxm_filename, parse_ahl
@@ -2162,6 +2167,29 @@ async def convert(
         default=False,
         description="Soft-preview: best-effort IWXXM with failure spans on partial convert",
     ),
+    strict: bool = Form(
+        default=False,
+        description=(
+            "When false, only critical and error findings are raised in the client. "
+            "When true, the full severity set applies subject to step flags, and IWXXM "
+            "output validation runs when the validate step is on."
+        ),
+    ),
+    strict_lint: bool = Form(
+        default=True,
+        description="When strict is true, include TAC lint findings in the raised set.",
+    ),
+    strict_convert: bool = Form(
+        default=True,
+        description="When strict is true, include convert findings in the raised set.",
+    ),
+    strict_validate: bool = Form(
+        default=True,
+        description=(
+            "When strict is true, include IWXXM validation findings in the raised set "
+            "and run post-convert validation on convert routes."
+        ),
+    ),
     include_nil_reasons: bool = Form(
         default=True,
         description=("When false, prefer omitting nilReason attributes (engine may still emit NIL report shells)"),
@@ -2847,12 +2875,25 @@ async def convert(
             )
 
     validation_level = api_surface.normalize_validation_level(validation_level)
+    validate_output, validation_level = apply_strict_validate_flags(
+        strict=bool(strict),
+        strict_validate=bool(strict_validate),
+        preview=bool(preview),
+        validate_output=bool(validate_output),
+        validation_level=validation_level,
+    )
     validate_output = bool(validate_output) or validation_level in [
         "comprehensive",
         "schematron",
         "icao_opmet",
         "schema",
     ]
+    raised_severities = compute_raised_severities(
+        strict=bool(strict),
+        strict_lint=bool(strict_lint),
+        strict_convert=bool(strict_convert),
+        strict_validate=bool(strict_validate),
+    )
     log_level_norm = set_request_log_level(request, log_level)
     logger.debug("[CONVERT] logger verbosity applied level=%s", log_level_norm)
     logger.info(
@@ -2906,6 +2947,11 @@ async def convert(
         "validation_level": validation_level,
         "stop_on_error": bool(stop_on_error),
         "semantic_profile": wire.semantic_canonical,
+        "strict": bool(strict),
+        "strict_lint": bool(strict_lint),
+        "strict_convert": bool(strict_convert),
+        "strict_validate": bool(strict_validate),
+        "raised_severities": list(raised_severities),
     }
     if response_report_variant:
         request_metadata["report_variant"] = response_report_variant
@@ -3034,11 +3080,23 @@ async def convert(
         [GroupTrace.model_validate(row) for row in trace_entries(manual_with_offsets, product)] if preview else []
     )
 
+    promoted_issues: list[ConversionIssue] = []
+    for issue in acc.issues:
+        promoted = promote_convert_failure_severity(
+            str(issue.severity),
+            layer=issue.layer,
+            code=issue.code,
+        )
+        if promoted == str(issue.severity):
+            promoted_issues.append(issue)
+        else:
+            promoted_issues.append(issue.model_copy(update={"severity": ConversionIssueSeverity(promoted)}))
+
     return api_surface.msgspec_json_response(
         ConversionResponse(
             results=acc.results,
             errors=acc.errors,
-            issues=acc.issues,
+            issues=promoted_issues,
             total_processed=acc.total_inputs,
             successful=len(acc.results),
             failed=len(acc.errors),
@@ -3046,6 +3104,7 @@ async def convert(
             ok=envelope_ok,
             failed_spans=acc.preview_failed_spans if preview else [],
             group_trace=group_trace,
+            raised_severities=list(raised_severities),
         )
     )
 

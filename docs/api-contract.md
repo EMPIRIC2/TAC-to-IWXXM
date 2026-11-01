@@ -124,6 +124,10 @@ the same public convert path. Work history: guest → IndexedDB; logged-in → s
 | `iwxxm_version` | no | SoT default (`2025-2`) | Enum = Python `SUPPORTED_VERSIONS` via generated JSON (`apps/frontend/src/generated/iwxxm_versions.json`; `make export-iwxxm-versions`; #851 / D-S046-sot) |
 | `lint` | no | `true` | Run `tac-validate` before convert (Q14=C) |
 | `preview` | no | `false` | Soft-preview mode (S011) — see below |
+| `strict` | no | `false` | Strict raise master (ADR-054). Off: client raises critical+error only. On: full ladder + drives validate when `strict_validate` |
+| `strict_lint` | no | `true` | When `strict`, include TAC lint in raised set |
+| `strict_convert` | no | `true` | When `strict`, include convert findings in raised set |
+| `strict_validate` | no | `true` | When `strict`, include IWXXM validation in raised set and enable post-convert validation |
 | `validate_output` | no | `false` | Run post-convert IWXXM validation when true |
 | `validation_level` | no | `basic` | `basic` \| `schema` \| `schematron` \| `icao_opmet` \| `comprehensive` |
 | `stop_on_error` | no | `false` | Stop processing remaining inputs after first error |
@@ -184,7 +188,7 @@ the same public convert path. Work history: guest → IndexedDB; logged-in → s
 | IWXXM version | `iwxxm_version` | `iwxxm_version` |
 | On Error = Fail | `stop_on_error=true` | — |
 | Log Level | `log_level` | — |
-| Strict Validation | `validate_output` + `validation_level` (off when preview) | — |
+| Strict | `strict` + step flags; drives `validate_output`/`validation_level` when validate step on (off when preview) | — |
 | Include Nil Reasons | `include_nil_reasons` | — |
 | Report variant | `report_variant` | — |
 | Library selects | matching `*_library_id` | conversion + dissemination ids |
@@ -206,7 +210,7 @@ existing string fields.
 - No metrics object on the response (library/CI only).
 - **Single-report only**: WMO AHL **bulletins** use `POST /api/v1/convert-bulletin` (below).
 
-**Response**: `ConversionResponse`; see docs/guides/API.md (shape unchanged).
+**Response**: `ConversionResponse`; see docs/guides/API.md. Additive optional `raised_severities` (ADR-054) lists severities raised for the request; all issues remain in `issues[]`. Convert success with IWXXM validation errors stays HTTP 200 with downloadable XML.
 
 Each `ConversionResult` includes optional `tac_input` (original TAC echo) for input traceability ([#594](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/594)).
 

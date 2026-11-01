@@ -91,7 +91,7 @@ describe('result card status', () => {
     ]);
   });
 
-  it('blocks publish when output validation warned even if severity is warning', () => {
+  it('allows download with awareness for IWXXM output validation warnings', () => {
     const card = assessResultCard({
       xml: '<iwxxm>ok</iwxxm>',
       ok: true,
@@ -103,32 +103,38 @@ describe('result card status', () => {
         },
       ],
     });
-    expect(card.statusLabel).toBe(RESULT_STATUS_ATTENTION);
-    expect(card.publishBlocked).toBe(true);
-    expect(card.errors.map((line) => line.code)).toEqual(['OUTPUT_VALIDATION_WARNING']);
+    expect(card.statusLabel).toBe(RESULT_STATUS_NOTES);
+    expect(card.publishBlocked).toBe(false);
+    expect(card.notes.map((line) => line.code)).toEqual(['OUTPUT_VALIDATION_WARNING']);
   });
 
-  it('says needs attention and blocks publish when an error or invalid XML is present', () => {
+  it('allows download when IWXXM validation errors are present but convert succeeded', () => {
     const fromError = assessResultCard({
       xml: '<iwxxm>ok</iwxxm>',
       ok: true,
-      errors: ['XML is not valid'],
       issues: [
         { severity: 'error', message: 'Schema check failed', code: 'XML_SCHEMA' },
-        { message: 'Missing severity still blocks publish' },
         { severity: 'info', message: 'A note stays with notes', code: 'NOTE' },
       ],
     });
     expect(fromError.statusLabel).toBe(RESULT_STATUS_ATTENTION);
-    expect(fromError.publishBlocked).toBe(true);
+    expect(fromError.publishBlocked).toBe(false);
     expect(fromError.errors.map((line) => line.message)).toEqual([
-      'XML is not valid',
       'Schema check failed',
-      'Missing severity still blocks publish',
     ]);
     expect(fromError.notes).toEqual([
       { message: 'A note stays with notes', code: 'NOTE' },
     ]);
+
+    const critical = assessResultCard({
+      xml: '<iwxxm>ok</iwxxm>',
+      ok: true,
+      issues: [
+        { severity: 'critical', message: 'Convert failed', code: 'PARSE_FAILED' },
+      ],
+    });
+    expect(critical.publishBlocked).toBe(true);
+    expect(critical.statusLabel).toBe(RESULT_STATUS_ATTENTION);
 
     const fromFlag = assessResultCard({ xml: '<iwxxm>ok</iwxxm>', ok: false });
     expect(fromFlag.publishBlocked).toBe(true);

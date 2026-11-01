@@ -290,6 +290,7 @@ import {
   type ConvertOnError,
   type ConvertParamsBar,
 } from '/utils/convertParams';
+import { StrictControls } from './StrictControls';
 import {
   BULLETIN_ID_FIELD_ERROR,
   ISSUING_CENTER_FIELD_ERROR,
@@ -555,6 +556,9 @@ interface ConversionParams {
   decodingLibraryId: string;
   iwxxmVersion: IWXXMVersion;
   strictValidation: boolean;
+  strictLint: boolean;
+  strictConvert: boolean;
+  strictValidate: boolean;
   includeNilReasons: boolean;
   onError: OnErrorBehavior;
   logLevel: LogLevel;
@@ -581,6 +585,9 @@ function paramsBarFromState(
     decodingLibraryId: params.decodingLibraryId,
     iwxxmVersion: params.iwxxmVersion,
     strictValidation: params.strictValidation,
+    strictLint: params.strictLint,
+    strictConvert: params.strictConvert,
+    strictValidate: params.strictValidate,
     includeNilReasons: params.includeNilReasons,
     onError: params.onError as ConvertOnError,
     logLevel: params.logLevel as ConvertLogLevel,
@@ -624,7 +631,10 @@ function initialConversionParams(): ConversionParams {
     overlayId: '',
     ...libraryIdsForNationalLine(DEFAULT_SEMANTIC_PROFILE),
     iwxxmVersion: DEFAULT_IWXXM_VERSION,
-    strictValidation: true,
+    strictValidation: false,
+    strictLint: true,
+    strictConvert: true,
+    strictValidate: true,
     includeNilReasons: true,
     onError: 'warn',
     logLevel: 'INFO',
@@ -670,7 +680,10 @@ function conversionParamsFromStoredPreferences(
     overlayId: '',
     ...(sync ? sync.libraryIds : libraryIdsForNationalLine(profile)),
     iwxxmVersion,
-    strictValidation: prefs.strictValidation !== false,
+    strictValidation: prefs.strictValidation === true,
+    strictLint: prefs.strictLint !== false,
+    strictConvert: prefs.strictConvert !== false,
+    strictValidate: prefs.strictValidate !== false,
     includeNilReasons: prefs.includeNilReasons !== false,
     onError: ((typeof prefs.onError === 'string' && prefs.onError) ||
       'warn') as ConversionParams['onError'],
@@ -3904,29 +3917,36 @@ export function FileConverter({
                                 <Label className="dark:text-white">
                                   Validation Options
                                 </Label>
-                                <label className="flex cursor-pointer items-center">
-                                  <input
-                                    type="checkbox"
-                                    checked={conversionParams.strictValidation}
-                                    onChange={(e) =>
-                                      setConversionParams((prev) => ({
-                                        ...prev,
-                                        strictValidation: e.target.checked,
-                                      }))
-                                    }
-                                    className="h-4 w-4 rounded text-blue-600 focus:ring-2 focus:ring-blue-500"
-                                    data-testid="strict-validation-checkbox"
-                                  />
-                                  <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">
-                                    Strict Validation
-                                  </span>
-                                </label>
-                                <p className="-mt-1 ml-6 text-xs text-gray-500 dark:text-gray-400">
-                                  When on (and soft-preview off), Convert sets{' '}
-                                  <code>validate_output=true</code> with{' '}
-                                  <code>validation_level=comprehensive</code> (XSD +
-                                  Schematron).
-                                </p>
+                                <StrictControls
+                                  strict={conversionParams.strictValidation}
+                                  strictLint={conversionParams.strictLint}
+                                  strictConvert={conversionParams.strictConvert}
+                                  strictValidate={conversionParams.strictValidate}
+                                  onStrictChange={(value) =>
+                                    setConversionParams((prev) => ({
+                                      ...prev,
+                                      strictValidation: value,
+                                    }))
+                                  }
+                                  onStrictLintChange={(value) =>
+                                    setConversionParams((prev) => ({
+                                      ...prev,
+                                      strictLint: value,
+                                    }))
+                                  }
+                                  onStrictConvertChange={(value) =>
+                                    setConversionParams((prev) => ({
+                                      ...prev,
+                                      strictConvert: value,
+                                    }))
+                                  }
+                                  onStrictValidateChange={(value) =>
+                                    setConversionParams((prev) => ({
+                                      ...prev,
+                                      strictValidate: value,
+                                    }))
+                                  }
+                                />
                                 <label className="flex cursor-pointer items-center">
                                   <input
                                     type="checkbox"

@@ -57,6 +57,7 @@
 | [ADR-051](ADR-051-ourairports-reference-lookup.md) | Live OurAirports lookup with a checked-in fallback | **Accepted** |
 | [ADR-052](ADR-052-live-map-import-cache.md) | Multi-feed live map cache with import-time translation | **Accepted** (EV-globe-live-map; amend EV-map-product-layers; filters stay in the browser) |
 | [ADR-053](ADR-053-config-ownership.md) | Config ownership: Ruff in root pyproject, Compose profiles, reusable quality workflow, drop Render blueprint | **Accepted** |
+| [ADR-054](ADR-054-severity-strict-ui.md) | Severity ladder + Strict operator raise policy (default OFF) | **Accepted** (EV-severity-strict-ui) |
 
 ## Process
 

@@ -64,8 +64,8 @@ export interface ResultIssueInput {
 
 const NOTE_SEVERITIES = new Set(['info', 'warning', 'warn', 'note']);
 
-/** Soft schema/Schematron failure on convert — must not be published. */
-const PUBLISH_BLOCKING_CODES = new Set(['OUTPUT_VALIDATION_WARNING']);
+/** Codes that still force needs-attention without blocking download alone (empty: ADR-054). */
+const PUBLISH_BLOCKING_CODES = new Set<string>();
 
 /**
  * Error severity blocks publish. Missing severity is an error. Info and warnings are notes.
@@ -163,17 +163,33 @@ export function assessResultCard(input: {
     }
   }
 
+  const hasCritical = (input.issues ?? []).some(
+    (issue) => (issue.severity ?? '').trim().toLowerCase() === 'critical',
+  );
+  // ADR-054: IWXXM validation errors are raised but download is allowed with awareness.
+  // Only convert-critical findings, soft-preview ok=false, or unusable XML block download.
   const publishBlocked =
-    errors.length > 0 ||
+    hasCritical ||
     blockingCode ||
     input.ok === false ||
-    xmlBlocksPublish(input.xml);
+    xmlBlocksPublish(input.xml) ||
+    ((input.errors?.length ?? 0) > 0 && !input.xml);
 
   if (publishBlocked) {
     return {
       status: 'needs-attention',
       statusLabel: RESULT_STATUS_ATTENTION,
       publishBlocked: true,
+      errors,
+      notes,
+    };
+  }
+  // Raised IWXXM validation errors: show attention but keep download enabled.
+  if (errors.length > 0) {
+    return {
+      status: 'needs-attention',
+      statusLabel: RESULT_STATUS_ATTENTION,
+      publishBlocked: false,
       errors,
       notes,
     };

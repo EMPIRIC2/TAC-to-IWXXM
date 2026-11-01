@@ -532,6 +532,7 @@
   `iwxxm_version`; optional `bulletin_id` / `issuing_center` / `stop_on_error` /
   `validate_output` / `validation_level` (ADR-023); editor cursor and character spans
   for highlight/hover. **No operator JWT** after F21 (S023).
+- **Strict raise (EV-severity-strict-ui / ADR-054)**: Operator Strict (default off) raises critical+error only; Strict on raises full ladder and drives IWXXM validate when the validate step is on. Server returns all issues. Convert success with IWXXM errors stays downloadable with awareness. No decode step toggle in v1.
 - **Outputs**: Ordered decode segments (`start`/`end` + explanation); span-aware lint/validate
   issues; best-effort IWXXM + failed-span markers on soft-preview; F7 session rows for seven
   products; optional in-band XSD/Schematron when Strict Validation is on (hard Convert).

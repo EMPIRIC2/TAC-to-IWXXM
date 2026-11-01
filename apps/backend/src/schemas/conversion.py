@@ -10,6 +10,7 @@ from pydantic import BaseModel, ConfigDict, Field
 class ConversionIssueSeverity(StrEnum):
     """Severity level for conversion and validation issues."""
 
+    CRITICAL = "critical"
     ERROR = "error"
     WARNING = "warning"
     INFO = "info"
@@ -259,6 +260,13 @@ class ConversionResponse(BaseModel):
         description=(
             "Preview pairing of TAC groups to IWXXM elements. "
             "Empty when preview is omitted or the product has no pairing."
+        ),
+    )
+    raised_severities: list[str] = Field(
+        default_factory=list,
+        description=(
+            "Severities considered raised for this response given Strict and step flags. "
+            "All issues remain in issues arrays."
         ),
     )
 
