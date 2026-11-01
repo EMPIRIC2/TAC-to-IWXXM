@@ -68,8 +68,11 @@ def test_policy_bindings_ca_and_uk() -> None:
 
 
 def test_issue_count_preserved_annex3_vs_iwxxm_us() -> None:
-    annex = lint_with_profile(_PROB_PERIOD, product="TAF", profile="annex3")
-    national = lint_with_profile(_PROB_PERIOD, product="TAF", profile="iwxxm_us")
+    # Compare the engines directly (no ICAO prefer): the national policy changes
+    # only severity, not which codes are emitted. lint_with_profile(..., annex3)
+    # now reroutes a CY* station to ca_eccc, so use lint() for engine parity.
+    annex = lint(_PROB_PERIOD, product="TAF", profile="annex3")
+    national = lint(_PROB_PERIOD, product="TAF", profile="iwxxm_us")
     assert len(annex.issues) == len(national.issues)
     assert sorted(i.code for i in annex.issues) == sorted(i.code for i in national.issues)
 

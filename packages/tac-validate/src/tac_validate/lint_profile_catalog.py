@@ -67,6 +67,9 @@ class LintProfileSpec:
         Optional parent profile id (single-parent DAG).
     stations : frozenset[str]
         ICAO list for station-scoped resolve (not inherited).
+    station_prefixes : frozenset[str]
+        ICAO prefixes for station-scoped resolve (not inherited). Exact
+        ``stations`` entries win over any prefix match.
     accept_end_tx_tn : bool
         When True, TX/TN after change groups is informational.
     """
@@ -79,6 +82,7 @@ class LintProfileSpec:
     recorded: tuple[str, ...]
     inherits: str | None = None
     stations: frozenset[str] = frozenset()
+    station_prefixes: frozenset[str] = frozenset()
     accept_end_tx_tn: bool = False
 
 
@@ -265,6 +269,8 @@ def _specs_from_document(document_raw: object) -> dict[str, LintProfileSpec]:
             inherits = inherits_raw.strip().lower()
         stations_raw = body.get("stations", [])
         stations = frozenset(item.upper() for item in _string_list(stations_raw, field="stations"))
+        prefixes_raw = body.get("station_prefixes", [])
+        station_prefixes = frozenset(item.upper() for item in _string_list(prefixes_raw, field="station_prefixes"))
         accept_end = body.get("accept_end_tx_tn", False)
         if not isinstance(accept_end, bool):
             msg = f"lint profile {profile_id} accept_end_tx_tn must be a boolean"
@@ -278,6 +284,7 @@ def _specs_from_document(document_raw: object) -> dict[str, LintProfileSpec]:
             recorded=recorded,
             inherits=inherits,
             stations=stations,
+            station_prefixes=station_prefixes,
             accept_end_tx_tn=accept_end,
         )
     _validate_inherits(loaded)
@@ -440,6 +447,7 @@ def resolved_lint_profile(profile_id: str) -> LintProfileSpec | None:
         recorded=tuple(recorded),
         inherits=spec.inherits,
         stations=spec.stations,
+        station_prefixes=spec.station_prefixes,
         accept_end_tx_tn=spec.accept_end_tx_tn,
     )
 

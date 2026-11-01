@@ -32,7 +32,9 @@ def test_catalog_records_every_thin_profile() -> None:
     assert rows["nz_caa_met"].differs is True
     assert rows["au_bom"].differs is True
     assert rows["uk_metoffice"].differs is True
-    assert rows["iwxxm_us"].recorded == ("US_CONVECTIVE_SIGMET_SHAPE",)
+    assert rows["iwxxm_us"].recorded == ("US_CONVECTIVE_SIGMET_SHAPE", "US_K_PREFIX_TAF_PREFER")
+    assert rows["iwxxm_us"].station_prefixes == frozenset({"K"})
+    assert rows["ca_eccc"].station_prefixes == frozenset({"CY"})
     assert rows["us_military"].inherits == "iwxxm_us"
     assert rows["us_military"].accept_end_tx_tn is True
 

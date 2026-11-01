@@ -28,6 +28,11 @@ _MILITARY_END_TX_TN: dict[str, str] = {
         "TEMPO 3019/3022 3200 BKN010 BECMG 3021/3022 15006KT 9999 NSW BKN015 "
         "TX22/3020Z TN12/3112Z="
     ),
+    "KDOV": (
+        "TAF KDOV 301800Z 3018/3124 30012KT 9999 FEW050 QNH3001INS "
+        "BECMG 3100/3101 28009KT 9999 SCT050 QNH3005INS "
+        "TX20/3019Z TN08/3111Z="
+    ),
     "KGRK": (
         "TAF KGRK 301600Z 3016/3122 08009KT 9999 VCSH SCT060 OVC110 QNH3008INS "
         "BECMG 3017/3018 08009KT 8000 -SHRA SCT020 OVC040 QNH3002INS "
@@ -105,7 +110,9 @@ def test_resolve_latam_stations(icao: str) -> None:
 
 
 def test_resolve_unknown_station() -> None:
-    assert resolve_profile_for_station("KORD") is None
+    # Non-US / non-Canadian stations without an exact map stay unmapped (no
+    # Europe profile; prefix prefer only covers K* / CY*).
+    assert resolve_profile_for_station("LFPG") is None
     assert resolve_profile_for_station("") is None
 
 
