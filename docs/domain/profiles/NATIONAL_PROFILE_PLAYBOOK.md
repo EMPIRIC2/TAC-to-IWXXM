@@ -49,6 +49,7 @@ Edit **once** in [`packages/tac-validate/.../lint_profiles.yaml`](../../../packa
 |-------|------|
 | `inherits` | Single-parent DAG (no mixins). Child may narrow `products`. |
 | `stations` / `accept_end_tx_tn` | Leaf-only station dialect flags |
+| `station_prefixes` | Leaf-only ICAO country prefixes for TAF ICAO prefer (exact `stations` win; longest prefix wins). E.g. `iwxxm_us` `[K]`, `ca_eccc` `[CY]`. |
 | `recorded` | Durable notes without severity remaps |
 | `differs` | True when national lint diverges from annex3 |
 

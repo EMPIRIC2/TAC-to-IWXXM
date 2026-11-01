@@ -9,6 +9,12 @@ METAR/SPECI/TAF. Core IWXXM only; no published UK extension XSD.
 **Inheritance**: `inherits: annex3` in `lint_profiles.yaml`. VV-omit dialect is
 `recorded` only (no severity softens this cycle — civil ICAO stays strict).
 
+**ICAO prefer** (EV-taf-national-prefer-prob): `station_prefixes: [EG]` — default-`annex3`
+UK `EG*` TAFs prefer `uk_metoffice`, so standalone `PROB + period`
+(`PROB_PERIOD_WITHOUT_TEMPO`) is info via the shared `taf-prob-period-info-quality` policy
+(standalone PROB is valid UK / ICAO Annex 3 App 5 §1.4 practice). PROB qualifying
+`BECMG`/`FM` stays `INVALID_PROB`.
+
 ## Owns (target)
 
 | Area | Scope |

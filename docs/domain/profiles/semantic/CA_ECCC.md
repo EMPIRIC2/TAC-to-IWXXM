@@ -7,6 +7,13 @@
 Environment and Climate Change Canada (ECCC / MSC) national semantic overlay: MANOBS
 surface observations, MANAIR aviation forecasts, and Canadian IWXXM extension schemas.
 
+**ICAO prefer** (EV-taf-national-prefer-prob): `station_prefixes: [CY]` — default-`annex3`
+Canadian `CY*` TAFs prefer `ca_eccc`, so standalone `PROB + period`
+(`PROB_PERIOD_WITHOUT_TEMPO`) is info via the shared `taf-prob-period-info-quality` policy.
+Prefer is **TAF-only**: `CW*` auto stations keep annex3 `MISSING_VISIBILITY` / `MISSING_QNH`
+errors (MANOBS expects `VIS MISG` / `PRES MISG` — not softened). PROB qualifying
+`BECMG`/`FM` stays `INVALID_PROB`.
+
 ## Owns (target)
 
 | Area | Scope |

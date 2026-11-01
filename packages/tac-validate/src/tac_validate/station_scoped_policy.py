@@ -86,9 +86,42 @@ def _station_to_profile() -> dict[str, str]:
     return mapping
 
 
+@cache
+def _prefix_to_profile() -> tuple[tuple[str, str], ...]:
+    """
+    Build ICAO-prefix → profile_id pairs, longest prefix first.
+
+    National profiles (e.g. US ``K``, Canada ``CY``) claim a country prefix so
+    live/default ``annex3`` + ICAO prefer maps a station to its national profile
+    for TAF. Exact ``stations`` entries win over any prefix match.
+
+    Returns
+    -------
+    tuple[tuple[str, str], ...]
+        ``(prefix, profile_id)`` pairs sorted by descending prefix length.
+
+    Raises
+    ------
+    ValueError
+        When one prefix is claimed by two profiles.
+    """
+    pairs: dict[str, str] = {}
+    for profile_id, spec in load_lint_profiles().items():
+        for prefix in spec.station_prefixes:
+            key = prefix.upper()
+            if key in pairs and pairs[key] != profile_id:
+                msg = f"prefix {key} claimed by both {pairs[key]!r} and {profile_id!r}"
+                raise ValueError(msg)
+            pairs[key] = profile_id
+    return tuple(sorted(pairs.items(), key=lambda item: len(item[0]), reverse=True))
+
+
 def resolve_profile_for_station(icao: str) -> str | None:
     """
     Return the lint profile id for an ICAO, if one is listed.
+
+    Exact ``stations`` entries win over country ``station_prefixes`` (e.g. the
+    military ``KBIX`` beats the US ``K`` prefix), and the longest prefix wins.
 
     Examples
     --------
@@ -108,7 +141,13 @@ def resolve_profile_for_station(icao: str) -> str | None:
     token = (icao or "").strip().upper()
     if not token:
         return None
-    return _station_to_profile().get(token)
+    exact = _station_to_profile().get(token)
+    if exact is not None:
+        return exact
+    for prefix, profile_id in _prefix_to_profile():
+        if token.startswith(prefix):
+            return profile_id
+    return None
 
 
 def accepts_end_tx_tn(profile: str) -> bool:

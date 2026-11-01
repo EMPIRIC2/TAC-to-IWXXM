@@ -16,7 +16,7 @@ Convert uses core IWXXM (`annex3`). This is not `US_FAA_NWS` / `iwxxm_us`
 |------|-------|
 | Products | TAF |
 | Lint | TX/TN after change groups → `TX_TN_PRESENT` (info), not `INVALID_TX_TN` |
-| Stations | KBIX, KCVS, KGRK, KNID, KNYL, KPOE, KSZL (YAML `stations` + `accept_end_tx_tn`) |
+| Stations | KBIX, KCVS, KDOV, KGRK, KNID, KNYL, KPOE, KSZL (YAML `stations` + `accept_end_tx_tn`) |
 | IWXXM | Core annex3 emit only (no military XSD) |
 
 ## Observed in live TAC
@@ -29,6 +29,10 @@ Convert uses core IWXXM (`annex3`). This is not `US_FAA_NWS` / `iwxxm_us`
 
 Annex 3 Table A5-1 places TX/TN on the base forecast. Use `ICAO_2025` / `annex3`
 when you want that rule enforced as an error.
+
+These exact `stations` win over the US `K` `station_prefixes` on `iwxxm_us`, so a
+military K-station resolves here (engine `annex3`, BECMG allowed) rather than to the
+BECMG-forbidding `iwxxm_us` pack (EV-taf-national-prefer-prob).
 
 ## Code
 
