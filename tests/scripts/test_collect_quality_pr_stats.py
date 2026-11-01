@@ -20,6 +20,22 @@ def test_normalize_product_unknown_pack_uppercases() -> None:
     assert mod.normalize_product("XYZ", pack_folder="") == "METAR"
 
 
+def test_normalize_sticky_profile_fallback_when_canonical_raises(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Scripts cov: local lowercasing when lint_profile_ids helper raises."""
+
+    def _boom(_raw: str) -> str:
+        raise RuntimeError("canonical unavailable")
+
+    monkeypatch.setattr(
+        "tac_validate.lint_profile_ids.canonical_lint_profile_id",
+        _boom,
+    )
+    assert mod.normalize_sticky_profile("  IwXxM_Us ") == "iwxxm_us"
+    assert mod.normalize_sticky_profile(None) == ""  # type: ignore[arg-type]
+
+
 def test_bump_and_rows_from_agg() -> None:
     agg: dict[tuple[str, str], list[int]] = {}
     mod._bump(agg, "metar", "annex3", "match")

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import importlib.util
 import json
 import subprocess
 import sys
@@ -12,6 +13,16 @@ import pytest
 ROOT = Path(__file__).resolve().parents[2]
 SCRIPT = ROOT / "scripts" / "ci" / "format_quality_pr_comment.py"
 MARKER = "<!-- quality-pr-comment -->"
+
+
+def _load_format_module():
+    spec = importlib.util.spec_from_file_location("format_quality_pr_comment", SCRIPT)
+    assert spec
+    assert spec.loader
+    mod = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = mod
+    spec.loader.exec_module(mod)
+    return mod
 
 
 def _write_summary(
@@ -118,3 +129,28 @@ def test_format_quality_pr_comment_marker_distinct_from_coverage() -> None:
     # When implemented, must not reuse EV-036 marker.
     if SCRIPT.is_file():
         assert "EV-036-coverage-comment" not in text
+
+
+@pytest.mark.unit
+def test_parse_summary_profile_fallback_when_canonical_raises(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Cover local lowercasing when lint_profile_ids helper raises."""
+    mod = _load_format_module()
+    path = tmp_path / "quality-summary.json"
+    _write_summary(
+        path,
+        source="fallback",
+        rows=[{"product": "METAR", "profile": "  IwXxM_Us ", "match": 1}],
+    )
+
+    def _boom(_raw: str) -> str:
+        raise RuntimeError("canonical unavailable")
+
+    monkeypatch.setattr(
+        "tac_validate.lint_profile_ids.canonical_lint_profile_id",
+        _boom,
+    )
+    source, rows = mod.parse_summary(path)
+    assert source == "fallback"
+    assert rows == [(("METAR", "iwxxm_us"), (1, 0, 0, 0))]
