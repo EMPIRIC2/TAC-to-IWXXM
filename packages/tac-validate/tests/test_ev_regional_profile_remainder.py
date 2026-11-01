@@ -1,4 +1,4 @@
-"""EV-regional-profile-remainder — C1/C2/C4/C6/C7 fixtures.
+"""EV-regional-profile-remainder — C1/C2/C4/C5/C6/C7 fixtures.
 
 [Corpus: product §F15/§F20/§F23/§F36] [Corpus: adr/ADR-046]
 [Corpus: tests §TC-EV-RPR-001..007]
@@ -8,12 +8,18 @@ from __future__ import annotations
 
 from tac2iwxxm.profile_resolve import resolve_validation_policies
 from tac_validate.api import lint, lint_with_profile
+from tac_validate.product_rules_pkg._common import _check_r8_pack
+from tac_validate.product_rules_pkg.sigmet_airmet import (
+    _check_airmet_a2,
+    _is_us_domestic_ws_sigmet,
+)
 from tac_validate.station_scoped_policy import resolve_profile_for_station
 
 _PTRO_TAF = "TAF PTRO 011200Z 0112/0212 09010KT P6SM SCT020 PROB30 0118/0122 3SM BR="
 _YSSY_TAF = "TAF YSSY 011200Z 0112/0218 18012KT 9999 SCT025 PROB30 0118/0122 4000 SHRA BKN012="
 _YCFS_METAR = "METAR YCFS 011300Z AUTO 16008KT 9999 // SCT020 21/// Q1016="
 _FNUE_METAR = "METAR FNUE 010100Z AUTO /////KT //// ////// ///// Q////="
+_ULOO_SPECI = "SPECI ULOO 311523Z 35002MPS 9999 FEW015 BKN046 08/07 Q1029 R19/010060 RMK QFE767"
 _HABANA = (
     "WSCU31 MUHA 312045\n"
     "MUFH SIGMET 3 VALID 312045/010045 MUHA-\n"
@@ -80,8 +86,33 @@ def test_c4_fnue_all_solidus_stays_missing() -> None:
     assert not any(i.code == "DEWPOINT_NOT_OBSERVABLE" for i in report.issues)
 
 
+def test_c5_cis_runway_state_skips_rvr_in_r8_pack() -> None:
+    """CIS Rxx/dddddd must take the runway-state continue path in R8."""
+    issues = _check_r8_pack(
+        ["R19/010060", "R04L/010062"],
+        product="METAR",
+        core="R19/010060 R04L/010062",
+        body_start=0,
+        body_end=24,
+    )
+    assert not any(i.code in {"INVALID_RVR", "RVR_PRESENT"} for i in issues)
+    assert "INVALID_RVR" not in {i.code for i in lint(_ULOO_SPECI, product="SPECI").issues}
+
+
 def test_c6_habana_mov_stnr_info() -> None:
     report = lint(_HABANA, product="SIGMET")
+    assert any(i.code == "STNR_MOVEMENT" for i in report.issues)
+    assert not any(i.code == "INVALID_STNR_MOVEMENT" for i in report.issues)
+
+
+def test_c6_airmet_mov_stnr_info() -> None:
+    """AIRMET MOV STNR (no direction) is stationary info, not INVALID_STNR_MOVEMENT."""
+    issues = _check_airmet_a2(start=0, end=40, upper="AIRMET ISOL TS OBS MOV STNR WKN")
+    codes = {i.code for i in issues}
+    assert "STNR_MOVEMENT" in codes
+    assert "INVALID_STNR_MOVEMENT" not in codes
+    tac = "YUDD AIRMET 1 VALID 101200/101600 YUSO- YUDD SHANLON FIR MOD ICE FCST S OF N54 TOP FL150 MOV STNR NC="
+    report = lint(tac, product="AIRMET")
     assert any(i.code == "STNR_MOVEMENT" for i in report.issues)
     assert not any(i.code == "INVALID_STNR_MOVEMENT" for i in report.issues)
 
@@ -131,3 +162,11 @@ def test_c7_tc_phonetic_series_with_icao_valid_not_domestic_gate() -> None:
     codes = {i.code for i in report.issues}
     assert "TC_CYCLONE_IDENTITY" in codes
     assert "MISSING_VALID" not in codes
+
+
+def test_c7_domestic_gate_excludes_convective_and_hazard_tokens() -> None:
+    """Direct shape helper: convective / TC / VA never classify as domestic WS."""
+    assert _is_us_domestic_ws_sigmet("CONVECTIVE SIGMET 47E VALID UNTIL 2355Z") is False
+    assert _is_us_domestic_ws_sigmet("SIGMET TANGO 1 TC IN-FA OBS") is False
+    assert _is_us_domestic_ws_sigmet("SIGMET TANGO 1 VA ERUPTION") is False
+    assert _is_us_domestic_ws_sigmet("WSUS06 KKCI SIGMET YANKEE 1") is True
