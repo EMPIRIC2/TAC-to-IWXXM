@@ -14,6 +14,7 @@ from typing import cast
 
 import yaml
 
+from tac_validate.lint_profile_ids import canonical_lint_profile_id
 from tac_validate.models import Issue, LintReport
 
 _CATALOG_PATH = Path(__file__).resolve().parent / "data" / "lint_profiles.yaml"
@@ -357,7 +358,7 @@ def lint_profile_spec(profile: str) -> LintProfileSpec | None:
     >>> 1 + 1  # docstring smoke (lint_profile_spec)
     2
     """
-    return load_lint_profiles().get(profile.strip().lower())
+    return load_lint_profiles().get(canonical_lint_profile_id(profile))
 
 
 def profile_inherit_chain(profile_id: str) -> tuple[str, ...]:
@@ -380,7 +381,7 @@ def profile_inherit_chain(profile_id: str) -> tuple[str, ...]:
     2
     """
     rows = load_lint_profiles()
-    leaf = profile_id.strip().lower()
+    leaf = canonical_lint_profile_id(profile_id)
     if leaf not in rows:
         return (leaf,)
     chain: list[str] = []
@@ -415,7 +416,7 @@ def resolved_lint_profile(profile_id: str) -> LintProfileSpec | None:
     2
     """
     rows = load_lint_profiles()
-    leaf = profile_id.strip().lower()
+    leaf = canonical_lint_profile_id(profile_id)
     spec = rows.get(leaf)
     if spec is None:
         return None

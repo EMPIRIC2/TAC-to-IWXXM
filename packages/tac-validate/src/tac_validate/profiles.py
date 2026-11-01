@@ -9,6 +9,7 @@ from __future__ import annotations
 from typing import Final
 
 from tac_validate.lint_profile_catalog import lint_profile_spec, load_lint_profiles
+from tac_validate.lint_profile_ids import canonical_lint_profile_id
 
 PROFILE_ANNEX3: Final[str] = "annex3"
 PROFILE_IWXXM_US: Final[str] = "iwxxm_us"
@@ -74,7 +75,7 @@ def normalize_profile(profile: str) -> str:
     str
         Lowercased profile id.
     """
-    key = profile.strip().lower()
+    key = canonical_lint_profile_id(profile)
     if key not in SUPPORTED_PROFILES:
         raise ValueError(f"unsupported lint profile {profile!r}; expected one of {sorted(SUPPORTED_PROFILES)}")
     return key
@@ -235,6 +236,7 @@ __all__ = [
     "PROFILE_US_NWS_VONA",
     "SUPPORTED_PROFILES",
     "ca_eccc_applicable",
+    "canonical_lint_profile_id",
     "effective_lint_profile",
     "in_imd_applicable",
     "iwxxm_us_applicable",

@@ -147,6 +147,11 @@ jobs:
       - name: Run lint
         run: make lint
 
+      - name: ADR-056 file budget + complexity
+        run: |
+          make file-budget
+          make file-complexity
+
       - name: Validation catalog drift
         run: make validation-catalog-check
 

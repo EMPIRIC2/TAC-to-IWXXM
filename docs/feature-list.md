@@ -22,7 +22,7 @@
 | F12 | Publishable TAC product validation (`tac-validate`) | Implemented | Product | S014 / EV-010; #698; **deepen** S043 / EV-035 lint↔source provenance; **deepen** S055 / EV-046 ISSUE_CATALOG; **deepen** S059 / EV-050 #959 offline membership Validated; **deepen** EV-1150 CalVer + nightly TestPyPI (ADR-043); **deepen EV-yaml-engine-configurability / #1224**: policy/detector overlay docs + preflight (detector YAML deepen deferred); **deepen EV-yaml-full-configurability / #1226**: every product TAC quality + detector cells → **full** |
 | F13 | Fast IWXXM validate (Rust core + Schematron + PyPI) | Implemented | Product | S014 / EV-010; #699; **deepen** S054 / EV-045 Rust CI (#725); **deepen** S064 / EV-055 #980; **deepen** EV-1150 CalVer + nightly TestPyPI (ADR-043) |
 | F14 | Publish `tac2iwxxm` + validate extras + PyPI/release CI | Implemented | Product | S014 / EV-010; #693; **deepen** S054 / EV-045 Rust CI (#725); **deepen** EV-1150 CalVer + promote tags + nightly TestPyPI (ADR-043); **deepen EV-yaml-full-configurability / #1226**: README/install smoke for overlay + emit map templates |
-| F15 | Maintainable TAC lint issue registry + METAR/SPECI quality bar | Done | Product | S015 / EV-011; #732; **deepen** S055 / EV-046 #889 Lean; **deepen** S059 / EV-050 #959 Validated membership + RE*/cloud fixtures; **deepen** EV-062 #1017 catalog descriptions + provenance locators; **deepen** EV-beta-ux-export-auth operator messages = library codes only (no research T3/S1 tokens); **deepen EV-yaml-engine-configurability / #1224**: honesty matrix for policy vs detector YAML; **deepen EV-yaml-full-configurability / #1226**: METAR/SPECI lead then all products to **full** (M2–M4); **deepen EV-1252-residual-yaml / #1252 / ADR-049**: declarative detector rules replace Python hatches where the DSL can express them (`kind: python` escape only); **deepen EV-regional-profile-remainder**: CIS runway-state ≠ `INVALID_RVR` (C5); BoM `tt///` dewpoint-not-observable (C4) |
+| F15 | Maintainable TAC lint issue registry + METAR/SPECI quality bar | Done | Product | S015 / EV-011; #732; **deepen** S055 / EV-046 #889 Lean; **deepen** S059 / EV-050 #959 Validated membership + RE*/cloud fixtures; **deepen** EV-062 #1017 catalog descriptions + provenance locators; **deepen** EV-beta-ux-export-auth operator messages = library codes only (no research T3/S1 tokens); **deepen EV-yaml-engine-configurability / #1224**: honesty matrix for policy vs detector YAML; **deepen EV-yaml-full-configurability / #1226**: METAR/SPECI lead then all products to **full** (M2–M4); **deepen EV-1252-residual-yaml / #1252 / ADR-049**: declarative detector rules replace Python hatches where the DSL can express them (`kind: python` escape only); **deepen EV-regional-profile-remainder**: CIS runway-state ≠ `INVALID_RVR` (C5); BoM `tt///` dewpoint-not-observable (C4); **deepen EV-packages-module-reorg**: lint-profile inherit casing + sticky/QM catalog-case keys (sticky table redesign follow-on) |
 | F16 | Dissemination drawer + multi-DB upload (BYOC URI) | Done | Product | S019 / EV-014; #729; **deepen** S024 / EV-018 multi-select (#785); **deepen** S047 / EV-039 live local SQL; **deepen** S050 / EV-042 #897 UI-hide (API retained); **restore** EV-091 / #898 + #1089 exchange overlay; **deepen** EV-1150 operator **beta** badge + Issues feedback (ADR-043); **deepen** EV-beta-ux-export-auth remove Upload to Database button; Disseminate/Convert&Send remain beta |
 | F17 | WIS2 dissemination pathway | Done | Product | S019 / EV-014; #2; S050 / EV-042 hide; **restore** EV-091 / #898; **deepen** EV-1150 beta surfacing (ADR-043) |
 | F18 | EDIS → RTH Washington dissemination | Done | Product | S019 / EV-014; #6; S050 / EV-042 hide; **restore** EV-091 / #898; **deepen** EV-1150 beta surfacing (ADR-043) |
@@ -43,9 +43,9 @@
 | F33 | Secure mass file/folder ingest | Implemented | Product | S050 / EV-042; #897; auth + caps + sniff/zip-bomb; multi-file + folder/zip; 11 approved |
 | F34 | Contract + mutation quality gates | Done | Platform | S069 / EV-059; epic #841 CLOSED; #727 Schemathesis; #874 Stryker + pytest-gremlins; **deepen** S071 / EV-061 stricter stage→main required checks (#1015); promote held; **deepen EV-101 / #1431**: local OpenAPI status and required-field check, coverage reports for tac2iwxxm, tac-validate, auth, and workflows, a Playwright coverage report, and named Playwright locators (#1448, #1433, #1436, #1435, #1432). Those five checks are already merged on `stage`. Epic #1431 stays open. [Corpus: tests] [Corpus: product] [Corpus: api] |
 | F35 | Semantic vs exchange profiles + canonical ID migration | Implemented | Product | EV-063 / PR #1026; #912 / #914; ADR-036 Accepted; alias cutover #1025 (2026-10-31); amends F6 wire; **deepen** EV-beta-ux-export-auth suppress operator-visible `DEPRECATED_PROFILE_ALIAS` notices; Conversion profiles UI marked **beta** (ADR-043) |
-| F36 | National semantic + regional exchange profile content | In progress | Product | EV-063 / #912; **#919 US closed (EV-085)**; **#916 CA_ECCC P1 closed (EV-078)**; **EV-098 CA_ECCC mining #1028–#1031 closed**; **#1032 closed (EV-075)**; **#1061 SIGMET emit (EV-076)**; VAA TAC validate-first (EV-077); VAA exchange emit waived; **EV-profile-validate-decode-deepen / #1221** AU/NZ → `implemented`; **deepen EV-1222 / #1222**: regional exchange overlays beyond COLLECT stubs (APAC_ROBEX first); **deepen EV-regional-profile-remainder**: exact PTRO/PTSA prefer; Y* `au_bom` + PROB emit; BR PROB deferred pending DECEA cite |
+| F36 | National semantic + regional exchange profile content | In progress | Product | EV-063 / #912; **#919 US closed (EV-085)**; **#916 CA_ECCC P1 closed (EV-078)**; **EV-098 CA_ECCC mining #1028–#1031 closed**; **#1032 closed (EV-075)**; **#1061 SIGMET emit (EV-076)**; VAA TAC validate-first (EV-077); VAA exchange emit waived; **EV-profile-validate-decode-deepen / #1221** AU/NZ → `implemented`; **deepen EV-1222 / #1222**: regional exchange overlays beyond COLLECT stubs (APAC_ROBEX first); **deepen EV-regional-profile-remainder**: exact PTRO/PTSA prefer; Y* `au_bom` + PROB emit; BR PROB deferred pending DECEA cite; **deepen EV-packages-module-reorg**: catalog-case profile ids for sticky/QM boundary |
 | F37 | Live TAC map on Decode visuals | In progress | Product | EV-live-map-24h-window: pull/store/share last 24h only; browser time presets 1h/3h/6h/12h/full; prior layers + country/region/phenomenon filters |
-| M1 | Monorepo layout (`apps/` + `packages/` + `vendor/`) | Implemented | Platform | REQ-002–006 |
+| M1 | Monorepo layout (`apps/` + `packages/` + `vendor/`) | Implemented | Platform | REQ-002–006; **deepen EV-packages-module-reorg**: tac-validate/tac2iwxxm layout + shim-drop |
 | M2 | Vendor snapshot sync (wmo-im iwxxm-*) | Planned | Platform | REQ-002, REQ-010 |
 | M3 | GIFTs as in-repo package | Deprecated (ADR-014) | Platform | REQ-003; removed with F6 cutover |
 | M4 | Auth library in backend API | Implemented | Platform | S038 / EV-031 — Supabase Auth-only restore; was Deprecated operator #783 |
@@ -1339,6 +1339,10 @@
 
 - **Status**: **Done**; shipped S015 / EV-011 (2026-07-20, PR [#742](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/742));
   issue [#732](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/732) closed on cycle close.
+  **Deepen (EV-packages-module-reorg):** lint-profile id casing helper
+  (`canonical_lint_profile_id`) + sticky/QM collector casefold toward catalog
+  lowercase; inherit DAG layout stays in `lint_profile_catalog` (sticky Match /
+  codes / region table redesign is a stacked follow-on, not this deepen).
 - **What it does**: Introduces a **maintainable issue registry** in `packages/tac-validate`
   (machine-readable `code` + default `severity` `info`|`warning`|`error` + message template).
   Rules import registry entries; a docs/generated catalog lists all codes for operators and
@@ -2875,6 +2879,10 @@
 
 - **Status**: **Implemented**: the repository uses the monorepo target tree today (`apps/`, `packages/`, `vendor/`), `.gitmodules` is absent, and migration acceptance lives in `TC-M001` / `TC-M004`.
 - **What it does**: Replaces six git submodules with a single-repo tree: `apps/`, `packages/`, `vendor/`.
+- **Deepen (EV-packages-module-reorg):** limited packages hygiene in
+  `tac-validate` / `tac2iwxxm` (profile-id casing + delete forwarding-only
+  `annex3_products` shim / strip `products` parse re-exports). Not a wholesale
+  package-tree rewrite.
 - **F6 delta**: Approved tree gains `packages/tac2iwxxm`; loses `packages/gifts` at F6 cutover.
 - **S008 package amend**: Also gains `packages/tac-validate` and `packages/iwxxm-validate`.
 - **Key parameters**:
@@ -2915,6 +2923,7 @@
 
 ### M5: Workspace Tooling
 
+- **ADR-056 deepen**: Hard CI file line budget ≤500 (grandfather allowlist) + Ruff/ESLint complexity caps; P0 splits deferred.
 - **What it does**: Root Makefile orchestrates uv (Python) and pnpm (JS) workspaces; pre-commit
   and GitHub Actions quality gates.
 - **F6 delta**: Workspace member `tac2iwxxm`; drop gifts from test matrix at cutover; **PyO3 /

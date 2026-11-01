@@ -64,6 +64,33 @@ def test_parse_summary_and_collect_rows(tmp_path: Path) -> None:
     assert "alt" in sources
 
 
+def test_parse_summary_profile_fallback_when_canonical_raises(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Scripts cov: local lowercasing when lint_profile_ids helper raises."""
+    path = tmp_path / "quality-summary.json"
+    path.write_text(
+        json.dumps(
+            {
+                "source": "fallback",
+                "rows": [{"product": "METAR", "profile": "  IwXxM_Us ", "match": 1}],
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    def _boom(_raw: str) -> str:
+        raise RuntimeError("canonical unavailable")
+
+    monkeypatch.setattr(
+        "tac_validate.lint_profile_ids.canonical_lint_profile_id",
+        _boom,
+    )
+    source, rows = mod.parse_summary(path)
+    assert source == "fallback"
+    assert rows == [(("METAR", "iwxxm_us"), (1, 0, 0, 0))]
+
+
 def test_format_markdown_branches(monkeypatch: pytest.MonkeyPatch) -> None:
     # CI sets GITHUB_RUN_ID; clear so the no-id branch of _run_url is covered.
     monkeypatch.delenv("GITHUB_RUN_ID", raising=False)

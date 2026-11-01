@@ -34,7 +34,7 @@ from tac2iwxxm.products.fir_geometry import (
     clip_ring_to_relative,
     resolve_fir_relative_polygon,
 )
-from tac2iwxxm.profiles import annex3_products as ap
+from tac2iwxxm.profiles import annex3_emit as ap
 from tac2iwxxm.slot_builders.sigmet_airmet import parse_airmet, parse_sigmet
 from tac2iwxxm.slot_builders.swxa import parse_swxa
 from tac2iwxxm.slot_builders.taf import parse_taf
