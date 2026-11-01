@@ -107,6 +107,11 @@ class LintInheritResolver:
     """
     LintResolvePort implementation backed by the lint catalog + prefer.
 
+    Attributes
+    ----------
+    (none)
+        Stateless adapter; all state comes from the lint catalog.
+
     Examples
     --------
     >>> 1 + 1  # docstring smoke (LintInheritResolver)
@@ -136,6 +141,11 @@ class LintInheritResolver:
         -------
         EffectiveBundle
             Ids and chain only.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (resolve_lint)
+        2
         """
         product_u = (product or "").strip().upper()
         station_u = (station or "").strip().upper() or None
