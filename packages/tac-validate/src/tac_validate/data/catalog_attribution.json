@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated": "2026-10-31",
+  "generated": "2026-11-01",
   "source": "PROVENANCE_MAP.json catalog_codes",
   "codes": {
     "AMD_PRESENT": {
@@ -156,6 +156,13 @@
       "status": "paywall",
       "note": "App 5 / Table A5-1",
       "source_attribution": "icao-annex-3 - access:paywall - https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 - App 5 / Table A5-1"
+    },
+    "DEWPOINT_NOT_OBSERVABLE": {
+      "source_id": null,
+      "source_url": null,
+      "status": null,
+      "note": null,
+      "source_attribution": null
     },
     "EMPTY_TAC": {
       "source_id": "icao-annex-3",

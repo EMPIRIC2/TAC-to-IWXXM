@@ -7,8 +7,13 @@ Bureau of Meteorology national semantic overlay: TAF change-group `INTER`, TAF3 
 marker in RMK, forecast T/Q remarks, and AUTO METAR/SPECI tokens (`NCD`, `UP`, solidi).
 
 **Inheritance**: `inherits: annex3` in `lint_profiles.yaml`. Durable dialects recorded under
-`recorded` (solidi / national heading) — count-preserving; no severity remaps beyond
-existing INTER/AUTO engines.
+`recorded` (solidi / national heading). **ICAO prefer** (EV-regional-profile-remainder):
+`station_prefixes: [Y]` — default-`annex3` Australian `Y*` TAFs prefer `au_bom`, and
+`au_bom` binds the shared `taf-prob-period-info-quality` policy so standalone
+`PROB`/`PROB`+`INTER` period without TEMPO is **info** (not a soft warning). Annex 3
+still keeps full missing `tt/td` as error; BoM AUTO dewpoint-nil `tt///` is
+**dewpoint-not-observable info** (narrow grammar), not a blanket `MISSING_TEMP_DEWPOINT`
+severity remap.
 
 ## Owns (target)
 

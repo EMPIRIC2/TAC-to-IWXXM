@@ -102,7 +102,18 @@ def _check_sigmet_g1(*, start: int, end: int, upper: str) -> list[Issue]:
         return issues
 
     if _SIGMET_STNR.search(core):
-        if _SIGMET_MOV.search(core):
+        # Habana idiom MOV STNR (no direction) is stationary, not a conflict.
+        if _SIGMET_MOV_STNR_ADJACENT.search(core) and not _SIGMET_MOV_DIR.search(core):
+            _emit_token_info(
+                issues,
+                code="STNR_MOVEMENT",
+                message="SIGMET STNR stationary movement - research G1",
+                core=core,
+                body_start=start,
+                body_end=end,
+                token="STNR",
+            )
+        elif _SIGMET_MOV.search(core):
             _emit_token_info(
                 issues,
                 code="INVALID_STNR_MOVEMENT",
@@ -428,7 +439,17 @@ def _check_airmet_a2(*, start: int, end: int, upper: str) -> list[Issue]:
     core = upper[:-1] if upper.endswith("=") else upper
 
     if _SIGMET_STNR.search(core):
-        if _SIGMET_MOV.search(core):
+        if _SIGMET_MOV_STNR_ADJACENT.search(core) and not _SIGMET_MOV_DIR.search(core):
+            _emit_token_info(
+                issues,
+                code="STNR_MOVEMENT",
+                message="AIRMET STNR stationary movement",
+                core=core,
+                body_start=start,
+                body_end=end,
+                token="STNR",
+            )
+        elif _SIGMET_MOV.search(core):
             _emit_token_info(
                 issues,
                 code="INVALID_STNR_MOVEMENT",
@@ -645,6 +666,36 @@ def _check_sigmet_tc(*, start: int, end: int, upper: str) -> list[Issue]:
 
 _CONVECTIVE_SIGMET_BULLETIN = re.compile(r"\bCONVECTIVE\s+SIGMET\b")
 _CONVECTIVE_VALID_UNTIL = re.compile(r"\bVALID\s+UNTIL\s+\d{4,6}Z\b")
+# US domestic non-convective WS: VALID UNTIL may omit trailing Z (FMH / WSUS form).
+_US_DOMESTIC_WS_VALID_UNTIL = re.compile(r"\bVALID\s+UNTIL\s+\d{4,6}Z?\b")
+_WSUS_TTAAII = re.compile(r"\bWSUS\d{2}\b")
+_US_DOMESTIC_WS_SERIES = re.compile(
+    r"\bSIGMET\s+(?:ALPHA|ALFA|BRAVO|CHARLIE|DELTA|ECHO|FOXTROT|GOLF|HOTEL|"
+    r"INDIA|JULIET|JULIETT|KILO|LIMA|MIKE|NOVEMBER|OSCAR|PAPA|QUEBEC|ROMEO|"
+    r"SIERRA|TANGO|UNIFORM|VICTOR|WHISKEY|XRAY|X-RAY|YANKEE|ZULU)\s+\d+\b"
+)
+
+
+def _is_us_domestic_ws_sigmet(upper: str) -> bool:
+    """
+    Return True for US NWS non-convective WS SIGMET domestic shape.
+
+    Parameters
+    ----------
+    upper : str
+        Uppercased SIGMET body.
+
+    Returns
+    -------
+    bool
+        True when WSUS and/or phonetic series plus ``VALID UNTIL`` are present
+        and the bulletin is not convective.
+    """
+    if _CONVECTIVE_SIGMET_BULLETIN.search(upper):
+        return False
+    if not _US_DOMESTIC_WS_VALID_UNTIL.search(upper):
+        return False
+    return bool(_WSUS_TTAAII.search(upper) or _US_DOMESTIC_WS_SERIES.search(upper))
 
 
 def _check_convective_sigmet(*, start: int, end: int, upper: str) -> list[Issue]:
@@ -679,6 +730,37 @@ def _check_convective_sigmet(*, start: int, end: int, upper: str) -> list[Issue]
     ]
 
 
+def _check_us_domestic_ws_sigmet(*, start: int, end: int, upper: str) -> list[Issue]:
+    """
+    Check a US domestic non-convective WS SIGMET.
+
+    Parameters
+    ----------
+    start : int
+        Body start offset.
+    end : int
+        Body end offset.
+    upper : str
+        Uppercased SIGMET body.
+
+    Returns
+    -------
+    list[Issue]
+        Empty when ``VALID UNTIL`` is present. Skips international FIR/OBS gates.
+    """
+    if _US_DOMESTIC_WS_VALID_UNTIL.search(upper):
+        return []
+    return [
+        _issue(
+            "MISSING_VALID",
+            "US WS SIGMET missing VALID UNTIL time",
+            start=start,
+            end=end,
+            location="valid",
+        )
+    ]
+
+
 def _check_sigmet_airmet(tac: str, product: str, *, profile: str = "annex3") -> list[Issue]:
     """
     Internal helper ``_check_sigmet_airmet``.
@@ -706,6 +788,10 @@ def _check_sigmet_airmet(tac: str, product: str, *, profile: str = "annex3") -> 
 
     if product == "SIGMET" and _CONVECTIVE_SIGMET_BULLETIN.search(upper):
         issues.extend(_check_convective_sigmet(start=start, end=end, upper=upper))
+        return issues
+
+    if product == "SIGMET" and _is_us_domestic_ws_sigmet(upper):
+        issues.extend(_check_us_domestic_ws_sigmet(start=start, end=end, upper=upper))
         return issues
 
     if not _VALID_PERIOD.search(upper):

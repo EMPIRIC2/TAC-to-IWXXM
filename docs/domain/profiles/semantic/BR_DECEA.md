@@ -34,6 +34,9 @@ GAMET: **parse-only** fixtures; no IWXXM emit (see [GAMET-spike.md](../GAMET-spi
 - [x] ≥1 attributed METAR + TAF (EV-094 M2)
 - [ ] Attributed SPECI / Brazilian FIR SIGMET / AIRMET
 - [x] Catalog `status: implemented` (EV-094 M7 / #1098)
+- [ ] **Standalone TAF PROB-period severity** (`PROB_PERIOD_WITHOUT_TEMPO` → info via
+  `br_decea` emit-key + `SB*` prefer) — **deferred** until a DECEA/AIP or mining cite
+  lands (EV-regional-profile-remainder C3). Until then Annex 3 warning stands.
 
 ## References
 

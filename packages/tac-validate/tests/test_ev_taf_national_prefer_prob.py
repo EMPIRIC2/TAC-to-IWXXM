@@ -58,10 +58,11 @@ class TestIcaoPrefixResolve:
         assert resolve_profile_for_station("CWDQ") is None
 
     def test_unmapped_station_stays_none(self) -> None:
-        # No France / Australia / Brazil prefix profile; standalone-PROB residual
-        # for those locales stays warning (locale-reasoning report).
+        # No France / Brazil prefix profile; AU Y* now maps to au_bom
+        # (EV-regional-profile-remainder C2). Standalone-PROB residual for
+        # unmapped locales stays warning.
         assert resolve_profile_for_station("LFPG") is None
-        assert resolve_profile_for_station("YPAD") is None
+        assert resolve_profile_for_station("YPAD") == "au_bom"
         assert resolve_profile_for_station("SBPV") is None
         assert resolve_profile_for_station("") is None
 

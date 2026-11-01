@@ -1,4 +1,4 @@
-# National TAF PROB-period acceptance (US / CA / UK bind).
+# National TAF PROB-period acceptance (US / CA / UK / AU bind; BR deferred).
 # PROB+period without TEMPO is dialect info, not a soft warning.
 # extends annex3-taf-quality so all other codes stay enabled.
 # [Corpus: product §F20] [Corpus: adr/ADR-046]

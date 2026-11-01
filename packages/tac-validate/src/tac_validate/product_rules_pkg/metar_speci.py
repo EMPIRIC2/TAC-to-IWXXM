@@ -113,7 +113,18 @@ def _check_metar_speci(tac: str, product: str, *, profile: str = "annex3") -> li
         else:
             issues.extend(r3_weather(tac, product))
 
-        if not _TEMP.search(core):
+        dewpoint_nil = _TEMP_DEWPOINT_NIL.search(core)
+        if dewpoint_nil is not None:
+            issues.append(
+                _issue(
+                    "DEWPOINT_NOT_OBSERVABLE",
+                    f"{product} dewpoint not observable (tt///) - temperature present",
+                    start=start + dewpoint_nil.start(),
+                    end=start + dewpoint_nil.end(),
+                    location="temperature",
+                )
+            )
+        elif not _TEMP.search(core):
             issues.append(
                 _issue(
                     "MISSING_TEMP_DEWPOINT",
