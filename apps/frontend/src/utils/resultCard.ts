@@ -145,7 +145,6 @@ export function assessResultCard(input: {
     }
   }
 
-  let blockingCode = false;
   for (const issue of input.issues ?? []) {
     const message = scrubInternalDocRefs(issue.message?.trim() ?? '');
     if (!message) {
@@ -153,10 +152,8 @@ export function assessResultCard(input: {
     }
     const code = issue.code?.trim();
     const line: ResultCardLine = code ? { message, code } : { message };
-    if (codeBlocksPublish(code)) {
-      blockingCode = true;
-      errors.push(line);
-    } else if (isErrorSeverity(issue.severity)) {
+    // ADR-054: code alone never blocks download (PUBLISH_BLOCKING_CODES empty).
+    if (isErrorSeverity(issue.severity)) {
       errors.push(line);
     } else {
       notes.push(line);
@@ -170,7 +167,6 @@ export function assessResultCard(input: {
   // Only convert-critical findings, soft-preview ok=false, or unusable XML block download.
   const publishBlocked =
     hasCritical ||
-    blockingCode ||
     input.ok === false ||
     xmlBlocksPublish(input.xml) ||
     ((input.errors?.length ?? 0) > 0 && !input.xml);

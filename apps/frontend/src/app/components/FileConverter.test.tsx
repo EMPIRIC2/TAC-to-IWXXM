@@ -3539,8 +3539,23 @@ describe('FileConverter Component', () => {
       expect(strictCheck).toBeTruthy();
       expect(nilCheck).toBeTruthy();
       expect(strictCheck.checked).toBe(false);
+      expect(screen.getByText('Strict')).toBeInTheDocument();
+      expect(screen.queryByTestId('strict-step-toggles')).not.toBeInTheDocument();
       await user.click(strictCheck);
       expect(strictCheck.checked).toBe(true);
+      expect(screen.getByTestId('strict-step-toggles')).toBeInTheDocument();
+      await user.click(screen.getByTestId('strict-lint-checkbox'));
+      expect(
+        (screen.getByTestId('strict-lint-checkbox') as HTMLInputElement).checked,
+      ).toBe(false);
+      await user.click(screen.getByTestId('strict-convert-checkbox'));
+      expect(
+        (screen.getByTestId('strict-convert-checkbox') as HTMLInputElement).checked,
+      ).toBe(false);
+      await user.click(screen.getByTestId('strict-validate-checkbox'));
+      expect(
+        (screen.getByTestId('strict-validate-checkbox') as HTMLInputElement).checked,
+      ).toBe(false);
       await user.click(nilCheck);
       expect(nilCheck.checked).toBe(false);
     });

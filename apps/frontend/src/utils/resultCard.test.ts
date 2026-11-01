@@ -8,6 +8,7 @@ import {
   RESULT_STATUS_VALID,
   assessConvertedFile,
   assessResultCard,
+  codeBlocksPublish,
   isErrorSeverity,
   xmlBlocksPublish,
 } from './resultCard';
@@ -28,6 +29,13 @@ describe('result card status', () => {
     expect(isErrorSeverity(' Warning ')).toBe(false);
     expect(isErrorSeverity('warn')).toBe(false);
     expect(isErrorSeverity('note')).toBe(false);
+  });
+
+  it('codeBlocksPublish stays empty under ADR-054 (no code alone blocks download)', () => {
+    expect(codeBlocksPublish(undefined)).toBe(false);
+    expect(codeBlocksPublish(null)).toBe(false);
+    expect(codeBlocksPublish('OUTPUT_VALIDATION_WARNING')).toBe(false);
+    expect(codeBlocksPublish('PARSE_FAILED')).toBe(false);
   });
 
   it('blocks publish for blank or tagless XML and allows tag-shaped documents', () => {
