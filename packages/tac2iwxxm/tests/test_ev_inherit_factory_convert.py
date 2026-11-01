@@ -7,6 +7,7 @@ Pin / IWXXM version selection is unchanged — this covers emit + policy ids onl
 from __future__ import annotations
 
 import pytest
+from tac2iwxxm.convert import convert
 from tac2iwxxm.convert_resolve import ConvertInheritResolver, prefer_emit_profile
 from tac2iwxxm.profile_resolve import resolve_validation_policies
 
@@ -66,3 +67,10 @@ def test_convert_resolve_taf_prob_period_info() -> None:
     bundle = port.resolve_convert(product="TAF", profile="annex3", station="KSGF")
     assert bundle.emit_key == "iwxxm_us"
     assert bundle.tac_quality_policy_id == "taf-prob-period-info-quality"
+
+
+def test_convert_does_not_auto_prefer_annex3_station() -> None:
+    # convert() must keep explicit annex3 (no silent national remap / pin rewrite).
+    tac = "METAR CYUL 231800Z 24010KT 15SM FEW040 14/13 A2995="
+    result = convert(tac, product="METAR", profile="annex3")
+    assert result.profile == "annex3"
