@@ -956,7 +956,7 @@ validate-yaml:
 overlay-preflight:
 	$(UV) run python scripts/overlays/preflight.py --all-examples
 
-validate-fast: format-check typecheck lint secrets-check validate-yaml catalog-check validation-catalog-check issue-registry-guard cursor-no-home-paths-guard pnpm-action-package-manager-guard overlay-preflight
+validate-fast: format-check typecheck lint secrets-check validate-yaml catalog-check validation-catalog-check issue-registry-guard cursor-no-home-paths-guard pnpm-action-package-manager-guard overlay-preflight file-budget file-complexity
 
 config-guard:
 	$(UV) run pytest tests/test_config_placeholders.py tests/smoke/test_h5_runtime_config.py -v
@@ -1024,3 +1024,10 @@ security-scan:
 
 check-exact-pins:
 	python3 scripts/ci/check-exact-pins.py
+
+# ADR-056 — file line budget + complexity caps
+file-budget:
+	python3 scripts/ci/check_file_budget.py
+
+file-complexity:
+	python3 scripts/ci/check_file_complexity.py

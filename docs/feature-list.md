@@ -2922,6 +2922,7 @@
 
 ### M5: Workspace Tooling
 
+- **ADR-056 deepen**: Hard CI file line budget ≤500 (grandfather allowlist) + Ruff/ESLint complexity caps; P0 splits deferred.
 - **What it does**: Root Makefile orchestrates uv (Python) and pnpm (JS) workspaces; pre-commit
   and GitHub Actions quality gates.
 - **F6 delta**: Workspace member `tac2iwxxm`; drop gifts from test matrix at cutover; **PyO3 /
