@@ -189,3 +189,10 @@ def test_apply_scalar_keys_child_wins() -> None:
     assert updated.lint_profile_id == "us_nws_convective_sigmet"
     assert updated.decode_pack_id == "sigmet"
     assert updated.product == "SIGMET"
+
+
+def test_types_module_exports_constructible() -> None:
+    from metar_shared.inherit_factory_types import EffectiveBundle, LayerOverrides
+
+    assert LayerOverrides().allow_codes == frozenset()
+    assert EffectiveBundle(product="METAR").product == "METAR"
