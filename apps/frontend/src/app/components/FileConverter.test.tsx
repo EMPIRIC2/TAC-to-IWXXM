@@ -3527,19 +3527,20 @@ describe('FileConverter Component', () => {
         (container.querySelector('#param-log-level') as HTMLSelectElement).value,
       ).toBe('DEBUG');
 
-      // Validation checkboxes (not soft-preview / live IWXXM toggles)
-      const strictCheck = screen
-        .getByText('Strict Validation')
-        .closest('label')
-        ?.querySelector('input[type="checkbox"]') as HTMLInputElement;
+      // Validation checkboxes (not soft-preview / live IWXXM toggles).
+      // ADR-054: Strict master defaults OFF; label is "Strict".
+      const strictCheck = screen.getByTestId(
+        'strict-validation-checkbox',
+      ) as HTMLInputElement;
       const nilCheck = screen
         .getByText('Include Nil Reasons')
         .closest('label')
         ?.querySelector('input[type="checkbox"]') as HTMLInputElement;
       expect(strictCheck).toBeTruthy();
       expect(nilCheck).toBeTruthy();
-      await user.click(strictCheck);
       expect(strictCheck.checked).toBe(false);
+      await user.click(strictCheck);
+      expect(strictCheck.checked).toBe(true);
       await user.click(nilCheck);
       expect(nilCheck.checked).toBe(false);
     });

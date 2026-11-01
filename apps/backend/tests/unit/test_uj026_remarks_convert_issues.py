@@ -119,6 +119,7 @@ def test_convert_absorbs_enum_like_and_warning_error_severities(
         profile="annex3",
     )
     by_code = {i.get("code"): i.get("severity") for i in (body.get("issues") or [])}
-    assert by_code.get("FAKE_ERROR") == "error"
+    # ADR-054: convert-path errors promote to critical; warnings/info stay.
+    assert by_code.get("FAKE_ERROR") == "critical"
     assert by_code.get("FAKE_WARN") == "warning"
     assert by_code.get("FAKE_INFO") == "info"

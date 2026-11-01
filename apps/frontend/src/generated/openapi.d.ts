@@ -1791,6 +1791,30 @@ export interface components {
              */
             stop_on_error: boolean;
             /**
+             * Strict
+             * @description When false, only critical and error findings are raised in the client. When true, the full severity set applies subject to step flags, and IWXXM output validation runs when the validate step is on.
+             * @default false
+             */
+            strict: boolean;
+            /**
+             * Strict Convert
+             * @description When strict is true, include convert findings in the raised set.
+             * @default true
+             */
+            strict_convert: boolean;
+            /**
+             * Strict Lint
+             * @description When strict is true, include TAC lint findings in the raised set.
+             * @default true
+             */
+            strict_lint: boolean;
+            /**
+             * Strict Validate
+             * @description When strict is true, include IWXXM validation findings in the raised set and run post-convert validation on convert routes.
+             * @default true
+             */
+            strict_validate: boolean;
+            /**
              * Tac Validation Library Id
              * @description TAC validation library asset id.
              * @default
@@ -2233,7 +2257,7 @@ export interface components {
          * @description Severity level for conversion and validation issues.
          * @enum {string}
          */
-        ConversionIssueSeverity: "error" | "warning" | "info";
+        ConversionIssueSeverity: "critical" | "error" | "warning" | "info";
         /**
          * ConversionResponse
          * @description Response from conversion endpoint with results and errors.
@@ -2299,6 +2323,11 @@ export interface components {
              * @description Soft-preview envelope flag; set when preview=true
              */
             ok?: boolean | null;
+            /**
+             * Raised Severities
+             * @description Severities considered raised for this response given Strict and step flags. All issues remain in issues arrays.
+             */
+            raised_severities?: string[];
             /**
              * Results
              * @description Successfully converted IWXXM XML documents
