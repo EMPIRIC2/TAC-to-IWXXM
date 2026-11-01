@@ -8,10 +8,14 @@ requires-python = ">=3.12"
 dependencies = [
   "hydra-core==1.3.7",
   "msgspec>=0.19",
+  "metar-shared",
   "pyyaml>=6.0",
   "tac-decoding>=2026.9.22",
   "reference-lookup==2026.9.23",
 ]
+
+[tool.uv.sources]
+metar-shared = { workspace = true }
 
 [project.scripts]
 tac2iwxxm = "tac2iwxxm.cli:main"
