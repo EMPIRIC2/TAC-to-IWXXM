@@ -1114,7 +1114,19 @@ def convert(
     if product_u in {"METAR", "SPECI"}:
         tac = fold_observation_case(tac)
     requested_iwxxm_version = iwxxm_version or "2025-2"
-    resolved = resolve_semantic_profile(profile)
+    # ADR-055: prefer remaps default annex3/ICAO_2025 emit when station is mapped.
+    # Pin / version selection below is unchanged once emit_key is chosen.
+    station_icao: str | None = None
+    try:
+        from tac_validate.api import extract_station_icao
+
+        station_icao = extract_station_icao(tac, product_u)
+    except ImportError:
+        station_icao = None
+    from tac2iwxxm.convert_resolve import prefer_emit_profile
+
+    profile_for_resolve = prefer_emit_profile(profile, product_u, station_icao)
+    resolved = resolve_semantic_profile(profile_for_resolve)
     if resolved is None:
         profile_l = profile.lower()
         issue = ConvertIssue(

@@ -13,6 +13,7 @@ REPO_ROOT = PACKAGE_ROOT.parents[1]
 SAMPLE_METAR = PACKAGE_ROOT / "tests" / "fixtures" / "annex3_golden" / "metar_basic.tac"
 
 _PACKAGES = (
+    "metar-shared",
     "reference-lookup",
     "tac-decoding",
     "tac2iwxxm",

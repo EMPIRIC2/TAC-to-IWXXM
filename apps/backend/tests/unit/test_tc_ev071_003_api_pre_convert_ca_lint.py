@@ -1,6 +1,6 @@
 """TC-EV071-003 - API pre-convert CA lint wire (EV-071 M1 / FR-L6).
 
-[Corpus: api] [Corpus: tests §TC-EV071]
+[Corpus: api] [Corpus: tests §TC-EV071] [Corpus: adr/ADR-055]
 """
 
 from __future__ import annotations

@@ -113,6 +113,7 @@ packages/tac-validate/pyproject.toml:metar-shared
 packages/tac-decoding/pyproject.toml:msgspec
 packages/tac-decoding/pyproject.toml:pyyaml
 packages/tac2iwxxm/pyproject.toml:msgspec
+packages/tac2iwxxm/pyproject.toml:metar-shared
 packages/tac2iwxxm/pyproject.toml:pyyaml
 packages/tac2iwxxm/pyproject.toml:tac-decoding
 packages/tac2iwxxm/pyproject.toml:tac-validate
