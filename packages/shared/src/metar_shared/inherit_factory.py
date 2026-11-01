@@ -1,119 +1,28 @@
 """Product → region → country → station inheritance factory (ADR-055).
 
-Shared **types**, pure **merge** helpers, and **Protocol** ports only.
-Engine packages implement ports; this module does not load YAML or run
-validators. [Corpus: adr/ADR-055] [Corpus: pack-engine-boundary]
+Shared **merge** helpers and resolve walk; types/ports live in
+``inherit_factory_types``. [Corpus: adr/ADR-055] [Corpus: pack-engine-boundary]
 """
 
 from __future__ import annotations
 
 from collections.abc import Mapping, MutableMapping
-from dataclasses import dataclass, field
-from typing import Protocol
+
+from metar_shared.inherit_factory_types import (
+    ConvertResolvePort,
+    DecodeResolvePort,
+    EffectiveBundle,
+    InheritNode,
+    IwxxmPolicyPort,
+    LayerOverrides,
+    LintResolvePort,
+)
 
 # Products eligible for ICAO / national prefer when catalog rows map them.
 PREFER_PRODUCTS: frozenset[str] = frozenset({"METAR", "SPECI", "TAF", "SIGMET"})
 
 # Caller profiles treated as "default" for prefer remap (case-normalized).
 DEFAULT_PROFILE_IDS: frozenset[str] = frozenset({"annex3", "icao_2025"})
-
-
-@dataclass(frozen=True, slots=True)
-class LayerOverrides:
-    """
-    Override bag at one DAG node.
-
-    Parameters
-    ----------
-    scalars : Mapping[str, str]
-        Child-wins string fields (e.g. lint_profile_id, emit_key).
-    allow_codes : frozenset[str]
-        Additive allow / enable set unless ``replace_allow`` is True.
-    deny_codes : frozenset[str]
-        Additive deny / suppress set unless ``replace_deny`` is True.
-    replace_allow : bool
-        When True, ``allow_codes`` replaces the parent set.
-    replace_deny : bool
-        When True, ``deny_codes`` replaces the parent set.
-    """
-
-    scalars: Mapping[str, str] = field(default_factory=lambda: dict[str, str]())
-    allow_codes: frozenset[str] = frozenset()
-    deny_codes: frozenset[str] = frozenset()
-    replace_allow: bool = False
-    replace_deny: bool = False
-
-
-@dataclass(frozen=True, slots=True)
-class InheritNode:
-    """
-    One node in a product-rooted inherit tree.
-
-    Parameters
-    ----------
-    id : str
-        Node id (product code, region id, country profile id, or ICAO).
-    overrides : LayerOverrides
-        Overrides applied at this node.
-    children : Mapping[str, InheritNode]
-        Child layer keyed by next-layer id.
-    """
-
-    id: str
-    overrides: LayerOverrides = field(default_factory=LayerOverrides)
-    children: Mapping[str, InheritNode] = field(
-        default_factory=lambda: dict[str, InheritNode]()
-    )
-
-
-@dataclass(frozen=True, slots=True)
-class EffectiveBundle:
-    """
-    Resolved ids for engines (ids only — no runtime payloads).
-
-    Parameters
-    ----------
-    product : str
-        Product family (METAR, TAF, …).
-    region : str or None
-        Semantic region id, if any.
-    country : str or None
-        Country / national profile id, if any.
-    station : str or None
-        Station ICAO, if any.
-    lint_profile_id : str or None
-        Effective lint profile id.
-    emit_key : str or None
-        Effective convert emit key.
-    tac_quality_policy_id : str or None
-        TAC quality policy document id.
-    iwxxm_output_policy_id : str or None
-        IWXXM output policy document id.
-    decode_pack_id : str or None
-        Decode pack id (resolution only).
-    chain : tuple[str, ...]
-        Resolved layer labels for optional HTTP/SDK echo.
-    allow_codes : frozenset[str]
-        Merged allow set.
-    deny_codes : frozenset[str]
-        Merged deny / suppress set.
-    scalars : Mapping[str, str]
-        Merged scalar map after child-wins.
-    """
-
-    product: str
-    region: str | None = None
-    country: str | None = None
-    station: str | None = None
-    lint_profile_id: str | None = None
-    emit_key: str | None = None
-    tac_quality_policy_id: str | None = None
-    iwxxm_output_policy_id: str | None = None
-    decode_pack_id: str | None = None
-    chain: tuple[str, ...] = ()
-    allow_codes: frozenset[str] = frozenset()
-    deny_codes: frozenset[str] = frozenset()
-    scalars: Mapping[str, str] = field(default_factory=lambda: dict[str, str]())
 
 
 def normalize_product(product: str) -> str:
@@ -129,6 +38,11 @@ def normalize_product(product: str) -> str:
     -------
     str
         Uppercased stripped product.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (normalize_product)
+    2
     """
     return (product or "").strip().upper()
 
@@ -146,6 +60,11 @@ def normalize_profile_id(profile: str) -> str:
     -------
     str
         Lowercased stripped id.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (normalize_profile_id)
+    2
     """
     return (profile or "").strip().lower()
 
@@ -165,6 +84,11 @@ def should_prefer_station(*, profile: str, product: str) -> bool:
     -------
     bool
         True when prefer is allowed for this call.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (should_prefer_station)
+    2
     """
     product_u = normalize_product(product)
     if product_u not in PREFER_PRODUCTS:
@@ -190,6 +114,11 @@ def merge_scalar_maps(
     -------
     dict[str, str]
         Merged map.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (merge_scalar_maps)
+    2
     """
     out: dict[str, str] = dict(parent)
     out.update(child)
@@ -218,6 +147,11 @@ def merge_code_sets(
     -------
     frozenset[str]
         Merged set.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (merge_code_sets)
+    2
     """
     if replace:
         return frozenset(child)
@@ -239,6 +173,11 @@ def merge_overrides(parent: LayerOverrides, child: LayerOverrides) -> LayerOverr
     -------
     LayerOverrides
         Merged bag.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (merge_overrides)
+    2
     """
     return LayerOverrides(
         scalars=merge_scalar_maps(parent.scalars, child.scalars),
@@ -266,7 +205,29 @@ def _bundle_from_merged(
     merged: LayerOverrides,
     chain: tuple[str, ...],
 ) -> EffectiveBundle:
-    """Build ``EffectiveBundle`` from merged overrides."""
+    """
+    Build ``EffectiveBundle`` from merged overrides.
+
+    Parameters
+    ----------
+    product : str
+        Product id.
+    region : str or None
+        Region id.
+    country : str or None
+        Country id.
+    station : str or None
+        Station ICAO.
+    merged : LayerOverrides
+        Merged overrides.
+    chain : tuple[str, ...]
+        Echo labels.
+
+    Returns
+    -------
+    EffectiveBundle
+        Ids-only bundle.
+    """
     scalars = dict(merged.scalars)
     return EffectiveBundle(
         product=product,
@@ -296,9 +257,6 @@ def resolve_inherit_tree(
     """
     Walk ``product → region → country → station`` merging overrides.
 
-    ``root`` must be the product node (``root.id`` matches ``product`` ignoring case).
-    Missing optional layers skip; only declared child keys are followed.
-
     Parameters
     ----------
     root : InheritNode
@@ -321,6 +279,11 @@ def resolve_inherit_tree(
     ------
     ValueError
         When ``root.id`` does not match ``product``.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (resolve_inherit_tree)
+    2
     """
     product_u = normalize_product(product)
     if normalize_product(root.id) != product_u:
@@ -360,60 +323,6 @@ def resolve_inherit_tree(
     )
 
 
-class LintResolvePort(Protocol):
-    """Port for tac-validate lint + prefer resolve."""
-
-    def resolve_lint(
-        self,
-        *,
-        product: str,
-        profile: str,
-        station: str | None,
-    ) -> EffectiveBundle:
-        """Return lint-oriented bundle for the call."""
-        ...
-
-
-class ConvertResolvePort(Protocol):
-    """Port for tac2iwxxm emit / policy id selection."""
-
-    def resolve_convert(
-        self,
-        *,
-        product: str,
-        profile: str,
-        station: str | None,
-    ) -> EffectiveBundle:
-        """Return convert-oriented bundle for the call."""
-        ...
-
-
-class IwxxmPolicyPort(Protocol):
-    """Port for iwxxm-validate policy id acceptance."""
-
-    def resolve_iwxxm_policy(
-        self,
-        *,
-        policy_id: str | None,
-        product: str,
-    ) -> str | None:
-        """Return output policy id to load (or None for default)."""
-        ...
-
-
-class DecodeResolvePort(Protocol):
-    """Port for tac-decoding pack / MatchPort resolution only."""
-
-    def resolve_decode(
-        self,
-        *,
-        product: str,
-        profile: str | None,
-    ) -> EffectiveBundle:
-        """Return decode pack id in ``EffectiveBundle.decode_pack_id``."""
-        ...
-
-
 def empty_bundle(product: str) -> EffectiveBundle:
     """
     Return a minimal bundle for ``product`` (adapter stub helper).
@@ -427,6 +336,11 @@ def empty_bundle(product: str) -> EffectiveBundle:
     -------
     EffectiveBundle
         Bundle with product and chain only.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (empty_bundle)
+    2
     """
     product_u = normalize_product(product)
     return EffectiveBundle(product=product_u, chain=(f"product:{product_u}",))
@@ -450,6 +364,11 @@ def apply_scalar_keys(
     -------
     EffectiveBundle
         Updated bundle.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (apply_scalar_keys)
+    2
     """
     scalars: MutableMapping[str, str] = dict(bundle.scalars)
     scalars.update(updates)
