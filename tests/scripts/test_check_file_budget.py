@@ -66,6 +66,16 @@ def test_count_physical_lines(budget: Any, tmp_path: Path) -> None:
     assert budget.count_physical_lines(p) == 3
     p.write_bytes(b"a\nb\nc\n")
     assert budget.count_physical_lines(p) == 3
+    empty = tmp_path / "empty.py"
+    empty.write_bytes(b"")
+    assert budget.count_physical_lines(empty) == 0
+
+
+@pytest.mark.unit
+def test_is_excluded_outside_root(budget: Any, tmp_path: Path) -> None:
+    """Paths outside the scan root are treated as excluded."""
+    outside = Path("/tmp/not-under-root/foo.py")
+    assert budget.is_excluded(outside, tmp_path) is True
 
 
 @pytest.mark.unit
