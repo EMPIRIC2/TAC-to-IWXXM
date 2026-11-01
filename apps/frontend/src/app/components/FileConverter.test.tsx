@@ -5475,6 +5475,50 @@ describe('FileConverter Component', () => {
       spy.mockRestore();
     });
 
+    it('resets a sticky US profile to ICAO/WMO when an Annex 3 demo is loaded', async () => {
+      // Regression: loading the official Annex 3 YUDO TAF (which contains BECMG)
+      // under a sticky US profile wrongly flagged US_TAF_BECMG_FORBIDDEN because the
+      // demo kept the prior US overlay instead of its native Annex 3 profile.
+      localStorage.setItem(
+        'metar_converter_preferences',
+        JSON.stringify({
+          profile: 'US_FAA_NWS',
+          product: 'TAF',
+          iwxxmVersion: '2025-2',
+        }),
+      );
+      const user = userEvent.setup({ delay: null });
+      render(<FileConverter {...defaultProps} />);
+
+      // Seed input so the full workbench (examples menu + profile bar) renders.
+      fireEvent.change(screen.getByTestId('tac-editor'), {
+        target: { value: 'TAF KDEN 151800Z 1600/1618 31008KT 9999 FEW040=' },
+      });
+
+      // Sticky US profile is active before loading the demo.
+      await waitFor(() => {
+        expect(screen.getByTestId('convert-active-profile')).toHaveTextContent(
+          'United States (FAA/NWS)',
+        );
+      });
+
+      await user.click(screen.getByTestId('examples-select'));
+      await user.click(
+        await screen.findByRole('option', { name: /TAF WMO A5-1 \(annex3\)/i }),
+      );
+
+      // Demo loaded its Annex 3 TAC …
+      expect((screen.getByTestId('tac-editor') as HTMLTextAreaElement).value).toContain(
+        'TAF YUDO',
+      );
+      // … and the active profile reset to the Annex 3 line so BECMG is not US-forbidden.
+      await waitFor(() => {
+        expect(screen.getByTestId('convert-active-profile')).toHaveTextContent(
+          'ICAO / WMO Annex 3 (2025)',
+        );
+      });
+    });
+
     it('shows batch convert error when no queue items are selected', async () => {
       const { container } = render(<FileConverter {...defaultProps} />);
       const fileInput = container.querySelector(

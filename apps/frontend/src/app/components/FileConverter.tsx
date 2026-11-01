@@ -1994,11 +1994,19 @@ export function FileConverter({
       setManualInput(exampleTac);
       applyLoadedReportName(exampleTac);
       setInputMode(example.inputMode);
+      // Demo bodies are WMO / Annex 3 goldens, so load them under the Annex 3 line.
+      // Resetting the profile stops a sticky national overlay (e.g. US_FAA_NWS) from
+      // flagging valid Annex 3 constructs like BECMG on the official samples.
+      const { profile: demoProfile, libraryIds: demoLibraryIds } =
+        libraryResetForProfile(DEFAULT_SEMANTIC_PROFILE);
       // Always set product — omit → auto — so a prior TAF pick cannot stick on AHL/TAC demos.
       setConversionParams((prev) => ({
         ...prev,
+        ...demoLibraryIds,
+        profile: demoProfile,
         product: example.product ?? 'auto',
         reportVariant: '',
+        iwxxmVersion: coerceIwxxmVersionForProfile(demoProfile, prev.iwxxmVersion),
       }));
       setDemoExampleLabel(example.label);
       toast.info(`Loaded ${example.label} example`);
@@ -3097,7 +3105,10 @@ export function FileConverter({
                               <div className="flex min-w-0 flex-wrap items-center gap-2">
                                 <span className="text-sm text-gray-600 dark:text-gray-400">
                                   Profile:{' '}
-                                  <span className="font-medium text-gray-900 dark:text-gray-100">
+                                  <span
+                                    data-testid="convert-active-profile"
+                                    className="font-medium text-gray-900 dark:text-gray-100"
+                                  >
                                     {calmProfileLabel}
                                   </span>
                                 </span>
