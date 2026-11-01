@@ -179,6 +179,28 @@ def test_station_map_conflict_raises(monkeypatch: pytest.MonkeyPatch) -> None:
     ssp._station_to_profile.cache_clear()
 
 
+def test_prefix_map_conflict_raises(monkeypatch: pytest.MonkeyPatch) -> None:
+    from tac_validate import station_scoped_policy as ssp
+    from tac_validate.lint_profile_catalog import LintProfileSpec
+
+    def _spec(profile_id: str) -> LintProfileSpec:
+        return LintProfileSpec(
+            profile_id=profile_id,
+            engine="annex3",
+            products=frozenset({"TAF"}),
+            differs=True,
+            deltas=(),
+            recorded=(),
+            station_prefixes=frozenset({"K"}),
+        )
+
+    monkeypatch.setattr(ssp, "load_lint_profiles", lambda: {"alpha": _spec("alpha"), "beta": _spec("beta")})
+    ssp._prefix_to_profile.cache_clear()
+    with pytest.raises(ValueError, match="claimed by both"):
+        ssp._prefix_to_profile()
+    ssp._prefix_to_profile.cache_clear()
+
+
 def test_accept_end_without_stations_skipped(monkeypatch: pytest.MonkeyPatch) -> None:
     from tac_validate import station_scoped_policy as ssp
     from tac_validate.lint_profile_catalog import LintProfileSpec
