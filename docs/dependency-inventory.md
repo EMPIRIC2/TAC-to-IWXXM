@@ -95,9 +95,10 @@ Package license: **MIT**. No FastAPI/Supabase imports.
 | Package | Purpose | License | Source |
 |---------|---------|---------|--------|
 | msgspec | Structured issue / fix models | Apache-2.0 | **Required** (ADR-016); reuse `tac_validate.codec` Encoder/Decoder |
+| metar-shared | Inherit-factory ports / merge helpers (ADR-055) | MIT | workspace path |
 | PyYAML | TAC quality policy YAML load (ADR-046 / #1216) | MIT | PyPI (`==6.0.3`; already used by tac2iwxxm / tac-decoding) |
 
-Package license: **MIT**. Stdlib-first preferred; no FastAPI/Supabase. No Schematron.
+Package license: **MIT**. Stdlib-first preferred; no FastAPI/Supabase. No Schematron. No `tac2iwxxm` import.
 
 ### packages/iwxxm-validate
 

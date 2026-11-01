@@ -5,9 +5,9 @@
 
 from __future__ import annotations
 
-from tac2iwxxm.profile_resolve import resolve_validation_policies
 from tac_validate.api import extract_station_icao, lint, lint_with_profile, prefer_station_profile
 from tac_validate.lint_profile_catalog import profile_inherit_chain, resolved_lint_profile
+from tac_validate.quality_policy_bind import resolve_tac_quality_policy_id
 
 _PROB_PERIOD = "TAF CYOW 301800Z 3018/3118 27010KT P6SM SCT040 PROB30 3020/3024 3SM -SHRA BR BKN020="
 _MIL_TX = (
@@ -38,8 +38,7 @@ def test_prob_period_info_under_iwxxm_us_via_policy() -> None:
 
 
 def test_prob_period_info_under_us_military_via_parent_bind() -> None:
-    policies = resolve_validation_policies("us_military", product="TAF")
-    assert policies.tac_quality_policy_id == "taf-prob-period-info-quality"
+    assert resolve_tac_quality_policy_id("us_military", product="TAF") == "taf-prob-period-info-quality"
 
 
 def test_icao_prefer_maps_military_end_tx_tn() -> None:
@@ -55,16 +54,12 @@ def test_icao_prefer_maps_military_end_tx_tn() -> None:
 
 def test_extract_station_icao_from_taf() -> None:
     assert extract_station_icao(_MIL_TX, "TAF") == "KBIX"
-    assert extract_station_icao("METAR KBIX 301800Z ...", "METAR") is None
+    assert extract_station_icao("METAR KBIX 301800Z 18008KT 10SM FEW050=", "METAR") == "KBIX"
 
 
 def test_policy_bindings_ca_and_uk() -> None:
-    assert resolve_validation_policies("ca_eccc", product="TAF").tac_quality_policy_id == (
-        "taf-prob-period-info-quality"
-    )
-    assert resolve_validation_policies("uk_metoffice", product="TAF").tac_quality_policy_id == (
-        "taf-prob-period-info-quality"
-    )
+    assert resolve_tac_quality_policy_id("ca_eccc", product="TAF") == "taf-prob-period-info-quality"
+    assert resolve_tac_quality_policy_id("uk_metoffice", product="TAF") == "taf-prob-period-info-quality"
 
 
 def test_issue_count_preserved_annex3_vs_iwxxm_us() -> None:

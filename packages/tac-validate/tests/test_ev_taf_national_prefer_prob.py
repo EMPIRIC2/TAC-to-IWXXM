@@ -1,12 +1,13 @@
 """EV-taf-national-prefer-prob — US/CA TAF prefix prefer + Annex 3 PROB nuance.
 
 Default ``annex3`` + ICAO prefer maps US ``K*`` → ``iwxxm_us`` and Canadian
-``CY*`` → ``ca_eccc`` for TAF, so ``PROB_PERIOD_WITHOUT_TEMPO`` becomes info via
-the shared ``taf-prob-period-info-quality`` policy. Exact station maps (military /
-LatAm) keep priority. ``CW*`` stays annex3 (prefer is TAF-only). HKJK / LGTS keep
+``CY*`` → ``ca_eccc`` for TAF (and METAR/SPECI/SIGMET when catalog-mapped), so
+``PROB_PERIOD_WITHOUT_TEMPO`` becomes info via the shared
+``taf-prob-period-info-quality`` policy. Exact station maps (military / LatAm)
+keep priority. ``CW*`` stays annex3 (no ``CW`` prefix). HKJK / LGTS keep
 ``INVALID_PROB`` because PROB qualifies BECMG/FM (Annex 3 App 5 §1.4).
 
-[Corpus: product §F20] [Corpus: product §F36] [Corpus: adr/ADR-046] [Corpus: tests]
+[Corpus: product §F20] [Corpus: product §F36] [Corpus: adr/ADR-046] [Corpus: adr/ADR-055] [Corpus: tests]
 """
 
 from __future__ import annotations
@@ -77,8 +78,10 @@ class TestPreferStationProfile:
         assert prefer_station_profile("iwxxm_us", "TAF", "CYQT") == "iwxxm_us"
         assert prefer_station_profile("ca_eccc", "TAF", "KSGF") == "ca_eccc"
 
-    def test_prefer_is_taf_only(self) -> None:
-        assert prefer_station_profile("annex3", "METAR", "KSGF") == "annex3"
+    def test_prefer_metar_uses_national_when_mapped(self) -> None:
+        assert prefer_station_profile("annex3", "METAR", "KSGF") == "iwxxm_us"
+        # CW* has no catalog prefix — honesty: stay annex3 (no VIS/QNH soften).
+        assert prefer_station_profile("annex3", "METAR", "CWDQ") == "annex3"
 
 
 class TestProbPeriodInfoUnderPrefer:

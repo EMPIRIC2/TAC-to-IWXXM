@@ -6,13 +6,13 @@
 
 from __future__ import annotations
 
-from tac2iwxxm.profile_resolve import resolve_validation_policies
 from tac_validate.api import lint, lint_with_profile
 from tac_validate.product_rules_pkg._common import _check_r8_pack
 from tac_validate.product_rules_pkg.sigmet_airmet import (
     _check_airmet_a2,
     _is_us_domestic_ws_sigmet,
 )
+from tac_validate.quality_policy_bind import resolve_tac_quality_policy_id
 from tac_validate.station_scoped_policy import resolve_profile_for_station
 
 _PTRO_TAF = "TAF PTRO 011200Z 0112/0212 09010KT P6SM SCT020 PROB30 0118/0122 3SM BR="
@@ -66,8 +66,7 @@ def test_c1_ptro_ptsa_exact_prefer() -> None:
 def test_c2_y_prefix_au_bom_prob_info() -> None:
     assert resolve_profile_for_station("YSSY") == "au_bom"
     assert resolve_profile_for_station("YCFS") == "au_bom"
-    policies = resolve_validation_policies("au_bom", product="TAF")
-    assert policies.tac_quality_policy_id == "taf-prob-period-info-quality"
+    assert resolve_tac_quality_policy_id("au_bom", product="TAF") == "taf-prob-period-info-quality"
     report = lint_with_profile(_YSSY_TAF, product="TAF", profile="annex3")
     matched = [i for i in report.issues if i.code == "PROB_PERIOD_WITHOUT_TEMPO"]
     assert matched
