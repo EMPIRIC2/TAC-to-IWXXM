@@ -28,5 +28,23 @@ describe('strictRaise', () => {
     expect(severityBlocksDownload('critical')).toBe(true);
     expect(severityBlocksDownload('error')).toBe(false);
     expect(severityBlocksDownload('warning')).toBe(false);
+    expect(severityBlocksDownload(undefined)).toBe(false);
+    expect(severityBlocksDownload(null)).toBe(false);
+  });
+
+  it('Strict ON with all steps off falls back to critical+error', () => {
+    const set = raisedSeveritySet(true, {
+      lint: false,
+      convert: false,
+      validate: false,
+    });
+    expect(set.has('critical')).toBe(true);
+    expect(set.has('warning')).toBe(false);
+  });
+
+  it('treats missing severity as raised error and rejects unknown tokens', () => {
+    expect(isSeverityRaised(undefined, false)).toBe(true);
+    expect(isSeverityRaised('   ', true)).toBe(true);
+    expect(isSeverityRaised('mystery', true)).toBe(false);
   });
 });
