@@ -67,24 +67,7 @@ jobs:
           fi
 
       - name: Delete stuck ImagePullBackOff pods (best-effort)
-        run: |
-          set -euo pipefail
-          kubectl -n "${DOKS_NAMESPACE}" get pods -o json \
-            | python3 -c '
-import json,sys
-data=json.load(sys.stdin)
-for p in data.get("items",[]):
-  name=p["metadata"]["name"]
-  statuses=(p.get("status",{}).get("containerStatuses") or []) + (p.get("status",{}).get("initContainerStatuses") or [])
-  for cs in statuses:
-    waiting=(cs.get("state") or {}).get("waiting") or {}
-    if waiting.get("reason") in ("ImagePullBackOff","ErrImagePull"):
-      print(name)
-      break
-' | while read -r pod; do
-            echo "Deleting stuck pod ${pod}"
-            kubectl -n "${DOKS_NAMESPACE}" delete pod "${pod}" --wait=false || true
-          done
+        run: bash scripts/deploy/doks_delete_imagepull_pods.sh
 
       - name: Roll out DOKS images
         run: bash scripts/deploy/doks_rollout_images.sh "${IMAGE_TAG}"
