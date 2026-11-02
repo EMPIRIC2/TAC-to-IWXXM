@@ -21,4 +21,4 @@ for pod in data.get("items", []):
 ' | while read -r pod; do
   echo "Deleting stuck pod ${pod}"
   kubectl -n "${NS}" delete pod "${pod}" --wait=false || true
-done
+done || true
