@@ -114,9 +114,12 @@ job `advisors`).
 
 **Workflow behavior:**
 
-- **Pull requests to `main`:** migration dry-run only (`db push --dry-run`); no remote writes
-- **Push to `main` / manual dispatch:** applies `supabase/migrations/` and deploys edge
-  functions under `apps/frontend/supabase/functions/`
+- **Pull requests to `main` / `stage`:** migration dry-run only (`db push --dry-run`); no
+  remote writes
+- **Push to `main` / `stage` / manual dispatch:** applies `supabase/migrations/` and deploys
+  edge functions under `apps/frontend/supabase/functions/`
+- **Advisors job (fail on ERROR):** stage pushes, PRs targeting `stage`, and
+  `workflow_dispatch` only — not `main` ([Corpus: deploy])
 
 Deprecate: `FRONTEND_VITE_SUPABASE_URL`, `FRONTEND_VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY`.
 
