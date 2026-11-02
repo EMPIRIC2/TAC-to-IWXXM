@@ -706,6 +706,16 @@ describe('FileConverter Component', () => {
       expect(document.title).toBe('TAC to IWXXM');
     });
 
+    it('uses outline chrome for Help and Preferences header buttons', () => {
+      render(<FileConverter {...defaultProps} isGuest />);
+      const help = screen.getByTestId('convert-help-open');
+      const prefs = screen.getByRole('button', { name: 'Open user preferences' });
+      for (const btn of [help, prefs]) {
+        expect(btn.className).toMatch(/border-primary/);
+        expect(btn.className).not.toMatch(/dark:bg-gray-700/);
+      }
+    });
+
     it('keeps the Convert title on the same inset as the page body', async () => {
       seedLiveConvertChrome();
 

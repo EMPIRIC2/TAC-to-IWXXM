@@ -44,6 +44,30 @@ describe('UserPreferencesDialog (EV-040 slim)', () => {
     expect(screen.queryByLabelText(/bulletin id/i)).not.toBeInTheDocument();
   });
 
+  it('keeps dark outline chrome on the preferences modal card and actions', async () => {
+    render(<UserPreferencesDialog {...defaultProps} />);
+    await screen.findByDisplayValue('prefs');
+
+    const panel = screen.getByTestId('preferences-dialog-panel');
+    expect(panel.className).toMatch(/dark:border-blue-/);
+    expect(panel.className).not.toMatch(/dark:bg-gray-700/);
+
+    const reset = screen.getByRole('button', {
+      name: /reset preferences to defaults/i,
+    });
+    expect(reset.className).toMatch(/border-primary/);
+    expect(reset.className).not.toMatch(/dark:bg-gray-700/);
+
+    const cancel = screen.getByRole('button', { name: /cancel/i });
+    expect(cancel.className).toMatch(/border-primary/);
+
+    const save = screen.getByRole('button', { name: /save preferences/i });
+    expect(save.className).toMatch(/bg-primary/);
+
+    expect(screen.queryByLabelText(/schematron/i)).not.toBeInTheDocument();
+    expect(screen.queryByLabelText(/validation/i)).not.toBeInTheDocument();
+  });
+
   it('merges display name and extension from localStorage', async () => {
     localStorage.setItem(
       'metar_converter_preferences',
