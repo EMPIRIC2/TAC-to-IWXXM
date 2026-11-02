@@ -46,6 +46,7 @@
           <iwxxm:prevailingVisibility uom="m">500</iwxxm:prevailingVisibility>
         </iwxxm:AerodromeHorizontalVisibility>
       </iwxxm:visibility>
+      <iwxxm:rvr xsi:nil="true" nilReason="http://codes.wmo.int/common/nil/missing"/>
       <iwxxm:presentWeather xlink:href="http://codes.wmo.int/306/4678/FG"/>
       <iwxxm:cloud>
         <iwxxm:AerodromeCloud>
