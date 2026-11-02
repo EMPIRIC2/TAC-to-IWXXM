@@ -29,6 +29,7 @@ sections when norms conflict—cite the UX log ids retired or merged.
 - Convert catalog Examples sit in a compact bar above the TAC editor — not inside the Settings product/profile panel.
 - Results → Downloads is file management only; conversion XML and result assessment details belong on Results → IWXXM.
 - Results drawer: title + Hide and the results tab strip stay pinned above the scrolling tab body (chrome outside the overflow scrollport).
+- Live map station cards: product + station in a compact header, observation-time select (not Newer/Earlier pills), TAC collapsed by default, explicit Send to converter via the existing map→workbench handoff.
 
 ## Copy / tone
 
@@ -93,3 +94,4 @@ Record the test path and red/green dates on `docs/ui-ux-tweaks/UX-YYYY-MM-DD-*.m
 | 2026-10-31 | [UX-2026-10-31-drop-console-chrome](ui-ux-tweaks/UX-2026-10-31-drop-console-chrome.md) | Operator log surfaces (conversion/validation log + Lint issue catalog) render inline — no collapsible "Console" shell/heading framing them. A **Clear log** affordance may remain as a small standalone control without a "Console" label. |
 | 2026-11-02 | [UX-2026-11-02-cite-live-map-provider](ui-ux-tweaks/UX-2026-11-02-cite-live-map-provider.md) | Live map Results chrome shows Aviation Weather Center report credit in a muted visible line near newest-observation status; not screen-reader-only. |
 | 2026-11-02 | [UX-2026-11-02-sticky-results-header](ui-ux-tweaks/UX-2026-11-02-sticky-results-header.md) | Results drawer: title + Hide and the results tab strip stay pinned above the scrolling tab body (chrome outside the overflow scrollport). |
+| 2026-11-02 | [UX-2026-11-02-compact-map-result-card](ui-ux-tweaks/UX-2026-11-02-compact-map-result-card.md) | Live map station cards: product + station header, observation-time select (not Newer/Earlier pills), TAC collapsed by default, Send to converter via existing handoff. |

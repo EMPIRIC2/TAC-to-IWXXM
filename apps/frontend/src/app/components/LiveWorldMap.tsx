@@ -26,22 +26,22 @@ import {
   LIVE_MAP_ALL_REGIONS,
   LIVE_MAP_CANVAS,
   LIVE_MAP_CANVAS_TOLERANCE,
-  LIVE_MAP_EARLIER,
   LIVE_MAP_ERROR,
   LIVE_MAP_FILTER_COUNTRY,
   LIVE_MAP_FILTER_PHENOMENON,
   LIVE_MAP_FILTER_REGION,
   LIVE_MAP_FILTER_TIME,
   LIVE_MAP_FULL_WINDOW,
+  LIVE_MAP_ISSUE_COPY,
   LIVE_MAP_LAST_12_HOURS,
   LIVE_MAP_LAST_3_HOURS,
   LIVE_MAP_LAST_6_HOURS,
   LIVE_MAP_LAST_HOUR,
   LIVE_MAP_LAYERS_OFF,
-  LIVE_MAP_NEWER,
   LIVE_MAP_NOTICE,
   LIVE_MAP_PHENOMENA,
   LIVE_MAP_REFRESH_MS,
+  LIVE_MAP_SEND_TO_CONVERTER,
   LIVE_MAP_SPACE,
   LIVE_MAP_TAC,
   LIVE_MAP_VIEWS,
@@ -65,6 +65,7 @@ import {
   type MapTimePreset,
 } from '@/utils/liveMap';
 import { placeRegion, regionFilterNames } from '@/utils/liveMapRegions';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from './ui/collapsible';
 
 const EMPTY_PLACES: LivePlace[] = [];
 
@@ -265,7 +266,26 @@ function redrawCanvas(map: L.Map): void {
 }
 
 /**
+ * Compact station id for the map card header (ICAO key when present).
+ *
+ * @param placeKey - Station or area id
+ * @param airportName - Optional airport display name
+ * @returns Short station label for the dense card
+ * @example
+ * const _ = true;
+ */
+function stationCardLabel(placeKey: string, airportName: string | undefined): string {
+  if (/^[A-Z][A-Z0-9]{3}$/.test(placeKey)) {
+    return placeKey;
+  }
+  return placeTitle(placeKey, airportName);
+}
+
+/**
  * Station text inside the map card.
+ *
+ * Compact header (product + station + issue-time select), TAC collapsed by
+ * default, and Send to converter via the existing onLoad handoff.
  *
  * @param place - Cached place
  * @param layout - Side by side on a wide map, stacked on a narrow one
@@ -286,6 +306,7 @@ export function StationPopup({
   onLoad?: (tac: string) => void;
 }) {
   const [index, setIndex] = useState(0);
+  const [tacOpen, setTacOpen] = useState(false);
   const report = place.reports[index];
   useEffect(() => {
     if (report) {
@@ -296,7 +317,7 @@ export function StationPopup({
     return null;
   }
   const airportName = airports.findWhere({ icao: place.place_key })?.name;
-  const station = placeTitle(place.place_key, airportName);
+  const station = stationCardLabel(place.place_key, airportName);
   return (
     <div
       data-testid="live-map-detail"
@@ -305,65 +326,81 @@ export function StationPopup({
       <div
         data-testid="live-map-card"
         data-layout={layout}
-        className={
-          layout === 'side' ? 'flex flex-row items-start gap-3' : 'flex flex-col gap-2'
-        }
-        onClick={(event) => {
-          event.stopPropagation();
-          onLoad?.(report.tac);
-        }}
+        className="flex flex-col gap-2"
       >
-        <div className="flex min-w-0 flex-1 flex-col gap-1">
-          <p className="text-base font-semibold" data-testid="live-map-product">
+        <div className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1">
+          <p className="text-sm font-semibold" data-testid="live-map-product">
             <span
               aria-hidden="true"
-              className="mr-2 inline-block h-2.5 w-2.5 rounded-full align-middle"
+              className="mr-1.5 inline-block h-2.5 w-2.5 rounded-full align-middle"
               style={{ backgroundColor: pinColor(place.product) }}
             />
             {productLabel(place.product)}
           </p>
-          <p data-testid="live-map-issued">{formatObservedAt(report.observed_at)}</p>
           <p className="font-medium" data-testid="live-map-station">
             {station}
           </p>
           {place.reports.length > 1 ? (
-            <div className="mt-1 flex gap-1">
-              <button
-                type="button"
-                className="rounded-full bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-800 hover:bg-gray-200"
-                data-testid="live-map-newer"
-                onClick={(event) => {
-                  event.stopPropagation();
-                  setIndex((current) => Math.max(0, current - 1));
-                }}
-              >
-                {LIVE_MAP_NEWER}
-              </button>
-              <button
-                type="button"
-                className="rounded-full bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-800 hover:bg-gray-200"
-                data-testid="live-map-earlier"
-                onClick={(event) => {
-                  event.stopPropagation();
-                  setIndex((current) =>
-                    Math.min(place.reports.length - 1, current + 1),
-                  );
-                }}
-              >
-                {LIVE_MAP_EARLIER}
-              </button>
-            </div>
-          ) : null}
+            <select
+              className="h-7 min-w-[9rem] max-w-full rounded-md border border-gray-200 bg-white px-1.5 text-xs text-gray-900"
+              data-testid="live-map-issue-time"
+              aria-label={LIVE_MAP_ISSUE_COPY}
+              value={String(index)}
+              onClick={(event) => {
+                event.stopPropagation();
+              }}
+              onChange={(event) => {
+                event.stopPropagation();
+                setIndex(Number(event.target.value));
+              }}
+            >
+              {place.reports.map((copy, copyIndex) => (
+                <option
+                  key={`${copy.observed_at}-${copyIndex}`}
+                  value={String(copyIndex)}
+                >
+                  {formatObservedAt(copy.observed_at)}
+                </option>
+              ))}
+            </select>
+          ) : (
+            <p className="text-xs text-gray-600" data-testid="live-map-issued">
+              {formatObservedAt(report.observed_at)}
+            </p>
+          )}
         </div>
-        <div className="flex min-w-0 flex-1 flex-col gap-1">
-          <p className="text-xs font-medium">{LIVE_MAP_TAC}</p>
-          <pre
-            className="max-h-32 overflow-y-auto rounded-md bg-gray-50 p-2 whitespace-pre-wrap font-mono text-xs text-gray-800"
-            data-testid="live-map-tac"
+        <Collapsible
+          className="min-w-0"
+          data-testid="live-map-tac-section"
+          open={tacOpen}
+          onOpenChange={setTacOpen}
+        >
+          <CollapsibleTrigger
+            className="cursor-pointer text-xs font-medium text-gray-800"
+            data-testid="live-map-tac-toggle"
           >
-            {report.tac}
-          </pre>
-        </div>
+            {LIVE_MAP_TAC}
+          </CollapsibleTrigger>
+          <CollapsibleContent>
+            <pre
+              className="mt-1 max-h-28 overflow-y-auto rounded-md bg-gray-50 p-2 whitespace-pre-wrap font-mono text-xs text-gray-800"
+              data-testid="live-map-tac"
+            >
+              {report.tac}
+            </pre>
+          </CollapsibleContent>
+        </Collapsible>
+        <button
+          type="button"
+          className="self-start rounded-md bg-gray-900 px-2.5 py-1 text-xs font-medium text-white hover:bg-gray-800"
+          data-testid="live-map-send-to-converter"
+          onClick={(event) => {
+            event.stopPropagation();
+            onLoad?.(report.tac);
+          }}
+        >
+          {LIVE_MAP_SEND_TO_CONVERTER}
+        </button>
       </div>
     </div>
   );
