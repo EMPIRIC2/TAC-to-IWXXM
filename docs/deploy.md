@@ -456,6 +456,7 @@ and list local edge functions; they never write to the project.
 |-----|------|-------------|
 | `migrations` | `supabase db push --linked` | `supabase/migrations/` |
 | `functions` | `supabase functions deploy --use-api` | `apps/frontend/supabase/functions/` |
+| `advisors` | Management API advisors (`security`, `performance`, `health` when available); fail on ERROR. **Stage-only:** push to `stage`, PRs targeting `stage`, or `workflow_dispatch` (not `main`) | `scripts/security/run-supabase-advisors.sh` |
 
 **Edge deploy note:** CI uses `--use-api` so the runner does **not** pull
 `public.ecr.aws/supabase/edge-runtime` via Docker. Anonymous ECR quota exhaustion
@@ -467,9 +468,17 @@ The deploy step retries up to three times on transient API errors.
 
 | Kind | Name | Purpose |
 |------|------|---------|
-| Secret | `SUPABASE_ACCESS_TOKEN` | `sbp_…` CI token for Supabase CLI |
+| Secret | `SUPABASE_ACCESS_TOKEN` | `sbp_…` CI token for Supabase CLI + advisors Management API |
 | Secret | `SUPABASE_DB_PASSWORD` | Database password for `link` + `db push` |
 | Variable | `SUPABASE_PROJECT_REF` | Optional; defaults to `ktvxijislbtgqapllmuk` |
+
+**Advisors job:** Read-only on **stage** pushes, PRs targeting **stage**, and
+`workflow_dispatch` (skipped on `main` so promote tips are not blocked by advisor lag).
+Calls `GET /v1/projects/{ref}/advisors/{security,performance,health}` (health skipped if
+404). Fails the workflow on lint `level=ERROR` ([Corpus: tech-spec] / CONSUMER-GATES). An
+invalid or expired `SUPABASE_ACCESS_TOKEN` fails migrations **and** advisors — rotate via
+Supabase Dashboard → Account → Access Tokens, then update the GitHub Actions secret (and
+local `.env` if used). Local check: `bash scripts/security/run-supabase-advisors.sh`.
 
 The `functions` job copies root `supabase/config.toml` into `apps/frontend/supabase/` at
 CI time (that tree has functions but no config). Auth routes run on metar-api; edge

@@ -5,13 +5,17 @@ name: Supabase Sync
 #   - Database migrations in supabase/ (primary — docs/deploy.md §Migrations)
 #   - Edge functions in apps/frontend/supabase/functions/ (legacy upload path;
 #     operator Auth package removed F21 / ADR-031 — retire when upload migrates)
+#   - Advisors (security + performance + health when available) via Management API
 #
-# Applies on push to main/stage and manual dispatch. On pull requests it runs a
-# read-only dry-run / diff only — it never writes to the project.
+# Migrations/functions: push to main/stage and manual dispatch. On pull requests
+# they run a read-only dry-run / diff only — they never write to the project.
 # Edge deploy uses --use-api (no local Docker/ECR pull of edge-runtime).
+# Advisors: read-only; run on stage pushes, PRs targeting stage, and manual
+# dispatch only (not main) so the ERROR gate does not spam every branch.
 #
 # Operator docs: docs/deploy.md §Supabase CI sync, docs/env-sync-runbook.md §Step 5
 # Pattern: https://supabase.com/docs/guides/functions/examples/github-actions
+# Advisors API: https://supabase.com/docs/reference/api/v1-get-security-advisors
 #
 # Required configuration (Settings → Secrets and variables → Actions):
 #   secret  SUPABASE_ACCESS_TOKEN  sbp_... personal/CI access token
@@ -170,3 +174,47 @@ jobs:
             sleep "${sleep_s}"
             attempt=$((attempt + 1))
           done
+
+  # ==========================================================================
+  # ADVISORS — Management API security + performance (+ health if exposed)
+  # Fail on ERROR (docs/policies/CONSUMER-GATES.md). Read-only.
+  # Stage-only: push to stage, PR targeting stage, or workflow_dispatch.
+  # Does not need SUPABASE_DB_PASSWORD. Invalid/expired ACCESS_TOKEN fails the job.
+  # ==========================================================================
+  advisors:
+    if: >
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'push' && github.ref == 'refs/heads/stage') ||
+      (github.event_name == 'pull_request' && github.base_ref == 'stage')
+    runs-on: ubuntu-latest
+    name: Supabase advisors
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          submodules: false
+
+      - name: Guard required secrets
+        id: guard
+        run: |
+          if [ -z "${SUPABASE_ACCESS_TOKEN}" ]; then
+            if [ "${{ github.event_name }}" = "pull_request" ]; then
+              echo "::notice::SUPABASE_ACCESS_TOKEN not configured; skipping advisors on pull request"
+              echo "skip=true" >> "${GITHUB_OUTPUT}"
+              exit 0
+            fi
+            echo "::error::Missing required secret SUPABASE_ACCESS_TOKEN (sbp_...). Create at Supabase Dashboard → Account → Access Tokens."
+            exit 1
+          fi
+          echo "skip=false" >> "${GITHUB_OUTPUT}"
+
+      - uses: actions/setup-python@v5
+        if: steps.guard.outputs.skip != 'true'
+        with:
+          python-version: "3.11"
+
+      - name: Run all available advisors
+        if: steps.guard.outputs.skip != 'true'
+        env:
+          # ERROR matches CONSUMER-GATES; override with SEC_SUPABASE_ADVISORS_FAIL_ON if needed.
+          SEC_SUPABASE_ADVISORS_FAIL_ON: error
+        run: bash scripts/security/run-supabase-advisors.sh
