@@ -1,7 +1,8 @@
 """Evaluation endpoints for METAR conversion validation."""
 
 from datetime import UTC, datetime
-from typing import Any
+from typing import Any, NoReturn
+from uuid import UUID
 
 from fastapi import APIRouter, BackgroundTasks, HTTPException, Query
 
@@ -33,6 +34,44 @@ from ..utilities.conversion import ConversionError, convert_metar_tac
 from ..utilities.station_sampler import StationSampler
 
 router = APIRouter()
+
+# Public eval routes historically passed the literal "anonymous". The
+# evaluation_jobs.user_id column is UUID, so callers must send a real UUID.
+# Stable nil UUID keeps list/create queries from raising cast errors when the
+# store is present; missing-table / FK failures still map to 503 below.
+_ANONYMOUS_EVAL_USER_ID = str(UUID(int=0))
+
+
+def _eval_user_id() -> str:
+    """
+    Return the store user id for unauthenticated evaluation routes.
+
+    Returns
+    -------
+    str
+        Nil UUID string used when no authenticated operator is present.
+    """
+    return _ANONYMOUS_EVAL_USER_ID
+
+
+def _raise_store_unavailable(exc: BaseException) -> NoReturn:
+    """
+    Map evaluation persistence failures to HTTP 503 (fail closed).
+
+    Parameters
+    ----------
+    exc : BaseException
+        Underlying store / database failure.
+
+    Returns
+    -------
+    NoReturn
+        Always raises ``HTTPException``; never returns.
+    """
+    raise HTTPException(
+        status_code=503,
+        detail="Evaluation store unavailable",
+    ) from exc
 
 
 async def run_evaluation_job(job_id: str, request: EvaluationRequest) -> None:
@@ -196,11 +235,16 @@ async def create_evaluation_job(
         )
         station_count = len(all_stations)
 
-    job_id = await create_job_in_db(
-        user_id="anonymous",
-        mode=request.mode.value,
-        total_stations=station_count,
-    )
+    try:
+        job_id = await create_job_in_db(
+            user_id=_eval_user_id(),
+            mode=request.mode.value,
+            total_stations=station_count,
+        )
+    except HTTPException:
+        raise
+    except Exception as exc:
+        _raise_store_unavailable(exc)
 
     background_tasks.add_task(run_evaluation_job, job_id, request)
 
@@ -241,7 +285,12 @@ async def get_job_status(
     object
         Return value.
     """
-    job = await get_job_for_user(job_id, "anonymous")
+    try:
+        job = await get_job_for_user(job_id, _eval_user_id())
+    except HTTPException:
+        raise
+    except Exception as exc:
+        _raise_store_unavailable(exc)
     if job is None:
         raise HTTPException(status_code=404, detail="Job not found")
 
@@ -304,17 +353,27 @@ async def get_job_results(
     object
         Return value.
     """
-    job = await get_job_for_user(job_id, "anonymous")
+    try:
+        job = await get_job_for_user(job_id, _eval_user_id())
+    except HTTPException:
+        raise
+    except Exception as exc:
+        _raise_store_unavailable(exc)
     if job is None:
         raise HTTPException(status_code=404, detail="Job not found")
 
     offset = (page - 1) * per_page
-    results_data, total_count = await list_results_for_job(
-        job_id,
-        limit=per_page,
-        offset=offset,
-        status_filter=status_filter.value if status_filter else None,
-    )
+    try:
+        results_data, total_count = await list_results_for_job(
+            job_id,
+            limit=per_page,
+            offset=offset,
+            status_filter=status_filter.value if status_filter else None,
+        )
+    except HTTPException:
+        raise
+    except Exception as exc:
+        _raise_store_unavailable(exc)
 
     results: list[Any] = []
     for row in results_data:
@@ -372,7 +431,12 @@ async def list_user_jobs(page: int = Query(1, ge=1), per_page: int = Query(20, g
         Return value.
     """
     offset = (page - 1) * per_page
-    jobs_data, total_count = await list_jobs_for_user("anonymous", per_page, offset)
+    try:
+        jobs_data, total_count = await list_jobs_for_user(_eval_user_id(), per_page, offset)
+    except HTTPException:
+        raise
+    except Exception as exc:
+        _raise_store_unavailable(exc)
 
     jobs: list[Any] = []
     for job in jobs_data:
