@@ -64,6 +64,7 @@ the EV-regional-dialect-profiles tree unless that session is the active one.
 - [ ] 5. IWXXM validate (package or /api/v1/validation/validate on XML) → OK/fail
 - [ ] 6. Aggregate codes, regions, stations, products
 - [ ] 7. Promote analysis → write reports under sessions/<id>/reports/
+- [ ] 8. Regression test coverage audit → live-Nd-regression-coverage.md (+ gaps)
 ```
 
 ### Reuse first
@@ -126,24 +127,83 @@ For each warn/error code (or user-selected set):
 Cite [Corpus: product] (F15/F20/profile prefer) and [Corpus: tests] for gates; put
 ticket/ADR ids only in session reports and agent text — never in UI/OpenAPI copy.
 
-## 5. Output paths
+## 5. Regression test coverage audit
+
+**Required after promote analysis** (pipeline step 8). Every warn/error code from the
+eval must be audited for automated regression coverage before the session closes.
+
+### Procedure
+
+1. For each warn/error code (and notable station/product fixtures from promote samples):
+   - Search `tests/` and package test trees (`packages/*/tests/`) for coverage of that
+     code and/or the live fixture pattern (token shape, ICAO, product).
+2. Record results in `sessions/<id>/reports/live-Nd-regression-coverage.md` (preferred)
+   and/or a section on the promote report. Include a table:
+
+   | code | occ | disposition | regression test path | status |
+   |------|-----|-------------|----------------------|--------|
+   | `CODE` | N | keep-as-error | `tests/…` or `packages/…/tests/…` | covered / gap / waived |
+
+   Status meanings:
+   - **covered** — a test asserts the expected behavior for this code (or the live
+     fixture pattern) and passes
+   - **gap** — no adequate regression; must add one unless waived
+   - **waived** — gap accepted with one-line rationale (singleton aged-out, defer
+     without repro TAC, etc.)
+
+3. **Required regressions** (unless waived with rationale) when disposition is
+   `product-rule-fix`, `bug-ticket`, or `keep-as-error` **and** the case reproduces
+   on real TAC from session evidence / promote-input:
+   - Add a failing-then-green regression under
+     **`tests/bugs/live_tac_eval/`** (preferred for live-eval finds) or the
+     appropriate package test tree ([Corpus: tests]). See that directory’s
+     `README.md` for layout.
+   - Prefer real TAC snippets from session evidence (no secrets / credentials).
+   - For **product-rule-fix**: TDD — red repro, then minimal grammar/accept fix so
+     the test goes green (not a severity soften).
+   - For **bug-ticket**: add a repro that documents expected behavior; leave red only
+     when process forbids implementing without an evolve — prefer green documenting
+     keep-as-error / leave when investigation confirms source quality, else green
+     documenting the intended accept once fixed.
+   - For **keep-as-error**: assert the code still fires on the live omission/malform
+     pattern (guards against accidental softens).
+4. Do **not** put Corpus/ADR/EV ids on operator surfaces; skill docs and agent/session
+   reports may cite them.
+
+Hard constraints from §4 still apply when closing gaps (no Europe blanket, no
+`MISSING_*` / CW* VIS-QNH soften, keep `INVALID_PROB`).
+
+### Checklist
+
+```
+After promote:
+- [ ] Every warn/error code has a coverage row (covered | gap | waived)
+- [ ] product-rule-fix / bug-ticket / keep-as-error + reproducible TAC → test added
+      or waived with rationale
+- [ ] Gaps that need product fixes: TDD red → minimal fix → green
+- [ ] Coverage report written under sessions/<id>/reports/
+```
+
+## 6. Output paths
 
 | Artifact | Path |
 |----------|------|
 | Reports | `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/<id>/reports/` |
 | Evidence / scripts | `…/sessions/<id>/evidence/` (or reuse EV-regional-dialect-profiles) |
 | Prior baseline | `…/sessions/EV-regional-dialect-profiles/reports/live-7d-*` |
+| Regression coverage | `…/reports/live-Nd-regression-coverage.md` |
+| Live-eval regression tests | `tests/bugs/live_tac_eval/` (product git) |
 
 Filenames: `live-<Nd>-<slug>.{md,json}` (e.g. `live-7d-lint-code-counts.md`).
 
-## 6. Citations & surfaces
+## 7. Citations & surfaces
 
 - Agent/docs: `[Corpus: product]`, `[Corpus: tests]` (+ ADR when disposition
   needs a standing decision).
 - Operator/public: plain language only — no `[Corpus:…]`, `docs/sessions/…`,
   `ADR-*`, `EV-*`, `TC-*`, `#NNN`.
 
-## 7. Related evolves (pointers only)
+## 8. Related evolves (pointers only)
 
 Do not block this skill on these; cross-link when a disposition needs them:
 
@@ -175,3 +235,4 @@ Then run convert + IWXXM validate over the same TAC set; fill tables from
 - Commit secrets / live TAC dumps with credentials into git
 - Treat bare-annex3 counts as post-prefer truth
 - Put planning ids on user-facing surfaces
+- Close a live-eval session without the regression coverage audit (step 8)
