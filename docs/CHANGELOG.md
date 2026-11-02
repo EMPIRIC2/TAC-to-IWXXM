@@ -2,6 +2,48 @@
 
 All notable user-facing and deployable changes for TAC to IWXXM.
 
+## 2026-11-02 — Stage tip (UX density + Supabase staging)
+
+Stage tip `8ee3372e` after the merges below. Staging only; not a production promote.
+Ops dual-ref detail stays in `docs/ops/env-sync-runbook.md` (already updated).
+
+### Operator UX
+- Live map shows an **Aviation Weather Center** credit near the newest-observation status
+  ([#1514](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1514), `60c58ce7`).
+- Results drawer keeps the title, Hide control, and tab strip fixed while tab bodies scroll
+  ([#1515](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1515), `2e20bfb3`).
+- Map station cards are denser: product/station header, observation-time select, TAC collapsed
+  by default, and an explicit Send to converter
+  ([#1516](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1516), `7f4c7bff`).
+
+### Tests / CI / cleanup
+- Downloads two-week dump lint regressions under `tests/bugs/live_tac_eval/`
+  ([#1509](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1509), `28169ea4`).
+- Stage and main pushes always run family quality packs (path filters no longer skip them)
+  ([#1512](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1512), `c44029a0`).
+- Removed unused `monitoring/` Grafana / Prometheus / Loki tree (never wired into compose,
+  Makefile, or CI)
+  ([#1511](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1511), `dd4df373`).
+
+### Supabase
+- CI advisors job on Sync workflow fails closed on lint `ERROR` (security + performance;
+  health skipped when the API returns 404)
+  ([#1513](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1513), `544709e6`).
+- Existence-guarded advisor WARN hardening plus legacy-table RLS migrations (`014` / `015`)
+  ([#1517](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1517), `c7580cc7`).
+- Stage Sync and advisors target staging-env preview `zvfhtcxjopwuesrozpvu`; `main` stays on
+  primary `ktvxijislbtgqapllmuk`
+  ([#1518](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1518), `8ee3372e`).
+- Staging-env was mirrored from primary; advisors **ERROR=0** there. Stage pushes apply Sync
+  and advisors to staging-env only (not primary).
+
+### PR-ready summary
+
+Stage tip `8ee3372e` adds live-map AWC credit, sticky Results chrome, and denser map station
+cards; Downloads dump lint regressions; always-on stage quality packs; removal of unused
+`monitoring/`; and Supabase advisors CI with stage Sync pointed at staging-env preview
+`zvfhtcxjopwuesrozpvu` while `main` keeps primary. Staging-env advisors report ERROR=0.
+
 ## 2026-09-22 — Release prep (YAML full configurability)
 
 Full YAML configurability program on staging (epic #1226 / M1–M5): honesty matrix
