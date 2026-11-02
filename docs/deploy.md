@@ -127,9 +127,19 @@ services without failing (see BUG-2026-08-03). GHCR push continues; DOKS is the 
 **Deploy** in `.github/workflows/ci-cd.yml` waits on full CI including **`e2e-smoke`**, then:
 
 1. Builds/pushes GHCR images tagged `TIMESTAMP-SHA` and `{stage\|main}-latest`.
-2. **Rolls DOKS** with `DOKS_NAMESPACE` + **env-scoped kubeconfig** via
+2. **Best-effort** marks GHCR packages public (`scripts/deploy/ghcr_ensure_public.sh`;
+   `GITHUB_TOKEN` often cannot change org package visibility — non-fatal).
+3. **Refreshes** the cluster `ghcr-pull` dockerconfig with the live job
+   `GITHUB_TOKEN` (`scripts/deploy/doks_refresh_ghcr_pull_secret.sh`) so DOKS can
+   pull private packages when the out-of-band PAT is expired/revoked (dead PAT →
+   `ImagePullBackOff` / GHCR token **403**).
+4. **Rolls DOKS** with `DOKS_NAMESPACE` + **env-scoped kubeconfig** via
    `scripts/deploy/doks_rollout_images.sh <tag>` (staging secret ≠ prod secret after EV-044).
-3. **Render hooks** (optional, **prod Deploy only**): `--skip-if-suspended` (`E34-4`).
+5. **Render hooks** (optional, **prod Deploy only**): `--skip-if-suspended` (`E34-4`).
+
+**Ops escape hatch:** `workflow_dispatch` → `ops=ghcr-doks-pull` + `ops_image_tag=<TIMESTAMP-SHA>`
+refreshes `ghcr-pull` and re-rolls staging without full CI. Prefer a long-lived
+`read:packages` PAT in `ghcr-pull` for break-glass; Deploy refreshes the secret each CD run.
 
 **Promote (required before any merge to `main`):** [Corpus: adr/ADR-034]
 

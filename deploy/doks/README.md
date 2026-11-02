@@ -44,7 +44,10 @@ kubectl --context do-nyc1-metar-iwxxm-staging -n metar-iwxxm-staging create secr
   --from-literal=OPENAIP_API_KEY='…'
 ```
 
-Also copy `ghcr-pull` into the staging namespace. Do **not** remount
+Also copy `ghcr-pull` into the staging namespace (dockerconfig for `ghcr.io` with a
+`read:packages` PAT). CD refreshes that secret each Deploy with the live
+`GITHUB_TOKEN` (`scripts/deploy/doks_refresh_ghcr_pull_secret.sh`) so a revoked
+static PAT does not block DOKS pulls. Do **not** remount
 `work_session_service.py` via ConfigMap (`work-session-ssl-fix` was a T7.1
 interim only, removed after BUG-2026-08-10; sslmode rewrite is in-image).
 
