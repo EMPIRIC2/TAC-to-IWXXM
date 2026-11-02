@@ -215,7 +215,7 @@ notice + DOKS URLs; `D-S038-tp`). **H7** remains bulletin ingest path (not F8 wo
 | E2E (T2)       | Playwright           | UJ-001–007 local stack                                                                               | `make test-e2e-playwright`       | apps/e2e/               |
 | Live E2E (T3)  | Playwright + pytest  | UJ-001–007 on the DOKS staging or prod hosts                                                         | `make test-live`                 | apps/e2e/ + live pytest |
 | Vendor         | pytest               | manifest + schema presence                                                                           | `pytest tests/vendor`            | tests/vendor            |
-| CI             | GitHub Actions       | validate + test (matrix, incl. `bugs`) + e2e-smoke (Playwright) + deploy; path filters deferred (P2) | `.github/workflows/ci-cd.yml`    | root                    |
+| CI             | GitHub Actions       | validate + test (matrix, incl. `bugs` / `tests/bugs/**`) + e2e-smoke + deploy on every `stage`/`main` push (no path filter on `ci-cd.yml`); family quality packs also always on push (PR path filters remain) | `.github/workflows/ci-cd.yml` + `*-quality.yml` | root                    |
 | Pre-commit     | pre-commit framework | fast gates (format/lint/typecheck/secrets/yaml)                                                      | `.pre-commit-config.yaml`        | root                    |
 
 **Coverage**: **100%** line+branch on all packages and apps (ADR-007 / EV-080 / #1077):

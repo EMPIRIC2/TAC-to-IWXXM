@@ -2,15 +2,10 @@
 # BBB→reportStatus + CNL/NIL product paths; complements per-family packs.
 name: Report-state matrix smoke
 
+# Stage/main push: always run (no path filter). PR remains path-filtered for cost.
 on:
   push:
     branches: [main, stage, evolve/EV-029-eight-family-ahl-rules]
-    paths:
-      - "packages/tac2iwxxm/src/tac2iwxxm/**"
-      - "packages/tac2iwxxm/tests/test_tc_ev029_006_report_state_matrix.py"
-      - "packages/tac2iwxxm/tests/fixtures/**"
-      - "scripts/ci/run_report_state_matrix_smoke.sh"
-      - ".github/workflows/report-state-matrix-smoke.yml"
   pull_request:
     paths:
       - "packages/tac2iwxxm/src/tac2iwxxm/**"

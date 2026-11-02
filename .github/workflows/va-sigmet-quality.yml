@@ -3,29 +3,10 @@
 # and gen SIGMET pack (sigmet-quality.yml).
 name: VA SIGMET quality
 
+# Stage/main push: always run (no path filter). PR remains path-filtered for cost.
 on:
   push:
     branches: [main, stage, evolve/EV-029-eight-family-ahl-rules]
-    paths:
-      - "packages/tac2iwxxm/src/tac2iwxxm/convert.py"
-      - "packages/tac2iwxxm/src/tac2iwxxm/bulletin.py"
-      - "packages/tac2iwxxm/src/tac2iwxxm/models.py"
-      - "packages/tac2iwxxm/src/tac2iwxxm/profiles/annex3.py"
-      - "packages/tac2iwxxm/src/tac2iwxxm/profiles/annex3_products.py"
-      - "packages/tac2iwxxm/src/tac2iwxxm/profiles/iwxxm_us.py"
-      - "packages/tac2iwxxm/src/tac2iwxxm/products/sigmet_airmet.py"
-      - "packages/tac2iwxxm/tests/test_tc_ev029_007_va_sigmet_gap_fixtures.py"
-      - "packages/tac2iwxxm/tests/test_tc_f23_003_va_sigmet_annex3_goldens.py"
-      - "packages/tac2iwxxm/tests/fixtures/va_sigmet/**"
-      - "packages/tac2iwxxm/tests/fixtures/annex3_golden/sigmet_va*"
-      - "packages/tac-validate/src/tac_validate/**"
-      - "packages/tac-validate/tests/**/sigmet*"
-      - "packages/tac-validate/tests/test_tc_f23_v1_va_sigmet.py"
-      - "apps/backend/src/utilities/conversion.py"
-      - "apps/backend/src/api.py"
-      - "apps/backend/tests/unit/test_tc_f6_030_convert_bulletin_unit.py"
-      - "scripts/ci/run_va_sigmet_quality.sh"
-      - ".github/workflows/va-sigmet-quality.yml"
   pull_request:
     paths:
       - "packages/tac2iwxxm/src/tac2iwxxm/convert.py"

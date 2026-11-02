@@ -1,6 +1,7 @@
 # October 2026 regional tester regressions.
 # The same Python files also run inside CI/CD Test (tac2iwxxm, tac-validate, backend).
 # This workflow is the named kit: one red check means a tester finding came back.
+# Always on stage/main push (no path filter) — same bar as CI/CD Test (bugs).
 name: Tester regression
 
 on:

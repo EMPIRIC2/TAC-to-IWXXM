@@ -2,17 +2,10 @@
 # One accept fixture per family in Phase B CI order; complements per-family packs.
 name: Product-order smoke
 
+# Stage/main push: always run (no path filter). PR remains path-filtered for cost.
 on:
   push:
     branches: [main, stage, evolve/EV-029-eight-family-ahl-rules]
-    paths:
-      - "packages/tac2iwxxm/src/tac2iwxxm/**"
-      - "packages/tac2iwxxm/tests/test_tc_ev029_007_product_order_smoke.py"
-      - "packages/tac2iwxxm/tests/fixtures/annex3_golden/**"
-      - "packages/tac-validate/src/tac_validate/**"
-      - "packages/iwxxm-validate/src/iwxxm_validate/**"
-      - "scripts/ci/run_product_order_smoke.sh"
-      - ".github/workflows/product-order-smoke.yml"
   pull_request:
     paths:
       - "packages/tac2iwxxm/src/tac2iwxxm/**"

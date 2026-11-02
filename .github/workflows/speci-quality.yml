@@ -2,26 +2,10 @@
 # Separate per-family workflow; complements root ci.yml.
 name: SPECI quality
 
+# Stage/main push: always run (no path filter). PR remains path-filtered for cost.
 on:
   push:
     branches: [main, stage, evolve/EV-029-eight-family-ahl-rules]
-    paths:
-      - "packages/tac2iwxxm/src/tac2iwxxm/convert.py"
-      - "packages/tac2iwxxm/src/tac2iwxxm/bulletin.py"
-      - "packages/tac2iwxxm/src/tac2iwxxm/models.py"
-      - "packages/tac2iwxxm/src/tac2iwxxm/profiles/annex3.py"
-      - "packages/tac2iwxxm/src/tac2iwxxm/profiles/iwxxm_us.py"
-      - "packages/tac2iwxxm/src/tac2iwxxm/products/metar_speci.py"
-      - "packages/tac2iwxxm/tests/test_tc_ev029_007_speci_gap_fixtures.py"
-      - "packages/tac2iwxxm/tests/fixtures/speci/**"
-      - "packages/tac2iwxxm/tests/fixtures/annex3_golden/speci*"
-      - "packages/tac-validate/src/tac_validate/**"
-      - "packages/tac-validate/tests/**/speci*"
-      - "apps/backend/src/utilities/conversion.py"
-      - "apps/backend/src/api.py"
-      - "apps/backend/tests/unit/test_tc_f6_030_convert_bulletin_unit.py"
-      - "scripts/ci/run_speci_quality.sh"
-      - ".github/workflows/speci-quality.yml"
   pull_request:
     paths:
       - "packages/tac2iwxxm/src/tac2iwxxm/convert.py"

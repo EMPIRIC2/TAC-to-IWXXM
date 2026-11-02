@@ -3,20 +3,10 @@
 # Complements ci-cd.yml; does not replace it.
 name: WMO quality
 
+# Stage/main push: always run (no path filter). PR remains path-filtered for cost.
 on:
   push:
     branches: [main, stage, evolve/EV-020-airmet-quality, evolve/EV-021-vaa-quality]
-    paths:
-      - "packages/tac-validate/**"
-      - "packages/tac2iwxxm/**"
-      - "packages/iwxxm-validate/**"
-      - "docs/domain/rules/**"
-      - "docs/sessions/S027-vaa-quality/**"
-      - "docs/sessions/S026-airmet-quality-wmo-examples/**"
-      - "docs/sessions/S025-sigmet-quality/**"
-      - "scripts/ci/run_wmo_quality.sh"
-      - "scripts/ci/run_sigmet_quality.sh"
-      - ".github/workflows/wmo-quality.yml"
   pull_request:
     paths:
       - "packages/tac-validate/**"
