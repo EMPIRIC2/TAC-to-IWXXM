@@ -962,7 +962,7 @@ config-guard:
 	$(UV) run pytest tests/test_config_placeholders.py tests/smoke/test_h5_runtime_config.py -v
 	$(UV) run python scripts/deploy/validate_ingest_poller_url.py --print-fixture >/dev/null
 	$(UV) run pytest apps/worker/tests/test_validate_ingest_poller_url.py \
-		tests/bugs/test_bug_2026_08_04_worker_placeholder_poller_url.py -q --no-cov
+		tests/bugs/worker/test_bug_2026_08_04_worker_placeholder_poller_url.py -q --no-cov
 
 env-check:
 	bash scripts/env/verify-sync.sh

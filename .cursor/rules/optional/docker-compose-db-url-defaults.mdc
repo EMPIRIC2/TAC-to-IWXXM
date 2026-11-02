@@ -14,7 +14,7 @@ alwaysApply: false
 # Docker Compose connection URL defaults
 
 Evidence: BUG-2026-06-25-docker-db-connect-localhost-5432 (#671); repro
-`tests/bugs/test_bug_2026_06_25_docker_db_connect.py`.
+`tests/bugs/ci_deploy/test_bug_2026_06_25_docker_db_connect.py`.
 
 ## docker-compose.yml
 
@@ -51,5 +51,5 @@ For `DATABASE_URL`, `SUPABASE_DB_URL`, and similar connection env vars:
 Pattern: `apps/backend/src/services/database.py` → `_clean_env()`.
 
 When adding a new env reader, add a unit test for blank values; for compose
-changes, extend `tests/bugs/test_bug_2026_06_25_docker_db_connect.py` or add a
+changes, extend `tests/bugs/ci_deploy/test_bug_2026_06_25_docker_db_connect.py` or add a
 sibling repro under `tests/bugs/`.

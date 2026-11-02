@@ -33,4 +33,4 @@ secret or relying on the native Project workflow above.
 
 ## Related
 
-- Workflow regression: `tests/bugs/test_bug_2026_10_30_project_auto_add_missing_token.py`
+- Workflow regression: `tests/bugs/quality/test_bug_2026_10_30_project_auto_add_missing_token.py`

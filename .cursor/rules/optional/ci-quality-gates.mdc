@@ -35,7 +35,7 @@ Bug repro tests under `tests/bugs/` are **executed in CI**, not just format-chec
 -m "not live and not live_api"`), and `make test-bugs` runs them locally (wired into
 `make test-unit` and `make ci`). A red bug repro test fails the pipeline like any other test.
 
-When adding `tests/bugs/test_bug_YYYY_MM_DD_*.py` (14-hotfix / bug-investigation):
+When adding `tests/bugs/<theme>/test_bug_YYYY_MM_DD_*.py` (14-hotfix / bug-investigation):
 
 1. Run `uv run ruff format tests/bugs/<file>.py` (or rely on `.cursor/hooks/format.sh`
    auto-format after edit).

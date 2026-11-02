@@ -207,6 +207,12 @@ notice + DOKS URLs; `D-S038-tp`). **H7** remains bulletin ingest path (not F8 wo
 
 ## Test Strategy
 
+**Layout:** See [`tests/README.md`](../tests/README.md) and
+[`tests/bugs/README.md`](../tests/bugs/README.md) for the repo test tree and bug
+thematic directories (`auth/`, `tac/`, `qa_gap/`, …). CI still runs
+`pytest tests/bugs`.
+
+
 | Level          | Framework            | Scope                                                                                                | Run Command                      | Location                |
 | -------------- | -------------------- | ---------------------------------------------------------------------------------------------------- | -------------------------------- | ----------------------- |
 | Unit           | pytest / Vitest      | packages/\*, apps/backend, apps/frontend components                                                  | `make test-unit`                 | per workspace           |
@@ -304,7 +310,7 @@ EV-059.
     download name shown as subtitle when it differs (#664 preserved)
   - Multi-line manual input shows `Line N of M` chip per Downloads row
   - API `ConversionResult.tac_input` populated for manual and file conversions
-- **Source**: `tests/bugs/test_bug_2026_06_22_issue_594_cor_after_time.py`, `packages/gifts/tests/test_metar_encoding.py::test_cor_after_time`, `apps/e2e/tac-file-conversion.e2e.spec.ts`, `apps/frontend/src/app/components/FileConverter.test.tsx`, `apps/frontend/src/utils/resultTraceability.test.ts`
+- **Source**: `tests/bugs/tac/test_bug_2026_06_22_issue_594_cor_after_time.py`, `packages/gifts/tests/test_metar_encoding.py::test_cor_after_time`, `apps/e2e/tac-file-conversion.e2e.spec.ts`, `apps/frontend/src/app/components/FileConverter.test.tsx`, `apps/frontend/src/utils/resultTraceability.test.ts`
 
 ### TC-001c: Custom output filename for manual input (EV-005 / #664)
 
@@ -3353,7 +3359,7 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
   the nested `3.0.0` profile-line tree, so `tree_sha256` still matches.
 - **Pass criteria**: UJ-DEV-002; no edits under `vendor/schemas/` outside a sync run
 - **Source**: #1318; epic #1307; M6
-- **Automated**: `tests/bugs/test_bug_2026_09_30_vendor_sync_export_ignore.py`;
+- **Automated**: `tests/bugs/ci_deploy/test_bug_2026_09_30_vendor_sync_export_ignore.py`;
   `tests/scripts/test_sync_iwxxm.py`
 
 ### TC-EV1317-001: Dissemination catalog content
@@ -4502,7 +4508,7 @@ wiring unchanged fail-closed.
 - **Level**: T1
 - **Objective**: Stage residual KKCI WST AREA and LINE / DMSHG LINE samples convert
   (ambiguous OurAirports VOR table fallbacks + FROM-chain stops before LINE/DMSHG)
-- **Pass criteria**: `tests/bugs/test_bug_2026_10_31_wst_convective_sigmet_convert.py`
+- **Pass criteria**: `tests/bugs/tac/test_bug_2026_10_31_wst_convective_sigmet_convert.py`
 - **Source**: EV-us-convective-sigmet-wst; [Corpus: product §F6] [Corpus: adr/ADR-051]
 
 ### TC-EV081-003: US TAF BECMG forbidden
@@ -7394,7 +7400,7 @@ These checks are already merged on `origin/stage` (pull requests #1447, #1444, #
 
 - **Level**: T0 in the bugs job of `.github/workflows/ci-cd.yml`
 - **Objective**: A CI job writes a coverage report for `apps/e2e`.
-- **Pass criteria**: The bugs job runs `node scripts/ci/collect_e2e_coverage.mjs` before `pytest tests/bugs`. That command writes `apps/e2e/coverage/coverage-final.json` (one of the paths the regression accepts). `uv run pytest tests/bugs/test_qa_gap_2026_10_18_e2e_coverage_report.py` passes on that job's workspace. No coverage floor is lowered to produce the file. Generated reports stay uncommitted.
+- **Pass criteria**: The bugs job runs `node scripts/ci/collect_e2e_coverage.mjs` before `pytest tests/bugs`. That command writes `apps/e2e/coverage/coverage-final.json` (one of the paths the regression accepts). `uv run pytest tests/bugs/qa_gap/test_qa_gap_2026_10_18_e2e_coverage_report.py` passes on that job's workspace. No coverage floor is lowered to produce the file. Generated reports stay uncommitted.
 
 ### TC-EV101-002: Package coverage comments (#1433)
 
