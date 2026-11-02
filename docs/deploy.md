@@ -143,6 +143,13 @@ refreshes `ghcr-pull` and re-rolls staging without full CI. Prefer a long-lived
 
 **Promote (required before any merge to `main`):** [Corpus: adr/ADR-034]
 
+**Evaluation metrics (required on stage→main PRs):** Do not ship a single opaque % —
+paste a **broken-down** live-eval (or equivalent) summary: lint × severity, convert
+pass/fail, IWXXM validate pass/fail, by product, top codes, promote dispositions, and a
+link to the session report. Checklist:
+[`.github/PULL_REQUEST_TEMPLATE/promote-stage-to-main.md`](../.github/PULL_REQUEST_TEMPLATE/promote-stage-to-main.md);
+guide: [guides/promote-eval-metrics.md](guides/promote-eval-metrics.md).
+
 1. Feature work → PR into **`stage`** (required CI green).
 2. Merge to `stage` → **Deploy (stage)** to staging cluster + **Staging smoke** green for that SHA
    (HTTPS when Porkbun A records point at staging LB `143.244.202.13`; until then Host-header
