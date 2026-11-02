@@ -9,10 +9,19 @@ literal ``anonymous`` into ``CAST(... AS uuid)``. Fail closed with 503.
 
 from __future__ import annotations
 
+import sys
+from pathlib import Path
+
 import pytest
 from fastapi import BackgroundTasks, HTTPException
-from src.routers import evaluation as eval_router
-from src.schemas.evaluation import EvaluationMode, EvaluationRequest
+
+ROOT = Path(__file__).resolve().parents[3]
+BACKEND_ROOT = ROOT / "apps" / "backend"
+if str(BACKEND_ROOT) not in sys.path:
+    sys.path.insert(0, str(BACKEND_ROOT))
+
+from src.routers import evaluation as eval_router  # noqa: E402
+from src.schemas.evaluation import EvaluationMode, EvaluationRequest  # noqa: E402
 
 
 @pytest.mark.asyncio

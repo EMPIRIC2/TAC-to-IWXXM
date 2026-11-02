@@ -247,6 +247,110 @@ async def test_list_user_jobs_store_unavailable_returns_503(monkeypatch):
 
 
 @pytest.mark.asyncio
+async def test_create_evaluation_job_http_exception_reraises(monkeypatch):
+    request = EvaluationRequest(mode=EvaluationMode.RANDOM, sample_size=2)
+
+    class _Sampler:
+        def get_all_major_airports(self, **_kwargs):
+            return ["KJFK", "KLAX"]
+
+    async def fake_create_job_in_db(**_kwargs):
+        raise HTTPException(status_code=409, detail="conflict")
+
+    monkeypatch.setattr(eval_router, "StationSampler", _Sampler)
+    monkeypatch.setattr(eval_router, "create_job_in_db", fake_create_job_in_db)
+
+    with pytest.raises(HTTPException) as exc:
+        await eval_router.create_evaluation_job(request, BackgroundTasks())
+    assert exc.value.status_code == 409
+
+
+@pytest.mark.asyncio
+async def test_get_job_status_store_unavailable_returns_503(monkeypatch):
+    async def boom(job_id, user_id):
+        raise RuntimeError("relation evaluation_jobs does not exist")
+
+    monkeypatch.setattr(eval_router, "get_job_for_user", boom)
+    with pytest.raises(HTTPException) as exc:
+        await eval_router.get_job_status("job-x")
+    assert exc.value.status_code == 503
+
+
+@pytest.mark.asyncio
+async def test_get_job_status_http_exception_reraises(monkeypatch):
+    async def boom(job_id, user_id):
+        raise HTTPException(status_code=401, detail="unauthorized")
+
+    monkeypatch.setattr(eval_router, "get_job_for_user", boom)
+    with pytest.raises(HTTPException) as exc:
+        await eval_router.get_job_status("job-x")
+    assert exc.value.status_code == 401
+
+
+@pytest.mark.asyncio
+async def test_get_job_results_store_unavailable_on_job_lookup(monkeypatch):
+    async def boom(job_id, user_id):
+        raise RuntimeError("relation evaluation_jobs does not exist")
+
+    monkeypatch.setattr(eval_router, "get_job_for_user", boom)
+    with pytest.raises(HTTPException) as exc:
+        await eval_router.get_job_results("job-x")
+    assert exc.value.status_code == 503
+
+
+@pytest.mark.asyncio
+async def test_get_job_results_http_exception_on_job_lookup_reraises(monkeypatch):
+    async def boom(job_id, user_id):
+        raise HTTPException(status_code=403, detail="forbidden")
+
+    monkeypatch.setattr(eval_router, "get_job_for_user", boom)
+    with pytest.raises(HTTPException) as exc:
+        await eval_router.get_job_results("job-x")
+    assert exc.value.status_code == 403
+
+
+@pytest.mark.asyncio
+async def test_get_job_results_store_unavailable_on_list(monkeypatch):
+    async def fake_get_job_for_user(job_id, user_id):
+        return {"id": job_id}
+
+    async def boom(job_id, *, limit, offset, status_filter=None):
+        raise RuntimeError("relation evaluation_results does not exist")
+
+    monkeypatch.setattr(eval_router, "get_job_for_user", fake_get_job_for_user)
+    monkeypatch.setattr(eval_router, "list_results_for_job", boom)
+    with pytest.raises(HTTPException) as exc:
+        await eval_router.get_job_results("job-1", page=1, per_page=50)
+    assert exc.value.status_code == 503
+
+
+@pytest.mark.asyncio
+async def test_get_job_results_http_exception_on_list_reraises(monkeypatch):
+    async def fake_get_job_for_user(job_id, user_id):
+        return {"id": job_id}
+
+    async def boom(job_id, *, limit, offset, status_filter=None):
+        raise HTTPException(status_code=422, detail="bad filter")
+
+    monkeypatch.setattr(eval_router, "get_job_for_user", fake_get_job_for_user)
+    monkeypatch.setattr(eval_router, "list_results_for_job", boom)
+    with pytest.raises(HTTPException) as exc:
+        await eval_router.get_job_results("job-1", page=1, per_page=50)
+    assert exc.value.status_code == 422
+
+
+@pytest.mark.asyncio
+async def test_list_user_jobs_http_exception_reraises(monkeypatch):
+    async def boom(user_id, limit, offset):
+        raise HTTPException(status_code=429, detail="rate limited")
+
+    monkeypatch.setattr(eval_router, "list_jobs_for_user", boom)
+    with pytest.raises(HTTPException) as exc:
+        await eval_router.list_user_jobs(page=1, per_page=20)
+    assert exc.value.status_code == 429
+
+
+@pytest.mark.asyncio
 async def test_list_user_jobs_with_summary(monkeypatch):
     async def fake_list_jobs_for_user(user_id, limit, offset):
         return (

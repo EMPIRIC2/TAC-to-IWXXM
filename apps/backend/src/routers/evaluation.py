@@ -43,12 +43,31 @@ _ANONYMOUS_EVAL_USER_ID = str(UUID(int=0))
 
 
 def _eval_user_id() -> str:
-    """Return the store user id for unauthenticated evaluation routes."""
+    """
+    Return the store user id for unauthenticated evaluation routes.
+
+    Returns
+    -------
+    str
+        Nil UUID string used when no authenticated operator is present.
+    """
     return _ANONYMOUS_EVAL_USER_ID
 
 
 def _raise_store_unavailable(exc: BaseException) -> NoReturn:
-    """Map evaluation persistence failures to HTTP 503 (fail closed)."""
+    """
+    Map evaluation persistence failures to HTTP 503 (fail closed).
+
+    Parameters
+    ----------
+    exc : BaseException
+        Underlying store / database failure.
+
+    Returns
+    -------
+    NoReturn
+        Always raises ``HTTPException``; never returns.
+    """
     raise HTTPException(
         status_code=503,
         detail="Evaluation store unavailable",
