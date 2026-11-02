@@ -56,32 +56,37 @@ jobs:
     steps:
       - name: Pick project ref for branch
         id: pick
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          BASE_REF: ${{ github.base_ref }}
+          REF_NAME: ${{ github.ref_name }}
+          GITHUB_REF: ${{ github.ref }}
+          PRIMARY_REF: ${{ vars.SUPABASE_PROJECT_REF || 'ktvxijislbtgqapllmuk' }}
+          STAGING_REF: ${{ vars.SUPABASE_PROJECT_REF_STAGING || 'zvfhtcxjopwuesrozpvu' }}
         run: |
           set -euo pipefail
-          if [ "${{ github.event_name }}" = "pull_request" ]; then
-            base="${{ github.base_ref }}"
-          elif [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+          if [ "${EVENT_NAME}" = "pull_request" ]; then
+            base="${BASE_REF}"
+          elif [ "${EVENT_NAME}" = "workflow_dispatch" ]; then
             # Manual runs on stage tip target staging; otherwise primary.
-            if [ "${{ github.ref }}" = "refs/heads/stage" ]; then
+            if [ "${GITHUB_REF}" = "refs/heads/stage" ]; then
               base="stage"
             else
               base="main"
             fi
           else
-            base="${{ github.ref_name }}"
+            base="${REF_NAME}"
           fi
-          primary="${{ vars.SUPABASE_PROJECT_REF || 'ktvxijislbtgqapllmuk' }}"
-          staging="${{ vars.SUPABASE_PROJECT_REF_STAGING || 'zvfhtcxjopwuesrozpvu' }}"
           if [ "${base}" = "stage" ]; then
-            echo "project_ref=${staging}" >> "${GITHUB_OUTPUT}"
+            echo "project_ref=${STAGING_REF}" >> "${GITHUB_OUTPUT}"
             echo "target_label=staging-env" >> "${GITHUB_OUTPUT}"
             echo "use_staging_password=true" >> "${GITHUB_OUTPUT}"
-            echo "Supabase target: staging-env ref=${staging} (base=${base})"
+            echo "Supabase target: staging-env ref=${STAGING_REF} (base=${base})"
           else
-            echo "project_ref=${primary}" >> "${GITHUB_OUTPUT}"
+            echo "project_ref=${PRIMARY_REF}" >> "${GITHUB_OUTPUT}"
             echo "target_label=primary" >> "${GITHUB_OUTPUT}"
             echo "use_staging_password=false" >> "${GITHUB_OUTPUT}"
-            echo "Supabase target: primary ref=${primary} (base=${base})"
+            echo "Supabase target: primary ref=${PRIMARY_REF} (base=${base})"
           fi
 
   # ==========================================================================
