@@ -96,7 +96,7 @@ describe('ConvertResultsDrawer', () => {
         {...body}
       />,
     );
-    expect(screen.getByTestId('convert-results-drawer-body')).toHaveStyle({
+    expect(screen.getByTestId('convert-results-drawer-shell')).toHaveStyle({
       height: '320px',
     });
     const handle = screen.getByTestId('results-drawer-vertical-resize');
@@ -104,5 +104,31 @@ describe('ConvertResultsDrawer', () => {
     fireEvent.pointerMove(window, { clientY: 140 });
     expect(onHeightChange).toHaveBeenCalledWith(360);
     fireEvent.pointerUp(window);
+  });
+
+  it('keeps Results header and tab strip outside the scrolling body', () => {
+    render(
+      <ConvertResultsDrawer
+        open
+        onOpenChange={() => undefined}
+        tab="map"
+        onTabChange={() => undefined}
+        height={320}
+        onHeightChange={() => undefined}
+        {...body}
+      />,
+    );
+
+    const chrome = screen.getByTestId('convert-results-drawer-chrome');
+    const scrollBody = screen.getByTestId('convert-results-drawer-body');
+    const tablist = screen.getByTestId('convert-results-tablist');
+    const toggle = screen.getByTestId('convert-results-drawer-toggle');
+
+    expect(chrome).toContainElement(toggle);
+    expect(within(chrome).getByText('Results')).toBeVisible();
+    expect(scrollBody).not.toContainElement(toggle);
+    expect(scrollBody).not.toContainElement(tablist);
+    expect(scrollBody.className.split(/\s+/)).toContain('overflow-auto');
+    expect(within(scrollBody).getByText('map-body')).toBeVisible();
   });
 });
