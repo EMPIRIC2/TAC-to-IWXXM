@@ -96,12 +96,15 @@
 - **Acceptance (this amend)**: Library API + CI tests; backend thin wrappers for validate
   endpoints call `iwxxm-validate` (no behavior regression vs current F2).
 - **Limitations**: Schema bundles must match vendored snapshot version; no official US `.sch`.
-  **2025-2** may emit `SCHEMATRON_SKIPPED` (xslt2) and/or `SCHEMA_IMPORT_WARNING` until EV-055
-  disposition lands (#980 / #979).
+  Pure-Python / lxml-only installs may still emit `SCHEMATRON_SKIPPED` (xslt2) for
+  **2025-2**; the **API Docker image** ships `iwxxm_validate._rust` so operator `/validate`
+  runs Schematron (parity with live-eval). `SCHEMA_IMPORT_WARNING` residuals tracked under
+  F13 / #979 as applicable.
 - **S064 / EV-055 deepen (#980 / #979)**: **Hard** this cycle (`D-S064-sch-hard=1` /
   `D-S064-xsd-hard=1`): enable Schematron evaluation for 2025-2 xslt2 (prefer native) and
   fix `SCHEMA_IMPORT_WARNING` import resolution. Quality metrics consume outcomes. See F7.q
-  EV-055 AC4–AC6 and F13.
+  EV-055 AC4–AC6 and F13. API deploy image must bake the native extension (see
+  [Corpus: deploy] §Docker Build Context).
 - **Weekly staging validation catalog (CI deepen)**: Scheduled GHA Sunday 00:00 UTC probes
   staging lint/validate catalogs + accept fixtures and uploads a severity/code report
   artifact. **No new Fn**; public API shapes unchanged. See [Corpus: deploy] §Weekly

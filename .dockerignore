@@ -1,0 +1,12 @@
+# Keep repo-root docker contexts lean (API / worker / frontend share context: .).
+.git
+**/.venv
+**/__pycache__
+**/rust/target
+**/.pytest_cache
+**/node_modules
+**/.mypy_cache
+**/.ruff_cache
+**/coverage.xml
+**/coverage.json
+**/.coverage

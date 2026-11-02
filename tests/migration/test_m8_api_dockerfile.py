@@ -61,6 +61,14 @@ class TestM8ApiDockerfileMonorepoContext:
         assert "uv sync" in dockerfile_text or "uv pip install" in dockerfile_text
         assert "pyproject.toml" in dockerfile_text
 
+    def test_dockerfile_builds_iwxxm_validate_native_for_schematron(
+        self, dockerfile_text: str
+    ) -> None:
+        """API image must ship iwxxm_validate._rust so 2025-2 Schematron runs (F13)."""
+        assert "maturin" in dockerfile_text
+        assert "rust/Cargo.toml" in dockerfile_text
+        assert "rust_available" in dockerfile_text
+
     def test_dockerfile_exposes_healthcheck_and_port(
         self, dockerfile_text: str
     ) -> None:

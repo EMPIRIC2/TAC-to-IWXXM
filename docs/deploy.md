@@ -428,6 +428,13 @@ API image must include: apps/backend, packages/tac2iwxxm, packages/reference-loo
 packages/tac-validate, packages/iwxxm-validate, packages/dissemination,
 packages/shared, packages/auth, vendor/schemas.
 
+**API native Schematron (F13 / 2025-2 xslt2):** `apps/backend/docker/Dockerfile` is a
+multi-stage build that runs `maturin develop` for `packages/iwxxm-validate` and asserts
+`rust_available()` before the runtime stage. Without the PyO3 extension, vendor
+`queryBinding="xslt2"` Schematron soft-skips (`SCHEMATRON_SKIPPED`) on the lxml path —
+operator `/validate` would diverge from live-eval. Runtime image does **not** retain the
+Rust toolchain.
+
 Worker image must include: apps/worker, packages/tac2iwxxm, packages/reference-lookup, packages/tac-decoding,
 packages/tac-validate, packages/iwxxm-validate, packages/workflows, packages/shared,
 vendor/schemas (no frontend).
