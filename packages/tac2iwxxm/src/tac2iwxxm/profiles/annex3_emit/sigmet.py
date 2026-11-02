@@ -954,20 +954,24 @@ def emit_convective_sigmet_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> 
     </gml:TimePeriod>
   </iwxxm:validPeriod>
   <iwxxm:phenomenon nilReason="http://codes.wmo.int/common/nil/template"/>
-  <iwxxm:analysis>
-    <iwxxm:SIGMETEvolvingConditionCollection gml:id="evolving.{fir.lower()}" timeIndicator="FORECAST">
-      <iwxxm:phenomenonTime>
-        <gml:TimePeriod gml:id="t.active.{fir.lower()}">
-          <gml:beginPosition>{issue}</gml:beginPosition>
-          <gml:endPosition>{active_end}</gml:endPosition>
-        </gml:TimePeriod>
-      </iwxxm:phenomenonTime>
-      <iwxxm:member>
-        <iwxxm:SIGMETEvolvingCondition gml:id="cond.{fir.lower()}">{geometry}{motion}
-        </iwxxm:SIGMETEvolvingCondition>
-      </iwxxm:member>
-    </iwxxm:SIGMETEvolvingConditionCollection>
-  </iwxxm:analysis>
+  <iwxxm:analysisCollection>
+    <iwxxm:analysisAndForecastPositionAnalysis gml:id="analysis.{fir.lower()}">
+      <iwxxm:analysis>
+        <iwxxm:SIGMETEvolvingConditionCollection gml:id="evolving.{fir.lower()}" timeIndicator="FORECAST">
+          <iwxxm:phenomenonTime>
+            <gml:TimePeriod gml:id="t.active.{fir.lower()}">
+              <gml:beginPosition>{issue}</gml:beginPosition>
+              <gml:endPosition>{active_end}</gml:endPosition>
+            </gml:TimePeriod>
+          </iwxxm:phenomenonTime>
+          <iwxxm:member>
+            <iwxxm:SIGMETEvolvingCondition gml:id="cond.{fir.lower()}">{geometry}{motion}
+            </iwxxm:SIGMETEvolvingCondition>
+          </iwxxm:member>
+        </iwxxm:SIGMETEvolvingConditionCollection>
+      </iwxxm:analysis>
+    </iwxxm:analysisAndForecastPositionAnalysis>
+  </iwxxm:analysisCollection>
 </iwxxm:SIGMET>
 """
     # Inject AffectedStates inside AirspaceVolume when geometry present.
