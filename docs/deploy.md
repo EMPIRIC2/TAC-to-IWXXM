@@ -480,6 +480,14 @@ invalid or expired `SUPABASE_ACCESS_TOKEN` fails migrations **and** advisors —
 Supabase Dashboard → Account → Access Tokens, then update the GitHub Actions secret (and
 local `.env` if used). Local check: `bash scripts/security/run-supabase-advisors.sh`.
 
+**Advisor remediations (migrations):** `20261102000013` enables RLS on ConversionProfile
+tables; `20261102000014` revokes anon GraphQL grants and trims SECURITY DEFINER EXECUTE /
+service-only authenticated grants. Remaining WARNs are intentional: username-login
+`lookup_email_by_username` (anon+authenticated EXECUTE), `is_admin` (authenticated RLS
+helper), and authenticated SELECT on owner-scoped product tables with RLS. Performance
+findings are INFO-only (`unused_index`, Auth connection pool) — do not drop indexes solely
+from INFO unused-index noise.
+
 The `functions` job copies root `supabase/config.toml` into `apps/frontend/supabase/` at
 CI time (that tree has functions but no config). Auth routes run on metar-api; edge
 functions remain only for the database-upload path until a follow-up retires them
