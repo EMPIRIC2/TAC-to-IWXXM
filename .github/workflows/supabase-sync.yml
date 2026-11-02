@@ -7,10 +7,11 @@ name: Supabase Sync
 #     operator Auth package removed F21 / ADR-031 — retire when upload migrates)
 #   - Advisors (security + performance + health when available) via Management API
 #
-# Applies on push to main/stage and manual dispatch. On pull requests it runs a
-# read-only dry-run / diff only — it never writes to the project.
+# Migrations/functions: push to main/stage and manual dispatch. On pull requests
+# they run a read-only dry-run / diff only — they never write to the project.
 # Edge deploy uses --use-api (no local Docker/ECR pull of edge-runtime).
-# Advisors are always read-only (PR + push).
+# Advisors: read-only; run on stage pushes, PRs targeting stage, and manual
+# dispatch only (not main) so the ERROR gate does not spam every branch.
 #
 # Operator docs: docs/deploy.md §Supabase CI sync, docs/env-sync-runbook.md §Step 5
 # Pattern: https://supabase.com/docs/guides/functions/examples/github-actions
@@ -176,10 +177,15 @@ jobs:
 
   # ==========================================================================
   # ADVISORS — Management API security + performance (+ health if exposed)
-  # Fail on ERROR (docs/policies/CONSUMER-GATES.md). Read-only on PR and push.
+  # Fail on ERROR (docs/policies/CONSUMER-GATES.md). Read-only.
+  # Stage-only: push to stage, PR targeting stage, or workflow_dispatch.
   # Does not need SUPABASE_DB_PASSWORD. Invalid/expired ACCESS_TOKEN fails the job.
   # ==========================================================================
   advisors:
+    if: >
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'push' && github.ref == 'refs/heads/stage') ||
+      (github.event_name == 'pull_request' && github.base_ref == 'stage')
     runs-on: ubuntu-latest
     name: Supabase advisors
     steps:
