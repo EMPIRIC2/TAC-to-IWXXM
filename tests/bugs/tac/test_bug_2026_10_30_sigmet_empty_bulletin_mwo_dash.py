@@ -49,7 +49,8 @@ def _assert_splits(text: str, *, starts_with: str) -> None:
     assert pasted is not None
     assert len(pasted.reports) >= 1
     report_text, _offset = pasted.reports[0]
-    assert report_text.upper().startswith(starts_with.upper())
+    # SIGMET paste keeps AHL so convert can see TT family roots (WC/WV/WS).
+    assert starts_with.upper() in report_text.upper()
 
 
 def test_bug_2026_10_30_oejd_space_before_mwo_dash_not_empty_bulletin() -> None:
