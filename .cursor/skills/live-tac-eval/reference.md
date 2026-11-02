@@ -142,7 +142,51 @@ For each code:
 
 ---
 
-## D. Minimal JSON shape (optional machine companion)
+## D. Regression coverage audit — `live-Nd-regression-coverage.md`
+
+Required after promote (skill §5). Search `tests/` + `packages/*/tests/` before closing.
+
+```markdown
+# Live-Nd regression test coverage audit
+
+- Promote: `reports/live-Nd-promote-disposition.md`
+- Tallies: `reports/live-Nd-lint-code-counts.json`
+- [Corpus: product] [Corpus: tests]
+
+## Coverage table
+
+| Code | Occ | Disposition | Regression test path | Status |
+|------|-----|-------------|----------------------|--------|
+| `CODE` | N | keep-as-error | `tests/bugs/…` or `packages/…/tests/…` | covered |
+| `CODE` | N | product-rule-fix | `tests/bugs/…` | gap → added |
+| `CODE` | N | defer | — | waived: singleton / no stable TAC |
+
+Status: `covered` | `gap` | `waived` (waive needs rationale).
+
+## Required when disposition ∈ product-rule-fix | bug-ticket | keep-as-error
+
+If the case reproduces on real TAC from session evidence:
+- Add failing-then-green regression under **`tests/bugs/live_tac_eval/`**
+  (or package tests when the find is not live-eval-specific)
+- product-rule-fix → minimal accept/grammar fix (not severity soften)
+- bug-ticket → document expected behavior after investigation
+- keep-as-error → assert code still fires (anti-soften guard)
+
+## Gaps closed this run
+
+| Code | Test added | Fix? |
+|------|------------|------|
+| `INVALID_RVR` | `tests/bugs/live_tac_eval/test_ca_rvr_slash_before_trend.py` | yes — optional `/` before U/D/N |
+| `UNKNOWN_WMO_MEMBERSHIP` | `tests/bugs/live_tac_eval/test_unknown_wmo_membership_live.py` | no — keep error |
+| `MISSING_*` / `INVALID_PROB` | `tests/bugs/live_tac_eval/test_keep_as_error_live_residuals.py` | no — anti-soften |
+```
+
+JSON companion optional: same rows as objects
+`{code, occurrences, disposition, test_path, status, notes}`.
+
+---
+
+## E. Minimal JSON shape (optional machine companion)
 
 ```json
 {
@@ -173,7 +217,7 @@ For each code:
 
 ---
 
-## E. Script reuse map
+## F. Script reuse map
 
 | Need | Prefer |
 |------|--------|

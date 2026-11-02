@@ -64,7 +64,8 @@ _RVR = re.compile(r"^R\d{2}")
 # R8: RVR runway visual range (simplified ICAO/US shapes).
 # ICAO tendency U|D|N may follow the value (and optional FT for US). EV-040: R12/1000U
 # from WMO A3-1 is valid - prior pattern only allowed bare N/FT, not U/D.
-_RVR_OK = re.compile(r"^R\d{2}[LCR]?/(?:[MP]?\d{4}(?:V[MP]?\d{4})?|////)(?:FT)?[UDN]?$")
+# Canadian MANOBS may insert '/' before tendency (…FT/N, …FT/D).
+_RVR_OK = re.compile(r"^R\d{2}[LCR]?/(?:[MP]?\d{4}(?:V[MP]?\d{4})?|////)(?:FT)?(?:/[UDN]|[UDN])?$")
 # CIS/Russian runway-state deposit group (Rxx/dddddd) is not ICAO RVR — skip R8.
 _RVR_RUNWAY_STATE = re.compile(r"^R\d{2}[LCR]?/\d{6}$")
 # BoM AUTO dewpoint-not-observable (temp present, dewpoint solidus).
