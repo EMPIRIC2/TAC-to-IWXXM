@@ -103,7 +103,11 @@ Set secrets and variables for CI (including `.github/workflows/supabase-sync.yml
 | `SUPABASE_PROJECT_REF` | Variable | Optional; defaults to `ktvxijislbtgqapllmuk` |
 
 **Supabase access token:** Dashboard → Account → Access Tokens → create token with deploy
-scope. Store as `SUPABASE_ACCESS_TOKEN`; do not commit.
+(and advisors read) scope. Store as `SUPABASE_ACCESS_TOKEN` in GitHub Actions secrets and
+local `.env` if used; do not commit. Rotate when `supabase link` / advisors CI reports
+`Invalid access token`. Advisors CI:
+`bash scripts/security/run-supabase-advisors.sh` (also `.github/workflows/supabase-sync.yml`
+job `advisors`).
 
 **Database password:** Project Settings → Database → reset or copy password. Required for
 `supabase link` in CI (migrations job).
