@@ -31,6 +31,11 @@ _VIS_M = re.compile(r"\b(?P<vis>\d{4})\b")
 _VIS_SM = TAF_STATUTE_MILE_GROUP
 _NCLWS = re.compile(r"\bWS(?P<height>\d{3})/(?P<dir>\d{3})(?P<spd>\d{2,3})KT\b")
 _CLOUD = re.compile(r"\b(?P<amt>FEW|SCT|BKN|OVC)(?P<base>\d{3}|///)(?P<ctype>CB|TCU)?\b")
+_NSC = re.compile(r"\bNSC\b")
+_NCD = re.compile(r"\bNCD\b")
+_SKC_CLR = re.compile(r"\b(?:SKC|CLR)\b")
+# Trailing (?![A-Z0-9/]) — not \b — so VV/// still matches (slash is non-word).
+_VV = re.compile(r"\bVV(?P<vv>\d{3}|///)(?![A-Z0-9/])")
 _ALT_INHG = re.compile(r"\bA(?P<alt>\d{4})\b")
 _NIL = re.compile(r"\bNIL\b")
 _CNL = re.compile(r"\bCNL\b")
@@ -274,12 +279,31 @@ def _parse_forecast_body(text: str, *, cavok_ok: bool = True) -> dict[str, Any]:
                 metres, above = prevailing_from_metre_group(int(vis.group("vis")))
                 out["visibility_m"] = metres
                 out["visibility_above"] = above
-    clouds = _parse_clouds(text)
-    if clouds:
-        out["clouds"] = clouds
-        out["cloud_amount"] = clouds[0]["amount"]
-        if "base_ft" in clouds[0]:
-            out["cloud_base_ft"] = clouds[0]["base_ft"]
+    # Cloud / sky state: NSC/NCD exclusive (METAR parity); else VV; else SKC/CLR;
+    # else layered FEW/SCT/BKN/OVC. TAF-8 requires iwxxm:cloud whenever CAVOK false.
+    if _NSC.search(text):
+        out["nsc"] = True
+    elif _NCD.search(text):
+        out["ncd"] = True
+    else:
+        vv = _VV.search(text)
+        if vv is not None:
+            token = vv.group("vv")
+            if token == "///":
+                out["vertical_visibility_not_observable"] = True
+            else:
+                out["vertical_visibility_ft"] = int(token) * 100
+        elif _SKC_CLR.search(text):
+            # CLR maps to CloudAmountReportedAtAerodrome/SKC (no CLR concept URI).
+            out["clouds"] = [{"amount": "SKC", "base_inapplicable": True}]
+            out["cloud_amount"] = "SKC"
+        else:
+            clouds = _parse_clouds(text)
+            if clouds:
+                out["clouds"] = clouds
+                out["cloud_amount"] = clouds[0]["amount"]
+                if "base_ft" in clouds[0]:
+                    out["cloud_base_ft"] = clouds[0]["base_ft"]
     wx = _parse_wx(text)
     if wx:
         out["weather"] = wx
