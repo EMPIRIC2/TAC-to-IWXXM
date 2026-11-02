@@ -35,6 +35,11 @@ _CNL = re.compile(
     r"(?P<cnl_from>\d{6})/(?P<cnl_to>\d{6})\b",
     re.IGNORECASE | re.DOTALL,
 )
+# Incomplete cancel (sequence only) must not fall through to a default phenomenon.
+_CNL_INCOMPLETE = re.compile(
+    r"\bCNL\s+(?:SIGMET|AIRMET)\s+(?:[A-Z]+\s+\d+|[A-Z]?\d+)\b",
+    re.IGNORECASE,
+)
 _SIGA0_LINE = re.compile(r"^SIGA0[A-Z0-9]*\s*$", re.IGNORECASE)
 # VA CNL identifies FIR to which ash has moved (F23 V1 / tac-validate VA_CNL_FIR_MOVED).
 _CNL_FIR_MOVED = re.compile(r"\b(?:AND|MOV)\s+TO\s+FIR\b", re.IGNORECASE)
@@ -319,28 +324,57 @@ def _apply_motion(ir: dict[str, Any], body: str) -> None:
         ir["motion_speed_kt"] = speed
 
 
-def _detect_phenomenon(body: str, table: tuple[tuple[str, str], ...]) -> str:
+def _detect_phenomenon(body: str, table: tuple[tuple[str, str], ...]) -> str | None:
     """
-    Internal helper ``_detect_phenomenon``.
+    Return the first matching phenomenon code, or ``None`` when none match.
 
     Parameters
     ----------
     body : str
-        Argument ``body``.
+        Hazard body text.
 
     table : tuple[tuple[str, str], ...]
-        Argument ``table``.
+        Needle → IR code pairs, longest / most specific first.
 
     Returns
     -------
-    str
-        Return value.
+    str | None
+        Matched IR phenomenon code, or ``None`` (do not invent ``TS``).
     """
     upper = body.upper()
     for needle, code in table:
         if needle in upper:
             return code
-    return "TS"
+    return None
+
+
+def _require_ordered_valid_period(
+    from_day: int,
+    from_hour: int,
+    from_minute: int,
+    to_day: int,
+    to_hour: int,
+    to_minute: int,
+    *,
+    product: str,
+) -> None:
+    """
+    Reject same-day VALID groups whose end is not after begin.
+
+    Day-of-month wrap (for example ``312200/010200``) stays allowed. Same-day
+    inverted or zero-length periods fail closed.
+
+    Parameters
+    ----------
+    from_day, from_hour, from_minute : int
+        VALID begin group.
+    to_day, to_hour, to_minute : int
+        VALID end group.
+    product : str
+        ``SIGMET`` or ``AIRMET`` for the error message.
+    """
+    if from_day == to_day and (to_hour, to_minute) <= (from_hour, from_minute):
+        raise ValueError(f"{product} valid period end must be after begin")
 
 
 def _detect_ca_gfa_phenomenon(body: str) -> str | None:
@@ -446,6 +480,8 @@ def _point_lat_lon(match: re.Match[str]) -> tuple[float, float]:
         lat = -lat
     if (groups.get("lon_hemi") or "E").upper() == "W":
         lon = -lon
+    if abs(lat) > 90.0 or abs(lon) > 180.0:
+        raise ValueError(f"coordinate out of range: lat={lat}, lon={lon}")
     return lat, lon
 
 
@@ -735,6 +771,8 @@ def _enrich_hazard_body(ir: dict[str, Any], body: str) -> None:
         else:
             ir.pop("phenomenon", None)
         return
+    if _CNL_INCOMPLETE.search(body) is not None:
+        raise ValueError("incomplete CNL: cancelled validity period required")
 
     ir["intensity_change"] = _detect_intensity(body)
     ir["stationary"] = bool(re.search(r"\bSTNR\b", upper))
@@ -1032,7 +1070,8 @@ def _phenomenon_from_conus_for_text(for_text: str) -> str:
         return "SFC_VIS"
     if "MTN" in upper and "OBSC" in upper:
         return "MT_OBSC"
-    return _detect_phenomenon(for_text, _AIR_PHENOMENA)
+    # CONUS FOR-text may omit a catalog token; keep a stable default for that path only.
+    return _detect_phenomenon(for_text, _AIR_PHENOMENA) or "TS"
 
 
 def _parse_frzlvl_section(text: str) -> dict[str, Any]:
@@ -1152,9 +1191,10 @@ def _airmet_area_ir(segment: str, *, default_phenomenon: str | None = None) -> d
     dict[str, Any]
         Return value.
     """
-    area: dict[str, Any] = {
-        "phenomenon": default_phenomenon or _detect_phenomenon(segment, _AIR_PHENOMENA),
-    }
+    area: dict[str, Any] = {}
+    area_phenomenon = default_phenomenon or _detect_phenomenon(segment, _AIR_PHENOMENA)
+    if area_phenomenon is not None:
+        area["phenomenon"] = area_phenomenon
     _enrich_hazard_body(area, segment)
     return area
 
@@ -1425,6 +1465,7 @@ def parse_sigmet(tac: str, *, product: str = "SIGMET") -> dict[str, Any]:
     body = without_cancellation_remark(match.group("body"))
     from_d, from_h, from_m = _parse_valid(match.group("from"))
     to_d, to_h, to_m = _parse_valid(match.group("to"))
+    _require_ordered_valid_period(from_d, from_h, from_m, to_d, to_h, to_m, product="SIGMET")
     seq_num, seq_label = _parse_sequence_token(match.group("seq"))
     fir = _sigmet_region_indicator(match, body)
     upper_body = body.upper()
@@ -1440,6 +1481,7 @@ def parse_sigmet(tac: str, *, product: str = "SIGMET") -> dict[str, Any]:
             fir,
             watch_office=match.group("mwo"),
         )
+    phenomenon = _detect_phenomenon(body, _SIG_PHENOMENA)
     ir: dict[str, Any] = {
         "ir_version": 1,
         "product": "SIGMET",
@@ -1452,10 +1494,11 @@ def parse_sigmet(tac: str, *, product: str = "SIGMET") -> dict[str, Any]:
         "valid_to_day": to_d,
         "valid_to_hour": to_h,
         "valid_to_minute": to_m,
-        "phenomenon": _detect_phenomenon(body, _SIG_PHENOMENA),
         "fir_name": fir_name,
         "raw": text,
     }
+    if phenomenon is not None:
+        ir["phenomenon"] = phenomenon
     if seq_label != str(seq_num):
         ir["sequence_label"] = seq_label
     fir_extra = match.groupdict().get("fir_extra")
@@ -1465,6 +1508,8 @@ def parse_sigmet(tac: str, *, product: str = "SIGMET") -> dict[str, Any]:
     if ahl_tt is not None:
         ir["ahl_tt"] = ahl_tt
     _enrich_sigmet_body(ir, body)
+    if not ir.get("cancel") and not ir.get("phenomenon"):
+        raise ValueError("SIGMET body missing phenomenon")
     # Content-selected IWXXM root under product=sigmet (E19-13 / F23 V2 / TC-EV029-004).
     # WC/WV AHL select family roots for CNL when the body omits phenomenon.
     if ir.get("phenomenon") == "TC" or ahl_tt == "WC":
@@ -1525,7 +1570,9 @@ def parse_airmet(tac: str, *, product: str = "AIRMET") -> dict[str, Any]:
         body = match.group("body")
         from_d, from_h, from_m = _parse_valid(match.group("from"))
         to_d, to_h, to_m = _parse_valid(match.group("to"))
+        _require_ordered_valid_period(from_d, from_h, from_m, to_d, to_h, to_m, product="AIRMET")
         seq_num, seq_label = _parse_sequence_token(match.group("seq"))
+        phenomenon = _detect_phenomenon(body, _AIR_PHENOMENA)
         ir = {
             "ir_version": 1,
             "product": "AIRMET",
@@ -1538,10 +1585,11 @@ def parse_airmet(tac: str, *, product: str = "AIRMET") -> dict[str, Any]:
             "valid_to_day": to_d,
             "valid_to_hour": to_h,
             "valid_to_minute": to_m,
-            "phenomenon": _detect_phenomenon(body, _AIR_PHENOMENA),
             "fir_name": "SHANLON FIR" if "SHANLON" in body.upper() else match.group("fir").upper(),
             "raw": text,
         }
+        if phenomenon is not None:
+            ir["phenomenon"] = phenomenon
         if seq_label != str(seq_num):
             ir["sequence_label"] = seq_label
     main_body, outlook_body = _split_airmet_main_and_outlook(body)
@@ -1564,8 +1612,10 @@ def parse_airmet(tac: str, *, product: str = "AIRMET") -> dict[str, Any]:
     if chart is not None:
         ir["gfa_chart_id"] = chart.group(1).upper()
     area_segments = _split_airmet_areas(hazard_body)
+    default_phenomenon = ir.get("phenomenon")
+    default_phenomenon_s = str(default_phenomenon) if default_phenomenon is not None else None
     if len(area_segments) > 1:
-        areas = [_airmet_area_ir(segment, default_phenomenon=str(ir["phenomenon"])) for segment in area_segments]
+        areas = [_airmet_area_ir(segment, default_phenomenon=default_phenomenon_s) for segment in area_segments]
         ir["areas"] = areas
         _apply_airmet_area_to_ir(ir, areas[0])
     else:
@@ -1573,7 +1623,9 @@ def parse_airmet(tac: str, *, product: str = "AIRMET") -> dict[str, Any]:
     if frzlvl_body is not None:
         ir["frzlvl_section"] = _parse_frzlvl_section(frzlvl_body)
     if outlook_body is not None:
-        outlook = _parse_airmet_outlook(outlook_body, default_phenomenon=str(ir["phenomenon"]))
+        if default_phenomenon_s is None:
+            raise ValueError("AIRMET body missing phenomenon")
+        outlook = _parse_airmet_outlook(outlook_body, default_phenomenon=default_phenomenon_s)
         outlook["valid_from_day"] = ir["valid_from_day"]
         if outlook["valid_to_hour"] < outlook["valid_from_hour"] or (
             outlook["valid_to_hour"] == outlook["valid_from_hour"]
@@ -1583,6 +1635,8 @@ def parse_airmet(tac: str, *, product: str = "AIRMET") -> dict[str, Any]:
         else:
             outlook["valid_to_day"] = ir["valid_to_day"]
         ir["outlook"] = outlook
+    if not ir.get("cancel") and not ir.get("phenomenon") and not ir.get("ca_gfa_phenomenon"):
+        raise ValueError("AIRMET body missing phenomenon")
     _attach_us_airmet_hazard(ir)
     return ir
 
