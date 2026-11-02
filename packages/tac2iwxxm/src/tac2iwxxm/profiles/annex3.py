@@ -223,7 +223,11 @@ def _rvr_block(ir: dict[str, Any], *, rvr_extension: str = "") -> str:
     if not isinstance(rvr_raw, dict):
         # Guidance / Amd79 CWFD: when vis is missing/notObservable and no RVR group,
         # emit empty rvr with common/nil/missing (sensors absent / not reported).
-        if ir.get("visibility_not_observable"):
+        # Schematron METAR_SPECI.MeteorologicalAerodromeObservation-2 also requires
+        # exists(iwxxm:rvr) whenever prevailing visibility is below 1500 m.
+        vis_m = ir.get("visibility_m")
+        low_vis = isinstance(vis_m, (int, float)) and float(vis_m) < 1500
+        if ir.get("visibility_not_observable") or low_vis:
             return f'      <iwxxm:rvr xsi:nil="true" nilReason="{NIL_MISSING}"/>\n'
         return ""
     rvr = cast(dict[str, Any], rvr_raw)
