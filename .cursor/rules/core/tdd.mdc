@@ -19,7 +19,7 @@ When implementing any feature or component:
 3. **Test location**: Place tests in the project's `tests/` directory. Mirror the source
    directory structure:
    - `src/pipeline/preprocess.py` → `tests/pipeline/test_preprocess.py`
-   - Tracked bugs (14-hotfix / 15-modal-health): `tests/bugs/test_bug_YYYY_MM_DD_[slug].py`
+   - Tracked bugs (14-hotfix / 15-modal-health): `tests/bugs/<theme>/test_bug_YYYY_MM_DD_<slug>.py`
      with report `docs/bug-reports/BUG-YYYY-MM-DD-[slug].md` — see `bug-investigation.mdc`
 
 4. **Test naming**: Use descriptive names stating the expected behavior:
