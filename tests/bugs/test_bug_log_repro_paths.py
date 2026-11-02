@@ -86,7 +86,9 @@ def test_bug_log_each_report_has_a_repro_file() -> None:
             if (_ROOT / _RETIRED_PAGE).exists():
                 missing.append(f"{report.stem} returned {_RETIRED_PAGE}")
             continue
-        relative = _OVERRIDES.get(report.stem, _default_bugs_repro_relative(report.stem))
+        relative = _OVERRIDES.get(
+            report.stem, _default_bugs_repro_relative(report.stem)
+        )
         if not (_ROOT / relative).is_file():
             missing.append(f"{report.stem} -> {relative}")
     assert missing == []
