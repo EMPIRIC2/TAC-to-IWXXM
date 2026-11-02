@@ -444,13 +444,13 @@ describe('LiveWorldMap', () => {
       'not validated for operational use',
     );
     expect(screen.getByTestId('live-map-product')).toHaveTextContent('METAR');
-    expect(screen.getByTestId('live-map-issued')).toHaveTextContent('newest');
-    expect(screen.getByTestId('live-map-station')).toHaveTextContent('Kennedy');
+    expect(screen.getByTestId('live-map-issue-time')).toHaveDisplayValue('newest');
+    expect(screen.getByTestId('live-map-station')).toHaveTextContent('KJFK');
     expect(screen.getByTestId('live-map-card')).toHaveAttribute('data-layout', 'side');
-    expect(screen.getByTestId('live-map-detail')).toHaveTextContent('Kennedy');
+    expect(screen.getByTestId('live-map-detail')).toHaveTextContent('KJFK');
     expect(screen.queryByTestId('live-map-decode')).not.toBeInTheDocument();
     expect(screen.queryByTestId('live-map-xml')).not.toBeInTheDocument();
-    expect(screen.getByTestId('live-map-tac')).toHaveTextContent('18012KT');
+    expect(screen.queryByTestId('live-map-tac')).not.toBeInTheDocument();
     expect(onOpenPlace).not.toHaveBeenCalled();
     act(() => {
       clicks[0]?.();
@@ -462,8 +462,8 @@ describe('LiveWorldMap', () => {
     act(() => {
       clicks[1]?.();
     });
-    expect(screen.getByTestId('live-map-tac')).toHaveTextContent('SIGMET');
     expect(screen.getByTestId('live-map-station')).toHaveTextContent('Area');
+    expect(screen.getByTestId('live-map-issued')).toHaveTextContent('hazard');
     expect(onOpenPlace).toHaveBeenCalledTimes(1);
     act(() => {
       clicks[1]?.();
@@ -522,16 +522,59 @@ describe('LiveWorldMap', () => {
     act(() => {
       clicks[1]?.();
     });
-    expect(screen.getByTestId('live-map-tac')).toHaveTextContent('SIGMET');
+    expect(screen.getByTestId('live-map-product')).toHaveTextContent('SIGMET');
+    expect(screen.getByTestId('live-map-tac-toggle')).toBeInTheDocument();
     expect(map.flyToBounds).not.toHaveBeenCalled();
     expect(map.panBy).not.toHaveBeenCalled();
   });
 
-  it('shows the station and the TAC without a decode pane', () => {
+  it('shows the station and the TAC without a decode pane', async () => {
+    const user = userEvent.setup();
     render(<StationPopup place={place} />);
-    expect(screen.getByTestId('live-map-station')).toHaveTextContent('Kennedy');
+    expect(screen.getByTestId('live-map-station')).toHaveTextContent('KJFK');
+    expect(screen.getByTestId('live-map-product')).toHaveTextContent('METAR');
+    expect(screen.queryByTestId('live-map-tac')).not.toBeInTheDocument();
+    await user.click(screen.getByTestId('live-map-tac-toggle'));
     expect(screen.getByTestId('live-map-tac')).toHaveTextContent('18012KT');
     expect(screen.queryByTestId('live-map-decode')).not.toBeInTheDocument();
+  });
+
+  it('compacts the station card: issue-time select, collapsed TAC, send to converter (UX-2026-11-02)', async () => {
+    const user = userEvent.setup();
+    const onLoad = vi.fn();
+    const tafPlace: LivePlace = {
+      place_key: 'EFKS',
+      product: 'taf',
+      latitude: 64.3,
+      longitude: 27.0,
+      geometry: { kind: 'point' },
+      reports: [
+        {
+          observed_at: '2026-11-02T11:35:00Z',
+          tac: 'TAF EFKS 021135Z 0212/0218 24006KT 9999',
+        },
+        {
+          observed_at: '2026-11-02T05:00:00Z',
+          tac: 'TAF EFKS 020500Z 0206/0212 18004KT CAVOK',
+        },
+      ],
+    };
+    render(<StationPopup place={tafPlace} onLoad={onLoad} />);
+    expect(screen.getByTestId('live-map-product')).toHaveTextContent('TAF');
+    expect(screen.getByTestId('live-map-station')).toHaveTextContent('EFKS');
+    expect(screen.queryByTestId('live-map-newer')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('live-map-earlier')).not.toBeInTheDocument();
+    const issueSelect = screen.getByTestId('live-map-issue-time');
+    expect(issueSelect.tagName).toBe('SELECT');
+    expect(screen.queryByTestId('live-map-tac')).not.toBeInTheDocument();
+    expect(screen.getByTestId('live-map-send-to-converter')).toHaveTextContent(
+      'Send to converter',
+    );
+    await user.selectOptions(issueSelect, '1');
+    await user.click(screen.getByTestId('live-map-tac-toggle'));
+    expect(screen.getByTestId('live-map-tac')).toHaveTextContent('020500Z');
+    await user.click(screen.getByTestId('live-map-send-to-converter'));
+    expect(onLoad).toHaveBeenCalledWith('TAF EFKS 020500Z 0206/0212 18004KT CAVOK');
   });
 
   it('renders nothing when a station has no reports', () => {
@@ -560,7 +603,7 @@ describe('LiveWorldMap', () => {
     const onOpenPlace = vi.fn();
     const view = render(<LiveWorldMap focusStation="KJFK" onOpenPlace={onOpenPlace} />);
     await waitFor(() => expect(map.flyTo).toHaveBeenCalledWith([40.6, -73.7], 8));
-    expect(screen.getByTestId('live-map-detail')).toHaveTextContent('Kennedy');
+    expect(screen.getByTestId('live-map-detail')).toHaveTextContent('KJFK');
     expect(onOpenPlace).not.toHaveBeenCalled();
     map.flyTo.mockClear();
     view.rerender(<LiveWorldMap focusStation="NONE" />);
@@ -588,17 +631,16 @@ describe('LiveWorldMap', () => {
     });
     expect(screen.getByTestId('live-map-card')).toHaveAttribute('data-layout', 'stack');
     expect(screen.getByTestId('live-map-product')).toHaveTextContent('METAR');
-    expect(screen.getByTestId('live-map-issued')).toHaveTextContent('newest');
+    expect(screen.getByTestId('live-map-issue-time')).toHaveDisplayValue('newest');
     expect(onOpenPlace).not.toHaveBeenCalled();
-    await user.click(screen.getByTestId('live-map-newer'));
-    await user.click(screen.getByTestId('live-map-earlier'));
-    await user.click(screen.getByTestId('live-map-earlier'));
+    await user.selectOptions(screen.getByTestId('live-map-issue-time'), '1');
+    await user.click(screen.getByTestId('live-map-tac-toggle'));
     expect(screen.getByTestId('live-map-tac')).toHaveTextContent('VRB03KT');
     expect(onOpenPlace).not.toHaveBeenCalled();
-    await user.click(screen.getByTestId('live-map-newer'));
+    await user.selectOptions(screen.getByTestId('live-map-issue-time'), '0');
     expect(screen.getByTestId('live-map-tac')).toHaveTextContent('18012KT');
-    await user.click(screen.getByTestId('live-map-earlier'));
-    await user.click(screen.getByTestId('live-map-card'));
+    await user.selectOptions(screen.getByTestId('live-map-issue-time'), '1');
+    await user.click(screen.getByTestId('live-map-send-to-converter'));
     expect(onOpenPlace).toHaveBeenCalledWith(
       expect.objectContaining({
         reports: [
