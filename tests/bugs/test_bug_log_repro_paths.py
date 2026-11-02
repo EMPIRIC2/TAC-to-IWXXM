@@ -52,6 +52,9 @@ _OVERRIDES = {
         "apps/frontend/src/hooks/useWorkSessionSync.test.ts"
     ),
     "BUG-2026-09-08-invalid-convert-error-log-missing": "apps/frontend/src/utils/api.test.ts",
+    "BUG-2026-11-02-ca-rvr-slash-before-trend": (
+        "tests/bugs/live_tac_eval/test_ca_rvr_slash_before_trend.py"
+    ),
 }
 
 # The profile editor page that dropped cached lists was removed.
