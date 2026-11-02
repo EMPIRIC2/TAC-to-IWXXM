@@ -60,8 +60,10 @@
     </gml:TimePeriod>
   </iwxxm:validPeriod>
   <iwxxm:phenomenon nilReason="http://codes.wmo.int/common/nil/template"/>
-  <iwxxm:analysis>
-    <iwxxm:SIGMETEvolvingConditionCollection gml:id="evolving.mkcc" timeIndicator="FORECAST">
+  <iwxxm:analysisCollection>
+    <iwxxm:analysisAndForecastPositionAnalysis gml:id="analysis.mkcc">
+      <iwxxm:analysis>
+        <iwxxm:SIGMETEvolvingConditionCollection gml:id="evolving.mkcc" timeIndicator="FORECAST">
       <iwxxm:phenomenonTime>
         <gml:TimePeriod gml:id="t.active.mkcc">
           <gml:beginPosition>2012-08-09T08:55:00Z</gml:beginPosition>
@@ -103,5 +105,7 @@
             </iwxxm:SIGMETEvolvingCondition>
       </iwxxm:member>
     </iwxxm:SIGMETEvolvingConditionCollection>
-  </iwxxm:analysis>
+      </iwxxm:analysis>
+    </iwxxm:analysisAndForecastPositionAnalysis>
+  </iwxxm:analysisCollection>
 </iwxxm:SIGMET>
