@@ -16,6 +16,7 @@ committed). CI runs this tree via `pytest tests/bugs`.
 | `test_downloads_two_week_failure_modes.py` | `MISSING_VISIBILITY` keep-as-error |
 | `test_downloads_two_week_success_modes.py` | VCSH/VCTS/TS, MKJP `////`, clean reports |
 | `test_ca_rvr_slash_before_trend.py` | Product-rule: CA `…FT/N` RVR trend slash |
+| `test_ws_runway_not_invalid_rvr.py` | Product-rule: `WS R14R` wind-shear runway ≠ RVR |
 | `test_unknown_wmo_membership_live.py` | Keep-as-error: concatenated wx / MOD TURB on SIGMET |
 | `test_keep_as_error_live_residuals.py` | Anti-soften: `MISSING_*`, `INVALID_PROB` |
 
