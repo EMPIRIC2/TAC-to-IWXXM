@@ -3195,6 +3195,12 @@
 - Storing destination secrets on `tac_work_sessions` or in logs (Q19=A / Q11).
 - Arbitrary SQL admin console / free-form DDL beyond the versioned writer-contract path.
 
+## Non-Goals (EV-drop-monitoring — repo observability configs)
+
+- Shipping or maintaining a repo-local Grafana / Prometheus / Loki stack under
+  `monitoring/` (removed; platform logs + optional Sentry stay — ADR-006 / EV-052).
+  Reintroduction needs a later evolve. [Corpus: deploy] [Corpus: adr/ADR-006]
+
 ## Non-Goals (S023 / EV-017 — public app + privacy)
 
 - Formal legal advice / DPIA (engineering supports counsel review).
