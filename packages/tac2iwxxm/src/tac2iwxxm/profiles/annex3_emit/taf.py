@@ -319,29 +319,37 @@ def _taf_change_forecasts(ir: dict[str, Any], station: str) -> str:
     return "".join(parts)
 
 
-def _prevailing_visibility_xml(uom: str, value: object, *, above: bool) -> str:
-    """Build prevailingVisibility (+ optional ABOVE operator) XML lines."""
-    vis = f'      <iwxxm:prevailingVisibility uom="{uom}">{value}</iwxxm:prevailingVisibility>\n'
-    if above:
-        vis += "      <iwxxm:prevailingVisibilityOperator>ABOVE</iwxxm:prevailingVisibilityOperator>\n"
-    return vis
-
-
 def _taf_visibility_block(fcst: dict[str, Any]) -> str:
-    """Emit prevailingVisibility; SM→metres when IR lacks metres (TAF-8 / TC-F6-053)."""
+    """
+    Emit prevailingVisibility XML; SM→metres when metres absent (TAF-8).
+
+    Parameters
+    ----------
+    fcst : dict[str, Any]
+        Forecast IR fields including optional visibility_* keys.
+
+    Returns
+    -------
+    str
+        XML fragment, or empty when no visibility should be emitted.
+    """
     display_uom = fcst.get("visibility_display_uom")
     if isinstance(display_uom, str):
-        return _prevailing_visibility_xml(
-            display_uom, fcst["visibility_display_value"], above=bool(fcst.get("visibility_above"))
-        )
+        vis = f'      <iwxxm:prevailingVisibility uom="{display_uom}">{fcst["visibility_display_value"]}</iwxxm:prevailingVisibility>\n'
+        if fcst.get("visibility_above"):
+            vis += "      <iwxxm:prevailingVisibilityOperator>ABOVE</iwxxm:prevailingVisibilityOperator>\n"
+        return vis
     if fcst.get("visibility_m") is not None:
-        return _prevailing_visibility_xml("m", fcst["visibility_m"], above=bool(fcst.get("visibility_above")))
-    vis_sm = fcst.get("visibility_sm")
-    if vis_sm is not None:
+        vis = f'      <iwxxm:prevailingVisibility uom="m">{fcst["visibility_m"]}</iwxxm:prevailingVisibility>\n'
+        if fcst.get("visibility_above"):
+            vis += "      <iwxxm:prevailingVisibilityOperator>ABOVE</iwxxm:prevailingVisibilityOperator>\n"
+        return vis
+    if (vis_sm := fcst.get("visibility_sm")) is not None:
         metres, above_sm = prevailing_from_statute_miles(float(vis_sm))
-        return _prevailing_visibility_xml(
-            "m", metres, above=bool(fcst.get("visibility_above")) or above_sm
-        )
+        vis = f'      <iwxxm:prevailingVisibility uom="m">{metres}</iwxxm:prevailingVisibility>\n'
+        if bool(fcst.get("visibility_above")) or above_sm:
+            vis += "      <iwxxm:prevailingVisibilityOperator>ABOVE</iwxxm:prevailingVisibilityOperator>\n"
+        return vis
     return ""
 
 
