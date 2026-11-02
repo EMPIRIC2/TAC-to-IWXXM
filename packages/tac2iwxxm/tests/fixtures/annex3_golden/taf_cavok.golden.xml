@@ -41,6 +41,12 @@
   <iwxxm:baseForecast>
     <iwxxm:MeteorologicalAerodromeForecast gml:id="fcst.base.yudo" cloudAndVisibilityOK="true">
       <iwxxm:phenomenonTime xlink:href="#t.valid"/>
+      <iwxxm:surfaceWind>
+        <iwxxm:AerodromeSurfaceWindForecast variableWindDirection="false">
+          <iwxxm:meanWindDirection uom="deg">130</iwxxm:meanWindDirection>
+          <iwxxm:meanWindSpeed uom="m/s">5.0</iwxxm:meanWindSpeed>
+        </iwxxm:AerodromeSurfaceWindForecast>
+      </iwxxm:surfaceWind>
     </iwxxm:MeteorologicalAerodromeForecast>
   </iwxxm:baseForecast>
 </iwxxm:TAF>
