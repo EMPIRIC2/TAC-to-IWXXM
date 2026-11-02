@@ -448,15 +448,21 @@ Operator reference: [env-sync-runbook.md](ops/env-sync-runbook.md), ADR-011, ADR
 ### Supabase CI sync
 
 `.github/workflows/supabase-sync.yml` applies schema changes and deploys legacy edge
-functions to project `ktvxijislbtgqapllmuk` on every push to `main` or `stage` (and via
-manual dispatch). Pull requests against `main`/`stage` run a read-only migration dry-run
-and list local edge functions; they never write to the project.
+functions on every push to `main` or `stage` (and via manual dispatch). Pull requests
+against `main`/`stage` run a read-only migration dry-run and list local edge functions;
+they never write to the project.
+
+| Git base | Supabase target | Default project ref |
+|----------|-----------------|---------------------|
+| `main` (push / PR→main) | Primary project `metar-to-iwxxm` | `ktvxijislbtgqapllmuk` |
+| `stage` (push / PR→stage) | Preview branch **staging-env** (persistent, `git_branch=stage`) | `zvfhtcxjopwuesrozpvu` |
 
 | Job | What | Source path |
 |-----|------|-------------|
+| `resolve-target` | Pick primary vs staging-env ref from branch | vars below |
 | `migrations` | `supabase db push --linked` | `supabase/migrations/` |
 | `functions` | `supabase functions deploy --use-api` | `apps/frontend/supabase/functions/` |
-| `advisors` | Management API advisors (`security`, `performance`, `health` when available); fail on ERROR. **Stage-only:** push to `stage`, PRs targeting `stage`, or `workflow_dispatch` (not `main`) | `scripts/security/run-supabase-advisors.sh` |
+| `advisors` | Management API advisors; fail on ERROR. **Stage-only** (targets staging-env) | `scripts/security/run-supabase-advisors.sh` |
 
 **Edge deploy note:** CI uses `--use-api` so the runner does **not** pull
 `public.ecr.aws/supabase/edge-runtime` via Docker. Anonymous ECR quota exhaustion
@@ -469,24 +475,26 @@ The deploy step retries up to three times on transient API errors.
 | Kind | Name | Purpose |
 |------|------|---------|
 | Secret | `SUPABASE_ACCESS_TOKEN` | `sbp_…` CI token for Supabase CLI + advisors Management API |
-| Secret | `SUPABASE_DB_PASSWORD` | Database password for `link` + `db push` |
+| Secret | `SUPABASE_DB_PASSWORD` | Primary project DB password (`link` + `db push` on `main`) |
+| Secret | `SUPABASE_DB_PASSWORD_STAGING` | staging-env preview DB password (`link` + `db push` on `stage`) |
 | Variable | `SUPABASE_PROJECT_REF` | Optional; defaults to `ktvxijislbtgqapllmuk` |
+| Variable | `SUPABASE_PROJECT_REF_STAGING` | Optional; defaults to `zvfhtcxjopwuesrozpvu` |
 
 **Advisors job:** Read-only on **stage** pushes, PRs targeting **stage**, and
-`workflow_dispatch` (skipped on `main` so promote tips are not blocked by advisor lag).
+`workflow_dispatch` (skipped on `main`). Runs against the **staging-env** project ref.
 Calls `GET /v1/projects/{ref}/advisors/{security,performance,health}` (health skipped if
 404). Fails the workflow on lint `level=ERROR` ([Corpus: tech-spec] / CONSUMER-GATES). An
 invalid or expired `SUPABASE_ACCESS_TOKEN` fails migrations **and** advisors — rotate via
 Supabase Dashboard → Account → Access Tokens, then update the GitHub Actions secret (and
-local `.env` if used). Local check: `bash scripts/security/run-supabase-advisors.sh`.
+local `.env` if used). Local check:
+`SUPABASE_PROJECT_REF=zvfhtcxjopwuesrozpvu bash scripts/security/run-supabase-advisors.sh`.
 
 **Advisor remediations (migrations):** `20261102000013` enables RLS on ConversionProfile
-tables; `20261102000014` revokes anon GraphQL grants and trims SECURITY DEFINER EXECUTE /
-service-only authenticated grants. Remaining WARNs are intentional: username-login
-`lookup_email_by_username` (anon+authenticated EXECUTE), `is_admin` (authenticated RLS
-helper), and authenticated SELECT on owner-scoped product tables with RLS. Performance
-findings are INFO-only (`unused_index`, Auth connection pool) — do not drop indexes solely
-from INFO unused-index noise.
+tables; `20261102000014` existence-guarded revoke of anon GraphQL grants + SECURITY DEFINER
+EXECUTE trim; `20261102000015` enables RLS on legacy `metar_results` /
+`storage_files` / `validation_results` for preview parity. Remaining WARNs are intentional
+where noted in the migration headers. Performance findings are INFO-only — do not drop
+indexes solely from INFO unused-index noise.
 
 The `functions` job copies root `supabase/config.toml` into `apps/frontend/supabase/` at
 CI time (that tree has functions but no config). Auth routes run on metar-api; edge

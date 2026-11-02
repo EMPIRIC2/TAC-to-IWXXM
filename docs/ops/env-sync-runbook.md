@@ -1,8 +1,9 @@
 # Environment Sync Runbook — Supabase → Local → Render → GitHub
 
 > **Session**: S003-supabase-keys-config  
-> **Supabase project**: `ktvxijislbtgqapllmuk` (`https://ktvxijislbtgqapllmuk.supabase.co`)  
-> **Last updated**: 2026-08-07 (Auth redirects → `app.tac-to-iwxxm.com`; BUG-2026-08-07)
+> **Supabase primary**: `ktvxijislbtgqapllmuk` (`https://ktvxijislbtgqapllmuk.supabase.co`)  
+> **Supabase staging-env** (preview, `git_branch=stage`, persistent): `zvfhtcxjopwuesrozpvu`  
+> **Last updated**: 2026-11-02 (dual primary / staging-env CI binding)
 
 Operator checklist for keeping secrets and config aligned across environments.
 
@@ -99,8 +100,10 @@ Set secrets and variables for CI (including `.github/workflows/supabase-sync.yml
 | `SUPABASE_SECRET_KEY` | Secret | Admin/integration fixtures (if needed) |
 | `DATABASE_URL` | Secret | Integration DB tests |
 | `SUPABASE_ACCESS_TOKEN` | Secret | Supabase CLI auth (`sbp_…` access token) |
-| `SUPABASE_DB_PASSWORD` | Secret | `supabase link` + `db push` in supabase-sync workflow |
+| `SUPABASE_DB_PASSWORD` | Secret | Primary DB password — `main` Sync |
+| `SUPABASE_DB_PASSWORD_STAGING` | Secret | staging-env preview DB password — `stage` Sync |
 | `SUPABASE_PROJECT_REF` | Variable | Optional; defaults to `ktvxijislbtgqapllmuk` |
+| `SUPABASE_PROJECT_REF_STAGING` | Variable | Optional; defaults to `zvfhtcxjopwuesrozpvu` |
 
 **Supabase access token:** Dashboard → Account → Access Tokens → create token with deploy
 (and advisors read) scope. Store as `SUPABASE_ACCESS_TOKEN` in GitHub Actions secrets and
@@ -116,10 +119,12 @@ job `advisors`).
 
 - **Pull requests to `main` / `stage`:** migration dry-run only (`db push --dry-run`); no
   remote writes
-- **Push to `main` / `stage` / manual dispatch:** applies `supabase/migrations/` and deploys
-  edge functions under `apps/frontend/supabase/functions/`
-- **Advisors job (fail on ERROR):** stage pushes, PRs targeting `stage`, and
-  `workflow_dispatch` only — not `main` ([Corpus: deploy])
+- **Push to `main`:** applies migrations + edge functions to **primary**
+  (`ktvxijislbtgqapllmuk`)
+- **Push to `stage`:** applies migrations + edge functions to **staging-env**
+  (`zvfhtcxjopwuesrozpvu`)
+- **Advisors job (fail on ERROR):** stage pushes / PRs targeting `stage` /
+  `workflow_dispatch` — against staging-env ([Corpus: deploy])
 
 Deprecate: `FRONTEND_VITE_SUPABASE_URL`, `FRONTEND_VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY`.
 
