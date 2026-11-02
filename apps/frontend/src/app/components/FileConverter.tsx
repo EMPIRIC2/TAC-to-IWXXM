@@ -2643,7 +2643,7 @@ export function FileConverter({
               type="button"
               variant="outline"
               size="sm"
-              className="dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600 focus:ring-2 focus:ring-gray-500"
+              className="bg-transparent dark:bg-transparent dark:text-white focus-visible:ring-primary/40"
               aria-label="Open convert help checklist"
               data-testid="convert-help-open"
               onClick={() => setHelpChecklistOpen(true)}
@@ -2655,7 +2655,7 @@ export function FileConverter({
               onClick={() => setIsPreferencesDialogOpen(true)}
               variant="outline"
               size="sm"
-              className="dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600 focus:ring-2 focus:ring-gray-500"
+              className="bg-transparent dark:bg-transparent dark:text-white focus-visible:ring-primary/40"
               aria-label="Open user preferences"
             >
               <Settings className="mr-0 h-4 w-4 sm:mr-2" aria-hidden="true" />

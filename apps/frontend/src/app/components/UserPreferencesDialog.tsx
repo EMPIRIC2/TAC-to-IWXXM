@@ -219,7 +219,8 @@ export function UserPreferencesDialog({
       aria-labelledby="preferences-dialog-title"
     >
       <Card
-        className="bg-white dark:bg-gray-800 dark:border-gray-700 p-6 max-w-lg w-full max-h-[90vh] overflow-y-auto"
+        data-testid="preferences-dialog-panel"
+        className="bg-white dark:bg-gray-800 dark:border-blue-400/50 p-6 max-w-lg w-full max-h-[90vh] overflow-y-auto shadow-none"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between mb-6">
@@ -240,7 +241,7 @@ export function UserPreferencesDialog({
             size="sm"
             onClick={handleReset}
             disabled={prefsControlsDisabled(isLoading, isSaving)}
-            className="dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600"
+            className="bg-transparent dark:bg-transparent dark:text-white"
             aria-label="Reset preferences to defaults"
           >
             <RotateCcw className="w-4 h-4 mr-2" aria-hidden="true" />

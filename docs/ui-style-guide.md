@@ -30,6 +30,7 @@ sections when norms conflict—cite the UX log ids retired or merged.
 - Results → Downloads is file management only; conversion XML and result assessment details belong on Results → IWXXM.
 - Results drawer: title + Hide and the results tab strip stay pinned above the scrolling tab body (chrome outside the overflow scrollport).
 - Live map station cards: product + station in a compact header, observation-time select (not Newer/Earlier pills), TAC collapsed by default, explicit Send to converter via the existing map→workbench handoff.
+- Workbench Help / Preferences chrome and the User Preferences modal use dark outline controls (primary blue border, transparent fill); Preferences stays display-name + output-extension only (no validation knobs).
 
 ## Copy / tone
 
@@ -95,3 +96,4 @@ Record the test path and red/green dates on `docs/ui-ux-tweaks/UX-YYYY-MM-DD-*.m
 | 2026-11-02 | [UX-2026-11-02-cite-live-map-provider](ui-ux-tweaks/UX-2026-11-02-cite-live-map-provider.md) | Live map Results chrome shows Aviation Weather Center report credit in a muted visible line near newest-observation status; not screen-reader-only. |
 | 2026-11-02 | [UX-2026-11-02-sticky-results-header](ui-ux-tweaks/UX-2026-11-02-sticky-results-header.md) | Results drawer: title + Hide and the results tab strip stay pinned above the scrolling tab body (chrome outside the overflow scrollport). |
 | 2026-11-02 | [UX-2026-11-02-compact-map-result-card](ui-ux-tweaks/UX-2026-11-02-compact-map-result-card.md) | Live map station cards: product + station header, observation-time select (not Newer/Earlier pills), TAC collapsed by default, Send to converter via existing handoff. |
+| 2026-11-02 | [UX-2026-11-02-preferences-visual](ui-ux-tweaks/UX-2026-11-02-preferences-visual.md) | Workbench Help / Preferences chrome and User Preferences modal: dark outline (primary blue border, transparent fill); Preferences stays display-name + output-extension only. |
