@@ -56,11 +56,15 @@ _NCD = re.compile(r"\bNCD\b")
 _VV_NOT_OBS = re.compile(r"\bVV///(?![A-Z0-9/])")
 _WIND_SECTOR = re.compile(r"\b(?P<ccw>\d{3})V(?P<cw>\d{3})\b")
 # Variable RVR (US / FMH-1): R04L/1100V2300FT - try before simple RVR.
+# Also accept Canadian MANOBS ``FT/N`` (unit then slash tendency).
 _RVR_VAR = re.compile(
     r"\bR(?P<rwy>\d{2}[LCR]?)/(?P<min_op>[PM])?(?P<min>\d{4})V(?P<max_op>[PM])?(?P<max>\d{4})"
-    r"(?P<tend>[UDN])?(?P<ft>FT)?\b"
+    r"(?:(?P<tend>[UDN])(?P<ft>FT)?|(?P<ft_ca>FT)(?:/(?P<tend_ca>[UDN]))?)?\b"
 )
-_RVR = re.compile(r"\bR(?P<rwy>\d{2}[LCR]?)/(?P<op>[PM])?(?P<val>\d{4})(?P<tend>[UDN])?(?P<ft>FT)?\b")
+_RVR = re.compile(
+    r"\bR(?P<rwy>\d{2}[LCR]?)/(?P<op>[PM])?(?P<val>\d{4})"
+    r"(?:(?P<tend>[UDN])(?P<ft>FT)?|(?P<ft_ca>FT)(?:/(?P<tend_ca>[UDN]))?)?\b"
+)
 # Minimum visibility with compass sector (e.g. 1200NE) - after prevailing metres.
 _VIS_MIN = re.compile(r"\b(?P<vis>\d{4})(?P<dir>N|NE|E|SE|S|SW|W|NW)\b")
 _COMPASS_DEG = {
@@ -1737,7 +1741,9 @@ def parse_metar_speci(tac: str, *, product: str) -> dict[str, Any]:
     if rvr_var is not None:
         min_raw = int(rvr_var.group("min"))
         max_raw = int(rvr_var.group("max"))
-        if rvr_var.group("ft"):
+        ft = rvr_var.group("ft") or rvr_var.group("ft_ca")
+        tend = rvr_var.group("tend") or rvr_var.group("tend_ca") or ""
+        if ft:
             min_m = round(min_raw * 0.3048)
             max_m = round(max_raw * 0.3048)
         else:
@@ -1750,19 +1756,21 @@ def parse_metar_speci(tac: str, *, product: str) -> dict[str, Any]:
             "max_m": max_m,
             "below_sensor_minimum": rvr_var.group("min_op") == "M",
             "above_sensor_maximum": rvr_var.group("max_op") == "P",
-            "tendency": {"U": "UPWARD", "D": "DOWNWARD", "N": "NO_CHANGE"}.get(rvr_var.group("tend") or ""),
+            "tendency": {"U": "UPWARD", "D": "DOWNWARD", "N": "NO_CHANGE"}.get(tend),
         }
     else:
         rvr = _RVR.search(obs_body)
         if rvr is not None:
             val = int(rvr.group("val"))
-            # US FT → metres; ICAO metre groups stay as-is.
-            metres = round(val * 0.3048) if rvr.group("ft") else val
+            ft = rvr.group("ft") or rvr.group("ft_ca")
+            tend = rvr.group("tend") or rvr.group("tend_ca") or ""
+            # US / CA FT → metres; ICAO metre groups stay as-is.
+            metres = round(val * 0.3048) if ft else val
             ir["rvr"] = {
                 "runway": rvr.group("rwy"),
                 "mean_m": metres,
                 "operator": {"P": "ABOVE", "M": "BELOW"}.get(rvr.group("op") or ""),
-                "tendency": {"U": "UPWARD", "D": "DOWNWARD", "N": "NO_CHANGE"}.get(rvr.group("tend") or ""),
+                "tendency": {"U": "UPWARD", "D": "DOWNWARD", "N": "NO_CHANGE"}.get(tend),
             }
 
     present: list[str] = []

@@ -30,7 +30,7 @@ async def test_create_evaluation_job_random_mode_adds_background_task(monkeypatc
             return ["KJFK", "KLAX"]
 
     async def fake_create_job_in_db(user_id, mode, total_stations):
-        assert user_id == "anonymous"
+        assert user_id == eval_router._ANONYMOUS_EVAL_USER_ID
         assert mode == "random"
         assert total_stations == 3
         return "job-123"
@@ -51,7 +51,7 @@ async def test_create_evaluation_job_single_mode_happy_path(monkeypatch):
     request = EvaluationRequest(mode=EvaluationMode.SINGLE, station_ids=["KJFK", "KLAX"])
 
     async def fake_create_job_in_db(user_id, mode, total_stations):
-        assert user_id == "anonymous"
+        assert user_id == eval_router._ANONYMOUS_EVAL_USER_ID
         assert mode == "single"
         assert total_stations == 2
         return "job-single"
@@ -74,7 +74,7 @@ async def test_create_evaluation_job_all_mode_uses_sampler(monkeypatch):
             return ["KJFK", "KLAX", "KSEA"]
 
     async def fake_create_job_in_db(user_id, mode, total_stations):
-        assert user_id == "anonymous"
+        assert user_id == eval_router._ANONYMOUS_EVAL_USER_ID
         assert mode == "all"
         assert total_stations == 3
         return "job-all"
@@ -103,8 +103,10 @@ async def test_create_evaluation_job_db_error_propagates(monkeypatch):
     monkeypatch.setattr(eval_router, "StationSampler", _Sampler)
     monkeypatch.setattr(eval_router, "create_job_in_db", fake_create_job_in_db)
 
-    with pytest.raises(RuntimeError):
+    with pytest.raises(HTTPException) as exc:
         await eval_router.create_evaluation_job(request, BackgroundTasks())
+    assert exc.value.status_code == 503
+    assert exc.value.detail == "Evaluation store unavailable"
 
 
 class _SupabaseClientStub:
@@ -229,6 +231,19 @@ async def test_get_job_results_not_found(monkeypatch):
         await eval_router.get_job_results("job-x")
 
     assert exc.value.status_code == 404
+
+
+@pytest.mark.asyncio
+async def test_list_user_jobs_store_unavailable_returns_503(monkeypatch):
+    async def fake_list_jobs_for_user(user_id, limit, offset):
+        raise RuntimeError("relation evaluation_jobs does not exist")
+
+    monkeypatch.setattr(eval_router, "list_jobs_for_user", fake_list_jobs_for_user)
+
+    with pytest.raises(HTTPException) as exc:
+        await eval_router.list_user_jobs(page=1, per_page=20)
+    assert exc.value.status_code == 503
+    assert exc.value.detail == "Evaluation store unavailable"
 
 
 @pytest.mark.asyncio
