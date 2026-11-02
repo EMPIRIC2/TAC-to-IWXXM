@@ -36,6 +36,7 @@ sections when norms conflict—cite the UX log ids retired or merged.
 - Prefer short, actionable empty-state and error text.
 - Conversion / validation log Notes: when a coded issue has no `hint`, show a scrubbed catalog reason/consequence line (acronym gloss when the template provides it); never leave title+Code-only for catalogued codes.
 - Live map / station minimap Leaflet corner credit must name OpenStreetMap contributors and the Open Database License (ODbL), with a link to the OSM copyright page, not a bare "© OpenStreetMap".
+- Live map Results chrome shows the report provider in a muted visible line near the newest-observation status (Aviation Weather Center via existing notice copy); do not leave that credit screen-reader-only.
 
 ## Accessibility
 
@@ -89,3 +90,4 @@ Record the test path and red/green dates on `docs/ui-ux-tweaks/UX-YYYY-MM-DD-*.m
 | 2026-10-30 | [UX-2026-10-30-map-data-attribution](ui-ux-tweaks/UX-2026-10-30-map-data-attribution.md) | Live map / station minimap Leaflet corner credit names OpenStreetMap contributors and ODbL (link OSM copyright page); not a bare "© OpenStreetMap". |
 | 2026-10-30 | [UX-2026-10-30-convert-button-center](ui-ux-tweaks/UX-2026-10-30-convert-button-center.md) | Convert primary action strip: full-width three equal columns (New TAC \| Convert \| Download latest); Convert stays in the middle column. Do not left-pack unequal min-widths. |
 | 2026-10-31 | [UX-2026-10-31-drop-console-chrome](ui-ux-tweaks/UX-2026-10-31-drop-console-chrome.md) | Operator log surfaces (conversion/validation log + Lint issue catalog) render inline — no collapsible "Console" shell/heading framing them. A **Clear log** affordance may remain as a small standalone control without a "Console" label. |
+| 2026-11-02 | [UX-2026-11-02-cite-live-map-provider](ui-ux-tweaks/UX-2026-11-02-cite-live-map-provider.md) | Live map Results chrome shows Aviation Weather Center report credit in a muted visible line near newest-observation status; not screen-reader-only. |
