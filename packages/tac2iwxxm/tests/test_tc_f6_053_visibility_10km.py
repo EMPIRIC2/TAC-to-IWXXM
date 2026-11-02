@@ -110,3 +110,21 @@ def test_taf_miles_below_ten_keep_the_existing_statute_mile_record() -> None:
     assert greater["visibility_sm"] == 6
     assert greater["visibility_above"] is True
     assert "visibility_m" not in greater
+
+
+def test_taf_sm_below_ten_still_emits_prevailing_visibility_metres() -> None:
+    """Annex-3 emit must derive metres from visibility_sm so TAF.TAF-8 can pass."""
+    metres, _ = prevailing_from_statute_miles(6)
+    expected = f'<iwxxm:prevailingVisibility uom="m">{metres}</iwxxm:prevailingVisibility>'
+
+    six = convert(_TAF_6SM, product="TAF")
+    assert six.ok is True
+    assert six.xml is not None
+    assert expected in six.xml
+    assert _ABOVE not in six.xml
+
+    greater = convert(_TAF_P6SM, product="TAF")
+    assert greater.ok is True
+    assert greater.xml is not None
+    assert expected in greater.xml
+    assert _ABOVE in greater.xml
