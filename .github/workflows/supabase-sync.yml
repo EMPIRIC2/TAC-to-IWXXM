@@ -1,26 +1,32 @@
 ---
 name: Supabase Sync
 
-# Sync the linked Supabase project (ktvxijislbtgqapllmuk):
-#   - Database migrations in supabase/ (primary — docs/deploy.md §Migrations)
-#   - Edge functions in apps/frontend/supabase/functions/ (legacy upload path;
-#     operator Auth package removed F21 / ADR-031 — retire when upload migrates)
+# Sync Supabase schema for the linked projects:
+#   - primary (prod Auth / legacy): ktvxijislbtgqapllmuk
+#   - staging preview branch staging-env: zvfhtcxjopwuesrozpvu (git_branch=stage)
+#   - Database migrations in supabase/
+#   - Edge functions in apps/frontend/supabase/functions/ (legacy upload path)
 #   - Advisors (security + performance + health when available) via Management API
 #
 # Migrations/functions: push to main/stage and manual dispatch. On pull requests
 # they run a read-only dry-run / diff only — they never write to the project.
 # Edge deploy uses --use-api (no local Docker/ECR pull of edge-runtime).
 # Advisors: read-only; run on stage pushes, PRs targeting stage, and manual
-# dispatch only (not main) so the ERROR gate does not spam every branch.
+# dispatch only (not main).
 #
-# Operator docs: docs/deploy.md §Supabase CI sync, docs/env-sync-runbook.md §Step 5
-# Pattern: https://supabase.com/docs/guides/functions/examples/github-actions
+# Branch → project binding:
+#   stage / PR→stage → SUPABASE_PROJECT_REF_STAGING (default zvfhtcxjopwuesrozpvu)
+#   main  / PR→main  → SUPABASE_PROJECT_REF (default ktvxijislbtgqapllmuk)
+#
+# Operator docs: docs/deploy.md §Supabase CI sync, docs/ops/env-sync-runbook.md §Step 5
 # Advisors API: https://supabase.com/docs/reference/api/v1-get-security-advisors
 #
 # Required configuration (Settings → Secrets and variables → Actions):
-#   secret  SUPABASE_ACCESS_TOKEN  sbp_... personal/CI access token
-#   secret  SUPABASE_DB_PASSWORD   database password for the linked project
-#   var     SUPABASE_PROJECT_REF   optional; defaults to ktvxijislbtgqapllmuk
+#   secret  SUPABASE_ACCESS_TOKEN           sbp_... access token
+#   secret  SUPABASE_DB_PASSWORD            primary project DB password
+#   secret  SUPABASE_DB_PASSWORD_STAGING    staging-env preview DB password
+#   var     SUPABASE_PROJECT_REF            optional; default ktvxijislbtgqapllmuk
+#   var     SUPABASE_PROJECT_REF_STAGING   optional; default zvfhtcxjopwuesrozpvu
 
 on:
   push:
@@ -36,18 +42,64 @@ concurrency:
   group: supabase-sync-${{ github.ref }}
   cancel-in-progress: false
 
-env:
-  SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
-  SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
-  SUPABASE_PROJECT_REF: ${{ vars.SUPABASE_PROJECT_REF || 'ktvxijislbtgqapllmuk' }}
-
 jobs:
   # ==========================================================================
-  # MIGRATIONS — supabase db push against the linked project (supabase/)
+  # Resolve target project (stage → staging-env preview; main → primary)
+  # ==========================================================================
+  resolve-target:
+    runs-on: ubuntu-latest
+    name: Resolve Supabase target
+    outputs:
+      project_ref: ${{ steps.pick.outputs.project_ref }}
+      target_label: ${{ steps.pick.outputs.target_label }}
+      use_staging_password: ${{ steps.pick.outputs.use_staging_password }}
+    steps:
+      - name: Pick project ref for branch
+        id: pick
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          BASE_REF: ${{ github.base_ref }}
+          REF_NAME: ${{ github.ref_name }}
+          GITHUB_REF: ${{ github.ref }}
+          PRIMARY_REF: ${{ vars.SUPABASE_PROJECT_REF || 'ktvxijislbtgqapllmuk' }}
+          STAGING_REF: ${{ vars.SUPABASE_PROJECT_REF_STAGING || 'zvfhtcxjopwuesrozpvu' }}
+        run: |
+          set -euo pipefail
+          if [ "${EVENT_NAME}" = "pull_request" ]; then
+            base="${BASE_REF}"
+          elif [ "${EVENT_NAME}" = "workflow_dispatch" ]; then
+            # Manual runs on stage tip target staging; otherwise primary.
+            if [ "${GITHUB_REF}" = "refs/heads/stage" ]; then
+              base="stage"
+            else
+              base="main"
+            fi
+          else
+            base="${REF_NAME}"
+          fi
+          if [ "${base}" = "stage" ]; then
+            echo "project_ref=${STAGING_REF}" >> "${GITHUB_OUTPUT}"
+            echo "target_label=staging-env" >> "${GITHUB_OUTPUT}"
+            echo "use_staging_password=true" >> "${GITHUB_OUTPUT}"
+            echo "Supabase target: staging-env ref=${STAGING_REF} (base=${base})"
+          else
+            echo "project_ref=${PRIMARY_REF}" >> "${GITHUB_OUTPUT}"
+            echo "target_label=primary" >> "${GITHUB_OUTPUT}"
+            echo "use_staging_password=false" >> "${GITHUB_OUTPUT}"
+            echo "Supabase target: primary ref=${PRIMARY_REF} (base=${base})"
+          fi
+
+  # ==========================================================================
+  # MIGRATIONS — supabase db push against the resolved project
   # ==========================================================================
   migrations:
+    needs: resolve-target
     runs-on: ubuntu-latest
     name: Sync database migrations
+    env:
+      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+      SUPABASE_PROJECT_REF: ${{ needs.resolve-target.outputs.project_ref }}
+      SUPABASE_DB_PASSWORD: ${{ needs.resolve-target.outputs.use_staging_password == 'true' && secrets.SUPABASE_DB_PASSWORD_STAGING || secrets.SUPABASE_DB_PASSWORD }}
     steps:
       - uses: actions/checkout@v5
         with:
@@ -73,11 +125,16 @@ jobs:
               echo "::error::Missing required secret SUPABASE_ACCESS_TOKEN (sbp_...)"
             fi
             if [ -z "${SUPABASE_DB_PASSWORD}" ]; then
-              echo "::error::Missing required secret SUPABASE_DB_PASSWORD"
+              if [ "${{ needs.resolve-target.outputs.use_staging_password }}" = "true" ]; then
+                echo "::error::Missing required secret SUPABASE_DB_PASSWORD_STAGING (staging-env preview DB password)"
+              else
+                echo "::error::Missing required secret SUPABASE_DB_PASSWORD"
+              fi
             fi
             exit 1
           fi
           echo "skip=false" >> "${GITHUB_OUTPUT}"
+          echo "Target=${{ needs.resolve-target.outputs.target_label }} ref=${SUPABASE_PROJECT_REF}"
 
       # Pin 2.111.0 — CLI 2.112.0 breaks `link` on api-keys inserted_at (+00:00 vs Z).
       # Upstream: https://github.com/supabase/cli/issues/6115 (BUG-2026-08-07).
@@ -97,20 +154,23 @@ jobs:
           supabase migration list --linked
           supabase db push --linked --dry-run
 
-      - name: Apply migrations (main / manual)
+      - name: Apply migrations (push / manual)
         if: steps.guard.outputs.skip != 'true' && github.event_name != 'pull_request'
         run: supabase db push --linked
 
   # ==========================================================================
   # FUNCTIONS — legacy upload edge functions (apps/frontend/supabase/functions/)
-  # Operator Auth package removed (F21 / ADR-031). Keep until database upload migrates.
   # ==========================================================================
   functions:
+    needs: resolve-target
     runs-on: ubuntu-latest
     name: Deploy edge functions
     defaults:
       run:
         working-directory: apps/frontend
+    env:
+      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+      SUPABASE_PROJECT_REF: ${{ needs.resolve-target.outputs.project_ref }}
     steps:
       - uses: actions/checkout@v5
         with:
@@ -130,7 +190,6 @@ jobs:
           fi
           echo "skip=false" >> "${GITHUB_OUTPUT}"
 
-      # Same pin as migrations job (BUG-2026-08-07 / supabase/cli#6115).
       - name: Install Supabase CLI
         if: steps.guard.outputs.skip != 'true'
         uses: supabase/setup-cli@v1
@@ -139,8 +198,6 @@ jobs:
 
       - name: Provision project root for functions
         if: steps.guard.outputs.skip != 'true'
-        # apps/frontend/supabase has functions/ but no config.toml; the CLI
-        # needs a project root. Copy the canonical root config (CI-only).
         run: |
           if [ ! -f supabase/config.toml ]; then
             cp ../../supabase/config.toml supabase/config.toml
@@ -149,12 +206,9 @@ jobs:
       - name: List functions (pull request dry-run)
         if: steps.guard.outputs.skip != 'true' && github.event_name == 'pull_request'
         run: |
-          echo "Edge functions that would be deployed:"
+          echo "Edge functions that would be deployed to ${SUPABASE_PROJECT_REF}:"
           ls -1 supabase/functions
 
-      # --use-api: bundle server-side so CI never pulls public.ecr.aws/supabase/edge-runtime
-      # (anonymous ECR "toomanyrequests: Data limit exceeded" / docker bundle exit 135).
-      # Retry transient API failures without reintroducing Docker.
       - name: Deploy edge functions (main / stage / manual)
         if: steps.guard.outputs.skip != 'true' && github.event_name != 'pull_request'
         run: |
@@ -176,18 +230,19 @@ jobs:
           done
 
   # ==========================================================================
-  # ADVISORS — Management API security + performance (+ health if exposed)
-  # Fail on ERROR (docs/policies/CONSUMER-GATES.md). Read-only.
-  # Stage-only: push to stage, PR targeting stage, or workflow_dispatch.
-  # Does not need SUPABASE_DB_PASSWORD. Invalid/expired ACCESS_TOKEN fails the job.
+  # ADVISORS — stage-only ERROR gate against the staging-env preview project
   # ==========================================================================
   advisors:
     if: >
       github.event_name == 'workflow_dispatch' ||
       (github.event_name == 'push' && github.ref == 'refs/heads/stage') ||
       (github.event_name == 'pull_request' && github.base_ref == 'stage')
+    needs: resolve-target
     runs-on: ubuntu-latest
     name: Supabase advisors
+    env:
+      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+      SUPABASE_PROJECT_REF: ${{ needs.resolve-target.outputs.project_ref }}
     steps:
       - uses: actions/checkout@v5
         with:
@@ -206,6 +261,7 @@ jobs:
             exit 1
           fi
           echo "skip=false" >> "${GITHUB_OUTPUT}"
+          echo "Advisors target=${{ needs.resolve-target.outputs.target_label }} ref=${SUPABASE_PROJECT_REF}"
 
       - uses: actions/setup-python@v5
         if: steps.guard.outputs.skip != 'true'
@@ -215,6 +271,5 @@ jobs:
       - name: Run all available advisors
         if: steps.guard.outputs.skip != 'true'
         env:
-          # ERROR matches CONSUMER-GATES; override with SEC_SUPABASE_ADVISORS_FAIL_ON if needed.
           SEC_SUPABASE_ADVISORS_FAIL_ON: error
         run: bash scripts/security/run-supabase-advisors.sh
