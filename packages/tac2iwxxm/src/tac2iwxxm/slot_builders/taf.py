@@ -241,10 +241,12 @@ def _parse_forecast_body(text: str, *, cavok_ok: bool = True) -> dict[str, Any]:
         Return value.
     """
     out: dict[str, Any] = {}
+    # Parse wind before CAVOK short-circuit — TAF.TAF-7 still requires surfaceWind
+    # on non-empty baseForecast even when cloudAndVisibilityOK is true.
+    _parse_wind(text, out)
     if cavok_ok and _CAVOK.search(text):
         out["cavok"] = True
         return out
-    _parse_wind(text, out)
     vis_sm = _VIS_SM.search(text)
     if vis_sm is not None:
         sm = parse_statute_mile_fraction(vis_sm.group("vis"))

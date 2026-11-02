@@ -24,6 +24,25 @@ See docs/deploy.md §Promote / §Release checklist. ADR-034.
 
 <!-- What is shipping to prod and why -->
 
+## Evaluation metrics (required — broken down, not a single %)
+
+Paste live-tac-eval (or equivalent) figures for the tip being promoted. Do **not**
+collapse to one opaque pass rate. Prefer linking a session report under
+`~/.cursor/workflow/.../sessions/<id>/reports/` (or a committed summary path).
+
+- [ ] **Lint** — pass/fail counts × severity (error / warn / info); top codes
+- [ ] **Convert** — pass/fail counts (and convert-fail share if non-zero)
+- [ ] **IWXXM validate** — pass/fail counts (XSD vs Schematron if split)
+- [ ] **By product** — METAR / SPECI / TAF / SIGMET(+VA/TC) / other as applicable
+- [ ] **By region / profile** (when the eval scoped regions) — top residual pockets
+- [ ] **Top Schematron / issue codes** — ranked list with counts (e.g. TAF-7, SIGMET-4)
+- [ ] **Promote dispositions** — keep-as-error / prefer-profile / fixed-this-promote /
+      deferred (with one-line rationale)
+- [ ] **Session / report link** — path or URL to the eval artifact used above
+
+See [docs/deploy.md](../../docs/deploy.md) §Promote · Evaluation metrics and
+[docs/guides/promote-eval-metrics.md](../../docs/guides/promote-eval-metrics.md).
+
 ## Test plan
 
 - [ ] Staging smoke green for tip SHA

@@ -461,7 +461,7 @@ def emit_taf_annex3(
         cavok = "true" if ir.get("cavok") else "false"
         base_wind_src = dict(ir)
         base_wind_src["_base_wind_decimal"] = True
-        wind = "" if ir.get("cavok") else _taf_wind_block(base_wind_src)
+        wind = _taf_wind_block(base_wind_src)  # TAF-7: required even when CAVOK
         weather = "" if ir.get("cavok") else _taf_weather_block(ir)
         vis = ""
         cloud = ""

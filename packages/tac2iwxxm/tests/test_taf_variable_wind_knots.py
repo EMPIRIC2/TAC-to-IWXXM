@@ -93,10 +93,12 @@ def test_numbered_wind_keeps_direction_speed_and_gust() -> None:
     assert '<iwxxm:windGustSpeed uom="[kn_i]">22</iwxxm:windGustSpeed>' in wind[0]
 
 
-def test_cavok_omits_the_variable_wind_block() -> None:
+def test_cavok_still_emits_the_variable_wind_block() -> None:
+    """TAF.TAF-7 requires surfaceWind even when cloudAndVisibilityOK is true."""
     xml = _convert(_CAVOK)
     assert 'cloudAndVisibilityOK="true"' in xml
-    assert "<iwxxm:surfaceWind>" not in xml
+    assert "<iwxxm:surfaceWind>" in xml
+    assert 'variableWindDirection="true"' in xml
 
 
 def test_missing_speed_omits_the_block() -> None:
