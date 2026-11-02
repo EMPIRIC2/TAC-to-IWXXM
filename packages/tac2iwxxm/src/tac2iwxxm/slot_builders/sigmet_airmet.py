@@ -177,6 +177,8 @@ _AIR_PHENOMENA = (
     ("MOD MTW", "MOD_MTW"),
     ("MT OBSC", "MT_OBSC"),
     ("MTN OBSC", "MT_OBSC"),
+    ("SFC WSPD", "SFC_WIND"),
+    ("SFC WIND", "SFC_WIND"),
     ("IFR", "SFC_VIS"),
     ("MTW", "MTW"),
     ("TS", "TS"),
