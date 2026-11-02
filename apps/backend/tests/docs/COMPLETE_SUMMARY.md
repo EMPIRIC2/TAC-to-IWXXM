@@ -152,11 +152,8 @@ Implemented an API testing infrastructure covering the testing pyramid from unit
 
 ### Configuration Files Created
 
-11. **monitoring/grafana-dashboard.json** (350+ lines)
-    - 13 monitoring panels
-    - 2 alerts (response time, error rate)
-    - Template variables (environment, endpoint)
-    - Deployment/incident annotations
+11. **monitoring/grafana-dashboard.json** (350+ lines) — historical; removed in
+    EV-drop-monitoring (was: 13 panels, response/error alerts, template variables).
 
 ### Documentation Files Updated/Created
 
@@ -398,27 +395,17 @@ E2E_TEST_PASSWORD: secure-test-password
 
 ### Grafana Installation
 
-1. **Import Dashboard**:
+The Phase 2 Grafana import path (`monitoring/grafana-dashboard.json`) was removed
+in EV-drop-monitoring. Do not follow those steps; use platform logs / optional Sentry.
 
-   ```bash
-   # Navigate to Grafana
-   # Dashboard → Import → Upload JSON file
-   # Select: monitoring/grafana-dashboard.json
-   ```
+<details><summary>Historical import steps (obsolete)</summary>
 
-2. **Configure Data Sources**:
-   - Prometheus for metrics
-   - GitHub for deployment annotations
+1. Import Dashboard via Grafana UI from the deleted JSON export.
+2. Data sources were Prometheus + GitHub annotations.
+3. Alert channels: Slack / email / PagerDuty.
+4. Response-time threshold default was 2s.
 
-3. **Set Alert Channels**:
-   - Slack webhook
-   - Email notifications
-   - PagerDuty (optional)
-
-4. **Customize Thresholds**:
-   - Response time: Default 2s (adjust per environment)
-   - Error rate: Default 0.1/s
-   - Success rate: Default 95%
+</details>
 
 ---
 
@@ -437,7 +424,7 @@ E2E_TEST_PASSWORD: secure-test-password
 ### Production Visibility
 
 - **Before**: Reactive incident response, manual log checking
-- **After**: Proactive monitoring every 15 min, auto-issue creation, Grafana dashboard
+- **After**: Proactive monitoring every 15 min, auto-issue creation (Grafana JSON later removed)
 
 ### Quality Assurance
 

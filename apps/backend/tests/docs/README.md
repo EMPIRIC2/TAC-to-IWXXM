@@ -571,9 +571,9 @@ pytest tests/test_endpoint_extended_coverage.py::TestConcurrentRequestHandling -
 
 ### Monitoring Dashboard
 
-Grafana dashboard configuration: `monitoring/grafana-dashboard.json`
-
-**Panels**: Health status, uptime, request rate, response time, error rate, conversion success, active jobs, database connections, regional stats, alerts
+Historical Phase 2 note: a Grafana dashboard JSON once lived under `monitoring/`
+(removed in EV-drop-monitoring). Current observability is platform logs (DOKS) and
+optional Sentry — not a repo Grafana stack.
 
 ## Contributing
 

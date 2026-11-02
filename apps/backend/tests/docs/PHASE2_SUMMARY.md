@@ -466,9 +466,10 @@ secrets:
 
 ## Bonus: Grafana Monitoring Dashboard
 
-### File Created
+### File Created (later removed)
 
-- `monitoring/grafana-dashboard.json` (350+ lines)
+- `monitoring/grafana-dashboard.json` (350+ lines) — deleted in EV-drop-monitoring;
+  do not restore without a later evolve.
 
 ### Panels Configured
 

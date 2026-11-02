@@ -219,8 +219,9 @@ Branch protection / Environments (admin): `bash scripts/deploy/apply_gh_branch_r
 **F21 Amended / F31**: Optional Auth restored via `packages/auth`. Convert remains public.
 F8 worker runs on DOKS.
 
-**Observability**: Platform logs (DOKS). Loki/Prometheus/Grafana remain out of Blueprint
-(ADR-006) unless a later evolve adds them.
+**Observability**: Platform logs (DOKS) plus optional Sentry when DSN is set (EV-052).
+Repo-local Grafana/Prometheus/Loki configs under `monitoring/` were removed (EV-drop-monitoring);
+they are not part of the Blueprint (ADR-006). Do not re-add a stack there without a later evolve.
 
 ## Integration
 
