@@ -1385,6 +1385,10 @@ def _check_r8_pack(
     for tok in tokens:
         if not _RVR.match(tok):
             continue
+        # Bare R14R after WS is a wind-shear runway designator, not an RVR group.
+        # True RVR always has '/' after the runway (R14R/P2000N).
+        if "/" not in tok:
+            continue
         if _RVR_RUNWAY_STATE.fullmatch(tok):
             continue
         if _RVR_OK.fullmatch(tok):
