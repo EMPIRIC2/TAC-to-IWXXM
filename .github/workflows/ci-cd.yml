@@ -95,9 +95,9 @@ jobs:
 
 
   # GHCR private + revoked ghcr-pull PAT → DOKS ImagePullBackOff / 403.
-  # Make packages public (repo is public) and re-roll the tip tag without full CI.
+  # Refresh cluster pull secret with live GITHUB_TOKEN, then re-roll tip (no full CI).
   ops-ghcr-doks-pull:
-    name: Ops GHCR public + DOKS rollout
+    name: Ops GHCR pull secret + DOKS rollout
     runs-on: ubuntu-latest
     if: >
       github.event_name == 'workflow_dispatch' &&
@@ -111,6 +111,8 @@ jobs:
       DOKS_NAMESPACE: metar-iwxxm-staging
       IMAGE_TAG: ${{ github.event.inputs.ops_image_tag }}
       ROLLOUT_TIMEOUT: 300s
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GHCR_USERNAME: ${{ github.actor }}
     steps:
       - uses: actions/checkout@v5
       - name: Require image tag
@@ -121,9 +123,7 @@ jobs:
             exit 1
           fi
           echo "Rolling tag=${IMAGE_TAG}"
-      - name: Ensure GHCR packages are public
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Ensure GHCR packages are public (best-effort)
         run: bash scripts/deploy/ghcr_ensure_public.sh
       - name: Set up kubectl
         uses: azure/setup-kubectl@v4
@@ -144,6 +144,8 @@ jobs:
             echo "::error::KUBE_CONFIG uses doctl exec auth; use a ServiceAccount token kubeconfig"
             exit 1
           fi
+      - name: Refresh ghcr-pull secret with live GITHUB_TOKEN
+        run: bash scripts/deploy/doks_refresh_ghcr_pull_secret.sh
       - name: Delete stuck ImagePullBackOff pods (best-effort)
         run: bash scripts/deploy/doks_delete_imagepull_pods.sh
       - name: Roll out DOKS images
@@ -1251,7 +1253,7 @@ jobs:
             ${{ env.REGISTRY }}/${{ env.WORKER_IMAGE }}:${{ steps.target.outputs.latest_tag }}
 
       # Public repo; keep packages pullable without a long-lived cluster PAT.
-      - name: Ensure GHCR packages are public
+      - name: Ensure GHCR packages are public (best-effort)
         if: steps.guard.outputs.skip != 'true'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -1302,6 +1304,9 @@ jobs:
         env:
           IMAGE_TAG: ${{ steps.tags.outputs.image_tag }}
           DOKS_NAMESPACE: ${{ steps.target.outputs.namespace }}
+          DEPLOY_ENV_ROLE: ${{ steps.target.outputs.env_role }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GHCR_USERNAME: ${{ github.actor }}
         run: |
           set -euo pipefail
           if [ -z "${KUBE_CONFIG:-}" ]; then
@@ -1318,7 +1323,8 @@ jobs:
             echo "::error::KUBE_CONFIG uses doctl exec auth; use a ServiceAccount token kubeconfig (docs/deploy.md)"
             exit 1
           fi
-          echo "Rolling DOKS env_role=${{ steps.target.outputs.env_role }} ns=${DOKS_NAMESPACE} tag=${IMAGE_TAG}"
+          echo "Rolling DOKS env_role=${DEPLOY_ENV_ROLE} ns=${DOKS_NAMESPACE} tag=${IMAGE_TAG}"
+          bash scripts/deploy/doks_refresh_ghcr_pull_secret.sh
           bash scripts/deploy/doks_rollout_images.sh "${IMAGE_TAG}"
 
       - name: CD skipped (credentials)

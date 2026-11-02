@@ -1,4 +1,4 @@
-# One-shot: make GHCR packages public + (re)roll DOKS tip images.
+# One-shot: refresh ghcr-pull secret + (re)roll DOKS tip images.
 # Fixes ImagePullBackOff when cluster ghcr-pull PAT is revoked and packages are private.
 name: Ops GHCR public + DOKS rollout
 
@@ -29,7 +29,7 @@ permissions:
 
 jobs:
   ghcr-public-and-rollout:
-    name: Public GHCR + DOKS rollout
+    name: Refresh GHCR pull + DOKS rollout
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
     env:
@@ -37,12 +37,13 @@ jobs:
       DOKS_NAMESPACE: ${{ inputs.namespace }}
       IMAGE_TAG: ${{ inputs.image_tag }}
       ROLLOUT_TIMEOUT: 300s
+      OPS_ENVIRONMENT: ${{ inputs.environment }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GHCR_USERNAME: ${{ github.actor }}
     steps:
       - uses: actions/checkout@v5
 
-      - name: Ensure GHCR packages are public
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Ensure GHCR packages are public (best-effort)
         run: bash scripts/deploy/ghcr_ensure_public.sh
 
       - name: Set up kubectl
@@ -52,7 +53,7 @@ jobs:
         run: |
           set -euo pipefail
           if [ -z "${KUBE_CONFIG:-}" ]; then
-            echo "::error::Missing secret KUBE_CONFIG for environment ${{ inputs.environment }}"
+            echo "::error::Missing secret KUBE_CONFIG for environment ${OPS_ENVIRONMENT}"
             exit 1
           fi
           mkdir -p "${HOME}/.kube"
@@ -65,6 +66,9 @@ jobs:
             echo "::error::KUBE_CONFIG uses doctl exec auth; use a ServiceAccount token kubeconfig"
             exit 1
           fi
+
+      - name: Refresh ghcr-pull secret with live GITHUB_TOKEN
+        run: bash scripts/deploy/doks_refresh_ghcr_pull_secret.sh
 
       - name: Delete stuck ImagePullBackOff pods (best-effort)
         run: bash scripts/deploy/doks_delete_imagepull_pods.sh
