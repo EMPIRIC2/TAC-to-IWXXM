@@ -44,9 +44,12 @@ kubectl --context do-nyc1-metar-iwxxm-staging -n metar-iwxxm-staging create secr
   --from-literal=OPENAIP_API_KEY='…'
 ```
 
-Also copy `ghcr-pull` into the staging namespace. Do **not** remount
-`work_session_service.py` via ConfigMap (`work-session-ssl-fix` was a T7.1
-interim only, removed after BUG-2026-08-10; sslmode rewrite is in-image).
+Also copy `ghcr-pull` into the staging namespace (dockerconfig for `ghcr.io` with a
+`read:packages` PAT). CD now also marks packages **public** after push
+(`scripts/deploy/ghcr_ensure_public.sh`) so a revoked PAT does not block DOKS
+pulls on this public repo. Do **not** remount `work_session_service.py` via
+ConfigMap (`work-session-ssl-fix` was a T7.1 interim only, removed after
+BUG-2026-08-10; sslmode rewrite is in-image).
 
 ## CD image rollout (EV-034 / EV-043 / EV-044)
 
