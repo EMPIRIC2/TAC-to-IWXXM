@@ -48,6 +48,9 @@ const PANEL: Record<
 /**
  * Collapsible results host with IWXXM / Console / Decoder / Map / Downloads tabs.
  *
+ * Title + Hide and the tab strip stay outside the scrolling tab body so chrome
+ * remains visible while panel content scrolls.
+ *
  * @param props - Open state, active tab, height, and tab bodies
  * @returns Drawer chrome for Convert secondary surfaces
  * @example
@@ -81,7 +84,10 @@ export function ConvertResultsDrawer({
       data-open={open ? 'true' : 'false'}
       aria-label="Convert results"
     >
-      <div className="flex items-center justify-between gap-2 border-b border-gray-200 px-3 py-2 dark:border-gray-700">
+      <div
+        className="flex items-center justify-between gap-2 border-b border-gray-200 px-3 py-2 dark:border-gray-700"
+        data-testid="convert-results-drawer-chrome"
+      >
         <h2 className="text-sm font-semibold text-gray-900 dark:text-white">Results</h2>
         <Button
           type="button"
@@ -95,45 +101,55 @@ export function ConvertResultsDrawer({
         </Button>
       </div>
       <div
-        className={`min-h-0 overflow-auto p-3 ${open ? '' : 'hidden'}`}
+        className={`flex min-h-0 flex-col ${open ? '' : 'hidden'}`}
         style={open ? { height } : undefined}
-        data-testid="convert-results-drawer-body"
+        data-testid="convert-results-drawer-shell"
         hidden={!open}
       >
         <Tabs
           value={tab}
           onValueChange={(value) => onTabChange(value as ConvertResultsTab)}
-          className="gap-0"
+          className="flex min-h-0 flex-1 flex-col gap-0"
           data-testid="convert-results-tabs"
           hidden={!open}
         >
-          <TabsList
-            className="mb-3 flex h-auto w-full flex-wrap justify-start gap-1"
-            aria-label="Results panels"
-            data-testid="convert-results-tablist"
+          <div
+            className="shrink-0 px-3 pt-3"
+            data-testid="convert-results-drawer-tab-chrome"
           >
-            {CONVERT_RESULTS_TABS.map((entry) => (
-              <TabsTrigger
-                key={entry.id}
-                value={entry.id}
-                data-testid={`convert-results-tab-${entry.id}`}
-              >
-                {entry.label}
-              </TabsTrigger>
-            ))}
-          </TabsList>
-          {(Object.keys(PANEL) as ConvertResultsTab[]).map((id) => (
-            <TabsContent
-              key={id}
-              value={id}
-              forceMount
-              hidden={tab !== id}
-              data-testid={`convert-results-panel-${id}`}
-              className={tab === id ? undefined : 'hidden'}
+            <TabsList
+              className="mb-3 flex h-auto w-full flex-wrap justify-start gap-1"
+              aria-label="Results panels"
+              data-testid="convert-results-tablist"
             >
-              {bodies[id]}
-            </TabsContent>
-          ))}
+              {CONVERT_RESULTS_TABS.map((entry) => (
+                <TabsTrigger
+                  key={entry.id}
+                  value={entry.id}
+                  data-testid={`convert-results-tab-${entry.id}`}
+                >
+                  {entry.label}
+                </TabsTrigger>
+              ))}
+            </TabsList>
+          </div>
+          <div
+            className="min-h-0 flex-1 overflow-auto px-3 pb-3"
+            data-testid="convert-results-drawer-body"
+          >
+            {(Object.keys(PANEL) as ConvertResultsTab[]).map((id) => (
+              <TabsContent
+                key={id}
+                value={id}
+                forceMount
+                hidden={tab !== id}
+                data-testid={`convert-results-panel-${id}`}
+                className={tab === id ? undefined : 'hidden'}
+              >
+                {bodies[id]}
+              </TabsContent>
+            ))}
+          </div>
         </Tabs>
       </div>
       {open ? (

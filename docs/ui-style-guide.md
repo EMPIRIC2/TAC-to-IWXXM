@@ -28,6 +28,7 @@ sections when norms conflict—cite the UX log ids retired or merged.
 - Convert empty state: example chips sit in a bar above the TAC editor inside the main convert card; Other tasks sit in one tight row under that card — not a separate far strip.
 - Convert catalog Examples sit in a compact bar above the TAC editor — not inside the Settings product/profile panel.
 - Results → Downloads is file management only; conversion XML and result assessment details belong on Results → IWXXM.
+- Results drawer: title + Hide and the results tab strip stay pinned above the scrolling tab body (chrome outside the overflow scrollport).
 
 ## Copy / tone
 
@@ -91,3 +92,4 @@ Record the test path and red/green dates on `docs/ui-ux-tweaks/UX-YYYY-MM-DD-*.m
 | 2026-10-30 | [UX-2026-10-30-convert-button-center](ui-ux-tweaks/UX-2026-10-30-convert-button-center.md) | Convert primary action strip: full-width three equal columns (New TAC \| Convert \| Download latest); Convert stays in the middle column. Do not left-pack unequal min-widths. |
 | 2026-10-31 | [UX-2026-10-31-drop-console-chrome](ui-ux-tweaks/UX-2026-10-31-drop-console-chrome.md) | Operator log surfaces (conversion/validation log + Lint issue catalog) render inline — no collapsible "Console" shell/heading framing them. A **Clear log** affordance may remain as a small standalone control without a "Console" label. |
 | 2026-11-02 | [UX-2026-11-02-cite-live-map-provider](ui-ux-tweaks/UX-2026-11-02-cite-live-map-provider.md) | Live map Results chrome shows Aviation Weather Center report credit in a muted visible line near newest-observation status; not screen-reader-only. |
+| 2026-11-02 | [UX-2026-11-02-sticky-results-header](ui-ux-tweaks/UX-2026-11-02-sticky-results-header.md) | Results drawer: title + Hide and the results tab strip stay pinned above the scrolling tab body (chrome outside the overflow scrollport). |
