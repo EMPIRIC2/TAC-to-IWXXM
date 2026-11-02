@@ -59,7 +59,8 @@ def test_speci_taf_and_sigmet_headings_convert() -> None:
 
     sigmet = reports_for_convert(f"WSXX01 YUSO 101200\n{_SIGMET}", "SIGMET")
     assert sigmet is not None
-    assert sigmet.reports[0][0].startswith("YUDD SIGMET")
+    # AHL retained so WC/WV CNL family roots survive the paste path (H1).
+    assert sigmet.reports[0][0].startswith("WSXX01 YUSO 101200\nYUDD SIGMET")
     sigmet_xml = convert(sigmet.reports[0][0], product="SIGMET", bulletin_date=_DATE)
     assert sigmet_xml.ok is True
     assert sigmet_xml.xml is not None

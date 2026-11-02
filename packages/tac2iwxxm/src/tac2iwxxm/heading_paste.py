@@ -201,11 +201,17 @@ def reports_for_convert(text: str, product: str) -> PastedHeading | None:
         if exc.code == "empty_bulletin":
             raise HeadingPasteError("empty_bulletin", EMPTY_HEADING) from exc
         raise HeadingPasteError("INVALID_AHL", MALFORMED_HEADING) from exc
+    # SIGMET/AIRMET family roots for CNL depend on AHL TT (WC/WV/WS/WA). Keep the
+    # heading on each report so convert still sees ahl_tt after bulletin peel.
+    product_key = product.strip().upper()
+    keep_ahl = product_key in {"SIGMET", "AIRMET"}
+    ahl_line = split.meta.ahl
     cursor = heading_start
     located: list[tuple[str, int]] = []
     for report in split.reports:
         found = text.find(report, cursor)
-        located.append((report, found))
+        payload = f"{ahl_line}\n{report}" if keep_ahl else report
+        located.append((payload, found))
         cursor = found + len(report)
     return PastedHeading(
         reports=tuple(located),

@@ -189,11 +189,11 @@ def test_convert_unsupported_profile_product_and_native_scan() -> None:
 
 
 def test_more_coverage_edges() -> None:
-    # Default phenomenon when no known token matches.
-    fog = parse_sigmet("YUDD SIGMET 1 VALID 101200/101600 YUSO- YUDD FIR FOG FCST=")
-    assert fog["phenomenon"] == "TS"
-    fog_a = parse_airmet("YUDD AIRMET 1 VALID 101200/101600 YUSO- YUDD FIR FOG OBS=")
-    assert fog_a["phenomenon"] == "TS"
+    # Unknown phenomenon tokens fail closed (do not invent TS).
+    with pytest.raises(ValueError, match="missing phenomenon"):
+        parse_sigmet("YUDD SIGMET 1 VALID 101200/101600 YUSO- YUDD FIR FOG FCST=")
+    with pytest.raises(ValueError, match="missing phenomenon"):
+        parse_airmet("YUDD AIRMET 1 VALID 101200/101600 YUSO- YUDD FIR FOG OBS=")
 
     # US NIL observation + namespace already present.
     nil_xml = emit_metar_speci_iwxxm_us(

@@ -553,6 +553,9 @@ def _valid_period_xml(tac: str, now: str) -> str:
     else:
         bday, bhour, eday, ehour = parts
         bmin = emin = "00"
+    # Same-day inverted / zero-length VALID must not enter the quarantine shell.
+    if bday == eday and (ehour, emin) <= (bhour, bmin):
+        return f'  <iwxxm:validPeriod nilReason="{_NIL_MISSING}"/>\n'
     year_month = now[:7]
     begin = f"{year_month}-{bday}T{bhour}:{bmin}:00Z"
     end = f"{year_month}-{eday}T{ehour}:{emin}:00Z"
@@ -1321,6 +1324,16 @@ def convert(
     except ValueError as exc:
         message = str(exc)
         if preview:
+            return _fail("PARSE_ERROR", message, span=True)
+        # Structural SIGMET/AIRMET defects fail closed — do not soft-succeed a
+        # quarantine shell that could still invent TS or inverted validPeriod.
+        hard_fail_markers = (
+            "missing phenomenon",
+            "incomplete CNL",
+            "valid period end must be after begin",
+            "coordinate out of range",
+        )
+        if any(marker in message for marker in hard_fail_markers):
             return _fail("PARSE_ERROR", message, span=True)
         if _should_quarantine(tac, product_u):
             span_start, span_end = _content_bounds(tac)

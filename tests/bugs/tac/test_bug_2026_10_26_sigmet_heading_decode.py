@@ -199,7 +199,8 @@ def test_bug_2026_10_26_heading_paste_not_empty_bulletin() -> None:
     assert len(pasted.reports) == 5
     first = pasted.reports[0]
     first_text = first[0] if isinstance(first, tuple) else first
-    assert str(first_text).startswith("KZWY KZMA SIGMET")
+    # SIGMET paste keeps AHL so convert can see TT family roots (WC/WV/WS).
+    assert "KZWY KZMA SIGMET" in str(first_text).upper()
 
 
 def test_bug_2026_10_26_heading_only_still_empty() -> None:
