@@ -3,16 +3,10 @@
 # Full matrix: make test-quality-matrices-full (optional / workflow_dispatch).
 name: Quality matrices smoke
 
+# Stage/main push: always run (no path filter). PR remains path-filtered for cost.
 on:
   push:
     branches: [main, stage, evolve/EV-030-quality-residuals-831]
-    paths:
-      - "tests/quality_matrices/**"
-      - "scripts/ci/run_quality_matrices_smoke.sh"
-      - "scripts/ci/run_quality_matrices_full.sh"
-      - "packages/iwxxm-validate/**"
-      - ".github/workflows/quality-matrices.yml"
-      - "pyproject.toml"
   pull_request:
     paths:
       - "tests/quality_matrices/**"

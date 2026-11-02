@@ -2,16 +2,10 @@
 # Offline only — does not fetch HTML from codes.wmo.int (non-flake).
 name: codelist URI drift
 
+# Stage/main push: always run (no path filter). PR remains path-filtered for cost.
 on:
   push:
     branches: [main, stage, evolve/EV-038-iwxxm-corpus-residuals]
-    paths:
-      - "vendor/schemas/iwxxm/**/rule/codes.wmo.int-*.rdf"
-      - "vendor/schemas/iwxxm-codelists/CSV/**"
-      - "vendor/manifest.json"
-      - "scripts/iwxxm/codelist_uri_drift.py"
-      - "scripts/ci/run_codelist_uri_drift.sh"
-      - ".github/workflows/codelist-uri-drift.yml"
   pull_request:
     paths:
       - "vendor/schemas/iwxxm/**/rule/codes.wmo.int-*.rdf"

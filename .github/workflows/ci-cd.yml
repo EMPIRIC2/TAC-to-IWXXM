@@ -1,6 +1,11 @@
 ---
 name: CI/CD Pipeline
 
+# Triggers: every push to main/stage runs Lint, Typecheck, full Test (*) matrix
+# (incl. Test (bugs) → pytest tests/bugs, covering live_tac_eval), e2e-smoke, etc.
+# No path filters — stage tip always executes the required unit/regression surface.
+# Intentionally skip on stage push (not tests): Staging gate + E2E Full (promote /
+# main-PR only), Coverage/Quality PR comments (PR only), Ops EV-933 (dispatch).
 on:
   push:
     branches: [main, stage]
@@ -400,6 +405,8 @@ jobs:
         if: matrix.package == 'bugs'
         run: uv run python scripts/ci/check_openapi_contract.py
 
+      # Stage/main push + PR: recursive under tests/bugs (incl. live_tac_eval/).
+      # Deselect only live/live_api markers — offline regressions stay required.
       - name: Run bug regression tests (tests/bugs)
         if: matrix.package == 'bugs'
         run: uv run pytest tests/bugs -m "not live and not live_api" --no-cov -v
