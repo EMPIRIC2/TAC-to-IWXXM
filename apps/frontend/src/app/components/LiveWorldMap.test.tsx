@@ -254,6 +254,22 @@ describe('LiveWorldMap', () => {
     expect(OSM_TILE_ATTRIBUTION).toContain('https://www.openstreetmap.org/copyright');
   });
 
+  it('shows Aviation Weather Center report attribution near map status (UX-2026-11-02-cite-live-map-provider)', () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue({
+        ok: true,
+        json: async () => ({ places: [] }),
+      }),
+    );
+    render(<LiveWorldMap />);
+    const notice = screen.getByTestId('live-map-notice');
+    expect(notice).toHaveTextContent('Aviation Weather Center');
+    expect(notice).toBeVisible();
+    expect(notice.className.split(/\s+/)).not.toContain('sr-only');
+    expect(screen.getByTestId('live-map-status')).toBeInTheDocument();
+  });
+
   it('reads bounds from the map', () => {
     expect(boundsOf(map as never)).toEqual({
       west: -80,

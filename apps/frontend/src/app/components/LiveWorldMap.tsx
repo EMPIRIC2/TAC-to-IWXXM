@@ -688,9 +688,6 @@ export function LiveWorldMap({
             {DECODE_VISUALS_FEEDBACK}
           </a>
         </p>
-        <p id="live-map-notice" className="sr-only" data-testid="live-map-notice">
-          {LIVE_MAP_NOTICE}
-        </p>
         <div className="flex flex-col gap-2">
           {LIVE_MAP_VIEWS.map((view) => (
             <div key={view.id} className="flex flex-wrap items-center gap-2">
@@ -853,6 +850,13 @@ export function LiveWorldMap({
           </p>
         )}
       </div>
+      <p
+        id="live-map-notice"
+        className="px-1 text-xs text-gray-400 dark:text-gray-500"
+        data-testid="live-map-notice"
+      >
+        {LIVE_MAP_NOTICE}
+      </p>
       <p className="px-1 text-xs text-gray-400">{LIVE_MAP_ZOOM_HINT}</p>
       <div
         ref={host}
