@@ -194,6 +194,13 @@ def test_more_coverage_edges() -> None:
         parse_sigmet("YUDD SIGMET 1 VALID 101200/101600 YUSO- YUDD FIR FOG FCST=")
     with pytest.raises(ValueError, match="missing phenomenon"):
         parse_airmet("YUDD AIRMET 1 VALID 101200/101600 YUSO- YUDD FIR FOG OBS=")
+    # AirWx MOD TURB on SIGMET stays fail-closed with a clearer operator message.
+    with pytest.raises(ValueError, match=r"MOD TURB|moderate turbulence"):
+        parse_sigmet(
+            "FQBE SIGMET A02 VALID 021126/021526 FQMA-\n"
+            "FQBE BEIRA FIR MOD TURB FCST WI S2619 E03142 - S2355 E03142 - "
+            "S2443 E03407 - S2654 E03434 - S2619 E03142 TOP FL400="
+        )
 
     # US NIL observation + namespace already present.
     nil_xml = emit_metar_speci_iwxxm_us(

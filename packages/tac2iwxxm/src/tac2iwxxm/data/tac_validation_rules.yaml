@@ -278,6 +278,18 @@ rules:
   - metar
   - speci
   - auto
+- id: TAC.DVLPG_AREA_QUALIFIER
+  code: DVLPG_AREA_QUALIFIER
+  label: Dvlpg Area Qualifier
+  severity: error
+  message_template: Convective SIGMET uses DVLPG (developing) before AREA. Keep DVLPG off the FROM ring;
+    it is a hazard qualifier, not a VOR offset.
+  product: sigmet
+  tags:
+  - geometry
+  - convective
+  - sigmet
+  - us_nws
 - id: TAC.EMPTY_TAC
   code: EMPTY_TAC
   label: Empty Tac

@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "source": "generated from tac_validate.issue_registry + PROVENANCE_MAP",
-  "generated": "2026-11-01",
+  "generated": "2026-11-02",
   "issues": [
     {
       "code": "AMD_PRESENT",
@@ -355,6 +355,21 @@
       "source_id": null,
       "source_url": null,
       "source_attribution": null
+    },
+    {
+      "code": "DVLPG_AREA_QUALIFIER",
+      "severity": "error",
+      "message_template": "Convective SIGMET uses DVLPG (developing) before AREA. Keep DVLPG off the FROM ring; it is a hazard qualifier, not a VOR offset.",
+      "product": "sigmet",
+      "tags": [
+        "geometry",
+        "convective",
+        "sigmet",
+        "us_nws"
+      ],
+      "source_id": "fmh-1",
+      "source_url": "https://aviationweather.gov/data/products/sigmet/",
+      "source_attribution": "fmh-1 - https://aviationweather.gov/data/products/sigmet/ - NWS convective SIGMET developing-area (DVLPG AREA) hazard qualifier; keep off FROM ring"
     },
     {
       "code": "EMPTY_TAC",
