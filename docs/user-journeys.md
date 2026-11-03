@@ -117,6 +117,7 @@ describe monorepo workflows introduced by migration features M1–M6 and F6.
 | UJ-087 | Open the live weather map, zoom, and read a report | apps/frontend / API | F37 (EV-globe-live-map) | T0 / T2 / **T3** / H4–H5 |
 | UJ-088 | Calmer Convert empty → convert → download + Help checklist | apps/frontend | F7 deepen (EV-calmer-convert-tutorial-caribbean) | T0 / T2 / **T3** / H4–H5 |
 | UJ-089 | Convert declutter — results drawer + spine + Settings | apps/frontend | F7 deepen (EV-convert-declutter-drawer) | T0 / T2 / **T3** / H4–H5 |
+| UJ-090 | Staging residual decode + typo lint warnings (libraries) | apps/frontend / API / CI | F9/F15 deepen (EV-decode-residuals-2026-11-03) | T0 / T2 / **T3** / H4–H5 |
 | UJ-076 | Five package-owned trust catalogs (tabbed) | apps/frontend / API | F7.v (ADR-044) | T0 / T2 / **T3** / H4–H5 |
 | UJ-076a | Convert four-engine light selects + Send-drawer dissem (#1251) | apps/frontend / API | F7 / F9 / F16–F19 (ADR-044; EV-yaml-config-light-ux) | T0 / T2 / **T3** / H4–H5 |
 | UJ-076b | Decode via `tac-decoding` parity | apps/frontend / API | F9 (ADR-044) | T0 / T2 / H4–H5 |
@@ -3072,3 +3073,26 @@ lint-issue-catalog filters.
 5. Close drawer; reopen and switch tabs — only one panel visible at a time.
 
 **Pass**: TC-UX-DECLUTTER-001..008 green; H4–H5 Convert smoke. Must-not-break UJ-088 (calm CTAs/help), UJ-013, UJ-027–030 (Send drawer), UJ-087 (map data), UJ-032, UJ-033, UJ-054, UJ-055. EV-048 clean.
+
+### UJ-090: Staging residual decode + typo lint warnings (libraries)
+
+**Goal**: An operator sees plain-language decode for previously residual TAC families
+(TAF→METAR→SPECI→SIGMET) and sees dedicated lint **warnings** for known typo patterns in
+the Decoding library / Validation Issues catalog — without auto-rewritten TAC.
+
+**Feature**: F9 / F15 deepen (EV-decode-residuals-2026-11-03).
+[Corpus: product §F9] [Corpus: product §F15] [Corpus: tests] [Corpus: decisions/ev-decode-residuals-2026-11-03]
+
+**Actors**: Guest (after terms/privacy) or signed-in operator.
+
+**Steps**:
+1. Soft-preview or decode a fixture that previously left a high-count residual (e.g. TAF
+   `TX`/`TN`, METAR `1snTTT`/`2snTTT`) — segments explain the group; it is not only a residual.
+2. Open Decoding library (or decode panel) and confirm the explanation is readable and free of
+   planning vocabulary.
+3. Lint a fixture with a known typo pattern (e.g. spaced `C A V O K`) — receive a **warning**
+   with a dedicated issue code; TAC text is unchanged.
+4. Open lint-issue catalog / Validation Issues and find that code with operator-facing copy.
+
+**Pass**: TC-EVDR-001..007 green; package unit tests on PRs to `stage`; e2e for library/catalog
+visibility. Must-not-break UJ-015, UJ-020, UJ-024, UJ-068, UJ-076, UJ-080. EV-048 clean.

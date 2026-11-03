@@ -138,6 +138,7 @@ Unified manual live test harness against **DOKS** production endpoints after F30
 | UJ-084          | F21 / F22 (EV-1315 / #1315)                                  | Quality disclaimer and site terms block the public shell until acknowledged                                                                                                                                                                                | T0; client-only | TC-EV1315-001                                                                            |
 | UJ-085          | F7.q (EV-1316 / #1316)                                       | Quality metrics subtitle, diagnostic overflow, deferred/mismatch/residual honesty                                                                                                                                                                          | T0; existing routes | TC-EV1316-001                                                                            |
 | UJ-086          | F7.v / F16–F19 (EV-1317 / #1317)                             | Dissemination catalog rows have readable summaries and public source metadata                                                                                                                                                                              | T0; existing route | TC-EV1317-001                                                                            |
+| UJ-090          | F9/F15 (EV-decode-residuals-2026-11-03)                      | Staging residual families decode + per-typo lint warnings; Decoding library / lint catalog e2e                                                                                                                                                             | **H4–H5** (catalog/library) | TC-EVDR-001..007                                                                         |
 | UJ-DEV-002      | M6 (EV-1318 / #1318)                                         | Vendor sync checks out the full pinned tree and keeps nested profile-line snapshots                                                                                                                                                                        | T0; H4–H5 N/A     | TC-EV1318-001                                                                            |
 | UJ-078          | F36/F9/F7 (EV-profile-validate-decode-deepen / #1221)        | ADR-044 FE residual + AU/NZ implemented + station-name decode                                                                                                                                                                                              | **H4–H5 when FE ships**           | TC-EVPVD-001..006; TC-EV1120 residual; TC-EVRPC residual                                  |
 | UJ-DEV-010      | F2/F6/F9/F12/F15 (EV-yaml-engine-configurability / #1224)    | Overlay honesty matrix + cookbook/examples + preflight (SDK/deployer)                                                                                                                                                                                      | H4–H5 **N/A**                     | TC-EVYEC-001..005                                                                        |
@@ -7425,4 +7426,50 @@ These checks are already merged on `origin/stage` (pull requests #1447, #1444, #
 - **Level**: T0 in the bugs job. No PactFlow credentials.
 - **Objective**: Every operation in `apps/frontend/openapi/openapi.json` has a local check for in-scope status codes and required JSON fields.
 - **Pass criteria**: The bugs job runs `uv run python scripts/ci/check_openapi_contract.py` with no broker credentials. The check reports 0 operations missing, 0 status codes missing, 0 required request fields missing, and 0 required response fields missing. `POST /api/v1/convert` status 200 includes `failed`, `successful`, and `total_processed`. Adding a required response field to the OpenAPI document without a matching interaction fails the check. Path-only pytest or Playwright mentions do not count. Operator-facing API behavior is unchanged. The fill is the in-repo status and required-field suite, not Pact consumer files. The pull request for that work is #1447, with follow-up #1449. [Corpus: api]
+
+## EV-decode-residuals-2026-11-03 — staging residual families (F9/F15)
+
+[Corpus: product §F9] [Corpus: product §F15] [Corpus: journeys §UJ-090] [Corpus: decisions/ev-decode-residuals-2026-11-03]
+
+### TC-EVDR-001: TAF residual families decode (UJ-090)
+
+- **Level**: T0 (`packages/tac-decoding/tests`; CI matrix on PRs to `stage`)
+- **Objective**: High-count TAF residual families from the intake tables become decode segments (legacy + pack).
+- **Pass criteria**: Representative fixtures for TX/TN, CAVOK, QNHnnnnINS, WShhh/dddffKT, NSW, frac SM, VVhhh, INTER, turbulence/icing groups, and documented multi-token remarks decode without those spans remaining residuals when present as complete groups/phrases.
+
+### TC-EVDR-002: METAR residual families decode (UJ-090)
+
+- **Level**: T0
+- **Objective**: METAR residual families decode as segments (legacy + pack dual-write).
+- **Pass criteria**: One regression per accepted METAR family in the intake table (valid/national-practice/multi-token).
+
+### TC-EVDR-003: SPECI residual families decode (UJ-090)
+
+- **Level**: T0
+- **Objective**: SPECI residual families from the intake table decode as segments.
+- **Pass criteria**: Same dual-write bar as METAR for SPECI-listed patterns.
+
+### TC-EVDR-004: SIGMET residual families decode (UJ-090)
+
+- **Level**: T0
+- **Objective**: SIGMET residual families decode or are intentionally ignored per table notes.
+- **Pass criteria**: Valid US convective clauses and documented valid forms decode; markers listed as safe-to-ignore do not fail the suite.
+
+### TC-EVDR-005: Typo warnings — one code per pattern (UJ-090)
+
+- **Level**: T0 (`packages/tac-validate/tests`; CI matrix on PRs to `stage`)
+- **Objective**: Each typo row emits a dedicated **warning** code; TAC is not rewritten.
+- **Pass criteria**: Registry + detector coverage for each typo pattern; severity `warning`; convert of the same TAC unchanged vs baseline.
+
+### TC-EVDR-006: Split phrases consume full remark (UJ-090)
+
+- **Level**: T0
+- **Objective**: Multi-token rules absorb split fragments when the parent phrase is present.
+- **Pass criteria**: Fixtures containing full remarks leave no orphan residual for the documented split token alone.
+
+### TC-EVDR-007: Decoding library / lint catalog e2e (UJ-090)
+
+- **Level**: T2 / T3 (Playwright)
+- **Objective**: Operator-visible Decoding library and lint catalog surface at least one new decode explanation and one new typo warning code.
+- **Pass criteria**: e2e asserts catalog/library visibility; copy free of planning ids; H4–H5 when FE deploys.
 

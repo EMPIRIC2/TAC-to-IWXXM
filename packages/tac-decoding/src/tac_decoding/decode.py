@@ -32,6 +32,12 @@ _CLOUD = re.compile(r"^(?P<amt>FEW|SCT|BKN|OVC|SKC|CLR|NSC|NCD)(?P<hgt>\d{3})?(?
 _WIND_VAR = re.compile(r"^(?P<a>\d{3})V(?P<b>\d{3})$")
 _VIS_FRAC = re.compile(r"^(?P<num>\d)/(?P<den>\d)SM$")
 _T_GROUP = re.compile(r"^T(?P<t>[01]\d{3})(?P<td>[01]\d{3})$")
+_T_TEMP_ONLY = re.compile(r"^T(?P<body>[01]\d{3})$")
+_SIX_HOUR_MAX = re.compile(r"^1(?P<body>[01]\d{3})$")
+_SIX_HOUR_MIN = re.compile(r"^2(?P<body>[01]\d{3})$")
+_DAY_MAX_MIN = re.compile(r"^4(?P<max>[01]\d{3})(?P<min>[01]\d{3})$")
+_PRECIP_3_6H = re.compile(r"^6(?P<amt>\d{4}|/{4})$")
+_PRECIP_24H = re.compile(r"^7(?P<amt>\d{4}|/{4})$")
 _PRESSURE_TENDENCY = re.compile(r"^5(?P<char>[0-8])(?P<amt>\d{3})$")
 _PRECIP_AMOUNT = re.compile(r"^P(?P<amt>\d{4})$")
 _PEAK_WIND = re.compile(r"^(?P<dir>\d{3})(?P<spd>\d{2,3})/(?P<hh>\d{2})(?P<mm>\d{2})$")
@@ -73,6 +79,11 @@ _STATION = re.compile(r"^[A-Z][A-Z0-9]{3}$")
 _TAF_VALID = re.compile(r"^(?P<d1>\d{2})(?P<h1>\d{2})/(?P<d2>\d{2})(?P<h2>\d{2})$")
 _TAF_FM = re.compile(r"^FM(?P<dd>\d{2})(?P<hh>\d{2})(?P<mm>\d{2})$")
 _TAF_PROB = re.compile(r"^PROB(?P<pct>\d{2})$")
+_TAF_TX_TN = re.compile(r"^T(?P<which>[XN])(?P<sign>M)?(?P<tt>\d{2})/(?P<dd>\d{2})(?P<hh>\d{2})Z$")
+_TAF_QNH_INS = re.compile(r"^QNH(?P<raw>\d{4})INS$")
+_TAF_WS = re.compile(r"^WS(?P<hhh>\d{3})/(?P<dir>\d{3})(?P<spd>\d{2,3})KT$")
+_TAF_TURB = re.compile(r"^5(?P<intensity>\d)(?P<base>\d{3}|/{3})(?P<thick>\d|/)$")
+_TAF_ICING = re.compile(r"^6(?P<intensity>\d)(?P<base>\d{3}|/{3})(?P<thick>\d|/)$")
 # METAR/SPECI trend time indicators (TL/AT/FM + HHMM) - distinct from TAF FMDDHHMM.
 _TREND_TIME = re.compile(r"^(?P<kind>TL|AT|FM)(?P<hh>\d{2})(?P<mm>\d{2})$")
 _SIG_VALID = re.compile(r"^(?P<d1>\d{2})(?P<h1>\d{2})(?P<m1>\d{2})/(?P<d2>\d{2})(?P<h2>\d{2})(?P<m2>\d{2})$")
@@ -1214,6 +1225,14 @@ def _explain_metar_speci(token: str, *, product: str, seen: dict[str, int]) -> s
         return "Automated station without precipitation discriminator"
     if upper == "AO2":
         return "Automated station with precipitation discriminator"
+    if upper == "AO2A":
+        return "Automated station with precipitation discriminator, augmented by an observer"
+    if upper == "FZRANO":
+        return "Freezing-rain sensor not working"
+    if upper == "TSNO":
+        return "Lightning detector not working"
+    if upper == "RVRNO":
+        return "Runway visual range should be reported but is not available"
     if upper.startswith("SLP") and len(upper) == 6 and upper[3:].isdigit():
         return "Sea-level pressure (FMH-1 SLP code)"
     if upper == "=" or token == "=":
@@ -1301,6 +1320,8 @@ def _explain_metar_speci(token: str, *, product: str, seen: dict[str, int]) -> s
         return f"Prevailing visibility {m.group('num')}/{m.group('den')} statute mile"
     if m := _T_GROUP.match(upper):
         return f"Temperature {_tenths_c(m.group('t'))} °C, dewpoint {_tenths_c(m.group('td'))} °C in tenths"
+    if m := _T_TEMP_ONLY.match(upper):
+        return f"Temperature {_tenths_c(m.group('body'))} °C (dewpoint not reported)"
     if seen.get("rmk"):
         remark = _explain_metar_remark(upper, seen)
         if remark:
@@ -1328,6 +1349,28 @@ def _explain_metar_remark(upper: str, seen: dict[str, int]) -> str | None:
         return "Sea-level pressure not available"
     if upper == "PNO":
         return "Precipitation amount not available"
+    if m := _SIX_HOUR_MAX.match(upper):
+        return f"6-hour maximum temperature {_tenths_c(m.group('body'))} °C"
+    if m := _SIX_HOUR_MIN.match(upper):
+        return f"6-hour minimum temperature {_tenths_c(m.group('body'))} °C"
+    if m := _DAY_MAX_MIN.match(upper):
+        return f"24-hour maximum {_tenths_c(m.group('max'))} °C, minimum {_tenths_c(m.group('min'))} °C"
+    if m := _PRECIP_3_6H.match(upper):
+        amt = m.group("amt")
+        if amt == "////":
+            return "3- or 6-hour precipitation not determinable"
+        hundredths = int(amt)
+        if hundredths == 0:
+            return "3- or 6-hour precipitation: trace"
+        return f"3- or 6-hour precipitation {hundredths / 100:.2f} inches"
+    if m := _PRECIP_24H.match(upper):
+        amt = m.group("amt")
+        if amt == "////":
+            return "24-hour precipitation not determinable"
+        hundredths = int(amt)
+        if hundredths == 0:
+            return "24-hour precipitation: trace"
+        return f"24-hour precipitation {hundredths / 100:.2f} inches"
     if phrase := _pressure_tendency(upper):
         return phrase
     if phrase := _precip_amount(upper):
@@ -1413,6 +1456,8 @@ def _explain_taf(token: str, *, seen: dict[str, int]) -> str | None:
         return f"Forecast visibility {int(upper)} m"
     if m := _VIS_SM.match(upper):
         return _fmt_vis_sm(m, label="Forecast visibility")
+    if m := _VIS_FRAC.match(upper):
+        return f"Forecast visibility {m.group('num')}/{m.group('den')} statute miles"
     if m := _CLOUD.match(upper):
         return _fmt_cloud(m, forecast=True)
     if m := _ALT.match(upper):
@@ -1427,9 +1472,48 @@ def _explain_taf(token: str, *, seen: dict[str, int]) -> str | None:
         return "Temporary fluctuations expected during the following period"
     if upper == "BECMG":
         return "Becoming, a gradual change during the following period"
+    if upper == "INTER":
+        return "Intermittent changes lasting under 30 minutes during the following period"
+    if upper == "CAVOK":
+        return "Ceiling and visibility OK"
+    if upper == "NSW":
+        return "No significant weather"
+    if m := _VV.match(upper):
+        if m.group("h") == "///":
+            return "Vertical visibility not reported"
+        return f"Vertical visibility {int(m.group('h')) * 100} ft"
+    if m := _TAF_TX_TN.match(upper):
+        which = "Maximum" if m.group("which") == "X" else "Minimum"
+        sign = "-" if m.group("sign") == "M" else ""
+        return (
+            f"{which} forecast temperature {sign}{int(m.group('tt'))} °C "
+            f"on day {int(m.group('dd'))} at {m.group('hh')}:00 UTC"
+        )
+    if m := _TAF_QNH_INS.match(upper):
+        inches = int(m.group("raw")) / 100
+        return f"Lowest forecast altimeter setting {inches:.2f} inHg"
+    if m := _TAF_WS.match(upper):
+        height = int(m.group("hhh")) * 100
+        return (
+            f"Non-convective low-level wind shear: wind "
+            f"{int(m.group('dir'))}° at {int(m.group('spd'))} kt "
+            f"at {height} ft above ground"
+        )
+    if m := _TAF_TURB.match(upper):
+        base = m.group("base")
+        thick = m.group("thick")
+        base_txt = "base not reported" if base == "///" else f"base {int(base) * 100} ft"
+        thick_txt = "thickness not reported" if thick == "/" else f"thickness {int(thick) * 1000} ft"
+        return f"Forecast turbulence (intensity {m.group('intensity')}), {base_txt}, {thick_txt}"
+    if m := _TAF_ICING.match(upper):
+        base = m.group("base")
+        thick = m.group("thick")
+        base_txt = "base not reported" if base == "///" else f"base {int(base) * 100} ft"
+        thick_txt = "thickness not reported" if thick == "/" else f"thickness {int(thick) * 1000} ft"
+        return f"Forecast icing (intensity {m.group('intensity')}), {base_txt}, {thick_txt}"
     if m := _TAF_PROB.match(upper):
         return f"{int(m.group('pct'))}% probability of the following conditions"
-    if upper.startswith(("FM", "TEMPO", "BECMG", "PROB")):
+    if upper.startswith(("FM", "TEMPO", "BECMG", "PROB", "INTER")):
         return "Change / probability group"
     if upper == "TS":
         return "Forecast weather: Thunderstorm"
@@ -2742,7 +2826,7 @@ def _decode_single_report(tac: str, *, product: str) -> DecodeResult:
         if idx in explained:
             continue
         explanation = classify(token, seen)
-        if explanation is None and product in {"METAR", "SPECI"}:
+        if explanation is None and product in {"METAR", "SPECI", "TAF"}:
             following = tokens[idx + 1][2] if idx + 1 < len(tokens) else ""
             explanation = _whole_miles(token, following)
         if explanation is None:
