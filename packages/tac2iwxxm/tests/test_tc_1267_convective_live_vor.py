@@ -64,3 +64,20 @@ AREA TS MOV FROM 21010KT. TOPS TO FL300.
     result = convert(tac, product="SIGMET", profile="iwxxm_us", iwxxm_version="2025-2")
     assert result.ok is False
     assert any(issue.code == "PARSE_ERROR" and "ZZZ" in issue.message for issue in result.issues)
+
+
+def test_tc_1267_dvlpg_area_after_from_ring_converts() -> None:
+    """NWS DVLPG AREA after a closed FROM ring isolates geometry (F6)."""
+    tac = """\
+WSUS32 KKCI 021855
+MKCC WST 021855
+CONVECTIVE SIGMET 30C
+VALID UNTIL 2055Z
+TX OK
+FROM 10E MMB-50WSW END-20N CDS-30ESE AMA-10E MMB
+DVLPG AREA TS MOV FROM 22025KT. TOPS TO FL340.
+"""
+    result = convert(tac, product="SIGMET", profile="iwxxm_us", iwxxm_version="2025-2")
+    assert result.ok, result.issues
+    assert result.xml is not None
+    assert "posList" in result.xml or "pos>" in result.xml
