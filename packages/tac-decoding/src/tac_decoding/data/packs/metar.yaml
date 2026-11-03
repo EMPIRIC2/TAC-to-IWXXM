@@ -54,6 +54,24 @@ rules:
   - id: visibility
     pattern: ["\\d{4}"]
     explain: "Visibility {0} metres"
+  - id: ao2a
+    pattern: ["AO2A"]
+    explain: "Automated station with observer augmentation {0}"
+  - id: sensor_no
+    pattern: ["(?:FZRANO|TSNO|RVRNO)"]
+    explain: "Sensor not available {0}"
+  - id: six_hour_temp
+    pattern: ["[12][01]\\d{3}"]
+    explain: "6-hour temperature extreme {0}"
+  - id: day_temp
+    pattern: ["4[01]\\d{3}[01]\\d{3}"]
+    explain: "24-hour temperature extremes {0}"
+  - id: precip_period
+    pattern: ["[67](?:\\d{4}|/{4})"]
+    explain: "Period precipitation {0}"
+  - id: temp_tenths
+    pattern: ["T[01]\\d{3}(?:[01]\\d{3})?"]
+    explain: "Temperature tenths group {0}"
   - id: equal
     pattern: ["="]
     explain: "Report terminator"

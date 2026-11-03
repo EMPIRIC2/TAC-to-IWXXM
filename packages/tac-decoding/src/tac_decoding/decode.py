@@ -32,6 +32,12 @@ _CLOUD = re.compile(r"^(?P<amt>FEW|SCT|BKN|OVC|SKC|CLR|NSC|NCD)(?P<hgt>\d{3})?(?
 _WIND_VAR = re.compile(r"^(?P<a>\d{3})V(?P<b>\d{3})$")
 _VIS_FRAC = re.compile(r"^(?P<num>\d)/(?P<den>\d)SM$")
 _T_GROUP = re.compile(r"^T(?P<t>[01]\d{3})(?P<td>[01]\d{3})$")
+_T_TEMP_ONLY = re.compile(r"^T(?P<body>[01]\d{3})$")
+_SIX_HOUR_MAX = re.compile(r"^1(?P<body>[01]\d{3})$")
+_SIX_HOUR_MIN = re.compile(r"^2(?P<body>[01]\d{3})$")
+_DAY_MAX_MIN = re.compile(r"^4(?P<max>[01]\d{3})(?P<min>[01]\d{3})$")
+_PRECIP_3_6H = re.compile(r"^6(?P<amt>\d{4}|/{4})$")
+_PRECIP_24H = re.compile(r"^7(?P<amt>\d{4}|/{4})$")
 _PRESSURE_TENDENCY = re.compile(r"^5(?P<char>[0-8])(?P<amt>\d{3})$")
 _PRECIP_AMOUNT = re.compile(r"^P(?P<amt>\d{4})$")
 _PEAK_WIND = re.compile(r"^(?P<dir>\d{3})(?P<spd>\d{2,3})/(?P<hh>\d{2})(?P<mm>\d{2})$")
@@ -1219,6 +1225,14 @@ def _explain_metar_speci(token: str, *, product: str, seen: dict[str, int]) -> s
         return "Automated station without precipitation discriminator"
     if upper == "AO2":
         return "Automated station with precipitation discriminator"
+    if upper == "AO2A":
+        return "Automated station with precipitation discriminator, augmented by an observer"
+    if upper == "FZRANO":
+        return "Freezing-rain sensor not working"
+    if upper == "TSNO":
+        return "Lightning detector not working"
+    if upper == "RVRNO":
+        return "Runway visual range should be reported but is not available"
     if upper.startswith("SLP") and len(upper) == 6 and upper[3:].isdigit():
         return "Sea-level pressure (FMH-1 SLP code)"
     if upper == "=" or token == "=":
@@ -1306,6 +1320,8 @@ def _explain_metar_speci(token: str, *, product: str, seen: dict[str, int]) -> s
         return f"Prevailing visibility {m.group('num')}/{m.group('den')} statute mile"
     if m := _T_GROUP.match(upper):
         return f"Temperature {_tenths_c(m.group('t'))} °C, dewpoint {_tenths_c(m.group('td'))} °C in tenths"
+    if m := _T_TEMP_ONLY.match(upper):
+        return f"Temperature {_tenths_c(m.group('body'))} °C (dewpoint not reported)"
     if seen.get("rmk"):
         remark = _explain_metar_remark(upper, seen)
         if remark:
@@ -1333,6 +1349,34 @@ def _explain_metar_remark(upper: str, seen: dict[str, int]) -> str | None:
         return "Sea-level pressure not available"
     if upper == "PNO":
         return "Precipitation amount not available"
+    if upper == "FZRANO":
+        return "Freezing-rain sensor not working"
+    if upper == "TSNO":
+        return "Lightning detector not working"
+    if upper == "AO2A":
+        return "Automated station with precipitation discriminator, augmented by an observer"
+    if m := _SIX_HOUR_MAX.match(upper):
+        return f"6-hour maximum temperature {_tenths_c(m.group('body'))} °C"
+    if m := _SIX_HOUR_MIN.match(upper):
+        return f"6-hour minimum temperature {_tenths_c(m.group('body'))} °C"
+    if m := _DAY_MAX_MIN.match(upper):
+        return f"24-hour maximum {_tenths_c(m.group('max'))} °C, minimum {_tenths_c(m.group('min'))} °C"
+    if m := _PRECIP_3_6H.match(upper):
+        amt = m.group("amt")
+        if amt == "////":
+            return "3- or 6-hour precipitation not determinable"
+        hundredths = int(amt)
+        if hundredths == 0:
+            return "3- or 6-hour precipitation: trace"
+        return f"3- or 6-hour precipitation {hundredths / 100:.2f} inches"
+    if m := _PRECIP_24H.match(upper):
+        amt = m.group("amt")
+        if amt == "////":
+            return "24-hour precipitation not determinable"
+        hundredths = int(amt)
+        if hundredths == 0:
+            return "24-hour precipitation: trace"
+        return f"24-hour precipitation {hundredths / 100:.2f} inches"
     if phrase := _pressure_tendency(upper):
         return phrase
     if phrase := _precip_amount(upper):
