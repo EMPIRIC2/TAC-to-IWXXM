@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "description": "CONUS VOR/VORTAC and airport reference points for US SIGMET FROM-chain geometry. The original points are from FAA NASR / AirNav navaid publications. Points added on 2026-09-23 cover live NWS convective SIGMET FROM-chains: OurAirports navaids (public domain), plus MMB, CLE, and TRV from published navaid coordinates and MIA from the OurAirports airport list. Points added on 2026-10-30 cover additional live convective misses: chart-id aliases absent from OurAirports (PHX\u2192Phoenix/PXR coords, AMA), unique US VORTAC rows when OurAirports is multi-country ambiguous, and common CONUS VORs needed offline under the pytest closed source. Points added on 2026-10-31 cover Stage live-map WST residuals: ambiguous OurAirports multi-country idents (TOU, MTU, PIR, LEV) and offline peers (HQM, HVE, RSK, TUL) under the pytest closed source. Points added on 2026-11-02 cover Stage live-map WST residuals: ambiguous OurAirports multi-country idents (END, ALS, ORL, FAR, GRB, BRD) and TLH chart id mapped to Seminole VORTAC (SZW) coordinates.",
+  "description": "CONUS VOR/VORTAC and airport reference points for US SIGMET FROM-chain geometry. The original points are from FAA NASR / AirNav navaid publications. Points added on 2026-09-23 cover live NWS convective SIGMET FROM-chains: OurAirports navaids (public domain), plus MMB, CLE, and TRV from published navaid coordinates and MIA from the OurAirports airport list. Points added on 2026-10-30 cover additional live convective misses: chart-id aliases absent from OurAirports (PHX\u2192Phoenix/PXR coords, AMA), unique US VORTAC rows when OurAirports is multi-country ambiguous, and common CONUS VORs needed offline under the pytest closed source. Points added on 2026-10-31 cover Stage live-map WST residuals: ambiguous OurAirports multi-country idents (TOU, MTU, PIR, LEV) and offline peers (HQM, HVE, RSK, TUL) under the pytest closed source. Points added on 2026-11-02 cover Stage live-map WST residuals: ambiguous OurAirports multi-country idents (END, ALS, ORL, FAR, GRB, BRD) and TLH chart id mapped to Seminole VORTAC (SZW) coordinates, plus offline peers (CEW, DEN, EAU, MCK, RSW, SRQ) required by those FROM-chains under the pytest closed source.",
   "points": {
     "ABI": {
       "lat": 32.4813,
@@ -132,6 +132,11 @@
       "lon": -100.289001,
       "name": "Childress"
     },
+    "CEW": {
+      "lat": 30.8262,
+      "lon": -86.6791,
+      "name": "Crestview VORTAC"
+    },
     "CHE": {
       "lat": 40.5201,
       "lon": -107.305,
@@ -187,6 +192,11 @@
       "lon": -90.709099,
       "name": "Dubuque"
     },
+    "DEN": {
+      "lat": 39.8125,
+      "lon": -104.661003,
+      "name": "Denver VOR/DME"
+    },
     "DIK": {
       "lat": 46.860001,
       "lon": -102.774002,
@@ -221,6 +231,11 @@
       "lat": 39.302299,
       "lon": -112.505997,
       "name": "Delta"
+    },
+    "EAU": {
+      "lat": 44.897701,
+      "lon": -91.4785,
+      "name": "Eau Claire VORTAC"
     },
     "ECG": {
       "lat": 36.257599,
@@ -447,6 +462,11 @@
       "lon": -94.737099,
       "name": "Kansas City"
     },
+    "MCK": {
+      "lat": 40.2038,
+      "lon": -100.594002,
+      "name": "McCook VOR/DME"
+    },
     "MCW": {
       "lat": 43.0947,
       "lon": -93.329903,
@@ -587,6 +607,11 @@
       "lon": -108.098999,
       "name": "Rattlesnake VORTAC"
     },
+    "RSW": {
+      "lat": 26.5299,
+      "lon": -81.775803,
+      "name": "Fort Myers VORTAC"
+    },
     "RWF": {
       "lat": 44.467201,
       "lon": -95.128304,
@@ -641,6 +666,11 @@
       "lat": 33.987301,
       "lon": -98.593498,
       "name": "Wichita Falls"
+    },
+    "SRQ": {
+      "lat": 27.3978,
+      "lon": -82.554298,
+      "name": "Sarasota VORTAC"
     },
     "SSO": {
       "lat": 32.269199,
