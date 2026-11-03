@@ -8,6 +8,7 @@ from typing import Any, cast
 from xml.sax.saxutils import escape
 
 from tac2iwxxm.profiles.annex3_emit._common import *
+from tac2iwxxm.profiles.annex3_emit.taf_cloud import taf_cloud_block
 from tac2iwxxm.taf_time_links import base_forecast_phenomenon_href
 from tac2iwxxm.visibility_measure import prevailing_from_statute_miles
 
@@ -187,61 +188,6 @@ def _taf_wind_block(fcst: dict[str, Any]) -> str:
 """
 
 
-def _taf_cloud_block(fcst: dict[str, Any], *, gml_id: str) -> str:
-    """
-    Internal helper ``_taf_cloud_block``.
-
-    Parameters
-    ----------
-    fcst : dict[str, Any]
-        Argument ``fcst``.
-
-    gml_id : str
-        Argument ``gml_id``.
-
-    Returns
-    -------
-    str
-        Return value.
-    """
-    clouds_raw = fcst.get("clouds")
-    layers: list[dict[str, Any]] = []
-    if isinstance(clouds_raw, list) and clouds_raw:
-        layers.extend(cast(dict[str, Any], item) for item in cast(list[Any], clouds_raw) if isinstance(item, dict))
-    elif fcst.get("cloud_amount") and fcst.get("cloud_base_ft") is not None:
-        layers = [{"amount": fcst["cloud_amount"], "base_ft": fcst["cloud_base_ft"]}]
-    if not layers:
-        return ""
-    layer_xml: list[str] = []
-    for layer in layers:
-        href = _CLOUD_HREF.format(amt=layer["amount"])
-        ctype_xml = ""
-        if layer.get("cloud_type"):
-            thref = escape(_CLOUD_TYPE_HREF.format(ctype=str(layer["cloud_type"])))
-            ctype_xml = f'\n              <iwxxm:cloudType xlink:href="{thref}"/>'
-        if layer.get("base_not_observable"):
-            base_xml = (
-                '<iwxxm:base uom="N/A" xsi:nil="true" nilReason="http://codes.wmo.int/common/nil/notObservable"/>'
-            )
-        else:
-            base_xml = f'<iwxxm:base uom="[ft_i]">{layer["base_ft"]}</iwxxm:base>'
-        layer_xml.append(
-            f"""          <iwxxm:layer>
-            <iwxxm:CloudLayer>
-              <iwxxm:amount xlink:href="{escape(href)}"/>
-              {base_xml}{ctype_xml}
-            </iwxxm:CloudLayer>
-          </iwxxm:layer>"""
-        )
-    joined = "\n".join(layer_xml)
-    return f"""      <iwxxm:cloud>
-        <iwxxm:AerodromeCloudForecast gml:id="{gml_id}">
-{joined}
-        </iwxxm:AerodromeCloudForecast>
-      </iwxxm:cloud>
-"""
-
-
 def _taf_weather_block(fcst: dict[str, Any]) -> str:
     """
     Internal helper ``_taf_weather_block``.
@@ -302,7 +248,7 @@ def _taf_change_forecasts(ir: dict[str, Any], station: str) -> str:
         vis = "" if change.get("cavok") else _taf_visibility_block(change)
         wind = "" if change.get("cavok") else _taf_wind_block(change)
         weather = "" if change.get("cavok") else _taf_weather_block(change)
-        cloud = "" if change.get("cavok") else _taf_cloud_block(change, gml_id=f"cloud.chg.{idx}.{station.lower()}")
+        cloud = "" if change.get("cavok") else taf_cloud_block(change, gml_id=f"cloud.chg.{idx}.{station.lower()}")
         parts.append(
             f"""  <iwxxm:changeForecast>
     <iwxxm:MeteorologicalAerodromeForecast gml:id="fcst.chg.{idx}.{station.lower()}" changeIndicator="{indicator}" cloudAndVisibilityOK="{cavok}">
@@ -467,7 +413,7 @@ def emit_taf_annex3(
         cloud = ""
         if not ir.get("cavok"):
             vis = _taf_visibility_block(ir)
-            cloud = _taf_cloud_block(ir, gml_id=f"cloud.base.{station.lower()}")
+            cloud = taf_cloud_block(ir, gml_id=f"cloud.base.{station.lower()}")
         base_fcst = f"""  <iwxxm:baseForecast>
     <iwxxm:MeteorologicalAerodromeForecast gml:id="fcst.base.{station.lower()}" cloudAndVisibilityOK="{cavok}">
       <iwxxm:phenomenonTime xlink:href="{base_forecast_phenomenon_href()}"/>
