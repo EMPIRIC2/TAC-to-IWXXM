@@ -1378,9 +1378,9 @@ def _parse_convective_sigmet(
         if fl_m is not None:  # pragma: no branch — same regex as elif guard
             ir["top_fl"] = int(fl_m.group("fl"))
             ir["top_qualifier"] = "TO"
-    # Isolate the FROM chain before AREA / LINE / DMSHG hazard lead-ins (NWS WST).
+    # Isolate the FROM chain before AREA / DVLPG / LINE / DMSHG hazard lead-ins (NWS WST).
     geom_src = re.split(
-        r"\b(?:AREA|DMSHG\s+LINE|LINE)\b",
+        r"\b(?:DVLPG|AREA|DMSHG\s+LINE|LINE)\b",
         body,
         maxsplit=1,
         flags=re.IGNORECASE,
@@ -1511,6 +1511,12 @@ def parse_sigmet(tac: str, *, product: str = "SIGMET") -> dict[str, Any]:
         ir["ahl_tt"] = ahl_tt
     _enrich_sigmet_body(ir, body)
     if not ir.get("cancel") and not ir.get("phenomenon"):
+        # AirWx tokens such as MOD TURB belong on AIRMET; SigWx uses SEV TURB.
+        if re.search(r"\bMOD\s+TURB\b", body, flags=re.IGNORECASE):
+            raise ValueError(
+                "SIGMET body missing phenomenon: moderate turbulence (MOD TURB) is "
+                "not a SIGMET phenomenon — use SEV TURB on a SIGMET, or issue an AIRMET"
+            )
         raise ValueError("SIGMET body missing phenomenon")
     # Content-selected IWXXM root under product=sigmet (E19-13 / F23 V2 / TC-EV029-004).
     # WC/WV AHL select family roots for CNL when the body omits phenomenon.

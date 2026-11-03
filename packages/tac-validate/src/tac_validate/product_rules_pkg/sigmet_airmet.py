@@ -666,6 +666,8 @@ def _check_sigmet_tc(*, start: int, end: int, upper: str) -> list[Issue]:
 
 _CONVECTIVE_SIGMET_BULLETIN = re.compile(r"\bCONVECTIVE\s+SIGMET\b")
 _CONVECTIVE_VALID_UNTIL = re.compile(r"\bVALID\s+UNTIL\s+\d{4,6}Z\b")
+# NWS WST developing-area qualifier (often after the closed FROM ring).
+_CONVECTIVE_DVLPG = re.compile(r"\bDVLPG\b")
 # US domestic non-convective WS: VALID UNTIL may omit trailing Z (FMH / WSUS form).
 _US_DOMESTIC_WS_VALID_UNTIL = re.compile(r"\bVALID\s+UNTIL\s+\d{4,6}Z?\b")
 _WSUS_TTAAII = re.compile(r"\bWSUS\d{2}\b")
@@ -720,20 +722,35 @@ def _check_convective_sigmet(*, start: int, end: int, upper: str) -> list[Issue]
     Returns
     -------
     list[Issue]
-        Empty when ``VALID UNTIL`` is present. International FIR and OBS rules
-        do not apply to this form.
+        Findings for missing ``VALID UNTIL`` and/or a ``DVLPG`` developing
+        qualifier. International FIR and OBS rules do not apply to this form.
     """
-    if _CONVECTIVE_VALID_UNTIL.search(upper):
-        return []
-    return [
-        _issue(
-            "MISSING_VALID",
-            "CONVECTIVE SIGMET missing VALID UNTIL time",
-            start=start,
-            end=end,
-            location="valid",
+    issues: list[Issue] = []
+    if not _CONVECTIVE_VALID_UNTIL.search(upper):
+        issues.append(
+            _issue(
+                "MISSING_VALID",
+                "CONVECTIVE SIGMET missing VALID UNTIL time",
+                start=start,
+                end=end,
+                location="valid",
+            )
         )
-    ]
+    dvlpg = _CONVECTIVE_DVLPG.search(upper)
+    if dvlpg is not None:
+        # Critical/error: operator must see developing qualifier even when convert
+        # soft-tolerates DVLPG AREA after isolating the FROM ring.
+        issues.append(
+            _issue(
+                "DVLPG_AREA_QUALIFIER",
+                "Convective SIGMET uses DVLPG (developing) before AREA. "
+                "Keep DVLPG off the FROM ring; it is a hazard qualifier, not a VOR offset.",
+                start=start + dvlpg.start(),
+                end=start + dvlpg.end(),
+                location="geometry",
+            )
+        )
+    return issues
 
 
 def _check_us_domestic_ws_sigmet(*, start: int, end: int, upper: str) -> list[Issue]:

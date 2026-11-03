@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated": "2026-11-01",
+  "generated": "2026-11-02",
   "source": "PROVENANCE_MAP.json catalog_codes",
   "codes": {
     "AMD_PRESENT": {
@@ -163,6 +163,13 @@
       "status": null,
       "note": null,
       "source_attribution": null
+    },
+    "DVLPG_AREA_QUALIFIER": {
+      "source_id": "fmh-1",
+      "source_url": "https://aviationweather.gov/data/products/sigmet/",
+      "status": "ok",
+      "note": "NWS convective SIGMET developing-area (DVLPG AREA) hazard qualifier; keep off FROM ring",
+      "source_attribution": "fmh-1 - https://aviationweather.gov/data/products/sigmet/ - NWS convective SIGMET developing-area (DVLPG AREA) hazard qualifier; keep off FROM ring"
     },
     "EMPTY_TAC": {
       "source_id": "icao-annex-3",

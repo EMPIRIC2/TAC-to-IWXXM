@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "description": "CONUS VOR/VORTAC and airport reference points for US SIGMET FROM-chain geometry. The original points are from FAA NASR / AirNav navaid publications. Points added on 2026-09-23 cover live NWS convective SIGMET FROM-chains: OurAirports navaids (public domain), plus MMB, CLE, and TRV from published navaid coordinates and MIA from the OurAirports airport list. Points added on 2026-10-30 cover additional live convective misses: chart-id aliases absent from OurAirports (PHX\u2192Phoenix/PXR coords, AMA), unique US VORTAC rows when OurAirports is multi-country ambiguous, and common CONUS VORs needed offline under the pytest closed source. Points added on 2026-10-31 cover Stage live-map WST residuals: ambiguous OurAirports multi-country idents (TOU, MTU, PIR, LEV) and offline peers (HQM, HVE, RSK, TUL) under the pytest closed source. Points added on 2026-11-02 cover Stage live-map WST residuals: ambiguous OurAirports multi-country idents (END, ALS, ORL, FAR, GRB, BRD) and TLH chart id mapped to Seminole VORTAC (SZW) coordinates, plus offline peers (CEW, DEN, EAU, MCK, RSW, SRQ) required by those FROM-chains under the pytest closed source.",
+  "description": "CONUS VOR/VORTAC and airport reference points for US SIGMET FROM-chain geometry. The original points are from FAA NASR / AirNav navaid publications. Points added on 2026-09-23 cover live NWS convective SIGMET FROM-chains: OurAirports navaids (public domain), plus MMB, CLE, and TRV from published navaid coordinates and MIA from the OurAirports airport list. Points added on 2026-10-30 cover additional live convective misses: chart-id aliases absent from OurAirports (PHX\u2192Phoenix/PXR coords, AMA), unique US VORTAC rows when OurAirports is multi-country ambiguous, and common CONUS VORs needed offline under the pytest closed source. Points added on 2026-10-31 cover Stage live-map WST residuals: ambiguous OurAirports multi-country idents (TOU, MTU, PIR, LEV) and offline peers (HQM, HVE, RSK, TUL) under the pytest closed source. Points added on 2026-11-02 cover Stage live-map WST residuals: ambiguous OurAirports multi-country idents (END, ALS, ORL, FAR, GRB, BRD) and TLH chart id mapped to Seminole VORTAC (SZW) coordinates, plus offline peers (CEW, DEN, EAU, MCK, RSW, SRQ) required by those FROM-chains under the pytest closed source. Points added on 2026-11-02 (DVLPG residual follow-up) cover OKC: OurAirports navaids only lists JP Okayama under OKC, so the US Oklahoma City / Will Rogers airport coordinates (OurAirports airports.csv KOKC) are seeded for NWS WST FROM-chains under the pytest closed source.",
   "points": {
     "ABI": {
       "lat": 32.4813,
@@ -521,6 +521,11 @@
       "lat": 34.6959,
       "lon": -83.297699,
       "name": "Foothills"
+    },
+    "OKC": {
+      "lat": 35.393388,
+      "lon": -97.598248,
+      "name": "Oklahoma City (Will Rogers)"
     },
     "OMN": {
       "lat": 29.303301,

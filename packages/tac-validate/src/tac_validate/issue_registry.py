@@ -637,6 +637,13 @@ ISSUES: tuple[IssueSpec, ...] = (
         product="sigmet",
         tags=("stnr", "movement", "sigmet", "airmet"),
     ),
+    _row(
+        "DVLPG_AREA_QUALIFIER",
+        "error",
+        "Convective SIGMET uses DVLPG (developing) before AREA. Keep DVLPG off the FROM ring; it is a hazard qualifier, not a VOR offset.",
+        product="sigmet",
+        tags=("geometry", "convective", "sigmet", "us_nws"),
+    ),
     # F23 theme G2 - sequence / validity / FIR / OBS·FCST / intensity (#733)
     _row(
         "SIGMET_SEQUENCE",

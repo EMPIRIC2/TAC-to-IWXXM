@@ -1066,6 +1066,16 @@
       "note": "EUR Doc 014 public; Annex 3 paywall companion"
     },
     {
+      "code": "DVLPG_AREA_QUALIFIER",
+      "status": "ok",
+      "source_id": "fmh-1",
+      "source_url": "https://aviationweather.gov/data/products/sigmet/",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/fmh1-2019-mining-notes.md",
+      "ticket": null,
+      "note": "NWS convective SIGMET developing-area (DVLPG AREA) hazard qualifier; keep off FROM ring"
+    },
+    {
       "code": "INVALID_TX_TN",
       "status": "paywall",
       "source_id": "icao-annex-3",

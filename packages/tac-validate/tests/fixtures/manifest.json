@@ -3151,5 +3151,18 @@
       "expected_codes": ["MISSING_VONA_VOLCANO"],
       "require_spans": true
     }
+  ],
+  "dvlpg_errors": [
+    {
+      "id": "sigmet_dvlpg_area_qualifier",
+      "product": "SIGMET",
+      "theme": "WST",
+      "depth": "full_checklist",
+      "cite": "NWS convective DVLPG before AREA is a developing hazard qualifier; keep off FROM ring",
+      "tac": "negative/sigmet/dvlpg_area_qualifier.tac",
+      "ok": false,
+      "expected_codes": ["DVLPG_AREA_QUALIFIER"],
+      "require_spans": true
+    }
   ]
 }
