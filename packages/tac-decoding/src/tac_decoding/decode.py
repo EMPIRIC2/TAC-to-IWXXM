@@ -1349,12 +1349,6 @@ def _explain_metar_remark(upper: str, seen: dict[str, int]) -> str | None:
         return "Sea-level pressure not available"
     if upper == "PNO":
         return "Precipitation amount not available"
-    if upper == "FZRANO":
-        return "Freezing-rain sensor not working"
-    if upper == "TSNO":
-        return "Lightning detector not working"
-    if upper == "AO2A":
-        return "Automated station with precipitation discriminator, augmented by an observer"
     if m := _SIX_HOUR_MAX.match(upper):
         return f"6-hour maximum temperature {_tenths_c(m.group('body'))} °C"
     if m := _SIX_HOUR_MIN.match(upper):

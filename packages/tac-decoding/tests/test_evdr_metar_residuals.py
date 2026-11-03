@@ -35,16 +35,17 @@ def test_metar_six_hour_max_min_and_precip() -> None:
 
 
 def test_metar_sensor_outages_and_ao2a() -> None:
-    tac = "METAR KNHK 031855Z AUTO 00000KT 10SM CLR 18/12 A2992 RMK AO2A FZRANO TSNO="
+    tac = "METAR KNHK 031855Z AUTO 00000KT 10SM CLR 18/12 A2992 RMK AO2A FZRANO TSNO RVRNO="
     codes = _codes(tac)
     assert "freezing" in codes["FZRANO"].lower()
     assert "lightning" in codes["TSNO"].lower() or "thunderstorm" in codes["TSNO"].lower()
     assert "augment" in codes["AO2A"].lower() or "observer" in codes["AO2A"].lower()
+    assert "visual range" in codes["RVRNO"].lower()
     residual = " ".join(r.text for r in decode_tac(tac, product="METAR").residuals)
-    for tok in ("FZRANO", "TSNO", "AO2A"):
+    for tok in ("FZRANO", "TSNO", "AO2A", "RVRNO"):
         assert tok not in residual
-    pack = _pack_codes("AO2A FZRANO TSNO")
-    assert all(tok in pack for tok in ("AO2A", "FZRANO", "TSNO"))
+    pack = _pack_codes("AO2A FZRANO TSNO RVRNO")
+    assert all(tok in pack for tok in ("AO2A", "FZRANO", "TSNO", "RVRNO"))
 
 
 def test_metar_twenty_four_hour_temps_and_t0() -> None:
@@ -56,3 +57,15 @@ def test_metar_twenty_four_hour_temps_and_t0() -> None:
     residual = " ".join(r.text for r in decode_tac(tac, product="METAR").residuals)
     assert "401001000" not in residual
     assert "T0100" not in residual
+
+
+def test_metar_period_precip_trace_and_missing() -> None:
+    tac = "METAR KJFK 031851Z 18008KT 10SM CLR 10/10 A3012 RMK AO2 60000 7//// 6//// 70000="
+    codes = _codes(tac)
+    assert "trace" in codes["60000"].lower()
+    assert "not determinable" in codes["6////"].lower()
+    assert "not determinable" in codes["7////"].lower()
+    assert "trace" in codes["70000"].lower()
+    residual = " ".join(r.text for r in decode_tac(tac, product="METAR").residuals)
+    for tok in ("60000", "6////", "7////", "70000"):
+        assert tok not in residual

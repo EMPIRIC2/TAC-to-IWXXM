@@ -54,6 +54,8 @@ def test_taf_cavok_nsw_vv_inter() -> None:
     assert pack["INTER"]
     assert pack["VV002"]
     assert pack["VV///"]
+    missing = _codes("TAF YSSY 030400Z 0306/0412 06015KT VV///=")
+    assert missing["VV///"] == "Vertical visibility not reported"
 
 
 def test_taf_qnh_ins_and_wind_shear() -> None:
