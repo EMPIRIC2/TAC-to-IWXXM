@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "description": "CONUS VOR/VORTAC and airport reference points for US SIGMET FROM-chain geometry. The original points are from FAA NASR / AirNav navaid publications. Points added on 2026-09-23 cover live NWS convective SIGMET FROM-chains: OurAirports navaids (public domain), plus MMB, CLE, and TRV from published navaid coordinates and MIA from the OurAirports airport list. Points added on 2026-10-30 cover additional live convective misses: chart-id aliases absent from OurAirports (PHX\u2192Phoenix/PXR coords, AMA), unique US VORTAC rows when OurAirports is multi-country ambiguous, and common CONUS VORs needed offline under the pytest closed source. Points added on 2026-10-31 cover Stage live-map WST residuals: ambiguous OurAirports multi-country idents (TOU, MTU, PIR, LEV) and offline peers (HQM, HVE, RSK, TUL) under the pytest closed source.",
+  "description": "CONUS VOR/VORTAC and airport reference points for US SIGMET FROM-chain geometry. The original points are from FAA NASR / AirNav navaid publications. Points added on 2026-09-23 cover live NWS convective SIGMET FROM-chains: OurAirports navaids (public domain), plus MMB, CLE, and TRV from published navaid coordinates and MIA from the OurAirports airport list. Points added on 2026-10-30 cover additional live convective misses: chart-id aliases absent from OurAirports (PHX\u2192Phoenix/PXR coords, AMA), unique US VORTAC rows when OurAirports is multi-country ambiguous, and common CONUS VORs needed offline under the pytest closed source. Points added on 2026-10-31 cover Stage live-map WST residuals: ambiguous OurAirports multi-country idents (TOU, MTU, PIR, LEV) and offline peers (HQM, HVE, RSK, TUL) under the pytest closed source. Points added on 2026-11-02 cover Stage live-map WST residuals: ambiguous OurAirports multi-country idents (END, ALS, ORL, FAR, GRB, BRD) and TLH chart id mapped to Seminole VORTAC (SZW) coordinates.",
   "points": {
     "ABI": {
       "lat": 32.4813,
@@ -31,6 +31,11 @@
       "lat": 40.016998,
       "lon": -80.817299,
       "name": "Bellaire"
+    },
+    "ALS": {
+      "lat": 37.349201,
+      "lon": -105.816002,
+      "name": "Alamosa VORTAC"
     },
     "AMA": {
       "lat": 35.239547,
@@ -91,6 +96,11 @@
       "lat": 43.4632,
       "lon": -108.300003,
       "name": "Boysen Reservoir"
+    },
+    "BRD": {
+      "lat": 46.348301,
+      "lon": -94.026001,
+      "name": "Brainerd VORTAC"
     },
     "BTY": {
       "lat": 36.800598,
@@ -237,6 +247,11 @@
       "lon": -114.848,
       "name": "Ely"
     },
+    "END": {
+      "lat": 36.345001,
+      "lon": -97.918297,
+      "name": "Vance VORTAC"
+    },
     "EYW": {
       "lat": 24.585899,
       "lon": -81.800499,
@@ -246,6 +261,11 @@
       "lat": 37.673401,
       "lon": -90.234001,
       "name": "Farmington"
+    },
+    "FAR": {
+      "lat": 46.753399,
+      "lon": -96.851303,
+      "name": "Fargo VORTAC"
     },
     "FOD": {
       "lat": 42.611198,
@@ -286,6 +306,11 @@
       "lat": 34.9613,
       "lon": -85.153397,
       "name": "Choo Choo"
+    },
+    "GRB": {
+      "lat": 44.555199,
+      "lon": -88.194901,
+      "name": "Green Bay VORTAC"
     },
     "HEC": {
       "lat": 34.797001,
@@ -492,6 +517,11 @@
       "lon": -76.200302,
       "name": "Norfolk"
     },
+    "ORL": {
+      "lat": 28.5427,
+      "lon": -81.334999,
+      "name": "Orlando VORTAC"
+    },
     "OSW": {
       "lat": 37.157501,
       "lon": -95.203598,
@@ -641,6 +671,11 @@
       "lat": 33.282501,
       "lon": -107.280998,
       "name": "Truth Or Consequences"
+    },
+    "TLH": {
+      "lat": 30.5562,
+      "lon": -84.374001,
+      "name": "Tallahassee chart id TLH (Seminole VORTAC SZW)"
     },
     "TOU": {
       "lat": 48.2999,
