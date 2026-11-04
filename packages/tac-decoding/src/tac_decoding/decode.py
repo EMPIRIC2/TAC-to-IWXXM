@@ -42,10 +42,21 @@ _PRESSURE_TENDENCY = re.compile(r"^5(?P<char>[0-8])(?P<amt>\d{3})$")
 _PRECIP_AMOUNT = re.compile(r"^P(?P<amt>\d{4})$")
 _PEAK_WIND = re.compile(r"^(?P<dir>\d{3})(?P<spd>\d{2,3})/(?P<hh>\d{2})(?P<mm>\d{2})$")
 _DENSITY_FT = re.compile(r"^(?P<n>-?\d+)FT$")
+_WIND_ALOFT_FT = re.compile(r"^(?P<ft>\d{3,5})FT$")
+_SEA_STATE = re.compile(r"^W(?P<wave>\d{1,2})/S(?P<swell>\d)$")
+_ICE_ACCRETION = re.compile(r"^I(?P<amt>\d{4})$")
+_MISSING_TEMP_DEW = re.compile(r"^(?P<body>\d{2})///$")
+_SHORT_PRECIP = re.compile(r"^P(?P<amt>\d{3})$")
+_RWY_DESIGNATOR = re.compile(r"^RWY(?P<rw>\d{2}[LCR]?)$")
+_LTG_TYPES = re.compile(r"^LTG(?P<types>[A-Z]+)$")
+_FOG_OKTAS = re.compile(r"^FG(?P<amt>[1-8])$")
 _PAST_HOUR = re.compile(r"^(?P<n>\d+)PAST$")
 _FRAC_MILE = re.compile(r"^(?P<num>\d)/(?P<den>\d)$")
 _BBB_CORRECTION = re.compile(r"^CC[A-Z]$")
 _BBB_DELAYED = re.compile(r"^RR[A-Z]$")
+_BBB_AMENDMENT = re.compile(r"^AA[A-Z]$")
+_ELLIPSIS_HAZARD = re.compile(r"^(?P<head>TORNADOES|HAIL|WIND|GUSTS)\.\.\.(?P<tail>HAIL|WIND|GUSTS|TORNADOES)?$")
+_IN_WIND_ELLIPSIS = re.compile(r"^IN\.\.\.WIND$|^\d+IN\.\.\.WIND$")
 _CA_CLOUD_TYPE = "(?:TCU|CI|CS|CC|AC|AS|NS|SC|ST|SF|CU|CF|CB)"
 _CA_CLOUD_AMOUNTS = re.compile(rf"^(?:{_CA_CLOUD_TYPE}\d)+$")
 _CA_CLOUD_ONE = re.compile(rf"^{_CA_CLOUD_TYPE}$")
@@ -220,6 +231,19 @@ _RMK_WORD = {
     "PWINO": "Present weather not available",
     "LTG": "Lightning",
     "AND": "And",
+    "SFC": "Surface",
+    "TWR": "Tower",
+    "OHD": "Overhead",
+    "BINOVC": "Breaks in overcast",
+    "OCNL": "Occasional",
+    "FRQ": "Frequent",
+    "CONS": "Continuous",
+    "APCH": "Approach",
+    "IN": "In",
+    "BIRD": "Bird",
+    "HAZARD": "Hazard",
+    "WIND": "Wind",
+    "RWY": "Runway",
 }
 _US_STATE = {
     "AL": "Alabama",
@@ -1092,11 +1116,16 @@ def _coord_token(token: str) -> str:
     str
         The coordinate without a glued hyphen.
     """
-    if len(token) > 1 and token.endswith("-"):
-        bare = token[:-1]
-        if _SIG_LAT.match(bare) or _SIG_LON.match(bare) or _SIG_LATLON.match(bare):
-            return bare
-    return token
+    bare = token
+    if len(bare) > 1 and bare.endswith("-"):
+        candidate = bare[:-1]
+        if _SIG_LAT.match(candidate) or _SIG_LON.match(candidate) or _SIG_LATLON.match(candidate):
+            bare = candidate
+    if len(bare) > 1 and bare.startswith("-"):
+        candidate = bare[1:]
+        if _SIG_LAT.match(candidate) or _SIG_LON.match(candidate) or _SIG_LATLON.match(candidate):
+            bare = candidate
+    return bare
 
 
 def _boundary_points(token: str) -> str | None:
@@ -1189,6 +1218,10 @@ def _explain_metar_speci(token: str, *, product: str, seen: dict[str, int]) -> s
         seen["density_alt"] = 0
         if m := _DENSITY_FT.match(upper):
             return f"Density altitude {m.group('n')} ft"
+    if seen.get("wind_aloft"):
+        seen["wind_aloft"] = 0
+        if m := _WIND_ALOFT_FT.match(upper):
+            return f"Wind at {int(m.group('ft'))} ft"
     if seen.get("cig"):
         seen["cig"] = 0
         if m := _WIND_VAR.match(upper):
@@ -1203,6 +1236,8 @@ def _explain_metar_speci(token: str, *, product: str, seen: dict[str, int]) -> s
         return f"Correction ({upper})"
     if _BBB_DELAYED.match(upper):
         return f"Delayed report ({upper})"
+    if _BBB_AMENDMENT.match(upper):
+        return f"Amendment ({upper})"
     if upper == "NIL":
         return "Nil report (no observation)"
     if upper == "CAVOK":
@@ -1221,12 +1256,16 @@ def _explain_metar_speci(token: str, *, product: str, seen: dict[str, int]) -> s
     if upper == "RMK":
         seen["rmk"] = 1
         return "Remarks section"
-    if upper == "AO1":
+    if upper in {"AO1", "A01"}:
         return "Automated station without precipitation discriminator"
-    if upper == "AO2":
+    if upper in {"AO2", "A02"}:
         return "Automated station with precipitation discriminator"
     if upper == "AO2A":
         return "Automated station with precipitation discriminator, augmented by an observer"
+    if m := _SEA_STATE.match(upper):
+        return f"Sea state: waves {int(m.group('wave'))}, swell {int(m.group('swell'))}"
+    if m := _MISSING_TEMP_DEW.match(upper):
+        return f"Temperature {int(m.group('body'))} °C, dewpoint not reported"
     if upper == "FZRANO":
         return "Freezing-rain sensor not working"
     if upper == "TSNO":
@@ -1389,6 +1428,29 @@ def _explain_metar_remark(upper: str, seen: dict[str, int]) -> str | None:
         seen["density"] = 0
         seen["density_alt"] = 1
         return "Altitude"
+    if upper == "WIND":
+        seen["wind_aloft"] = 1
+        return "Wind"
+    if m := _WIND_ALOFT_FT.match(upper):
+        return f"Wind at {int(m.group('ft'))} ft"
+    if m := _ICE_ACCRETION.match(upper):
+        hundredths = int(m.group("amt"))
+        if hundredths == 0:
+            return "Ice accretion: trace"
+        return f"Ice accretion {hundredths / 100:.2f} inches"
+    if m := _SHORT_PRECIP.match(upper):
+        hundredths = int(m.group("amt"))
+        if hundredths == 0:
+            return "Precipitation trace in the past hour"
+        return f"Precipitation {hundredths / 100:.2f} inches in the past hour"
+    if m := _RWY_DESIGNATOR.match(upper):
+        return f"Runway {m.group('rw')}"
+    if m := _FOG_OKTAS.match(upper):
+        count = int(m.group("amt"))
+        unit = "okta" if count == 1 else "oktas"
+        return f"Fog {count} {unit}"
+    if m := _LTG_TYPES.match(upper):
+        return f"Lightning ({m.group('types')})"
     if m := _PEAK_WIND.match(upper):
         return f"Peak wind {int(m.group('dir'))}° at {int(m.group('spd'))} kt at {m.group('hh')}:{m.group('mm')} UTC"
     if m := _PAST_HOUR.match(upper):
@@ -1523,6 +1585,18 @@ def _explain_taf(token: str, *, seen: dict[str, int]) -> str | None:
         return "Forecast weather: Thunderstorm in the vicinity"
     if m := _WX.match(upper):
         return _fmt_wx(m, forecast=True)
+    if upper == "NOT":
+        return "Not"
+    if upper == "SKED":
+        return "Scheduled"
+    if upper == "TIL":
+        return "Until"
+    if upper == "AUTOMATED":
+        return "Automated"
+    if upper == "SENSOR":
+        return "Sensor"
+    if upper == "METWATCH":
+        return "Meteorological watch period"
     return None
 
 
@@ -1546,7 +1620,10 @@ def _explain_sigmet_airmet(token: str, *, product: str, seen: dict[str, int]) ->
     str | None
         Return value.
     """
-    upper = token.upper().rstrip(".")
+    upper = token.upper().rstrip(":")
+    # Drop a lone report-style trailing period, but keep ellipsis (``…`` / ``...``).
+    if re.search(r"(?<!\.)\.$", upper):
+        upper = upper[:-1]
     if upper in {"SIGMET", "AIRMET"} and seen.get("rtype", 0) == 0:
         seen["rtype"] = 1
         return f"Report type ({upper})"
@@ -1561,6 +1638,8 @@ def _explain_sigmet_airmet(token: str, *, product: str, seen: dict[str, int]) ->
         return f"Correction ({upper})"
     if _BBB_DELAYED.match(upper):
         return f"Delayed report ({upper})"
+    if _BBB_AMENDMENT.match(upper):
+        return f"Amendment ({upper})"
     if upper == "=":
         return "Report terminator"
     if upper == "CNL":
@@ -1762,18 +1841,43 @@ def _explain_sigmet_airmet(token: str, *, product: str, seen: dict[str, int]) ->
     ):
         return f"Volcano name ({icao})"
 
-    # FIR proper name (e.g. SHANLON) when not a known glossary hazard token.
+    # FIR proper name (e.g. SHANLON, ROSTOV-NA-DONU) when not a known glossary hazard.
+    fir_name = upper.replace("-", "")
     if (
-        icao.isalpha()
-        and len(icao) >= 2
+        fir_name.isalpha()
+        and len(upper) >= 2
         and seen.get("station")
-        and not meaning_for(icao)
+        and not meaning_for(upper.split("-")[0])
         and (not seen.get("fir_name") or seen.get("name_open") or seen.get("after_fir"))
     ):
         seen["fir_name"] = 1
         seen["name_open"] = 1
         seen["after_fir"] = 0
-        return f"FIR name ({icao})"
+        return f"FIR name ({upper})"
+
+    if m := _ELLIPSIS_HAZARD.match(upper):
+        seen["hail_size"] = 1
+        head = m.group("head").capitalize()
+        tail = m.group("tail")
+        if tail:
+            return f"{head} and {tail.lower()} possible"
+        return f"{head} possible"
+    if _IN_WIND_ELLIPSIS.match(upper):
+        return "Hail size in inches; wind gusts follow"
+    if upper == "TORNADOES":
+        seen["hail_size"] = 1
+        return "Tornadoes possible"
+    if upper == "HAIL":
+        seen["hail_size"] = 1
+        return "Hail"
+    if upper == "GUSTS":
+        return "Gusts"
+    if upper == "POSS":
+        return "Possible"
+    if upper == "TO" and seen.get("hail_size"):
+        return "To"
+    if upper.isdigit() and len(upper) <= 2 and seen.get("hail_size") and seen.get("seq"):
+        return f"{int(upper)} inch hail"
 
     # Glossary-backed intensity / hazard / movement tokens (F9 deepen).
     gloss = explain_glossary_token(upper)
