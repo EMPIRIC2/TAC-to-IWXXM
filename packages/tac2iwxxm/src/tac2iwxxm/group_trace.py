@@ -54,6 +54,8 @@ _TAF_RULES: dict[str, tuple[_Emit, ...]] = {
     "issue_time": (("issueTime", "block", "emit"),),
     "validity": (("validPeriod", "block", "emit"),),
     "wind": (("surfaceWind", "block", "emit"),),
+    "cavok": (("MeteorologicalAerodromeForecast", "line", "emit"),),
+    "cavok_spaced": (("MeteorologicalAerodromeForecast", "line", "emit"),),
     "visibility": (("prevailingVisibility", "line", "emit"),),
     "weather": (("weather", "line", "emit"),),
     "cloud": (("CloudLayer", "block", "emit"),),
@@ -259,8 +261,6 @@ def _emits_for(pack_id: str, rule_id: str, token: str) -> tuple[_Emit, ...]:
     tuple[_Emit, ...]
         Element, scope, and whether it opens a new element or shares one.
     """
-    if pack_id == "taf" and rule_id == "visibility" and token.strip().upper() == "CAVOK":
-        return (("MeteorologicalAerodromeForecast", "line", "emit"),)
     if pack_id == "taf" and rule_id == "cloud" and token.strip().upper() in _BARE_CLOUD:
         return (("cloud", "line", "emit"),)
     table = _PACK_RULES.get(pack_id)

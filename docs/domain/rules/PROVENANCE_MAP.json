@@ -1083,7 +1083,7 @@
       "consumer": "tac-validate",
       "dig": "docs/domain/mining/fmh1-2019-mining-notes.md",
       "ticket": null,
-      "note": "NWS convective SIGMET developing-area (DVLPG AREA) hazard qualifier; keep off FROM ring"
+      "note": "NWS convective SIGMET developing-area: accept canonical DVLPG AREA; error on FROM-ring or incomplete DVLPG"
     },
     {
       "code": "INVALID_TX_TN",

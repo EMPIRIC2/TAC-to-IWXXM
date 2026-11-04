@@ -39,7 +39,8 @@ _VV = re.compile(r"\bVV(?P<vv>\d{3}|///)(?![A-Z0-9/])")
 _ALT_INHG = re.compile(r"\bA(?P<alt>\d{4})\b")
 _NIL = re.compile(r"\bNIL\b")
 _CNL = re.compile(r"\bCNL\b")
-_CAVOK = re.compile(r"\bCAVOK\b")
+# Accept live spaced typo ``C A V O K`` (HAAB / #1553) as CAVOK for TAF.TAF-8.
+_CAVOK = re.compile(r"\bC(?:AVOK|\s+A\s+V\s+O\s+K)\b")
 _BECMG = re.compile(
     r"\bBECMG\s+(?P<from>\d{4})/(?P<to>\d{4})\s+(?P<body>.*)$",
     re.DOTALL,
