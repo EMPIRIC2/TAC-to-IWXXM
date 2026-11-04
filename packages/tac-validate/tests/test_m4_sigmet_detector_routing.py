@@ -50,3 +50,15 @@ def test_convective_sigmet_without_valid_until_is_missing_valid() -> None:
     )
     errors = [issue for issue in report.issues if issue.severity == "error"]
     assert any(issue.code == "MISSING_VALID" for issue in errors)
+
+
+def test_intl_sigmet_without_cccc_is_missing_cccc() -> None:
+    """Annex 3 skeleton requires CCCC before SIGMET (#1564)."""
+    report = lint(
+        "SIGMET 2 VALID 101200/101600 YUSO- YUDD FIR OBSC TS FCST=",
+        product="SIGMET",
+        profile="annex3",
+    )
+    errors = [issue for issue in report.issues if issue.severity == "error"]
+    assert any(issue.code == "MISSING_CCCC" for issue in errors)
+    assert not any(issue.code == "MISSING_VALID" for issue in errors)

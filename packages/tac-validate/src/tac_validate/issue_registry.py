@@ -111,7 +111,7 @@ ISSUES: tuple[IssueSpec, ...] = (
         "MISSING_CCCC",
         "error",
         "{product} missing ICAO location (CCCC)",
-        tags=("station", "metar", "speci", "taf"),
+        tags=("station", "metar", "speci", "taf", "sigmet", "airmet"),
     ),
     _row(
         "MISSING_OBS_TIME",

@@ -678,6 +678,8 @@ _US_DOMESTIC_WS_SERIES = re.compile(
     r"INDIA|JULIET|JULIETT|KILO|LIMA|MIKE|NOVEMBER|OSCAR|PAPA|QUEBEC|ROMEO|"
     r"SIERRA|TANGO|UNIFORM|VICTOR|WHISKEY|XRAY|X-RAY|YANKEE|ZULU)\s+\d+\b"
 )
+# Annex 3 minimum identity: CCCC immediately before SIGMET or AIRMET (#1564).
+_SIGMET_AIRMET_CCCC_IDENTITY = re.compile(r"\b[A-Z]{4}\s+(?:SIGMET|AIRMET)\b")
 
 
 def _is_us_domestic_ws_sigmet(upper: str) -> bool:
@@ -822,6 +824,19 @@ def _check_sigmet_airmet(tac: str, product: str, *, profile: str = "annex3") -> 
     if product == "SIGMET" and _is_us_domestic_ws_sigmet(upper):
         issues.extend(_check_us_domestic_ws_sigmet(start=start, end=end, upper=upper))
         return issues
+
+    # Minimum Annex 3 skeleton: CCCC SIGMET|AIRMET … VALID YYGGgg/YYGGgg.
+    # US convective / domestic WS return above (VALID UNTIL forms).
+    if product in {"SIGMET", "AIRMET"} and not _SIGMET_AIRMET_CCCC_IDENTITY.search(upper):
+        issues.append(
+            _issue(
+                "MISSING_CCCC",
+                f"{product} missing ICAO location (CCCC) before {product}",
+                start=start,
+                end=end,
+                location="header",
+            )
+        )
 
     if not _VALID_PERIOD.search(upper):
         issues.append(
