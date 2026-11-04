@@ -65,18 +65,14 @@ _CA_CLOUD_ONE = re.compile(rf"^{_CA_CLOUD_TYPE}$")
 _SIG_SFC_LAYER = re.compile(r"^SFC/(?P<alt>\d{3,5})(?P<unit>FT|M)$")
 _SIG_NM = re.compile(r"^(?P<n>\d{1,3})NM$")
 _RVR_MISSING = re.compile(r"^R(?P<rw>\d{2}[LCR]?)/+$")
-_RVR_VARY = re.compile(
-    r"^R(?P<rw>\d{2}[LCR]?)/(?P<a>[MP]?\d{4})V(?P<b>[MP]?\d{4})(?P<unit>FT)?(?:/(?P<trend>[UDN]))?$"
-)
+_RVR_VARY = re.compile(r"^R(?P<rw>\d{2}[LCR]?)/(?P<a>[MP]?\d{4})V(?P<b>[MP]?\d{4})(?P<unit>FT)?(?:/(?P<trend>[UDN]))?$")
 _CLOUD_TYPE_8 = re.compile(r"^8/(?P<body>[0-9/]{3})$")
 _MISSING_WIND_KT = re.compile(r"^/{5}KT$")
 _MISSING_QNH_SLASH = re.compile(r"^Q/{4}$")
 _MISSING_PRESS_TEND = re.compile(r"^5/{4}$")
 _SOG_DEPTH = re.compile(r"^SOG$")
 _SOG_VALUE = re.compile(r"^(?P<cm>\d{2})$")
-_VIS_VARIABLE = re.compile(
-    r"^(?P<lo>M?(?:\d+\s+)?\d+/\d+|\d+|M?\d+/\d+)V(?P<hi>\d+(?:/\d+)?)$"
-)
+_VIS_VARIABLE = re.compile(r"^(?P<lo>M?(?:\d+\s+)?\d+/\d+|\d+|M?\d+/\d+)V(?P<hi>\d+(?:/\d+)?)$")
 _VIS_VRB_RANGE = re.compile(r"^(?P<a>\d+)-(?P<b>\d+)$")
 _WSHFT_MIN = re.compile(r"^(?P<mm>\d{2})$")
 _CB_LOC = re.compile(r"^(?P<head>CB|TCU|TCUE)(?P<sep>[-/])(?P<dir>[A-Z;/-]+)$")
@@ -743,6 +739,41 @@ def _iter_tokens(tac: str) -> list[tuple[int, int, str]]:
         Return value.
     """
     return [(m.start(), m.end(), m.group(0)) for m in re.finditer(r"=|[^\s=]+", tac)]
+
+
+_SPACED_CAVOK_LETTERS = ("C", "A", "V", "O", "K")
+
+
+def _spaced_cavok_span(
+    tokens: list[tuple[int, int, str]],
+    index: int,
+) -> tuple[int, int] | None:
+    """
+    Return ``(start, end)`` when ``tokens[index:index+5]`` are spaced CAVOK.
+
+    Live TAF traffic (e.g. HAAB) sometimes emits ``C A V O K`` instead of
+    ``CAVOK``. Treat the five single-letter tokens as one ceiling/visibility
+    group so decode does not leave them as a residual.
+
+    Parameters
+    ----------
+    tokens : list[tuple[int, int, str]]
+        Token spans from :func:`_iter_tokens`.
+
+    index : int
+        Candidate start index.
+
+    Returns
+    -------
+    tuple[int, int] | None
+        Character span covering all five letters, or ``None``.
+    """
+    if index + 5 > len(tokens):
+        return None
+    letters = tuple(tokens[index + offset][2].upper() for offset in range(5))
+    if letters != _SPACED_CAVOK_LETTERS:
+        return None
+    return tokens[index][0], tokens[index + 4][1]
 
 
 def _tenths_c(raw: str) -> str:
@@ -1604,7 +1635,9 @@ def _explain_metar_remark(upper: str, seen: dict[str, int]) -> str | None:
         return "Last staffed observation / next time"
     if seen.get("last_stfd") and upper in {"STFD", "OBS", "NXT", "NEXT"}:
         return _RMK_WORD.get(upper, upper.title())
-    if seen.get("last_stfd") and (_TIME_Z.match(upper) or re.fullmatch(r"\d{6}(?:UTC)?", upper) or re.fullmatch(r"\d{2}", upper)):
+    if seen.get("last_stfd") and (
+        _TIME_Z.match(upper) or re.fullmatch(r"\d{6}(?:UTC)?", upper) or re.fullmatch(r"\d{2}", upper)
+    ):
         seen["last_stfd"] = 0
         return f"Next staffed observation time ({upper})"
     if m := _PEAK_WIND.match(upper):
@@ -3175,6 +3208,21 @@ def _decode_single_report(tac: str, *, product: str) -> DecodeResult:
     for idx, (start, end, token) in enumerate(tokens):
         if idx in explained:
             continue
+        # Spaced CAVOK (TAF live typo) — consume five single-letter tokens.
+        if product == "TAF":
+            cavok_span = _spaced_cavok_span(tokens, idx)
+            if cavok_span is not None:
+                cavok_start, cavok_end = cavok_span
+                segments.append(
+                    DecodeSegment(
+                        start=cavok_start,
+                        end=cavok_end,
+                        code=tac[cavok_start:cavok_end],
+                        explanation="Ceiling and visibility OK",
+                    )
+                )
+                explained.update(range(idx, idx + 5))
+                continue
         explanation = classify(token, seen)
         if explanation is None and product in {"METAR", "SPECI", "TAF"}:
             following = tokens[idx + 1][2] if idx + 1 < len(tokens) else ""

@@ -19,6 +19,7 @@ committed). CI runs this tree via `pytest tests/bugs`.
 | `test_ws_runway_not_invalid_rvr.py` | Product-rule: `WS R14R` wind-shear runway ≠ RVR |
 | `test_unknown_wmo_membership_live.py` | Keep-as-error: concatenated wx / MOD TURB on SIGMET |
 | `test_keep_as_error_live_residuals.py` | Anti-soften: `MISSING_*`, `INVALID_PROB` |
+| `test_bug_2026_11_04_taf_spaced_cavok.py` | HAAB spaced `C A V O K` decode + TAF.TAF-8 (#1553) |
 
 Session audit reports (not in git):  
 `~/.cursor/workflow/…/sessions/<id>/reports/live-Nd-regression-coverage.md`  
