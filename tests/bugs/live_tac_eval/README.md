@@ -18,7 +18,7 @@ committed). CI runs this tree via `pytest tests/bugs`.
 | `test_ca_rvr_slash_before_trend.py` | Product-rule: CA `…FT/N` RVR trend slash |
 | `test_ws_runway_not_invalid_rvr.py` | Product-rule: `WS R14R` wind-shear runway ≠ RVR |
 | `test_unknown_wmo_membership_live.py` | Keep-as-error: concatenated wx / MOD TURB on SIGMET |
-| `test_keep_as_error_live_residuals.py` | Anti-soften: `MISSING_*`, `INVALID_PROB` |
+| `test_keep_as_error_live_residuals.py` | Anti-soften (#1556): `MISSING_VISIBILITY` / `MISSING_QNH` / `MISSING_WIND` / `MISSING_TEMP_DEWPOINT` / `MISSING_OBS_TIME` / `INVALID_PROB` (incl. CW* VIS/QNH stay error) |
 
 Session audit reports (not in git):  
 `~/.cursor/workflow/…/sessions/<id>/reports/live-Nd-regression-coverage.md`  
