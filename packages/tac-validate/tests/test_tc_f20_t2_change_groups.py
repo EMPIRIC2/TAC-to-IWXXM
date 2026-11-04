@@ -53,15 +53,13 @@ _T2_ERRORS = list(_MANIFEST.get("t2_errors", []))
 def test_t2_manifest_sections_present() -> None:
     assert len(_T2_ACCEPT) >= 6
     assert {c["product"] for c in _T2_ACCEPT} == {"TAF"}
-    assert len(_T2_INFO) >= 6
-    assert len(_T2_WARNINGS) >= 1
+    assert len(_T2_INFO) >= 7
+    assert len(_T2_WARNINGS) == 0
     assert len(_T2_ERRORS) >= 3
     for case in _T2_ACCEPT + _T2_INFO + _T2_WARNINGS + _T2_ERRORS:
         assert (_read_tac(case["tac"])).strip()
     codes = {c["expected_codes"][0] for c in _T2_INFO}
     assert codes == _INFO_CODES
-    warn_codes = {c["expected_codes"][0] for c in _T2_WARNINGS}
-    assert warn_codes == {"PROB_PERIOD_WITHOUT_TEMPO"}
     for case in _T2_ERRORS:
         assert case["expected_codes"] == ["INVALID_PROB"]
 

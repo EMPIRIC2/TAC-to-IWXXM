@@ -17,10 +17,10 @@ class ProbGroupKind(StrEnum):
     """``PROB30|40 TEMPO|EMPO ddhh/ddhh`` — informational."""
 
     PERIOD_WITHOUT_TEMPO = "period_without_tempo"
-    """``PROB30|40 ddhh/ddhh …`` — common national form; warning, not error."""
+    """``PROB30|40 ddhh/ddhh …`` — valid Annex 3 / national standalone PROB (info only)."""
 
     INTER = "inter"
-    """``PROB30|40 INTER ddhh/ddhh …`` — national INTER qualifier; warning until decided."""
+    """``PROB30|40 INTER ddhh/ddhh …`` — national INTER qualifier (info only)."""
 
     INVALID = "invalid"
     """True defect: bad percent, PROB on BECMG/FM, truncated, or unusable shape."""

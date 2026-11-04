@@ -1013,7 +1013,7 @@
       "consumer": "tac-validate",
       "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
       "ticket": "#1487",
-      "note": "App 5 / Table A5-1; national PROB+period / PROB+INTER as warning"
+      "note": "App 5 / Table A5-1; standalone PROB+period emission retired — engines emit PROB_PRESENT; code kept for catalog continuity"
     },
     {
       "code": "INVALID_REMARK",

@@ -1,4 +1,4 @@
-"""Live TAF PROB+period is warning; PROB+BECMG stays error (#1487/#1488/#1489)."""
+"""Standalone PROB+period is valid; PROB+BECMG stays error (#1487 family / EV-live-lint-decode)."""
 
 from __future__ import annotations
 
@@ -39,20 +39,19 @@ _TEMPO_OK = (
     [_CYOW, _EGLL, _KIAH],
     ids=["CYOW", "EGLL", "KIAH"],
 )
-def test_bug_2026_10_31_prob_period_is_warning(tac: str) -> None:
+def test_bug_2026_10_31_prob_period_is_present_info(tac: str) -> None:
     report = lint(tac, product="TAF")
     codes = {i.code: i.severity for i in report.issues}
-    assert codes.get("PROB_PERIOD_WITHOUT_TEMPO") == "warning"
+    assert "PROB_PERIOD_WITHOUT_TEMPO" not in codes
+    assert codes.get("PROB_PRESENT") == "info"
     assert "INVALID_PROB" not in codes
     assert report.ok is True
 
 
-def test_bug_2026_10_31_prob_inter_is_warning() -> None:
+def test_bug_2026_10_31_prob_inter_is_present_info() -> None:
     report = lint(_NVVA, product="TAF")
-    assert any(
-        i.code == "PROB_PERIOD_WITHOUT_TEMPO" and i.severity == "warning"
-        for i in report.issues
-    )
+    assert "PROB_PERIOD_WITHOUT_TEMPO" not in {i.code for i in report.issues}
+    assert any(i.code == "PROB_PRESENT" and i.severity == "info" for i in report.issues)
     assert report.ok is True
 
 

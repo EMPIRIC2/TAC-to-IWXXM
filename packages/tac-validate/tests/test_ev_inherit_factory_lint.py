@@ -78,12 +78,11 @@ def test_catalog_inherit_root_product_country_station() -> None:
 
 
 def test_lint_with_profile_no_tac2iwxxm_import() -> None:
-    # Behavioral lock: annex3 + US K* TAF still softens PROB period via local bind.
+    # Behavioral lock: annex3 + US K* TAF emits PROB_PRESENT for standalone period.
     tac = "TAF KSGF 301720Z 3018/0124 18008KT P6SM SCT050 PROB30 0106/0112 2SM BR="
     report = lint_with_profile(tac, product="TAF", profile="annex3")
-    matched = [i for i in report.issues if i.code == "PROB_PERIOD_WITHOUT_TEMPO"]
-    assert matched
-    assert all(i.severity == "info" for i in matched)
+    assert "PROB_PERIOD_WITHOUT_TEMPO" not in {i.code for i in report.issues}
+    assert any(i.code == "PROB_PRESENT" and i.severity == "info" for i in report.issues)
 
 
 def test_invalid_prob_unchanged_under_prefer() -> None:

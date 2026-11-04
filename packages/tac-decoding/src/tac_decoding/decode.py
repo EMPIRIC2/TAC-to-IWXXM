@@ -66,6 +66,25 @@ _SIG_SFC_LAYER = re.compile(r"^SFC/(?P<alt>\d{3,5})(?P<unit>FT|M)$")
 _SIG_NM = re.compile(r"^(?P<n>\d{1,3})NM$")
 _RVR_MISSING = re.compile(r"^R(?P<rw>\d{2}[LCR]?)/+$")
 _RVR_VARY = re.compile(r"^R(?P<rw>\d{2}[LCR]?)/(?P<a>[MP]?\d{4})V(?P<b>[MP]?\d{4})(?P<unit>FT)?(?:/(?P<trend>[UDN]))?$")
+# Bare runway designator after WS (Annex 3 wind shear), e.g. R36R.
+_WS_RUNWAY = re.compile(r"^R(?P<rw>\d{2}[LCR]?)$")
+# CA / national TAF RMK trailer crumbs (known-ignored; not partial decode).
+_TAF_RMK_TRAILER_WORD = frozenset(
+    {
+        "NXT",
+        "NEXT",
+        "FCST",
+        "BY",
+        "BASED",
+        "ON",
+        "AUTO",
+        "OBS",
+        "OBS.",
+        "MIL",
+    }
+)
+_TAF_RMK_NATIONAL = re.compile(r"^P[A-Z]{2,3}$|^PH[A-Z]{0,2}$")
+_TAF_RMK_NEXT_TIME = re.compile(r"^\d{2}Z$|^\d{6}Z$|^\d{2}$")
 _CLOUD_TYPE_8 = re.compile(r"^8/(?P<body>[0-9/]{3})$")
 _MISSING_WIND_KT = re.compile(r"^/{5}KT$")
 _MISSING_QNH_SLASH = re.compile(r"^Q/{4}$")
@@ -73,7 +92,8 @@ _MISSING_PRESS_TEND = re.compile(r"^5/{4}$")
 _SOG_DEPTH = re.compile(r"^SOG$")
 _SOG_VALUE = re.compile(r"^(?P<cm>\d{2})$")
 _VIS_VARIABLE = re.compile(r"^(?P<lo>M?(?:\d+\s+)?\d+/\d+|\d+|M?\d+/\d+)V(?P<hi>\d+(?:/\d+)?)$")
-_VIS_VRB_RANGE = re.compile(r"^(?P<a>\d+)-(?P<b>\d+)$")
+# VIS VRB ranges: 1-2, 0-1/4, 1/4-3/4, 3/8-1 (CA remark form).
+_VIS_VRB_RANGE = re.compile(r"^(?P<a>M?\d+(?:/\d+)?)-(?P<b>M?\d+(?:/\d+)?)$")
 _WSHFT_MIN = re.compile(r"^(?P<mm>\d{2})$")
 _CB_LOC = re.compile(r"^(?P<head>CB|TCU|TCUE)(?P<sep>[-/])(?P<dir>[A-Z;/-]+)$")
 _OHD_CHAIN = re.compile(r"^(?:[A-Z]{1,3}-)*OHD(?:-[A-Z]{1,3})+$|^(?:[A-Z]{1,3}-){2,}[A-Z]{1,3}$")
@@ -380,8 +400,8 @@ _WX = re.compile(
     r"(?P<desc>MI|PR|BC|DR|BL|SH|TS|FZ)?"
     r"(?P<phen>(?:DZ|RA|SN|SG|IC|PL|GR|GS|UP|BR|FG|FU|VA|DU|SA|HZ|PY|PO|SQ|FC|SS|DS)+)$"
 )
-# Runway visual range - R{rw}/{vis}{U|D|N}? (e.g. R12/1000U).
-_RVR = re.compile(r"^R(?P<rw>\d{2}[LCR]?)/(?P<vis>[MP]?\d{4})(?P<trend>[UDN])?$")
+# Runway visual range — R{rw}/{vis}[FT][/{U|D|N}] (e.g. R12/1000U, R11/1800FT/N).
+_RVR = re.compile(r"^R(?P<rw>\d{2}[LCR]?)/(?P<vis>[MP]?\d{4})(?P<unit>FT)?(?:/(?P<trend>[UDN]))?(?P<trend2>[UDN])?$")
 # Legacy runway state group: runway, deposit, extent, depth, friction (e.g. R19/290052).
 _RUNWAY_STATE = re.compile(
     r"^R(?P<rw>\d{2}[LCR]?)/(?P<dep>[0-9/])(?P<ext>[1259/])(?P<depth>\d{2}|//)(?P<fric>\d{2}|//)$"
@@ -1453,13 +1473,14 @@ def _explain_metar_speci(token: str, *, product: str, seen: dict[str, int]) -> s
     if m := _WX.match(upper):
         return _fmt_wx(m, forecast=bool(seen.get("in_trend")))
     if m := _RVR.match(upper):
-        trend = m.group("trend")
+        trend = m.group("trend") or m.group("trend2")
         trend_txt = {
             "U": ", upward trend",
             "D": ", downward trend",
             "N": ", no distinct trend",
         }.get(trend or "", "")
-        return f"Runway visual range runway {m.group('rw')}: {m.group('vis')} m{trend_txt}"
+        unit = "ft" if m.group("unit") == "FT" else "m"
+        return f"Runway visual range runway {m.group('rw')}: {_rvr_bound(m.group('vis'))} {unit}{trend_txt}"
     if phrase := _varying_rvr(upper):
         return phrase
     if phrase := _runway_state(upper):
@@ -1699,6 +1720,17 @@ def _explain_taf(token: str, *, seen: dict[str, int]) -> str | None:
         return "Nil forecast"
     if upper == "=":
         return "Report terminator"
+    if upper == "RMK":
+        seen["rmk"] = 1
+        return "Remarks section"
+    if seen.get("rmk"):
+        crumb = upper.rstrip(".")
+        if crumb in _TAF_RMK_TRAILER_WORD or upper in _TAF_RMK_TRAILER_WORD:
+            return "National forecast trailer"
+        if _TAF_RMK_NATIONAL.match(upper):
+            return "National TAF remark code"
+        if _TAF_RMK_NEXT_TIME.match(upper):
+            return "Next forecast time"
     if _STATION.match(upper) and seen.get("station", 0) == 0:
         seen["station"] = 1
         place = resolve_location_name(upper)
@@ -3222,6 +3254,22 @@ def _decode_single_report(tac: str, *, product: str) -> DecodeResult:
                     )
                 )
                 explained.update(range(idx, idx + 5))
+                continue
+        # Annex 3 runway wind shear: WS + bare R{nn}[LCR]?
+        if product in {"METAR", "SPECI"} and token.upper() == "WS" and idx + 1 < len(tokens):
+            _next_start, next_end, next_tok = tokens[idx + 1]
+            if _WS_RUNWAY.fullmatch(next_tok.upper()) and (idx + 1) not in explained:
+                rw = next_tok.upper()[1:]
+                segments.append(
+                    DecodeSegment(
+                        start=start,
+                        end=next_end,
+                        code=f"{token} {next_tok}",
+                        explanation=f"Wind shear on runway {rw}",
+                    )
+                )
+                explained.add(idx)
+                explained.add(idx + 1)
                 continue
         explanation = classify(token, seen)
         if explanation is None and product in {"METAR", "SPECI", "TAF"}:

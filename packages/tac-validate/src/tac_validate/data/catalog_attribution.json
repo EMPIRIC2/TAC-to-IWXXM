@@ -602,8 +602,8 @@
       "source_id": "icao-annex-3",
       "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
       "status": "paywall",
-      "note": "App 5 / Table A5-1; national PROB+period / PROB+INTER as warning",
-      "source_attribution": "icao-annex-3 - access:paywall - https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 - App 5 / Table A5-1; national PROB+period / PROB+INTER as warning"
+      "note": "App 5 / Table A5-1; standalone PROB+period emission retired \u2014 engines emit PROB_PRESENT; code kept for catalog continuity",
+      "source_attribution": "icao-annex-3 - access:paywall - https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 - App 5 / Table A5-1; standalone PROB+period emission retired \u2014 engines emit PROB_PRESENT; code kept for catalog continuity"
     },
     "PROB_PRESENT": {
       "source_id": "icao-annex-3",

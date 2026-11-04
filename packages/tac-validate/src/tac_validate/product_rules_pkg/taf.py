@@ -529,34 +529,17 @@ def _check_taf_change_groups(
         if m is None:
             continue
         kind = classify_probability_group(tokens, i)
-        if kind is ProbGroupKind.TEMPO_OK:
+        # Standalone PROB+period and INTER are valid Annex 3 / national forms —
+        # emit PROB_PRESENT info only (do not emit PROB_PERIOD_WITHOUT_TEMPO).
+        if kind in {
+            ProbGroupKind.TEMPO_OK,
+            ProbGroupKind.PERIOD_WITHOUT_TEMPO,
+            ProbGroupKind.INTER,
+        }:
             _emit_token_info(
                 issues,
                 code="PROB_PRESENT",
                 message=f"{product} PROB30/40 change group present - research T2",
-                core=core,
-                body_start=body_start,
-                body_end=body_end,
-                token=tok,
-            )
-        elif kind is ProbGroupKind.PERIOD_WITHOUT_TEMPO:
-            _emit_token_info(
-                issues,
-                code="PROB_PERIOD_WITHOUT_TEMPO",
-                message=(
-                    f"{product} PROB30/40 with a time period but no TEMPO/EMPO "
-                    f"qualifier - common national form; review (warning)"
-                ),
-                core=core,
-                body_start=body_start,
-                body_end=body_end,
-                token=tok,
-            )
-        elif kind is ProbGroupKind.INTER:
-            _emit_token_info(
-                issues,
-                code="PROB_PERIOD_WITHOUT_TEMPO",
-                message=(f"{product} PROB30/40 INTER group - national INTER form; review (warning)"),
                 core=core,
                 body_start=body_start,
                 body_end=body_end,
