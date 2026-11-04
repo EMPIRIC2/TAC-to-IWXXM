@@ -58,9 +58,8 @@ def test_c1_ptro_ptsa_exact_prefer() -> None:
     assert resolve_profile_for_station("PTSA") == "iwxxm_us"
     assert resolve_profile_for_station("PTKK") is None
     report = lint_with_profile(_PTRO_TAF, product="TAF", profile="annex3")
-    matched = [i for i in report.issues if i.code == "PROB_PERIOD_WITHOUT_TEMPO"]
-    assert matched
-    assert all(i.severity == "info" for i in matched)
+    assert "PROB_PERIOD_WITHOUT_TEMPO" not in {i.code for i in report.issues}
+    assert any(i.code == "PROB_PRESENT" and i.severity == "info" for i in report.issues)
 
 
 def test_c2_y_prefix_au_bom_prob_info() -> None:
@@ -68,9 +67,8 @@ def test_c2_y_prefix_au_bom_prob_info() -> None:
     assert resolve_profile_for_station("YCFS") == "au_bom"
     assert resolve_tac_quality_policy_id("au_bom", product="TAF") == "taf-prob-period-info-quality"
     report = lint_with_profile(_YSSY_TAF, product="TAF", profile="annex3")
-    matched = [i for i in report.issues if i.code == "PROB_PERIOD_WITHOUT_TEMPO"]
-    assert matched
-    assert all(i.severity == "info" for i in matched)
+    assert "PROB_PERIOD_WITHOUT_TEMPO" not in {i.code for i in report.issues}
+    assert any(i.code == "PROB_PRESENT" and i.severity == "info" for i in report.issues)
 
 
 def test_c4_ycfs_dewpoint_nil_info() -> None:

@@ -1,4 +1,4 @@
-"""PROB30/40: TEMPO info, period-without-TEMPO warning, true defects error."""
+"""PROB30/40: TEMPO/period/INTER → PROB_PRESENT info; true defects error."""
 
 from __future__ import annotations
 
@@ -27,18 +27,18 @@ def test_sample_keeps_prob_present_and_not_invalid() -> None:
     assert report.ok is True
 
 
-def test_prob_period_without_tempo_is_warning_not_error() -> None:
+def test_prob_period_without_tempo_is_present_info() -> None:
     report = lint(_PERIOD_NO_TEMPO, product="TAF")
-    warn = [i for i in report.issues if i.code == "PROB_PERIOD_WITHOUT_TEMPO"]
-    assert warn
-    assert all(i.severity == "warning" for i in warn)
+    assert "PROB_PERIOD_WITHOUT_TEMPO" not in {i.code for i in report.issues}
+    assert any(i.code == "PROB_PRESENT" and i.severity == "info" for i in report.issues)
     assert "INVALID_PROB" not in {i.code for i in report.issues}
     assert report.ok is True
 
 
-def test_prob_inter_is_warning() -> None:
+def test_prob_inter_is_present_info() -> None:
     report = lint(_INTER, product="TAF")
-    assert any(i.code == "PROB_PERIOD_WITHOUT_TEMPO" and i.severity == "warning" for i in report.issues)
+    assert "PROB_PERIOD_WITHOUT_TEMPO" not in {i.code for i in report.issues}
+    assert any(i.code == "PROB_PRESENT" and i.severity == "info" for i in report.issues)
     assert "INVALID_PROB" not in {i.code for i in report.issues}
     assert report.ok is True
 

@@ -25,16 +25,16 @@ def test_us_military_inherits_iwxxm_us_chain() -> None:
     assert "KBIX" in resolved.stations
 
 
-def test_prob_period_warning_under_annex3() -> None:
+def test_prob_period_present_info_under_annex3() -> None:
     report = lint(_PROB_PERIOD, product="TAF", profile="annex3")
-    assert any(i.code == "PROB_PERIOD_WITHOUT_TEMPO" and i.severity == "warning" for i in report.issues)
+    assert "PROB_PERIOD_WITHOUT_TEMPO" not in {i.code for i in report.issues}
+    assert any(i.code == "PROB_PRESENT" and i.severity == "info" for i in report.issues)
 
 
-def test_prob_period_info_under_iwxxm_us_via_policy() -> None:
+def test_prob_period_present_under_iwxxm_us() -> None:
     report = lint_with_profile(_PROB_PERIOD, product="TAF", profile="iwxxm_us")
-    matched = [i for i in report.issues if i.code == "PROB_PERIOD_WITHOUT_TEMPO"]
-    assert matched
-    assert all(i.severity == "info" for i in matched)
+    assert "PROB_PERIOD_WITHOUT_TEMPO" not in {i.code for i in report.issues}
+    assert any(i.code == "PROB_PRESENT" for i in report.issues)
 
 
 def test_prob_period_info_under_us_military_via_parent_bind() -> None:
@@ -89,4 +89,5 @@ def test_extract_station_icao_rejects_non_matching_taf() -> None:
 
 def test_lint_with_profile_can_skip_policy_apply() -> None:
     report = lint_with_profile(_PROB_PERIOD, product="TAF", profile="iwxxm_us", apply_policy=False)
-    assert any(i.code == "PROB_PERIOD_WITHOUT_TEMPO" and i.severity == "warning" for i in report.issues)
+    assert "PROB_PERIOD_WITHOUT_TEMPO" not in {i.code for i in report.issues}
+    assert any(i.code == "PROB_PRESENT" for i in report.issues)

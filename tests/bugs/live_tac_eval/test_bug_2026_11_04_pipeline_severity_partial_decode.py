@@ -14,8 +14,8 @@ from tac_validate.issue_registry import by_code
 
 from tac2iwxxm import convert, decode_tac
 
-# Canadian TAF remark residual family from live-30d problem chains.
-_PARTIAL_TAF = "TAF CYUL 031340Z 0314/0414 28008KT P6SM SCT040 RMK NXT FCST BY 032000Z"
+# Undecoded body token (CA RMK trailers are known-ignore; use junk for residual).
+_PARTIAL_TAF = "TAF CYUL 031340Z 0314/0414 28008KT P6SM SCT040 ZZQQ="
 
 
 def test_registry_partial_decode_is_warning() -> None:

@@ -493,7 +493,7 @@ ISSUES: tuple[IssueSpec, ...] = (
     _row(
         "PROB_PERIOD_WITHOUT_TEMPO",
         "warning",
-        "{product} has PROB30/PROB40 with a time period (or INTER) but without a TEMPO/EMPO qualifier. Warning: common in national TAF practice; review for profile policy. True defects (PROB on BECMG/FM, PROB50, truncated PROB) stay INVALID_PROB. Source: ICAO Annex 3 App 5 / Table A5-1 and live eval. Full normative text may require purchase.",
+        "{product} historically flagged standalone PROB30/40 + period (or INTER) without TEMPO. Annex 3 allows standalone PROB; emission retired — engines emit PROB_PRESENT info instead. True defects stay INVALID_PROB. Source: ICAO Annex 3 App 5 / Table A5-1 and live eval.",
         product="taf",
         tags=("change", "taf", "prob"),
     ),
