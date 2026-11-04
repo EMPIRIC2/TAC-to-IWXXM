@@ -1374,6 +1374,21 @@ def convert(
     # to operators (EV-beta-ux-export-auth / D-EV-beta-05).
     if propagate_issue is not None:
         issues.append(propagate_issue)
+    # Pipeline overlay: decode residuals → TAC warning (ADR-054 ladder; live-eval map).
+    decoded_for_partial = decode_tac(tac, product=product_u)
+    residual_spans = [r for r in decoded_for_partial.residuals if r.text and r.text.strip()]
+    if residual_spans:
+        first = residual_spans[0]
+        issues.append(
+            ConvertIssue(
+                severity="warning",
+                code="PARTIAL_DECODE",
+                message=("Some TAC tokens were not decoded (partial decode); conversion may still succeed"),
+                location="decode",
+                start=first.start,
+                end=residual_spans[-1].end,
+            )
+        )
     # D-EV087-inter-emit / national remark provenance (AU INTER, TAF3, NZ domestic extras).
     national_tokens = ir.get("national_remark_tokens")
     if isinstance(national_tokens, list) and national_tokens:

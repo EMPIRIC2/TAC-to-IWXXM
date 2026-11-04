@@ -1,8 +1,22 @@
 # Dependency Inventory
 
-> **Project**: METAR to IWXXM Converter
+> **Project**: TAC to IWXXM
 > **Last updated**: 2026-08-17 (S069 / EV-059 — F34 Schemathesis + pytest-gremlins + Stryker)
 > **Status**: **Accepted** for F30/F31; **EV-059 planned** quality-gate deps below (install in 07-build)
+
+## How to read this document
+
+This inventory lists **allowed** third-party and workspace packages for the
+monorepo. It is a satellite of [tech-spec.md](tech-spec.md).
+
+| Before you… | Do this |
+|-------------|---------|
+| Add a new dependency | Confirm it is listed here, or raise `[Decision]`, then back-add a row |
+| Check a license | Use the License column in the package tables below |
+| Trace a workspace path | Rows marked `workspace path` are in-repo packages under `packages/` |
+
+Tables below are grouped by consumer (`apps/backend`, each `packages/*`, frontend,
+dev/CI). Do not invent packages in code that are missing from this file.
 
 ## Runtime Dependencies
 

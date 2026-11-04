@@ -1,14 +1,22 @@
 # Documentation
 
-Install and run: [ops/DEVELOPMENT.md](ops/DEVELOPMENT.md).
+Install and run the project with [ops/DEVELOPMENT.md](ops/DEVELOPMENT.md).
 
-Operators:
+## Operators
 
-- [One-pager](guides/operator-one-pager.md)
-- [Handbook](guides/operator-handbook.md)
+Operators who turn aviation weather text into IWXXM day to day:
 
-HTTP reference: [guides/API.md](guides/API.md).
+- [One-pager](guides/operator-one-pager.md) — one printed sheet
+- [Handbook](guides/operator-handbook.md) — sign-in, workbench use, history, troubleshooting
 
-Deploy: [deploy.md](deploy.md).
+## HTTP API
+
+HTTP reference index: [guides/API.md](guides/API.md).
+
+## Deploy
+
+Deploy and connectivity: [deploy.md](deploy.md).
+
+## Release notes
 
 Release notes: [CHANGELOG.md](CHANGELOG.md).

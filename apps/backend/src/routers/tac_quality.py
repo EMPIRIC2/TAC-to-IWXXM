@@ -524,21 +524,45 @@ async def lint_tac(
             status_code=400,
             detail={"code": "invalid_semantic_profile", "message": str(exc)},
         ) from exc
+    lint_issues = [
+        LintIssueModel(
+            severity=i.severity,
+            code=i.code,
+            message=i.message,
+            location=i.location,
+            start=getattr(i, "start", None),
+            end=getattr(i, "end", None),
+        )
+        for i in report.issues
+    ]
+    # Pipeline overlay: decode residuals → PARTIAL_DECODE warning.
+    # Emit at API orchestration — not from the pack engine.
+    from tac_validate.issue_registry import issue_from as lint_issue_from
+
+    decoded = tac2iwxxm_decode_tac(tac_text, product=product_u)
+    residual_spans = [r for r in decoded.residuals if getattr(r, "text", None) and str(r.text).strip()]
+    if residual_spans and not any(i.code == "PARTIAL_DECODE" for i in lint_issues):
+        partial = lint_issue_from(
+            "PARTIAL_DECODE",
+            start=residual_spans[0].start,
+            end=residual_spans[-1].end,
+            location="decode",
+        )
+        lint_issues.append(
+            LintIssueModel(
+                severity=partial.severity,
+                code=partial.code,
+                message=partial.message,
+                location=partial.location,
+                start=partial.start,
+                end=partial.end,
+            )
+        )
     return api_surface.msgspec_json_response(
         LintTacResponse(
             ok=report.ok,
             product=report.product,
-            issues=[
-                LintIssueModel(
-                    severity=i.severity,
-                    code=i.code,
-                    message=i.message,
-                    location=i.location,
-                    start=getattr(i, "start", None),
-                    end=getattr(i, "end", None),
-                )
-                for i in report.issues
-            ],
+            issues=lint_issues,
             fixes=[LintFixModel(code=f.code, message=f.message, replacement=f.replacement) for f in report.fixes],
         )
     )

@@ -1,11 +1,26 @@
-# Citation & search guide — national compliance briefing
+# Citation & search guide - national compliance briefing
 
 > **Audience:** MET / aviation authority leadership (State / ANSP / Met Service heads)  
 > **Purpose:** Find **citable** ICAO/WMO landings for “why we must produce IWXXM” and “what good looks like” — without inventing deadlines or pasting paywalled SARPs text.  
 > **Policy:** [ACCESS_AND_CITATION.md](../../domain/rules/ACCESS_AND_CITATION.md)  
 > **Master URL catalog:** [RULE_SOURCE_URLS.md](../../domain/rules/RULE_SOURCE_URLS.md)
 
-Use this before finalizing slides. Prefer **landing pages + edition + section numbers** over long quotations.
+Use this guide before you finalize slides. Prefer **landing pages + edition + section
+numbers** over long quotations.
+
+Terms used in this guide:
+
+- **MET** means meteorological.
+- **ANSP** means air navigation service provider.
+- **ICAO** means International Civil Aviation Organization.
+- **WMO** means World Meteorological Organization.
+- **IWXXM** means ICAO/WMO XML weather exchange format.
+- **OPMET** means operational meteorological information.
+- **SARPs** means Standards and Recommended Practices.
+- **TAC** means Traditional Alphanumeric Code.
+- **XSD** means XML Schema Definition.
+- **Schematron** means rule-based XML checks beyond XSD.
+- **SoT** means source of truth.
 
 ---
 

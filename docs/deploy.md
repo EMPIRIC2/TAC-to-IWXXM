@@ -1,8 +1,23 @@
 # Deployment
 
-> **Project**: METAR to IWXXM Converter
+> **Project**: TAC to IWXXM
 > **Platform**: **DOKS** (F30 primary) · Render **suspended** (T6.5 / `D-S038-t65-waive`)
 > **Last updated**: 2026-08-16 (S067 / EV-057 — #948 apex → app; staging short-host mirror)
+
+This document describes how the product runs in DigitalOcean Kubernetes Service
+(**DOKS**), how Continuous Delivery (CD) rolls images, and how a **promote**
+moves code from staging to production. For current tip SHAs and live URLs, see
+[deploy-state.md](deploy-state.md). For environment variable names, see
+[env-contract.md](env-contract.md).
+
+**Quick map**
+
+| Role | Git branch | Cluster | Public hosts |
+|------|------------|---------|--------------|
+| Staging | `stage` | `metar-iwxxm-staging` | `api.staging…` / `app.staging…` |
+| Production | `main` + deploy tag | `metar-iwxxm` | `api.tac-to-iwxxm.com` / `app.tac-to-iwxxm.com` |
+
+Render services are **suspended**. Do not point production config at onrender.com.
 
 ## Topology (F30 — DOKS dual env / dual cluster)
 
@@ -17,21 +32,28 @@
 | staging | `stage` | **Staging TAC-to-IWXXM** | `metar-iwxxm-staging` | `metar-iwxxm-staging` | `https://api.staging.tac-to-iwxxm.com`, `https://app.staging.tac-to-iwxxm.com` |
 | prod | `main` | **TAC-to-IWXXM** | `metar-iwxxm` | `metar-iwxxm` | `https://api.tac-to-iwxxm.com`, `https://app.tac-to-iwxxm.com` |
 
-**IaC (T6.1 / #712 / EV-043 / EV-044):** Kustomize overlays at
+**Infrastructure as Code (IaC) (T6.1 / #712 / EV-043 / EV-044):** Kustomize overlays at
 [`deploy/doks/overlays/{staging,prod}`](../deploy/doks/):
 `kubectl apply -k deploy/doks/overlays/staging` (or `prod`) against the **matching** cluster.
-Secrets create out-of-band.
+Create secrets out of band.
 Staging DNS: [ops/doks-staging-dns-runbook.md](ops/doks-staging-dns-runbook.md). Promote path:
 [ADR-034](adr/ADR-034-doks-staging-promote-from-stage.md).
 
-**Release migrate (T6.2):** API Deployment **initContainer** runs idempotent
+**Release migrate (T6.2):** The API Deployment **initContainer** runs idempotent
 `alembic upgrade head` (same as `make db-migrate` / CI). Optional Job:
 `deploy/doks/base/job-alembic-upgrade.yaml`.
 
-**Product DB**: DigitalOcean Postgres (`DATABASE_URL`) for sessions + F8 store/quarantine + F37 live-map cache.  
-**Auth**: Supabase Auth only (**JWKS**). No Supabase product DB on default path (ADR-033).
+**Product DB**: DigitalOcean Postgres (`DATABASE_URL`) for sessions, F8 store/quarantine,
+and F37 live-map cache.  
+**Auth**: Supabase Auth only (**JWKS**). No Supabase product DB on the default path
+(ADR-033).
 
-**F37 live map**: Staging runs `metar-map-translator` (backend image, `from src.map_translator import main`) at one replica. It is not a public Service. The API timer is off on staging (`LIVE_MAP_REFRESH=0`). Both processes use `LIVE_MAP_CACHE_URL` from the product `DATABASE_URL`. `metar-worker` stays at 0 replicas. Production promotion is a separate step. [Corpus: product §F37] [Corpus: adr/ADR-052] [Corpus: deploy]
+**F37 live map**: Staging runs `metar-map-translator` (backend image,
+`from src.map_translator import main`) at one replica. It is not a public Service.
+The API timer is off on staging (`LIVE_MAP_REFRESH=0`). Both processes use
+`LIVE_MAP_CACHE_URL` from the product `DATABASE_URL`. `metar-worker` stays at 0
+replicas. Production promotion is a separate step.
+[Corpus: product §F37] [Corpus: adr/ADR-052] [Corpus: deploy]
 
 ### DOKS public hostnames (T6.3 + EV-043 / EV-044 staging)
 
@@ -141,30 +163,36 @@ services without failing (see BUG-2026-08-03). GHCR push continues; DOKS is the 
 refreshes `ghcr-pull` and re-rolls staging without full CI. Prefer a long-lived
 `read:packages` PAT in `ghcr-pull` for break-glass; Deploy refreshes the secret each CD run.
 
-**Promote (required before any merge to `main`):** [Corpus: adr/ADR-034]
+### Promote (`stage` → `main` → deploy tag)
 
-**Evaluation metrics (required on stage→main PRs):** Do not ship a single opaque % —
-paste a **broken-down** live-eval (or equivalent) summary: lint × severity, convert
-pass/fail, IWXXM validate pass/fail, by product, top codes, promote dispositions, and a
-link to the session report. Checklist:
+**Promote** means: merge the `stage` branch into `main`, then ship production with a
+deploy tag. Feature branches must not merge directly into `main`. Required path:
+[Corpus: adr/ADR-034].
+
+**Evaluation metrics (required on stage→main PRs):** Do not ship a single opaque
+percent. Paste a **broken-down** live-eval (or equivalent) summary: lint by
+severity, convert pass/fail, IWXXM validate pass/fail, by product, top codes,
+promote dispositions, and a link to the session report. Checklist:
 [`.github/PULL_REQUEST_TEMPLATE/promote-stage-to-main.md`](../.github/PULL_REQUEST_TEMPLATE/promote-stage-to-main.md);
 guide: [guides/promote-eval-metrics.md](guides/promote-eval-metrics.md).
 
-1. Feature work → PR into **`stage`** (required CI green).
-2. Merge to `stage` → **Deploy (stage)** to staging cluster + **Staging smoke** green for that SHA
-   (HTTPS when Porkbun A records point at staging LB `143.244.202.13`; until then Host-header
-   probes via `STAGING_LB_IP` / `DOKS_LB_IP` are valid).
+1. Open a feature pull request into **`stage`**. Required CI must be green.
+2. Merge to `stage`. **Deploy (stage)** rolls the staging cluster. **Staging smoke**
+   must be green for that SHA (HTTPS when Porkbun A records point at staging LB
+   `143.244.202.13`; until then Host-header probes via `STAGING_LB_IP` /
+   `DOKS_LB_IP` are valid).
 3. **Release prep on `stage` (recommended):** bump publishable package **CalVer**
-   (`YYYY.MM.DD` / `YYYY.MM.DD.N` per ADR-043) when those
-   packages changed since the last release; cut `docs/CHANGELOG.md`; commit on `stage` so the
-   promote PR carries the release metadata (see checklist below).
-4. Open PR **`stage` → `main` only** (never feature → `main`). Job **Staging gate**
-   (`scripts/ci/staging_gate.sh` / TC-F30-012) must pass: head branch = `stage` and tip has a
-   successful **Staging smoke** check-run. The gate prints a **release reminder** (advisory).
-   **EV-061 / #1015 (stricter promote):** In addition, the promote PR must not merge until
-   **required** checks covering **full CI unit jobs**, **lint**, **typecheck**, and **full
-   E2E** (broader than smoke-only) are green on that PR. Branch protection / required-check
-   configuration may be updated accordingly (no new app secrets).
+   (`YYYY.MM.DD` / `YYYY.MM.DD.N` per ADR-043) when those packages changed since
+   the last release. Cut `docs/CHANGELOG.md`. Commit on `stage` so the promote PR
+   carries the release metadata (see checklist below).
+4. Open a pull request **`stage` → `main` only** (never feature → `main`). Job
+   **Staging gate** (`scripts/ci/staging_gate.sh` / TC-F30-012) must pass: head
+   branch = `stage` and tip has a successful **Staging smoke** check-run. The gate
+   prints a **release reminder** (advisory).
+   **EV-061 / #1015 (stricter promote):** Also, the promote PR must not merge until
+   **required** checks covering **full CI unit jobs**, **lint**, **typecheck**, and
+   **full E2E** (broader than smoke-only) are green on that PR. Branch protection /
+   required-check configuration may be updated accordingly (no new app secrets).
 
    | Required check context (exact `name:`) | Role |
    |----------------------------------------|------|
@@ -185,25 +213,25 @@ guide: [guides/promote-eval-metrics.md](guides/promote-eval-metrics.md).
    | `Staging gate` | Head=`stage` + tip Staging smoke (existing) |
    | Also retained | `Rust crates (fmt/clippy/test)`, `tac2iwxxm PyO3 (maturin)`, `iwxxm-validate PyO3 (maturin)`, `Converter perf (tac2iwxxm)` |
 
-   `E2E Smoke (Playwright)` remains for Deploy `needs` on `stage` pushes; smoke-only is
-   **insufficient** as the promote E2E bar (#1015).
+   `E2E Smoke (Playwright)` remains for Deploy `needs` on `stage` pushes. Smoke-only
+   is **insufficient** as the promote E2E bar (#1015).
 
    Apply / refresh rulesets (admin): `bash scripts/deploy/apply_gh_branch_rulesets.sh`
    (see [ops/doks-staging-dns-runbook.md](ops/doks-staging-dns-runbook.md) §GitHub admin).
-5. Merge to `main` → full CI on `main` (**no** prod Deploy).
+5. Merge to `main`. Full CI runs on `main`. That push does **not** run prod Deploy.
 6. **Ship prod:** on the merged `main` tip, `git tag vYYYY.MM.DD-deploy` &&
    `git push origin <tag>` (triggers prod Deploy after CI). Optional escape hatch:
    Actions → CI/CD Pipeline → **Run workflow** (`workflow_dispatch`, production).
-7. PyPI package tags (F12–F14) when publishing, separate from the deploy tag.
+7. PyPI package tags (F12–F14) when publishing are separate from the deploy tag.
 
-Solo-dev gates: (1) PR `stage`→`main`, (2) deploy tag or dispatch. No Environment reviewers.
-Do **not** promote while Staging smoke or Staging gate is red/missing. See
-[ADR-034](adr/ADR-034-doks-staging-promote-from-stage.md) and
+Solo-dev gates: (1) PR `stage`→`main`, (2) deploy tag or dispatch. No Environment
+reviewers. Do **not** promote while Staging smoke or Staging gate is red or missing.
+See [ADR-034](adr/ADR-034-doks-staging-promote-from-stage.md) and
 [ops/doks-staging-dns-runbook.md](ops/doks-staging-dns-runbook.md).
 
 ### Release checklist (`stage` → `main` → tag)
 
-Treat every prod cutover as a release:
+Treat every production cutover as a release:
 
 - [ ] Diff `stage` vs last deploy tag / last promote: note which of `packages/tac2iwxxm`,
       `packages/tac-validate`, `packages/iwxxm-validate` changed

@@ -1,8 +1,12 @@
 # Image / figure pointers
 
 **Git policy:** do **not** commit ICAO/WMO PDFs, workshop slide PNGs, or production
-screenshots into this repo. Insert them only into your personal `.pptx`. Local digs may
-already exist under gitignored `.local/reference/`.
+screenshots into this repo. Insert those assets only into your personal `.pptx`. Local
+digs may already exist under gitignored `.local/reference/`.
+
+ICAO means International Civil Aviation Organization. WMO means World Meteorological
+Organization. IWXXM means ICAO/WMO XML weather exchange format. TAC means Traditional
+Alphanumeric Code.
 
 ---
 
@@ -25,7 +29,7 @@ already exist under gitignored `.local/reference/`.
 
 ---
 
-## Architecture mermaid (slide 4 — redraw in PPT)
+## Architecture mermaid (slide 4 - redraw in PPT)
 
 ```mermaid
 flowchart TB
@@ -80,5 +84,5 @@ Standing dig: [PPT-02-IWXXM-Framework-WMO-mining-notes.md](../../domain/mining/P
 
 Prefer a **redrawn** 2-column table (2023-1 / 2025-2) from
 [VERSION_SUPPORT_POLICY.md](../../domain/iwxxm/VERSION_SUPPORT_POLICY.md) Appendix A
-(informative capture). Do not present PPT-02 p.5 as machine SoT; defer to vendored XSD
-`version=` attributes.
+(informative capture). Do not present PPT-02 p.5 as machine source of truth; defer to
+vendored XSD `version=` attributes.

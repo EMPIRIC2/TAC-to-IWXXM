@@ -1,7 +1,7 @@
 [project]
 name = "tac2iwxxm"
 version = "2026.9.22"
-description = "Convert TAC aviation weather reports to IWXXM XML"
+description = "Turn Traditional Alphanumeric Code (TAC) aviation weather reports into IWXXM XML"
 readme = "README.md"
 license = { text = "MIT" }
 requires-python = ">=3.12"

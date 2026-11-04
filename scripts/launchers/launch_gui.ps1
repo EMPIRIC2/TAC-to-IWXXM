@@ -1,4 +1,4 @@
-# Launch script for METAR to IWXXM Converter Frontend (PowerShell)
+# Launch script for TAC to IWXXM Frontend (PowerShell)
 # Usage: .\launch_gui.ps1 [-Help]
 
 param(
@@ -47,7 +47,7 @@ if (-not (Test-Path (Join-Path $FrontendDir "node_modules"))) {
 # Launch the frontend dev server
 Write-Host ""
 Write-Host "========================================" -ForegroundColor Cyan
-Write-Host " METAR to IWXXM Converter Frontend" -ForegroundColor Green
+Write-Host " TAC to IWXXM Frontend" -ForegroundColor Green
 Write-Host "========================================" -ForegroundColor Cyan
 Write-Host " Server will start at http://localhost:5173" -ForegroundColor Yellow
 Write-Host " (Vite default port)" -ForegroundColor Yellow

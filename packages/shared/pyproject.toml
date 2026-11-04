@@ -1,7 +1,7 @@
 [project]
 name = "metar-shared"
 version = "0.1.0"
-description = "Shared constants and env helpers for METAR to IWXXM monorepo"
+description = "Shared constants and environment helpers for the TAC to IWXXM monorepo"
 requires-python = ">=3.12"
 dependencies = []
 

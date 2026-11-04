@@ -1,10 +1,31 @@
 # API Contract
 
-> **Project**: METAR to IWXXM Converter
+> **Project**: TAC to IWXXM
 > **Last updated**: 2026-09-20 (EV-validation-policy-layers / #1216 — endpoint review: no new lint/validate query fields; profile id only)
 > **Delta**: Monorepo M4 auth; F6 tac2iwxxm; F7 operator API; F11 msgspec HTTP (ADR-026);
 > F15 registry codes (ADR-028); F20 TAF/SPECI quality; **F21 Amended** public convert + optional
 > Auth; **F22** privacy; **F30/F31** Auth-only Supabase + DO Postgres work-sessions (ADR-033)
+
+## How to read this document
+
+This file is the **HTTP API** corpus (`[Corpus: api]`). It records request and
+response shapes, auth rules, and known quirks for the backend in `apps/backend`.
+
+| Source | Authority |
+|--------|-----------|
+| Live OpenAPI `GET {API}/openapi.json` | Which routes are mounted in that environment |
+| This document | Contracts, field tables, and migration notes |
+| When they disagree | Prefer OpenAPI, then AskQuestion before you patch callers |
+
+**Auth model (F21 Amended / F31):** Convert, lint, validate, and disseminate stay
+**public** (no JWT). A JWT is required only for `/api/v1/work-sessions*`. Guests
+use IndexedDB. Logged-in users use DigitalOcean Postgres sessions. `/admin/*`
+remains **gone** (404). The frontend uses one API base for `/api/v1/*` and
+`/auth/*`.
+
+Sections below start with **Base URLs**, then **Services**, then per-endpoint
+tables. Code samples and JSON schemas in those sections are normative; do not
+rewrite them casually.
 
 ## Base URLs
 
@@ -13,15 +34,6 @@
 | Local dev | `http://localhost:18000` | `http://localhost:18001` |
 | DOKS (prod) | `https://app.tac-to-iwxxm.com` | `https://api.tac-to-iwxxm.com` |
 | DOKS (staging) | `https://app.staging.tac-to-iwxxm.com` | `https://api.staging.tac-to-iwxxm.com` |
-
-**Path inventory truth:** live OpenAPI (`GET {API}/openapi.json`) is authoritative for which
-routes are mounted in that environment. This document captures contracts and quirks; when they
-disagree, prefer OpenAPI + AskQuestion before patching callers.
-
-**EV-031 / F21 Amended**: Frontend uses single API base for `/api/v1/*` **and** `/auth/*`.
-Convert/lint/validate/disseminate remain **public** (no JWT). JWT required only for
-`/api/v1/work-sessions*`. Guests use IndexedDB; logged-in users use DO Postgres sessions.
-`/admin/*` remains **gone** (404).
 
 ## Services
 
@@ -124,7 +136,7 @@ the same public convert path. Work history: guest → IndexedDB; logged-in → s
 | `iwxxm_version` | no | SoT default (`2025-2`) | Enum = Python `SUPPORTED_VERSIONS` via generated JSON (`apps/frontend/src/generated/iwxxm_versions.json`; `make export-iwxxm-versions`; #851 / D-S046-sot) |
 | `lint` | no | `true` | Run `tac-validate` before convert (Q14=C) |
 | `preview` | no | `false` | Soft-preview mode (S011) — see below |
-| `strict` | no | `false` | Strict raise master (ADR-054). Off: client raises critical+error only. On: full ladder + drives validate when `strict_validate` |
+| `strict` | no | `false` | Strict raise master ([Corpus: adr/ADR-054]). Off: client raises critical and error only. On: full ladder and drives validate when `strict_validate` |
 | `strict_lint` | no | `true` | When `strict`, include TAC lint in raised set |
 | `strict_convert` | no | `true` | When `strict`, include convert findings in raised set |
 | `strict_validate` | no | `true` | When `strict`, include IWXXM validation in raised set and enable post-convert validation |
@@ -210,7 +222,7 @@ existing string fields.
 - No metrics object on the response (library/CI only).
 - **Single-report only**: WMO AHL **bulletins** use `POST /api/v1/convert-bulletin` (below).
 
-**Response**: `ConversionResponse`; see docs/guides/API.md. Additive optional `raised_severities` (ADR-054) lists severities raised for the request; all issues remain in `issues[]`. Convert success with IWXXM validation errors stays HTTP 200 with downloadable XML.
+**Response**: `ConversionResponse`; see docs/guides/API.md. Additive optional `raised_severities` ([Corpus: adr/ADR-054]) lists severities raised for the request; all issues stay in `issues[]`. Convert success with IWXXM validation errors stays HTTP 200 with downloadable XML. Convert path failures promote to severity `critical`. IWXXM validation findings stay at `error`. When decode leaves residual TAC tokens, convert and `POST /lint-tac` emit warning code `PARTIAL_DECODE` (registry default warning; not a pack-engine lint emit).
 
 Each `ConversionResult` includes optional `tac_input` (original TAC echo) for input traceability ([#594](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/594)).
 

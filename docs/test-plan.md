@@ -1,8 +1,34 @@
 # Test Plan
 
-> **Project**: METAR to IWXXM Converter
+> **Project**: TAC to IWXXM
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
 > **Last updated**: 2026-10-30 (TC-WEEKLY-VAL-001 weekly staging validation catalog GHA)
+
+## How to read this document
+
+This file is the **tests** corpus (`[Corpus: tests]`). It defines what to test, which
+**tier** owns the check, and the test-case ids (`TC-*`) that CI and live signoff cite.
+
+| Id family | Meaning |
+|-----------|---------|
+| `TC-*` | Test case id (unit, API, e2e, or live) |
+| `UJ-*` | User journey id — see [user-journeys.md](user-journeys.md) |
+| `H0`…`H7` | Connectivity / live harness tier (table below) |
+| `F*` / `M*` | Product feature or milestone from [feature-list.md](feature-list.md) |
+
+**Tiers at a glance**
+
+| Tier | What it covers | Typical command |
+|------|----------------|-----------------|
+| Local unit / package CI | Libraries and backend without live hosts | `make test-unit` / package jobs |
+| H3 | Live API pytest (health, convert, validate; convert needs no JWT) | `make test-live-api` |
+| H4–H5 | CORS preflight + frontend bundle URLs | `make test-live-connectivity` |
+| H6 / H6′ | Playwright journeys (operator UI + dissemination smokes) | `make test-live-e2e` |
+| H7 | Live bulletin gate (AHL → split → convert → Schematron) | `make test-live-bulletin` |
+| Full live sequence | H4–H5 → H3 → H6 → H7 | `make test-live` |
+
+Live harness targets DigitalOcean Kubernetes Service (**DOKS**) hosts after the
+F30 cutover. Render URLs are historical only (TC-F30-005).
 
 ## Scope
 
@@ -33,7 +59,7 @@ PostgREST as product data plane. **Exception:** Sunday weekly staging validation
 
 ### Live harness (delta 2026-06-22; H7 2026-07-12; **DOKS target S038 / EV-031**)
 
-Unified manual live test harness against **DOKS** production endpoints after F30 cutover
+Manual live harness against **DOKS** production endpoints after the F30 cutover
 (Render URLs remain valid only until soak + decommission; TC-F30-005):
 
 | Tier   | Scope                                                                                     | Makefile target                         |
@@ -7473,3 +7499,24 @@ These checks are already merged on `origin/stage` (pull requests #1447, #1444, #
 - **Objective**: Operator-visible Decoding library and lint catalog surface at least one new decode explanation and one new typo warning code.
 - **Pass criteria**: e2e asserts catalog/library visibility; copy free of planning ids; H4–H5 when FE deploys.
 
+## Live 30d pipeline severity map (2026-11-04)
+
+[Corpus: tests] [Corpus: adr/ADR-054] [Corpus: api]
+
+### TC-LIVE-30D-SEV-001: Partial decode emits `PARTIAL_DECODE` warning
+
+- **Level**: T0 (`tests/bugs/live_tac_eval/`)
+- **Objective**: When decode leaves unread TAC tokens, convert emits warning code `PARTIAL_DECODE`.
+- **Pass criteria**: `test_bug_2026_11_04_pipeline_severity_partial_decode.py` is green. Registry default severity for `PARTIAL_DECODE` is `warning`. A full decode sample does not emit the code. Convert failure still promotes to `critical` and IWXXM validation stays `error` via existing ADR-054 unit tests (`test_strict_raise_adr054.py`). No Europe blanket soften. No `MISSING_*` soften. `INVALID_PROB` stays error.
+
+### TC-LIVE-30D-SEV-002: US WST VOR table covers LSU/IND/BNA/ORD
+
+- **Level**: T0 (`tests/bugs/live_tac_eval/`)
+- **Objective**: Live convective SIGMET FROM-chains that name LSU, IND, BNA, or ORD convert under the offline VOR table.
+- **Pass criteria**: `test_bug_2026_11_04_wst_vor_lsu_ind_bna_ord.py` is green.
+
+### TC-LIVE-30D-SEV-003: Spaced CAVOK on TAF sets cloudAndVisibilityOK
+
+- **Level**: T0 (`tests/bugs/live_tac_eval/`)
+- **Objective**: Spaced `C A V O K` on TAF parses as CAVOK so Schematron TAF.TAF-8 can pass when wind is present.
+- **Pass criteria**: `test_bug_2026_11_04_haab_spaced_cavok_taf8.py` is green.

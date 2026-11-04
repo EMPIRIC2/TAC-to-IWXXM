@@ -1,8 +1,28 @@
 # Feature List
 
-> **Project**: METAR to IWXXM Converter
+> **Project**: TAC to IWXXM
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
 > **Last updated**: 2026-10-07 (EV-live-map-24h-window: 24h share + time presets; prior EV-map-product-layers)
+
+## How to read this document
+
+This file is the **product** corpus (`[Corpus: product]`). It lists every approved
+feature (`F*`) and platform milestone (`M*`). Agents and engineers use it for
+scope: new work must map to a row below, or raise `[Scope Drift]`.
+
+| Part | Use it to… |
+|------|------------|
+| **Summary** table | See id, short name, status, and source at a glance |
+| **Product Feature Details** | Read acceptance, inputs/outputs, and deepen notes for one `F*` |
+| Status key (under the summary) | Decode Implemented / In progress / Planned / Deprecated |
+
+**Status key** (also repeated under the summary table): Implemented = production-ready;
+In progress = partial delivery on approved scope; Planned = approved in requirements
+interview; Experimental = works but not validated; Superseded / Deprecated = replaced
+by a later decision.
+
+When a row cites an evolve id (`EV-…`), session id (`S0…`), or issue (`#…`), those
+ids are engineering trace only. They are not operator-facing copy.
 
 ## Summary
 
@@ -532,7 +552,7 @@
   `iwxxm_version`; optional `bulletin_id` / `issuing_center` / `stop_on_error` /
   `validate_output` / `validation_level` (ADR-023); editor cursor and character spans
   for highlight/hover. **No operator JWT** after F21 (S023).
-- **Strict raise (EV-severity-strict-ui / ADR-054)**: Operator Strict (default off) raises critical+error only; Strict on raises full ladder and drives IWXXM validate when the validate step is on. Server returns all issues. Convert success with IWXXM errors stays downloadable with awareness. No decode step toggle in v1.
+- **Strict raise ([Corpus: adr/ADR-054])**: Operator Strict (default off) raises critical and error only. Strict on raises the full ladder and sets IWXXM validate when the validate step is on. The server returns all issues. Convert success with IWXXM errors stays downloadable with awareness. No decode step toggle in v1. Pipeline stage map: convert failure → `critical`; IWXXM validation failure → `error`; partial decode (unread TAC tokens) → TAC lint/convert warning `PARTIAL_DECODE`.
 - **Outputs**: Ordered decode segments (`start`/`end` + explanation); span-aware lint/validate
   issues; best-effort IWXXM + failed-span markers on soft-preview; F7 session rows for seven
   products; optional in-band XSD/Schematron when Strict Validation is on (hard Convert).

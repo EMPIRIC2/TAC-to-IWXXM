@@ -210,6 +210,13 @@ docs/domain/profiles/_scaffold_out/
 artifacts/
 third_party/
 
+# ASD-STE100 Issue 9 official copy (copyrighted — local only; see .cursor/skills/asd-ste100)
+/docs/ste/ASD-STE100*
+/docs/ste/*.pdf
+/docs/ste/*.docx
+/docs/ste/*.txt
+/docs/ste/.env.path
+
 # Spec-development process. Files stay on disk; they are not part of the public tree.
 /workflow-state.yaml
 /docs/sessions/

@@ -1,6 +1,6 @@
 # User Journeys
 
-> **Project**: METAR to IWXXM Converter
+> **Project**: TAC to IWXXM
 > **Source**: feature-list.md; S008 F6 + realtime amend; S011 / EV-008 F7 operator UI;
 > S013 / EV-009 F9/F10 decode + preview UX; S014 / EV-010 package publish + msgspec HTTP;
 > S015 / EV-011 F15 METAR lint registry + #732 quality; S016 / EV-012 Manual TAC Input modes (#730);
@@ -9,8 +9,24 @@
 > S040 / EV-032 F32 VONA + #846 corpus
 > **Last updated**: 2026-09-23 (EV-1252-residual-yaml / #1252 — UJ-DEV-013)
 
-Product-facing journeys (UJ-*) describe end-user flows. Developer journeys (UJ-DEV-*)
-describe monorepo workflows introduced by migration features M1–M6 and F6.
+## How to read this document
+
+This file is the **journeys** corpus (`[Corpus: journeys]`). Each **user journey**
+(`UJ-*`) describes one end-to-end flow an operator or developer must be able to
+complete. End-to-end (E2E) and verify-impl stages sign off against these ids.
+
+| Prefix | Audience | Examples |
+|--------|----------|----------|
+| `UJ-*` | Operator / product flow | Convert, validate, disseminate, privacy |
+| `UJ-DEV-*` | Developer / monorepo flow | Package CI, vendor sync, PyPI smoke |
+
+**How the index works:** the **Journey Index** table lists id, short name, entry
+point, linked feature (`F*` from [feature-list.md](feature-list.md)), and E2E
+tier (`T0` / `T2` / `T3` / `H4–H5` / live). Detailed steps for each journey follow
+later in this file. Test case ids (`TC-*`) that implement a journey live in
+[test-plan.md](test-plan.md).
+
+Do not put journey ids into operator-visible UI copy.
 
 ## Journey Index
 

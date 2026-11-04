@@ -724,6 +724,9 @@ class DecodeResult(msgspec.Struct, frozen=True):
     summary: str = ""
 
 
+_TOKEN_RE = re.compile(r"=|C\s+A\s+V\s+O\s+K|[^\s=]+", re.IGNORECASE)
+
+
 def _iter_tokens(tac: str) -> list[tuple[int, int, str]]:
     """
     Internal helper ``_iter_tokens``.
@@ -738,7 +741,7 @@ def _iter_tokens(tac: str) -> list[tuple[int, int, str]]:
     list[tuple[int, int, str]]
         Return value.
     """
-    return [(m.start(), m.end(), m.group(0)) for m in re.finditer(r"=|[^\s=]+", tac)]
+    return [(m.start(), m.end(), m.group(0)) for m in _TOKEN_RE.finditer(tac)]
 
 
 _SPACED_CAVOK_LETTERS = ("C", "A", "V", "O", "K")
@@ -1376,7 +1379,7 @@ def _explain_metar_speci(token: str, *, product: str, seen: dict[str, int]) -> s
         return f"Amendment ({upper})"
     if upper == "NIL":
         return "Nil report (no observation)"
-    if upper == "CAVOK":
+    if upper == "CAVOK" or re.sub(r"\s+", "", upper) == "CAVOK":
         return "Ceiling and visibility OK"
     if upper == "NOSIG":
         seen["in_trend"] = 1
@@ -1697,6 +1700,8 @@ def _explain_taf(token: str, *, seen: dict[str, int]) -> str | None:
         return "Cancelled forecast"
     if upper == "NIL":
         return "Nil forecast"
+    if upper == "CAVOK" or re.sub(r"\s+", "", upper) == "CAVOK":
+        return "Ceiling and visibility OK"
     if upper == "=":
         return "Report terminator"
     if _STATION.match(upper) and seen.get("station", 0) == 0:

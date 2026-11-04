@@ -1,8 +1,21 @@
-# Deploy State
+# Deploy state
 
 > Last updated: 2026-08-18  
 > Status: **staging current** (EV-060 converter operator bugs + Auth UAT on `stage`);
 > **production** last promoted 2026-08-10. Promote `stage`→`main` **deferred**.
+
+This file records **which Git tips and URLs** are live on staging and production.
+It is a short ops snapshot, not the full deploy runbook. For topology, promote
+steps, and rollbacks, use [deploy.md](deploy.md).
+
+**Terms**
+
+| Term | Meaning |
+|------|---------|
+| `stage` | Git branch that feeds the staging cluster |
+| `main` | Git branch that feeds production after a promote and deploy tag |
+| Promote | Pull request from `stage` into `main` (see [deploy.md](deploy.md) §Promote) |
+| Staging / production | Separate DigitalOcean Kubernetes Service (DOKS) clusters |
 
 ## Environments
 
@@ -32,8 +45,8 @@
 
 ## Rollback
 
-Prior DOKS/GHCR image tag via `scripts/deploy/doks_rollout_images.sh` against the matching
-cluster secret (staging ≠ prod). See [deploy.md](deploy.md).
+Roll back with a prior DOKS/GHCR image tag via `scripts/deploy/doks_rollout_images.sh`
+against the matching cluster secret (staging ≠ prod). See [deploy.md](deploy.md).
 
 ## Session pointers
 

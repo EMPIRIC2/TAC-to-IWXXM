@@ -1,7 +1,7 @@
 [project]
 name = "tac-validate"
 version = "2026.9.22"
-description = "Lint TAC aviation weather products (METAR/SPECI/TAF and related) with structured issues"
+description = "Lint Traditional Alphanumeric Code (TAC) aviation weather products and return structured issues"
 readme = "README.md"
 license = { text = "MIT" }
 requires-python = ">=3.12"

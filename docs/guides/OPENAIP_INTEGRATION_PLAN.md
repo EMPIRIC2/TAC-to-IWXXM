@@ -1,34 +1,44 @@
-# IWXXM Airport Data Integration - Implementation Plan
+# IWXXM airport data integration - implementation plan
 
-**Status**: Phase 1-2 Complete (OpenAIP Infrastructure + GIFTS Integration)
+**Status**: Phase 1-2 Complete (OpenAIP Infrastructure + GIFTs Integration)
 
 **Date**: February 14, 2026
+
+**METAR** means routine aerodrome weather report. **TAC** means Traditional Alphanumeric
+Code. **IWXXM** means ICAO/WMO XML weather exchange format. **GIFTs** is the library that
+encodes TAC into IWXXM. **OpenAIP** is an airport data API and cache source. **ICAO** is
+a four-letter aerodrome designator in this context.
 
 ---
 
 ## Summary
 
-This implementation addresses critical failures in METAR-to-IWXXM conversion where airports like ENFB (Fornebu Airport) are returning incorrect data. The root cause: GIFTs encoder wasn't receiving airport metadata, falling back to OurAirports data which incorrectly mapped ENFB to "Statfjord B" (501km away in the North Sea).
+This work addresses failures in METAR-to-IWXXM conversion where airports such as ENFB
+(Fornebu Airport) returned incorrect data. The root cause: the GIFTs encoder did not
+receive airport metadata, so the pipeline fell back to OurAirports data that mapped ENFB
+to "Statfjord B" (501 km away in the North Sea).
 
-### Key Achievements
+### Key results
 
-✅ **Phase 1: OpenAIP Infrastructure**
-- Created `fetch_openaip_airports.py` - Script to fetch and cache airport data from OpenAIP API
-- Created `openaip_service.py` - Service for caching with live API fallback
-- Created `airport_record_builder.py` - Data merger from multiple sources (OpenAIP, vertical_datum_map, airports.json)
-- Created `closed_airports.json` - Registry of closed/deprecated airports for transparency
+**Phase 1: OpenAIP infrastructure**
 
-✅ **Phase 2: GIFTS Integration Plumbing**
-- Created `gifts_locationdb_adapter.py` - Adapts airport data to GIFTs-compatible format
-- Updated `gifts_adapter.py` - Now accepts and passes `geo_locations_db` parameter to encoder
-- Updated `conversion.py` - Initializes GiftsLocationDBAdapter and injects it into conversion pipeline
-- Expanded `vertical_datum_map.json` - Added complete airport records (name, iata, designator, status) for ENFB and CWFD
+- Created `fetch_openaip_airports.py` — Script to fetch and cache airport data from OpenAIP API
+- Created `openaip_service.py` — Service for caching with live API fallback
+- Created `airport_record_builder.py` — Data merger from multiple sources (OpenAIP, vertical_datum_map, airports.json)
+- Created `closed_airports.json` — Registry of closed/deprecated airports for transparency
+
+**Phase 2: GIFTs integration plumbing**
+
+- Created `gifts_locationdb_adapter.py` — Adapts airport data to GIFTs-compatible format
+- Updated `gifts_adapter.py` — Now accepts and passes `geo_locations_db` parameter to encoder
+- Updated `conversion.py` — Initializes GiftsLocationDBAdapter and injects it into conversion pipeline
+- Expanded `vertical_datum_map.json` — Added complete airport records (name, iata, designator, status) for ENFB and CWFD
 
 ---
 
 ## Architecture
 
-### Data Source Hierarchy
+### Data source hierarchy
 
 When building an airport record, sources are checked in this priority order:
 
@@ -46,7 +56,7 @@ When building an airport record, sources are checked in this priority order:
    └─ Known issues: ENFB → "Statfjord B" (wrong, 501km away)
 ```
 
-### Conversion Pipeline
+### Conversion pipeline
 
 ```
 METAR TAC Input
@@ -70,9 +80,9 @@ IWXXM XML Output with Complete Airport Data
 
 ---
 
-## Files Created/Modified
+## Files created or modified
 
-### New Files
+### New files
 
 | File | Purpose |
 |------|---------|
@@ -83,7 +93,7 @@ IWXXM XML Output with Complete Airport Data
 | `backend/src/data/closed_airports.json` | Registry of closed/deprecated airports |
 | `test_openaip_integration.py` | Integration test script for verification |
 
-### Modified Files
+### Modified files
 
 | File | Changes |
 |------|---------|
@@ -95,7 +105,7 @@ IWXXM XML Output with Complete Airport Data
 
 ## Usage
 
-### Initialize OpenAIP Cache
+### Initialize OpenAIP cache
 
 ```bash
 # First time setup
@@ -109,7 +119,7 @@ python3 scripts/fetch_openaip_airports.py --refresh
 OPENAIP_API_KEY=your_key python3 scripts/fetch_openaip_airports.py
 ```
 
-### Test Integration
+### Test integration
 
 ```bash
 # Test all new components
@@ -121,7 +131,7 @@ cd backend
 python3 -m pytest tests/test_metar_pairs_comprehensive.py::TestMetarConversion -k "ENFB or CWFD" -xvs
 ```
 
-### Convert METAR with Full Airport Data
+### Convert METAR with full airport data
 
 ```python
 from src.utilities.conversion import convert_metar_tac
@@ -133,13 +143,15 @@ print(xml_string)  # XML includes correct name, IATA, designator
 
 ---
 
-## Data Quality
+## Data quality
 
-### ENFB (Fornebu Airport) - Critical Fix
+### ENFB (Fornebu Airport) - critical fix
 
-**Problem**: OurAirports mistakenly linked ENFB ICAO code to "Statfjord B" heliport at 61.206°N, 1.829°E (North Sea, 501km away)
+**Problem**: OurAirports linked the ENFB ICAO code to "Statfjord B" heliport at
+61.206°N, 1.829°E (North Sea, 501 km away)
 
-**Solution**: 
+**Solution**:
+
 - vertical_datum_map.json override with correct data
 - OpenAIP primary source (if available after cache sync)
 - Marked as `"status": "closed"` with `"closure_year": 1998`
@@ -157,26 +169,26 @@ print(xml_string)  # XML includes correct name, IATA, designator
 <gml:pos>59.89580 10.6172</gml:pos>
 ```
 
-### Test Coverage
+### Test coverage
 
 | Airport | Issue | Status |
 |---------|-------|--------|
-| ENFB | OurAirports confusion (501km) | ✅ Fixed via vertical_datum_map + OpenAIP |
-| CWFD | Missing designator/IATA | ✅ Added to vertical_datum_map |
-| BGGH | Name variation (GODTHAAB vs NUUK) | ✓ Production correct (OpenAIP primary) |
+| ENFB | OurAirports confusion (501km) | Fixed via vertical_datum_map + OpenAIP |
+| CWFD | Missing designator/IATA | Added to vertical_datum_map |
+| BGGH | Name variation (GODTHAAB vs NUUK) | Production correct (OpenAIP primary) |
 
 ---
 
 ## Configuration
 
-### Environment Variables
+### Environment variables
 
 ```bash
-OPENAIP_API_KEY=01daea028583ab08394619973ba6bd89  # From .env
+OPENAIP_API_KEY=your_key_from_dotenv
 INCLUDE_METADATA_COMMENTS=false                   # Optional: adds XML comments with data source
 ```
 
-### Optional: Cache Refresh Automation
+### Optional: cache refresh automation
 
 Add to CI/CD pipeline:
 ```yaml
@@ -188,20 +200,20 @@ Add to CI/CD pipeline:
 
 ---
 
-## Known Limitations & Next Steps
+## Known limitations and next steps
 
-### Phase 3: Schematron Validation (Not Yet Implemented)
+### Phase 3: Schematron validation (not yet implemented)
 
-- Schematron rules in IWXXM schemas don't enforce element ordering (XSD `<sequence>` does)
-- Could add optional schematron validation runner for stricter validation
+- Schematron rules in IWXXM schemas do not enforce element ordering (XSD `<sequence>` does)
+- Optional Schematron validation runner could be added for stricter checks
 
-### Phase 4: 2025-2 Version Support
+### Phase 4: 2025-2 version support
 
-- Same architecture applies to future IWXXM versions
+- The same architecture applies to later IWXXM versions
 - vertical_datum_map.json and OpenAIP data sources remain current
-- May need version-specific test overrides (unlikely, as data quality improves)
+- Version-specific test overrides may be needed (unlikely as data quality improves)
 
-### Phase 5: Documentation & Monitoring
+### Phase 5: Documentation and monitoring
 
 - Track OpenAIP cache freshness
 - Log warnings when using fallback data sources
@@ -209,9 +221,9 @@ Add to CI/CD pipeline:
 
 ---
 
-## Performance Considerations
+## Performance considerations
 
-### Cache Strategy: Hybrid Approach
+### Cache strategy: hybrid approach
 
 | Operation | Latency | Strategy |
 |-----------|---------|----------|
@@ -223,12 +235,12 @@ Add to CI/CD pipeline:
 ### Optimization
 
 - 5-minute in-memory cache for live API calls
-- No blocking on cache initialization (adapter handles gracefully)
+- No blocking on cache initialization (adapter handles missing cache)
 - Empty cache falls back to airports.json automatically
 
 ---
 
-## Validation Checklist
+## Validation checklist
 
 - [ ] OpenAIP API key confirmed working
 - [ ] fetch_openaip_airports.py runs successfully
@@ -244,7 +256,7 @@ Add to CI/CD pipeline:
 
 ## Troubleshooting
 
-### OpenAIP Cache Not Initialized
+### OpenAIP cache not initialized
 
 ```bash
 # Check if cache file exists
@@ -259,18 +271,18 @@ python3 -c "import json; print(len(json.load(open('src/data/openaip_cache.json')
 # Should show 4000+
 ```
 
-### Airport Data Still Wrong
+### Airport data still wrong
 
-1. Check vertical_datum_map.json has complete entry for airport
+1. Check vertical_datum_map.json has a complete entry for the airport
 2. Verify fetch_openaip_airports.py ran without errors
 3. Check GiftsLocationDBAdapter is being instantiated (look for log: "Initialized GIFTs LocationDB adapter")
 4. Run test: `python3 test_openaip_integration.py`
 
-### XML Missing Designator/IATA
+### XML missing designator/IATA
 
-- Ensure GiftsLocationDBAdapter.get() returns properly formatted string
-- Check that airport record has all required fields
-- Verify GIFTs encoder receives geo_locations_db parameter
+- Ensure GiftsLocationDBAdapter.get() returns a properly formatted string
+- Check that the airport record has all required fields
+- Verify the GIFTs encoder receives the geo_locations_db parameter
 
 ---
 
@@ -280,4 +292,3 @@ python3 -c "import json; print(len(json.load(open('src/data/openaip_cache.json')
 - **IWXXM Schemas**: `/root/metar-to-IWXXM/schemas/iwxxm/2023-1/` and `2025-2/`
 - **WMO Test Data**: `/root/metar-to-IWXXM/data/iwxxm-translation/Amd79-80-2023/metar/`
 - **GIFTs Documentation**: GIFTs/readme.md
-

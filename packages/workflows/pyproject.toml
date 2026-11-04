@@ -1,7 +1,7 @@
 [project]
 name = "workflows"
 version = "0.1.0"
-description = "MET workflow YAML executor — execute(message, workflow) (ADR-042)"
+description = "Execute meteorology workflow YAML with execute(message, workflow)"
 readme = "README.md"
 license = { text = "MIT" }
 requires-python = ">=3.12"

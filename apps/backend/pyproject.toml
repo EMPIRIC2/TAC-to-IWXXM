@@ -1,7 +1,7 @@
 [project]
 name = "metar-backend"
 version = "0.1.0"
-description = "Backend API for METAR to IWXXM conversion"
+description = "HTTP API that turns Traditional Alphanumeric Code (TAC) into IWXXM XML"
 requires-python = ">=3.12"
 dependencies = [
     "metar-shared",
