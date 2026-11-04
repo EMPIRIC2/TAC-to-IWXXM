@@ -7,19 +7,19 @@ labels: ["beta-feedback"]
 
 ## Which beta feature?
 
-- [ ] Dissemination / Send
-- [ ] Dissemination ops
-- [ ] Other (name it):
+- [ ] Dissemination / Send (send converted IWXXM to an approved destination)
+- [ ] Dissemination ops (operations view for send destinations)
+- [ ] Other (name the feature):
 
 ## What happened?
 
-<!-- Steps, expected vs actual, screenshots if useful -->
+<!-- Steps you took, what you expected, what you saw. Add screenshots if useful. -->
 
 ## Environment
 
-- Staging / production / local:
-- Browser (if UI):
+- Site: Staging / production / local:
+- Browser (if this is a UI problem):
 
 ## Optional
 
-- ICAO / sample TAC (scrub secrets):
+- ICAO location indicator / sample TAC (remove secrets before you paste):

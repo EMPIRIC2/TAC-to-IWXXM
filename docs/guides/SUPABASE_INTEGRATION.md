@@ -1,24 +1,33 @@
-# Supabase PostgreSQL Integration - Complete Setup Guide
+# Supabase PostgreSQL integration - setup guide
 
 ## Status: RESOLVED
 
-The auth service is now **connected to Supabase PostgreSQL** using the IPv4 transaction pooler. All 29 core tests pass.
+The auth service connects to Supabase PostgreSQL through the IPv4 transaction pooler.
+All 29 core tests pass (see Testing Results below).
 
-## Problem & Solution
+**Supabase** is a hosted PostgreSQL and auth platform. **PostgreSQL** is the database
+engine. **IPv4** / **IPv6** are Internet Protocol address families. A **transaction
+pooler** shares short database connections across requests.
 
-### The Problem
-Your system lacks IPv6 support, and Supabase's direct PostgreSQL connection (`db.YOUR_PROJECT_REF.supabase.co`) only provides IPv6 connectivity. This caused DNS resolution failures:
+## Problem and solution
+
+### The problem
+The host system lacked IPv6 support. Supabase’s direct PostgreSQL host
+(`db.YOUR_PROJECT_REF.supabase.co`) provides IPv6 connectivity only. That mismatch
+caused DNS resolution failures:
+
 ```
 socket.gaierror: [Errno 11001] getaddrinfo failed
 ```
 
-### The Solution
-Use **Supabase's Transaction Pooler** which provides IPv4 connectivity:
+### The solution
+Use **Supabase’s Transaction Pooler**, which provides IPv4 connectivity:
+
 - **Host**: `aws-0-us-west-2.pooler.supabase.com` (resolves to IPv4)
 - **Port**: `6543` (transaction mode)
-- **Region**: us-west-2 (not us-east-1!)
+- **Region**: us-west-2 (not us-east-1)
 
-## Connection Configuration
+## Connection configuration
 
 ### .env File
 ```bash
@@ -30,7 +39,7 @@ DATABASE_URL=postgresql+psycopg2://postgres.PROJECT_REF:PASSWORD@aws-0-us-west-2
 # Get actual values from Supabase Dashboard → Settings → Database
 ```
 
-### Key Details
+### Key details
 | Parameter | Value |
 |-----------|-------|
 | Host | aws-0-us-west-2.pooler.supabase.com |
@@ -42,10 +51,10 @@ DATABASE_URL=postgresql+psycopg2://postgres.PROJECT_REF:PASSWORD@aws-0-us-west-2
 | IPv Support | IPv4 ✓, IPv6 ✓ |
 | Prepared Statements | Not supported (disabled in code) |
 
-## Implementation Details
+## Implementation details
 
-### Database Configuration (`auth/src/auth/database.py`)
-The configuration automatically detects transaction mode pooler and disables prepared statements:
+### Database configuration (`auth/src/auth/database.py`)
+The configuration detects the transaction-mode pooler and disables prepared statements:
 
 ```python
 if "pooler.supabase.com" in DATABASE_URL and ":6543/" in DATABASE_URL:
@@ -58,12 +67,14 @@ if "pooler.supabase.com" in DATABASE_URL and ":6543/" in DATABASE_URL:
     )
 ```
 
-### Why Disable Prepared Statements?
-Supabase's transaction pooler (Supavisor in transaction mode) doesn't support PostgreSQL prepared statements. The code automatically detects this and disables them using SQLAlchemy's `execution_options`.
+### Why disable prepared statements?
+Supabase’s transaction pooler (Supavisor in transaction mode) does not support
+PostgreSQL prepared statements. The code detects that mode and disables prepared
+statements through SQLAlchemy’s `execution_options`.
 
-## Testing Results
+## Testing results
 
-### Test Suite
+### Test suite
 ```
 Platform: Windows 10, Python 3.12.6
 Database: Supabase PostgreSQL via IPv4 Pooler
@@ -73,7 +84,7 @@ Results: ✅ 29 PASSED, 2 SKIPPED (intentional)
 Success Rate: 93.5% (2 tests require PostgreSQL-specific conditions)
 ```
 
-### Test Coverage
+### Test coverage
 - ✓ User registration and login
 - ✓ JWT token creation and validation
 - ✓ API key generation and revocation
@@ -83,7 +94,9 @@ Success Rate: 93.5% (2 tests require PostgreSQL-specific conditions)
 - ✓ Concurrent operations
 - ✓ Database operations (CREATE, INSERT, SELECT, DELETE)
 
-### Real-World Tests
+**JWT** means JSON Web Token.
+
+### Real-world tests
 ```bash
 # Registration (Docker service)
 curl -X POST http://localhost:8002/auth/register \
@@ -104,26 +117,27 @@ curl -X POST http://localhost:8002/auth/login \
 # Response: 200 OK, JWT token returned ✓
 ```
 
-## Docker Services
+## Docker services
 
-All services are **healthy and running**:
+At the time of this write-up, these services were healthy and running:
+
 ```
 ✓ metar-iwxxm-auth      (port 8002) - Connected to Supabase
 ✓ metar-iwxxm-backend   (port 8001)
 ✓ metar-iwxxm-frontend  (port 8000)
 ```
 
-## Connection Methods Explained
+## Connection methods explained
 
-### 1. Direct Connection (IPv6 Only)
+### 1. Direct connection (IPv6 only)
 ```
 postgresql://postgres:PASSWORD@db.YOUR_PROJECT_REF.supabase.co:5432/postgres
 ```
 - **Pros**: Low latency, no pooler overhead
 - **Cons**: IPv6 only, fails on systems without IPv6
-- **Status**: Not usable on your system
+- **Status**: Not usable on the host that hit the DNS error above
 
-### 2. Session Pooler (IPv4) Alternative
+### 2. Session pooler (IPv4) alternative
 ```
 postgresql://postgres.YOUR_PROJECT_REF:PASSWORD@aws-0-us-west-2.pooler.supabase.com:5432/postgres
 ```
@@ -132,7 +146,7 @@ postgresql://postgres.YOUR_PROJECT_REF:PASSWORD@aws-0-us-west-2.pooler.supabase.
 - **Supports**: Prepared statements
 - **Status**: Would work, but not currently used
 
-### 3. Transaction Pooler (IPv4) Currently Used
+### 3. Transaction pooler (IPv4) currently used
 ```
 postgresql://postgres.YOUR_PROJECT_REF:PASSWORD@aws-0-us-west-2.pooler.supabase.com:6543/postgres
 ```
@@ -146,28 +160,29 @@ postgresql://postgres.YOUR_PROJECT_REF:PASSWORD@aws-0-us-west-2.pooler.supabase.
 ### If connection fails with "Tenant or user not found"
 1. Verify the **region** is correct (us-west-2, not us-east-1)
 2. Verify the **project reference** is correct (YOUR_PROJECT_REF)
-3. Verify the **password** hasn't been reset
+3. Verify the **password** has not been reset
 4. Check Supabase dashboard: Settings → Database → Connection pooling
 
 ### If you see "does not support PREPARE" errors
-- The code already handles this by disabling prepared statements for transaction mode
+- The code already disables prepared statements for transaction mode
 - No changes needed
 
 ### If tests fail with "duplicate key" errors
 - Clear test data: `DELETE FROM users; DELETE FROM api_keys; DELETE FROM password_reset_tokens;`
 - Re-run tests
 
-## Next Steps
+## Next steps
 
-1. **Monitor Performance**: The pooler works well for the auth service. Monitor if you need the session pooler for other services.
+1. **Monitor performance**: The pooler works for the auth service. Monitor whether other
+   services need the session pooler instead.
+2. **Apply to other services**: If other services (backend, and so on) need PostgreSQL,
+   use the same pooler connection string.
+3. **Upgrade consideration**: For production, consider Supabase’s **Dedicated Pooler**
+   (paid tier) for better performance and prepared-statement support.
+4. **Database migrations**: When adding new tables or schemas, use migration tools
+   (Alembic is configured).
 
-2. **Apply to Other Services**: If other services (backend, etc.) need PostgreSQL, use the same pooler connection string.
-
-3. **Upgrade Consideration**: For production, consider Supabase's **Dedicated Pooler** (paid tier) for better performance and prepared statement support.
-
-4. **Database Migrations**: When adding new tables/schemas, use proper migration tools (Alembic is configured).
-
-## Files Modified
+## Files modified
 
 | File | Changes |
 |------|---------|
@@ -190,15 +205,15 @@ psycopg2 driver
 [Supabase PostgreSQL] us-west-2 region
 ```
 
-## Key Takeaways
+## Key takeaways
 
 **Problem**: IPv6-only direct connection unreachable  
 **Solution**: Use IPv4 transaction pooler  
 **Implementation**: Automatic pooler detection and PREPARE statement disabling  
 **Testing**: 29/31 tests passing (2 intentionally skipped)  
-**Production Ready**: Yes, with proper monitoring and error handling  
+**Production readiness**: Documented as ready at write-up time, with monitoring and error handling
 
 ---
 
 **Last Updated**: January 5, 2026  
-**Status**: Complete - Supabase PostgreSQL fully integrated and tested
+**Status**: Complete — Supabase PostgreSQL integrated and tested per the results above

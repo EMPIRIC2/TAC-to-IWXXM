@@ -2,8 +2,9 @@
 
 [Corpus: deploy] [Corpus: tests] [Corpus: product §F6]
 
-When opening a **stage → main** promote PR, include a **broken-down** evaluation
-metrics section — not a single opaque percentage. The checklist lives in
+When you open a **stage → main** promote pull request (PR), include an evaluation
+metrics section with separate dimensions. Do not report one opaque percentage. The
+checklist is in
 [`.github/PULL_REQUEST_TEMPLATE/promote-stage-to-main.md`](../../.github/PULL_REQUEST_TEMPLATE/promote-stage-to-main.md).
 
 ## Required breakdown
@@ -19,11 +20,19 @@ metrics section — not a single opaque percentage. The checklist lives in
 | Dispositions | keep-as-error · prefer-profile · fixed-this-promote · deferred |
 | Provenance | Link to live-tac-eval (or equivalent) session report |
 
+Terms used above:
+
+- **Lint** means Traditional Alphanumeric Code (TAC) issue checks before convert.
+- **IWXXM** means ICAO/WMO XML weather exchange format.
+- **XSD** means XML Schema Definition checks.
+- **Schematron** means rule-based XML checks beyond XSD.
+- **METAR**, **SPECI**, **TAF**, and **SIGMET** are the aviation weather product types in scope for that eval.
+
 ## Sources
 
 Prefer `.cursor/skills/live-tac-eval` session artifacts under
-`~/.cursor/workflow/{owner}/{repo}/sessions/<id>/reports/`. Summaries may be
-copied into the PR body; do not invent metrics.
+`~/.cursor/workflow/{owner}/{repo}/sessions/<id>/reports/`. You may copy summaries
+into the PR body. Do not invent metrics.
 
 ## Non-goals
 

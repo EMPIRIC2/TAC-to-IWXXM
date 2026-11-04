@@ -126,6 +126,12 @@ ISSUES: tuple[IssueSpec, ...] = (
         tags=("match", "metar"),
     ),
     _row(
+        "PARTIAL_DECODE",
+        "warning",
+        "Some TAC tokens were not decoded (partial decode); conversion may still succeed",
+        tags=("decode", "residual"),
+    ),
+    _row(
         "ODD_FIELD_ORDER",
         "warning",
         "{product} groups out of A3-2 order (CCCC → ddhhmmZ → wind)",

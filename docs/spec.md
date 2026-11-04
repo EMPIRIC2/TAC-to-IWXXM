@@ -7,19 +7,45 @@
 
 ## Overview
 
-TAC to IWXXM converts aviation TAC messages (AIRMET, METAR, SIGMET, SPECI, TAF, VAA, TCA,
-and related products) to WMO IWXXM XML via `packages/tac2iwxxm`, lints TAC via
-`packages/tac-validate`, and validates IWXXM via `packages/iwxxm-validate` (XSD + Schematron)
-against authoritative WMO and optional NOAA IWXXM-US schema bundles under `vendor/schemas/`.
-The system is a **single-git monorepo** with `apps/` (deployables), `packages/` (libraries),
-and `vendor/` (read-only upstream snapshots). Multi-product operator UI remains the umbrella
-product track; **Quality metrics** (list + detail) is live on **staging** (promote deferred).
-Near-realtime ingest worker is implemented (product store on DigitalOcean Postgres). Public
-convert APIs remain unauthenticated; **optional Supabase Auth** gates long-term work sessions.
-**Supabase** is **Auth/JWT verify only**; product DB is **DigitalOcean Postgres** (`DATABASE_URL`).
-Hosting: **DOKS** (Render retired after soak).
-**Dissemination destinations** use **one-shot user-pasted BYOC** credentials
-(memory-only; never saved profiles) under SSRF + required egress allowlist.
+This document is the **system specification** (corpus id `system-spec`). It describes
+architecture, components, and hard constraints. For runtime config and deploy hosts,
+use [tech-spec.md](tech-spec.md) and its satellites. For approved features, use
+[feature-list.md](feature-list.md).
+
+**What the product does**
+
+TAC to IWXXM turns aviation Traditional Alphanumeric Code (TAC) messages into
+World Meteorological Organization (WMO) IWXXM XML. Supported products include
+AIRMET, METAR, SIGMET, SPECI, TAF, VAA, TCA, and related forms.
+
+| Concern | Package / location |
+|---------|-------------------|
+| Convert TAC → IWXXM | `packages/tac2iwxxm` |
+| Lint TAC | `packages/tac-validate` |
+| Validate IWXXM (XSD + Schematron) | `packages/iwxxm-validate` |
+| Schema snapshots (read-only) | `vendor/schemas/` (WMO and optional NOAA IWXXM-US) |
+
+**Repository shape**
+
+The codebase is one Git monorepo:
+
+- `apps/` — deployable services (API, frontend, worker, e2e)
+- `packages/` — libraries
+- `vendor/` — read-only upstream schema snapshots
+
+**Runtime facts (F30 / F31)**
+
+- Hosting is DigitalOcean Kubernetes Service (**DOKS**). Render is retired after soak.
+- Product database is **DigitalOcean Postgres** via `DATABASE_URL`.
+- **Supabase** verifies Auth JSON Web Tokens (JWTs) only. It is not the product database.
+- Public convert, lint, validate, and disseminate routes need no JWT.
+- Optional Supabase Auth gates long-term work sessions (`/api/v1/work-sessions*`).
+- A near-realtime ingest worker (feature F8) writes to the same product Postgres.
+- Dissemination uses one-shot Bring Your Own Credentials (**BYOC**): pasted secrets
+  stay in memory only, with Server-Side Request Forgery (SSRF) controls and a required
+  egress allowlist.
+- The multi-product operator UI is the umbrella product track. **Quality metrics**
+  (list + detail) is live on **staging**. Promote to production is deferred.
 
 ## System Architecture
 
@@ -46,9 +72,10 @@ apps/worker (DOKS — F8)
    └── DATABASE_URL → DigitalOcean Postgres (store/quarantine; no Supabase DB)
 ```
 
-`packages/gifts` remains absent (ADR-014). Supabase product PostgREST/DB is **out**; Auth only.
-One-time migrate of legacy Supabase `tac_work_sessions` (and related) into DO Postgres this cycle
-(`D-S038-spec-data` Q3=2). Alembic (or backend migration path) targets `DATABASE_URL`.
+`packages/gifts` remains absent (ADR-014). Supabase product PostgREST and product DB
+are **out**. Auth only. One-time migrate of legacy Supabase `tac_work_sessions` (and
+related) into DigitalOcean Postgres this cycle (`D-S038-spec-data` Q3=2). Alembic (or
+the backend migration path) targets `DATABASE_URL`.
 
 ### Repository (target tree)
 
@@ -85,6 +112,9 @@ TAC-to-IWXXM/
 ```
 
 ### Component Overview
+
+The table below maps each major component to its purpose, path, and main
+dependencies. Later sections (**Component Details**) expand each row.
 
 | Component | Purpose | Location | Dependencies |
 |-----------|---------|----------|--------------|

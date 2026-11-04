@@ -1,4 +1,4 @@
-# Slide outline — National compliance briefing (TAC → IWXXM)
+# Slide outline - National compliance briefing (TAC → IWXXM)
 
 **Audience:** Heads of MET services / aviation authorities / State representatives
 responsible for meeting **ICAO/WMO OPMET–IWXXM** exchange expectations.
@@ -8,9 +8,23 @@ lint → convert → validate. Not a click tutorial.
 **Citation pack:** [citation-search-guide.md](./citation-search-guide.md)
 **Policy:** cite landings + section numbers; never paste Annex 3 / MoC body text.
 
+Terms used in this outline:
+
+- **MET** means meteorological.
+- **TAC** means Traditional Alphanumeric Code.
+- **IWXXM** means ICAO/WMO XML weather exchange format.
+- **OPMET** means operational meteorological information.
+- **ICAO** means International Civil Aviation Organization.
+- **WMO** means World Meteorological Organization.
+- **SARPs** means Standards and Recommended Practices.
+- **XSD** means XML Schema Definition.
+- **Schematron** means rule-based XML checks beyond XSD.
+- **ROC** means Regional OPMET Centre.
+- **ANSP** means air navigation service provider.
+
 ---
 
-## Slide 1 — Title
+## Slide 1 - Title
 
 **Title:** Meeting OPMET IWXXM Exchange Expectations
 **Subtitle:** TAC → validated IWXXM for international air navigation · Schema pin **IWXXM v2025-2**
@@ -27,7 +41,7 @@ this system implements lint/convert/validate against published schemas.
 
 ---
 
-## Slide 2 — Why leadership cares
+## Slide 2 - Why leadership cares
 
 **Title:** From TAC operations to IWXXM exchange
 
@@ -45,7 +59,7 @@ regional agreement states it. Workshop ~2030 talk is **informative** only (PPT-0
 
 ---
 
-## Slide 3 — Binding sources map
+## Slide 3 - Binding sources map
 
 **Title:** Sources States cite for IWXXM programmes
 
@@ -65,7 +79,7 @@ regional agreement states it. Workshop ~2030 talk is **informative** only (PPT-0
 
 ---
 
-## Slide 4 — What “compliance-ready IWXXM” means
+## Slide 4 - What “compliance-ready IWXXM” means
 
 **Title:** Proof points Regulators and ROCs expect
 
@@ -85,7 +99,7 @@ Hub: docs/domain/README.md pipeline table.
 
 ---
 
-## Slide 5 — How this system maps
+## Slide 5 - How this system maps
 
 **Title:** Software pipeline aligned to ICAO/WMO sources
 
@@ -101,7 +115,7 @@ Hub: docs/domain/README.md pipeline table.
 
 ---
 
-## Slide 6 — Products in scope
+## Slide 6 - Products in scope
 
 **Title:** Products covered for State programmes
 
@@ -115,7 +129,7 @@ Hub: docs/domain/README.md pipeline table.
 
 ---
 
-## Slide 7 — Schema pin & version governance
+## Slide 7 - Schema pin & version governance
 
 **Title:** Validate against a published IWXXM line
 
@@ -129,7 +143,7 @@ Hub: docs/domain/README.md pipeline table.
 
 ---
 
-## Slide 8 — Governance & access (procurement / legal)
+## Slide 8 - Governance & access (procurement / legal)
 
 **Title:** What your State must hold vs what is free
 
@@ -143,7 +157,7 @@ Hub: docs/domain/README.md pipeline table.
 
 ---
 
-## Slide 9 — Recommended leadership actions
+## Slide 9 - Recommended leadership actions
 
 **Title:** Next steps for a State programme
 
@@ -159,7 +173,7 @@ Hub: docs/domain/README.md pipeline table.
 
 ---
 
-## Slide 10 — Informative workshop context (optional)
+## Slide 10 - Informative workshop context (optional)
 
 **Title:** Industry briefing context (not SARPs)
 
@@ -172,7 +186,7 @@ Hub: docs/domain/README.md pipeline table.
 
 ---
 
-## Slide 11 — References (handout)
+## Slide 11 - References (handout)
 
 **Title:** Cite these landings
 
@@ -187,7 +201,7 @@ Hub: docs/domain/README.md pipeline table.
 
 ---
 
-## Slide 12 — Closing
+## Slide 12 - Closing
 
 **Title:** Compliance is standards-led; software makes it operable
 

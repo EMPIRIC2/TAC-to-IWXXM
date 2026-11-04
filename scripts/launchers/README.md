@@ -1,6 +1,6 @@
 # Launch Scripts
 
-Platform-specific scripts for starting the METAR to IWXXM Converter services.
+Platform-specific scripts that start the TAC to IWXXM local API and operator website.
 
 macOS and Linux use the repo-root `start-dev-servers.sh` launcher (API port 18001). This folder keeps the Windows scripts.
 

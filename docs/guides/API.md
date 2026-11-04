@@ -1,12 +1,20 @@
 # API guide
 
-The HTTP API is the FastAPI app in `apps/backend`.
+The HTTP API is the FastAPI application in `apps/backend`.
 
-The live reference is the OpenAPI document served by that app:
+## Live reference
+
+The live reference is the OpenAPI document that the FastAPI application serves:
 
 - `{API}/openapi.json`
 - `{API}/docs`
 
-Local ports and environment variables are in [Development](../ops/DEVELOPMENT.md).
+Replace `{API}` with your API base URL (for example
+`http://localhost:8001` for local `make dev`, or
+`https://api.staging.tac-to-iwxxm.com` for staging).
 
-The checked-in field contract is [api-contract.md](../api-contract.md).
+## Related docs
+
+- Local ports and environment variables:
+  [Development](../ops/DEVELOPMENT.md)
+- Checked-in field contract: [api-contract.md](../api-contract.md)

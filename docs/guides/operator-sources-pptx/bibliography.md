@@ -1,14 +1,18 @@
-# Bibliography — curated sources for the briefing deck
+# Bibliography - curated sources for the briefing deck
 
 Subset of [RULE_SOURCE_URLS.md](../../domain/rules/RULE_SOURCE_URLS.md) plus software
 cites. Labels: **normative** | **normative-schema** | **normative-vocabulary** |
 **informative** | **software**. Access: **public** | **paywall** | **library**.
 
-**Audience:** national MET / aviation authority leadership (compliance).
+**Audience:** national meteorological (MET) / aviation authority leadership (compliance).
 **Search walkthrough:** [citation-search-guide.md](./citation-search-guide.md).
 
 Vendor pin (runtime): IWXXM **v2025-2**, codelists **49-2**, iwxxm-us **3.0**:
 [`vendor/manifest.json`](../../../vendor/manifest.json).
+
+IWXXM means ICAO/WMO XML weather exchange format. ICAO means International Civil
+Aviation Organization. WMO means World Meteorological Organization. OPMET means
+operational meteorological information.
 
 ---
 
@@ -46,7 +50,7 @@ Vendor pin (runtime): IWXXM **v2025-2**, codelists **49-2**, iwxxm-us **3.0**:
 | FMH-1 (2019) Federal Meteorological Handbook No. 1 | OFCM/ICAMS public PDF (see RULE_SOURCE_URLS / fmh1 mining notes) | normative (US TAC) | public | 3 |
 | PPT-02 IWXXM Framework (TT-AvData / ESAF workshop) | https://www.icao.int/filebrowser/download/26741?fid=26741 | informative | public | 10 |
 
-Mining digs (working notes, not SoT): [docs/domain/mining/](../../domain/mining/).
+Mining digs (working notes, not source of truth): [docs/domain/mining/](../../domain/mining/).
 
 ---
 

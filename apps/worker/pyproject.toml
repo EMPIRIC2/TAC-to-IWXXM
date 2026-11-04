@@ -1,7 +1,7 @@
 [project]
 name = "metar-worker"
 version = "0.1.0"
-description = "F8 near-RT TAC ingest worker (ADR-018)"
+description = "Near-real-time Traditional Alphanumeric Code (TAC) ingest worker"
 requires-python = ">=3.12"
 dependencies = [
     "metar-shared",

@@ -1,7 +1,7 @@
 [project]
 name = "metar-iwxxm-workspace"
 version = "0.0.0"
-description = "METAR to IWXXM monorepo — uv workspace root (ADR-005)"
+description = "uv workspace root for the TAC to IWXXM monorepo"
 requires-python = ">=3.12"
 dependencies = []
 

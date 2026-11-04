@@ -4,27 +4,27 @@ about: Ask for a validation rule the catalog does not cover
 title: "Validation rule request"
 ---
 
-## Level
+## Severity level
 
-What level is it?
+What severity should the rule use?
 
 - [ ] Info
 - [ ] Warning
 - [ ] Error
 - [ ] Other:
 
-## What is the issue?
+## What should the rule detect?
 
-<!-- What the issue is, or the information the rule should carry. -->
+<!-- Describe the problem or the information the rule should report. -->
 
-## Where it usually shows up
+## Where it usually appears
 
-<!-- Product, section of the report, or similar. -->
+<!-- Name the product (METAR, TAF, SIGMET, and so on), the section of the report, or a similar location. -->
 
 ## How often you see it
 
-<!-- How many times this shows up in your experience. -->
+<!-- About how often this appears in your work. -->
 
 ## Current coverage
 
-- [ ] The system doesn't account for this currently
+- [ ] The system does not account for this case today

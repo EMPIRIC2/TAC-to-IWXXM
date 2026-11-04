@@ -1,8 +1,21 @@
 # Configuration Specification
 
-> **Project**: METAR to IWXXM Converter  
+> **Project**: TAC to IWXXM  
 > **Last updated**: 2026-10-25 (config hygiene target — decisions log §EV-config-file-hygiene)  
 > **Session**: S003-supabase-keys-config (base); S008; S011; S023-public-app-privacy; **S038**
+
+## How to read this document
+
+This file defines **non-secret** JSON config under `config/`, how the API and
+frontend select an environment, and which values must stay in environment
+variables instead. It is a satellite of [tech-spec.md](tech-spec.md). Exact
+secret **names** also appear in [env-contract.md](env-contract.md).
+
+| Layer | Holds |
+|-------|-------|
+| `config/{env}.json` | Committed non-secrets (URLs, CORS, flags) |
+| Environment variables | Secrets and abuse-control knobs |
+| Frontend `/config.json` | Deploy-time inject (URLs + publishable Auth key) |
 
 ## Precedence Order
 
@@ -12,15 +25,17 @@ Configuration values resolve in this order (highest priority first):
 2. `config/{env}.json` selected by `METAR_CONFIG_ENV`
 3. Built-in defaults in `packages/shared`
 
-**Secrets never belong in `config/*.json`.** FE may receive **publishable** Auth bootstrap via
-deploy-time `/config.json` inject. Product DB secrets are **`DATABASE_URL` only** (DigitalOcean).
-Supabase **service-role must not** be used as the product data plane (ADR-033).
+**Secrets never belong in `config/*.json`.** The frontend may receive a
+**publishable** Auth bootstrap via deploy-time `/config.json` inject. Product
+database secrets use **`DATABASE_URL` only** (DigitalOcean Postgres). Supabase
+**service-role must not** be used as the product data plane (ADR-033).
 
 ## BYO credentials (S011 / R6 / #697) — amended EV-031
 
-Operators may still BYO **their** Supabase **Auth** project (URL + publishable + JWT verify).
-Product Postgres is **DigitalOcean** (`DATABASE_URL`), not Supabase hosted DB. F8 worker uses
-`DATABASE_URL` + poller env (ADR-018 amend).
+Operators may still bring their own (**BYO**) Supabase **Auth** project (URL +
+publishable key + JWT verify). Product Postgres is **DigitalOcean**
+(`DATABASE_URL`), not a Supabase hosted database. The F8 worker uses
+`DATABASE_URL` plus poller env (ADR-018 amend).
 
 ## Configuration Files
 

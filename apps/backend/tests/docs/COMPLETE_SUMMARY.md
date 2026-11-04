@@ -1,6 +1,6 @@
 # Complete API Testing Infrastructure - Final Summary
 
-**Project**: METAR to IWXXM Converter  
+**Project**: TAC to IWXXM  
 **Implementation Date**: 2026-02-16  
 **Status**: ✅ **COMPLETE** (Phase 1 + Phase 2)  
 **Total Tests**: 175+ across 10 test files  

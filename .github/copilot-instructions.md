@@ -1,5 +1,8 @@
-- Use Python 3
-- Follow PEP8 and Google Python style guidance
-- Prefer short, maintainable code
-- Use `python -m venv .venv` + pip for dependencies unless repo already standardizes differently
-- Avoid committing secrets; use Codespaces/Repo/Org secrets
+- Use Python **3.12** (pinned) for backend and packages; Node **22** for frontend
+- Prefer short, maintainable code; match existing monorepo style
+- Install and run from the repo root with **uv** (Python) and **pnpm** (JavaScript), not ad-hoc top-level `pip` unless a doc says otherwise
+- Layout: `apps/backend`, `apps/frontend`, `apps/worker`, `apps/e2e`, `packages/*`, `vendor/schemas/*` (read-only schemas)
+- Local checks: `make format-check lint typecheck test-unit` (or `make ci`)
+- Coverage on covered packages is **fail-under 100** — do not lower thresholds to pass CI
+- Do not commit secrets; use repository / organization / Codespaces secrets
+- Feature pull requests target the `stage` branch when it exists; promote `stage` → `main` separately

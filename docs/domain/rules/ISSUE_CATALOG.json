@@ -1193,6 +1193,19 @@
       "source_attribution": "icao-annex-3 - access:paywall - https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 - Table A3-2 / App 3"
     },
     {
+      "code": "PARTIAL_DECODE",
+      "severity": "warning",
+      "message_template": "Some TAC tokens were not decoded (partial decode); conversion may still succeed",
+      "product": null,
+      "tags": [
+        "decode",
+        "residual"
+      ],
+      "source_id": null,
+      "source_url": null,
+      "source_attribution": null
+    },
+    {
       "code": "POINT_LOCATION",
       "severity": "info",
       "message_template": "SIGMET single-point location (encode CircleByCenterPoint r=0). Informational: noted for operator awareness; does not by itself block conversion. Source: EUR Doc 014 public; Annex 3 paywall companion.",

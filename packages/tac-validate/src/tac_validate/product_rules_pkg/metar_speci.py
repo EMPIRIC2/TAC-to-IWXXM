@@ -318,8 +318,6 @@ def _check_s1_exceptional(
             location="body",
         )
         for tok in tokens
-        if tok in {"CABOK", "/R10/", "A02"}
-        or re.fullmatch(r"T\d{10}", tok)
-        or re.fullmatch(r"RAEMM[A-Z]?\d*", tok)
+        if tok in {"CABOK", "/R10/", "A02"} or re.fullmatch(r"T\d{10}", tok) or re.fullmatch(r"RAEMM[A-Z]?\d*", tok)
     )
     return issues

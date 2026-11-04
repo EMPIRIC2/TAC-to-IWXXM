@@ -1,7 +1,7 @@
 [project]
 name = "metar-auth"
 version = "0.2.0"
-description = "Supabase Auth JWKS verify + /auth/* routers (F31 / ADR-033)"
+description = "Verify Supabase Auth JSON Web Tokens (JWTs) and serve /auth HTTP routes"
 requires-python = ">=3.12"
 dependencies = [
   "fastapi>=0.110",

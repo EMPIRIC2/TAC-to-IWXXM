@@ -12,6 +12,16 @@ Author: Joe McGuire · joseph_mcguire@brown.edu · Brown University.
 Products in scope: METAR, SPECI, TAF, SIGMET. All output is test output and is not
 operationally authoritative.
 
+Terms used in this deck:
+
+- **TAC** means Traditional Alphanumeric Code (coded text form of a report).
+- **IWXXM** means ICAO/WMO XML weather exchange format.
+- **METAR** means routine aerodrome report.
+- **SPECI** means special aerodrome report.
+- **TAF** means aerodrome forecast.
+- **SIGMET** means en-route hazard information.
+- **CMO** means Caribbean Meteorological Organization.
+
 - Built deck: `beta-operator-one-pager.pptx`
 - Content sources: the CMO two-week Testing and Evaluation Guide, plus
   [`../operator-one-pager.md`](../operator-one-pager.md)
@@ -69,7 +79,7 @@ This outline lists slide text only; the UI panels on each slide are named in `SC
 
 - En-route hazard information
 
-- Everything the prototype produces in these two weeks is test output. It is not operationally authoritative and must not be disseminated as an official product.
+- Everything the prototype produces in these two weeks is test output. The output is not operationally authoritative and must not be disseminated as an official product.
 
 ---
 
@@ -95,7 +105,7 @@ This outline lists slide text only; the UI panels on each slide are named in `SC
 - Folder / ZIP mass upload
 - Use the account your Service issued
 
-- Signing in is worth it for a two-week evaluation: you will want to reopen your own tests.
+- Signing in helps a two-week evaluation: you will want to reopen your own tests.
 
 - Two-week testing and evaluation
 
@@ -137,7 +147,7 @@ This outline lists slide text only; the UI panels on each slide are named in `SC
 
 - Keep the .xml with the source TAC for your Test Log.
 
-- Terminate each report with “=”. If Convert gives you nothing, that is the first thing to check.
+- Terminate each report with “=”. If Convert gives you nothing, check the terminator first.
 
 ---
 
@@ -154,14 +164,14 @@ This outline lists slide text only; the UI panels on each slide are named in `SC
 - Convert, then Validate
 
 - Best-effort IWXXM while your TAC is still partial
-- Highlights the spans it could not decode
+- Highlights the spans the preview could not decode
 - Plain-language decode helps you read the TAC
 - Never record a preview as a test result
 
 - Builds the IWXXM XML you download and keep
 - Writes a conversion / validation log you can read
 - Validation catches schema and rule problems
-- This is what goes in the Test Log
+- Convert and Validate output goes in the Test Log
 
 - If the preview and Convert disagree, trust Convert and Validate.
 
@@ -181,7 +191,7 @@ This outline lists slide text only; the UI panels on each slide are named in `SC
 
 - Run IWXXM validation on your conversion, or paste existing IWXXM in to check it.
 
-- One .xml, or a ZIP when you converted a batch. Keep it with the source TAC.
+- One .xml, or a ZIP when you converted a batch. Keep the file with the source TAC.
 
 - WORK HISTORY
 
@@ -209,7 +219,7 @@ This outline lists slide text only; the UI panels on each slide are named in `SC
 
 - END OF WEEK 3
 
-- Familiarisation and basic functionality
+- Familiarization and basic functionality
 
 - Operational parallel testing
 
@@ -245,15 +255,15 @@ This outline lists slide text only; the UI panels on each slide are named in `SC
 
 - Error handling
 
-- Does it convert METAR, SPECI, TAF and SIGMET at all?
+- Does the translator convert METAR, SPECI, TAF and SIGMET at all?
 
 - Does the IWXXM say what the TAC said?
 
 - Does the IWXXM conform to the schema and rules?
 
-- Is it practical for operational staff?
+- Is the translator practical for operational staff?
 
-- Does it report problems and unsupported input clearly?
+- Does the translator report problems and unsupported input clearly?
 
 - Critical
 
@@ -275,7 +285,7 @@ This outline lists slide text only; the UI panels on each slide are named in `SC
 
 - Every test goes in the Test Log: the ones that worked as well as the ones that did not.
 - For any failed or questionable result, keep the original TAC, the generated IWXXM and the validation result.
-- Describe the problem briefly, and say whether it affects translation, validation, accuracy or usability.
+- Describe the problem briefly, and say whether the problem affects translation, validation, accuracy or usability.
 - Note the product, the options you used, and the date and time in UTC.
 
 - IN THE APP
@@ -318,12 +328,12 @@ This outline lists slide text only; the UI panels on each slide are named in `SC
 
 - An element is missing or altered
 
-- Record it as Critical, keep the TAC, the IWXXM and the validation result.
+- Record the finding as Critical, keep the TAC, the IWXXM and the validation result.
 
 - History is empty
 
 - Sign in, then check Privacy settings. Guest work is not kept in the cloud.
 
-- Slow, or it times out
+- Slow, or the request times out
 
-- Retry once. If it persists, note the time and the product and report it.
+- Retry once. If the problem persists, note the time and the product and report it.

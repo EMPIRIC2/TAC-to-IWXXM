@@ -213,9 +213,7 @@ def _check_taf(tac: str, *, profile: str = "annex3") -> list[Issue]:
         )
     )
 
-    spaced_cavok = any(
-        tokens[i : i + 5] == ["C", "A", "V", "O", "K"] for i in range(max(0, len(tokens) - 4))
-    )
+    spaced_cavok = any(tokens[i : i + 5] == ["C", "A", "V", "O", "K"] for i in range(max(0, len(tokens) - 4)))
     issues.extend(
         _issue(
             "MALFORMED_SOURCE_TOKEN",

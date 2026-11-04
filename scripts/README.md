@@ -1,6 +1,7 @@
 # Scripts Directory
 
-This directory contains organized utility scripts, database setup scripts, and launch scripts for the METAR to IWXXM Converter project.
+This directory holds utility scripts, database setup scripts, and launch scripts
+for the TAC to IWXXM monorepo.
 
 ## Coverage gate (EV-080 / #1077)
 

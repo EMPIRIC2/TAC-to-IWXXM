@@ -124,9 +124,7 @@ def test_explain_edge_seen_states() -> None:
     assert "Moved" in (_explain_metar_remark("MOVD", seen) or "")
     assert "fog 1 okta" in (_explain_metar_remark("FG1", seen) or "").lower()
     assert (_explain_metar_remark("LASTOBS/NEXT", {}) or "").startswith("Last staffed")
-    assert "Last staffed observation / next" in (
-        _explain_metar_remark("LASTSTFDOBS/NXT", {}) or ""
-    )
+    assert "Last staffed observation / next" in (_explain_metar_remark("LASTSTFDOBS/NXT", {}) or "")
     seen = {"last_stfd": 1, "rmk": 1}
     assert "Next staffed" in (_explain_metar_remark("041300Z", seen) or "")
     seen = {"last_stfd": 1, "rmk": 1}

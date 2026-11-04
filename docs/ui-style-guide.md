@@ -2,16 +2,27 @@
 
 [Corpus: ui-style] [Corpus: product §F7] [Corpus: journeys]
 
-Living norms for the operator UI (`apps/frontend`). Grown by the **ui-ux-tweak** orchestrator:
-each closed tweak appends a row under **Changelog of norms**. Consolidation PRs may rewrite
-sections when norms conflict—cite the UX log ids retired or merged.
+This file records living norms for the operator user interface in `apps/frontend`.
+Engineers and agents use this guide when they change screens, labels, or layout.
 
-**Required artifacts (every ui-ux-tweak):** (1) UX log under `docs/ui-ux-tweaks/` from
-`_template.md`, (2) regression test (Vitest or Playwright), (3) minimal FE change plus a
-**Changelog of norms** row here linking that UX log id. Cite `[Corpus: ui-style]`.
+**Audience:** engineering. Operators do not read this file. Operator-visible strings
+(labels, help, toasts, `aria-label`) must stay plain language. Do not put planning
+ids (`EV-`, `UJ-`, `ADR-`, `docs/…`) into those strings. See
+`no-internal-doc-refs-user-facing` / EV-048.
 
-**Not for operators:** this file is engineering corpus. Do not put planning ids (`EV-`, `UJ-`,
-`ADR-`, `docs/…`) into user-visible copy (see no-internal-doc-refs / EV-048).
+**How norms grow:** the **ui-ux-tweak** orchestrator closes a tweak, then appends one
+row under **Changelog of norms**. When two norms conflict, a consolidation pull
+request may rewrite a section. Cite the UX log ids that the consolidation retires
+or merges.
+
+**Required artifacts (every ui-ux-tweak):**
+
+1. UX log under `docs/ui-ux-tweaks/` from `_template.md`
+2. Regression test (Vitest or Playwright)
+3. Minimal frontend change plus a **Changelog of norms** row here that links that
+   UX log id
+
+Cite `[Corpus: ui-style]` when you apply these norms.
 
 ## Tokens / theme
 
@@ -34,8 +45,11 @@ sections when norms conflict—cite the UX log ids retired or merged.
 
 ## Copy / tone
 
-- Plain-language operator copy; no planning vocabulary in labels, help, toasts, or `aria-label`.
-- No feature/journey/theme shorthand (`F26`, `UJ-…`, `theme V1`) and no vague filler (`stuff`) on operator surfaces; keep grammatical articles (`a` / `an` / `the`).
+- Write operator copy in plain language. Do not use planning vocabulary in labels,
+  help, toasts, or `aria-label`.
+- Do not use feature, journey, or theme shorthand (`F26`, `UJ-…`, `theme V1`) on
+  operator surfaces. Do not use vague filler (`stuff`). Keep articles (`a` / `an` /
+  `the`).
 - Prefer short, actionable empty-state and error text.
 - Conversion / validation log Notes: when a coded issue has no `hint`, show a scrubbed catalog reason/consequence line (acronym gloss when the template provides it); never leave title+Code-only for catalogued codes.
 - Live map / station minimap Leaflet corner credit must name OpenStreetMap contributors and the Open Database License (ODbL), with a link to the OSM copyright page, not a bare "© OpenStreetMap".
