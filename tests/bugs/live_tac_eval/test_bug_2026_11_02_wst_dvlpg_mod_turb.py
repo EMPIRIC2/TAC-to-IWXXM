@@ -1,10 +1,10 @@
 """Live residual convert/lint: WST DVLPG FROM-ring + SIGMET MOD TURB.
 
 Convert soft-tolerates NWS ``DVLPG AREA TS`` after isolating the FROM ring;
-lint still emits a critical/error for the developing qualifier. SIGMET
+prefer lint accepts the canonical developing-area form (#1554). SIGMET
 ``MOD TURB`` stays fail-closed on convert and lint membership error.
 
-[Corpus: product §F6] [Corpus: product §F15] [Corpus: tests]
+[Corpus: product §F6] [Corpus: product §F15] [Corpus: product §F23] [Corpus: tests]
 """
 
 from __future__ import annotations
@@ -148,19 +148,14 @@ def test_dvlpg_live_wst_convert_ok_with_geometry(place_key: str, tac: str) -> No
 @pytest.mark.parametrize(
     ("place_key", "tac"), _DVLPG_LIVE, ids=[p for p, _ in _DVLPG_LIVE]
 )
-def test_dvlpg_live_wst_lint_critical_error(place_key: str, tac: str) -> None:
-    """Failure/lint: DVLPG AREA is still a critical lint error while convert OK."""
+def test_dvlpg_live_wst_lint_accepts_canonical_area(place_key: str, tac: str) -> None:
+    """Success/lint: canonical DVLPG AREA after FROM ring is not a false error."""
     report = lint(tac, product="SIGMET")
     matched = [i for i in report.issues if i.code == "DVLPG_AREA_QUALIFIER"]
-    assert matched, (
+    assert not matched, (
         place_key,
         [(i.code, i.severity, i.message) for i in report.issues],
     )
-    assert all(i.severity == "error" for i in matched)
-    assert any("DVLPG" in i.message for i in matched)
-    # No planning vocabulary in operator-facing copy.
-    joined = " ".join(i.message for i in matched)
-    assert not re.search(r"\b(?:ADR-|EV-|Corpus:|F15|F6)\b", joined)
 
 
 def test_area_ts_and_dmshg_line_still_convert_ok() -> None:

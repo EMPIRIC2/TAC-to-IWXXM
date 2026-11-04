@@ -282,8 +282,8 @@ rules:
   code: DVLPG_AREA_QUALIFIER
   label: Dvlpg Area Qualifier
   severity: error
-  message_template: Convective SIGMET uses DVLPG (developing) before AREA. Keep DVLPG off the FROM ring;
-    it is a hazard qualifier, not a VOR offset.
+  message_template: Convective SIGMET has a misplaced or incomplete DVLPG (developing) qualifier. Use
+    DVLPG AREA after the FROM ring; DVLPG is a hazard qualifier, not a VOR offset.
   product: sigmet
   tags:
   - geometry
