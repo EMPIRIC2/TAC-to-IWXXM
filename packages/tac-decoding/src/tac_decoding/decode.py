@@ -43,13 +43,15 @@ _PRECIP_AMOUNT = re.compile(r"^P(?P<amt>\d{4})$")
 _PEAK_WIND = re.compile(r"^(?P<dir>\d{3})(?P<spd>\d{2,3})/(?P<hh>\d{2})(?P<mm>\d{2})$")
 _DENSITY_FT = re.compile(r"^(?P<n>-?\d+)FT$")
 _WIND_ALOFT_FT = re.compile(r"^(?P<ft>\d{3,5})FT$")
-_SEA_STATE = re.compile(r"^W(?P<wave>\d{1,2})/S(?P<swell>\d)$")
+_SEA_STATE = re.compile(r"^W(?P<wave>\d{1,2}|/{2,3})/S(?P<swell>\d)$")
 _ICE_ACCRETION = re.compile(r"^I(?P<amt>\d{4})$")
 _MISSING_TEMP_DEW = re.compile(r"^(?P<body>\d{2})///$")
+_TEMP_MISSING_DEW = re.compile(r"^(?P<body>M?\d{2})/$")
 _SHORT_PRECIP = re.compile(r"^P(?P<amt>\d{3})$")
+_PP_PRECIP_MM = re.compile(r"^PP(?P<amt>\d{3})$")
+_TX_DECIMAL = re.compile(r"^TX(?P<val>\d+(?:\.\d+)?)$")
 _RWY_DESIGNATOR = re.compile(r"^RWY(?P<rw>\d{2}[LCR]?)$")
 _LTG_TYPES = re.compile(r"^LTG(?P<types>[A-Z]+)$")
-_FOG_OKTAS = re.compile(r"^FG(?P<amt>[1-8])$")
 _PAST_HOUR = re.compile(r"^(?P<n>\d+)PAST$")
 _FRAC_MILE = re.compile(r"^(?P<num>\d)/(?P<den>\d)$")
 _BBB_CORRECTION = re.compile(r"^CC[A-Z]$")
@@ -57,13 +59,34 @@ _BBB_DELAYED = re.compile(r"^RR[A-Z]$")
 _BBB_AMENDMENT = re.compile(r"^AA[A-Z]$")
 _ELLIPSIS_HAZARD = re.compile(r"^(?P<head>TORNADOES|HAIL|WIND|GUSTS)\.\.\.(?P<tail>HAIL|WIND|GUSTS|TORNADOES)?$")
 _IN_WIND_ELLIPSIS = re.compile(r"^IN\.\.\.WIND$|^\d+IN\.\.\.WIND$")
-_CA_CLOUD_TYPE = "(?:TCU|CI|CS|CC|AC|AS|NS|SC|ST|SF|CU|CF|CB)"
+_CA_CLOUD_TYPE = "(?:TCU|CI|CS|CC|AC|AS|NS|SC|ST|SF|CU|CF|CB|FG)"
 _CA_CLOUD_AMOUNTS = re.compile(rf"^(?:{_CA_CLOUD_TYPE}\d)+$")
 _CA_CLOUD_ONE = re.compile(rf"^{_CA_CLOUD_TYPE}$")
 _SIG_SFC_LAYER = re.compile(r"^SFC/(?P<alt>\d{3,5})(?P<unit>FT|M)$")
 _SIG_NM = re.compile(r"^(?P<n>\d{1,3})NM$")
 _RVR_MISSING = re.compile(r"^R(?P<rw>\d{2}[LCR]?)/+$")
-_RVR_VARY = re.compile(r"^R(?P<rw>\d{2}[LCR]?)/(?P<a>[MP]?\d{4})V(?P<b>[MP]?\d{4})(?P<unit>FT)?$")
+_RVR_VARY = re.compile(
+    r"^R(?P<rw>\d{2}[LCR]?)/(?P<a>[MP]?\d{4})V(?P<b>[MP]?\d{4})(?P<unit>FT)?(?:/(?P<trend>[UDN]))?$"
+)
+_CLOUD_TYPE_8 = re.compile(r"^8/(?P<body>[0-9/]{3})$")
+_MISSING_WIND_KT = re.compile(r"^/{5}KT$")
+_MISSING_QNH_SLASH = re.compile(r"^Q/{4}$")
+_MISSING_PRESS_TEND = re.compile(r"^5/{4}$")
+_SOG_DEPTH = re.compile(r"^SOG$")
+_SOG_VALUE = re.compile(r"^(?P<cm>\d{2})$")
+_VIS_VARIABLE = re.compile(
+    r"^(?P<lo>M?(?:\d+\s+)?\d+/\d+|\d+|M?\d+/\d+)V(?P<hi>\d+(?:/\d+)?)$"
+)
+_VIS_VRB_RANGE = re.compile(r"^(?P<a>\d+)-(?P<b>\d+)$")
+_WSHFT_MIN = re.compile(r"^(?P<mm>\d{2})$")
+_CB_LOC = re.compile(r"^(?P<head>CB|TCU|TCUE)(?P<sep>[-/])(?P<dir>[A-Z;/-]+)$")
+_OHD_CHAIN = re.compile(r"^(?:[A-Z]{1,3}-)*OHD(?:-[A-Z]{1,3})+$|^(?:[A-Z]{1,3}-){2,}[A-Z]{1,3}$")
+_LAST_STFD = re.compile(
+    r"^LAST(?:STFD)?OBS/(?:NXT|NEXT)(?P<rest>.*)$",
+    re.IGNORECASE,
+)
+_MX_PRESS_9 = re.compile(r"^9(?P<body>\d{2})$")
+_CIG_HUNDREDS = re.compile(r"^(?P<h>\d{3})$")
 _VV = re.compile(r"^VV(?P<h>\d{3}|///)$")
 _MISSING_CLOUD = re.compile(r"^(?P<slashes>/{4,}|(?:/+)(?P<ctype>CB|TCU))$")
 _MM_AMOUNT = re.compile(r"^(?P<n>\d+(?:\.\d+)?)MM$")
@@ -194,6 +217,7 @@ _CA_CLOUD_NAME = {
     "CF": "cumulus fractus",
     "CB": "cumulonimbus",
     "TCU": "towering cumulus",
+    "FG": "fog",
 }
 _RMK_WORD = {
     "TR": "Trace",
@@ -244,6 +268,26 @@ _RMK_WORD = {
     "HAZARD": "Hazard",
     "WIND": "Wind",
     "RWY": "Runway",
+    "EST": "Estimated",
+    "RAG": "Ragged",
+    "INTMT": "Intermittent",
+    "HYR": "Higher",
+    "VRB": "Variable",
+    "FOG": "Fog",
+    "HZY": "Hazy",
+    "ISOL": "Isolated",
+    "RTD": "Delayed routine report",
+    "RTS": "Remark text (unverified)",
+    "MOVD": "Moved",
+    "OBST": "Obstacles",
+    "OBSC": "Obscured",
+    "SKEID": "Skeid sensor",
+    "LAST": "Last",
+    "STFD": "Staffed",
+    "OBS": "Observation",
+    "NXT": "Next",
+    "NEXT": "Next",
+    "SOG": "Snow on ground",
 }
 _US_STATE = {
     "AL": "Alabama",
@@ -858,9 +902,16 @@ def _varying_rvr(token: str) -> str | None:
     if varying is None:
         return None
     unit = "ft" if varying.group("unit") == "FT" else "m"
+    trend = varying.group("trend")
+    trend_txt = {
+        "U": ", upward trend",
+        "D": ", downward trend",
+        "N": ", no distinct trend",
+    }.get(trend or "", "")
     return (
         f"Runway visual range runway {varying.group('rw')}: "
         f"varying from {_rvr_bound(varying.group('a'))} {unit} to {_rvr_bound(varying.group('b'))} {unit}"
+        f"{trend_txt}"
     )
 
 
@@ -1222,16 +1273,64 @@ def _explain_metar_speci(token: str, *, product: str, seen: dict[str, int]) -> s
         seen["wind_aloft"] = 0
         if m := _WIND_ALOFT_FT.match(upper):
             return f"Wind at {int(m.group('ft'))} ft"
+        if upper == "SKEID":
+            seen["sensor_wind"] = 1
+            return "Wind sensor (Skeid)"
+    if seen.get("sensor_wind"):
+        if m := _WIND.match(upper):
+            seen["sensor_wind"] = 0
+            return _fmt_wind(m, label="Sensor wind")
+        if m := _WIND_VAR.match(upper):
+            return f"Sensor wind direction varying from {int(m.group('a'))}° to {int(m.group('b'))}°"
+        seen["sensor_wind"] = 0
     if seen.get("cig"):
         seen["cig"] = 0
         if m := _WIND_VAR.match(upper):
             return f"Ceiling varying from {int(m.group('a')) * 100} ft to {int(m.group('b')) * 100} ft"
+        if m := _CIG_HUNDREDS.match(upper):
+            seen["cig_rwy"] = 1
+            return f"Ceiling {int(m.group('h')) * 100} ft"
+    if seen.get("cig_rwy"):
+        if m := _RWY_DESIGNATOR.match(upper):
+            seen["cig_rwy"] = 0
+            return f"Runway {m.group('rw')}"
+        seen["cig_rwy"] = 0
+    if seen.get("vis_expect"):
+        seen["vis_expect"] = 0
+        if m := _VIS_VARIABLE.match(upper):
+            return f"Visibility varying from {m.group('lo')} to {m.group('hi')} statute miles"
+        if m := _VIS_VRB_RANGE.match(upper):
+            return f"Visibility varying from {m.group('a')} to {m.group('b')} statute miles"
+        if upper.isdigit() and len(upper) <= 2:
+            return f"Visibility {int(upper)} statute miles"
+        if m := _VIS_SM.match(upper):
+            return _fmt_vis_sm(m, label="Visibility")
+        if upper in {"HYR", "LWR"}:
+            seen["vis_dir"] = 1
+            return _RMK_WORD[upper]
+    if seen.get("vis_dir") and upper in _SIG_DIR:
+        seen["vis_dir"] = 0
+        return _SIG_DIR_NAME[upper]
+    if seen.get("sog_expect"):
+        seen["sog_expect"] = 0
+        if m := _SOG_VALUE.match(upper):
+            return f"Snow on ground {int(m.group('cm'))} cm"
+    if seen.get("wshft_expect"):
+        seen["wshft_expect"] = 0
+        if m := _WSHFT_MIN.match(upper):
+            return f"Wind shift at minute {m.group('mm')}"
+    if seen.get("movd_expect"):
+        seen["movd_expect"] = 0
+        if upper in _SIG_DIR:
+            return f"Moved {_SIG_DIR_NAME[upper]}"
     if upper in {"METAR", "SPECI"} and seen.get("rtype", 0) == 0:
         seen["rtype"] = 1
         label = "routine" if upper == "METAR" else "special"
         return f"Report type ({label} meteorological aerodrome report)"
     if upper == "COR":
         return "Correction indicator"
+    if upper == "RTD":
+        return "Delayed routine report"
     if _BBB_CORRECTION.match(upper):
         return f"Correction ({upper})"
     if _BBB_DELAYED.match(upper):
@@ -1263,9 +1362,17 @@ def _explain_metar_speci(token: str, *, product: str, seen: dict[str, int]) -> s
     if upper == "AO2A":
         return "Automated station with precipitation discriminator, augmented by an observer"
     if m := _SEA_STATE.match(upper):
-        return f"Sea state: waves {int(m.group('wave'))}, swell {int(m.group('swell'))}"
+        wave = m.group("wave")
+        wave_txt = "not reported" if "/" in wave else str(int(wave))
+        return f"Sea state: waves {wave_txt}, swell {int(m.group('swell'))}"
     if m := _MISSING_TEMP_DEW.match(upper):
         return f"Temperature {int(m.group('body'))} °C, dewpoint not reported"
+    if m := _TEMP_MISSING_DEW.match(upper):
+        return f"Temperature {_signed_temp(m.group('body'))} °C, dewpoint not reported"
+    if _MISSING_WIND_KT.match(upper):
+        return "Wind not reported"
+    if _MISSING_QNH_SLASH.match(upper):
+        return "Altimeter setting not reported"
     if upper == "FZRANO":
         return "Freezing-rain sensor not working"
     if upper == "TSNO":
@@ -1340,6 +1447,7 @@ def _explain_metar_speci(token: str, *, product: str, seen: dict[str, int]) -> s
     if upper == "$":
         return "Station needs maintenance"
     if upper == "WSHFT":
+        seen["wshft_expect"] = 1
         return "Wind shift"
     if upper in {"//", "///"}:
         return "Missing data"
@@ -1431,6 +1539,24 @@ def _explain_metar_remark(upper: str, seen: dict[str, int]) -> str | None:
     if upper == "WIND":
         seen["wind_aloft"] = 1
         return "Wind"
+    if upper == "VIS":
+        seen["vis_expect"] = 1
+        return "Visibility"
+    if upper == "SOG":
+        seen["sog_expect"] = 1
+        return "Snow on ground"
+    if upper == "WSHFT":
+        seen["wshft_expect"] = 1
+        return "Wind shift"
+    if upper == "MOVD":
+        seen["movd_expect"] = 1
+        return "Moved"
+    if upper == "SFC":
+        seen["vis_expect"] = 1
+        return "Surface"
+    if upper == "TWR":
+        seen["vis_expect"] = 1
+        return "Tower"
     if m := _WIND_ALOFT_FT.match(upper):
         return f"Wind at {int(m.group('ft'))} ft"
     if m := _ICE_ACCRETION.match(upper):
@@ -1443,14 +1569,38 @@ def _explain_metar_remark(upper: str, seen: dict[str, int]) -> str | None:
         if hundredths == 0:
             return "Precipitation trace in the past hour"
         return f"Precipitation {hundredths / 100:.2f} inches in the past hour"
+    if m := _PP_PRECIP_MM.match(upper):
+        tenths = int(m.group("amt"))
+        return f"Precipitation {tenths / 10:.1f} mm"
+    if m := _TX_DECIMAL.match(upper):
+        return f"Maximum temperature {m.group('val')} °C"
+    if m := _CLOUD_TYPE_8.match(upper):
+        return f"Cloud-type group (low/mid/high): {m.group('body')}"
+    if _MISSING_PRESS_TEND.match(upper):
+        return "3-hour pressure tendency not reported"
+    if m := _MX_PRESS_9.match(upper):
+        return f"Pressure-change remark {upper} (unverified national code)"
     if m := _RWY_DESIGNATOR.match(upper):
         return f"Runway {m.group('rw')}"
-    if m := _FOG_OKTAS.match(upper):
-        count = int(m.group("amt"))
-        unit = "okta" if count == 1 else "oktas"
-        return f"Fog {count} {unit}"
     if m := _LTG_TYPES.match(upper):
         return f"Lightning ({m.group('types')})"
+    if m := _CB_LOC.match(upper):
+        return f"{m.group('head')} toward {m.group('dir').replace('-', ' ').replace('/', ' ')}"
+    if _OHD_CHAIN.match(upper):
+        return f"Direction chain ({upper.replace('-', ' → ')})"
+    if upper == "LAST":
+        seen["last_stfd"] = 1
+        return "Last"
+    if m := _LAST_STFD.match(upper):
+        rest = (m.group("rest") or "").strip()
+        if rest:
+            return f"Last staffed observation; next at {rest}"
+        return "Last staffed observation / next time"
+    if seen.get("last_stfd") and upper in {"STFD", "OBS", "NXT", "NEXT"}:
+        return _RMK_WORD.get(upper, upper.title())
+    if seen.get("last_stfd") and (_TIME_Z.match(upper) or re.fullmatch(r"\d{6}(?:UTC)?", upper) or re.fullmatch(r"\d{2}", upper)):
+        seen["last_stfd"] = 0
+        return f"Next staffed observation time ({upper})"
     if m := _PEAK_WIND.match(upper):
         return f"Peak wind {int(m.group('dir'))}° at {int(m.group('spd'))} kt at {m.group('hh')}:{m.group('mm')} UTC"
     if m := _PAST_HOUR.match(upper):
@@ -1458,7 +1608,14 @@ def _explain_metar_remark(upper: str, seen: dict[str, int]) -> str | None:
         return f"In the past {m.group('n')} {unit}"
     if m := _FRAC_MILE.match(upper):
         return f"Visibility {m.group('num')}/{m.group('den')} statute mile"
+    if m := _VIS_VARIABLE.match(upper):
+        return f"Visibility varying from {m.group('lo')} to {m.group('hi')} statute miles"
+    if seen.get("vis_expect") and (m := _VIS_VRB_RANGE.match(upper)):
+        seen["vis_expect"] = 0
+        return f"Visibility varying from {m.group('a')} to {m.group('b')} statute miles"
     if upper in _RMK_WORD:
+        if upper == "VRB":
+            seen["vis_expect"] = 1
         return _RMK_WORD[upper]
     if upper in _SIG_DIR:
         return _SIG_DIR_NAME[upper]

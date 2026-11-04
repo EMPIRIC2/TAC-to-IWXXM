@@ -2,7 +2,11 @@
 
 from __future__ import annotations
 
-from tac2iwxxm.convert import convert, resolve_propagate_residuals_to_remarks
+from tac2iwxxm.convert import (
+    _apply_propagate_residuals,
+    convert,
+    resolve_propagate_residuals_to_remarks,
+)
 
 # Undecoded body token becomes a decode residual; RMK still present for UJ-026 fence.
 _TAC_WITH_RESIDUAL = "METAR KJFK 251451Z 18005KT 10SM FEW050 ZZZZ 22/12 A2992 RMK AO2 SLP123="
@@ -122,6 +126,19 @@ def test_tc_ev981_002_dedup_skips_residual_already_in_remarks_free_text() -> Non
     assert result.xml
     free = str((result.ir or {}).get("remarks_free_text") or "")
     assert free.count("VIRGA NE") == 1
+
+
+def test_apply_propagate_skips_when_residuals_already_in_remarks() -> None:
+    """HRT profile with residuals already in remarks_free_text returns unchanged IR."""
+    ir = {"remarks_free_text": "ZZZZ already stored", "remarks_present": True}
+    updated, issue = _apply_propagate_residuals(
+        _TAC_WITH_RESIDUAL,
+        product="METAR",
+        profile_l="iwxxm_us",
+        ir=ir,
+    )
+    assert issue is None
+    assert updated is ir
 
 
 def test_tc_ev981_resolve_semantic_alias_and_empty_residual_paths() -> None:
