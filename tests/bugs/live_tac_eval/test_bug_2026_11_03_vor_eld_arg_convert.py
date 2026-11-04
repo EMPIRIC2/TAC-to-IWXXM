@@ -10,8 +10,9 @@ returns ``PARSE_ERROR`` and IWXXM validate is skipped.
 
 from __future__ import annotations
 
-from tac2iwxxm import convert
 from tac2iwxxm.geometry.reference_point import resolve_vor
+
+from tac2iwxxm import convert
 
 # Staging live-map 30d dump (EV-decode-residuals-2026-11-03) — no secrets.
 _LIVE_ELD = """\
@@ -82,5 +83,6 @@ AREA TS MOV FROM 21010KT. TOPS TO FL300.
     result = convert(tac, product="SIGMET", profile="annex3")
     assert result.ok is False
     assert any(
-        issue.code == "PARSE_ERROR" and "ZZZ" in issue.message for issue in result.issues
+        issue.code == "PARSE_ERROR" and "ZZZ" in issue.message
+        for issue in result.issues
     )
