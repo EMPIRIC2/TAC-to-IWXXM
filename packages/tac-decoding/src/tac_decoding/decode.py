@@ -126,6 +126,9 @@ _TAF_ICING = re.compile(r"^6(?P<intensity>\d)(?P<base>\d{3}|/{3})(?P<thick>\d|/)
 _TREND_TIME = re.compile(r"^(?P<kind>TL|AT|FM)(?P<hh>\d{2})(?P<mm>\d{2})$")
 _SIG_VALID = re.compile(r"^(?P<d1>\d{2})(?P<h1>\d{2})(?P<m1>\d{2})/(?P<d2>\d{2})(?P<h2>\d{2})(?P<m2>\d{2})$")
 _SIG_FL = re.compile(r"^FL(?P<fl>\d{2,3})$")
+_SIG_WIND_RANGE = re.compile(r"^(?P<a>\d{2,3})-(?P<b>\d{2,3})(?P<unit>KT|KMH|MPS)$")
+_SIG_AT_HHMMZ = re.compile(r"^AT(?P<hh>\d{2})(?P<mm>\d{2})Z$")
+_SIG_TRAIL_DOTS = re.compile(r"^\.{3,}$")
 # Vertical layer - ``SFC/FL550``, ``FL250/370``, or ``9000FT/FL290``.
 _SIG_FL_LAYER = re.compile(r"^(?:SFC/FL(?P<sfc>\d{2,3})|FL(?P<a>\d{2,3})/(?:FL)?(?P<b>\d{2,3}))$")
 _SIG_FT_LAYER = re.compile(r"^(?P<alt>\d{3,4})(?P<unit>FT|M)/FL(?P<fl>\d{2,3})$")
@@ -1937,9 +1940,41 @@ def _explain_sigmet_airmet(token: str, *, product: str, seen: dict[str, int]) ->
     if upper in _SIGMET_SERIES and seen.get("ref"):
         return f"Referenced SIGMET series ({upper.capitalize()})"
 
+    if upper == "LINE":
+        seen["line"] = 1
+        return "Line of coordinates"
+    if upper == "WIDE":
+        return "Wide"
+    if upper == "NM" and seen.get("line"):
+        return "Nautical miles"
+    if upper.isdigit() and seen.get("line") and len(upper) <= 3 and not seen.get("line_width"):
+        seen["line_width"] = 1
+        return f"Line width {int(upper)}"
+    if upper == "HAIL":
+        seen["hail_size"] = 1
+        return "Hail"
+    if upper == "GUSTS":
+        return "Gusts"
+    if upper == "TORNADOES":
+        seen["hail_size"] = 1
+        return "Tornadoes possible"
+    if upper.isdigit() and len(upper) <= 2 and seen.get("hail_size"):
+        return f"{int(upper)} inch hail"
+    if m := _SIG_WIND_RANGE.match(upper):
+        unit = _SIG_SPEED_UNIT.get(m.group("unit"), m.group("unit").lower())
+        return f"Speed {int(m.group('a'))} to {int(m.group('b'))} {unit}"
+    if _SIG_TRAIL_DOTS.match(upper):
+        return "Truncated text"
+    if upper == "FL":
+        seen["fl_expect"] = 1
+        return "Flight level"
+    if seen.get("fl_expect") and upper.isdigit() and 2 <= len(upper) <= 3:
+        seen["fl_expect"] = 0
+        return f"Flight level {int(upper)}"
+
     # MWO designator often carries a trailing hyphen (``YUSO-``).
     icao = upper.rstrip("-")
-    if _STATION.match(icao):
+    if _STATION.match(icao) and icao not in {"LINE", "WIDE", "AREA", "HAIL", "GUSTS"}:
         if seen.get("station", 0) == 0:
             seen["station"] = 1
             place = resolve_location_name(icao)
@@ -1981,9 +2016,6 @@ def _explain_sigmet_airmet(token: str, *, product: str, seen: dict[str, int]) ->
         if seen.get("line"):
             return "Line vertex separator"
         return "Polygon vertex separator"
-    if upper == "LINE":
-        seen["line"] = 1
-        return "Line of coordinates"
     if upper == "OBS/FCST":
         return "Observed and forecast"
     if m := _SIG_SFC_LAYER.match(upper):
@@ -2087,20 +2119,12 @@ def _explain_sigmet_airmet(token: str, *, product: str, seen: dict[str, int]) ->
         return f"{head} possible"
     if _IN_WIND_ELLIPSIS.match(upper):
         return "Hail size in inches; wind gusts follow"
-    if upper == "TORNADOES":
-        seen["hail_size"] = 1
-        return "Tornadoes possible"
-    if upper == "HAIL":
-        seen["hail_size"] = 1
-        return "Hail"
-    if upper == "GUSTS":
-        return "Gusts"
     if upper == "POSS":
         return "Possible"
     if upper == "TO" and seen.get("hail_size"):
         return "To"
-    if upper.isdigit() and len(upper) <= 2 and seen.get("hail_size") and seen.get("seq"):
-        return f"{int(upper)} inch hail"
+    if upper.startswith("IN") and seen.get("hail_size") and not _IN_WIND_ELLIPSIS.match(upper):
+        return "Inches"
 
     # Glossary-backed intensity / hazard / movement tokens (F9 deepen).
     gloss = explain_glossary_token(upper)
