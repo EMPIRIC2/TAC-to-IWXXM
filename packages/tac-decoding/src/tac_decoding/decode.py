@@ -55,7 +55,7 @@ _FRAC_MILE = re.compile(r"^(?P<num>\d)/(?P<den>\d)$")
 _BBB_CORRECTION = re.compile(r"^CC[A-Z]$")
 _BBB_DELAYED = re.compile(r"^RR[A-Z]$")
 _BBB_AMENDMENT = re.compile(r"^AA[A-Z]$")
-_ELLIPSIS_HAZARD = re.compile(r"^(?P<head>TORNADOES|HAIL|WIND|GUSTS)(?:\.\.\.(?P<tail>HAIL|WIND|GUSTS|TORNADOES))?$")
+_ELLIPSIS_HAZARD = re.compile(r"^(?P<head>TORNADOES|HAIL|WIND|GUSTS)\.\.\.(?P<tail>HAIL|WIND|GUSTS|TORNADOES)?$")
 _IN_WIND_ELLIPSIS = re.compile(r"^IN\.\.\.WIND$|^\d+IN\.\.\.WIND$")
 _CA_CLOUD_TYPE = "(?:TCU|CI|CS|CC|AC|AS|NS|SC|ST|SF|CU|CF|CB)"
 _CA_CLOUD_AMOUNTS = re.compile(rf"^(?:{_CA_CLOUD_TYPE}\d)+$")
@@ -1620,7 +1620,10 @@ def _explain_sigmet_airmet(token: str, *, product: str, seen: dict[str, int]) ->
     str | None
         Return value.
     """
-    upper = token.upper().rstrip(".").rstrip(":")
+    upper = token.upper().rstrip(":")
+    # Drop a lone report-style trailing period, but keep ellipsis (``…`` / ``...``).
+    if re.search(r"(?<!\.)\.$", upper):
+        upper = upper[:-1]
     if upper in {"SIGMET", "AIRMET"} and seen.get("rtype", 0) == 0:
         seen["rtype"] = 1
         return f"Report type ({upper})"

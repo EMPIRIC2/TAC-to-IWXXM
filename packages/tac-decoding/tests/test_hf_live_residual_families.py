@@ -174,3 +174,31 @@ def test_sigmet_fir_name_and_coord_scraps() -> None:
     assert "-S2233" in codes_p or "S2233" in {k.lstrip("-") for k in codes_p}
     residual = _residual_text(poly, "SIGMET")
     assert "-S2233" not in residual
+
+
+def test_coverage_edges_for_new_remark_and_sigmet_paths() -> None:
+    """Hit leftover branches so package coverage stays at 100%."""
+    from tac_decoding.decode import _coord_token, _explain_metar_speci, _explain_sigmet_airmet
+
+    assert _coord_token("-FOO") == "-FOO"
+    assert _explain_metar_speci("NOSUCH", product="METAR", seen={"wind_aloft": 1}) is None
+    assert _codes("METAR KJFK 051430Z AAA", "METAR")["AAA"] == "Amendment (AAA)"
+    ice_trace = "METAR KGPI 031355Z AUTO 00000KT 10SM CLR M05/M06 A3025 RMK AO2 I0000"
+    assert "trace" in _codes(ice_trace, "METAR")["I0000"].lower()
+    precip = "METAR KSVE 031455Z AUTO 26003KT 9SM CLR 00/00 A3008 RMK A01 P012"
+    assert "0.12" in _codes(precip, "METAR")["P012"]
+    wind_ft = "METAR ENBR 031450Z 17004KT CAVOK 07/04 Q1038 RMK 2500FT"
+    assert "2500" in _codes(wind_ft, "METAR")["2500FT"]
+    assert _codes("YUDD SIGMET 2 VALID 101200/101600 YUSO- AAA=", "SIGMET")["AAA"] == "Amendment (AAA)"
+    seen = {"station": 1, "seq": 1, "fir_icao": 1, "fir_name": 1}
+    assert "possible" in (_explain_sigmet_airmet("HAIL...", product="SIGMET", seen=dict(seen)) or "").lower()
+    assert "Tornadoes" in (_explain_sigmet_airmet("TORNADOES", product="SIGMET", seen=dict(seen)) or "")
+    assert _explain_sigmet_airmet("HAIL", product="SIGMET", seen=dict(seen)) == "Hail"
+    assert _explain_sigmet_airmet("GUSTS", product="SIGMET", seen=dict(seen)) == "Gusts"
+    assert _explain_sigmet_airmet("POSS.", product="SIGMET", seen=dict(seen)) == "Possible"
+    assert _explain_sigmet_airmet("TO", product="SIGMET", seen={**seen, "hail_size": 1}) == "To"
+    assert "inch" in (_explain_sigmet_airmet("2", product="SIGMET", seen={**seen, "hail_size": 1}) or "").lower()
+    assert "1IN...WIND" not in _residual_text(
+        "YUDD SIGMET 2 VALID 101200/101600 YUSO- YUDD FIR EMBD TS 1IN...WIND GUSTS=",
+        "SIGMET",
+    )
