@@ -85,6 +85,10 @@ _LAST_STFD = re.compile(
     r"^LAST(?:STFD)?OBS/(?:NXT|NEXT)(?P<rest>.*)$",
     re.IGNORECASE,
 )
+_NAVY_FS_FN = re.compile(r"^F[SN]\d{5}$")
+_AU_TEMP_DIGIT = re.compile(r"^\d{2}$")
+_AU_QNH_DIGIT = re.compile(r"^\d{4}$")
+_TAF_AFT_HH = re.compile(r"^(?P<dd>\d{2})(?P<hh>\d{2})(?P<mm>\d{2})?$")
 _MX_PRESS_9 = re.compile(r"^9(?P<body>\d{2})$")
 _CIG_HUNDREDS = re.compile(r"^(?P<h>\d{3})$")
 _VV = re.compile(r"^VV(?P<h>\d{3}|///)$")
@@ -1648,7 +1652,11 @@ def _explain_taf(token: str, *, seen: dict[str, int]) -> str | None:
     if upper == "TAF" and seen.get("rtype", 0) == 0:
         seen["rtype"] = 1
         return "Report type (terminal aerodrome forecast)"
-    if upper in {"AMD", "COR"}:
+    if upper == "COR":
+        return "Amendment / correction indicator"
+    if upper == "AMD":
+        if seen.get("last_amd"):
+            return "Amendments"
         return "Amendment / correction indicator"
     if upper == "CNL":
         return "Cancelled forecast"
@@ -1671,6 +1679,34 @@ def _explain_taf(token: str, *, seen: dict[str, int]) -> str | None:
         )
     if m := _WIND.match(upper):
         return _fmt_wind(m, label="Forecast wind")
+    if seen.get("au_t") and _AU_TEMP_DIGIT.match(upper):
+        return f"Forecast temperature {int(upper)} °C"
+    if seen.get("au_t") and upper == "Q":
+        seen["au_t"] = 0
+        seen["au_q"] = 1
+        return "Australian QNH sequence"
+    if seen.get("au_q") and _AU_QNH_DIGIT.match(upper):
+        return f"Forecast QNH {int(upper)} hPa"
+    if seen.get("au_q") and not _AU_QNH_DIGIT.match(upper):
+        seen["au_q"] = 0
+    if seen.get("metwatch") and (m := _TAF_AFT_HH.match(upper)):
+        seen["metwatch"] = 0
+        mm = m.group("mm") or "00"
+        return f"Metwatch time day {int(m.group('dd'))} {m.group('hh')}:{mm} UTC"
+    if seen.get("aft_expect"):
+        seen["aft_expect"] = 0
+        if m := _TAF_AFT_HH.match(upper):
+            mm = m.group("mm") or "00"
+            return f"After day {int(m.group('dd'))} {m.group('hh')}:{mm} UTC"
+    if seen.get("next_expect") and (m := _TAF_AFT_HH.match(upper)):
+        seen["next_expect"] = 0
+        seen["last_amd"] = 0
+        mm = m.group("mm") or "00"
+        return f"Next amendment day {int(m.group('dd'))} {m.group('hh')}:{mm} UTC"
+    if seen.get("amd_ltd") and (m := _TAF_AFT_HH.match(upper)):
+        seen["amd_ltd"] = 0
+        mm = m.group("mm") or "00"
+        return f"Limited amendment until day {int(m.group('dd'))} {m.group('hh')}:{mm} UTC"
     if _VIS_M.match(upper):
         return f"Forecast visibility {int(upper)} m"
     if m := _VIS_SM.match(upper):
@@ -1753,7 +1789,37 @@ def _explain_taf(token: str, *, seen: dict[str, int]) -> str | None:
     if upper == "SENSOR":
         return "Sensor"
     if upper == "METWATCH":
+        seen["metwatch"] = 1
         return "Meteorological watch period"
+    if seen.get("metwatch") and upper == "FROM":
+        return "From"
+    if _NAVY_FS_FN.match(upper):
+        return f"Navy forecast supplement code ({upper})"
+    if upper == "WND":
+        return "Wind"
+    if upper == "AFT":
+        seen["aft_expect"] = 1
+        return "After"
+    if upper == "LAST":
+        seen["last_amd"] = 1
+        return "Last"
+    if seen.get("last_amd") and upper == "NO":
+        return "No"
+    if seen.get("last_amd") and upper in {"AMD", "AMDS"}:
+        return "Amendments"
+    if seen.get("last_amd") and upper == "NEXT":
+        seen["next_expect"] = 1
+        return "Next"
+    if upper == "LTD":
+        seen["amd_ltd"] = 1
+        return "Limited"
+    if seen.get("amd_ltd") and upper == "TO":
+        return "To"
+    if seen.get("amd_ltd") and upper in {"CLD", "VIS", "AND", "WIND"}:
+        return _RMK_WORD.get(upper, upper.title())
+    if upper == "T" and not seen.get("au_t") and not seen.get("au_q"):
+        seen["au_t"] = 1
+        return "Australian temperature sequence"
     return None
 
 
