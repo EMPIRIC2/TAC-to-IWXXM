@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "description": "CONUS VOR/VORTAC and airport reference points for US SIGMET FROM-chain geometry. The original points are from FAA NASR / AirNav navaid publications. Points added on 2026-09-23 cover live NWS convective SIGMET FROM-chains: OurAirports navaids (public domain), plus MMB, CLE, and TRV from published navaid coordinates and MIA from the OurAirports airport list. Points added on 2026-10-30 cover additional live convective misses: chart-id aliases absent from OurAirports (PHX\u2192Phoenix/PXR coords, AMA), unique US VORTAC rows when OurAirports is multi-country ambiguous, and common CONUS VORs needed offline under the pytest closed source. Points added on 2026-10-31 cover Stage live-map WST residuals: ambiguous OurAirports multi-country idents (TOU, MTU, PIR, LEV) and offline peers (HQM, HVE, RSK, TUL) under the pytest closed source. Points added on 2026-11-02 cover Stage live-map WST residuals: ambiguous OurAirports multi-country idents (END, ALS, ORL, FAR, GRB, BRD) and TLH chart id mapped to Seminole VORTAC (SZW) coordinates, plus offline peers (CEW, DEN, EAU, MCK, RSW, SRQ) required by those FROM-chains under the pytest closed source. Points added on 2026-11-02 (DVLPG residual follow-up) cover OKC: OurAirports navaids only lists JP Okayama under OKC, so the US Oklahoma City / Will Rogers airport coordinates (OurAirports airports.csv KOKC) are seeded for NWS WST FROM-chains under the pytest closed source.",
+  "description": "CONUS VOR/VORTAC and airport reference points for US SIGMET FROM-chain geometry. The original points are from FAA NASR / AirNav navaid publications. Points added on 2026-09-23 cover live NWS convective SIGMET FROM-chains: OurAirports navaids (public domain), plus MMB, CLE, and TRV from published navaid coordinates and MIA from the OurAirports airport list. Points added on 2026-10-30 cover additional live convective misses: chart-id aliases absent from OurAirports (PHX\u2192Phoenix/PXR coords, AMA), unique US VORTAC rows when OurAirports is multi-country ambiguous, and common CONUS VORs needed offline under the pytest closed source. Points added on 2026-10-31 cover Stage live-map WST residuals: ambiguous OurAirports multi-country idents (TOU, MTU, PIR, LEV) and offline peers (HQM, HVE, RSK, TUL) under the pytest closed source. Points added on 2026-11-02 cover Stage live-map WST residuals: ambiguous OurAirports multi-country idents (END, ALS, ORL, FAR, GRB, BRD) and TLH chart id mapped to Seminole VORTAC (SZW) coordinates, plus offline peers (CEW, DEN, EAU, MCK, RSW, SRQ) required by those FROM-chains under the pytest closed source. Points added on 2026-11-02 (DVLPG residual follow-up) cover OKC: OurAirports navaids only lists JP Okayama under OKC, so the US Oklahoma City / Will Rogers airport coordinates (OurAirports airports.csv KOKC) are seeded for NWS WST FROM-chains under the pytest closed source. Points added on 2026-11-03 cover Stage live-map WST convert hard-fails (#1536): multi-country ambiguous OurAirports idents (ELD El Dorado US VORTAC, ARG Walnut Ridge US VORTAC) and offline peers required by those FROM-chains under the pytest closed source (GGG, SGF, LIT, RZC, EIC, BAE, ODI, DLL, TXK).",
   "points": {
     "ABI": {
       "lat": 32.4813,
@@ -52,6 +52,11 @@
       "lon": -82.588303,
       "name": "Appleton"
     },
+    "ARG": {
+      "lat": 36.11000061035156,
+      "lon": -90.95369720458984,
+      "name": "Walnut Ridge VORTAC"
+    },
     "ATL": {
       "lat": 33.629101,
       "lon": -84.435097,
@@ -61,6 +66,11 @@
       "lat": 39.737521,
       "lon": -88.856431,
       "name": "Decatur"
+    },
+    "BAE": {
+      "lat": 43.11690139770508,
+      "lon": -88.2843017578125,
+      "name": "Badger VORTAC"
     },
     "BAM": {
       "lat": 40.569199,
@@ -207,6 +217,11 @@
       "lon": -100.772003,
       "name": "Laughlin"
     },
+    "DLL": {
+      "lat": 43.550899505615234,
+      "lon": -89.76360321044922,
+      "name": "Dells VORTAC"
+    },
     "DMN": {
       "lat": 32.2756,
       "lon": -107.605003,
@@ -247,10 +262,20 @@
       "lon": -114.47326,
       "name": "NEEDLES VORTAC"
     },
+    "EIC": {
+      "lat": 32.771400451660156,
+      "lon": -93.80989837646484,
+      "name": "Belcher VORTAC"
+    },
     "EKN": {
       "lat": 38.914398,
       "lon": -80.099297,
       "name": "Elkins"
+    },
+    "ELD": {
+      "lat": 33.25619888305664,
+      "lon": -92.743896484375,
+      "name": "El Dorado VORTAC"
     },
     "ELP": {
       "lat": 31.815901,
@@ -311,6 +336,11 @@
       "lat": 37.919102,
       "lon": -100.724998,
       "name": "Garden City"
+    },
+    "GGG": {
+      "lat": 32.41780090332031,
+      "lon": -94.7531967163086,
+      "name": "Gregg Co VORTAC"
     },
     "GGW": {
       "lat": 48.215302,
@@ -437,6 +467,11 @@
       "lon": -90.103996,
       "name": "Leeville VORTAC"
     },
+    "LIT": {
+      "lat": 34.8101,
+      "lon": -92.152067,
+      "name": "Little Rock VORTAC"
+    },
     "LOZ": {
       "lat": 37.0331,
       "lon": -84.1101,
@@ -521,6 +556,11 @@
       "lat": 34.6959,
       "lon": -83.297699,
       "name": "Foothills"
+    },
+    "ODI": {
+      "lat": 43.91239929199219,
+      "lon": -91.46759796142578,
+      "name": "Nodine VORTAC"
     },
     "OKC": {
       "lat": 35.393388,
@@ -622,6 +662,11 @@
       "lon": -95.128304,
       "name": "Redwood Falls"
     },
+    "RZC": {
+      "lat": 36.24639892578125,
+      "lon": -94.12139892578125,
+      "name": "Razorback VORTAC"
+    },
     "SAT": {
       "lat": 29.643999,
       "lon": -98.461304,
@@ -631,6 +676,11 @@
       "lat": 32.146301,
       "lon": -81.199097,
       "name": "Savannah"
+    },
+    "SGF": {
+      "lat": 37.355899810791016,
+      "lon": -93.33399963378906,
+      "name": "Springfield VORTAC"
     },
     "SHR": {
       "lat": 44.8423,
@@ -741,6 +791,11 @@
       "lat": 32.0952,
       "lon": -110.915001,
       "name": "Tucson"
+    },
+    "TXK": {
+      "lat": 33.51390075683594,
+      "lon": -94.07319641113281,
+      "name": "Texarkana VORTAC"
     },
     "TXO": {
       "lat": 34.495098,
