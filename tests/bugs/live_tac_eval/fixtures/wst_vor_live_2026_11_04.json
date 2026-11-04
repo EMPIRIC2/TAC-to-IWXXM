@@ -1,0 +1,117 @@
+{
+  "source": "staging live-map 2026-11-04 CONUS SIGMET convert hard-fails (#1552)",
+  "cases": [
+    {
+      "vor_id": "IND",
+      "place_key": "sigmet-06f7879f77eef6b8",
+      "observed_at": "2026-11-04T07:55:00+00:00",
+      "message": "unknown VOR reference 'IND'",
+      "tac": "WSUS32 KKCI 040755\nMKCC WST 040755\nCONVECTIVE SIGMET 21C\nVALID UNTIL 0955Z\nTN KY IN AL IL\nFROM 40NNE IND-40WNW LOZ-60W GQO-30SSE DYR-60WNW PXV-40NNE IND\nAREA EMBD TS MOV FROM 23030KT. TOPS TO FL370."
+    },
+    {
+      "vor_id": "LSU",
+      "place_key": "sigmet-0a87b2cd32187317",
+      "observed_at": "2026-11-04T05:55:00+00:00",
+      "message": "unknown VOR reference 'LSU'",
+      "tac": "WSUS32 KKCI 040555\nMKCC WST 040555\nCONVECTIVE SIGMET 15C\nVALID UNTIL 0755Z\nTN AL MS LA\nFROM 30NE MEM-40NNW MSL-20SE IGB-10E LSU-40SE LCH-30NE MEM\nAREA EMBD TS MOV FROM 24040KT. TOPS TO FL450."
+    },
+    {
+      "vor_id": "ORD",
+      "place_key": "sigmet-1fe25cfba484a0c8",
+      "observed_at": "2026-11-03T16:55:00+00:00",
+      "message": "unknown VOR reference 'ORD'",
+      "tac": "WSUS32 KKCI 031655\nMKCC WST 031655\nCONVECTIVE SIGMET 77C\nVALID UNTIL 1855Z\nWI IL LM\nFROM 30ESE GRB-10N ORD-60ESE DBQ-40WSW GRB-30ESE GRB\nAREA TS MOV FROM 21045KT. TOPS TO FL330."
+    },
+    {
+      "vor_id": "LSU",
+      "place_key": "sigmet-30000534c8d682e1",
+      "observed_at": "2026-11-04T03:55:00+00:00",
+      "message": "unknown VOR reference 'LSU'",
+      "tac": "WSUS32 KKCI 040355\nMKCC WST 040355\nCONVECTIVE SIGMET 10C\nVALID UNTIL 0555Z\nLA AND LA TX CSTL WTRS\nFROM 40SSE AEX-60SSW LSU-130SSE PSX-60SE CRP-40SSE AEX\nAREA EMBD TS MOV FROM 27020KT. TOPS ABV FL450."
+    },
+    {
+      "vor_id": "BNA",
+      "place_key": "sigmet-429f72a15c1c40de",
+      "observed_at": "2026-11-04T08:55:00+00:00",
+      "message": "unknown VOR reference 'BNA'",
+      "tac": "WSUS32 KKCI 040855\nMKCC WST 040855\nCONVECTIVE SIGMET 25C\nVALID UNTIL 1055Z\nTN AL MS\nFROM 40SSW BNA-30SW VUZ-20ENE MCB-30WNW MCB-30ESE SQS-40SSW BNA\nAREA EMBD TS MOV FROM 26025KT. TOPS TO FL450."
+    },
+    {
+      "vor_id": "LSU",
+      "place_key": "sigmet-5039556ac7305472",
+      "observed_at": "2026-11-04T02:55:00+00:00",
+      "message": "unknown VOR reference 'LSU'",
+      "tac": "WSUS32 KKCI 040255\nMKCC WST 040255\nCONVECTIVE SIGMET 6C\nVALID UNTIL 0455Z\nMS LA AR\nFROM 30W MEM-60WNW MSL-40S MEI-20SSW LSU-10NNE LCH-30W MEM\nAREA EMBD TS MOV FROM 24040KT. TOPS TO FL440."
+    },
+    {
+      "vor_id": "LSU",
+      "place_key": "sigmet-5197ea57b52a11e3",
+      "observed_at": "2026-11-03T20:55:00+00:00",
+      "message": "unknown VOR reference 'LSU'",
+      "tac": "WSUS32 KKCI 032055\nMKCC WST 032055\nCONVECTIVE SIGMET 91C\nVALID UNTIL 2255Z\nTN KY IL MS LA MO AR TX\nFROM 30ENE UIN-30ENE AXC-30NNW LSU-10NW LFK-30ENE UIN\nAREA TS MOV FROM 23040KT. TOPS ABV FL450."
+    },
+    {
+      "vor_id": "LSU",
+      "place_key": "sigmet-60af40b7bc57fd03",
+      "observed_at": "2026-11-04T07:55:00+00:00",
+      "message": "unknown VOR reference 'LSU'",
+      "tac": "WSUS32 KKCI 040755\nMKCC WST 040755\nCONVECTIVE SIGMET 23C\nVALID UNTIL 0955Z\nLA AND LA TX CSTL WTRS\nFROM 10N LSU-140ESE PSX\nDMSHG LINE EMBD TS 30 NM WIDE MOV FROM 27020KT. TOPS TO FL400."
+    },
+    {
+      "vor_id": "LSU",
+      "place_key": "sigmet-87aded899569d8b0",
+      "observed_at": "2026-11-03T21:55:00+00:00",
+      "message": "unknown VOR reference 'LSU'",
+      "tac": "WSUS32 KKCI 032155\nMKCC WST 032155\nCONVECTIVE SIGMET 96C\nVALID UNTIL 2355Z\nMS LA AR TX AND LA TX CSTL WTRS\nFROM 10NW LIT-20SSW MEM-10W LSU-70SSW LCH-50SSW IAH-10NW LIT\nAREA SEV TS MOV FROM 24035KT. TOPS TO FL450.\nTORNADOES...HAIL TO 1 IN...WIND GUSTS TO 50KT POSS."
+    },
+    {
+      "vor_id": "LSU",
+      "place_key": "sigmet-8839968327890dbb",
+      "observed_at": "2026-11-04T04:55:00+00:00",
+      "message": "unknown VOR reference 'LSU'",
+      "tac": "WSUS32 KKCI 040455\nMKCC WST 040455\nCONVECTIVE SIGMET 13C\nVALID UNTIL 0655Z\nLA AND LA TX CSTL WTRS\nFROM 40W LSU-50W LEV-120E BRO-60SSE CRP-40W LSU\nAREA EMBD TS MOV FROM 27020KT. TOPS TO FL450."
+    },
+    {
+      "vor_id": "LSU",
+      "place_key": "sigmet-a2c223a8b60fd91d",
+      "observed_at": "2026-11-04T06:55:00+00:00",
+      "message": "unknown VOR reference 'LSU'",
+      "tac": "WSUS32 KKCI 040655\nMKCC WST 040655\nCONVECTIVE SIGMET 18C\nVALID UNTIL 0855Z\nTN AL MS\nFROM 30SSE DYR-40NNW MSL-20SE IGB-20ENE MCB-50N LSU-30SSE DYR\nAREA EMBD TS MOV FROM 27025KT. TOPS TO FL450."
+    },
+    {
+      "vor_id": "LSU",
+      "place_key": "sigmet-d52a6ab31eecefc5",
+      "observed_at": "2026-11-04T06:55:00+00:00",
+      "message": "unknown VOR reference 'LSU'",
+      "tac": "WSUS32 KKCI 040655\nMKCC WST 040655\nCONVECTIVE SIGMET 19C\nVALID UNTIL 0855Z\nLA AND LA TX CSTL WTRS\nFROM 20W LSU-70S LCH-110ESE PSX\nLINE EMBD TS 30 NM WIDE MOV FROM 27020KT. TOPS TO FL450."
+    },
+    {
+      "vor_id": "BNA",
+      "place_key": "sigmet-e0e8af3b1db15d57",
+      "observed_at": "2026-11-04T09:55:00+00:00",
+      "message": "unknown VOR reference 'BNA'",
+      "tac": "WSUS32 KKCI 040955\nMKCC WST 040955\nCONVECTIVE SIGMET 26C\nVALID UNTIL 1155Z\nTN AL\nFROM 30NNW BNA-50NNW GQO-30SSW VUZ-30NE IGB-30NNW BNA\nAREA EMBD TS MOV FROM 26025KT. TOPS TO FL450."
+    },
+    {
+      "vor_id": "LSU",
+      "place_key": "sigmet-e19dd846a872411a",
+      "observed_at": "2026-11-03T22:55:00+00:00",
+      "message": "unknown VOR reference 'LSU'",
+      "tac": "WSUS32 KKCI 032255\nMKCC WST 032255\nCONVECTIVE SIGMET 01C\nVALID UNTIL 0055Z\nMS LA AR TX AND LA TX CSTL WTRS\nFROM 20ENE LIT-20S MEM-30N LSU-70S LCH-40ENE PSX-20ENE LIT\nAREA SEV EMBD TS MOV FROM 24035KT. TOPS ABV FL450.\nTORNADOES...HAIL TO 1 IN...WIND GUSTS TO 50KT POSS."
+    },
+    {
+      "vor_id": "LSU",
+      "place_key": "sigmet-e58ecddb0eeec919",
+      "observed_at": "2026-11-04T02:55:00+00:00",
+      "message": "unknown VOR reference 'LSU'",
+      "tac": "WSUS32 KKCI 040255\nMKCC WST 040255\nCONVECTIVE SIGMET 7C\nVALID UNTIL 0455Z\nLA AND LA TX CSTL WTRS\nFROM 10NNE LCH-20SSW LSU-130SE PSX-50SE CRP-10NNE LCH\nAREA EMBD TS MOV FROM 27020KT. TOPS ABV FL450."
+    },
+    {
+      "vor_id": "IND",
+      "place_key": "sigmet-eb7d9133eb62f29d",
+      "observed_at": "2026-11-04T06:55:00+00:00",
+      "message": "unknown VOR reference 'IND'",
+      "tac": "WSUS32 KKCI 040655\nMKCC WST 040655\nCONVECTIVE SIGMET 17C\nVALID UNTIL 0855Z\nTN KY IN AL IL MO\nFROM IND-60ESE BWG-60W GQO-30SSE DYR-60NE FAM-IND\nAREA EMBD TS MOV FROM 23030KT. TOPS TO FL370."
+    }
+  ]
+}

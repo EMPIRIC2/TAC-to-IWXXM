@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "description": "CONUS VOR/VORTAC and airport reference points for US SIGMET FROM-chain geometry. The original points are from FAA NASR / AirNav navaid publications. Points added on 2026-09-23 cover live NWS convective SIGMET FROM-chains: OurAirports navaids (public domain), plus MMB, CLE, and TRV from published navaid coordinates and MIA from the OurAirports airport list. Points added on 2026-10-30 cover additional live convective misses: chart-id aliases absent from OurAirports (PHX\u2192Phoenix/PXR coords, AMA), unique US VORTAC rows when OurAirports is multi-country ambiguous, and common CONUS VORs needed offline under the pytest closed source. Points added on 2026-10-31 cover Stage live-map WST residuals: ambiguous OurAirports multi-country idents (TOU, MTU, PIR, LEV) and offline peers (HQM, HVE, RSK, TUL) under the pytest closed source. Points added on 2026-11-02 cover Stage live-map WST residuals: ambiguous OurAirports multi-country idents (END, ALS, ORL, FAR, GRB, BRD) and TLH chart id mapped to Seminole VORTAC (SZW) coordinates, plus offline peers (CEW, DEN, EAU, MCK, RSW, SRQ) required by those FROM-chains under the pytest closed source. Points added on 2026-11-02 (DVLPG residual follow-up) cover OKC: OurAirports navaids only lists JP Okayama under OKC, so the US Oklahoma City / Will Rogers airport coordinates (OurAirports airports.csv KOKC) are seeded for NWS WST FROM-chains under the pytest closed source. Points added on 2026-11-03 cover Stage live-map WST convert hard-fails (#1536): multi-country ambiguous OurAirports idents (ELD El Dorado US VORTAC, ARG Walnut Ridge US VORTAC) and offline peers required by those FROM-chains under the pytest closed source (GGG, SGF, LIT, RZC, EIC, BAE, ODI, DLL, TXK).",
+  "description": "CONUS VOR/VORTAC and airport reference points for US SIGMET FROM-chain geometry. The original points are from FAA NASR / AirNav navaid publications. Points added on 2026-09-23 cover live NWS convective SIGMET FROM-chains: OurAirports navaids (public domain), plus MMB, CLE, and TRV from published navaid coordinates and MIA from the OurAirports airport list. Points added on 2026-10-30 cover additional live convective misses: chart-id aliases absent from OurAirports (PHX\u2192Phoenix/PXR coords, AMA), unique US VORTAC rows when OurAirports is multi-country ambiguous, and common CONUS VORs needed offline under the pytest closed source. Points added on 2026-10-31 cover Stage live-map WST residuals: ambiguous OurAirports multi-country idents (TOU, MTU, PIR, LEV) and offline peers (HQM, HVE, RSK, TUL) under the pytest closed source. Points added on 2026-11-02 cover Stage live-map WST residuals: ambiguous OurAirports multi-country idents (END, ALS, ORL, FAR, GRB, BRD) and TLH chart id mapped to Seminole VORTAC (SZW) coordinates, plus offline peers (CEW, DEN, EAU, MCK, RSW, SRQ) required by those FROM-chains under the pytest closed source. Points added on 2026-11-02 (DVLPG residual follow-up) cover OKC: OurAirports navaids only lists JP Okayama under OKC, so the US Oklahoma City / Will Rogers airport coordinates (OurAirports airports.csv KOKC) are seeded for NWS WST FROM-chains under the pytest closed source. Points added on 2026-11-03 cover Stage live-map WST convert hard-fails (#1536): multi-country ambiguous OurAirports idents (ELD El Dorado US VORTAC, ARG Walnut Ridge US VORTAC) and offline peers required by those FROM-chains under the pytest closed source (GGG, SGF, LIT, RZC, EIC, BAE, ODI, DLL, TXK). Points added on 2026-11-04 cover Stage live-map WST convert hard-fails (#1552): chart ids absent from OurAirports navaids (IND\u2192Brickyard/VHP, ORD Chicago O'Hare VOR/DME, LSU Fighting Tiger / OA BTR), multi-country ambiguous BNA (US Nashville VORTAC), and offline peers required by those FROM-chains under the pytest closed source (AEX, BRO, DYR, IGB, LFK, MCB, MEI, MEM, SQS, UIN, VUZ).",
   "points": {
     "ABI": {
       "lat": 32.4813,
@@ -26,6 +26,11 @@
       "lat": 34.211601,
       "lon": -97.168297,
       "name": "Ardmore"
+    },
+    "AEX": {
+      "lat": 31.25670051574707,
+      "lon": -92.5009994506836,
+      "name": "Alexandria VORTAC"
     },
     "AIR": {
       "lat": 40.016998,
@@ -102,6 +107,11 @@
       "lon": -81.123497,
       "name": "Beckley"
     },
+    "BNA": {
+      "lat": 36.137001037597656,
+      "lon": -86.68479919433594,
+      "name": "Nashville VORTAC"
+    },
     "BOY": {
       "lat": 43.4632,
       "lon": -108.300003,
@@ -111,6 +121,11 @@
       "lat": 46.348301,
       "lon": -94.026001,
       "name": "Brainerd VORTAC"
+    },
+    "BRO": {
+      "lat": 25.924100875854492,
+      "lon": -97.37529754638672,
+      "name": "Brownsville VORTAC"
     },
     "BTY": {
       "lat": 36.800598,
@@ -246,6 +261,11 @@
       "lat": 39.302299,
       "lon": -112.505997,
       "name": "Delta"
+    },
+    "DYR": {
+      "lat": 36.01860046386719,
+      "lon": -89.31759643554688,
+      "name": "Dyersburg VORTAC"
     },
     "EAU": {
       "lat": 44.897701,
@@ -392,6 +412,11 @@
       "lon": -97.583801,
       "name": "Wichita"
     },
+    "IGB": {
+      "lat": 33.48550033569336,
+      "lon": -88.51360321044922,
+      "name": "Bigbee VORTAC"
+    },
     "ILC": {
       "lat": 38.250198,
       "lon": -114.393997,
@@ -401,6 +426,11 @@
       "lat": 34.3517,
       "lon": -77.874397,
       "name": "Wilmington"
+    },
+    "IND": {
+      "lat": 39.814701080322266,
+      "lon": -86.36759948730469,
+      "name": "Indianapolis chart id IND (Brickyard VORTAC VHP)"
     },
     "INK": {
       "lat": 31.8748,
@@ -467,6 +497,11 @@
       "lon": -90.103996,
       "name": "Leeville VORTAC"
     },
+    "LFK": {
+      "lat": 31.162399291992188,
+      "lon": -94.71700286865234,
+      "name": "Lufkin VORTAC"
+    },
     "LIT": {
       "lat": 34.8101,
       "lon": -92.152067,
@@ -482,6 +517,11 @@
       "lon": -99.417702,
       "name": "Laredo"
     },
+    "LSU": {
+      "lat": 30.4851339,
+      "lon": -91.2940667,
+      "name": "Fighting Tiger VORTAC (chart id LSU; OA BTR)"
+    },
     "LWT": {
       "lat": 47.053001,
       "lon": -109.606003,
@@ -491,6 +531,11 @@
       "lat": 32.0093,
       "lon": -102.190002,
       "name": "Midland"
+    },
+    "MCB": {
+      "lat": 31.304500579833984,
+      "lon": -90.2582015991211,
+      "name": "Mc Comb VORTAC"
     },
     "MCI": {
       "lat": 39.285301,
@@ -506,6 +551,16 @@
       "lat": 43.0947,
       "lon": -93.329903,
       "name": "Mason City"
+    },
+    "MEI": {
+      "lat": 32.378501892089844,
+      "lon": -88.8042984008789,
+      "name": "Meridian VORTAC"
+    },
+    "MEM": {
+      "lat": 35.015098571777344,
+      "lon": -89.98320007324219,
+      "name": "Memphis VORTAC"
     },
     "MIA": {
       "lat": 25.796011,
@@ -576,6 +631,11 @@
       "lat": 42.470501,
       "lon": -98.686897,
       "name": "O'Neill"
+    },
+    "ORD": {
+      "lat": 41.987689,
+      "lon": -87.904819,
+      "name": "Chicago O'Hare VOR/DME"
     },
     "ORF": {
       "lat": 36.891899,
@@ -722,6 +782,11 @@
       "lon": -98.593498,
       "name": "Wichita Falls"
     },
+    "SQS": {
+      "lat": 33.46390151977539,
+      "lon": -90.27729797363281,
+      "name": "Sidon VORTAC"
+    },
     "SRQ": {
       "lat": 27.3978,
       "lon": -82.554298,
@@ -801,6 +866,16 @@
       "lat": 34.495098,
       "lon": -102.839996,
       "name": "Texico"
+    },
+    "UIN": {
+      "lat": 39.847900390625,
+      "lon": -91.27880096435547,
+      "name": "Quincy VORTAC"
+    },
+    "VUZ": {
+      "lat": 33.67020034790039,
+      "lon": -86.8998031616211,
+      "name": "Vulcan VORTAC"
     }
   }
 }
