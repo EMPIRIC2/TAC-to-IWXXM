@@ -57,6 +57,12 @@ _OVERRIDES = {
     "BUG-2026-11-02-ca-rvr-slash-before-trend": (
         "tests/bugs/live_tac_eval/test_ca_rvr_slash_before_trend.py"
     ),
+    "BUG-2026-11-02-ws-runway-not-invalid-rvr": (
+        "tests/bugs/live_tac_eval/test_ws_runway_not_invalid_rvr.py"
+    ),
+    "BUG-2026-11-02-api-image-schematron-2025-2": (
+        "packages/iwxxm-validate/tests/test_tc_ev055_004_schematron_2025_2.py"
+    ),
 }
 
 # The profile editor page that dropped cached lists was removed.
