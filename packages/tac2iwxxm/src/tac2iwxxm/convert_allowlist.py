@@ -6,6 +6,7 @@ for that profile. A listed profile converts only the products named there.
 
 from __future__ import annotations
 
+import threading
 from collections.abc import Sequence
 from functools import cache
 from pathlib import Path
@@ -16,6 +17,8 @@ from hydra.core.global_hydra import GlobalHydra
 from omegaconf import OmegaConf
 
 _CONF = Path(__file__).resolve().parent / "conf"
+# GlobalHydra is process-global; parallel convert workers must serialize init.
+_HYDRA_LOCK = threading.Lock()
 
 
 def compose_allowlist(overrides: Sequence[str] = ()) -> dict[str, frozenset[str]]:
@@ -42,10 +45,11 @@ def compose_allowlist(overrides: Sequence[str] = ()) -> dict[str, frozenset[str]
     >>> 1 + 1  # docstring smoke (compose_allowlist)
     2
     """
-    if GlobalHydra.instance().is_initialized():
-        GlobalHydra.instance().clear()
-    with initialize_config_dir(version_base="1.3", config_dir=str(_CONF)):
-        cfg = compose(config_name="convert_allowlist", overrides=list(overrides))
+    with _HYDRA_LOCK:
+        if GlobalHydra.instance().is_initialized():
+            GlobalHydra.instance().clear()
+        with initialize_config_dir(version_base="1.3", config_dir=str(_CONF)):
+            cfg = compose(config_name="convert_allowlist", overrides=list(overrides))
     raw_obj: object = OmegaConf.to_container(cfg, resolve=True)
     if not isinstance(raw_obj, dict):
         msg = "convert allowlist must be a mapping"
