@@ -688,7 +688,9 @@
         "station",
         "metar",
         "speci",
-        "taf"
+        "taf",
+        "sigmet",
+        "airmet"
       ],
       "source_id": "icao-annex-3",
       "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",

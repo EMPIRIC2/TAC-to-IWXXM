@@ -541,6 +541,8 @@ rules:
   - metar
   - speci
   - taf
+  - sigmet
+  - airmet
 - id: TAC.MISSING_DECODE_MATCH
   code: MISSING_DECODE_MATCH
   label: Missing Decode Match

@@ -33,6 +33,17 @@ def test_taf_tx_tn_temperature_extremes() -> None:
     assert "TNM02/0311Z" in pack
 
 
+def test_taf_spaced_cavok_decodes_as_ceiling_and_visibility_ok() -> None:
+    """Live HAAB typo ``C A V O K`` is one CAVOK span (#1553 coverage)."""
+    tac = "TAF HAAB 032130Z 0400/0506 14008KT C A V O K"
+    result = decode_tac(tac, product="TAF")
+    cavok = [s for s in result.segments if s.code.replace(" ", "") == "CAVOK" or s.code == "C A V O K"]
+    assert cavok
+    assert any("ceiling" in s.explanation.lower() for s in cavok)
+    residual_text = " ".join(r.text for r in result.residuals)
+    assert "C A V O K" not in residual_text
+
+
 def test_taf_cavok_nsw_vv_inter() -> None:
     tac = (
         "TAF YSSY 030400Z 0306/0412 06015KT CAVOK "
