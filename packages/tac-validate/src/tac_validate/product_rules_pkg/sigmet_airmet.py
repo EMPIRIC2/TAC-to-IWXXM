@@ -666,8 +666,10 @@ def _check_sigmet_tc(*, start: int, end: int, upper: str) -> list[Issue]:
 
 _CONVECTIVE_SIGMET_BULLETIN = re.compile(r"\bCONVECTIVE\s+SIGMET\b")
 _CONVECTIVE_VALID_UNTIL = re.compile(r"\bVALID\s+UNTIL\s+\d{4,6}Z\b")
-# NWS WST developing-area qualifier (often after the closed FROM ring).
+# NWS WST developing qualifier token; canonical hazard lead-in is ``DVLPG AREA``.
 _CONVECTIVE_DVLPG = re.compile(r"\bDVLPG\b")
+# Valid FMH/NWS developing-area form after the closed FROM ring.
+_CONVECTIVE_DVLPG_AREA_OK = re.compile(r"\bDVLPG\s+AREA\b")
 # US domestic non-convective WS: VALID UNTIL may omit trailing Z (FMH / WSUS form).
 _US_DOMESTIC_WS_VALID_UNTIL = re.compile(r"\bVALID\s+UNTIL\s+\d{4,6}Z?\b")
 _WSUS_TTAAII = re.compile(r"\bWSUS\d{2}\b")
@@ -722,8 +724,10 @@ def _check_convective_sigmet(*, start: int, end: int, upper: str) -> list[Issue]
     Returns
     -------
     list[Issue]
-        Findings for missing ``VALID UNTIL`` and/or a ``DVLPG`` developing
-        qualifier. International FIR and OBS rules do not apply to this form.
+        Findings for missing ``VALID UNTIL`` and/or a misplaced or incomplete
+        ``DVLPG`` developing qualifier. Canonical ``DVLPG AREA`` after the FROM
+        ring is accepted. International FIR and OBS rules do not apply to this
+        form.
     """
     issues: list[Issue] = []
     if not _CONVECTIVE_VALID_UNTIL.search(upper):
@@ -736,15 +740,17 @@ def _check_convective_sigmet(*, start: int, end: int, upper: str) -> list[Issue]
                 location="valid",
             )
         )
-    dvlpg = _CONVECTIVE_DVLPG.search(upper)
-    if dvlpg is not None:
-        # Critical/error: operator must see developing qualifier even when convert
-        # soft-tolerates DVLPG AREA after isolating the FROM ring.
+    # Accept canonical NWS ``DVLPG AREA`` hazard lead-in; flag other DVLPG uses
+    # (FROM-ring abuse, incomplete qualifier without AREA).
+    for dvlpg in _CONVECTIVE_DVLPG.finditer(upper):
+        if _CONVECTIVE_DVLPG_AREA_OK.match(upper, dvlpg.start()) is not None:
+            continue
         issues.append(
             _issue(
                 "DVLPG_AREA_QUALIFIER",
-                "Convective SIGMET uses DVLPG (developing) before AREA. "
-                "Keep DVLPG off the FROM ring; it is a hazard qualifier, not a VOR offset.",
+                "Convective SIGMET has a misplaced or incomplete DVLPG "
+                "(developing) qualifier. Use DVLPG AREA after the FROM ring; "
+                "DVLPG is a hazard qualifier, not a VOR offset.",
                 start=start + dvlpg.start(),
                 end=start + dvlpg.end(),
                 location="geometry",

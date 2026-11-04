@@ -646,7 +646,7 @@ ISSUES: tuple[IssueSpec, ...] = (
     _row(
         "DVLPG_AREA_QUALIFIER",
         "error",
-        "Convective SIGMET uses DVLPG (developing) before AREA. Keep DVLPG off the FROM ring; it is a hazard qualifier, not a VOR offset.",
+        "Convective SIGMET has a misplaced or incomplete DVLPG (developing) qualifier. Use DVLPG AREA after the FROM ring; DVLPG is a hazard qualifier, not a VOR offset.",
         product="sigmet",
         tags=("geometry", "convective", "sigmet", "us_nws"),
     ),

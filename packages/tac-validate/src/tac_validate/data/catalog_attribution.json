@@ -168,8 +168,8 @@
       "source_id": "fmh-1",
       "source_url": "https://aviationweather.gov/data/products/sigmet/",
       "status": "ok",
-      "note": "NWS convective SIGMET developing-area (DVLPG AREA) hazard qualifier; keep off FROM ring",
-      "source_attribution": "fmh-1 - https://aviationweather.gov/data/products/sigmet/ - NWS convective SIGMET developing-area (DVLPG AREA) hazard qualifier; keep off FROM ring"
+      "note": "NWS convective SIGMET developing-area: accept canonical DVLPG AREA; error on FROM-ring or incomplete DVLPG",
+      "source_attribution": "fmh-1 - https://aviationweather.gov/data/products/sigmet/ - NWS convective SIGMET developing-area: accept canonical DVLPG AREA; error on FROM-ring or incomplete DVLPG"
     },
     "EMPTY_TAC": {
       "source_id": "icao-annex-3",
