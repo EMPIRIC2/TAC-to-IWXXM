@@ -537,27 +537,38 @@ async def lint_tac(
     ]
     # Pipeline overlay: decode residuals → PARTIAL_DECODE warning.
     # Emit at API orchestration — not from the pack engine.
+    # Skip WMO AHL bulletins: whole-blob decode treats sibling reports as
+    # residuals; convert-bulletin maps residuals per contained report instead.
     from tac_validate.issue_registry import issue_from as lint_issue_from
 
-    decoded = tac2iwxxm_decode_tac(tac_text, product=product_u)
-    residual_spans = [r for r in decoded.residuals if getattr(r, "text", None) and str(r.text).strip()]
-    if residual_spans and not any(i.code == "PARTIAL_DECODE" for i in lint_issues):
-        partial = lint_issue_from(
-            "PARTIAL_DECODE",
-            start=residual_spans[0].start,
-            end=residual_spans[-1].end,
-            location="decode",
-        )
-        lint_issues.append(
-            LintIssueModel(
-                severity=partial.severity,
-                code=partial.code,
-                message=partial.message,
-                location=partial.location,
-                start=partial.start,
-                end=partial.end,
+    from tac2iwxxm import BulletinSplitError, split_bulletin
+
+    try:
+        split_bulletin(tac_text, product=product_u)
+        is_ahl_bulletin = True
+    except BulletinSplitError:
+        is_ahl_bulletin = False
+
+    if not is_ahl_bulletin:
+        decoded = tac2iwxxm_decode_tac(tac_text, product=product_u)
+        residual_spans = [r for r in decoded.residuals if getattr(r, "text", None) and str(r.text).strip()]
+        if residual_spans and not any(i.code == "PARTIAL_DECODE" for i in lint_issues):
+            partial = lint_issue_from(
+                "PARTIAL_DECODE",
+                start=residual_spans[0].start,
+                end=residual_spans[-1].end,
+                location="decode",
             )
-        )
+            lint_issues.append(
+                LintIssueModel(
+                    severity=partial.severity,
+                    code=partial.code,
+                    message=partial.message,
+                    location=partial.location,
+                    start=partial.start,
+                    end=partial.end,
+                )
+            )
     return api_surface.msgspec_json_response(
         LintTacResponse(
             ok=report.ok,
