@@ -309,19 +309,17 @@ def _check_s1_exceptional(
                 token=tok,
             )
             break
-    for tok in tokens:
-        if (
-            tok in {"CABOK", "/R10/", "A02"}
-            or re.fullmatch(r"T\d{10}", tok)
-            or re.fullmatch(r"RAEMM[A-Z]?\d*", tok)
-        ):
-            issues.append(
-                _issue(
-                    "MALFORMED_SOURCE_TOKEN",
-                    f"{product} looks like a source typo or garbled group {tok!r}",
-                    start=body_start,
-                    end=body_end,
-                    location="body",
-                )
-            )
+    issues.extend(
+        _issue(
+            "MALFORMED_SOURCE_TOKEN",
+            f"{product} looks like a source typo or garbled group {tok!r}",
+            start=body_start,
+            end=body_end,
+            location="body",
+        )
+        for tok in tokens
+        if tok in {"CABOK", "/R10/", "A02"}
+        or re.fullmatch(r"T\d{10}", tok)
+        or re.fullmatch(r"RAEMM[A-Z]?\d*", tok)
+    )
     return issues

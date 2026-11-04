@@ -518,6 +518,18 @@ rules:
   - in_imd
   - temperature
   - tx_tn
+- id: TAC.MALFORMED_SOURCE_TOKEN
+  code: MALFORMED_SOURCE_TOKEN
+  label: Malformed Source Token
+  severity: warning
+  message_template: '{product} looks like a source typo or garbled group {token!r}'
+  product: null
+  tags:
+  - parse_gate
+  - metar
+  - speci
+  - taf
+  - sigmet
 - id: TAC.MISSING_CCCC
   code: MISSING_CCCC
   label: Missing Cccc
