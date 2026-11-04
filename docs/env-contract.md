@@ -1,4 +1,4 @@
-# Environment contract
+# Environment contract — DOKS / Auth-only Supabase / DO Postgres (F30 / F31)
 
 > **Project**: TAC to IWXXM  
 > **Session**: S038-platform-independence-842 / EV-031 (F30/F31)  
@@ -30,8 +30,8 @@ deploy secrets, local `.env`, and docs.
   Feature F22 privacy gates still apply.
 - **Product DB** is DigitalOcean Postgres via `DATABASE_URL` (sessions + feature
   F8 ingest store).
-- **Supabase** supplies Auth URL and keys only. Supabase is **not** the product
-  PostgREST or hosted app tables.
+- **Supabase**: Auth URL + keys only, **not** product PostgREST / hosted app
+  tables.
 - **Compute** is DOKS as primary after the F30 cutover. Render is **suspended**
   (T6.5 / `D-S038-t65-waive`).
 - **Dissemination** BYOC credentials stay **memory-only** (ADR-021/029).
