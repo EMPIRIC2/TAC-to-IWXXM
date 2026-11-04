@@ -922,6 +922,15 @@ rules:
   - time
   - metar
   - speci
+- id: TAC.PARTIAL_DECODE
+  code: PARTIAL_DECODE
+  label: Partial Decode
+  severity: warning
+  message_template: Some TAC tokens were not decoded (partial decode); conversion may still succeed
+  product: null
+  tags:
+  - decode
+  - residual
 - id: TAC.POINT_LOCATION
   code: POINT_LOCATION
   label: Point Location
