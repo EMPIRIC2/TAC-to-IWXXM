@@ -62,3 +62,16 @@ def test_intl_sigmet_without_cccc_is_missing_cccc() -> None:
     errors = [issue for issue in report.issues if issue.severity == "error"]
     assert any(issue.code == "MISSING_CCCC" for issue in errors)
     assert not any(issue.code == "MISSING_VALID" for issue in errors)
+
+
+def test_convective_dvlpg_area_after_from_ring_is_clean() -> None:
+    """Canonical NWS DVLPG AREA after the FROM ring is not an error (#1554)."""
+    tac = (
+        "WSUS32 KKCI 040155\nMKCC WST 040155\nCONVECTIVE SIGMET 91C\n"
+        "VALID UNTIL 0355Z\nKS OK TX\n"
+        "FROM 40ESE MMB-30N CDS-50ESE AMA-40ESE MMB\n"
+        "DVLPG AREA TS MOV FROM 22025KT. TOPS TO FL340.\n"
+    )
+    report = lint(tac, product="SIGMET", profile="annex3")
+    assert not any(i.code == "DVLPG_AREA_QUALIFIER" for i in report.issues)
+    assert "MISSING_VALID" not in {i.code for i in report.issues if i.severity == "error"}
