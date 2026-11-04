@@ -1025,6 +1025,16 @@
       "ticket": null
     },
     {
+      "code": "MALFORMED_SOURCE_TOKEN",
+      "status": "ok",
+      "source_id": "live-eval",
+      "source_url": "https://www.icao.int/",
+      "consumer": "tac-validate",
+      "dig": null,
+      "ticket": null,
+      "note": "Source typo or garbled TAC group from live traffic"
+    },
+    {
       "code": "INVALID_RVR",
       "status": "ok",
       "source_id": "codes-wmo-int",

@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "source": "generated from tac_validate.issue_registry + PROVENANCE_MAP",
-  "generated": "2026-11-02",
+  "generated": "2026-11-04",
   "issues": [
     {
       "code": "AMD_PRESENT",
@@ -662,6 +662,22 @@
       "source_id": "imd-mausam",
       "source_url": "https://mausam.imd.gov.in/",
       "source_attribution": "imd-mausam - https://mausam.imd.gov.in/ - India IMD TAF often omits TX/TN temperature extremes"
+    },
+    {
+      "code": "MALFORMED_SOURCE_TOKEN",
+      "severity": "warning",
+      "message_template": "{product} looks like a source typo or garbled group {token!r}",
+      "product": null,
+      "tags": [
+        "parse_gate",
+        "metar",
+        "speci",
+        "taf",
+        "sigmet"
+      ],
+      "source_id": "live-eval",
+      "source_url": "https://www.icao.int/",
+      "source_attribution": "live-eval - https://www.icao.int/ - Source typo or garbled TAC group from live traffic"
     },
     {
       "code": "MISSING_CCCC",

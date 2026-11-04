@@ -204,6 +204,12 @@ ISSUES: tuple[IssueSpec, ...] = (
         tags=("remark", "metar", "speci", "iwxxm_us"),
     ),
     _row(
+        "MALFORMED_SOURCE_TOKEN",
+        "warning",
+        "{product} looks like a source typo or garbled group {token!r}",
+        tags=("parse_gate", "metar", "speci", "taf", "sigmet"),
+    ),
+    _row(
         "AUTO_PRESENT",
         "info",
         "{product} includes the AUTO modifier, meaning the observation was produced by an automatic station. Informational: noted for operator awareness; does not by itself block conversion. Source: ICAO Annex 3 Table A3-2 / App 3. Full normative text may require purchase.",

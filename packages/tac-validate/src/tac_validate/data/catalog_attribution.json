@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated": "2026-11-02",
+  "generated": "2026-11-04",
   "source": "PROVENANCE_MAP.json catalog_codes",
   "codes": {
     "AMD_PRESENT": {
@@ -317,6 +317,13 @@
       "status": "ok",
       "note": "India IMD TAF often omits TX/TN temperature extremes",
       "source_attribution": "imd-mausam - https://mausam.imd.gov.in/ - India IMD TAF often omits TX/TN temperature extremes"
+    },
+    "MALFORMED_SOURCE_TOKEN": {
+      "source_id": "live-eval",
+      "source_url": "https://www.icao.int/",
+      "status": "ok",
+      "note": "Source typo or garbled TAC group from live traffic",
+      "source_attribution": "live-eval - https://www.icao.int/ - Source typo or garbled TAC group from live traffic"
     },
     "MISSING_CCCC": {
       "source_id": "icao-annex-3",
