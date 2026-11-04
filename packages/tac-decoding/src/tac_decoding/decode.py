@@ -127,7 +127,6 @@ _TREND_TIME = re.compile(r"^(?P<kind>TL|AT|FM)(?P<hh>\d{2})(?P<mm>\d{2})$")
 _SIG_VALID = re.compile(r"^(?P<d1>\d{2})(?P<h1>\d{2})(?P<m1>\d{2})/(?P<d2>\d{2})(?P<h2>\d{2})(?P<m2>\d{2})$")
 _SIG_FL = re.compile(r"^FL(?P<fl>\d{2,3})$")
 _SIG_WIND_RANGE = re.compile(r"^(?P<a>\d{2,3})-(?P<b>\d{2,3})(?P<unit>KT|KMH|MPS)$")
-_SIG_AT_HHMMZ = re.compile(r"^AT(?P<hh>\d{2})(?P<mm>\d{2})Z$")
 _SIG_TRAIL_DOTS = re.compile(r"^\.{3,}$")
 # Vertical layer - ``SFC/FL550``, ``FL250/370``, or ``9000FT/FL290``.
 _SIG_FL_LAYER = re.compile(r"^(?:SFC/FL(?P<sfc>\d{2,3})|FL(?P<a>\d{2,3})/(?:FL)?(?P<b>\d{2,3}))$")

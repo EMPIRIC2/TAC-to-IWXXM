@@ -874,25 +874,20 @@ def _check_sigmet_airmet(tac: str, product: str, *, profile: str = "annex3") -> 
     issues.extend(_check_phenomenon_membership(upper, product=product, start=start, end=end))
 
     tokens = core.replace("=", " ").replace("\n", " ").split()
-
-    def _malformed_sigmet_token(tok: str) -> bool:
-        if tok.endswith("-?") or tok == "METAR":
-            return True
-        if re.fullmatch(r"AT\d{4}Z", tok):
-            return True
+    malformed: list[Issue] = []
+    for tok in tokens:
         lat = re.fullmatch(r"[NS](?P<deg>\d{2})(?P<min>\d{2})", tok)
-        return bool(lat and (int(lat.group("deg")) > 90 or int(lat.group("min")) > 59))
-
-    issues.extend(
-        _issue(
-            "MALFORMED_SOURCE_TOKEN",
-            f"{product} looks like a source typo or garbled group {tok!r}",
-            start=start,
-            end=end,
-            location="body",
-        )
-        for tok in tokens
-        if _malformed_sigmet_token(tok)
-    )
+        bad_lat = bool(lat and (int(lat.group("deg")) > 90 or int(lat.group("min")) > 59))
+        if tok.endswith("-?") or tok == "METAR" or re.fullmatch(r"AT\d{4}Z", tok) or bad_lat:
+            malformed.append(
+                _issue(
+                    "MALFORMED_SOURCE_TOKEN",
+                    f"{product} looks like a source typo or garbled group {tok!r}",
+                    start=start,
+                    end=end,
+                    location="body",
+                )
+            )
+    issues.extend(malformed)
 
     return issues
