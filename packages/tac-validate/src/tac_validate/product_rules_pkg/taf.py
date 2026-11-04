@@ -213,6 +213,33 @@ def _check_taf(tac: str, *, profile: str = "annex3") -> list[Issue]:
         )
     )
 
+    spaced_cavok = any(
+        tokens[i : i + 5] == ["C", "A", "V", "O", "K"] for i in range(max(0, len(tokens) - 4))
+    )
+    issues.extend(
+        _issue(
+            "MALFORMED_SOURCE_TOKEN",
+            f"{product} looks like a source typo or garbled group {tok!r}",
+            start=start,
+            end=end,
+            location="body",
+        )
+        for tok in tokens
+        if tok in {"-VCTSRA", "SC045", "BKN0206", "ECMG"}
+        or re.fullmatch(r"\d{4}/\d{5}", tok)
+        or re.fullmatch(r"(?:FEW|SCT|BKN|OVC)\d{4,}", tok)
+    )
+    if spaced_cavok:
+        issues.append(
+            _issue(
+                "MALFORMED_SOURCE_TOKEN",
+                f"{product} looks like a source typo or garbled group 'C A V O K'",
+                start=start,
+                end=end,
+                location="body",
+            )
+        )
+
     return issues
 
 
