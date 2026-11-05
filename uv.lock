@@ -1137,7 +1137,7 @@ wheels = [
 
 [[package]]
 name = "iwxxm-validate"
-version = "2026.9.22"
+version = "2026.11.5"
 source = { editable = "packages/iwxxm-validate" }
 dependencies = [
     { name = "lxml" },
@@ -2929,7 +2929,7 @@ wheels = [
 
 [[package]]
 name = "tac-decoding"
-version = "2026.9.22"
+version = "2026.11.5"
 source = { editable = "packages/tac-decoding" }
 dependencies = [
     { name = "msgspec" },
@@ -2944,7 +2944,7 @@ requires-dist = [
 
 [[package]]
 name = "tac-validate"
-version = "2026.9.22"
+version = "2026.11.5"
 source = { editable = "packages/tac-validate" }
 dependencies = [
     { name = "metar-shared" },
@@ -2961,7 +2961,7 @@ requires-dist = [
 
 [[package]]
 name = "tac2iwxxm"
-version = "2026.9.22"
+version = "2026.11.5"
 source = { editable = "packages/tac2iwxxm" }
 dependencies = [
     { name = "hydra-core" },
