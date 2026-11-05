@@ -105,7 +105,7 @@ export function CalmConvertEmptyHero({
             <Button
               type="button"
               variant="default"
-              data-testid="convert-primary-cta"
+              data-testid="convert-button"
               disabled={convertDisabled}
               aria-busy={isConverting}
               onClick={onConvert}

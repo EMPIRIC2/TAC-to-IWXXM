@@ -48,11 +48,11 @@ describe('TC-UX-CALM leaf components', () => {
       </CalmConvertEmptyHero>,
     );
     expect(screen.getByTestId('convert-empty-hero')).toBeInTheDocument();
-    expect(screen.getByTestId('convert-primary-cta')).toHaveTextContent('Convert');
+    expect(screen.getByTestId('convert-button')).toHaveTextContent('Convert');
     expect(screen.getByTestId('convert-example-chips')).toBeInTheDocument();
     await user.click(screen.getByTestId('convert-example-chip-m'));
     expect(onExampleChip).toHaveBeenCalledWith('m');
-    await user.click(screen.getByTestId('convert-primary-cta'));
+    await user.click(screen.getByTestId('convert-button'));
     expect(onConvert).toHaveBeenCalled();
     await user.click(screen.getByTestId('convert-profile-change'));
     expect(onChangeProfile).toHaveBeenCalled();
@@ -87,7 +87,7 @@ describe('TC-UX-CALM leaf components', () => {
     const card = screen.getByTestId('convert-empty-card');
     const bar = within(card).getByTestId('convert-examples-bar');
     expect(within(bar).getByTestId('convert-example-chips')).toBeInTheDocument();
-    expect(within(card).getByTestId('convert-primary-cta')).toBeInTheDocument();
+    expect(within(card).getByTestId('convert-button')).toBeInTheDocument();
     expect(within(card).queryByText('Other tasks')).not.toBeInTheDocument();
     expect(screen.getByText('Other tasks')).toBeInTheDocument();
     const tac = within(card).getByLabelText('TAC');

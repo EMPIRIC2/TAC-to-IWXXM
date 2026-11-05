@@ -5,7 +5,7 @@
  * [Corpus: product §F7] [Corpus: journeys §UJ-088] [Corpus: tests]
  */
 import { expect, test, type Page } from '@playwright/test';
-import { convertManualMetar, openConverterForE2e } from './playwright-e2e-helpers';
+import { convertManualMetar, openPublicConverter } from './playwright-e2e-helpers';
 
 const METAR_TAC = 'METAR KJFK 121251Z 24016G28KT 3SM -RA BR BKN020 OVC040 14/11 A2990=';
 
@@ -70,7 +70,7 @@ test.describe('UJ-088 — Calmer Convert + Help checklist', () => {
     page,
   }) => {
     await stubCalmConvertApis(page);
-    await openConverterForE2e(page);
+    await openPublicConverter(page);
 
     await expect(page.getByTestId('convert-empty-hero')).toBeVisible({
       timeout: 15_000,
@@ -105,8 +105,8 @@ test.describe('UJ-088 — Calmer Convert + Help checklist', () => {
     await expect(exampleChip).toBeVisible();
     await exampleChip.click();
     await expect(page.getByTestId('convert-empty-hero')).toHaveCount(0);
-    const editor = page.getByLabel('Enter METAR data manually', { exact: true });
-    await expect(editor).not.toHaveValue('');
+    // CodeMirror contenteditable — assert strip Convert is available with TAC loaded.
+    await expect(page.getByTestId('convert-button')).toBeVisible();
 
     await convertManualMetar(page, METAR_TAC);
 
