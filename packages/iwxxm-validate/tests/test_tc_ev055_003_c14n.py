@@ -103,11 +103,11 @@ def test_tc_ev055_003_c14n_strips_whitespace_only_tails() -> None:
 
 def test_tc_ev055_003_c14n_helpers_norm_text_and_local_name() -> None:
     """Direct coverage for private helpers used by volatile-attr strip."""
-    from iwxxm_validate import c14n as c14n_mod
+    from iwxxm_validate import canonical_xml as canonical_mod
 
-    assert c14n_mod._local_name("{urn:x}id") == "id"
-    assert c14n_mod._local_name("gml:id") == "id"
-    assert c14n_mod._local_name("id") == "id"
-    assert c14n_mod._norm_text(None) == ""
-    assert c14n_mod._norm_text("  a   b  ") == "a b"
-    assert c14n_mod._is_volatile_attr("stable", "keep") is False
+    assert canonical_mod._local_name("{urn:x}id") == "id"
+    assert canonical_mod._local_name("gml:id") == "id"
+    assert canonical_mod._local_name("id") == "id"
+    assert canonical_mod._norm_text(None) == ""
+    assert canonical_mod._norm_text("  a   b  ") == "a b"
+    assert canonical_mod._is_volatile_attr("stable", "keep") is False

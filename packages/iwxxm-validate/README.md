@@ -14,6 +14,18 @@ pip install iwxxm-validate
 Requires Python ≥ 3.12. The default wheel is pure Python (lxml). An optional Rust
 extension speeds up validation when built from source (see below).
 
+## Start here
+
+| I want to…                                                            | Import                                                             |
+| --------------------------------------------------------------------- | ------------------------------------------------------------------ |
+| Validate IWXXM XML (XSD + Schematron)                                 | `from iwxxm_validate import validate`                              |
+| Prefer the Rust engine when it is built                               | `from iwxxm_validate import validate_iwxxm, rust_available`        |
+| Compare two IWXXM documents for Quality Metrics and ignore formatting | `from iwxxm_validate import to_canonical_xml, canonical_xml_equal` |
+| Run validation tuned for Quality Metrics                              | `from iwxxm_validate import validate_for_quality_metrics`          |
+
+Canonical XML means W3C Canonical XML 1.0 (also called C14N). The short names
+`c14n_xml` and `c14n_equal` remain as aliases for one package CalVer window.
+
 ## Library
 
 ```python
@@ -27,6 +39,13 @@ report = validate_iwxxm(xml, iwxxm_version="2023-1", profile="annex3")
 if not report.ok:
     for issue in report.issues:
         print(issue.code, issue.message)
+```
+
+```python
+from iwxxm_validate import canonical_xml_equal, to_canonical_xml
+
+same = canonical_xml_equal(official_xml, converted_xml)
+form = to_canonical_xml(converted_xml)
 ```
 
 Common version lines include `2023-1` and `2025-2`. Profile `annex3` is the default ICAO
