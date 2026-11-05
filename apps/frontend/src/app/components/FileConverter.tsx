@@ -2785,93 +2785,91 @@ export function FileConverter({
           />
         </div>
 
-        {/* Action Buttons — fixed strip; status lives outside so busy/save text cannot reflow */}
-        <div
-          className="mb-4"
-          data-testid="action-button-strip"
-          hidden={showCalmEmptyHero}
-        >
-          <div
-            className="mb-2 flex h-5 items-center"
-            aria-live="polite"
-            data-testid="autosave-indicator"
-          >
-            {saveIndicatorLabel ? (
-              <span className="text-sm text-gray-600 dark:text-gray-400">
-                {saveIndicatorLabel}
-              </span>
-            ) : (
-              <span className="sr-only">Autosave idle</span>
-            )}
-          </div>
-          <div
-            className="grid min-h-10 w-full grid-cols-1 gap-2 sm:grid-cols-3 sm:gap-3"
-            data-testid="convert-primary-actions"
-          >
-            <Button
-              type="button"
-              variant="outline"
-              onClick={handleNewMetar}
-              disabled={isBusy}
-              data-testid="new-tac-button"
-              aria-label="Start a new TAC session"
-              className="w-full"
+        {/* Action Buttons — omit while empty hero owns the Convert CTA (strict E2E locators). */}
+        {!showCalmEmptyHero ? (
+          <div className="mb-4" data-testid="action-button-strip">
+            <div
+              className="mb-2 flex h-5 items-center"
+              aria-live="polite"
+              data-testid="autosave-indicator"
             >
-              New TAC
-            </Button>
-            <Button
-              data-testid="convert-button"
-              variant={calmUi.primaryKind === 'convert' ? 'default' : 'outline'}
-              onClick={handleConvert}
-              disabled={convertDisabled}
-              className="relative w-full text-base disabled:opacity-50 disabled:cursor-not-allowed"
-              aria-busy={isConverting}
-              aria-label={
-                isConverting
-                  ? inputMode === 'validate_iwxxm' ||
-                    conversionParams.product === 'IWXXM'
-                    ? 'Validating IWXXM, please wait'
-                    : 'Converting files, please wait'
-                  : inputMode === 'validate_iwxxm'
-                    ? 'Validate IWXXM XML'
-                    : conversionParams.product === 'IWXXM'
-                      ? IWXXM_PRODUCT_CONVERT_ARIA
-                      : CALM_CONVERT_PRIMARY_LABEL
-              }
-            >
-              <Loader2
-                className={`absolute left-3 h-4 w-4 animate-spin ${isConverting ? '' : 'invisible'}`}
-                aria-hidden="true"
-              />
-              {inputMode === 'validate_iwxxm'
-                ? 'Validate'
-                : conversionParams.product === 'IWXXM'
-                  ? IWXXM_PRODUCT_CONVERT_LABEL
-                  : CALM_CONVERT_PRIMARY_LABEL}
-            </Button>
-            <span
-              className="min-w-0 w-full"
-              data-testid={
-                calmUi.primaryKind === 'download' ? 'convert-primary-cta' : undefined
-              }
+              {saveIndicatorLabel ? (
+                <span className="text-sm text-gray-600 dark:text-gray-400">
+                  {saveIndicatorLabel}
+                </span>
+              ) : (
+                <span className="sr-only">Autosave idle</span>
+              )}
+            </div>
+            <div
+              className="grid min-h-10 w-full grid-cols-1 gap-2 sm:grid-cols-3 sm:gap-3"
+              data-testid="convert-primary-actions"
             >
               <Button
-                variant={calmUi.primaryKind === 'download' ? 'default' : 'outline'}
-                onClick={() => {
-                  if (!latestConverted) return;
-                  void handleDownloadSingle(latestConverted);
-                }}
-                disabled={isBusy || !latestConverted}
-                className="w-full text-base disabled:opacity-40 disabled:cursor-not-allowed"
-                aria-label={CALM_DOWNLOAD_PRIMARY_LABEL}
-                data-testid="convert-download-iwxxm"
+                type="button"
+                variant="outline"
+                onClick={handleNewMetar}
+                disabled={isBusy}
+                data-testid="new-tac-button"
+                aria-label="Start a new TAC session"
+                className="w-full"
               >
-                <Download className="mr-2 h-4 w-4" aria-hidden="true" />
-                {CALM_DOWNLOAD_PRIMARY_LABEL}
+                New TAC
               </Button>
-            </span>
+              <Button
+                data-testid="convert-button"
+                variant={calmUi.primaryKind === 'convert' ? 'default' : 'outline'}
+                onClick={handleConvert}
+                disabled={convertDisabled}
+                className="relative w-full text-base disabled:opacity-50 disabled:cursor-not-allowed"
+                aria-busy={isConverting}
+                aria-label={
+                  isConverting
+                    ? inputMode === 'validate_iwxxm' ||
+                      conversionParams.product === 'IWXXM'
+                      ? 'Validating IWXXM, please wait'
+                      : 'Converting files, please wait'
+                    : inputMode === 'validate_iwxxm'
+                      ? 'Validate IWXXM XML'
+                      : conversionParams.product === 'IWXXM'
+                        ? IWXXM_PRODUCT_CONVERT_ARIA
+                        : CALM_CONVERT_PRIMARY_LABEL
+                }
+              >
+                <Loader2
+                  className={`absolute left-3 h-4 w-4 animate-spin ${isConverting ? '' : 'invisible'}`}
+                  aria-hidden="true"
+                />
+                {inputMode === 'validate_iwxxm'
+                  ? 'Validate'
+                  : conversionParams.product === 'IWXXM'
+                    ? IWXXM_PRODUCT_CONVERT_LABEL
+                    : CALM_CONVERT_PRIMARY_LABEL}
+              </Button>
+              <span
+                className="min-w-0 w-full"
+                data-testid={
+                  calmUi.primaryKind === 'download' ? 'convert-primary-cta' : undefined
+                }
+              >
+                <Button
+                  variant={calmUi.primaryKind === 'download' ? 'default' : 'outline'}
+                  onClick={() => {
+                    if (!latestConverted) return;
+                    void handleDownloadSingle(latestConverted);
+                  }}
+                  disabled={isBusy || !latestConverted}
+                  className="w-full text-base disabled:opacity-40 disabled:cursor-not-allowed"
+                  aria-label={CALM_DOWNLOAD_PRIMARY_LABEL}
+                  data-testid="convert-download-iwxxm"
+                >
+                  <Download className="mr-2 h-4 w-4" aria-hidden="true" />
+                  {CALM_DOWNLOAD_PRIMARY_LABEL}
+                </Button>
+              </span>
+            </div>
           </div>
-        </div>
+        ) : null}
 
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_280px]">
           <div className="min-w-0" data-testid="workbench-main-column">

@@ -5,14 +5,14 @@ import { expect, test } from '@playwright/test';
 import {
   convertManualMetar,
   openConvertIwxxmTab,
-  openPublicConverter,
+  openConverterForE2e,
 } from './playwright-e2e-helpers';
 
 test.describe('Workflow: Conversion Parameters And Preferences', () => {
   test('changing parameters before manual conversion produces conversion output', async ({
     page,
   }) => {
-    await openPublicConverter(page);
+    await openConverterForE2e(page);
 
     await page.getByLabel('Expand parameters', { exact: true }).click();
     await page.locator('#param-iwxxm-version').selectOption('2023-1');
@@ -28,7 +28,7 @@ test.describe('Workflow: Conversion Parameters And Preferences', () => {
   });
 
   test('preferences save display name and output extension', async ({ page }) => {
-    await openPublicConverter(page);
+    await openConverterForE2e(page);
 
     await page
       .getByRole('button', { name: 'Open user preferences', exact: true })

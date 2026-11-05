@@ -115,6 +115,36 @@ export async function openPublicConverter(page: Page): Promise<void> {
   await dismissPrivacyNoticeIfPresent(page);
 }
 
+/**
+ * Leave the Calmer Convert empty hero so convert-shell / Settings / Expand
+ * parameters are available. Seeds a METAR example when chips are present.
+ *
+ * Prefer {@link openPublicConverter} alone when a test asserts empty-hero UX.
+ */
+export async function leaveCalmEmptyHero(page: Page): Promise<void> {
+  const hero = page.getByTestId('convert-empty-hero');
+  if ((await hero.count()) === 0) {
+    return;
+  }
+  const metarChip = page.getByRole('button', { name: 'METAR', exact: true });
+  if ((await metarChip.count()) > 0) {
+    await metarChip.first().click();
+  } else {
+    const editor = page.getByLabel('Enter METAR data manually', { exact: true });
+    await editor.click();
+    await page.keyboard.insertText(
+      'METAR KJFK 010000Z 00000KT 10SM SKC 10/00 A2992',
+    );
+  }
+  await expect(hero).toHaveCount(0, { timeout: 15_000 });
+  await expect(page.getByTestId('convert-button')).toBeVisible();
+}
+
+/** Click the Convert control (strip or empty-hero CTA; both use convert-button). */
+export async function clickConvertButton(page: Page): Promise<void> {
+  await page.getByTestId('convert-button').click();
+}
+
 /** Open the optional login view from the public converter (F31). */
 export async function gotoLogin(page: Page): Promise<void> {
   await openPublicConverter(page);
@@ -208,6 +238,7 @@ export async function openConverterWithMockSession(page: Page): Promise<void> {
 /** Local T2 path: F21 public app — open converter without login/JWT. */
 export async function openConverterForE2e(page: Page): Promise<void> {
   await openPublicConverter(page);
+  await leaveCalmEmptyHero(page);
 }
 
 /** Operator input-mode button suffixes (`data-testid="input-mode-…"`). */
@@ -237,6 +268,7 @@ const EMPTY_HERO_OTHER_TASK: Record<Exclude<E2eInputMode, 'tac'>, string> = {
  * @param page - Playwright page hosting the converter.
  */
 export async function openConvertSettings(page: Page): Promise<void> {
+  await leaveCalmEmptyHero(page);
   const settings = page.getByTestId('convert-settings');
   await expect(page.getByTestId('convert-settings-cog')).toBeVisible();
   if ((await settings.getAttribute('open')) === null) {
@@ -277,6 +309,10 @@ export async function fillManualTac(page: Page, metar: string): Promise<void> {
   await editor.click();
   await page.keyboard.press(process.platform === 'darwin' ? 'Meta+A' : 'Control+A');
   await page.keyboard.insertText(metar);
+  // CodeMirror is contenteditable — wait until calm empty hero (if any) dismisses.
+  await expect(page.getByTestId('convert-empty-hero')).toHaveCount(0, {
+    timeout: 15_000,
+  });
 }
 
 /**
@@ -287,7 +323,7 @@ export async function fillManualTac(page: Page, metar: string): Promise<void> {
  */
 export async function convertManualMetar(page: Page, metar: string): Promise<void> {
   await fillManualTac(page, metar);
-  await page.getByTestId('convert-button').click();
+  await clickConvertButton(page);
 }
 
 /**
