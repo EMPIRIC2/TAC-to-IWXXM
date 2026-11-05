@@ -36,11 +36,11 @@ def test_tc_ev055_002_c14n_equality_despite_volatile_ids() -> None:
 
 
 def test_tc_ev055_002_generator_imports_c14n_not_adr032_for_match() -> None:
-    """generate_quality_metrics must use c14n_xml / c14n_equal for match_status."""
+    """generate_quality_metrics must use Canonical XML equality for match_status."""
     from pathlib import Path
 
     src = Path(__file__).resolve().parents[3] / "scripts" / "ci" / "generate_quality_metrics.py"
     text = src.read_text(encoding="utf-8")
-    assert "c14n_equal" in text or "c14n_xml" in text
+    assert "canonical_xml_equal" in text or "to_canonical_xml" in text or "c14n_equal" in text or "c14n_xml" in text
     # Match branch must not still depend on ADR-032 canonicalize for equality
     assert "canonicalize_xml(converted_xml) == canonicalize_xml(official_xml)" not in text

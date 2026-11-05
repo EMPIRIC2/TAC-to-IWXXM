@@ -314,6 +314,11 @@ EV-922 session `reports/923-platform-package-layout.md`; EV-922-synthesis `repor
 
 ### packages/iwxxm-validate
 
+**Developer experience (EV-layout-dx):** Public jobs must be reachable from plain
+module and symbol names. See [Corpus: package-dx]. Pilot: Canonical XML helpers
+for Quality Metrics compare use a clear primary path (not jargon-only `c14n`),
+with aliases during one CalVer window. DX tests: `TC-DX-001`…`TC-DX-004`.
+
 - **Purpose**: F2 engine: XSD + Schematron validation of IWXXM XML against vendored schemas.
 - **Inputs**: IWXXM XML; `iwxxm_version`; optional `profile` (US catalogs when `iwxxm_us`).
 - **Outputs**: Validation report (pass/fail + messages).

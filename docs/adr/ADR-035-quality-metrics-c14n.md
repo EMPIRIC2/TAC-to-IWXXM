@@ -23,7 +23,8 @@ volatile attributes.
 ## Decision
 
 1. Quality metrics **`match_status`** and default unified diff peers use **W3C C14N 1.0**
-   via `iwxxm_validate.c14n.c14n_xml` (lxml) after:
+   via `iwxxm_validate.canonical_xml.to_canonical_xml` (lxml; aliases
+   `iwxxm_validate.c14n.c14n_xml` for one CalVer window — EV-layout-dx) after:
    - **volatile-attribute strip** (same local-name set / UUID-href / `codes.wmo.int` href
      rules as ADR-032 `strip_volatile_attributes` / `_filter_volatile_attrs`), then
    - stripping whitespace-only text nodes
@@ -42,8 +43,8 @@ volatile attributes.
 
 ## Consequences
 
-- Generator must switch from `canonicalize_xml` to `c14n_xml` / `c14n_equal` for
-  `match_status` (M3).
+- Generator must switch from `canonicalize_xml` to Canonical XML equality
+  (`canonical_xml_equal` / legacy `c14n_equal`) for `match_status` (M3; EV-layout-dx).
 - Regenerating `corpus_metrics.json` may change equal/unequal counts vs EV-054, but UUID /
   `gml:id`-only peers should remain usable match chips (not blanket `unequal`).
 - FE and Python helpers must stay golden-parity for representative stems.

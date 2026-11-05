@@ -31,7 +31,7 @@ Agent guardrail: `.cursor/rules/optional/strict-typing.mdc`.
 
 Per-package `pyproject.toml` files **extend** the root `pyproject.toml` (line-length 120 where noted). Do not reintroduce thin `E,W,F,I`-only overrides.
 
-**ANN401 waivers:** lxml / PyO3 boundary modules in `packages/iwxxm-validate` (`c14n`, `native`, `schematron`, `xsd`): third-party handles without complete stubs.
+**ANN401 waivers:** lxml / PyO3 boundary modules in `packages/iwxxm-validate` (`canonical_xml`, `c14n` alias, `native`, `schematron`, `xsd`): third-party handles without complete stubs.
 
 ### basedpyright
 

@@ -217,7 +217,7 @@ max-complexity = 10
 "**/test_*.py" = ["ANN", "D"]
 "**/conftest.py" = ["ANN", "D"]
 # lxml / PyO3 boundaries — third-party handles without complete stubs (typing-policy)
-"packages/iwxxm-validate/src/iwxxm_validate/{c14n,native,schematron,xsd}.py" = ["ANN401"]
+"packages/iwxxm-validate/src/iwxxm_validate/{canonical_xml,c14n,native,schematron,xsd}.py" = ["ANN401"]
 
 [tool.ruff.lint.isort]
 known-first-party = ["gifts", "auth", "shared", "metar_shared"]

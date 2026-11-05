@@ -2641,6 +2641,46 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
 - **Pass criteria**: Local Playwright/Vitest green; H4–H5 after staging deploy (12/13)
 - **Source**: EV-055 AC1 / AC6 / AC7; UJ-056; `D-S064-gateA-M2=override`
 
+### EV-layout-dx — Package DX journeys (`TC-DX-*`)
+
+- **Mode**: delta deepen M1 / F2 ([Corpus: package-dx])
+- **Pass criteria**: TC-DX-001..004 green on `iwxxm-validate` after L1; later packages add rows
+- **Source**: EV-layout-dx; `docs/engineering/package-dx.md`; `docs/decisions/ev-layout-dx.md`
+
+### TC-DX-001: Validate IWXXM from the package façade
+
+- **Level**: T0
+- **Objective**: A consumer who wants to validate IWXXM XML can
+  `from iwxxm_validate import validate` and finds `validate` in `__all__`
+- **Pass criteria**: Unit test imports and asserts membership in `__all__`
+- **Source**: EV-layout-dx A3; [Corpus: package-dx]
+
+### TC-DX-002: Canonical XML compare for Quality Metrics
+
+- **Level**: T0
+- **Objective**: A consumer who wants to compare two IWXXM documents for Quality Metrics
+  and ignore formatting noise imports clear primary symbols
+  (`to_canonical_xml`, `canonical_xml_equal`). During the one-CalVer alias window,
+  `c14n_xml` / `c14n_equal` remain importable
+- **Pass criteria**: Unit test for primary names + alias imports; TC-EV055-002/003 stay green
+- **Source**: EV-layout-dx A3/A4; [Corpus: package-dx]; ADR-035
+
+### TC-DX-003: Rust engine availability
+
+- **Level**: T0
+- **Objective**: A consumer who wants to know whether the Rust native engine is available
+  imports `rust_available` from `iwxxm_validate` (`__all__`)
+- **Pass criteria**: Unit test import + `__all__` membership
+- **Source**: EV-layout-dx A3; [Corpus: package-dx]
+
+### TC-DX-004: Quality Metrics–oriented validation entry
+
+- **Level**: T0
+- **Objective**: A consumer who wants validation tuned for Quality Metrics reporting
+  imports `validate_for_quality_metrics` from `iwxxm_validate` (`__all__`)
+- **Pass criteria**: Unit test import + `__all__` membership
+- **Source**: EV-layout-dx A3; [Corpus: package-dx]
+
 ### EV-056 / S066 — Quality metrics detail page + collapsible diffs (#988 / F7.q)
 
 - **Mode**: delta deepen F7.q (UX/docs/tests; C14N semantics unchanged)

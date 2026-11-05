@@ -185,7 +185,7 @@ def generate_corpus_metrics() -> dict[str, Any]:
     """
     _ensure_imports()
     from iwxxm_validate import validate_for_quality_metrics
-    from iwxxm_validate.c14n import c14n_equal
+    from iwxxm_validate.canonical_xml import canonical_xml_equal
     from tac_validate import lint
     from wmo_official_tac_inventory import (
         OFFICIAL_TAC_PEERS,
@@ -257,7 +257,7 @@ def generate_corpus_metrics() -> dict[str, Any]:
         converted_xml = conv.xml or ""
         if not conv.ok or not converted_xml:
             match_status = "convert_fail"
-        elif c14n_equal(converted_xml, official_xml):
+        elif canonical_xml_equal(converted_xml, official_xml):
             match_status = "equal"
         else:
             match_status = "unequal"

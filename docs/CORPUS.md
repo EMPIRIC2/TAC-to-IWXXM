@@ -20,6 +20,7 @@ document sets.
 | **product** | Approved features and acceptance | [feature-list.md](feature-list.md) | Scope (feature `F*` / milestone `M*`); reject out-of-list work |
 | **now** | Ticket-tuned engineering index | [engineering/NOW.md](engineering/NOW.md) | Current open epics and priority work |
 | **docstrings** | In-code documentation bar | [engineering/docstrings.md](engineering/docstrings.md) | NumPy / TSDoc / comment policy |
+| **package-dx** | Package naming, façades, DX tests | [engineering/package-dx.md](engineering/package-dx.md) | Module/symbol clarity; `TC-DX-*`; rename+alias rules (EV-layout-dx) |
 | **journeys** | End-user journeys | [user-journeys.md](user-journeys.md) | End-to-end / verify-impl sign-off (`UJ-*`) |
 | **ui-style** | Living operator UI style guide | [ui-style-guide.md](ui-style-guide.md) | UI/UX tweak norms; cite when polishing the frontend |
 | **system-spec** | Architecture, components, constraints | [spec.md](spec.md) | Design parity vs `apps/` + `packages/` + `vendor/` |

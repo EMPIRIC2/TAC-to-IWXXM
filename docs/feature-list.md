@@ -29,7 +29,7 @@ ids are engineering trace only. They are not operator-facing copy.
 | # | Feature | Status | Category | Source |
 |---|---------|--------|----------|--------|
 | F1 | METAR → IWXXM conversion (GIFTs-era UX) | Superseded by F6 | Product | Historical; UI actions retained until F6 UI |
-| F2 | IWXXM validation | Implemented | Product | backend → `packages/iwxxm-validate`; **deepen** S064 / EV-055 #980/#979 (2025-2 Schematron/XSD); prior S046 / EV-038; **deepen** S071 / EV-061 readable item-by-item decode on validate (#1010); **deepen EV-yaml-engine-configurability / #1224**: overlay honesty matrix + cookbook/preflight (no Schematron-as-YAML); **deepen EV-yaml-full-configurability / #1226 / ADR-047**: every product IWXXM output-policy cell → **full**; pin↔Schematron asserts (vendor SCH SoT) |
+| F2 | IWXXM validation | Implemented | Product | backend → `packages/iwxxm-validate`; **deepen** S064 / EV-055 #980/#979 (2025-2 Schematron/XSD); prior S046 / EV-038; **deepen** S071 / EV-061 readable item-by-item decode on validate (#1010); **deepen EV-yaml-engine-configurability / #1224**: overlay honesty matrix + cookbook/preflight (no Schematron-as-YAML); **deepen EV-yaml-full-configurability / #1226 / ADR-047**: every product IWXXM output-policy cell → **full**; pin↔Schematron asserts (vendor SCH SoT); **deepen EV-layout-dx**: package-dx façade + `TC-DX-*` (Canonical XML primary names; `c14n_*` aliases) |
 | F3 | Airport data services | Implemented | Product | OpenAIP / reconciliation services |
 | F4 | IWXXM version handling | Implemented | Product | docs/domain/iwxxm/IWXXM_VERSION_SWITCHING.md; **deepen** S046 / EV-038 release-line SoT/UX (#851–#855); **deepen EV-1273 / #1273**: profile package pin, Canada 3.0.0 stays profile-scoped |
 | F5 | User METAR work history | Implemented | Product | S038 / EV-031 / F31 hybrid: guest IndexedDB + logged-in DO Postgres |
@@ -65,7 +65,7 @@ ids are engineering trace only. They are not operator-facing copy.
 | F35 | Semantic vs exchange profiles + canonical ID migration | Implemented | Product | EV-063 / PR #1026; #912 / #914; ADR-036 Accepted; alias cutover #1025 (2026-10-31); amends F6 wire; **deepen** EV-beta-ux-export-auth suppress operator-visible `DEPRECATED_PROFILE_ALIAS` notices; Conversion profiles UI marked **beta** (ADR-043) |
 | F36 | National semantic + regional exchange profile content | In progress | Product | EV-063 / #912; **#919 US closed (EV-085)**; **#916 CA_ECCC P1 closed (EV-078)**; **EV-098 CA_ECCC mining #1028–#1031 closed**; **#1032 closed (EV-075)**; **#1061 SIGMET emit (EV-076)**; VAA TAC validate-first (EV-077); VAA exchange emit waived; **EV-profile-validate-decode-deepen / #1221** AU/NZ → `implemented`; **deepen EV-1222 / #1222**: regional exchange overlays beyond COLLECT stubs (APAC_ROBEX first); **deepen EV-regional-profile-remainder**: exact PTRO/PTSA prefer; Y* `au_bom` + PROB emit; BR PROB deferred pending DECEA cite; **deepen EV-packages-module-reorg**: catalog-case profile ids for sticky/QM boundary |
 | F37 | Live TAC map on Decode visuals | In progress | Product | EV-live-map-24h-window: pull/store/share last 24h only; browser time presets 1h/3h/6h/12h/full; prior layers + country/region/phenomenon filters |
-| M1 | Monorepo layout (`apps/` + `packages/` + `vendor/`) | Implemented | Platform | REQ-002–006; **deepen EV-packages-module-reorg**: tac-validate/tac2iwxxm layout + shim-drop |
+| M1 | Monorepo layout (`apps/` + `packages/` + `vendor/`) | Implemented | Platform | REQ-002–006; **deepen EV-packages-module-reorg**: tac-validate/tac2iwxxm layout + shim-drop; **deepen EV-layout-dx**: package-dx naming bar + interfaces + `TC-DX-*` (pilot `iwxxm-validate` Canonical XML) |
 | M2 | Vendor snapshot sync (wmo-im iwxxm-*) | Planned | Platform | REQ-002, REQ-010 |
 | M3 | GIFTs as in-repo package | Deprecated (ADR-014) | Platform | REQ-003; removed with F6 cutover |
 | M4 | Auth library in backend API | Implemented | Platform | S038 / EV-031 — Supabase Auth-only restore; was Deprecated operator #783 |
@@ -2944,6 +2944,12 @@ ids are engineering trace only. They are not operator-facing copy.
   `tac-validate` / `tac2iwxxm` (profile-id casing + delete forwarding-only
   `annex3_products` shim / strip `products` parse re-exports). Not a wholesale
   package-tree rewrite.
+- **Deepen (EV-layout-dx):** package developer-experience bar
+  ([Corpus: package-dx]) — plain module/symbol names, package façades,
+  and DX scenario tests (`TC-DX-*`). Pilot: `iwxxm-validate` Canonical XML
+  helpers (replace opaque `c14n` primary path; keep aliases one CalVer).
+  Later: other packages, `apps/` clarity, root README/clutter. Does not
+  rename top-level `packages/<name>` dirs (ADR-037).
 - **F6 delta**: Approved tree gains `packages/tac2iwxxm`; loses `packages/gifts` at F6 cutover.
 - **S008 package amend**: Also gains `packages/tac-validate` and `packages/iwxxm-validate`.
 - **Key parameters**:
