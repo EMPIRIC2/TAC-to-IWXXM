@@ -5,6 +5,7 @@ import { expect, test } from '@playwright/test';
 import {
   convertManualMetar,
   openConvertIwxxmTab,
+  openConvertSettings,
   openConverterForE2e,
 } from './playwright-e2e-helpers';
 
@@ -13,6 +14,7 @@ test.describe('Workflow: Conversion Parameters And Preferences', () => {
     page,
   }) => {
     await openConverterForE2e(page);
+    await openConvertSettings(page);
 
     await page.getByLabel('Expand parameters', { exact: true }).click();
     await page.locator('#param-iwxxm-version').selectOption('2023-1');
