@@ -11,6 +11,9 @@ import { expect, test, type APIRequestContext, type Request } from '@playwright/
 import {
   convertManualMetar,
   fillManualTac,
+  leaveCalmEmptyHero,
+  openConvertDownloadsTab,
+  openConvertSettings,
   openPublicConverter,
   playwrightApiFetch,
   selectInputMode,
@@ -119,6 +122,7 @@ test.describe('EV-060 T2 — UJ-060 IWXXM product pass-through', () => {
     page,
   }) => {
     await openPublicConverter(page);
+    await leaveCalmEmptyHero(page);
     await page.getByTestId('product-type-select').selectOption('IWXXM');
     await expect(page.getByTestId('iwxxm-product-help')).toBeVisible();
     await expect(page.getByTestId('iwxxm-product-help')).toContainText(/pass-through/i);
@@ -160,6 +164,8 @@ test.describe('EV-060 T2 — UJ-061 Conversion library at converter top', () => 
     page,
   }) => {
     await openPublicConverter(page);
+    await leaveCalmEmptyHero(page);
+    await openConvertSettings(page);
     await page
       .getByLabel(/Expand parameters/i)
       .click()
@@ -176,12 +182,7 @@ test.describe('EV-060 T2 — UJ-061 Conversion library at converter top', () => 
     const captured = await convertReq;
     expect(postBody(captured)).toContain('LIB.CONVERSION.US_FAA_NWS');
     expect(postBody(captured)).not.toContain('name="semantic_profile"');
-    // targets the conversion results region
-    await expect(page.getByRole('region', { name: /conversion results/i })).toBeVisible(
-      {
-        timeout: 60_000,
-      },
-    );
+    await openConvertDownloadsTab(page, 60_000);
   });
 });
 
@@ -190,6 +191,7 @@ test.describe('EV-060 T2 — UJ-062 bulletin fields', () => {
     page,
   }) => {
     await openPublicConverter(page);
+    await leaveCalmEmptyHero(page);
     const bulletinId = page.getByTestId('bulletin-id-input');
     const issuingCenter = page.getByTestId('issuing-center-input');
     await expect(bulletinId).toBeVisible();
@@ -208,18 +210,14 @@ test.describe('EV-060 T2 — UJ-062 bulletin fields', () => {
     const body = postBody(captured);
     expect(body).toContain('SAAA00');
     expect(body).toContain('KWBC');
-    // targets the conversion results region
-    await expect(page.getByRole('region', { name: /conversion results/i })).toBeVisible(
-      {
-        timeout: 60_000,
-      },
-    );
+    await openConvertDownloadsTab(page, 60_000);
   });
 
   test('UJ-062: invalid Issuing Center is a field error (TC-EV060-1005-003)', async ({
     page,
   }) => {
     await openPublicConverter(page);
+    await leaveCalmEmptyHero(page);
     await page.getByTestId('issuing-center-input').fill('KW1C');
     await fillManualTac(page, METAR_TAC);
     await page.getByTestId('convert-button').click();
@@ -235,6 +233,8 @@ test.describe('EV-060 T2 — UJ-063 log_level', () => {
     page,
   }) => {
     await openPublicConverter(page);
+    await leaveCalmEmptyHero(page);
+    await openConvertSettings(page);
     await page.getByLabel(/Expand parameters/i).click();
     const logLevel = page.locator('#param-log-level');
     await expect(logLevel).toBeVisible();

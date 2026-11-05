@@ -8,6 +8,7 @@ import { expect, test, type Page, type Request } from '@playwright/test';
 import { gzipSync } from 'node:zlib';
 import {
   fillManualTac,
+  openConvertDownloadsTab,
   openConverterForE2e,
   seedLocalWorkSession,
   selectInputMode,
@@ -164,11 +165,7 @@ test.describe('TC-F7-007 / UJ-025: Manual TAC Input modes', () => {
 
     await page.getByTestId('convert-button').click();
 
-    await expect(
-      page.getByRole('region', { name: 'Conversion results', exact: true }),
-    ).toBeVisible({
-      timeout: 10000,
-    });
+    await openConvertDownloadsTab(page, 10_000);
     expect(captured.convert.length).toBeGreaterThanOrEqual(1);
     expect(captured.convertBulletin).toHaveLength(0);
     expect(captured.ingestCollect).toHaveLength(0);

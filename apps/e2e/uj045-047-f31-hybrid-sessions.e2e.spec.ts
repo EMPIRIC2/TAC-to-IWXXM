@@ -7,6 +7,7 @@
 import { expect, test } from '@playwright/test';
 import {
   convertManualMetar,
+  openConvertDownloadsTab,
   dismissPrivacyNoticeIfPresent,
   E2E_USER_EMAIL,
   E2E_USER_PASSWORD,
@@ -58,11 +59,7 @@ test.describe('T7.1 — F31 hybrid sessions (UJ-045..047)', () => {
     );
 
     await convertManualMetar(page, SAMPLE_METAR);
-    await expect(
-      page.getByRole('region', { name: 'Conversion results', exact: true }),
-    ).toBeVisible({
-      timeout: 45_000,
-    });
+    await openConvertDownloadsTab(page, 30_000);
     expect(authHeaders).toEqual([]);
     await expect(page.getByTestId('guest-loss-notice')).toBeVisible();
   });

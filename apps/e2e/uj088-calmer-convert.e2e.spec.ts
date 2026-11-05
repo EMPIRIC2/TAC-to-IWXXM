@@ -5,7 +5,11 @@
  * [Corpus: product §F7] [Corpus: journeys §UJ-088] [Corpus: tests]
  */
 import { expect, test, type Page } from '@playwright/test';
-import { convertManualMetar, openPublicConverter } from './playwright-e2e-helpers';
+import {
+  convertManualMetar,
+  openConvertDownloadsTab,
+  openPublicConverter,
+} from './playwright-e2e-helpers';
 
 const METAR_TAC = 'METAR KJFK 121251Z 24016G28KT 3SM -RA BR BKN020 OVC040 14/11 A2990=';
 
@@ -109,10 +113,7 @@ test.describe('UJ-088 — Calmer Convert + Help checklist', () => {
     await expect(page.getByTestId('convert-button')).toBeVisible();
 
     await convertManualMetar(page, METAR_TAC);
-
-    await expect(
-      page.getByRole('region', { name: 'Conversion results', exact: true }),
-    ).toBeVisible({ timeout: 15_000 });
+    await openConvertDownloadsTab(page, 15_000);
     // Opposite state: the empty hero is visible before convert fills TAC.
     await expect(page.getByTestId('convert-empty-hero')).toHaveCount(0);
     await expect(page.getByTestId('convert-results-drawer')).toBeVisible();

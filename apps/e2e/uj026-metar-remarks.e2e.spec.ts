@@ -7,6 +7,7 @@
 import { expect, test } from '@playwright/test';
 import {
   convertManualMetar,
+  openConvertDownloadsTab,
   openConvertSettings,
   openPublicConverter,
   playwrightApiBaseUrl,
@@ -62,10 +63,6 @@ test.describe('UJ-026: METAR REMARKS retain / exclusion', () => {
       await conversionLib.selectOption('LIB.CONVERSION.ICAO_2025');
     }
     await convertManualMetar(page, TAC_RMK);
-    await expect(
-      page.getByRole('region', { name: 'Conversion results', exact: true }),
-    ).toBeVisible({
-      timeout: 30000,
-    });
+    await openConvertDownloadsTab(page, 30_000);
   });
 });

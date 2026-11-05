@@ -117,7 +117,7 @@ export async function openPublicConverter(page: Page): Promise<void> {
 
 /**
  * Leave the Calmer Convert empty hero so convert-shell / Settings / Expand
- * parameters are available. Seeds a METAR example when chips are present.
+ * parameters are available. Types a seed METAR (no example chip — #1436).
  *
  * Prefer {@link openPublicConverter} alone when a test asserts empty-hero UX.
  */
@@ -126,17 +126,11 @@ export async function leaveCalmEmptyHero(page: Page): Promise<void> {
   if ((await hero.count()) === 0) {
     return;
   }
-  // Scope to the empty hero so the METAR chip is unambiguous (#1436).
-  const metarChip = hero.getByRole('button', { name: 'METAR', exact: true });
-  if ((await metarChip.count()) > 0) {
-    await metarChip.click();
-  } else {
-    const editor = hero.getByLabel('Enter METAR data manually', { exact: true });
-    await editor.click();
-    await page.keyboard.insertText(
-      'METAR KJFK 010000Z 00000KT 10SM SKC 10/00 A2992',
-    );
-  }
+  const editor = hero.getByLabel('Enter METAR data manually', { exact: true });
+  await editor.click();
+  await page.keyboard.insertText(
+    'METAR KJFK 010000Z 00000KT 10SM SKC 10/00 A2992=',
+  );
   await expect(hero).toHaveCount(0, { timeout: 15_000 });
   await expect(page.getByTestId('convert-button')).toBeVisible();
 }
@@ -236,10 +230,14 @@ export async function openConverterWithMockSession(page: Page): Promise<void> {
   await openPublicConverter(page);
 }
 
-/** Local T2 path: F21 public app — open converter without login/JWT. */
+/**
+ * Local T2 path: F21 public app — open converter without login/JWT.
+ *
+ * Leaves the calm empty hero intact. Call {@link leaveCalmEmptyHero},
+ * {@link fillManualTac}, or {@link openConvertSettings} when shell chrome is required.
+ */
 export async function openConverterForE2e(page: Page): Promise<void> {
   await openPublicConverter(page);
-  await leaveCalmEmptyHero(page);
 }
 
 /** Operator input-mode button suffixes (`data-testid="input-mode-…"`). */
@@ -393,6 +391,43 @@ export async function openConvertDownloadsTab(
   await expect(
     page.getByRole('region', { name: 'Conversion results', exact: true }),
   ).toBeVisible({ timeout: 15_000 });
+}
+
+/**
+ * Open Results → Decoder (decode panel lives in the declutter drawer).
+ *
+ * @param page - Playwright page hosting the converter.
+ */
+export async function openConvertDecoderTab(page: Page): Promise<void> {
+  await leaveCalmEmptyHero(page);
+  await ensureConvertResultsDrawerOpen(page);
+  await page.getByTestId('convert-results-tab-decoder').click();
+  await expect(page.getByTestId('decode-panel')).toBeVisible();
+}
+
+/**
+ * Open Results → Console (workbench console + conversion error log).
+ *
+ * @param page - Playwright page hosting the converter.
+ */
+export async function openConvertConsoleTab(page: Page): Promise<void> {
+  await leaveCalmEmptyHero(page);
+  await ensureConvertResultsDrawerOpen(page);
+  await page.getByTestId('convert-results-tab-console').click();
+  await expect(page.getByTestId('workbench-console')).toBeVisible();
+}
+
+/**
+ * Open Settings and click Disseminate / open-dissemination-drawer.
+ *
+ * @param page - Playwright page hosting the converter.
+ */
+export async function openDisseminationDrawerFromSettings(page: Page): Promise<void> {
+  await openConvertSettings(page);
+  const openBtn = page.getByTestId('open-dissemination-drawer');
+  await expect(openBtn).toBeEnabled({ timeout: 15_000 });
+  await openBtn.click();
+  await expect(page.getByTestId('dissemination-drawer')).toBeVisible();
 }
 
 /**

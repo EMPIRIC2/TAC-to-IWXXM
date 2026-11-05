@@ -8,6 +8,7 @@ import { expect, test } from '@playwright/test';
 import {
   convertManualMetar,
   dismissPrivacyNoticeIfPresent,
+  openConvertDownloadsTab,
   openConvertSettings,
   openPublicConverter,
 } from './playwright-e2e-helpers';
@@ -25,11 +26,7 @@ test.describe('UJ-057: Accumulate conversions → Download ZIP (TC-EV057-903)', 
     await page.locator('#param-product').selectOption('METAR');
 
     await convertManualMetar(page, TAC_A);
-    await expect(
-      page.getByRole('region', { name: 'Conversion results', exact: true }),
-    ).toBeVisible({
-      timeout: 30_000,
-    });
+    await openConvertDownloadsTab(page, 30_000);
     await openConvertSettings(page);
     await expect(page.getByTestId('download-zip-button')).toHaveAccessibleName(
       /download all 1 converted files as zip/i,

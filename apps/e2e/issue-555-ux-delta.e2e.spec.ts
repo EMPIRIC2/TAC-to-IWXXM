@@ -4,6 +4,8 @@
 import { expect, test } from '@playwright/test';
 import {
   convertManualMetar,
+  openConvertConsoleTab,
+  openConvertDownloadsTab,
   openConverterForE2e,
   openConvertSettings,
 } from './playwright-e2e-helpers';
@@ -18,18 +20,14 @@ test.describe('UJ-001 delta — accumulate results + error log', () => {
     const metarB = 'METAR KDEN 121653Z 02006KT 10SM SCT050 21/08 A3010';
 
     await convertManualMetar(page, metarA);
-    await expect(
-      page.getByRole('region', { name: 'Conversion results', exact: true }),
-    ).toBeVisible({
-      timeout: 10000,
-    });
+    await openConvertDownloadsTab(page, 10_000);
 
     await convertManualMetar(page, metarB);
+    await openConvertDownloadsTab(page, 10_000);
     const resultsRegion = page.getByRole('region', {
       name: 'Conversion results',
       exact: true,
     });
-    await expect(resultsRegion).toBeVisible({ timeout: 10000 });
     // F7.r / #903 — accumulate (do not replace) across successful converts.
     await expect(
       resultsRegion.getByRole('button', {
@@ -53,6 +51,7 @@ test.describe('UJ-001 delta — accumulate results + error log', () => {
     await openConverterForE2e(page);
     await convertManualMetar(page, 'METAR NOT A VALID');
 
+    await openConvertConsoleTab(page);
     const errorLog = page.getByLabel('Conversion error log', { exact: true });
     await expect(errorLog).toBeVisible({
       timeout: 10000,
