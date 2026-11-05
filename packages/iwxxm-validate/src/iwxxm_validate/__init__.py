@@ -28,7 +28,7 @@ from iwxxm_validate.models import Issue, StageResult, ValidationReport
 from iwxxm_validate.native import clear_schema_caches, rust_available, rust_module
 from iwxxm_validate.validate_iwxxm import validate_iwxxm
 
-__version__ = "2026.9.22"
+__version__ = "2026.11.5"
 
 __all__ = [
     "Issue",

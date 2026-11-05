@@ -1,6 +1,6 @@
 [project]
 name = "tac-decoding"
-version = "2026.9.22"
+version = "2026.11.5"
 description = "Decode Traditional Alphanumeric Code (TAC) aviation weather into plain-language segments and summaries"
 readme = "README.md"
 license = { text = "MIT" }

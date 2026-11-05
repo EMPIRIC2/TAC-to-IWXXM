@@ -2,6 +2,53 @@
 
 All notable user-facing and deployable changes for TAC to IWXXM.
 
+## 2026-11-05 — Production release
+
+Promote `stage` → `main` after staging validation since the 2026-09-22 cut.
+Live-eval provenance: session `live-tac-eval-30d-2026-11-04-eve` (5996 reports;
+convert 5995/5996 ok; IWXXM validate 5994/5996 ok).
+
+### Added
+- STE user guide under `user-docs/` with Wiki link map and example journeys
+  ([#1570](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1570),
+  [#1571](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1571)).
+- Canonical XML primary-name layout DX façade tests
+  ([#1569](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1569)).
+- Partial decode mapped to TAC warning (ADR-054)
+  ([#1567](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1567)).
+- Live residual remark / non-RMK decode conventions for METAR, SPECI, TAF, SIGMET
+  ([#1547](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1547)–[#1550](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1550)).
+- Regional dialect profiles, severity ladder / Strict UI, promote-eval metrics
+  guidance, and denser live-map / Convert operator UX (see 2026-11-02 stage tip
+  and mid-window UX PRs).
+
+### Fixed
+- TAF emit residuals: CAVOK surface wind, P6SM/SM visibility, SKC/NSC/VV cloud
+  ([#1524](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1524)–[#1530](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1530),
+  [#1553](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1553)/[#1559](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1559)).
+- US convective SIGMET `analysisCollection`, DVLPG AREA qualifier, WST VOR seeds,
+  Hydra parallel-convert serialize
+  ([#1526](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1526),
+  [#1531](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1531)–[#1536](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1536)/[#1546](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1546),
+  [#1554](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1554)/[#1560](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1560),
+  [#1557](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1557)/[#1565](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1565)).
+- SIGMET/AIRMET minimum header lint skeleton
+  ([#1564](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1564)/[#1566](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1566)).
+- Supabase advisors fail-closed + staging-env Sync targeting (2026-11-02 tip).
+
+### Packages
+- `tac2iwxxm` **2026.9.22 → 2026.11.5**
+- `tac-validate` **2026.9.22 → 2026.11.5**
+- `iwxxm-validate` **2026.9.22 → 2026.11.5**
+- `tac-decoding` **2026.9.22 → 2026.11.5**
+
+### Deploy
+- Release-prep on `stage` before promote; Staging smoke must be green.
+- After `stage` → `main` merge + tip CI green: tag `v2026.11.05-deploy` for prod
+  (API / WebApp / worker Docker via GHCR `main-latest`).
+- PyPI tags (OIDC): `tac2iwxxm-v2026.11.5`, `tac-validate-v2026.11.5`,
+  `iwxxm-validate-v2026.11.5`, `tac-decoding-v2026.11.5`.
+
 ## 2026-11-02 — Stage tip (UX density + Supabase staging)
 
 Stage tip `8ee3372e` after the merges below. Staging only; not a production promote.

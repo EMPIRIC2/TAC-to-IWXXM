@@ -1,6 +1,6 @@
 [project]
 name = "tac-validate"
-version = "2026.9.22"
+version = "2026.11.5"
 description = "Lint Traditional Alphanumeric Code (TAC) aviation weather products and return structured issues"
 readme = "README.md"
 license = { text = "MIT" }
