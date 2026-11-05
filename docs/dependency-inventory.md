@@ -195,6 +195,7 @@ via Supabase). **JWKS-only** (`D-S038-04-b1` Q2=2): do not use `SUPABASE_JWT_SEC
 | xsdata | **dev/codegen** (F11 / ADR-027) | XSD → Python models from pinned IWXXM schemas — `xsdata[cli]>=24.5` in workspace `dev` |
 | xsdata-pydantic | **dev/codegen** (F11 / ADR-027) | pydantic v2 output plugin — `>=24.5` in workspace `dev`; also `metar-shared[xsd]` for importing committed models |
 | maturin | **dev** (F13/F14) | PyO3 wheel build — `>=1.7` in workspace `dev`; also CI |
+| mkdocs | **docs** (EV-github-wiki-docs) | Public user guide under `user-docs/` (Read the Docs theme); pin `>=1.6,<2` in `user-docs/requirements.txt` — **BSD**; not a runtime app dependency |
 
 **Deployables**: API + static frontend + **F8 worker** on **DOKS** (ADR-033; Render transitional).
 API image depends on tac2iwxxm + validate + **auth** packages; worker image uses packages plus
@@ -236,6 +237,9 @@ New dependencies require `[Decision]` + back-add to this file per plan-adherence
 
 ### Session changelog
 
+- EV-github-wiki-docs (2026-11-05): **mkdocs** `>=1.6,<2` for `user-docs/` public guide
+  (Read the Docs theme; ASD-STE100). Decision:
+  `decisions/ev-github-wiki-docs-rtd-mkdocs.md`
 - EV-080 / #1077 (2026-08-27): Coverage floor **100%** line+branch (ADR-007 amend); **bats-core**
   for every `scripts/**/*.sh`; scripts Python coverage harness (`D-EV080-bats`)
 - S069 / EV-059 (2026-08-17): **schemathesis==4.24.3** (MIT) pinned in workspace `dev`;

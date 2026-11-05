@@ -1,0 +1,49 @@
+# Public user documentation — MkDocs + Read the Docs theme
+# Language target: ASD-STE100 Issue 9 (editable prose). Not a design gate.
+site_name: TAC to IWXXM
+site_description: Convert Traditional Alphanumeric Code (TAC) aviation weather to IWXXM XML
+# Set site_url after the Read the Docs project exists (do not invent a host).
+repo_url: https://github.com/EMPIRIC2/TAC-to-IWXXM
+repo_name: EMPIRIC2/TAC-to-IWXXM
+edit_uri: edit/stage/user-docs/docs/
+
+docs_dir: docs
+site_dir: site
+
+theme:
+  name: readthedocs
+  highlightjs: true
+
+nav:
+  - Home: index.md
+  - Getting started: getting-started.md
+  - Example user journeys:
+      - Overview: journeys/index.md
+      - Web app example: web-app/example-journey.md
+      - HTTP API example: api/example-journey.md
+      - Python packages example: python-packages/example-journey.md
+  - HTTP API:
+      - Overview: api/index.md
+      - First convert call: api/first-convert-call.md
+      - Authentication: api/authentication.md
+      - Example journey: api/example-journey.md
+  - Web app:
+      - Overview: web-app/index.md
+      - Convert and validate: web-app/convert-and-validate.md
+      - Work history and privacy: web-app/work-history.md
+      - Example journey: web-app/example-journey.md
+  - Python packages:
+      - Overview: python-packages/index.md
+      - Example journey: python-packages/example-journey.md
+      - tac2iwxxm: python-packages/tac2iwxxm.md
+      - tac-validate: python-packages/tac-validate.md
+      - iwxxm-validate: python-packages/iwxxm-validate.md
+      - tac-decoding: python-packages/tac-decoding.md
+
+markdown_extensions:
+  - toc:
+      permalink: true
+  - tables
+  - fenced_code
+
+strict: false
