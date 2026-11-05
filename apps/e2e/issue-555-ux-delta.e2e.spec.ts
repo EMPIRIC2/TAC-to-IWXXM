@@ -30,9 +30,11 @@ test.describe('UJ-001 delta — accumulate results + error log', () => {
     });
     // F7.r / #903 — accumulate (do not replace) across successful converts.
     await expect(page.locator('[data-testid^="result-item-"]')).toHaveCount(2);
+    // targets the Show METAR KJFK row on IWXXM tab button
     await expect(
       resultsRegion.getByRole('button', { name: /Show METAR KJFK .* on IWXXM tab/i }),
     ).toBeVisible();
+    // targets the Show METAR KDEN row on IWXXM tab button
     await expect(
       resultsRegion.getByRole('button', { name: /Show METAR KDEN .* on IWXXM tab/i }),
     ).toBeVisible();
