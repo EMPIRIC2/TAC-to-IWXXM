@@ -32,7 +32,7 @@ Package Index (PyPI).
 The optional extra `tac2iwxxm[validate]` installs `tac-validate` and
 `iwxxm-validate` together.
 
-## Example journey
+## Example
 
-Follow the [Python packages example journey](https://github.com/EMPIRIC2/TAC-to-IWXXM/wiki/Python-packages-Example-journey)
+Follow the [Python packages example](https://github.com/EMPIRIC2/TAC-to-IWXXM/wiki/Python-packages-Example)
 for lint, convert, validate, and decode of one sample METAR.

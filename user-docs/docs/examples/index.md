@@ -1,11 +1,11 @@
-# Example user journeys
+# Examples
 
 This section shows three basic paths for the same sample METAR. Use the path
 that matches your work.
 
 ## Sample TAC
 
-All three journeys use this Traditional Alphanumeric Code (TAC) METAR:
+All three examples use this Traditional Alphanumeric Code (TAC) METAR:
 
 ```text
 METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005=
@@ -13,13 +13,13 @@ METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005=
 
 The terminator `=` must stay at the end of the TAC string.
 
-## Choose a journey
+## Choose an example
 
 | Path | Open |
 |------|------|
-| Browser (web app) | [Web app example journey](https://github.com/EMPIRIC2/TAC-to-IWXXM/wiki/Web-app-Example-journey) |
-| HTTP API | [HTTP API example journey](https://github.com/EMPIRIC2/TAC-to-IWXXM/wiki/HTTP-API-Example-journey) |
-| Python packages | [Python packages example journey](https://github.com/EMPIRIC2/TAC-to-IWXXM/wiki/Python-packages-Example-journey) |
+| Browser (web app) | [Web app example](https://github.com/EMPIRIC2/TAC-to-IWXXM/wiki/Web-app-Example) |
+| HTTP API | [HTTP API example](https://github.com/EMPIRIC2/TAC-to-IWXXM/wiki/HTTP-API-Example) |
+| Python packages | [Python packages example](https://github.com/EMPIRIC2/TAC-to-IWXXM/wiki/Python-packages-Example) |
 
 ## What success looks like
 

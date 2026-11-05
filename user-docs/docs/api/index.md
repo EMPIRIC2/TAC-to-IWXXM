@@ -60,7 +60,7 @@ convert engine is available.
 
 ## Related pages
 
-- [HTTP API example journey](https://github.com/EMPIRIC2/TAC-to-IWXXM/wiki/HTTP-API-Example-journey)
+- [HTTP API example](https://github.com/EMPIRIC2/TAC-to-IWXXM/wiki/HTTP-API-Example)
 - [First convert call](https://github.com/EMPIRIC2/TAC-to-IWXXM/wiki/HTTP-API-First-convert-call)
 - [Authentication](https://github.com/EMPIRIC2/TAC-to-IWXXM/wiki/HTTP-API-Authentication)
 - [Web app overview](https://github.com/EMPIRIC2/TAC-to-IWXXM/wiki/Web-app)
