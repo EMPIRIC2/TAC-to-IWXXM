@@ -1,6 +1,6 @@
-# HTTP API example journey
+# HTTP API example
 
-This journey shows one public convert call for a METAR on the staging API. No
+This example shows one public convert call for a METAR on the staging API. No
 JWT is required for convert.
 
 ## Goal
@@ -73,4 +73,4 @@ response to OpenAPI for the host that you call.
 ## Next step
 
 - Field detail: [First convert call](https://github.com/EMPIRIC2/TAC-to-IWXXM/wiki/HTTP-API-First-convert-call)
-- Other paths: [Example user journeys](https://github.com/EMPIRIC2/TAC-to-IWXXM/wiki/Example-user-journeys)
+- Other paths: [Examples](https://github.com/EMPIRIC2/TAC-to-IWXXM/wiki/Examples)

@@ -39,15 +39,15 @@ The machine-readable OpenAPI document is `{API}/openapi.json`.
 | Validate | Make sure that IWXXM XML meets schema rules |
 | Lint | Examine TAC text against product rules before convert |
 
-## Example journeys (same sample METAR)
+## Examples (same sample METAR)
 
 | Path | Open |
 |------|------|
-| Web app | [Web app example journey](https://github.com/EMPIRIC2/TAC-to-IWXXM/wiki/Web-app-Example-journey) |
-| HTTP API | [HTTP API example journey](https://github.com/EMPIRIC2/TAC-to-IWXXM/wiki/HTTP-API-Example-journey) |
-| Python packages | [Python packages example journey](https://github.com/EMPIRIC2/TAC-to-IWXXM/wiki/Python-packages-Example-journey) |
+| Web app | [Web app example](https://github.com/EMPIRIC2/TAC-to-IWXXM/wiki/Web-app-Example) |
+| HTTP API | [HTTP API example](https://github.com/EMPIRIC2/TAC-to-IWXXM/wiki/HTTP-API-Example) |
+| Python packages | [Python packages example](https://github.com/EMPIRIC2/TAC-to-IWXXM/wiki/Python-packages-Example) |
 
-Index: [Example user journeys](https://github.com/EMPIRIC2/TAC-to-IWXXM/wiki/Example-user-journeys)
+Index: [Examples](https://github.com/EMPIRIC2/TAC-to-IWXXM/wiki/Examples)
 
 ## Next step
 

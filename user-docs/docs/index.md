@@ -18,7 +18,7 @@ the same products.
 ## Start here
 
 1. Read [Getting started](https://github.com/EMPIRIC2/TAC-to-IWXXM/wiki/Getting-started).
-2. Try an [example user journey](https://github.com/EMPIRIC2/TAC-to-IWXXM/wiki/Example-user-journeys) for the web app, HTTP API, or Python packages.
+2. Try an [example](https://github.com/EMPIRIC2/TAC-to-IWXXM/wiki/Examples) for the web app, HTTP API, or Python packages.
 3. Open the guide that matches your path.
 4. Keep official products on Convert and Validate results.
 5. Do not treat soft preview alone as an official product.

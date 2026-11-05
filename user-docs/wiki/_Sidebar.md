@@ -4,13 +4,13 @@
 
 - [Home](https://github.com/EMPIRIC2/TAC-to-IWXXM/wiki/Home)
 - [Getting started](https://github.com/EMPIRIC2/TAC-to-IWXXM/wiki/Getting-started)
-- [Example user journeys](https://github.com/EMPIRIC2/TAC-to-IWXXM/wiki/Example-user-journeys)
+- [Examples](https://github.com/EMPIRIC2/TAC-to-IWXXM/wiki/Examples)
 
-## Example journeys
+## Examples
 
-- [Web app](https://github.com/EMPIRIC2/TAC-to-IWXXM/wiki/Web-app-Example-journey)
-- [HTTP API](https://github.com/EMPIRIC2/TAC-to-IWXXM/wiki/HTTP-API-Example-journey)
-- [Python packages](https://github.com/EMPIRIC2/TAC-to-IWXXM/wiki/Python-packages-Example-journey)
+- [Web app](https://github.com/EMPIRIC2/TAC-to-IWXXM/wiki/Web-app-Example)
+- [HTTP API](https://github.com/EMPIRIC2/TAC-to-IWXXM/wiki/HTTP-API-Example)
+- [Python packages](https://github.com/EMPIRIC2/TAC-to-IWXXM/wiki/Python-packages-Example)
 
 ## HTTP API
 

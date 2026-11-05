@@ -9,17 +9,17 @@ relative MkDocs paths.
 |-------------|---------------|
 | `docs/index.md` | `https://github.com/EMPIRIC2/TAC-to-IWXXM/wiki/Home` |
 | `docs/getting-started.md` | `https://github.com/EMPIRIC2/TAC-to-IWXXM/wiki/Getting-started` |
-| `docs/journeys/index.md` | `https://github.com/EMPIRIC2/TAC-to-IWXXM/wiki/Example-user-journeys` |
+| `docs/examples/index.md` | `https://github.com/EMPIRIC2/TAC-to-IWXXM/wiki/Examples` |
 | `docs/api/index.md` | `https://github.com/EMPIRIC2/TAC-to-IWXXM/wiki/HTTP-API` |
 | `docs/api/first-convert-call.md` | `https://github.com/EMPIRIC2/TAC-to-IWXXM/wiki/HTTP-API-First-convert-call` |
 | `docs/api/authentication.md` | `https://github.com/EMPIRIC2/TAC-to-IWXXM/wiki/HTTP-API-Authentication` |
-| `docs/api/example-journey.md` | `https://github.com/EMPIRIC2/TAC-to-IWXXM/wiki/HTTP-API-Example-journey` |
+| `docs/api/example.md` | `https://github.com/EMPIRIC2/TAC-to-IWXXM/wiki/HTTP-API-Example` |
 | `docs/web-app/index.md` | `https://github.com/EMPIRIC2/TAC-to-IWXXM/wiki/Web-app` |
 | `docs/web-app/convert-and-validate.md` | `https://github.com/EMPIRIC2/TAC-to-IWXXM/wiki/Web-app-Convert-and-validate` |
 | `docs/web-app/work-history.md` | `https://github.com/EMPIRIC2/TAC-to-IWXXM/wiki/Web-app-Work-history` |
-| `docs/web-app/example-journey.md` | `https://github.com/EMPIRIC2/TAC-to-IWXXM/wiki/Web-app-Example-journey` |
+| `docs/web-app/example.md` | `https://github.com/EMPIRIC2/TAC-to-IWXXM/wiki/Web-app-Example` |
 | `docs/python-packages/index.md` | `https://github.com/EMPIRIC2/TAC-to-IWXXM/wiki/Python-packages` |
-| `docs/python-packages/example-journey.md` | `https://github.com/EMPIRIC2/TAC-to-IWXXM/wiki/Python-packages-Example-journey` |
+| `docs/python-packages/example.md` | `https://github.com/EMPIRIC2/TAC-to-IWXXM/wiki/Python-packages-Example` |
 | `docs/python-packages/tac2iwxxm.md` | `https://github.com/EMPIRIC2/TAC-to-IWXXM/wiki/Package-tac2iwxxm` |
 | `docs/python-packages/tac-validate.md` | `https://github.com/EMPIRIC2/TAC-to-IWXXM/wiki/Package-tac-validate` |
 | `docs/python-packages/iwxxm-validate.md` | `https://github.com/EMPIRIC2/TAC-to-IWXXM/wiki/Package-iwxxm-validate` |

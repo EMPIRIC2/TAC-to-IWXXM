@@ -42,9 +42,9 @@ destinations, download the XML and use your normal send tools.
 
 Never paste secret connection strings into shared tickets or chat.
 
-## Example journey
+## Example
 
-Follow the [Web app example journey](https://github.com/EMPIRIC2/TAC-to-IWXXM/wiki/Web-app-Example-journey)
+Follow the [Web app example](https://github.com/EMPIRIC2/TAC-to-IWXXM/wiki/Web-app-Example)
 for a guest convert of one sample METAR on staging.
 
 ## Help in the product

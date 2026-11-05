@@ -1,6 +1,6 @@
-# Web app example journey
+# Web app example
 
-This journey shows a guest convert of one METAR in the browser. Staging hosts
+This example shows a guest convert of one METAR in the browser. Staging hosts
 are used so you can try without production risk.
 
 ## Goal
@@ -59,4 +59,4 @@ only. Trust Convert and Validate for the file that you keep.
 ## Next step
 
 - Full procedure: [Convert and validate](https://github.com/EMPIRIC2/TAC-to-IWXXM/wiki/Web-app-Convert-and-validate)
-- Other paths: [Example user journeys](https://github.com/EMPIRIC2/TAC-to-IWXXM/wiki/Example-user-journeys)
+- Other paths: [Examples](https://github.com/EMPIRIC2/TAC-to-IWXXM/wiki/Examples)

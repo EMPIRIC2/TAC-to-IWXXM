@@ -1,6 +1,6 @@
-# Python packages example journey
+# Python packages example
 
-This journey shows lint, convert, validate, and decode for one METAR in a local
+This example shows lint, convert, validate, and decode for one METAR in a local
 Python environment.
 
 ## Goal
@@ -106,4 +106,4 @@ print(result.xml[:200])
 ## Next step
 
 - Package pages: [Python packages overview](https://github.com/EMPIRIC2/TAC-to-IWXXM/wiki/Python-packages)
-- Other paths: [Example user journeys](https://github.com/EMPIRIC2/TAC-to-IWXXM/wiki/Example-user-journeys)
+- Other paths: [Examples](https://github.com/EMPIRIC2/TAC-to-IWXXM/wiki/Examples)
