@@ -45,6 +45,7 @@ document sets.
 |------|------|
 | [domain/](domain/) (including profiles) | Domain mining, national or exchange profiles (for example CA_ECCC, features F35/F36) |
 | [guides/](guides/), [ops/](ops/) | Operator runbooks and narrative how-tos — **not** design gates; treat GIFTs-era `guides/API.md` and `guides/ARCHITECTURE.md` as obsolete |
+| [user-docs](../user-docs/) (`[Corpus: user-docs]`) | Public operator and integrator MkDocs site (Read the Docs theme; ASD-STE100). **Not** a design gate. Live OpenAPI and `[Corpus: api]` remain HTTP truth. See [decisions/ev-github-wiki-docs-rtd-mkdocs.md](decisions/ev-github-wiki-docs-rtd-mkdocs.md) |
 | [guides/promote-eval-metrics.md](guides/promote-eval-metrics.md) | `stage`→`main` promote pull requests: required broken-down live-eval metrics checklist (with deploy.md §Promote and the promote pull-request template) |
 | [bug-reports/](bug-reports/) | Active hotfix investigation |
 | [ui-ux-tweaks/](ui-ux-tweaks/) | Per-tweak logs from `ui-ux-tweak` (template + `UX-YYYY-MM-DD-*`) |

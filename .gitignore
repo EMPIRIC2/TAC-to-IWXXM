@@ -139,6 +139,7 @@ Thumbs.db
 # --- Docs site builds ---
 docs/_build/
 /site
+user-docs/site/
 
 # --- Local tooling binaries / artifacts ---
 .tools/
