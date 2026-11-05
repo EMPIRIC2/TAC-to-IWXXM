@@ -458,6 +458,8 @@ test.describe('UJ-072: ConversionProfile editor (EV-933 / TC-EV933-006)', () => 
     await stubProfilesApis(page);
 
     await openPublicConverter(page);
+    await openConvertSettings(page);
+    await page.getByLabel('Expand parameters', { exact: true }).click();
     await expect(page.getByTestId('library-pickers-bar')).toBeVisible();
     page.once('dialog', (dialog) => dialog.accept());
     await page

@@ -29,17 +29,12 @@ test.describe('UJ-001 delta — accumulate results + error log', () => {
       exact: true,
     });
     // F7.r / #903 — accumulate (do not replace) across successful converts.
+    await expect(page.locator('[data-testid^="result-item-"]')).toHaveCount(2);
     await expect(
-      resultsRegion.getByRole('button', {
-        name: 'Toggle details for METAR KJFK 121251Z',
-        exact: true,
-      }),
+      resultsRegion.getByRole('button', { name: /Show METAR KJFK .* on IWXXM tab/i }),
     ).toBeVisible();
     await expect(
-      resultsRegion.getByRole('button', {
-        name: 'Toggle details for METAR KDEN 121653Z',
-        exact: true,
-      }),
+      resultsRegion.getByRole('button', { name: /Show METAR KDEN .* on IWXXM tab/i }),
     ).toBeVisible();
     await openConvertSettings(page);
     await expect(page.getByTestId('download-zip-button')).toHaveAccessibleName(

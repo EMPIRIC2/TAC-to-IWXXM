@@ -7,8 +7,8 @@
 import { expect, test, type Page } from '@playwright/test';
 import {
   dismissPrivacyNoticeIfPresent,
-  leaveCalmEmptyHero,
   openConvertDownloadsTab,
+  openConvertSettings,
   openPublicConverter,
 } from './playwright-e2e-helpers';
 
@@ -150,7 +150,7 @@ test.describe('EV-bridge — UJ-072g Libraries + hard cut', () => {
     });
 
     await openPublicConverter(page);
-    await leaveCalmEmptyHero(page);
+    await openConvertSettings(page);
     await page.getByLabel('Expand parameters', { exact: true }).click();
     await expect(page.getByTestId('library-pickers-bar')).toBeVisible();
     await expect(page.getByTestId('conversion-library-select')).toBeVisible();

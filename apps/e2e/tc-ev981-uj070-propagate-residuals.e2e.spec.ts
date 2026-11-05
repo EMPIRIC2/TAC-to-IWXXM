@@ -7,7 +7,7 @@
 import { expect, test } from '@playwright/test';
 import {
   fillManualTac,
-  leaveCalmEmptyHero,
+  openConvertSettings,
   openPublicConverter,
 } from './playwright-e2e-helpers';
 
@@ -42,7 +42,7 @@ test.describe('EV-981 — UJ-070 propagate residuals toggle', () => {
     });
 
     await openPublicConverter(page);
-    await leaveCalmEmptyHero(page);
+    await openConvertSettings(page);
     const toggle = page.getByTestId('propagate-residuals-toggle');
     await expect(toggle).toBeVisible();
     await toggle.check();

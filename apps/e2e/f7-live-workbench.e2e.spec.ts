@@ -66,7 +66,7 @@ async function stubLiveAssistApis(page: import('@playwright/test').Page): Promis
 }
 
 test.describe('T4.4 / TC-F7-001 + TC-F7-004: live workbench', () => {
-  test('TC-F7-001: workbench shell mounts editor, products, console, live IWXXM off', async ({
+  test('TC-F7-001: workbench shell mounts editor, products, console, live IWXXM on', async ({
     page,
   }) => {
     await stubLiveAssistApis(page);
@@ -77,7 +77,8 @@ test.describe('T4.4 / TC-F7-001 + TC-F7-004: live workbench', () => {
     await openConvertConsoleTab(page);
     await expect(page.getByTestId('workbench-console')).toBeVisible();
     await openConvertSettings(page);
-    await expect(page.getByTestId('live-iwxxm-toggle')).not.toBeChecked();
+    // Product default: live IWXXM assist is on.
+    await expect(page.getByTestId('live-iwxxm-toggle')).toBeChecked();
 
     const product = page.locator('#param-product');
     await expect(product).toBeVisible();

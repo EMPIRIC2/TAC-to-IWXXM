@@ -128,9 +128,8 @@ export async function leaveCalmEmptyHero(page: Page): Promise<void> {
   }
   const editor = hero.getByLabel('Enter METAR data manually', { exact: true });
   await editor.click();
-  await page.keyboard.insertText(
-    'METAR KJFK 010000Z 00000KT 10SM SKC 10/00 A2992=',
-  );
+  // fill() drives CodeMirror contenteditable more reliably than insertText alone.
+  await editor.fill('METAR KJFK 010000Z 00000KT 10SM SKC 10/00 A2992=');
   await expect(hero).toHaveCount(0, { timeout: 15_000 });
   await expect(page.getByTestId('convert-button')).toBeVisible();
 }
@@ -428,6 +427,11 @@ export async function openDisseminationDrawerFromSettings(page: Page): Promise<v
   await expect(openBtn).toBeEnabled({ timeout: 15_000 });
   await openBtn.click();
   await expect(page.getByTestId('dissemination-drawer')).toBeVisible();
+  // Settings is an absolute popover — close it so drawer controls stay clickable.
+  const settings = page.getByTestId('convert-settings');
+  if ((await settings.getAttribute('open')) !== null) {
+    await page.getByTestId('convert-settings-cog').click();
+  }
 }
 
 /**
