@@ -126,11 +126,12 @@ export async function leaveCalmEmptyHero(page: Page): Promise<void> {
   if ((await hero.count()) === 0) {
     return;
   }
-  const metarChip = page.getByRole('button', { name: 'METAR', exact: true });
+  // Scope to the empty hero so the METAR chip is unambiguous (#1436).
+  const metarChip = hero.getByRole('button', { name: 'METAR', exact: true });
   if ((await metarChip.count()) > 0) {
-    await metarChip.first().click();
+    await metarChip.click();
   } else {
-    const editor = page.getByLabel('Enter METAR data manually', { exact: true });
+    const editor = hero.getByLabel('Enter METAR data manually', { exact: true });
     await editor.click();
     await page.keyboard.insertText(
       'METAR KJFK 010000Z 00000KT 10SM SKC 10/00 A2992',

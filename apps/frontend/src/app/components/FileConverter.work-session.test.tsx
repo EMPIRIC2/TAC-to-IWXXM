@@ -113,6 +113,22 @@ vi.mock('./AirportDetailsCard', () => ({ AirportDetailsCard: () => null }));
 vi.mock('./WorkHistorySidebar', () => ({ WorkHistorySidebar: () => null }));
 vi.mock('./ErrorLogPanel', () => ({ ErrorLogPanel: () => null }));
 
+const mockReadGuestConverterState = vi.hoisted(() =>
+  vi.fn(() => ({
+    manualInput: 'METAR KJFK 121251Z 18004KT 10SM FEW020 18/12 A3012=',
+    pendingFiles: [],
+    convertedFiles: [],
+    conversionLog: null,
+    conversionParams: {},
+  })),
+);
+
+vi.mock('/utils/guestConverterState', () => ({
+  readGuestConverterState: mockReadGuestConverterState,
+  saveGuestConverterState: vi.fn(),
+  clearGuestConverterState: vi.fn(),
+}));
+
 describe('FileConverter F5 workflow', () => {
   // Coverage runs can exceed the suite default when typing METAR + Convert&Send.
   vi.setConfig({ testTimeout: 20_000 });
@@ -127,6 +143,14 @@ describe('FileConverter F5 workflow', () => {
       results: [{ iwxxm_xml: '<iwxxm/>', name: 'manual.txt', tac_input: 'METAR' }],
     } as any);
     mockUpload.mockResolvedValue({ message: 'sent' } as any);
+    // Leave empty-hero so toolbar / Convert strip is mounted for F5 assertions.
+    mockReadGuestConverterState.mockReturnValue({
+      manualInput: 'METAR KJFK 121251Z 18004KT 10SM FEW020 18/12 A3012=',
+      pendingFiles: [],
+      convertedFiles: [],
+      conversionLog: null,
+      conversionParams: {},
+    });
   });
 
   it('shows draft saved indicator when authenticated (T4.11)', () => {

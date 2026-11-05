@@ -788,7 +788,8 @@ describe('FileConverter Component', () => {
       expect(hero).toBeInTheDocument();
       expect(screen.getByTestId('convert-setup')).not.toBeVisible();
       expect(screen.getByTestId('live-convert-stage')).not.toBeVisible();
-      expect(screen.getByTestId('action-button-strip')).not.toBeVisible();
+      // Empty hero owns Convert CTA — strip is unmounted (strict E2E locators).
+      expect(screen.queryByTestId('action-button-strip')).not.toBeInTheDocument();
       expect(
         within(hero).getByLabelText('Enter METAR data manually'),
       ).toBeInTheDocument();
@@ -796,7 +797,7 @@ describe('FileConverter Component', () => {
 
     it('primary action strip exposes only New TAC, Convert, and Download latest', () => {
       operatorDisseminationUiConfig.destinationsEnabled = true;
-      mockReadGuestConverterState.mockReturnValue(null);
+      seedLiveConvertChrome();
       render(<FileConverter {...defaultProps} />);
       const strip = screen.getByTestId('convert-primary-actions');
       expect(within(strip).getByTestId('new-tac-button')).toHaveTextContent('New TAC');
@@ -828,7 +829,7 @@ describe('FileConverter Component', () => {
     });
 
     it('UX-2026-10-30: primary actions keep Convert centered in equal columns', () => {
-      mockReadGuestConverterState.mockReturnValue(null);
+      seedLiveConvertChrome();
       render(<FileConverter {...defaultProps} />);
       const strip = screen.getByTestId('convert-primary-actions');
       expect(strip.className).toContain('grid');
@@ -1938,16 +1939,23 @@ describe('FileConverter Component', () => {
         results: [{ iwxxm_xml: '<iwxxm>converted</iwxxm>' }],
       });
 
+      // Start empty so Convert begins disabled; seeding would enable it immediately.
+      mockReadGuestConverterState.mockReturnValue(null);
       const { container } = render(<FileConverter {...defaultProps} />);
-      fireEvent.click(screen.getByTestId('live-iwxxm-toggle'));
-      const convertBtn = screen.getByTestId('convert-button');
-      expect(convertBtn).toBeDisabled();
+      const hero = screen.getByTestId('convert-empty-hero');
+      expect(within(hero).getByTestId('convert-button')).toBeDisabled();
 
       const textarea = container.querySelector('textarea') as HTMLTextAreaElement;
       // Instant set — per-keystroke type times out under full coverage load.
+      // Leaving the empty hero remounts Convert on the action strip.
       fireEvent.change(textarea, {
         target: { value: 'METAR KJFK 121651Z 18005KT 10SM FEW030 24/16 A2992' },
       });
+      await waitFor(() => {
+        expect(screen.queryByTestId('convert-empty-hero')).not.toBeInTheDocument();
+      });
+      fireEvent.click(screen.getByTestId('live-iwxxm-toggle'));
+      const convertBtn = screen.getByTestId('convert-button');
       expect(convertBtn).toBeEnabled();
 
       await user.click(convertBtn);
@@ -5470,10 +5478,10 @@ describe('FileConverter Component', () => {
 
     it('shows read-only new session toast when starting a new TAC', async () => {
       mockIsReadOnly.value = true;
+      seedLiveConvertChrome();
       const user = userEvent.setup({ delay: null });
       render(<FileConverter {...defaultProps} />);
 
-      await user.type(screen.getByTestId('tac-editor'), 'METAR KJFK=');
       await user.click(screen.getByTestId('new-tac-button'));
 
       expect(mockToast.info).toHaveBeenCalledWith('Starting a new TAC session');
@@ -5962,6 +5970,7 @@ describe('FileConverter Component', () => {
 
       for (const [state, pattern] of labels) {
         cleanup();
+        seedLiveConvertChrome();
         mockSaveIndicator.value = state;
         render(<FileConverter {...defaultProps} />);
         expect(screen.getByTestId('autosave-indicator')).toHaveTextContent(pattern);
@@ -5969,10 +5978,10 @@ describe('FileConverter Component', () => {
     });
 
     it('shows draft toast when starting a new TAC while editable', async () => {
+      seedLiveConvertChrome();
       const user = userEvent.setup({ delay: null });
       render(<FileConverter {...defaultProps} />);
 
-      await user.type(screen.getByTestId('tac-editor'), 'METAR KJFK=');
       await user.click(screen.getByTestId('new-tac-button'));
 
       expect(mockToast.info).toHaveBeenCalledWith('Starting a new TAC draft');
@@ -8350,6 +8359,7 @@ describe('FileConverter Component', () => {
 
   describe('EVPYL conversion metadata + WMO library sync', () => {
     it('toggles metadata export, checklist items, and guest operator hint', async () => {
+      seedLiveConvertChrome();
       const user = userEvent.setup({ delay: null });
       render(<FileConverter isGuest />);
 
