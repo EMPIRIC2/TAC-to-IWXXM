@@ -53,7 +53,19 @@ _UUID_VALUE = re.compile(
 
 
 def _local_name(name: str) -> str:
-    """Return the local part of an XML attribute or element name."""
+    """
+    Return the local part of an XML attribute or element name.
+
+    Parameters
+    ----------
+    name : str
+        Qualified or Clark-notation attribute or element name.
+
+    Returns
+    -------
+    str
+        Local name without namespace URI or prefix.
+    """
     if name.startswith("{"):
         return name.rsplit("}", 1)[-1]
     if ":" in name:
@@ -62,14 +74,40 @@ def _local_name(name: str) -> str:
 
 
 def _norm_text(value: str | None) -> str:
-    """Collapse whitespace in an attribute value for volatile checks."""
+    """
+    Collapse whitespace in an attribute value for volatile checks.
+
+    Parameters
+    ----------
+    value : str or None
+        Raw attribute text.
+
+    Returns
+    -------
+    str
+        Whitespace-collapsed text, or empty string when ``value`` is None.
+    """
     if value is None:
         return ""
     return " ".join(value.split())
 
 
 def _is_volatile_attr(key: str, value: str) -> bool:
-    """Return True when an attribute must be omitted before Canonical XML."""
+    """
+    Return True when an attribute must be omitted before Canonical XML.
+
+    Parameters
+    ----------
+    key : str
+        Attribute name.
+    value : str
+        Attribute value.
+
+    Returns
+    -------
+    bool
+        True when the attribute is volatile for Quality Metrics compare.
+    """
     local = _local_name(key)
     if local in VOLATILE_ATTRS:
         return True
@@ -87,7 +125,14 @@ def _is_volatile_attr(key: str, value: str) -> bool:
 
 
 def _strip_volatile_attributes(node: Any) -> None:
-    """Remove volatile attributes from ``node`` and its descendants in place."""
+    """
+    Remove volatile attributes from ``node`` and its descendants in place.
+
+    Parameters
+    ----------
+    node : object
+        lxml element to mutate.
+    """
     for key in list(node.attrib):
         if _is_volatile_attr(key, node.attrib.get(key, "")):
             del node.attrib[key]
@@ -96,7 +141,14 @@ def _strip_volatile_attributes(node: Any) -> None:
 
 
 def _strip_whitespace_only_text(node: Any) -> None:
-    """Clear whitespace-only element text and tails under ``node``."""
+    """
+    Clear whitespace-only element text and tails under ``node``.
+
+    Parameters
+    ----------
+    node : object
+        lxml element to mutate.
+    """
     for child in list(node):
         _strip_whitespace_only_text(child)
     # Element text / tail that is only whitespace is insignificant for IWXXM compare
