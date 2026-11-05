@@ -4,7 +4,12 @@
  * Spec: docs/test-plan.md TC-F7-001, TC-F7-004; execution-plan T4.4.
  */
 import { expect, test } from '@playwright/test';
-import { openConvertSettings, openConverterForE2e } from './playwright-e2e-helpers';
+import {
+  openConvertConsoleTab,
+  openConvertDecoderTab,
+  openConvertSettings,
+  openConverterForE2e,
+} from './playwright-e2e-helpers';
 
 const METAR_TAC = 'METAR KJFK 121251Z 24016G28KT 3SM -RA BR BKN020 OVC040 14/11 A2990';
 
@@ -66,9 +71,10 @@ test.describe('T4.4 / TC-F7-001 + TC-F7-004: live workbench', () => {
   }) => {
     await stubLiveAssistApis(page);
     await openConverterForE2e(page);
-
+    await openConvertDecoderTab(page);
     await expect(page.getByTestId('tac-editor')).toBeVisible();
     await expect(page.getByTestId('decode-panel')).toBeVisible();
+    await openConvertConsoleTab(page);
     await expect(page.getByTestId('workbench-console')).toBeVisible();
     await openConvertSettings(page);
     await expect(page.getByTestId('live-iwxxm-toggle')).not.toBeChecked();
@@ -116,7 +122,7 @@ test.describe('T4.4 / TC-F7-001 + TC-F7-004: live workbench', () => {
       '1',
     );
 
-    await page.getByTestId('workbench-console-toggle').click();
+    await openConvertConsoleTab(page);
     await expect(page.getByTestId('workbench-console-lines')).toContainText(
       /lint-tac|issue/i,
     );

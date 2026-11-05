@@ -7,6 +7,7 @@
 import { expect, test } from '@playwright/test';
 import {
   convertManualMetar,
+  openConvertDownloadsTab,
   openPublicConverter,
   openSignInFormThenReturn,
   playwrightApiFetch,
@@ -33,11 +34,7 @@ test.describe('T7.1 — Public app + privacy (F21/F22)', () => {
     await expect(page.locator('#email')).toHaveCount(0);
 
     await convertManualMetar(page, SAMPLE_METAR);
-    await expect(
-      page.getByRole('region', { name: 'Conversion results', exact: true }),
-    ).toBeVisible({
-      timeout: 15_000,
-    });
+    await openConvertDownloadsTab(page, 15_000);
     expect(authHeaders).toEqual([]);
   });
 
@@ -46,11 +43,11 @@ test.describe('T7.1 — Public app + privacy (F21/F22)', () => {
   }) => {
     await openPublicConverter(page);
     await convertManualMetar(page, LOWER_ST_MAARTEN);
+    await openConvertDownloadsTab(page, 15_000);
     const results = page.getByRole('region', {
       name: 'Conversion results',
       exact: true,
     });
-    await expect(results).toBeVisible({ timeout: 15_000 });
     await expect(results).not.toContainText(/no METAR\/SPECI report found/i);
     await expect(results).toContainText(/TNCM/i);
   });

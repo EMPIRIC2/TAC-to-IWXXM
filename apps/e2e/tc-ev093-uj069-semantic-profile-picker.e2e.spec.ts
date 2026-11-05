@@ -5,7 +5,11 @@
  * [Corpus: product §F7.w] [Corpus: journeys] [Corpus: tests]
  */
 import { expect, test } from '@playwright/test';
-import { openPublicConverter, selectInputMode } from './playwright-e2e-helpers';
+import {
+  leaveCalmEmptyHero,
+  openPublicConverter,
+  selectInputMode,
+} from './playwright-e2e-helpers';
 
 const AHL_WELL_FORMED = `SAUS31 KZNY 121200
 METAR KJFK 121151Z 18008KT 10SM FEW250 22/14 A3012=
@@ -55,6 +59,7 @@ test.describe('EV-bridge — Convert library pickers (AHL)', () => {
     });
 
     await openPublicConverter(page);
+    await leaveCalmEmptyHero(page);
     await page.getByLabel('Expand parameters', { exact: true }).click();
     await expect(page.getByTestId('library-pickers-bar')).toBeVisible();
 

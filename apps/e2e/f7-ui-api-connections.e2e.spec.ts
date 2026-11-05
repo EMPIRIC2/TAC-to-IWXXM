@@ -9,7 +9,11 @@
  * Spec: docs/test-plan.md TC-F7-001–005; docs/api-contract.md; F21 IndexedDB (UJ-018).
  */
 import { expect, test, type Page, type Request } from '@playwright/test';
-import { openConvertSettings, openConverterForE2e } from './playwright-e2e-helpers';
+import {
+  openConvertDecoderTab,
+  openConvertSettings,
+  openConverterForE2e,
+} from './playwright-e2e-helpers';
 
 const METAR_TAC = 'METAR KJFK 121251Z 24016G28KT 3SM -RA BR BKN020 OVC040 14/11 A2990';
 const BAD_TAC = 'METAR XXXX NOT_A_REAL_REPORT GARBAGE=';
@@ -161,6 +165,7 @@ test.describe('F7 UI↔API connection points', () => {
     expect(await postDataIncludes(decodeReq, 'manual_text')).toBe(true);
     expect(await postDataIncludes(decodeReq, 'product', 'METAR')).toBe(true);
 
+    await openConvertDecoderTab(page);
     await expect(page.getByTestId('decode-panel')).toBeVisible();
     await expect(page.getByTestId('tac-editor')).toHaveAttribute(
       'data-issue-span-count',

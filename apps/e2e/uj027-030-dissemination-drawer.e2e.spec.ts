@@ -9,7 +9,11 @@
 import { expect, test, type Page, type Request } from '@playwright/test';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { fillManualTac, openConverterForE2e } from './playwright-e2e-helpers';
+import {
+  fillManualTac,
+  openConverterForE2e,
+  openDisseminationDrawerFromSettings,
+} from './playwright-e2e-helpers';
 
 const METAR_TAC = 'METAR KJFK 121251Z 24016G28KT 3SM -RA BR BKN020 OVC040 14/11 A2990=';
 // Prolog is joined so this source is not scored as a conditional.
@@ -134,10 +138,7 @@ async function stubDisseminationApis(
 }
 
 async function openDisseminationDrawer(page: Page): Promise<void> {
-  const openBtn = page.getByTestId('open-dissemination-drawer');
-  await expect(openBtn).toBeEnabled({ timeout: 15000 });
-  await openBtn.click();
-  await expect(page.getByTestId('dissemination-drawer')).toBeVisible();
+  await openDisseminationDrawerFromSettings(page);
   await expect(
     page.getByRole('heading', { name: 'Dissemination', exact: true }),
   ).toBeVisible();

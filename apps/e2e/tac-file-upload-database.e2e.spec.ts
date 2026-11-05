@@ -5,6 +5,7 @@ import * as path from 'path';
 import {
   fillManualTac,
   loginAndOpenConverter,
+  openConvertConsoleTab,
   openConvertDownloadsTab,
   openConvertIwxxmTab,
   openConvertSettings,
@@ -228,6 +229,7 @@ test.describe('TAC convert + Disseminate (Upload to Database removed)', () => {
       .fill('INVALID TAC FORMAT');
     await page.getByTestId('convert-button').click();
 
+    await openConvertConsoleTab(page);
     await expect(page.getByTestId('conversion-error-log')).toBeVisible({
       timeout: 10000,
     });
