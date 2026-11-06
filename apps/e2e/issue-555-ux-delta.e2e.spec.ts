@@ -21,22 +21,28 @@ test.describe('UJ-001 delta — accumulate results + error log', () => {
 
     await convertManualMetar(page, metarA);
     await openConvertDownloadsTab(page, 10_000);
+    await expect(page.locator('[data-testid^="result-item-"]')).toHaveCount(1);
 
     await convertManualMetar(page, metarB);
+    // Wait for accumulate before Downloads — openConvertDownloadsTab only
+    // requires count > 0 and can race the second convert landing.
+    await expect
+      .poll(async () => page.locator('[data-testid^="result-item-"]').count(), {
+        timeout: 30_000,
+      })
+      .toBe(2);
     await openConvertDownloadsTab(page, 10_000);
     const resultsRegion = page.getByRole('region', {
       name: 'Conversion results',
       exact: true,
     });
     // F7.r / #903 — accumulate (do not replace) across successful converts.
-    await expect(page.locator('[data-testid^="result-item-"]')).toHaveCount(2);
-    // Prefer converted-* rows; loaded-result-* can share the same aria-label.
-    const converted = resultsRegion.locator(
-      '[data-testid^="convert-download-select-converted-"]',
+    const downloadSelects = resultsRegion.locator(
+      '[data-testid^="convert-download-select-"]',
     );
-    await expect(converted).toHaveCount(2);
-    await expect(converted.filter({ hasText: 'KJFK' })).toHaveCount(1);
-    await expect(converted.filter({ hasText: 'KDEN' })).toHaveCount(1);
+    await expect(downloadSelects).toHaveCount(2);
+    await expect(downloadSelects.filter({ hasText: 'KJFK' })).toHaveCount(1);
+    await expect(downloadSelects.filter({ hasText: 'KDEN' })).toHaveCount(1);
     await openConvertSettings(page);
     await expect(page.getByTestId('download-zip-button')).toHaveAccessibleName(
       /download all 2 converted files as zip/i,

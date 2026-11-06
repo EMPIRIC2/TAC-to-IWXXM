@@ -167,7 +167,10 @@ test.describe('EV-060 T2 — UJ-061 Conversion library at converter top', () => 
     await openConvertLibraryPickers(page);
     const conversionLib = page.getByTestId('conversion-library-select');
     await expect(conversionLib).toBeVisible();
+    // National-line change prompts confirmLibraryResetForProfile (window.confirm).
+    page.once('dialog', (dialog) => dialog.accept());
     await conversionLib.selectOption('LIB.CONVERSION.US_FAA_NWS');
+    await expect(conversionLib).toHaveValue('LIB.CONVERSION.US_FAA_NWS');
 
     const convertReq = page.waitForRequest(
       (req) => req.url().includes('/api/v1/convert') && req.method() === 'POST',

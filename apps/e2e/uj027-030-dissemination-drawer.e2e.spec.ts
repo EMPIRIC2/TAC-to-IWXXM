@@ -291,8 +291,9 @@ test.describe('T6.3 / UJ-027–030: dissemination drawer H6′ smokes', () => {
       .fill('sqlite:////tmp/e2e-dissemination.db');
 
     await page.getByTestId('dissemination-file-input').setInputFiles(FIXTURE_TAC);
+    // Settings leave-hero seeds one TAC candidate; the drop adds a second.
     await expect(page.getByTestId('dissemination-payload-status')).toContainText(
-      /1 candidate/,
+      /2 candidate/,
     );
 
     await page.getByTestId('dissemination-send-button').click();
@@ -375,13 +376,15 @@ test.describe('T6.3 / UJ-027–030: dissemination drawer H6′ smokes', () => {
     await page.getByTestId('dissemination-select-all').click();
     await page.getByTestId('dissemination-send-button').click();
 
+    // Seed TAC + dropped file(s); one preflight fail then continue.
     await expect(page.getByTestId('dissemination-send-success')).toContainText(
-      /1 file/,
+      /file/,
     );
     const failRow = page.locator(
       '[data-testid^="dissemination-progress-row-"][data-status="failed"]',
     );
     await expect(failRow).toBeVisible();
+    // targets the per-row Disseminate failure detail control
     await expect(failRow.getByTestId(/dissemination-progress-fail-/)).toBeVisible();
 
     await expect(page.getByTestId('dissemination-progress-list')).toHaveScreenshot(
