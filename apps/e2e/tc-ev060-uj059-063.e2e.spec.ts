@@ -12,6 +12,7 @@ import {
   convertManualMetar,
   fillManualTac,
   openConvertDownloadsTab,
+  openConvertLibraryPickers,
   openConvertSettings,
   openPublicConverter,
   playwrightApiFetch,
@@ -163,11 +164,7 @@ test.describe('EV-060 T2 — UJ-061 Conversion library at converter top', () => 
     page,
   }) => {
     await openPublicConverter(page);
-    await openConvertSettings(page);
-    await page
-      .getByLabel(/Expand parameters/i)
-      .click()
-      .catch(() => undefined);
+    await openConvertLibraryPickers(page);
     const conversionLib = page.getByTestId('conversion-library-select');
     await expect(conversionLib).toBeVisible();
     await conversionLib.selectOption('LIB.CONVERSION.US_FAA_NWS');
