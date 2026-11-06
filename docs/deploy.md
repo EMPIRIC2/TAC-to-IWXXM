@@ -670,6 +670,11 @@ publishing** on version tags:
 | `packages/iwxxm-validate` | `iwxxm-validate-v*` | `iwxxm-validate` |
 | `packages/tac2iwxxm` | `tac2iwxxm-v*` | `tac2iwxxm` |
 | `packages/tac-decoding` | `tac-decoding-v*` | `tac-decoding` |
+| `packages/shared` | `metar-shared-v*` | `metar-shared` |
+| `packages/reference-lookup` | `reference-lookup-v*` | `reference-lookup` |
+
+Publish **`metar-shared`** and **`reference-lookup`** before consumers that declare them
+(`tac-validate`, `tac2iwxxm`). Same Trusted Publisher settings as the other packages.
 
 **Versioning (ADR-043):** **CalVer** date components as PEP 440 integers **without
 leading zeros** (e.g. `2026.9.10`; same-day `2026.9.10.1`). Example tag:

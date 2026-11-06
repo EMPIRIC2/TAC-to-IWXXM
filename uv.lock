@@ -1137,7 +1137,7 @@ wheels = [
 
 [[package]]
 name = "iwxxm-validate"
-version = "2026.11.5"
+version = "2026.11.5.1"
 source = { editable = "packages/iwxxm-validate" }
 dependencies = [
     { name = "lxml" },
@@ -1667,7 +1667,7 @@ dev = [
 
 [[package]]
 name = "metar-shared"
-version = "0.1.0"
+version = "2026.11.5"
 source = { editable = "packages/shared" }
 
 [package.optional-dependencies]
@@ -2536,7 +2536,7 @@ wheels = [
 
 [[package]]
 name = "reference-lookup"
-version = "2026.9.23"
+version = "2026.11.5"
 source = { editable = "packages/reference-lookup" }
 dependencies = [
     { name = "httpx" },
@@ -2944,7 +2944,7 @@ requires-dist = [
 
 [[package]]
 name = "tac-validate"
-version = "2026.11.5"
+version = "2026.11.5.1"
 source = { editable = "packages/tac-validate" }
 dependencies = [
     { name = "metar-shared" },
@@ -2961,7 +2961,7 @@ requires-dist = [
 
 [[package]]
 name = "tac2iwxxm"
-version = "2026.11.5"
+version = "2026.11.5.1"
 source = { editable = "packages/tac2iwxxm" }
 dependencies = [
     { name = "hydra-core" },

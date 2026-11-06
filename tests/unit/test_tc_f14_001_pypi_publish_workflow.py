@@ -10,10 +10,24 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 WORKFLOW = REPO_ROOT / ".github" / "workflows" / "pypi-publish.yml"
 
 EXPECTED_PACKAGES = frozenset(
-    {"tac-validate", "iwxxm-validate", "tac2iwxxm", "tac-decoding"}
+    {
+        "tac-validate",
+        "iwxxm-validate",
+        "tac2iwxxm",
+        "tac-decoding",
+        "metar-shared",
+        "reference-lookup",
+    }
 )
 EXPECTED_TAG_PREFIXES = frozenset(
-    {"tac-validate-v*", "iwxxm-validate-v*", "tac2iwxxm-v*", "tac-decoding-v*"}
+    {
+        "tac-validate-v*",
+        "iwxxm-validate-v*",
+        "tac2iwxxm-v*",
+        "tac-decoding-v*",
+        "metar-shared-v*",
+        "reference-lookup-v*",
+    }
 )
 
 
@@ -74,15 +88,17 @@ def test_pypi_publish_workflow_oidc_and_matrix() -> None:
     assert publish["environment"]["name"] == "pypi"
     assert "should_publish" in str(publish["if"])
 
-    # Trusted publishing: no password / API token wiring in the publish step.
+    # Trusted publishing remains primary (id-token + pypi env). Optional
+    # PYPI_API_TOKEN password is an escape hatch when a project's OIDC publisher
+    # is missing/misconfigured (empty secret ⇒ action falls back to OIDC).
     publish_steps = publish["steps"]
     publish_step = next(
         s for s in publish_steps if "pypi-publish" in str(s.get("uses", ""))
     )
     with_block = publish_step.get("with") or {}
-    assert "password" not in with_block
     assert "user" not in with_block
-    assert "secrets.PYPI_API_TOKEN" not in WORKFLOW.read_text(encoding="utf-8")
+    assert with_block.get("password") == "${{ secrets.PYPI_API_TOKEN }}"
+    assert "secrets.PYPI_API_TOKEN" in WORKFLOW.read_text(encoding="utf-8")
 
 
 def test_pypi_publish_workflow_dispatch_dry_run_default() -> None:

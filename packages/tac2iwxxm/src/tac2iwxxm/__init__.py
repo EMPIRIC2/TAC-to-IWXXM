@@ -27,7 +27,7 @@ from tac2iwxxm.models import (
 )
 from tac2iwxxm.native import rust_available, rust_module, scan_metar_tokens
 
-__version__ = "2026.11.5"
+__version__ = "2026.11.5.1"
 
 __all__ = [
     "AhlParts",

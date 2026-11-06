@@ -1,13 +1,13 @@
 [project]
 name = "tac-validate"
-version = "2026.11.5"
+version = "2026.11.5.1"
 description = "Lint Traditional Alphanumeric Code (TAC) aviation weather products and return structured issues"
 readme = "README.md"
 license = { text = "MIT" }
 requires-python = ">=3.12"
 dependencies = [
   "msgspec>=0.19",
-  "metar-shared",
+  "metar-shared==2026.11.5",
   "pyyaml==6.0.3",
 ]
 

@@ -1,6 +1,6 @@
 [project]
 name = "tac2iwxxm"
-version = "2026.11.5"
+version = "2026.11.5.1"
 description = "Turn Traditional Alphanumeric Code (TAC) aviation weather reports into IWXXM XML"
 readme = "README.md"
 license = { text = "MIT" }
@@ -8,14 +8,15 @@ requires-python = ">=3.12"
 dependencies = [
   "hydra-core==1.3.7",
   "msgspec>=0.19",
-  "metar-shared",
+  "metar-shared==2026.11.5",
   "pyyaml>=6.0",
   "tac-decoding>=2026.9.22",
-  "reference-lookup==2026.9.23",
+  "reference-lookup==2026.11.5",
 ]
 
 [tool.uv.sources]
 metar-shared = { workspace = true }
+reference-lookup = { workspace = true }
 
 [project.scripts]
 tac2iwxxm = "tac2iwxxm.cli:main"

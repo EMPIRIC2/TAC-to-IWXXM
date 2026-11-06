@@ -40,7 +40,7 @@ dependencies = [
 
 [[package]]
 name = "iwxxm_validate_rust"
-version = "2026.11.5"
+version = "2026.11.5+1"
 dependencies = [
  "pyo3",
  "xmloxide",
