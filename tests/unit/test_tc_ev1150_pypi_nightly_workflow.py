@@ -50,6 +50,9 @@ def test_pypi_nightly_workflow_schedule_and_testpypi() -> None:
         "python3.12" in steps_blob
     )  # manylinux interpreter pin (EV-ci-runtime-failures)
     assert "continue-on-error" in WORKFLOW.read_text(encoding="utf-8")
+    # Native maturin jobs leave UV_CACHE_DIR empty; setup-uv must not fail post-job.
+    install_uv = next(s for s in job["steps"] if s.get("name") == "Install uv")
+    assert (install_uv.get("with") or {}).get("enable-cache") is False
     # No long-lived TestPyPI password in the workflow file.
     assert "secrets.PYPI_API_TOKEN" not in WORKFLOW.read_text(encoding="utf-8")
     assert "password" not in (

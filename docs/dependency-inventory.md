@@ -86,10 +86,10 @@ Package license: **MIT**. No FastAPI/Supabase imports. Backend already has `sqla
 | Package | Purpose | License | Source |
 |---------|---------|---------|--------|
 | msgspec | Versioned IR / convert issue models (ADR-016) | Apache-2.0 | PyPI (`>=0.19`) |
-| metar-shared | Inherit-factory ports / merge helpers (ADR-055) | MIT | workspace path |
+| metar-shared | Inherit-factory ports / merge helpers (ADR-055) | MIT | PyPI (`==2026.11.5`; workspace for local) |
 | PyYAML | Decode glossary YAML overlays (F9 / ADR-032; E20-F5) | MIT | PyPI (`>=6.0`) |
 | hydra-core | Compose the national convert allowlist (ADR-050 / #1270) | MIT | PyPI (`==1.3.7`) |
-| reference-lookup | Navaid and ICAO coordinates before the checked-in table (ADR-051) | MIT | workspace (`==2026.9.23`) |
+| reference-lookup | Navaid and ICAO coordinates before the checked-in table (ADR-051) | MIT | PyPI (`==2026.11.5`; workspace for local) |
 | lxml | XML encode/validate support (optional / transitional) | BSD | PyPI |
 | PyO3 / maturin / rustc | Native hotspots | Apache-2.0 / MIT (typical) | **Required before cutover** (ADR-017) |
 
@@ -110,7 +110,7 @@ Package license: **MIT**. No FastAPI/Supabase imports.
 | Package | Purpose | License | Source |
 |---------|---------|---------|--------|
 | msgspec | Structured issue / fix models | Apache-2.0 | **Required** (ADR-016); reuse `tac_validate.codec` Encoder/Decoder |
-| metar-shared | Inherit-factory ports / merge helpers (ADR-055) | MIT | workspace path |
+| metar-shared | Inherit-factory ports / merge helpers (ADR-055) | MIT | PyPI (`==2026.11.5`; workspace for local) |
 | PyYAML | TAC quality policy YAML load (ADR-046 / #1216) | MIT | PyPI (`==6.0.3`; already used by tac2iwxxm / tac-decoding) |
 
 Package license: **MIT**. Stdlib-first preferred; no FastAPI/Supabase. No Schematron. No `tac2iwxxm` import.
