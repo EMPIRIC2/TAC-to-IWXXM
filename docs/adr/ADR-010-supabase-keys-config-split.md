@@ -31,7 +31,7 @@ legacy JWT `anon` / `service_role` keys.
 
 - One rotation updates fewer dashboard fields; `make env-check` catches drift.
 - Frontend deploy adds a config-injection build step; no secrets in committed JSON.
-- Breaking change for operators using old env names — mitigated by deprecation warnings.
+- Breaking change for operators using old env names, mitigated by deprecation warnings.
 - METAR Supabase MCP not linked to org account; migrations applied manually via dashboard.
 - Edge functions under `apps/frontend/supabase/functions/` still use secret key until follow-up.
 

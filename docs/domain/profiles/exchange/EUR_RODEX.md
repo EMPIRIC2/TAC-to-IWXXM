@@ -4,7 +4,7 @@
 > **Catalog row**: [`catalog.yaml`](../catalog.yaml) · **ADR**: [ADR-036](../../../adr/ADR-036-semantic-vs-exchange-profiles.md)
 
 Regional **exchange** overlay for EUR RODEX / IWXXM OPMET practice. P0 stub
-delegates to the `GLOBAL_AFS` COLLECT baseline — same bulletin shell, registry id,
+delegates to the `GLOBAL_AFS` COLLECT baseline: same bulletin shell, registry id,
 and packaging hook. RODEX-specific filename or routing rules deepen on backlog.
 
 ## Owns (target)

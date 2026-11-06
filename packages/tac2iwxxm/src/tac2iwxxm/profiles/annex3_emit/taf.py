@@ -8,30 +8,96 @@ from typing import Any, cast
 from xml.sax.saxutils import escape
 
 from tac2iwxxm.profiles.annex3_emit._common import *
+from tac2iwxxm.profiles.annex3_emit.taf_cloud import taf_cloud_block
+from tac2iwxxm.taf_time_links import base_forecast_phenomenon_href
+from tac2iwxxm.visibility_measure import prevailing_from_statute_miles
 
 
-def _taf_time_prefix(ir: dict[str, Any]) -> str:
-    """WMO YUDO examples use 2012-08; other fixtures use 2023-06."""
+def _taf_time_prefix(ir: dict[str, Any], day: int | None = None) -> str:
+    """
+    Internal helper ``_taf_time_prefix``.
+
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Argument ``ir``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
     # ruff: noqa: F403, F405
+    from tac2iwxxm.time_anchor import anchored_prefix
+
+    day_value = int(ir.get("issue_day") or 1) if day is None else int(day)
+    anchored = anchored_prefix(ir, day_value)
+    if anchored is not None:
+        return anchored
     if ir.get("station") == "YUDO":
         return "2012-08"
     return "2023-06"
 
 
 def _taf_issue_stamp(ir: dict[str, Any]) -> str:
-    prefix = _taf_time_prefix(ir)
+    """
+    Internal helper ``_taf_issue_stamp``.
+
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Argument ``ir``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
+    prefix = _taf_time_prefix(ir, int(ir["issue_day"]))
     return f"{prefix}-{int(ir['issue_day']):02d}T{int(ir['issue_hour']):02d}:{int(ir['issue_minute']):02d}:00Z"
 
 
 def _taf_period(ir: dict[str, Any], *, from_key: str = "valid") -> tuple[str, str]:
-    prefix = _taf_time_prefix(ir)
-    begin = f"{prefix}-{int(ir[f'{from_key}_from_day']):02d}T{int(ir[f'{from_key}_from_hour']):02d}:00:00Z"
-    end = f"{prefix}-{int(ir[f'{from_key}_to_day']):02d}T{int(ir[f'{from_key}_to_hour']):02d}:00:00Z"
+    """
+    Internal helper ``_taf_period``.
+
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Argument ``ir``.
+
+    from_key : str, optional
+        Argument ``from_key``.
+
+    Returns
+    -------
+    tuple[str, str]
+        Return value.
+    """
+    begin_prefix = _taf_time_prefix(ir, int(ir[f"{from_key}_from_day"]))
+    end_prefix = _taf_time_prefix(ir, int(ir[f"{from_key}_to_day"]))
+    begin = f"{begin_prefix}-{int(ir[f'{from_key}_from_day']):02d}T{int(ir[f'{from_key}_from_hour']):02d}:00:00Z"
+    end = f"{end_prefix}-{int(ir[f'{from_key}_to_day']):02d}T{int(ir[f'{from_key}_to_hour']):02d}:00:00Z"
     return begin, end
 
 
 def _taf_aerodrome_block(station: str, *, include_arp: bool) -> str:
-    """Emit TAF aerodrome; YUDO WMO examples include name (+ ARP on non-cancel)."""
+    """
+    Internal helper ``_taf_aerodrome_block``.
+
+    Parameters
+    ----------
+    station : str
+        Argument ``station``.
+
+    include_arp : bool
+        Argument ``include_arp``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
     name = ""
     arp = ""
     if station == "YUDO":
@@ -61,6 +127,19 @@ def _taf_aerodrome_block(station: str, *, include_arp: bool) -> str:
 
 
 def _fmt_taf_speed(value: object) -> str:
+    """
+    Internal helper ``_fmt_taf_speed``.
+
+    Parameters
+    ----------
+    value : object
+        Argument ``value``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
     fval = float(str(value))
     if fval == int(fval):
         # Vendor A5-1: base uses 5.0; TEMPO/FM use bare integers for whole m/s.
@@ -69,15 +148,22 @@ def _fmt_taf_speed(value: object) -> str:
 
 
 def _taf_wind_block(fcst: dict[str, Any]) -> str:
-    if fcst.get("wind_variable"):
-        return """      <iwxxm:surfaceWind>
-        <iwxxm:AerodromeSurfaceWindForecast variableWindDirection="true">
-          <iwxxm:meanWindSpeed uom="m/s">0.0</iwxxm:meanWindSpeed>
-        </iwxxm:AerodromeSurfaceWindForecast>
-      </iwxxm:surfaceWind>
-"""
+    """
+    Internal helper ``_taf_wind_block``.
+
+    Parameters
+    ----------
+    fcst : dict[str, Any]
+        Argument ``fcst``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
     if fcst.get("wind_speed_mps") is None and fcst.get("wind_speed_kt") is None:
         return ""
+    variable = bool(fcst.get("wind_variable"))
     if fcst.get("wind_speed_mps") is not None:
         # WMO A5-1 baseForecast uses one decimal on 5.0; change groups use bare ints.
         spd_raw = float(fcst["wind_speed_mps"])
@@ -91,60 +177,65 @@ def _taf_wind_block(fcst: dict[str, Any]) -> str:
     gust_xml = ""
     if gust is not None:
         gust_xml = f'\n          <iwxxm:windGustSpeed uom="{uom}">{_fmt_taf_speed(gust)}</iwxxm:windGustSpeed>'
+    direction = ""
+    if not variable:
+        direction = f'\n          <iwxxm:meanWindDirection uom="deg">{fcst["wind_dir_deg"]}</iwxxm:meanWindDirection>'
     return f"""      <iwxxm:surfaceWind>
-        <iwxxm:AerodromeSurfaceWindForecast variableWindDirection="false">
-          <iwxxm:meanWindDirection uom="deg">{fcst["wind_dir_deg"]}</iwxxm:meanWindDirection>
+        <iwxxm:AerodromeSurfaceWindForecast variableWindDirection="{str(variable).lower()}">{direction}
           <iwxxm:meanWindSpeed uom="{uom}">{spd}</iwxxm:meanWindSpeed>{gust_xml}
         </iwxxm:AerodromeSurfaceWindForecast>
       </iwxxm:surfaceWind>
 """
 
 
-def _taf_cloud_block(fcst: dict[str, Any], *, gml_id: str) -> str:
-    clouds_raw = fcst.get("clouds")
-    layers: list[dict[str, Any]] = []
-    if isinstance(clouds_raw, list) and clouds_raw:
-        layers.extend(cast(dict[str, Any], item) for item in cast(list[Any], clouds_raw) if isinstance(item, dict))
-    elif fcst.get("cloud_amount") and fcst.get("cloud_base_ft") is not None:
-        layers = [{"amount": fcst["cloud_amount"], "base_ft": fcst["cloud_base_ft"]}]
-    if not layers:
-        return ""
-    layer_xml: list[str] = []
-    for layer in layers:
-        href = _CLOUD_HREF.format(amt=layer["amount"])
-        ctype_xml = ""
-        if layer.get("cloud_type"):
-            thref = escape(_CLOUD_TYPE_HREF.format(ctype=str(layer["cloud_type"])))
-            ctype_xml = f'\n              <iwxxm:cloudType xlink:href="{thref}"/>'
-        layer_xml.append(
-            f"""          <iwxxm:layer>
-            <iwxxm:CloudLayer>
-              <iwxxm:amount xlink:href="{escape(href)}"/>
-              <iwxxm:base uom="[ft_i]">{layer["base_ft"]}</iwxxm:base>{ctype_xml}
-            </iwxxm:CloudLayer>
-          </iwxxm:layer>"""
-        )
-    joined = "\n".join(layer_xml)
-    return f"""      <iwxxm:cloud>
-        <iwxxm:AerodromeCloudForecast gml:id="{gml_id}">
-{joined}
-        </iwxxm:AerodromeCloudForecast>
-      </iwxxm:cloud>
-"""
-
-
 def _taf_weather_block(fcst: dict[str, Any]) -> str:
+    """
+    Internal helper ``_taf_weather_block``.
+
+    Parameters
+    ----------
+    fcst : dict[str, Any]
+        Argument ``fcst``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
     codes = fcst.get("weather")
     if not isinstance(codes, list) or not codes:
         return ""
+    # CA national forecast weather (e.g. IC) is emitted only via iwxxm-ca extension.
+    skip_national = bool(fcst.get("ca_forecast_weather_hrefs"))
     parts: list[str] = []
     for raw_code in cast(list[Any], codes):
-        href = escape(_WX_HREF.format(code=str(raw_code)))
+        token = str(raw_code)
+        if skip_national and token.upper() == "IC":
+            continue
+        href = escape(_WX_HREF.format(code=token))
         parts.append(f'      <iwxxm:weather xlink:href="{href}"/>')
+    if not parts:
+        return ""
     return "\n".join(parts) + "\n"
 
 
 def _taf_change_forecasts(ir: dict[str, Any], station: str) -> str:
+    """
+    Internal helper ``_taf_change_forecasts``.
+
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Argument ``ir``.
+
+    station : str
+        Argument ``station``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
     changes_raw = ir.get("change_forecasts")
     if not isinstance(changes_raw, list) or not changes_raw:
         return ""
@@ -154,14 +245,10 @@ def _taf_change_forecasts(ir: dict[str, Any], station: str) -> str:
     for idx, change in enumerate(typed_changes, start=1):
         indicator = str(change.get("change_indicator") or "BECOMING")
         cavok = "true" if change.get("cavok") else "false"
-        vis = ""
-        if not change.get("cavok") and change.get("visibility_m") is not None:
-            vis = f'      <iwxxm:prevailingVisibility uom="m">{change["visibility_m"]}</iwxxm:prevailingVisibility>\n'
-            if change.get("visibility_above"):
-                vis += "      <iwxxm:prevailingVisibilityOperator>ABOVE</iwxxm:prevailingVisibilityOperator>\n"
+        vis = "" if change.get("cavok") else _taf_visibility_block(change)
         wind = "" if change.get("cavok") else _taf_wind_block(change)
         weather = "" if change.get("cavok") else _taf_weather_block(change)
-        cloud = "" if change.get("cavok") else _taf_cloud_block(change, gml_id=f"cloud.chg.{idx}.{station.lower()}")
+        cloud = "" if change.get("cavok") else taf_cloud_block(change, gml_id=f"cloud.chg.{idx}.{station.lower()}")
         parts.append(
             f"""  <iwxxm:changeForecast>
     <iwxxm:MeteorologicalAerodromeForecast gml:id="fcst.chg.{idx}.{station.lower()}" changeIndicator="{indicator}" cloudAndVisibilityOK="{cavok}">
@@ -179,7 +266,19 @@ def _taf_change_forecasts(ir: dict[str, Any], station: str) -> str:
 
 
 def _taf_visibility_block(fcst: dict[str, Any]) -> str:
-    """Render prevailing visibility for a TAF forecast group."""
+    """
+    Emit prevailingVisibility XML; SM→metres when metres absent (TAF-8).
+
+    Parameters
+    ----------
+    fcst : dict[str, Any]
+        Forecast IR fields including optional visibility_* keys.
+
+    Returns
+    -------
+    str
+        XML fragment, or empty when no visibility should be emitted.
+    """
     display_uom = fcst.get("visibility_display_uom")
     if isinstance(display_uom, str):
         vis = f'      <iwxxm:prevailingVisibility uom="{display_uom}">{fcst["visibility_display_value"]}</iwxxm:prevailingVisibility>\n'
@@ -191,6 +290,12 @@ def _taf_visibility_block(fcst: dict[str, Any]) -> str:
         if fcst.get("visibility_above"):
             vis += "      <iwxxm:prevailingVisibilityOperator>ABOVE</iwxxm:prevailingVisibilityOperator>\n"
         return vis
+    if (vis_sm := fcst.get("visibility_sm")) is not None:
+        metres, above_sm = prevailing_from_statute_miles(float(vis_sm))
+        vis = f'      <iwxxm:prevailingVisibility uom="m">{metres}</iwxxm:prevailingVisibility>\n'
+        if bool(fcst.get("visibility_above")) or above_sm:
+            vis += "      <iwxxm:prevailingVisibilityOperator>ABOVE</iwxxm:prevailingVisibilityOperator>\n"
+        return vis
     return ""
 
 
@@ -200,7 +305,30 @@ def emit_taf_annex3(
     iwxxm_version: str,
     forecast_extension: str = "",
 ) -> str:
-    """Emit a minimal IWXXM TAF document for the annex3 profile."""
+    """
+    Emit a minimal IWXXM TAF document for the annex3 profile.
+
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Parsed product fields.
+
+    iwxxm_version : str
+        IWXXM release line.
+
+    forecast_extension : str, optional
+        Forecast extension XML.
+
+    Returns
+    -------
+    str
+        A minimal IWXXM TAF document for the annex3 profile.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (emit_taf_annex3)
+    2
+    """
     ns = _ns(iwxxm_version)
     station = str(ir["station"])
     issue = _taf_issue_stamp(ir)
@@ -279,16 +407,17 @@ def emit_taf_annex3(
         cavok = "true" if ir.get("cavok") else "false"
         base_wind_src = dict(ir)
         base_wind_src["_base_wind_decimal"] = True
-        wind = "" if ir.get("cavok") else _taf_wind_block(base_wind_src)
+        wind = _taf_wind_block(base_wind_src)  # TAF-7: required even when CAVOK
+        weather = "" if ir.get("cavok") else _taf_weather_block(ir)
         vis = ""
         cloud = ""
         if not ir.get("cavok"):
             vis = _taf_visibility_block(ir)
-            cloud = _taf_cloud_block(ir, gml_id=f"cloud.base.{station.lower()}")
+            cloud = taf_cloud_block(ir, gml_id=f"cloud.base.{station.lower()}")
         base_fcst = f"""  <iwxxm:baseForecast>
     <iwxxm:MeteorologicalAerodromeForecast gml:id="fcst.base.{station.lower()}" cloudAndVisibilityOK="{cavok}">
-      <iwxxm:phenomenonTime xlink:href="#uuid.00000000-0000-4000-8000-000000000001"/>
-{vis}{wind}{cloud}{forecast_extension}    </iwxxm:MeteorologicalAerodromeForecast>
+      <iwxxm:phenomenonTime xlink:href="{base_forecast_phenomenon_href()}"/>
+{vis}{wind}{weather}{cloud}{forecast_extension}    </iwxxm:MeteorologicalAerodromeForecast>
   </iwxxm:baseForecast>
 """
         changes = _taf_change_forecasts(ir, station)

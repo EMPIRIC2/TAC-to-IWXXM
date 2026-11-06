@@ -30,6 +30,9 @@ vi.mock('sonner', () => ({
   toast: mockToast,
 }));
 
+/**
+ *
+ */
 function jsonResponse(body: unknown, ok = true): Response {
   return {
     ok,

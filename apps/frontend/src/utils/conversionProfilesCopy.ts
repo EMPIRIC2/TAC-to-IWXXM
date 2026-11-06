@@ -91,7 +91,7 @@ export const MAPPING_BRIDGE_UNMATCHED_HINT =
 export const MAPPING_BRIDGE_EMPTY_IWXXM = 'Run preview to see the IWXXM block.';
 export const PROFILES_GLOSSARY_HEADING = 'What these options mean';
 export const PROFILES_GLOSSARY_PROFILE =
-  'Base profile chooses the operational rule set and national extensions used for TAC lint, conversion, and IWXXM validation.';
+  'Base profile chooses the operational rule set and national extensions used for TAC input checks, conversion, and IWXXM validation.';
 export const PROFILES_GLOSSARY_EXCHANGE =
   'Exchange packaging describes how output is bundled for bulletin exchange. It does not select destinations or credentials.';
 export const PROFILES_GLOSSARY_OVERLAY =
@@ -118,9 +118,41 @@ export const CONVERT_PRESET_LABEL = 'Semantic preset';
 export const CONVERT_PRESET_NONE = 'None';
 export const CONVERT_PRESET_HELP =
   'Optional saved preset for this convert. Applies saved profile defaults, but does not choose destinations or credentials.';
+export const COUNTRY_PRESET_LABEL = 'Country preset';
+export const COUNTRY_PRESET_CUSTOM = 'Custom';
+export const COUNTRY_PRESET_HELP =
+  'Sets TAC validation, conversion, decoding, and IWXXM validation together. You can change any one of them afterward.';
+export const VALIDATE_IWXXM_HEADING = 'Validate IWXXM';
+export const VALIDATE_IWXXM_INTRO = 'Paste or upload IWXXM XML, then Validate.';
+export const VALIDATE_IWXXM_EMPTY_RESULTS = 'Validation results appear after Validate.';
+export const VALIDATE_IWXXM_DROP_TITLE = 'Drop one XML file or select';
+export const VALIDATE_IWXXM_DROP_HELP = 'One .xml file';
 export const CONVERT_RESET_WMO_LIBRARY_DEFAULTS = 'Reset to WMO defaults';
 export const CONVERT_RESET_WMO_LIBRARY_DEFAULTS_HELP =
   'Restore the ICAO / WMO baseline profile and matching built-in library selections on Convert.';
+export const CONVERT_LIBRARY_HELP_DECODING =
+  'Controls how TAC tokens are explained in the decode panel.';
+export const CONVERT_LIBRARY_HELP_TAC_VALIDATION =
+  'Controls TAC input checks run before and with conversion.';
+export const CONVERT_LIBRARY_HELP_IWXXM_VALIDATION =
+  'Controls IWXXM output checks after conversion.';
+export const CONVERT_LIBRARY_HELP_CONVERSION =
+  'Controls how TAC is mapped into IWXXM for convert and export.';
+export const CONVERT_LIBRARY_CATALOG_LINK = 'View rule catalog';
+/**
+ * Confirm copy when changing Convert national line / semantic profile.
+ *
+ * @param nationalLine - Target line id (plain language in message)
+ * @returns Operator confirm dialog body
+ * @example
+ * const _ = true;
+ */
+export function CONVERT_PROFILE_LIBRARY_RESET_CONFIRM(nationalLine: string): string {
+  return (
+    `Change profile to ${nationalLine} and reset Decoding, TAC validation, ` +
+    `IWXXM validation, and Conversion libraries to that line's defaults?`
+  );
+}
 export const PROFILES_INSPECTOR_ACCESS_BUILTIN = 'Built-in (read-only default)';
 export const PROFILES_INSPECTOR_STATUS_READY = 'Ready';
 export const PROFILES_INSPECTOR_STATUS_DRAFT = 'Draft saved locally';
@@ -161,6 +193,9 @@ export const PROFILES_PACK_EXPORT = 'Export share bundle';
 export const PROFILES_PACK_IMPORT = 'Import share bundle';
 export const PROFILES_ERROR_PREFIX = 'Profiles error:';
 export const PROFILES_COUNT_UNAVAILABLE = 'Unavailable';
+/** Workbench twin when profile catalog fetch fails (EV-1149 / #1149). */
+export const WORKBENCH_PROFILE_CATALOG_DEGRADED =
+  'Profile details could not be loaded. Rule pack and overlay counts may be incomplete.';
 export const PROFILES_PRESETS_HEADING = 'Semantic presets';
 export const PROFILES_PRESETS_LOADING = 'Loading semantic presets…';
 export const PROFILES_PRESETS_EMPTY = 'No semantic presets yet.';
@@ -222,7 +257,7 @@ export const PROFILES_TOOLTIP_LIBRARIES =
 export const PROFILES_TOOLTIP_LIBRARY_TAB_CONVERSION =
   'Map TAC groups to IWXXM blocks with typed slots and optional decode-only or skip modes.';
 export const PROFILES_TOOLTIP_LIBRARY_TAB_TAC_VALIDATION =
-  'TAC lint rules that run before or alongside conversion for the selected profile line.';
+  'TAC input check rules that run before or alongside conversion for the selected profile line.';
 export const PROFILES_TOOLTIP_LIBRARY_TAB_IWXXM_VALIDATION =
   'IWXXM schema and Schematron checks applied to converted output.';
 export const PROFILES_TOOLTIP_LIBRARY_TAB_DISSEMINATION =

@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from collections.abc import Sequence
 
+from iwxxm_validate.declared_package import apply_declared_package
 from iwxxm_validate.models import Issue, ValidationReport
 from iwxxm_validate.paths import ca_xsd_path, us_catalog_path
 from iwxxm_validate.pin_sch import PinSchError, assert_pin_schematron_match
@@ -11,7 +12,7 @@ from iwxxm_validate.schematron import validate_schematron
 from iwxxm_validate.xsd import validate_xsd
 
 _DEFAULT_LEVELS: tuple[str, ...] = ("xsd", "schematron")
-_VALID_PROFILES = frozenset({"annex3", "iwxxm_us", "ca_eccc"})
+_VALID_PROFILES = frozenset({"annex3", "iwxxm_us", "ca_eccc", "ca_msc_sigmet"})
 _CA_ECCC_IWXXM_VERSION = "3.0.0"
 _VALID_LEVELS = frozenset({"xsd", "schematron"})
 
@@ -29,23 +30,28 @@ def validate(
 
     Parameters
     ----------
-    xml_content :
+    xml_content : str
         IWXXM XML document.
-    iwxxm_version :
+    iwxxm_version : str
         Release line (e.g. ``2023-1``).
-    profile :
+    profile : str, optional
         ``annex3`` (default), ``iwxxm_us`` (requires vendored US catalog), or
         ``ca_eccc`` (requires vendored ``iwxxm-ca`` pin; IWXXM version ``3.0.0``).
-    levels :
+    levels : Sequence[str] or None, optional
         Subset of ``xsd`` / ``schematron``. Default runs both.
-    product :
-        API product enum for Canadian extension XSD when ``profile=ca_eccc``.
+    product : str or None, optional
+        API product enum for Canadian extension XSD when ``profile=ca_eccc``. By default ``None``.
 
     Returns
     -------
     ValidationReport
         ``ok`` is ``False`` when any error-severity issue is present.
         XSLT2 Schematron yields non-blocking ``SCHEMATRON_SKIPPED`` (D-S008-T21-sch).
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (validate)
+    2
     """
     if profile not in _VALID_PROFILES:
         return ValidationReport(
@@ -79,6 +85,19 @@ def validate(
             ],
         )
 
+    iwxxm_version, rejection = apply_declared_package(
+        xml_content,
+        profile=profile,
+        iwxxm_version=iwxxm_version,
+    )
+    if rejection is not None:
+        return ValidationReport(
+            ok=False,
+            iwxxm_version=iwxxm_version,
+            profile=profile,
+            issues=[rejection],
+        )
+
     issues: list[Issue] = []
 
     try:
@@ -98,7 +117,7 @@ def validate(
             ],
         )
 
-    if profile == "ca_eccc":
+    if profile in {"ca_eccc", "ca_msc_sigmet"}:
         if ca_xsd_path() is None:
             issues.append(
                 Issue(
@@ -120,7 +139,7 @@ def validate(
                     severity="error",
                     code="INVALID_IWXXM_VERSION",
                     message=(
-                        f"profile=ca_eccc requires iwxxm_version {_CA_ECCC_IWXXM_VERSION!r}, got {iwxxm_version!r}"
+                        f"profile={profile} requires iwxxm_version {_CA_ECCC_IWXXM_VERSION!r}, got {iwxxm_version!r}"
                     ),
                     layer="wmo_xsd",
                 )
@@ -133,11 +152,20 @@ def validate(
             )
         from iwxxm_validate.ca_eccc_validate import validate_ca_eccc_layered
 
-        return validate_ca_eccc_layered(
+        report = validate_ca_eccc_layered(
             xml_content,
             iwxxm_version=iwxxm_version,
             product=product,
             levels=selected,
+        )
+        if profile == "ca_eccc":
+            return report
+        return ValidationReport(
+            ok=report.ok,
+            iwxxm_version=report.iwxxm_version,
+            profile=profile,
+            issues=report.issues,
+            stages=report.stages,
         )
 
     if profile == "iwxxm_us" and us_catalog_path() is None:

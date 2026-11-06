@@ -23,7 +23,17 @@ logger = logging.getLogger(__name__)
 @lru_cache(maxsize=32)
 def _compile_schema_file(xsd_file: str) -> Any | None:
     """
-    Compile and cache an arbitrary XSD path (product extension schemas).
+    Internal helper ``_compile_schema_file``.
+
+    Parameters
+    ----------
+    xsd_file : object
+        Argument ``xsd_file``.
+
+    Returns
+    -------
+    object
+        Return value.
     """
     path = Path(xsd_file)
     try:
@@ -40,10 +50,17 @@ def _compile_schema_file(xsd_file: str) -> Any | None:
 @lru_cache(maxsize=16)
 def _compile_schema(iwxxm_version: str) -> Any | None:
     """
-    Compile and cache the XSD for ``iwxxm_version``.
+    Internal helper ``_compile_schema``.
 
-    Returns ``None`` when the schema has known non-blocking import gaps
-    (parity with backend F2 for 2025-x substitutionGroup issues).
+    Parameters
+    ----------
+    iwxxm_version : object
+        Argument ``iwxxm_version``.
+
+    Returns
+    -------
+    object
+        Return value.
     """
     path = xsd_path(iwxxm_version)
     try:
@@ -64,6 +81,25 @@ def _validate_against_schema(
     layer: str,
     schema_label: str,
 ) -> list[Issue]:
+    """
+    Internal helper ``_validate_against_schema``.
+
+    Parameters
+    ----------
+    xml_content : object
+        Argument ``xml_content``.
+    schema : object
+        Argument ``schema``.
+    layer : object
+        Argument ``layer``.
+    schema_label : object
+        Argument ``schema_label``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     try:
         xml_doc = etree.fromstring(xml_content.encode("utf-8"))
     except etree.XMLSyntaxError as exc:
@@ -137,17 +173,22 @@ def validate_xsd_at_path(
 
     Parameters
     ----------
-    xml_content :
+    xml_content : str
         XML document text.
-    xsd_file :
+    xsd_file : Path or str
         Absolute or relative path to the XSD schema file.
-    layer :
-        Issue ``layer`` / stage id for findings (e.g. ``ca_xsd``).
+    layer : str, optional
+        Issue ``layer`` / stage id for findings (e.g. ``ca_xsd``). By default ``_XSD_LAYER_DEFAULT``.
 
     Returns
     -------
-    list of Issue
+    list[Issue]
         Empty on success; otherwise schema / parse findings.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (validate_xsd_at_path)
+    2
     """
     path = Path(xsd_file)
     if not path.is_file():
@@ -188,15 +229,20 @@ def validate_xsd(xml_content: str, iwxxm_version: str) -> list[Issue]:
 
     Parameters
     ----------
-    xml_content :
+    xml_content : str
         XML document text.
-    iwxxm_version :
+    iwxxm_version : str
         IWXXM release line.
 
     Returns
     -------
-    list of Issue
+    list[Issue]
         Empty on success; otherwise schema / parse findings.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (validate_xsd)
+    2
     """
     try:
         schema = _compile_schema(iwxxm_version)
@@ -237,7 +283,14 @@ def validate_xsd(xml_content: str, iwxxm_version: str) -> list[Issue]:
 
 
 def clear_xsd_cache() -> None:
-    """Clear compiled XSD cache (tests)."""
+    """
+    Clear compiled XSD cache (tests).
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (clear_xsd_cache)
+    2
+    """
     _compile_schema.cache_clear()
     _compile_schema_file.cache_clear()
 

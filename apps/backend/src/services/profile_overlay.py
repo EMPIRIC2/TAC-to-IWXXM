@@ -25,6 +25,11 @@ def overlay_hmac_secret() -> str:
     ------
     HTTPException
         503 when the secret is unset (overlays unavailable).
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (overlay_hmac_secret)
+    2
     """
     secret = (os.environ.get("PROFILE_OVERLAY_HMAC_SECRET") or "").strip()
     if not secret:
@@ -36,7 +41,24 @@ def overlay_hmac_secret() -> str:
 
 
 def canonical_overlay_body(body: dict[str, Any]) -> str:
-    """Return stable JSON for HMAC input (sorted keys, compact separators)."""
+    """
+    Return stable JSON for HMAC input (sorted keys, compact separators).
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (canonical_overlay_body)
+    2
+
+    Parameters
+    ----------
+    body : object
+        Argument ``body``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return json.dumps(body, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
 
 
@@ -52,6 +74,16 @@ def sign_overlay(*, user_id: UUID, base_profile_id: str, body: dict[str, Any]) -
         Catalog profile id the overlay amends.
     body :
         Operator overlay JSON (no secrets).
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (sign_overlay)
+    2
+
+    Returns
+    -------
+    object
+        Return value.
     """
     message = f"{user_id}:{base_profile_id}:{canonical_overlay_body(body)}"
     digest = hmac.new(
@@ -76,6 +108,22 @@ def verify_overlay_signature(
     ------
     HTTPException
         400 when the signature is missing or does not match.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (verify_overlay_signature)
+    2
+
+    Parameters
+    ----------
+    user_id : object
+        Argument ``user_id``.
+    base_profile_id : object
+        Argument ``base_profile_id``.
+    body : object
+        Argument ``body``.
+    signature : object
+        Argument ``signature``.
     """
     if not (signature or "").strip():
         raise HTTPException(

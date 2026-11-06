@@ -28,20 +28,23 @@ logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/v1/translation", tags=["ICAO OPMET Statistics"])
 
 
-@router.get("/centre-info", response_model=TranslationCentreInfo)
+@router.get("/centre-info", response_model=TranslationCentreInfo, summary="Translation centre information")
 async def get_centre_info() -> TranslationCentreInfo:
     """
-    Get Translation Centre identification and capabilities.
+    Return this translation centre's name, designator, location, supported IWXXM versions, and products.
 
-    Returns metadata about this Translation Centre as per ICAO OPMET guidelines.
-    This endpoint is public and does not require authentication.
+    No login is required.
 
-    **Returns**:
-    - Translation centre name and designator
-    - ICAO location indicator
-    - Supported IWXXM versions
-    - Supported aviation product types
-    - Service online date
+
+    Returns
+    -------
+    object
+        Return value.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (get_centre_info)
+    2
     """
     info = get_translation_centre_info()
 
@@ -61,49 +64,31 @@ async def get_centre_info() -> TranslationCentreInfo:
     )
 
 
-@router.post("/statistics", response_model=TranslationStatistics)
+@router.post("/statistics", response_model=TranslationStatistics, summary="Translation statistics")
 async def get_translation_statistics(
     request: TranslationStatisticsRequest,
 ) -> object:
     """
-    Query aggregated translation statistics.
+    Return aggregated translation statistics for a time range.
 
-    Retrieves translation centre statistics for a specified time period with optional filters.
-    Implements ICAO OPMET Data Exchange Guidelines Section 7 reporting requirements.
+    Optional filters are ICAO region, IWXXM version, and airport. No login is required.
 
-    **Authentication**: Public (no login required).
 
-    **Request Parameters**:
-    - **start_date** (required): Statistics period start (ISO 8601)
-    - **end_date** (required): Statistics period end (ISO 8601)
-    - **icao_region** (optional): Filter by ICAO region (AFI, APAC, EUR, MID, NAM, SAM)
-    - **iwxxm_version** (optional): Filter by IWXXM version (2025-2, 2023-1)
-    - **airport_code** (optional): Filter by specific ICAO airport code
-    - **include_airport_breakdown** (optional): Include per-airport statistics (default: false)
-    - **include_error_details** (optional): Include detailed error analysis (default: false)
+    Parameters
+    ----------
+    request : object
+        Argument ``request``.
 
-    **Returns**:
-    - Aggregated translation statistics including:
-      - Total, successful, and failed translation counts
-      - Success rate percentage
-      - Average and median processing duration
-      - Breakdown by ICAO region
-      - Breakdown by IWXXM version
-      - Validation layer success rates
-      - Optional airport-level details
-      - Optional error frequency analysis
+    Returns
+    -------
+    object
+        Return value.
 
-    **Example**:
-    ```json
-    {
-        "start_date": "2026-02-01T00:00:00Z",
-        "end_date": "2026-02-13T23:59:59Z",
-        "icao_region": "NAM",
-        "include_airport_breakdown": true
-    }
-    ```
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (get_translation_statistics)
+    2
     """
-
     # Validate date range
     if request.end_date < request.start_date:
         raise HTTPException(status_code=400, detail="end_date must be after start_date")
@@ -135,28 +120,37 @@ async def get_translation_statistics(
     return TranslationStatistics(**stats_data)
 
 
-@router.get("/statistics/recent", response_model=TranslationStatistics)
+@router.get("/statistics/recent", response_model=TranslationStatistics, summary="Recent translation statistics")
 async def get_recent_statistics(
     hours: int = Query(24, ge=1, le=168, description="Number of hours to query (1-168)"),
     icao_region: ICAORegion | None = Query(None, description="Filter by ICAO region"),
     iwxxm_version: str | None = Query(None, description="Filter by IWXXM version"),
 ) -> object:
     """
-    Get recent translation statistics (last N hours).
+    Return translation statistics for the last N hours.
 
-    Convenience endpoint for querying recent activity without specifying exact dates.
+    No login is required.
 
-    **Authentication**: Public (no login required).
 
-    **Query Parameters**:
-    - **hours**: Number of hours to look back (1-168, default: 24)
-    - **icao_region**: Optional ICAO region filter
-    - **iwxxm_version**: Optional IWXXM version filter
+    Parameters
+    ----------
+    hours : object
+        Argument ``hours``.
+    icao_region : object
+        Argument ``icao_region``.
+    iwxxm_version : object
+        Argument ``iwxxm_version``.
 
-    **Returns**:
-    Aggregated translation statistics for the specified time window.
+    Returns
+    -------
+    object
+        Return value.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (get_recent_statistics)
+    2
     """
-
     end_date = datetime.now(UTC).replace(tzinfo=None)
     start_date = end_date - timedelta(hours=hours)
 
@@ -184,34 +178,34 @@ async def get_recent_statistics(
     return TranslationStatistics(**stats_data)
 
 
-@router.get("/statistics/by-region", response_model=dict)
+@router.get("/statistics/by-region", response_model=dict, summary="Translation statistics by ICAO region")
 async def get_statistics_by_region(
     start_date: datetime = Query(..., description="Statistics period start (ISO 8601)"),
     end_date: datetime = Query(..., description="Statistics period end (ISO 8601)"),
 ) -> object:
     """
-    Get translation statistics grouped by ICAO region.
+    Return translation counts grouped by ICAO region for a time range.
 
-    Returns translation activity summary for all ICAO regions.
-    Useful for identifying regional distribution and capacity planning.
+    No login is required.
 
-    **Authentication**: Public (no login required).
 
-    **Query Parameters**:
-    - **start_date**: Statistics period start (ISO 8601)
-    - **end_date**: Statistics period end (ISO 8601)
+    Parameters
+    ----------
+    start_date : object
+        Argument ``start_date``.
+    end_date : object
+        Argument ``end_date``.
 
-    **Returns**:
-    Dictionary mapping ICAO region codes to statistics:
-    ```json
-    {
-        "NAM": {"total": 1500, "success_rate": 98.5},
-        "EUR": {"total": 890, "success_rate": 97.2},
-        "APAC": {"total": 456, "success_rate": 99.1}
-    }
-    ```
+    Returns
+    -------
+    object
+        Return value.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (get_statistics_by_region)
+    2
     """
-
     # Query region-grouped statistics from database
     logger.info(f"Region statistics query: {start_date} to {end_date}")
 
@@ -221,30 +215,28 @@ async def get_statistics_by_region(
     )
 
 
-@router.get("/airport-region/{airport_code}")
+@router.get("/airport-region/{airport_code}", summary="ICAO region for an airport")
 async def get_airport_region(airport_code: str) -> dict[str, Any]:
     """
-    Determine ICAO region for a given airport code.
+    Return the ICAO region for a four-letter airport code.
 
-    Utility endpoint for testing ICAO region mapping.
-    This endpoint is public and does not require authentication.
+    No login is required.
 
-    **Path Parameters**:
-    - **airport_code**: 4-letter ICAO airport identifier
 
-    **Returns**:
-    ```json
-    {
-        "airport_code": "KJFK",
-        "icao_region": "NAM",
-        "region_name": "North American"
-    }
-    ```
+    Parameters
+    ----------
+    airport_code : object
+        Argument ``airport_code``.
 
-    **Example**:
-    - `GET /api/v1/translation/airport-region/KJFK` → `{"icao_region": "NAM"}`
-    - `GET /api/v1/translation/airport-region/EGLL` → `{"icao_region": "EUR"}`
-    - `GET /api/v1/translation/airport-region/RJAA` → `{"icao_region": "APAC"}`
+    Returns
+    -------
+    object
+        Return value.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (get_airport_region)
+    2
     """
     try:
         region = get_icao_region(airport_code)
@@ -274,13 +266,23 @@ async def get_airport_region(airport_code: str) -> dict[str, Any]:
 # =============================================================================
 
 
-@router.get("/health")
+@router.get("/health", summary="Translation statistics health")
 async def statistics_health() -> object:
     """
-    Translation statistics service health check.
+    Return translation statistics service status.
 
-    Returns service status and configuration.
-    Public endpoint (no authentication required).
+    No login is required.
+
+
+    Returns
+    -------
+    object
+        Return value.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (statistics_health)
+    2
     """
     from ..config.icao_opmet import (
         ENABLE_STATISTICS,

@@ -133,15 +133,16 @@ def test_tc_ev087_006_unknown_semantic_still_fail_closed() -> None:
 
 
 def test_tc_ev087_007_unsupported_product_for_au_nz() -> None:
-    """SIGMET is out of P1 product set for AU_BOM / NZ_CAA_MET."""
-    for profile in ("AU_BOM", "NZ_CAA_MET"):
-        bad = convert(
-            "YMMM SIGMET A1 VALID 010000/010400 YMMC-\nYMMM MELBOURNE FIR SEV TURB FCST WI N3000 E15000 - N3100 E15100 FL180/350=",
-            product="SIGMET",
-            profile=profile,
-        )
-        assert not bad.ok, profile
-        assert any(i.code == "UNSUPPORTED_PROFILE" for i in bad.issues), profile
+    """Australia SIGMET converts. New Zealand still rejects SIGMET."""
+    tac = (
+        "YMMM SIGMET A1 VALID 010000/010400 YMMC-\n"
+        "YMMM MELBOURNE FIR SEV TURB FCST WI N3000 E15000 - N3100 E15100 FL180/350="
+    )
+    au = convert(tac, product="SIGMET", profile="AU_BOM")
+    assert au.ok, au.issues
+    nz = convert(tac, product="SIGMET", profile="NZ_CAA_MET")
+    assert not nz.ok
+    assert any(i.code == "UNSUPPORTED_PROFILE" for i in nz.issues)
 
 
 def test_tc_ev087_008_nz_2000ft_wind_vrb_and_gust() -> None:

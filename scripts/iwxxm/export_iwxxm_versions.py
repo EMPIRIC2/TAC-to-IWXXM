@@ -32,8 +32,8 @@ def _load_versions_module():  # noqa: ANN202
 
 def build_payload(versions_mod: object) -> dict[str, object]:
     """Map Python SoT to the locked FE/CI JSON shape."""
-    default = str(getattr(versions_mod, "DEFAULT_VERSION"))
-    supported: dict[str, dict[str, object]] = getattr(versions_mod, "SUPPORTED_VERSIONS")
+    default = str(versions_mod.DEFAULT_VERSION)
+    supported: dict[str, dict[str, object]] = versions_mod.SUPPORTED_VERSIONS
     out_versions: list[dict[str, str]] = []
     for version_id, meta in supported.items():
         role = str(meta.get("status", ""))

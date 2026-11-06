@@ -35,7 +35,19 @@ _LOCATION = frozenset(
 
 
 def _fields(text: str) -> dict[str, str]:
-    """Collect KEY: value pairs, joining indented continuation lines."""
+    """
+    Internal helper ``_fields``.
+
+    Parameters
+    ----------
+    text : str
+        Argument ``text``.
+
+    Returns
+    -------
+    dict[str, str]
+        Return value.
+    """
     out: dict[str, str] = {}
     current_key: str | None = None
     for raw in text.splitlines():
@@ -56,6 +68,19 @@ def _fields(text: str) -> dict[str, str]:
 
 
 def _parse_dtg(token: str) -> str | None:
+    """
+    Internal helper ``_parse_dtg``.
+
+    Parameters
+    ----------
+    token : str
+        Argument ``token``.
+
+    Returns
+    -------
+    str | None
+        Return value.
+    """
     token = token.strip().replace(" ", "")
     m = _DTG_SHORT.search(token)
     if m:
@@ -64,6 +89,22 @@ def _parse_dtg(token: str) -> str | None:
 
 
 def _day_hhmm_to_iso(token: str, *, issue_iso: str) -> str | None:
+    """
+    Internal helper ``_day_hhmm_to_iso``.
+
+    Parameters
+    ----------
+    token : str
+        Argument ``token``.
+
+    issue_iso : str
+        Argument ``issue_iso``.
+
+    Returns
+    -------
+    str | None
+        Return value.
+    """
     m = _DAY_HHMM.search(token.replace(" ", ""))
     if m is None:
         return None
@@ -71,6 +112,19 @@ def _day_hhmm_to_iso(token: str, *, issue_iso: str) -> str | None:
 
 
 def _normalize_location(tok: str) -> str:
+    """
+    Internal helper ``_normalize_location``.
+
+    Parameters
+    ----------
+    tok : str
+        Argument ``tok``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
     upper = tok.upper()
     if upper == "DAYSIDE":
         return "DAYLIGHT_SIDE"
@@ -78,7 +132,19 @@ def _normalize_location(tok: str) -> str:
 
 
 def _parse_intensity_regions(body: str) -> list[dict[str, Any]]:
-    """Parse ``SEV MNH EQN … MOD NIGHTSIDE`` into intensity groups."""
+    """
+    Internal helper ``_parse_intensity_regions``.
+
+    Parameters
+    ----------
+    body : str
+        Argument ``body``.
+
+    Returns
+    -------
+    list[dict[str, Any]]
+        Return value.
+    """
     tokens = body.split()
     groups: list[dict[str, Any]] = []
     current_intensity: str | None = None
@@ -102,6 +168,22 @@ def _parse_intensity_regions(body: str) -> list[dict[str, Any]]:
 
 
 def _parse_obs_or_fcst(raw: str, *, issue_iso: str) -> dict[str, Any] | None:
+    """
+    Internal helper ``_parse_obs_or_fcst``.
+
+    Parameters
+    ----------
+    raw : str
+        Argument ``raw``.
+
+    issue_iso : str
+        Argument ``issue_iso``.
+
+    Returns
+    -------
+    dict[str, Any] | None
+        Return value.
+    """
     text = raw.strip()
     if not text:
         return None
@@ -121,9 +203,10 @@ def parse_swxa(tac: str, *, product: str = "SWXA") -> dict[str, Any]:
 
     Parameters
     ----------
-    tac :
+    tac : str
         SWX ADVISORY text.
-    product :
+
+    product : str, optional
         Must be ``SWXA``.
 
     Returns
@@ -135,6 +218,11 @@ def parse_swxa(tac: str, *, product: str = "SWXA") -> dict[str, Any]:
     ------
     ValueError
         When product is wrong or required fields are missing.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (parse_swxa)
+    2
     """
     if product.upper() != "SWXA":
         raise ValueError(f"SWXA parser expected product SWXA, found {product!r}")

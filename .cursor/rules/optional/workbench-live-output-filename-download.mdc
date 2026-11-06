@@ -17,5 +17,5 @@ Evidence: BUG-2026-08-07 / #904 / S051 — preview updated, Download stayed on c
    do not force live Output filename onto uploads unless product says so.
 4. **Regression** — Keep
    `apps/frontend/src/test/bug-2026-08-07-output-filename-download-stale.test.tsx`
-   and `tests/bugs/test_bug_2026_08_07_output_filename_download_stale.py` green
+   and `tests/bugs/frontend/test_bug_2026_08_07_output_filename_download_stale.py` green
    when changing download naming.

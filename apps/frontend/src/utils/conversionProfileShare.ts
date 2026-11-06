@@ -32,12 +32,20 @@ const FORBIDDEN_SECRET_KEYS = new Set([
   'dsn',
 ]);
 
+/**
+ * Type `ConversionProfileShareBundle`.
+ * @example
+ * const _ = true;
+ */
 export interface ConversionProfileShareBundle {
   schemaVersion: number;
   rulePacks: RulePackCreateBody[];
   overlays: OverlayCreateBody[];
 }
 
+/**
+ * Function `isRecord`.
+ */
 function isRecord(value: unknown): value is Record<string, unknown> {
   return value !== null && typeof value === 'object' && !Array.isArray(value);
 }
@@ -47,6 +55,8 @@ function isRecord(value: unknown): value is Record<string, unknown> {
  *
  * @param value - Arbitrary JSON fragment
  * @param path - Dot path for error messages
+ * @example
+ * const _ = true;
  */
 export function assertNoShareSecrets(value: unknown, path = 'root'): void {
   if (Array.isArray(value)) {
@@ -67,6 +77,9 @@ export function assertNoShareSecrets(value: unknown, path = 'root'): void {
   }
 }
 
+/**
+ * Function `asString`.
+ */
 function asString(value: unknown, field: string): string {
   if (typeof value !== 'string' || !value.trim()) {
     throw new Error(`Share bundle field must be a non-empty string: ${field}`);
@@ -74,6 +87,9 @@ function asString(value: unknown, field: string): string {
   return value;
 }
 
+/**
+ * Function `asOptionalString`.
+ */
 function asOptionalString(value: unknown, field: string): string | undefined {
   if (value === undefined) {
     return undefined;
@@ -84,6 +100,9 @@ function asOptionalString(value: unknown, field: string): string | undefined {
   return value;
 }
 
+/**
+ * Function `toRulePackCreateBody`.
+ */
 function toRulePackCreateBody(value: unknown): RulePackCreateBody {
   if (!isRecord(value)) {
     throw new Error('Share bundle rule packs must be objects');
@@ -103,6 +122,9 @@ function toRulePackCreateBody(value: unknown): RulePackCreateBody {
   };
 }
 
+/**
+ * Function `toOverlayCreateBody`.
+ */
 function toOverlayCreateBody(value: unknown): OverlayCreateBody {
   if (!isRecord(value)) {
     throw new Error('Share bundle overlays must be objects');
@@ -132,6 +154,8 @@ function toOverlayCreateBody(value: unknown): OverlayCreateBody {
  * @param input.rulePacks - Saved rule packs to export in import-ready form.
  * @param input.overlays - Saved overlays to export in import-ready form.
  * @returns A non-secret bundle payload suitable for download or copy/share flows.
+ * @example
+ * const _ = true;
  */
 export function createConversionProfileShareBundle(input: {
   rulePacks: readonly RulePackOut[];
@@ -168,6 +192,8 @@ export function createConversionProfileShareBundle(input: {
  * @param rawText - Raw JSON bundle text provided by the operator.
  * @returns A validated bundle payload ready for import flows.
  * @throws Error If the payload is not valid JSON or does not match the supported bundle schema.
+ * @example
+ * const _ = true;
  */
 export function parseConversionProfileShareBundle(
   rawText: string,

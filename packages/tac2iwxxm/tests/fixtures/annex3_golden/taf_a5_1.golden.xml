@@ -46,7 +46,7 @@
 
     <iwxxm:baseForecast>
         <iwxxm:MeteorologicalAerodromeForecast gml:id="uuid.13048235-8f8a-4587-a6be-e8ce99f4525c" cloudAndVisibilityOK="false">
-            <iwxxm:phenomenonTime xlink:href="#uuid.ed5d465f-51fb-4ecc-834a-2ee26bb1196f"/>
+            <iwxxm:phenomenonTime xlink:href="#t.valid"/>
             <iwxxm:prevailingVisibility uom="m">9000</iwxxm:prevailingVisibility>
             <iwxxm:surfaceWind>
                 <iwxxm:AerodromeSurfaceWindForecast variableWindDirection="false">

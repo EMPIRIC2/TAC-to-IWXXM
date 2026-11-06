@@ -17,7 +17,7 @@ bulletin variants not required for v1.
 
 ## Gaps
 
-- [x] Attributed VHHH METAR/TAF (AWC; EV-094 M6 / #1098) — SPECI/SIGMET/VAA still synthetic
+- [x] Attributed VHHH METAR/TAF (AWC; EV-094 M6 / #1098); SPECI/SIGMET/VAA still synthetic
 - [x] Registry allowlist (EV-089; SIGMET+VAA retained per D-EV094-products)
 - [x] Catalog `status: implemented` (EV-094 M7 / #1098)
 - [ ] Attributed SPECI / Hong Kong FIR SIGMET / VAA corpora

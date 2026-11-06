@@ -1,5 +1,5 @@
 @echo off
-REM Launch script for METAR to IWXXM Converter Frontend (Windows Command Prompt)
+REM Launch script for TAC to IWXXM Frontend (Windows Command Prompt)
 REM Usage: launch_gui.bat
 
 setlocal enabledelayedexpansion
@@ -33,7 +33,7 @@ if not exist "%FRONTEND_DIR%\\node_modules" (
 REM Launch the frontend dev server
 echo.
 echo ========================================
-echo  METAR to IWXXM Converter Frontend
+echo  TAC to IWXXM Frontend
 echo ========================================
 echo  Server will start at http://localhost:5173
 echo  (Vite default port)

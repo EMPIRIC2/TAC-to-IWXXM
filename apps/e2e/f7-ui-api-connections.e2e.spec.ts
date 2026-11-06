@@ -9,7 +9,11 @@
  * Spec: docs/test-plan.md TC-F7-001–005; docs/api-contract.md; F21 IndexedDB (UJ-018).
  */
 import { expect, test, type Page, type Request } from '@playwright/test';
-import { openConverterForE2e } from './playwright-e2e-helpers';
+import {
+  openConvertDecoderTab,
+  openConvertSettings,
+  openConverterForE2e,
+} from './playwright-e2e-helpers';
 
 const METAR_TAC = 'METAR KJFK 121251Z 24016G28KT 3SM -RA BR BKN020 OVC040 14/11 A2990';
 const BAD_TAC = 'METAR XXXX NOT_A_REAL_REPORT GARBAGE=';
@@ -139,11 +143,10 @@ test.describe('F7 UI↔API connection points', () => {
   }) => {
     const captured = await wireF7ApiStubs(page);
     await openConverterForE2e(page);
-
-    await page.getByLabel(/Expand parameters/i).click();
+    await openConvertSettings(page);
     await page.locator('#param-product').selectOption('METAR');
 
-    const editor = page.getByLabel(/Enter METAR data manually/i);
+    const editor = page.getByLabel('Enter METAR data manually', { exact: true });
     await editor.click();
     await editor.fill(METAR_TAC);
 
@@ -162,6 +165,7 @@ test.describe('F7 UI↔API connection points', () => {
     expect(await postDataIncludes(decodeReq, 'manual_text')).toBe(true);
     expect(await postDataIncludes(decodeReq, 'product', 'METAR')).toBe(true);
 
+    await openConvertDecoderTab(page);
     await expect(page.getByTestId('decode-panel')).toBeVisible();
     await expect(page.getByTestId('tac-editor')).toHaveAttribute(
       'data-issue-span-count',
@@ -174,10 +178,10 @@ test.describe('F7 UI↔API connection points', () => {
   }) => {
     const captured = await wireF7ApiStubs(page);
     await openConverterForE2e(page);
-
+    await openConvertSettings(page);
     await page.getByTestId('soft-preview-toggle').check();
 
-    const editor = page.getByLabel(/Enter METAR data manually/i);
+    const editor = page.getByLabel('Enter METAR data manually', { exact: true });
     await editor.fill(BAD_TAC);
     await page.getByTestId('convert-button').click();
 
@@ -198,7 +202,7 @@ test.describe('F7 UI↔API connection points', () => {
     const captured = await wireF7ApiStubs(page);
     await openConverterForE2e(page);
 
-    const editor = page.getByLabel(/Enter METAR data manually/i);
+    const editor = page.getByLabel('Enter METAR data manually', { exact: true });
     await editor.fill(METAR_TAC);
 
     await expect(page.getByTestId('autosave-indicator')).toContainText(/saved/i, {

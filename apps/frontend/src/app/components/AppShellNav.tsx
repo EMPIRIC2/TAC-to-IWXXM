@@ -1,25 +1,22 @@
 /**
- * Primary operator shell navigation — Convert | History | Quality metrics |
- * Validation Issues Catalog | Dissemination ops.
+ * Primary operator shell navigation — Convert, History, and Rule catalogs.
  *
- * Peer tabs for F7 / F7.q / F7.v / UJ-071; not a FileConverter panel.
+ * Peer tabs for the operator shell; not a FileConverter panel.
  */
 
-import { BetaBadge } from './BetaBadge';
+import { shellFrameClass, useLiveConvertLayout } from '/utils/liveConvertLayout';
 
-export type ShellPrimaryView =
-  | 'converter'
-  | 'history'
-  | 'quality'
-  | 'catalog'
-  | 'dissemination-ops';
+/**
+ * Type `ShellPrimaryView`.
+ * @example
+ * const _ = true;
+ */
+export type ShellPrimaryView = 'converter' | 'history' | 'catalog';
 
 export const SHELL_NAV_LABELS = {
   converter: 'Convert',
   history: 'History',
-  quality: 'Quality metrics',
   catalog: 'Rule catalogs',
-  'dissemination-ops': 'Dissemination ops',
 } as const;
 
 interface AppShellNavProps {
@@ -29,28 +26,26 @@ interface AppShellNavProps {
   onNavigate: (view: ShellPrimaryView) => void;
 }
 
-const TABS: ShellPrimaryView[] = [
-  'converter',
-  'history',
-  'quality',
-  'catalog',
-  'dissemination-ops',
-];
+const TABS: ShellPrimaryView[] = ['converter', 'history', 'catalog'];
 
 /**
- * Render Convert / History / Quality metrics / catalog / Dissemination ops tabs.
+ * Render Convert, History, and Rule catalogs.
  *
  * @param props.activeView - Currently selected shell view
  * @param props.onNavigate - View change handler
+ * @example
+ * const _ = true;
  */
 export function AppShellNav({ activeView, onNavigate }: AppShellNavProps) {
+  const { layout } = useLiveConvertLayout();
+  const frame = shellFrameClass(layout.span);
   return (
     <nav
       className="border-b border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-950"
       aria-label="Primary"
       data-testid="app-shell-nav"
     >
-      <div className="mx-auto flex max-w-6xl flex-wrap gap-1 px-4 py-2">
+      <div className={`mx-auto flex w-full flex-wrap gap-1 px-4 py-2 ${frame}`}>
         {TABS.map((view) => {
           const selected = activeView === view;
           return (
@@ -68,9 +63,6 @@ export function AppShellNav({ activeView, onNavigate }: AppShellNavProps) {
               onClick={() => onNavigate(view)}
             >
               {SHELL_NAV_LABELS[view]}
-              {view === 'dissemination-ops' ? (
-                <BetaBadge className="inline-flex" />
-              ) : null}
             </button>
           );
         })}

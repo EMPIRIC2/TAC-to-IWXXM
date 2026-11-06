@@ -1,0 +1,243 @@
+rule_id: MULTI_REPORT_BULLETIN
+engine: lint
+cases:
+- bucket: happy
+  case_id: '01'
+  status: ready
+  tac: 'TAF KORD 151800Z 1600/1618 31008KT 9999 FEW040=
+
+    TAF KJFK 151800Z 1600/1618 31008KT 9999 FEW040='
+  expect:
+    accept: true
+    codes:
+    - MULTI_REPORT_BULLETIN
+  meta:
+    product: TAF
+    profile: annex3
+    cite: '#1265 profile MULTI_REPORT_BULLETIN/happy'
+- bucket: happy
+  case_id: '02'
+  status: ready
+  tac: 'TAF KJFK 151800Z 1600/1618 31008KT 9999 FEW040=
+
+    TAF KLAX 151800Z 1600/1618 31008KT 9999 FEW040='
+  expect:
+    accept: true
+    codes:
+    - MULTI_REPORT_BULLETIN
+  meta:
+    product: TAF
+    profile: annex3
+    cite: '#1265 profile MULTI_REPORT_BULLETIN/happy'
+- bucket: happy
+  case_id: '03'
+  status: ready
+  tac: 'TAF KLAX 151800Z 1600/1618 31008KT 9999 FEW040=
+
+    TAF KDEN 151800Z 1600/1618 31008KT 9999 FEW040='
+  expect:
+    accept: true
+    codes:
+    - MULTI_REPORT_BULLETIN
+  meta:
+    product: TAF
+    profile: annex3
+    cite: '#1265 profile MULTI_REPORT_BULLETIN/happy'
+- bucket: happy
+  case_id: '04'
+  status: ready
+  tac: 'TAF KDEN 151800Z 1600/1618 31008KT 9999 FEW040=
+
+    TAF KATL 151800Z 1600/1618 31008KT 9999 FEW040='
+  expect:
+    accept: true
+    codes:
+    - MULTI_REPORT_BULLETIN
+  meta:
+    product: TAF
+    profile: annex3
+    cite: '#1265 profile MULTI_REPORT_BULLETIN/happy'
+- bucket: happy
+  case_id: '05'
+  status: ready
+  tac: 'TAF KATL 151800Z 1600/1618 31008KT 9999 FEW040=
+
+    TAF KORD 151800Z 1600/1618 31008KT 9999 FEW040='
+  expect:
+    accept: true
+    codes:
+    - MULTI_REPORT_BULLETIN
+  meta:
+    product: TAF
+    profile: annex3
+    cite: '#1265 profile MULTI_REPORT_BULLETIN/happy'
+- bucket: sad
+  case_id: '01'
+  status: ready
+  tac: TAF KORD 151800Z 1600/1618 31008KT 9999 FEW040=
+  expect:
+    accept: true
+  meta:
+    product: TAF
+    profile: annex3
+    cite: '#1265 profile MULTI_REPORT_BULLETIN/sad'
+- bucket: sad
+  case_id: '02'
+  status: ready
+  tac: TAF KJFK 151800Z 1600/1618 31008KT 9999 FEW040=
+  expect:
+    accept: true
+  meta:
+    product: TAF
+    profile: annex3
+    cite: '#1265 profile MULTI_REPORT_BULLETIN/sad'
+- bucket: sad
+  case_id: '03'
+  status: ready
+  tac: TAF KLAX 151800Z 1600/1618 31008KT 9999 FEW040=
+  expect:
+    accept: true
+  meta:
+    product: TAF
+    profile: annex3
+    cite: '#1265 profile MULTI_REPORT_BULLETIN/sad'
+- bucket: sad
+  case_id: '04'
+  status: ready
+  tac: TAF KDEN 151800Z 1600/1618 31008KT 9999 FEW040=
+  expect:
+    accept: true
+  meta:
+    product: TAF
+    profile: annex3
+    cite: '#1265 profile MULTI_REPORT_BULLETIN/sad'
+- bucket: sad
+  case_id: '05'
+  status: ready
+  tac: TAF KATL 151800Z 1600/1618 31008KT 9999 FEW040=
+  expect:
+    accept: true
+  meta:
+    product: TAF
+    profile: annex3
+    cite: '#1265 profile MULTI_REPORT_BULLETIN/sad'
+- bucket: edge_pass
+  case_id: '01'
+  status: ready
+  tac: 'TAF KORD 151800Z 1600/1618 31008KT 9999 FEW040=
+
+    TAF KJFK 151800Z 1600/1618 31008KT 9999 FEW040='
+  expect:
+    accept: true
+    codes:
+    - MULTI_REPORT_BULLETIN
+  meta:
+    product: TAF
+    profile: annex3
+    cite: '#1265 profile MULTI_REPORT_BULLETIN/edge_pass'
+- bucket: edge_pass
+  case_id: '02'
+  status: ready
+  tac: 'TAF KJFK 151800Z 1600/1618 31008KT 9999 FEW040=
+
+    TAF KLAX 151800Z 1600/1618 31008KT 9999 FEW040='
+  expect:
+    accept: true
+    codes:
+    - MULTI_REPORT_BULLETIN
+  meta:
+    product: TAF
+    profile: annex3
+    cite: '#1265 profile MULTI_REPORT_BULLETIN/edge_pass'
+- bucket: edge_pass
+  case_id: '03'
+  status: ready
+  tac: 'TAF KLAX 151800Z 1600/1618 31008KT 9999 FEW040=
+
+    TAF KDEN 151800Z 1600/1618 31008KT 9999 FEW040='
+  expect:
+    accept: true
+    codes:
+    - MULTI_REPORT_BULLETIN
+  meta:
+    product: TAF
+    profile: annex3
+    cite: '#1265 profile MULTI_REPORT_BULLETIN/edge_pass'
+- bucket: edge_pass
+  case_id: '04'
+  status: ready
+  tac: 'TAF KDEN 151800Z 1600/1618 31008KT 9999 FEW040=
+
+    TAF KATL 151800Z 1600/1618 31008KT 9999 FEW040='
+  expect:
+    accept: true
+    codes:
+    - MULTI_REPORT_BULLETIN
+  meta:
+    product: TAF
+    profile: annex3
+    cite: '#1265 profile MULTI_REPORT_BULLETIN/edge_pass'
+- bucket: edge_pass
+  case_id: '05'
+  status: ready
+  tac: 'TAF KATL 151800Z 1600/1618 31008KT 9999 FEW040=
+
+    TAF KORD 151800Z 1600/1618 31008KT 9999 FEW040='
+  expect:
+    accept: true
+    codes:
+    - MULTI_REPORT_BULLETIN
+  meta:
+    product: TAF
+    profile: annex3
+    cite: '#1265 profile MULTI_REPORT_BULLETIN/edge_pass'
+- bucket: edge_fail
+  case_id: '01'
+  status: ready
+  tac: TAF KORD 151800Z 1600/1618 31008KT 9999 FEW040=
+  expect:
+    accept: true
+  meta:
+    product: TAF
+    profile: annex3
+    cite: '#1265 profile MULTI_REPORT_BULLETIN/edge_fail'
+- bucket: edge_fail
+  case_id: '02'
+  status: ready
+  tac: TAF KJFK 151800Z 1600/1618 31008KT 9999 FEW040=
+  expect:
+    accept: true
+  meta:
+    product: TAF
+    profile: annex3
+    cite: '#1265 profile MULTI_REPORT_BULLETIN/edge_fail'
+- bucket: edge_fail
+  case_id: '03'
+  status: ready
+  tac: TAF KLAX 151800Z 1600/1618 31008KT 9999 FEW040=
+  expect:
+    accept: true
+  meta:
+    product: TAF
+    profile: annex3
+    cite: '#1265 profile MULTI_REPORT_BULLETIN/edge_fail'
+- bucket: edge_fail
+  case_id: '04'
+  status: ready
+  tac: TAF KDEN 151800Z 1600/1618 31008KT 9999 FEW040=
+  expect:
+    accept: true
+  meta:
+    product: TAF
+    profile: annex3
+    cite: '#1265 profile MULTI_REPORT_BULLETIN/edge_fail'
+- bucket: edge_fail
+  case_id: '05'
+  status: ready
+  tac: TAF KATL 151800Z 1600/1618 31008KT 9999 FEW040=
+  expect:
+    accept: true
+  meta:
+    product: TAF
+    profile: annex3
+    cite: '#1265 profile MULTI_REPORT_BULLETIN/edge_fail'

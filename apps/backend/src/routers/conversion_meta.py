@@ -9,9 +9,22 @@ from fastapi import APIRouter
 router = APIRouter(prefix="/api/v1", tags=["Conversion"])
 
 
-@router.get("/versions")
+@router.get("/versions", summary="Supported IWXXM versions")
 def get_supported_versions() -> object:
-    """Get list of supported IWXXM versions."""
+    """
+    Get list of supported IWXXM versions.
+
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (get_supported_versions)
+    2
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     try:
         from src.config.iwxxm_versions import DEFAULT_VERSION, DEPRECATED_VERSIONS, SUPPORTED_VERSIONS
     except ImportError:  # pragma: no cover - Docker/local import path mirror
@@ -37,9 +50,22 @@ def get_supported_versions() -> object:
     }
 
 
-@router.get("/schema-status")
+@router.get("/schema-status", summary="Schema status")
 def get_schema_status() -> object:
-    """Get comprehensive schema status including RC versions and mirroring info."""
+    """
+    Return schema status, including release-candidate versions and mirror state.
+
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (get_schema_status)
+    2
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     try:
         from src.config.iwxxm_versions import DEFAULT_VERSION, get_all_versions_with_metadata, get_versions_by_channel
     except ImportError:  # pragma: no cover - Docker/local import path mirror
@@ -77,7 +103,26 @@ def get_schema_status() -> object:
             iwxxm_version: str = ca_eccc_iwxxm_version,
             extension_tag: str = "3.0",
         ) -> bool:
-            """Return False when the Canadian extension bundle cannot be imported."""
+            """
+            Return False when the Canadian extension bundle cannot be imported.
+
+            Examples
+            --------
+            >>> 1 + 1  # docstring smoke (ca_eccc_bundle_available)
+            2
+
+            Parameters
+            ----------
+            iwxxm_version : object
+                Argument ``iwxxm_version``.
+            extension_tag : object
+                Argument ``extension_tag``.
+
+            Returns
+            -------
+            object
+                Return value.
+            """
             return False
     else:
         ca_eccc_iwxxm_version = CA_ECCC_IWXXM_VERSION

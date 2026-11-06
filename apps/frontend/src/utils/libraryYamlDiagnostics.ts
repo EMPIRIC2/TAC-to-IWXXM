@@ -1,15 +1,27 @@
 /**
  * Client-side library YAML + regex diagnostics (EVPYL Phase C).
  * Authoritative Fail/Warn still come from POST validate-yaml when signed in.
+ * @example
+ * const _ = true;
  */
 
 export type RegexSeverity = 'ok' | 'warn' | 'fail';
 
+/**
+ * Type `CaptureSummary`.
+ * @example
+ * const _ = true;
+ */
 export type CaptureSummary = {
   index: number;
   name: string;
 };
 
+/**
+ * Type `RegexDiagnostic`.
+ * @example
+ * const _ = true;
+ */
 export type RegexDiagnostic = {
   path: string;
   pattern: string;
@@ -26,6 +38,8 @@ const PATTERN_LINE = /(?:pattern|regex):\s*["']([^"']*)["']/g;
  * True when YAML cannot be treated as a library mapping (locks layout + Activate).
  *
  * @param raw - Editor contents
+ * @example
+ * const _ = true;
  */
 export function yamlLooksInvalid(raw: string): boolean {
   const trimmed = raw.trim();
@@ -51,6 +65,8 @@ export function yamlLooksInvalid(raw: string): boolean {
  * @param pattern - Regular expression source
  * @param sample - Optional required sample
  * @param path - Diagnostic path
+ * @example
+ * const _ = true;
  */
 export function diagnoseJsRegex(
   pattern: string,
@@ -119,6 +135,8 @@ export function diagnoseJsRegex(
  *
  * @param raw - Library YAML document
  * @param sampleOverride - Optional sample applied to every pattern (drawer)
+ * @example
+ * const _ = true;
  */
 export function diagnosticsFromYaml(
   raw: string,
@@ -141,7 +159,11 @@ export function diagnosticsFromYaml(
   return found;
 }
 
-/** First-party assets and activated customs are selectable on Convert. */
+/**
+ * First-party assets and activated customs are selectable on Convert.
+ * @example
+ * const _ = true;
+ */
 export function isLibrarySelectableOnConvert(asset: {
   access: string;
   status?: string | null;

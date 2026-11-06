@@ -1,7 +1,10 @@
 import { expect, test } from '@playwright/test';
 import {
+  clearConvertWorkbench,
   convertManualMetar,
   fillManualTac,
+  openConvertDownloadsTab,
+  openConvertIwxxmTab,
   openConverterForE2e,
   openConverterWithMockSession,
 } from './playwright-e2e-helpers';
@@ -15,15 +18,8 @@ test.describe('TAC File Conversion', () => {
       'METAR KJFK 121251Z 24016G28KT 3SM -RA BR BKN020 OVC040 14/11 A2990',
     );
 
-    await expect(page.getByRole('region', { name: /conversion results/i })).toBeVisible(
-      { timeout: 10000 },
-    );
-    await expect(
-      page
-        .locator('pre')
-        .filter({ hasText: /iwxxm|metar:/i })
-        .first(),
-    ).toBeVisible();
+    await openConvertIwxxmTab(page, 10_000);
+    await expect(page.getByTestId('iwxxm-preview-xml')).toBeVisible();
   });
 
   test('COR METAR input produces correction output', async ({ page }) => {
@@ -34,12 +30,10 @@ test.describe('TAC File Conversion', () => {
       'METAR COR FAOR 101200Z 12012KT 9999 FEW020 22/14 Q1018',
     );
 
-    const xmlOutput = page
-      .locator('pre')
-      .filter({ hasText: /iwxxm|metar:/i })
-      .first();
-    await expect(xmlOutput).toBeVisible({ timeout: 10000 });
-    await expect(xmlOutput).toContainText('reportStatus="CORRECTION"');
+    await openConvertIwxxmTab(page, 10_000);
+    await expect(page.getByTestId('iwxxm-preview-xml')).toContainText(
+      'reportStatus="CORRECTION"',
+    );
   });
 
   test('ICAO COR-after-time METAR input produces correction output', async ({
@@ -52,23 +46,21 @@ test.describe('TAC File Conversion', () => {
       'METAR FAOR 101200Z COR 12012KT 9999 FEW020 22/14 Q1018',
     );
 
-    const xmlOutput = page
-      .locator('pre')
-      .filter({ hasText: /iwxxm|metar:/i })
-      .first();
-    await expect(xmlOutput).toBeVisible({ timeout: 10000 });
-    await expect(xmlOutput).toContainText('reportStatus="CORRECTION"');
+    await openConvertIwxxmTab(page, 10_000);
+    await expect(page.getByTestId('iwxxm-preview-xml')).toContainText(
+      'reportStatus="CORRECTION"',
+    );
   });
 
   test('clear removes manual input', async ({ page }) => {
     await openConverterForE2e(page);
 
     await fillManualTac(page, 'METAR KDEN 121653Z 02006KT 10SM SCT050 21/08 A3010');
-    await page
-      .getByRole('button', { name: /Clear all pending files and manual input/i })
-      .click();
+    await clearConvertWorkbench(page);
 
-    await expect(page.getByLabel(/Enter METAR data manually/i)).toHaveText('');
+    await expect(
+      page.getByLabel('Enter METAR data manually', { exact: true }),
+    ).toHaveText('');
   });
 
   test('mocked success conversion shows success notification and results', async ({
@@ -107,14 +99,12 @@ test.describe('TAC File Conversion', () => {
     await expect(page.getByText(/Successfully converted 1 file\(s\)/i)).toBeVisible({
       timeout: 10000,
     });
-    await expect(
-      page.getByRole('region', { name: /conversion results/i }),
-    ).toBeVisible();
+    await openConvertIwxxmTab(page, 10_000);
+    await expect(page.getByTestId('iwxxm-preview-xml')).toContainText('mock-success');
+    await openConvertDownloadsTab(page, 10_000);
     await expect(page.getByText(/Download: manual_input\.txt/)).toBeVisible();
-    await expect(page.getByText('Source TAC')).toBeVisible();
-    await expect(
-      page.getByRole('region', { name: /original tac input for metar kjfk 121251z/i }),
-    ).toBeVisible();
+    // Downloads is file management only — conversion XML stays on the IWXXM tab.
+    await expect(page.getByTestId('convert-downloads-panel')).toBeVisible();
   });
 
   test('custom output filename names manual results (#664)', async ({ page }) => {
@@ -145,19 +135,21 @@ test.describe('TAC File Conversion', () => {
     });
 
     await openConverterWithMockSession(page);
-    await page
-      .getByLabel(/Output filename for manually entered METAR downloads/i)
-      .fill('report');
+    // Leave empty-hero so Settings (live-convert-stage) is visible.
     await fillManualTac(page, 'METAR KJFK LINE ONE\nMETAR KDEN LINE TWO');
+    await page.getByTestId('convert-settings-cog').click();
+    await page
+      .getByLabel('Output filename for manually entered METAR downloads', {
+        exact: true,
+      })
+      .fill('report');
     await page.getByTestId('convert-button').click();
 
-    await expect(page.getByRole('region', { name: /conversion results/i })).toBeVisible(
-      { timeout: 10000 },
-    );
+    await openConvertDownloadsTab(page, 10_000);
     await expect(page.getByText('report_1.txt')).toBeVisible();
     await expect(page.getByText('report_2.txt')).toBeVisible();
     await expect(
-      page.getByRole('button', { name: /download report_1\.txt as xml/i }),
+      page.getByRole('button', { name: 'Download report_1.txt as XML', exact: true }),
     ).toBeVisible();
   });
 
@@ -182,10 +174,17 @@ test.describe('TAC File Conversion', () => {
     await openConverterWithMockSession(page);
     await convertManualMetar(page, 'METAR EMPTY RESULTS CASE');
 
-    await expect(page.getByText(/No files were converted/i).first()).toBeVisible({
+    await expect(page.getByText('Conversion Error', { exact: true })).toBeVisible({
       timeout: 10000,
     });
-    await expect(page.getByText(/Conversion Error/i).first()).toBeVisible();
+    await expect(
+      page.locator('p', { hasText: /^No files were converted$/ }),
+    ).toBeVisible();
+    await expect(
+      page.locator('[data-sonner-toast] [data-title]', {
+        hasText: /^No files were converted$/,
+      }),
+    ).toBeVisible();
   });
 
   test('mocked unauthorized conversion shows authentication notification', async ({
@@ -208,11 +207,18 @@ test.describe('TAC File Conversion', () => {
       'METAR KDEN 121653Z 02006KT 10SM SCT050 21/08 A3010',
     );
 
+    await expect(page.getByText('Conversion Error', { exact: true })).toBeVisible({
+      timeout: 10000,
+    });
     await expect(
-      page
-        .getByText(/Authentication failed\. Please ensure you are logged in\./i)
-        .first(),
-    ).toBeVisible({ timeout: 10000 });
-    await expect(page.getByText(/Conversion Error/i).first()).toBeVisible();
+      page.locator('p', {
+        hasText: /^Authentication failed\. Please ensure you are logged in\.$/,
+      }),
+    ).toBeVisible();
+    await expect(
+      page.locator('[data-sonner-toast] [data-title]', {
+        hasText: /^Authentication failed\. Please ensure you are logged in\.$/,
+      }),
+    ).toBeVisible();
   });
 });

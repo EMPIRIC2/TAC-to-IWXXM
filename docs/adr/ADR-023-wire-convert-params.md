@@ -26,11 +26,11 @@ existing multipart contract on `POST /api/v1/convert`.
      (`true` → `comprehensive`; `false` → `basic`)
 2. **Soft-preview (`preview=true`)** keeps `validate_output=false` /
    `validation_level=basic` even when Strict Validation is checked (does not imply
-   publish Schematron — ADR-022).
+   publish Schematron; ADR-022).
 3. **Log Level** filters the workbench console **client-side** only. Convert has no
    `log_level` Form field; process `LOG_LEVEL` remains server observability env.
 4. **Include Nil Reasons** stays a preference UI control only until the API exposes a
-   matching field — not sent; labeled as such in UI.
+   matching field: not sent; labeled as such in UI.
 5. **Upload accept** includes `.txt`, `.metar`, and `.tac`. AHL bulletin / COLLECT XML /
    `.gz` remain **Later** (bulletin UI → `/convert-bulletin`).
 

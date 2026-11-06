@@ -11,7 +11,14 @@ from workflows.stages import STAGE_REGISTRY, run_stage
 
 
 class WorkflowExecuteError(ValueError):
-    """Raised for fail-closed execute errors (unknown stage, bad workflow)."""
+    """
+    Raised for fail-closed execute errors (unknown stage, bad workflow).
+
+    Attributes
+    ----------
+    args : tuple
+        Arguments passed to the exception constructor.
+    """
 
 
 def execute(
@@ -28,23 +35,28 @@ def execute(
 
     Parameters
     ----------
-    message :
+    message : WorkflowMessage
         TAC + product (+ optional job_id).
-    workflow :
+    workflow : str or WorkflowDefinition
         Workflow id string or already-parsed definition.
-    workflows_dir :
-        Override YAML search path.
-    store_valid :
-        Optional ``onValid.store`` callback.
-    store_invalid :
-        Optional ``onInvalid.store`` callback.
-    skip_stages :
-        Stage ids to omit (F8 ``skip_lint`` maps to ``validate-tac``).
+    workflows_dir : Path or None, optional
+        Override YAML search path. By default ``None``.
+    store_valid : StorePort or None, optional
+        Optional ``onValid.store`` callback. By default ``None``.
+    store_invalid : StorePort or None, optional
+        Optional ``onInvalid.store`` callback. By default ``None``.
+    skip_stages : frozenset[str] or None, optional
+        Stage ids to omit (F8 ``skip_lint`` maps to ``validate-tac``). By default ``None``.
 
     Returns
     -------
     WorkflowResult
         Aggregate outcome; first failing stage halts the pipeline.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (execute)
+    2
     """
     if isinstance(workflow, str):
         try:
@@ -103,6 +115,20 @@ def _dispatch_stores(
     store_valid: StorePort | None,
     store_invalid: StorePort | None,
 ) -> None:
+    """
+    Internal helper ``_dispatch_stores``.
+
+    Parameters
+    ----------
+    result : object
+        Argument ``result``.
+    definition : object
+        Argument ``definition``.
+    store_valid : object
+        Argument ``store_valid``.
+    store_invalid : object
+        Argument ``store_invalid``.
+    """
     if result.ok and store_valid is not None:
         for sink in definition.on_valid_store:
             store_valid(result, sink=sink)

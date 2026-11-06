@@ -21,8 +21,43 @@ _VAA_FORBIDDEN_ROOTS = frozenset(
 )
 
 
+def _vaa_deg_text(degrees: int | float) -> str:
+    """
+    Format an ash-cloud bearing, keeping half-degree compass points.
+
+    Parameters
+    ----------
+    degrees : int | float
+        Bearing from true north.
+
+    Returns
+    -------
+    str
+        Whole degrees as an integer, otherwise one decimal place.
+    """
+    number = float(degrees)
+    if number.is_integer():
+        return str(int(number))
+    return f"{number:.1f}"
+
+
 def _vaa_cloud_extent_xml(cloud: dict[str, Any], *, gid: str) -> str:
-    """Emit ashCloudExtent AirspaceVolume (+ optional motion) for one cloud."""
+    """
+    Internal helper ``_vaa_cloud_extent_xml``.
+
+    Parameters
+    ----------
+    cloud : dict[str, Any]
+        Argument ``cloud``.
+
+    gid : str
+        Argument ``gid``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
     # ruff: noqa: F403, F405
     if cloud.get("lower") == "GND":
         limits = f"""
@@ -38,9 +73,13 @@ def _vaa_cloud_extent_xml(cloud: dict[str, Any], *, gid: str) -> str:
                             <aixm:lowerLimitReference>STD</aixm:lowerLimitReference>"""
     pos_list = escape(str(cloud["pos_list"]))
     motion = ""
-    if "motion_dir_deg" in cloud and "motion_speed_kt" in cloud:
+    if "motion_dir_deg" in cloud and "motion_speed_kmh" in cloud:
         motion = f"""
-                    <iwxxm:directionOfMotion uom="deg">{int(cloud["motion_dir_deg"])}</iwxxm:directionOfMotion>
+                    <iwxxm:directionOfMotion uom="deg">{_vaa_deg_text(cloud["motion_dir_deg"])}</iwxxm:directionOfMotion>
+                    <iwxxm:speedOfMotion uom="km/h">{int(cloud["motion_speed_kmh"])}</iwxxm:speedOfMotion>"""
+    elif "motion_dir_deg" in cloud and "motion_speed_kt" in cloud:
+        motion = f"""
+                    <iwxxm:directionOfMotion uom="deg">{_vaa_deg_text(cloud["motion_dir_deg"])}</iwxxm:directionOfMotion>
                     <iwxxm:speedOfMotion uom="[kn_i]">{int(cloud["motion_speed_kt"])}</iwxxm:speedOfMotion>"""
     return f"""
                     <iwxxm:ashCloudExtent>
@@ -70,6 +109,24 @@ def emit_vaa_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
     always opens ``iwxxm:VolcanicAshAdvisory`` and never ``VolcanicAshSIGMET``
     (or other SIGMET-family / TCA roots). Rejects IR that claims a forbidden
     ``iwxxm_root`` or non-VAA ``product``.
+
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Parsed product fields.
+
+    iwxxm_version : str
+        IWXXM release line.
+
+    Returns
+    -------
+    str
+        An IWXXM ``VolcanicAshAdvisory`` document (F6.f / F26 themes V2-V3).
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (emit_vaa_annex3)
+    2
     """
     product = str(ir.get("product", "VAA")).upper()
     if product != "VAA":
@@ -231,7 +288,19 @@ def emit_vaa_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
 
 
 def _assert_vaa_advisory_xml(xml: str) -> str:
-    """Reject XML that is missing the VAA root or smuggles a VA SIGMET root."""
+    """
+    Internal helper ``_assert_vaa_advisory_xml``.
+
+    Parameters
+    ----------
+    xml : str
+        Argument ``xml``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
     if "<iwxxm:VolcanicAshAdvisory " not in xml:
         raise ValueError("VAA emitter product/root guard: missing VolcanicAshAdvisory root")
     if "<iwxxm:VolcanicAshSIGMET " in xml or "iwxxm:VolcanicAshSIGMET" in xml:

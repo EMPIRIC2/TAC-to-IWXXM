@@ -1,0 +1,4 @@
+id,filename,ident,name,type,frequency_khz,latitude_deg,longitude_deg,elevation_ft,iso_country,dme_frequency_khz,dme_channel,dme_latitude_deg,dme_longitude_deg,dme_elevation_ft,slaved_variation_deg,magnetic_variation_deg,usageType,power,associated_airport
+85183,Aalborg_TACAN_DK,AAL,Aalborg,TACAN,116700,57.10390090942383,9.992810249328613,57,DK,116700,114X,,,,1.008,0.598,BOTH,HIGH,EKYT
+85184,Aalborg_VOR-DME_DK,AAL,Aalborg,VOR-DME,116700,57.10369873046875,9.995579719543457,57,DK,116700,114X,57.1039,9.99281,57,1.008,0.589,RNAV,HIGH,EKYT
+93931,Sarasota_VORTAC_US,SRQ,Sarasota,VORTAC,115200,27.39780044555664,-82.5542984008789,20,US,115200,099X,,,,-2.001,-4.159,BOTH,HIGH,KSRQ

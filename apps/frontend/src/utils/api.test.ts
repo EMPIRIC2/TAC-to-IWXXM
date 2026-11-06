@@ -13,8 +13,6 @@ import {
   fetchLintIssueCatalog,
   fetchRuleCatalog,
   fetchSelectionOptions,
-  fetchQualityMetrics,
-  fetchQualityMetricsDetail,
   fetchSchemaStatus,
   ingestCollect,
   lintTac,
@@ -103,6 +101,20 @@ describe('API Utils', () => {
 
   // ============= METAR Conversion Tests =============
   describe('convertMetarToIwxxm', () => {
+    it('does not log a cancelled conversion', async () => {
+      const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+      (global.fetch as any).mockRejectedValueOnce(
+        new DOMException('signal is aborted without reason', 'AbortError'),
+      );
+      await expect(
+        convertMetarToIwxxm({
+          manualText: 'METAR KJFK 121251Z 18010KT 10SM FEW050 22/12 A3012',
+        }),
+      ).rejects.toMatchObject({ name: 'AbortError' });
+      expect(errorSpy).not.toHaveBeenCalled();
+      errorSpy.mockRestore();
+    });
+
     it('should convert manual METAR text successfully', async () => {
       const mockResponse: ConversionResponse = {
         results: [
@@ -364,6 +376,10 @@ describe('API Utils', () => {
         stopOnError: true,
         bulletinId: 'saaa00',
         issuingCenter: 'kwbc',
+        strict: true,
+        strictLint: true,
+        strictConvert: true,
+        strictValidate: true,
       });
 
       const [, options] = (global.fetch as any).mock.calls[0];
@@ -373,6 +389,36 @@ describe('API Utils', () => {
       expect(body.get('stop_on_error')).toBe('true');
       expect(body.get('bulletin_id')).toBe('SAAA00');
       expect(body.get('issuing_center')).toBe('KWBC');
+      expect(body.get('strict')).toBe('true');
+      expect(body.get('strict_lint')).toBe('true');
+      expect(body.get('strict_convert')).toBe('true');
+      expect(body.get('strict_validate')).toBe('true');
+    });
+
+    it('appends Strict ADR-054 flags as false when toggles are off', async () => {
+      mockFetchResponse({
+        results: [],
+        errors: [],
+        total_processed: 0,
+        successful: 0,
+        failed: 0,
+      });
+
+      await convertMetarToIwxxm({
+        manualText: 'METAR KJFK 121251Z',
+        product: 'METAR',
+        strict: false,
+        strictLint: false,
+        strictConvert: false,
+        strictValidate: false,
+      });
+
+      const [, options] = (global.fetch as any).mock.calls[0];
+      const body = options.body as FormData;
+      expect(body.get('strict')).toBe('false');
+      expect(body.get('strict_lint')).toBe('false');
+      expect(body.get('strict_convert')).toBe('false');
+      expect(body.get('strict_validate')).toBe('false');
     });
 
     it('appends CA_ECCC extensions and exchange_output (EV-073)', async () => {
@@ -1223,66 +1269,6 @@ describe('API Utils', () => {
       await expect(fetchLintIssueCatalog()).rejects.toThrow('catalog unavailable');
     });
 
-    it('fetches quality-metrics list with product filter', async () => {
-      mockFetchResponse({
-        generated_at: '2026-08-10T00:00:00Z',
-        iwxxm_pin: '2025-2',
-        summaries: [{ product: 'metar', match_pass: 1 }],
-        files: [{ stem: 'metar-A3-1', product: 'metar', tier: 'wmoPass' }],
-      });
-      const result = await fetchQualityMetrics({ product: 'METAR' });
-      expect(result.files).toHaveLength(1);
-      expect(global.fetch).toHaveBeenCalledWith(
-        expect.stringMatching(/\/quality-metrics\?product=metar$/),
-        expect.objectContaining({ method: 'GET' }),
-      );
-    });
-
-    it('fetches quality-metrics detail by stem', async () => {
-      mockFetchResponse({
-        stem: 'metar-A3-1',
-        product: 'metar',
-        tier: 'wmoPass',
-        match_status: 'equal',
-        tac: 'METAR …=',
-        official_xml: '<a/>',
-        converted_xml: '<a/>',
-        residuals: [],
-        lint_issues: [],
-        validate_issues: [],
-      });
-      const result = await fetchQualityMetricsDetail({ stem: 'metar-A3-1' });
-      expect(result.match_status).toBe('equal');
-      expect(global.fetch).toHaveBeenCalledWith(
-        expect.stringMatching(/\/quality-metrics\/metar-A3-1$/),
-        expect.objectContaining({ method: 'GET' }),
-      );
-    });
-
-    it('falls back when quality-metrics list error body is not JSON', async () => {
-      (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
-        ok: false,
-        status: 503,
-        statusText: 'Unavailable',
-        json: vi.fn().mockRejectedValueOnce(new Error('not json')),
-      });
-      await expect(fetchQualityMetrics()).rejects.toThrow(
-        /HTTP 503|Quality metrics fetch failed/,
-      );
-    });
-
-    it('falls back when quality-metrics detail error body is not JSON', async () => {
-      (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
-        ok: false,
-        status: 404,
-        statusText: 'Not Found',
-        json: vi.fn().mockRejectedValueOnce(new Error('not json')),
-      });
-      await expect(fetchQualityMetricsDetail({ stem: 'missing' })).rejects.toThrow(
-        /HTTP 404|Quality metrics detail failed/,
-      );
-    });
-
     it('falls back when lint-issue-catalog error body is not JSON', async () => {
       (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
         ok: false,
@@ -1326,12 +1312,29 @@ describe('API Utils', () => {
     it('GETs selection-options by kind', async () => {
       mockFetchResponse({
         kind: 'dissemination',
-        options: [{ id: 'GLOBAL_AFS', label: 'GLOBAL_AFS' }],
+        options: [
+          { id: 'LIB.DISSEMINATION.ICAO_2025', label: 'Dissemination · ICAO_2025' },
+        ],
       });
       const result = await fetchSelectionOptions({ kind: 'dissemination' });
-      expect(result.options[0]!.id).toBe('GLOBAL_AFS');
+      expect(result.options[0]!.id).toBe('LIB.DISSEMINATION.ICAO_2025');
       expect(global.fetch).toHaveBeenCalledWith(
         expect.stringMatching(/\/selection-options\?kind=dissemination$/),
+        expect.objectContaining({ method: 'GET' }),
+      );
+    });
+
+    it('GETs selection-options for tac_validation (TC-EVYCL)', async () => {
+      mockFetchResponse({
+        kind: 'tac_validation',
+        options: [
+          { id: 'LIB.TAC_VALIDATION.ICAO_2025', label: 'TAC validation · ICAO_2025' },
+        ],
+      });
+      const result = await fetchSelectionOptions({ kind: 'tac_validation' });
+      expect(result.options[0]!.id).toMatch(/^LIB\.TAC_VALIDATION\./);
+      expect(global.fetch).toHaveBeenCalledWith(
+        expect.stringMatching(/\/selection-options\?kind=tac_validation$/),
         expect.objectContaining({ method: 'GET' }),
       );
     });
@@ -1455,6 +1458,33 @@ describe('API Utils', () => {
       });
       body = (global.fetch as any).mock.calls[0][1].body as FormData;
       expect(body.get('propagate_residuals_to_remarks')).toBe('false');
+    });
+
+    it('sends extensions and bearer on convert-bulletin', async () => {
+      mockFetchResponse({
+        bulletin_meta: {
+          ahl: 'SAUS31 KZNY 121200',
+          report_count: 0,
+          tt: 'SA',
+          aa: 'US',
+          cccc: 'KZNY',
+          yygggg: '121200',
+        },
+        results: [],
+      });
+      await convertBulletin({
+        product: 'METAR',
+        manualText: 'SAUS31',
+        extensions: ['IWXXM_CA', '  '],
+        accessToken: 'bulletin-token',
+      });
+      const call = (global.fetch as ReturnType<typeof vi.fn>).mock.calls[0]!;
+      const init = call[1] as {
+        body: FormData;
+        headers?: { Authorization?: string };
+      };
+      expect(init.body.getAll('extensions')).toEqual(['IWXXM_CA']);
+      expect(init.headers?.Authorization).toBe('Bearer bulletin-token');
     });
 
     it('throws on convert-bulletin HTTP error with detail.message', async () => {

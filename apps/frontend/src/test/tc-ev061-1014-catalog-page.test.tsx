@@ -3,9 +3,10 @@
  */
 
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { render, screen, within } from '@testing-library/react';
+import { cleanup, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { LintValidationCatalogPage } from '../app/components/LintValidationCatalogPage';
+import { CATALOG_VIEW_STORAGE_KEY } from '../utils/catalogView';
 
 const fetchLintIssueCatalog = vi.hoisted(() => vi.fn());
 const fetchRuleCatalog = vi.hoisted(() => vi.fn());
@@ -14,6 +15,23 @@ vi.mock('@/utils/api', () => ({
   fetchLintIssueCatalog: (...args: unknown[]) => fetchLintIssueCatalog(...args),
   fetchRuleCatalog: (...args: unknown[]) => fetchRuleCatalog(...args),
 }));
+
+/**
+ * Codes in the order the catalog list renders them.
+ *
+ * @param list - Catalog list region
+ * @returns Rule codes from top to bottom
+ */
+function listedCodes(list: HTMLElement): string[] {
+  return [
+    ...list.querySelectorAll('[data-testid^="lint-validation-catalog-entry-"]'),
+  ].map((row) =>
+    (row.getAttribute('data-testid') ?? '').replace(
+      'lint-validation-catalog-entry-',
+      '',
+    ),
+  );
+}
 
 const BASE_ISSUES = [
   {
@@ -81,6 +99,7 @@ const BASE_ISSUES = [
 
 describe('LintValidationCatalogPage', () => {
   beforeEach(() => {
+    sessionStorage.removeItem(CATALOG_VIEW_STORAGE_KEY);
     fetchLintIssueCatalog.mockReset();
     fetchRuleCatalog.mockReset();
     fetchLintIssueCatalog.mockResolvedValue({ issues: BASE_ISSUES });
@@ -178,9 +197,12 @@ describe('LintValidationCatalogPage', () => {
       screen.getByTestId('lint-validation-catalog-family-filter'),
       'conversion',
     );
-    expect(
-      await screen.findByTestId('lint-validation-catalog-entry-BARE'),
-    ).toHaveTextContent('Bare title');
+    const bare = await screen.findByTestId('lint-validation-catalog-entry-BARE');
+    expect(bare).toHaveTextContent('Bare title');
+    // Missing severity/type/access are not invented as info/other/public.
+    expect(within(bare).getByTestId('catalog-entry-type')).toHaveTextContent('—');
+    expect(within(bare).getByTestId('catalog-entry-level')).toHaveTextContent('—');
+    expect(bare).not.toHaveTextContent('Access: public');
     expect(
       await screen.findByTestId('lint-validation-catalog-entry-TAGGED'),
     ).toHaveTextContent('Has summary');
@@ -253,10 +275,7 @@ describe('LintValidationCatalogPage', () => {
       'issue_type',
     );
 
-    const rows = within(list).getAllByRole('row');
-    const codes = rows
-      .slice(1)
-      .map((row) => row.querySelector('td')?.textContent?.trim());
+    const codes = listedCodes(list);
     expect(codes).toEqual([
       'XML_SCHEMA',
       'AMD_PRESENT',
@@ -272,19 +291,23 @@ describe('LintValidationCatalogPage', () => {
     expect(row).toHaveTextContent(/Access: public/i);
   });
 
-  it('shows applicable semantic and exchange profiles in the catalog', async () => {
+  it('shows the rule text without semantic or exchange profile lines', async () => {
     render(<LintValidationCatalogPage />);
     const xmlSchema = await screen.findByTestId(
       'lint-validation-catalog-entry-XML_SCHEMA',
     );
-    expect(xmlSchema).toHaveTextContent('Semantic: ICAO_2025, CA_ECCC');
-    expect(xmlSchema).toHaveTextContent('Exchange: All exchange profiles');
-
-    const terminator = screen.getByTestId(
-      'lint-validation-catalog-entry-MISSING_TERMINATOR',
+    expect(xmlSchema).toHaveTextContent(
+      'IWXXM document must validate against the pinned XSD schema',
     );
-    expect(terminator).toHaveTextContent('Semantic: All semantic profiles');
-    expect(terminator).toHaveTextContent('Exchange: GLOBAL_AFS');
+    expect(xmlSchema).not.toHaveTextContent(/semantic profile/i);
+    expect(xmlSchema).not.toHaveTextContent(/exchange profile/i);
+    expect(xmlSchema).not.toHaveTextContent(/^Profiles:/m);
+    expect(
+      screen.queryByTestId('lint-validation-catalog-profile-filter'),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByTestId('lint-validation-catalog-exchange-filter'),
+    ).not.toBeInTheDocument();
   });
 
   it('filters by level client-side (TC-EV062-004)', async () => {
@@ -339,20 +362,14 @@ describe('LintValidationCatalogPage', () => {
       screen.getByTestId('lint-validation-catalog-sort'),
       'level',
     );
-    let codes = within(list)
-      .getAllByRole('row')
-      .slice(1)
-      .map((row) => row.querySelector('td')?.textContent?.trim());
-    expect(codes?.[0]).toBe('XML_SCHEMA');
+    let codes = listedCodes(list);
+    expect(codes[0]).toBe('XML_SCHEMA');
 
     await user.selectOptions(
       screen.getByTestId('lint-validation-catalog-sort'),
       'family',
     );
-    codes = within(list)
-      .getAllByRole('row')
-      .slice(1)
-      .map((row) => row.querySelector('td')?.textContent?.trim());
+    codes = listedCodes(list);
     expect(codes).toContain('XML_SCHEMA');
     expect(codes).toContain('AMD_PRESENT');
 
@@ -360,11 +377,8 @@ describe('LintValidationCatalogPage', () => {
       screen.getByTestId('lint-validation-catalog-sort'),
       'source_access',
     );
-    codes = within(list)
-      .getAllByRole('row')
-      .slice(1)
-      .map((row) => row.querySelector('td')?.textContent?.trim());
-    expect(codes?.length).toBe(4);
+    codes = listedCodes(list);
+    expect(codes.length).toBe(4);
   });
 
   it('renders non-clickable http when status is not verified', async () => {
@@ -404,8 +418,7 @@ describe('LintValidationCatalogPage', () => {
     });
     render(<LintValidationCatalogPage />);
     const row = await screen.findByTestId('lint-validation-catalog-entry-NO_TYPE');
-    const cells = within(row).getAllByRole('cell');
-    expect(cells[1]).toHaveTextContent('—');
+    expect(within(row).getByTestId('catalog-entry-type')).toHaveTextContent('—');
   });
 
   it('shows empty state when level filter matches nothing', async () => {
@@ -462,20 +475,14 @@ describe('LintValidationCatalogPage', () => {
       screen.getByTestId('lint-validation-catalog-sort'),
       'code',
     );
-    let codes = within(list)
-      .getAllByRole('row')
-      .slice(1)
-      .map((row) => row.querySelector('td')?.textContent?.trim());
+    let codes = listedCodes(list);
     expect(codes).toEqual(['A_FIRST', 'M_MID', 'Z_LAST']);
 
     await user.selectOptions(
       screen.getByTestId('lint-validation-catalog-sort'),
       'level',
     );
-    codes = within(list)
-      .getAllByRole('row')
-      .slice(1)
-      .map((row) => row.querySelector('td')?.textContent?.trim());
+    codes = listedCodes(list);
     // errors first (A before Z), then warning
     expect(codes).toEqual(['A_FIRST', 'Z_LAST', 'M_MID']);
 
@@ -519,10 +526,7 @@ describe('LintValidationCatalogPage', () => {
       screen.getByTestId('lint-validation-catalog-sort'),
       'level',
     );
-    const codes = within(list)
-      .getAllByRole('row')
-      .slice(1)
-      .map((row) => row.querySelector('td')?.textContent?.trim());
+    const codes = listedCodes(list);
     expect(codes).toEqual(['INFO_SEV', 'UNKNOWN_SEV']);
   });
 
@@ -554,21 +558,41 @@ describe('LintValidationCatalogPage', () => {
   });
 
   it('shows empty and error states', async () => {
+    const user = userEvent.setup();
     fetchLintIssueCatalog.mockResolvedValueOnce({ issues: [] });
     const { unmount } = render(<LintValidationCatalogPage />);
     expect(await screen.findByText(/No catalog entries/i)).toBeInTheDocument();
     unmount();
 
-    fetchLintIssueCatalog.mockRejectedValueOnce(new Error('catalog down'));
+    fetchLintIssueCatalog.mockRejectedValueOnce(new Error('Failed to fetch'));
     const { unmount: unmount2 } = render(<LintValidationCatalogPage />);
-    expect(await screen.findByRole('alert')).toHaveTextContent('catalog down');
+    expect(await screen.findByRole('alert')).toHaveTextContent(
+      'The catalog could not be loaded.',
+    );
+    expect(screen.getByRole('alert')).not.toHaveTextContent('Failed to fetch');
+    expect(screen.getByTestId('lint-validation-catalog-retry')).toBeInTheDocument();
     unmount2();
 
     fetchLintIssueCatalog.mockRejectedValueOnce('offline');
+    fetchLintIssueCatalog.mockResolvedValueOnce({
+      issues: [
+        {
+          code: 'RETRIED',
+          severity: 'info',
+          message_template: 'Loaded after retry',
+          family: 'lint',
+          status: 'verified',
+        },
+      ],
+    });
     render(<LintValidationCatalogPage />);
     expect(await screen.findByRole('alert')).toHaveTextContent(
-      'Failed to load catalog',
+      'The catalog could not be loaded.',
     );
+    await user.click(screen.getByTestId('lint-validation-catalog-retry'));
+    expect(
+      await screen.findByTestId('lint-validation-catalog-entry-RETRIED'),
+    ).toBeInTheDocument();
   });
 
   it('shows a dash when source_url is absent', async () => {
@@ -633,5 +657,404 @@ describe('LintValidationCatalogPage', () => {
     expect(
       within(list).getByTestId('lint-validation-catalog-entry-B_SECOND'),
     ).toBeInTheDocument();
+  });
+
+  it('keeps catalog copy free of planning ids', async () => {
+    render(<LintValidationCatalogPage />);
+    await screen.findByTestId('lint-validation-catalog-list');
+    expect(screen.queryByText(/EV-1120|TC-EV|#1123|ADR-/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/All semantic profiles/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/All exchange profiles/i)).not.toBeInTheDocument();
+  });
+
+  const RULE_FAMILIES = ['conversion', 'dissemination', 'decoding'] as const;
+
+  for (const family of RULE_FAMILIES) {
+    it(`TC-EV1281: ${family} Type/Level/Access/Sort are client-only (#1281)`, async () => {
+      const user = userEvent.setup();
+      render(<LintValidationCatalogPage />);
+      await screen.findByTestId('lint-validation-catalog-list');
+
+      fetchRuleCatalog.mockResolvedValue({
+        family,
+        items: [
+          { id: 'ZULU', title: 'Zulu', summary: 'z row', severity: 'warning' },
+          { id: 'ALPHA', title: 'Alpha', summary: 'a row', severity: 'error' },
+          { id: 'MIKE', title: 'Mike', summary: 'm row' },
+        ],
+      });
+      await user.selectOptions(
+        screen.getByTestId('lint-validation-catalog-family-filter'),
+        family,
+      );
+      const list = await screen.findByTestId('lint-validation-catalog-list');
+      expect(fetchRuleCatalog).toHaveBeenLastCalledWith({ family });
+
+      // Unsorted fixtures → Sort by Code reorders by id.
+      await user.selectOptions(
+        screen.getByTestId('lint-validation-catalog-sort'),
+        'code',
+      );
+      let codes = listedCodes(list);
+      expect(codes).toEqual(['ALPHA', 'MIKE', 'ZULU']);
+
+      // Sort by Level uses real severity; missing severity is last (not invented info).
+      await user.selectOptions(
+        screen.getByTestId('lint-validation-catalog-sort'),
+        'level',
+      );
+      codes = listedCodes(list);
+      expect(codes).toEqual(['ALPHA', 'ZULU', 'MIKE']);
+
+      // Type value no row has → empty; All restores.
+      // Conversion uses profile|policy|other; dissemination uses profile|other.
+      // Decoding keeps the TAC/IWXXM type list (e.g. structure).
+      const emptyType =
+        family === 'conversion'
+          ? 'policy'
+          : family === 'dissemination'
+            ? 'profile'
+            : 'structure';
+      await user.selectOptions(
+        screen.getByTestId('lint-validation-catalog-type-filter'),
+        emptyType,
+      );
+      expect(await screen.findByText(/No catalog entries/i)).toBeInTheDocument();
+      expect(fetchRuleCatalog).toHaveBeenLastCalledWith({ family });
+      await user.selectOptions(
+        screen.getByTestId('lint-validation-catalog-type-filter'),
+        'all',
+      );
+      expect(
+        await screen.findByTestId('lint-validation-catalog-entry-ALPHA'),
+      ).toBeInTheDocument();
+
+      // Access value no row has → empty; All restores. Missing access ≠ public.
+      await user.selectOptions(
+        screen.getByTestId('lint-validation-catalog-access-filter'),
+        'public',
+      );
+      expect(await screen.findByText(/No catalog entries/i)).toBeInTheDocument();
+      await user.selectOptions(
+        screen.getByTestId('lint-validation-catalog-access-filter'),
+        'all',
+      );
+      expect(
+        await screen.findByTestId('lint-validation-catalog-entry-ZULU'),
+      ).toBeInTheDocument();
+
+      // Level=info must not match rows with missing severity.
+      await user.selectOptions(
+        screen.getByTestId('lint-validation-catalog-level-filter'),
+        'info',
+      );
+      expect(await screen.findByText(/No catalog entries/i)).toBeInTheDocument();
+      await user.selectOptions(
+        screen.getByTestId('lint-validation-catalog-level-filter'),
+        'error',
+      );
+      expect(
+        await screen.findByTestId('lint-validation-catalog-entry-ALPHA'),
+      ).toBeInTheDocument();
+      expect(
+        screen.queryByTestId('lint-validation-catalog-entry-ZULU'),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByTestId('lint-validation-catalog-entry-MIKE'),
+      ).not.toBeInTheDocument();
+
+      // Never add type/level/access/sort query params for rule catalogs.
+      for (const call of fetchRuleCatalog.mock.calls) {
+        expect(call[0]).toEqual({ family: expect.any(String) });
+        expect(call[0]).not.toHaveProperty('issue_type');
+        expect(call[0]).not.toHaveProperty('source_access');
+        expect(call[0]).not.toHaveProperty('sort');
+      }
+      expect(fetchLintIssueCatalog).not.toHaveBeenCalledWith(
+        expect.objectContaining({ family }),
+      );
+    });
+  }
+
+  it('searches the catalog and opens the selected rule', async () => {
+    const user = userEvent.setup();
+    render(<LintValidationCatalogPage />);
+    const detail = await screen.findByTestId('lint-validation-catalog-detail');
+    expect(detail).toHaveTextContent('AMD_PRESENT');
+
+    await user.click(
+      within(screen.getByTestId('lint-validation-catalog-entry-XML_SCHEMA')).getByRole(
+        'button',
+      ),
+    );
+    expect(screen.getByTestId('lint-validation-catalog-detail')).toHaveTextContent(
+      'XML_SCHEMA',
+    );
+    expect(screen.getByTestId('lint-validation-catalog-detail')).toHaveTextContent(
+      'IWXXM validation',
+    );
+
+    await user.type(screen.getByTestId('lint-validation-catalog-search'), 'vendor pin');
+    expect(
+      screen.getByTestId('lint-validation-catalog-entry-VENDOR_ONLY'),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByTestId('lint-validation-catalog-entry-XML_SCHEMA'),
+    ).not.toBeInTheDocument();
+    expect(screen.getByTestId('lint-validation-catalog-detail')).toHaveTextContent(
+      'VENDOR_ONLY',
+    );
+  });
+
+  it('shows packaged pass and fail reports and says when an example is not on file', async () => {
+    const user = userEvent.setup();
+    fetchLintIssueCatalog.mockResolvedValue({
+      issues: [
+        ...BASE_ISSUES,
+        {
+          code: 'MISSING_CCCC',
+          severity: 'error',
+          message_template: 'Station identifier is missing',
+          product: 'metar',
+          tags: ['station'],
+          family: 'lint',
+          issue_type: 'presence',
+          source_access: 'paywall',
+          status: 'verified',
+          semantic_profiles: [],
+          exchange_profiles: [],
+        },
+        {
+          code: 'MISSING_DTG',
+          severity: 'error',
+          message_template: 'Advisory time is missing',
+          product: 'vaa',
+          tags: ['time'],
+          family: 'lint',
+          issue_type: 'presence',
+          source_access: 'public',
+          status: 'verified',
+          semantic_profiles: [],
+          exchange_profiles: [],
+        },
+        {
+          code: 'AT_PRESENT',
+          severity: 'info',
+          message_template: 'AT change group noted',
+          product: 'taf',
+          tags: ['change'],
+          family: 'lint',
+          issue_type: 'presence',
+          source_access: 'public',
+          status: 'verified',
+          semantic_profiles: [],
+          exchange_profiles: [],
+        },
+        {
+          code: 'INFO_NO_SAMPLE',
+          severity: 'info',
+          message_template: 'Info rule with no packaged report',
+          product: 'taf',
+          tags: ['time'],
+          family: 'lint',
+          issue_type: 'presence',
+          source_access: 'public',
+          status: 'verified',
+          semantic_profiles: [],
+          exchange_profiles: [],
+        },
+      ],
+    });
+    render(<LintValidationCatalogPage />);
+    const infoDetail = await screen.findByTestId('lint-validation-catalog-detail');
+    const infoExample = within(infoDetail).getByTestId('catalog-rule-example');
+    expect(infoExample).toHaveAttribute('data-tone', 'example');
+    expect(infoExample).toHaveTextContent('TAF KJFK');
+    expect(infoExample).not.toHaveTextContent('YUDO');
+    expect(
+      within(infoDetail).getByRole('heading', { name: /^Examples$/ }),
+    ).toBeInTheDocument();
+    expect(
+      within(infoDetail).queryByRole('heading', { name: 'Passing example' }),
+    ).not.toBeInTheDocument();
+    expect(
+      within(infoDetail).queryByRole('heading', { name: 'Failing example' }),
+    ).not.toBeInTheDocument();
+    expect(
+      within(infoDetail).queryByText(/passing|failing|succeeding/i),
+    ).not.toBeInTheDocument();
+    expect(
+      within(infoDetail).queryByTestId('catalog-rule-example-fail'),
+    ).not.toBeInTheDocument();
+    expect(
+      within(infoDetail).queryByTestId('catalog-rule-example-pass'),
+    ).not.toBeInTheDocument();
+
+    await user.click(
+      within(
+        screen.getByTestId('lint-validation-catalog-entry-MISSING_CCCC'),
+      ).getByRole('button'),
+    );
+    expect(screen.getByTestId('catalog-rule-example-pass')).toHaveAttribute(
+      'data-tone',
+      'pass',
+    );
+    expect(screen.getByTestId('catalog-rule-example-pass')).toHaveTextContent('KJFK');
+    expect(screen.getByTestId('catalog-rule-example-fail')).toHaveAttribute(
+      'data-tone',
+      'fail',
+    );
+    expect(screen.getByTestId('catalog-rule-example-fail')).not.toHaveTextContent(
+      'KJFK',
+    );
+
+    await user.click(
+      within(screen.getByTestId('lint-validation-catalog-entry-MISSING_DTG')).getByRole(
+        'button',
+      ),
+    );
+    expect(screen.getByTestId('catalog-rule-example-pass')).toHaveAttribute(
+      'data-tone',
+      'pass',
+    );
+    expect(screen.getByTestId('catalog-rule-example-pass')).toHaveTextContent('DTG:');
+    expect(screen.getByTestId('catalog-rule-example-fail')).toHaveAttribute(
+      'data-tone',
+      'fail',
+    );
+    expect(screen.getByTestId('catalog-rule-example-fail')).toHaveTextContent(
+      'VA ADVISORY',
+    );
+
+    await user.click(
+      within(screen.getByTestId('lint-validation-catalog-entry-AT_PRESENT')).getByRole(
+        'button',
+      ),
+    );
+    const atPresent = screen.getByTestId('lint-validation-catalog-detail');
+    expect(within(atPresent).getByTestId('catalog-rule-example')).toHaveTextContent(
+      'TAF KJFK',
+    );
+    expect(within(atPresent).getByTestId('catalog-rule-example')).not.toHaveTextContent(
+      'BECMG',
+    );
+    expect(
+      within(atPresent).getByRole('heading', { name: /^Examples$/ }),
+    ).toBeInTheDocument();
+    expect(
+      within(atPresent).queryByRole('heading', { name: 'Failing example' }),
+    ).not.toBeInTheDocument();
+
+    await user.click(
+      within(
+        screen.getByTestId('lint-validation-catalog-entry-INFO_NO_SAMPLE'),
+      ).getByRole('button'),
+    );
+    const emptyInfo = screen.getByTestId('lint-validation-catalog-detail');
+    expect(within(emptyInfo).getByTestId('catalog-rule-example')).toHaveAttribute(
+      'data-tone',
+      'unavailable',
+    );
+    expect(within(emptyInfo).getByTestId('catalog-rule-example')).toHaveTextContent(
+      'No example is available for this rule yet.',
+    );
+    expect(
+      within(emptyInfo).queryByText(/passing|failing|succeeding/i),
+    ).not.toBeInTheDocument();
+
+    await user.click(
+      within(screen.getByTestId('lint-validation-catalog-entry-VENDOR_ONLY')).getByRole(
+        'button',
+      ),
+    );
+    const warningDetail = screen.getByTestId('lint-validation-catalog-detail');
+    expect(
+      within(warningDetail).getByRole('heading', { name: /^Passing example$/ }),
+    ).toBeInTheDocument();
+    expect(
+      within(warningDetail).getByRole('heading', { name: /^Failing example$/ }),
+    ).toBeInTheDocument();
+    expect(
+      within(warningDetail).getByTestId('catalog-rule-example-pass'),
+    ).toHaveAttribute('data-tone', 'unavailable');
+    expect(
+      within(warningDetail).getByTestId('catalog-rule-example-fail'),
+    ).toHaveAttribute('data-tone', 'unavailable');
+  });
+
+  it('switches between compact and detailed and keeps search and the selected rule', async () => {
+    const user = userEvent.setup();
+    render(<LintValidationCatalogPage />);
+    expect(
+      await screen.findByTestId('lint-validation-catalog-view-detailed'),
+    ).toHaveAttribute('aria-pressed', 'true');
+    expect(screen.getByTestId('catalog-detail-facts')).toBeInTheDocument();
+    expect(
+      within(
+        screen.getByTestId('lint-validation-catalog-entry-AMD_PRESENT'),
+      ).getByTestId('catalog-entry-type'),
+    ).toBeInTheDocument();
+
+    await user.click(screen.getByTestId('lint-validation-catalog-view-compact'));
+    expect(screen.getByTestId('lint-validation-catalog-view-compact')).toHaveAttribute(
+      'aria-pressed',
+      'true',
+    );
+    expect(document.querySelector('[data-view="compact"]')).toBeTruthy();
+    expect(
+      within(
+        screen.getByTestId('lint-validation-catalog-entry-AMD_PRESENT'),
+      ).queryByTestId('catalog-entry-type'),
+    ).not.toBeInTheDocument();
+    expect(screen.queryByTestId('catalog-detail-facts')).not.toBeInTheDocument();
+    expect(screen.getByTestId('lint-validation-catalog-detail')).toHaveTextContent(
+      'AMD_PRESENT',
+    );
+
+    await user.type(screen.getByTestId('lint-validation-catalog-search'), 'vendor pin');
+    expect(
+      screen.getByTestId('lint-validation-catalog-entry-VENDOR_ONLY'),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByTestId('lint-validation-catalog-entry-AMD_PRESENT'),
+    ).not.toBeInTheDocument();
+    expect(screen.getByTestId('lint-validation-catalog-detail')).toHaveTextContent(
+      'VENDOR_ONLY',
+    );
+
+    await user.click(screen.getByTestId('lint-validation-catalog-view-detailed'));
+    expect(screen.getByTestId('catalog-detail-facts')).toHaveTextContent('structure');
+    expect(sessionStorage.getItem(CATALOG_VIEW_STORAGE_KEY)).toBe('detailed');
+
+    cleanup();
+    sessionStorage.setItem(CATALOG_VIEW_STORAGE_KEY, 'compact');
+    render(<LintValidationCatalogPage />);
+    expect(
+      await screen.findByTestId('lint-validation-catalog-view-compact'),
+    ).toHaveAttribute('aria-pressed', 'true');
+  });
+
+  it('keeps the selected rule in view on wide screens and links to the issues list', async () => {
+    render(<LintValidationCatalogPage />);
+    const detail = await screen.findByTestId('lint-validation-catalog-detail');
+    expect(detail.className).toContain('lg:sticky');
+    expect(detail.className).toContain('lg:top-4');
+    expect(detail.className).toContain('lg:self-start');
+    expect(detail.className).toContain('lg:max-h-[calc(100dvh-2rem)]');
+    expect(detail.className).toContain('lg:overflow-y-auto');
+    expect(detail.className).not.toMatch(/(^|\s)sticky(\s|$)/);
+
+    const link = within(detail).getByTestId('lint-validation-catalog-issues-link');
+    expect(link).toHaveAttribute(
+      'href',
+      'https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/new?template=validation_rule_request.md',
+    );
+    expect(link).toHaveAttribute('target', '_blank');
+    expect(link).toHaveAttribute('rel', 'noopener noreferrer');
+    expect(link).toHaveTextContent('open an issue');
+    expect(detail).toHaveTextContent(
+      'If a rule you need is not listed, open an issue.',
+    );
+    expect(detail.lastElementChild).toContainElement(link);
   });
 });

@@ -2,7 +2,7 @@
 
 from datetime import UTC, datetime
 from enum import StrEnum
-from typing import Any
+from typing import Any, Literal
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -10,13 +10,22 @@ from pydantic import BaseModel, ConfigDict, Field
 class ConversionIssueSeverity(StrEnum):
     """Severity level for conversion and validation issues."""
 
+    CRITICAL = "critical"
     ERROR = "error"
     WARNING = "warning"
     INFO = "info"
 
 
 class ConversionIssue(BaseModel):
-    """Structured issue for a single conversion input item."""
+    """
+    Structured issue for a single conversion input item.
+
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     source: str = Field(
         ...,
@@ -61,7 +70,15 @@ class ConversionIssue(BaseModel):
 
 
 class ProfileOutputSpecModel(BaseModel):
-    """Operator-visible CA_ECCC exchange output contract (EV-071 M2)."""
+    """
+    CA_ECCC exchange output fields for a converted report.
+
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     semantic_profile: str = Field(..., description="Semantic profile id (e.g. CA_ECCC)")
     file_naming_pattern: str = Field(..., description="MSC IWXXM filename pattern")
@@ -90,8 +107,42 @@ class ProfileOutputSpecModel(BaseModel):
     )
 
 
+class GroupTrace(BaseModel):
+    """
+    TAC group that produced one IWXXM element in a preview.
+
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
+
+    start: int = Field(..., ge=0, description="Inclusive character offset into the TAC")
+    end: int = Field(..., ge=0, description="Exclusive character offset into the TAC")
+    token: str = Field(..., description="TAC text of the group")
+    element: str = Field(..., description="IWXXM element name, without a namespace prefix")
+    occurrence: int = Field(
+        ...,
+        ge=0,
+        description="How many earlier groups in this preview used the same element name",
+    )
+    scope: Literal["line", "block"] = Field(
+        ...,
+        description="line marks the opening tag; block marks through the closing tag",
+    )
+
+
 class FailedSpan(BaseModel):
-    """Character span marking a soft-preview failure."""
+    """
+    Character span marking a soft-preview failure.
+
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     start: int = Field(..., ge=0, description="Inclusive character offset into source TAC")
     end: int = Field(..., ge=0, description="Exclusive character offset into source TAC")
@@ -100,7 +151,15 @@ class FailedSpan(BaseModel):
 
 
 class ConversionResult(BaseModel):
-    """Individual conversion result for a single METAR input."""
+    """
+    Individual conversion result for a single METAR input.
+
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     model_config = ConfigDict(
         json_schema_extra={
@@ -135,7 +194,15 @@ class ConversionResult(BaseModel):
 
 
 class ConversionResponse(BaseModel):
-    """Response from conversion endpoint with results and errors."""
+    """
+    Response from conversion endpoint with results and errors.
+
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     model_config = ConfigDict(
         json_schema_extra={
@@ -188,10 +255,32 @@ class ConversionResponse(BaseModel):
         default_factory=list,
         description="Soft-preview failed character spans; empty when preview omitted/false",
     )
+    group_trace: list[GroupTrace] = Field(
+        default_factory=list,
+        description=(
+            "Preview pairing of TAC groups to IWXXM elements. "
+            "Empty when preview is omitted or the product has no pairing."
+        ),
+    )
+    raised_severities: list[str] = Field(
+        default_factory=list,
+        description=(
+            "Severities considered raised for this response given Strict and step flags. "
+            "All issues remain in issues arrays."
+        ),
+    )
 
 
 class ErrorDetail(BaseModel):
-    """Detailed error response."""
+    """
+    Detailed error response.
+
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     message: str
     errors: list[str] = Field(default_factory=list)
@@ -200,7 +289,15 @@ class ErrorDetail(BaseModel):
 
 
 class HealthResponse(BaseModel):
-    """Health check response."""
+    """
+    Health check response.
+
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     status: str
     version: str
@@ -210,7 +307,15 @@ class HealthResponse(BaseModel):
 
 
 class ConversionRequest(BaseModel):
-    """Request for METAR to IWXXM conversion via JSON body."""
+    """
+    Request for METAR to IWXXM conversion via JSON body.
+
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     model_config = ConfigDict(
         json_schema_extra={
@@ -280,11 +385,11 @@ class ConversionRequest(BaseModel):
     )
     preset_id: str | None = Field(
         default=None,
-        description="Deprecated on Convert — rejected after library hard cut; use conversion_library_id",
+        description="Deprecated on convert. Rejected. Use conversion_library_id.",
     )
     overlay_id: str | None = Field(
         default=None,
-        description="Deprecated on Convert — rejected after library hard cut",
+        description="Deprecated on convert. Rejected.",
     )
     conversion_library_id: str | None = Field(
         default=None,

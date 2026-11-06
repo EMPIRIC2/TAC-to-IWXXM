@@ -1,0 +1,353 @@
+rule_id: sigmet_multi_location_va
+engine: convert
+cases:
+- bucket: happy
+  case_id: '01'
+  status: ready
+  tac: 'YUDD SIGMET 2 VALID 101200/101800 YUSO-
+
+    YUDD SHANLON FIR VA ERUPTION MT ASHVAL PSN N4315 E02115
+
+    VA CLD OBS AT 1200Z WI N4315 E02115 - N4345 E02145 - N4330 E02215 - N4245 E02230 - N4230 E02145 - N4315 E02115 FL250/370 NC
+
+    FCST AT 1800Z WI N4330 E02215 - N4315 E02345 - N4145 E02315 - N4230 E02200 - N4330 E02215
+
+    AND OBS AT 1200Z WI N4200 E02115 - N4217 E02130 - N4145 E02200 - N4130 E02130 - N4200 E02115 FL150/300 NC
+
+    FCST AT 1800Z WI N4200 E02145 - N4145 E02215 - N4100 E02215 - N4130 E02130 - N4200 E02145='
+  expect:
+    encode_ok: true
+    require_xml: true
+  meta:
+    product: SIGMET
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: annex3_golden/sigmet_multi_location_va.tac
+- bucket: happy
+  case_id: '02'
+  status: ready
+  tac: 'YUDD SIGMET 3 VALID 111200/111800 YUSO-
+
+    YUDD SHANLON FIR VA ERUPTION MT ASHVAL PSN N4315 E02115
+
+    VA CLD OBS AT 1200Z WI N4315 E02115 - N4345 E02145 - N4330 E02215 - N4245 E02230 - N4230 E02145 - N4315 E02115 FL250/370 NC
+
+    FCST AT 1800Z WI N4330 E02215 - N4315 E02345 - N4145 E02315 - N4230 E02200 - N4330 E02215
+
+    AND OBS AT 1200Z WI N4200 E02115 - N4217 E02130 - N4145 E02200 - N4130 E02130 - N4200 E02115 FL150/300 NC
+
+    FCST AT 1800Z WI N4200 E02145 - N4145 E02215 - N4100 E02215 - N4130 E02130 - N4200 E02145='
+  expect:
+    encode_ok: true
+    require_xml: true
+  meta:
+    product: SIGMET
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 variant of sigmet_multi_location_va
+- bucket: happy
+  case_id: '03'
+  status: ready
+  tac: 'YUDD SIGMET 2 VALID 121200/121800 YUSO-
+
+    YUDD SHANLON FIR VA ERUPTION MT ASHVAL PSN N4315 E02115
+
+    VA CLD OBS AT 1200Z WI N4315 E02115 - N4345 E02145 - N4330 E02215 - N4245 E02230 - N4230 E02145 - N4315 E02115 FL250/370 NC
+
+    FCST AT 1800Z WI N4330 E02215 - N4315 E02345 - N4145 E02315 - N4230 E02200 - N4330 E02215
+
+    AND OBS AT 1200Z WI N4200 E02115 - N4217 E02130 - N4145 E02200 - N4130 E02130 - N4200 E02115 FL150/300 NC
+
+    FCST AT 1800Z WI N4200 E02145 - N4145 E02215 - N4100 E02215 - N4130 E02130 - N4200 E02145='
+  expect:
+    encode_ok: true
+    require_xml: true
+  meta:
+    product: SIGMET
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 variant of sigmet_multi_location_va
+- bucket: happy
+  case_id: '04'
+  status: ready
+  tac: 'YUDD SIGMET 2 VALID 101200/101800 YUSO-
+
+    YUDD SHANLON FIR VA ERUPTION MT ASHVAL PSN N4315 E02115
+
+    VA CLD OBS AT 1200Z WI N4315 E02115 - N4345 E02145 - N4330 E02215 - N4245 E02230 - N4230 E02145 - N4315 E02115 FL250/350 NC
+
+    FCST AT 1800Z WI N4330 E02215 - N4315 E02345 - N4145 E02315 - N4230 E02200 - N4330 E02215
+
+    AND OBS AT 1200Z WI N4200 E02115 - N4217 E02130 - N4145 E02200 - N4130 E02130 - N4200 E02115 FL150/300 NC
+
+    FCST AT 1800Z WI N4200 E02145 - N4145 E02215 - N4100 E02215 - N4130 E02130 - N4200 E02145='
+  expect:
+    encode_ok: true
+    require_xml: true
+  meta:
+    product: SIGMET
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 variant of sigmet_multi_location_va
+- bucket: happy
+  case_id: '05'
+  status: ready
+  tac: 'YUDD SIGMET 4 VALID 101200/101800 YUSO-
+
+    YUDD SHANLON FIR VA ERUPTION MT ASHVAL PSN N4315 E02115
+
+    VA CLD OBS AT 1200Z WI N4315 E02115 - N4345 E02145 - N4330 E02215 - N4245 E02230 - N4230 E02145 - N4315 E02115 FL250/370 NC
+
+    FCST AT 1800Z WI N4330 E02215 - N4315 E02345 - N4145 E02315 - N4230 E02200 - N4330 E02215
+
+    AND OBS AT 1200Z WI N4200 E02115 - N4217 E02130 - N4145 E02200 - N4130 E02130 - N4200 E02115 FL150/280 NC
+
+    FCST AT 1800Z WI N4200 E02145 - N4145 E02215 - N4100 E02215 - N4130 E02130 - N4200 E02145='
+  expect:
+    encode_ok: true
+    require_xml: true
+  meta:
+    product: SIGMET
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 variant of sigmet_multi_location_va
+- bucket: sad
+  case_id: '01'
+  status: ready
+  tac: GARBAGE
+  expect:
+    encode_ok: false
+    codes:
+    - PARSE_ERROR
+  meta:
+    product: SIGMET
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 garbage tokens
+- bucket: sad
+  case_id: '02'
+  status: ready
+  tac: .
+  expect:
+    encode_ok: false
+    codes:
+    - PARSE_ERROR
+  meta:
+    product: SIGMET
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 dot-only TAC
+- bucket: sad
+  case_id: '03'
+  status: ready
+  tac: METAR YUDO 151800Z 13005MPS 9000 BKN020 17/16 Q1018=
+  expect:
+    encode_ok: false
+    codes:
+    - PARSE_ERROR
+  meta:
+    product: SIGMET
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 METAR body under product SIGMET
+- bucket: sad
+  case_id: '04'
+  status: ready
+  tac: NOTAM YUDO CLOSED=
+  expect:
+    encode_ok: false
+    codes:
+    - PARSE_ERROR
+  meta:
+    product: SIGMET
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 non-SIGMET product token
+- bucket: sad
+  case_id: '05'
+  status: ready
+  tac: TAF YUDO 151800Z 1600/1618 13005MPS 9000 BKN020=
+  expect:
+    encode_ok: false
+    codes:
+    - PARSE_ERROR
+  meta:
+    product: SIGMET
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 TAF body under product SIGMET
+- bucket: edge_pass
+  case_id: '01'
+  status: ready
+  tac: 'YUDD SIGMET 2 VALID 101200/101800 YUSO-
+
+    YUDD SHANLON FIR VA ERUPTION MT ASHVAL PSN N4315 E02115
+
+    VA CLD OBS AT 1200Z WI N4315 E02115 - N4345 E02145 - N4330 E02215 - N4245 E02230 - N4230 E02145 - N4315 E02115 FL250/370 NC
+
+    FCST AT 1800Z WI N4330 E02215 - N4315 E02345 - N4145 E02315 - N4230 E02200 - N4330 E02215
+
+    AND OBS AT 1200Z WI N4200 E02115 - N4217 E02130 - N4145 E02200 - N4130 E02130 - N4200 E02115 FL150/300 NC
+
+    FCST AT 1800Z WI N4200 E02145 - N4145 E02215 - N4100 E02215 - N4130 E02130 - N4200 E02145'
+  expect:
+    encode_ok: true
+    require_xml: true
+  meta:
+    product: SIGMET
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 edge of sigmet_multi_location_va
+- bucket: edge_pass
+  case_id: '02'
+  status: ready
+  tac: '  YUDD SIGMET 2 VALID 101200/101800 YUSO-
+
+    YUDD SHANLON FIR VA ERUPTION MT ASHVAL PSN N4315 E02115
+
+    VA CLD OBS AT 1200Z WI N4315 E02115 - N4345 E02145 - N4330 E02215 - N4245 E02230 - N4230 E02145 - N4315 E02115 FL250/370 NC
+
+    FCST AT 1800Z WI N4330 E02215 - N4315 E02345 - N4145 E02315 - N4230 E02200 - N4330 E02215
+
+    AND OBS AT 1200Z WI N4200 E02115 - N4217 E02130 - N4145 E02200 - N4130 E02130 - N4200 E02115 FL150/300 NC
+
+    FCST AT 1800Z WI N4200 E02145 - N4145 E02215 - N4100 E02215 - N4130 E02130 - N4200 E02145=  '
+  expect:
+    encode_ok: true
+    require_xml: true
+  meta:
+    product: SIGMET
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 edge of sigmet_multi_location_va
+- bucket: edge_pass
+  case_id: '03'
+  status: ready
+  tac: 'YUDD SIGMET 2 VALID 101200/101800 YUSO-
+
+    YUDD SHANLON FIR VA ERUPTION MT ASHVAL PSN N4315 E02115
+
+    VA CLD OBS AT 1200Z WI N4315 E02115 - N4345 E02145 - N4330 E02215 - N4245 E02230 - N4230 E02145 - N4315 E02115 FL250/370 NC
+
+    FCST AT 1800Z WI N4330 E02215 - N4315 E02345 - N4145 E02315 - N4230 E02200 - N4330 E02215
+
+    AND OBS AT 1200Z WI N4200 E02115 - N4217 E02130 - N4145 E02200 - N4130 E02130 - N4200 E02115 FL150/300 NC
+
+    FCST AT 1800Z WI N4200 E02145 - N4145 E02215 - N4100 E02215 - N4130 E02130 - N4200 E02145 ='
+  expect:
+    encode_ok: true
+    require_xml: true
+  meta:
+    product: SIGMET
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 edge of sigmet_multi_location_va
+- bucket: edge_pass
+  case_id: '04'
+  status: ready
+  tac: 'YUDD SIGMET 5 VALID 131200/131800 YUSO-
+
+    YUDD SHANLON FIR VA ERUPTION MT ASHVAL PSN N4315 E02115
+
+    VA CLD OBS AT 1200Z WI N4315 E02115 - N4345 E02145 - N4330 E02215 - N4245 E02230 - N4230 E02145 - N4315 E02115 FL250/370 NC
+
+    FCST AT 1800Z WI N4330 E02215 - N4315 E02345 - N4145 E02315 - N4230 E02200 - N4330 E02215
+
+    AND OBS AT 1200Z WI N4200 E02115 - N4217 E02130 - N4145 E02200 - N4130 E02130 - N4200 E02115 FL150/300 NC
+
+    FCST AT 1800Z WI N4200 E02145 - N4145 E02215 - N4100 E02215 - N4130 E02130 - N4200 E02145='
+  expect:
+    encode_ok: true
+    require_xml: true
+  meta:
+    product: SIGMET
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 edge of sigmet_multi_location_va
+- bucket: edge_pass
+  case_id: '05'
+  status: ready
+  tac: 'YUDD SIGMET 2 VALID 101200/101800 YUSO-
+
+    YUDD SHANLON FIR VA ERUPTION MT ASHVAL PSN N4320 E02120
+
+    VA CLD OBS AT 1200Z WI N4315 E02115 - N4345 E02145 - N4330 E02215 - N4245 E02230 - N4230 E02145 - N4315 E02115 FL250/370 NC
+
+    FCST AT 1800Z WI N4330 E02215 - N4315 E02345 - N4145 E02315 - N4230 E02200 - N4330 E02215
+
+    AND OBS AT 1200Z WI N4200 E02115 - N4217 E02130 - N4145 E02200 - N4130 E02130 - N4200 E02115 FL150/300 NC
+
+    FCST AT 1800Z WI N4200 E02145 - N4145 E02215 - N4100 E02215 - N4130 E02130 - N4200 E02145='
+  expect:
+    encode_ok: true
+    require_xml: true
+  meta:
+    product: SIGMET
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 edge of sigmet_multi_location_va
+- bucket: edge_fail
+  case_id: '01'
+  status: ready
+  tac: SPECI YUDO 151800Z 13005MPS 9000 BKN020 17/16 Q1018=
+  expect:
+    encode_ok: false
+    codes:
+    - PARSE_ERROR
+  meta:
+    product: SIGMET
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 SPECI body under product SIGMET
+- bucket: edge_fail
+  case_id: '02'
+  status: ready
+  tac: SPECI
+  expect:
+    encode_ok: false
+    codes:
+    - PARSE_ERROR
+  meta:
+    product: SIGMET
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 keyword only SPECI
+- bucket: edge_fail
+  case_id: '03'
+  status: ready
+  tac: ????
+  expect:
+    encode_ok: false
+    codes:
+    - PARSE_ERROR
+  meta:
+    product: SIGMET
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 symbols
+- bucket: edge_fail
+  case_id: '04'
+  status: ready
+  tac: AIRMET YUDO
+  expect:
+    encode_ok: false
+    codes:
+    - PARSE_ERROR
+  meta:
+    product: SIGMET
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 AIRMET keyword under product SIGMET
+- bucket: edge_fail
+  case_id: '05'
+  status: ready
+  tac: METAR
+  expect:
+    encode_ok: false
+    codes:
+    - PARSE_ERROR
+  meta:
+    product: SIGMET
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 keyword only METAR

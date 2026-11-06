@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<iwxxm:SPECI xmlns:iwxxm="http://icao.int/iwxxm/2025-2"
+    xmlns:xlink="http://www.w3.org/1999/xlink"
+    xmlns:gml="http://www.opengis.net/gml/3.2"
+    xmlns:aixm="http://www.aixm.aero/schema/5.1.1"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    gml:id="speci.basic.tgpy"
+    reportStatus="NORMAL"
+    permissibleUsage="OPERATIONAL"
+    automatedStation="false">
+  <iwxxm:issueTime>
+    <gml:TimeInstant gml:id="t.issue">
+      <gml:timePosition>2023-06-11T14:47:00Z</gml:timePosition>
+    </gml:TimeInstant>
+  </iwxxm:issueTime>
+  <iwxxm:aerodrome>
+    <aixm:AirportHeliport gml:id="ad.tgpy">
+      <aixm:timeSlice>
+        <aixm:AirportHeliportTimeSlice gml:id="ad.ts.tgpy">
+          <gml:validTime/>
+          <aixm:interpretation>SNAPSHOT</aixm:interpretation>
+          <aixm:designator>TGPY</aixm:designator>
+          <aixm:locationIndicatorICAO>TGPY</aixm:locationIndicatorICAO>
+        </aixm:AirportHeliportTimeSlice>
+      </aixm:timeSlice>
+    </aixm:AirportHeliport>
+  </iwxxm:aerodrome>
+  <iwxxm:observationTime>
+    <gml:TimeInstant gml:id="t.obs">
+      <gml:timePosition>2023-06-11T14:47:00Z</gml:timePosition>
+    </gml:TimeInstant>
+  </iwxxm:observationTime>
+  <iwxxm:observation>
+    <iwxxm:MeteorologicalAerodromeObservation gml:id="obs.1" cloudAndVisibilityOK="false">
+      <iwxxm:airTemperature uom="Cel">25.0</iwxxm:airTemperature>
+      <iwxxm:dewpointTemperature uom="Cel">24.0</iwxxm:dewpointTemperature>
+      <iwxxm:qnh uom="hPa">1016</iwxxm:qnh>
+      <iwxxm:surfaceWind>
+        <iwxxm:AerodromeSurfaceWind variableWindDirection="false">
+          <iwxxm:meanWindDirection uom="deg">120</iwxxm:meanWindDirection>
+          <iwxxm:meanWindSpeed uom="[kn_i]">15</iwxxm:meanWindSpeed>
+          <iwxxm:windGustSpeed uom="[kn_i]">26</iwxxm:windGustSpeed>
+        </iwxxm:AerodromeSurfaceWind>
+      </iwxxm:surfaceWind>
+      <iwxxm:visibility>
+        <iwxxm:AerodromeHorizontalVisibility>
+          <iwxxm:prevailingVisibility uom="m">8000</iwxxm:prevailingVisibility>
+        </iwxxm:AerodromeHorizontalVisibility>
+      </iwxxm:visibility>
+      <iwxxm:presentWeather xlink:href="http://codes.wmo.int/306/4678/-TSRA"/>
+      <iwxxm:cloud>
+        <iwxxm:AerodromeCloud>
+          <iwxxm:layer>
+            <iwxxm:CloudLayer>
+              <iwxxm:amount xlink:href="http://codes.wmo.int/49-2/CloudAmountReportedAtAerodrome/FEW"/>
+              <iwxxm:base uom="[ft_i]">1300</iwxxm:base>
+              <iwxxm:cloudType xlink:href="http://codes.wmo.int/49-2/SigConvectiveCloudType/CB"/>
+            </iwxxm:CloudLayer>
+          </iwxxm:layer>
+          <iwxxm:layer>
+            <iwxxm:CloudLayer>
+              <iwxxm:amount xlink:href="http://codes.wmo.int/49-2/CloudAmountReportedAtAerodrome/BKN"/>
+              <iwxxm:base uom="[ft_i]">1600</iwxxm:base>
+            </iwxxm:CloudLayer>
+          </iwxxm:layer>
+        </iwxxm:AerodromeCloud>
+      </iwxxm:cloud>
+    </iwxxm:MeteorologicalAerodromeObservation>
+  </iwxxm:observation>
+  <iwxxm:trendForecast>
+    <iwxxm:MeteorologicalAerodromeTrendForecast gml:id="trend.1" changeIndicator="TEMPORARY_FLUCTUATIONS" cloudAndVisibilityOK="false">
+      <iwxxm:phenomenonTime nilReason="http://codes.wmo.int/common/nil/missing"/>
+      <iwxxm:weather xlink:href="http://codes.wmo.int/306/4678/TSRA"/>
+    </iwxxm:MeteorologicalAerodromeTrendForecast>
+  </iwxxm:trendForecast>
+</iwxxm:SPECI>

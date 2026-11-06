@@ -3,7 +3,7 @@
 # Human stubs: semantic/*.md · exchange/*.md
 schema_version: 2
 cycle: EV-M1-five-remaining
-updated: "2026-09-09"
+updated: "2026-10-31"
 
 priority_legend:
   P0: "Baseline — implemented or default exchange overlay (F35)"
@@ -65,7 +65,7 @@ profiles:
       package: packages/tac2iwxxm
       module: profiles/iwxxm_us.py
       deepen_issue: "#919"
-    products: [METAR, SPECI, SIGMET, AIRMET]
+    products: [METAR, SPECI, TAF, SIGMET, AIRMET, TCA, SWXA, VONA, VAA]
     vendor_pins:
       iwxxm: vendor/manifest.json → iwxxm v2025-2
       iwxxm-us: vendor/manifest.json → iwxxm-us 3.0
@@ -106,6 +106,56 @@ profiles:
       waived:
         - M14 alias cutover (#1025 → 2026-10-31)
         - FMH-1 §12.7.2 full additive RMK matrix (no mined fixtures)
+
+  - id: US_MILITARY
+    kind: semantic
+    priority: P2
+    status: implemented
+    emit_key: us_military
+    implementation:
+      package: packages/tac-validate
+      validate_profile: us_military
+      cycle: EV-station-profile-tx-tn
+      policy: StationScopedLintPolicy / UsMilitaryLintPolicy
+    products: [TAF]
+    stations: [KBIX, KCVS, KGRK, KNID, KNYL, KPOE, KSZL]
+    sources:
+      - url: https://www.aviationweather.gov/
+        label: Live US military TAF samples (e.g. KBIX)
+        access: public
+        proves: TX/TN after BECMG/TEMPO with QNH####INS
+    stub: semantic/US_MILITARY.md
+    gaps:
+      - Workbench does not auto-pick profile from station ICAO yet
+      - FMH / military handbook mining beyond live TAC
+    acceptance:
+      cycle: EV-station-profile-tx-tn
+      status: implemented
+
+  - id: LATAM_TAF
+    kind: semantic
+    priority: P2
+    status: implemented
+    emit_key: latam_taf
+    implementation:
+      package: packages/tac-validate
+      validate_profile: latam_taf
+      cycle: EV-station-profile-tx-tn
+      policy: StationScopedLintPolicy / LatAmTafLintPolicy
+    products: [TAF]
+    stations: [SKBO, SEQM, SKBQ, SVMI]
+    sources:
+      - url: https://www.aviationweather.gov/
+        label: Live LatAm TAF samples (SKBO, SEQM, SKBQ, SVMI)
+        access: public
+        proves: TX/TN after change groups
+    stub: semantic/LATAM_TAF.md
+    gaps:
+      - Workbench does not auto-pick profile from station ICAO yet
+      - National handbook mining beyond live TAC
+    acceptance:
+      cycle: EV-station-profile-tx-tn
+      status: implemented
 
   - id: CA_ECCC
     kind: semantic
@@ -263,7 +313,7 @@ profiles:
       issue: "#917"
       package: packages/tac2iwxxm
       cycle: EV-087 / EV-profile-validate-decode-deepen
-    products: [TAF, METAR, SPECI]
+    products: [TAF, METAR, SPECI, VAA, SIGMET, TCA, SWXA]
     # TAF3 is an RMK service marker under product=TAF (D-EV087-taf3) — not a separate API product enum.
     vendor_pins:
       iwxxm: vendor/manifest.json → active core pin (no AU national extension published)
@@ -302,7 +352,7 @@ profiles:
       issue: "#918"
       package: packages/tac2iwxxm
       cycle: EV-087 / EV-profile-validate-decode-deepen
-    products: [TAF, METAR, SPECI]
+    products: [TAF, METAR, SPECI, VAA, VONA]
     vendor_pins:
       iwxxm: vendor/manifest.json → active core pin (no NZ national extension published)
     sources:
@@ -333,7 +383,7 @@ profiles:
       package: packages/tac2iwxxm
       cycle: EV-094
       path: thin
-    products: [METAR, SPECI, TAF]
+    products: [METAR, SPECI, TAF, VAA, SWXA]
     vendor_pins:
       iwxxm: vendor/manifest.json → active core pin (no UK national extension published)
     sources:
@@ -503,7 +553,7 @@ profiles:
       package: packages/tac2iwxxm
       cycle: EV-094
       path: compat
-    products: [METAR, SPECI, TAF, SIGMET]
+    products: [METAR, SPECI, TAF, SIGMET, TCA]
     vendor_pins:
       iwxxm: vendor/manifest.json → active core pin (no IN national extension published)
     sources:
@@ -580,6 +630,54 @@ profiles:
       - AIP GEN 3.5 durable URL still gap
       - Chinese-language bulletin variants not required for v1 fixtures
 
+  - id: US_NWS_CONVECTIVE_SIGMET
+    kind: semantic
+    priority: P1
+    status: implemented
+    emit_key: us_nws_convective_sigmet
+    products: [SIGMET]
+    vendor_pins:
+      iwxxm: vendor/manifest.json → iwxxm v2025-2
+    stub: semantic/US_FAA_NWS.md
+    gaps:
+      - Convective SIGMET uses the existing convective emitter. International SIGMET stays on ICAO_2025.
+
+  - id: US_NWS_G_AIRMET
+    kind: semantic
+    priority: P1
+    status: implemented
+    emit_key: us_nws_g_airmet
+    products: [AIRMET]
+    vendor_pins:
+      iwxxm: vendor/manifest.json → iwxxm v2025-2
+    stub: semantic/US_FAA_NWS.md
+    gaps:
+      - Public feed is hazard polygons. Convert and lint refuse until a text bulletin exists.
+
+  - id: US_NWS_VONA
+    kind: semantic
+    priority: P1
+    status: implemented
+    emit_key: us_nws_vona
+    products: [VONA]
+    vendor_pins:
+      iwxxm: vendor/manifest.json → iwxxm v2025-2
+    stub: semantic/US_FAA_NWS.md
+    gaps:
+      - Convert and lint refuse until a clean TAC fixture is accepted. iwxxm_us keeps its current VONA path.
+
+  - id: CA_MSC_SIGMET
+    kind: semantic
+    priority: P1
+    status: implemented
+    emit_key: ca_msc_sigmet
+    products: [SIGMET]
+    vendor_pins:
+      iwxxm-ca: vendor/manifest.json → iwxxm-ca 3.0
+    stub: semantic/CA_ECCC.md
+    gaps:
+      - Validates a published IWXXM 3.0 file. Text conversion waits for a TAC source. ca_eccc keeps its SIGMET TAC path.
+
   # --- Exchange (packaging / routing — not TAC grammar) ---
 
   - id: GLOBAL_AFS
@@ -613,10 +711,10 @@ profiles:
   - id: APAC_ROBEX
     kind: exchange
     priority: P2
-    status: stub
+    status: in_progress
     implementation:
-      issue: "#921"
-      note: EV-065 P0 — registry + COLLECT baseline; EV-090 mining promote (OPMET Guidelines + APAC FAQs); ROBEX handbook durable file pinned from ICAO APAC edocs
+      issue: "#1222"
+      note: EV-1222 — COLLECT shell via OPMET Guidelines (ROBEX HB §6.6.1); default bulletinIdentifier A_SACI31ZBBB.xml from ROBEX HB §6.4.2 / App A SACI31 example
     sources:
       - url: https://www.icao.int/sites/default/files/METP/Documents/Guidlines-for-the-Implementation-of-OPMET-Data-Exchange-using-IWXXM_5th-Edition.pdf
         label: OPMET IWXXM Exchange Guidelines (5th Ed.)
@@ -637,9 +735,11 @@ profiles:
     mining_notes:
       - docs/domain/mining/OPMET-IWXXM-Exchange-Guidelines-5th-mining-notes.md
       - docs/domain/mining/icao-apac-iwxxm-faqs-3rd-2025-mining-notes.md
+      - docs/domain/mining/icao-apac-robex-hb-19th-2026-mining-notes.md
     stub: exchange/APAC_ROBEX.md
     gaps:
-      - Overlay rules beyond GLOBAL_AFS COLLECT baseline not scoped
+      - Full ROBEX App A/B bulletin matrices / ROC distribution lists not encoded
+      - Dynamic TTAAii selection from aerodrome not implemented (example default only)
 
   - id: EUR_RODEX
     kind: exchange
@@ -662,7 +762,7 @@ profiles:
       - docs/domain/mining/icao-eur-doc-14-sigmet-airmet-2023-mining-notes.md
     stub: exchange/EUR_RODEX.md
     gaps:
-      - Overlay rules beyond GLOBAL_AFS COLLECT baseline not scoped
+      - Overlay rules beyond GLOBAL_AFS COLLECT baseline not scoped (#1222 — EUR Doc 018 packaging delta not yet promoted)
 
   - id: AFI
     kind: exchange
@@ -684,7 +784,7 @@ profiles:
       - docs/domain/mining/OPMET-IWXXM-Exchange-Guidelines-5th-mining-notes.md
     stub: exchange/AFI.md
     gaps:
-      - Overlay rules beyond GLOBAL_AFS COLLECT baseline not scoped
+      - Overlay rules beyond GLOBAL_AFS COLLECT baseline not scoped (#1222 — AFI IWXXM guideline packaging delta not yet promoted)
 
   - id: CAR_SAM
     kind: exchange
@@ -703,4 +803,4 @@ profiles:
     stub: exchange/CAR_SAM.md
     gaps:
       - Authoritative CAR/SAM-specific exchange rule source not listed in #913 initial mine
-      - Overlay rules beyond GLOBAL_AFS COLLECT baseline not scoped
+      - Overlay rules beyond GLOBAL_AFS COLLECT baseline not scoped (#1222 — regional handbook packaging delta not yet promoted)

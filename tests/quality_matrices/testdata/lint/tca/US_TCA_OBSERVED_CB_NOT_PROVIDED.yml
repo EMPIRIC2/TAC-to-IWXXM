@@ -1,0 +1,807 @@
+rule_id: US_TCA_OBSERVED_CB_NOT_PROVIDED
+engine: lint
+cases:
+- bucket: happy
+  case_id: '01'
+  status: ready
+  tac: "HURRICANE ODALYS ICAO ADVISORY NUMBER  14\nNWS NATIONAL HURRICANE CENTER MIAMI\
+    \ FL       EP162026\n1500 UTC WED SEP 23 2026\nTC ADVISORY\nDTG:             \
+    \         20260923/1500Z\nTCAC:                     KNHC\nTC:                \
+    \       ODALYS\nADVISORY NR:              2026/014\nOBS PSN:                 \
+    \ 23/1500Z N1600 W12754\nMOV:                      ENE 07KT\nINTST CHANGE:   \
+    \          NC\nC:                        0989HPA\nMAX WIND:                 065KT\n\
+    FCST PSN +3 HR:           23/1800Z N1603 W12734\nFCST MAX WIND +3 HR:      065KT\n\
+    FCST PSN +6 HR:           23/2100Z N1607 W12713\nFCST MAX WIND +6 HR:      070KT\n\
+    FCST PSN +9 HR:           24/0000Z N1612 W12654\nFCST MAX WIND +9 HR:      070KT\n\
+    FCST PSN +15 HR:          24/0600Z N1630 W12612\nFCST MAX WIND +15 HR:     075KT\n\
+    FCST PSN +21 HR:          24/1200Z N1648 W12530\nFCST MAX WIND +21 HR:     075KT\n\
+    FCST PSN +27 HR:          24/1800Z N1709 W12451\nFCST MAX WIND +27 HR:     080KT\n\
+    RMK:                      THE FORECAST POSITION INFORMATION IN\n             \
+    \             THIS PRODUCT IS INTERPOLATED FROM\n                          OFFICIAL\
+    \ FORECAST DATA VALID AT 0000...\n                          0600...1200...AND\
+    \ 1800Z.\nNXT MSG:                  20260923/2100Z\n$$\nCB: NIL"
+  expect:
+    accept: true
+  meta:
+    product: TCA
+    profile: iwxxm_us
+    cite: '#1265 US_TCA_OBSERVED_CB_NOT_PROVIDED/happy NOAA tgftp + aviationweather.gov
+      retrieved 2026-09-23'
+- bucket: happy
+  case_id: '02'
+  status: ready
+  tac: "HURRICANE POLO ICAO ADVISORY NUMBER  12\nNWS NATIONAL HURRICANE CENTER MIAMI\
+    \ FL       EP172026\n1500 UTC WED SEP 23 2026\nTC ADVISORY\nDTG:             \
+    \         20260923/1500Z\nTCAC:                     KNHC\nTC:                \
+    \       POLO\nADVISORY NR:              2026/012\nOBS PSN:                  23/1500Z\
+    \ N1524 W10148\nMOV:                      NW 04KT\nINTST CHANGE:             WKN\n\
+    C:                        0927HPA\nMAX WIND:                 130KT\nFCST PSN +3\
+    \ HR:           23/1800Z N1533 W10201\nFCST MAX WIND +3 HR:      130KT\nFCST PSN\
+    \ +6 HR:           23/2100Z N1544 W10215\nFCST MAX WIND +6 HR:      125KT\nFCST\
+    \ PSN +9 HR:           24/0000Z N1554 W10230\nFCST MAX WIND +9 HR:      125KT\n\
+    FCST PSN +15 HR:          24/0600Z N1612 W10315\nFCST MAX WIND +15 HR:     125KT\n\
+    FCST PSN +21 HR:          24/1200Z N1630 W10400\nFCST MAX WIND +21 HR:     125KT\n\
+    FCST PSN +27 HR:          24/1800Z N1639 W10454\nFCST MAX WIND +27 HR:     130KT\n\
+    RMK:                      THE FORECAST POSITION INFORMATION IN\n             \
+    \             THIS PRODUCT IS INTERPOLATED FROM\n                          OFFICIAL\
+    \ FORECAST DATA VALID AT 0000...\n                          0600...1200...AND\
+    \ 1800Z.\nNXT MSG:                  20260923/2100Z\n$$\nCB: NIL"
+  expect:
+    accept: true
+  meta:
+    product: TCA
+    profile: iwxxm_us
+    cite: '#1265 US_TCA_OBSERVED_CB_NOT_PROVIDED/happy NOAA tgftp + aviationweather.gov
+      retrieved 2026-09-23'
+- bucket: happy
+  case_id: '03'
+  status: ready
+  tac: "POST-TROPICAL CYCLONE FAY ICAO ADVISORY NUMBER  14\nNWS NATIONAL HURRICANE\
+    \ CENTER MIAMI FL       AL062026\n2100 UTC TUE SEP 22 2026\nTC ADVISORY\nDTG:\
+    \                      20260922/2100Z\nTCAC:                     KNHC\nTC:   \
+    \                    FAY\nADVISORY NR:              2026/014\nOBS PSN:       \
+    \           22/2100Z N3048 W03518\nMOV:                      WSW 08KT\nINTST CHANGE:\
+    \             NC\nC:                        1011HPA\nMAX WIND:               \
+    \  030KT\nFCST PSN +3 HR:           23/0000Z N3036 W03544\nFCST MAX WIND +3 HR:\
+    \      030KT\nFCST PSN +6 HR:           23/0300Z N3024 W03609\nFCST MAX WIND +6\
+    \ HR:      030KT\nFCST PSN +9 HR:           23/0600Z N3012 W03636\nFCST MAX WIND\
+    \ +9 HR:      030KT\nFCST PSN +15 HR:          23/1200Z N3000 W03733\nFCST MAX\
+    \ WIND +15 HR:     030KT\nFCST PSN +21 HR:          23/1800Z N2948 W03830\nFCST\
+    \ MAX WIND +21 HR:     025KT\nFCST PSN +27 HR:          24/0000Z N2942 W03927\n\
+    FCST MAX WIND +27 HR:     025KT\nRMK:                      THE FORECAST POSITION\
+    \ INFORMATION IN\n                          THIS PRODUCT IS INTERPOLATED FROM\n\
+    \                          OFFICIAL FORECAST DATA VALID AT 0000...\n         \
+    \                 0600...1200...AND 1800Z.\nNXT MSG:                  NO MSG EXP\n\
+    $$\nCB: NIL"
+  expect:
+    accept: true
+  meta:
+    product: TCA
+    profile: iwxxm_us
+    cite: '#1265 US_TCA_OBSERVED_CB_NOT_PROVIDED/happy NOAA tgftp + aviationweather.gov
+      retrieved 2026-09-23'
+- bucket: happy
+  case_id: '04'
+  status: ready
+  tac: 'TC ADVISORY
+
+    DTG: 20260427/1237Z
+
+    TCAC: REUNION
+
+    TC: JULUKA
+
+    ADVISORY NR:
+
+    2026/01
+
+    OBS PSN: 27/1200Z S3434 E04806
+
+    CB: NIL
+
+    FL420
+
+    MOV: SSE 09KT
+
+    INTST CHANGE: WKN
+
+    C: 1000HPA
+
+    MAX WIND: 35KT
+
+    FCST
+
+    PSN +6 HR: 27/1800Z S3552 E04912
+
+    FCST MAX WIND +6 HR: 30KT
+
+    FCST PSN
+
+    +12 HR: 28/0000Z S3730 E05052
+
+    FCST MAX WIND +12 HR: 30KT
+
+    FCST PSN +18
+
+    HR: 28/0600Z S3930 E05214
+
+    FCST MAX WIND +18 HR: 35KT
+
+    FCST PSN +24 HR:
+
+    28/1200Z S4319 E05425
+
+    FCST MAX WIND +24 HR: 40KT
+
+    RMK: SUBTROPICAL
+
+    SYSTEM
+
+    NXT MSG: NO MSG EXP='
+  expect:
+    accept: true
+  meta:
+    product: TCA
+    profile: iwxxm_us
+    cite: '#1265 US_TCA_OBSERVED_CB_NOT_PROVIDED/happy NOAA tgftp + aviationweather.gov
+      retrieved 2026-09-23'
+- bucket: happy
+  case_id: '05'
+  status: ready
+  tac: 'TC ADVISORY
+
+    DTG:                 20260322/0000Z
+
+    TCAC:                DARWIN
+
+    TC:                  Ex-TC NARELLE
+
+    ADVISORY NR:         2026/21
+
+    OBS PSN:             22/0000Z S1400 E13418
+
+    CB: NIL
+
+    MOV:                 WSW 18KT
+
+    INTST CHANGE:        WKN
+
+    C:                   988HPA
+
+    MAX WIND:            40KT
+
+    FCST PSN +6HR:       22/0600 S1406 E13330
+
+    FCST MAX WIND +6HR:  30KT
+
+    FCST PSN +12HR:      22/1200 S1400 E13224
+
+    FCST MAX WIND +12HR: 30KT
+
+    FCST PSN +18HR:      22/1800 S1412 E13100
+
+    FCST MAX WIND +18HR: 30KT
+
+    FCST PSN +24HR:      23/0000 S1424 E12948
+
+    FCST MAX WIND +24HR: 30KT
+
+    RMK:                 NIL
+
+    NXT MSG:             NO MSG EXP'
+  expect:
+    accept: true
+  meta:
+    product: TCA
+    profile: iwxxm_us
+    cite: '#1265 US_TCA_OBSERVED_CB_NOT_PROVIDED/happy NOAA tgftp + aviationweather.gov
+      retrieved 2026-09-23'
+- bucket: sad
+  case_id: '01'
+  status: ready
+  tac: "HURRICANE ODALYS ICAO ADVISORY NUMBER  14\nNWS NATIONAL HURRICANE CENTER MIAMI\
+    \ FL       EP162026\n1500 UTC WED SEP 23 2026\nTC ADVISORY\nDTG:             \
+    \         20260923/1500Z\nTCAC:                     KNHC\nTC:                \
+    \       ODALYS\nADVISORY NR:              2026/014\nOBS PSN:                 \
+    \ 23/1500Z N1600 W12754\nMOV:                      ENE 07KT\nINTST CHANGE:   \
+    \          NC\nC:                        0989HPA\nMAX WIND:                 065KT\n\
+    FCST PSN +3 HR:           23/1800Z N1603 W12734\nFCST MAX WIND +3 HR:      065KT\n\
+    FCST PSN +6 HR:           23/2100Z N1607 W12713\nFCST MAX WIND +6 HR:      070KT\n\
+    FCST PSN +9 HR:           24/0000Z N1612 W12654\nFCST MAX WIND +9 HR:      070KT\n\
+    FCST PSN +15 HR:          24/0600Z N1630 W12612\nFCST MAX WIND +15 HR:     075KT\n\
+    FCST PSN +21 HR:          24/1200Z N1648 W12530\nFCST MAX WIND +21 HR:     075KT\n\
+    FCST PSN +27 HR:          24/1800Z N1709 W12451\nFCST MAX WIND +27 HR:     080KT\n\
+    RMK:                      THE FORECAST POSITION INFORMATION IN\n             \
+    \             THIS PRODUCT IS INTERPOLATED FROM\n                          OFFICIAL\
+    \ FORECAST DATA VALID AT 0000...\n                          0600...1200...AND\
+    \ 1800Z.\nNXT MSG:                  20260923/2100Z\n$$\nCB: WI 110NM OF TC CENTRE\
+    \ TOP FL600"
+  expect:
+    accept: false
+    codes:
+    - US_TCA_OBSERVED_CB_NOT_PROVIDED
+  meta:
+    product: TCA
+    profile: iwxxm_us
+    cite: '#1265 US_TCA_OBSERVED_CB_NOT_PROVIDED/sad NOAA tgftp + aviationweather.gov
+      retrieved 2026-09-23'
+- bucket: sad
+  case_id: '02'
+  status: ready
+  tac: "HURRICANE POLO ICAO ADVISORY NUMBER  12\nNWS NATIONAL HURRICANE CENTER MIAMI\
+    \ FL       EP172026\n1500 UTC WED SEP 23 2026\nTC ADVISORY\nDTG:             \
+    \         20260923/1500Z\nTCAC:                     KNHC\nTC:                \
+    \       POLO\nADVISORY NR:              2026/012\nOBS PSN:                  23/1500Z\
+    \ N1524 W10148\nMOV:                      NW 04KT\nINTST CHANGE:             WKN\n\
+    C:                        0927HPA\nMAX WIND:                 130KT\nFCST PSN +3\
+    \ HR:           23/1800Z N1533 W10201\nFCST MAX WIND +3 HR:      130KT\nFCST PSN\
+    \ +6 HR:           23/2100Z N1544 W10215\nFCST MAX WIND +6 HR:      125KT\nFCST\
+    \ PSN +9 HR:           24/0000Z N1554 W10230\nFCST MAX WIND +9 HR:      125KT\n\
+    FCST PSN +15 HR:          24/0600Z N1612 W10315\nFCST MAX WIND +15 HR:     125KT\n\
+    FCST PSN +21 HR:          24/1200Z N1630 W10400\nFCST MAX WIND +21 HR:     125KT\n\
+    FCST PSN +27 HR:          24/1800Z N1639 W10454\nFCST MAX WIND +27 HR:     130KT\n\
+    RMK:                      THE FORECAST POSITION INFORMATION IN\n             \
+    \             THIS PRODUCT IS INTERPOLATED FROM\n                          OFFICIAL\
+    \ FORECAST DATA VALID AT 0000...\n                          0600...1200...AND\
+    \ 1800Z.\nNXT MSG:                  20260923/2100Z\n$$\nCB: WI 110NM OF TC CENTRE\
+    \ TOP FL600"
+  expect:
+    accept: false
+    codes:
+    - US_TCA_OBSERVED_CB_NOT_PROVIDED
+  meta:
+    product: TCA
+    profile: iwxxm_us
+    cite: '#1265 US_TCA_OBSERVED_CB_NOT_PROVIDED/sad NOAA tgftp + aviationweather.gov
+      retrieved 2026-09-23'
+- bucket: sad
+  case_id: '03'
+  status: ready
+  tac: "POST-TROPICAL CYCLONE FAY ICAO ADVISORY NUMBER  14\nNWS NATIONAL HURRICANE\
+    \ CENTER MIAMI FL       AL062026\n2100 UTC TUE SEP 22 2026\nTC ADVISORY\nDTG:\
+    \                      20260922/2100Z\nTCAC:                     KNHC\nTC:   \
+    \                    FAY\nADVISORY NR:              2026/014\nOBS PSN:       \
+    \           22/2100Z N3048 W03518\nMOV:                      WSW 08KT\nINTST CHANGE:\
+    \             NC\nC:                        1011HPA\nMAX WIND:               \
+    \  030KT\nFCST PSN +3 HR:           23/0000Z N3036 W03544\nFCST MAX WIND +3 HR:\
+    \      030KT\nFCST PSN +6 HR:           23/0300Z N3024 W03609\nFCST MAX WIND +6\
+    \ HR:      030KT\nFCST PSN +9 HR:           23/0600Z N3012 W03636\nFCST MAX WIND\
+    \ +9 HR:      030KT\nFCST PSN +15 HR:          23/1200Z N3000 W03733\nFCST MAX\
+    \ WIND +15 HR:     030KT\nFCST PSN +21 HR:          23/1800Z N2948 W03830\nFCST\
+    \ MAX WIND +21 HR:     025KT\nFCST PSN +27 HR:          24/0000Z N2942 W03927\n\
+    FCST MAX WIND +27 HR:     025KT\nRMK:                      THE FORECAST POSITION\
+    \ INFORMATION IN\n                          THIS PRODUCT IS INTERPOLATED FROM\n\
+    \                          OFFICIAL FORECAST DATA VALID AT 0000...\n         \
+    \                 0600...1200...AND 1800Z.\nNXT MSG:                  NO MSG EXP\n\
+    $$\nCB: WI 110NM OF TC CENTRE TOP FL600"
+  expect:
+    accept: false
+    codes:
+    - US_TCA_OBSERVED_CB_NOT_PROVIDED
+  meta:
+    product: TCA
+    profile: iwxxm_us
+    cite: '#1265 US_TCA_OBSERVED_CB_NOT_PROVIDED/sad NOAA tgftp + aviationweather.gov
+      retrieved 2026-09-23'
+- bucket: sad
+  case_id: '04'
+  status: ready
+  tac: 'TC ADVISORY
+
+    DTG: 20260427/1237Z
+
+    TCAC: REUNION
+
+    TC: JULUKA
+
+    ADVISORY NR:
+
+    2026/01
+
+    OBS PSN: 27/1200Z S3434 E04806
+
+    CB: WI 110NM OF TC CENTRE TOP FL600
+
+    FL420
+
+    MOV: SSE 09KT
+
+    INTST CHANGE: WKN
+
+    C: 1000HPA
+
+    MAX WIND: 35KT
+
+    FCST
+
+    PSN +6 HR: 27/1800Z S3552 E04912
+
+    FCST MAX WIND +6 HR: 30KT
+
+    FCST PSN
+
+    +12 HR: 28/0000Z S3730 E05052
+
+    FCST MAX WIND +12 HR: 30KT
+
+    FCST PSN +18
+
+    HR: 28/0600Z S3930 E05214
+
+    FCST MAX WIND +18 HR: 35KT
+
+    FCST PSN +24 HR:
+
+    28/1200Z S4319 E05425
+
+    FCST MAX WIND +24 HR: 40KT
+
+    RMK: SUBTROPICAL
+
+    SYSTEM
+
+    NXT MSG: NO MSG EXP='
+  expect:
+    accept: false
+    codes:
+    - US_TCA_OBSERVED_CB_NOT_PROVIDED
+  meta:
+    product: TCA
+    profile: iwxxm_us
+    cite: '#1265 US_TCA_OBSERVED_CB_NOT_PROVIDED/sad NOAA tgftp + aviationweather.gov
+      retrieved 2026-09-23'
+- bucket: sad
+  case_id: '05'
+  status: ready
+  tac: 'TC ADVISORY
+
+    DTG:                 20260322/0000Z
+
+    TCAC:                DARWIN
+
+    TC:                  Ex-TC NARELLE
+
+    ADVISORY NR:         2026/21
+
+    OBS PSN:             22/0000Z S1400 E13418
+
+    CB: WI 110NM OF TC CENTRE TOP FL600
+
+    MOV:                 WSW 18KT
+
+    INTST CHANGE:        WKN
+
+    C:                   988HPA
+
+    MAX WIND:            40KT
+
+    FCST PSN +6HR:       22/0600 S1406 E13330
+
+    FCST MAX WIND +6HR:  30KT
+
+    FCST PSN +12HR:      22/1200 S1400 E13224
+
+    FCST MAX WIND +12HR: 30KT
+
+    FCST PSN +18HR:      22/1800 S1412 E13100
+
+    FCST MAX WIND +18HR: 30KT
+
+    FCST PSN +24HR:      23/0000 S1424 E12948
+
+    FCST MAX WIND +24HR: 30KT
+
+    RMK:                 NIL
+
+    NXT MSG:             NO MSG EXP'
+  expect:
+    accept: false
+    codes:
+    - US_TCA_OBSERVED_CB_NOT_PROVIDED
+  meta:
+    product: TCA
+    profile: iwxxm_us
+    cite: '#1265 US_TCA_OBSERVED_CB_NOT_PROVIDED/sad NOAA tgftp + aviationweather.gov
+      retrieved 2026-09-23'
+- bucket: edge_pass
+  case_id: '01'
+  status: ready
+  tac: "HURRICANE ODALYS ICAO ADVISORY NUMBER  14\nNWS NATIONAL HURRICANE CENTER MIAMI\
+    \ FL       EP162026\n1500 UTC WED SEP 23 2026\nTC ADVISORY\nDTG:             \
+    \         20260923/1500Z\nTCAC:                     KNHC\nTC:                \
+    \       ODALYS\nADVISORY NR:              2026/014\nOBS PSN:                 \
+    \ 23/1500Z N1600 W12754\nMOV:                      ENE 07KT\nINTST CHANGE:   \
+    \          NC\nC:                        0989HPA\nMAX WIND:                 065KT\n\
+    FCST PSN +3 HR:           23/1800Z N1603 W12734\nFCST MAX WIND +3 HR:      065KT\n\
+    FCST PSN +6 HR:           23/2100Z N1607 W12713\nFCST MAX WIND +6 HR:      070KT\n\
+    FCST PSN +9 HR:           24/0000Z N1612 W12654\nFCST MAX WIND +9 HR:      070KT\n\
+    FCST PSN +15 HR:          24/0600Z N1630 W12612\nFCST MAX WIND +15 HR:     075KT\n\
+    FCST PSN +21 HR:          24/1200Z N1648 W12530\nFCST MAX WIND +21 HR:     075KT\n\
+    FCST PSN +27 HR:          24/1800Z N1709 W12451\nFCST MAX WIND +27 HR:     080KT\n\
+    RMK:                      THE FORECAST POSITION INFORMATION IN\n             \
+    \             THIS PRODUCT IS INTERPOLATED FROM\n                          OFFICIAL\
+    \ FORECAST DATA VALID AT 0000...\n                          0600...1200...AND\
+    \ 1800Z.\nNXT MSG:                  20260923/2100Z\n$$\nCB: NIL"
+  expect:
+    accept: true
+  meta:
+    product: TCA
+    profile: iwxxm_us
+    cite: '#1265 US_TCA_OBSERVED_CB_NOT_PROVIDED/edge_pass NOAA tgftp + aviationweather.gov
+      retrieved 2026-09-23'
+- bucket: edge_pass
+  case_id: '02'
+  status: ready
+  tac: "HURRICANE POLO ICAO ADVISORY NUMBER  12\nNWS NATIONAL HURRICANE CENTER MIAMI\
+    \ FL       EP172026\n1500 UTC WED SEP 23 2026\nTC ADVISORY\nDTG:             \
+    \         20260923/1500Z\nTCAC:                     KNHC\nTC:                \
+    \       POLO\nADVISORY NR:              2026/012\nOBS PSN:                  23/1500Z\
+    \ N1524 W10148\nMOV:                      NW 04KT\nINTST CHANGE:             WKN\n\
+    C:                        0927HPA\nMAX WIND:                 130KT\nFCST PSN +3\
+    \ HR:           23/1800Z N1533 W10201\nFCST MAX WIND +3 HR:      130KT\nFCST PSN\
+    \ +6 HR:           23/2100Z N1544 W10215\nFCST MAX WIND +6 HR:      125KT\nFCST\
+    \ PSN +9 HR:           24/0000Z N1554 W10230\nFCST MAX WIND +9 HR:      125KT\n\
+    FCST PSN +15 HR:          24/0600Z N1612 W10315\nFCST MAX WIND +15 HR:     125KT\n\
+    FCST PSN +21 HR:          24/1200Z N1630 W10400\nFCST MAX WIND +21 HR:     125KT\n\
+    FCST PSN +27 HR:          24/1800Z N1639 W10454\nFCST MAX WIND +27 HR:     130KT\n\
+    RMK:                      THE FORECAST POSITION INFORMATION IN\n             \
+    \             THIS PRODUCT IS INTERPOLATED FROM\n                          OFFICIAL\
+    \ FORECAST DATA VALID AT 0000...\n                          0600...1200...AND\
+    \ 1800Z.\nNXT MSG:                  20260923/2100Z\n$$\nCB: NIL"
+  expect:
+    accept: true
+  meta:
+    product: TCA
+    profile: iwxxm_us
+    cite: '#1265 US_TCA_OBSERVED_CB_NOT_PROVIDED/edge_pass NOAA tgftp + aviationweather.gov
+      retrieved 2026-09-23'
+- bucket: edge_pass
+  case_id: '03'
+  status: ready
+  tac: "POST-TROPICAL CYCLONE FAY ICAO ADVISORY NUMBER  14\nNWS NATIONAL HURRICANE\
+    \ CENTER MIAMI FL       AL062026\n2100 UTC TUE SEP 22 2026\nTC ADVISORY\nDTG:\
+    \                      20260922/2100Z\nTCAC:                     KNHC\nTC:   \
+    \                    FAY\nADVISORY NR:              2026/014\nOBS PSN:       \
+    \           22/2100Z N3048 W03518\nMOV:                      WSW 08KT\nINTST CHANGE:\
+    \             NC\nC:                        1011HPA\nMAX WIND:               \
+    \  030KT\nFCST PSN +3 HR:           23/0000Z N3036 W03544\nFCST MAX WIND +3 HR:\
+    \      030KT\nFCST PSN +6 HR:           23/0300Z N3024 W03609\nFCST MAX WIND +6\
+    \ HR:      030KT\nFCST PSN +9 HR:           23/0600Z N3012 W03636\nFCST MAX WIND\
+    \ +9 HR:      030KT\nFCST PSN +15 HR:          23/1200Z N3000 W03733\nFCST MAX\
+    \ WIND +15 HR:     030KT\nFCST PSN +21 HR:          23/1800Z N2948 W03830\nFCST\
+    \ MAX WIND +21 HR:     025KT\nFCST PSN +27 HR:          24/0000Z N2942 W03927\n\
+    FCST MAX WIND +27 HR:     025KT\nRMK:                      THE FORECAST POSITION\
+    \ INFORMATION IN\n                          THIS PRODUCT IS INTERPOLATED FROM\n\
+    \                          OFFICIAL FORECAST DATA VALID AT 0000...\n         \
+    \                 0600...1200...AND 1800Z.\nNXT MSG:                  NO MSG EXP\n\
+    $$\nCB: NIL"
+  expect:
+    accept: true
+  meta:
+    product: TCA
+    profile: iwxxm_us
+    cite: '#1265 US_TCA_OBSERVED_CB_NOT_PROVIDED/edge_pass NOAA tgftp + aviationweather.gov
+      retrieved 2026-09-23'
+- bucket: edge_pass
+  case_id: '04'
+  status: ready
+  tac: 'TC ADVISORY
+
+    DTG: 20260427/1237Z
+
+    TCAC: REUNION
+
+    TC: JULUKA
+
+    ADVISORY NR:
+
+    2026/01
+
+    OBS PSN: 27/1200Z S3434 E04806
+
+    CB: NIL
+
+    FL420
+
+    MOV: SSE 09KT
+
+    INTST CHANGE: WKN
+
+    C: 1000HPA
+
+    MAX WIND: 35KT
+
+    FCST
+
+    PSN +6 HR: 27/1800Z S3552 E04912
+
+    FCST MAX WIND +6 HR: 30KT
+
+    FCST PSN
+
+    +12 HR: 28/0000Z S3730 E05052
+
+    FCST MAX WIND +12 HR: 30KT
+
+    FCST PSN +18
+
+    HR: 28/0600Z S3930 E05214
+
+    FCST MAX WIND +18 HR: 35KT
+
+    FCST PSN +24 HR:
+
+    28/1200Z S4319 E05425
+
+    FCST MAX WIND +24 HR: 40KT
+
+    RMK: SUBTROPICAL
+
+    SYSTEM
+
+    NXT MSG: NO MSG EXP='
+  expect:
+    accept: true
+  meta:
+    product: TCA
+    profile: iwxxm_us
+    cite: '#1265 US_TCA_OBSERVED_CB_NOT_PROVIDED/edge_pass NOAA tgftp + aviationweather.gov
+      retrieved 2026-09-23'
+- bucket: edge_pass
+  case_id: '05'
+  status: ready
+  tac: 'TC ADVISORY
+
+    DTG:                 20260322/0000Z
+
+    TCAC:                DARWIN
+
+    TC:                  Ex-TC NARELLE
+
+    ADVISORY NR:         2026/21
+
+    OBS PSN:             22/0000Z S1400 E13418
+
+    CB: NIL
+
+    MOV:                 WSW 18KT
+
+    INTST CHANGE:        WKN
+
+    C:                   988HPA
+
+    MAX WIND:            40KT
+
+    FCST PSN +6HR:       22/0600 S1406 E13330
+
+    FCST MAX WIND +6HR:  30KT
+
+    FCST PSN +12HR:      22/1200 S1400 E13224
+
+    FCST MAX WIND +12HR: 30KT
+
+    FCST PSN +18HR:      22/1800 S1412 E13100
+
+    FCST MAX WIND +18HR: 30KT
+
+    FCST PSN +24HR:      23/0000 S1424 E12948
+
+    FCST MAX WIND +24HR: 30KT
+
+    RMK:                 NIL
+
+    NXT MSG:             NO MSG EXP'
+  expect:
+    accept: true
+  meta:
+    product: TCA
+    profile: iwxxm_us
+    cite: '#1265 US_TCA_OBSERVED_CB_NOT_PROVIDED/edge_pass NOAA tgftp + aviationweather.gov
+      retrieved 2026-09-23'
+- bucket: edge_fail
+  case_id: '01'
+  status: ready
+  tac: "HURRICANE ODALYS ICAO ADVISORY NUMBER  14\nNWS NATIONAL HURRICANE CENTER MIAMI\
+    \ FL       EP162026\n1500 UTC WED SEP 23 2026\nTC ADVISORY\nDTG:             \
+    \         20260923/1500Z\nTCAC:                     KNHC\nTC:                \
+    \       ODALYS\nADVISORY NR:              2026/014\nOBS PSN:                 \
+    \ 23/1500Z N1600 W12754\nMOV:                      ENE 07KT\nINTST CHANGE:   \
+    \          NC\nC:                        0989HPA\nMAX WIND:                 065KT\n\
+    FCST PSN +3 HR:           23/1800Z N1603 W12734\nFCST MAX WIND +3 HR:      065KT\n\
+    FCST PSN +6 HR:           23/2100Z N1607 W12713\nFCST MAX WIND +6 HR:      070KT\n\
+    FCST PSN +9 HR:           24/0000Z N1612 W12654\nFCST MAX WIND +9 HR:      070KT\n\
+    FCST PSN +15 HR:          24/0600Z N1630 W12612\nFCST MAX WIND +15 HR:     075KT\n\
+    FCST PSN +21 HR:          24/1200Z N1648 W12530\nFCST MAX WIND +21 HR:     075KT\n\
+    FCST PSN +27 HR:          24/1800Z N1709 W12451\nFCST MAX WIND +27 HR:     080KT\n\
+    RMK:                      THE FORECAST POSITION INFORMATION IN\n             \
+    \             THIS PRODUCT IS INTERPOLATED FROM\n                          OFFICIAL\
+    \ FORECAST DATA VALID AT 0000...\n                          0600...1200...AND\
+    \ 1800Z.\nNXT MSG:                  20260923/2100Z\n$$\nCB: WI 110NM OF TC CENTRE\
+    \ TOP FL600"
+  expect:
+    accept: false
+    codes:
+    - US_TCA_OBSERVED_CB_NOT_PROVIDED
+  meta:
+    product: TCA
+    profile: iwxxm_us
+    cite: '#1265 US_TCA_OBSERVED_CB_NOT_PROVIDED/edge_fail NOAA tgftp + aviationweather.gov
+      retrieved 2026-09-23'
+- bucket: edge_fail
+  case_id: '02'
+  status: ready
+  tac: "HURRICANE POLO ICAO ADVISORY NUMBER  12\nNWS NATIONAL HURRICANE CENTER MIAMI\
+    \ FL       EP172026\n1500 UTC WED SEP 23 2026\nTC ADVISORY\nDTG:             \
+    \         20260923/1500Z\nTCAC:                     KNHC\nTC:                \
+    \       POLO\nADVISORY NR:              2026/012\nOBS PSN:                  23/1500Z\
+    \ N1524 W10148\nMOV:                      NW 04KT\nINTST CHANGE:             WKN\n\
+    C:                        0927HPA\nMAX WIND:                 130KT\nFCST PSN +3\
+    \ HR:           23/1800Z N1533 W10201\nFCST MAX WIND +3 HR:      130KT\nFCST PSN\
+    \ +6 HR:           23/2100Z N1544 W10215\nFCST MAX WIND +6 HR:      125KT\nFCST\
+    \ PSN +9 HR:           24/0000Z N1554 W10230\nFCST MAX WIND +9 HR:      125KT\n\
+    FCST PSN +15 HR:          24/0600Z N1612 W10315\nFCST MAX WIND +15 HR:     125KT\n\
+    FCST PSN +21 HR:          24/1200Z N1630 W10400\nFCST MAX WIND +21 HR:     125KT\n\
+    FCST PSN +27 HR:          24/1800Z N1639 W10454\nFCST MAX WIND +27 HR:     130KT\n\
+    RMK:                      THE FORECAST POSITION INFORMATION IN\n             \
+    \             THIS PRODUCT IS INTERPOLATED FROM\n                          OFFICIAL\
+    \ FORECAST DATA VALID AT 0000...\n                          0600...1200...AND\
+    \ 1800Z.\nNXT MSG:                  20260923/2100Z\n$$\nCB: WI 110NM OF TC CENTRE\
+    \ TOP FL600"
+  expect:
+    accept: false
+    codes:
+    - US_TCA_OBSERVED_CB_NOT_PROVIDED
+  meta:
+    product: TCA
+    profile: iwxxm_us
+    cite: '#1265 US_TCA_OBSERVED_CB_NOT_PROVIDED/edge_fail NOAA tgftp + aviationweather.gov
+      retrieved 2026-09-23'
+- bucket: edge_fail
+  case_id: '03'
+  status: ready
+  tac: "POST-TROPICAL CYCLONE FAY ICAO ADVISORY NUMBER  14\nNWS NATIONAL HURRICANE\
+    \ CENTER MIAMI FL       AL062026\n2100 UTC TUE SEP 22 2026\nTC ADVISORY\nDTG:\
+    \                      20260922/2100Z\nTCAC:                     KNHC\nTC:   \
+    \                    FAY\nADVISORY NR:              2026/014\nOBS PSN:       \
+    \           22/2100Z N3048 W03518\nMOV:                      WSW 08KT\nINTST CHANGE:\
+    \             NC\nC:                        1011HPA\nMAX WIND:               \
+    \  030KT\nFCST PSN +3 HR:           23/0000Z N3036 W03544\nFCST MAX WIND +3 HR:\
+    \      030KT\nFCST PSN +6 HR:           23/0300Z N3024 W03609\nFCST MAX WIND +6\
+    \ HR:      030KT\nFCST PSN +9 HR:           23/0600Z N3012 W03636\nFCST MAX WIND\
+    \ +9 HR:      030KT\nFCST PSN +15 HR:          23/1200Z N3000 W03733\nFCST MAX\
+    \ WIND +15 HR:     030KT\nFCST PSN +21 HR:          23/1800Z N2948 W03830\nFCST\
+    \ MAX WIND +21 HR:     025KT\nFCST PSN +27 HR:          24/0000Z N2942 W03927\n\
+    FCST MAX WIND +27 HR:     025KT\nRMK:                      THE FORECAST POSITION\
+    \ INFORMATION IN\n                          THIS PRODUCT IS INTERPOLATED FROM\n\
+    \                          OFFICIAL FORECAST DATA VALID AT 0000...\n         \
+    \                 0600...1200...AND 1800Z.\nNXT MSG:                  NO MSG EXP\n\
+    $$\nCB: WI 110NM OF TC CENTRE TOP FL600"
+  expect:
+    accept: false
+    codes:
+    - US_TCA_OBSERVED_CB_NOT_PROVIDED
+  meta:
+    product: TCA
+    profile: iwxxm_us
+    cite: '#1265 US_TCA_OBSERVED_CB_NOT_PROVIDED/edge_fail NOAA tgftp + aviationweather.gov
+      retrieved 2026-09-23'
+- bucket: edge_fail
+  case_id: '04'
+  status: ready
+  tac: 'TC ADVISORY
+
+    DTG: 20260427/1237Z
+
+    TCAC: REUNION
+
+    TC: JULUKA
+
+    ADVISORY NR:
+
+    2026/01
+
+    OBS PSN: 27/1200Z S3434 E04806
+
+    CB: WI 110NM OF TC CENTRE TOP FL600
+
+    FL420
+
+    MOV: SSE 09KT
+
+    INTST CHANGE: WKN
+
+    C: 1000HPA
+
+    MAX WIND: 35KT
+
+    FCST
+
+    PSN +6 HR: 27/1800Z S3552 E04912
+
+    FCST MAX WIND +6 HR: 30KT
+
+    FCST PSN
+
+    +12 HR: 28/0000Z S3730 E05052
+
+    FCST MAX WIND +12 HR: 30KT
+
+    FCST PSN +18
+
+    HR: 28/0600Z S3930 E05214
+
+    FCST MAX WIND +18 HR: 35KT
+
+    FCST PSN +24 HR:
+
+    28/1200Z S4319 E05425
+
+    FCST MAX WIND +24 HR: 40KT
+
+    RMK: SUBTROPICAL
+
+    SYSTEM
+
+    NXT MSG: NO MSG EXP='
+  expect:
+    accept: false
+    codes:
+    - US_TCA_OBSERVED_CB_NOT_PROVIDED
+  meta:
+    product: TCA
+    profile: iwxxm_us
+    cite: '#1265 US_TCA_OBSERVED_CB_NOT_PROVIDED/edge_fail NOAA tgftp + aviationweather.gov
+      retrieved 2026-09-23'
+- bucket: edge_fail
+  case_id: '05'
+  status: ready
+  tac: 'TC ADVISORY
+
+    DTG:                 20260322/0000Z
+
+    TCAC:                DARWIN
+
+    TC:                  Ex-TC NARELLE
+
+    ADVISORY NR:         2026/21
+
+    OBS PSN:             22/0000Z S1400 E13418
+
+    CB: WI 110NM OF TC CENTRE TOP FL600
+
+    MOV:                 WSW 18KT
+
+    INTST CHANGE:        WKN
+
+    C:                   988HPA
+
+    MAX WIND:            40KT
+
+    FCST PSN +6HR:       22/0600 S1406 E13330
+
+    FCST MAX WIND +6HR:  30KT
+
+    FCST PSN +12HR:      22/1200 S1400 E13224
+
+    FCST MAX WIND +12HR: 30KT
+
+    FCST PSN +18HR:      22/1800 S1412 E13100
+
+    FCST MAX WIND +18HR: 30KT
+
+    FCST PSN +24HR:      23/0000 S1424 E12948
+
+    FCST MAX WIND +24HR: 30KT
+
+    RMK:                 NIL
+
+    NXT MSG:             NO MSG EXP'
+  expect:
+    accept: false
+    codes:
+    - US_TCA_OBSERVED_CB_NOT_PROVIDED
+  meta:
+    product: TCA
+    profile: iwxxm_us
+    cite: '#1265 US_TCA_OBSERVED_CB_NOT_PROVIDED/edge_fail NOAA tgftp + aviationweather.gov
+      retrieved 2026-09-23'

@@ -28,7 +28,7 @@ UI product/profile pickers in v1; metrics library/CI-only (no convert-response m
    not** call gifts; **remove `packages/gifts`** in that same PR (hard cutover + delete).
 4. **F1**: Status **Superseded by F6** (UX/actions remain user-facing until F6 UI lands; engine
    is tac2iwxxm).
-5. **REQ-014 / ADR-004**: **Deprecated** — no in-repo gifts package to sync.
+5. **REQ-014 / ADR-004**: **Deprecated**; no in-repo gifts package to sync.
 6. **License**: `packages/tac2iwxxm` is **MIT**.
 7. **Unchanged from ADR-013**: New package (not gifts rewrite); IWXXM-US vendor pin; IR +
    product/profile plugins; default profile `annex3`; extend `/api/v1/convert` with `product` +
@@ -54,9 +54,9 @@ UI product/profile pickers in v1; metrics library/CI-only (no convert-response m
 ### Negative / risks
 
 - **Cutover risk**: Deleting gifts in the first wire-up PR means METAR/SPECI production path
-  depends on tac2iwxxm correctness immediately — M-parity and golden suite must gate that PR
+  depends on tac2iwxxm correctness immediately; M-parity and golden suite must gate that PR
 - Larger v1 scope (7 products + US profile + UI pickers)
-- Rust toolchain in CI (maturin/cargo) when native extras land — detail in 04-tech-plan
+- Rust toolchain in CI (maturin/cargo) when native extras land; detail in 04-tech-plan
 
 ### Follow-ups
 

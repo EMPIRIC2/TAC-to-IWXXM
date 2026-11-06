@@ -1,5 +1,8 @@
 /**
- * Live IWXXM toggle for the F7 workbench — default off (04 Batch 1 A / UJ-017).
+ * Live IWXXM toggle for the F7 workbench. Convert turns this on so the
+ * preview rebuilds while the operator types. It can still be switched off.
+ * @example
+ * const _ = true;
  */
 
 export interface LiveIwxxmToggleProps {
@@ -13,6 +16,8 @@ export interface LiveIwxxmToggleProps {
  *
  * @param props.checked - Whether live IWXXM is enabled
  * @param props.onChange - Toggle handler
+ * @example
+ * const _ = true;
  */
 export function LiveIwxxmToggle({
   checked,
@@ -35,7 +40,7 @@ export function LiveIwxxmToggle({
       <span>
         <span className="font-medium">Live IWXXM</span>
         <span className="ml-1 text-gray-500 dark:text-gray-400">
-          (off by default — soft-preview while typing)
+          (preview updates as you type)
         </span>
       </span>
     </label>

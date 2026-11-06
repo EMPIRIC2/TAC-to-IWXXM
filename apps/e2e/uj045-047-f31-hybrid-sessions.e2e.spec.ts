@@ -7,6 +7,7 @@
 import { expect, test } from '@playwright/test';
 import {
   convertManualMetar,
+  openConvertDownloadsTab,
   dismissPrivacyNoticeIfPresent,
   E2E_USER_EMAIL,
   E2E_USER_PASSWORD,
@@ -20,7 +21,20 @@ import {
 const SAMPLE_METAR =
   'METAR KJFK 121251Z 24016G28KT 3SM -RA BR BKN020 OVC040 14/11 A2990';
 
+function accessTokenFromLogin(body: unknown): string {
+  const record = body as {
+    session?: { access_token?: string };
+  };
+  return record.session?.access_token ?? '';
+}
+
 test.describe('T7.1 — F31 hybrid sessions (UJ-045..047)', () => {
+  test('login token is empty when the session is omitted', () => {
+    expect(accessTokenFromLogin({})).toBe('');
+    expect(accessTokenFromLogin({ session: {} })).toBe('');
+    expect(accessTokenFromLogin({ session: { access_token: 'tok' } })).toBe('tok');
+  });
+
   test('TC-F31-001/002: public convert + guest loss notice (UJ-045)', async ({
     page,
   }) => {
@@ -35,6 +49,7 @@ test.describe('T7.1 — F31 hybrid sessions (UJ-045..047)', () => {
 
     await openPublicConverter(page);
     await expect(page.getByTestId('sign-in-button')).toBeVisible();
+    // Opposite state: the notice is visible after unsaved guest TAC.
     await expect(page.getByTestId('guest-loss-notice')).toHaveCount(0);
 
     await fillManualTac(page, 'METAR KJFK');
@@ -44,11 +59,7 @@ test.describe('T7.1 — F31 hybrid sessions (UJ-045..047)', () => {
     );
 
     await convertManualMetar(page, SAMPLE_METAR);
-    await expect(page.getByRole('region', { name: /conversion results/i })).toBeVisible(
-      {
-        timeout: 45_000,
-      },
-    );
+    await openConvertDownloadsTab(page, 30_000);
     expect(authHeaders).toEqual([]);
     await expect(page.getByTestId('guest-loss-notice')).toBeVisible();
   });
@@ -85,10 +96,7 @@ test.describe('T7.1 — F31 hybrid sessions (UJ-045..047)', () => {
       timeout: 30_000,
     });
     expect(login.status()).toBe(200);
-    const body = (await login.json()) as {
-      session?: { access_token?: string };
-    };
-    const token = body.session?.access_token ?? '';
+    const token = accessTokenFromLogin(await login.json());
     expect(token.length).toBeGreaterThan(20);
 
     const sessions = await playwrightApiFetch(request, '/api/v1/work-sessions', {
@@ -146,11 +154,14 @@ test.describe('T7.1 — F31 hybrid sessions (UJ-045..047)', () => {
       page.getByText(/Guest work history and converter sessions/i),
     ).toBeVisible();
 
-    const workHistory = page.getByLabel(/store guest work history in this browser/i);
+    const workHistory = page.getByLabel('Store guest work history in this browser', {
+      exact: true,
+    });
     await expect(workHistory).toBeVisible();
     // Disclosure + toggle presence is the live gate; footer Save can sit off-viewport.
     await expect(workHistory).toBeEnabled();
     await page.keyboard.press('Escape');
+    // Opposite state: the dialog is open before Escape.
     await expect(page.getByTestId('privacy-settings-dialog')).toHaveCount(0);
   });
 
@@ -162,15 +173,17 @@ test.describe('T7.1 — F31 hybrid sessions (UJ-045..047)', () => {
     await expect(page.getByTestId('guest-loss-notice')).toBeVisible();
     await page
       .getByTestId('guest-loss-notice')
-      .getByRole('button', { name: /sign in/i })
+      .getByRole('button', { name: 'Sign in', exact: true })
       .click();
     await expect(page.getByTestId('login-view')).toBeVisible();
     await page
-      .getByRole('button', { name: /continue to converter without signing in/i })
+      .getByRole('button', {
+        name: 'Continue to converter without signing in',
+        exact: true,
+      })
       .click();
-    await expect(
-      page.getByRole('heading', { name: /METAR.*IWXXM.*Converter/i }),
-    ).toBeVisible();
+    // targets the TAC to IWXXM heading
+    await expect(page.getByRole('heading', { name: /^TAC to IWXXM$/ })).toBeVisible();
     await dismissPrivacyNoticeIfPresent(page);
   });
 });

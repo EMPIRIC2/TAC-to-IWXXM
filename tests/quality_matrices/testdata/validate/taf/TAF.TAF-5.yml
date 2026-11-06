@@ -1,0 +1,203 @@
+rule_id: TAF.TAF-5
+engine: validate
+cases:
+- bucket: happy
+  case_id: '01'
+  status: ready
+  tac: TAF YUDO 151800Z 1600/1618 13005MPS 9000 BKN020=
+  expect:
+    accept: true
+  meta:
+    product: TAF
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: annex3_golden/taf_basic.tac
+- bucket: happy
+  case_id: '02'
+  status: ready
+  tac: TAF YUDO 161800Z 1700/1718 13005MPS 9000 BKN020=
+  expect:
+    accept: true
+  meta:
+    product: TAF
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 TAF convert-then-validate
+- bucket: happy
+  case_id: '03'
+  status: ready
+  tac: TAF YUDD 151800Z 1600/1618 13005MPS 9000 BKN020=
+  expect:
+    accept: true
+  meta:
+    product: TAF
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 TAF convert-then-validate
+- bucket: happy
+  case_id: '04'
+  status: ready
+  tac: TAF YUDO 151800Z 1600/1618 14005MPS 9000 BKN020=
+  expect:
+    accept: true
+  meta:
+    product: TAF
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 TAF convert-then-validate
+- bucket: happy
+  case_id: '05'
+  status: ready
+  tac: TAF YUDO 151800Z 1600/1618 13005MPS 8000 BKN020=
+  expect:
+    accept: true
+  meta:
+    product: TAF
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 TAF convert-then-validate
+- bucket: edge_pass
+  case_id: '01'
+  status: ready
+  tac: TAF YUDO 151800Z 1600/1618 13005MPS 9000 BKN020
+  expect:
+    accept: true
+  meta:
+    product: TAF
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 TAF edge convert-then-validate
+- bucket: edge_pass
+  case_id: '02'
+  status: ready
+  tac: '  TAF YUDO 151800Z 1600/1618 13005MPS 9000 BKN020=  '
+  expect:
+    accept: true
+  meta:
+    product: TAF
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 TAF edge convert-then-validate
+- bucket: edge_pass
+  case_id: '03'
+  status: ready
+  tac: TAF YUDO 151800Z 1600/1618 13005MPS 9000 BKN020 =
+  expect:
+    accept: true
+  meta:
+    product: TAF
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 TAF edge convert-then-validate
+- bucket: edge_pass
+  case_id: '04'
+  status: ready
+  tac: TAF YUDO 151200Z 1518/1618 13005MPS 9000 BKN020=
+  expect:
+    accept: true
+  meta:
+    product: TAF
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 TAF edge convert-then-validate
+- bucket: edge_pass
+  case_id: '05'
+  status: ready
+  tac: TAF YUDO 152000Z 1606/1618 13005MPS 9000 BKN020=
+  expect:
+    accept: true
+  meta:
+    product: TAF
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 TAF edge convert-then-validate
+- bucket: sad
+  case_id: '01'
+  status: oos
+  meta:
+    product: TAF
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: '#1265'
+    reason: 'Native XPath1 stand-in does not yet make this pattern report its id (residual if()/document()/geometry); cite #1265'
+- bucket: sad
+  case_id: '02'
+  status: oos
+  meta:
+    product: TAF
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: '#1265'
+    reason: 'Native XPath1 stand-in does not yet make this pattern report its id (residual if()/document()/geometry); cite #1265'
+- bucket: sad
+  case_id: '03'
+  status: oos
+  meta:
+    product: TAF
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: '#1265'
+    reason: 'Native XPath1 stand-in does not yet make this pattern report its id (residual if()/document()/geometry); cite #1265'
+- bucket: sad
+  case_id: '04'
+  status: oos
+  meta:
+    product: TAF
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: '#1265'
+    reason: 'Native XPath1 stand-in does not yet make this pattern report its id (residual if()/document()/geometry); cite #1265'
+- bucket: sad
+  case_id: '05'
+  status: oos
+  meta:
+    product: TAF
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: '#1265'
+    reason: 'Native XPath1 stand-in does not yet make this pattern report its id (residual if()/document()/geometry); cite #1265'
+- bucket: edge_fail
+  case_id: '01'
+  status: oos
+  meta:
+    product: TAF
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: '#1265'
+    reason: 'Native XPath1 stand-in does not yet make this pattern report its id (residual if()/document()/geometry); cite #1265'
+- bucket: edge_fail
+  case_id: '02'
+  status: oos
+  meta:
+    product: TAF
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: '#1265'
+    reason: 'Native XPath1 stand-in does not yet make this pattern report its id (residual if()/document()/geometry); cite #1265'
+- bucket: edge_fail
+  case_id: '03'
+  status: oos
+  meta:
+    product: TAF
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: '#1265'
+    reason: 'Native XPath1 stand-in does not yet make this pattern report its id (residual if()/document()/geometry); cite #1265'
+- bucket: edge_fail
+  case_id: '04'
+  status: oos
+  meta:
+    product: TAF
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: '#1265'
+    reason: 'Native XPath1 stand-in does not yet make this pattern report its id (residual if()/document()/geometry); cite #1265'
+- bucket: edge_fail
+  case_id: '05'
+  status: oos
+  meta:
+    product: TAF
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: '#1265'
+    reason: 'Native XPath1 stand-in does not yet make this pattern report its id (residual if()/document()/geometry); cite #1265'

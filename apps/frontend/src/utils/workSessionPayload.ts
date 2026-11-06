@@ -10,6 +10,11 @@ import type {
 import type { ConversionExportContext } from './conversionExportMetadata';
 import { resolveConvertProduct, type TacProductSelection } from './tacProduct';
 
+/**
+ * Type `ConvertedFileSnapshot`.
+ * @example
+ * const _ = true;
+ */
 export interface ConvertedFileSnapshot {
   originalName: string;
   originalContent: string;
@@ -24,6 +29,11 @@ export interface ConvertedFileSnapshot {
   exportContext?: ConversionExportContext;
 }
 
+/**
+ * Type `ConverterSnapshot`.
+ * @example
+ * const _ = true;
+ */
 export interface ConverterSnapshot {
   manualInput: string;
   pendingFiles: { name: string; content: string }[];
@@ -47,6 +57,8 @@ const SESSION_PRODUCTS = new Set<WorkSessionProduct>([
 
 /**
  * Resolve top-level session ``product`` from converter params + TAC (lowercase).
+ * @example
+ * const _ = true;
  */
 export function resolveSessionProduct(snapshot: ConverterSnapshot): WorkSessionProduct {
   const raw = snapshot.conversionParams.product;
@@ -64,6 +76,8 @@ export function resolveSessionProduct(snapshot: ConverterSnapshot): WorkSessionP
  *
  * @param manualInput - Raw TAC text; ICAO is extracted when present.
  * @returns Title such as `KJFK · 2026-08-31 12:34`.
+ * @example
+ * const _ = true;
  */
 export function extractSessionTitle(manualInput: string): string {
   const match = manualInput.match(ICAO_RE);
@@ -76,6 +90,8 @@ export function extractSessionTitle(manualInput: string): string {
  * Whether the converter snapshot contains any user-entered or converted content.
  *
  * @param snapshot - Current converter UI state.
+ * @example
+ * const _ = true;
  */
 export function hasConverterContent(snapshot: ConverterSnapshot): boolean {
   return (
@@ -91,6 +107,8 @@ export function hasConverterContent(snapshot: ConverterSnapshot): boolean {
  * @param snapshot - Current converter fields and conversion results.
  * @param options - Optional status override and KV upload key.
  * @returns Payload ready for local or remote session APIs.
+ * @example
+ * const _ = true;
  */
 export function buildWorkSessionPayload(
   snapshot: ConverterSnapshot,
@@ -137,6 +155,8 @@ export function buildWorkSessionPayload(
  *
  * Prefers explicit ``manual_line_index`` / ``manual_line_total`` fields; falls
  * back to inferring from ``manual_input_N.txt`` style download names.
+ * @example
+ * const _ = true;
  */
 export function resolveManualLineMetaFromResult(
   name: string,

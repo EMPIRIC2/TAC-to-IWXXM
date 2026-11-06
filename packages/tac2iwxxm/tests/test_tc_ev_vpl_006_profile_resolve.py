@@ -10,6 +10,8 @@ from tac2iwxxm.profile_resolve import (
     resolve_validation_policies,
 )
 
+from tac2iwxxm import profile_resolve
+
 
 def test_annex3_alias_and_canonical_bind_builtin_policies() -> None:
     alias = resolve_validation_policies("annex3")
@@ -28,7 +30,22 @@ def test_taf_product_swaps_to_taf_quality_policy() -> None:
     assert taf.tac_quality_policy_id == "annex3-taf-quality"
     assert taf.iwxxm_output_policy_id == "annex3-iwxxm-output"
     us_taf = resolve_validation_policies("iwxxm_us", product="TAF")
-    assert us_taf.tac_quality_policy_id == "annex3-taf-quality"
+    assert us_taf.tac_quality_policy_id == "taf-prob-period-info-quality"
+    mil_taf = resolve_validation_policies("us_military", product="TAF")
+    assert mil_taf.tac_quality_policy_id == "taf-prob-period-info-quality"
+
+
+def test_emit_chain_falls_back_when_catalog_import_fails(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    def _boom(_emit_key: str) -> tuple[str, ...]:
+        raise RuntimeError("catalog unavailable")
+
+    monkeypatch.setattr(
+        "tac_validate.lint_profile_catalog.profile_inherit_chain",
+        _boom,
+    )
+    assert profile_resolve._emit_chain("iwxxm_us") == ("iwxxm_us",)
 
 
 def test_sigmet_product_swaps_to_sigmet_quality_policy() -> None:

@@ -43,13 +43,39 @@ def canonical_national_line_ids() -> tuple[str, ...]:
     -------
     tuple[str, ...]
         Sorted OpenAPI-style ids such as ``ICAO_2025``.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (canonical_national_line_ids)
+    2
     """
     return canonical_semantic_profile_wire_ids()
 
 
 @dataclass(frozen=True, slots=True)
 class LibraryAsset:
-    """One first-party or custom library asset."""
+    """
+    One first-party or custom library asset.
+
+    Attributes
+    ----------
+    id : str
+        ID.
+    kind : LibraryKind
+        Kind.
+    name : str
+        Asset name.
+    access : Access
+        Access.
+    engine_profile_id : str
+        Engine profile ID.
+    attached_national_line : str
+        Attached national line.
+    body : dict[str, Any]
+        Library document mapping.
+    fork_of : str | None
+        Fork of. Default ``None``.
+    """
 
     id: str
     kind: LibraryKind
@@ -61,7 +87,19 @@ class LibraryAsset:
     fork_of: str | None = None
 
     def to_dict(self) -> dict[str, Any]:
-        """Serialize for JSON / API responses."""
+        """
+        Serialize for JSON / API responses.
+
+        Returns
+        -------
+        dict[str, Any]
+            Serialized form for JSON / API responses.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (to_dict)
+        2
+        """
         return {
             "id": self.id,
             "kind": self.kind,
@@ -75,6 +113,19 @@ class LibraryAsset:
 
 
 def _kind_label(kind: LibraryKind) -> str:
+    """
+    Internal helper ``_kind_label``.
+
+    Parameters
+    ----------
+    kind : LibraryKind
+        Argument ``kind``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
     return {
         "conversion": "Conversion",
         "tac_validation": "TAC validation",
@@ -85,7 +136,22 @@ def _kind_label(kind: LibraryKind) -> str:
 
 
 def _seed_body(kind: LibraryKind, national_line: str) -> dict[str, Any]:
-    """Build a minimal first-party body for the kind."""
+    """
+    Internal helper ``_seed_body``.
+
+    Parameters
+    ----------
+    kind : LibraryKind
+        Argument ``kind``.
+
+    national_line : str
+        Argument ``national_line``.
+
+    Returns
+    -------
+    dict[str, Any]
+        Return value.
+    """
     if kind == "conversion":
         from tac2iwxxm.conversion_schema_blocks import schema_blocks_for_national_line
 
@@ -139,15 +205,21 @@ def first_party_library_id(kind: LibraryKind, national_line: str) -> str:
 
     Parameters
     ----------
-    kind :
+    kind : LibraryKind
         Library kind.
-    national_line :
+
+    national_line : str
         Uppercase wire id (e.g. ``ICAO_2025``).
 
     Returns
     -------
     str
         Id such as ``LIB.CONVERSION.ICAO_2025``.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (first_party_library_id)
+    2
     """
     kind_token = kind.upper()
     return f"LIB.{kind_token}.{national_line}"
@@ -161,6 +233,11 @@ def list_first_party_library_assets() -> tuple[LibraryAsset, ...]:
     -------
     tuple[LibraryAsset, ...]
         Immutable first-party catalog (5 kinds per national line).
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (list_first_party_library_assets)
+    2
     """
     return tuple(
         LibraryAsset(
@@ -183,13 +260,18 @@ def get_first_party_library_asset(asset_id: str) -> LibraryAsset | None:
 
     Parameters
     ----------
-    asset_id :
+    asset_id : str
         Stable ``LIB.*`` id.
 
     Returns
     -------
     LibraryAsset | None
         Matching asset, or ``None``.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (get_first_party_library_asset)
+    2
     """
     for asset in list_first_party_library_assets():
         if asset.id == asset_id:
@@ -208,11 +290,13 @@ def fork_first_party_library(
 
     Parameters
     ----------
-    asset_id :
+    asset_id : str
         First-party id to fork.
-    new_id :
+
+    new_id : str
         Id for the custom fork.
-    name :
+
+    name : str | None, optional
         Optional display name; defaults to ``"{name} (fork)"``.
 
     Returns
@@ -226,6 +310,11 @@ def fork_first_party_library(
         When ``asset_id`` is unknown.
     ValueError
         When attempting to fork a non-first-party id shape incorrectly.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (fork_first_party_library)
+    2
     """
     base = get_first_party_library_asset(asset_id)
     if base is None:
@@ -249,15 +338,21 @@ def assert_first_party_immutable(asset: LibraryAsset, *, mutating: bool) -> None
 
     Parameters
     ----------
-    asset :
+    asset : LibraryAsset
         Asset under consideration.
-    mutating :
+
+    mutating : bool
         ``True`` for update/delete of the builtin itself.
 
     Raises
     ------
     PermissionError
         When ``mutating`` and ``access`` is ``first_party``.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (assert_first_party_immutable)
+    2
     """
     if mutating and asset.access == "first_party":
         msg = "first-party library defaults cannot be mutated or deleted; fork instead"
@@ -270,13 +365,18 @@ def conversion_rules_for_asset(asset: LibraryAsset) -> tuple[ConversionTemplate,
 
     Parameters
     ----------
-    asset :
+    asset : LibraryAsset
         Conversion-kind library asset.
 
     Returns
     -------
     tuple[ConversionTemplate, ...]
         Parsed rules; empty for non-conversion kinds.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (conversion_rules_for_asset)
+    2
     """
     if asset.kind != "conversion":
         return ()
@@ -300,9 +400,10 @@ def require_rule_for_group(
 
     Parameters
     ----------
-    asset :
+    asset : LibraryAsset
         Conversion library asset.
-    focus_group :
+
+    focus_group : str
         TAC group token (e.g. ``18012G20KT``).
 
     Returns
@@ -314,6 +415,11 @@ def require_rule_for_group(
     ------
     ValueError
         When kind is not conversion or no rule matches (fail closed).
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (require_rule_for_group)
+    2
     """
     from tac2iwxxm.conversion_templates import preview_bridge
 

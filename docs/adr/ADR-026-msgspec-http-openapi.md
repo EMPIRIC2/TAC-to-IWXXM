@@ -25,14 +25,14 @@ Render redeploy (12–13) is in scope.
    `/decode-tac`. Prefer reused `Encoder`/`Decoder` instances on hot paths.
 2. **Multipart intake stays FastAPI** `Form`/`File` parsing (these routes are
    `multipart/form-data`, not JSON bodies). After fields are assembled, map into msgspec
-   Structs for typed validation where useful — **do not** claim msgspec JSON-decode of the
+   Structs for typed validation where useful; **do not** claim msgspec JSON-decode of the
    raw multipart body. Optional JSON body alternatives are out of scope unless a later
    decision adds them.
 3. **Auth, work-sessions, airports, ICAO OPMET stats** stay on **pydantic** (lower traffic;
    OpenAPI stability).
 4. **OpenAPI**: Keep publishing OpenAPI for the API. For msgspec-backed **response** models,
    maintain **thin pydantic alias models** and/or explicit JSON Schema export solely for schema
-   generation — **do not dual-validate** at runtime (would erase the speed win).
+   generation; **do not dual-validate** at runtime (would erase the speed win).
 5. **Frontend**: Update shared/OpenAPI-derived TS types in the **same cycle** as any
    breaking JSON **response** shape changes.
 6. **Perf gates (E10-24)**: Soft benches during build; hard-fail at publish/cutover that

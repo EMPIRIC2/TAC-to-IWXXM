@@ -2006,6 +2006,29 @@
       "expected_codes": ["AT_PRESENT"],
       "expected_severity": "info",
       "require_spans": true
+    },
+    {
+      "id": "taf_t2_prob_period_info",
+      "product": "TAF",
+      "theme": "T2",
+      "cite": "PROB+period without TEMPO \u2192 PROB_PRESENT info (Annex 3 valid)",
+      "tac": "accept/taf_t2_prob30_period.tac",
+      "ok": true,
+      "expected_codes": ["PROB_PRESENT"],
+      "expected_severity": "info",
+      "require_spans": true
+    }
+  ],
+  "t2_modifier_warnings": [],
+  "registry_coverage_only": [
+    {
+      "id": "taf_prob_period_without_tempo_retired_code",
+      "product": "TAF",
+      "theme": "T2",
+      "cite": "Registry coverage for retired PROB_PERIOD_WITHOUT_TEMPO (engines emit PROB_PRESENT)",
+      "tac": "accept/taf_t2_prob30_period.tac",
+      "ok": true,
+      "expected_codes": ["PROB_PERIOD_WITHOUT_TEMPO"]
     }
   ],
   "t2_errors": [
@@ -2713,7 +2736,7 @@
       "product": "SIGMET",
       "theme": "V1",
       "depth": "full_checklist",
-      "cite": "VA without MT/PSN; research V1",
+      "cite": "VA CLD without volcano name/PSN; research V1",
       "tac": "negative/sigmet/va_missing_volcano.tac",
       "ok": false,
       "expected_codes": ["MISSING_VA_VOLCANO"],
@@ -3136,6 +3159,19 @@
       "tac": "negative/vona/missing_volcano.tac",
       "ok": false,
       "expected_codes": ["MISSING_VONA_VOLCANO"],
+      "require_spans": true
+    }
+  ],
+  "dvlpg_errors": [
+    {
+      "id": "sigmet_dvlpg_area_qualifier",
+      "product": "SIGMET",
+      "theme": "WST",
+      "depth": "full_checklist",
+      "cite": "NWS DVLPG in the FROM ring (or without AREA) is invalid; canonical DVLPG AREA after the ring is accepted",
+      "tac": "negative/sigmet/dvlpg_area_qualifier.tac",
+      "ok": false,
+      "expected_codes": ["DVLPG_AREA_QUALIFIER"],
       "require_spans": true
     }
   ]

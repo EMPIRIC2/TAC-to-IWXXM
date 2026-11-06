@@ -1,6 +1,6 @@
 # ADR-045: Shared TAC pack engine for decode and convert
 
-**Status:** Accepted (requirements lock — EV-configurable-tac-decode-packs, 2026-09-19)
+**Status:** Accepted (requirements lock, EV-configurable-tac-decode-packs, 2026-09-19)
 **Date:** 2026-09-19
 **Corpus:** [Corpus: product §F6] [Corpus: product §F9] [Corpus: product §F23] [Corpus: product §F28] [Corpus: product §F32] [Corpus: system-spec] [Corpus: api] [Corpus: adr/ADR-032] [Corpus: adr/ADR-044]
 
@@ -56,7 +56,7 @@ Deepen #1214. Reopens **selective** deletion only.
 1. **Fill + wire.** Remaining core packs (TAF, ordinary/VA/TC SIGMET, AIRMET, VAA, TCA, SWXA, VONA) gain real rules and pack-IR emit. METAR/SPECI stay.
 2. **Stricter coverage bar.** In-bar peers include primary Annex examples **plus** `sigmet-A6-1b-CNL`, `sigmet-multi-location-VA`, and SWXA `_alternate` XML peers on pins where they exist. Out of bar: NIL-collect / translation-failed families unless later deepen.
 3. **Mapper independence.** `pack_ir_map` (and pack emit) must not import `products/*.py` for any product whose legacy parser is deleted.
-4. **Selective delete-gate.** Vendor XML byte-identical on every existing pin for in-bar peers → may delete that product’s legacy parser. Shared files (`metar_speci.py`, `sigmet_airmet.py`, `vaa_tca.py`) are **all-or-nothing**: delete the file only when every product it owns passes; otherwise keep the file and remove only safe dead paths. **Zero deletes this cycle is acceptable** if siblings fail — still ship pack fill.
+4. **Selective delete-gate.** Vendor XML byte-identical on every existing pin for in-bar peers → may delete that product’s legacy parser. Shared files (`metar_speci.py`, `sigmet_airmet.py`, `vaa_tca.py`) are **all-or-nothing**: delete the file only when every product it owns passes; otherwise keep the file and remove only safe dead paths. **Zero deletes this cycle is acceptable** if siblings fail; still ship pack fill.
 5. **SWXA alternates.** Where a pin has both primary and `_alternate` vendor XML, pack-IR emit must match **both** before flip/delete for SWXA.
 6. **METAR/SPECI.** May delete `metar_speci.py` in this cycle if goldens still pass after mapper independence.
 7. **Packages stay separate.** WAFS/QVACI remain stubs. No HTTP wire change. No required Render secret.

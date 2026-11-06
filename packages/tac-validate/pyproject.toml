@@ -1,14 +1,18 @@
 [project]
 name = "tac-validate"
-version = "2026.9.22"
-description = "Lint TAC aviation weather products (METAR/SPECI/TAF and related) with structured issues"
+version = "2026.11.5"
+description = "Lint Traditional Alphanumeric Code (TAC) aviation weather products and return structured issues"
 readme = "README.md"
 license = { text = "MIT" }
 requires-python = ">=3.12"
 dependencies = [
   "msgspec>=0.19",
+  "metar-shared",
   "pyyaml==6.0.3",
 ]
+
+[tool.uv.sources]
+metar-shared = { workspace = true }
 
 [project.scripts]
 tac-validate = "tac_validate.cli:main"
@@ -21,6 +25,11 @@ build-backend = "hatchling.build"
 packages = ["src/tac_validate"]
 
 [tool.pytest.ini_options]
+asyncio_default_fixture_loop_scope = "function"
+
+filterwarnings = [
+  "error",
+]
 testpaths = ["tests"]
 pythonpath = ["src"]
 markers = [
@@ -36,5 +45,5 @@ fail_under = 100
 show_missing = true
 
 [tool.ruff]
-extend = "../../ruff.toml"
+extend = "../../pyproject.toml"
 line-length = 120

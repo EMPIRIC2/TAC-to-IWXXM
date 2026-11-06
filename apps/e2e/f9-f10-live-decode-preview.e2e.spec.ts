@@ -2,7 +2,13 @@
  * T3.7 / TC-F9-002 + TC-F10-001/002 — UJ-020/021 live decode + preview UX (S013 / EV-009).
  */
 import { expect, test } from '@playwright/test';
-import { openConverterForE2e } from './playwright-e2e-helpers';
+import {
+  ensureConvertResultsDrawerOpen,
+  leaveCalmEmptyHero,
+  openConvertConsoleTab,
+  openConvertDecoderTab,
+  openConverterForE2e,
+} from './playwright-e2e-helpers';
 
 const METAR_NO_EQ = 'METAR KJFK 121251Z 18004KT 10SM FEW250 24/18 A3011';
 const SUMMARY =
@@ -93,10 +99,11 @@ test.describe('T3.7 / UJ-020 + UJ-021: live decode summary + preview UX', () => 
     await stubF9F10Apis(page);
     await openConverterForE2e(page);
 
-    const editor = page.getByLabel(/Enter METAR data manually/i);
+    const editor = page.getByLabel('Enter METAR data manually', { exact: true });
     await editor.click();
     await editor.fill(METAR_NO_EQ);
 
+    await openConvertDecoderTab(page);
     await expect(page.getByTestId('decode-plain-language')).toBeVisible({
       timeout: 5000,
     });
@@ -110,15 +117,18 @@ test.describe('T3.7 / UJ-020 + UJ-021: live decode summary + preview UX', () => 
   }) => {
     await stubF9F10Apis(page);
     await openConverterForE2e(page);
+    await leaveCalmEmptyHero(page);
+    await ensureConvertResultsDrawerOpen(page);
+    await page.getByTestId('convert-results-tab-iwxxm').click();
 
     await expect(page.getByTestId('iwxxm-preview-pane')).toBeVisible();
     await expect(page.getByTestId('iwxxm-preview-empty')).toBeVisible();
 
-    const editor = page.getByLabel(/Enter METAR data manually/i);
+    const editor = page.getByLabel('Enter METAR data manually', { exact: true });
     await editor.click();
     await editor.fill(METAR_NO_EQ);
 
-    await page.getByTestId('workbench-console-toggle').click();
+    await openConvertConsoleTab(page);
     const addEq = page.getByTestId('console-action-add_terminator');
     await expect(addEq).toBeVisible({ timeout: 5000 });
     await addEq.click();

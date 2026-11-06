@@ -11,6 +11,7 @@ from __future__ import annotations
 import contextvars
 
 from tac_validate import membership
+from tac_validate.cloud_amount import known_base_convective_cloud
 from tac_validate.models import Issue
 from tac_validate.product_rules_pkg._common import (
     _LAYER_CLOUD_PARTS,
@@ -56,6 +57,19 @@ R8_CODES = frozenset(
 
 
 def _tokens(tac: str) -> tuple[int, int, str, list[str]]:
+    """
+    Internal helper ``_tokens``.
+
+    Parameters
+    ----------
+    tac : object
+        Argument ``tac``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     start, end, body = _body_span(tac)
     upper = body.upper()
     core = upper[:-1] if upper.endswith("=") else upper
@@ -64,7 +78,26 @@ def _tokens(tac: str) -> tuple[int, int, str, list[str]]:
 
 
 def r1_identity_order(tac_text: str, product: str) -> list[Issue]:
-    """R1: CCCC, observation time, field order."""
+    """
+    R1: CCCC, observation time, field order.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (r1_identity_order)
+    2
+
+    Parameters
+    ----------
+    tac_text : str
+        TAC text.
+    product : str
+        Product id.
+
+    Returns
+    -------
+    list[Issue]
+        R1: CCCC, observation time, field order.
+    """
     start, end, core, tokens = _tokens(tac_text)
     issues: list[Issue] = []
     if _first_icao(tokens, _METAR_SPECI_SKIP) is None:
@@ -94,7 +127,26 @@ def r1_identity_order(tac_text: str, product: str) -> list[Issue]:
 
 
 def r3_weather(tac_text: str, product: str) -> list[Issue]:
-    """R3: present / recent weather token validity + membership."""
+    """
+    R3: present / recent weather token validity + membership.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (r3_weather)
+    2
+
+    Parameters
+    ----------
+    tac_text : str
+        TAC text.
+    product : str
+        Product id.
+
+    Returns
+    -------
+    list[Issue]
+        R3: present / recent weather token validity + membership.
+    """
     start, end, core, tokens = _tokens(tac_text)
     issues: list[Issue] = []
     for _i, wx_tok in _weather_candidate_tokens(tokens):
@@ -144,7 +196,26 @@ def r3_weather(tac_text: str, product: str) -> list[Issue]:
 
 
 def r4_cloud(tac_text: str, product: str) -> list[Issue]:
-    """R4: cloud / VV tokens + CB/TCU info."""
+    """
+    R4: cloud / VV tokens + CB/TCU info.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (r4_cloud)
+    2
+
+    Parameters
+    ----------
+    tac_text : str
+        TAC text.
+    product : str
+        Product id.
+
+    Returns
+    -------
+    list[Issue]
+        R4: cloud / VV tokens + CB/TCU info.
+    """
     start, end, core, tokens = _tokens(tac_text)
     issues: list[Issue] = []
     for _i, cloud_tok in _cloud_candidate_tokens(tokens):
@@ -164,6 +235,16 @@ def r4_cloud(tac_text: str, product: str) -> list[Issue]:
                 )
             )
             continue
+        if cloud_tok.endswith("///") and cloud_tok[:3] in {"FEW", "SCT", "BKN", "OVC"}:
+            issues.append(
+                _issue(
+                    "CLOUD_TYPE_NOT_OBSERVABLE",
+                    f"{product} cloud group {cloud_tok!r} uses /// because the convective cloud type was not observed",
+                    start=cloud_start,
+                    end=cloud_end,
+                    location="cloud",
+                )
+            )
         parts = _LAYER_CLOUD_PARTS.fullmatch(cloud_tok)
         if parts is not None:
             amount, ctype = parts.group(1), parts.group(2)
@@ -189,7 +270,7 @@ def r4_cloud(tac_text: str, product: str) -> list[Issue]:
                         location="cloud",
                     )
                 )
-        if cloud_tok.endswith(("CB", "TCU")):
+        if known_base_convective_cloud(cloud_tok):
             issues.append(
                 _issue(
                     "CLOUD_CB_OR_TCU",
@@ -203,7 +284,26 @@ def r4_cloud(tac_text: str, product: str) -> list[Issue]:
 
 
 def r5_remarks(tac_text: str, product: str) -> list[Issue]:
-    """R5: US REMARKS malformed + iwxxm_us extension awareness."""
+    """
+    R5: US REMARKS malformed + iwxxm_us extension awareness.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (r5_remarks)
+    2
+
+    Parameters
+    ----------
+    tac_text : str
+        TAC text.
+    product : str
+        Product id.
+
+    Returns
+    -------
+    list[Issue]
+        R5: US REMARKS malformed + iwxxm_us extension awareness.
+    """
     start, end, core, tokens = _tokens(tac_text)
     return _check_us_remarks(
         tokens,
@@ -216,7 +316,26 @@ def r5_remarks(tac_text: str, product: str) -> list[Issue]:
 
 
 def r8_nil_gate(tac_text: str, product: str) -> list[Issue] | None:
-    """If NIL is report content, return R8 NIL issues; else ``None`` (continue body)."""
+    """
+    If NIL is report content, return R8 NIL issues; else ``None`` (continue body).
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (r8_nil_gate)
+    2
+
+    Parameters
+    ----------
+    tac_text : str
+        TAC text.
+    product : str
+        Product id.
+
+    Returns
+    -------
+    list[Issue] or None
+        If NIL is report content, return R8 NIL issues; else ``None`` (continue body).
+    """
     start, end, core, tokens = _tokens(tac_text)
     if "NIL" not in tokens:
         return None
@@ -266,7 +385,26 @@ def r8_nil_gate(tac_text: str, product: str) -> list[Issue] | None:
 
 
 def r8_modifiers(tac_text: str, product: str) -> list[Issue]:
-    """R8 non-NIL: AUTO/COR/NOSIG/TEMPO/RVR/wind diagnostics."""
+    """
+    R8 non-NIL: AUTO/COR/NOSIG/TEMPO/RVR/wind diagnostics.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (r8_modifiers)
+    2
+
+    Parameters
+    ----------
+    tac_text : str
+        TAC text.
+    product : str
+        Product id.
+
+    Returns
+    -------
+    list[Issue]
+        R8 non-NIL: AUTO/COR/NOSIG/TEMPO/RVR/wind diagnostics.
+    """
     start, end, core, tokens = _tokens(tac_text)
     if "NIL" in tokens:
         return []
@@ -280,29 +418,124 @@ def r8_modifiers(tac_text: str, product: str) -> list[Issue]:
 
 
 def hatch_r1(tac_text: str, product: str) -> list[Issue]:
-    """Detector hatch for R1 pack."""
+    """
+    Detector hatch for R1 pack.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (hatch_r1)
+    2
+
+    Parameters
+    ----------
+    tac_text : str
+        TAC text.
+    product : str
+        Product id.
+
+    Returns
+    -------
+    list[Issue]
+        Detector hatch for R1 pack.
+    """
     return r1_identity_order(tac_text, product)
 
 
 def hatch_r1_order(tac_text: str, product: str) -> list[Issue]:
-    """Declarative R1 residual: field-order only (CCCC / time via YAML)."""
+    """
+    Declarative R1 residual: field-order only (CCCC / time via YAML).
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (hatch_r1_order)
+    2
+
+    Parameters
+    ----------
+    tac_text : str
+        TAC text.
+    product : str
+        Product id.
+
+    Returns
+    -------
+    list[Issue]
+        Declarative R1 residual: field-order only (CCCC / time via YAML).
+    """
     start, end, _core, tokens = _tokens(tac_text)
     order_issue = _check_metar_speci_field_order(tokens, product=product, start=start, end=end)
     return [order_issue] if order_issue is not None else []
 
 
 def hatch_r3(tac_text: str, product: str) -> list[Issue]:
-    """Detector hatch for R3 pack."""
+    """
+    Detector hatch for R3 pack.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (hatch_r3)
+    2
+
+    Parameters
+    ----------
+    tac_text : str
+        TAC text.
+    product : str
+        Product id.
+
+    Returns
+    -------
+    list[Issue]
+        Detector hatch for R3 pack.
+    """
     return r3_weather(tac_text, product)
 
 
 def hatch_r4(tac_text: str, product: str) -> list[Issue]:
-    """Detector hatch for R4 pack."""
+    """
+    Detector hatch for R4 pack.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (hatch_r4)
+    2
+
+    Parameters
+    ----------
+    tac_text : str
+        TAC text.
+    product : str
+        Product id.
+
+    Returns
+    -------
+    list[Issue]
+        Detector hatch for R4 pack.
+    """
     return r4_cloud(tac_text, product)
 
 
 def hatch_r4_membership(tac_text: str, product: str) -> list[Issue]:
-    """Declarative R4 residual: WMO membership only (shape/CB via YAML)."""
+    """
+    Declarative R4 residual: WMO membership only (shape/CB via YAML).
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (hatch_r4_membership)
+    2
+
+    Parameters
+    ----------
+    tac_text : str
+        TAC text.
+    product : str
+        Product id.
+
+    Returns
+    -------
+    list[Issue]
+        Declarative R4 residual: WMO membership only (shape/CB via YAML).
+    """
     start, end, core, tokens = _tokens(tac_text)
     issues: list[Issue] = []
     for _i, cloud_tok in _cloud_candidate_tokens(tokens):
@@ -343,12 +576,50 @@ def hatch_r4_membership(tac_text: str, product: str) -> list[Issue]:
 
 
 def hatch_r5(tac_text: str, product: str) -> list[Issue]:
-    """Detector hatch for R5 pack."""
+    """
+    Detector hatch for R5 pack.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (hatch_r5)
+    2
+
+    Parameters
+    ----------
+    tac_text : str
+        TAC text.
+    product : str
+        Product id.
+
+    Returns
+    -------
+    list[Issue]
+        Detector hatch for R5 pack.
+    """
     return r5_remarks(tac_text, product)
 
 
 def hatch_r5_pk_and_extension(tac_text: str, product: str) -> list[Issue]:
-    """Declarative R5 residual: PK WND + iwxxm_us extension (SLP/P/T shape via YAML)."""
+    """
+    Declarative R5 residual: PK WND + iwxxm_us extension (SLP/P/T shape via YAML).
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (hatch_r5_pk_and_extension)
+    2
+
+    Parameters
+    ----------
+    tac_text : str
+        TAC text.
+    product : str
+        Product id.
+
+    Returns
+    -------
+    list[Issue]
+        Declarative R5 residual: PK WND + iwxxm_us extension (SLP/P/T shape via YAML).
+    """
     start, end, core, tokens = _tokens(tac_text)
     if "RMK" not in tokens:
         return []
@@ -432,7 +703,26 @@ def hatch_r5_pk_and_extension(tac_text: str, product: str) -> list[Issue]:
 
 
 def hatch_r8(tac_text: str, product: str) -> list[Issue]:
-    """Detector hatch for R8 pack (NIL gate + modifiers)."""
+    """
+    Detector hatch for R8 pack (NIL gate + modifiers).
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (hatch_r8)
+    2
+
+    Parameters
+    ----------
+    tac_text : str
+        TAC text.
+    product : str
+        Product id.
+
+    Returns
+    -------
+    list[Issue]
+        Detector hatch for R8 pack (NIL gate + modifiers).
+    """
     nil = r8_nil_gate(tac_text, product)
     if nil is not None:
         return nil
@@ -440,7 +730,26 @@ def hatch_r8(tac_text: str, product: str) -> list[Issue]:
 
 
 def hatch_taf(tac_text: str, product: str) -> list[Issue]:
-    """Detector hatch for TAF core checklist (A5-1 + F20 gates)."""
+    """
+    Detector hatch for TAF core checklist (A5-1 + F20 gates).
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (hatch_taf)
+    2
+
+    Parameters
+    ----------
+    tac_text : str
+        TAC text.
+    product : str
+        Product id.
+
+    Returns
+    -------
+    list[Issue]
+        Detector hatch for TAF core checklist (A5-1 + F20 gates).
+    """
     del product  # pack products: [TAF]; profile via lint_profile contextvar
     from tac_validate.product_rules_pkg.taf import _check_taf
 
@@ -448,21 +757,78 @@ def hatch_taf(tac_text: str, product: str) -> list[Issue]:
 
 
 def hatch_sigmet(tac_text: str, product: str) -> list[Issue]:
-    """Detector hatch for SIGMET A6 / F23 checklist."""
+    """
+    Detector hatch for SIGMET A6 / F23 checklist.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (hatch_sigmet)
+    2
+
+    Parameters
+    ----------
+    tac_text : str
+        TAC text.
+    product : str
+        Product id.
+
+    Returns
+    -------
+    list[Issue]
+        Detector hatch for SIGMET A6 / F23 checklist.
+    """
     from tac_validate.product_rules_pkg.sigmet_airmet import _check_sigmet_airmet
 
     return _check_sigmet_airmet(tac_text, product, profile=lint_profile.get())
 
 
 def hatch_airmet(tac_text: str, product: str) -> list[Issue]:
-    """Detector hatch for AIRMET A6 / F24 checklist."""
+    """
+    Detector hatch for AIRMET A6 / F24 checklist.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (hatch_airmet)
+    2
+
+    Parameters
+    ----------
+    tac_text : str
+        TAC text.
+    product : str
+        Product id.
+
+    Returns
+    -------
+    list[Issue]
+        Detector hatch for AIRMET A6 / F24 checklist.
+    """
     from tac_validate.product_rules_pkg.sigmet_airmet import _check_sigmet_airmet
 
     return _check_sigmet_airmet(tac_text, product, profile=lint_profile.get())
 
 
 def hatch_vaa(tac_text: str, product: str) -> list[Issue]:
-    """Detector hatch for VAA checklist."""
+    """
+    Detector hatch for VAA checklist.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (hatch_vaa)
+    2
+
+    Parameters
+    ----------
+    tac_text : str
+        TAC text.
+    product : str
+        Product id.
+
+    Returns
+    -------
+    list[Issue]
+        Detector hatch for VAA checklist.
+    """
     del product
     from tac_validate.product_rules_pkg.vaa import _check_vaa
 
@@ -470,7 +836,26 @@ def hatch_vaa(tac_text: str, product: str) -> list[Issue]:
 
 
 def hatch_tca(tac_text: str, product: str) -> list[Issue]:
-    """Detector hatch for TCA checklist."""
+    """
+    Detector hatch for TCA checklist.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (hatch_tca)
+    2
+
+    Parameters
+    ----------
+    tac_text : str
+        TAC text.
+    product : str
+        Product id.
+
+    Returns
+    -------
+    list[Issue]
+        Detector hatch for TCA checklist.
+    """
     del product
     from tac_validate.product_rules_pkg.tca import _check_tca
 

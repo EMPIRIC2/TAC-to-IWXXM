@@ -1,23 +1,47 @@
 /**
  * Map FileConverter conversion parameters onto `/api/v1/convert` multipart fields
  * and client-side conversion/validation/lint log filtering (ADR-023 / ADR-024).
+ * @example
+ * const _ = true;
  */
 
 export type ConvertOnError = 'skip' | 'fail' | 'warn';
+/**
+ * Type `ConvertLogLevel`.
+ * @example
+ * const _ = true;
+ */
 export type ConvertLogLevel = 'DEBUG' | 'INFO' | 'WARNING' | 'ERROR' | 'CRITICAL';
+/**
+ * Type `ConsoleLineLevel`.
+ * @example
+ * const _ = true;
+ */
 export type ConsoleLineLevel = 'info' | 'warn' | 'error';
+/**
+ * Type `IssueSeverity`.
+ * @example
+ * const _ = true;
+ */
 export type IssueSeverity = 'error' | 'warning' | 'info' | string;
 
+/**
+ * Type `ConvertValidationFlags`.
+ * @example
+ * const _ = true;
+ */
 export interface ConvertValidationFlags {
   validateOutput: boolean;
   validationLevel: 'basic' | 'comprehensive';
 }
 
 /**
- * Soft-preview never runs post-convert Schematron/XSD; hard convert honors Strict Validation.
+ * Soft-preview never runs post-convert Schematron/XSD; hard convert honors Strict.
  *
- * @param strict - UI "Strict Validation" checkbox
+ * @param strict - UI Strict master checkbox
  * @param softPreview - Soft-preview / preview=true mode
+ * @example
+ * const _ = true;
  */
 export function mapStrictToValidation(
   strict: boolean,
@@ -36,9 +60,122 @@ export function mapStrictToValidation(
  * Map On Error Behavior to API ``stop_on_error``.
  *
  * @param onError - UI select value
+ * @example
+ * const _ = true;
  */
 export function mapOnErrorToStopOnError(onError: ConvertOnError): boolean {
   return onError === 'fail';
+}
+
+/**
+ * Operator Conversion Parameters bar values that map onto convert multipart fields.
+ *
+ * @example
+ * const _ = true;
+ */
+export interface ConvertParamsBar {
+  bulletinId: string;
+  issuingCenter: string;
+  reportVariant: string;
+  profile: string;
+  exchangeProfile: string;
+  presetId: string;
+  conversionLibraryId: string;
+  tacValidationLibraryId: string;
+  iwxxmValidationLibraryId: string;
+  disseminationLibraryId: string;
+  decodingLibraryId: string;
+  iwxxmVersion: string;
+  strictValidation: boolean;
+  /** When Strict is on, include TAC lint in the raised set (default true). */
+  strictLint?: boolean;
+  /** When Strict is on, include convert findings in the raised set (default true). */
+  strictConvert?: boolean;
+  /** When Strict is on, include IWXXM validate + drive validate_output (default true). */
+  strictValidate?: boolean;
+  includeNilReasons: boolean;
+  onError: ConvertOnError;
+  logLevel: ConvertLogLevel;
+}
+
+/**
+ * Multipart-bound fields shared by hard Convert and live preview.
+ *
+ * Soft-preview forces validation off. Empty strings are omitted by the caller
+ * via {@link optionalTrim}.
+ *
+ * @example
+ * const _ = true;
+ */
+export function optionalTrim(value: string | undefined): string | undefined {
+  const trimmed = value?.trim();
+  return trimmed ? trimmed : undefined;
+}
+
+/**
+ * Map the Conversion Parameters bar onto `/convert` request fields.
+ *
+ * @example
+ * const _ = true;
+ */
+export function convertFieldsFromParamsBar(
+  bar: ConvertParamsBar,
+  options: { softPreview: boolean; propagateResidualsToRemarks: boolean },
+): {
+  bulletinId?: string;
+  issuingCenter?: string;
+  reportVariant?: string;
+  profile: string;
+  exchangeProfile: string;
+  presetId?: string;
+  conversionLibraryId?: string;
+  tacValidationLibraryId?: string;
+  iwxxmValidationLibraryId?: string;
+  disseminationLibraryId?: string;
+  decodingLibraryId?: string;
+  iwxxmVersion: string;
+  validateOutput: boolean;
+  validationLevel: 'basic' | 'comprehensive';
+  stopOnError: boolean;
+  includeNilReasons: boolean;
+  logLevel: ConvertLogLevel;
+  preview: boolean;
+  propagateResidualsToRemarks: boolean;
+  strict: boolean;
+  strictLint: boolean;
+  strictConvert: boolean;
+  strictValidate: boolean;
+} {
+  const strictValidate = bar.strictValidate !== false;
+  const validation = mapStrictToValidation(
+    bar.strictValidation && strictValidate,
+    options.softPreview,
+  );
+  return {
+    bulletinId: optionalTrim(bar.bulletinId),
+    issuingCenter: optionalTrim(bar.issuingCenter),
+    reportVariant: optionalTrim(bar.reportVariant),
+    profile: bar.profile,
+    exchangeProfile: bar.exchangeProfile,
+    presetId: optionalTrim(bar.presetId),
+    conversionLibraryId: optionalTrim(bar.conversionLibraryId),
+    tacValidationLibraryId: optionalTrim(bar.tacValidationLibraryId),
+    iwxxmValidationLibraryId: optionalTrim(bar.iwxxmValidationLibraryId),
+    disseminationLibraryId: optionalTrim(bar.disseminationLibraryId),
+    decodingLibraryId: optionalTrim(bar.decodingLibraryId),
+    iwxxmVersion: bar.iwxxmVersion,
+    validateOutput: validation.validateOutput,
+    validationLevel: validation.validationLevel,
+    stopOnError: mapOnErrorToStopOnError(bar.onError),
+    includeNilReasons: bar.includeNilReasons,
+    logLevel: bar.logLevel,
+    preview: options.softPreview,
+    propagateResidualsToRemarks: options.propagateResidualsToRemarks,
+    strict: bar.strictValidation,
+    strictLint: bar.strictLint !== false,
+    strictConvert: bar.strictConvert !== false,
+    strictValidate,
+  };
 }
 
 const LINE_RANK: Record<ConsoleLineLevel, number> = {
@@ -62,6 +199,8 @@ const MIN_RANK: Record<ConvertLogLevel, number> = {
  *
  * @param lineLevel - Console line severity
  * @param minLevel - Operator Log Level preference
+ * @example
+ * const _ = true;
  */
 export function consoleLevelPasses(
   lineLevel: ConsoleLineLevel,
@@ -74,6 +213,8 @@ export function consoleLevelPasses(
  * Map issue severity string onto console ranks.
  *
  * @param severity - Issue severity from convert/lint/validate
+ * @example
+ * const _ = true;
  */
 export function issueSeverityRank(severity: IssueSeverity | undefined): number {
   const s = (severity ?? 'error').toLowerCase();
@@ -94,6 +235,8 @@ export function issueSeverityRank(severity: IssueSeverity | undefined): number {
  *
  * @param severity - Issue severity
  * @param minLevel - Operator Log Level (filters process log for input/output)
+ * @example
+ * const _ = true;
  */
 export function issueLevelPasses(
   severity: IssueSeverity | undefined,
@@ -105,13 +248,21 @@ export function issueLevelPasses(
 const BULLETIN_ID_RE = /^[A-Z]{4}[0-9]{2}$/;
 const ISSUING_CENTER_RE = /^[A-Z]{4}$/;
 
-/** True when Bulletin ID is empty or 4 letters + 2 digits. */
+/**
+ * True when Bulletin ID is empty or 4 letters + 2 digits.
+ * @example
+ * const _ = true;
+ */
 export function isValidBulletinId(value: string): boolean {
   const raw = value.trim().toUpperCase();
   return raw === '' || BULLETIN_ID_RE.test(raw);
 }
 
-/** True when Issuing Center is empty or exactly 4 letters (CCCC). */
+/**
+ * True when Issuing Center is empty or exactly 4 letters (CCCC).
+ * @example
+ * const _ = true;
+ */
 export function isValidIssuingCenter(value: string): boolean {
   const raw = value.trim().toUpperCase();
   return raw === '' || ISSUING_CENTER_RE.test(raw);

@@ -11,8 +11,12 @@ import { expect, test, type APIRequestContext, type Request } from '@playwright/
 import {
   convertManualMetar,
   fillManualTac,
+  openConvertDownloadsTab,
+  openConvertLibraryPickers,
+  openConvertSettings,
   openPublicConverter,
   playwrightApiFetch,
+  selectInputMode,
 } from './playwright-e2e-helpers';
 
 const AHL_WELL_FORMED = `SAUS31 KZNY 121200
@@ -41,6 +45,18 @@ function postBody(req: Request): string {
   return req.postData() ?? '';
 }
 
+function issuesFromLintBody(body: { issues?: unknown }): Array<{
+  code?: string;
+  location?: string;
+  severity?: string;
+}> {
+  const issues = body.issues as
+    | Array<{ code?: string; location?: string; severity?: string }>
+    | null
+    | undefined;
+  return issues ?? [];
+}
+
 async function lintTac(
   request: APIRequestContext,
   text: string,
@@ -58,9 +74,17 @@ async function lintTac(
 }
 
 test.describe('EV-060 T2 — UJ-059 AHL bulletin', () => {
+  test('lint body with no issues list is an empty list', () => {
+    expect(issuesFromLintBody({})).toEqual([]);
+    expect(issuesFromLintBody({ issues: null })).toEqual([]);
+    expect(issuesFromLintBody({ issues: [{ code: 'NOT_XML' }] })).toEqual([
+      { code: 'NOT_XML' },
+    ]);
+  });
+
   test('UJ-059: AHL mode convert shows bulletin summary', async ({ page }) => {
     await openPublicConverter(page);
-    await page.getByTestId('input-mode-ahl_bulletin').click();
+    await selectInputMode(page, 'ahl_bulletin');
     await fillManualTac(page, AHL_WELL_FORMED);
     await page.getByTestId('convert-button').click();
     await expect(page.getByTestId('bulletin-summary')).toBeVisible({ timeout: 60_000 });
@@ -72,7 +96,7 @@ test.describe('EV-060 T2 — UJ-059 AHL bulletin', () => {
   }) => {
     const { status, body } = await lintTac(request, AHL_WELL_FORMED, 'METAR');
     expect(status).toBe(200);
-    const issues = (body.issues as Array<{ code?: string }>) ?? [];
+    const issues = issuesFromLintBody(body);
     const codes = issues.map((issue) => issue.code);
     expect(codes).not.toContain('MISSING_PRODUCT_KEYWORD');
     expect(codes).not.toContain('MULTI_REPORT_BULLETIN');
@@ -84,9 +108,7 @@ test.describe('EV-060 T2 — UJ-059 AHL bulletin', () => {
     const { status, body } = await lintTac(request, AHL_MALFORMED, 'METAR');
     expect(status).toBe(200);
     expect(body.ok).toBe(false);
-    const issues =
-      (body.issues as Array<{ code?: string; location?: string; severity?: string }>) ??
-      [];
+    const issues = issuesFromLintBody(body);
     const bulletin = issues.filter(
       (issue) => issue.location === 'bulletin' && issue.severity === 'error',
     );
@@ -100,6 +122,7 @@ test.describe('EV-060 T2 — UJ-060 IWXXM product pass-through', () => {
     page,
   }) => {
     await openPublicConverter(page);
+    await openConvertSettings(page);
     await page.getByTestId('product-type-select').selectOption('IWXXM');
     await expect(page.getByTestId('iwxxm-product-help')).toBeVisible();
     await expect(page.getByTestId('iwxxm-product-help')).toContainText(/pass-through/i);
@@ -107,8 +130,10 @@ test.describe('EV-060 T2 — UJ-060 IWXXM product pass-through', () => {
       /Lint and validate IWXXM XML/i,
     );
     await expect(page.getByTestId('convert-button')).toHaveText(/Lint & validate/i);
-    await expect(page.getByTestId('input-mode-validate_iwxxm')).toBeEnabled();
-    await page.getByTestId('input-mode-validate_iwxxm').click();
+    await selectInputMode(page, 'validate_iwxxm');
+    await expect(page.getByTestId('input-mode-validate_iwxxm')).toHaveClass(
+      /bg-blue-700|bg-blue-600/,
+    );
     await expect(page.getByTestId('validate-iwxxm-help')).toBeVisible();
   });
 
@@ -118,9 +143,7 @@ test.describe('EV-060 T2 — UJ-060 IWXXM product pass-through', () => {
     const { status, body } = await lintTac(request, METAR_TAC, 'iwxxm');
     expect(status).toBe(200);
     expect(body.ok).toBe(false);
-    const codes = ((body.issues as Array<{ code?: string }>) ?? []).map(
-      (issue) => issue.code,
-    );
+    const codes = issuesFromLintBody(body).map((issue) => issue.code);
     expect(codes).toContain('NOT_XML');
     expect(codes).not.toContain('MISSING_PRODUCT_KEYWORD');
   });
@@ -130,9 +153,7 @@ test.describe('EV-060 T2 — UJ-060 IWXXM product pass-through', () => {
   }) => {
     const { status, body } = await lintTac(request, MINIMAL_IWXXM, 'iwxxm');
     expect(status).toBe(200);
-    const codes = ((body.issues as Array<{ code?: string }>) ?? []).map(
-      (issue) => issue.code,
-    );
+    const codes = issuesFromLintBody(body).map((issue) => issue.code);
     expect(codes).not.toContain('MISSING_PRODUCT_KEYWORD');
     expect(codes).not.toContain('NOT_XML');
   });
@@ -143,13 +164,13 @@ test.describe('EV-060 T2 — UJ-061 Conversion library at converter top', () => 
     page,
   }) => {
     await openPublicConverter(page);
-    await page
-      .getByLabel(/Expand parameters/i)
-      .click()
-      .catch(() => undefined);
+    await openConvertLibraryPickers(page);
     const conversionLib = page.getByTestId('conversion-library-select');
     await expect(conversionLib).toBeVisible();
+    // National-line change prompts confirmLibraryResetForProfile (window.confirm).
+    page.once('dialog', (dialog) => dialog.accept());
     await conversionLib.selectOption('LIB.CONVERSION.US_FAA_NWS');
+    await expect(conversionLib).toHaveValue('LIB.CONVERSION.US_FAA_NWS');
 
     const convertReq = page.waitForRequest(
       (req) => req.url().includes('/api/v1/convert') && req.method() === 'POST',
@@ -159,11 +180,7 @@ test.describe('EV-060 T2 — UJ-061 Conversion library at converter top', () => 
     const captured = await convertReq;
     expect(postBody(captured)).toContain('LIB.CONVERSION.US_FAA_NWS');
     expect(postBody(captured)).not.toContain('name="semantic_profile"');
-    await expect(page.getByRole('region', { name: /conversion results/i })).toBeVisible(
-      {
-        timeout: 60_000,
-      },
-    );
+    await openConvertDownloadsTab(page, 60_000);
   });
 });
 
@@ -172,6 +189,7 @@ test.describe('EV-060 T2 — UJ-062 bulletin fields', () => {
     page,
   }) => {
     await openPublicConverter(page);
+    await openConvertSettings(page);
     const bulletinId = page.getByTestId('bulletin-id-input');
     const issuingCenter = page.getByTestId('issuing-center-input');
     await expect(bulletinId).toBeVisible();
@@ -190,17 +208,14 @@ test.describe('EV-060 T2 — UJ-062 bulletin fields', () => {
     const body = postBody(captured);
     expect(body).toContain('SAAA00');
     expect(body).toContain('KWBC');
-    await expect(page.getByRole('region', { name: /conversion results/i })).toBeVisible(
-      {
-        timeout: 60_000,
-      },
-    );
+    await openConvertDownloadsTab(page, 60_000);
   });
 
   test('UJ-062: invalid Issuing Center is a field error (TC-EV060-1005-003)', async ({
     page,
   }) => {
     await openPublicConverter(page);
+    await openConvertSettings(page);
     await page.getByTestId('issuing-center-input').fill('KW1C');
     await fillManualTac(page, METAR_TAC);
     await page.getByTestId('convert-button').click();
@@ -216,6 +231,7 @@ test.describe('EV-060 T2 — UJ-063 log_level', () => {
     page,
   }) => {
     await openPublicConverter(page);
+    await openConvertSettings(page);
     await page.getByLabel(/Expand parameters/i).click();
     const logLevel = page.locator('#param-log-level');
     await expect(logLevel).toBeVisible();

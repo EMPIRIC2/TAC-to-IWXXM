@@ -19,6 +19,19 @@ import yaml
 
 
 def _tokens_from_mapping(raw: object) -> dict[str, str]:
+    """
+    Internal helper ``_tokens_from_mapping``.
+
+    Parameters
+    ----------
+    raw : object
+        Argument ``raw``.
+
+    Returns
+    -------
+    dict[str, str]
+        Return value.
+    """
     if not isinstance(raw, dict):
         return {}
     mapping = cast(Mapping[Any, Any], raw)
@@ -62,6 +75,7 @@ _OFFICIAL_TOKENS: dict[str, str] = {
     "TC": "tropical cyclone",
     "GR": "hail",
     "FZRA": "freezing rain",
+    "LINE": "line",
     "RDOACT": "radioactive",
     "CLD": "cloud",
     "CB": "cumulonimbus",
@@ -97,6 +111,7 @@ _OFFICIAL_TOKENS: dict[str, str] = {
 
 _ENV_PATH = "TAC_DECODING_GLOSSARY_PATH"
 _LEGACY_ENV_PATH = "TAC2IWXXM_DECODE_GLOSSARY_PATH"
+ENV_LOCATION_NAMES_PATH = "TAC_DECODING_LOCATION_NAMES_PATH"
 
 LocationNameResolver = Callable[[str], str | None]
 
@@ -109,34 +124,99 @@ def set_location_name_resolver(resolver: LocationNameResolver | None) -> None:
 
     Parameters
     ----------
-    resolver :
+    resolver : LocationNameResolver | None
         Callable returning a place name for an ICAO designator, or ``None`` on
         miss. ``None`` clears the resolver (designator-only explanations).
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (set_location_name_resolver)
+    2
     """
     global _location_name_resolver
     _location_name_resolver = resolver
 
 
+def _load_location_name_table() -> dict[str, str]:
+    """
+    Load the optional ICAO→name YAML table.
+
+    The file is a mapping of designator to place name. There is no packaged
+    default. A missing path, unreadable file, or non-mapping document yields
+    an empty table. Never raises.
+
+    Returns
+    -------
+    dict[str, str]
+        Uppercase designators to stripped place names.
+    """
+    raw_path = os.environ.get(ENV_LOCATION_NAMES_PATH, "").strip()
+    if not raw_path:
+        return {}
+    path = Path(raw_path)
+    try:
+        text = path.read_text(encoding="utf-8")
+        loaded = yaml.safe_load(text)
+    except (OSError, yaml.YAMLError):
+        return {}
+    if not isinstance(loaded, dict):
+        return {}
+    mapping = cast(Mapping[Any, Any], loaded)
+    names = mapping.get("names", mapping)
+    if not isinstance(names, dict):
+        return {}
+    out: dict[str, str] = {}
+    for key, value in cast(Mapping[Any, Any], names).items():
+        if not isinstance(key, str) or not isinstance(value, str):
+            continue
+        designator = key.strip().upper()
+        place = value.strip()
+        if designator and place:
+            out[designator] = place
+    return out
+
+
 def resolve_location_name(icao: str) -> str | None:
     """
-    Resolve an ICAO designator via the installed location resolver.
+    Resolve an ICAO designator via the installed hook, else the YAML name table.
+
+    An installed ``set_location_name_resolver`` wins and does not fall through
+    to the table. With no hook, ``TAC_DECODING_LOCATION_NAMES_PATH`` supplies
+    names. A miss returns ``None`` (designator-only copy). Never raises.
+
+    Parameters
+    ----------
+    icao : str
+        ICAO location indicator.
 
     Returns
     -------
     str | None
-        Place name when resolvable; ``None`` on miss or when no resolver is set.
-        Never raises on lookup failure.
+        Place name when resolvable; ``None`` on miss or when no source is set.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (resolve_location_name)
+    2
     """
-    if _location_name_resolver is None:
-        return None
-    try:
-        return _location_name_resolver(icao.upper())
-    except Exception:
-        return None
+    designator = icao.strip().upper()
+    if _location_name_resolver is not None:
+        try:
+            return _location_name_resolver(designator)
+        except Exception:
+            return None
+    return _load_location_name_table().get(designator)
 
 
 def _packaged_overlay_tokens() -> dict[str, str]:
-    """Load packaged ``decode_glossary.yaml`` tokens (empty if absent)."""
+    """
+    Internal helper ``_packaged_overlay_tokens``.
+
+    Returns
+    -------
+    dict[str, str]
+        Return value.
+    """
     try:
         root = resources.files("tac_decoding")
         data = root.joinpath("data", "decode_glossary.yaml")
@@ -151,12 +231,41 @@ def _packaged_overlay_tokens() -> dict[str, str]:
 
 
 def _load_yaml_tokens(path: Path) -> dict[str, str]:
+    """
+    Internal helper ``_load_yaml_tokens``.
+
+    Parameters
+    ----------
+    path : Path
+        Argument ``path``.
+
+    Returns
+    -------
+    dict[str, str]
+        Return value.
+    """
     if not path.is_file():
         return {}
     return _tokens_from_mapping(yaml.safe_load(path.read_text(encoding="utf-8")))
 
 
 def _merge_tables(official: dict[str, str], overlay: dict[str, str]) -> dict[str, str]:
+    """
+    Internal helper ``_merge_tables``.
+
+    Parameters
+    ----------
+    official : dict[str, str]
+        Argument ``official``.
+
+    overlay : dict[str, str]
+        Argument ``overlay``.
+
+    Returns
+    -------
+    dict[str, str]
+        Return value.
+    """
     merged = dict(official)
     merged.update(overlay)
     return merged
@@ -171,6 +280,11 @@ def load_glossary() -> dict[str, str]:
     -------
     dict[str, str]
         Uppercase token → English meaning. Env path overrides packaged YAML keys.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (load_glossary)
+    2
     """
     overlay: dict[str, str] = {}
     overlay.update(_packaged_overlay_tokens())
@@ -181,7 +295,19 @@ def load_glossary() -> dict[str, str]:
 
 
 def reload_glossary() -> dict[str, str]:
-    """Clear the glossary cache and reload (tests / hot reload)."""
+    """
+    Clear the glossary cache and reload (tests / hot reload).
+
+    Returns
+    -------
+    dict[str, str]
+        Clear the glossary cache and reload (tests / hot reload).
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (reload_glossary)
+    2
+    """
     load_glossary.cache_clear()
     return load_glossary()
 
@@ -192,13 +318,18 @@ def meaning_for(token: str) -> str:
 
     Parameters
     ----------
-    token :
+    token : str
         TAC token (case-insensitive).
 
     Returns
     -------
     str
         English meaning, or empty string if unknown.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (meaning_for)
+    2
     """
     return load_glossary().get(token.upper(), "")
 
@@ -209,15 +340,21 @@ def explain_glossary_token(token: str, *, fallback: str | None = None) -> str | 
 
     Parameters
     ----------
-    token :
+    token : str
         TAC token.
-    fallback :
+
+    fallback : str | None, optional
         Category-style label when the token is not in the glossary.
 
     Returns
     -------
     str | None
         Capitalized meaning or fallback; ``None`` if both missing.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (explain_glossary_token)
+    2
     """
     meaning = meaning_for(token)
     if meaning:

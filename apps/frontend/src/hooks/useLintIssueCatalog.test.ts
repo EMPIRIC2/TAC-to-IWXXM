@@ -1,5 +1,8 @@
 /**
  * TC-EV1120-009 — workbench catalog follows Profile / Exchange selections.
+ *
+ * Rule catalogs page filter binding lives in tc-ev061-1014-catalog-page.test.tsx
+ * (same TC id / AC-UI-1).
  */
 
 import { describe, it, expect, vi, beforeEach } from 'vitest';

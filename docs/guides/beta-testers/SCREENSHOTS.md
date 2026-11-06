@@ -1,17 +1,18 @@
 # UI figures in the tester decks
 
-Both decks currently use **rendered UI panels**, not photographic screenshots. Each
-panel was rebuilt from the production interface: every tab name, button label, option
-value, helper sentence and sample report on them was read off `app.tac-to-iwxxm.com`
-and is reproduced verbatim. The title slide of each deck says so.
+Both decks use **rendered UI panels**, not photographic screenshots. Each panel was
+rebuilt from the production interface. Every tab name, button label, option value,
+helper sentence, and sample report on those panels was read from
+`app.tac-to-iwxxm.com` and is reproduced verbatim. The title slide of each deck states
+that fact.
 
-They were rendered rather than captured because `app.tac-to-iwxxm.com` is refused by
-the organisation's egress policy from the build environment, so the host could be read
-through a browser but not captured to a file.
+The panels were rendered rather than captured because `app.tac-to-iwxxm.com` is refused
+by the organization's egress policy from the build environment. The host could be read
+through a browser but could not be captured to a file.
 
 **Replacing a panel with a real capture is a drop-in swap.** Save a capture over the
-matching filename below and rebuild; anything not replaced keeps its rendered panel.
-One figure, the dissemination drawer, has no panel at all, because its contents are
+matching filename below and rebuild. Any figure you do not replace keeps its rendered
+panel. One figure, the dissemination drawer, has no panel, because its contents are
 site-specific; that slide shows a labelled note instead.
 
 ## How to capture
@@ -20,8 +21,9 @@ site-specific; that slide shows a labelled note instead.
    visible, no bookmarks bar, and signed **out** unless a shot says otherwise.
 2. Capture just the app area, not the whole desktop (macOS: `⌘⇧4`, then drag).
 3. Save each file with the **exact filename** below into the capture folder.
-4. Scrub before you save: no personal email address, no account name, and no TAC that
-   is not a published sample. The demo examples in the Examples picker are safe.
+4. Scrub before you save: no personal email address, no account name, and no Traditional
+   Alphanumeric Code (TAC) that is not a published sample. The demo examples in the
+   Examples picker are safe.
 
 Capture folder on this machine: `~/Desktop/beta-deck-shots/`
 
@@ -51,8 +53,6 @@ folder. Either way works.
 | `06-convert-result.png` | After Convert: the `Conversion / validation log` showing Issues and Results with the download link | Convert, Validate, Five-steps slides |
 | `07-action-bar.png` | The button row: `NEW TAC` `CONVERT` `CONVERT&SEND` `UPLOAD TO DATABASE` `DISSEMINATE` `DOWNLOAD ZIP` `CLEAR` | Five steps, Download |
 | `08-history.png` | History tab: `My METARs`, the `Local history` label, the status filters | Work history |
-| `09-quality-metrics.png` | Quality metrics list with the count tiles and a few example rows | Quality metrics |
-| `10-quality-detail.png` | One Quality metrics example opened: Official / Converted panes and the diff | Quality metrics |
 | `11-upload-zone.png` | The drop zone: "Drop TAC files or select" with `SELECT FILES` / `FOLDER` / `ZIP` | Three ways in |
 | `12-privacy-settings.png` | The header close-up (`HELP`, `PREFERENCES`, Theme, `SIGN IN`) or the Privacy settings panel | Where to get help |
 
@@ -62,7 +62,7 @@ folder. Either way works.
 |---|---|---|
 | `13-dissemination-drawer.png` | The dissemination drawer, with any destination names or addresses blanked out | Dissemination |
 
-If dissemination is not enabled, leave this one out; the slide still reads correctly
+If dissemination is not enabled, leave this capture out. The slide still reads correctly
 with its placeholder, and the copy already says the panel may be hidden.
 
 ## Rebuilding

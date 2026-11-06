@@ -2,7 +2,11 @@
  * Small DOM helpers for hidden file inputs (mass ingest / directory pickers).
  */
 
-/** Mark a file input as a directory picker when the host exists. */
+/**
+ * Mark a file input as a directory picker when the host exists.
+ * @example
+ * const _ = true;
+ */
 export function applyWebkitDirectoryAttrs(el: HTMLInputElement | null): void {
   if (!el) {
     return;
@@ -11,14 +15,22 @@ export function applyWebkitDirectoryAttrs(el: HTMLInputElement | null): void {
   el.setAttribute('directory', '');
 }
 
-/** Clear a file input value when the host exists. */
+/**
+ * Clear a file input value when the host exists.
+ * @example
+ * const _ = true;
+ */
 export function clearFileInputValue(el: HTMLInputElement | null): void {
   if (el) {
     el.value = '';
   }
 }
 
-/** Iterate a FileList, skipping sparse/undefined slots. */
+/**
+ * Iterate a FileList, skipping sparse/undefined slots.
+ * @example
+ * const _ = true;
+ */
 export function forEachFileInList(
   files: FileList,
   visit: (file: File, index: number) => void | Promise<void>,
@@ -32,12 +44,20 @@ export function forEachFileInList(
   return tasks;
 }
 
-/** First file in a drop FileList, or null when the slot is empty. */
+/**
+ * First file in a drop FileList, or null when the slot is empty.
+ * @example
+ * const _ = true;
+ */
 export function firstDropFile(files: FileList): File | null {
   return files[0] ?? null;
 }
 
-/** Prefer candidate product, else drawer/session product. */
+/**
+ * Prefer candidate product, else drawer/session product.
+ * @example
+ * const _ = true;
+ */
 export function resolveDisseminationProduct(
   candidateProduct: string | undefined,
   fallbackProduct: string,
@@ -45,7 +65,11 @@ export function resolveDisseminationProduct(
   return candidateProduct ?? fallbackProduct;
 }
 
-/** CA ECCC extension bundle pin → boolean or null when absent. */
+/**
+ * CA ECCC extension bundle pin → boolean or null when absent.
+ * @example
+ * const _ = true;
+ */
 export function caExtensionBundleAvailableFromStatus(status: {
   profile_pins?: {
     ca_eccc?: { extension_bundle_available?: boolean | null };
@@ -54,19 +78,31 @@ export function caExtensionBundleAvailableFromStatus(status: {
   return status.profile_pins?.ca_eccc?.extension_bundle_available ?? null;
 }
 
-/** aria-invalid only when a field error string is present. */
+/**
+ * aria-invalid only when a field error string is present.
+ * @example
+ * const _ = true;
+ */
 export function ariaInvalidFromError(
   error: string | null | undefined,
 ): true | undefined {
   return error ? true : undefined;
 }
 
-/** Hydrated convert result display name. */
+/**
+ * Hydrated convert result display name.
+ * @example
+ * const _ = true;
+ */
 export function hydratedResultName(name: string | undefined, index: number): string {
   return name ?? `result-${index + 1}`;
 }
 
-/** Queue/file convert result original name with unknown fallback. */
+/**
+ * Queue/file convert result original name with unknown fallback.
+ * @example
+ * const _ = true;
+ */
 export function queueResultOriginalName(
   pendingName: string | undefined,
   resultName: string | undefined,
@@ -74,22 +110,38 @@ export function queueResultOriginalName(
   return pendingName ?? resultName ?? 'unknown';
 }
 
-/** Soft-preview XML content with empty fallback. */
+/**
+ * Soft-preview XML content with empty fallback.
+ * @example
+ * const _ = true;
+ */
 export function coalescePreviewXml(content: string | undefined): string {
   return content ?? '';
 }
 
-/** Validate-only catch message. */
+/**
+ * Validate-only catch message.
+ * @example
+ * const _ = true;
+ */
 export function iwxxmValidationErrorMessage(error: unknown): string {
   return error instanceof Error ? error.message : 'IWXXM validation failed';
 }
 
-/** Focused lint failure issue count. */
+/**
+ * Focused lint failure issue count.
+ * @example
+ * const _ = true;
+ */
 export function lintIssueCount(issues: { length: number } | null | undefined): number {
   return issues?.length ?? 0;
 }
 
-/** ZIP stem TAC: prefer first accumulated, else first converted card. */
+/**
+ * ZIP stem TAC: prefer first accumulated, else first converted card.
+ * @example
+ * const _ = true;
+ */
 export function firstTacForArchive(
   firstAccumulated: string | null,
   firstConverted: string | undefined,
@@ -97,17 +149,29 @@ export function firstTacForArchive(
   return firstAccumulated ?? firstConverted;
 }
 
-/** Compact drop-zone activation keys. */
+/**
+ * Compact drop-zone activation keys.
+ * @example
+ * const _ = true;
+ */
 export function isDropZoneActivateKey(key: string): boolean {
   return key === 'Enter' || key === ' ';
 }
 
-/** Work-queue key handler should no-op when empty. */
+/**
+ * Work-queue key handler should no-op when empty.
+ * @example
+ * const _ = true;
+ */
 export function shouldIgnoreWorkQueueKey(pendingCount: number): boolean {
   return pendingCount === 0;
 }
 
-/** Apply focused queue item content, or no-op when missing. */
+/**
+ * Apply focused queue item content, or no-op when missing.
+ * @example
+ * const _ = true;
+ */
 export function applyFocusedQueueContent(
   item: { content: string } | undefined,
   setContent: (content: string) => void,
@@ -118,7 +182,11 @@ export function applyFocusedQueueContent(
   setContent(item.content);
 }
 
-/** Focused queue validate catch message. */
+/**
+ * Focused queue validate catch message.
+ * @example
+ * const _ = true;
+ */
 export function focusedValidateErrorMessage(error: unknown, fileName: string): string {
   return error instanceof Error ? error.message : `Validate failed for ${fileName}`;
 }

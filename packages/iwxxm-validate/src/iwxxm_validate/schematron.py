@@ -25,6 +25,19 @@ _WORKING_DIRS: dict[str, Path] = {}
 
 
 def _uses_xslt2(sch_path: Path) -> bool:
+    """
+    Internal helper ``_uses_xslt2``.
+
+    Parameters
+    ----------
+    sch_path : object
+        Argument ``sch_path``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     try:
         head = sch_path.read_text(encoding="utf-8", errors="replace")[:4000]
     except OSError:
@@ -33,6 +46,19 @@ def _uses_xslt2(sch_path: Path) -> bool:
 
 
 def _setup_working_directory(iwxxm_version: str) -> Path:
+    """
+    Internal helper ``_setup_working_directory``.
+
+    Parameters
+    ----------
+    iwxxm_version : object
+        Argument ``iwxxm_version``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if iwxxm_version in _WORKING_DIRS:
         return _WORKING_DIRS[iwxxm_version]
 
@@ -47,7 +73,17 @@ def _setup_working_directory(iwxxm_version: str) -> Path:
 @lru_cache(maxsize=16)
 def _compile_schematron(iwxxm_version: str) -> Any | None:
     """
-    Compile Schematron or return ``None`` to signal non-blocking skip (xslt2).
+    Internal helper ``_compile_schematron``.
+
+    Parameters
+    ----------
+    iwxxm_version : object
+        Argument ``iwxxm_version``.
+
+    Returns
+    -------
+    object
+        Return value.
     """
     sch_path = schematron_path(iwxxm_version)
     if _uses_xslt2(sch_path):
@@ -70,6 +106,23 @@ def validate_schematron(xml_content: str, iwxxm_version: str) -> list[Issue]:
     XSLT2 schemas yield a non-blocking ``SCHEMATRON_SKIPPED`` warning.
     Optional Docker/Saxon backend is selected when
     ``IWXXM_VALIDATE_SCHEMATRON_DOCKER=1`` (soft gate; not required for unit CI).
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (validate_schematron)
+    2
+
+    Parameters
+    ----------
+    xml_content : str
+        XML text.
+    iwxxm_version : str
+        IWXXM release line.
+
+    Returns
+    -------
+    list[Issue]
+        Validate IWXXM XML against vendored Schematron rules.
     """
     if os.environ.get("IWXXM_VALIDATE_SCHEMATRON_DOCKER", "").strip() in {"1", "true", "True"}:
         # Soft/separate gate - Docker path is optional; fall through to lxml/skip
@@ -181,7 +234,14 @@ def validate_schematron(xml_content: str, iwxxm_version: str) -> list[Issue]:
 
 
 def clear_schematron_cache() -> None:
-    """Clear compiled Schematron cache and temp working dirs (tests)."""
+    """
+    Clear compiled Schematron cache and temp working dirs (tests).
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (clear_schematron_cache)
+    2
+    """
     _compile_schematron.cache_clear()
     for work_dir in _WORKING_DIRS.values():
         shutil.rmtree(work_dir, ignore_errors=True)

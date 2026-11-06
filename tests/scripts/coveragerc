@@ -3,6 +3,8 @@
 branch = true
 source = scripts
 omit =
+    # One-shot ADR-048 backfill helpers (not runtime product paths).
+    */scripts/docs/backfill_*.py
 
 [report]
 fail_under = 100

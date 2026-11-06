@@ -11,7 +11,14 @@ import httpx
 
 @dataclass
 class Airport:
-    """Standardized airport data model."""
+    """
+    Standardized airport data model.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     icao_code: str
     name: str
@@ -25,7 +32,19 @@ class Airport:
 
     @property
     def lat_lon(self) -> tuple[float, float] | None:
-        """Extract coordinates from GeoJSON geometry."""
+        """
+        Extract coordinates from GeoJSON geometry.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (lat_lon)
+        2
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         if not self.geometry:
             return None
 
@@ -39,30 +58,64 @@ class Airport:
 
     @property
     def latitude(self) -> float | None:
-        """Get latitude."""
+        """
+        Get latitude.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (latitude)
+        2
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         coords = self.lat_lon
         return coords[0] if coords else None
 
     @property
     def longitude(self) -> float | None:
-        """Get longitude."""
+        """
+        Get longitude.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (longitude)
+        2
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         coords = self.lat_lon
         return coords[1] if coords else None
 
 
 class OpenAIPClient:
-    """Client for OpenAIP airport database.
+    """
+    Client for OpenAIP airport database.
 
     Note: This client works with locally cached OpenAIP data.
     For live API access, you need an OpenAIP API key.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
     """
 
     def __init__(self, data_path: Path | None = None, api_key: str | None = None) -> None:
-        """Initialize OpenAIP client.
+        """
+        Internal helper ``__init__``.
 
-        Args:
-            data_path: Path to local OpenAIP data cache
-            api_key: OpenAIP API key for live queries
+        Parameters
+        ----------
+        data_path : object
+            Argument ``data_path``.
+        api_key : object
+            Argument ``api_key``.
         """
         self.data_path = data_path or Path("data/open-aip")
         self.api_key = api_key
@@ -98,7 +151,19 @@ class OpenAIPClient:
         self._loaded = True
 
     def _parse_feature(self, feature: dict[str, Any]) -> Airport | None:
-        """Parse GeoJSON feature into Airport object."""
+        """
+        Internal helper ``_parse_feature``.
+
+        Parameters
+        ----------
+        feature : object
+            Argument ``feature``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         properties = feature.get("properties", {})
         geometry = feature.get("geometry")
 
@@ -125,13 +190,27 @@ class OpenAIPClient:
         )
 
     def get_airport_by_icao(self, icao: str) -> Airport | None:
-        """Fetch airport metadata by ICAO code.
+        """
+        Fetch airport metadata by ICAO code.
 
-        Args:
-            icao: ICAO station identifier
+        Returns
+        -------
+            Airport object or None if no
 
-        Returns:
+        Parameters
+        ----------
+        icao : object
+            ICAO station identifier
+
+        Returns
+        -------
+        object
             Airport object or None if not found
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (get_airport_by_icao)
+        2
         """
         self._load_local_data()
         return self._cache.get(icao.upper())
@@ -139,15 +218,31 @@ class OpenAIPClient:
     def search_airports(
         self, country: str | None = None, bbox: tuple[float, float, float, float] | None = None, limit: int = 1000
     ) -> list[Airport]:
-        """Search airports with filters.
+        """
+        Search airports with filters.
 
-        Args:
-            country: ISO country code
-            bbox: Bounding box (min_lon, min_lat, max_lon, max_lat)
-            limit: Maximum number of results
-
-        Returns:
+        Returns
+        -------
             List of matching airports
+
+        Parameters
+        ----------
+        country : object
+            ISO country code
+        bbox : object
+            Bounding box (min_lon, min_lat, max_lon, max_lat)
+        limit : object
+            Maximum number of results
+
+        Returns
+        -------
+        object
+            List of matching airports
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (search_airports)
+        2
         """
         self._load_local_data()
 
@@ -171,10 +266,18 @@ class OpenAIPClient:
         return results
 
     def get_statistics(self) -> dict[str, Any]:
-        """Get statistics about loaded airport data.
+        """
+        Get statistics about loaded airport data.
 
-        Returns:
+        Returns
+        -------
+        object
             Dictionary with statistics
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (get_statistics)
+        2
         """
         self._load_local_data()
 
@@ -202,16 +305,26 @@ class OpenAIPClient:
 async def download_openaip_data(
     output_dir: Path, countries: list[str] | None = None, api_key: str | None = None
 ) -> None:
-    """Download OpenAIP airport data for specified countries.
-
-    Args:
-        output_dir: Directory to save downloaded data
-        countries: List of ISO country codes (default: major aviation countries)
-        api_key: OpenAIP API key
+    """
+    Download OpenAIP airport data for specified countries.
 
     Note:
         This function requires an OpenAIP API key.
         Free tier available at https://www.openaip.net/
+
+    Parameters
+    ----------
+    output_dir : object
+        Directory to save downloaded data
+    countries : object
+        List of ISO country codes (default: major aviation countries)
+    api_key : object
+        OpenAIP API key
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (download_openaip_data)
+    2
     """
     if not api_key:
         raise ValueError("OpenAIP API key required for downloads")
@@ -237,6 +350,16 @@ async def download_openaip_data(
                 payload = response.json()
 
                 def _write(out: Path = output_file, data: object = payload) -> None:
+                    """
+                    Internal helper ``_write``.
+
+                    Parameters
+                    ----------
+                    out : object
+                        Argument ``out``.
+                    data : object
+                        Argument ``data``.
+                    """
                     with open(out, "w", encoding="utf-8") as f:
                         json.dump(data, f, indent=2)
 

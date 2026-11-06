@@ -1,0 +1,83 @@
+# One-shot: refresh ghcr-pull secret + (re)roll DOKS tip images.
+# Fixes ImagePullBackOff when cluster ghcr-pull PAT is revoked and packages are private.
+name: Ops GHCR public + DOKS rollout
+
+on:
+  workflow_dispatch:
+    inputs:
+      image_tag:
+        description: Immutable GHCR TIMESTAMP-SHA tag to roll (staging tip)
+        required: true
+        type: string
+      namespace:
+        description: DOKS namespace
+        required: true
+        default: metar-iwxxm-staging
+        type: string
+      environment:
+        description: GitHub Environment (kubeconfig secret scope)
+        required: true
+        default: staging
+        type: choice
+        options:
+          - staging
+          - production
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  ghcr-public-and-rollout:
+    name: Refresh GHCR pull + DOKS rollout
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+    env:
+      KUBE_CONFIG: ${{ secrets.KUBE_CONFIG }}
+      DOKS_NAMESPACE: ${{ inputs.namespace }}
+      IMAGE_TAG: ${{ inputs.image_tag }}
+      ROLLOUT_TIMEOUT: 300s
+      OPS_ENVIRONMENT: ${{ inputs.environment }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GHCR_USERNAME: ${{ github.actor }}
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Ensure GHCR packages are public (best-effort)
+        run: bash scripts/deploy/ghcr_ensure_public.sh
+
+      - name: Set up kubectl
+        uses: azure/setup-kubectl@v4
+
+      - name: Configure kubeconfig
+        run: |
+          set -euo pipefail
+          if [ -z "${KUBE_CONFIG:-}" ]; then
+            echo "::error::Missing secret KUBE_CONFIG for environment ${OPS_ENVIRONMENT}"
+            exit 1
+          fi
+          mkdir -p "${HOME}/.kube"
+          if ! printf '%s' "${KUBE_CONFIG}" | base64 --decode > "${HOME}/.kube/config" 2>/dev/null; then
+            echo "::error::KUBE_CONFIG is not valid base64"
+            exit 1
+          fi
+          chmod 600 "${HOME}/.kube/config"
+          if grep -qE 'command:[[:space:]]*doctl' "${HOME}/.kube/config"; then
+            echo "::error::KUBE_CONFIG uses doctl exec auth; use a ServiceAccount token kubeconfig"
+            exit 1
+          fi
+
+      - name: Refresh ghcr-pull secret with live GITHUB_TOKEN
+        run: bash scripts/deploy/doks_refresh_ghcr_pull_secret.sh
+
+      - name: Delete stuck ImagePullBackOff pods (best-effort)
+        run: bash scripts/deploy/doks_delete_imagepull_pods.sh
+
+      - name: Roll out DOKS images
+        run: bash scripts/deploy/doks_rollout_images.sh "${IMAGE_TAG}"
+
+      - name: Show running images
+        run: |
+          kubectl -n "${DOKS_NAMESPACE}" get deploy metar-api metar-frontend metar-map-translator metar-worker \
+            -o jsonpath='{range .items[*]}{.metadata.name}{"\t"}{range .spec.template.spec.containers[*]}{.name}={.image}{" "}{end}{"\n"}{end}'
+          kubectl -n "${DOKS_NAMESPACE}" get pods -o wide

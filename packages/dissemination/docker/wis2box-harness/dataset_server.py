@@ -34,7 +34,7 @@ class DatasetHandler(BaseHTTPRequestHandler):
             return None
         return self.storage_root / rel
 
-    def do_GET(self) -> None:  # noqa: N802 — BaseHTTPRequestHandler API
+    def do_GET(self) -> None:
         if urlparse(self.path).path == "/health":
             body = b'{"ok":true,"service":"wis2box-harness"}\n'
             self.send_response(200)
@@ -58,7 +58,7 @@ class DatasetHandler(BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(data)
 
-    def do_HEAD(self) -> None:  # noqa: N802
+    def do_HEAD(self) -> None:
         if urlparse(self.path).path == "/health":
             self.send_response(200)
             self.send_header("Content-Type", "application/json")
@@ -73,7 +73,7 @@ class DatasetHandler(BaseHTTPRequestHandler):
         self.send_header("Content-Length", str(target.stat().st_size))
         self.end_headers()
 
-    def do_PUT(self) -> None:  # noqa: N802
+    def do_PUT(self) -> None:
         target = self._dataset_path()
         if target is None:
             self.send_error(404, "not found")

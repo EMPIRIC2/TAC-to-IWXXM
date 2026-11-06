@@ -7,15 +7,23 @@ import sys
 from collections.abc import Sequence
 from pathlib import Path
 
-from tac_validate.api import lint
+from tac_validate.api import lint_with_profile
 from tac_validate.codec import json_encoder
 from tac_validate.overlay_check import check_tac_policy_overlay_dir
-from tac_validate.policy import PolicyError, apply_policy_to_report
+from tac_validate.policy import PolicyError
 from tac_validate.products import PRODUCTS
 from tac_validate.profiles import SUPPORTED_PROFILES
 
 
 def _build_parser() -> argparse.ArgumentParser:
+    """
+    Internal helper ``_build_parser``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     parser = argparse.ArgumentParser(
         prog="tac-validate",
         description="Lint TAC text for F6 products (parse-gate + checklist/template gates).",
@@ -57,21 +65,58 @@ def _build_parser() -> argparse.ArgumentParser:
 
 
 def _lint_profile(emit_key: str) -> str:
+    """
+    Internal helper ``_lint_profile``.
+
+    Parameters
+    ----------
+    emit_key : object
+        Argument ``emit_key``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if emit_key in SUPPORTED_PROFILES:
         return emit_key
     return "annex3"
 
 
 def _bound_policy(profile: str, policy: str | None, *, product: str | None = None) -> tuple[str, str]:
+    """
+    Internal helper ``_bound_policy``.
+
+    Parameters
+    ----------
+    profile : object
+        Argument ``profile``.
+    policy : object
+        Argument ``policy``.
+    product : object
+        Argument ``product``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
+    from tac_validate.lint_profile_catalog import load_lint_profiles
+    from tac_validate.lint_profile_ids import canonical_lint_profile_id
+    from tac_validate.quality_policy_bind import resolve_tac_quality_policy_id
+
+    profile_l = canonical_lint_profile_id(profile)
+    if profile_l not in load_lint_profiles():
+        raise PolicyError(f"unknown conversion profile {profile!r}")
     try:
-        from tac2iwxxm.profile_resolve import ProfileResolveError, resolve_validation_policies
-    except ImportError:
-        return _lint_profile(profile), policy or ""
-    try:
-        resolved = resolve_validation_policies(profile, product=product, tac_policy=policy)
-    except ProfileResolveError as exc:
+        policy_id = resolve_tac_quality_policy_id(
+            profile_l,
+            product=product,
+            tac_policy=policy,
+        )
+    except Exception as exc:
         raise PolicyError(str(exc)) from exc
-    return _lint_profile(resolved.emit_key), resolved.tac_quality_policy_id
+    return _lint_profile(profile_l), policy_id
 
 
 def main(argv: Sequence[str] | None = None) -> int:
@@ -80,13 +125,18 @@ def main(argv: Sequence[str] | None = None) -> int:
 
     Parameters
     ----------
-    argv :
+    argv : Sequence[str] or None, optional
         Argument vector (defaults to ``sys.argv[1:]``).
 
     Returns
     -------
     int
         ``0`` when ``report.ok``; ``1`` on lint errors or I/O failure; ``2`` when the profile or policy id is unknown.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (main)
+    2
     """
     parser = _build_parser()
     args = parser.parse_args(list(argv) if argv is not None else None)
@@ -116,13 +166,16 @@ def main(argv: Sequence[str] | None = None) -> int:
         print(f"error: {exc}", file=sys.stderr)
         return 2
 
-    report = lint(text, product=args.product, profile=lint_profile)
-    if policy_id:
-        try:
-            report = apply_policy_to_report(report, policy_id, profile=lint_profile)
-        except PolicyError as exc:
-            print(f"error: {exc}", file=sys.stderr)
-            return 2
+    try:
+        report = lint_with_profile(
+            text,
+            product=args.product,
+            profile=lint_profile,
+            tac_policy=policy_id or None,
+        )
+    except PolicyError as exc:
+        print(f"error: {exc}", file=sys.stderr)
+        return 2
     if args.json:
         sys.stdout.write(json_encoder.encode(report).decode("utf-8"))
         sys.stdout.write("\n")

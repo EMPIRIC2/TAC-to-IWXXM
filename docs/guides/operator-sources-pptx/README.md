@@ -1,4 +1,4 @@
-# Operator sources — PowerPoint source pack
+# Operator sources - PowerPoint source pack
 
 > **Session lineage:** S049 / EV-041 (sources pack) · **Audience update:** national MET /
 > aviation **authority leadership** (compliance / OPMET–IWXXM exchange)  
@@ -6,9 +6,18 @@
 
 ## What this pack is
 
-Markdown you copy into PowerPoint for a **compliance-oriented** briefing: why States
-produce IWXXM, which ICAO/WMO sources to cite, and how this tool’s lint → convert →
-XSD+Schematron path maps to those sources.
+Markdown you copy into PowerPoint for a compliance briefing. The briefing covers why
+States produce IWXXM (ICAO/WMO XML weather exchange), which ICAO/WMO sources to cite,
+and how this tool’s lint → convert → XSD + Schematron path maps to those sources.
+
+Terms used above:
+
+- **OPMET** means operational meteorological information exchanged for aviation.
+- **Lint** means Traditional Alphanumeric Code (TAC) issue checks before convert.
+- **XSD** means XML Schema Definition checks.
+- **Schematron** means rule-based XML checks beyond XSD.
+- **ICAO** means International Civil Aviation Organization.
+- **WMO** means World Meteorological Organization.
 
 | File | Use |
 |------|-----|
@@ -22,11 +31,12 @@ XSD+Schematron path maps to those sources.
 
 Follow [ACCESS_AND_CITATION.md](../../domain/rules/ACCESS_AND_CITATION.md):
 
-- Titles, editions, section numbers, landing URLs — yes.
-- Multi-page Annex 3 / MoC / Doc 8896 paste — no.
+- Titles, editions, section numbers, landing URLs: yes.
+- Multi-page Annex 3 / MoC / Doc 8896 paste: no.
 - Label paywall / public / informative.
-- Schema SoT = `vendor/manifest.json` pin **v2025-2**.
-- Do not invent TAC sunset dates unless the State’s licensed SARPs edition says so.
+- Schema source of truth (SoT) = `vendor/manifest.json` pin **v2025-2**.
+- Do not invent TAC sunset dates unless the State’s licensed Standards and Recommended
+  Practices (SARPs) edition states those dates.
 
 ## Footer suggestion
 

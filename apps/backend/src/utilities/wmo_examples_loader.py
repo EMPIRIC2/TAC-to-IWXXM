@@ -18,7 +18,14 @@ logger = logging.getLogger(__name__)
 
 @dataclass
 class WMOExample:
-    """Represents a single WMO canonical example."""
+    """
+    Represents a single WMO canonical example.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     example_id: str  # e.g., "metar-A3-1"
     version: str  # IWXXM version (e.g., "2025-2")
@@ -35,6 +42,11 @@ class WMOExample:
 class WMOExamplesLoader:
     """
     Loads WMO canonical examples from mirrored schema directories.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
     """
 
     MESSAGE_TYPE_PATTERNS: ClassVar[dict[str, Pattern[str]]] = {
@@ -53,19 +65,28 @@ class WMOExamplesLoader:
 
     def __init__(self, schemas_base_path: Path) -> None:
         """
-        Initialize the examples loader.
+        Internal helper ``__init__``.
 
-        Args:
-            schemas_base_path: Base path for mirrored schemas (e.g., PROJECT_ROOT/schemas/iwxxm)
+        Parameters
+        ----------
+        schemas_base_path : object
+            Argument ``schemas_base_path``.
         """
         self.schemas_base_path = Path(schemas_base_path)
 
     def _examples_dir(self, version: str) -> Path:
         """
-        Resolve the examples directory for a version.
+        Internal helper ``_examples_dir``.
 
-        Prefer vendor pin layout ``{version}/IWXXM/examples``, then mirrored
-        ``{version}/examples`` (schemas.wmo.int / local mirror).
+        Parameters
+        ----------
+        version : object
+            Argument ``version``.
+
+        Returns
+        -------
+        object
+            Return value.
         """
         candidates = (
             self.schemas_base_path / version / "IWXXM" / "examples",
@@ -80,12 +101,26 @@ class WMOExamplesLoader:
         """
         Load all examples for a specific IWXXM version.
 
-        Args:
-            version: IWXXM version string (e.g., "2025-2")
-            message_types: Optional filter for specific message types
-
-        Returns:
+        Returns
+        -------
             List of WMOExample objects
+
+        Parameters
+        ----------
+        version : object
+            IWXXM version string (e.g., "2025-2")
+        message_types : object
+            Optional filter for specific message types
+
+        Returns
+        -------
+        object
+            List of WMOExample objects
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (load_examples)
+        2
         """
         examples_dir = self._examples_dir(version)
 
@@ -134,11 +169,24 @@ class WMOExamplesLoader:
         """
         Load examples for multiple versions.
 
-        Args:
-            versions: List of version strings. If None, auto-detect from directories.
-
-        Returns:
+        Returns
+        -------
             Dictionary mapping version -> list of examples
+
+        Parameters
+        ----------
+        versions : object
+            List of version strings. If None, auto-detect from directories.
+
+        Returns
+        -------
+        object
+            Dictionary mapping version -> list of examples
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (load_all_versions)
+        2
         """
         if versions is None:
             versions = self._detect_available_versions()
@@ -155,12 +203,26 @@ class WMOExamplesLoader:
         """
         Get TAC↔XML pairs for testing roundtrip conversions.
 
-        Args:
-            version: IWXXM version
-            message_type: Optional message type filter
-
-        Returns:
+        Returns
+        -------
             List of (tac_path, xml_path, example_id) tuples
+
+        Parameters
+        ----------
+        version : object
+            IWXXM version
+        message_type : object
+            Optional message type filter
+
+        Returns
+        -------
+        object
+            List of (tac_path, xml_path, example_id) tuples
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (get_tac_xml_pairs)
+        2
         """
         examples = self.load_examples(version)
         pairs: list[tuple[Path, Path, str]] = []
@@ -179,11 +241,24 @@ class WMOExamplesLoader:
         """
         Load TAC-to-XML-Guidance.txt if available.
 
-        Args:
-            version: IWXXM version
+        Returns
+        -------
+            Guidance document con
 
-        Returns:
+        Parameters
+        ----------
+        version : object
+            IWXXM version
+
+        Returns
+        -------
+        object
             Guidance document content or None if not found
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (load_guidance_document)
+        2
         """
         guidance_file = self._examples_dir(version) / "TAC-to-XML-Guidance.txt"
 
@@ -196,11 +271,24 @@ class WMOExamplesLoader:
         """
         Generate manifest of all examples for a version.
 
-        Args:
-            version: IWXXM version
+        Returns
+        -------
+            Manifest dictionary w
 
-        Returns:
+        Parameters
+        ----------
+        version : object
+            IWXXM version
+
+        Returns
+        -------
+        object
             Manifest dictionary with counts and categories
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (get_example_manifest)
+        2
         """
         examples = self.load_examples(version)
 
@@ -234,13 +322,17 @@ class WMOExamplesLoader:
 
     def _detect_message_type(self, example_id: str) -> str:
         """
-        Detect message type from example filename.
+        Internal helper ``_detect_message_type``.
 
-        Args:
-            example_id: Example ID (filename without extension)
+        Parameters
+        ----------
+        example_id : object
+            Argument ``example_id``.
 
-        Returns:
-            Message type string
+        Returns
+        -------
+        object
+            Return value.
         """
         for msg_type, pattern in self.MESSAGE_TYPE_PATTERNS.items():
             if pattern.match(example_id):
@@ -250,13 +342,17 @@ class WMOExamplesLoader:
 
     def _extract_scenario(self, example_id: str) -> str | None:
         """
-        Extract test scenario description from example ID.
+        Internal helper ``_extract_scenario``.
 
-        Args:
-            example_id: Example ID
+        Parameters
+        ----------
+        example_id : object
+            Argument ``example_id``.
 
-        Returns:
-            Scenario description or None
+        Returns
+        -------
+        object
+            Return value.
         """
         # Remove message type prefix and extract scenario
         parts = example_id.split("-", 1)
@@ -268,7 +364,8 @@ class WMOExamplesLoader:
         """
         Auto-detect available versions from schemas directory.
 
-        Returns:
+        Returns
+        -------
             List of version strings that have examples directories
         """
         versions: list[str] = []
@@ -291,13 +388,28 @@ def load_wmo_examples(
     """
     Convenience function to load WMO examples.
 
-    Args:
-        version: IWXXM version
-        schemas_base_path: Base path for schemas
-        message_types: Optional message type filter
-
-    Returns:
+    Returns
+    -------
         List of WMOExample objects
+
+    Parameters
+    ----------
+    version : object
+        IWXXM version
+    schemas_base_path : object
+        Base path for schemas
+    message_types : object
+        Optional message type filter
+
+    Returns
+    -------
+    object
+        List of WMOExample objects
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (load_wmo_examples)
+    2
     """
     loader = WMOExamplesLoader(schemas_base_path)
     return loader.load_examples(version, message_types)

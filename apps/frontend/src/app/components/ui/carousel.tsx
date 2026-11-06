@@ -30,6 +30,9 @@ type CarouselContextProps = {
 
 const CarouselContext = React.createContext<CarouselContextProps | null>(null);
 
+/**
+ * Function `useCarousel`.
+ */
 function useCarousel() {
   const context = React.useContext(CarouselContext);
 
@@ -40,6 +43,9 @@ function useCarousel() {
   return context;
 }
 
+/**
+ * Function `Carousel`.
+ */
 function Carousel({
   orientation = 'horizontal',
   opts,
@@ -129,6 +135,9 @@ function Carousel({
   );
 }
 
+/**
+ * Function `CarouselContent`.
+ */
 function CarouselContent({ className, ...props }: React.ComponentProps<'div'>) {
   const { carouselRef, orientation } = useCarousel();
 
@@ -146,6 +155,9 @@ function CarouselContent({ className, ...props }: React.ComponentProps<'div'>) {
   );
 }
 
+/**
+ * Function `CarouselItem`.
+ */
 function CarouselItem({ className, ...props }: React.ComponentProps<'div'>) {
   const { orientation } = useCarousel();
 
@@ -164,6 +176,9 @@ function CarouselItem({ className, ...props }: React.ComponentProps<'div'>) {
   );
 }
 
+/**
+ * Function `CarouselPrevious`.
+ */
 function CarouselPrevious({
   className,
   variant = 'outline',
@@ -194,6 +209,9 @@ function CarouselPrevious({
   );
 }
 
+/**
+ * Function `CarouselNext`.
+ */
 function CarouselNext({
   className,
   variant = 'outline',

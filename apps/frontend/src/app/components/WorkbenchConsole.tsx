@@ -6,12 +6,16 @@
  */
 
 import { useState, type ReactNode } from 'react';
-import { ChevronDown, ChevronUp, Terminal } from 'lucide-react';
+import { IssueDetailDialog } from '@/app/components/IssueDetailDialog';
 import type { LiveWorkbenchConsoleLine } from '@/hooks/useLiveWorkbenchAssist';
 import type { LintIssueCatalogEntry } from '@/utils/api';
+import { issueDetailFromConsoleLine, type IssueDetailModel } from '@/utils/issueDetail';
+import { ISSUE_DETAIL_BUTTON, ISSUE_DETAIL_OPEN } from '@/utils/issueDetailCopy';
+import { isPlanningEvolveTag, scrubInternalDocRefs } from '@/utils/internalDocRefGuard';
 import {
   filterCatalogByTag,
   formatCatalogEntryCopy,
+  maybeOpenCatalogForLintCode,
   resolveLintIssueTooltip,
 } from '@/utils/lintIssueCatalog';
 import { consoleLevelPasses, type ConvertLogLevel } from '/utils/convertParams';
@@ -28,9 +32,14 @@ const PREFERRED_CATALOG_TAGS = [
   'airmet',
 ] as const;
 
+/**
+ * Function `catalogTagOptionsFromEntries`.
+ */
 function catalogTagOptionsFromEntries(entries: LintIssueCatalogEntry[]): string[] {
   const present = new Set(
-    entries.flatMap((entry) => (entry.tags ?? []).map((t) => t.toLowerCase())),
+    entries
+      .flatMap((entry) => (entry.tags ?? []).map((t) => t.toLowerCase()))
+      .filter((tag) => !isPlanningEvolveTag(tag)),
   );
   const preferred = PREFERRED_CATALOG_TAGS.filter((tag) => present.has(tag));
   const rest = [...present]
@@ -44,11 +53,21 @@ function catalogTagOptionsFromEntries(entries: LintIssueCatalogEntry[]): string[
   return [...preferred, ...rest];
 }
 
+/**
+ * Type `WorkbenchConsoleProps`.
+ * @example
+ * const _ = true;
+ */
 export interface WorkbenchConsoleProps {
   lines: LiveWorkbenchConsoleLine[];
   onClear?: () => void;
   /** Invoked when a console line action button is clicked (e.g. add_terminator). */
   onLineAction?: (actionId: string) => void;
+  /**
+   * No-op; retained for call-site compatibility. Log lines always render
+   * inline now (there is no collapse).
+   * @deprecated The console no longer collapses.
+   */
   defaultOpen?: boolean;
   /** Minimum severity to show (operator Log Level). Default INFO. */
   minLogLevel?: ConvertLogLevel;
@@ -56,26 +75,54 @@ export interface WorkbenchConsoleProps {
   catalogByCode?: Map<string, LintIssueCatalogEntry>;
   /** Full catalog rows for the lightweight panel. */
   catalogEntries?: LintIssueCatalogEntry[];
+  /** Open Rule catalogs focused on a console lint/validation code. */
+  onOpenCatalogCode?: (code: string) => void;
+  /** Shell open-catalog handler (family + optional code). */
+  onOpenCatalog?: (
+    family?: 'conversion' | 'lint' | 'iwxxm' | 'decoding',
+    code?: string,
+  ) => void;
 }
 
+/**
+ * Function `messageWithCodeTooltips`.
+ */
 function messageWithCodeTooltips(
   message: string,
   catalogByCode: Map<string, LintIssueCatalogEntry> | undefined,
+  onOpenCatalogCode?: (code: string) => void,
 ): ReactNode {
+  const visible = scrubInternalDocRefs(message);
   if (!catalogByCode || catalogByCode.size === 0) {
-    return message;
+    return visible;
   }
-  const parts = message.split(CODE_TOKEN);
+  const parts = visible.split(CODE_TOKEN);
   return parts.map((part, index) => {
     const match = /^\[([A-Z][A-Z0-9_]*)\]$/.exec(part);
     if (!match) {
       return <span key={index}>{part}</span>;
     }
     const code = match[1]!;
+    const tooltip = resolveLintIssueTooltip(catalogByCode, code);
+    if (onOpenCatalogCode) {
+      return (
+        <button
+          key={index}
+          type="button"
+          title={tooltip}
+          className="cursor-pointer font-sans font-medium underline decoration-dotted underline-offset-2 hover:decoration-solid"
+          data-testid={`lint-code-tooltip-${code}`}
+          aria-label={`Open ${code} in rule catalogs`}
+          onClick={() => onOpenCatalogCode(code)}
+        >
+          {part}
+        </button>
+      );
+    }
     return (
       <span
         key={index}
-        title={resolveLintIssueTooltip(catalogByCode, code)}
+        title={tooltip}
         className="cursor-help underline decoration-dotted underline-offset-2"
         data-testid={`lint-code-tooltip-${code}`}
       >
@@ -91,52 +138,42 @@ function messageWithCodeTooltips(
  * @param props.minLogLevel - Filter lines below this severity (client-side)
  * @param props.catalogByCode - Optional registry map for code tooltips
  * @param props.catalogEntries - Optional full catalog for the lightweight panel
+ * @example
+ * const _ = true;
  */
 export function WorkbenchConsole({
   lines,
   onClear,
   onLineAction,
-  defaultOpen = false,
   minLogLevel = 'INFO',
   catalogByCode,
   catalogEntries = [],
+  onOpenCatalogCode,
+  onOpenCatalog,
 }: WorkbenchConsoleProps) {
-  const [open, setOpen] = useState(defaultOpen);
   const [catalogOpen, setCatalogOpen] = useState(false);
   const [tagFilter, setTagFilter] = useState('');
+  const [detail, setDetail] = useState<IssueDetailModel | null>(null);
   const visibleLines = lines.filter((line) =>
     consoleLevelPasses(line.level, minLogLevel),
   );
   const filteredCatalog = filterCatalogByTag(catalogEntries, tagFilter);
   const catalogTagOptions = catalogTagOptionsFromEntries(catalogEntries);
+  const openCatalogCode =
+    onOpenCatalogCode ??
+    (onOpenCatalog && catalogByCode
+      ? (code: string) =>
+          maybeOpenCatalogForLintCode(onOpenCatalog, catalogByCode, code)
+      : undefined);
 
   return (
     <section
-      className="mt-3 rounded-md border border-gray-300 bg-gray-50 dark:border-gray-700 dark:bg-gray-900/60"
-      aria-label="Workbench console"
+      className="mt-3 space-y-2"
+      aria-label="Conversion and validation log"
       data-testid="workbench-console"
     >
-      <div className="flex items-center gap-2 px-3 py-2">
-        <button
-          type="button"
-          className="flex flex-1 items-center gap-2 text-left text-sm font-medium text-gray-900 dark:text-white"
-          aria-expanded={open}
-          onClick={() => setOpen((v) => !v)}
-          data-testid="workbench-console-toggle"
-        >
-          {open ? (
-            <ChevronDown className="h-4 w-4 shrink-0" aria-hidden />
-          ) : (
-            <ChevronUp className="h-4 w-4 shrink-0" aria-hidden />
-          )}
-          <Terminal className="h-4 w-4 shrink-0" aria-hidden />
-          Console
-          <span className="font-normal text-gray-500 dark:text-gray-400">
-            ({visibleLines.length}
-            {visibleLines.length !== lines.length ? `/${lines.length}` : ''})
-          </span>
-        </button>
-        {onClear ? (
+      {onClear ? (
+        <div className="flex justify-end">
           <button
             type="button"
             className="text-xs text-gray-600 underline dark:text-gray-300"
@@ -145,56 +182,63 @@ export function WorkbenchConsole({
           >
             Clear log
           </button>
-        ) : null}
-      </div>
-      {open ? (
-        <ul
-          className="max-h-40 space-y-1 overflow-y-auto border-t border-gray-200 px-3 py-2 font-mono text-xs dark:border-gray-700"
-          data-testid="workbench-console-lines"
-        >
-          {visibleLines.length === 0 ? (
-            <li className="text-gray-500 dark:text-gray-400">
-              {lines.length === 0
-                ? 'No messages yet.'
-                : `No messages at ${minLogLevel} or above.`}
-            </li>
-          ) : (
-            visibleLines.map((line, index) => (
-              <li
-                key={`${line.at}-${index}`}
-                className={
-                  line.level === 'error'
-                    ? 'text-rose-700 dark:text-rose-300'
-                    : line.level === 'warn'
-                      ? 'text-amber-800 dark:text-amber-200'
-                      : line.level === 'info'
-                        ? 'text-sky-700 dark:text-sky-300'
-                        : 'text-gray-800 dark:text-gray-200'
-                }
-                data-level={line.level}
-              >
-                <span className="text-gray-500 dark:text-gray-400">
-                  [{line.source}]
-                </span>{' '}
-                {messageWithCodeTooltips(line.message, catalogByCode)}
-                {line.action && onLineAction ? (
-                  <button
-                    type="button"
-                    className="ml-2 rounded border border-sky-400 px-1.5 py-0.5 text-[11px] font-sans text-sky-800 hover:bg-sky-100 dark:border-sky-600 dark:text-sky-200 dark:hover:bg-sky-950"
-                    data-testid={`console-action-${line.action.id}`}
-                    onClick={() => onLineAction(line.action!.id)}
-                  >
-                    {line.action.label}
-                  </button>
-                ) : null}
-              </li>
-            ))
-          )}
-        </ul>
+        </div>
       ) : null}
+      <ul
+        className="max-h-40 space-y-1 overflow-y-auto rounded-md border border-gray-200 bg-gray-50 px-3 py-2 font-mono text-xs dark:border-gray-700 dark:bg-gray-900/60"
+        data-testid="workbench-console-lines"
+      >
+        {visibleLines.length === 0 ? (
+          <li className="text-gray-500 dark:text-gray-400">
+            {lines.length === 0
+              ? 'No messages yet.'
+              : `No messages at ${minLogLevel} or above.`}
+          </li>
+        ) : (
+          visibleLines.map((line, index) => (
+            <li
+              key={`${line.at}-${index}`}
+              className={
+                line.level === 'error'
+                  ? 'text-rose-700 dark:text-rose-300'
+                  : line.level === 'warn'
+                    ? 'text-amber-800 dark:text-amber-200'
+                    : line.level === 'info'
+                      ? 'text-sky-700 dark:text-sky-300'
+                      : 'text-gray-800 dark:text-gray-200'
+              }
+              data-level={line.level}
+            >
+              <span className="text-gray-500 dark:text-gray-400">[{line.source}]</span>{' '}
+              {messageWithCodeTooltips(line.message, catalogByCode, openCatalogCode)}
+              <button
+                type="button"
+                className="ml-2 font-sans underline"
+                data-testid={`issue-detail-open-${index}`}
+                aria-label={ISSUE_DETAIL_OPEN}
+                onClick={() =>
+                  setDetail(issueDetailFromConsoleLine(line, catalogByCode))
+                }
+              >
+                {ISSUE_DETAIL_BUTTON}
+              </button>
+              {line.action && onLineAction ? (
+                <button
+                  type="button"
+                  className="ml-2 rounded border border-sky-400 px-1.5 py-0.5 text-[11px] font-sans text-sky-800 hover:bg-sky-100 dark:border-sky-600 dark:text-sky-200 dark:hover:bg-sky-950"
+                  data-testid={`console-action-${line.action.id}`}
+                  onClick={() => onLineAction(line.action!.id)}
+                >
+                  {line.action.label}
+                </button>
+              ) : null}
+            </li>
+          ))
+        )}
+      </ul>
       {catalogEntries.length > 0 ? (
         <div
-          className="border-t border-gray-200 px-3 py-2 dark:border-gray-700"
+          className="rounded-md border border-gray-200 px-3 py-2 dark:border-gray-700"
           data-testid="lint-issue-catalog-panel"
         >
           <button
@@ -248,6 +292,7 @@ export function WorkbenchConsole({
           ) : null}
         </div>
       ) : null}
+      <IssueDetailDialog detail={detail} onClose={() => setDetail(null)} />
     </section>
   );
 }

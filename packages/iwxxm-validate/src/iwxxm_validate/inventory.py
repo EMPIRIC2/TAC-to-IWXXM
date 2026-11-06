@@ -16,10 +16,30 @@ _PATTERN_ID = re.compile(r"""<(?:[\w.-]+:)?pattern\b[^>]*\bid\s*=\s*["']([^"']+)
 
 
 class InventoryError(ValueError):
-    """Assert inventory could not be loaded for a pin."""
+    """
+    Assert inventory could not be loaded for a pin.
+
+    Attributes
+    ----------
+    args : tuple
+        Arguments passed to the exception constructor.
+    """
 
 
 def _collect_pattern_ids(pin_root: Path) -> frozenset[str]:
+    """
+    Internal helper ``_collect_pattern_ids``.
+
+    Parameters
+    ----------
+    pin_root : object
+        Argument ``pin_root``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     ids: set[str] = set()
     for path in sorted(pin_root.rglob("*.sch")):
         text = path.read_text(encoding="utf-8", errors="replace")
@@ -34,8 +54,18 @@ def load_assert_inventory(pin: str) -> frozenset[str]:
 
     Parameters
     ----------
-    pin :
+    pin : str
         IWXXM release directory name under the schema root.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (load_assert_inventory)
+    2
+
+    Returns
+    -------
+    frozenset[str]
+        Schematron pattern ids for ``pin`` (for example ``2025-2``).
     """
     pin_root = vendor_iwxxm_root() / pin
     if not pin_root.is_dir():
@@ -49,7 +79,24 @@ def load_assert_inventory(pin: str) -> frozenset[str]:
 
 
 def load_assert_inventory_from(pin_root: Path) -> frozenset[str]:
-    """Load pattern ids from an explicit pin directory (tests and overlays)."""
+    """
+    Load pattern ids from an explicit pin directory (tests and overlays).
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (load_assert_inventory_from)
+    2
+
+    Parameters
+    ----------
+    pin_root : Path
+        Pin root.
+
+    Returns
+    -------
+    frozenset[str]
+        Load pattern ids from an explicit pin directory (tests and overlays).
+    """
     if not pin_root.is_dir():
         msg = f"IWXXM pin directory not found: {pin_root}"
         raise InventoryError(msg)

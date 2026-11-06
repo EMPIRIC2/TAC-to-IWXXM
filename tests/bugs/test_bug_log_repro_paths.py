@@ -1,0 +1,100 @@
+"""Every bug report keeps a regression file that still exists.
+
+Renamed and relocated repros are listed here so a deleted test fails this check.
+Default lookup resolves by basename under tests/bugs/** (thematic subdirs).
+"""
+
+from __future__ import annotations
+
+from pathlib import Path
+
+_ROOT = Path(__file__).resolve().parents[2]
+_BUGS = _ROOT / "tests" / "bugs"
+
+# Reports whose repro file name does not match the report slug.
+_OVERRIDES = {
+    "BUG-2026-06-21-logout-failed-production": (
+        "tests/bugs/auth/test_bug_2026_06_21_logout_missing_auth_header.py"
+    ),
+    "BUG-2026-06-22-admin-e2e-user-approvals-heading": (
+        "apps/frontend/src/app/components/admin/AdminDashboard.test.tsx"
+    ),
+    "BUG-2026-06-22-issue-594-cor-traceability": (
+        "tests/bugs/tac/test_bug_2026_06_22_issue_594_cor_after_time.py"
+    ),
+    "BUG-2026-06-25-docker-db-connect-localhost-5432": (
+        "tests/bugs/ci_deploy/test_bug_2026_06_25_docker_db_connect.py"
+    ),
+    "BUG-2026-06-25-prod-disable-auth-work-session-502": (
+        "tests/bugs/auth/test_bug_2026_06_25_prod_auth_bypass_non_uuid.py"
+    ),
+    "BUG-2026-06-25-work-session-soft-delete-rls-42501": (
+        "tests/bugs/auth/test_bug_2026_06_25_work_session_soft_delete_rls.py"
+    ),
+    "BUG-2026-07-12-convert-bulletin-product-profile": (
+        "apps/backend/tests/unit/test_bug_2026_07_12_convert_bulletin_product_profile.py"
+    ),
+    "BUG-2026-07-12-convert-metar-gate-blocks-f6": (
+        "apps/backend/tests/unit/test_bug_2026_07_12_convert_metar_gate_blocks_f6.py"
+    ),
+    "BUG-2026-07-12-result-card-dismiss": (
+        "apps/frontend/src/test/bug-2026-07-12-result-card-dismiss.test.tsx"
+    ),
+    "BUG-2026-07-12-validate-tac-convert-ignores-profile": (
+        "apps/backend/tests/unit/test_bug_2026_07_12_validate_tac_convert_ignores_profile.py"
+    ),
+    "BUG-2026-07-15-empty-bearer-lint-tac": (
+        "apps/frontend/src/test/bug-2026-07-15-empty-bearer-lint-tac.test.tsx"
+    ),
+    "BUG-2026-08-10-staging-work-session-uuid-nameerror": (
+        "tests/bugs/work_session/test_bug_2026_08_10_staging_work_session_ssl_fix_mount.py"
+    ),
+    "BUG-2026-08-31-e2e-full-promote": "apps/e2e/metar-work-history.e2e.spec.ts",
+    "BUG-2026-09-08-authenticated-save-failed-wrong-target": (
+        "apps/frontend/src/hooks/useWorkSessionSync.test.ts"
+    ),
+    "BUG-2026-09-08-invalid-convert-error-log-missing": "apps/frontend/src/utils/api.test.ts",
+    "BUG-2026-11-02-ca-rvr-slash-before-trend": (
+        "tests/bugs/live_tac_eval/test_ca_rvr_slash_before_trend.py"
+    ),
+    "BUG-2026-11-02-ws-runway-not-invalid-rvr": (
+        "tests/bugs/live_tac_eval/test_ws_runway_not_invalid_rvr.py"
+    ),
+    "BUG-2026-11-02-api-image-schematron-2025-2": (
+        "packages/iwxxm-validate/tests/test_tc_ev055_004_schematron_2025_2.py"
+    ),
+}
+
+# The profile editor page that dropped cached lists was removed.
+_RETIRED = {
+    "BUG-2026-09-05-profile-editor-retains-catalog-on-partial-reload",
+    "BUG-2026-09-05-profile-editor-retains-pack-overlay-lists-on-partial-reload",
+}
+_RETIRED_PAGE = "apps/frontend/src/app/components/ConversionProfilePage.tsx"
+
+
+def _default_bugs_repro_relative(stem: str) -> str:
+    """Map report stem to a path under tests/bugs by basename."""
+    name = "test_" + stem.replace("-", "_").lower() + ".py"
+    matches = sorted(_BUGS.rglob(name))
+    if len(matches) == 1:
+        return matches[0].relative_to(_ROOT).as_posix()
+    if not matches:
+        return f"tests/bugs/{name}"
+    matches.sort(key=lambda p: (len(p.parts), str(p)))
+    return matches[0].relative_to(_ROOT).as_posix()
+
+
+def test_bug_log_each_report_has_a_repro_file() -> None:
+    missing: list[str] = []
+    for report in sorted((_ROOT / "docs/bug-reports").glob("BUG-*.md")):
+        if report.stem in _RETIRED:
+            if (_ROOT / _RETIRED_PAGE).exists():
+                missing.append(f"{report.stem} returned {_RETIRED_PAGE}")
+            continue
+        relative = _OVERRIDES.get(
+            report.stem, _default_bugs_repro_relative(report.stem)
+        )
+        if not (_ROOT / relative).is_file():
+            missing.append(f"{report.stem} -> {relative}")
+    assert missing == []

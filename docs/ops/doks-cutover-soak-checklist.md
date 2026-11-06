@@ -32,14 +32,14 @@ bash scripts/deploy/doks_host_header_smoke.sh
 
 ## Preconditions (start of soak = day 0)
 
-- [x] DNS pin waived (`D-S038-t63-waive`) — placeholders + LB retained; residual: real DNS → re-pin
+- [x] DNS pin waived (`D-S038-t63-waive`): placeholders + LB retained; residual: real DNS → re-pin
 - [x] `alembic upgrade head` applied on DO Postgres (idempotent; initContainer)
 - [x] Legacy Supabase product migrate verified (T5.x VERIFY PASS)
 - [x] DOKS API + FE + worker healthy; Host-header H0/H3 convert green
-- [ ] Auth login + work-sessions smoke (UJ-046) — optional during provisional HTTP
+- [ ] Auth login + work-sessions smoke (UJ-046); optional during provisional HTTP
 - [x] `LIVE_*` / `liveE2e` / `api.baseUrl` / `frontendUrl` → provisional DOKS (T6.5)
-- [x] Render marked **suspended / non-primary** — T6.5 under `D-S038-t65-waive`
-- [x] Full H4–H5 via `make test-live-connectivity-doks-provisional` (T7.2) — H0c 6/6, H4 2/2, H5 PASS on Host-header path; HTTPS + real DNS still deferred (`D-S038-t63-waive`)
+- [x] Render marked **suspended / non-primary** (T6.5 under `D-S038-t65-waive`)
+- [x] Full H4–H5 via `make test-live-connectivity-doks-provisional` (T7.2): H0c 6/6, H4 2/2, H5 PASS on Host-header path; HTTPS + real DNS still deferred (`D-S038-t63-waive`)
 
 ## Daily checks (days 1–7)
 
@@ -57,7 +57,7 @@ bash scripts/deploy/doks_host_header_smoke.sh
 ## Exit criteria (after day 7) — **waived early** (`D-S038-t65-waive`)
 
 - [x] No open P0/P1 incidents attributable to DOKS primary (day 0 exit; risk accepted)
-- [x] TC-F30-005 — Render decommission checklist (T6.5) — see [t6.5-render-decommission.md](../sessions/S038-platform-independence-842/reports/t6.5-render-decommission.md)
+- [x] TC-F30-005 — Render decommission checklist (T6.5); see [t6.5-render-decommission.md](../sessions/S038-platform-independence-842/reports/t6.5-render-decommission.md)
 - [x] Archive Render `LIVE_*` as historical; CORPUS/deploy reflect DOKS-primary
 - [x] Close soak in evolve-summary / deploy-report
 - [ ] **Residual**: pin real DNS + retire placeholders before calling public cutover complete

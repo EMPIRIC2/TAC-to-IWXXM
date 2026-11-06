@@ -165,7 +165,7 @@ Use airport-specific overrides when more accurate data is available.
 
 ## Testing
 
-Run comprehensive datum tests:
+Run datum tests:
 
 ```bash
 # Test multiple airports across different countries

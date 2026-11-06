@@ -37,7 +37,12 @@ describe('Login', () => {
   it('renders login form controls', () => {
     render(<Login {...defaultProps} />);
 
-    expect(screen.getByText('METAR Converter')).toBeInTheDocument();
+    const brand = screen.getByRole('heading', { level: 1, name: 'TAC-to-IWXXM' });
+    expect(brand).toBeInTheDocument();
+    expect(brand.className).not.toMatch(/\buppercase\b/);
+    expect(
+      screen.getByText('Optional sign-in for long-term work history'),
+    ).toBeInTheDocument();
     expect(screen.getByLabelText(/email address/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/^password$/i)).toBeInTheDocument();
     expect(

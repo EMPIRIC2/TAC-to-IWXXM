@@ -4,6 +4,8 @@
 
 from __future__ import annotations
 
+import re
+
 from tac_validate.models import Issue
 from tac_validate.product_rules_pkg._common import *
 from tac_validate.theme_checks import (
@@ -18,6 +20,23 @@ from tac_validate.theme_checks import (
 
 
 def _check_metar_speci(tac: str, product: str, *, profile: str = "annex3") -> list[Issue]:
+    """
+    Internal helper ``_check_metar_speci``.
+
+    Parameters
+    ----------
+    tac : object
+        Argument ``tac``.
+    product : object
+        Argument ``product``.
+    profile : object
+        Argument ``profile``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     start, end, body = _body_span(tac)
     upper = body.upper()
     # Drop trailing '=' for token scans.
@@ -94,7 +113,18 @@ def _check_metar_speci(tac: str, product: str, *, profile: str = "annex3") -> li
         else:
             issues.extend(r3_weather(tac, product))
 
-        if not _TEMP.search(core):
+        dewpoint_nil = _TEMP_DEWPOINT_NIL.search(core)
+        if dewpoint_nil is not None:
+            issues.append(
+                _issue(
+                    "DEWPOINT_NOT_OBSERVABLE",
+                    f"{product} dewpoint not observable (tt///) - temperature present",
+                    start=start + dewpoint_nil.start(),
+                    end=start + dewpoint_nil.end(),
+                    location="temperature",
+                )
+            )
+        elif not _TEMP.search(core):
             issues.append(
                 _issue(
                     "MISSING_TEMP_DEWPOINT",
@@ -149,6 +179,25 @@ def _check_metar_speci(tac: str, product: str, *, profile: str = "annex3") -> li
         lint_profile.reset(profile_token)
 
 
+def _observation_before_remark(core: str) -> str:
+    """Return the observation body, stopping at the RMK token.
+
+    Parameters
+    ----------
+    core : str
+        Uppercased report body.
+
+    Returns
+    -------
+    str
+        Text before ``RMK``, or the whole body when there is no remark.
+    """
+    remark = re.search(r"(?:^|\s)RMK(?:\s|$)", core)
+    if remark is None:
+        return core
+    return core[: remark.start()]
+
+
 def _check_s1_exceptional(
     tokens: list[str],
     *,
@@ -157,7 +206,27 @@ def _check_s1_exceptional(
     body_start: int,
     body_end: int,
 ) -> list[Issue]:
-    """S1 exceptional METAR/SPECI tokens (Guidance + #734) - info diagnostics."""
+    """
+    Internal helper ``_check_s1_exceptional``.
+
+    Parameters
+    ----------
+    tokens : object
+        Argument ``tokens``.
+    product : object
+        Argument ``product``.
+    core : object
+        Argument ``core``.
+    body_start : object
+        Argument ``body_start``.
+    body_end : object
+        Argument ``body_end``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     # ruff: noqa: F403, F405
     issues: list[Issue] = []
     if "CAVOK" in tokens:
@@ -188,7 +257,7 @@ def _check_s1_exceptional(
             body_start=body_start,
             body_end=body_end,
         )
-    if "NCD" in tokens:
+    if re.search(r"(?<![A-Z0-9])NCD(?![A-Z0-9])", _observation_before_remark(core)):
         _emit_token_info(
             issues,
             code="NCD_PRESENT",
@@ -240,4 +309,15 @@ def _check_s1_exceptional(
                 token=tok,
             )
             break
+    issues.extend(
+        _issue(
+            "MALFORMED_SOURCE_TOKEN",
+            f"{product} looks like a source typo or garbled group {tok!r}",
+            start=body_start,
+            end=body_end,
+            location="body",
+        )
+        for tok in tokens
+        if tok in {"CABOK", "/R10/", "A02"} or re.fullmatch(r"T\d{10}", tok) or re.fullmatch(r"RAEMM[A-Z]?\d*", tok)
+    )
     return issues

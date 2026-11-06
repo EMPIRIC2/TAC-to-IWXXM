@@ -66,8 +66,44 @@ describe('DecodePanel', () => {
 
     expect(screen.getByTestId('decode-residuals')).toBeInTheDocument();
     expect(screen.getByText('KARYMSKY 1000-13')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /KARYMSKY 1000-13/ })).toHaveAttribute(
+      'aria-pressed',
+      'false',
+    );
     await user.click(screen.getByRole('button', { name: /Decode/i }));
     expect(screen.queryByTestId('decode-residuals')).not.toBeInTheDocument();
+  });
+
+  it('marks the residual that matches the selected span', async () => {
+    const user = userEvent.setup();
+    const onSelect = vi.fn();
+    render(
+      <DecodePanel
+        product="VAA"
+        defaultOpen
+        selectedStart={20}
+        selectedEnd={40}
+        onSelect={onSelect}
+        segments={[]}
+        residuals={[
+          {
+            start: 20,
+            end: 40,
+            text: 'KARYMSKY 1000-13',
+          },
+        ]}
+      />,
+    );
+
+    const selected = screen.getByRole('button', { name: /KARYMSKY 1000-13/ });
+    expect(selected).toHaveAttribute('aria-pressed', 'true');
+    expect(selected.className).toContain('bg-sky-100');
+    await user.click(selected);
+    expect(onSelect).toHaveBeenCalledWith({
+      start: 20,
+      end: 40,
+      code: 'KARYMSKY 1000-13',
+    });
   });
 
   // T3.1 / TC-F9-002 §4 — Plain language block (S013 / EV-009)
@@ -227,5 +263,151 @@ describe('DecodePanel', () => {
 
     rerender(<DecodePanel segments={[]} residuals={[]} defaultOpen />);
     expect(screen.getByText('No decode segments yet.')).toBeInTheDocument();
+  });
+
+  it('pins the reading open and selects a row', async () => {
+    const user = userEvent.setup();
+    const onSelect = vi.fn();
+    render(
+      <DecodePanel
+        pinned
+        decodingProfile="ICAO Annex 3"
+        product="METAR"
+        segments={[{ start: 0, end: 5, code: 'METAR', explanation: 'Report type' }]}
+        residuals={[{ start: 6, end: 8, text: 'XX' }]}
+        selectedStart={0}
+        selectedEnd={5}
+        onSelect={onSelect}
+      />,
+    );
+    expect(screen.queryByRole('button', { name: /^Decode/ })).not.toBeInTheDocument();
+    expect(screen.getByTestId('decode-profile-label')).toHaveTextContent(
+      'Decoding profile: ICAO Annex 3',
+    );
+    expect(screen.getByRole('button', { name: /METAR/ })).toHaveAttribute(
+      'aria-pressed',
+      'true',
+    );
+    await user.click(screen.getByRole('button', { name: /METAR/ }));
+    expect(onSelect).toHaveBeenCalledWith({ start: 0, end: 5, code: 'METAR' });
+    await user.click(screen.getByRole('button', { name: /XX/ }));
+    expect(onSelect).toHaveBeenCalledWith({ start: 6, end: 8, code: 'XX' });
+  });
+
+  it('compact density keeps Code | Explanation and omits plain language', () => {
+    render(
+      <DecodePanel
+        pinned
+        density="compact"
+        summary="Plain reading"
+        segments={[{ start: 0, end: 5, code: 'METAR', explanation: 'Report type' }]}
+        residuals={[]}
+      />,
+    );
+    expect(screen.getByText('METAR')).toBeInTheDocument();
+    expect(screen.getByText('Report type')).toBeInTheDocument();
+    expect(screen.getByText('Explanation')).toBeInTheDocument();
+    expect(screen.queryByTestId('decode-plain-language')).not.toBeInTheDocument();
+  });
+
+  // UX-2026-10-29-live-decode-phrases — grouped natural-language Live decode rows
+  it('groups adjacent SIGMET tokens into natural-language phrase rows', async () => {
+    const user = userEvent.setup();
+    const onSelect = vi.fn();
+    render(
+      <DecodePanel
+        pinned
+        product="SIGMET"
+        onSelect={onSelect}
+        segments={[
+          {
+            start: 78,
+            end: 80,
+            code: 'TC',
+            explanation: 'Tropical cyclone',
+          },
+          {
+            start: 81,
+            end: 86,
+            code: 'IN-FA',
+            explanation: 'Tropical cyclone (IN-FA)',
+          },
+          {
+            start: 87,
+            end: 90,
+            code: 'OBS',
+            explanation: 'Observed',
+          },
+          {
+            start: 91,
+            end: 93,
+            code: 'AT',
+            explanation: 'At (observation / forecast time)',
+          },
+          {
+            start: 94,
+            end: 99,
+            code: '1800Z',
+            explanation: 'Time 18:00 UTC',
+          },
+          {
+            start: 100,
+            end: 105,
+            code: 'N1540',
+            explanation: "Latitude 15°40' N",
+          },
+          {
+            start: 106,
+            end: 112,
+            code: 'E15620',
+            explanation: "Longitude 156°20' E",
+          },
+          {
+            start: 113,
+            end: 115,
+            code: 'CB',
+            explanation: 'Cumulonimbus',
+          },
+          {
+            start: 116,
+            end: 119,
+            code: 'TOP',
+            explanation: 'Top',
+          },
+          {
+            start: 120,
+            end: 125,
+            code: 'FL510',
+            explanation: 'Flight level 510',
+          },
+        ]}
+        residuals={[]}
+      />,
+    );
+
+    const rows = screen.getAllByTestId('decode-phrase-row');
+    expect(rows).toHaveLength(3);
+    expect(screen.getByText('TC IN-FA')).toBeInTheDocument();
+    expect(screen.getByText('Tropical cyclone IN-FA')).toBeInTheDocument();
+    expect(screen.getByText('OBS AT 1800Z N1540 E15620')).toBeInTheDocument();
+    expect(
+      screen.getByText("Observed at 18:00 UTC near 15°40'N 156°20'E"),
+    ).toBeInTheDocument();
+    expect(screen.getByText('CB TOP FL510')).toBeInTheDocument();
+    expect(
+      screen.getByText('Cumulonimbus top at flight level 510'),
+    ).toBeInTheDocument();
+    // Atomic gloss rows must not remain as separate list items.
+    expect(
+      screen.queryByText('At (observation / forecast time)'),
+    ).not.toBeInTheDocument();
+    expect(screen.queryByText('Top')).not.toBeInTheDocument();
+
+    await user.click(screen.getByRole('button', { name: /CB TOP FL510/i }));
+    expect(onSelect).toHaveBeenCalledWith({
+      start: 113,
+      end: 125,
+      code: 'CB TOP FL510',
+    });
   });
 });

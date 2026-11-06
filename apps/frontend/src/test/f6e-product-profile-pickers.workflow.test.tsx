@@ -50,6 +50,12 @@ vi.mock('/utils/api', () => ({
   EndpointNotImplementedError: class extends Error {},
   convertTafToIwxxm: vi.fn().mockResolvedValue({ success: true, data: '<iwxxm />' }),
   fetchLintIssueCatalog: vi.fn().mockResolvedValue({ issues: [] }),
+  fetchSelectionOptions: vi
+    .fn()
+    .mockImplementation(async ({ kind }: { kind: string }) => ({
+      kind,
+      options: [],
+    })),
   fetchSchemaStatus: vi.fn().mockResolvedValue({
     profile_pins: {
       ca_eccc: { extension_bundle_available: true, iwxxm_version: '3.0.0' },
@@ -120,6 +126,13 @@ const GUEST_CONVERSION_IDS = [
 ] as const;
 
 describe('T8.1 / TC-F6-001: F6.e product + Conversion library + version pickers', () => {
+  beforeEach(() => {
+    vi.stubGlobal(
+      'confirm',
+      vi.fn(() => true),
+    );
+  });
+
   const defaultProps = {
     onLogout: vi.fn(),
     userEmail: 'f6e@example.com',
@@ -130,14 +143,28 @@ describe('T8.1 / TC-F6-001: F6.e product + Conversion library + version pickers'
   beforeEach(() => {
     vi.clearAllMocks();
     localStorage.clear();
+    sessionStorage.clear();
+    sessionStorage.setItem(
+      'metar_guest_converter_state',
+      JSON.stringify({
+        manualInput: 'METAR KJFK 121251Z 18004KT=',
+        pendingFiles: [],
+        convertedFiles: [],
+        conversionLog: null,
+        conversionParams: {},
+      }),
+    );
   });
 
-  it('renders product type next to TAC; Conversion library and version when parameters are expanded', async () => {
+  it('renders product type in Settings; Conversion library and version when parameters are expanded', async () => {
     const user = userEvent.setup();
     render(<FileConverter {...defaultProps} />);
+    await user.click(screen.getByTestId('convert-settings-cog'));
+    screen.getByTestId('convert-advanced-engines').setAttribute('open', '');
 
     const product = screen.getByTestId('product-type-select') as HTMLSelectElement;
-    expect(product).toBeInTheDocument();
+    expect(screen.getByTestId('convert-settings-dialog')).toContainElement(product);
+    expect(screen.getByTestId('convert-body')).not.toContainElement(product);
 
     const productValues = Array.from(product.options).map((o) => o.value);
     for (const p of PRODUCTS) {
@@ -175,6 +202,9 @@ describe('T8.1 / TC-F6-001: F6.e product + Conversion library + version pickers'
   it('sends selected product, conversionLibraryId, and version on convert (ICAO METAR)', async () => {
     const user = userEvent.setup();
     const { container } = render(<FileConverter {...defaultProps} />);
+    screen.getByTestId('convert-advanced-engines').setAttribute('open', '');
+    screen.getByTestId('convert-advanced-engines').setAttribute('open', '');
+    fireEvent.click(screen.getByTestId('live-iwxxm-toggle'));
 
     await user.click(screen.getByLabelText(/expand parameters/i));
 
@@ -217,6 +247,9 @@ describe('T8.1 / TC-F6-001: F6.e product + Conversion library + version pickers'
   it('sends US_FAA_NWS conversionLibraryId when selected', async () => {
     const user = userEvent.setup();
     const { container } = render(<FileConverter {...defaultProps} />);
+    screen.getByTestId('convert-advanced-engines').setAttribute('open', '');
+    screen.getByTestId('convert-advanced-engines').setAttribute('open', '');
+    fireEvent.click(screen.getByTestId('live-iwxxm-toggle'));
 
     await user.click(screen.getByLabelText(/expand parameters/i));
 
@@ -253,6 +286,9 @@ describe('T8.1 / TC-F6-001: F6.e product + Conversion library + version pickers'
   it('auto product resolves to detected keyword before API call', async () => {
     const user = userEvent.setup();
     const { container } = render(<FileConverter {...defaultProps} />);
+    screen.getByTestId('convert-advanced-engines').setAttribute('open', '');
+    screen.getByTestId('convert-advanced-engines').setAttribute('open', '');
+    fireEvent.click(screen.getByTestId('live-iwxxm-toggle'));
 
     await user.click(screen.getByLabelText(/expand parameters/i));
 
@@ -283,6 +319,9 @@ describe('T8.1 / TC-F6-001: F6.e product + Conversion library + version pickers'
   it('warns when explicit product differs from auto-detect but still converts', async () => {
     const user = userEvent.setup();
     const { container } = render(<FileConverter {...defaultProps} />);
+    screen.getByTestId('convert-advanced-engines').setAttribute('open', '');
+    screen.getByTestId('convert-advanced-engines').setAttribute('open', '');
+    fireEvent.click(screen.getByTestId('live-iwxxm-toggle'));
 
     await user.click(screen.getByLabelText(/expand parameters/i));
 

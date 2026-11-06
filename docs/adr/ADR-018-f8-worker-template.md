@@ -18,11 +18,11 @@ remain on the existing API (thin wrappers); no dedicated converter microservice.
 ## Decision
 
 1. **Promote F8** to build-this-cycle (Q15c=B). Amend feature-list status accordingly.
-2. **New deployable**: `apps/worker/` — Render **Background Worker** (Q19=A).
+2. **New deployable**: `apps/worker/`, a Render **Background Worker** (Q19=A).
 3. **Template**: `static+api` → **`static+api+worker`** (document in workflow-state + rules).
 4. **Ingest v1**: HTTPS / object-prefix **poller** (Q16=A). AMHS/SWIM still out of scope.
 5. **Store**: On Schematron pass, persist IWXXM + metadata to product Postgres
-   (**DigitalOcean via `DATABASE_URL`** — ADR-033 / F30; originally Supabase Q17=A).
+   (**DigitalOcean via `DATABASE_URL`**, ADR-033 / F30; originally Supabase Q17=A).
 6. **Quarantine**: **Separate** quarantine table/bucket on lint/convert/Schematron fail (Q18=B);
    no publish.
 7. **Auth for writers**: Worker uses **machine/`DATABASE_URL` credentials** (ADR-033).

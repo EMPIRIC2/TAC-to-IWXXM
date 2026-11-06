@@ -77,7 +77,7 @@ repos:
         always_run: true
       - id: render-deploy-hook-guard
         name: Render deploy hook fallback (BUG-2026-08-03)
-        entry: uv run pytest tests/bugs/test_bug_2026_08_03_render_deploy_hook_500.py -q
+        entry: uv run pytest tests/bugs/ci_deploy/test_bug_2026_08_03_render_deploy_hook_500.py -q
         language: system
         pass_filenames: false
         always_run: true

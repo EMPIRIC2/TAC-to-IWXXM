@@ -1,0 +1,908 @@
+/**
+ * World map of cached TAC reports.
+ */
+
+import { useEffect, useRef, useState } from 'react';
+import { flushSync } from 'react-dom';
+import { createRoot, type Root } from 'react-dom/client';
+import 'leaflet/dist/leaflet.css';
+import L from 'leaflet';
+import { drawForPlace } from '@metar/live-map-geometry';
+import {
+  DECODE_VISUALS_BETA,
+  DECODE_VISUALS_FEEDBACK,
+  DECODE_VISUALS_FEEDBACK_URL,
+} from '@/utils/decodeVisualsCopy';
+import { airports } from '@/utils/airportsData';
+import { OSM_TILE_ATTRIBUTION, OSM_TILE_URL } from '@/utils/mapTileAttribution';
+import {
+  boundsOf,
+  cardLayout,
+  copyOpacity,
+  fetchLivePlaces,
+  filterPlaces,
+  formatObservedAt,
+  LIVE_MAP_ALL_COUNTRIES,
+  LIVE_MAP_ALL_REGIONS,
+  LIVE_MAP_CANVAS,
+  LIVE_MAP_CANVAS_TOLERANCE,
+  LIVE_MAP_ERROR,
+  LIVE_MAP_FILTER_COUNTRY,
+  LIVE_MAP_FILTER_PHENOMENON,
+  LIVE_MAP_FILTER_REGION,
+  LIVE_MAP_FILTER_TIME,
+  LIVE_MAP_FULL_WINDOW,
+  LIVE_MAP_ISSUE_COPY,
+  LIVE_MAP_LAST_12_HOURS,
+  LIVE_MAP_LAST_3_HOURS,
+  LIVE_MAP_LAST_6_HOURS,
+  LIVE_MAP_LAST_HOUR,
+  LIVE_MAP_LAYERS_OFF,
+  LIVE_MAP_NOTICE,
+  LIVE_MAP_PHENOMENA,
+  LIVE_MAP_REFRESH_MS,
+  LIVE_MAP_SEND_TO_CONVERTER,
+  LIVE_MAP_SPACE,
+  LIVE_MAP_TAC,
+  LIVE_MAP_VIEWS,
+  LIVE_MAP_ZOOM_HINT,
+  pinColor,
+  placeShowingReport,
+  placeTitle,
+  pointerSlack,
+  pointNudge,
+  popupWidth,
+  productLabel,
+  selectedLayerQuery,
+  shapePaint,
+  shiftLatLng,
+  shiftPositions,
+  spaceWeatherListColor,
+  viewStatus,
+  WORLD_COPY_LNG_OFFSETS,
+  type LivePlace,
+  type MapBounds,
+  type MapTimePreset,
+} from '@/utils/liveMap';
+import { placeRegion, regionFilterNames } from '@/utils/liveMapRegions';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from './ui/collapsible';
+
+const EMPTY_PLACES: LivePlace[] = [];
+
+/**
+ * True when two fetches describe the same drawn reports.
+ *
+ * @param current - Places already on the map
+ * @param next - Places just fetched
+ * @returns Whether a redraw can be skipped
+ * @example
+ * const _ = true;
+ */
+function placesMatch(current: LivePlace[], next: LivePlace[]): boolean {
+  return JSON.stringify(current) === JSON.stringify(next);
+}
+
+/**
+ * Open a marker from the keyboard.
+ *
+ * @param event - Leaflet keyboard event
+ * @param open - Opens the popup or zooms
+ * @example
+ * const _ = true;
+ */
+function openOnKey(
+  event: { originalEvent?: { key?: string; preventDefault?: () => void } },
+  open: () => void,
+) {
+  const key = event.originalEvent?.key;
+  if (key === 'Enter' || key === ' ') {
+    event.originalEvent?.preventDefault?.();
+    open();
+  }
+}
+
+/**
+ * Give a drawn shape a name for the keyboard.
+ *
+ * @param layer - Leaflet layer
+ * @param label - Accessible name
+ * @example
+ * const _ = true;
+ */
+function nameLayer(layer: L.Layer, label: string) {
+  const readable = layer as { getElement?: () => HTMLElement | undefined };
+  const element = readable.getElement?.() ?? null;
+  if (!element) {
+    return;
+  }
+  element.setAttribute('role', 'button');
+  element.tabIndex = 0;
+  element.setAttribute('aria-label', label);
+}
+
+/**
+ * Pin position from the stored report coordinate.
+ *
+ * @param place - Cached place
+ * @returns Latitude and longitude
+ * @example
+ * const _ = true;
+ */
+function pointOf(place: LivePlace): [number, number] {
+  return [place.latitude, place.longitude];
+}
+
+type PointerPath = {
+  _clickTolerance?: () => number;
+  _containsPoint?: (point: L.Point, closed?: boolean) => boolean;
+  _point?: L.Point;
+  _radius?: number;
+};
+
+/**
+ * Keep the pointer on the dot or along the edge. [Corpus: product §F37]
+ *
+ * A wide halo opened the card while the pointer was still on empty map.
+ * The inside of a polygon or circle stays free so the map can still be moved.
+ *
+ * @param layer - Drawn shape
+ * @param kind - Point, line, polygon, or circle
+ * @example
+ * const _ = true;
+ */
+function fitPointerTarget(
+  layer: L.Layer,
+  kind: 'point' | 'polygon' | 'line' | 'circle',
+) {
+  const path = layer as PointerPath;
+  path._clickTolerance = () => pointerSlack(kind);
+  if (kind === 'polygon') {
+    const stroke = (
+      L.Polyline.prototype as unknown as {
+        _containsPoint: (point: L.Point, closed?: boolean) => boolean;
+      }
+    )._containsPoint;
+    path._containsPoint = function (point: L.Point) {
+      return stroke.call(this, point, true);
+    };
+    return;
+  }
+  if (kind === 'circle') {
+    path._containsPoint = function (point: L.Point) {
+      const shape = this as PointerPath;
+      if (!shape._point || shape._radius === undefined) {
+        return false;
+      }
+      return (
+        Math.abs(point.distanceTo(shape._point) - shape._radius) <=
+        pointerSlack('circle')
+      );
+    };
+  }
+}
+
+/**
+ * Draw one place as a point, polygon, line, or circle.
+ *
+ * @param map - Leaflet map
+ * @param place - Cached place
+ * @param at - Optional nudged station coordinates on the primary copy
+ * @param lngOffset - World-copy longitude shift (−360, 0, or 360)
+ * @returns The layer that was added
+ * @example
+ * const _ = true;
+ */
+function drawPlace(
+  map: L.Map,
+  place: LivePlace,
+  at?: [number, number],
+  lngOffset = 0,
+): L.Layer {
+  const draw = drawForPlace(place);
+  const paint = shapePaint(place.product);
+  if (draw.kind === 'polygon') {
+    const layer = L.polygon(shiftPositions(draw.positions, lngOffset), paint);
+    fitPointerTarget(layer, draw.kind);
+    return layer.addTo(map);
+  }
+  if (draw.kind === 'line') {
+    const layer = L.polyline(shiftPositions(draw.positions, lngOffset), {
+      color: paint.fillColor,
+      weight: 3,
+    });
+    fitPointerTarget(layer, draw.kind);
+    return layer.addTo(map);
+  }
+  if (draw.kind === 'circle') {
+    const layer = L.circle(shiftLatLng(draw.latitude, draw.longitude, lngOffset), {
+      ...paint,
+      radius: draw.radiusM,
+    });
+    fitPointerTarget(layer, draw.kind);
+    return layer.addTo(map);
+  }
+  const [latitude, longitude] = at ?? [draw.latitude, draw.longitude];
+  const layer = L.circleMarker(shiftLatLng(latitude, longitude, lngOffset), {
+    radius: 6,
+    ...paint,
+    fillOpacity: copyOpacity(0),
+  });
+  fitPointerTarget(layer, 'point');
+  return layer.addTo(map);
+}
+
+/**
+ * Brighten a shape under the pointer, then put the resting paint back.
+ *
+ * @param layer - Drawn shape
+ * @param place - Cached place
+ * @param on - True while the pointer is over the shape
+ * @example
+ * const _ = true;
+ */
+function paintHover(layer: L.Layer, place: LivePlace, on: boolean) {
+  const path = layer as unknown as { setStyle: (style: L.PathOptions) => void };
+  const paint = shapePaint(place.product);
+  const point = drawForPlace(place).kind === 'point';
+  const resting = point ? { ...paint, fillOpacity: copyOpacity(0) } : paint;
+  path.setStyle(on ? { ...resting, weight: resting.weight + 2 } : resting);
+}
+
+/**
+ * Paint vectors again after a full replace. Leaflet 1.9.4 can leave the canvas blank.
+ *
+ * @param map - Leaflet map
+ * @example
+ * const _ = true;
+ */
+function redrawCanvas(map: L.Map): void {
+  const renderer = map.options.renderer as unknown as {
+    _map?: unknown;
+    _update: () => void;
+  };
+  if (renderer._map) {
+    renderer._update();
+  }
+}
+
+/**
+ * Compact station id for the map card header (ICAO key when present).
+ *
+ * @param placeKey - Station or area id
+ * @param airportName - Optional airport display name
+ * @returns Short station label for the dense card
+ * @example
+ * const _ = true;
+ */
+function stationCardLabel(placeKey: string, airportName: string | undefined): string {
+  if (/^[A-Z][A-Z0-9]{3}$/.test(placeKey)) {
+    return placeKey;
+  }
+  return placeTitle(placeKey, airportName);
+}
+
+/**
+ * Station text inside the map card.
+ *
+ * Compact header (product + station + issue-time select), TAC collapsed by
+ * default, and Send to converter via the existing onLoad handoff.
+ *
+ * @param place - Cached place
+ * @param layout - Side by side on a wide map, stacked on a narrow one
+ * @param onShowing - Remembers the copy on the card
+ * @param onLoad - Loads that copy into the converter
+ * @example
+ * const _ = true;
+ */
+export function StationPopup({
+  place,
+  layout = 'side',
+  onShowing,
+  onLoad,
+}: {
+  place: LivePlace;
+  layout?: 'side' | 'stack';
+  onShowing?: (tac: string) => void;
+  onLoad?: (tac: string) => void;
+}) {
+  const [index, setIndex] = useState(0);
+  const [tacOpen, setTacOpen] = useState(false);
+  const report = place.reports[index];
+  useEffect(() => {
+    if (report) {
+      onShowing?.(report.tac);
+    }
+  }, [onShowing, report]);
+  if (!report) {
+    return null;
+  }
+  const airportName = airports.findWhere({ icao: place.place_key })?.name;
+  const station = stationCardLabel(place.place_key, airportName);
+  return (
+    <div
+      data-testid="live-map-detail"
+      className="max-h-48 overflow-y-auto text-sm text-gray-900"
+    >
+      <div
+        data-testid="live-map-card"
+        data-layout={layout}
+        className="flex flex-col gap-2"
+      >
+        <div className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1">
+          <p className="text-sm font-semibold" data-testid="live-map-product">
+            <span
+              aria-hidden="true"
+              className="mr-1.5 inline-block h-2.5 w-2.5 rounded-full align-middle"
+              style={{ backgroundColor: pinColor(place.product) }}
+            />
+            {productLabel(place.product)}
+          </p>
+          <p className="font-medium" data-testid="live-map-station">
+            {station}
+          </p>
+          {place.reports.length > 1 ? (
+            <select
+              className="h-7 min-w-[9rem] max-w-full rounded-md border border-gray-200 bg-white px-1.5 text-xs text-gray-900"
+              data-testid="live-map-issue-time"
+              aria-label={LIVE_MAP_ISSUE_COPY}
+              value={String(index)}
+              onClick={(event) => {
+                event.stopPropagation();
+              }}
+              onChange={(event) => {
+                event.stopPropagation();
+                setIndex(Number(event.target.value));
+              }}
+            >
+              {place.reports.map((copy, copyIndex) => (
+                <option
+                  key={`${copy.observed_at}-${copyIndex}`}
+                  value={String(copyIndex)}
+                >
+                  {formatObservedAt(copy.observed_at)}
+                </option>
+              ))}
+            </select>
+          ) : (
+            <p className="text-xs text-gray-600" data-testid="live-map-issued">
+              {formatObservedAt(report.observed_at)}
+            </p>
+          )}
+        </div>
+        <Collapsible
+          className="min-w-0"
+          data-testid="live-map-tac-section"
+          open={tacOpen}
+          onOpenChange={setTacOpen}
+        >
+          <CollapsibleTrigger
+            className="cursor-pointer text-xs font-medium text-gray-800"
+            data-testid="live-map-tac-toggle"
+          >
+            {LIVE_MAP_TAC}
+          </CollapsibleTrigger>
+          <CollapsibleContent>
+            <pre
+              className="mt-1 max-h-28 overflow-y-auto rounded-md bg-gray-50 p-2 whitespace-pre-wrap font-mono text-xs text-gray-800"
+              data-testid="live-map-tac"
+            >
+              {report.tac}
+            </pre>
+          </CollapsibleContent>
+        </Collapsible>
+        <button
+          type="button"
+          className="self-start rounded-md bg-gray-900 px-2.5 py-1 text-xs font-medium text-white hover:bg-gray-800"
+          data-testid="live-map-send-to-converter"
+          onClick={(event) => {
+            event.stopPropagation();
+            onLoad?.(report.tac);
+          }}
+        >
+          {LIVE_MAP_SEND_TO_CONVERTER}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+/**
+ * Open a scrolling popup on a station. A cluster does not use this.
+ *
+ * @param layer - Station layer
+ * @param place - Cached place
+ * @param roots - React roots to unmount with the layer
+ * @example
+ * const _ = true;
+ */
+function showPopup(
+  layer: L.Layer,
+  place: LivePlace,
+  roots: Root[],
+  map: L.Map,
+  onShowing: (tac: string) => void,
+  onLoad: (tac: string) => void,
+) {
+  if (place.reports.length === 0) {
+    return;
+  }
+  const stale = roots.splice(0);
+  queueMicrotask(() => {
+    stale.forEach((root) => {
+      root.unmount();
+    });
+  });
+  const node = document.createElement('div');
+  const root = createRoot(node);
+  flushSync(() => {
+    root.render(
+      <StationPopup
+        place={place}
+        layout={cardLayout(map.getSize().x)}
+        onShowing={onShowing}
+        onLoad={onLoad}
+      />,
+    );
+  });
+  roots.push(root);
+  const width = popupWidth(map.getSize().x);
+  layer.bindPopup(node, {
+    maxWidth: width,
+    minWidth: Math.min(280, width),
+    autoPan: false,
+    keepInView: false,
+    autoClose: true,
+    closeOnClick: true,
+    className: 'live-map-popup',
+  });
+  layer.openPopup();
+  layer.getPopup()?.update();
+}
+
+/**
+ * Pannable map. Every layer starts on.
+ * @example
+ * const _ = true;
+ */
+export function LiveWorldMap({
+  focusStation = '',
+  onOpenPlace,
+}: {
+  focusStation?: string;
+  /** Load the clicked report into the converter above the map. */
+  onOpenPlace?: (place: LivePlace) => void;
+}) {
+  const host = useRef<HTMLDivElement>(null);
+  const mapRef = useRef<L.Map | null>(null);
+  const openPlaceRef = useRef(onOpenPlace);
+  useEffect(() => {
+    openPlaceRef.current = onOpenPlace;
+  }, [onOpenPlace]);
+  const [off, setOff] = useState<ReadonlySet<string>>(new Set());
+  const [country, setCountry] = useState('all');
+  const [region, setRegion] = useState('all');
+  const [timePreset, setTimePreset] = useState<MapTimePreset>('full');
+  const [phenomena, setPhenomena] = useState<ReadonlySet<string>>(new Set());
+  const [bounds, setBounds] = useState<MapBounds | null>(null);
+  const [zoom, setZoom] = useState(2);
+  const [places, setPlaces] = useState<LivePlace[]>([]);
+  const [error, setError] = useState('');
+  const [phase, setPhase] = useState<'loading' | 'ready' | 'refreshing'>('loading');
+  const [refreshTick, setRefreshTick] = useState(0);
+  const products = selectedLayerQuery(off);
+  const loaded = bounds && products ? places : EMPTY_PLACES;
+  const countries = [
+    ...new Set(
+      loaded
+        .map((place) => airports.findWhere({ icao: place.place_key })?.country)
+        .filter((name): name is string => Boolean(name)),
+    ),
+  ].sort((left, right) => left.localeCompare(right));
+  const visible = filterPlaces(loaded, {
+    country,
+    region,
+    time: timePreset,
+    phenomena,
+    countryOf: (placeKey) => airports.findWhere({ icao: placeKey })?.country,
+    regionOf: (latitude, longitude) => placeRegion(latitude, longitude),
+  });
+  const message = products ? error : '';
+  const status = !products
+    ? LIVE_MAP_LAYERS_OFF
+    : viewStatus(visible, phase === 'loading', phase === 'refreshing');
+
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map || !focusStation) {
+      return;
+    }
+    const place = places.find((item) => item.place_key === focusStation);
+    if (!place) {
+      return;
+    }
+    map.flyTo(pointOf(place), 8);
+  }, [focusStation, places]);
+
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map) {
+      return undefined;
+    }
+    const roots: Root[] = [];
+    const layers: L.Layer[] = [];
+    let focused = false;
+    const cohorts = new Map<string, LivePlace[]>();
+    visible.forEach((place) => {
+      if (drawForPlace(place).kind !== 'point') {
+        return;
+      }
+      const key = `${place.latitude.toFixed(3)},${place.longitude.toFixed(3)}`;
+      const group = cohorts.get(key) ?? [];
+      group.push(place);
+      cohorts.set(key, group);
+    });
+    WORLD_COPY_LNG_OFFSETS.forEach((lngOffset) => {
+      visible.forEach((place) => {
+        const draw = drawForPlace(place);
+        const key = `${place.latitude.toFixed(3)},${place.longitude.toFixed(3)}`;
+        const group = cohorts.get(key) ?? [];
+        const slot = Math.max(0, group.indexOf(place));
+        const nudge = pointNudge(slot, group.length);
+        const moved = nudge.latitude !== 0 || nudge.longitude !== 0;
+        const at: [number, number] | undefined =
+          draw.kind === 'point' &&
+          (moved || place.reports.length > 1 || group.length > 1)
+            ? [draw.latitude + nudge.latitude, draw.longitude + nudge.longitude]
+            : undefined;
+        const layer = drawPlace(map, place, at, lngOffset);
+        if (at && place.reports.length > 1) {
+          place.reports.slice(1).forEach((_, reportIndex) => {
+            layers.push(
+              L.circleMarker(shiftLatLng(at[0], at[1], lngOffset), {
+                radius: 4,
+                ...shapePaint(place.product),
+                fillOpacity: copyOpacity(reportIndex + 1),
+                interactive: false,
+              }).addTo(map),
+            );
+          });
+        }
+        if (at && group.length > 1 && zoom >= 6) {
+          layers.push(
+            L.marker(shiftLatLng(at[0], at[1], lngOffset), {
+              interactive: false,
+              keyboard: false,
+              icon: L.divIcon({
+                className: 'live-map-type-chip',
+                html: `<span style="display:inline-flex;align-items:center;height:16px;padding:0 6px;border-radius:999px;background:#111827;color:#fff;font:600 10px/16px ui-sans-serif,system-ui,sans-serif">${productLabel(place.product)}</span>`,
+                iconSize: [72, 16],
+              }),
+            }).addTo(map),
+          );
+        }
+        let cardOpen = false;
+        let showingTac = place.reports[0]?.tac ?? '';
+        const remember = (tac: string) => {
+          showingTac = tac;
+        };
+        const loadShowing = (tac: string) => {
+          showingTac = tac;
+          openPlaceRef.current?.(placeShowingReport(place, tac));
+        };
+        const reveal = () => {
+          showPopup(layer, place, roots, map, remember, loadShowing);
+          if (place.reports.length > 0) {
+            cardOpen = true;
+          }
+        };
+        layer.on('mouseover', () => {
+          paintHover(layer, place, true);
+          if (!cardOpen) {
+            reveal();
+          }
+        });
+        layer.on('mouseout', () => {
+          paintHover(layer, place, false);
+        });
+        layer.on('click', () => {
+          if (cardOpen) {
+            loadShowing(showingTac);
+          } else {
+            reveal();
+          }
+        });
+        layer.on('keydown', (event) => {
+          openOnKey(event, () => {
+            if (cardOpen) {
+              loadShowing(showingTac);
+            } else {
+              reveal();
+            }
+          });
+        });
+        nameLayer(layer, `${place.place_key} ${productLabel(place.product)}`);
+        if (
+          lngOffset === 0 &&
+          !focused &&
+          focusStation &&
+          place.place_key === focusStation
+        ) {
+          focused = true;
+          reveal();
+        }
+        layers.push(layer);
+      });
+    });
+    redrawCanvas(map);
+    return () => {
+      layers.forEach((layer) => layer.remove());
+      const pending = roots.splice(0);
+      queueMicrotask(() => {
+        pending.forEach((root) => {
+          root.unmount();
+        });
+      });
+    };
+  }, [visible, focusStation, zoom]);
+
+  useEffect(() => {
+    const node = host.current as HTMLDivElement;
+    const vectors = L.canvas({ tolerance: LIVE_MAP_CANVAS_TOLERANCE });
+    const map = L.map(node, {
+      scrollWheelZoom: true,
+      preferCanvas: true,
+      renderer: vectors,
+    }).setView([20, 0], 2);
+    map.options.renderer = vectors;
+    mapRef.current = map;
+    L.tileLayer(OSM_TILE_URL, {
+      attribution: OSM_TILE_ATTRIBUTION,
+      maxZoom: 16,
+    }).addTo(map);
+    const fit = () => {
+      map.invalidateSize();
+    };
+    fit();
+    const observer = new ResizeObserver(fit);
+    observer.observe(node);
+    const publish = () => {
+      setBounds(boundsOf(map));
+      setZoom(map.getZoom());
+    };
+    map.on('moveend', publish);
+    map.on('zoomend', publish);
+    publish();
+    return () => {
+      observer.disconnect();
+      map.remove();
+      mapRef.current = null;
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!bounds || !products) {
+      return undefined;
+    }
+    const controller = new AbortController();
+    fetchLivePlaces(bounds, products, controller.signal)
+      .then((next) => {
+        setError('');
+        setPlaces((current) => (placesMatch(current, next) ? current : next));
+        setPhase('ready');
+      })
+      .catch((reason: unknown) => {
+        if (reason instanceof DOMException && reason.name === 'AbortError') {
+          return;
+        }
+        setError(LIVE_MAP_ERROR);
+        setPlaces([]);
+        setPhase('ready');
+      });
+    return () => controller.abort();
+  }, [bounds, products, refreshTick]);
+
+  useEffect(() => {
+    if (!bounds || !products) {
+      return undefined;
+    }
+    const timer = window.setInterval(() => {
+      setPhase('refreshing');
+      setRefreshTick((tick) => tick + 1);
+    }, LIVE_MAP_REFRESH_MS);
+    return () => window.clearInterval(timer);
+  }, [bounds, products]);
+
+  const filterSelect =
+    'h-9 min-w-[10rem] rounded-lg border border-gray-200 bg-white px-2.5 text-sm font-medium text-gray-900 shadow-sm outline-none focus:ring-2 focus:ring-sky-500 dark:border-gray-700 dark:bg-gray-900 dark:text-white';
+
+  return (
+    <div className="flex flex-col gap-3" data-testid="live-world-map">
+      <div className="rounded-2xl border border-gray-200 bg-white p-3 shadow-sm dark:border-gray-800 dark:bg-gray-950">
+        <p className="mb-3 text-xs text-gray-500 dark:text-gray-400">
+          <span data-testid="live-map-beta">{DECODE_VISUALS_BETA}</span>
+          {'. '}
+          <a className="underline" href={DECODE_VISUALS_FEEDBACK_URL}>
+            {DECODE_VISUALS_FEEDBACK}
+          </a>
+        </p>
+        <div className="flex flex-col gap-2">
+          {LIVE_MAP_VIEWS.map((view) => (
+            <div key={view.id} className="flex flex-wrap items-center gap-2">
+              <span className="w-24 text-[11px] font-semibold tracking-wide text-gray-400 uppercase">
+                {view.label}
+              </span>
+              {view.products.map((product) => {
+                const on = !off.has(product);
+                const color = pinColor(product);
+                return (
+                  <label
+                    key={product}
+                    className={`inline-flex cursor-pointer items-center gap-2 rounded-full border px-3 py-1 text-sm font-medium transition ${
+                      on
+                        ? 'border-transparent text-white shadow-sm'
+                        : 'border-gray-200 bg-gray-50 text-gray-500 hover:border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-400'
+                    }`}
+                    style={on ? { backgroundColor: color } : undefined}
+                  >
+                    <input
+                      type="checkbox"
+                      className="sr-only"
+                      checked={on}
+                      data-testid={`layer-${product}`}
+                      onChange={() => {
+                        const next = new Set(off);
+                        if (next.has(product)) {
+                          next.delete(product);
+                        } else {
+                          next.add(product);
+                        }
+                        setOff(next);
+                      }}
+                    />
+                    <span
+                      aria-hidden="true"
+                      data-testid={`swatch-${product}`}
+                      className={`inline-block h-2 w-2 rounded-full ${on ? 'bg-white' : ''}`}
+                      style={on ? undefined : { backgroundColor: color }}
+                    />
+                    {productLabel(product)}
+                  </label>
+                );
+              })}
+            </div>
+          ))}
+        </div>
+        <div className="mt-3 flex flex-wrap items-end gap-2 border-t border-gray-100 pt-3 dark:border-gray-800">
+          <label className="flex flex-col gap-1 text-[11px] font-semibold tracking-wide text-gray-400 uppercase">
+            {LIVE_MAP_FILTER_COUNTRY}
+            <select
+              className={filterSelect}
+              value={country}
+              data-testid="live-map-country"
+              onChange={(event) => {
+                setCountry(event.target.value);
+              }}
+            >
+              <option value="all">{LIVE_MAP_ALL_COUNTRIES}</option>
+              {countries.map((name) => (
+                <option key={name} value={name}>
+                  {name}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label className="flex flex-col gap-1 text-[11px] font-semibold tracking-wide text-gray-400 uppercase">
+            {LIVE_MAP_FILTER_REGION}
+            <select
+              className={filterSelect}
+              value={region}
+              data-testid="live-map-region"
+              onChange={(event) => {
+                setRegion(event.target.value);
+              }}
+            >
+              <option value="all">{LIVE_MAP_ALL_REGIONS}</option>
+              {regionFilterNames().map((name) => (
+                <option key={name} value={name}>
+                  {name}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label className="flex flex-col gap-1 text-[11px] font-semibold tracking-wide text-gray-400 uppercase">
+            {LIVE_MAP_FILTER_TIME}
+            <select
+              className={filterSelect}
+              value={timePreset}
+              data-testid="live-map-time"
+              onChange={(event) => {
+                setTimePreset(event.target.value as MapTimePreset);
+              }}
+            >
+              <option value="1h">{LIVE_MAP_LAST_HOUR}</option>
+              <option value="3h">{LIVE_MAP_LAST_3_HOURS}</option>
+              <option value="6h">{LIVE_MAP_LAST_6_HOURS}</option>
+              <option value="12h">{LIVE_MAP_LAST_12_HOURS}</option>
+              <option value="full">{LIVE_MAP_FULL_WINDOW}</option>
+            </select>
+          </label>
+        </div>
+        <div className="mt-3 flex flex-wrap items-center gap-2">
+          <span className="text-[11px] font-semibold tracking-wide text-gray-400 uppercase">
+            {LIVE_MAP_FILTER_PHENOMENON}
+          </span>
+          {LIVE_MAP_PHENOMENA.map((item) => {
+            const on = phenomena.has(item.id);
+            return (
+              <label
+                key={item.id}
+                className={`inline-flex cursor-pointer items-center rounded-full border px-3 py-1 text-sm font-medium transition ${
+                  on
+                    ? 'border-gray-900 bg-gray-900 text-white dark:border-white dark:bg-white dark:text-gray-900'
+                    : 'border-gray-200 bg-white text-gray-600 hover:border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300'
+                }`}
+              >
+                <input
+                  type="checkbox"
+                  className="sr-only"
+                  checked={on}
+                  data-testid={`phenomenon-${item.id}`}
+                  onChange={() => {
+                    const next = new Set(phenomena);
+                    if (next.has(item.id)) {
+                      next.delete(item.id);
+                    } else {
+                      next.add(item.id);
+                    }
+                    setPhenomena(next);
+                  }}
+                />
+                {item.label}
+              </label>
+            );
+          })}
+        </div>
+      </div>
+      <div className="flex flex-wrap items-center justify-between gap-2 px-1">
+        <p
+          className="text-xs text-gray-500 dark:text-gray-400"
+          data-testid="live-map-space"
+          style={{ color: spaceWeatherListColor(0) }}
+        >
+          {LIVE_MAP_SPACE}
+        </p>
+        {message ? (
+          <p
+            className="text-sm text-gray-600 dark:text-gray-300"
+            data-testid="live-map-error"
+          >
+            {message}
+          </p>
+        ) : (
+          <p
+            className="rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-700 dark:bg-gray-800 dark:text-gray-200"
+            data-testid="live-map-status"
+          >
+            {status}
+          </p>
+        )}
+      </div>
+      <p
+        id="live-map-notice"
+        className="px-1 text-xs text-gray-400 dark:text-gray-500"
+        data-testid="live-map-notice"
+      >
+        {LIVE_MAP_NOTICE}
+      </p>
+      <p className="px-1 text-xs text-gray-400">{LIVE_MAP_ZOOM_HINT}</p>
+      <div
+        ref={host}
+        role="region"
+        aria-label={LIVE_MAP_CANVAS}
+        aria-describedby="live-map-notice"
+        className="z-0 h-[min(70dvh,44rem)] min-h-[24rem] w-full overflow-hidden rounded-2xl border border-gray-200 shadow-sm dark:border-gray-800"
+        data-testid="live-map-canvas"
+      />
+    </div>
+  );
+}

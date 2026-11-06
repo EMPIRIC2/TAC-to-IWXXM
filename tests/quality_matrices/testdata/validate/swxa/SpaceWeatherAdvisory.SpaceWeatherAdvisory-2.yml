@@ -1,0 +1,203 @@
+rule_id: SpaceWeatherAdvisory.SpaceWeatherAdvisory-2
+engine: validate
+cases:
+- bucket: happy
+  case_id: '01'
+  status: ready
+  tac: "SWX ADVISORY\nDTG:                20201108/0100Z \nSWXC:               DONLON\nSWX EFFECT:         HF COM\nADVISORY NR:        2020/1\nOBS SWX:            08/0100Z SEV MNH EQN EQS MSH DAYSIDE MOD NIGHTSIDE\nFCST SWX +6 HR:     08/0700Z NO SWX EXP\nFCST SWX +12 HR:    08/1300Z NO SWX EXP\nFCST SWX +18 HR:    08/1900Z NO SWX EXP\nFCST SWX +24 HR:    09/0100Z NO SWX EXP\nRMK:                SWX EVENT IMPACTING LOWER HF COM FREQ BAND. SEE\n                    WWW.SPACEWEATHERPROVIDER.WEB \nNXT ADVISORY:       WILL BE ISSUED BY 20201108/0700Z\n"
+  expect:
+    accept: true
+  meta:
+    product: SWXA
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: annex3_golden/swxa_a7_3.tac
+- bucket: happy
+  case_id: '02'
+  status: ready
+  tac: "SWX ADVISORY\nDTG:                20201110/0100Z \nSWXC:               DONLON\nSWX EFFECT:         HF COM\nADVISORY NR:        2020/3\nOBS SWX:            10/0100Z SEV MNH EQN EQS MSH DAYSIDE MOD NIGHTSIDE\nFCST SWX +6 HR:     09/0700Z NO SWX EXP\nFCST SWX +12 HR:    09/1300Z NO SWX EXP\nFCST SWX +18 HR:    09/1900Z NO SWX EXP\nFCST SWX +24 HR:    10/0100Z NO SWX EXP\nRMK:                SWX EVENT IMPACTING LOWER HF COM FREQ BAND. SEE\n                    WWW.SPACEWEATHERPROVIDER.WEB \nNXT ADVISORY:       WILL BE ISSUED BY 20201109/0700Z\n"
+  expect:
+    accept: true
+  meta:
+    product: SWXA
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 SWXA convert-then-validate
+- bucket: happy
+  case_id: '03'
+  status: ready
+  tac: "SWX ADVISORY\nDTG:                20201108/0100Z \nSWXC:               DONLON\nSWX EFFECT:         HF COM\nADVISORY NR:        2020/4\nOBS SWX:            08/0100Z SEV MNH EQN EQS MSH DAYSIDE MOD NIGHTSIDE\nFCST SWX +6 HR:     08/0700Z NO SWX EXP\nFCST SWX +12 HR:    08/1300Z NO SWX EXP\nFCST SWX +18 HR:    08/1900Z NO SWX EXP\nFCST SWX +24 HR:    09/0100Z NO SWX EXP\nRMK:                SWX EVENT IMPACTING LOWER HF COM FREQ BAND. SEE\n                    WWW.SPACEWEATHERPROVIDER.WEB \nNXT ADVISORY:       WILL BE ISSUED BY 20201108/0700Z\n"
+  expect:
+    accept: true
+  meta:
+    product: SWXA
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 SWXA convert-then-validate
+- bucket: happy
+  case_id: '04'
+  status: ready
+  tac: "SWX ADVISORY\nDTG:                20201108/0100Z \nSWXC:               DONLON\nSWX EFFECT:         HF COM\nADVISORY NR:        2020/1\nOBS SWX:            08/0100Z MOD MNH EQN EQS MSH DAYSIDE MOD NIGHTSIDE\nFCST SWX +6 HR:     08/0700Z NO SWX EXP\nFCST SWX +12 HR:    08/1300Z NO SWX EXP\nFCST SWX +18 HR:    08/1900Z NO SWX EXP\nFCST SWX +24 HR:    09/0100Z NO SWX EXP\nRMK:                SWX EVENT IMPACTING LOWER HF COM FREQ BAND. SEE\n                    WWW.SPACEWEATHERPROVIDER.WEB \nNXT ADVISORY:       WILL BE ISSUED BY 20201108/0700Z\n"
+  expect:
+    accept: true
+  meta:
+    product: SWXA
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 SWXA convert-then-validate
+- bucket: happy
+  case_id: '05'
+  status: ready
+  tac: "SWX ADVISORY\nDTG:                20201108/0100Z \nSWXC:               DONLON\nSWX EFFECT:         HF COM\nADVISORY NR:        2020/1\nOBS SWX:            08/0100Z SEV MNH EQN EQS MSH DAYSIDE SEV NIGHTSIDE\nFCST SWX +6 HR:     08/0700Z NO SWX EXP\nFCST SWX +12 HR:    08/1300Z NO SWX EXP\nFCST SWX +18 HR:    08/1900Z NO SWX EXP\nFCST SWX +24 HR:    09/0100Z NO SWX EXP\nRMK:                SWX EVENT IMPACTING LOWER HF COM FREQ BAND. SEE\n                    WWW.SPACEWEATHERPROVIDER.WEB \nNXT ADVISORY:       WILL BE ISSUED BY 20201108/0700Z\n"
+  expect:
+    accept: true
+  meta:
+    product: SWXA
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 SWXA convert-then-validate
+- bucket: edge_pass
+  case_id: '01'
+  status: ready
+  tac: "SWX ADVISORY\nDTG:                20201108/0100Z \nSWXC:               DONLON\nSWX EFFECT:         HF COM\nADVISORY NR:        2020/1\nOBS SWX:            08/0100Z SEV MNH EQN EQS MSH DAYSIDE MOD NIGHTSIDE\nFCST SWX +6 HR:     08/0700Z NO SWX EXP\nFCST SWX +12 HR:    08/1300Z NO SWX EXP\nFCST SWX +18 HR:    08/1900Z NO SWX EXP\nFCST SWX +24 HR:    09/0100Z NO SWX EXP\nRMK:                SWX EVENT IMPACTING LOWER HF COM FREQ BAND. SEE\n                    WWW.SPACEWEATHERPROVIDER.WEB \nNXT ADVISORY:       WILL BE ISSUED BY 20201108/0700Z"
+  expect:
+    accept: true
+  meta:
+    product: SWXA
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 SWXA edge convert-then-validate
+- bucket: edge_pass
+  case_id: '02'
+  status: ready
+  tac: "  SWX ADVISORY\nDTG:                20201108/0100Z \nSWXC:               DONLON\nSWX EFFECT:         HF COM\nADVISORY NR:        2020/1\nOBS SWX:            08/0100Z SEV MNH EQN EQS MSH DAYSIDE MOD NIGHTSIDE\nFCST SWX +6 HR:     08/0700Z NO SWX EXP\nFCST SWX +12 HR:    08/1300Z NO SWX EXP\nFCST SWX +18 HR:    08/1900Z NO SWX EXP\nFCST SWX +24 HR:    09/0100Z NO SWX EXP\nRMK:                SWX EVENT IMPACTING LOWER HF COM FREQ BAND. SEE\n                    WWW.SPACEWEATHERPROVIDER.WEB \nNXT ADVISORY:       WILL BE ISSUED BY 20201108/0700Z  "
+  expect:
+    accept: true
+  meta:
+    product: SWXA
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 SWXA edge convert-then-validate
+- bucket: edge_pass
+  case_id: '03'
+  status: ready
+  tac: "SWX ADVISORY\nDTG:                20201108/0100Z \nSWXC:               DONLON\nSWX EFFECT:         HF COM\nADVISORY NR:        2020/1\nOBS SWX:            08/0100Z SEV MNH EQN EQS MSH DAYSIDE MOD NIGHTSIDE\nFCST SWX +6 HR:     08/0700Z NO SWX EXP\nFCST SWX +12 HR:    08/1300Z NO SWX EXP\nFCST SWX +18 HR:    08/1900Z NO SWX EXP\nFCST SWX +24 HR:    09/0100Z NO SWX EXP\nRMK:                SWX EVENT IMPACTING LOWER HF COM FREQ BAND. SEE\n                    WWW.SPACEWEATHERPROVIDER.WEB \nNXT ADVISORY :       WILL BE ISSUED BY 20201108/0700Z\n"
+  expect:
+    accept: true
+  meta:
+    product: SWXA
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 SWXA edge convert-then-validate
+- bucket: edge_pass
+  case_id: '04'
+  status: ready
+  tac: "SWX ADVISORY\nDTG:                20201110/0100Z \nSWXC:               DONLON\nSWX EFFECT:         HF COM\nADVISORY NR:        2020/3\nOBS SWX:            10/0100Z SEV MNH EQN EQS MSH DAYSIDE MOD NIGHTSIDE\nFCST SWX +6 HR:     09/0700Z NO SWX EXP\nFCST SWX +12 HR:    09/1300Z NO SWX EXP\nFCST SWX +18 HR:    09/1900Z NO SWX EXP\nFCST SWX +24 HR:    10/0100Z NO SWX EXP\nRMK:                SWX EVENT IMPACTING LOWER HF COM FREQ BAND. SEE\n                    WWW.SPACEWEATHERPROVIDER.WEB \nNXT ADVISORY:       WILL BE ISSUED BY 20201109/0700Z\n"
+  expect:
+    accept: true
+  meta:
+    product: SWXA
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 SWXA edge convert-then-validate
+- bucket: edge_pass
+  case_id: '05'
+  status: ready
+  tac: "SWX ADVISORY\nDTG:                20201108/0100Z \nSWXC:               DONLON\nSWX EFFECT:         HF COM\nADVISORY NR:        2020/4\nOBS SWX:            08/0100Z SEV MNH EQN EQS MSH DAYSIDE MOD NIGHTSIDE\nFCST SWX +6 HR:     08/0700Z NO SWX EXP\nFCST SWX +12 HR:    08/1300Z NO SWX EXP\nFCST SWX +18 HR:    08/1900Z NO SWX EXP\nFCST SWX +24 HR:    09/0100Z NO SWX EXP\nRMK:                SWX EVENT IMPACTING LOWER HF COM FREQ BAND. SEE\n                    WWW.SPACEWEATHERPROVIDER.WEB \nNXT ADVISORY:       WILL BE ISSUED BY 20201108/0700Z\n"
+  expect:
+    accept: true
+  meta:
+    product: SWXA
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 SWXA edge convert-then-validate
+- bucket: sad
+  case_id: '01'
+  status: oos
+  meta:
+    product: SWXA
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: '#1265'
+    reason: 'Native XPath1 stand-in does not yet make this pattern report its id (residual if()/document()/geometry); cite #1265'
+- bucket: sad
+  case_id: '02'
+  status: oos
+  meta:
+    product: SWXA
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: '#1265'
+    reason: 'Native XPath1 stand-in does not yet make this pattern report its id (residual if()/document()/geometry); cite #1265'
+- bucket: sad
+  case_id: '03'
+  status: oos
+  meta:
+    product: SWXA
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: '#1265'
+    reason: 'Native XPath1 stand-in does not yet make this pattern report its id (residual if()/document()/geometry); cite #1265'
+- bucket: sad
+  case_id: '04'
+  status: oos
+  meta:
+    product: SWXA
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: '#1265'
+    reason: 'Native XPath1 stand-in does not yet make this pattern report its id (residual if()/document()/geometry); cite #1265'
+- bucket: sad
+  case_id: '05'
+  status: oos
+  meta:
+    product: SWXA
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: '#1265'
+    reason: 'Native XPath1 stand-in does not yet make this pattern report its id (residual if()/document()/geometry); cite #1265'
+- bucket: edge_fail
+  case_id: '01'
+  status: oos
+  meta:
+    product: SWXA
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: '#1265'
+    reason: 'Native XPath1 stand-in does not yet make this pattern report its id (residual if()/document()/geometry); cite #1265'
+- bucket: edge_fail
+  case_id: '02'
+  status: oos
+  meta:
+    product: SWXA
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: '#1265'
+    reason: 'Native XPath1 stand-in does not yet make this pattern report its id (residual if()/document()/geometry); cite #1265'
+- bucket: edge_fail
+  case_id: '03'
+  status: oos
+  meta:
+    product: SWXA
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: '#1265'
+    reason: 'Native XPath1 stand-in does not yet make this pattern report its id (residual if()/document()/geometry); cite #1265'
+- bucket: edge_fail
+  case_id: '04'
+  status: oos
+  meta:
+    product: SWXA
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: '#1265'
+    reason: 'Native XPath1 stand-in does not yet make this pattern report its id (residual if()/document()/geometry); cite #1265'
+- bucket: edge_fail
+  case_id: '05'
+  status: oos
+  meta:
+    product: SWXA
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: '#1265'
+    reason: 'Native XPath1 stand-in does not yet make this pattern report its id (residual if()/document()/geometry); cite #1265'

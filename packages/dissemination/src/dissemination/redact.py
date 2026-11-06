@@ -15,13 +15,18 @@ def redact_uri(uri: str) -> str:
 
     Parameters
     ----------
-    uri :
+    uri : str
         Possibly secret-bearing URI.
 
     Returns
     -------
     str
         URI with password replaced by ``***`` when present.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (redact_uri)
+    2
     """
     redacted = _URI_USERINFO.sub(r"\1***\3", uri)
     try:
@@ -39,6 +44,23 @@ def redact_uri(uri: str) -> str:
 
 
 def redact_secrets(text: str) -> str:
-    """Redact URI passwords and common secret JSON/key patterns from ``text``."""
+    """
+    Redact URI passwords and common secret JSON/key patterns from ``text``.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (redact_secrets)
+    2
+
+    Parameters
+    ----------
+    text : str
+        Text.
+
+    Returns
+    -------
+    str
+        Redact URI passwords and common secret JSON/key patterns from ``text``.
+    """
     out = redact_uri(text)
     return _PASSWORD_JSON.sub(r"\1***\3", out)

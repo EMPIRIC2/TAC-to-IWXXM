@@ -5,6 +5,8 @@ const ERROR_IMG_SRC =
 
 /**
  * Image element that shows a placeholder when the source fails to load.
+ * @example
+ * const _ = true;
  */
 export function ImageWithFallback(props: React.ImgHTMLAttributes<HTMLImageElement>) {
   const [didError, setDidError] = useState(false);

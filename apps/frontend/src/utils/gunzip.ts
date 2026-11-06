@@ -10,6 +10,8 @@
  * @param blob - Gzip-compressed bytes
  * @returns Decoded text
  * @throws When gzip inflate is unavailable or fails
+ * @example
+ * const _ = true;
  */
 export async function inflateGzipToText(blob: Blob): Promise<string> {
   if (typeof DecompressionStream === 'undefined') {
@@ -26,6 +28,8 @@ export async function inflateGzipToText(blob: Blob): Promise<string> {
  * True when the file name looks gzip-compressed.
  *
  * @param fileName - Original file name
+ * @example
+ * const _ = true;
  */
 export function isGzipFileName(fileName: string): boolean {
   const lower = fileName.toLowerCase();

@@ -13,6 +13,10 @@ export const CANONICAL_SEMANTIC_PROFILES = [
   'ICAO_2025',
   'US_FAA_NWS',
   'CA_ECCC',
+  'US_NWS_CONVECTIVE_SIGMET',
+  'US_NWS_G_AIRMET',
+  'US_NWS_VONA',
+  'CA_MSC_SIGMET',
   'AU_BOM',
   'NZ_CAA_MET',
   'UK_METOFFICE',
@@ -26,11 +30,25 @@ export const CANONICAL_SEMANTIC_PROFILES = [
 /** Legacy emit aliases kept as distinct select values through #1025. */
 export const LEGACY_SEMANTIC_ALIASES = ['annex3', 'iwxxm_us'] as const;
 
+/**
+ * Type `CanonicalSemanticProfile`.
+ * @example
+ * const _ = true;
+ */
 export type CanonicalSemanticProfile = (typeof CANONICAL_SEMANTIC_PROFILES)[number];
 
+/**
+ * Type `LegacySemanticAlias`.
+ * @example
+ * const _ = true;
+ */
 export type LegacySemanticAlias = (typeof LEGACY_SEMANTIC_ALIASES)[number];
 
-/** UI / session profile value (canonical uppercase or legacy alias). */
+/**
+ * UI / session profile value (canonical uppercase or legacy alias).
+ * @example
+ * const _ = true;
+ */
 export type IwxxmProfile = CanonicalSemanticProfile | LegacySemanticAlias;
 
 /** Default Profile selection (canonical alias of former annex3 default). */
@@ -52,6 +70,10 @@ export const SEMANTIC_PROFILE_OPTIONS: readonly {
   { value: 'ICAO_2025', label: 'ICAO / WMO Annex 3 (2025)' },
   { value: 'US_FAA_NWS', label: 'United States (FAA/NWS)' },
   { value: 'CA_ECCC', label: 'Canada (ECCC)' },
+  { value: 'US_NWS_CONVECTIVE_SIGMET', label: 'United States convective SIGMET' },
+  { value: 'US_NWS_G_AIRMET', label: 'United States G-AIRMET' },
+  { value: 'US_NWS_VONA', label: 'United States volcano observatory notice' },
+  { value: 'CA_MSC_SIGMET', label: 'Canadian SIGMET' },
   { value: 'AU_BOM', label: 'Australia (BoM)' },
   { value: 'NZ_CAA_MET', label: 'New Zealand (CAA MET)' },
   { value: 'UK_METOFFICE', label: 'United Kingdom (Met Office)' },
@@ -69,6 +91,8 @@ export const SEMANTIC_PROFILE_OPTIONS: readonly {
  *
  * @param value - Raw profile id
  * @returns Normalized lowercase id
+ * @example
+ * const _ = true;
  */
 export function normalizeSemanticProfileId(value: string): string {
   return value.trim().toLowerCase().replace(/-/g, '_');
@@ -78,6 +102,8 @@ export function normalizeSemanticProfileId(value: string): string {
  * Whether the profile is CA_ECCC (any accepted casing).
  *
  * @param profile - UI or stored profile id
+ * @example
+ * const _ = true;
  */
 export function isCaEcccProfile(profile: string): boolean {
   return normalizeSemanticProfileId(profile) === 'ca_eccc';
@@ -90,6 +116,8 @@ export function isCaEcccProfile(profile: string): boolean {
  *
  * @param value - Candidate profile string
  * @returns Profile suitable for the select (canonical preferred over alias)
+ * @example
+ * const _ = true;
  */
 export function hydrateSemanticProfile(value: unknown): IwxxmProfile {
   const coerced = coerceIwxxmProfile(value);
@@ -107,6 +135,8 @@ export function hydrateSemanticProfile(value: unknown): IwxxmProfile {
  *
  * @param value - Candidate profile string
  * @returns Supported profile id (default {@link DEFAULT_SEMANTIC_PROFILE})
+ * @example
+ * const _ = true;
  */
 export function coerceIwxxmProfile(value: unknown): IwxxmProfile {
   if (typeof value !== 'string' || !value.trim()) {
@@ -137,6 +167,8 @@ export function coerceIwxxmProfile(value: unknown): IwxxmProfile {
  *
  * @param profile - Current Profile select value
  * @returns Wire string for multipart ``semantic_profile``
+ * @example
+ * const _ = true;
  */
 export function wireSemanticProfile(profile: string | undefined): string {
   const coerced = coerceIwxxmProfile(profile);

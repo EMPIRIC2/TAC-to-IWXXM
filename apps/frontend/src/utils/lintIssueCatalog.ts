@@ -6,12 +6,15 @@
  */
 
 import type { LintIssueCatalogEntry } from './api';
+import { isPlanningEvolveTag, scrubInternalDocRefs } from './internalDocRefGuard';
 
 /**
  * Index catalog rows by stable public code.
  *
  * @param entries - Catalog rows from GET /lint-issue-catalog
  * @returns Map keyed by ``code``
+ * @example
+ * const _ = true;
  */
 export function indexCatalogByCode(
   entries: LintIssueCatalogEntry[],
@@ -34,6 +37,8 @@ export function indexCatalogByCode(
  * @param byCode - Index from {@link indexCatalogByCode}
  * @param code - Public SCREAMING_SNAKE issue code
  * @returns Tooltip text for the console code chip
+ * @example
+ * const _ = true;
  */
 export function resolveLintIssueTooltip(
   byCode: Map<string, LintIssueCatalogEntry>,
@@ -43,7 +48,7 @@ export function resolveLintIssueTooltip(
   if (!entry) {
     return `${code} (not in loaded catalog)`;
   }
-  return `${entry.severity}: ${entry.message_template}`;
+  return scrubInternalDocRefs(`${entry.severity}: ${entry.message_template}`);
 }
 
 /**
@@ -54,6 +59,8 @@ export function resolveLintIssueTooltip(
  * @param entries - Full catalog list
  * @param tag - Tag to match (e.g. ``taf``); empty = all
  * @returns Filtered rows in original order
+ * @example
+ * const _ = true;
  */
 export function filterCatalogByTag(
   entries: LintIssueCatalogEntry[],
@@ -74,10 +81,15 @@ export function filterCatalogByTag(
  *
  * @param entry - Single catalog row
  * @returns One-line operator-facing copy
+ * @example
+ * const _ = true;
  */
 export function formatCatalogEntryCopy(entry: LintIssueCatalogEntry): string {
   const parts = [`${entry.code} (${entry.severity})`];
-  const tags = (entry.tags ?? []).join(', ');
+  const tags = (entry.tags ?? [])
+    .map((tag) => tag.trim())
+    .filter((tag) => tag && !isPlanningEvolveTag(tag))
+    .join(', ');
   if (tags) {
     parts.push(`tags: ${tags}`);
   }
@@ -85,10 +97,85 @@ export function formatCatalogEntryCopy(entry: LintIssueCatalogEntry): string {
     parts.push(`product: ${entry.product}`);
   }
   if (entry.source_attribution) {
-    parts.push(`source: ${entry.source_attribution}`);
+    parts.push(`source: ${scrubInternalDocRefs(entry.source_attribution)}`);
   } else if (entry.source_id) {
     const url = entry.source_url ? ` (${entry.source_url})` : '';
-    parts.push(`source: ${entry.source_id}${url}`);
+    parts.push(`source: ${scrubInternalDocRefs(entry.source_id)}${url}`);
   }
   return parts.join(' ');
+}
+
+/**
+ * Map a catalog row family to Rule catalogs shell filter values.
+ *
+ * @example
+ * const _ = true;
+ */
+export function catalogShellFamilyForCode(
+  entry: Pick<LintIssueCatalogEntry, 'family'> | undefined,
+): 'lint' | 'iwxxm' | undefined {
+  const familyRaw = entry?.family;
+  return familyRaw === 'iwxxm' || familyRaw === 'lint' ? familyRaw : undefined;
+}
+
+/**
+ * Catalog code that can open Rule catalogs, or null when the issue has none.
+ *
+ * A blank code, a missing catalog, or a code that is not in the loaded catalog
+ * stays a plain log line.
+ *
+ * @param code - Issue code from the conversion or validation log
+ * @param catalogByCode - Loaded catalog index
+ * @returns The trimmed code and the catalog that contains it
+ * @example
+ * const _ = true;
+ */
+export function catalogJumpTarget(
+  code: string | null | undefined,
+  catalogByCode: Map<string, LintIssueCatalogEntry> | undefined,
+): { code: string; catalogByCode: Map<string, LintIssueCatalogEntry> } | null {
+  if (typeof code !== 'string' || !catalogByCode) {
+    return null;
+  }
+  const trimmed = code.trim();
+  if (!trimmed || !catalogByCode.has(trimmed)) {
+    return null;
+  }
+  return { code: trimmed, catalogByCode };
+}
+
+/**
+ * Open Rule catalogs focused on a console lint/validation code.
+ *
+ * @example
+ * const _ = true;
+ */
+export function openCatalogForLintCode(
+  onOpenCatalog: (
+    family?: 'conversion' | 'lint' | 'iwxxm' | 'decoding',
+    code?: string,
+  ) => void,
+  catalogByCode: Map<string, LintIssueCatalogEntry>,
+  code: string,
+): void {
+  onOpenCatalog(catalogShellFamilyForCode(catalogByCode.get(code)), code);
+}
+
+/**
+ * No-op when the shell does not provide an open-catalog handler.
+ *
+ * @example
+ * const _ = true;
+ */
+export function maybeOpenCatalogForLintCode(
+  onOpenCatalog:
+    | ((family?: 'conversion' | 'lint' | 'iwxxm' | 'decoding', code?: string) => void)
+    | undefined,
+  catalogByCode: Map<string, LintIssueCatalogEntry>,
+  code: string,
+): void {
+  if (!onOpenCatalog) {
+    return;
+  }
+  openCatalogForLintCode(onOpenCatalog, catalogByCode, code);
 }

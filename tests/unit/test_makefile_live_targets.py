@@ -9,6 +9,8 @@ REQUIRED_TARGETS = (
     "test-live-api",
     "test-live-integration",
     "test-live-e2e",
+    "test-live-feeds",
+    "test-live-profile",
     "test-live",
 )
 

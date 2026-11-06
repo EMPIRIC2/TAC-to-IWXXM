@@ -55,6 +55,7 @@ vi.mock('./components/FileConverter', () => ({
     onNewMetar,
     onSessionUpdated,
     onActiveSessionIdChange,
+    onOpenCatalog,
     isGuest,
   }: {
     onOpenHistory?: () => void;
@@ -64,6 +65,10 @@ vi.mock('./components/FileConverter', () => ({
     onNewMetar?: () => void;
     onSessionUpdated?: (s: WorkSession) => void;
     onActiveSessionIdChange?: (id: string | null) => void;
+    onOpenCatalog?: (
+      family?: 'conversion' | 'lint' | 'iwxxm' | 'decoding',
+      code?: string,
+    ) => void;
     isGuest?: boolean;
   }) => (
     <div data-testid="file-converter">
@@ -89,6 +94,20 @@ vi.mock('./components/FileConverter', () => ({
       )}
       <button type="button" data-testid="new-metar" onClick={() => onNewMetar?.()}>
         New
+      </button>
+      <button
+        type="button"
+        data-testid="open-catalog"
+        onClick={() => onOpenCatalog?.()}
+      >
+        Catalog
+      </button>
+      <button
+        type="button"
+        data-testid="open-catalog-with-code"
+        onClick={() => onOpenCatalog?.('lint', 'MISSING_TERMINATOR')}
+      >
+        Catalog with code
       </button>
       <button
         type="button"
@@ -321,49 +340,28 @@ vi.mock('./components/MyMetarsPage', () => ({
   ),
 }));
 
-vi.mock('./components/QualityMetricsPage', () => ({
-  QualityMetricsPage: ({
-    routeStem,
-    onOpenDetailRoute,
-    onBackToList,
+vi.mock('./components/LintValidationCatalogPage', () => ({
+  LintValidationCatalogPage: ({
+    focusCode,
+    initialFamily,
+    onFocusHandled,
   }: {
-    routeStem: string | null;
-    onOpenDetailRoute: (stem: string) => void;
-    onBackToList: () => void;
+    focusCode?: string;
+    initialFamily?: 'lint' | 'iwxxm';
+    onFocusHandled?: () => void;
   }) => (
-    <div data-testid="quality-metrics-page" data-stem={routeStem ?? ''}>
+    <div
+      data-testid="lint-validation-catalog-page"
+      data-focus-code={focusCode ?? ''}
+      data-focus-family={initialFamily ?? ''}
+    >
       <button
         type="button"
-        data-testid="open-quality-detail"
-        onClick={() => onOpenDetailRoute('stem-1')}
+        data-testid="catalog-focus-handled"
+        onClick={() => onFocusHandled?.()}
       >
-        Detail
+        Focus handled
       </button>
-      <button type="button" data-testid="back-quality-list" onClick={onBackToList}>
-        List
-      </button>
-    </div>
-  ),
-}));
-
-vi.mock('./components/LintValidationCatalogPage', () => ({
-  LintValidationCatalogPage: () => <div data-testid="lint-validation-catalog-page" />,
-}));
-
-vi.mock('./components/DisseminationOpsPage', () => ({
-  DisseminationOpsPage: ({
-    accessToken,
-    onRequestLogin,
-  }: {
-    accessToken?: string;
-    onRequestLogin?: () => void;
-  }) => (
-    <div data-testid="dissemination-ops-page" data-authed={accessToken ? '1' : '0'}>
-      {onRequestLogin ? (
-        <button type="button" data-testid="ops-request-login" onClick={onRequestLogin}>
-          Sign in
-        </button>
-      ) : null}
     </div>
   ),
 }));
@@ -377,11 +375,13 @@ vi.mock('./components/ui/sonner', () => ({
 }));
 
 import App from './App';
+import { acknowledgeSiteTerms } from '@/utils/privacyPreferences';
 
 describe('App Component (F31 optional Auth)', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     localStorage.clear();
+    acknowledgeSiteTerms();
     window.history.replaceState({}, '', '/');
     authMocks.getAccessToken.mockReturnValue(null);
     authMocks.isLoggedIn.mockReturnValue(false);
@@ -417,6 +417,23 @@ describe('App Component (F31 optional Auth)', () => {
     expect(screen.getByTestId('sign-in-button')).toBeInTheDocument();
   });
 
+  it('blocks the public shell until site terms are acknowledged', async () => {
+    localStorage.clear();
+    const user = userEvent.setup();
+    const view = render(<App />);
+    expect(screen.getByTestId('site-terms-gate')).toBeInTheDocument();
+    expect(screen.queryByTestId('file-converter')).not.toBeInTheDocument();
+    expect(screen.getByTestId('site-terms-continue')).toBeDisabled();
+    await user.click(screen.getByTestId('site-terms-ack'));
+    expect(screen.getByTestId('site-terms-continue')).toBeEnabled();
+    await user.click(screen.getByTestId('site-terms-continue'));
+    expect(screen.getByTestId('file-converter')).toBeInTheDocument();
+    view.unmount();
+    render(<App />);
+    expect(screen.getByTestId('file-converter')).toBeInTheDocument();
+    expect(screen.queryByTestId('site-terms-gate')).not.toBeInTheDocument();
+  });
+
   it('opens login UX from Sign in without blocking convert return path', async () => {
     const user = userEvent.setup();
     render(<App />);
@@ -447,8 +464,10 @@ describe('App Component (F31 optional Auth)', () => {
   it('opens history view and returns to converter', async () => {
     const user = userEvent.setup();
     render(<App />);
+    const converter = document.querySelector('[data-testid="file-converter"]');
     await user.click(screen.getByTestId('open-history'));
     expect(screen.getByTestId('history-view')).toBeInTheDocument();
+    expect(document.querySelector('[data-testid="file-converter"]')).toBe(converter);
     await user.click(screen.getByTestId('back-converter'));
     expect(screen.getByTestId('file-converter')).toBeInTheDocument();
   });
@@ -461,104 +480,49 @@ describe('App Component (F31 optional Auth)', () => {
     expect(screen.getByTestId('file-converter')).toBeInTheDocument();
   });
 
-  it('reaches Quality metrics via primary shell nav (TC-EV054-001)', async () => {
+  it('reaches catalog and history from the primary shell nav', async () => {
     const user = userEvent.setup();
     render(<App />);
 
     expect(screen.getByTestId('app-shell-nav')).toBeInTheDocument();
+    expect(screen.queryByTestId('shell-nav-quality')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('shell-nav-visuals')).not.toBeInTheDocument();
+    await user.click(screen.getByTestId('shell-nav-converter'));
     expect(screen.getByTestId('shell-nav-converter')).toHaveAttribute(
       'aria-selected',
       'true',
     );
 
-    await user.click(screen.getByTestId('shell-nav-quality'));
-    expect(screen.getByTestId('quality-metrics-page')).toBeInTheDocument();
-    expect(screen.queryByTestId('file-converter')).not.toBeInTheDocument();
-    expect(screen.getByTestId('shell-nav-quality')).toHaveAttribute(
+    await user.click(screen.getByTestId('shell-nav-catalog'));
+    expect(screen.getByTestId('lint-validation-catalog-page')).toBeInTheDocument();
+    expect(screen.getByTestId('file-converter')).not.toBeVisible();
+    expect(screen.getByTestId('shell-nav-catalog')).toHaveAttribute(
       'aria-selected',
       'true',
     );
 
     await user.click(screen.getByTestId('shell-nav-history'));
     expect(screen.getByTestId('history-view')).toBeInTheDocument();
-    expect(screen.queryByTestId('quality-metrics-page')).not.toBeInTheDocument();
+    expect(
+      screen.queryByTestId('lint-validation-catalog-page'),
+    ).not.toBeInTheDocument();
   });
 
-  it('opens catalog via shell nav and quality detail/list routes', async () => {
-    const user = userEvent.setup();
-    const pushSpy = vi.spyOn(window.history, 'pushState');
+  it('omits Dissemination ops from the shell nav', () => {
     render(<App />);
+    expect(screen.queryByTestId('shell-nav-dissemination-ops')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('dissemination-ops-page')).not.toBeInTheDocument();
+  });
 
-    await user.click(screen.getByTestId('shell-nav-catalog'));
-    expect(screen.getByTestId('lint-validation-catalog-page')).toBeInTheDocument();
-
-    await user.click(screen.getByTestId('shell-nav-dissemination-ops'));
-    expect(screen.getByTestId('dissemination-ops-page')).toHaveAttribute(
-      'data-authed',
-      '0',
-    );
-
-    await user.click(screen.getByTestId('shell-nav-quality'));
-    await user.click(screen.getByTestId('open-quality-detail'));
-    expect(screen.getByTestId('quality-metrics-page')).toHaveAttribute(
-      'data-stem',
-      'stem-1',
-    );
-    expect(pushSpy).toHaveBeenCalled();
-
-    await user.click(screen.getByTestId('back-quality-list'));
-    expect(screen.getByTestId('quality-metrics-page')).toHaveAttribute('data-stem', '');
-
-    await user.click(screen.getByTestId('shell-nav-converter'));
+  it('stays on the converter when the location is /quality', () => {
+    window.history.replaceState({}, '', '/quality/foo-stem');
+    render(<App />);
+    expect(screen.queryByTestId('shell-nav-quality')).not.toBeInTheDocument();
     expect(screen.getByTestId('file-converter')).toBeInTheDocument();
   });
 
-  it('opens Dissemination ops as authenticated with JWT', async () => {
-    const user = userEvent.setup();
-    authMocks.isLoggedIn.mockReturnValue(true);
-    authMocks.getAccessToken.mockReturnValue('jwt-ops');
+  it('handles popstate for auth callback paths', async () => {
     render(<App />);
-
-    await user.click(screen.getByTestId('shell-nav-dissemination-ops'));
-    expect(screen.getByTestId('dissemination-ops-page')).toHaveAttribute(
-      'data-authed',
-      '1',
-    );
-  });
-
-  it('boots on quality detail path from location', () => {
-    window.history.replaceState({}, '', '/quality/foo-stem');
-    render(<App />);
-    expect(screen.getByTestId('quality-metrics-page')).toHaveAttribute(
-      'data-stem',
-      'foo-stem',
-    );
-  });
-
-  it('handles popstate for quality and auth callback paths', async () => {
-    render(<App />);
-    act(() => {
-      window.history.pushState({}, '', '/quality/pop-stem');
-      window.dispatchEvent(new PopStateEvent('popstate'));
-    });
-    await waitFor(() => {
-      expect(screen.getByTestId('quality-metrics-page')).toHaveAttribute(
-        'data-stem',
-        'pop-stem',
-      );
-    });
-
-    act(() => {
-      window.history.pushState({}, '', '/quality');
-      window.dispatchEvent(new PopStateEvent('popstate'));
-    });
-    await waitFor(() => {
-      expect(screen.getByTestId('quality-metrics-page')).toHaveAttribute(
-        'data-stem',
-        '',
-      );
-    });
-
     act(() => {
       window.history.pushState({}, '', '/auth/callback');
       window.dispatchEvent(new PopStateEvent('popstate'));
@@ -843,7 +807,21 @@ describe('App Component (F31 optional Auth)', () => {
     await user.click(screen.getByTestId('active-session-id'));
     await user.click(screen.getByTestId('new-metar'));
     await user.click(screen.getByTestId('load-session-fc'));
-    expect(screen.getByTestId('file-converter')).toBeInTheDocument();
+    await user.click(screen.getByTestId('open-catalog'));
+    expect(screen.getByTestId('lint-validation-catalog-page')).toBeInTheDocument();
+  });
+
+  it('opens catalog with focus code from console deep link', async () => {
+    const user = userEvent.setup();
+    render(<App />);
+    await user.click(screen.getByTestId('open-catalog-with-code'));
+    const page = screen.getByTestId('lint-validation-catalog-page');
+    expect(page).toHaveAttribute('data-focus-code', 'MISSING_TERMINATOR');
+    await user.click(screen.getByTestId('catalog-focus-handled'));
+    expect(screen.getByTestId('lint-validation-catalog-page')).toHaveAttribute(
+      'data-focus-code',
+      '',
+    );
   });
 
   it('auth callback wires login/register/verified', async () => {
@@ -880,22 +858,6 @@ describe('App Component (F31 optional Auth)', () => {
     });
   });
 
-  it('navigates quality when already on list/detail paths without push', async () => {
-    const user = userEvent.setup();
-    window.history.replaceState({}, '', '/quality');
-    const pushSpy = vi.spyOn(window.history, 'pushState');
-    render(<App />);
-    await user.click(screen.getByTestId('shell-nav-quality'));
-    // already on list path — pushState for list should be skipped
-    const listPushes = pushSpy.mock.calls.filter((c) => c[2] === '/quality');
-    expect(listPushes.length).toBeLessThanOrEqual(1);
-
-    await user.click(screen.getByTestId('open-quality-detail'));
-    pushSpy.mockClear();
-    await user.click(screen.getByTestId('open-quality-detail'));
-    // second open of same stem should skip push when path already matches
-  });
-
   it('history view shows Operator email when authenticated with empty email', async () => {
     const user = userEvent.setup();
     authMocks.isLoggedIn.mockReturnValue(true);
@@ -906,16 +868,5 @@ describe('App Component (F31 optional Auth)', () => {
     });
     await user.click(screen.getByTestId('open-history'));
     expect(screen.getByTestId('history-view')).toBeInTheDocument();
-  });
-
-  it('skips quality-list pushState when already on the list path', async () => {
-    const user = userEvent.setup();
-    window.history.replaceState({}, '', '/quality');
-    const pushSpy = vi.spyOn(window.history, 'pushState');
-    render(<App />);
-    await user.click(screen.getByTestId('shell-nav-quality'));
-    pushSpy.mockClear();
-    await user.click(screen.getByTestId('back-quality-list'));
-    expect(pushSpy.mock.calls.some((c) => c[2] === '/quality')).toBe(false);
   });
 });

@@ -13,7 +13,21 @@ from tac_validate.product_rules_pkg.tca import _check_us_faa_nws_swxa_overlay
 
 
 def _check_swxa_spacewx_membership(body: str, *, start: int) -> list[Issue]:
-    """Map SWX EFFECT + OBS severity to SpaceWxPhenomena membership (EV-050)."""
+    """
+    Internal helper ``_check_swxa_spacewx_membership``.
+
+    Parameters
+    ----------
+    body : object
+        Argument ``body``.
+    start : object
+        Argument ``start``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     # ruff: noqa: F403, F405
     issues: list[Issue] = []
     effect_m = _SWX_EFFECT_LINE.search(body)
@@ -61,6 +75,21 @@ def _check_swxa_spacewx_membership(body: str, *, start: int) -> list[Issue]:
 
 
 def _check_swxa(tac: str, *, profile: str = "annex3") -> list[Issue]:
+    """
+    Internal helper ``_check_swxa``.
+
+    Parameters
+    ----------
+    tac : object
+        Argument ``tac``.
+    profile : object
+        Argument ``profile``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     start, end, body = _body_span(tac)
     issues: list[Issue] = []
     if not _DTG_LINE.search(body):
@@ -77,7 +106,7 @@ def _check_swxa(tac: str, *, profile: str = "annex3") -> list[Issue]:
         issues.append(
             _issue(
                 "MISSING_SWXC",
-                "SWXA missing SWXC: template field - F28 theme SX1 / A2-3",
+                "SWXA missing SWXC: template field - A2-3",
                 start=start,
                 end=end,
                 location="swxc",
@@ -92,7 +121,7 @@ def _check_swxa(tac: str, *, profile: str = "annex3") -> list[Issue]:
             issues.append(
                 _issue(
                     "SWXA_RMK_NIL",
-                    "SWXA RMK NIL - remarks inapplicable (F28 theme SX1)",
+                    "SWXA RMK NIL - remarks inapplicable",
                     start=rmk_m.start(1),
                     end=rmk_m.end(1),
                     location="remarks",
@@ -103,7 +132,7 @@ def _check_swxa(tac: str, *, profile: str = "annex3") -> list[Issue]:
         issues.append(
             _issue(
                 "SWXA_FCST_NO_SWX_EXP",
-                "SWXA forecast NO SWX EXP - no space weather expected (F28 theme SX1)",
+                "SWXA forecast NO SWX EXP - no space weather expected",
                 start=no_swx.start(),
                 end=no_swx.end(),
                 location="forecast",
@@ -114,7 +143,7 @@ def _check_swxa(tac: str, *, profile: str = "annex3") -> list[Issue]:
         issues.append(
             _issue(
                 "SWXA_NO_FURTHER_ADVISORIES",
-                "SWXA NXT ADVISORY NO FURTHER ADVISORIES - next time inapplicable (F28 theme SX1)",
+                "SWXA NXT ADVISORY NO FURTHER ADVISORIES - next time inapplicable",
                 start=nxt_m.start(1),
                 end=nxt_m.end(1),
                 location="next_advisory",

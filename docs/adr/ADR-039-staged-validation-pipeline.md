@@ -11,17 +11,17 @@ Spike [#925](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/925) investigates a
 
 Today:
 
-- **IR:** `tac2iwxxm.ConvertResult.ir` — product-specific `dict[str, Any]` from `parse_*` functions
+- **IR:** `tac2iwxxm.ConvertResult.ir` (product-specific `dict[str, Any]` from `parse_*` functions)
 - **TAC validation:** `tac-validate` → flat `LintReport`
 - **Conversion:** `tac2iwxxm.convert` → `ConvertResult` with issues
 - **IWXXM validation:** `iwxxm-validate` → `ValidationReport`; **`stages`** populated for `ca_eccc` layered path (EV-068)
-- **HTTP:** `/api/v1/validate` — separate 7-layer operator stack (airport + XML layers)
+- **HTTP:** `/api/v1/validate`, a separate 7-layer operator stack (airport + XML layers)
 
-ADR-037 Option C keeps package names — extracting `packages/core/canonical-model` is out of scope for this spike.
+ADR-037 Option C keeps package names; extracting `packages/core/canonical-model` is out of scope for this spike.
 
 ## Decision
 
-1. **Canonical IR boundary — keep-in-place.** The versioned IR remains **`tac2iwxxm` product parse output** (`ConvertResult.ir`). Document per-product dict shapes as the canonical boundary. Typed msgspec canonical structs are **deferred** until METAR-family schemas stabilize under #912.
+1. **Canonical IR boundary: keep-in-place.** The versioned IR remains **`tac2iwxxm` product parse output** (`ConvertResult.ir`). Document per-product dict shapes as the canonical boundary. Typed msgspec canonical structs are **deferred** until METAR-family schemas stabilize under #912.
 
 2. **Reject** new `packages/core/canonical-model` package for M5 / #925 window (same rationale as ADR-037 Option C).
 
@@ -37,11 +37,11 @@ ADR-037 Option C keeps package names — extracting `packages/core/canonical-mod
 
    Reuse `iwxxm_validate.StageResult` shape for cross-package stages when implemented.
 
-4. **Confirm architecture:** **one ICAO baseline parse/convert path + national overlays** at lint, emit, and validate attach points (ADR-036) — not N independent converters.
+4. **Confirm architecture:** **one ICAO baseline parse/convert path + national overlays** at lint, emit, and validate attach points (ADR-036), not N independent converters.
 
 5. **Implementation deferred:** unified `PipelineResult` runtime and #938 inspector require workflow orchestrator [#931](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/931). #925 delivers contract + mapping only.
 
-6. **Fixtures:** profile-driven layouts under `profiles/<id>/<product>/{valid,invalid,expected-*}` remain F36 / #912 — reference `CA_ECCC` staged validate as pattern.
+6. **Fixtures:** profile-driven layouts under `profiles/<id>/<product>/{valid,invalid,expected-*}` remain F36 / #912; reference `CA_ECCC` staged validate as pattern.
 
 ## Consequences
 
@@ -53,11 +53,11 @@ ADR-037 Option C keeps package names — extracting `packages/core/canonical-mod
 
 ### Negative / follow-ups
 
-- IR remains untyped dict — tooling/inspector must stay product-aware until typed IR ADR
+- IR remains untyped dict; tooling/inspector must stay product-aware until typed IR ADR
 - Platform-wide `stages[]` not yet on lint/convert HTTP responses
-- `/validate` 7-layer model remains separate — document dual paths in api corpus
+- `/validate` 7-layer model remains separate; document dual paths in api corpus
 
 ## References
 
-- Context: canonical-met-staged-validation-925 (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate)
+- Context: canonical-met-staged-validation-925 (archived; see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate)
 - EV-925 session report `925-canonical-met-staged-validation.md`

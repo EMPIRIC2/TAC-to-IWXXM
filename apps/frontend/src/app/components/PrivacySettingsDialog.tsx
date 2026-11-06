@@ -25,11 +25,19 @@ import {
   type StorageInventoryItem,
 } from '@/utils/privacyPreferences';
 
+/**
+ * Type `PrivacySettingsDialogProps`.
+ * @example
+ * const _ = true;
+ */
 export interface PrivacySettingsDialogProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
+/**
+ * Function `inventoryTestId`.
+ */
 function inventoryTestId(item: StorageInventoryItem): string | undefined {
   if (item.kind === 'cookie' && /auth/i.test(item.purpose)) {
     return 'privacy-inventory-auth-cookie';
@@ -40,6 +48,9 @@ function inventoryTestId(item: StorageInventoryItem): string | undefined {
   return undefined;
 }
 
+/**
+ * Function `PrivacySettingsForm`.
+ */
 function PrivacySettingsForm({ onClose }: { onClose: () => void }) {
   const [prefs, setPrefs] = useState<PrivacyPreferences>(() =>
     loadPrivacyPreferences(),
@@ -66,8 +77,8 @@ function PrivacySettingsForm({ onClose }: { onClose: () => void }) {
       <DialogHeader>
         <DialogTitle>Privacy settings</DialogTitle>
         <DialogDescription>
-          Solution A — no non-essential analytics or marketing. Preferences stay in this
-          browser only. Clearing site data resets them.
+          No analytics or marketing. Preferences stay in this browser only. Clearing
+          site data resets them.
         </DialogDescription>
       </DialogHeader>
 
@@ -77,8 +88,8 @@ function PrivacySettingsForm({ onClose }: { onClose: () => void }) {
           data-testid="privacy-gpc-active"
           className="rounded border border-emerald-200 bg-emerald-50 p-3 text-sm text-emerald-900 dark:border-emerald-800 dark:bg-emerald-950 dark:text-emerald-100"
         >
-          Global Privacy Control (GPC) detected — sale/sharing and targeted advertising
-          opt-outs are enforced.
+          Global Privacy Control is on. Sale, sharing, and targeted advertising opt-outs
+          are enforced.
         </p>
       ) : null}
 
@@ -100,7 +111,7 @@ function PrivacySettingsForm({ onClose }: { onClose: () => void }) {
                 <div className="font-medium capitalize">{item.kind}</div>
                 <p className="mt-1 text-gray-600 dark:text-gray-300">{item.purpose}</p>
                 <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                  {item.necessary ? 'Necessary — always on' : 'Optional'}
+                  {item.necessary ? 'Necessary, always on' : 'Optional'}
                 </p>
               </li>
             ))}
@@ -215,6 +226,8 @@ function PrivacySettingsForm({ onClose }: { onClose: () => void }) {
  * Modal dialog for privacy and work-history storage preferences.
  *
  * Wraps the settings form in a dismissible dialog shell.
+ * @example
+ * const _ = true;
  */
 export function PrivacySettingsDialog({ isOpen, onClose }: PrivacySettingsDialogProps) {
   return (

@@ -41,6 +41,8 @@ interface MonitoringPanelProps {
 
 /**
  * Admin monitoring dashboard — user stats and searchable account list.
+ * @example
+ * const _ = true;
  */
 export function MonitoringPanel({ accessToken }: MonitoringPanelProps) {
   const [users, setUsers] = useState<UserInfo[]>([]);

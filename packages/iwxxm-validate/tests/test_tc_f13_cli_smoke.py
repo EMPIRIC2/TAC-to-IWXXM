@@ -149,11 +149,19 @@ def test_console_script_on_path() -> None:
 
 def test_cli_module_guard_invokes_main(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
     import runpy
+    import warnings
 
     missing = tmp_path / "missing.xml"
+    sys.modules.pop("iwxxm_validate.cli", None)
     monkeypatch.setattr(sys, "argv", ["iwxxm_validate.cli", str(missing)])
 
-    with pytest.raises(SystemExit) as exc_info:
-        runpy.run_module("iwxxm_validate.cli", run_name="__main__")
+    with warnings.catch_warnings():
+        warnings.filterwarnings(
+            "ignore",
+            message=r".*found in sys\.modules after import of the same name.*",
+            category=RuntimeWarning,
+        )
+        with pytest.raises(SystemExit) as exc_info:
+            runpy.run_module("iwxxm_validate.cli", run_name="__main__", alter_sys=True)
 
     assert exc_info.value.code == 1

@@ -22,7 +22,14 @@ depends_on: str | Sequence[str] | None = None
 
 
 def upgrade() -> None:
-    """Add YAML document + lifecycle columns."""
+    """
+    Add YAML document + lifecycle columns.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (upgrade)
+    2
+    """
     op.add_column("tac_library_assets", sa.Column("yaml_body", sa.Text(), nullable=True))
     op.add_column(
         "tac_library_assets",
@@ -40,7 +47,14 @@ def upgrade() -> None:
 
 
 def downgrade() -> None:
-    """Drop YAML document + lifecycle columns."""
+    """
+    Drop YAML document + lifecycle columns.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (downgrade)
+    2
+    """
     op.drop_constraint("ck_tac_library_assets_status", "tac_library_assets", type_="check")
     op.drop_column("tac_library_assets", "schema_version")
     op.drop_column("tac_library_assets", "status")

@@ -7,19 +7,45 @@
 
 ## Overview
 
-TAC to IWXXM converts aviation TAC messages (AIRMET, METAR, SIGMET, SPECI, TAF, VAA, TCA,
-and related products) to WMO IWXXM XML via `packages/tac2iwxxm`, lints TAC via
-`packages/tac-validate`, and validates IWXXM via `packages/iwxxm-validate` (XSD + Schematron)
-against authoritative WMO and optional NOAA IWXXM-US schema bundles under `vendor/schemas/`.
-The system is a **single-git monorepo** with `apps/` (deployables), `packages/` (libraries),
-and `vendor/` (read-only upstream snapshots). Multi-product operator UI remains the umbrella
-product track; **Quality metrics** (list + detail) is live on **staging** (promote deferred).
-Near-realtime ingest worker is implemented (product store on DigitalOcean Postgres). Public
-convert APIs remain unauthenticated; **optional Supabase Auth** gates long-term work sessions.
-**Supabase** is **Auth/JWT verify only**; product DB is **DigitalOcean Postgres** (`DATABASE_URL`).
-Hosting: **DOKS** (Render retired after soak).
-**Dissemination destinations** use **one-shot user-pasted BYOC** credentials
-(memory-only; never saved profiles) under SSRF + required egress allowlist.
+This document is the **system specification** (corpus id `system-spec`). It describes
+architecture, components, and hard constraints. For runtime config and deploy hosts,
+use [tech-spec.md](tech-spec.md) and its satellites. For approved features, use
+[feature-list.md](feature-list.md).
+
+**What the product does**
+
+TAC to IWXXM turns aviation Traditional Alphanumeric Code (TAC) messages into
+World Meteorological Organization (WMO) IWXXM XML. Supported products include
+AIRMET, METAR, SIGMET, SPECI, TAF, VAA, TCA, and related forms.
+
+| Concern | Package / location |
+|---------|-------------------|
+| Convert TAC → IWXXM | `packages/tac2iwxxm` |
+| Lint TAC | `packages/tac-validate` |
+| Validate IWXXM (XSD + Schematron) | `packages/iwxxm-validate` |
+| Schema snapshots (read-only) | `vendor/schemas/` (WMO and optional NOAA IWXXM-US) |
+
+**Repository shape**
+
+The codebase is one Git monorepo:
+
+- `apps/` — deployable services (API, frontend, worker, e2e)
+- `packages/` — libraries
+- `vendor/` — read-only upstream schema snapshots
+
+**Runtime facts (F30 / F31)**
+
+- Hosting is DigitalOcean Kubernetes Service (**DOKS**). Render is retired after soak.
+- Product database is **DigitalOcean Postgres** via `DATABASE_URL`.
+- **Supabase** verifies Auth JSON Web Tokens (JWTs) only. It is not the product database.
+- Public convert, lint, validate, and disseminate routes need no JWT.
+- Optional Supabase Auth gates long-term work sessions (`/api/v1/work-sessions*`).
+- A near-realtime ingest worker (feature F8) writes to the same product Postgres.
+- Dissemination uses one-shot Bring Your Own Credentials (**BYOC**): pasted secrets
+  stay in memory only, with Server-Side Request Forgery (SSRF) controls and a required
+  egress allowlist.
+- The multi-product operator UI is the umbrella product track. **Quality metrics**
+  (list + detail) is live on **staging**. Promote to production is deferred.
 
 ## System Architecture
 
@@ -46,9 +72,10 @@ apps/worker (DOKS — F8)
    └── DATABASE_URL → DigitalOcean Postgres (store/quarantine; no Supabase DB)
 ```
 
-`packages/gifts` remains absent (ADR-014). Supabase product PostgREST/DB is **out**; Auth only.
-One-time migrate of legacy Supabase `tac_work_sessions` (and related) into DO Postgres this cycle
-(`D-S038-spec-data` Q3=2). Alembic (or backend migration path) targets `DATABASE_URL`.
+`packages/gifts` remains absent (ADR-014). Supabase product PostgREST and product DB
+are **out**. Auth only. One-time migrate of legacy Supabase `tac_work_sessions` (and
+related) into DigitalOcean Postgres this cycle (`D-S038-spec-data` Q3=2). Alembic (or
+the backend migration path) targets `DATABASE_URL`.
 
 ### Repository (target tree)
 
@@ -62,6 +89,7 @@ TAC-to-IWXXM/
 ├── packages/
 │   ├── auth/             # Supabase Auth JWT library (not a deployable)
 │   ├── tac2iwxxm/        # General TAC→IWXXM (F6); MIT; PyO3 required at cutover
+│   ├── reference-lookup/ # Station and navaid coordinates for convert (F6 / ADR-051)
 │   ├── tac-validate/     # TAC lint + business rules
 │   ├── iwxxm-validate/   # XSD + Schematron (F2); vendor consumers
 │   ├── dissemination/    # F16–F19 sinks / writer-contract / SSRF (ADR-030)
@@ -85,13 +113,17 @@ TAC-to-IWXXM/
 
 ### Component Overview
 
+The table below maps each major component to its purpose, path, and main
+dependencies. Later sections (**Component Details**) expand each row.
+
 | Component | Purpose | Location | Dependencies |
 |-----------|---------|----------|--------------|
 | Backend API | Conversion, validation, auth; **Done** F16–F19 dissemination preflight/send (BYOC, memory-only); rule-catalog aggregator (ADR-044) | `apps/backend/` | tac2iwxxm, tac-decoding, tac-validate, iwxxm-validate, dissemination, auth, shared, vendor |
 | Frontend | Operator UI (workbench, decode, F7 sessions, five trust catalogs; F16–F19 drawer; **ADR-044** Profile Builder authoring retired → dropdowns) | `apps/frontend/` | shared (types); CodeMirror 6 |
 | E2E workspace | Cross-app tests | `apps/e2e/` | backend, frontend |
 | Auth library | Supabase Auth JWT middleware (Auth-only) | `packages/auth/` | supabase-py / JWT verify |
-| tac2iwxxm | TAC → IWXXM (7 products, bulletin split, profiles); decode re-export window (ADR-044) | `packages/tac2iwxxm/` | tac-validate (optional), tac-decoding (re-export), vendor; PyO3 required at cutover (ADR-017) |
+| tac2iwxxm | TAC → IWXXM (7 products, bulletin split, profiles); decode re-export window (ADR-044) | `packages/tac2iwxxm/` | tac-validate (optional), tac-decoding (re-export), reference-lookup, vendor; PyO3 required at cutover (ADR-017) |
+| reference-lookup | Station and navaid coordinates for convert (F6 / ADR-051) | `packages/reference-lookup/` | OurAirports public-domain files; checked-in table remains the fallback |
 | tac-decoding | TAC → natural-language decode + glossary + Decoding catalog (F9 / ADR-044) | `packages/tac-decoding/` | — (no FastAPI/Supabase); MIT; PyPI `tac-decoding` |
 | tac-validate | TAC lint / shared rule pack | `packages/tac-validate/` | — (no FastAPI/Supabase) |
 | iwxxm-validate | XSD + Schematron (F2 engine) | `packages/iwxxm-validate/` | vendor schemas (read-only) |
@@ -109,7 +141,7 @@ Epic [#922](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/922) describes a **l
 (**Core → Profiles → Validation → Adapters → Dissemination**). Spike [#923](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/923)
 and [ADR-037](adr/ADR-037-platform-logical-layers.md) **keep current package names** (Option C) and map
 epic layers onto the monorepo below. Physical renames/splits (Option B) require a later evolve cycle
-after contract spikes #924–#927 close — **those spikes are now closed (ADR-038–042, EV-922 synthesis 2026-09-03).**
+after contract spikes #924–#927 close; **those spikes are now closed (ADR-038–042, EV-922 synthesis 2026-09-03).**
 
 | Logical layer | Purpose | Current home(s) | Contract (ADR) | Runtime gap |
 |---------------|---------|-----------------|----------------|-------------|
@@ -125,11 +157,13 @@ after contract spikes #924–#927 close — **those spikes are now closed (ADR-0
 | **Auth** | JWT middleware | `packages/auth` | — | Out of MET platform layers |
 | **Apps** | HTTP / UI / worker / e2e | `apps/backend`, `frontend`, `worker`, `e2e` | — | Thin callers — no package move |
 
+**Residual YAML (ADR-049 / #1252):** detector hatch behavior moves into declarative detector YAML where the DSL can express it; decode airport names use a file/env YAML ICAO→name table (`set_location_name_resolver` remains an optional override); emit stays Python builders selected by emit-map `plugin:`, with a golden that an overlay swap changes output. No Schematron-as-YAML, no HTTP YAML bodies, no operator UI. Public `convert` and `decode_tac` wire stay stable.
+
 **Approved milestone sequence** (epic #922 synthesis): Core → Profiles (#912/#924) → Validation (#925) →
 Adapters (#926) → Dissemination (#927) → Workflows (#931) → Platform UIs (#933–#938).
 
-**References:** Context: platform-package-layout-923 (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate);
-Context: epic-922-synthesis (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate);
+**References:** Context: platform-package-layout-923 (archived; see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate);
+Context: epic-922-synthesis (archived; see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate);
 EV-922 session `reports/923-platform-package-layout.md`; EV-922-synthesis `reports/922-epic-synthesis.md`.
 
 ## Component Details
@@ -141,8 +175,8 @@ EV-922 session `reports/923-platform-package-layout.md`; EV-922-synthesis `repor
   `/api/v1/work-sessions*` (F31). Convert/lint/validate/disseminate remain **public** (no JWT)
   with abuse controls (F21 Amended). **No** `/admin/*` (F7.a / #697).
 - **Data**: Product DB = **DigitalOcean Postgres** (`DATABASE_URL`). Supabase used only to
-  **verify** Auth JWTs — no product PostgREST writes.
-- **Migrations**: Alembic (or backend migration path) against `DATABASE_URL` — not Supabase CLI
+  **verify** Auth JWTs; no product PostgREST writes.
+- **Migrations**: Alembic (or backend migration path) against `DATABASE_URL`, not Supabase CLI
   as SoT (`D-S038-spec-data`).
 - **S038 / EV-031**: Restore Auth library + session APIs; F8/store co-located on same DO DB;
   one-time migrate legacy Supabase session rows into DO.
@@ -153,7 +187,7 @@ EV-922 session `reports/923-platform-package-layout.md`; EV-922-synthesis `repor
 - **EV-063 / F35 delta (#912)**: Profile plugins evolve from flat `annex3` / `iwxxm_us` to
   **semantic** ids (`ICAO_2025`, `US_FAA_NWS`, …) with legacy aliases until #1025 cutover.
   **Exchange** profiles (`GLOBAL_AFS`, `APAC_ROBEX`, …) apply on packaging paths in
-  `packages/dissemination` — not in the TAC lexer. See [ADR-036](adr/ADR-036-semantic-vs-exchange-profiles.md)
+  `packages/dissemination`, not in the TAC lexer. See [ADR-036](adr/ADR-036-semantic-vs-exchange-profiles.md)
   and [domain/profiles/](domain/profiles/).
 - **Purpose**: General TAC→IWXXM library (F6). Python public API → **bulletin split** (WMO AHL)
   → versioned IR → product plugins → profile plugins (`annex3` / `iwxxm_us` → **F35** semantic ids)
@@ -164,7 +198,7 @@ EV-922 session `reports/923-platform-package-layout.md`; EV-922-synthesis `repor
 - **S011 deltas**: Decode/annotate ordered segments (`start`/`end` + short explanation);
   soft-preview / partial convert hooks returning best-effort XML + failed spans. VAA/TCA spans
   may be best-effort with explicit residuals (G4).
-- **S013 delta (F9)**: `decode_tac` explanations become **value-aware** (parsed values —
+- **S013 delta (F9)**: `decode_tac` explanations become **value-aware** (parsed values:
   temps, wind direction/speed/gusts, visibility, pressure, times, change groups) for all
   seven products (sparse ones best-effort), and the result gains a deterministic
   plain-language `summary` paragraph ("Not decoded: …" clause when residuals exist;
@@ -174,16 +208,16 @@ EV-922 session `reports/923-platform-package-layout.md`; EV-922-synthesis `repor
   `[validate]` depends on `tac-validate` + `iwxxm-validate`. Public convert API documented for
   third-party install.
 - **S020 / EV-015 delta (F20)**: Deepen **TAF (F6.c)** and **SPECI (F6.b)** convert/golden
-  fidelity — exceptional-rule tables from #735/#734; guidance + 2025-2 corrections; expanded
+  fidelity: exceptional-rule tables from #735/#734; guidance + 2025-2 corrections; expanded
   annex3 / `iwxxm_us` goldens; convert → `iwxxm-validate` round-trip. Roots `iwxxm:TAF` /
   `iwxxm:SPECI`.
-- **S025 / EV-019 delta (F23)**: Deepen **SIGMET (F6.d)** — general `iwxxm:SIGMET` plus
+- **S025 / EV-019 delta (F23)**: Deepen **SIGMET (F6.d)**: general `iwxxm:SIGMET` plus
   content-selected **`iwxxm:VolcanicAshSIGMET`** (VA phenomenon / WV AHL; still
   `product=sigmet` on HTTP). Exceptional-rule tables from #733/#739; guidance + 2025-2
   corrections; expanded goldens; convert → `iwxxm-validate` round-trip. TC SIGMET OOS (#738).
-- **S027 / EV-021 delta (F26/F27)**: Deepen **VAA (F6.f)** + **TCA (F6.f)** WMO golden bar —
+- **S027 / EV-021 delta (F26/F27)**: Deepen **VAA (F6.f)** + **TCA (F6.f)** WMO golden bar:
   `canonicalize_xml` under defaults; see feature-list F26/F27 (**Done**).
-- **S030 / EV-023 delta (#800)**: Cross-product encode correctness deepen — NSC vs layered
+- **S030 / EV-023 delta (#800)**: Cross-product encode correctness deepen: NSC vs layered
   cloud; Guidance nils (`common/nil` vs `iwxxm/nil`); `translationFailedTAC` quarantine;
   dual-register colour href policy (offline vendor RDF/CSV); iwxxm-translation Amd79-80-2023
   TAC → 2025-2 as **informative** (no 2023-1 XML byte-match); default omit `translationCentre*`
@@ -199,14 +233,18 @@ EV-922 session `reports/923-platform-package-layout.md`; EV-922-synthesis `repor
   `products/*.py`. Selective delete-gate: all-or-nothing per shared parser file when
   in-bar peers are byte-identical; keep files that fail. Does not merge packages.
 - **SoC**: **No** FastAPI or Supabase imports.
+- **EV-1307 / #1308 Conversion catalog**: Package-owned Conversion trust-catalog rows
+  (aggregated as `GET /api/v1/rule-catalogs?family=conversion`) are one row per semantic
+  profile with a 1–3 sentence operator `summary` and `issue_type=profile` (`policy`
+  reserved). Descriptions prefer existing profile registry / ADR-036 prose (EV-048 clean).
 - **Runtime**: Pure Python v0; optional **Rust/PyO3** hotspots after benchmarks (not Cython).
 - **License**: MIT.
 - **IR**: **msgspec.Struct** (ADR-016); HTTP high-churn paths also msgspec (ADR-026).
 - **Source**: [feature-list.md](feature-list.md) F6/F14/F20/F23/F26/F27; ADR-013; ADR-014; ADR-026;
-  evolve-decisions EV-023; context/general-tac-iwxxm-converter.md (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate);
-  context/package-publish-validation.md (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate);
-  context/aerodrome-quality.md (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate);
-  context/sigmet-quality.md (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate).
+  evolve-decisions EV-023; context/general-tac-iwxxm-converter.md (archived; see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate);
+  context/package-publish-validation.md (archived; see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate);
+  context/aerodrome-quality.md (archived; see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate);
+  context/sigmet-quality.md (archived; see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate).
 
 ### packages/tac-decoding
 
@@ -216,6 +254,11 @@ EV-922 session `reports/923-platform-package-layout.md`; EV-922-synthesis `repor
 - **Location**: `packages/tac-decoding/`
 - **Constraints**: No FastAPI/Supabase imports. Catalog rows are read-only trust metadata
   (EV-048: no internal doc refs in operator-facing strings).
+- **EV-1307 / #1308 catalog deepen**: Decoding catalog export may include additive
+  `issue_type` (EV-062 vocabulary), optional `severity`, `source_*`, and optional
+  `conform_note`. Null/omit when unknown; FE must not invent defaults. Prefer `content`
+  for glossary tokens that explain TAC groups/codes; best-effort public sources only.
+  Aggregated via `GET /api/v1/rule-catalogs?family=decoding` (ADR-044).
 - **Migration**: Logic moves from `tac2iwxxm.decode` / `glossary`; `tac2iwxxm` re-exports for
   one release then deprecates those entry points. **ADR-045** keeps the shims, the legacy
   parsers, and the multi-pin compares.
@@ -240,23 +283,23 @@ EV-922 session `reports/923-platform-package-layout.md`; EV-922-synthesis `repor
   (parse gate + rules). **Not** Schematron.
 - **Inputs**: TAC text or bulletin fragments; product hint when known.
 - **Outputs**: Structured issue list (severity, code, message, location; optional integer
-  `start`/`end` character offsets for editor highlight — S011).
+  `start`/`end` character offsets for editor highlight; S011).
 - **S013 delta (F10)**: Severity enum `error | warning | info`; `ok` computed from `error` only.
   `MISSING_TERMINATOR` → `info` with actionable copy + paired `add_terminator` fix entry
   (`replacement` = text with `=` appended) powering the UI quick fix. ADR-025.
 - **S014 / EV-010 delta (F12)**: Published to PyPI `tac-validate` `0.1.0`; encode mined
-  `docs/domain/` rules — full depth METAR/SPECI/TAF; SIGMET/AIRMET/VAA/TCA templates + gates;
+  `docs/domain/` rules: full depth METAR/SPECI/TAF; SIGMET/AIRMET/VAA/TCA templates + gates;
   cite-only for paywalled Annex text. CLI for CI.
 - **S015 / EV-011 delta (F15)**: **Issue registry** module is the single source of lint
   `code` + default `severity` + message template (ADR-028). Rules import registry entries;
   docs/generated catalog lists codes. METAR rule pack expanded (R1–R6 + opportunistic);
   CI rejects unknown codes. Public codes stable; severities may tighten in minor releases.
   Workbench METAR lint+convert smoke under F15 (F7 status unchanged).
-- **S020 / EV-015 delta (F20)**: Same registry — add/extend **TAF** codes and deepen **SPECI**
+- **S020 / EV-015 delta (F20)**: Same registry; add/extend **TAF** codes and deepen **SPECI**
   rules/fixtures to the #734 full quality bar (not residual-only). Coverage-matrix TAF + SPECI
   rows; exceptional-rule accept/negative packs. Workbench `product=taf` / `product=speci` smoke
   under F20 (F7 status unchanged). No new registry architecture (ADR-028 reuse).
-- **S025 / EV-019 delta (F23)**: Same registry — add/extend **SIGMET** (+ VA SIGMET) codes and
+- **S025 / EV-019 delta (F23)**: Same registry; add/extend **SIGMET** (+ VA SIGMET) codes and
   fixtures to the #733/#739 full quality bar. Coverage-matrix themes G1–G3 / V1–V3 / C1;
   exceptional-rule accept/negative packs. Workbench `product=sigmet` (+ VA fixture) smoke
   under F23 (F7 status unchanged). No new registry architecture (ADR-028 reuse).
@@ -271,19 +314,24 @@ EV-922 session `reports/923-platform-package-layout.md`; EV-922-synthesis `repor
 
 ### packages/iwxxm-validate
 
-- **Purpose**: F2 engine — XSD + Schematron validation of IWXXM XML against vendored schemas.
+**Developer experience (EV-layout-dx):** Public jobs must be reachable from plain
+module and symbol names. See [Corpus: package-dx]. Pilot: Canonical XML helpers
+for Quality Metrics compare use a clear primary path (not jargon-only `c14n`),
+with aliases during one CalVer window. DX tests: `TC-DX-001`…`TC-DX-004`.
+
+- **Purpose**: F2 engine: XSD + Schematron validation of IWXXM XML against vendored schemas.
 - **Inputs**: IWXXM XML; `iwxxm_version`; optional `profile` (US catalogs when `iwxxm_us`).
 - **Outputs**: Validation report (pass/fail + messages).
 - **S014 / EV-010 delta (F13)**: **Rust core** (well-formed + XSD + native Schematron/SVRL)
   via PyO3; Python SDK; pinned schemas **bundled** in the wheel; PyPI `iwxxm-validate` `0.1.0`.
   Parity suite vs historical lxml isoschematron. Optional **XSD-derived** typed models
-  (codegen; F11) — UML modelling is provenance only; TAC has no official model.
+  (codegen; F11); UML modelling is provenance only; TAC has no official model.
 - **S030 / EV-023 delta (#800)**: SCH/XSD **negative** fixtures for NSC+layers; dual-register
   colour / dual nil RDF policy tests under offline vendor SoT (v2025-2 pin).
 - **SoC**: **No** FastAPI or Supabase imports; **read-only** consumption of `vendor/schemas/*`
   (and bundled copies in published wheels).
-- **Source**: feature-list F2/F13; context/realtime-tac-ingest.md (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate);
-  context/package-publish-validation.md (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate);
+- **Source**: feature-list F2/F13; context/realtime-tac-ingest.md (archived; see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate);
+  context/package-publish-validation.md (archived; see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate);
   evolve-decisions EV-023.
 - **EV-validation-policy-layers / ADR-046 (#1216)**: Assert inventory + IWXXM output policy
   runtime (enable/disable by assert id; Schematron bundle refs). XSD/well-formed always error.
@@ -298,7 +346,7 @@ EV-922 session `reports/923-platform-package-layout.md`; EV-922-synthesis `repor
 
 - **Purpose**: Read-only copies of upstream schema repositories at pinned tags.
 - **Inputs**: `vendor/manifest.json` pins; sync script/Action fetches release artifacts
-  (wmo-im iwxxm-* and IWXXM-US — URL/tag TBD in 04).
+  (wmo-im iwxxm-* and IWXXM-US; URL/tag TBD in 04).
 - **Outputs**: XSD, Schematron, codelist files consumed by `iwxxm-validate` and tac2iwxxm.
 - **Constraints**: **No direct edits** in monorepo except manifest version bumps via sync PRs.
 - **Source**: REQ-002, REQ-012; ADR-013/014.
@@ -327,7 +375,7 @@ EV-922 session `reports/923-platform-package-layout.md`; EV-922-synthesis `repor
 - **F7.r accumulate ZIP (EV-057 / #903)**: Workbench accumulates sequential successful IWXXM
   results; Download all → one ZIP; default stem ≈ first 8 sanitized TAC chars of first
   success + timestamp; clear/reset; soft cap **≤200**. Dissemination multi-select unchanged.
-- **F7.s validate-only (EV-057 / #838)**: Dedicated Validate mode — paste or single `.xml`
+- **F7.s validate-only (EV-057 / #838)**: Dedicated Validate mode: paste or single `.xml`
   upload via existing `POST /api/v1/validate` (reuse unless 04 finds a gap); F4
   version/profile parity; guest-usable. Orthogonal to Quality metrics.
 - **F7.t IWXXM product (EV-060 / #1003)**: Product select includes **IWXXM**. Pass-through:
@@ -350,11 +398,11 @@ EV-922 session `reports/923-platform-package-layout.md`; EV-922-synthesis `repor
   Upload accept: `.txt`, `.metar`, `.tac`.
 - **F7 delta (S011; F21 amend)**: Debounced **public** calls to lint/decode/validate/preview with
   AbortController; span highlight + hover; collapsible Code|Explanation decode panel; toggleable
-  live IWXXM; pull-up console; **local** F7.h session persist/resume (IndexedDB — not server).
+  live IWXXM; pull-up console; **local** F7.h session persist/resume (IndexedDB, not server).
 - **F7 input modes (ADR-024)**: TAC | AHL bulletin (`/convert-bulletin`) | IWXXM COLLECT
   (`/ingest-collect` 501 placeholder). Accept `.xml`/`.gz` (inflate). `log_level` +
   `include_nil_reasons` on Convert. Log Level filters Conversion log + console for lint/validate
-  process messages. **Validation**: UJ-025 / TC-F7-007 (S016 / EV-012 / #730) — auto-switch
+  process messages. **Validation**: UJ-025 / TC-F7-007 (S016 / EV-012 / #730): auto-switch
   required; COLLECT 501 honest UX; F7 status unchanged.
 - **F7.g golden examples (S021 / EV-016 / #780)**: Static frontend catalog (copied package
   goldens) + Examples control in FileConverter; loads TAC / AHL / happy-path IWXXM into
@@ -364,11 +412,22 @@ EV-922 session `reports/923-platform-package-layout.md`; EV-922-synthesis `repor
   `product IN (metar, speci)` local filter; **no** `/api/v1/work-sessions`.
 - **F9/F10 delta (S013)**: Decode panel gains a top **"Plain language"** block rendering the
   backend `summary` live (existing debounce path). New **side-by-side IWXXM preview pane**
-  (stacked < `lg`) anchors Soft-preview / Live IWXXM output — pretty-printed XML + status
+  (stacked < `lg`) anchors Soft-preview / Live IWXXM output: pretty-printed XML + status
   badge ("Soft preview — not for publish" plain-language copy vs "Passed") + failed-span
   count linked to editor highlights. Lint console renders `info` severity distinctly with a
   one-click **"Add `=`"** quick fix (also as editor affordance on the hint span). ADR-025.
-- **Source**: F6-R5; feature-list F6/F7/F9/F10/F21/F22; context/f7-operator-ui.md (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate).
+- **Source**: F6-R5; feature-list F6/F7/F9/F10/F21/F22; context/f7-operator-ui.md (archived; see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate).
+
+### F37 — Live TAC map (EV-globe-live-map)
+
+- **Purpose**: Guest-visible Leaflet map of current aviation weather on Decode visuals. The API timer pulls Aviation Weather Center feeds, stores every fetched location, translates at most 40 reports per tick, and serves the cache. [Corpus: product §F37] [Corpus: adr/ADR-052]
+- **Home**: `apps/frontend` Decode visuals and `apps/backend` live-map router plus the existing database. The F8 worker stays at 0 replicas.
+- **Read path**: `GET /api/v1/live-map` is public. It returns places already in the cache for the requested box and families. It does not call a feed.
+- **Write path**: About every 5 minutes the API process stores every fetched location and text. It translates and lints at most 40 reports. A stored place is drawn before IWXXM exists. Three reports per place, newest first.
+- **Map**: Leaflet with the current tiles. World zoom draws one marker per continent that has reports. The next zoom draws sub-region markers. A closer zoom draws each station and shape on its own product layer. Colors are fixed: METAR `#1d4ed8`, SPECI `#0369a1`, TAF `#0f766e`, AIRMET `#c2410c`, G-AIRMET `#a16207`, SIGMET `#b91c1c`, volcanic ash `#6d28d9`, tropical cyclone `#be185d`, volcano notice `#4338ca`. Fills and outlines differ. The newest report is solid. The two earlier reports are faded. Hover highlights the shape. Co-located airport reports are offset and each has a type chip. [Corpus: product §F37]
+- **Hover**: The card shows the product, issue time, and station, or Area when there is no airport. Scrollable TAC sits to the right on a wide screen and below the metadata on a narrow screen. The card opens on the newest stored report. A control selects an earlier copy. Clicking the shape or the card loads that copy into the converter above the map. Stored IWXXM stays off the map list.
+- **Filters**: Group headings stay. Each product is its own checkbox and layer, including `gairmet` under Hazards. Space weather is a list, never a pin. The list uses `#0e7490` when it has rows. This cycle does not add a space-weather feed. Country, region, issue time, and hazard phenomenon filter the loaded view in the browser. They are not `GET /api/v1/live-map` parameters. Country defaults to all countries and uses the existing airport country for ICAO stations; Area reports stay. Region defaults to all regions and uses the existing continent and sub-region names. Time defaults to all reports, with presets for the last hour, last 6 hours, and last 24 hours, judged from the newest report. Phenomenon checkboxes start off. IFR, Turbulence, Icing, and Thunderstorms apply only to AIRMET, G-AIRMET, and SIGMET. A hazard stays when its newest TAC matches any checked phenomenon. [Corpus: product §F37]
+- **Must not change**: Convert and validate response bodies, guest access, station search, continent and sub-region zoom, the tile source, and the live-map query parameters.
 
 ### Runtime configuration (`config/`)
 
@@ -395,7 +454,7 @@ EV-922 session `reports/923-platform-package-layout.md`; EV-922-synthesis `repor
 
 - **Purpose**: Operator UI for seven F6 products + hybrid sessions (**F7.i** / F31).
 - **Slices**: F7.a–F7.h as before; **F7.i** restores JWT session APIs to DO Postgres for logged-in users.
-- **F7.w (EV-933 / #933)**: ConversionProfile editor — rule-pack CRUD, ADR-038 inspector,
+- **F7.w (EV-933 / #933)**: ConversionProfile editor: rule-pack CRUD, ADR-038 inspector,
   signed operator overlays on product Postgres (`DATABASE_URL`) with JWT ownership; UJ-072.
   Complements light picker (#1024); does not merge destinations/credentials into profiles.
 - **EV-1120 / #1145 delta on F7.w**: keep the workbench Profile affordance compact while making
@@ -423,7 +482,7 @@ EV-922 session `reports/923-platform-package-layout.md`; EV-922-synthesis `repor
   validate-yaml require JWT (see §#1196 / §#1203).
 - **Source**: S011; S023 F7.h; **S038 / EV-031 F7.i**; **EV-933 F7.w**; **EV-080 / #1146**;
   **#1196**; **#1203**;
-  Context: conversion-profile-editor-933 (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate);
+  Context: conversion-profile-editor-933 (archived; see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate);
   Context: [profile-builder-workbench-edit](context/profile-builder-workbench-edit.md) (scoped; not a CORPUS design gate).
 
 ### F21 — Public convert + optional Auth (Amended S038 / EV-031)
@@ -447,17 +506,17 @@ EV-922 session `reports/923-platform-package-layout.md`; EV-922-synthesis `repor
   results (operator dissemination sinks are **F16–F19**, not F8 auto-push).
 - **Source**: ADR-018; **F30**; [feature-list.md](feature-list.md) F8.
 - **EV-1132 / #1132**: Cut over to `packages/workflows.execute` + `workflows/f8-metar-ingest-default.yaml`
-  (ADR-042). See Context: workflows-runtime-1132 (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate).
+  (ADR-042). See Context: workflows-runtime-1132 (archived; see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate).
 
 ### packages/workflows (ADR-042 / EV-1132)
 
-- **Purpose**: Thin MET-lib workflow executor — load git `workflows/*.yaml`, run fixed stage
+- **Purpose**: Thin MET-lib workflow executor: load git `workflows/*.yaml`, run fixed stage
   registry (`validate-tac` → `convert-iwxxm` → `validate-xsd` / `validate-schematron` for MVP),
   return `WorkflowResult`. Apps remain thin callers.
 - **SoC**: **No** FastAPI, Supabase, or SQLAlchemy; store/quarantine via injected ports.
-- **Status**: **Implemented** (EV-1132 / #1132) — contract Accepted in ADR-042.
+- **Status**: **Implemented** (EV-1132 / #1132); contract Accepted in ADR-042.
 - **Source**: [ADR-042](adr/ADR-042-workflow-definitions.md);
-  Context: workflows-runtime-1132 (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate).
+  Context: workflows-runtime-1132 (archived; see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate).
 
 ### F30 — Platform independence (S038 / EV-031)
 
@@ -466,7 +525,7 @@ EV-922 session `reports/923-platform-package-layout.md`; EV-922-synthesis `repor
 
 ### F31 — Hybrid operator sessions (S038 / EV-031)
 
-- **Purpose**: Guest local + notice; logged-in DO sessions; auto-upload; F22 interplay.
+- **Purpose**: Guest local + notice; logged-in DO sessions; auto-upload; F22 interaction.
 - **Source**: [feature-list.md](feature-list.md) F31.
 
 ### F16–F19 deepen — Gateway hooks + ops UI (EV-936 / #936) — Planned
@@ -477,7 +536,7 @@ EV-922 session `reports/923-platform-package-layout.md`; EV-922-synthesis `repor
   drawer. JWT for ops/plan/audit/mapping/health; public preflight/send unchanged (F21).
 - **Non-goals**: #933/#934/#938; live AFTN/failover features; secrets in audit UI; new packages.
 - **Source**: [feature-list.md](feature-list.md) §F16–F19 deepen (EV-936);
-  Context: dissemination-ops-936 (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate); ADR-041 / ADR-040;
+  Context: dissemination-ops-936 (archived; see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate); ADR-041 / ADR-040;
   [evolve-decisions.md](decisions/evolve-decisions.md) §EV-936; UJ-071.
 
 ### F16–F19 — Dissemination epic (S019 / EV-014) — Done
@@ -492,14 +551,14 @@ EV-922 session `reports/923-platform-package-layout.md`; EV-922-synthesis `repor
   **≤20**; Finished IndexedDB history and batched multi-payload API **out of scope** v1.
   F17–F19 reuse the same selection UI contract.
 - **F16 deepen (S047 / EV-039)**: Live local multi-DB SQL ingest via Playwright against
-  `docker-compose.mock-byoc.yml` (Postgres / MySQL / SQL Server + disposable SQLite); separate
+  `docker-compose.yml` profile `mock-byoc` (Postgres / MySQL / SQL Server + disposable SQLite); separate
   from mocked H6′; mandatory teardown across integration / e2e / local Compose. No new
-  components — test/harness deepen of existing drawer + `packages/dissemination`.
+  components; test/harness deepen of existing drawer + `packages/dissemination`.
   [Corpus: product §F16] [Corpus: tests]
-- **F17**: WIS2 publish — staging wis2box harness for test; live BYOC waived at EV-014 close (Q15).
-- **F18**: EDIS-compliant submit to RTH Washington — BYOC SMTP/gateway in drawer; live waived (Q15).
+- **F17**: WIS2 publish; staging wis2box harness for test; live BYOC waived at EV-014 close (Q15).
+- **F18**: EDIS-compliant submit to RTH Washington; BYOC SMTP/gateway in drawer; live waived (Q15).
 - **F19**: AMHS / SWIM / AFS adapters in the same drawer (staging stubs; live optional).
-- **Auth / F5**: Public dissemination (F21 — no operator JWT). Local session may record
+- **Auth / F5**: Public dissemination (F21; no operator JWT). Local session may record
   `kv_upload_key` on Finished in IndexedDB only; never store destination secrets.
 - **Status**: **Done** (EV-014 closed 2026-07-21; PR #771/#772). Multi-select deepen EV-018;
   live local SQL e2e deepen S047 / EV-039. **EV-091 / #898**: Operator UI destinations
@@ -518,28 +577,28 @@ EV-922 session `reports/923-platform-package-layout.md`; EV-922-synthesis `repor
   dissemination destinations this cycle).
 - **Caps**: ≤200 files; ≤5 MiB each; ≤50 MiB total unzipped. May require raising
   `MAX_REQUEST_BODY_BYTES` or a dedicated mass-ingest limit (Gate A decision).
-- **Status**: **Planned** — [feature-list.md](feature-list.md) §F33; UJ-051; TC-F33-*.
+- **Status**: **Planned**; [feature-list.md](feature-list.md) §F33; UJ-051; TC-F33-*.
 - **Source**: #897; evolve-decisions EV-042; [Corpus: api] mass ingest section.
 
 ### F20 — TAF + SPECI quality bar (S020 / EV-015) — Done
 
-- **Purpose**: F15 sequel — raise **TAF** (#735) and **SPECI** (#734) lint / convert /
+- **Purpose**: F15 sequel: raise **TAF** (#735) and **SPECI** (#734) lint / convert /
   IWXXM-validate quality to the METAR/SPECI bar. Reuse ADR-028 registry; deepen F6.b/F6.c and F12.
 - **Encode authority**: WMO `TAC-to-XML-Guidance.txt` + 2025-2 corrections (no `runwayState`);
   FM 205 / Manual on Codes I.3; pinned XSD + Schematron.
 - **TAF exceptional rules** (fixtures or explicit deferrals): NIL, CNL, AMD, COR, CAVOK, NSC,
   NSW, VV///, FM/TL/AT, TX/TN on base forecast, change groups FM/BECMG/TEMPO/PROB.
-- **SPECI**: Full #734 AC parallel to TAF — shared METAR/SPECI pack + mis-classification guards
+- **SPECI**: Full #734 AC parallel to TAF; shared METAR/SPECI pack + mis-classification guards
   (Auto-detect / product hint never silent-swap SPECI↔METAR).
 - **Status**: **Done** (S020 / EV-015; #778).
 - **Non-goals**: Sibling product-quality tickets; PyPI bumps; F16–F19 changes; new ADR unless
   registry architecture changes.
-- **Source**: [feature-list.md](feature-list.md) F20; #735/#734; context/aerodrome-quality.md (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate);
+- **Source**: [feature-list.md](feature-list.md) F20; #735/#734; context/aerodrome-quality.md (archived; see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate);
   evolve-decisions EV-015; ADR-028.
 
 ### F23 — SIGMET family quality bar (general + VA) (S025 / EV-019) — Done
 
-- **Purpose**: F15/F20 sequel — raise **General SIGMET** (#733) and **VA SIGMET** (#739)
+- **Purpose**: F15/F20 sequel: raise **General SIGMET** (#733) and **VA SIGMET** (#739)
   lint / convert / IWXXM-validate quality. Reuse ADR-028 registry; deepen F6.d and F12.
 - **Encode authority**: WMO `TAC-to-XML-Guidance.txt` + 2025-2 corrections; FM 205 /
   Manual on Codes I.3; pinned XSD + Schematron; EUR Doc 014 (public TAC shape) cite-only.
@@ -557,7 +616,7 @@ EV-922 session `reports/923-platform-package-layout.md`; EV-922-synthesis `repor
   new `product` enum (E19-13). FE: **additive catalog filters for SIGMET/VA tags** in scope
   (E19-17=B amends E19-14); new ADR unless registry architecture changes.
 - **Source**: [feature-list.md](feature-list.md) F23; #733/#739;
-  context/sigmet-quality.md (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate); evolve-decisions EV-019; ADR-028.
+  context/sigmet-quality.md (archived; see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate); evolve-decisions EV-019; ADR-028.
 
 ### F24 — AIRMET quality bar (S026 / EV-020) — Done
 
@@ -597,7 +656,7 @@ EV-922 session `reports/923-platform-package-layout.md`; EV-922-synthesis `repor
 
 - **Purpose**: #737 TCA (`iwxxm:TropicalCycloneAdvisory`) quality peer. WMO
   `tc-advisory-A2-2` golden under defaults. Themes **F27 T1–T3 / C1**. Do not confuse with
-  TC SIGMET (`iwxxm:TropicalCycloneSIGMET` — quality path absorbed in **S036 / EV-029 / #738**).
+  TC SIGMET (`iwxxm:TropicalCycloneSIGMET`; quality path absorbed in **S036 / EV-029 / #738**).
 - **Status**: **Done** (S027 / EV-021; PR #794). **Deepen**: S036 / EV-029 (#820 / #823 B4).
 - **API**: `product=tca` already in enum; no new routes.
 - **Journeys / tests**: UJ-038; TC-F27-001..006; deepen UJ-032 / TC-F7-008.
@@ -619,7 +678,7 @@ EV-922 session `reports/923-platform-package-layout.md`; EV-922-synthesis `repor
 - **Journeys / tests**: **UJ-043**; TC-F28-001..006; cycle TC-EV029-*.
 - **Non-goals**: VONA #741; SIGWX / QVACI; dissemination sink UI; GIFTs-as-normative.
 - **Source**: feature-list F28; evolve-decisions EV-029;
-  Context: eight-family-ahl-rules-823 (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate).
+  Context: eight-family-ahl-rules-823 (archived; see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate).
 
 ### S036 / EV-029 — Eight-family AHL / lint / convert / validate (#823)
 
@@ -644,7 +703,7 @@ EV-922 session `reports/923-platform-package-layout.md`; EV-922-synthesis `repor
 - **Journeys / tests**: **UJ-044**; TC-F29-001..007; cycle TC-EV030-*.
 - **Non-goals**: 100% Annex-3 coverage in first PR; live network/Supabase coupling.
 - **Source**: feature-list F29; evolve-decisions EV-030;
-  Context: quality-residuals-831 (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate); #831.
+  Context: quality-residuals-831 (archived; see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate); #831.
 
 ### S037 / EV-030 — Quality residuals #831 / #829 / #820
 
@@ -660,7 +719,7 @@ EV-922 session `reports/923-platform-package-layout.md`; EV-922-synthesis `repor
 ### F32 — VONA quality bar (S040 / EV-032) — Planned
 
 - **Purpose**: #741 Volcano Observatory Notice for Aviation
-  (`iwxxm:VolcanoObservatoryNoticeForAviation`) quality peer to F15–F28. Guidance file silent —
+  (`iwxxm:VolcanoObservatoryNoticeForAviation`) quality peer to F15–F28. Guidance file silent;
   XSD + SCH + `vona-A7-1` + PANS-MET. Full F7 product surface this cycle (`D-S040-E32-M` Q2=3).
 - **Status**: **Planned** (S040 / EV-032; epic #846).
 - **API**: Additive **`product=vona`** on convert / convert-bulletin / lint-tac / decode-tac
@@ -670,7 +729,7 @@ EV-922 session `reports/923-platform-package-layout.md`; EV-922-synthesis `repor
 - **Journeys / tests**: **UJ-045**; TC-F32-001..006; cycle TC-EV032-*.
 - **Non-goals**: Metrics UI #836; SIGWX / QVACI; vendor hand-edits.
 - **Source**: feature-list F32; evolve-decisions EV-032;
-  Context: iwxxm-corpus-quality-846 (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate); #741.
+  Context: iwxxm-corpus-quality-846 (archived; see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate); #741.
 
 ### S040 / EV-032 — Official IWXXM corpus quality / WMO source parity (#846)
 
@@ -690,7 +749,7 @@ EV-922 session `reports/923-platform-package-layout.md`; EV-922-synthesis `repor
 ### S030 / EV-023 — APAC FAQ + codes encode/validate deepen (#800)
 
 - **Purpose**: Cross-cutting encode/lint/SCH deltas from APAC FAQs, codes.wmo.int, and
-  iwxxm-translation mining — **deepen F6/F2/F12/F13** (no new Fn). Full #800 P0+P1+actionable P2.
+  iwxxm-translation mining: **deepen F6/F2/F12/F13** (no new Fn). Full #800 P0+P1+actionable P2.
 - **Status**: **Done** (S030 / EV-023; PR #801 / #802).
 - **Journeys / tests**: No new UJ; TC-EV023-001..009; deepen UJ-001/005/006/016.
 - **API**: No new routes expected; optional convert flag for `translationCentre*` (name in 04).
@@ -701,13 +760,13 @@ EV-922 session `reports/923-platform-package-layout.md`; EV-922-synthesis `repor
 
 - **Purpose**: Discovery-first domain mine of WMO `IWXXM/` tree (#804), wmo-im org/siblings
   (#807), and IWXXM-US/MDL (#773); wire validate/CI; load official WMO examples from the
-  workbench **Examples / sample menu** (**UJ-039**). Deepen F6/F2/F4/F12/F13/F25 (+ F6.b) —
+  workbench **Examples / sample menu** (**UJ-039**). Deepen F6/F2/F4/F12/F13/F25 (+ F6.b);
   no new Fn. Exclude #806 (WIS2).
 - **Status**: **Done** (S031 / EV-024; PR #813 / #814). Children #809–#812 filed for engine work.
 - **Components**: `docs/domain/mining/*` + rules/canonicals; `apps/frontend` examples catalog;
   validate/convert fixture surfaces; no new deployable.
 - **Journeys / tests**: **UJ-039**; deepen UJ-036/UJ-032; TC-EV024-001..008; H4–H5 when FE ships.
-- **Catalog policy**: ADR-032 amend — strict `wmoPass` vs WMO reference (loadable); no
+- **Catalog policy**: ADR-032 amend: strict `wmoPass` vs WMO reference (loadable); no
   translation-failed happy-path; no US-in-WMO catalog mix.
 - **Non-goals**: #806; big-bang encode engines; hand-edit `vendor/schemas/*`; USWX; PDF/clone commits.
 - **Source**: feature-list S031 deepen; evolve-decisions EV-024; ADR-032 amend.
@@ -715,10 +774,10 @@ EV-922 session `reports/923-platform-package-layout.md`; EV-922-synthesis `repor
 
 ### S032 / EV-025 — iwxxm-us REMARKS encode + VA multi-location (#810–#812 / #809)
 
-- **Purpose**: Dual-lane engine cycle — (A) encode/lint/golden/validate all dig ❌ iwxxm-us
+- **Purpose**: Dual-lane engine cycle: (A) encode/lint/golden/validate all dig ❌ iwxxm-us
   METAR/SPECI REMARKS types (#810/#811/#812 + adjacent checklist); (B) #809
   `sigmet-multi-location-VA` annex3 golden soft→strict / catalog promote under ADR-032.
-  Deepen F6.b / F12 / F2 / F13 / F23 — no new Fn.
+  Deepen F6.b / F12 / F2 / F13 / F23; no new Fn.
 - **Status**: **In progress** (S032 / EV-025).
 - **Components**: `packages/tac2iwxxm`, `packages/tac-validate`, `packages/iwxxm-validate`,
   annex3/`iwxxm_us` fixtures; catalog tier for #809; no new deployable / no new UI surface.
@@ -729,8 +788,8 @@ EV-922 session `reports/923-platform-package-layout.md`; EV-922-synthesis `repor
 
 ### F9 / F10 — Live decode translations + preview clarity (S013 / EV-009)
 
-- **Purpose**: F9 — value-aware decode explanations + deterministic plain-language `summary`
-  (packages/tac2iwxxm + decode panel). F10 — side-by-side IWXXM preview pane, plain-language
+- **Purpose**: F9: value-aware decode explanations + deterministic plain-language `summary`
+  (packages/tac2iwxxm + decode panel). F10: side-by-side IWXXM preview pane, plain-language
   soft-fail copy, `MISSING_TERMINATOR` info-level + "Add `=`" quick fix
   (apps/frontend + packages/tac-validate).
 - **Status**: **Done** (S013). **S026 deepen (F9)**: extensible glossary registry + optional
@@ -800,9 +859,9 @@ Separate GitHub repos (Metartoiwxxmfrontend, GIFTs fork, iwxxm forks) will be **
 
 ### Hard Constraints
 
-- iwxxm / iwxxm-* (and iwxxm-us) content is authoritative from upstream — read-only in vendor/.
-- Single git clone must be sufficient for local dev (`git clone` — no `--recurse-submodules`).
-- Render / DOKS: deploy **three** workloads — API + static frontend + F8 worker (ADR-018;
+- iwxxm / iwxxm-* (and iwxxm-us) content is authoritative from upstream; read-only in vendor/.
+- Single git clone must be sufficient for local dev (`git clone`, no `--recurse-submodules`).
+- Render / DOKS: deploy **three** workloads: API + static frontend + F8 worker (ADR-018;
   **F30** moves primary hosting to DOKS; Render retired after soak).
 - No FastAPI/Supabase **product-DB** imports inside `packages/tac2iwxxm`, `packages/tac-validate`,
   or `packages/iwxxm-validate`. Auth/JWT verify may live only in `packages/auth` + backend.
@@ -818,7 +877,7 @@ Separate GitHub repos (Metartoiwxxmfrontend, GIFTs fork, iwxxm forks) will be **
 - NOAA/MDL continues to publish IWXXM-US schemas suitable for vendor pinning.
 - Convert/lint/validate/disseminate stay public; JWT only for work-session APIs (F21 Amended).
 - F8 worker uses `DATABASE_URL` (DO), not Supabase service-role DB writers (F30).
-- `DISABLE_AUTH` dual path remains **retired** — no local/CI JWT bypass that weakens abuse controls.
+- `DISABLE_AUTH` dual path remains **retired**; no local/CI JWT bypass that weakens abuse controls.
 
 ## Security & Privacy
 
@@ -850,17 +909,17 @@ Separate GitHub repos (Metartoiwxxmfrontend, GIFTs fork, iwxxm forks) will be **
 ## Known Limitations
 
 - Big-bang migration required coordinated downtime or feature freeze during merge PR (historical).
-- **Hard cutover**: first tac2iwxxm wire-up PR deletes gifts — production METAR path depends on
+- **Hard cutover**: first tac2iwxxm wire-up PR deletes gifts; production METAR path depends on
   tac2iwxxm immediately (gate with M-parity / goldens).
 - US AIRMET/SIGMET fixture depth may lag METAR/TAF.
 - PyO3 is **required before cutover** (ADR-017); pure Python may exist during M3–M4 only.
-- Accuracy metrics are library/CI only — not exposed on convert API responses in v1.
+- Accuracy metrics are library/CI only, not exposed on convert API responses in v1.
 - Scheduled vendor PRs require review before production pins update.
-- F5 not extended as a permanent parallel store — **IndexedDB** unified sessions (R2″ / F7.h);
+- F5 not extended as a permanent parallel store; **IndexedDB** unified sessions (R2″ / F7.h);
   My METARs remains METAR/SPECI filter. Historical server `tac_work_sessions` (R2′) retired from
   public API.
 - VAA/TCA decode may be residual-heavy in v1 (G4).
-- Public machine-ingest auth, push sinks, AMHS/SWIM — out of scope (see feature-list Non-Goals).
+- Public machine-ingest auth, push sinks, AMHS/SWIM: out of scope (see feature-list Non-Goals).
 
 ## Documentation layout
 
@@ -873,7 +932,7 @@ Standing specs in `docs/` are **project-wide** sources of truth. Bounded work ru
 | **Session (ephemeral)** | `docs/sessions/{id}/` | `session-brief.md`, `routing-plan.md`, `reports/qa-report.md`, `reports/e2e-report.md` |
 | **Scoped context** | `docs/context/{slug}.md` | Feature/workflow discovery briefs (linked from session brief) |
 
-**Entry:** [skill-routing.md](skill-routing.md) — start with **00-context** (recommended) to
+**Entry:** [skill-routing.md](skill-routing.md): start with **00-context** (recommended) to
 open a session, approve a routing plan, then run stages 00–19 per plan.
 
 **State:** repo-root `workflow-state.yaml` §`active_session` and §`sessions[]`.
@@ -886,7 +945,7 @@ Standing doc updates during a session use **delta commits** on the session branc
 ## References
 
 - docs/guides/ARCHITECTURE.md (pre-migration product architecture)
-- [ARCHIVE/pre-monorepo-deploy/AUTH_MIDDLEWARE_ARCHITECTURE.md](ARCHIVE/pre-monorepo-deploy/AUTH_MIDDLEWARE_ARCHITECTURE.md) (superseded by M4 — see ADR-002)
+- [ARCHIVE/pre-monorepo-deploy/AUTH_MIDDLEWARE_ARCHITECTURE.md](ARCHIVE/pre-monorepo-deploy/AUTH_MIDDLEWARE_ARCHITECTURE.md) (superseded by M4; see ADR-002)
 - docs/decisions/requirements-decisions.md
 - ADR-013, ADR-014
 
@@ -894,7 +953,7 @@ Standing doc updates during a session use **delta commits** on the session branc
 
 - S008 (2026-07-12): F6 tac2iwxxm architecture; gifts removal; IWXXM-US; UI product/profile; ADR-014
 - S008 amend (2026-07-12): `tac-validate` + `iwxxm-validate`; unified pipeline; F7/F8 Planned;
-  dashed F8 worker; context/realtime-tac-ingest.md (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate)
+  dashed F8 worker; context/realtime-tac-ingest.md (archived; see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate)
 - S008 05 (2026-07-12): F8 worker in-tree; PyO3 cutover gate; iwxxm-us HTTP 3.0 pin; three Render
   services (D-S008-05-batch1)
 - S011 / EV-008 (2026-07-13): F7 operator UI architecture; BYO + admin removal; decode/spans/

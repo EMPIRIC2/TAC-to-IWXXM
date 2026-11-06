@@ -1,0 +1,275 @@
+rule_id: MISSING_OBS_OR_FCST
+engine: lint
+cases:
+- bucket: happy
+  case_id: '01'
+  status: ready
+  tac: LAAA AIRMET 5 VALID 151200/151500 LATI- LAAA TIRANA FIR ISOL TS FCST SE OF
+    LINE N4221 E02010 - N4035 E019 TOP ABV FL150 STNR NC=
+  expect:
+    accept: true
+  meta:
+    product: AIRMET
+    profile: annex3
+    cite: '#1265 MISSING_OBS_OR_FCST/happy NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'
+- bucket: happy
+  case_id: '02'
+  status: ready
+  tac: UDDD AIRMET 1 VALID 170335/170700 UDYZ- UDDD YEREVAN FIR MT OBSC FCST N OF
+    N4046 E04530=
+  expect:
+    accept: true
+  meta:
+    product: AIRMET
+    profile: annex3
+    cite: '#1265 MISSING_OBS_OR_FCST/happy NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'
+- bucket: happy
+  case_id: '03'
+  status: ready
+  tac: SBBS AIRMET 9 VALID 281034/281130 SBBS - SBBS BRASILIA FIR SFC VIS 1000M RA
+    OBS AT 1015Z WI S2311 W04721 - S2314 W04714 - S2327 W04640 - S2326 W04632 - S2254
+    W04632 - S2254 W04721 - S2311 W04721 STNR NC=
+  expect:
+    accept: true
+  meta:
+    product: AIRMET
+    profile: annex3
+    cite: '#1265 MISSING_OBS_OR_FCST/happy NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'
+- bucket: happy
+  case_id: '04'
+  status: ready
+  tac: SBAZ AIRMET 4 VALID 231100/231425 SBAZ - SBAZ AMAZONICA FIR OVC CLD 100/0400FT
+    FCST WI S1300 W06031 - S1224 W06031 - S1224 W05941 - S1300 W05941 - S1300 W06031
+    STNR NC=
+  expect:
+    accept: true
+  meta:
+    product: AIRMET
+    profile: annex3
+    cite: '#1265 MISSING_OBS_OR_FCST/happy NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'
+- bucket: happy
+  case_id: '05'
+  status: ready
+  tac: EBBU AIRMET 001 VALID 152213/160001 EBBR- EBBU BRUSSELS FIR ISOL TS OBS WI
+    N5115 E00515 - N5110 E00550 - N5045 E00540 - N5045 E00600 - N5005 E00555 - N5010
+    E00450 - N5115 E00515 TOP FL330 STNR NC=
+  expect:
+    accept: true
+  meta:
+    product: AIRMET
+    profile: annex3
+    cite: '#1265 MISSING_OBS_OR_FCST/happy NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'
+- bucket: sad
+  case_id: '01'
+  status: ready
+  tac: LAAA AIRMET 5 VALID 151200/151500 LATI- LAAA TIRANA FIR ISOL TS SEEN SE OF
+    LINE N4221 E02010 - N4035 E019 TOP ABV FL150 STNR NC=
+  expect:
+    accept: false
+    codes:
+    - MISSING_OBS_OR_FCST
+  meta:
+    product: AIRMET
+    profile: annex3
+    cite: '#1265 MISSING_OBS_OR_FCST/sad NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'
+- bucket: sad
+  case_id: '02'
+  status: ready
+  tac: UDDD AIRMET 1 VALID 170335/170700 UDYZ- UDDD YEREVAN FIR MT OBSC SEEN N OF
+    N4046 E04530=
+  expect:
+    accept: false
+    codes:
+    - MISSING_OBS_OR_FCST
+  meta:
+    product: AIRMET
+    profile: annex3
+    cite: '#1265 MISSING_OBS_OR_FCST/sad NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'
+- bucket: sad
+  case_id: '03'
+  status: ready
+  tac: SBBS AIRMET 9 VALID 281034/281130 SBBS - SBBS BRASILIA FIR SFC VIS 1000M RA
+    SEEN AT 1015Z WI S2311 W04721 - S2314 W04714 - S2327 W04640 - S2326 W04632 - S2254
+    W04632 - S2254 W04721 - S2311 W04721 STNR NC=
+  expect:
+    accept: false
+    codes:
+    - MISSING_OBS_OR_FCST
+  meta:
+    product: AIRMET
+    profile: annex3
+    cite: '#1265 MISSING_OBS_OR_FCST/sad NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'
+- bucket: sad
+  case_id: '04'
+  status: ready
+  tac: SBAZ AIRMET 4 VALID 231100/231425 SBAZ - SBAZ AMAZONICA FIR OVC CLD 100/0400FT
+    SEEN WI S1300 W06031 - S1224 W06031 - S1224 W05941 - S1300 W05941 - S1300 W06031
+    STNR NC=
+  expect:
+    accept: false
+    codes:
+    - MISSING_OBS_OR_FCST
+  meta:
+    product: AIRMET
+    profile: annex3
+    cite: '#1265 MISSING_OBS_OR_FCST/sad NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'
+- bucket: sad
+  case_id: '05'
+  status: ready
+  tac: EBBU AIRMET 001 VALID 152213/160001 EBBR- EBBU BRUSSELS FIR ISOL TS SEEN WI
+    N5115 E00515 - N5110 E00550 - N5045 E00540 - N5045 E00600 - N5005 E00555 - N5010
+    E00450 - N5115 E00515 TOP FL330 STNR NC=
+  expect:
+    accept: false
+    codes:
+    - MISSING_OBS_OR_FCST
+  meta:
+    product: AIRMET
+    profile: annex3
+    cite: '#1265 MISSING_OBS_OR_FCST/sad NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'
+- bucket: edge_pass
+  case_id: '01'
+  status: ready
+  tac: LAAA AIRMET 5 VALID 151200/151500 LATI- LAAA TIRANA FIR ISOL TS FCST SE OF
+    LINE N4221 E02010 - N4035 E019 TOP ABV FL150 STNR NC=
+  expect:
+    accept: true
+  meta:
+    product: AIRMET
+    profile: annex3
+    cite: '#1265 MISSING_OBS_OR_FCST/edge_pass NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'
+- bucket: edge_pass
+  case_id: '02'
+  status: ready
+  tac: UDDD AIRMET 1 VALID 170335/170700 UDYZ- UDDD YEREVAN FIR MT OBSC FCST N OF
+    N4046 E04530=
+  expect:
+    accept: true
+  meta:
+    product: AIRMET
+    profile: annex3
+    cite: '#1265 MISSING_OBS_OR_FCST/edge_pass NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'
+- bucket: edge_pass
+  case_id: '03'
+  status: ready
+  tac: SBBS AIRMET 9 VALID 281034/281130 SBBS - SBBS BRASILIA FIR SFC VIS 1000M RA
+    OBS AT 1015Z WI S2311 W04721 - S2314 W04714 - S2327 W04640 - S2326 W04632 - S2254
+    W04632 - S2254 W04721 - S2311 W04721 STNR NC=
+  expect:
+    accept: true
+  meta:
+    product: AIRMET
+    profile: annex3
+    cite: '#1265 MISSING_OBS_OR_FCST/edge_pass NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'
+- bucket: edge_pass
+  case_id: '04'
+  status: ready
+  tac: SBAZ AIRMET 4 VALID 231100/231425 SBAZ - SBAZ AMAZONICA FIR OVC CLD 100/0400FT
+    FCST WI S1300 W06031 - S1224 W06031 - S1224 W05941 - S1300 W05941 - S1300 W06031
+    STNR NC=
+  expect:
+    accept: true
+  meta:
+    product: AIRMET
+    profile: annex3
+    cite: '#1265 MISSING_OBS_OR_FCST/edge_pass NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'
+- bucket: edge_pass
+  case_id: '05'
+  status: ready
+  tac: EBBU AIRMET 001 VALID 152213/160001 EBBR- EBBU BRUSSELS FIR ISOL TS OBS WI
+    N5115 E00515 - N5110 E00550 - N5045 E00540 - N5045 E00600 - N5005 E00555 - N5010
+    E00450 - N5115 E00515 TOP FL330 STNR NC=
+  expect:
+    accept: true
+  meta:
+    product: AIRMET
+    profile: annex3
+    cite: '#1265 MISSING_OBS_OR_FCST/edge_pass NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'
+- bucket: edge_fail
+  case_id: '01'
+  status: ready
+  tac: LAAA AIRMET 5 VALID 151200/151500 LATI- LAAA TIRANA FIR ISOL TS SEEN SE OF
+    LINE N4221 E02010 - N4035 E019 TOP ABV FL150 STNR NC=
+  expect:
+    accept: false
+    codes:
+    - MISSING_OBS_OR_FCST
+  meta:
+    product: AIRMET
+    profile: annex3
+    cite: '#1265 MISSING_OBS_OR_FCST/edge_fail NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'
+- bucket: edge_fail
+  case_id: '02'
+  status: ready
+  tac: UDDD AIRMET 1 VALID 170335/170700 UDYZ- UDDD YEREVAN FIR MT OBSC SEEN N OF
+    N4046 E04530=
+  expect:
+    accept: false
+    codes:
+    - MISSING_OBS_OR_FCST
+  meta:
+    product: AIRMET
+    profile: annex3
+    cite: '#1265 MISSING_OBS_OR_FCST/edge_fail NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'
+- bucket: edge_fail
+  case_id: '03'
+  status: ready
+  tac: SBBS AIRMET 9 VALID 281034/281130 SBBS - SBBS BRASILIA FIR SFC VIS 1000M RA
+    SEEN AT 1015Z WI S2311 W04721 - S2314 W04714 - S2327 W04640 - S2326 W04632 - S2254
+    W04632 - S2254 W04721 - S2311 W04721 STNR NC=
+  expect:
+    accept: false
+    codes:
+    - MISSING_OBS_OR_FCST
+  meta:
+    product: AIRMET
+    profile: annex3
+    cite: '#1265 MISSING_OBS_OR_FCST/edge_fail NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'
+- bucket: edge_fail
+  case_id: '04'
+  status: ready
+  tac: SBAZ AIRMET 4 VALID 231100/231425 SBAZ - SBAZ AMAZONICA FIR OVC CLD 100/0400FT
+    SEEN WI S1300 W06031 - S1224 W06031 - S1224 W05941 - S1300 W05941 - S1300 W06031
+    STNR NC=
+  expect:
+    accept: false
+    codes:
+    - MISSING_OBS_OR_FCST
+  meta:
+    product: AIRMET
+    profile: annex3
+    cite: '#1265 MISSING_OBS_OR_FCST/edge_fail NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'
+- bucket: edge_fail
+  case_id: '05'
+  status: ready
+  tac: EBBU AIRMET 001 VALID 152213/160001 EBBR- EBBU BRUSSELS FIR ISOL TS SEEN WI
+    N5115 E00515 - N5110 E00550 - N5045 E00540 - N5045 E00600 - N5005 E00555 - N5010
+    E00450 - N5115 E00515 TOP FL330 STNR NC=
+  expect:
+    accept: false
+    codes:
+    - MISSING_OBS_OR_FCST
+  meta:
+    product: AIRMET
+    profile: annex3
+    cite: '#1265 MISSING_OBS_OR_FCST/edge_fail NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'

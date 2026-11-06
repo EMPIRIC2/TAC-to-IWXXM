@@ -1,0 +1,171 @@
+# Lint profile catalog. One row per semantic profile.
+# inherits: single-parent profile DAG (child may narrow products).
+# stations / station_prefixes / accept_end_tx_tn: station-scoped TAF flags
+# (not inherited). ICAO prefer resolves exact stations first, then the longest
+# station_prefix (e.g. military KBIX beats the US K prefix).
+# engine: rule pack id. deltas: token suppressions. recorded: noted differences.
+# [Corpus: product §F36] [Corpus: adr/ADR-046]
+
+schema_version: 1
+profiles:
+  annex3:
+    engine: annex3
+    differs: false
+    products: [METAR, SPECI, TAF, SIGMET, AIRMET, VAA, TCA, SWXA, VONA]
+  iwxxm_us:
+    inherits: annex3
+    engine: iwxxm_us
+    differs: true
+    products: [METAR, SPECI, TAF, SIGMET, AIRMET, TCA, SWXA, VONA]
+    station_prefixes: [K]
+    stations: [PTRO, PTSA]
+    recorded:
+      - id: US_CONVECTIVE_SIGMET_SHAPE
+        note: Convective SIGMET uses FROM and VOR lines. Annex 3 FIR and VALID checks still fire.
+      - id: US_K_PREFIX_TAF_PREFER
+        note: >-
+          US K* TAF stations prefer iwxxm_us under ICAO prefer so
+          PROB_PERIOD_WITHOUT_TEMPO is info (NWS 10-813 / FAA-H-8083-28 standalone
+          PROB). Military K* stations are exact-listed under us_military and win.
+      - id: US_PACIFIC_PT_EXACT_TAF_PREFER
+        note: >-
+          Exact PTRO/PTSA (not PT* blanket) prefer iwxxm_us for standalone PROB-period
+          TAF lint (SM VIS / NWS dialect).
+  us_military:
+    inherits: iwxxm_us
+    engine: annex3
+    differs: true
+    products: [TAF]
+    stations: [KBIX, KCVS, KDOV, KGRK, KNID, KNYL, KPOE, KSZL]
+    accept_end_tx_tn: true
+    recorded:
+      - id: US_MILITARY_END_TX_TN
+        note: >-
+          TX/TN after BECMG/TEMPO/FM/PROB → TX_TN_PRESENT in T3.
+          Stations listed under stations. TAF PROB period severity via parent policy bind.
+  latam_taf:
+    inherits: annex3
+    engine: annex3
+    differs: true
+    products: [TAF]
+    stations: [SKBO, SEQM, SKBQ, SVMI]
+    accept_end_tx_tn: true
+    recorded:
+      - id: LATAM_TAF_END_TX_TN
+        note: >-
+          TX/TN after change groups → TX_TN_PRESENT. Sibling of br_decea (not a child).
+  ca_eccc:
+    inherits: annex3
+    engine: ca_eccc
+    differs: true
+    products: [METAR, SPECI, TAF, AIRMET, SIGMET, VAA]
+    station_prefixes: [CY]
+    recorded:
+      - id: CA_CY_PREFIX_TAF_PREFER
+        note: >-
+          Canadian CY* TAF stations prefer ca_eccc under ICAO prefer so
+          PROB_PERIOD_WITHOUT_TEMPO is info. Prefer is TAF-only; CW* auto stations
+          stay annex3 (MANOBS expects VIS MISG / PRES MISG — not softened).
+  in_imd:
+    inherits: annex3
+    engine: in_imd
+    differs: true
+    products: [TAF]
+  au_bom:
+    inherits: annex3
+    engine: annex3
+    differs: true
+    products: [METAR, SPECI, TAF, VAA]
+    station_prefixes: [Y]
+    recorded:
+      - id: AU_WX_NOT_OBSERVABLE
+        note: METAR/SPECI //// weather is WX_NOT_OBSERVABLE info under annex3 detectors.
+      - id: AU_NATIONAL_TAC_PROVENANCE
+        note: National / BoM heading provenance infos on AU and Pacific stations.
+      - id: AU_Y_PREFIX_TAF_PREFER
+        note: >-
+          Australian Y* TAF stations prefer au_bom under ICAO prefer so
+          PROB_PERIOD_WITHOUT_TEMPO is info via the shared PROB-period policy.
+      - id: AU_DEWPOINT_NIL
+        note: >-
+          BoM AUTO tt/// (dewpoint not observable) is DEWPOINT_NOT_OBSERVABLE info
+          under annex3 grammar; full missing tt/td stays MISSING_TEMP_DEWPOINT.
+  nz_caa_met:
+    inherits: annex3
+    engine: annex3
+    differs: true
+    products: [METAR, SPECI, TAF]
+    deltas:
+      - id: NZ_CLOUD_TYPE_UNOBSERVED
+        products: [METAR, SPECI]
+        suppress_codes: [INVALID_CLOUD_TOKEN]
+        token_pattern: '^(?:FEW|SCT|BKN|OVC)\d{3}///$'
+    recorded:
+      - id: NZ_CLOUD_TYPE_INFO_ALIGN
+        note: FEW/SCT/BKN/OVC###/// aligns with annex3 CLOUD_TYPE_NOT_OBSERVABLE.
+  uk_metoffice:
+    inherits: annex3
+    engine: annex3
+    differs: true
+    products: [METAR, SPECI, TAF]
+    station_prefixes: [EG]
+    recorded:
+      - id: UK_VV_OMIT_EXPECTED
+        note: VV omit / VV/// common on UK TAFs (CAP 746 context); annex3 emits VV_OMIT info.
+      - id: UK_EG_PREFIX_TAF_PREFER
+        note: >-
+          UK EG* TAF stations prefer uk_metoffice under ICAO prefer so
+          PROB_PERIOD_WITHOUT_TEMPO is info (standalone PROB is valid UK/Annex 3
+          practice), on the same seam as US K* and Canada CY*.
+  br_decea:
+    inherits: annex3
+    engine: annex3
+    differs: false
+    products: [METAR, SPECI, TAF, SIGMET, AIRMET]
+  kr_kma:
+    inherits: annex3
+    engine: annex3
+    differs: false
+    products: [METAR, SPECI, TAF, SIGMET, AIRMET]
+  jp_jma:
+    inherits: annex3
+    engine: annex3
+    differs: false
+    products: [METAR, SPECI, TAF, SIGMET, VAA]
+  hk_hko:
+    inherits: annex3
+    engine: annex3
+    differs: false
+    products: [METAR, SPECI, TAF, SIGMET, VAA]
+  us_nws_convective_sigmet:
+    inherits: iwxxm_us
+    engine: annex3
+    differs: true
+    products: [SIGMET]
+    recorded:
+      - id: US_NWS_CONVECTIVE_SIGMET_GATE
+        note: Lint short-circuits on CONVECTIVE SIGMET shape; not a suppression delta.
+  us_nws_g_airmet:
+    inherits: iwxxm_us
+    engine: annex3
+    differs: true
+    products: [AIRMET]
+    recorded:
+      - id: US_NWS_G_AIRMET_SOURCE
+        note: Returns SOURCE_UNAVAILABLE until a text bulletin is on file.
+  us_nws_vona:
+    inherits: iwxxm_us
+    engine: annex3
+    differs: true
+    products: [VONA]
+    recorded:
+      - id: US_NWS_VONA_SOURCE
+        note: Returns SOURCE_UNAVAILABLE until a complete notice is on file.
+  ca_msc_sigmet:
+    inherits: ca_eccc
+    engine: annex3
+    differs: true
+    products: [SIGMET]
+    recorded:
+      - id: CA_MSC_SIGMET_SOURCE
+        note: Returns SOURCE_UNAVAILABLE until a text source is on file.

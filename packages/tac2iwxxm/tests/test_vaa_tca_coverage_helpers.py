@@ -13,6 +13,7 @@ from tac2iwxxm.glossary import (
     resolve_location_name,
     set_location_name_resolver,
 )
+from tac2iwxxm.profiles.annex3_emit.vaa import _vaa_cloud_extent_xml, _vaa_deg_text
 from tac2iwxxm.slot_builders.vaa_tca import (
     _parse_ash_clouds,
     _parse_dtg,
@@ -44,6 +45,28 @@ def test_pos_list_empty_and_open_ring() -> None:
 def test_parse_ash_clouds_no_va_exp_and_skip_empty_chunk() -> None:
     assert _parse_ash_clouds("NO VA EXP") == []
     assert _parse_ash_clouds("FL250/300 NO POINTS HERE") == []
+
+
+def test_ash_cloud_motion_accepts_international_units() -> None:
+    knots = _parse_ash_clouds("FL250/300 N5400 E15930 - N5400 E16100 - N5300 E15945 - N5300 E16000 MOV SE 20KT")
+    assert knots[0]["motion_speed_kt"] == 20
+    assert "motion_speed_kmh" not in knots[0]
+
+    kilometres = _parse_ash_clouds("FL250/300 N5400 E15930 - N5400 E16100 - N5300 E15945 MOV NNE 30KMH")
+    assert kilometres[0]["motion_dir_deg"] == 22.5
+    assert kilometres[0]["motion_speed_kmh"] == 30
+    slash = _parse_ash_clouds("FL250/300 N5400 E15930 - N5400 E16100 - N5300 E15945 MOV E 20KM/H")
+    assert slash[0]["motion_speed_kmh"] == 20
+    metres = _parse_ash_clouds("FL250/300 N5400 E15930 - N5400 E16100 - N5300 E15945 MOV W 10MPS")
+    assert metres[0]["motion_speed_kmh"] == 36
+
+    kmh_xml = _vaa_cloud_extent_xml(kilometres[0], gid="obs.cloud.0")
+    assert 'uom="km/h">30</iwxxm:speedOfMotion>' in kmh_xml
+    assert ">22.5</iwxxm:directionOfMotion>" in kmh_xml
+    kt_xml = _vaa_cloud_extent_xml(knots[0], gid="obs.cloud.1")
+    assert 'uom="[kn_i]">20</iwxxm:speedOfMotion>' in kt_xml
+    assert _vaa_deg_text(90) == "90"
+    assert _vaa_deg_text(22.5) == "22.5"
 
 
 def test_parse_ash_clouds_fl_band_and_sfc() -> None:

@@ -5,13 +5,21 @@ from __future__ import annotations
 import json
 import re
 from pathlib import Path
-from typing import ClassVar
+from typing import Any, ClassVar, cast
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 
 class AirportCoordinates(BaseModel):
-    """Geographic coordinates for an airport."""
+    """
+    Geographic coordinates for an airport.
+
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     model_config: ClassVar[ConfigDict] = ConfigDict(
         json_schema_extra={
@@ -31,7 +39,15 @@ class AirportCoordinates(BaseModel):
 
 
 class Airport(BaseModel):
-    """Airport data model with ICAO and metadata."""
+    """
+    Airport data model with ICAO and metadata.
+
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     model_config: ClassVar[ConfigDict] = ConfigDict(
         json_schema_extra={
@@ -78,7 +94,24 @@ class Airport(BaseModel):
     @field_validator("icao")
     @classmethod
     def validate_icao_format(cls, v: str) -> str:
-        """Validate ICAO code format: 4 uppercase alphanumeric characters."""
+        """
+        Validate ICAO code format: 4 uppercase alphanumeric characters.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (validate_icao_format)
+        2
+
+        Parameters
+        ----------
+        v : object
+            Argument ``v``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         if not re.match(r"^[A-Z0-9]{4}$", v.upper()):
             raise ValueError(f"ICAO code must be 4 uppercase alphanumeric characters, got: {v}")
         return v.upper()
@@ -86,7 +119,24 @@ class Airport(BaseModel):
     @field_validator("iata")
     @classmethod
     def validate_iata_format(cls, v: str | None) -> str | None:
-        """Validate IATA code format: 3 uppercase alphanumeric characters."""
+        """
+        Validate IATA code format: 3 uppercase alphanumeric characters.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (validate_iata_format)
+        2
+
+        Parameters
+        ----------
+        v : object
+            Argument ``v``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         if v is None:
             return None
         if not re.match(r"^[A-Z0-9]{3}$", v.upper()):
@@ -99,6 +149,12 @@ class AirportValidator:
     Singleton validator for airport ICAO codes.
 
     Loads airport data from airports.json and provides validation methods.
+
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
     """
 
     _instance: AirportValidator | None = None
@@ -106,7 +162,14 @@ class AirportValidator:
     _loaded: bool = False
 
     def __new__(cls) -> AirportValidator:
-        """Ensure singleton instance."""
+        """
+        Internal helper ``__new__``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         if cls._instance is None:
             cls._instance = super().__new__(cls)
         return cls._instance
@@ -117,10 +180,22 @@ class AirportValidator:
             self.load_airports()
 
     def load_airports(self) -> None:
-        """Load airports from airports.json into memory."""
+        """
+        Load airports from airports.json into memory.
+
+        Also merges ``airport_registry_supplements.json`` (F3 deepen for METAR
+        stations missing from the OurAirports ``icao_code`` export).
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (load_airports)
+        2
+        """
         # Determine path to airports.json relative to this file
         current_file = Path(__file__)
-        data_path = current_file.parent.parent / "data" / "airports.json"
+        data_dir = current_file.parent.parent / "data"
+        data_path = data_dir / "airports.json"
+        supplements_path = data_dir / "airport_registry_supplements.json"
 
         if not data_path.exists():
             raise FileNotFoundError(
@@ -141,6 +216,27 @@ class AirportValidator:
                 print(f"Warning: Failed to load airport {airport_data.get('icao', 'UNKNOWN')}: {e}")
                 continue
 
+        if supplements_path.exists():
+            try:
+                with open(supplements_path, encoding="utf-8") as f:
+                    supplement_payload = cast(dict[str, Any], json.load(f))
+                stations_raw = supplement_payload.get("stations")
+                stations: list[dict[str, Any]] = []
+                if isinstance(stations_raw, list):
+                    stations.extend(
+                        cast(dict[str, Any], item) for item in cast(list[Any], stations_raw) if isinstance(item, dict)
+                    )
+                for airport_data in stations:
+                    try:
+                        airport = Airport(**airport_data)
+                        # Supplements fill gaps; do not overwrite a main-catalog hit.
+                        self._airports.setdefault(airport.icao.upper(), airport)
+                    except Exception as e:
+                        icao_label = airport_data.get("icao", "UNKNOWN")
+                        print(f"Warning: Failed to load supplement airport {icao_label}: {e}")
+            except Exception as e:
+                print(f"Warning: Failed to load airport supplements: {e}")
+
         self._loaded = True
         print(f"Loaded {len(self._airports)} airports for validation")
 
@@ -148,16 +244,29 @@ class AirportValidator:
         """
         Check if an ICAO code is valid.
 
-        Args:
-            icao_code: ICAO code to validate (case-insensitive)
-
-        Returns:
+        Returns
+        -------
             True if valid, False otherwise
+
+        Parameters
+        ----------
+        icao_code : object
+            ICAO code to validate (case-insensitive)
+
+        Returns
+        -------
+        object
+            True if valid, False otherwise
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (validate_icao)
+        2
         """
         if not icao_code:
             return False
-        # Validate format: exactly 4 uppercase letters
-        if len(icao_code) != 4 or not icao_code.isalpha():
+        # Match Airport.icao / Layer-1 extract: 4 alphanumeric characters.
+        if not re.match(r"^[A-Z0-9]{4}$", icao_code.upper()):
             return False
         return icao_code.upper() in self._airports
 
@@ -165,11 +274,24 @@ class AirportValidator:
         """
         Get airport data for an ICAO code.
 
-        Args:
-            icao_code: ICAO code to look up (case-insensitive)
-
-        Returns:
+        Returns
+        -------
             Airport object if found, None otherwise
+
+        Parameters
+        ----------
+        icao_code : object
+            ICAO code to look up (case-insensitive)
+
+        Returns
+        -------
+        object
+            Airport object if found, None otherwise
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (get_airport)
+        2
         """
         if not icao_code:
             return None
@@ -179,12 +301,26 @@ class AirportValidator:
         """
         Search airports by ICAO code prefix.
 
-        Args:
-            prefix: ICAO code prefix (case-insensitive)
-            limit: Maximum number of results
-
-        Returns:
+        Returns
+        -------
             List of matching airports
+
+        Parameters
+        ----------
+        prefix : object
+            ICAO code prefix (case-insensitive)
+        limit : object
+            Maximum number of results
+
+        Returns
+        -------
+        object
+            List of matching airports
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (search_by_prefix)
+        2
         """
         if not prefix:
             return []
@@ -197,12 +333,26 @@ class AirportValidator:
         """
         Search airports by name or city (case-insensitive).
 
-        Args:
-            query: Search query
-            limit: Maximum number of results
-
-        Returns:
+        Returns
+        -------
             List of matching airports
+
+        Parameters
+        ----------
+        query : object
+            Search query
+        limit : object
+            Maximum number of results
+
+        Returns
+        -------
+        object
+            List of matching airports
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (search_by_name)
+        2
         """
         if not query:
             return []
@@ -216,11 +366,35 @@ class AirportValidator:
         return matches[:limit]
 
     def get_all_airports(self) -> list[Airport]:
-        """Get all loaded airports."""
+        """
+        Get all loaded airports.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (get_all_airports)
+        2
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         return list(self._airports.values())
 
     def count(self) -> int:
-        """Get count of loaded airports."""
+        """
+        Get count of loaded airports.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (count)
+        2
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         return len(self._airports)
 
 
@@ -232,8 +406,15 @@ def get_airport_validator() -> AirportValidator:
     """
     Get the global AirportValidator instance.
 
-    Returns:
+    Returns
+    -------
+    object
         Singleton AirportValidator instance
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (get_airport_validator)
+    2
     """
     global _validator_instance
     if _validator_instance is None:

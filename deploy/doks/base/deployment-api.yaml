@@ -43,6 +43,12 @@ spec:
                 name: metar-api-config
             - secretRef:
                 name: metar-api-secrets
+          env:
+            - name: LIVE_MAP_CACHE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: metar-api-secrets
+                  key: DATABASE_URL
           # sslmode rewrite lives in-image (_sync_database_url). Do not remount
           # work_session_service.py via ConfigMap — stale mounts caused staging
           # NameError: UUID (BUG-2026-08-10).

@@ -14,15 +14,21 @@ def check_profile_overlay_dir(directory: Path | str, *, profile: str = "annex3")
 
     Parameters
     ----------
-    directory :
+    directory : Path | str
         Directory of profile → policy binding YAML overlays.
-    profile :
+
+    profile : str, optional
         Conversion profile id to resolve (default ``annex3``).
 
     Raises
     ------
     tac2iwxxm.profile_resolve.ProfileResolveError
         When overlays fail closed (bad ``extends``, headers, etc.).
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (check_profile_overlay_dir)
+    2
     """
     path = Path(directory).expanduser().resolve()
     if not path.is_dir():

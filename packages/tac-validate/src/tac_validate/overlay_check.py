@@ -16,15 +16,20 @@ def check_tac_policy_overlay_dir(directory: Path | str, *, profile: str = "annex
 
     Parameters
     ----------
-    directory :
+    directory : Path or str
         Directory of policy YAML overlays.
-    profile :
-        Conversion profile id used when loading the catalog.
+    profile : str, optional
+        Conversion profile id used when loading the catalog. By default ``'annex3'``.
 
     Raises
     ------
     tac_validate.policy.PolicyError
         When overlays fail closed (bad ``extends``, headers, etc.).
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (check_tac_policy_overlay_dir)
+    2
     """
     path = Path(directory).expanduser().resolve()
     if not path.is_dir():

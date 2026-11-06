@@ -8,7 +8,7 @@
 
 ## Context
 
-[#1224](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1224) / [#1225](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1225) shipped honesty documentation and package overlay examples/preflight. Convert **emit** remains imperative Python plugins. Operators and SDK embedders need true **full** YAML configurability across TAC decode, TAC validation, IWXXM output policy, and TAC→IWXXM convert — including emit — without HTTP YAML injection or in-app authoring (ADR-044).
+[#1224](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1224) / [#1225](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1225) shipped honesty documentation and package overlay examples/preflight. Convert **emit** remains imperative Python plugins. Operators and SDK embedders need **full** YAML configurability across TAC decode, TAC validation, IWXXM output policy, and TAC→IWXXM convert (including emit) without HTTP YAML injection or in-app authoring (ADR-044).
 
 Vendor IWXXM **Schematron** remains the authoritative rule source (ADR-046). Application YAML must not re-author Schematron, but runtime must keep Schematron bundles aligned with the IWXXM **pin** used for emit and validate.
 

@@ -29,7 +29,7 @@ conversion in the current WMO IWXXM pin set used by this repo.
 ## Future reopen
 
 Reopen only when WMO publishes an IWXXM GAMET (or successor) schema and this project pins it
-via vendor sync — then a dedicated evolve cycle, not a silent #920 deepen.
+via vendor sync, and then as a dedicated evolve cycle, not a silent #920 deepen.
 
 ## EV-094 reaffirmation (2026-08-31)
 

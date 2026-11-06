@@ -15,7 +15,12 @@ from typing import Any, cast
 from xml.sax.saxutils import escape
 
 from tac2iwxxm.profiles.annex3 import NS, aerodrome_block, build_observation_and_trends, obs_timestamp
-from tac2iwxxm.profiles.annex3_products import emit_airmet_annex3, emit_taf_annex3
+from tac2iwxxm.profiles.annex3_emit import (
+    emit_airmet_annex3,
+    emit_sigmet_annex3,
+    emit_taf_annex3,
+    emit_vaa_annex3,
+)
 
 CA_IWXXM_VERSION = "3.0.0"
 CA_NS = "https://dd.meteo.gc.ca/today/aviation/iwxxm/"
@@ -37,7 +42,22 @@ CA_IWXXM_CA_SUBSTITUTION_ROOTS = frozenset({"LWIS", "SAWR"})
 
 
 def _ca_gml_id(ir: dict[str, Any], product: str) -> str:
-    """Stable gml:id for CA_ECCC golden fixtures."""
+    """
+    Internal helper ``_ca_gml_id``.
+
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Argument ``ir``.
+
+    product : str
+        Argument ``product``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
     ca_root = str(ir.get("ca_iwxxm_root") or product).lower()
     station = str(ir["station"]).lower()
     if ca_root == "lwis":
@@ -57,7 +77,19 @@ def _ca_gml_id(ir: dict[str, Any], product: str) -> str:
 
 
 def _prepare_ca_ir(ir: dict[str, Any]) -> dict[str, Any]:
-    """Apply MANOBS display hints (SM visibility) without mutating the caller IR."""
+    """
+    Internal helper ``_prepare_ca_ir``.
+
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Argument ``ir``.
+
+    Returns
+    -------
+    dict[str, Any]
+        Return value.
+    """
     out = dict(ir)
     if out.get("cavok") or out.get("visibility_not_observable"):
         return out
@@ -69,7 +101,19 @@ def _prepare_ca_ir(ir: dict[str, Any]) -> dict[str, Any]:
 
 
 def _ca_pressure_change_href(ir: dict[str, Any]) -> str | None:
-    """Map parsed PRESFR/PRESRR to MSC code-ca vocabulary."""
+    """
+    Internal helper ``_ca_pressure_change_href``.
+
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Argument ``ir``.
+
+    Returns
+    -------
+    str | None
+        Return value.
+    """
     href = ir.get("pressure_change_href")
     if not isinstance(href, str):
         return None
@@ -81,7 +125,19 @@ def _ca_pressure_change_href(ir: dict[str, Any]) -> str | None:
 
 
 def _ca_observing_system_href(ir: dict[str, Any]) -> str | None:
-    """Resolve Canadian observing-system vocabulary for AUTO / LWIS / SAWR."""
+    """
+    Internal helper ``_ca_observing_system_href``.
+
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Argument ``ir``.
+
+    Returns
+    -------
+    str | None
+        Return value.
+    """
     explicit = ir.get("ca_observing_system_href")
     if isinstance(explicit, str) and explicit:
         return explicit
@@ -96,7 +152,22 @@ def _ca_observing_system_href(ir: dict[str, Any]) -> str | None:
 
 
 def _ca_iwxxm_root_tag(ir: dict[str, Any], product: str) -> tuple[str, str]:
-    """Return (namespace prefix, root local name) for CA METAR-family reports."""
+    """
+    Internal helper ``_ca_iwxxm_root_tag``.
+
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Argument ``ir``.
+
+    product : str
+        Argument ``product``.
+
+    Returns
+    -------
+    tuple[str, str]
+        Return value.
+    """
     ca_root = str(ir.get("ca_iwxxm_root") or product).upper()
     if ca_root in {"LWIS", "SAWR"}:
         return "iwxxm-ca", ca_root
@@ -104,7 +175,19 @@ def _ca_iwxxm_root_tag(ir: dict[str, Any], product: str) -> tuple[str, str]:
 
 
 def _density_altitude_xml(ir: dict[str, Any]) -> str:
-    """Serialize Addendum ``densityAltitude`` from MANOBS DENSITY ALT remark."""
+    """
+    Internal helper ``_density_altitude_xml``.
+
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Argument ``ir``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
     if ir.get("density_altitude_missing"):
         return '          <iwxxm-ca:densityAltitude uom="[ft_i]" xsi:nil="true" nilReason="missing"/>\n'
     ft = ir.get("density_altitude_ft")
@@ -114,7 +197,19 @@ def _density_altitude_xml(ir: dict[str, Any]) -> str:
 
 
 def _icing_addendum_xml(ir: dict[str, Any]) -> str:
-    """Serialize Addendum ``icing`` from MANOBS ICE remark."""
+    """
+    Internal helper ``_icing_addendum_xml``.
+
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Argument ``ir``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
     href = ir.get("ca_icing_href")
     if not isinstance(href, str) or not href:
         return ""
@@ -122,7 +217,19 @@ def _icing_addendum_xml(ir: dict[str, Any]) -> str:
 
 
 def _processed_quantity_addendum_inner(ir: dict[str, Any]) -> str:
-    """Serialize Addendum ``processedQuantity`` rows (shared IR with iwxxm_us P/6/7)."""
+    """
+    Internal helper ``_processed_quantity_addendum_inner``.
+
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Argument ``ir``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
     qty_raw = ir.get("processed_quantities")
     if not isinstance(qty_raw, list) or not qty_raw:
         return ""
@@ -152,7 +259,19 @@ def _processed_quantity_addendum_inner(ir: dict[str, Any]) -> str:
 
 
 def _addendum_extension(ir: dict[str, Any]) -> str:
-    """Serialize observation-level ``iwxxm-ca:Addendum`` for MANOBS REMARKS."""
+    """
+    Internal helper ``_addendum_extension``.
+
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Argument ``ir``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
     free_text = str(ir.get("remarks_free_text") or "").strip()
     obs_href = _ca_observing_system_href(ir)
     pres_href = _ca_pressure_change_href(ir)
@@ -193,7 +312,19 @@ def _addendum_extension(ir: dict[str, Any]) -> str:
 
 
 def _ca_taf_gml_id(ir: dict[str, Any]) -> str:
-    """Stable gml:id for CA_ECCC TAF golden fixtures."""
+    """
+    Internal helper ``_ca_taf_gml_id``.
+
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Argument ``ir``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
     station = str(ir["station"]).lower()
     if ir.get("amendment"):
         return f"taf.ca.amd.{station}"
@@ -206,7 +337,19 @@ def _ca_taf_gml_id(ir: dict[str, Any]) -> str:
 
 
 def _prepare_ca_taf_ir(ir: dict[str, Any]) -> dict[str, Any]:
-    """Apply MANAIR display hints (SM visibility) without mutating the caller IR."""
+    """
+    Internal helper ``_prepare_ca_taf_ir``.
+
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Argument ``ir``.
+
+    Returns
+    -------
+    dict[str, Any]
+        Return value.
+    """
     out = dict(ir)
     if out.get("cavok") or out.get("visibility_not_observable"):
         return out
@@ -218,7 +361,19 @@ def _prepare_ca_taf_ir(ir: dict[str, Any]) -> dict[str, Any]:
 
 
 def _nclws_extension_inner(ir: dict[str, Any]) -> str:
-    """Serialize ``iwxxm-ca:NonConvectiveLowLevelWindShear`` for MANAIR TAF."""
+    """
+    Internal helper ``_nclws_extension_inner``.
+
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Argument ``ir``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
     nclws = ir.get("nclws")
     if not isinstance(nclws, dict):
         return ""
@@ -242,7 +397,19 @@ def _nclws_extension_inner(ir: dict[str, Any]) -> str:
 
 
 def _ca_taf_weather_extension_inner(ir: dict[str, Any]) -> str:
-    """Serialize ``iwxxm-ca:weather`` national forecast weather hrefs."""
+    """
+    Internal helper ``_ca_taf_weather_extension_inner``.
+
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Argument ``ir``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
     hrefs = ir.get("ca_forecast_weather_hrefs")
     if not isinstance(hrefs, list) or not hrefs:
         return ""
@@ -255,7 +422,19 @@ def _ca_taf_weather_extension_inner(ir: dict[str, Any]) -> str:
 
 
 def _taf_forecast_extension(ir: dict[str, Any]) -> str:
-    """Build combined ``iwxxm:extension`` for MANAIR TAF national elements."""
+    """
+    Internal helper ``_taf_forecast_extension``.
+
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Argument ``ir``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
     inner = "\n".join(
         block
         for block in (
@@ -277,12 +456,39 @@ def _taf_forecast_extension(ir: dict[str, Any]) -> str:
 
 
 def _nclws_extension(ir: dict[str, Any]) -> str:
-    """Backward-compatible wrapper - prefer ``_taf_forecast_extension``."""
+    """
+    Internal helper ``_nclws_extension``.
+
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Argument ``ir``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
     return _taf_forecast_extension(ir)
 
 
 def _inject_ca_taf_namespace(xml: str, *, iwxxm_version: str) -> str:
-    """Add ``iwxxm-ca`` namespace declaration on the TAF root element."""
+    """
+    Internal helper ``_inject_ca_taf_namespace``.
+
+    Parameters
+    ----------
+    xml : str
+        Argument ``xml``.
+
+    iwxxm_version : str
+        Argument ``iwxxm_version``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
     needle = f'<iwxxm:TAF xmlns:iwxxm="{NS[iwxxm_version]}"'
     if needle not in xml:
         return xml
@@ -294,12 +500,39 @@ def _inject_ca_taf_namespace(xml: str, *, iwxxm_version: str) -> str:
 
 
 def _inject_ca_taf_gml_id(xml: str, *, gml_id: str) -> str:
-    """Replace annex3 default TAF gml:id with CA fixture id."""
+    """
+    Internal helper ``_inject_ca_taf_gml_id``.
+
+    Parameters
+    ----------
+    xml : str
+        Argument ``xml``.
+
+    gml_id : str
+        Argument ``gml_id``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
     return re.sub(r'gml:id="taf\.[^"]+"', f'gml:id="{gml_id}"', xml, count=1)
 
 
 def _gfa_structured_extension(ir: dict[str, Any]) -> str:
-    """Serialize ``airmet-ca`` GFA structured fields inside evolving condition."""
+    """
+    Internal helper ``_gfa_structured_extension``.
+
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Argument ``ir``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
     structured = ir.get("ca_gfa_structured")
     if not isinstance(structured, dict):
         return ""
@@ -352,7 +585,22 @@ def _gfa_structured_extension(ir: dict[str, Any]) -> str:
 
 
 def _inject_airmet_gfa_extension(xml: str, extension: str) -> str:
-    """Insert GFA extension block before closing ``AIRMETEvolvingCondition``."""
+    """
+    Internal helper ``_inject_airmet_gfa_extension``.
+
+    Parameters
+    ----------
+    xml : str
+        Argument ``xml``.
+
+    extension : str
+        Argument ``extension``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
     if not extension:
         return xml
     needle = "</iwxxm:AIRMETEvolvingCondition>"
@@ -362,7 +610,19 @@ def _inject_airmet_gfa_extension(xml: str, extension: str) -> str:
 
 
 def _ca_airmet_gml_id(ir: dict[str, Any]) -> str:
-    """Stable gml:id for CA_ECCC AIRMET golden fixtures."""
+    """
+    Internal helper ``_ca_airmet_gml_id``.
+
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Argument ``ir``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
     fir = str(ir["fir"]).lower()
     if ir.get("ca_gfa_structured"):
         return f"airmet.ca.gfa.vis.{fir}"
@@ -372,7 +632,19 @@ def _ca_airmet_gml_id(ir: dict[str, Any]) -> str:
 
 
 def _ca_airmet_phenomenon_href(ir: dict[str, Any]) -> str | None:
-    """Map MANAIR GFA compound phenomenon to MSC code-ca vocabulary."""
+    """
+    Internal helper ``_ca_airmet_phenomenon_href``.
+
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Argument ``ir``.
+
+    Returns
+    -------
+    str | None
+        Return value.
+    """
     code = ir.get("ca_gfa_phenomenon")
     if not isinstance(code, str):
         return None
@@ -380,7 +652,22 @@ def _ca_airmet_phenomenon_href(ir: dict[str, Any]) -> str | None:
 
 
 def _inject_ca_airmet_namespace(xml: str, *, iwxxm_version: str) -> str:
-    """Add ``iwxxm-ca`` namespace declaration on the AIRMET root element."""
+    """
+    Internal helper ``_inject_ca_airmet_namespace``.
+
+    Parameters
+    ----------
+    xml : str
+        Argument ``xml``.
+
+    iwxxm_version : str
+        Argument ``iwxxm_version``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
     needle = f'<iwxxm:AIRMET xmlns:iwxxm="{NS[iwxxm_version]}"'
     if needle not in xml:
         return xml
@@ -392,8 +679,96 @@ def _inject_ca_airmet_namespace(xml: str, *, iwxxm_version: str) -> str:
 
 
 def _inject_ca_airmet_gml_id(xml: str, *, gml_id: str) -> str:
-    """Replace annex3 default AIRMET gml:id with CA fixture id."""
+    """
+    Internal helper ``_inject_ca_airmet_gml_id``.
+
+    Parameters
+    ----------
+    xml : str
+        Argument ``xml``.
+
+    gml_id : str
+        Argument ``gml_id``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
     return re.sub(r'gml:id="airmet\.[^"]+"', f'gml:id="{gml_id}"', xml, count=1)
+
+
+def _require_ca_pin(iwxxm_version: str) -> None:
+    """
+    Internal helper ``_require_ca_pin``.
+
+    Parameters
+    ----------
+    iwxxm_version : str
+        Requested IWXXM pin.
+
+    Returns
+    -------
+    None
+        Returns when the pin is the Canadian operational line.
+    """
+    if iwxxm_version != CA_IWXXM_VERSION:
+        raise ValueError(f"profile ca_eccc requires iwxxm_version {CA_IWXXM_VERSION!r}, got {iwxxm_version!r}")
+
+
+def emit_sigmet_ca_eccc(ir: dict[str, Any], *, iwxxm_version: str) -> str:
+    """
+    Emit SIGMET IWXXM for profile ``CA_ECCC``.
+
+    Canadian SIGMET uses the ICAO SIGMET body on the MSC IWXXM 3.0.0 line.
+    There is no separate iwxxm-ca SIGMET schema.
+
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Parsed intermediate representation from ``parse_sigmet``.
+
+    iwxxm_version : str
+        Must be ``3.0.0``.
+
+    Returns
+    -------
+    str
+        IWXXM 3.0.0 SIGMET XML.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (emit_sigmet_ca_eccc)
+    2
+    """
+    _require_ca_pin(iwxxm_version)
+    return emit_sigmet_annex3(ir, iwxxm_version=iwxxm_version)
+
+
+def emit_vaa_ca_eccc(ir: dict[str, Any], *, iwxxm_version: str) -> str:
+    """
+    Emit VAA IWXXM for profile ``CA_ECCC``.
+
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Parsed intermediate representation from ``parse_vaa``.
+
+    iwxxm_version : str
+        Must be ``3.0.0``.
+
+    Returns
+    -------
+    str
+        IWXXM 3.0.0 volcanic ash advisory XML.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (emit_vaa_ca_eccc)
+    2
+    """
+    _require_ca_pin(iwxxm_version)
+    return emit_vaa_annex3(ir, iwxxm_version=iwxxm_version)
 
 
 def emit_airmet_ca_eccc(ir: dict[str, Any], *, iwxxm_version: str) -> str:
@@ -402,9 +777,10 @@ def emit_airmet_ca_eccc(ir: dict[str, Any], *, iwxxm_version: str) -> str:
 
     Parameters
     ----------
-    ir :
+    ir : dict[str, Any]
         Parsed intermediate representation from ``parse_airmet``.
-    iwxxm_version :
+
+    iwxxm_version : str
         Must be ``3.0.0`` (MSC operational line).
 
     Returns
@@ -416,6 +792,11 @@ def emit_airmet_ca_eccc(ir: dict[str, Any], *, iwxxm_version: str) -> str:
     ------
     ValueError
         When ``iwxxm_version`` is not ``3.0.0``.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (emit_airmet_ca_eccc)
+    2
     """
     if iwxxm_version != CA_IWXXM_VERSION:
         raise ValueError(f"profile ca_eccc requires iwxxm_version {CA_IWXXM_VERSION!r}, got {iwxxm_version!r}")
@@ -436,9 +817,10 @@ def emit_taf_ca_eccc(ir: dict[str, Any], *, iwxxm_version: str) -> str:
 
     Parameters
     ----------
-    ir :
+    ir : dict[str, Any]
         Parsed intermediate representation from ``parse_taf``.
-    iwxxm_version :
+
+    iwxxm_version : str
         Must be ``3.0.0`` (MSC operational line).
 
     Returns
@@ -450,6 +832,11 @@ def emit_taf_ca_eccc(ir: dict[str, Any], *, iwxxm_version: str) -> str:
     ------
     ValueError
         When ``iwxxm_version`` is not ``3.0.0``.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (emit_taf_ca_eccc)
+    2
     """
     if iwxxm_version != CA_IWXXM_VERSION:
         raise ValueError(f"profile ca_eccc requires iwxxm_version {CA_IWXXM_VERSION!r}, got {iwxxm_version!r}")
@@ -472,11 +859,13 @@ def emit_metar_speci_ca_eccc(
 
     Parameters
     ----------
-    ir :
+    ir : dict[str, Any]
         Parsed intermediate representation from ``parse_metar_speci``.
-    product :
+
+    product : str
         ``METAR`` or ``SPECI``.
-    iwxxm_version :
+
+    iwxxm_version : str
         Must be ``3.0.0`` (MSC operational line).
 
     Returns
@@ -488,6 +877,11 @@ def emit_metar_speci_ca_eccc(
     ------
     ValueError
         When ``iwxxm_version`` is not ``3.0.0``.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (emit_metar_speci_ca_eccc)
+    2
     """
     if iwxxm_version != CA_IWXXM_VERSION:
         raise ValueError(f"profile ca_eccc requires iwxxm_version {CA_IWXXM_VERSION!r}, got {iwxxm_version!r}")

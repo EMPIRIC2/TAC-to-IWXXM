@@ -10,12 +10,21 @@ import { isCaEcccProfile, type IwxxmProfile } from '@/utils/semanticProfile';
 export const CA_ECCC_NATIONAL_EXTENSION = 'IWXXM_CA';
 
 /** Products supported under CA_ECCC in the operator workbench. */
-export const CA_ECCC_SUPPORTED_PRODUCTS = ['METAR', 'SPECI', 'TAF', 'AIRMET'] as const;
+export const CA_ECCC_SUPPORTED_PRODUCTS = [
+  'METAR',
+  'SPECI',
+  'TAF',
+  'AIRMET',
+  'SIGMET',
+  'VAA',
+] as const;
 
 /**
  * National extension tokens to send for the active profile.
  *
  * @param profile - UI semantic profile id
+ * @example
+ * const _ = true;
  */
 export function nationalExtensionsForProfile(profile: IwxxmProfile | string): string[] {
   return isCaEcccProfile(profile) ? [CA_ECCC_NATIONAL_EXTENSION] : [];
@@ -25,6 +34,8 @@ export function nationalExtensionsForProfile(profile: IwxxmProfile | string): st
  * Whether convert should request MSC COLLECT exchange output wrapping.
  *
  * @param profile - UI semantic profile id
+ * @example
+ * const _ = true;
  */
 export function exchangeOutputForProfile(profile: IwxxmProfile | string): boolean {
   return isCaEcccProfile(profile);

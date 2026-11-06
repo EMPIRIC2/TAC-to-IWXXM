@@ -874,6 +874,17 @@
       "note": "CB/TCU convective type register"
     },
     {
+      "code": "CLOUD_TYPE_NOT_OBSERVABLE",
+      "status": "ok",
+      "source_id": "codes-wmo-int",
+      "source_url": "https://github.com/wmo-im/iwxxm/blob/master/IWXXM/ReleaseNotes-IWXXM.txt",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/codes-wmo-int-aviation-mining-notes.md",
+      "ticket": null,
+      "source_attribution": "codes-wmo-int — https://codes.wmo.int/common/nil/notObservable · prior landing: https://codes.wmo.int/common/nil",
+      "note": "AUTO cloud group solidi /// means convective cloud type was not observed"
+    },
+    {
       "code": "CNL_REPORT",
       "status": "paywall",
       "source_id": "icao-annex-3",
@@ -991,8 +1002,18 @@
       "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
       "consumer": "tac-validate",
       "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
-      "ticket": null,
-      "note": "App 5 / Table A5-1"
+      "ticket": "#1488",
+      "note": "App 5 / Table A5-1; true defects only (BECMG/FM, bad percent)"
+    },
+    {
+      "code": "PROB_PERIOD_WITHOUT_TEMPO",
+      "status": "paywall",
+      "source_id": "icao-annex-3",
+      "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
+      "ticket": "#1487",
+      "note": "App 5 / Table A5-1; standalone PROB+period emission retired — engines emit PROB_PRESENT; code kept for catalog continuity"
     },
     {
       "code": "INVALID_REMARK",
@@ -1002,6 +1023,16 @@
       "consumer": "tac-validate",
       "dig": "docs/domain/mining/fmh1-2019-mining-notes.md",
       "ticket": null
+    },
+    {
+      "code": "MALFORMED_SOURCE_TOKEN",
+      "status": "ok",
+      "source_id": "live-eval",
+      "source_url": "https://www.icao.int/",
+      "consumer": "tac-validate",
+      "dig": null,
+      "ticket": null,
+      "note": "Source typo or garbled TAC group from live traffic"
     },
     {
       "code": "INVALID_RVR",
@@ -1043,6 +1074,16 @@
       "dig": "docs/domain/mining/icao-eur-doc-14-sigmet-airmet-2023-mining-notes.md",
       "ticket": null,
       "note": "EUR Doc 014 public; Annex 3 paywall companion"
+    },
+    {
+      "code": "DVLPG_AREA_QUALIFIER",
+      "status": "ok",
+      "source_id": "fmh-1",
+      "source_url": "https://aviationweather.gov/data/products/sigmet/",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/fmh1-2019-mining-notes.md",
+      "ticket": null,
+      "note": "NWS convective SIGMET developing-area: accept canonical DVLPG AREA; error on FROM-ring or incomplete DVLPG"
     },
     {
       "code": "INVALID_TX_TN",
@@ -1728,6 +1769,46 @@
       "dig": "docs/domain/mining/fmh1-2019-mining-notes.md",
       "ticket": "https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/919",
       "note": "US TAF TEMPO groups limited to 4 hours (national overlay)"
+    },
+    {
+      "code": "US_TAF_PROB40_NOT_USED",
+      "status": "ok",
+      "source_id": "faa-aim",
+      "source_url": "https://www.faa.gov/air_traffic/publications/atpubs/aim_html/chap7_section_1.html",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/profiles/mining/EV-1120-profile-scoped-catalog.md",
+      "ticket": "https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1122",
+      "note": "NWS TAFs do not use PROB40 (FAA AIM meteorology / ICAO weather formats)"
+    },
+    {
+      "code": "US_METAR_STATUTE_MILE_VIS",
+      "status": "ok",
+      "source_id": "faa-aim",
+      "source_url": "https://www.faa.gov/air_traffic/publications/atpubs/aim_html/chap7_section_1.html",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/profiles/mining/EV-1120-profile-scoped-catalog.md",
+      "ticket": "https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1122",
+      "note": "US METAR/SPECI report prevailing visibility in statute miles with SM"
+    },
+    {
+      "code": "US_METAR_INHG_ALTIMETER",
+      "status": "ok",
+      "source_id": "faa-aim",
+      "source_url": "https://www.faa.gov/air_traffic/publications/atpubs/aim_html/chap7_section_1.html",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/profiles/mining/EV-1120-profile-scoped-catalog.md",
+      "ticket": "https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1122",
+      "note": "US METAR/SPECI altimeter uses inches of mercury A#### (national overlay)"
+    },
+    {
+      "code": "CA_METAR_UP_AWOS_ONLY",
+      "status": "ok",
+      "source_id": "manobs-ca",
+      "source_url": "https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manobs-surface-observations.html",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/profiles/mining/EV-1120-profile-scoped-catalog.md",
+      "ticket": "https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1122",
+      "note": "MANOBS present-weather UP (unknown precipitation) is AWOS-only"
     },
     {
       "code": "US_TCA_OBSERVED_CB_NOT_PROVIDED",

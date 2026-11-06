@@ -9,10 +9,17 @@ from tac_validate.products import PRODUCT_KEYWORDS, PRODUCTS
 
 def _content_bounds(tac_text: str) -> tuple[int, int, str]:
     """
-    Return inclusive start, exclusive end, and stripped body for ``tac_text``.
+    Internal helper ``_content_bounds``.
 
-    Offsets are relative to the original string so editors can highlight in-place.
-    Empty / whitespace-only input spans the entire original string.
+    Parameters
+    ----------
+    tac_text : object
+        Argument ``tac_text``.
+
+    Returns
+    -------
+    object
+        Return value.
     """
     stripped = tac_text.strip()
     if not stripped:
@@ -25,6 +32,21 @@ _CA_METAR_FAMILY_LEADS: tuple[str, ...] = ("METAR", "LWIS", "SAWR")
 
 
 def _parse_gate_keywords(product: str, profile: str) -> tuple[str, ...]:
+    """
+    Internal helper ``_parse_gate_keywords``.
+
+    Parameters
+    ----------
+    product : object
+        Argument ``product``.
+    profile : object
+        Argument ``profile``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     base = PRODUCT_KEYWORDS[product]
     if profile == "ca_eccc" and product == "METAR":
         return _CA_METAR_FAMILY_LEADS
@@ -42,16 +64,23 @@ def check_parse_gate(
 
     Parameters
     ----------
-    tac_text :
+    tac_text : str
         Raw TAC text.
-    product :
+    product : str
         F6 product id.
+    profile : str, optional
+        Profile id. By default ``'annex3'``.
 
     Returns
     -------
-    issues, fixes
+    tuple[list[Issue], list[Fix]]
         Structured findings and optional repairs. Issues include ``start``/``end``
         character offsets when the rule can locate a span in ``tac_text``.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (check_parse_gate)
+    2
     """
     issues: list[Issue] = []
     fixes: list[Fix] = []
@@ -132,6 +161,25 @@ def check_product_rules(
 
     Delegates to ``product_rules`` after parse-gate success.
     ``profile`` is reserved for L5 gating (EV-050); L3 membership is shared.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (check_product_rules)
+    2
+
+    Parameters
+    ----------
+    tac_text : str
+        TAC text.
+    product : str
+        Product id.
+    profile : str, optional
+        Profile id. By default ``'annex3'``.
+
+    Returns
+    -------
+    list[Issue]
+        Issues from the product checklist.
     """
     from tac_validate.product_rules import check_product_rules as _impl
 

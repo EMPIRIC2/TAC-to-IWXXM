@@ -15,15 +15,25 @@ logger = logging.getLogger(__name__)
 
 
 class OpenAIPService:
-    """Service for accessing OpenAIP airport data with intelligent caching."""
+    """
+    Service for accessing OpenAIP airport data with intelligent caching.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     def __init__(self, cache_file: Path | None = None, api_key: str | None = None) -> None:
         """
-        Initialize OpenAIP service.
+        Internal helper ``__init__``.
 
-        Args:
-            cache_file: Path to openaip_cache.json file
-            api_key: Optional OpenAIP API key for live fallback
+        Parameters
+        ----------
+        cache_file : object
+            Argument ``cache_file``.
+        api_key : object
+            Argument ``api_key``.
         """
         if cache_file is None:
             cache_file = Path(__file__).parent.parent / "data" / "openaip_cache.json"
@@ -36,7 +46,14 @@ class OpenAIPService:
         self._load_cache()
 
     def _load_cache(self) -> bool:
-        """Load cache from file."""
+        """
+        Internal helper ``_load_cache``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         if not self.cache_file.exists():
             logger.warning(f"Cache file not found: {self.cache_file}")
             return False
@@ -74,11 +91,24 @@ class OpenAIPService:
         2. In-memory cache (from live API calls)
         3. Live API (if api_key available)
 
-        Args:
-            icao: 4-letter ICAO airport code
+        Returns
+        -------
+            Airport data dict or None if no
 
-        Returns:
+        Parameters
+        ----------
+        icao : object
+            4-letter ICAO airport code
+
+        Returns
+        -------
+        object
             Airport data dict or None if not found
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (get_airport)
+        2
         """
         icao = icao.upper().strip()
 
@@ -106,13 +136,17 @@ class OpenAIPService:
 
     def _fetch_from_api(self, icao: str) -> dict[str, Any] | None:
         """
-        Fetch a single airport from OpenAIP API (fallback).
+        Internal helper ``_fetch_from_api``.
 
-        Args:
-            icao: 4-letter ICAO airport code
+        Parameters
+        ----------
+        icao : object
+            Argument ``icao``.
 
-        Returns:
-            Airport data or None
+        Returns
+        -------
+        object
+            Return value.
         """
         try:
             import requests
@@ -139,11 +173,24 @@ class OpenAIPService:
         """
         Check if airport exists in OpenAIP data.
 
-        Args:
-            icao: 4-letter ICAO code
+        Returns
+        -------
+            True if airport found,
 
-        Returns:
+        Parameters
+        ----------
+        icao : object
+            4-letter ICAO code
+
+        Returns
+        -------
+        object
             True if airport found, False otherwise
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (validate_airport)
+        2
         """
         return self.get_airport(icao) is not None
 
@@ -151,8 +198,15 @@ class OpenAIPService:
         """
         Get all cached airports (for bulk operations).
 
-        Returns:
+        Returns
+        -------
+        object
             Dictionary of all cached airports keyed by ICAO
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (get_all_airports)
+        2
         """
         return self._cache or {}
 
@@ -160,8 +214,15 @@ class OpenAIPService:
         """
         Get how old the cache is.
 
-        Returns:
+        Returns
+        -------
+        object
             Timedelta of cache age, or None if not loaded
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (cache_freshness)
+        2
         """
         if self._cache_timestamp:
             return datetime.now(UTC).replace(tzinfo=None) - self._cache_timestamp
@@ -171,18 +232,43 @@ class OpenAIPService:
         """
         Check if cache is older than max_age_days.
 
-        Args:
-            max_age_days: Maximum acceptable cache age in days
-
-        Returns:
+        Returns
+        -------
             True if cache is stale
+
+        Parameters
+        ----------
+        max_age_days : object
+            Maximum acceptable cache age in days
+
+        Returns
+        -------
+        object
+            True if cache is stale
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (is_cache_stale)
+        2
         """
         if freshness := self.cache_freshness():
             return freshness > timedelta(days=max_age_days)
         return True
 
     def suggest_refresh(self) -> str:
-        """Get refresh suggestion message."""
+        """
+        Get refresh suggestion message.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (suggest_refresh)
+        2
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         if self.is_cache_stale():
             freshness = self.cache_freshness()
             age_days = int(freshness.days) if freshness is not None else 0

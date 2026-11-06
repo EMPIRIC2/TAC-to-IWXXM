@@ -1,6 +1,11 @@
 ---
 name: CI/CD Pipeline
 
+# Triggers: every push to main/stage runs Lint, Typecheck, full Test (*) matrix
+# (incl. Test (bugs) → pytest tests/bugs, covering live_tac_eval), e2e-smoke, etc.
+# No path filters — stage tip always executes the required unit/regression surface.
+# Intentionally skip on stage push (not tests): Staging gate + E2E Full (promote /
+# main-PR only), Coverage/Quality PR comments (PR only), Ops EV-933 (dispatch).
 on:
   push:
     branches: [main, stage]
@@ -20,12 +25,18 @@ on:
           - production
         default: production
       ops:
-        description: 'Optional one-shot ops (does not Deploy)'
+        description: 'Optional one-shot ops (skips normal CI/Deploy)'
         type: choice
         options:
           - none
           - ev933-staging
+          - ghcr-doks-pull
         default: none
+      ops_image_tag:
+        description: 'For ops=ghcr-doks-pull — immutable GHCR TIMESTAMP-SHA tag'
+        required: false
+        type: string
+        default: ''
 
 env:
   REGISTRY: ghcr.io
@@ -82,6 +93,69 @@ jobs:
           DOKS_NAMESPACE: metar-iwxxm-staging
         run: bash scripts/deploy/doks_staging_ev933_ops.sh
 
+
+  # GHCR private + revoked ghcr-pull PAT → DOKS ImagePullBackOff / 403.
+  # Refresh cluster pull secret with live GITHUB_TOKEN, then re-roll tip (no full CI).
+  ops-ghcr-doks-pull:
+    name: Ops GHCR pull secret + DOKS rollout
+    runs-on: ubuntu-latest
+    if: >
+      github.event_name == 'workflow_dispatch' &&
+      github.event.inputs.ops == 'ghcr-doks-pull'
+    environment: staging
+    permissions:
+      contents: read
+      packages: write
+    env:
+      KUBE_CONFIG: ${{ secrets.KUBE_CONFIG }}
+      DOKS_NAMESPACE: metar-iwxxm-staging
+      IMAGE_TAG: ${{ github.event.inputs.ops_image_tag }}
+      ROLLOUT_TIMEOUT: 300s
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GHCR_USERNAME: ${{ github.actor }}
+    steps:
+      - uses: actions/checkout@v5
+      - name: Require image tag
+        run: |
+          set -euo pipefail
+          if [ -z "${IMAGE_TAG:-}" ]; then
+            echo "::error::ops_image_tag is required for ops=ghcr-doks-pull"
+            exit 1
+          fi
+          echo "Rolling tag=${IMAGE_TAG}"
+      - name: Ensure GHCR packages are public (best-effort)
+        run: bash scripts/deploy/ghcr_ensure_public.sh
+      - name: Set up kubectl
+        uses: azure/setup-kubectl@v4
+      - name: Configure kubectl
+        run: |
+          set -euo pipefail
+          if [ -z "${KUBE_CONFIG:-}" ]; then
+            echo "::error::Missing staging secret KUBE_CONFIG"
+            exit 1
+          fi
+          mkdir -p "${HOME}/.kube"
+          if ! printf '%s' "${KUBE_CONFIG}" | base64 --decode > "${HOME}/.kube/config" 2>/dev/null; then
+            echo "::error::KUBE_CONFIG is not valid base64"
+            exit 1
+          fi
+          chmod 600 "${HOME}/.kube/config"
+          if grep -qE 'command:[[:space:]]*doctl' "${HOME}/.kube/config"; then
+            echo "::error::KUBE_CONFIG uses doctl exec auth; use a ServiceAccount token kubeconfig"
+            exit 1
+          fi
+      - name: Refresh ghcr-pull secret with live GITHUB_TOKEN
+        run: bash scripts/deploy/doks_refresh_ghcr_pull_secret.sh
+      - name: Delete stuck ImagePullBackOff pods (best-effort)
+        run: bash scripts/deploy/doks_delete_imagepull_pods.sh
+      - name: Roll out DOKS images
+        run: bash scripts/deploy/doks_rollout_images.sh "${IMAGE_TAG}"
+      - name: Show running images
+        run: |
+          kubectl -n "${DOKS_NAMESPACE}" get deploy metar-api metar-frontend metar-map-translator metar-worker \
+            -o jsonpath='{range .items[*]}{.metadata.name}{"\t"}{range .spec.template.spec.containers[*]}{.name}={.image}{" "}{end}{"\n"}{end}'
+          kubectl -n "${DOKS_NAMESPACE}" get pods -o wide
+
   # EV-043 / TC-F30-012 — PRs to main must promote from stage after Staging smoke.
   staging-gate:
     runs-on: ubuntu-latest
@@ -113,7 +187,7 @@ jobs:
   # stage→main). Format/config remain local pre-commit (EV-036); Compose integration
   # stays local pre-push only. Unit matrix + coverage remain below.
   lint:
-    if: ${{ !(github.event_name == 'workflow_dispatch' && github.event.inputs.ops == 'ev933-staging') }}
+    if: ${{ !(github.event_name == 'workflow_dispatch' && github.event.inputs.ops != 'none') }}
     runs-on: ubuntu-latest
     name: Lint
     steps:
@@ -147,11 +221,23 @@ jobs:
       - name: Run lint
         run: make lint
 
+      - name: ADR-056 file budget + complexity
+        run: |
+          make file-budget
+          make file-complexity
+
       - name: Validation catalog drift
         run: make validation-catalog-check
 
+      - name: ADR-048 documentation bar (checkers)
+        run: |
+          make check-docs
+          make check-docs-ts
+          make check-docs-rust
+          make test-doctest
+
   typecheck:
-    if: ${{ !(github.event_name == 'workflow_dispatch' && github.event.inputs.ops == 'ev933-staging') }}
+    if: ${{ !(github.event_name == 'workflow_dispatch' && github.event.inputs.ops != 'none') }}
     runs-on: ubuntu-latest
     name: Typecheck
     steps:
@@ -186,7 +272,7 @@ jobs:
         run: make typecheck
 
   test:
-    if: ${{ !(github.event_name == 'workflow_dispatch' && github.event.inputs.ops == 'ev933-staging') }}
+    if: ${{ !(github.event_name == 'workflow_dispatch' && github.event.inputs.ops != 'none') }}
     runs-on: ubuntu-latest
     name: Test (${{ matrix.package }})
     strategy:
@@ -200,6 +286,7 @@ jobs:
             frontend,
             tac2iwxxm,
             tac-decoding,
+            reference-lookup,
             iwxxm-validate,
             tac-validate,
             dissemination,
@@ -255,6 +342,7 @@ jobs:
             --cov-report=term-missing --cov-fail-under=100 -v
           uv run python scripts/ci/check_per_file_coverage.py packages/shared/coverage.json
           pnpm --filter @metar/shared run test:coverage
+          pnpm --filter @metar/live-map-geometry run test:coverage
 
       - name: Run backend unit tests with coverage
         if: matrix.package == 'backend'
@@ -302,6 +390,11 @@ jobs:
         if: matrix.package == 'tac-decoding'
         run: |
           make test-unit-tac-decoding
+
+      - name: Run reference-lookup unit tests with coverage
+        if: matrix.package == 'reference-lookup'
+        run: |
+          make test-unit-reference-lookup
 
       - name: Install Rust toolchain (iwxxm-validate native)
         if: matrix.package == 'iwxxm-validate'
@@ -366,12 +459,33 @@ jobs:
         if: matrix.package == 'frontend'
         run: pnpm --filter @metar/frontend run test:coverage
 
+      - name: Set up Node.js
+        if: matrix.package == 'bugs'
+        uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+          package-manager-cache: false
+
+      - name: Collect Playwright suite coverage
+        if: matrix.package == 'bugs'
+        run: node scripts/ci/collect_e2e_coverage.mjs
+
+      - name: Check OpenAPI status and required-field contracts
+        if: matrix.package == 'bugs'
+        run: uv run python scripts/ci/check_openapi_contract.py
+
+      # Stage/main push + PR: recursive under tests/bugs (incl. live_tac_eval/).
+      # Deselect only live/live_api markers — offline regressions stay required.
       - name: Run bug regression tests (tests/bugs)
         if: matrix.package == 'bugs'
         run: uv run pytest tests/bugs -m "not live and not live_api" --no-cov -v
 
+      - name: Run Caribbean tester regression kit
+        if: matrix.package == 'bugs'
+        run: uv run pytest tests/regression/caribbean_tester --no-cov -q
+
       - name: Upload package coverage XML artifact
-        if: always() && contains(fromJSON('["shared","auth","backend","tac2iwxxm","iwxxm-validate","tac-validate"]'), matrix.package)
+        if: always() && contains(fromJSON('["shared","auth","backend","tac2iwxxm","iwxxm-validate","tac-validate","workflows"]'), matrix.package)
         uses: actions/upload-artifact@v4
         with:
           name: coverage-xml-${{ matrix.package }}
@@ -382,6 +496,7 @@ jobs:
             packages/tac2iwxxm/coverage.xml
             packages/iwxxm-validate/coverage.xml
             packages/tac-validate/coverage.xml
+            packages/workflows/coverage.xml
           if-no-files-found: ignore
 
       - name: Upload frontend coverage artifact
@@ -392,9 +507,48 @@ jobs:
           path: apps/frontend/coverage/
           if-no-files-found: ignore
 
+  # Decode station names: the key must be present, and OpenAIP must answer.
+  openaip-station-lookup:
+    if: ${{ !(github.event_name == 'workflow_dispatch' && github.event.inputs.ops != 'none') }}
+    runs-on: ubuntu-latest
+    name: OpenAIP station lookup
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          submodules: false
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip uv
+          uv sync
+
+      - name: Require the OpenAIP key
+        env:
+          OPENAIP_API_KEY: ${{ secrets.OPENAIP_API_KEY }}
+        run: |
+          if [ -z "${OPENAIP_API_KEY}" ]; then
+            echo "::error::OPENAIP_API_KEY secret is missing"
+            exit 1
+          fi
+
+      - name: Resolve a few stations against OpenAIP
+        working-directory: apps/backend
+        env:
+          OPENAIP_API_KEY: ${{ secrets.OPENAIP_API_KEY }}
+          CI: "true"
+        run: |
+          uv run pytest tests/live/test_openaip_station_names.py \
+            --override-ini='addopts=' -q --tb=short
+
   # EV-080 / #1077 — scripts Python cov + bats-core (D-TP080-2/3).
   scripts-coverage:
-    if: ${{ !(github.event_name == 'workflow_dispatch' && github.event.inputs.ops == 'ev933-staging') }}
+    if: ${{ !(github.event_name == 'workflow_dispatch' && github.event.inputs.ops != 'none') }}
     runs-on: ubuntu-latest
     name: Scripts coverage (py + bats)
     steps:
@@ -423,6 +577,9 @@ jobs:
             -o Dir::Etc::sourceparts="-" \
             -o APT::Get::List-Cleanup="0"
           sudo apt-get install -y bats
+
+      - name: OpenAPI status and required-field contract
+        run: make check-openapi-contract
 
       - name: Scripts Python coverage (fail_under 100)
         run: make test-coverage-scripts
@@ -467,6 +624,7 @@ jobs:
         id: cov
         run: |
           python3 scripts/ci/format_coverage_pr_comment.py coverage-artifacts \
+            --require tac2iwxxm,tac-validate,auth,workflows \
             > coverage-pr-comment.md
           {
             echo "body<<EOF"
@@ -607,7 +765,7 @@ jobs:
 
   # F30 / EV-031 T2.3 — Postgres service + idempotent alembic upgrade head (TC-EV031-002).
   test-alembic:
-    if: ${{ !(github.event_name == 'workflow_dispatch' && github.event.inputs.ops == 'ev933-staging') }}
+    if: ${{ !(github.event_name == 'workflow_dispatch' && github.event.inputs.ops != 'none') }}
     runs-on: ubuntu-latest
     name: Test (alembic / TC-EV031-002)
     services:
@@ -656,7 +814,7 @@ jobs:
   # Matrix legs get GH name suffixes; required check is rust-crates-gate below.
   # ============================================================================
   rust-crates:
-    if: ${{ !(github.event_name == 'workflow_dispatch' && github.event.inputs.ops == 'ev933-staging') }}
+    if: ${{ !(github.event_name == 'workflow_dispatch' && github.event.inputs.ops != 'none') }}
     runs-on: ubuntu-latest
     name: Rust crate (${{ matrix.package }})
     strategy:
@@ -710,7 +868,7 @@ jobs:
     needs: [rust-crates]
     if: >
       always() &&
-      !(github.event_name == 'workflow_dispatch' && github.event.inputs.ops == 'ev933-staging')
+      !(github.event_name == 'workflow_dispatch' && github.event.inputs.ops != 'none')
     steps:
       - name: Require rust-crates matrix success
         run: |
@@ -723,7 +881,7 @@ jobs:
   # Job id stays tac2iwxxm-native for EV-036 contract tests; display names are locked.
   # ============================================================================
   tac2iwxxm-native:
-    if: ${{ !(github.event_name == 'workflow_dispatch' && github.event.inputs.ops == 'ev933-staging') }}
+    if: ${{ !(github.event_name == 'workflow_dispatch' && github.event.inputs.ops != 'none') }}
     runs-on: ubuntu-latest
     name: ${{ matrix.check_name }}
     strategy:
@@ -789,7 +947,7 @@ jobs:
   # Locked check name for rulesets: Converter perf (tac2iwxxm)
   # ============================================================================
   converter-perf:
-    if: ${{ !(github.event_name == 'workflow_dispatch' && github.event.inputs.ops == 'ev933-staging') }}
+    if: ${{ !(github.event_name == 'workflow_dispatch' && github.event.inputs.ops != 'none') }}
     runs-on: ubuntu-latest
     name: Converter perf (tac2iwxxm)
     steps:
@@ -817,16 +975,21 @@ jobs:
   # disableAuth=true, so no Supabase secrets are required (mock session path).
   # ============================================================================
   e2e-smoke:
-    if: ${{ !(github.event_name == 'workflow_dispatch' && github.event.inputs.ops == 'ev933-staging') }}
+    if: ${{ !(github.event_name == 'workflow_dispatch' && github.event.inputs.ops != 'none') }}
     runs-on: ubuntu-latest
     name: E2E Smoke (Playwright)
     env:
       METAR_CONFIG_ENV: local
+      # Non-production logout fixture. The require step fails if this file is missing.
+      E2E_LOGOUT_FIXTURE: apps/e2e/fixtures/ci-logout.json
 
     steps:
       - uses: actions/checkout@v5
         with:
           submodules: false
+
+      - name: Require non-production logout fixture
+        run: python3 scripts/ci/check_e2e_logout_fixture.py
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -882,11 +1045,16 @@ jobs:
       METAR_CONFIG_ENV: local
       # Auth routes need URL (F31). Publishable key already set at workflow env.
       SUPABASE_URL: ${{ secrets.FRONTEND_VITE_SUPABASE_URL }}
+      # Non-production logout fixture. The require step fails if this file is missing.
+      E2E_LOGOUT_FIXTURE: apps/e2e/fixtures/ci-logout.json
 
     steps:
       - uses: actions/checkout@v5
         with:
           submodules: false
+
+      - name: Require non-production logout fixture
+        run: python3 scripts/ci/check_e2e_logout_fixture.py
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -937,9 +1105,9 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     name: Deploy (${{ github.ref_name }})
-    needs: [test, test-alembic, rust-crates-gate, tac2iwxxm-native, converter-perf, e2e-smoke]
+    needs: [test, test-alembic, rust-crates-gate, tac2iwxxm-native, converter-perf, e2e-smoke, openaip-station-lookup]
     if: |
-      (github.event.inputs.ops != 'ev933-staging') && (
+      (github.event.inputs.ops != 'ev933-staging' && github.event.inputs.ops != 'ghcr-doks-pull') && (
       (github.event_name == 'push' && github.ref == 'refs/heads/stage') ||
       (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/') && startsWith(github.ref_name, 'v') && endsWith(github.ref_name, '-deploy')) ||
       (github.event_name == 'workflow_dispatch' && github.event.inputs.target == 'production')
@@ -1084,6 +1252,13 @@ jobs:
             ${{ env.REGISTRY }}/${{ env.WORKER_IMAGE }}:${{ steps.tags.outputs.image_tag }}
             ${{ env.REGISTRY }}/${{ env.WORKER_IMAGE }}:${{ steps.target.outputs.latest_tag }}
 
+      # Public repo; keep packages pullable without a long-lived cluster PAT.
+      - name: Ensure GHCR packages are public (best-effort)
+        if: steps.guard.outputs.skip != 'true'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: bash scripts/deploy/ghcr_ensure_public.sh
+
       - name: Optional Render hooks (non-blocking, prod Deploy only)
         if: steps.guard.outputs.skip != 'true' && steps.target.outputs.env_role == 'prod'
         continue-on-error: true
@@ -1129,6 +1304,9 @@ jobs:
         env:
           IMAGE_TAG: ${{ steps.tags.outputs.image_tag }}
           DOKS_NAMESPACE: ${{ steps.target.outputs.namespace }}
+          DEPLOY_ENV_ROLE: ${{ steps.target.outputs.env_role }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GHCR_USERNAME: ${{ github.actor }}
         run: |
           set -euo pipefail
           if [ -z "${KUBE_CONFIG:-}" ]; then
@@ -1145,7 +1323,8 @@ jobs:
             echo "::error::KUBE_CONFIG uses doctl exec auth; use a ServiceAccount token kubeconfig (docs/deploy.md)"
             exit 1
           fi
-          echo "Rolling DOKS env_role=${{ steps.target.outputs.env_role }} ns=${DOKS_NAMESPACE} tag=${IMAGE_TAG}"
+          echo "Rolling DOKS env_role=${DEPLOY_ENV_ROLE} ns=${DOKS_NAMESPACE} tag=${IMAGE_TAG}"
+          bash scripts/deploy/doks_refresh_ghcr_pull_secret.sh
           bash scripts/deploy/doks_rollout_images.sh "${IMAGE_TAG}"
 
       - name: CD skipped (credentials)
@@ -1165,7 +1344,6 @@ jobs:
       # Host-header fallback until Porkbun A records → staging LB (EV-044).
       STAGING_LB_IP: "143.244.202.13"
       DOKS_LB_IP: "143.244.202.13"
-      STAGING_SMOKE_PYTEST: "0"
     steps:
       - uses: actions/checkout@v5
       - name: Wait briefly for ingress/TLS

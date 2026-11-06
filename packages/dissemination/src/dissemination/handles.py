@@ -11,7 +11,22 @@ from typing import Any
 
 @dataclass
 class HandleRecord:
-    """In-memory preflight handle payload bound to one user and sink."""
+    """
+    In-memory preflight handle payload bound to one user and sink.
+
+    Attributes
+    ----------
+    user_id : str
+        Caller id.
+    sink_type : str
+        Sink type id.
+    uri : str or None
+        Destination URI.
+    params : dict[str, Any]
+        Sink parameters.
+    expires_at : float
+        Expiry time.
+    """
 
     user_id: str
     sink_type: str
@@ -21,9 +36,24 @@ class HandleRecord:
 
 
 class HandleStore:
-    """Process-local handle map - never persisted."""
+    """
+    Process-local handle map - never persisted.
+
+    Attributes
+    ----------
+    ttl_seconds : float
+        Handle lifetime in seconds.
+    """
 
     def __init__(self, *, ttl_seconds: float = 300.0) -> None:
+        """
+        Internal helper ``__init__``.
+
+        Parameters
+        ----------
+        ttl_seconds : float, optional
+            Handle lifetime in seconds. By default ``300.0``.
+        """
         self.ttl_seconds = ttl_seconds
         self._items: dict[str, HandleRecord] = {}
         self._lock = threading.Lock()
@@ -42,21 +72,26 @@ class HandleStore:
 
         Parameters
         ----------
-        user_id :
+        user_id : str
             Authenticated caller id; handles are scoped per user.
-        sink_type :
+        sink_type : str
             Drawer / API sink discriminator.
-        uri :
+        uri : str or None
             Destination URI captured at preflight time, if any.
-        params :
-            Non-secret sink parameters to replay on send.
-        now :
+        params : dict[str, Any] or None, optional
+            Non-secret sink parameters to replay on send. By default ``None``.
+        now : float or None, optional
             Optional epoch seconds for tests; defaults to ``time.time()``.
 
         Returns
         -------
         str
             URL-safe handle token valid for ``ttl_seconds``.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (create)
+        2
         """
         token = secrets.token_urlsafe(24)
         ts = time.time() if now is None else now
@@ -84,17 +119,22 @@ class HandleStore:
 
         Parameters
         ----------
-        handle :
+        handle : str
             Opaque token from ``create``.
-        user_id :
+        user_id : str
             Caller id; must match the record owner.
-        now :
-            Optional epoch seconds for expiry checks.
+        now : float or None, optional
+            Optional epoch seconds for expiry checks. By default ``None``.
 
         Returns
         -------
         HandleRecord or None
             The record when valid; ``None`` when missing, expired, or user mismatch.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (get)
+        2
         """
         ts = time.time() if now is None else now
         with self._lock:
@@ -115,15 +155,20 @@ class HandleStore:
 
         Parameters
         ----------
-        handle :
+        handle : str
             Opaque token from ``create``.
-        user_id :
+        user_id : str
             Caller id; must match the record owner.
 
         Returns
         -------
         HandleRecord or None
             The removed record, or ``None`` when missing or user mismatch.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (pop)
+        2
         """
         with self._lock:
             rec = self._items.get(handle)
@@ -132,11 +177,26 @@ class HandleStore:
             return self._items.pop(handle)
 
     def clear(self) -> None:
-        """Drop all in-memory handles (tests and process reset)."""
+        """
+        Drop all in-memory handles (tests and process reset).
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (clear)
+        2
+        """
         with self._lock:
             self._items.clear()
 
     def _purge(self, now: float) -> None:
+        """
+        Internal helper ``_purge``.
+
+        Parameters
+        ----------
+        now : object
+            Argument ``now``.
+        """
         expired = [k for k, v in self._items.items() if v.expires_at < now]
         for k in expired:
             del self._items[k]

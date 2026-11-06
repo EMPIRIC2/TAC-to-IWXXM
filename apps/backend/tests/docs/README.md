@@ -1,6 +1,6 @@
 # Backend Testing Guide
 
-Comprehensive testing infrastructure for the METAR to IWXXM Backend API.
+Testing infrastructure for the METAR to IWXXM Backend API.
 
 ## Quick Start
 
@@ -509,7 +509,7 @@ async def test_concurrent_requests():
 - [DEVELOPMENT.md](../../docs/ops/DEVELOPMENT.md) - Development workflow
 - [API.md](../../docs/guides/API.md) - API documentation
 
-## Phase 2: Advanced Testing Infrastructure (✅ Complete)
+## Phase 2: Advanced Testing Infrastructure (Complete)
 
 ### E2E Tests with Real Services
 
@@ -571,9 +571,9 @@ pytest tests/test_endpoint_extended_coverage.py::TestConcurrentRequestHandling -
 
 ### Monitoring Dashboard
 
-Grafana dashboard configuration: `monitoring/grafana-dashboard.json`
-
-**Panels**: Health status, uptime, request rate, response time, error rate, conversion success, active jobs, database connections, regional stats, alerts
+Historical Phase 2 note: a Grafana dashboard JSON once lived under `monitoring/`
+(removed in EV-drop-monitoring). Current observability is platform logs (DOKS) and
+optional Sentry — not a repo Grafana stack.
 
 ## Contributing
 

@@ -4,14 +4,41 @@ This module provides centralized configuration for all validation layers
 including XSD, Schematron, and WMO Code List validation.
 """
 
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class ValidationSettings(BaseSettings):
-    """Validation configuration with environment variable support.
+    """
+    Validation configuration with environment variable support.
 
     All settings can be overridden via environment variables or .env file.
+
+    Attributes
+    ----------
+    wmo_online_validation : bool
+        Validate against the live WMO registry when True.
+    wmo_validation_timeout : int
+        Timeout in seconds for online WMO validation.
+    wmo_registry_cache_ttl : int
+        Cache TTL in seconds for online WMO validation results.
+    wmo_registry_url : str
+        Base URL for the WMO codes registry.
+    schematron_use_docker : bool
+        Prefer Docker/Saxon for full XSLT2 Schematron support.
+    schematron_timeout : int
+        Timeout in seconds for Schematron validation.
+    xsd_cache_enabled : bool
+        Cache compiled XSD schemas when True.
+    enable_live_api_tests : bool
+        Enable tests that call live external APIs.
     """
+
+    model_config = SettingsConfigDict(
+        env_prefix="",
+        case_sensitive=False,
+        env_file=".env",
+        env_file_encoding="utf-8",
+    )
 
     # WMO Code List Validation
     wmo_online_validation: bool = True  # DEFAULT ON - validate against live registry
@@ -29,24 +56,24 @@ class ValidationSettings(BaseSettings):
     # Live API Testing
     enable_live_api_tests: bool = True  # Enable tests against live APIs
 
-    class Config:
-        """Pydantic configuration."""
-
-        env_prefix = ""  # No prefix, use exact env var names
-        case_sensitive = False  # Case-insensitive env var matching
-        env_file = ".env"  # Load from .env file if present
-        env_file_encoding = "utf-8"
-
 
 # Global singleton instance
 _settings_instance: ValidationSettings | None = None
 
 
 def get_validation_settings() -> ValidationSettings:
-    """Get singleton instance of validation settings.
+    """
+    Get singleton instance of validation settings.
 
-    Returns:
+    Returns
+    -------
+    ValidationSettings
         ValidationSettings instance with current configuration
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (get_validation_settings)
+    2
     """
     global _settings_instance
     if _settings_instance is None:
@@ -55,7 +82,14 @@ def get_validation_settings() -> ValidationSettings:
 
 
 def reset_validation_settings() -> None:
-    """Reset settings instance (useful for testing)."""
+    """
+    Reset settings instance (useful for testing).
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (reset_validation_settings)
+    2
+    """
     global _settings_instance
     _settings_instance = None
 

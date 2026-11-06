@@ -18,9 +18,9 @@ Spike [#926](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/926) asks for SQL d
 Gaps:
 
 - No **source-side** DB poll adapter (F8 uses HTTP poller)
-- No **operator-defined column mapping** — only contract v1 columns
+- No **operator-defined column mapping**; only contract v1 columns
 - Oracle not in dialect matrix
-- #896 connector spike is transport — needs mapping layer on top
+- #896 connector spike is transport; needs mapping layer on top
 
 ## Decision
 
@@ -30,9 +30,9 @@ Gaps:
 
 3. **Backward compatibility:** absent mapping → **writer-contract v1** default (`iwxxm_reports` + existing columns).
 
-4. **SourceAdapter protocol (Planned):** mirror `SinkAdapter` — `poll()` / `ack()` with allowlist + memory-only URI. Implementation deferred to F8/workflow issues; #926 documents interface only.
+4. **SourceAdapter protocol (Planned):** mirror `SinkAdapter`: `poll()` / `ack()` with allowlist + memory-only URI. Implementation deferred to F8/workflow issues; #926 documents interface only.
 
-5. **Engine matrix v1:** postgres, mysql/mariadb, sqlserver, sqlite — **sink and source**. **Oracle deferred** — document gap; no DDL until driver/dialect decision.
+5. **Engine matrix v1:** postgres, mysql/mariadb, sqlserver, sqlite: **sink and source**. **Oracle deferred**: document gap; no DDL until driver/dialect decision.
 
 6. **MariaDB:** use **mysql** dialect + DDL path (already in `writer_contract_ddl`).
 
@@ -44,7 +44,7 @@ Gaps:
 
 ## MappingConfig sketch
 
-See Context: sql-adapters-mapping-926 (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate) for full YAML example.
+See Context: sql-adapters-mapping-926 (archived; see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate) for full YAML example.
 
 Logical fields:
 
@@ -68,7 +68,7 @@ Logical fields:
 
 - Symmetric narrative for epic #922 Adapters layer
 - #935 / #896 can align on one config shape
-- Writer-contract v1 remains default — no break
+- Writer-contract v1 remains default; no break
 
 ### Negative / follow-ups
 

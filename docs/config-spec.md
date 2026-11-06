@@ -1,26 +1,41 @@
 # Configuration Specification
 
-> **Project**: METAR to IWXXM Converter  
-> **Last updated**: 2026-08-03 (S038 / EV-031 — F30/F31 Auth-only Supabase + DO Postgres + DOKS)  
+> **Project**: TAC to IWXXM  
+> **Last updated**: 2026-10-25 (config hygiene target — decisions log §EV-config-file-hygiene)  
 > **Session**: S003-supabase-keys-config (base); S008; S011; S023-public-app-privacy; **S038**
+
+## How to read this document
+
+This file defines **non-secret** JSON config under `config/`, how the API and
+frontend select an environment, and which values must stay in environment
+variables instead. It is a satellite of [tech-spec.md](tech-spec.md). Exact
+secret **names** also appear in [env-contract.md](env-contract.md).
+
+| Layer | Holds |
+|-------|-------|
+| `config/{env}.json` | Committed non-secrets (URLs, CORS, flags) |
+| Environment variables | Secrets and abuse-control knobs |
+| Frontend `/config.json` | Deploy-time inject (URLs + publishable Auth key) |
 
 ## Precedence Order
 
 Configuration values resolve in this order (highest priority first):
 
-1. Environment variables (secrets + abuse-control knobs — see below)
+1. Environment variables (secrets + abuse-control knobs; see below)
 2. `config/{env}.json` selected by `METAR_CONFIG_ENV`
 3. Built-in defaults in `packages/shared`
 
-**Secrets never belong in `config/*.json`.** FE may receive **publishable** Auth bootstrap via
-deploy-time `/config.json` inject. Product DB secrets are **`DATABASE_URL` only** (DigitalOcean).
-Supabase **service-role must not** be used as the product data plane (ADR-033).
+**Secrets never belong in `config/*.json`.** The frontend may receive a
+**publishable** Auth bootstrap via deploy-time `/config.json` inject. Product
+database secrets use **`DATABASE_URL` only** (DigitalOcean Postgres). Supabase
+**service-role must not** be used as the product data plane (ADR-033).
 
 ## BYO credentials (S011 / R6 / #697) — amended EV-031
 
-Operators may still BYO **their** Supabase **Auth** project (URL + publishable + JWT verify).
-Product Postgres is **DigitalOcean** (`DATABASE_URL`) — not Supabase hosted DB. F8 worker uses
-`DATABASE_URL` + poller env (ADR-018 amend).
+Operators may still bring their own (**BYO**) Supabase **Auth** project (URL +
+publishable key + JWT verify). Product Postgres is **DigitalOcean**
+(`DATABASE_URL`), not a Supabase hosted database. The F8 worker uses
+`DATABASE_URL` plus poller env (ADR-018 amend).
 
 ## Configuration Files
 
@@ -63,7 +78,7 @@ Same schema as `prod.json` with local values:
 | `supabase.url`    | project URL                                |
 | `supabase.url`    | `https://ktvxijislbtgqapllmuk.supabase.co` |
 
-**Port standard (S003-R4):** Frontend `18000`, API `18001` everywhere — compose, config, and
+**Port standard (S003-R4):** Frontend `18000`, API `18001` everywhere: compose, config, and
 `start-dev-servers.sh`.
 
 ### Frontend runtime `/config.json`
@@ -72,7 +87,7 @@ Same schema as `prod.json` with local values:
 - **Location**: Served from static host at `/config.json` (copied from `config/prod.json` at build)
 - **Purpose**: Replace build-time `VITE_*` for URLs; fetch at app bootstrap (S003-R2)
 
-Injected at deploy time (`scripts/frontend/prepare-config.sh` — publishable key not committed):
+Injected at deploy time (`scripts/frontend/prepare-config.sh`; publishable key not committed):
 
 ```json
 {
@@ -98,7 +113,7 @@ committed `config/prod.json` (DOKS). Staging uses `config/staging.json`
 
 ## Environment Variables (secrets + abuse controls)
 
-Minimal `.env.example` — copy to repo-root `.env`. **Canonical names:** [env-contract.md](env-contract.md).
+Minimal `.env.example`: copy to repo-root `.env`. **Canonical names:** [env-contract.md](env-contract.md).
 
 | Variable                                            | Required      | Description                                                  | Source                    |
 | --------------------------------------------------- | ------------- | ------------------------------------------------------------ | ------------------------- |
@@ -162,14 +177,30 @@ admin dashboard; prefer documenting operator Supabase Auth invite policy.
 
 No new CLI flags.
 
+## Config hygiene target (2026-10-25)
+
+[Corpus: product §M5] [Corpus: adr/ADR-053] [Corpus: decisions] `requirements-decisions.md` §EV-config-file-hygiene.
+
+These file moves keep CI, deploy, and local-setup behavior:
+
+| Change | Status |
+|--------|--------|
+| `render.yaml` | Removed. Live deploy stays `deploy/doks/`. |
+| `apps/backend/scripts/start_dev.sh`, `scripts/launchers/launch_api.sh`, `scripts/launchers/launch_gui.sh` | Removed. The local launcher stays `start-dev-servers.sh` (API port `18001`). |
+| Root `ruff.toml` | Removed. Settings live in root `pyproject.toml` `[tool.ruff]`. Package `extend` lines point at `../../pyproject.toml`. |
+| `docker-compose.wis2box.yml`, `docker-compose.mock-byoc.yml` | Removed. Those services live in `docker-compose.yml` under profiles `wis2box` and `mock-byoc`. Default `docker compose up` does not start them. |
+| Product-family quality workflows | Still separate. A later edit may add one reusable workflow while each thin `.github/workflows/*-quality.yml` keeps its GitHub check name. |
+
+`Brewfile`, `config/local.json`, `config/prod.json`, `config/staging.json`, `config/e2e.json`, and the DOKS staging/prod overlays stay. They are separate owners, not duplicates.
+
 ## Validation Rules
 
 - Rate-limit / body knobs must be positive integers when set (`RATE_LIMIT_*`, `MAX_REQUEST_BODY_BYTES`)
 - `config/*.json` must parse as valid JSON; `api.corsOrigins` must be a non-empty array in prod
-- `api.baseUrl` is the single API origin for `/api/v1/*` **and** `/auth/*` (F31 / ADR-033) — **no** `/admin`
+- `api.baseUrl` is the single API origin for `/api/v1/*` **and** `/auth/*` (F31 / ADR-033); **no** `/admin`
 - `make env-check` fails if Auth bootstrap is required without `supabase.url` / publishable key when Auth is enabled
 - Secret / service-role keys must never appear in frontend build env or committed files
-- Product DB writers use `DATABASE_URL` (DO Postgres) — not Supabase PostgREST service-role (F30)
+- Product DB writers use `DATABASE_URL` (DO Postgres), not Supabase PostgREST service-role (F30)
 - `DISSEMINATION_EGRESS_ALLOWLIST` empty ⇒ fail-closed (ADR-029)
 
 ## F6 — tac2iwxxm conversion (S008)
@@ -187,7 +218,7 @@ No new `config/*.json` keys and **no new environment variables** for F6.
 
 **Connectivity**: Frontend and API remain different origins on Render. Keep `api.corsOrigins`
 correct; redeploy **API before** frontend sign-off when CORS/API contract changes. F6 UI pickers
-use runtime `/config.json` — no new `VITE_*` required.
+use runtime `/config.json`; no new `VITE_*` required.
 
 **`.env.example`**: Unchanged for F6.
 
@@ -210,7 +241,7 @@ apply. Redeploy API before frontend when contract changes.
 ## F11–F14 — msgspec HTTP + PyPI publish (S014 / EV-010)
 
 No new `config/*.json` keys for msgspec response encoding. **PyPI publish uses GitHub
-OIDC trusted publishing** — no long-lived PyPI API token in repo secrets when OIDC is configured
+OIDC trusted publishing**: no long-lived PyPI API token in repo secrets when OIDC is configured
 ([Real Python](https://realpython.com/pypi-publish-python-package/)).
 
 | Concern                 | Where it lives                    | Notes                                                    |
@@ -223,7 +254,7 @@ OIDC trusted publishing** — no long-lived PyPI API token in repo secrets when 
 | Schema bundle size      | `iwxxm-validate` wheel build      | From `vendor/schemas/*` pins; not an env var             |
 | Render redeploy         | Existing API/static secrets       | When API contract changes; CORS unchanged                |
 
-**GitHub Actions (publish)** — configure in GitHub UI (not committed secrets):
+**GitHub Actions (publish)**: configure in GitHub UI (not committed secrets):
 
 | Setting                 | Purpose                                                                             |
 | ----------------------- | ----------------------------------------------------------------------------------- |
@@ -275,26 +306,26 @@ on DO Postgres while keeping public convert and abuse-control env knobs:
 
 ### Session changelog
 
-- S008 (2026-07-12): F6 — no new config/env; profile default in code; hard cutover
+- S008 (2026-07-12): F6; no new config/env; profile default in code; hard cutover
 - S011 / EV-008 (2026-07-13): BYO; deprecate `ADMIN_*` → `E2E_USER_*`; drop `/admin` from baseUrl docs
 - S014 / EV-010 (2026-07-18): PyPI OIDC trusted publishing notes; no new runtime secrets;
   matrix workflow clarification (05 S2.M1)
 - S019 / EV-014 (2026-07-21): `DISSEMINATION_EGRESS_ALLOWLIST` (E14-08=A); no config JSON for sinks
 - S019 / EV-014 T6.6 (2026-07-21): document local/CI recommended allowlist value; Render live value still operator-set (no `RENDER_API_KEY` in cloud agent)
-- S023 / EV-017 (2026-07-28): F21 — rate-limit + body env; retire `DISABLE_AUTH` / `E2E_USER_*` / FE Auth keys (ADR-031)
+- S023 / EV-017 (2026-07-28): F21: rate-limit + body env; retire `DISABLE_AUTH` / `E2E_USER_*` / FE Auth keys (ADR-031)
 - S026 / EV-020 (2026-07-29): F9 glossary package data + optional override; F3/OpenAIP reuse for
-  decode names (ADR-032) — see §F24/F25/F9 below
-- S027 / EV-021 (2026-07-29): F26/F27 VAA+TCA WMO goldens — **no new env vars**; see §F26/F27
-- S038 / EV-031 (2026-08-03): F30/F31 — `DATABASE_URL` required; Auth keys restored; DOKS live URLs;
+  decode names (ADR-032); see §F24/F25/F9 below
+- S027 / EV-021 (2026-07-29): F26/F27 VAA+TCA WMO goldens; **no new env vars**; see §F26/F27
+- S038 / EV-031 (2026-08-03): F30/F31: `DATABASE_URL` required; Auth keys restored; DOKS live URLs;
   F8 off Supabase DB (ADR-033)
 - EV-configurable-tac-decode-packs / #1210 (2026-09-19): optional `TAC_DECODING_PACK_DIR`;
   unset means built-in packs only. Not a required deploy secret (ADR-045).
 - EV-validation-policy-layers / #1216 (2026-09-20): optional `TAC_VALIDATE_POLICY_DIR`,
-  `TAC_VALIDATE_DETECTOR_DIR`, `IWXXM_VALIDATE_POLICY_DIR` — file/env overlays only (ADR-046).
+  `TAC_VALIDATE_DETECTOR_DIR`, `IWXXM_VALIDATE_POLICY_DIR`: file/env overlays only (ADR-046).
   Not required Render secrets.
-- EV-yaml-extension-header (2026-09-21): optional `TAC2IWXXM_PROFILE_DIR` — conversion profile
+- EV-yaml-extension-header (2026-09-21): optional `TAC2IWXXM_PROFILE_DIR` for conversion profile
   binding overlays. Not a required Render secret (ADR-045 / ADR-046).
-- EV-yaml-full-configurability / #1229 (2026-09-22): optional `TAC2IWXXM_EMIT_MAP_DIR` — convert
+- EV-yaml-full-configurability / #1229 (2026-09-22): optional `TAC2IWXXM_EMIT_MAP_DIR` for convert
   emit-map overlays (ADR-047). Not a required Render secret.
 
 ## F24 / F25 / F9 deepen — WMO goldens + glossary (S026 / EV-020)
@@ -307,6 +338,7 @@ No new Render secrets required for convert goldens (package-side). Decode glossa
 | WMO golden defaults | Code defaults | `profile=annex3`, pinned default `iwxxm_version` — ADR-032 |
 | Decode glossary | Official/near-official sources + YAML **overrides** | E20-E2; ADR-032 |
 | Glossary override path | Packaged `decode_glossary.yaml` + optional `TAC_DECODING_GLOSSARY_PATH` (legacy `TAC2IWXXM_DECODE_GLOSSARY_PATH`) | Overlay only |
+| Airport name table | Optional `TAC_DECODING_LOCATION_NAMES_PATH` (ADR-049). No packaged names | Include. File/env only. Resolver hook wins when installed |
 | Pack overlay dir | Optional `TAC_DECODING_PACK_DIR` | Directory of YAML/JSON packs. Unset = built-in packs only. Not a Render secret (ADR-045 / #1210) |
 | TAC quality policy overlay | Optional `TAC_VALIDATE_POLICY_DIR` | Extra TAC quality policy YAML. Unset = builtins. Not a Render secret (ADR-046 / #1216) |
 | TAC detector overlay | Optional `TAC_VALIDATE_DETECTOR_DIR` | Extra detector packs. Unset = builtins. Not a Render secret (ADR-046 / #1216) |
@@ -325,7 +357,7 @@ decode-tac string behavior ships in API image.
 ## F26 / F27 — VAA + TCA quality (S027 / EV-021)
 
 No new Render secrets or env vars. Package-side goldens under ADR-032 defaults; FE Examples
-catalog remains static fixtures (WMO-passers only for VAA/TCA when F26/F27 green — E21-3).
+catalog remains static fixtures (WMO-passers only for VAA/TCA when F26/F27 green; E21-3).
 
 | Concern | Where it lives | Notes |
 |---------|----------------|-------|
@@ -347,6 +379,21 @@ behavior ships in API image.
 
 No new Render secrets required for P0/P1 library fixtures. Redeploy API before claiming
 13-deploy-smoke if convert quarantine / nil / NSC behavior changes.
+
+## F37 — Live map cache (EV-globe-live-map)
+
+[Corpus: product §F37] [Corpus: tech-spec] [Corpus: adr/ADR-052]
+
+| Name | Default | Rule |
+|------|---------|------|
+| `LIVE_MAP_REFRESH` | `0` on staging once the translator is running. `1` starts a timer in that process | Tests leave it unset so the API timer stays off |
+| `LIVE_MAP_REFRESH_SECONDS` | `300` | Pause between refresh areas. Integer ≥ 60 |
+| `LIVE_MAP_IMPORT_LIMIT` | `40` | Cap for the API timer only. The map translator finishes every stored report in the current area before the next area |
+| `LIVE_MAP_CACHE_URL` | The product `DATABASE_URL` | Shared by the API and the translator. Unset uses process memory |
+
+**Retention (EV-live-map-24h-window):** pull, store, and `GET /api/v1/live-map` share a fixed **24-hour** window versus UTC now. There is no env override in this cycle. METAR vendor requests use `hours=24`. [Corpus: product §F37] [Corpus: adr/ADR-052]
+
+Staging turns the API timer off and runs `metar-map-translator` at one replica. That Deployment is not a public service. The ingest poller stays at 0 replicas. [Corpus: product §F37] [Corpus: adr/ADR-052]
 
 ## References
 

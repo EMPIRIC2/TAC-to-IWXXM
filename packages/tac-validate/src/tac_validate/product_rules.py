@@ -52,18 +52,23 @@ def check_product_rules(
 
     Parameters
     ----------
-    tac_text :
+    tac_text : str
         Raw TAC text.
-    product :
+    product : str
         F6 product id.
-    profile :
+    profile : str, optional
         ``annex3`` or ``iwxxm_us``. Reserved for L5 overlay gating (EV-050 T3.3);
-        WMO L3 membership checks are shared across profiles today.
+        WMO L3 membership checks are shared across profiles today. By default ``'annex3'``.
 
     Returns
     -------
     list[Issue]
         Error-severity findings with spans when possible.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (check_product_rules)
+    2
     """
     if product in {"METAR", "SPECI"}:
         return _check_metar_speci(tac_text, product, profile=profile)

@@ -65,8 +65,21 @@ make test-tac2iwxxm-native
 ```
 
 When adding or changing a METAR/SPECI encode theme in this monorepo, also update the F29
-quality matrices — see [`tests/quality_matrices/AUTHORING.md`](../../tests/quality_matrices/AUTHORING.md)
+quality matrices. See [`tests/quality_matrices/AUTHORING.md`](../../tests/quality_matrices/AUTHORING.md)
 (TC-F29-007).
+
+## Convert allowlist
+
+National product gates live in `src/tac2iwxxm/conf/convert_allowlist.yaml` and load
+through Hydra. Annex 3 is not listed, so it stays ungated. From a git checkout:
+
+```bash
+make convert-allowlist
+uv run python scripts/tac2iwxxm/compose_convert_allowlist.py \
+  --override 'profiles.au_bom=[METAR,TAF]'
+```
+
+The override prints a composed view. It does not change the packaged file.
 
 ## Validation catalogs
 
@@ -97,6 +110,18 @@ binding for listed profile ids (ADR-046). See the monorepo
 export TAC2IWXXM_PROFILE_DIR=packages/tac2iwxxm/examples/starters
 tac2iwxxm --check-overlay "$TAC2IWXXM_PROFILE_DIR"
 ```
+
+### Embedder quickstart (four engines)
+
+From a monorepo checkout, run starter overlays for decode + TAC validate + IWXXM
+validate + convert bindings in one shot:
+
+```bash
+make overlay-preflight
+```
+
+Emit-map overlays use `TAC2IWXXM_EMIT_MAP_DIR`. HTTP APIs do not accept YAML bodies;
+mount directories in deploy config.
 
 Decode glossary SoT is [`tac-decoding`](https://pypi.org/project/tac-decoding/)
 (`TAC_DECODING_GLOSSARY_PATH`); this package may still ship a shim copy.

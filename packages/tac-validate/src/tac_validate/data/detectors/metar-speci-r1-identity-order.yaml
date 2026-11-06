@@ -9,7 +9,8 @@ products:
 rules:
   - id: missing_cccc
     kind: require_search
-    pattern: '\b(?!AUTO\b)[A-Z]{4}\b'
+    # Letter-first CCCC; allow digits (US METAR e.g. K10U). #1476
+    pattern: '\b(?!AUTO\b)[A-Z][A-Z0-9]{3}\b'
     on_fail:
       code: MISSING_CCCC
       location: station

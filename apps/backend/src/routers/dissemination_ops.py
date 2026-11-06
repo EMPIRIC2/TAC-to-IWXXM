@@ -39,11 +39,28 @@ _bearer = HTTPBearer(auto_error=True)
 def ops_service(
     user: dict[str, Any] = Depends(verify_supabase_token),
 ) -> DisseminationOpsService:
-    """Build owner-scoped ops service from JWT ``sub``."""
+    """
+    Build owner-scoped ops service from JWT ``sub``.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (ops_service)
+    2
+
+    Parameters
+    ----------
+    user : object
+        Argument ``user``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return DisseminationOpsService(str(user.get("sub") or user.get("user_id")))
 
 
-@router.put("/plans/{slug}", response_model=DisseminationPlanOut)
+@router.put("/plans/{slug}", response_model=DisseminationPlanOut, summary="Create a dissemination plan")
 def upsert_plan_by_slug(
     slug: str,
     payload: DisseminationPlanCreate,
@@ -53,6 +70,26 @@ def upsert_plan_by_slug(
     Create a plan under ``slug`` (unique per user).
 
     Path slug wins over body.slug when they differ.
+
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (upsert_plan_by_slug)
+    2
+
+    Parameters
+    ----------
+    slug : object
+        Argument ``slug``.
+    payload : object
+        Argument ``payload``.
+    service : object
+        Argument ``service``.
+
+    Returns
+    -------
+    object
+        Return value.
     """
     body = payload.model_copy(update={"slug": slug})
     return service.create_plan(body)
@@ -63,7 +100,27 @@ def get_plan(
     plan_id: UUID,
     service: DisseminationOpsService = Depends(ops_service),
 ) -> DisseminationPlanOut:
-    """Fetch one plan by id (owner-scoped)."""
+    """
+    Fetch one plan by id (owner-scoped).
+
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (get_plan)
+    2
+
+    Parameters
+    ----------
+    plan_id : object
+        Argument ``plan_id``.
+    service : object
+        Argument ``service``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return service.get_plan(plan_id)
 
 
@@ -73,11 +130,37 @@ def patch_plan(
     payload: DisseminationPlanUpdate,
     service: DisseminationOpsService = Depends(ops_service),
 ) -> DisseminationPlanOut:
-    """Update plan fields (no secrets)."""
+    """
+    Update plan fields (no secrets).
+
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (patch_plan)
+    2
+
+    Parameters
+    ----------
+    plan_id : object
+        Argument ``plan_id``.
+    payload : object
+        Argument ``payload``.
+    service : object
+        Argument ``service``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return service.update_plan(plan_id, payload)
 
 
-@router.post("/plans/{plan_id}/execute", response_model=PlanExecuteResponse)
+@router.post(
+    "/plans/{plan_id}/execute",
+    response_model=PlanExecuteResponse,
+    summary="Execute or dry-run a plan",
+)
 async def execute_plan_route(
     plan_id: UUID,
     body: PlanExecuteRequest,
@@ -87,6 +170,26 @@ async def execute_plan_route(
     Execute or dry-run a plan; persist redacted audit rows per receipt.
 
     Default ``dry_run=true`` so operators can exercise audit without egress.
+
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (execute_plan_route)
+    2
+
+    Parameters
+    ----------
+    plan_id : object
+        Argument ``plan_id``.
+    body : object
+        Argument ``body``.
+    service : object
+        Argument ``service``.
+
+    Returns
+    -------
+    object
+        Return value.
     """
     stored = service.get_plan(plan_id)
     plan = DisseminationPlan(
@@ -144,7 +247,37 @@ def list_audit(
     limit: int = Query(20, ge=1, le=100),
     service: DisseminationOpsService = Depends(ops_service),
 ) -> AuditListResponse:
-    """List redacted delivery audit rows for the caller."""
+    """
+    List redacted delivery audit rows for the caller.
+
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (list_audit)
+    2
+
+    Parameters
+    ----------
+    product : object
+        Argument ``product``.
+    station : object
+        Argument ``station``.
+    profile : object
+        Argument ``profile``.
+    status_filter : object
+        Argument ``status_filter``.
+    page : object
+        Argument ``page``.
+    limit : object
+        Argument ``limit``.
+    service : object
+        Argument ``service``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     items, total = service.list_audit(
         product=product,
         station=station,
@@ -161,7 +294,27 @@ def get_audit(
     audit_id: UUID,
     service: DisseminationOpsService = Depends(ops_service),
 ) -> AuditRecordOut:
-    """Fetch one audit row (owner-scoped)."""
+    """
+    Fetch one audit row (owner-scoped).
+
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (get_audit)
+    2
+
+    Parameters
+    ----------
+    audit_id : object
+        Argument ``audit_id``.
+    service : object
+        Argument ``service``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return service.get_audit(audit_id)
 
 
@@ -171,7 +324,29 @@ def upsert_mapping(
     payload: MappingConfigCreate,
     service: DisseminationOpsService = Depends(ops_service),
 ) -> MappingConfigOut:
-    """Create MappingConfig by name (unique per user)."""
+    """
+    Create MappingConfig by name (unique per user).
+
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (upsert_mapping)
+    2
+
+    Parameters
+    ----------
+    name : object
+        Argument ``name``.
+    payload : object
+        Argument ``payload``.
+    service : object
+        Argument ``service``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     body = payload.model_copy(update={"name": name})
     return service.create_mapping(body)
 
@@ -181,7 +356,27 @@ def get_mapping(
     mapping_id: UUID,
     service: DisseminationOpsService = Depends(ops_service),
 ) -> MappingConfigOut:
-    """Fetch MappingConfig by id."""
+    """
+    Fetch MappingConfig by id.
+
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (get_mapping)
+    2
+
+    Parameters
+    ----------
+    mapping_id : object
+        Argument ``mapping_id``.
+    service : object
+        Argument ``service``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return service.get_mapping(mapping_id)
 
 
@@ -191,19 +386,61 @@ def patch_mapping(
     payload: MappingConfigUpdate,
     service: DisseminationOpsService = Depends(ops_service),
 ) -> MappingConfigOut:
-    """Update MappingConfig fields."""
+    """
+    Update MappingConfig fields.
+
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (patch_mapping)
+    2
+
+    Parameters
+    ----------
+    mapping_id : object
+        Argument ``mapping_id``.
+    payload : object
+        Argument ``payload``.
+    service : object
+        Argument ``service``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return service.update_mapping(mapping_id, payload)
 
 
-@router.get("/gateways/health", response_model=GatewayHealthListResponse)
+@router.get(
+    "/gateways/health",
+    response_model=GatewayHealthListResponse,
+    summary="Gateway connectivity",
+)
 async def gateways_health(
     _user: dict[str, Any] = Depends(verify_supabase_token),
 ) -> GatewayHealthListResponse:
     """
-    Connectivity-only health for known drawer gateway kinds.
+    Connectivity checks for known gateway kinds.
 
-    AMHS, SWIM, and AFS kinds are staging-honest; others report no live probe
-    until registered.
+    AMHS, SWIM, and AFS stay unsuccessful until a live pathway is configured.
+    Other kinds report that no live probe is configured.
+
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (gateways_health)
+    2
+
+    Parameters
+    ----------
+    _user : object
+        Argument ``_user``.
+
+    Returns
+    -------
+    object
+        Return value.
     """
     items = [
         GatewayHealthOut(

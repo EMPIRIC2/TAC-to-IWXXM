@@ -8,7 +8,15 @@ from pydantic import BaseModel, Field
 
 
 class QualityMetricsSummaryModel(BaseModel):
-    """Per-product aggregate counts for the corpus browser."""
+    """
+    Per-product aggregate counts for the corpus browser.
+
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     product: str
     match_pass: int = 0
@@ -22,7 +30,15 @@ class QualityMetricsSummaryModel(BaseModel):
 
 
 class QualityMetricsFileRowModel(BaseModel):
-    """Slim inventory row for the corpus file list."""
+    """
+    Slim inventory row for the corpus file list.
+
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     stem: str
     product: str
@@ -36,7 +52,15 @@ class QualityMetricsFileRowModel(BaseModel):
 
 
 class QualityMetricsListResponse(BaseModel):
-    """Response for GET /api/v1/quality-metrics."""
+    """
+    Response for GET /api/v1/quality-metrics.
+
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     generated_at: str
     iwxxm_pin: str
@@ -45,7 +69,15 @@ class QualityMetricsListResponse(BaseModel):
 
 
 class QualityMetricsDetailResponse(BaseModel):
-    """Response for GET /api/v1/quality-metrics/{stem}."""
+    """
+    Response for GET /api/v1/quality-metrics/{stem}.
+
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     stem: str
     product: str

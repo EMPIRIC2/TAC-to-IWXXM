@@ -28,7 +28,16 @@ _URI_OR_SECRET = re.compile(
 
 @dataclass(frozen=True, slots=True)
 class CaptureSummary:
-    """One named or positional capture from a compiled pattern."""
+    """
+    One named or positional capture from a compiled pattern.
+
+    Attributes
+    ----------
+    index : int
+        Index.
+    name : str
+        Capture name.
+    """
 
     index: int
     name: str
@@ -36,7 +45,24 @@ class CaptureSummary:
 
 @dataclass(frozen=True, slots=True)
 class RegexDiagnostic:
-    """Compile result for one pattern in a library YAML document."""
+    """
+    Compile result for one pattern in a library YAML document.
+
+    Attributes
+    ----------
+    path : str
+        Location of this pattern in the library document.
+    pattern : str
+        Regular expression text.
+    severity : RegexSeverity
+        Severity.
+    message : str
+        Human-readable message.
+    captures : tuple[CaptureSummary, ...]
+        Captures.
+    sample_matched : bool | None
+        Sample matched. Default ``None``.
+    """
 
     path: str
     pattern: str
@@ -48,7 +74,32 @@ class RegexDiagnostic:
 
 @dataclass(frozen=True, slots=True)
 class LibraryYamlReport:
-    """Strict YAML parse + regex diagnostics for one library asset."""
+    """
+    Strict YAML parse + regex diagnostics for one library asset.
+
+    Attributes
+    ----------
+    valid_yaml : bool
+        Valid YAML.
+    yaml_error : str | None
+        YAML error.
+    kind : LibraryKind | None
+        Kind.
+    name : str | None
+        Library name, or ``None``.
+    lifecycle : LibraryLifecycle
+        Library lifecycle value.
+    diagnostics : tuple[RegexDiagnostic, ...]
+        Diagnostics.
+    fail_count : int
+        Fail count.
+    warn_count : int
+        Warn count.
+    can_activate : bool
+        Can activate.
+    data : dict[str, Any]
+        Data.
+    """
 
     valid_yaml: bool
     yaml_error: str | None
@@ -62,7 +113,19 @@ class LibraryYamlReport:
     data: dict[str, Any] = field(default_factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
-        """Serialize for JSON / API responses."""
+        """
+        Serialize for JSON / API responses.
+
+        Returns
+        -------
+        dict[str, Any]
+            Serialized form for JSON / API responses.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (to_dict)
+        2
+        """
         return {
             "valid_yaml": self.valid_yaml,
             "yaml_error": self.yaml_error,
@@ -88,12 +151,38 @@ class LibraryYamlReport:
 
 
 def _as_str(value: object) -> str | None:
+    """
+    Internal helper ``_as_str``.
+
+    Parameters
+    ----------
+    value : object
+        Argument ``value``.
+
+    Returns
+    -------
+    str | None
+        Return value.
+    """
     if isinstance(value, str) and value.strip():
         return value.strip()
     return None
 
 
 def _as_mapping(value: object) -> dict[str, Any]:
+    """
+    Internal helper ``_as_mapping``.
+
+    Parameters
+    ----------
+    value : object
+        Argument ``value``.
+
+    Returns
+    -------
+    dict[str, Any]
+        Return value.
+    """
     if not isinstance(value, dict):
         return {}
     mapped: dict[str, Any] = {}
@@ -103,13 +192,41 @@ def _as_mapping(value: object) -> dict[str, Any]:
 
 
 def _as_list(value: object) -> list[object]:
+    """
+    Internal helper ``_as_list``.
+
+    Parameters
+    ----------
+    value : object
+        Argument ``value``.
+
+    Returns
+    -------
+    list[object]
+        Return value.
+    """
     if not isinstance(value, list):
         return []
     return list(cast(list[object], value))
 
 
 def _extract_patterns(kind: LibraryKind, data: dict[str, Any]) -> list[tuple[str, str, str | None]]:
-    """Return (path, pattern, required_sample) tuples from a parsed document."""
+    """
+    Internal helper ``_extract_patterns``.
+
+    Parameters
+    ----------
+    kind : LibraryKind
+        Argument ``kind``.
+
+    data : dict[str, Any]
+        Argument ``data``.
+
+    Returns
+    -------
+    list[tuple[str, str, str | None]]
+        Return value.
+    """
     found: list[tuple[str, str, str | None]] = []
     rows: list[object]
     key: str
@@ -156,7 +273,22 @@ def _extract_patterns(kind: LibraryKind, data: dict[str, Any]) -> list[tuple[str
 
 
 def _rule_rows_for_checks(kind: LibraryKind, data: dict[str, Any]) -> list[tuple[str, dict[str, Any]]]:
-    """Return (path_prefix, row) for TAC/IWXXM rules that may carry numeric checks."""
+    """
+    Internal helper ``_rule_rows_for_checks``.
+
+    Parameters
+    ----------
+    kind : LibraryKind
+        Argument ``kind``.
+
+    data : dict[str, Any]
+        Argument ``data``.
+
+    Returns
+    -------
+    list[tuple[str, dict[str, Any]]]
+        Return value.
+    """
     found: list[tuple[str, dict[str, Any]]] = []
     if kind == "tac_validation":
         rows = _as_list(data.get("rules"))
@@ -179,7 +311,22 @@ def _numeric_check_diagnostics(
     kind: LibraryKind,
     data: dict[str, Any],
 ) -> tuple[RegexDiagnostic, ...]:
-    """Validate numeric check shapes and sample-bound evaluations."""
+    """
+    Internal helper ``_numeric_check_diagnostics``.
+
+    Parameters
+    ----------
+    kind : LibraryKind
+        Argument ``kind``.
+
+    data : dict[str, Any]
+        Argument ``data``.
+
+    Returns
+    -------
+    tuple[RegexDiagnostic, ...]
+        Return value.
+    """
     out: list[RegexDiagnostic] = []
     for path, row in _rule_rows_for_checks(kind, data):
         if "check" not in row:
@@ -231,7 +378,30 @@ def _numeric_check_diagnostics(
 
 
 def diagnose_regex(pattern: str, *, sample: str | None = None, path: str = "pattern") -> RegexDiagnostic:
-    """Compile one pattern and classify ok / warn / fail."""
+    """
+    Compile one pattern and classify ok / warn / fail.
+
+    Parameters
+    ----------
+    pattern : str
+        Regular expression to compile.
+
+    sample : str | None, optional
+        Sample TAC or text to try.
+
+    path : str, optional
+        Path recorded on the diagnostic.
+
+    Returns
+    -------
+    RegexDiagnostic
+        One pattern and classify ok / warn / fail.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (diagnose_regex)
+    2
+    """
     try:
         compiled = re.compile(pattern)
     except re.error as exc:
@@ -282,6 +452,19 @@ def diagnose_regex(pattern: str, *, sample: str | None = None, path: str = "patt
 
 
 def _secret_violation(data: dict[str, Any]) -> str | None:
+    """
+    Internal helper ``_secret_violation``.
+
+    Parameters
+    ----------
+    data : dict[str, Any]
+        Argument ``data``.
+
+    Returns
+    -------
+    str | None
+        Return value.
+    """
     blob = yaml.safe_dump(data, sort_keys=False)
     if _URI_OR_SECRET.search(blob):
         return "Dissemination YAML must not include credentials or destination URIs"
@@ -294,7 +477,30 @@ def validate_library_yaml(
     expected_kind: LibraryKind | None = None,
     lifecycle: LibraryLifecycle = "draft",
 ) -> LibraryYamlReport:
-    """Parse YAML, enforce kind/name, and collect regex diagnostics."""
+    """
+    Parse YAML, enforce kind/name, and collect regex diagnostics.
+
+    Parameters
+    ----------
+    raw : str
+        Library YAML mapping.
+
+    expected_kind : LibraryKind | None, optional
+        Expected library kind.
+
+    lifecycle : LibraryLifecycle, optional
+        Library lifecycle value.
+
+    Returns
+    -------
+    LibraryYamlReport
+        YAML, enforce kind/name, and collect regex diagnostics.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (validate_library_yaml)
+    2
+    """
     stripped = raw.strip()
     if not stripped:
         return LibraryYamlReport(

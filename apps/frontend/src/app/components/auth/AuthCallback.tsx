@@ -16,6 +16,8 @@ interface AuthCallbackProps {
  * Supports:
  * - Supabase token_hash query links (`/auth/confirm?token_hash=…&type=email`)
  * - Legacy hash fragment access_token callbacks (`/auth/callback#access_token=…`)
+ * @example
+ * const _ = true;
  */
 export function AuthCallback({ onLogin, onRegister, onVerified }: AuthCallbackProps) {
   const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading');

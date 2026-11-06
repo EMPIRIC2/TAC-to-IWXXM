@@ -139,6 +139,7 @@ Thumbs.db
 # --- Docs site builds ---
 docs/_build/
 /site
+user-docs/site/
 
 # --- Local tooling binaries / artifacts ---
 .tools/
@@ -204,3 +205,36 @@ tmp/
 
 # EV-088 profile scaffold working copies (merge into catalog.yaml by hand)
 docs/domain/profiles/_scaffold_out/
+
+# Local scratch: hook adapter, quality-run output, fetched QA plugin
+.claude/hooks/
+artifacts/
+third_party/
+
+# ASD-STE100 Issue 9 official copy (copyrighted — local only; see .cursor/skills/asd-ste100)
+/docs/ste/ASD-STE100*
+/docs/ste/*.pdf
+/docs/ste/*.docx
+/docs/ste/*.txt
+/docs/ste/.env.path
+
+# Spec-development process. Files stay on disk; they are not part of the public tree.
+/workflow-state.yaml
+/docs/sessions/
+/docs/decisions/
+/docs/context/
+/docs/bug-reports/
+/docs/reports/
+/docs/engineering/
+# Coverage inventories stay tracked (unit gate EV-052 / EV-080).
+!/docs/engineering/
+!/docs/engineering/coverage-surface-inventory.yaml
+!/docs/engineering/coverage-surface-inventory-s061.yaml
+/docs/ARCHIVE/
+/docs/domain/mining/
+/docs/evolve-report-*.md
+# project-board.md is a CORPUS standing doc — track it (was ignored by mistake).
+/docs/hotfix-log.md
+/docs/skill-routing.md
+/.cursor/artifacts/execution-plan-live-e2e.md
+/.cursor/artifacts/execution-plan-monorepo.md

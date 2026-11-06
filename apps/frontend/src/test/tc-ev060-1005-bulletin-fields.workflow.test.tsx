@@ -117,10 +117,24 @@ describe('T3.3 / TC-EV060-1005: Bulletin ID and Issuing Center', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     localStorage.clear();
+    sessionStorage.clear();
+    // Seed TAC so calm empty hero does not hide Settings chrome.
+    sessionStorage.setItem(
+      'metar_guest_converter_state',
+      JSON.stringify({
+        manualInput: TAC_SAMPLE,
+        pendingFiles: [],
+        convertedFiles: [],
+        conversionLog: null,
+        conversionParams: {},
+      }),
+    );
   });
 
   it('shows labeled Bulletin ID and Issuing Center without expanding parameters (TC-EV060-1005-001)', () => {
     render(<FileConverter {...defaultProps} />);
+    // Bulletin fields live in Settings (not under Expand parameters).
+    screen.getByTestId('convert-settings').setAttribute('open', '');
 
     const bulletinId = screen.getByTestId('bulletin-id-input');
     const issuingCenter = screen.getByTestId('issuing-center-input');
@@ -133,12 +147,11 @@ describe('T3.3 / TC-EV060-1005: Bulletin ID and Issuing Center', () => {
   it('sends filled Bulletin ID and Issuing Center on convert (TC-EV060-1005-001)', async () => {
     const user = userEvent.setup();
     render(<FileConverter {...defaultProps} />);
+    fireEvent.click(screen.getByTestId('live-iwxxm-toggle'));
+    screen.getByTestId('convert-settings').setAttribute('open', '');
 
     await user.type(screen.getByTestId('bulletin-id-input'), 'saaa00');
     await user.type(screen.getByTestId('issuing-center-input'), 'kwbc');
-    fireEvent.change(screen.getByLabelText(/enter metar data manually/i), {
-      target: { value: TAC_SAMPLE },
-    });
     await user.click(screen.getByTestId('convert-button'));
 
     await waitFor(() => {
@@ -155,6 +168,7 @@ describe('T3.3 / TC-EV060-1005: Bulletin ID and Issuing Center', () => {
   it('omits empty Bulletin ID and Issuing Center so AHL/defaults apply (TC-EV060-1005-002)', async () => {
     const user = userEvent.setup();
     render(<FileConverter {...defaultProps} />);
+    fireEvent.click(screen.getByTestId('live-iwxxm-toggle'));
 
     fireEvent.change(screen.getByLabelText(/enter metar data manually/i), {
       target: { value: TAC_SAMPLE },
@@ -175,11 +189,10 @@ describe('T3.3 / TC-EV060-1005: Bulletin ID and Issuing Center', () => {
   it('shows one field error for invalid Issuing Center and does not convert (TC-EV060-1005-003)', async () => {
     const user = userEvent.setup();
     render(<FileConverter {...defaultProps} />);
+    fireEvent.click(screen.getByTestId('live-iwxxm-toggle'));
+    screen.getByTestId('convert-settings').setAttribute('open', '');
 
     await user.type(screen.getByTestId('issuing-center-input'), 'KW1C');
-    fireEvent.change(screen.getByLabelText(/enter metar data manually/i), {
-      target: { value: TAC_SAMPLE },
-    });
     await user.click(screen.getByTestId('convert-button'));
 
     expect(mockConvertMetarToIwxxm).not.toHaveBeenCalled();

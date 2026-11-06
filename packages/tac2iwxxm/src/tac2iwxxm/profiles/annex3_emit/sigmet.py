@@ -17,7 +17,19 @@ _EGGX_VOLCANO_POS = "63.98 -19.67"
 
 
 def _is_wmo_sigmet_multi_location_va_yudd(ir: dict[str, Any]) -> bool:
-    """True for WMO ``sigmet-multi-location-VA`` stem (YUDD/YUSO + ≥2 VA locations)."""
+    """
+    Internal helper ``_is_wmo_sigmet_multi_location_va_yudd``.
+
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Argument ``ir``.
+
+    Returns
+    -------
+    bool
+        Return value.
+    """
     # ruff: noqa: F403, F405
     if ir.get("product") != "SIGMET" or ir.get("phenomenon") != "VA":
         return False
@@ -31,7 +43,19 @@ def _is_wmo_sigmet_multi_location_va_yudd(ir: dict[str, Any]) -> bool:
 
 
 def _is_wmo_sigmet_va_eggx(ir: dict[str, Any]) -> bool:
-    """True for WMO ``sigmet-VA-EGGX`` stem (EGGX/EGRR + MT HEKLA + FCST cloud; ADR-032 / #856)."""
+    """
+    Internal helper ``_is_wmo_sigmet_va_eggx``.
+
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Argument ``ir``.
+
+    Returns
+    -------
+    bool
+        Return value.
+    """
     if ir.get("product") != "SIGMET" or ir.get("phenomenon") != "VA":
         return False
     if str(ir.get("fir")) != "EGGX" or str(ir.get("mwo")) != "EGRR":
@@ -59,31 +83,62 @@ def _is_wmo_sigmet_va_eggx(ir: dict[str, Any]) -> bool:
 
 
 def _hazard_stamp(ir: dict[str, Any], prefix: str) -> tuple[str, str, str]:
-    """Return issue, begin, end timestamps (year-month fixed to WMO examples)."""
+    """
+    Internal helper ``_hazard_stamp``.
+
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Argument ``ir``.
+
+    prefix : str
+        Argument ``prefix``.
+
+    Returns
+    -------
+    tuple[str, str, str]
+        Return value.
+    """
+    from tac2iwxxm.time_anchor import iso_stamp
+
     if _is_wmo_sigmet_multi_location_va_yudd(ir) or _is_wmo_sigmet_va_eggx(ir):
         # Vendor VA-EGGX + multi-location-VA use 2018-07 (#809 / #856).
-        year_month = "2018-07"
+        legacy = "2018-07"
     elif ir["product"] == "SIGMET":
-        year_month = "2012-08"
+        legacy = "2012-08"
     else:
-        year_month = "2014-05"
-    issue = (
-        f"{year_month}-{int(ir['valid_from_day']):02d}T"
-        f"{int(ir['valid_from_hour']):02d}:{int(ir['valid_from_minute']):02d}:00Z"
+        legacy = "2014-05"
+    issue = iso_stamp(
+        ir,
+        int(ir["valid_from_day"]),
+        int(ir["valid_from_hour"]),
+        int(ir["valid_from_minute"]),
+        legacy=legacy,
     )
     begin = issue
-    end = (
-        f"{year_month}-{int(ir['valid_to_day']):02d}T"
-        f"{int(ir['valid_to_hour']):02d}:{int(ir['valid_to_minute']):02d}:00Z"
+    end = iso_stamp(
+        ir,
+        int(ir["valid_to_day"]),
+        int(ir["valid_to_hour"]),
+        int(ir["valid_to_minute"]),
+        legacy=legacy,
     )
     return issue, begin, end
 
 
 def _sigmet_root_local(ir: dict[str, Any]) -> str:
     """
-    Content-select IWXXM SIGMET family root under HTTP ``product=sigmet`` (E19-13 / F23 V2).
+    Internal helper ``_sigmet_root_local``.
 
-    VA → ``VolcanicAshSIGMET``; TC / WC AHL → ``TropicalCycloneSIGMET``; else ``SIGMET``.
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Argument ``ir``.
+
+    Returns
+    -------
+    str
+        Return value.
     """
     if ir.get("phenomenon") == "TC" or ir.get("iwxxm_root") == "TropicalCycloneSIGMET":
         return "TropicalCycloneSIGMET"
@@ -100,6 +155,31 @@ def _sigmet_header_units(
     issue: str,
     extra_xmlns: str = "",
 ) -> str:
+    """
+    Internal helper ``_sigmet_header_units``.
+
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Argument ``ir``.
+
+    ns : str
+        Argument ``ns``.
+
+    gml_id : str
+        Argument ``gml_id``.
+
+    issue : str
+        Argument ``issue``.
+
+    extra_xmlns : str, optional
+        Argument ``extra_xmlns``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
     fir = str(ir["fir"])
     mwo = str(ir["mwo"])
     root = _sigmet_root_local(ir)
@@ -175,7 +255,19 @@ def _sigmet_header_units(
 
 
 def _wmo_multi_location_va_pos_list(pos_list: str) -> str:
-    """Reverse TAC WI winding and format coords to two decimals (vendor #809 stem)."""
+    """
+    Internal helper ``_wmo_multi_location_va_pos_list``.
+
+    Parameters
+    ----------
+    pos_list : str
+        Argument ``pos_list``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
     toks = pos_list.split()
     if len(toks) < 6 or len(toks) % 2 != 0:
         return pos_list
@@ -192,12 +284,37 @@ def _wmo_multi_location_va_pos_list(pos_list: str) -> str:
 
 
 def _sigmet_tc_format_pos(lat: float, lon: float) -> str:
-    """Format TC SIGMET ``gml:pos`` for vendor A6-2-TC (#835 / ADR-032).
+    """
+    Internal helper ``_sigmet_tc_format_pos``.
 
-    Prefer two decimals when exact; otherwise trim trailing zeros (e.g. ``27.6667 -73.75``).
+    Parameters
+    ----------
+    lat : float
+        Argument ``lat``.
+
+    lon : float
+        Argument ``lon``.
+
+    Returns
+    -------
+    str
+        Return value.
     """
 
     def _one(value: float) -> str:
+        """
+        Internal helper ``_one``.
+
+        Parameters
+        ----------
+        value : float
+            Argument ``value``.
+
+        Returns
+        -------
+        str
+            Return value.
+        """
         two = f"{value:.2f}"
         if abs(value - float(two)) < 1e-9:
             return two
@@ -215,7 +332,34 @@ def _sigmet_geometry_xml(
     include_limits: bool = True,
     wmo_multi_location_va_ring: bool = False,
 ) -> str:
-    """Build evolving-condition geometry from IR (G1 exceptional rules / #733/#739)."""
+    """
+    Internal helper ``_sigmet_geometry_xml``.
+
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Argument ``ir``.
+
+    fir : str
+        Argument ``fir``.
+
+    gid : str | None, optional
+        Argument ``gid``.
+
+    geometry : dict[str, Any] | None, optional
+        Argument ``geometry``.
+
+    include_limits : bool, optional
+        Argument ``include_limits``.
+
+    wmo_multi_location_va_ring : bool, optional
+        Argument ``wmo_multi_location_va_ring``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
     if ir.get("no_va_exp") and geometry is None:
         return """
               <iwxxm:geometry nilReason="http://codes.wmo.int/common/nil/nothingOfOperationalSignificance"/>"""
@@ -246,6 +390,13 @@ def _sigmet_geometry_xml(
               <aixm:upperLimitReference>STD</aixm:upperLimitReference>"""
             else:
                 limits = f"""
+              <aixm:upperLimit uom="FL">{int(upper_fl)}</aixm:upperLimit>
+              <aixm:upperLimitReference>STD</aixm:upperLimitReference>"""
+        elif ir.get("lower_ft") is not None and upper_fl is not None:
+            unit = "[ft_i]" if str(ir.get("lower_unit", "FT")).upper() == "FT" else "m"
+            limits = f"""
+              <aixm:lowerLimit uom="{unit}">{int(ir["lower_ft"])}</aixm:lowerLimit>
+              <aixm:lowerLimitReference>MSL</aixm:lowerLimitReference>
               <aixm:upperLimit uom="FL">{int(upper_fl)}</aixm:upperLimit>
               <aixm:upperLimitReference>STD</aixm:upperLimitReference>"""
         elif lower_fl is not None and upper_fl is not None:
@@ -351,7 +502,40 @@ def _sigmet_location_analysis_xml(
     wmo_multi_location_va_ring: bool = False,
     wmo_va_eggx_ring: bool = False,
 ) -> str:
-    """Emit one analysisCollection for a multi-location VA OBS(+FCST) segment (#809)."""
+    """
+    Internal helper ``_sigmet_location_analysis_xml``.
+
+    Parameters
+    ----------
+    loc : dict[str, Any]
+        Argument ``loc``.
+
+    fir : str
+        Argument ``fir``.
+
+    index : int
+        Argument ``index``.
+
+    issue : str
+        Argument ``issue``.
+
+    begin : str
+        Argument ``begin``.
+
+    end : str
+        Argument ``end``.
+
+    wmo_multi_location_va_ring : bool, optional
+        Argument ``wmo_multi_location_va_ring``.
+
+    wmo_va_eggx_ring : bool, optional
+        Argument ``wmo_va_eggx_ring``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
     suffix = f"{fir.lower()}.{index}"
     intensity = str(loc.get("intensity_change", "NO_CHANGE"))
     obs_ir = {
@@ -451,6 +635,19 @@ def _sigmet_location_analysis_xml(
 
 
 def _sigmet_volcano_xml(ir: dict[str, Any]) -> str:
+    """
+    Internal helper ``_sigmet_volcano_xml``.
+
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Argument ``ir``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
     volcano_raw = ir.get("volcano")
     if not isinstance(volcano_raw, dict):
         return ""
@@ -479,20 +676,72 @@ def _sigmet_volcano_xml(ir: dict[str, Any]) -> str:
 """
 
 
+def _motion_deg_text(degrees: int | float) -> str:
+    """
+    Format a motion bearing, keeping half-degree compass points.
+
+    Parameters
+    ----------
+    degrees : int | float
+        Bearing from true north.
+
+    Returns
+    -------
+    str
+        Whole degrees as an integer, otherwise one decimal place.
+    """
+    number = float(degrees)
+    if number.is_integer():
+        return str(int(number))
+    return f"{number:.1f}"
+
+
 def _sigmet_motion_xml(ir: dict[str, Any]) -> str:
+    """
+    Internal helper ``_sigmet_motion_xml``.
+
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Argument ``ir``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
     if ir.get("stationary"):
         return """
               <iwxxm:directionOfMotion uom="deg" xsi:nil="true" nilReason="http://codes.wmo.int/common/nil/inapplicable"/>
               <iwxxm:speedOfMotion uom="[kn_i]">0</iwxxm:speedOfMotion>"""
+    if "motion_dir_deg" in ir and "motion_speed_kmh" in ir:
+        return f"""
+              <iwxxm:directionOfMotion uom="deg">{_motion_deg_text(ir["motion_dir_deg"])}</iwxxm:directionOfMotion>
+              <iwxxm:speedOfMotion uom="km/h">{int(ir["motion_speed_kmh"])}</iwxxm:speedOfMotion>"""
     if "motion_dir_deg" in ir and "motion_speed_kt" in ir:
         return f"""
-              <iwxxm:directionOfMotion uom="deg">{int(ir["motion_dir_deg"])}</iwxxm:directionOfMotion>
+              <iwxxm:directionOfMotion uom="deg">{_motion_deg_text(ir["motion_dir_deg"])}</iwxxm:directionOfMotion>
               <iwxxm:speedOfMotion uom="[kn_i]">{int(ir["motion_speed_kt"])}</iwxxm:speedOfMotion>"""
+    if "motion_dir_deg" in ir:
+        return f"""
+              <iwxxm:directionOfMotion uom="deg">{_motion_deg_text(ir["motion_dir_deg"])}</iwxxm:directionOfMotion>"""
     return ""
 
 
 def _sigmet_tropical_cyclone_xml(ir: dict[str, Any]) -> str:
-    """Emit ``iwxxm:tropicalCyclone`` / metce name for TropicalCycloneSIGMET (#738)."""
+    """
+    Internal helper ``_sigmet_tropical_cyclone_xml``.
+
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Argument ``ir``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
     name = ir.get("tropical_cyclone_name")
     if not isinstance(name, str) or not name.strip():
         return ""
@@ -507,7 +756,22 @@ def _sigmet_tropical_cyclone_xml(ir: dict[str, Any]) -> str:
 
 
 def _sigmet_tc_position_xml(ir: dict[str, Any], *, gid: str) -> str:
-    """Emit ``tropicalCyclonePosition`` Point when IR has a TC centre."""
+    """
+    Internal helper ``_sigmet_tc_position_xml``.
+
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Argument ``ir``.
+
+    gid : str
+        Argument ``gid``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
     pos = ir.get("tropical_cyclone_position")
     if not isinstance(pos, dict) or "lat" not in pos or "lon" not in pos:
         return ""
@@ -523,7 +787,25 @@ def _sigmet_tc_position_xml(ir: dict[str, Any], *, gid: str) -> str:
 
 
 def _sigmet_tc_forecast_xml(ir: dict[str, Any], *, fir: str, end: str) -> str:
-    """Emit forecastPositionAnalysis for FCST AT … TC CENTRE PSN (A6-2-TC)."""
+    """
+    Internal helper ``_sigmet_tc_forecast_xml``.
+
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Argument ``ir``.
+
+    fir : str
+        Argument ``fir``.
+
+    end : str
+        Argument ``end``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
     fcst = ir.get("tropical_cyclone_forecast")
     if not isinstance(fcst, dict) or "lat" not in fcst or "lon" not in fcst:
         return ""
@@ -536,7 +818,9 @@ def _sigmet_tc_forecast_xml(ir: dict[str, Any], *, fir: str, end: str) -> str:
     # Prefer VALID end day; vendor A6-2 uses end-of-validity forecast time.
     hour = int(hhmm[:2]) if len(hhmm) == 4 and hhmm.isdigit() else int(ir["valid_to_hour"])
     minute = int(hhmm[2:4]) if len(hhmm) == 4 and hhmm.isdigit() else int(ir["valid_to_minute"])
-    fcst_time = f"2012-08-{day:02d}T{hour:02d}:{minute:02d}:00Z"
+    from tac2iwxxm.time_anchor import iso_stamp
+
+    fcst_time = iso_stamp(ir, day, hour, minute, legacy="2012-08")
     if fcst_time > end:
         fcst_time = end
     return f"""
@@ -562,14 +846,40 @@ def _sigmet_tc_forecast_xml(ir: dict[str, Any], *, fir: str, end: str) -> str:
 
 
 def emit_convective_sigmet_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
-    """Emit US ``CONVECTIVE SIGMET`` (WST) with iwxxm-us analysis shape (#919 M11)."""
+    """
+    Emit US ``CONVECTIVE SIGMET`` (WST) with iwxxm-us analysis shape (#919 M11).
+
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Parsed product fields.
+
+    iwxxm_version : str
+        IWXXM release line.
+
+    Returns
+    -------
+    str
+        US ``CONVECTIVE SIGMET`` (WST) with iwxxm-us analysis shape (#919 M11).
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (emit_convective_sigmet_annex3)
+    2
+    """
     ns = _ns(iwxxm_version)
     fir = str(ir["fir"])
     mwo = str(ir["mwo"])
     issue, begin, end = _hazard_stamp(ir, "sigmet")
     gml_id = f"sigmet.conv.{fir.lower()}"
-    active_end = (
-        f"2012-08-{int(ir['valid_to_day']):02d}T{int(ir['valid_to_hour']):02d}:{int(ir['valid_to_minute']):02d}:00Z"
+    from tac2iwxxm.time_anchor import iso_stamp
+
+    active_end = iso_stamp(
+        ir,
+        int(ir["valid_to_day"]),
+        int(ir["valid_to_hour"]),
+        int(ir["valid_to_minute"]),
+        legacy="2012-08",
     )
     geometry = _sigmet_geometry_xml(ir, fir=fir)
     motion = _sigmet_motion_xml(ir)
@@ -644,20 +954,24 @@ def emit_convective_sigmet_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> 
     </gml:TimePeriod>
   </iwxxm:validPeriod>
   <iwxxm:phenomenon nilReason="http://codes.wmo.int/common/nil/template"/>
-  <iwxxm:analysis>
-    <iwxxm:SIGMETEvolvingConditionCollection gml:id="evolving.{fir.lower()}" timeIndicator="FORECAST">
-      <iwxxm:phenomenonTime>
-        <gml:TimePeriod gml:id="t.active.{fir.lower()}">
-          <gml:beginPosition>{issue}</gml:beginPosition>
-          <gml:endPosition>{active_end}</gml:endPosition>
-        </gml:TimePeriod>
-      </iwxxm:phenomenonTime>
-      <iwxxm:member>
-        <iwxxm:SIGMETEvolvingCondition gml:id="cond.{fir.lower()}">{geometry}{motion}
-        </iwxxm:SIGMETEvolvingCondition>
-      </iwxxm:member>
-    </iwxxm:SIGMETEvolvingConditionCollection>
-  </iwxxm:analysis>
+  <iwxxm:analysisCollection>
+    <iwxxm:analysisAndForecastPositionAnalysis gml:id="analysis.{fir.lower()}">
+      <iwxxm:analysis>
+        <iwxxm:SIGMETEvolvingConditionCollection gml:id="evolving.{fir.lower()}" timeIndicator="FORECAST">
+          <iwxxm:phenomenonTime>
+            <gml:TimePeriod gml:id="t.active.{fir.lower()}">
+              <gml:beginPosition>{issue}</gml:beginPosition>
+              <gml:endPosition>{active_end}</gml:endPosition>
+            </gml:TimePeriod>
+          </iwxxm:phenomenonTime>
+          <iwxxm:member>
+            <iwxxm:SIGMETEvolvingCondition gml:id="cond.{fir.lower()}">{geometry}{motion}
+            </iwxxm:SIGMETEvolvingCondition>
+          </iwxxm:member>
+        </iwxxm:SIGMETEvolvingConditionCollection>
+      </iwxxm:analysis>
+    </iwxxm:analysisAndForecastPositionAnalysis>
+  </iwxxm:analysisCollection>
 </iwxxm:SIGMET>
 """
     # Inject AffectedStates inside AirspaceVolume when geometry present.
@@ -671,7 +985,27 @@ def emit_convective_sigmet_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> 
 
 
 def emit_sigmet_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
-    """Emit an IWXXM SIGMET / VolcanicAshSIGMET / TropicalCycloneSIGMET document."""
+    """
+    Emit an IWXXM SIGMET / VolcanicAshSIGMET / TropicalCycloneSIGMET document.
+
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Parsed product fields.
+
+    iwxxm_version : str
+        IWXXM release line.
+
+    Returns
+    -------
+    str
+        An IWXXM SIGMET / VolcanicAshSIGMET / TropicalCycloneSIGMET document.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (emit_sigmet_annex3)
+    2
+    """
     if ir.get("convective"):
         return emit_convective_sigmet_annex3(ir, iwxxm_version=iwxxm_version)
     ns = _ns(iwxxm_version)
@@ -689,13 +1023,21 @@ def emit_sigmet_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
         gml_id = f"sigmet.basic.{fir.lower()}"
 
     if cancel:
-        c_begin = (
-            f"2012-08-{int(ir['cancelled_from_day']):02d}T"
-            f"{int(ir['cancelled_from_hour']):02d}:{int(ir['cancelled_from_minute']):02d}:00Z"
+        from tac2iwxxm.time_anchor import iso_stamp
+
+        c_begin = iso_stamp(
+            ir,
+            int(ir["cancelled_from_day"]),
+            int(ir["cancelled_from_hour"]),
+            int(ir["cancelled_from_minute"]),
+            legacy="2012-08",
         )
-        c_end = (
-            f"2012-08-{int(ir['cancelled_to_day']):02d}T"
-            f"{int(ir['cancelled_to_hour']):02d}:{int(ir['cancelled_to_minute']):02d}:00Z"
+        c_end = iso_stamp(
+            ir,
+            int(ir["cancelled_to_day"]),
+            int(ir["cancelled_to_hour"]),
+            int(ir["cancelled_to_minute"]),
+            legacy="2012-08",
         )
         head = _sigmet_header_units(ir, ns=ns, gml_id=gml_id, issue=issue).format(
             cancel_attr='\n    isCancelReport="true"'
@@ -719,7 +1061,7 @@ def emit_sigmet_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
 """
         )
 
-    phenom = _SIG_PHENOM_HREF.format(code=ir["phenomenon"])
+    phenom = _sigmet_phenomenon_href(str(ir["phenomenon"]))
     intensity = str(ir.get("intensity_change", "NO_CHANGE"))
     locations_raw = ir.get("locations")
     locations: list[dict[str, Any]] = []

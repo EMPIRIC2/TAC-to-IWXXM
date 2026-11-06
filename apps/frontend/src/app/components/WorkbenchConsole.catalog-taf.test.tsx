@@ -41,6 +41,9 @@ const METAR_ONLY: LintIssueCatalogEntry = {
 
 const ENTRIES = [TAF_ONLY, SHARED, METAR_ONLY];
 
+/**
+ *
+ */
 async function openCatalog(user: ReturnType<typeof userEvent.setup>) {
   render(<WorkbenchConsole defaultOpen lines={[]} catalogEntries={ENTRIES} />);
   await user.click(screen.getByTestId('lint-issue-catalog-toggle'));

@@ -40,6 +40,13 @@ metadata:
   name: metar-worker
 spec:
   replicas: 0
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: metar-map-translator
+spec:
+  replicas: 1
   template:
     spec:
       containers:

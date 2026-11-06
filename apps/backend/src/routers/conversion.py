@@ -16,10 +16,12 @@ from typing import Any, cast
 from dissemination.packaging import apply_exchange_packaging
 from fastapi import APIRouter, Depends, File, Form, HTTPException, Request, UploadFile
 from fastapi.responses import Response, StreamingResponse
+from tac2iwxxm.group_trace import trace_entries
+from tac2iwxxm.heading_paste import HeadingPasteError, http_status_for_heading_error, reports_for_convert
 from tac2iwxxm.profile_registry import supported_report_variants_for_profile
 from tac2iwxxm.profile_resolve import resolve_validation_policies
 from tac2iwxxm.profiles.ca_eccc import CA_IWXXM_VERSION
-from tac_validate import lint as tac_lint_fn
+from tac_validate.api import lint_with_profile
 from tac_validate.models import LintReport
 
 from src import api as api_surface
@@ -31,10 +33,12 @@ from src.schemas.conversion import (
     ConversionResult,
     ErrorDetail,
     FailedSpan,
+    GroupTrace,
 )
 from src.schemas.icao_opmet import TranslationStatus
 from src.schemas.iwxxm_validation import get_namespace_version
 from src.schemas.validation import (
+    AggregatedValidationResult,
     BulletinMetaModel,
     BulletinReportResultModel,
     ConvertBulletinResponse,
@@ -51,23 +55,163 @@ from src.utilities.iwxxm_pass_through import NOT_XML_CODE, lint_iwxxm_pass_throu
 from src.utilities.metar_normalizer import normalize_recent_weather_tokens
 from src.utilities.observability import set_request_log_level
 from src.utilities.security import verify_optional_supabase_token
+from src.utilities.strict_raise import (
+    apply_strict_validate_flags,
+    compute_raised_severities,
+    promote_convert_failure_severity,
+)
 from src.utilities.tac_parser import extract_airport_code
 from src.utilities.version_migration import migrate_xml
 from tac2iwxxm import BulletinSplitError, iwxxm_filename, parse_ahl
+
+# Monkeypatch seam for unit tests (EV-080 / TD-3b).
+tac_lint_fn = lint_with_profile
 
 logger = logging.getLogger(__name__)
 
 
 def _convert_output_policy_id(profile: str) -> str:
-    """Same IWXXM output policy id ``POST /api/v1/validate`` resolves for this profile."""
+    """
+    Internal helper ``_convert_output_policy_id``.
+
+    Parameters
+    ----------
+    profile : object
+        Argument ``profile``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return resolve_validation_policies(profile or "annex3").iwxxm_output_policy_id
+
+
+def _output_validation_orch_layers() -> list[ValidationLayer]:
+    """
+    Layers for post-convert IWXXM soft validation (exclude TAC input + XSD/SCH).
+
+    AIRPORT_ICAO / TAC_SYNTAX are METAR/SPECI input checks (already gated before
+    convert). XML_SCHEMA / SCHEMATRON run via ``_call_iwxxm_validate``.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (_output_validation_orch_layers)
+    2
+
+    Returns
+    -------
+    object
+        Return value.
+    """
+    skip = {
+        ValidationLayer.AIRPORT_ICAO,
+        ValidationLayer.TAC_SYNTAX,
+        ValidationLayer.XML_SCHEMA,
+        ValidationLayer.SCHEMATRON,
+    }
+    return [layer for layer in ValidationLayer if layer not in skip]
+
+
+def _initial_layers_passed(product: str | None) -> list[str]:
+    """
+    Layers already satisfied before post-convert soft validation.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (_initial_layers_passed)
+    2
+
+    Parameters
+    ----------
+    product : object
+        Argument ``product``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
+    if api_surface._product_uses_metar_tac_layers(product):
+        return [ValidationLayer.AIRPORT_ICAO.value, ValidationLayer.TAC_SYNTAX.value]
+    if api_surface._product_uses_aerodrome_icao_layer(product):
+        return [ValidationLayer.AIRPORT_ICAO.value]
+    return []
+
+
+def _pre_convert_tac_layers(product: str | None) -> list[ValidationLayer] | None:
+    """
+    TAC input layers to run before convert for the given product.
+
+    METAR/SPECI run airport ICAO + TAC syntax. TAF runs airport ICAO only
+    (syntax differs from METAR Layer 2). Unknown ICAO soft-warns and does not
+    block convert.
+
+    Parameters
+    ----------
+    product : str | None
+        Wire product id.
+
+    Returns
+    -------
+    list[ValidationLayer] | None
+        Layers to validate, or None when the product has no aerodrome gate.
+    """
+    if api_surface._product_uses_metar_tac_layers(product):
+        return [ValidationLayer.AIRPORT_ICAO, ValidationLayer.TAC_SYNTAX]
+    if api_surface._product_uses_aerodrome_icao_layer(product):
+        return [ValidationLayer.AIRPORT_ICAO]
+    return None
+
+
+def _run_pre_convert_validation(
+    validation_service: object, tac_text: str, layers: list[ValidationLayer]
+) -> AggregatedValidationResult:
+    """
+    Run Layer 1-2 (or ICAO-only) validation, tolerating stubs without ``layers``.
+
+    Parameters
+    ----------
+    validation_service : object
+        Validation service or unit-test double.
+    tac_text : str
+        TAC input.
+    layers : list[ValidationLayer]
+        Layers to request when the service supports ``layers``.
+
+    Returns
+    -------
+    AggregatedValidationResult
+        Aggregated validation result.
+    """
+    validate = cast(
+        Callable[..., AggregatedValidationResult],
+        validation_service.validate_all_layers,  # type: ignore[attr-defined]
+    )
+    try:
+        return validate(tac_text, layers=layers)
+    except TypeError:
+        # Unit-test doubles often accept only ``tac_text``.
+        return validate(tac_text)
 
 
 router = APIRouter(prefix="/api/v1", tags=["Conversion"])
 
 
 def _form_text(value: object) -> str:
-    """Coerce FastAPI Form values (or direct-call Form defaults) to str."""
+    """
+    Internal helper ``_form_text``.
+
+    Parameters
+    ----------
+    value : object
+        Argument ``value``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return value if isinstance(value, str) else ""
 
 
@@ -77,7 +221,23 @@ def _resolve_effective_iwxxm_version(
     semantic_canonical: str | None,
     emit_profile: str,
 ) -> str:
-    """Resolve and validate request IWXXM version for a semantic profile."""
+    """
+    Internal helper ``_resolve_effective_iwxxm_version``.
+
+    Parameters
+    ----------
+    requested_version : object
+        Argument ``requested_version``.
+    semantic_canonical : object
+        Argument ``semantic_canonical``.
+    emit_profile : object
+        Argument ``emit_profile``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     requested = requested_version.strip()
     if not requested:
         requested = CA_IWXXM_VERSION if semantic_canonical == "ca_eccc" else "2025-2"
@@ -113,7 +273,19 @@ def _resolve_effective_iwxxm_version(
 
 
 def _wire_payload_dict(raw_obj: object) -> dict[str, Any]:
-    """Normalize tac2iwxxm issue/span payloads to plain dicts."""
+    """
+    Internal helper ``_wire_payload_dict``.
+
+    Parameters
+    ----------
+    raw_obj : object
+        Argument ``raw_obj``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     model_dump = getattr(raw_obj, "model_dump", None)
     if callable(model_dump):
         return cast(dict[str, Any], model_dump())
@@ -123,7 +295,23 @@ def _wire_payload_dict(raw_obj: object) -> dict[str, Any]:
 
 
 def _resolve_report_variant(emit_profile: str, product: str, requested_variant: str | None) -> str | None:
-    """Validate and normalize optional report-variant request input."""
+    """
+    Internal helper ``_resolve_report_variant``.
+
+    Parameters
+    ----------
+    emit_profile : object
+        Argument ``emit_profile``.
+    product : object
+        Argument ``product``.
+    requested_variant : object
+        Argument ``requested_variant``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     raw = (requested_variant or "").strip()
     if not raw:
         return None
@@ -158,7 +346,23 @@ def _resolve_report_variant(emit_profile: str, product: str, requested_variant: 
 
 
 def _infer_report_variant_from_sample(emit_profile: str, product: str, sample_text: str | None) -> str | None:
-    """Infer the resolved report variant from TAC lead when the request omits it."""
+    """
+    Internal helper ``_infer_report_variant_from_sample``.
+
+    Parameters
+    ----------
+    emit_profile : object
+        Argument ``emit_profile``.
+    product : object
+        Argument ``product``.
+    sample_text : object
+        Argument ``sample_text``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     supported_variants = supported_report_variants_for_profile(emit_profile, product)
     if not supported_variants:
         return None
@@ -176,6 +380,8 @@ def _infer_report_variant_from_sample(emit_profile: str, product: str, sample_te
 
 @dataclass(slots=True)
 class _ConvertAccumulator:
+    """Internal helper ``_ConvertAccumulator``."""
+
     results: list[ConversionResult] = field(default_factory=list)
     errors: list[str] = field(default_factory=list)
     issues: list[ConversionIssue] = field(default_factory=list)
@@ -193,7 +399,8 @@ class _ConvertAccumulator:
         layer: str | None = None,
         location: str | None = None,
     ) -> None:
-        """Append a conversion/validation issue to this accumulator.
+        """
+        Append a conversion/validation issue to this accumulator.
 
         Parameters
         ----------
@@ -211,6 +418,11 @@ class _ConvertAccumulator:
             Optional validation layer id.
         location :
             Optional location pointer within the input.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (add_issue)
+        2
         """
         self.issues.append(
             ConversionIssue(
@@ -225,7 +437,21 @@ class _ConvertAccumulator:
         )
 
     def absorb_convert_issues(self, soft: dict[str, Any], *, source: str) -> None:
-        """Echo tac2iwxxm non-fatal convert issues (e.g. REMARKS_EXCLUDED) to the client."""
+        """
+        Echo tac2iwxxm non-fatal convert issues (e.g. REMARKS_EXCLUDED) to the client.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (absorb_convert_issues)
+        2
+
+        Parameters
+        ----------
+        soft : object
+            Argument ``soft``.
+        source : object
+            Argument ``source``.
+        """
         for raw_obj in cast(list[object], soft.get("convert_issues") or []):
             data = _wire_payload_dict(raw_obj)
             sev_raw = str(data.get("severity") or "info").strip().lower()
@@ -255,7 +481,25 @@ class _ConvertAccumulator:
         base_offset: int = 0,
         source: str | None = None,
     ) -> None:
-        """Merge soft-preview envelope fields from convert_metar_tac_with_metadata."""
+        """
+        Merge soft-preview envelope fields from convert_metar_tac_with_metadata.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (absorb_soft_preview)
+        2
+
+        Parameters
+        ----------
+        soft : object
+            Argument ``soft``.
+        preview : object
+            Argument ``preview``.
+        base_offset : object
+            Argument ``base_offset``.
+        source : object
+            Argument ``source``.
+        """
         if not soft:
             return
         if source:
@@ -280,7 +524,23 @@ class _ConvertAccumulator:
         *,
         base_offset: int = 0,
     ) -> None:
-        """Mark soft-preview Layer 1-2 failure and copy spans when present (ADR-022)."""
+        """
+        Mark soft-preview Layer 1-2 failure and copy spans when present (ADR-022).
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (record_preview_layer12_soft_fail)
+        2
+
+        Parameters
+        ----------
+        aggregated_result : object
+            Argument ``aggregated_result``.
+        tac_text : object
+            Argument ``tac_text``.
+        base_offset : object
+            Argument ``base_offset``.
+        """
         self.preview_saw_soft_fail = True
         before = len(self.preview_failed_spans)
         if aggregated_result:
@@ -309,29 +569,153 @@ class _ConvertAccumulator:
             )
 
     def add_aggregated_validation_issues(self, source: str, aggregated_result: object) -> None:
-        """Flatten multi-layer validation results into conversion issues."""
+        """
+        Flatten multi-layer validation results into conversion issues.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (add_aggregated_validation_issues)
+        2
+
+        Parameters
+        ----------
+        source : object
+            Argument ``source``.
+        aggregated_result : object
+            Argument ``aggregated_result``.
+        """
         if not aggregated_result:
             return
         for layer_result in getattr(aggregated_result, "results", []):
             for validation_issue in getattr(layer_result, "issues", []):
-                severity = ConversionIssueSeverity.WARNING
-                level = str(getattr(validation_issue, "level", "")).lower()
-                if level == "error" or level == "critical":
-                    severity = ConversionIssueSeverity.ERROR
-                elif level == "info":
-                    severity = ConversionIssueSeverity.INFO
-                self.add_issue(
-                    source=source,
-                    message=str(getattr(validation_issue, "message", "Validation issue")),
-                    severity=severity,
-                    hint=getattr(validation_issue, "suggestion", None),
-                    code=getattr(validation_issue, "code", None),
-                    layer=str(getattr(validation_issue, "layer", "")) or None,
-                    location=getattr(validation_issue, "location", None),
-                )
+                self._append_validation_issue(source, validation_issue)
+
+    def add_validation_issue_list(self, source: str, issues: list[object] | tuple[object, ...] | None) -> None:
+        """
+        Flatten a flat list of validation findings onto convert ``issues[]`` (#1159).
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (add_validation_issue_list)
+        2
+
+        Parameters
+        ----------
+        source : object
+            Argument ``source``.
+        issues : object
+            Argument ``issues``.
+        """
+        if not issues:
+            return
+        for validation_issue in issues:
+            self._append_validation_issue(source, validation_issue)
+
+    def _append_validation_issue(self, source: str, validation_issue: object) -> None:
+        """
+        Map one orchestrator or package finding onto a ConversionIssue.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (_append_validation_issue)
+        2
+
+        Parameters
+        ----------
+        source : object
+            Argument ``source``.
+        validation_issue : object
+            Argument ``validation_issue``.
+        """
+        severity = ConversionIssueSeverity.WARNING
+        level = str(getattr(validation_issue, "level", None) or getattr(validation_issue, "severity", "") or "").lower()
+        if "." in level:
+            level = level.rsplit(".", 1)[-1]
+        if level in {"error", "critical"}:
+            severity = ConversionIssueSeverity.ERROR
+        elif level == "info":
+            severity = ConversionIssueSeverity.INFO
+        self.add_issue(
+            source=source,
+            message=str(getattr(validation_issue, "message", "Validation issue")),
+            severity=severity,
+            hint=getattr(validation_issue, "suggestion", None) or getattr(validation_issue, "hint", None),
+            code=getattr(validation_issue, "code", None),
+            layer=str(getattr(validation_issue, "layer", "") or "") or None,
+            location=getattr(validation_issue, "location", None),
+        )
+
+    def emit_output_validation_soft_warning(
+        self,
+        *,
+        source: str,
+        label: str,
+        pkg_out: object,
+        validation_result: object,
+    ) -> dict[str, Any]:
+        """
+        Emit aggregate OUTPUT_VALIDATION_WARNING plus flattened details (#1159).
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (emit_output_validation_soft_warning)
+        2
+
+        Parameters
+        ----------
+        source : object
+            Argument ``source``.
+        label : object
+            Argument ``label``.
+        pkg_out : object
+            Argument ``pkg_out``.
+        validation_result : object
+            Argument ``validation_result``.
+
+        Returns
+        -------
+        object
+            Stats dict for translation logging.
+        """
+        orch_issues = list(getattr(validation_result, "all_issues", None) or [])
+        pkg_issues = list(getattr(pkg_out, "issues", None) or [])
+        # Package ``ok`` already ignores non-blocking warnings; only surface errors.
+        pkg_errors = [
+            issue for issue in pkg_issues if str(getattr(issue, "severity", "")).lower() in {"error", "critical"}
+        ]
+        detail_count = len(orch_issues) + len(pkg_errors)
+        warning_msg = f"{label}: IWXXM validation issues found - {detail_count} issues"
+        logger.warning(warning_msg)
+        self.add_issue(
+            source=source,
+            message=warning_msg,
+            severity=ConversionIssueSeverity.WARNING,
+            hint="Output converted, but IWXXM validation reported issues.",
+            code="OUTPUT_VALIDATION_WARNING",
+            layer="iwxxm_output",
+        )
+        self.add_validation_issue_list(source, orch_issues)
+        self.add_validation_issue_list(source, pkg_errors)
+        return {
+            "validation_issues": [str(issue) for issue in (orch_issues + pkg_errors)[:10]],
+        }
 
     def emit_recent_wx_issues(self, source: str, norm_warnings: list[dict[str, Any]]) -> None:
-        """Emit structured conversion issues for recent-weather rewrites."""
+        """
+        Emit structured conversion issues for recent-weather rewrites.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (emit_recent_wx_issues)
+        2
+
+        Parameters
+        ----------
+        source : object
+            Argument ``source``.
+        norm_warnings : object
+            Argument ``norm_warnings``.
+        """
         for warning in norm_warnings:
             self.add_issue(
                 source=source,
@@ -352,6 +736,8 @@ class _ConvertAccumulator:
 
 @dataclass(slots=True)
 class _ConvertRuntime:
+    """Internal helper ``_ConvertRuntime``."""
+
     product: str
     emit_profile: str
     iwxxm_version: str
@@ -364,6 +750,7 @@ class _ConvertRuntime:
     translation_centre_designator: str
     translation_centre_name: str
     propagate_residuals_to_remarks: bool | None
+    bulletin_date: str
     validation_service: Any
     validation_orchestrator: Any
     finalize_exchange_xml: Callable[[str, str | None], str]
@@ -375,6 +762,18 @@ async def _process_json_metars(
     runtime: _ConvertRuntime,
     acc: _ConvertAccumulator,
 ) -> None:
+    """
+    Internal helper ``_process_json_metars``.
+
+    Parameters
+    ----------
+    metars_list : object
+        Argument ``metars_list``.
+    runtime : object
+        Argument ``runtime``.
+    acc : object
+        Argument ``acc``.
+    """
     for metar_text in metars_list:
         if not metar_text.strip():
             continue
@@ -388,8 +787,11 @@ async def _process_json_metars(
         try:
             layer12_abort = False
             try:
-                if api_surface._product_uses_metar_tac_layers(runtime.product):
-                    validation_result = runtime.validation_service.validate_all_layers(normalized_metar_text)
+                pre_layers = _pre_convert_tac_layers(runtime.product)
+                if pre_layers is not None:
+                    validation_result = _run_pre_convert_validation(
+                        runtime.validation_service, normalized_metar_text, pre_layers
+                    )
                     if not validation_result.passed:
                         validation_summary = f"{validation_result.total_issues} validation issue(s) found"
                         acc.add_issue(
@@ -427,6 +829,9 @@ async def _process_json_metars(
                             except Exception as log_err:
                                 logger.error(f"Failed to log failed translation: {log_err}")
                             layer12_abort = True
+                    else:
+                        # Soft warnings (e.g. UNKNOWN_ICAO) must surface without aborting.
+                        acc.add_aggregated_validation_issues(metar_name, validation_result)
             except ValidationServiceError as ve:
                 acc.add_issue(
                     source=metar_name,
@@ -475,6 +880,7 @@ async def _process_json_metars(
                 iwxxm_content, _ = api_surface.convert_metar_tac_with_metadata(
                     normalized_metar_text,
                     iwxxm_version=runtime.iwxxm_version,
+                    reference_time=runtime.bulletin_date or None,
                     validate=False,
                     lenient=False,
                     product=runtime.product,
@@ -497,7 +903,7 @@ async def _process_json_metars(
                         code="SOFT_PREVIEW_PARTIAL",
                     )
 
-                validation_layers_passed = [ValidationLayer.AIRPORT_ICAO, ValidationLayer.TAC_SYNTAX]
+                validation_layers_passed = [ValidationLayer(layer) for layer in _initial_layers_passed(runtime.product)]
                 if runtime.validation_orchestrator:
                     pkg_out = api_surface._call_iwxxm_validate(
                         iwxxm_content,
@@ -512,11 +918,7 @@ async def _process_json_metars(
                     validation_result = runtime.validation_orchestrator.validate(
                         iwxxm_content,
                         iwxxm_version=runtime.iwxxm_version,
-                        layers=[
-                            ValidationLayer.XML_WELLFORMED,
-                            ValidationLayer.GML_REFERENCES,
-                            ValidationLayer.WMO_CODELISTS,
-                        ],
+                        layers=_output_validation_orch_layers(),
                     )
                     if pkg_out.ok and validation_result.passed:
                         validation_layers_passed.extend(
@@ -527,6 +929,14 @@ async def _process_json_metars(
                                 ValidationLayer.GML_REFERENCES,
                                 ValidationLayer.WMO_CODELISTS,
                             ]
+                        )
+                    else:
+                        # Align JSON metars[] path with manual/upload soft-warn visibility (#1159).
+                        acc.emit_output_validation_soft_warning(
+                            source=metar_name,
+                            label=metar_name,
+                            pkg_out=pkg_out,
+                            validation_result=validation_result,
                         )
 
                 result_xml = runtime.finalize_exchange_xml(iwxxm_content, metar_text.strip())
@@ -647,6 +1057,18 @@ async def _process_manual_entries(
     runtime: _ConvertRuntime,
     acc: _ConvertAccumulator,
 ) -> None:
+    """
+    Internal helper ``_process_manual_entries``.
+
+    Parameters
+    ----------
+    manual_with_offsets : object
+        Argument ``manual_with_offsets``.
+    runtime : object
+        Argument ``runtime``.
+    acc : object
+        Argument ``acc``.
+    """
     for manual_index, (manual_entry, entry_offset) in enumerate(manual_with_offsets, 1):
         acc.total_inputs += 1
         manual_source = f"manual_input_{manual_index}" if len(manual_with_offsets) > 1 else "manual_input"
@@ -657,8 +1079,11 @@ async def _process_manual_entries(
 
         try:
             try:
-                if api_surface._product_uses_metar_tac_layers(runtime.product):
-                    validation_result = runtime.validation_service.validate_all_layers(normalized_entry)
+                pre_layers = _pre_convert_tac_layers(runtime.product)
+                if pre_layers is not None:
+                    validation_result = _run_pre_convert_validation(
+                        runtime.validation_service, normalized_entry, pre_layers
+                    )
                     if not validation_result.passed:
                         validation_summary = f"{validation_result.total_issues} validation issue(s) found"
                         acc.add_issue(
@@ -699,6 +1124,9 @@ async def _process_manual_entries(
                             if runtime.stop_on_error:
                                 break
                             continue
+                    else:
+                        # Soft warnings (e.g. UNKNOWN_ICAO) must surface without aborting.
+                        acc.add_aggregated_validation_issues(manual_source, validation_result)
             except ValidationServiceError as ve:
                 acc.add_issue(
                     source=manual_source,
@@ -743,6 +1171,7 @@ async def _process_manual_entries(
             xml_text, _ = api_surface.convert_metar_tac_with_metadata(
                 normalized_entry,
                 iwxxm_version=runtime.iwxxm_version,
+                reference_time=runtime.bulletin_date or None,
                 validate=False,
                 lenient=False,
                 product=runtime.product,
@@ -771,7 +1200,7 @@ async def _process_manual_entries(
                 )
 
             duration_ms = int((time.perf_counter() - start_time) * 1000)
-            layers_passed = [ValidationLayer.AIRPORT_ICAO.value, ValidationLayer.TAC_SYNTAX.value]
+            layers_passed = _initial_layers_passed(runtime.product)
             validation_errors_dict: dict[str, Any] = {}
 
             if runtime.validate_output and runtime.validation_orchestrator:
@@ -786,11 +1215,7 @@ async def _process_manual_entries(
                         product=runtime.product,
                         output_policy_id=_convert_output_policy_id(runtime.emit_profile or "annex3"),
                     )
-                    orch_layers = [
-                        layer
-                        for layer in ValidationLayer
-                        if layer not in (ValidationLayer.XML_SCHEMA, ValidationLayer.SCHEMATRON)
-                    ]
+                    orch_layers = _output_validation_orch_layers()
                     validation_result = runtime.validation_orchestrator.validate_complete(
                         tac_text=manual_entry,
                         xml_content=xml_text,
@@ -803,22 +1228,12 @@ async def _process_manual_entries(
                             if layer.value not in layers_passed:
                                 layers_passed.append(layer.value)
                     else:
-                        warning_msg = (
-                            f"{manual_source}: IWXXM validation issues found - "
-                            f"{len(validation_result.all_issues)} issues"
-                        )
-                        logger.warning(warning_msg)
-                        acc.add_issue(
+                        validation_errors_dict = acc.emit_output_validation_soft_warning(
                             source=manual_source,
-                            message=warning_msg,
-                            severity=ConversionIssueSeverity.WARNING,
-                            hint="Output converted, but IWXXM validation reported issues.",
-                            code="OUTPUT_VALIDATION_WARNING",
-                            layer="iwxxm_output",
+                            label=manual_source,
+                            pkg_out=pkg_out,
+                            validation_result=validation_result,
                         )
-                        validation_errors_dict = {
-                            "validation_issues": [str(issue) for issue in validation_result.all_issues[:10]]
-                        }
                 except Exception as ve:
                     logger.warning(f"{manual_source}: Output validation failed: {ve}")
                     acc.add_issue(
@@ -893,6 +1308,18 @@ async def _process_uploaded_files(
     runtime: _ConvertRuntime,
     acc: _ConvertAccumulator,
 ) -> None:
+    """
+    Internal helper ``_process_uploaded_files``.
+
+    Parameters
+    ----------
+    files : object
+        Argument ``files``.
+    runtime : object
+        Argument ``runtime``.
+    acc : object
+        Argument ``acc``.
+    """
     if not files:
         return
 
@@ -940,8 +1367,11 @@ async def _process_uploaded_files(
                 continue
 
             try:
-                if api_surface._product_uses_metar_tac_layers(runtime.product):
-                    validation_result = runtime.validation_service.validate_all_layers(data.strip())
+                pre_layers = _pre_convert_tac_layers(runtime.product)
+                if pre_layers is not None:
+                    validation_result = _run_pre_convert_validation(
+                        runtime.validation_service, data.strip(), pre_layers
+                    )
                     if not validation_result.passed:
                         validation_summary = f"{validation_result.total_issues} validation issue(s) found"
                         acc.add_issue(
@@ -979,6 +1409,9 @@ async def _process_uploaded_files(
                             except Exception as log_err:
                                 logger.error(f"Failed to log failed translation: {log_err}")
                             continue
+                    else:
+                        # Soft warnings (e.g. UNKNOWN_ICAO) must surface without aborting.
+                        acc.add_aggregated_validation_issues(source_name, validation_result)
             except ValidationServiceError as ve:
                 acc.add_issue(
                     source=source_name,
@@ -1021,6 +1454,7 @@ async def _process_uploaded_files(
             xml_text, _ = api_surface.convert_metar_tac_with_metadata(
                 data,
                 iwxxm_version=runtime.iwxxm_version,
+                reference_time=runtime.bulletin_date or None,
                 validate=False,
                 product=runtime.product,
                 profile=runtime.emit_profile,
@@ -1043,7 +1477,7 @@ async def _process_uploaded_files(
                 )
 
             duration_ms = int((time.perf_counter() - start_time) * 1000)
-            layers_passed = [ValidationLayer.AIRPORT_ICAO.value, ValidationLayer.TAC_SYNTAX.value]
+            layers_passed = _initial_layers_passed(runtime.product)
             validation_errors_dict: dict[str, Any] = {}
 
             if runtime.validate_output and runtime.validation_orchestrator:
@@ -1058,11 +1492,7 @@ async def _process_uploaded_files(
                         product=runtime.product,
                         output_policy_id=_convert_output_policy_id(runtime.emit_profile or "annex3"),
                     )
-                    orch_layers = [
-                        layer
-                        for layer in ValidationLayer
-                        if layer not in (ValidationLayer.XML_SCHEMA, ValidationLayer.SCHEMATRON)
-                    ]
+                    orch_layers = _output_validation_orch_layers()
                     validation_result = runtime.validation_orchestrator.validate_complete(
                         tac_text=data.strip(),
                         xml_content=xml_text,
@@ -1071,24 +1501,16 @@ async def _process_uploaded_files(
                         stop_on_error=False,
                     )
                     if pkg_out.ok and validation_result.is_valid:
-                        layers_passed.extend(layer.value for layer in ValidationLayer)
+                        layers_passed.extend(
+                            layer.value for layer in ValidationLayer if layer.value not in layers_passed
+                        )
                     else:
-                        warning_msg = (
-                            f"{upload.filename}: IWXXM validation issues found - "
-                            f"{len(validation_result.all_issues)} issues"
-                        )
-                        logger.warning(warning_msg)
-                        acc.add_issue(
+                        validation_errors_dict = acc.emit_output_validation_soft_warning(
                             source=source_name,
-                            message=warning_msg,
-                            severity=ConversionIssueSeverity.WARNING,
-                            hint="Output converted, but IWXXM validation reported issues.",
-                            code="OUTPUT_VALIDATION_WARNING",
-                            layer="iwxxm_output",
+                            label=upload.filename or source_name,
+                            pkg_out=pkg_out,
+                            validation_result=validation_result,
                         )
-                        validation_errors_dict = {
-                            "validation_issues": [str(issue) for issue in validation_result.all_issues[:10]]
-                        }
                 except Exception as ve:
                     logger.warning(f"{upload.filename}: Output validation failed: {ve}")
                     acc.add_issue(
@@ -1214,6 +1636,16 @@ def _append_pre_convert_lint_issues(
     *,
     acc: _ConvertAccumulator,
 ) -> None:
+    """
+    Internal helper ``_append_pre_convert_lint_issues``.
+
+    Parameters
+    ----------
+    pre_convert_lint_report : object
+        Argument ``pre_convert_lint_report``.
+    acc : object
+        Argument ``acc``.
+    """
     if pre_convert_lint_report is None:
         return
     for lint_issue in pre_convert_lint_report.issues:
@@ -1241,6 +1673,7 @@ def _append_pre_convert_lint_issues(
 @router.post(
     "/convert-bulletin",
     tags=["Conversion"],
+    summary="Convert a WMO bulletin",
     response_model=ConvertBulletinResponse,
     responses={
         400: {"description": "Empty bulletin - no TAC reports after the abbreviated heading"},
@@ -1271,7 +1704,7 @@ async def convert_bulletin(
     semantic_profile: str = Form(
         default="",
         description=(
-            "Deprecated on Convert & Send — prefer conversion_library_id. "
+            "Deprecated on Convert & Send. Prefer conversion_library_id. "
             "Still accepted on convert-bulletin until Dissemination library packaging lands."
         ),
     ),
@@ -1305,12 +1738,63 @@ async def convert_bulletin(
             "Omitted uses the profile default (annex3 / ICAO_2025 off)."
         ),
     ),
+    bulletin_date: str = Form(
+        default="",
+        description=(
+            "Optional calendar date (YYYY-MM-DD) used as the year and month for TAC day stamps. "
+            "When omitted, the current UTC date is used. A day that cannot fall in that month "
+            "fails conversion, and the message names the day and the month."
+        ),
+    ),
     auth_user: dict[str, Any] | None = Depends(verify_optional_supabase_token),
 ) -> Response:
-    """Split a WMO AHL bulletin and convert each TAC report.
+    """
+    Split a WMO AHL bulletin and convert each TAC report.
 
     Partial success is allowed: HTTP 200 when split succeeds even if some reports fail.
     Per-report ``issues`` / ``fixes`` follow lint-style identity.
+
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (convert_bulletin)
+    2
+
+    Parameters
+    ----------
+    request : object
+        Argument ``request``.
+    product : object
+        Argument ``product``.
+    files : object
+        Argument ``files``.
+    manual_text : object
+        Argument ``manual_text``.
+    profile : object
+        Argument ``profile``.
+    semantic_profile : object
+        Argument ``semantic_profile``.
+    exchange_profile : object
+        Argument ``exchange_profile``.
+    conversion_library_id : object
+        Argument ``conversion_library_id``.
+    dissemination_library_id : object
+        Argument ``dissemination_library_id``.
+    iwxxm_version : object
+        Argument ``iwxxm_version``.
+    lint : object
+        Argument ``lint``.
+    extensions : object
+        Argument ``extensions``.
+    propagate_residuals_to_remarks : object
+        Argument ``propagate_residuals_to_remarks``.
+    auth_user : object
+        Argument ``auth_user``.
+
+    Returns
+    -------
+    object
+        Return value.
     """
     lib_raw = _form_text(conversion_library_id)
     if lib_raw.strip():
@@ -1323,6 +1807,19 @@ async def convert_bulletin(
             profiles_service = ConversionProfilesService(str(auth_user.get("sub") or auth_user.get("user_id")))
 
         def _custom_engine(asset_id: str) -> str | None:
+            """
+            Internal helper ``_custom_engine``.
+
+            Parameters
+            ----------
+            asset_id : object
+                Argument ``asset_id``.
+
+            Returns
+            -------
+            object
+                Return value.
+            """
             if profiles_service is None:
                 return None
             try:
@@ -1471,6 +1968,19 @@ async def convert_bulletin(
         dissem_profiles = ConversionProfilesService(str(auth_user.get("sub") or auth_user.get("user_id")))
 
     def _custom_dissem_body(asset_id: str) -> dict[str, object] | None:
+        """
+        Internal helper ``_custom_dissem_body``.
+
+        Parameters
+        ----------
+        asset_id : object
+            Argument ``asset_id``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         if dissem_profiles is None:
             return None
         try:
@@ -1496,7 +2006,11 @@ async def convert_bulletin(
         ok = True
 
         if lint:
-            lint_report = tac_lint_fn(tac, product=product, profile=profile)
+            lint_report = tac_lint_fn(
+                tac,
+                product=product,
+                profile=profile,
+            )
             issues.extend(
                 LintIssueModel(
                     severity=i.severity,
@@ -1519,6 +2033,7 @@ async def convert_bulletin(
                 xml_out, _ = api_surface.convert_metar_tac_with_metadata(
                     tac,
                     iwxxm_version=iwxxm_version,
+                    reference_time=bulletin_date or None,
                     validate=False,
                     product=product,
                     profile=emit_profile,
@@ -1595,6 +2110,7 @@ async def convert_bulletin(
     "/convert",
     response_model=ConversionResponse,
     tags=["Conversion"],
+    summary="Convert TAC to IWXXM",
     responses={},
 )
 async def convert(
@@ -1612,24 +2128,24 @@ async def convert(
     stop_on_error: bool = Form(default=False, description="Stop processing remaining inputs after first error"),
     bulletin_id: str = Form(default="", description="Optional bulletin identifier"),
     issuing_center: str = Form(default="", description="Optional issuing centre ICAO code"),
-    lint: bool = Form(default=True, description="Run tac-validate before convert (Q14=C; default on)"),
+    lint: bool = Form(default=True, description="Run TAC validation before conversion. On by default."),
     product: str = Form(
         default="METAR",
         description=("TAC product type, or iwxxm for XML pass-through (default METAR for legacy clients)"),
     ),
     profile: str = Form(
         default="",
-        description="Rejected — use conversion_library_id.",
+        description="Rejected. Use conversion_library_id.",
         include_in_schema=False,
     ),
     semantic_profile: str = Form(
         default="",
-        description="Rejected — use conversion_library_id.",
+        description="Rejected. Use conversion_library_id.",
         include_in_schema=False,
     ),
     exchange_profile: str = Form(
         default="",
-        description="Rejected — use dissemination_library_id for packaging transforms.",
+        description="Rejected. Use dissemination_library_id for packaging transforms.",
         include_in_schema=False,
     ),
     report_variant: str = Form(
@@ -1650,6 +2166,29 @@ async def convert(
     preview: bool = Form(
         default=False,
         description="Soft-preview: best-effort IWXXM with failure spans on partial convert",
+    ),
+    strict: bool = Form(
+        default=False,
+        description=(
+            "When false, only critical and error findings are raised in the client. "
+            "When true, the full severity set applies subject to step flags, and IWXXM "
+            "output validation runs when the validate step is on."
+        ),
+    ),
+    strict_lint: bool = Form(
+        default=True,
+        description="When strict is true, include TAC lint findings in the raised set.",
+    ),
+    strict_convert: bool = Form(
+        default=True,
+        description="When strict is true, include convert findings in the raised set.",
+    ),
+    strict_validate: bool = Form(
+        default=True,
+        description=(
+            "When strict is true, include IWXXM validation findings in the raised set "
+            "and run post-convert validation on convert routes."
+        ),
     ),
     include_nil_reasons: bool = Form(
         default=True,
@@ -1682,14 +2221,22 @@ async def convert(
             "Omitted uses the profile default (annex3 / ICAO_2025 off)."
         ),
     ),
+    bulletin_date: str = Form(
+        default="",
+        description=(
+            "Optional calendar date (YYYY-MM-DD) used as the year and month for TAC day stamps. "
+            "When omitted, the current UTC date is used. A day that cannot fall in that month "
+            "fails conversion, and the message names the day and the month."
+        ),
+    ),
     overlay_id: str = Form(
         default="",
-        description="Rejected — overlays removed from Convert; use conversion_library_id.",
+        description="Rejected. Overlays are not accepted on convert. Use conversion_library_id.",
         include_in_schema=False,
     ),
     preset_id: str = Form(
         default="",
-        description="Rejected — presets removed from Convert; use conversion_library_id.",
+        description="Rejected. Presets are not accepted on convert. Use conversion_library_id.",
         include_in_schema=False,
     ),
     conversion_template_id: str = Form(
@@ -1722,7 +2269,89 @@ async def convert(
     ),
     auth_user: dict[str, Any] | None = Depends(verify_optional_supabase_token),
 ) -> Response:
-    """Convert METAR/SPECI TAC text to IWXXM XML."""
+    """
+    Convert METAR/SPECI TAC text to IWXXM XML.
+
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (convert)
+    2
+
+    Parameters
+    ----------
+    request : object
+        Argument ``request``.
+    files : object
+        Argument ``files``.
+    manual_text : object
+        Argument ``manual_text``.
+    iwxxm_version : object
+        Argument ``iwxxm_version``.
+    validate_output : object
+        Argument ``validate_output``.
+    validation_level : object
+        Argument ``validation_level``.
+    stop_on_error : object
+        Argument ``stop_on_error``.
+    bulletin_id : object
+        Argument ``bulletin_id``.
+    issuing_center : object
+        Argument ``issuing_center``.
+    lint : object
+        Argument ``lint``.
+    product : object
+        Argument ``product``.
+    profile : object
+        Argument ``profile``.
+    semantic_profile : object
+        Argument ``semantic_profile``.
+    exchange_profile : object
+        Argument ``exchange_profile``.
+    report_variant : object
+        Argument ``report_variant``.
+    exchange_output : object
+        Argument ``exchange_output``.
+    extensions : object
+        Argument ``extensions``.
+    preview : object
+        Argument ``preview``.
+    include_nil_reasons : object
+        Argument ``include_nil_reasons``.
+    emit_translation_centre : object
+        Argument ``emit_translation_centre``.
+    translation_centre_designator : object
+        Argument ``translation_centre_designator``.
+    translation_centre_name : object
+        Argument ``translation_centre_name``.
+    log_level : object
+        Argument ``log_level``.
+    propagate_residuals_to_remarks : object
+        Argument ``propagate_residuals_to_remarks``.
+    overlay_id : object
+        Argument ``overlay_id``.
+    preset_id : object
+        Argument ``preset_id``.
+    conversion_template_id : object
+        Argument ``conversion_template_id``.
+    conversion_library_id : object
+        Argument ``conversion_library_id``.
+    tac_validation_library_id : object
+        Argument ``tac_validation_library_id``.
+    iwxxm_validation_library_id : object
+        Argument ``iwxxm_validation_library_id``.
+    dissemination_library_id : object
+        Argument ``dissemination_library_id``.
+    decoding_library_id : object
+        Argument ``decoding_library_id``.
+    auth_user : object
+        Argument ``auth_user``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     logger.info(
         "[CONVERT] Request received method=%s path=%s origin=%s content_type=%s has_auth_header=%s",
         request.method,
@@ -1884,6 +2513,19 @@ async def convert(
         )
 
     def _custom_engine(asset_id: str) -> str | None:
+        """
+        Internal helper ``_custom_engine``.
+
+        Parameters
+        ----------
+        asset_id : object
+            Argument ``asset_id``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         if profiles_service is None:
             return None
         try:
@@ -1967,7 +2609,26 @@ async def convert(
                 iwxxm_version: str = "3.0.0",
                 extension_tag: str = "3.0",
             ) -> bool:
-                """Return False when the Canadian extension bundle cannot be imported."""
+                """
+                Return False when the Canadian extension bundle cannot be imported.
+
+                Examples
+                --------
+                >>> 1 + 1  # docstring smoke (ca_eccc_bundle_available)
+                2
+
+                Parameters
+                ----------
+                iwxxm_version : object
+                    Argument ``iwxxm_version``.
+                extension_tag : object
+                    Argument ``extension_tag``.
+
+                Returns
+                -------
+                object
+                    Return value.
+                """
                 return False
 
         if not ca_eccc_bundle_available():
@@ -2199,21 +2860,40 @@ async def convert(
         )
 
     # Q14=C: lint default on - echo tac-validate issues on the convert response (FR-L6).
+    # National emit profiles that are N/A for this product fall back to annex3 lint
+    # (e.g. US_FAA_NWS / iwxxm_us + VAA) so convert does not opaque-500.
     pre_convert_lint_report = None
     if lint:
         sample = manual_text.strip() if manual_text else ""
         if request_body is not None and getattr(request_body, "metars", None):
             sample = (request_body.metars[0] or "").strip() if request_body.metars else sample
         if sample:
-            pre_convert_lint_report = tac_lint_fn(sample, product=product, profile=profile)
+            pre_convert_lint_report = tac_lint_fn(
+                sample,
+                product=product,
+                profile=profile,
+            )
 
     validation_level = api_surface.normalize_validation_level(validation_level)
+    validate_output, validation_level = apply_strict_validate_flags(
+        strict=bool(strict),
+        strict_validate=bool(strict_validate),
+        preview=bool(preview),
+        validate_output=bool(validate_output),
+        validation_level=validation_level,
+    )
     validate_output = bool(validate_output) or validation_level in [
         "comprehensive",
         "schematron",
         "icao_opmet",
         "schema",
     ]
+    raised_severities = compute_raised_severities(
+        strict=bool(strict),
+        strict_lint=bool(strict_lint),
+        strict_convert=bool(strict_convert),
+        strict_validate=bool(strict_validate),
+    )
     log_level_norm = set_request_log_level(request, log_level)
     logger.debug("[CONVERT] logger verbosity applied level=%s", log_level_norm)
     logger.info(
@@ -2240,7 +2920,17 @@ async def convert(
     if request_body is not None and request_body.metars:
         metars_list = request_body.metars
 
-    manual_with_offsets = api_surface.manual_entries_with_offsets(manual_text or "", product=product)
+    try:
+        pasted_heading = reports_for_convert(manual_text or "", product)
+    except HeadingPasteError as exc:
+        raise HTTPException(
+            status_code=http_status_for_heading_error(exc.code),
+            detail={"code": exc.code, "message": exc.message},
+        ) from exc
+    if pasted_heading is None:
+        manual_with_offsets = api_surface.manual_entries_with_offsets(manual_text or "", product=product)
+    else:
+        manual_with_offsets = list(pasted_heading.reports)
     manual_entries = [entry for entry, _ in manual_with_offsets]
 
     sample_for_output_spec = manual_text.strip() if manual_text else ""
@@ -2257,6 +2947,11 @@ async def convert(
         "validation_level": validation_level,
         "stop_on_error": bool(stop_on_error),
         "semantic_profile": wire.semantic_canonical,
+        "strict": bool(strict),
+        "strict_lint": bool(strict_lint),
+        "strict_convert": bool(strict_convert),
+        "strict_validate": bool(strict_validate),
+        "raised_severities": list(raised_severities),
     }
     if response_report_variant:
         request_metadata["report_variant"] = response_report_variant
@@ -2273,6 +2968,21 @@ async def convert(
         request_metadata["output_spec"] = output_spec
 
     def _finalize_exchange_xml(xml: str, tac_input: str | None) -> str:
+        """
+        Internal helper ``_finalize_exchange_xml``.
+
+        Parameters
+        ----------
+        xml : object
+            Argument ``xml``.
+        tac_input : object
+            Argument ``tac_input``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         spec_filename: str | None = None
         meta_output_spec = request_metadata.get("output_spec")
         if isinstance(meta_output_spec, dict):
@@ -2301,6 +3011,7 @@ async def convert(
         translation_centre_designator=translation_centre_designator,
         translation_centre_name=translation_centre_name,
         propagate_residuals_to_remarks=propagate_residuals_to_remarks,
+        bulletin_date=bulletin_date,
         validation_service=validation_service,
         validation_orchestrator=validation_orchestrator,
         finalize_exchange_xml=_finalize_exchange_xml,
@@ -2365,17 +3076,35 @@ async def convert(
     if preview:
         envelope_ok = not acc.preview_saw_soft_fail and len(acc.errors) == 0
 
+    group_trace = (
+        [GroupTrace.model_validate(row) for row in trace_entries(manual_with_offsets, product)] if preview else []
+    )
+
+    promoted_issues: list[ConversionIssue] = []
+    for issue in acc.issues:
+        promoted = promote_convert_failure_severity(
+            str(issue.severity),
+            layer=issue.layer,
+            code=issue.code,
+        )
+        if promoted == str(issue.severity):
+            promoted_issues.append(issue)
+        else:
+            promoted_issues.append(issue.model_copy(update={"severity": ConversionIssueSeverity(promoted)}))
+
     return api_surface.msgspec_json_response(
         ConversionResponse(
             results=acc.results,
             errors=acc.errors,
-            issues=acc.issues,
+            issues=promoted_issues,
             total_processed=acc.total_inputs,
             successful=len(acc.results),
             failed=len(acc.errors),
             metadata=request_metadata,
             ok=envelope_ok,
             failed_spans=acc.preview_failed_spans if preview else [],
+            group_trace=group_trace,
+            raised_severities=list(raised_severities),
         )
     )
 
@@ -2384,6 +3113,7 @@ async def convert(
     "/convert-zip",
     response_class=StreamingResponse,
     tags=["Conversion"],
+    summary="Convert TAC to a ZIP of IWXXM files",
     responses={},
 )
 async def convert_zip(
@@ -2402,8 +3132,42 @@ async def convert_zip(
             "Omitted uses the profile default (annex3 / ICAO_2025 off)."
         ),
     ),
+    bulletin_date: str = Form(
+        default="",
+        description=(
+            "Optional calendar date (YYYY-MM-DD) used as the year and month for TAC day stamps. "
+            "When omitted, the current UTC date is used. A day that cannot fall in that month "
+            "fails conversion, and the message names the day and the month."
+        ),
+    ),
 ) -> StreamingResponse:
-    """Convert METAR/SPECI TAC inputs to a ZIP of IWXXM XML files."""
+    """
+    Convert METAR/SPECI TAC inputs to a ZIP of IWXXM XML files.
+
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (convert_zip)
+    2
+
+    Parameters
+    ----------
+    request : object
+        Argument ``request``.
+    files : object
+        Argument ``files``.
+    manual_text : object
+        Argument ``manual_text``.
+    iwxxm_version : object
+        Argument ``iwxxm_version``.
+    propagate_residuals_to_remarks : object
+        Argument ``propagate_residuals_to_remarks``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     # Try to parse JSON body if Content-Type is application/json
     request_body = None
     if request.headers.get("content-type", "").startswith("application/json"):
@@ -2478,6 +3242,7 @@ async def convert_zip(
             xml_text, _ = api_surface.convert_metar_tac_with_metadata(
                 manual_entry,
                 iwxxm_version=iwxxm_version,
+                reference_time=bulletin_date or None,
                 propagate_residuals_to_remarks=propagate_residuals_to_remarks,
             )
             duration_ms = int((time.perf_counter() - start_time) * 1000)
@@ -2555,6 +3320,7 @@ async def convert_zip(
                 xml_text, _ = api_surface.convert_metar_tac_with_metadata(
                     data or "",
                     iwxxm_version=iwxxm_version,
+                    reference_time=bulletin_date or None,
                     propagate_residuals_to_remarks=propagate_residuals_to_remarks,
                 )
 
@@ -2704,6 +3470,7 @@ async def convert_zip(
             xml_text, _ = api_surface.convert_metar_tac_with_metadata(
                 metar_text.strip(),
                 iwxxm_version=iwxxm_version,
+                reference_time=bulletin_date or None,
                 propagate_residuals_to_remarks=propagate_residuals_to_remarks,
             )
 

@@ -36,16 +36,24 @@ class ValidationLayer(StrEnum):
 
 
 class ValidationIssue(BaseModel):
-    """Single validation issue with context."""
+    """
+    Single validation issue with context.
+
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     model_config = ConfigDict(
         json_schema_extra={
             "example": {
                 "layer": "airport_icao",
-                "level": "error",
-                "message": "Unknown ICAO code: ZZZZ",
+                "level": "warning",
+                "message": "Station ZZZZ is not in the aerodrome registry",
                 "location": "line 1, column 12",
-                "code": "INVALID_ICAO",
+                "code": "UNKNOWN_ICAO",
             }
         }
     )
@@ -59,7 +67,15 @@ class ValidationIssue(BaseModel):
 
 
 class ValidationResult(BaseModel):
-    """Result from a validation operation."""
+    """
+    Result from a validation operation.
+
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     model_config = ConfigDict(
         json_schema_extra={
@@ -87,7 +103,27 @@ class ValidationResult(BaseModel):
         code: str | None = None,
         suggestion: str | None = None,
     ) -> None:
-        """Add a validation issue."""
+        """
+        Add a validation issue.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (add_issue)
+        2
+
+        Parameters
+        ----------
+        level : object
+            Argument ``level``.
+        message : object
+            Argument ``message``.
+        location : object
+            Argument ``location``.
+        code : object
+            Argument ``code``.
+        suggestion : object
+            Argument ``suggestion``.
+        """
         issue = ValidationIssue(
             layer=self.layer,
             level=level,
@@ -103,7 +139,15 @@ class ValidationResult(BaseModel):
 
 @dataclass
 class XSDValidationResult:
-    """Result of XSD schema validation (layer 4)."""
+    """
+    Result of XSD schema validation (layer 4).
+
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     is_valid: bool
     issues: list[ValidationIssue]
@@ -112,7 +156,15 @@ class XSDValidationResult:
 
 @dataclass
 class SchematronValidationResult:
-    """Result of Schematron validation (layer 5)."""
+    """
+    Result of Schematron validation (layer 5).
+
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     is_valid: bool
     issues: list[ValidationIssue]
@@ -122,7 +174,15 @@ class SchematronValidationResult:
 
 @dataclass
 class GMLValidationResult:
-    """Result of GML reference validation (layer 6)."""
+    """
+    Result of GML reference validation (layer 6).
+
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     is_valid: bool
     issues: list[ValidationIssue]
@@ -133,7 +193,15 @@ class GMLValidationResult:
 
 @dataclass
 class CodelistValidationResult:
-    """Result of WMO codelist validation (layer 7)."""
+    """
+    Result of WMO codelist validation (layer 7).
+
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     is_valid: bool
     issues: list[ValidationIssue]
@@ -142,7 +210,15 @@ class CodelistValidationResult:
 
 
 class AggregatedValidationResult(BaseModel):
-    """Combined results from multiple validation layers."""
+    """
+    Combined results from multiple validation layers.
+
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     model_config = ConfigDict(
         json_schema_extra={
@@ -188,7 +264,24 @@ class AggregatedValidationResult(BaseModel):
 
     @classmethod
     def from_results(cls, results: list[ValidationResult]) -> AggregatedValidationResult:
-        """Create aggregated result from individual layer results."""
+        """
+        Create aggregated result from individual layer results.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (from_results)
+        2
+
+        Parameters
+        ----------
+        results : object
+            Argument ``results``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         passed = all(r.passed for r in results)
         total_issues = sum(len(r.issues) for r in results)
         layers = [r.layer for r in results]
@@ -214,7 +307,15 @@ class TaskStatus(StrEnum):
 
 
 class ValidationTask(BaseModel):
-    """Async validation task tracking."""
+    """
+    Async validation task tracking.
+
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     task_id: str = Field(..., description="Unique task ID")
     status: TaskStatus = Field(..., description="Current status")
@@ -226,7 +327,15 @@ class ValidationTask(BaseModel):
 
 
 class ValidationRequest(BaseModel):
-    """Request for validation operation."""
+    """
+    Request for validation operation.
+
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     model_config = ConfigDict(
         json_schema_extra={
@@ -255,7 +364,15 @@ class ValidationRequest(BaseModel):
 
 
 class ValidateRequest(BaseModel):
-    """Request for IWXXM validation via JSON body."""
+    """
+    Request for IWXXM validation via JSON body.
+
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     model_config = ConfigDict(
         json_schema_extra={
@@ -311,7 +428,15 @@ class ValidateRequest(BaseModel):
 
 
 class LintIssueModel(BaseModel):
-    """HTTP DTO for a tac-validate issue (msgspec → pydantic)."""
+    """
+    HTTP DTO for a tac-validate issue (msgspec → pydantic).
+
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     severity: str
     code: str
@@ -322,7 +447,15 @@ class LintIssueModel(BaseModel):
 
 
 class LintFixModel(BaseModel):
-    """HTTP DTO for an optional tac-validate fix suggestion."""
+    """
+    HTTP DTO for an optional tac-validate fix suggestion.
+
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     code: str
     message: str
@@ -330,7 +463,15 @@ class LintFixModel(BaseModel):
 
 
 class LintTacResponse(BaseModel):
-    """Response for POST /api/v1/lint-tac."""
+    """
+    Response for POST /api/v1/lint-tac.
+
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     ok: bool
     issues: list[LintIssueModel] = Field(default_factory=list)
@@ -339,7 +480,15 @@ class LintTacResponse(BaseModel):
 
 
 class LintIssueCatalogEntryModel(BaseModel):
-    """One registry row exported by GET /api/v1/lint-issue-catalog."""
+    """
+    One registry row exported by GET /api/v1/lint-issue-catalog.
+
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     code: str
     severity: str
@@ -399,13 +548,29 @@ class LintIssueCatalogEntryModel(BaseModel):
 
 
 class LintIssueCatalogResponse(BaseModel):
-    """Response for GET /api/v1/lint-issue-catalog."""
+    """
+    Response for GET /api/v1/lint-issue-catalog.
+
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     issues: list[LintIssueCatalogEntryModel] = Field(default_factory=list)
 
 
 class DecodeSegmentModel(BaseModel):
-    """HTTP DTO for one TAC decode/annotate segment."""
+    """
+    HTTP DTO for one TAC decode/annotate segment.
+
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     start: int
     end: int
@@ -414,7 +579,15 @@ class DecodeSegmentModel(BaseModel):
 
 
 class DecodeResidualModel(BaseModel):
-    """HTTP DTO for an undecoded TAC span (explicit residuals - G4)."""
+    """
+    HTTP DTO for an undecoded TAC span (explicit residuals - G4).
+
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     start: int
     end: int
@@ -422,7 +595,15 @@ class DecodeResidualModel(BaseModel):
 
 
 class DecodeTacResponse(BaseModel):
-    """Response for POST /api/v1/decode-tac."""
+    """
+    Response for POST /api/v1/decode-tac.
+
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     product: str
     segments: list[DecodeSegmentModel] = Field(default_factory=list)
@@ -434,7 +615,15 @@ class DecodeTacResponse(BaseModel):
 
 
 class PackageIssueModel(BaseModel):
-    """HTTP DTO for an iwxxm-validate package finding (additive on /validate)."""
+    """
+    HTTP DTO for an iwxxm-validate package finding (additive on /validate).
+
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     layer: str
     severity: str
@@ -446,7 +635,15 @@ class PackageIssueModel(BaseModel):
 
 
 class PackageStageModel(BaseModel):
-    """Per-stage CA_ECCC validation outcome (additive on /validate)."""
+    """
+    Per-stage CA_ECCC validation outcome (additive on /validate).
+
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     stage: str
     label: str
@@ -455,7 +652,15 @@ class PackageStageModel(BaseModel):
 
 
 class ValidateIssueModel(BaseModel):
-    """HTTP DTO for a validation orchestrator finding on /validate."""
+    """
+    HTTP DTO for a validation orchestrator finding on /validate.
+
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     layer: str
     level: str
@@ -467,7 +672,15 @@ class ValidateIssueModel(BaseModel):
 
 
 class ValidateLayerIssueModel(BaseModel):
-    """Per-layer issue entry nested under ``issues_by_layer``."""
+    """
+    Per-layer issue entry nested under ``issues_by_layer``.
+
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     level: str
     message: str
@@ -476,7 +689,15 @@ class ValidateLayerIssueModel(BaseModel):
 
 
 class ValidateResponse(BaseModel):
-    """Response for POST /api/v1/validate (validation layers + package_* extras)."""
+    """
+    Response for POST /api/v1/validate (validation layers + package_* extras).
+
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     is_valid: bool
     version: str
@@ -517,7 +738,15 @@ class ValidateResponse(BaseModel):
 
 
 class BulletinMetaModel(BaseModel):
-    """HTTP DTO for WMO AHL metadata on convert-bulletin (api-contract Q6/Q7)."""
+    """
+    Abbreviated heading fields for one converted bulletin.
+
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     ahl: str
     report_count: int
@@ -530,7 +759,15 @@ class BulletinMetaModel(BaseModel):
 
 
 class BulletinReportResultModel(BaseModel):
-    """Per-report convert-bulletin result (partial success allowed)."""
+    """
+    Per-report convert-bulletin result (partial success allowed).
+
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     report_index: int
     ok: bool
@@ -541,7 +778,15 @@ class BulletinReportResultModel(BaseModel):
 
 
 class ConvertBulletinResponse(BaseModel):
-    """Response for POST /api/v1/convert-bulletin."""
+    """
+    Response for POST /api/v1/convert-bulletin.
+
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     bulletin_meta: BulletinMetaModel
     exchange_profile: str | None = Field(

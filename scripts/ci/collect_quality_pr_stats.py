@@ -81,6 +81,21 @@ def normalize_product(raw: str, *, pack_folder: str = "") -> str:
     return "METAR"
 
 
+def normalize_sticky_profile(raw: str) -> str:
+    """
+    Casefold sticky / QM profile tokens toward catalog lowercase ids.
+
+    Prefers ``tac_validate.lint_profile_ids.canonical_lint_profile_id`` when
+    the package is importable; otherwise strips and lowercases locally.
+    """
+    try:
+        from tac_validate.lint_profile_ids import canonical_lint_profile_id
+
+        return canonical_lint_profile_id(raw)
+    except Exception:
+        return (raw or "").strip().lower()
+
+
 def _bump(
     agg: dict[tuple[str, str], list[int]],
     product: str,
@@ -88,7 +103,7 @@ def _bump(
     bucket: str,
 ) -> None:
     idx = {"match": 0, "soft_diff": 1, "fail": 2, "skip": 3}[bucket]
-    key = (product.upper(), profile)
+    key = (product.upper(), normalize_sticky_profile(profile))
     if key not in agg:
         agg[key] = [0, 0, 0, 0]
     agg[key][idx] += 1

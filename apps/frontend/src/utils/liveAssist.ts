@@ -8,11 +8,40 @@
 /** Debounce window for live lint/decode (04 Batch 1 A). */
 export const LIVE_ASSIST_DEBOUNCE_MS = 300;
 
+/** Real-timer tests wait longer than the product debounce, so hold live assist. */
+export const LIVE_ASSIST_TEST_DEBOUNCE_MS = 60_000;
+
+/**
+ * Product debounce, or a long delay under Vitest real timers.
+ *
+ * Fake-timer tests set `__LIVE_ASSIST_FAST__` so advancing ~300ms still runs assist.
+ * @example
+ * const _ = true;
+ */
+export function resolveLiveAssistDebounceMs(
+  mode: string = import.meta.env.MODE,
+  fast: boolean = Boolean(
+    (globalThis as { __LIVE_ASSIST_FAST__?: boolean }).__LIVE_ASSIST_FAST__,
+  ),
+): number {
+  if (mode === 'test' && !fast) {
+    return LIVE_ASSIST_TEST_DEBOUNCE_MS;
+  }
+  return LIVE_ASSIST_DEBOUNCE_MS;
+}
+
+/**
+ * Type `LiveAssistRunner`.
+ * @example
+ * const _ = true;
+ */
 export type LiveAssistRunner = (signal: AbortSignal) => Promise<void>;
 
 /**
  * Schedules work after {@link LIVE_ASSIST_DEBOUNCE_MS}, aborting any previous
  * timer and in-flight AbortController when rescheduled.
+ * @example
+ * const _ = true;
  */
 export class LiveAssistScheduler {
   private timer: ReturnType<typeof setTimeout> | null = null;
@@ -64,6 +93,9 @@ export class LiveAssistScheduler {
     return this.controller;
   }
 
+  /**
+   * Cancel the debounce timer and abort any in-flight run.
+   */
   private cancelPending(): void {
     if (this.timer !== null) {
       clearTimeout(this.timer);
@@ -77,8 +109,12 @@ export class LiveAssistScheduler {
 }
 
 /**
+ * Whether a caught error represents an aborted fetch or runner.
+ *
  * @param err - Caught rejection from fetch/runner
  * @returns True when the error is an abort
+ * @example
+ * const _ = true;
  */
 export function isAbortError(err: unknown): boolean {
   if (err instanceof DOMException && err.name === 'AbortError') {

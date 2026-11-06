@@ -1,0 +1,293 @@
+rule_id: sigmet_a6_2_tc
+engine: convert
+cases:
+- bucket: happy
+  case_id: '01'
+  status: ready
+  tac: 'YUCC SIGMET 3 VALID 251600/252200 YUDO-
+
+    YUCC AMSWELL FIR TC GLORIA PSN N2706 W07306 CB OBS AT 1600Z WI 250NM OF TC CENTRE TOP FL500 NC
+
+    FCST AT 2200Z TC CENTRE PSN N2740 W07345='
+  expect:
+    encode_ok: true
+    require_xml: true
+  meta:
+    product: SIGMET
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: annex3_golden/sigmet_a6_2_tc.tac
+- bucket: happy
+  case_id: '02'
+  status: ready
+  tac: 'YUCC SIGMET 4 VALID 261600/262200 YUDO-
+
+    YUCC AMSWELL FIR TC GLORIA PSN N2706 W07306 CB OBS AT 1600Z WI 250NM OF TC CENTRE TOP FL500 NC
+
+    FCST AT 2200Z TC CENTRE PSN N2740 W07345='
+  expect:
+    encode_ok: true
+    require_xml: true
+  meta:
+    product: SIGMET
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 variant of sigmet_a6_2_tc
+- bucket: happy
+  case_id: '03'
+  status: ready
+  tac: 'YUCC SIGMET 3 VALID 271600/272200 YUDO-
+
+    YUCC AMSWELL FIR TC GLORIA PSN N2706 W07306 CB OBS AT 1600Z WI 250NM OF TC CENTRE TOP FL500 NC
+
+    FCST AT 2200Z TC CENTRE PSN N2740 W07345='
+  expect:
+    encode_ok: true
+    require_xml: true
+  meta:
+    product: SIGMET
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 variant of sigmet_a6_2_tc
+- bucket: happy
+  case_id: '04'
+  status: ready
+  tac: 'YUCC SIGMET 3 VALID 251600/252200 YUDO-
+
+    YUCC AMSWELL FIR TC GLORIA PSN N2706 W07306 CB OBS AT 1600Z WI 200NM OF TC CENTRE TOP FL500 NC
+
+    FCST AT 2200Z TC CENTRE PSN N2740 W07345='
+  expect:
+    encode_ok: true
+    require_xml: true
+  meta:
+    product: SIGMET
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 variant of sigmet_a6_2_tc
+- bucket: happy
+  case_id: '05'
+  status: ready
+  tac: 'YUCC SIGMET 3 VALID 251600/252200 YUDO-
+
+    YUCC AMSWELL FIR TC GLORIA PSN N2706 W07306 CB OBS AT 1600Z WI 250NM OF TC CENTRE TOP FL450 NC
+
+    FCST AT 2200Z TC CENTRE PSN N2740 W07345='
+  expect:
+    encode_ok: true
+    require_xml: true
+  meta:
+    product: SIGMET
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 variant of sigmet_a6_2_tc
+- bucket: sad
+  case_id: '01'
+  status: ready
+  tac: GARBAGE
+  expect:
+    encode_ok: false
+    codes:
+    - PARSE_ERROR
+  meta:
+    product: SIGMET
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 garbage tokens
+- bucket: sad
+  case_id: '02'
+  status: ready
+  tac: .
+  expect:
+    encode_ok: false
+    codes:
+    - PARSE_ERROR
+  meta:
+    product: SIGMET
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 dot-only TAC
+- bucket: sad
+  case_id: '03'
+  status: ready
+  tac: METAR YUDO 151800Z 13005MPS 9000 BKN020 17/16 Q1018=
+  expect:
+    encode_ok: false
+    codes:
+    - PARSE_ERROR
+  meta:
+    product: SIGMET
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 METAR body under product SIGMET
+- bucket: sad
+  case_id: '04'
+  status: ready
+  tac: NOTAM YUDO CLOSED=
+  expect:
+    encode_ok: false
+    codes:
+    - PARSE_ERROR
+  meta:
+    product: SIGMET
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 non-SIGMET product token
+- bucket: sad
+  case_id: '05'
+  status: ready
+  tac: TAF YUDO 151800Z 1600/1618 13005MPS 9000 BKN020=
+  expect:
+    encode_ok: false
+    codes:
+    - PARSE_ERROR
+  meta:
+    product: SIGMET
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 TAF body under product SIGMET
+- bucket: edge_pass
+  case_id: '01'
+  status: ready
+  tac: 'YUCC SIGMET 3 VALID 251600/252200 YUDO-
+
+    YUCC AMSWELL FIR TC GLORIA PSN N2706 W07306 CB OBS AT 1600Z WI 250NM OF TC CENTRE TOP FL500 NC
+
+    FCST AT 2200Z TC CENTRE PSN N2740 W07345'
+  expect:
+    encode_ok: true
+    require_xml: true
+  meta:
+    product: SIGMET
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 edge of sigmet_a6_2_tc
+- bucket: edge_pass
+  case_id: '02'
+  status: ready
+  tac: '  YUCC SIGMET 3 VALID 251600/252200 YUDO-
+
+    YUCC AMSWELL FIR TC GLORIA PSN N2706 W07306 CB OBS AT 1600Z WI 250NM OF TC CENTRE TOP FL500 NC
+
+    FCST AT 2200Z TC CENTRE PSN N2740 W07345=  '
+  expect:
+    encode_ok: true
+    require_xml: true
+  meta:
+    product: SIGMET
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 edge of sigmet_a6_2_tc
+- bucket: edge_pass
+  case_id: '03'
+  status: ready
+  tac: 'YUCC SIGMET 3 VALID 251600/252200 YUDO-
+
+    YUCC AMSWELL FIR TC GLORIA PSN N2706 W07306 CB OBS AT 1600Z WI 250NM OF TC CENTRE TOP FL500 NC
+
+    FCST AT 2200Z TC CENTRE PSN N2740 W07345 ='
+  expect:
+    encode_ok: true
+    require_xml: true
+  meta:
+    product: SIGMET
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 edge of sigmet_a6_2_tc
+- bucket: edge_pass
+  case_id: '04'
+  status: ready
+  tac: 'YUCC SIGMET 5 VALID 281600/282200 YUDO-
+
+    YUCC AMSWELL FIR TC GLORIA PSN N2706 W07306 CB OBS AT 1600Z WI 250NM OF TC CENTRE TOP FL500 NC
+
+    FCST AT 2200Z TC CENTRE PSN N2740 W07345='
+  expect:
+    encode_ok: true
+    require_xml: true
+  meta:
+    product: SIGMET
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 edge of sigmet_a6_2_tc
+- bucket: edge_pass
+  case_id: '05'
+  status: ready
+  tac: 'YUCC SIGMET 3 VALID 251600/252200 YUDO-
+
+    YUCC AMSWELL FIR TC GLORIA PSN N2710 W07310 CB OBS AT 1600Z WI 250NM OF TC CENTRE TOP FL500 NC
+
+    FCST AT 2200Z TC CENTRE PSN N2740 W07345='
+  expect:
+    encode_ok: true
+    require_xml: true
+  meta:
+    product: SIGMET
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 edge of sigmet_a6_2_tc
+- bucket: edge_fail
+  case_id: '01'
+  status: ready
+  tac: SPECI YUDO 151800Z 13005MPS 9000 BKN020 17/16 Q1018=
+  expect:
+    encode_ok: false
+    codes:
+    - PARSE_ERROR
+  meta:
+    product: SIGMET
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 SPECI body under product SIGMET
+- bucket: edge_fail
+  case_id: '02'
+  status: ready
+  tac: SPECI
+  expect:
+    encode_ok: false
+    codes:
+    - PARSE_ERROR
+  meta:
+    product: SIGMET
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 keyword only SPECI
+- bucket: edge_fail
+  case_id: '03'
+  status: ready
+  tac: ????
+  expect:
+    encode_ok: false
+    codes:
+    - PARSE_ERROR
+  meta:
+    product: SIGMET
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 symbols
+- bucket: edge_fail
+  case_id: '04'
+  status: ready
+  tac: AIRMET YUDO
+  expect:
+    encode_ok: false
+    codes:
+    - PARSE_ERROR
+  meta:
+    product: SIGMET
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 AIRMET keyword under product SIGMET
+- bucket: edge_fail
+  case_id: '05'
+  status: ready
+  tac: METAR
+  expect:
+    encode_ok: false
+    codes:
+    - PARSE_ERROR
+  meta:
+    product: SIGMET
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 keyword only METAR

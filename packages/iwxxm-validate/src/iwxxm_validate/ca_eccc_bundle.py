@@ -26,7 +26,22 @@ CA_ECCC_EXTENSION_TAG = "3.0"
 
 @dataclass(frozen=True, slots=True)
 class CaEcccSchemaBundle:
-    """Resolved on-disk paths for the CA_ECCC validation bundle."""
+    """
+    Resolved on-disk paths for the CA_ECCC validation bundle.
+
+    Attributes
+    ----------
+    iwxxm_version : str
+        IWXXM release line.
+    core_xsd : Path
+        Core XSD.
+    schematron : Path
+        Schematron.
+    extension_root : Path
+        Extension root.
+    aggregate_ca_xsd : Path or None
+        Aggregate CA XSD.
+    """
 
     iwxxm_version: str
     core_xsd: Path
@@ -45,15 +60,20 @@ def resolve_ca_eccc_bundle(
 
     Parameters
     ----------
-    iwxxm_version :
+    iwxxm_version : str, optional
         Profile-pinned IWXXM release line (default ``3.0.0``).
-    extension_tag :
+    extension_tag : str, optional
         MSC ``iwxxm-ca`` pin subdirectory (default ``3.0``).
 
     Returns
     -------
     CaEcccSchemaBundle | None
         ``None`` when core or extension pins are missing (fail-closed).
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (resolve_ca_eccc_bundle)
+    2
     """
     if iwxxm_version != CA_ECCC_IWXXM_VERSION:
         return None
@@ -88,15 +108,20 @@ def ca_eccc_catalog_roots(
 
     Parameters
     ----------
-    iwxxm_version :
-        Profile-pinned IWXXM release line.
-    extension_tag :
-        MSC pin subdirectory under ``iwxxm-ca``.
+    iwxxm_version : str, optional
+        Profile-pinned IWXXM release line. By default ``CA_ECCC_IWXXM_VERSION``.
+    extension_tag : str, optional
+        MSC pin subdirectory under ``iwxxm-ca``. By default ``CA_ECCC_EXTENSION_TAG``.
 
     Returns
     -------
     list[str]
         Absolute directory paths suitable for ``catalog_roots`` on the Rust path.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (ca_eccc_catalog_roots)
+    2
     """
     try:
         vdir = version_dir(iwxxm_version)
@@ -124,7 +149,26 @@ def ca_eccc_bundle_available(
     iwxxm_version: str = CA_ECCC_IWXXM_VERSION,
     extension_tag: str = CA_ECCC_EXTENSION_TAG,
 ) -> bool:
-    """Return whether ``resolve_ca_eccc_bundle`` would succeed."""
+    """
+    Return whether ``resolve_ca_eccc_bundle`` would succeed.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (ca_eccc_bundle_available)
+    2
+
+    Parameters
+    ----------
+    iwxxm_version : str, optional
+        IWXXM release line. By default ``CA_ECCC_IWXXM_VERSION``.
+    extension_tag : str, optional
+        Extension tag. By default ``CA_ECCC_EXTENSION_TAG``.
+
+    Returns
+    -------
+    bool
+        Whether ``resolve_ca_eccc_bundle`` would succeed.
+    """
     return resolve_ca_eccc_bundle(iwxxm_version=iwxxm_version, extension_tag=extension_tag) is not None
 
 

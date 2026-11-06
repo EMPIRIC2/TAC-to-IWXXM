@@ -32,7 +32,7 @@ docker run -p 8000:8000 \
   metar-backend:latest
 ```
 
-`SUPABASE_JWKS_URL` is optional — defaults to
+`SUPABASE_JWKS_URL` is optional and defaults to
 `{SUPABASE_URL}/auth/v1/.well-known/jwks.json` (JWKS-only verify; ADR-033).
 
 ### Dockerfile.schematron

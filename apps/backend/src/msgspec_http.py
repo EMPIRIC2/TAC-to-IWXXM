@@ -42,6 +42,11 @@ def msgspec_json_response(
     -------
     Response
         Starlette/FastAPI response whose body is msgspec-encoded JSON bytes.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (msgspec_json_response)
+    2
     """
     if isinstance(obj, BaseModel):
         payload: Any = obj.model_dump(mode="json")

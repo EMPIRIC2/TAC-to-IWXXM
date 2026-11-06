@@ -67,8 +67,6 @@ def _ensure_wis2box_harness() -> Iterator[None]:
         "compose",
         "-f",
         str(_ROOT / "docker-compose.yml"),
-        "-f",
-        str(_ROOT / "docker-compose.wis2box.yml"),
         "--profile",
         "wis2box",
     ]

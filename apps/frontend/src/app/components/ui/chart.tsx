@@ -8,6 +8,11 @@ import { cn } from './utils';
 // Format: { THEME_NAME: CSS_SELECTOR }
 const THEMES = { light: '', dark: '.dark' } as const;
 
+/**
+ * Type `ChartConfig`.
+ * @example
+ * const _ = true;
+ */
 export type ChartConfig = {
   [k in string]: {
     label?: React.ReactNode;
@@ -24,6 +29,9 @@ type ChartContextProps = {
 
 const ChartContext = React.createContext<ChartContextProps | null>(null);
 
+/**
+ * Function `useChart`.
+ */
 function useChart() {
   const context = React.useContext(ChartContext);
 
@@ -34,6 +42,9 @@ function useChart() {
   return context;
 }
 
+/**
+ * Function `ChartContainer`.
+ */
 function ChartContainer({
   id,
   className,
@@ -103,6 +114,9 @@ ${colorConfig
 
 const ChartTooltip = RechartsPrimitive.Tooltip;
 
+/**
+ * Function `ChartTooltipContent`.
+ */
 function ChartTooltipContent({
   active,
   payload,
@@ -241,6 +255,9 @@ function ChartTooltipContent({
 
 const ChartLegend = RechartsPrimitive.Legend;
 
+/**
+ * Function `ChartLegendContent`.
+ */
 function ChartLegendContent({
   className,
   hideIcon = false,
@@ -296,6 +313,9 @@ function ChartLegendContent({
 }
 
 // Helper to extract item config from a payload.
+/**
+ * Function `getPayloadConfigFromPayload`.
+ */
 function getPayloadConfigFromPayload(
   config: ChartConfig,
   payload: unknown,

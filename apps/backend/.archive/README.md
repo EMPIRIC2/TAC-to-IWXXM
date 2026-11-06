@@ -81,7 +81,7 @@ Archived files are typically removed after:
 
 Current archived files have been in archive since **Jan 28, 2026** and can be removed after **Apr 28, 2026** if no longer needed.
 
-## Best Practices
+## Practices
 
 1. **Don't import from .archive/** - Use current implementations
 2. **Don't modify archived files** - They're frozen as reference

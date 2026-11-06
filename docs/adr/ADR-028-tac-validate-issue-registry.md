@@ -32,7 +32,7 @@ that can grow without renaming public codes casually.
    severity for a published code is an ADR/changelog decision.
 5. **CI**: Unknown codes emitted by rules fail tests. Registry row without a covering fixture
    may be marked `deferred` **only** for non–R1–R8 / thin non-METAR-SPECI product rows this
-   cycle (E11-23/32). **R1–R8 METAR/SPECI themes must ship green fixtures** — no silent deferral.
+   cycle (E11-23/32). **R1–R8 METAR/SPECI themes must ship green fixtures**; no silent deferral.
 6. **HTTP catalog (E11-31)**: Additive `GET /api/v1/lint-issue-catalog` exports the registry for
    FE tooltips; `POST /lint-tac` wire shape unchanged.
 
@@ -52,7 +52,7 @@ that can grow without renaming public codes casually.
 - Frontend displays `code` + `severity` from lint-tac; catalog panel/tooltips use
   `GET /api/v1/lint-issue-catalog` (E11-31) without changing lint-tac fields.
 - Coverage-matrix and research catalog (EV-011) cite registry codes for METAR/SPECI **R1–R8**
-  themes (HARD — E11-23/28).
+  themes (HARD; E11-23/28).
 
 ## Amend — EV-validation-policy-layers / ADR-046 (2026-09-20)
 

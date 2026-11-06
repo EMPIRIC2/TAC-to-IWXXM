@@ -143,6 +143,69 @@ cases:
 
 
 @pytest.mark.unit
+def test_normalize_sticky_profile_maps_uppercase_to_catalog_case() -> None:
+    """G-inherit-6 — sticky/QM profile ids normalize to catalog lowercase."""
+    mod = _load_module()
+    assert mod.normalize_sticky_profile("CA_MSC_SIGMET") == "ca_msc_sigmet"
+    assert mod.normalize_sticky_profile("US_NWS_VONA") == "us_nws_vona"
+    assert mod.normalize_sticky_profile("US_NWS_G_AIRMET") == "us_nws_g_airmet"
+    assert (
+        mod.normalize_sticky_profile("US_NWS_CONVECTIVE_SIGMET")
+        == "us_nws_convective_sigmet"
+    )
+    assert mod.normalize_sticky_profile("annex3") == "annex3"
+    assert mod.normalize_sticky_profile("  IwXxM_Us ") == "iwxxm_us"
+
+
+@pytest.mark.unit
+def test_normalize_sticky_profile_fallback_when_canonical_raises(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Cover local lowercasing when lint_profile_ids helper is unavailable."""
+    mod = _load_module()
+
+    def _boom(_raw: str) -> str:
+        raise RuntimeError("canonical unavailable")
+
+    monkeypatch.setattr(
+        "tac_validate.lint_profile_ids.canonical_lint_profile_id",
+        _boom,
+    )
+    assert mod.normalize_sticky_profile("  IwXxM_Us ") == "iwxxm_us"
+    assert mod.normalize_sticky_profile(None) == ""  # type: ignore[arg-type]
+
+
+@pytest.mark.unit
+def test_collect_quality_matrix_inventory_normalizes_profile_case(
+    tmp_path: Path,
+) -> None:
+    """G-inherit-6 — inventory rows key profiles as catalog lowercase."""
+    mod = _load_module()
+    qm = tmp_path / "quality_matrices"
+    td = qm / "testdata" / "lint" / "sigmet"
+    td.mkdir(parents=True)
+    (td / "CA_MSC_SIGMET.yml").write_text(
+        """
+rule_id: CA_MSC_SIGMET
+engine: lint
+cases:
+- bucket: happy
+  case_id: "01"
+  status: ready
+  tac: "WSCA31 CWAO 010000="
+  meta:
+    product: SIGMET
+    profile: CA_MSC_SIGMET
+""",
+        encoding="utf-8",
+    )
+    counts = mod.collect_quality_matrix_inventory(qm)
+    assert ("SIGMET", "ca_msc_sigmet") in counts
+    assert ("SIGMET", "CA_MSC_SIGMET") not in counts
+    assert counts[("SIGMET", "ca_msc_sigmet")][0] == 1
+
+
+@pytest.mark.unit
 def test_normalize_product_junk_rolls_to_pack_parent() -> None:
     """TC-EV970-STICKY-001 — opaque sad-fixture products map to pack parent."""
     mod = _load_module()

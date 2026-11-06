@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-08T00:19:33Z",
+  "generated_at": "2026-10-29T21:54:26Z",
   "iwxxm_pin": "2025-2",
   "summaries": [
     {
@@ -22,13 +22,13 @@
       "validate_fail": 0,
       "deferred_gaps": 1,
       "pair_examples": 1,
-      "unpaired_examples": 1
+      "unpaired_examples": 0
     },
     {
       "product": "sigmet",
       "match_pass": 1,
       "match_fail": 4,
-      "residual_nonempty": 1,
+      "residual_nonempty": 0,
       "lint_fail": 0,
       "validate_fail": 0,
       "deferred_gaps": 0,
@@ -55,18 +55,18 @@
       "validate_fail": 0,
       "deferred_gaps": 2,
       "pair_examples": 1,
-      "unpaired_examples": 2
+      "unpaired_examples": 0
     },
     {
       "product": "taf",
-      "match_pass": 2,
-      "match_fail": 0,
+      "match_pass": 1,
+      "match_fail": 1,
       "residual_nonempty": 0,
       "lint_fail": 0,
       "validate_fail": 0,
       "deferred_gaps": 1,
       "pair_examples": 2,
-      "unpaired_examples": 1
+      "unpaired_examples": 0
     },
     {
       "product": "tca",
@@ -129,7 +129,7 @@
       "stem": "taf-A5-1",
       "product": "taf",
       "tier": "wmoPass",
-      "match_status": "equal",
+      "match_status": "unequal",
       "residual_count": 0,
       "lint_error_count": 0,
       "validate_error_count": 0,
@@ -196,7 +196,7 @@
       "product": "sigmet",
       "tier": "wmoPass",
       "match_status": "equal",
-      "residual_count": 4,
+      "residual_count": 0,
       "lint_error_count": 0,
       "validate_error_count": 0,
       "deferred": false,
@@ -317,7 +317,7 @@
         {
           "severity": "info",
           "code": "RVR_PRESENT",
-          "message": "METAR RVR group 'R12/1000U' present - research R8",
+          "message": "METAR RVR group 'R12/1000U' present",
           "location": "modifier",
           "start": 33,
           "end": 42
@@ -325,7 +325,7 @@
         {
           "severity": "info",
           "code": "NSW_PRESENT",
-          "message": "METAR NSW present - research T3 / S1",
+          "message": "METAR NSW present",
           "location": "modifier",
           "start": 114,
           "end": 117
@@ -347,7 +347,7 @@
         {
           "severity": "info",
           "code": "CLOUD_CB_OR_TCU",
-          "message": "SPECI cloud group 'BKN005CB' includes convective type - research R4",
+          "message": "SPECI cloud group 'BKN005CB' includes convective type",
           "location": "cloud",
           "start": 48,
           "end": 56
@@ -355,7 +355,7 @@
         {
           "severity": "info",
           "code": "TEMPO_PRESENT",
-          "message": "SPECI TEMPO trend present - research R8",
+          "message": "SPECI TEMPO trend present",
           "location": "modifier",
           "start": 69,
           "end": 74
@@ -363,7 +363,7 @@
         {
           "severity": "info",
           "code": "WIND_VRB_OR_GUST",
-          "message": "SPECI wind '05025G37KT' uses VRB and/or gust - research R8",
+          "message": "SPECI wind '05025G37KT' uses VRB and/or gust",
           "location": "modifier",
           "start": 19,
           "end": 29
@@ -371,7 +371,7 @@
         {
           "severity": "info",
           "code": "NSC_PRESENT",
-          "message": "SPECI NSC present - research T3 / S1",
+          "message": "SPECI NSC present",
           "location": "modifier",
           "start": 109,
           "end": 112
@@ -379,7 +379,7 @@
         {
           "severity": "info",
           "code": "NSW_PRESENT",
-          "message": "SPECI NSW present - research T3 / S1",
+          "message": "SPECI NSW present",
           "location": "modifier",
           "start": 105,
           "end": 108
@@ -394,14 +394,14 @@
       "deferred": false,
       "tac": "TAF YUDO 151800Z 1600/1618 13005MPS 9000 BKN020 BECMG 1606/1608 SCT015CB BKN020 TEMPO 1608/1612 17006G12MPS 1000 TSRA SCT010CB BKN020 FM161230 15004MPS 9999 BKN020=\n",
       "official_xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<iwxxm:TAF \n    xmlns:iwxxm=\"http://icao.int/iwxxm/2025-2\" \n    xmlns:gml=\"http://www.opengis.net/gml/3.2\"\n    xmlns:xlink=\"http://www.w3.org/1999/xlink\" \n    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n    xmlns:aixm=\"http://www.aixm.aero/schema/5.1.1\"\n    xsi:schemaLocation=\"http://icao.int/iwxxm/2025-2 http://schemas.wmo.int/iwxxm/2025-2/iwxxm.xsd\"\n    gml:id=\"uuid.d6a85870-f32e-4ea8-8502-c7d9be7e0144\"\n    reportStatus=\"NORMAL\"\n    permissibleUsage=\"OPERATIONAL\">\n\n    <iwxxm:issueTime>\n        <gml:TimeInstant gml:id=\"uuid.0c02ab83-22e8-4a66-b115-35544e7078f1\">\n            <gml:timePosition>2012-08-15T18:00:00Z</gml:timePosition>\n        </gml:TimeInstant>\n    </iwxxm:issueTime>\n\n    <iwxxm:aerodrome>\n        <aixm:AirportHeliport gml:id=\"uuid.a5a157ad-5b93-443d-a8e6-8324816ccb7e\">\n            <aixm:timeSlice>\n                <aixm:AirportHeliportTimeSlice gml:id=\"uuid.9cf64bc2-0aca-452e-a330-9f6ce9f533e4\">\n                    <gml:validTime/>\n                    <aixm:interpretation>SNAPSHOT</aixm:interpretation>\n                    <aixm:designator>YUDO</aixm:designator>\n                    <aixm:name>DONLON/INTERNATIONAL</aixm:name>\n                    <aixm:locationIndicatorICAO>YUDO</aixm:locationIndicatorICAO>\n                    <aixm:ARP>\n                        <aixm:ElevatedPoint gml:id=\"uuid.4f5ce1f8-ae4c-4dea-99c7-6bc15ca6b004\" srsDimension=\"2\" axisLabels=\"Lat Long\" srsName=\"http://www.opengis.net/def/crs/EPSG/0/4326\">\n                            <gml:pos>12.34 -12.34</gml:pos>\n                            <aixm:elevation uom=\"M\">12</aixm:elevation>\n                            <aixm:verticalDatum>EGM_96</aixm:verticalDatum>\n                        </aixm:ElevatedPoint>\n                    </aixm:ARP>\n                </aixm:AirportHeliportTimeSlice>\n            </aixm:timeSlice>\n        </aixm:AirportHeliport>\n    </iwxxm:aerodrome>\n\n    <iwxxm:validPeriod>\n        <gml:TimePeriod gml:id=\"uuid.ed5d465f-51fb-4ecc-834a-2ee26bb1196f\">\n            <gml:beginPosition>2012-08-16T00:00:00Z</gml:beginPosition>\n            <gml:endPosition>2012-08-16T18:00:00Z</gml:endPosition>\n        </gml:TimePeriod>\n    </iwxxm:validPeriod>\n\n    <iwxxm:baseForecast>\n        <iwxxm:MeteorologicalAerodromeForecast gml:id=\"uuid.13048235-8f8a-4587-a6be-e8ce99f4525c\" cloudAndVisibilityOK=\"false\">\n            <iwxxm:phenomenonTime xlink:href=\"#uuid.ed5d465f-51fb-4ecc-834a-2ee26bb1196f\"/>\n            <iwxxm:prevailingVisibility uom=\"m\">9000</iwxxm:prevailingVisibility>\n            <iwxxm:surfaceWind>\n                <iwxxm:AerodromeSurfaceWindForecast variableWindDirection=\"false\">\n                    <iwxxm:meanWindDirection uom=\"deg\">130</iwxxm:meanWindDirection>\n                    <iwxxm:meanWindSpeed uom=\"m/s\">5.0</iwxxm:meanWindSpeed>\n                </iwxxm:AerodromeSurfaceWindForecast>\n            </iwxxm:surfaceWind>\n            <iwxxm:cloud>\n                <iwxxm:AerodromeCloudForecast gml:id=\"uuid.cbd88f13-e806-4ab9-857f-b82a66cc2854\">\n                    <iwxxm:layer>\n                        <iwxxm:CloudLayer>\n                            <iwxxm:amount xlink:href=\"http://codes.wmo.int/49-2/CloudAmountReportedAtAerodrome/BKN\"/>\n                            <iwxxm:base uom=\"[ft_i]\">2000</iwxxm:base>\n                        </iwxxm:CloudLayer>\n                    </iwxxm:layer>\n                </iwxxm:AerodromeCloudForecast>\n            </iwxxm:cloud>\n        </iwxxm:MeteorologicalAerodromeForecast>\n    </iwxxm:baseForecast>\n\n    <iwxxm:changeForecast>\n        <iwxxm:MeteorologicalAerodromeForecast gml:id=\"uuid.fe2635c8-3994-4423-b79f-123593fa2b55\" changeIndicator=\"BECOMING\" cloudAndVisibilityOK=\"false\">\n            <iwxxm:phenomenonTime>\n                <gml:TimePeriod gml:id=\"uuid.921ff3f9-e89e-402e-acd1-82c8600f9929\">\n                    <gml:beginPosition>2012-08-16T06:00:00Z</gml:beginPosition>\n                    <gml:endPosition>2012-08-16T08:00:00Z</gml:endPosition>\n                </gml:TimePeriod>\n            </iwxxm:phenomenonTime>\n            <iwxxm:cloud>\n                <iwxxm:AerodromeCloudForecast gml:id=\"uuid.235edc5d-213f-490b-8fdb-755032480849\">\n                    <iwxxm:layer>\n                        <iwxxm:CloudLayer>\n                            <iwxxm:amount xlink:href=\"http://codes.wmo.int/49-2/CloudAmountReportedAtAerodrome/SCT\"/>\n                            <iwxxm:base uom=\"[ft_i]\">1500</iwxxm:base>\n                            <iwxxm:cloudType xlink:href=\"http://codes.wmo.int/49-2/SigConvectiveCloudType/CB\"/>\n                        </iwxxm:CloudLayer>\n                    </iwxxm:layer>\n                    <iwxxm:layer>\n                        <iwxxm:CloudLayer>\n                            <iwxxm:amount xlink:href=\"http://codes.wmo.int/49-2/CloudAmountReportedAtAerodrome/BKN\"/>\n                            <iwxxm:base uom=\"[ft_i]\">2000</iwxxm:base>\n                        </iwxxm:CloudLayer>\n                    </iwxxm:layer>\n                </iwxxm:AerodromeCloudForecast>\n            </iwxxm:cloud>\n        </iwxxm:MeteorologicalAerodromeForecast>\n    </iwxxm:changeForecast>\n\n    <iwxxm:changeForecast>\n        <iwxxm:MeteorologicalAerodromeForecast gml:id=\"uuid.8985ba4e-f6f0-4dc2-8dd7-2cbf86a64056\" changeIndicator=\"TEMPORARY_FLUCTUATIONS\" cloudAndVisibilityOK=\"false\">\n            <iwxxm:phenomenonTime>\n                <gml:TimePeriod gml:id=\"uuid.5bdac885-79bf-4ebe-9693-cd0a4b2b91d0\">\n                    <gml:beginPosition>2012-08-16T08:00:00Z</gml:beginPosition>\n                    <gml:endPosition>2012-08-16T12:00:00Z</gml:endPosition>\n                </gml:TimePeriod>\n            </iwxxm:phenomenonTime>\n            <iwxxm:prevailingVisibility uom=\"m\">1000</iwxxm:prevailingVisibility>\n            <iwxxm:surfaceWind>\n                <iwxxm:AerodromeSurfaceWindForecast variableWindDirection=\"false\">\n                    <iwxxm:meanWindDirection uom=\"deg\">170</iwxxm:meanWindDirection>\n                    <iwxxm:meanWindSpeed uom=\"m/s\">6</iwxxm:meanWindSpeed>\n                    <iwxxm:windGustSpeed uom=\"m/s\">12</iwxxm:windGustSpeed>\n                </iwxxm:AerodromeSurfaceWindForecast>\n            </iwxxm:surfaceWind>\n            <iwxxm:weather xlink:href=\"http://codes.wmo.int/306/4678/TSRA\"/>\n            <iwxxm:cloud>\n                <iwxxm:AerodromeCloudForecast gml:id=\"uuid.5d76e06c-220d-4491-83e8-439108891615\">\n                    <iwxxm:layer>\n                        <iwxxm:CloudLayer>\n                            <iwxxm:amount xlink:href=\"http://codes.wmo.int/49-2/CloudAmountReportedAtAerodrome/SCT\"/>\n                            <iwxxm:base uom=\"[ft_i]\">1000</iwxxm:base>\n                            <iwxxm:cloudType xlink:href=\"http://codes.wmo.int/49-2/SigConvectiveCloudType/CB\"/>\n                        </iwxxm:CloudLayer>\n                    </iwxxm:layer>\n                    <iwxxm:layer>\n                        <iwxxm:CloudLayer>\n                            <iwxxm:amount xlink:href=\"http://codes.wmo.int/49-2/CloudAmountReportedAtAerodrome/BKN\"/>\n                            <iwxxm:base uom=\"[ft_i]\">2000</iwxxm:base>\n                        </iwxxm:CloudLayer>\n                    </iwxxm:layer>\n                </iwxxm:AerodromeCloudForecast>\n            </iwxxm:cloud>\n        </iwxxm:MeteorologicalAerodromeForecast>\n    </iwxxm:changeForecast>\n\n    <iwxxm:changeForecast>\n        <iwxxm:MeteorologicalAerodromeForecast gml:id=\"uuid.aeadfb00-4cfa-46b5-af21-1e79e4b6b1b5\" changeIndicator=\"FROM\" cloudAndVisibilityOK=\"false\">\n            <iwxxm:phenomenonTime>\n                <gml:TimePeriod gml:id=\"uuid.06f40788-ea21-471e-8c17-c0ef5b581c98\">\n                    <gml:beginPosition>2012-08-16T12:30:00Z</gml:beginPosition>\n                    <gml:endPosition>2012-08-16T18:00:00Z</gml:endPosition>\n                </gml:TimePeriod>\n            </iwxxm:phenomenonTime>\n            <iwxxm:prevailingVisibility uom=\"m\">10000</iwxxm:prevailingVisibility>\n            <iwxxm:prevailingVisibilityOperator>ABOVE</iwxxm:prevailingVisibilityOperator>\n            <iwxxm:surfaceWind>\n                <iwxxm:AerodromeSurfaceWindForecast variableWindDirection=\"false\">\n                    <iwxxm:meanWindDirection uom=\"deg\">150</iwxxm:meanWindDirection>\n                    <iwxxm:meanWindSpeed uom=\"m/s\">4</iwxxm:meanWindSpeed>\n                </iwxxm:AerodromeSurfaceWindForecast>\n            </iwxxm:surfaceWind>\n            <iwxxm:cloud>\n                <iwxxm:AerodromeCloudForecast gml:id=\"uuid.ad9464f9-82de-49bd-8770-596b774591e5\">\n                    <iwxxm:layer>\n                        <iwxxm:CloudLayer>\n                            <iwxxm:amount xlink:href=\"http://codes.wmo.int/49-2/CloudAmountReportedAtAerodrome/BKN\"/>\n                            <iwxxm:base uom=\"[ft_i]\">2000</iwxxm:base>\n                        </iwxxm:CloudLayer>\n                    </iwxxm:layer>\n                </iwxxm:AerodromeCloudForecast>\n            </iwxxm:cloud>\n        </iwxxm:MeteorologicalAerodromeForecast>\n    </iwxxm:changeForecast>\n\n</iwxxm:TAF>\n",
-      "converted_xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<iwxxm:TAF xmlns:iwxxm=\"http://icao.int/iwxxm/2025-2\"\n    xmlns:xlink=\"http://www.w3.org/1999/xlink\"\n    xmlns:gml=\"http://www.opengis.net/gml/3.2\"\n    xmlns:aixm=\"http://www.aixm.aero/schema/5.1.1\"\n    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n    gml:id=\"taf.basic.yudo\"\n    reportStatus=\"NORMAL\"\n    permissibleUsage=\"OPERATIONAL\">\n  <iwxxm:issueTime>\n    <gml:TimeInstant gml:id=\"t.issue\">\n      <gml:timePosition>2012-08-15T18:00:00Z</gml:timePosition>\n    </gml:TimeInstant>\n  </iwxxm:issueTime>\n  <iwxxm:aerodrome>\n    <aixm:AirportHeliport gml:id=\"ad.yudo\">\n      <aixm:timeSlice>\n        <aixm:AirportHeliportTimeSlice gml:id=\"ad.ts.yudo\">\n          <gml:validTime/>\n          <aixm:interpretation>SNAPSHOT</aixm:interpretation>\n          <aixm:designator>YUDO</aixm:designator>\n          <aixm:name>DONLON/INTERNATIONAL</aixm:name>\n          <aixm:locationIndicatorICAO>YUDO</aixm:locationIndicatorICAO>\n          <aixm:ARP>\n            <aixm:ElevatedPoint gml:id=\"arp.yudo\" srsDimension=\"2\" axisLabels=\"Lat Long\" srsName=\"http://www.opengis.net/def/crs/EPSG/0/4326\">\n              <gml:pos>12.34 -12.34</gml:pos>\n              <aixm:elevation uom=\"M\">12</aixm:elevation>\n              <aixm:verticalDatum>EGM_96</aixm:verticalDatum>\n            </aixm:ElevatedPoint>\n          </aixm:ARP>\n        </aixm:AirportHeliportTimeSlice>\n      </aixm:timeSlice>\n    </aixm:AirportHeliport>\n  </iwxxm:aerodrome>\n  <iwxxm:validPeriod>\n    <gml:TimePeriod gml:id=\"t.valid\">\n      <gml:beginPosition>2012-08-16T00:00:00Z</gml:beginPosition>\n      <gml:endPosition>2012-08-16T18:00:00Z</gml:endPosition>\n    </gml:TimePeriod>\n  </iwxxm:validPeriod>\n  <iwxxm:baseForecast>\n    <iwxxm:MeteorologicalAerodromeForecast gml:id=\"fcst.base.yudo\" cloudAndVisibilityOK=\"false\">\n      <iwxxm:phenomenonTime xlink:href=\"#uuid.00000000-0000-4000-8000-000000000001\"/>\n      <iwxxm:prevailingVisibility uom=\"m\">9000</iwxxm:prevailingVisibility>\n      <iwxxm:surfaceWind>\n        <iwxxm:AerodromeSurfaceWindForecast variableWindDirection=\"false\">\n          <iwxxm:meanWindDirection uom=\"deg\">130</iwxxm:meanWindDirection>\n          <iwxxm:meanWindSpeed uom=\"m/s\">5.0</iwxxm:meanWindSpeed>\n        </iwxxm:AerodromeSurfaceWindForecast>\n      </iwxxm:surfaceWind>\n      <iwxxm:cloud>\n        <iwxxm:AerodromeCloudForecast gml:id=\"cloud.base.yudo\">\n          <iwxxm:layer>\n            <iwxxm:CloudLayer>\n              <iwxxm:amount xlink:href=\"http://codes.wmo.int/49-2/CloudAmountReportedAtAerodrome/BKN\"/>\n              <iwxxm:base uom=\"[ft_i]\">2000</iwxxm:base>\n            </iwxxm:CloudLayer>\n          </iwxxm:layer>\n        </iwxxm:AerodromeCloudForecast>\n      </iwxxm:cloud>\n    </iwxxm:MeteorologicalAerodromeForecast>\n  </iwxxm:baseForecast>\n  <iwxxm:changeForecast>\n    <iwxxm:MeteorologicalAerodromeForecast gml:id=\"fcst.chg.1.yudo\" changeIndicator=\"BECOMING\" cloudAndVisibilityOK=\"false\">\n      <iwxxm:phenomenonTime>\n        <gml:TimePeriod gml:id=\"t.chg.1\">\n          <gml:beginPosition>2012-08-16T06:00:00Z</gml:beginPosition>\n          <gml:endPosition>2012-08-16T08:00:00Z</gml:endPosition>\n        </gml:TimePeriod>\n      </iwxxm:phenomenonTime>\n      <iwxxm:cloud>\n        <iwxxm:AerodromeCloudForecast gml:id=\"cloud.chg.1.yudo\">\n          <iwxxm:layer>\n            <iwxxm:CloudLayer>\n              <iwxxm:amount xlink:href=\"http://codes.wmo.int/49-2/CloudAmountReportedAtAerodrome/SCT\"/>\n              <iwxxm:base uom=\"[ft_i]\">1500</iwxxm:base>\n              <iwxxm:cloudType xlink:href=\"http://codes.wmo.int/49-2/SigConvectiveCloudType/CB\"/>\n            </iwxxm:CloudLayer>\n          </iwxxm:layer>\n          <iwxxm:layer>\n            <iwxxm:CloudLayer>\n              <iwxxm:amount xlink:href=\"http://codes.wmo.int/49-2/CloudAmountReportedAtAerodrome/BKN\"/>\n              <iwxxm:base uom=\"[ft_i]\">2000</iwxxm:base>\n            </iwxxm:CloudLayer>\n          </iwxxm:layer>\n        </iwxxm:AerodromeCloudForecast>\n      </iwxxm:cloud>\n    </iwxxm:MeteorologicalAerodromeForecast>\n  </iwxxm:changeForecast>\n  <iwxxm:changeForecast>\n    <iwxxm:MeteorologicalAerodromeForecast gml:id=\"fcst.chg.2.yudo\" changeIndicator=\"TEMPORARY_FLUCTUATIONS\" cloudAndVisibilityOK=\"false\">\n      <iwxxm:phenomenonTime>\n        <gml:TimePeriod gml:id=\"t.chg.2\">\n          <gml:beginPosition>2012-08-16T08:00:00Z</gml:beginPosition>\n          <gml:endPosition>2012-08-16T12:00:00Z</gml:endPosition>\n        </gml:TimePeriod>\n      </iwxxm:phenomenonTime>\n      <iwxxm:prevailingVisibility uom=\"m\">1000</iwxxm:prevailingVisibility>\n      <iwxxm:surfaceWind>\n        <iwxxm:AerodromeSurfaceWindForecast variableWindDirection=\"false\">\n          <iwxxm:meanWindDirection uom=\"deg\">170</iwxxm:meanWindDirection>\n          <iwxxm:meanWindSpeed uom=\"m/s\">6</iwxxm:meanWindSpeed>\n          <iwxxm:windGustSpeed uom=\"m/s\">12</iwxxm:windGustSpeed>\n        </iwxxm:AerodromeSurfaceWindForecast>\n      </iwxxm:surfaceWind>\n      <iwxxm:weather xlink:href=\"http://codes.wmo.int/306/4678/TSRA\"/>\n      <iwxxm:cloud>\n        <iwxxm:AerodromeCloudForecast gml:id=\"cloud.chg.2.yudo\">\n          <iwxxm:layer>\n            <iwxxm:CloudLayer>\n              <iwxxm:amount xlink:href=\"http://codes.wmo.int/49-2/CloudAmountReportedAtAerodrome/SCT\"/>\n              <iwxxm:base uom=\"[ft_i]\">1000</iwxxm:base>\n              <iwxxm:cloudType xlink:href=\"http://codes.wmo.int/49-2/SigConvectiveCloudType/CB\"/>\n            </iwxxm:CloudLayer>\n          </iwxxm:layer>\n          <iwxxm:layer>\n            <iwxxm:CloudLayer>\n              <iwxxm:amount xlink:href=\"http://codes.wmo.int/49-2/CloudAmountReportedAtAerodrome/BKN\"/>\n              <iwxxm:base uom=\"[ft_i]\">2000</iwxxm:base>\n            </iwxxm:CloudLayer>\n          </iwxxm:layer>\n        </iwxxm:AerodromeCloudForecast>\n      </iwxxm:cloud>\n    </iwxxm:MeteorologicalAerodromeForecast>\n  </iwxxm:changeForecast>\n  <iwxxm:changeForecast>\n    <iwxxm:MeteorologicalAerodromeForecast gml:id=\"fcst.chg.3.yudo\" changeIndicator=\"FROM\" cloudAndVisibilityOK=\"false\">\n      <iwxxm:phenomenonTime>\n        <gml:TimePeriod gml:id=\"t.chg.3\">\n          <gml:beginPosition>2012-08-16T12:30:00Z</gml:beginPosition>\n          <gml:endPosition>2012-08-16T18:00:00Z</gml:endPosition>\n        </gml:TimePeriod>\n      </iwxxm:phenomenonTime>\n      <iwxxm:prevailingVisibility uom=\"m\">10000</iwxxm:prevailingVisibility>\n      <iwxxm:prevailingVisibilityOperator>ABOVE</iwxxm:prevailingVisibilityOperator>\n      <iwxxm:surfaceWind>\n        <iwxxm:AerodromeSurfaceWindForecast variableWindDirection=\"false\">\n          <iwxxm:meanWindDirection uom=\"deg\">150</iwxxm:meanWindDirection>\n          <iwxxm:meanWindSpeed uom=\"m/s\">4</iwxxm:meanWindSpeed>\n        </iwxxm:AerodromeSurfaceWindForecast>\n      </iwxxm:surfaceWind>\n      <iwxxm:cloud>\n        <iwxxm:AerodromeCloudForecast gml:id=\"cloud.chg.3.yudo\">\n          <iwxxm:layer>\n            <iwxxm:CloudLayer>\n              <iwxxm:amount xlink:href=\"http://codes.wmo.int/49-2/CloudAmountReportedAtAerodrome/BKN\"/>\n              <iwxxm:base uom=\"[ft_i]\">2000</iwxxm:base>\n            </iwxxm:CloudLayer>\n          </iwxxm:layer>\n        </iwxxm:AerodromeCloudForecast>\n      </iwxxm:cloud>\n    </iwxxm:MeteorologicalAerodromeForecast>\n  </iwxxm:changeForecast>\n</iwxxm:TAF>\n",
-      "match_status": "equal",
+      "converted_xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<iwxxm:TAF xmlns:iwxxm=\"http://icao.int/iwxxm/2025-2\"\n    xmlns:xlink=\"http://www.w3.org/1999/xlink\"\n    xmlns:gml=\"http://www.opengis.net/gml/3.2\"\n    xmlns:aixm=\"http://www.aixm.aero/schema/5.1.1\"\n    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n    gml:id=\"taf.basic.yudo\"\n    reportStatus=\"NORMAL\"\n    permissibleUsage=\"OPERATIONAL\">\n  <iwxxm:issueTime>\n    <gml:TimeInstant gml:id=\"t.issue\">\n      <gml:timePosition>2012-08-15T18:00:00Z</gml:timePosition>\n    </gml:TimeInstant>\n  </iwxxm:issueTime>\n  <iwxxm:aerodrome>\n    <aixm:AirportHeliport gml:id=\"ad.yudo\">\n      <aixm:timeSlice>\n        <aixm:AirportHeliportTimeSlice gml:id=\"ad.ts.yudo\">\n          <gml:validTime/>\n          <aixm:interpretation>SNAPSHOT</aixm:interpretation>\n          <aixm:designator>YUDO</aixm:designator>\n          <aixm:name>DONLON/INTERNATIONAL</aixm:name>\n          <aixm:locationIndicatorICAO>YUDO</aixm:locationIndicatorICAO>\n          <aixm:ARP>\n            <aixm:ElevatedPoint gml:id=\"arp.yudo\" srsDimension=\"2\" axisLabels=\"Lat Long\" srsName=\"http://www.opengis.net/def/crs/EPSG/0/4326\">\n              <gml:pos>12.34 -12.34</gml:pos>\n              <aixm:elevation uom=\"M\">12</aixm:elevation>\n              <aixm:verticalDatum>EGM_96</aixm:verticalDatum>\n            </aixm:ElevatedPoint>\n          </aixm:ARP>\n        </aixm:AirportHeliportTimeSlice>\n      </aixm:timeSlice>\n    </aixm:AirportHeliport>\n  </iwxxm:aerodrome>\n  <iwxxm:validPeriod>\n    <gml:TimePeriod gml:id=\"t.valid\">\n      <gml:beginPosition>2012-08-16T00:00:00Z</gml:beginPosition>\n      <gml:endPosition>2012-08-16T18:00:00Z</gml:endPosition>\n    </gml:TimePeriod>\n  </iwxxm:validPeriod>\n  <iwxxm:baseForecast>\n    <iwxxm:MeteorologicalAerodromeForecast gml:id=\"fcst.base.yudo\" cloudAndVisibilityOK=\"false\">\n      <iwxxm:phenomenonTime xlink:href=\"#t.valid\"/>\n      <iwxxm:prevailingVisibility uom=\"m\">9000</iwxxm:prevailingVisibility>\n      <iwxxm:surfaceWind>\n        <iwxxm:AerodromeSurfaceWindForecast variableWindDirection=\"false\">\n          <iwxxm:meanWindDirection uom=\"deg\">130</iwxxm:meanWindDirection>\n          <iwxxm:meanWindSpeed uom=\"m/s\">5.0</iwxxm:meanWindSpeed>\n        </iwxxm:AerodromeSurfaceWindForecast>\n      </iwxxm:surfaceWind>\n      <iwxxm:cloud>\n        <iwxxm:AerodromeCloudForecast gml:id=\"cloud.base.yudo\">\n          <iwxxm:layer>\n            <iwxxm:CloudLayer>\n              <iwxxm:amount xlink:href=\"http://codes.wmo.int/49-2/CloudAmountReportedAtAerodrome/BKN\"/>\n              <iwxxm:base uom=\"[ft_i]\">2000</iwxxm:base>\n            </iwxxm:CloudLayer>\n          </iwxxm:layer>\n        </iwxxm:AerodromeCloudForecast>\n      </iwxxm:cloud>\n    </iwxxm:MeteorologicalAerodromeForecast>\n  </iwxxm:baseForecast>\n  <iwxxm:changeForecast>\n    <iwxxm:MeteorologicalAerodromeForecast gml:id=\"fcst.chg.1.yudo\" changeIndicator=\"BECOMING\" cloudAndVisibilityOK=\"false\">\n      <iwxxm:phenomenonTime>\n        <gml:TimePeriod gml:id=\"t.chg.1\">\n          <gml:beginPosition>2012-08-16T06:00:00Z</gml:beginPosition>\n          <gml:endPosition>2012-08-16T08:00:00Z</gml:endPosition>\n        </gml:TimePeriod>\n      </iwxxm:phenomenonTime>\n      <iwxxm:cloud>\n        <iwxxm:AerodromeCloudForecast gml:id=\"cloud.chg.1.yudo\">\n          <iwxxm:layer>\n            <iwxxm:CloudLayer>\n              <iwxxm:amount xlink:href=\"http://codes.wmo.int/49-2/CloudAmountReportedAtAerodrome/SCT\"/>\n              <iwxxm:base uom=\"[ft_i]\">1500</iwxxm:base>\n              <iwxxm:cloudType xlink:href=\"http://codes.wmo.int/49-2/SigConvectiveCloudType/CB\"/>\n            </iwxxm:CloudLayer>\n          </iwxxm:layer>\n          <iwxxm:layer>\n            <iwxxm:CloudLayer>\n              <iwxxm:amount xlink:href=\"http://codes.wmo.int/49-2/CloudAmountReportedAtAerodrome/BKN\"/>\n              <iwxxm:base uom=\"[ft_i]\">2000</iwxxm:base>\n            </iwxxm:CloudLayer>\n          </iwxxm:layer>\n        </iwxxm:AerodromeCloudForecast>\n      </iwxxm:cloud>\n    </iwxxm:MeteorologicalAerodromeForecast>\n  </iwxxm:changeForecast>\n  <iwxxm:changeForecast>\n    <iwxxm:MeteorologicalAerodromeForecast gml:id=\"fcst.chg.2.yudo\" changeIndicator=\"TEMPORARY_FLUCTUATIONS\" cloudAndVisibilityOK=\"false\">\n      <iwxxm:phenomenonTime>\n        <gml:TimePeriod gml:id=\"t.chg.2\">\n          <gml:beginPosition>2012-08-16T08:00:00Z</gml:beginPosition>\n          <gml:endPosition>2012-08-16T12:00:00Z</gml:endPosition>\n        </gml:TimePeriod>\n      </iwxxm:phenomenonTime>\n      <iwxxm:prevailingVisibility uom=\"m\">1000</iwxxm:prevailingVisibility>\n      <iwxxm:surfaceWind>\n        <iwxxm:AerodromeSurfaceWindForecast variableWindDirection=\"false\">\n          <iwxxm:meanWindDirection uom=\"deg\">170</iwxxm:meanWindDirection>\n          <iwxxm:meanWindSpeed uom=\"m/s\">6</iwxxm:meanWindSpeed>\n          <iwxxm:windGustSpeed uom=\"m/s\">12</iwxxm:windGustSpeed>\n        </iwxxm:AerodromeSurfaceWindForecast>\n      </iwxxm:surfaceWind>\n      <iwxxm:weather xlink:href=\"http://codes.wmo.int/306/4678/TSRA\"/>\n      <iwxxm:cloud>\n        <iwxxm:AerodromeCloudForecast gml:id=\"cloud.chg.2.yudo\">\n          <iwxxm:layer>\n            <iwxxm:CloudLayer>\n              <iwxxm:amount xlink:href=\"http://codes.wmo.int/49-2/CloudAmountReportedAtAerodrome/SCT\"/>\n              <iwxxm:base uom=\"[ft_i]\">1000</iwxxm:base>\n              <iwxxm:cloudType xlink:href=\"http://codes.wmo.int/49-2/SigConvectiveCloudType/CB\"/>\n            </iwxxm:CloudLayer>\n          </iwxxm:layer>\n          <iwxxm:layer>\n            <iwxxm:CloudLayer>\n              <iwxxm:amount xlink:href=\"http://codes.wmo.int/49-2/CloudAmountReportedAtAerodrome/BKN\"/>\n              <iwxxm:base uom=\"[ft_i]\">2000</iwxxm:base>\n            </iwxxm:CloudLayer>\n          </iwxxm:layer>\n        </iwxxm:AerodromeCloudForecast>\n      </iwxxm:cloud>\n    </iwxxm:MeteorologicalAerodromeForecast>\n  </iwxxm:changeForecast>\n  <iwxxm:changeForecast>\n    <iwxxm:MeteorologicalAerodromeForecast gml:id=\"fcst.chg.3.yudo\" changeIndicator=\"FROM\" cloudAndVisibilityOK=\"false\">\n      <iwxxm:phenomenonTime>\n        <gml:TimePeriod gml:id=\"t.chg.3\">\n          <gml:beginPosition>2012-08-16T12:30:00Z</gml:beginPosition>\n          <gml:endPosition>2012-08-16T18:00:00Z</gml:endPosition>\n        </gml:TimePeriod>\n      </iwxxm:phenomenonTime>\n      <iwxxm:prevailingVisibility uom=\"m\">10000</iwxxm:prevailingVisibility>\n      <iwxxm:prevailingVisibilityOperator>ABOVE</iwxxm:prevailingVisibilityOperator>\n      <iwxxm:surfaceWind>\n        <iwxxm:AerodromeSurfaceWindForecast variableWindDirection=\"false\">\n          <iwxxm:meanWindDirection uom=\"deg\">150</iwxxm:meanWindDirection>\n          <iwxxm:meanWindSpeed uom=\"m/s\">4</iwxxm:meanWindSpeed>\n        </iwxxm:AerodromeSurfaceWindForecast>\n      </iwxxm:surfaceWind>\n      <iwxxm:cloud>\n        <iwxxm:AerodromeCloudForecast gml:id=\"cloud.chg.3.yudo\">\n          <iwxxm:layer>\n            <iwxxm:CloudLayer>\n              <iwxxm:amount xlink:href=\"http://codes.wmo.int/49-2/CloudAmountReportedAtAerodrome/BKN\"/>\n              <iwxxm:base uom=\"[ft_i]\">2000</iwxxm:base>\n            </iwxxm:CloudLayer>\n          </iwxxm:layer>\n        </iwxxm:AerodromeCloudForecast>\n      </iwxxm:cloud>\n    </iwxxm:MeteorologicalAerodromeForecast>\n  </iwxxm:changeForecast>\n</iwxxm:TAF>\n",
+      "match_status": "unequal",
       "residuals": [],
       "lint_issues": [
         {
           "severity": "info",
           "code": "FM_PRESENT",
-          "message": "TAF FM change group present - research T2",
+          "message": "TAF FM change group present",
           "location": "modifier",
           "start": 134,
           "end": 142
@@ -409,7 +409,7 @@
         {
           "severity": "info",
           "code": "BECMG_PRESENT",
-          "message": "TAF BECMG change group present - research T2",
+          "message": "TAF BECMG change group present",
           "location": "modifier",
           "start": 48,
           "end": 53
@@ -417,7 +417,7 @@
         {
           "severity": "info",
           "code": "TEMPO_PRESENT",
-          "message": "TAF TEMPO change group present - research T2",
+          "message": "TAF TEMPO change group present",
           "location": "modifier",
           "start": 80,
           "end": 85
@@ -439,7 +439,7 @@
         {
           "severity": "info",
           "code": "AMD_PRESENT",
-          "message": "TAF AMD modifier present - research T1",
+          "message": "TAF AMD modifier present",
           "location": "modifier",
           "start": 4,
           "end": 7
@@ -447,7 +447,7 @@
         {
           "severity": "info",
           "code": "CNL_REPORT",
-          "message": "TAF CNL cancel report - research T1",
+          "message": "TAF CNL cancel report",
           "location": "modifier",
           "start": 31,
           "end": 34
@@ -469,7 +469,7 @@
         {
           "severity": "info",
           "code": "SINGLE_ALTITUDE",
-          "message": "SIGMET single altitude (same lower/upper) - research G1",
+          "message": "SIGMET single altitude (same lower/upper)",
           "location": "modifier",
           "start": 101,
           "end": 106
@@ -477,7 +477,7 @@
         {
           "severity": "info",
           "code": "SIGMET_SEQUENCE",
-          "message": "SIGMET sequence number present - research G2",
+          "message": "SIGMET sequence number present",
           "location": "modifier",
           "start": 12,
           "end": 13
@@ -485,7 +485,7 @@
         {
           "severity": "info",
           "code": "FIR_OR_CTA",
-          "message": "SIGMET FIR/CTA/UIR airspace identity - research G2",
+          "message": "SIGMET FIR/CTA/UIR airspace identity",
           "location": "modifier",
           "start": 53,
           "end": 56
@@ -493,7 +493,7 @@
         {
           "severity": "info",
           "code": "OBS_OR_FCST",
-          "message": "SIGMET OBS or FCST analysis - research G2",
+          "message": "SIGMET OBS or FCST analysis",
           "location": "modifier",
           "start": 69,
           "end": 73
@@ -501,7 +501,7 @@
         {
           "severity": "info",
           "code": "INTENSITY_CHANGE",
-          "message": "SIGMET intensity change INTSF/WKN/NC - research G2",
+          "message": "SIGMET intensity change INTSF/WKN/NC",
           "location": "modifier",
           "start": 118,
           "end": 121
@@ -523,7 +523,7 @@
         {
           "severity": "info",
           "code": "SIGMET_CNL",
-          "message": "SIGMET CNL cancel report - research G1",
+          "message": "SIGMET CNL cancel report",
           "location": "modifier",
           "start": 61,
           "end": 64
@@ -545,7 +545,7 @@
         {
           "severity": "info",
           "code": "POLYGON_LOCATION",
-          "message": "SIGMET polygon/line WI geometry - research G1",
+          "message": "SIGMET polygon/line WI geometry",
           "location": "modifier",
           "start": 128,
           "end": 130
@@ -553,7 +553,7 @@
         {
           "severity": "info",
           "code": "SIGMET_SEQUENCE",
-          "message": "SIGMET sequence number present - research G2",
+          "message": "SIGMET sequence number present",
           "location": "modifier",
           "start": 12,
           "end": 13
@@ -561,7 +561,7 @@
         {
           "severity": "info",
           "code": "FIR_OR_CTA",
-          "message": "SIGMET FIR/CTA/UIR airspace identity - research G2",
+          "message": "SIGMET FIR/CTA/UIR airspace identity",
           "location": "modifier",
           "start": 64,
           "end": 67
@@ -569,7 +569,7 @@
         {
           "severity": "info",
           "code": "OBS_OR_FCST",
-          "message": "SIGMET OBS or FCST analysis - research G2",
+          "message": "SIGMET OBS or FCST analysis",
           "location": "modifier",
           "start": 114,
           "end": 117
@@ -577,7 +577,7 @@
         {
           "severity": "info",
           "code": "INTENSITY_CHANGE",
-          "message": "SIGMET intensity change INTSF/WKN/NC - research G2",
+          "message": "SIGMET intensity change INTSF/WKN/NC",
           "location": "modifier",
           "start": 199,
           "end": 201
@@ -585,7 +585,7 @@
         {
           "severity": "info",
           "code": "VA_VOLCANO_IDENTITY",
-          "message": "VA SIGMET erupting volcano identity (MT/PSN) - research V1",
+          "message": "VA SIGMET erupting volcano identity (MT/PSN)",
           "location": "modifier",
           "start": 80,
           "end": 82
@@ -593,7 +593,7 @@
         {
           "severity": "info",
           "code": "VA_ASH_GEOMETRY",
-          "message": "VA SIGMET ash cloud geometry / forecast position - research V1",
+          "message": "VA SIGMET ash cloud geometry / forecast position",
           "location": "modifier",
           "start": 68,
           "end": 70
@@ -615,7 +615,7 @@
         {
           "severity": "info",
           "code": "POLYGON_LOCATION",
-          "message": "SIGMET polygon/line WI geometry - research G1",
+          "message": "SIGMET polygon/line WI geometry",
           "location": "modifier",
           "start": 135,
           "end": 137
@@ -623,7 +623,7 @@
         {
           "severity": "info",
           "code": "SIGMET_SEQUENCE",
-          "message": "SIGMET sequence number present - research G2",
+          "message": "SIGMET sequence number present",
           "location": "modifier",
           "start": 18,
           "end": 19
@@ -631,7 +631,7 @@
         {
           "severity": "info",
           "code": "FIR_OR_CTA",
-          "message": "SIGMET FIR/CTA/UIR airspace identity - research G2",
+          "message": "SIGMET FIR/CTA/UIR airspace identity",
           "location": "modifier",
           "start": 65,
           "end": 68
@@ -639,7 +639,7 @@
         {
           "severity": "info",
           "code": "OBS_OR_FCST",
-          "message": "SIGMET OBS or FCST analysis - research G2",
+          "message": "SIGMET OBS or FCST analysis",
           "location": "modifier",
           "start": 121,
           "end": 124
@@ -647,7 +647,7 @@
         {
           "severity": "info",
           "code": "INTENSITY_CHANGE",
-          "message": "SIGMET intensity change INTSF/WKN/NC - research G2",
+          "message": "SIGMET intensity change INTSF/WKN/NC",
           "location": "modifier",
           "start": 236,
           "end": 238
@@ -655,7 +655,7 @@
         {
           "severity": "info",
           "code": "VA_VOLCANO_IDENTITY",
-          "message": "VA SIGMET erupting volcano identity (MT/PSN) - research V1",
+          "message": "VA SIGMET erupting volcano identity (MT/PSN)",
           "location": "modifier",
           "start": 81,
           "end": 83
@@ -663,7 +663,7 @@
         {
           "severity": "info",
           "code": "VA_ASH_GEOMETRY",
-          "message": "VA SIGMET ash cloud geometry / forecast position - research V1",
+          "message": "VA SIGMET ash cloud geometry / forecast position",
           "location": "modifier",
           "start": 69,
           "end": 71
@@ -680,33 +680,12 @@
       "official_xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<iwxxm:TropicalCycloneSIGMET \n    xmlns:iwxxm=\"http://icao.int/iwxxm/2025-2\"\n    xmlns:aixm=\"http://www.aixm.aero/schema/5.1.1\" \n    xmlns:metce=\"http://def.wmo.int/metce/2013\"\n    xmlns:gml=\"http://www.opengis.net/gml/3.2\" \n    xmlns:xlink=\"http://www.w3.org/1999/xlink\"\n    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n    xsi:schemaLocation=\"http://icao.int/iwxxm/2025-2 http://schemas.wmo.int/iwxxm/2025-2/iwxxm.xsd\"\n    gml:id=\"uuid.f12194be-0d82-49ad-ad97-41e46f724dec\" \n    reportStatus=\"NORMAL\"\n    permissibleUsage=\"OPERATIONAL\">\n\n    <iwxxm:issueTime>\n        <gml:TimeInstant gml:id=\"uuid.f598d1e0-8e2d-4af1-a4ee-83d04b37f19e\">\n            <gml:timePosition>2012-08-25T16:00:00Z</gml:timePosition>\n        </gml:TimeInstant>\n    </iwxxm:issueTime>\n    \n    <iwxxm:issuingAirTrafficServicesUnit>\n        <aixm:Unit gml:id=\"uuid.ee9eedf1-52d2-45b4-8f7c-f027dd25c5e6\">\n            <aixm:timeSlice>\n                <aixm:UnitTimeSlice gml:id=\"uuid.608b9022-1c51-4729-bd89-67543b3d7d68\">\n                    <gml:validTime/>\n                    <aixm:interpretation>SNAPSHOT</aixm:interpretation>\n                    <aixm:name>YUCC FIC</aixm:name>\n                    <aixm:type>FIC</aixm:type>\n                    <aixm:designator>YUCC</aixm:designator>\n                </aixm:UnitTimeSlice>\n            </aixm:timeSlice>\n        </aixm:Unit>\n    </iwxxm:issuingAirTrafficServicesUnit>\n\n    <iwxxm:originatingMeteorologicalWatchOffice>\n        <aixm:Unit gml:id=\"uuid.d8835dc7-18db-424e-929a-e4c79be92cad\">\n            <aixm:timeSlice>\n                <aixm:UnitTimeSlice gml:id=\"uuid.0fac05ad-b4c5-49df-9e88-31fe413d087a\">\n                    <gml:validTime/>\n                    <aixm:interpretation>SNAPSHOT</aixm:interpretation>\n                    <aixm:name>YUDO MWO</aixm:name>\n                    <aixm:type>MWO</aixm:type>\n                    <aixm:designator>YUDO</aixm:designator>\n                </aixm:UnitTimeSlice>\n            </aixm:timeSlice>\n        </aixm:Unit>\n    </iwxxm:originatingMeteorologicalWatchOffice>\n\n    <iwxxm:issuingAirTrafficServicesRegion>\n        <aixm:Airspace gml:id=\"uuid.83b13711-6bf4-4497-9293-6bb5490bc259\">\n            <aixm:timeSlice>\n                <aixm:AirspaceTimeSlice gml:id=\"uuid.44f4afb1-fab4-4d01-8030-7d51b43eb4ed\">\n                    <gml:validTime/>\n                    <aixm:interpretation>SNAPSHOT</aixm:interpretation>\n                    <aixm:type>FIR</aixm:type>\n                    <aixm:designator>YUCC</aixm:designator>\n                    <aixm:name>AMSWELL FIR</aixm:name>\n                </aixm:AirspaceTimeSlice>\n            </aixm:timeSlice>\n        </aixm:Airspace>\n    </iwxxm:issuingAirTrafficServicesRegion>\n\n    <iwxxm:sequenceNumber>3</iwxxm:sequenceNumber>\n\n    <iwxxm:validPeriod>\n        <gml:TimePeriod gml:id=\"uuid.d26ff125-63ea-4cd8-b2cf-75629b9ecbe3\">\n            <gml:beginPosition>2012-08-25T16:00:00Z</gml:beginPosition>\n            <gml:endPosition>2012-08-25T22:00:00Z</gml:endPosition>\n        </gml:TimePeriod>\n    </iwxxm:validPeriod>\n\n    <iwxxm:phenomenon xlink:href=\"http://codes.wmo.int/49-2/SigWxPhenomena/TC\"/>\n\n    <iwxxm:analysisCollection>\n        <iwxxm:analysisAndForecastPositionAnalysis gml:id=\"uuid.50222a02-409a-45df-a479-d4b14e997602\">\n            <iwxxm:analysis>\n                <iwxxm:SIGMETEvolvingConditionCollection gml:id=\"uuid.89147e42-7ce0-493e-b81d-6ba6a989e8a1\" timeIndicator=\"OBSERVATION\">\n                    <iwxxm:phenomenonTime>\n                        <gml:TimeInstant gml:id=\"uuid.2f6d2369-b614-4522-8c76-bc44d770ce5e\">\n                            <gml:timePosition>2012-08-25T16:00:00Z</gml:timePosition>\n                        </gml:TimeInstant>\n                    </iwxxm:phenomenonTime>\n                    <iwxxm:member>\n                        <iwxxm:SIGMETEvolvingCondition gml:id=\"uuid.c0a23437-9eb7-4e6b-82f2-6fbd5757440c\">\n                            <iwxxm:tropicalCyclonePosition>\n                                <gml:Point gml:id=\"uuid.e84be2a6-cb1e-4905-b70a-6958c3cea1e3\" srsDimension=\"2\" axisLabels=\"Lat Long\" srsName=\"http://www.opengis.net/def/crs/EPSG/0/4326\">\n                                    <gml:pos>27.10 -73.10</gml:pos>\n                                </gml:Point>\n                            </iwxxm:tropicalCyclonePosition>\n                            <iwxxm:geometry>\n                                <aixm:AirspaceVolume gml:id=\"uuid.08077323-fbd5-4e04-a787-fccff0543f0a\">\n                                    <aixm:upperLimit uom=\"FL\">500</aixm:upperLimit>\n                                    <aixm:upperLimitReference>STD</aixm:upperLimitReference>\n                                    <aixm:horizontalProjection>\n                                        <aixm:Surface gml:id=\"uuid.62695824-f234-4618-b459-90bb795cde9a\" srsDimension=\"2\" axisLabels=\"Lat Long\" srsName=\"http://www.opengis.net/def/crs/EPSG/0/4326\">\n                                            <gml:patches>\n                                                <gml:PolygonPatch>\n                                                    <gml:exterior>\n                                                        <gml:Ring>\n                                                            <gml:curveMember>\n                                                                <gml:Curve gml:id=\"uuid.b7fa4047-2e78-431c-ba95-3fdf6343e3b5\">\n                                                                    <gml:segments>\n                                                                        <gml:CircleByCenterPoint numArc=\"1\">\n                                                                            <gml:pos>27.10 -73.10</gml:pos>\n                                                                            <gml:radius uom=\"[nmi_i]\">250</gml:radius>\n                                                                        </gml:CircleByCenterPoint>\n                                                                    </gml:segments>\n                                                                </gml:Curve>\n                                                            </gml:curveMember>\n                                                        </gml:Ring>\n                                                    </gml:exterior>\n                                                </gml:PolygonPatch>\n                                            </gml:patches>\n                                        </aixm:Surface>\n                                    </aixm:horizontalProjection>\n                                </aixm:AirspaceVolume>\n                            </iwxxm:geometry>\n                        </iwxxm:SIGMETEvolvingCondition>\n                    </iwxxm:member>\n                </iwxxm:SIGMETEvolvingConditionCollection>\n            </iwxxm:analysis>\n            <iwxxm:forecastPositionAnalysis>\n                <iwxxm:SIGMETPositionCollection gml:id=\"uuid.59824907-bcbe-476d-8151-8743e4a1b7db\">\n                    <iwxxm:phenomenonTime>\n                        <gml:TimeInstant gml:id=\"uuid.aab0df0d-6ee9-4ff8-82b2-06a2a42ab0a9\">\n                            <gml:timePosition>2012-08-25T22:00:00Z</gml:timePosition>\n                        </gml:TimeInstant>\n                    </iwxxm:phenomenonTime>\n                    <iwxxm:member>\n                        <iwxxm:SIGMETPosition gml:id=\"uuid.338354de-7634-4fca-ac75-3675cb592284\">\n                            <iwxxm:tropicalCyclonePosition>\n                                <gml:Point gml:id=\"uuid.1e0ca159-77e7-4d85-8ace-44aadf52f9af\" srsDimension=\"2\" axisLabels=\"Lat Long\" srsName=\"http://www.opengis.net/def/crs/EPSG/0/4326\">\n                                    <gml:pos>27.6667 -73.75</gml:pos>\n                                </gml:Point>\n                            </iwxxm:tropicalCyclonePosition>\n                            <iwxxm:geometry nilReason=\"http://codes.wmo.int/common/nil/inapplicable\"/>\n                        </iwxxm:SIGMETPosition>\n                    </iwxxm:member>\n                </iwxxm:SIGMETPositionCollection>\n\t    </iwxxm:forecastPositionAnalysis>\n        </iwxxm:analysisAndForecastPositionAnalysis>\n    </iwxxm:analysisCollection>\n\n    <iwxxm:tropicalCyclone>\n        <metce:TropicalCyclone gml:id=\"uuid.c529d539-2fa9-428d-937a-867e50056f16\">\n            <metce:name>Gloria</metce:name>\n        </metce:TropicalCyclone>\n    </iwxxm:tropicalCyclone>\n\n</iwxxm:TropicalCycloneSIGMET>\n",
       "converted_xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<iwxxm:TropicalCycloneSIGMET xmlns:iwxxm=\"http://icao.int/iwxxm/2025-2\"\n    xmlns:xlink=\"http://www.w3.org/1999/xlink\"\n    xmlns:gml=\"http://www.opengis.net/gml/3.2\"\n    xmlns:aixm=\"http://www.aixm.aero/schema/5.1.1\"\n    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n    xmlns:metce=\"http://def.wmo.int/metce/2013\"\n    gml:id=\"sigmet.tc.yucc\"\n    reportStatus=\"NORMAL\"\n    permissibleUsage=\"OPERATIONAL\">\n  <iwxxm:issueTime>\n    <gml:TimeInstant gml:id=\"t.issue\">\n      <gml:timePosition>2012-08-25T16:00:00Z</gml:timePosition>\n    </gml:TimeInstant>\n  </iwxxm:issueTime>\n  <iwxxm:issuingAirTrafficServicesUnit>\n    <aixm:Unit gml:id=\"unit.atsu.yucc\">\n      <aixm:timeSlice>\n        <aixm:UnitTimeSlice gml:id=\"unit.atsu.ts.yucc\">\n          <gml:validTime/>\n          <aixm:interpretation>SNAPSHOT</aixm:interpretation>\n          <aixm:name>YUCC FIC</aixm:name>\n          <aixm:type>FIC</aixm:type>\n          <aixm:designator>YUCC</aixm:designator>\n        </aixm:UnitTimeSlice>\n      </aixm:timeSlice>\n    </aixm:Unit>\n  </iwxxm:issuingAirTrafficServicesUnit>\n  <iwxxm:originatingMeteorologicalWatchOffice>\n    <aixm:Unit gml:id=\"unit.mwo.yudo\">\n      <aixm:timeSlice>\n        <aixm:UnitTimeSlice gml:id=\"unit.mwo.ts.yudo\">\n          <gml:validTime/>\n          <aixm:interpretation>SNAPSHOT</aixm:interpretation>\n          <aixm:name>YUDO MWO</aixm:name>\n          <aixm:type>MWO</aixm:type>\n          <aixm:designator>YUDO</aixm:designator>\n        </aixm:UnitTimeSlice>\n      </aixm:timeSlice>\n    </aixm:Unit>\n  </iwxxm:originatingMeteorologicalWatchOffice>\n  <iwxxm:issuingAirTrafficServicesRegion>\n    <aixm:Airspace gml:id=\"as.yucc\">\n      <aixm:timeSlice>\n        <aixm:AirspaceTimeSlice gml:id=\"as.ts.yucc\">\n          <gml:validTime/>\n          <aixm:interpretation>SNAPSHOT</aixm:interpretation>\n          <aixm:type>FIR</aixm:type>\n          <aixm:designator>YUCC</aixm:designator>\n          <aixm:name>AMSWELL FIR</aixm:name>\n        </aixm:AirspaceTimeSlice>\n      </aixm:timeSlice>\n    </aixm:Airspace>\n  </iwxxm:issuingAirTrafficServicesRegion>\n  <iwxxm:sequenceNumber>3</iwxxm:sequenceNumber>\n  <iwxxm:validPeriod>\n    <gml:TimePeriod gml:id=\"t.valid\">\n      <gml:beginPosition>2012-08-25T16:00:00Z</gml:beginPosition>\n      <gml:endPosition>2012-08-25T22:00:00Z</gml:endPosition>\n    </gml:TimePeriod>\n  </iwxxm:validPeriod>\n  <iwxxm:phenomenon xlink:href=\"http://codes.wmo.int/49-2/SigWxPhenomena/TC\"/>\n  <iwxxm:analysisCollection>\n    <iwxxm:analysisAndForecastPositionAnalysis gml:id=\"analysis.yucc\">\n      <iwxxm:analysis>\n        <iwxxm:SIGMETEvolvingConditionCollection gml:id=\"evolving.yucc\" timeIndicator=\"OBSERVATION\">\n          <iwxxm:phenomenonTime>\n            <gml:TimeInstant gml:id=\"t.obs.yucc\">\n              <gml:timePosition>2012-08-25T16:00:00Z</gml:timePosition>\n            </gml:TimeInstant>\n          </iwxxm:phenomenonTime>\n          <iwxxm:member>\n            <iwxxm:SIGMETEvolvingCondition gml:id=\"cond.yucc\">\n              <iwxxm:tropicalCyclonePosition>\n                <gml:Point gml:id=\"tc.pos.yucc\" srsDimension=\"2\" axisLabels=\"Lat Long\" srsName=\"http://www.opengis.net/def/crs/EPSG/0/4326\">\n                  <gml:pos>27.10 -73.10</gml:pos>\n                </gml:Point>\n              </iwxxm:tropicalCyclonePosition>\n              <iwxxm:geometry>\n                <aixm:AirspaceVolume gml:id=\"vol.yucc\">\n              <aixm:upperLimit uom=\"FL\">500</aixm:upperLimit>\n              <aixm:upperLimitReference>STD</aixm:upperLimitReference>\n                  <aixm:horizontalProjection>\n                    <aixm:Surface gml:id=\"sfc.yucc\" srsDimension=\"2\" axisLabels=\"Lat Long\" srsName=\"http://www.opengis.net/def/crs/EPSG/0/4326\">\n                      <gml:patches>\n                        <gml:PolygonPatch>\n                          <gml:exterior>\n                            <gml:Ring>\n                              <gml:curveMember>\n                                <gml:Curve gml:id=\"curve.yucc\">\n                                  <gml:segments>\n                                    <gml:CircleByCenterPoint numArc=\"1\">\n                                      <gml:pos>27.10 -73.10</gml:pos>\n                                      <gml:radius uom=\"[nmi_i]\">250</gml:radius>\n                                    </gml:CircleByCenterPoint>\n                                  </gml:segments>\n                                </gml:Curve>\n                              </gml:curveMember>\n                            </gml:Ring>\n                          </gml:exterior>\n                        </gml:PolygonPatch>\n                      </gml:patches>\n                    </aixm:Surface>\n                  </aixm:horizontalProjection>\n                </aixm:AirspaceVolume>\n              </iwxxm:geometry>\n            </iwxxm:SIGMETEvolvingCondition>\n          </iwxxm:member>\n        </iwxxm:SIGMETEvolvingConditionCollection>\n      </iwxxm:analysis>\n      <iwxxm:forecastPositionAnalysis>\n        <iwxxm:SIGMETPositionCollection gml:id=\"fcst.pos.yucc\">\n          <iwxxm:phenomenonTime>\n            <gml:TimeInstant gml:id=\"t.fcst.yucc\">\n              <gml:timePosition>2012-08-25T22:00:00Z</gml:timePosition>\n            </gml:TimeInstant>\n          </iwxxm:phenomenonTime>\n          <iwxxm:member>\n            <iwxxm:SIGMETPosition gml:id=\"fcst.cond.yucc\">\n              <iwxxm:tropicalCyclonePosition>\n                <gml:Point gml:id=\"fcst.tc.pos.yucc\" srsDimension=\"2\" axisLabels=\"Lat Long\" srsName=\"http://www.opengis.net/def/crs/EPSG/0/4326\">\n                  <gml:pos>27.6667 -73.75</gml:pos>\n                </gml:Point>\n              </iwxxm:tropicalCyclonePosition>\n              <iwxxm:geometry nilReason=\"http://codes.wmo.int/common/nil/inapplicable\"/>\n            </iwxxm:SIGMETPosition>\n          </iwxxm:member>\n        </iwxxm:SIGMETPositionCollection>\n      </iwxxm:forecastPositionAnalysis>\n    </iwxxm:analysisAndForecastPositionAnalysis>\n  </iwxxm:analysisCollection>\n  <iwxxm:tropicalCyclone>\n    <metce:TropicalCyclone gml:id=\"tc.gloria\">\n      <metce:name>Gloria</metce:name>\n    </metce:TropicalCyclone>\n  </iwxxm:tropicalCyclone>\n</iwxxm:TropicalCycloneSIGMET>\n",
       "match_status": "equal",
-      "residuals": [
-        {
-          "start": 60,
-          "end": 66,
-          "text": "GLORIA"
-        },
-        {
-          "start": 103,
-          "end": 108,
-          "text": "250NM"
-        },
-        {
-          "start": 115,
-          "end": 121,
-          "text": "CENTRE"
-        },
-        {
-          "start": 152,
-          "end": 158,
-          "text": "CENTRE"
-        }
-      ],
+      "residuals": [],
       "lint_issues": [
         {
           "severity": "info",
           "code": "POLYGON_LOCATION",
-          "message": "SIGMET polygon/line WI geometry - research G1",
+          "message": "SIGMET polygon/line WI geometry",
           "location": "modifier",
           "start": 100,
           "end": 102
@@ -714,7 +693,7 @@
         {
           "severity": "info",
           "code": "SINGLE_ALTITUDE",
-          "message": "SIGMET single altitude (same lower/upper) - research G1",
+          "message": "SIGMET single altitude (same lower/upper)",
           "location": "modifier",
           "start": 126,
           "end": 131
@@ -722,7 +701,7 @@
         {
           "severity": "info",
           "code": "SIGMET_SEQUENCE",
-          "message": "SIGMET sequence number present - research G2",
+          "message": "SIGMET sequence number present",
           "location": "modifier",
           "start": 12,
           "end": 13
@@ -730,7 +709,7 @@
         {
           "severity": "info",
           "code": "FIR_OR_CTA",
-          "message": "SIGMET FIR/CTA/UIR airspace identity - research G2",
+          "message": "SIGMET FIR/CTA/UIR airspace identity",
           "location": "modifier",
           "start": 53,
           "end": 56
@@ -738,7 +717,7 @@
         {
           "severity": "info",
           "code": "OBS_OR_FCST",
-          "message": "SIGMET OBS or FCST analysis - research G2",
+          "message": "SIGMET OBS or FCST analysis",
           "location": "modifier",
           "start": 87,
           "end": 90
@@ -746,7 +725,7 @@
         {
           "severity": "info",
           "code": "INTENSITY_CHANGE",
-          "message": "SIGMET intensity change INTSF/WKN/NC - research G2",
+          "message": "SIGMET intensity change INTSF/WKN/NC",
           "location": "modifier",
           "start": 132,
           "end": 134
@@ -754,7 +733,7 @@
         {
           "severity": "info",
           "code": "TC_CYCLONE_IDENTITY",
-          "message": "TC SIGMET tropical cyclone identity (TC … PSN) - #829 / TC-EV030-004",
+          "message": "TC SIGMET tropical cyclone identity (TC … PSN)",
           "location": "modifier",
           "start": 57,
           "end": 59
@@ -762,7 +741,7 @@
         {
           "severity": "info",
           "code": "TC_CB_GEOMETRY",
-          "message": "TC SIGMET CB geometry WI … OF TC CENTRE - #829 / TC-EV030-004",
+          "message": "TC SIGMET CB geometry WI … OF TC CENTRE",
           "location": "modifier",
           "start": 57,
           "end": 59

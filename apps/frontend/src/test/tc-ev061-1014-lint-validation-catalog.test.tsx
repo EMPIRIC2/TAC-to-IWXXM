@@ -63,10 +63,6 @@ vi.mock('../app/components/MyMetarsPage', () => ({
   MyMetarsPage: () => <div data-testid="history-view" />,
 }));
 
-vi.mock('../app/components/QualityMetricsPage', () => ({
-  QualityMetricsPage: () => <div data-testid="quality-metrics-page" />,
-}));
-
 vi.mock('../app/components/auth/Login', () => ({
   Login: () => <div data-testid="login-view" />,
 }));
@@ -134,11 +130,13 @@ vi.mock('sonner', () => ({
 }));
 
 import App from '../app/App';
+import { acknowledgeSiteTerms } from '@/utils/privacyPreferences';
 
 describe('T5.1 / TC-EV061-1014: Validation Issues Catalog', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     localStorage.clear();
+    acknowledgeSiteTerms();
     vi.stubEnv('VITE_API_BASE_URL', 'https://api.example.onrender.com');
   });
 
@@ -152,7 +150,7 @@ describe('T5.1 / TC-EV061-1014: Validation Issues Catalog', () => {
 
     await user.click(catalogTab);
     expect(screen.getByTestId('lint-validation-catalog-page')).toBeInTheDocument();
-    expect(screen.queryByTestId('file-converter')).not.toBeInTheDocument();
+    expect(screen.getByTestId('file-converter')).not.toBeVisible();
     expect(catalogTab).toHaveAttribute('aria-selected', 'true');
   });
 

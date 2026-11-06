@@ -1,8 +1,22 @@
 # Dependency Inventory
 
-> **Project**: METAR to IWXXM Converter
+> **Project**: TAC to IWXXM
 > **Last updated**: 2026-08-17 (S069 / EV-059 — F34 Schemathesis + pytest-gremlins + Stryker)
 > **Status**: **Accepted** for F30/F31; **EV-059 planned** quality-gate deps below (install in 07-build)
+
+## How to read this document
+
+This inventory lists **allowed** third-party and workspace packages for the
+monorepo. It is a satellite of [tech-spec.md](tech-spec.md).
+
+| Before you… | Do this |
+|-------------|---------|
+| Add a new dependency | Confirm it is listed here, or raise `[Decision]`, then back-add a row |
+| Check a license | Use the License column in the package tables below |
+| Trace a workspace path | Rows marked `workspace path` are in-repo packages under `packages/` |
+
+Tables below are grouped by consumer (`apps/backend`, each `packages/*`, frontend,
+dev/CI). Do not invent packages in code that are missing from this file.
 
 ## Runtime Dependencies
 
@@ -72,9 +86,22 @@ Package license: **MIT**. No FastAPI/Supabase imports. Backend already has `sqla
 | Package | Purpose | License | Source |
 |---------|---------|---------|--------|
 | msgspec | Versioned IR / convert issue models (ADR-016) | Apache-2.0 | PyPI (`>=0.19`) |
+| metar-shared | Inherit-factory ports / merge helpers (ADR-055) | MIT | workspace path |
 | PyYAML | Decode glossary YAML overlays (F9 / ADR-032; E20-F5) | MIT | PyPI (`>=6.0`) |
+| hydra-core | Compose the national convert allowlist (ADR-050 / #1270) | MIT | PyPI (`==1.3.7`) |
+| reference-lookup | Navaid and ICAO coordinates before the checked-in table (ADR-051) | MIT | workspace (`==2026.9.23`) |
 | lxml | XML encode/validate support (optional / transitional) | BSD | PyPI |
 | PyO3 / maturin / rustc | Native hotspots | Apache-2.0 / MIT (typical) | **Required before cutover** (ADR-017) |
+
+Package license: **MIT**. No FastAPI/Supabase imports.
+
+### packages/reference-lookup
+
+| Package | Purpose | License | Source |
+|---------|---------|---------|--------|
+| httpx | Download OurAirports `navaids.csv` and `airports.csv` once per process (ADR-051) | BSD | PyPI (`==0.28.1`) |
+
+The dataset is public domain. Tests ship a few copied rows, not the full dump. An ident that matches more than one row is a source error.
 
 Package license: **MIT**. No FastAPI/Supabase imports.
 
@@ -83,9 +110,10 @@ Package license: **MIT**. No FastAPI/Supabase imports.
 | Package | Purpose | License | Source |
 |---------|---------|---------|--------|
 | msgspec | Structured issue / fix models | Apache-2.0 | **Required** (ADR-016); reuse `tac_validate.codec` Encoder/Decoder |
+| metar-shared | Inherit-factory ports / merge helpers (ADR-055) | MIT | workspace path |
 | PyYAML | TAC quality policy YAML load (ADR-046 / #1216) | MIT | PyPI (`==6.0.3`; already used by tac2iwxxm / tac-decoding) |
 
-Package license: **MIT**. Stdlib-first preferred; no FastAPI/Supabase. No Schematron.
+Package license: **MIT**. Stdlib-first preferred; no FastAPI/Supabase. No Schematron. No `tac2iwxxm` import.
 
 ### packages/iwxxm-validate
 
@@ -133,6 +161,8 @@ via Supabase). **JWKS-only** (`D-S038-04-b1` Q2=2): do not use `SUPABASE_JWT_SEC
 | **@supabase/supabase-js** | Optional client Auth bootstrap (F31 login) | Apache-2.0 | npm — restore in 04 |
 | CodeMirror 6 | F7 workbench editor | MIT | npm — pinned S011 M2 T2.5: `codemirror@6.0.2`, `@codemirror/view@6.43.6`, `@codemirror/state@6.7.1`, `@codemirror/commands@6.10.4`, `@codemirror/language@6.12.4` (autocomplete deferred until needed) |
 | @sentry/react | Browser error monitoring when DSN set — EV-052 / #900 | MIT | npm (`apps/frontend`) |
+| leaflet | Pannable station map on Decode visuals (F7 / F9). Tiles from OpenStreetMap; one station coordinate comes from `GET /api/v1/stations/{icao}`. Types: `@types/leaflet` (MIT, dev) | BSD-2-Clause | npm (`apps/frontend`) |
+| @metar/live-map-geometry | Chooses point, line, polygon, or circle for one cached place (F37). No third-party packages. The frontend paints the result with Leaflet. | MIT (in-repo) | pnpm workspace (`packages/live-map-geometry`) |
 | openapi-typescript | OpenAPI → typed FE client — EV-052 / #900 (`D-S061-orval=1`; not full Orval) | MIT | npm (dev; `apps/frontend`) |
 
 ## Workspace Tooling
@@ -145,9 +175,10 @@ via Supabase). **JWKS-only** (`D-S038-04-b1` Q2=2): do not use `SUPABASE_JWT_SEC
 | pnpm | **9.15.4** via `packageManager` + corepack | JS workspace (monorepo); not Homebrew |
 | macOS Homebrew | root [`Brewfile`](../Brewfile) | System toolchain: `python@3.12`, `node@22`, `uv`, `rust`, Docker Desktop, `libpq`, `unixodbc`, `gh` |
 | basedpyright | strict | Python typechecking including tac2iwxxm, tac-validate, iwxxm-validate (ADR-005) |
-| ruff | all Python packages | Lint + format including new validate packages (ADR-005) |
+| ruff | all Python packages | Lint + format including new validate packages (ADR-005); **pydocstyle (D)** on ADR-048 trees (EV-adr048-doc-linters). Config owner moves from root `ruff.toml` into root `pyproject.toml` `[tool.ruff]`; packages keep `extend` and do not copy the rule set |
 | prettier | workspace TS | Format apps/* and packages/* TypeScript |
 | eslint | workspace TS | Lint apps/frontend, apps/e2e, packages/shared |
+| eslint-plugin-jsdoc | apps/frontend (+ e2e helpers) | TSDoc / `@example` presence (ADR-048 / EV-adr048-doc-linters; with product checkers) |
 | make | system | Orchestration |
 | pre-commit | dev group (pyproject) | Fast commit gates (invoked from husky) |
 | husky | root `package.json` devDependency (^9.1.7) | Git hooksPath — pre-commit (fast+medium) + pre-push (`make ci` units+Compose; EV-036) |
@@ -164,6 +195,7 @@ via Supabase). **JWKS-only** (`D-S038-04-b1` Q2=2): do not use `SUPABASE_JWT_SEC
 | xsdata | **dev/codegen** (F11 / ADR-027) | XSD → Python models from pinned IWXXM schemas — `xsdata[cli]>=24.5` in workspace `dev` |
 | xsdata-pydantic | **dev/codegen** (F11 / ADR-027) | pydantic v2 output plugin — `>=24.5` in workspace `dev`; also `metar-shared[xsd]` for importing committed models |
 | maturin | **dev** (F13/F14) | PyO3 wheel build — `>=1.7` in workspace `dev`; also CI |
+| mkdocs | **docs** (EV-github-wiki-docs) | Public user guide under `user-docs/` (Read the Docs theme); pin `>=1.6,<2` in `user-docs/requirements.txt` — **BSD**; not a runtime app dependency |
 
 **Deployables**: API + static frontend + **F8 worker** on **DOKS** (ADR-033; Render transitional).
 API image depends on tac2iwxxm + validate + **auth** packages; worker image uses packages plus
@@ -192,10 +224,10 @@ poller/store writers via `DATABASE_URL`. Rust toolchain in API (and worker if li
 
 ## License Notes
 
-- wmo-im schema repos: WMO terms — read-only vendor copies.
+- wmo-im schema repos: WMO terms; read-only vendor copies.
 - iwxxm-us: cite NOAA/MDL upstream notices in vendor README at pin time.
 - `packages/tac2iwxxm`, `packages/tac-validate`, `packages/iwxxm-validate`: **MIT**.
-- GIFTs: package removed — no longer ship its LICENSE in-tree.
+- GIFTs: package removed; no longer ship its LICENSE in-tree.
 - Run audit-licenses skill before adding new PyPI/npm deps (including PyO3 extras; tac-validate
   pydantic/msgspec choice in 04).
 
@@ -205,11 +237,14 @@ New dependencies require `[Decision]` + back-add to this file per plan-adherence
 
 ### Session changelog
 
+- EV-github-wiki-docs (2026-11-05): **mkdocs** `>=1.6,<2` for `user-docs/` public guide
+  (Read the Docs theme; ASD-STE100). Decision:
+  `decisions/ev-github-wiki-docs-rtd-mkdocs.md`
 - EV-080 / #1077 (2026-08-27): Coverage floor **100%** line+branch (ADR-007 amend); **bats-core**
   for every `scripts/**/*.sh`; scripts Python coverage harness (`D-EV080-bats`)
 - S069 / EV-059 (2026-08-17): **schemathesis==4.24.3** (MIT) pinned in workspace `dev`;
   **pytest-gremlins==1.9.0** (MIT) + **@stryker-mutator/{core,vitest-runner,typescript-checker}@10.0.0**
-  (Apache-2.0) pinned for #874 — F34 quality gates (`D-S069-tool`); mutation not a every-PR
+  (Apache-2.0) pinned for #874 (F34 quality gates `D-S069-tool`); mutation not a every-PR
   required gate; workflow `.github/workflows/mutation.yml` (schedule + workflow_dispatch)
 - S008 (2026-07-12): tac2iwxxm MIT; gifts removed; iwxxm-us; optional PyO3; IR lib TBD in 04
 - S008 amend (2026-07-12): tac-validate + iwxxm-validate MIT; lxml for Schematron; tac-validate
@@ -221,20 +256,20 @@ New dependencies require `[Decision]` + back-add to this file per plan-adherence
 - S014 / EV-010 (2026-07-18): backend msgspec high-churn (ADR-026); iwxxm-validate Rust+bundle;
   PyPI publish deps (maturin/OIDC); **xsdata + xsdata-pydantic** for XSD codegen (ADR-027);
   **xmloxide 0.4.x** native XSD+Schematron (D-S014-T33-crates / E10-46)
-- S015 / EV-011 (2026-07-19): F15 issue registry — **no new runtime deps**; catalog HTTP + docs
+- S015 / EV-011 (2026-07-19): F15 issue registry: **no new runtime deps**; catalog HTTP + docs
   export from existing `tac-validate` / msgspec stack (E11-30)
-- S019 / EV-014 (2026-07-21): Planned `packages/dissemination` — SQLAlchemy async + aiomysql /
+- S019 / EV-014 (2026-07-21): Planned `packages/dissemination`: SQLAlchemy async + aiomysql /
   aiosqlite / **aioodbc** (E14-06=A) + aiosmtplib; msgspec HTTP (E14-07=A); pins in M1
-- S019 / EV-014 T2.5 (2026-07-21): **testcontainers[mysql,postgres]≥4.8** — multi-DB writer-contract
+- S019 / EV-014 T2.5 (2026-07-21): **testcontainers[mysql,postgres]≥4.8** for multi-DB writer-contract
   integration (TC-F16-003 / E14-09); SQLite in-process; PG/MySQL skip without Docker
 - S019 / EV-014 T2.6 (2026-07-21): SQL Server via **aioodbc** + Testcontainers; integration
   tests **skip when no ODBC driver** (E14-06)
 - S019 / EV-014 T2.7 (2026-07-21): ODBC driver install/verify notes in `docs/deploy.md` +
   `packages/dissemination/README.md` (E14-06); stock API image still omits `msodbcsql18`
-- S019 / EV-014 T3.3 (2026-07-21): wis2box Compose harness — **lightweight MQTT+HTTP image**
+- S019 / EV-014 T3.3 (2026-07-21): wis2box Compose harness: **lightweight MQTT+HTTP image**
   (`python:3.12.11-slim-bookworm` + Debian `mosquitto`); reject full WMO wis2box release stack
   for CI cost (E14-04 / Q17); not a Render service
-- S019 / EV-014 T3.4 (2026-07-21): **httpx** + **aiomqtt≥2.3,<3** — concrete WIS2 transports
+- S019 / EV-014 T3.4 (2026-07-21): **httpx** + **aiomqtt≥2.3,<3** as concrete WIS2 transports
   for TC-F17-001 harness publish (D-S019-EV014-T34-transports); reject aiomqtt 3.x alpha
 - S026 / EV-020 (2026-07-29): **PyYAML≥6.0** on `tac2iwxxm` for decode glossary YAML overlays
   (F9 / ADR-032; E20-F5)

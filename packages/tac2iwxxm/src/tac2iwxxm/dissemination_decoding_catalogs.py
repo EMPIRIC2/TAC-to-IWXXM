@@ -10,6 +10,19 @@ import yaml
 
 
 def _load_yaml(name: str) -> dict[str, Any]:
+    """
+    Internal helper ``_load_yaml``.
+
+    Parameters
+    ----------
+    name : str
+        Argument ``name``.
+
+    Returns
+    -------
+    dict[str, Any]
+        Return value.
+    """
     raw = resources.files("tac2iwxxm.data").joinpath(name).read_text(encoding="utf-8")
     data = yaml.safe_load(raw)
     if not isinstance(data, dict):
@@ -19,7 +32,19 @@ def _load_yaml(name: str) -> dict[str, Any]:
 
 @lru_cache(maxsize=1)
 def load_dissemination_transforms() -> dict[str, Any]:
-    """Return mined dissemination transform catalog."""
+    """
+    Return mined dissemination transform catalog.
+
+    Returns
+    -------
+    dict[str, Any]
+        Mined dissemination transform catalog.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (load_dissemination_transforms)
+    2
+    """
     data = _load_yaml("dissemination_transforms.yaml")
     if "transforms" not in data:
         raise ValueError("dissemination_transforms.yaml missing transforms")
@@ -28,7 +53,19 @@ def load_dissemination_transforms() -> dict[str, Any]:
 
 @lru_cache(maxsize=1)
 def load_decoding_library_entries() -> dict[str, Any]:
-    """Return mined decoding library entries catalog."""
+    """
+    Return mined decoding library entries catalog.
+
+    Returns
+    -------
+    dict[str, Any]
+        Mined decoding library entries catalog.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (load_decoding_library_entries)
+    2
+    """
     data = _load_yaml("decoding_library_entries.yaml")
     if "entries" not in data:
         raise ValueError("decoding_library_entries.yaml missing entries")

@@ -2,77 +2,82 @@
 
 from __future__ import annotations
 
+import gzip
 import os
 import re
 from collections.abc import Callable
-from datetime import UTC
+from datetime import UTC, datetime
 from typing import Any, cast
 from xml.sax.saxutils import escape
 
 from tac_decoding.match import MatchContext, match_tac
 from tac_decoding.packs import load_packs
 
+from tac2iwxxm.bulletin import BulletinSplitError, iwxxm_filename, parse_ahl
+from tac2iwxxm.convert_allowlist import products_for
 from tac2iwxxm.decode import decode_tac
 from tac2iwxxm.emit_map import emit_with_map
 from tac2iwxxm.exchange_output import default_ca_translation_centre
+from tac2iwxxm.geometry.reference_point import UnknownVOR
 from tac2iwxxm.ir_source import IR_SOURCE_ENV, resolve_ir_source
-from tac2iwxxm.models import ConvertIssue, ConvertResult
+from tac2iwxxm.models import AhlParts, ConvertIssue, ConvertResult
 from tac2iwxxm.pack_ir_map import PackIrMapError, map_spans_to_convert_ir, pack_id_for_product
 from tac2iwxxm.profile_registry import (
     EMIT_ANNEX3,
-    EMIT_AU_BOM,
-    EMIT_BR_DECEA,
     EMIT_CA_ECCC,
-    EMIT_HK_HKO,
-    EMIT_IN_IMD,
+    EMIT_CA_MSC_SIGMET,
     EMIT_IWXXM_US,
-    EMIT_JP_JMA,
-    EMIT_KR_KMA,
-    EMIT_NZ_CAA_MET,
-    EMIT_UK_METOFFICE,
+    EMIT_US_NWS_CONVECTIVE_SIGMET,
     resolve_semantic_profile,
     supported_iwxxm_versions_for_profile,
     supported_report_variants_for_profile,
 )
-from tac2iwxxm.profiles.annex3_products import (
+from tac2iwxxm.profiles.annex3_emit import (
     emit_swxa_annex3,
     emit_vona_annex3,
 )
 from tac2iwxxm.profiles.ca_eccc import CA_IWXXM_VERSION
-from tac2iwxxm.slot_builders.metar_speci import parse_metar_speci
+from tac2iwxxm.slot_builders.metar_speci import fold_observation_case, parse_metar_speci
 from tac2iwxxm.slot_builders.sigmet_airmet import parse_airmet, parse_sigmet
 from tac2iwxxm.slot_builders.swxa import parse_swxa
 from tac2iwxxm.slot_builders.taf import parse_taf
 from tac2iwxxm.slot_builders.vaa_tca import parse_tca, parse_vaa
 from tac2iwxxm.slot_builders.vona import parse_vona
+from tac2iwxxm.taf_time_links import failed_preview_nil_element
+from tac2iwxxm.time_anchor import (
+    ImpossibleTacDay,
+    anchor_from_bulletin_date,
+    pop_bulletin_anchor,
+    push_bulletin_anchor,
+)
 
 
 def _ir_source_is_explicit_pack(ir_source: str | None) -> bool:
-    """True when the caller or env forces pack IR (no legacy fallback)."""
+    """
+    Internal helper ``_ir_source_is_explicit_pack``.
+
+    Parameters
+    ----------
+    ir_source : str | None
+        Argument ``ir_source``.
+
+    Returns
+    -------
+    bool
+        Return value.
+    """
     if ir_source is not None:
         return ir_source.strip().lower() == "pack"
     return os.environ.get(IR_SOURCE_ENV, "").strip().lower() == "pack"
 
 
 _SUPPORTED_PRODUCTS = frozenset({"METAR", "SPECI", "TAF", "SIGMET", "AIRMET", "VAA", "TCA", "SWXA", "VONA"})
-_US_PRODUCTS = frozenset({"METAR", "SPECI", "TAF", "SIGMET", "AIRMET"})
-_CA_ECCC_PRODUCTS = frozenset({"METAR", "SPECI", "TAF", "AIRMET"})
-_AU_BOM_PRODUCTS = frozenset({"METAR", "SPECI", "TAF"})
-_NZ_CAA_MET_PRODUCTS = frozenset({"METAR", "SPECI", "TAF"})
-# EV-089 / #920 thin-compat packs — core IWXXM emit; GAMET never listed (D-EV089-gamet).
-_UK_METOFFICE_PRODUCTS = frozenset({"METAR", "SPECI", "TAF"})
-_BR_DECEA_PRODUCTS = frozenset({"METAR", "SPECI", "TAF", "SIGMET", "AIRMET"})
-_KR_KMA_PRODUCTS = frozenset({"METAR", "SPECI", "TAF", "SIGMET", "AIRMET"})
-_JP_JMA_PRODUCTS = frozenset({"METAR", "SPECI", "TAF", "SIGMET", "VAA"})
-_IN_IMD_PRODUCTS = frozenset({"METAR", "SPECI", "TAF", "SIGMET"})
-_HK_HKO_PRODUCTS = frozenset({"METAR", "SPECI", "TAF", "SIGMET", "VAA"})
-_THIN_COMPAT_PRODUCTS: dict[str, frozenset[str]] = {
-    EMIT_UK_METOFFICE: _UK_METOFFICE_PRODUCTS,
-    EMIT_BR_DECEA: _BR_DECEA_PRODUCTS,
-    EMIT_KR_KMA: _KR_KMA_PRODUCTS,
-    EMIT_JP_JMA: _JP_JMA_PRODUCTS,
-    EMIT_IN_IMD: _IN_IMD_PRODUCTS,
-    EMIT_HK_HKO: _HK_HKO_PRODUCTS,
+_SOURCE_UNAVAILABLE = {
+    "us_nws_g_airmet": ("United States G-AIRMET conversion is unavailable until a text bulletin is on file."),
+    "us_nws_vona": (
+        "United States volcano observatory notice conversion is unavailable until a complete notice is on file."
+    ),
+    "ca_msc_sigmet": ("Canadian SIGMET text conversion is unavailable until a text source is on file."),
 }
 _REPORT_STATUSES = frozenset({"NORMAL", "AMENDMENT", "CORRECTION"})
 
@@ -140,15 +145,21 @@ def resolve_propagate_residuals_to_remarks(
 
     Parameters
     ----------
-    profile :
+    profile : str
         Emit key or semantic profile id (case-insensitive).
-    value :
+
+    value : bool | None
         Explicit override, or ``None`` to use the profile default table.
 
     Returns
     -------
     bool
         Effective flag. Omitted / unknown profiles default to ``False`` this cycle.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (resolve_propagate_residuals_to_remarks)
+    2
     """
     if value is not None:
         return bool(value)
@@ -167,7 +178,22 @@ def _residual_texts_to_append(
     *,
     remarks_free_text: str,
 ) -> list[str]:
-    """Return residual spans not already covered by remarks retain / free-text."""
+    """
+    Internal helper ``_residual_texts_to_append``.
+
+    Parameters
+    ----------
+    residual_texts : list[str]
+        Argument ``residual_texts``.
+
+    remarks_free_text : str
+        Argument ``remarks_free_text``.
+
+    Returns
+    -------
+    list[str]
+        Return value.
+    """
     existing = remarks_free_text.strip()
     existing_upper = existing.upper()
     out: list[str] = []
@@ -189,10 +215,26 @@ def _apply_propagate_residuals(
     ir: dict[str, Any],
 ) -> tuple[dict[str, Any], ConvertIssue | None]:
     """
-    Fold decode residuals into remarks/HRT when the profile supports it.
+    Internal helper ``_apply_propagate_residuals``.
 
-    annex3 has no XML remarks target — emit an info issue documenting that fact
-    without inventing free-text remarks (D-EV981-emit-target).
+    Parameters
+    ----------
+    tac : str
+        Argument ``tac``.
+
+    product : str
+        Argument ``product``.
+
+    profile_l : str
+        Argument ``profile_l``.
+
+    ir : dict[str, Any]
+        Argument ``ir``.
+
+    Returns
+    -------
+    tuple[dict[str, Any], ConvertIssue | None]
+        Return value.
     """
     decoded = decode_tac(tac, product=product)
     residual_texts = [r.text for r in decoded.residuals if r.text and r.text.strip()]
@@ -234,7 +276,19 @@ def _apply_propagate_residuals(
 
 
 def _content_bounds(tac: str) -> tuple[int, int]:
-    """Return inclusive start / exclusive end of stripped TAC content in ``tac``."""
+    """
+    Internal helper ``_content_bounds``.
+
+    Parameters
+    ----------
+    tac : str
+        Argument ``tac``.
+
+    Returns
+    -------
+    tuple[int, int]
+        Return value.
+    """
     stripped = tac.strip()
     if not stripped:
         return 0, len(tac)
@@ -248,17 +302,19 @@ def _preview_stub_xml(product: str, iwxxm_version: str, reason: str) -> str:
 
     Parameters
     ----------
-    product :
+    product : str
         Product root element name (e.g. ``METAR``).
-    iwxxm_version :
+
+    iwxxm_version : str
         Release line used to pick the IWXXM namespace.
-    reason :
+
+    reason : str
         Short human-readable failure note embedded as an XML comment.
 
     Returns
     -------
     str
-        IWXXM-looking XML document with a nil observation.
+        IWXXM-looking XML document with a nil body element.
     """
     from xml.sax.saxutils import escape
 
@@ -267,18 +323,34 @@ def _preview_stub_xml(product: str, iwxxm_version: str, reason: str) -> str:
     ns = _PREVIEW_NS.get(iwxxm_version, _PREVIEW_NS["2025-2"])
     gml_id = f"{root.lower()}.preview.failed"
     note = escape(reason[:240])
+    nil_element = failed_preview_nil_element(product_u)
     return (
         '<?xml version="1.0" encoding="UTF-8"?>\n'
         f'<iwxxm:{root} xmlns:iwxxm="{ns}" xmlns:gml="http://www.opengis.net/gml/3.2" '
         f'gml:id="{gml_id}" reportStatus="NORMAL">\n'
         f"  <!-- soft-preview: {note} -->\n"
-        '  <iwxxm:observation nilReason="http://codes.wmo.int/common/nil/missing"/>\n'
+        f'  <iwxxm:{nil_element} nilReason="http://codes.wmo.int/common/nil/missing"/>\n'
         f"</iwxxm:{root}>\n"
     )
 
 
 def _tac_looks_like_product(tac: str, product: str) -> bool:
-    """Return True when TAC appears to be the requested product (header / keyword)."""
+    """
+    Internal helper ``_tac_looks_like_product``.
+
+    Parameters
+    ----------
+    tac : str
+        Argument ``tac``.
+
+    product : str
+        Argument ``product``.
+
+    Returns
+    -------
+    bool
+        Return value.
+    """
     pattern = _PRODUCT_LEAD.get(product)
     if pattern is None:
         return False
@@ -287,27 +359,338 @@ def _tac_looks_like_product(tac: str, product: str) -> bool:
 
 def _should_quarantine(tac: str, product: str) -> bool:
     """
-    Whether failed/unreliable TAC should emit ``translationFailedTAC`` quarantine.
+    Internal helper ``_should_quarantine``.
 
-    Explicit ``INVALID`` (official failed examples) or a product-shaped TAC that
-    cannot be translated operationally.
+    Parameters
+    ----------
+    tac : str
+        Argument ``tac``.
+
+    product : str
+        Argument ``product``.
+
+    Returns
+    -------
+    bool
+        Return value.
     """
     if _UNRELIABLE_TAC.search(tac):
         return True
     return _tac_looks_like_product(tac, product)
 
 
-def _quarantine_xml(product: str, tac: str, iwxxm_version: str) -> str:
+def _heading_from_tac(tac: str) -> AhlParts | None:
+    """
+    Return parsed abbreviated-heading parts, or None when the first line is not a heading.
+
+    Parameters
+    ----------
+    tac : str
+        Bulletin or single-report text.
+
+    Returns
+    -------
+    AhlParts | None
+        Parsed heading, or None when the first line is not an abbreviated heading.
+    """
+    try:
+        return parse_ahl(tac)
+    except BulletinSplitError:
+        return None
+
+
+def _compact_bulletin_id(parts: AhlParts) -> str:
+    """
+    Return ``TTAAiiCCCCYYGGgg`` plus BBB when the heading has one.
+
+    Parameters
+    ----------
+    parts : AhlParts
+        Parsed abbreviated heading.
+
+    Returns
+    -------
+    str
+        Compact bulletin identifier with no spaces.
+    """
+    bbb = parts.bbb or ""
+    return f"{parts.tt}{parts.aa}{parts.ii}{parts.cccc}{parts.yygggg}{bbb}"
+
+
+_STATUS_TEST = re.compile(r"(?im)^\s*STATUS:\s*TEST\s*$")
+_THIS_IS_A_TEST = re.compile(r"THIS IS A TEST", re.IGNORECASE)
+_EXERCISE_WORD = re.compile(r"\bEXERCISE\b", re.IGNORECASE)
+_RMK_LINE = re.compile(r"RMK\s*:\s*(.*)$", re.IGNORECASE)
+_NEXT_FIELD = re.compile(r"^[A-Z0-9 /+]{2,}:")
+
+
+def _remark_text(tac: str) -> str | None:
+    """
+    Return the RMK field with wrapped lines joined, or None when it is absent.
+
+    Parameters
+    ----------
+    tac : str
+        Original TAC text.
+
+    Returns
+    -------
+    str | None
+        Remark text, or None when the bulletin has no RMK field.
+    """
+    chunks: list[str] = []
+    capturing = False
+    for raw in tac.splitlines():
+        line = raw.strip()
+        if not line:
+            continue
+        remark = _RMK_LINE.match(line)
+        if remark is not None:
+            capturing = True
+            chunks.append(remark.group(1).strip())
+            continue
+        if capturing:
+            if _NEXT_FIELD.match(line):
+                break
+            chunks.append(line)
+    text = " ".join(chunks).strip()
+    return text or None
+
+
+def _permissible_usage_attrs(tac: str) -> str:
+    """
+    Return the permissible-usage attributes for an explicit test or exercise marker.
+
+    Parameters
+    ----------
+    tac : str
+        Original TAC text.
+
+    Returns
+    -------
+    str
+        ``permissibleUsage="OPERATIONAL"``, or the non-operational attributes.
+    """
+    exercise = _EXERCISE_WORD.search(tac) is not None
+    status_test = _STATUS_TEST.search(tac) is not None
+    remark_test = _THIS_IS_A_TEST.search(tac) is not None
+    if not exercise and not status_test and not remark_test:
+        return 'permissibleUsage="OPERATIONAL"'
+    reason = "EXERCISE" if exercise else "TEST"
+    remark = _remark_text(tac)
+    if remark:
+        note = remark
+    elif exercise:
+        note = "Exercise bulletin"
+    else:
+        note = "Test bulletin"
+    return (
+        'permissibleUsage="NON-OPERATIONAL" '
+        f'permissibleUsageReason="{escape(reason)}" '
+        f'permissibleUsageSupplementary="{escape(note)}"'
+    )
+
+
+def _apply_permissible_usage(xml: str, tac: str) -> str:
+    """
+    Replace the operational usage attribute when the TAC has an explicit marker.
+
+    Parameters
+    ----------
+    xml : str
+        Successful convert document.
+
+    tac : str
+        Original TAC text.
+
+    Returns
+    -------
+    str
+        XML with usage attributes for a test or exercise, or the input XML.
+    """
+    attrs = _permissible_usage_attrs(tac)
+    if attrs == 'permissibleUsage="OPERATIONAL"':
+        return xml
+    return xml.replace('permissibleUsage="OPERATIONAL"', attrs, 1)
+
+
+_NIL_MISSING = "http://codes.wmo.int/common/nil/missing"
+_VALID_6 = re.compile(r"\b(\d{2})(\d{2})(\d{2})/(\d{2})(\d{2})(\d{2})\b")
+_VALID_4 = re.compile(r"\b(\d{2})(\d{2})/(\d{2})(\d{2})\b")
+_ATS_UNIT = re.compile(r"\b([A-Z]{4})\s+(?:SIGMET|AIRMET)\b")
+_ADVISORY_CENTRE = {
+    "VAAC": re.compile(r"^VAAC:\s*(\S+)", re.MULTILINE),
+    "TCAC": re.compile(r"^TCAC:\s*(\S+)", re.MULTILINE),
+    "SWXC": re.compile(r"^SWXC:\s*(\S+)", re.MULTILINE),
+}
+
+
+def _valid_period_xml(tac: str, now: str) -> str:
+    """
+    Build a valid-period element from a TAC validity group.
+
+    Parameters
+    ----------
+    tac : str
+        Original TAC text.
+
+    now : str
+        Issue timestamp ``YYYY-MM-DDTHH:MM:SSZ`` used for the year and month.
+
+    Returns
+    -------
+    str
+        A ``validPeriod`` element, nil when the TAC has no validity group.
+    """
+    six = _VALID_6.search(tac)
+    four = None if six else _VALID_4.search(tac)
+    match = six or four
+    if match is None:
+        return f'  <iwxxm:validPeriod nilReason="{_NIL_MISSING}"/>\n'
+    parts = match.groups()
+    if len(parts) == 6:
+        bday, bhour, bmin, eday, ehour, emin = parts
+    else:
+        bday, bhour, eday, ehour = parts
+        bmin = emin = "00"
+    # Same-day inverted / zero-length VALID must not enter the quarantine shell.
+    if bday == eday and (ehour, emin) <= (bhour, bmin):
+        return f'  <iwxxm:validPeriod nilReason="{_NIL_MISSING}"/>\n'
+    year_month = now[:7]
+    begin = f"{year_month}-{bday}T{bhour}:{bmin}:00Z"
+    end = f"{year_month}-{eday}T{ehour}:{emin}:00Z"
+    return (
+        "  <iwxxm:validPeriod>\n"
+        '    <gml:TimePeriod gml:id="t.valid">\n'
+        f"      <gml:beginPosition>{begin}</gml:beginPosition>\n"
+        f"      <gml:endPosition>{end}</gml:endPosition>\n"
+        "    </gml:TimePeriod>\n"
+        "  </iwxxm:validPeriod>\n"
+    )
+
+
+def _unit_xml(tag: str, name: str | None, *, unit_type: str) -> str:
+    """
+    Build an issuing-unit element.
+
+    Parameters
+    ----------
+    tag : str
+        IWXXM element local name.
+
+    name : str | None
+        Centre or unit token recovered from the TAC, or ``None``.
+
+    unit_type : str
+        AIXM unit type.
+
+    Returns
+    -------
+    str
+        The unit element, nil when ``name`` is absent.
+    """
+    if not name:
+        return f'  <iwxxm:{tag} nilReason="{_NIL_MISSING}"/>\n'
+    safe = escape(name)
+    designator = ""
+    if re.fullmatch(r"[A-Z0-9]{4}", name):
+        designator = f"\n        <aixm:designator>{safe}</aixm:designator>"
+    return (
+        f"  <iwxxm:{tag}>\n"
+        f'    <aixm:Unit gml:id="unit.{tag}">\n'
+        "      <aixm:timeSlice>\n"
+        f'        <aixm:UnitTimeSlice gml:id="unit.ts.{tag}">\n'
+        "          <gml:validTime/>\n"
+        "          <aixm:interpretation>SNAPSHOT</aixm:interpretation>\n"
+        f"          <aixm:name>{safe}</aixm:name>\n"
+        f"          <aixm:type>{unit_type}</aixm:type>{designator}\n"
+        "        </aixm:UnitTimeSlice>\n"
+        "      </aixm:timeSlice>\n"
+        "    </aixm:Unit>\n"
+        f"  </iwxxm:{tag}>\n"
+    )
+
+
+def _advisory_centre(tac: str, label: str) -> str | None:
+    """
+    Return the advisory-centre token for ``label``, or ``None``.
+
+    Parameters
+    ----------
+    tac : str
+        Original TAC text.
+
+    label : str
+        One of ``VAAC``, ``TCAC``, or ``SWXC``.
+
+    Returns
+    -------
+    str | None
+        Upper-case centre token.
+    """
+    match = _ADVISORY_CENTRE[label].search(tac)
+    return match.group(1).upper() if match else None
+
+
+def _quarantine_identity(product: str, tac: str, now: str) -> str:
+    """
+    Extra identity elements required on a failed shell.
+
+    Parameters
+    ----------
+    product : str
+        F6 product code.
+
+    tac : str
+        Original TAC text.
+
+    now : str
+        Issue timestamp.
+
+    Returns
+    -------
+    str
+        Identity XML, or an empty string when the shell already has its fields.
+    """
+    if product == "TAF":
+        return _valid_period_xml(tac, now)
+    if product in {"SIGMET", "AIRMET"}:
+        unit = _ATS_UNIT.search(tac)
+        name = unit.group(1) if unit else None
+        return _unit_xml("issuingAirTrafficServicesUnit", name, unit_type="FIC") + _valid_period_xml(tac, now)
+    centres = {
+        "VAA": ("issuingVolcanicAshAdvisoryCentre", "VAAC", "OTHER:VAAC"),
+        "TCA": ("issuingTropicalCycloneAdvisoryCentre", "TCAC", "OTHER:TCAC"),
+        "SWXA": ("issuingSpaceWeatherCentre", "SWXC", "OTHER:SWXC"),
+    }
+    spec = centres.get(product)
+    if spec is None:
+        return ""
+    tag, label, unit_type = spec
+    return _unit_xml(tag, _advisory_centre(tac, label), unit_type=unit_type)
+
+
+def _quarantine_xml(
+    product: str,
+    tac: str,
+    iwxxm_version: str,
+    *,
+    bulletin_id: str | None = None,
+    centre_designator: str | None = None,
+    centre_name: str | None = None,
+) -> str:
     """
     Emit official-shaped quarantine shell with ``@translationFailedTAC``.
 
     Parameters
     ----------
-    product :
+    product : str
         F6 product code.
-    tac :
+
+    tac : str
         Original TAC text (stored on translationFailedTAC).
-    iwxxm_version :
+
+    iwxxm_version : str
         IWXXM release line for namespace.
 
     Returns
@@ -323,6 +706,13 @@ def _quarantine_xml(product: str, tac: str, iwxxm_version: str) -> str:
     gml_id = f"{product.lower()}.translation.failed"
     failed_tac = escape(" ".join(tac.split()))
     now = datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%SZ")
+    designator = centre_designator or ""
+    centre = centre_name or ""
+    bulletin_attr = f'translatedBulletinID="{escape(bulletin_id)}" ' if bulletin_id else ""
+    if bulletin_id or designator or centre:
+        centre_attr = f'translationCentreDesignator="{escape(designator)}" translationCentreName="{escape(centre)}" '
+    else:
+        centre_attr = ""
     station_m = _STATION_AFTER_PRODUCT.search(tac)
     station = station_m.group("station").upper() if station_m else "YUDO"
     aerodrome = ""
@@ -363,19 +753,33 @@ def _quarantine_xml(product: str, tac: str, iwxxm_version: str) -> str:
         f'gml:id="{gml_id}" '
         'reportStatus="NORMAL" '
         'permissibleUsage="OPERATIONAL" '
-        'translatedBulletinID="TTAAiiCCCYYGGgg" '
+        f"{bulletin_attr}"
         f'translatedBulletinReceptionTime="{now}" '
-        'translationCentreDesignator="YUZZ" '
-        'translationCentreName="Fictional translation centre" '
+        f"{centre_attr}"
         f'translationTime="{now}" '
         f'translationFailedTAC="{failed_tac}">\n'
-        f"{time_block}{aerodrome}"
+        f"{time_block}{aerodrome}{_quarantine_identity(product, tac, now)}"
         f"</iwxxm:{root}>\n"
     )
 
 
 def _remark_span(tac: str, message: str) -> tuple[int | None, int | None]:
-    """Best-effort character span for a US REMARKS diagnostic message."""
+    """
+    Internal helper ``_remark_span``.
+
+    Parameters
+    ----------
+    tac : str
+        Argument ``tac``.
+
+    message : str
+        Argument ``message``.
+
+    Returns
+    -------
+    tuple[int | None, int | None]
+        Return value.
+    """
     for needle, pattern in _REMARK_SPAN_PATTERNS:
         if needle in message:
             match = pattern.search(tac)
@@ -390,15 +794,39 @@ class ConvertError(ValueError):
 
     Parameters
     ----------
-    message :
+    message : str
         Human-readable description.
     """
 
     def __init__(self, message: str) -> None:
+        """
+        Store ``message``.
+
+        Parameters
+        ----------
+        message : str
+            Human-readable message.
+        """
         super().__init__(message)
 
 
 def _parse(product: str, tac: str) -> dict[str, Any]:
+    """
+    Internal helper ``_parse``.
+
+    Parameters
+    ----------
+    product : str
+        Argument ``product``.
+
+    tac : str
+        Argument ``tac``.
+
+    Returns
+    -------
+    dict[str, Any]
+        Return value.
+    """
     parsers: dict[str, Callable[..., dict[str, Any]]] = {
         "METAR": parse_metar_speci,
         "SPECI": parse_metar_speci,
@@ -420,7 +848,28 @@ def _parse_pack_ir(
     iwxxm_version: str,
     profile: str,
 ) -> dict[str, Any]:
-    """Match the product pack and map spans into convert IR slots."""
+    """
+    Internal helper ``_parse_pack_ir``.
+
+    Parameters
+    ----------
+    product : str
+        Argument ``product``.
+
+    tac : str
+        Argument ``tac``.
+
+    iwxxm_version : str
+        Argument ``iwxxm_version``.
+
+    profile : str
+        Argument ``profile``.
+
+    Returns
+    -------
+    dict[str, Any]
+        Return value.
+    """
     packs = {item.id: item for item in load_packs(profile)}
     pack_id = pack_id_for_product(product, tac)
     pack = packs.get(pack_id)
@@ -444,6 +893,34 @@ def _parse_for_convert(
     profile: str,
     ir_source_explicit: bool,
 ) -> dict[str, Any]:
+    """
+    Internal helper ``_parse_for_convert``.
+
+    Parameters
+    ----------
+    product : str
+        Argument ``product``.
+
+    tac : str
+        Argument ``tac``.
+
+    ir_source : str
+        Argument ``ir_source``.
+
+    iwxxm_version : str
+        Argument ``iwxxm_version``.
+
+    profile : str
+        Argument ``profile``.
+
+    ir_source_explicit : bool
+        Argument ``ir_source_explicit``.
+
+    Returns
+    -------
+    dict[str, Any]
+        Return value.
+    """
     if ir_source == "pack":
         try:
             return _parse_pack_ir(product, tac, iwxxm_version=iwxxm_version, profile=profile)
@@ -456,6 +933,28 @@ def _parse_for_convert(
 
 
 def _emit(product: str, profile: str, ir: dict[str, Any], iwxxm_version: str) -> str:
+    """
+    Internal helper ``_emit``.
+
+    Parameters
+    ----------
+    product : str
+        Argument ``product``.
+
+    profile : str
+        Argument ``profile``.
+
+    ir : dict[str, Any]
+        Argument ``ir``.
+
+    iwxxm_version : str
+        Argument ``iwxxm_version``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
     if product in {"METAR", "SPECI", "TAF", "SIGMET", "AIRMET", "VAA", "TCA"}:
         # ADR-047: core F6 products emit via YAML maps (python plugins remain builders).
         return emit_with_map(ir, product=product, profile=profile, iwxxm_version=iwxxm_version)
@@ -474,6 +973,7 @@ def _inject_translation_centre(
     *,
     designator: str,
     name: str,
+    heading: tuple[str, str] | None = None,
 ) -> str:
     """
     Insert ``translationCentre*`` attributes on the IWXXM root element.
@@ -493,10 +993,44 @@ def _inject_translation_centre(
         XML with centre attributes on the first ``iwxxm:*`` root start tag.
     """
     extra = f'\n    translationCentreDesignator="{escape(designator)}"\n    translationCentreName="{escape(name)}"'
+    if heading is not None:
+        bulletin_id, translation_time = heading
+        extra += (
+            f'\n    translatedBulletinID="{escape(bulletin_id)}"'
+            f'\n    translatedBulletinReceptionTime="{escape(translation_time)}"'
+            f'\n    translationTime="{escape(translation_time)}"'
+        )
     match = _ROOT_OPEN.search(xml)
     if match is None:
         return xml
     return xml[: match.start()] + match.group(1) + match.group(2) + extra + match.group(3) + xml[match.end() :]
+
+
+def _xml_gzip(xml: str | None, suggested_filename: str | None) -> bytes | None:
+    """
+    Gzip the IWXXM text when the suggested name ends in ``.xml.gz``.
+
+    Parameters
+    ----------
+    xml : str | None
+        IWXXM document text.
+
+    suggested_filename : str | None
+        Guideline filename, or ``None``.
+
+    Returns
+    -------
+    bytes | None
+        Compressed document, or ``None`` when there is nothing to compress.
+
+    Examples
+    --------
+    >>> _xml_gzip(None, None) is None
+    True
+    """
+    if xml and suggested_filename and suggested_filename.endswith(".xml.gz"):
+        return gzip.compress(xml.encode("utf-8"))
+    return None
 
 
 def convert(
@@ -513,52 +1047,75 @@ def convert(
     report_variant: str | None = None,
     propagate_residuals_to_remarks: bool | None = None,
     ir_source: str | None = None,
+    bulletin_date: str | None = None,
 ) -> ConvertResult:
     """
     Convert a TAC report to IWXXM XML.
 
     Parameters
     ----------
-    tac :
+    tac : str
         TAC text (single report or bulletin containing one report).
-    product :
+
+    product : str
         One of the F6 products or ``SWXA`` (F28).
-    profile :
+
+    profile : str, optional
         ``annex3`` (default) or ``iwxxm_us`` (METAR/SPECI US extensions; others T5.4-T5.5).
-    iwxxm_version :
+
+    iwxxm_version : str | None, optional
         Target IWXXM release line.
-    preview :
+
+    preview : bool, optional
         When ``True``, fatal parse/profile failures still return best-effort stub XML
         (soft-preview / ADR-022). Does not imply Schematron-passed publish.
-    emit_translation_centre :
+
+    emit_translation_centre : bool, optional
         When ``True``, emit ``translationCentreDesignator`` / ``translationCentreName``
         on successful convert (cross-State / Translation Centre mode; FAQ §14.5).
         Default ``False`` omits them for in-State convert. Quarantine shells always
         include centre attrs (official ``*-translation-failed`` model).
-    translation_centre_designator :
+
+    translation_centre_designator : str, optional
         Designator when ``emit_translation_centre`` is true.
-    translation_centre_name :
+
+    translation_centre_name : str, optional
         Human-readable centre name when ``emit_translation_centre`` is true.
-    report_status :
+
+    report_status : str | None, optional
         Optional IWXXM ``reportStatus`` override (``NORMAL`` / ``AMENDMENT`` /
         ``CORRECTION``). Used for AHL BBB→reportStatus when the TAC body has no
         COR/AMD keyword (EV-029 M2 / #823 B3). When omitted, emitters keep
         body-derived COR → CORRECTION behavior.
-    propagate_residuals_to_remarks :
+
+    propagate_residuals_to_remarks : bool | None, optional
         When ``True``, fold decode residual token text into the profile remarks /
         ``humanReadableText`` path (or document no XML target on annex3). When
         ``None``, use the semantic-profile default (annex3 / ICAO_2025 → off).
-    ir_source :
+
+    ir_source : str | None, optional
         ``legacy``, ``pack``, or ``auto`` (default). ``auto`` uses pack IR for
         METAR/SPECI and legacy parsers for other products. Override with
         ``TAC2IWXXM_CONVERT_IR_SOURCE`` when omitted.
+
+    bulletin_date : str | None, optional
+        Optional ``YYYY-MM-DD`` (or a timestamp with that prefix) used as the
+        year and month for TAC day stamps. Omitted conversions keep example
+        pins such as ``2023-06`` and ``2012-08``.
 
     Returns
     -------
     ConvertResult
         Structured result with XML, IR, and issues.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (convert)
+    2
     """
     product_u = product.upper()
+    if product_u in {"METAR", "SPECI"}:
+        tac = fold_observation_case(tac)
     requested_iwxxm_version = iwxxm_version or "2025-2"
     resolved = resolve_semantic_profile(profile)
     if resolved is None:
@@ -589,9 +1146,20 @@ def convert(
     profile_l = resolved.emit_key
     semantic_profile = resolved.canonical
     deprecated_alias_used = resolved.alias_used
+    heading = _heading_from_tac(tac)
+    issued_at = datetime.now(UTC)
+    issued_text = issued_at.strftime("%Y-%m-%dT%H:%M:%SZ")
+    bulletin_id = _compact_bulletin_id(heading) if heading is not None else None
+    suggested_filename = (
+        iwxxm_filename(heading, issued_at=issued_at, gzip=True)
+        if heading is not None and profile_l != EMIT_CA_ECCC
+        else None
+    )
     do_propagate = resolve_propagate_residuals_to_remarks(profile_l, propagate_residuals_to_remarks)
     effective_iwxxm_version = (
-        CA_IWXXM_VERSION if profile_l == EMIT_CA_ECCC and iwxxm_version is None else requested_iwxxm_version
+        CA_IWXXM_VERSION
+        if profile_l in {EMIT_CA_ECCC, EMIT_CA_MSC_SIGMET} and iwxxm_version is None
+        else requested_iwxxm_version
     )
 
     def _fail(
@@ -600,6 +1168,25 @@ def convert(
         *,
         span: bool = False,
     ) -> ConvertResult:
+        """
+        Internal helper ``_fail``.
+
+        Parameters
+        ----------
+        code : str
+            Argument ``code``.
+
+        message : str
+            Argument ``message``.
+
+        span : bool, optional
+            Argument ``span``.
+
+        Returns
+        -------
+        ConvertResult
+            Return value.
+        """
         span_start = span_end = None
         if span:
             span_start, span_end = _content_bounds(tac)
@@ -624,28 +1211,8 @@ def convert(
 
     if product_u not in _SUPPORTED_PRODUCTS:
         return _fail("UNSUPPORTED_PRODUCT", f"product {product_u!r} not supported yet")
-    if profile_l == EMIT_IWXXM_US and product_u not in _US_PRODUCTS:
-        return _fail(
-            "UNSUPPORTED_PROFILE",
-            f"profile iwxxm_us not supported yet for product {product_u!r}",
-        )
-    if profile_l == EMIT_CA_ECCC and product_u not in _CA_ECCC_PRODUCTS:
-        return _fail(
-            "UNSUPPORTED_PROFILE",
-            f"profile ca_eccc not supported yet for product {product_u!r}",
-        )
-    if profile_l == EMIT_AU_BOM and product_u not in _AU_BOM_PRODUCTS:
-        return _fail(
-            "UNSUPPORTED_PROFILE",
-            f"profile au_bom not supported yet for product {product_u!r}",
-        )
-    if profile_l == EMIT_NZ_CAA_MET and product_u not in _NZ_CAA_MET_PRODUCTS:
-        return _fail(
-            "UNSUPPORTED_PROFILE",
-            f"profile nz_caa_met not supported yet for product {product_u!r}",
-        )
-    thin_products = _THIN_COMPAT_PRODUCTS.get(profile_l)
-    if thin_products is not None and product_u not in thin_products:
+    gated = products_for(profile_l)
+    if gated is not None and product_u not in gated:
         return _fail(
             "UNSUPPORTED_PROFILE",
             f"profile {profile_l} not supported yet for product {product_u!r}",
@@ -663,6 +1230,8 @@ def convert(
             "INVALID_IWXXM_VERSION",
             message,
         )
+    if profile_l in _SOURCE_UNAVAILABLE:
+        return _fail("SOURCE_UNAVAILABLE", _SOURCE_UNAVAILABLE[profile_l])
     if not preview:
         # TC-EVYFC-004 / D-YFC-05: fail-closed pin↔SCH (soft-preview waived).
         try:
@@ -702,6 +1271,14 @@ def convert(
                 f"report_status {report_status!r} must be one of {sorted(_REPORT_STATUSES)}",
             )
 
+    time_anchor: str | None = None
+    if bulletin_date is not None and str(bulletin_date).strip():
+        try:
+            time_anchor = anchor_from_bulletin_date(str(bulletin_date))
+        except ValueError:
+            return _fail("INVALID_BULLETIN_DATE", "bulletin_date must be a calendar date (YYYY-MM-DD)")
+
+    anchor_token = push_bulletin_anchor(time_anchor)
     propagate_issue: ConvertIssue | None = None
     try:
         if _UNRELIABLE_TAC.search(tac):
@@ -718,6 +1295,8 @@ def convert(
             profile=profile_l,
             ir_source_explicit=_ir_source_is_explicit_pack(ir_source),
         )
+        if time_anchor is not None:
+            ir = {**ir, "time_anchor": time_anchor}
         if resolved_report_variant is not None and profile_l == EMIT_CA_ECCC and product_u == "METAR":
             ir = {**ir, "ca_iwxxm_root": resolved_report_variant}
         if status_override is not None:
@@ -729,13 +1308,43 @@ def convert(
                 profile_l=profile_l,
                 ir=ir,
             )
-        xml = _emit(product_u, profile_l, ir, effective_iwxxm_version)
+        if profile_l == EMIT_US_NWS_CONVECTIVE_SIGMET:
+            if not ir.get("convective"):
+                return _fail(
+                    "NOT_CONVECTIVE_SIGMET",
+                    "This profile converts United States convective SIGMET text, not an international SIGMET.",
+                )
+            xml = _emit(product_u, EMIT_IWXXM_US, ir, effective_iwxxm_version)
+        else:
+            xml = _emit(product_u, profile_l, ir, effective_iwxxm_version)
+    except ImpossibleTacDay as exc:
+        return _fail("IMPOSSIBLE_TAC_DAY", str(exc))
+    except UnknownVOR as exc:
+        return _fail("PARSE_ERROR", f"unknown VOR reference {exc}", span=True)
     except ValueError as exc:
         message = str(exc)
         if preview:
             return _fail("PARSE_ERROR", message, span=True)
+        # Structural SIGMET/AIRMET defects fail closed — do not soft-succeed a
+        # quarantine shell that could still invent TS or inverted validPeriod.
+        hard_fail_markers = (
+            "missing phenomenon",
+            "incomplete CNL",
+            "valid period end must be after begin",
+            "coordinate out of range",
+        )
+        if any(marker in message for marker in hard_fail_markers):
+            return _fail("PARSE_ERROR", message, span=True)
         if _should_quarantine(tac, product_u):
             span_start, span_end = _content_bounds(tac)
+            quarantine_xml = _quarantine_xml(
+                product_u,
+                tac.strip(),
+                effective_iwxxm_version,
+                bulletin_id=bulletin_id,
+                centre_designator=translation_centre_designator or None,
+                centre_name=translation_centre_name or None,
+            )
             return ConvertResult(
                 ok=True,
                 product=product_u,
@@ -743,7 +1352,9 @@ def convert(
                 iwxxm_version=effective_iwxxm_version,
                 semantic_profile=semantic_profile,
                 deprecated_alias_used=deprecated_alias_used,
-                xml=_quarantine_xml(product_u, tac.strip(), effective_iwxxm_version),
+                xml=quarantine_xml,
+                xml_gzip=_xml_gzip(quarantine_xml, suggested_filename),
+                suggested_filename=suggested_filename,
                 issues=[
                     ConvertIssue(
                         severity="warning",
@@ -755,12 +1366,29 @@ def convert(
                 ],
             )
         return _fail("PARSE_ERROR", message, span=True)
+    finally:
+        pop_bulletin_anchor(anchor_token)
 
     issues: list[ConvertIssue] = []
     # Alias resolution remains server-side; do not surface DEPRECATED_PROFILE_ALIAS
     # to operators (EV-beta-ux-export-auth / D-EV-beta-05).
     if propagate_issue is not None:
         issues.append(propagate_issue)
+    # Pipeline overlay: decode residuals → TAC warning (ADR-054 ladder; live-eval map).
+    decoded_for_partial = decode_tac(tac, product=product_u)
+    residual_spans = [r for r in decoded_for_partial.residuals if r.text and r.text.strip()]
+    if residual_spans:
+        first = residual_spans[0]
+        issues.append(
+            ConvertIssue(
+                severity="warning",
+                code="PARTIAL_DECODE",
+                message=("Some TAC tokens were not decoded (partial decode); conversion may still succeed"),
+                location="decode",
+                start=first.start,
+                end=residual_spans[-1].end,
+            )
+        )
     # D-EV087-inter-emit / national remark provenance (AU INTER, TAF3, NZ domestic extras).
     national_tokens = ir.get("national_remark_tokens")
     if isinstance(national_tokens, list) and national_tokens:
@@ -782,10 +1410,7 @@ def convert(
             ConvertIssue(
                 severity="info",
                 code="REMARKS_EXCLUDED",
-                message=(
-                    "REMARKS (RMK) present in TAC but excluded from annex3 IWXXM output; "
-                    "use profile=iwxxm_us to retain US remarks"
-                ),
+                message="Remarks after RMK stay out of the international report.",
                 location="remarks",
                 start=rmk_match.start() if rmk_match else None,
                 end=rmk_match.end() if rmk_match else None,
@@ -818,7 +1443,10 @@ def convert(
             xml,
             designator=translation_centre_designator,
             name=translation_centre_name,
+            heading=(bulletin_id, issued_text) if bulletin_id is not None else None,
         )
+
+    xml = _apply_permissible_usage(xml, tac)
 
     return ConvertResult(
         ok=True,
@@ -828,8 +1456,10 @@ def convert(
         semantic_profile=semantic_profile,
         deprecated_alias_used=deprecated_alias_used,
         xml=xml,
+        xml_gzip=_xml_gzip(xml, suggested_filename),
         ir=ir,
         issues=issues,
+        suggested_filename=suggested_filename,
     )
 
 

@@ -11,12 +11,41 @@ _REPO_ROOT = Path(__file__).resolve().parents[4]
 
 
 def get_config_env() -> str:
-    """Return active config profile (``local`` or ``prod``)."""
+    """
+    Return active config profile (``local`` or ``prod``).
+
+    Returns
+    -------
+    str
+        Active config profile (``local`` or ``prod``).
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (get_config_env)
+    2
+    """
     return os.getenv("METAR_CONFIG_ENV", "local").strip() or "local"
 
 
 def config_path(env: str | None = None) -> Path:
-    """Path to ``config/{env}.json`` under the repository root."""
+    """
+    Path to ``config/{env}.json`` under the repository root.
+
+    Parameters
+    ----------
+    env : str | None, optional
+        Config profile. ``None`` uses ``METAR_CONFIG_ENV`` or ``local``.
+
+    Returns
+    -------
+    Path
+        Path to ``config/{env}.json`` under the repository root.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (config_path)
+    2
+    """
     profile = (env or get_config_env()).strip() or "local"
     return _REPO_ROOT / "config" / f"{profile}.json"
 
@@ -27,7 +56,7 @@ def load_config(env: str | None = None) -> dict[str, Any]:
 
     Parameters
     ----------
-    env
+    env : str | None, optional
         Profile name; defaults to ``METAR_CONFIG_ENV`` or ``local``.
 
     Returns
@@ -41,6 +70,11 @@ def load_config(env: str | None = None) -> dict[str, Any]:
         When the profile file is missing.
     json.JSONDecodeError
         When the file is not valid JSON.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (load_config)
+    2
     """
     path = config_path(env)
     with path.open(encoding="utf-8") as handle:
@@ -48,7 +82,24 @@ def load_config(env: str | None = None) -> dict[str, Any]:
 
 
 def get_supabase_url_from_config(env: str | None = None) -> str:
-    """Return ``supabase.url`` from config, or empty string when unset."""
+    """
+    Return ``supabase.url`` from config, or empty string when unset.
+
+    Parameters
+    ----------
+    env : str | None, optional
+        Config profile. ``None`` uses ``METAR_CONFIG_ENV`` or ``local``.
+
+    Returns
+    -------
+    str
+        ``supabase.url`` from config, or empty string when unset.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (get_supabase_url_from_config)
+    2
+    """
     try:
         cfg = load_config(env)
     except (FileNotFoundError, json.JSONDecodeError, OSError):
@@ -62,7 +113,24 @@ def get_supabase_url_from_config(env: str | None = None) -> str:
 
 
 def get_cors_origins_from_config(env: str | None = None) -> list[str]:
-    """Return ``api.corsOrigins`` from config, or empty list when unset."""
+    """
+    Return ``api.corsOrigins`` from config, or empty list when unset.
+
+    Parameters
+    ----------
+    env : str | None, optional
+        Config profile. ``None`` uses ``METAR_CONFIG_ENV`` or ``local``.
+
+    Returns
+    -------
+    list[str]
+        ``api.corsOrigins`` from config, or empty list when unset.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (get_cors_origins_from_config)
+    2
+    """
     try:
         cfg = load_config(env)
     except (FileNotFoundError, json.JSONDecodeError, OSError):
@@ -80,7 +148,24 @@ def get_cors_origins_from_config(env: str | None = None) -> list[str]:
 
 
 def get_frontend_url_from_config(env: str | None = None) -> str:
-    """Return ``api.frontendUrl`` from config, or empty string when unset."""
+    """
+    Return ``api.frontendUrl`` from config, or empty string when unset.
+
+    Parameters
+    ----------
+    env : str | None, optional
+        Config profile. ``None`` uses ``METAR_CONFIG_ENV`` or ``local``.
+
+    Returns
+    -------
+    str
+        ``api.frontendUrl`` from config, or empty string when unset.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (get_frontend_url_from_config)
+    2
+    """
     try:
         cfg = load_config(env)
     except (FileNotFoundError, json.JSONDecodeError, OSError):

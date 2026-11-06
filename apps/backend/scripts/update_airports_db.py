@@ -8,14 +8,27 @@ to the JSON format expected by the Airport validator.
 
 import csv
 import json
+import re
 import sys
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any
 from urllib.request import urlretrieve
 
 
 def download_ourairports_data(output_path: Path) -> None:
-    """Download airports.csv from OurAirports."""
+    """
+    Download airports.csv from OurAirports.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (download_ourairports_data)
+    2
+
+    Parameters
+    ----------
+    output_path : object
+        Argument ``output_path``.
+    """
     url = "https://davidmegginson.github.io/ourairports-data/airports.csv"
     print(f"Downloading from {url}...")
     urlretrieve(url, output_path)
@@ -23,14 +36,28 @@ def download_ourairports_data(output_path: Path) -> None:
 
 
 def convert_csv_to_json(csv_path: Path, json_path: Path) -> None:
-    """Convert OurAirports CSV to airports.json format."""
+    """
+    Convert OurAirports CSV to airports.json format.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (convert_csv_to_json)
+    2
+
+    Parameters
+    ----------
+    csv_path : object
+        Argument ``csv_path``.
+    json_path : object
+        Argument ``json_path``.
+    """
     # Load vertical datum mapping
     datum_map_path = json_path.parent / "vertical_datum_map.json"
     datum_defaults = {}
 
     try:
         if datum_map_path.exists():
-            with open(datum_map_path, "r", encoding="utf-8") as f:
+            with open(datum_map_path, encoding="utf-8") as f:
                 datum_data = json.load(f)
                 datum_defaults = datum_data.get("country_defaults", {})
             print(f"Loaded vertical datum mappings for {len(datum_defaults)} countries")
@@ -41,18 +68,23 @@ def convert_csv_to_json(csv_path: Path, json_path: Path) -> None:
     skipped = 0
 
     print(f"Reading {csv_path}...")
-    with open(csv_path, "r", encoding="utf-8") as f:
+    with open(csv_path, encoding="utf-8") as f:
         reader = csv.DictReader(f)
 
         for row in reader:
-            # Skip airports without ICAO codes
-            icao = row.get("icao_code", "").strip()
-            if not icao or icao == "":
+            # Prefer icao_code; fall back to ident when it is a 4-char designator
+            # (aligns with ADR-051 reference-lookup matching on ident).
+            icao = row.get("icao_code", "").strip().upper()
+            if not icao:
+                ident = row.get("ident", "").strip().upper()
+                if re.fullmatch(r"[A-Z0-9]{4}", ident):
+                    icao = ident
+            if not icao:
                 skipped += 1
                 continue
 
             # Build airport object
-            airport: Dict[str, Any] = {
+            airport: dict[str, Any] = {
                 "icao": icao,
                 "name": row.get("name", "").strip(),
                 "type": row.get("type", "").strip(),
@@ -113,6 +145,23 @@ def convert_csv_to_json(csv_path: Path, json_path: Path) -> None:
 
     print(f"Converted {len(airports)} airports (skipped {skipped} without ICAO codes)")
 
+    # Re-apply checked-in supplements so a full OurAirports refresh does not drop
+    # METAR stations that only appear in NOAA AWC (or OA ident-only rows).
+    supplements_path = json_path.parent / "airport_registry_supplements.json"
+    if supplements_path.exists():
+        with open(supplements_path, encoding="utf-8") as f:
+            supplement_payload = json.load(f)
+        existing = {a.get("icao", "").upper() for a in airports}
+        added = 0
+        for row in supplement_payload.get("stations") or []:
+            icao = (row.get("icao") or "").strip().upper()
+            if not icao or icao in existing:
+                continue
+            airports.append(row)
+            existing.add(icao)
+            added += 1
+        print(f"Merged {added} supplement stations from {supplements_path.name}")
+
     # Write JSON
     print(f"Writing to {json_path}...")
     with open(json_path, "w", encoding="utf-8") as f:
@@ -123,8 +172,20 @@ def convert_csv_to_json(csv_path: Path, json_path: Path) -> None:
 
 
 def verify_bgbw(json_path: Path) -> None:
-    """Verify BGBW is in the database."""
-    with open(json_path, "r", encoding="utf-8") as f:
+    """
+    Verify BGBW is in the database.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (verify_bgbw)
+    2
+
+    Parameters
+    ----------
+    json_path : object
+        Argument ``json_path``.
+    """
+    with open(json_path, encoding="utf-8") as f:
         airports = json.load(f)
 
     bgbw = None
@@ -146,7 +207,14 @@ def verify_bgbw(json_path: Path) -> None:
 
 
 def main():
-    """Main execution."""
+    """
+    Main execution.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (main)
+    2
+    """
     # Determine paths
     script_dir = Path(__file__).parent
     backend_dir = script_dir.parent

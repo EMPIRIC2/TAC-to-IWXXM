@@ -5,6 +5,16 @@ from __future__ import annotations
 import re
 from typing import Any
 
+from tac2iwxxm.bulletin import BulletinSplitError, parse_ahl
+from tac2iwxxm.slot_builders.metar_speci import parse_statute_mile_fraction
+from tac2iwxxm.taf_prob import is_unqualified_probability, probability_tempo_parts
+from tac2iwxxm.time_anchor import iso_stamp
+from tac2iwxxm.visibility_measure import (
+    TAF_STATUTE_MILE_GROUP,
+    prevailing_from_metre_group,
+    prevailing_from_statute_miles,
+)
+
 _TAF = re.compile(
     r"^(?:TAF\s+)?(?:AMD\s+|COR\s+)?(?P<station>[A-Z][A-Z0-9]{3})\s+"
     r"(?P<issue>\d{6})Z\s+"
@@ -18,13 +28,19 @@ _TAF_NIL_ONLY = re.compile(
 )
 _WIND = re.compile(r"\b(?P<dir>\d{3}|VRB)(?P<spd>\d{2,3})(?:G(?P<gust>\d{2,3}))?(?P<uom>KT|MPS)\b")
 _VIS_M = re.compile(r"\b(?P<vis>\d{4})\b")
-_VIS_SM = re.compile(r"\b(?P<mod>P)?(?P<vis>\d{1,2})SM\b")
+_VIS_SM = TAF_STATUTE_MILE_GROUP
 _NCLWS = re.compile(r"\bWS(?P<height>\d{3})/(?P<dir>\d{3})(?P<spd>\d{2,3})KT\b")
-_CLOUD = re.compile(r"\b(?P<amt>FEW|SCT|BKN|OVC)(?P<base>\d{3})(?P<ctype>CB|TCU)?\b")
+_CLOUD = re.compile(r"\b(?P<amt>FEW|SCT|BKN|OVC)(?P<base>\d{3}|///)(?P<ctype>CB|TCU)?\b")
+_NSC = re.compile(r"\bNSC\b")
+_NCD = re.compile(r"\bNCD\b")
+_SKC_CLR = re.compile(r"\b(?:SKC|CLR)\b")
+# Trailing (?![A-Z0-9/]) — not \b — so VV/// still matches (slash is non-word).
+_VV = re.compile(r"\bVV(?P<vv>\d{3}|///)(?![A-Z0-9/])")
 _ALT_INHG = re.compile(r"\bA(?P<alt>\d{4})\b")
 _NIL = re.compile(r"\bNIL\b")
 _CNL = re.compile(r"\bCNL\b")
-_CAVOK = re.compile(r"\bCAVOK\b")
+# Accept live spaced typo ``C A V O K`` (HAAB / #1553) as CAVOK for TAF.TAF-8.
+_CAVOK = re.compile(r"\bC(?:AVOK|\s+A\s+V\s+O\s+K)\b")
 _BECMG = re.compile(
     r"\bBECMG\s+(?P<from>\d{4})/(?P<to>\d{4})\s+(?P<body>.*)$",
     re.DOTALL,
@@ -46,10 +62,19 @@ _WX_TOKEN = re.compile(
     r"(?<![A-Z0-9/])(?P<wx>"
     r"(?:\+|-|VC)?"
     r"(?:MI|PR|BC|DR|BL|SH|TS|FZ)?"
-    r"(?:DZ|RA|SN|SG|PL|GR|GS|UP|BR|FG|FU|VA|DU|SA|HZ|PY|PO|SQ|FC|SS|DS|IC)+"
+    r"(?:DZ|RA|SN|SG|PL|GR|GS|UP|BR|FG|FU|VA|DU|SA|HZ|PY|PO|SQ|FC|SS|DS|IC|TS)+"
+    r"|VCSH"
     r")(?![A-Z0-9/])"
 )
-_CHANGE_TOKEN = r"(?:BECMG\s+\d{4}/\d{4}|(?:TEMPO|EMPO)\s+\d{4}/\d{4}|INTER\s+\d{4}/\d{4}|FM\d{6})"
+_CHANGE_TOKEN = (
+    r"(?:"
+    r"(?:PROB(?:30|40)\s+)?(?:TEMPO|EMPO)\s+\d{4}/\d{4}"
+    r"|BECMG\s+\d{4}/\d{4}"
+    r"|INTER\s+\d{4}/\d{4}"
+    r"|FM\d{6}"
+    r"|PROB(?:30|40)(?:\s+\d{4}/\d{4})?"
+    r")"
+)
 _CHANGE_GROUP = re.compile(
     rf"\b{_CHANGE_TOKEN}\b.*?(?=\b{_CHANGE_TOKEN}\b|$)",
     re.DOTALL,
@@ -63,6 +88,19 @@ _NZ_QNH_MNM_MAX = re.compile(r"\bQNH\s+MNM\s+(?P<mnm>\d{4})\s+MAX\s+(?P<max>\d{4
 
 
 def _modifier_flags(joined: str) -> dict[str, bool]:
+    """
+    Internal helper ``_modifier_flags``.
+
+    Parameters
+    ----------
+    joined : str
+        Argument ``joined``.
+
+    Returns
+    -------
+    dict[str, bool]
+        Return value.
+    """
     upper = joined.upper()
     # "TAF AMD …" / "TAF COR …" (not station-embedded).
     return {
@@ -72,12 +110,27 @@ def _modifier_flags(joined: str) -> dict[str, bool]:
 
 
 def _parse_clouds(text: str) -> list[dict[str, Any]]:
+    """
+    Internal helper ``_parse_clouds``.
+
+    Parameters
+    ----------
+    text : str
+        Argument ``text``.
+
+    Returns
+    -------
+    list[dict[str, Any]]
+        Return value.
+    """
     layers: list[dict[str, Any]] = []
     for c in _CLOUD.finditer(text):
-        layer: dict[str, Any] = {
-            "amount": c.group("amt"),
-            "base_ft": int(c.group("base")) * 100,
-        }
+        layer: dict[str, Any] = {"amount": c.group("amt")}
+        base = c.group("base")
+        if base == "///":
+            layer["base_not_observable"] = True
+        else:
+            layer["base_ft"] = int(base) * 100
         if c.group("ctype"):
             layer["cloud_type"] = c.group("ctype")
         layers.append(layer)
@@ -85,6 +138,17 @@ def _parse_clouds(text: str) -> list[dict[str, Any]]:
 
 
 def _parse_wind(text: str, target: dict[str, Any]) -> None:
+    """
+    Internal helper ``_parse_wind``.
+
+    Parameters
+    ----------
+    text : str
+        Argument ``text``.
+
+    target : dict[str, Any]
+        Argument ``target``.
+    """
     wind = _WIND.search(text)
     if wind is None:
         return
@@ -103,6 +167,19 @@ def _parse_wind(text: str, target: dict[str, Any]) -> None:
 
 
 def _parse_wx(text: str) -> list[str]:
+    """
+    Internal helper ``_parse_wx``.
+
+    Parameters
+    ----------
+    text : str
+        Argument ``text``.
+
+    Returns
+    -------
+    list[str]
+        Return value.
+    """
     return [m.group("wx") for m in _WX_TOKEN.finditer(text)]
 
 
@@ -110,14 +187,38 @@ _CODE_CA_PRESENT_FORECAST_WEATHER = "https://dd.weather.gc.ca/today/aviation/iwx
 
 
 def _ca_forecast_weather_hrefs(wx_tokens: list[str]) -> list[str]:
-    """Map MANAIR TAF weather groups to MSC ``present_and_forecast_weather`` hrefs."""
+    """
+    Internal helper ``_ca_forecast_weather_hrefs``.
+
+    Parameters
+    ----------
+    wx_tokens : list[str]
+        Argument ``wx_tokens``.
+
+    Returns
+    -------
+    list[str]
+        Return value.
+    """
     hrefs: list[str] = []
     hrefs.extend(f"{_CODE_CA_PRESENT_FORECAST_WEATHER}/IC" for token in wx_tokens if token.upper() == "IC")
     return hrefs
 
 
 def _parse_nclws(text: str) -> dict[str, Any] | None:
-    """Parse MANAIR low-level wind shear group ``WShhh/dddffKT``."""
+    """
+    Internal helper ``_parse_nclws``.
+
+    Parameters
+    ----------
+    text : str
+        Argument ``text``.
+
+    Returns
+    -------
+    dict[str, Any] | None
+        Return value.
+    """
     match = _NCLWS.search(text)
     if match is None:
         return None
@@ -129,16 +230,41 @@ def _parse_nclws(text: str) -> dict[str, Any] | None:
 
 
 def _parse_forecast_body(text: str, *, cavok_ok: bool = True) -> dict[str, Any]:
-    """Parse wind / vis / cloud / weather from a base or change-group body."""
+    """
+    Internal helper ``_parse_forecast_body``.
+
+    Parameters
+    ----------
+    text : str
+        Argument ``text``.
+
+    cavok_ok : bool, optional
+        Argument ``cavok_ok``.
+
+    Returns
+    -------
+    dict[str, Any]
+        Return value.
+    """
     out: dict[str, Any] = {}
+    # Parse wind before CAVOK short-circuit — TAF.TAF-7 still requires surfaceWind
+    # on non-empty baseForecast even when cloudAndVisibilityOK is true.
+    _parse_wind(text, out)
     if cavok_ok and _CAVOK.search(text):
         out["cavok"] = True
         return out
-    _parse_wind(text, out)
     vis_sm = _VIS_SM.search(text)
     if vis_sm is not None:
-        out["visibility_sm"] = int(vis_sm.group("vis"))
-        out["visibility_above"] = vis_sm.group("mod") == "P"
+        sm = parse_statute_mile_fraction(vis_sm.group("vis"))
+        whole = int(sm)
+        out["visibility_sm"] = whole if sm == whole else sm
+        if vis_sm.group("mod") == "P":
+            out["visibility_above"] = True
+        else:
+            metres, above = prevailing_from_statute_miles(sm)
+            out["visibility_above"] = above
+            if above or sm != whole:
+                out["visibility_m"] = metres
     else:
         vis_km = _VIS_KM.search(text)
         if vis_km is not None:
@@ -151,14 +277,34 @@ def _parse_forecast_body(text: str, *, cavok_ok: bool = True) -> dict[str, Any]:
         else:
             vis = _VIS_M.search(text)
             if vis is not None:
-                metres = int(vis.group("vis"))
-                out["visibility_m"] = 10000 if metres >= 9999 else metres
-                out["visibility_above"] = metres >= 9999
-    clouds = _parse_clouds(text)
-    if clouds:
-        out["clouds"] = clouds
-        out["cloud_amount"] = clouds[0]["amount"]
-        out["cloud_base_ft"] = clouds[0]["base_ft"]
+                metres, above = prevailing_from_metre_group(int(vis.group("vis")))
+                out["visibility_m"] = metres
+                out["visibility_above"] = above
+    # Cloud / sky state: NSC/NCD exclusive (METAR parity); else VV; else SKC/CLR;
+    # else layered FEW/SCT/BKN/OVC. TAF-8 requires iwxxm:cloud whenever CAVOK false.
+    if _NSC.search(text):
+        out["nsc"] = True
+    elif _NCD.search(text):
+        out["ncd"] = True
+    else:
+        vv = _VV.search(text)
+        if vv is not None:
+            token = vv.group("vv")
+            if token == "///":
+                out["vertical_visibility_not_observable"] = True
+            else:
+                out["vertical_visibility_ft"] = int(token) * 100
+        elif _SKC_CLR.search(text):
+            # CLR maps to CloudAmountReportedAtAerodrome/SKC (no CLR concept URI).
+            out["clouds"] = [{"amount": "SKC", "base_inapplicable": True}]
+            out["cloud_amount"] = "SKC"
+        else:
+            clouds = _parse_clouds(text)
+            if clouds:
+                out["clouds"] = clouds
+                out["cloud_amount"] = clouds[0]["amount"]
+                if "base_ft" in clouds[0]:
+                    out["cloud_base_ft"] = clouds[0]["base_ft"]
     wx = _parse_wx(text)
     if wx:
         out["weather"] = wx
@@ -166,18 +312,72 @@ def _parse_forecast_body(text: str, *, cavok_ok: bool = True) -> dict[str, Any]:
 
 
 def _taf_day_hour_stamp(ir: dict[str, Any], ddhh: str, *, minute: int = 0) -> str:
-    prefix = "2012-08" if ir.get("station") == "YUDO" else "2023-06"
+    """
+    Internal helper ``_taf_day_hour_stamp``.
+
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Argument ``ir``.
+
+    ddhh : str
+        Argument ``ddhh``.
+
+    minute : int, optional
+        Argument ``minute``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
+    legacy = "2012-08" if ir.get("station") == "YUDO" else "2023-06"
     day = int(ddhh[0:2])
     hour = int(ddhh[2:4])
-    return f"{prefix}-{day:02d}T{hour:02d}:{minute:02d}:00Z"
+    return iso_stamp(ir, day, hour, minute, legacy=legacy)
 
 
 def _taf_valid_end_stamp(ir: dict[str, Any]) -> str:
-    prefix = "2012-08" if ir.get("station") == "YUDO" else "2023-06"
-    return f"{prefix}-{int(ir['valid_to_day']):02d}T{int(ir['valid_to_hour']):02d}:00:00Z"
+    """
+    Internal helper ``_taf_valid_end_stamp``.
+
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Argument ``ir``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
+    legacy = "2012-08" if ir.get("station") == "YUDO" else "2023-06"
+    return iso_stamp(
+        ir,
+        int(ir["valid_to_day"]),
+        int(ir["valid_to_hour"]),
+        0,
+        legacy=legacy,
+    )
 
 
 def _parse_change_groups(ir: dict[str, Any], body: str) -> list[dict[str, Any]]:
+    """
+    Internal helper ``_parse_change_groups``.
+
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Argument ``ir``.
+
+    body : str
+        Argument ``body``.
+
+    Returns
+    -------
+    list[dict[str, Any]]
+        Return value.
+    """
     changes: list[dict[str, Any]] = []
     for raw in _CHANGE_GROUP.findall(body):
         chunk = raw.strip()
@@ -190,6 +390,21 @@ def _parse_change_groups(ir: dict[str, Any], body: str) -> list[dict[str, Any]]:
             }
             change.update(_parse_forecast_body(becmg.group("body")))
             changes.append(change)
+            continue
+        probable = probability_tempo_parts(chunk)
+        if probable is not None:
+            indicator, kind, begin, end, forecast_body = probable
+            change = {
+                "change_indicator": indicator,
+                "phenomenon_begin": _taf_day_hour_stamp(ir, begin),
+                "phenomenon_end": _taf_day_hour_stamp(ir, end),
+            }
+            if kind == "EMPO":
+                change["tac_change_indicator"] = "EMPO"
+            change.update(_parse_forecast_body(forecast_body))
+            changes.append(change)
+            continue
+        if is_unqualified_probability(chunk):
             continue
         tempo = _TEMPO.match(chunk)
         if tempo is not None:
@@ -219,9 +434,16 @@ def _parse_change_groups(ir: dict[str, Any], body: str) -> list[dict[str, Any]]:
         fm = _FM.match(chunk)
         if fm is not None:
             stamp = fm.group("stamp")
+            legacy = "2012-08" if ir.get("station") == "YUDO" else "2023-06"
             change = {
                 "change_indicator": "FROM",
-                "phenomenon_begin": (f"2012-08-{int(stamp[0:2]):02d}T{int(stamp[2:4]):02d}:{int(stamp[4:6]):02d}:00Z"),
+                "phenomenon_begin": iso_stamp(
+                    ir,
+                    int(stamp[0:2]),
+                    int(stamp[2:4]),
+                    int(stamp[4:6]),
+                    legacy=legacy,
+                ),
                 "phenomenon_end": _taf_valid_end_stamp(ir),
             }
             change.update(_parse_forecast_body(fm.group("body")))
@@ -235,9 +457,10 @@ def parse_taf(tac: str, *, product: str = "TAF") -> dict[str, Any]:
 
     Parameters
     ----------
-    tac :
+    tac : str
         TAC text (optional leading ``TAF`` keyword).
-    product :
+
+    product : str, optional
         Expected ``TAF``.
 
     Returns
@@ -249,12 +472,26 @@ def parse_taf(tac: str, *, product: str = "TAF") -> dict[str, Any]:
     ------
     ValueError
         When the product mismatches or required groups are missing.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (parse_taf)
+    2
     """
     if product.upper() != "TAF":
         raise ValueError(f"product mismatch: expected TAF, found {product}")
 
-    text = tac.strip().rstrip("=").strip()
-    # Drop bulletin AHL if present (first line without TAF/station pattern).
+    text = tac.strip()
+    # Drop a leading abbreviated heading (FT/FC…) so GTS paste matches METAR/SPECI.
+    lines = [ln.strip() for ln in text.splitlines() if ln.strip()]
+    if len(lines) >= 2:
+        try:
+            parse_ahl(lines[0])
+        except BulletinSplitError:
+            pass
+        else:
+            lines = lines[1:]
+    text = "\n".join(lines).strip().rstrip("=").strip()
     lines = [ln.strip() for ln in text.splitlines() if ln.strip()]
     joined = " ".join(lines)
     if not joined.upper().startswith("TAF"):

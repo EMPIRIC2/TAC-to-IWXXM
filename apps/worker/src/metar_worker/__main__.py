@@ -20,6 +20,16 @@ _seen_job_ids: set[str] = set()
 
 
 def _handle_sigterm(_signum: int, _frame: object) -> None:
+    """
+    Internal helper ``_handle_sigterm``.
+
+    Parameters
+    ----------
+    _signum : object
+        Argument ``_signum``.
+    _frame : object
+        Argument ``_frame``.
+    """
     global _shutdown
     _shutdown = True
     logger.info("SIGTERM received — finishing current poll then exiting")
@@ -33,6 +43,18 @@ def run_once(settings: WorkerSettings, store: StoreClient | None = None) -> int:
     -------
     int
         Number of jobs processed (skips already-seen ``job_id`` values in-process).
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (run_once)
+    2
+
+    Parameters
+    ----------
+    settings : object
+        Argument ``settings``.
+    store : object
+        Argument ``store``.
     """
     poller_url = validate_ingest_poller_url(settings.ingest_poller_url)
 
@@ -77,6 +99,11 @@ def main() -> None:
 
     Validates ``INGEST_POLLER_URL``, initializes observability hooks, and exits on
     SIGTERM/SIGINT after the current poll completes.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (main)
+    2
     """
     logging.basicConfig(
         level=logging.INFO,

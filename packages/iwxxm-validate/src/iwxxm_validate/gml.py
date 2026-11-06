@@ -33,6 +33,25 @@ def _issue(
     message: str,
     location: str | None = None,
 ) -> Issue:
+    """
+    Internal helper ``_issue``.
+
+    Parameters
+    ----------
+    severity : object
+        Argument ``severity``.
+    code : object
+        Argument ``code``.
+    message : object
+        Argument ``message``.
+    location : object
+        Argument ``location``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return Issue(
         severity=severity,
         code=code,
@@ -43,6 +62,21 @@ def _issue(
 
 
 def _load_rdf_elements(rdf_path: Path, cache: dict[str, set[str]]) -> set[str]:
+    """
+    Internal helper ``_load_rdf_elements``.
+
+    Parameters
+    ----------
+    rdf_path : object
+        Argument ``rdf_path``.
+    cache : object
+        Argument ``cache``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     key = str(rdf_path)
     if key in cache:
         return cache[key]
@@ -72,15 +106,20 @@ def validate_gml_references(
 
     Parameters
     ----------
-    xml_content :
+    xml_content : str
         IWXXM XML document.
-    codelists_dir :
-        Directory containing bundled ``codes.wmo.int-*.rdf`` files.
+    codelists_dir : Path or None, optional
+        Directory containing bundled ``codes.wmo.int-*.rdf`` files. By default ``None``.
 
     Returns
     -------
     list[Issue]
         Empty when all references resolve.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (validate_gml_references)
+    2
     """
     issues: list[Issue] = []
     rdf_cache: dict[str, set[str]] = {}

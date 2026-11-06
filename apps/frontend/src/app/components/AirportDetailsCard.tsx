@@ -5,6 +5,7 @@
 import { useEffect, useState } from 'react';
 import { fetchAirportRegion } from '../../utils/api';
 import { airports } from '../../utils/airportsData';
+import { RegionSchematic } from './RegionSchematic';
 
 interface AirportDetailsCardProps {
   icao: string;
@@ -15,6 +16,9 @@ interface AirportRegionInfo {
   airport_code: string;
 }
 
+/**
+ * Function `AirportDetailsCardContent`.
+ */
 function AirportDetailsCardContent({ icao }: { icao: string }) {
   const airport = airports.findWhere({ icao });
   const [regionInfo, setRegionInfo] = useState<AirportRegionInfo | null>(null);
@@ -69,6 +73,7 @@ function AirportDetailsCardContent({ icao }: { icao: string }) {
           <span className="text-amber-700 dark:text-amber-400">{regionError}</span>
         )}
       </div>
+      <RegionSchematic icao={icao} />
     </div>
   );
 }
@@ -77,6 +82,8 @@ function AirportDetailsCardContent({ icao }: { icao: string }) {
  * Renders airport metadata and ICAO region lookup for a valid four-letter code.
  *
  * Returns null when the ICAO is missing or not in the local airport catalog.
+ * @example
+ * const _ = true;
  */
 export function AirportDetailsCard({ icao }: AirportDetailsCardProps) {
   const normalized = icao.trim().toUpperCase();

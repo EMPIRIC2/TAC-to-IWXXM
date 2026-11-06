@@ -1,6 +1,6 @@
 """TC-EV071-003 - API pre-convert CA lint wire (EV-071 M1 / FR-L6).
 
-[Corpus: api] [Corpus: tests §TC-EV071]
+[Corpus: api] [Corpus: tests §TC-EV071] [Corpus: adr/ADR-055]
 """
 
 from __future__ import annotations
@@ -61,10 +61,11 @@ def test_tc_ev071_003_convert_echoes_ca_lint_codes(
     assert "CA_REMARK_SECTOR_VIS" in issue_codes
 
 
-def test_tc_ev071_003_annex3_convert_no_ca_codes(
+def test_tc_ev071_003_annex3_cy_station_prefers_ca_lint(
     client: TestClient,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
+    # ADR-055: default ICAO_2025/annex3 + CY* METAR remaps to ca_eccc prefer.
     monkeypatch.setattr(
         api_module,
         "convert_metar_tac_with_metadata",
@@ -77,6 +78,33 @@ def test_tc_ev071_003_annex3_convert_no_ca_codes(
             conversion_library_id=(None, "LIB.CONVERSION.ICAO_2025"),
             iwxxm_version=(None, "2025-2"),
         ),
+    )
+    assert response.status_code == 200, response.text[:500]
+    issue_codes = {row.get("code") for row in response.json().get("issues", [])}
+    assert "CA_STATUTE_MILE_VIS" in issue_codes
+    assert "CA_REMARK_SECTOR_VIS" in issue_codes
+
+
+def test_tc_ev071_003_annex3_us_station_no_ca_codes(
+    client: TestClient,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setattr(
+        api_module,
+        "convert_metar_tac_with_metadata",
+        lambda tac, **kwargs: ("<iwxxm:METAR/>", None),
+    )
+    us_metar = "METAR KJFK 231800Z 24010KT 2SM BR BKN008 14/13 A2995="
+
+    response = client.post(
+        "/api/v1/convert",
+        files={
+            "manual_text": (None, us_metar),
+            "product": (None, "METAR"),
+            "iwxxm_version": (None, "2025-2"),
+            "lint": (None, "true"),
+            "conversion_library_id": (None, "LIB.CONVERSION.ICAO_2025"),
+        },
     )
     assert response.status_code == 200, response.text[:500]
     issue_codes = {row.get("code") for row in response.json().get("issues", [])}

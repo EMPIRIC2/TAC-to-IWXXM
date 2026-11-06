@@ -1,6 +1,6 @@
 # ADR-046: Registry / Detector / Policy / Runtime for TAC and IWXXM validation
 
-**Status:** Accepted (requirements lock — EV-validation-policy-layers / #1216, 2026-09-20)  
+**Status:** Accepted (requirements lock, EV-validation-policy-layers / #1216, 2026-09-20)  
 **Date:** 2026-09-20  
 **Corpus:** [Corpus: product §F15] [Corpus: product §F2] [Corpus: adr/ADR-028] [Corpus: adr/ADR-038] [Corpus: adr/ADR-039] [Corpus: adr/ADR-044] [Corpus: adr/ADR-045] [Corpus: system-spec] [Corpus: api] [Corpus: decisions]
 
@@ -65,4 +65,32 @@ Composes with the ADR-045 header. Does not add an HTTP field or turn MatchPort o
 2. Policy lists merge as follows: overlay ignore ids are added; a non-empty select replaces the builtin select for those profiles; an empty select inherits the builtin select. Empty builtin select remains every assert.
 3. A Schematron issue `code` is the pattern id when the engine has one. XSD, well-formed, and `SCHEMATRON_SKIPPED` codes stay. A failure with no pattern id stays `SCHEMATRON_ASSERT` and is not dropped. Empty select still lists every Schematron failure; the code text on a named row is the pattern id.
 4. Convert-time validation passes the same output policy id as `POST /api/v1/validate`.
+
+## Lint profile inherits (2026-10-31, EV-regional-dialect-profiles)
+
+Two-layer reuse only (no mixins):
+
+1. **Lint profile DAG** — `lint_profiles.yaml` may set a single `inherits` parent. Products may narrow; `stations` / `accept_end_tx_tn` stay on the leaf. Resolved specs drive engines and station maps.
+2. **Policy `extends`** — unchanged ADR-046 policy documents. Profile resolve walks the inherit chain and binds the first TAC quality / IWXXM output policy id found (child wins). Shared helper `lint_with_profile` runs lint then `apply_policy_to_report`.
+3. **HTTP / ICAO** — `/lint-tac` and convert pre-lint share that helper. When the caller profile is default `annex3` / `ICAO_2025` and the station maps to a national leaf, prefer the station profile; an explicit national profile wins.
+
+### Amend (2026-11-01, EV-taf-national-prefer-prob)
+
+`lint_profiles.yaml` adds a leaf-only `station_prefixes` list alongside `stations`.
+ICAO prefer resolves **exact `stations` first, then the longest matching
+`station_prefix`**. US `K` prefixes to `iwxxm_us` and Canadian `CY` to `ca_eccc`, so
+default `annex3` TAF lint over K\*/CY\* stations binds the shared
+`taf-prob-period-info-quality` policy (PROB period → info; aligns with NWS 10-813 /
+FAA-H-8083-28 standalone PROB). Military K-stations stay exact-listed under
+`us_military` (engine `annex3`, BECMG allowed) and win over the `K` prefix. Prefer is
+TAF-only, so Canadian `CW*` auto stations keep annex3 METAR errors (`MISSING_VISIBILITY`
+/ `MISSING_QNH` — MANOBS expects VIS MISG / PRES MISG). PROB that qualifies BECMG/FM
+stays `INVALID_PROB` (Annex 3 App 5 §1.4) — e.g. HKJK, LGTS.
+
+### Amend (2026-11-01, EV-regional-profile-remainder)
+
+`_TAF_PROB_PERIOD_EMIT_KEYS` may include **`au_bom`** (and later **`br_decea`** when a
+DECEA cite lands) alongside US / CA / UK. UK `EG*` prefer and exact Pacific
+`PTRO`/`PTSA` → `iwxxm_us` stations are in the same prefer + policy seam. Policy YAML
+header documents US/CA/UK/AU bind honesty; BR PROB emit remains deferred.
 

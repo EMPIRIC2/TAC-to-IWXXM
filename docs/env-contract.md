@@ -1,22 +1,40 @@
-# Environment Contract — DOKS / Auth-only Supabase / DO Postgres (F30 / F31)
+# Environment contract — DOKS / Auth-only Supabase / DO Postgres (F30 / F31)
 
-> **Project**: METAR to IWXXM Converter  
+> **Project**: TAC to IWXXM  
 > **Session**: S038-platform-independence-842 / EV-031 (F30/F31)  
 > **Supersedes**: F21-only public-app contract (S023) for Auth + data-plane topology  
 > **Last updated**: 2026-08-03 (T0.3 — JWKS-only verify names)  
 > **Status**: **Accepted** for Auth/DB names (Gate B / T0.3); DOKS host placeholders → T0.4/M6
 
-Single source of truth for **what** each layer owns and **which name** to use everywhere.
+This document is the single source of truth for environment variable **names**
+and for **which layer owns** each concern. Use the same name in config files,
+deploy secrets, local `.env`, and docs.
+
+**Terms used here**
+
+| Term | Meaning in this project |
+|------|-------------------------|
+| DOKS | DigitalOcean Kubernetes Service — primary compute after the F30 cutover |
+| Supabase Auth | Login and JSON Web Token (JWT) issue only. Not the product database. |
+| Product DB | DigitalOcean Postgres reached via `DATABASE_URL` |
+| JWKS | JSON Web Key Set — public keys the API uses to verify Auth JWTs |
+| BYOC | Bring Your Own Credentials — one-shot pasted destination secrets (memory-only) |
 
 ## Model (EV-031)
 
-- **Convert / lint / validate / disseminate** remain **public** (no JWT).
-- **Optional Supabase Auth** for long-term work sessions only (JWT → `/api/v1/work-sessions*`).
-- **Guests**: IndexedDB + persistent loss-of-progress notice; F22 privacy gates.
-- **Product DB**: DigitalOcean Postgres via `DATABASE_URL` (sessions + F8).
-- **Supabase**: Auth URL + keys only — **not** product PostgREST / hosted app tables.
-- **Compute**: DOKS primary after F30 cutover; Render **suspended** (T6.5 / `D-S038-t65-waive`).
-- **Dissemination** BYOC credentials remain **memory-only** (ADR-021/029).
+- **Convert / lint / validate / disseminate** stay **public**. Those routes need
+  no JWT.
+- **Optional Supabase Auth** covers long-term work sessions only. A JWT is
+  required for `/api/v1/work-sessions*`.
+- **Guests** use browser IndexedDB and see a persistent loss-of-progress notice.
+  Feature F22 privacy gates still apply.
+- **Product DB** is DigitalOcean Postgres via `DATABASE_URL` (sessions + feature
+  F8 ingest store).
+- **Supabase**: Auth URL + keys only, **not** product PostgREST / hosted app
+  tables.
+- **Compute** is DOKS as primary after the F30 cutover. Render is **suspended**
+  (T6.5 / `D-S038-t65-waive`).
+- **Dissemination** BYOC credentials stay **memory-only** (ADR-021/029).
 
 ## Source of truth by layer
 
@@ -61,14 +79,19 @@ Single source of truth for **what** each layer owns and **which name** to use ev
 | Default semantic profile (F35) | `DEFAULT_SEMANTIC_PROFILE` | API / `.env` — default `ICAO_2025` (or `annex3` alias during window); non-secret |
 | Default exchange profile (F35) | `DEFAULT_EXCHANGE_PROFILE` | API / `.env` — default `GLOBAL_AFS` when packaging invoked; non-secret |
 | Profile wire v2 cutover (F35) | `PROFILE_WIRE_V2` | API / `.env` — `true` prefers nested semantic/exchange fields; `false` keeps flat `profile=` default |
+| Live map timer (F37) | `LIVE_MAP_REFRESH` | Staging API is `0` when `metar-map-translator` owns the loop. `1` starts a timer in that process. Not a secret |
+| Live map refresh (F37) | `LIVE_MAP_REFRESH_SECONDS` | Translator / API — default `300`. Pause between areas. Not a secret |
+| Live map import cap (F37) | `LIVE_MAP_IMPORT_LIMIT` | API timer only — default `40`. The translator finishes the whole area. Not a secret |
+| Live map cache (F37) | `LIVE_MAP_CACHE_URL` | Same product database as `DATABASE_URL` for the API and the translator. Not a second database server |
 
-**F35 (EV-063):** Profile ids are **not** secrets. Exchange profile must not imply dissemination
-credentials (F16–F19 memory-only BYOC unchanged). See [ADR-036](adr/ADR-036-semantic-vs-exchange-profiles.md).
+**F35 (EV-063):** Profile ids are **not** secrets. An exchange profile must not
+imply dissemination credentials (F16–F19 memory-only BYOC unchanged). See
+[ADR-036](adr/ADR-036-semantic-vs-exchange-profiles.md).
 
 **F8 non-prod fixture (EV-033):**  
 `https://raw.githubusercontent.com/EMPIRIC2/TAC-to-IWXXM/main/apps/worker/tests/fixtures/ingest_feed.json`  
 Validate: `python3 scripts/deploy/validate_ingest_poller_url.py --probe "$INGEST_POLLER_URL"`.  
-After DOKS cutover, do not reuse unverified Render poller URLs.
+After the DOKS cutover, do not reuse unverified Render poller URLs.
 
 ### Retired / do not use for product data plane
 
@@ -99,6 +122,10 @@ After DOKS cutover, do not reuse unverified Render poller URLs.
 | Rate limits / body / allowlist | env | — | — |
 | `METAR_CONFIG_ENV=prod` | yes | copy → `public/config.json` | — |
 | F8 poller | — | — | env |
+| `OPENAIP_API_KEY` | required for station names | — | — |
+
+Staging (`metar-iwxxm-staging`) uses the same `OPENAIP_API_KEY` entry on
+`metar-api-secrets`.
 
 ### Render (historical — TC-F30-005 complete)
 
@@ -123,6 +150,8 @@ Do not point `LIVE_*` or `config/prod.json` at onrender.com.
 | Session / Auth tests | Fixture user or mocked JWKS/JWT (M1/M2) |
 | Postgres + Alembic | Service container `DATABASE_URL`; **`alembic upgrade head`** before schema tests (idempotent) |
 | F8 / dissemination | `DATABASE_URL` + allowlist fixtures |
+| OpenAIP station names | `OPENAIP_API_KEY` on the OpenAIP station lookup job; a missing key fails that job |
+| Weekly validation catalog | Workflow `weekly-validation-catalog.yml` on Environment **`staging`**. Vars: optional `LIVE_API_URL` / `STAGING_API_URL` / `STAGING_LB_IP`. Secrets: optional `STAGING_API_BEARER_TOKEN` (or `STAGING_API_TOKEN`). Defaults match [Corpus: deploy] staging hosts. Not a merge gate. |
 
 ## Verification
 

@@ -1,0 +1,263 @@
+rule_id: US_NWS_VONA
+engine: lint
+cases:
+- bucket: happy
+  case_id: '01'
+  status: ready
+  tac: |
+    VONA SLOT happy 1
+  expect:
+    accept: false
+    codes:
+    - SOURCE_UNAVAILABLE
+  meta:
+    product: VONA
+    profile: US_NWS_VONA
+
+- bucket: happy
+  case_id: '02'
+  status: ready
+  tac: |
+    VONA SLOT happy 2
+  expect:
+    accept: false
+    codes:
+    - SOURCE_UNAVAILABLE
+  meta:
+    product: VONA
+    profile: US_NWS_VONA
+
+- bucket: happy
+  case_id: '03'
+  status: ready
+  tac: |
+    VONA SLOT happy 3
+  expect:
+    accept: false
+    codes:
+    - SOURCE_UNAVAILABLE
+  meta:
+    product: VONA
+    profile: US_NWS_VONA
+
+- bucket: happy
+  case_id: '04'
+  status: ready
+  tac: |
+    VONA SLOT happy 4
+  expect:
+    accept: false
+    codes:
+    - SOURCE_UNAVAILABLE
+  meta:
+    product: VONA
+    profile: US_NWS_VONA
+
+- bucket: happy
+  case_id: '05'
+  status: ready
+  tac: |
+    VONA SLOT happy 5
+  expect:
+    accept: false
+    codes:
+    - SOURCE_UNAVAILABLE
+  meta:
+    product: VONA
+    profile: US_NWS_VONA
+
+- bucket: sad
+  case_id: '01'
+  status: ready
+  tac: |
+    VONA SLOT sad 1
+  expect:
+    accept: false
+    codes:
+    - SOURCE_UNAVAILABLE
+  meta:
+    product: VONA
+    profile: US_NWS_VONA
+
+- bucket: sad
+  case_id: '02'
+  status: ready
+  tac: |
+    VONA SLOT sad 2
+  expect:
+    accept: false
+    codes:
+    - SOURCE_UNAVAILABLE
+  meta:
+    product: VONA
+    profile: US_NWS_VONA
+
+- bucket: sad
+  case_id: '03'
+  status: ready
+  tac: |
+    VONA SLOT sad 3
+  expect:
+    accept: false
+    codes:
+    - SOURCE_UNAVAILABLE
+  meta:
+    product: VONA
+    profile: US_NWS_VONA
+
+- bucket: sad
+  case_id: '04'
+  status: ready
+  tac: |
+    VONA SLOT sad 4
+  expect:
+    accept: false
+    codes:
+    - SOURCE_UNAVAILABLE
+  meta:
+    product: VONA
+    profile: US_NWS_VONA
+
+- bucket: sad
+  case_id: '05'
+  status: ready
+  tac: |
+    VONA SLOT sad 5
+  expect:
+    accept: false
+    codes:
+    - SOURCE_UNAVAILABLE
+  meta:
+    product: VONA
+    profile: US_NWS_VONA
+
+- bucket: edge_pass
+  case_id: '01'
+  status: ready
+  tac: |
+    VONA SLOT edge_pass 1
+  expect:
+    accept: false
+    codes:
+    - SOURCE_UNAVAILABLE
+  meta:
+    product: VONA
+    profile: US_NWS_VONA
+
+- bucket: edge_pass
+  case_id: '02'
+  status: ready
+  tac: |
+    VONA SLOT edge_pass 2
+  expect:
+    accept: false
+    codes:
+    - SOURCE_UNAVAILABLE
+  meta:
+    product: VONA
+    profile: US_NWS_VONA
+
+- bucket: edge_pass
+  case_id: '03'
+  status: ready
+  tac: |
+    VONA SLOT edge_pass 3
+  expect:
+    accept: false
+    codes:
+    - SOURCE_UNAVAILABLE
+  meta:
+    product: VONA
+    profile: US_NWS_VONA
+
+- bucket: edge_pass
+  case_id: '04'
+  status: ready
+  tac: |
+    VONA SLOT edge_pass 4
+  expect:
+    accept: false
+    codes:
+    - SOURCE_UNAVAILABLE
+  meta:
+    product: VONA
+    profile: US_NWS_VONA
+
+- bucket: edge_pass
+  case_id: '05'
+  status: ready
+  tac: |
+    VONA SLOT edge_pass 5
+  expect:
+    accept: false
+    codes:
+    - SOURCE_UNAVAILABLE
+  meta:
+    product: VONA
+    profile: US_NWS_VONA
+
+- bucket: edge_fail
+  case_id: '01'
+  status: ready
+  tac: |
+    VONA SLOT edge_fail 1
+  expect:
+    accept: false
+    codes:
+    - SOURCE_UNAVAILABLE
+  meta:
+    product: VONA
+    profile: US_NWS_VONA
+
+- bucket: edge_fail
+  case_id: '02'
+  status: ready
+  tac: |
+    VONA SLOT edge_fail 2
+  expect:
+    accept: false
+    codes:
+    - SOURCE_UNAVAILABLE
+  meta:
+    product: VONA
+    profile: US_NWS_VONA
+
+- bucket: edge_fail
+  case_id: '03'
+  status: ready
+  tac: |
+    VONA SLOT edge_fail 3
+  expect:
+    accept: false
+    codes:
+    - SOURCE_UNAVAILABLE
+  meta:
+    product: VONA
+    profile: US_NWS_VONA
+
+- bucket: edge_fail
+  case_id: '04'
+  status: ready
+  tac: |
+    VONA SLOT edge_fail 4
+  expect:
+    accept: false
+    codes:
+    - SOURCE_UNAVAILABLE
+  meta:
+    product: VONA
+    profile: US_NWS_VONA
+
+- bucket: edge_fail
+  case_id: '05'
+  status: ready
+  tac: |
+    VONA SLOT edge_fail 5
+  expect:
+    accept: false
+    codes:
+    - SOURCE_UNAVAILABLE
+  meta:
+    product: VONA
+    profile: US_NWS_VONA
+

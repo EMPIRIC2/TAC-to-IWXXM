@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import logging
 import re
+from datetime import UTC, datetime
 from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
@@ -37,6 +38,14 @@ except ImportError:  # pragma: no cover - flat layout fallback
 
 
 def _load_service_validation_error() -> type[Exception]:
+    """
+    Internal helper ``_load_service_validation_error``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     try:
         from ..services.validation import ValidationError
 
@@ -60,7 +69,19 @@ ServiceValidationError = _load_service_validation_error()
 
 
 def _normalize_issue_severity(value: object) -> str:
-    """Return ``error`` / ``warning`` / ``info`` from str or enum-like severity."""
+    """
+    Internal helper ``_normalize_issue_severity``.
+
+    Parameters
+    ----------
+    value : object
+        Argument ``value``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if value is None:
         return "info"
     raw = getattr(value, "value", value)
@@ -73,13 +94,32 @@ def _normalize_issue_severity(value: object) -> str:
 
 
 class ConversionError(Exception):
-    """Raised when METAR to IWXXM conversion fails."""
+    """
+    Raised when METAR to IWXXM conversion fails.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     pass
 
 
 def _extract_icao_from_tac(tac_text: str) -> str | None:
-    """Extract ICAO code from METAR/SPECI TAC text."""
+    """
+    Internal helper ``_extract_icao_from_tac``.
+
+    Parameters
+    ----------
+    tac_text : object
+        Argument ``tac_text``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     icao = extract_airport_code(tac_text)
     if icao:
         return icao
@@ -90,7 +130,21 @@ def _extract_icao_from_tac(tac_text: str) -> str | None:
 
 
 def _detect_product(tac_text: str, default: str = "METAR") -> str:
-    """Detect METAR vs SPECI (and map CA LWIS/SAWR to METAR API product)."""
+    """
+    Internal helper ``_detect_product``.
+
+    Parameters
+    ----------
+    tac_text : object
+        Argument ``tac_text``.
+    default : object
+        Argument ``default``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     match = re.search(r"\b(LWIS|SAWR|METAR|SPECI)\b", tac_text.upper())
     if match:
         token = match.group(1)
@@ -113,6 +167,23 @@ def convert_metar_tac(tac_text: str, iwxxm_version: str | None = None) -> str:
     Convert METAR/SPECI TAC text to IWXXM XML.
 
     Deprecated: prefer ``convert_metar_tac_with_metadata``.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (convert_metar_tac)
+    2
+
+    Parameters
+    ----------
+    tac_text : object
+        Argument ``tac_text``.
+    iwxxm_version : object
+        Argument ``iwxxm_version``.
+
+    Returns
+    -------
+    object
+        Return value.
     """
     import warnings
 
@@ -134,7 +205,21 @@ def _apply_recent_weather_normalization(
     *,
     lenient: bool,
 ) -> str:
-    """Optionally normalize recent-weather tokens and log rewrites."""
+    """
+    Internal helper ``_apply_recent_weather_normalization``.
+
+    Parameters
+    ----------
+    tac_text : object
+        Argument ``tac_text``.
+    lenient : object
+        Argument ``lenient``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if not lenient:
         return tac_text
 
@@ -149,6 +234,27 @@ def _apply_recent_weather_normalization(
         )
 
     return normalized_tac
+
+
+def _bulletin_date_arg(reference_time: str | None) -> str:
+    """
+    Return YYYY-MM-DD for the library time anchor.
+
+    Parameters
+    ----------
+    reference_time : str | None
+        Operator timestamp. The first ten characters are the calendar date.
+        ``None`` or a blank string uses the current UTC date.
+
+    Returns
+    -------
+    str
+        Calendar date passed to ``convert`` as ``bulletin_date``.
+    """
+    if reference_time is not None and reference_time.strip():
+        text = reference_time.strip()
+        return text[:10] if len(text) >= 10 else text
+    return datetime.now(UTC).date().isoformat()
 
 
 def convert_metar_tac_with_metadata(
@@ -181,7 +287,9 @@ def convert_metar_tac_with_metadata(
     iwxxm_version :
         Target IWXXM release line (default ``2025-2``).
     reference_time :
-        Reserved (historical date patching was gifts-specific); ignored.
+        Bulletin date (``YYYY-MM-DD`` or a timestamp with that prefix). When
+        omitted, the current UTC date is used so operator conversions are not
+        pinned to example months.
     use_test_overrides :
         Reserved; ignored after gifts cutover.
     validate :
@@ -225,8 +333,14 @@ def convert_metar_tac_with_metadata(
     ------
     ConversionError
         When conversion (or requested validation) fails and ``preview`` is False.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (convert_metar_tac_with_metadata)
+    2
     """
-    _ = (reference_time, use_test_overrides)  # gifts-era knobs; no-op after cutover
+    _ = use_test_overrides  # gifts-era knob; no-op after cutover
+    bulletin_date = _bulletin_date_arg(reference_time)
 
     try:
         from tac2iwxxm import convert as tac2iwxxm_convert
@@ -251,6 +365,7 @@ def convert_metar_tac_with_metadata(
         report_status=report_status,
         report_variant=report_variant,
         propagate_residuals_to_remarks=propagate_residuals_to_remarks,
+        bulletin_date=bulletin_date,
     )
     if not result.ok or not result.xml:
         msgs = "; ".join(f"{i.code}: {i.message}" for i in result.issues) or "unknown convert failure"

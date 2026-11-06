@@ -6,14 +6,14 @@
 > gates. Engine map: [COMPREHENSIVE_VALIDATION.md](./COMPREHENSIVE_VALIDATION.md).
 
 ## Overview
-Enhanced the validation and conversion code to implement a comprehensive 3-layer validation strategy with online WMO validation, configurable settings, and validation-by-default in the conversion pipeline.
+Enhanced the validation and conversion code to implement a 3-layer validation strategy with online WMO validation, configurable settings, and validation-by-default in the conversion pipeline.
 
 ## Implementation Date
 December 2024
 
 ## Changes Summary
 
-### 1. ✅ Created Validation Configuration Module
+### 1. Created Validation Configuration Module
 **File:** `backend/src/config/validation.py`
 
 Created a centralized configuration module using pydantic-settings:
@@ -25,7 +25,7 @@ Created a centralized configuration module using pydantic-settings:
 - Singleton pattern via `get_validation_settings()`
 - Loads from `.env` file automatically
 
-### 2. ✅ Enhanced WMO Codelist Validation with Online Fallback
+### 2. Enhanced WMO Codelist Validation with Online Fallback
 **File:** `backend/src/utilities/codelist_parser.py`
 
 Enhanced the codelist parser to validate against live WMO registry:
@@ -39,7 +39,7 @@ Enhanced the codelist parser to validate against live WMO registry:
   - Proper error handling with timeouts
   - Falls back gracefully when offline
 
-### 3. ✅ Updated Conversion Function for Validation-by-Default
+### 3. Updated Conversion Function for Validation-by-Default
 **File:** `backend/src/utilities/conversion.py`
 
 Enhanced the main conversion function:
@@ -61,7 +61,7 @@ Enhanced the main conversion function:
   - WMO_CODELISTS - Should have valid WMO codes
 - **Deprecated:** `convert_metar_tac()` function (calls new function with `validate=False`)
 
-### 4. ✅ Enabled Live API Tests by Default
+### 4. Enabled Live API Tests by Default
 **File:** `backend/tests/conftest.py`
 
 Changed test configuration to enable live API tests:
@@ -69,7 +69,7 @@ Changed test configuration to enable live API tests:
 - **New Behavior:** Live API tests run by default, skip only if `ENABLE_LIVE_API_TESTS=false`
 - Tests now hit real APIs (aviationweather.gov, codes.wmo.int) during development
 
-### 5. ✅ Created Environment Configuration Files
+### 5. Created Environment Configuration Files
 **Files:**
 - `backend/.env` - Backend-specific configuration
 - `.env.example` - Updated with validation settings
@@ -84,14 +84,14 @@ ENABLE_LIVE_API_TESTS=true
 SCHEMATRON_USE_DOCKER=true
 ```
 
-### 6. ✅ Verified Vendored Schemas
+### 6. Verified Vendored Schemas
 Verified the checked-in schema bundles under:
 - `vendor/schemas/iwxxm/` - IWXXM XML schemas
-- `vendor/schemas/iwxxm-modelling/` - IWXXM UML/EA modelling + XSLT generators (informative; not runtime Schematron — see `docs/domain/mining/iwxxm-modelling-v2025-2-mining-notes.md`)
+- `vendor/schemas/iwxxm-modelling/` - IWXXM UML/EA modelling + XSLT generators (informative; not runtime Schematron; see `docs/domain/mining/iwxxm-modelling-v2025-2-mining-notes.md`)
 
 This fixed ~16 previously skipped tests that required schema files.
 
-### 7. ✅ Fixed API Integration
+### 7. Fixed API Integration
 **File:** `backend/src/api.py`
 
 Updated all 4 call sites for `convert_metar_tac_with_metadata()`:
@@ -198,7 +198,7 @@ if validation_result and not validation_result.is_valid:
 - Configurable timeouts and caching
 - Graceful fallback when offline
 - No breaking changes (deprecated old function)
-- Comprehensive error handling
+- Error handling
 
 ### 4. **Performance**
 - 1-hour cache TTL reduces online lookups

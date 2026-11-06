@@ -43,7 +43,7 @@ profiles/
 and [`_template/`](_template/).
 
 Fixture goldens (implementation): `profiles/<id>/<product>/{valid,invalid,expected-*}` under
-package test trees — land with first heavy national profile (F36).
+package test trees; they land with first heavy national profile (F36).
 
 ## Relationship to `docs/domain/mining/`
 
@@ -58,11 +58,11 @@ source row. Do not treat mining notes alone as profile SoT.
 | `ICAO_2025` | `annex3` | ICAO Annex 3; WMO IWXXM 2025-2; PANS-MET |
 | `US_FAA_NWS` | `iwxxm_us` | IWXXM-US; FMH-1; NWS schemas pin |
 
-Exchange default: `GLOBAL_AFS` — see [`exchange/GLOBAL_AFS.md`](exchange/GLOBAL_AFS.md).
+Exchange default: `GLOBAL_AFS`; see [`exchange/GLOBAL_AFS.md`](exchange/GLOBAL_AFS.md).
 
 ## Catalog index
 
-Machine-readable index: [`catalog.yaml`](catalog.yaml) — P0/P1 profile rows with source URLs,
+Machine-readable index: [`catalog.yaml`](catalog.yaml): P0/P1 profile rows with source URLs,
 access tier, vendor pins, gaps, and mining-note cross-refs.
 
 ### `metar_family_variants` contract
@@ -92,7 +92,7 @@ Runtime contract:
 |----------|----------|----------|
 | **P0** | `ICAO_2025`, `US_FAA_NWS` | `GLOBAL_AFS` (default) |
 | **P1** | `CA_ECCC`, `AU_BOM`, `NZ_CAA_MET` | — |
-| **P2** | `UK_METOFFICE`, `BR_DECEA`, `KR_KMA`, `JP_JMA`, `IN_IMD`, `HK_HKO` (#920 kickoff; **#1098** / EV-094 deepen → `implemented`) | `APAC_ROBEX`, `EUR_RODEX`, `AFI`, `CAR_SAM` |
+| **P2** | `UK_METOFFICE`, `BR_DECEA`, `KR_KMA`, `JP_JMA`, `IN_IMD`, `HK_HKO`, `US_MILITARY`, `LATAM_TAF` | `APAC_ROBEX`, `EUR_RODEX`, `AFI`, `CAR_SAM` |
 
 ## Open gaps (#913 deepen)
 
@@ -106,8 +106,8 @@ Closeout triage: [`mining/EV-M1-913-source-triage.md`](mining/EV-M1-913-source-t
 - [x] Thin/compat catalog + stubs for #920 ids (EV-089; deepen [#1098](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1098) / EV-094)  
 - [x] Thin/compat **deepen** corpora + KR/JP SPECI + `in_imd` lint overlay (#1098 / EV-094)  
 - [x] Regional exchange **source pins** for ROBEX / RODEX / AFI (EV-090); `CAR_SAM` handbook **deferred gap**  
-- [ ] CA MANOBS/MANAIR **section-level** rule stubs — **re-homed** to [#1028](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1028) / [#1031](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1031) (not `#913` close blocker)  
-- [ ] ROBEX/RODEX **full handbook rule matrices** — exchange deepen residual (URLs mined; matrices outside `#913` AC)
+- [ ] CA MANOBS/MANAIR **section-level** rule stubs: **re-homed** to [#1028](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1028) / [#1031](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1031) (not `#913` close blocker)  
+- [ ] ROBEX/RODEX **full handbook rule matrices**: exchange deepen residual (URLs mined; matrices outside `#913` AC)
 
 ## References
 

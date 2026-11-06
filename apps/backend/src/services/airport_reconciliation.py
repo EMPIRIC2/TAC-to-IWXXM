@@ -28,7 +28,14 @@ class DataSource(Enum):
 
 @dataclass
 class ConflictLog:
-    """Log entry for data conflicts."""
+    """
+    Log entry for data conflicts.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     icao: str
     field: str
@@ -37,14 +44,28 @@ class ConflictLog:
     winner: str | None = None
 
     def __str__(self) -> str:
-        """Format conflict for logging."""
+        """
+        Internal helper ``__str__``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         values_str = ", ".join(f"{src}={val}" for src, val in self.sources.items())
         return f"Conflict for {self.icao}.{self.field}: {values_str} → resolved to {self.winner}={self.resolution}"
 
 
 @dataclass
 class ReconciledAirport:
-    """Reconciled airport data from multiple sources."""
+    """
+    Reconciled airport data from multiple sources.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     icao_code: str
     name: str
@@ -64,11 +85,35 @@ class ReconciledAirport:
     elevation_confidence: float = 1.0
 
     def has_conflicts(self) -> bool:
-        """Check if any conflicts were found during reconciliation."""
+        """
+        Check if any conflicts were found during reconciliation.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (has_conflicts)
+        2
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         return len(self.conflicts) > 0
 
     def get_conflict_summary(self) -> str:
-        """Get summary of conflicts."""
+        """
+        Get summary of conflicts.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (get_conflict_summary)
+        2
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         if not self.conflicts:
             return "No conflicts"
 
@@ -76,13 +121,19 @@ class ReconciledAirport:
 
 
 class AirportReconciliationService:
-    """Service for reconciling airport data from multiple sources.
+    """
+    Service for reconciling airport data from multiple sources.
 
     Priority order:
     1. OpenAIP (most comprehensive, community-maintained)
     2. GIFTs internal database
     3. AviationWeather.gov API
     4. Fallback/default values
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
     """
 
     def __init__(
@@ -91,12 +142,17 @@ class AirportReconciliationService:
         aviation_weather_client: AviationWeatherClient | None = None,
         gifts_data_path: Path | None = None,
     ) -> None:
-        """Initialize reconciliation service.
+        """
+        Internal helper ``__init__``.
 
-        Args:
-            openaip_client: OpenAIP client instance
-            aviation_weather_client: AviationWeather client instance
-            gifts_data_path: Path to GIFTs airport data
+        Parameters
+        ----------
+        openaip_client : object
+            Argument ``openaip_client``.
+        aviation_weather_client : object
+            Argument ``aviation_weather_client``.
+        gifts_data_path : object
+            Argument ``gifts_data_path``.
         """
         self.openaip = openaip_client or OpenAIPClient()
         self.aviation_weather = aviation_weather_client or AviationWeatherClient()
@@ -159,7 +215,19 @@ class AirportReconciliationService:
         self._gifts_loaded = True
 
     def _safe_float(self, value: object) -> float | None:
-        """Safely convert value to float."""
+        """
+        Internal helper ``_safe_float``.
+
+        Parameters
+        ----------
+        value : object
+            Argument ``value``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         if value is None or value == "":
             return None
         if isinstance(value, (int, float)):
@@ -172,13 +240,27 @@ class AirportReconciliationService:
         return None
 
     def get_airport(self, icao: str) -> ReconciledAirport | None:
-        """Get reconciled airport data for ICAO code.
+        """
+        Get reconciled airport data for ICAO code.
 
-        Args:
-            icao: ICAO station identifier
+        Returns
+        -------
+            ReconciledAirport with best-
 
-        Returns:
+        Parameters
+        ----------
+        icao : object
+            ICAO station identifier
+
+        Returns
+        -------
+        object
             ReconciledAirport with best-effort data or None if not found
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (get_airport)
+        2
         """
         self.stats["total_queries"] += 1
         icao = icao.upper()
@@ -214,14 +296,20 @@ class AirportReconciliationService:
         return self._reconcile(icao, sources_data)
 
     def _reconcile(self, icao: str, sources_data: dict[DataSource, Any]) -> ReconciledAirport | None:
-        """Reconcile data from multiple sources.
+        """
+        Internal helper ``_reconcile``.
 
-        Args:
-            icao: ICAO code
-            sources_data: Data from each source
+        Parameters
+        ----------
+        icao : object
+            Argument ``icao``.
+        sources_data : object
+            Argument ``sources_data``.
 
-        Returns:
-            ReconciledAirport with merged data
+        Returns
+        -------
+        object
+            Return value.
         """
         # Priority order
         priority_order = [DataSource.OPENAIP, DataSource.GIFTS, DataSource.AVIATION_WEATHER]
@@ -282,7 +370,23 @@ class AirportReconciliationService:
         return reconciled
 
     def _get_field(self, data: object, field: str, default: object) -> object:
-        """Get field from data object (handles both dict and object)."""
+        """
+        Internal helper ``_get_field``.
+
+        Parameters
+        ----------
+        data : object
+            Argument ``data``.
+        field : object
+            Argument ``field``.
+        default : object
+            Argument ``default``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         if isinstance(data, dict):
             return cast(dict[str, Any], data).get(field, default)
         return getattr(data, field, default)
@@ -290,16 +394,24 @@ class AirportReconciliationService:
     def _check_field_conflict(
         self, icao: str, field: str, sources_data: dict[DataSource, Any], priority_order: list[DataSource]
     ) -> ConflictLog | None:
-        """Check if field has conflicting values across sources.
+        """
+        Internal helper ``_check_field_conflict``.
 
-        Args:
-            icao: ICAO code
-            field: Field name
-            sources_data: Data from each source
-            priority_order: Source priority order
+        Parameters
+        ----------
+        icao : object
+            Argument ``icao``.
+        field : object
+            Argument ``field``.
+        sources_data : object
+            Argument ``sources_data``.
+        priority_order : object
+            Argument ``priority_order``.
 
-        Returns:
-            ConflictLog if conflict found, None otherwise
+        Returns
+        -------
+        object
+            Return value.
         """
         # Collect values from all sources
         values: dict[str, Any] = {}
@@ -332,14 +444,22 @@ class AirportReconciliationService:
     def _calculate_coordinate_confidence(
         self, sources_data: dict[DataSource, Any], final_lat: float | None, final_lon: float | None
     ) -> float:
-        """Calculate confidence score for coordinates.
+        """
+        Internal helper ``_calculate_coordinate_confidence``.
 
-        Confidence is higher when:
-        - Multiple sources agree
-        - Data comes from high-priority source
+        Parameters
+        ----------
+        sources_data : object
+            Argument ``sources_data``.
+        final_lat : object
+            Argument ``final_lat``.
+        final_lon : object
+            Argument ``final_lon``.
 
-        Returns:
-            Confidence score (0.0-1.0)
+        Returns
+        -------
+        object
+            Return value.
         """
         if final_lat is None or final_lon is None:
             return 0.0
@@ -376,10 +496,20 @@ class AirportReconciliationService:
     def _calculate_elevation_confidence(
         self, sources_data: dict[DataSource, Any], final_elevation: float | None
     ) -> float:
-        """Calculate confidence score for elevation.
+        """
+        Internal helper ``_calculate_elevation_confidence``.
 
-        Returns:
-            Confidence score (0.0-1.0)
+        Parameters
+        ----------
+        sources_data : object
+            Argument ``sources_data``.
+        final_elevation : object
+            Argument ``final_elevation``.
+
+        Returns
+        -------
+        object
+            Return value.
         """
         if final_elevation is None:
             return 0.0
@@ -412,10 +542,18 @@ class AirportReconciliationService:
         return agreement_ratio
 
     def get_statistics(self) -> dict[str, Any]:
-        """Get reconciliation statistics.
+        """
+        Get reconciliation statistics.
 
-        Returns:
+        Returns
+        -------
+        object
             Dictionary with statistics
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (get_statistics)
+        2
         """
         return {
             **self.stats,

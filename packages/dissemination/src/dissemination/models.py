@@ -33,7 +33,20 @@ DRAWER_SINK_TYPES: tuple[SinkType, ...] = (
 
 
 class SchemaDiffItem(msgspec.Struct, frozen=True):
-    """One schema difference returned from dissemination preflight."""
+    """
+    One schema difference returned from dissemination preflight.
+
+    Attributes
+    ----------
+    kind : str
+        Difference kind.
+    table : str
+        Table name.
+    detail : str
+        Detail text.
+    column : str or None, optional
+        Column name.
+    """
 
     kind: str
     table: str
@@ -42,7 +55,26 @@ class SchemaDiffItem(msgspec.Struct, frozen=True):
 
 
 class PreflightRequest(msgspec.Struct, frozen=True):
-    """Preflight a destination sink before operator send."""
+    """
+    Preflight a destination sink before operator send.
+
+    Attributes
+    ----------
+    dissemination_template_id : str or None, optional
+        Dissemination template ID.
+    sink_type : SinkType or None, optional
+        Sink type id.
+    uri : str or None, optional
+        Destination URI.
+    ddl : bool or None, optional
+        DDL.
+    product : str or None, optional
+        Product id.
+    iwxxm_version : str or None, optional
+        IWXXM release line.
+    params : dict[str, Any], optional
+        Extra sink parameters. By default an empty dict.
+    """
 
     dissemination_template_id: str | None = None
     sink_type: SinkType | None = None
@@ -54,7 +86,22 @@ class PreflightRequest(msgspec.Struct, frozen=True):
 
 
 class PreflightResponse(msgspec.Struct, frozen=True):
-    """Preflight outcome with connectivity, schema diffs, and optional handle."""
+    """
+    Preflight outcome with connectivity, schema diffs, and optional handle.
+
+    Attributes
+    ----------
+    ok : bool
+        True when the result succeeded.
+    connectivity_ok : bool
+        True when connectivity succeeded.
+    diffs : list[SchemaDiffItem]
+        Schema differences.
+    handle : str or None, optional
+        Preflight handle.
+    detail : str or None, optional
+        Detail text.
+    """
 
     ok: bool
     connectivity_ok: bool
@@ -64,7 +111,32 @@ class PreflightResponse(msgspec.Struct, frozen=True):
 
 
 class SendRequest(msgspec.Struct, frozen=True):
-    """Send IWXXM (and optional TAC) to a preflighted or one-shot destination."""
+    """
+    Send IWXXM (and optional TAC) to a preflighted or one-shot destination.
+
+    Attributes
+    ----------
+    dissemination_template_id : str or None, optional
+        Dissemination template ID.
+    dissemination_library_id : str or None, optional
+        Dissemination library ID.
+    handle : str or None, optional
+        Preflight handle.
+    sink_type : SinkType or None, optional
+        Sink type id.
+    uri : str or None, optional
+        Destination URI.
+    iwxxm_xml : str or None, optional
+        IWXXM XML text.
+    tac_text : str or None, optional
+        TAC text.
+    product : str or None, optional
+        Product id.
+    iwxxm_version : str or None, optional
+        IWXXM release line.
+    params : dict[str, Any], optional
+        Extra sink parameters. By default an empty dict.
+    """
 
     dissemination_template_id: str | None = None
     dissemination_library_id: str | None = None
@@ -79,7 +151,18 @@ class SendRequest(msgspec.Struct, frozen=True):
 
 
 class SendResponse(msgspec.Struct, frozen=True):
-    """Send outcome with optional object-store upload key metadata."""
+    """
+    Send outcome with optional object-store upload key metadata.
+
+    Attributes
+    ----------
+    ok : bool
+        True when the result succeeded.
+    kv_upload_key : str or None, optional
+        Key-value upload key.
+    detail : str or None, optional
+        Detail text.
+    """
 
     ok: bool
     kv_upload_key: str | None = None

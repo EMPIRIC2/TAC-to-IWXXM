@@ -1,0 +1,33 @@
+# Build the public user guide (MkDocs) on pull requests that touch it.
+name: User docs (MkDocs)
+
+on:
+  pull_request:
+    paths:
+      - "user-docs/**"
+      - ".readthedocs.yaml"
+      - ".github/workflows/user-docs.yml"
+  push:
+    branches: [stage, main]
+    paths:
+      - "user-docs/**"
+      - ".readthedocs.yaml"
+      - ".github/workflows/user-docs.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  mkdocs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install MkDocs
+        run: pip install -r user-docs/requirements.txt
+      - name: Wiki link check
+        run: python3 user-docs/scripts/check_wiki_links.py
+      - name: MkDocs strict build
+        run: mkdocs build --config-file user-docs/mkdocs.yml --strict

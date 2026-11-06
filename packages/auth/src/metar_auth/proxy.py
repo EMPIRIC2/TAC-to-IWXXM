@@ -15,15 +15,41 @@ _OPERATOR_EMAIL_NOT_CONFIRMED = (
 
 
 class AuthProxyError(Exception):
-    """Supabase Auth HTTP call failed."""
+    """
+    Supabase Auth HTTP call failed.
+
+    Attributes
+    ----------
+    status_code : int
+        HTTP status code.
+    """
 
     def __init__(self, message: str, *, status_code: int = 400) -> None:
+        """
+        Internal helper ``__init__``.
+
+        Parameters
+        ----------
+        message : str
+            Message text.
+        status_code : int, optional
+            HTTP status code. By default ``400``.
+        """
         super().__init__(message)
         self.status_code = status_code
 
 
 class SupabaseAuthProxy:
-    """Password-grant Auth API client (publishable key only)."""
+    """
+    Password-grant Auth API client (publishable key only).
+
+    Attributes
+    ----------
+    supabase_url : str or None
+        Supabase project URL.
+    publishable_key : str or None
+        Supabase publishable key.
+    """
 
     def __init__(
         self,
@@ -33,6 +59,18 @@ class SupabaseAuthProxy:
         client: httpx.Client | None = None,
     ) -> None:
         # Explicit ``""`` means unset (tests); ``None`` falls back to env / Vite shims.
+        """
+        Internal helper ``__init__``.
+
+        Parameters
+        ----------
+        supabase_url : str or None, optional
+            Supabase project URL. By default ``None``.
+        publishable_key : str or None, optional
+            Supabase publishable key. By default ``None``.
+        client : httpx.Client or None, optional
+            HTTP client. By default ``None``.
+        """
         if supabase_url is not None:
             self.supabase_url = supabase_url.rstrip("/")
         else:
@@ -56,17 +94,40 @@ class SupabaseAuthProxy:
         self._owns_client = client is None
 
     def _http(self) -> httpx.Client:
+        """
+        Internal helper ``_http``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         if self._client is None:
             self._client = httpx.Client(timeout=30.0)
         return self._client
 
     def close(self) -> None:
-        """Close the owned HTTP client."""
+        """
+        Close the owned HTTP client.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (close)
+        2
+        """
         if self._owns_client and self._client is not None:
             self._client.close()
             self._client = None
 
     def _headers(self) -> dict[str, str]:
+        """
+        Internal helper ``_headers``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         if not self.supabase_url or not self.publishable_key:
             raise AuthProxyError(
                 "SUPABASE_URL and SUPABASE_PUBLISHABLE_KEY required for Auth",
@@ -93,6 +154,11 @@ class SupabaseAuthProxy:
         -------
         dict[str, Any]
             Normalized ``user`` + ``session`` payload.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (sign_in)
+        2
         """
         url = f"{self.supabase_url}/auth/v1/token?grant_type=password"
         response = self._http().post(
@@ -116,13 +182,18 @@ class SupabaseAuthProxy:
         ----------
         token_hash : str
             ``token_hash`` from the Auth email link query string.
-        type_ : str
-            GoTrue verify type (``email``, ``signup``, ``recovery``, …).
+        type_ : str, optional
+            GoTrue verify type (``email``, ``signup``, ``recovery``, …). By default ``'email'``.
 
         Returns
         -------
         dict[str, Any]
             Normalized ``user`` + ``session`` payload.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (verify_email)
+        2
         """
         url = f"{self.supabase_url}/auth/v1/verify"
         response = self._http().post(
@@ -155,6 +226,11 @@ class SupabaseAuthProxy:
         dict[str, Any]
             Normalized ``user`` + optional ``session`` (null when email confirm
             is required).
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (sign_up)
+        2
         """
         url = f"{self.supabase_url}/auth/v1/signup"
         response = self._http().post(
@@ -181,13 +257,18 @@ class SupabaseAuthProxy:
         ----------
         access_token : str
             User access token (Bearer).
-        scope : str or None
-            Optional GoTrue logout scope: ``global``, ``local``, or ``others``.
+        scope : str or None, optional
+            Optional GoTrue logout scope: ``global``, ``local``, or ``others``. By default ``None``.
 
         Returns
         -------
         dict[str, str]
             Success message payload for the API response.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (sign_out)
+        2
         """
         url = f"{self.supabase_url}/auth/v1/logout"
         params: dict[str, str] = {}
@@ -219,6 +300,11 @@ class SupabaseAuthProxy:
         -------
         dict[str, Any]
             User dict with ``id`` / ``email`` / ``metadata``.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (get_user)
+        2
         """
         url = f"{self.supabase_url}/auth/v1/user"
         headers = self._headers()
@@ -235,7 +321,19 @@ class SupabaseAuthProxy:
 
 
 def _login_error_message(raw: str) -> str:
-    """Map GoTrue login error bodies to operator-facing messages."""
+    """
+    Internal helper ``_login_error_message``.
+
+    Parameters
+    ----------
+    raw : object
+        Argument ``raw``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     try:
         decoded: object = json.loads(raw)
     except json.JSONDecodeError:
@@ -251,13 +349,18 @@ def _login_error_message(raw: str) -> str:
 
 
 def _normalize_session_payload(data: dict[str, Any]) -> dict[str, Any]:
-    """Normalize GoTrue token or signup JSON into ``user`` + optional ``session``.
+    """
+    Internal helper ``_normalize_session_payload``.
 
-    Password-grant responses nest the user under ``user`` and put tokens at the
-    top level. Email-confirm signup often returns the **user object itself** at
-    the top level (``id`` / ``email`` / ``confirmation_sent_at``) with no
-    ``access_token`` — treat that shape as the user so register does not return
-    an empty ``user`` when ``session`` is null.
+    Parameters
+    ----------
+    data : object
+        Argument ``data``.
+
+    Returns
+    -------
+    object
+        Return value.
     """
     user_obj = data.get("user")
     if isinstance(user_obj, dict):

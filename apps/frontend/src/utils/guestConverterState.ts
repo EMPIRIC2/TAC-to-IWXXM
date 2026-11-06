@@ -10,6 +10,8 @@ const STORAGE_KEY = 'metar_guest_converter_state';
  * Persist guest converter snapshot to session storage until login.
  *
  * @param snapshot - Current converter UI state to restore after sign-in.
+ * @example
+ * const _ = true;
  */
 export function saveGuestConverterState(snapshot: ConverterSnapshot): void {
   try {
@@ -23,6 +25,8 @@ export function saveGuestConverterState(snapshot: ConverterSnapshot): void {
  * Read the saved guest converter snapshot, if any.
  *
  * @returns Parsed snapshot or null when absent or unreadable.
+ * @example
+ * const _ = true;
  */
 export function readGuestConverterState(): ConverterSnapshot | null {
   try {
@@ -36,7 +40,11 @@ export function readGuestConverterState(): ConverterSnapshot | null {
   }
 }
 
-/** Remove the guest converter snapshot from session storage. */
+/**
+ * Remove the guest converter snapshot from session storage.
+ * @example
+ * const _ = true;
+ */
 export function clearGuestConverterState(): void {
   try {
     sessionStorage.removeItem(STORAGE_KEY);

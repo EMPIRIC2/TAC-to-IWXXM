@@ -30,6 +30,21 @@ QUARANTINE_ATTRS = (
     "translatedBulletinReceptionTime",
 )
 
+# Official examples keep the workshop placeholders. Convert of a failed TAC with
+# no heading omits them (#1290 / TC-F6-039).
+CONVERT_QUARANTINE_ATTRS = (
+    "reportStatus",
+    "permissibleUsage",
+    "translationFailedTAC",
+    "translationTime",
+    "translatedBulletinReceptionTime",
+)
+_OMITTED_WITHOUT_HEADING = (
+    "translationCentreDesignator",
+    "translationCentreName",
+    "translatedBulletinID",
+)
+
 _OFFICIAL_FAILED = [
     ("metar-translation-failed.xml", "iwxxm:METAR", "METAR YUDO 221630Z INVALID"),
     ("taf-translation-failed.xml", "iwxxm:TAF", "TAF YUDO 151800Z 1600/1618 INVALID"),
@@ -61,6 +76,19 @@ def assert_quarantine_attr_matrix(xml: str) -> None:
     tac = _attr(xml, "translationFailedTAC")
     assert tac is not None
     assert tac.strip(), "translationFailedTAC must carry original TAC"
+
+
+def assert_convert_quarantine_omits_placeholder_centre(xml: str) -> None:
+    """Heading-less convert quarantine keeps the TAC shell and drops the placeholders."""
+    missing = [a for a in CONVERT_QUARANTINE_ATTRS if _attr(xml, a) is None]
+    assert not missing, f"missing quarantine attrs: {missing}"
+    assert _attr(xml, "reportStatus") == "NORMAL"
+    assert _attr(xml, "permissibleUsage") == "OPERATIONAL"
+    for name in _OMITTED_WITHOUT_HEADING:
+        assert _attr(xml, name) is None, f"heading-less quarantine must omit {name}"
+    assert "YUZZ" not in xml
+    assert "Fictional translation centre" not in xml
+    assert "TTAAiiCCCYYGGgg" not in xml
 
 
 def assert_quarantine_shell_no_partial_observation(xml: str) -> None:
@@ -121,7 +149,7 @@ def test_tc_ev023_003_metar_invalid_convert_emits_quarantine() -> None:
     assert result.ok is True, f"quarantine convert should soft-ok: {result.issues!r}"
     assert result.xml is not None
     assert "<iwxxm:METAR" in result.xml
-    assert_quarantine_attr_matrix(result.xml)
+    assert_convert_quarantine_omits_placeholder_centre(result.xml)
     assert "INVALID" in (_attr(result.xml, "translationFailedTAC") or "")
     assert_quarantine_shell_no_partial_observation(result.xml)
     assert_no_tac_in_xml_comments(result.xml)
@@ -141,6 +169,6 @@ def test_tc_ev023_003_taf_invalid_must_not_partial_translate() -> None:
     )
     assert result.ok is True, f"quarantine convert should soft-ok: {result.issues!r}"
     assert result.xml is not None
-    assert_quarantine_attr_matrix(result.xml)
+    assert_convert_quarantine_omits_placeholder_centre(result.xml)
     assert_quarantine_shell_no_partial_observation(result.xml)
     assert_no_tac_in_xml_comments(result.xml)

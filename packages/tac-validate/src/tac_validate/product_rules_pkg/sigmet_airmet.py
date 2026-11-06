@@ -11,6 +11,21 @@ from tac_validate.product_rules_pkg._common import *
 
 
 def _count_families(text: str, families: tuple[tuple[str, re.Pattern[str]], ...]) -> list[str]:
+    """
+    Internal helper ``_count_families``.
+
+    Parameters
+    ----------
+    text : object
+        Argument ``text``.
+    families : object
+        Argument ``families``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     found: list[str] = []
     for name, pattern in families:
         if pattern.search(text):
@@ -19,7 +34,23 @@ def _count_families(text: str, families: tuple[tuple[str, re.Pattern[str]], ...]
 
 
 def _check_sigmet_g1(*, start: int, end: int, upper: str) -> list[Issue]:
-    """F23 theme G1 - CNL / COR / STNR / geometry / single-alt / TOP ABV|BLW."""
+    """
+    Internal helper ``_check_sigmet_g1``.
+
+    Parameters
+    ----------
+    start : object
+        Argument ``start``.
+    end : object
+        Argument ``end``.
+    upper : object
+        Argument ``upper``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     # ruff: noqa: F403, F405
     issues: list[Issue] = []
     core = upper[:-1] if upper.endswith("=") else upper
@@ -71,7 +102,18 @@ def _check_sigmet_g1(*, start: int, end: int, upper: str) -> list[Issue]:
         return issues
 
     if _SIGMET_STNR.search(core):
-        if _SIGMET_MOV.search(core):
+        # Habana idiom MOV STNR (no direction) is stationary, not a conflict.
+        if _SIGMET_MOV_STNR_ADJACENT.search(core) and not _SIGMET_MOV_DIR.search(core):
+            _emit_token_info(
+                issues,
+                code="STNR_MOVEMENT",
+                message="SIGMET STNR stationary movement - research G1",
+                core=core,
+                body_start=start,
+                body_end=end,
+                token="STNR",
+            )
+        elif _SIGMET_MOV.search(core):
             _emit_token_info(
                 issues,
                 code="INVALID_STNR_MOVEMENT",
@@ -142,7 +184,21 @@ def _check_sigmet_g1(*, start: int, end: int, upper: str) -> list[Issue]:
 
 
 def _sigmet_validity_hours(start: str, end: str) -> float | None:
-    """Return VALID period length in hours (coarse midnight/month wrap)."""
+    """
+    Internal helper ``_sigmet_validity_hours``.
+
+    Parameters
+    ----------
+    start : object
+        Argument ``start``.
+    end : object
+        Argument ``end``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if len(start) != 6 or len(end) != 6 or not start.isdigit() or not end.isdigit():
         return None
     sd, sh, sm = int(start[:2]), int(start[2:4]), int(start[4:6])
@@ -165,7 +221,27 @@ def _check_sigmet_g2(
     is_va: bool = False,
     is_tc: bool = False,
 ) -> list[Issue]:
-    """F23 theme G2 - sequence / validity duration / FIR / OBS·FCST / intensity."""
+    """
+    Internal helper ``_check_sigmet_g2``.
+
+    Parameters
+    ----------
+    start : object
+        Argument ``start``.
+    end : object
+        Argument ``end``.
+    upper : object
+        Argument ``upper``.
+    is_va : object
+        Argument ``is_va``.
+    is_tc : object
+        Argument ``is_tc``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     issues: list[Issue] = []
     core = upper[:-1] if upper.endswith("=") else upper
 
@@ -274,7 +350,23 @@ def _check_sigmet_g2(
 
 
 def _check_airmet_a1(*, start: int, end: int, upper: str) -> list[Issue]:
-    """F24 theme A1 - AIRMET sequence number + FIR/CTA identity."""
+    """
+    Internal helper ``_check_airmet_a1``.
+
+    Parameters
+    ----------
+    start : object
+        Argument ``start``.
+    end : object
+        Argument ``end``.
+    upper : object
+        Argument ``upper``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     issues: list[Issue] = []
     core = upper[:-1] if upper.endswith("=") else upper
 
@@ -283,7 +375,7 @@ def _check_airmet_a1(*, start: int, end: int, upper: str) -> list[Issue]:
         _emit_token_info(
             issues,
             code="SIGMET_SEQUENCE",
-            message="AIRMET sequence number present - F24 theme A1",
+            message="AIRMET sequence number present",
             core=core,
             body_start=start,
             body_end=end,
@@ -293,7 +385,7 @@ def _check_airmet_a1(*, start: int, end: int, upper: str) -> list[Issue]:
         _emit_token_info(
             issues,
             code="MISSING_SEQUENCE",
-            message="AIRMET missing sequence number after AIRMET - F24 theme A1",
+            message="AIRMET missing sequence number after AIRMET",
             core=core,
             body_start=start,
             body_end=end,
@@ -305,7 +397,7 @@ def _check_airmet_a1(*, start: int, end: int, upper: str) -> list[Issue]:
         _emit_token_info(
             issues,
             code="FIR_OR_CTA",
-            message="AIRMET FIR/CTA/UIR airspace identity - F24 theme A1",
+            message="AIRMET FIR/CTA/UIR airspace identity",
             core=core,
             body_start=start,
             body_end=end,
@@ -315,7 +407,7 @@ def _check_airmet_a1(*, start: int, end: int, upper: str) -> list[Issue]:
         _emit_token_info(
             issues,
             code="MISSING_FIR_OR_CTA",
-            message="AIRMET missing FIR/CTA/UIR airspace identity - F24 theme A1",
+            message="AIRMET missing FIR/CTA/UIR airspace identity",
             core=core,
             body_start=start,
             body_end=end,
@@ -326,16 +418,42 @@ def _check_airmet_a1(*, start: int, end: int, upper: str) -> list[Issue]:
 
 
 def _check_airmet_a2(*, start: int, end: int, upper: str) -> list[Issue]:
-    """F24 theme A2 - AIRMET phenomenon modifiers (OBS/STNR/WKN/TOP ABV)."""
+    """
+    Internal helper ``_check_airmet_a2``.
+
+    Parameters
+    ----------
+    start : object
+        Argument ``start``.
+    end : object
+        Argument ``end``.
+    upper : object
+        Argument ``upper``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     issues: list[Issue] = []
     core = upper[:-1] if upper.endswith("=") else upper
 
     if _SIGMET_STNR.search(core):
-        if _SIGMET_MOV.search(core):
+        if _SIGMET_MOV_STNR_ADJACENT.search(core) and not _SIGMET_MOV_DIR.search(core):
+            _emit_token_info(
+                issues,
+                code="STNR_MOVEMENT",
+                message="AIRMET STNR stationary movement",
+                core=core,
+                body_start=start,
+                body_end=end,
+                token="STNR",
+            )
+        elif _SIGMET_MOV.search(core):
             _emit_token_info(
                 issues,
                 code="INVALID_STNR_MOVEMENT",
-                message="AIRMET STNR conflicts with MOV - F24 theme A2",
+                message="AIRMET STNR conflicts with MOV",
                 core=core,
                 body_start=start,
                 body_end=end,
@@ -345,7 +463,7 @@ def _check_airmet_a2(*, start: int, end: int, upper: str) -> list[Issue]:
             _emit_token_info(
                 issues,
                 code="STNR_MOVEMENT",
-                message="AIRMET STNR stationary movement - F24 theme A2",
+                message="AIRMET STNR stationary movement",
                 core=core,
                 body_start=start,
                 body_end=end,
@@ -356,7 +474,7 @@ def _check_airmet_a2(*, start: int, end: int, upper: str) -> list[Issue]:
         _emit_token_info(
             issues,
             code="TOP_ABV_OR_BLW",
-            message="AIRMET TOP ABV/BLW level grammar - F24 theme A2",
+            message="AIRMET TOP ABV/BLW level grammar",
             core=core,
             body_start=start,
             body_end=end,
@@ -368,7 +486,7 @@ def _check_airmet_a2(*, start: int, end: int, upper: str) -> list[Issue]:
         _emit_token_info(
             issues,
             code="OBS_OR_FCST",
-            message="AIRMET OBS or FCST analysis - F24 theme A2",
+            message="AIRMET OBS or FCST analysis",
             core=core,
             body_start=start,
             body_end=end,
@@ -378,7 +496,7 @@ def _check_airmet_a2(*, start: int, end: int, upper: str) -> list[Issue]:
         _emit_token_info(
             issues,
             code="MISSING_OBS_OR_FCST",
-            message="AIRMET missing OBS or FCST - F24 theme A2",
+            message="AIRMET missing OBS or FCST",
             core=core,
             body_start=start,
             body_end=end,
@@ -390,7 +508,7 @@ def _check_airmet_a2(*, start: int, end: int, upper: str) -> list[Issue]:
         _emit_token_info(
             issues,
             code="INTENSITY_CHANGE",
-            message="AIRMET intensity change INTSF/WKN/NC - F24 theme A2",
+            message="AIRMET intensity change INTSF/WKN/NC",
             core=core,
             body_start=start,
             body_end=end,
@@ -401,7 +519,23 @@ def _check_airmet_a2(*, start: int, end: int, upper: str) -> list[Issue]:
 
 
 def _check_sigmet_v1(*, start: int, end: int, upper: str) -> list[Issue]:
-    """F23 theme V1 - VA volcano identity / ash geometry / NO VA EXP / CNL FIR-moved."""
+    """
+    Internal helper ``_check_sigmet_v1``.
+
+    Parameters
+    ----------
+    start : object
+        Argument ``start``.
+    end : object
+        Argument ``end``.
+    upper : object
+        Argument ``upper``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     issues: list[Issue] = []
     core = upper[:-1] if upper.endswith("=") else upper
 
@@ -431,21 +565,22 @@ def _check_sigmet_v1(*, start: int, end: int, upper: str) -> list[Issue]:
         return issues
 
     # Volcano identity required for active VA (including NO VA EXP with volcano named).
+    # Accept MT…PSN or VA [ERUPTION] [MT] NAME PSN (operational MHTG omits MT).
     if _SIGMET_VA_VOLCANO.search(core):
         _emit_token_info(
             issues,
             code="VA_VOLCANO_IDENTITY",
-            message="VA SIGMET erupting volcano identity (MT/PSN) - research V1",
+            message="VA SIGMET erupting volcano identity (name/MT PSN) - research V1",
             core=core,
             body_start=start,
             body_end=end,
-            token="MT",
+            token="PSN",
         )
     elif not _SIGMET_CNL.search(core):
         _emit_token_info(
             issues,
             code="MISSING_VA_VOLCANO",
-            message="VA SIGMET missing volcano identity (MT … PSN) - research V1",
+            message="VA SIGMET missing volcano identity (name/MT … PSN) - research V1",
             core=core,
             body_start=start,
             body_end=end,
@@ -467,7 +602,23 @@ def _check_sigmet_v1(*, start: int, end: int, upper: str) -> list[Issue]:
 
 
 def _check_sigmet_tc(*, start: int, end: int, upper: str) -> list[Issue]:
-    """EV-030 theme TC - cyclone identity / OF TC CENTRE geometry (#829)."""
+    """
+    Internal helper ``_check_sigmet_tc``.
+
+    Parameters
+    ----------
+    start : object
+        Argument ``start``.
+    end : object
+        Argument ``end``.
+    upper : object
+        Argument ``upper``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     issues: list[Issue] = []
     core = upper[:-1] if upper.endswith("=") else upper
 
@@ -482,7 +633,7 @@ def _check_sigmet_tc(*, start: int, end: int, upper: str) -> list[Issue]:
         _emit_token_info(
             issues,
             code="TC_CYCLONE_IDENTITY",
-            message="TC SIGMET tropical cyclone identity (TC … PSN) - #829 / TC-EV030-004",
+            message="TC SIGMET tropical cyclone identity (TC … PSN)",
             core=core,
             body_start=start,
             body_end=end,
@@ -492,7 +643,7 @@ def _check_sigmet_tc(*, start: int, end: int, upper: str) -> list[Issue]:
         _emit_token_info(
             issues,
             code="MISSING_TC_IDENTITY",
-            message="TC SIGMET missing cyclone identity (TC … PSN) - #829 / TC-EV030-004",
+            message="TC SIGMET missing cyclone identity (TC … PSN)",
             core=core,
             body_start=start,
             body_end=end,
@@ -503,7 +654,7 @@ def _check_sigmet_tc(*, start: int, end: int, upper: str) -> list[Issue]:
         _emit_token_info(
             issues,
             code="TC_CB_GEOMETRY",
-            message="TC SIGMET CB geometry WI … OF TC CENTRE - #829 / TC-EV030-004",
+            message="TC SIGMET CB geometry WI … OF TC CENTRE",
             core=core,
             body_start=start,
             body_end=end,
@@ -513,13 +664,179 @@ def _check_sigmet_tc(*, start: int, end: int, upper: str) -> list[Issue]:
     return issues
 
 
+_CONVECTIVE_SIGMET_BULLETIN = re.compile(r"\bCONVECTIVE\s+SIGMET\b")
+_CONVECTIVE_VALID_UNTIL = re.compile(r"\bVALID\s+UNTIL\s+\d{4,6}Z\b")
+# NWS WST developing qualifier token; canonical hazard lead-in is ``DVLPG AREA``.
+_CONVECTIVE_DVLPG = re.compile(r"\bDVLPG\b")
+# Valid FMH/NWS developing-area form after the closed FROM ring.
+_CONVECTIVE_DVLPG_AREA_OK = re.compile(r"\bDVLPG\s+AREA\b")
+# US domestic non-convective WS: VALID UNTIL may omit trailing Z (FMH / WSUS form).
+_US_DOMESTIC_WS_VALID_UNTIL = re.compile(r"\bVALID\s+UNTIL\s+\d{4,6}Z?\b")
+_WSUS_TTAAII = re.compile(r"\bWSUS\d{2}\b")
+_US_DOMESTIC_WS_SERIES = re.compile(
+    r"\bSIGMET\s+(?:ALPHA|ALFA|BRAVO|CHARLIE|DELTA|ECHO|FOXTROT|GOLF|HOTEL|"
+    r"INDIA|JULIET|JULIETT|KILO|LIMA|MIKE|NOVEMBER|OSCAR|PAPA|QUEBEC|ROMEO|"
+    r"SIERRA|TANGO|UNIFORM|VICTOR|WHISKEY|XRAY|X-RAY|YANKEE|ZULU)\s+\d+\b"
+)
+# Annex 3 minimum identity: CCCC immediately before SIGMET or AIRMET (#1564).
+_SIGMET_AIRMET_CCCC_IDENTITY = re.compile(r"\b[A-Z]{4}\s+(?:SIGMET|AIRMET)\b")
+
+
+def _is_us_domestic_ws_sigmet(upper: str) -> bool:
+    """
+    Return True for US NWS non-convective WS SIGMET domestic shape.
+
+    Parameters
+    ----------
+    upper : str
+        Uppercased SIGMET body.
+
+    Returns
+    -------
+    bool
+        True when WSUS and/or phonetic series plus ``VALID UNTIL`` are present
+        and the bulletin is not convective.
+    """
+    if _CONVECTIVE_SIGMET_BULLETIN.search(upper):
+        return False
+    # International A6 VALID ddhhmm/ddhhmm (incl. TC/VA phonetic series) stays
+    # on the Annex 3 path — do not treat as US domestic WS.
+    if _VALID_PERIOD.search(upper):
+        return False
+    if _SIGMET_TC_TOKEN.search(upper) or _SIGMET_VA_TOKEN.search(upper):
+        return False
+    # Shape detect without requiring VALID UNTIL — missing time is checked below
+    # (same pattern as convective SIGMET).
+    return bool(_WSUS_TTAAII.search(upper) or _US_DOMESTIC_WS_SERIES.search(upper))
+
+
+def _check_convective_sigmet(*, start: int, end: int, upper: str) -> list[Issue]:
+    """
+    Check a US convective SIGMET.
+
+    Parameters
+    ----------
+    start : int
+        Body start offset.
+    end : int
+        Body end offset.
+    upper : str
+        Uppercased SIGMET body.
+
+    Returns
+    -------
+    list[Issue]
+        Findings for missing ``VALID UNTIL`` and/or a misplaced or incomplete
+        ``DVLPG`` developing qualifier. Canonical ``DVLPG AREA`` after the FROM
+        ring is accepted. International FIR and OBS rules do not apply to this
+        form.
+    """
+    issues: list[Issue] = []
+    if not _CONVECTIVE_VALID_UNTIL.search(upper):
+        issues.append(
+            _issue(
+                "MISSING_VALID",
+                "CONVECTIVE SIGMET missing VALID UNTIL time",
+                start=start,
+                end=end,
+                location="valid",
+            )
+        )
+    # Accept canonical NWS ``DVLPG AREA`` hazard lead-in; flag other DVLPG uses
+    # (FROM-ring abuse, incomplete qualifier without AREA).
+    for dvlpg in _CONVECTIVE_DVLPG.finditer(upper):
+        if _CONVECTIVE_DVLPG_AREA_OK.match(upper, dvlpg.start()) is not None:
+            continue
+        issues.append(
+            _issue(
+                "DVLPG_AREA_QUALIFIER",
+                "Convective SIGMET has a misplaced or incomplete DVLPG "
+                "(developing) qualifier. Use DVLPG AREA after the FROM ring; "
+                "DVLPG is a hazard qualifier, not a VOR offset.",
+                start=start + dvlpg.start(),
+                end=start + dvlpg.end(),
+                location="geometry",
+            )
+        )
+    return issues
+
+
+def _check_us_domestic_ws_sigmet(*, start: int, end: int, upper: str) -> list[Issue]:
+    """
+    Check a US domestic non-convective WS SIGMET.
+
+    Parameters
+    ----------
+    start : int
+        Body start offset.
+    end : int
+        Body end offset.
+    upper : str
+        Uppercased SIGMET body.
+
+    Returns
+    -------
+    list[Issue]
+        Empty when ``VALID UNTIL`` is present. Skips international FIR/OBS gates.
+    """
+    if _US_DOMESTIC_WS_VALID_UNTIL.search(upper):
+        return []
+    return [
+        _issue(
+            "MISSING_VALID",
+            "US WS SIGMET missing VALID UNTIL time",
+            start=start,
+            end=end,
+            location="valid",
+        )
+    ]
+
+
 def _check_sigmet_airmet(tac: str, product: str, *, profile: str = "annex3") -> list[Issue]:
+    """
+    Internal helper ``_check_sigmet_airmet``.
+
+    Parameters
+    ----------
+    tac : object
+        Argument ``tac``.
+    product : object
+        Argument ``product``.
+    profile : object
+        Argument ``profile``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     start, end, body = _body_span(tac)
     upper = body.upper()
     core = upper[:-1] if upper.endswith("=") else upper
     issues: list[Issue] = []
     # F23 theme C1 - one IWXXM report per TAC report (shared with METAR/SPECI/TAF).
     issues.extend(_check_c1_multi_report(tac, product))
+
+    if product == "SIGMET" and _CONVECTIVE_SIGMET_BULLETIN.search(upper):
+        issues.extend(_check_convective_sigmet(start=start, end=end, upper=upper))
+        return issues
+
+    if product == "SIGMET" and _is_us_domestic_ws_sigmet(upper):
+        issues.extend(_check_us_domestic_ws_sigmet(start=start, end=end, upper=upper))
+        return issues
+
+    # Minimum Annex 3 skeleton: CCCC SIGMET|AIRMET … VALID YYGGgg/YYGGgg.
+    # US convective / domestic WS return above (VALID UNTIL forms).
+    if product in {"SIGMET", "AIRMET"} and not _SIGMET_AIRMET_CCCC_IDENTITY.search(upper):
+        issues.append(
+            _issue(
+                "MISSING_CCCC",
+                f"{product} missing ICAO location (CCCC) before {product}",
+                start=start,
+                end=end,
+                location="header",
+            )
+        )
 
     if not _VALID_PERIOD.search(upper):
         issues.append(
@@ -576,5 +893,22 @@ def _check_sigmet_airmet(tac: str, product: str, *, profile: str = "annex3") -> 
 
     # EV-050 - AirWx/SigWx register membership (underscore↔space normalize).
     issues.extend(_check_phenomenon_membership(upper, product=product, start=start, end=end))
+
+    tokens = core.replace("=", " ").replace("\n", " ").split()
+    malformed: list[Issue] = []
+    for tok in tokens:
+        lat = re.fullmatch(r"[NS](?P<deg>\d{2})(?P<min>\d{2})", tok)
+        bad_lat = bool(lat and (int(lat.group("deg")) > 90 or int(lat.group("min")) > 59))
+        if tok.endswith("-?") or tok == "METAR" or re.fullmatch(r"AT\d{4}Z", tok) or bad_lat:
+            malformed.append(
+                _issue(
+                    "MALFORMED_SOURCE_TOKEN",
+                    f"{product} looks like a source typo or garbled group {tok!r}",
+                    start=start,
+                    end=end,
+                    location="body",
+                )
+            )
+    issues.extend(malformed)
 
     return issues

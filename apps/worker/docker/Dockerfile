@@ -19,6 +19,7 @@ RUN apt-get update \
 COPY pyproject.toml uv.lock ./
 COPY packages/shared/pyproject.toml packages/shared/pyproject.toml
 COPY packages/tac2iwxxm/pyproject.toml packages/tac2iwxxm/pyproject.toml
+COPY packages/reference-lookup/pyproject.toml packages/reference-lookup/pyproject.toml
 COPY packages/tac-decoding/pyproject.toml packages/tac-decoding/pyproject.toml
 COPY packages/iwxxm-validate/pyproject.toml packages/iwxxm-validate/pyproject.toml
 COPY packages/tac-validate/pyproject.toml packages/tac-validate/pyproject.toml
@@ -27,6 +28,7 @@ COPY apps/worker/pyproject.toml apps/worker/pyproject.toml
 
 COPY packages/shared packages/shared
 COPY packages/tac2iwxxm packages/tac2iwxxm
+COPY packages/reference-lookup packages/reference-lookup
 COPY packages/tac-decoding packages/tac-decoding
 COPY packages/iwxxm-validate packages/iwxxm-validate
 COPY packages/tac-validate packages/tac-validate

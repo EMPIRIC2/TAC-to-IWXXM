@@ -3,121 +3,221 @@ engine: lint
 cases:
 - bucket: happy
   case_id: '01'
-  status: needs-fixture
+  status: ready
+  tac: TAF CYUL 231800Z 2319/2418 24010KT 9999 BKN020 WS015/24045KT=
+  expect:
+    accept: true
+    codes:
+    - CA_TAF_NCLWS
   meta:
-    reason: "EV-071 M1 scaffold \u2014 fill when fixture ready"
-    cite: MANOBS/MANAIR mining
+    product: TAF
+    profile: ca_eccc
+    cite: '#1265 profile CA_TAF_NCLWS/happy'
 - bucket: happy
   case_id: '02'
-  status: needs-fixture
+  status: ready
+  tac: TAF CYYZ 231800Z 2319/2418 24010KT 9999 BKN020 WS015/24045KT=
+  expect:
+    accept: true
+    codes:
+    - CA_TAF_NCLWS
   meta:
-    reason: "EV-071 M1 scaffold \u2014 fill when fixture ready"
-    cite: MANOBS/MANAIR mining
+    product: TAF
+    profile: ca_eccc
+    cite: '#1265 profile CA_TAF_NCLWS/happy'
 - bucket: happy
   case_id: '03'
-  status: needs-fixture
+  status: ready
+  tac: TAF CYVR 231800Z 2319/2418 24010KT 9999 BKN020 WS015/24045KT=
+  expect:
+    accept: true
+    codes:
+    - CA_TAF_NCLWS
   meta:
-    reason: "EV-071 M1 scaffold \u2014 fill when fixture ready"
-    cite: MANOBS/MANAIR mining
+    product: TAF
+    profile: ca_eccc
+    cite: '#1265 profile CA_TAF_NCLWS/happy'
 - bucket: happy
   case_id: '04'
-  status: needs-fixture
+  status: ready
+  tac: TAF CYOW 231800Z 2319/2418 24010KT 9999 BKN020 WS015/24045KT=
+  expect:
+    accept: true
+    codes:
+    - CA_TAF_NCLWS
   meta:
-    reason: "EV-071 M1 scaffold \u2014 fill when fixture ready"
-    cite: MANOBS/MANAIR mining
+    product: TAF
+    profile: ca_eccc
+    cite: '#1265 profile CA_TAF_NCLWS/happy'
 - bucket: happy
   case_id: '05'
-  status: needs-fixture
+  status: ready
+  tac: TAF CYHZ 231800Z 2319/2418 24010KT 9999 BKN020 WS015/24045KT=
+  expect:
+    accept: true
+    codes:
+    - CA_TAF_NCLWS
   meta:
-    reason: "EV-071 M1 scaffold \u2014 fill when fixture ready"
-    cite: MANOBS/MANAIR mining
+    product: TAF
+    profile: ca_eccc
+    cite: '#1265 profile CA_TAF_NCLWS/happy'
 - bucket: sad
   case_id: '01'
-  status: needs-fixture
+  status: ready
+  tac: TAF CYUL 231800Z 2319/2418 24010KT 9999 BKN020=
+  expect:
+    accept: true
   meta:
-    reason: "EV-071 M1 scaffold \u2014 fill when fixture ready"
-    cite: MANOBS/MANAIR mining
+    product: TAF
+    profile: ca_eccc
+    cite: '#1265 profile CA_TAF_NCLWS/sad'
 - bucket: sad
   case_id: '02'
-  status: needs-fixture
+  status: ready
+  tac: TAF CYYZ 231800Z 2319/2418 24010KT 9999 BKN020=
+  expect:
+    accept: true
   meta:
-    reason: "EV-071 M1 scaffold \u2014 fill when fixture ready"
-    cite: MANOBS/MANAIR mining
+    product: TAF
+    profile: ca_eccc
+    cite: '#1265 profile CA_TAF_NCLWS/sad'
 - bucket: sad
   case_id: '03'
-  status: needs-fixture
+  status: ready
+  tac: TAF CYVR 231800Z 2319/2418 24010KT 9999 BKN020=
+  expect:
+    accept: true
   meta:
-    reason: "EV-071 M1 scaffold \u2014 fill when fixture ready"
-    cite: MANOBS/MANAIR mining
+    product: TAF
+    profile: ca_eccc
+    cite: '#1265 profile CA_TAF_NCLWS/sad'
 - bucket: sad
   case_id: '04'
-  status: needs-fixture
+  status: ready
+  tac: TAF CYOW 231800Z 2319/2418 24010KT 9999 BKN020=
+  expect:
+    accept: true
   meta:
-    reason: "EV-071 M1 scaffold \u2014 fill when fixture ready"
-    cite: MANOBS/MANAIR mining
+    product: TAF
+    profile: ca_eccc
+    cite: '#1265 profile CA_TAF_NCLWS/sad'
 - bucket: sad
   case_id: '05'
-  status: needs-fixture
+  status: ready
+  tac: TAF CYHZ 231800Z 2319/2418 24010KT 9999 BKN020=
+  expect:
+    accept: true
   meta:
-    reason: "EV-071 M1 scaffold \u2014 fill when fixture ready"
-    cite: MANOBS/MANAIR mining
+    product: TAF
+    profile: ca_eccc
+    cite: '#1265 profile CA_TAF_NCLWS/sad'
 - bucket: edge_pass
   case_id: '01'
-  status: needs-fixture
+  status: ready
+  tac: TAF CYUL 231800Z 2319/2418 24010KT 9999 BKN020 WS015/24045KT=
+  expect:
+    accept: true
+    codes:
+    - CA_TAF_NCLWS
   meta:
-    reason: "EV-071 M1 scaffold \u2014 fill when fixture ready"
-    cite: MANOBS/MANAIR mining
+    product: TAF
+    profile: ca_eccc
+    cite: '#1265 profile CA_TAF_NCLWS/edge_pass'
 - bucket: edge_pass
   case_id: '02'
-  status: needs-fixture
+  status: ready
+  tac: TAF CYYZ 231800Z 2319/2418 24010KT 9999 BKN020 WS015/24045KT=
+  expect:
+    accept: true
+    codes:
+    - CA_TAF_NCLWS
   meta:
-    reason: "EV-071 M1 scaffold \u2014 fill when fixture ready"
-    cite: MANOBS/MANAIR mining
+    product: TAF
+    profile: ca_eccc
+    cite: '#1265 profile CA_TAF_NCLWS/edge_pass'
 - bucket: edge_pass
   case_id: '03'
-  status: needs-fixture
+  status: ready
+  tac: TAF CYVR 231800Z 2319/2418 24010KT 9999 BKN020 WS015/24045KT=
+  expect:
+    accept: true
+    codes:
+    - CA_TAF_NCLWS
   meta:
-    reason: "EV-071 M1 scaffold \u2014 fill when fixture ready"
-    cite: MANOBS/MANAIR mining
+    product: TAF
+    profile: ca_eccc
+    cite: '#1265 profile CA_TAF_NCLWS/edge_pass'
 - bucket: edge_pass
   case_id: '04'
-  status: needs-fixture
+  status: ready
+  tac: TAF CYOW 231800Z 2319/2418 24010KT 9999 BKN020 WS015/24045KT=
+  expect:
+    accept: true
+    codes:
+    - CA_TAF_NCLWS
   meta:
-    reason: "EV-071 M1 scaffold \u2014 fill when fixture ready"
-    cite: MANOBS/MANAIR mining
+    product: TAF
+    profile: ca_eccc
+    cite: '#1265 profile CA_TAF_NCLWS/edge_pass'
 - bucket: edge_pass
   case_id: '05'
-  status: needs-fixture
+  status: ready
+  tac: TAF CYHZ 231800Z 2319/2418 24010KT 9999 BKN020 WS015/24045KT=
+  expect:
+    accept: true
+    codes:
+    - CA_TAF_NCLWS
   meta:
-    reason: "EV-071 M1 scaffold \u2014 fill when fixture ready"
-    cite: MANOBS/MANAIR mining
+    product: TAF
+    profile: ca_eccc
+    cite: '#1265 profile CA_TAF_NCLWS/edge_pass'
 - bucket: edge_fail
   case_id: '01'
-  status: needs-fixture
+  status: ready
+  tac: TAF CYUL 231800Z 2319/2418 24010KT 9999 BKN020=
+  expect:
+    accept: true
   meta:
-    reason: "EV-071 M1 scaffold \u2014 fill when fixture ready"
-    cite: MANOBS/MANAIR mining
+    product: TAF
+    profile: ca_eccc
+    cite: '#1265 profile CA_TAF_NCLWS/edge_fail'
 - bucket: edge_fail
   case_id: '02'
-  status: needs-fixture
+  status: ready
+  tac: TAF CYYZ 231800Z 2319/2418 24010KT 9999 BKN020=
+  expect:
+    accept: true
   meta:
-    reason: "EV-071 M1 scaffold \u2014 fill when fixture ready"
-    cite: MANOBS/MANAIR mining
+    product: TAF
+    profile: ca_eccc
+    cite: '#1265 profile CA_TAF_NCLWS/edge_fail'
 - bucket: edge_fail
   case_id: '03'
-  status: needs-fixture
+  status: ready
+  tac: TAF CYVR 231800Z 2319/2418 24010KT 9999 BKN020=
+  expect:
+    accept: true
   meta:
-    reason: "EV-071 M1 scaffold \u2014 fill when fixture ready"
-    cite: MANOBS/MANAIR mining
+    product: TAF
+    profile: ca_eccc
+    cite: '#1265 profile CA_TAF_NCLWS/edge_fail'
 - bucket: edge_fail
   case_id: '04'
-  status: needs-fixture
+  status: ready
+  tac: TAF CYOW 231800Z 2319/2418 24010KT 9999 BKN020=
+  expect:
+    accept: true
   meta:
-    reason: "EV-071 M1 scaffold \u2014 fill when fixture ready"
-    cite: MANOBS/MANAIR mining
+    product: TAF
+    profile: ca_eccc
+    cite: '#1265 profile CA_TAF_NCLWS/edge_fail'
 - bucket: edge_fail
   case_id: '05'
-  status: needs-fixture
+  status: ready
+  tac: TAF CYHZ 231800Z 2319/2418 24010KT 9999 BKN020=
+  expect:
+    accept: true
   meta:
-    reason: "EV-071 M1 scaffold \u2014 fill when fixture ready"
-    cite: MANOBS/MANAIR mining
+    product: TAF
+    profile: ca_eccc
+    cite: '#1265 profile CA_TAF_NCLWS/edge_fail'

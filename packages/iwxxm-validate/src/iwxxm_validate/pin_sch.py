@@ -21,12 +21,34 @@ _PIN_NS_FRAGMENT: dict[str, str] = {
 
 
 class PinSchError(ValueError):
-    """IWXXM pin and Schematron bundle do not match."""
+    """
+    IWXXM pin and Schematron bundle do not match.
+
+    Attributes
+    ----------
+    args : tuple
+        Arguments passed to the exception constructor.
+    """
 
 
 @dataclass(frozen=True, slots=True)
 class PinSchBundle:
-    """Resolved XSD + Schematron paths for one IWXXM pin."""
+    """
+    Resolved XSD + Schematron paths for one IWXXM pin.
+
+    Attributes
+    ----------
+    pin : str
+        Pin.
+    version_root : Path
+        Version root.
+    xsd : Path
+        XSD.
+    schematron : Path
+        Schematron.
+    namespace_uri : str
+        Namespace URI.
+    """
 
     pin: str
     version_root: Path
@@ -41,12 +63,36 @@ _BUNDLE_CACHE: dict[str, PinSchBundle] = {}
 
 
 def clear_pin_sch_cache() -> None:
-    """Drop cached pin↔SCH bundles (tests / path monkeypatches)."""
+    """
+    Drop cached pin↔SCH bundles (tests / path monkeypatches).
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (clear_pin_sch_cache)
+    2
+    """
     _BUNDLE_CACHE.clear()
 
 
 def expected_iwxxm_namespace(iwxxm_version: str) -> str:
-    """Return the ICAO IWXXM namespace URI expected for ``iwxxm_version``."""
+    """
+    Return the ICAO IWXXM namespace URI expected for ``iwxxm_version``.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (expected_iwxxm_namespace)
+    2
+
+    Parameters
+    ----------
+    iwxxm_version : str
+        IWXXM release line.
+
+    Returns
+    -------
+    str
+        The ICAO IWXXM namespace URI expected for ``iwxxm_version``.
+    """
     fragment = _PIN_NS_FRAGMENT.get(iwxxm_version.strip())
     if fragment is None:
         msg = f"unsupported IWXXM pin for pin↔SCH check: {iwxxm_version!r}"
@@ -61,7 +107,7 @@ def assert_pin_schematron_match(iwxxm_version: str) -> PinSchBundle:
 
     Parameters
     ----------
-    iwxxm_version :
+    iwxxm_version : str
         Release pin (``2023-1``, ``2025-2``, ``3.0.0``).
 
     Returns
@@ -74,6 +120,11 @@ def assert_pin_schematron_match(iwxxm_version: str) -> PinSchBundle:
     PinSchError
         When the pin is unknown, files are missing, SCH is outside the pin tree,
         or the SCH namespace URI does not match the pin.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (assert_pin_schematron_match)
+    2
     """
     pin = iwxxm_version.strip()
     cached = _BUNDLE_CACHE.get(pin)

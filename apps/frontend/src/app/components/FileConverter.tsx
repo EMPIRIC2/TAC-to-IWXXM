@@ -6,6 +6,9 @@ import {
   useCallback,
   useMemo,
 } from 'react';
+import { stationFromReport } from '@/utils/decodeVisuals';
+import { publishDecodeVisuals } from '@/utils/decodeVisualsStore';
+import { type LivePlace } from '@/utils/liveMap';
 import { Button } from './ui/button';
 import { Card } from './ui/card';
 import { Input } from './ui/input';
@@ -21,8 +24,26 @@ import {
 import { SoftPreviewControl } from './SoftPreviewControl';
 import { PropagateResidualsControl } from './PropagateResidualsControl';
 import { LiveIwxxmToggle } from './LiveIwxxmToggle';
+import { BulletinReportList } from './BulletinReportList';
+import { LiveWorldMap } from './LiveWorldMap';
+import { LiveConvertStatusStrip } from './LiveConvertStatusStrip';
+import { TacLintJumps } from './TacLintJumps';
 import { StatusBanner } from './StatusBanner';
 import { WorkbenchConsole } from './WorkbenchConsole';
+import { ConvertResultsDrawer } from './ConvertResultsDrawer';
+import { ConvertSettingsCog } from './ConvertSettingsCog';
+import { VerticalResizeHandle } from './VerticalResizeHandle';
+import {
+  defaultTabAfterConvert,
+  shouldAutoOpenResultsDrawer,
+  type ConvertResultsTab,
+} from '/utils/convertResultsDrawer';
+import {
+  lintHighlightTokens,
+  readLintHighlightPreset,
+  writeLintHighlightPreset,
+  type LintHighlightPreset,
+} from '/utils/lintHighlightPreset';
 import { useLintIssueCatalog } from '@/hooks/useLintIssueCatalog';
 import {
   Upload,
@@ -30,8 +51,6 @@ import {
   Download,
   Copy,
   FileText,
-  FolderOpen,
-  Archive,
   Loader2,
   Settings,
   ChevronDown,
@@ -58,7 +77,16 @@ import {
 } from '@/utils/conversionProfilesApi';
 import { convertOverlayFields } from '@/utils/convertOverlayFields';
 import { LibraryPickersBar } from './LibraryPickersBar';
+import { libraryDisplayName } from '@/utils/libraryChoiceReason';
 import { libraryIdsForNationalLine } from '@/utils/libraryIds';
+import {
+  confirmLibraryResetForProfile,
+  COUNTRY_PRESET_LINES,
+  countryPresetLineForLibraries,
+  libraryIdsFromSessionParams,
+  isSemanticProfileLineChange,
+  libraryResetForProfile,
+} from '@/utils/profileLibraryReset';
 import {
   buildConversionExportMetadata,
   CONVERSION_METADATA_CHECKLIST_CONVERT_CONTEXT,
@@ -84,6 +112,14 @@ import {
 import {
   CONVERT_RESET_WMO_LIBRARY_DEFAULTS,
   CONVERT_RESET_WMO_LIBRARY_DEFAULTS_HELP,
+  COUNTRY_PRESET_CUSTOM,
+  COUNTRY_PRESET_HELP,
+  COUNTRY_PRESET_LABEL,
+  VALIDATE_IWXXM_DROP_HELP,
+  VALIDATE_IWXXM_DROP_TITLE,
+  VALIDATE_IWXXM_EMPTY_RESULTS,
+  VALIDATE_IWXXM_HEADING,
+  VALIDATE_IWXXM_INTRO,
 } from '@/utils/conversionProfilesCopy';
 import {
   readWmoLibraryDefaultsSync,
@@ -96,6 +132,8 @@ import { optionalFormField } from '@/utils/optionalFormField';
 import { UserPreferencesDialog } from './UserPreferencesDialog';
 import { PrivacyNotice } from './PrivacyNotice';
 import { PrivacySettingsDialog } from './PrivacySettingsDialog';
+import { OperatorFooter } from './OperatorFooter';
+import { SiteTermsDialog } from './SiteTermsDialog';
 import {
   acknowledgePrivacyNotice,
   shouldShowPrivacyNotice,
@@ -114,6 +152,7 @@ import {
   type IwxxmVersionId,
   coerceIwxxmVersion,
   coerceIwxxmVersionForProfile,
+  isMscOperationalLine,
   iwxxmVersionOptionsForProfile,
 } from '@/utils/iwxxmVersions';
 import { signOutWithScope } from '/utils/supabase/logout';
@@ -124,7 +163,6 @@ import {
   convertMetarToIwxxm as callBackendConversion,
   convertBulletin,
   ingestCollect,
-  massIngestFiles,
   lintTac,
   validateIwxxm,
   fetchSchemaStatus,
@@ -141,6 +179,34 @@ import {
   toggleQueueSelection,
 } from '/utils/operatorWorkQueue';
 import { useLiveWorkbenchAssist } from '@/hooks/useLiveWorkbenchAssist';
+import {
+  formFieldSpanInEditor,
+  lintSummaryLabel,
+  previewIsIncomplete,
+  readGroupTrace,
+  spansWithSelection,
+  type GroupTrace,
+  type LiveTraceTarget,
+} from '/utils/liveConvertTrace';
+import {
+  jumpableLintIssues,
+  lintIssueFromKey,
+  type JumpableLintIssue,
+} from '/utils/lintIssueJump';
+import {
+  errorLayerNames,
+  lintIssueCounts,
+  outputLayerStatus,
+  strictConvertRan,
+  tacLintLayerStatus,
+} from '/utils/checkLayers';
+import {
+  appendOutputVersion,
+  readOutputVersions,
+  type OutputVersion,
+} from '/utils/outputVersions';
+import { shellFrameClass, useLiveConvertLayout } from '/utils/liveConvertLayout';
+import { listBulletinReports, replaceBulletinReport } from '/utils/bulletinReportList';
 import { isAbortError } from '/utils/liveAssist';
 import {
   detectTacProduct,
@@ -177,6 +243,9 @@ import {
   CONVERT_AND_SEND_UPLOAD_OPTIONS,
   uploadConvertedFiles,
 } from '/utils/databaseUpload';
+import { CalmConvertEmptyHero } from './CalmConvertEmptyHero';
+import { ConvertHelpChecklist } from './ConvertHelpChecklist';
+import { ConvertProfileDrawer } from './ConvertProfileDrawer';
 import { ErrorLogPanel, type ConversionLog } from './ErrorLogPanel';
 import { WorkHistorySidebar } from './WorkHistorySidebar';
 import type { WorkSession } from '@metar/shared';
@@ -187,7 +256,19 @@ import {
   resolveManualLineMetaFromResult,
 } from '/utils/workSessionPayload';
 import { readGuestConverterState } from '/utils/guestConverterState';
-import { OPERATOR_ONE_PAGER_URL } from '/utils/operatorHelp';
+import {
+  CALM_CONVERT_PRIMARY_LABEL,
+  CALM_DOWNLOAD_PRIMARY_LABEL,
+  buildCalmExampleChips,
+  deriveCalmConvertUi,
+  resolveCalmProfileLabel,
+} from '/utils/convertCalmState';
+import {
+  assessConvertedFile,
+  PAGE_TITLE,
+  type ResultIssueInput,
+} from '/utils/resultCard';
+import { getTacExamplesForProduct } from '@/fixtures/examples/examplesCatalog';
 import {
   ACCUMULATE_RESULT_CAP,
   appendConvertedWithinCap,
@@ -195,22 +276,21 @@ import {
   manualOutputName,
   nextFirstAccumulatedTac,
   outputArchiveName,
+  outputFilenameAfterReportLoad,
   sanitizeOutputFilename,
   uniquifyZipMemberNames,
 } from '/utils/outputFilename';
+import { ConvertResultStatus } from './ConvertResultStatus';
+import { deriveTacDisplayTitle, resolveOriginalTac } from '/utils/resultTraceability';
 import {
-  deriveTacDisplayTitle,
-  resolveOriginalTac,
-  truncateTacSnippet,
-} from '/utils/resultTraceability';
-import {
+  convertFieldsFromParamsBar,
   isValidBulletinId,
   isValidIssuingCenter,
-  mapOnErrorToStopOnError,
-  mapStrictToValidation,
   type ConvertLogLevel,
   type ConvertOnError,
+  type ConvertParamsBar,
 } from '/utils/convertParams';
+import { StrictControls } from './StrictControls';
 import {
   BULLETIN_ID_FIELD_ERROR,
   ISSUING_CENTER_FIELD_ERROR,
@@ -220,15 +300,14 @@ import {
   kindToMode,
   looksLikeAhlBulletin,
   looksLikeCollectIwxxm,
+  looksLikeTacNotXml,
   type OperatorInputMode,
 } from '/utils/inputKind';
 import { inflateGzipToText, isGzipFileName } from '/utils/gunzip';
 import {
-  applyWebkitDirectoryAttrs,
   applyFocusedQueueContent,
   ariaInvalidFromError,
   caExtensionBundleAvailableFromStatus,
-  clearFileInputValue,
   coalescePreviewXml,
   firstTacForArchive,
   focusedValidateErrorMessage,
@@ -259,6 +338,12 @@ interface ConvertedFile {
   liveOutputSlot?: { index: number; total: number };
   /** Convert-time snapshot for export metadata sidecars. */
   exportContext?: ConversionExportContext;
+  /** Issues captured for this result. Older saved cards omit it. */
+  resultCard?: {
+    errors: string[];
+    issues: ResultIssueInput[];
+    ok?: boolean;
+  };
 }
 
 interface PendingFile {
@@ -285,8 +370,16 @@ interface FileConverterProps {
   onActiveSessionIdChange?: (id: string | null) => void;
   activeWorkSessionId?: string | null;
   loadedWorkSession?: WorkSession | null;
+  /** Open Rule catalogs (optional family hint for Convert trust links). */
+  onOpenCatalog?: (
+    family?: 'conversion' | 'lint' | 'iwxxm' | 'decoding',
+    code?: string,
+  ) => void;
 }
 
+/**
+ * Function `isStructuredConvertError`.
+ */
 function isStructuredConvertError(
   error: unknown,
 ): error is Error & { errors: string[]; issues: ConversionLog['issues'] } {
@@ -300,6 +393,9 @@ function isStructuredConvertError(
   return Array.isArray(candidate.errors) && Array.isArray(candidate.issues);
 }
 
+/**
+ * Function `mergeVisibleConvertErrors`.
+ */
 function mergeVisibleConvertErrors(primaryMessage: string, errors: string[]): string[] {
   const merged = new Set<string>();
   const normalizedPrimary = primaryMessage.trim();
@@ -318,10 +414,6 @@ function mergeVisibleConvertErrors(primaryMessage: string, errors: string[]): st
 type IWXXMVersion = IwxxmVersionId;
 type OnErrorBehavior = 'skip' | 'fail' | 'warn';
 type LogLevel = 'DEBUG' | 'INFO' | 'WARNING' | 'ERROR' | 'CRITICAL';
-
-const PROFILE_LABELS = new Map<string, string>(
-  SEMANTIC_PROFILE_OPTIONS.map((option) => [option.value, option.label]),
-);
 
 const FALLBACK_PROFILE_SUMMARIES: Partial<Record<IwxxmProfile, ProfileCatalogEntry>> = {
   ICAO_2025: {
@@ -343,7 +435,7 @@ const FALLBACK_PROFILE_SUMMARIES: Partial<Record<IwxxmProfile, ProfileCatalogEnt
   US_FAA_NWS: {
     id: 'US_FAA_NWS',
     kind: 'semantic',
-    products: ['METAR', 'SPECI', 'SIGMET', 'AIRMET'],
+    products: ['METAR', 'SPECI', 'TAF', 'SIGMET', 'AIRMET', 'TCA', 'SWXA', 'VONA'],
     deltas_vs_icao: [
       'Adds FAA/NWS national differences on top of the ICAO baseline.',
       'Uses the iwxxm-us schema catalog for United States IWXXM extensions.',
@@ -384,12 +476,43 @@ const FALLBACK_PROFILE_SUMMARIES: Partial<Record<IwxxmProfile, ProfileCatalogEnt
       },
     ],
   },
+  US_NWS_CONVECTIVE_SIGMET: {
+    id: 'US_NWS_CONVECTIVE_SIGMET',
+    kind: 'semantic',
+    products: ['SIGMET'],
+    deltas_vs_icao: [
+      'United States convective SIGMET. Use this for convective SIGMET text, not an international SIGMET.',
+    ],
+  },
+  US_NWS_G_AIRMET: {
+    id: 'US_NWS_G_AIRMET',
+    kind: 'semantic',
+    products: ['AIRMET'],
+    deltas_vs_icao: [
+      'United States G-AIRMET. Conversion is unavailable until a text bulletin is on file.',
+    ],
+  },
+  US_NWS_VONA: {
+    id: 'US_NWS_VONA',
+    kind: 'semantic',
+    products: ['VONA'],
+    deltas_vs_icao: [
+      'United States volcano observatory notice. Conversion is unavailable until a complete notice is on file.',
+    ],
+  },
+  CA_MSC_SIGMET: {
+    id: 'CA_MSC_SIGMET',
+    kind: 'semantic',
+    products: ['SIGMET'],
+    deltas_vs_icao: [
+      'Canadian SIGMET published as IWXXM. This checks the published file. Text conversion is unavailable.',
+    ],
+  },
 };
 
-function profileDisplayName(profileId: string): string {
-  return PROFILE_LABELS.get(profileId) ?? profileId;
-}
-
+/**
+ * Function `fallbackProfileSummary`.
+ */
 function fallbackProfileSummary(
   profile: IwxxmProfile,
   iwxxmVersion: IWXXMVersion,
@@ -399,10 +522,9 @@ function fallbackProfileSummary(
   if (fallback) {
     return {
       ...fallback,
-      iwxxm_line:
-        canonicalId === 'CA_ECCC'
-          ? `IWXXM ${CA_ECCC_IWXXM_VERSION} (MSC operational)`
-          : `IWXXM ${iwxxmVersion}`,
+      iwxxm_line: isMscOperationalLine(canonicalId)
+        ? `IWXXM ${CA_ECCC_IWXXM_VERSION} (MSC operational)`
+        : `IWXXM ${iwxxmVersion}`,
     };
   }
   return {
@@ -434,11 +556,47 @@ interface ConversionParams {
   decodingLibraryId: string;
   iwxxmVersion: IWXXMVersion;
   strictValidation: boolean;
+  strictLint: boolean;
+  strictConvert: boolean;
+  strictValidate: boolean;
   includeNilReasons: boolean;
   onError: OnErrorBehavior;
   logLevel: LogLevel;
 }
 
+/**
+ * Function `snapshotExportContext`.
+ */
+function paramsBarFromState(
+  params: ConversionParams,
+  reportVariant: string,
+): ConvertParamsBar {
+  return {
+    bulletinId: params.bulletinId,
+    issuingCenter: params.issuingCenter,
+    reportVariant,
+    profile: params.profile,
+    exchangeProfile: params.exchangeProfile,
+    presetId: params.presetId,
+    conversionLibraryId: params.conversionLibraryId,
+    tacValidationLibraryId: params.tacValidationLibraryId,
+    iwxxmValidationLibraryId: params.iwxxmValidationLibraryId,
+    disseminationLibraryId: params.disseminationLibraryId,
+    decodingLibraryId: params.decodingLibraryId,
+    iwxxmVersion: params.iwxxmVersion,
+    strictValidation: params.strictValidation,
+    strictLint: params.strictLint,
+    strictConvert: params.strictConvert,
+    strictValidate: params.strictValidate,
+    includeNilReasons: params.includeNilReasons,
+    onError: params.onError as ConvertOnError,
+    logLevel: params.logLevel as ConvertLogLevel,
+  };
+}
+
+/**
+ * Function `snapshotExportContext`.
+ */
 function snapshotExportContext(
   params: ConversionParams,
   product: string,
@@ -457,6 +615,9 @@ function snapshotExportContext(
   };
 }
 
+/**
+ * Function `initialConversionParams`.
+ */
 function initialConversionParams(): ConversionParams {
   const base: ConversionParams = {
     bulletinId: '',
@@ -470,7 +631,10 @@ function initialConversionParams(): ConversionParams {
     overlayId: '',
     ...libraryIdsForNationalLine(DEFAULT_SEMANTIC_PROFILE),
     iwxxmVersion: DEFAULT_IWXXM_VERSION,
-    strictValidation: true,
+    strictValidation: false,
+    strictLint: true,
+    strictConvert: true,
+    strictValidate: true,
     includeNilReasons: true,
     onError: 'warn',
     logLevel: 'INFO',
@@ -516,7 +680,10 @@ function conversionParamsFromStoredPreferences(
     overlayId: '',
     ...(sync ? sync.libraryIds : libraryIdsForNationalLine(profile)),
     iwxxmVersion,
-    strictValidation: prefs.strictValidation !== false,
+    strictValidation: prefs.strictValidation === true,
+    strictLint: prefs.strictLint !== false,
+    strictConvert: prefs.strictConvert !== false,
+    strictValidate: prefs.strictValidate !== false,
     includeNilReasons: prefs.includeNilReasons !== false,
     onError: ((typeof prefs.onError === 'string' && prefs.onError) ||
       'warn') as ConversionParams['onError'],
@@ -525,6 +692,9 @@ function conversionParamsFromStoredPreferences(
   };
 }
 
+/**
+ * Function `activeMetarFamilyVariants`.
+ */
 function activeMetarFamilyVariants(
   entry: ProfileCatalogEntry,
   product: string,
@@ -554,6 +724,8 @@ function activeMetarFamilyVariants(
  * @param props.onActiveSessionIdChange - Reports the active F5 session id
  * @param props.activeWorkSessionId - Current F5 session id when known
  * @param props.loadedWorkSession - Hydration payload for the active session
+ * @example
+ * const _ = true;
  */
 export function FileConverter({
   accessToken,
@@ -568,6 +740,7 @@ export function FileConverter({
   onActiveSessionIdChange,
   activeWorkSessionId,
   loadedWorkSession,
+  onOpenCatalog,
 }: FileConverterProps) {
   const [pendingFiles, setPendingFiles] = useState<PendingFile[]>([]);
   const [queueFocusIndex, setQueueFocusIndex] = useState(0);
@@ -580,11 +753,18 @@ export function FileConverter({
   const [firstAccumulatedTac, setFirstAccumulatedTac] = useState<string | null>(null);
   /** F7.s validate-only report (POST /api/v1/validate with xml_content). */
   const [validateReport, setValidateReport] = useState<ValidateResponse | null>(null);
-  const [manualInput, setManualInput] = useState('');
+  const [manualInput, setManualInput] = useState(() => {
+    const saved = readGuestConverterState()?.manualInput;
+    return typeof saved === 'string' ? saved : '';
+  });
   const [decodeError, setDecodeError] = useState<string | null>(null);
   const [softPreview, setSoftPreview] = useState(false);
   const [propagateResiduals, setPropagateResiduals] = useState(false);
-  const [liveIwxxm, setLiveIwxxm] = useState(false);
+  const [liveIwxxm, setLiveIwxxm] = useState(true);
+  const [selectedTrace, setSelectedTrace] = useState<LiveTraceTarget | null>(null);
+  const [lintJump, setLintJump] = useState<number | null>(null);
+  const [lintFocusOffset, setLintFocusOffset] = useState<number | null>(null);
+  const [groupTrace, setGroupTrace] = useState<GroupTrace[]>([]);
   const [failedSpans, setFailedSpans] = useState<FailedSpan[]>([]);
   const [previewXml, setPreviewXml] = useState('');
   const [previewStatus, setPreviewStatus] = useState<IwxxmPreviewStatus>('empty');
@@ -592,6 +772,8 @@ export function FileConverter({
   const [previewSoftFailDetail, setPreviewSoftFailDetail] = useState<
     string | undefined
   >();
+  /** Which converted file the IWXXM tab is showing (Downloads selects into this). */
+  const [focusedConvertedId, setFocusedConvertedId] = useState<string | null>(null);
   const [inputMode, setInputMode] = useState<OperatorInputMode>('tac');
   const [demoExampleLabel, setDemoExampleLabel] = useState<string | null>(null);
   const [bulletinSummary, setBulletinSummary] = useState<string | null>(null);
@@ -600,25 +782,40 @@ export function FileConverter({
   const [recentWorkCollapsed, setRecentWorkCollapsed] = useState(
     preferCollapsedWorkbenchChrome,
   );
-  /** UX-08: remount Profile glance closed when entering narrow (epoch bump). */
-  const [profileGlanceEpoch, setProfileGlanceEpoch] = useState(0);
+  /** Converter panes follow the report. Hidden leaves the map in view. */
+  const [converterOpen, setConverterOpen] = useState(true);
   // Restore the guest's custom output filename from the session snapshot (R5).
   const [outputFilename, setOutputFilename] = useState(() => {
     const saved = readGuestConverterState()?.conversionParams?.output_filename;
     return typeof saved === 'string' ? saved : '';
   });
+  /** True after the operator types a non-empty output filename. */
+  const outputFilenameOwned = useRef(outputFilename.trim() !== '');
   const [isDragging, setIsDragging] = useState(false);
   const [isConverting, setIsConverting] = useState(false);
   const [isConvertAndSending, setIsConvertAndSending] = useState(false);
+  const [helpChecklistOpen, setHelpChecklistOpen] = useState(false);
+  const [profileDrawerOpen, setProfileDrawerOpen] = useState(false);
+  const [tacLockedAfterConvert, setTacLockedAfterConvert] = useState(false);
+  const [resultsDrawerOpen, setResultsDrawerOpen] = useState(true);
+  const [resultsTab, setResultsTab] = useState<ConvertResultsTab>('iwxxm');
+  const [converterPaneHeight, setConverterPaneHeight] = useState(280);
+  const [lintHighlightPreset, setLintHighlightPreset] = useState<LintHighlightPreset>(
+    () => readLintHighlightPreset(),
+  );
+  const convertedQueueWasEmptyRef = useRef(true);
   const [conversionStatus, setConversionStatus] = useState<{
     type: 'idle' | 'loading' | 'timeout' | 'error' | 'send_error';
     message?: string;
   }>({ type: 'idle' });
   const [conversionLog, setConversionLog] = useState<ConversionLog | null>(null);
   const [isDisseminationOpen, setIsDisseminationOpen] = useState(false);
-  const [isMassIngesting, setIsMassIngesting] = useState(false);
+  /** Packaging-drawer Exchange for catalog filter while Disseminate is open (AC-UI Exchange). */
+  const [packagingExchangeProfile, setPackagingExchangeProfile] =
+    useState<ExchangeProfileId | null>(null);
   const [isPreferencesDialogOpen, setIsPreferencesDialogOpen] = useState(false);
   const [isPrivacySettingsOpen, setIsPrivacySettingsOpen] = useState(false);
+  const [isSiteTermsOpen, setIsSiteTermsOpen] = useState(false);
   const [isLogoutMenuOpen, setIsLogoutMenuOpen] = useState(false);
   const [showPrivacyNotice, setShowPrivacyNotice] = useState(() =>
     shouldShowPrivacyNotice(),
@@ -634,6 +831,12 @@ export function FileConverter({
   const [conversionParams, setConversionParams] = useState<ConversionParams>(
     initialConversionParams,
   );
+  const handleDisseminationOpenChange = (open: boolean) => {
+    setIsDisseminationOpen(open);
+    if (!open) {
+      setPackagingExchangeProfile(null);
+    }
+  };
   const [profileCatalogEntries, setProfileCatalogEntries] = useState<
     ProfileCatalogEntry[]
   >([]);
@@ -642,15 +845,24 @@ export function FileConverter({
   );
   const [isMetadataChecklistOpen, setIsMetadataChecklistOpen] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const massFolderInputRef = useRef<HTMLInputElement>(null);
-  const massZipInputRef = useRef<HTMLInputElement>(null);
   const hydratedWorkSessionIdRef = useRef<string | null>(null);
+  const outputVersionsRef = useRef<OutputVersion[]>([]);
+  const [, setOutputVersions] = useState<OutputVersion[]>([]);
+  const { layout: liveLayout, updateLayout: updateLiveLayout } = useLiveConvertLayout();
+  const [bulletinSource, setBulletinSource] = useState('');
+  const [focusedBulletinReport, setFocusedBulletinReport] = useState<number | null>(
+    null,
+  );
   const convertedFilesRef = useRef<ConvertedFile[]>([]);
   const conversionLogRef = useRef<ConversionLog | null>(null);
 
   const updateConversionLog = useCallback((next: ConversionLog | null) => {
     conversionLogRef.current = next;
     setConversionLog(next);
+  }, []);
+
+  useEffect(() => {
+    document.title = PAGE_TITLE;
   }, []);
 
   const applyWmoLibraryDefaultsSync = useCallback((sync: WmoLibraryDefaultsSync) => {
@@ -698,17 +910,35 @@ export function FileConverter({
   }, [convertedFiles]);
 
   useEffect(() => {
+    const hasConvertedNow = convertedFiles.length > 0;
+    if (
+      shouldAutoOpenResultsDrawer(hasConvertedNow, convertedQueueWasEmptyRef.current)
+    ) {
+      setResultsDrawerOpen(true);
+      setResultsTab(defaultTabAfterConvert());
+    }
+    convertedQueueWasEmptyRef.current = !hasConvertedNow;
+  }, [convertedFiles.length]);
+
+  useEffect(() => {
+    const tokens = lintHighlightTokens(lintHighlightPreset);
+    const root = document.documentElement;
+    root.style.setProperty('--tac-lint-issue-bg', tokens.issueBg);
+    root.style.setProperty('--tac-lint-issue-border', tokens.issueBorder);
+    root.style.setProperty('--tac-lint-info-bg', tokens.infoBg);
+    root.style.setProperty('--tac-lint-info-border', tokens.infoBorder);
+    root.style.setProperty('--tac-lint-selected-bg', tokens.selectedBg);
+    root.style.setProperty('--tac-lint-selected-border', tokens.selectedBorder);
+    writeLintHighlightPreset(lintHighlightPreset);
+  }, [lintHighlightPreset]);
+
+  useEffect(() => {
     conversionLogRef.current = conversionLog;
   }, [conversionLog]);
 
   useEffect(() => {
-    applyWebkitDirectoryAttrs(massFolderInputRef.current);
-  }, []);
-
-  useEffect(() => {
     return subscribeNarrowWorkbenchChrome(() => {
       setRecentWorkCollapsed(true);
-      setProfileGlanceEpoch((epoch) => epoch + 1);
     });
   }, []);
 
@@ -805,6 +1035,7 @@ export function FileConverter({
     conversionParams: {
       ...(conversionParams as unknown as Record<string, unknown>),
       output_filename: outputFilename,
+      output_versions: outputVersionsRef.current,
     },
     ...overrides,
   });
@@ -883,6 +1114,10 @@ export function FileConverter({
   useLayoutEffect(() => {
     if (!loadedWorkSession) {
       hydratedWorkSessionIdRef.current = null;
+      if (outputVersionsRef.current.length > 0) {
+        outputVersionsRef.current = [];
+        setOutputVersions([]);
+      }
       return;
     }
     // Re-hydrate only when the user selects a different session — not on every
@@ -903,43 +1138,50 @@ export function FileConverter({
       const resultNames = loadedWorkSession.converted_results.map((result, index) =>
         hydratedResultName(result.name as string | undefined, index),
       );
-      setConvertedFiles(
-        loadedWorkSession.converted_results.map((result, index) => {
-          const originalName = resultNames[index] as string;
-          const originalContent = String(result.tac_input ?? '');
-          const lineMeta = resolveManualLineMetaFromResult(
-            originalName,
-            result,
-            resultNames,
-          );
-          return {
-            id: `loaded-result-${index}`,
-            originalName,
-            originalContent,
-            displayTitle: deriveTacDisplayTitle(originalContent, originalName),
-            manualLineIndex: lineMeta.manualLineIndex,
-            manualLineTotal: lineMeta.manualLineTotal,
-            convertedContent: String(
-              result.iwxxm_xml ?? result.xml ?? result.content ?? '',
-            ),
-            timestamp:
-              typeof result.converted_at === 'number'
-                ? result.converted_at
-                : Date.now(),
-            ...(result.export_context &&
-            typeof result.export_context === 'object' &&
-            !Array.isArray(result.export_context)
-              ? {
-                  exportContext: result.export_context as ConversionExportContext,
-                }
-              : {}),
-          };
-        }),
-      );
+      const hydratedFiles = loadedWorkSession.converted_results.map((result, index) => {
+        const originalName = resultNames[index] as string;
+        const originalContent = String(result.tac_input ?? '');
+        const lineMeta = resolveManualLineMetaFromResult(
+          originalName,
+          result,
+          resultNames,
+        );
+        return {
+          id: `loaded-result-${index}`,
+          originalName,
+          originalContent,
+          displayTitle: deriveTacDisplayTitle(originalContent, originalName),
+          manualLineIndex: lineMeta.manualLineIndex,
+          manualLineTotal: lineMeta.manualLineTotal,
+          convertedContent: String(
+            result.iwxxm_xml ?? result.xml ?? result.content ?? '',
+          ),
+          timestamp:
+            typeof result.converted_at === 'number' ? result.converted_at : Date.now(),
+          ...(result.export_context &&
+          typeof result.export_context === 'object' &&
+          !Array.isArray(result.export_context)
+            ? {
+                exportContext: result.export_context as ConversionExportContext,
+              }
+            : {}),
+        };
+      });
+      setConvertedFiles(hydratedFiles);
+      const latestHydrated = hydratedFiles[hydratedFiles.length - 1]!;
+      setFocusedConvertedId(latestHydrated.id);
+      const hydratedXml = coalescePreviewXml(latestHydrated.convertedContent);
+      if (hydratedXml) {
+        setPreviewXml(hydratedXml);
+        setPreviewMode('live');
+        setPreviewStatus('passed');
+        setPreviewSoftFailDetail(undefined);
+      }
       const firstTac = String(loadedWorkSession.converted_results[0]?.tac_input ?? '');
       setFirstAccumulatedTac(firstTac || null);
     } else {
       setConvertedFiles([]);
+      setFocusedConvertedId(null);
       setFirstAccumulatedTac(null);
     }
     const hasLog =
@@ -958,7 +1200,9 @@ export function FileConverter({
       | Record<string, unknown>
       | undefined;
     const savedName = params?.output_filename;
-    setOutputFilename(typeof savedName === 'string' ? savedName : '');
+    const restoredName = typeof savedName === 'string' ? savedName : '';
+    outputFilenameOwned.current = restoredName.trim() !== '';
+    setOutputFilename(restoredName);
     if (params) {
       setConversionParams((prev) => {
         const next = { ...prev };
@@ -1001,8 +1245,15 @@ export function FileConverter({
         } else if (typeof params.overlayId === 'string') {
           next.overlayId = params.overlayId;
         }
+        Object.assign(next, libraryIdsFromSessionParams(params));
         return next;
       });
+      const storedVersions = readOutputVersions(params);
+      outputVersionsRef.current = storedVersions;
+      setOutputVersions(storedVersions);
+    } else {
+      outputVersionsRef.current = [];
+      setOutputVersions([]);
     }
   }, [loadedWorkSession, updateConversionLog]);
   /* eslint-enable react-hooks/set-state-in-effect */
@@ -1037,6 +1288,12 @@ export function FileConverter({
     } catch (error) {
       console.error('Error reloading preferences:', error);
     }
+  };
+
+  const applyLoadedReportName = (tac: string) => {
+    setOutputFilename((current) =>
+      outputFilenameAfterReportLoad(current, outputFilenameOwned.current, tac),
+    );
   };
 
   const handleFileSelect = async (files: FileList | null) => {
@@ -1078,9 +1335,9 @@ export function FileConverter({
       setInputMode(detectedMode);
       toast.info(
         detectedMode === 'ahl_bulletin'
-          ? 'Detected AHL bulletin — switched input mode'
+          ? 'Detected an AHL bulletin. Switched input mode.'
           : detectedMode === 'collect_iwxxm'
-            ? 'Detected IWXXM COLLECT — switched input mode'
+            ? 'Detected an IWXXM COLLECT file. Switched input mode.'
             : 'Switched to TAC report mode',
       );
     }
@@ -1106,88 +1363,6 @@ export function FileConverter({
     setIsDragging(false);
   };
 
-  /**
-   * Auth-gated mass ingest (F33): upload folder/zip via ``POST /api/v1/ingest/mass``,
-   * then hand accepted text into the pending convert queue.
-   */
-  const handleMassIngest = async (files: FileList | null) => {
-    if (!files || files.length === 0) return;
-
-    const token = accessToken?.trim();
-    if (!token) {
-      toast.error('Sign in required for mass folder or zip ingest');
-      onRequestLogin?.();
-      return;
-    }
-
-    const fileList = Array.from(files);
-    setIsMassIngesting(true);
-    const progressId = toast.loading(`Mass ingesting ${fileList.length} file(s)…`);
-
-    try {
-      const response = await massIngestFiles({
-        files: fileList,
-        accessToken: token,
-      });
-
-      const accepted: PendingFile[] = [];
-      const rejectSamples: string[] = [];
-      for (const [index, item] of response.results.entries()) {
-        if (item.accepted && item.content != null) {
-          accepted.push({
-            id: `mass-${item.name}-${Date.now()}-${index}`,
-            name: item.name,
-            content: item.content,
-          });
-        } else if (!item.accepted) {
-          if (rejectSamples.length < 5) {
-            rejectSamples.push(`${item.name}: ${item.reason || 'rejected'}`);
-          }
-        }
-      }
-
-      if (accepted.length > 0) {
-        setPendingFiles((prev) => [...prev, ...accepted]);
-      }
-
-      for (const sample of rejectSamples) {
-        toast.error(sample);
-      }
-
-      toast.success(
-        `Mass ingest: ${response.accepted_count} accepted, ${response.rejected_count} rejected`,
-        { id: progressId },
-      );
-    } catch (error) {
-      console.error('[FileConverter] Mass ingest error:', error);
-      toast.error(error instanceof Error ? error.message : 'Mass ingest failed', {
-        id: progressId,
-      });
-    } finally {
-      setIsMassIngesting(false);
-      clearFileInputValue(massFolderInputRef.current);
-      clearFileInputValue(massZipInputRef.current);
-    }
-  };
-
-  const requestMassFolder = () => {
-    if (!accessToken?.trim()) {
-      toast.error('Sign in required for mass folder or zip ingest');
-      onRequestLogin?.();
-      return;
-    }
-    massFolderInputRef.current?.click();
-  };
-
-  const requestMassZip = () => {
-    if (!accessToken?.trim()) {
-      toast.error('Sign in required for mass folder or zip ingest');
-      onRequestLogin?.();
-      return;
-    }
-    massZipInputRef.current?.click();
-  };
-
   const performConversion = async (opts?: {
     pendingSubset?: PendingFile[];
     includeManual?: boolean;
@@ -1198,7 +1373,26 @@ export function FileConverter({
   } | null> => {
     const queueFiles = opts?.pendingSubset ?? pendingFiles;
     const includeManual = opts?.includeManual !== false;
-    const manualText = includeManual ? manualInput.trim() : '';
+    const manualText = includeManual
+      ? inputMode === 'ahl_bulletin' && focusedBulletinReport !== null
+        ? bulletinSource.trim()
+        : manualInput.trim()
+      : '';
+    const rememberHardConvert = (files: ConvertedFile[]) => {
+      if (softPreview) {
+        return;
+      }
+      const next = appendOutputVersion(outputVersionsRef.current, {
+        at: Date.now(),
+        tac: manualText || files[0]?.originalContent || '',
+        xml: files.map((file) => file.convertedContent).join('\n'),
+        conversionProfile:
+          conversionParams.conversionLibraryId || conversionParams.profile,
+        decodingProfile: conversionParams.decodingLibraryId,
+      });
+      outputVersionsRef.current = next;
+      setOutputVersions(next);
+    };
 
     if (queueFiles.length === 0 && !manualText) {
       toast.error('Please add files or enter manual input');
@@ -1236,11 +1430,11 @@ export function FileConverter({
       if (mode === 'tac' && looksLikeAhlBulletin(tacForDetect)) {
         mode = 'ahl_bulletin';
         setInputMode('ahl_bulletin');
-        toast.info('Detected AHL bulletin — switched input mode');
+        toast.info('Detected an AHL bulletin. Switched input mode.');
       } else if (mode === 'tac' && looksLikeCollectIwxxm(tacForDetect)) {
         mode = 'collect_iwxxm';
         setInputMode('collect_iwxxm');
-        toast.info('Detected IWXXM COLLECT — switched input mode');
+        toast.info('Detected an IWXXM COLLECT file. Switched input mode.');
       }
 
       const resolvedProduct = resolveConvertProduct(
@@ -1311,6 +1505,9 @@ export function FileConverter({
           exchangeProfile: conversionParams.exchangeProfile,
           iwxxmVersion: conversionParams.iwxxmVersion,
           lint: true,
+          propagateResidualsToRemarks: propagateResiduals,
+          extensions: nationalExtensionsForProfile(conversionParams.profile),
+          ...(accessToken?.trim() ? { accessToken: accessToken.trim() } : {}),
         });
         const meta = bulletinResponse.bulletin_meta;
         setBulletinSummary(
@@ -1343,6 +1540,11 @@ export function FileConverter({
               convertedContent: result.xml,
               timestamp: Date.now(),
               exportContext: snapshotExportContext(conversionParams, resolvedProduct),
+              resultCard: {
+                errors: [],
+                issues: result.issues,
+                ok: result.ok,
+              },
             });
           }
         });
@@ -1362,7 +1564,14 @@ export function FileConverter({
             setFirstAccumulatedTac((stem) =>
               nextFirstAccumulatedTac(stem, newConvertedFiles[0]?.originalContent),
             );
+            rememberHardConvert(newConvertedFiles);
           }
+          const latestBulletin = newConvertedFiles[newConvertedFiles.length - 1]!;
+          setFocusedConvertedId(latestBulletin.id);
+          setPreviewXml(latestBulletin.convertedContent);
+          setPreviewMode('live');
+          setPreviewStatus('passed');
+          setPreviewSoftFailDetail(undefined);
         }
         clearConvertedFromQueue();
         // EV-040: keep manual TAC input after convert (do not clear).
@@ -1390,44 +1599,18 @@ export function FileConverter({
         softPreview,
       });
 
-      const { validateOutput, validationLevel } = mapStrictToValidation(
-        conversionParams.strictValidation,
-        softPreview,
+      const barFields = convertFieldsFromParamsBar(
+        paramsBarFromState(conversionParams, activeReportVariant),
+        { softPreview, propagateResidualsToRemarks: propagateResiduals },
       );
 
       const response = await callBackendConversion({
         manualText: manualText || undefined,
         files: filesToConvert.length > 0 ? filesToConvert : undefined,
         product: resolvedProduct,
-        profile: conversionParams.profile,
-        presetId: optionalFormField(conversionParams.presetId),
-        conversionLibraryId: optionalFormField(conversionParams.conversionLibraryId),
-        tacValidationLibraryId: optionalFormField(
-          conversionParams.tacValidationLibraryId,
-        ),
-        iwxxmValidationLibraryId: optionalFormField(
-          conversionParams.iwxxmValidationLibraryId,
-        ),
-        disseminationLibraryId: optionalFormField(
-          conversionParams.disseminationLibraryId,
-        ),
-        decodingLibraryId: optionalFormField(conversionParams.decodingLibraryId),
-        reportVariant: optionalFormField(activeReportVariant),
-        iwxxmVersion: conversionParams.iwxxmVersion,
-        validateOutput,
-        validationLevel,
-        stopOnError: mapOnErrorToStopOnError(
-          conversionParams.onError as ConvertOnError,
-        ),
-        bulletinId: optionalFormField(conversionParams.bulletinId),
-        issuingCenter: optionalFormField(conversionParams.issuingCenter),
-        includeNilReasons: conversionParams.includeNilReasons,
-        logLevel: conversionParams.logLevel,
-        preview: softPreview,
-        propagateResidualsToRemarks: propagateResiduals,
+        ...barFields,
         extensions: nationalExtensionsForProfile(conversionParams.profile),
         exchangeOutput: exchangeOutputForProfile(conversionParams.profile),
-        exchangeProfile: conversionParams.exchangeProfile,
         ...(accessToken?.trim() ? { accessToken: accessToken.trim() } : {}),
         ...convertOverlayFields(conversionParams.overlayId, accessToken),
       });
@@ -1490,6 +1673,15 @@ export function FileConverter({
         setFailedSpans(spans);
       }
 
+      const resultOk = response.ok !== false;
+      for (const file of newConvertedFiles) {
+        file.resultCard = {
+          errors: responseErrors,
+          issues: responseIssues,
+          ok: resultOk,
+        };
+      }
+
       if (newConvertedFiles.length === 0) {
         if (hasLog) {
           updateConversionLog({ errors: responseErrors, issues: responseIssues });
@@ -1500,19 +1692,25 @@ export function FileConverter({
         return null;
       }
 
-      const latestPreviewXml = coalescePreviewXml(
-        newConvertedFiles[newConvertedFiles.length - 1]?.convertedContent,
-      );
-      if (latestPreviewXml && (softPreview || softFail)) {
+      const latestFile = newConvertedFiles[newConvertedFiles.length - 1]!;
+      const latestPreviewXml = coalescePreviewXml(latestFile.convertedContent);
+      if (latestPreviewXml) {
         setPreviewXml(latestPreviewXml);
-        setPreviewMode('soft-preview');
-        if (softFail) {
-          setPreviewStatus('soft-fail');
-          setPreviewSoftFailDetail(
-            'Some groups could not be converted. Fix the highlighted spans in the editor, then retry Soft-preview. This output is not for publish.',
-          );
+        setFocusedConvertedId(latestFile.id);
+        if (softPreview || softFail) {
+          setPreviewMode('soft-preview');
+          if (softFail) {
+            setPreviewStatus('soft-fail');
+            setPreviewSoftFailDetail(
+              'Some groups could not be converted. Fix the highlighted spans in the editor, then retry the preview. This output is not for publishing.',
+            );
+          } else {
+            setPreviewStatus('passed');
+            setPreviewSoftFailDetail(undefined);
+          }
         } else {
-          setPreviewStatus('passed');
+          setPreviewMode('live');
+          setPreviewStatus(resultOk ? 'passed' : 'soft-fail');
           setPreviewSoftFailDetail(undefined);
         }
       }
@@ -1532,6 +1730,7 @@ export function FileConverter({
           setFirstAccumulatedTac((stem) =>
             nextFirstAccumulatedTac(stem, newConvertedFiles[0]?.originalContent),
           );
+          rememberHardConvert(newConvertedFiles);
         }
       }
       clearConvertedFromQueue();
@@ -1543,7 +1742,12 @@ export function FileConverter({
         hasLog ? { errors: responseErrors, issues: responseIssues } : null,
       );
       setConversionStatus({ type: 'idle' });
-      return { files: newConvertedFiles, hasErrors: hasLog || softFail, softFail };
+      // Info notes stay in the log. They do not fail a conversion that produced files.
+      return {
+        files: newConvertedFiles,
+        hasErrors: responseErrors.length > 0 || softFail,
+        softFail,
+      };
     } catch (error) {
       console.error('[FileConverter] Conversion error:', error);
 
@@ -1598,6 +1802,12 @@ export function FileConverter({
       toast.error('Paste IWXXM XML or upload one .xml file to validate.');
       return;
     }
+    if (looksLikeTacNotXml(xmlContent)) {
+      toast.error(
+        'That looks like TAC, not IWXXM XML. Convert first, then validate the XML output.',
+      );
+      return;
+    }
     setIsConverting(true);
     setValidateReport(null);
     setConversionStatus({ type: 'loading', message: 'Validating IWXXM…' });
@@ -1646,23 +1856,28 @@ export function FileConverter({
       if (result) {
         if (result.softFail) {
           toast.warning(
-            'Soft-preview returned Failed-TAC markers — not ready to publish',
+            'Soft preview found groups that failed. This result is not ready to publish.',
           );
-        } else {
+        } else if (result.files.length > 0) {
           toast.success(`Successfully converted ${result.files.length} file(s)`);
+          setTacLockedAfterConvert(true);
         }
-        const snapshot = buildSnapshot({
-          convertedFiles: result.files.map((file) => ({
-            originalName: file.originalName,
-            originalContent: file.originalContent,
-            convertedContent: file.convertedContent,
-          })),
-          manualInput,
-          pendingFiles: [],
-        });
-        await persistSession(snapshot, {
-          status: result.hasErrors ? 'failed' : 'wip',
-        });
+        // A mode that produced no files already explained itself. Do not mark
+        // the current draft failed or announce a zero-file success.
+        if (result.files.length > 0 || !result.hasErrors) {
+          const snapshot = buildSnapshot({
+            convertedFiles: result.files.map((file) => ({
+              originalName: file.originalName,
+              originalContent: file.originalContent,
+              convertedContent: file.convertedContent,
+            })),
+            manualInput,
+            pendingFiles: [],
+          });
+          await persistSession(snapshot, {
+            status: result.hasErrors ? 'failed' : 'wip',
+          });
+        }
       } else {
         await persistSession(buildSnapshot(), { status: 'failed' });
       }
@@ -1685,7 +1900,9 @@ export function FileConverter({
 
       if (result.hasErrors) {
         if (result.softFail) {
-          toast.warning('Soft-preview Failed-TAC — fix markers before Convert & Send');
+          toast.warning(
+            'Soft preview found failed groups. Fix them before Convert & Send.',
+          );
         }
         await persistSession(
           buildSnapshot({
@@ -1743,12 +1960,21 @@ export function FileConverter({
     setPendingFiles([]);
     setManualInput('');
     setDemoExampleLabel(null);
+    outputFilenameOwned.current = false;
     setOutputFilename('');
     setConvertedFiles([]);
+    setTacLockedAfterConvert(false);
     setFirstAccumulatedTac(null);
     setValidateReport(null);
     updateConversionLog(null);
     setConversionStatus({ type: 'idle' });
+    setInputMode('tac');
+    setConversionParams((prev) => ({ ...prev, product: 'auto' }));
+    setFailedSpans([]);
+    setPreviewXml('');
+    setPreviewStatus('empty');
+    setPreviewMode('idle');
+    setPreviewSoftFailDetail(undefined);
     onActiveSessionIdChange?.(null);
     onNewMetar?.();
     toast.info(isReadOnly ? 'Starting a new TAC session' : 'Starting a new TAC draft');
@@ -1763,6 +1989,7 @@ export function FileConverter({
       // Drop prior conversion/preview state so demo TAC is never paired with stale XML.
       setPendingFiles([]);
       setConvertedFiles([]);
+      setTacLockedAfterConvert(false);
       setFirstAccumulatedTac(null);
       setValidateReport(null);
       updateConversionLog(null);
@@ -1776,13 +2003,23 @@ export function FileConverter({
       setPlaceholderNotice(null);
       setDecodeError(null);
 
-      setManualInput(example.body.replace(/\s+$/, ''));
+      const exampleTac = example.body.replace(/\s+$/, '');
+      setManualInput(exampleTac);
+      applyLoadedReportName(exampleTac);
       setInputMode(example.inputMode);
+      // Demo bodies are WMO / Annex 3 goldens, so load them under the Annex 3 line.
+      // Resetting the profile stops a sticky national overlay (e.g. US_FAA_NWS) from
+      // flagging valid Annex 3 constructs like BECMG on the official samples.
+      const { profile: demoProfile, libraryIds: demoLibraryIds } =
+        libraryResetForProfile(DEFAULT_SEMANTIC_PROFILE);
       // Always set product — omit → auto — so a prior TAF pick cannot stick on AHL/TAC demos.
       setConversionParams((prev) => ({
         ...prev,
+        ...demoLibraryIds,
+        profile: demoProfile,
         product: example.product ?? 'auto',
         reportVariant: '',
+        iwxxmVersion: coerceIwxxmVersionForProfile(demoProfile, prev.iwxxmVersion),
       }));
       setDemoExampleLabel(example.label);
       toast.info(`Loaded ${example.label} example`);
@@ -1920,7 +2157,6 @@ export function FileConverter({
   };
 
   const handleCopy = (content: string) => {
-    // Try modern clipboard API first
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard
         .writeText(content)
@@ -1928,11 +2164,9 @@ export function FileConverter({
           toast.success('Copied to clipboard');
         })
         .catch(() => {
-          // Fallback to older method
           fallbackCopy(content);
         });
     } else {
-      // Fallback for browsers without clipboard API
       fallbackCopy(content);
     }
   };
@@ -1946,10 +2180,8 @@ export function FileConverter({
       textarea.style.top = '-9999px';
       document.body.appendChild(textarea);
       textarea.select();
-
       const successful = document.execCommand('copy');
       document.body.removeChild(textarea);
-
       if (successful) {
         toast.success('Copied to clipboard');
       } else {
@@ -1974,7 +2206,13 @@ export function FileConverter({
   const focusQueueItem = (index: number) => {
     const clamped = clampQueueIndex(index, pendingFiles.length);
     setQueueFocusIndex(clamped);
-    applyFocusedQueueContent(pendingFiles[clamped], setManualInput);
+    const focusedFile = pendingFiles[clamped];
+    applyFocusedQueueContent(focusedFile, (content) => {
+      setManualInput(content);
+      if (!focusedFile!.name.toLowerCase().endsWith('.xml')) {
+        applyLoadedReportName(content);
+      }
+    });
   };
 
   const handleQueueConvertFocused = async () => {
@@ -2095,7 +2333,40 @@ export function FileConverter({
   };
 
   const removeConvertedFile = (id: string) => {
-    setConvertedFiles((prev) => prev.filter((f) => f.id !== id));
+    setConvertedFiles((prev) => {
+      const next = prev.filter((f) => f.id !== id);
+      if (focusedConvertedId === id) {
+        const fallback = next[next.length - 1];
+        setFocusedConvertedId(fallback?.id ?? null);
+        if (fallback?.convertedContent) {
+          setPreviewXml(fallback.convertedContent);
+        } else {
+          setPreviewXml('');
+          setPreviewStatus('empty');
+          setPreviewMode('idle');
+        }
+      }
+      return next;
+    });
+  };
+
+  /**
+   * Show one converted file on the IWXXM tab (Downloads is manage-only).
+   *
+   * @param file - Converted batch entry to preview
+   */
+  const focusConvertedForPreview = (file: ConvertedFile) => {
+    setFocusedConvertedId(file.id);
+    const xml = coalescePreviewXml(file.convertedContent);
+    if (xml) {
+      setPreviewXml(xml);
+      setPreviewMode('live');
+      const assessment = assessConvertedFile(file);
+      setPreviewStatus(assessment.publishBlocked ? 'soft-fail' : 'passed');
+      setPreviewSoftFailDetail(undefined);
+    }
+    setResultsTab('iwxxm');
+    setResultsDrawerOpen(true);
   };
 
   const handleClear = () => {
@@ -2104,13 +2375,17 @@ export function FileConverter({
     setQueueFocusIndex(0);
     setManualInput('');
     setDemoExampleLabel(null);
+    outputFilenameOwned.current = false;
     setOutputFilename('');
     setConvertedFiles([]);
+    setFocusedConvertedId(null);
+    setTacLockedAfterConvert(false);
     setFirstAccumulatedTac(null);
     setValidateReport(null);
     updateConversionLog(null);
     setConversionStatus({ type: 'idle' });
     setFailedSpans([]);
+    setSelectedTrace(null);
     setPreviewXml('');
     setPreviewStatus('empty');
     setPreviewMode('idle');
@@ -2121,13 +2396,48 @@ export function FileConverter({
     toast.info('Queue cleared');
   };
 
-  const isBusy =
-    isConverting || isConvertAndSending || isMassIngesting || isBatchValidating;
+  const isBusy = isConverting || isConvertAndSending || isBatchValidating;
   const hasInput = pendingFiles.length > 0 || !!manualInput.trim();
   const hasConverted = convertedFiles.length > 0;
+  const latestConverted = convertedFiles[0];
+  const focusedConverted =
+    convertedFiles.find((file) => file.id === focusedConvertedId) ??
+    convertedFiles[convertedFiles.length - 1] ??
+    null;
+  const focusedAssessment = focusedConverted
+    ? assessConvertedFile(focusedConverted)
+    : null;
+  const latestAssessment = latestConverted
+    ? assessConvertedFile(latestConverted)
+    : null;
+  const latestReadyToDownload = Boolean(
+    latestConverted && latestAssessment && !latestAssessment.publishBlocked,
+  );
+  const calmUi = deriveCalmConvertUi({
+    hasInput,
+    hasConverted,
+    latestReadyToDownload,
+  });
+  /** Empty hero is Convert TAC only — not validate-IWXXM / collect modes. */
+  const showCalmEmptyHero =
+    calmUi.showEmptyHero && inputMode === 'tac' && conversionParams.product !== 'IWXXM';
+  const calmProfileLabel = resolveCalmProfileLabel(
+    conversionParams.profile,
+    SEMANTIC_PROFILE_OPTIONS,
+  );
+  const calmExampleChips = buildCalmExampleChips(
+    [
+      { label: 'METAR', product: 'METAR' },
+      { label: 'TAF', product: 'TAF' },
+      { label: 'SIGMET', product: 'SIGMET' },
+      { label: 'Volcanic ash advisory', product: 'VAA' },
+    ],
+    (product) => getTacExamplesForProduct(product as 'METAR')[0],
+  );
   const caProfileBlocked =
     isCaEcccProfile(conversionParams.profile) && caExtensionBundleAvailable === false;
   const convertDisabled = isBusy || !hasInput || isReadOnly || caProfileBlocked;
+  const calmTacReadOnly = isReadOnly || (tacLockedAfterConvert && hasConverted);
   const safeQueueFocusIndex = clampQueueIndex(queueFocusIndex, pendingFiles.length);
   const activeSelectedCount = pendingFiles.filter((f) =>
     selectedPendingIds.has(f.id),
@@ -2141,31 +2451,17 @@ export function FileConverter({
   const liveIwxxmRunner = useCallback(
     async (signal: AbortSignal) => {
       setDecodeError(null);
+      setGroupTrace([]);
       try {
         const response = await callBackendConversion({
           manualText: manualInput.trim(),
           product: liveAssistProduct,
-          profile: conversionParams.profile,
-          presetId: optionalFormField(conversionParams.presetId),
-          conversionLibraryId: optionalFormField(conversionParams.conversionLibraryId),
-          tacValidationLibraryId: optionalFormField(
-            conversionParams.tacValidationLibraryId,
+          ...convertFieldsFromParamsBar(
+            paramsBarFromState(conversionParams, activeReportVariant),
+            { softPreview: true, propagateResidualsToRemarks: propagateResiduals },
           ),
-          iwxxmValidationLibraryId: optionalFormField(
-            conversionParams.iwxxmValidationLibraryId,
-          ),
-          disseminationLibraryId: optionalFormField(
-            conversionParams.disseminationLibraryId,
-          ),
-          decodingLibraryId: optionalFormField(conversionParams.decodingLibraryId),
-          reportVariant: optionalFormField(activeReportVariant),
-          iwxxmVersion: conversionParams.iwxxmVersion,
-          validateOutput: false,
-          preview: true,
-          propagateResidualsToRemarks: propagateResiduals,
           extensions: nationalExtensionsForProfile(conversionParams.profile),
           exchangeOutput: exchangeOutputForProfile(conversionParams.profile),
-          exchangeProfile: conversionParams.exchangeProfile,
           ...(accessToken?.trim() ? { accessToken: accessToken.trim() } : {}),
           ...convertOverlayFields(conversionParams.overlayId, accessToken),
           signal,
@@ -2178,6 +2474,13 @@ export function FileConverter({
           response.results?.[0]?.xml ||
           response.results?.[0]?.content ||
           '';
+        const posted = manualInput.trim();
+        setGroupTrace(
+          readGroupTrace(response).map((row) => ({
+            ...row,
+            ...formFieldSpanInEditor(manualInput, posted, row.start, row.end),
+          })),
+        );
         if (latestXml) {
           setPreviewXml(latestXml);
           setPreviewMode('live');
@@ -2185,15 +2488,14 @@ export function FileConverter({
         if (response.failed_spans?.length) {
           setFailedSpans(
             response.failed_spans.map((span) => ({
-              start: span.start,
-              end: span.end,
+              ...formFieldSpanInEditor(manualInput, posted, span.start, span.end),
               code: span.code ?? undefined,
               message: span.message ?? undefined,
             })),
           );
           setPreviewStatus('soft-fail');
           setPreviewSoftFailDetail(
-            'Some groups could not be converted. Fix the highlighted spans in the editor, then retry. This Soft preview is not for publish.',
+            'Some groups could not be converted. Fix the highlighted spans in the editor, then retry. This preview is not for publishing.',
           );
         } else if (response.ok !== false) {
           setFailedSpans([]);
@@ -2210,17 +2512,8 @@ export function FileConverter({
     [
       manualInput,
       liveAssistProduct,
-      conversionParams.profile,
-      conversionParams.iwxxmVersion,
-      conversionParams.presetId,
-      conversionParams.conversionLibraryId,
-      conversionParams.tacValidationLibraryId,
-      conversionParams.iwxxmValidationLibraryId,
-      conversionParams.disseminationLibraryId,
-      conversionParams.decodingLibraryId,
+      conversionParams,
       activeReportVariant,
-      conversionParams.exchangeProfile,
-      conversionParams.overlayId,
       accessToken,
       propagateResiduals,
     ],
@@ -2228,6 +2521,7 @@ export function FileConverter({
 
   const {
     issueSpans,
+    lintIssues,
     lintFixes,
     decodeSegments,
     decodeResiduals,
@@ -2236,7 +2530,6 @@ export function FileConverter({
     loading: decodeLoading,
     consoleLines,
     clearConsole,
-    appendConsole,
   } = useLiveWorkbenchAssist({
     text: manualInput,
     product: liveAssistProduct,
@@ -2245,11 +2538,66 @@ export function FileConverter({
     liveIwxxmRunner,
   });
 
+  useEffect(() => {
+    publishDecodeVisuals({
+      station: stationFromReport(manualInput),
+      segments: decodeSegments.map((segment) => ({
+        code: segment.code,
+        explanation: segment.explanation,
+      })),
+    });
+  }, [manualInput, decodeSegments]);
+
+  const tacLintSummary =
+    manualInput.trim().length === 0
+      ? 'TAC input: not checked yet'
+      : lintSummaryLabel(lintIssues);
+  const bulletinReports =
+    inputMode === 'ahl_bulletin'
+      ? listBulletinReports(bulletinSource || manualInput)
+      : [];
+  const previewIncomplete = previewIsIncomplete(
+    lintIssues.filter((issue) => issue.severity === 'error').length,
+    decodeResiduals.length,
+    failedSpans.length,
+  );
+  const editorSpans = spansWithSelection(issueSpans, selectedTrace);
+  const jumpIssues = jumpableLintIssues(lintIssues);
+  const applyLintJump = (issue: JumpableLintIssue) => {
+    setLintJump(jumpIssues.indexOf(issue));
+    setLintFocusOffset(issue.start);
+    setSelectedTrace({
+      start: issue.start,
+      end: issue.end,
+      code: manualInput.slice(issue.start, issue.end),
+    });
+  };
+  const lintCounts = lintIssueCounts(lintIssues);
+  const convertIssueLayers = errorLayerNames(conversionLog);
+  const strictLayersRan = strictConvertRan({
+    strict: conversionParams.strictValidation,
+    softPreview,
+    convertedCount: convertedFiles.length,
+    status: conversionStatus.type,
+  });
+  const consoleSchemaStatus = outputLayerStatus(
+    'schema',
+    validateReport,
+    convertIssueLayers,
+    strictLayersRan,
+  );
+  const consoleSchematronStatus = outputLayerStatus(
+    'schematron',
+    validateReport,
+    convertIssueLayers,
+    strictLayersRan,
+  );
+
   const { entries: lintCatalogEntries, byCode: lintCatalogByCode } =
     useLintIssueCatalog({
       product: liveAssistProduct,
       semanticProfile: conversionParams.profile,
-      exchangeProfile: conversionParams.exchangeProfile,
+      exchangeProfile: packagingExchangeProfile ?? conversionParams.exchangeProfile,
       enabled: !isReadOnly,
     });
 
@@ -2276,125 +2624,134 @@ export function FileConverter({
             : null;
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8 px-4 transition-colors">
-      <div className="max-w-6xl mx-auto">
-        {/* Header — stack/wrap on narrow viewports (staging UX: no horizontal overflow). */}
-        <div className="mb-8">
-          <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <h1 className="text-2xl font-semibold text-gray-900 dark:text-white sm:text-3xl">
-              METAR → IWXXM Converter
-            </h1>
-            <div
-              className="flex flex-wrap items-center gap-2 sm:gap-3"
-              data-testid="workbench-header-actions"
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors">
+      <header
+        className="sticky top-0 z-30 w-full border-b border-gray-300 bg-white py-3 shadow-sm dark:border-gray-600 dark:bg-gray-950"
+        data-testid="workbench-top-bar"
+      >
+        <div
+          className={`mx-auto flex w-full flex-wrap items-center justify-between gap-3 px-4 ${shellFrameClass(liveLayout.span)}`}
+        >
+          <h1 className="text-2xl font-semibold text-gray-900 dark:text-white sm:text-3xl">
+            {inputMode === 'validate_iwxxm' ? VALIDATE_IWXXM_HEADING : PAGE_TITLE}
+          </h1>
+          <div
+            className="flex flex-wrap items-center gap-2 sm:gap-3"
+            data-testid="workbench-header-actions"
+          >
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              className="bg-transparent dark:bg-transparent dark:text-white focus-visible:ring-primary/40"
+              aria-label="Open convert help checklist"
+              data-testid="convert-help-open"
+              onClick={() => setHelpChecklistOpen(true)}
             >
+              <CircleHelp className="mr-0 h-4 w-4 sm:mr-2" aria-hidden="true" />
+              <span className="hidden sm:inline">Help</span>
+            </Button>
+            <Button
+              onClick={() => setIsPreferencesDialogOpen(true)}
+              variant="outline"
+              size="sm"
+              className="bg-transparent dark:bg-transparent dark:text-white focus-visible:ring-primary/40"
+              aria-label="Open user preferences"
+            >
+              <Settings className="mr-0 h-4 w-4 sm:mr-2" aria-hidden="true" />
+              <span className="hidden sm:inline">Preferences</span>
+            </Button>
+            <div className="flex items-center gap-2">
+              <span className="hidden text-sm text-gray-600 dark:text-gray-400 sm:inline">
+                Theme
+              </span>
+              <ThemeToggle />
+            </div>
+            <div className="relative">
               <Button
-                asChild
-                variant="outline"
-                size="sm"
-                className="dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600 focus:ring-2 focus:ring-gray-500"
-              >
-                <a
-                  href={OPERATOR_ONE_PAGER_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="Open operator help one-pager"
-                  data-testid="operator-help-link"
-                >
-                  <CircleHelp className="mr-0 h-4 w-4 sm:mr-2" aria-hidden="true" />
-                  <span className="hidden sm:inline">Help</span>
-                </a>
-              </Button>
-              <Button
-                onClick={() => setIsPreferencesDialogOpen(true)}
-                variant="outline"
-                size="sm"
-                className="dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600 focus:ring-2 focus:ring-gray-500"
-                aria-label="Open user preferences"
-              >
-                <Settings className="mr-0 h-4 w-4 sm:mr-2" aria-hidden="true" />
-                <span className="hidden sm:inline">Preferences</span>
-              </Button>
-              <div className="flex items-center gap-2">
-                <span className="hidden text-sm text-gray-600 dark:text-gray-400 sm:inline">
-                  Theme
-                </span>
-                <ThemeToggle />
-              </div>
-              <div className="relative">
-                <Button
-                  variant={isGuest ? 'default' : 'outline'}
-                  className={
-                    isGuest
-                      ? undefined
-                      : 'border-gray-300 text-gray-800 hover:bg-gray-100 dark:border-gray-600 dark:text-gray-100 dark:hover:bg-gray-700'
+                variant={isGuest ? 'default' : 'outline'}
+                className={
+                  isGuest
+                    ? undefined
+                    : 'border-gray-300 text-gray-800 hover:bg-gray-100 dark:border-gray-600 dark:text-gray-100 dark:hover:bg-gray-700'
+                }
+                aria-label={isGuest ? 'Sign in to save work' : 'Logout options'}
+                data-testid={isGuest ? 'sign-in-button' : 'logout-button'}
+                onClick={() => {
+                  if (isGuest) {
+                    onRequestLogin?.();
+                    return;
                   }
-                  aria-label={isGuest ? 'Sign in to save work' : 'Logout options'}
-                  data-testid={isGuest ? 'sign-in-button' : 'logout-button'}
-                  onClick={() => {
-                    if (isGuest) {
-                      onRequestLogin?.();
-                      return;
-                    }
-                    setIsLogoutMenuOpen(!isLogoutMenuOpen);
-                  }}
-                >
-                  <LogOut className="w-4 h-4 mr-2" aria-hidden="true" />
-                  {isGuest ? 'Sign in' : 'Logout'}
-                  {!isGuest && (
-                    <ChevronDown className="w-4 h-4 ml-1" aria-hidden="true" />
-                  )}
-                </Button>
-
-                {isLogoutMenuOpen && !isGuest && (
-                  <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-lg z-10">
-                    <div className="p-3 space-y-2">
-                      <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 px-2 py-1">
-                        Sign out scope:
-                      </p>
-                      <button
-                        type="button"
-                        onClick={() => void handleLogoutWithScope('local')}
-                        className="w-full text-left px-3 py-2 rounded-md text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-                        aria-label="Sign out from this device only"
-                      >
-                        <div className="font-medium">This Device</div>
-                        <div className="text-xs text-gray-500 dark:text-gray-400">
-                          Only this session
-                        </div>
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => void handleLogoutWithScope('global')}
-                        className="w-full text-left px-3 py-2 rounded-md text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-                        aria-label="Sign out from all devices"
-                      >
-                        <div className="font-medium">All Devices</div>
-                        <div className="text-xs text-gray-500 dark:text-gray-400">
-                          Every signed-in session
-                        </div>
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => void handleLogoutWithScope('others')}
-                        className="w-full text-left px-3 py-2 rounded-md text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-                        aria-label="Sign out other devices"
-                      >
-                        <div className="font-medium">Other Devices</div>
-                        <div className="text-xs text-gray-500 dark:text-gray-400">
-                          Keep this device signed in
-                        </div>
-                      </button>
-                    </div>
-                  </div>
+                  setIsLogoutMenuOpen(!isLogoutMenuOpen);
+                }}
+              >
+                <LogOut className="w-4 h-4 mr-2" aria-hidden="true" />
+                {isGuest ? 'Sign in' : 'Logout'}
+                {!isGuest && (
+                  <ChevronDown className="w-4 h-4 ml-1" aria-hidden="true" />
                 )}
-              </div>
+              </Button>
+
+              {isLogoutMenuOpen && !isGuest && (
+                <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-lg z-10">
+                  <div className="p-3 space-y-2">
+                    <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 px-2 py-1">
+                      Sign out scope:
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() => void handleLogoutWithScope('local')}
+                      className="w-full text-left px-3 py-2 rounded-md text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                      aria-label="Sign out from this device only"
+                    >
+                      <div className="font-medium">This Device</div>
+                      <div className="text-xs text-gray-500 dark:text-gray-400">
+                        Only this session
+                      </div>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => void handleLogoutWithScope('global')}
+                      className="w-full text-left px-3 py-2 rounded-md text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                      aria-label="Sign out from all devices"
+                    >
+                      <div className="font-medium">All Devices</div>
+                      <div className="text-xs text-gray-500 dark:text-gray-400">
+                        Every signed-in session
+                      </div>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => void handleLogoutWithScope('others')}
+                      className="w-full text-left px-3 py-2 rounded-md text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                      aria-label="Sign out other devices"
+                    >
+                      <div className="font-medium">Other Devices</div>
+                      <div className="text-xs text-gray-500 dark:text-gray-400">
+                        Keep this device signed in
+                      </div>
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
-          <p className="text-base text-gray-600 dark:text-gray-300">
-            Enter TAC in the console below (choose product type as needed), then
-            Convert. Upload files from the compact drop zone under the console when
-            preferred.
+        </div>
+      </header>
+      <div
+        data-testid="workbench-frame"
+        className={`mx-auto w-full px-4 py-4 ${shellFrameClass(liveLayout.span)}`}
+      >
+        <div className="mb-4">
+          <p
+            className="text-base text-gray-600 dark:text-gray-300"
+            data-testid="workbench-intro"
+          >
+            {inputMode === 'validate_iwxxm'
+              ? VALIDATE_IWXXM_INTRO
+              : showCalmEmptyHero
+                ? 'Paste a TAC report to begin, or try an example below. Convert when ready.'
+                : 'Enter TAC in the console below (choose product type as needed), then Convert. Upload files from the compact drop zone under the console when preferred.'}
           </p>
           {showGuestLossNotice && (
             <StatusBanner
@@ -2428,238 +2785,91 @@ export function FileConverter({
           />
         </div>
 
-        {/* Action Buttons — fixed strip; status lives outside so busy/save text cannot reflow */}
-        <div className="mb-8" data-testid="action-button-strip">
-          <div
-            className="mb-2 flex h-5 items-center"
-            aria-live="polite"
-            data-testid="autosave-indicator"
-          >
-            {saveIndicatorLabel ? (
-              <span className="text-sm text-gray-600 dark:text-gray-400">
-                {saveIndicatorLabel}
-              </span>
-            ) : (
-              <span className="sr-only">Autosave idle</span>
-            )}
-          </div>
-          <div className="flex min-h-10 flex-wrap items-center gap-2 sm:gap-3">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={handleNewMetar}
-              disabled={isBusy}
-              data-testid="new-tac-button"
-              aria-label="Start a new TAC session"
-              className="min-w-[7.5rem]"
+        {/* Action Buttons — omit while empty hero owns the Convert CTA (strict E2E locators). */}
+        {!showCalmEmptyHero ? (
+          <div className="mb-4" data-testid="action-button-strip">
+            <div
+              className="mb-2 flex h-5 items-center"
+              aria-live="polite"
+              data-testid="autosave-indicator"
             >
-              New TAC
-            </Button>
-            <Button
-              data-testid="convert-button"
-              variant="default"
-              onClick={handleConvert}
-              disabled={convertDisabled}
-              className="min-w-[7.5rem] text-base disabled:opacity-50 disabled:cursor-not-allowed"
-              aria-busy={isConverting}
-              aria-label={
-                isConverting
-                  ? inputMode === 'validate_iwxxm' ||
-                    conversionParams.product === 'IWXXM'
-                    ? 'Validating IWXXM, please wait'
-                    : 'Converting files, please wait'
-                  : inputMode === 'validate_iwxxm'
-                    ? 'Validate IWXXM XML'
-                    : conversionParams.product === 'IWXXM'
-                      ? IWXXM_PRODUCT_CONVERT_ARIA
-                      : 'Convert TAC to IWXXM XML'
-              }
+              {saveIndicatorLabel ? (
+                <span className="text-sm text-gray-600 dark:text-gray-400">
+                  {saveIndicatorLabel}
+                </span>
+              ) : (
+                <span className="sr-only">Autosave idle</span>
+              )}
+            </div>
+            <div
+              className="grid min-h-10 w-full grid-cols-1 gap-2 sm:grid-cols-3 sm:gap-3"
+              data-testid="convert-primary-actions"
             >
-              <Loader2
-                className={`w-4 h-4 animate-spin ${isConverting ? '' : 'invisible'}`}
-                aria-hidden="true"
-              />
-              {inputMode === 'validate_iwxxm'
-                ? 'Validate'
-                : conversionParams.product === 'IWXXM'
-                  ? IWXXM_PRODUCT_CONVERT_LABEL
-                  : 'Convert'}
-            </Button>
-            {isOperatorDisseminationDestinationsEnabled() &&
-            inputMode !== 'validate_iwxxm' &&
-            conversionParams.product !== 'IWXXM' ? (
               <Button
-                data-testid="convert-and-send-button"
+                type="button"
                 variant="outline"
-                onClick={handleConvertAndSend}
+                onClick={handleNewMetar}
+                disabled={isBusy}
+                data-testid="new-tac-button"
+                aria-label="Start a new TAC session"
+                className="w-full"
+              >
+                New TAC
+              </Button>
+              <Button
+                data-testid="convert-button"
+                variant={calmUi.primaryKind === 'convert' ? 'default' : 'outline'}
+                onClick={handleConvert}
                 disabled={convertDisabled}
-                className="min-w-[9.5rem] text-base disabled:opacity-50 disabled:cursor-not-allowed"
-                aria-busy={isConvertAndSending}
+                className="relative w-full text-base disabled:opacity-50 disabled:cursor-not-allowed"
+                aria-busy={isConverting}
                 aria-label={
-                  isConvertAndSending
-                    ? 'Converting and sending files, please wait (beta)'
-                    : 'Convert TAC to IWXXM XML and send to database (beta)'
+                  isConverting
+                    ? inputMode === 'validate_iwxxm' ||
+                      conversionParams.product === 'IWXXM'
+                      ? 'Validating IWXXM, please wait'
+                      : 'Converting files, please wait'
+                    : inputMode === 'validate_iwxxm'
+                      ? 'Validate IWXXM XML'
+                      : conversionParams.product === 'IWXXM'
+                        ? IWXXM_PRODUCT_CONVERT_ARIA
+                        : CALM_CONVERT_PRIMARY_LABEL
                 }
               >
                 <Loader2
-                  className={`w-4 h-4 animate-spin ${isConvertAndSending ? '' : 'invisible'}`}
+                  className={`absolute left-3 h-4 w-4 animate-spin ${isConverting ? '' : 'invisible'}`}
                   aria-hidden="true"
                 />
-                Convert&Send
-                <BetaBadge className="ml-1 inline-flex" />
+                {inputMode === 'validate_iwxxm'
+                  ? 'Validate'
+                  : conversionParams.product === 'IWXXM'
+                    ? IWXXM_PRODUCT_CONVERT_LABEL
+                    : CALM_CONVERT_PRIMARY_LABEL}
               </Button>
-            ) : null}
-            {isOperatorDisseminationDestinationsEnabled() ? (
-              <Button
-                type="button"
-                data-testid="open-dissemination-drawer"
-                onClick={() => setIsDisseminationOpen(true)}
-                disabled={isBusy || isReadOnly}
-                variant="outline"
-                className="min-w-[10rem] text-base disabled:opacity-40 disabled:cursor-not-allowed"
-                aria-label="Open dissemination drawer for BYOC upload or publish (beta)"
+              <span
+                className="min-w-0 w-full"
+                data-testid={
+                  calmUi.primaryKind === 'download' ? 'convert-primary-cta' : undefined
+                }
               >
-                Disseminate
-                <BetaBadge className="ml-1 inline-flex" />
-              </Button>
-            ) : null}
-            <div
-              className="flex min-w-[12rem] flex-col gap-1 rounded-md border border-gray-200 bg-gray-50 px-3 py-2 dark:border-gray-700 dark:bg-gray-900/40"
-              data-testid="conversion-metadata-export-panel"
-            >
-              <div className="flex items-center gap-2">
-                <Checkbox
-                  id="conversion-metadata-toggle"
-                  data-testid="conversion-metadata-toggle"
-                  checked={metadataPrefs.enabled}
-                  disabled={isReadOnly}
-                  onCheckedChange={(checked) => {
-                    persistMetadataPrefs({
-                      ...metadataPrefs,
-                      enabled: checked === true,
-                      checklist:
-                        checked === true && !metadataPrefs.enabled
-                          ? defaultConversionMetadataChecklist()
-                          : metadataPrefs.checklist,
-                    });
+                <Button
+                  variant={calmUi.primaryKind === 'download' ? 'default' : 'outline'}
+                  onClick={() => {
+                    if (!latestConverted) return;
+                    void handleDownloadSingle(latestConverted);
                   }}
-                />
-                <Label
-                  htmlFor="conversion-metadata-toggle"
-                  className="flex cursor-pointer items-center gap-1 text-sm text-gray-800 dark:text-gray-200"
+                  disabled={isBusy || !latestConverted}
+                  className="w-full text-base disabled:opacity-40 disabled:cursor-not-allowed"
+                  aria-label={CALM_DOWNLOAD_PRIMARY_LABEL}
+                  data-testid="convert-download-iwxxm"
                 >
-                  {CONVERSION_METADATA_TOGGLE_LABEL}
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <button
-                        type="button"
-                        className="inline-flex h-5 w-5 items-center justify-center rounded text-gray-500 hover:text-gray-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:text-gray-400 dark:hover:text-gray-100"
-                        aria-label="About conversion metadata"
-                        data-testid="conversion-metadata-toggle-help"
-                        onClick={(event) => event.preventDefault()}
-                      >
-                        <CircleHelp className="h-3.5 w-3.5" aria-hidden />
-                      </button>
-                    </TooltipTrigger>
-                    <TooltipContent side="bottom" className="max-w-xs text-balance">
-                      {CONVERSION_METADATA_TOGGLE_HELP}
-                    </TooltipContent>
-                  </Tooltip>
-                  <BetaBadge className="inline-flex" />
-                </Label>
-              </div>
-              {metadataPrefs.enabled ? (
-                <Collapsible
-                  open={isMetadataChecklistOpen}
-                  onOpenChange={setIsMetadataChecklistOpen}
-                >
-                  <CollapsibleTrigger asChild>
-                    <button
-                      type="button"
-                      className="flex items-center gap-1 text-left text-xs font-medium text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100"
-                      data-testid="conversion-metadata-checklist-trigger"
-                    >
-                      {isMetadataChecklistOpen ? (
-                        <ChevronUp className="h-3.5 w-3.5" aria-hidden="true" />
-                      ) : (
-                        <ChevronDown className="h-3.5 w-3.5" aria-hidden="true" />
-                      )}
-                      {CONVERSION_METADATA_CHECKLIST_HEADING}
-                    </button>
-                  </CollapsibleTrigger>
-                  <CollapsibleContent
-                    className="mt-1 space-y-1.5"
-                    data-testid="conversion-metadata-checklist"
-                  >
-                    {(
-                      [
-                        ['libraries', CONVERSION_METADATA_CHECKLIST_LIBRARIES],
-                        [
-                          'libraryYamlHashes',
-                          CONVERSION_METADATA_CHECKLIST_YAML_HASHES,
-                        ],
-                        [
-                          'convertContext',
-                          CONVERSION_METADATA_CHECKLIST_CONVERT_CONTEXT,
-                        ],
-                        ['operator', CONVERSION_METADATA_CHECKLIST_OPERATOR],
-                        ['lintSummary', CONVERSION_METADATA_CHECKLIST_LINT],
-                        [
-                          'tacFingerprint',
-                          CONVERSION_METADATA_CHECKLIST_TAC_FINGERPRINT,
-                        ],
-                        [
-                          'mappingBridgeSummary',
-                          CONVERSION_METADATA_CHECKLIST_MAPPING_BRIDGE,
-                        ],
-                      ] as const
-                    ).map(([key, label]) => (
-                      <div key={key} className="flex items-center gap-2">
-                        <Checkbox
-                          id={`conversion-metadata-check-${key}`}
-                          checked={metadataPrefs.checklist[key]}
-                          disabled={isReadOnly || (key === 'operator' && isGuest)}
-                          onCheckedChange={(checked) =>
-                            updateMetadataChecklist(key, checked === true)
-                          }
-                        />
-                        <Label
-                          htmlFor={`conversion-metadata-check-${key}`}
-                          className="cursor-pointer text-xs text-gray-700 dark:text-gray-300"
-                        >
-                          {label}
-                          {key === 'operator' && isGuest ? ' (sign in required)' : ''}
-                        </Label>
-                      </div>
-                    ))}
-                  </CollapsibleContent>
-                </Collapsible>
-              ) : null}
-            </div>
-            <Button
-              data-testid="download-zip-button"
-              onClick={() => void handleDownloadAll()}
-              disabled={isBusy || !hasConverted}
-              variant="outline"
-              className="min-w-[10rem] text-base disabled:opacity-40 disabled:cursor-not-allowed"
-              aria-label={`Download all ${convertedFiles.length} converted files as ZIP`}
-            >
-              Download ZIP
-              <span className="inline-block min-w-[1.75rem] tabular-nums">
-                ({convertedFiles.length})
+                  <Download className="mr-2 h-4 w-4" aria-hidden="true" />
+                  {CALM_DOWNLOAD_PRIMARY_LABEL}
+                </Button>
               </span>
-            </Button>
-            <Button
-              data-testid="clear-queue-button"
-              onClick={handleClear}
-              variant="ghost"
-              className="min-w-[5.5rem] text-base text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-800"
-              aria-label="Clear all pending files and manual input"
-            >
-              Clear
-            </Button>
+            </div>
           </div>
-        </div>
+        ) : null}
 
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_280px]">
           <div className="min-w-0" data-testid="workbench-main-column">
@@ -2671,489 +2881,50 @@ export function FileConverter({
                   to start fresh.
                 </StatusBanner>
               )}
-              <div className="mb-2 flex flex-col gap-2">
-                <div className="flex flex-col gap-2 lg:flex-row lg:items-end lg:justify-between">
-                  <label
-                    htmlFor="manual-input"
-                    className="block text-base font-medium text-gray-900 dark:text-white"
-                  >
-                    {inputMode === 'validate_iwxxm'
-                      ? 'Manual IWXXM Input'
-                      : 'Manual TAC Input'}
-                  </label>
-                  <div
-                    className="flex flex-col gap-2 lg:flex-row lg:flex-nowrap lg:items-center"
-                    data-testid="input-mode-bar"
-                  >
-                    <div
-                      className="flex shrink-0 rounded-md border border-gray-300 dark:border-gray-600"
-                      role="group"
-                      aria-label="Input mode"
-                      data-testid="input-mode-group"
-                    >
-                      {(
-                        [
-                          ['tac', 'TAC report'],
-                          ['ahl_bulletin', 'AHL bulletin'],
-                          ['collect_iwxxm', 'IWXXM COLLECT'],
-                          ['validate_iwxxm', 'Validate IWXXM'],
-                        ] as const
-                      ).map(([value, label]) => (
-                        <button
-                          key={value}
-                          type="button"
-                          data-testid={`input-mode-${value}`}
-                          disabled={isReadOnly}
-                          onClick={() => setInputMode(value)}
-                          className={`px-2 py-1 text-xs whitespace-nowrap ${
-                            inputMode === value
-                              ? 'bg-blue-600 text-white'
-                              : 'bg-white text-gray-700 dark:bg-gray-800 dark:text-gray-200'
-                          }`}
-                        >
-                          {label}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-                <div className="flex flex-col gap-1.5">
-                  <div
-                    className="flex min-w-0 flex-col gap-2 rounded-md border border-gray-300 bg-white px-2 py-2 dark:border-gray-600 dark:bg-gray-800 lg:flex-row lg:flex-wrap lg:items-center"
-                    data-testid="product-profile-bar"
-                  >
-                    <Label
-                      htmlFor="param-product"
-                      className="shrink-0 text-sm text-gray-700 dark:text-gray-300"
-                    >
-                      Product type
-                    </Label>
-                    <select
-                      id="param-product"
-                      aria-label="Product"
-                      data-testid="product-type-select"
-                      value={conversionParams.product}
-                      disabled={isReadOnly}
-                      onChange={(e) =>
-                        setConversionParams((prev) => ({
-                          ...prev,
-                          product: e.target.value as TacProductSelection,
-                          reportVariant: '',
-                        }))
-                      }
-                      className="min-w-[9.5rem] shrink-0 rounded-md border border-gray-300 bg-white px-2 py-1.5 text-sm text-gray-900 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
-                    >
-                      <option value="auto">Auto-detect</option>
-                      <option value="AIRMET">AIRMET</option>
-                      <option value="METAR">METAR</option>
-                      <option value="SIGMET">SIGMET</option>
-                      <option value="SPECI">SPECI</option>
-                      <option value="TAF">TAF</option>
-                      <option value="VAA">VAA</option>
-                      <option value="TCA">TCA</option>
-                      <option value="SWXA">SWXA</option>
-                      <option value="VONA">VONA</option>
-                      <option value="IWXXM">IWXXM</option>
-                    </select>
-                    <LibraryPickersBar
-                      accessToken={accessToken}
-                      disabled={isReadOnly}
-                      values={{
-                        conversionLibraryId: conversionParams.conversionLibraryId,
-                        tacValidationLibraryId: conversionParams.tacValidationLibraryId,
-                        iwxxmValidationLibraryId:
-                          conversionParams.iwxxmValidationLibraryId,
-                        disseminationLibraryId: conversionParams.disseminationLibraryId,
-                        decodingLibraryId: conversionParams.decodingLibraryId,
-                      }}
-                      onChange={(next, conversionEngineProfileId) => {
-                        setConversionParams((prev) => {
-                          if (!conversionEngineProfileId) {
-                            return { ...prev, ...next };
-                          }
-                          const profile = coerceIwxxmProfile(conversionEngineProfileId);
-                          return {
-                            ...prev,
-                            ...next,
-                            profile,
-                            reportVariant: '',
-                            iwxxmVersion: coerceIwxxmVersionForProfile(
-                              profile,
-                              prev.iwxxmVersion,
-                            ),
-                          };
-                        });
-                      }}
-                    />
-                    <div className="flex shrink-0 items-center gap-1">
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        disabled={isReadOnly}
-                        data-testid="reset-wmo-library-defaults"
-                        className="text-xs text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800"
-                        onClick={() => {
-                          const sync = resetWmoLibraryDefaultsSync();
-                          applyWmoLibraryDefaultsSync(sync);
-                        }}
-                      >
-                        {CONVERT_RESET_WMO_LIBRARY_DEFAULTS}
-                      </Button>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <button
-                            type="button"
-                            className="inline-flex h-6 w-6 items-center justify-center rounded text-gray-500 hover:text-gray-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:text-gray-400 dark:hover:text-gray-100"
-                            aria-label="About reset to WMO defaults"
-                            data-testid="reset-wmo-library-defaults-help"
-                          >
-                            <CircleHelp className="h-3.5 w-3.5" aria-hidden />
-                          </button>
-                        </TooltipTrigger>
-                        <TooltipContent side="bottom" className="max-w-xs text-balance">
-                          {CONVERT_RESET_WMO_LIBRARY_DEFAULTS_HELP}
-                        </TooltipContent>
-                      </Tooltip>
-                    </div>
-
-                    {reportVariantOptions.length > 0 &&
-                      inputMode !== 'ahl_bulletin' && (
-                        <>
-                          <div className="flex shrink-0 items-center gap-1">
-                            <Label
-                              htmlFor="param-report-variant"
-                              className="shrink-0 text-sm text-gray-700 dark:text-gray-300"
-                            >
-                              Report variant
-                            </Label>
-                            <Tooltip>
-                              <TooltipTrigger asChild>
-                                <button
-                                  type="button"
-                                  className="inline-flex h-6 w-6 items-center justify-center rounded text-gray-500 hover:text-gray-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:text-gray-400 dark:hover:text-gray-100"
-                                  aria-label="About Report variant"
-                                  data-testid="report-variant-help-icon"
-                                >
-                                  <CircleHelp className="h-3.5 w-3.5" aria-hidden />
-                                </button>
-                              </TooltipTrigger>
-                              <TooltipContent
-                                side="bottom"
-                                className="max-w-xs text-balance"
-                              >
-                                Optional profile-scoped IWXXM root inside the selected
-                                product family. Leave on Auto-detect to infer from the
-                                TAC lead.
-                              </TooltipContent>
-                            </Tooltip>
-                          </div>
-                          <select
-                            id="param-report-variant"
-                            aria-label="Report variant"
-                            data-testid="report-variant-select"
-                            value={activeReportVariant}
-                            disabled={isReadOnly}
-                            onChange={(e) => {
-                              setConversionParams((prev) => ({
-                                ...prev,
-                                reportVariant: e.target.value,
-                              }));
-                            }}
-                            className="min-w-[10rem] shrink-0 rounded-md border border-gray-300 bg-white px-2 py-1.5 text-sm text-gray-900 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
-                          >
-                            <option value="">Auto-detect from TAC</option>
-                            {reportVariantOptions.map((variant) => (
-                              <option key={variant.tac_lead} value={variant.tac_lead}>
-                                {variant.tac_lead}
-                                {variant.minimal_observation ? ' (minimal)' : ''}
-                              </option>
-                            ))}
-                          </select>
-                        </>
-                      )}
-
-                    <GoldenExamplesSelect
-                      applicableProducts={activeProfileExampleProducts}
-                      disabled={isReadOnly}
-                      semanticProfile={conversionParams.profile}
-                      onSelectExample={handleLoadGoldenExample}
-                      onOpenChange={(open) => {
-                        if (open) {
-                          setRecentWorkCollapsed(true);
-                        }
-                      }}
-                    />
-                  </div>
-                  <p
-                    id="product-profile-bar-summary"
-                    className="text-xs text-gray-600 dark:text-gray-400"
-                    data-testid="product-profile-bar-summary"
-                  >
-                    Encoding and packaging rules only — not destinations, credentials,
-                    or editable overlays.
-                  </p>
-                  <details
-                    key={profileGlanceEpoch}
-                    className="rounded-md border border-gray-200 bg-white text-sm dark:border-gray-700 dark:bg-gray-800"
-                    data-testid="workbench-profile-summary"
-                  >
-                    <summary className="cursor-pointer select-none px-3 py-2">
-                      <span className="text-xs font-medium uppercase tracking-wide text-gray-500">
-                        Profile at a glance
-                      </span>
-                      <span className="mt-0.5 flex flex-wrap items-baseline justify-between gap-2">
-                        <span className="text-sm font-semibold text-gray-900 dark:text-gray-100">
-                          {profileDisplayName(activeProfileSummary.id)}
-                        </span>
-                        <span className="text-xs text-gray-600 dark:text-gray-400">
-                          {activeProfileSummary.iwxxm_line ?? 'IWXXM line unavailable'}
-                        </span>
-                      </span>
-                    </summary>
-                    <div className="space-y-2 border-t border-gray-100 px-3 py-2 dark:border-gray-700">
-                      <p className="text-xs text-gray-600 dark:text-gray-400">
-                        {activeProfileSummary.id}
-                      </p>
-                      {activeProfileSummary.deltas_vs_icao &&
-                      activeProfileSummary.deltas_vs_icao.length > 0 ? (
-                        <ul className="space-y-1 text-xs text-gray-700 dark:text-gray-300">
-                          {activeProfileSummary.deltas_vs_icao
-                            .slice(0, 3)
-                            .map((delta) => (
-                              <li key={delta}>{delta}</li>
-                            ))}
-                        </ul>
-                      ) : null}
-                      <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-gray-600 dark:text-gray-400">
-                        <span>
-                          Products:{' '}
-                          {activeProfileSummary.products.length > 0
-                            ? activeProfileSummary.products.join(', ')
-                            : 'Sign in to load profile coverage'}
-                        </span>
-                        <span>
-                          Rule packs:{' '}
-                          {activeProfileSummary.rule_pack_count != null
-                            ? activeProfileSummary.rule_pack_count
-                            : '—'}
-                        </span>
-                        <span>
-                          Overlays:{' '}
-                          {activeProfileSummary.overlay_count != null
-                            ? activeProfileSummary.overlay_count
-                            : '—'}
-                        </span>
-                      </div>
-                    </div>
-                  </details>
-                  <details
-                    className="rounded-md border border-gray-200 bg-white px-2 py-1 text-xs text-gray-600 open:pb-2 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400"
-                    data-testid="product-profile-trust-details"
-                  >
-                    <summary className="cursor-pointer select-none font-medium text-gray-700 dark:text-gray-300">
-                      What&apos;s this?
-                    </summary>
-                    <div className="mt-1.5 space-y-1.5 border-t border-gray-100 pt-1.5 dark:border-gray-700">
-                      <p data-testid="semantic-profile-help">
-                        Profile selects encoding rules for conversion. Does not set
-                        destinations or credentials, and does not make national overlays
-                        editable.
-                      </p>
-                      <p data-testid="exchange-profile-help">
-                        Exchange profile is used when packaging bulletins. Does not
-                        choose destinations or credentials.
-                      </p>
-                    </div>
-                  </details>
-                  {isCaEcccProfile(conversionParams.profile) && (
-                    <div
-                      className="rounded border border-sky-200 bg-sky-50 px-2 py-1.5 text-xs text-sky-950 dark:border-sky-900 dark:bg-sky-950/40 dark:text-sky-100"
-                      data-testid="ca-eccc-profile-metadata"
-                      role="status"
-                    >
-                      <p>IWXXM {CA_ECCC_IWXXM_VERSION} (MSC operational line)</p>
-                      <p>{CA_ECCC_EXTENSION_LABEL}</p>
-                      <p>Supported products: {CA_ECCC_SUPPORTED_PRODUCTS.join(', ')}</p>
-                      {caProfileBlocked && (
-                        <p className="mt-1 font-medium text-amber-900 dark:text-amber-200">
-                          Canadian extension schemas are not available on this
-                          deployment. Conversion is blocked until the vendor bundle is
-                          installed.
-                        </p>
-                      )}
-                    </div>
-                  )}
-                </div>
-              </div>
-              {demoExampleLabel && (
-                <StatusBanner
-                  tone="info"
-                  className="mb-2 text-xs"
-                  data-testid="demo-example-banner"
-                >
-                  Demo / non-operational example: {demoExampleLabel}
-                </StatusBanner>
-              )}
-              {inputMode === 'ahl_bulletin' && (
-                <p className="mb-2 text-xs text-gray-600 dark:text-gray-400">
-                  AHL bulletins are split and converted via{' '}
-                  <code>POST /api/v1/convert-bulletin</code>.
-                </p>
-              )}
-              {inputMode === 'collect_iwxxm' && (
-                <p className="mb-2 text-xs text-amber-800 dark:text-amber-200">
-                  IWXXM COLLECT / FTBP path uses{' '}
-                  <code>POST /api/v1/ingest-collect</code> (placeholder — returns 501
-                  until member extract ships).
-                </p>
-              )}
-              {inputMode === 'validate_iwxxm' && (
-                <p
-                  className="mb-2 text-xs text-gray-600 dark:text-gray-400"
-                  data-testid="validate-iwxxm-help"
-                >
-                  Paste IWXXM XML or upload one <code>.xml</code> file. Runs layered
-                  validation only — no TAC conversion.
-                </p>
-              )}
-              {conversionParams.product === 'IWXXM' &&
-                inputMode !== 'validate_iwxxm' && (
-                  <p
-                    className="mb-2 text-xs text-gray-600 dark:text-gray-400"
-                    data-testid="iwxxm-product-help"
-                    role="status"
-                  >
-                    {IWXXM_PRODUCT_HELP}
-                  </p>
-                )}
-              {bulletinSummary && (
-                <StatusBanner
-                  tone="info"
-                  className="mb-2 text-xs"
-                  data-testid="bulletin-summary"
-                >
-                  {bulletinSummary}
-                </StatusBanner>
-              )}
-              {placeholderNotice && (
-                <StatusBanner
-                  tone="caution"
-                  className="mb-2 text-xs"
-                  data-testid="placeholder-notice"
-                >
-                  {placeholderNotice}
-                </StatusBanner>
-              )}
-              <FailedTacCue failedSpans={failedSpans} />
-              <div className="grid grid-cols-1 gap-3 lg:grid-cols-2 lg:items-stretch">
-                <div
-                  className="min-w-0"
-                  onFocusCapture={() => setRecentWorkCollapsed(true)}
+              {showCalmEmptyHero ? (
+                <CalmConvertEmptyHero
+                  convertDisabled={convertDisabled}
+                  isConverting={isConverting}
+                  onConvert={handleConvert}
+                  exampleChips={calmExampleChips}
+                  onExampleChip={handleLoadGoldenExample}
+                  profileLabel={calmProfileLabel}
+                  onChangeProfile={() => setProfileDrawerOpen(true)}
+                  onBrowseFiles={() => fileInputRef.current?.click()}
+                  onOtherTask={(task) => {
+                    if (task === 'validate_iwxxm') {
+                      setInputMode('validate_iwxxm');
+                      return;
+                    }
+                    if (task === 'ahl') {
+                      setInputMode('ahl_bulletin');
+                      return;
+                    }
+                    setInputMode('collect_iwxxm');
+                  }}
                 >
                   <TacEditor
                     id="manual-input"
                     value={manualInput}
-                    onChange={setManualInput}
+                    onReportLoaded={applyLoadedReportName}
+                    onChange={(value) => {
+                      setManualInput(value);
+                      setSelectedTrace(null);
+                      setLintJump(null);
+                      setLintFocusOffset(null);
+                    }}
                     readOnly={isReadOnly}
-                    placeholder="SPECI BGSF 282350Z 10RMF50MT 9999 SCT110 BKN130 0RN130 NN7/N11 Q1021"
-                    aria-label={
-                      inputMode === 'validate_iwxxm'
-                        ? 'Enter IWXXM XML manually'
-                        : 'Enter METAR data manually'
+                    placeholder={
+                      'WSAZ31 LPMG 251142\nLPPO SIGMET T04 VALID 251145/251545 LPPT- …'
                     }
-                    className="min-h-[160px] focus-within:ring-2 focus-within:ring-blue-500"
-                    failedSpans={failedSpans}
-                    issueSpans={issueSpans}
-                    onSpanFix={applyLintFix}
+                    aria-label="Enter METAR data manually"
+                    className="min-h-44 border-0 shadow-none focus-within:ring-0"
                   />
-                  <DecodePanel
-                    segments={decodeSegments}
-                    residuals={decodeResiduals}
-                    summary={decodeSummary}
-                    product={decodeProduct}
-                    loading={decodeLoading}
-                    error={decodeError}
-                    defaultOpen
-                  />
-                </div>
-                <IwxxmPreviewPane
-                  xml={previewXml}
-                  status={previewStatus}
-                  mode={previewMode}
-                  softFailDetail={previewSoftFailDetail}
-                  failedSpanCount={failedSpans.length}
-                  onFailedSpanFocus={() => {
-                    document
-                      .querySelector('[data-testid="failed-tac-cue"]')
-                      ?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-                  }}
-                />
-              </div>
-              {/* Output filename beside TAC / IWXXM panes (EVCPU Phase A) */}
-              <div className="mt-3" data-testid="output-filename-near-convert">
-                <Label
-                  htmlFor="output-filename"
-                  className="mb-1 block text-sm font-medium text-gray-900 dark:text-white"
-                >
-                  Output filename (optional)
-                </Label>
-                <Input
-                  id="output-filename"
-                  data-testid="output-filename-input"
-                  value={outputFilename}
-                  onChange={(e) => setOutputFilename(e.target.value)}
-                  readOnly={isReadOnly}
-                  placeholder="manual_input"
-                  className="text-sm dark:border-gray-700 dark:bg-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500"
-                  aria-label="Output filename for manually entered METAR downloads"
-                />
-                <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                  Applies to manually entered downloads. The <code>.xml</code> extension
-                  is added automatically; leave blank to use <code>manual_input</code>.
-                  Saves as{' '}
-                  <code data-testid="output-filename-preview">
-                    {sanitizeOutputFilename(outputFilename)}.xml
-                  </code>
-                  .
-                </p>
-              </div>
-              <div className="mt-3 flex flex-col gap-3 rounded-md border border-gray-200 bg-gray-50/60 p-3 dark:border-gray-700 dark:bg-gray-900/30 sm:flex-row sm:items-start sm:gap-6">
-                <SoftPreviewControl
-                  checked={softPreview}
-                  onChange={setSoftPreview}
-                  disabled={isReadOnly || isBusy}
-                />
-                <PropagateResidualsControl
-                  checked={propagateResiduals}
-                  onChange={setPropagateResiduals}
-                  disabled={isReadOnly || isBusy}
-                />
-                <LiveIwxxmToggle
-                  checked={liveIwxxm}
-                  onChange={setLiveIwxxm}
-                  disabled={isReadOnly || isBusy}
-                />
-              </div>
-              <WorkbenchConsole
-                lines={consoleLines}
-                minLogLevel={conversionParams.logLevel as ConvertLogLevel}
-                onLineAction={applyLintFix}
-                catalogByCode={lintCatalogByCode}
-                catalogEntries={lintCatalogEntries}
-                onClear={() => {
-                  clearConsole();
-                  appendConsole({
-                    level: 'info',
-                    source: 'console',
-                    message: 'cleared',
-                  });
-                }}
-              />
-
-              {/* Compact file upload — secondary to the TAC console */}
+                </CalmConvertEmptyHero>
+              ) : null}
+              {/* Compact upload card sits above the convert box (UJ-089). */}
               <Card
-                className={`mt-4 border-2 border-dashed p-3 shadow-none transition-colors ${
+                className={`mb-1 border-2 border-dashed p-2 shadow-none transition-colors ${
                   isDragging
                     ? 'border-blue-500 bg-blue-50 dark:border-blue-400 dark:bg-blue-950'
                     : 'border-gray-300 bg-white dark:border-gray-700 dark:bg-gray-800'
@@ -3162,7 +2933,11 @@ export function FileConverter({
                 onDragOver={handleDragOver}
                 onDragLeave={handleDragLeave}
                 role="button"
-                aria-label="File drop zone - Drop files here or click to select files"
+                aria-label={
+                  inputMode === 'validate_iwxxm'
+                    ? 'XML file drop zone - Drop one XML file or click to select it'
+                    : 'File drop zone - Drop files here or click to select files'
+                }
                 tabIndex={0}
                 data-testid="compact-file-drop-zone"
                 onKeyDown={(e) => {
@@ -3172,19 +2947,22 @@ export function FileConverter({
                   }
                 }}
               >
-                <div className="flex flex-col items-stretch gap-2 sm:flex-row sm:items-center sm:justify-between">
+                <div className="flex flex-col items-stretch gap-3 sm:flex-row sm:items-center sm:justify-between">
                   <div className="flex min-w-0 items-center gap-2">
                     <Upload
                       className="h-5 w-5 shrink-0 text-gray-400 dark:text-gray-500"
                       aria-hidden="true"
                     />
                     <div className="min-w-0 text-left">
-                      <p className="text-sm text-gray-900 dark:text-white">
-                        Drop TAC files or select
+                      <p className="text-sm font-medium text-gray-900 dark:text-white">
+                        {inputMode === 'validate_iwxxm'
+                          ? VALIDATE_IWXXM_DROP_TITLE
+                          : 'Drop TAC files here'}
                       </p>
                       <p className="text-xs text-gray-500 dark:text-gray-400">
-                        Multiple files · Folder/Zip mass ingest (signed in) · .txt,
-                        .metar, .tac, .xml, .gz, .zip
+                        {inputMode === 'validate_iwxxm'
+                          ? VALIDATE_IWXXM_DROP_HELP
+                          : 'Or pick files below · .txt, .metar, .tac, .xml, .gz'}
                       </p>
                     </div>
                   </div>
@@ -3195,336 +2973,1640 @@ export function FileConverter({
                     accept=".txt,.metar,.tac,.xml,.gz,text/plain,application/gzip,application/xml,text/xml"
                     className="hidden"
                     onChange={(e) => handleFileSelect(e.target.files)}
-                    aria-label="Select TAC files to upload"
+                    aria-label={
+                      inputMode === 'validate_iwxxm'
+                        ? 'Select one XML file to validate'
+                        : 'Select TAC files to upload'
+                    }
                   />
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      fileInputRef.current?.click();
-                    }}
-                    disabled={isBusy || isReadOnly}
-                    className="shrink-0 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-                    aria-label="Browse and select files"
-                  >
-                    Select Files
-                  </Button>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    data-testid="mass-ingest-folder-button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      requestMassFolder();
-                    }}
-                    disabled={isBusy || isReadOnly}
-                    className="shrink-0 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-                    aria-label="Mass ingest a folder of TAC files (sign-in required)"
-                    aria-busy={isMassIngesting}
-                  >
-                    <FolderOpen className="h-4 w-4" aria-hidden="true" />
-                    Folder
-                  </Button>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    data-testid="mass-ingest-zip-button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      requestMassZip();
-                    }}
-                    disabled={isBusy || isReadOnly}
-                    className="shrink-0 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-                    aria-label="Mass ingest a zip archive of TAC files (sign-in required)"
-                    aria-busy={isMassIngesting}
-                  >
-                    <Archive className="h-4 w-4" aria-hidden="true" />
-                    Zip
-                  </Button>
-                  <input
-                    ref={massFolderInputRef}
-                    type="file"
-                    multiple
-                    className="hidden"
-                    data-testid="mass-ingest-folder-input"
-                    onChange={(e) => {
-                      void handleMassIngest(e.target.files);
-                    }}
-                    aria-label="Select folder for mass ingest"
-                  />
-                  <input
-                    ref={massZipInputRef}
-                    type="file"
-                    accept=".zip,application/zip"
-                    className="hidden"
-                    data-testid="mass-ingest-zip-input"
-                    onChange={(e) => {
-                      void handleMassIngest(e.target.files);
-                    }}
-                    aria-label="Select zip archive for mass ingest"
-                  />
+                  <div className="flex flex-wrap items-stretch gap-2 sm:items-center">
+                    <Button
+                      variant="default"
+                      size="sm"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        fileInputRef.current?.click();
+                      }}
+                      disabled={isBusy || isReadOnly}
+                      className="shrink-0 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                      aria-label="Browse and select files"
+                      data-testid="select-files-button"
+                    >
+                      <FileText className="h-4 w-4" aria-hidden="true" />
+                      Select files
+                    </Button>
+                  </div>
                 </div>
               </Card>
+              <div
+                className="flex flex-col gap-1"
+                data-testid="live-convert-stage"
+                hidden={showCalmEmptyHero}
+              >
+                <div
+                  className="rounded-lg border border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-900"
+                  data-testid="convert-shell"
+                >
+                  <div
+                    className="flex flex-col gap-1.5 border-b border-gray-200 px-2 py-1.5 dark:border-gray-700 lg:flex-row lg:items-center lg:justify-between"
+                    data-testid="convert-chrome-toolbar"
+                  >
+                    <div className="flex min-w-0 flex-wrap items-center gap-1.5">
+                      <button
+                        type="button"
+                        data-testid="convert-panes-toggle"
+                        aria-expanded={converterOpen}
+                        className="inline-flex h-8 w-fit items-center rounded-md border border-gray-200 bg-white px-2.5 text-sm font-medium text-gray-800 shadow-sm hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100"
+                        onClick={() => setConverterOpen((open) => !open)}
+                      >
+                        {converterOpen ? 'Hide converter' : 'Show converter'}
+                      </button>
+                      <ConvertSettingsCog>
+                        <div
+                          className="flex max-w-full flex-wrap rounded-md border border-gray-300 dark:border-gray-600"
+                          role="group"
+                          aria-label="Input mode"
+                          data-testid="input-mode-group"
+                        >
+                          {(
+                            [
+                              ['tac', 'TAC report'],
+                              ['ahl_bulletin', 'AHL bulletin'],
+                              ['collect_iwxxm', 'IWXXM COLLECT'],
+                              ['validate_iwxxm', 'Validate IWXXM'],
+                            ] as const
+                          ).map(([value, label]) => (
+                            <button
+                              key={value}
+                              type="button"
+                              data-testid={`input-mode-${value}`}
+                              disabled={isReadOnly}
+                              onClick={() => {
+                                if (
+                                  value !== 'ahl_bulletin' &&
+                                  focusedBulletinReport !== null
+                                ) {
+                                  setManualInput(bulletinSource);
+                                  setFocusedBulletinReport(null);
+                                }
+                                if (value === 'validate_iwxxm') {
+                                  const xml =
+                                    convertedFiles[0]?.convertedContent?.trim() || '';
+                                  if (xml) {
+                                    setManualInput(xml);
+                                  }
+                                }
+                                setInputMode(value);
+                                if (value !== 'collect_iwxxm') {
+                                  setPlaceholderNotice(null);
+                                }
+                              }}
+                              className={`px-2 py-1 text-xs whitespace-nowrap ${
+                                inputMode === value
+                                  ? 'bg-blue-700 text-white dark:bg-blue-600'
+                                  : 'bg-white text-gray-700 dark:bg-gray-800 dark:text-gray-200'
+                              }`}
+                            >
+                              {label}
+                            </button>
+                          ))}
+                        </div>
+                        <div
+                          className="space-y-3 border-t border-gray-200 pt-3 dark:border-gray-700"
+                          data-testid="convert-setup"
+                        >
+                          <div className="flex flex-col gap-1.5">
+                            <div
+                              className="flex min-w-0 flex-col gap-1.5 rounded-md border border-gray-300 bg-white px-2 py-1.5 dark:border-gray-600 dark:bg-gray-800 lg:flex-row lg:flex-wrap lg:items-center"
+                              data-testid="product-profile-bar"
+                            >
+                              <Label
+                                htmlFor="param-product"
+                                className="shrink-0 text-sm text-gray-700 dark:text-gray-300"
+                              >
+                                Product type
+                              </Label>
+                              <select
+                                id="param-product"
+                                aria-label="Product"
+                                data-testid="product-type-select"
+                                value={conversionParams.product}
+                                disabled={isReadOnly}
+                                onChange={(e) =>
+                                  setConversionParams((prev) => ({
+                                    ...prev,
+                                    product: e.target.value as TacProductSelection,
+                                    reportVariant: '',
+                                  }))
+                                }
+                                className="min-w-[9.5rem] shrink-0 rounded-md border border-gray-300 bg-white px-2 py-1.5 text-sm text-gray-900 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+                              >
+                                <option value="auto">Auto-detect</option>
+                                <option value="AIRMET">AIRMET</option>
+                                <option value="METAR">METAR</option>
+                                <option value="SIGMET">SIGMET</option>
+                                <option value="SPECI">SPECI</option>
+                                <option value="TAF">TAF</option>
+                                <option value="VAA">VAA</option>
+                                <option value="TCA">TCA</option>
+                                <option value="SWXA">SWXA</option>
+                                <option value="VONA">VONA</option>
+                                <option value="IWXXM">IWXXM</option>
+                              </select>
+                              <div className="flex min-w-0 flex-wrap items-center gap-2">
+                                <span className="text-sm text-gray-600 dark:text-gray-400">
+                                  Profile:{' '}
+                                  <span
+                                    data-testid="convert-active-profile"
+                                    className="font-medium text-gray-900 dark:text-gray-100"
+                                  >
+                                    {calmProfileLabel}
+                                  </span>
+                                </span>
+                                <button
+                                  type="button"
+                                  className="text-sm font-medium text-blue-700 underline-offset-2 hover:underline dark:text-blue-300"
+                                  data-testid="convert-profile-change-live"
+                                  onClick={() => setProfileDrawerOpen(true)}
+                                >
+                                  Change
+                                </button>
+                              </div>
+                              {inputMode !== 'validate_iwxxm' ? (
+                                <>
+                                  <details
+                                    className="order-2 w-full rounded-md border border-gray-200 bg-white px-2 py-1.5 dark:border-gray-700 dark:bg-gray-800"
+                                    data-testid="convert-advanced-engines"
+                                  >
+                                    <summary className="cursor-pointer select-none text-sm font-medium text-gray-700 dark:text-gray-200">
+                                      Customize each step
+                                    </summary>
+                                    <div className="mt-2 space-y-2 border-t border-gray-100 pt-2 dark:border-gray-700">
+                                      <LibraryPickersBar
+                                        disabled={isReadOnly}
+                                        values={{
+                                          conversionLibraryId:
+                                            conversionParams.conversionLibraryId,
+                                          tacValidationLibraryId:
+                                            conversionParams.tacValidationLibraryId,
+                                          iwxxmValidationLibraryId:
+                                            conversionParams.iwxxmValidationLibraryId,
+                                          disseminationLibraryId:
+                                            conversionParams.disseminationLibraryId,
+                                          decodingLibraryId:
+                                            conversionParams.decodingLibraryId,
+                                        }}
+                                        onOpenCatalog={onOpenCatalog}
+                                        onChange={(next, conversionEngineProfileId) => {
+                                          setConversionParams((prev) => {
+                                            if (!conversionEngineProfileId) {
+                                              return { ...prev, ...next };
+                                            }
+                                            const lineChanging =
+                                              isSemanticProfileLineChange(
+                                                prev.profile,
+                                                conversionEngineProfileId,
+                                              );
+                                            if (lineChanging) {
+                                              if (
+                                                !confirmLibraryResetForProfile(
+                                                  conversionEngineProfileId,
+                                                )
+                                              ) {
+                                                return prev;
+                                              }
+                                              const { profile, libraryIds } =
+                                                libraryResetForProfile(
+                                                  conversionEngineProfileId,
+                                                );
+                                              return {
+                                                ...prev,
+                                                ...libraryIds,
+                                                profile,
+                                                reportVariant: '',
+                                                iwxxmVersion:
+                                                  coerceIwxxmVersionForProfile(
+                                                    profile,
+                                                    prev.iwxxmVersion,
+                                                  ),
+                                              };
+                                            }
+                                            const profile = coerceIwxxmProfile(
+                                              conversionEngineProfileId,
+                                            );
+                                            return {
+                                              ...prev,
+                                              ...next,
+                                              profile,
+                                              reportVariant: '',
+                                              iwxxmVersion:
+                                                coerceIwxxmVersionForProfile(
+                                                  profile,
+                                                  prev.iwxxmVersion,
+                                                ),
+                                            };
+                                          });
+                                        }}
+                                      />
+                                      <div className="flex shrink-0 items-center gap-1">
+                                        <Button
+                                          type="button"
+                                          variant="ghost"
+                                          size="sm"
+                                          disabled={isReadOnly}
+                                          data-testid="reset-wmo-library-defaults"
+                                          className="text-xs text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800"
+                                          onClick={() => {
+                                            const sync = resetWmoLibraryDefaultsSync();
+                                            applyWmoLibraryDefaultsSync(sync);
+                                          }}
+                                        >
+                                          {CONVERT_RESET_WMO_LIBRARY_DEFAULTS}
+                                        </Button>
+                                        <Tooltip>
+                                          <TooltipTrigger asChild>
+                                            <button
+                                              type="button"
+                                              className="inline-flex h-6 w-6 items-center justify-center rounded text-gray-500 hover:text-gray-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:text-gray-400 dark:hover:text-gray-100"
+                                              aria-label="About reset to WMO defaults"
+                                              data-testid="reset-wmo-library-defaults-help"
+                                            >
+                                              <CircleHelp
+                                                className="h-3.5 w-3.5"
+                                                aria-hidden
+                                              />
+                                            </button>
+                                          </TooltipTrigger>
+                                          <TooltipContent
+                                            side="bottom"
+                                            className="max-w-xs text-balance"
+                                          >
+                                            {CONVERT_RESET_WMO_LIBRARY_DEFAULTS_HELP}
+                                          </TooltipContent>
+                                        </Tooltip>
+                                      </div>
+                                    </div>
+                                  </details>
+                                  {reportVariantOptions.length > 0 &&
+                                    inputMode !== 'ahl_bulletin' && (
+                                      <>
+                                        <div className="order-1 flex shrink-0 items-center gap-1">
+                                          <Label
+                                            htmlFor="param-report-variant"
+                                            className="shrink-0 text-sm text-gray-700 dark:text-gray-300"
+                                          >
+                                            Report variant
+                                          </Label>
+                                          <Tooltip>
+                                            <TooltipTrigger asChild>
+                                              <button
+                                                type="button"
+                                                className="inline-flex h-6 w-6 items-center justify-center rounded text-gray-500 hover:text-gray-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:text-gray-400 dark:hover:text-gray-100"
+                                                aria-label="About Report variant"
+                                                data-testid="report-variant-help-icon"
+                                              >
+                                                <CircleHelp
+                                                  className="h-3.5 w-3.5"
+                                                  aria-hidden
+                                                />
+                                              </button>
+                                            </TooltipTrigger>
+                                            <TooltipContent
+                                              side="bottom"
+                                              className="max-w-xs text-balance"
+                                            >
+                                              Optional profile-scoped IWXXM root inside
+                                              the selected product family. Leave on
+                                              Auto-detect to infer from the TAC lead.
+                                            </TooltipContent>
+                                          </Tooltip>
+                                        </div>
+                                        <select
+                                          id="param-report-variant"
+                                          aria-label="Report variant"
+                                          data-testid="report-variant-select"
+                                          value={activeReportVariant}
+                                          disabled={isReadOnly}
+                                          onChange={(e) => {
+                                            setConversionParams((prev) => ({
+                                              ...prev,
+                                              reportVariant: e.target.value,
+                                            }));
+                                          }}
+                                          className="order-1 min-w-[10rem] shrink-0 rounded-md border border-gray-300 bg-white px-2 py-1.5 text-sm text-gray-900 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+                                        >
+                                          <option value="">Auto-detect from TAC</option>
+                                          {reportVariantOptions.map((variant) => (
+                                            <option
+                                              key={variant.tac_lead}
+                                              value={variant.tac_lead}
+                                            >
+                                              {variant.tac_lead}
+                                              {variant.minimal_observation
+                                                ? ' (minimal)'
+                                                : ''}
+                                            </option>
+                                          ))}
+                                        </select>
+                                      </>
+                                    )}
+                                </>
+                              ) : null}
+                            </div>
+                            {inputMode !== 'validate_iwxxm' ? (
+                              <>
+                                <div className="flex flex-wrap items-center justify-end gap-2">
+                                  <p
+                                    id="product-profile-bar-summary"
+                                    className="sr-only"
+                                    data-testid="product-profile-bar-summary"
+                                  >
+                                    Encoding and packaging rules only. This does not set
+                                    destinations, credentials, or editable overlays.
+                                  </p>
+                                  <details
+                                    className="rounded-md border border-gray-200 bg-white px-2 py-1 text-xs text-gray-600 open:pb-2 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400"
+                                    data-testid="product-profile-trust-details"
+                                  >
+                                    <summary className="cursor-pointer select-none font-medium text-gray-700 dark:text-gray-300">
+                                      What&apos;s this?
+                                    </summary>
+                                    <div className="mt-1.5 space-y-1.5 border-t border-gray-100 pt-1.5 dark:border-gray-700">
+                                      <p data-testid="semantic-profile-help">
+                                        Profile selects encoding rules for conversion.
+                                        Does not set destinations or credentials, and
+                                        does not make national overlays editable.
+                                      </p>
+                                      <p data-testid="exchange-profile-help">
+                                        Exchange profile is used when packaging
+                                        bulletins. Does not choose destinations or
+                                        credentials.
+                                      </p>
+                                    </div>
+                                  </details>
+                                </div>
+                                <div
+                                  className="hidden flex-wrap items-center gap-2"
+                                  aria-hidden="true"
+                                  data-testid="country-preset"
+                                >
+                                  <label
+                                    className="flex items-center gap-2"
+                                    htmlFor="country-preset-select"
+                                  >
+                                    <span className="text-xs font-medium text-gray-500">
+                                      {COUNTRY_PRESET_LABEL}
+                                    </span>
+                                    <select
+                                      id="country-preset-select"
+                                      data-testid="country-preset-select"
+                                      aria-label={COUNTRY_PRESET_LABEL}
+                                      title={COUNTRY_PRESET_HELP}
+                                      className="min-w-[10rem] rounded-md border border-gray-300 bg-white px-2 py-1.5 text-sm text-gray-900 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+                                      value={countryPresetLineForLibraries(
+                                        conversionParams,
+                                      )}
+                                      disabled={isReadOnly}
+                                      onChange={(event) => {
+                                        const line = event.target.value;
+                                        if (line === '') {
+                                          return;
+                                        }
+                                        const { profile, libraryIds } =
+                                          libraryResetForProfile(line);
+                                        setConversionParams((prev) => ({
+                                          ...prev,
+                                          ...libraryIds,
+                                          profile,
+                                          reportVariant: '',
+                                          iwxxmVersion: coerceIwxxmVersionForProfile(
+                                            profile,
+                                            prev.iwxxmVersion,
+                                          ),
+                                        }));
+                                      }}
+                                    >
+                                      <option value="">{COUNTRY_PRESET_CUSTOM}</option>
+                                      {SEMANTIC_PROFILE_OPTIONS.filter((option) =>
+                                        (
+                                          COUNTRY_PRESET_LINES as readonly string[]
+                                        ).includes(option.value),
+                                      ).map((option) => (
+                                        <option key={option.value} value={option.value}>
+                                          {option.label}
+                                        </option>
+                                      ))}
+                                    </select>
+                                  </label>
+                                  <p
+                                    className="sr-only"
+                                    data-testid="country-preset-help"
+                                  >
+                                    {COUNTRY_PRESET_HELP}
+                                  </p>
+                                </div>
+                                {isCaEcccProfile(conversionParams.profile) && (
+                                  <div
+                                    className="rounded border border-sky-200 bg-sky-50 px-2 py-1.5 text-xs text-sky-950 dark:border-sky-900 dark:bg-sky-950/40 dark:text-sky-100"
+                                    data-testid="ca-eccc-profile-metadata"
+                                    role="status"
+                                  >
+                                    <p>
+                                      IWXXM {CA_ECCC_IWXXM_VERSION} (MSC operational
+                                      line)
+                                    </p>
+                                    <p>{CA_ECCC_EXTENSION_LABEL}</p>
+                                    <p>
+                                      Supported products:{' '}
+                                      {CA_ECCC_SUPPORTED_PRODUCTS.join(', ')}
+                                    </p>
+                                    {caProfileBlocked && (
+                                      <p className="mt-1 font-medium text-amber-900 dark:text-amber-200">
+                                        Canadian extension schemas are not available on
+                                        this deployment. Conversion is blocked until the
+                                        vendor bundle is installed.
+                                      </p>
+                                    )}
+                                  </div>
+                                )}
+                              </>
+                            ) : null}
+                          </div>
+                        </div>
+                        {inputMode !== 'validate_iwxxm' ? (
+                          <>
+                            <div data-testid="output-filename-near-convert">
+                              <Label
+                                htmlFor="output-filename"
+                                className="mb-1 block text-sm font-medium text-gray-900 dark:text-white"
+                              >
+                                Output filename (optional)
+                              </Label>
+                              <Input
+                                id="output-filename"
+                                data-testid="output-filename-input"
+                                value={outputFilename}
+                                onChange={(e) => {
+                                  const value = e.target.value;
+                                  outputFilenameOwned.current = value.trim() !== '';
+                                  setOutputFilename(value);
+                                }}
+                                readOnly={isReadOnly}
+                                placeholder="manual_input"
+                                className="text-sm dark:border-gray-700 dark:bg-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500"
+                                aria-label="Output filename for manually entered METAR downloads"
+                              />
+                              <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                                Saves as{' '}
+                                <code data-testid="output-filename-preview">
+                                  {sanitizeOutputFilename(outputFilename)}.xml
+                                </code>
+                                .
+                              </p>
+                            </div>
+                            <SoftPreviewControl
+                              checked={softPreview}
+                              onChange={setSoftPreview}
+                              disabled={isReadOnly || isBusy}
+                            />
+                            <PropagateResidualsControl
+                              checked={propagateResiduals}
+                              onChange={setPropagateResiduals}
+                              disabled={isReadOnly || isBusy}
+                            />
+                            <LiveIwxxmToggle
+                              checked={liveIwxxm}
+                              onChange={setLiveIwxxm}
+                              disabled={isReadOnly || isBusy}
+                            />
+                            <div
+                              className="flex flex-wrap items-center gap-3"
+                              data-testid="convert-layout-controls"
+                            >
+                              <div
+                                className="flex rounded-md bg-gray-100 p-0.5 dark:bg-gray-800"
+                                role="group"
+                                aria-label="Decode density"
+                              >
+                                <button
+                                  type="button"
+                                  aria-pressed={liveLayout.density === 'detailed'}
+                                  className={`rounded px-2 py-1 text-xs font-medium ${
+                                    liveLayout.density === 'detailed'
+                                      ? 'bg-gray-300 text-gray-950 dark:bg-gray-600 dark:text-white'
+                                      : 'text-gray-900 dark:text-gray-100'
+                                  }`}
+                                  onClick={() =>
+                                    updateLiveLayout({ density: 'detailed' })
+                                  }
+                                >
+                                  Detailed
+                                </button>
+                                <button
+                                  type="button"
+                                  aria-pressed={liveLayout.density === 'compact'}
+                                  className={`rounded px-2 py-1 text-xs font-medium ${
+                                    liveLayout.density === 'compact'
+                                      ? 'bg-gray-300 text-gray-950 dark:bg-gray-600 dark:text-white'
+                                      : 'text-gray-900 dark:text-gray-100'
+                                  }`}
+                                  onClick={() =>
+                                    updateLiveLayout({ density: 'compact' })
+                                  }
+                                >
+                                  Compact
+                                </button>
+                              </div>
+                              <div
+                                className="flex rounded-md bg-gray-100 p-0.5 dark:bg-gray-800"
+                                role="group"
+                                aria-label="Convert layout"
+                              >
+                                <button
+                                  type="button"
+                                  aria-pressed={liveLayout.span === 'roomy'}
+                                  className={`rounded px-2 py-1 text-xs font-medium ${
+                                    liveLayout.span === 'roomy'
+                                      ? 'bg-gray-300 text-gray-950 dark:bg-gray-600 dark:text-white'
+                                      : 'text-gray-900 dark:text-gray-100'
+                                  }`}
+                                  onClick={() => updateLiveLayout({ span: 'roomy' })}
+                                >
+                                  Roomier
+                                </button>
+                                <button
+                                  type="button"
+                                  aria-pressed={liveLayout.span === 'tight'}
+                                  className={`rounded px-2 py-1 text-xs font-medium ${
+                                    liveLayout.span === 'tight'
+                                      ? 'bg-gray-300 text-gray-950 dark:bg-gray-600 dark:text-white'
+                                      : 'text-gray-900 dark:text-gray-100'
+                                  }`}
+                                  onClick={() => updateLiveLayout({ span: 'tight' })}
+                                >
+                                  Tighter
+                                </button>
+                              </div>
+                              <label className="flex items-center gap-2 text-xs text-gray-800 dark:text-gray-200">
+                                <input
+                                  type="checkbox"
+                                  data-testid="wrap-xml-lines"
+                                  checked={liveLayout.wrapXml}
+                                  onChange={(event) =>
+                                    updateLiveLayout({
+                                      wrapXml: event.target.checked,
+                                    })
+                                  }
+                                />
+                                Wrap XML lines
+                              </label>
+                            </div>
+                            <div
+                              className="flex min-w-0 flex-col gap-1 border-t border-gray-200 pt-3 dark:border-gray-700"
+                              data-testid="conversion-metadata-export-panel"
+                            >
+                              <div className="flex items-center gap-2">
+                                <Checkbox
+                                  id="conversion-metadata-toggle"
+                                  data-testid="conversion-metadata-toggle"
+                                  checked={metadataPrefs.enabled}
+                                  disabled={isReadOnly}
+                                  onCheckedChange={(checked) => {
+                                    persistMetadataPrefs({
+                                      ...metadataPrefs,
+                                      enabled: checked === true,
+                                      checklist:
+                                        checked === true && !metadataPrefs.enabled
+                                          ? defaultConversionMetadataChecklist()
+                                          : metadataPrefs.checklist,
+                                    });
+                                  }}
+                                />
+                                <Label
+                                  htmlFor="conversion-metadata-toggle"
+                                  className="flex cursor-pointer items-center gap-1 text-sm text-gray-800 dark:text-gray-200"
+                                >
+                                  {CONVERSION_METADATA_TOGGLE_LABEL}
+                                  <Tooltip>
+                                    <TooltipTrigger asChild>
+                                      <button
+                                        type="button"
+                                        className="inline-flex h-5 w-5 items-center justify-center rounded text-gray-500 hover:text-gray-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:text-gray-400 dark:hover:text-gray-100"
+                                        aria-label="About conversion metadata"
+                                        data-testid="conversion-metadata-toggle-help"
+                                        onClick={(event) => event.preventDefault()}
+                                      >
+                                        <CircleHelp
+                                          className="h-3.5 w-3.5"
+                                          aria-hidden
+                                        />
+                                      </button>
+                                    </TooltipTrigger>
+                                    <TooltipContent
+                                      side="bottom"
+                                      className="max-w-xs text-balance"
+                                    >
+                                      {CONVERSION_METADATA_TOGGLE_HELP}
+                                    </TooltipContent>
+                                  </Tooltip>
+                                  <BetaBadge className="inline-flex" />
+                                </Label>
+                              </div>
+                              {metadataPrefs.enabled ? (
+                                <Collapsible
+                                  open={isMetadataChecklistOpen}
+                                  onOpenChange={setIsMetadataChecklistOpen}
+                                >
+                                  <CollapsibleTrigger asChild>
+                                    <button
+                                      type="button"
+                                      className="flex items-center gap-1 text-left text-xs font-medium text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100"
+                                      data-testid="conversion-metadata-checklist-trigger"
+                                    >
+                                      {isMetadataChecklistOpen ? (
+                                        <ChevronUp
+                                          className="h-3.5 w-3.5"
+                                          aria-hidden="true"
+                                        />
+                                      ) : (
+                                        <ChevronDown
+                                          className="h-3.5 w-3.5"
+                                          aria-hidden="true"
+                                        />
+                                      )}
+                                      {CONVERSION_METADATA_CHECKLIST_HEADING}
+                                    </button>
+                                  </CollapsibleTrigger>
+                                  <CollapsibleContent
+                                    className="mt-1 space-y-1.5"
+                                    data-testid="conversion-metadata-checklist"
+                                  >
+                                    {(
+                                      [
+                                        [
+                                          'libraries',
+                                          CONVERSION_METADATA_CHECKLIST_LIBRARIES,
+                                        ],
+                                        [
+                                          'libraryYamlHashes',
+                                          CONVERSION_METADATA_CHECKLIST_YAML_HASHES,
+                                        ],
+                                        [
+                                          'convertContext',
+                                          CONVERSION_METADATA_CHECKLIST_CONVERT_CONTEXT,
+                                        ],
+                                        [
+                                          'operator',
+                                          CONVERSION_METADATA_CHECKLIST_OPERATOR,
+                                        ],
+                                        [
+                                          'lintSummary',
+                                          CONVERSION_METADATA_CHECKLIST_LINT,
+                                        ],
+                                        [
+                                          'tacFingerprint',
+                                          CONVERSION_METADATA_CHECKLIST_TAC_FINGERPRINT,
+                                        ],
+                                        [
+                                          'mappingBridgeSummary',
+                                          CONVERSION_METADATA_CHECKLIST_MAPPING_BRIDGE,
+                                        ],
+                                      ] as const
+                                    ).map(([key, label]) => (
+                                      <div
+                                        key={key}
+                                        className="flex items-center gap-2"
+                                      >
+                                        <Checkbox
+                                          id={`conversion-metadata-check-${key}`}
+                                          checked={metadataPrefs.checklist[key]}
+                                          disabled={
+                                            isReadOnly ||
+                                            (key === 'operator' && isGuest)
+                                          }
+                                          onCheckedChange={(checked) =>
+                                            updateMetadataChecklist(
+                                              key,
+                                              checked === true,
+                                            )
+                                          }
+                                        />
+                                        <Label
+                                          htmlFor={`conversion-metadata-check-${key}`}
+                                          className="cursor-pointer text-xs text-gray-700 dark:text-gray-300"
+                                        >
+                                          {label}
+                                          {key === 'operator' && isGuest
+                                            ? ' (sign in required)'
+                                            : ''}
+                                        </Label>
+                                      </div>
+                                    ))}
+                                  </CollapsibleContent>
+                                </Collapsible>
+                              ) : null}
+                            </div>
+                          </>
+                        ) : null}
+                        {inputMode !== 'validate_iwxxm' ? (
+                          <div
+                            className="space-y-3 border-t border-gray-200 pt-3 dark:border-gray-700"
+                            data-testid="conversion-params-bar"
+                          >
+                            <div className="flex items-center justify-between gap-2">
+                              <p className="text-sm font-medium text-gray-900 dark:text-white">
+                                Conversion parameters
+                              </p>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => setIsParamsExpanded(!isParamsExpanded)}
+                                className="hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-2 focus:ring-gray-500"
+                                aria-label={
+                                  isParamsExpanded
+                                    ? 'Collapse parameters'
+                                    : 'Expand parameters'
+                                }
+                              >
+                                {isParamsExpanded ? (
+                                  <ChevronUp
+                                    className="h-4 w-4 text-gray-600 dark:text-gray-400"
+                                    aria-hidden="true"
+                                  />
+                                ) : (
+                                  <ChevronDown
+                                    className="h-4 w-4 text-gray-600 dark:text-gray-400"
+                                    aria-hidden="true"
+                                  />
+                                )}
+                              </Button>
+                            </div>
+                            <div className="flex flex-col gap-3">
+                              <div>
+                                <Label
+                                  htmlFor="param-bulletin-id"
+                                  className="mb-1 block text-xs font-medium text-gray-700 dark:text-gray-200"
+                                >
+                                  Bulletin ID
+                                </Label>
+                                <Input
+                                  id="param-bulletin-id"
+                                  data-testid="bulletin-id-input"
+                                  value={conversionParams.bulletinId}
+                                  onChange={(e) => {
+                                    setBulletinFieldError(null);
+                                    setConversionParams((prev) => ({
+                                      ...prev,
+                                      bulletinId: e.target.value.toUpperCase(),
+                                    }));
+                                  }}
+                                  placeholder="SAAA00"
+                                  maxLength={6}
+                                  aria-invalid={ariaInvalidFromError(
+                                    bulletinFieldError,
+                                  )}
+                                  className="dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+                                />
+                                {bulletinFieldError ? (
+                                  <p
+                                    className="mt-1 text-xs text-red-600 dark:text-red-400"
+                                    data-testid="bulletin-id-field-error"
+                                    role="alert"
+                                  >
+                                    {bulletinFieldError}
+                                  </p>
+                                ) : (
+                                  <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                                    Format: 4 letters + 2 digits. Leave blank to
+                                    discover from the AHL.
+                                  </p>
+                                )}
+                              </div>
+                              <div>
+                                <IcaoAutocomplete
+                                  label="Issuing Center (ICAO)"
+                                  id="param-issuing-center"
+                                  inputTestId="issuing-center-input"
+                                  formatOnly
+                                  value={conversionParams.issuingCenter}
+                                  onChange={(value) => {
+                                    setIssuingCenterFieldError(null);
+                                    setConversionParams((prev) => ({
+                                      ...prev,
+                                      issuingCenter: value,
+                                    }));
+                                  }}
+                                  placeholder="KWBC"
+                                  maxLength={4}
+                                  helperText={
+                                    issuingCenterFieldError
+                                      ? undefined
+                                      : '4-letter ICAO code. Leave blank to discover from the AHL.'
+                                  }
+                                />
+                                {issuingCenterFieldError ? (
+                                  <p
+                                    className="mt-1 text-xs text-red-600 dark:text-red-400"
+                                    data-testid="issuing-center-field-error"
+                                    role="alert"
+                                  >
+                                    {issuingCenterFieldError}
+                                  </p>
+                                ) : null}
+                              </div>
+                              <div className={isParamsExpanded ? '' : 'hidden'}>
+                                <AirportDetailsCard
+                                  icao={conversionParams.issuingCenter}
+                                />
+                              </div>
+                              <div className={isParamsExpanded ? '' : 'hidden'}>
+                                <Label
+                                  htmlFor="param-iwxxm-version"
+                                  className="mb-2 dark:text-white"
+                                >
+                                  IWXXM Version
+                                </Label>
+                                <select
+                                  id="param-iwxxm-version"
+                                  value={conversionParams.iwxxmVersion}
+                                  onChange={(e) =>
+                                    setConversionParams((prev) => ({
+                                      ...prev,
+                                      iwxxmVersion: coerceIwxxmVersion(e.target.value),
+                                    }))
+                                  }
+                                  className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-900 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+                                >
+                                  {iwxxmVersionOptionsForProfile(
+                                    conversionParams.profile,
+                                  ).map((opt) => (
+                                    <option key={opt.value} value={opt.value}>
+                                      {opt.label}
+                                    </option>
+                                  ))}
+                                </select>
+                              </div>
+                              <div className={isParamsExpanded ? '' : 'hidden'}>
+                                <Label
+                                  htmlFor="param-on-error"
+                                  className="mb-2 dark:text-white"
+                                >
+                                  On Error Behavior
+                                </Label>
+                                <select
+                                  id="param-on-error"
+                                  value={conversionParams.onError}
+                                  onChange={(e) =>
+                                    setConversionParams((prev) => ({
+                                      ...prev,
+                                      onError: e.target.value as OnErrorBehavior,
+                                    }))
+                                  }
+                                  className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-900 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+                                >
+                                  <option value="skip">
+                                    Skip - Continue, skip invalid
+                                  </option>
+                                  <option value="fail">
+                                    Fail - Stop on first error
+                                  </option>
+                                  <option value="warn">
+                                    Warn - Continue with warnings
+                                  </option>
+                                </select>
+                                <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                                  Fail sets API <code>stop_on_error=true</code>;
+                                  Skip/Warn leave it false.
+                                </p>
+                              </div>
+                              <div className={isParamsExpanded ? '' : 'hidden'}>
+                                <Label
+                                  htmlFor="param-log-level"
+                                  className="mb-2 dark:text-white"
+                                >
+                                  Log Level
+                                </Label>
+                                <select
+                                  id="param-log-level"
+                                  value={conversionParams.logLevel}
+                                  onChange={(e) =>
+                                    setConversionParams((prev) => ({
+                                      ...prev,
+                                      logLevel: e.target.value as LogLevel,
+                                    }))
+                                  }
+                                  className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-900 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+                                >
+                                  <option value="DEBUG">DEBUG</option>
+                                  <option value="INFO">INFO (Default)</option>
+                                  <option value="WARNING">WARNING</option>
+                                  <option value="ERROR">ERROR</option>
+                                  <option value="CRITICAL">CRITICAL</option>
+                                </select>
+                                <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                                  Filters conversion / validation / lint process
+                                  messages (Results → Console). Sent as{' '}
+                                  <code>log_level</code> on Convert.
+                                </p>
+                              </div>
+                              <div
+                                className={`flex flex-col gap-3 ${isParamsExpanded ? '' : 'hidden'}`}
+                              >
+                                <Label className="dark:text-white">
+                                  Validation Options
+                                </Label>
+                                <StrictControls
+                                  strict={conversionParams.strictValidation}
+                                  strictLint={conversionParams.strictLint}
+                                  strictConvert={conversionParams.strictConvert}
+                                  strictValidate={conversionParams.strictValidate}
+                                  onStrictChange={(value) =>
+                                    setConversionParams((prev) => ({
+                                      ...prev,
+                                      strictValidation: value,
+                                    }))
+                                  }
+                                  onStrictLintChange={(value) =>
+                                    setConversionParams((prev) => ({
+                                      ...prev,
+                                      strictLint: value,
+                                    }))
+                                  }
+                                  onStrictConvertChange={(value) =>
+                                    setConversionParams((prev) => ({
+                                      ...prev,
+                                      strictConvert: value,
+                                    }))
+                                  }
+                                  onStrictValidateChange={(value) =>
+                                    setConversionParams((prev) => ({
+                                      ...prev,
+                                      strictValidate: value,
+                                    }))
+                                  }
+                                />
+                                <label className="flex cursor-pointer items-center">
+                                  <input
+                                    type="checkbox"
+                                    checked={conversionParams.includeNilReasons}
+                                    onChange={(e) =>
+                                      setConversionParams((prev) => ({
+                                        ...prev,
+                                        includeNilReasons: e.target.checked,
+                                      }))
+                                    }
+                                    className="h-4 w-4 rounded text-blue-600 focus:ring-2 focus:ring-blue-500"
+                                    data-testid="include-nil-reasons-checkbox"
+                                  />
+                                  <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">
+                                    Include Nil Reasons
+                                  </span>
+                                </label>
+                                <p className="-mt-1 ml-6 text-xs text-gray-500 dark:text-gray-400">
+                                  Sent as <code>include_nil_reasons</code>.
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        ) : null}
+                        <div data-testid="lint-highlight-preset">
+                          <Label
+                            htmlFor="lint-highlight-preset"
+                            className="mb-1 block text-sm font-medium text-gray-900 dark:text-white"
+                          >
+                            Lint highlight colors
+                          </Label>
+                          <select
+                            id="lint-highlight-preset"
+                            data-testid="lint-highlight-preset-select"
+                            className="w-full rounded-md border border-gray-300 bg-white px-2 py-1.5 text-sm dark:border-gray-600 dark:bg-gray-800 dark:text-white"
+                            value={lintHighlightPreset}
+                            onChange={(event) =>
+                              setLintHighlightPreset(
+                                event.target.value as LintHighlightPreset,
+                              )
+                            }
+                          >
+                            <option value="default">Default</option>
+                            <option value="colorblind">Colorblind-safe</option>
+                          </select>
+                        </div>
+                        <div
+                          className="space-y-2 border-t border-gray-200 pt-3 dark:border-gray-700"
+                          data-testid="convert-settings-secondary-actions"
+                        >
+                          <p className="text-sm font-medium text-gray-900 dark:text-white">
+                            More actions
+                          </p>
+                          {isOperatorDisseminationDestinationsEnabled() &&
+                          inputMode !== 'validate_iwxxm' &&
+                          conversionParams.product !== 'IWXXM' ? (
+                            <Button
+                              data-testid="convert-and-send-button"
+                              variant="outline"
+                              onClick={handleConvertAndSend}
+                              disabled={convertDisabled}
+                              className="w-full justify-center text-base disabled:opacity-50 disabled:cursor-not-allowed"
+                              aria-busy={isConvertAndSending}
+                              aria-label={
+                                isConvertAndSending
+                                  ? 'Converting and sending files, please wait (beta)'
+                                  : 'Convert TAC to IWXXM XML and send to database (beta)'
+                              }
+                            >
+                              <Loader2
+                                className={`w-4 h-4 animate-spin ${isConvertAndSending ? '' : 'invisible'}`}
+                                aria-hidden="true"
+                              />
+                              {calmUi.primaryKind === 'download'
+                                ? 'Send…'
+                                : 'Convert&Send'}
+                              <BetaBadge className="ml-1 inline-flex" />
+                            </Button>
+                          ) : null}
+                          {isOperatorDisseminationDestinationsEnabled() ? (
+                            <Button
+                              type="button"
+                              data-testid="open-dissemination-drawer"
+                              onClick={() => {
+                                setPackagingExchangeProfile(
+                                  conversionParams.exchangeProfile,
+                                );
+                                handleDisseminationOpenChange(true);
+                              }}
+                              disabled={isBusy || isReadOnly}
+                              variant="outline"
+                              className="w-full justify-center text-base disabled:opacity-40 disabled:cursor-not-allowed"
+                              aria-label="Open dissemination drawer for BYOC upload or publish (beta)"
+                            >
+                              {calmUi.primaryKind === 'download'
+                                ? 'Send…'
+                                : 'Disseminate'}
+                              <BetaBadge className="ml-1 inline-flex" />
+                            </Button>
+                          ) : null}
+                          <Button
+                            data-testid="download-zip-button"
+                            onClick={() => void handleDownloadAll()}
+                            disabled={isBusy || !hasConverted}
+                            variant="outline"
+                            className="w-full justify-center text-base disabled:opacity-40 disabled:cursor-not-allowed"
+                            aria-label={`Download all ${convertedFiles.length} converted files as ZIP`}
+                          >
+                            Download ZIP
+                            <span className="inline-block min-w-[1.75rem] tabular-nums">
+                              ({convertedFiles.length})
+                            </span>
+                          </Button>
+                          <Button
+                            data-testid="clear-queue-button"
+                            onClick={handleClear}
+                            variant="ghost"
+                            className="w-full justify-center text-base text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-800"
+                            aria-label="Clear all pending files and manual input"
+                          >
+                            Clear
+                          </Button>
+                        </div>
+                      </ConvertSettingsCog>
+                    </div>
+                  </div>
+                  <div
+                    hidden={!converterOpen}
+                    data-testid="convert-body"
+                    className="p-2"
+                  >
+                    {inputMode !== 'validate_iwxxm' && demoExampleLabel && (
+                      <StatusBanner
+                        tone="info"
+                        className="mb-2 text-xs"
+                        data-testid="demo-example-banner"
+                      >
+                        Demo / non-operational example: {demoExampleLabel}
+                      </StatusBanner>
+                    )}
+                    {inputMode === 'ahl_bulletin' && (
+                      <p className="mb-2 text-xs text-gray-600 dark:text-gray-400">
+                        AHL bulletins are split and converted via{' '}
+                        <code>POST /api/v1/convert-bulletin</code>.
+                      </p>
+                    )}
+                    {inputMode === 'collect_iwxxm' && (
+                      <p className="mb-2 text-xs text-amber-800 dark:text-amber-200">
+                        IWXXM COLLECT / FTBP path uses{' '}
+                        <code>POST /api/v1/ingest-collect</code> (not available yet; the
+                        request returns 501 until member extract ships).
+                      </p>
+                    )}
+                    {inputMode === 'validate_iwxxm' && (
+                      <p
+                        className="mb-2 text-xs text-gray-600 dark:text-gray-400"
+                        data-testid="validate-iwxxm-help"
+                      >
+                        Paste IWXXM XML or upload one <code>.xml</code> file. This
+                        checks the XML only. It does not convert TAC.
+                      </p>
+                    )}
+                    {conversionParams.product === 'IWXXM' &&
+                      inputMode !== 'validate_iwxxm' && (
+                        <p
+                          className="mb-2 text-xs text-gray-600 dark:text-gray-400"
+                          data-testid="iwxxm-product-help"
+                          role="status"
+                        >
+                          {IWXXM_PRODUCT_HELP}
+                        </p>
+                      )}
+                    {bulletinSummary && (
+                      <StatusBanner
+                        tone="info"
+                        className="mb-2 text-xs"
+                        data-testid="bulletin-summary"
+                      >
+                        {bulletinSummary}
+                      </StatusBanner>
+                    )}
+                    {placeholderNotice && (
+                      <StatusBanner
+                        tone="caution"
+                        className="mb-2 text-xs"
+                        data-testid="placeholder-notice"
+                      >
+                        {placeholderNotice}
+                      </StatusBanner>
+                    )}
+                    {bulletinReports.length >= 2 ? (
+                      <BulletinReportList
+                        reports={bulletinReports}
+                        selectedIndex={focusedBulletinReport}
+                        onShowAll={() => {
+                          setFocusedBulletinReport(null);
+                          setManualInput(bulletinSource || manualInput);
+                        }}
+                        onSelect={(index, tac) => {
+                          const source = bulletinSource || manualInput;
+                          setBulletinSource(source);
+                          setFocusedBulletinReport(index);
+                          setManualInput(tac);
+                          setSelectedTrace(null);
+                        }}
+                      />
+                    ) : null}
+                    <div data-testid="convert-panes-slot">
+                      <div
+                        className="flex min-h-0 min-w-0 flex-col overflow-auto rounded-md border border-gray-200 bg-white p-2 dark:border-gray-700 dark:bg-gray-900"
+                        data-testid="live-convert-panes"
+                        data-fit={liveLayout.span === 'roomy' ? 'roomy' : 'tight'}
+                        role="region"
+                        aria-label={inputMode === 'validate_iwxxm' ? 'IWXXM' : 'TAC'}
+                        style={{ height: converterPaneHeight }}
+                        onFocusCapture={() => setRecentWorkCollapsed(true)}
+                        onKeyDown={(event) => {
+                          const issue = lintIssueFromKey(event, jumpIssues, lintJump);
+                          if (!issue) return;
+                          event.preventDefault();
+                          applyLintJump(issue);
+                        }}
+                      >
+                        <div className="mb-2 flex items-center justify-between gap-2">
+                          <h2 className="text-sm font-semibold text-gray-900 dark:text-white">
+                            {inputMode === 'validate_iwxxm' ? 'IWXXM' : 'TAC'}
+                          </h2>
+                          {calmTacReadOnly && !isReadOnly ? (
+                            <button
+                              type="button"
+                              className="text-sm font-medium text-blue-700 underline-offset-2 hover:underline dark:text-blue-300"
+                              data-testid="convert-tac-edit"
+                              onClick={() => setTacLockedAfterConvert(false)}
+                            >
+                              Edit
+                            </button>
+                          ) : null}
+                        </div>
+                        {inputMode !== 'validate_iwxxm' ? (
+                          <div
+                            className="mb-2 flex min-w-0 flex-wrap items-center gap-2"
+                            data-testid="convert-examples-bar"
+                          >
+                            <GoldenExamplesSelect
+                              applicableProducts={activeProfileExampleProducts}
+                              disabled={isReadOnly}
+                              semanticProfile={conversionParams.profile}
+                              onSelectExample={handleLoadGoldenExample}
+                              onOpenChange={(open) => {
+                                if (open) {
+                                  setRecentWorkCollapsed(true);
+                                }
+                              }}
+                            />
+                          </div>
+                        ) : null}
+                        <div
+                          data-testid={
+                            calmTacReadOnly
+                              ? 'convert-tac-readonly'
+                              : 'convert-tac-editable'
+                          }
+                        >
+                          {!showCalmEmptyHero ? (
+                            <TacEditor
+                              id="manual-input"
+                              value={manualInput}
+                              onReportLoaded={applyLoadedReportName}
+                              onChange={(value) => {
+                                setManualInput(value);
+                                setSelectedTrace(null);
+                                setLintJump(null);
+                                setLintFocusOffset(null);
+                                if (inputMode !== 'ahl_bulletin') {
+                                  return;
+                                }
+                                if (focusedBulletinReport === null) {
+                                  setBulletinSource(value);
+                                  return;
+                                }
+                                setBulletinSource((current) =>
+                                  replaceBulletinReport(
+                                    current,
+                                    focusedBulletinReport,
+                                    value,
+                                  ),
+                                );
+                              }}
+                              readOnly={calmTacReadOnly}
+                              placeholder={
+                                inputMode === 'validate_iwxxm'
+                                  ? '<iwxxm:METAR>...</iwxxm:METAR>'
+                                  : 'SPECI BGSF 282350Z 10RMF50MT 9999 SCT110 BKN130 0RN130 NN7/N11 Q1021'
+                              }
+                              aria-label={
+                                inputMode === 'validate_iwxxm'
+                                  ? 'Enter IWXXM XML manually'
+                                  : 'Enter METAR data manually'
+                              }
+                              className="max-h-80 min-h-44 focus-within:ring-2 focus-within:ring-blue-500"
+                              failedSpans={failedSpans}
+                              issueSpans={editorSpans}
+                              onSpanFix={applyLintFix}
+                              focusOffset={lintFocusOffset}
+                            />
+                          ) : null}
+                        </div>
+                        {inputMode !== 'validate_iwxxm' ? (
+                          <>
+                            <p
+                              className="mt-2 text-xs text-gray-700 dark:text-gray-200"
+                              data-testid="tac-lint-summary"
+                            >
+                              {tacLintSummary}
+                            </p>
+                            <TacLintJumps
+                              issues={jumpIssues}
+                              activeIndex={lintJump}
+                              onSelect={applyLintJump}
+                            />
+                          </>
+                        ) : null}
+                      </div>
+                      <VerticalResizeHandle
+                        height={converterPaneHeight}
+                        onHeightChange={setConverterPaneHeight}
+                        label="Resize converter box"
+                        testId="converter-vertical-resize"
+                      />
+                    </div>
+                    <div className="mt-2 space-y-2" data-testid="convert-error-cues">
+                      {inputMode !== 'validate_iwxxm' ? (
+                        <>
+                          <FailedTacCue failedSpans={failedSpans} />
+                          {previewStatus === 'soft-fail' && previewSoftFailDetail ? (
+                            <StatusBanner
+                              tone="caution"
+                              className="text-xs"
+                              data-testid="convert-soft-fail-cue"
+                            >
+                              {previewSoftFailDetail}
+                            </StatusBanner>
+                          ) : null}
+                        </>
+                      ) : null}
+                    </div>
+                  </div>
+                </div>
+                <ConvertResultsDrawer
+                  open={resultsDrawerOpen}
+                  onOpenChange={setResultsDrawerOpen}
+                  tab={resultsTab}
+                  onTabChange={setResultsTab}
+                  height={liveLayout.resultsDrawerHeight}
+                  onHeightChange={(next) =>
+                    updateLiveLayout({ resultsDrawerHeight: next })
+                  }
+                  iwxxm={
+                    <div
+                      data-testid="iwxxm-resize-pane"
+                      className="flex min-h-0 flex-col gap-3"
+                    >
+                      {inputMode !== 'validate_iwxxm' && focusedAssessment ? (
+                        <ConvertResultStatus assessment={focusedAssessment} />
+                      ) : null}
+                      {inputMode === 'validate_iwxxm' ? (
+                        <section
+                          data-testid="validate-iwxxm-results"
+                          aria-label="Validation results"
+                          className="flex min-h-0 flex-col overflow-auto rounded-md border border-gray-200 bg-white p-3 dark:border-gray-700 dark:bg-gray-900"
+                        >
+                          <h3 className="mb-2 text-sm font-semibold text-gray-900 dark:text-white">
+                            Validation results
+                          </h3>
+                          {validateReport ? (
+                            <ValidateIwxxmReport
+                              report={validateReport}
+                              catalogByCode={lintCatalogByCode}
+                            />
+                          ) : (
+                            <p
+                              data-testid="validate-iwxxm-empty"
+                              className="text-sm text-gray-500 dark:text-gray-400"
+                            >
+                              {VALIDATE_IWXXM_EMPTY_RESULTS}
+                            </p>
+                          )}
+                        </section>
+                      ) : (
+                        <IwxxmPreviewPane
+                          className="min-w-0"
+                          xml={previewXml}
+                          status={previewStatus}
+                          mode={previewMode}
+                          softFailDetail={previewSoftFailDetail}
+                          failedSpanCount={failedSpans.length}
+                          numbered
+                          highlightToken={selectedTrace?.code ?? ''}
+                          highlightStart={selectedTrace?.start}
+                          highlightEnd={selectedTrace?.end}
+                          groupTrace={groupTrace}
+                          incomplete={previewIncomplete && previewXml.trim().length > 0}
+                          conversionProfile={
+                            conversionParams.conversionLibraryId ||
+                            conversionParams.profile
+                          }
+                          wrapXml={liveLayout.wrapXml}
+                          onFailedSpanFocus={() => {
+                            document
+                              .querySelector('[data-testid="failed-tac-cue"]')
+                              ?.scrollIntoView({
+                                behavior: 'smooth',
+                                block: 'nearest',
+                              });
+                          }}
+                        />
+                      )}
+                    </div>
+                  }
+                  console={
+                    <div className="space-y-3" data-testid="convert-console-panel">
+                      {inputMode !== 'validate_iwxxm' ? (
+                        <LiveConvertStatusStrip
+                          hasTac={manualInput.trim().length > 0}
+                          decodeReady={decodeSegments.length > 0}
+                          decodeLoading={decodeLoading}
+                          previewState={
+                            !previewXml.trim()
+                              ? 'waiting'
+                              : previewIncomplete
+                                ? 'incomplete'
+                                : 'current'
+                          }
+                          lintStatus={tacLintLayerStatus({
+                            hasTac: manualInput.trim().length > 0,
+                            loading: decodeLoading,
+                            errorCount: lintCounts.errorCount,
+                            warningCount: lintCounts.warningCount,
+                            issueCount: lintCounts.issueCount,
+                          })}
+                          schemaStatus={consoleSchemaStatus}
+                          schematronStatus={consoleSchematronStatus}
+                        />
+                      ) : null}
+                      {conversionLog ? (
+                        <ErrorLogPanel
+                          log={conversionLog}
+                          minLogLevel={conversionParams.logLevel as ConvertLogLevel}
+                          catalogByCode={lintCatalogByCode}
+                          onOpenCatalog={onOpenCatalog}
+                        />
+                      ) : null}
+                      <WorkbenchConsole
+                        lines={consoleLines}
+                        minLogLevel={conversionParams.logLevel as ConvertLogLevel}
+                        onLineAction={applyLintFix}
+                        catalogByCode={lintCatalogByCode}
+                        catalogEntries={lintCatalogEntries}
+                        onOpenCatalog={onOpenCatalog}
+                        onClear={() => {
+                          clearConsole();
+                        }}
+                      />
+                    </div>
+                  }
+                  decoder={
+                    inputMode === 'validate_iwxxm' ? (
+                      <p className="text-sm text-gray-500 dark:text-gray-400">
+                        Decoder is available in TAC convert mode.
+                      </p>
+                    ) : (
+                      <div
+                        className="flex max-h-96 min-h-0 min-w-0 flex-col overflow-auto"
+                        data-testid="decode-pane"
+                      >
+                        <DecodePanel
+                          segments={decodeSegments}
+                          residuals={decodeResiduals}
+                          summary={decodeSummary}
+                          product={decodeProduct}
+                          loading={decodeLoading}
+                          error={decodeError}
+                          pinned
+                          defaultOpen
+                          decodingProfile={
+                            libraryDisplayName(conversionParams.decodingLibraryId) ||
+                            undefined
+                          }
+                          density={liveLayout.density}
+                          selectedStart={selectedTrace?.start}
+                          selectedEnd={selectedTrace?.end}
+                          onSelect={setSelectedTrace}
+                        />
+                      </div>
+                    )
+                  }
+                  map={
+                    <div data-testid="convert-weather-map">
+                      <div data-testid="convert-weather-map-panel">
+                        <LiveWorldMap
+                          onOpenPlace={(place: LivePlace) => {
+                            const tac = place.reports[0]?.tac?.trim() ?? '';
+                            if (!tac) {
+                              return;
+                            }
+                            setInputMode('tac');
+                            setManualInput(tac);
+                            setSelectedTrace(null);
+                            setLintJump(null);
+                            setLintFocusOffset(null);
+                            setConversionParams((prev) => ({
+                              ...prev,
+                              product: detectTacProduct(tac),
+                            }));
+                            setConverterOpen(true);
+                            setResultsDrawerOpen(false);
+                            document
+                              .querySelector('[data-testid="live-convert-panes"]')
+                              ?.scrollIntoView({ behavior: 'auto', block: 'start' });
+                          }}
+                        />
+                      </div>
+                    </div>
+                  }
+                  downloads={
+                    <div data-testid="convert-downloads-panel" className="space-y-3">
+                      {convertedFiles.length === 0 ? (
+                        <p className="text-sm text-gray-500 dark:text-gray-400">
+                          Converted IWXXM files will appear here for download.
+                        </p>
+                      ) : (
+                        <div
+                          className="space-y-3"
+                          role="region"
+                          aria-label="Conversion results"
+                        >
+                          {convertedFiles.map((file) => {
+                            const resultAssessment = assessConvertedFile(file);
+                            const isFocused =
+                              (focusedConvertedId ?? focusedConverted?.id) === file.id;
+                            return (
+                              <div
+                                key={file.id}
+                                className={`rounded-lg border bg-white p-3 dark:bg-gray-800 ${
+                                  isFocused
+                                    ? 'border-blue-400 dark:border-blue-500'
+                                    : 'border-gray-200 dark:border-gray-700'
+                                }`}
+                                data-testid={`result-item-${file.id}`}
+                              >
+                                <div className="flex flex-wrap items-center justify-between gap-2">
+                                  <button
+                                    type="button"
+                                    className="min-w-0 flex-1 text-left"
+                                    aria-label={`Show ${file.displayTitle} on IWXXM tab`}
+                                    aria-pressed={isFocused}
+                                    data-testid={`convert-download-select-${file.id}`}
+                                    onClick={() => focusConvertedForPreview(file)}
+                                  >
+                                    <div className="flex flex-wrap items-center gap-2">
+                                      <p className="text-sm font-medium text-gray-900 dark:text-white">
+                                        {file.displayTitle}
+                                      </p>
+                                      <span
+                                        className="inline-flex items-center rounded-full bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-800 dark:bg-gray-700 dark:text-gray-100"
+                                        data-testid={`convert-download-status-${file.id}`}
+                                      >
+                                        {resultAssessment.statusLabel}
+                                      </span>
+                                      {file.manualLineIndex != null &&
+                                      file.manualLineTotal != null ? (
+                                        <span className="inline-flex items-center rounded-full bg-blue-100 px-2 py-0.5 text-xs font-medium text-blue-800 dark:bg-blue-900/40 dark:text-blue-200">
+                                          Line {file.manualLineIndex} of{' '}
+                                          {file.manualLineTotal}
+                                        </span>
+                                      ) : null}
+                                    </div>
+                                    {file.displayTitle !== file.originalName ? (
+                                      <p className="mt-0.5 text-xs text-gray-500 dark:text-gray-400">
+                                        Download: {file.originalName}
+                                      </p>
+                                    ) : null}
+                                  </button>
+                                  <div className="flex gap-1.5">
+                                    <Button
+                                      variant="outline"
+                                      size="sm"
+                                      data-testid={`convert-download-item-${file.id}`}
+                                      disabled={resultAssessment.publishBlocked}
+                                      title={
+                                        resultAssessment.publishBlocked
+                                          ? 'Do not publish — download disabled until issues are fixed'
+                                          : undefined
+                                      }
+                                      onClick={() => void handleDownloadSingle(file)}
+                                      className="border-0 bg-blue-500 text-sm text-white hover:bg-blue-600 focus:ring-2 focus:ring-blue-500 disabled:opacity-50 dark:bg-blue-600 dark:hover:bg-blue-700"
+                                      aria-label={
+                                        resultAssessment.publishBlocked
+                                          ? `Do not publish — download disabled for ${file.originalName}`
+                                          : includeConversionMetadata
+                                            ? `Download ${file.originalName} as ZIP with metadata`
+                                            : `Download ${file.originalName} as XML`
+                                      }
+                                    >
+                                      <Download
+                                        className="mr-1 h-4 w-4"
+                                        aria-hidden="true"
+                                      />
+                                      Download
+                                    </Button>
+                                    <Button
+                                      variant="outline"
+                                      size="sm"
+                                      onClick={() => handleCopy(file.convertedContent)}
+                                      className="border-0 bg-blue-500 text-sm text-white hover:bg-blue-600 focus:ring-2 focus:ring-blue-500 dark:bg-blue-600 dark:hover:bg-blue-700"
+                                      aria-label={`Copy ${file.originalName} content to clipboard`}
+                                    >
+                                      <Copy
+                                        className="mr-1 h-4 w-4"
+                                        aria-hidden="true"
+                                      />
+                                      Copy
+                                    </Button>
+                                    <Button
+                                      variant="ghost"
+                                      size="sm"
+                                      onClick={() => removeConvertedFile(file.id)}
+                                      className="hover:bg-gray-100 focus:ring-2 focus:ring-red-500 dark:hover:bg-gray-700"
+                                      aria-label={`Remove ${file.originalName} from results`}
+                                    >
+                                      <X
+                                        className="h-4 w-4 text-gray-600 dark:text-gray-400"
+                                        aria-hidden="true"
+                                      />
+                                    </Button>
+                                  </div>
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      )}
+                      {convertedFiles.length > 1 ? (
+                        <Button
+                          type="button"
+                          variant="secondary"
+                          size="sm"
+                          data-testid="convert-downloads-zip"
+                          onClick={() => {
+                            void handleDownloadAll();
+                          }}
+                        >
+                          Download all as ZIP
+                        </Button>
+                      ) : null}
+                    </div>
+                  }
+                />
+              </div>
             </div>
 
-            {/* Conversion Parameters */}
-            <Card className="mb-6 p-6 bg-white dark:bg-gray-800 dark:border-gray-700">
-              <div className="flex items-center justify-between">
-                <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white">
-                  Conversion Parameters
-                </h3>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setIsParamsExpanded(!isParamsExpanded)}
-                  className="hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-2 focus:ring-gray-500"
-                  aria-label={
-                    isParamsExpanded ? 'Collapse parameters' : 'Expand parameters'
-                  }
-                >
-                  {isParamsExpanded ? (
-                    <ChevronUp
-                      className="w-4 h-4 text-gray-600 dark:text-gray-400"
-                      aria-hidden="true"
-                    />
-                  ) : (
-                    <ChevronDown
-                      className="w-4 h-4 text-gray-600 dark:text-gray-400"
-                      aria-hidden="true"
-                    />
-                  )}
-                </Button>
-              </div>
-              <div
-                className="flex flex-col gap-4 overflow-x-auto lg:flex-row lg:flex-nowrap lg:items-end"
-                data-testid="conversion-params-bar"
-              >
-                <div className="min-w-[14rem] shrink-0">
-                  <Label htmlFor="param-bulletin-id" className="dark:text-white mb-2">
-                    Bulletin ID
-                  </Label>
-                  <Input
-                    id="param-bulletin-id"
-                    data-testid="bulletin-id-input"
-                    value={conversionParams.bulletinId}
-                    onChange={(e) => {
-                      setBulletinFieldError(null);
-                      setConversionParams((prev) => ({
-                        ...prev,
-                        bulletinId: e.target.value.toUpperCase(),
-                      }));
-                    }}
-                    placeholder="SAAA00"
-                    maxLength={6}
-                    aria-invalid={ariaInvalidFromError(bulletinFieldError)}
-                    className="dark:bg-gray-700 dark:text-white dark:border-gray-600"
-                  />
-                  {bulletinFieldError ? (
-                    <p
-                      className="mt-1 text-xs text-red-600 dark:text-red-400"
-                      data-testid="bulletin-id-field-error"
-                      role="alert"
-                    >
-                      {bulletinFieldError}
-                    </p>
-                  ) : (
-                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                      Format: 4 letters + 2 digits. Leave blank to discover from the
-                      AHL.
-                    </p>
-                  )}
-                </div>
-                <div className="min-w-[14rem] shrink-0">
-                  <IcaoAutocomplete
-                    label="Issuing Center (ICAO)"
-                    id="param-issuing-center"
-                    inputTestId="issuing-center-input"
-                    formatOnly
-                    value={conversionParams.issuingCenter}
-                    onChange={(value) => {
-                      setIssuingCenterFieldError(null);
-                      setConversionParams((prev) => ({
-                        ...prev,
-                        issuingCenter: value,
-                      }));
-                    }}
-                    placeholder="KWBC"
-                    maxLength={4}
-                    helperText={
-                      issuingCenterFieldError
-                        ? undefined
-                        : '4-letter ICAO code. Leave blank to discover from the AHL.'
-                    }
-                  />
-                  {issuingCenterFieldError ? (
-                    <p
-                      className="mt-1 text-xs text-red-600 dark:text-red-400"
-                      data-testid="issuing-center-field-error"
-                      role="alert"
-                    >
-                      {issuingCenterFieldError}
-                    </p>
-                  ) : null}
-                </div>
-                <div
-                  className={`min-w-[14rem] shrink-0 ${isParamsExpanded ? '' : 'hidden'}`}
-                >
-                  <AirportDetailsCard icao={conversionParams.issuingCenter} />
-                </div>
-
-                {/* F6.e Product + Profile — primary controls next to Manual TAC Input */}
-
-                {/* IWXXM Version */}
-                <div
-                  className={`min-w-[14rem] shrink-0 ${isParamsExpanded ? '' : 'hidden'}`}
-                >
-                  <Label htmlFor="param-iwxxm-version" className="dark:text-white mb-2">
-                    IWXXM Version
-                  </Label>
-                  <select
-                    id="param-iwxxm-version"
-                    value={conversionParams.iwxxmVersion}
-                    onChange={(e) =>
-                      setConversionParams((prev) => ({
-                        ...prev,
-                        iwxxmVersion: coerceIwxxmVersion(e.target.value),
-                      }))
-                    }
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500"
-                  >
-                    {iwxxmVersionOptionsForProfile(conversionParams.profile).map(
-                      (opt) => (
-                        <option key={opt.value} value={opt.value}>
-                          {opt.label}
-                        </option>
-                      ),
-                    )}
-                  </select>
-                </div>
-
-                {/* On Error */}
-                <div
-                  className={`min-w-[14rem] shrink-0 ${isParamsExpanded ? '' : 'hidden'}`}
-                >
-                  <Label htmlFor="param-on-error" className="dark:text-white mb-2">
-                    On Error Behavior
-                  </Label>
-                  <select
-                    id="param-on-error"
-                    value={conversionParams.onError}
-                    onChange={(e) =>
-                      setConversionParams((prev) => ({
-                        ...prev,
-                        onError: e.target.value as OnErrorBehavior,
-                      }))
-                    }
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500"
-                  >
-                    <option value="skip">Skip - Continue, skip invalid</option>
-                    <option value="fail">Fail - Stop on first error</option>
-                    <option value="warn">Warn - Continue with warnings</option>
-                  </select>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                    Fail sets API <code>stop_on_error=true</code>; Skip/Warn leave it
-                    false.
-                  </p>
-                </div>
-
-                {/* Log Level */}
-                <div
-                  className={`min-w-[14rem] shrink-0 ${isParamsExpanded ? '' : 'hidden'}`}
-                >
-                  <Label htmlFor="param-log-level" className="dark:text-white mb-2">
-                    Log Level
-                  </Label>
-                  <select
-                    id="param-log-level"
-                    value={conversionParams.logLevel}
-                    onChange={(e) =>
-                      setConversionParams((prev) => ({
-                        ...prev,
-                        logLevel: e.target.value as LogLevel,
-                      }))
-                    }
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500"
-                  >
-                    <option value="DEBUG">DEBUG</option>
-                    <option value="INFO">INFO (Default)</option>
-                    <option value="WARNING">WARNING</option>
-                    <option value="ERROR">ERROR</option>
-                    <option value="CRITICAL">CRITICAL</option>
-                  </select>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                    Filters conversion / validation / lint process messages for input
-                    and output (Conversion log + workbench console). Sent as{' '}
-                    <code>log_level</code> on Convert. Not the server process env{' '}
-                    <code>LOG_LEVEL</code>.
-                  </p>
-                </div>
-
-                {/* Validation Options */}
-                <div
-                  className={`flex min-w-[16rem] shrink-0 flex-col gap-3 ${isParamsExpanded ? '' : 'hidden'}`}
-                >
-                  <Label className="dark:text-white">Validation Options</Label>
-                  <label className="flex items-center cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={conversionParams.strictValidation}
-                      onChange={(e) =>
-                        setConversionParams((prev) => ({
-                          ...prev,
-                          strictValidation: e.target.checked,
-                        }))
-                      }
-                      className="w-4 h-4 text-blue-600 rounded focus:ring-2 focus:ring-blue-500"
-                      data-testid="strict-validation-checkbox"
-                    />
-                    <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">
-                      Strict Validation
-                    </span>
-                  </label>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 -mt-1 ml-6">
-                    When on (and soft-preview off), Convert sets{' '}
-                    <code>validate_output=true</code> with{' '}
-                    <code>validation_level=comprehensive</code> (XSD + Schematron).
-                  </p>
-                  <label className="flex items-center cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={conversionParams.includeNilReasons}
-                      onChange={(e) =>
-                        setConversionParams((prev) => ({
-                          ...prev,
-                          includeNilReasons: e.target.checked,
-                        }))
-                      }
-                      className="w-4 h-4 text-blue-600 rounded focus:ring-2 focus:ring-blue-500"
-                      data-testid="include-nil-reasons-checkbox"
-                    />
-                    <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">
-                      Include Nil Reasons
-                    </span>
-                  </label>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 -mt-1 ml-6">
-                    Sent as <code>include_nil_reasons</code>. Engine may still emit
-                    nilReason on NIL TAC until full honor lands (accepted + logged).
-                  </p>
-                </div>
-              </div>
-            </Card>
-
-            {conversionLog && (
-              <ErrorLogPanel
-                log={conversionLog}
-                minLogLevel={conversionParams.logLevel as ConvertLogLevel}
-              />
-            )}
-
-            {validateReport && <ValidateIwxxmReport report={validateReport} />}
+            {/* Conversion / validation log lives in Results → Console (no duplicate panel). */}
 
             {/* Conversion Status Display */}
             {conversionStatus.type !== 'idle' && (
@@ -3706,155 +4788,14 @@ export function FileConverter({
               </div>
             )}
 
-            {/* Results */}
-            {convertedFiles.length > 0 && (
-              <div role="region" aria-label="Conversion results">
-                <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">
-                  Results
-                </h2>
-                <div className="space-y-4">
-                  {convertedFiles.map((file) => (
-                    <Collapsible
-                      key={file.id}
-                      defaultOpen
-                      className="rounded-lg border border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800"
-                      data-testid={`result-item-${file.id}`}
-                    >
-                      <div className="flex items-center justify-between gap-2 p-4 flex-wrap">
-                        <CollapsibleTrigger asChild>
-                          <button
-                            type="button"
-                            className="min-w-0 flex-1 text-left group"
-                            aria-label={`Toggle details for ${file.displayTitle}`}
-                            data-testid={`result-toggle-${file.id}`}
-                          >
-                            <div className="flex flex-wrap items-center gap-2">
-                              <ChevronDown
-                                className="h-4 w-4 shrink-0 text-gray-500 transition-transform group-data-[state=closed]:-rotate-90"
-                                aria-hidden="true"
-                              />
-                              <p className="text-base font-medium text-gray-900 dark:text-white">
-                                {file.displayTitle}
-                              </p>
-                              {file.manualLineIndex != null &&
-                              file.manualLineTotal != null ? (
-                                <span className="inline-flex items-center rounded-full bg-blue-100 px-2 py-0.5 text-xs font-medium text-blue-800 dark:bg-blue-900/40 dark:text-blue-200">
-                                  Line {file.manualLineIndex} of {file.manualLineTotal}
-                                </span>
-                              ) : null}
-                            </div>
-                            {file.displayTitle !== file.originalName ? (
-                              <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5 ml-6">
-                                Download: {file.originalName}
-                              </p>
-                            ) : null}
-                          </button>
-                        </CollapsibleTrigger>
-                        <div className="flex gap-2">
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => void handleDownloadSingle(file)}
-                            className="bg-blue-500 text-white hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700 text-sm border-0 focus:ring-2 focus:ring-blue-500"
-                            aria-label={
-                              includeConversionMetadata
-                                ? `Download ${file.originalName} as ZIP with metadata`
-                                : `Download ${file.originalName} as XML`
-                            }
-                          >
-                            <Download className="w-4 h-4 mr-1" aria-hidden="true" />
-                            Download
-                          </Button>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => handleCopy(file.convertedContent)}
-                            className="bg-blue-500 text-white hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700 text-sm border-0 focus:ring-2 focus:ring-blue-500"
-                            aria-label={`Copy ${file.originalName} content to clipboard`}
-                          >
-                            <Copy className="w-4 h-4 mr-1" aria-hidden="true" />
-                            Copy
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => removeConvertedFile(file.id)}
-                            className="hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-2 focus:ring-red-500"
-                            aria-label={`Remove ${file.originalName} from results`}
-                          >
-                            <X
-                              className="w-4 h-4 text-gray-600 dark:text-gray-400"
-                              aria-hidden="true"
-                            />
-                          </Button>
-                        </div>
-                      </div>
-                      <CollapsibleContent className="px-4 pb-4">
-                        {file.originalContent.length > 60 &&
-                        file.displayTitle !==
-                          file.originalContent.trim().replace(/\s+/g, ' ') ? (
-                          <p className="text-xs font-mono text-gray-600 dark:text-gray-400 mb-3 break-all">
-                            {truncateTacSnippet(file.originalContent)}
-                          </p>
-                        ) : null}
-                        <div
-                          className="bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-200 p-4 rounded text-sm overflow-x-auto mb-3 border border-gray-200 dark:border-gray-700"
-                          role="region"
-                          aria-label={`Original TAC input for ${file.displayTitle}`}
-                        >
-                          <p className="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400 mb-2">
-                            Source TAC
-                          </p>
-                          {file.originalContent ? (
-                            <pre className="whitespace-pre-wrap break-all font-mono">
-                              {file.originalContent}
-                            </pre>
-                          ) : (
-                            <p className="text-sm italic text-gray-500 dark:text-gray-400">
-                              Original TAC unavailable for this result.
-                            </p>
-                          )}
-                        </div>
-                        <div
-                          className="bg-gray-900 dark:bg-gray-950 text-green-400 dark:text-green-300 p-4 rounded text-sm overflow-x-auto"
-                          role="region"
-                          aria-label={`Converted XML content for ${file.originalName}`}
-                        >
-                          <pre className="whitespace-pre-wrap break-all font-mono">
-                            {file.convertedContent}
-                          </pre>
-                        </div>
-                      </CollapsibleContent>
-                    </Collapsible>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Footer */}
-            <div className="mt-12 text-center text-sm text-gray-500 dark:text-gray-400">
-              <p>
-                TAC → IWXXM conversion powered by{' '}
-                <code className="text-xs">tac2iwxxm</code>, with{' '}
-                <code className="text-xs">tac-validate</code> and{' '}
-                <code className="text-xs">iwxxm-validate</code>. Downloads are IWXXM{' '}
-                <code className="text-xs">.xml</code> files.
-              </p>
-              <p className="mt-2">
-                <button
-                  type="button"
-                  className="underline underline-offset-2 hover:text-gray-700 dark:hover:text-gray-200"
-                  onClick={() => setIsPrivacySettingsOpen(true)}
-                  aria-label="Open privacy settings"
-                >
-                  Privacy settings
-                </button>
-              </p>
-            </div>
+            <OperatorFooter
+              onOpenPrivacy={() => setIsPrivacySettingsOpen(true)}
+              onOpenTerms={() => setIsSiteTermsOpen(true)}
+            />
           </div>
           {onLoadWorkSession && (
             <aside
-              className="relative z-0 w-full min-w-0 lg:sticky lg:top-8 lg:mt-8 lg:w-[280px] lg:max-w-[280px] lg:shrink-0 lg:self-start"
+              className="relative z-0 w-full min-w-0 lg:sticky lg:top-20 lg:mt-8 lg:w-[280px] lg:max-w-[280px] lg:shrink-0 lg:self-start"
               data-testid="recent-work-aside"
             >
               <WorkHistorySidebar
@@ -3876,7 +4817,7 @@ export function FileConverter({
             isDisseminationOpen ? `open-${conversionParams.exchangeProfile}` : 'closed'
           }
           open={isDisseminationOpen}
-          onOpenChange={setIsDisseminationOpen}
+          onOpenChange={handleDisseminationOpenChange}
           iwxxmXml={convertedFiles[0]?.convertedContent}
           tacText={manualInput || undefined}
           product={conversionParams.product === 'SPECI' ? 'speci' : 'metar'}
@@ -3890,6 +4831,7 @@ export function FileConverter({
             )
           }
           exchangeProfile={conversionParams.exchangeProfile}
+          onExchangeProfileChange={setPackagingExchangeProfile}
         />
       ) : null}
 
@@ -3901,9 +4843,84 @@ export function FileConverter({
         onPreferencesSaved={handlePreferencesSaved}
       />
 
+      <ConvertHelpChecklist
+        open={helpChecklistOpen}
+        onOpenChange={setHelpChecklistOpen}
+      />
+      <ConvertProfileDrawer
+        open={profileDrawerOpen}
+        onOpenChange={setProfileDrawerOpen}
+        nationalSection={
+          <div className="space-y-2">
+            {SEMANTIC_PROFILE_OPTIONS.filter((option) =>
+              (COUNTRY_PRESET_LINES as readonly string[]).includes(option.value),
+            ).map((option) => (
+              <label
+                key={option.value}
+                className="flex cursor-pointer items-center gap-2 text-sm text-gray-800 dark:text-gray-200"
+              >
+                <input
+                  type="radio"
+                  name="calm-national-profile"
+                  checked={conversionParams.profile === option.value}
+                  onChange={() => {
+                    const { profile, libraryIds } = libraryResetForProfile(
+                      option.value,
+                    );
+                    setConversionParams((prev) => ({
+                      ...prev,
+                      ...libraryIds,
+                      profile,
+                      reportVariant: '',
+                      iwxxmVersion: coerceIwxxmVersionForProfile(
+                        profile,
+                        prev.iwxxmVersion,
+                      ),
+                    }));
+                  }}
+                />
+                {option.label}
+              </label>
+            ))}
+          </div>
+        }
+        customizeSection={
+          <p className="text-sm text-gray-600 dark:text-gray-400">
+            Only needed when one step must follow a different rule set. Open{' '}
+            <span className="font-medium text-gray-800 dark:text-gray-200">
+              Settings
+            </span>{' '}
+            and expand Customize each step to override Decoding, TAC checks, IWXXM
+            mapping, or IWXXM checks.
+          </p>
+        }
+        outputSection={
+          <p className="text-sm text-gray-600 dark:text-gray-400">
+            Bulletin ID, issuing centre, file name, conversion metadata, soft preview,
+            and leftover TAC in remarks.
+          </p>
+        }
+        onApply={() => {
+          /* profile radios already update state live */
+        }}
+        onReset={() => {
+          const { profile, libraryIds } = libraryResetForProfile('ICAO_2025');
+          setConversionParams((prev) => ({
+            ...prev,
+            ...libraryIds,
+            profile,
+            reportVariant: '',
+            iwxxmVersion: coerceIwxxmVersionForProfile(profile, prev.iwxxmVersion),
+          }));
+        }}
+      />
       <PrivacySettingsDialog
         isOpen={isPrivacySettingsOpen}
         onClose={() => setIsPrivacySettingsOpen(false)}
+      />
+      <SiteTermsDialog
+        isOpen={isSiteTermsOpen}
+        onClose={() => setIsSiteTermsOpen(false)}
       />
     </div>
   );

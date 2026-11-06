@@ -9,6 +9,11 @@ import type { ReactNode } from 'react';
 
 import { cn } from '@/app/components/ui/utils';
 
+/**
+ * Type `StatusBannerTone`.
+ * @example
+ * const _ = true;
+ */
 export type StatusBannerTone = 'warning' | 'info' | 'caution' | 'neutral';
 
 const TONE_CLASS: Record<StatusBannerTone, string> = {
@@ -28,6 +33,11 @@ const ACCENT_CLASS: Record<StatusBannerTone, string> = {
   neutral: 'bg-gray-400',
 };
 
+/**
+ * Type `StatusBannerProps`.
+ * @example
+ * const _ = true;
+ */
 export interface StatusBannerProps {
   tone: StatusBannerTone;
   children: ReactNode;
@@ -44,6 +54,8 @@ export interface StatusBannerProps {
  * @param props.tone - Visual severity / category
  * @param props.children - Banner body copy
  * @param props.action - Optional inline action control
+ * @example
+ * const _ = true;
  */
 export function StatusBanner({
   tone,

@@ -21,7 +21,7 @@ verified bottle versions in comments):
 brew bundle --file=Brewfile
 ```
 
-Then `make install` (uv + corepack pnpm). Vendor schemas ship in-repo — a plain `git clone`
+Then `make install` (uv + corepack pnpm). Vendor schemas ship in-repo; a plain `git clone`
 is all you need for schema assets.
 
 ## Quick start (local)
@@ -60,19 +60,19 @@ docker compose up --build
 | Frontend | http://localhost:18000 |
 | API | http://localhost:18001 |
 
-Compose runs **db (Postgres) + backend + frontend** — auth is inlined in the API
+Compose runs **db (Postgres) + backend + frontend**; auth is inlined in the API
 image via `packages/auth`. The bundled `db` service makes the stack self-contained:
 the backend defaults `DATABASE_URL` to it, so `docker compose up` starts without an
 external database. Override `DATABASE_URL` in `.env` to point at another Postgres
 (e.g. a Supabase pooler). The bundled Postgres only backs the ORM tables
-(statistics/evaluation) — auth and work-history (F5) still need Supabase
+(statistics/evaluation); auth and work-history (F5) still need Supabase
 credentials in `.env`.
 
 ## Repository layout
 
 ```
 apps/backend/            FastAPI — conversion, validation, /auth/*, dissemination
-apps/frontend/           React operator UI (incl. Quality metrics /quality)
+apps/frontend/           React operator UI
 apps/worker/             near-RT ingest poller
 apps/e2e/                Playwright tests
 packages/auth/           Supabase Auth JWT middleware (library, not a deployable)
@@ -111,7 +111,7 @@ as conversion APIs. The frontend uses a single `VITE_API_BASE_URL` (or runtime
 
 ## Environment variables
 
-Copy `.env.example` to `.env` at the repo root — **secrets only** (five placeholders).
+Copy `.env.example` to `.env` at the repo root: **secrets only** (five placeholders).
 Non-secret URLs, CORS, and feature flags live in `config/local.json` or `config/prod.json`,
 selected by `METAR_CONFIG_ENV` (default `local`).
 
@@ -145,7 +145,7 @@ For local auth testing, point `config/local.json` → `supabase.url` to `http://
 and copy publishable/secret keys from `make supabase-status`. Production push:
 `supabase link --project-ref ktvxijislbtgqapllmuk` then `make supabase-push`.
 
-RLS advisor migrations (004–006) target METAR tables only — see env-sync-runbook §Database advisor.
+RLS advisor migrations (004–006) target METAR tables only; see env-sync-runbook §Database advisor.
 
 ## Workspace commands
 
@@ -154,7 +154,7 @@ make install          # uv sync + pnpm install
 make dev              # Start API + Vite (interactive port cleanup)
 make dev-kill         # Same, auto-kill conflicting ports
 make test-unit        # Python workspace + packages/shared tests
-make vendor-sync      # Refresh vendor/schemas from wmo-im manifest
+make vendor-sync      # Refresh vendor/schemas from wmo-im (full git checkout; keeps nested profile-line trees such as iwxxm/3.0.0)
 make openapi-refresh  # Dump FastAPI OpenAPI + regenerate FE types (EV-052)
 # Drift check: pnpm --filter @metar/frontend run openapi:check
 ```
@@ -234,7 +234,7 @@ Primary workflow: `.github/workflows/ci-cd.yml` (**EV-036** local-first amend).
 | Deploy | `main`/`stage` push | needs `test` + `test-alembic` + `rust-crates-gate` + `tac2iwxxm-native`; GHCR + DOKS |
 
 Image deploys use `scripts/deploy/trigger_render_image_deploy.py` (hook + `imgURL`, with REST
-`imageUrl` fallback when `RENDER_API_KEY` is set — BUG-2026-08-03).
+`imageUrl` fallback when `RENDER_API_KEY` is set; BUG-2026-08-03).
 
 | Job | Checks |
 |-----|--------|
@@ -279,7 +279,7 @@ unit matrix, Compose) stay on **remote CI** and opt-in `make validate-*` / `ci-p
 `make ci`. Family long packs (`make test-*-quality`) stay opt-in / path-filtered.
 
 Bypass only when intentional: `git commit --no-verify` / `git push --no-verify`.
-Do **not** use `--no-verify` as a merge path for `main` / `stage` — remote CI must stay green.
+Do **not** use `--no-verify` as a merge path for `main` / `stage`; remote CI must stay green.
 
 - Python 3.12 + Node 22
 - Unit coverage gates enforced in CI (`test` job) and locally via husky / `make ci-prepush`
@@ -288,7 +288,7 @@ Do **not** use `--no-verify` as a merge path for `main` / `stage` — remote CI 
 
 Removed from remote CI (EV-036): standalone **validate** job and Compose **integration**
 matrix entry (moved to local hooks). Historical merges into validate (EV-002): `secret-scan.yml`,
-`github-yaml-lint.yml`, `frontend-audit.yml` — still covered by local `validate-fast` / medium.
+`github-yaml-lint.yml`, `frontend-audit.yml`, still covered by local `validate-fast` / medium.
 
 Vendor schemas: weekly GitHub Action syncs wmo-im repos into `vendor/schemas/` (see
 `scripts/vendor/sync-iwxxm.sh`).
@@ -350,14 +350,14 @@ Docker).
 
 ## Deployment
 
-**Primary:** DigitalOcean Kubernetes (DOKS) — staging from `stage`, production from `main`
+**Primary:** DigitalOcean Kubernetes (DOKS): staging from `stage`, production from `main`
 / deploy tags (`vYYYY.MM.DD-deploy`). See [deploy.md](../deploy.md) and
 [deploy-state.md](../deploy-state.md) for topology, env vars, and connectivity checks
 (H0c–H5). Render services are legacy/suspended.
 
 ## Agent workflow (pipeline sessions)
 
-Cursor pipeline skills (00–19) use a **session-first** model for all bounded work — from
+Cursor pipeline skills (00–19) use a **session-first** model for all bounded work, from
 greenfield builds to feature adds, hotfixes, and live E2E integration.
 
 1. Invoke **00-context** with your goal (e.g. “add export API”, “run live E2E on staging”).

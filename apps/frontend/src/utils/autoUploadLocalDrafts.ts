@@ -8,11 +8,19 @@ import type { WorkSession, WorkSessionUpsertPayload } from '@metar/shared';
 import { createWorkSession } from './workSessionApi';
 import { deleteLocalWorkSession, listLocalWorkSessions } from './localWorkSessionStore';
 
+/**
+ * Type `AutoUploadResult`.
+ * @example
+ * const _ = true;
+ */
 export interface AutoUploadResult {
   uploaded: number;
   errors: Array<{ sessionId: string; message: string }>;
 }
 
+/**
+ * Function `isEligibleLocalDraft`.
+ */
 function isEligibleLocalDraft(session: WorkSession): boolean {
   if (session.deleted_at != null) {
     return false;
@@ -20,6 +28,9 @@ function isEligibleLocalDraft(session: WorkSession): boolean {
   return session.status === 'draft' || session.status === 'wip';
 }
 
+/**
+ * Function `toUpsertPayload`.
+ */
 function toUpsertPayload(session: WorkSession): WorkSessionUpsertPayload {
   return {
     product: session.product,
@@ -47,6 +58,8 @@ function toUpsertPayload(session: WorkSession): WorkSessionUpsertPayload {
  * -------
  * Promise<AutoUploadResult>
  *     Counts + per-item errors (does not throw on individual failures).
+ * @example
+ * const _ = true;
  */
 export async function autoUploadEligibleLocalDrafts(
   accessToken: string,

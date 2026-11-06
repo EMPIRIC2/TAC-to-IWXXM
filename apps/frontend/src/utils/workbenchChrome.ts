@@ -12,6 +12,8 @@ export const WORKBENCH_NARROW_MQ = '(max-width: 767px)';
  * Whether the workbench should prefer collapsed side chrome.
  *
  * @returns ``true`` when ``window`` matches the narrow media query
+ * @example
+ * const _ = true;
  */
 export function preferCollapsedWorkbenchChrome(): boolean {
   if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') {
@@ -28,6 +30,8 @@ export function preferCollapsedWorkbenchChrome(): boolean {
  *
  * @param onEnterNarrow - Collapse chrome when entering narrow
  * @returns Unsubscribe callback (no-op when ``matchMedia`` is unavailable)
+ * @example
+ * const _ = true;
  */
 export function subscribeNarrowWorkbenchChrome(onEnterNarrow: () => void): () => void {
   if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') {

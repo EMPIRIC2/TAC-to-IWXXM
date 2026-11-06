@@ -305,7 +305,7 @@ curl -X POST http://localhost:8001/convert-zip \
 
 - Version-aware wrapper around GIFTs encoder/decoder
 - Per-version encoder caching
-- Seamless version switching without GIFTs code changes
+- Version switching without GIFTs code changes
 - Supports: `GIFTsEncoder(version)`, `GIFTsDecoder()`
 
 **4. Version Migration** (`src/utilities/version_migration.py`)

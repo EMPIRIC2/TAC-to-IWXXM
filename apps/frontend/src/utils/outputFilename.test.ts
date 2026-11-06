@@ -5,6 +5,7 @@ import {
   manualOutputName,
   manualDownloadXmlName,
   outputArchiveName,
+  outputFilenameAfterReportLoad,
   stemFromFirstTac,
   formatArchiveTimestamp,
   ACCUMULATE_RESULT_CAP,
@@ -94,6 +95,23 @@ describe('stemFromFirstTac', () => {
   });
 });
 
+describe('outputFilenameAfterReportLoad', () => {
+  it('fills an empty field from the report and keeps a typed name', () => {
+    expect(outputFilenameAfterReportLoad('', false, 'METAR KJFK 011200Z')).toBe(
+      'METARKJF',
+    );
+    expect(outputFilenameAfterReportLoad('myreport', true, 'METAR EGLL 121650Z')).toBe(
+      'myreport',
+    );
+    expect(outputFilenameAfterReportLoad('METARKJF', false, 'TAF YUDO 151800Z')).toBe(
+      'TAFYUDO1',
+    );
+    expect(outputFilenameAfterReportLoad('', false, '   ')).toBe('');
+    expect(outputFilenameAfterReportLoad('', false, '')).toBe('');
+    expect(outputFilenameAfterReportLoad('', false, '<>')).toBe('');
+  });
+});
+
 describe('formatArchiveTimestamp', () => {
   it('formats as yyyyMMddHHmmss', () => {
     const d = new Date(2026, 7, 15, 9, 30, 45); // Aug 15 2026 local
@@ -141,9 +159,9 @@ describe('ACCUMULATE_RESULT_CAP', () => {
 });
 
 describe('appendConvertedWithinCap', () => {
-  it('appends under the cap and rejects over-cap batches', () => {
+  it('places the newest batch first and rejects over-cap batches', () => {
     expect(appendConvertedWithinCap([1], [2], 3)).toEqual({
-      files: [1, 2],
+      files: [2, 1],
       overCap: false,
     });
     expect(appendConvertedWithinCap([1, 2], [3], 2)).toEqual({

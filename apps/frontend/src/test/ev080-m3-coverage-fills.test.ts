@@ -13,7 +13,6 @@ import { sanitizeOutputFilename } from '@/utils/outputFilename';
 import {
   convertBulletin,
   convertMetarToIwxxm,
-  fetchQualityMetrics,
   ingestCollect,
   lintTac,
   validateIwxxm,
@@ -89,7 +88,7 @@ describe('EV-080 exportSelection / lintIssueCatalog / outputFilename edges', () 
   });
 });
 
-describe('EV-080 api.json catch fallbacks and quality metrics defaults', () => {
+describe('EV-080 api.json catch fallbacks', () => {
   beforeEach(() => {
     vi.stubGlobal(
       'fetch',
@@ -150,21 +149,6 @@ describe('EV-080 api.json catch fallbacks and quality metrics defaults', () => {
     await expect(ingestCollect({ manualText: '<collect/>' })).rejects.toThrow(
       /not implemented/i,
     );
-  });
-
-  it('fetchQualityMetrics defaults missing summaries and files', async () => {
-    vi.stubGlobal(
-      'fetch',
-      vi.fn().mockResolvedValue({
-        ok: true,
-        status: 200,
-        statusText: 'OK',
-        json: vi.fn().mockResolvedValue({ generated_at: 't', iwxxm_pin: 'p' }),
-      }),
-    );
-    const body = await fetchQualityMetrics();
-    expect(body.summaries).toEqual([]);
-    expect(body.files).toEqual([]);
   });
 
   it('convertMetarToIwxxm omits iwxxm_version when caller does not specify one', async () => {

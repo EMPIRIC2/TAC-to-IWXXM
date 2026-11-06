@@ -80,6 +80,20 @@ describe('MyMetarsPage', () => {
     mockRestoreServer.mockResolvedValue(sampleSession({ id: 'srv-1' }));
   });
 
+  it('says when the filter matches no saved reports', async () => {
+    mockList.mockResolvedValue({ items: [], total: 0, page: 1, limit: 50 });
+    render(
+      <MyMetarsPage
+        userEmail="Local history"
+        onBack={onBack}
+        onOpenSession={onOpenSession}
+      />,
+    );
+    expect(await screen.findByTestId('my-metars-empty')).toHaveTextContent(
+      'No saved reports match this filter.',
+    );
+  });
+
   it('loads and displays work sessions from IndexedDB', async () => {
     render(
       <MyMetarsPage
@@ -400,5 +414,47 @@ describe('MyMetarsPage', () => {
     const clickSpy = vi.spyOn(input, 'click');
     await user.click(screen.getByTestId('import-sessions'));
     expect(clickSpy).toHaveBeenCalled();
+  });
+
+  it('compares the last two convert versions on a history row', async () => {
+    const user = userEvent.setup();
+    mockList.mockResolvedValue({
+      items: [
+        sampleSession({
+          conversion_params: {
+            output_versions: [
+              {
+                at: 1,
+                tac: 'METAR',
+                xml: '<a/>',
+                conversionProfile: 'c',
+                decodingProfile: 'd',
+              },
+              {
+                at: 2,
+                tac: 'METAR',
+                xml: '<b/>',
+                conversionProfile: 'c',
+                decodingProfile: 'd',
+              },
+            ],
+          },
+        }),
+      ],
+      total: 1,
+      page: 1,
+      limit: 50,
+    });
+    render(<MyMetarsPage onBack={onBack} onOpenSession={onOpenSession} />);
+    const compare = await screen.findByRole('button', {
+      name: /Compare versions \(2\)/,
+    });
+    await user.click(compare);
+    expect(screen.getByTestId('output-version-compare')).toHaveTextContent('Removed');
+    expect(screen.getByText('<a/>')).toBeInTheDocument();
+    expect(screen.getByText('Added')).toBeInTheDocument();
+    expect(onOpenSession).not.toHaveBeenCalled();
+    await user.click(compare);
+    expect(screen.queryByTestId('output-version-compare')).not.toBeInTheDocument();
   });
 });

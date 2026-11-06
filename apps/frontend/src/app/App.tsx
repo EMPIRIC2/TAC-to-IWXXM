@@ -1,9 +1,7 @@
 import { useState, useEffect, useLayoutEffect, useRef, useCallback } from 'react';
 import { FileConverter } from './components/FileConverter';
 import { MyMetarsPage } from './components/MyMetarsPage';
-import { QualityMetricsPage } from './components/QualityMetricsPage';
 import { LintValidationCatalogPage } from './components/LintValidationCatalogPage';
-import { DisseminationOpsPage } from './components/DisseminationOpsPage';
 import { AppShellNav, type ShellPrimaryView } from './components/AppShellNav';
 import { Login } from './components/auth/Login';
 import { Register } from './components/auth/Register';
@@ -11,6 +9,7 @@ import { EmailVerification } from './components/auth/EmailVerification';
 import { AuthCallback } from './components/auth/AuthCallback';
 import { PasswordReset } from './components/auth/PasswordReset';
 import { Toaster } from './components/ui/sonner';
+import { TermsConsentGate } from './components/TermsConsentGate';
 import { toast } from 'sonner';
 import { ThemeProvider } from './components/ThemeProvider';
 import { getAccessToken, isLoggedIn, logout } from '@/utils/authService';
@@ -22,12 +21,11 @@ import {
   listLocalWorkSessions,
   migrateGuestSessionStorageToIndexedDb,
 } from '@/utils/localWorkSessionStore';
-import {
-  parseQualityMetricsPath,
-  QUALITY_METRICS_LIST_PATH,
-  qualityMetricsDetailPath,
-} from '@/utils/qualityMetricsPath';
 import { listWorkSessions } from '@/utils/workSessionApi';
+import {
+  acknowledgeSiteTerms,
+  hasAcknowledgedSiteTerms,
+} from '@/utils/privacyPreferences';
 
 /**
  * Validate required environment variables on app load.
@@ -54,14 +52,11 @@ type AppView =
   | 'callback'
   | 'reset';
 
+/**
+ * Function `isPrimaryShellView`.
+ */
 function isPrimaryShellView(view: AppView): view is ShellPrimaryView {
-  return (
-    view === 'converter' ||
-    view === 'history' ||
-    view === 'quality' ||
-    view === 'catalog' ||
-    view === 'dissemination-ops'
-  );
+  return view === 'converter' || view === 'history' || view === 'catalog';
 }
 
 /**
@@ -70,13 +65,12 @@ function isPrimaryShellView(view: AppView): view is ShellPrimaryView {
  */
 function App() {
   const initiallyLoggedIn = isLoggedIn();
-  const initialQuality = parseQualityMetricsPath(window.location.pathname);
-  const [currentView, setCurrentView] = useState<AppView>(() =>
-    initialQuality ? 'quality' : 'converter',
+  const [currentView, setCurrentView] = useState<AppView>('converter');
+  const [catalogFocusCode, setCatalogFocusCode] = useState<string | null>(null);
+  const [catalogFocusFamily, setCatalogFocusFamily] = useState<'lint' | 'iwxxm' | null>(
+    null,
   );
-  const [qualityStem, setQualityStem] = useState<string | null>(() =>
-    initialQuality?.kind === 'detail' ? initialQuality.stem : null,
-  );
+  const [termsAcknowledged, setTermsAcknowledged] = useState(hasAcknowledgedSiteTerms);
   const [userEmail, setUserEmail] = useState('');
   const [isAuthenticated, setIsAuthenticated] = useState(initiallyLoggedIn);
   const [accessToken, setAccessToken] = useState(() =>
@@ -92,12 +86,6 @@ function App() {
 
   useEffect(() => {
     const onPopState = () => {
-      const parsed = parseQualityMetricsPath(window.location.pathname);
-      if (parsed) {
-        setCurrentView('quality');
-        setQualityStem(parsed.kind === 'detail' ? parsed.stem : null);
-        return;
-      }
       if (
         window.location.pathname.includes('/auth/callback') ||
         window.location.pathname.includes('/auth/confirm')
@@ -252,36 +240,6 @@ function App() {
 
   const handleShellNavigate = (view: ShellPrimaryView) => {
     setCurrentView(view);
-    if (view === 'quality') {
-      setQualityStem(null);
-      if (window.location.pathname !== QUALITY_METRICS_LIST_PATH) {
-        window.history.pushState({}, '', QUALITY_METRICS_LIST_PATH);
-      }
-      return;
-    }
-    if (
-      window.location.pathname === QUALITY_METRICS_LIST_PATH ||
-      window.location.pathname.startsWith(`${QUALITY_METRICS_LIST_PATH}/`)
-    ) {
-      window.history.pushState({}, '', '/');
-    }
-  };
-
-  const handleOpenQualityDetail = (stem: string) => {
-    setCurrentView('quality');
-    setQualityStem(stem);
-    const path = qualityMetricsDetailPath(stem);
-    if (window.location.pathname !== path) {
-      window.history.pushState({}, '', path);
-    }
-  };
-
-  const handleBackToQualityList = () => {
-    setCurrentView('quality');
-    setQualityStem(null);
-    if (window.location.pathname !== QUALITY_METRICS_LIST_PATH) {
-      window.history.pushState({}, '', QUALITY_METRICS_LIST_PATH);
-    }
   };
 
   const handleRequestLogin = () => {
@@ -309,90 +267,113 @@ function App() {
   };
 
   const isGuest = !isAuthenticated;
+  const showTermsGate = isPrimaryShellView(currentView) && !termsAcknowledged;
 
   return (
     <ThemeProvider>
-      {isPrimaryShellView(currentView) && (
-        <AppShellNav activeView={currentView} onNavigate={handleShellNavigate} />
-      )}
-
-      {currentView === 'login' && (
-        <Login
-          onLogin={handleLogin}
-          onSwitchToRegister={() => setCurrentView('register')}
-          onForgotPassword={() => setCurrentView('reset')}
-          onContinueAsGuest={handleContinueAsGuest}
+      {showTermsGate ? (
+        <TermsConsentGate
+          onAcknowledge={() => {
+            acknowledgeSiteTerms();
+            setTermsAcknowledged(true);
+          }}
         />
-      )}
+      ) : (
+        <>
+          {isPrimaryShellView(currentView) && (
+            <AppShellNav activeView={currentView} onNavigate={handleShellNavigate} />
+          )}
 
-      {currentView === 'register' && (
-        <Register
-          onRegister={handleRegister}
-          onSwitchToLogin={() => setCurrentView('login')}
-        />
-      )}
+          {currentView === 'login' && (
+            <Login
+              onLogin={handleLogin}
+              onSwitchToRegister={() => setCurrentView('register')}
+              onForgotPassword={() => setCurrentView('reset')}
+              onContinueAsGuest={handleContinueAsGuest}
+            />
+          )}
 
-      {currentView === 'reset' && (
-        <PasswordReset onBackToLogin={() => setCurrentView('login')} />
-      )}
+          {currentView === 'register' && (
+            <Register
+              onRegister={handleRegister}
+              onSwitchToLogin={() => setCurrentView('login')}
+            />
+          )}
 
-      {currentView === 'verify' && (
-        <EmailVerification
-          email={userEmail}
-          onVerified={handleVerified}
-          onBackToLogin={() => setCurrentView('login')}
-        />
-      )}
+          {currentView === 'reset' && (
+            <PasswordReset onBackToLogin={() => setCurrentView('login')} />
+          )}
 
-      {currentView === 'converter' && (
-        <FileConverter
-          onLogout={handleLogout}
-          userEmail={isGuest ? 'Guest' : userEmail || 'Operator'}
-          accessToken={isAuthenticated ? accessToken : undefined}
-          isGuest={isGuest}
-          onRequestLogin={handleRequestLogin}
-          onOpenHistory={handleOpenHistory}
-          onLoadWorkSession={handleLoadWorkSession}
-          onNewMetar={handleNewMetar}
-          onSessionUpdated={handleSessionUpdated}
-          onActiveSessionIdChange={setActiveWorkSessionId}
-          activeWorkSessionId={activeWorkSessionId}
-          loadedWorkSession={loadedWorkSession}
-        />
-      )}
+          {currentView === 'verify' && (
+            <EmailVerification
+              email={userEmail}
+              onVerified={handleVerified}
+              onBackToLogin={() => setCurrentView('login')}
+            />
+          )}
 
-      {currentView === 'history' && (
-        <MyMetarsPage
-          accessToken={isAuthenticated ? accessToken : undefined}
-          userEmail={isAuthenticated ? userEmail || 'Operator' : 'Local history'}
-          onBack={handleSwitchToConverter}
-          onOpenSession={handleLoadWorkSession}
-        />
-      )}
+          {(currentView === 'converter' ||
+            currentView === 'history' ||
+            currentView === 'catalog') && (
+            <div hidden={currentView !== 'converter'}>
+              <FileConverter
+                onLogout={handleLogout}
+                userEmail={isGuest ? 'Guest' : userEmail || 'Operator'}
+                accessToken={isAuthenticated ? accessToken : undefined}
+                isGuest={isGuest}
+                onRequestLogin={handleRequestLogin}
+                onOpenHistory={handleOpenHistory}
+                onLoadWorkSession={handleLoadWorkSession}
+                onNewMetar={handleNewMetar}
+                onSessionUpdated={handleSessionUpdated}
+                onActiveSessionIdChange={setActiveWorkSessionId}
+                activeWorkSessionId={activeWorkSessionId}
+                loadedWorkSession={loadedWorkSession}
+                onOpenCatalog={(family, code) => {
+                  if (code) {
+                    setCatalogFocusCode(code);
+                  } else {
+                    setCatalogFocusCode(null);
+                  }
+                  if (family === 'lint' || family === 'iwxxm') {
+                    setCatalogFocusFamily(family);
+                  } else {
+                    setCatalogFocusFamily(null);
+                  }
+                  setCurrentView('catalog');
+                }}
+              />
+            </div>
+          )}
 
-      {currentView === 'quality' && (
-        <QualityMetricsPage
-          routeStem={qualityStem}
-          onOpenDetailRoute={handleOpenQualityDetail}
-          onBackToList={handleBackToQualityList}
-        />
-      )}
+          {currentView === 'history' && (
+            <MyMetarsPage
+              accessToken={isAuthenticated ? accessToken : undefined}
+              userEmail={isAuthenticated ? userEmail || 'Operator' : 'Local history'}
+              onBack={handleSwitchToConverter}
+              onOpenSession={handleLoadWorkSession}
+            />
+          )}
 
-      {currentView === 'catalog' && <LintValidationCatalogPage />}
+          {currentView === 'catalog' && (
+            <LintValidationCatalogPage
+              focusCode={catalogFocusCode ?? undefined}
+              initialFamily={catalogFocusFamily ?? undefined}
+              onFocusHandled={() => {
+                setCatalogFocusCode(null);
+                setCatalogFocusFamily(null);
+              }}
+            />
+          )}
 
-      {currentView === 'dissemination-ops' && (
-        <DisseminationOpsPage
-          accessToken={isAuthenticated ? accessToken : undefined}
-          onRequestLogin={handleRequestLogin}
-        />
-      )}
-
-      {currentView === 'callback' && (
-        <AuthCallback
-          onLogin={handleLogin}
-          onRegister={handleRegister}
-          onVerified={handleVerified}
-        />
+          {currentView === 'callback' && (
+            <AuthCallback
+              onLogin={handleLogin}
+              onRegister={handleRegister}
+              onVerified={handleVerified}
+            />
+          )}
+        </>
       )}
 
       <Toaster />

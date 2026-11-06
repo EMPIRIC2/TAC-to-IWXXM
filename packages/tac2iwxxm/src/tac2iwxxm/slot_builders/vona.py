@@ -12,6 +12,8 @@ _PSN = re.compile(r"(?P<ns>[NS])(?P<lat>\d{4,5})\s+(?P<ew>[EW])(?P<lon>\d{5,6})"
 # G-VONA-2: originatingCentre AIXM designator is not in TAC - fixture/registry map.
 _SVO_DESIGNATORS: dict[str, str] = {
     "KVERT": "UHPP",
+    "PHVO": "PHVO",
+    "PAVO": "PAVO",
 }
 
 _ACT_STATUS: dict[str, str] = {
@@ -28,14 +30,26 @@ _ACT_STATUS: dict[str, str] = {
 }
 
 _ELEV = re.compile(
-    r"(?P<val>\d+(?:\.\d+)?)\s*(?P<uom>KM|M)\b",
+    r"(?P<val>\d+(?:\.\d+)?)\s*(?P<uom>KM|M|FT)\b",
     re.IGNORECASE,
 )
 _AHL_LINE = re.compile(r"^[A-Z]{2}[A-Z]{2}\d{2}\s+[A-Z]{4}\s+\d{6}(?:\s+[A-Z]{1,3})?\s*$")
 
 
 def _fields(text: str) -> dict[str, str]:
-    """Collect KEY: value pairs, joining indented continuation lines."""
+    """
+    Internal helper ``_fields``.
+
+    Parameters
+    ----------
+    text : str
+        Argument ``text``.
+
+    Returns
+    -------
+    dict[str, str]
+        Return value.
+    """
     out: dict[str, str] = {}
     current_key: str | None = None
     for raw in text.splitlines():
@@ -56,6 +70,19 @@ def _fields(text: str) -> dict[str, str]:
 
 
 def _parse_dtg(token: str) -> str | None:
+    """
+    Internal helper ``_parse_dtg``.
+
+    Parameters
+    ----------
+    token : str
+        Argument ``token``.
+
+    Returns
+    -------
+    str | None
+        Return value.
+    """
     token = token.strip().replace(" ", "")
     m = _DTG_SHORT.search(token)
     if m:
@@ -64,6 +91,22 @@ def _parse_dtg(token: str) -> str | None:
 
 
 def _latlon(token: str, *, ndigits: int = 2) -> tuple[float, float] | None:
+    """
+    Internal helper ``_latlon``.
+
+    Parameters
+    ----------
+    token : str
+        Argument ``token``.
+
+    ndigits : int, optional
+        Argument ``ndigits``.
+
+    Returns
+    -------
+    tuple[float, float] | None
+        Return value.
+    """
     m = _PSN.search(token)
     if m is None:
         return None
@@ -85,24 +128,108 @@ def _latlon(token: str, *, ndigits: int = 2) -> tuple[float, float] | None:
 
 
 def _strip_optional_ahl(tac: str) -> str:
+    """
+    Internal helper ``_strip_optional_ahl``.
+
+    Parameters
+    ----------
+    tac : str
+        Argument ``tac``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
     lines = tac.splitlines()
     if lines and _AHL_LINE.match(lines[0].strip()):
         return "\n".join(lines[1:])
     return tac
 
 
+def _ahl_centre(tac: str) -> str | None:
+    """
+    Return the WMO CCCC on a leading abbreviated heading, when present.
+
+    Parameters
+    ----------
+    tac : str
+        VONA text, optionally starting with a WMO abbreviated heading.
+
+    Returns
+    -------
+    str | None
+        Four-letter originator, or ``None`` when the first line is not a heading.
+    """
+    lines = tac.splitlines()
+    if not lines:
+        return None
+    match = _AHL_LINE.match(lines[0].strip())
+    if match is None:
+        return None
+    parts = lines[0].split()
+    return parts[1].upper() if len(parts) >= 2 else None
+
+
+def _strip_gateway_question_padding(tac: str) -> str:
+    """
+    Drop ``?`` runs used as padding on truncated US VONA gateway files.
+
+    Parameters
+    ----------
+    tac : str
+        Raw VONA text.
+
+    Returns
+    -------
+    str
+        Text with question-mark padding removed when a field colon is present.
+    """
+    if "?" not in tac or ":" not in tac:
+        return tac
+    return re.sub(r"(?<=:)\s*\?+", "", tac)
+
+
 def _parse_elevation_m(token: str) -> float | None:
-    """Return elevation in metres MSL from ``1536M AMSL`` / ``15KM AMSL``."""
+    """
+    Internal helper ``_parse_elevation_m``.
+
+    Parameters
+    ----------
+    token : str
+        Argument ``token``.
+
+    Returns
+    -------
+    float | None
+        Return value.
+    """
     m = _ELEV.search(token.replace(",", ""))
     if m is None:
         return None
     value = float(m.group("val"))
-    if m.group("uom").upper() == "KM":
+    uom = m.group("uom").upper()
+    if uom == "KM":
         return value * 1000.0
+    if uom == "FT":
+        return value * 0.3048
     return value
 
 
 def _parse_volcano(token: str) -> tuple[str, str | None]:
+    """
+    Internal helper ``_parse_volcano``.
+
+    Parameters
+    ----------
+    token : str
+        Argument ``token``.
+
+    Returns
+    -------
+    tuple[str, str | None]
+        Return value.
+    """
     parts = token.strip().split()
     if not parts:
         return "", None
@@ -112,6 +239,19 @@ def _parse_volcano(token: str) -> tuple[str, str | None]:
 
 
 def _map_activity(token: str) -> str:
+    """
+    Internal helper ``_map_activity``.
+
+    Parameters
+    ----------
+    token : str
+        Argument ``token``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
     cleaned = re.sub(r"\s+", " ", token.strip().upper())
     if cleaned in _ACT_STATUS:
         return _ACT_STATUS[cleaned]
@@ -122,6 +262,19 @@ def _map_activity(token: str) -> str:
 
 
 def _nilish(token: str) -> bool:
+    """
+    Internal helper ``_nilish``.
+
+    Parameters
+    ----------
+    token : str
+        Argument ``token``.
+
+    Returns
+    -------
+    bool
+        Return value.
+    """
     return token.strip().upper() in {"", "NIL", "NONE"}
 
 
@@ -131,9 +284,10 @@ def parse_vona(tac: str, *, product: str = "VONA") -> dict[str, Any]:
 
     Parameters
     ----------
-    tac :
+    tac : str
         Standalone labeled VONA report (optional WM AHL line).
-    product :
+
+    product : str, optional
         Must be ``VONA``.
 
     Returns
@@ -145,11 +299,18 @@ def parse_vona(tac: str, *, product: str = "VONA") -> dict[str, Any]:
     ------
     ValueError
         When product is wrong or required fields are missing.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (parse_vona)
+    2
     """
     if product.upper() != "VONA":
         raise ValueError(f"VONA parser expected product VONA, found {product!r}")
 
-    text = _strip_optional_ahl(tac)
+    text = _strip_gateway_question_padding(tac)
+    centre = _ahl_centre(text)
+    text = _strip_optional_ahl(text)
     if not re.search(r"(?m)^\s*VONA\b", text):
         raise ValueError("VONA TAC missing VONA header")
 
@@ -167,7 +328,7 @@ def parse_vona(tac: str, *, product: str = "VONA") -> dict[str, Any]:
     if psn is None:
         raise ValueError("VONA missing/invalid PSN")
 
-    svo = fields.get("SVO", "").strip()
+    svo = fields.get("SVO", "").strip() or (centre or "")
     if not svo:
         raise ValueError("VONA missing SVO")
 

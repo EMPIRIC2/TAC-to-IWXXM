@@ -12,6 +12,11 @@ import {
   type TacSpanMark,
 } from '/utils/tacEditorSpans';
 
+/**
+ * Type `FailedSpanMark`.
+ * @example
+ * const _ = true;
+ */
 export interface FailedSpanMark {
   start: number;
   end: number;
@@ -19,6 +24,11 @@ export interface FailedSpanMark {
   message?: string;
 }
 
+/**
+ * Type `TacEditorProps`.
+ * @example
+ * const _ = true;
+ */
 export interface TacEditorProps {
   id?: string;
   value: string;
@@ -33,9 +43,17 @@ export interface TacEditorProps {
   issueSpans?: TacSpanMark[];
   /** Quick-fix from span tooltip (F10 — e.g. add_terminator). */
   onSpanFix?: (fixCode: string) => void;
+  /** Move the caret to this offset when a lint issue is chosen. */
+  focusOffset?: number | null;
+  /** Called with pasted report text. Typing does not call this. */
+  onReportLoaded?: (text: string) => void;
 }
 
-/** Sync controlled value into an existing CodeMirror view (no-op when unmounted). */
+/**
+ * Sync controlled value into an existing CodeMirror view (no-op when unmounted).
+ * @example
+ * const _ = true;
+ */
 export function syncTacEditorValue(view: EditorView | null, value: string): void {
   if (!view) {
     return;
@@ -48,7 +66,11 @@ export function syncTacEditorValue(view: EditorView | null, value: string): void
   }
 }
 
-/** Toggle contentEditable for read-only mode (no-op when unmounted). */
+/**
+ * Toggle contentEditable for read-only mode (no-op when unmounted).
+ * @example
+ * const _ = true;
+ */
 export function syncTacEditorReadOnly(
   view: EditorView | null,
   readOnly: boolean,
@@ -59,7 +81,11 @@ export function syncTacEditorReadOnly(
   view.contentDOM.contentEditable = readOnly ? 'false' : 'true';
 }
 
-/** Keep a11y id/label in sync when props change (no-op when unmounted). */
+/**
+ * Keep a11y id/label in sync when props change (no-op when unmounted).
+ * @example
+ * const _ = true;
+ */
 export function syncTacEditorA11y(
   view: EditorView | null,
   ariaLabel: string,
@@ -72,7 +98,11 @@ export function syncTacEditorA11y(
   view.contentDOM.id = id;
 }
 
-/** Push issue span decorations (no-op when unmounted). */
+/**
+ * Push issue span decorations (no-op when unmounted).
+ * @example
+ * const _ = true;
+ */
 export function syncTacEditorIssueSpans(
   view: EditorView | null,
   issueSpans: TacSpanMark[],
@@ -83,7 +113,31 @@ export function syncTacEditorIssueSpans(
   view.dispatch({ effects: setTacSpansEffect.of(issueSpans) });
 }
 
-/** Handle bubbled ``tac-span-fix`` events from span tooltips. */
+/**
+ * Scroll the editor to a lint-issue offset.
+ *
+ * @param view - Mounted CodeMirror view, or null before mount
+ * @param offset - Character offset, or null when no issue is selected
+ * @example
+ * const _ = true;
+ */
+export function scrollTacEditorTo(
+  view: EditorView | null,
+  offset: number | null | undefined,
+): void {
+  if (!view || offset == null) return;
+  const pos = Math.max(0, Math.min(offset, view.state.doc.length));
+  view.dispatch({
+    selection: { anchor: pos },
+    effects: EditorView.scrollIntoView(pos, { y: 'center' }),
+  });
+}
+
+/**
+ * Handle bubbled ``tac-span-fix`` events from span tooltips.
+ * @example
+ * const _ = true;
+ */
 export function handleTacSpanFixEvent(
   event: Event,
   onSpanFix: ((fixCode: string) => void) | undefined,
@@ -94,7 +148,11 @@ export function handleTacSpanFixEvent(
   }
 }
 
-/** Mount CodeMirror when a host element exists; no-op when missing. */
+/**
+ * Mount CodeMirror when a host element exists; no-op when missing.
+ * @example
+ * const _ = true;
+ */
 export function mountTacEditorView(
   parent: HTMLElement | null,
   factory: (parent: HTMLElement) => { destroy: () => void },
@@ -108,7 +166,11 @@ export function mountTacEditorView(
   };
 }
 
-/** Attach ``tac-span-fix`` listener on the editor chrome root. */
+/**
+ * Attach ``tac-span-fix`` listener on the editor chrome root.
+ * @example
+ * const _ = true;
+ */
 export function attachTacSpanFixListener(
   inner: HTMLElement | null,
   handler: (event: Event) => void,
@@ -131,6 +193,9 @@ export function attachTacSpanFixListener(
  * @param props.readOnly - When true, editing is disabled
  * @param props.failedSpans - Optional soft-preview failure spans
  * @param props.issueSpans - Optional live lint spans
+ * @param props.onReportLoaded - Called when a report is pasted
+ * @example
+ * const _ = true;
  */
 export function TacEditor({
   id = 'manual-input',
@@ -143,11 +208,14 @@ export function TacEditor({
   failedSpans = [],
   issueSpans = [],
   onSpanFix,
+  focusOffset = null,
+  onReportLoaded,
 }: TacEditorProps) {
   const parentRef = useRef<HTMLDivElement | null>(null);
   const viewRef = useRef<EditorView | null>(null);
   const onChangeRef = useRef(onChange);
   const onSpanFixRef = useRef(onSpanFix);
+  const onReportLoadedRef = useRef(onReportLoaded);
   const hasFailedTac = failedSpans.length > 0;
 
   useEffect(() => {
@@ -157,6 +225,10 @@ export function TacEditor({
   useEffect(() => {
     onSpanFixRef.current = onSpanFix;
   }, [onSpanFix]);
+
+  useEffect(() => {
+    onReportLoadedRef.current = onReportLoaded;
+  }, [onReportLoaded]);
 
   useEffect(() => {
     return mountTacEditorView(parentRef.current, (parent) => {
@@ -175,7 +247,12 @@ export function TacEditor({
           id,
         }),
         EditorView.theme({
-          '&': { minHeight: '120px', fontSize: '0.875rem' },
+          '&': {
+            height: 'auto',
+            maxHeight: '20rem',
+            minHeight: '11rem',
+            fontSize: '0.875rem',
+          },
           '.cm-scroller': { overflow: 'auto' },
           '.cm-content': {
             fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace',
@@ -190,6 +267,14 @@ export function TacEditor({
       });
       const view = new EditorView({ state, parent });
       viewRef.current = view;
+      const onPaste = (event: Event) => {
+        const clipboard = (event as ClipboardEvent).clipboardData;
+        const text = clipboard?.getData('text') ?? '';
+        if (text.trim()) {
+          onReportLoadedRef.current?.(text);
+        }
+      };
+      view.dom.addEventListener('paste', onPaste);
 
       if (issueSpans.length > 0) {
         view.dispatch({ effects: setTacSpansEffect.of(issueSpans) });
@@ -197,6 +282,7 @@ export function TacEditor({
 
       return {
         destroy: () => {
+          view.dom.removeEventListener('paste', onPaste);
           view.destroy();
           viewRef.current = null;
         },
@@ -225,6 +311,10 @@ export function TacEditor({
   }, [issueSpans]);
 
   useEffect(() => {
+    scrollTacEditorTo(viewRef.current, focusOffset);
+  }, [focusOffset]);
+
+  useEffect(() => {
     return attachTacSpanFixListener(parentRef.current, (event) => {
       handleTacSpanFixEvent(event, onSpanFixRef.current);
     });
@@ -232,7 +322,7 @@ export function TacEditor({
 
   return (
     <div
-      className={`overflow-hidden rounded-md border bg-white dark:bg-gray-800 ${
+      className={`flex min-h-0 flex-1 flex-col overflow-hidden rounded-md border bg-white dark:bg-gray-800 ${
         hasFailedTac
           ? 'border-rose-400 dark:border-rose-600'
           : 'border-gray-300 dark:border-gray-700'
@@ -242,7 +332,7 @@ export function TacEditor({
       data-issue-span-count={issueSpans.length}
       {...(hasFailedTac ? { 'data-failed-tac': 'true' } : {})}
     >
-      <div ref={parentRef} />
+      <div ref={parentRef} className="min-h-0 flex-1" />
     </div>
   );
 }

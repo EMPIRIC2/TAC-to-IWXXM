@@ -12,12 +12,18 @@ import {
   type LintIssue,
 } from '/utils/api';
 import {
-  LIVE_ASSIST_DEBOUNCE_MS,
   LiveAssistScheduler,
   isAbortError,
+  resolveLiveAssistDebounceMs,
 } from '/utils/liveAssist';
+import { formFieldSpanInEditor } from '/utils/liveConvertTrace';
 import type { TacSpanMark } from '/utils/tacEditorSpans';
 
+/**
+ * Type `LiveWorkbenchConsoleLine`.
+ * @example
+ * const _ = true;
+ */
 export interface LiveWorkbenchConsoleLine {
   level: 'info' | 'warn' | 'error';
   source: string;
@@ -27,6 +33,11 @@ export interface LiveWorkbenchConsoleLine {
   action?: { id: string; label: string };
 }
 
+/**
+ * Type `UseLiveWorkbenchAssistOptions`.
+ * @example
+ * const _ = true;
+ */
 export interface UseLiveWorkbenchAssistOptions {
   text: string;
   product: string;
@@ -37,6 +48,11 @@ export interface UseLiveWorkbenchAssistOptions {
   liveIwxxmRunner?: (signal: AbortSignal) => Promise<void>;
 }
 
+/**
+ * Type `UseLiveWorkbenchAssistResult`.
+ * @example
+ * const _ = true;
+ */
 export interface UseLiveWorkbenchAssistResult {
   issueSpans: TacSpanMark[];
   lintIssues: LintIssue[];
@@ -57,6 +73,8 @@ export interface UseLiveWorkbenchAssistResult {
  * @param options.text - Current TAC editor text
  * @param options.product - Resolved product id
  * @param options.liveIwxxm - Optional live IWXXM path (default off)
+ * @example
+ * const _ = true;
  */
 export function useLiveWorkbenchAssist({
   text,
@@ -78,18 +96,22 @@ export function useLiveWorkbenchAssist({
 
   const schedulerRef = useRef<LiveAssistScheduler | null>(null);
   if (schedulerRef.current === null) {
-    schedulerRef.current = new LiveAssistScheduler(LIVE_ASSIST_DEBOUNCE_MS);
+    schedulerRef.current = new LiveAssistScheduler(resolveLiveAssistDebounceMs());
   }
 
   const liveIwxxmRunnerRef = useRef(liveIwxxmRunner);
-  liveIwxxmRunnerRef.current = liveIwxxmRunner;
+  useEffect(() => {
+    liveIwxxmRunnerRef.current = liveIwxxmRunner;
+  }, [liveIwxxmRunner]);
 
   const appendConsole = useCallback((line: Omit<LiveWorkbenchConsoleLine, 'at'>) => {
-    setConsoleLines((prev) => [...prev.slice(-199), { ...line, at: Date.now() }]);
+    // Ephemeral operator notes replace the board (console is current issues only).
+    setConsoleLines([{ ...line, at: Date.now() }]);
   }, []);
 
   const clearConsole = useCallback(() => setConsoleLines([]), []);
 
+  /* eslint-disable react-hooks/set-state-in-effect -- reset/schedule live lint+decode when editor text/product changes */
   useEffect(() => {
     const scheduler = schedulerRef.current!;
 
@@ -102,6 +124,7 @@ export function useLiveWorkbenchAssist({
       setDecodeResiduals([]);
       setDecodeProduct(undefined);
       setDecodeSummary('');
+      setConsoleLines([]);
       setLoading(false);
       return;
     }
@@ -134,8 +157,7 @@ export function useLiveWorkbenchAssist({
               typeof i.start === 'number' && typeof i.end === 'number',
           )
           .map((i) => ({
-            start: i.start,
-            end: i.end,
+            ...formFieldSpanInEditor(text, text, i.start, i.end),
             message: i.message,
             severity: i.severity,
             code: i.code,
@@ -156,8 +178,18 @@ export function useLiveWorkbenchAssist({
           return span;
         });
         setIssueSpans(spansWithFixes);
-        setDecodeSegments(decodeResult.segments);
-        setDecodeResiduals(decodeResult.residuals);
+        setDecodeSegments(
+          decodeResult.segments.map((segment) => ({
+            ...segment,
+            ...formFieldSpanInEditor(text, text, segment.start, segment.end),
+          })),
+        );
+        setDecodeResiduals(
+          decodeResult.residuals.map((residual) => ({
+            ...residual,
+            ...formFieldSpanInEditor(text, text, residual.start, residual.end),
+          })),
+        );
         setDecodeProduct(decodeResult.product);
         setDecodeSummary(decodeResult.summary ?? '');
 
@@ -198,10 +230,8 @@ export function useLiveWorkbenchAssist({
             });
           }
         }
-        setConsoleLines((prev) => [
-          ...prev.slice(-200 + nextLines.length),
-          ...nextLines,
-        ]);
+        // Replace — Console shows the current lint pass only (no running history).
+        setConsoleLines(nextLines);
 
         if (liveIwxxm && liveIwxxmRunnerRef.current) {
           await liveIwxxmRunnerRef.current(signal);
@@ -210,8 +240,7 @@ export function useLiveWorkbenchAssist({
         if (isAbortError(err) || signal.aborted) {
           return;
         }
-        setConsoleLines((prev) => [
-          ...prev.slice(-198),
+        setConsoleLines([
           {
             level: 'error',
             source: 'live-assist',
@@ -230,6 +259,7 @@ export function useLiveWorkbenchAssist({
       scheduler.cancel();
     };
   }, [text, product, accessToken, enabled, liveIwxxm]);
+  /* eslint-enable react-hooks/set-state-in-effect */
 
   return {
     issueSpans,

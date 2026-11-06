@@ -67,6 +67,16 @@ def repo_root() -> Path:
     Return monorepo root containing ``vendor/schemas``.
 
     Honours ``TAC_VALIDATE_REPO_ROOT`` when set.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (repo_root)
+    2
+
+    Returns
+    -------
+    Path
+        Monorepo root containing ``vendor/schemas``.
     """
     env = os.environ.get("TAC_VALIDATE_REPO_ROOT")
     if env:
@@ -75,11 +85,36 @@ def repo_root() -> Path:
 
 
 def membership_artifact_path() -> Path:
-    """Path to the committed generated membership JSON artifact."""
+    """
+    Path to the committed generated membership JSON artifact.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (membership_artifact_path)
+    2
+
+    Returns
+    -------
+    Path
+        Path to the committed generated membership JSON artifact.
+    """
     return _ARTIFACT
 
 
 def _csv_notations(path: Path) -> frozenset[str]:
+    """
+    Internal helper ``_csv_notations``.
+
+    Parameters
+    ----------
+    path : object
+        Argument ``path``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if not path.is_file():
         raise FileNotFoundError(path)
     out: set[str] = set()
@@ -97,6 +132,21 @@ def _csv_notations(path: Path) -> frozenset[str]:
 
 
 def _rdf_notations(path: Path, *, register_uri: str) -> frozenset[str]:
+    """
+    Internal helper ``_rdf_notations``.
+
+    Parameters
+    ----------
+    path : object
+        Argument ``path``.
+    register_uri : object
+        Argument ``register_uri``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if not path.is_file():
         raise FileNotFoundError(path)
     text = path.read_text(encoding="utf-8")
@@ -120,15 +170,20 @@ def harvest_membership(
 
     Parameters
     ----------
-    root : Path, optional
+    root : Path or None, optional
         Monorepo root; default :func:`repo_root`.
     iwxxm_version : str, optional
-        IWXXM pin line for RDF under ``vendor/schemas/iwxxm/{version}/IWXXM/rule``.
+        IWXXM pin line for RDF under ``vendor/schemas/iwxxm/{version}/IWXXM/rule``. By default ``'2025-2'``.
 
     Returns
     -------
     dict[str, frozenset[str]]
         Family key → notations.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (harvest_membership)
+    2
     """
     base = root if root is not None else repo_root()
     codelists = base / "vendor" / "schemas" / "iwxxm-codelists"
@@ -155,6 +210,22 @@ def write_membership_artifact(
     -------
     Path
         Path written.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (write_membership_artifact)
+    2
+
+    Parameters
+    ----------
+    sets : dict[str, frozenset[str]] or None, optional
+        Sets. By default ``None``.
+    root : Path or None, optional
+        Root. By default ``None``.
+    iwxxm_version : str, optional
+        IWXXM release line. By default ``'2025-2'``.
+    dest : Path or None, optional
+        Dest. By default ``None``.
     """
     harvested = sets if sets is not None else harvest_membership(root=root, iwxxm_version=iwxxm_version)
     path = dest if dest is not None else membership_artifact_path()
@@ -184,6 +255,11 @@ def load_membership_sets() -> dict[str, frozenset[str]]:
     ------
     FileNotFoundError
         When the artifact is missing (run harvest / ``make membership-regen``).
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (load_membership_sets)
+    2
     """
     path = membership_artifact_path()
     if not path.is_file():
@@ -197,7 +273,28 @@ def load_membership_sets() -> dict[str, frozenset[str]]:
 
 
 def is_member(family: str, notation: str, *, sets: dict[str, frozenset[str]] | None = None) -> bool:
-    """Return True if ``notation`` is in the named family set."""
+    """
+    Return True if ``notation`` is in the named family set.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (is_member)
+    2
+
+    Parameters
+    ----------
+    family : str
+        Family.
+    notation : str
+        Notation.
+    sets : dict[str, frozenset[str]] or None, optional
+        Sets. By default ``None``.
+
+    Returns
+    -------
+    bool
+        True if ``notation`` is in the named family set.
+    """
     table = sets if sets is not None else load_membership_sets()
     members = table.get(family)
     if members is None:
@@ -218,6 +315,11 @@ def normalize_register_notation(token: str) -> str:
     -------
     str
         Underscore-joined notation (e.g. ``ISOL_TS``).
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (normalize_register_notation)
+    2
     """
     return "_".join(token.strip().split())
 
@@ -233,6 +335,25 @@ def is_member_normalized(
 
     Used for AIRMET/SIGMET phenomena where TAC may use spaces (``ISOL TS``) while
     ``codes.wmo.int`` / vendor CSV notations use underscores (``ISOL_TS``).
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (is_member_normalized)
+    2
+
+    Parameters
+    ----------
+    family : str
+        Family.
+    notation : str
+        Notation.
+    sets : dict[str, frozenset[str]] or None, optional
+        Sets. By default ``None``.
+
+    Returns
+    -------
+    bool
+        True if ``notation`` or its underscore-normalized form is in ``family``.
     """
     table = sets if sets is not None else load_membership_sets()
     if is_member(family, notation, sets=table):

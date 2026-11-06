@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated": "2026-09-21",
+  "generated": "2026-11-04",
   "source": "PROVENANCE_MAP.json catalog_codes",
   "codes": {
     "AMD_PRESENT": {
@@ -73,6 +73,13 @@
       "note": "Schema-backed SAWR substitution in metar-speci-ca; not a MANOBS code form",
       "source_attribution": "eccc-iwxxm-ca - https://dd.weather.gc.ca/today/aviation/iwxxm/schema/ - Schema-backed SAWR substitution in metar-speci-ca; not a MANOBS code form"
     },
+    "CA_METAR_UP_AWOS_ONLY": {
+      "source_id": "manobs-ca",
+      "source_url": "https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manobs-surface-observations.html",
+      "status": "ok",
+      "note": "MANOBS present-weather UP (unknown precipitation) is AWOS-only",
+      "source_attribution": "manobs-ca - https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manobs-surface-observations.html - MANOBS present-weather UP (unknown precipitation) is AWOS-only"
+    },
     "CA_REMARK_MANOBS": {
       "source_id": "manobs-ca",
       "source_url": "https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manobs-surface-observations.html",
@@ -129,6 +136,13 @@
       "note": "CB/TCU convective type register",
       "source_attribution": "codes-wmo-int - https://codes.wmo.int/ui/resources/WMO-Codes-Registry_user-guide-v1.0.pdf - CB/TCU convective type register"
     },
+    "CLOUD_TYPE_NOT_OBSERVABLE": {
+      "source_id": "codes-wmo-int",
+      "source_url": "https://github.com/wmo-im/iwxxm/blob/master/IWXXM/ReleaseNotes-IWXXM.txt",
+      "status": "ok",
+      "note": "AUTO cloud group solidi /// means convective cloud type was not observed",
+      "source_attribution": "codes-wmo-int - https://github.com/wmo-im/iwxxm/blob/master/IWXXM/ReleaseNotes-IWXXM.txt - AUTO cloud group solidi /// means convective cloud type was not observed"
+    },
     "CNL_REPORT": {
       "source_id": "icao-annex-3",
       "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
@@ -142,6 +156,20 @@
       "status": "paywall",
       "note": "App 5 / Table A5-1",
       "source_attribution": "icao-annex-3 - access:paywall - https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 - App 5 / Table A5-1"
+    },
+    "DEWPOINT_NOT_OBSERVABLE": {
+      "source_id": null,
+      "source_url": null,
+      "status": null,
+      "note": null,
+      "source_attribution": null
+    },
+    "DVLPG_AREA_QUALIFIER": {
+      "source_id": "fmh-1",
+      "source_url": "https://aviationweather.gov/data/products/sigmet/",
+      "status": "ok",
+      "note": "NWS convective SIGMET developing-area: accept canonical DVLPG AREA; error on FROM-ring or incomplete DVLPG",
+      "source_attribution": "fmh-1 - https://aviationweather.gov/data/products/sigmet/ - NWS convective SIGMET developing-area: accept canonical DVLPG AREA; error on FROM-ring or incomplete DVLPG"
     },
     "EMPTY_TAC": {
       "source_id": "icao-annex-3",
@@ -210,8 +238,8 @@
       "source_id": "icao-annex-3",
       "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
       "status": "paywall",
-      "note": "App 5 / Table A5-1",
-      "source_attribution": "icao-annex-3 - access:paywall - https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 - App 5 / Table A5-1"
+      "note": "App 5 / Table A5-1; true defects only (BECMG/FM, bad percent)",
+      "source_attribution": "icao-annex-3 - access:paywall - https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 - App 5 / Table A5-1; true defects only (BECMG/FM, bad percent)"
     },
     "INVALID_REMARK": {
       "source_id": "fmh-1",
@@ -289,6 +317,13 @@
       "status": "ok",
       "note": "India IMD TAF often omits TX/TN temperature extremes",
       "source_attribution": "imd-mausam - https://mausam.imd.gov.in/ - India IMD TAF often omits TX/TN temperature extremes"
+    },
+    "MALFORMED_SOURCE_TOKEN": {
+      "source_id": "live-eval",
+      "source_url": "https://www.icao.int/",
+      "status": "ok",
+      "note": "Source typo or garbled TAC group from live traffic",
+      "source_attribution": "live-eval - https://www.icao.int/ - Source typo or garbled TAC group from live traffic"
     },
     "MISSING_CCCC": {
       "source_id": "icao-annex-3",
@@ -542,6 +577,13 @@
       "note": "Table A3-2 / App 3",
       "source_attribution": "icao-annex-3 - access:paywall - https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 - Table A3-2 / App 3"
     },
+    "PARTIAL_DECODE": {
+      "source_id": null,
+      "source_url": null,
+      "status": null,
+      "note": null,
+      "source_attribution": null
+    },
     "POINT_LOCATION": {
       "source_id": "icao-eur-doc-014",
       "source_url": "https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf",
@@ -555,6 +597,13 @@
       "status": "ok",
       "note": "EUR Doc 014 public; Annex 3 paywall companion",
       "source_attribution": "icao-eur-doc-014 - https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf - EUR Doc 014 public; Annex 3 paywall companion"
+    },
+    "PROB_PERIOD_WITHOUT_TEMPO": {
+      "source_id": "icao-annex-3",
+      "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
+      "status": "paywall",
+      "note": "App 5 / Table A5-1; standalone PROB+period emission retired \u2014 engines emit PROB_PRESENT; code kept for catalog continuity",
+      "source_attribution": "icao-annex-3 - access:paywall - https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 - App 5 / Table A5-1; standalone PROB+period emission retired \u2014 engines emit PROB_PRESENT; code kept for catalog continuity"
     },
     "PROB_PRESENT": {
       "source_id": "icao-annex-3",
@@ -710,6 +759,20 @@
       "note": "Validated: tac-validate membership gate vs harvested wmo_membership.json",
       "source_attribution": "codes-wmo-int - https://codes.wmo.int/ui/resources/WMO-Codes-Registry_user-guide-v1.0.pdf - Validated: tac-validate membership gate vs harvested wmo_membership.json"
     },
+    "US_METAR_INHG_ALTIMETER": {
+      "source_id": "faa-aim",
+      "source_url": "https://www.faa.gov/air_traffic/publications/atpubs/aim_html/chap7_section_1.html",
+      "status": "ok",
+      "note": "US METAR/SPECI altimeter uses inches of mercury A#### (national overlay)",
+      "source_attribution": "faa-aim - https://www.faa.gov/air_traffic/publications/atpubs/aim_html/chap7_section_1.html - US METAR/SPECI altimeter uses inches of mercury A#### (national overlay)"
+    },
+    "US_METAR_STATUTE_MILE_VIS": {
+      "source_id": "faa-aim",
+      "source_url": "https://www.faa.gov/air_traffic/publications/atpubs/aim_html/chap7_section_1.html",
+      "status": "ok",
+      "note": "US METAR/SPECI report prevailing visibility in statute miles with SM",
+      "source_attribution": "faa-aim - https://www.faa.gov/air_traffic/publications/atpubs/aim_html/chap7_section_1.html - US METAR/SPECI report prevailing visibility in statute miles with SM"
+    },
     "US_SWXA_SATCOM_NOT_ISSUED": {
       "source_id": null,
       "source_url": null,
@@ -723,6 +786,13 @@
       "status": "ok",
       "note": "US TAF does not use BECMG change groups (FAA GEN 1.7 / national overlay)",
       "source_attribution": "fmh-1 - https://www.faa.gov/air_traffic/publications/atpubs/aip_html/part1_gen_section_1.7.html - US TAF does not use BECMG change groups (FAA GEN 1.7 / national overlay)"
+    },
+    "US_TAF_PROB40_NOT_USED": {
+      "source_id": "faa-aim",
+      "source_url": "https://www.faa.gov/air_traffic/publications/atpubs/aim_html/chap7_section_1.html",
+      "status": "ok",
+      "note": "NWS TAFs do not use PROB40 (FAA AIM meteorology / ICAO weather formats)",
+      "source_attribution": "faa-aim - https://www.faa.gov/air_traffic/publications/atpubs/aim_html/chap7_section_1.html - NWS TAFs do not use PROB40 (FAA AIM meteorology / ICAO weather formats)"
     },
     "US_TAF_TEMPO_MAX_4H": {
       "source_id": "fmh-1",

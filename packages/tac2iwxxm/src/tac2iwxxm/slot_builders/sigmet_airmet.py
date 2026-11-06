@@ -2,17 +2,27 @@
 
 from __future__ import annotations
 
+import math
 import re
 from typing import Any, cast
 
 from tac2iwxxm.geometry.reference_point import parse_vor_reference_geometry
+from tac2iwxxm.slot_builders.sigmet_body import (
+    compound_movement_degrees,
+    flight_information_region_name,
+    unwrap_wrapped_coordinates,
+    use_volcanic_ash_locations,
+    without_cancellation_remark,
+)
 
 _SIGMET = re.compile(
-    r"^(?P<fir>[A-Z]{4})(?:\s+(?P<fir_extra>(?:[A-Z]{4}\s+)+))?\s*SIGMET\s+"
+    r"^(?:(?P<fir>[A-Z]{4})(?:\s+(?P<fir_extra>(?:[A-Z]{4}\s+)+))?\s*)?"
+    r"SIGMET\s+"
     r"(?P<seq>(?:[A-Z]+\s+\d+|[A-Z]?\d+))\s+VALID\s+"
     r"(?P<from>\d{6})/(?P<to>\d{6})\s+(?P<mwo>[A-Z]{4})\s*-\s*(?P<body>.*)$",
     re.DOTALL | re.IGNORECASE,
 )
+_BODY_FIR = re.compile(r"\b(?P<fir>[A-Z]{4})\b(?=\s+\S+\s+FIR\b)", re.IGNORECASE)
 _AIRMET = re.compile(
     r"^(?P<fir>[A-Z]{4})\s+AIRMET\s+"
     r"(?P<seq>(?:[A-Z]+\s+\d+|[A-Z]?\d+))\s+VALID\s+"
@@ -25,12 +35,17 @@ _CNL = re.compile(
     r"(?P<cnl_from>\d{6})/(?P<cnl_to>\d{6})\b",
     re.IGNORECASE | re.DOTALL,
 )
+# Incomplete cancel (sequence only) must not fall through to a default phenomenon.
+_CNL_INCOMPLETE = re.compile(
+    r"\bCNL\s+(?:SIGMET|AIRMET)\s+(?:[A-Z]+\s+\d+|[A-Z]?\d+)\b",
+    re.IGNORECASE,
+)
 _SIGA0_LINE = re.compile(r"^SIGA0[A-Z0-9]*\s*$", re.IGNORECASE)
 # VA CNL identifies FIR to which ash has moved (F23 V1 / tac-validate VA_CNL_FIR_MOVED).
 _CNL_FIR_MOVED = re.compile(r"\b(?:AND|MOV)\s+TO\s+FIR\b", re.IGNORECASE)
 # Optional leading WMO AHL (WC/WV/WS) so convert can family-select CNL roots (EV-029 M7).
 _AHL_PREFIX = re.compile(
-    r"^(?P<tt>[A-Z]{2})(?P<aa>[A-Z]{2})(?P<ii>\d{2})\s+"
+    r"^(?P<tt>[A-Z]{2})(?P<aa>[A-Z]{2})(?P<ii>(?=[A-Z0-9]*\d)[A-Z0-9]{2})\s+"
     r"(?P<cccc>[A-Z]{4})\s+(?P<yygggg>\d{6})"
     r"(?:\s+(?P<bbb>[A-Z]{1,3}))?\s*\n",
 )
@@ -41,27 +56,42 @@ _TC_CIRCLE = re.compile(
 )
 _TC_FCST_PSN = re.compile(
     r"\bFCST\s+AT\s+(?P<hhmm>\d{4})Z\s+TC\s+CENTRE\s+PSN\s+"
-    r"N(?P<lat_deg>\d{2})(?P<lat_min>\d{2})(?:\d{2})?\s+"
+    r"(?P<lat_hemi>[NS])(?P<lat_deg>\d{2})(?P<lat_min>\d{2})(?:\d{2})?\s+"
     r"(?P<lon_hemi>[EW])(?P<lon_deg>\d{3})(?P<lon_min>\d{2})(?:\d{2})?\b",
     re.IGNORECASE,
 )
 _TC_OBS_PSN = re.compile(
     r"\bTC\s+[A-Z][A-Z0-9-]*\s+PSN\s+"
-    r"N(?P<lat_deg>\d{2})(?P<lat_min>\d{2})(?:\d{2})?\s+"
+    r"(?P<lat_hemi>[NS])(?P<lat_deg>\d{2})(?P<lat_min>\d{2})(?:\d{2})?\s+"
     r"(?P<lon_hemi>[EW])(?P<lon_deg>\d{3})(?P<lon_min>\d{2})(?:\d{2})?\b",
     re.IGNORECASE,
 )
 _MOV = re.compile(
-    r"\bMOV\s+(?P<dir>N|NE|E|SE|S|SW|W|NW)\s+(?P<spd>\d+)\s*KT\b",
+    r"\bMOV\s+(?P<dir>NNE|ENE|ESE|SSE|SSW|WSW|WNW|NNW|NE|SE|SW|NW|N|E|S|W)"
+    r"(?:\s+(?P<spd>\d+)\s*(?P<unit>KT|KM/?H|MPS))?(?=\s|\Z|=)",
     re.IGNORECASE,
+)
+# A half-plane has no FIR outline. This offset keeps the boundary on the named
+# side so the mandatory surface can carry the line vertices.
+_LINE_SIDE_OFFSET_DEG = 0.05
+_LINE_SIDE = re.compile(
+    r"\b(?P<side>NNE|ENE|ESE|SSE|SSW|WSW|WNW|NNW|NE|SE|SW|NW|N|E|S|W)\s+OF\s+LINE\b",
+    re.IGNORECASE,
+)
+_LINE_WIDTH = re.compile(r"\b(?P<width>\d+)\s*(?P<unit>NM|KM)\s+WID\s+LINE\b", re.IGNORECASE)
+_LINE_SPAN = re.compile(
+    r"\bLINE\b(?P<body>.*?)(?=\bSFC/|\bFL\d|\bTOP\b|\bMOV\b|\bSTNR\b|\bNC\b|\bWKN\b|\bINTSF\b|=|$)",
+    re.IGNORECASE | re.DOTALL,
 )
 _AREA_TS_MOV = re.compile(
     r"\bAREA\s+TS\s+MOV\s+FROM\s+(?P<dir>\d{3})(?P<spd>\d{2,3})KT\b",
     re.IGNORECASE,
 )
 _CONVECTIVE_SIGMET = re.compile(
-    r"^(?:(?P<unit>[A-Z]{4})\s+)?CONVECTIVE\s+SIGMET\s+(?P<tag>\S+)\s+VALID\s+UNTIL\s+"
-    r"(?P<until>\d{4,6})Z\s+(?P<states>(?:[A-Z]{2}\s*)+?)\s+FROM\s+(?P<body>.*)$",
+    r"^(?:SIG(?!MET)[A-Z0-9]*\s+)?"
+    r"(?:(?P<unit>(?!SIG)[A-Z]{4})\s+(?:WST\s+\d{6}\s+)?)?"
+    r"CONVECTIVE\s+SIGMET\s+(?P<tag>\S+)\s+"
+    r"VALID\s+UNTIL\s+(?P<until>\d{4,6})Z\s+(?P<states>.+?)\s+FROM\s+(?P<body>.*)$",
     re.DOTALL | re.IGNORECASE,
 )
 _NWS_HAZARD_IFR = "http://nws.weather.gov/codes/NWSI10-811/HazardTypes/IFR"
@@ -74,11 +104,15 @@ _SE_BOX = re.compile(
 # WMO airmet-A6-1a-TS: "N OF S50" → sample box north of S50 (Guidance / vendor XML).
 _N_OF_S = re.compile(r"\bN OF S(?P<lat>\d{1,2})\b", re.IGNORECASE)
 _POINT = re.compile(
-    r"\bN(?P<lat_deg>\d{2})(?P<lat_min>\d{2})(?:\d{2})?\s+"
+    r"\b(?P<lat_hemi>[NS])(?P<lat_deg>\d{2})(?P<lat_min>\d{2})(?:\d{2})?\s+"
     r"(?P<lon_hemi>[EW])(?P<lon_deg>\d{3})(?P<lon_min>\d{2})(?:\d{2})?\b",
     re.IGNORECASE,
 )
 _FL_BAND = re.compile(r"\bFL(?P<lo>\d{2,3})/(?P<hi>\d{2,3})\b", re.IGNORECASE)
+_FT_FL_LAYER = re.compile(
+    r"\b(?P<ft>\d{3,4})(?P<unit>FT|M)/FL(?P<fl>\d{2,3})\b",
+    re.IGNORECASE,
+)
 _SINGLE_FL = re.compile(r"\bFL(?P<fl>\d{2,3})\b", re.IGNORECASE)
 _SFC_FL = re.compile(r"\bSFC/FL(?P<fl>\d{2,3})\b", re.IGNORECASE)
 _WI_BLOCK = re.compile(
@@ -88,7 +122,7 @@ _WI_BLOCK = re.compile(
 _NO_VA_EXP = re.compile(r"\bNO\s+VA\s+EXP\b", re.IGNORECASE)
 _VA_ERUPTION = re.compile(
     r"\bVA\s+ERUPTION\s+(?P<name>MT\s+\w+)\s+PSN\s+"
-    r"N(?P<lat_deg>\d{2})(?P<lat_min>\d{2})(?:\d{2})?\s+"
+    r"(?P<lat_hemi>[NS])(?P<lat_deg>\d{2})(?P<lat_min>\d{2})(?:\d{2})?\s+"
     r"(?P<lon_hemi>[EW])(?P<lon_deg>\d{3})(?P<lon_min>\d{2})(?:\d{2})?\b",
     re.IGNORECASE,
 )
@@ -104,13 +138,29 @@ _VA_LOCATION = re.compile(
 )
 
 # Common phenomenon tokens → WMO codelist local name.
+# Longer needles first. SigWxPhenomena has no bare ``TS``; keep ``TS`` last only as a
+# parse fallback for unknown bodies (emit resolves href membership separately).
+# AIRMET-style tokens (OCNL/ISOL) appear in some national SIGMET bulletins.
 _SIG_PHENOMENA = (
+    ("OBSC TSGR", "OBSC_TSGR"),
+    ("EMBD TSGR", "EMBD_TSGR"),
+    ("FRQ TSGR", "FRQ_TSGR"),
+    ("SQL TSGR", "SQL_TSGR"),
     ("OBSC TS", "OBSC_TS"),
     ("EMBD TS", "EMBD_TS"),
     ("FRQ TS", "FRQ_TS"),
     ("SQL TS", "SQL_TS"),
+    ("OCNL TSGR", "OCNL_TSGR"),
+    ("ISOL TSGR", "ISOL_TSGR"),
+    ("OCNL TS", "OCNL_TS"),
+    ("ISOL TS", "ISOL_TS"),
     ("SEV TURB", "SEV_TURB"),
+    ("SEV ICE (FZRA)", "SEV_ICE_FZRA"),
     ("SEV ICE", "SEV_ICE"),
+    ("SEV MTW", "SEV_MTW"),
+    ("HVY DS", "HVY_DS"),
+    ("HVY SS", "HVY_SS"),
+    ("RDOACT CLD", "RDOACT_CLD"),
     ("TC", "TC"),
     ("VA", "VA"),
     ("TS", "TS"),
@@ -127,6 +177,8 @@ _AIR_PHENOMENA = (
     ("MOD MTW", "MOD_MTW"),
     ("MT OBSC", "MT_OBSC"),
     ("MTN OBSC", "MT_OBSC"),
+    ("SFC WSPD", "SFC_WIND"),
+    ("SFC WIND", "SFC_WIND"),
     ("IFR", "SFC_VIS"),
     ("MTW", "MTW"),
     ("TS", "TS"),
@@ -147,16 +199,25 @@ _GFA_CLOUD_BASE = re.compile(r"\b(?:BKN|OVC)(?P<base>\d{3})\b")
 
 _DIR_DEG = {
     "N": 0,
+    "NNE": 22.5,
     "NE": 45,
+    "ENE": 67.5,
     "E": 90,
+    "ESE": 112.5,
     "SE": 135,
+    "SSE": 157.5,
     "S": 180,
+    "SSW": 202.5,
     "SW": 225,
+    "WSW": 247.5,
     "W": 270,
+    "WNW": 292.5,
     "NW": 315,
+    "NNW": 337.5,
 }
 _INTENSITY = {
     "WKN": "WEAKEN",
+    "DECR": "WEAKEN",
     "INTSF": "INTENSIFY",
     "NC": "NO_CHANGE",
 }
@@ -193,24 +254,145 @@ _CONUS_AIR_LEAD = re.compile(r"^AIRMET\s+[A-Z]+\.\.\.", re.IGNORECASE)
 
 
 def _normalize(tac: str) -> str:
+    """
+    Internal helper ``_normalize``.
+
+    Parameters
+    ----------
+    tac : str
+        Argument ``tac``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
     lines = [ln.strip() for ln in tac.strip().rstrip("=").splitlines() if ln.strip()]
     return " ".join(lines)
 
 
 def _parse_valid(token: str) -> tuple[int, int, int]:
+    """
+    Internal helper ``_parse_valid``.
+
+    Parameters
+    ----------
+    token : str
+        Argument ``token``.
+
+    Returns
+    -------
+    tuple[int, int, int]
+        Return value.
+    """
     return int(token[0:2]), int(token[2:4]), int(token[4:6])
 
 
-def _detect_phenomenon(body: str, table: tuple[tuple[str, str], ...]) -> str:
+def _apply_motion(ir: dict[str, Any], body: str) -> None:
+    """
+    Record movement direction and speed, keeping kilometres per hour distinct from knots.
+
+    Parameters
+    ----------
+    ir : dict
+        Hazard intermediate representation being filled.
+    body : str
+        SIGMET or AIRMET body text.
+
+    Returns
+    -------
+    None
+        ``ir`` is updated in place when a movement group matches.
+    """
+    if ir.get("stationary"):
+        return
+    mov = _MOV.search(body)
+    if mov is None:
+        degrees = compound_movement_degrees(body)
+        if degrees is None:
+            return
+        ir["motion_dir_deg"] = degrees
+        return
+    ir["motion_dir_deg"] = _DIR_DEG[mov.group("dir").upper()]
+    if mov.group("spd") is None:
+        return
+    speed = int(mov.group("spd"))
+    unit = mov.group("unit").upper().replace("/", "")
+    if unit == "MPS":
+        ir["motion_speed_kmh"] = round(speed * 3.6)
+    elif unit == "KMH":
+        ir["motion_speed_kmh"] = speed
+    else:
+        ir["motion_speed_kt"] = speed
+
+
+def _detect_phenomenon(body: str, table: tuple[tuple[str, str], ...]) -> str | None:
+    """
+    Return the first matching phenomenon code, or ``None`` when none match.
+
+    Parameters
+    ----------
+    body : str
+        Hazard body text.
+
+    table : tuple[tuple[str, str], ...]
+        Needle → IR code pairs, longest / most specific first.
+
+    Returns
+    -------
+    str | None
+        Matched IR phenomenon code, or ``None`` (do not invent ``TS``).
+    """
     upper = body.upper()
     for needle, code in table:
         if needle in upper:
             return code
-    return "TS"
+    return None
+
+
+def _require_ordered_valid_period(
+    from_day: int,
+    from_hour: int,
+    from_minute: int,
+    to_day: int,
+    to_hour: int,
+    to_minute: int,
+    *,
+    product: str,
+) -> None:
+    """
+    Reject same-day VALID groups whose end is not after begin.
+
+    Day-of-month wrap (for example ``312200/010200``) stays allowed. Same-day
+    inverted or zero-length periods fail closed.
+
+    Parameters
+    ----------
+    from_day, from_hour, from_minute : int
+        VALID begin group.
+    to_day, to_hour, to_minute : int
+        VALID end group.
+    product : str
+        ``SIGMET`` or ``AIRMET`` for the error message.
+    """
+    if from_day == to_day and (to_hour, to_minute) <= (from_hour, from_minute):
+        raise ValueError(f"{product} valid period end must be after begin")
 
 
 def _detect_ca_gfa_phenomenon(body: str) -> str | None:
-    """Return MSC code-ca id when body encodes a MANAIR GFA compound phenomenon."""
+    """
+    Internal helper ``_detect_ca_gfa_phenomenon``.
+
+    Parameters
+    ----------
+    body : str
+        Argument ``body``.
+
+    Returns
+    -------
+    str | None
+        Return value.
+    """
     upper = body.upper()
     for needle, code in _CA_GFA_PHENOMENA:
         if needle in upper:
@@ -219,7 +401,22 @@ def _detect_ca_gfa_phenomenon(body: str) -> str | None:
 
 
 def _parse_ca_gfa_structured(body: str, gfa_code: str) -> dict[str, Any] | None:
-    """Extract GFA structured ranges for SFC VIS compound phenomena."""
+    """
+    Internal helper ``_parse_ca_gfa_structured``.
+
+    Parameters
+    ----------
+    body : str
+        Argument ``body``.
+
+    gfa_code : str
+        Argument ``gfa_code``.
+
+    Returns
+    -------
+    dict[str, Any] | None
+        Return value.
+    """
     if gfa_code not in {"SFC_VIS_and_BKN_CLD", "SFC_VIS_and_OVC_CLD"}:
         return None
     structured: dict[str, Any] = {}
@@ -244,6 +441,19 @@ def _parse_ca_gfa_structured(body: str, gfa_code: str) -> dict[str, Any] | None:
 
 
 def _detect_intensity(body: str) -> str:
+    """
+    Internal helper ``_detect_intensity``.
+
+    Parameters
+    ----------
+    body : str
+        Argument ``body``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
     upper = body.upper()
     for token, code in _INTENSITY.items():
         if re.search(rf"\b{token}\b", upper):
@@ -252,15 +462,204 @@ def _detect_intensity(body: str) -> str:
 
 
 def _point_lat_lon(match: re.Match[str]) -> tuple[float, float]:
+    """
+    Internal helper ``_point_lat_lon``.
+
+    Parameters
+    ----------
+    match : re.Match[str]
+        Argument ``match``.
+
+    Returns
+    -------
+    tuple[float, float]
+        Return value.
+    """
     lat = int(match.group("lat_deg")) + int(match.group("lat_min")) / 60.0
     lon = int(match.group("lon_deg")) + int(match.group("lon_min")) / 60.0
-    if match.group("lon_hemi").upper() == "W":
+    groups = match.groupdict()
+    if (groups.get("lat_hemi") or "N").upper() == "S":
+        lat = -lat
+    if (groups.get("lon_hemi") or "E").upper() == "W":
         lon = -lon
+    if abs(lat) > 90.0 or abs(lon) > 180.0:
+        raise ValueError(f"coordinate out of range: lat={lat}, lon={lon}")
     return lat, lon
 
 
+def _format_pos_list(points: list[tuple[float, float]]) -> str:
+    """
+    Join latitude and longitude pairs for a GML position list.
+
+    Parameters
+    ----------
+    points : list[tuple[float, float]]
+        Vertices in latitude, longitude order.
+
+    Returns
+    -------
+    str
+        Space-separated positions.
+    """
+    return " ".join(f"{lat:.4f} {lon:.4f}" for lat, lon in points)
+
+
+def _close_ring(points: list[tuple[float, float]]) -> list[tuple[float, float]]:
+    """
+    Repeat the first vertex so a GML linear ring is closed.
+
+    Parameters
+    ----------
+    points : list[tuple[float, float]]
+        Open vertex list.
+
+    Returns
+    -------
+    list[tuple[float, float]]
+        The same vertices with the first appended.
+    """
+    return [*points, points[0]]
+
+
+def _side_offset(side: str) -> tuple[float, float]:
+    """
+    Degree step toward a compass side.
+
+    Parameters
+    ----------
+    side : str
+        Sixteen-point compass token.
+
+    Returns
+    -------
+    tuple[float, float]
+        Latitude and longitude offsets in degrees.
+    """
+    bearing = math.radians(_DIR_DEG[side])
+    return (
+        _LINE_SIDE_OFFSET_DEG * math.cos(bearing),
+        _LINE_SIDE_OFFSET_DEG * math.sin(bearing),
+    )
+
+
+def _offset_vertices(
+    points: list[tuple[float, float]],
+    *,
+    half_width_deg: float,
+) -> list[tuple[float, float]]:
+    """
+    Build a corridor ring around a centreline.
+
+    Parameters
+    ----------
+    points : list[tuple[float, float]]
+        Line vertices, at least two.
+    half_width_deg : float
+        Half-width in degrees of latitude.
+
+    Returns
+    -------
+    list[tuple[float, float]]
+        Closed ring around the line.
+    """
+
+    def _normal(start: tuple[float, float], end: tuple[float, float]) -> tuple[float, float]:
+        """
+        Perpendicular step from one vertex to the next.
+
+        Parameters
+        ----------
+        start : tuple[float, float]
+            Segment start, latitude then longitude.
+        end : tuple[float, float]
+            Segment end, latitude then longitude.
+
+        Returns
+        -------
+        tuple[float, float]
+            Latitude and longitude offsets of half the corridor width.
+        """
+        dlat = end[0] - start[0]
+        dlon = end[1] - start[1]
+        length = math.hypot(dlat, dlon) or 1.0
+        return (-dlon / length * half_width_deg, dlat / length * half_width_deg)
+
+    left: list[tuple[float, float]] = []
+    right: list[tuple[float, float]] = []
+    last = len(points) - 1
+    for index, point in enumerate(points):
+        if index == 0:
+            north, east = _normal(points[0], points[1])
+        elif index == last:
+            north, east = _normal(points[-2], points[-1])
+        else:
+            first = _normal(points[index - 1], point)
+            second = _normal(point, points[index + 1])
+            north = (first[0] + second[0]) / 2
+            east = (first[1] + second[1]) / 2
+        left.append((point[0] + north, point[1] + east))
+        right.append((point[0] - north, point[1] - east))
+    return _close_ring(left + list(reversed(right)))
+
+
+def _apply_line_geometry(ir: dict[str, Any], body: str) -> bool:
+    """
+    Record a line of coordinates as a surface ring.
+
+    A stated width becomes a corridor. A compass side, such as ``E OF LINE``,
+    becomes a thin ring on that side. The ring is the line, not the whole FIR.
+
+    Parameters
+    ----------
+    ir : dict
+        Hazard intermediate representation being filled.
+    body : str
+        SIGMET or AIRMET body text.
+
+    Returns
+    -------
+    bool
+        True when a line was found, including a line with too few vertices.
+    """
+    if re.search(r"\bLINE\b", body, re.IGNORECASE) is None:
+        return False
+    span = _LINE_SPAN.search(body)
+    if span is None:  # pragma: no cover
+        return True
+    raw_points = [_point_lat_lon(match) for match in _POINT.finditer(span.group("body"))]
+    if len(raw_points) < 2:
+        return True
+    width = _LINE_WIDTH.search(body)
+    if width is not None:
+        amount = int(width.group("width"))
+        full_width_deg = amount / 111.195 if width.group("unit").upper() == "KM" else amount / 60.0
+        ring = _offset_vertices(raw_points, half_width_deg=full_width_deg / 2)
+    else:
+        side_match = _LINE_SIDE.search(body)
+        if side_match is None:
+            ring = _offset_vertices(raw_points, half_width_deg=_LINE_SIDE_OFFSET_DEG)
+        else:
+            dlat, dlon = _side_offset(side_match.group("side").upper())
+            offset = [(lat + dlat, lon + dlon) for lat, lon in raw_points]
+            ring = _close_ring([*raw_points, *reversed(offset)])
+    ir["geometry"] = {"kind": "polygon", "pos_list": _format_pos_list(ring)}
+    return True
+
+
 def _polygon_from_wi_body(wi_body: str) -> dict[str, Any] | None:
-    """Build a closed polygon geometry from a WI coordinate body, or None."""
+    """
+    Internal helper ``_polygon_from_wi_body``.
+
+    Parameters
+    ----------
+    wi_body : str
+        Argument ``wi_body``.
+
+    Returns
+    -------
+    dict[str, Any] | None
+        Return value.
+    """
     pts = [_point_lat_lon(m) for m in _POINT.finditer(wi_body)]
     if len(pts) < 3:
         return None
@@ -271,6 +670,19 @@ def _polygon_from_wi_body(wi_body: str) -> dict[str, Any] | None:
 
 
 def _parse_va_eruption(body: str) -> dict[str, Any] | None:
+    """
+    Internal helper ``_parse_va_eruption``.
+
+    Parameters
+    ----------
+    body : str
+        Argument ``body``.
+
+    Returns
+    -------
+    dict[str, Any] | None
+        Return value.
+    """
     match = _VA_ERUPTION.search(body)
     if match is None:
         return None
@@ -279,7 +691,19 @@ def _parse_va_eruption(body: str) -> dict[str, Any] | None:
 
 
 def _parse_va_locations(body: str) -> list[dict[str, Any]]:
-    """Parse AND-joined OBS/FCST VA cloud locations (#809 multi-location)."""
+    """
+    Internal helper ``_parse_va_locations``.
+
+    Parameters
+    ----------
+    body : str
+        Argument ``body``.
+
+    Returns
+    -------
+    list[dict[str, Any]]
+        Return value.
+    """
     locations: list[dict[str, Any]] = []
     for match in _VA_LOCATION.finditer(body):
         obs_geom = _polygon_from_wi_body(match.group("obs_wi"))
@@ -315,7 +739,17 @@ def _parse_va_locations(body: str) -> list[dict[str, Any]]:
 
 
 def _enrich_hazard_body(ir: dict[str, Any], body: str) -> None:
-    """Attach exceptional-rule fields from SIGMET/AIRMET body (F23 / F24 / #733/#731)."""
+    """
+    Internal helper ``_enrich_hazard_body``.
+
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Argument ``ir``.
+
+    body : str
+        Argument ``body``.
+    """
     upper = body.upper()
     cnl = _CNL.search(body)
     if cnl is not None:
@@ -339,6 +773,8 @@ def _enrich_hazard_body(ir: dict[str, Any], body: str) -> None:
         else:
             ir.pop("phenomenon", None)
         return
+    if _CNL_INCOMPLETE.search(body) is not None:
+        raise ValueError("incomplete CNL: cancelled validity period required")
 
     ir["intensity_change"] = _detect_intensity(body)
     ir["stationary"] = bool(re.search(r"\bSTNR\b", upper))
@@ -354,7 +790,7 @@ def _enrich_hazard_body(ir: dict[str, Any], body: str) -> None:
         ir["volcano"] = volcano
 
     # Multi-location VA (AND-joined OBS/FCST) or single OBS(+FCST) VA cloud (#809 / #856).
-    locations = _parse_va_locations(body)
+    locations = _parse_va_locations(body) if use_volcanic_ash_locations(str(ir.get("phenomenon", "")), body) else []
     if locations:
         ir["locations"] = locations
         first = locations[0]
@@ -367,16 +803,10 @@ def _enrich_hazard_body(ir: dict[str, Any], body: str) -> None:
         if "lower_fl" in first:
             ir["lower_fl"] = first["lower_fl"]
             ir["upper_fl"] = first["upper_fl"]
-        mov = _MOV.search(body)
-        if mov is not None and not ir["stationary"]:
-            ir["motion_dir_deg"] = _DIR_DEG[mov.group("dir").upper()]
-            ir["motion_speed_kt"] = int(mov.group("spd"))
+        _apply_motion(ir, body)
         return
 
-    mov = _MOV.search(body)
-    if mov is not None and not ir["stationary"]:
-        ir["motion_dir_deg"] = _DIR_DEG[mov.group("dir").upper()]
-        ir["motion_speed_kt"] = int(mov.group("spd"))
+    _apply_motion(ir, body)
 
     top = _TOP_FL.search(body)
     if top is not None:
@@ -386,11 +816,16 @@ def _enrich_hazard_body(ir: dict[str, Any], body: str) -> None:
         elif "BLW" in top.group(0).upper():
             ir["top_qualifier"] = "BLW"
 
+    feet_layer = _FT_FL_LAYER.search(body)
+    if feet_layer is not None:
+        ir["lower_ft"] = int(feet_layer.group("ft"))
+        ir["lower_unit"] = feet_layer.group("unit").upper()
+        ir["upper_fl"] = int(feet_layer.group("fl"))
     sfc_fl = _SFC_FL.search(body)
-    if sfc_fl is not None:
+    if feet_layer is None and sfc_fl is not None:
         ir["lower_surface"] = "SFC"
         ir["upper_fl"] = int(sfc_fl.group("fl"))
-    else:
+    elif feet_layer is None:
         frzlvl_band = _FRZLVL_BAND.search(body)
         if frzlvl_band is not None:
             ir["lower_surface"] = "FRZLVL"
@@ -403,7 +838,7 @@ def _enrich_hazard_body(ir: dict[str, Any], body: str) -> None:
         if band is not None:
             ir["lower_fl"] = int(band.group("lo"))
             ir["upper_fl"] = int(band.group("hi"))
-        elif "top_fl" not in ir:
+        elif "top_fl" not in ir and "upper_fl" not in ir:
             # Single FL token that is not TOP FLnnn (e.g. FL180 alone).
             singles = list(_SINGLE_FL.finditer(body))
             if len(singles) == 1 and "TOP" not in body.upper()[max(0, singles[0].start() - 4) : singles[0].start()]:
@@ -470,6 +905,9 @@ def _enrich_hazard_body(ir: dict[str, Any], body: str) -> None:
         }
         return
 
+    if _apply_line_geometry(ir, body):
+        return
+
     # Prefer VA CLD / hazard WI polygon over volcano PSN point (F23 V3 / #739).
     wi = _WI_BLOCK.search(body)
     if wi is not None:
@@ -488,21 +926,53 @@ def _enrich_hazard_body(ir: dict[str, Any], body: str) -> None:
 
 
 def _enrich_sigmet_body(ir: dict[str, Any], body: str) -> None:
-    """Backward-compatible alias for SIGMET body enrichment."""
+    """
+    Internal helper ``_enrich_sigmet_body``.
+
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Argument ``ir``.
+
+    body : str
+        Argument ``body``.
+    """
     _enrich_hazard_body(ir, body)
 
 
-def _parse_until_token(until: str) -> tuple[int, int, int]:
-    """Parse ``VALID UNTIL`` token (``hhmm`` or ``ddhhmm``) into day/hour/minute."""
+def _parse_until_token(until: str, *, issue_day: int | None = None) -> tuple[int, int, int]:
+    """
+    Internal helper ``_parse_until_token``.
+
+    Parameters
+    ----------
+    until : str
+        Argument ``until``.
+
+    issue_day : int | None, optional
+        Day of month from the bulletin heading when ``until`` is ``hhmm``.
+
+    Returns
+    -------
+    tuple[int, int, int]
+        Return value.
+    """
     if len(until) >= 6:
         return int(until[0:2]), int(until[2:4]), int(until[4:6])
     hour = int(until[0:2])
     minute = int(until[2:4])
-    return 9, hour, minute
+    return issue_day if issue_day is not None else 9, hour, minute
 
 
 def _attach_us_airmet_hazard(ir: dict[str, Any]) -> None:
-    """Map parsed AIRMET phenomenon to iwxxm-us ``AIRMETWeatherHazards`` when required."""
+    """
+    Internal helper ``_attach_us_airmet_hazard``.
+
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Argument ``ir``.
+    """
     phen = ir.get("phenomenon")
     if phen == "SFC_VIS":
         ir["us_airmet_hazard"] = {
@@ -512,7 +982,19 @@ def _attach_us_airmet_hazard(ir: dict[str, Any]) -> None:
 
 
 def _split_airmet_main_and_outlook(body: str) -> tuple[str, str | None]:
-    """Split AIRMET body into active and optional ``OTLK VALID`` outlook subsection."""
+    """
+    Internal helper ``_split_airmet_main_and_outlook``.
+
+    Parameters
+    ----------
+    body : str
+        Argument ``body``.
+
+    Returns
+    -------
+    tuple[str, str | None]
+        Return value.
+    """
     match = re.search(r"\bOTLK\b", body, flags=re.IGNORECASE)
     if match is None:
         return body, None
@@ -520,7 +1002,19 @@ def _split_airmet_main_and_outlook(body: str) -> tuple[str, str | None]:
 
 
 def _split_frzlvl_section(body: str) -> tuple[str, str | None]:
-    """Split optional standalone ``FRZLVL...`` subsection from the hazard body."""
+    """
+    Internal helper ``_split_frzlvl_section``.
+
+    Parameters
+    ----------
+    body : str
+        Argument ``body``.
+
+    Returns
+    -------
+    tuple[str, str | None]
+        Return value.
+    """
     match = _FRZLVL_SECTION.search(body)
     if match is None:
         return body, None
@@ -528,7 +1022,19 @@ def _split_frzlvl_section(body: str) -> tuple[str, str | None]:
 
 
 def _strip_conus_airmet_lead(body: str) -> str:
-    """Remove ``AIRMET ICE...`` phenomenon lead from a CONUS product body."""
+    """
+    Internal helper ``_strip_conus_airmet_lead``.
+
+    Parameters
+    ----------
+    body : str
+        Argument ``body``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
     if not _CONUS_AIR_LEAD.match(body):
         return body
     from_match = re.search(r"\bFROM\b", body, flags=re.IGNORECASE)
@@ -544,7 +1050,19 @@ def _strip_conus_airmet_lead(body: str) -> str:
 
 
 def _phenomenon_from_conus_for_text(for_text: str) -> str:
-    """Map CONUS ``FOR …`` clause tokens to IWXXM phenomenon codes."""
+    """
+    Internal helper ``_phenomenon_from_conus_for_text``.
+
+    Parameters
+    ----------
+    for_text : str
+        Argument ``for_text``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
     upper = for_text.upper()
     if "ICE" in upper:
         return "MOD_ICE"
@@ -554,11 +1072,24 @@ def _phenomenon_from_conus_for_text(for_text: str) -> str:
         return "SFC_VIS"
     if "MTN" in upper and "OBSC" in upper:
         return "MT_OBSC"
-    return _detect_phenomenon(for_text, _AIR_PHENOMENA)
+    # CONUS FOR-text may omit a catalog token; keep a stable default for that path only.
+    return _detect_phenomenon(for_text, _AIR_PHENOMENA) or "TS"
 
 
 def _parse_frzlvl_section(text: str) -> dict[str, Any]:
-    """Parse standalone ``FRZLVL...`` subsection into structured IR."""
+    """
+    Internal helper ``_parse_frzlvl_section``.
+
+    Parameters
+    ----------
+    text : str
+        Argument ``text``.
+
+    Returns
+    -------
+    dict[str, Any]
+        Return value.
+    """
     section: dict[str, Any] = {"isopleths": []}
     ranging = _FRZLVL_RANGING.search(text)
     if ranging is not None:
@@ -582,7 +1113,19 @@ def _parse_frzlvl_section(text: str) -> dict[str, Any]:
 
 
 def _try_parse_conus_airmet(text: str) -> dict[str, Any] | None:
-    """Parse CONUS/Hawaii ``AIRMET <series> UPDT`` bulletin when ICAO header absent."""
+    """
+    Internal helper ``_try_parse_conus_airmet``.
+
+    Parameters
+    ----------
+    text : str
+        Argument ``text``.
+
+    Returns
+    -------
+    dict[str, Any] | None
+        Return value.
+    """
     match = _CONUS_AIRMET.match(text)
     if match is None:
         return None
@@ -616,22 +1159,65 @@ def _try_parse_conus_airmet(text: str) -> dict[str, Any] | None:
 
 
 def _split_airmet_areas(body: str) -> list[str]:
-    """Split AND-joined multi-area AIRMET bodies (NWSI 10-811 §7.3)."""
+    """
+    Internal helper ``_split_airmet_areas``.
+
+    Parameters
+    ----------
+    body : str
+        Argument ``body``.
+
+    Returns
+    -------
+    list[str]
+        Return value.
+    """
     segments = [segment.strip() for segment in _AIR_AREA_BOUNDARY.split(body) if segment.strip()]
     return segments if len(segments) > 1 else [body]
 
 
 def _airmet_area_ir(segment: str, *, default_phenomenon: str | None = None) -> dict[str, Any]:
-    """Parse one geographic AIRMET subsection into a minimal IR fragment."""
-    area: dict[str, Any] = {
-        "phenomenon": default_phenomenon or _detect_phenomenon(segment, _AIR_PHENOMENA),
-    }
+    """
+    Internal helper ``_airmet_area_ir``.
+
+    Parameters
+    ----------
+    segment : str
+        Argument ``segment``.
+
+    default_phenomenon : str | None, optional
+        Argument ``default_phenomenon``.
+
+    Returns
+    -------
+    dict[str, Any]
+        Return value.
+    """
+    area: dict[str, Any] = {}
+    area_phenomenon = default_phenomenon or _detect_phenomenon(segment, _AIR_PHENOMENA)
+    if area_phenomenon is not None:
+        area["phenomenon"] = area_phenomenon
     _enrich_hazard_body(area, segment)
     return area
 
 
 def _parse_airmet_outlook(outlook_text: str, *, default_phenomenon: str) -> dict[str, Any]:
-    """Parse ``OTLK VALID`` outlook block (CONUS/Hawaii AIRMET bulletin §7.3 item 10)."""
+    """
+    Internal helper ``_parse_airmet_outlook``.
+
+    Parameters
+    ----------
+    outlook_text : str
+        Argument ``outlook_text``.
+
+    default_phenomenon : str
+        Argument ``default_phenomenon``.
+
+    Returns
+    -------
+    dict[str, Any]
+        Return value.
+    """
     match = _OTLK_VALID.search(outlook_text)
     if match is None:
         raise ValueError("unable to parse AIRMET outlook valid period")
@@ -649,16 +1235,33 @@ def _parse_airmet_outlook(outlook_text: str, *, default_phenomenon: str) -> dict
 
 
 def _apply_airmet_area_to_ir(ir: dict[str, Any], area: dict[str, Any]) -> None:
-    """Merge parsed area fields onto the root AIRMET IR."""
+    """
+    Internal helper ``_apply_airmet_area_to_ir``.
+
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Argument ``ir``.
+
+    area : dict[str, Any]
+        Argument ``area``.
+    """
     ir.update(area)
 
 
 def _parse_sequence_token(raw: str) -> tuple[int, str]:
     """
-    Normalize SIGMET/AIRMET sequence tokens to (numeric, label).
+    Internal helper ``_parse_sequence_token``.
 
-    Accepts ``12``, ``03``, ``A4``, ``E6``, ``A08``, ``T03``, and phonetic
-    forms such as ``FOXTROT 20`` / ``ALFA 12`` (US oceanic).
+    Parameters
+    ----------
+    raw : str
+        Argument ``raw``.
+
+    Returns
+    -------
+    tuple[int, str]
+        Return value.
     """
     token = " ".join(raw.upper().split())
     phonetic = re.fullmatch(r"([A-Z]+)\s+(\d+)", token)
@@ -674,20 +1277,61 @@ def _parse_sequence_token(raw: str) -> tuple[int, str]:
 
 
 def _strip_siga0_heading(text: str) -> str:
-    """Drop NWS ``SIGA0*`` abbreviated-heading lines before SIGMET body parse."""
+    """
+    Internal helper ``_strip_siga0_heading``.
+
+    Parameters
+    ----------
+    text : str
+        Argument ``text``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
     lines = [ln for ln in text.splitlines() if not _SIGA0_LINE.match(ln.strip())]
     return "\n".join(lines)
 
 
-def _parse_convective_sigmet(text: str) -> dict[str, Any] | None:
-    """Parse US ``CONVECTIVE SIGMET`` body (WST / #919 M11)."""
+def _parse_convective_sigmet(
+    text: str,
+    *,
+    issue_day: int | None = None,
+    office: str | None = None,
+) -> dict[str, Any] | None:
+    """
+    Internal helper ``_parse_convective_sigmet``.
+
+    Parameters
+    ----------
+    text : str
+        Argument ``text``.
+
+    issue_day : int | None, optional
+        Day of month used when ``VALID UNTIL`` has no day.
+
+    office : str | None, optional
+        Issuing office from the heading when the body has no unit id.
+
+    Returns
+    -------
+    dict[str, Any] | None
+        Return value.
+    """
     match = _CONVECTIVE_SIGMET.match(text)
     if match is None:
         return None
-    body = match.group("body")
+    body = re.split(
+        r"\b(?:OUTLOOK|REF\s+INTL)\b",
+        match.group("body"),
+        maxsplit=1,
+        flags=re.IGNORECASE,
+    )[0].strip()
     tag = match.group("tag").upper()
-    unit = (match.group("unit") or "MKCC").upper()
-    to_d, to_h, to_m = _parse_until_token(match.group("until"))
+    named_unit = match.group("unit")
+    unit = (named_unit or office or "MKCC").upper()
+    to_d, to_h, to_m = _parse_until_token(match.group("until"), issue_day=issue_day)
     # Active period ends at UNTIL; issue ~2h earlier (NWS convective convention).
     from_h = to_h - 2
     from_d = to_d
@@ -734,10 +1378,43 @@ def _parse_convective_sigmet(text: str) -> dict[str, Any] | None:
         if fl_m is not None:  # pragma: no branch — same regex as elif guard
             ir["top_fl"] = int(fl_m.group("fl"))
             ir["top_qualifier"] = "TO"
-    vor_geometry = parse_vor_reference_geometry(f"FROM {body.split('AREA', 1)[0]}")
+    # Isolate the FROM chain before AREA / DVLPG / LINE / DMSHG hazard lead-ins (NWS WST).
+    geom_src = re.split(
+        r"\b(?:DVLPG|AREA|DMSHG\s+LINE|LINE)\b",
+        body,
+        maxsplit=1,
+        flags=re.IGNORECASE,
+    )[0]
+    vor_geometry = parse_vor_reference_geometry(f"FROM {geom_src}")
     if vor_geometry is not None:
         ir["geometry"] = vor_geometry
     return ir
+
+
+def _sigmet_region_indicator(match: re.Match[str], body: str) -> str:
+    """
+    Return the flight information region indicator for a SIGMET header.
+
+    Parameters
+    ----------
+    match : re.Match[str]
+        Header match. The leading indicator may be absent.
+
+    body : str
+        SIGMET body after the watch-office hyphen.
+
+    Returns
+    -------
+    str
+        Leading indicator, else the four-letter token before ``FIR``, else the watch office.
+    """
+    raw = match.group("fir")
+    if raw:
+        return raw.upper()
+    named = _BODY_FIR.search(body.upper())
+    if named is not None:
+        return named.group("fir")
+    return match.group("mwo").upper()
 
 
 def parse_sigmet(tac: str, *, product: str = "SIGMET") -> dict[str, Any]:
@@ -746,15 +1423,21 @@ def parse_sigmet(tac: str, *, product: str = "SIGMET") -> dict[str, Any]:
 
     Parameters
     ----------
-    tac :
+    tac : str
         SIGMET TAC text.
-    product :
+
+    product : str, optional
         Expected ``SIGMET``.
 
     Returns
     -------
     dict
         Intermediate representation.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (parse_sigmet)
+    2
     """
     if product.upper() != "SIGMET":
         raise ValueError(f"product mismatch: expected SIGMET, found {product}")
@@ -768,8 +1451,11 @@ def parse_sigmet(tac: str, *, product: str = "SIGMET") -> dict[str, Any]:
         body_tac = raw_in[ahl_match.end() :]
 
     body_tac = _strip_siga0_heading(body_tac)
+    body_tac = unwrap_wrapped_coordinates(body_tac)
     text = _normalize(body_tac)
-    conv = _parse_convective_sigmet(text)
+    issue_day = int(ahl_match.group("yygggg")[:2]) if ahl_match is not None else None
+    office = ahl_match.group("cccc") if ahl_match is not None else None
+    conv = _parse_convective_sigmet(text, issue_day=issue_day, office=office)
     if conv is not None:
         if ahl_tt is not None:
             conv["ahl_tt"] = ahl_tt
@@ -778,10 +1464,12 @@ def parse_sigmet(tac: str, *, product: str = "SIGMET") -> dict[str, Any]:
     if match is None:
         raise ValueError("unable to parse SIGMET header")
 
-    body = match.group("body")
+    body = without_cancellation_remark(match.group("body"))
     from_d, from_h, from_m = _parse_valid(match.group("from"))
     to_d, to_h, to_m = _parse_valid(match.group("to"))
+    _require_ordered_valid_period(from_d, from_h, from_m, to_d, to_h, to_m, product="SIGMET")
     seq_num, seq_label = _parse_sequence_token(match.group("seq"))
+    fir = _sigmet_region_indicator(match, body)
     upper_body = body.upper()
     if "AMSWELL" in upper_body:
         fir_name = "AMSWELL FIR"
@@ -790,11 +1478,16 @@ def parse_sigmet(tac: str, *, product: str = "SIGMET") -> dict[str, Any]:
     elif "SHANWICK OCEANIC FIR" in upper_body:
         fir_name = "SHANWICK OCEANIC FIR"
     else:
-        fir_name = match.group("fir").upper()
+        fir_name = flight_information_region_name(
+            body,
+            fir,
+            watch_office=match.group("mwo"),
+        )
+    phenomenon = _detect_phenomenon(body, _SIG_PHENOMENA)
     ir: dict[str, Any] = {
         "ir_version": 1,
         "product": "SIGMET",
-        "fir": match.group("fir").upper(),
+        "fir": fir,
         "mwo": match.group("mwo").upper(),
         "sequence": seq_num,
         "valid_from_day": from_d,
@@ -803,10 +1496,11 @@ def parse_sigmet(tac: str, *, product: str = "SIGMET") -> dict[str, Any]:
         "valid_to_day": to_d,
         "valid_to_hour": to_h,
         "valid_to_minute": to_m,
-        "phenomenon": _detect_phenomenon(body, _SIG_PHENOMENA),
         "fir_name": fir_name,
         "raw": text,
     }
+    if phenomenon is not None:
+        ir["phenomenon"] = phenomenon
     if seq_label != str(seq_num):
         ir["sequence_label"] = seq_label
     fir_extra = match.groupdict().get("fir_extra")
@@ -816,6 +1510,14 @@ def parse_sigmet(tac: str, *, product: str = "SIGMET") -> dict[str, Any]:
     if ahl_tt is not None:
         ir["ahl_tt"] = ahl_tt
     _enrich_sigmet_body(ir, body)
+    if not ir.get("cancel") and not ir.get("phenomenon"):
+        # AirWx tokens such as MOD TURB belong on AIRMET; SigWx uses SEV TURB.
+        if re.search(r"\bMOD\s+TURB\b", body, flags=re.IGNORECASE):
+            raise ValueError(
+                "SIGMET body missing phenomenon: moderate turbulence (MOD TURB) is "
+                "not a SIGMET phenomenon — use SEV TURB on a SIGMET, or issue an AIRMET"
+            )
+        raise ValueError("SIGMET body missing phenomenon")
     # Content-selected IWXXM root under product=sigmet (E19-13 / F23 V2 / TC-EV029-004).
     # WC/WV AHL select family roots for CNL when the body omits phenomenon.
     if ir.get("phenomenon") == "TC" or ahl_tt == "WC":
@@ -831,15 +1533,21 @@ def parse_airmet(tac: str, *, product: str = "AIRMET") -> dict[str, Any]:
 
     Parameters
     ----------
-    tac :
+    tac : str
         AIRMET TAC text.
-    product :
+
+    product : str, optional
         Expected ``AIRMET``.
 
     Returns
     -------
     dict
         Intermediate representation.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (parse_airmet)
+    2
     """
     if product.upper() != "AIRMET":
         raise ValueError(f"product mismatch: expected AIRMET, found {product}")
@@ -870,7 +1578,9 @@ def parse_airmet(tac: str, *, product: str = "AIRMET") -> dict[str, Any]:
         body = match.group("body")
         from_d, from_h, from_m = _parse_valid(match.group("from"))
         to_d, to_h, to_m = _parse_valid(match.group("to"))
+        _require_ordered_valid_period(from_d, from_h, from_m, to_d, to_h, to_m, product="AIRMET")
         seq_num, seq_label = _parse_sequence_token(match.group("seq"))
+        phenomenon = _detect_phenomenon(body, _AIR_PHENOMENA)
         ir = {
             "ir_version": 1,
             "product": "AIRMET",
@@ -883,10 +1593,11 @@ def parse_airmet(tac: str, *, product: str = "AIRMET") -> dict[str, Any]:
             "valid_to_day": to_d,
             "valid_to_hour": to_h,
             "valid_to_minute": to_m,
-            "phenomenon": _detect_phenomenon(body, _AIR_PHENOMENA),
             "fir_name": "SHANLON FIR" if "SHANLON" in body.upper() else match.group("fir").upper(),
             "raw": text,
         }
+        if phenomenon is not None:
+            ir["phenomenon"] = phenomenon
         if seq_label != str(seq_num):
             ir["sequence_label"] = seq_label
     main_body, outlook_body = _split_airmet_main_and_outlook(body)
@@ -909,8 +1620,10 @@ def parse_airmet(tac: str, *, product: str = "AIRMET") -> dict[str, Any]:
     if chart is not None:
         ir["gfa_chart_id"] = chart.group(1).upper()
     area_segments = _split_airmet_areas(hazard_body)
+    default_phenomenon = ir.get("phenomenon")
+    default_phenomenon_s = str(default_phenomenon) if default_phenomenon is not None else None
     if len(area_segments) > 1:
-        areas = [_airmet_area_ir(segment, default_phenomenon=str(ir["phenomenon"])) for segment in area_segments]
+        areas = [_airmet_area_ir(segment, default_phenomenon=default_phenomenon_s) for segment in area_segments]
         ir["areas"] = areas
         _apply_airmet_area_to_ir(ir, areas[0])
     else:
@@ -918,7 +1631,9 @@ def parse_airmet(tac: str, *, product: str = "AIRMET") -> dict[str, Any]:
     if frzlvl_body is not None:
         ir["frzlvl_section"] = _parse_frzlvl_section(frzlvl_body)
     if outlook_body is not None:
-        outlook = _parse_airmet_outlook(outlook_body, default_phenomenon=str(ir["phenomenon"]))
+        if default_phenomenon_s is None:
+            raise ValueError("AIRMET body missing phenomenon")
+        outlook = _parse_airmet_outlook(outlook_body, default_phenomenon=default_phenomenon_s)
         outlook["valid_from_day"] = ir["valid_from_day"]
         if outlook["valid_to_hour"] < outlook["valid_from_hour"] or (
             outlook["valid_to_hour"] == outlook["valid_from_hour"]
@@ -928,6 +1643,8 @@ def parse_airmet(tac: str, *, product: str = "AIRMET") -> dict[str, Any]:
         else:
             outlook["valid_to_day"] = ir["valid_to_day"]
         ir["outlook"] = outlook
+    if not ir.get("cancel") and not ir.get("phenomenon") and not ir.get("ca_gfa_phenomenon"):
+        raise ValueError("AIRMET body missing phenomenon")
     _attach_us_airmet_hazard(ir)
     return ir
 

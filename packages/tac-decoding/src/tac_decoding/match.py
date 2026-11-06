@@ -18,12 +18,28 @@ _TOKEN = re.compile(r"=|[^\s=]+")
 
 
 class MatchBudgetError(ValueError):
-    """The matcher stopped because it used its step budget."""
+    """
+    The matcher stopped because it used its step budget.
+
+    Attributes
+    ----------
+    args : tuple
+        Arguments passed to the exception constructor.
+    """
 
 
 @dataclass(frozen=True, slots=True)
 class MatchContext:
-    """Caller-owned version and profile. Packs do not select these."""
+    """
+    Caller-owned version and profile. Packs do not select these.
+
+    Attributes
+    ----------
+    iwxxm_version : str | None
+        IWXXM release line. Default ``None``.
+    profile : str | None
+        Semantic profile id. Default ``None``.
+    """
 
     iwxxm_version: str | None = None
     profile: str | None = None
@@ -31,7 +47,22 @@ class MatchContext:
 
 @dataclass(frozen=True, slots=True)
 class MatchSpan:
-    """One matched or residual slice of the original TAC."""
+    """
+    One matched or residual slice of the original TAC.
+
+    Attributes
+    ----------
+    start : int
+        Start.
+    end : int
+        End.
+    code : str
+        Machine-readable error code.
+    explanation : str
+        Explanation.
+    rule_id : str
+        Rule id.
+    """
 
     start: int
     end: int
@@ -42,7 +73,22 @@ class MatchSpan:
 
 @dataclass(frozen=True, slots=True)
 class MatchResult:
-    """Spans, leftovers, and the version context the caller supplied."""
+    """
+    Spans, leftovers, and the version context the caller supplied.
+
+    Attributes
+    ----------
+    spans : tuple[MatchSpan, ...]
+        Spans.
+    residuals : tuple[MatchSpan, ...]
+        Residuals.
+    steps : int
+        Steps.
+    iwxxm_version : str | None
+        IWXXM release line.
+    profile : str | None
+        Semantic profile id.
+    """
 
     spans: tuple[MatchSpan, ...]
     residuals: tuple[MatchSpan, ...]
@@ -60,7 +106,39 @@ def match_tac(
     locale: str = ENGLISH,
     hook: ExplanationHook | None = None,
 ) -> MatchResult:
-    """Match ``tac`` with ``pack``. The same text explains the same way on every pin."""
+    """
+    Match ``tac`` with ``pack``. The same text explains the same way on every pin.
+
+    Parameters
+    ----------
+    tac : str
+        TAC text.
+
+    pack : Pack
+        Decode pack.
+
+    context : MatchContext | None, optional
+        Match context.
+
+    max_steps : int, optional
+        Maximum match steps.
+
+    locale : str, optional
+        Locale code.
+
+    hook : ExplanationHook | None, optional
+        Explanation hook.
+
+    Returns
+    -------
+    MatchResult
+        Match ``tac`` with ``pack``.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (match_tac)
+    2
+    """
     require_locale(locale)
     ctx = context or MatchContext()
     explain = _Explain(locale, hook or ExplanationHook())
@@ -73,10 +151,31 @@ def match_tac(
 
 @dataclass(frozen=True, slots=True)
 class _Explain:
+    """Internal helper ``_Explain``."""
+
     locale: str
     hook: ExplanationHook
 
     def __call__(self, rule: Rule, groups: tuple[str, ...] = (), value: str | None = None) -> str:
+        """
+        Internal helper ``__call__``.
+
+        Parameters
+        ----------
+        rule : Rule
+            Argument ``rule``.
+
+        groups : tuple[str, ...], optional
+            Argument ``groups``.
+
+        value : str | None, optional
+            Argument ``value``.
+
+        Returns
+        -------
+        str
+            Return value.
+        """
         template = self.hook.template_for(rule.id, rule.explain)
         return render_template(template, groups, value=value, locale=self.locale)
 
@@ -87,10 +186,48 @@ def _result(
     residuals: list[MatchSpan],
     steps: int,
 ) -> MatchResult:
+    """
+    Internal helper ``_result``.
+
+    Parameters
+    ----------
+    ctx : MatchContext
+        Argument ``ctx``.
+
+    spans : list[MatchSpan]
+        Argument ``spans``.
+
+    residuals : list[MatchSpan]
+        Argument ``residuals``.
+
+    steps : int
+        Argument ``steps``.
+
+    Returns
+    -------
+    MatchResult
+        Return value.
+    """
     return MatchResult(tuple(spans), tuple(residuals), steps, ctx.iwxxm_version, ctx.profile)
 
 
 def _stub(tac: str, ctx: MatchContext) -> MatchResult:
+    """
+    Internal helper ``_stub``.
+
+    Parameters
+    ----------
+    tac : str
+        Argument ``tac``.
+
+    ctx : MatchContext
+        Argument ``ctx``.
+
+    Returns
+    -------
+    MatchResult
+        Return value.
+    """
     if not tac:
         return _result(ctx, [], [], 0)
     span = MatchSpan(0, len(tac), tac, "", "")
@@ -98,6 +235,22 @@ def _stub(tac: str, ctx: MatchContext) -> MatchResult:
 
 
 def _bump(steps: int, max_steps: int) -> int:
+    """
+    Internal helper ``_bump``.
+
+    Parameters
+    ----------
+    steps : int
+        Argument ``steps``.
+
+    max_steps : int
+        Argument ``max_steps``.
+
+    Returns
+    -------
+    int
+        Return value.
+    """
     steps += 1
     if steps > max_steps:
         msg = f"Matcher stopped after {max_steps} steps"
@@ -112,6 +265,31 @@ def _match_tokens(
     max_steps: int,
     explain: _Explain,
 ) -> MatchResult:
+    """
+    Internal helper ``_match_tokens``.
+
+    Parameters
+    ----------
+    tac : str
+        Argument ``tac``.
+
+    pack : Pack
+        Argument ``pack``.
+
+    ctx : MatchContext
+        Argument ``ctx``.
+
+    max_steps : int
+        Argument ``max_steps``.
+
+    explain : _Explain
+        Argument ``explain``.
+
+    Returns
+    -------
+    MatchResult
+        Return value.
+    """
     tokens = list(_TOKEN.finditer(tac))
     spans: list[MatchSpan] = []
     residuals: list[MatchSpan] = []
@@ -138,6 +316,37 @@ def _take_tokens(
     max_steps: int,
     explain: _Explain,
 ) -> tuple[MatchSpan | None, int, int]:
+    """
+    Internal helper ``_take_tokens``.
+
+    Parameters
+    ----------
+    tac : str
+        Argument ``tac``.
+
+    tokens : list[re.Match[str]]
+        Argument ``tokens``.
+
+    index : int
+        Argument ``index``.
+
+    rules : tuple[Rule, ...]
+        Argument ``rules``.
+
+    steps : int
+        Argument ``steps``.
+
+    max_steps : int
+        Argument ``max_steps``.
+
+    explain : _Explain
+        Argument ``explain``.
+
+    Returns
+    -------
+    tuple[MatchSpan | None, int, int]
+        Return value.
+    """
     for rule in rules:
         steps = _bump(steps, max_steps)
         count = len(rule.patterns)
@@ -161,6 +370,31 @@ def _match_labels(
     max_steps: int,
     explain: _Explain,
 ) -> MatchResult:
+    """
+    Internal helper ``_match_labels``.
+
+    Parameters
+    ----------
+    tac : str
+        Argument ``tac``.
+
+    pack : Pack
+        Argument ``pack``.
+
+    ctx : MatchContext
+        Argument ``ctx``.
+
+    max_steps : int
+        Argument ``max_steps``.
+
+    explain : _Explain
+        Argument ``explain``.
+
+    Returns
+    -------
+    MatchResult
+        Return value.
+    """
     rules = tuple(sorted(pack.rules, key=lambda rule: len(rule.label), reverse=True))
     spans: list[MatchSpan] = []
     residuals: list[MatchSpan] = []
@@ -186,6 +420,34 @@ def _take_label(
     max_steps: int,
     explain: _Explain,
 ) -> tuple[MatchSpan | None, int]:
+    """
+    Internal helper ``_take_label``.
+
+    Parameters
+    ----------
+    content : str
+        Argument ``content``.
+
+    offset : int
+        Argument ``offset``.
+
+    rules : tuple[Rule, ...]
+        Argument ``rules``.
+
+    steps : int
+        Argument ``steps``.
+
+    max_steps : int
+        Argument ``max_steps``.
+
+    explain : _Explain
+        Argument ``explain``.
+
+    Returns
+    -------
+    tuple[MatchSpan | None, int]
+        Return value.
+    """
     for rule in rules:
         steps = _bump(steps, max_steps)
         matched = re.match(re.escape(rule.label) + r"\s*:\s*(.*)$", content, re.IGNORECASE)

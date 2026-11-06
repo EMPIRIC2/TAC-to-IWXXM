@@ -1,101 +1,39 @@
-# GitHub Project board — TAC-to-IWXXM
+# GitHub Project board (EMPIRIC2 #7)
 
-Canonical Project Status and planning policy for agents and humans.
+[Corpus: project-board]
 
-[Corpus: project-board] · Decision log: [decisions/ev-project-board-planning.md](decisions/ev-project-board-planning.md)
+Organization project:
+[EMPIRIC2 Project #7](https://github.com/orgs/EMPIRIC2/projects/7)
+(TAC-to-IWXXM board — Status / Size / Iteration / velocity).
 
-| Key | Value |
-|-----|--------|
-| Owner | `EMPIRIC2` |
-| Project | **#7** — [TAC-to-IWXXM](https://github.com/orgs/EMPIRIC2/projects/7) |
-| Repo | `EMPIRIC2/TAC-to-IWXXM` |
-| Capacity | **20 h/week** solo · ~**15 shipping h/week** · **2-week** iterations (~**30 shipping h**/iteration) |
-| I01 start | **2026-09-15** (Mon–Sun × 2; each Ix = 14 days) |
+## Auto-import of issues
 
-## Status columns (left → right)
+Two complementary paths:
 
-`Backlog` → `Ready` → `In progress` → `In review` → `On stage` → `On main` → `Done`
+1. **Native Project workflow (preferred when available)**  
+   Project → Workflows → Auto-add to project (filter `is:issue`).
 
-| Status | Meaning |
-|--------|---------|
-| Backlog | Parked / umbrella / spike / not next |
-| Ready | Shippable slice; pull only when a WIP slot is free |
-| In progress | Active session / implementation |
-| In review | Implementing PR open |
-| On stage | On `stage` / staging smoke green |
-| On main | On `main` / prod smoke green |
-| Done | AC met; session closed |
+2. **Repository Actions workflow**
+   [`.github/workflows/project-auto-add.yml`](../.github/workflows/project-auto-add.yml)  
+   Runs on `issues: [opened, reopened, transferred]`.
 
-## Planning fields
+### `PROJECT_TOKEN` secret
 
-| Field | Values | Use |
-|-------|--------|-----|
-| Priority | P0–P3 | Board rank (keep issue `priority-*` labels aligned) |
-| Size | XS / S / M / L / XL | Relative effort (XS≈2h … XL≈32h) |
-| Estimate (h) | number | Hours for this issue (or remaining chunk) |
-| Iteration | I00-Backlog, I01… (single-select) | Two-week bucket; **not** GitHub native Iteration field; epics stay `I00-Backlog` |
-| Due date | date | Prefer milestone due; override for hard gates |
+The `actions/add-to-project` action needs a token that can write organization
+Projects. The default `GITHUB_TOKEN` is not enough for organization Project #7.
 
-Size → hours guide: **XS=2 · S=4 · M=8 · L=16 · XL=32**.
+| Item | Value |
+|------|--------|
+| Secret name | `PROJECT_TOKEN` (repository Actions secret) |
+| Token type | Fine-grained personal access token (PAT) on a dedicated bot user |
+| Scopes | Organization **Projects** (read and write); this repository **Issues** (read) |
+| Do not use | Classic PAT with blanket `repo` scope |
 
-## Iteration windows (from I01)
+If `PROJECT_TOKEN` is unset, the workflow **warns and skips** (the job stays
+green) so a missing secret does not fail every new issue. Restore auto-add by
+setting the secret or by relying on the native Project workflow above.
 
-| Ix | Window (Mon–Sun × 2) |
-|----|----------------------|
-| I01 | 2026-09-15 → 2026-09-28 |
-| I02 | 2026-09-29 → 2026-10-12 |
-| I03 | 2026-10-13 → 2026-10-26 |
-| I04 | 2026-10-27 → 2026-11-09 |
-| I05 | 2026-11-10 → 2026-11-23 |
+## Related
 
-Further Ix continue every 14 days; epics use `I00-Backlog`.
-
-## Velocity / WIP
-
-1. **Done rate:** ≈ **1–2** shippable issues/week at 20 h ≡ **2–4** Done / **2-week** iteration (supersedes older ~12 Done/week swarm assumption).
-2. **WIP cap:** ≤ **2** issues in `In progress` (prefer **1**).
-3. **Ready queue:** keep **3–5** small shippable issues in `Ready`. Refill from the **active milestone** first.
-4. **Epics:** `epic`-labeled issues stay in `Backlog` / `I00-Backlog` until children are Done.
-5. **Sizing:** one Done issue ≈ one mergeable PR. Split umbrellas before Ready.
-6. **Orphans:** every open issue must be on Project #7 (`item-add` if missing).
-
-## Lifecycle sync (agents)
-
-| Trigger | Status |
-|---------|--------|
-| Session / evolve / hotfix open (linked issue) | `In progress` |
-| Implementing PR opened | `In review` |
-| Merged to `stage` / staging smoke green | `On stage` |
-| Merged to `main` / prod smoke green | `On main` |
-| AC done / session close | `Done` |
-
-## Auto-import new tickets
-
-1. **Preferred:** Project → Workflows → **Auto-add to project** for `EMPIRIC2/TAC-to-IWXXM`, filter `is:issue`, enabled.
-2. **Fallback CI:** `.github/workflows/project-auto-add.yml` uses `actions/add-to-project` on `issues: [opened, reopened, transferred]`. Requires repo secret **`PROJECT_TOKEN`**: a **fine-grained PAT** on a dedicated bot account with **Organization → Projects (read & write)** and **Repository → Issues (read-only)** for `EMPIRIC2/TAC-to-IWXXM` only. Do **not** use a classic PAT with blanket `repo` scope.
-
-Sub-issue auto-add may already be enabled; it does **not** replace issue auto-add.
-
-## Milestones (SOW pace)
-
-IWXXM deadlines follow these GitHub milestones (not the EMPIRIC2-planning climate-validation SOW).
-
-| Milestone | Due | Focus |
-|-----------|-----|--------|
-| [M1](https://github.com/EMPIRIC2/TAC-to-IWXXM/milestone/4) — Profiles | 2026-09-19 | Annex 3 / US / custom closeout |
-| [M2](https://github.com/EMPIRIC2/TAC-to-IWXXM/milestone/5) — Dissemination realtime | 2026-10-17 | #843 family; WIS2/EDIS/AMHS/AFTN |
-| [M3](https://github.com/EMPIRIC2/TAC-to-IWXXM/milestone/6) — Automation | 2026-11-07 | #876; live harvest / DB |
-| [M4](https://github.com/EMPIRIC2/TAC-to-IWXXM/milestone/7) — Nov 11 gate | 2026-11-11 | Hardening, manuals, demo freeze |
-| [M5](https://github.com/EMPIRIC2/TAC-to-IWXXM/milestone/8) — Post-workshop / AMS | 2027-01-31 | Platform UI deepen, AMS |
-
-**Nov 11 must-ship (solo):** #1159, thin #911+#806, #1028–1031, #1121–1123, #1025, #949, spike #877.  
-**Slip post-gate unless thinned:** #909, #910, #777, #728, #970 remainder, M5 UI.
-
-Live schedule snapshot: session `EV-two-week-iterations` → `reports/draft-schedule.md` (2-week; supersedes `EV-project-board-planning` 1-week draft).
-
-## Views (recommended)
-
-- **Board** — Group by Status
-- **Ready** — `status:Ready`
-- **WIP** — `status:"In progress","In review"`
-- **By iteration** — Group by Iteration (table)
+- Workflow regression:
+  `tests/bugs/quality/test_bug_2026_10_30_project_auto_add_missing_token.py`

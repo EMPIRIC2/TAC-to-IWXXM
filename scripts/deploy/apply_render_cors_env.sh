@@ -76,4 +76,4 @@ echo "Deploy started: ${deploy_id:-unknown}"
 
 echo ""
 echo "Wait for deploy to finish, then verify:"
-echo "  uv run pytest tests/bugs/test_bug_2026_06_20_login_cors_failed_fetch.py -m live -v"
+echo "  uv run pytest tests/bugs/auth/test_bug_2026_06_20_login_cors_failed_fetch.py -m live -v"

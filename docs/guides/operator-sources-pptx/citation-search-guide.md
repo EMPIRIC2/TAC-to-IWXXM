@@ -1,11 +1,26 @@
-# Citation & search guide — national compliance briefing
+# Citation & search guide - national compliance briefing
 
 > **Audience:** MET / aviation authority leadership (State / ANSP / Met Service heads)  
 > **Purpose:** Find **citable** ICAO/WMO landings for “why we must produce IWXXM” and “what good looks like” — without inventing deadlines or pasting paywalled SARPs text.  
 > **Policy:** [ACCESS_AND_CITATION.md](../../domain/rules/ACCESS_AND_CITATION.md)  
 > **Master URL catalog:** [RULE_SOURCE_URLS.md](../../domain/rules/RULE_SOURCE_URLS.md)
 
-Use this before finalizing slides. Prefer **landing pages + edition + section numbers** over long quotations.
+Use this guide before you finalize slides. Prefer **landing pages + edition + section
+numbers** over long quotations.
+
+Terms used in this guide:
+
+- **MET** means meteorological.
+- **ANSP** means air navigation service provider.
+- **ICAO** means International Civil Aviation Organization.
+- **WMO** means World Meteorological Organization.
+- **IWXXM** means ICAO/WMO XML weather exchange format.
+- **OPMET** means operational meteorological information.
+- **SARPs** means Standards and Recommended Practices.
+- **TAC** means Traditional Alphanumeric Code.
+- **XSD** means XML Schema Definition.
+- **Schematron** means rule-based XML checks beyond XSD.
+- **SoT** means source of truth.
 
 ---
 
@@ -48,7 +63,7 @@ Repo digs (help find section numbers; not SoT):
 
 1. ICAO Store → search **“Annex 3”** → open the **edition your State has adopted**.  
 2. In-PDF search: `IWXXM`, `XML`, `digital`, `dissemination`, `METAR`, `TAF`, `SIGMET`.  
-3. Record **chapter / appendix / table** numbers on slides — not paragraphs.  
+3. Record **chapter / appendix / table** numbers on slides, not paragraphs.  
 4. Download **OPMET IWXXM Exchange Guidelines 5th** (table #3) → search `translation`, `Schematron`, `AMHS`, `FTBP`.  
 5. Store search **“Doc 10003”** → use the **published** edition (not the 2014 advance draft).
 
@@ -60,7 +75,7 @@ Repo digs (help find section numbers; not SoT):
 
 ### C. “How do we prove a bulletin is exchange-ready?”
 
-1. Guidelines 5th → generation / translation / validation (repo dig: §5.3 — XSD **and** Schematron).  
+1. Guidelines 5th → generation / translation / validation (repo dig: §5.3, XSD **and** Schematron).  
 2. Pipeline: TAC lint → convert → XSD → Schematron.  
 3. Official examples: `…/2025-2/examples/` and `vendor/schemas/iwxxm/`.
 
@@ -117,11 +132,11 @@ Ops notes: [ICAO_OPMET_COMPLIANCE.md](../../domain/iwxxm/ICAO_OPMET_COMPLIANCE.m
 
 ## 6. Leave-behind one-pager
 
-1. Annex 3 (Store) — SARPs  
-2. Doc 10003 (Store) — exchange model  
-3. OPMET IWXXM Guidelines 5th (public PDF) — how to implement exchange  
-4. schemas.wmo.int/iwxxm/2025-2 — validate here  
-5. codes.wmo.int — vocabularies  
+1. Annex 3 (Store): SARPs  
+2. Doc 10003 (Store): exchange model  
+3. OPMET IWXXM Guidelines 5th (public PDF): how to implement exchange  
+4. schemas.wmo.int/iwxxm/2025-2: validate here  
+5. codes.wmo.int: vocabularies  
 6. This system: lint → convert → XSD+SCH against pin v2025-2  
 
 [Corpus: product §F6/F7] [docs/domain/rules/ACCESS_AND_CITATION.md]

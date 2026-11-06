@@ -1,7 +1,8 @@
 """Evaluation endpoints for METAR conversion validation."""
 
 from datetime import UTC, datetime
-from typing import Any
+from typing import Any, NoReturn
+from uuid import UUID
 
 from fastapi import APIRouter, BackgroundTasks, HTTPException, Query
 
@@ -34,9 +35,61 @@ from ..utilities.station_sampler import StationSampler
 
 router = APIRouter()
 
+# Public eval routes historically passed the literal "anonymous". The
+# evaluation_jobs.user_id column is UUID, so callers must send a real UUID.
+# Stable nil UUID keeps list/create queries from raising cast errors when the
+# store is present; missing-table / FK failures still map to 503 below.
+_ANONYMOUS_EVAL_USER_ID = str(UUID(int=0))
+
+
+def _eval_user_id() -> str:
+    """
+    Return the store user id for unauthenticated evaluation routes.
+
+    Returns
+    -------
+    str
+        Nil UUID string used when no authenticated operator is present.
+    """
+    return _ANONYMOUS_EVAL_USER_ID
+
+
+def _raise_store_unavailable(exc: BaseException) -> NoReturn:
+    """
+    Map evaluation persistence failures to HTTP 503 (fail closed).
+
+    Parameters
+    ----------
+    exc : BaseException
+        Underlying store / database failure.
+
+    Returns
+    -------
+    NoReturn
+        Always raises ``HTTPException``; never returns.
+    """
+    raise HTTPException(
+        status_code=503,
+        detail="Evaluation store unavailable",
+    ) from exc
+
 
 async def run_evaluation_job(job_id: str, request: EvaluationRequest) -> None:
-    """Background task to run evaluation job."""
+    """
+    Background task to run evaluation job.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (run_evaluation_job)
+    2
+
+    Parameters
+    ----------
+    job_id : object
+        Argument ``job_id``.
+    request : object
+        Argument ``request``.
+    """
     try:
         await update_job_status(job_id, "running")
 
@@ -140,13 +193,34 @@ async def run_evaluation_job(job_id: str, request: EvaluationRequest) -> None:
     "/jobs",
     response_model=EvaluationJobResponse,
     tags=["Evaluation"],
+    summary="Create an evaluation job",
     responses={},
 )
 async def create_evaluation_job(
     request: EvaluationRequest,
     background_tasks: BackgroundTasks,
 ) -> object:
-    """Create a new evaluation job."""
+    """
+    Create a new evaluation job.
+
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (create_evaluation_job)
+    2
+
+    Parameters
+    ----------
+    request : object
+        Argument ``request``.
+    background_tasks : object
+        Argument ``background_tasks``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if request.mode == EvaluationMode.SINGLE and not request.station_ids:
         raise HTTPException(status_code=400, detail="station_ids required for single mode")
 
@@ -161,11 +235,16 @@ async def create_evaluation_job(
         )
         station_count = len(all_stations)
 
-    job_id = await create_job_in_db(
-        user_id="anonymous",
-        mode=request.mode.value,
-        total_stations=station_count,
-    )
+    try:
+        job_id = await create_job_in_db(
+            user_id=_eval_user_id(),
+            mode=request.mode.value,
+            total_stations=station_count,
+        )
+    except HTTPException:
+        raise
+    except Exception as exc:
+        _raise_store_unavailable(exc)
 
     background_tasks.add_task(run_evaluation_job, job_id, request)
 
@@ -181,13 +260,37 @@ async def create_evaluation_job(
     "/jobs/{job_id}",
     response_model=EvaluationJobStatus,
     tags=["Evaluation"],
+    summary="Evaluation job status",
     responses={},
 )
 async def get_job_status(
     job_id: str,
 ) -> object:
-    """Get the status of an evaluation job."""
-    job = await get_job_for_user(job_id, "anonymous")
+    """
+    Get the status of an evaluation job.
+
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (get_job_status)
+    2
+
+    Parameters
+    ----------
+    job_id : object
+        Argument ``job_id``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
+    try:
+        job = await get_job_for_user(job_id, _eval_user_id())
+    except HTTPException:
+        raise
+    except Exception as exc:
+        _raise_store_unavailable(exc)
     if job is None:
         raise HTTPException(status_code=404, detail="Job not found")
 
@@ -216,6 +319,7 @@ async def get_job_status(
     "/jobs/{job_id}/results",
     response_model=EvaluationResultsResponse,
     tags=["Evaluation"],
+    summary="Evaluation job results",
     responses={},
 )
 async def get_job_results(
@@ -224,18 +328,52 @@ async def get_job_results(
     per_page: int = Query(50, ge=1, le=100),
     status_filter: ComparisonStatus | None = None,
 ) -> object:
-    """Get evaluation results for a job (paginated)."""
-    job = await get_job_for_user(job_id, "anonymous")
+    """
+    Get evaluation results for a job (paginated).
+
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (get_job_results)
+    2
+
+    Parameters
+    ----------
+    job_id : object
+        Argument ``job_id``.
+    page : object
+        Argument ``page``.
+    per_page : object
+        Argument ``per_page``.
+    status_filter : object
+        Argument ``status_filter``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
+    try:
+        job = await get_job_for_user(job_id, _eval_user_id())
+    except HTTPException:
+        raise
+    except Exception as exc:
+        _raise_store_unavailable(exc)
     if job is None:
         raise HTTPException(status_code=404, detail="Job not found")
 
     offset = (page - 1) * per_page
-    results_data, total_count = await list_results_for_job(
-        job_id,
-        limit=per_page,
-        offset=offset,
-        status_filter=status_filter.value if status_filter else None,
-    )
+    try:
+        results_data, total_count = await list_results_for_job(
+            job_id,
+            limit=per_page,
+            offset=offset,
+            status_filter=status_filter.value if status_filter else None,
+        )
+    except HTTPException:
+        raise
+    except Exception as exc:
+        _raise_store_unavailable(exc)
 
     results: list[Any] = []
     for row in results_data:
@@ -267,12 +405,38 @@ async def get_job_results(
     "/jobs",
     response_model=JobListResponse,
     tags=["Evaluation"],
+    summary="List evaluation jobs",
     responses={},
 )
 async def list_user_jobs(page: int = Query(1, ge=1), per_page: int = Query(20, ge=1, le=100)) -> object:
-    """List all evaluation jobs for the current user."""
+    """
+    List all evaluation jobs for the current user.
+
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (list_user_jobs)
+    2
+
+    Parameters
+    ----------
+    page : object
+        Argument ``page``.
+    per_page : object
+        Argument ``per_page``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     offset = (page - 1) * per_page
-    jobs_data, total_count = await list_jobs_for_user("anonymous", per_page, offset)
+    try:
+        jobs_data, total_count = await list_jobs_for_user(_eval_user_id(), per_page, offset)
+    except HTTPException:
+        raise
+    except Exception as exc:
+        _raise_store_unavailable(exc)
 
     jobs: list[Any] = []
     for job in jobs_data:

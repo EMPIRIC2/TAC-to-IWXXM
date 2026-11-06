@@ -47,7 +47,11 @@ def test_v1_families_present_in_artifact(sets: dict[str, frozenset[str]]) -> Non
 def test_repo_root_default_without_override(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.delenv("TAC_VALIDATE_REPO_ROOT", raising=False)
 
-    assert membership.repo_root().name == "TAC-to-IWXXM"
+    # Default resolves to the monorepo root that holds ``vendor/schemas``. Assert
+    # the marker rather than a hardcoded folder name so the check also passes from
+    # a linked git worktree (whose basename differs from ``TAC-to-IWXXM``).
+    root = membership.repo_root()
+    assert (root / "vendor" / "schemas").is_dir()
 
 
 def test_csv_notations_skips_blank_rows(tmp_path: Path) -> None:

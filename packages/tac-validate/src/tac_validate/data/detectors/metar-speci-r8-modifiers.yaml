@@ -60,8 +60,11 @@ rules:
   - id: rvr_scan
     kind: token_scan
     skip_if_match: '\bNIL\b'
-    select: '^R\d{2}\S*$'
-    ok: '^R\d{2}[LCR]?/(?:[MP]?\d{4}(?:V[MP]?\d{4})?|////)(?:FT)?[UDN]?$'
+    # Require '/' after runway — bare R14R after WS is wind-shear runway, not RVR.
+    # Exclude CIS/Russian runway-state Rxx/dddddd (not ICAO RVR).
+    select: '^(?!R\d{2}[LCR]?/\d{6}$)R\d{2}[LCR]?/\S*$'
+    # Optional '/' before U|D|N (Canadian MANOBS …FT/N); ICAO …FTN / …N still OK.
+    ok: '^R\d{2}[LCR]?/(?:[MP]?\d{4}(?:V[MP]?\d{4})?|////)(?:FT)?(?:/[UDN]|[UDN])?$'
     on_ok:
       code: RVR_PRESENT
       location: modifier

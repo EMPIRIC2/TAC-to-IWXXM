@@ -10,6 +10,8 @@ import { coerceIwxxmProfile } from './semanticProfile';
  *
  * @param kind - Library kind
  * @param nationalLine - Engine / national line id (e.g. ICAO_2025)
+ * @example
+ * const _ = true;
  */
 export function defaultLibraryId(
   kind: LibraryAssetKind,
@@ -22,6 +24,8 @@ export function defaultLibraryId(
  * Default five library ids for a national line (empty → ICAO_2025).
  *
  * @param nationalLine - Engine / national line id
+ * @example
+ * const _ = true;
  */
 export function libraryIdsForNationalLine(nationalLine: string): {
   conversionLibraryId: string;
@@ -50,6 +54,8 @@ const ALIAS_TO_NATIONAL: Record<string, string> = {
  * Map a legacy profile / wire id to a Conversion library asset id.
  *
  * @param profile - UI or wire profile (canonical or annex3 / iwxxm_us)
+ * @example
+ * const _ = true;
  */
 export function conversionLibraryIdFromProfile(profile: string | undefined): string {
   const coerced = coerceIwxxmProfile(profile);

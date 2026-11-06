@@ -34,7 +34,7 @@ One-paragraph purpose: issuing body, products, thin vs full path.
 
 ## Fixtures
 
-`packages/tac2iwxxm/tests/fixtures/profiles/PLACEHOLDER_ID/` — see playbook §4.
+`packages/tac2iwxxm/tests/fixtures/profiles/PLACEHOLDER_ID/`; see playbook §4.
 
 ## Gaps
 

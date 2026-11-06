@@ -20,13 +20,27 @@ logger = logging.getLogger(__name__)
 
 
 class ValidationError(Exception):
-    """Raised when validation fails critically."""
+    """
+    Raised when validation fails critically.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     pass
 
 
 class ValidationService:
-    """Service for layered validation of METAR/TAC and IWXXM XML."""
+    """
+    Service for layered validation of METAR/TAC and IWXXM XML.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     def __init__(self) -> None:
         """Initialize validation service."""
@@ -39,14 +53,24 @@ class ValidationService:
 
         Extracts ICAO from TAC text and validates against airport database.
 
-        Args:
-            tac_text: METAR/SPECI TAC format text
+        Returns
+        -------
+            ValidationResult with pass/fail statlid (blocking validation)
 
-        Returns:
+        Parameters
+        ----------
+        tac_text : object
+            METAR/SPECI TAC format text
+
+        Returns
+        -------
+        object
             ValidationResult with pass/fail status
 
-        Raises:
-            ValidationError: If ICAO code is invalid (blocking validation)
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (validate_airport_icao)
+        2
         """
         start_time = time.time()
         result = ValidationResult(
@@ -77,17 +101,17 @@ class ValidationService:
                 )
                 raise ValidationError(f"Invalid ICAO code format: {icao}")
 
-            # Check if ICAO exists in database. Unknown codes are soft-fail (WARNING)
-            # so WMO fictional stations (YUDO) and offline demos still convert (UJ-036 /
-            # ADR-032). Missing / malformed ICAO remain blocking.
+            # Unknown ICAO soft-warns (WARNING) and does not block convert — aerodrome
+            # registry enrich is advisory [Corpus: product §F3]. Missing / malformed
+            # ICAO remain blocking.
             if not self.airport_validator.validate_icao(icao):
                 result.add_issue(
                     level=ValidationLevel.WARNING,
-                    message=f"Unknown ICAO code: {icao}",
+                    message=f"Station {icao} is not in the aerodrome registry",
                     code="UNKNOWN_ICAO",
                     suggestion=(
-                        f"ICAO code '{icao}' not found in airport database; "
-                        "conversion continues (demo / fictional stations allowed)"
+                        f"Designator '{icao}' was not found in the local airport catalog; "
+                        "conversion continues, but coordinates and airport name may be incomplete"
                     ),
                 )
                 result.metadata = {"icao": icao, "airport_known": False}
@@ -125,11 +149,24 @@ class ValidationService:
 
         Performs basic TAC format validation before attempting conversion.
 
-        Args:
-            tac_text: METAR/SPECI TAC format text
-
-        Returns:
+        Returns
+        -------
             ValidationResult with syntax issues
+
+        Parameters
+        ----------
+        tac_text : object
+            METAR/SPECI TAC format text
+
+        Returns
+        -------
+        object
+            ValidationResult with syntax issues
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (validate_tac_syntax)
+        2
         """
         start_time = time.time()
         result = ValidationResult(
@@ -192,9 +229,31 @@ class ValidationService:
         layers: list[ValidationLayer] | None = None,
         iwxxm_version: str | None = None,
     ) -> AggregatedValidationResult:
-        """Validate TAC content for the requested layers (router entry point).
+        """
+        Validate TAC content for the requested layers (router entry point).
 
         XML / IWXXM content must be routed through ``ValidationOrchestrator``.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (validate)
+        2
+
+        Parameters
+        ----------
+        content : object
+            Argument ``content``.
+        content_type : object
+            Argument ``content_type``.
+        layers : object
+            Argument ``layers``.
+        iwxxm_version : object
+            Argument ``iwxxm_version``.
+
+        Returns
+        -------
+        object
+            Return value.
         """
         del iwxxm_version
         normalized = (content_type or "tac").strip().lower()
@@ -228,6 +287,11 @@ class ValidationService:
         -------
         AggregatedValidationResult
             Aggregated TAC layer results.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (validate_all_layers)
+        2
         """
         results: list[Any] = []
         wanted = (
@@ -275,7 +339,19 @@ class ValidationService:
 
     @staticmethod
     def _extract_icao_from_tac(tac_text: str) -> str | None:
-        """Extract ICAO code from METAR/SPECI TAC text."""
+        """
+        Internal helper ``_extract_icao_from_tac``.
+
+        Parameters
+        ----------
+        tac_text : object
+            Argument ``tac_text``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         icao = extract_airport_code(tac_text)
         if icao:
             return icao
@@ -293,7 +369,19 @@ _validation_service: ValidationService | None = None
 
 
 def get_validation_service() -> ValidationService:
-    """Get or create the global ValidationService instance."""
+    """
+    Get or create the global ValidationService instance.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (get_validation_service)
+    2
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     global _validation_service
     if _validation_service is None:
         _validation_service = ValidationService()

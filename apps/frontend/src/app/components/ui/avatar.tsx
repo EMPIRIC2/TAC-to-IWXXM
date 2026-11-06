@@ -5,6 +5,9 @@ import * as AvatarPrimitive from '@radix-ui/react-avatar';
 
 import { cn } from './utils';
 
+/**
+ * Function `Avatar`.
+ */
 function Avatar({
   className,
   ...props
@@ -21,6 +24,9 @@ function Avatar({
   );
 }
 
+/**
+ * Function `AvatarImage`.
+ */
 function AvatarImage({
   className,
   ...props
@@ -34,6 +40,9 @@ function AvatarImage({
   );
 }
 
+/**
+ * Function `AvatarFallback`.
+ */
 function AvatarFallback({
   className,
   ...props

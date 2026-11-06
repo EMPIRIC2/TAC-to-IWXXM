@@ -47,4 +47,34 @@ describe('WorkbenchConsole catalog tooltips (T5.4)', () => {
       'MISSING_TERMINATOR',
     );
   });
+
+  it('opens issue details for a console lint line', async () => {
+    const user = userEvent.setup();
+    const byCode = new Map([
+      ['MISSING_TERMINATOR', { ...ENTRY, source_attribution: 'WMO code list' }],
+    ]);
+    render(
+      <WorkbenchConsole
+        defaultOpen
+        lines={[
+          {
+            level: 'warn',
+            source: 'lint-tac',
+            message: '1 issue(s): [MISSING_TERMINATOR] add terminator',
+            at: 1,
+          },
+        ]}
+        catalogByCode={byCode}
+      />,
+    );
+    await user.click(screen.getByTestId('issue-detail-open-0'));
+    expect(screen.getByTestId('issue-detail-dialog')).toHaveTextContent(
+      "Reports in bulletins end with '='",
+    );
+    expect(screen.getByTestId('issue-detail-dialog')).toHaveTextContent(
+      'WMO code list',
+    );
+    await user.click(screen.getByTestId('issue-detail-close'));
+    expect(screen.queryByTestId('issue-detail-dialog')).not.toBeInTheDocument();
+  });
 });

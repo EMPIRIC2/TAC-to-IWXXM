@@ -1,0 +1,303 @@
+rule_id: MISSING_TC_IDENTITY
+engine: lint
+cases:
+- bucket: happy
+  case_id: '01'
+  status: ready
+  tac: WSTPAX KZAK SIGMET XRAY 1 VALID 231320/231920 PHFO- OAKLAND OCEANIC FIR TC
+    SURIGAE PSN N1725 E13700 CB OBS AT 1200Z WI N2100 E13430 - N2100 E13915 - N1615
+    E13915 - N1615 E13445 - N2100 E13430. TOP FL580. MOV NW 11KT. NC. FCST AT 1800Z
+    TC CENTER PSN N1730 E13555.=
+  expect:
+    accept: true
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 MISSING_TC_IDENTITY/happy NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'
+- bucket: happy
+  case_id: '02'
+  status: ready
+  tac: WSTP0E KZAK SIGMET ECHO 14 VALID 231510/232110 KKCI- OAKLAND OCEANIC FIR TC
+    ODALYS PSN N1600 W12754 OBS AT 1500Z NR N1600 W12754. MOV ENE 7KT. NC.  TOP FL570
+    WI N1912 W12620 - N1715 W12116 - N1112 W13038 - N1609 W13332 - N1912 W12620. FCST
+    2100Z TC CENTER N1607 W12713.=
+  expect:
+    accept: true
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 MISSING_TC_IDENTITY/happy NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'
+- bucket: happy
+  case_id: '03'
+  status: ready
+  tac: WSTP0E KZAK SIGMET ECHO 14 VALID 231510/232110 KKCI- OAKLAND OCEANIC FIR TC
+    ODALYS PSN N1600 W12754 OBS AT 1500Z NR N1600 W12754. MOV ENE 7KT. NC.  TOP FL570
+    WI N1912 W12620 - N1715 W12116 - N1112 W13038 - N1609 W13332 - N1912 W12620. FCST
+    2100Z TC CENTER N1607 W12713.=
+  expect:
+    accept: true
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 MISSING_TC_IDENTITY/happy NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'
+- bucket: happy
+  case_id: '04'
+  status: ready
+  tac: WSTPAX KZAK SIGMET XRAY 1 VALID 231320/231920 PHFO- OAKLAND OCEANIC FIR TC
+    SURIGAE PSN N1725 E13700 CB OBS AT 1200Z WI N2100 E13430 - N2100 E13915 - N1615
+    E13915 - N1615 E13445 - N2100 E13430. TOP FL580. MOV NW 11KT. NC. FCST AT 1800Z
+    TC CENTER PSN N1730 E13555.=
+  expect:
+    accept: true
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 MISSING_TC_IDENTITY/happy NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'
+- bucket: happy
+  case_id: '05'
+  status: ready
+  tac: WSTP0E KZAK SIGMET ECHO 14 VALID 231510/232110 KKCI- OAKLAND OCEANIC FIR TC
+    ODALYS PSN N1600 W12754 OBS AT 1500Z NR N1600 W12754. MOV ENE 7KT. NC.  TOP FL570
+    WI N1912 W12620 - N1715 W12116 - N1112 W13038 - N1609 W13332 - N1912 W12620. FCST
+    2100Z TC CENTER N1607 W12713.=
+  expect:
+    accept: true
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 MISSING_TC_IDENTITY/happy NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'
+- bucket: sad
+  case_id: '01'
+  status: ready
+  tac: WSTPAX KZAK SIGMET XRAY 1 VALID 231320/231920 PHFO- OAKLAND OCEANIC FIR TC
+    SURIGAE N1725 E13700 CB OBS AT 1200Z WI N2100 E13430 - N2100 E13915 - N1615 E13915
+    - N1615 E13445 - N2100 E13430. TOP FL580. MOV NW 11KT. NC. FCST AT 1800Z TC CENTER
+    N1730 E13555.=
+  expect:
+    accept: false
+    codes:
+    - MISSING_TC_IDENTITY
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 MISSING_TC_IDENTITY/sad NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'
+- bucket: sad
+  case_id: '02'
+  status: ready
+  tac: WSTP0E KZAK SIGMET ECHO 14 VALID 231510/232110 KKCI- OAKLAND OCEANIC FIR TC
+    ODALYS N1600 W12754 OBS AT 1500Z NR N1600 W12754. MOV ENE 7KT. NC.  TOP FL570
+    WI N1912 W12620 - N1715 W12116 - N1112 W13038 - N1609 W13332 - N1912 W12620. FCST
+    2100Z TC CENTER N1607 W12713.=
+  expect:
+    accept: false
+    codes:
+    - MISSING_TC_IDENTITY
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 MISSING_TC_IDENTITY/sad NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'
+- bucket: sad
+  case_id: '03'
+  status: ready
+  tac: WSTP0E KZAK SIGMET ECHO 14 VALID 231510/232110 KKCI- OAKLAND OCEANIC FIR TC
+    ODALYS N1600 W12754 OBS AT 1500Z NR N1600 W12754. MOV ENE 7KT. NC.  TOP FL570
+    WI N1912 W12620 - N1715 W12116 - N1112 W13038 - N1609 W13332 - N1912 W12620. FCST
+    2100Z TC CENTER N1607 W12713.=
+  expect:
+    accept: false
+    codes:
+    - MISSING_TC_IDENTITY
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 MISSING_TC_IDENTITY/sad NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'
+- bucket: sad
+  case_id: '04'
+  status: ready
+  tac: WSTPAX KZAK SIGMET XRAY 1 VALID 231320/231920 PHFO- OAKLAND OCEANIC FIR TC
+    SURIGAE N1725 E13700 CB OBS AT 1200Z WI N2100 E13430 - N2100 E13915 - N1615 E13915
+    - N1615 E13445 - N2100 E13430. TOP FL580. MOV NW 11KT. NC. FCST AT 1800Z TC CENTER
+    N1730 E13555.=
+  expect:
+    accept: false
+    codes:
+    - MISSING_TC_IDENTITY
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 MISSING_TC_IDENTITY/sad NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'
+- bucket: sad
+  case_id: '05'
+  status: ready
+  tac: WSTP0E KZAK SIGMET ECHO 14 VALID 231510/232110 KKCI- OAKLAND OCEANIC FIR TC
+    ODALYS N1600 W12754 OBS AT 1500Z NR N1600 W12754. MOV ENE 7KT. NC.  TOP FL570
+    WI N1912 W12620 - N1715 W12116 - N1112 W13038 - N1609 W13332 - N1912 W12620. FCST
+    2100Z TC CENTER N1607 W12713.=
+  expect:
+    accept: false
+    codes:
+    - MISSING_TC_IDENTITY
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 MISSING_TC_IDENTITY/sad NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'
+- bucket: edge_pass
+  case_id: '01'
+  status: ready
+  tac: WSTPAX KZAK SIGMET XRAY 1 VALID 231320/231920 PHFO- OAKLAND OCEANIC FIR TC
+    SURIGAE PSN N1725 E13700 CB OBS AT 1200Z WI N2100 E13430 - N2100 E13915 - N1615
+    E13915 - N1615 E13445 - N2100 E13430. TOP FL580. MOV NW 11KT. NC. FCST AT 1800Z
+    TC CENTER PSN N1730 E13555.=
+  expect:
+    accept: true
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 MISSING_TC_IDENTITY/edge_pass NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'
+- bucket: edge_pass
+  case_id: '02'
+  status: ready
+  tac: WSTP0E KZAK SIGMET ECHO 14 VALID 231510/232110 KKCI- OAKLAND OCEANIC FIR TC
+    ODALYS PSN N1600 W12754 OBS AT 1500Z NR N1600 W12754. MOV ENE 7KT. NC.  TOP FL570
+    WI N1912 W12620 - N1715 W12116 - N1112 W13038 - N1609 W13332 - N1912 W12620. FCST
+    2100Z TC CENTER N1607 W12713.=
+  expect:
+    accept: true
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 MISSING_TC_IDENTITY/edge_pass NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'
+- bucket: edge_pass
+  case_id: '03'
+  status: ready
+  tac: WSTP0E KZAK SIGMET ECHO 14 VALID 231510/232110 KKCI- OAKLAND OCEANIC FIR TC
+    ODALYS PSN N1600 W12754 OBS AT 1500Z NR N1600 W12754. MOV ENE 7KT. NC.  TOP FL570
+    WI N1912 W12620 - N1715 W12116 - N1112 W13038 - N1609 W13332 - N1912 W12620. FCST
+    2100Z TC CENTER N1607 W12713.=
+  expect:
+    accept: true
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 MISSING_TC_IDENTITY/edge_pass NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'
+- bucket: edge_pass
+  case_id: '04'
+  status: ready
+  tac: WSTPAX KZAK SIGMET XRAY 1 VALID 231320/231920 PHFO- OAKLAND OCEANIC FIR TC
+    SURIGAE PSN N1725 E13700 CB OBS AT 1200Z WI N2100 E13430 - N2100 E13915 - N1615
+    E13915 - N1615 E13445 - N2100 E13430. TOP FL580. MOV NW 11KT. NC. FCST AT 1800Z
+    TC CENTER PSN N1730 E13555.=
+  expect:
+    accept: true
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 MISSING_TC_IDENTITY/edge_pass NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'
+- bucket: edge_pass
+  case_id: '05'
+  status: ready
+  tac: WSTP0E KZAK SIGMET ECHO 14 VALID 231510/232110 KKCI- OAKLAND OCEANIC FIR TC
+    ODALYS PSN N1600 W12754 OBS AT 1500Z NR N1600 W12754. MOV ENE 7KT. NC.  TOP FL570
+    WI N1912 W12620 - N1715 W12116 - N1112 W13038 - N1609 W13332 - N1912 W12620. FCST
+    2100Z TC CENTER N1607 W12713.=
+  expect:
+    accept: true
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 MISSING_TC_IDENTITY/edge_pass NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'
+- bucket: edge_fail
+  case_id: '01'
+  status: ready
+  tac: WSTPAX KZAK SIGMET XRAY 1 VALID 231320/231920 PHFO- OAKLAND OCEANIC FIR TC
+    SURIGAE N1725 E13700 CB OBS AT 1200Z WI N2100 E13430 - N2100 E13915 - N1615 E13915
+    - N1615 E13445 - N2100 E13430. TOP FL580. MOV NW 11KT. NC. FCST AT 1800Z TC CENTER
+    N1730 E13555.=
+  expect:
+    accept: false
+    codes:
+    - MISSING_TC_IDENTITY
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 MISSING_TC_IDENTITY/edge_fail NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'
+- bucket: edge_fail
+  case_id: '02'
+  status: ready
+  tac: WSTP0E KZAK SIGMET ECHO 14 VALID 231510/232110 KKCI- OAKLAND OCEANIC FIR TC
+    ODALYS N1600 W12754 OBS AT 1500Z NR N1600 W12754. MOV ENE 7KT. NC.  TOP FL570
+    WI N1912 W12620 - N1715 W12116 - N1112 W13038 - N1609 W13332 - N1912 W12620. FCST
+    2100Z TC CENTER N1607 W12713.=
+  expect:
+    accept: false
+    codes:
+    - MISSING_TC_IDENTITY
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 MISSING_TC_IDENTITY/edge_fail NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'
+- bucket: edge_fail
+  case_id: '03'
+  status: ready
+  tac: WSTP0E KZAK SIGMET ECHO 14 VALID 231510/232110 KKCI- OAKLAND OCEANIC FIR TC
+    ODALYS N1600 W12754 OBS AT 1500Z NR N1600 W12754. MOV ENE 7KT. NC.  TOP FL570
+    WI N1912 W12620 - N1715 W12116 - N1112 W13038 - N1609 W13332 - N1912 W12620. FCST
+    2100Z TC CENTER N1607 W12713.=
+  expect:
+    accept: false
+    codes:
+    - MISSING_TC_IDENTITY
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 MISSING_TC_IDENTITY/edge_fail NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'
+- bucket: edge_fail
+  case_id: '04'
+  status: ready
+  tac: WSTPAX KZAK SIGMET XRAY 1 VALID 231320/231920 PHFO- OAKLAND OCEANIC FIR TC
+    SURIGAE N1725 E13700 CB OBS AT 1200Z WI N2100 E13430 - N2100 E13915 - N1615 E13915
+    - N1615 E13445 - N2100 E13430. TOP FL580. MOV NW 11KT. NC. FCST AT 1800Z TC CENTER
+    N1730 E13555.=
+  expect:
+    accept: false
+    codes:
+    - MISSING_TC_IDENTITY
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 MISSING_TC_IDENTITY/edge_fail NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'
+- bucket: edge_fail
+  case_id: '05'
+  status: ready
+  tac: WSTP0E KZAK SIGMET ECHO 14 VALID 231510/232110 KKCI- OAKLAND OCEANIC FIR TC
+    ODALYS N1600 W12754 OBS AT 1500Z NR N1600 W12754. MOV ENE 7KT. NC.  TOP FL570
+    WI N1912 W12620 - N1715 W12116 - N1112 W13038 - N1609 W13332 - N1912 W12620. FCST
+    2100Z TC CENTER N1607 W12713.=
+  expect:
+    accept: false
+    codes:
+    - MISSING_TC_IDENTITY
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 MISSING_TC_IDENTITY/edge_fail NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'

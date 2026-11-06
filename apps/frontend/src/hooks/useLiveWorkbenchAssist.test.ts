@@ -41,6 +41,9 @@ vi.mock('/utils/api', () => ({
 
 import { useLiveWorkbenchAssist } from './useLiveWorkbenchAssist';
 
+/**
+ *
+ */
 async function flushDebouncedAssist(): Promise<void> {
   await act(async () => {
     await vi.advanceTimersByTimeAsync(LIVE_ASSIST_DEBOUNCE_MS + 5);
@@ -166,9 +169,70 @@ describe('useLiveWorkbenchAssist', () => {
     });
     expect(result.current.consoleLines).toHaveLength(1);
     act(() => {
+      result.current.appendConsole({
+        level: 'warn',
+        source: 'test',
+        message: 'replaced',
+      });
+    });
+    expect(result.current.consoleLines).toEqual([
+      expect.objectContaining({ message: 'replaced' }),
+    ]);
+    act(() => {
       result.current.clearConsole();
     });
     expect(result.current.consoleLines).toHaveLength(0);
+  });
+
+  it('replaces console lines on each lint pass (no running history)', async () => {
+    lintTac.mockResolvedValueOnce({
+      ok: false,
+      issues: [
+        {
+          severity: 'error',
+          code: 'A',
+          message: 'first pass',
+          start: 0,
+          end: 1,
+        },
+      ],
+      fixes: [],
+    });
+    const { result, rerender } = renderHook(
+      ({ text }: { text: string }) =>
+        useLiveWorkbenchAssist({
+          text,
+          product: 'METAR',
+          enabled: true,
+        }),
+      { initialProps: { text: 'METAR ONE' } },
+    );
+    await flushDebouncedAssist();
+    expect(
+      result.current.consoleLines.filter((l) => l.message.includes('first pass')),
+    ).toHaveLength(1);
+
+    lintTac.mockResolvedValueOnce({
+      ok: false,
+      issues: [
+        {
+          severity: 'error',
+          code: 'B',
+          message: 'second pass',
+          start: 0,
+          end: 1,
+        },
+      ],
+      fixes: [],
+    });
+    rerender({ text: 'METAR TWO' });
+    await flushDebouncedAssist();
+    expect(
+      result.current.consoleLines.some((l) => l.message.includes('first pass')),
+    ).toBe(false);
+    expect(
+      result.current.consoleLines.filter((l) => l.message.includes('second pass')),
+    ).toHaveLength(1);
   });
 
   it('attaches MISSING_TERMINATOR fix affordances and warning/info levels', async () => {
@@ -220,6 +284,33 @@ describe('useLiveWorkbenchAssist', () => {
     ).toBe(true);
     expect(result.current.consoleLines.some((l) => l.level === 'warn')).toBe(true);
     expect(result.current.consoleLines.some((l) => l.level === 'info')).toBe(true);
+  });
+
+  it('maps decode residuals into editor spans', async () => {
+    decodeTac.mockResolvedValue({
+      product: 'METAR',
+      segments: [{ start: 0, end: 5, code: 'METAR', explanation: 'type' }],
+      residuals: [{ start: 6, end: 10, text: 'XXXX' }],
+      summary: 'with residual',
+    });
+    lintTac.mockResolvedValue({ ok: true, issues: [], fixes: [] });
+
+    const { result } = renderHook(() =>
+      useLiveWorkbenchAssist({
+        text: 'METAR XXXX',
+        product: 'METAR',
+        enabled: true,
+      }),
+    );
+    await flushDebouncedAssist();
+
+    expect(result.current.decodeResiduals).toHaveLength(1);
+    expect(result.current.decodeResiduals[0]).toMatchObject({
+      start: 6,
+      end: 10,
+      text: 'XXXX',
+    });
+    expect(result.current.decodeSummary).toBe('with residual');
   });
 
   it('ignores abort errors and aborted signals without console noise', async () => {

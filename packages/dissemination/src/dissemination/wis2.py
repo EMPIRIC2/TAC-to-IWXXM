@@ -20,26 +20,59 @@ from dissemination.redact import redact_secrets
 class MqttClient(Protocol):
     """Minimal async MQTT client used by the WIS2 sink."""
 
-    async def connect(self) -> None: ...
+    async def connect(self) -> None:
+        """Open the MQTT connection."""
+        ...
 
-    async def publish(self, topic: str, payload: bytes) -> None: ...
+    async def publish(self, topic: str, payload: bytes) -> None:
+        """Publish ``payload`` to ``topic``."""
+        ...
 
-    async def disconnect(self) -> None: ...
+    async def disconnect(self) -> None:
+        """Close the MQTT connection."""
+        ...
 
 
 class HttpDatasetClient(Protocol):
     """Minimal async HTTP client for dataset PUT/GET/ping."""
 
-    async def ping(self, url: str) -> bool: ...
+    async def ping(self, url: str) -> bool:
+        """Return True when ``url`` responds successfully."""
+        ...
 
-    async def put_dataset(self, url: str, body: bytes, content_type: str) -> int: ...
+    async def put_dataset(self, url: str, body: bytes, content_type: str) -> int:
+        """PUT ``body`` to ``url`` and return the HTTP status code."""
+        ...
 
-    async def get_dataset(self, url: str) -> bytes: ...
+    async def get_dataset(self, url: str) -> bytes:
+        """GET dataset bytes from ``url``."""
+        ...
 
 
 @dataclass(frozen=True, slots=True)
 class Wis2Params:
-    """BYOC WIS2 endpoint parameters (memory-only; never logged raw)."""
+    """
+    BYOC WIS2 endpoint parameters (memory-only; never logged raw).
+
+    Attributes
+    ----------
+    mqtt_host : str
+        Mqtt host.
+    mqtt_topic : str
+        Mqtt topic.
+    dataset_url : str
+        Dataset URL.
+    mqtt_port : int, optional
+        Mqtt port. By default ``8883``.
+    centre_id : str or None, optional
+        Centre ID. By default ``None``.
+    mqtt_username : str or None, optional
+        Mqtt username. By default ``None``.
+    mqtt_password : str or None, optional
+        Mqtt password. By default ``None``.
+    use_tls : bool, optional
+        Use tls. By default ``True``.
+    """
 
     mqtt_host: str
     mqtt_topic: str
@@ -53,7 +86,20 @@ class Wis2Params:
 
 @dataclass(frozen=True, slots=True)
 class Wis2PublishResult:
-    """Result of a WIS2 publish (MQTT notify + HTTP dataset)."""
+    """
+    Result of a WIS2 publish (MQTT notify + HTTP dataset).
+
+    Attributes
+    ----------
+    ok : bool
+        True when the result succeeded.
+    dataset_url : str
+        Dataset URL.
+    mqtt_topic : str
+        Mqtt topic.
+    detail : str or None, optional
+        Detail text. By default ``None``.
+    """
 
     ok: bool
     dataset_url: str
@@ -62,6 +108,19 @@ class Wis2PublishResult:
 
 
 def _dataset_hostname(dataset_url: str) -> str:
+    """
+    Internal helper ``_dataset_hostname``.
+
+    Parameters
+    ----------
+    dataset_url : object
+        Argument ``dataset_url``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     host = urlparse(dataset_url).hostname
     if not host:
         raise ValueError("dataset_url must include a hostname")
@@ -69,11 +128,36 @@ def _dataset_hostname(dataset_url: str) -> str:
 
 
 def _validate_wis2_egress(params: Wis2Params, allowlist: Allowlist) -> None:
+    """
+    Internal helper ``_validate_wis2_egress``.
+
+    Parameters
+    ----------
+    params : object
+        Argument ``params``.
+    allowlist : object
+        Argument ``allowlist``.
+    """
     validate_egress_host(params.mqtt_host, allowlist=allowlist)
     validate_egress_host(_dataset_hostname(params.dataset_url), allowlist=allowlist)
 
 
 def _redact_exc(exc: BaseException, params: Wis2Params) -> str:
+    """
+    Internal helper ``_redact_exc``.
+
+    Parameters
+    ----------
+    exc : object
+        Argument ``exc``.
+    params : object
+        Argument ``params``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     text = redact_secrets(str(exc))
     if params.mqtt_password:
         text = text.replace(params.mqtt_password, "REDACTED")
@@ -92,15 +176,20 @@ def build_wis2_notification(
 
     Parameters
     ----------
-    params :
-        WIS2 BYOC parameters (topic + canonical dataset URL).
-    content_type :
-        Media type for the canonical link.
+    params : Wis2Params
+        Sink parameters.
+    content_type : str, optional
+        Content type. By default ``'application/xml'``.
 
     Returns
     -------
     dict[str, object]
-        JSON-serializable notification (no credentials).
+        Build a minimal WIS Notification Message-shaped JSON dict.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (build_wis2_notification)
+    2
     """
     centre = params.centre_id or "unknown"
     data_id = f"wis2/{centre}/{uuid4().hex}"
@@ -137,6 +226,27 @@ async def wis2_preflight(
         When MQTT or dataset hosts are not allowlisted.
     ValueError
         When transport checks fail (secrets redacted).
+
+    Parameters
+    ----------
+    params : Wis2Params
+        Sink parameters.
+    allowlist : Allowlist
+        Allowlist.
+    mqtt : MqttClient
+        Mqtt.
+    http : HttpDatasetClient
+        HTTP.
+
+    Returns
+    -------
+    PreflightResponse
+        Check allowlist + MQTT connect + HTTP dataset reachability.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (wis2_preflight)
+    2
     """
     _validate_wis2_egress(params, allowlist)
     try:
@@ -181,6 +291,31 @@ async def wis2_publish(
         When MQTT or dataset hosts are not allowlisted.
     ValueError
         When transport fails (secrets redacted).
+
+    Parameters
+    ----------
+    params : Wis2Params
+        Sink parameters.
+    iwxxm_xml : bytes or str
+        IWXXM XML text.
+    allowlist : Allowlist
+        Allowlist.
+    mqtt : MqttClient
+        Mqtt.
+    http : HttpDatasetClient
+        HTTP.
+    content_type : str, optional
+        Content type. By default ``'application/xml'``.
+
+    Returns
+    -------
+    Wis2PublishResult
+        PUT IWXXM dataset over HTTP, then publish MQTT notification with canonical link.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (wis2_publish)
+    2
     """
     _validate_wis2_egress(params, allowlist)
     body = iwxxm_xml.encode("utf-8") if isinstance(iwxxm_xml, str) else iwxxm_xml

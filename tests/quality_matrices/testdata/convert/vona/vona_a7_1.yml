@@ -1,0 +1,253 @@
+rule_id: vona_a7_1
+engine: convert
+cases:
+- bucket: happy
+  case_id: '01'
+  status: ready
+  tac: "VONA\nDTG:\t\t\t20240216/0130Z\nVOLCANO:\t\tKARYMSKY 300130\nPSN:\t\t\tN5403 E15927\nAREA:\t\t\tRUSSIA\nSOURCE ELEV:\t\t1536M AMSL\nNOTICE NR:\t\t2021/4\nCURRENT COLOUR CODE:\tYELLOW\nPREVIOUS COLOUR CODE:\tORANGE\nSVO:\t\t\tKVERT\nACT STS:\t\tDECREASED ACT\nONSET:\t\t\tNIL\nDUR:\t\t\tNIL\nVA CLD HGT:\t\t15KM AMSL\nHGT SOURCE:\t\tGRD OBSERVER\nMOV:\t\t\tSW\nCTC:\t\t\tDUTY VOLCANOLOGIEST, TEL +123-456-789 EMAIL, DUTY.VOLCANOLOGIEST[AT]VOLCANO.COM,\n\t\t\tWWW.VOLCANO.COM\nRMK:\t\t\tSATELLITE, SEISMIC AND INFRASOUND DATA SHOW NO EVIDENCE OF FURTHER ERUPTIVE\n\t\t\tACT. FUTURE EXPLOSIONS AT KARYMSKY ARE LIKELY. THEY OCCUR WO WRNG AND TYPICALLY\n\t\t\tPRODUCE SMALL VA CLD THAT DISSIPATE QUICKLY; HOWEVER, LARGER ASH ARE POSS.\nNXT NOTICE:\t\tWILL BE ISSUED BY 20240223/0130Z"
+  expect:
+    encode_ok: true
+    require_xml: true
+  meta:
+    product: VONA
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: annex3_golden/vona_a7_1.tac
+- bucket: happy
+  case_id: '02'
+  status: ready
+  tac: "VONA\nDTG:\t\t\t20240217/0130Z\nVOLCANO:\t\tKARYMSKY 300130\nPSN:\t\t\tN5403 E15927\nAREA:\t\t\tRUSSIA\nSOURCE ELEV:\t\t1536M AMSL\nNOTICE NR:\t\t2021/5\nCURRENT COLOUR CODE:\tYELLOW\nPREVIOUS COLOUR CODE:\tORANGE\nSVO:\t\t\tKVERT\nACT STS:\t\tDECREASED ACT\nONSET:\t\t\tNIL\nDUR:\t\t\tNIL\nVA CLD HGT:\t\t15KM AMSL\nHGT SOURCE:\t\tGRD OBSERVER\nMOV:\t\t\tSW\nCTC:\t\t\tDUTY VOLCANOLOGIEST, TEL +123-456-789 EMAIL, DUTY.VOLCANOLOGIEST[AT]VOLCANO.COM,\n\t\t\tWWW.VOLCANO.COM\nRMK:\t\t\tSATELLITE, SEISMIC AND INFRASOUND DATA SHOW NO EVIDENCE OF FURTHER ERUPTIVE\n\t\t\tACT. FUTURE EXPLOSIONS AT KARYMSKY ARE LIKELY. THEY OCCUR WO WRNG AND TYPICALLY\n\t\t\tPRODUCE SMALL VA CLD THAT DISSIPATE QUICKLY; HOWEVER, LARGER ASH ARE POSS.\nNXT NOTICE:\t\tWILL BE ISSUED BY 20240224/0130Z"
+  expect:
+    encode_ok: true
+    require_xml: true
+  meta:
+    product: VONA
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 variant of vona_a7_1
+- bucket: happy
+  case_id: '03'
+  status: ready
+  tac: "VONA\nDTG:\t\t\t20240216/0130Z\nVOLCANO:\t\tKARYMSKY 300130\nPSN:\t\t\tN5403 E15927\nAREA:\t\t\tRUSSIA\nSOURCE ELEV:\t\t1536M AMSL\nNOTICE NR:\t\t2021/6\nCURRENT COLOUR CODE:\tYELLOW\nPREVIOUS COLOUR CODE:\tORANGE\nSVO:\t\t\tKVERT\nACT STS:\t\tDECREASED ACT\nONSET:\t\t\tNIL\nDUR:\t\t\tNIL\nVA CLD HGT:\t\t15KM AMSL\nHGT SOURCE:\t\tGRD OBSERVER\nMOV:\t\t\tSW\nCTC:\t\t\tDUTY VOLCANOLOGIEST, TEL +123-456-789 EMAIL, DUTY.VOLCANOLOGIEST[AT]VOLCANO.COM,\n\t\t\tWWW.VOLCANO.COM\nRMK:\t\t\tSATELLITE, SEISMIC AND INFRASOUND DATA SHOW NO EVIDENCE OF FURTHER ERUPTIVE\n\t\t\tACT. FUTURE EXPLOSIONS AT KARYMSKY ARE LIKELY. THEY OCCUR WO WRNG AND TYPICALLY\n\t\t\tPRODUCE SMALL VA CLD THAT DISSIPATE QUICKLY; HOWEVER, LARGER ASH ARE POSS.\nNXT NOTICE:\t\tWILL BE ISSUED BY 20240223/0130Z"
+  expect:
+    encode_ok: true
+    require_xml: true
+  meta:
+    product: VONA
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 variant of vona_a7_1
+- bucket: happy
+  case_id: '04'
+  status: ready
+  tac: "VONA\nDTG:\t\t\t20240216/0130Z\nVOLCANO:\t\tKARYMSKY 300130\nPSN:\t\t\tN5403 E15927\nAREA:\t\t\tRUSSIA\nSOURCE ELEV:\t\t1536M AMSL\nNOTICE NR:\t\t2021/4\nCURRENT COLOUR CODE:\tYELLOW\nPREVIOUS COLOUR CODE:\tORANGE\nSVO:\t\t\tKVERT\nACT STS:\t\tDECREASED ACT\nONSET:\t\t\tNIL\nDUR:\t\t\tNIL\nVA CLD HGT:\t\t12KM AMSL\nHGT SOURCE:\t\tGRD OBSERVER\nMOV:\t\t\tSW\nCTC:\t\t\tDUTY VOLCANOLOGIEST, TEL +123-456-789 EMAIL, DUTY.VOLCANOLOGIEST[AT]VOLCANO.COM,\n\t\t\tWWW.VOLCANO.COM\nRMK:\t\t\tSATELLITE, SEISMIC AND INFRASOUND DATA SHOW NO EVIDENCE OF FURTHER ERUPTIVE\n\t\t\tACT. FUTURE EXPLOSIONS AT KARYMSKY ARE LIKELY. THEY OCCUR WO WRNG AND TYPICALLY\n\t\t\tPRODUCE SMALL VA CLD THAT DISSIPATE QUICKLY; HOWEVER, LARGER ASH ARE POSS.\nNXT NOTICE:\t\tWILL BE ISSUED BY 20240223/0130Z"
+  expect:
+    encode_ok: true
+    require_xml: true
+  meta:
+    product: VONA
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 variant of vona_a7_1
+- bucket: happy
+  case_id: '05'
+  status: ready
+  tac: "VONA\nDTG:\t\t\t20240216/0130Z\nVOLCANO:\t\tKARYMSKY 300130\nPSN:\t\t\tN5403 E15927\nAREA:\t\t\tRUSSIA\nSOURCE ELEV:\t\t1536M AMSL\nNOTICE NR:\t\t2021/4\nCURRENT COLOUR CODE:\tYELLOW\nPREVIOUS COLOUR CODE:\tORANGE\nSVO:\t\t\tKVERT\nACT STS:\t\tDECREASED ACT\nONSET:\t\t\tNIL\nDUR:\t\t\tNIL\nVA CLD HGT:\t\t15KM AMSL\nHGT SOURCE:\t\tGRD OBSERVER\nMOV:\t\t\tSE\nCTC:\t\t\tDUTY VOLCANOLOGIEST, TEL +123-456-789 EMAIL, DUTY.VOLCANOLOGIEST[AT]VOLCANO.COM,\n\t\t\tWWW.VOLCANO.COM\nRMK:\t\t\tSATELLITE, SEISMIC AND INFRASOUND DATA SHOW NO EVIDENCE OF FURTHER ERUPTIVE\n\t\t\tACT. FUTURE EXPLOSIONS AT KARYMSKY ARE LIKELY. THEY OCCUR WO WRNG AND TYPICALLY\n\t\t\tPRODUCE SMALL VA CLD THAT DISSIPATE QUICKLY; HOWEVER, LARGER ASH ARE POSS.\nNXT NOTICE:\t\tWILL BE ISSUED BY 20240223/0130Z"
+  expect:
+    encode_ok: true
+    require_xml: true
+  meta:
+    product: VONA
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 variant of vona_a7_1
+- bucket: sad
+  case_id: '01'
+  status: ready
+  tac: GARBAGE
+  expect:
+    encode_ok: false
+    codes:
+    - PARSE_ERROR
+  meta:
+    product: VONA
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 garbage tokens
+- bucket: sad
+  case_id: '02'
+  status: ready
+  tac: .
+  expect:
+    encode_ok: false
+    codes:
+    - PARSE_ERROR
+  meta:
+    product: VONA
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 dot-only TAC
+- bucket: sad
+  case_id: '03'
+  status: ready
+  tac: METAR YUDO 151800Z 13005MPS 9000 BKN020 17/16 Q1018=
+  expect:
+    encode_ok: false
+    codes:
+    - PARSE_ERROR
+  meta:
+    product: VONA
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 METAR body under product
+- bucket: sad
+  case_id: '04'
+  status: ready
+  tac: NOTAM YUDO CLOSED=
+  expect:
+    encode_ok: false
+    codes:
+    - PARSE_ERROR
+  meta:
+    product: VONA
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 non-product token
+- bucket: sad
+  case_id: '05'
+  status: ready
+  tac: SIGMET YUDO
+  expect:
+    encode_ok: false
+    codes:
+    - PARSE_ERROR
+  meta:
+    product: VONA
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 SIGMET keyword under product
+- bucket: edge_pass
+  case_id: '01'
+  status: ready
+  tac: "VONA\nDTG:\t\t\t20240216/0130Z\nVOLCANO:\t\tKARYMSKY 300130\nPSN:\t\t\tN5403 E15927\nAREA:\t\t\tRUSSIA\nSOURCE ELEV:\t\t1536M AMSL\nNOTICE NR:\t\t2021/4\nCURRENT COLOUR CODE:\tYELLOW\nPREVIOUS COLOUR CODE:\tORANGE\nSVO:\t\t\tKVERT\nACT STS:\t\tDECREASED ACT\nONSET:\t\t\tNIL\nDUR:\t\t\tNIL\nVA CLD HGT:\t\t15KM AMSL\nHGT SOURCE:\t\tGRD OBSERVER\nMOV:\t\t\tSW\nCTC:\t\t\tDUTY VOLCANOLOGIEST, TEL +123-456-789 EMAIL, DUTY.VOLCANOLOGIEST[AT]VOLCANO.COM,\n\t\t\tWWW.VOLCANO.COM\nRMK:\t\t\tSATELLITE, SEISMIC AND INFRASOUND DATA SHOW NO EVIDENCE OF FURTHER ERUPTIVE\n\t\t\tACT. FUTURE EXPLOSIONS AT KARYMSKY ARE LIKELY. THEY OCCUR WO WRNG AND TYPICALLY\n\t\t\tPRODUCE SMALL VA CLD THAT DISSIPATE QUICKLY; HOWEVER, LARGER ASH ARE POSS.\nNXT NOTICE:\t\tWILL BE ISSUED BY 20240223/0130Z"
+  expect:
+    encode_ok: true
+    require_xml: true
+  meta:
+    product: VONA
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 edge of vona_a7_1
+- bucket: edge_pass
+  case_id: '02'
+  status: ready
+  tac: "  VONA\nDTG:\t\t\t20240216/0130Z\nVOLCANO:\t\tKARYMSKY 300130\nPSN:\t\t\tN5403 E15927\nAREA:\t\t\tRUSSIA\nSOURCE ELEV:\t\t1536M AMSL\nNOTICE NR:\t\t2021/4\nCURRENT COLOUR CODE:\tYELLOW\nPREVIOUS COLOUR CODE:\tORANGE\nSVO:\t\t\tKVERT\nACT STS:\t\tDECREASED ACT\nONSET:\t\t\tNIL\nDUR:\t\t\tNIL\nVA CLD HGT:\t\t15KM AMSL\nHGT SOURCE:\t\tGRD OBSERVER\nMOV:\t\t\tSW\nCTC:\t\t\tDUTY VOLCANOLOGIEST, TEL +123-456-789 EMAIL, DUTY.VOLCANOLOGIEST[AT]VOLCANO.COM,\n\t\t\tWWW.VOLCANO.COM\nRMK:\t\t\tSATELLITE, SEISMIC AND INFRASOUND DATA SHOW NO EVIDENCE OF FURTHER ERUPTIVE\n\t\t\tACT. FUTURE EXPLOSIONS AT KARYMSKY ARE LIKELY. THEY OCCUR WO WRNG AND TYPICALLY\n\t\t\tPRODUCE SMALL VA CLD THAT DISSIPATE QUICKLY; HOWEVER, LARGER ASH ARE POSS.\nNXT NOTICE:\t\tWILL BE ISSUED BY 20240223/0130Z  "
+  expect:
+    encode_ok: true
+    require_xml: true
+  meta:
+    product: VONA
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 edge of vona_a7_1
+- bucket: edge_pass
+  case_id: '03'
+  status: ready
+  tac: "VONA\nDTG:\t\t\t20240216/0130Z\nVOLCANO:\t\tKARYMSKY 300130\nPSN:\t\t\tN5403 E15927\nAREA:\t\t\tRUSSIA\nSOURCE ELEV:\t\t1536M AMSL\nNOTICE NR:\t\t2021/7\nCURRENT COLOUR CODE:\tYELLOW\nPREVIOUS COLOUR CODE:\tORANGE\nSVO:\t\t\tKVERT\nACT STS:\t\tDECREASED ACT\nONSET:\t\t\tNIL\nDUR:\t\t\tNIL\nVA CLD HGT:\t\t15KM AMSL\nHGT SOURCE:\t\tGRD OBSERVER\nMOV:\t\t\tSW\nCTC:\t\t\tDUTY VOLCANOLOGIEST, TEL +123-456-789 EMAIL, DUTY.VOLCANOLOGIEST[AT]VOLCANO.COM,\n\t\t\tWWW.VOLCANO.COM\nRMK:\t\t\tSATELLITE, SEISMIC AND INFRASOUND DATA SHOW NO EVIDENCE OF FURTHER ERUPTIVE\n\t\t\tACT. FUTURE EXPLOSIONS AT KARYMSKY ARE LIKELY. THEY OCCUR WO WRNG AND TYPICALLY\n\t\t\tPRODUCE SMALL VA CLD THAT DISSIPATE QUICKLY; HOWEVER, LARGER ASH ARE POSS.\nNXT NOTICE:\t\tWILL BE ISSUED BY 20240223/0130Z"
+  expect:
+    encode_ok: true
+    require_xml: true
+  meta:
+    product: VONA
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 edge of vona_a7_1
+- bucket: edge_pass
+  case_id: '04'
+  status: ready
+  tac: "VONA\nDTG:\t\t\t20240216/0130Z\nVOLCANO:\t\tKARYMSKY 300130\nPSN:\t\t\tN5403 E15927\nAREA:\t\t\tRUSSIA\nSOURCE ELEV:\t\t1536M AMSL\nNOTICE NR:\t\t2021/4\nCURRENT COLOUR CODE:\tYELLOW\nPREVIOUS COLOUR CODE:\tORANGE\nSVO:\t\t\tKVERT\nACT STS:\t\tDECREASED ACT\nONSET:\t\t\t20240215/1200Z\nDUR:\t\t\tNIL\nVA CLD HGT:\t\t15KM AMSL\nHGT SOURCE:\t\tGRD OBSERVER\nMOV:\t\t\tSW\nCTC:\t\t\tDUTY VOLCANOLOGIEST, TEL +123-456-789 EMAIL, DUTY.VOLCANOLOGIEST[AT]VOLCANO.COM,\n\t\t\tWWW.VOLCANO.COM\nRMK:\t\t\tSATELLITE, SEISMIC AND INFRASOUND DATA SHOW NO EVIDENCE OF FURTHER ERUPTIVE\n\t\t\tACT. FUTURE EXPLOSIONS AT KARYMSKY ARE LIKELY. THEY OCCUR WO WRNG AND TYPICALLY\n\t\t\tPRODUCE SMALL VA CLD THAT DISSIPATE QUICKLY; HOWEVER, LARGER ASH ARE POSS.\nNXT NOTICE:\t\tWILL BE ISSUED BY 20240223/0130Z"
+  expect:
+    encode_ok: true
+    require_xml: true
+  meta:
+    product: VONA
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 edge of vona_a7_1
+- bucket: edge_pass
+  case_id: '05'
+  status: ready
+  tac: "VONA\nDTG:\t\t\t20240216/0130Z\nVOLCANO:\t\tKARYMSKY 300130\nPSN:\t\t\tN5403 E15927\nAREA:\t\t\tRUSSIA\nSOURCE ELEV:\t\t1536M AMSL\nNOTICE NR:\t\t2021/4\nCURRENT COLOUR CODE:\tYELLOW\nPREVIOUS COLOUR CODE:\tORANGE\nSVO:\t\t\tKVERT\nACT STS:\t\tDECREASED ACT\nONSET:\t\t\tNIL\nDUR:\t\t\t2HR\nVA CLD HGT:\t\t15KM AMSL\nHGT SOURCE:\t\tGRD OBSERVER\nMOV:\t\t\tSW\nCTC:\t\t\tDUTY VOLCANOLOGIEST, TEL +123-456-789 EMAIL, DUTY.VOLCANOLOGIEST[AT]VOLCANO.COM,\n\t\t\tWWW.VOLCANO.COM\nRMK:\t\t\tSATELLITE, SEISMIC AND INFRASOUND DATA SHOW NO EVIDENCE OF FURTHER ERUPTIVE\n\t\t\tACT. FUTURE EXPLOSIONS AT KARYMSKY ARE LIKELY. THEY OCCUR WO WRNG AND TYPICALLY\n\t\t\tPRODUCE SMALL VA CLD THAT DISSIPATE QUICKLY; HOWEVER, LARGER ASH ARE POSS.\nNXT NOTICE:\t\tWILL BE ISSUED BY 20240223/0130Z"
+  expect:
+    encode_ok: true
+    require_xml: true
+  meta:
+    product: VONA
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 edge of vona_a7_1
+- bucket: edge_fail
+  case_id: '01'
+  status: ready
+  tac: SPECI YUDO 151800Z 13005MPS 9000 BKN020 17/16 Q1018=
+  expect:
+    encode_ok: false
+    codes:
+    - PARSE_ERROR
+  meta:
+    product: VONA
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 SPECI body under product
+- bucket: edge_fail
+  case_id: '02'
+  status: ready
+  tac: SPECI
+  expect:
+    encode_ok: false
+    codes:
+    - PARSE_ERROR
+  meta:
+    product: VONA
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 keyword only SPECI
+- bucket: edge_fail
+  case_id: '03'
+  status: ready
+  tac: ????
+  expect:
+    encode_ok: false
+    codes:
+    - PARSE_ERROR
+  meta:
+    product: VONA
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 symbols
+- bucket: edge_fail
+  case_id: '04'
+  status: ready
+  tac: TAF YUDO
+  expect:
+    encode_ok: false
+    codes:
+    - PARSE_ERROR
+  meta:
+    product: VONA
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 TAF keyword under product
+- bucket: edge_fail
+  case_id: '05'
+  status: ready
+  tac: METAR
+  expect:
+    encode_ok: false
+    codes:
+    - PARSE_ERROR
+  meta:
+    product: VONA
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 keyword only METAR

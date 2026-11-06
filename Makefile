@@ -5,10 +5,12 @@ PNPM := pnpm
 
 PY_TREES := apps packages tests
 PY_LINT := apps/backend/src apps/backend/tests \
+	apps/worker/src \
 	packages/auth/src \
 	packages/shared packages/shared/tests \
 	packages/tac2iwxxm/src packages/tac2iwxxm/tests \
 	packages/tac-decoding/src packages/tac-decoding/tests \
+	packages/reference-lookup/src packages/reference-lookup/tests \
 	packages/iwxxm-validate/src packages/iwxxm-validate/tests \
 	packages/tac-validate/src packages/tac-validate/tests \
 	packages/dissemination/src packages/dissemination/tests \
@@ -20,10 +22,10 @@ PY_LINT := apps/backend/src apps/backend/tests \
 	iwxxm-us-compat-smoke codelist-uri-drift \
 	test-unit-workspace test-unit-workspace-py test-unit-shared-py test-unit-shared-js test-unit-workspace-js \
 	test-unit-backend test-unit-auth test-unit-frontend \
-	test-unit-tac2iwxxm test-unit-iwxxm-validate test-unit-tac-validate \
+	test-unit-tac2iwxxm test-unit-reference-lookup test-unit-iwxxm-validate test-unit-tac-validate \
 	test-unit-dissemination test-unit-workflows test-unit-worker test-bugs \
 	test-schemathesis test-mutation test-mutation-poc test-mutation-python test-mutation-js \
-	build-tac2iwxxm-native build-iwxxm-validate-native \
+	build-tac2iwxxm-native build-iwxxm-validate-native convert-allowlist \
 	test-tac2iwxxm-native test-iwxxm-validate-native rust-check \
 	perf-converter-baseline test-converter-pr-gate test-unit-fast lint-fast \
 	db-migrate test-alembic \
@@ -55,14 +57,15 @@ PY_LINT := apps/backend/src apps/backend/tests \
 	compose-mock-byoc-all-up compose-mock-byoc-all-down \
 	test-mock-byoc-smoke test-mock-byoc-compose test-mock-byoc-all-sinks \
 	format format-check typecheck typecheck-py typecheck-js \
+	check-docs test-doctest check-docs-ts check-docs-rust check-docs-all \
 	lint lint-py lint-js lint-backend lint-auth lint-frontend lint-shared \
 	lint-tac2iwxxm lint-iwxxm-validate lint-tac-validate lint-dissemination \
 	lint-fix lint-fix-py lint-fix-backend lint-fix-auth lint-fix-frontend \
 	dev dev-kill dev-servers dev-servers-kill \
 	test-e2e-playwright test-e2e-playwright-smoke test-e2e-t2-product \
 	test-e2e-f16-live-sql \
-	test-live-connectivity test-live-connectivity-doks-provisional test-live-topology-doks-provisional test-live-api test-live-integration test-live-e2e test-live-e2e-doks-provisional test-live-bulletin test-live \
-	test-integration test-coverage-scripts test-bats \
+	test-live-connectivity test-live-connectivity-doks-provisional test-live-topology-doks-provisional test-live-api test-live-integration test-live-e2e test-live-e2e-doks-provisional test-live-bulletin test-live-feeds test-live-profile test-live \
+	test-integration test-coverage-scripts test-bats check-openapi-contract \
 	coverage coverage-backend coverage-frontend coverage-shared \
 	coverage-dissemination coverage-modules coverage-all ci acci badge-audit audit-frontend \
 	validate-fast validate-yaml secrets-check security-scan config-guard validate-ci env-check \
@@ -171,6 +174,23 @@ format-check:
 	$(UV) run ruff format --check $(PY_TREES)
 	$(PNPM) run format:check
 
+# ADR-048 / EV-docstring-multilang-bar — multi-lang documentation bar
+check-docs:
+	$(UV) run python scripts/docs/check_docs_py.py .
+
+test-doctest:
+	bash scripts/docs/run_doctest.sh
+
+check-docs-ts:
+	node scripts/docs/check_docs_ts.mjs .
+
+check-docs-rust:
+	bash scripts/docs/check_docs_rust.sh
+
+check-docs-all: check-docs check-docs-ts check-docs-rust test-doctest
+
+
+
 # --- Typechecking ---
 
 typecheck: typecheck-py typecheck-js
@@ -179,6 +199,7 @@ typecheck-py:
 	$(UV) run basedpyright packages/shared/src
 	$(UV) run basedpyright packages/auth/src
 	$(UV) run basedpyright packages/tac2iwxxm/src
+	$(UV) run basedpyright packages/reference-lookup/src
 	$(UV) run basedpyright packages/iwxxm-validate/src
 	$(UV) run basedpyright packages/tac-validate/src
 	cd apps/backend && $(UV) run basedpyright
@@ -248,6 +269,7 @@ test-unit-shared-py:
 
 test-unit-shared-js:
 	$(PNPM) --filter @metar/shared run test:coverage
+	$(PNPM) --filter @metar/live-map-geometry run test:coverage
 
 test-unit-workspace-js:
 	$(PNPM) --filter @metar/shared test
@@ -268,7 +290,8 @@ test-unit-backend:
 test-schemathesis:
 	(cd apps/backend && SCHEMATHESIS_MAX_EXAMPLES=$${SCHEMATHESIS_MAX_EXAMPLES:-25} \
 		$(UV) run pytest tests/contract/test_schemathesis_openapi.py \
-		-m schemathesis --override-ini addopts= -v \
+		-m schemathesis --override-ini addopts= \
+		--override-ini "filterwarnings=default" -v \
 		--tb=short)
 
 # F34 / EV-059 / #874 — Mutation testing (TC-F34-003..005). Nightly/manual only.
@@ -334,6 +357,13 @@ test-unit-tac2iwxxm:
 		--cov-report=term-missing --cov-fail-under=100 -v
 	$(UV) run python scripts/ci/check_per_file_coverage.py packages/tac2iwxxm/coverage.json
 
+test-unit-reference-lookup:
+	$(UV) run coverage run --data-file=packages/reference-lookup/.coverage --source=reference_lookup --branch \
+		-m pytest packages/reference-lookup/tests -q --tb=short
+	$(UV) run coverage report --data-file=packages/reference-lookup/.coverage --fail-under=100 --show-missing
+	$(UV) run coverage json --data-file=packages/reference-lookup/.coverage -o packages/reference-lookup/coverage.json
+	$(UV) run python scripts/ci/check_per_file_coverage.py packages/reference-lookup/coverage.json
+
 test-unit-tac-decoding:
 	$(UV) run pytest packages/tac-decoding/tests \
 		packages/tac2iwxxm/tests/test_decode_tac.py \
@@ -354,6 +384,10 @@ test-unit-tac-decoding:
 		--cov-report=json:packages/tac-decoding/coverage.json \
 		--cov-report=term-missing --cov-fail-under=100 -v
 	$(UV) run python scripts/ci/check_per_file_coverage.py packages/tac-decoding/coverage.json
+
+# Print the Hydra-composed convert allowlist. Extra overrides: ARGS='--override ...'
+convert-allowlist:
+	$(UV) run python scripts/tac2iwxxm/compose_convert_allowlist.py $(ARGS)
 
 # Build optional PyO3 extension (requires rustc + maturin). ADR-017 / T4.3.
 build-tac2iwxxm-native:
@@ -399,7 +433,7 @@ test-converter-pr-gate:
 	$(UV) run pytest tests/perf/test_converter_pr_gate.py -v --no-cov
 
 # EV-047 / #833 — husky pre-push fast unit subset (shape A).
-test-unit-fast: test-unit-workspace test-unit-tac2iwxxm
+test-unit-fast: test-unit-workspace test-unit-tac2iwxxm test-unit-reference-lookup
 
 # M1 — layer cost matrix harness (T1.1–T1.3). Script lands in build; stub until then.
 bench-validation-stack:
@@ -555,7 +589,9 @@ test-unit-dissemination:
 test-unit-workflows:
 	$(UV) run pytest packages/workflows/tests -m unit \
 		--cov=workflows --cov-config=packages/workflows/pyproject.toml --cov-branch \
-		--cov-report=term-missing --cov-report=json:packages/workflows/coverage.json \
+		--cov-report=term-missing \
+		--cov-report=xml:packages/workflows/coverage.xml \
+		--cov-report=json:packages/workflows/coverage.json \
 		--cov-fail-under=100 -v
 	@if [ -f scripts/ci/check_per_file_coverage.py ]; then \
 		$(UV) run python scripts/ci/check_per_file_coverage.py packages/workflows/coverage.json; \
@@ -568,11 +604,11 @@ test-integration-dissemination:
 
 # F17 / E14-04 — wis2box Compose harness (MQTT + HTTP dataset overlay; T3.3).
 compose-wis2box-up:
-	$(COMPOSE) -f docker-compose.yml -f docker-compose.wis2box.yml --profile wis2box up -d --build --wait wis2box
+	$(COMPOSE) -f docker-compose.yml --profile wis2box up -d --build --wait wis2box
 
 compose-wis2box-down:
-	@$(COMPOSE) -f docker-compose.yml -f docker-compose.wis2box.yml --profile wis2box stop wis2box || true
-	@$(COMPOSE) -f docker-compose.yml -f docker-compose.wis2box.yml --profile wis2box rm -f wis2box || true
+	@$(COMPOSE) -f docker-compose.yml --profile wis2box stop wis2box || true
+	@$(COMPOSE) -f docker-compose.yml --profile wis2box rm -f wis2box || true
 
 compose-wis2box-harness:
 	bash scripts/ci/run_wis2box_harness.sh
@@ -581,7 +617,7 @@ compose-wis2box-harness:
 # Use a dedicated compose project so `down -v` cannot tear down backend/frontend (EV-039 / AC4).
 BYOC_COMPOSE_PROJECT := metar-iwxxm-mock-byoc
 BYOC_COMPOSE := $(COMPOSE) -p $(BYOC_COMPOSE_PROJECT) \
-	-f docker-compose.yml -f docker-compose.mock-byoc.yml --profile mock-byoc
+	-f docker-compose.yml --profile mock-byoc
 
 compose-mock-byoc-up:
 	@set -e; \
@@ -595,7 +631,7 @@ compose-mock-byoc-down:
 	@$(BYOC_COMPOSE) down -v --remove-orphans || true
 
 compose-mock-byoc-full-up:
-	$(COMPOSE) -p $(BYOC_COMPOSE_PROJECT) -f docker-compose.yml -f docker-compose.mock-byoc.yml -f docker-compose.wis2box.yml \
+	$(COMPOSE) -p $(BYOC_COMPOSE_PROJECT) -f docker-compose.yml \
 		--profile mock-byoc --profile wis2box up -d --build --wait \
 		byoc-postgres byoc-mysql byoc-sqlserver byoc-mailhog byoc-f19 wis2box
 
@@ -621,7 +657,7 @@ test-coverage-scripts:
 		echo "[test-coverage-scripts] error: no tests under tests/scripts/ (EV-080 M4)." >&2; \
 		exit 1; \
 	fi; \
-	$(UV) run pytest tests/scripts \
+	$(UV) run pytest tests/scripts tests/docs \
 		--cov=scripts \
 		--cov=scripts/tac-validate/regen_issue_catalog.py \
 		--cov=scripts/test-data/export_tc_m003_golden.py \
@@ -631,6 +667,13 @@ test-coverage-scripts:
 		--cov-report=json:scripts/coverage.json \
 		--cov-fail-under=100 -v; \
 	$(UV) run python scripts/ci/check_per_file_coverage.py scripts/coverage.json --min-pct 100
+
+# Local OpenAPI consumer contract: status codes and required JSON fields.
+# [Corpus: tests] [Corpus: api] [Corpus: product]
+check-openapi-contract:
+	$(UV) run python scripts/ci/check_openapi_contract.py \
+		--spec apps/frontend/openapi/openapi.json \
+		--interactions tests/contracts/openapi-interactions.json
 
 # EV-080 / #1077 — bats-core for every scripts/**/*.sh (D-TP080-2).
 test-bats:
@@ -649,7 +692,7 @@ test-bugs:
 	$(UV) run pytest tests/bugs -m "not live and not live_api" --no-cov -v
 
 test-unit: test-unit-workspace test-unit-backend test-unit-auth test-unit-frontend \
-	test-unit-tac2iwxxm test-unit-iwxxm-validate test-unit-tac-validate \
+	test-unit-tac2iwxxm test-unit-reference-lookup test-unit-iwxxm-validate test-unit-tac-validate \
 	test-unit-dissemination test-unit-workflows test-unit-worker test-bugs
 
 test: test-unit
@@ -684,7 +727,14 @@ test-e2e-playwright:
 
 test-e2e-playwright-smoke:
 	cd apps/e2e && METAR_CONFIG_ENV=local $(PNPM) exec playwright test \
-		tac-file-conversion.e2e.spec.ts
+		tac-file-conversion.e2e.spec.ts \
+		uj079-reference-lookup.e2e.spec.ts \
+		site-terms-gate.e2e.spec.ts \
+		site-terms-gate.e2e.spec.ts \
+		tc-ev060-1006-auth.e2e.spec.ts \
+		f6e-product-profile-pickers.e2e.spec.ts
+	cd apps/e2e && METAR_CONFIG_ENV=local $(PNPM) exec playwright test \
+		tc-ev061-uj064-068.e2e.spec.ts --grep "required decode rows"
 
 test-e2e-t2-product:
 	cd apps/e2e && METAR_CONFIG_ENV=local $(PNPM) exec playwright test tac-file-conversion.e2e.spec.ts
@@ -795,6 +845,18 @@ test-live-bulletin:
 	@$(load_dotenv); \
 	$(UV) run pytest tests/live/test_tc_live_f6_030_bulletin.py -m live_api -v --tb=short --no-cov
 
+# TC-LIVE-FEEDS — NOAA AWC + MET Norway, plus KNMI when KNMI_OPEN_DATA_API_KEY is in .env.
+# Manual only (ADR-009). Not part of test-live.
+test-live-feeds:
+	@$(load_dotenv); \
+	$(UV) run pytest tests/live/test_national_feeds.py -m live_api -v --tb=short --no-cov
+
+# TC-LIVE-PROFILE — public bulletin sample under each implemented semantic profile.
+# Manual only. Not part of test-live. Exit code is the check result.
+test-live-profile:
+	@$(load_dotenv); \
+	$(UV) run python tests/live/profile_check.py
+
 test-live: test-live-connectivity test-live-api test-live-integration test-live-bulletin test-live-e2e
 
 coverage-backend:
@@ -894,13 +956,13 @@ validate-yaml:
 overlay-preflight:
 	$(UV) run python scripts/overlays/preflight.py --all-examples
 
-validate-fast: format-check typecheck lint secrets-check validate-yaml catalog-check validation-catalog-check issue-registry-guard cursor-no-home-paths-guard pnpm-action-package-manager-guard overlay-preflight
+validate-fast: format-check typecheck lint secrets-check validate-yaml catalog-check validation-catalog-check issue-registry-guard cursor-no-home-paths-guard pnpm-action-package-manager-guard overlay-preflight file-budget file-complexity
 
 config-guard:
 	$(UV) run pytest tests/test_config_placeholders.py tests/smoke/test_h5_runtime_config.py -v
 	$(UV) run python scripts/deploy/validate_ingest_poller_url.py --print-fixture >/dev/null
 	$(UV) run pytest apps/worker/tests/test_validate_ingest_poller_url.py \
-		tests/bugs/test_bug_2026_08_04_worker_placeholder_poller_url.py -q --no-cov
+		tests/bugs/worker/test_bug_2026_08_04_worker_placeholder_poller_url.py -q --no-cov
 
 env-check:
 	bash scripts/env/verify-sync.sh
@@ -940,7 +1002,7 @@ validate-ci: validate-fast validate-ci-medium
 # Unit/matrix suite without Compose (also run on remote CI test matrix).
 # Use `make ci` / `make test-integration` when Docker ports 18000/18001 are free.
 ci-prepush: format-check typecheck lint test-unit-workspace test-unit-backend \
-	test-unit-frontend test-unit-tac2iwxxm test-unit-iwxxm-validate test-unit-tac-validate \
+	test-unit-frontend test-unit-tac2iwxxm test-unit-reference-lookup test-unit-iwxxm-validate test-unit-tac-validate \
 	test-unit-dissemination test-unit-workflows test-unit-worker test-bugs badge-audit
 
 # EV-036 long local gate (husky pre-push): units + Compose integration.
@@ -962,3 +1024,10 @@ security-scan:
 
 check-exact-pins:
 	python3 scripts/ci/check-exact-pins.py
+
+# ADR-056 — file line budget + complexity caps
+file-budget:
+	python3 scripts/ci/check_file_budget.py
+
+file-complexity:
+	python3 scripts/ci/check_file_complexity.py

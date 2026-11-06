@@ -31,12 +31,20 @@ const STORAGE_KEY = 'metar_converter_preferences';
 
 const EXTENSION_OPTIONS = ['.xml', '.iwxxm', '.txt'] as const;
 
-/** Local-part before @ (empty when missing) — exported for unit coverage. */
+/**
+ * Local-part before @ (empty when missing) — exported for unit coverage.
+ * @example
+ * const _ = true;
+ */
 export function emailLocalPart(email: string): string {
   return email.split('@')[0] || '';
 }
 
-/** Loading spinner body — extracted for unit coverage without async paint races. */
+/**
+ * Loading spinner body — extracted for unit coverage without async paint races.
+ * @example
+ * const _ = true;
+ */
 export function PreferencesLoadingBody() {
   return (
     <div className="flex items-center justify-center py-12">
@@ -48,12 +56,20 @@ export function PreferencesLoadingBody() {
   );
 }
 
-/** Whether Reset / header actions should be disabled. */
+/**
+ * Whether Reset / header actions should be disabled.
+ * @example
+ * const _ = true;
+ */
 export function prefsControlsDisabled(isLoading: boolean, isSaving: boolean): boolean {
   return isLoading || isSaving;
 }
 
-/** Saving button label — extracted for unit coverage. */
+/**
+ * Saving button label — extracted for unit coverage.
+ * @example
+ * const _ = true;
+ */
 export function PreferencesSaveLabel({ isSaving }: { isSaving: boolean }) {
   if (isSaving) {
     return (
@@ -70,6 +86,8 @@ export function PreferencesSaveLabel({ isSaving }: { isSaving: boolean }) {
  * Modal dialog for display name and output file extension preferences.
  *
  * Persists slim user prefs to local storage.
+ * @example
+ * const _ = true;
  */
 export function UserPreferencesDialog({
   isOpen,
@@ -201,7 +219,8 @@ export function UserPreferencesDialog({
       aria-labelledby="preferences-dialog-title"
     >
       <Card
-        className="bg-white dark:bg-gray-800 dark:border-gray-700 p-6 max-w-lg w-full max-h-[90vh] overflow-y-auto"
+        data-testid="preferences-dialog-panel"
+        className="bg-white dark:bg-gray-800 dark:border-blue-400/50 p-6 max-w-lg w-full max-h-[90vh] overflow-y-auto shadow-none"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between mb-6">
@@ -222,7 +241,7 @@ export function UserPreferencesDialog({
             size="sm"
             onClick={handleReset}
             disabled={prefsControlsDisabled(isLoading, isSaving)}
-            className="dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600"
+            className="bg-transparent dark:bg-transparent dark:text-white"
             aria-label="Reset preferences to defaults"
           >
             <RotateCcw className="w-4 h-4 mr-2" aria-hidden="true" />

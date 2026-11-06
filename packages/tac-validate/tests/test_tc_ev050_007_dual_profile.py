@@ -60,7 +60,7 @@ def test_dual_applicable_no_unclassified_divergence(product: str) -> None:
     assert mem_a == mem_u
 
 
-@pytest.mark.parametrize("product", ["VAA", "VONA"])
+@pytest.mark.parametrize("product", ["VAA"])
 def test_na_products_iwxxm_us_not_fail(product: str) -> None:
     tac = _read(_REPRESENTATIVE[product])
     result = compare_lint_profiles(tac, product=product)
@@ -71,7 +71,7 @@ def test_na_products_iwxxm_us_not_fail(product: str) -> None:
         lint(tac, product=product, profile=PROFILE_IWXXM_US)
 
 
-@pytest.mark.parametrize("product", ["TCA", "SWXA"])
+@pytest.mark.parametrize("product", ["TCA", "SWXA", "VONA"])
 def test_thin_lint_products_dual_na_but_iwxxm_us_lint_allowed(product: str) -> None:
     """#919 M22 - SWXA/TCA accept iwxxm_us for thin US lint; dual compare stays N/A."""
     tac = _read(_REPRESENTATIVE[product])

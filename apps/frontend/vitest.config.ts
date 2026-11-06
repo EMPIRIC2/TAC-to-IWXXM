@@ -18,7 +18,14 @@ export default defineConfig({
       VITE_SUPABASE_URL: 'https://example.supabase.co',
       VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY: 'test-publishable-key',
     },
-    exclude: ['node_modules/', 'dist/', 'tests/', '**/*.e2e.spec.ts', '**/*.spec.ts'],
+    exclude: [
+      'node_modules/',
+      'dist/',
+      'tests/',
+      '.stryker-tmp/**',
+      '**/*.e2e.spec.ts',
+      '**/*.spec.ts',
+    ],
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html'],

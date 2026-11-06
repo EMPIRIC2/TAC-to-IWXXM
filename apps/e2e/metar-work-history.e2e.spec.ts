@@ -22,7 +22,7 @@ test.describe('UJ-004 — METAR work history (IndexedDB)', () => {
 
     await openPublicConverter(page);
 
-    const manualInput = page.getByLabel(/Enter METAR data manually/i);
+    const manualInput = page.getByLabel('Enter METAR data manually', { exact: true });
     await manualInput.fill(SAMPLE_METAR);
 
     await expect(page.getByTestId('autosave-indicator')).toContainText(/saved/i, {
@@ -60,7 +60,9 @@ test.describe('UJ-004 — METAR work history (IndexedDB)', () => {
     await page.reload();
     await openPublicConverter(page);
 
-    await page.getByRole('button', { name: /KJFK finished/i }).click();
+    await page
+      .getByRole('button', { name: 'KJFK finished Finished', exact: true })
+      .click();
 
     await expect(page.getByTestId('convert-button')).toBeDisabled({ timeout: 10_000 });
     // EV-091: Convert&Send stays mounted when destinations are enabled, but disabled

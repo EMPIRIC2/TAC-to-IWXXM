@@ -8,7 +8,9 @@
     gml:id="metar.ca.vis.sm.cyxe"
     reportStatus="NORMAL"
     permissibleUsage="OPERATIONAL"
-    automatedStation="false">
+    automatedStation="false"
+    translationCentreDesignator="CWAO"
+    translationCentreName="Environment and Climate Change Canada">
   <iwxxm:issueTime>
     <gml:TimeInstant gml:id="t.issue">
       <gml:timePosition>2023-06-23T18:00:00Z</gml:timePosition>
@@ -44,9 +46,10 @@
       </iwxxm:surfaceWind>
       <iwxxm:visibility>
         <iwxxm:AerodromeHorizontalVisibility>
-          <iwxxm:prevailingVisibility uom="[mi_i]">4</iwxxm:prevailingVisibility>
+          <iwxxm:prevailingVisibility uom="[mi_i]">0.75</iwxxm:prevailingVisibility>
         </iwxxm:AerodromeHorizontalVisibility>
       </iwxxm:visibility>
+      <iwxxm:rvr xsi:nil="true" nilReason="http://codes.wmo.int/common/nil/missing"/>
       <iwxxm:presentWeather xlink:href="http://codes.wmo.int/306/4678/-RA"/>
       <iwxxm:presentWeather xlink:href="http://codes.wmo.int/306/4678/BR"/>
       <iwxxm:cloud>

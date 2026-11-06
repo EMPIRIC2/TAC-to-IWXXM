@@ -130,7 +130,7 @@ Check your Supabase Dashboard → Authentication → Email Templates
 - Rotate periodically
 - Store securely (environment variables, secrets manager)
 
-### Best Practices
+### Practices
 1. Use `.env` files (added to `.gitignore`)
 2. Use separate credentials for dev/staging/production
 3. Limit script execution to trusted environments

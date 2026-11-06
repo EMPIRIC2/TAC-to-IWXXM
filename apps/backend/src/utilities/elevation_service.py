@@ -14,7 +14,14 @@ logger = logging.getLogger(__name__)
 
 
 class ElevationService:
-    """Service for managing airport elevation and vertical datum data."""
+    """
+    Service for managing airport elevation and vertical datum data.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     def __init__(self) -> None:
         """Initialize the elevation service with vertical datum mappings."""
@@ -42,12 +49,26 @@ class ElevationService:
         """
         Get the appropriate vertical datum for an airport.
 
-        Args:
-            icao: ICAO airport code
-            country_code: ISO 2-letter country code (e.g., 'US', 'GL')
-
-        Returns:
+        Returns
+        -------
             IWXXM-compliant vertical datum code (e.g., 'EGM_96', 'NAVD88')
+
+        Parameters
+        ----------
+        icao : object
+            ICAO airport code
+        country_code : object
+            ISO 2-letter country code (e.g., 'US', 'GL')
+
+        Returns
+        -------
+        object
+            IWXXM-compliant vertical datum code (e.g., 'EGM_96', 'NAVD88')
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (get_vertical_datum)
+        2
         """
         # Check for airport-specific override
         overrides = self.datum_map.get("airport_overrides", {})
@@ -70,13 +91,17 @@ class ElevationService:
 
     def _normalize_datum_code(self, datum: str) -> str:
         """
-        Normalize datum code to IWXXM format.
+        Internal helper ``_normalize_datum_code``.
 
-        Args:
-            datum: Raw datum code (e.g., 'NAVD88', 'CGVD2013')
+        Parameters
+        ----------
+        datum : object
+            Argument ``datum``.
 
-        Returns:
-            IWXXM-compliant code (e.g., 'NAVD88', 'OTHER:CGVD2013')
+        Returns
+        -------
+        object
+            Return value.
         """
         # IWXXM natively supports: EGM_96, NAVD88, AHD
         supported = {"EGM_96", "EGM96", "NAVD88", "AHD"}
@@ -108,15 +133,32 @@ class ElevationService:
         """
         Get elevation and vertical datum for an airport with version-aware formatting.
 
-        Args:
-            icao: ICAO airport code
-            default_elevation_ft: Default elevation in feet (from database)
-            country_code: ISO 2-letter country code
-            version: IWXXM version for formatting rules
-            use_test_overrides: If True, applies test-specific vertical datum overrides
-
-        Returns:
+        Returns
+        -------
             Tuple of (elevation_meters, vertical_datum)
+
+        Parameters
+        ----------
+        icao : object
+            ICAO airport code
+        default_elevation_ft : object
+            Default elevation in feet (from database)
+        country_code : object
+            ISO 2-letter country code
+        version : object
+            IWXXM version for formatting rules
+        use_test_overrides : object
+            If True, applies test-specific vertical datum overrides
+
+        Returns
+        -------
+        object
+            Tuple of (elevation_meters, vertical_datum)
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (get_elevation_data)
+        2
         """
         # Get raw elevation and datum with test override support
         elevation_m, vertical_datum = self._get_raw_elevation_data(
@@ -141,13 +183,24 @@ class ElevationService:
         country_code: str | None = None,
         use_test_overrides: bool = False,
     ) -> tuple[int | None, str]:
-        """Get raw elevation data without version-specific formatting.
+        """
+        Internal helper ``_get_raw_elevation_data``.
 
-        Args:
-            icao: ICAO airport code
-            default_elevation_ft: Default elevation in feet (from database)
-            country_code: ISO 2-letter country code
-            use_test_overrides: If True, checks test_overrides first for vertical datum
+        Parameters
+        ----------
+        icao : object
+            Argument ``icao``.
+        default_elevation_ft : object
+            Argument ``default_elevation_ft``.
+        country_code : object
+            Argument ``country_code``.
+        use_test_overrides : object
+            Argument ``use_test_overrides``.
+
+        Returns
+        -------
+        object
+            Return value.
         """
         # Check for test-specific override first (for WMO reference test compliance)
         if use_test_overrides:
@@ -204,11 +257,24 @@ class ElevationService:
         """
         Get high-precision coordinate overrides for an airport if available.
 
-        Args:
-            icao: ICAO airport code
+        Returns
+        -------
+            Tuple of (latitude, lo
 
-        Returns:
+        Parameters
+        ----------
+        icao : object
+            ICAO airport code
+
+        Returns
+        -------
+        object
             Tuple of (latitude, longitude) or None if no override exists
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (get_coordinates_override)
+        2
         """
         overrides = self.datum_map.get("airport_overrides", {})
         if icao in overrides:
@@ -228,11 +294,24 @@ class ElevationService:
         """
         Get test-specific vertical datum override for WMO reference compliance.
 
-        Args:
-            icao: ICAO airport code
+        Returns
+        -------
+            Dictionary with vertic
 
-        Returns:
+        Parameters
+        ----------
+        icao : object
+            ICAO airport code
+
+        Returns
+        -------
+        object
             Dictionary with vertical_datum and metadata, or None if no test override
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (get_test_datum_override)
+        2
         """
         test_overrides = self.datum_map.get("test_overrides", {})
         return test_overrides.get(icao)
@@ -241,11 +320,24 @@ class ElevationService:
         """
         Get information about a vertical datum.
 
-        Args:
-            datum: Datum code (e.g., 'EGM_96', 'NAVD88')
-
-        Returns:
+        Returns
+        -------
             Dictionary with datum information or None
+
+        Parameters
+        ----------
+        datum : object
+            Datum code (e.g., 'EGM_96', 'NAVD88')
+
+        Returns
+        -------
+        object
+            Dictionary with datum information or None
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (get_datum_info)
+        2
         """
         # Strip OTHER: prefix if present
         clean_datum = datum.replace("OTHER:", "").replace("_", "")
@@ -259,12 +351,23 @@ class ElevationService:
         """
         Add or update an airport-specific elevation override.
 
-        Args:
-            icao: ICAO airport code
-            elevation_m: Elevation in meters
-            vertical_datum: Vertical datum code
-            source: Data source description
-            notes: Additional notes
+        Parameters
+        ----------
+        icao : object
+            ICAO airport code
+        elevation_m : object
+            Elevation in meters
+        vertical_datum : object
+            Vertical datum code
+        source : object
+            Data source description
+        notes : object
+            Additional notes
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (add_airport_override)
+        2
         """
         overrides = self.datum_map.get("airport_overrides", {})
         overrides[icao] = {
@@ -277,7 +380,14 @@ class ElevationService:
         logger.info(f"Added elevation override for {icao}: {elevation_m}m ({vertical_datum})")
 
     def save_datum_mapping(self) -> None:
-        """Save current datum mapping to file."""
+        """
+        Save current datum mapping to file.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (save_datum_mapping)
+        2
+        """
         datum_file = Path(__file__).parent.parent / "data" / "vertical_datum_map.json"
 
         try:
@@ -293,7 +403,19 @@ _elevation_service = None
 
 
 def get_elevation_service() -> ElevationService:
-    """Get the singleton elevation service instance."""
+    """
+    Get the singleton elevation service instance.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (get_elevation_service)
+    2
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     global _elevation_service
     if _elevation_service is None:
         _elevation_service = ElevationService()

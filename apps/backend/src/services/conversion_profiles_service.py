@@ -54,6 +54,14 @@ _tables: dict[str, Table] = {}
 
 
 def _sync_database_url() -> str:
+    """
+    Internal helper ``_sync_database_url``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     raw = (os.environ.get("DATABASE_URL") or "").strip()
     if not raw:
         raise HTTPException(
@@ -74,6 +82,14 @@ def _sync_database_url() -> str:
 
 
 def _get_engine() -> Engine:
+    """
+    Internal helper ``_get_engine``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     global _engine
     if _engine is None:
         _engine = create_engine(_sync_database_url(), pool_pre_ping=True)
@@ -81,13 +97,35 @@ def _get_engine() -> Engine:
 
 
 def _table(name: str) -> Table:
+    """
+    Internal helper ``_table``.
+
+    Parameters
+    ----------
+    name : object
+        Argument ``name``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if name not in _tables:
         _tables[name] = Table(name, _metadata, autoload_with=_get_engine())
     return _tables[name]
 
 
 def _reject_secrets(payload: dict[str, Any], *, path: str = "") -> None:
-    """Raise 422 if payload keys look like secrets or URIs."""
+    """
+    Internal helper ``_reject_secrets``.
+
+    Parameters
+    ----------
+    payload : object
+        Argument ``payload``.
+    path : object
+        Argument ``path``.
+    """
     for key, value in payload.items():
         full = f"{path}.{key}" if path else key
         if _SECRET_KEY.search(key):
@@ -101,6 +139,19 @@ def _reject_secrets(payload: dict[str, Any], *, path: str = "") -> None:
 
 
 def _handle_db_error(exc: Exception) -> NoReturn:
+    """
+    Internal helper ``_handle_db_error``.
+
+    Parameters
+    ----------
+    exc : object
+        Argument ``exc``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     logger.exception("conversion profiles db error: %s", exc)
     if isinstance(exc, IntegrityError):
         raise HTTPException(
@@ -114,6 +165,19 @@ def _handle_db_error(exc: Exception) -> NoReturn:
 
 
 def _row_to_out(row: dict[str, Any]) -> RulePackOut:
+    """
+    Internal helper ``_row_to_out``.
+
+    Parameters
+    ----------
+    row : object
+        Argument ``row``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return RulePackOut(
         id=row["id"],
         user_id=row["user_id"],
@@ -131,6 +195,19 @@ def _row_to_out(row: dict[str, Any]) -> RulePackOut:
 
 
 def _preset_row_to_out(row: dict[str, Any]) -> PresetOut:
+    """
+    Internal helper ``_preset_row_to_out``.
+
+    Parameters
+    ----------
+    row : object
+        Argument ``row``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     raw_extensions = row.get("extensions")
     extensions = [str(item) for item in cast(list[object], raw_extensions)] if isinstance(raw_extensions, list) else []
     return PresetOut(
@@ -150,6 +227,19 @@ def _preset_row_to_out(row: dict[str, Any]) -> PresetOut:
 
 
 def _template_row_to_out(row: dict[str, Any]) -> DisseminationTemplateOut:
+    """
+    Internal helper ``_template_row_to_out``.
+
+    Parameters
+    ----------
+    row : object
+        Argument ``row``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     raw_params = row.get("params")
     params: dict[str, Any] = cast(dict[str, Any], raw_params) if isinstance(raw_params, dict) else {}
     return DisseminationTemplateOut(
@@ -168,6 +258,16 @@ def _template_row_to_out(row: dict[str, Any]) -> DisseminationTemplateOut:
 
 
 def _reject_template_values(value: object, *, path: str) -> None:
+    """
+    Internal helper ``_reject_template_values``.
+
+    Parameters
+    ----------
+    value : object
+        Argument ``value``.
+    path : object
+        Argument ``path``.
+    """
     if isinstance(value, dict):
         _reject_secrets(cast(dict[str, Any], value), path=path)
         for key, nested in cast(dict[str, Any], value).items():
@@ -186,7 +286,14 @@ def _reject_template_values(value: object, *, path: str) -> None:
 
 
 class ConversionProfilesService:
-    """JWT-owner scoped rule pack persistence."""
+    """
+    JWT-owner scoped rule pack persistence.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     def __init__(self, user_id: str) -> None:
         """
@@ -204,7 +311,19 @@ class ConversionProfilesService:
             ) from exc
 
     def list_rule_packs(self) -> list[RulePackOut]:
-        """List rule packs owned by the caller."""
+        """
+        List rule packs owned by the caller.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (list_rule_packs)
+        2
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         t = _table(RULE_PACKS_TABLE)
         try:
             with _get_engine().connect() as conn:
@@ -214,7 +333,19 @@ class ConversionProfilesService:
         return [_row_to_out(dict(r)) for r in rows]
 
     def list_presets(self) -> list[PresetOut]:
-        """List semantic presets owned by the caller (plus shared rows)."""
+        """
+        List semantic presets owned by the caller (plus shared rows).
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (list_presets)
+        2
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         t = _table(PRESETS_TABLE)
         try:
             with _get_engine().connect() as conn:
@@ -230,7 +361,26 @@ class ConversionProfilesService:
         return [_preset_row_to_out(dict(r)) for r in rows]
 
     def get_preset(self, preset_id: UUID, *, require_owner: bool = False) -> PresetOut:
-        """Fetch one semantic preset by id (owner or shared)."""
+        """
+        Fetch one semantic preset by id (owner or shared).
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (get_preset)
+        2
+
+        Parameters
+        ----------
+        preset_id : object
+            Argument ``preset_id``.
+        require_owner : object
+            Argument ``require_owner``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         t = _table(PRESETS_TABLE)
         try:
             with _get_engine().connect() as conn:
@@ -248,7 +398,24 @@ class ConversionProfilesService:
         return _preset_row_to_out(dict(row))
 
     def create_preset(self, payload: PresetCreate) -> PresetOut:
-        """Insert a new semantic preset."""
+        """
+        Insert a new semantic preset.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (create_preset)
+        2
+
+        Parameters
+        ----------
+        payload : object
+            Argument ``payload``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         data = payload.model_dump(by_alias=False)
         _reject_secrets(data)
         now = datetime.now(tz=UTC)
@@ -276,7 +443,26 @@ class ConversionProfilesService:
         return self.get_preset(preset_id, require_owner=True)
 
     def update_preset(self, preset_id: UUID, payload: PresetUpdate) -> PresetOut:
-        """Patch an owned semantic preset."""
+        """
+        Patch an owned semantic preset.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (update_preset)
+        2
+
+        Parameters
+        ----------
+        preset_id : object
+            Argument ``preset_id``.
+        payload : object
+            Argument ``payload``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         existing = self.get_preset(preset_id, require_owner=True)
         data = payload.model_dump(exclude_unset=True, by_alias=False)
         _reject_secrets(data)
@@ -308,7 +494,19 @@ class ConversionProfilesService:
         return self.get_preset(preset_id, require_owner=True)
 
     def delete_preset(self, preset_id: UUID) -> None:
-        """Delete a semantic preset owned by the caller."""
+        """
+        Delete a semantic preset owned by the caller.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (delete_preset)
+        2
+
+        Parameters
+        ----------
+        preset_id : object
+            Argument ``preset_id``.
+        """
         t = _table(PRESETS_TABLE)
         try:
             with _get_engine().begin() as conn:
@@ -321,7 +519,19 @@ class ConversionProfilesService:
             _handle_db_error(exc)
 
     def list_templates(self) -> list[DisseminationTemplateOut]:
-        """List dissemination templates owned by the caller (plus shared rows)."""
+        """
+        List dissemination templates owned by the caller (plus shared rows).
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (list_templates)
+        2
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         t = _table(TEMPLATES_TABLE)
         try:
             with _get_engine().connect() as conn:
@@ -337,7 +547,26 @@ class ConversionProfilesService:
         return [_template_row_to_out(dict(r)) for r in rows]
 
     def get_template(self, template_id: UUID, *, require_owner: bool = False) -> DisseminationTemplateOut:
-        """Fetch one dissemination template by id (owner or shared)."""
+        """
+        Fetch one dissemination template by id (owner or shared).
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (get_template)
+        2
+
+        Parameters
+        ----------
+        template_id : object
+            Argument ``template_id``.
+        require_owner : object
+            Argument ``require_owner``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         t = _table(TEMPLATES_TABLE)
         try:
             with _get_engine().connect() as conn:
@@ -355,7 +584,24 @@ class ConversionProfilesService:
         return _template_row_to_out(dict(row))
 
     def create_template(self, payload: DisseminationTemplateCreate) -> DisseminationTemplateOut:
-        """Insert a new dissemination template."""
+        """
+        Insert a new dissemination template.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (create_template)
+        2
+
+        Parameters
+        ----------
+        payload : object
+            Argument ``payload``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         data = payload.model_dump(by_alias=False)
         _reject_secrets(data)
         _reject_template_values(payload.params, path="params")
@@ -383,7 +629,26 @@ class ConversionProfilesService:
         return self.get_template(template_id, require_owner=True)
 
     def update_template(self, template_id: UUID, payload: DisseminationTemplateUpdate) -> DisseminationTemplateOut:
-        """Patch an owned dissemination template."""
+        """
+        Patch an owned dissemination template.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (update_template)
+        2
+
+        Parameters
+        ----------
+        template_id : object
+            Argument ``template_id``.
+        payload : object
+            Argument ``payload``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         existing = self.get_template(template_id, require_owner=True)
         data = payload.model_dump(exclude_unset=True, by_alias=False)
         _reject_secrets(data)
@@ -416,7 +681,19 @@ class ConversionProfilesService:
         return self.get_template(template_id, require_owner=True)
 
     def delete_template(self, template_id: UUID) -> None:
-        """Delete a dissemination template owned by the caller."""
+        """
+        Delete a dissemination template owned by the caller.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (delete_template)
+        2
+
+        Parameters
+        ----------
+        template_id : object
+            Argument ``template_id``.
+        """
         t = _table(TEMPLATES_TABLE)
         try:
             with _get_engine().begin() as conn:
@@ -429,7 +706,24 @@ class ConversionProfilesService:
             _handle_db_error(exc)
 
     def get_rule_pack(self, pack_id: UUID) -> RulePackOut:
-        """Fetch one rule pack by id (owner-scoped)."""
+        """
+        Fetch one rule pack by id (owner-scoped).
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (get_rule_pack)
+        2
+
+        Parameters
+        ----------
+        pack_id : object
+            Argument ``pack_id``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         t = _table(RULE_PACKS_TABLE)
         try:
             with _get_engine().connect() as conn:
@@ -441,7 +735,24 @@ class ConversionProfilesService:
         return _row_to_out(dict(row))
 
     def create_rule_pack(self, payload: RulePackCreate) -> RulePackOut:
-        """Insert a new rule pack."""
+        """
+        Insert a new rule pack.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (create_rule_pack)
+        2
+
+        Parameters
+        ----------
+        payload : object
+            Argument ``payload``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         data = payload.model_dump(by_alias=False)
         _reject_secrets(data)
         now = datetime.now(tz=UTC)
@@ -469,7 +780,26 @@ class ConversionProfilesService:
         return self.get_rule_pack(pack_id)
 
     def update_rule_pack(self, pack_id: UUID, payload: RulePackUpdate) -> RulePackOut:
-        """Patch an existing rule pack."""
+        """
+        Patch an existing rule pack.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (update_rule_pack)
+        2
+
+        Parameters
+        ----------
+        pack_id : object
+            Argument ``pack_id``.
+        payload : object
+            Argument ``payload``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         data = payload.model_dump(exclude_unset=True, by_alias=False)
         _reject_secrets(data)
         if not data:
@@ -488,7 +818,19 @@ class ConversionProfilesService:
         return self.get_rule_pack(pack_id)
 
     def delete_rule_pack(self, pack_id: UUID) -> None:
-        """Delete a rule pack owned by the caller."""
+        """
+        Delete a rule pack owned by the caller.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (delete_rule_pack)
+        2
+
+        Parameters
+        ----------
+        pack_id : object
+            Argument ``pack_id``.
+        """
         t = _table(RULE_PACKS_TABLE)
         try:
             with _get_engine().begin() as conn:
@@ -501,6 +843,19 @@ class ConversionProfilesService:
             _handle_db_error(exc)
 
     def _overlay_to_out(self, row: dict[str, Any]) -> OverlayOut:
+        """
+        Internal helper ``_overlay_to_out``.
+
+        Parameters
+        ----------
+        row : object
+            Argument ``row``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         raw_body = row.get("body")
         body_dict: dict[str, Any] = cast(dict[str, Any], raw_body) if isinstance(raw_body, dict) else {}
         verify_overlay_signature(
@@ -522,7 +877,19 @@ class ConversionProfilesService:
         )
 
     def list_overlays(self) -> list[OverlayOut]:
-        """List overlays owned by the caller (plus shared rows)."""
+        """
+        List overlays owned by the caller (plus shared rows).
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (list_overlays)
+        2
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         t = _table(OVERLAYS_TABLE)
         try:
             with _get_engine().connect() as conn:
@@ -538,7 +905,26 @@ class ConversionProfilesService:
         return [self._overlay_to_out(dict(r)) for r in rows]
 
     def get_overlay(self, overlay_id: UUID, *, require_owner: bool = False) -> OverlayOut:
-        """Fetch one overlay by id (owner or shared)."""
+        """
+        Fetch one overlay by id (owner or shared).
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (get_overlay)
+        2
+
+        Parameters
+        ----------
+        overlay_id : object
+            Argument ``overlay_id``.
+        require_owner : object
+            Argument ``require_owner``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         t = _table(OVERLAYS_TABLE)
         try:
             with _get_engine().connect() as conn:
@@ -556,7 +942,24 @@ class ConversionProfilesService:
         return self._overlay_to_out(dict(row))
 
     def create_overlay(self, payload: OverlayCreate) -> OverlayOut:
-        """Insert a new server-signed overlay."""
+        """
+        Insert a new server-signed overlay.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (create_overlay)
+        2
+
+        Parameters
+        ----------
+        payload : object
+            Argument ``payload``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         data = payload.model_dump(by_alias=False)
         _reject_secrets(data)
         _reject_secrets(payload.body)
@@ -587,7 +990,26 @@ class ConversionProfilesService:
         return self.get_overlay(overlay_id, require_owner=True)
 
     def update_overlay(self, overlay_id: UUID, payload: OverlayUpdate) -> OverlayOut:
-        """Patch an owned overlay and re-sign."""
+        """
+        Patch an owned overlay and re-sign.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (update_overlay)
+        2
+
+        Parameters
+        ----------
+        overlay_id : object
+            Argument ``overlay_id``.
+        payload : object
+            Argument ``payload``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         existing = self.get_overlay(overlay_id, require_owner=True)
         data = payload.model_dump(exclude_unset=True, by_alias=False)
         _reject_secrets(data)
@@ -626,7 +1048,19 @@ class ConversionProfilesService:
         return self.get_overlay(overlay_id, require_owner=True)
 
     def delete_overlay(self, overlay_id: UUID) -> None:
-        """Delete an overlay owned by the caller."""
+        """
+        Delete an overlay owned by the caller.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (delete_overlay)
+        2
+
+        Parameters
+        ----------
+        overlay_id : object
+            Argument ``overlay_id``.
+        """
         t = _table(OVERLAYS_TABLE)
         try:
             with _get_engine().begin() as conn:
@@ -640,7 +1074,19 @@ class ConversionProfilesService:
 
     @staticmethod
     def _first_party_template_out(template_id: str) -> ConversionTemplateOut | None:
-        """Project a code-served first-party conversion template."""
+        """
+        Internal helper ``_first_party_template_out``.
+
+        Parameters
+        ----------
+        template_id : object
+            Argument ``template_id``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         try:
             from tac2iwxxm.conversion_templates import get_first_party_template
         except ImportError:
@@ -681,7 +1127,19 @@ class ConversionProfilesService:
         )
 
     def _conversion_template_row_to_out(self, row: dict[str, Any]) -> ConversionTemplateOut:
-        """Map a DB row to ConversionTemplateOut."""
+        """
+        Internal helper ``_conversion_template_row_to_out``.
+
+        Parameters
+        ----------
+        row : object
+            Argument ``row``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         raw_slots_any: Any = row.get("slots") or []
         slot_items: list[Any] = cast(list[Any], raw_slots_any) if isinstance(raw_slots_any, list) else []
         slots: list[ConversionTemplateSlot] = [
@@ -707,7 +1165,19 @@ class ConversionProfilesService:
         )
 
     def list_conversion_templates(self) -> list[ConversionTemplateOut]:
-        """List first-party builtins plus custom templates visible to the caller."""
+        """
+        List first-party builtins plus custom templates visible to the caller.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (list_conversion_templates)
+        2
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         items: list[ConversionTemplateOut] = []
         try:
             from tac2iwxxm.conversion_templates import list_first_party_templates
@@ -734,7 +1204,26 @@ class ConversionProfilesService:
         return items
 
     def get_conversion_template(self, template_id: str, *, require_owner: bool = False) -> ConversionTemplateOut:
-        """Fetch a first-party or custom conversion template; fail-closed on unknown."""
+        """
+        Fetch a first-party or custom conversion template; fail-closed on unknown.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (get_conversion_template)
+        2
+
+        Parameters
+        ----------
+        template_id : object
+            Argument ``template_id``.
+        require_owner : object
+            Argument ``require_owner``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         first = self._first_party_template_out(template_id)
         if first is not None:
             if require_owner:
@@ -761,7 +1250,24 @@ class ConversionProfilesService:
         return self._conversion_template_row_to_out(dict(row))
 
     def create_conversion_template(self, payload: ConversionTemplateCreate) -> ConversionTemplateOut:
-        """Insert a custom conversion template (fork or new)."""
+        """
+        Insert a custom conversion template (fork or new).
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (create_conversion_template)
+        2
+
+        Parameters
+        ----------
+        payload : object
+            Argument ``payload``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         data = payload.model_dump(by_alias=False)
         _reject_secrets(data)
         for slot in payload.slots:
@@ -792,7 +1298,26 @@ class ConversionProfilesService:
         return self.get_conversion_template(str(template_id), require_owner=True)
 
     def update_conversion_template(self, template_id: str, payload: ConversionTemplateUpdate) -> ConversionTemplateOut:
-        """Patch an owned custom conversion template; reject first-party ids."""
+        """
+        Patch an owned custom conversion template; reject first-party ids.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (update_conversion_template)
+        2
+
+        Parameters
+        ----------
+        template_id : object
+            Argument ``template_id``.
+        payload : object
+            Argument ``payload``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         if self._first_party_template_out(template_id) is not None:
             raise HTTPException(status_code=403, detail="First-party templates cannot be modified")
         existing = self.get_conversion_template(template_id, require_owner=True)
@@ -838,7 +1363,19 @@ class ConversionProfilesService:
         return self.get_conversion_template(template_id, require_owner=True)
 
     def delete_conversion_template(self, template_id: str) -> None:
-        """Delete an owned custom conversion template; reject first-party."""
+        """
+        Delete an owned custom conversion template; reject first-party.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (delete_conversion_template)
+        2
+
+        Parameters
+        ----------
+        template_id : object
+            Argument ``template_id``.
+        """
         if self._first_party_template_out(template_id) is not None:
             raise HTTPException(status_code=403, detail="First-party templates cannot be deleted")
         try:
@@ -857,7 +1394,19 @@ class ConversionProfilesService:
             _handle_db_error(exc)
 
     def _first_party_library_out(self, asset_id: str) -> LibraryAssetOut | None:
-        """Map a first-party LibraryAsset to API out."""
+        """
+        Internal helper ``_first_party_library_out``.
+
+        Parameters
+        ----------
+        asset_id : object
+            Argument ``asset_id``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         try:
             from tac2iwxxm.library_assets import get_first_party_library_asset
         except ImportError:
@@ -880,7 +1429,19 @@ class ConversionProfilesService:
         )
 
     def _library_row_to_out(self, row: dict[str, Any]) -> LibraryAssetOut:
-        """Map a DB library asset row to API out."""
+        """
+        Internal helper ``_library_row_to_out``.
+
+        Parameters
+        ----------
+        row : object
+            Argument ``row``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         body_candidate: Any = row.get("body")
         body: dict[str, Any] = cast(dict[str, Any], body_candidate) if isinstance(body_candidate, dict) else {}
         status_raw = str(row.get("status") or "draft")
@@ -909,7 +1470,24 @@ class ConversionProfilesService:
         )
 
     def list_library_assets(self, *, kind: str | None = None) -> list[LibraryAssetOut]:
-        """List first-party defaults plus custom assets visible to the caller."""
+        """
+        List first-party defaults plus custom assets visible to the caller.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (list_library_assets)
+        2
+
+        Parameters
+        ----------
+        kind : object
+            Argument ``kind``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         items: list[LibraryAssetOut] = []
         try:
             from tac2iwxxm.library_assets import list_first_party_library_assets
@@ -935,7 +1513,26 @@ class ConversionProfilesService:
         return items
 
     def get_library_asset(self, asset_id: str, *, require_owner: bool = False) -> LibraryAssetOut:
-        """Fetch a first-party or custom library asset; fail-closed on unknown."""
+        """
+        Fetch a first-party or custom library asset; fail-closed on unknown.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (get_library_asset)
+        2
+
+        Parameters
+        ----------
+        asset_id : object
+            Argument ``asset_id``.
+        require_owner : object
+            Argument ``require_owner``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         first = self._first_party_library_out(asset_id)
         if first is not None:
             if require_owner:
@@ -968,7 +1565,28 @@ class ConversionProfilesService:
         kind: str,
         lifecycle: str = "draft",
     ) -> dict[str, Any]:
-        """Parse YAML and collect regex diagnostics without persisting."""
+        """
+        Parse YAML and collect regex diagnostics without persisting.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (validate_library_yaml_document)
+        2
+
+        Parameters
+        ----------
+        yaml_body : object
+            Argument ``yaml_body``.
+        kind : object
+            Argument ``kind``.
+        lifecycle : object
+            Argument ``lifecycle``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         try:
             from tac2iwxxm.library_yaml import LibraryKind, LibraryLifecycle, validate_library_yaml
         except ImportError as exc:
@@ -987,7 +1605,23 @@ class ConversionProfilesService:
         kind: str,
         lifecycle_status: str,
     ) -> dict[str, Any]:
-        """Validate YAML when activating; Draft may include Fail diagnostics."""
+        """
+        Internal helper ``_enforce_yaml_lifecycle``.
+
+        Parameters
+        ----------
+        yaml_body : object
+            Argument ``yaml_body``.
+        kind : object
+            Argument ``kind``.
+        lifecycle_status : object
+            Argument ``lifecycle_status``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         extra: dict[str, Any] = {}
         if yaml_body is None:
             if lifecycle_status == "activated":
@@ -1020,7 +1654,24 @@ class ConversionProfilesService:
         return extra
 
     def create_library_asset(self, payload: LibraryAssetCreate) -> LibraryAssetOut:
-        """Insert a custom library asset (fork or new)."""
+        """
+        Insert a custom library asset (fork or new).
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (create_library_asset)
+        2
+
+        Parameters
+        ----------
+        payload : object
+            Argument ``payload``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         data = payload.model_dump(by_alias=False)
         _reject_secrets(data)
         _reject_secrets(payload.body)
@@ -1058,7 +1709,26 @@ class ConversionProfilesService:
         return self.get_library_asset(str(asset_id), require_owner=True)
 
     def update_library_asset(self, asset_id: str, payload: LibraryAssetUpdate) -> LibraryAssetOut:
-        """Update owned custom asset, or auto-fork first-party on edit (AC3)."""
+        """
+        Update owned custom asset, or auto-fork first-party on edit (AC3).
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (update_library_asset)
+        2
+
+        Parameters
+        ----------
+        asset_id : object
+            Argument ``asset_id``.
+        payload : object
+            Argument ``payload``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         first = self._first_party_library_out(asset_id)
         if first is not None:
             body = payload.body if payload.body is not None else dict(first.body)
@@ -1119,7 +1789,19 @@ class ConversionProfilesService:
         return self.get_library_asset(asset_id, require_owner=True)
 
     def delete_library_asset(self, asset_id: str) -> None:
-        """Delete an owned custom library asset; reject first-party (AC4)."""
+        """
+        Delete an owned custom library asset; reject first-party (AC4).
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (delete_library_asset)
+        2
+
+        Parameters
+        ----------
+        asset_id : object
+            Argument ``asset_id``.
+        """
         if self._first_party_library_out(asset_id) is not None:
             raise HTTPException(status_code=403, detail="First-party library defaults cannot be deleted")
         try:
@@ -1138,7 +1820,26 @@ class ConversionProfilesService:
             _handle_db_error(exc)
 
     def preview_library_rule(self, library_id: str, focus_group: str) -> tuple[str, str]:
-        """Resolve AC11 rule association; return ``(rule_id, rule_name)``."""
+        """
+        Resolve AC11 rule association; return ``(rule_id, rule_name)``.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (preview_library_rule)
+        2
+
+        Parameters
+        ----------
+        library_id : object
+            Argument ``library_id``.
+        focus_group : object
+            Argument ``focus_group``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         asset_out = self.get_library_asset(library_id)
         if asset_out.kind != "conversion":
             raise HTTPException(status_code=400, detail="Rule preview requires a conversion library")

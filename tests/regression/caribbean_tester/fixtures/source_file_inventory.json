@@ -1,0 +1,978 @@
+{
+  "source_root": "/Users/bigme/Downloads/TAC-IWXXM TRANSLATOR TESTING RESULTS (2)",
+  "file_count": 124,
+  "files": [
+    {
+      "path": "BELIZE-TAC TO IWXXM COMPLETED TESTING RESULTS/TAC TO IWXXM COMPLETED/2-WeekTest-Log TAC-IWXXM  SEP 09 2026.xlsx",
+      "suffix": ".xlsx",
+      "bytes": 25339,
+      "ingested": "raw_copy"
+    },
+    {
+      "path": "BELIZE-TAC TO IWXXM COMPLETED TESTING RESULTS/TAC TO IWXXM COMPLETED/NMHS TAC-IWXXM User Evaluation Questionnaire.docx",
+      "suffix": ".docx",
+      "bytes": 43072,
+      "ingested": "tac_extracted_to_jsonl"
+    },
+    {
+      "path": "BELIZE-TAC TO IWXXM COMPLETED TESTING RESULTS/TAC TO IWXXM COMPLETED/TAC to IWXXM Test-METAR Error Report.docx",
+      "suffix": ".docx",
+      "bytes": 61423,
+      "ingested": "tac_extracted_to_jsonl"
+    },
+    {
+      "path": "BELIZE-TAC TO IWXXM COMPLETED TESTING RESULTS/TAC TO IWXXM COMPLETED/TAC to IWXXM Test-TAF PARSE Error Report.docx",
+      "suffix": ".docx",
+      "bytes": 238452,
+      "ingested": "tac_extracted_to_jsonl"
+    },
+    {
+      "path": "BELIZE-TAC TO IWXXM COMPLETED TESTING RESULTS/TAC TO IWXXM COMPLETED/TAC to IWXXM Test-TAF TRANSLATION Error Report.docx",
+      "suffix": ".docx",
+      "bytes": 393038,
+      "ingested": "tac_extracted_to_jsonl"
+    },
+    {
+      "path": "BELIZE-TAC TO IWXXM COMPLETED TESTING RESULTS/TAC TO IWXXM COMPLETED/TAC-IWXXM-Comparison Checklist.docx",
+      "suffix": ".docx",
+      "bytes": 43631,
+      "ingested": "tac_extracted_to_jsonl"
+    },
+    {
+      "path": "BELIZE-TAC TO IWXXM COMPLETED TESTING RESULTS/TAC TO IWXXM COMPLETED/WEEK 1/METAR/METARTTC_20260929052820.zip",
+      "suffix": ".zip",
+      "bytes": 50719,
+      "zip_members": [
+        "manual_input.xml",
+        "manual_input_2.xml",
+        "manual_input_3.xml",
+        "manual_input_4.xml",
+        "manual_input_5.xml",
+        "manual_input_6.xml",
+        "manual_input_7.xml",
+        "manual_input_8.xml",
+        "manual_input_9.xml",
+        "manual_input_10.xml",
+        "manual_input_11.xml",
+        "manual_input_12.xml",
+        "manual_input_13.xml",
+        "manual_input_14.xml",
+        "manual_input_15.xml",
+        "manual_input_16.xml",
+        "manual_input_17.xml",
+        "manual_input_18.xml"
+      ],
+      "ingested": "zip_text_extracted"
+    },
+    {
+      "path": "BELIZE-TAC TO IWXXM COMPLETED TESTING RESULTS/TAC TO IWXXM COMPLETED/WEEK 1/METAR/METARTTP_20260930124244.zip",
+      "suffix": ".zip",
+      "bytes": 69167,
+      "zip_members": [
+        "manual_input.xml",
+        "manual_input_2.xml",
+        "manual_input_3.xml",
+        "manual_input_4.xml",
+        "manual_input_5.xml",
+        "manual_input_6.xml",
+        "manual_input_7.xml",
+        "manual_input_8.xml",
+        "manual_input_9.xml",
+        "manual_input_10.xml",
+        "manual_input_11.xml",
+        "manual_input_12.xml",
+        "manual_input_13.xml",
+        "manual_input_14.xml",
+        "manual_input_15.xml",
+        "manual_input_16.xml",
+        "manual_input_17.xml",
+        "manual_input_18.xml",
+        "manual_input_19.xml",
+        "manual_input_20.xml",
+        "manual_input_21.xml",
+        "manual_input_22.xml",
+        "manual_input_23.xml",
+        "manual_input_24.xml",
+        "manual_input_25.xml"
+      ],
+      "ingested": "zip_text_extracted"
+    },
+    {
+      "path": "BELIZE-TAC TO IWXXM COMPLETED TESTING RESULTS/TAC TO IWXXM COMPLETED/WEEK 1/METAR/METARTUP_20260929063041.zip",
+      "suffix": ".zip",
+      "bytes": 48462,
+      "zip_members": [
+        "manual_input.xml",
+        "manual_input_2.xml",
+        "manual_input_3.xml",
+        "manual_input_4.xml",
+        "manual_input_5.xml",
+        "manual_input_6.xml",
+        "manual_input_7.xml",
+        "manual_input_8.xml",
+        "manual_input_9.xml",
+        "manual_input_10.xml",
+        "manual_input_11.xml",
+        "manual_input_12.xml",
+        "manual_input_13.xml",
+        "manual_input_14.xml",
+        "manual_input_15.xml",
+        "manual_input_16.xml",
+        "manual_input_17.xml"
+      ],
+      "ingested": "zip_text_extracted"
+    },
+    {
+      "path": "BELIZE-TAC TO IWXXM COMPLETED TESTING RESULTS/TAC TO IWXXM COMPLETED/WEEK 1/METAR/WEEK 1 METAR DATASET TTCP.docx",
+      "suffix": ".docx",
+      "bytes": 304065,
+      "ingested": "tac_extracted_to_jsonl"
+    },
+    {
+      "path": "BELIZE-TAC TO IWXXM COMPLETED TESTING RESULTS/TAC TO IWXXM COMPLETED/WEEK 1/METAR/WEEK 1 METAR DATASET TUPJ.docx",
+      "suffix": ".docx",
+      "bytes": 534904,
+      "ingested": "tac_extracted_to_jsonl"
+    },
+    {
+      "path": "BELIZE-TAC TO IWXXM COMPLETED TESTING RESULTS/TAC TO IWXXM COMPLETED/WEEK 1/METAR/Week 1 METAR DATASET TTPP.docx",
+      "suffix": ".docx",
+      "bytes": 473480,
+      "ingested": "tac_extracted_to_jsonl"
+    },
+    {
+      "path": "BELIZE-TAC TO IWXXM COMPLETED TESTING RESULTS/TAC TO IWXXM COMPLETED/WEEK 1/N_A/METARTTP_20260926161113.zip",
+      "suffix": ".zip",
+      "bytes": 66441,
+      "zip_members": [
+        "manual_input.xml",
+        "manual_input_2.xml",
+        "manual_input_3.xml",
+        "manual_input_4.xml",
+        "manual_input_5.xml",
+        "manual_input_6.xml",
+        "manual_input_7.xml",
+        "manual_input_8.xml",
+        "manual_input_9.xml",
+        "manual_input_10.xml",
+        "manual_input_11.xml",
+        "manual_input_12.xml",
+        "manual_input_13.xml",
+        "manual_input_14.xml",
+        "manual_input_15.xml",
+        "manual_input_16.xml",
+        "manual_input_17.xml",
+        "manual_input_18.xml",
+        "manual_input_19.xml",
+        "manual_input_20.xml",
+        "manual_input_21.xml",
+        "manual_input_22.xml",
+        "manual_input_23.xml",
+        "manual_input_24.xml"
+      ],
+      "ingested": "zip_text_extracted"
+    },
+    {
+      "path": "BELIZE-TAC TO IWXXM COMPLETED TESTING RESULTS/TAC TO IWXXM COMPLETED/WEEK 1/N_A/Week 1 METAR Testing Dataset_1.docx",
+      "suffix": ".docx",
+      "bytes": 1757989,
+      "ingested": "tac_extracted_to_jsonl"
+    },
+    {
+      "path": "BELIZE-TAC TO IWXXM COMPLETED TESTING RESULTS/TAC TO IWXXM COMPLETED/WEEK 1/N_A/Week 1 \u2013 SIGMET Testing Dataset_4.docx",
+      "suffix": ".docx",
+      "bytes": 13891,
+      "ingested": "tac_extracted_to_jsonl"
+    },
+    {
+      "path": "BELIZE-TAC TO IWXXM COMPLETED TESTING RESULTS/TAC TO IWXXM COMPLETED/WEEK 1/SPECI/SPECITTP_20260929001859.zip",
+      "suffix": ".zip",
+      "bytes": 136268,
+      "zip_members": [
+        "manual_input.xml",
+        "manual_input_2.xml",
+        "manual_input_3.xml",
+        "manual_input_4.xml",
+        "manual_input_5.xml",
+        "manual_input_6.xml",
+        "manual_input_7.xml",
+        "manual_input_8.xml",
+        "manual_input_9.xml",
+        "manual_input_10.xml",
+        "manual_input_11.xml",
+        "manual_input_12.xml",
+        "manual_input_13.xml",
+        "manual_input_14.xml",
+        "manual_input_15.xml",
+        "manual_input_16.xml",
+        "manual_input_17.xml",
+        "manual_input_18.xml",
+        "manual_input_19.xml",
+        "manual_input_20.xml",
+        "manual_input_21.xml",
+        "manual_input_22.xml",
+        "manual_input_23.xml",
+        "manual_input_24.xml",
+        "manual_input_25.xml",
+        "manual_input_26.xml",
+        "manual_input_27.xml",
+        "manual_input_28.xml",
+        "manual_input_29.xml",
+        "manual_input_30.xml",
+        "manual_input_31.xml",
+        "manual_input_32.xml",
+        "manual_input_33.xml",
+        "manual_input_34.xml",
+        "manual_input_35.xml",
+        "manual_input_36.xml",
+        "manual_input_37.xml",
+        "manual_input_38.xml",
+        "manual_input_39.xml",
+        "manual_input_40.xml",
+        "manual_input_41.xml",
+        "manual_input_42.xml",
+        "manual_input_43.xml",
+        "manual_input_44.xml",
+        "manual_input_45.xml"
+      ],
+      "ingested": "zip_text_extracted"
+    },
+    {
+      "path": "BELIZE-TAC TO IWXXM COMPLETED TESTING RESULTS/TAC TO IWXXM COMPLETED/WEEK 1/SPECI/Week 1 \u2013 SPECI Testing Dataset-V1.docx",
+      "suffix": ".docx",
+      "bytes": 2119538,
+      "ingested": "tac_extracted_to_jsonl"
+    },
+    {
+      "path": "BELIZE-TAC TO IWXXM COMPLETED TESTING RESULTS/TAC TO IWXXM COMPLETED/WEEK 1/TAF/TAFTTPP0_20260928223215.zip",
+      "suffix": ".zip",
+      "bytes": 104416,
+      "zip_members": [
+        "manual_input.xml",
+        "manual_input_2.xml",
+        "manual_input_3.xml",
+        "manual_input_4.xml",
+        "manual_input_5.xml",
+        "manual_input_6.xml",
+        "manual_input_7.xml",
+        "manual_input_8.xml",
+        "manual_input_9.xml",
+        "manual_input_10.xml",
+        "manual_input_11.xml",
+        "manual_input_12.xml",
+        "manual_input_13.xml",
+        "manual_input_14.xml",
+        "manual_input_15.xml",
+        "manual_input_16.xml",
+        "manual_input_17.xml",
+        "manual_input_18.xml",
+        "manual_input_19.xml",
+        "manual_input_20.xml",
+        "manual_input_21.xml"
+      ],
+      "ingested": "zip_text_extracted"
+    },
+    {
+      "path": "BELIZE-TAC TO IWXXM COMPLETED TESTING RESULTS/TAC TO IWXXM COMPLETED/WEEK 1/TAF/Week 1 \u2013 TAF Testing Dataset_2.docx",
+      "suffix": ".docx",
+      "bytes": 810454,
+      "ingested": "tac_extracted_to_jsonl"
+    },
+    {
+      "path": "BELIZE-TAC TO IWXXM COMPLETED TESTING RESULTS/TAC TO IWXXM COMPLETED/WEEK 2/METAR_SPECI/METAR WEEK 2.docx",
+      "suffix": ".docx",
+      "bytes": 1651280,
+      "ingested": "tac_extracted_to_jsonl"
+    },
+    {
+      "path": "BELIZE-TAC TO IWXXM COMPLETED TESTING RESULTS/TAC TO IWXXM COMPLETED/WEEK 2/METAR_SPECI/METARMZB_20260929074709.zip",
+      "suffix": ".zip",
+      "bytes": 110879,
+      "zip_members": [
+        "manual_input.xml",
+        "manual_input_2.xml",
+        "manual_input_3.xml",
+        "manual_input_4.xml",
+        "manual_input_5.xml",
+        "manual_input_6.xml",
+        "manual_input_7.xml",
+        "manual_input_8.xml",
+        "manual_input_9.xml",
+        "manual_input_10.xml",
+        "manual_input_11.xml",
+        "manual_input_12.xml",
+        "manual_input_13.xml",
+        "manual_input_14.xml",
+        "manual_input_15.xml",
+        "manual_input_16.xml",
+        "manual_input_17.xml",
+        "manual_input_18.xml",
+        "manual_input_19.xml",
+        "manual_input_20.xml",
+        "manual_input_21.xml",
+        "manual_input_22.xml",
+        "manual_input_23.xml",
+        "manual_input_24.xml",
+        "manual_input_25.xml",
+        "manual_input_26.xml",
+        "manual_input_27.xml",
+        "manual_input_28.xml",
+        "manual_input_29.xml",
+        "manual_input_30.xml",
+        "manual_input_31.xml",
+        "manual_input_32.xml",
+        "manual_input_33.xml",
+        "manual_input_34.xml",
+        "manual_input_35.xml",
+        "manual_input_36.xml",
+        "manual_input_37.xml",
+        "manual_input_38.xml"
+      ],
+      "ingested": "zip_text_extracted"
+    },
+    {
+      "path": "BELIZE-TAC TO IWXXM COMPLETED TESTING RESULTS/TAC TO IWXXM COMPLETED/WEEK 2/TAF/TAF MZBZ WEEK2.docx",
+      "suffix": ".docx",
+      "bytes": 811284,
+      "ingested": "tac_extracted_to_jsonl"
+    },
+    {
+      "path": "BELIZE-TAC TO IWXXM COMPLETED TESTING RESULTS/TAC TO IWXXM COMPLETED/WEEK 2/TAF/TAFMZBZ1_20260930120906.zip",
+      "suffix": ".zip",
+      "bytes": 98205,
+      "zip_members": [
+        "manual_input.xml",
+        "manual_input_2.xml",
+        "manual_input_3.xml",
+        "manual_input_4.xml",
+        "manual_input_5.xml",
+        "manual_input_1.xml",
+        "manual_input_6.xml",
+        "manual_input_7.xml",
+        "manual_input_8.xml",
+        "manual_input_9.xml",
+        "manual_input_10.xml",
+        "manual_input_11.xml",
+        "manual_input_1_2.xml",
+        "manual_input_2_2.xml",
+        "manual_input_3_2.xml",
+        "manual_input_12.xml",
+        "manual_input_13.xml",
+        "manual_input_14.xml",
+        "manual_input_15.xml",
+        "manual_input_16.xml",
+        "manual_input_17.xml",
+        "manual_input_18.xml",
+        "manual_input_19.xml",
+        "manual_input_20.xml"
+      ],
+      "ingested": "zip_text_extracted"
+    },
+    {
+      "path": "BRITISH VIRGIN ISLANDS/2-WeekTest-Log TAC-IWXXM  SEP 09 2026 (1).xlsx",
+      "suffix": ".xlsx",
+      "bytes": 86933,
+      "ingested": "raw_copy"
+    },
+    {
+      "path": "BRITISH VIRGIN ISLANDS/WMO TAC - IWXXM Testing  (1).docx",
+      "suffix": ".docx",
+      "bytes": 509233,
+      "ingested": "tac_extracted_to_jsonl"
+    },
+    {
+      "path": "GUYANA-TAC-IWXXM-TEST-EVALUATION/2-WeekTest-Log TAC-IWXXM  SEP 09 2026.xlsx",
+      "suffix": ".xlsx",
+      "bytes": 27610,
+      "ingested": "raw_copy"
+    },
+    {
+      "path": "GUYANA-TAC-IWXXM-TEST-EVALUATION/NMHS_TAC-IWXXM_User_Evaluation.docx",
+      "suffix": ".docx",
+      "bytes": 31234,
+      "ingested": "tac_extracted_to_jsonl"
+    },
+    {
+      "path": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TAC-IWXXM_Comparison_Checklist.docx",
+      "suffix": ".docx",
+      "bytes": 30475,
+      "ingested": "tac_extracted_to_jsonl"
+    },
+    {
+      "path": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TAC_to_IWXXM_Test-Error_Report.docx",
+      "suffix": ".docx",
+      "bytes": 29272,
+      "ingested": "tac_extracted_to_jsonl"
+    },
+    {
+      "path": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T012A.jpeg",
+      "suffix": ".jpeg",
+      "bytes": 1135061,
+      "ingested": "binary_evidence_skipped"
+    },
+    {
+      "path": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T012B.jpeg",
+      "suffix": ".jpeg",
+      "bytes": 1242080,
+      "ingested": "binary_evidence_skipped"
+    },
+    {
+      "path": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T013A.jpeg",
+      "suffix": ".jpeg",
+      "bytes": 1104246,
+      "ingested": "binary_evidence_skipped"
+    },
+    {
+      "path": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T013B.jpeg",
+      "suffix": ".jpeg",
+      "bytes": 1102842,
+      "ingested": "binary_evidence_skipped"
+    },
+    {
+      "path": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T014A.jpeg",
+      "suffix": ".jpeg",
+      "bytes": 983220,
+      "ingested": "binary_evidence_skipped"
+    },
+    {
+      "path": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T014B.jpeg",
+      "suffix": ".jpeg",
+      "bytes": 1102724,
+      "ingested": "binary_evidence_skipped"
+    },
+    {
+      "path": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T016A.jpeg",
+      "suffix": ".jpeg",
+      "bytes": 933670,
+      "ingested": "binary_evidence_skipped"
+    },
+    {
+      "path": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T016B.jpeg",
+      "suffix": ".jpeg",
+      "bytes": 1021033,
+      "ingested": "binary_evidence_skipped"
+    },
+    {
+      "path": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T017A.jpeg",
+      "suffix": ".jpeg",
+      "bytes": 979887,
+      "ingested": "binary_evidence_skipped"
+    },
+    {
+      "path": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T017B.jpeg",
+      "suffix": ".jpeg",
+      "bytes": 1060926,
+      "ingested": "binary_evidence_skipped"
+    },
+    {
+      "path": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T018.jpeg",
+      "suffix": ".jpeg",
+      "bytes": 256635,
+      "ingested": "binary_evidence_skipped"
+    },
+    {
+      "path": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T019.jpeg",
+      "suffix": ".jpeg",
+      "bytes": 264169,
+      "ingested": "binary_evidence_skipped"
+    },
+    {
+      "path": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T026.jpeg",
+      "suffix": ".jpeg",
+      "bytes": 337319,
+      "ingested": "binary_evidence_skipped"
+    },
+    {
+      "path": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T027.jpeg",
+      "suffix": ".jpeg",
+      "bytes": 369175,
+      "ingested": "binary_evidence_skipped"
+    },
+    {
+      "path": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T028.jpeg",
+      "suffix": ".jpeg",
+      "bytes": 360189,
+      "ingested": "binary_evidence_skipped"
+    },
+    {
+      "path": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T029A.jpeg",
+      "suffix": ".jpeg",
+      "bytes": 1162321,
+      "ingested": "binary_evidence_skipped"
+    },
+    {
+      "path": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T029B.jpeg",
+      "suffix": ".jpeg",
+      "bytes": 1371676,
+      "ingested": "binary_evidence_skipped"
+    },
+    {
+      "path": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T030A.jpeg",
+      "suffix": ".jpeg",
+      "bytes": 1009147,
+      "ingested": "binary_evidence_skipped"
+    },
+    {
+      "path": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T030B.jpeg",
+      "suffix": ".jpeg",
+      "bytes": 1192874,
+      "ingested": "binary_evidence_skipped"
+    },
+    {
+      "path": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T031A.jpeg",
+      "suffix": ".jpeg",
+      "bytes": 1051517,
+      "ingested": "binary_evidence_skipped"
+    },
+    {
+      "path": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T031B.jpeg",
+      "suffix": ".jpeg",
+      "bytes": 1212864,
+      "ingested": "binary_evidence_skipped"
+    },
+    {
+      "path": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T032A.jpeg",
+      "suffix": ".jpeg",
+      "bytes": 1167720,
+      "ingested": "binary_evidence_skipped"
+    },
+    {
+      "path": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T032B.jpeg",
+      "suffix": ".jpeg",
+      "bytes": 1340578,
+      "ingested": "binary_evidence_skipped"
+    },
+    {
+      "path": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T033.jpeg",
+      "suffix": ".jpeg",
+      "bytes": 477903,
+      "ingested": "binary_evidence_skipped"
+    },
+    {
+      "path": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T034.jpeg",
+      "suffix": ".jpeg",
+      "bytes": 453591,
+      "ingested": "binary_evidence_skipped"
+    },
+    {
+      "path": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T035.jpeg",
+      "suffix": ".jpeg",
+      "bytes": 466256,
+      "ingested": "binary_evidence_skipped"
+    },
+    {
+      "path": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T036A.jpeg",
+      "suffix": ".jpeg",
+      "bytes": 660303,
+      "ingested": "binary_evidence_skipped"
+    },
+    {
+      "path": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T036B.jpeg",
+      "suffix": ".jpeg",
+      "bytes": 918660,
+      "ingested": "binary_evidence_skipped"
+    },
+    {
+      "path": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T037A.jpeg",
+      "suffix": ".jpeg",
+      "bytes": 659704,
+      "ingested": "binary_evidence_skipped"
+    },
+    {
+      "path": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T037B.jpeg",
+      "suffix": ".jpeg",
+      "bytes": 922047,
+      "ingested": "binary_evidence_skipped"
+    },
+    {
+      "path": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T038A.jpeg",
+      "suffix": ".jpeg",
+      "bytes": 682743,
+      "ingested": "binary_evidence_skipped"
+    },
+    {
+      "path": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T038B.jpeg",
+      "suffix": ".jpeg",
+      "bytes": 924524,
+      "ingested": "binary_evidence_skipped"
+    },
+    {
+      "path": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T039A.jpeg",
+      "suffix": ".jpeg",
+      "bytes": 683036,
+      "ingested": "binary_evidence_skipped"
+    },
+    {
+      "path": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T039B.jpeg",
+      "suffix": ".jpeg",
+      "bytes": 922710,
+      "ingested": "binary_evidence_skipped"
+    },
+    {
+      "path": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T040.jpeg",
+      "suffix": ".jpeg",
+      "bytes": 382987,
+      "ingested": "binary_evidence_skipped"
+    },
+    {
+      "path": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T041A.jpeg",
+      "suffix": ".jpeg",
+      "bytes": 710296,
+      "ingested": "binary_evidence_skipped"
+    },
+    {
+      "path": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T041B.jpeg",
+      "suffix": ".jpeg",
+      "bytes": 889739,
+      "ingested": "binary_evidence_skipped"
+    },
+    {
+      "path": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T042A.jpeg",
+      "suffix": ".jpeg",
+      "bytes": 727663,
+      "ingested": "binary_evidence_skipped"
+    },
+    {
+      "path": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T042B.jpeg",
+      "suffix": ".jpeg",
+      "bytes": 940274,
+      "ingested": "binary_evidence_skipped"
+    },
+    {
+      "path": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T043.jpeg",
+      "suffix": ".jpeg",
+      "bytes": 408045,
+      "ingested": "binary_evidence_skipped"
+    },
+    {
+      "path": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T044A.jpeg",
+      "suffix": ".jpeg",
+      "bytes": 836229,
+      "ingested": "binary_evidence_skipped"
+    },
+    {
+      "path": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T044B.jpeg",
+      "suffix": ".jpeg",
+      "bytes": 909376,
+      "ingested": "binary_evidence_skipped"
+    },
+    {
+      "path": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T045A.jpeg",
+      "suffix": ".jpeg",
+      "bytes": 782773,
+      "ingested": "binary_evidence_skipped"
+    },
+    {
+      "path": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T045B.jpeg",
+      "suffix": ".jpeg",
+      "bytes": 941993,
+      "ingested": "binary_evidence_skipped"
+    },
+    {
+      "path": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T046.jpeg",
+      "suffix": ".jpeg",
+      "bytes": 408535,
+      "ingested": "binary_evidence_skipped"
+    },
+    {
+      "path": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T047.jpeg",
+      "suffix": ".jpeg",
+      "bytes": 399443,
+      "ingested": "binary_evidence_skipped"
+    },
+    {
+      "path": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T048A.jpeg",
+      "suffix": ".jpeg",
+      "bytes": 669052,
+      "ingested": "binary_evidence_skipped"
+    },
+    {
+      "path": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T048B.jpeg",
+      "suffix": ".jpeg",
+      "bytes": 665165,
+      "ingested": "binary_evidence_skipped"
+    },
+    {
+      "path": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T049A.jpeg",
+      "suffix": ".jpeg",
+      "bytes": 739573,
+      "ingested": "binary_evidence_skipped"
+    },
+    {
+      "path": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/T049B.jpeg",
+      "suffix": ".jpeg",
+      "bytes": 906959,
+      "ingested": "binary_evidence_skipped"
+    },
+    {
+      "path": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/bulletin_report_12.tac",
+      "suffix": ".tac",
+      "bytes": 6686,
+      "ingested": "raw_copy"
+    },
+    {
+      "path": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/bulletin_report_13.tac",
+      "suffix": ".tac",
+      "bytes": 6686,
+      "ingested": "raw_copy"
+    },
+    {
+      "path": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/bulletin_report_14.tac",
+      "suffix": ".tac",
+      "bytes": 5185,
+      "ingested": "raw_copy"
+    },
+    {
+      "path": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/bulletin_report_16.tac",
+      "suffix": ".tac",
+      "bytes": 4602,
+      "ingested": "raw_copy"
+    },
+    {
+      "path": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/bulletin_report_17.tac",
+      "suffix": ".tac",
+      "bytes": 4599,
+      "ingested": "raw_copy"
+    },
+    {
+      "path": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/bulletin_report_29.tac",
+      "suffix": ".tac",
+      "bytes": 7341,
+      "ingested": "raw_copy"
+    },
+    {
+      "path": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/bulletin_report_30.tac",
+      "suffix": ".tac",
+      "bytes": 5960,
+      "ingested": "raw_copy"
+    },
+    {
+      "path": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/bulletin_report_31.tac",
+      "suffix": ".tac",
+      "bytes": 6201,
+      "ingested": "raw_copy"
+    },
+    {
+      "path": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/bulletin_report_32.tac",
+      "suffix": ".tac",
+      "bytes": 7145,
+      "ingested": "raw_copy"
+    },
+    {
+      "path": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/bulletin_report_36.tac",
+      "suffix": ".tac",
+      "bytes": 3089,
+      "ingested": "raw_copy"
+    },
+    {
+      "path": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/bulletin_report_37.tac",
+      "suffix": ".tac",
+      "bytes": 3089,
+      "ingested": "raw_copy"
+    },
+    {
+      "path": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/bulletin_report_38.tac",
+      "suffix": ".tac",
+      "bytes": 3150,
+      "ingested": "raw_copy"
+    },
+    {
+      "path": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/bulletin_report_39.tac",
+      "suffix": ".tac",
+      "bytes": 3148,
+      "ingested": "raw_copy"
+    },
+    {
+      "path": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/bulletin_report_41.tac",
+      "suffix": ".tac",
+      "bytes": 3441,
+      "ingested": "raw_copy"
+    },
+    {
+      "path": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/bulletin_report_42.tac",
+      "suffix": ".tac",
+      "bytes": 3534,
+      "ingested": "raw_copy"
+    },
+    {
+      "path": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/manual_input_44.xml",
+      "suffix": ".xml",
+      "bytes": 2442,
+      "ingested": "raw_copy"
+    },
+    {
+      "path": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/manual_input_45.xml",
+      "suffix": ".xml",
+      "bytes": 2729,
+      "ingested": "raw_copy"
+    },
+    {
+      "path": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/manual_input_48.xml",
+      "suffix": ".xml",
+      "bytes": 1319,
+      "ingested": "raw_copy"
+    },
+    {
+      "path": "GUYANA-TAC-IWXXM-TEST-EVALUATION/TESTID/manual_input_49.xml",
+      "suffix": ".xml",
+      "bytes": 2729,
+      "ingested": "raw_copy"
+    },
+    {
+      "path": "JAMAICA IWXXM TESTING RESULTS/2-WeekTest-Log TAC-IWXXM  SEP 09 2026.xlsx",
+      "suffix": ".xlsx",
+      "bytes": 80711,
+      "ingested": "raw_copy"
+    },
+    {
+      "path": "JAMAICA IWXXM TESTING RESULTS/Recommended_UX_Mockup.png",
+      "suffix": ".png",
+      "bytes": 281414,
+      "ingested": "binary_evidence_skipped"
+    },
+    {
+      "path": "JAMAICA IWXXM TESTING RESULTS/T011-a.png",
+      "suffix": ".png",
+      "bytes": 218097,
+      "ingested": "binary_evidence_skipped"
+    },
+    {
+      "path": "JAMAICA IWXXM TESTING RESULTS/T011-b.png",
+      "suffix": ".png",
+      "bytes": 100442,
+      "ingested": "binary_evidence_skipped"
+    },
+    {
+      "path": "JAMAICA IWXXM TESTING RESULTS/T1059-b.png",
+      "suffix": ".png",
+      "bytes": 89695,
+      "ingested": "binary_evidence_skipped"
+    },
+    {
+      "path": "JAMAICA IWXXM TESTING RESULTS/T1059.png",
+      "suffix": ".png",
+      "bytes": 227401,
+      "ingested": "binary_evidence_skipped"
+    },
+    {
+      "path": "JAMAICA IWXXM TESTING RESULTS/T1060-a.png",
+      "suffix": ".png",
+      "bytes": 143366,
+      "ingested": "binary_evidence_skipped"
+    },
+    {
+      "path": "JAMAICA IWXXM TESTING RESULTS/T1060-b.png",
+      "suffix": ".png",
+      "bytes": 106768,
+      "ingested": "binary_evidence_skipped"
+    },
+    {
+      "path": "JAMAICA IWXXM TESTING RESULTS/T146-a.png",
+      "suffix": ".png",
+      "bytes": 116975,
+      "ingested": "binary_evidence_skipped"
+    },
+    {
+      "path": "JAMAICA IWXXM TESTING RESULTS/T146-b.png",
+      "suffix": ".png",
+      "bytes": 113925,
+      "ingested": "binary_evidence_skipped"
+    },
+    {
+      "path": "JAMAICA IWXXM TESTING RESULTS/T302-a.png",
+      "suffix": ".png",
+      "bytes": 214404,
+      "ingested": "binary_evidence_skipped"
+    },
+    {
+      "path": "JAMAICA IWXXM TESTING RESULTS/T302-b.png",
+      "suffix": ".png",
+      "bytes": 110928,
+      "ingested": "binary_evidence_skipped"
+    },
+    {
+      "path": "JAMAICA IWXXM TESTING RESULTS/T360-a.png",
+      "suffix": ".png",
+      "bytes": 223281,
+      "ingested": "binary_evidence_skipped"
+    },
+    {
+      "path": "JAMAICA IWXXM TESTING RESULTS/T360-b.png",
+      "suffix": ".png",
+      "bytes": 114444,
+      "ingested": "binary_evidence_skipped"
+    },
+    {
+      "path": "JAMAICA IWXXM TESTING RESULTS/T571-a.png",
+      "suffix": ".png",
+      "bytes": 229182,
+      "ingested": "binary_evidence_skipped"
+    },
+    {
+      "path": "JAMAICA IWXXM TESTING RESULTS/T571-b.png",
+      "suffix": ".png",
+      "bytes": 119867,
+      "ingested": "binary_evidence_skipped"
+    },
+    {
+      "path": "JAMAICA IWXXM TESTING RESULTS/TAC-IWXXM_Test_and_UX_Report.docx",
+      "suffix": ".docx",
+      "bytes": 557419,
+      "ingested": "tac_extracted_to_jsonl"
+    },
+    {
+      "path": "SAINT LUCIA - TAC-IWXXM TESTING RESULT/METAR TUPJ 071900Z 14006KT 10SM VCSH FEW012CB SCT017 28.docx",
+      "suffix": ".docx",
+      "bytes": 4306859,
+      "ingested": "tac_extracted_to_jsonl"
+    },
+    {
+      "path": "SAINT LUCIA - TAC-IWXXM TESTING RESULT/SAINT LUCIA EMAIL.pdf",
+      "suffix": ".pdf",
+      "bytes": 138685,
+      "ingested": "binary_evidence_skipped"
+    },
+    {
+      "path": "ST KITTS and NEVIS-TAC-IWXXM-TEST-EVALUATIONS/IWXXMTestFiles.xlsx",
+      "suffix": ".xlsx",
+      "bytes": 11582,
+      "ingested": "raw_copy"
+    },
+    {
+      "path": "ST KITTS and NEVIS-TAC-IWXXM-TEST-EVALUATIONS/St Kitts and Nevis Results-Testing and Evaluation Regional TAC-IWXXM Translator prototype.pdf",
+      "suffix": ".pdf",
+      "bytes": 116390,
+      "ingested": "binary_evidence_skipped"
+    },
+    {
+      "path": "St Maarten IWXXM TESTING RESULTS/NMHS TAC-IWXXM User Evaluation Questionnaire.docx",
+      "suffix": ".docx",
+      "bytes": 30621,
+      "ingested": "tac_extracted_to_jsonl"
+    },
+    {
+      "path": "St Maarten IWXXM TESTING RESULTS/TAC to IWXXM Test-Error Report.docx",
+      "suffix": ".docx",
+      "bytes": 27465,
+      "ingested": "tac_extracted_to_jsonl"
+    },
+    {
+      "path": "St Maarten IWXXM TESTING RESULTS/TAC-IWXXM-Comparison Checklist.docx",
+      "suffix": ".docx",
+      "bytes": 29576,
+      "ingested": "tac_extracted_to_jsonl"
+    },
+    {
+      "path": "TRINIDAD AND TOBAGO -TAC-TO-IWXXM TESTING RESULTS/2-WeekTest-Log TAC-IWXXM  SEP 09 2026.TTMS.xlsx",
+      "suffix": ".xlsx",
+      "bytes": 26433,
+      "ingested": "raw_copy"
+    },
+    {
+      "path": "TRINIDAD AND TOBAGO -TAC-TO-IWXXM TESTING RESULTS/NMHS TAC-IWXXM User Evaluation Questionnaire_TTPPFeedback.docx",
+      "suffix": ".docx",
+      "bytes": 34070,
+      "ingested": "tac_extracted_to_jsonl"
+    }
+  ]
+}

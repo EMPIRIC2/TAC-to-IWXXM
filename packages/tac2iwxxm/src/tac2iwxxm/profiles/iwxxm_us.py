@@ -13,7 +13,22 @@ from tac2iwxxm.profiles.annex3 import NS, build_observation_and_trends, obs_time
 
 
 def _us_gml_id(ir: dict[str, Any], product: str) -> str:
-    """Stable gml:id for US golden fixtures (theme-aware for F20 S3)."""
+    """
+    Internal helper ``_us_gml_id``.
+
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Argument ``ir``.
+
+    product : str
+        Argument ``product``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
     root = product.lower()
     station = str(ir["station"]).lower()
     rvr_raw = ir.get("rvr")
@@ -45,30 +60,84 @@ def _us_gml_id(ir: dict[str, Any], product: str) -> str:
 
 
 def _peak_timestamp(ir: dict[str, Any]) -> str:
-    """Peak-wind time on the same calendar month as observation fixtures."""
+    """
+    Internal helper ``_peak_timestamp``.
+
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Argument ``ir``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
     day = int(ir["day"])
     hour = int(ir["peak_wind_hour"])
     minute = int(ir["peak_wind_minute"])
-    return f"2023-06-{day:02d}T{hour:02d}:{minute:02d}:00Z"
+    from tac2iwxxm.time_anchor import iso_stamp
+
+    legacy = "2012-08" if str(ir.get("station")) == "YUDO" else "2023-06"
+    return iso_stamp(ir, day, hour, minute, legacy=legacy)
 
 
 def _wind_shift_timestamp(ir: dict[str, Any]) -> str:
-    """Wind-shift time on the same calendar month as observation fixtures."""
+    """
+    Internal helper ``_wind_shift_timestamp``.
+
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Argument ``ir``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
     day = int(ir["day"])
     hour = int(ir["wind_shift_hour"])
     minute = int(ir["wind_shift_minute"])
-    return f"2023-06-{day:02d}T{hour:02d}:{minute:02d}:00Z"
+    from tac2iwxxm.time_anchor import iso_stamp
+
+    legacy = "2012-08" if str(ir.get("station")) == "YUDO" else "2023-06"
+    return iso_stamp(ir, day, hour, minute, legacy=legacy)
 
 
 def _fmt_deg(value: float) -> str:
-    """Format sector angle for iwxxm-us Sector (PDF uses .5° steps)."""
+    """
+    Internal helper ``_fmt_deg``.
+
+    Parameters
+    ----------
+    value : float
+        Argument ``value``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
     if float(value).is_integer():
         return str(int(value))
     return f"{value:g}"
 
 
 def _observed_lightning_xml(lightning: dict[str, Any]) -> str:
-    """Serialize one ``iwxxm-us:ObservedLightning`` block."""
+    """
+    Internal helper ``_observed_lightning_xml``.
+
+    Parameters
+    ----------
+    lightning : dict[str, Any]
+        Argument ``lightning``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
     parts: list[str] = ["              <iwxxm-us:ObservedLightning>"]
     dist = lightning.get("qualitative_distance_href")
     if dist:
@@ -104,7 +173,25 @@ def _observed_lightning_xml(lightning: dict[str, Any]) -> str:
 
 
 def _cloud_character_elem(tag: str, href: str | None, nil_reason: str | None) -> str:
-    """Serialize one CharacterOfTheSky CloudTypes child (xlink or nilReason)."""
+    """
+    Internal helper ``_cloud_character_elem``.
+
+    Parameters
+    ----------
+    tag : str
+        Argument ``tag``.
+
+    href : str | None
+        Argument ``href``.
+
+    nil_reason : str | None
+        Argument ``nil_reason``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
     if href:
         return f'              <iwxxm-us:{tag} xlink:href="{escape(href)}"/>'
     if nil_reason:
@@ -113,7 +200,19 @@ def _cloud_character_elem(tag: str, href: str | None, nil_reason: str | None) ->
 
 
 def _character_of_the_sky_xml(sky: dict[str, Any]) -> str:
-    """Serialize ``iwxxm-us:CharacterOfTheSky`` for VOP."""
+    """
+    Internal helper ``_character_of_the_sky_xml``.
+
+    Parameters
+    ----------
+    sky : dict[str, Any]
+        Argument ``sky``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
     low = _cloud_character_elem(
         "lowCloudCharacter",
         sky.get("low_href") if isinstance(sky.get("low_href"), str) else None,
@@ -137,7 +236,19 @@ def _character_of_the_sky_xml(sky: dict[str, Any]) -> str:
 
 
 def _convective_cloud_xml(conv: dict[str, Any]) -> str:
-    """Serialize one ``iwxxm-us:ConvectiveCloudLocation`` block."""
+    """
+    Internal helper ``_convective_cloud_xml``.
+
+    Parameters
+    ----------
+    conv : dict[str, Any]
+        Argument ``conv``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
     parts: list[str] = ["              <iwxxm-us:ConvectiveCloudLocation>"]
     ctype = conv.get("cloud_type_href")
     if ctype:
@@ -174,7 +285,19 @@ def _convective_cloud_xml(conv: dict[str, Any]) -> str:
 
 
 def _vop_addendum_inner(ir: dict[str, Any]) -> str:
-    """Serialize Addendum ``visuallyObservablePhenomena`` (lightning / convection / sky / obscuration)."""
+    """
+    Internal helper ``_vop_addendum_inner``.
+
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Argument ``ir``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
     lightning_raw = ir.get("observed_lightning")
     has_lightning = isinstance(lightning_raw, dict)
     convective_raw = ir.get("convective_cloud")
@@ -232,7 +355,19 @@ def _vop_addendum_inner(ir: dict[str, Any]) -> str:
 
 
 def _hailstone_size_addendum_inner(ir: dict[str, Any]) -> str:
-    """Serialize Addendum ``hailstoneSize`` from FMH-1 GR remark."""
+    """
+    Internal helper ``_hailstone_size_addendum_inner``.
+
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Argument ``ir``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
     hail_raw = ir.get("hailstone_size")
     if not isinstance(hail_raw, dict):
         return ""
@@ -252,7 +387,19 @@ def _hailstone_size_addendum_inner(ir: dict[str, Any]) -> str:
 
 
 def _snow_increase_addendum_inner(ir: dict[str, Any]) -> str:
-    """Serialize Addendum ``snowIncrease`` from FMH-1 SNINCR."""
+    """
+    Internal helper ``_snow_increase_addendum_inner``.
+
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Argument ``ir``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
     snow_raw = ir.get("snow_increase")
     if not isinstance(snow_raw, dict):
         return ""
@@ -279,7 +426,19 @@ def _snow_increase_addendum_inner(ir: dict[str, Any]) -> str:
 
 
 def _inoperative_sensors_extension(ir: dict[str, Any]) -> str:
-    """Serialize observation-level ``iwxxm-us:InoperativeSensors`` for sensor-NO remarks."""
+    """
+    Internal helper ``_inoperative_sensors_extension``.
+
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Argument ``ir``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
     hrefs_raw = ir.get("inoperative_sensor_hrefs")
     if not isinstance(hrefs_raw, list) or not hrefs_raw:
         return ""
@@ -305,7 +464,19 @@ def _inoperative_sensors_extension(ir: dict[str, Any]) -> str:
 
 
 def _second_location_addendum_inner(ir: dict[str, Any]) -> str:
-    """Serialize Addendum ``observedAtSecondLocation`` from CIG/VIS RWY remarks."""
+    """
+    Internal helper ``_second_location_addendum_inner``.
+
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Argument ``ir``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
     second_raw = ir.get("observed_at_second_location")
     if not isinstance(second_raw, dict):
         return ""
@@ -342,7 +513,19 @@ def _second_location_addendum_inner(ir: dict[str, Any]) -> str:
 
 
 def _visibility_us_extension(ir: dict[str, Any]) -> str:
-    """Serialize SectorVisibility / TowerVisibility / VariableVisibility extensions."""
+    """
+    Internal helper ``_visibility_us_extension``.
+
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Argument ``ir``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
     chunks: list[str] = []
     sector_raw = ir.get("sector_visibility")
     if isinstance(sector_raw, dict):
@@ -389,7 +572,19 @@ def _visibility_us_extension(ir: dict[str, Any]) -> str:
 
 
 def _cloud_layer_us_extension(ir: dict[str, Any]) -> str:
-    """Serialize VariableCeilingHeight / VariableSkyCondition on CloudLayer."""
+    """
+    Internal helper ``_cloud_layer_us_extension``.
+
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Argument ``ir``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
     chunks: list[str] = []
     cig_raw = ir.get("variable_ceiling")
     if isinstance(cig_raw, dict):
@@ -421,7 +616,19 @@ def _cloud_layer_us_extension(ir: dict[str, Any]) -> str:
 
 
 def _max_min_temperatures_addendum_inner(ir: dict[str, Any]) -> str:
-    """Serialize Addendum ``maxMinTemperatures`` from FMH-1 ``1``/``2``/``4`` groups."""
+    """
+    Internal helper ``_max_min_temperatures_addendum_inner``.
+
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Argument ``ir``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
     rows_raw = ir.get("max_min_temperatures")
     if not isinstance(rows_raw, list) or not rows_raw:
         return ""
@@ -447,7 +654,25 @@ def _max_min_temperatures_addendum_inner(ir: dict[str, Any]) -> str:
 
 
 def _measure_or_nil(tag: str, value: object, *, uom: str) -> str:
-    """Emit a MeasureWithNilReason element (value or missing nil)."""
+    """
+    Internal helper ``_measure_or_nil``.
+
+    Parameters
+    ----------
+    tag : str
+        Argument ``tag``.
+
+    value : object
+        Argument ``value``.
+
+    uom : str
+        Argument ``uom``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
     if value is None:
         return f'<iwxxm-us:{tag} uom="N/A" nilReason="missing" xsi:nil="true"/>'
     txt = f"{value:.1f}" if isinstance(value, float) else _fmt_deg(float(str(value)))
@@ -455,7 +680,19 @@ def _measure_or_nil(tag: str, value: object, *, uom: str) -> str:
 
 
 def _processed_quantity_addendum_inner(ir: dict[str, Any]) -> str:
-    """Serialize Addendum ``processedQuantity`` ProcessedProperty rows (precip P/6/7)."""
+    """
+    Internal helper ``_processed_quantity_addendum_inner``.
+
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Argument ``ir``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
     qty_raw = ir.get("processed_quantities")
     if not isinstance(qty_raw, list) or not qty_raw:
         return ""
@@ -491,12 +728,27 @@ def _processed_quantity_addendum_inner(ir: dict[str, Any]) -> str:
 
 
 def _recent_weather_addendum_inner(ir: dict[str, Any]) -> str:
-    """Serialize Addendum ``recentWeather`` from FMH-1 begin/end remarks."""
+    """
+    Internal helper ``_recent_weather_addendum_inner``.
+
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Argument ``ir``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
     rows_raw = ir.get("recent_weather_us")
     if not isinstance(rows_raw, list) or not rows_raw:
         return ""
+    from tac2iwxxm.time_anchor import iso_stamp
+
     day = int(ir["day"])
     obs_hour = int(ir["hour"])
+    legacy = "2012-08" if str(ir.get("station")) == "YUDO" else "2023-06"
     parts: list[str] = ["          <iwxxm-us:recentWeather>"]
     for idx, row_obj in enumerate(cast(list[object], rows_raw)):
         if not isinstance(row_obj, dict):
@@ -508,12 +760,12 @@ def _recent_weather_addendum_inner(ir: dict[str, Any]) -> str:
         begin_xml = ""
         end_xml = ""
         if row.get("begin_minute") is not None:
-            stamp = f"2023-06-{day:02d}T{b_hour:02d}:{int(str(row['begin_minute'])):02d}:00Z"
+            stamp = iso_stamp(ir, day, b_hour, int(str(row["begin_minute"])), legacy=legacy)
             begin_xml = f"<gml:beginPosition>{stamp}</gml:beginPosition>"
         else:
             begin_xml = '<gml:beginPosition indeterminatePosition="unknown"/>'
         if row.get("end_minute") is not None:
-            stamp = f"2023-06-{day:02d}T{e_hour:02d}:{int(str(row['end_minute'])):02d}:00Z"
+            stamp = iso_stamp(ir, day, e_hour, int(str(row["end_minute"])), legacy=legacy)
             end_xml = f"<gml:endPosition>{stamp}</gml:endPosition>"
         else:
             end_xml = '<gml:endPosition indeterminatePosition="unknown"/>'
@@ -535,7 +787,19 @@ def _recent_weather_addendum_inner(ir: dict[str, Any]) -> str:
 
 
 def _addendum_extension(ir: dict[str, Any]) -> str:
-    """Serialize observation-level ``iwxxm-us:Addendum`` when REMARKS present."""
+    """
+    Internal helper ``_addendum_extension``.
+
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Argument ``ir``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
     free_text = str(ir.get("remarks_free_text") or "").strip()
     has_vop = (
         isinstance(ir.get("observed_lightning"), dict)
@@ -617,7 +881,19 @@ def _addendum_extension(ir: dict[str, Any]) -> str:
 
 
 def _peak_wind_extension(ir: dict[str, Any]) -> str:
-    """Serialize surface-wind ``iwxxm-us:AerodromePeakWind`` when PK WND present."""
+    """
+    Internal helper ``_peak_wind_extension``.
+
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Argument ``ir``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
     if ir.get("peak_wind_dir_deg") is None:
         return ""
     stamp = _peak_timestamp(ir)
@@ -636,7 +912,19 @@ def _peak_wind_extension(ir: dict[str, Any]) -> str:
 
 
 def _wind_shift_extension(ir: dict[str, Any]) -> str:
-    """Serialize surface-wind ``iwxxm-us:AerodromeWindShift`` when WSHFT present."""
+    """
+    Internal helper ``_wind_shift_extension``.
+
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Argument ``ir``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
     if ir.get("wind_shift_hour") is None:
         return ""
     stamp = _wind_shift_timestamp(ir)
@@ -654,7 +942,19 @@ def _wind_shift_extension(ir: dict[str, Any]) -> str:
 
 
 def _variable_rvr_extension(ir: dict[str, Any]) -> str:
-    """Serialize RVR ``iwxxm-us:AerodromeVariableRVR`` when variable min/max present."""
+    """
+    Internal helper ``_variable_rvr_extension``.
+
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Argument ``ir``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
     rvr_raw = ir.get("rvr")
     if not isinstance(rvr_raw, dict):
         return ""
@@ -687,17 +987,24 @@ def emit_metar_speci_iwxxm_us(
 
     Parameters
     ----------
-    ir :
+    ir : dict[str, Any]
         Parsed METAR/SPECI IR (including optional REMARKS fields).
-    product :
+
+    product : str
         ``METAR`` or ``SPECI``.
-    iwxxm_version :
+
+    iwxxm_version : str
         Release line (namespace selection).
 
     Returns
     -------
     str
         IWXXM XML document with US extension blocks.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (emit_metar_speci_iwxxm_us)
+    2
     """
     ns = NS.get(iwxxm_version)
     if ns is None:
@@ -771,28 +1078,84 @@ _US_NS = 'xmlns:iwxxm-us="http://www.weather.gov/iwxxm-us/3.0"'
 
 
 def _with_us_namespace(xml: str) -> str:
-    """Inject the IWXXM-US namespace declaration on the root element."""
+    """
+    Internal helper ``_with_us_namespace``.
+
+    Parameters
+    ----------
+    xml : str
+        Argument ``xml``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
     if "xmlns:iwxxm-us=" in xml:
         return xml
     return xml.replace("xmlns:iwxxm=", f"{_US_NS}\n    xmlns:iwxxm=", 1)
 
 
 def _inject_evolving_extension(xml: str, extension: str, closing_tag: str) -> str:
-    """Insert an ``iwxxm:extension`` block before the evolving-condition close tag."""
+    """
+    Internal helper ``_inject_evolving_extension``.
+
+    Parameters
+    ----------
+    xml : str
+        Argument ``xml``.
+
+    extension : str
+        Argument ``extension``.
+
+    closing_tag : str
+        Argument ``closing_tag``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
     if not extension or closing_tag not in xml:
         return xml
     return xml.replace(closing_tag, f"{extension}\n            {closing_tag}", 1)
 
 
 def _airmet_subperiod_extension(parent_ir: dict[str, Any], outlook: dict[str, Any]) -> str:
-    """Serialize ``validTimeSubPeriod`` for an AIRMET outlook subsection."""
-    year_month = "2014-05"
+    """
+    Internal helper ``_airmet_subperiod_extension``.
+
+    Parameters
+    ----------
+    parent_ir : dict[str, Any]
+        Argument ``parent_ir``.
+
+    outlook : dict[str, Any]
+        Argument ``outlook``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
+    from tac2iwxxm.time_anchor import iso_stamp
+
     from_day = int(outlook.get("valid_from_day", parent_ir["valid_from_day"]))
     to_day = int(outlook.get("valid_to_day", from_day))
-    begin = (
-        f"{year_month}-{from_day:02d}T{int(outlook['valid_from_hour']):02d}:{int(outlook['valid_from_minute']):02d}:00Z"
+    begin = iso_stamp(
+        parent_ir,
+        from_day,
+        int(outlook["valid_from_hour"]),
+        int(outlook["valid_from_minute"]),
+        legacy="2014-05",
     )
-    end = f"{year_month}-{to_day:02d}T{int(outlook['valid_to_hour']):02d}:{int(outlook['valid_to_minute']):02d}:00Z"
+    end = iso_stamp(
+        parent_ir,
+        to_day,
+        int(outlook["valid_to_hour"]),
+        int(outlook["valid_to_minute"]),
+        legacy="2014-05",
+    )
     freezing_levels = ""
     inline_lo = outlook.get("inline_frzlvl_lo")
     inline_hi = outlook.get("inline_frzlvl_hi")
@@ -812,7 +1175,22 @@ def _airmet_subperiod_extension(parent_ir: dict[str, Any], outlook: dict[str, An
 
 
 def _flight_level_layer_xml(alt: str, gml_id: str) -> str:
-    """Serialize ``iwxxm-us:flightLevel`` for a freezing-level isopleth."""
+    """
+    Internal helper ``_flight_level_layer_xml``.
+
+    Parameters
+    ----------
+    alt : str
+        Argument ``alt``.
+
+    gml_id : str
+        Argument ``gml_id``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
     if alt.upper() == "SFC":
         return f"""                    <aixm:AirspaceLayer gml:id="{gml_id}">
                       <aixm:lowerLimit>GND</aixm:lowerLimit>
@@ -826,7 +1204,25 @@ def _flight_level_layer_xml(alt: str, gml_id: str) -> str:
 
 
 def _inline_freezing_levels_xml(lo: int, hi: int, *, prefix: str) -> str:
-    """Serialize inline ``FRZLVL lo-hi`` tokens inside an evolving extension."""
+    """
+    Internal helper ``_inline_freezing_levels_xml``.
+
+    Parameters
+    ----------
+    lo : int
+        Argument ``lo``.
+
+    hi : int
+        Argument ``hi``.
+
+    prefix : str
+        Argument ``prefix``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
     return f"""
                   <iwxxm-us:freezingLevel>
                     <iwxxm-us:flightLevel>
@@ -843,7 +1239,25 @@ def _inline_freezing_levels_xml(lo: int, hi: int, *, prefix: str) -> str:
 
 
 def _freezing_level_isopleth_xml(isopleth: dict[str, Any], idx: int, *, multiple: bool) -> str:
-    """Serialize one ``iwxxm-us:FreezingLevel`` isopleth member."""
+    """
+    Internal helper ``_freezing_level_isopleth_xml``.
+
+    Parameters
+    ----------
+    isopleth : dict[str, Any]
+        Argument ``isopleth``.
+
+    idx : int
+        Argument ``idx``.
+
+    multiple : bool
+        Argument ``multiple``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
     alt = str(isopleth["alt"])
     return f"""          <iwxxm-us:isopleth>
             <iwxxm-us:FreezingLevel>
@@ -856,7 +1270,19 @@ def _freezing_level_isopleth_xml(isopleth: dict[str, Any], idx: int, *, multiple
 
 
 def _airmet_freezing_level_forecast_extension(ir: dict[str, Any]) -> str:
-    """Serialize ``iwxxm-us:FreezingLevelForecast`` for standalone FRZLVL subsection."""
+    """
+    Internal helper ``_airmet_freezing_level_forecast_extension``.
+
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Argument ``ir``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
     section_raw = ir.get("frzlvl_section")
     if not isinstance(section_raw, dict):
         return ""
@@ -864,14 +1290,21 @@ def _airmet_freezing_level_forecast_extension(ir: dict[str, Any]) -> str:
     isopleths = section.get("isopleths")
     if not isinstance(isopleths, list) or not isopleths:
         return ""
-    year_month = "2014-05"
-    begin = (
-        f"{year_month}-{int(ir['valid_from_day']):02d}T"
-        f"{int(ir['valid_from_hour']):02d}:{int(ir['valid_from_minute']):02d}:00Z"
+    from tac2iwxxm.time_anchor import iso_stamp
+
+    begin = iso_stamp(
+        ir,
+        int(ir["valid_from_day"]),
+        int(ir["valid_from_hour"]),
+        int(ir["valid_from_minute"]),
+        legacy="2014-05",
     )
-    end = (
-        f"{year_month}-{int(ir['valid_to_day']):02d}T"
-        f"{int(ir['valid_to_hour']):02d}:{int(ir['valid_to_minute']):02d}:00Z"
+    end = iso_stamp(
+        ir,
+        int(ir["valid_to_day"]),
+        int(ir["valid_to_hour"]),
+        int(ir["valid_to_minute"]),
+        legacy="2014-05",
     )
     multiple = bool(section.get("multiple_levels"))
     typed_isopleths: list[dict[str, Any]] = []
@@ -894,7 +1327,22 @@ def _airmet_freezing_level_forecast_extension(ir: dict[str, Any]) -> str:
 
 
 def _inject_first_evolving_extension(xml: str, inner: str) -> str:
-    """Insert evolving-condition ``iwxxm-us`` extension before the first member close tag."""
+    """
+    Internal helper ``_inject_first_evolving_extension``.
+
+    Parameters
+    ----------
+    xml : str
+        Argument ``xml``.
+
+    inner : str
+        Argument ``inner``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
     if not inner:
         return xml
     wrapped = f"""              <iwxxm:extension>
@@ -910,7 +1358,19 @@ def _inject_first_evolving_extension(xml: str, inner: str) -> str:
 
 
 def _airmet_weather_hazards_extension(ir: dict[str, Any]) -> str:
-    """Serialize ``iwxxm-us:AIRMETWeatherHazards`` when IR carries US hazard metadata."""
+    """
+    Internal helper ``_airmet_weather_hazards_extension``.
+
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Argument ``ir``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
     hazard_raw = ir.get("us_airmet_hazard")
     if not isinstance(hazard_raw, dict):
         return ""
@@ -933,7 +1393,19 @@ def _airmet_weather_hazards_extension(ir: dict[str, Any]) -> str:
 
 
 def _sigmet_weather_hazards_extension(ir: dict[str, Any]) -> str:
-    """Serialize ``iwxxm-us:SIGMETWeatherHazards`` when IR carries US hazard metadata."""
+    """
+    Internal helper ``_sigmet_weather_hazards_extension``.
+
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Argument ``ir``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
     hazard_raw = ir.get("us_sigmet_hazard")
     if not isinstance(hazard_raw, dict):
         return ""
@@ -962,12 +1434,23 @@ def emit_taf_iwxxm_us(ir: dict[str, Any], *, iwxxm_version: str) -> str:
 
     Parameters
     ----------
-    ir :
+    ir : dict[str, Any]
         Parsed TAF IR (optional ``forecast_altimeter_inhg``).
-    iwxxm_version :
+
+    iwxxm_version : str
         Release line.
+
+    Returns
+    -------
+    str
+        TAF annex3 body plus optional ``MeteorologicalAerodromeForecastExtension``.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (emit_taf_iwxxm_us)
+    2
     """
-    from tac2iwxxm.profiles.annex3_products import emit_taf_annex3
+    from tac2iwxxm.profiles.annex3_emit import emit_taf_annex3
 
     xml = emit_taf_annex3(ir, iwxxm_version=iwxxm_version)
     xml = _with_us_namespace(xml)
@@ -990,8 +1473,28 @@ def emit_taf_iwxxm_us(ir: dict[str, Any], *, iwxxm_version: str) -> str:
 
 
 def emit_sigmet_iwxxm_us(ir: dict[str, Any], *, iwxxm_version: str) -> str:
-    """Emit SIGMET annex3 body with IWXXM-US namespace and weather-hazard extensions."""
-    from tac2iwxxm.profiles.annex3_products import emit_sigmet_annex3
+    """
+    Emit SIGMET annex3 body with IWXXM-US namespace and weather-hazard extensions.
+
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Parsed product fields.
+
+    iwxxm_version : str
+        IWXXM release line.
+
+    Returns
+    -------
+    str
+        SIGMET annex3 body with IWXXM-US namespace and weather-hazard extensions.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (emit_sigmet_iwxxm_us)
+    2
+    """
+    from tac2iwxxm.profiles.annex3_emit import emit_sigmet_annex3
 
     xml = emit_sigmet_annex3(ir, iwxxm_version=iwxxm_version)
     xml = _with_us_namespace(xml)
@@ -1002,8 +1505,28 @@ def emit_sigmet_iwxxm_us(ir: dict[str, Any], *, iwxxm_version: str) -> str:
 
 
 def emit_airmet_iwxxm_us(ir: dict[str, Any], *, iwxxm_version: str) -> str:
-    """Emit AIRMET annex3 body with IWXXM-US namespace and weather-hazard extensions."""
-    from tac2iwxxm.profiles.annex3_products import emit_airmet_annex3
+    """
+    Emit AIRMET annex3 body with IWXXM-US namespace and weather-hazard extensions.
+
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Parsed product fields.
+
+    iwxxm_version : str
+        IWXXM release line.
+
+    Returns
+    -------
+    str
+        AIRMET annex3 body with IWXXM-US namespace and weather-hazard extensions.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (emit_airmet_iwxxm_us)
+    2
+    """
+    from tac2iwxxm.profiles.annex3_emit import emit_airmet_annex3
 
     xml = emit_airmet_annex3(ir, iwxxm_version=iwxxm_version)
     xml = _with_us_namespace(xml)

@@ -2,13 +2,13 @@
 
 **Ticket:** [#1226](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1226) (M1 DX) · baseline [#1224](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1224)  
 **Audience:** SDK embedders and deployers (file/env overlays)  
-**Not for:** in-app YAML editing (retired — ADR-044)
+**Not for:** in-app YAML editing (retired; ADR-044)
 
 [Corpus: tech-spec] [Corpus: adr/ADR-044] [Corpus: adr/ADR-045] [Corpus: adr/ADR-046] [Corpus: adr/ADR-047] [Corpus: tests]
 
 ## Shared header
 
-Extension YAML always needs `id` and `profiles`. **`extends` shape depends on the package** — do not copy one form for all four:
+Extension YAML always needs `id` and `profiles`. **`extends` shape depends on the package**: do not copy one form for all four:
 
 ```yaml
 # tac-decoding pack overlay (string parent pack id)
@@ -67,7 +67,7 @@ make overlay-preflight
 
 After preflight succeeds, point the same env vars at your own overlay directory in deploy
 config (see [config-spec.md](../config-spec.md)). The HTTP API still does **not** accept
-YAML bodies — mount directories on the server.
+YAML bodies; mount directories on the server.
 
 ## Troubleshooting
 
@@ -84,6 +84,7 @@ YAML bodies — mount directories on the server.
 |---------|-----|---------|
 | `tac-decoding` | `TAC_DECODING_PACK_DIR` | Pack overlays |
 | `tac-decoding` | `TAC_DECODING_GLOSSARY_PATH` | Glossary overlay (legacy: `TAC2IWXXM_DECODE_GLOSSARY_PATH`) |
+| `tac-decoding` | `TAC_DECODING_LOCATION_NAMES_PATH` | ICAO→name YAML table (ADR-049). No packaged default. An installed resolver hook wins |
 | `tac-validate` | `TAC_VALIDATE_POLICY_DIR` | TAC quality policy overlays |
 | `tac-validate` | `TAC_VALIDATE_DETECTOR_DIR` | Detector pack overlays |
 | `tac-validate` | `TAC_VALIDATE_DETECTOR_MODE` | `detector` / `legacy` |
@@ -97,8 +98,14 @@ See also [config-spec.md](../config-spec.md) §F24/F9 deepen.
 ## Honesty
 
 Read [product-engine-matrix.md](product-engine-matrix.md) before assuming a product is
-“fully YAML configured.” Convert **emit** for METAR/SPECI is YAML-routed (ADR-047 Accepted);
-other products remain Python plugins until M4.
+“fully YAML configured.” Program [#1226](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1226)
+/ ADR-047: every core product cell (decode, TAC quality, detectors, IWXXM output policy,
+convert pack-IR, convert emit) is rated **full**. Named Python residuals (detector hatches,
+decode location enrichment, emit-map `plugin:` builders) remain documented and do **not**
+block that rating. [ADR-049](../../adr/ADR-049-residual-yaml-hatches-enrichment-emit.md) /
+[#1252](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1252) moves hatch behavior into
+declarative detector rules where the DSL can express it, makes a YAML ICAO→name table the
+decode name source of truth, and requires emit `plugin:` swap goldens. Builders stay Python.
 
 ## HTTP
 

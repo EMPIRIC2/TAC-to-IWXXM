@@ -37,7 +37,7 @@ diverge structurally. Separately, decode explanations for SIGMET/AIRMET use cate
    meanings (WMO code lists, Annex 3 / Manual on Codes cites, in-repo domain tables, F3 /
    OpenAIP names when resolvable). Ship a versioned YAML/JSON file as **overrides / additions**
    on top of those sources (not the sole authority). Explanations prefer official meaning, then
-   YAML override, then category fallback. On OpenAIP/F3 miss, keep ICAO designator — decode
+   YAML override, then category fallback. On OpenAIP/F3 miss, keep ICAO designator; decode
    must not fail.
 4. **API**: Keep `POST /api/v1/decode-tac` response shape (`summary`, `segments`, `residuals`).
    No new required fields in v1 of this cycle; richer explanation strings only (backward

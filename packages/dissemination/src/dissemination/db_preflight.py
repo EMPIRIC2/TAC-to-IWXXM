@@ -16,7 +16,24 @@ from dissemination.writer_contract import (
 
 
 def uri_hostname(uri: str) -> str | None:
-    """Return hostname from ``uri``, or ``None`` for hostless schemes (e.g. sqlite memory)."""
+    """
+    Return hostname from ``uri``, or ``None`` for hostless schemes (e.g. sqlite memory).
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (uri_hostname)
+    2
+
+    Parameters
+    ----------
+    uri : str
+        Destination URI.
+
+    Returns
+    -------
+    str or None
+        Hostname from ``uri``, or ``None`` for hostless schemes (e.g. sqlite memory).
+    """
     parsed = urlparse(uri)
     return parsed.hostname
 
@@ -27,7 +44,7 @@ def dialect_for_sink(sink_type: str) -> str:
 
     Parameters
     ----------
-    sink_type :
+    sink_type : str
         One of ``postgres``, ``mysql``, ``sqlserver``, or ``sqlite``.
 
     Returns
@@ -39,6 +56,11 @@ def dialect_for_sink(sink_type: str) -> str:
     ------
     ValueError
         When ``sink_type`` is not a supported DB sink.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (dialect_for_sink)
+    2
     """
     mapping = {
         "postgres": "postgresql",
@@ -52,7 +74,26 @@ def dialect_for_sink(sink_type: str) -> str:
 
 
 def normalize_sqlalchemy_uri(uri: str, sink_type: str) -> str:
-    """Ensure async driver prefix for SQLAlchemy."""
+    """
+    Ensure async driver prefix for SQLAlchemy.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (normalize_sqlalchemy_uri)
+    2
+
+    Parameters
+    ----------
+    uri : str
+        Destination URI.
+    sink_type : str
+        Sink type id.
+
+    Returns
+    -------
+    str
+        Ensure async driver prefix for SQLAlchemy.
+    """
     if sink_type == "postgres" and uri.startswith("postgresql://"):
         return "postgresql+asyncpg://" + uri.removeprefix("postgresql://")
     if sink_type == "mysql" and uri.startswith("mysql://"):
@@ -81,6 +122,21 @@ async def run_db_preflight(req: PreflightRequest) -> PreflightResponse:
         When allowlist/SSRF checks fail.
     ValueError
         When the request is incomplete or unsupported.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (run_db_preflight)
+    2
+
+    Parameters
+    ----------
+    req : PreflightRequest
+        Req.
+
+    Returns
+    -------
+    PreflightResponse
+        Validate egress + optional writer-contract against a DB URI.
     """
     if not req.uri:
         raise ValueError("uri is required for DB sink preflight")

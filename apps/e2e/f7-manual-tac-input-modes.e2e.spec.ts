@@ -8,8 +8,10 @@ import { expect, test, type Page, type Request } from '@playwright/test';
 import { gzipSync } from 'node:zlib';
 import {
   fillManualTac,
+  openConvertDownloadsTab,
   openConverterForE2e,
   seedLocalWorkSession,
+  selectInputMode,
 } from './playwright-e2e-helpers';
 
 const METAR_TAC = 'METAR KJFK 121251Z 24016G28KT 3SM -RA BR BKN020 OVC040 14/11 A2990=';
@@ -150,18 +152,20 @@ test.describe('TC-F7-007 / UJ-025: Manual TAC Input modes', () => {
     const captured = await stubModeApis(page);
     await openConverterForE2e(page);
 
+    // Modes live under Settings (or empty-hero Other tasks); TAC is the default.
+    await expect(page.getByTestId('convert-empty-hero')).toBeVisible();
+    await fillManualTac(page, METAR_TAC);
+    await expect(page.getByTestId('convert-settings')).toBeVisible();
+    await page.getByTestId('convert-settings-cog').click();
     await expect(page.getByTestId('input-mode-group')).toBeVisible();
-    await expect(page.getByTestId('input-mode-tac')).toBeVisible();
+    await expect(page.getByTestId('input-mode-tac')).toHaveClass(
+      /bg-blue-700|bg-blue-600/,
+    );
     await expect(page.getByTestId('product-type-select')).toHaveValue('auto');
 
-    await fillManualTac(page, METAR_TAC);
     await page.getByTestId('convert-button').click();
 
-    await expect(page.getByRole('region', { name: /conversion results/i })).toBeVisible(
-      {
-        timeout: 10000,
-      },
-    );
+    await openConvertDownloadsTab(page, 10_000);
     expect(captured.convert.length).toBeGreaterThanOrEqual(1);
     expect(captured.convertBulletin).toHaveLength(0);
     expect(captured.ingestCollect).toHaveLength(0);
@@ -171,7 +175,7 @@ test.describe('TC-F7-007 / UJ-025: Manual TAC Input modes', () => {
     const captured = await stubModeApis(page);
     await openConverterForE2e(page);
 
-    await page.getByTestId('input-mode-ahl_bulletin').click();
+    await selectInputMode(page, 'ahl_bulletin');
     await expect(page.getByText(/convert-bulletin/i)).toBeVisible();
 
     await fillManualTac(page, AHL_BULLETIN);
@@ -187,7 +191,7 @@ test.describe('TC-F7-007 / UJ-025: Manual TAC Input modes', () => {
     const captured = await stubModeApis(page);
     await openConverterForE2e(page);
 
-    await expect(page.getByTestId('input-mode-tac')).toBeVisible();
+    await selectInputMode(page, 'tac');
     await fillManualTac(page, AHL_BULLETIN);
     await page.getByTestId('convert-button').click();
 
@@ -195,7 +199,11 @@ test.describe('TC-F7-007 / UJ-025: Manual TAC Input modes', () => {
       /bg-blue-600/,
       { timeout: 10000 },
     );
-    await expect(page.getByText(/Detected AHL bulletin/i).first()).toBeVisible({
+    await expect(
+      page.locator('[data-sonner-toast] [data-title]', {
+        hasText: /^Detected an AHL bulletin\. Switched input mode\.$/,
+      }),
+    ).toBeVisible({
       timeout: 5000,
     });
     await expect(page.getByTestId('bulletin-summary')).toBeVisible({ timeout: 10000 });
@@ -207,7 +215,7 @@ test.describe('TC-F7-007 / UJ-025: Manual TAC Input modes', () => {
     const captured = await stubModeApis(page);
     await openConverterForE2e(page);
 
-    await page.getByTestId('input-mode-collect_iwxxm').click();
+    await selectInputMode(page, 'collect_iwxxm');
     await expect(page.getByText(/ingest-collect/i)).toBeVisible();
     await expect(page.getByText(/501/i)).toBeVisible();
 
@@ -217,7 +225,11 @@ test.describe('TC-F7-007 / UJ-025: Manual TAC Input modes', () => {
     await expect(page.getByTestId('placeholder-notice')).toBeVisible({
       timeout: 10000,
     });
-    await expect(page.getByText(/COLLECT ingest placeholder/i).first()).toBeVisible({
+    await expect(
+      page.locator('[data-sonner-toast] [data-title]', {
+        hasText: /^COLLECT ingest placeholder \(not implemented yet\)$/,
+      }),
+    ).toBeVisible({
       timeout: 5000,
     });
     expect(captured.ingestCollect.length).toBeGreaterThanOrEqual(1);
@@ -236,10 +248,18 @@ test.describe('TC-F7-007 / UJ-025: Manual TAC Input modes', () => {
       buffer: gz,
     });
 
-    await expect(page.getByText(/Decompressed/i).first()).toBeVisible({
+    await expect(
+      page.locator('[data-sonner-toast] [data-title]', {
+        hasText: /^Decompressed metar-collect\.xml\.gz$/,
+      }),
+    ).toBeVisible({
       timeout: 10000,
     });
-    await expect(page.getByText(/Detected IWXXM COLLECT/i).first()).toBeVisible({
+    await expect(
+      page.locator('[data-sonner-toast] [data-title]', {
+        hasText: /^Detected an IWXXM COLLECT file\. Switched input mode\.$/,
+      }),
+    ).toBeVisible({
       timeout: 10000,
     });
     await expect(page.getByTestId('input-mode-collect_iwxxm')).toHaveClass(
@@ -283,11 +303,13 @@ test.describe('TC-F7-007 / UJ-025: Manual TAC Input modes', () => {
     await page.reload();
     await openConverterForE2e(page);
     await expect(
-      page.getByRole('button', { name: /KJFK finished modes/i }),
+      page.getByRole('button', { name: 'KJFK finished modes Finished', exact: true }),
     ).toBeVisible({
       timeout: 15000,
     });
-    await page.getByRole('button', { name: /KJFK finished modes/i }).click();
+    await page
+      .getByRole('button', { name: 'KJFK finished modes Finished', exact: true })
+      .click();
 
     await expect(page.getByTestId('input-mode-tac')).toBeDisabled({ timeout: 10000 });
     await expect(page.getByTestId('input-mode-ahl_bulletin')).toBeDisabled();

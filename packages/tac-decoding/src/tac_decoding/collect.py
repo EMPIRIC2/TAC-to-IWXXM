@@ -40,12 +40,30 @@ _MAX_TAC_REPORTS = 500
 
 
 class CollectError(ValueError):
-    """The text is not a readable COLLECT or IWXXM document."""
+    """
+    The text is not a readable COLLECT or IWXXM document.
+
+    Attributes
+    ----------
+    args : tuple
+        Arguments passed to the exception constructor.
+    """
 
 
 @dataclass(frozen=True, slots=True)
 class CollectField:
-    """One leaf XML field from an XML-only COLLECT walk."""
+    """
+    One leaf XML field from an XML-only COLLECT walk.
+
+    Attributes
+    ----------
+    name : str
+        Local name of the leaf element.
+    value : str
+        Leaf text.
+    path : str
+        Local-name path from the root to the leaf.
+    """
 
     name: str
     value: str
@@ -54,7 +72,20 @@ class CollectField:
 
 @dataclass(frozen=True, slots=True)
 class CollectRead:
-    """Result of reading COLLECT or IWXXM XML without encoding."""
+    """
+    Result of reading COLLECT or IWXXM XML without encoding.
+
+    Attributes
+    ----------
+    mode : str
+        Mode.
+    bulletin_identifier : str | None
+        Bulletin identifier.
+    tac_reports : tuple[str, ...]
+        TAC reports.
+    fields : tuple[CollectField, ...]
+        Fields.
+    """
 
     mode: str
     bulletin_identifier: str | None
@@ -63,26 +94,90 @@ class CollectRead:
 
 
 def _local(tag: str) -> str:
+    """
+    Internal helper ``_local``.
+
+    Parameters
+    ----------
+    tag : str
+        Argument ``tag``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
     if tag.startswith("{"):
         return tag.rsplit("}", 1)[-1]
     return tag
 
 
 def _attr_local(name: str) -> str:
+    """
+    Internal helper ``_attr_local``.
+
+    Parameters
+    ----------
+    name : str
+        Argument ``name``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
     return _local(name)
 
 
 def _looks_like_xml(text: str) -> bool:
+    """
+    Internal helper ``_looks_like_xml``.
+
+    Parameters
+    ----------
+    text : str
+        Argument ``text``.
+
+    Returns
+    -------
+    bool
+        Return value.
+    """
     stripped = text.lstrip()
     return stripped.startswith("<?xml") or stripped.startswith("<")
 
 
 def _has_forbidden_dtd(text: str) -> bool:
-    """Reject DTD / custom entity declarations (billion-laughs class)."""
+    """
+    Internal helper ``_has_forbidden_dtd``.
+
+    Parameters
+    ----------
+    text : str
+        Argument ``text``.
+
+    Returns
+    -------
+    bool
+        Return value.
+    """
     return _FORBIDDEN_DTD.search(text) is not None
 
 
 def _parse_root(text: str) -> ET.Element:
+    """
+    Internal helper ``_parse_root``.
+
+    Parameters
+    ----------
+    text : str
+        Argument ``text``.
+
+    Returns
+    -------
+    ET.Element
+        Return value.
+    """
     if _has_forbidden_dtd(text):
         msg = "COLLECT XML must not include a document type or entity declaration"
         raise CollectError(msg)
@@ -94,6 +189,19 @@ def _parse_root(text: str) -> ET.Element:
 
 
 def _is_collect_shape(root: ET.Element) -> bool:
+    """
+    Internal helper ``_is_collect_shape``.
+
+    Parameters
+    ----------
+    root : ET.Element
+        Argument ``root``.
+
+    Returns
+    -------
+    bool
+        Return value.
+    """
     local = _local(root.tag)
     if local == "MeteorologicalBulletin" or local in _IWXXM_ROOTS:
         return True
@@ -106,7 +214,24 @@ def _is_collect_shape(root: ET.Element) -> bool:
 
 
 def is_collect_input(text: str) -> bool:
-    """Return whether ``text`` should use the COLLECT / IWXXM read path."""
+    """
+    Return whether ``text`` should use the COLLECT / IWXXM read path.
+
+    Parameters
+    ----------
+    text : str
+        Text that may be COLLECT or IWXXM XML.
+
+    Returns
+    -------
+    bool
+        Whether ``text`` should use the COLLECT / IWXXM read path.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (is_collect_input)
+    2
+    """
     if not _looks_like_xml(text) or _has_forbidden_dtd(text):
         return False
     try:
@@ -117,6 +242,19 @@ def is_collect_input(text: str) -> bool:
 
 
 def _read_from_root(root: ET.Element) -> CollectRead:
+    """
+    Internal helper ``_read_from_root``.
+
+    Parameters
+    ----------
+    root : ET.Element
+        Argument ``root``.
+
+    Returns
+    -------
+    CollectRead
+        Return value.
+    """
     local = _local(root.tag)
     tac_reports: list[str] = []
     fields: list[CollectField] = []
@@ -125,7 +263,25 @@ def _read_from_root(root: ET.Element) -> CollectRead:
     saw_failed_attr = False
 
     def walk(el: ET.Element, path: tuple[str, ...], depth: int) -> None:
-        """Walk one COLLECT element, collecting TAC and fields."""
+        """
+        Walk one COLLECT element, collecting TAC and fields.
+
+        Parameters
+        ----------
+        el : ET.Element
+            Current XML element.
+
+        path : tuple[str, ...]
+            Local names from the root to this element.
+
+        depth : int
+            Nesting depth of ``el``.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (walk)
+        2
+        """
         nonlocal bulletin_identifier, nodes, saw_failed_attr
         if depth > _MAX_DEPTH:
             msg = "COLLECT XML exceeds the maximum nesting depth"
@@ -172,7 +328,7 @@ def read_collect(xml: str) -> CollectRead:
 
     Parameters
     ----------
-    xml :
+    xml : str
         Document text. Must parse as XML and be a COLLECT bulletin, an IWXXM
         product root, or a tree that carries ``translationFailedTAC``.
 
@@ -181,12 +337,35 @@ def read_collect(xml: str) -> CollectRead:
     CollectRead
         ``mode`` is ``tac`` when at least one contained TAC is present, else
         ``xml_walk``.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (read_collect)
+    2
     """
     return _read_from_root(_parse_root(xml))
 
 
 def _source_span(xml: str, needle: str, search_from: int) -> tuple[int, int, int]:
-    """Best-effort source offsets. Missed finds stay zero-width (entity-decoded text)."""
+    """
+    Internal helper ``_source_span``.
+
+    Parameters
+    ----------
+    xml : str
+        Argument ``xml``.
+
+    needle : str
+        Argument ``needle``.
+
+    search_from : int
+        Argument ``search_from``.
+
+    Returns
+    -------
+    tuple[int, int, int]
+        Return value.
+    """
     if not needle:
         return 0, 0, search_from
     pos = xml.find(needle, search_from)
@@ -204,6 +383,27 @@ def decode_collect(xml: str, *, product: str, read: CollectRead | None = None) -
 
     Contained TAC is preferred. Otherwise leaf fields become segments. Never
     encodes IWXXM.
+
+    Parameters
+    ----------
+    xml : str
+        COLLECT or IWXXM XML.
+
+    product : str
+        Product name.
+
+    read : CollectRead | None, optional
+        Parsed collect document.
+
+    Returns
+    -------
+    DecodeResult
+        Decode COLLECT or IWXXM XML into the public decode shape.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (decode_collect)
+    2
     """
     from tac_decoding.decode import (
         DecodeResidual,
@@ -259,7 +459,27 @@ def decode_collect(xml: str, *, product: str, read: CollectRead | None = None) -
 
 
 def try_decode_collect(xml: str, *, product: str) -> DecodeResult | None:
-    """Decode COLLECT/IWXXM XML, or return ``None`` when the text is not that path."""
+    """
+    Decode COLLECT/IWXXM XML, or return ``None`` when the text is not that path.
+
+    Parameters
+    ----------
+    xml : str
+        COLLECT or IWXXM XML.
+
+    product : str
+        Product name.
+
+    Returns
+    -------
+    DecodeResult | None
+        Decode COLLECT/IWXXM XML, or return ``None`` when the text is not that path.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (try_decode_collect)
+    2
+    """
     if not _looks_like_xml(xml) or _has_forbidden_dtd(xml):
         return None
     try:

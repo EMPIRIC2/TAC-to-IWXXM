@@ -5,9 +5,10 @@ from __future__ import annotations
 import logging
 import os
 import pathlib
+import re
 import sys
 from collections.abc import Awaitable, Callable
-from typing import Any
+from typing import Any, cast
 
 from starlette.types import Message, Receive, Scope, Send
 
@@ -94,6 +95,7 @@ parse_optional_bulletin_id = api_wire.parse_optional_bulletin_id
 parse_optional_issuing_center = api_wire.parse_optional_issuing_center
 normalize_validation_level = api_wire.normalize_validation_level
 _product_uses_metar_tac_layers = api_wire._product_uses_metar_tac_layers  # pyright: ignore[reportPrivateUsage]
+_product_uses_aerodrome_icao_layer = api_wire._product_uses_aerodrome_icao_layer  # pyright: ignore[reportPrivateUsage]
 parse_optional_files = api_wire.parse_optional_files
 bulletin_split_http_error = api_wire.bulletin_split_http_error
 MAX_BULLETIN_REPORTS = api_wire.MAX_BULLETIN_REPORTS
@@ -131,6 +133,7 @@ try:
         evaluation,
         health,
         icao_opmet,
+        live_map,
         mass_ingest,
         quality_metrics,
         rule_catalogs,
@@ -149,6 +152,7 @@ except ImportError:
         evaluation,
         health,
         icao_opmet,
+        live_map,
         mass_ingest,
         quality_metrics,
         rule_catalogs,
@@ -160,7 +164,7 @@ except ImportError:
 app = FastAPI(
     title="METAR to IWXXM Backend API",
     version="0.1.0",
-    description="Convert METAR/SPECI TAC messages to IWXXM XML format with comprehensive validation",
+    description="Convert TAC messages to IWXXM XML and validate the result.",
     lifespan=database_lifespan,
     openapi_tags=[
         {
@@ -169,7 +173,7 @@ app = FastAPI(
         },
         {
             "name": "Conversion",
-            "description": "Convert METAR TAC to IWXXM XML format",
+            "description": "Convert TAC to IWXXM XML.",
         },
         {
             "name": "Validation",
@@ -191,12 +195,39 @@ install_abuse_controls(app)
 
 
 class ConvertRequestLoggingMiddleware:
-    """Log request/response details for convert flow, including OPTIONS preflight."""
+    """
+    Log request/response details for convert flow, including OPTIONS preflight.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     def __init__(self, app: Callable[[Scope, Receive, Send], Awaitable[None]]) -> None:
+        """
+        Internal helper ``__init__``.
+
+        Parameters
+        ----------
+        app : object
+            Argument ``app``.
+        """
         self.app = app
 
     async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
+        """
+        Internal helper ``__call__``.
+
+        Parameters
+        ----------
+        scope : object
+            Argument ``scope``.
+        receive : object
+            Argument ``receive``.
+        send : object
+            Argument ``send``.
+        """
         if scope.get("type") != "http":
             await self.app(scope, receive, send)
             return
@@ -221,7 +252,19 @@ class ConvertRequestLoggingMiddleware:
         )
 
         async def send_wrapper(message: Message) -> None:
-            """Log preflight response status before forwarding ASGI messages."""
+            """
+            Log preflight response status before forwarding ASGI messages.
+
+            Examples
+            --------
+            >>> 1 + 1  # docstring smoke (send_wrapper)
+            2
+
+            Parameters
+            ----------
+            message : object
+                Argument ``message``.
+            """
             if message.get("type") == "http.response.start":
                 status_code = message.get("status")
                 logger.info(
@@ -262,7 +305,14 @@ logger.info(
 
 
 def _warn_if_dev_cors_relaxed(enabled: bool) -> None:
-    """Emit operator-facing warning when local CORS relaxation is active."""
+    """
+    Internal helper ``_warn_if_dev_cors_relaxed``.
+
+    Parameters
+    ----------
+    enabled : object
+        Argument ``enabled``.
+    """
     if enabled:
         logger.warning(
             "[CORS] ENABLE_DEV_CORS_RELAXATION is active: localhost:5173 added and preflight headers set to '*'"
@@ -277,7 +327,26 @@ async def add_translation_centre_headers(
     request: Request,
     call_next: Callable[[Request], Awaitable[Response]],
 ) -> Response:
-    """Add ICAO Translation Centre identification headers to all responses."""
+    """
+    Add ICAO Translation Centre identification headers to all responses.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (add_translation_centre_headers)
+    2
+
+    Parameters
+    ----------
+    request : object
+        Argument ``request``.
+    call_next : object
+        Argument ``call_next``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     response = await call_next(request)
 
     try:
@@ -294,13 +363,67 @@ async def add_translation_centre_headers(
     return response
 
 
+_NUMPY_SECTION = re.compile(
+    "\n(?:Examples|Parameters|Returns|Raises|Attributes|Notes|Warnings|See Also|References)\n-+"
+)
+
+
+def _operator_description(text: str) -> str:
+    """Keep the prose before a NumPy section or a form feed.
+
+    Parameters
+    ----------
+    text : str
+        OpenAPI description copied from a docstring.
+
+    Returns
+    -------
+    str
+        Operator-facing description.
+    """
+    head = text.split("\f", 1)[0]
+    match = _NUMPY_SECTION.search(head)
+    if match:
+        head = head[: match.start()]
+    return head.strip()
+
+
+def _trim_operator_descriptions(node: object) -> None:
+    """Apply :func:`_operator_description` to every OpenAPI description.
+
+    Parameters
+    ----------
+    node : object
+        OpenAPI object, array, or scalar.
+    """
+    if isinstance(node, dict):
+        mapping = cast(dict[str, Any], node)
+        description = mapping.get("description")
+        if isinstance(description, str):
+            trimmed = _operator_description(description)
+            if trimmed != description:
+                mapping["description"] = trimmed
+        for value in mapping.values():
+            _trim_operator_descriptions(value)
+    elif isinstance(node, list):
+        items = cast(list[Any], node)
+        for item in items:
+            _trim_operator_descriptions(item)
+
+
 def custom_openapi() -> dict[str, Any]:
-    """Build OpenAPI schema without security schemes for public API docs.
+    """
+    Build OpenAPI schema without security schemes for public API docs.
 
     Returns
     -------
     dict
         Cached OpenAPI document for the FastAPI application.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (custom_openapi)
+    2
     """
     if app.openapi_schema:
         return app.openapi_schema
@@ -314,6 +437,7 @@ def custom_openapi() -> dict[str, Any]:
         routes=app.routes,
         tags=app.openapi_tags,
     )
+    _trim_operator_descriptions(openapi_schema)
     components = openapi_schema.setdefault("components", {})
     components.pop("securitySchemes", None)
     openapi_schema.pop("security", None)
@@ -394,6 +518,7 @@ try:
     app.include_router(rule_catalogs.router)
     app.include_router(conversion.router)
     app.include_router(comprehensive_validation.router)
+    app.include_router(live_map.router)
     logger.info("DEBUG: included TD-3b routers successfully")
 except Exception as e:  # pragma: no cover - defensive
     logger.error(f"DEBUG: Failed to include TD-3b routers: {e}", exc_info=True)

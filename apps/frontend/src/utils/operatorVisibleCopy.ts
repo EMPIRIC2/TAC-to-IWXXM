@@ -8,28 +8,52 @@
 import { EXAMPLES } from '@/fixtures/examples/examplesCatalog';
 import { SHELL_NAV_LABELS } from '@/app/components/AppShellNav';
 import {
-  QUALITY_METRICS_DIFF_EMPTY_LABEL,
-  QUALITY_METRICS_DIFF_EXPAND_ALL,
-  QUALITY_METRICS_DIFF_COLLAPSE_ALL,
-  QUALITY_METRICS_DIFF_HEADING,
-  QUALITY_METRICS_EMPTY_DIAGNOSTICS,
-  QUALITY_METRICS_LINT_HELP,
-  QUALITY_METRICS_RESIDUALS_FOLDED,
-  QUALITY_METRICS_RESIDUALS_HELP,
-  QUALITY_METRICS_RESIDUALS_NOT_FOLDED,
-  QUALITY_METRICS_VALIDATE_HELP,
-  QUALITY_METRICS_XML_VIEW_HELP,
-  QUALITY_METRICS_XML_VIEW_NORMALIZED,
-  QUALITY_METRICS_XML_VIEW_RAW,
-} from '@/app/components/QualityMetricsDetail';
+  DECODE_VISUALS_BETA,
+  DECODE_VISUALS_EMPTY,
+  DECODE_VISUALS_FEEDBACK,
+  DECODE_VISUALS_INTRO,
+  DECODE_VISUALS_MAP_LOADING,
+  DECODE_VISUALS_NO_MAP,
+  DECODE_VISUALS_NO_REGION,
+  DECODE_VISUALS_NO_WIND,
+  DECODE_VISUALS_OPEN,
+  DECODE_VISUALS_REGION_CAPTION,
+  DECODE_VISUALS_SEARCH_PLACEHOLDER,
+  DECODE_VISUALS_STATION_LABEL,
+  DECODE_VISUALS_TITLE,
+  DECODE_VISUALS_WIND_VARIABLE,
+} from '@/utils/decodeVisualsCopy';
 import {
-  QUALITY_METRICS_DEFERRED_LABEL,
-  QUALITY_METRICS_DETAIL_LOAD_FAILED,
-  QUALITY_METRICS_DETAIL_LOADING,
-  QUALITY_METRICS_EMPTY_LIST,
-  QUALITY_METRICS_PAGE_SUBTITLE,
-  QUALITY_METRICS_PAGE_TITLE,
-} from '@/utils/qualityMetricsCopy';
+  LIVE_MAP_ALL_COUNTRIES,
+  LIVE_MAP_ALL_REGIONS,
+  LIVE_MAP_FULL_WINDOW,
+  LIVE_MAP_LAST_3_HOURS,
+  LIVE_MAP_LAST_12_HOURS,
+  LIVE_MAP_CANVAS,
+  LIVE_MAP_EMPTY,
+  LIVE_MAP_ERROR,
+  LIVE_MAP_FILTER_COUNTRY,
+  LIVE_MAP_FILTER_PHENOMENON,
+  LIVE_MAP_FILTER_REGION,
+  LIVE_MAP_FILTER_TIME,
+  LIVE_MAP_LAST_6_HOURS,
+  LIVE_MAP_LAST_HOUR,
+  LIVE_MAP_TAC,
+  LIVE_MAP_ISSUE_COPY,
+  LIVE_MAP_SEND_TO_CONVERTER,
+  LIVE_MAP_PANEL,
+  LIVE_MAP_LAYERS_OFF,
+  LIVE_MAP_LOADING,
+  LIVE_MAP_NO_TIME,
+  LIVE_MAP_NOTICE,
+  LIVE_MAP_PHENOMENA,
+  LIVE_MAP_PRODUCTS,
+  LIVE_MAP_REFRESHING,
+  LIVE_MAP_SPACE,
+  LIVE_MAP_VIEWS,
+  LIVE_MAP_ZOOM_HINT,
+  productLabel,
+} from '@/utils/liveMap';
 import {
   IWXXM_PRODUCT_CONVERT_ARIA,
   IWXXM_PRODUCT_CONVERT_LABEL,
@@ -44,6 +68,10 @@ import {
   SOFT_PREVIEW_LABEL,
 } from '@/app/components/SoftPreviewControl';
 import {
+  COLLAPSE_PREVIEW_LABEL,
+  EXPAND_PREVIEW_LABEL,
+} from '@/app/components/IwxxmPreviewPane';
+import {
   PROPAGATE_RESIDUALS_HELP,
   PROPAGATE_RESIDUALS_LABEL,
 } from '@/app/components/PropagateResidualsControl';
@@ -51,39 +79,10 @@ import { GUEST_LOSS_OF_PROGRESS_MESSAGE } from '@/utils/guestLossNotice';
 import { OPERATOR_HANDBOOK_URL, OPERATOR_ONE_PAGER_URL } from '@/utils/operatorHelp';
 import { STORAGE_INVENTORY } from '@/utils/privacyPreferences';
 import {
-  QUALITY_METRICS_SCHEMA_IMPORT_RESOLVED,
-  QUALITY_METRICS_SCHEMA_IMPORT_WARNING,
-  QUALITY_METRICS_SCHEMATRON_EVALUATED,
-  QUALITY_METRICS_SCHEMATRON_SKIPPED,
-} from '@/utils/validateDispositionChips';
-import {
   BETA_BADGE_LABEL,
   BETA_FEEDBACK_HELP,
   BETA_FEEDBACK_LINK_LABEL,
 } from '@/utils/betaFeedback';
-import {
-  DISSEMINATION_OPS_AUDIT_EMPTY,
-  DISSEMINATION_OPS_AUDIT_HEADING,
-  DISSEMINATION_OPS_AUDIT_LOADING,
-  DISSEMINATION_OPS_ERROR_PREFIX,
-  DISSEMINATION_OPS_HEALTH_EMPTY,
-  DISSEMINATION_OPS_HEALTH_HEADING,
-  DISSEMINATION_OPS_HEALTH_LOADING,
-  DISSEMINATION_OPS_LOGIN_REQUIRED,
-  DISSEMINATION_OPS_MAPPING_HEADING,
-  DISSEMINATION_OPS_MAPPING_MODE_LABEL,
-  DISSEMINATION_OPS_MAPPING_NAME_LABEL,
-  DISSEMINATION_OPS_MAPPING_SAVE,
-  DISSEMINATION_OPS_PLAN_DEST_LABEL,
-  DISSEMINATION_OPS_PLAN_DRY_RUN,
-  DISSEMINATION_OPS_PLAN_HEADING,
-  DISSEMINATION_OPS_PLAN_POLICY_LABEL,
-  DISSEMINATION_OPS_PLAN_SAVE,
-  DISSEMINATION_OPS_PLAN_SLUG_LABEL,
-  DISSEMINATION_OPS_SIGN_IN,
-  DISSEMINATION_OPS_SUBTITLE,
-  DISSEMINATION_OPS_TITLE,
-} from '@/utils/disseminationOpsCopy';
 import {
   CONVERSION_METADATA_CHECKLIST_CONVERT_CONTEXT,
   CONVERSION_METADATA_CHECKLIST_HEADING,
@@ -101,9 +100,74 @@ import {
   CONVERSION_METADATA_TOGGLE_LABEL,
 } from '@/utils/conversionExportMetadata';
 import {
+  SITE_TERMS_BODY,
+  SITE_TERMS_CHECKBOX,
+  SITE_TERMS_CONTINUE,
+  SITE_TERMS_TITLE,
+} from '@/utils/siteTermsCopy';
+import {
+  LINT_VALIDATION_CATALOG_ACCESS_LABEL,
+  LINT_VALIDATION_CATALOG_COL_CODE,
+  LINT_VALIDATION_CATALOG_COL_DESCRIPTION,
+  LINT_VALIDATION_CATALOG_COL_LEVEL,
+  LINT_VALIDATION_CATALOG_COL_SOURCE,
+  LINT_VALIDATION_CATALOG_COL_TYPE,
+  LINT_VALIDATION_CATALOG_EMPTY,
+  LINT_VALIDATION_CATALOG_ACCESS_LABELS,
+  LINT_VALIDATION_CATALOG_FAMILY_ALL,
+  LINT_VALIDATION_CATALOG_FAMILY_LABEL,
+  LINT_VALIDATION_CATALOG_LOAD_ERROR,
+  LINT_VALIDATION_CATALOG_RETRY,
+  LINT_VALIDATION_CATALOG_TYPE_LABELS,
+  LINT_VALIDATION_CATALOG_LEVEL_LABEL,
+  LINT_VALIDATION_CATALOG_DETAIL,
+  LINT_VALIDATION_CATALOG_EXAMPLE_FAIL,
+  LINT_VALIDATION_CATALOG_EXAMPLE_FAIL_UNAVAILABLE,
+  LINT_VALIDATION_CATALOG_EXAMPLE_NOTE,
+  LINT_VALIDATION_CATALOG_EXAMPLE_PASS,
+  LINT_VALIDATION_CATALOG_EXAMPLE_PASS_UNAVAILABLE,
+  LINT_VALIDATION_CATALOG_EXAMPLES,
+  LINT_VALIDATION_CATALOG_EXAMPLES_UNAVAILABLE,
+  LINT_VALIDATION_CATALOG_LOADING,
+  LINT_VALIDATION_CATALOG_MISSING_RULE_LEAD,
+  LINT_VALIDATION_CATALOG_MISSING_RULE_LINK,
+  LINT_VALIDATION_CATALOG_SEARCH,
+  LINT_VALIDATION_CATALOG_PAGE_SUBTITLE,
+  LINT_VALIDATION_CATALOG_PAGE_TITLE,
+  LINT_VALIDATION_CATALOG_SORT_LABEL,
+  LINT_VALIDATION_CATALOG_TYPE_LABEL,
+  LINT_VALIDATION_CATALOG_VIEW_COMPACT,
+  LINT_VALIDATION_CATALOG_VIEW_DETAILED,
+  LINT_VALIDATION_CATALOG_VIEW_LABEL,
+} from '@/utils/lintValidationCatalogCopy';
+import {
+  ISSUE_DETAIL_BUTTON,
+  ISSUE_DETAIL_CLOSE,
+  ISSUE_DETAIL_CODE,
+  ISSUE_DETAIL_EMPTY,
+  ISSUE_DETAIL_HINT,
+  ISSUE_DETAIL_LOCATION,
+  ISSUE_DETAIL_MESSAGE,
+  ISSUE_DETAIL_OPEN,
+  ISSUE_DETAIL_PRODUCT,
+  ISSUE_DETAIL_RULE,
+  ISSUE_DETAIL_SEVERITY,
+  ISSUE_DETAIL_SOURCE,
+  ISSUE_DETAIL_TAGS,
+  ISSUE_DETAIL_TITLE,
+} from '@/utils/issueDetailCopy';
+import {
   CONVERT_OVERLAY_HELP,
   CONVERT_OVERLAY_LABEL,
   CONVERT_OVERLAY_NONE,
+  COUNTRY_PRESET_CUSTOM,
+  COUNTRY_PRESET_HELP,
+  COUNTRY_PRESET_LABEL,
+  VALIDATE_IWXXM_DROP_HELP,
+  VALIDATE_IWXXM_DROP_TITLE,
+  VALIDATE_IWXXM_EMPTY_RESULTS,
+  VALIDATE_IWXXM_HEADING,
+  VALIDATE_IWXXM_INTRO,
   CONVERT_RESET_WMO_LIBRARY_DEFAULTS,
   CONVERT_RESET_WMO_LIBRARY_DEFAULTS_HELP,
   PROFILES_AUTHORING_RETIRED_NOTE,
@@ -129,6 +193,8 @@ import {
   PROFILES_CONV_TEMPLATES_SEARCH_PLACEHOLDER,
   PROFILES_CONV_TEMPLATES_SLOT_LABEL,
   PROFILES_ERROR_PREFIX,
+  PROFILES_COUNT_UNAVAILABLE,
+  WORKBENCH_PROFILE_CATALOG_DEGRADED,
   PROFILES_INSPECTOR_EMPTY,
   PROFILES_INSPECTOR_HEADING,
   PROFILES_INSPECTOR_LOADING,
@@ -255,6 +321,11 @@ import {
   PROFILES_WORKBENCH_PREVIEW_ISSUES_PLACEHOLDER,
 } from '@/utils/conversionProfilesCopy';
 
+/**
+ * Type `OperatorVisibleCopyEntry`.
+ * @example
+ * const _ = true;
+ */
 export type OperatorVisibleCopyEntry = {
   id: string;
   text: string;
@@ -264,11 +335,15 @@ export type OperatorVisibleCopyEntry = {
  * Collect agreed FE string catalogs for the internal-doc-ref guard.
  *
  * @returns Flat list of `{ id, text }` entries
+ * @example
+ * const _ = true;
  */
 export function collectOperatorVisibleCopy(): OperatorVisibleCopyEntry[] {
   const entries: OperatorVisibleCopyEntry[] = [
     { id: 'soft-preview.label', text: SOFT_PREVIEW_LABEL },
     { id: 'soft-preview.help', text: SOFT_PREVIEW_HELP },
+    { id: 'iwxxm-preview.expand', text: EXPAND_PREVIEW_LABEL },
+    { id: 'iwxxm-preview.collapse', text: COLLAPSE_PREVIEW_LABEL },
     { id: 'propagate-residuals.label', text: PROPAGATE_RESIDUALS_LABEL },
     { id: 'propagate-residuals.help', text: PROPAGATE_RESIDUALS_HELP },
     { id: 'iwxxm-product.help', text: IWXXM_PRODUCT_HELP },
@@ -281,11 +356,219 @@ export function collectOperatorVisibleCopy(): OperatorVisibleCopyEntry[] {
     { id: 'help.handbook-url', text: OPERATOR_HANDBOOK_URL },
     { id: 'shell.nav.convert', text: SHELL_NAV_LABELS.converter },
     { id: 'shell.nav.history', text: SHELL_NAV_LABELS.history },
-    { id: 'shell.nav.quality', text: SHELL_NAV_LABELS.quality },
     { id: 'shell.nav.catalog', text: SHELL_NAV_LABELS.catalog },
+    { id: 'decode-visuals.title', text: DECODE_VISUALS_TITLE },
+    { id: 'decode-visuals.intro', text: DECODE_VISUALS_INTRO },
+    { id: 'decode-visuals.beta', text: DECODE_VISUALS_BETA },
+    { id: 'decode-visuals.feedback', text: DECODE_VISUALS_FEEDBACK },
+    { id: 'decode-visuals.station', text: DECODE_VISUALS_STATION_LABEL },
     {
-      id: 'shell.nav.dissemination-ops',
-      text: SHELL_NAV_LABELS['dissemination-ops'],
+      id: 'decode-visuals.search-placeholder',
+      text: DECODE_VISUALS_SEARCH_PLACEHOLDER,
+    },
+    { id: 'decode-visuals.empty', text: DECODE_VISUALS_EMPTY },
+    { id: 'decode-visuals.no-map', text: DECODE_VISUALS_NO_MAP },
+    { id: 'decode-visuals.map-loading', text: DECODE_VISUALS_MAP_LOADING },
+    { id: 'decode-visuals.no-region', text: DECODE_VISUALS_NO_REGION },
+    { id: 'decode-visuals.region-caption', text: DECODE_VISUALS_REGION_CAPTION },
+    { id: 'decode-visuals.no-wind', text: DECODE_VISUALS_NO_WIND },
+    { id: 'decode-visuals.wind-variable', text: DECODE_VISUALS_WIND_VARIABLE },
+    { id: 'decode-visuals.open', text: DECODE_VISUALS_OPEN },
+    { id: 'live-map.canvas', text: LIVE_MAP_CANVAS },
+    { id: 'live-map.notice', text: LIVE_MAP_NOTICE },
+    ...LIVE_MAP_VIEWS.map((view) => ({
+      id: `live-map.view.${view.id}`,
+      text: view.label,
+    })),
+    ...LIVE_MAP_PRODUCTS.map((product) => ({
+      id: `live-map.product.${product}`,
+      text: productLabel(product),
+    })),
+    { id: 'live-map.zoom-hint', text: LIVE_MAP_ZOOM_HINT },
+    { id: 'live-map.loading', text: LIVE_MAP_LOADING },
+    { id: 'live-map.refreshing', text: LIVE_MAP_REFRESHING },
+    { id: 'live-map.empty', text: LIVE_MAP_EMPTY },
+    { id: 'live-map.no-time', text: LIVE_MAP_NO_TIME },
+    { id: 'live-map.layers-off', text: LIVE_MAP_LAYERS_OFF },
+    { id: 'live-map.space', text: LIVE_MAP_SPACE },
+    { id: 'live-map.error', text: LIVE_MAP_ERROR },
+    { id: 'live-map.tac', text: LIVE_MAP_TAC },
+    { id: 'live-map.issue-copy', text: LIVE_MAP_ISSUE_COPY },
+    { id: 'live-map.send-to-converter', text: LIVE_MAP_SEND_TO_CONVERTER },
+    { id: 'live-map.all-countries', text: LIVE_MAP_ALL_COUNTRIES },
+    { id: 'live-map.all-regions', text: LIVE_MAP_ALL_REGIONS },
+    { id: 'live-map.last-hour', text: LIVE_MAP_LAST_HOUR },
+    { id: 'live-map.last-3-hours', text: LIVE_MAP_LAST_3_HOURS },
+    { id: 'live-map.last-6-hours', text: LIVE_MAP_LAST_6_HOURS },
+    { id: 'live-map.last-12-hours', text: LIVE_MAP_LAST_12_HOURS },
+    { id: 'live-map.full-window', text: LIVE_MAP_FULL_WINDOW },
+    { id: 'live-map.filter-country', text: LIVE_MAP_FILTER_COUNTRY },
+    { id: 'live-map.filter-region', text: LIVE_MAP_FILTER_REGION },
+    { id: 'live-map.filter-time', text: LIVE_MAP_FILTER_TIME },
+    { id: 'live-map.filter-phenomenon', text: LIVE_MAP_FILTER_PHENOMENON },
+    ...LIVE_MAP_PHENOMENA.map((item) => ({
+      id: `live-map.phenomenon.${item.id}`,
+      text: item.label,
+    })),
+    { id: 'live-map.panel', text: LIVE_MAP_PANEL },
+    {
+      id: 'lint-validation-catalog.title',
+      text: LINT_VALIDATION_CATALOG_PAGE_TITLE,
+    },
+    {
+      id: 'lint-validation-catalog.subtitle',
+      text: LINT_VALIDATION_CATALOG_PAGE_SUBTITLE,
+    },
+    { id: 'lint-validation-catalog.empty', text: LINT_VALIDATION_CATALOG_EMPTY },
+    {
+      id: 'lint-validation-catalog.loading',
+      text: LINT_VALIDATION_CATALOG_LOADING,
+    },
+    {
+      id: 'lint-validation-catalog.search',
+      text: LINT_VALIDATION_CATALOG_SEARCH,
+    },
+    {
+      id: 'lint-validation-catalog.detail',
+      text: LINT_VALIDATION_CATALOG_DETAIL,
+    },
+    {
+      id: 'lint-validation-catalog.example-pass',
+      text: LINT_VALIDATION_CATALOG_EXAMPLE_PASS,
+    },
+    {
+      id: 'lint-validation-catalog.example-fail',
+      text: LINT_VALIDATION_CATALOG_EXAMPLE_FAIL,
+    },
+    {
+      id: 'lint-validation-catalog.example-pass-unavailable',
+      text: LINT_VALIDATION_CATALOG_EXAMPLE_PASS_UNAVAILABLE,
+    },
+    {
+      id: 'lint-validation-catalog.example-fail-unavailable',
+      text: LINT_VALIDATION_CATALOG_EXAMPLE_FAIL_UNAVAILABLE,
+    },
+    {
+      id: 'lint-validation-catalog.example-note',
+      text: LINT_VALIDATION_CATALOG_EXAMPLE_NOTE,
+    },
+    {
+      id: 'lint-validation-catalog.examples',
+      text: LINT_VALIDATION_CATALOG_EXAMPLES,
+    },
+    {
+      id: 'lint-validation-catalog.examples-unavailable',
+      text: LINT_VALIDATION_CATALOG_EXAMPLES_UNAVAILABLE,
+    },
+    {
+      id: 'lint-validation-catalog.missing-rule-lead',
+      text: LINT_VALIDATION_CATALOG_MISSING_RULE_LEAD,
+    },
+    {
+      id: 'lint-validation-catalog.missing-rule-link',
+      text: LINT_VALIDATION_CATALOG_MISSING_RULE_LINK,
+    },
+    {
+      id: 'lint-validation-catalog.view',
+      text: LINT_VALIDATION_CATALOG_VIEW_LABEL,
+    },
+    {
+      id: 'lint-validation-catalog.view-detailed',
+      text: LINT_VALIDATION_CATALOG_VIEW_DETAILED,
+    },
+    {
+      id: 'lint-validation-catalog.view-compact',
+      text: LINT_VALIDATION_CATALOG_VIEW_COMPACT,
+    },
+    {
+      id: 'lint-validation-catalog.family',
+      text: LINT_VALIDATION_CATALOG_FAMILY_LABEL,
+    },
+    {
+      id: 'lint-validation-catalog.family-all',
+      text: LINT_VALIDATION_CATALOG_FAMILY_ALL,
+    },
+    {
+      id: 'lint-validation-catalog.load-error',
+      text: LINT_VALIDATION_CATALOG_LOAD_ERROR,
+    },
+    {
+      id: 'lint-validation-catalog.retry',
+      text: LINT_VALIDATION_CATALOG_RETRY,
+    },
+    ...Object.entries(LINT_VALIDATION_CATALOG_TYPE_LABELS).map(([value, text]) => ({
+      id: `lint-validation-catalog.type.${value}`,
+      text,
+    })),
+    ...Object.entries(LINT_VALIDATION_CATALOG_ACCESS_LABELS).map(([value, text]) => ({
+      id: `lint-validation-catalog.access.${value}`,
+      text,
+    })),
+    { id: 'issue-detail.title', text: ISSUE_DETAIL_TITLE },
+    { id: 'issue-detail.close', text: ISSUE_DETAIL_CLOSE },
+    { id: 'issue-detail.open', text: ISSUE_DETAIL_OPEN },
+    { id: 'issue-detail.button', text: ISSUE_DETAIL_BUTTON },
+    { id: 'issue-detail.code', text: ISSUE_DETAIL_CODE },
+    { id: 'issue-detail.severity', text: ISSUE_DETAIL_SEVERITY },
+    { id: 'issue-detail.message', text: ISSUE_DETAIL_MESSAGE },
+    { id: 'issue-detail.rule', text: ISSUE_DETAIL_RULE },
+    { id: 'issue-detail.hint', text: ISSUE_DETAIL_HINT },
+    { id: 'issue-detail.source', text: ISSUE_DETAIL_SOURCE },
+    { id: 'issue-detail.product', text: ISSUE_DETAIL_PRODUCT },
+    { id: 'issue-detail.tags', text: ISSUE_DETAIL_TAGS },
+    { id: 'issue-detail.location', text: ISSUE_DETAIL_LOCATION },
+    { id: 'issue-detail.empty', text: ISSUE_DETAIL_EMPTY },
+    {
+      id: 'lint-validation-catalog.type',
+      text: LINT_VALIDATION_CATALOG_TYPE_LABEL,
+    },
+    {
+      id: 'lint-validation-catalog.level',
+      text: LINT_VALIDATION_CATALOG_LEVEL_LABEL,
+    },
+    {
+      id: 'lint-validation-catalog.access',
+      text: LINT_VALIDATION_CATALOG_ACCESS_LABEL,
+    },
+    {
+      id: 'lint-validation-catalog.sort',
+      text: LINT_VALIDATION_CATALOG_SORT_LABEL,
+    },
+    {
+      id: 'site-terms.title',
+      text: SITE_TERMS_TITLE,
+    },
+    {
+      id: 'site-terms.body',
+      text: SITE_TERMS_BODY,
+    },
+    {
+      id: 'site-terms.checkbox',
+      text: SITE_TERMS_CHECKBOX,
+    },
+    {
+      id: 'site-terms.continue',
+      text: SITE_TERMS_CONTINUE,
+    },
+    {
+      id: 'lint-validation-catalog.col-code',
+      text: LINT_VALIDATION_CATALOG_COL_CODE,
+    },
+    {
+      id: 'lint-validation-catalog.col-type',
+      text: LINT_VALIDATION_CATALOG_COL_TYPE,
+    },
+    {
+      id: 'lint-validation-catalog.col-level',
+      text: LINT_VALIDATION_CATALOG_COL_LEVEL,
+    },
+    {
+      id: 'lint-validation-catalog.col-description',
+      text: LINT_VALIDATION_CATALOG_COL_DESCRIPTION,
+    },
+    {
+      id: 'lint-validation-catalog.col-source',
+      text: LINT_VALIDATION_CATALOG_COL_SOURCE,
     },
     { id: 'profiles.title', text: PROFILES_EDITOR_TITLE },
     { id: 'profiles.subtitle', text: PROFILES_EDITOR_SUBTITLE },
@@ -456,6 +739,19 @@ export function collectOperatorVisibleCopy(): OperatorVisibleCopyEntry[] {
     { id: 'profiles.convert-overlay-none', text: CONVERT_OVERLAY_NONE },
     { id: 'profiles.convert-overlay-help', text: CONVERT_OVERLAY_HELP },
     { id: 'profiles.error-prefix', text: PROFILES_ERROR_PREFIX },
+    { id: 'profiles.count-unavailable', text: PROFILES_COUNT_UNAVAILABLE },
+    {
+      id: 'workbench.profile-catalog-degraded',
+      text: WORKBENCH_PROFILE_CATALOG_DEGRADED,
+    },
+    { id: 'convert.country-preset-label', text: COUNTRY_PRESET_LABEL },
+    { id: 'convert.country-preset-custom', text: COUNTRY_PRESET_CUSTOM },
+    { id: 'convert.country-preset-help', text: COUNTRY_PRESET_HELP },
+    { id: 'validate.heading', text: VALIDATE_IWXXM_HEADING },
+    { id: 'validate.intro', text: VALIDATE_IWXXM_INTRO },
+    { id: 'validate.empty-results', text: VALIDATE_IWXXM_EMPTY_RESULTS },
+    { id: 'validate.drop-title', text: VALIDATE_IWXXM_DROP_TITLE },
+    { id: 'validate.drop-help', text: VALIDATE_IWXXM_DROP_HELP },
     {
       id: 'convert.reset-wmo-library-defaults',
       text: CONVERT_RESET_WMO_LIBRARY_DEFAULTS,
@@ -630,134 +926,9 @@ export function collectOperatorVisibleCopy(): OperatorVisibleCopyEntry[] {
       id: 'profiles.draft-sample-placeholder',
       text: PROFILES_DRAFT_SAMPLE_PLACEHOLDER,
     },
-    { id: 'dissemination-ops.title', text: DISSEMINATION_OPS_TITLE },
-    { id: 'dissemination-ops.subtitle', text: DISSEMINATION_OPS_SUBTITLE },
     { id: 'beta.badge', text: BETA_BADGE_LABEL },
     { id: 'beta.feedback-help', text: BETA_FEEDBACK_HELP },
     { id: 'beta.feedback-link', text: BETA_FEEDBACK_LINK_LABEL },
-    {
-      id: 'dissemination-ops.login-required',
-      text: DISSEMINATION_OPS_LOGIN_REQUIRED,
-    },
-    { id: 'dissemination-ops.sign-in', text: DISSEMINATION_OPS_SIGN_IN },
-    {
-      id: 'dissemination-ops.health-heading',
-      text: DISSEMINATION_OPS_HEALTH_HEADING,
-    },
-    {
-      id: 'dissemination-ops.health-loading',
-      text: DISSEMINATION_OPS_HEALTH_LOADING,
-    },
-    {
-      id: 'dissemination-ops.health-empty',
-      text: DISSEMINATION_OPS_HEALTH_EMPTY,
-    },
-    {
-      id: 'dissemination-ops.audit-heading',
-      text: DISSEMINATION_OPS_AUDIT_HEADING,
-    },
-    {
-      id: 'dissemination-ops.audit-loading',
-      text: DISSEMINATION_OPS_AUDIT_LOADING,
-    },
-    { id: 'dissemination-ops.audit-empty', text: DISSEMINATION_OPS_AUDIT_EMPTY },
-    { id: 'dissemination-ops.plan-heading', text: DISSEMINATION_OPS_PLAN_HEADING },
-    {
-      id: 'dissemination-ops.plan-slug',
-      text: DISSEMINATION_OPS_PLAN_SLUG_LABEL,
-    },
-    {
-      id: 'dissemination-ops.plan-policy',
-      text: DISSEMINATION_OPS_PLAN_POLICY_LABEL,
-    },
-    {
-      id: 'dissemination-ops.plan-dest',
-      text: DISSEMINATION_OPS_PLAN_DEST_LABEL,
-    },
-    { id: 'dissemination-ops.plan-save', text: DISSEMINATION_OPS_PLAN_SAVE },
-    {
-      id: 'dissemination-ops.plan-dry-run',
-      text: DISSEMINATION_OPS_PLAN_DRY_RUN,
-    },
-    {
-      id: 'dissemination-ops.mapping-heading',
-      text: DISSEMINATION_OPS_MAPPING_HEADING,
-    },
-    {
-      id: 'dissemination-ops.mapping-name',
-      text: DISSEMINATION_OPS_MAPPING_NAME_LABEL,
-    },
-    {
-      id: 'dissemination-ops.mapping-mode',
-      text: DISSEMINATION_OPS_MAPPING_MODE_LABEL,
-    },
-    {
-      id: 'dissemination-ops.mapping-save',
-      text: DISSEMINATION_OPS_MAPPING_SAVE,
-    },
-    {
-      id: 'dissemination-ops.error-prefix',
-      text: DISSEMINATION_OPS_ERROR_PREFIX,
-    },
-    { id: 'quality-metrics.title', text: QUALITY_METRICS_PAGE_TITLE },
-    { id: 'quality-metrics.subtitle', text: QUALITY_METRICS_PAGE_SUBTITLE },
-    { id: 'quality-metrics.deferred-label', text: QUALITY_METRICS_DEFERRED_LABEL },
-    { id: 'quality-metrics.empty-list', text: QUALITY_METRICS_EMPTY_LIST },
-    {
-      id: 'quality-metrics.detail-load-failed',
-      text: QUALITY_METRICS_DETAIL_LOAD_FAILED,
-    },
-    {
-      id: 'quality-metrics.detail-loading',
-      text: QUALITY_METRICS_DETAIL_LOADING,
-    },
-    { id: 'quality-metrics.diff-empty', text: QUALITY_METRICS_DIFF_EMPTY_LABEL },
-    { id: 'quality-metrics.diff-heading', text: QUALITY_METRICS_DIFF_HEADING },
-    {
-      id: 'quality-metrics.diff-expand-all',
-      text: QUALITY_METRICS_DIFF_EXPAND_ALL,
-    },
-    {
-      id: 'quality-metrics.diff-collapse-all',
-      text: QUALITY_METRICS_DIFF_COLLAPSE_ALL,
-    },
-    {
-      id: 'quality-metrics.empty-diagnostics',
-      text: QUALITY_METRICS_EMPTY_DIAGNOSTICS,
-    },
-    { id: 'quality-metrics.residuals-help', text: QUALITY_METRICS_RESIDUALS_HELP },
-    {
-      id: 'quality-metrics.residuals-folded',
-      text: QUALITY_METRICS_RESIDUALS_FOLDED,
-    },
-    {
-      id: 'quality-metrics.residuals-not-folded',
-      text: QUALITY_METRICS_RESIDUALS_NOT_FOLDED,
-    },
-    { id: 'quality-metrics.lint-help', text: QUALITY_METRICS_LINT_HELP },
-    { id: 'quality-metrics.validate-help', text: QUALITY_METRICS_VALIDATE_HELP },
-    {
-      id: 'quality-metrics.xml-view-normalized',
-      text: QUALITY_METRICS_XML_VIEW_NORMALIZED,
-    },
-    { id: 'quality-metrics.xml-view-raw', text: QUALITY_METRICS_XML_VIEW_RAW },
-    { id: 'quality-metrics.xml-view-help', text: QUALITY_METRICS_XML_VIEW_HELP },
-    {
-      id: 'quality-metrics.schematron-evaluated',
-      text: QUALITY_METRICS_SCHEMATRON_EVALUATED,
-    },
-    {
-      id: 'quality-metrics.schematron-skipped',
-      text: QUALITY_METRICS_SCHEMATRON_SKIPPED,
-    },
-    {
-      id: 'quality-metrics.schema-import-resolved',
-      text: QUALITY_METRICS_SCHEMA_IMPORT_RESOLVED,
-    },
-    {
-      id: 'quality-metrics.schema-import-warning',
-      text: QUALITY_METRICS_SCHEMA_IMPORT_WARNING,
-    },
   ];
 
   for (const item of STORAGE_INVENTORY) {

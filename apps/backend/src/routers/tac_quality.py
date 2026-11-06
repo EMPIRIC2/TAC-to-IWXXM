@@ -7,10 +7,12 @@ from typing import Any
 
 from fastapi import APIRouter, File, Form, HTTPException, Request, UploadFile
 from fastapi.responses import Response
-from tac_validate import lint as tac_lint_fn
+from tac_validate.api import lint_with_profile
 from tac_validate.issue_registry import catalog_entries as tac_catalog_entries
+from tac_validate.profiles import PROFILE_ANNEX3
 
 from src import api as api_surface
+from src.schemas.airport import get_airport_validator
 from src.schemas.validation import (
     DecodeResidualModel,
     DecodeSegmentModel,
@@ -30,22 +32,29 @@ _location_resolver_ready = False
 
 
 def _ensure_airport_location_resolver() -> None:
-    """Install F3 AirportValidator as the decode ICAO→name lookup (#724)."""
+    """Install a per-station OpenAIP lookup for decode names (#724)."""
     global _location_resolver_ready
     if _location_resolver_ready:
         return
     from tac_decoding import set_location_name_resolver
 
-    from src.schemas.airport import get_airport_validator
-
-    validator = get_airport_validator()
-
     def _resolve(icao: str) -> str | None:
-        airport = validator.get_airport(icao)
-        if airport is None:
-            return None
-        name = (airport.name or "").strip()
-        return name or None
+        """
+        Look up one station name.
+
+        Parameters
+        ----------
+        icao : str
+            Station location indicator.
+
+        Returns
+        -------
+        str | None
+            Airport name, or None when the lookup misses.
+        """
+        from src.services.airport_name_lookup import lookup_airport_name
+
+        return lookup_airport_name(icao)
 
     set_location_name_resolver(_resolve)
     _location_resolver_ready = True
@@ -53,6 +62,8 @@ def _ensure_airport_location_resolver() -> None:
 
 @dataclass(frozen=True)
 class _DecodedRow:
+    """Internal helper ``_DecodedRow``."""
+
     start: int
     end: int
     code: str
@@ -61,12 +72,29 @@ class _DecodedRow:
 
 @dataclass(frozen=True)
 class _DecodedResidual:
+    """Internal helper ``_DecodedResidual``."""
+
     start: int
     end: int
     text: str
 
 
 def _advisory_explanation(product: str, label: str) -> str:
+    """
+    Internal helper ``_advisory_explanation``.
+
+    Parameters
+    ----------
+    product : object
+        Argument ``product``.
+    label : object
+        Argument ``label``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     common: dict[str, str] = {
         "DTG": "Issue time",
         "RMK": "Remarks",
@@ -109,6 +137,27 @@ def _enrich_advisory_decode(
     residuals: list[Any],
     summary: str | None,
 ) -> tuple[list[_DecodedRow], list[_DecodedResidual], str]:
+    """
+    Internal helper ``_enrich_advisory_decode``.
+
+    Parameters
+    ----------
+    tac_text : object
+        Argument ``tac_text``.
+    product : object
+        Argument ``product``.
+    segments : object
+        Argument ``segments``.
+    residuals : object
+        Argument ``residuals``.
+    summary : object
+        Argument ``summary``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if product not in {"VONA", "SWXA"}:
         return (
             [_DecodedRow(start=s.start, end=s.end, code=s.code, explanation=s.explanation) for s in segments],
@@ -207,6 +256,7 @@ def _enrich_advisory_decode(
 @router.get(
     "/lint-issue-catalog",
     response_model=LintIssueCatalogResponse,
+    summary="Lint and validation catalog",
     responses={},
 )
 async def lint_issue_catalog(
@@ -217,7 +267,35 @@ async def lint_issue_catalog(
     semantic_profile: str | None = None,
     exchange_profile: str | None = None,
 ) -> Response:
-    """Export TAC lint + IWXXM validation catalog for FE tooltips / catalog page."""
+    """
+    Return the TAC lint and IWXXM validation issue catalog.
+
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (lint_issue_catalog)
+    2
+
+    Parameters
+    ----------
+    product : object
+        Argument ``product``.
+    family : object
+        Argument ``family``.
+    issue_type : object
+        Argument ``issue_type``.
+    source_access : object
+        Argument ``source_access``.
+    semantic_profile : object
+        Argument ``semantic_profile``.
+    exchange_profile : object
+        Argument ``exchange_profile``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     from dissemination.exchange_registry import resolve_exchange_profile
     from tac_validate.catalog_attribution import attribution_for
     from tac_validate.issue_catalog_meta import classify_issue_type
@@ -339,6 +417,7 @@ async def lint_issue_catalog(
 @router.post(
     "/lint-tac",
     response_model=LintTacResponse,
+    summary="Lint TAC or IWXXM",
     responses={
         415: {"description": "Unsupported Media Type - multipart/form-data required"},
     },
@@ -350,9 +429,41 @@ async def lint_tac(
         default="METAR",
         description="Product type, or iwxxm for XML lint (default METAR)",
     ),
+    semantic_profile: str = Form(
+        default=PROFILE_ANNEX3,
+        description="Semantic / lint profile id (default annex3)",
+    ),
+    icao: str = Form(
+        default="",
+        description="Optional station ICAO; TAF auto-detects when omitted",
+    ),
     files: list[UploadFile] | None = File(None),
 ) -> Response:
-    """Thin wrapper over ``packages/tac-validate`` (multipart/form-data only - Q8=A)."""
+    """
+    Lint TAC or IWXXM XML. The body must be multipart form data.
+
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (lint_tac)
+    2
+
+    Parameters
+    ----------
+    request : object
+        Argument ``request``.
+    manual_text : object
+        Argument ``manual_text``.
+    product : object
+        Argument ``product``.
+    files : object
+        Argument ``files``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     content_type = (request.headers.get("content-type") or "").lower()
     if "multipart/form-data" not in content_type:
         raise HTTPException(
@@ -389,22 +500,80 @@ async def lint_tac(
                 fixes=[],
             )
         )
-    report = tac_lint_fn(tac_text, product=product_u)
+    # Direct unit calls may leave FastAPI Form defaults unbound.
+    profile_raw = semantic_profile if type(semantic_profile) is str else PROFILE_ANNEX3
+    icao_raw = icao if type(icao) is str else ""
+    profile = (profile_raw or PROFILE_ANNEX3).strip() or PROFILE_ANNEX3
+    station = (icao_raw or "").strip() or None
+    try:
+        from tac2iwxxm.profile_registry import resolve_semantic_profile
+
+        resolved = resolve_semantic_profile(profile)
+        profile_key = resolved.emit_key if resolved is not None else profile
+    except Exception:
+        profile_key = profile
+    try:
+        report = lint_with_profile(
+            tac_text,
+            product=product_u,
+            profile=profile_key,
+            icao=station,
+        )
+    except ValueError as exc:
+        raise HTTPException(
+            status_code=400,
+            detail={"code": "invalid_semantic_profile", "message": str(exc)},
+        ) from exc
+    lint_issues = [
+        LintIssueModel(
+            severity=i.severity,
+            code=i.code,
+            message=i.message,
+            location=i.location,
+            start=getattr(i, "start", None),
+            end=getattr(i, "end", None),
+        )
+        for i in report.issues
+    ]
+    # Pipeline overlay: decode residuals → PARTIAL_DECODE warning.
+    # Emit at API orchestration — not from the pack engine.
+    # Skip WMO AHL bulletins: whole-blob decode treats sibling reports as
+    # residuals; convert-bulletin maps residuals per contained report instead.
+    from tac_validate.issue_registry import issue_from as lint_issue_from
+
+    from tac2iwxxm import BulletinSplitError, split_bulletin
+
+    try:
+        split_bulletin(tac_text, product=product_u)
+        is_ahl_bulletin = True
+    except BulletinSplitError:
+        is_ahl_bulletin = False
+
+    if not is_ahl_bulletin:
+        decoded = tac2iwxxm_decode_tac(tac_text, product=product_u)
+        residual_spans = [r for r in decoded.residuals if getattr(r, "text", None) and str(r.text).strip()]
+        if residual_spans and not any(i.code == "PARTIAL_DECODE" for i in lint_issues):
+            partial = lint_issue_from(
+                "PARTIAL_DECODE",
+                start=residual_spans[0].start,
+                end=residual_spans[-1].end,
+                location="decode",
+            )
+            lint_issues.append(
+                LintIssueModel(
+                    severity=partial.severity,
+                    code=partial.code,
+                    message=partial.message,
+                    location=partial.location,
+                    start=partial.start,
+                    end=partial.end,
+                )
+            )
     return api_surface.msgspec_json_response(
         LintTacResponse(
             ok=report.ok,
             product=report.product,
-            issues=[
-                LintIssueModel(
-                    severity=i.severity,
-                    code=i.code,
-                    message=i.message,
-                    location=i.location,
-                    start=getattr(i, "start", None),
-                    end=getattr(i, "end", None),
-                )
-                for i in report.issues
-            ],
+            issues=lint_issues,
             fixes=[LintFixModel(code=f.code, message=f.message, replacement=f.replacement) for f in report.fixes],
         )
     )
@@ -413,6 +582,7 @@ async def lint_tac(
 @router.post(
     "/decode-tac",
     tags=["Conversion"],
+    summary="Decode TAC",
     response_model=DecodeTacResponse,
     responses={
         415: {"description": "Unsupported Media Type - multipart/form-data required"},
@@ -425,7 +595,31 @@ async def decode_tac_endpoint(
     manual_text: str = Form(default="", description="TAC text to decode"),
     files: list[UploadFile] | None = File(None),
 ) -> Response:
-    """Decode TAC into annotated segments and a plain-language summary."""
+    """
+    Decode TAC into annotated segments and a plain-language summary.
+
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (decode_tac_endpoint)
+    2
+
+    Parameters
+    ----------
+    request : object
+        Argument ``request``.
+    product : object
+        Argument ``product``.
+    manual_text : object
+        Argument ``manual_text``.
+    files : object
+        Argument ``files``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     content_type = (request.headers.get("content-type") or "").lower()
     if "multipart/form-data" not in content_type:
         raise HTTPException(
@@ -467,3 +661,43 @@ async def decode_tac_endpoint(
             summary=summary,
         )
     )
+
+
+@router.get("/stations/{icao}")
+def station_point(icao: str) -> dict[str, Any]:
+    """
+    Return the map point for one station ID.
+
+    The airport catalog is already loaded for ICAO checks. This reads that
+    one record. It does not call an external map service.
+
+
+    Parameters
+    ----------
+    icao :
+        Four-character station location indicator.
+
+    Returns
+    -------
+    dict[str, Any]
+        ICAO code, name, and decimal degrees. Unknown codes return null
+        coordinates so a map lookup is a normal miss, not an error response.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (station_point)
+    2
+    """
+    code = icao.strip().upper()
+    if len(code) != 4 or not code.isalnum() or not code[0].isalpha():
+        return {"icao": code, "name": None, "latitude": None, "longitude": None}
+    airport = get_airport_validator().get_airport(code)
+    coordinates = None if airport is None else airport.coordinates
+    if airport is None or coordinates is None:
+        return {"icao": code, "name": None, "latitude": None, "longitude": None}
+    return {
+        "icao": airport.icao,
+        "name": airport.name,
+        "latitude": coordinates.latitude,
+        "longitude": coordinates.longitude,
+    }

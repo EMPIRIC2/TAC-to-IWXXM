@@ -7,6 +7,16 @@
 United States national semantic overlay on the ICAO baseline: FMH-1 METAR/SPECI body and RMK
 grammar, encoded with **IWXXM-US** extension XSDs alongside core IWXXM.
 
+**ICAO prefer** (EV-taf-national-prefer-prob): `station_prefixes: [K]` — default-`annex3` US
+`K*` TAFs prefer `iwxxm_us`, so standalone `PROB + period` (`PROB_PERIOD_WITHOUT_TEMPO`) is
+info via the shared `taf-prob-period-info-quality` policy (NWS 10-813 / FAA-H-8083-28
+standalone PROB). Exact military `K*` stations (incl. `KDOV`) win via `us_military`. PROB
+qualifying `BECMG`/`FM` stays `INVALID_PROB`.
+
+**Exact Pacific stations** (EV-regional-profile-remainder): `PTRO` and `PTSA` are listed under
+`iwxxm_us` `stations` so standalone PROB-period TAF lint is info (SM VIS / NWS TAF dialect).
+No blanket `PT*` / `P*` prefix.
+
 ## Owns
 
 | Area | Scope |

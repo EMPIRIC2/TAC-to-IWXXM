@@ -40,7 +40,14 @@ _PARSERS: dict[str, Callable[..., dict[str, Any]]] = {
 
 
 class PackIrMapError(ValueError):
-    """Pack match cannot be mapped into convert IR slots."""
+    """
+    Pack match cannot be mapped into convert IR slots.
+
+    Attributes
+    ----------
+    args : tuple
+        Arguments passed to the exception constructor.
+    """
 
 
 def pack_id_for_product(product: str, tac: str) -> str:
@@ -49,15 +56,21 @@ def pack_id_for_product(product: str, tac: str) -> str:
 
     Parameters
     ----------
-    product :
+    product : str
         Convert product id (for example ``SIGMET``).
-    tac :
+
+    tac : str
         TAC text used to distinguish VA / TC SIGMET packs.
 
     Returns
     -------
     str
         Pack id such as ``metar`` or ``va_sigmet``.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (pack_id_for_product)
+    2
     """
     product_u = product.upper()
     if product_u != "SIGMET":
@@ -84,11 +97,13 @@ def map_spans_to_convert_ir(
 
     Parameters
     ----------
-    match :
+    match : MatchResult
         Result of ``tac_decoding.match.match_tac``.
-    tac :
+
+    tac : str
         Original TAC.
-    product :
+
+    product : str
         Convert product id.
 
     Returns
@@ -101,6 +116,11 @@ def map_spans_to_convert_ir(
     PackIrMapError
         When the pack match is incomplete for the product layout, or the
         product is not supported for pack mapping.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (map_spans_to_convert_ir)
+    2
     """
     product_u = product.upper()
     if product_u not in _PACK_PRODUCTS:

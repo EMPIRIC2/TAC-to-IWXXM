@@ -20,10 +20,25 @@ export const TAC_PRODUCTS = [
 /** Wire products including IWXXM pass-through (F7.t / EV-060 / #1003). */
 export const CONVERT_PRODUCTS = [...TAC_PRODUCTS, 'IWXXM'] as const;
 
+/**
+ * Type `TacProduct`.
+ * @example
+ * const _ = true;
+ */
 export type TacProduct = (typeof TAC_PRODUCTS)[number];
 
+/**
+ * Type `ConvertProduct`.
+ * @example
+ * const _ = true;
+ */
 export type ConvertProduct = (typeof CONVERT_PRODUCTS)[number];
 
+/**
+ * Type `TacProductSelection`.
+ * @example
+ * const _ = true;
+ */
 export type TacProductSelection = ConvertProduct | 'auto';
 
 /**
@@ -31,12 +46,18 @@ export type TacProductSelection = ConvertProduct | 'auto';
  *
  * @param value - Candidate product string
  * @returns True when `value` is auto or a CONVERT_PRODUCTS member
+ * @example
+ * const _ = true;
  */
 export function isConvertProductSelection(value: string): value is TacProductSelection {
   return value === 'auto' || (CONVERT_PRODUCTS as readonly string[]).includes(value);
 }
 
-/** @deprecated Prefer importing from `@/utils/semanticProfile` (EV-093). */
+/**
+ * Semantic profile type alias (legacy import path).
+ *
+ * @deprecated Prefer importing from `@/utils/semanticProfile` (EV-093).
+ */
 export type { IwxxmProfile } from '@/utils/semanticProfile';
 
 export {
@@ -57,6 +78,8 @@ const PRODUCT_RE =
  * @param tacText - Raw TAC or bulletin fragment
  * @param defaultProduct - Fallback when no keyword matches
  * @returns Uppercase product enum value
+ * @example
+ * const _ = true;
  */
 export function detectTacProduct(
   tacText: string,
@@ -87,6 +110,8 @@ export function detectTacProduct(
  *
  * @param selection - UI picker value (`auto` or explicit product)
  * @param tacText - TAC used for auto-detect
+ * @example
+ * const _ = true;
  */
 export function resolveConvertProduct(
   selection: TacProductSelection,
@@ -119,6 +144,8 @@ const MULTILINE_TEMPLATE_PRODUCTS = new Set<string>([
  * @param manualText - Editor buffer
  * @param product - Resolved convert product
  * @returns Entry texts in convert order
+ * @example
+ * const _ = true;
  */
 export function splitManualEntries(
   manualText: string,

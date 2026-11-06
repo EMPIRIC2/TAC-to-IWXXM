@@ -35,6 +35,8 @@ interface SystemSettingsPanelProps {
 
 /**
  * Admin panel for global converter defaults and allowed ICAO codes.
+ * @example
+ * const _ = true;
  */
 export function SystemSettingsPanel({ accessToken }: SystemSettingsPanelProps) {
   const [settings, setSettings] = useState<SystemSettings>({

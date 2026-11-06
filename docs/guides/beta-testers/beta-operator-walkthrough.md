@@ -13,6 +13,17 @@ Author: Joe McGuire · joseph_mcguire@brown.edu · Brown University.
 Products in scope: METAR, SPECI, TAF, SIGMET. All output is test output and is not
 operationally authoritative.
 
+Terms used in this deck:
+
+- **TAC** means Traditional Alphanumeric Code (coded text form of a report).
+- **IWXXM** means ICAO/WMO XML weather exchange format.
+- **METAR** means routine aerodrome report.
+- **SPECI** means special aerodrome report.
+- **TAF** means aerodrome forecast.
+- **SIGMET** means en-route hazard information.
+- **CMO** means Caribbean Meteorological Organization.
+- **UTC** means Coordinated Universal Time.
+
 - Built deck: `beta-operator-walkthrough.pptx`
 - Content sources: the CMO two-week Testing and Evaluation Guide, plus
   [`../operator-handbook.md`](../operator-handbook.md) and [`../operator-one-pager.md`](../operator-one-pager.md)
@@ -64,9 +75,9 @@ Welcome, and thank you for taking part.
 
 This is a prototype TAC-to-IWXXM translator developed by CMO Headquarters with Brown University, to help Member States get ready for exchanging aeronautical meteorological information in IWXXM.
 
-Over the next two weeks we are asking you to use it the way you would use a real tool, and tell us where it falls short. The conversion, validation and downloads are real. What they are not is operationally authoritative. Nothing produced here goes out as an official product.
+Over the next two weeks we ask you to use the translator the way you would use a real tool, and tell us where the translator falls short. The conversion, validation and downloads are real. The output is not operationally authoritative. Nothing produced here goes out as an official product.
 
-Three parts: how to operate it, what else it does, and what we need recorded and sent back. Interrupt at any point.
+Three parts: how to operate the translator, what else the prototype does, and what we need recorded and sent back. Interrupt at any point.
 
 ---
 
@@ -75,9 +86,9 @@ Three parts: how to operate it, what else it does, and what we need recorded and
 ## Why we are doing this
 
 - CMO Headquarters and Brown University have built a prototype translator to support Member States in preparing for IWXXM exchange.
-- These two weeks assess its functionality, accuracy, validation and usability.
+- These two weeks assess functionality, accuracy, validation and usability.
 - The result is a consolidated picture of what needs improving before anything wider is considered.
-- Your Service’s findings feed directly into that, particularly the failures.
+- Your Service’s findings feed directly into that picture, particularly the failures.
 
 - REAL
 
@@ -89,15 +100,15 @@ Three parts: how to operate it, what else it does, and what we need recorded and
 
 - Labels and defaults may change
 - Product coverage varies
-- That is what you are here to find
+- That variation is what you are here to find
 
-- Treat everything the prototype produces as test output. It is not operationally authoritative.
+- Treat everything the prototype produces as test output. The output is not operationally authoritative.
 
 ### Speaker notes
 
 Set the frame before anyone touches the app.
 
-This is a joint CMO / Brown prototype, and the point of the exercise is readiness: can Services in this region take their existing TAC and produce IWXXM that is correct and valid.
+This is a joint CMO / Brown prototype. The point of the exercise is readiness: can Services in this region take their existing TAC and produce IWXXM that is correct and valid.
 
 What is real: the production site, the real conversion engine, real schema and rule validation. Files you download are genuine IWXXM.
 
@@ -142,11 +153,11 @@ Say the bottom line out loud. Test output is not authoritative. Nothing here cha
 
 Four products, and only four, for this evaluation: METAR, SPECI, TAF and SIGMET. The picker in the app offers more; anything else is out of scope here.
 
-Two sources of test material. CMO Headquarters supplies a representative set, and that is Week 1. Then your own operational TAC, the real traffic your Service produces, and that is Week 2.
+Two sources of test material. CMO Headquarters supplies a representative set, and that set is Week 1. Then your own operational TAC, the real traffic your Service produces, and that traffic is Week 2.
 
 The principle people most often get wrong is the second one: record what worked too. A log full of only failures tells us nothing about coverage.
 
-And the fourth is a hard rule. This runs in parallel. Nothing about how you produce or disseminate TAC changes during these two weeks.
+And the fourth principle is a hard rule. The evaluation runs in parallel. Nothing about how you produce or disseminate TAC changes during these two weeks.
 
 ---
 
@@ -160,7 +171,7 @@ And the fourth is a hard rule. This runs in parallel. Nothing about how you prod
 
 - END OF WEEK 3
 
-- Familiarisation and basic functionality
+- Familiarization and basic functionality
 
 - Operational parallel testing
 
@@ -178,7 +189,7 @@ And the fourth is a hard rule. This runs in parallel. Nothing about how you prod
 - Plus any Error Reports and the User Evaluation Questionnaire.
 - CMO consolidates the results with Brown University.
 
-- Identify your Service focal point now. That is who collates the Test Log and submits it.
+- Identify your Service focal point now. That person collates the Test Log and submits it.
 
 ### Speaker notes
 
@@ -201,7 +212,7 @@ If you have not already, agree now who your focal point is.
 
 ### Speaker notes
 
-This part is deliberately narrow: one operator, one report, from paste to a validated file on disk. Everything else can wait until they have done it once.
+This part is deliberately narrow: one operator, one report, from paste to a validated file on disk. Everything else can wait until they have done that path once.
 
 ---
 
@@ -235,7 +246,7 @@ Open the production URL. The banner across the top is the app being honest about
 
 For a two-week evaluation, sign in. You will want to reopen your own tests, and guest work is not recoverable once the browser is cleared.
 
-The privacy point matters on a shared operational position. Guest work history can be stored in this browser and preferences are stored locally. Privacy settings in the footer controls that. Check it before you start, not after.
+The privacy point matters on a shared operational position. Guest work history can be stored in this browser and preferences are stored locally. Privacy settings in the footer control that storage. Check Privacy settings before you start, not after.
 
 On accounts: use the credentials your Service issued. If sign-in fails, check the URL and caps lock, then go to your local IT or MET systems contact. Nobody sends passwords around.
 
@@ -253,11 +264,7 @@ On accounts: use the credentials your Service issued. If sign-in fails, check th
 
 - My METARs: your drafts and finished work.
 
-- Quality metrics
-
-- Compare output against official WMO examples.
-
-- Validation Issues Catalog
+- Rule catalogs
 
 - Look up what a validation or lint message means.
 
@@ -265,19 +272,15 @@ On accounts: use the credentials your Service issued. If sign-in fails, check th
 
 - Sending. Not used during this evaluation.
 
-- Conversion profiles
-
-- What each profile encodes, at a glance.
-
 - Header, right-hand side: HELP · PREFERENCES · Theme · SIGN IN
 
 ### Speaker notes
 
-Six tabs along the top. For this evaluation, only the first three matter much.
+The top bar is Convert, History, Rule catalogs, and Dissemination ops. For this evaluation, Convert and History are the ones you will use.
 
-Convert is where you will spend your time. History is your own work, and it is where you will go back to find a test you want to write up. Quality metrics compares the app against official WMO example products, and we will come back to it.
+Convert is where you will spend your time. History is your own work, and History is where you will go back to find a test you want to write up.
 
-The Validation Issues Catalog is a lookup for messages you do not recognise. Dissemination ops we are not using. Conversion profiles shows what each profile does.
+Rule catalogs is a lookup for messages you do not recognize. Dissemination ops we are not using. Conversion profiles shows what each profile does.
 
 Top right: HELP opens the operator one-pager, PREFERENCES holds your options including privacy, Theme is light and dark, SIGN IN on the far right.
 
@@ -309,11 +312,11 @@ Top right: HELP opens the operator one-pager, PREFERENCES holds your options inc
 
 ### Speaker notes
 
-Demonstrate the demo example first: it removes the fear of doing it wrong.
+Demonstrate the demo example first: the demo removes the fear of doing the steps wrong.
 
-Typing or pasting is the everyday path for a single report. The one thing that catches people is the terminator: each report ends with an equals sign. If Convert gives you nothing, check that first.
+Typing or pasting is the everyday path for a single report. The one thing that catches people is the terminator: each report ends with an equals sign. If Convert gives you nothing, check that terminator first.
 
-The drop zone takes files. For Week 1, if you are signed in you can point it at the whole representative set as a folder or ZIP rather than one at a time.
+The drop zone takes files. For Week 1, if you are signed in you can point the drop zone at the whole representative set as a folder or ZIP rather than one file at a time.
 
 The Examples picker loads a sample known to convert cleanly. If something fails afterwards, you know the difference is your text, not the app.
 
@@ -325,7 +328,7 @@ The Examples picker loads a sample known to convert cleanly. If something fails 
 
 - PRODUCT TYPE
 
-- Which product you are converting, or Auto-detect, which reads it from the report.
+- Which product you are converting, or Auto-detect, which reads the type from the report.
 
 - The encoding rules: the international Annex 3 line, or your State’s profile.
 
@@ -335,21 +338,21 @@ The Examples picker loads a sample known to convert cleanly. If something fails 
 
 - How the output is packaged for exchange in your region.
 
-- Use what your Service expects, and keep it the same across your tests, and record the settings with each result.
+- Use what your Service expects, keep the same settings across your tests, and record the settings with each result.
 
 ### Speaker notes
 
-Three selectors, and testers over-think them. Keep it simple.
+Three selectors, and testers over-think them. Keep the selectors simple.
 
-Product type: leave it on Auto-detect unless you are deliberately forcing a type. If auto-detect picks the wrong one for a real report, that is a finding. Keep the report.
+Product type: leave the control on Auto-detect unless you are deliberately forcing a type. If auto-detect picks the wrong type for a real report, that mismatch is a finding. Keep the report.
 
-Profile: the encoding rule set. There is an international Annex 3 line and a set of State profiles. Use what your Service expects, and use the same one throughout, or your results will not be comparable.
+Profile: the encoding rule set. There is an international Annex 3 line and a set of State profiles. Use what your Service expects, and use the same profile throughout, or your results will not be comparable.
 
 Exchange profile: regional packaging.
 
-These change encoding and packaging only, not destinations and not credentials. And record the settings alongside each test result; a result without its settings is hard to reproduce.
+These selectors change encoding and packaging only, not destinations and not credentials. And record the settings alongside each test result; a result without its settings is hard to reproduce.
 
-If the default that loads is not what your Service uses, that is worth reporting on its own.
+If the default that loads is not what your Service uses, that default mismatch is worth reporting on its own.
 
 ---
 
@@ -363,15 +366,15 @@ If the default that loads is not what your Service uses, that is worth reporting
 
 - SOFT PREVIEW
 
-- Best-effort IWXXM while your TAC is still partial, with the spans it could not decode highlighted. Advisory only: it can lag or simplify edge cases. Never record a preview as a test result.
+- Best-effort IWXXM while your TAC is still partial, with the spans the preview could not decode highlighted. Advisory only: the preview can lag or simplify edge cases. Never record a preview as a test result.
 
 ### Speaker notes
 
 This is the slide that prevents the worst mistake in the evaluation, so do not rush it.
 
-The Decode panel reads your TAC back in plain language and explains each group. For the accuracy assessment this is your first check: if the decode says something different from what you meant, the IWXXM will too.
+The Decode panel reads your TAC back in plain language and explains each group. For the accuracy assessment the Decode panel is your first check: if the decode says something different from what you meant, the IWXXM will too.
 
-Soft preview is a sketch. It exists so you can see something while a report is half-typed, and it marks the spans it could not decode. The app labels it "not for publish".
+Soft preview is a sketch. Soft preview exists so you can see something while a report is half-typed, and soft preview marks the spans it could not decode. The app labels soft preview "not for publish".
 
 Say the rule out loud: the preview is never a test result. If the preview and Convert disagree, Convert and Validate win.
 
@@ -384,10 +387,10 @@ Say the rule out loud: the preview is never a test result. If the preview and Co
 - CONVERT builds the IWXXM XML from what is in the console or in your uploaded files.
 - The conversion / validation log opens underneath: Issues first, then Results.
 - Issues are graded. Information is worth reading; errors need fixing before you rely on the file.
-- Leftover TAC the encoder could not place is reported as residuals. Those are accuracy findings, so record them.
+- Leftover TAC the encoder could not place is reported as residuals. Residuals are accuracy findings, so record them.
 - The counters on the action buttons tell you how many converted files you are holding.
 
-- CONVERT&SEND converts and sends in one action. Do not use it during this evaluation. Convert, then download.
+- CONVERT&SEND converts and sends in one action. Do not use CONVERT&SEND during this evaluation. Convert, then download.
 
 ### Speaker notes
 
@@ -395,9 +398,9 @@ Press CONVERT and let the log open. Resist going straight to Download.
 
 The log has two halves. Issues is what the app noticed: some informational, some a real problem. Results is the converted output with its download link.
 
-Residuals deserve attention in this evaluation. If the encoder could not place part of your TAC it says so rather than silently dropping it. A residual on a routine report is an accuracy finding: keep the TAC and the output, and log it.
+Residuals deserve attention in this evaluation. If the encoder could not place part of your TAC, the encoder says so rather than silently dropping that part. A residual on a routine report is an accuracy finding: keep the TAC and the output, and log the finding.
 
-Build the habit of reading the log every time, even when it converted cleanly. A green result with three information messages still tells you something.
+Build the habit of reading the log every time, even when the conversion completed cleanly. A green result with three information messages still tells you something.
 
 And skip CONVERT&SEND entirely for these two weeks. We are not disseminating anything.
 
@@ -421,13 +424,13 @@ And skip CONVERT&SEND entirely for these two weeks. We are not disseminating any
 
 ### Speaker notes
 
-Validation answers one of the five assessment questions directly, so it is never optional here.
+Validation answers one of the five assessment questions directly, so validation is never optional here.
 
-Two routes. Normally you validate what you just converted, from the same log, and that is the validation result that goes in the Test Log. Separately, the Validate IWXXM input mode lets you check IWXXM that came from somewhere else.
+Two routes. Normally you validate what you just converted, from the same log, and that outcome is the validation result that goes in the Test Log. Separately, the Validate IWXXM input mode lets you check IWXXM that came from somewhere else.
 
 When validation is red, the messages tell you which problem you have. Two usual causes: the TAC has a real problem, or the IWXXM version does not match what the receiving system expects.
 
-Important for grading: if a perfectly ordinary operational report fails validation, that is not a curiosity, it is a Major finding. And if an element came out wrong or missing, it is Critical. Keep the TAC, the IWXXM and the validation output.
+Important for grading: if a perfectly ordinary operational report fails validation, that failure is not a curiosity, it is a Major finding. And if an element came out wrong or missing, the finding is Critical. Keep the TAC, the IWXXM and the validation output.
 
 ---
 
@@ -438,16 +441,16 @@ Important for grading: if a perfectly ordinary operational report fails validati
 - Download the .xml from the Results section of the log.
 - Converted a batch? DOWNLOAD ZIP takes the whole set in one file.
 - Keep the generated IWXXM with the source TAC and the validation result. That trio is what makes a finding reproducible.
-- Store them the way your Service stores working material for the evaluation.
+- Store the files the way your Service stores working material for the evaluation.
 - As a guest, download promptly, because clearing the browser can remove local drafts.
 
-- TAC in, IWXXM out, validation result alongside. That is one Test Log entry.
+- TAC in, IWXXM out, validation result alongside. That trio is one Test Log entry.
 
 ### Speaker notes
 
 Short slide, one message: the evidence matters as much as the outcome.
 
-A single conversion gives you a download link in Results. A batch gives you DOWNLOAD ZIP with a count, so you can tell whether you have all of them.
+A single conversion gives you a download link in Results. A batch gives you DOWNLOAD ZIP with a count, so you can tell whether you have all of the files.
 
 For anything that failed or looked questionable, keep three things together: the original TAC, the generated IWXXM, and the validation result. A report we cannot reproduce usually goes nowhere.
 
@@ -464,7 +467,7 @@ And if you are working as a guest, download before you close the tab.
 
 ### Speaker notes
 
-Part A was the single-report path. Part B is what they will discover on their own anyway, so it is better they hear it from us with the caveats attached.
+Part A was the single-report path. Part B is what they will discover on their own anyway, so it is better they hear Part B from us with the caveats attached.
 
 ---
 
@@ -481,20 +484,20 @@ Part A was the single-report path. Part B is what they will discover on their ow
 - Survives a new browser or machine
 
 - Local history in this browser only
-- Clearing site data removes it
-- Nothing to recover if it goes
+- Clearing site data removes local history
+- Nothing to recover if local history goes
 
 - Filter by status (draft, in progress, finished, failed), or show the trash.
 - EXPORT and IMPORT move your local history between browsers.
-- Over a two-week evaluation this is how you find a test again when you write it up.
+- Over a two-week evaluation, History is how you find a test again when you write the test up.
 
 - If history looks empty: you are probably in guest mode, or storage is off in Privacy settings.
 
 ### Speaker notes
 
-The History tab is labelled My METARs. Signed in, it is your saved work. As a guest it is a local list in this browser and nothing more.
+The History tab is labelled My METARs. Signed in, History is your saved work. As a guest, History is a local list in this browser and nothing more.
 
-For this evaluation that difference is practical, not theoretical: you will be writing up tests days after you ran them. Guest mode means clearing site data, switching browsers or moving machines loses them, with no copy on a server to restore.
+For this evaluation that difference is practical, not theoretical: you will be writing up tests days after you ran them. Guest mode means clearing site data, switching browsers or moving machines loses those tests, with no copy on a server to restore.
 
 The status filters are how you find things again. EXPORT and IMPORT exist for moving a local list, occasionally useful on a shared position.
 
@@ -504,35 +507,11 @@ The most common support question is "my history is empty". Almost always guest m
 
 <!-- Slide 16 -->
 `PART B: WHAT YOU CAN DO`
-## Quality metrics
-
-- Browses official WMO IWXXM example products and shows how this prototype’s output compares.
-- Each row carries a match status plus residual, lint and validation counts.
-- Open a row for a detail view: Official and Converted side by side, with a readable diff.
-- Unchanged sections collapse; expand a hunk, or expand all, when you need context.
-- Filter by product to reach the four families in scope.
-
-- Useful for training and for understanding accuracy. It is not a substitute for running Validate on your own conversions.
-
-### Speaker notes
-
-This tab is the one people find most interesting and most easily misread, so lead with what it is for.
-
-It takes the official WMO example products and shows what this prototype produces for the same input, with a match status and counts for residuals, lint and validation. Open a row and you get official and converted XML side by side with a readable diff; identical regions collapse.
-
-It is genuinely useful here, because it shows you what a difference between two IWXXM documents looks like, which is exactly the skill you need for the accuracy assessment on your own reports.
-
-Two honest points. A difference is not automatically a fault; some examples are not scored yet. And a good score here says nothing about the file on your screen. Only Validate does that.
-
----
-
-<!-- Slide 17 -->
-`PART B: WHAT YOU CAN DO`
 ## The picker offers more than we are testing
 
 - IN SCOPE
 
-- Test the four in scope. If you try another and it behaves oddly, say so, but it does not belong in the Test Log for this evaluation.
+- Test the four in scope. If you try another product and it behaves oddly, say so, but that product does not belong in the Test Log for this evaluation.
 
 - METAR
 
@@ -552,7 +531,7 @@ Two honest points. A difference is not automatically a fault; some examples are 
 
 - SWXA
 
-- Auto-detect reads the product from the report. If it picks the wrong type for one of the four, keep the report. That is a finding.
+- Auto-detect reads the product from the report. If Auto-detect picks the wrong type for one of the four, keep the report. That mismatch is a finding.
 
 - VONA
 
@@ -560,15 +539,15 @@ Two honest points. A difference is not automatically a fault; some examples are 
 
 ### Speaker notes
 
-The picker lists more product types than this evaluation covers. That is not an invitation.
+The picker lists more product types than this evaluation covers. That longer list is not an invitation.
 
-Four products are in scope: METAR, SPECI, TAF, SIGMET. Those are what CMO will consolidate across Services, and mixing in others makes the results harder to compare.
+Four products are in scope: METAR, SPECI, TAF, SIGMET. Those four are what CMO will consolidate across Services, and mixing in others makes the results harder to compare.
 
-If curiosity gets the better of you and something misbehaves on another type, mention it informally, but keep the Test Log to the four.
+If curiosity gets the better of you and something misbehaves on another type, mention the issue informally, but keep the Test Log to the four.
 
 The last entry in the picker is different: IWXXM as an input means handing the app an existing IWXXM file to validate rather than TAC to convert.
 
-And if auto-detect picks the wrong type for one of our four, that is a genuine finding. Keep the report text.
+And if auto-detect picks the wrong type for one of our four, that mismatch is a genuine finding. Keep the report text.
 
 ---
 
@@ -577,7 +556,7 @@ And if auto-detect picks the wrong type for one of our four, that is a genuine f
 ## Dissemination: not part of this evaluation
 
 - Depending on the deployment, the app may offer destinations after convert: a database upload, or a message pathway.
-- During these two weeks you do not use them. Download the XML and keep it.
+- During these two weeks you do not use those destinations. Download the XML and keep it.
 - Your Service’s operational dissemination continues exactly as it does today, through your existing channels.
 - If the panel is hidden or disabled at your site, nothing is wrong.
 
@@ -588,13 +567,13 @@ And if auto-detect picks the wrong type for one of our four, that is a genuine f
 
 ### Speaker notes
 
-Keep this short and firm. Sending is out of scope, and half the room may not see the panel at all.
+Keep this section short and firm. Sending is out of scope, and half the room may not see the panel at all.
 
-The prototype can offer destinations where a site has configured them. We are not using that. The evaluation produces test output, and test output does not get disseminated, which is also why CONVERT&SEND stays untouched.
+The prototype can offer destinations where a site has configured them. We are not using those destinations. The evaluation produces test output, and test output does not get disseminated, which is also why CONVERT&SEND stays untouched.
 
-Your operational dissemination carries on through whatever you use today. Nothing about it changes.
+Your operational dissemination carries on through whatever channels you use today. Nothing about operational dissemination changes.
 
-The warning on the slide applies for the whole fortnight: no credentials, no connection strings, no destination addresses in a Test Log or an Error Report. If something about a destination needs to change, that is your systems contact, not this evaluation.
+The warning on the slide applies for the whole fortnight: no credentials, no connection strings, no destination addresses in a Test Log or an Error Report. If something about a destination needs to change, that change is for your systems contact, not this evaluation.
 
 ---
 
@@ -606,17 +585,17 @@ The warning on the slide applies for the whole fortnight: no credentials, no con
 
 - MANUAL PASTE
 
-- Automated ingest, where your site runs it. That pipeline stays the route for routine traffic throughout.
+- Automated ingest, where your site runs ingest. That pipeline stays the route for routine traffic throughout.
 
-- What you use for this evaluation, plus ad-hoc fixes, training and recovery. Not a replacement for the pipeline.
+- What you use for this evaluation, plus ad-hoc fixes, training and recovery. Manual paste is not a replacement for the pipeline.
 
 - Testing in parallel means nothing about continuous operations changes for these two weeks.
 
-- Not sure whether ingest is running for your centre? Ask your systems contact. It is not something you can tell from this screen.
+- Not sure whether ingest is running for your centre? Ask your systems contact. You cannot tell from this screen.
 
 ### Speaker notes
 
-This matters at some sites only, but it prevents a real operational misunderstanding.
+This slide matters at some sites only, but the slide prevents a real operational misunderstanding.
 
 If your centre runs automated near-real-time ingest, that pipeline remains the primary path for routine traffic for the whole fortnight. The converter you are testing is a parallel activity.
 
@@ -631,11 +610,11 @@ Nothing on this screen tells you whether ingest is active. Ask.
 
 - PART C
 
-- What to assess, how to grade it, and what your focal point sends back.
+- What to assess, how to grade findings, and what your focal point sends back.
 
 ### Speaker notes
 
-Land the plane here. The single most valuable thing a tester does is write down the moment they were confused, while they are still confused, and keep the file that caused it.
+Bring the session to reporting here. The single most valuable thing a tester does is write down the moment they were confused, while they are still confused, and keep the file that caused the confusion.
 
 ---
 
@@ -659,19 +638,19 @@ Land the plane here. The single most valuable thing a tester does is write down 
 
 - USABILITY
 
-- Does it identify and report translation problems, unsupported constructs and invalid input?
+- Does the translator identify and report translation problems, unsupported constructs and invalid input?
 
 - ERROR HANDLING
 
-- Every Test Log entry should be classifiable against one of these five. If you cannot place it, write it down anyway and say why.
+- Every Test Log entry should be classifiable against one of these five. If you cannot place the entry, write the entry down anyway and say why.
 
 ### Speaker notes
 
-Five dimensions. Read them out. They are the headings CMO will consolidate against, so a tester who has them in mind writes a much more useful log.
+Five dimensions. Read the five out. The five are the headings CMO will consolidate against, so a tester who has them in mind writes a much more useful log.
 
-Functionality is the crudest: did it convert at all. Accuracy is the one that needs a human: does the IWXXM actually say what the TAC said. Validation is objective and the app gives you the answer. Usability is your professional judgement as an operator, and it is a real finding, not a nicety.
+Functionality is the crudest: did conversion happen at all. Accuracy is the one that needs a human: does the IWXXM actually say what the TAC said. Validation is objective and the app gives you the answer. Usability is your professional judgement as an operator, and usability is a real finding, not a nicety.
 
-Error handling is the one testers forget to assess. When you feed it something broken on purpose, does it tell you clearly what is wrong? Try that deliberately at least once.
+Error handling is the one testers forget to assess. When you feed the translator something broken on purpose, does the translator tell you clearly what is wrong? Try that case deliberately at least once.
 
 ---
 
@@ -681,23 +660,23 @@ Error handling is the one testers forget to assess. When you feed it something b
 
 - Every test goes in the Test Log: the ones that worked as well as the ones that did not.
 - For any failed or questionable result, retain the original TAC, the generated IWXXM and the validation result.
-- Describe the problem briefly, and say whether it affects translation, validation, accuracy or usability.
+- Describe the problem briefly, and say whether the problem affects translation, validation, accuracy or usability.
 - Note the product, the options you used, and the date and time in UTC.
-- Week 1 entries come from the representative set; Week 2 entries from your operational traffic. Say which.
+- Week 1 entries come from the representative set; Week 2 entries from your operational traffic. Say which week.
 
-- TAC in, IWXXM out, validation result alongside, one line of description. That is a complete entry.
+- TAC in, IWXXM out, validation result alongside, one line of description. That set is a complete entry.
 
 ### Speaker notes
 
 The Test Log is the deliverable. A test you ran and did not record did not happen, as far as the consolidation is concerned.
 
-Record the successes too. Without them CMO cannot tell the difference between "this product works" and "nobody tried this product".
+Record the successes too. Without successes CMO cannot tell the difference between "this product works" and "nobody tried this product".
 
-For anything that failed or looked wrong, the three artefacts together are what make it reproducible: the TAC you fed in, the IWXXM that came out, and the validation result.
+For anything that failed or looked wrong, the three artefacts together are what make the finding reproducible: the TAC you fed in, the IWXXM that came out, and the validation result.
 
-One line of description is enough, as long as it says which of the four areas it touches: translation, validation, accuracy or usability.
+One line of description is enough, as long as the line says which of the four areas the issue touches: translation, validation, accuracy or usability.
 
-And mark whether it was Week 1 representative material or Week 2 operational traffic. That distinction matters when the results are pooled.
+And mark whether the entry was Week 1 representative material or Week 2 operational traffic. That distinction matters when the results are pooled.
 
 ---
 
@@ -729,9 +708,9 @@ And mark whether it was Week 1 representative material or Week 2 operational tra
 
 Three levels, and the boundary that matters is between Critical and Major.
 
-Critical is about meteorological meaning. If a wind group, a visibility, a cloud layer or a hazard comes out wrong or vanishes, the product now says something different from what the observer or forecaster intended. That is the most serious thing you can find and we want it flagged immediately, not saved for the end.
+Critical is about meteorological meaning. If a wind group, a visibility, a cloud layer or a hazard comes out wrong or vanishes, the product now says something different from what the observer or forecaster intended. That meaning change is the most serious thing you can find and we want the finding flagged immediately, not saved for the end.
 
-Major is serious but not meaning-changing: something will not convert, or valid TAC fails validation. It has to be fixed before anyone talks about wider use.
+Major is serious but not meaning-changing: something will not convert, or valid TAC fails validation. Major issues have to be fixed before anyone talks about wider use.
 
 Minor is usability and cosmetics. Still worth logging: a tool operators find awkward at three in the morning is a real problem.
 
@@ -755,7 +734,7 @@ When in doubt, grade up and explain.
 
 - USER EVALUATION QUESTIONNAIRE
 
-- Anything Critical should reach your focal point as soon as you find it. Do not hold it until the end.
+- Anything Critical should reach your focal point as soon as you find it. Do not hold a Critical finding until the end.
 
 - Your Service’s overall judgement of the prototype.
 
@@ -767,9 +746,9 @@ Three things go back, from one person: your designated focal point.
 
 The completed Test Log covering both weeks. Error Reports for anything that failed or looked wrong, with the artefacts attached. And the User Evaluation Questionnaire, which is where your overall judgement as operators goes.
 
-Timing: the testing is two weeks, and submission is at the end of Week 3. That gives the focal point a week to collate. Use it; do not start collating on the last day.
+Timing: the testing is two weeks, and submission is at the end of Week 3. That schedule gives the focal point a week to collate. Use that week; do not start collating on the last day.
 
-One exception to waiting: if you find something Critical (an element wrong or missing), tell your focal point when you find it. That should not sit in a spreadsheet for a fortnight.
+One exception to waiting: if you find something Critical (an element wrong or missing), tell your focal point when you find it. A Critical finding should not sit in a spreadsheet for a fortnight.
 
 From there CMO pools every Service's results and works with Brown to set priorities.
 
@@ -797,7 +776,7 @@ From there CMO pools every Service's results and works with Brown to set priorit
 
 - An element is wrong or missing
 
-- Grade it Critical. Keep the TAC, the IWXXM and the validation result, and tell your focal point.
+- Grade the finding Critical. Keep the TAC, the IWXXM and the validation result, and tell your focal point.
 
 - Cannot sign in
 
@@ -809,25 +788,21 @@ From there CMO pools every Service's results and works with Brown to set priorit
 
 - Destinations missing
 
-- Expected. They are not used in this evaluation, so download instead.
-
-- Quality metrics empty or error
-
-- Check your network, retry, and note the example name if one row fails.
+- Expected. Destinations are not used in this evaluation, so download instead.
 
 - Slow or timing out
 
-- Retry once. If it persists, note the time and the product and log it.
+- Retry once. If the problem persists, note the time and the product and log the issue.
 
 ### Speaker notes
 
-Do not read this table out. Point at it and pick the two rows the room will actually hit.
+Do not read this table out. Point at the table and pick the two rows the room will actually hit.
 
 The first row accounts for most "it does not work" reports: a missing equals sign at the end of the report.
 
-The fourth row is the one to dwell on, because it is the bridge between troubleshooting and reporting. A wrong or missing element is not a thing to work around. It is the most valuable finding in the whole evaluation.
+The fourth row is the one to dwell on, because the fourth row is the bridge between troubleshooting and reporting. A wrong or missing element is not a thing to work around. The finding is the most valuable finding in the whole evaluation.
 
-Everything here is also in the operator handbook, so testers have it in writing.
+Everything here is also in the operator handbook, so testers have the same content in writing.
 
 ---
 
@@ -839,7 +814,7 @@ Everything here is also in the operator handbook, so testers have it in writing.
 
 - HELP in the converter header opens the operator one-pager, the short version of today.
 
-- The operator handbook: sign-in, convert and validate, history, Quality metrics, troubleshooting.
+- The operator handbook: sign-in, convert and validate, history, troubleshooting.
 
 - DAY TO DAY
 
@@ -857,7 +832,7 @@ Everything here is also in the operator handbook, so testers have it in writing.
 
 Four places, in the order you should try them.
 
-HELP in the header is the fastest. It opens the operator one-pager, essentially a printable version of Part A.
+HELP in the header is the fastest. HELP opens the operator one-pager, essentially a printable version of Part A.
 
 The handbook is the day-to-day manual, including the troubleshooting table.
 
@@ -881,11 +856,11 @@ Anything about the evaluation itself (scope, timing, what counts as Critical, ho
 
 - Convert
 
-- Builds the IWXXM XML from your TAC. This produces the file you keep.
+- Builds the IWXXM XML from your TAC. Convert produces the file you keep.
 
 - Validate
 
-- Checks the IWXXM against schema and rules. This is the validation result you record.
+- Checks the IWXXM against schema and rules. Validate is the validation result you record.
 
 - Soft preview
 
@@ -909,6 +884,6 @@ Anything about the evaluation itself (scope, timing, what counts as Critical, ho
 
 ### Speaker notes
 
-Leave this up while you take questions. It is the vocabulary the rest of the evaluation uses.
+Leave this slide up while you take questions. The glossary is the vocabulary the rest of the evaluation uses.
 
-The three worth pointing at: Convert versus Validate, soft preview, and the Test Log. If a tester goes away with those straight, the session did its job.
+The three terms worth pointing at: Convert versus Validate, soft preview, and the Test Log. If a tester goes away with those terms clear, the session did its job.

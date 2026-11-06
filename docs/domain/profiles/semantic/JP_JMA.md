@@ -5,7 +5,7 @@
 
 Compat pack for JMA METAR/SPECI/TAF/SIGMET plus Tokyo VAAC **VAA**. AIRMET **excluded**
 (D-EV089-jp-va). **SPECI** on convert allowlist (EV-094 M4 / D-EV094-speci-expand).
-Core IWXXM only — no national VA schema fork.
+Core IWXXM only; no national VA schema fork.
 
 ## Owns (target)
 
@@ -18,7 +18,7 @@ Core IWXXM only — no national VA schema fork.
 ## Gaps
 
 - [x] SPECI fixture + allowlist wire (Build M4)
-- [x] Attributed real METAR/TAF corpora (AWC RJTT) — EV-094 / #1098
+- [x] Attributed real METAR/TAF corpora (AWC RJTT; EV-094 / #1098)
 - [x] Catalog `status: implemented` (EV-094 M7 / #1098)
 - [ ] Attributed real SPECI / FIR SIGMET / Tokyo VAA corpora (synthetic_ev089 gaps)
 

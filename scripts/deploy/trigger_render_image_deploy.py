@@ -184,7 +184,11 @@ def is_suspended_deploy_block(status_code: int, detail: str) -> bool:
     if "suspended" not in text:
         return False
     # Hook conflict / REST reject shapes seen in production CI.
-    return status_code in (0, 400, 409, 500) or "cannot deploy" in text or "conflict" in text
+    return (
+        status_code in (0, 400, 409, 500)
+        or "cannot deploy" in text
+        or "conflict" in text
+    )
 
 
 def trigger_via_hook(

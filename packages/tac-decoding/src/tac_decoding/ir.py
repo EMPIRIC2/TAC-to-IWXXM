@@ -20,11 +20,13 @@ def project_ir(
 
     Parameters
     ----------
-    match :
+    match : MatchResult
         Result of :func:`tac_decoding.match.match_tac`.
-    product :
+
+    product : str
         Convert product id (for example ``METAR`` or ``SIGMET``).
-    pack_id :
+
+    pack_id : str
         Pack that produced the match (``sigmet``, ``va_sigmet``, or ``tc_sigmet``
         for SIGMET).
 
@@ -32,6 +34,11 @@ def project_ir(
     -------
     dict[str, object]
         Versioned IR projection. Callers keep legacy XML emit on the parser IR.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (project_ir)
+    2
     """
     return {
         "ir_version": 1,

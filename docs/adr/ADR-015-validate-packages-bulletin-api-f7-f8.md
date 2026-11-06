@@ -33,7 +33,7 @@ postponed; F5 remains METAR-only.
 6. **F7** (multi-product operator entry/sessions): **Planned**; F5 unchanged; **not built**
    this cycle.
 7. **F8** (near-RT ingest, store+push, quarantine, worker scale): **Promoted to build this
-   cycle** — see **ADR-018** (supersedes “not built this cycle” for F8 worker scope). Push
+   cycle**; see **ADR-018** (supersedes “not built this cycle” for F8 worker scope). Push
    sinks and AMHS adapters remain postponed. F6 non-goal “no converter microservice” unchanged.
 8. **H7**: Dedicated live connectivity gate for bulletin path (UJ-011 / TC-LIVE-F6-030);
    extends live harness beyond H6 (see test-plan + connectivity-gates).
@@ -57,7 +57,7 @@ postponed; F5 remains METAR-only.
 
 - M1/M5/CI gain two workspace members; coverage gate applies.
 - API surface grows by two routes; OpenAPI/shared types update in build.
-- Template remains `static+api` until F8 — **amended by ADR-018** → `static+api+worker`.
+- Template remains `static+api` until F8; **amended by ADR-018** → `static+api+worker`.
 - 04-tech-plan defined: bulletin multi-result schema; lint-tac content-type; AHL dialect
   fixtures; `make test-live-bulletin`; F8 worker.
 

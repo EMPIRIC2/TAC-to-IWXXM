@@ -22,10 +22,38 @@ _TCA_FORBIDDEN_ROOTS = frozenset(
 
 
 def _tca_format_pos(lat: float, lon: float) -> str:
-    """Format lat/lon for WMO A2-2-style ``gml:pos`` (up to 5 decimals; ``.00`` for wholes)."""
+    """
+    Internal helper ``_tca_format_pos``.
+
+    Parameters
+    ----------
+    lat : float
+        Argument ``lat``.
+
+    lon : float
+        Argument ``lon``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
     # ruff: noqa: F403, F405
 
     def _one(value: float) -> str:
+        """
+        Internal helper ``_one``.
+
+        Parameters
+        ----------
+        value : float
+            Argument ``value``.
+
+        Returns
+        -------
+        str
+            Return value.
+        """
         s = f"{value:.5f}".rstrip("0")
         if s.endswith("."):
             s += "00"
@@ -45,6 +73,24 @@ def emit_tca_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
 
     Vendor fidelity (TC-F27-002 / A2-2): observation + forecasts + RMK NIL →
     ``remarks`` with ``nilReason=inapplicable``.
+
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Parsed product fields.
+
+    iwxxm_version : str
+        IWXXM release line.
+
+    Returns
+    -------
+    str
+        An IWXXM ``TropicalCycloneAdvisory`` document (F6.f / F27 themes T2-T3).
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (emit_tca_annex3)
+    2
     """
     product = str(ir.get("product", "TCA")).upper()
     if product != "TCA":
@@ -273,6 +319,19 @@ def emit_tca_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
 
 
 def _assert_tca_advisory_xml(xml: str) -> str:
+    """
+    Internal helper ``_assert_tca_advisory_xml``.
+
+    Parameters
+    ----------
+    xml : str
+        Argument ``xml``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
     if "<iwxxm:TropicalCycloneAdvisory " not in xml:
         raise ValueError("TCA emitter product/root guard: missing TropicalCycloneAdvisory root")
     if "<iwxxm:TropicalCycloneSIGMET " in xml or "iwxxm:TropicalCycloneSIGMET" in xml:

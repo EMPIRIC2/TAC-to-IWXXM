@@ -108,7 +108,8 @@ def get_test_stations(category: str = "all") -> list[str]:
                  "extreme_conditions", "coastal_and_marine", "mountain_and_terrain",
                  "minimal_quick_test", "all")
 
-    Returns:
+    Returns
+    -------
         List of ICAO station identifiers
     """
     if category == "all":
@@ -133,7 +134,8 @@ def get_station_metadata(icao: str) -> dict[str, str]:
     Args:
         icao: ICAO station identifier
 
-    Returns:
+    Returns
+    -------
         Metadata dictionary (empty if not found)
     """
     return STATION_METADATA.get(icao, {})
@@ -143,7 +145,8 @@ def get_all_test_stations_with_metadata() -> dict[str, dict[str, str]]:
     """
     Get all test stations with their metadata.
 
-    Returns:
+    Returns
+    -------
         Dictionary mapping ICAO codes to metadata
     """
     all_icao = get_test_stations("all")
@@ -154,7 +157,8 @@ def count_stations_by_category() -> dict[str, int]:
     """
     Count stations in each category.
 
-    Returns:
+    Returns
+    -------
         Dictionary mapping category names to station counts
     """
     return {category: len(stations) for category, stations in TEST_STATIONS.items()}

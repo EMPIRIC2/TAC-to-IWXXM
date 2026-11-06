@@ -106,3 +106,13 @@ def test_version_matrix_still_lists_profile_pins() -> None:
     assert "3.0.0" not in annex3
     ca = supported_iwxxm_versions_for_profile("ca_eccc")
     assert ca == frozenset({"3.0.0"})
+
+
+def test_tc_f4_001_2023_1_remains_a_global_line() -> None:
+    """TC-F4-001: 2023-1 stays selectable on the global window."""
+    annex3 = supported_iwxxm_versions_for_profile("annex3")
+    us = supported_iwxxm_versions_for_profile("iwxxm_us")
+    assert "2023-1" in annex3
+    assert "2023-1" in us
+    assert "3.0.0" not in annex3
+    assert "3.0.0" not in us

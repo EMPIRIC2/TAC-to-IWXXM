@@ -28,7 +28,7 @@ describe('IwxxmPreviewPane', () => {
       />,
     );
     expect(screen.getByTestId('iwxxm-preview-badge')).toHaveTextContent(
-      /Soft preview — not for publish/i,
+      /Soft preview, not for publishing/i,
     );
     expect(screen.queryByText(/LAYER12_SOFT_FAIL/)).not.toBeInTheDocument();
     expect(screen.getByTestId('iwxxm-preview-soft-fail')).toHaveTextContent(
@@ -36,9 +36,30 @@ describe('IwxxmPreviewPane', () => {
     );
   });
 
-  it('shows Passed badge when preview succeeds', () => {
+  it('shows Valid when the preview succeeds', () => {
     render(<IwxxmPreviewPane xml={SAMPLE_XML} status="passed" mode="live" />);
-    expect(screen.getByTestId('iwxxm-preview-badge')).toHaveTextContent(/^Passed$/);
+    expect(screen.getByTestId('iwxxm-preview-badge')).toHaveTextContent(/^Valid$/);
+    expect(screen.queryByText('Passed')).not.toBeInTheDocument();
+  });
+
+  it('never shows Valid on soft-preview even when status is passed', () => {
+    render(<IwxxmPreviewPane xml={SAMPLE_XML} status="passed" mode="soft-preview" />);
+    expect(screen.getByTestId('iwxxm-preview-badge')).toHaveTextContent(
+      /Soft preview, not for publishing/i,
+    );
+    expect(screen.queryByText(/^Valid$/)).not.toBeInTheDocument();
+    expect(screen.queryByText('Passed')).not.toBeInTheDocument();
+  });
+
+  it('does not say Passed when the preview is incomplete', () => {
+    render(
+      <IwxxmPreviewPane xml={SAMPLE_XML} status="passed" mode="live" incomplete />,
+    );
+    expect(screen.queryByText('Passed')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('iwxxm-preview-badge')).not.toBeInTheDocument();
+    expect(screen.getByTestId('iwxxm-preview-incomplete')).toHaveTextContent(
+      'Needs attention. Do not publish. Fix the TAC errors first.',
+    );
   });
 
   it('links failed-span count to onFailedSpanFocus callback', async () => {
@@ -58,6 +79,20 @@ describe('IwxxmPreviewPane', () => {
     expect(screen.getByTestId('iwxxm-preview-failed-count')).toHaveTextContent('3');
   });
 
+  it('uses the singular label for one failed span', () => {
+    render(
+      <IwxxmPreviewPane
+        xml={SAMPLE_XML}
+        status="soft-fail"
+        mode="soft-preview"
+        failedSpanCount={1}
+      />,
+    );
+    expect(screen.getByTestId('iwxxm-preview-failed-count')).toHaveTextContent(
+      '1 failed span',
+    );
+  });
+
   it('shows most recent XML only (replaces prior content)', () => {
     const { rerender } = render(
       <IwxxmPreviewPane xml="<a/>" status="passed" mode="live" />,
@@ -73,7 +108,88 @@ describe('IwxxmPreviewPane', () => {
       <IwxxmPreviewPane xml={SAMPLE_XML} status="passed" mode="soft-preview" />,
     );
     const root = container.querySelector('[data-testid="iwxxm-preview-pane"]');
-    expect(root?.className).toMatch(/lg:/);
+    expect(root?.className).toContain('max-h-80');
+    expect(root?.className).not.toContain('min-h-[100dvh]');
+  });
+
+  it('offers Expand preview and grows past the squat max-height when expanded', async () => {
+    const user = userEvent.setup();
+    render(<IwxxmPreviewPane xml={SAMPLE_XML} status="passed" mode="live" />);
+    const root = screen.getByTestId('iwxxm-preview-pane');
+    const expand = screen.getByTestId('iwxxm-preview-expand');
+    expect(expand).toHaveAttribute('aria-expanded', 'false');
+    expect(expand).toHaveAccessibleName(/expand preview/i);
+    expect(root.className).toContain('max-h-80');
+    expect(root).toHaveAttribute('data-expanded', 'false');
+
+    await user.click(expand);
+
+    expect(expand).toHaveAttribute('aria-expanded', 'true');
+    expect(expand).toHaveAccessibleName(/collapse preview/i);
+    expect(root).toHaveAttribute('data-expanded', 'true');
+    expect(root.className).not.toContain('max-h-80');
+    expect(root.className).toMatch(/max-h-\[min\(70dvh/);
+  });
+
+  it('numbers lines, names the conversion profile, and marks the selected group', () => {
+    render(
+      <IwxxmPreviewPane
+        xml={'preview\n\nTTPP'}
+        status="soft-fail"
+        mode="live"
+        numbered
+        highlightToken="TTPP"
+        incomplete
+        conversionProfile="ICAO Annex 3"
+      />,
+    );
+    expect(screen.getByTestId('iwxxm-conversion-profile')).toHaveTextContent(
+      'Conversion profile: ICAO Annex 3',
+    );
+    expect(screen.getByTestId('iwxxm-preview-incomplete')).toHaveTextContent(
+      'Needs attention. Do not publish. Fix the TAC errors first.',
+    );
+    expect(screen.getByTestId('iwxxm-preview-line-hit')).toHaveTextContent('TTPP');
+  });
+
+  it('marks the paired cloud layer and leaves the other layer alone', () => {
+    const xml = [
+      '<iwxxm:cloud>',
+      '<iwxxm:CloudLayer>FEW</iwxxm:CloudLayer>',
+      '<iwxxm:CloudLayer>SCT</iwxxm:CloudLayer>',
+      '</iwxxm:cloud>',
+    ].join('\n');
+    render(
+      <IwxxmPreviewPane
+        xml={xml}
+        status="passed"
+        mode="live"
+        numbered
+        highlightToken="SCT"
+        highlightStart={4}
+        highlightEnd={7}
+        groupTrace={[
+          {
+            start: 4,
+            end: 7,
+            token: 'SCT',
+            element: 'CloudLayer',
+            occurrence: 1,
+            scope: 'block',
+          },
+        ]}
+      />,
+    );
+    const hits = screen.getAllByTestId('iwxxm-preview-line-hit');
+    expect(hits).toHaveLength(1);
+    expect(hits[0]).toHaveTextContent('SCT');
+  });
+
+  it('can keep each XML line on one row', () => {
+    render(
+      <IwxxmPreviewPane xml={SAMPLE_XML} status="passed" mode="live" wrapXml={false} />,
+    );
+    expect(screen.getByTestId('iwxxm-preview-xml')).toHaveClass('whitespace-pre');
   });
 
   it('shows empty placeholder when no XML yet', () => {

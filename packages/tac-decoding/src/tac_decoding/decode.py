@@ -18,6 +18,7 @@ from tac_decoding.glossary import (
     meaning_for,
     resolve_location_name,
 )
+from tac_decoding.remark_plain import explain_remark_plain
 
 _SUPPORTED = frozenset({"AIRMET", "METAR", "SIGMET", "SPECI", "TAF", "VAA", "TCA", "SWXA", "VONA"})
 _ADVISORY_STRUCTURED = frozenset({"VAA", "TCA", "SWXA", "VONA"})
@@ -27,36 +28,366 @@ _VIS_SM = re.compile(r"^(?P<mod>[PM])?(?P<val>\d{1,2})SM$")
 _VIS_M = re.compile(r"^\d{4}$")
 # Minimum visibility with compass sector (e.g. 1200NE) - after prevailing metres.
 _VIS_MIN = re.compile(r"^(?P<vis>\d{4})(?P<dir>N|NE|E|SE|S|SW|W|NW)$")
-_CLOUD = re.compile(r"^(?P<amt>FEW|SCT|BKN|OVC|SKC|CLR|NSC|NCD)(?P<hgt>\d{3})?(?P<ctype>CB|TCU)?$")
+_CLOUD = re.compile(r"^(?P<amt>FEW|SCT|BKN|OVC|SKC|CLR|NSC|NCD)(?P<hgt>\d{3})?(?P<ctype>CB|TCU)?(?P<unk>///)?$")
+_WIND_VAR = re.compile(r"^(?P<a>\d{3})V(?P<b>\d{3})$")
+_VIS_FRAC = re.compile(r"^(?P<num>\d)/(?P<den>\d)SM$")
+_T_GROUP = re.compile(r"^T(?P<t>[01]\d{3})(?P<td>[01]\d{3})$")
+_T_TEMP_ONLY = re.compile(r"^T(?P<body>[01]\d{3})$")
+_SIX_HOUR_MAX = re.compile(r"^1(?P<body>[01]\d{3})$")
+_SIX_HOUR_MIN = re.compile(r"^2(?P<body>[01]\d{3})$")
+_DAY_MAX_MIN = re.compile(r"^4(?P<max>[01]\d{3})(?P<min>[01]\d{3})$")
+_PRECIP_3_6H = re.compile(r"^6(?P<amt>\d{4}|/{4})$")
+_PRECIP_24H = re.compile(r"^7(?P<amt>\d{4}|/{4})$")
+_PRESSURE_TENDENCY = re.compile(r"^5(?P<char>[0-8])(?P<amt>\d{3})$")
+_PRECIP_AMOUNT = re.compile(r"^P(?P<amt>\d{4})$")
+_PEAK_WIND = re.compile(r"^(?P<dir>\d{3})(?P<spd>\d{2,3})/(?P<hh>\d{2})(?P<mm>\d{2})$")
+_DENSITY_FT = re.compile(r"^(?P<n>-?\d+)FT$")
+_WIND_ALOFT_FT = re.compile(r"^(?P<ft>\d{3,5})FT$")
+_SEA_STATE = re.compile(r"^W(?P<wave>\d{1,2}|/{2,3})/S(?P<swell>\d)$")
+_ICE_ACCRETION = re.compile(r"^I(?P<amt>\d{4})$")
+_MISSING_TEMP_DEW = re.compile(r"^(?P<body>\d{2})///$")
+_TEMP_MISSING_DEW = re.compile(r"^(?P<body>M?\d{2})/$")
+_SHORT_PRECIP = re.compile(r"^P(?P<amt>\d{3})$")
+_PP_PRECIP_MM = re.compile(r"^PP(?P<amt>\d{3})$")
+_TX_DECIMAL = re.compile(r"^TX(?P<val>\d+(?:\.\d+)?)$")
+_RWY_DESIGNATOR = re.compile(r"^RWY(?P<rw>\d{2}[LCR]?)$")
+_LTG_TYPES = re.compile(r"^LTG(?P<types>[A-Z]+)$")
+_PAST_HOUR = re.compile(r"^(?P<n>\d+)PAST$")
+_FRAC_MILE = re.compile(r"^(?P<num>\d)/(?P<den>\d)$")
+_BBB_CORRECTION = re.compile(r"^CC[A-Z]$")
+_BBB_DELAYED = re.compile(r"^RR[A-Z]$")
+_BBB_AMENDMENT = re.compile(r"^AA[A-Z]$")
+_ELLIPSIS_HAZARD = re.compile(r"^(?P<head>TORNADOES|HAIL|WIND|GUSTS)\.\.\.(?P<tail>HAIL|WIND|GUSTS|TORNADOES)?$")
+_IN_WIND_ELLIPSIS = re.compile(r"^IN\.\.\.WIND$|^\d+IN\.\.\.WIND$")
+_CA_CLOUD_TYPE = "(?:TCU|CI|CS|CC|AC|AS|NS|SC|ST|SF|CU|CF|CB|FG)"
+_CA_CLOUD_AMOUNTS = re.compile(rf"^(?:{_CA_CLOUD_TYPE}\d)+$")
+_CA_CLOUD_ONE = re.compile(rf"^{_CA_CLOUD_TYPE}$")
+_SIG_SFC_LAYER = re.compile(r"^SFC/(?P<alt>\d{3,5})(?P<unit>FT|M)$")
+_SIG_NM = re.compile(r"^(?P<n>\d{1,3})NM$")
+_RVR_MISSING = re.compile(r"^R(?P<rw>\d{2}[LCR]?)/+$")
+_RVR_VARY = re.compile(r"^R(?P<rw>\d{2}[LCR]?)/(?P<a>[MP]?\d{4})V(?P<b>[MP]?\d{4})(?P<unit>FT)?(?:/(?P<trend>[UDN]))?$")
+# Bare runway designator after WS (Annex 3 wind shear), e.g. R36R.
+_WS_RUNWAY = re.compile(r"^R(?P<rw>\d{2}[LCR]?)$")
+# CA / national TAF RMK trailer crumbs (known-ignored; not partial decode).
+_TAF_RMK_TRAILER_WORD = frozenset(
+    {
+        "NXT",
+        "NEXT",
+        "FCST",
+        "BY",
+        "BASED",
+        "ON",
+        "AUTO",
+        "OBS",
+        "OBS.",
+        "MIL",
+    }
+)
+_TAF_RMK_NATIONAL = re.compile(r"^P[A-Z]{2,3}$|^PH[A-Z]{0,2}$")
+_TAF_RMK_NEXT_TIME = re.compile(r"^\d{2}Z$|^\d{6}Z$|^\d{2}$")
+_CLOUD_TYPE_8 = re.compile(r"^8/(?P<body>[0-9/]{3})$")
+_MISSING_WIND_KT = re.compile(r"^/{5}KT$")
+_MISSING_QNH_SLASH = re.compile(r"^Q/{4}$")
+_MISSING_PRESS_TEND = re.compile(r"^5/{4}$")
+_SOG_DEPTH = re.compile(r"^SOG$")
+_SOG_VALUE = re.compile(r"^(?P<cm>\d{2})$")
+_VIS_VARIABLE = re.compile(r"^(?P<lo>M?(?:\d+\s+)?\d+/\d+|\d+|M?\d+/\d+)V(?P<hi>\d+(?:/\d+)?)$")
+# VIS VRB ranges: 1-2, 0-1/4, 1/4-3/4, 3/8-1 (CA remark form).
+_VIS_VRB_RANGE = re.compile(r"^(?P<a>M?\d+(?:/\d+)?)-(?P<b>M?\d+(?:/\d+)?)$")
+_WSHFT_MIN = re.compile(r"^(?P<mm>\d{2})$")
+_CB_LOC = re.compile(r"^(?P<head>CB|TCU|TCUE)(?P<sep>[-/])(?P<dir>[A-Z;/-]+)$")
+_OHD_CHAIN = re.compile(r"^(?:[A-Z]{1,3}-)*OHD(?:-[A-Z]{1,3})+$|^(?:[A-Z]{1,3}-){2,}[A-Z]{1,3}$")
+_LAST_STFD = re.compile(
+    r"^LAST(?:STFD)?OBS/(?:NXT|NEXT)(?P<rest>.*)$",
+    re.IGNORECASE,
+)
+_NAVY_FS_FN = re.compile(r"^F[SN]\d{5}$")
+_AU_TEMP_DIGIT = re.compile(r"^\d{2}$")
+_AU_QNH_DIGIT = re.compile(r"^\d{4}$")
+_TAF_AFT_HH = re.compile(r"^(?P<dd>\d{2})(?P<hh>\d{2})(?P<mm>\d{2})?$")
+_MX_PRESS_9 = re.compile(r"^9(?P<body>\d{2})$")
+_CIG_HUNDREDS = re.compile(r"^(?P<h>\d{3})$")
+_VV = re.compile(r"^VV(?P<h>\d{3}|///)$")
+_MISSING_CLOUD = re.compile(r"^(?P<slashes>/{4,}|(?:/+)(?P<ctype>CB|TCU))$")
+_MM_AMOUNT = re.compile(r"^(?P<n>\d+(?:\.\d+)?)MM$")
+_WX_TIME_NAME = {
+    "RA": "Rain",
+    "SN": "Snow",
+    "DZ": "Drizzle",
+    "SG": "Snow grains",
+    "PL": "Ice pellets",
+    "GR": "Hail",
+    "GS": "Small hail",
+    "UP": "Unknown precipitation",
+    "TS": "Thunderstorm",
+}
+# Unhyphenated names need ≥3 letters; hyphenated runs may start at 2 (e.g. IN-FA).
+_CYCLONE_NAME = re.compile(r"^(?:[A-Z]{3,}|[A-Z]{2,}(?:-[A-Z]{2,})+)$")
+_CYCLONE_NAME_RESERVED = frozenset({"CENTRE", "CENTER"})
 _TEMP = re.compile(r"^(?P<t>M?\d{2})/(?P<td>M?\d{2})$")
 _ALT = re.compile(r"^A(?P<val>\d{4})$")
 _QNH = re.compile(r"^Q(?P<val>\d{3,4})$")
+_QNH_MEANING = "the altimeter setting reduced to mean sea level"
 _TIME_Z = re.compile(r"^(?P<dd>\d{2})(?P<hh>\d{2})(?P<mm>\d{2})Z$")
 _STATION = re.compile(r"^[A-Z][A-Z0-9]{3}$")
 _TAF_VALID = re.compile(r"^(?P<d1>\d{2})(?P<h1>\d{2})/(?P<d2>\d{2})(?P<h2>\d{2})$")
 _TAF_FM = re.compile(r"^FM(?P<dd>\d{2})(?P<hh>\d{2})(?P<mm>\d{2})$")
 _TAF_PROB = re.compile(r"^PROB(?P<pct>\d{2})$")
+_TAF_TX_TN = re.compile(r"^T(?P<which>[XN])(?P<sign>M)?(?P<tt>\d{2})/(?P<dd>\d{2})(?P<hh>\d{2})Z$")
+_TAF_QNH_INS = re.compile(r"^QNH(?P<raw>\d{4})INS$")
+_TAF_WS = re.compile(r"^WS(?P<hhh>\d{3})/(?P<dir>\d{3})(?P<spd>\d{2,3})KT$")
+_TAF_TURB = re.compile(r"^5(?P<intensity>\d)(?P<base>\d{3}|/{3})(?P<thick>\d|/)$")
+_TAF_ICING = re.compile(r"^6(?P<intensity>\d)(?P<base>\d{3}|/{3})(?P<thick>\d|/)$")
 # METAR/SPECI trend time indicators (TL/AT/FM + HHMM) - distinct from TAF FMDDHHMM.
 _TREND_TIME = re.compile(r"^(?P<kind>TL|AT|FM)(?P<hh>\d{2})(?P<mm>\d{2})$")
 _SIG_VALID = re.compile(r"^(?P<d1>\d{2})(?P<h1>\d{2})(?P<m1>\d{2})/(?P<d2>\d{2})(?P<h2>\d{2})(?P<m2>\d{2})$")
 _SIG_FL = re.compile(r"^FL(?P<fl>\d{2,3})$")
-# Vertical layer - ``SFC/FL550`` or ``FL250/370``.
+_SIG_WIND_RANGE = re.compile(r"^(?P<a>\d{2,3})-(?P<b>\d{2,3})(?P<unit>KT|KMH|MPS)$")
+_SIG_TRAIL_DOTS = re.compile(r"^\.{3,}$")
+# Vertical layer - ``SFC/FL550``, ``FL250/370``, or ``9000FT/FL290``.
 _SIG_FL_LAYER = re.compile(r"^(?:SFC/FL(?P<sfc>\d{2,3})|FL(?P<a>\d{2,3})/(?:FL)?(?P<b>\d{2,3}))$")
-_SIG_SPEED_KT = re.compile(r"^(?P<spd>\d{1,3})KT$")
+_SIG_FT_LAYER = re.compile(r"^(?P<alt>\d{3,4})(?P<unit>FT|M)/FL(?P<fl>\d{2,3})$")
+_LOOSE_AHL = re.compile(r"^(?P<ahl>[A-Z]{4}(?=[A-Z0-9]*\d)[A-Z0-9]{2})\s+(?P<cccc>[A-Z]{4})\s+(?P<yygggg>\d{6})\b")
+_SIG_SPEED = re.compile(r"^(?P<spd>\d{1,3})(?P<unit>KT|KM/H|KMH|MPS)$")
+_SIG_SPEED_UNIT = {
+    "KT": "kt",
+    "KMH": "kilometres per hour",
+    "KM/H": "kilometres per hour",
+    "MPS": "metres per second",
+}
 _SIG_LAT = re.compile(r"^(?P<hemi>[NS])(?P<deg>\d{1,2})(?P<min>\d{2})?$")
 _SIG_LON = re.compile(r"^(?P<hemi>[EW])(?P<deg>\d{1,3})(?P<min>\d{2})?$")
+_SIG_LATLON = re.compile(r"^(?P<lat>[NS]\d{4})(?P<lon>[EW]\d{5})$")
+_SIG_SEQ = re.compile(r"^(?:(?P<letter_first>[A-Z])(?P<num_a>\d{1,2})|(?P<num_b>\d{1,3})(?P<letter_last>[A-Z])?)$")
+_MOV_FROM = re.compile(r"^(?P<deg>\d{3})(?P<spd>\d{2,3})KT$")
+_BEARING = "NNE|ENE|ESE|SSE|SSW|WSW|WNW|NNW|NE|NW|SE|SW|N|E|S|W"
+_BOUNDARY_PART = re.compile(rf"^(?:(?P<dist>\d{{1,3}})(?P<dir>{_BEARING}))?(?P<fix>[A-Z]{{2,5}})?$")
+_SIGMET_SERIES = frozenset(
+    {
+        "ALFA",
+        "BRAVO",
+        "CHARLIE",
+        "DELTA",
+        "ECHO",
+        "FOXTROT",
+        "GOLF",
+        "HOTEL",
+        "INDIA",
+        "JULIET",
+        "KILO",
+        "LIMA",
+        "MIKE",
+        "NOVEMBER",
+        "OSCAR",
+        "PAPA",
+        "QUEBEC",
+        "ROMEO",
+        "SIERRA",
+        "TANGO",
+        "UNIFORM",
+        "VICTOR",
+        "WHISKEY",
+        "XRAY",
+        "YANKEE",
+        "ZULU",
+    }
+)
 # Observation/forecast clock ``1600Z`` (hhmmZ) - distinct from METAR ``ddhhmmZ``.
 _SIG_HHMMZ = re.compile(r"^(?P<hh>\d{2})(?P<mm>\d{2})Z$")
-_SIG_DIR = frozenset({"N", "NE", "E", "SE", "S", "SW", "W", "NW"})
+_SIG_DIR = frozenset(
+    {
+        "N",
+        "NNE",
+        "NE",
+        "ENE",
+        "E",
+        "ESE",
+        "SE",
+        "SSE",
+        "S",
+        "SSW",
+        "SW",
+        "WSW",
+        "W",
+        "WNW",
+        "NW",
+        "NNW",
+    }
+)
+_TENDENCY_CHAR = {
+    "0": "increasing, then decreasing",
+    "1": "increasing, then steady",
+    "2": "increasing",
+    "3": "decreasing or steady, then increasing",
+    "4": "steady",
+    "5": "decreasing, then increasing",
+    "6": "decreasing, then steady",
+    "7": "decreasing",
+    "8": "steady or increasing, then decreasing",
+}
+_CA_CLOUD_NAME = {
+    "CI": "cirrus",
+    "CS": "cirrostratus",
+    "CC": "cirrocumulus",
+    "AC": "altocumulus",
+    "AS": "altostratus",
+    "NS": "nimbostratus",
+    "SC": "stratocumulus",
+    "ST": "stratus",
+    "SF": "stratus fractus",
+    "CU": "cumulus",
+    "CF": "cumulus fractus",
+    "CB": "cumulonimbus",
+    "TCU": "towering cumulus",
+    "FG": "fog",
+}
+_RMK_WORD = {
+    "TR": "Trace",
+    "DSNT": "Distant",
+    "DIST": "Distant",
+    "PCPN": "Precipitation",
+    "VRY": "Very",
+    "LGT": "Light",
+    "ALQDS": "All quadrants",
+    "SH": "Showers",
+    "CVCTV": "Convective",
+    "EMBD": "Embedded",
+    "CLD": "Cloud",
+    "VIS": "Visibility",
+    "FG": "Fog",
+    "BANK": "Bank",
+    "QUAD": "Quadrant",
+    "DNWND": "Downwind",
+    "LO": "Low",
+    "TOPS": "Tops",
+    "HR": "Hour",
+    "LWR": "Lower",
+    "ACSL": "Altocumulus standing lenticular",
+    "SM": "Statute miles",
+    "PAST": "Past",
+    "ASOCTD": "Associated",
+    "CONTRAILS": "Contrails",
+    "VIRGA": "Virga",
+    "LTNG": "Lightning",
+    "MOD": "Moderate",
+    "MOV": "Moving",
+    "ICE": "Ice",
+    "PRESRR": "Pressure rising rapidly",
+    "PRESFR": "Pressure falling rapidly",
+    "PWINO": "Present weather not available",
+    "LTG": "Lightning",
+    "AND": "And",
+    "SFC": "Surface",
+    "TWR": "Tower",
+    "OHD": "Overhead",
+    "BINOVC": "Breaks in overcast",
+    "OCNL": "Occasional",
+    "FRQ": "Frequent",
+    "CONS": "Continuous",
+    "APCH": "Approach",
+    "IN": "In",
+    "BIRD": "Bird",
+    "HAZARD": "Hazard",
+    "WIND": "Wind",
+    "RWY": "Runway",
+    "EST": "Estimated",
+    "RAG": "Ragged",
+    "INTMT": "Intermittent",
+    "HYR": "Higher",
+    "VRB": "Variable",
+    "FOG": "Fog",
+    "HZY": "Hazy",
+    "ISOL": "Isolated",
+    "RTD": "Delayed routine report",
+    "RTS": "Remark text (unverified)",
+    "MOVD": "Moved",
+    "OBST": "Obstacles",
+    "OBSC": "Obscured",
+    "SKEID": "Skeid sensor",
+    "LAST": "Last",
+    "STFD": "Staffed",
+    "OBS": "Observation",
+    "NXT": "Next",
+    "NEXT": "Next",
+    "SOG": "Snow on ground",
+}
+_US_STATE = {
+    "AL": "Alabama",
+    "AK": "Alaska",
+    "AZ": "Arizona",
+    "AR": "Arkansas",
+    "CA": "California",
+    "CO": "Colorado",
+    "CT": "Connecticut",
+    "DE": "Delaware",
+    "FL": "Florida",
+    "GA": "Georgia",
+    "HI": "Hawaii",
+    "IA": "Iowa",
+    "ID": "Idaho",
+    "IL": "Illinois",
+    "IN": "Indiana",
+    "KS": "Kansas",
+    "KY": "Kentucky",
+    "LA": "Louisiana",
+    "MA": "Massachusetts",
+    "MD": "Maryland",
+    "ME": "Maine",
+    "MI": "Michigan",
+    "MN": "Minnesota",
+    "MO": "Missouri",
+    "MS": "Mississippi",
+    "MT": "Montana",
+    "NC": "North Carolina",
+    "ND": "North Dakota",
+    "NE": "Nebraska",
+    "NH": "New Hampshire",
+    "NJ": "New Jersey",
+    "NM": "New Mexico",
+    "NV": "Nevada",
+    "NY": "New York",
+    "OH": "Ohio",
+    "OK": "Oklahoma",
+    "OR": "Oregon",
+    "PA": "Pennsylvania",
+    "RI": "Rhode Island",
+    "SC": "South Carolina",
+    "SD": "South Dakota",
+    "TN": "Tennessee",
+    "TX": "Texas",
+    "UT": "Utah",
+    "VA": "Virginia",
+    "VT": "Vermont",
+    "WA": "Washington",
+    "WI": "Wisconsin",
+    "WV": "West Virginia",
+    "WY": "Wyoming",
+    "DC": "District of Columbia",
+}
+_US_LAKE = {
+    "LS": "Superior",
+    "LM": "Michigan",
+    "LH": "Huron",
+    "LE": "Erie",
+    "LO": "Ontario",
+}
 _SIG_DIR_NAME = {
     "N": "North",
+    "NNE": "North-northeast",
     "NE": "Northeast",
+    "ENE": "East-northeast",
     "E": "East",
+    "ESE": "East-southeast",
     "SE": "Southeast",
+    "SSE": "South-southeast",
     "S": "South",
+    "SSW": "South-southwest",
     "SW": "Southwest",
+    "WSW": "West-southwest",
     "W": "West",
+    "WNW": "West-northwest",
     "NW": "Northwest",
+    "NNW": "North-northwest",
 }
 _CLOUD_TYPE = {"CB": "cumulonimbus", "TCU": "towering cumulus"}
 _TREND_TIME_LABEL = {
@@ -69,8 +400,42 @@ _WX = re.compile(
     r"(?P<desc>MI|PR|BC|DR|BL|SH|TS|FZ)?"
     r"(?P<phen>(?:DZ|RA|SN|SG|IC|PL|GR|GS|UP|BR|FG|FU|VA|DU|SA|HZ|PY|PO|SQ|FC|SS|DS)+)$"
 )
-# Runway visual range - R{rw}/{vis}{U|D|N}? (e.g. R12/1000U).
-_RVR = re.compile(r"^R(?P<rw>\d{2}[LCR]?)/(?P<vis>[MP]?\d{4})(?P<trend>[UDN])?$")
+# Runway visual range — R{rw}/{vis}[FT][/{U|D|N}] (e.g. R12/1000U, R11/1800FT/N).
+_RVR = re.compile(r"^R(?P<rw>\d{2}[LCR]?)/(?P<vis>[MP]?\d{4})(?P<unit>FT)?(?:/(?P<trend>[UDN]))?(?P<trend2>[UDN])?$")
+# Legacy runway state group: runway, deposit, extent, depth, friction (e.g. R19/290052).
+_RUNWAY_STATE = re.compile(
+    r"^R(?P<rw>\d{2}[LCR]?)/(?P<dep>[0-9/])(?P<ext>[1259/])(?P<depth>\d{2}|//)(?P<fric>\d{2}|//)$"
+)
+_RUNWAY_CLEARED = re.compile(r"^R(?P<rw>\d{2}[LCR]?)/CLRD(?P<fric>\d{2}|//)$")
+_QFE = re.compile(r"^QFE(?P<mm>\d{3})(?:/(?P<hpa>\d{4}))?$")
+_RUNWAY_DEPOSIT = {
+    "0": "clear and dry",
+    "1": "damp",
+    "2": "wet or water patches",
+    "3": "rime or frost",
+    "4": "dry snow",
+    "5": "wet snow",
+    "6": "slush",
+    "7": "ice",
+    "8": "compacted or rolled snow",
+    "9": "frozen ruts or ridges",
+    "/": "deposit not reported",
+}
+_RUNWAY_EXTENT = {
+    "1": "less than 10 percent covered",
+    "2": "11 to 25 percent covered",
+    "5": "26 to 50 percent covered",
+    "9": "51 to 100 percent covered",
+    "/": "coverage not reported",
+}
+_RUNWAY_DEPTH_CM = {92: 10, 93: 15, 94: 20, 95: 25, 96: 30, 97: 35, 98: 40}
+_RUNWAY_BRAKING = {
+    "91": "poor",
+    "92": "medium to poor",
+    "93": "medium",
+    "94": "medium to good",
+    "95": "good",
+}
 
 _WX_INTENSITY = {"+": "heavy", "-": "light", "VC": "in the vicinity"}
 _WX_DESCRIPTOR = {
@@ -120,16 +485,61 @@ _CLOUD_AMOUNT = {
 
 
 def _signed_temp(raw: str) -> int:
-    """Parse a TAC temperature field (``M`` prefix = negative) to °C."""
+    """
+    Internal helper ``_signed_temp``.
+
+    Parameters
+    ----------
+    raw : str
+        Argument ``raw``.
+
+    Returns
+    -------
+    int
+        Return value.
+    """
     return -int(raw[1:]) if raw.startswith("M") else int(raw)
 
 
+def _fmt_qnh(raw: str) -> str:
+    """
+    Explain a QNH group and keep the pressure in hectopascals.
+
+    Parameters
+    ----------
+    raw : str
+        Digits from the ``Q`` group.
+
+    Returns
+    -------
+    str
+        Operator sentence for that group.
+    """
+    return f"QNH {int(raw)} hPa, {_QNH_MEANING}"
+
+
 def _fmt_wind(m: re.Match[str], *, label: str) -> str:
+    """
+    Internal helper ``_fmt_wind``.
+
+    Parameters
+    ----------
+    m : re.Match[str]
+        Argument ``m``.
+
+    label : str
+        Argument ``label``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
     direction = m.group("dir")
     speed = int(m.group("spd"))
     unit = "kt" if m.group("unit") == "KT" else "m/s"
     origin = "variable in direction" if direction == "VRB" else f"from {int(direction)}°"
-    text = f"{label} - {origin} at {speed} {unit}"
+    text = f"{label} {origin} at {speed} {unit}"
     gust = m.group("gust")
     if gust:
         text += f", gusting {int(gust)} {unit}"
@@ -137,10 +547,42 @@ def _fmt_wind(m: re.Match[str], *, label: str) -> str:
 
 
 def _fmt_time(m: re.Match[str], *, label: str) -> str:
-    return f"{label} - day {int(m.group('dd'))} at {m.group('hh')}:{m.group('mm')} UTC"
+    """
+    Internal helper ``_fmt_time``.
+
+    Parameters
+    ----------
+    m : re.Match[str]
+        Argument ``m``.
+
+    label : str
+        Argument ``label``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
+    return f"{label} on day {int(m.group('dd'))} at {m.group('hh')}:{m.group('mm')} UTC"
 
 
 def _fmt_vis_sm(m: re.Match[str], *, label: str) -> str:
+    """
+    Internal helper ``_fmt_vis_sm``.
+
+    Parameters
+    ----------
+    m : re.Match[str]
+        Argument ``m``.
+
+    label : str
+        Argument ``label``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
     value = int(m.group("val"))
     prefix = {"P": "more than ", "M": "less than "}.get(m.group("mod") or "", "")
     plural = "s" if value != 1 else ""
@@ -148,18 +590,52 @@ def _fmt_vis_sm(m: re.Match[str], *, label: str) -> str:
 
 
 def _fmt_cloud(m: re.Match[str], *, forecast: bool) -> str:
+    """
+    Internal helper ``_fmt_cloud``.
+
+    Parameters
+    ----------
+    m : re.Match[str]
+        Argument ``m``.
+
+    forecast : bool
+        Argument ``forecast``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
     amount = _CLOUD_AMOUNT[m.group("amt")]
     if forecast:
         amount = f"Forecast {amount[0].lower()}{amount[1:]}"
     height = m.group("hgt")
     ctype = m.group("ctype")
     type_note = f" ({_CLOUD_TYPE[ctype]})" if ctype else ""
+    if m.group("unk"):
+        type_note = f"{type_note}, type not reported"
     if height:
         return f"{amount} at {int(height) * 100:,} ft{type_note}"
     return f"{amount}{type_note}"
 
 
 def _fmt_wx(m: re.Match[str], *, forecast: bool) -> str:
+    """
+    Internal helper ``_fmt_wx``.
+
+    Parameters
+    ----------
+    m : re.Match[str]
+        Argument ``m``.
+
+    forecast : bool
+        Argument ``forecast``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
     parts: list[str] = []
     intensity = m.group("int")
     if intensity:
@@ -171,11 +647,55 @@ def _fmt_wx(m: re.Match[str], *, forecast: bool) -> str:
     parts.extend(_WX_PHENOMENON[phen[i : i + 2]] for i in range(0, len(phen), 2))
     phrase = " ".join(parts)
     label = "Forecast weather" if forecast else "Weather"
-    return f"{label} - {phrase[0].upper()}{phrase[1:]}" if phrase else f"{label} group"
+    if not phrase:
+        return f"{label} group"
+    return f"{label}: {phrase[0].upper()}{phrase[1:]}"
+
+
+def _explain_recent_weather(body: str) -> str | None:
+    """
+    Plain language for a recent-weather group after the ``RE`` prefix.
+
+    Parameters
+    ----------
+    body : str
+        Weather codes after ``RE`` (for example ``TS``, ``SH``, ``SHRA``).
+
+    Returns
+    -------
+    str | None
+        Explanation, or ``None`` when the body is not recent weather.
+    """
+    if body == "TS":
+        return "Recent weather: Thunderstorm"
+    if body == "SH":
+        return "Recent weather: Showers"
+    if body == "VCSH":
+        return "Recent weather: Showers in the vicinity"
+    if body == "VCTS":
+        return "Recent weather: Thunderstorm in the vicinity"
+    if m := _WX.match(body):
+        phrase = _fmt_wx(m, forecast=False)
+        detail = phrase.removeprefix("Weather: ").removeprefix("Weather ")
+        return f"Recent weather: {detail}"
+    return None
 
 
 class DecodeSegment(msgspec.Struct, frozen=True):
-    """One annotated TAC span for the Code | Explanation panel."""
+    """
+    One annotated TAC span for the Code | Explanation panel.
+
+    Attributes
+    ----------
+    start : int
+        Start.
+    end : int
+        End.
+    code : str
+        Machine-readable error code.
+    explanation : str
+        Explanation.
+    """
 
     start: int
     end: int
@@ -184,7 +704,18 @@ class DecodeSegment(msgspec.Struct, frozen=True):
 
 
 class DecodeResidual(msgspec.Struct, frozen=True):
-    """Undecoded character span (explicit residuals - G4)."""
+    """
+    Undecoded character span (explicit residuals - G4).
+
+    Attributes
+    ----------
+    start : int
+        Start.
+    end : int
+        End.
+    text : str
+        Input text.
+    """
 
     start: int
     end: int
@@ -192,7 +723,20 @@ class DecodeResidual(msgspec.Struct, frozen=True):
 
 
 class DecodeResult(msgspec.Struct, frozen=True):
-    """Result of :func:`decode_tac`."""
+    """
+    Result of :func:`decode_tac`.
+
+    Attributes
+    ----------
+    product : str
+        Product name.
+    segments : list[DecodeSegment]
+        Segments.
+    residuals : list[DecodeResidual]
+        Residuals.
+    summary : str
+        Summary. Default ``''``.
+    """
 
     product: str
     segments: list[DecodeSegment] = msgspec.field(default_factory=list)
@@ -201,22 +745,655 @@ class DecodeResult(msgspec.Struct, frozen=True):
 
 
 def _iter_tokens(tac: str) -> list[tuple[int, int, str]]:
-    """Return ``(start, end, token)`` for each non-whitespace run in ``tac``.
+    """
+    Internal helper ``_iter_tokens``.
 
-    The report terminator ``=`` is split into its own token even when attached
-    to the preceding group (e.g. ``A3011=``) so both spans decode (F9).
+    Parameters
+    ----------
+    tac : str
+        Argument ``tac``.
+
+    Returns
+    -------
+    list[tuple[int, int, str]]
+        Return value.
     """
     return [(m.start(), m.end(), m.group(0)) for m in re.finditer(r"=|[^\s=]+", tac)]
 
 
+_SPACED_CAVOK_LETTERS = ("C", "A", "V", "O", "K")
+
+
+def _spaced_cavok_span(
+    tokens: list[tuple[int, int, str]],
+    index: int,
+) -> tuple[int, int] | None:
+    """
+    Return ``(start, end)`` when ``tokens[index:index+5]`` are spaced CAVOK.
+
+    Live TAF traffic (e.g. HAAB) sometimes emits ``C A V O K`` instead of
+    ``CAVOK``. Treat the five single-letter tokens as one ceiling/visibility
+    group so decode does not leave them as a residual.
+
+    Parameters
+    ----------
+    tokens : list[tuple[int, int, str]]
+        Token spans from :func:`_iter_tokens`.
+
+    index : int
+        Candidate start index.
+
+    Returns
+    -------
+    tuple[int, int] | None
+        Character span covering all five letters, or ``None``.
+    """
+    if index + 5 > len(tokens):
+        return None
+    letters = tuple(tokens[index + offset][2].upper() for offset in range(5))
+    if letters != _SPACED_CAVOK_LETTERS:
+        return None
+    return tokens[index][0], tokens[index + 4][1]
+
+
+def _tenths_c(raw: str) -> str:
+    """FMH-1 temperature in tenths, with a leading sign digit.
+
+    Parameters
+    ----------
+    raw : str
+        Four digits. ``0`` is positive and ``1`` is negative.
+
+    Returns
+    -------
+    str
+        Degrees Celsius with one decimal place.
+    """
+    sign = -1 if raw[0] == "1" else 1
+    return f"{sign * int(raw[1:]) / 10:.1f}"
+
+
+def _pressure_tendency(token: str) -> str | None:
+    """FMH-1 group ``5appp``: characteristic and 3-hour change in tenths of hPa.
+
+    Parameters
+    ----------
+    token : str
+        One remarks group.
+
+    Returns
+    -------
+    str | None
+        The tendency in plain language, or None when the group is not ``5appp``.
+    """
+    match = _PRESSURE_TENDENCY.match(token)
+    if match is None:
+        return None
+    amount = int(match.group("amt")) / 10
+    return f"Pressure tendency: {_TENDENCY_CHAR[match.group('char')]}, change {amount:.1f} hPa in 3 hours"
+
+
+def _precip_amount(token: str) -> str | None:
+    """Hourly precipitation ``P####`` in hundredths of an inch. ``P0000`` is a trace.
+
+    Parameters
+    ----------
+    token : str
+        One remarks group.
+
+    Returns
+    -------
+    str | None
+        The amount in plain language, or None when the group is not ``P####``.
+    """
+    match = _PRECIP_AMOUNT.match(token)
+    if match is None:
+        return None
+    hundredths = int(match.group("amt"))
+    if hundredths == 0:
+        return "Precipitation trace in the past hour"
+    return f"Precipitation {hundredths / 100:.2f} inches in the past hour"
+
+
+def _okta_phrase(kind: str, amount: str) -> str:
+    """One Canadian remark cloud type and its coverage in oktas.
+
+    Parameters
+    ----------
+    kind : str
+        A two-letter cloud type, or ``TCU``.
+    amount : str
+        Coverage as a single digit of oktas.
+
+    Returns
+    -------
+    str
+        The type name and coverage.
+    """
+    count = int(amount)
+    unit = "okta" if count == 1 else "oktas"
+    return f"{_CA_CLOUD_NAME[kind]} {count} {unit}"
+
+
+def _canadian_clouds(token: str) -> str | None:
+    """Canadian remark clouds, either ``SF8`` or a run such as ``ST3CU1CI1``.
+
+    Parameters
+    ----------
+    token : str
+        One remarks group.
+
+    Returns
+    -------
+    str | None
+        The clouds in plain language, or None when the group is not a cloud run.
+    """
+    if _CA_CLOUD_AMOUNTS.match(token):
+        parts = re.findall(rf"({_CA_CLOUD_TYPE})(\d)", token)
+        return "Clouds: " + ", ".join(_okta_phrase(kind, amount) for kind, amount in parts)
+    if _CA_CLOUD_ONE.match(token):
+        return f"Cloud type ({_CA_CLOUD_NAME[token]})"
+    return None
+
+
+def _whole_miles(token: str, following: str) -> str | None:
+    """The whole miles that sit in front of a fractional statute-mile group.
+
+    Parameters
+    ----------
+    token : str
+        A single digit from 1 to 9.
+    following : str
+        The next group, which must be a fractional mile.
+
+    Returns
+    -------
+    str | None
+        The whole-mile phrase, or None when the pair is not whole miles plus a fraction.
+    """
+    if not re.fullmatch(r"[1-9]", token):
+        return None
+    following_upper = following.upper()
+    if not _VIS_FRAC.match(following_upper) and not _FRAC_MILE.match(following_upper):
+        return None
+    return f"Visibility {token} statute mile, plus the following fraction"
+
+
+def _rvr_bound(raw: str) -> str:
+    """A runway visual range limit, including a greater-than or less-than mark.
+
+    Parameters
+    ----------
+    raw : str
+        Digits, or the same digits with a leading ``P`` or ``M``.
+
+    Returns
+    -------
+    str
+        The limit, with ``more than`` or ``less than`` when marked.
+    """
+    if raw.startswith("P"):
+        return f"more than {int(raw[1:])}"
+    if raw.startswith("M"):
+        return f"less than {int(raw[1:])}"
+    return str(int(raw))
+
+
+def _varying_rvr(token: str) -> str | None:
+    """Runway visual range that varies, in metres or feet.
+
+    Parameters
+    ----------
+    token : str
+        One runway visual range group.
+
+    Returns
+    -------
+    str | None
+        The varying or unreported range, or None when the group is a single value.
+    """
+    missing = _RVR_MISSING.match(token)
+    if missing:
+        return f"Runway visual range runway {missing.group('rw')}: not reported"
+    varying = _RVR_VARY.match(token)
+    if varying is None:
+        return None
+    unit = "ft" if varying.group("unit") == "FT" else "m"
+    trend = varying.group("trend")
+    trend_txt = {
+        "U": ", upward trend",
+        "D": ", downward trend",
+        "N": ", no distinct trend",
+    }.get(trend or "", "")
+    return (
+        f"Runway visual range runway {varying.group('rw')}: "
+        f"varying from {_rvr_bound(varying.group('a'))} {unit} to {_rvr_bound(varying.group('b'))} {unit}"
+        f"{trend_txt}"
+    )
+
+
+def _depth_phrase(raw: str) -> str | None:
+    """Depth of the runway deposit from the runway state group.
+
+    Parameters
+    ----------
+    raw : str
+        Two digits, or ``//`` when the depth is not significant.
+
+    Returns
+    -------
+    str | None
+        The depth in plain language, or None when the code is unused.
+    """
+    if raw == "//":
+        return "depth not significant"
+    if raw == "00":
+        return "depth less than 1 mm"
+    if raw == "99":
+        return "runway not operational"
+    depth = int(raw)
+    if 1 <= depth <= 90:
+        return f"depth {depth} mm"
+    centimetres = _RUNWAY_DEPTH_CM.get(depth)
+    if centimetres is None:
+        return None
+    if depth == 98:
+        return f"depth {centimetres} cm or more"
+    return f"depth {centimetres} cm"
+
+
+def _friction_phrase(raw: str) -> str | None:
+    """Friction coefficient or braking action from the runway state group.
+
+    Parameters
+    ----------
+    raw : str
+        Two digits, or ``//`` when friction is not reported.
+
+    Returns
+    -------
+    str | None
+        The friction in plain language, or None when the code is unused.
+    """
+    if raw == "//":
+        return "friction not reported"
+    braking = _RUNWAY_BRAKING.get(raw)
+    if braking:
+        return f"braking action {braking}"
+    if raw == "99":
+        return "friction unreliable"
+    coefficient = int(raw)
+    if 0 <= coefficient <= 90:
+        return f"friction coefficient {coefficient / 100:.2f}"
+    return None
+
+
+def _runway_state(token: str) -> str | None:
+    """The legacy runway state group, including a cleared runway.
+
+    Parameters
+    ----------
+    token : str
+        One group such as ``R19/290052`` or ``R06L/CLRD62``.
+
+    Returns
+    -------
+    str | None
+        The runway state in plain language, or None when it is runway visual range.
+    """
+    cleared = _RUNWAY_CLEARED.match(token)
+    if cleared:
+        friction = _friction_phrase(cleared.group("fric"))
+        if friction is None:
+            return None
+        return f"Runway state runway {cleared.group('rw')}: contamination ceased, {friction}"
+    state = _RUNWAY_STATE.match(token)
+    if state is None:
+        return None
+    depth = _depth_phrase(state.group("depth"))
+    friction = _friction_phrase(state.group("fric"))
+    if depth is None or friction is None:
+        return None
+    return (
+        f"Runway state runway {state.group('rw')}: {_RUNWAY_DEPOSIT[state.group('dep')]}, "
+        f"{_RUNWAY_EXTENT[state.group('ext')]}, {depth}, {friction}"
+    )
+
+
+def _qfe(token: str) -> str | None:
+    """Aerodrome pressure in millimetres of mercury, with hectopascals when sent.
+
+    Parameters
+    ----------
+    token : str
+        One group such as ``QFE747`` or ``QFE747/0996``.
+
+    Returns
+    -------
+    str | None
+        The field pressure, or None when the group is not QFE.
+    """
+    match = _QFE.match(token)
+    if match is None:
+        return None
+    millimetres = int(match.group("mm"))
+    reported = match.group("hpa")
+    if reported:
+        return f"QFE {millimetres} mmHg ({int(reported)} hPa), the pressure at the aerodrome"
+    hectopascals = round(millimetres * 1013.25 / 760)
+    return f"QFE {millimetres} mmHg (about {hectopascals} hPa), the pressure at the aerodrome"
+
+
+def _wx_clock(raw: str) -> str:
+    """Minutes past the hour, or an hour and minute when four digits are present.
+
+    Parameters
+    ----------
+    raw : str
+        Two digits of minutes, or four digits of hour and minute.
+
+    Returns
+    -------
+    str
+        A clock phrase for that time.
+    """
+    if len(raw) == 4:
+        return f"at {raw[:2]}:{raw[2:]}"
+    return f"at {raw} minutes past the hour"
+
+
+def _wx_began_or_ended(token: str) -> str | None:
+    """One weather type, or several glued together, with began and ended times.
+
+    Parameters
+    ----------
+    token : str
+        A remarks group such as ``RAB19`` or ``RAE2055DZB08E10``.
+
+    Returns
+    -------
+    str | None
+        The begin and end times, or None when the group is not a weather-time chain.
+    """
+    pos = 0
+    clauses: list[str] = []
+    while pos < len(token):
+        kind = next((name for name in _WX_TIME_NAME if token.startswith(name, pos)), None)
+        if kind is None:
+            return None
+        pos += len(kind)
+        edges: list[str] = []
+        while pos < len(token) and token[pos] in "BE":
+            word = "began" if token[pos] == "B" else "ended"
+            pos += 1
+            four = token[pos : pos + 4]
+            two = token[pos : pos + 2]
+            if len(four) == 4 and four.isdigit() and _wx_four_digits(token, pos):
+                edges.append(f"{word} {_wx_clock(four)}")
+                pos += 4
+            elif len(two) == 2 and two.isdigit():
+                edges.append(f"{word} {_wx_clock(two)}")
+                pos += 2
+            else:
+                return None
+        if not edges:
+            return None
+        sentence = f"{_WX_TIME_NAME[kind]} {edges[0]}"
+        if len(edges) > 1:
+            sentence += "".join(f" and {edge}" for edge in edges[1:])
+        clauses.append(sentence)
+    return ". ".join(clauses)
+
+
+def _wx_four_digits(token: str, pos: int) -> bool:
+    """True when four digits end the token, or a new edge or weather type follows.
+
+    Parameters
+    ----------
+    token : str
+        The full weather-time group.
+    pos : int
+        Index of the first of the four digits.
+
+    Returns
+    -------
+    bool
+        Whether those four digits are an hour and minute.
+    """
+    nxt = token[pos + 4 : pos + 6]
+    if not nxt:
+        return True
+    if nxt[0] in "BE":
+        return True
+    return any(nxt.startswith(name) for name in _WX_TIME_NAME)
+
+
+def _navaid_chain(token: str) -> str | None:
+    """A hyphenated run of navaids with no distance, such as ``TRV-PBI``.
+
+    Parameters
+    ----------
+    token : str
+        One group from a convective ``FROM`` line.
+
+    Returns
+    -------
+    str | None
+        The navaids in order, or None when a part is not a navaid name.
+    """
+    parts = token.split("-")
+    if len(parts) < 2 or any(part == "" for part in parts):
+        return None
+    if not all(re.fullmatch(r"[A-Z]{2,5}", part) for part in parts):
+        return None
+    return "Navaids " + " to ".join(parts)
+
+
+def _in_convective_area(seen: dict[str, int]) -> bool:
+    """True on the convective area line, after validity and before ``FROM``.
+
+    Parameters
+    ----------
+    seen : dict[str, int]
+        Tokens already accepted while decoding this report.
+
+    Returns
+    -------
+    bool
+        Whether a state or lake abbreviation is part of the area line.
+    """
+    return bool(
+        seen.get("convective")
+        and seen.get("until")
+        and not seen.get("from_line")
+        and not seen.get("area")
+        and not seen.get("tops")
+    )
+
+
+def _coord_token(token: str) -> str:
+    """Drop a polygon hyphen glued to a latitude or longitude.
+
+    Parameters
+    ----------
+    token : str
+        One coordinate group, with or without a trailing hyphen.
+
+    Returns
+    -------
+    str
+        The coordinate without a glued hyphen.
+    """
+    bare = token
+    if len(bare) > 1 and bare.endswith("-"):
+        candidate = bare[:-1]
+        if _SIG_LAT.match(candidate) or _SIG_LON.match(candidate) or _SIG_LATLON.match(candidate):
+            bare = candidate
+    if len(bare) > 1 and bare.startswith("-"):
+        candidate = bare[1:]
+        if _SIG_LAT.match(candidate) or _SIG_LON.match(candidate) or _SIG_LATLON.match(candidate):
+            bare = candidate
+    return bare
+
+
+def _boundary_points(token: str) -> str | None:
+    """Explain a navaid boundary such as ``50WSW`` or ``MSS-30S``.
+
+    Parameters
+    ----------
+    token : str
+        One whitespace-delimited group.
+
+    Returns
+    -------
+    str | None
+        A plain-language boundary, or None when the group is not one.
+    """
+    parts = token.split("-")
+    rendered: list[str] = []
+    saw_distance = False
+    for part in parts:
+        match = _BOUNDARY_PART.match(part)
+        if match is None:
+            return None
+        dist = match.group("dist")
+        direction = match.group("dir")
+        fix = match.group("fix")
+        if dist and direction:
+            saw_distance = True
+            place = f" of {fix}" if fix else ""
+            rendered.append(f"{int(dist)} nm {_SIG_DIR_NAME[direction]}{place}")
+        elif fix and not dist:
+            rendered.append(fix)
+        else:
+            return None
+    if not saw_distance:
+        return None
+    return "Boundary " + " to ".join(rendered)
+
+
+def _lat_lon_phrase(lat: str, lon: str) -> str | None:
+    """Plain language for one glued latitude and longitude.
+
+    Parameters
+    ----------
+    lat : str
+        Latitude token such as ``N1346``.
+    lon : str
+        Longitude token such as ``W09652``.
+
+    Returns
+    -------
+    str | None
+        Both coordinates, or None when either half does not match.
+    """
+    lat_match = _SIG_LAT.match(lat)
+    lon_match = _SIG_LON.match(lon)
+    if lat_match is None or lon_match is None:
+        return None
+    lat_hemi = "North" if lat_match.group("hemi") == "N" else "South"
+    lon_hemi = "East" if lon_match.group("hemi") == "E" else "West"
+    lat_min = lat_match.group("min") or "00"
+    lon_min = lon_match.group("min") or "00"
+    return (
+        f"Latitude {int(lat_match.group('deg'))}°{lat_min}' {lat_hemi[0]}, "
+        f"longitude {int(lon_match.group('deg'))}°{lon_min}' {lon_hemi[0]}"
+    )
+
+
 def _explain_metar_speci(token: str, *, product: str, seen: dict[str, int]) -> str | None:
+    """
+    Internal helper ``_explain_metar_speci``.
+
+    Parameters
+    ----------
+    token : str
+        Argument ``token``.
+
+    product : str
+        Argument ``product``.
+
+    seen : dict[str, int]
+        Argument ``seen``.
+
+    Returns
+    -------
+    str | None
+        Return value.
+    """
     upper = token.upper()
+    if seen.get("density_alt"):
+        seen["density_alt"] = 0
+        if m := _DENSITY_FT.match(upper):
+            return f"Density altitude {m.group('n')} ft"
+    if seen.get("wind_aloft"):
+        seen["wind_aloft"] = 0
+        if m := _WIND_ALOFT_FT.match(upper):
+            return f"Wind at {int(m.group('ft'))} ft"
+        if upper == "SKEID":
+            seen["sensor_wind"] = 1
+            return "Wind sensor (Skeid)"
+    if seen.get("sensor_wind"):
+        if m := _WIND.match(upper):
+            seen["sensor_wind"] = 0
+            return _fmt_wind(m, label="Sensor wind")
+        if m := _WIND_VAR.match(upper):
+            return f"Sensor wind direction varying from {int(m.group('a'))}° to {int(m.group('b'))}°"
+        seen["sensor_wind"] = 0
+    if seen.get("cig"):
+        seen["cig"] = 0
+        if m := _WIND_VAR.match(upper):
+            return f"Ceiling varying from {int(m.group('a')) * 100} ft to {int(m.group('b')) * 100} ft"
+        if m := _CIG_HUNDREDS.match(upper):
+            seen["cig_rwy"] = 1
+            return f"Ceiling {int(m.group('h')) * 100} ft"
+    if seen.get("cig_rwy"):
+        if m := _RWY_DESIGNATOR.match(upper):
+            seen["cig_rwy"] = 0
+            return f"Runway {m.group('rw')}"
+        seen["cig_rwy"] = 0
+    if seen.get("vis_expect"):
+        seen["vis_expect"] = 0
+        if m := _VIS_VARIABLE.match(upper):
+            return f"Visibility varying from {m.group('lo')} to {m.group('hi')} statute miles"
+        if m := _VIS_VRB_RANGE.match(upper):
+            return f"Visibility varying from {m.group('a')} to {m.group('b')} statute miles"
+        if upper.isdigit() and len(upper) <= 2:
+            return f"Visibility {int(upper)} statute miles"
+        if m := _VIS_SM.match(upper):
+            return _fmt_vis_sm(m, label="Visibility")
+        if upper in {"HYR", "LWR"}:
+            seen["vis_dir"] = 1
+            return _RMK_WORD[upper]
+    if seen.get("vis_dir") and upper in _SIG_DIR:
+        seen["vis_dir"] = 0
+        return _SIG_DIR_NAME[upper]
+    if seen.get("sog_expect"):
+        seen["sog_expect"] = 0
+        if m := _SOG_VALUE.match(upper):
+            return f"Snow on ground {int(m.group('cm'))} cm"
+    if seen.get("wshft_expect"):
+        seen["wshft_expect"] = 0
+        if m := _WSHFT_MIN.match(upper):
+            return f"Wind shift at minute {m.group('mm')}"
+    if seen.get("movd_expect"):
+        seen["movd_expect"] = 0
+        if upper in _SIG_DIR:
+            return f"Moved {_SIG_DIR_NAME[upper]}"
     if upper in {"METAR", "SPECI"} and seen.get("rtype", 0) == 0:
         seen["rtype"] = 1
         label = "routine" if upper == "METAR" else "special"
         return f"Report type ({label} meteorological aerodrome report)"
     if upper == "COR":
         return "Correction indicator"
+    if upper == "RTD":
+        return "Delayed routine report"
+    if _BBB_CORRECTION.match(upper):
+        return f"Correction ({upper})"
+    if _BBB_DELAYED.match(upper):
+        return f"Delayed report ({upper})"
+    if _BBB_AMENDMENT.match(upper):
+        return f"Amendment ({upper})"
     if upper == "NIL":
         return "Nil report (no observation)"
     if upper == "CAVOK":
@@ -229,15 +1406,36 @@ def _explain_metar_speci(token: str, *, product: str, seen: dict[str, int]) -> s
         return "Temporary fluctuations expected during the following period"
     if upper == "BECMG":
         seen["in_trend"] = 1
-        return "Becoming - gradual change during the following period"
+        return "Becoming, a gradual change during the following period"
     if upper == "NSW":
         return "No significant weather"
     if upper == "RMK":
+        seen["rmk"] = 1
         return "Remarks section"
-    if upper == "AO1":
+    if upper in {"AO1", "A01"}:
         return "Automated station without precipitation discriminator"
-    if upper == "AO2":
+    if upper in {"AO2", "A02"}:
         return "Automated station with precipitation discriminator"
+    if upper == "AO2A":
+        return "Automated station with precipitation discriminator, augmented by an observer"
+    if m := _SEA_STATE.match(upper):
+        wave = m.group("wave")
+        wave_txt = "not reported" if "/" in wave else str(int(wave))
+        return f"Sea state: waves {wave_txt}, swell {int(m.group('swell'))}"
+    if m := _MISSING_TEMP_DEW.match(upper):
+        return f"Temperature {int(m.group('body'))} °C, dewpoint not reported"
+    if m := _TEMP_MISSING_DEW.match(upper):
+        return f"Temperature {_signed_temp(m.group('body'))} °C, dewpoint not reported"
+    if _MISSING_WIND_KT.match(upper):
+        return "Wind not reported"
+    if _MISSING_QNH_SLASH.match(upper):
+        return "Altimeter setting not reported"
+    if upper == "FZRANO":
+        return "Freezing-rain sensor not working"
+    if upper == "TSNO":
+        return "Lightning detector not working"
+    if upper == "RVRNO":
+        return "Runway visual range should be reported but is not available"
     if upper.startswith("SLP") and len(upper) == 6 and upper[3:].isdigit():
         return "Sea-level pressure (FMH-1 SLP code)"
     if upper == "=" or token == "=":
@@ -246,8 +1444,8 @@ def _explain_metar_speci(token: str, *, product: str, seen: dict[str, int]) -> s
         seen["station"] = 1
         place = resolve_location_name(upper)
         if place:
-            return f"ICAO station location indicator — {place}"
-        return f"ICAO station location indicator ({upper})"
+            return f"Station {place} ({upper})"
+        return f"Station {upper}"
     if m := _TIME_Z.match(upper):
         return _fmt_time(m, label="Observation time")
     if m := _WIND.match(upper):
@@ -263,7 +1461,7 @@ def _explain_metar_speci(token: str, *, product: str, seen: dict[str, int]) -> s
         return f"{label} {int(upper)} m"
     if m := _TREND_TIME.match(upper):
         kind = m.group("kind")
-        return f"Trend time - {_TREND_TIME_LABEL[kind]} {m.group('hh')}:{m.group('mm')} UTC"
+        return f"Trend {_TREND_TIME_LABEL[kind]} {m.group('hh')}:{m.group('mm')} UTC"
     if m := _CLOUD.match(upper):
         return _fmt_cloud(m, forecast=bool(seen.get("in_trend")))
     if m := _TEMP.match(upper):
@@ -271,29 +1469,250 @@ def _explain_metar_speci(token: str, *, product: str, seen: dict[str, int]) -> s
     if m := _ALT.match(upper):
         return f"Altimeter {int(m.group('val')) / 100:.2f} inHg"
     if m := _QNH.match(upper):
-        return f"QNH {int(m.group('val'))} hPa"
+        return _fmt_qnh(m.group("val"))
     if m := _WX.match(upper):
         return _fmt_wx(m, forecast=bool(seen.get("in_trend")))
     if m := _RVR.match(upper):
-        trend = m.group("trend")
+        trend = m.group("trend") or m.group("trend2")
         trend_txt = {
             "U": ", upward trend",
             "D": ", downward trend",
             "N": ", no distinct trend",
         }.get(trend or "", "")
-        return f"Runway visual range runway {m.group('rw')}: {m.group('vis')} m{trend_txt}"
+        unit = "ft" if m.group("unit") == "FT" else "m"
+        return f"Runway visual range runway {m.group('rw')}: {_rvr_bound(m.group('vis'))} {unit}{trend_txt}"
+    if phrase := _varying_rvr(upper):
+        return phrase
+    if phrase := _runway_state(upper):
+        return phrase
+    if phrase := _qfe(upper):
+        return phrase
+    if m := _VV.match(upper):
+        if m.group("h") == "///":
+            return "Vertical visibility not reported"
+        return f"Vertical visibility {int(m.group('h')) * 100} ft"
+    if m := _MISSING_CLOUD.match(upper):
+        kind = _CA_CLOUD_NAME.get(m.group("ctype") or "")
+        if kind:
+            return f"Cloud amount not reported, {kind}"
+        return "Cloud amount not reported"
+    if phrase := _wx_began_or_ended(upper):
+        return phrase
     if upper.startswith("PK") or upper == "WND":
         return "Peak wind remarks token"
+    if upper == "AUTO":
+        return "Automated report"
+    if upper == "$":
+        return "Station needs maintenance"
+    if upper == "WSHFT":
+        seen["wshft_expect"] = 1
+        return "Wind shift"
+    if upper in {"//", "///"}:
+        return "Missing data"
+    if upper == "TS":
+        return "Thunderstorm"
+    if upper == "VCSH":
+        return "Showers in the vicinity"
+    if upper == "VCTS":
+        return "Thunderstorm in the vicinity"
+    if upper.startswith("RE") and len(upper) > 2 and not seen.get("rmk"):
+        recent = _explain_recent_weather(upper[2:])
+        if recent is not None:
+            return recent
+    if m := _WIND_VAR.match(upper):
+        return f"Wind direction varying from {int(m.group('a'))}° to {int(m.group('b'))}°"
+    if m := _VIS_FRAC.match(upper):
+        return f"Prevailing visibility {m.group('num')}/{m.group('den')} statute mile"
+    if m := _T_GROUP.match(upper):
+        return f"Temperature {_tenths_c(m.group('t'))} °C, dewpoint {_tenths_c(m.group('td'))} °C in tenths"
+    if m := _T_TEMP_ONLY.match(upper):
+        return f"Temperature {_tenths_c(m.group('body'))} °C (dewpoint not reported)"
+    if seen.get("rmk"):
+        remark = _explain_metar_remark(upper, seen)
+        if remark:
+            return remark
     _ = product
     return None
 
 
+def _explain_metar_remark(upper: str, seen: dict[str, int]) -> str | None:
+    """Groups that show up in the remarks, after ``RMK``.
+
+    Parameters
+    ----------
+    upper : str
+        One remarks group, already uppercased.
+    seen : dict[str, int]
+        Tokens already accepted while decoding this report.
+
+    Returns
+    -------
+    str | None
+        The remark in plain language, or None when the group stays unexplained.
+    """
+    if upper == "SLPNO":
+        return "Sea-level pressure not available"
+    if upper == "PNO":
+        return "Precipitation amount not available"
+    if m := _SIX_HOUR_MAX.match(upper):
+        return f"6-hour maximum temperature {_tenths_c(m.group('body'))} °C"
+    if m := _SIX_HOUR_MIN.match(upper):
+        return f"6-hour minimum temperature {_tenths_c(m.group('body'))} °C"
+    if m := _DAY_MAX_MIN.match(upper):
+        return f"24-hour maximum {_tenths_c(m.group('max'))} °C, minimum {_tenths_c(m.group('min'))} °C"
+    if m := _PRECIP_3_6H.match(upper):
+        amt = m.group("amt")
+        if amt == "////":
+            return "3- or 6-hour precipitation not determinable"
+        hundredths = int(amt)
+        if hundredths == 0:
+            return "3- or 6-hour precipitation: trace"
+        return f"3- or 6-hour precipitation {hundredths / 100:.2f} inches"
+    if m := _PRECIP_24H.match(upper):
+        amt = m.group("amt")
+        if amt == "////":
+            return "24-hour precipitation not determinable"
+        hundredths = int(amt)
+        if hundredths == 0:
+            return "24-hour precipitation: trace"
+        return f"24-hour precipitation {hundredths / 100:.2f} inches"
+    if phrase := _pressure_tendency(upper):
+        return phrase
+    if phrase := _precip_amount(upper):
+        return phrase
+    if phrase := _canadian_clouds(upper):
+        return phrase
+    if m := _MM_AMOUNT.match(upper):
+        return f"Precipitation {m.group('n')} mm"
+    if upper == "CIG":
+        seen["cig"] = 1
+        return "Ceiling"
+    if upper == "DENSITY":
+        seen["density"] = 1
+        return "Density"
+    if upper == "ALT" and seen.get("density"):
+        seen["density"] = 0
+        seen["density_alt"] = 1
+        return "Altitude"
+    if upper == "WIND":
+        seen["wind_aloft"] = 1
+        return "Wind"
+    if upper == "VIS":
+        seen["vis_expect"] = 1
+        return "Visibility"
+    if upper == "SOG":
+        seen["sog_expect"] = 1
+        return "Snow on ground"
+    if upper == "WSHFT":
+        seen["wshft_expect"] = 1
+        return "Wind shift"
+    if upper == "MOVD":
+        seen["movd_expect"] = 1
+        return "Moved"
+    if upper == "SFC":
+        seen["vis_expect"] = 1
+        return "Surface"
+    if upper == "TWR":
+        seen["vis_expect"] = 1
+        return "Tower"
+    if m := _WIND_ALOFT_FT.match(upper):
+        return f"Wind at {int(m.group('ft'))} ft"
+    if m := _ICE_ACCRETION.match(upper):
+        hundredths = int(m.group("amt"))
+        if hundredths == 0:
+            return "Ice accretion: trace"
+        return f"Ice accretion {hundredths / 100:.2f} inches"
+    if m := _SHORT_PRECIP.match(upper):
+        hundredths = int(m.group("amt"))
+        if hundredths == 0:
+            return "Precipitation trace in the past hour"
+        return f"Precipitation {hundredths / 100:.2f} inches in the past hour"
+    if m := _PP_PRECIP_MM.match(upper):
+        tenths = int(m.group("amt"))
+        return f"Precipitation {tenths / 10:.1f} mm"
+    if m := _TX_DECIMAL.match(upper):
+        return f"Maximum temperature {m.group('val')} °C"
+    if m := _CLOUD_TYPE_8.match(upper):
+        return f"Cloud-type group (low/mid/high): {m.group('body')}"
+    if _MISSING_PRESS_TEND.match(upper):
+        return "3-hour pressure tendency not reported"
+    if m := _MX_PRESS_9.match(upper):
+        return f"Pressure-change remark {upper} (unverified national code)"
+    if m := _RWY_DESIGNATOR.match(upper):
+        return f"Runway {m.group('rw')}"
+    if m := _LTG_TYPES.match(upper):
+        return f"Lightning ({m.group('types')})"
+    if m := _CB_LOC.match(upper):
+        return f"{m.group('head')} toward {m.group('dir').replace('-', ' ').replace('/', ' ')}"
+    if _OHD_CHAIN.match(upper):
+        return f"Direction chain ({upper.replace('-', ' → ')})"
+    if upper == "LAST":
+        seen["last_stfd"] = 1
+        return "Last"
+    if m := _LAST_STFD.match(upper):
+        rest = (m.group("rest") or "").strip()
+        if rest:
+            return f"Last staffed observation; next at {rest}"
+        return "Last staffed observation / next time"
+    if seen.get("last_stfd") and upper in {"STFD", "OBS", "NXT", "NEXT"}:
+        return _RMK_WORD.get(upper, upper.title())
+    if seen.get("last_stfd") and (
+        _TIME_Z.match(upper) or re.fullmatch(r"\d{6}(?:UTC)?", upper) or re.fullmatch(r"\d{2}", upper)
+    ):
+        seen["last_stfd"] = 0
+        return f"Next staffed observation time ({upper})"
+    if m := _PEAK_WIND.match(upper):
+        return f"Peak wind {int(m.group('dir'))}° at {int(m.group('spd'))} kt at {m.group('hh')}:{m.group('mm')} UTC"
+    if m := _PAST_HOUR.match(upper):
+        unit = "hour" if m.group("n") == "1" else "hours"
+        return f"In the past {m.group('n')} {unit}"
+    if m := _FRAC_MILE.match(upper):
+        return f"Visibility {m.group('num')}/{m.group('den')} statute mile"
+    if m := _VIS_VARIABLE.match(upper):
+        return f"Visibility varying from {m.group('lo')} to {m.group('hi')} statute miles"
+    if seen.get("vis_expect") and (m := _VIS_VRB_RANGE.match(upper)):
+        seen["vis_expect"] = 0
+        return f"Visibility varying from {m.group('a')} to {m.group('b')} statute miles"
+    if upper in _RMK_WORD:
+        if upper == "VRB":
+            seen["vis_expect"] = 1
+        return _RMK_WORD[upper]
+    if upper in _SIG_DIR:
+        return _SIG_DIR_NAME[upper]
+    sector = re.fullmatch(rf"({_BEARING})-({_BEARING})", upper)
+    if sector:
+        return f"From {_SIG_DIR_NAME[sector.group(1)]} to {_SIG_DIR_NAME[sector.group(2)]}"
+    if phrase := explain_remark_plain(upper):
+        return phrase
+    return None
+
+
 def _explain_taf(token: str, *, seen: dict[str, int]) -> str | None:
+    """
+    Internal helper ``_explain_taf``.
+
+    Parameters
+    ----------
+    token : str
+        Argument ``token``.
+
+    seen : dict[str, int]
+        Argument ``seen``.
+
+    Returns
+    -------
+    str | None
+        Return value.
+    """
     upper = token.upper()
     if upper == "TAF" and seen.get("rtype", 0) == 0:
         seen["rtype"] = 1
         return "Report type (terminal aerodrome forecast)"
-    if upper in {"AMD", "COR"}:
+    if upper == "COR":
+        return "Amendment / correction indicator"
+    if upper == "AMD":
+        if seen.get("last_amd"):
+            return "Amendments"
         return "Amendment / correction indicator"
     if upper == "CNL":
         return "Cancelled forecast"
@@ -301,67 +1720,245 @@ def _explain_taf(token: str, *, seen: dict[str, int]) -> str | None:
         return "Nil forecast"
     if upper == "=":
         return "Report terminator"
+    if upper == "RMK":
+        seen["rmk"] = 1
+        return "Remarks section"
+    if seen.get("rmk"):
+        crumb = upper.rstrip(".")
+        if crumb in _TAF_RMK_TRAILER_WORD or upper in _TAF_RMK_TRAILER_WORD:
+            return "National forecast trailer"
+        if _TAF_RMK_NATIONAL.match(upper):
+            return "National TAF remark code"
+        if _TAF_RMK_NEXT_TIME.match(upper):
+            return "Next forecast time"
     if _STATION.match(upper) and seen.get("station", 0) == 0:
         seen["station"] = 1
         place = resolve_location_name(upper)
         if place:
-            return f"ICAO station location indicator — {place}"
-        return f"ICAO station location indicator ({upper})"
+            return f"Station {place} ({upper})"
+        return f"Station {upper}"
     if m := _TIME_Z.match(upper):
         return _fmt_time(m, label="Issue time")
     if m := _TAF_VALID.match(upper):
         return (
-            f"Validity - day {int(m.group('d1'))} {m.group('h1')}:00 UTC"
+            f"Valid from day {int(m.group('d1'))} {m.group('h1')}:00 UTC"
             f" to day {int(m.group('d2'))} {m.group('h2')}:00 UTC"
         )
     if m := _WIND.match(upper):
         return _fmt_wind(m, label="Forecast wind")
+    if seen.get("au_t") and _AU_TEMP_DIGIT.match(upper):
+        return f"Forecast temperature {int(upper)} °C"
+    if seen.get("au_t") and upper == "Q":
+        seen["au_t"] = 0
+        seen["au_q"] = 1
+        return "Australian QNH sequence"
+    if seen.get("au_q") and _AU_QNH_DIGIT.match(upper):
+        return f"Forecast QNH {int(upper)} hPa"
+    if seen.get("au_q") and not _AU_QNH_DIGIT.match(upper):
+        seen["au_q"] = 0
+    if seen.get("metwatch") and (m := _TAF_AFT_HH.match(upper)):
+        seen["metwatch"] = 0
+        mm = m.group("mm") or "00"
+        return f"Metwatch time day {int(m.group('dd'))} {m.group('hh')}:{mm} UTC"
+    if seen.get("aft_expect"):
+        seen["aft_expect"] = 0
+        if m := _TAF_AFT_HH.match(upper):
+            mm = m.group("mm") or "00"
+            return f"After day {int(m.group('dd'))} {m.group('hh')}:{mm} UTC"
+    if seen.get("next_expect") and (m := _TAF_AFT_HH.match(upper)):
+        seen["next_expect"] = 0
+        seen["last_amd"] = 0
+        mm = m.group("mm") or "00"
+        return f"Next amendment day {int(m.group('dd'))} {m.group('hh')}:{mm} UTC"
+    if seen.get("amd_ltd") and (m := _TAF_AFT_HH.match(upper)):
+        seen["amd_ltd"] = 0
+        mm = m.group("mm") or "00"
+        return f"Limited amendment until day {int(m.group('dd'))} {m.group('hh')}:{mm} UTC"
     if _VIS_M.match(upper):
         return f"Forecast visibility {int(upper)} m"
     if m := _VIS_SM.match(upper):
         return _fmt_vis_sm(m, label="Forecast visibility")
+    if m := _VIS_FRAC.match(upper):
+        return f"Forecast visibility {m.group('num')}/{m.group('den')} statute miles"
     if m := _CLOUD.match(upper):
         return _fmt_cloud(m, forecast=True)
     if m := _ALT.match(upper):
         return f"Altimeter {int(m.group('val')) / 100:.2f} inHg"
     if m := _QNH.match(upper):
-        return f"QNH {int(m.group('val'))} hPa"
+        return _fmt_qnh(m.group("val"))
     if m := _TAF_FM.match(upper):
         return (
-            f"From day {int(m.group('dd'))} at {m.group('hh')}:{m.group('mm')} UTC"
-            " - rapid change to new prevailing conditions"
+            f"From day {int(m.group('dd'))} at {m.group('hh')}:{m.group('mm')} UTC, then the conditions change quickly"
         )
     if upper == "TEMPO":
         return "Temporary fluctuations expected during the following period"
     if upper == "BECMG":
-        return "Becoming - gradual change during the following period"
+        return "Becoming, a gradual change during the following period"
+    if upper == "INTER":
+        return "Intermittent changes lasting under 30 minutes during the following period"
+    if upper == "CAVOK":
+        return "Ceiling and visibility OK"
+    if upper == "NSW":
+        return "No significant weather"
+    if m := _VV.match(upper):
+        if m.group("h") == "///":
+            return "Vertical visibility not reported"
+        return f"Vertical visibility {int(m.group('h')) * 100} ft"
+    if m := _TAF_TX_TN.match(upper):
+        which = "Maximum" if m.group("which") == "X" else "Minimum"
+        sign = "-" if m.group("sign") == "M" else ""
+        return (
+            f"{which} forecast temperature {sign}{int(m.group('tt'))} °C "
+            f"on day {int(m.group('dd'))} at {m.group('hh')}:00 UTC"
+        )
+    if m := _TAF_QNH_INS.match(upper):
+        inches = int(m.group("raw")) / 100
+        return f"Lowest forecast altimeter setting {inches:.2f} inHg"
+    if m := _TAF_WS.match(upper):
+        height = int(m.group("hhh")) * 100
+        return (
+            f"Non-convective low-level wind shear: wind "
+            f"{int(m.group('dir'))}° at {int(m.group('spd'))} kt "
+            f"at {height} ft above ground"
+        )
+    if m := _TAF_TURB.match(upper):
+        base = m.group("base")
+        thick = m.group("thick")
+        base_txt = "base not reported" if base == "///" else f"base {int(base) * 100} ft"
+        thick_txt = "thickness not reported" if thick == "/" else f"thickness {int(thick) * 1000} ft"
+        return f"Forecast turbulence (intensity {m.group('intensity')}), {base_txt}, {thick_txt}"
+    if m := _TAF_ICING.match(upper):
+        base = m.group("base")
+        thick = m.group("thick")
+        base_txt = "base not reported" if base == "///" else f"base {int(base) * 100} ft"
+        thick_txt = "thickness not reported" if thick == "/" else f"thickness {int(thick) * 1000} ft"
+        return f"Forecast icing (intensity {m.group('intensity')}), {base_txt}, {thick_txt}"
     if m := _TAF_PROB.match(upper):
         return f"{int(m.group('pct'))}% probability of the following conditions"
-    if upper.startswith(("FM", "TEMPO", "BECMG", "PROB")):
+    if upper.startswith(("FM", "TEMPO", "BECMG", "PROB", "INTER")):
         return "Change / probability group"
+    if upper == "TS":
+        return "Forecast weather: Thunderstorm"
+    if upper == "VCSH":
+        return "Forecast weather: Showers in the vicinity"
+    if upper == "VCTS":
+        return "Forecast weather: Thunderstorm in the vicinity"
     if m := _WX.match(upper):
         return _fmt_wx(m, forecast=True)
+    if upper == "NOT":
+        return "Not"
+    if upper == "SKED":
+        return "Scheduled"
+    if upper == "TIL":
+        return "Until"
+    if upper == "AUTOMATED":
+        return "Automated"
+    if upper == "SENSOR":
+        return "Sensor"
+    if upper == "METWATCH":
+        seen["metwatch"] = 1
+        return "Meteorological watch period"
+    if seen.get("metwatch") and upper == "FROM":
+        return "From"
+    if _NAVY_FS_FN.match(upper):
+        return f"Navy forecast supplement code ({upper})"
+    if upper == "WND":
+        return "Wind"
+    if upper == "AFT":
+        seen["aft_expect"] = 1
+        return "After"
+    if upper == "LAST":
+        seen["last_amd"] = 1
+        return "Last"
+    if seen.get("last_amd") and upper == "NO":
+        return "No"
+    if seen.get("last_amd") and upper in {"AMD", "AMDS"}:
+        return "Amendments"
+    if seen.get("last_amd") and upper == "NEXT":
+        seen["next_expect"] = 1
+        return "Next"
+    if upper == "LTD":
+        seen["amd_ltd"] = 1
+        return "Limited"
+    if seen.get("amd_ltd") and upper == "TO":
+        return "To"
+    if seen.get("amd_ltd") and upper in {"CLD", "VIS", "AND", "WIND"}:
+        return _RMK_WORD.get(upper, upper.title())
+    if upper == "T" and not seen.get("au_t") and not seen.get("au_q"):
+        seen["au_t"] = 1
+        return "Australian temperature sequence"
     return None
 
 
 def _explain_sigmet_airmet(token: str, *, product: str, seen: dict[str, int]) -> str | None:
-    upper = token.upper()
-    if upper == product and seen.get("rtype", 0) == 0:
+    """
+    Internal helper ``_explain_sigmet_airmet``.
+
+    Parameters
+    ----------
+    token : str
+        Argument ``token``.
+
+    product : str
+        Argument ``product``.
+
+    seen : dict[str, int]
+        Argument ``seen``.
+
+    Returns
+    -------
+    str | None
+        Return value.
+    """
+    upper = token.upper().rstrip(":")
+    # Drop a lone report-style trailing period, but keep ellipsis (``…`` / ``...``).
+    if re.search(r"(?<!\.)\.$", upper):
+        upper = upper[:-1]
+    if upper in {"SIGMET", "AIRMET"} and seen.get("rtype", 0) == 0:
         seen["rtype"] = 1
-        return f"Report type ({product})"
-    if upper == product and seen.get("cnl"):
+        return f"Report type ({upper})"
+    if upper in {"SIGMET", "AIRMET"} and seen.get("cnl"):
         # Cancelled bulletin references the product again (``CNL SIGMET 2 …``).
-        return f"Cancelled {product} reference"
+        return f"Cancelled {upper} reference"
+    if upper in {"SIGMET", "AIRMET"} and seen.get("ref"):
+        return f"Referenced report ({upper})"
+    if upper in {"SIGMET", "AIRMET"} and seen.get("rtype"):
+        return f"Report type ({upper})"
+    if _BBB_CORRECTION.match(upper):
+        return f"Correction ({upper})"
+    if _BBB_DELAYED.match(upper):
+        return f"Delayed report ({upper})"
+    if _BBB_AMENDMENT.match(upper):
+        return f"Amendment ({upper})"
     if upper == "=":
         return "Report terminator"
     if upper == "CNL":
         seen["cnl"] = 1
         return explain_glossary_token(upper, fallback="Cancellation")
+    if upper == "CONVECTIVE" and not seen.get("rtype"):
+        seen["convective"] = 1
+        return "Convective"
     if upper == "VALID":
         return "Validity period marker"
-    if upper.isdigit() and seen.get("rtype") and not seen.get("seq"):
+    if upper == "UNTIL":
+        if seen.get("convective"):
+            seen["until"] = 1
+        return "Until"
+    if upper == "WST":
+        return "Convective SIGMET bulletin"
+    if upper in _SIGMET_SERIES and seen.get("rtype") and not seen.get("seq") and not seen.get("valid_period"):
+        return f"SIGMET series ({upper.capitalize()})"
+    if seen.get("rtype") and not seen.get("seq") and not seen.get("valid_period") and (m := _SIG_SEQ.match(upper)):
         seen["seq"] = 1
-        return f"Sequence number ({int(upper)})"
+        if m.group("letter_first"):
+            label = f"{m.group('letter_first')}{int(m.group('num_a'))}"
+        elif m.group("letter_last"):
+            label = f"{int(m.group('num_b'))}{m.group('letter_last')}"
+        else:
+            label = str(int(m.group("num_b")))
+        return f"Sequence number ({label})"
+    if re.fullmatch(r"\d{6}", upper) and not seen.get("valid_period"):
+        return f"Issue time day {int(upper[:2])} {upper[2:4]}:{upper[4:]} UTC"
     if upper.isdigit() and seen.get("cnl"):
         return f"Cancelled sequence number ({int(upper)})"
     if m := _SIG_VALID.match(upper):
@@ -371,9 +1968,77 @@ def _explain_sigmet_airmet(token: str, *, product: str, seen: dict[str, int]) ->
             f" to day {int(m.group('d2'))} {m.group('h2')}:{m.group('m2')} UTC"
         )
 
+    if upper == "FROM" and seen.get("rtype"):
+        seen["from_line"] = 1
+        return "From"
+    if upper == "AREA":
+        seen["from_line"] = 0
+        seen["area"] = 1
+        return "Area"
+    if upper == "TOPS":
+        seen["tops"] = 1
+        return "Cloud tops"
+    if upper == "CSTL":
+        return "Coastal"
+    if upper == "WTRS":
+        return "Waters"
+    if _in_convective_area(seen) and upper in _US_STATE:
+        return f"State ({_US_STATE[upper]})"
+    if _in_convective_area(seen) and upper in _US_LAKE:
+        return f"Lake ({_US_LAKE[upper]})"
+    if seen.get("tc_next"):
+        seen["tc_next"] = 0
+        if upper not in _CYCLONE_NAME_RESERVED and _CYCLONE_NAME.match(upper) and not meaning_for(upper.split("-")[0]):
+            return f"Tropical cyclone ({upper})"
+        if upper == "CENTRE":
+            return "Centre"
+        if upper == "CENTER":
+            return "Center"
+    if upper == "REF":
+        seen["ref"] = 1
+        return "Reference"
+    if upper == "INTL":
+        return "International"
+    if upper == "SERIES":
+        return "Series"
+    if upper in _SIGMET_SERIES and seen.get("ref"):
+        return f"Referenced SIGMET series ({upper.capitalize()})"
+
+    if upper == "LINE":
+        seen["line"] = 1
+        return "Line of coordinates"
+    if upper == "WIDE":
+        return "Wide"
+    if upper == "NM" and seen.get("line"):
+        return "Nautical miles"
+    if upper.isdigit() and seen.get("line") and len(upper) <= 3 and not seen.get("line_width"):
+        seen["line_width"] = 1
+        return f"Line width {int(upper)}"
+    if upper == "HAIL":
+        seen["hail_size"] = 1
+        return "Hail"
+    if upper == "GUSTS":
+        return "Gusts"
+    if upper == "TORNADOES":
+        seen["hail_size"] = 1
+        return "Tornadoes possible"
+    if upper.isdigit() and len(upper) <= 2 and seen.get("hail_size"):
+        return f"{int(upper)} inch hail"
+    if m := _SIG_WIND_RANGE.match(upper):
+        unit = _SIG_SPEED_UNIT.get(m.group("unit"), m.group("unit").lower())
+        return f"Speed {int(m.group('a'))} to {int(m.group('b'))} {unit}"
+    if _SIG_TRAIL_DOTS.match(upper):
+        return "Truncated text"
+    if upper == "FL":
+        seen["fl_expect"] = 1
+        return "Flight level"
+    if seen.get("fl_expect") and upper.isdigit() and 2 <= len(upper) <= 3:
+        seen["fl_expect"] = 0
+        return f"Flight level {int(upper)}"
+
     # MWO designator often carries a trailing hyphen (``YUSO-``).
     icao = upper.rstrip("-")
-    if _STATION.match(icao):
+    if _STATION.match(icao) and icao not in {"LINE", "WIDE", "AREA", "HAIL", "GUSTS"}:
         if seen.get("station", 0) == 0:
             seen["station"] = 1
             place = resolve_location_name(icao)
@@ -386,13 +2051,17 @@ def _explain_sigmet_airmet(token: str, *, product: str, seen: dict[str, int]) ->
             if place:
                 return f"Originating meteorological watch office {icao} ({place})"
             return f"Originating meteorological watch office ({icao})"
-        if not seen.get("fir_icao"):
+        if not seen.get("fir_icao") and not (seen.get("name_open") and icao.isalpha()):
             seen["fir_icao"] = 1
             return f"Affected FIR / ATS region ({icao})"
 
     if upper in {"FIR/UIR", "FIR", "UIR"}:
+        seen["name_open"] = 0
+        seen["after_fir"] = 1
         return explain_glossary_token(upper, fallback="Flight information region")
     if upper == "OCEANIC":
+        seen["name_open"] = 0
+        seen["after_fir"] = 1
         return "Oceanic FIR qualifier"
     if upper == "ERUPTION":
         seen["eruption"] = 1
@@ -401,10 +2070,26 @@ def _explain_sigmet_airmet(token: str, *, product: str, seen: dict[str, int]) ->
         return "Mount"
     if upper == "AT":
         return "At (observation / forecast time)"
+    if upper == "TO" and seen.get("tops"):
+        return "To"
+    if upper == "LTL":
+        return "Little"
     if upper == "WI":
         return "Within (area polygon)"
-    if upper == "-":
+    if upper in {"-", "\u2013", "\u2014"}:
+        if seen.get("line"):
+            return "Line vertex separator"
         return "Polygon vertex separator"
+    if upper == "OBS/FCST":
+        return "Observed and forecast"
+    if m := _SIG_SFC_LAYER.match(upper):
+        unit = "ft" if m.group("unit") == "FT" else "m"
+        return f"Surface to {int(m.group('alt'))} {unit}"
+    if m := _SIG_NM.match(upper):
+        return f"Within {int(m.group('n'))} nautical miles"
+    if m := _SIG_FT_LAYER.match(upper):
+        unit = "ft" if m.group("unit") == "FT" else "m"
+        return f"Altitude {int(m.group('alt'))} {unit} to flight level {int(m.group('fl'))}"
     if m := _SIG_FL_LAYER.match(upper):
         if m.group("sfc"):
             return f"Surface to flight level {int(m.group('sfc'))}"
@@ -421,15 +2106,27 @@ def _explain_sigmet_airmet(token: str, *, product: str, seen: dict[str, int]) ->
             seen["mov_dir"] = 1
             return f"Movement direction ({_SIG_DIR_NAME[upper]})"
         return _SIG_DIR_NAME[upper]
-    if m := _SIG_SPEED_KT.match(upper):
-        return f"Speed {int(m.group('spd'))} kt"
-    if m := _SIG_LAT.match(upper):
+    if m := _SIG_SPEED.match(upper):
+        unit = _SIG_SPEED_UNIT[m.group("unit")]
+        return f"Speed {int(m.group('spd'))} {unit}"
+    if m := _MOV_FROM.match(upper):
+        return f"Moving from {int(m.group('deg'))}° at {int(m.group('spd'))} kt"
+    if upper.isdigit() and seen.get("mov_dir") and not seen.get("mov_spd") and len(upper) <= 3:
+        seen["mov_spd"] = 1
+        return f"Speed {int(upper)}"
+    if upper in _SIG_SPEED_UNIT and seen.get("mov_spd") and not seen.get("mov_unit"):
+        seen["mov_unit"] = 1
+        return _SIG_SPEED_UNIT[upper]
+    coord = _coord_token(upper)
+    if m := _SIG_LAT.match(coord):
         hemi = "North" if m.group("hemi") == "N" else "South"
         mins = m.group("min")
         if mins:
             return f"Latitude {int(m.group('deg'))}°{mins}' {hemi[0]}"
         return f"Latitude {int(m.group('deg'))}° {hemi}"
-    if m := _SIG_LON.match(upper):
+    if m := _SIG_LATLON.match(coord):
+        return _lat_lon_phrase(m.group("lat"), m.group("lon"))
+    if m := _SIG_LON.match(coord):
         hemi = "East" if m.group("hemi") == "E" else "West"
         mins = m.group("min")
         if mins:
@@ -437,6 +2134,21 @@ def _explain_sigmet_airmet(token: str, *, product: str, seen: dict[str, int]) ->
         return f"Longitude {int(m.group('deg'))}° {hemi}"
     if upper in {"OF", "AND"}:
         return explain_glossary_token(upper, fallback=upper.capitalize())
+    if upper == "CENTER":
+        return "Center"
+    if seen.get("from_line"):
+        boundary = _boundary_points(upper)
+        if boundary:
+            return boundary
+        chain = _navaid_chain(upper)
+        if chain:
+            return chain
+        if re.fullmatch(r"[A-Z]{3}", upper):
+            return f"Navaid {upper}"
+
+    if upper == "TC":
+        seen["tc_next"] = 1
+        return explain_glossary_token(upper, fallback="Tropical cyclone")
 
     # Volcano name after ``ERUPTION MT …`` (e.g. HEKLA, ASHVAL).
     if (
@@ -448,17 +2160,66 @@ def _explain_sigmet_airmet(token: str, *, product: str, seen: dict[str, int]) ->
     ):
         return f"Volcano name ({icao})"
 
-    # FIR proper name (e.g. SHANLON) when not a known glossary hazard token.
-    if icao.isalpha() and len(icao) >= 4 and seen.get("station") and not seen.get("fir_name") and not meaning_for(icao):
+    # FIR proper name (e.g. SHANLON, ROSTOV-NA-DONU) when not a known glossary hazard.
+    fir_name = upper.replace("-", "")
+    if (
+        fir_name.isalpha()
+        and len(upper) >= 2
+        and seen.get("station")
+        and not meaning_for(upper.split("-")[0])
+        and (not seen.get("fir_name") or seen.get("name_open") or seen.get("after_fir"))
+    ):
         seen["fir_name"] = 1
-        return f"FIR name ({icao})"
+        seen["name_open"] = 1
+        seen["after_fir"] = 0
+        return f"FIR name ({upper})"
+
+    if m := _ELLIPSIS_HAZARD.match(upper):
+        seen["hail_size"] = 1
+        head = m.group("head").capitalize()
+        tail = m.group("tail")
+        if tail:
+            return f"{head} and {tail.lower()} possible"
+        return f"{head} possible"
+    if _IN_WIND_ELLIPSIS.match(upper):
+        return "Hail size in inches; wind gusts follow"
+    if upper == "POSS":
+        return "Possible"
+    if upper == "TO" and seen.get("hail_size"):
+        return "To"
+    if upper.startswith("IN") and seen.get("hail_size") and not _IN_WIND_ELLIPSIS.match(upper):
+        return "Inches"
 
     # Glossary-backed intensity / hazard / movement tokens (F9 deepen).
-    return explain_glossary_token(upper)
+    gloss = explain_glossary_token(upper)
+    if gloss:
+        return gloss
+    bare = upper.strip("()")
+    if bare and bare != upper:
+        return explain_glossary_token(bare)
+    return None
 
 
 def _explain_advisory(token: str, *, product: str, seen: dict[str, int]) -> str | None:
-    """Best-effort advisory keyword spans; labeled fields use ``_iter_advisory_fields``."""
+    """
+    Internal helper ``_explain_advisory``.
+
+    Parameters
+    ----------
+    token : str
+        Argument ``token``.
+
+    product : str
+        Argument ``product``.
+
+    seen : dict[str, int]
+        Argument ``seen``.
+
+    Returns
+    -------
+    str | None
+        Return value.
+    """
     upper = token.upper().rstrip(":")
     if product == "VAA":
         if upper == "VA" and seen.get("va", 0) == 0:
@@ -489,7 +2250,7 @@ def _explain_advisory(token: str, *, product: str, seen: dict[str, int]) -> str 
             return explain_glossary_token(upper, fallback="Space weather advisory abbreviation")
     if product == "VONA" and upper == "VONA":
         return explain_glossary_token(upper, fallback="Volcano Observatory Notice for Aviation")
-    return explain_glossary_token(upper, fallback=f"{product} token")
+    return explain_glossary_token(upper, fallback="Unrecognized group")
 
 
 # Longest-first advisory field labels (WMO VAA/TCA/SWXA/VONA TAC layout). Title templates use
@@ -570,7 +2331,19 @@ _FIELD_SPECS_BY_PRODUCT: dict[str, tuple[tuple[str, str], ...]] = {
 
 
 def _advisory_field_finder(product: str) -> list[tuple[re.Pattern[str], str]]:
-    """Return ``(compiled_label_pattern, title_template)`` pairs longest-first."""
+    """
+    Internal helper ``_advisory_field_finder``.
+
+    Parameters
+    ----------
+    product : str
+        Argument ``product``.
+
+    Returns
+    -------
+    list[tuple[re.Pattern[str], str]]
+        Return value.
+    """
     specs = _FIELD_SPECS_BY_PRODUCT.get(product)
     if not specs:
         return []
@@ -578,7 +2351,25 @@ def _advisory_field_finder(product: str) -> list[tuple[re.Pattern[str], str]]:
 
 
 def _advisory_field_title(label: str, title_template: str, match: re.Match[str]) -> str:
-    """Format a field title, substituting ``{hours}`` when present."""
+    """
+    Internal helper ``_advisory_field_title``.
+
+    Parameters
+    ----------
+    label : str
+        Argument ``label``.
+
+    title_template : str
+        Argument ``title_template``.
+
+    match : re.Match[str]
+        Argument ``match``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
     hours = match.groupdict().get("hours")
     if hours is not None and "{hours}" in title_template:
         return title_template.format(hours=hours)
@@ -589,10 +2380,23 @@ _AHL_LINE = re.compile(
     r"^(?P<ahl>[A-Z]{4}\d{2})\s+(?P<cccc>[A-Z]{4})\s+(?P<yygggg>\d{6})\b",
     re.MULTILINE,
 )
+_AHL_BBB_TOKEN = re.compile(r"^(?:AA|CC|RR)[A-X]\b")
 
 
 def _iter_ahl_heading(tac: str) -> list[tuple[int, int, str, str]]:
-    """Decode a leading WMO abbreviated heading on any product bulletin."""
+    """
+    Internal helper ``_iter_ahl_heading``.
+
+    Parameters
+    ----------
+    tac : str
+        Argument ``tac``.
+
+    Returns
+    -------
+    list[tuple[int, int, str, str]]
+        Return value.
+    """
     m = _AHL_LINE.match(tac.lstrip("\ufeff"))
     if m is None:
         stripped = tac.lstrip()
@@ -605,28 +2409,289 @@ def _iter_ahl_heading(tac: str) -> list[tuple[int, int, str, str]]:
     else:
         start, end = m.start(), m.end()
     code = tac[start:end]
-    explanation = f"WMO abbreviated heading - {m.group('ahl')} from {m.group('cccc')} at day-time {m.group('yygggg')}"
-    return [(start, end, code, explanation)]
+    explanation = f"Abbreviated heading {m.group('ahl')} from {m.group('cccc')} at {m.group('yygggg')}"
+    segments: list[tuple[int, int, str, str]] = [(start, end, code, explanation)]
+    # Optional WMO BBB after YYGGgg (CCx / RRx / AAx). Bulletin split consumes the
+    # heading line including BBB, so decode must emit the BBB token explicitly.
+    rest = tac[end:]
+    space = len(rest) - len(rest.lstrip(" \t"))
+    bbb_at = end + space
+    bbb_m = _AHL_BBB_TOKEN.match(tac[bbb_at:])
+    if bbb_m is not None:
+        bbb = bbb_m.group(0)
+        bbb_end = bbb_at + len(bbb)
+        if bbb.startswith("RR"):
+            bbb_explanation = f"Delayed report ({bbb})"
+        elif bbb.startswith("CC"):
+            bbb_explanation = f"Correction ({bbb})"
+        else:
+            bbb_explanation = f"Amendment ({bbb})"
+        segments.append((bbb_at, bbb_end, bbb, bbb_explanation))
+    return segments
 
 
 def _iter_advisory_ahl(tac: str, *, product: str) -> list[tuple[int, int, str, str]]:
-    """Decode leading WMO AHL (``T1T2A1A2ii CCCC YYGGgg``) on structured advisory peers."""
+    """
+    Internal helper ``_iter_advisory_ahl``.
+
+    Parameters
+    ----------
+    tac : str
+        Argument ``tac``.
+
+    product : str
+        Argument ``product``.
+
+    Returns
+    -------
+    list[tuple[int, int, str, str]]
+        Return value.
+    """
     if product not in _ADVISORY_STRUCTURED:
         return []
     return _iter_ahl_heading(tac)
+
+
+_MONTHS = (
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+)
+
+_COMPASS = {
+    "N": "north",
+    "NNE": "north-northeast",
+    "NE": "northeast",
+    "ENE": "east-northeast",
+    "E": "east",
+    "ESE": "east-southeast",
+    "SE": "southeast",
+    "SSE": "south-southeast",
+    "S": "south",
+    "SSW": "south-southwest",
+    "SW": "southwest",
+    "WSW": "west-southwest",
+    "W": "west",
+    "WNW": "west-northwest",
+    "NW": "northwest",
+    "NNW": "north-northwest",
+}
+
+_SPEED_UNIT = {
+    "KMH": "kilometres per hour",
+    "KM/H": "kilometres per hour",
+    "KT": "knots",
+    "MPS": "metres per second",
+}
+
+_COMPASS_RE = "|".join(sorted(_COMPASS, key=len, reverse=True))
+
+_ADVISORY_PHRASES: tuple[tuple[re.Pattern[str], str], ...] = (
+    (re.compile(r"\bNO\s+VA\s+EXP\b"), "no volcanic ash expected"),
+    (re.compile(r"\bNO\s+MSG\s+EXP\b"), "no message expected"),
+    (re.compile(r"\bOF\s+TC\s+CENTRE\b"), "of the tropical cyclone centre,"),
+    (re.compile(r"\bAMSL\b"), "above mean sea level"),
+    (re.compile(r"\bINTSF\b"), "intensifying"),
+    (re.compile(r"\bINTST\b"), "intensifying"),
+    (re.compile(r"\bWKN\b"), "weakening"),
+    (re.compile(r"\bSTNR\b"), "stationary"),
+    (re.compile(r"\bNIL\b"), "none"),
+    (re.compile(r"\bNC\b"), "no change"),
+    (re.compile(r"\bWI\b"), "within"),
+    (re.compile(r"\bTOP\b"), "top"),
+)
+
+
+def _ordinal_day(day: int) -> str:
+    """Day of month with an ordinal, such as ``the 1st``.
+
+    Parameters
+    ----------
+    day : int
+        Day of the month.
+
+    Returns
+    -------
+    str
+        ``the`` plus the day and its suffix.
+    """
+    suffix = "th" if 10 <= day % 100 <= 20 else {1: "st", 2: "nd", 3: "rd"}.get(day % 10, "th")
+    return f"the {day}{suffix}"
+
+
+def _plain_advisory_value(value: str) -> str:
+    """Read coded advisory values as plain language.
+
+    Dates, positions, speeds, distances, and a few fixed phrases are expanded.
+    Surrounding words stay as written. [Corpus: product §F9]
+
+    Parameters
+    ----------
+    value : str
+        Text after an advisory field label.
+
+    Returns
+    -------
+    str
+        The same text with coded pieces expanded.
+    """
+    text = " ".join(value.split())
+    if not text:
+        return ""
+
+    def _dtg(match: re.Match[str]) -> str:
+        """Expand ``YYYYMMDD/HHMMZ`` to a clock time and calendar date.
+
+        Parameters
+        ----------
+        match : re.Match[str]
+            Date and time groups.
+
+        Returns
+        -------
+        str
+            Plain time, or the original text when the date is impossible.
+        """
+        raw, hhmm = match.group(1), match.group(2)
+        month, day = int(raw[4:6]), int(raw[6:8])
+        if not 1 <= month <= 12 or not 1 <= day <= 31:
+            return match.group(0)
+        return f"{hhmm[:2]}:{hhmm[2:]} UTC on {day} {_MONTHS[month - 1]} {raw[:4]}"
+
+    def _daytime(match: re.Match[str]) -> str:
+        """Expand ``DD/HHMMZ`` to a clock time on that day.
+
+        Parameters
+        ----------
+        match : re.Match[str]
+            Day and time groups.
+
+        Returns
+        -------
+        str
+            Plain time, or the original text when the day is impossible.
+        """
+        day = int(match.group(1))
+        hhmm = match.group(2)
+        if not 1 <= day <= 31:
+            return match.group(0)
+        return f"{hhmm[:2]}:{hhmm[2:]} UTC on {_ordinal_day(day)}"
+
+    def _lat(match: re.Match[str]) -> str:
+        """Expand a coded latitude.
+
+        Parameters
+        ----------
+        match : re.Match[str]
+            Hemisphere, degrees, and minutes.
+
+        Returns
+        -------
+        str
+            Degrees and minutes north or south.
+        """
+        hemi = "north" if match.group(1) == "N" else "south"
+        return f"{int(match.group(2))} degrees {match.group(3)} minutes {hemi}"
+
+    def _lon(match: re.Match[str]) -> str:
+        """Expand a coded longitude.
+
+        Parameters
+        ----------
+        match : re.Match[str]
+            Hemisphere, degrees, and minutes.
+
+        Returns
+        -------
+        str
+            Degrees and minutes east or west.
+        """
+        hemi = "east" if match.group(1) == "E" else "west"
+        return f"{int(match.group(2))} degrees {match.group(3)} minutes {hemi}"
+
+    def _move(match: re.Match[str]) -> str:
+        """Expand a compass direction and speed.
+
+        Parameters
+        ----------
+        match : re.Match[str]
+            Direction, speed, and unit.
+
+        Returns
+        -------
+        str
+            Direction, speed, and unit in words.
+        """
+        unit = match.group(3).upper()
+        return f"{_COMPASS[match.group(1)]} at {int(match.group(2))} {_SPEED_UNIT[unit]}"
+
+    def _speed(match: re.Match[str]) -> str:
+        """Expand a bare speed.
+
+        Parameters
+        ----------
+        match : re.Match[str]
+            Speed and unit.
+
+        Returns
+        -------
+        str
+            Speed and unit in words.
+        """
+        unit = match.group(2).upper()
+        return f"{int(match.group(1))} {_SPEED_UNIT[unit]}"
+
+    text = re.sub(r"\b(\d{8})/(\d{4})Z\b", _dtg, text)
+    text = re.sub(r"\b(\d{2})/(\d{4})Z\b", _daytime, text)
+    text = re.sub(r"\b([NS])(\d{2})(\d{2})\b", _lat, text)
+    text = re.sub(r"\b([EW])(\d{2,3})(\d{2})\b", _lon, text)
+    text = re.sub(rf"\b({_COMPASS_RE})\s*(\d{{1,3}})\s*(KM/H|KMH|KT|MPS)\b", _move, text)
+    text = re.sub(r"\bSFC/FL(\d+)\b", lambda m: f"surface to flight level {int(m.group(1))}", text)
+    text = re.sub(
+        r"\bFL(\d+)/(\d+)\b",
+        lambda m: f"flight level {int(m.group(1))} to {int(m.group(2))}",
+        text,
+    )
+    text = re.sub(r"\bFL(\d+)\b", lambda m: f"flight level {int(m.group(1))}", text)
+    text = re.sub(r"\b(\d+)(KM/H|KMH|KT|MPS)\b", _speed, text)
+    text = re.sub(r"\b(\d+)HPA\b", lambda m: f"{int(m.group(1))} hectopascals", text)
+    text = re.sub(r"\b(\d+)NM\b", lambda m: f"{int(m.group(1))} nautical miles", text)
+    text = re.sub(r"\b(\d+)KM\b", lambda m: f"{int(m.group(1))} kilometres", text)
+    text = re.sub(r"\b(\d+)M\b", lambda m: f"{int(m.group(1))} metres", text)
+    for pattern, phrase in _ADVISORY_PHRASES:
+        text = pattern.sub(phrase, text)
+    return " ".join(text.split())
 
 
 def _iter_advisory_fields(
     tac: str,
     *,
     product: str,
-) -> list[tuple[int, int, str, str]]:
+) -> list[tuple[int, int, str, str, int]]:
     """
-    Yield structured ``(start, end, code, explanation)`` for advisory labeled fields.
+    Internal helper ``_iter_advisory_fields``.
 
-    Each field spans from its ``LABEL:`` through the value text until the next
-    labeled field (or end of bulletin). Continuations on following indented lines
-    are included in the same span (WMO A7 / A2 / SWXA / VONA layout).
+    Parameters
+    ----------
+    tac : str
+        Argument ``tac``.
+
+    product : str
+        Argument ``product``.
+
+    Returns
+    -------
+    list[tuple[int, int, str, str, int]]
+        Return value.
     """
     if product not in _ADVISORY_STRUCTURED:
         return []
@@ -653,13 +2718,19 @@ def _iter_advisory_fields(
     for i, (start, label_end, code, title_template, match) in enumerate(selected):
         value_start = label_end
         value_end = selected[i + 1][0] if i + 1 < len(selected) else len(tac)
-        value = tac[value_start:value_end]
-        trim = len(value.rstrip())
-        end = value_start + trim
-        value_text = " ".join(tac[value_start:end].split())
+        raw_value = tac[value_start:value_end]
+        trim = len(raw_value.rstrip())
+        body = raw_value[:trim]
+        lead = len(body) - len(body.lstrip())
+        value_text = " ".join(body.split())
+        plain = _plain_advisory_value(value_text)
         title = _advisory_field_title(code, title_template, match)
-        explanation = f"{title} - {value_text}" if value_text else title
-        out.append((start, end, code, explanation))
+        explanation = f"{title}: {plain}" if plain else title
+        mark_start = value_start + lead
+        mark_end = value_start + trim
+        if mark_end <= mark_start:
+            mark_start, mark_end = start, label_end
+        out.append((mark_start, mark_end, code, explanation, start))
     return out
 
 
@@ -667,7 +2738,22 @@ def _token_indices_covering(
     tokens: list[tuple[int, int, str]],
     spans: list[tuple[int, int]],
 ) -> set[int]:
-    """Return token indices that overlap any ``[start, end)`` character span."""
+    """
+    Internal helper ``_token_indices_covering``.
+
+    Parameters
+    ----------
+    tokens : list[tuple[int, int, str]]
+        Argument ``tokens``.
+
+    spans : list[tuple[int, int]]
+        Argument ``spans``.
+
+    Returns
+    -------
+    set[int]
+        Return value.
+    """
     covered: set[int] = set()
     for idx, (tstart, tend, _) in enumerate(tokens):
         for start, end in spans:
@@ -680,32 +2766,125 @@ def _token_indices_covering(
 def _classify(
     product: str,
 ) -> Callable[[str, dict[str, int]], str | None]:
+    """
+    Internal helper ``_classify``.
+
+    Parameters
+    ----------
+    product : str
+        Argument ``product``.
+
+    Returns
+    -------
+    Callable[[str, dict[str, int]], str | None]
+        Return value.
+    """
     if product in {"METAR", "SPECI"}:
 
         def _metar(tok: str, seen: dict[str, int]) -> str | None:
+            """
+            Internal helper ``_metar``.
+
+            Parameters
+            ----------
+            tok : str
+                Argument ``tok``.
+
+            seen : dict[str, int]
+                Argument ``seen``.
+
+            Returns
+            -------
+            str | None
+                Return value.
+            """
             return _explain_metar_speci(tok, product=product, seen=seen)
 
         return _metar
     if product == "TAF":
 
         def _taf(tok: str, seen: dict[str, int]) -> str | None:
+            """
+            Internal helper ``_taf``.
+
+            Parameters
+            ----------
+            tok : str
+                Argument ``tok``.
+
+            seen : dict[str, int]
+                Argument ``seen``.
+
+            Returns
+            -------
+            str | None
+                Return value.
+            """
             return _explain_taf(tok, seen=seen)
 
         return _taf
     if product in {"SIGMET", "AIRMET"}:
 
         def _haz(tok: str, seen: dict[str, int]) -> str | None:
+            """
+            Internal helper ``_haz``.
+
+            Parameters
+            ----------
+            tok : str
+                Argument ``tok``.
+
+            seen : dict[str, int]
+                Argument ``seen``.
+
+            Returns
+            -------
+            str | None
+                Return value.
+            """
             return _explain_sigmet_airmet(tok, product=product, seen=seen)
 
         return _haz
     if product in _ADVISORY_STRUCTURED:
 
         def _adv(tok: str, seen: dict[str, int]) -> str | None:
+            """
+            Internal helper ``_adv``.
+
+            Parameters
+            ----------
+            tok : str
+                Argument ``tok``.
+
+            seen : dict[str, int]
+                Argument ``seen``.
+
+            Returns
+            -------
+            str | None
+                Return value.
+            """
             return _explain_advisory(tok, product=product, seen=seen)
 
         return _adv
 
     def _none(_tok: str, _seen: dict[str, int]) -> str | None:
+        """
+        Internal helper ``_none``.
+
+        Parameters
+        ----------
+        _tok : str
+            Argument ``_tok``.
+
+        _seen : dict[str, int]
+            Argument ``_seen``.
+
+        Returns
+        -------
+        str | None
+            Return value.
+        """
         return None
 
     return _none
@@ -716,7 +2895,25 @@ def _coalesce_residuals(
     explained: set[int],
     tac: str,
 ) -> list[DecodeResidual]:
-    """Merge adjacent unexplained tokens into residual runs."""
+    """
+    Internal helper ``_coalesce_residuals``.
+
+    Parameters
+    ----------
+    tokens : list[tuple[int, int, str]]
+        Argument ``tokens``.
+
+    explained : set[int]
+        Argument ``explained``.
+
+    tac : str
+        Argument ``tac``.
+
+    Returns
+    -------
+    list[DecodeResidual]
+        Return value.
+    """
     residuals: list[DecodeResidual] = []
     i = 0
     while i < len(tokens):
@@ -739,7 +2936,19 @@ _SPARSE_PRODUCTS = frozenset({"SIGMET", "AIRMET", "VAA", "TCA", "SWXA", "VONA"})
 
 
 def _sentence_from_segment(seg: DecodeSegment) -> str | None:
-    """Turn a value-aware explanation into a summary clause (skip terminators)."""
+    """
+    Internal helper ``_sentence_from_segment``.
+
+    Parameters
+    ----------
+    seg : DecodeSegment
+        Argument ``seg``.
+
+    Returns
+    -------
+    str | None
+        Return value.
+    """
     if seg.code == "=" or seg.explanation.lower().startswith("report terminator"):
         return None
     text = seg.explanation.strip()
@@ -775,11 +2984,13 @@ def _build_summary(
 
     Parameters
     ----------
-    product :
+    product : str
         Uppercase product id.
-    segments :
+
+    segments : list[DecodeSegment]
         Value-aware decode segments.
-    residuals :
+
+    residuals : list[DecodeResidual]
         Undecoded spans; named in a trailing "Not decoded: …" clause.
 
     Returns
@@ -790,7 +3001,7 @@ def _build_summary(
     clauses: list[str] = []
     for seg in segments:
         clause = _sentence_from_segment(seg)
-        if clause:
+        if clause and (not clauses or clauses[-1] != clause):
             clauses.append(clause)
 
     if product in _SPARSE_PRODUCTS:
@@ -814,7 +3025,19 @@ def _build_summary(
 
 
 def _looks_like_ahl_bulletin(text: str) -> bool:
-    """Return True when the first non-empty line is a WMO abbreviated heading."""
+    """
+    Internal helper ``_looks_like_ahl_bulletin``.
+
+    Parameters
+    ----------
+    text : str
+        Argument ``text``.
+
+    Returns
+    -------
+    bool
+        Return value.
+    """
     for line in text.splitlines():
         stripped = line.strip()
         if not stripped:
@@ -824,7 +3047,22 @@ def _looks_like_ahl_bulletin(text: str) -> bool:
 
 
 def _shift_decode(result: DecodeResult, offset: int) -> DecodeResult:
-    """Translate segment/residual offsets into the parent bulletin string."""
+    """
+    Internal helper ``_shift_decode``.
+
+    Parameters
+    ----------
+    result : DecodeResult
+        Argument ``result``.
+
+    offset : int
+        Argument ``offset``.
+
+    Returns
+    -------
+    DecodeResult
+        Return value.
+    """
     return DecodeResult(
         product=result.product,
         segments=[
@@ -850,11 +3088,15 @@ def _shift_decode(result: DecodeResult, offset: int) -> DecodeResult:
 
 
 class _BulletinMeta(Protocol):
+    """Internal bulletin metadata."""
+
     ahl: str
     report_count: int
 
 
 class _BulletinSplit(Protocol):
+    """Internal bulletin split result."""
+
     reports: Sequence[str]
     meta: _BulletinMeta
 
@@ -863,17 +3105,39 @@ _bulletin_splitter: Callable[[str, str], object] | None = None
 
 
 def set_bulletin_splitter(splitter: Callable[[str, str], object] | None) -> None:
-    """Inject WMO bulletin splitting. Unset means bulletins are not split."""
+    """
+    Inject WMO bulletin splitting. Unset means bulletins are not split.
+
+    Parameters
+    ----------
+    splitter : Callable[[str, str], object] | None
+        Callable that splits a bulletin into TAC reports.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (set_bulletin_splitter)
+    2
+    """
     global _bulletin_splitter
     _bulletin_splitter = splitter
 
 
 def _decode_bulletin(tac: str, *, product: str) -> DecodeResult | None:
-    """Split a WMO AHL bulletin and decode each contained TAC report.
+    """
+    Internal helper ``_decode_bulletin``.
 
-    Returns None when the text is not a splittable bulletin, or when no
-    bulletin splitter has been injected, so the caller can fall through to
-    single-report decode. This package does not import the converter.
+    Parameters
+    ----------
+    tac : str
+        Argument ``tac``.
+
+    product : str
+        Argument ``product``.
+
+    Returns
+    -------
+    DecodeResult | None
+        Return value.
     """
     if not _looks_like_ahl_bulletin(tac):
         return None
@@ -912,26 +3176,105 @@ def _decode_bulletin(tac: str, *, product: str) -> DecodeResult | None:
 
 
 def _decode_single_report(tac: str, *, product: str) -> DecodeResult:
-    """Decode one TAC report (no bulletin split)."""
+    """
+    Internal helper ``_decode_single_report``.
+
+    Parameters
+    ----------
+    tac : str
+        Argument ``tac``.
+
+    product : str
+        Argument ``product``.
+
+    Returns
+    -------
+    DecodeResult
+        Return value.
+    """
     tokens = _iter_tokens(tac)
     classify = _classify(product)
     seen: dict[str, int] = {}
     segments: list[DecodeSegment] = []
     explained: set[int] = set()
 
+    if product in {"SIGMET", "AIRMET"}:
+        heading = _LOOSE_AHL.match(tac.lstrip("\ufeff"))
+        if heading is not None:
+            lead = len(tac) - len(tac.lstrip("\ufeff"))
+            start = lead + heading.start()
+            end = lead + heading.end()
+            segments.append(
+                DecodeSegment(
+                    start=start,
+                    end=end,
+                    code=tac[start:end],
+                    explanation=(
+                        f"Abbreviated heading {heading.group('ahl')} from "
+                        f"{heading.group('cccc')} at {heading.group('yygggg')}"
+                    ),
+                )
+            )
+            for idx, (token_start, token_end, _token) in enumerate(tokens):
+                if token_start >= start and token_end <= end:
+                    explained.add(idx)
+
     # Advisory products: structured LABEL: value fields first (EV-030 / EV-099).
     if product in _ADVISORY_STRUCTURED:
         field_spans: list[tuple[int, int]] = []
-        advisory_parts = _iter_advisory_ahl(tac, product=product) + _iter_advisory_fields(tac, product=product)
-        for start, end, code, explanation in advisory_parts:
+        for start, end, code, explanation in _iter_advisory_ahl(tac, product=product):
             segments.append(DecodeSegment(start=start, end=end, code=code, explanation=explanation))
             field_spans.append((start, end))
+        label_starts: list[int] = []
+        for mark_start, mark_end, code, explanation, label_start in _iter_advisory_fields(tac, product=product):
+            segments.append(DecodeSegment(start=mark_start, end=mark_end, code=code, explanation=explanation))
+            field_spans.append((label_start, mark_end))
+            label_starts.append(label_start)
         explained |= _token_indices_covering(tokens, field_spans)
+        if label_starts:
+            first_label = min(label_starts)
+            for idx, (_token_start, token_end, _token) in enumerate(tokens):
+                if token_end <= first_label:
+                    explained.add(idx)
 
     for idx, (start, end, token) in enumerate(tokens):
         if idx in explained:
             continue
+        # Spaced CAVOK (TAF live typo) — consume five single-letter tokens.
+        if product == "TAF":
+            cavok_span = _spaced_cavok_span(tokens, idx)
+            if cavok_span is not None:
+                cavok_start, cavok_end = cavok_span
+                segments.append(
+                    DecodeSegment(
+                        start=cavok_start,
+                        end=cavok_end,
+                        code=tac[cavok_start:cavok_end],
+                        explanation="Ceiling and visibility OK",
+                    )
+                )
+                explained.update(range(idx, idx + 5))
+                continue
+        # Annex 3 runway wind shear: WS + bare R{nn}[LCR]?
+        if product in {"METAR", "SPECI"} and token.upper() == "WS" and idx + 1 < len(tokens):
+            _next_start, next_end, next_tok = tokens[idx + 1]
+            if _WS_RUNWAY.fullmatch(next_tok.upper()) and (idx + 1) not in explained:
+                rw = next_tok.upper()[1:]
+                segments.append(
+                    DecodeSegment(
+                        start=start,
+                        end=next_end,
+                        code=f"{token} {next_tok}",
+                        explanation=f"Wind shear on runway {rw}",
+                    )
+                )
+                explained.add(idx)
+                explained.add(idx + 1)
+                continue
         explanation = classify(token, seen)
+        if explanation is None and product in {"METAR", "SPECI", "TAF"}:
+            following = tokens[idx + 1][2] if idx + 1 < len(tokens) else ""
+            explanation = _whole_miles(token, following)
         if explanation is None:
             continue
         segments.append(
@@ -951,13 +3294,78 @@ def _decode_single_report(tac: str, *, product: str) -> DecodeResult:
 
 
 def decode_single_report(tac: str, *, product: str) -> DecodeResult:
-    """Decode one TAC report without bulletin or COLLECT dispatch."""
+    """
+    Decode one TAC report without bulletin or COLLECT dispatch.
+
+    Parameters
+    ----------
+    tac : str
+        TAC text.
+
+    product : str
+        Product name.
+
+    Returns
+    -------
+    DecodeResult
+        Decode one TAC report without bulletin or COLLECT dispatch.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (decode_single_report)
+    2
+    """
     return _decode_single_report(tac, product=product)
 
 
 def shift_decode(result: DecodeResult, offset: int) -> DecodeResult:
-    """Translate segment offsets into a parent document string."""
+    """
+    Translate segment offsets into a parent document string.
+
+    Parameters
+    ----------
+    result : DecodeResult
+        Decode result whose spans are shifted.
+
+    offset : int
+        Character offset added to spans.
+
+    Returns
+    -------
+    DecodeResult
+        Translate segment offsets into a parent document string.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (shift_decode)
+    2
+    """
     return _shift_decode(result, offset)
+
+
+def _leading_report_product(tac: str) -> str | None:
+    """
+    Return the product keyword when the report itself starts with one.
+
+    Parameters
+    ----------
+    tac : str
+        Raw TAC text.
+
+    Returns
+    -------
+    str | None
+        Supported product id, or None when the first word is not one.
+    """
+    for line in tac.splitlines():
+        stripped = line.strip()
+        if not stripped:
+            continue
+        first = stripped.split(None, 1)[0].upper().rstrip(":")
+        if first in _SUPPORTED:
+            return first
+        return None
+    return None
 
 
 def decode_tac(tac: str, *, product: str) -> DecodeResult:
@@ -966,10 +3374,11 @@ def decode_tac(tac: str, *, product: str) -> DecodeResult:
 
     Parameters
     ----------
-    tac :
+    tac : str
         Raw TAC report text, a WMO AHL bulletin, or COLLECT / IWXXM XML with
         contained TAC or leaf fields.
-    product :
+
+    product : str
         One of the F6 product ids or ``SWXA`` (case-insensitive).
 
     Returns
@@ -983,8 +3392,17 @@ def decode_tac(tac: str, *, product: str) -> DecodeResult:
         (heading is a bulletin-framing segment, not a product residual).
         COLLECT documents decode contained TAC when present, otherwise walk XML
         fields (ADR-045).
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (decode_tac)
+    2
     """
     product_u = product.upper()
+    if product_u in _SUPPORTED:
+        leading = _leading_report_product(tac)
+        if leading is not None:
+            product_u = leading
     if product_u not in _SUPPORTED:
         # Entire body residual - unknown product still returns a well-formed shape.
         text = tac

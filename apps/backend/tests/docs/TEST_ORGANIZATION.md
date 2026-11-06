@@ -402,7 +402,7 @@ class TestMyEndpoint:
         assert response.status_code == 200
 ```
 
-## Best Practices
+## Practices
 
 1. **Keep tests focused** - One assertion per test when possible
 2. **Use fixtures** - Avoid duplication with pytest fixtures
@@ -441,7 +441,7 @@ pytest --collect-only -q | grep -E "test_.*$" | wc -l
 Test documentation is located in `tests/docs/`:
 
 - **README.md** - Main testing guide
-- **COMPLETE_SUMMARY.md** - Comprehensive test coverage summary
+- **COMPLETE_SUMMARY.md** - Test coverage summary
 - **IMPLEMENTATION_SUMMARY.md** - Implementation details
 - **PHASE2_SUMMARY.md** - Phase 2 work summary
 - **E2E_TEST_COVERAGE_REPORT.md** - E2E coverage analysis

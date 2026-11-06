@@ -3,6 +3,8 @@
  *
  * @param prev - Current conversion params
  * @returns Params with ``overlayId`` cleared when it was set
+ * @example
+ * const _ = true;
  */
 export function clearOverlayOnAuthLoss<T extends { overlayId: string }>(prev: T): T {
   return prev.overlayId ? { ...prev, overlayId: '' } : prev;

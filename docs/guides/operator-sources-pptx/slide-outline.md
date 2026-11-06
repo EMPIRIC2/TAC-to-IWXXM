@@ -1,4 +1,4 @@
-# Slide outline — National compliance briefing (TAC → IWXXM)
+# Slide outline - National compliance briefing (TAC → IWXXM)
 
 **Audience:** Heads of MET services / aviation authorities / State representatives
 responsible for meeting **ICAO/WMO OPMET–IWXXM** exchange expectations.
@@ -8,9 +8,23 @@ lint → convert → validate. Not a click tutorial.
 **Citation pack:** [citation-search-guide.md](./citation-search-guide.md)
 **Policy:** cite landings + section numbers; never paste Annex 3 / MoC body text.
 
+Terms used in this outline:
+
+- **MET** means meteorological.
+- **TAC** means Traditional Alphanumeric Code.
+- **IWXXM** means ICAO/WMO XML weather exchange format.
+- **OPMET** means operational meteorological information.
+- **ICAO** means International Civil Aviation Organization.
+- **WMO** means World Meteorological Organization.
+- **SARPs** means Standards and Recommended Practices.
+- **XSD** means XML Schema Definition.
+- **Schematron** means rule-based XML checks beyond XSD.
+- **ROC** means Regional OPMET Centre.
+- **ANSP** means air navigation service provider.
+
 ---
 
-## Slide 1 — Title
+## Slide 1 - Title
 
 **Title:** Meeting OPMET IWXXM Exchange Expectations
 **Subtitle:** TAC → validated IWXXM for international air navigation · Schema pin **IWXXM v2025-2**
@@ -19,7 +33,7 @@ lint → convert → validate. Not a click tutorial.
 - For: State MET / ANSP / aviation authority leadership
 - Scope: convert Traditional Alphanumeric Code (TAC) to IWXXM XML and prove quality
 
-**Speaker notes:** Frame as **compliance enablement**. Obligations come from ICAO/WMO —
+**Speaker notes:** Frame as **compliance enablement**. Obligations come from ICAO/WMO;
 this system implements lint/convert/validate against published schemas.
 [citation-search-guide.md] [Corpus: product §F6/F7]
 
@@ -27,14 +41,14 @@ this system implements lint/convert/validate against published schemas.
 
 ---
 
-## Slide 2 — Why leadership cares
+## Slide 2 - Why leadership cares
 
 **Title:** From TAC operations to IWXXM exchange
 
 **Bullets:**
 - TAC remains widely used for **presentation** and local ops
 - International OPMET **exchange** increasingly requires **IWXXM** (XML/GML)
-- Annex 3 sets MET service / product SARPs (State-adopted edition) — *Access: paywall*
+- Annex 3 sets MET service / product SARPs (State-adopted edition). *Access: paywall*
 - Public **OPMET IWXXM Exchange Guidelines (5th Ed., 2023)** describe prep, translation, exchange over AFS/AMHS
 - Authorities need: **valid TAC → correct IWXXM → XSD + Schematron pass**
 
@@ -45,7 +59,7 @@ regional agreement states it. Workshop ~2030 talk is **informative** only (PPT-0
 
 ---
 
-## Slide 3 — Binding sources map
+## Slide 3 - Binding sources map
 
 **Title:** Sources States cite for IWXXM programmes
 
@@ -61,11 +75,11 @@ regional agreement states it. Workshop ~2030 talk is **informative** only (PPT-0
 | Overview only | TT-AvData workshop PPT-02 | Public **informative** |
 
 **Speaker notes:** Walk leaders through citation-search-guide §2–§3. Regional guides
-(e.g. EUR Doc 014) **complement** Annex 3 — they do not replace it.
+(e.g. EUR Doc 014) **complement** Annex 3; they do not replace it.
 
 ---
 
-## Slide 4 — What “compliance-ready IWXXM” means
+## Slide 4 - What “compliance-ready IWXXM” means
 
 **Title:** Proof points Regulators and ROCs expect
 
@@ -78,14 +92,14 @@ regional agreement states it. Workshop ~2030 talk is **informative** only (PPT-0
 6. Prefer official TAC↔XML example pairs for acceptance tests
 7. Translation metadata when translating for another centre; retain TAC on failure
 
-**Speaker notes:** Guidelines 5th §5.3.2 — schema **and** Schematron. Default pin **2025-2**.
+**Speaker notes:** Guidelines 5th §5.3.2: schema **and** Schematron. Default pin **2025-2**.
 Hub: docs/domain/README.md pipeline table.
 
 **Cite:** Guidelines 5th · schemas.wmo.int/2025-2 · IWXXM_VALIDATION.md
 
 ---
 
-## Slide 5 — How this system maps
+## Slide 5 - How this system maps
 
 **Title:** Software pipeline aligned to ICAO/WMO sources
 
@@ -101,7 +115,7 @@ Hub: docs/domain/README.md pipeline table.
 
 ---
 
-## Slide 6 — Products in scope
+## Slide 6 - Products in scope
 
 **Title:** Products covered for State programmes
 
@@ -115,7 +129,7 @@ Hub: docs/domain/README.md pipeline table.
 
 ---
 
-## Slide 7 — Schema pin & version governance
+## Slide 7 - Schema pin & version governance
 
 **Title:** Validate against a published IWXXM line
 
@@ -129,7 +143,7 @@ Hub: docs/domain/README.md pipeline table.
 
 ---
 
-## Slide 8 — Governance & access (procurement / legal)
+## Slide 8 - Governance & access (procurement / legal)
 
 **Title:** What your State must hold vs what is free
 
@@ -143,7 +157,7 @@ Hub: docs/domain/README.md pipeline table.
 
 ---
 
-## Slide 9 — Recommended leadership actions
+## Slide 9 - Recommended leadership actions
 
 **Title:** Next steps for a State programme
 
@@ -159,35 +173,35 @@ Hub: docs/domain/README.md pipeline table.
 
 ---
 
-## Slide 10 — Informative workshop context (optional)
+## Slide 10 - Informative workshop context (optional)
 
 **Title:** Industry briefing context (not SARPs)
 
 **Bullets:**
-- TT-AvData “IWXXM Framework” (ESAF, Oct 2025) — public download
-- Useful for landings map / messaging — label **INFORMATIVE**
+- TT-AvData “IWXXM Framework” (ESAF, Oct 2025), public download
+- Useful for landings map / messaging; label **INFORMATIVE**
 - Forward messages (e.g. TAC sunset discussions) → verify against **your** Annex 3 edition / Region
 
 **Cite:** https://www.icao.int/filebrowser/download/26741?fid=26741
 
 ---
 
-## Slide 11 — References (handout)
+## Slide 11 - References (handout)
 
 **Title:** Cite these landings
 
 **Bullets:**
-- Annex 3 — store.icao.int/en/annexes/annex-3
-- Doc 10003 — ICAO Store
-- OPMET IWXXM Guidelines 5th — icao.int METP PDF (public)
+- Annex 3: store.icao.int/en/annexes/annex-3
+- Doc 10003: ICAO Store
+- OPMET IWXXM Guidelines 5th: icao.int METP PDF (public)
 - schemas.wmo.int/iwxxm/2025-2/
 - codes.wmo.int
-- library.wmo.int — Manual on Codes I.3
+- library.wmo.int: Manual on Codes I.3
 - Full search steps: `docs/guides/operator-sources-pptx/citation-search-guide.md`
 
 ---
 
-## Slide 12 — Closing
+## Slide 12 - Closing
 
 **Title:** Compliance is standards-led; software makes it operable
 

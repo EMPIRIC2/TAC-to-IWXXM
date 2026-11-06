@@ -1,11 +1,15 @@
-# METAR to IWXXM Conversion - Architecture Overview
+# METAR to IWXXM conversion - architecture overview
 
 > **OBSOLETE (EV-docs-accuracy-audit):** Pre-monorepo / GIFTs-era layered diagrams. **Not a
 > CORPUS design gate.** Use [spec.md](../spec.md) + [tech-spec.md](../tech-spec.md) + ADRs.
 
-## System Design (Sprint 1 + Sprint 2)
+**METAR** means routine aerodrome weather report. **IWXXM** means ICAO/WMO XML weather
+exchange format. **TAC** means Traditional Alphanumeric Code. **GIFTs** is the encoder
+library used in this era of the design. **TTL** means time to live for a cache entry.
 
-### Layered Architecture
+## System design (Sprint 1 + Sprint 2)
+
+### Layered architecture
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
@@ -90,16 +94,16 @@
 │  │   respectful     │   FeatureCol     │ • Format: RDF/XML       │ │
 │  │ • Updated: 3h    │                  │ • Online cache: 1 week  │ │
 │  └──────────────────┴──────────────────┴──────────────────────────┘ │
-│  Local: data/af-airports.csv (GIFTs)                              │ │
-│  ├─ 100K+ airport records                                         │ │
-│  ├─ ICAO codes, names, coords, elevation                          │ │
-│  └─ Primary for African airports                                  │ │
+│  Local: data/af-airports.csv (GIFTs)                              │
+│  ├─ 100K+ airport records                                         │
+│  ├─ ICAO codes, names, coords, elevation                          │
+│  └─ Primary for African airports                                  │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
-## Data Flow
+## Data flow
 
-### Complete Test Generation Flow
+### Complete test generation flow
 
 ```
 ┌─ python3 scripts/generate_test_data.py ─┐
@@ -168,7 +172,7 @@
 └─→ Exit (or run tests)                   │
 ```
 
-### Test Execution Flow
+### Test execution flow
 
 ```
 ┌─ pytest tests/test_dynamic_metar_generation.py ─┐
@@ -203,9 +207,9 @@
 └─→ Exit with results                             │
 ```
 
-## Component Integration Points
+## Component integration points
 
-### When AirportReconciliationService Gets Data
+### When AirportReconciliationService gets data
 
 ```
 reconciliation.get_airport("KDCA")
@@ -225,7 +229,7 @@ reconciliation.get_airport("KDCA")
    └─ Return ReconciledAirport object
 ```
 
-### When METARTestGenerator Creates Test Cases
+### When METARTestGenerator creates test cases
 
 ```
 test_generator.diverse_sample(count=200)
@@ -250,7 +254,7 @@ test_generator.diverse_sample(count=200)
 └─ Cache results to JSON file
 ```
 
-## Data Structures
+## Data structures
 
 ### METARTestCase
 
@@ -309,9 +313,9 @@ class CoverageReport:
     to_dict() → Dict                       # For JSON export
 ```
 
-## Caching Strategy
+## Caching strategy
 
-### Cache Directory Structure
+### Cache directory structure
 
 ```
 test-data/generated-tests/
@@ -330,7 +334,7 @@ test-data/generated-tests/
 └─ regional_australia_30_3h.json
 ```
 
-### Cache Keys
+### Cache keys
 
 Generated using MD5 of:
 ```
@@ -348,9 +352,9 @@ sample query: MD5("sample", 100, 3)
 - AviationWeather cache: **1 hour** (3600s) by default
 - Manual override: `use_cache=False` bypasses
 
-## Error Handling
+## Error handling
 
-### API Failures
+### API failures
 
 ```
 try fetch_metars_by_bbox()
@@ -363,7 +367,7 @@ try fetch_metars_by_bbox()
 Result: Graceful degradation, partial coverage acceptable
 ```
 
-### Metadata Enrichment Failures
+### Metadata enrichment failures
 
 ```
 try reconciliation.get_airport(station_id)
@@ -375,9 +379,9 @@ try reconciliation.get_airport(station_id)
 Result: Test case created with API data as fallback
 ```
 
-## Performance Characteristics
+## Performance characteristics
 
-### First Run (All API Calls)
+### First run (all API calls)
 
 ```
 7 regions × 400 METARs × 3 API calls (with retries)
@@ -387,7 +391,7 @@ Result: Test case created with API data as fallback
 └─ Total: 30-60 seconds
 ```
 
-### Cached Runs
+### Cached runs
 
 ```
 Load JSON files from disk
@@ -396,7 +400,7 @@ Load JSON files from disk
 └─ Total: <1 second
 ```
 
-### Test Execution (200 tests)
+### Test execution (200 tests)
 
 ```
 For each METAR:
@@ -405,21 +409,21 @@ For each METAR:
 └─ 200 test cases: 1-5 minutes
 ```
 
-## Security Considerations
+## Security considerations
 
-### API Keys
+### API keys
 
 - **OpenAIP key**: Optional, stored in .env (from user attachment)
 - **WMO**: No auth required (public registry)
 - **AviationWeather**: No auth required (no rate limiting for research use)
 
-### Data Privacy
+### Data privacy
 
 - Test data is public (weather is public information)
 - Failure reports saved locally only
 - No data transmitted outside of direct API calls
 
-### Cache Security
+### Cache security
 
 - Cache files are local JSON (plain text)
 - No sensitive data cached
@@ -427,11 +431,13 @@ For each METAR:
 
 ## Summary
 
-This architecture provides:
+This architecture (Sprint 1–2 era) provides:
 
-1. **Scalability**: 200+ tests with one command, easily extensible
-2. **Reproducibility**: Cached data ensures same tests across runs
+1. **Scale**: 200+ tests with one command, extensible
+2. **Reproducibility**: Cached data keeps the same tests across runs
 3. **Coverage**: 7 world regions, 8+ phenomena, 79+ stations
-4. **Integration**: Leverages all Sprint 1 components
-5. **Maintainability**: Clean separation of concerns
-6. **Extensibility**: Ready for Sprint 3 semantic validation
+4. **Integration**: Uses Sprint 1 components
+5. **Maintainability**: Separation of concerns between layers
+6. **Extensibility**: Prepared for Sprint 3 semantic validation
+
+Use current CORPUS docs for the monorepo design. This file is historical only.

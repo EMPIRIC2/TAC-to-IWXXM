@@ -1,7 +1,7 @@
 [project]
 name = "tac-decoding"
-version = "2026.9.22"
-description = "Decode TAC aviation weather products into natural-language segments and summaries"
+version = "2026.11.5"
+description = "Decode Traditional Alphanumeric Code (TAC) aviation weather into plain-language segments and summaries"
 readme = "README.md"
 license = { text = "MIT" }
 requires-python = ">=3.12"
@@ -22,10 +22,16 @@ packages = ["src/tac_decoding"]
 
 [tool.hatch.build.targets.wheel.force-include]
 "src/tac_decoding/data/decode_glossary.yaml" = "tac_decoding/data/decode_glossary.yaml"
+"src/tac_decoding/data/catalog_meta.yaml" = "tac_decoding/data/catalog_meta.yaml"
 "src/tac_decoding/data/packs/metar.yaml" = "tac_decoding/data/packs/metar.yaml"
 "src/tac_decoding/data/packs/speci.yaml" = "tac_decoding/data/packs/speci.yaml"
 
 [tool.pytest.ini_options]
+asyncio_default_fixture_loop_scope = "function"
+
+filterwarnings = [
+  "error",
+]
 testpaths = ["tests"]
 pythonpath = ["src"]
 
@@ -43,5 +49,5 @@ exclude_lines = [
 ]
 
 [tool.ruff]
-extend = "../../ruff.toml"
+extend = "../../pyproject.toml"
 line-length = 120

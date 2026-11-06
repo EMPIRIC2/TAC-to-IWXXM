@@ -1,10 +1,19 @@
 # AU_BOM — Australia BoM semantic overlay (P1)
 
-> **Profile id**: `AU_BOM` · **Kind**: semantic · **Priority**: P1 · **Status**: implemented (EV-087 / [#917](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/917); deepen [#1221](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1221))  
-> **Catalog row**: [`catalog.yaml`](../catalog.yaml) · **ADR**: [ADR-036](../../../adr/ADR-036-semantic-vs-exchange-profiles.md)
+> **Profile id**: `AU_BOM` · **Kind**: semantic · **Priority**: P1 · **Status**: implemented (EV-087 / [#917](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/917); deepen EV-regional-dialect-profiles)  
+> **Catalog row**: [`catalog.yaml`](../catalog.yaml) · **ADR**: [ADR-036](../../../adr/ADR-036-semantic-vs-exchange-profiles.md) · [ADR-046](../../../adr/ADR-046-validation-policy-layers.md)
 
 Bureau of Meteorology national semantic overlay: TAF change-group `INTER`, TAF3 service
 marker in RMK, forecast T/Q remarks, and AUTO METAR/SPECI tokens (`NCD`, `UP`, solidi).
+
+**Inheritance**: `inherits: annex3` in `lint_profiles.yaml`. Durable dialects recorded under
+`recorded` (solidi / national heading). **ICAO prefer** (EV-regional-profile-remainder):
+`station_prefixes: [Y]` — default-`annex3` Australian `Y*` TAFs prefer `au_bom`, and
+`au_bom` binds the shared `taf-prob-period-info-quality` policy so standalone
+`PROB`/`PROB`+`INTER` period without TEMPO is **info** (not a soft warning). Annex 3
+still keeps full missing `tt/td` as error; BoM AUTO dewpoint-nil `tt///` is
+**dewpoint-not-observable info** (narrow grammar), not a blanket `MISSING_TEMP_DEWPOINT`
+severity remap.
 
 ## Owns (target)
 
@@ -41,9 +50,11 @@ marker in RMK, forecast T/Q remarks, and AUTO METAR/SPECI tokens (`NCD`, `UP`, s
 | Component | Location |
 |-----------|----------|
 | Registry | `packages/tac2iwxxm/src/tac2iwxxm/profile_registry.py` (`au_bom`) |
+| Lint catalog | `packages/tac-validate/.../lint_profiles.yaml` → `au_bom` (`differs: true`) |
+| Shared helper | `packages/tac-validate/.../api.py` → `lint_with_profile` |
 | Fixtures | `packages/tac2iwxxm/tests/fixtures/profiles/AU_BOM/` |
 
 ## Gaps
 
-- Native IWXXM `INTER` changeIndicator does not exist in `taf.xsd` — provenance via remarks.
+- Native IWXXM `INTER` changeIndicator does not exist in `taf.xsd`; provenance via remarks.
 - Category A/B issuance schedules optional deepen.

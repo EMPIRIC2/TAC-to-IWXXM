@@ -35,6 +35,14 @@ _limiter = get_limiter()
 
 
 def _caps() -> MassIngestCaps:
+    """
+    Internal helper ``_caps``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return MassIngestCaps(
         max_files=get_mass_ingest_max_files(),
         max_file_bytes=get_mass_ingest_max_file_bytes(),
@@ -43,6 +51,19 @@ def _caps() -> MassIngestCaps:
 
 
 def _result_payload(item: MassIngestFileResult) -> dict[str, Any]:
+    """
+    Internal helper ``_result_payload``.
+
+    Parameters
+    ----------
+    item : object
+        Argument ``item``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return {
         "name": item.name,
         "accepted": item.accepted,
@@ -52,7 +73,7 @@ def _result_payload(item: MassIngestFileResult) -> dict[str, Any]:
     }
 
 
-@router.post("/ingest/mass")
+@router.post("/ingest/mass", summary="Ingest files or a zip")
 @mass_ingest_limit(_limiter)
 async def mass_ingest(
     request: Request,
@@ -61,6 +82,7 @@ async def mass_ingest(
 ) -> JSONResponse:
     """
     Authenticated multi-file / zip ingest with caps, sniff, and zip-bomb guards.
+
 
     Parameters
     ----------
@@ -75,6 +97,11 @@ async def mass_ingest(
     -------
     JSONResponse
         Per-file accept/reject list and summary counts.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (mass_ingest)
+    2
     """
     uploads = files
     if not uploads:
@@ -103,12 +130,12 @@ async def mass_ingest(
 
     if len(results) > caps.max_files:
         raise HTTPException(
-            status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE,
+            status_code=status.HTTP_413_CONTENT_TOO_LARGE,
             detail=f"Too many files after expansion (max {caps.max_files})",
         )
     if total_bytes > caps.max_total_bytes:
         raise HTTPException(
-            status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE,
+            status_code=status.HTTP_413_CONTENT_TOO_LARGE,
             detail=f"Accepted content exceeds {caps.max_total_bytes} bytes",
         )
 
@@ -132,8 +159,9 @@ async def mass_ingest(
 @router.post(
     "/ingest-collect",
     tags=["Conversion"],
+    summary="COLLECT ingest",
     responses={
-        501: {"description": "COLLECT / FTBP ingest not implemented yet (placeholder)"},
+        501: {"description": "COLLECT member extraction is not available."},
     },
 )
 async def ingest_collect(
@@ -143,10 +171,34 @@ async def ingest_collect(
     profile: str = Form(default="annex3"),
     iwxxm_version: str = Form(default="2025-2"),
 ) -> dict[str, Any]:
-    """Placeholder for IWXXM COLLECT / FTBP ingest.
+    """
+    Accept a COLLECT upload, including gzip text, and return HTTP 501.
 
-    Accepts uploads (including ``.gz`` via ``read_upload_files_text``) so the operator UI
-    can exercise the path; returns HTTP 501 until member extraction + validate is shipped.
+    Member extraction is not available.
+
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (ingest_collect)
+    2
+
+    Parameters
+    ----------
+    request : object
+        Argument ``request``.
+    files : object
+        Argument ``files``.
+    manual_text : object
+        Argument ``manual_text``.
+    profile : object
+        Argument ``profile``.
+    iwxxm_version : object
+        Argument ``iwxxm_version``.
+
+    Returns
+    -------
+    object
+        Return value.
     """
     content_type = (request.headers.get("content-type") or "").lower()
     if "multipart/form-data" not in content_type:

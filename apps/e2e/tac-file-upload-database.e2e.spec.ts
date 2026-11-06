@@ -1,7 +1,15 @@
 import { expect, test } from '@playwright/test';
 import * as fs from 'fs';
+import * as os from 'os';
 import * as path from 'path';
-import { loginAndOpenConverter } from './playwright-e2e-helpers';
+import {
+  fillManualTac,
+  loginAndOpenConverter,
+  openConvertConsoleTab,
+  openConvertDownloadsTab,
+  openConvertIwxxmTab,
+  openConvertSettings,
+} from './playwright-e2e-helpers';
 
 /** Legacy layout (pre-monorepo) plus vendor pin path after M2. */
 const DEFAULT_TAC_RELATIVE_CANDIDATES = [
@@ -11,7 +19,7 @@ const DEFAULT_TAC_RELATIVE_CANDIDATES = [
 const REQUIRE_TAC_FIXTURES =
   process.env.PLAYWRIGHT_REQUIRE_TAC_FIXTURES === '1' || process.env.CI === 'true';
 
-function resolveTacFilesDir(): string | null {
+function resolveTacFilesDir(searchFrom: string = process.cwd()): string | null {
   const configured = process.env.PLAYWRIGHT_TAC_FIXTURES_DIR;
   if (configured) {
     if (!fs.existsSync(configured)) {
@@ -24,9 +32,9 @@ function resolveTacFilesDir(): string | null {
 
   // playwright.config / make test-e2e-* run with cwd = apps/e2e
   const searchRoots = [
-    process.cwd(),
-    path.resolve(process.cwd(), '..'),
-    path.resolve(process.cwd(), '../..'),
+    searchFrom,
+    path.resolve(searchFrom, '..'),
+    path.resolve(searchFrom, '../..'),
   ];
   const checked: string[] = [];
   for (const root of searchRoots) {
@@ -79,18 +87,58 @@ function getTacFiles(): TacFixture[] {
   );
 }
 
+/** Search a directory that is not the repo, so missing fixture paths are visited. */
+function missingFixtureSearch(): string {
+  const previous = process.env.PLAYWRIGHT_TAC_FIXTURES_DIR;
+  delete process.env.PLAYWRIGHT_TAC_FIXTURES_DIR;
+  const scratch = fs.mkdtempSync(path.join(os.tmpdir(), 'tac-e2e-'));
+  try {
+    const found = resolveTacFilesDir(scratch);
+    return found ?? '';
+  } catch (error) {
+    return String(error);
+  } finally {
+    if (previous === undefined) {
+      delete process.env.PLAYWRIGHT_TAC_FIXTURES_DIR;
+    } else {
+      process.env.PLAYWRIGHT_TAC_FIXTURES_DIR = previous;
+    }
+    fs.rmSync(scratch, { recursive: true, force: true });
+  }
+}
+
 test.describe('TAC convert + Disseminate (Upload to Database removed)', () => {
+  test('missing TAC fixture candidates are skipped', () => {
+    const first = missingFixtureSearch();
+    const second = missingFixtureSearch();
+    const located = resolveTacFilesDir();
+    const locatedAgain = resolveTacFilesDir();
+    expect(first === '' || first.includes('No TAC fixtures directory found')).toBe(
+      true,
+    );
+    expect(second === '' || second.includes('No TAC fixtures directory found')).toBe(
+      true,
+    );
+    expect(located).toBe(locatedAgain);
+  });
+
   test('Upload to Database button is absent (EV-beta-ux-export-auth)', async ({
     page,
   }) => {
     await loginAndOpenConverter(page);
+    await fillManualTac(page, 'METAR KJFK 121251Z 24008KT 10SM FEW250 18/M03 A3016=');
+    await openConvertSettings(page);
 
-    await expect(page.getByTestId('upload-to-database-button')).toHaveCount(0);
-    await expect(
-      page.getByRole('button', { name: /Upload .* converted files to database/i }),
-    ).toHaveCount(0);
     await expect(page.getByTestId('open-dissemination-drawer')).toBeVisible();
     await expect(page.getByTestId('convert-and-send-button')).toBeVisible();
+    // Opposite state: Disseminate and Convert & Send are on the page.
+    await expect(page.getByTestId('upload-to-database-button')).toHaveCount(0);
+    // Removed upload button. Its name was "Upload N converted files to database";
+    // the file count is the only part that changed.
+    await expect(
+      // targets the upload converted files button
+      page.getByRole('button', { name: /^Upload \d+ converted files to database$/ }),
+    ).toHaveCount(0);
   });
 
   test('single TAC file can be converted and sent with one click', async ({ page }) => {
@@ -134,20 +182,17 @@ test.describe('TAC convert + Disseminate (Upload to Database removed)', () => {
       });
     });
 
-    // Prefer aria-label — mass-ingest folder/zip inputs also match input[type=file].
-    await page.getByLabel('Select TAC files to upload').setInputFiles({
+    // Prefer aria-label so the compact drop-zone file input is unambiguous.
+    await page.getByLabel('Select TAC files to upload', { exact: true }).setInputFiles({
       name: 'kjfk-clean.tac',
       mimeType: 'text/plain',
       buffer: Buffer.from(`${cleanMetar}\n`, 'utf-8'),
     });
+    await openConvertSettings(page);
     await page.getByTestId('convert-and-send-button').click();
 
-    const resultsRegion = page.getByRole('region', { name: /conversion results/i });
-    await expect(resultsRegion).toBeVisible({ timeout: 10000 });
-    // Source TAC is the first <pre>; IWXXM XML is a later block in the same result.
-    await expect(
-      resultsRegion.locator('pre').filter({ hasText: /iwxxm/i }).first(),
-    ).toBeVisible({
+    await openConvertIwxxmTab(page, 10_000);
+    await expect(page.getByTestId('iwxxm-preview-xml')).toBeVisible({
       timeout: 10000,
     });
     await expect(page.getByText(/Files converted and sent successfully/i)).toBeVisible({
@@ -165,26 +210,26 @@ test.describe('TAC convert + Disseminate (Upload to Database removed)', () => {
     await loginAndOpenConverter(page);
 
     await page
-      .getByLabel('Select TAC files to upload')
+      .getByLabel('Select TAC files to upload', { exact: true })
       .setInputFiles(tacFiles.slice(0, 2).map((file) => file.path));
     await page.getByTestId('convert-button').click();
 
-    await expect(page.getByRole('region', { name: /conversion results/i })).toBeVisible(
-      { timeout: 10000 },
-    );
-    const resultsRegion = page.getByRole('region', { name: /conversion results/i });
-    // Each converted file renders Source TAC + IWXXM blocks (2 <pre> per result).
-    await expect(resultsRegion.locator('pre')).toHaveCount(4);
-    await expect(page.getByTestId('upload-to-database-button')).toHaveCount(0);
+    await openConvertDownloadsTab(page, 10_000);
+    await expect(page.locator('[data-testid^="result-item-"]')).toHaveCount(2);
+    await openConvertIwxxmTab(page, 10_000);
+    await expect(page.getByTestId('iwxxm-preview-xml')).toBeVisible();
     await expect(page.getByTestId('open-dissemination-drawer')).toBeEnabled();
   });
 
   test('invalid manual TAC shows an error state', async ({ page }) => {
     await loginAndOpenConverter(page);
 
-    await page.getByLabel(/Enter METAR data manually/i).fill('INVALID TAC FORMAT');
+    await page
+      .getByLabel('Enter METAR data manually', { exact: true })
+      .fill('INVALID TAC FORMAT');
     await page.getByTestId('convert-button').click();
 
+    await openConvertConsoleTab(page);
     await expect(page.getByTestId('conversion-error-log')).toBeVisible({
       timeout: 10000,
     });

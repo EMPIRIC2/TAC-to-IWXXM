@@ -1,0 +1,293 @@
+rule_id: sigmet_va_no_va_exp
+engine: convert
+cases:
+- bucket: happy
+  case_id: '01'
+  status: ready
+  tac: 'EGGX SIGMET 5 VALID 251800/252200 EGRR-
+
+    EGGX SHANWICK OCEANIC FIR VA ERUPTION MT HEKLA PSN N6359 W01940
+
+    NO VA EXP='
+  expect:
+    encode_ok: true
+    require_xml: true
+  meta:
+    product: SIGMET
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: annex3_golden/sigmet_va_no_va_exp.tac
+- bucket: happy
+  case_id: '02'
+  status: ready
+  tac: 'EGGX SIGMET 6 VALID 261800/262200 EGRR-
+
+    EGGX SHANWICK OCEANIC FIR VA ERUPTION MT HEKLA PSN N6359 W01940
+
+    NO VA EXP='
+  expect:
+    encode_ok: true
+    require_xml: true
+  meta:
+    product: SIGMET
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 variant of sigmet_va_no_va_exp
+- bucket: happy
+  case_id: '03'
+  status: ready
+  tac: 'EGGX SIGMET 5 VALID 271800/272200 EGRR-
+
+    EGGX SHANWICK OCEANIC FIR VA ERUPTION MT HEKLA PSN N6359 W01940
+
+    NO VA EXP='
+  expect:
+    encode_ok: true
+    require_xml: true
+  meta:
+    product: SIGMET
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 variant of sigmet_va_no_va_exp
+- bucket: happy
+  case_id: '04'
+  status: ready
+  tac: 'EGGX SIGMET 5 VALID 251800/252200 EGRR-
+
+    EGGX SHANWICK OCEANIC FIR VA ERUPTION MT HEKLA PSN N6400 W01940
+
+    NO VA EXP='
+  expect:
+    encode_ok: true
+    require_xml: true
+  meta:
+    product: SIGMET
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 variant of sigmet_va_no_va_exp
+- bucket: happy
+  case_id: '05'
+  status: ready
+  tac: 'EGGX SIGMET 7 VALID 251800/252200 EGRR-
+
+    EGGX SHANWICK OCEANIC FIR VA ERUPTION MT HEKLA PSN N6359 W01940
+
+    NO VA EXP='
+  expect:
+    encode_ok: true
+    require_xml: true
+  meta:
+    product: SIGMET
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 variant of sigmet_va_no_va_exp
+- bucket: sad
+  case_id: '01'
+  status: ready
+  tac: GARBAGE
+  expect:
+    encode_ok: false
+    codes:
+    - PARSE_ERROR
+  meta:
+    product: SIGMET
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 garbage tokens
+- bucket: sad
+  case_id: '02'
+  status: ready
+  tac: .
+  expect:
+    encode_ok: false
+    codes:
+    - PARSE_ERROR
+  meta:
+    product: SIGMET
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 dot-only TAC
+- bucket: sad
+  case_id: '03'
+  status: ready
+  tac: METAR YUDO 151800Z 13005MPS 9000 BKN020 17/16 Q1018=
+  expect:
+    encode_ok: false
+    codes:
+    - PARSE_ERROR
+  meta:
+    product: SIGMET
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 METAR body under product SIGMET
+- bucket: sad
+  case_id: '04'
+  status: ready
+  tac: NOTAM YUDO CLOSED=
+  expect:
+    encode_ok: false
+    codes:
+    - PARSE_ERROR
+  meta:
+    product: SIGMET
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 non-SIGMET product token
+- bucket: sad
+  case_id: '05'
+  status: ready
+  tac: TAF YUDO 151800Z 1600/1618 13005MPS 9000 BKN020=
+  expect:
+    encode_ok: false
+    codes:
+    - PARSE_ERROR
+  meta:
+    product: SIGMET
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 TAF body under product SIGMET
+- bucket: edge_pass
+  case_id: '01'
+  status: ready
+  tac: 'EGGX SIGMET 5 VALID 251800/252200 EGRR-
+
+    EGGX SHANWICK OCEANIC FIR VA ERUPTION MT HEKLA PSN N6359 W01940
+
+    NO VA EXP'
+  expect:
+    encode_ok: true
+    require_xml: true
+  meta:
+    product: SIGMET
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 edge of sigmet_va_no_va_exp
+- bucket: edge_pass
+  case_id: '02'
+  status: ready
+  tac: '  EGGX SIGMET 5 VALID 251800/252200 EGRR-
+
+    EGGX SHANWICK OCEANIC FIR VA ERUPTION MT HEKLA PSN N6359 W01940
+
+    NO VA EXP=  '
+  expect:
+    encode_ok: true
+    require_xml: true
+  meta:
+    product: SIGMET
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 edge of sigmet_va_no_va_exp
+- bucket: edge_pass
+  case_id: '03'
+  status: ready
+  tac: 'EGGX SIGMET 5 VALID 251800/252200 EGRR-
+
+    EGGX SHANWICK OCEANIC FIR VA ERUPTION MT HEKLA PSN N6359 W01940
+
+    NO VA EXP ='
+  expect:
+    encode_ok: true
+    require_xml: true
+  meta:
+    product: SIGMET
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 edge of sigmet_va_no_va_exp
+- bucket: edge_pass
+  case_id: '04'
+  status: ready
+  tac: 'EGGX SIGMET 8 VALID 281800/282200 EGRR-
+
+    EGGX SHANWICK OCEANIC FIR VA ERUPTION MT HEKLA PSN N6359 W01940
+
+    NO VA EXP='
+  expect:
+    encode_ok: true
+    require_xml: true
+  meta:
+    product: SIGMET
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 edge of sigmet_va_no_va_exp
+- bucket: edge_pass
+  case_id: '05'
+  status: ready
+  tac: 'EGGX SIGMET 5 VALID 251900/252300 EGRR-
+
+    EGGX SHANWICK OCEANIC FIR VA ERUPTION MT HEKLA PSN N6359 W01940
+
+    NO VA EXP='
+  expect:
+    encode_ok: true
+    require_xml: true
+  meta:
+    product: SIGMET
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 edge of sigmet_va_no_va_exp
+- bucket: edge_fail
+  case_id: '01'
+  status: ready
+  tac: SPECI YUDO 151800Z 13005MPS 9000 BKN020 17/16 Q1018=
+  expect:
+    encode_ok: false
+    codes:
+    - PARSE_ERROR
+  meta:
+    product: SIGMET
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 SPECI body under product SIGMET
+- bucket: edge_fail
+  case_id: '02'
+  status: ready
+  tac: SPECI
+  expect:
+    encode_ok: false
+    codes:
+    - PARSE_ERROR
+  meta:
+    product: SIGMET
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 keyword only SPECI
+- bucket: edge_fail
+  case_id: '03'
+  status: ready
+  tac: ????
+  expect:
+    encode_ok: false
+    codes:
+    - PARSE_ERROR
+  meta:
+    product: SIGMET
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 symbols
+- bucket: edge_fail
+  case_id: '04'
+  status: ready
+  tac: AIRMET YUDO
+  expect:
+    encode_ok: false
+    codes:
+    - PARSE_ERROR
+  meta:
+    product: SIGMET
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 AIRMET keyword under product SIGMET
+- bucket: edge_fail
+  case_id: '05'
+  status: ready
+  tac: METAR
+  expect:
+    encode_ok: false
+    codes:
+    - PARSE_ERROR
+  meta:
+    product: SIGMET
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 keyword only METAR

@@ -1,12 +1,32 @@
 import { useMemo, useState } from 'react';
 import { ChevronDown, ChevronUp, AlertCircle } from 'lucide-react';
 import type { ConversionIssue } from '/utils/api';
+import type { LintIssueCatalogEntry } from '@/utils/api';
+import { IssueDetailDialog } from '@/app/components/IssueDetailDialog';
+import { buildIssueDetail, type IssueDetailModel } from '@/utils/issueDetail';
+import { ISSUE_DETAIL_OPEN } from '@/utils/issueDetailCopy';
+import { scrubInternalDocRefs } from '@/utils/internalDocRefGuard';
+import {
+  catalogJumpTarget,
+  maybeOpenCatalogForLintCode,
+} from '@/utils/lintIssueCatalog';
+import {
+  isErrorSeverityEmphasis,
+  lintSeverityErrorCardClass,
+} from '@/utils/lintSeverityStyle';
+import { resolveConversionLogHint } from '@/utils/conversionLogEnrichment';
 import {
   issueLevelPasses,
   issueSeverityRank,
   type ConvertLogLevel,
 } from '/utils/convertParams';
+import { isErrorSeverity } from '/utils/resultCard';
 
+/**
+ * Type `ConversionLog`.
+ * @example
+ * const _ = true;
+ */
 export interface ConversionLog {
   errors: string[];
   issues: ConversionIssue[];
@@ -16,19 +36,82 @@ interface ErrorLogPanelProps {
   log: ConversionLog;
   /** Operator log level — filters conversion/validation/lint issues. */
   minLogLevel?: ConvertLogLevel;
+  /** Loaded rules catalog, keyed by code. */
+  catalogByCode?: Map<string, LintIssueCatalogEntry>;
+  /** Open Rule catalogs on a code that is in the catalog. */
+  onOpenCatalog?: (
+    family?: 'conversion' | 'lint' | 'iwxxm' | 'decoding',
+    code?: string,
+  ) => void;
 }
 
 /** Internal codes that must not appear in the operator Conversion/Validation log. */
 const HIDDEN_OPERATOR_ISSUE_CODES = new Set(['DEPRECATED_PROFILE_ALIAS']);
 
 /**
+ * Code line for one conversion or validation issue.
+ *
+ * A code that is in the loaded catalog is a button. Any other code stays text.
+ *
+ * @param props.code - Issue code, when the log has one
+ * @param props.className - Tone classes for the line
+ * @param props.catalogByCode - Loaded catalog index
+ * @param props.onOpenCatalog - Opens Rule catalogs on that code
+ * @example
+ * const _ = true;
+ */
+function LogIssueCode({
+  code,
+  className,
+  catalogByCode,
+  onOpenCatalog,
+}: {
+  code: string | null | undefined;
+  className: string;
+  catalogByCode?: Map<string, LintIssueCatalogEntry>;
+  onOpenCatalog?: (
+    family?: 'conversion' | 'lint' | 'iwxxm' | 'decoding',
+    code?: string,
+  ) => void;
+}) {
+  const jump = catalogJumpTarget(code, catalogByCode);
+  if (!code) {
+    return null;
+  }
+  if (!jump || !onOpenCatalog) {
+    return <p className={className}>Code: {code}</p>;
+  }
+  return (
+    <button
+      type="button"
+      className={`${className} cursor-pointer text-left underline decoration-dotted underline-offset-2 hover:decoration-solid`}
+      data-testid={`log-issue-catalog-${jump.code}`}
+      aria-label={`Open ${jump.code} in the rules catalog`}
+      onClick={() =>
+        maybeOpenCatalogForLintCode(onOpenCatalog, jump.catalogByCode, jump.code)
+      }
+    >
+      Code: {jump.code}
+    </button>
+  );
+}
+
+/**
  * Collapsible panel showing conversion errors and filtered validation issues.
  *
  * Respects the operator minimum log level when rendering issues. Info-only
  * content uses neutral chrome (not amber/red).
+ * @example
+ * const _ = true;
  */
-export function ErrorLogPanel({ log, minLogLevel = 'INFO' }: ErrorLogPanelProps) {
+export function ErrorLogPanel({
+  log,
+  minLogLevel = 'INFO',
+  catalogByCode,
+  onOpenCatalog,
+}: ErrorLogPanelProps) {
   const [expanded, setExpanded] = useState(true);
+  const [detail, setDetail] = useState<IssueDetailModel | null>(null);
   const visibleErrors = log.errors;
   const suppressedByCode = log.issues.filter((issue) =>
     HIDDEN_OPERATOR_ISSUE_CODES.has(String(issue.code ?? '')),
@@ -78,6 +161,13 @@ export function ErrorLogPanel({ log, minLogLevel = 'INFO' }: ErrorLogPanelProps)
     }
   }
 
+  const errorIssueRows = filteredIssues.flatMap((issue, index) =>
+    isErrorSeverity(issue.severity) ? [{ issue, index }] : [],
+  );
+  const noteIssueRows = filteredIssues.flatMap((issue, index) =>
+    isErrorSeverity(issue.severity) ? [] : [{ issue, index }],
+  );
+
   const shell =
     tone === 'alert'
       ? 'mb-8 rounded-lg border-2 border-amber-300 bg-amber-50 dark:border-amber-700 dark:bg-amber-900/20'
@@ -110,6 +200,53 @@ export function ErrorLogPanel({ log, minLogLevel = 'INFO' }: ErrorLogPanelProps)
     tone === 'alert'
       ? 'mt-1 text-xs text-amber-700 dark:text-amber-300'
       : 'mt-1 text-xs text-gray-500 dark:text-gray-400';
+
+  const renderIssueRow = (issue: ConversionIssue, index: number) => {
+    const emphasizeError = isErrorSeverityEmphasis(issue.severity);
+    const rowCard = emphasizeError ? lintSeverityErrorCardClass() : issueCard;
+    const messageClass = emphasizeError
+      ? 'font-semibold text-destructive'
+      : 'font-medium';
+    const catalog = issue.code ? catalogByCode?.get(issue.code) : null;
+    const displayHint = resolveConversionLogHint(issue, catalog);
+    return (
+      <li
+        key={`issue-${index}`}
+        className={rowCard}
+        data-error-emphasis={emphasizeError}
+      >
+        <button
+          type="button"
+          className="w-full text-left"
+          data-testid={`issue-detail-open-${index}`}
+          aria-label={ISSUE_DETAIL_OPEN}
+          onClick={() =>
+            setDetail(
+              buildIssueDetail({
+                code: issue.code,
+                severity: issue.severity,
+                message: issue.message,
+                hint: displayHint,
+                location: issue.location,
+                start: issue.start,
+                end: issue.end,
+                catalog,
+              }),
+            )
+          }
+        >
+          <p className={messageClass}>{scrubInternalDocRefs(issue.message)}</p>
+          {displayHint ? <p className={hintClass}>{displayHint}</p> : null}
+        </button>
+        <LogIssueCode
+          code={issue.code}
+          className={codeClass}
+          catalogByCode={catalogByCode}
+          onOpenCatalog={onOpenCatalog}
+        />
+      </li>
+    );
+  };
 
   return (
     <section
@@ -144,34 +281,41 @@ export function ErrorLogPanel({ log, minLogLevel = 'INFO' }: ErrorLogPanelProps)
               info/warnings.
             </p>
           ) : null}
-          {visibleErrors.length > 0 && (
-            <div>
+          {(visibleErrors.length > 0 || errorIssueRows.length > 0) && (
+            <section aria-label="Errors">
               <h3 className={headingClass}>Errors</h3>
-              <ul className={`list-disc space-y-1 pl-5 ${textClass}`}>
-                {visibleErrors.map((error, index) => (
-                  <li key={`error-${index}`}>{error}</li>
-                ))}
-              </ul>
-            </div>
+              {visibleErrors.length > 0 ? (
+                <ul className={`list-disc space-y-1 pl-5 ${textClass}`}>
+                  {visibleErrors.map((error, index) => (
+                    <li
+                      key={`error-${index}`}
+                      className="font-semibold text-destructive"
+                    >
+                      {scrubInternalDocRefs(error)}
+                    </li>
+                  ))}
+                </ul>
+              ) : null}
+              {errorIssueRows.length > 0 ? (
+                <ul className={`mt-2 space-y-2 ${textClass}`}>
+                  {errorIssueRows.map(({ issue, index }) =>
+                    renderIssueRow(issue, index),
+                  )}
+                </ul>
+              ) : null}
+            </section>
           )}
-          {filteredIssues.length > 0 && (
-            <div>
-              <h3 className={headingClass}>Issues</h3>
+          {noteIssueRows.length > 0 ? (
+            <section aria-label="Notes">
+              <h3 className={headingClass}>Notes</h3>
               <ul className={`space-y-2 ${textClass}`}>
-                {filteredIssues.map((issue, index) => (
-                  <li key={`issue-${index}`} className={issueCard}>
-                    <p className="font-medium">
-                      [{issue.severity ?? 'error'}] {issue.source}: {issue.message}
-                    </p>
-                    {issue.hint && <p className={hintClass}>{issue.hint}</p>}
-                    {issue.code && <p className={codeClass}>Code: {issue.code}</p>}
-                  </li>
-                ))}
+                {noteIssueRows.map(({ issue, index }) => renderIssueRow(issue, index))}
               </ul>
-            </div>
-          )}
+            </section>
+          ) : null}
         </div>
       )}
+      <IssueDetailDialog detail={detail} onClose={() => setDetail(null)} />
     </section>
   );
 }

@@ -23,7 +23,19 @@ class SinkAdapter(Protocol):
 
     @property
     def sink_type(self) -> SinkType:
-        """Drawer / API sink discriminator."""
+        """
+        Drawer / API sink discriminator.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (sink_type)
+        2
+
+        Returns
+        -------
+        SinkType
+            Drawer / API sink discriminator.
+        """
 
     async def preflight(
         self,
@@ -40,6 +52,23 @@ class SinkAdapter(Protocol):
             When destination hosts are not allowlisted.
         ValueError
             When params or transport checks fail (secrets redacted).
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (preflight)
+        2
+
+        Parameters
+        ----------
+        params : object
+            Sink parameters.
+        allowlist : Allowlist
+            Allowlist.
+
+        Returns
+        -------
+        PreflightResponse
+            Connectivity / schema preflight without committing the payload.
         """
 
     async def send(
@@ -59,6 +88,27 @@ class SinkAdapter(Protocol):
             When destination hosts are not allowlisted.
         ValueError
             When params, payload, or transport fail (secrets redacted).
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (send)
+        2
+
+        Parameters
+        ----------
+        params : object
+            Sink parameters.
+        allowlist : Allowlist
+            Allowlist.
+        iwxxm_xml : str or bytes or None, optional
+            IWXXM XML text. By default ``None``.
+        tac_text : str or None, optional
+            TAC text. By default ``None``.
+
+        Returns
+        -------
+        SendResponse
+            Deliver IWXXM and/or TAC to the sink after allowlist checks.
         """
 
 

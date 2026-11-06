@@ -7,7 +7,9 @@ Vendor copies that are not on disk stay absent. [Corpus: tests] [Corpus: adr/ADR
 
 from __future__ import annotations
 
+import importlib
 import json
+from datetime import UTC, datetime
 from pathlib import Path
 
 import pytest
@@ -130,7 +132,10 @@ def test_annex3_rejects_3_0_0_in_shadow_the_same_way(
     assert any(issue.code == "INVALID_IWXXM_VERSION" for issue in legacy.issues)
 
 
-@pytest.mark.parametrize(("case_id", "product", "_stem", "_pins"), _CASES)
+_CA_STILL_REJECTED = tuple(case for case in _CASES if case[1] != "VAA")
+
+
+@pytest.mark.parametrize(("case_id", "product", "_stem", "_pins"), _CA_STILL_REJECTED)
 def test_ca_eccc_does_not_take_these_products(
     case_id: str,
     product: str,
@@ -145,3 +150,22 @@ def test_ca_eccc_does_not_take_these_products(
     assert shadow.xml == legacy.xml
     assert shadow.match is None
     assert any(issue.code == "UNSUPPORTED_PROFILE" for issue in legacy.issues)
+
+
+def test_ca_eccc_converts_vaa_the_same_way(monkeypatch: pytest.MonkeyPatch) -> None:
+    frozen = datetime(2024, 9, 23, 1, 30, tzinfo=UTC)
+
+    def _now(_tz: object = None) -> datetime:
+        return frozen
+
+    convert_module = importlib.import_module("tac2iwxxm.convert")
+    monkeypatch.setattr(convert_module, "datetime", type("Clock", (), {"now": staticmethod(_now)}))
+    tac = _tac("vaa_a7_2")
+    legacy = convert(tac, product="VAA", profile="ca_eccc", iwxxm_version="3.0.0")
+    shadow = convert_shadow(tac, product="VAA", profile="ca_eccc", iwxxm_version="3.0.0")
+    assert legacy.ok is True
+    assert shadow.ok is True
+    assert shadow.xml == legacy.xml
+    assert shadow.match is not None
+    assert shadow.iwxxm_version == "3.0.0"
+    assert "http://icao.int/iwxxm/3.0" in (shadow.xml or "")

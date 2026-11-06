@@ -1,8 +1,15 @@
-# Typing Policy
+# Typing policy
 
-> **Project**: METAR to IWXXM Converter  
+> **Project**: TAC to IWXXM  
 > **Last updated**: 2026-08-27 (EV-strict-lint-typecheck)  
 > **Source**: execution plan §Tech Stack, ADR-005, ADR-007 (amended EV-080 / #1077 — 100%)
+
+This document states the typecheck and lint rules for Python and TypeScript in
+this monorepo. Use it when you add packages, tighten CI, or decide whether a
+`# type: ignore` is allowed.
+
+**Related:** toolchain versions live in [dependency-inventory.md](dependency-inventory.md).
+Agent guardrail: `.cursor/rules/optional/strict-typing.mdc`.
 
 ## Python
 
@@ -12,7 +19,7 @@
 | Typechecker | **basedpyright** (`strict` on `apps/backend`, `packages/*`) |
 | Linter / formatter | **Ruff** (all Python packages including `packages/gifts`) |
 
-### Ruff rule sets (monorepo root `ruff.toml`)
+### Ruff rule sets (monorepo root `pyproject.toml` `[tool.ruff]`)
 
 | Code | Purpose |
 |------|---------|
@@ -22,9 +29,9 @@
 | PT | pytest-style (raises match, assert layout) |
 | ANN | annotations on `apps/` + `packages/` **src** (`**/tests/**` ignores ANN) |
 
-Per-package `pyproject.toml` files **extend** root `ruff.toml` (line-length 120 where noted) — do not reintroduce thin `E,W,F,I`-only overrides.
+Per-package `pyproject.toml` files **extend** the root `pyproject.toml` (line-length 120 where noted). Do not reintroduce thin `E,W,F,I`-only overrides.
 
-**ANN401 waivers:** lxml / PyO3 boundary modules in `packages/iwxxm-validate` (`c14n`, `native`, `schematron`, `xsd`) — third-party handles without complete stubs.
+**ANN401 waivers:** lxml / PyO3 boundary modules in `packages/iwxxm-validate` (`canonical_xml`, `c14n` alias, `native`, `schematron`, `xsd`): third-party handles without complete stubs.
 
 ### basedpyright
 
@@ -41,7 +48,7 @@ Use typed JSON/XML boundaries (`cast`, `TypedDict`, `XmlElement` protocol in `ap
 
 - Public functions and methods require explicit parameter and return types.
 - Prefer `TypedDict`, `Protocol`, and concrete collections over untyped `dict`.
-- Use `object` instead of `Any` when the shape is genuinely unknown; justify `Any` in code review.
+- Use `object` instead of `Any` when the shape is unknown. Justify `Any` in code review.
 - Third-party stubs: `reportMissingTypeStubs = false` in `pyproject.toml` / `pyrightconfig.json`.
 
 ### Commands
@@ -53,11 +60,13 @@ make lint-py        # ruff check (PY_LINT scope)
 uv run ruff format --check apps packages tests
 ```
 
-Strict enforcement applies to new code under `apps/` and `packages/`. Legacy paths (`backend/`, `GIFTs/`, `auth/`) are included during migration and tightened as packages move (Phase 1–3).
+Strict enforcement applies to new code under `apps/` and `packages/`. Legacy paths
+(`backend/`, `GIFTs/`, `auth/`) are included during migration and tightened as
+packages move (Phase 1–3).
 
-**packages/gifts exception:** upstream GIFTs is linted and formatted with Ruff but excluded from
-basedpyright enforcement (`packages/gifts/pyrightconfig.json`, `typeCheckingMode: off`) until
-upstream typing remediation is merged.
+**packages/gifts exception:** upstream GIFTs is linted and formatted with Ruff but
+excluded from basedpyright enforcement (`packages/gifts/pyrightconfig.json`,
+`typeCheckingMode: off`) until upstream typing remediation is merged.
 
 ## TypeScript
 
@@ -70,7 +79,7 @@ upstream typing remediation is merged.
 
 ### Compiler strictness
 
-All TS workspaces enable:
+All TypeScript workspaces enable:
 
 - `"strict": true`
 - `"noUncheckedIndexedAccess": true` — array/tuple/index reads may be `undefined`; guard before use
@@ -98,14 +107,16 @@ cd apps/frontend && pnpm exec tsc --noEmit
 
 ## Coverage gate (ADR-007 / EV-080 / #1077)
 
-**100%** line and branch coverage on all workspace members — pytest for Python, Vitest for
-frontend/shared. Configured in root `pyproject.toml` `[tool.coverage.report]` and
-per-package overrides (`fail_under = 100`, `branch = true`). **Per-file ≥100%** via
+**100%** line and branch coverage on all workspace members: pytest for Python,
+Vitest for frontend/shared. Configured in root `pyproject.toml`
+`[tool.coverage.report]` and per-package overrides (`fail_under = 100`,
+`branch = true`). **Per-file ≥100%** via
 `scripts/ci/check_per_file_coverage.py --min-pct 100` after package unit jobs.
 
-**Scripts (EV-080):** all `scripts/**/*.py` under a dedicated coverage job (≥100%); every
-`scripts/**/*.sh` exercised by ≥1 **bats-core** test in CI. Approved omits only:
-`vendor/**`, generated XSD/codegen, non-executable fixtures — see ADR-007.
+**Scripts (EV-080):** all `scripts/**/*.py` under a dedicated coverage job (≥100%).
+Every `scripts/**/*.sh` is exercised by ≥1 **bats-core** test in CI. Approved
+omits only: `vendor/**`, generated XSD/codegen, non-executable fixtures (see
+ADR-007).
 
 ## References
 

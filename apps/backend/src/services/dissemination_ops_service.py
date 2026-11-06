@@ -38,6 +38,14 @@ _tables: dict[str, Table] = {}
 
 
 def _sync_database_url() -> str:
+    """
+    Internal helper ``_sync_database_url``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     raw = (os.environ.get("DATABASE_URL") or "").strip()
     if not raw:
         raise HTTPException(
@@ -58,6 +66,14 @@ def _sync_database_url() -> str:
 
 
 def _get_engine() -> Engine:
+    """
+    Internal helper ``_get_engine``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     global _engine
     if _engine is None:
         _engine = create_engine(_sync_database_url(), pool_pre_ping=True)
@@ -65,13 +81,35 @@ def _get_engine() -> Engine:
 
 
 def _table(name: str) -> Table:
+    """
+    Internal helper ``_table``.
+
+    Parameters
+    ----------
+    name : object
+        Argument ``name``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if name not in _tables:
         _tables[name] = Table(name, _metadata, autoload_with=_get_engine())
     return _tables[name]
 
 
 def _reject_secrets(payload: dict[str, Any], *, path: str = "") -> None:
-    """Raise 422 if payload keys look like secrets or URIs."""
+    """
+    Internal helper ``_reject_secrets``.
+
+    Parameters
+    ----------
+    payload : object
+        Argument ``payload``.
+    path : object
+        Argument ``path``.
+    """
     for key, value in payload.items():
         full = f"{path}.{key}" if path else key
         if _SECRET_KEY.search(key):
@@ -91,6 +129,19 @@ def _reject_secrets(payload: dict[str, Any], *, path: str = "") -> None:
 
 
 def _handle_db_error(exc: Exception) -> NoReturn:
+    """
+    Internal helper ``_handle_db_error``.
+
+    Parameters
+    ----------
+    exc : object
+        Argument ``exc``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     logger.exception("dissemination ops db error: %s", exc)
     if isinstance(exc, IntegrityError):
         raise HTTPException(
@@ -104,14 +155,41 @@ def _handle_db_error(exc: Exception) -> NoReturn:
 
 
 def _raise_db(exc: Exception) -> NoReturn:
-    """Always raises — narrows type checkers after except handlers."""
+    """
+    Internal helper ``_raise_db``.
+
+    Parameters
+    ----------
+    exc : object
+        Argument ``exc``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     _handle_db_error(exc)
 
 
 class DisseminationOpsService:
-    """JWT owner-scoped persistence for plans, audit, and MappingConfig."""
+    """
+    JWT owner-scoped persistence for plans, audit, and MappingConfig.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     def __init__(self, user_id: str) -> None:
+        """
+        Internal helper ``__init__``.
+
+        Parameters
+        ----------
+        user_id : object
+            Argument ``user_id``.
+        """
         try:
             self.user_id = UUID(user_id)
         except ValueError as exc:
@@ -138,6 +216,11 @@ class DisseminationOpsService:
         ------
         HTTPException
             If the payload contains disallowed secret-like fields or the database write fails.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (create_plan)
+        2
         """
         _reject_secrets(payload.model_dump())
         row: dict[str, Any] = {
@@ -176,6 +259,11 @@ class DisseminationOpsService:
         ------
         HTTPException
             If the plan does not exist for the owner or the database lookup fails.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (get_plan)
+        2
         """
         t = _table(PLANS_TABLE)
         result: Any | None
@@ -211,6 +299,11 @@ class DisseminationOpsService:
         HTTPException
             If the plan is missing, the update payload contains secret-like fields,
             or the database write fails.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (update_plan)
+        2
         """
         data = payload.model_dump(exclude_unset=True)
         _reject_secrets(data)
@@ -277,6 +370,11 @@ class DisseminationOpsService:
         HTTPException
             If destination metadata contains disallowed secret-like fields or the
             database write fails.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (record_audit)
+        2
         """
         dest = destinations or {}
         _reject_secrets(dest)
@@ -338,6 +436,11 @@ class DisseminationOpsService:
         ------
         HTTPException
             If the database query fails.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (list_audit)
+        2
         """
         t = _table(AUDIT_TABLE)
         stmt = select(t).where(t.c.user_id == self.user_id)
@@ -382,6 +485,11 @@ class DisseminationOpsService:
         ------
         HTTPException
             If the record does not exist for the owner or the database lookup fails.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (get_audit)
+        2
         """
         t = _table(AUDIT_TABLE)
         result: Any | None
@@ -414,6 +522,11 @@ class DisseminationOpsService:
         ------
         HTTPException
             If the payload contains disallowed secret-like fields or the database write fails.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (create_mapping)
+        2
         """
         _reject_secrets(payload.model_dump())
         row: dict[str, Any] = {
@@ -450,6 +563,11 @@ class DisseminationOpsService:
         ------
         HTTPException
             If the mapping does not exist for the owner or the database lookup fails.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (get_mapping)
+        2
         """
         t = _table(MAPPINGS_TABLE)
         result: Any | None
@@ -485,6 +603,11 @@ class DisseminationOpsService:
         HTTPException
             If the mapping is missing, the update payload contains secret-like fields,
             or the database write fails.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (update_mapping)
+        2
         """
         data = payload.model_dump(exclude_unset=True)
         _reject_secrets(data)

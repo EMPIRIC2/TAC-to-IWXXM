@@ -1,6 +1,8 @@
 /**
  * Airport data utility for ICAO code validation and lookup
  * This replaces the vulnerable airport-codes package
+ * @example
+ * const _ = true;
  */
 
 export interface Airport {

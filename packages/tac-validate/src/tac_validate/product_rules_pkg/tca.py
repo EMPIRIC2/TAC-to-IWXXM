@@ -11,7 +11,21 @@ from tac_validate.product_rules_pkg._common import *
 
 
 def _check_us_faa_nws_tca_overlay(body: str, *, profile: str) -> list[Issue]:
-    """US national TCA policy - observed CB not provided (#919 thin validation)."""
+    """
+    Internal helper ``_check_us_faa_nws_tca_overlay``.
+
+    Parameters
+    ----------
+    body : object
+        Argument ``body``.
+    profile : object
+        Argument ``profile``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     # ruff: noqa: F403, F405
     if profile != "iwxxm_us":
         return []
@@ -34,7 +48,23 @@ def _check_us_faa_nws_tca_overlay(body: str, *, profile: str) -> list[Issue]:
 
 
 def _check_us_faa_nws_swxa_overlay(body: str, *, start: int, profile: str) -> list[Issue]:
-    """US national SWXA policy - SATCOM not issued (#919 thin validation)."""
+    """
+    Internal helper ``_check_us_faa_nws_swxa_overlay``.
+
+    Parameters
+    ----------
+    body : object
+        Argument ``body``.
+    start : object
+        Argument ``start``.
+    profile : object
+        Argument ``profile``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if profile != "iwxxm_us":
         return []
     issues: list[Issue] = []
@@ -66,6 +96,21 @@ def _check_us_faa_nws_swxa_overlay(body: str, *, start: int, profile: str) -> li
 
 
 def _check_tca(tac: str, *, profile: str = "annex3") -> list[Issue]:
+    """
+    Internal helper ``_check_tca``.
+
+    Parameters
+    ----------
+    tac : object
+        Argument ``tac``.
+    profile : object
+        Argument ``profile``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     start, end, body = _body_span(tac)
     issues: list[Issue] = []
     if not _DTG_LINE.search(body):
@@ -94,7 +139,7 @@ def _check_tca(tac: str, *, profile: str = "annex3") -> list[Issue]:
         issues.append(
             _issue(
                 "MISSING_TC",
-                "TCA missing TC: template field - F27 theme T1 / A2-2",
+                "TCA missing TC: template field - A2-2",
                 start=start,
                 end=end,
                 location="tropical_cyclone",
@@ -107,7 +152,7 @@ def _check_tca(tac: str, *, profile: str = "annex3") -> list[Issue]:
             issues.append(
                 _issue(
                     "MISSING_TC",
-                    "TCA missing TC: template field - F27 theme T1 / A2-2",
+                    "TCA missing TC: template field - A2-2",
                     start=tc_m.start(),
                     end=tc_m.end(),
                     location="tropical_cyclone",
@@ -117,7 +162,7 @@ def _check_tca(tac: str, *, profile: str = "annex3") -> list[Issue]:
             issues.append(
                 _issue(
                     "TCA_CYCLONE_UNNAMED",
-                    "TCA TC UNNAMED - exceptional name allowed (F27 theme T1)",
+                    "TCA TC UNNAMED - exceptional name allowed",
                     start=t_start,
                     end=t_end,
                     location="tropical_cyclone",
@@ -130,7 +175,7 @@ def _check_tca(tac: str, *, profile: str = "annex3") -> list[Issue]:
             issues.append(
                 _issue(
                     "TCA_CB_NIL",
-                    "TCA CB NIL - CB missing (F27 theme T1)",
+                    "TCA CB NIL - CB missing",
                     start=cb_m.start(1),
                     end=cb_m.end(1),
                     location="cb",
@@ -143,7 +188,7 @@ def _check_tca(tac: str, *, profile: str = "annex3") -> list[Issue]:
             issues.append(
                 _issue(
                     "TCA_RMK_NIL",
-                    "TCA RMK NIL - remarks inapplicable (F27 theme T1)",
+                    "TCA RMK NIL - remarks inapplicable",
                     start=rmk_m.start(1),
                     end=rmk_m.end(1),
                     location="remarks",
@@ -154,7 +199,7 @@ def _check_tca(tac: str, *, profile: str = "annex3") -> list[Issue]:
         issues.append(
             _issue(
                 "TCA_NO_MSG_EXP",
-                "TCA NXT MSG NO MSG EXP - next time inapplicable (F27 theme T1)",
+                "TCA NXT MSG NO MSG EXP - next time inapplicable",
                 start=nxt_m.start(1),
                 end=nxt_m.end(1),
                 location="next_advisory",

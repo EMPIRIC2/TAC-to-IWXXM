@@ -30,17 +30,24 @@ rules:
   - id: wind
     pattern: ["(?:\\d{3}|VRB)\\d{2,3}(?:G\\d{2,3})?(?:KT|MPS)"]
     explain: "Wind {0}"
+  - id: cavok
+    pattern: ["CAVOK"]
+    explain: "Ceiling and visibility OK"
+  # Live spaced typo (HAAB); must precede the catch-all token rule.
+  - id: cavok_spaced
+    pattern: ["C", "A", "V", "O", "K"]
+    explain: "Ceiling and visibility OK"
   - id: visibility
-    pattern: ["(?:\\d{4}|P?\\d{1,2}SM|CAVOK)"]
+    pattern: ["(?:\\d{4}|P?\\d{1,2}(?:\\s+\\d+/\\d+)?SM|\\d+/\\d+SM)"]
     explain: "Visibility {0}"
   - id: weather
     pattern: ["(?://|(?:\\+|-|VC)?(?:MI|PR|BC|DR|BL|SH|TS|FZ)?(?:DZ|RA|SN|SG|PL|GR|GS|UP|BR|FG|FU|VA|DU|SA|HZ|PY|PO|SQ|FC|SS|DS)+|NSW)"]
     explain: "Weather {0}"
   - id: cloud
-    pattern: ["(?:FEW|SCT|BKN|OVC)\\d{3}(?:CB|TCU)?|NSC|SKC|CLR"]
+    pattern: ["(?:FEW|SCT|BKN|OVC)\\d{3}(?:CB|TCU)?|NSC|SKC|CLR|VV(?:\\d{3}|/{3})"]
     explain: "Cloud {0}"
   - id: change_indicator
-    pattern: ["(?:TEMPO|BECMG|NOSIG)"]
+    pattern: ["(?:TEMPO|BECMG|NOSIG|INTER)"]
     explain: "Change indicator {0}"
   - id: from_group
     pattern: ["FM\\d{6}"]
@@ -49,8 +56,20 @@ rules:
     pattern: ["PROB\\d{2}"]
     explain: "Probability {0}"
   - id: temperature
-    pattern: ["T[XN]-?\\d{2}/\\d{4}Z"]
+    pattern: ["T[XN]M?\\d{2}/\\d{4}Z"]
     explain: "Temperature extreme {0}"
+  - id: wind_shear
+    pattern: ["WS\\d{3}/\\d{3}\\d{2,3}KT"]
+    explain: "Low-level wind shear {0}"
+  - id: qnh_ins
+    pattern: ["QNH\\d{4}INS"]
+    explain: "Forecast altimeter {0}"
+  - id: turbulence
+    pattern: ["5\\d(?:\\d{3}|/{3})(?:\\d|/)"]
+    explain: "Turbulence {0}"
+  - id: icing
+    pattern: ["6\\d(?:\\d{3}|/{3})(?:\\d|/)"]
+    explain: "Icing {0}"
   - id: equal
     pattern: ["="]
     explain: "Report terminator"

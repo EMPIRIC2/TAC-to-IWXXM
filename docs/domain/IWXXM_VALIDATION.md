@@ -2,10 +2,10 @@
 
 **Purpose:** Pointer catalog for **validating produced IWXXM XML** (XSD + Schematron + codelist RDF).  
 **Ticket:** [#719](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/719) · feeds [#699](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/699).  
-**Does not** re-litigate packaging design — cite official landings + vendor pins only.
+**Does not** re-litigate packaging design; cite official landings + vendor pins only.
 
 Hub: [README.md](README.md) · Runtime: `packages/iwxxm-validate` · Engine notes: [validation/COMPREHENSIVE_VALIDATION.md](validation/COMPREHENSIVE_VALIDATION.md).  
-Source digs (not SoT): [mining/](mining/) — especially Tier A vendor pins, [codes.wmo.int aviation](mining/codes-wmo-int-aviation-mining-notes.md), historical Manual I.3 D-1…D-10 landings ([2019/upd-2021 dig complete](mining/WMO-306-vI-3-2019-upd-2021-mining-notes.md) · #798; prefer [2023 dig](mining/WMO-306-vI-3-2023-mining-notes.md) + pin SCH/RDF).
+Source digs (not SoT): [mining/](mining/), especially Tier A vendor pins, [codes.wmo.int aviation](mining/codes-wmo-int-aviation-mining-notes.md), historical Manual I.3 D-1…D-10 landings ([2019/upd-2021 dig complete](mining/WMO-306-vI-3-2019-upd-2021-mining-notes.md) · #798; prefer [2023 dig](mining/WMO-306-vI-3-2023-mining-notes.md) + pin SCH/RDF).
 
 ---
 
@@ -22,9 +22,9 @@ Source digs (not SoT): [mining/](mining/) — especially Tier A vendor pins, [co
 
 Always validate against the **vendored** tree in CI; use schemas.wmo.int for citations and upgrade discovery.
 
-**Pin vs GitHub tag tip (2026-07-14):** vendored commit `35180cbe…` is **ahead of** remote tag `v2025-2` tip `2c4db03…` and uses versioned paths `2025-2/IWXXM/` (+ `2023-1/`). Prefer vendor / `schemas.wmo.int` over a fresh `git checkout v2025-2`. Local clones: `.local/reference/wmo-im-tier-a/` — [mining/wmo-im-tier-a-mining-notes.md](mining/wmo-im-tier-a-mining-notes.md).
+**Pin vs GitHub tag tip (2026-07-14):** vendored commit `35180cbe…` is **ahead of** remote tag `v2025-2` tip `2c4db03…` and uses versioned paths `2025-2/IWXXM/` (+ `2023-1/`). Prefer vendor / `schemas.wmo.int` over a fresh `git checkout v2025-2`. Local clones: `.local/reference/wmo-im-tier-a/` ([mining/wmo-im-tier-a-mining-notes.md](mining/wmo-im-tier-a-mining-notes.md)).
 
-FM 205-2023-1 in WMO-No. 306 Vol I.3 still indexes many tables to the **2023-1** package — treat that as historical lineage; **do not** mix 2023-1 Schematron with 2025-2 XML. Working AsciiDoc in the pin tree is titled **FM 205-2025-2** (`documentation/manual/FM205.adoc`).
+FM 205-2023-1 in WMO-No. 306 Vol I.3 still indexes many tables to the **2023-1** package. Treat that as historical lineage; **do not** mix 2023-1 Schematron with 2025-2 XML. Working AsciiDoc in the pin tree is titled **FM 205-2025-2** (`documentation/manual/FM205.adoc`).
 
 ---
 
@@ -32,7 +32,7 @@ FM 205-2023-1 in WMO-No. 306 Vol I.3 still indexes many tables to the **2023-1**
 
 Pipeline placement: **stages 3–6** of the domain E2E flow ([README.md](README.md)
 §End-to-end strategy). Input is XML from `tac2iwxxm` (or an official fixture). This
-strategy is **rule provenance** — engine wiring lives under [validation/](validation/).
+strategy is **rule provenance**; engine wiring lives under [validation/](validation/).
 
 ### Required stages (release gate)
 
@@ -65,7 +65,7 @@ line as the document namespace (`http://icao.int/iwxxm/2025-2` ↔ vendor `2025-
 | **Blocking for release** | Schematron (OPMET Guidelines require SCH on translator outputs) | Fail release gate even if some engines historically labeled SCH “non-blocking” |
 | **Advisory / smoke** | Extra GML id checks beyond SCH; live AWC XML; iwxxm-translation extras | Informational regression only |
 
-Engine layer names (`AIRPORT_ICAO`, `TAC_SYNTAX`, …) are implementation detail — see
+Engine layer names (`AIRPORT_ICAO`, `TAC_SYNTAX`, …) are implementation detail; see
 [COMPREHENSIVE_VALIDATION.md](validation/COMPREHENSIVE_VALIDATION.md). Domain SoT for
 *what* must pass remains this document + OPMET Guidelines dig.
 
@@ -79,7 +79,7 @@ Engine layer names (`AIRPORT_ICAO`, `TAC_SYNTAX`, …) are implementation detail
 
 ### CA_ECCC validation stages (EV-068 / #1035)
 
-MSC operational validation is a **staged stack** — not a single global XSD pass. EV-068
+MSC operational validation is a **staged stack**, not a single global XSD pass. EV-068
 delivered layers **1–4**; EV-069 completes **5–6** (code-ca + exchange).
 
 | Order | Stage | Layer id (target) | Pass criterion | Today |
@@ -103,7 +103,7 @@ delivered layers **1–4**; EV-069 completes **5–6** (code-ca + exchange).
 
 **Exchange filename (CA):** MSC grammar uses a repeated issuer token written `{CCC}` in prose but exemplified as WMO **CCCC** (e.g. `_C_CWAO_`). Implement as repeat-`CCCC`, not width-3 (`CA-ECCC-FILENAME`).
 
-**Operator-visible stage labels** must be plain language (EV-048) — no corpus ids or planning
+**Operator-visible stage labels** must be plain language (EV-048): no corpus ids or planning
 tokens in API/CLI issue text.
 
 Cross-reference: [eccc-iwxxm-ca-mining-notes.md](mining/eccc-iwxxm-ca-mining-notes.md) validation
@@ -111,7 +111,7 @@ stack diagram · [CA_ECCC.md](profiles/semantic/CA_ECCC.md) §Validate profile.
 
 ### Fixture priority
 
-Same as conversion golden strategy — official pin examples are **P0**; US examples for US
+Same as conversion golden strategy: official pin examples are **P0**; US examples for US
 profile; translation / AWC are informative.
 
 ### Translator / aggregator compliance (OPMET Guidelines)
@@ -126,13 +126,13 @@ Public [OPMET IWXXM Exchange Guidelines 5th](mining/OPMET-IWXXM-Exchange-Guideli
 | Translation metadata | `common.xsd` attrs — [IWXXM_CONVERSION.md](IWXXM_CONVERSION.md) |
 | Monitoring / SCH success **per IWXXM version** | Ops stats — [ICAO_OPMET_COMPLIANCE.md](iwxxm/ICAO_OPMET_COMPLIANCE.md) |
 
-Do **not** mark release green if Schematron is skipped (`xslt2` path not executed) — domain
+Do **not** mark release green if Schematron is skipped (`xslt2` path not executed). Domain
 fixtures are ready; engine gap is tracked in the [reference-set dig](mining/iwxxm-2025-2-reference-set-mining-notes.md).
 
 ### How to validate one IWXXM document
 
 1. Confirm namespace year line (`http://icao.int/iwxxm/2025-2` ↔ vendor `2025-2/`).
-2. **Well-formed** (incl. `xmlns:xlink` when `xlink:href` is used — AWC TAF smoke fails here).
+2. **Well-formed** (incl. `xmlns:xlink` when `xlink:href` is used; AWC TAF smoke fails here).
 3. Resolve XSD via **XML catalog / vendored** tree (product XSD + METCE/AIXM imports).
 4. Run **Schematron** `rule/iwxxm.sch` with sibling `rule/*.rdf` (`queryBinding="xslt2"`).
 5. Prefer official `examples/*.xml` as control; AWC / translation extras = informative only.
@@ -179,9 +179,9 @@ Gates: [rules/COVERAGE_MATRIX.md](rules/COVERAGE_MATRIX.md) **G1–G7**.
 | Collect entry | https://schemas.wmo.int/iwxxm/2025-2/iwxxm-collect.xsd | `2025-2/IWXXM/iwxxm-collect.xsd` |
 | Common types | https://schemas.wmo.int/iwxxm/2025-2/common.xsd | `2025-2/IWXXM/common.xsd` |
 
-**§2 validation file set (inventory 2026-07-14):** `iwxxm.xsd`, `metarSpeci.xsd`, `iwxxm-collect.xsd`, `common.xsd`, `gmliwxxm.xsd`, `rule/iwxxm.sch`, and `rule/` RDF snapshots are all present under the vendor pin. Resolve the full import graph via XML catalog / local vendor tree — do not rely on one XSD alone. Compatibility tree: `vendor/schemas/iwxxm/2023-1/IWXXM/` (do **not** mix SCH across year lines). Tracker: [mining/iwxxm-2025-2-reference-set-mining-notes.md](mining/iwxxm-2025-2-reference-set-mining-notes.md).
+**§2 validation file set (inventory 2026-07-14):** `iwxxm.xsd`, `metarSpeci.xsd`, `iwxxm-collect.xsd`, `common.xsd`, `gmliwxxm.xsd`, `rule/iwxxm.sch`, and `rule/` RDF snapshots are all present under the vendor pin. Resolve the full import graph via XML catalog / local vendor tree; do not rely on one XSD alone. Compatibility tree: `vendor/schemas/iwxxm/2023-1/IWXXM/` (do **not** mix SCH across year lines). Tracker: [mining/iwxxm-2025-2-reference-set-mining-notes.md](mining/iwxxm-2025-2-reference-set-mining-notes.md).
 
-**Path caveat — `schemas.wmo.int/rule/`:** the top-level [https://schemas.wmo.int/rule/](https://schemas.wmo.int/rule/) tree is a **centralized / early-line Schematron index** (packages **1.0–1.2**, listing dated **2019-10-11**). It is **not** the runtime Schematron for year-versioned IWXXM. Prefer `…/iwxxm/<pin>/rule/iwxxm.sch`. `/rule/1.0|1.1/iwxxm.sch` bind ns `http://icao.int/iwxxm/1.0|1.1` (63 patterns; no AIRMET/VAA/TCA; includes removed runway-state rules). `/rule/1.2/` dropped IWXXM/SAF SCH and only mirrors foundation files that are **byte-identical** to `metce/1.2/rule/`, `opm/1.2/rule/`, `collect/1.2/rule/` (vendor embeds those package-local paths — no top-level `externalSchema/.../rule/`). Dig: [mining/schemas-wmo-int-rule-mining-notes.md](mining/schemas-wmo-int-rule-mining-notes.md).
+**Path caveat (`schemas.wmo.int/rule/`):** the top-level [https://schemas.wmo.int/rule/](https://schemas.wmo.int/rule/) tree is a **centralized / early-line Schematron index** (packages **1.0–1.2**, listing dated **2019-10-11**). It is **not** the runtime Schematron for year-versioned IWXXM. Prefer `…/iwxxm/<pin>/rule/iwxxm.sch`. `/rule/1.0|1.1/iwxxm.sch` bind ns `http://icao.int/iwxxm/1.0|1.1` (63 patterns; no AIRMET/VAA/TCA; includes removed runway-state rules). `/rule/1.2/` dropped IWXXM/SAF SCH and only mirrors foundation files that are **byte-identical** to `metce/1.2/rule/`, `opm/1.2/rule/`, `collect/1.2/rule/` (vendor embeds those package-local paths; no top-level `externalSchema/.../rule/`). Dig: [mining/schemas-wmo-int-rule-mining-notes.md](mining/schemas-wmo-int-rule-mining-notes.md).
 
 ### Product XSDs
 
@@ -216,9 +216,9 @@ Non-F6 but present: `spaceWxAdvisory.xsd`, `WAFSSigWxFC.xsd`, `vona.xsd`, `qvaci
 US landing: https://nws.weather.gov/schemas/iwxxm-us/  
 Examples: https://nws.weather.gov/schemas/iwxxm-us/3.0/examples/
 
-**Nil / colour / MetFeature registers (2025-2):** Schematron ships **both** `codes.wmo.int-common-nil.rdf` (`IWXXM.nilReasonCheckLegacy`) and `codes.wmo.int-iwxxm-nil.rdf` (`IWXXM.nilReasonCheck`), plus `49-2` and `iwxxm` AviationColourCode RDF. Official METAR examples use `common/nil`; VONA uses `iwxxm/AviationColourCode` and often `iwxxm/nil`. Encode per XSD `vocabulary=` + official examples — see [mining/wmo-im-tier-a-mining-notes.md](mining/wmo-im-tier-a-mining-notes.md) · live inventory refresh [mining/codes-wmo-int-aviation-mining-notes.md](mining/codes-wmo-int-aviation-mining-notes.md) (2026-07-30): `49-2/AviationColourCode` has NIL/NOT_GIVEN/UNKNOWN; `iwxxm/AviationColourCode` has **UNASSIGNED** instead; `iwxxm/MeteorologicalFeature` is **28** members vs **27** on `49-2/` (**+`VOLCANIC_ASH`**) — pin SCH RDF matches live. Live HTML browse needs `Accept: text/html` (bare curl often 404). Weather table **`306/4678`**: prefer vendor CSV (**402** stable notations) — live HTML browse shows only a **~101** subset.
+**Nil / colour / MetFeature registers (2025-2):** Schematron ships **both** `codes.wmo.int-common-nil.rdf` (`IWXXM.nilReasonCheckLegacy`) and `codes.wmo.int-iwxxm-nil.rdf` (`IWXXM.nilReasonCheck`), plus `49-2` and `iwxxm` AviationColourCode RDF. Official METAR examples use `common/nil`; VONA uses `iwxxm/AviationColourCode` and often `iwxxm/nil`. Encode per XSD `vocabulary=` + official examples; see [mining/wmo-im-tier-a-mining-notes.md](mining/wmo-im-tier-a-mining-notes.md) · live inventory refresh [mining/codes-wmo-int-aviation-mining-notes.md](mining/codes-wmo-int-aviation-mining-notes.md) (2026-07-30): `49-2/AviationColourCode` has NIL/NOT_GIVEN/UNKNOWN; `iwxxm/AviationColourCode` has **UNASSIGNED** instead; `iwxxm/MeteorologicalFeature` is **28** members vs **27** on `49-2/` (**+`VOLCANIC_ASH`**); pin SCH RDF matches live. Live HTML browse needs `Accept: text/html` (bare curl often 404). Weather table **`306/4678`**: prefer vendor CSV (**402** stable notations); live HTML browse shows only a **~101** subset.
 
-**NSC vs layered cloud (informative FAQ):** APAC IWXXM FAQs 3rd §14.3 — when NSC is reported, layered `cloud` content is not required and co-occurrence can fail format validation. Prefer convert omit + SCH fixture under #797; cite [mining/icao-apac-iwxxm-faqs-3rd-2025-mining-notes.md](mining/icao-apac-iwxxm-faqs-3rd-2025-mining-notes.md).
+**NSC vs layered cloud (informative FAQ):** APAC IWXXM FAQs 3rd §14.3: when NSC is reported, layered `cloud` content is not required and co-occurrence can fail format validation. Prefer convert omit + SCH fixture under #797; cite [mining/icao-apac-iwxxm-faqs-3rd-2025-mining-notes.md](mining/icao-apac-iwxxm-faqs-3rd-2025-mining-notes.md).
 
 ---
 
@@ -236,16 +236,16 @@ Prefer offline RDF in CI; optional live:
 
 Inventory dig (2026-07-30): [mining/codes-wmo-int-aviation-mining-notes.md](mining/codes-wmo-int-aviation-mining-notes.md). Prefer offline RDF in CI; live browse is optional smoke / discovery.
 
-Community index: https://community.wmo.int/iwxxm (**404** as of 2026-07-14) — recovered package table: [Wayback 2026-03-14](https://web.archive.org/web/20260314162354/https://community.wmo.int/iwxxm) · [mining/community-wmo-iwxxm-wayback-mining-notes.md](mining/community-wmo-iwxxm-wayback-mining-notes.md) · [VERSION_SUPPORT_POLICY Appendix A](iwxxm/VERSION_SUPPORT_POLICY.md#appendix-a--package--iwxxm-line-matrix-informative).  
-Live / recent operational METAR·TAF TAC+IWXXM (informative only): [Aviation Weather Center Data API](https://aviationweather.gov/data/api/) — [mining/awc-data-api-mining-notes.md](mining/awc-data-api-mining-notes.md).  
-ICAO OPMET exchange Guidelines (5th Ed., Oct 2023, **public**): [mining/OPMET-IWXXM-Exchange-Guidelines-5th-mining-notes.md](mining/OPMET-IWXXM-Exchange-Guidelines-5th-mining-notes.md) — require Schematron on translator/aggregator/databank outputs; ROC stats include Schematron success **per IWXXM version**; operational package selection historically from the community compatibility table (not printed in the Guidelines).
-Informative workshop overview (2025-10 TT-AvData): [mining/PPT-02-IWXXM-Framework-WMO-mining-notes.md](mining/PPT-02-IWXXM-Framework-WMO-mining-notes.md) — deck messaging that **IWXXM 2021-2 and earlier** are to be deprecated in OPMET Guidelines once **2025-2** is official (**not yet in** the Oct 2023 5th Edition text); package×line matrix captured from slides 5/16 (matches vendored **2023-1** / **2025-2** XSD versions); still validate runtime XML only against the **vendored** pin.  
-Historical Doc 10003 Advance 2014 (IWXXM **1.0RC2** sample / no COLLECT): [mining/ICAO-Doc-10003-draft-2014-mining-notes.md](mining/ICAO-Doc-10003-draft-2014-mining-notes.md) — lineage only; do not mix with 2025-2 validation.  
-UML / EA modelling provenance (how SCH pattern IDs and nilReason types are *authored*): [mining/iwxxm-modelling-v2025-2-mining-notes.md](mining/iwxxm-modelling-v2025-2-mining-notes.md) — **informative**; still validate only against the **vendored** `iwxxm` SCH+XSD+RDF.  
-METCE foundation (TropicalCyclone / Volcano imports for TCA·VAA·SIGMET TC/VA): [mining/schemas-wmo-int-metce-mining-notes.md](mining/schemas-wmo-int-metce-mining-notes.md) — publish https://schemas.wmo.int/metce/1.2/; runtime via vendor `externalSchema`.  
-OPM foundation (Observable Property Model; transitive via METCE Process only): [mining/schemas-wmo-int-opm-mining-notes.md](mining/schemas-wmo-int-opm-mining-notes.md) — publish https://schemas.wmo.int/opm/1.2/; no `opm:` in 2025-2 F6 examples.  
-SAF foundation (**historical** Simple Aeronautical Features): [mining/schemas-wmo-int-saf-mining-notes.md](mining/schemas-wmo-int-saf-mining-notes.md) — publish https://schemas.wmo.int/saf/{1.0,1.1}/; obsolete since IWXXM 2.0RC1; pin uses AIXM via `common.xsd` instead.  
-TSML (OGC TimeseriesML 1.0 mirror): [mining/schemas-wmo-int-tsml-mining-notes.md](mining/schemas-wmo-int-tsml-mining-notes.md) — publish https://schemas.wmo.int/tsml/1.0/; **not** imported by IWXXM; prefer OGC `schemas.opengis.net` for instance `schemaLocation`.
+Community index: https://community.wmo.int/iwxxm (**404** as of 2026-07-14); recovered package table: [Wayback 2026-03-14](https://web.archive.org/web/20260314162354/https://community.wmo.int/iwxxm) · [mining/community-wmo-iwxxm-wayback-mining-notes.md](mining/community-wmo-iwxxm-wayback-mining-notes.md) · [VERSION_SUPPORT_POLICY Appendix A](iwxxm/VERSION_SUPPORT_POLICY.md#appendix-a--package--iwxxm-line-matrix-informative).  
+Live / recent operational METAR·TAF TAC+IWXXM (informative only): [Aviation Weather Center Data API](https://aviationweather.gov/data/api/) · [mining/awc-data-api-mining-notes.md](mining/awc-data-api-mining-notes.md).  
+ICAO OPMET exchange Guidelines (5th Ed., Oct 2023, **public**): [mining/OPMET-IWXXM-Exchange-Guidelines-5th-mining-notes.md](mining/OPMET-IWXXM-Exchange-Guidelines-5th-mining-notes.md). The Guidelines require Schematron on translator/aggregator/databank outputs; ROC stats include Schematron success **per IWXXM version**; operational package selection historically from the community compatibility table (not printed in the Guidelines).
+Informative workshop overview (2025-10 TT-AvData): [mining/PPT-02-IWXXM-Framework-WMO-mining-notes.md](mining/PPT-02-IWXXM-Framework-WMO-mining-notes.md); deck messaging that **IWXXM 2021-2 and earlier** are to be deprecated in OPMET Guidelines once **2025-2** is official (**not yet in** the Oct 2023 5th Edition text); package×line matrix captured from slides 5/16 (matches vendored **2023-1** / **2025-2** XSD versions); still validate runtime XML only against the **vendored** pin.  
+Historical Doc 10003 Advance 2014 (IWXXM **1.0RC2** sample / no COLLECT): [mining/ICAO-Doc-10003-draft-2014-mining-notes.md](mining/ICAO-Doc-10003-draft-2014-mining-notes.md); lineage only; do not mix with 2025-2 validation.  
+UML / EA modelling provenance (how SCH pattern IDs and nilReason types are *authored*): [mining/iwxxm-modelling-v2025-2-mining-notes.md](mining/iwxxm-modelling-v2025-2-mining-notes.md) (**informative**); still validate only against the **vendored** `iwxxm` SCH+XSD+RDF.  
+METCE foundation (TropicalCyclone / Volcano imports for TCA·VAA·SIGMET TC/VA): [mining/schemas-wmo-int-metce-mining-notes.md](mining/schemas-wmo-int-metce-mining-notes.md); publish https://schemas.wmo.int/metce/1.2/; runtime via vendor `externalSchema`.  
+OPM foundation (Observable Property Model; transitive via METCE Process only): [mining/schemas-wmo-int-opm-mining-notes.md](mining/schemas-wmo-int-opm-mining-notes.md); publish https://schemas.wmo.int/opm/1.2/; no `opm:` in 2025-2 F6 examples.  
+SAF foundation (**historical** Simple Aeronautical Features): [mining/schemas-wmo-int-saf-mining-notes.md](mining/schemas-wmo-int-saf-mining-notes.md); publish https://schemas.wmo.int/saf/{1.0,1.1}/; obsolete since IWXXM 2.0RC1; pin uses AIXM via `common.xsd` instead.  
+TSML (OGC TimeseriesML 1.0 mirror): [mining/schemas-wmo-int-tsml-mining-notes.md](mining/schemas-wmo-int-tsml-mining-notes.md); publish https://schemas.wmo.int/tsml/1.0/; **not** imported by IWXXM; prefer OGC `schemas.opengis.net` for instance `schemaLocation`.
 
 ---
 

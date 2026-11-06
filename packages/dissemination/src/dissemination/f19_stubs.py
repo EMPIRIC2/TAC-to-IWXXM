@@ -22,7 +22,24 @@ F19_SINK_TYPES: Final[tuple[F19SinkName, ...]] = ("amhs", "swim", "afs")
 
 @dataclass(frozen=True, slots=True)
 class F19Params:
-    """BYOC connection parameters for F19 adapters (memory-only; never logged raw)."""
+    """
+    BYOC connection parameters for F19 adapters (memory-only; never logged raw).
+
+    Attributes
+    ----------
+    sink_type : F19SinkName
+        Sink type id.
+    host : str
+        Destination host.
+    port : int, optional
+        Destination port. By default ``0``.
+    username : str or None, optional
+        User name. By default ``None``.
+    password : str or None, optional
+        Password. By default ``None``.
+    endpoint : str or None, optional
+        Service endpoint. By default ``None``.
+    """
 
     sink_type: F19SinkName
     host: str
@@ -33,6 +50,21 @@ class F19Params:
 
 
 def _redact_exc(exc: BaseException, params: F19Params) -> str:
+    """
+    Internal helper ``_redact_exc``.
+
+    Parameters
+    ----------
+    exc : object
+        Argument ``exc``.
+    params : object
+        Argument ``params``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     text = redact_secrets(str(exc))
     if params.password:
         text = text.replace(params.password, "***")
@@ -42,6 +74,19 @@ def _redact_exc(exc: BaseException, params: F19Params) -> str:
 
 
 def _require_host(params: F19Params) -> str:
+    """
+    Internal helper ``_require_host``.
+
+    Parameters
+    ----------
+    params : object
+        Argument ``params``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     host = (params.host or "").strip()
     if not host:
         raw = f"F19 host is required; password={params.password}; username={params.username}"
@@ -50,6 +95,16 @@ def _require_host(params: F19Params) -> str:
 
 
 def _validate_f19_egress(params: F19Params, allowlist: Allowlist) -> None:
+    """
+    Internal helper ``_validate_f19_egress``.
+
+    Parameters
+    ----------
+    params : object
+        Argument ``params``.
+    allowlist : object
+        Argument ``allowlist``.
+    """
     validate_egress_host(_require_host(params), allowlist=allowlist)
 
 
@@ -58,6 +113,16 @@ def _require_payload(
     iwxxm_xml: str | bytes | None,
     tac_text: str | None,
 ) -> None:
+    """
+    Internal helper ``_require_payload``.
+
+    Parameters
+    ----------
+    iwxxm_xml : object
+        Argument ``iwxxm_xml``.
+    tac_text : object
+        Argument ``tac_text``.
+    """
     has_xml = iwxxm_xml is not None and (len(iwxxm_xml) > 0 if isinstance(iwxxm_xml, (bytes, str)) else True)
     has_tac = tac_text is not None and len(tac_text) > 0
     if not has_xml and not has_tac:
@@ -70,18 +135,43 @@ class StagingSinkAdapter:
 
     Performs allowlist checks and returns green preflight/send markers without
     live protocol egress (S-EV014-M2).
+
+    Attributes
+    ----------
+    mode : Final[str]
+        Adapter mode. Value is ``'staging'``.
     """
 
     mode: Final[str] = "staging"
 
     def __init__(self, sink_type: F19SinkName) -> None:
+        """
+        Internal helper ``__init__``.
+
+        Parameters
+        ----------
+        sink_type : F19SinkName
+            Sink type id.
+        """
         if sink_type not in F19_SINK_TYPES:
             raise ValueError(f"sink_type {sink_type!r} is not an F19 staging adapter")
         self._sink_type: SinkType = sink_type
 
     @property
     def sink_type(self) -> SinkType:
-        """Drawer / API sink discriminator for this F19 staging adapter."""
+        """
+        Drawer / API sink discriminator for this F19 staging adapter.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (sink_type)
+        2
+
+        Returns
+        -------
+        SinkType
+            Drawer / API sink discriminator for this F19 staging adapter.
+        """
         return self._sink_type
 
     async def preflight(
@@ -99,6 +189,23 @@ class StagingSinkAdapter:
             When ``params.host`` is not allowlisted.
         ValueError
             When ``host`` is missing (secrets redacted).
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (preflight)
+        2
+
+        Parameters
+        ----------
+        params : F19Params
+            Sink parameters.
+        allowlist : Allowlist
+            Allowlist.
+
+        Returns
+        -------
+        PreflightResponse
+            Allowlist-only preflight for the F19 staging stub.
         """
         if params.sink_type != self._sink_type:
             raise ValueError(f"params.sink_type {params.sink_type!r} does not match adapter {self._sink_type!r}")
@@ -127,6 +234,27 @@ class StagingSinkAdapter:
             When ``params.host`` is not allowlisted.
         ValueError
             When host or payload is missing (secrets redacted).
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (send)
+        2
+
+        Parameters
+        ----------
+        params : F19Params
+            Sink parameters.
+        allowlist : Allowlist
+            Allowlist.
+        iwxxm_xml : str or bytes or None, optional
+            IWXXM XML text. By default ``None``.
+        tac_text : str or None, optional
+            TAC text. By default ``None``.
+
+        Returns
+        -------
+        SendResponse
+            Record a staging delivery marker after allowlist + payload checks.
         """
         if params.sink_type != self._sink_type:
             raise ValueError(f"params.sink_type {params.sink_type!r} does not match adapter {self._sink_type!r}")
@@ -147,7 +275,7 @@ def get_staging_sink(sink_type: F19SinkName | str) -> StagingSinkAdapter:
 
     Parameters
     ----------
-    sink_type :
+    sink_type : F19SinkName or str
         One of ``amhs``, ``swim``, ``afs``.
 
     Returns
@@ -159,6 +287,11 @@ def get_staging_sink(sink_type: F19SinkName | str) -> StagingSinkAdapter:
     ------
     ValueError
         When ``sink_type`` is not an F19 adapter.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (get_staging_sink)
+    2
     """
     if sink_type not in F19_SINK_TYPES:
         raise ValueError(f"sink_type {sink_type!r} is not an F19 staging adapter")

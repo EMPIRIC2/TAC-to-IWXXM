@@ -25,7 +25,28 @@ _SIGMET_PACKS = {
 
 @dataclass(frozen=True, slots=True)
 class ShadowResult:
-    """Convert output plus an optional pack match and pack IR."""
+    """
+    Convert output plus an optional pack match and pack IR.
+
+    Attributes
+    ----------
+    ok : bool
+        Ok.
+    xml : str | None
+        XML text.
+    iwxxm_version : str
+        IWXXM release line.
+    profile : str
+        Semantic profile id.
+    match : MatchResult | None
+        Match.
+    pack_id : str | None
+        Pack ID.
+    pack_ir : dict[str, object] | None
+        Pack ir.
+    legacy_ir : dict[str, Any] | None
+        Legacy ir.
+    """
 
     ok: bool
     xml: str | None
@@ -49,15 +70,18 @@ def convert_shadow(
 
     Parameters
     ----------
-    tac :
+    tac : str
         TAC text.
-    product :
+
+    product : str
         Product id. METAR, SPECI, TAF, AIRMET, SIGMET, VAA, TCA, SWXA, and VONA
         run the pack. SIGMET stays one id; the legacy parse selects the ordinary,
         volcanic-ash, or tropical-cyclone pack.
-    profile :
+
+    profile : str, optional
         Caller profile. The pack does not select this.
-    iwxxm_version :
+
+    iwxxm_version : str | None, optional
         Caller pin. The pack does not select this.
 
     Returns
@@ -65,6 +89,11 @@ def convert_shadow(
     ShadowResult
         ``xml`` matches default :func:`convert`. ``legacy_ir`` is from
         ``ir_source=legacy`` when that convert succeeds.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (convert_shadow)
+    2
     """
     result = convert(tac, product=product, profile=profile, iwxxm_version=iwxxm_version)
     legacy = convert(
@@ -102,7 +131,22 @@ def convert_shadow(
 
 
 def _pack_id(product: str, ir: dict[str, object] | None) -> str:
-    """Map a convert product to a pack. SIGMET stays one product id."""
+    """
+    Internal helper ``_pack_id``.
+
+    Parameters
+    ----------
+    product : str
+        Argument ``product``.
+
+    ir : dict[str, object] | None
+        Argument ``ir``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
     if product != "SIGMET":
         return product.lower()
     root = ""

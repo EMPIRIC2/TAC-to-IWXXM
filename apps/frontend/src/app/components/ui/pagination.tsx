@@ -4,6 +4,9 @@ import { ChevronLeftIcon, ChevronRightIcon, MoreHorizontalIcon } from 'lucide-re
 import { cn } from './utils';
 import { Button, buttonVariants } from './button';
 
+/**
+ * Function `Pagination`.
+ */
 function Pagination({ className, ...props }: React.ComponentProps<'nav'>) {
   return (
     <nav
@@ -16,6 +19,9 @@ function Pagination({ className, ...props }: React.ComponentProps<'nav'>) {
   );
 }
 
+/**
+ * Function `PaginationContent`.
+ */
 function PaginationContent({ className, ...props }: React.ComponentProps<'ul'>) {
   return (
     <ul
@@ -26,6 +32,9 @@ function PaginationContent({ className, ...props }: React.ComponentProps<'ul'>) 
   );
 }
 
+/**
+ * Function `PaginationItem`.
+ */
 function PaginationItem({ ...props }: React.ComponentProps<'li'>) {
   return <li data-slot="pagination-item" {...props} />;
 }
@@ -35,6 +44,9 @@ type PaginationLinkProps = {
 } & Pick<React.ComponentProps<typeof Button>, 'size'> &
   React.ComponentProps<'a'>;
 
+/**
+ * Function `PaginationLink`.
+ */
 function PaginationLink({
   className,
   isActive,
@@ -58,6 +70,9 @@ function PaginationLink({
   );
 }
 
+/**
+ * Function `PaginationPrevious`.
+ */
 function PaginationPrevious({
   className,
   ...props
@@ -75,6 +90,9 @@ function PaginationPrevious({
   );
 }
 
+/**
+ * Function `PaginationNext`.
+ */
 function PaginationNext({
   className,
   ...props
@@ -92,6 +110,9 @@ function PaginationNext({
   );
 }
 
+/**
+ * Function `PaginationEllipsis`.
+ */
 function PaginationEllipsis({ className, ...props }: React.ComponentProps<'span'>) {
   return (
     <span

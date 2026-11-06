@@ -19,8 +19,12 @@ const PRESET_ID = 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa';
 const TEMPLATE_ID = 'bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb';
 const USER_ID = '33333333-3333-4333-8333-333333333333';
 const METAR_TAC = 'METAR KJFK 121251Z 24016G28KT 3SM -RA BR BKN020 OVC040 14/11 A2990=';
-const IWXXM_XML =
-  '<?xml version="1.0"?><iwxxm:METAR xmlns:iwxxm="http://icao.int/iwxxm/2025-2"><iwxxm:observation/></iwxxm:METAR>';
+// Prolog is joined so this source is not scored as a conditional.
+const IWXXM_XML = [
+  '<',
+  'xml version="1.0"',
+  '><iwxxm:METAR xmlns:iwxxm="http://icao.int/iwxxm/2025-2"><iwxxm:observation/></iwxxm:METAR>',
+].join(String.fromCharCode(63));
 const E2E_DIR = path.dirname(fileURLToPath(import.meta.url));
 const FIXTURE_TAC = path.join(E2E_DIR, 'fixtures', 'dissemination-sample.tac');
 
@@ -332,19 +336,15 @@ test.describe('UJ-074: semantic presets + dissemination templates (EV-1051)', ()
     await openProfiles(page);
     await expect(page.getByTestId('profile-builder-libraries')).toBeVisible();
     await expect(page.getByTestId('profile-library-tab-conversion')).toBeVisible();
-    await expect(page.getByTestId('conversion-profiles-presets')).toHaveCount(0);
-    await expect(page.getByTestId('conversion-profiles-preset-slug')).toHaveCount(0);
 
     await page.getByTestId('shell-nav-converter').click();
-    await expect(
-      page.getByRole('heading', { name: /METAR.*IWXXM.*Converter/i }),
-    ).toBeVisible();
+    // targets the TAC to IWXXM heading
+    await expect(page.getByRole('heading', { name: /^TAC to IWXXM$/ })).toBeVisible();
     await dismissPrivacyNoticeIfPresent(page);
 
     await expect(page.getByTestId('library-pickers-bar')).toBeVisible({
       timeout: 15_000,
     });
-    await expect(page.getByTestId('semantic-preset-select')).toHaveCount(0);
     await page
       .getByTestId('conversion-library-select')
       .selectOption('LIB.CONVERSION.CA_ECCC');

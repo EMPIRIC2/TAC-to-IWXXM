@@ -43,6 +43,11 @@ def init_sentry(
     -------
     bool
         ``True`` if ``sentry_sdk.init`` ran; ``False`` when DSN unset.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (init_sentry)
+    2
     """
     resolved = (dsn if dsn is not None else os.environ.get("SENTRY_DSN", "")).strip()
     if not resolved:

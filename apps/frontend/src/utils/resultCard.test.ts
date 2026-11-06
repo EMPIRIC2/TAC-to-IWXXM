@@ -1,0 +1,173 @@
+import { describe, expect, it } from 'vitest';
+
+import {
+  DO_NOT_PUBLISH_LABEL,
+  PAGE_TITLE,
+  RESULT_STATUS_ATTENTION,
+  RESULT_STATUS_NOTES,
+  RESULT_STATUS_VALID,
+  assessConvertedFile,
+  assessResultCard,
+  codeBlocksPublish,
+  isErrorSeverity,
+  xmlBlocksPublish,
+} from './resultCard';
+
+describe('result card status', () => {
+  it('names the page TAC to IWXXM', () => {
+    expect(PAGE_TITLE).toBe('TAC to IWXXM');
+    expect(PAGE_TITLE).not.toBe('METAR-2-IWXXM');
+  });
+
+  it('treats missing and error severity as errors, and info or warnings as notes', () => {
+    expect(isErrorSeverity(undefined)).toBe(true);
+    expect(isErrorSeverity(null)).toBe(true);
+    expect(isErrorSeverity('')).toBe(true);
+    expect(isErrorSeverity(' ERROR ')).toBe(true);
+    expect(isErrorSeverity('critical')).toBe(true);
+    expect(isErrorSeverity('info')).toBe(false);
+    expect(isErrorSeverity(' Warning ')).toBe(false);
+    expect(isErrorSeverity('warn')).toBe(false);
+    expect(isErrorSeverity('note')).toBe(false);
+  });
+
+  it('codeBlocksPublish stays empty under ADR-054 (no code alone blocks download)', () => {
+    expect(codeBlocksPublish(undefined)).toBe(false);
+    expect(codeBlocksPublish(null)).toBe(false);
+    expect(codeBlocksPublish('OUTPUT_VALIDATION_WARNING')).toBe(false);
+    expect(codeBlocksPublish('PARSE_FAILED')).toBe(false);
+  });
+
+  it('blocks publish for blank or tagless XML and allows tag-shaped documents', () => {
+    expect(xmlBlocksPublish(undefined)).toBe(false);
+    expect(xmlBlocksPublish(null)).toBe(false);
+    expect(xmlBlocksPublish('   ')).toBe(true);
+    expect(xmlBlocksPublish('<iwxxm')).toBe(true);
+    expect(xmlBlocksPublish('<iwxxm>ok</iwxxm>')).toBe(false);
+    expect(xmlBlocksPublish('<iwxxm:METAR>line-one</iwxxm:METAR>')).toBe(false);
+  });
+
+  it('is valid when the XML is well-formed and nothing was reported', () => {
+    const card = assessResultCard({ xml: '<iwxxm>ok</iwxxm>', ok: true });
+    expect(card.statusLabel).toBe(RESULT_STATUS_VALID);
+    expect(card.publishBlocked).toBe(false);
+    expect(card.errors).toEqual([]);
+    expect(card.notes).toEqual([]);
+  });
+
+  it('is valid with notes when only informational issues are present', () => {
+    const card = assessResultCard({
+      xml: '<iwxxm>ok</iwxxm>',
+      errors: ['  '],
+      issues: [
+        { severity: 'info', message: 'Remark stays in the decode', code: 'RMK_NOTE' },
+        { severity: 'warning', message: '  ' },
+        { severity: 'info', message: null },
+        { severity: 'warning', message: 'Check the cloud group', code: '   ' },
+      ],
+    });
+    expect(card.statusLabel).toBe(RESULT_STATUS_NOTES);
+    expect(card.publishBlocked).toBe(false);
+    expect(card.errors).toEqual([]);
+    expect(card.notes).toEqual([
+      { message: 'Remark stays in the decode', code: 'RMK_NOTE' },
+      { message: 'Check the cloud group' },
+    ]);
+  });
+
+  it('keeps download allowed when only UNKNOWN_ICAO warning is present', () => {
+    // [Corpus: product §F3] unknown aerodrome soft-warn does not alone block publish.
+    const card = assessResultCard({
+      xml: '<iwxxm:METAR>ok</iwxxm:METAR>',
+      ok: true,
+      issues: [
+        {
+          severity: 'warning',
+          message: 'Station ABCD is not in the aerodrome registry',
+          code: 'UNKNOWN_ICAO',
+        },
+      ],
+    });
+    expect(card.statusLabel).toBe(RESULT_STATUS_NOTES);
+    expect(card.publishBlocked).toBe(false);
+    expect(card.errors).toEqual([]);
+    expect(card.notes).toEqual([
+      {
+        message: 'Station ABCD is not in the aerodrome registry',
+        code: 'UNKNOWN_ICAO',
+      },
+    ]);
+  });
+
+  it('allows download with awareness for IWXXM output validation warnings', () => {
+    const card = assessResultCard({
+      xml: '<iwxxm>ok</iwxxm>',
+      ok: true,
+      issues: [
+        {
+          severity: 'warning',
+          message: 'IWXXM checks reported problems',
+          code: 'OUTPUT_VALIDATION_WARNING',
+        },
+      ],
+    });
+    expect(card.statusLabel).toBe(RESULT_STATUS_NOTES);
+    expect(card.publishBlocked).toBe(false);
+    expect(card.notes.map((line) => line.code)).toEqual(['OUTPUT_VALIDATION_WARNING']);
+  });
+
+  it('allows download when IWXXM validation errors are present but convert succeeded', () => {
+    const fromError = assessResultCard({
+      xml: '<iwxxm>ok</iwxxm>',
+      ok: true,
+      issues: [
+        { severity: 'error', message: 'Schema check failed', code: 'XML_SCHEMA' },
+        { severity: 'info', message: 'A note stays with notes', code: 'NOTE' },
+      ],
+    });
+    expect(fromError.statusLabel).toBe(RESULT_STATUS_ATTENTION);
+    expect(fromError.publishBlocked).toBe(false);
+    expect(fromError.errors.map((line) => line.message)).toEqual([
+      'Schema check failed',
+    ]);
+    expect(fromError.notes).toEqual([
+      { message: 'A note stays with notes', code: 'NOTE' },
+    ]);
+
+    const critical = assessResultCard({
+      xml: '<iwxxm>ok</iwxxm>',
+      ok: true,
+      issues: [
+        { severity: 'critical', message: 'Convert failed', code: 'PARSE_FAILED' },
+      ],
+    });
+    expect(critical.publishBlocked).toBe(true);
+    expect(critical.statusLabel).toBe(RESULT_STATUS_ATTENTION);
+
+    const fromFlag = assessResultCard({ xml: '<iwxxm>ok</iwxxm>', ok: false });
+    expect(fromFlag.publishBlocked).toBe(true);
+    expect(fromFlag.statusLabel).toBe(RESULT_STATUS_ATTENTION);
+
+    const fromXml = assessResultCard({ xml: '<iwxxm', ok: true });
+    expect(fromXml.publishBlocked).toBe(true);
+    expect(DO_NOT_PUBLISH_LABEL).toBe('Do not publish');
+  });
+
+  it('assesses a stored file, including a card with no saved issues', () => {
+    expect(
+      assessConvertedFile({
+        convertedContent: '<iwxxm>ok</iwxxm>',
+      }).statusLabel,
+    ).toBe(RESULT_STATUS_VALID);
+
+    expect(
+      assessConvertedFile({
+        convertedContent: '<iwxxm>ok</iwxxm>',
+        resultCard: {
+          ok: true,
+          issues: [{ severity: 'info', message: 'Kept as a note' }],
+        },
+      }).statusLabel,
+    ).toBe(RESULT_STATUS_NOTES);
+  });
+});

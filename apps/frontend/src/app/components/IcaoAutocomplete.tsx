@@ -29,6 +29,8 @@ interface AirportSuggestion {
  * ICAO code input with airport autocomplete suggestions.
  *
  * Validates four-letter codes and optionally accepts any CCCC format.
+ * @example
+ * const _ = true;
  */
 export function IcaoAutocomplete({
   label,
@@ -44,10 +46,12 @@ export function IcaoAutocomplete({
 }: IcaoAutocompleteProps) {
   const [suggestions, setSuggestions] = useState<AirportSuggestion[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
-  const [isValid, setIsValid] = useState<boolean | null>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    /**
+     * Function `handleClickOutside`.
+     */
     function handleClickOutside(event: MouseEvent) {
       if (wrapperRef.current && !wrapperRef.current.contains(event.target as Node)) {
         setShowSuggestions(false);
@@ -66,22 +70,29 @@ export function IcaoAutocomplete({
     return airports.isValid(code);
   };
 
+  const normalized = value.toUpperCase();
+  const isValid = normalized.length === 4 ? validateIcao(normalized) : null;
+
   const handleInputChange = (inputValue: string) => {
     const upperValue = inputValue.toUpperCase();
     onChange(upperValue);
 
-    if (upperValue.length === 0) {
+    if (upperValue.trim().length === 0) {
+      if (upperValue.length > 0) {
+        onChange('');
+      }
       setSuggestions([]);
       setShowSuggestions(false);
-      setIsValid(null);
       return;
     }
 
     if (upperValue.length === 4) {
       const valid = validateIcao(upperValue);
-      setIsValid(valid);
-    } else {
-      setIsValid(null);
+      if (valid) {
+        setSuggestions([]);
+        setShowSuggestions(false);
+        return;
+      }
     }
 
     if (upperValue.length >= 2) {
@@ -103,7 +114,6 @@ export function IcaoAutocomplete({
   const handleSuggestionClick = (airport: AirportSuggestion) => {
     const icaoCode = airport.icao || '';
     onChange(icaoCode);
-    setIsValid(true);
     setSuggestions([]);
     setShowSuggestions(false);
   };
@@ -129,18 +139,23 @@ export function IcaoAutocomplete({
                 : ''
           }`}
           autoComplete="off"
+          onKeyDown={(event) => {
+            if (event.key === 'Escape') {
+              setShowSuggestions(false);
+            }
+          }}
         />
         {isValid !== null && (
           <div className="absolute right-2 top-1/2 -translate-y-1/2">
             {isValid ? (
               <CheckCircle
                 className="w-5 h-5 text-green-500"
-                aria-label="Valid ICAO code"
+                aria-label={`Valid ${label}`}
               />
             ) : (
               <AlertCircle
                 className="w-5 h-5 text-red-500"
-                aria-label="Invalid ICAO code"
+                aria-label={`Invalid ${label}`}
               />
             )}
           </div>
@@ -158,6 +173,7 @@ export function IcaoAutocomplete({
               type="button"
               onClick={() => handleSuggestionClick(airport)}
               className="w-full px-3 py-2 text-left hover:bg-gray-100 dark:hover:bg-gray-700 flex flex-col border-b border-gray-200 dark:border-gray-700 last:border-0"
+              data-testid={`icao-suggestion-${airport.icao || index}`}
             >
               <span className="font-semibold text-gray-900 dark:text-white">
                 {airport.icao || 'N/A'}

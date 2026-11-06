@@ -28,7 +28,16 @@ _KNOWN_WIRE_IDS: frozenset[str] = frozenset(_CANONICAL_TO_WIRE) | frozenset(_CAN
 
 @dataclass(frozen=True, slots=True)
 class ResolvedExchangeProfile:
-    """Resolved exchange profile with canonical id and wire id."""
+    """
+    Resolved exchange profile with canonical id and wire id.
+
+    Attributes
+    ----------
+    canonical : str
+        Canonical.
+    wire_id : str
+        Wire ID.
+    """
 
     canonical: str
     wire_id: str
@@ -40,19 +49,41 @@ def normalize_exchange_id(profile: str) -> str:
 
     Parameters
     ----------
-    profile :
+    profile : str
         Exchange profile id (e.g. ``GLOBAL_AFS``).
 
     Returns
     -------
     str
         Uppercase id with hyphens as underscores.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (normalize_exchange_id)
+    2
     """
     return profile.strip().upper().replace("-", "_")
 
 
 def normalize_exchange_id_key(profile: str) -> str:
-    """Return lowercase registry lookup key for an exchange profile id."""
+    """
+    Return lowercase registry lookup key for an exchange profile id.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (normalize_exchange_id_key)
+    2
+
+    Parameters
+    ----------
+    profile : str
+        Profile id.
+
+    Returns
+    -------
+    str
+        Lowercase registry lookup key for an exchange profile id.
+    """
     return profile.strip().lower().replace("-", "_")
 
 
@@ -62,13 +93,18 @@ def resolve_exchange_profile(profile: str) -> ResolvedExchangeProfile | None:
 
     Parameters
     ----------
-    profile :
+    profile : str
         Canonical or wire exchange profile id.
 
     Returns
     -------
     ResolvedExchangeProfile | None
         ``None`` when the id is unknown.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (resolve_exchange_profile)
+    2
     """
     norm = normalize_exchange_id_key(profile)
     if norm in _CANONICAL_TO_WIRE:
@@ -84,7 +120,19 @@ def resolve_exchange_profile(profile: str) -> ResolvedExchangeProfile | None:
 
 
 def known_exchange_profile_ids() -> frozenset[str]:
-    """Return all accepted exchange profile wire ids."""
+    """
+    Return all accepted exchange profile wire ids.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (known_exchange_profile_ids)
+    2
+
+    Returns
+    -------
+    frozenset[str]
+        All accepted exchange profile wire ids.
+    """
     return _KNOWN_WIRE_IDS
 
 

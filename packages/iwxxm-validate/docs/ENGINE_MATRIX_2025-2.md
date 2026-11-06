@@ -13,8 +13,8 @@
 
 - **#980 / #979**: Enable/fix via **native** path (`D-S064-sch-hard=1`, `D-S064-xsd-hard=1`).
 - Quality metrics / corpus precompute must call `validate_for_quality_metrics` → `validate_iwxxm`.
-- lxml soft-skips remain documented fallback when `_rust` is not built — not an acceptable
-  Quality metrics close when native is available.
+- lxml soft-skips remain documented fallback when `_rust` is not built (not an acceptable
+  Quality metrics close when native is available).
 
 ## Root cause (#979)
 

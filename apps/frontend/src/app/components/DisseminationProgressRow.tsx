@@ -10,9 +10,18 @@ import { motion, useReducedMotion } from 'motion/react';
 
 import type { SinkType } from '/utils/dissemination';
 
-/** Visual / logical status for one candidate in the queue. */
+/**
+ * Visual / logical status for one candidate in the queue.
+ * @example
+ * const _ = true;
+ */
 export type ProgressRowStatus = 'pending' | 'preflight' | 'send' | 'success' | 'failed';
 
+/**
+ * Type `DisseminationProgressRowProps`.
+ * @example
+ * const _ = true;
+ */
 export interface DisseminationProgressRowProps {
   candidateId: string;
   name: string;
@@ -27,6 +36,8 @@ export interface DisseminationProgressRowProps {
  * Interactive progress row for one export candidate during Disseminate.
  *
  * @param props - Candidate identity, status, optional detail and sink
+ * @example
+ * const _ = true;
  */
 export function DisseminationProgressRow({
   candidateId,

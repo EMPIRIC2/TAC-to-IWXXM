@@ -130,7 +130,7 @@ def e2e_client(e2e_environment_check):
 
 - ✅ All test_icao_opmet_admin.py tests passing (27/27)
 - ✅ test_evaluation_endpoints_comprehensive.py tests passing
-- ⏭️ test_live_api_health.py tests gracefully skipped (API not running)
+- ⏭️ test_live_api_health.py tests skipped (API not running)
 - ✅ No RuntimeWarnings
 
 ## Commands to Verify Fixes
@@ -155,4 +155,4 @@ python3 scripts/utilities/syntax_check.py backend/tests/
 2. **Match Pydantic schemas exactly**: Field names and types must match model definitions
 3. **Graceful skips for integration tests**: Check service availability before running tests
 4. **Success rate format**: Use percentage (95.0) not decimal (0.95) for display values
-5. **Mock return values comprehensively**: Include all required Pydantic fields to avoid validation errors
+5. **Mock return values fully**: Include all required Pydantic fields to avoid validation errors

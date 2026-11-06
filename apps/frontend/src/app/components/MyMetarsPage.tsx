@@ -16,8 +16,11 @@ import {
   listWorkSessions,
   restoreWorkSession,
 } from '/utils/workSessionApi';
+import { shellFrameClass, useLiveConvertLayout } from '@/utils/liveConvertLayout';
 import { Button } from './ui/button';
 import { Card } from './ui/card';
+import { OutputVersionCompare } from './OutputVersionCompare';
+import { readOutputVersions } from '/utils/outputVersions';
 
 interface MyMetarsPageProps {
   /** JWT — when set, list/mutate DO Postgres sessions (F31). */
@@ -26,6 +29,34 @@ interface MyMetarsPageProps {
   userEmail?: string;
   onBack: () => void;
   onOpenSession: (session: WorkSession) => void;
+}
+
+/**
+ * Expand a history row's last two convert versions.
+ *
+ * @param props.params - Session conversion params
+ * @example
+ * const _ = true;
+ */
+function SessionVersions({ params }: { params: Record<string, unknown> }) {
+  const [open, setOpen] = useState(false);
+  const versions = readOutputVersions(params);
+  if (versions.length < 2) {
+    return null;
+  }
+  return (
+    <div className="mt-2">
+      <button
+        type="button"
+        className="text-xs font-medium text-gray-800 underline dark:text-gray-200"
+        aria-expanded={open}
+        onClick={() => setOpen((current) => !current)}
+      >
+        Compare versions ({versions.length})
+      </button>
+      {open ? <OutputVersionCompare versions={versions} /> : null}
+    </div>
+  );
 }
 
 const STATUS_OPTIONS: Array<WorkSessionStatus | 'all'> = [
@@ -40,6 +71,8 @@ const STATUS_OPTIONS: Array<WorkSessionStatus | 'all'> = [
  * Work-history page listing saved METAR/SPECI sessions.
  *
  * Uses local IndexedDB by default; syncs with the server when authenticated.
+ * @example
+ * const _ = true;
  */
 export function MyMetarsPage({
   accessToken,
@@ -47,6 +80,7 @@ export function MyMetarsPage({
   onBack,
   onOpenSession,
 }: MyMetarsPageProps) {
+  const { layout } = useLiveConvertLayout();
   const [statusFilter, setStatusFilter] = useState<WorkSessionStatus | 'all'>('all');
   const [includeDeleted, setIncludeDeleted] = useState(false);
   const [sessions, setSessions] = useState<WorkSession[]>([]);
@@ -147,8 +181,10 @@ export function MyMetarsPage({
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6 dark:bg-gray-900">
-      <div className="mx-auto max-w-4xl space-y-6">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <div
+        className={`mx-auto w-full space-y-6 px-4 py-6 ${shellFrameClass(layout.span)}`}
+      >
         <div className="flex items-center justify-between gap-4">
           <div>
             <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
@@ -243,7 +279,16 @@ export function MyMetarsPage({
           )}
           {error && <p className="text-sm text-red-600">{error}</p>}
 
-          {!loading && !error && (
+          {!loading && !error && sessions.length === 0 && (
+            <p
+              className="text-sm text-gray-600 dark:text-gray-400"
+              data-testid="my-metars-empty"
+            >
+              No saved reports match this filter.
+            </p>
+          )}
+
+          {!loading && !error && sessions.length > 0 && (
             <ul className="divide-y divide-gray-200 dark:divide-gray-700">
               {sessions.map((session) => (
                 <li
@@ -263,6 +308,7 @@ export function MyMetarsPage({
                       {new Date(session.updated_at).toLocaleString()}
                     </div>
                   </button>
+                  <SessionVersions params={session.conversion_params} />
                   <div className="flex gap-2">
                     {session.deleted_at ? (
                       <Button

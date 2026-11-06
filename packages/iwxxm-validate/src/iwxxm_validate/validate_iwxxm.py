@@ -9,6 +9,7 @@ from iwxxm_validate.api import validate
 from iwxxm_validate.ca_eccc_bundle import CA_ECCC_IWXXM_VERSION, ca_eccc_catalog_roots
 from iwxxm_validate.ca_eccc_validate import validate_ca_eccc_layered
 from iwxxm_validate.codelists import validate_codelist_references
+from iwxxm_validate.declared_package import apply_declared_package
 from iwxxm_validate.gml import validate_gml_references
 from iwxxm_validate.models import Issue, ValidationReport
 from iwxxm_validate.native import rust_available, rust_module
@@ -26,17 +27,31 @@ from iwxxm_validate.pin_sch import PinSchError, assert_pin_schematron_match
 from iwxxm_validate.wellformed import run_wellformed_lxml
 
 _DEFAULT_LEVELS: tuple[str, ...] = ("xsd", "schematron")
-_VALID_PROFILES = frozenset({"annex3", "iwxxm_us", "ca_eccc"})
+_VALID_PROFILES = frozenset({"annex3", "iwxxm_us", "ca_eccc", "ca_msc_sigmet", "us_nws_convective_sigmet"})
+_ENGINE_PROFILE = {
+    "ca_msc_sigmet": "ca_eccc",
+    "us_nws_convective_sigmet": "iwxxm_us",
+}
 _VALID_LEVELS = frozenset({"wellformed", "xsd", "schematron", "gml", "codelists"})
 _RUST_LEVELS = frozenset({"wellformed", "xsd", "schematron"})
 _LXML_LEVELS = frozenset({"xsd", "schematron"})
 
 
 def _catalog_roots(iwxxm_version: str, *, profile: str = "annex3") -> list[str]:
-    """Return directory roots for xmloxide ``SchemaResolver`` (packaged / vendor).
+    """
+    Internal helper ``_catalog_roots``.
 
-    Runtime subset (E10-34) ships ``iwxxm/externalSchema`` only - no translation
-    modelling bulk. Monorepo may still resolve translation as a last resort.
+    Parameters
+    ----------
+    iwxxm_version : object
+        Argument ``iwxxm_version``.
+    profile : object
+        Argument ``profile``.
+
+    Returns
+    -------
+    object
+        Return value.
     """
     vdir = version_dir(iwxxm_version)
     root = vendor_iwxxm_root()
@@ -50,13 +65,25 @@ def _catalog_roots(iwxxm_version: str, *, profile: str = "annex3") -> list[str]:
         # Optional monorepo-only fallback (excluded from the wheel subset).
         repo_root() / "vendor" / "schemas" / "iwxxm-translation" / "externalSchema",
     ]
-    if profile == "ca_eccc":
+    if profile in {"ca_eccc", "ca_msc_sigmet"}:
         return ca_eccc_catalog_roots(iwxxm_version)
     return [str(p) for p in candidates if p.is_dir()]
 
 
 def _issues_from_rust(raw: Sequence[dict[str, Any]]) -> list[Issue]:
-    """Map Rust issue dicts to msgspec ``Issue`` structs."""
+    """
+    Internal helper ``_issues_from_rust``.
+
+    Parameters
+    ----------
+    raw : object
+        Argument ``raw``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return [
         Issue(
             severity=str(item.get("severity", "error")),
@@ -76,7 +103,25 @@ def _append_extended_levels(
     iwxxm_version: str,
     selected: tuple[str, ...],
 ) -> list[Issue]:
-    """Run GML / codelist layers and merge with existing issues."""
+    """
+    Internal helper ``_append_extended_levels``.
+
+    Parameters
+    ----------
+    issues : object
+        Argument ``issues``.
+    xml_content : object
+        Argument ``xml_content``.
+    iwxxm_version : object
+        Argument ``iwxxm_version``.
+    selected : object
+        Argument ``selected``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     out = list(issues)
     try:
         cl_dir = codelists_dir(iwxxm_version)
@@ -105,6 +150,23 @@ def _report_from_issues(
     iwxxm_version: str,
     profile: str,
 ) -> ValidationReport:
+    """
+    Internal helper ``_report_from_issues``.
+
+    Parameters
+    ----------
+    issues : object
+        Argument ``issues``.
+    iwxxm_version : object
+        Argument ``iwxxm_version``.
+    profile : object
+        Argument ``profile``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     ok = not any(issue.severity == "error" for issue in issues)
     return ValidationReport(
         ok=ok,
@@ -121,7 +183,25 @@ def _validate_core_levels(
     profile: str,
     selected: tuple[str, ...],
 ) -> ValidationReport:
-    """Run wellformed / XSD / Schematron via Rust or lxml fallback."""
+    """
+    Internal helper ``_validate_core_levels``.
+
+    Parameters
+    ----------
+    xml_content : object
+        Argument ``xml_content``.
+    iwxxm_version : object
+        Argument ``iwxxm_version``.
+    profile : object
+        Argument ``profile``.
+    selected : object
+        Argument ``selected``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     rust_levels = [level for level in selected if level in _RUST_LEVELS]
     lxml_levels = [level for level in selected if level in _LXML_LEVELS]
 
@@ -239,6 +319,22 @@ def _validate_iwxxm(
                 )
             ],
         )
+    engine = _ENGINE_PROFILE.get(profile)
+    if engine is not None:
+        report = _validate_iwxxm(
+            xml_content,
+            iwxxm_version=iwxxm_version,
+            profile=engine,
+            levels=levels,
+            product=product,
+        )
+        return ValidationReport(
+            ok=report.ok,
+            iwxxm_version=report.iwxxm_version,
+            profile=profile,
+            issues=report.issues,
+            stages=report.stages,
+        )
 
     selected = tuple(levels) if levels is not None else _DEFAULT_LEVELS
     unknown = [level for level in selected if level not in _VALID_LEVELS]
@@ -255,6 +351,19 @@ def _validate_iwxxm(
                     layer="xsd",
                 )
             ],
+        )
+
+    iwxxm_version, rejection = apply_declared_package(
+        xml_content,
+        profile=profile,
+        iwxxm_version=iwxxm_version,
+    )
+    if rejection is not None:
+        return ValidationReport(
+            ok=False,
+            iwxxm_version=iwxxm_version,
+            profile=profile,
+            issues=[rejection],
         )
 
     try:
@@ -346,6 +455,31 @@ def validate_iwxxm(
 
     Empty ``select`` keeps every Schematron assert. Disabled assert ids are omitted.
     XSD, well-formed, and skipped-Schematron issues always remain.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (validate_iwxxm)
+    2
+
+    Parameters
+    ----------
+    xml_content : str
+        XML text.
+    iwxxm_version : str
+        IWXXM release line.
+    profile : str, optional
+        Profile id. By default ``'annex3'``.
+    levels : Sequence[str] or None, optional
+        Levels. By default ``None``.
+    product : str or None, optional
+        Product id. By default ``None``.
+    output_policy_id : str or None, optional
+        Output policy ID. By default ``None``.
+
+    Returns
+    -------
+    ValidationReport
+        Validate IWXXM XML, then apply an output policy when ``output_policy_id`` is set.
     """
     report = _validate_iwxxm(
         xml_content,

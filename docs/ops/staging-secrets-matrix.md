@@ -4,7 +4,7 @@
 > [config-spec.md](../config-spec.md) (S003, 2026-06-23; **F21 rewrite S023 / EV-017**). This file
 > retained for historical staging URL reference until fully migrated.
 
-> **Project**: METAR to IWXXM Converter
+> **Project**: TAC to IWXXM
 > **Generated**: 2026-06-15 (04-tech-plan)
 > **Updated**: 2026-07-28 (S023 / EV-017 — F21 rate-limit stubs; Auth retired)
 > **Platform**: Render
@@ -84,7 +84,7 @@ Populate `.env` from `.env.example` before `make test-live*`:
 | `LIVE_FRONTEND_URL` | `https://metar-to-iwxxm-frontend-v4-web.onrender.com` |
 | `PLAYWRIGHT_BASE_URL` | Same as `LIVE_FRONTEND_URL` |
 
-F21: no `E2E_USER_*` / `ADMIN_*` — public convert smoke + `TC-F21-auth-gone`.
+F21: no `E2E_USER_*` / `ADMIN_*`; public convert smoke + `TC-F21-auth-gone`.
 
 See [deploy.md](../deploy.md) §Live test harness and ADR-009 / ADR-031.
 

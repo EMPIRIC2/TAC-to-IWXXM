@@ -14,16 +14,16 @@ F6 today exposes a single flat `profile` enum (`annex3` | `iwxxm_us`) on convert
 1. **Semantic profiles** — how TAC is parsed, normalized, and encoded to IWXXM (national
    extensions, RMK policy, unit/geo rules).
 2. **Exchange profiles** — how converted products are **packaged** for regional AFS / ROBEX /
-   RODEX routing (bulletin headers, filenames, COLLECT conventions) — not TAC grammar.
+   RODEX routing (bulletin headers, filenames, COLLECT conventions), not TAC grammar.
 
 Epic [#912](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/912) requires multiple national
 semantic profiles (`ICAO_2025`, `US_FAA_NWS`, `CA_ECCC`, …) and separate exchange overlays
 (`GLOBAL_AFS`, `APAC_ROBEX`, …). Dissemination saved connections (F16–F19) already use the
-word “profile” for a different concept (memory-only BYOC destinations) — must not merge.
+word “profile” for a different concept (memory-only BYOC destinations); must not merge.
 
 Constraints from EV-063 intake:
 
-- One ICAO/PANS-MET canonical IR + national overlays — not N independent converters.
+- One ICAO/PANS-MET canonical IR + national overlays, not N independent converters.
 - `iwxxmVersion` and extension XSD list are **independent** of semantic profile id.
 - Breaking wire change is acceptable with ADR + deprecation window; alias removal tracked in #1025
   after **2026-10-31**.
@@ -46,7 +46,7 @@ Constraints from EV-063 intake:
 
    Additional national ids (`CA_ECCC`, `AU_BOM`, `NZ_CAA_MET`, …) are **F36** children of #912.
 
-3. **Wire shape** (normative target — implement after Spec→Build gate)
+3. **Wire shape** (normative target; implement after Spec→Build gate)
 
    ```yaml
    conversion:
@@ -61,7 +61,7 @@ Constraints from EV-063 intake:
 
    During transition, flat multipart `profile=` remains accepted and maps to
    `conversion.semanticProfile` via aliases. Config default may stay on legacy names until cutover
-   (`PROFILE_WIRE_V2` feature flag — see env-contract).
+   (`PROFILE_WIRE_V2` feature flag; see env-contract).
 
    `reportVariant` is optional and only applies where the selected semantic profile defines a
    profile-scoped variant catalog (for example `CA_ECCC.metar_family_variants`). It does **not**

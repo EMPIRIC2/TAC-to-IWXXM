@@ -1,199 +1,284 @@
 /**
- * Convert bar — five Libraries pickers (Conversion … Decoding).
+ * Convert bar — four library selects (Decoding / TAC / IWXXM / Conversion).
+ * Options from GET /selection-options (TP-YCL-01 / #1251). Dissemination is Send-drawer only.
  */
 
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
+import { fetchSelectionOptions, type SelectionOptionKind } from '../../utils/api';
 import {
-  listLibraryAssets,
-  type LibraryAssetKind,
-  type LibraryAssetOut,
-} from '../../utils/conversionProfilesApi';
+  libraryChoiceReason,
+  libraryDisplayName,
+} from '../../utils/libraryChoiceReason';
 import { defaultLibraryId } from '../../utils/libraryIds';
-import { isLibrarySelectableOnConvert } from '../../utils/libraryYamlDiagnostics';
 import {
+  CONVERT_LIBRARY_CATALOG_LINK,
+  CONVERT_LIBRARY_HELP_CONVERSION,
+  CONVERT_LIBRARY_HELP_DECODING,
+  CONVERT_LIBRARY_HELP_IWXXM_VALIDATION,
+  CONVERT_LIBRARY_HELP_TAC_VALIDATION,
   PROFILES_LIBRARY_TAB_CONVERSION,
   PROFILES_LIBRARY_TAB_DECODING,
-  PROFILES_LIBRARY_TAB_DISSEMINATION,
   PROFILES_LIBRARY_TAB_IWXXM_VALIDATION,
   PROFILES_LIBRARY_TAB_TAC_VALIDATION,
 } from '../../utils/conversionProfilesCopy';
 import { BetaBadge } from './BetaBadge';
 import { Label } from './ui/label';
 
+type ConvertSelectKind = Exclude<SelectionOptionKind, 'dissemination'>;
+
+type SelectOption = { id: string; label: string };
+
 const KIND_META: Array<{
-  kind: LibraryAssetKind;
+  kind: ConvertSelectKind;
   label: string;
+  help: string;
+  catalogFamily: 'conversion' | 'lint' | 'iwxxm' | 'decoding';
   testId: string;
+  helpTestId: string;
+  catalogTestId: string;
   field:
     | 'conversionLibraryId'
     | 'tacValidationLibraryId'
     | 'iwxxmValidationLibraryId'
-    | 'disseminationLibraryId'
     | 'decodingLibraryId';
 }> = [
   {
-    kind: 'conversion',
-    label: PROFILES_LIBRARY_TAB_CONVERSION,
-    testId: 'conversion-library-select',
-    field: 'conversionLibraryId',
+    kind: 'decoding',
+    label: PROFILES_LIBRARY_TAB_DECODING,
+    help: CONVERT_LIBRARY_HELP_DECODING,
+    catalogFamily: 'decoding',
+    testId: 'decoding-library-select',
+    helpTestId: 'decoding-library-help',
+    catalogTestId: 'decoding-library-catalog-link',
+    field: 'decodingLibraryId',
   },
   {
     kind: 'tac_validation',
     label: PROFILES_LIBRARY_TAB_TAC_VALIDATION,
+    help: CONVERT_LIBRARY_HELP_TAC_VALIDATION,
+    catalogFamily: 'lint',
     testId: 'tac-validation-library-select',
+    helpTestId: 'tac-validation-library-help',
+    catalogTestId: 'tac-validation-library-catalog-link',
     field: 'tacValidationLibraryId',
   },
   {
     kind: 'iwxxm_validation',
     label: PROFILES_LIBRARY_TAB_IWXXM_VALIDATION,
+    help: CONVERT_LIBRARY_HELP_IWXXM_VALIDATION,
+    catalogFamily: 'iwxxm',
     testId: 'iwxxm-validation-library-select',
+    helpTestId: 'iwxxm-validation-library-help',
+    catalogTestId: 'iwxxm-validation-library-catalog-link',
     field: 'iwxxmValidationLibraryId',
   },
   {
-    kind: 'dissemination',
-    label: PROFILES_LIBRARY_TAB_DISSEMINATION,
-    testId: 'dissemination-library-select',
-    field: 'disseminationLibraryId',
-  },
-  {
-    kind: 'decoding',
-    label: PROFILES_LIBRARY_TAB_DECODING,
-    testId: 'decoding-library-select',
-    field: 'decodingLibraryId',
+    kind: 'conversion',
+    label: PROFILES_LIBRARY_TAB_CONVERSION,
+    help: CONVERT_LIBRARY_HELP_CONVERSION,
+    catalogFamily: 'conversion',
+    testId: 'conversion-library-select',
+    helpTestId: 'conversion-library-help',
+    catalogTestId: 'conversion-library-catalog-link',
+    field: 'conversionLibraryId',
   },
 ];
 
+/**
+ * Type `LibraryPickerValues`.
+ * @example
+ * const _ = true;
+ */
 export type LibraryPickerValues = {
   conversionLibraryId: string;
   tacValidationLibraryId: string;
   iwxxmValidationLibraryId: string;
+  /** Kept for Send drawer / convert wire; not shown on Convert bar. */
   disseminationLibraryId: string;
   decodingLibraryId: string;
 };
 
+/**
+ * Type `LibraryPickersBarProps`.
+ * @example
+ * const _ = true;
+ */
 export type LibraryPickersBarProps = {
   accessToken?: string;
   values: LibraryPickerValues;
   disabled?: boolean;
   onChange: (next: LibraryPickerValues, conversionEngineProfileId?: string) => void;
+  /** Optional: open Rule catalogs for the matching family. */
+  onOpenCatalog?: (family: 'conversion' | 'lint' | 'iwxxm' | 'decoding') => void;
 };
 
-function guestDefaults(): LibraryAssetOut[] {
+/**
+ * Guest fallback options when selection-options is unavailable.
+ */
+function guestOptions(kind: ConvertSelectKind): SelectOption[] {
   const lines = ['ICAO_2025', 'US_FAA_NWS', 'CA_ECCC'];
-  const kinds: LibraryAssetKind[] = [
-    'conversion',
-    'tac_validation',
-    'iwxxm_validation',
-    'dissemination',
-    'decoding',
-  ];
-  const out: LibraryAssetOut[] = [];
-  for (const line of lines) {
-    for (const kind of kinds) {
-      out.push({
-        id: defaultLibraryId(kind, line),
-        kind,
-        name: `${line.replaceAll('_', ' ')}`,
-        access: 'first_party',
-        engineProfileId: line,
-        attachedNationalLine: line,
-      });
-    }
-  }
-  return out;
+  return lines.map((line) => {
+    const id = defaultLibraryId(kind, line);
+    return { id, label: libraryDisplayName(id) };
+  });
 }
 
 /**
- * Five library selects for the Convert product bar.
+ * National line from a first-party LIB.* id (LIB.CONVERSION.US_FAA_NWS → US_FAA_NWS).
+ */
+function nationalLineFromLibId(id: string): string | undefined {
+  const parts = id.split('.');
+  if (parts.length >= 3 && parts[0] === 'LIB') {
+    return parts.slice(2).join('.');
+  }
+  return undefined;
+}
+
+/**
+ * Four library selects for the Convert product bar (ADR-044 / #1251).
  *
- * @param props.accessToken - Optional JWT (loads custom + first-party assets)
  * @param props.values - Selected library ids
  * @param props.onChange - Emits ids + Conversion engine profile when Conversion changes
  * @param props.disabled - Read-only workbench
+ * @param props.onOpenCatalog - Opens read-only Rule catalogs for the kind's family
+ * @example
+ * const _ = true;
  */
 export function LibraryPickersBar({
-  accessToken,
   values,
   disabled = false,
   onChange,
+  onOpenCatalog,
 }: LibraryPickersBarProps) {
-  const [assets, setAssets] = useState<LibraryAssetOut[]>(() => guestDefaults());
+  const [byKind, setByKind] = useState<Record<ConvertSelectKind, SelectOption[]>>(
+    () => ({
+      decoding: guestOptions('decoding'),
+      tac_validation: guestOptions('tac_validation'),
+      iwxxm_validation: guestOptions('iwxxm_validation'),
+      conversion: guestOptions('conversion'),
+    }),
+  );
 
   const load = useCallback(async () => {
-    const token = accessToken?.trim();
-    if (!token) {
-      setAssets(guestDefaults());
-      return;
-    }
-    try {
-      const res = await listLibraryAssets(token);
-      setAssets(res.items.length > 0 ? res.items : guestDefaults());
-    } catch {
-      setAssets(guestDefaults());
-    }
-  }, [accessToken]);
+    const next: Partial<Record<ConvertSelectKind, SelectOption[]>> = {};
+    await Promise.all(
+      KIND_META.map(async (meta) => {
+        try {
+          const res = await fetchSelectionOptions({ kind: meta.kind });
+          next[meta.kind] =
+            res.options.length > 0
+              ? res.options.map((o) => ({
+                  id: o.id,
+                  label: libraryDisplayName(o.id, o.label),
+                }))
+              : guestOptions(meta.kind);
+        } catch {
+          next[meta.kind] = guestOptions(meta.kind);
+        }
+      }),
+    );
+    setByKind({
+      decoding: next.decoding as SelectOption[],
+      tac_validation: next.tac_validation as SelectOption[],
+      iwxxm_validation: next.iwxxm_validation as SelectOption[],
+      conversion: next.conversion as SelectOption[],
+    });
+  }, []);
 
-  /* eslint-disable react-hooks/set-state-in-effect -- refetch when token changes */
+  /* eslint-disable react-hooks/set-state-in-effect -- load selection-options once on mount */
   useEffect(() => {
     void load();
   }, [load]);
   /* eslint-enable react-hooks/set-state-in-effect */
 
-  const byKind = useMemo(() => {
-    const map = new Map<LibraryAssetKind, LibraryAssetOut[]>();
-    for (const meta of KIND_META) {
-      map.set(
-        meta.kind,
-        assets.filter((a) => a.kind === meta.kind && isLibrarySelectableOnConvert(a)),
-      );
-    }
-    return map;
-  }, [assets]);
+  const reasons = KIND_META.map((meta) => {
+    const options = byKind[meta.kind];
+    const value = values[meta.field] || options[0]!.id;
+    return libraryChoiceReason(value);
+  });
+  const sharedReason = reasons.every((reason) => reason === reasons[0])
+    ? reasons[0]
+    : null;
 
   return (
     <div
-      className="flex min-w-0 flex-col gap-2 lg:flex-row lg:flex-wrap lg:items-center"
+      className="order-2 flex min-w-0 basis-full flex-col gap-2"
       data-testid="library-pickers-bar"
     >
-      <BetaBadge className="inline-flex shrink-0" />
-      {KIND_META.map((meta) => {
-        const options = byKind.get(meta.kind)!;
-        const value = values[meta.field] || options[0]?.id || '';
-        return (
-          <div key={meta.kind} className="flex min-w-0 items-center gap-1">
-            <Label
-              htmlFor={`param-library-${meta.kind}`}
-              className="shrink-0 text-sm text-gray-700 dark:text-gray-300"
-            >
-              {meta.label}
-            </Label>
-            <select
-              id={`param-library-${meta.kind}`}
-              aria-label={meta.label}
-              data-testid={meta.testId}
-              value={value}
-              disabled={disabled || options.length === 0}
-              onChange={(e) => {
-                const id = e.target.value;
-                const asset = options.find((o) => o.id === id);
-                const next = { ...values, [meta.field]: id };
-                onChange(
-                  next,
-                  meta.kind === 'conversion' ? asset?.engineProfileId : undefined,
-                );
-              }}
-              className="min-w-[9.5rem] shrink-0 rounded-md border border-gray-300 bg-white px-2 py-1.5 text-sm text-gray-900 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
-            >
-              {options.map((opt) => (
-                <option key={opt.id} value={opt.id}>
-                  {opt.name}
-                </option>
-              ))}
-            </select>
-          </div>
-        );
-      })}
+      <div className="flex flex-wrap items-center gap-2">
+        <BetaBadge className="inline-flex shrink-0" />
+        {sharedReason ? (
+          <p
+            className="text-xs text-gray-800 dark:text-gray-200"
+            data-testid="library-pickers-shared-reason"
+          >
+            {sharedReason}
+          </p>
+        ) : null}
+      </div>
+      <div className="grid min-w-0 gap-3 sm:grid-cols-2 xl:grid-cols-4">
+        {KIND_META.map((meta) => {
+          const options = byKind[meta.kind];
+          const value = values[meta.field] || options[0]!.id;
+          return (
+            <div key={meta.kind} className="flex min-w-0 flex-col gap-1">
+              <div className="flex items-baseline justify-between gap-2">
+                <Label
+                  htmlFor={`param-library-${meta.kind}`}
+                  className="text-sm text-gray-700 dark:text-gray-300"
+                >
+                  {meta.label}
+                </Label>
+                {onOpenCatalog ? (
+                  <button
+                    type="button"
+                    className="text-xs text-blue-700 underline dark:text-blue-300"
+                    data-testid={meta.catalogTestId}
+                    onClick={() => onOpenCatalog(meta.catalogFamily)}
+                  >
+                    {CONVERT_LIBRARY_CATALOG_LINK}
+                  </button>
+                ) : null}
+              </div>
+              <select
+                id={`param-library-${meta.kind}`}
+                aria-label={meta.label}
+                title={meta.help}
+                data-testid={meta.testId}
+                value={value}
+                disabled={disabled || options.length === 0}
+                onChange={(e) => {
+                  const id = e.target.value;
+                  const next = { ...values, [meta.field]: id };
+                  onChange(
+                    next,
+                    meta.kind === 'conversion' ? nationalLineFromLibId(id) : undefined,
+                  );
+                }}
+                className="min-w-0 rounded-md border border-gray-300 bg-white px-2 py-1.5 text-sm text-gray-900 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+              >
+                {options.map((opt) => (
+                  <option key={opt.id} value={opt.id}>
+                    {opt.label}
+                  </option>
+                ))}
+              </select>
+              {sharedReason ? null : (
+                <p
+                  className="text-xs text-gray-800 dark:text-gray-200"
+                  data-testid={`${meta.testId}-reason`}
+                >
+                  {libraryChoiceReason(value)}
+                </p>
+              )}
+              <p className="sr-only" data-testid={meta.helpTestId}>
+                {meta.help}
+              </p>
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 }

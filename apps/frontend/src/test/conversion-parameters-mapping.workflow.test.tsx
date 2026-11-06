@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { FileConverter } from '../app/components/FileConverter';
 
@@ -92,6 +92,18 @@ vi.mock('../app/components/IcaoAutocomplete', () => ({
   ),
 }));
 
+const TAC_SEED = 'METAR KJFK 121251Z 18004KT=';
+
+/**
+ * Open Settings then expand Conversion parameters (UJ-089 declutter).
+ */
+async function openExpandedParameters(
+  user: ReturnType<typeof userEvent.setup>,
+): Promise<void> {
+  await user.click(screen.getByTestId('convert-settings-cog'));
+  await user.click(screen.getByLabelText(/expand parameters/i));
+}
+
 describe('UI Workflow: Conversion Parameter Mapping', () => {
   const defaultProps = {
     onLogout: vi.fn(),
@@ -103,13 +115,26 @@ describe('UI Workflow: Conversion Parameter Mapping', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     localStorage.clear();
+    sessionStorage.clear();
+    // Seed TAC so calm empty hero does not hide Settings chrome.
+    sessionStorage.setItem(
+      'metar_guest_converter_state',
+      JSON.stringify({
+        manualInput: TAC_SEED,
+        pendingFiles: [],
+        convertedFiles: [],
+        conversionLog: null,
+        conversionParams: {},
+      }),
+    );
   });
 
   it('sends selected IWXXM version in conversion API payload', async () => {
     const user = userEvent.setup();
     const { container } = render(<FileConverter {...defaultProps} />);
+    fireEvent.click(screen.getByTestId('live-iwxxm-toggle'));
 
-    await user.click(screen.getByLabelText(/expand parameters/i));
+    await openExpandedParameters(user);
 
     const iwxxmVersion = container.querySelector(
       '#param-iwxxm-version',
@@ -134,8 +159,10 @@ describe('UI Workflow: Conversion Parameter Mapping', () => {
         manualText:
           'METAR KJFK 121251Z 24016G28KT 3SM -RA BR BKN020 OVC040 14/11 A2990',
         iwxxmVersion: '2023-1',
-        validateOutput: true,
-        validationLevel: 'comprehensive',
+        // ADR-054: Strict defaults OFF → no post-convert validate_output.
+        strict: false,
+        validateOutput: false,
+        validationLevel: 'basic',
         stopOnError: false,
         // EV-1051: signed-in convert always forwards Bearer (preset_id auth).
         accessToken: 'mapping-token',
@@ -146,8 +173,9 @@ describe('UI Workflow: Conversion Parameter Mapping', () => {
   it('maps bulletin, issuing centre, onError fail, and soft-preview validation off', async () => {
     const user = userEvent.setup();
     const { container } = render(<FileConverter {...defaultProps} />);
+    fireEvent.click(screen.getByTestId('live-iwxxm-toggle'));
 
-    await user.click(screen.getByLabelText(/expand parameters/i));
+    await openExpandedParameters(user);
 
     const bulletinId = container.querySelector(
       '#param-bulletin-id',
@@ -183,6 +211,46 @@ describe('UI Workflow: Conversion Parameter Mapping', () => {
     );
   });
 
+  it('sends the same bar fields on live preview convert', async () => {
+    vi.useFakeTimers();
+    try {
+      const { container } = render(<FileConverter {...defaultProps} />);
+
+      screen.getByTestId('convert-settings').setAttribute('open', '');
+      fireEvent.click(screen.getByLabelText(/expand parameters/i));
+      const bulletinId = container.querySelector(
+        '#param-bulletin-id',
+      ) as HTMLInputElement;
+      fireEvent.change(bulletinId, { target: { value: 'saaa00' } });
+      const logLevel = container.querySelector('#param-log-level') as HTMLSelectElement;
+      fireEvent.change(logLevel, { target: { value: 'WARNING' } });
+
+      fireEvent.change(screen.getByLabelText(/enter metar data manually/i), {
+        target: {
+          value: 'METAR KJFK 121251Z 24016G28KT 10SM FEW250 14/11 A2990',
+        },
+      });
+
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(350);
+        await Promise.resolve();
+      });
+
+      expect(mockConvertMetarToIwxxm).toHaveBeenCalledWith(
+        expect.objectContaining({
+          bulletinId: 'SAAA00',
+          logLevel: 'WARNING',
+          includeNilReasons: true,
+          preview: true,
+          validateOutput: false,
+          validationLevel: 'basic',
+        }),
+      );
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
   it('maps default parameters from saved preferences before conversion', async () => {
     localStorage.setItem(
       'metar_converter_preferences',
@@ -200,7 +268,7 @@ describe('UI Workflow: Conversion Parameter Mapping', () => {
     const user = userEvent.setup();
     const { container } = render(<FileConverter {...defaultProps} />);
 
-    await user.click(screen.getByLabelText(/expand parameters/i));
+    await openExpandedParameters(user);
 
     const bulletinId = container.querySelector(
       '#param-bulletin-id',
@@ -237,8 +305,9 @@ describe('UI Workflow: Conversion Parameter Mapping', () => {
 
     const user = userEvent.setup();
     const { container } = render(<FileConverter {...defaultProps} />);
+    fireEvent.click(screen.getByTestId('live-iwxxm-toggle'));
 
-    await user.click(screen.getByLabelText(/expand parameters/i));
+    await openExpandedParameters(user);
     const iwxxmVersion = container.querySelector(
       '#param-iwxxm-version',
     ) as HTMLSelectElement;
@@ -280,7 +349,7 @@ describe('UI Workflow: Conversion Parameter Mapping', () => {
       />,
     );
 
-    await user.click(screen.getByLabelText(/expand parameters/i));
+    await openExpandedParameters(user);
     const iwxxmVersion = container.querySelector(
       '#param-iwxxm-version',
     ) as HTMLSelectElement;
@@ -306,7 +375,7 @@ describe('UI Workflow: Conversion Parameter Mapping', () => {
       />,
     );
 
-    await user.click(screen.getByLabelText(/expand parameters/i));
+    await openExpandedParameters(user);
     const iwxxmVersion = container.querySelector(
       '#param-iwxxm-version',
     ) as HTMLSelectElement;
@@ -332,7 +401,7 @@ describe('UI Workflow: Conversion Parameter Mapping', () => {
       />,
     );
 
-    await user.click(screen.getByLabelText(/expand parameters/i));
+    await openExpandedParameters(user);
     const iwxxmVersion = container.querySelector(
       '#param-iwxxm-version',
     ) as HTMLSelectElement;

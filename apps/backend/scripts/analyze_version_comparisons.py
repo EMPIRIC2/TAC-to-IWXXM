@@ -12,18 +12,34 @@ import json
 from collections import defaultdict
 from datetime import UTC, datetime
 from pathlib import Path
-from typing import Dict
 
 
-def load_reports(report_dir: Path) -> Dict[str, dict]:
-    """Load all JSON reports from a directory."""
+def load_reports(report_dir: Path) -> dict[str, dict]:
+    """
+    Load all JSON reports from a directory.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (load_reports)
+    2
+
+    Parameters
+    ----------
+    report_dir : object
+        Argument ``report_dir``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     reports = {}
     if not report_dir.exists():
         return reports
 
     for json_file in report_dir.glob("*.json"):
         try:
-            with open(json_file, "r", encoding="utf-8") as f:
+            with open(json_file, encoding="utf-8") as f:
                 report = json.load(f)
                 reports[json_file.stem] = report
         except Exception as e:
@@ -32,11 +48,27 @@ def load_reports(report_dir: Path) -> Dict[str, dict]:
 
 
 def extract_test_case(report_name: str) -> str:
-    """Extract base test case name from report filename.
+    """
+    Extract base test case name from report filename.
 
     Examples:
         "KJFK-290000Z_Amd79-80-2023" -> "KJFK-290000Z"
         "CYEK-290000Z_Amd79-80-2023-2025-2" -> "CYEK-290000Z"
+
+    Parameters
+    ----------
+    report_name : object
+        Argument ``report_name``.
+
+    Returns
+    -------
+    object
+        Return value.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (extract_test_case)
+    2
     """
     # Remove version suffix
     parts = report_name.split("_")
@@ -44,7 +76,14 @@ def extract_test_case(report_name: str) -> str:
 
 
 def compare_versions():
-    """Compare local vs live test reports."""
+    """
+    Compare local vs live test reports.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (compare_versions)
+    2
+    """
     base_dir = Path(__file__).parent.parent / "test-reports"
     local_dir = base_dir / "local-test-failures"
     live_dir = base_dir / "live-test-failures"

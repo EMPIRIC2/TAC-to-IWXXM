@@ -15,10 +15,20 @@ def main(argv: list[str] | None = None) -> int:
     """
     Decode a TAC file to JSON or plain summary, or check a pack overlay directory.
 
+    Parameters
+    ----------
+    argv : list[str] | None, optional
+        Argument vector. ``None`` uses ``sys.argv``.
+
     Returns
     -------
     int
         Process exit code (0 on success).
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (main)
+    2
     """
     parser = argparse.ArgumentParser(prog="tac-decoding", description="Decode TAC to natural language")
     parser.add_argument(

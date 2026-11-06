@@ -1,0 +1,44 @@
+{
+  "description": "Fixture window for weekly staging validation catalog probe. Paths are repo-relative accept fixtures.",
+  "default_semantic_profile": "ICAO_2025",
+  "default_iwxxm_version": "2025-2",
+  "samples": [
+    {
+      "id": "metar_basic",
+      "product": "METAR",
+      "path": "packages/tac-validate/tests/fixtures/accept/metar_basic.tac",
+      "probes": ["lint-tac", "validate"]
+    },
+    {
+      "id": "speci_basic",
+      "product": "SPECI",
+      "path": "packages/tac-validate/tests/fixtures/accept/speci_basic.tac",
+      "probes": ["lint-tac", "validate"]
+    },
+    {
+      "id": "taf_basic",
+      "product": "TAF",
+      "path": "packages/tac-validate/tests/fixtures/accept/taf_basic.tac",
+      "probes": ["lint-tac", "validate"]
+    },
+    {
+      "id": "sigmet_basic",
+      "product": "SIGMET",
+      "path": "packages/tac-validate/tests/fixtures/accept/sigmet_basic.tac",
+      "probes": ["lint-tac", "validate"]
+    },
+    {
+      "id": "airmet_basic",
+      "product": "AIRMET",
+      "path": "packages/tac-validate/tests/fixtures/accept/airmet_basic.tac",
+      "probes": ["lint-tac", "validate"]
+    }
+  ],
+  "catalog_queries": [
+    {"path": "/api/v1/lint-issue-catalog", "label": "lint-issue-catalog-all"},
+    {"path": "/api/v1/lint-issue-catalog?family=lint", "label": "lint-issue-catalog-lint"},
+    {"path": "/api/v1/lint-issue-catalog?family=iwxxm", "label": "lint-issue-catalog-iwxxm"},
+    {"path": "/api/v1/rule-catalogs?family=tac", "label": "rule-catalogs-tac"},
+    {"path": "/api/v1/rule-catalogs?family=iwxxm", "label": "rule-catalogs-iwxxm"}
+  ]
+}

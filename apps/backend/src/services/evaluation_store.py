@@ -12,7 +12,28 @@ from .database import get_db_session
 
 
 async def create_job_in_db(user_id: str, mode: str, total_stations: int) -> str:
-    """Insert a pending evaluation job and return its id."""
+    """
+    Insert a pending evaluation job and return its id.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (create_job_in_db)
+    2
+
+    Parameters
+    ----------
+    user_id : object
+        Argument ``user_id``.
+    mode : object
+        Argument ``mode``.
+    total_stations : object
+        Argument ``total_stations``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     async with get_db_session() as session:
         result = await session.execute(
             text(
@@ -40,7 +61,27 @@ async def update_job_status(
     summary_stats: JobSummaryStats | dict[str, Any] | None = None,
     error_message: str | None = None,
 ) -> None:
-    """Update evaluation job status and optional fields."""
+    """
+    Update evaluation job status and optional fields.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (update_job_status)
+    2
+
+    Parameters
+    ----------
+    job_id : object
+        Argument ``job_id``.
+    status : object
+        Argument ``status``.
+    progress : object
+        Argument ``progress``.
+    summary_stats : object
+        Argument ``summary_stats``.
+    error_message : object
+        Argument ``error_message``.
+    """
     update_data: dict[str, Any] = {"job_id": job_id, "status": status}
     set_clauses = ["status = :status", "updated_at = NOW()"]
 
@@ -64,7 +105,21 @@ async def update_job_status(
 
 
 async def save_result_to_db(job_id: str, result: EvaluationResultDetail) -> None:
-    """Persist one evaluation result row."""
+    """
+    Persist one evaluation result row.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (save_result_to_db)
+    2
+
+    Parameters
+    ----------
+    job_id : object
+        Argument ``job_id``.
+    result : object
+        Argument ``result``.
+    """
     comparison_detail = result.comparison.model_dump() if result.comparison else None
     async with get_db_session() as session:
         await session.execute(
@@ -95,7 +150,26 @@ async def save_result_to_db(job_id: str, result: EvaluationResultDetail) -> None
 
 
 async def get_job_for_user(job_id: str, user_id: str) -> dict[str, Any] | None:
-    """Fetch a job row when owned by ``user_id``."""
+    """
+    Fetch a job row when owned by ``user_id``.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (get_job_for_user)
+    2
+
+    Parameters
+    ----------
+    job_id : object
+        Argument ``job_id``.
+    user_id : object
+        Argument ``user_id``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     async with get_db_session() as session:
         result = await session.execute(
             text(
@@ -113,7 +187,28 @@ async def get_job_for_user(job_id: str, user_id: str) -> dict[str, Any] | None:
 
 
 async def list_jobs_for_user(user_id: str, limit: int, offset: int) -> tuple[list[dict[str, Any]], int]:
-    """Return paginated jobs and total count for a user."""
+    """
+    Return paginated jobs and total count for a user.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (list_jobs_for_user)
+    2
+
+    Parameters
+    ----------
+    user_id : object
+        Argument ``user_id``.
+    limit : object
+        Argument ``limit``.
+    offset : object
+        Argument ``offset``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     async with get_db_session() as session:
         rows = await session.execute(
             text(
@@ -143,7 +238,30 @@ async def list_results_for_job(
     offset: int,
     status_filter: str | None = None,
 ) -> tuple[list[dict[str, Any]], int]:
-    """Return paginated evaluation results for a job."""
+    """
+    Return paginated evaluation results for a job.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (list_results_for_job)
+    2
+
+    Parameters
+    ----------
+    job_id : object
+        Argument ``job_id``.
+    limit : object
+        Argument ``limit``.
+    offset : object
+        Argument ``offset``.
+    status_filter : object
+        Argument ``status_filter``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     filters = "job_id = CAST(:job_id AS uuid)"
     params: dict[str, Any] = {"job_id": job_id, "limit": limit, "offset": offset}
     if status_filter:

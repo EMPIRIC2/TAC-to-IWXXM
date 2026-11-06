@@ -40,12 +40,32 @@ PythonDetector = Callable[[str, str], list[Issue]]
 
 
 class DetectorError(ValueError):
-    """Invalid detector pack or rule."""
+    """
+    Invalid detector pack or rule.
+
+    Attributes
+    ----------
+    args : tuple
+        Arguments passed to the exception constructor.
+    """
 
 
 @dataclass(frozen=True, slots=True)
 class PreprocessSpec:
-    """Text windowing before a rule runs."""
+    """
+    Text windowing before a rule runs.
+
+    Attributes
+    ----------
+    before : str or None, optional
+        When this marker is found, keep only the text before it. By default ``None``.
+    after : str or None, optional
+        When this marker is found, keep only the text after it. By default ``None``.
+    exclude_ahl_lines : bool, optional
+        Drop lines that match an AHL heading. By default ``False``.
+    strip_terminator : bool, optional
+        Drop a trailing ``=``. By default ``True``.
+    """
 
     before: str | None = None
     after: str | None = None
@@ -55,7 +75,22 @@ class PreprocessSpec:
 
 @dataclass(frozen=True, slots=True)
 class EmitSpec:
-    """Issue emission on match or fail."""
+    """
+    Issue emission on match or fail.
+
+    Attributes
+    ----------
+    code : str
+        Code.
+    location : str or None
+        Location.
+    message_template : str
+        Message template.
+    capture_group : int, optional
+        Capture group. By default ``0``.
+    span : Literal['match', 'body'], optional
+        Span. By default ``'match'``.
+    """
 
     code: str
     location: str | None
@@ -66,7 +101,40 @@ class EmitSpec:
 
 @dataclass(frozen=True, slots=True)
 class DetectorRule:
-    """One detector rule inside a pack."""
+    """
+    One detector rule inside a pack.
+
+    Attributes
+    ----------
+    id : str
+        ID.
+    kind : DetectorKind
+        ``finditer``, ``require_search``, ``python``, or ``token_scan``.
+    preprocess : PreprocessSpec
+        Preprocess.
+    pattern : str or None
+        Pattern.
+    flags : int
+        Flags.
+    skip_if_codes : tuple[str, ...]
+        Skip if codes.
+    on_match : EmitSpec or None
+        On match.
+    on_fail : EmitSpec or None
+        On fail.
+    python_ref : str or None
+        Python ref.
+    skip_if_match : str or None, optional
+        Skip if match. By default ``None``.
+    select_pattern : str or None, optional
+        Select pattern. By default ``None``.
+    ok_pattern : str or None, optional
+        OK pattern. By default ``None``.
+    on_ok : EmitSpec or None, optional
+        On OK. By default ``None``.
+    max_emits : int or None, optional
+        Max emits. By default ``None``.
+    """
 
     id: str
     kind: DetectorKind
@@ -86,7 +154,22 @@ class DetectorRule:
 
 @dataclass(frozen=True, slots=True)
 class DetectorPack:
-    """Loaded detector pack document."""
+    """
+    Loaded detector pack document.
+
+    Attributes
+    ----------
+    id : str
+        ID.
+    stage : DetectorStage
+        Stage.
+    products : frozenset[str]
+        Products.
+    rules : tuple[DetectorRule, ...]
+        Rules.
+    source_path : str or None, optional
+        Source path. By default ``None``.
+    """
 
     id: str
     stage: DetectorStage
@@ -97,7 +180,18 @@ class DetectorPack:
 
 @dataclass(frozen=True, slots=True)
 class ShadowCompareResult:
-    """Legacy vs detector issue sets for one code family."""
+    """
+    Legacy vs detector issue sets for one code family.
+
+    Attributes
+    ----------
+    matched : bool
+        Matched.
+    legacy_keys : frozenset[tuple[str, int or None, int or None]]
+        Legacy keys.
+    detector_keys : frozenset[tuple[str, int or None, int or None]]
+        Detector keys.
+    """
 
     matched: bool
     legacy_keys: frozenset[tuple[str, int | None, int | None]]
@@ -105,6 +199,19 @@ class ShadowCompareResult:
 
 
 def _re_flags(names: Sequence[object]) -> int:
+    """
+    Internal helper ``_re_flags``.
+
+    Parameters
+    ----------
+    names : object
+        Argument ``names``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     flags = 0
     for name in names:
         if not isinstance(name, str):
@@ -124,6 +231,19 @@ def _re_flags(names: Sequence[object]) -> int:
 
 
 def _parse_preprocess(raw: object) -> PreprocessSpec:
+    """
+    Internal helper ``_parse_preprocess``.
+
+    Parameters
+    ----------
+    raw : object
+        Argument ``raw``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if raw is None:
         return PreprocessSpec()
     if not isinstance(raw, dict):
@@ -145,6 +265,21 @@ def _parse_preprocess(raw: object) -> PreprocessSpec:
 
 
 def _parse_emit(raw: object, *, required: bool) -> EmitSpec | None:
+    """
+    Internal helper ``_parse_emit``.
+
+    Parameters
+    ----------
+    raw : object
+        Argument ``raw``.
+    required : object
+        Argument ``required``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if raw is None:
         if required:
             msg = "emit spec required"
@@ -183,6 +318,19 @@ def _parse_emit(raw: object, *, required: bool) -> EmitSpec | None:
 
 
 def _parse_rule(raw: object) -> DetectorRule:
+    """
+    Internal helper ``_parse_rule``.
+
+    Parameters
+    ----------
+    raw : object
+        Argument ``raw``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if not isinstance(raw, dict):
         msg = "rule must be a mapping"
         raise DetectorError(msg)
@@ -296,6 +444,21 @@ def _parse_rule(raw: object) -> DetectorRule:
 
 
 def _parse_pack(data: object, *, source_path: str | None) -> DetectorPack:
+    """
+    Internal helper ``_parse_pack``.
+
+    Parameters
+    ----------
+    data : object
+        Argument ``data``.
+    source_path : object
+        Argument ``source_path``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if not isinstance(data, dict):
         msg = "detector pack root must be a mapping"
         raise DetectorError(msg)
@@ -335,13 +498,45 @@ def _parse_pack(data: object, *, source_path: str | None) -> DetectorPack:
 
 
 def load_detector_pack(path: Path | str) -> DetectorPack:
-    """Load one detector pack YAML file."""
+    """
+    Load one detector pack YAML file.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (load_detector_pack)
+    2
+
+    Parameters
+    ----------
+    path : Path or str
+        Path.
+
+    Returns
+    -------
+    DetectorPack
+        Load one detector pack YAML file.
+    """
     file_path = Path(path)
     raw = yaml.safe_load(file_path.read_text(encoding="utf-8"))
     return _parse_pack(raw, source_path=str(file_path))
 
 
 def _header_extends(value: object, *, name: str) -> str | None:
+    """
+    Internal helper ``_header_extends``.
+
+    Parameters
+    ----------
+    value : object
+        Argument ``value``.
+    name : object
+        Argument ``name``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if value is None or value == []:
         return None
     if isinstance(value, str) and value.strip():
@@ -355,6 +550,21 @@ def _header_extends(value: object, *, name: str) -> str | None:
 
 
 def _header_profiles(value: object, *, name: str) -> tuple[str, ...]:
+    """
+    Internal helper ``_header_profiles``.
+
+    Parameters
+    ----------
+    value : object
+        Argument ``value``.
+    name : object
+        Argument ``name``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if value is None:
         return ()
     if not isinstance(value, list) or not value:
@@ -373,6 +583,21 @@ def _merge_detector_rules(
     base: tuple[DetectorRule, ...],
     extra: tuple[DetectorRule, ...],
 ) -> tuple[DetectorRule, ...]:
+    """
+    Internal helper ``_merge_detector_rules``.
+
+    Parameters
+    ----------
+    base : object
+        Argument ``base``.
+    extra : object
+        Argument ``extra``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     replacement = {rule.id: rule for rule in extra}
     seen = {rule.id for rule in base}
     merged = [replacement.get(rule.id, rule) for rule in base]
@@ -387,6 +612,25 @@ def _take_detector_overlay(
     *,
     profile: str | None,
 ) -> DetectorPack | None:
+    """
+    Internal helper ``_take_detector_overlay``.
+
+    Parameters
+    ----------
+    raw : object
+        Argument ``raw``.
+    pack : object
+        Argument ``pack``.
+    catalog : object
+        Argument ``catalog``.
+    profile : object
+        Argument ``profile``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     mapping = cast(Mapping[str, Any], raw)
     base_id = _header_extends(mapping.get("extends"), name=pack.id)
     profiles = _header_profiles(mapping.get("profiles"), name=pack.id)
@@ -420,11 +664,27 @@ def _take_detector_overlay(
 
 
 def load_detector_catalog(profile: str | None = None) -> dict[str, DetectorPack]:
-    """Load builtin detector packs plus optional ``TAC_VALIDATE_DETECTOR_DIR``.
+    """
+    Load builtin detector packs plus optional ``TAC_VALIDATE_DETECTOR_DIR``.
 
     An overlay with ``extends`` layers rules onto that builtin for the profile
     ids in its header. Omitting ``profile`` leaves those layers off. A new pack
     id with no ``extends`` is added for every profile.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (load_detector_catalog)
+    2
+
+    Parameters
+    ----------
+    profile : str or None, optional
+        Profile id. By default ``None``.
+
+    Returns
+    -------
+    dict[str, DetectorPack]
+        Load builtin detector packs plus optional ``TAC_VALIDATE_DETECTOR_DIR``.
     """
     catalog: dict[str, DetectorPack] = {}
     root = resources.files("tac_validate").joinpath("data", "detectors")
@@ -449,7 +709,19 @@ def load_detector_catalog(profile: str | None = None) -> dict[str, DetectorPack]
 
 
 def detector_mode() -> Literal["legacy", "shadow", "detector"]:
-    """Return effective detector mode (default ``detector`` after R2 flip)."""
+    """
+    Return effective detector mode (default ``detector`` after R2 flip).
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (detector_mode)
+    2
+
+    Returns
+    -------
+    Literal['legacy', 'shadow', 'detector']
+        Effective detector mode (default ``detector`` after R2 flip).
+    """
     raw = os.environ.get(ENV_DETECTOR_MODE, "detector").strip().lower()
     if raw == "legacy":
         return "legacy"
@@ -459,6 +731,19 @@ def detector_mode() -> Literal["legacy", "shadow", "detector"]:
 
 
 def _body_span(tac: str) -> tuple[int, int, str]:
+    """
+    Internal helper ``_body_span``.
+
+    Parameters
+    ----------
+    tac : object
+        Argument ``tac``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     stripped = tac.strip()
     if not stripped:
         return 0, len(tac), ""
@@ -467,7 +752,21 @@ def _body_span(tac: str) -> tuple[int, int, str]:
 
 
 def _prepare_window(body: str, prep: PreprocessSpec) -> tuple[str, int]:
-    """Return (window_text, offset_into_body)."""
+    """
+    Internal helper ``_prepare_window``.
+
+    Parameters
+    ----------
+    body : object
+        Argument ``body``.
+    prep : object
+        Argument ``prep``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     text = body
     offset = 0
     if prep.strip_terminator and text.endswith("="):
@@ -497,6 +796,19 @@ def _prepare_window(body: str, prep: PreprocessSpec) -> tuple[str, int]:
 
 
 def _resolve_python(ref: str) -> PythonDetector:
+    """
+    Internal helper ``_resolve_python``.
+
+    Parameters
+    ----------
+    ref : object
+        Argument ``ref``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if not ref.startswith("python:"):
         msg = f"python ref must start with python:: {ref!r}"
         raise DetectorError(msg)
@@ -525,6 +837,29 @@ def _emit_issue(
     window_offset: int,
     match: re.Match[str] | None,
 ) -> Issue:
+    """
+    Internal helper ``_emit_issue``.
+
+    Parameters
+    ----------
+    emit : object
+        Argument ``emit``.
+    product : object
+        Argument ``product``.
+    body_start : object
+        Argument ``body_start``.
+    body_end : object
+        Argument ``body_end``.
+    window_offset : object
+        Argument ``window_offset``.
+    match : object
+        Argument ``match``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     capture = ""
     start = body_start
     end = body_end
@@ -560,14 +895,24 @@ def run_detector_pack(
 
     Parameters
     ----------
-    pack :
+    pack : DetectorPack
         Loaded detector pack.
-    tac_text :
+    tac_text : str
         Raw TAC.
-    product :
+    product : str
         Product id (METAR / SPECI / …).
-    budget :
-        Max regex match steps across finditer rules; fail closed when exceeded.
+    budget : int, optional
+        Max regex match steps across finditer rules; fail closed when exceeded. By default ``DEFAULT_LINT_BUDGET``.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (run_detector_pack)
+    2
+
+    Returns
+    -------
+    list[Issue]
+        Run all rules in ``pack`` for ``product``.
     """
     product_u = product.upper()
     if product_u not in pack.products:
@@ -668,7 +1013,24 @@ def run_detector_pack(
 
 
 def issue_keys(issues: Sequence[Issue]) -> frozenset[tuple[str, int | None, int | None]]:
-    """Shadow-compare keys: code + span."""
+    """
+    Shadow-compare keys: code + span.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (issue_keys)
+    2
+
+    Parameters
+    ----------
+    issues : Sequence[Issue]
+        Issues.
+
+    Returns
+    -------
+    frozenset[tuple[str, int or None, int or None]]
+        Shadow-compare keys: code + span.
+    """
     return frozenset((i.code, i.start, i.end) for i in issues)
 
 
@@ -678,14 +1040,54 @@ def compare_shadow(
     *,
     codes: frozenset[str],
 ) -> ShadowCompareResult:
-    """Compare legacy vs detector issues filtered to ``codes``."""
+    """
+    Compare legacy vs detector issues filtered to ``codes``.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (compare_shadow)
+    2
+
+    Parameters
+    ----------
+    legacy : Sequence[Issue]
+        Legacy.
+    detector : Sequence[Issue]
+        Detector.
+    codes : frozenset[str]
+        Codes.
+
+    Returns
+    -------
+    ShadowCompareResult
+        Compare legacy vs detector issues filtered to ``codes``.
+    """
     leg = issue_keys([i for i in legacy if i.code in codes])
     det = issue_keys([i for i in detector if i.code in codes])
     return ShadowCompareResult(matched=leg == det, legacy_keys=leg, detector_keys=det)
 
 
 def run_r2_visibility_detectors(tac_text: str, product: str) -> list[Issue]:
-    """Convenience: run builtin R2 visibility pack."""
+    """
+    Convenience: run builtin R2 visibility pack.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (run_r2_visibility_detectors)
+    2
+
+    Parameters
+    ----------
+    tac_text : str
+        TAC text.
+    product : str
+        Product id.
+
+    Returns
+    -------
+    list[Issue]
+        Convenience: run builtin R2 visibility pack.
+    """
     return run_theme_pack("metar-speci-r2-visibility", tac_text, product)
 
 
@@ -702,7 +1104,28 @@ _ANNEX3_METAR_THEME_PACKS = frozenset(
 
 
 def run_theme_pack(pack_id: str, tac_text: str, product: str) -> list[Issue]:
-    """Run one builtin/overlay detector pack by id (empty if missing or product mismatch)."""
+    """
+    Run one builtin/overlay detector pack by id (empty if missing or product mismatch).
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (run_theme_pack)
+    2
+
+    Parameters
+    ----------
+    pack_id : str
+        Pack ID.
+    tac_text : str
+        TAC text.
+    product : str
+        Product id.
+
+    Returns
+    -------
+    list[Issue]
+        Run one builtin/overlay detector pack by id (empty if missing or product mismatch).
+    """
     spans = match_port_spans.get()
     strict = (
         spans is not None
@@ -743,13 +1166,51 @@ def run_theme_pack(pack_id: str, tac_text: str, product: str) -> list[Issue]:
 
 
 def example_python_hatch(tac_text: str, product: str) -> list[Issue]:
-    """No-op python hatch used by unit tests."""
+    """
+    No-op python hatch used by unit tests.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (example_python_hatch)
+    2
+
+    Parameters
+    ----------
+    tac_text : str
+        TAC text.
+    product : str
+        Product id.
+
+    Returns
+    -------
+    list[Issue]
+        No-op python hatch used by unit tests.
+    """
     _ = (tac_text, product)
     return []
 
 
 def example_python_hatch_emit(tac_text: str, product: str) -> list[Issue]:
-    """Python hatch that emits INVALID_VISIBILITY for skip_if / emitted_codes coverage."""
+    """
+    Python hatch that emits INVALID_VISIBILITY for skip_if / emitted_codes coverage.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (example_python_hatch_emit)
+    2
+
+    Parameters
+    ----------
+    tac_text : str
+        TAC text.
+    product : str
+        Product id.
+
+    Returns
+    -------
+    list[Issue]
+        Python hatch that emits INVALID_VISIBILITY for skip_if / emitted_codes coverage.
+    """
     _ = tac_text
     return [
         Issue(

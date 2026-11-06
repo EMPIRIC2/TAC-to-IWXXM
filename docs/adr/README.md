@@ -51,6 +51,15 @@
 | [ADR-045](ADR-045-shared-tac-pack-engine.md) | Shared TAC pack engine for decode and convert IR | **Accepted** (EV-configurable-tac-decode-packs) |
 | [ADR-046](ADR-046-validation-policy-layers.md) | Registry / Detector / Policy / Runtime for TAC lint + IWXXM output | **Accepted** (EV-validation-policy-layers / #1216) |
 | [ADR-047](ADR-047-convert-emit-yaml-full-matrix.md) | Convert emit YAML + full engine matrix | **Proposed** (EV-yaml-full-configurability / #1226) |
+| [ADR-048](ADR-048-multilang-inline-documentation-bar.md) | Multi-language inline documentation bar (PY/TS/Rust; supersedes hybrid D) | **Accepted** (EV-docstring-multilang-bar) |
+| [ADR-049](ADR-049-residual-yaml-hatches-enrichment-emit.md) | Residual YAML: declarative detector hatches, ICAO name table, emit plugin-swap goldens | **Accepted** (EV-1252-residual-yaml / #1252) |
+| [ADR-050](ADR-050-convert-allowlist-yaml.md) | Convert allowlist lives in package YAML | **Accepted** (#1270) |
+| [ADR-051](ADR-051-ourairports-reference-lookup.md) | Live OurAirports lookup with a checked-in fallback | **Accepted** |
+| [ADR-052](ADR-052-live-map-import-cache.md) | Multi-feed live map cache with import-time translation | **Accepted** (EV-globe-live-map; amend EV-map-product-layers; filters stay in the browser) |
+| [ADR-053](ADR-053-config-ownership.md) | Config ownership: Ruff in root pyproject, Compose profiles, reusable quality workflow, drop Render blueprint | **Accepted** |
+| [ADR-054](ADR-054-severity-strict-ui.md) | Severity ladder + Strict operator raise policy (default OFF) | **Accepted** (EV-severity-strict-ui) |
+| [ADR-055](ADR-055-inherit-factory-product-region-country-station.md) | Product → region → country → station inheritance factory | **Accepted** (EV-lint-inherit-factory L0) |
+| [ADR-056](ADR-056-file-budget-complexity.md) | File line budget ≤500 + complexity caps | **Accepted** (EV-file-budget-complexity) |
 
 ## Process
 

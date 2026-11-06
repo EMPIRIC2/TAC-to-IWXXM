@@ -7,6 +7,8 @@
 import { expect, test } from '@playwright/test';
 import {
   convertManualMetar,
+  openConvertDownloadsTab,
+  openConvertSettings,
   openPublicConverter,
   playwrightApiBaseUrl,
 } from './playwright-e2e-helpers';
@@ -53,23 +55,14 @@ test.describe('UJ-026: METAR REMARKS retain / exclusion', () => {
 
   test('UI: annex3 convert with RMK still yields results', async ({ page }) => {
     await openPublicConverter(page);
-    const product = page.locator('#param-product');
-    if (!(await product.isVisible().catch(() => false))) {
-      await page
-        .getByLabel(/Expand parameters/i)
-        .click()
-        .catch(() => undefined);
-    }
+    await openConvertSettings(page);
     await page.locator('#param-product').selectOption('METAR');
+    await page.getByTestId('convert-advanced-engines').locator('summary').click();
     const conversionLib = page.getByTestId('conversion-library-select');
     if (await conversionLib.isVisible().catch(() => false)) {
       await conversionLib.selectOption('LIB.CONVERSION.ICAO_2025');
     }
     await convertManualMetar(page, TAC_RMK);
-    await expect(page.getByRole('region', { name: /conversion results/i })).toBeVisible(
-      {
-        timeout: 30000,
-      },
-    );
+    await openConvertDownloadsTab(page, 30_000);
   });
 });

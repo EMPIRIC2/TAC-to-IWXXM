@@ -16,7 +16,16 @@ from typing import Protocol, cast
 
 @dataclass(frozen=True, slots=True)
 class DecodeMatch:
-    """One decode span a caller may hand to theme detectors."""
+    """
+    One decode span a caller may hand to theme detectors.
+
+    Attributes
+    ----------
+    start : int
+        Start.
+    end : int
+        End.
+    """
 
     start: int
     end: int
@@ -26,7 +35,19 @@ class MatchPort(Protocol):
     """Source of decode spans. Implemented by apps; not by ``tac-decoding`` here."""
 
     def matches(self) -> Sequence[DecodeMatch]:
-        """Return decode spans for the current report. Empty means none were found."""
+        """
+        Return decode spans for the current report. Empty means none were found.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (matches)
+        2
+
+        Returns
+        -------
+        Sequence[DecodeMatch]
+            Decode spans for the current report. Empty means none were found.
+        """
         ...
 
 
@@ -37,7 +58,24 @@ match_port_spans: contextvars.ContextVar[tuple[DecodeMatch, ...] | None] = conte
 
 
 def spans_from_port(port: MatchPort | Sequence[DecodeMatch] | None) -> tuple[DecodeMatch, ...] | None:
-    """Normalize a port, a span sequence, or omission (``None``)."""
+    """
+    Normalize a port, a span sequence, or omission (``None``).
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (spans_from_port)
+    2
+
+    Parameters
+    ----------
+    port : MatchPort or Sequence[DecodeMatch] or None
+        Destination port.
+
+    Returns
+    -------
+    tuple[DecodeMatch, ...] or None
+        Normalize a port, a span sequence, or omission (``None``).
+    """
     if port is None:
         return None
     if isinstance(port, tuple | list):

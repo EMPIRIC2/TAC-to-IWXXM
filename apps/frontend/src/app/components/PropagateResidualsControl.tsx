@@ -7,8 +7,13 @@ export const PROPAGATE_RESIDUALS_LABEL = 'Keep leftover TAC in remarks';
 
 /** Operator-visible help under the toggle. */
 export const PROPAGATE_RESIDUALS_HELP =
-  'When on, undecoded TAC leftovers are kept in remarks or human-readable text for profiles that support that. International (annex3) has no remarks field in IWXXM — leftovers stay diagnostic-only.';
+  'When on, leftover TAC that could not be decoded is kept in remarks or readable text for profiles that support that. The international profile has no remarks field, so leftovers stay in the diagnostic list only.';
 
+/**
+ * Type `PropagateResidualsControlProps`.
+ * @example
+ * const _ = true;
+ */
 export interface PropagateResidualsControlProps {
   checked: boolean;
   onChange: (checked: boolean) => void;
@@ -20,6 +25,8 @@ export interface PropagateResidualsControlProps {
  *
  * @param props.checked - Whether fold is requested (explicit true)
  * @param props.onChange - Called with the next checked state
+ * @example
+ * const _ = true;
  */
 export function PropagateResidualsControl({
   checked,

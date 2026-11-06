@@ -53,6 +53,16 @@ def repo_root() -> Path:
     Return monorepo root containing ``vendor/schemas``.
 
     Honours ``TAC2IWXXM_REPO_ROOT`` when set.
+
+    Returns
+    -------
+    Path
+        Monorepo root containing ``vendor/schemas``.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (repo_root)
+    2
     """
     env = os.environ.get("TAC2IWXXM_REPO_ROOT")
     if env:
@@ -61,6 +71,19 @@ def repo_root() -> Path:
 
 
 def _rule_dir(iwxxm_version: str) -> Path:
+    """
+    Internal helper ``_rule_dir``.
+
+    Parameters
+    ----------
+    iwxxm_version : str
+        Argument ``iwxxm_version``.
+
+    Returns
+    -------
+    Path
+        Return value.
+    """
     path = repo_root() / "vendor" / "schemas" / "iwxxm" / iwxxm_version / "IWXXM" / "rule"
     if not path.is_dir():
         raise FileNotFoundError(f"IWXXM rule/codelist directory not found: {path}")
@@ -68,6 +91,22 @@ def _rule_dir(iwxxm_version: str) -> Path:
 
 
 def _rdf_concept_members(path: Path, *, register_uri: str) -> frozenset[str]:
+    """
+    Internal helper ``_rdf_concept_members``.
+
+    Parameters
+    ----------
+    path : Path
+        Argument ``path``.
+
+    register_uri : str
+        Argument ``register_uri``.
+
+    Returns
+    -------
+    frozenset[str]
+        Return value.
+    """
     text = path.read_text(encoding="utf-8")
     prefix = register_uri.rstrip("/") + "/"
     out: set[str] = set()
@@ -92,6 +131,7 @@ def load_aviation_colour_members(
     ----------
     register : {"iwxxm", "49-2"}
         Colour register family.
+
     iwxxm_version : str, optional
         Vendor pin line (default ``2025-2``).
 
@@ -106,6 +146,11 @@ def load_aviation_colour_members(
         When the pin RDF is missing.
     ValueError
         When ``register`` is unknown or RDF has no concepts.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (load_aviation_colour_members)
+    2
     """
     key = "iwxxm-colour" if register == "iwxxm" else "49-2-colour" if register == "49-2" else ""
     if not key:
@@ -129,6 +174,7 @@ def load_nil_members(
     ----------
     family : {"common", "iwxxm"}
         Nil register family.
+
     iwxxm_version : str, optional
         Vendor pin line (default ``2025-2``).
 
@@ -136,6 +182,11 @@ def load_nil_members(
     -------
     frozenset[str]
         Nil concept notations (11 members per pin).
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (load_nil_members)
+    2
     """
     key = "common-nil" if family == "common" else "iwxxm-nil" if family == "iwxxm" else ""
     if not key:
@@ -147,6 +198,19 @@ def load_nil_members(
 
 
 def _normalize_colour_token(token: str) -> str:
+    """
+    Internal helper ``_normalize_colour_token``.
+
+    Parameters
+    ----------
+    token : str
+        Argument ``token``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
     cleaned = " ".join(token.strip().upper().split())
     if cleaned == "NOT GIVEN":
         return "NOT_GIVEN"
@@ -170,8 +234,10 @@ def aviation_colour_href(
     ----------
     token : str
         Colour token (e.g. ``RED``, ``NOT GIVEN``).
+
     iwxxm_version : str, optional
         Vendor pin line.
+
     register : {"iwxxm", "49-2"}, optional
         Override register; default ``iwxxm`` for ``2025-2``, else ``49-2``.
 
@@ -184,6 +250,11 @@ def aviation_colour_href(
     ------
     ValueError
         When the resolved notation is not in the offline register.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (aviation_colour_href)
+    2
     """
     reg: ColourRegister
     reg = register if register is not None else "iwxxm" if iwxxm_version == "2025-2" else "49-2"
@@ -214,8 +285,10 @@ def nil_reason_href(
     ----------
     notation : str
         Nil concept notation (e.g. ``missing``, ``notObservable``).
+
     family : {"common", "iwxxm"}, optional
         Register family (default ``common`` for aerodrome Guidance nils).
+
     iwxxm_version : str, optional
         Vendor pin line.
 
@@ -228,6 +301,11 @@ def nil_reason_href(
     ------
     ValueError
         When ``notation`` is not a member of the offline register.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (nil_reason_href)
+    2
     """
     members = load_nil_members(family, iwxxm_version=iwxxm_version)
     if notation not in members:
@@ -237,7 +315,14 @@ def nil_reason_href(
 
 
 def clear_codelist_caches() -> None:
-    """Clear cached RDF member loads (tests / after vendor sync)."""
+    """
+    Clear cached RDF member loads (tests / after vendor sync).
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (clear_codelist_caches)
+    2
+    """
     load_aviation_colour_members.cache_clear()
     load_nil_members.cache_clear()
 

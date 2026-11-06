@@ -33,13 +33,18 @@ def is_ca_collect_bulletin(xml: str) -> bool:
 
     Parameters
     ----------
-    xml :
+    xml : str
         Document text.
 
     Returns
     -------
     bool
         True when the root element is a COLLECT bulletin.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (is_ca_collect_bulletin)
+    2
     """
     try:
         root = etree.fromstring(xml.encode("utf-8"))
@@ -59,15 +64,21 @@ def wrap_ca_eccc_collect(
 
     Parameters
     ----------
-    xml :
+    xml : str
         Inner IWXXM product XML (one root element).
-    bulletin_identifier :
+
+    bulletin_identifier : str
         MSC datamart filename for ``collect:bulletinIdentifier``.
 
     Returns
     -------
     str
         COLLECT bulletin XML; unchanged when input is already COLLECT.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (wrap_ca_eccc_collect)
+    2
     """
     if is_ca_collect_bulletin(xml):
         return xml

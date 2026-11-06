@@ -142,6 +142,38 @@ def test_tc_ev081_009_wst_default_unit_and_non_match() -> None:
     assert parse_sigmet(ordinary).get("convective") is not True
 
 
+_LIVE_CONVECTIVE = """\
+WSUS31 KKCI 232155
+SIGE
+CONVECTIVE SIGMET 47E
+VALID UNTIL 2355Z
+FL AND CSTL WTRS
+FROM 60ESE PBI-140SE MIA-50SW EYW-50W EYW-60ESE PBI
+AREA TS MOV FROM 25010KT. TOPS ABV FL450.
+REF INTL SIGMET FOXTROT SERIES.
+OUTLOOK VALID 232355-240355
+AREA 1...FROM 70ENE ECG-190ESE ECG
+"""
+
+
+def test_tc_ev081_011_live_convective_sigmet_shape() -> None:
+    """NWS convective bulletins use separate lines and coastal-water areas."""
+    ir = parse_sigmet(_LIVE_CONVECTIVE)
+    assert ir.get("convective") is True
+    assert ir.get("convective_tag") == "47E"
+    assert ir.get("fir") == "KKCI"
+    assert "CSTL WTRS" in str(ir.get("affected_states"))
+    assert ir.get("valid_to_day") == 23
+    result = convert(
+        _LIVE_CONVECTIVE,
+        product="SIGMET",
+        profile=PROFILE,
+        iwxxm_version=IWXXM_VERSION,
+    )
+    assert result.ok
+    assert result.xml
+
+
 def test_tc_ev081_010_taf_lint_isolation_and_tempo_ok() -> None:
     """M13 - annex3 does not apply US TAF codes; TEMPO ≤4h is allowed."""
     becmg = "TAF KJFK 151800Z 1600/1618 13005KT 9000 BKN020 BECMG 1602/1604 15010KT="

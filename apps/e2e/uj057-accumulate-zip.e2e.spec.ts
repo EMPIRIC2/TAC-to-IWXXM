@@ -8,6 +8,8 @@ import { expect, test } from '@playwright/test';
 import {
   convertManualMetar,
   dismissPrivacyNoticeIfPresent,
+  openConvertDownloadsTab,
+  openConvertSettings,
   openPublicConverter,
 } from './playwright-e2e-helpers';
 
@@ -20,27 +22,18 @@ test.describe('UJ-057: Accumulate conversions → Download ZIP (TC-EV057-903)', 
   }) => {
     await openPublicConverter(page);
     await dismissPrivacyNoticeIfPresent(page);
-
-    const product = page.locator('#param-product');
-    if (!(await product.isVisible().catch(() => false))) {
-      await page
-        .getByLabel(/Expand parameters/i)
-        .click()
-        .catch(() => undefined);
-    }
+    await openConvertSettings(page);
     await page.locator('#param-product').selectOption('METAR');
 
     await convertManualMetar(page, TAC_A);
-    await expect(page.getByRole('region', { name: /conversion results/i })).toBeVisible(
-      {
-        timeout: 30_000,
-      },
-    );
+    await openConvertDownloadsTab(page, 30_000);
+    await openConvertSettings(page);
     await expect(page.getByTestId('download-zip-button')).toHaveAccessibleName(
       /download all 1 converted files as zip/i,
     );
 
     await convertManualMetar(page, TAC_B);
+    await openConvertSettings(page);
     await expect(page.getByTestId('download-zip-button')).toHaveAccessibleName(
       /download all 2 converted files as zip/i,
       { timeout: 30_000 },
@@ -51,9 +44,11 @@ test.describe('UJ-057: Accumulate conversions → Download ZIP (TC-EV057-903)', 
     const download = await downloadPromise;
     expect(download.suggestedFilename()).toMatch(/^METARKJF_\d{14}\.zip$/);
 
+    await openConvertSettings(page);
     await page.getByTestId('clear-queue-button').click();
-    await expect(page.getByRole('region', { name: /conversion results/i })).toHaveCount(
-      0,
-    );
+    // Opposite state: the conversion results region is visible before Clear.
+    await expect(
+      page.getByRole('region', { name: 'Conversion results', exact: true }),
+    ).toHaveCount(0);
   });
 });

@@ -88,9 +88,51 @@ def collect_rows(root: Path) -> list[tuple[str, str, str]]:
     return rows
 
 
+def _cli(argv: list[str]) -> tuple[Path, list[str], str | None]:
+    """Return ``(root, required labels, error)``.
+
+    ``--require`` is a comma-separated list of package labels that must appear
+    in the comment at a 100% line rate (#1433).
+    """
+    positional: list[str] = []
+    require: list[str] = []
+    args = argv[1:]
+    index = 0
+    while index < len(args):
+        token = args[index]
+        if token != "--require":
+            positional.append(token)
+            index += 1
+            continue
+        if index + 1 >= len(args):
+            return (
+                Path(),
+                [],
+                "error: --require needs a comma-separated package list",
+            )
+        require.extend(
+            part.strip() for part in args[index + 1].split(",") if part.strip()
+        )
+        index += 2
+    root = Path(positional[0] if positional else "coverage-artifacts")
+    return root, require, None
+
+
+def _missing_line_rate(
+    rows: list[tuple[str, str, str]], require: list[str]
+) -> list[str]:
+    """Labels that are absent or whose line cell is not ``100.00%``."""
+    by_label = {label: line for label, line, _branch in rows}
+    return [label for label in require if by_label.get(label) != "100.00%"]
+
+
 def main(argv: list[str]) -> int:
-    root = Path(argv[1] if len(argv) > 1 else "coverage-artifacts")
+    root, require, error = _cli(argv)
+    if error:
+        print(error, file=sys.stderr)
+        return 2
     rows = collect_rows(root) if root.is_dir() else []
+    missing = _missing_line_rate(rows, require)
 
     lines = [
         MARKER,
@@ -120,6 +162,13 @@ def main(argv: list[str]) -> int:
         ]
     )
     sys.stdout.write("\n".join(lines))
+    if missing:
+        joined = ", ".join(missing)
+        print(
+            f"error: coverage comment missing 100% line rate for: {joined}",
+            file=sys.stderr,
+        )
+        return 1
     return 0
 
 

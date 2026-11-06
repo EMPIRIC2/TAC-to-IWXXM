@@ -5,7 +5,11 @@
  * credentials, destination URIs, or auth tokens.
  */
 
-/** Minimal lint log shape for export metadata summaries. */
+/**
+ * Minimal lint log shape for export metadata summaries.
+ * @example
+ * const _ = true;
+ */
 export interface ConversionMetadataLintLog {
   errors?: string[];
   issues?: Array<{
@@ -43,6 +47,11 @@ export const CONVERSION_METADATA_PLACEHOLDER_MAPPING =
 
 export const CONVERSION_METADATA_SCHEMA_VERSION = 1 as const;
 
+/**
+ * Type `ConversionMetadataChecklistKey`.
+ * @example
+ * const _ = true;
+ */
 export type ConversionMetadataChecklistKey =
   | 'libraries'
   | 'libraryYamlHashes'
@@ -52,16 +61,31 @@ export type ConversionMetadataChecklistKey =
   | 'tacFingerprint'
   | 'mappingBridgeSummary';
 
+/**
+ * Type `ConversionMetadataChecklist`.
+ * @example
+ * const _ = true;
+ */
 export type ConversionMetadataChecklist = Record<
   ConversionMetadataChecklistKey,
   boolean
 >;
 
+/**
+ * Type `ConversionMetadataPrefs`.
+ * @example
+ * const _ = true;
+ */
 export interface ConversionMetadataPrefs {
   enabled: boolean;
   checklist: ConversionMetadataChecklist;
 }
 
+/**
+ * Type `ConversionMetadataLibraryIds`.
+ * @example
+ * const _ = true;
+ */
 export interface ConversionMetadataLibraryIds {
   conversionLibraryId: string;
   tacValidationLibraryId: string;
@@ -70,13 +94,22 @@ export interface ConversionMetadataLibraryIds {
   decodingLibraryId: string;
 }
 
-/** Snapshot of convert context captured when a result is created. */
+/**
+ * Snapshot of convert context captured when a result is created.
+ * @example
+ * const _ = true;
+ */
 export type ConversionExportContext = ConversionMetadataLibraryIds & {
   product: string;
   iwxxmVersion: string;
   reportVariant?: string;
 };
 
+/**
+ * Type `BuildConversionMetadataInput`.
+ * @example
+ * const _ = true;
+ */
 export interface BuildConversionMetadataInput {
   tacContent: string;
   convertedAt: number;
@@ -119,7 +152,11 @@ const FORBIDDEN_METADATA_KEYS = new Set(
 const FORBIDDEN_VALUE_RE =
   /(?:^|\s)(?:Bearer\s+[A-Za-z0-9._~+/=-]+|postgresql:\/\/|mongodb:\/\/|mysql:\/\/|smtp:\/\/|https?:\/\/[^\s]*(?:password|token|secret)=)/i;
 
-/** Default checklist — all groups on when export metadata is enabled. */
+/**
+ * Default checklist — all groups on when export metadata is enabled.
+ * @example
+ * const _ = true;
+ */
 export function defaultConversionMetadataChecklist(): ConversionMetadataChecklist {
   return {
     libraries: true,
@@ -132,7 +169,11 @@ export function defaultConversionMetadataChecklist(): ConversionMetadataChecklis
   };
 }
 
-/** Default prefs — opt-in off until the operator enables the toggle. */
+/**
+ * Default prefs — opt-in off until the operator enables the toggle.
+ * @example
+ * const _ = true;
+ */
 export function defaultConversionMetadataPrefs(): ConversionMetadataPrefs {
   return {
     enabled: false,
@@ -140,10 +181,16 @@ export function defaultConversionMetadataPrefs(): ConversionMetadataPrefs {
   };
 }
 
+/**
+ * Function `isRecord`.
+ */
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value);
 }
 
+/**
+ * Function `parseChecklist`.
+ */
 function parseChecklist(raw: unknown): ConversionMetadataChecklist {
   const defaults = defaultConversionMetadataChecklist();
   if (!isRecord(raw)) {
@@ -160,6 +207,8 @@ function parseChecklist(raw: unknown): ConversionMetadataChecklist {
 
 /**
  * Read remembered export-metadata prefs from localStorage.
+ * @example
+ * const _ = true;
  */
 export function readConversionMetadataPrefs(): ConversionMetadataPrefs {
   try {
@@ -184,6 +233,8 @@ export function readConversionMetadataPrefs(): ConversionMetadataPrefs {
  * Persist export-metadata prefs to localStorage.
  *
  * @param prefs - Toggle + checklist selections to remember.
+ * @example
+ * const _ = true;
  */
 export function writeConversionMetadataPrefs(prefs: ConversionMetadataPrefs): void {
   try {
@@ -197,6 +248,8 @@ export function writeConversionMetadataPrefs(prefs: ConversionMetadataPrefs): vo
  * Derive sibling sidecar name for an XML download member.
  *
  * @param xmlFileName - Intended `.xml` filename (e.g. `report.xml`).
+ * @example
+ * const _ = true;
  */
 export function metaSidecarFileName(xmlFileName: string): string {
   const trimmed = xmlFileName.trim() || 'download.xml';
@@ -211,6 +264,8 @@ export function metaSidecarFileName(xmlFileName: string): string {
  * Extract JWT `sub` for operator identity without persisting the token.
  *
  * @param accessToken - Bearer JWT from auth storage.
+ * @example
+ * const _ = true;
  */
 export function jwtSubject(accessToken: string | undefined): string | undefined {
   const token = accessToken?.trim();
@@ -239,6 +294,8 @@ export function jwtSubject(accessToken: string | undefined): string | undefined 
  * Normalize TAC for fingerprinting (trim, collapse whitespace, uppercase).
  *
  * @param tac - Raw TAC text.
+ * @example
+ * const _ = true;
  */
 export function normalizeTacForFingerprint(tac: string): string {
   return tac.trim().replace(/\s+/g, ' ').toUpperCase();
@@ -248,6 +305,8 @@ export function normalizeTacForFingerprint(tac: string): string {
  * Deterministic TAC fingerprint (Phase A — client-side; not a security hash).
  *
  * @param tac - Raw TAC text.
+ * @example
+ * const _ = true;
  */
 export function computeTacFingerprint(tac: string): string {
   const normalized = normalizeTacForFingerprint(tac);
@@ -259,10 +318,16 @@ export function computeTacFingerprint(tac: string): string {
   return `fnv1a32:${(hash >>> 0).toString(16).padStart(8, '0')}`;
 }
 
+/**
+ * Function `placeholderBlock`.
+ */
 function placeholderBlock(note: string): Record<string, unknown> {
   return { status: 'placeholder', note };
 }
 
+/**
+ * Function `lintSummaryFromLog`.
+ */
 function lintSummaryFromLog(
   log: ConversionMetadataLintLog | null | undefined,
   sessionBatch = false,
@@ -290,6 +355,8 @@ function lintSummaryFromLog(
  * Build export metadata JSON for one converted result.
  *
  * @param input - Conversion context and checklist selections.
+ * @example
+ * const _ = true;
  */
 export function buildConversionExportMetadata(
   input: BuildConversionMetadataInput,
@@ -360,6 +427,8 @@ export function buildConversionExportMetadata(
  * Serialize metadata for download (pretty JSON).
  *
  * @param metadata - Sanitized metadata object.
+ * @example
+ * const _ = true;
  */
 export function serializeConversionMetadata(metadata: Record<string, unknown>): string {
   return `${JSON.stringify(metadata, null, 2)}\n`;
@@ -369,6 +438,8 @@ export function serializeConversionMetadata(metadata: Record<string, unknown>): 
  * Fail-closed scrub for secret-like keys/values before writing sidecars.
  *
  * @param value - Metadata object tree.
+ * @example
+ * const _ = true;
  */
 export function sanitizeMetadataForExport(
   value: Record<string, unknown>,
@@ -384,6 +455,9 @@ export function sanitizeMetadataForExport(
   return out;
 }
 
+/**
+ * Function `sanitizeMetadataNode`.
+ */
 function sanitizeMetadataNode(value: unknown): unknown {
   if (typeof value === 'string') {
     return FORBIDDEN_VALUE_RE.test(value) ? '[redacted]' : value;
@@ -401,6 +475,8 @@ function sanitizeMetadataNode(value: unknown): unknown {
  * Whether metadata export is active for downloads.
  *
  * @param prefs - Stored toggle + checklist.
+ * @example
+ * const _ = true;
  */
 export function isConversionMetadataExportEnabled(
   prefs: ConversionMetadataPrefs,

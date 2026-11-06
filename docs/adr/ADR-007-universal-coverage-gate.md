@@ -53,11 +53,11 @@ FE modules such as `App.tsx` / editor helpers) without an explicit AskQuestion w
 
 ## Alternatives Considered
 
-- **Keep 95%**: Rejected — operator requested strictest 100% interpretation (EV-080).
-- **100% line only (no branch)**: Rejected — strict intake requires line **and** branch.
-- **Waive shell scripts / FE excludes**: Rejected — bats for every `.sh`; remove executable
+- **Keep 95%**: Rejected; operator requested strictest 100% interpretation (EV-080).
+- **100% line only (no branch)**: Rejected; strict intake requires line **and** branch.
+- **Waive shell scripts / FE excludes**: Rejected; bats for every `.sh`; remove executable
   FE coverage excludes.
-- **Remove coverage gate**: Rejected — regression risk.
+- **Remove coverage gate**: Rejected; regression risk.
 
 ## Amendment history
 

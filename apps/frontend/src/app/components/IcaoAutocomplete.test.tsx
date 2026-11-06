@@ -17,6 +17,9 @@ vi.mock('../../utils/airportsData', () => ({
 
 describe('IcaoAutocomplete', () => {
   const renderHarness = (onChangeSpy?: (value: string) => void) => {
+    /**
+     *
+     */
     function Harness() {
       const [value, setValue] = useState('');
 
@@ -61,7 +64,7 @@ describe('IcaoAutocomplete', () => {
     await user.type(screen.getByLabelText('ICAO'), 'KJFK');
 
     expect(mockIsValid).toHaveBeenCalledWith('KJFK');
-    expect(screen.getByLabelText(/valid icao code/i)).toBeInTheDocument();
+    expect(screen.getByLabelText('Valid ICAO')).toBeInTheDocument();
   });
 
   it('shows invalid icon for invalid 4-letter ICAO code', async () => {
@@ -72,7 +75,7 @@ describe('IcaoAutocomplete', () => {
 
     await user.type(screen.getByLabelText('ICAO'), 'XXXX');
 
-    expect(screen.getByLabelText(/invalid icao code/i)).toBeInTheDocument();
+    expect(screen.getByLabelText('Invalid ICAO')).toBeInTheDocument();
   });
 
   it('shows suggestions and selects one from dropdown', async () => {
@@ -138,6 +141,9 @@ describe('IcaoAutocomplete', () => {
     const user = userEvent.setup();
     mockSearchByIcao.mockReturnValue([{ icao: 'KJFK', name: 'John F Kennedy' }]);
 
+    /**
+     *
+     */
     function Wrapper() {
       const [value, setValue] = useState('');
 
@@ -242,6 +248,9 @@ describe('IcaoAutocomplete', () => {
       { icao: 'KORD', name: 'Chicago O Hare', city: 'Chicago' },
     ]);
 
+    /**
+     *
+     */
     function Wrapper() {
       const [value, setValue] = useState('');
       return <IcaoAutocomplete label="Station" value={value} onChange={setValue} />;
@@ -261,21 +270,67 @@ describe('IcaoAutocomplete', () => {
 
     await user.type(screen.getByLabelText('ICAO'), 'KJF');
     expect(mockIsValid).not.toHaveBeenCalled();
-    expect(screen.queryByLabelText(/valid icao code/i)).not.toBeInTheDocument();
-    expect(screen.queryByLabelText(/invalid icao code/i)).not.toBeInTheDocument();
+    expect(screen.queryByLabelText('Valid ICAO')).not.toBeInTheDocument();
+    expect(screen.queryByLabelText('Invalid ICAO')).not.toBeInTheDocument();
   });
 
   it('uses formatOnly regex path for valid ICAO', async () => {
     const user = userEvent.setup();
+    /**
+     *
+     */
     function Harness() {
       const [value, setValue] = useState('');
       return (
         <IcaoAutocomplete label="ICAO" value={value} onChange={setValue} formatOnly />
       );
     }
+    mockSearchByIcao.mockReturnValue([
+      { icao: 'KJFK', name: 'Kennedy', city: 'New York', country: 'US' },
+    ]);
     render(<Harness />);
     await user.type(screen.getByLabelText('ICAO'), 'KJFK');
-    expect(screen.getByLabelText(/valid icao code/i)).toBeInTheDocument();
+    expect(screen.getByLabelText('Valid ICAO')).toBeInTheDocument();
     expect(mockIsValid).not.toHaveBeenCalled();
+    expect(screen.queryByTestId('icao-suggestion-KJFK')).not.toBeInTheDocument();
+  });
+
+  it('hides suggestions once the code is a complete valid station', async () => {
+    const user = userEvent.setup();
+    mockIsValid.mockReturnValue(true);
+    mockSearchByIcao.mockReturnValue([
+      { icao: 'KJFK', name: 'Kennedy', city: 'New York', country: 'US' },
+    ]);
+    renderHarness();
+
+    await user.type(screen.getByLabelText('ICAO'), 'KJ');
+    expect(screen.getByTestId('icao-suggestion-KJFK')).toBeInTheDocument();
+    await user.keyboard('{Escape}');
+    expect(screen.queryByTestId('icao-suggestion-KJFK')).not.toBeInTheDocument();
+    await user.type(screen.getByLabelText('ICAO'), 'FK');
+    expect(screen.queryByTestId('icao-suggestion-KJFK')).not.toBeInTheDocument();
+    expect(screen.getByLabelText('Valid ICAO')).toBeInTheDocument();
+  });
+
+  it('clears a field that is only spaces', async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    renderHarness(onChange);
+
+    await user.type(screen.getByLabelText('ICAO'), '    ');
+    expect(onChange).toHaveBeenLastCalledWith('');
+    expect(screen.getByLabelText('ICAO')).toHaveValue('');
+    expect(screen.queryByLabelText('Invalid ICAO')).not.toBeInTheDocument();
+  });
+
+  it('shows the status for a station that is already filled in', () => {
+    mockIsValid.mockImplementation((code: string) => code === 'KJFK');
+    const { rerender } = render(
+      <IcaoAutocomplete label="Station ID" value="KJFK" onChange={vi.fn()} />,
+    );
+    expect(screen.getByLabelText('Valid Station ID')).toBeInTheDocument();
+    rerender(<IcaoAutocomplete label="Station ID" value="QXZX" onChange={vi.fn()} />);
+    expect(screen.getByLabelText('Invalid Station ID')).toBeInTheDocument();
+    expect(screen.queryByLabelText('Invalid ICAO code')).not.toBeInTheDocument();
   });
 });

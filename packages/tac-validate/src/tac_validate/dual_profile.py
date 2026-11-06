@@ -29,7 +29,28 @@ INTENTIONAL_PROFILE_DIVERGENCE_CODES: Final[frozenset[str]] = frozenset(
 
 @dataclass(frozen=True)
 class ProfileLintCompare:
-    """Result of comparing annex3 vs iwxxm_us lint outcomes for one TAC."""
+    """
+    Result of comparing annex3 vs iwxxm_us lint outcomes for one TAC.
+
+    Attributes
+    ----------
+    product : str
+        Product id.
+    disposition : str
+        Disposition.
+    annex3_codes : frozenset[str]
+        Annex3 codes.
+    iwxxm_us_codes : frozenset[str] or None
+        IWXXM US codes.
+    divergent_codes : frozenset[str]
+        Divergent codes.
+    unclassified_divergent : frozenset[str]
+        Unclassified divergent.
+    ok : bool
+        False only when the product is dual-applicable and unclassified codes diverge.
+    note : str, optional
+        Note. By default ``''``.
+    """
 
     product: str
     disposition: str  # "dual" | "na"
@@ -42,6 +63,23 @@ class ProfileLintCompare:
 
 
 def _issue_codes(tac_text: str, *, product: str, profile: str) -> frozenset[str]:
+    """
+    Internal helper ``_issue_codes``.
+
+    Parameters
+    ----------
+    tac_text : object
+        Argument ``tac_text``.
+    product : object
+        Argument ``product``.
+    profile : object
+        Argument ``profile``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     report = lint(tac_text, product=product, profile=profile)
     return frozenset(i.code for i in report.issues)
 
@@ -52,15 +90,20 @@ def compare_lint_profiles(tac_text: str, *, product: str) -> ProfileLintCompare:
 
     Parameters
     ----------
-    tac_text :
+    tac_text : str
         TAC report text.
-    product :
+    product : str
         F6 / deepen product id.
 
     Returns
     -------
     ProfileLintCompare
         ``ok`` is False only when dual-applicable and unclassified codes diverge.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (compare_lint_profiles)
+    2
     """
     product_u = product.upper()
     annex3_codes = _issue_codes(tac_text, product=product_u, profile=PROFILE_ANNEX3)

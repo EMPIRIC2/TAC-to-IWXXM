@@ -102,8 +102,12 @@ vi.mock('@/app/components/ui/sonner', () => ({
 }));
 
 import App from '@/app/App';
+import { acknowledgeSiteTerms } from '@/utils/privacyPreferences';
 import userEvent from '@testing-library/user-event';
 
+/**
+ *
+ */
 function authHeaderFromFetchCall(): string | undefined {
   const call = (global.fetch as ReturnType<typeof vi.fn>).mock.calls[0];
   const init = call?.[1] as RequestInit | undefined;
@@ -115,6 +119,7 @@ describe('TC-F21-auth-gone (frontend, F31 amended)', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     localStorage.clear();
+    acknowledgeSiteTerms();
     vi.stubEnv('VITE_API_BASE_URL', 'https://api.example.onrender.com');
     (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValue({
       ok: true,

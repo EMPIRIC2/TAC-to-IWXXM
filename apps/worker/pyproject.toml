@@ -1,7 +1,7 @@
 [project]
 name = "metar-worker"
 version = "0.1.0"
-description = "F8 near-RT TAC ingest worker (ADR-018)"
+description = "Near-real-time Traditional Alphanumeric Code (TAC) ingest worker"
 requires-python = ">=3.12"
 dependencies = [
     "metar-shared",
@@ -36,6 +36,11 @@ dev = [
 ]
 
 [tool.pytest.ini_options]
+asyncio_default_fixture_loop_scope = "function"
+
+filterwarnings = [
+  "error",
+]
 testpaths = ["tests"]
 pythonpath = ["src"]
 markers = [
@@ -46,6 +51,13 @@ markers = [
 [tool.coverage.run]
 branch = true
 source = ["src/metar_worker"]
+
+[tool.ruff]
+extend = "../../pyproject.toml"
+
+[tool.ruff.lint.per-file-ignores]
+# Poller accepts heterogeneous JSON payloads from ingest sources.
+"src/metar_worker/poller.py" = ["ANN401"]
 
 [tool.coverage.report]
 fail_under = 100

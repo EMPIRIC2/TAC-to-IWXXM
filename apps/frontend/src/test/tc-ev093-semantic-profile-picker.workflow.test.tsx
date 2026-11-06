@@ -6,7 +6,7 @@
  */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { FileConverter } from '../app/components/FileConverter';
 import { defaultLibraryId } from '../utils/libraryIds';
@@ -40,6 +40,12 @@ vi.mock('/utils/api', () => ({
   EndpointNotImplementedError: class extends Error {},
   convertTafToIwxxm: vi.fn(),
   fetchLintIssueCatalog: vi.fn().mockResolvedValue({ issues: [] }),
+  fetchSelectionOptions: vi
+    .fn()
+    .mockImplementation(async ({ kind }: { kind: string }) => ({
+      kind,
+      options: [],
+    })),
   fetchSchemaStatus: vi.fn().mockResolvedValue({
     profile_pins: {
       ca_eccc: { extension_bundle_available: true, iwxxm_version: '3.0.0' },
@@ -105,6 +111,31 @@ const GUEST_CONVERSION_IDS = [
   defaultLibraryId('conversion', 'CA_ECCC'),
 ] as const;
 
+/**
+ *
+ */
+function seedLiveConvertChrome(): void {
+  sessionStorage.setItem(
+    'metar_guest_converter_state',
+    JSON.stringify({
+      manualInput: TAC,
+      pendingFiles: [],
+      convertedFiles: [],
+      conversionLog: null,
+      conversionParams: {},
+    }),
+  );
+}
+
+/**
+ *
+ */
+function openAdvancedEngines(): void {
+  // Libraries live under Settings → Advanced engines (UJ-089).
+  screen.getByTestId('convert-settings').setAttribute('open', '');
+  screen.getByTestId('convert-advanced-engines').setAttribute('open', '');
+}
+
 describe('TC-EV093 — Conversion library picker deepen', () => {
   const defaultProps = {
     onLogout: vi.fn(),
@@ -116,10 +147,14 @@ describe('TC-EV093 — Conversion library picker deepen', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     localStorage.clear();
+    sessionStorage.clear();
+    seedLiveConvertChrome();
+    vi.spyOn(window, 'confirm').mockReturnValue(true);
   });
 
   it('TC-EV093-001 lists guest Conversion libraries; default ICAO_2025', () => {
     render(<FileConverter {...defaultProps} />);
+    openAdvancedEngines();
     expect(screen.getByTestId('library-pickers-bar')).toBeVisible();
     const conversion = screen.getByTestId(
       'conversion-library-select',
@@ -138,6 +173,8 @@ describe('TC-EV093 — Conversion library picker deepen', () => {
   it('TC-EV093-003 sends conversionLibraryId when US_FAA_NWS selected', async () => {
     const user = userEvent.setup();
     render(<FileConverter {...defaultProps} />);
+    openAdvancedEngines();
+    fireEvent.click(screen.getByTestId('live-iwxxm-toggle'));
     await user.selectOptions(
       screen.getByTestId('conversion-library-select'),
       defaultLibraryId('conversion', 'US_FAA_NWS'),
@@ -159,6 +196,7 @@ describe('TC-EV093 — Conversion library picker deepen', () => {
   it('TC-EV093-004 CA_ECCC still shows metadata and pins 3.0.0', async () => {
     const user = userEvent.setup();
     render(<FileConverter {...defaultProps} />);
+    openAdvancedEngines();
     await user.selectOptions(
       screen.getByTestId('conversion-library-select'),
       defaultLibraryId('conversion', 'CA_ECCC'),
@@ -172,29 +210,35 @@ describe('TC-EV093 — Conversion library picker deepen', () => {
   it('TC-EV093-005 shows library bar trust copy without internal doc refs', async () => {
     const user = userEvent.setup();
     render(<FileConverter {...defaultProps} />);
+    openAdvancedEngines();
 
     const summary = screen.getByTestId('product-profile-bar-summary');
-    expect(summary).toBeVisible();
-    expect(summary.textContent).toMatch(/not destinations/i);
+    expect(summary.textContent).toMatch(/does not set destinations/i);
     expect(summary.textContent).toMatch(/editable overlays/i);
     expect(summary.textContent).not.toMatch(/ADR-|EV-|Corpus:|#\d{3,}/);
 
     expect(screen.getByTestId('library-pickers-bar')).toBeVisible();
     expect(screen.getByTestId('conversion-library-select')).toBeVisible();
-    expect(screen.getByTestId('dissemination-library-select')).toBeVisible();
+    expect(screen.getByTestId('decoding-library-select')).toBeVisible();
+    expect(screen.getByTestId('tac-validation-library-select')).toBeVisible();
+    expect(screen.getByTestId('iwxxm-validation-library-select')).toBeVisible();
+    expect(
+      screen.queryByTestId('dissemination-library-select'),
+    ).not.toBeInTheDocument();
     expect(screen.queryByTestId('semantic-profile-help-icon')).not.toBeInTheDocument();
     expect(screen.queryByTestId('exchange-profile-help-icon')).not.toBeInTheDocument();
 
     const bar = screen.getByTestId('product-profile-bar');
     expect(bar).not.toContainElement(screen.getByTestId('semantic-profile-help'));
     expect(bar).not.toContainElement(screen.getByTestId('exchange-profile-help'));
-    expect(bar).not.toContainElement(summary);
 
-    await user.click(screen.getByText(/what's this\?/i));
-    const help = screen.getByTestId('semantic-profile-help');
-    expect(help).toBeVisible();
+    // Trust details stay under "What's this?" (calm Convert: summary is sr-only).
+    const trust = screen.getByTestId('product-profile-trust-details');
+    trust.setAttribute('open', '');
+    const help = within(trust).getByTestId('semantic-profile-help');
     expect(help.textContent).toMatch(/does not set destinations/i);
     expect(help.textContent).toMatch(/does not make national overlays editable/i);
     expect(help.textContent).not.toMatch(/ADR-|EV-|Corpus:|#\d{3,}/);
+    expect(user).toBeTruthy();
   });
 });

@@ -42,6 +42,16 @@ def test_convert_metar_tac_with_metadata_ok() -> None:
     assert validation is None
 
 
+def test_convert_metar_uses_reference_time_as_the_bulletin_month() -> None:
+    xml, _ = convert_metar_tac_with_metadata(
+        "METAR KJFK 081200Z 18012KT 10SM FEW040 15/07 A3005=",
+        reference_time="2026-10-13T00:00:00Z",
+        validate=False,
+    )
+    assert "2026-10-08T12:00:00Z" in xml
+    assert "2023-06-08" not in xml
+
+
 def test_convert_metar_tac_deprecated() -> None:
     with pytest.warns(DeprecationWarning, match=r"."):
         xml = convert_metar_tac("METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005=")

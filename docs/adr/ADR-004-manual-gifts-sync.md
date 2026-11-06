@@ -9,7 +9,7 @@
 
 ADR-001 and REQ-014 originally specified scheduled GitHub Actions for GIFTs subtree pulls from
 mgoberfield/GIFTs. During product plan verification (statement S-gifts), the user chose
-**manual merges only** — no automated sync for GIFTs.
+**manual merges only**: no automated sync for GIFTs.
 
 Vendor iwxxm schemas remain on scheduled wmo-im sync (ADR-001).
 

@@ -1,7 +1,7 @@
 [project]
 name = "workflows"
 version = "0.1.0"
-description = "MET workflow YAML executor — execute(message, workflow) (ADR-042)"
+description = "Execute meteorology workflow YAML with execute(message, workflow)"
 readme = "README.md"
 license = { text = "MIT" }
 requires-python = ">=3.12"
@@ -20,6 +20,11 @@ build-backend = "hatchling.build"
 packages = ["src/workflows"]
 
 [tool.pytest.ini_options]
+asyncio_default_fixture_loop_scope = "function"
+
+filterwarnings = [
+  "error",
+]
 testpaths = ["tests"]
 markers = [
   "unit: fast unit tests",
@@ -34,5 +39,5 @@ fail_under = 100
 show_missing = true
 
 [tool.ruff]
-extend = "../../ruff.toml"
+extend = "../../pyproject.toml"
 line-length = 120

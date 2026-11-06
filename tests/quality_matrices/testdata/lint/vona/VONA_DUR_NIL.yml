@@ -1,0 +1,449 @@
+rule_id: VONA_DUR_NIL
+engine: lint
+cases:
+- bucket: happy
+  case_id: '01'
+  status: ready
+  tac: "VONA\nSTATUS:               TEST\nDTG:                  20260416/2322Z\nVOLCANO:\
+    \              TEST 999999\nPSN:                  S1000 E10000\nAREA:        \
+    \         UNKNOWN\nSOURCE ELEV:          UNKNOWN\nNOTICE NR:            2026/5\n\
+    CURRENT COLOUR CODE:  NIL\nPREVIOUS COLOUR CODE: NIL\nSVO:                  NIL\n\
+    ACT STS:              NIL\nONSET:                NIL\nDUR:                  NIL\n\
+    VA CLD HGT:           NO VA CLD PRODUCED\nHGT SOURCE:           NO VA CLD PRODUCED\n\
+    MOV:                  NO VA CLD PRODUCED\nCTC:                  VAAC?AT?METSERVICE.COM\n\
+    RMK:                  THIS IS A TEST VONA TO CHECK IWXXM TRANSLATION\nOF VONA\
+    \ FROM THE NZ VONA INPUT\n                      SYSTEM. NO ACTIONS REQUIRED.\n\
+    NXT NOTICE:           A NEW VONA WILL BE ISSUED IF COND CHANGE SIGNIF\nICANTLY\
+    \ OR IF THE COLOUR CODE\n                      CHANGES"
+  expect:
+    accept: true
+    codes:
+    - VONA_DUR_NIL
+  meta:
+    product: VONA
+    profile: annex3
+    cite: '#1265 VONA_DUR_NIL/happy NOAA tgftp + aviationweather.gov retrieved 2026-09-23'
+- bucket: happy
+  case_id: '02'
+  status: ready
+  tac: "VONA\nDTG:                  20260917/1140Z\nVOLCANO:              WHAKAARI/WHITE\
+    \ ISLAND 241040\nPSN:                  S3731 E17711\nAREA:                 TAUPO\
+    \ VOLCANIC ARC\nSOURCE ELEV:          294M AMSL\nNOTICE NR:            2026/15\n\
+    CURRENT COLOUR CODE:  YELLOW\nPREVIOUS COLOUR CODE: YELLOW\nSVO:             \
+    \     EARTH SCIENCES NEW ZEALAND\nACT STS:              HEIGHTENED UNREST\nONSET:\
+    \                NIL\nDUR:                  NIL\nVA CLD HGT:           NO VA CLD\
+    \ PRODUCED\nHGT SOURCE:           NO VA CLD PRODUCED\nMOV:                  NO\
+    \ VA CLD PRODUCED\nCTC:                  DUTY VOLCANOLOGIST, +6473748211\nRMK:\
+    \                  BASED ON RECENT OBSERVATIONS, ACTIVITY AT\nWHAKA\nARI/WHITE\
+    \ ISLAND CONTINUES WITH\n                      STEAM AND GAS EMISSIONS. ACTIVITY\
+    \ HAS BEEN\nCONS\nISTENT OVER THE PAST FEW MONTHS,\n                      WITH\
+    \ NO ERUPTIVE ACTIVITY.\nNXT NOTICE:           WILL BE ISSUED BY 20260928/0000Z"
+  expect:
+    accept: true
+    codes:
+    - VONA_DUR_NIL
+  meta:
+    product: VONA
+    profile: annex3
+    cite: '#1265 VONA_DUR_NIL/happy NOAA tgftp + aviationweather.gov retrieved 2026-09-23'
+- bucket: happy
+  case_id: '03'
+  status: ready
+  tac: "VONA\nDTG:                  20260602/0051Z\nVOLCANO:              TUHUA/MAYOR\
+    \ ISLAND 241021\nPSN:                  S3717 E17615\nAREA:                 TAUPO\
+    \ VOLCANIC ARC\nSOURCE ELEV:          355M AMSL\nNOTICE NR:            2026/1\n\
+    CURRENT COLOUR CODE:  GREEN\nPREVIOUS COLOUR CODE: GREEN\nSVO:               \
+    \   EARTH SCIENCES NEW ZEALAND\nACT STS:              NIL\nONSET:            \
+    \    NIL\nDUR:                  NIL\nVA CLD HGT:           NO VA CLD PRODUCED\n\
+    HGT SOURCE:           NO VA CLD PRODUCED\nMOV:                  NO VA CLD PRODUCED\n\
+    CTC:                  DUTY VOLCANOLOGIST, +6473748211\nRMK:                  THIS\
+    \ VONA DOES NOT COMMUNICATE ANY CHANGE IN\nVO\nLCANIC ACTIVITY, BUT IS AN\n  \
+    \                    INITIAL VONA, OFFICIALLY SETTING THE AVIATION\nC\nOLOUR CODE\
+    \ FOR THIS VOLCANO\n                      WITHIN A NEW SYSTEM. PLEASE SEE EMAIL\
+    \ SENT BY\nE\nARTH SCIENCES NEW ZEALAND ON 13\n                      MAY 2026\
+    \ FOR DETAILS.\nNXT NOTICE:           A NEW VONA WILL BE ISSUED IF COND CHANGE\
+    \ SIGNIF\nICANTLY OR IF THE COLOUR CODE\n                      CHANGES"
+  expect:
+    accept: true
+    codes:
+    - VONA_DUR_NIL
+  meta:
+    product: VONA
+    profile: annex3
+    cite: '#1265 VONA_DUR_NIL/happy NOAA tgftp + aviationweather.gov retrieved 2026-09-23'
+- bucket: happy
+  case_id: '04'
+  status: ready
+  tac: "VONA\nSTATUS:               TEST\nDTG:                  20260416/2322Z\nVOLCANO:\
+    \ FUEGO 342090\nPSN:                  S1000 E10000\nAREA:                 UNKNOWN\n\
+    SOURCE ELEV:          UNKNOWN\nNOTICE NR:            2026/5\nCURRENT COLOUR CODE:\
+    \  NIL\nPREVIOUS COLOUR CODE: NIL\nSVO:                  NIL\nACT STS:       \
+    \       NIL\nONSET:                NIL\nDUR:                  NIL\nVA CLD HGT:\
+    \           NO VA CLD PRODUCED\nHGT SOURCE:           NO VA CLD PRODUCED\nMOV:\
+    \                  NO VA CLD PRODUCED\nCTC:                  VAAC?AT?METSERVICE.COM\n\
+    RMK:                  THIS IS A TEST VONA TO CHECK IWXXM TRANSLATION\nOF VONA\
+    \ FROM THE NZ VONA INPUT\n                      SYSTEM. NO ACTIONS REQUIRED.\n\
+    NXT NOTICE:           A NEW VONA WILL BE ISSUED IF COND CHANGE SIGNIF\nICANTLY\
+    \ OR IF THE COLOUR CODE\n                      CHANGES"
+  expect:
+    accept: true
+    codes:
+    - VONA_DUR_NIL
+  meta:
+    product: VONA
+    profile: annex3
+    cite: '#1265 VONA_DUR_NIL/happy NOAA tgftp + aviationweather.gov retrieved 2026-09-23'
+- bucket: happy
+  case_id: '05'
+  status: ready
+  tac: "VONA\nSTATUS:               TEST\nDTG:                  20260416/2322Z\nVOLCANO:\
+    \ DUKONO 268010\nPSN:                  S1000 E10000\nAREA:                 UNKNOWN\n\
+    SOURCE ELEV:          UNKNOWN\nNOTICE NR:            2026/5\nCURRENT COLOUR CODE:\
+    \  NIL\nPREVIOUS COLOUR CODE: NIL\nSVO:                  NIL\nACT STS:       \
+    \       NIL\nONSET:                NIL\nDUR:                  NIL\nVA CLD HGT:\
+    \           NO VA CLD PRODUCED\nHGT SOURCE:           NO VA CLD PRODUCED\nMOV:\
+    \                  NO VA CLD PRODUCED\nCTC:                  VAAC?AT?METSERVICE.COM\n\
+    RMK:                  THIS IS A TEST VONA TO CHECK IWXXM TRANSLATION\nOF VONA\
+    \ FROM THE NZ VONA INPUT\n                      SYSTEM. NO ACTIONS REQUIRED.\n\
+    NXT NOTICE:           A NEW VONA WILL BE ISSUED IF COND CHANGE SIGNIF\nICANTLY\
+    \ OR IF THE COLOUR CODE\n                      CHANGES"
+  expect:
+    accept: true
+    codes:
+    - VONA_DUR_NIL
+  meta:
+    product: VONA
+    profile: annex3
+    cite: '#1265 VONA_DUR_NIL/happy NOAA tgftp + aviationweather.gov retrieved 2026-09-23'
+- bucket: sad
+  case_id: '01'
+  status: ready
+  tac: "VONA\nSTATUS:               TEST\nDTG:                  20260416/2322Z\nVOLCANO:\
+    \              TEST 999999\nPSN:                  S1000 E10000\nAREA:        \
+    \         UNKNOWN\nSOURCE ELEV:          UNKNOWN\nNOTICE NR:            2026/5\n\
+    CURRENT COLOUR CODE:  NIL\nPREVIOUS COLOUR CODE: NIL\nSVO:                  NIL\n\
+    ACT STS:              NIL\nONSET:                NIL\nDUR: 20260923/0100Z\nVA\
+    \ CLD HGT:           NO VA CLD PRODUCED\nHGT SOURCE:           NO VA CLD PRODUCED\n\
+    MOV:                  NO VA CLD PRODUCED\nCTC:                  VAAC?AT?METSERVICE.COM\n\
+    RMK:                  THIS IS A TEST VONA TO CHECK IWXXM TRANSLATION\nOF VONA\
+    \ FROM THE NZ VONA INPUT\n                      SYSTEM. NO ACTIONS REQUIRED.\n\
+    NXT NOTICE:           A NEW VONA WILL BE ISSUED IF COND CHANGE SIGNIF\nICANTLY\
+    \ OR IF THE COLOUR CODE\n                      CHANGES"
+  expect:
+    accept: true
+  meta:
+    product: VONA
+    profile: annex3
+    cite: '#1265 VONA_DUR_NIL/sad NOAA tgftp + aviationweather.gov retrieved 2026-09-23'
+- bucket: sad
+  case_id: '02'
+  status: ready
+  tac: "VONA\nDTG:                  20260917/1140Z\nVOLCANO:              WHAKAARI/WHITE\
+    \ ISLAND 241040\nPSN:                  S3731 E17711\nAREA:                 TAUPO\
+    \ VOLCANIC ARC\nSOURCE ELEV:          294M AMSL\nNOTICE NR:            2026/15\n\
+    CURRENT COLOUR CODE:  YELLOW\nPREVIOUS COLOUR CODE: YELLOW\nSVO:             \
+    \     EARTH SCIENCES NEW ZEALAND\nACT STS:              HEIGHTENED UNREST\nONSET:\
+    \                NIL\nDUR: 20260923/0100Z\nVA CLD HGT:           NO VA CLD PRODUCED\n\
+    HGT SOURCE:           NO VA CLD PRODUCED\nMOV:                  NO VA CLD PRODUCED\n\
+    CTC:                  DUTY VOLCANOLOGIST, +6473748211\nRMK:                  BASED\
+    \ ON RECENT OBSERVATIONS, ACTIVITY AT\nWHAKA\nARI/WHITE ISLAND CONTINUES WITH\n\
+    \                      STEAM AND GAS EMISSIONS. ACTIVITY HAS BEEN\nCONS\nISTENT\
+    \ OVER THE PAST FEW MONTHS,\n                      WITH NO ERUPTIVE ACTIVITY.\n\
+    NXT NOTICE:           WILL BE ISSUED BY 20260928/0000Z"
+  expect:
+    accept: true
+  meta:
+    product: VONA
+    profile: annex3
+    cite: '#1265 VONA_DUR_NIL/sad NOAA tgftp + aviationweather.gov retrieved 2026-09-23'
+- bucket: sad
+  case_id: '03'
+  status: ready
+  tac: "VONA\nDTG:                  20260602/0051Z\nVOLCANO:              TUHUA/MAYOR\
+    \ ISLAND 241021\nPSN:                  S3717 E17615\nAREA:                 TAUPO\
+    \ VOLCANIC ARC\nSOURCE ELEV:          355M AMSL\nNOTICE NR:            2026/1\n\
+    CURRENT COLOUR CODE:  GREEN\nPREVIOUS COLOUR CODE: GREEN\nSVO:               \
+    \   EARTH SCIENCES NEW ZEALAND\nACT STS:              NIL\nONSET:            \
+    \    NIL\nDUR: 20260923/0100Z\nVA CLD HGT:           NO VA CLD PRODUCED\nHGT SOURCE:\
+    \           NO VA CLD PRODUCED\nMOV:                  NO VA CLD PRODUCED\nCTC:\
+    \                  DUTY VOLCANOLOGIST, +6473748211\nRMK:                  THIS\
+    \ VONA DOES NOT COMMUNICATE ANY CHANGE IN\nVO\nLCANIC ACTIVITY, BUT IS AN\n  \
+    \                    INITIAL VONA, OFFICIALLY SETTING THE AVIATION\nC\nOLOUR CODE\
+    \ FOR THIS VOLCANO\n                      WITHIN A NEW SYSTEM. PLEASE SEE EMAIL\
+    \ SENT BY\nE\nARTH SCIENCES NEW ZEALAND ON 13\n                      MAY 2026\
+    \ FOR DETAILS.\nNXT NOTICE:           A NEW VONA WILL BE ISSUED IF COND CHANGE\
+    \ SIGNIF\nICANTLY OR IF THE COLOUR CODE\n                      CHANGES"
+  expect:
+    accept: true
+  meta:
+    product: VONA
+    profile: annex3
+    cite: '#1265 VONA_DUR_NIL/sad NOAA tgftp + aviationweather.gov retrieved 2026-09-23'
+- bucket: sad
+  case_id: '04'
+  status: ready
+  tac: "VONA\nSTATUS:               TEST\nDTG:                  20260416/2322Z\nVOLCANO:\
+    \ FUEGO 342090\nPSN:                  S1000 E10000\nAREA:                 UNKNOWN\n\
+    SOURCE ELEV:          UNKNOWN\nNOTICE NR:            2026/5\nCURRENT COLOUR CODE:\
+    \  NIL\nPREVIOUS COLOUR CODE: NIL\nSVO:                  NIL\nACT STS:       \
+    \       NIL\nONSET:                NIL\nDUR: 20260923/0100Z\nVA CLD HGT:     \
+    \      NO VA CLD PRODUCED\nHGT SOURCE:           NO VA CLD PRODUCED\nMOV:    \
+    \              NO VA CLD PRODUCED\nCTC:                  VAAC?AT?METSERVICE.COM\n\
+    RMK:                  THIS IS A TEST VONA TO CHECK IWXXM TRANSLATION\nOF VONA\
+    \ FROM THE NZ VONA INPUT\n                      SYSTEM. NO ACTIONS REQUIRED.\n\
+    NXT NOTICE:           A NEW VONA WILL BE ISSUED IF COND CHANGE SIGNIF\nICANTLY\
+    \ OR IF THE COLOUR CODE\n                      CHANGES"
+  expect:
+    accept: true
+  meta:
+    product: VONA
+    profile: annex3
+    cite: '#1265 VONA_DUR_NIL/sad NOAA tgftp + aviationweather.gov retrieved 2026-09-23'
+- bucket: sad
+  case_id: '05'
+  status: ready
+  tac: "VONA\nSTATUS:               TEST\nDTG:                  20260416/2322Z\nVOLCANO:\
+    \ DUKONO 268010\nPSN:                  S1000 E10000\nAREA:                 UNKNOWN\n\
+    SOURCE ELEV:          UNKNOWN\nNOTICE NR:            2026/5\nCURRENT COLOUR CODE:\
+    \  NIL\nPREVIOUS COLOUR CODE: NIL\nSVO:                  NIL\nACT STS:       \
+    \       NIL\nONSET:                NIL\nDUR: 20260923/0100Z\nVA CLD HGT:     \
+    \      NO VA CLD PRODUCED\nHGT SOURCE:           NO VA CLD PRODUCED\nMOV:    \
+    \              NO VA CLD PRODUCED\nCTC:                  VAAC?AT?METSERVICE.COM\n\
+    RMK:                  THIS IS A TEST VONA TO CHECK IWXXM TRANSLATION\nOF VONA\
+    \ FROM THE NZ VONA INPUT\n                      SYSTEM. NO ACTIONS REQUIRED.\n\
+    NXT NOTICE:           A NEW VONA WILL BE ISSUED IF COND CHANGE SIGNIF\nICANTLY\
+    \ OR IF THE COLOUR CODE\n                      CHANGES"
+  expect:
+    accept: true
+  meta:
+    product: VONA
+    profile: annex3
+    cite: '#1265 VONA_DUR_NIL/sad NOAA tgftp + aviationweather.gov retrieved 2026-09-23'
+- bucket: edge_pass
+  case_id: '01'
+  status: ready
+  tac: "VONA\nSTATUS:               TEST\nDTG:                  20260416/2322Z\nVOLCANO:\
+    \              TEST 999999\nPSN:                  S1000 E10000\nAREA:        \
+    \         UNKNOWN\nSOURCE ELEV:          UNKNOWN\nNOTICE NR:            2026/5\n\
+    CURRENT COLOUR CODE:  NIL\nPREVIOUS COLOUR CODE: NIL\nSVO:                  NIL\n\
+    ACT STS:              NIL\nONSET:                NIL\nDUR:                  NIL\n\
+    VA CLD HGT:           NO VA CLD PRODUCED\nHGT SOURCE:           NO VA CLD PRODUCED\n\
+    MOV:                  NO VA CLD PRODUCED\nCTC:                  VAAC?AT?METSERVICE.COM\n\
+    RMK:                  THIS IS A TEST VONA TO CHECK IWXXM TRANSLATION\nOF VONA\
+    \ FROM THE NZ VONA INPUT\n                      SYSTEM. NO ACTIONS REQUIRED.\n\
+    NXT NOTICE:           A NEW VONA WILL BE ISSUED IF COND CHANGE SIGNIF\nICANTLY\
+    \ OR IF THE COLOUR CODE\n                      CHANGES"
+  expect:
+    accept: true
+    codes:
+    - VONA_DUR_NIL
+  meta:
+    product: VONA
+    profile: annex3
+    cite: '#1265 VONA_DUR_NIL/edge_pass NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'
+- bucket: edge_pass
+  case_id: '02'
+  status: ready
+  tac: "VONA\nDTG:                  20260917/1140Z\nVOLCANO:              WHAKAARI/WHITE\
+    \ ISLAND 241040\nPSN:                  S3731 E17711\nAREA:                 TAUPO\
+    \ VOLCANIC ARC\nSOURCE ELEV:          294M AMSL\nNOTICE NR:            2026/15\n\
+    CURRENT COLOUR CODE:  YELLOW\nPREVIOUS COLOUR CODE: YELLOW\nSVO:             \
+    \     EARTH SCIENCES NEW ZEALAND\nACT STS:              HEIGHTENED UNREST\nONSET:\
+    \                NIL\nDUR:                  NIL\nVA CLD HGT:           NO VA CLD\
+    \ PRODUCED\nHGT SOURCE:           NO VA CLD PRODUCED\nMOV:                  NO\
+    \ VA CLD PRODUCED\nCTC:                  DUTY VOLCANOLOGIST, +6473748211\nRMK:\
+    \                  BASED ON RECENT OBSERVATIONS, ACTIVITY AT\nWHAKA\nARI/WHITE\
+    \ ISLAND CONTINUES WITH\n                      STEAM AND GAS EMISSIONS. ACTIVITY\
+    \ HAS BEEN\nCONS\nISTENT OVER THE PAST FEW MONTHS,\n                      WITH\
+    \ NO ERUPTIVE ACTIVITY.\nNXT NOTICE:           WILL BE ISSUED BY 20260928/0000Z"
+  expect:
+    accept: true
+    codes:
+    - VONA_DUR_NIL
+  meta:
+    product: VONA
+    profile: annex3
+    cite: '#1265 VONA_DUR_NIL/edge_pass NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'
+- bucket: edge_pass
+  case_id: '03'
+  status: ready
+  tac: "VONA\nDTG:                  20260602/0051Z\nVOLCANO:              TUHUA/MAYOR\
+    \ ISLAND 241021\nPSN:                  S3717 E17615\nAREA:                 TAUPO\
+    \ VOLCANIC ARC\nSOURCE ELEV:          355M AMSL\nNOTICE NR:            2026/1\n\
+    CURRENT COLOUR CODE:  GREEN\nPREVIOUS COLOUR CODE: GREEN\nSVO:               \
+    \   EARTH SCIENCES NEW ZEALAND\nACT STS:              NIL\nONSET:            \
+    \    NIL\nDUR:                  NIL\nVA CLD HGT:           NO VA CLD PRODUCED\n\
+    HGT SOURCE:           NO VA CLD PRODUCED\nMOV:                  NO VA CLD PRODUCED\n\
+    CTC:                  DUTY VOLCANOLOGIST, +6473748211\nRMK:                  THIS\
+    \ VONA DOES NOT COMMUNICATE ANY CHANGE IN\nVO\nLCANIC ACTIVITY, BUT IS AN\n  \
+    \                    INITIAL VONA, OFFICIALLY SETTING THE AVIATION\nC\nOLOUR CODE\
+    \ FOR THIS VOLCANO\n                      WITHIN A NEW SYSTEM. PLEASE SEE EMAIL\
+    \ SENT BY\nE\nARTH SCIENCES NEW ZEALAND ON 13\n                      MAY 2026\
+    \ FOR DETAILS.\nNXT NOTICE:           A NEW VONA WILL BE ISSUED IF COND CHANGE\
+    \ SIGNIF\nICANTLY OR IF THE COLOUR CODE\n                      CHANGES"
+  expect:
+    accept: true
+    codes:
+    - VONA_DUR_NIL
+  meta:
+    product: VONA
+    profile: annex3
+    cite: '#1265 VONA_DUR_NIL/edge_pass NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'
+- bucket: edge_pass
+  case_id: '04'
+  status: ready
+  tac: "VONA\nSTATUS:               TEST\nDTG:                  20260416/2322Z\nVOLCANO:\
+    \ FUEGO 342090\nPSN:                  S1000 E10000\nAREA:                 UNKNOWN\n\
+    SOURCE ELEV:          UNKNOWN\nNOTICE NR:            2026/5\nCURRENT COLOUR CODE:\
+    \  NIL\nPREVIOUS COLOUR CODE: NIL\nSVO:                  NIL\nACT STS:       \
+    \       NIL\nONSET:                NIL\nDUR:                  NIL\nVA CLD HGT:\
+    \           NO VA CLD PRODUCED\nHGT SOURCE:           NO VA CLD PRODUCED\nMOV:\
+    \                  NO VA CLD PRODUCED\nCTC:                  VAAC?AT?METSERVICE.COM\n\
+    RMK:                  THIS IS A TEST VONA TO CHECK IWXXM TRANSLATION\nOF VONA\
+    \ FROM THE NZ VONA INPUT\n                      SYSTEM. NO ACTIONS REQUIRED.\n\
+    NXT NOTICE:           A NEW VONA WILL BE ISSUED IF COND CHANGE SIGNIF\nICANTLY\
+    \ OR IF THE COLOUR CODE\n                      CHANGES"
+  expect:
+    accept: true
+    codes:
+    - VONA_DUR_NIL
+  meta:
+    product: VONA
+    profile: annex3
+    cite: '#1265 VONA_DUR_NIL/edge_pass NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'
+- bucket: edge_pass
+  case_id: '05'
+  status: ready
+  tac: "VONA\nSTATUS:               TEST\nDTG:                  20260416/2322Z\nVOLCANO:\
+    \ DUKONO 268010\nPSN:                  S1000 E10000\nAREA:                 UNKNOWN\n\
+    SOURCE ELEV:          UNKNOWN\nNOTICE NR:            2026/5\nCURRENT COLOUR CODE:\
+    \  NIL\nPREVIOUS COLOUR CODE: NIL\nSVO:                  NIL\nACT STS:       \
+    \       NIL\nONSET:                NIL\nDUR:                  NIL\nVA CLD HGT:\
+    \           NO VA CLD PRODUCED\nHGT SOURCE:           NO VA CLD PRODUCED\nMOV:\
+    \                  NO VA CLD PRODUCED\nCTC:                  VAAC?AT?METSERVICE.COM\n\
+    RMK:                  THIS IS A TEST VONA TO CHECK IWXXM TRANSLATION\nOF VONA\
+    \ FROM THE NZ VONA INPUT\n                      SYSTEM. NO ACTIONS REQUIRED.\n\
+    NXT NOTICE:           A NEW VONA WILL BE ISSUED IF COND CHANGE SIGNIF\nICANTLY\
+    \ OR IF THE COLOUR CODE\n                      CHANGES"
+  expect:
+    accept: true
+    codes:
+    - VONA_DUR_NIL
+  meta:
+    product: VONA
+    profile: annex3
+    cite: '#1265 VONA_DUR_NIL/edge_pass NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'
+- bucket: edge_fail
+  case_id: '01'
+  status: ready
+  tac: "VONA\nSTATUS:               TEST\nDTG:                  20260416/2322Z\nVOLCANO:\
+    \              TEST 999999\nPSN:                  S1000 E10000\nAREA:        \
+    \         UNKNOWN\nSOURCE ELEV:          UNKNOWN\nNOTICE NR:            2026/5\n\
+    CURRENT COLOUR CODE:  NIL\nPREVIOUS COLOUR CODE: NIL\nSVO:                  NIL\n\
+    ACT STS:              NIL\nONSET:                NIL\nDUR: 20260923/0100Z\nVA\
+    \ CLD HGT:           NO VA CLD PRODUCED\nHGT SOURCE:           NO VA CLD PRODUCED\n\
+    MOV:                  NO VA CLD PRODUCED\nCTC:                  VAAC?AT?METSERVICE.COM\n\
+    RMK:                  THIS IS A TEST VONA TO CHECK IWXXM TRANSLATION\nOF VONA\
+    \ FROM THE NZ VONA INPUT\n                      SYSTEM. NO ACTIONS REQUIRED.\n\
+    NXT NOTICE:           A NEW VONA WILL BE ISSUED IF COND CHANGE SIGNIF\nICANTLY\
+    \ OR IF THE COLOUR CODE\n                      CHANGES"
+  expect:
+    accept: true
+  meta:
+    product: VONA
+    profile: annex3
+    cite: '#1265 VONA_DUR_NIL/edge_fail NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'
+- bucket: edge_fail
+  case_id: '02'
+  status: ready
+  tac: "VONA\nDTG:                  20260917/1140Z\nVOLCANO:              WHAKAARI/WHITE\
+    \ ISLAND 241040\nPSN:                  S3731 E17711\nAREA:                 TAUPO\
+    \ VOLCANIC ARC\nSOURCE ELEV:          294M AMSL\nNOTICE NR:            2026/15\n\
+    CURRENT COLOUR CODE:  YELLOW\nPREVIOUS COLOUR CODE: YELLOW\nSVO:             \
+    \     EARTH SCIENCES NEW ZEALAND\nACT STS:              HEIGHTENED UNREST\nONSET:\
+    \                NIL\nDUR: 20260923/0100Z\nVA CLD HGT:           NO VA CLD PRODUCED\n\
+    HGT SOURCE:           NO VA CLD PRODUCED\nMOV:                  NO VA CLD PRODUCED\n\
+    CTC:                  DUTY VOLCANOLOGIST, +6473748211\nRMK:                  BASED\
+    \ ON RECENT OBSERVATIONS, ACTIVITY AT\nWHAKA\nARI/WHITE ISLAND CONTINUES WITH\n\
+    \                      STEAM AND GAS EMISSIONS. ACTIVITY HAS BEEN\nCONS\nISTENT\
+    \ OVER THE PAST FEW MONTHS,\n                      WITH NO ERUPTIVE ACTIVITY.\n\
+    NXT NOTICE:           WILL BE ISSUED BY 20260928/0000Z"
+  expect:
+    accept: true
+  meta:
+    product: VONA
+    profile: annex3
+    cite: '#1265 VONA_DUR_NIL/edge_fail NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'
+- bucket: edge_fail
+  case_id: '03'
+  status: ready
+  tac: "VONA\nDTG:                  20260602/0051Z\nVOLCANO:              TUHUA/MAYOR\
+    \ ISLAND 241021\nPSN:                  S3717 E17615\nAREA:                 TAUPO\
+    \ VOLCANIC ARC\nSOURCE ELEV:          355M AMSL\nNOTICE NR:            2026/1\n\
+    CURRENT COLOUR CODE:  GREEN\nPREVIOUS COLOUR CODE: GREEN\nSVO:               \
+    \   EARTH SCIENCES NEW ZEALAND\nACT STS:              NIL\nONSET:            \
+    \    NIL\nDUR: 20260923/0100Z\nVA CLD HGT:           NO VA CLD PRODUCED\nHGT SOURCE:\
+    \           NO VA CLD PRODUCED\nMOV:                  NO VA CLD PRODUCED\nCTC:\
+    \                  DUTY VOLCANOLOGIST, +6473748211\nRMK:                  THIS\
+    \ VONA DOES NOT COMMUNICATE ANY CHANGE IN\nVO\nLCANIC ACTIVITY, BUT IS AN\n  \
+    \                    INITIAL VONA, OFFICIALLY SETTING THE AVIATION\nC\nOLOUR CODE\
+    \ FOR THIS VOLCANO\n                      WITHIN A NEW SYSTEM. PLEASE SEE EMAIL\
+    \ SENT BY\nE\nARTH SCIENCES NEW ZEALAND ON 13\n                      MAY 2026\
+    \ FOR DETAILS.\nNXT NOTICE:           A NEW VONA WILL BE ISSUED IF COND CHANGE\
+    \ SIGNIF\nICANTLY OR IF THE COLOUR CODE\n                      CHANGES"
+  expect:
+    accept: true
+  meta:
+    product: VONA
+    profile: annex3
+    cite: '#1265 VONA_DUR_NIL/edge_fail NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'
+- bucket: edge_fail
+  case_id: '04'
+  status: ready
+  tac: "VONA\nSTATUS:               TEST\nDTG:                  20260416/2322Z\nVOLCANO:\
+    \ FUEGO 342090\nPSN:                  S1000 E10000\nAREA:                 UNKNOWN\n\
+    SOURCE ELEV:          UNKNOWN\nNOTICE NR:            2026/5\nCURRENT COLOUR CODE:\
+    \  NIL\nPREVIOUS COLOUR CODE: NIL\nSVO:                  NIL\nACT STS:       \
+    \       NIL\nONSET:                NIL\nDUR: 20260923/0100Z\nVA CLD HGT:     \
+    \      NO VA CLD PRODUCED\nHGT SOURCE:           NO VA CLD PRODUCED\nMOV:    \
+    \              NO VA CLD PRODUCED\nCTC:                  VAAC?AT?METSERVICE.COM\n\
+    RMK:                  THIS IS A TEST VONA TO CHECK IWXXM TRANSLATION\nOF VONA\
+    \ FROM THE NZ VONA INPUT\n                      SYSTEM. NO ACTIONS REQUIRED.\n\
+    NXT NOTICE:           A NEW VONA WILL BE ISSUED IF COND CHANGE SIGNIF\nICANTLY\
+    \ OR IF THE COLOUR CODE\n                      CHANGES"
+  expect:
+    accept: true
+  meta:
+    product: VONA
+    profile: annex3
+    cite: '#1265 VONA_DUR_NIL/edge_fail NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'
+- bucket: edge_fail
+  case_id: '05'
+  status: ready
+  tac: "VONA\nSTATUS:               TEST\nDTG:                  20260416/2322Z\nVOLCANO:\
+    \ DUKONO 268010\nPSN:                  S1000 E10000\nAREA:                 UNKNOWN\n\
+    SOURCE ELEV:          UNKNOWN\nNOTICE NR:            2026/5\nCURRENT COLOUR CODE:\
+    \  NIL\nPREVIOUS COLOUR CODE: NIL\nSVO:                  NIL\nACT STS:       \
+    \       NIL\nONSET:                NIL\nDUR: 20260923/0100Z\nVA CLD HGT:     \
+    \      NO VA CLD PRODUCED\nHGT SOURCE:           NO VA CLD PRODUCED\nMOV:    \
+    \              NO VA CLD PRODUCED\nCTC:                  VAAC?AT?METSERVICE.COM\n\
+    RMK:                  THIS IS A TEST VONA TO CHECK IWXXM TRANSLATION\nOF VONA\
+    \ FROM THE NZ VONA INPUT\n                      SYSTEM. NO ACTIONS REQUIRED.\n\
+    NXT NOTICE:           A NEW VONA WILL BE ISSUED IF COND CHANGE SIGNIF\nICANTLY\
+    \ OR IF THE COLOUR CODE\n                      CHANGES"
+  expect:
+    accept: true
+  meta:
+    product: VONA
+    profile: annex3
+    cite: '#1265 VONA_DUR_NIL/edge_fail NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'

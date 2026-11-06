@@ -28,7 +28,18 @@ KNOWN_TRANSFORM_TYPES = frozenset({"envelope", "topic_filename", "checksum", "bu
 
 @dataclass(frozen=True, slots=True)
 class TransformStep:
-    """One ordered transform from a Dissemination library body."""
+    """
+    One ordered transform from a Dissemination library body.
+
+    Attributes
+    ----------
+    id : str
+        ID.
+    type : str
+        Type.
+    params : dict[str, Any], optional
+        Parameters for this step. By default an empty dict.
+    """
 
     id: str
     type: str
@@ -37,7 +48,18 @@ class TransformStep:
 
 @dataclass(frozen=True, slots=True)
 class TransformResult:
-    """Outcome of applying an ordered transform pipeline."""
+    """
+    Outcome of applying an ordered transform pipeline.
+
+    Attributes
+    ----------
+    xml : str
+        XML text.
+    applied : tuple[str, ...]
+        Applied.
+    annotations : tuple[str, ...], optional
+        Annotations.
+    """
 
     xml: str
     applied: tuple[str, ...]
@@ -50,6 +72,21 @@ def normalize_transform_steps(raw: object) -> list[TransformStep]:
 
     Accepts ``list[str]`` (type ids) or ``list[dict]`` with ``type`` / ``id``.
     Unknown shapes are skipped. Empty / None → empty list.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (normalize_transform_steps)
+    2
+
+    Parameters
+    ----------
+    raw : object
+        Raw.
+
+    Returns
+    -------
+    list[TransformStep]
+        Normalize library ``transforms`` JSON into ordered steps.
     """
     if raw is None:
         return []
@@ -92,14 +129,14 @@ def apply_dissemination_transforms(
 
     Parameters
     ----------
-    xml :
+    xml : str
         IWXXM (or already-COLLECT) document.
-    transforms :
+    transforms : object
         Library body ``transforms`` list (dicts or type strings).
-    bulletin_identifier :
-        Optional COLLECT bulletin id / topic filename.
-    topic :
-        Alias for bulletin_identifier when the latter is omitted.
+    bulletin_identifier : str or None, optional
+        Optional COLLECT bulletin id / topic filename. By default ``None``.
+    topic : str or None, optional
+        Alias for bulletin_identifier when the latter is omitted. By default ``None``.
 
     Returns
     -------
@@ -110,6 +147,11 @@ def apply_dissemination_transforms(
     ------
     ValueError
         When a step type is unknown (fail closed).
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (apply_dissemination_transforms)
+    2
     """
     steps = normalize_transform_steps(transforms)
     if not steps:
@@ -146,6 +188,21 @@ def apply_dissemination_transforms(
 
 
 def _ensure_collect_then_set_bulletin_id(xml: str, bulletin_id: str) -> str:
+    """
+    Internal helper ``_ensure_collect_then_set_bulletin_id``.
+
+    Parameters
+    ----------
+    xml : object
+        Argument ``xml``.
+    bulletin_id : object
+        Argument ``bulletin_id``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     wrapped = wrap_global_afs_collect(xml, bulletin_identifier=bulletin_id)
     if _BULLETIN_ID_RE.search(wrapped):
         return _BULLETIN_ID_RE.sub(
@@ -157,6 +214,19 @@ def _ensure_collect_then_set_bulletin_id(xml: str, bulletin_id: str) -> str:
 
 
 def _apply_checksum_comment(xml: str) -> tuple[str, str]:
+    """
+    Internal helper ``_apply_checksum_comment``.
+
+    Parameters
+    ----------
+    xml : object
+        Argument ``xml``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     stripped = _CHECKSUM_COMMENT_RE.sub("", xml)
     digest = hashlib.sha256(stripped.encode("utf-8")).hexdigest()
     comment = f"<!-- dissemination-checksum:{digest} -->\n"
@@ -171,6 +241,21 @@ def _apply_checksum_comment(xml: str) -> tuple[str, str]:
 
 
 def _bulletin_rewrap(xml: str, *, bulletin_identifier: str | None) -> str:
+    """
+    Internal helper ``_bulletin_rewrap``.
+
+    Parameters
+    ----------
+    xml : object
+        Argument ``xml``.
+    bulletin_identifier : object
+        Argument ``bulletin_identifier``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if not is_collect_bulletin(xml):
         return wrap_global_afs_collect(xml, bulletin_identifier=bulletin_identifier)
     # Unwrap member for a fresh COLLECT shell

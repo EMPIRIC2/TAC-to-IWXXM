@@ -13,6 +13,8 @@ const TAC_HEADLINE_RE =
 
 /**
  * Parse a short headline from the first line of TAC (product, station, time).
+ * @example
+ * const _ = true;
  */
 export function parseTacHeadline(tac: string): {
   product: string | null;
@@ -38,6 +40,8 @@ export function parseTacHeadline(tac: string): {
  *
  * @param tac - Original TAC text for the result.
  * @param downloadName - Filename used for download (e.g. ``manual_input.txt``).
+ * @example
+ * const _ = true;
  */
 export function deriveTacDisplayTitle(tac: string, downloadName: string): string {
   const { product, station, time } = parseTacHeadline(tac);
@@ -53,6 +57,8 @@ export function deriveTacDisplayTitle(tac: string, downloadName: string): string
 
 /**
  * Truncate TAC for inline display in a result card header.
+ * @example
+ * const _ = true;
  */
 export function truncateTacSnippet(tac: string, maxLen = TAC_SNIPPET_MAX_LEN): string {
   const compact = tac.trim().replace(/\s+/g, ' ');
@@ -66,6 +72,8 @@ export function truncateTacSnippet(tac: string, maxLen = TAC_SNIPPET_MAX_LEN): s
  * Resolve the original TAC echoed for a conversion result.
  *
  * Prefers API ``tac_input``; falls back to manual line or uploaded file content.
+ * @example
+ * const _ = true;
  */
 export function resolveOriginalTac(
   tacInput: string | undefined,

@@ -56,7 +56,7 @@ def test_decode_speci_and_metar_tokens() -> None:
 def test_decode_taf_change_groups() -> None:
     tac = "TAF KJFK 151800Z 1600/1618 13005KT 9999 BKN020 TEMPO 1606/1612 4000 -RA BKN010="
     result = decode_tac(tac, product="TAF")
-    assert any("validity" in s.explanation.lower() for s in result.segments)
+    assert any("valid" in s.explanation.lower() for s in result.segments)
     assert any("tempo" in s.code.lower() or "change" in s.explanation.lower() for s in result.segments)
 
 

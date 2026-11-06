@@ -24,13 +24,13 @@ Constraints:
 
 ## Decision
 
-1. **Option C — logical layers only (M5 / this spike).** Keep current `packages/*` names and uv workspace members. Document a **logical layer map** in `[Corpus: system-spec]` that aliases epic #922 layers onto existing packages and `docs/domain/profiles/`.
+1. **Option C: logical layers only (M5 / this spike).** Keep current `packages/*` names and uv workspace members. Document a **logical layer map** in `[Corpus: system-spec]` that aliases epic #922 layers onto existing packages and `docs/domain/profiles/`.
 
-2. **Reject Option A (big-bang restructure)** for the foreseeable M5 window — cost outweighs benefit before contracts exist.
+2. **Reject Option A (big-bang restructure)** for the foreseeable M5 window; cost outweighs benefit before contracts exist.
 
 3. **Defer Option B (incremental rename/split)** until #924–#927 close with ADRs. Any future B move requires a new evolve + ADR amend; this ADR does **not** authorize package moves.
 
-4. **Milestone sequence (draft — revise after siblings):**
+4. **Milestone sequence (draft; revise after siblings):**
 
    ```text
    Core → Profiles (#912/#924) → Validation (#925) → Adapters (#926) → Dissemination (#927) → Workflows (#931) → Platform UIs (#933–#938)
@@ -56,11 +56,11 @@ Constraints:
 
 ### Negative / follow-ups
 
-- Layer names in epic prose won’t match directory names — always cite the system-spec map
+- Layer names in epic prose won’t match directory names; always cite the system-spec map
 - Future Option B must update template-conformance + plan-adherence + PyPI publish paths carefully
 
 ## References
 
-- Context: platform-package-layout-923 (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate)
+- Context: platform-package-layout-923 (archived; see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate)
 - EV-922 session report `923-platform-package-layout.md`
 - [Corpus: product] F6, F16–F19

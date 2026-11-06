@@ -18,7 +18,7 @@ _PLACEHOLDER_PATTERNS = [
 # Config files that are checked into source and affect builds or Render deploys
 _CONFIG_FILES = [
     ".github/workflows/ci-cd.yml",
-    "render.yaml",
+    "deploy/doks/base/secret-api.yaml",
 ]
 
 
@@ -48,11 +48,10 @@ def test_no_placeholder_supabase_url_in_ci_config():
 
 
 def test_no_placeholder_supabase_url_in_render_yaml():
-    """render.yaml must not hard-code a placeholder Supabase URL/key;
-    use sync:false so the Render dashboard value is preserved."""
-    hits = _scan_file("render.yaml")
+    """The live API secret manifest must not hard-code a placeholder Supabase URL."""
+    assert not (REPO_ROOT / "render.yaml").exists()
+    hits = _scan_file("deploy/doks/base/secret-api.yaml")
     assert not hits, (
-        "Placeholder Supabase credentials found in render.yaml - "
-        "use 'sync: false' and set the correct value in the Render dashboard:\n"
+        "Placeholder Supabase credentials found in the API secret manifest:\n"
         + "\n".join(hits)
     )

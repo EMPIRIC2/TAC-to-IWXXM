@@ -6,26 +6,41 @@ import { XIcon } from 'lucide-react';
 
 import { cn } from './utils';
 
+/**
+ * Function `Dialog`.
+ */
 function Dialog({ ...props }: React.ComponentProps<typeof DialogPrimitive.Root>) {
   return <DialogPrimitive.Root data-slot="dialog" {...props} />;
 }
 
+/**
+ * Function `DialogTrigger`.
+ */
 function DialogTrigger({
   ...props
 }: React.ComponentProps<typeof DialogPrimitive.Trigger>) {
   return <DialogPrimitive.Trigger data-slot="dialog-trigger" {...props} />;
 }
 
+/**
+ * Function `DialogPortal`.
+ */
 function DialogPortal({
   ...props
 }: React.ComponentProps<typeof DialogPrimitive.Portal>) {
   return <DialogPrimitive.Portal data-slot="dialog-portal" {...props} />;
 }
 
+/**
+ * Function `DialogClose`.
+ */
 function DialogClose({ ...props }: React.ComponentProps<typeof DialogPrimitive.Close>) {
   return <DialogPrimitive.Close data-slot="dialog-close" {...props} />;
 }
 
+/**
+ * Function `DialogOverlay`.
+ */
 function DialogOverlay({
   className,
   ...props
@@ -42,6 +57,9 @@ function DialogOverlay({
   );
 }
 
+/**
+ * Function `DialogContent`.
+ */
 function DialogContent({
   className,
   children,
@@ -68,6 +86,9 @@ function DialogContent({
   );
 }
 
+/**
+ * Function `DialogHeader`.
+ */
 function DialogHeader({ className, ...props }: React.ComponentProps<'div'>) {
   return (
     <div
@@ -78,6 +99,9 @@ function DialogHeader({ className, ...props }: React.ComponentProps<'div'>) {
   );
 }
 
+/**
+ * Function `DialogFooter`.
+ */
 function DialogFooter({ className, ...props }: React.ComponentProps<'div'>) {
   return (
     <div
@@ -91,6 +115,9 @@ function DialogFooter({ className, ...props }: React.ComponentProps<'div'>) {
   );
 }
 
+/**
+ * Function `DialogTitle`.
+ */
 function DialogTitle({
   className,
   ...props
@@ -104,6 +131,9 @@ function DialogTitle({
   );
 }
 
+/**
+ * Function `DialogDescription`.
+ */
 function DialogDescription({
   className,
   ...props

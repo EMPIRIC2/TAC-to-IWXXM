@@ -5,7 +5,7 @@
 
 Default **exchange** profile when packaging or disseminate-prep paths are invoked without an
 explicit exchange id. Selects bulletin headers, COLLECT aggregation, FTBP filename conventions,
-and AFS routing defaults — **not** TAC grammar (semantic profiles own that).
+and AFS routing defaults, **not** TAC grammar (semantic profiles own that).
 
 ## Owns (target)
 
@@ -18,7 +18,7 @@ and AFS routing defaults — **not** TAC grammar (semantic profiles own that).
 
 ## Does not own
 
-- Dissemination destination credentials (F16–F19 BYOC — memory-only)
+- Dissemination destination credentials (F16–F19 BYOC; memory-only)
 - TAC parse rules or national RMK policy (semantic profiles)
 - Live sink egress (`DISSEMINATION_EGRESS_ALLOWLIST`)
 
@@ -46,5 +46,5 @@ and AFS routing defaults — **not** TAC grammar (semantic profiles own that).
 
 ## Gaps
 
-- FTBP `A_TTAAii…xml.gz` filename synthesis from AHL (partial — `bulletinIdentifier` when AHL parseable)
+- FTBP `A_TTAAii…xml.gz` filename synthesis from AHL (partial: `bulletinIdentifier` when AHL parseable)
 - Regional overlays (`APAC_ROBEX` P0 stub landed EV-065; `EUR_RODEX`, …) deepen separately

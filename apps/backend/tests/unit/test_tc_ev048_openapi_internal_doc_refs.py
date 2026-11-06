@@ -21,9 +21,10 @@ INTERNAL_DOC_REF_PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = (
     ("docs/sessions", re.compile(r"docs/sessions/")),
     ("docs/feature-list", re.compile(r"docs/feature-list")),
     ("ADR", re.compile(r"\bADR-\d+\b")),
-    ("EV", re.compile(r"\bEV-\d+\b")),
+    ("EV", re.compile(r"\bEV-\d+\b", re.IGNORECASE)),
     ("S0", re.compile(r"\bS0\d+\b")),
-    ("TC", re.compile(r"\bTC-[A-Z0-9-]+\b")),
+    ("TC", re.compile(r"\bTC-[A-Z0-9-]+\b", re.IGNORECASE)),
+    ("UJ", re.compile(r"\bUJ-\d+\b", re.IGNORECASE)),
     ("E##", re.compile(r"\bE\d{2}-\d+\b")),
     ("#NNN", re.compile(r"(?<!\w)#\d{3,}\b")),
     # Product feature ids (D-S057-qa003=2).
@@ -74,7 +75,9 @@ def format_hits(hits: Iterable[tuple[str, str, str]]) -> str:
 
 def test_tc_ev048_005_synthetic_inject_detected() -> None:
     """Guard must fail when a synthetic planning cite is injected into a string."""
-    poisoned = "Soft-preview mode (ADR-022): best-effort; see #702 and TC-F7-002 / E11-31 / EV-040 / S011 / F31"
+    poisoned = (
+        "Soft-preview mode (ADR-022): best-effort; see #702 and TC-F7-002 / E11-31 / EV-040 / S011 / F31 / UJ-016"
+    )
     hits = find_internal_doc_refs(poisoned)
     names = {name for name, _ in hits}
     assert "ADR" in names
@@ -84,6 +87,7 @@ def test_tc_ev048_005_synthetic_inject_detected() -> None:
     assert "EV" in names
     assert "S0" in names
     assert "Fn" in names
+    assert "UJ" in names
 
 
 def test_tc_ev048_005_clean_operator_copy_passes() -> None:

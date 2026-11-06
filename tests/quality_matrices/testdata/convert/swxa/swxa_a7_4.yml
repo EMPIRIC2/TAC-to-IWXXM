@@ -1,0 +1,253 @@
+rule_id: swxa_a7_4
+engine: convert
+cases:
+- bucket: happy
+  case_id: '01'
+  status: ready
+  tac: "SWX ADVISORY\nDTG:                20201108/0100Z\nSWXC:               DONLON\nSWX EFFECT:         GNSS\nADVISORY NR:        2020/2\nNR RPLC:            2020/1\nOBS SWX:            08/0100Z MOD HNH HSH W180-E180\nFCST SWX +6 HR:     08/0700Z MOD HNH HSH W180-E180\nFCST SWX +12 HR:    08/1300Z NO SWX EXP\nFCST SWX +18 HR:    08/1900Z NO SWX EXP \nFCST SWX +24 HR:    09/0100Z NO SWX EXP\nRMK:                SWX EVENT INPR POSSIBLY IMPACTING GNSS PER. AREA OF\n                    IMPACT MOVES WITH EARTH'S ROTATION, STAYING\n                    STRONGER ON NIGHTSIDE. EXP TO SUBSIDE IN THE FCST\n                    PERIOD. SEE WWW.SPACEWEATHERPROVIDER.WEB \nNXT ADVISORY:       WILL BE ISSUED BY 20201108/0700Z\n"
+  expect:
+    encode_ok: true
+    require_xml: true
+  meta:
+    product: SWXA
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: annex3_golden/swxa_a7_4.tac
+- bucket: happy
+  case_id: '02'
+  status: ready
+  tac: "SWX ADVISORY\nDTG:                20201110/0100Z\nSWXC:               DONLON\nSWX EFFECT:         GNSS\nADVISORY NR:        2020/5\nNR RPLC:            2020/4\nOBS SWX:            10/0100Z MOD HNH HSH W180-E180\nFCST SWX +6 HR:     09/0700Z MOD HNH HSH W180-E180\nFCST SWX +12 HR:    09/1300Z NO SWX EXP\nFCST SWX +18 HR:    09/1900Z NO SWX EXP \nFCST SWX +24 HR:    10/0100Z NO SWX EXP\nRMK:                SWX EVENT INPR POSSIBLY IMPACTING GNSS PER. AREA OF\n                    IMPACT MOVES WITH EARTH'S ROTATION, STAYING\n                    STRONGER ON NIGHTSIDE. EXP TO SUBSIDE IN THE FCST\n                    PERIOD. SEE WWW.SPACEWEATHERPROVIDER.WEB \nNXT ADVISORY:       WILL BE ISSUED BY 20201109/0700Z\n"
+  expect:
+    encode_ok: true
+    require_xml: true
+  meta:
+    product: SWXA
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 variant of swxa_a7_4
+- bucket: happy
+  case_id: '03'
+  status: ready
+  tac: "SWX ADVISORY\nDTG:                20201108/0100Z\nSWXC:               DONLON\nSWX EFFECT:         GNSS\nADVISORY NR:        2020/6\nNR RPLC:            2020/1\nOBS SWX:            08/0100Z MOD HNH HSH W180-E180\nFCST SWX +6 HR:     08/0700Z MOD HNH HSH W180-E180\nFCST SWX +12 HR:    08/1300Z NO SWX EXP\nFCST SWX +18 HR:    08/1900Z NO SWX EXP \nFCST SWX +24 HR:    09/0100Z NO SWX EXP\nRMK:                SWX EVENT INPR POSSIBLY IMPACTING GNSS PER. AREA OF\n                    IMPACT MOVES WITH EARTH'S ROTATION, STAYING\n                    STRONGER ON NIGHTSIDE. EXP TO SUBSIDE IN THE FCST\n                    PERIOD. SEE WWW.SPACEWEATHERPROVIDER.WEB \nNXT ADVISORY:       WILL BE ISSUED BY 20201108/0700Z\n"
+  expect:
+    encode_ok: true
+    require_xml: true
+  meta:
+    product: SWXA
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 variant of swxa_a7_4
+- bucket: happy
+  case_id: '04'
+  status: ready
+  tac: "SWX ADVISORY\nDTG:                20201108/0100Z\nSWXC:               DONLON\nSWX EFFECT:         GNSS\nADVISORY NR:        2020/2\nNR RPLC:            2020/1\nOBS SWX:            08/0100Z SEV HNH HSH W180-E180\nFCST SWX +6 HR:     08/0700Z SEV HNH HSH W180-E180\nFCST SWX +12 HR:    08/1300Z NO SWX EXP\nFCST SWX +18 HR:    08/1900Z NO SWX EXP \nFCST SWX +24 HR:    09/0100Z NO SWX EXP\nRMK:                SWX EVENT INPR POSSIBLY IMPACTING GNSS PER. AREA OF\n                    IMPACT MOVES WITH EARTH'S ROTATION, STAYING\n                    STRONGER ON NIGHTSIDE. EXP TO SUBSIDE IN THE FCST\n                    PERIOD. SEE WWW.SPACEWEATHERPROVIDER.WEB \nNXT ADVISORY:       WILL BE ISSUED BY 20201108/0700Z\n"
+  expect:
+    encode_ok: true
+    require_xml: true
+  meta:
+    product: SWXA
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 variant of swxa_a7_4
+- bucket: happy
+  case_id: '05'
+  status: ready
+  tac: "SWX ADVISORY\nDTG:                20201108/0100Z\nSWXC:               DONLON\nSWX EFFECT:         GNSS\nADVISORY NR:        2020/2\nNR RPLC:            2020/1\nOBS SWX:            08/0100Z MOD HNH HSH W170-E170\nFCST SWX +6 HR:     08/0700Z MOD HNH HSH W170-E170\nFCST SWX +12 HR:    08/1300Z NO SWX EXP\nFCST SWX +18 HR:    08/1900Z NO SWX EXP \nFCST SWX +24 HR:    09/0100Z NO SWX EXP\nRMK:                SWX EVENT INPR POSSIBLY IMPACTING GNSS PER. AREA OF\n                    IMPACT MOVES WITH EARTH'S ROTATION, STAYING\n                    STRONGER ON NIGHTSIDE. EXP TO SUBSIDE IN THE FCST\n                    PERIOD. SEE WWW.SPACEWEATHERPROVIDER.WEB \nNXT ADVISORY:       WILL BE ISSUED BY 20201108/0700Z\n"
+  expect:
+    encode_ok: true
+    require_xml: true
+  meta:
+    product: SWXA
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 variant of swxa_a7_4
+- bucket: sad
+  case_id: '01'
+  status: ready
+  tac: GARBAGE
+  expect:
+    encode_ok: false
+    codes:
+    - PARSE_ERROR
+  meta:
+    product: SWXA
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 garbage tokens
+- bucket: sad
+  case_id: '02'
+  status: ready
+  tac: .
+  expect:
+    encode_ok: false
+    codes:
+    - PARSE_ERROR
+  meta:
+    product: SWXA
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 dot-only TAC
+- bucket: sad
+  case_id: '03'
+  status: ready
+  tac: METAR YUDO 151800Z 13005MPS 9000 BKN020 17/16 Q1018=
+  expect:
+    encode_ok: false
+    codes:
+    - PARSE_ERROR
+  meta:
+    product: SWXA
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 METAR body under product
+- bucket: sad
+  case_id: '04'
+  status: ready
+  tac: NOTAM YUDO CLOSED=
+  expect:
+    encode_ok: false
+    codes:
+    - PARSE_ERROR
+  meta:
+    product: SWXA
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 non-product token
+- bucket: sad
+  case_id: '05'
+  status: ready
+  tac: SIGMET YUDO
+  expect:
+    encode_ok: false
+    codes:
+    - PARSE_ERROR
+  meta:
+    product: SWXA
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 SIGMET keyword under product
+- bucket: edge_pass
+  case_id: '01'
+  status: ready
+  tac: "SWX ADVISORY\nDTG:                20201108/0100Z\nSWXC:               DONLON\nSWX EFFECT:         GNSS\nADVISORY NR:        2020/2\nNR RPLC:            2020/1\nOBS SWX:            08/0100Z MOD HNH HSH W180-E180\nFCST SWX +6 HR:     08/0700Z MOD HNH HSH W180-E180\nFCST SWX +12 HR:    08/1300Z NO SWX EXP\nFCST SWX +18 HR:    08/1900Z NO SWX EXP \nFCST SWX +24 HR:    09/0100Z NO SWX EXP\nRMK:                SWX EVENT INPR POSSIBLY IMPACTING GNSS PER. AREA OF\n                    IMPACT MOVES WITH EARTH'S ROTATION, STAYING\n                    STRONGER ON NIGHTSIDE. EXP TO SUBSIDE IN THE FCST\n                    PERIOD. SEE WWW.SPACEWEATHERPROVIDER.WEB \nNXT ADVISORY:       WILL BE ISSUED BY 20201108/0700Z"
+  expect:
+    encode_ok: true
+    require_xml: true
+  meta:
+    product: SWXA
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 edge of swxa_a7_4
+- bucket: edge_pass
+  case_id: '02'
+  status: ready
+  tac: "  SWX ADVISORY\nDTG:                20201108/0100Z\nSWXC:               DONLON\nSWX EFFECT:         GNSS\nADVISORY NR:        2020/2\nNR RPLC:            2020/1\nOBS SWX:            08/0100Z MOD HNH HSH W180-E180\nFCST SWX +6 HR:     08/0700Z MOD HNH HSH W180-E180\nFCST SWX +12 HR:    08/1300Z NO SWX EXP\nFCST SWX +18 HR:    08/1900Z NO SWX EXP \nFCST SWX +24 HR:    09/0100Z NO SWX EXP\nRMK:                SWX EVENT INPR POSSIBLY IMPACTING GNSS PER. AREA OF\n                    IMPACT MOVES WITH EARTH'S ROTATION, STAYING\n                    STRONGER ON NIGHTSIDE. EXP TO SUBSIDE IN THE FCST\n                    PERIOD. SEE WWW.SPACEWEATHERPROVIDER.WEB \nNXT ADVISORY:       WILL BE ISSUED BY 20201108/0700Z  "
+  expect:
+    encode_ok: true
+    require_xml: true
+  meta:
+    product: SWXA
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 edge of swxa_a7_4
+- bucket: edge_pass
+  case_id: '03'
+  status: ready
+  tac: "SWX ADVISORY\nDTG:                20201108/0100Z\nSWXC:               DONLON\nSWX EFFECT:         GNSS\nADVISORY NR:        2020/2\nNR RPLC:            2020/1\nOBS SWX:            08/0100Z MOD HNH HSH W180-E180\nFCST SWX +6 HR:     08/0700Z MOD HNH HSH W180-E180\nFCST SWX +12 HR:    08/1300Z NO SWX EXP\nFCST SWX +18 HR:    08/1900Z NO SWX EXP \nFCST SWX +24 HR:    09/0100Z NO SWX EXP\nRMK:                SWX EVENT INPR POSSIBLY IMPACTING GNSS PER. AREA OF\n                    IMPACT MOVES WITH EARTH'S ROTATION, STAYING\n                    STRONGER ON NIGHTSIDE. EXP TO SUBSIDE IN THE FCST\n                    PERIOD. SEE WWW.SPACEWEATHERPROVIDER.WEB \nNXT ADVISORY :       WILL BE ISSUED BY 20201108/0700Z\n"
+  expect:
+    encode_ok: true
+    require_xml: true
+  meta:
+    product: SWXA
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 edge of swxa_a7_4
+- bucket: edge_pass
+  case_id: '04'
+  status: ready
+  tac: "SWX ADVISORY\nDTG:                20201110/0100Z\nSWXC:               DONLON\nSWX EFFECT:         GNSS\nADVISORY NR:        2020/5\nNR RPLC:            2020/4\nOBS SWX:            10/0100Z MOD HNH HSH W180-E180\nFCST SWX +6 HR:     09/0700Z MOD HNH HSH W180-E180\nFCST SWX +12 HR:    09/1300Z NO SWX EXP\nFCST SWX +18 HR:    09/1900Z NO SWX EXP \nFCST SWX +24 HR:    10/0100Z NO SWX EXP\nRMK:                SWX EVENT INPR POSSIBLY IMPACTING GNSS PER. AREA OF\n                    IMPACT MOVES WITH EARTH'S ROTATION, STAYING\n                    STRONGER ON NIGHTSIDE. EXP TO SUBSIDE IN THE FCST\n                    PERIOD. SEE WWW.SPACEWEATHERPROVIDER.WEB \nNXT ADVISORY:       WILL BE ISSUED BY 20201109/0700Z\n"
+  expect:
+    encode_ok: true
+    require_xml: true
+  meta:
+    product: SWXA
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 edge of swxa_a7_4
+- bucket: edge_pass
+  case_id: '05'
+  status: ready
+  tac: "SWX ADVISORY\nDTG:                20201108/0100Z\nSWXC:               DONLON\nSWX EFFECT:         GNSS\nADVISORY NR:        2020/6\nNR RPLC:            2020/1\nOBS SWX:            08/0100Z MOD HNH HSH W180-E180\nFCST SWX +6 HR:     08/0700Z MOD HNH HSH W180-E180\nFCST SWX +12 HR:    08/1300Z NO SWX EXP\nFCST SWX +18 HR:    08/1900Z NO SWX EXP \nFCST SWX +24 HR:    09/0100Z NO SWX EXP\nRMK:                SWX EVENT INPR POSSIBLY IMPACTING GNSS PER. AREA OF\n                    IMPACT MOVES WITH EARTH'S ROTATION, STAYING\n                    STRONGER ON NIGHTSIDE. EXP TO SUBSIDE IN THE FCST\n                    PERIOD. SEE WWW.SPACEWEATHERPROVIDER.WEB \nNXT ADVISORY:       WILL BE ISSUED BY 20201108/0700Z\n"
+  expect:
+    encode_ok: true
+    require_xml: true
+  meta:
+    product: SWXA
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 edge of swxa_a7_4
+- bucket: edge_fail
+  case_id: '01'
+  status: ready
+  tac: SPECI YUDO 151800Z 13005MPS 9000 BKN020 17/16 Q1018=
+  expect:
+    encode_ok: false
+    codes:
+    - PARSE_ERROR
+  meta:
+    product: SWXA
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 SPECI body under product
+- bucket: edge_fail
+  case_id: '02'
+  status: ready
+  tac: SPECI
+  expect:
+    encode_ok: false
+    codes:
+    - PARSE_ERROR
+  meta:
+    product: SWXA
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 keyword only SPECI
+- bucket: edge_fail
+  case_id: '03'
+  status: ready
+  tac: ????
+  expect:
+    encode_ok: false
+    codes:
+    - PARSE_ERROR
+  meta:
+    product: SWXA
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 symbols
+- bucket: edge_fail
+  case_id: '04'
+  status: ready
+  tac: TAF YUDO
+  expect:
+    encode_ok: false
+    codes:
+    - PARSE_ERROR
+  meta:
+    product: SWXA
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 TAF keyword under product
+- bucket: edge_fail
+  case_id: '05'
+  status: ready
+  tac: METAR
+  expect:
+    encode_ok: false
+    codes:
+    - PARSE_ERROR
+  meta:
+    product: SWXA
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 keyword only METAR

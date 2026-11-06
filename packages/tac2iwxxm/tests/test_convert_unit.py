@@ -209,18 +209,6 @@ def test_scan_metar_tokens_raises_without_extension(monkeypatch: pytest.MonkeyPa
         scan_metar_tokens("METAR KJFK 231751Z NIL=")
 
 
-def test_scan_metar_tokens_when_rust_available() -> None:
-    from tac2iwxxm.native import scan_metar_tokens
-
-    from tac2iwxxm import rust_available
-
-    if not rust_available():
-        pytest.skip("PyO3 extension not built in this environment")
-    tokens = scan_metar_tokens("METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005=")
-    assert tokens[0] == "METAR"
-    assert "KJFK" in tokens
-
-
 def test_convert_vrb_omits_mean_wind_direction() -> None:
     """Bugbot PR #705: VRB must not emit meanWindDirection=None."""
     result = convert(

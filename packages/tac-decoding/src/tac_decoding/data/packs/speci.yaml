@@ -19,8 +19,11 @@ rules:
     pattern: ["\\d{4}(?:N|NE|E|SE|S|SW|W|NW)"]
     explain: "Minimum visibility {0}"
   - id: rvr
-    pattern: ["R\\d{2}[LCR]?/(?:[PM])?\\d{4}(?:[UDN])?(?:FT)?"]
+    pattern: ["R\\d{2}[LCR]?/(?:[PM])?\\d{4}(?:FT)?(?:/[UDN])?[UDN]?"]
     explain: "Runway visual range {0}"
+  - id: wind_shear_runway
+    pattern: ["WS", "R\\d{2}[LCR]?"]
+    explain: "Wind shear on runway {1}"
   - id: weather
     pattern: ["(?://|(?:\\+|-|VC)?(?:MI|PR|BC|DR|BL|SH|TS|FZ)?(?:DZ|RA|SN|SG|PL|GR|GS|UP|BR|FG|FU|VA|DU|SA|HZ|PY|PO|SQ|FC|SS|DS)+)"]
     explain: "Weather {0}"
@@ -38,7 +41,7 @@ rules:
     explain: "Temperature and dewpoint {0}"
   - id: qnh
     pattern: ["Q\\d{3,4}"]
-    explain: "QNH {0}"
+    explain: "QNH {0}, the altimeter setting reduced to mean sea level"
   - id: altimeter
     pattern: ["A\\d{4}"]
     explain: "Altimeter {0}"
@@ -57,6 +60,24 @@ rules:
   - id: visibility
     pattern: ["\\d{4}"]
     explain: "Visibility {0} metres"
+  - id: ao2a
+    pattern: ["AO2A"]
+    explain: "Automated station with observer augmentation {0}"
+  - id: sensor_no
+    pattern: ["(?:FZRANO|TSNO|RVRNO)"]
+    explain: "Sensor not available {0}"
+  - id: six_hour_temp
+    pattern: ["[12][01]\\d{3}"]
+    explain: "6-hour temperature extreme {0}"
+  - id: day_temp
+    pattern: ["4[01]\\d{3}[01]\\d{3}"]
+    explain: "24-hour temperature extremes {0}"
+  - id: precip_period
+    pattern: ["[67](?:\\d{4}|/{4})"]
+    explain: "Period precipitation {0}"
+  - id: temp_tenths
+    pattern: ["T[01]\\d{3}(?:[01]\\d{3})?"]
+    explain: "Temperature tenths group {0}"
   - id: equal
     pattern: ["="]
     explain: "Report terminator"

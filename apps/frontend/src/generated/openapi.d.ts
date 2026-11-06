@@ -14,7 +14,7 @@ export interface paths {
         get?: never;
         put?: never;
         /**
-         * Convert
+         * Convert TAC to IWXXM
          * @description Convert METAR/SPECI TAC text to IWXXM XML.
          */
         post: operations["convert_api_v1_convert_post"];
@@ -34,7 +34,7 @@ export interface paths {
         get?: never;
         put?: never;
         /**
-         * Convert Bulletin
+         * Convert a WMO bulletin
          * @description Split a WMO AHL bulletin and convert each TAC report.
          *
          *     Partial success is allowed: HTTP 200 when split succeeds even if some reports fail.
@@ -57,7 +57,7 @@ export interface paths {
         get?: never;
         put?: never;
         /**
-         * Convert Zip
+         * Convert TAC to a ZIP of IWXXM files
          * @description Convert METAR/SPECI TAC inputs to a ZIP of IWXXM XML files.
          */
         post: operations["convert_zip_api_v1_convert_zip_post"];
@@ -77,7 +77,7 @@ export interface paths {
         get?: never;
         put?: never;
         /**
-         * Decode Tac Endpoint
+         * Decode TAC
          * @description Decode TAC into annotated segments and a plain-language summary.
          */
         post: operations["decode_tac_endpoint_api_v1_decode_tac_post"];
@@ -135,11 +135,11 @@ export interface paths {
             cookie?: never;
         };
         /**
-         * Gateways Health
-         * @description Connectivity-only health for known drawer gateway kinds.
+         * Gateway connectivity
+         * @description Connectivity checks for known gateway kinds.
          *
-         *     AMHS, SWIM, and AFS kinds are staging-honest; others report no live probe
-         *     until registered.
+         *     AMHS, SWIM, and AFS stay unsuccessful until a live pathway is configured.
+         *     Other kinds report that no live probe is configured.
          */
         get: operations["gateways_health_api_v1_dissemination_gateways_health_get"];
         put?: never;
@@ -228,7 +228,7 @@ export interface paths {
         get?: never;
         put?: never;
         /**
-         * Execute Plan Route
+         * Execute or dry-run a plan
          * @description Execute or dry-run a plan; persist redacted audit rows per receipt.
          *
          *     Default ``dry_run=true`` so operators can exercise audit without egress.
@@ -249,7 +249,7 @@ export interface paths {
         };
         get?: never;
         /**
-         * Upsert Plan By Slug
+         * Create a dissemination plan
          * @description Create a plan under ``slug`` (unique per user).
          *
          *     Path slug wins over body.slug when they differ.
@@ -310,13 +310,13 @@ export interface paths {
             cookie?: never;
         };
         /**
-         * List User Jobs
+         * List evaluation jobs
          * @description List all evaluation jobs for the current user.
          */
         get: operations["list_user_jobs_api_v1_eval_jobs_get"];
         put?: never;
         /**
-         * Create Evaluation Job
+         * Create an evaluation job
          * @description Create a new evaluation job.
          */
         post: operations["create_evaluation_job_api_v1_eval_jobs_post"];
@@ -334,7 +334,7 @@ export interface paths {
             cookie?: never;
         };
         /**
-         * Get Job Status
+         * Evaluation job status
          * @description Get the status of an evaluation job.
          */
         get: operations["get_job_status_api_v1_eval_jobs__job_id__get"];
@@ -354,7 +354,7 @@ export interface paths {
             cookie?: never;
         };
         /**
-         * Get Job Results
+         * Evaluation job results
          * @description Get evaluation results for a job (paginated).
          */
         get: operations["get_job_results_api_v1_eval_jobs__job_id__results_get"];
@@ -376,11 +376,10 @@ export interface paths {
         get?: never;
         put?: never;
         /**
-         * Ingest Collect
-         * @description Placeholder for IWXXM COLLECT / FTBP ingest.
+         * COLLECT ingest
+         * @description Accept a COLLECT upload, including gzip text, and return HTTP 501.
          *
-         *     Accepts uploads (including ``.gz`` via ``read_upload_files_text``) so the operator UI
-         *     can exercise the path; returns HTTP 501 until member extraction + validate is shipped.
+         *     Member extraction is not available.
          */
         post: operations["ingest_collect_api_v1_ingest_collect_post"];
         delete?: never;
@@ -399,22 +398,8 @@ export interface paths {
         get?: never;
         put?: never;
         /**
-         * Mass Ingest
+         * Ingest files or a zip
          * @description Authenticated multi-file / zip ingest with caps, sniff, and zip-bomb guards.
-         *
-         *     Parameters
-         *     ----------
-         *     request : Request
-         *         Incoming request (slowapi).
-         *     files : list[UploadFile] | None
-         *         Multipart files and/or ``.zip`` archives.
-         *     _user : dict[str, Any]
-         *         Verified JWT claims (must include ``sub``).
-         *
-         *     Returns
-         *     -------
-         *     JSONResponse
-         *         Per-file accept/reject list and summary counts.
          */
         post: operations["mass_ingest_api_v1_ingest_mass_post"];
         delete?: never;
@@ -431,8 +416,8 @@ export interface paths {
             cookie?: never;
         };
         /**
-         * Lint Issue Catalog
-         * @description Export TAC lint + IWXXM validation catalog for FE tooltips / catalog page.
+         * Lint and validation catalog
+         * @description Return the TAC lint and IWXXM validation issue catalog.
          */
         get: operations["lint_issue_catalog_api_v1_lint_issue_catalog_get"];
         put?: never;
@@ -453,10 +438,30 @@ export interface paths {
         get?: never;
         put?: never;
         /**
-         * Lint Tac
-         * @description Thin wrapper over ``packages/tac-validate`` (multipart/form-data only - Q8=A).
+         * Lint TAC or IWXXM
+         * @description Lint TAC or IWXXM XML. The body must be multipart form data.
          */
         post: operations["lint_tac_api_v1_lint_tac_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/live-map": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Cached reports in the current map view
+         * @description Reports cached for the area in view. The newest report is first. At most two earlier reports follow it.
+         */
+        get: operations["read_live_map_api_v1_live_map_get"];
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -572,7 +577,7 @@ export interface paths {
         put?: never;
         /**
          * Create Library Asset
-         * @description Retired — library authoring is no longer available.
+         * @description Library authoring is no longer available.
          */
         post: operations["create_library_asset_api_v1_profiles_library_assets_post"];
         delete?: never;
@@ -592,7 +597,7 @@ export interface paths {
         put?: never;
         /**
          * Preview Library Rule
-         * @description Retired — library authoring is no longer available.
+         * @description Library authoring is no longer available.
          */
         post: operations["preview_library_rule_api_v1_profiles_library_assets_preview_rule_post"];
         delete?: never;
@@ -612,7 +617,7 @@ export interface paths {
         put?: never;
         /**
          * Validate Library Yaml
-         * @description Retired — library authoring is no longer available.
+         * @description Library authoring is no longer available.
          */
         post: operations["validate_library_yaml_api_v1_profiles_library_assets_validate_yaml_post"];
         delete?: never;
@@ -637,14 +642,14 @@ export interface paths {
         post?: never;
         /**
          * Delete Library Asset
-         * @description Retired — library authoring is no longer available.
+         * @description Library authoring is no longer available.
          */
         delete: operations["delete_library_asset_api_v1_profiles_library_assets__asset_id__delete"];
         options?: never;
         head?: never;
         /**
          * Update Library Asset
-         * @description Retired — library authoring is no longer available.
+         * @description Library authoring is no longer available.
          */
         patch: operations["update_library_asset_api_v1_profiles_library_assets__asset_id__patch"];
         trace?: never;
@@ -925,8 +930,8 @@ export interface paths {
             cookie?: never;
         };
         /**
-         * Get Schema Status
-         * @description Get comprehensive schema status including RC versions and mirroring info.
+         * Schema status
+         * @description Return schema status, including release-candidate versions and mirror state.
          */
         get: operations["get_schema_status_api_v1_schema_status_get"];
         put?: never;
@@ -957,6 +962,29 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/stations/{icao}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Station Point
+         * @description Return the map point for one station ID.
+         *
+         *     The airport catalog is already loaded for ICAO checks. This reads that
+         *     one record. It does not call an external map service.
+         */
+        get: operations["station_point_api_v1_stations__icao__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/translation/airport-region/{airport_code}": {
         parameters: {
             query?: never;
@@ -965,28 +993,10 @@ export interface paths {
             cookie?: never;
         };
         /**
-         * Get Airport Region
-         * @description Determine ICAO region for a given airport code.
+         * ICAO region for an airport
+         * @description Return the ICAO region for a four-letter airport code.
          *
-         *     Utility endpoint for testing ICAO region mapping.
-         *     This endpoint is public and does not require authentication.
-         *
-         *     **Path Parameters**:
-         *     - **airport_code**: 4-letter ICAO airport identifier
-         *
-         *     **Returns**:
-         *     ```json
-         *     {
-         *         "airport_code": "KJFK",
-         *         "icao_region": "NAM",
-         *         "region_name": "North American"
-         *     }
-         *     ```
-         *
-         *     **Example**:
-         *     - `GET /api/v1/translation/airport-region/KJFK` → `{"icao_region": "NAM"}`
-         *     - `GET /api/v1/translation/airport-region/EGLL` → `{"icao_region": "EUR"}`
-         *     - `GET /api/v1/translation/airport-region/RJAA` → `{"icao_region": "APAC"}`
+         *     No login is required.
          */
         get: operations["get_airport_region_api_v1_translation_airport_region__airport_code__get"];
         put?: never;
@@ -1005,18 +1015,10 @@ export interface paths {
             cookie?: never;
         };
         /**
-         * Get Centre Info
-         * @description Get Translation Centre identification and capabilities.
+         * Translation centre information
+         * @description Return this translation centre's name, designator, location, supported IWXXM versions, and products.
          *
-         *     Returns metadata about this Translation Centre as per ICAO OPMET guidelines.
-         *     This endpoint is public and does not require authentication.
-         *
-         *     **Returns**:
-         *     - Translation centre name and designator
-         *     - ICAO location indicator
-         *     - Supported IWXXM versions
-         *     - Supported aviation product types
-         *     - Service online date
+         *     No login is required.
          */
         get: operations["get_centre_info_api_v1_translation_centre_info_get"];
         put?: never;
@@ -1035,11 +1037,10 @@ export interface paths {
             cookie?: never;
         };
         /**
-         * Statistics Health
-         * @description Translation statistics service health check.
+         * Translation statistics health
+         * @description Return translation statistics service status.
          *
-         *     Returns service status and configuration.
-         *     Public endpoint (no authentication required).
+         *     No login is required.
          */
         get: operations["statistics_health_api_v1_translation_health_get"];
         put?: never;
@@ -1060,43 +1061,10 @@ export interface paths {
         get?: never;
         put?: never;
         /**
-         * Get Translation Statistics
-         * @description Query aggregated translation statistics.
+         * Translation statistics
+         * @description Return aggregated translation statistics for a time range.
          *
-         *     Retrieves translation centre statistics for a specified time period with optional filters.
-         *     Implements ICAO OPMET Data Exchange Guidelines Section 7 reporting requirements.
-         *
-         *     **Authentication**: Public (no login required).
-         *
-         *     **Request Parameters**:
-         *     - **start_date** (required): Statistics period start (ISO 8601)
-         *     - **end_date** (required): Statistics period end (ISO 8601)
-         *     - **icao_region** (optional): Filter by ICAO region (AFI, APAC, EUR, MID, NAM, SAM)
-         *     - **iwxxm_version** (optional): Filter by IWXXM version (2025-2, 2023-1)
-         *     - **airport_code** (optional): Filter by specific ICAO airport code
-         *     - **include_airport_breakdown** (optional): Include per-airport statistics (default: false)
-         *     - **include_error_details** (optional): Include detailed error analysis (default: false)
-         *
-         *     **Returns**:
-         *     - Aggregated translation statistics including:
-         *       - Total, successful, and failed translation counts
-         *       - Success rate percentage
-         *       - Average and median processing duration
-         *       - Breakdown by ICAO region
-         *       - Breakdown by IWXXM version
-         *       - Validation layer success rates
-         *       - Optional airport-level details
-         *       - Optional error frequency analysis
-         *
-         *     **Example**:
-         *     ```json
-         *     {
-         *         "start_date": "2026-02-01T00:00:00Z",
-         *         "end_date": "2026-02-13T23:59:59Z",
-         *         "icao_region": "NAM",
-         *         "include_airport_breakdown": true
-         *     }
-         *     ```
+         *     Optional filters are ICAO region, IWXXM version, and airport. No login is required.
          */
         post: operations["get_translation_statistics_api_v1_translation_statistics_post"];
         delete?: never;
@@ -1113,27 +1081,10 @@ export interface paths {
             cookie?: never;
         };
         /**
-         * Get Statistics By Region
-         * @description Get translation statistics grouped by ICAO region.
+         * Translation statistics by ICAO region
+         * @description Return translation counts grouped by ICAO region for a time range.
          *
-         *     Returns translation activity summary for all ICAO regions.
-         *     Useful for identifying regional distribution and capacity planning.
-         *
-         *     **Authentication**: Public (no login required).
-         *
-         *     **Query Parameters**:
-         *     - **start_date**: Statistics period start (ISO 8601)
-         *     - **end_date**: Statistics period end (ISO 8601)
-         *
-         *     **Returns**:
-         *     Dictionary mapping ICAO region codes to statistics:
-         *     ```json
-         *     {
-         *         "NAM": {"total": 1500, "success_rate": 98.5},
-         *         "EUR": {"total": 890, "success_rate": 97.2},
-         *         "APAC": {"total": 456, "success_rate": 99.1}
-         *     }
-         *     ```
+         *     No login is required.
          */
         get: operations["get_statistics_by_region_api_v1_translation_statistics_by_region_get"];
         put?: never;
@@ -1152,20 +1103,10 @@ export interface paths {
             cookie?: never;
         };
         /**
-         * Get Recent Statistics
-         * @description Get recent translation statistics (last N hours).
+         * Recent translation statistics
+         * @description Return translation statistics for the last N hours.
          *
-         *     Convenience endpoint for querying recent activity without specifying exact dates.
-         *
-         *     **Authentication**: Public (no login required).
-         *
-         *     **Query Parameters**:
-         *     - **hours**: Number of hours to look back (1-168, default: 24)
-         *     - **icao_region**: Optional ICAO region filter
-         *     - **iwxxm_version**: Optional IWXXM version filter
-         *
-         *     **Returns**:
-         *     Aggregated translation statistics for the specified time window.
+         *     No login is required.
          */
         get: operations["get_recent_statistics_api_v1_translation_statistics_recent_get"];
         put?: never;
@@ -1186,43 +1127,12 @@ export interface paths {
         get?: never;
         put?: never;
         /**
-         * Validate Comprehensive
-         * @description Perform comprehensive 7-layer IWXXM validation.
+         * Validate TAC or IWXXM
+         * @description Validate TAC or IWXXM XML.
          *
-         *     Validates METAR TAC input through all 7 validation layers:
-         *
-         *     1. **Layer 1 (AIRPORT_ICAO)**: Validates ICAO airport code against database
-         *     2. **Layer 2 (TAC_SYNTAX)**: Validates TAC/METAR syntax basics
-         *     3. **Layer 3 (XML_WELLFORMED)**: Checks XML is well-formed
-         *     4. **Layer 4 (XML_SCHEMA)**: Validates against official IWXXM XSD schemas
-         *     5. **Layer 5 (SCHEMATRON)**: Validates business rules from official Schematron
-         *     6. **Layer 6 (GML_REFERENCES)**: Validates GML internal references
-         *     7. **Layer 7 (WMO_CODELISTS)**: Validates against official WMO RDF codelists
-         *
-         *     **Authentication**: Public (no login required)
-         *
-         *     **Request Parameters**:
-         *     - **manual_text** (required): METAR TAC text to validate
-         *     - **xml_content** (optional): Pre-converted XML to validate (if omitted, TAC will be converted)
-         *     - **iwxxm_version**: Target IWXXM version (default: "2025-2")
-         *     - **layers**: Validation layers to run (default: ["ALL"])
-         *       - "ALL": Run all 7 layers
-         *       - Or specify: ["AIRPORT_ICAO", "TAC_SYNTAX", "XML_SCHEMA", "SCHEMATRON", ...]
-         *     - **stop_on_error**: Stop at first blocking layer failure (default: true)
-         *
-         *     **Response**:
-         *     ```json
-         *     {
-         *       "is_valid": true,
-         *       "version": "2025-2",
-         *       "layers_run": ["AIRPORT_ICAO", "TAC_SYNTAX", "XML_WELLFORMED", "XML_SCHEMA", "SCHEMATRON", "GML_REFERENCES", "WMO_CODELISTS"],
-         *       "layers_passed": ["AIRPORT_ICAO", "TAC_SYNTAX", "XML_WELLFORMED", "XML_SCHEMA", "SCHEMATRON", "GML_REFERENCES", "WMO_CODELISTS"],
-         *       "layers_failed": [],
-         *       "total_issues": 0,
-         *       "issues_by_layer": {},
-         *       "stopped_at_layer": null
-         *     }
-         *     ```
+         *     With the default layer list, the check runs airport code, TAC syntax,
+         *     well-formed XML, XSD, Schematron, GML references, and WMO code lists.
+         *     No login is required.
          */
         post: operations["validate_comprehensive_api_v1_validate_post"];
         delete?: never;
@@ -1239,47 +1149,10 @@ export interface paths {
             cookie?: never;
         };
         /**
-         * Get available validation layers
-         * @description Get information about available validation layers.
+         * List validation layers
+         * @description List the validation layers.
          *
-         *     Each layer validates specific aspects of METAR TAC or IWXXM XML content.
-         *     Layers marked as blocking will stop further validation if they fail.
-         *
-         *     ## Response
-         *     Returns list of validation layers with:
-         *     - **layer**: Layer identifier
-         *     - **description**: What this layer validates
-         *     - **blocking**: Whether it blocks further layers on failure
-         *     - **supported_content_types**: Content types this layer supports ("tac" or "xml")
-         *
-         *     ## Available Layers
-         *     1. **airport_icao**: Extract and validate ICAO code against airport database
-         *     2. **tac_syntax**: Parse and validate METAR TAC syntax
-         *     3. **xml_wellformed**: Check if output XML is well-formed
-         *     4. **xml_schema**: Validate against XSD schema
-         *     5. **schematron**: SCHEMATRON rules validation
-         *     6. **gml_references**: GML reference checks
-         *     7. **wmo_codelists**: WMO code list validation
-         *
-         *     ## Example Response
-         *     ```json
-         *     {
-         *       "layers": [
-         *         {
-         *           "layer": "airport_icao",
-         *           "description": "Extract and validate ICAO code against airport database",
-         *           "blocking": true,
-         *           "supported_content_types": ["tac"]
-         *         },
-         *         {
-         *           "layer": "tac_syntax",
-         *           "description": "Parse and validate METAR TAC syntax",
-         *           "blocking": true,
-         *           "supported_content_types": ["tac"]
-         *         }
-         *       ]
-         *     }
-         *     ```
+         *     A blocking layer stops later layers when it fails.
          */
         get: operations["get_validation_layers_api_v1_validation_layers_get"];
         put?: never;
@@ -1301,67 +1174,7 @@ export interface paths {
         put?: never;
         /**
          * Validate METAR TAC or IWXXM XML content
-         * @description Validate METAR TAC or IWXXM XML content through multiple validation layers.
-         *
-         *     ## Request Body
-         *     - **content** (string, required): The METAR TAC or IWXXM XML content to validate
-         *     - **content_type** (string, default="tac"): ``tac``, ``xml``, or ``iwxxm`` (alias of xml)
-         *     - **layers** (array, optional): Specific validation layers to run.
-         *       - TAC (``content_type=tac``): ``airport_icao``, ``tac_syntax`` (default both)
-         *       - XML (``content_type=xml|iwxxm``): ``xml_wellformed``, ``xml_schema``,
-         *         ``schematron``, ``gml_references``, ``wmo_codelists`` (default all XML layers)
-         *     - **iwxxm_version** (string, optional): IWXXM version for XML layers (e.g., "2025-2")
-         *
-         *     ## Response
-         *     Returns aggregated validation results with:
-         *     - **passed** (boolean): Whether all requested layers passed
-         *     - **layers_validated** (array): Layers that were run
-         *     - **total_issues** (integer): Total validation issues found
-         *     - **results** (array): Per-layer validation details
-         *     - **execution_time_ms** (float): Total execution time
-         *
-         *     ## Example Success Response
-         *     ```json
-         *     {
-         *       "passed": true,
-         *       "layers_validated": ["airport_icao", "tac_syntax"],
-         *       "total_issues": 0,
-         *       "results": [
-         *         {
-         *           "passed": true,
-         *           "layer": "airport_icao",
-         *           "issues": [],
-         *           "execution_time_ms": 5.2
-         *         }
-         *       ],
-         *       "execution_time_ms": 10.5
-         *     }
-         *     ```
-         *
-         *     ## Example Failure Response
-         *     ```json
-         *     {
-         *       "passed": false,
-         *       "layers_validated": ["airport_icao", "tac_syntax"],
-         *       "total_issues": 1,
-         *       "results": [
-         *         {
-         *           "passed": false,
-         *           "layer": "tac_syntax",
-         *           "issues": [
-         *             {
-         *               "layer": "tac_syntax",
-         *               "level": "error",
-         *               "message": "Invalid TAC format",
-         *               "code": "INVALID_TAC_FORMAT"
-         *             }
-         *           ],
-         *           "execution_time_ms": 8.3
-         *         }
-         *       ],
-         *       "execution_time_ms": 8.3
-         *     }
-         *     ```
+         * @description Validate one METAR TAC or IWXXM XML document through the selected layers.
          */
         post: operations["validate_content_api_v1_validation_validate_post"];
         delete?: never;
@@ -1380,67 +1193,10 @@ export interface paths {
         get?: never;
         put?: never;
         /**
-         * Validate multiple METAR TAC or IWXXM XML inputs
-         * @description Validate multiple METAR TAC or IWXXM XML inputs in a single request.
+         * Validate a batch of TAC or IWXXM inputs
+         * @description Validate up to 100 TAC or IWXXM documents in one request.
          *
-         *     Useful for batch validation of multiple entries. Each item is validated
-         *     independently and can have different content types.
-         *
-         *     ## Request Body
-         *     - **items** (array, required): Array of validation requests (1-100 items)
-         *       - Each item has: content, content_type, layers (optional), iwxxm_version (optional)
-         *     - **layers** (array, optional): Default layers to apply to all items that omit layers
-         *
-         *     ## Response
-         *     Returns batch validation results with:
-         *     - **results** (array): Aggregated validation result for each item
-         *     - **total_items** (integer): Total items requested
-         *     - **passed_items** (integer): Items that passed all layers
-         *     - **failed_items** (integer): Items that failed at least one layer
-         *     - **total_execution_time_ms** (float): Total execution time for all items
-         *
-         *     ## Example Request
-         *     ```json
-         *     {
-         *       "items": [
-         *         {
-         *           "content": "METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005",
-         *           "content_type": "tac"
-         *         },
-         *         {
-         *           "content": "METAR EGLL 231750Z 17008KT 9999 SCT035 12/08 Q1007",
-         *           "content_type": "tac"
-         *         }
-         *       ],
-         *       "layers": ["airport_icao", "tac_syntax"]
-         *     }
-         *     ```
-         *
-         *     ## Example Response
-         *     ```json
-         *     {
-         *       "results": [
-         *         {
-         *           "passed": true,
-         *           "layers_validated": ["airport_icao", "tac_syntax"],
-         *           "total_issues": 0,
-         *           "results": [],
-         *           "execution_time_ms": 12.3
-         *         },
-         *         {
-         *           "passed": false,
-         *           "layers_validated": ["airport_icao", "tac_syntax"],
-         *           "total_issues": 1,
-         *           "results": [],
-         *           "execution_time_ms": 8.5
-         *         }
-         *       ],
-         *       "total_items": 2,
-         *       "passed_items": 1,
-         *       "failed_items": 1,
-         *       "total_execution_time_ms": 20.8
-         *     }
-         *     ```
+         *     Each document is checked on its own.
          */
         post: operations["validate_multiple_api_v1_validation_validate_multi_post"];
         delete?: never;
@@ -1457,7 +1213,7 @@ export interface paths {
             cookie?: never;
         };
         /**
-         * Get Supported Versions
+         * Supported IWXXM versions
          * @description Get list of supported IWXXM versions.
          */
         get: operations["get_supported_versions_api_v1_versions_get"];
@@ -1649,7 +1405,7 @@ export interface paths {
             cookie?: never;
         };
         /**
-         * Health
+         * API health
          * @description Check API health and conversion availability.
          */
         get: operations["health_health_get"];
@@ -1749,7 +1505,7 @@ export interface components {
         };
         /**
          * AuditRecordOut
-         * @description Persisted audit row — never includes BYOC secrets or URIs.
+         * @description Persisted delivery audit row. BYOC secrets and URIs are omitted.
          */
         AuditRecordOut: {
             /**
@@ -1880,6 +1636,12 @@ export interface components {
         /** Body_convert_api_v1_convert_post */
         Body_convert_api_v1_convert_post: {
             /**
+             * Bulletin Date
+             * @description Optional calendar date (YYYY-MM-DD) used as the year and month for TAC day stamps. When omitted, the current UTC date is used. A day that cannot fall in that month fails conversion, and the message names the day and the month.
+             * @default
+             */
+            bulletin_date: string;
+            /**
              * Bulletin Id
              * @description Optional bulletin identifier
              * @default
@@ -1923,7 +1685,7 @@ export interface components {
             exchange_output: boolean;
             /**
              * Exchange Profile
-             * @description Rejected — use dissemination_library_id for packaging transforms.
+             * @description Rejected. Use dissemination_library_id for packaging transforms.
              * @default
              */
             exchange_profile: string;
@@ -1959,7 +1721,7 @@ export interface components {
             iwxxm_version: string;
             /**
              * Lint
-             * @description Run tac-validate before convert (Q14=C; default on)
+             * @description Run TAC validation before conversion. On by default.
              * @default true
              */
             lint: boolean;
@@ -1977,13 +1739,13 @@ export interface components {
             manual_text: string;
             /**
              * Overlay Id
-             * @description Rejected — overlays removed from Convert; use conversion_library_id.
+             * @description Rejected. Overlays are not accepted on convert. Use conversion_library_id.
              * @default
              */
             overlay_id: string;
             /**
              * Preset Id
-             * @description Rejected — presets removed from Convert; use conversion_library_id.
+             * @description Rejected. Presets are not accepted on convert. Use conversion_library_id.
              * @default
              */
             preset_id: string;
@@ -2001,7 +1763,7 @@ export interface components {
             product: string;
             /**
              * Profile
-             * @description Rejected — use conversion_library_id.
+             * @description Rejected. Use conversion_library_id.
              * @default
              */
             profile: string;
@@ -2018,7 +1780,7 @@ export interface components {
             report_variant: string;
             /**
              * Semantic Profile
-             * @description Rejected — use conversion_library_id.
+             * @description Rejected. Use conversion_library_id.
              * @default
              */
             semantic_profile: string;
@@ -2028,6 +1790,30 @@ export interface components {
              * @default false
              */
             stop_on_error: boolean;
+            /**
+             * Strict
+             * @description When false, only critical and error findings are raised in the client. When true, the full severity set applies subject to step flags, and IWXXM output validation runs when the validate step is on.
+             * @default false
+             */
+            strict: boolean;
+            /**
+             * Strict Convert
+             * @description When strict is true, include convert findings in the raised set.
+             * @default true
+             */
+            strict_convert: boolean;
+            /**
+             * Strict Lint
+             * @description When strict is true, include TAC lint findings in the raised set.
+             * @default true
+             */
+            strict_lint: boolean;
+            /**
+             * Strict Validate
+             * @description When strict is true, include IWXXM validation findings in the raised set and run post-convert validation on convert routes.
+             * @default true
+             */
+            strict_validate: boolean;
             /**
              * Tac Validation Library Id
              * @description TAC validation library asset id.
@@ -2061,6 +1847,12 @@ export interface components {
         };
         /** Body_convert_bulletin_api_v1_convert_bulletin_post */
         Body_convert_bulletin_api_v1_convert_bulletin_post: {
+            /**
+             * Bulletin Date
+             * @description Optional calendar date (YYYY-MM-DD) used as the year and month for TAC day stamps. When omitted, the current UTC date is used. A day that cannot fall in that month fails conversion, and the message names the day and the month.
+             * @default
+             */
+            bulletin_date: string;
             /**
              * Conversion Library Id
              * @description Conversion library asset id (resolves engine profile when set)
@@ -2123,13 +1915,19 @@ export interface components {
             propagate_residuals_to_remarks?: boolean | null;
             /**
              * Semantic Profile
-             * @description Deprecated on Convert & Send — prefer conversion_library_id. Still accepted on convert-bulletin until Dissemination library packaging lands.
+             * @description Deprecated on Convert & Send. Prefer conversion_library_id. Still accepted on convert-bulletin until Dissemination library packaging lands.
              * @default
              */
             semantic_profile: string;
         };
         /** Body_convert_zip_api_v1_convert_zip_post */
         Body_convert_zip_api_v1_convert_zip_post: {
+            /**
+             * Bulletin Date
+             * @description Optional calendar date (YYYY-MM-DD) used as the year and month for TAC day stamps. When omitted, the current UTC date is used. A day that cannot fall in that month fails conversion, and the message names the day and the month.
+             * @default
+             */
+            bulletin_date: string;
             /**
              * Iwxxm Version
              * @description Target IWXXM version: 2025-2 (latest), 2023-1 (previous), or 2025-1 (auto-remaps to 2025-2)
@@ -2190,6 +1988,12 @@ export interface components {
             /** Files */
             files?: string[] | null;
             /**
+             * Icao
+             * @description Optional station ICAO; TAF auto-detects when omitted
+             * @default
+             */
+            icao: string;
+            /**
              * Manual Text
              * @description TAC or IWXXM XML to lint
              * @default
@@ -2201,6 +2005,12 @@ export interface components {
              * @default METAR
              */
             product: string;
+            /**
+             * Semantic Profile
+             * @description Semantic / lint profile id (default annex3)
+             * @default annex3
+             */
+            semantic_profile: string;
         };
         /** Body_mass_ingest_api_v1_ingest_mass_post */
         Body_mass_ingest_api_v1_ingest_mass_post: {
@@ -2275,7 +2085,7 @@ export interface components {
         };
         /**
          * BulletinMetaModel
-         * @description HTTP DTO for WMO AHL metadata on convert-bulletin (api-contract Q6/Q7).
+         * @description Abbreviated heading fields for one converted bulletin.
          */
         BulletinMetaModel: {
             /** Aa */
@@ -2447,7 +2257,7 @@ export interface components {
          * @description Severity level for conversion and validation issues.
          * @enum {string}
          */
-        ConversionIssueSeverity: "error" | "warning" | "info";
+        ConversionIssueSeverity: "critical" | "error" | "warning" | "info";
         /**
          * ConversionResponse
          * @description Response from conversion endpoint with results and errors.
@@ -2492,6 +2302,11 @@ export interface components {
              */
             failed_spans?: components["schemas"]["FailedSpan"][];
             /**
+             * Group Trace
+             * @description Preview pairing of TAC groups to IWXXM elements. Empty when preview is omitted or the product has no pairing.
+             */
+            group_trace?: components["schemas"]["GroupTrace"][];
+            /**
              * Issues
              * @description Structured issues (errors/warnings/info) for failed or partial conversions
              */
@@ -2508,6 +2323,11 @@ export interface components {
              * @description Soft-preview envelope flag; set when preview=true
              */
             ok?: boolean | null;
+            /**
+             * Raised Severities
+             * @description Severities considered raised for this response given Strict and step flags. All issues remain in issues arrays.
+             */
+            raised_severities?: string[];
             /**
              * Results
              * @description Successfully converted IWXXM XML documents
@@ -3306,6 +3126,43 @@ export interface components {
             /** Ok */
             ok: boolean;
         };
+        /**
+         * GroupTrace
+         * @description TAC group that produced one IWXXM element in a preview.
+         */
+        GroupTrace: {
+            /**
+             * Element
+             * @description IWXXM element name, without a namespace prefix
+             */
+            element: string;
+            /**
+             * End
+             * @description Exclusive character offset into the TAC
+             */
+            end: number;
+            /**
+             * Occurrence
+             * @description How many earlier groups in this preview used the same element name
+             */
+            occurrence: number;
+            /**
+             * Scope
+             * @description line marks the opening tag; block marks through the closing tag
+             * @enum {string}
+             */
+            scope: "line" | "block";
+            /**
+             * Start
+             * @description Inclusive character offset into the TAC
+             */
+            start: number;
+            /**
+             * Token
+             * @description TAC text of the group
+             */
+            token: string;
+        };
         /** HTTPValidationError */
         HTTPValidationError: {
             /** Detail */
@@ -3860,7 +3717,7 @@ export interface components {
         };
         /**
          * MappingConfigCreate
-         * @description Create a field mapping — no connection secrets.
+         * @description Create a field mapping. Connection secrets are not stored.
          */
         MappingConfigCreate: {
             /** Config */
@@ -4435,12 +4292,27 @@ export interface components {
         /**
          * RuleCatalogItem
          * @description One package-owned trust-catalog row.
+         *
+         *     Optional additive metadata: ``issue_type``, ``source_*``, ``conform_note``.
+         *     Null or omitted when unknown; clients must not invent defaults.
          */
         RuleCatalogItem: {
+            /** Conform Note */
+            conform_note?: string | null;
             /** Id */
             id: string;
+            /** Issue Type */
+            issue_type?: string | null;
             /** Severity */
             severity?: string | null;
+            /** Source Access */
+            source_access?: string | null;
+            /** Source Attribution */
+            source_attribution?: string | null;
+            /** Source Locator */
+            source_locator?: string | null;
+            /** Source Url */
+            source_url?: string | null;
             /**
              * Summary
              * @default
@@ -5022,11 +4894,11 @@ export interface components {
          * ValidationIssue
          * @description Single validation issue with context.
          * @example {
-         *       "code": "INVALID_ICAO",
+         *       "code": "UNKNOWN_ICAO",
          *       "layer": "airport_icao",
-         *       "level": "error",
+         *       "level": "warning",
          *       "location": "line 1, column 12",
-         *       "message": "Unknown ICAO code: ZZZZ"
+         *       "message": "Station ZZZZ is not in the aerodrome registry"
          *     }
          */
         ValidationIssue: {
@@ -6054,7 +5926,7 @@ export interface operations {
                     "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
-            /** @description COLLECT / FTBP ingest not implemented yet (placeholder) */
+            /** @description COLLECT member extraction is not available. */
             501: {
                 headers: {
                     [name: string]: unknown;
@@ -6160,6 +6032,48 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    read_live_map_api_v1_live_map_get: {
+        parameters: {
+            query: {
+                /** @description West edge of the view, in degrees. */
+                west: number;
+                /** @description South edge of the view, in degrees. */
+                south: number;
+                /** @description East edge of the view, in degrees. */
+                east: number;
+                /** @description North edge of the view, in degrees. */
+                north: number;
+                /** @description Comma-separated product ids. Defaults to every geographically located product. */
+                products?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
             };
             /** @description Validation Error */
             422: {
@@ -7309,7 +7223,7 @@ export interface operations {
     get_selection_options_api_v1_selection_options_get: {
         parameters: {
             query: {
-                /** @description conversion | dissemination | decoding */
+                /** @description conversion | tac_validation | iwxxm_validation | decoding | dissemination (first-party LIB.* ids) */
                 kind: string;
             };
             header?: never;
@@ -7325,6 +7239,39 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["SelectionOptionsResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    station_point_api_v1_stations__icao__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                icao: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
                 };
             };
             /** @description Validation Error */

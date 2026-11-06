@@ -1,7 +1,7 @@
 # Ops note — Legacy `tac_work_sessions` archive (F21 / E17-5)
 
 **Session**: S023 / EV-017  
-**Decision**: E17-5 — no public API to old rows; archive/delete after **~30 days**  
+**Decision**: E17-5: no public API to old rows; archive/delete after **~30 days**  
 **ADR**: [ADR-031](../adr/ADR-031-public-app-indexeddb-history.md)
 
 ## Policy
@@ -36,6 +36,6 @@ After the public-app cutover (operator Auth + work-sessions HTTP removed):
 
 ## Related
 
-- Env: [env-contract.md](../env-contract.md) — no browser Auth / `E2E_USER_*` for public convert
-- Secrets matrix: [staging-secrets-matrix.md](staging-secrets-matrix.md) — F8 service-role only
+- Env: [env-contract.md](../env-contract.md): no browser Auth / `E2E_USER_*` for public convert
+- Secrets matrix: [staging-secrets-matrix.md](staging-secrets-matrix.md): F8 service-role only
 - Package: `packages/auth` deleted (E17-22); F8 continues on service-role env without it

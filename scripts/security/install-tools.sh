@@ -21,7 +21,33 @@ case "${ARCH_RAW}" in
   *) err "unsupported arch ${ARCH_RAW}"; exit 1 ;;
 esac
 
-download() { curl -fsSL "$1" -o "$2"; }
+github_token() { printf '%s' "${GITHUB_TOKEN:-${GH_TOKEN:-}}"; }
+
+download() {
+  local url="$1"
+  local dest="$2"
+  local -a hdr=()
+  local token
+  token="$(github_token)"
+  if [[ -n "${token}" && "${url}" == https://github.com/* ]]; then
+    hdr+=(-H "Authorization: Bearer ${token}")
+  fi
+  curl -fsSL "${hdr[@]}" "${url}" -o "${dest}"
+}
+
+github_api() {
+  local url="$1"
+  local -a hdr=(
+    -H "Accept: application/vnd.github+json"
+    -H "X-GitHub-Api-Version: 2022-11-28"
+  )
+  local token
+  token="$(github_token)"
+  if [[ -n "${token}" ]]; then
+    hdr+=(-H "Authorization: Bearer ${token}")
+  fi
+  curl -fsSL "${hdr[@]}" "${url}"
+}
 
 log "installing → ${BIN_DIR} (${OS}/${ARCH})"
 
@@ -57,7 +83,7 @@ if [[ ! -x "${BIN_DIR}/kics" || ! -d "${ASSETS_DIR}/kics/assets/queries" || "${S
       printf '%s\n' "${SEC_KICS_VERSION}"
       return 0
     fi
-    curl -fsSL "https://api.github.com/repos/Checkmarx/kics/releases?per_page=20" | python3 -c '
+    github_api "https://api.github.com/repos/Checkmarx/kics/releases?per_page=20" | python3 -c '
 import json, sys
 osn, arch = sys.argv[1], sys.argv[2]
 for rel in json.load(sys.stdin):

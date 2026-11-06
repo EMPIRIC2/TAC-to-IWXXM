@@ -55,10 +55,10 @@ tac-validate --check-overlay "$TAC_VALIDATE_POLICY_DIR"
 
 METAR, SPECI, and TAF use a full product checklist. SIGMET, AIRMET, VAA, TCA, and SWXA use
 structured templates plus coverage gates. The wheel does not ship copyrighted Annex
-prose — rules cite external standards only.
+prose; rules cite external standards only.
 
 When adding or changing a METAR/SPECI lint rule in this monorepo, also update the F29
-quality matrices — see [`tests/quality_matrices/AUTHORING.md`](../../tests/quality_matrices/AUTHORING.md)
+quality matrices. See [`tests/quality_matrices/AUTHORING.md`](../../tests/quality_matrices/AUTHORING.md)
 (TC-F29-007).
 
 ## Links

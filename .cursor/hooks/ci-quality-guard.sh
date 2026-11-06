@@ -25,6 +25,14 @@ if [[ "$command_line" =~ (--no-verify|-n) ]]; then
   exit 0
 fi
 
+# Gate the checkout the command runs in. A worktree commit must not be
+# judged against the Cursor workspace root when that root is a different tree.
+payload_cwd="$(
+  python3 -c "import json,sys; d=json.load(sys.stdin); print(d.get('cwd') or '')" <<<"$payload"
+)"
+if [[ -n "$payload_cwd" && -d "$payload_cwd" ]]; then
+  cd "$payload_cwd"
+fi
 repo_root="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"
 cd "$repo_root"
 

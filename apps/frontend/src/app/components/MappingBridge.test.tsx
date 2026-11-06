@@ -48,6 +48,19 @@ describe('MappingBridge', () => {
     expect(screen.getByTestId('mapping-bridge-skip-chips')).toHaveTextContent('noise');
   });
 
+  it('renders a skip chip without a gloss', () => {
+    render(
+      <MappingBridge
+        tacGroup="18012KT"
+        matched={true}
+        iwxxmBlock="<iwxxm:WindObservation/>"
+        skipChips={[{ label: 'noise' }]}
+      />,
+    );
+    expect(screen.getByTestId('mapping-bridge-skip-chips')).toHaveTextContent('noise');
+    expect(screen.getByTestId('mapping-bridge-skip-chips')).not.toHaveTextContent('—');
+  });
+
   it('renders em dash placeholders when TAC group and template name are empty', () => {
     render(<MappingBridge tacGroup="" matched={null} iwxxmBlock="" />);
     expect(screen.getByTestId('mapping-bridge-col-tac')).toHaveTextContent('—');

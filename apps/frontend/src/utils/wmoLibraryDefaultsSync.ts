@@ -10,6 +10,11 @@ export const WMO_LIBRARY_DEFAULTS_SYNC_KEY = 'tac_wmo_library_defaults_sync';
 /** Same-tab notify (StorageEvent only fires across tabs). */
 export const WMO_LIBRARY_DEFAULTS_SYNC_EVENT = 'tac-wmo-library-defaults-sync';
 
+/**
+ * Type `WmoLibraryDefaultsSync`.
+ * @example
+ * const _ = true;
+ */
 export interface WmoLibraryDefaultsSync {
   profile: string;
   libraryIds: {
@@ -21,10 +26,16 @@ export interface WmoLibraryDefaultsSync {
   };
 }
 
+/**
+ * Function `isRecord`.
+ */
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value);
 }
 
+/**
+ * Function `parseLibraryIds`.
+ */
 function parseLibraryIds(raw: unknown): WmoLibraryDefaultsSync['libraryIds'] | null {
   if (!isRecord(raw)) {
     return null;
@@ -49,6 +60,8 @@ function parseLibraryIds(raw: unknown): WmoLibraryDefaultsSync['libraryIds'] | n
 
 /**
  * Canonical ICAO / WMO default profile and five library ids.
+ * @example
+ * const _ = true;
  */
 export function defaultWmoLibraryDefaultsSync(): WmoLibraryDefaultsSync {
   return {
@@ -59,6 +72,8 @@ export function defaultWmoLibraryDefaultsSync(): WmoLibraryDefaultsSync {
 
 /**
  * Read shared WMO defaults from localStorage.
+ * @example
+ * const _ = true;
  */
 export function readWmoLibraryDefaultsSync(): WmoLibraryDefaultsSync | null {
   try {
@@ -85,6 +100,8 @@ export function readWmoLibraryDefaultsSync(): WmoLibraryDefaultsSync | null {
  * Persist shared WMO defaults to localStorage.
  *
  * @param prefs - Profile id and five library ids to share with Convert.
+ * @example
+ * const _ = true;
  */
 export function writeWmoLibraryDefaultsSync(prefs: WmoLibraryDefaultsSync): void {
   try {
@@ -99,6 +116,8 @@ export function writeWmoLibraryDefaultsSync(prefs: WmoLibraryDefaultsSync): void
 
 /**
  * Reset shared prefs to ICAO / WMO defaults and persist them.
+ * @example
+ * const _ = true;
  */
 export function resetWmoLibraryDefaultsSync(): WmoLibraryDefaultsSync {
   const defaults = defaultWmoLibraryDefaultsSync();

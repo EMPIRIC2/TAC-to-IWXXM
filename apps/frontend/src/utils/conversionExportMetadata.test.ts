@@ -28,6 +28,9 @@ const libraries = {
   decodingLibraryId: 'LIB.DECODING.ICAO_2025',
 };
 
+/**
+ *
+ */
 function b64urlJson(value: unknown): string {
   return btoa(JSON.stringify(value))
     .replace(/\+/g, '-')

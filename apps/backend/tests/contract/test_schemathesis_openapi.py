@@ -54,6 +54,29 @@ def _path_excluded(path: str) -> bool:
     return any(path == prefix or path.startswith(prefix) for prefix in _EXCLUDED_PATH_PREFIXES)
 
 
+def _schemathesis_config() -> object:
+    """Build Schemathesis Config for the OpenAPI ASGI suite (TC-F34-001).
+
+    ``POST /api/v1/validation/validate-multi`` nests ``items`` (1..100) of
+    ``ValidationRequest`` with layer enums. Hypothesis discards many drafts on
+    Linux CI and raises ``FailedHealthCheck: filter_too_much`` unless suppressed
+    (BUG-2026-10-29-schemathesis-api / HF-schemathesis-api-failures).
+    """
+    return schemathesis.Config.from_dict(
+        {
+            "generation": {"max-examples": _MAX_EXAMPLES},
+            # Nested batch bodies filter heavily; keep generating within budget.
+            "suppress-health-check": ["filter_too_much"],
+            # Documented placeholder 501 on /api/v1/ingest-collect is expected (not a bug).
+            "checks": {
+                "not_a_server_error": {
+                    "expected-statuses": ["2xx", "4xx", "501"],
+                }
+            },
+        }
+    )
+
+
 @pytest.fixture
 def schemathesis_app() -> Iterator[object]:
     """ASGI app with JWT gate overridden so protected routes are exercised."""
@@ -71,17 +94,7 @@ def schemathesis_app() -> Iterator[object]:
 @pytest.fixture
 def api_schema(schemathesis_app: object) -> object:
     """Schemathesis schema from backend OpenAPI with budget + path filters."""
-    config = schemathesis.Config.from_dict(
-        {
-            "generation": {"max-examples": _MAX_EXAMPLES},
-            # Documented placeholder 501 on /api/v1/ingest-collect is expected (not a bug).
-            "checks": {
-                "not_a_server_error": {
-                    "expected-statuses": ["2xx", "4xx", "501"],
-                }
-            },
-        }
-    )
+    config = _schemathesis_config()
     schema = schemathesis.openapi.from_asgi("/openapi.json", schemathesis_app, config=config)
     # Prefer filter over pytest.skip so excluded ops are not collected.
     return (

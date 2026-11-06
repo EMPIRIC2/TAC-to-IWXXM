@@ -28,7 +28,7 @@ Constraints:
 - Fail-closed unknown profile ids
 - No dissemination credentials in profile objects (ADR-021/029)
 - No browser-uploaded unsigned schema bundles
-- #924 is investigation-only — no runtime engine rewrite
+- #924 is investigation-only; no runtime engine rewrite
 
 ## Decision
 
@@ -58,7 +58,7 @@ Constraints:
 
 6. **OpenAPI:** keep ADR-036 nested `semantic_profile` / `exchange_profile` / `iwxxm_version` /
    `extensions`. Optional future shorthand `conversionProfile=` documented in api corpus only
-   after #933 — not authorized by this ADR.
+   after #933; not authorized by this ADR.
 
 ## Normative contract sketch
 
@@ -104,8 +104,8 @@ Exchange-only profiles (`GLOBAL_AFS`, …) use `kind: exchange` and omit convers
 
 ### Negative / follow-ups
 
-- Contract fields not yet machine-validated against runtime — #933 or #925 may add loader
-- `appliesTo.stations` / state filters unimplemented — document as future
+- Contract fields not yet machine-validated against runtime; #933 or #925 may add loader
+- `appliesTo.stations` / state filters unimplemented; document as future
 
 ### Amend (EV-933 / #933 — Accepted)
 
@@ -123,21 +123,21 @@ JWT ownership (`user_id` = Auth `sub`). Trust model:
    schema/rule packs stay **rejected**. Overlay bodies must not carry credentials or
    destination URIs (ADR-021 / ADR-029).
 
-See Context: conversion-profile-editor-933 (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate).
+See Context: conversion-profile-editor-933 (archived; see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate).
 
 ### Amend (EV-080 / #1146 — Accepted)
 
 **Parameterizable conversion templates** are the **default Conversion rule object** for
 operator-authored TAC→IWXXM mapping (slot-builder-first; compiled pattern secondary).
 This amend authorizes **runtime-applicable** composable template objects on the existing
-IR / plugin pipeline — it does **not** authorize N per-country converter engines or
+IR / plugin pipeline; it does **not** authorize N per-country converter engines or
 browser-uploaded unsigned schema bundles.
 
 1. **Object model:** A template is an ordered list of typed slots (digits, enum, unit,
    literal, station, time, …) with optional flags, optional literal prefixes, and mapping
    to an IWXXM block/path (including ns, nil, cardinality, choice, uom, nesting; Schematron
    hooks may appear in the model even when UI v1 does not expose every control).
-2. **Pass-through:** Typed captures carry numbers/enums through — not one rule per literal
+2. **Pass-through:** Typed captures carry numbers/enums through, not one rule per literal
    value.
 3. **Authoring:** Same builder for first-party built-ins and custom templates. Trust v1:
    JWT owner CRUD for custom; first-party **view + fork** only (no mutate of builtin
@@ -148,7 +148,7 @@ browser-uploaded unsigned schema bundles.
    (highlighted span, captures, resulting XML block), comments under TAC, and inline
    conversion preview. Slot reorder supports drag-and-drop with keyboard/↑↓ fallback.
 5. **Pipeline:** Templates compose with ADR-036 semantic profiles and existing
-   `tac2iwxxm` emit — overlays on one IR pipeline. Dissemination profile/rules still apply
+   `tac2iwxxm` emit: overlays on one IR pipeline. Dissemination profile/rules still apply
    only on Disseminate / Convert & Send (not Convert-only). Destination credentials remain
    memory-only (ADR-021 / ADR-029 / ADR-030).
 6. **Phase-1 ship set (EV-080):** conversion templates + bridge UI only. Libraries for TAC
@@ -233,12 +233,12 @@ export metadata. Does not reopen the EV-bridge hard cut.
    rules inside a block. Create paths: starter templates, duplicate mined block, import YAML.
 4. **Libraries:** Conversion, TAC validation, IWXXM validation, Dissemination, and Decoding
    are all fully customizable. IWXXM validation supports mined Schematron assert toggles and
-   custom XPath / regex-on-XML. Dissemination YAML/transforms remain pattern-only — **never**
+   custom XPath / regex-on-XML. Dissemination YAML/transforms remain pattern-only; **never**
    credentials or destination URIs (ADR-021 / ADR-029 / ADR-030).
 5. **Defaults:** ICAO/WMO Annex 3 baseline selections for all five library pickers on Profile
    Builder and Convert, kept in sync.
 6. **Lifecycle:** Phase A ships Draft-only customs + UX shell + export sidecar. Phase B ships
-   comprehensive mined catalogs. Phase C ships live regex validation (compile + capture
+   full mined catalogs. Phase C ships live regex validation (compile + capture
    summary; Warn vs Fail), Activate (requires zero Fail; Draft may have Fail), and runtime
    binding of activated customs via existing Convert library-id selection.
 7. **Export metadata (Phase A):** Optional Convert download / ZIP / single-result toggle
@@ -313,8 +313,8 @@ See [ADR-046](ADR-046-validation-policy-layers.md) and
 
 ## References
 
-- Context: conversion-profile-contract-924 (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate)
-- Context: conversion-profile-editor-933 (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate)
+- Context: conversion-profile-contract-924 (archived; see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate)
+- Context: conversion-profile-editor-933 (archived; see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate)
 - [ADR-037](ADR-037-platform-logical-layers.md) Profiles layer
 - EV-924 session report `924-conversion-profile-contract.md`
 - EV-933 / #933 F7.w / UJ-072

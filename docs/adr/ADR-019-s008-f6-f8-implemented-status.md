@@ -20,7 +20,7 @@ documented live-connectivity waivers (routing skips 12-verify-deploy / 13-deploy
 1. Set **F6** and **F8** summary status to **Implemented**.
 2. Leave **F7** as **Planned** (not built this cycle).
 3. Do **not** bulk-refresh M1–M6 summary rows in this decision (option 2 declined).
-4. Record live H4–H7 / T7.4 as deferred caveats under F6/F8 detail sections — not blocking
+4. Record live H4–H7 / T7.4 as deferred caveats under F6/F8 detail sections, not blocking
    Implemented for this build+verify cycle.
 
 ## Alternatives Considered

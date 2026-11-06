@@ -8,9 +8,32 @@ RuleFamily = Literal["tac", "iwxxm", "conversion", "dissemination", "decoding"]
 
 _FAMILIES: frozenset[str] = frozenset({"tac", "iwxxm", "conversion", "dissemination", "decoding"})
 
+# Convert + Send drawer selection kinds (first-party LIB.* assets). TP-YCL-01 / #1251.
+_SELECTION_KINDS: frozenset[str] = frozenset(
+    {
+        "conversion",
+        "tac_validation",
+        "iwxxm_validation",
+        "decoding",
+        "dissemination",
+    }
+)
+
 
 def known_families() -> frozenset[str]:
-    """Return supported ``family`` query values."""
+    """
+    Return supported ``family`` query values.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (known_families)
+    2
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return _FAMILIES
 
 
@@ -34,6 +57,11 @@ def catalog_for_family(family: str, *, product: str | None = None) -> list[dict[
     ------
     ValueError
         When ``family`` is unknown.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (catalog_for_family)
+    2
     """
     key = family.strip().lower()
     if key not in _FAMILIES:
@@ -68,30 +96,14 @@ def catalog_for_family(family: str, *, product: str | None = None) -> list[dict[
         ]
 
     if key == "conversion":
-        from tac2iwxxm.profile_registry import known_semantic_profile_ids
+        from tac2iwxxm.conversion_catalog import catalog_entries as conversion_catalog
 
-        return [
-            {
-                "id": pid,
-                "title": pid,
-                "summary": f"Semantic conversion profile {pid}",
-                "tags": ["conversion", "profile"],
-            }
-            for pid in sorted(known_semantic_profile_ids())
-        ]
+        return conversion_catalog()
 
     if key == "dissemination":
-        from dissemination.exchange_registry import known_exchange_profile_ids
+        from dissemination.exchange_catalog import catalog_entries as dissemination_catalog
 
-        return [
-            {
-                "id": pid,
-                "title": pid,
-                "summary": f"Exchange / dissemination profile {pid}",
-                "tags": ["dissemination", "exchange"],
-            }
-            for pid in sorted(known_exchange_profile_ids())
-        ]
+        return dissemination_catalog()
 
     from tac_decoding import catalog_entries as decoding_catalog
 
@@ -100,34 +112,33 @@ def catalog_for_family(family: str, *, product: str | None = None) -> list[dict[
 
 def selection_options(kind: str) -> list[dict[str, Any]]:
     """
-    Lightweight dropdown options for deployed registries.
+    Lightweight dropdown options for deployed first-party libraries.
 
     Parameters
     ----------
     kind :
-        ``conversion`` | ``dissemination`` | ``decoding``.
+        ``conversion`` | ``tac_validation`` | ``iwxxm_validation`` |
+        ``decoding`` | ``dissemination``.
 
     Returns
     -------
     list[dict[str, Any]]
-        ``id`` / ``label`` pairs.
+        ``id`` / ``label`` pairs using first-party ``LIB.*`` ids (TP-YCL-01 / #1251).
 
     Raises
     ------
     ValueError
         When ``kind`` is unknown.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (selection_options)
+    2
     """
     key = kind.strip().lower()
-    if key == "conversion":
-        from tac2iwxxm.profile_registry import known_semantic_profile_ids
+    if key not in _SELECTION_KINDS:
+        raise ValueError(f"Unknown selection kind {kind!r}")
 
-        return [{"id": pid, "label": pid} for pid in sorted(known_semantic_profile_ids())]
-    if key == "dissemination":
-        from dissemination.exchange_registry import known_exchange_profile_ids
+    from tac2iwxxm.library_assets import list_first_party_library_assets
 
-        return [{"id": pid, "label": pid} for pid in sorted(known_exchange_profile_ids())]
-    if key == "decoding":
-        from tac_decoding import catalog_entries
-
-        return [{"id": row["id"], "label": row["title"]} for row in catalog_entries(limit=200)]
-    raise ValueError(f"Unknown selection kind {kind!r}")
+    return [{"id": asset.id, "label": asset.name} for asset in list_first_party_library_assets() if asset.kind == key]

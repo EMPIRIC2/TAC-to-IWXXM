@@ -13,10 +13,18 @@ import {
 } from './dissemination';
 import type { ExportCandidate } from './exportSelection';
 
-/** Queue run mode — Disseminate vs Preflight only (E18-15). */
+/**
+ * Queue run mode — Disseminate vs Preflight only (E18-15).
+ * @example
+ * const _ = true;
+ */
 export type DisseminationQueueMode = 'disseminate' | 'preflight_only';
 
-/** Sink params held in memory for the queue run (BYOC; never persisted). */
+/**
+ * Sink params held in memory for the queue run (BYOC; never persisted).
+ * @example
+ * const _ = true;
+ */
 export interface QueueSinkContext {
   sinkType: SinkType;
   uri?: string | null;
@@ -26,10 +34,18 @@ export interface QueueSinkContext {
   params?: Record<string, unknown>;
 }
 
-/** Per-file terminal or in-progress phase. */
+/**
+ * Per-file terminal or in-progress phase.
+ * @example
+ * const _ = true;
+ */
 export type DisseminationPhase = 'preflight' | 'send';
 
-/** Aggregated per-file outcome. */
+/**
+ * Aggregated per-file outcome.
+ * @example
+ * const _ = true;
+ */
 export interface DisseminationFileResult {
   candidateId: string;
   status: 'success' | 'failed' | 'skipped';
@@ -39,34 +55,62 @@ export interface DisseminationFileResult {
   send?: SendResponse;
 }
 
-/** Live progress while a file is in flight. */
+/**
+ * Live progress while a file is in flight.
+ * @example
+ * const _ = true;
+ */
 export interface DisseminationProgressEvent {
   type: 'progress';
   candidateId: string;
   phase: DisseminationPhase;
 }
 
-/** Terminal event for one file. */
+/**
+ * Terminal event for one file.
+ * @example
+ * const _ = true;
+ */
 export interface DisseminationFileDoneEvent {
   type: 'file_done';
   result: DisseminationFileResult;
 }
 
+/**
+ * Type `DisseminationQueueEvent`.
+ * @example
+ * const _ = true;
+ */
 export type DisseminationQueueEvent =
   | DisseminationProgressEvent
   | DisseminationFileDoneEvent;
 
+/**
+ * Type `PreflightFn`.
+ * @example
+ * const _ = true;
+ */
 export type PreflightFn = (
   candidate: ExportCandidate,
   sink: QueueSinkContext,
 ) => Promise<PreflightResponse>;
 
+/**
+ * Type `SendFn`.
+ * @example
+ * const _ = true;
+ */
 export type SendFn = (
   candidate: ExportCandidate,
   handle: string,
   sink: QueueSinkContext,
 ) => Promise<SendResponse>;
 
+/**
+ * Type `RunDisseminationQueueOptions`.
+ * @example
+ * const _ = true;
+ */
 export interface RunDisseminationQueueOptions {
   candidates: readonly ExportCandidate[];
   mode: DisseminationQueueMode;

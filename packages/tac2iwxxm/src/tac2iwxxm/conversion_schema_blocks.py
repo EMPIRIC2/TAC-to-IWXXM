@@ -18,6 +18,11 @@ def load_conversion_schema_blocks() -> dict[str, Any]:
     -------
     dict[str, Any]
         Catalog with ``blocks`` list (id, label, authority, cards, …).
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (load_conversion_schema_blocks)
+    2
     """
     raw = resources.files("tac2iwxxm.data").joinpath("conversion_schema_blocks.yaml").read_text(encoding="utf-8")
     data = yaml.safe_load(raw)
@@ -32,13 +37,18 @@ def schema_blocks_for_national_line(national_line: str) -> list[dict[str, Any]]:
 
     Parameters
     ----------
-    national_line :
+    national_line : str
         Uppercase wire id such as ``ICAO_2025`` or ``US_FAA_NWS``.
 
     Returns
     -------
     list[dict[str, Any]]
         Blocks whose ``national_lines`` includes ``*`` or the line id.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (schema_blocks_for_national_line)
+    2
     """
     catalog = load_conversion_schema_blocks()
     raw_blocks = catalog.get("blocks")

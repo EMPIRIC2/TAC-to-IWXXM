@@ -24,6 +24,9 @@ import {
 } from './localWorkSessionStore';
 import { clearPrivacyPreferences, savePrivacyPreferences } from './privacyPreferences';
 
+/**
+ *
+ */
 function draftPayload(
   overrides: Partial<WorkSessionUpsertPayload> = {},
 ): WorkSessionUpsertPayload {

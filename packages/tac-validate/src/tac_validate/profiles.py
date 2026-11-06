@@ -8,25 +8,31 @@ from __future__ import annotations
 
 from typing import Final
 
+from tac_validate.lint_profile_catalog import lint_profile_spec, load_lint_profiles
+from tac_validate.lint_profile_ids import canonical_lint_profile_id
+
 PROFILE_ANNEX3: Final[str] = "annex3"
 PROFILE_IWXXM_US: Final[str] = "iwxxm_us"
 PROFILE_CA_ECCC: Final[str] = "ca_eccc"
 PROFILE_IN_IMD: Final[str] = "in_imd"
+PROFILE_US_NWS_CONVECTIVE_SIGMET: Final[str] = "us_nws_convective_sigmet"
+PROFILE_US_NWS_G_AIRMET: Final[str] = "us_nws_g_airmet"
+PROFILE_US_NWS_VONA: Final[str] = "us_nws_vona"
+PROFILE_CA_MSC_SIGMET: Final[str] = "ca_msc_sigmet"
 
-SUPPORTED_PROFILES: Final[frozenset[str]] = frozenset(
-    {PROFILE_ANNEX3, PROFILE_IWXXM_US, PROFILE_CA_ECCC, PROFILE_IN_IMD}
-)
+SUPPORTED_PROFILES: Final[frozenset[str]] = frozenset(load_lint_profiles())
 
 # Products with a defined US profile overlay (L5 REMARKS / FMH-1 / iwxxm-us encode).
 IWXXM_US_PRODUCTS: Final[frozenset[str]] = frozenset({"METAR", "SPECI", "TAF", "SIGMET", "AIRMET"})
 
 # Thin US national validation policy only (#919 M22) - no convert/dual-profile parity.
-IWXXM_US_THIN_LINT_PRODUCTS: Final[frozenset[str]] = frozenset({"SWXA", "TCA"})
+# VONA is Annex 3 TAC; iwxxm_us may lint it, and dual-profile compare stays N/A.
+IWXXM_US_THIN_LINT_PRODUCTS: Final[frozenset[str]] = frozenset({"SWXA", "TCA", "VONA"})
 
 IWXXM_US_LINT_PRODUCTS: Final[frozenset[str]] = IWXXM_US_PRODUCTS | IWXXM_US_THIN_LINT_PRODUCTS
 
 # Products with CA_ECCC MANOBS/MANAIR overlay (EV-064 M3/M4).
-CA_ECCC_PRODUCTS: Final[frozenset[str]] = frozenset({"METAR", "SPECI", "TAF", "AIRMET"})
+CA_ECCC_PRODUCTS: Final[frozenset[str]] = frozenset({"METAR", "SPECI", "TAF", "AIRMET", "SIGMET", "VAA"})
 
 # IN_IMD thin lint overlay — TAF TX/TN omission awareness only (EV-094 M5 / #1098).
 IN_IMD_PRODUCTS: Final[frozenset[str]] = frozenset({"TAF"})
@@ -53,31 +59,164 @@ def normalize_profile(profile: str) -> str:
     ------
     ValueError
         When ``profile`` is not a supported lint profile.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (normalize_profile)
+    2
+
+    Parameters
+    ----------
+    profile : str
+        Profile id.
+
+    Returns
+    -------
+    str
+        Lowercased profile id.
     """
-    key = profile.strip().lower()
+    key = canonical_lint_profile_id(profile)
     if key not in SUPPORTED_PROFILES:
         raise ValueError(f"unsupported lint profile {profile!r}; expected one of {sorted(SUPPORTED_PROFILES)}")
     return key
 
 
 def ca_eccc_applicable(product: str) -> bool:
-    """Return True when ``profile=ca_eccc`` is defined for ``product``."""
+    """
+    Return True when ``profile=ca_eccc`` is defined for ``product``.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (ca_eccc_applicable)
+    2
+
+    Parameters
+    ----------
+    product : str
+        Product id.
+
+    Returns
+    -------
+    bool
+        True when ``profile=ca_eccc`` is defined for ``product``.
+    """
     return product.upper() in CA_ECCC_PRODUCTS
 
 
 def in_imd_applicable(product: str) -> bool:
-    """Return True when ``profile=in_imd`` is defined for ``product``."""
+    """
+    Return True when ``profile=in_imd`` is defined for ``product``.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (in_imd_applicable)
+    2
+
+    Parameters
+    ----------
+    product : str
+        Product id.
+
+    Returns
+    -------
+    bool
+        True when ``profile=in_imd`` is defined for ``product``.
+    """
     return product.upper() in IN_IMD_PRODUCTS
 
 
 def iwxxm_us_applicable(product: str) -> bool:
-    """Return True when ``profile=iwxxm_us`` is defined for ``product``."""
+    """
+    Return True when ``profile=iwxxm_us`` is defined for ``product``.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (iwxxm_us_applicable)
+    2
+
+    Parameters
+    ----------
+    product : str
+        Product id.
+
+    Returns
+    -------
+    bool
+        True when ``profile=iwxxm_us`` is defined for ``product``.
+    """
     return product.upper() in IWXXM_US_PRODUCTS
 
 
 def iwxxm_us_lint_applicable(product: str) -> bool:
-    """Return True when ``lint(..., profile=iwxxm_us)`` is allowed for ``product``."""
+    """
+    Return True when ``lint(..., profile=iwxxm_us)`` is allowed for ``product``.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (iwxxm_us_lint_applicable)
+    2
+
+    Parameters
+    ----------
+    product : str
+        Product id.
+
+    Returns
+    -------
+    bool
+        True when ``lint(..., profile=iwxxm_us)`` is allowed for ``product``.
+    """
     return product.upper() in IWXXM_US_LINT_PRODUCTS
+
+
+def effective_lint_profile(profile: str, product: str) -> str:
+    """
+    Return a lint profile applicable to ``product``, falling back to annex3.
+
+    Convert pre-lint uses the conversion emit profile. National overlays that
+    are N/A for a product (for example ``iwxxm_us`` + VAA) must not raise —
+    Annex 3 rules still apply. Explicit ``lint()`` / ``/lint-tac`` callers that
+    need fail-closed N/A behavior should keep calling ``lint`` directly.
+
+    Parameters
+    ----------
+    profile : str
+        Requested emit / lint profile id (alias or catalog key).
+    product : str
+        Product id (for example ``VAA``).
+
+    Returns
+    -------
+    str
+        Lowercased applicable lint profile (``annex3`` when the requested
+        profile does not list ``product``).
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (effective_lint_profile)
+    2
+    """
+    product_u = product.upper()
+    try:
+        profile_l = normalize_profile(profile)
+    except ValueError:
+        return PROFILE_ANNEX3
+
+    if profile_l == PROFILE_ANNEX3:
+        return PROFILE_ANNEX3
+    if profile_l == PROFILE_IWXXM_US and not iwxxm_us_lint_applicable(product_u):
+        return PROFILE_ANNEX3
+    if profile_l == PROFILE_CA_ECCC and not ca_eccc_applicable(product_u):
+        return PROFILE_ANNEX3
+    if profile_l == PROFILE_IN_IMD and not in_imd_applicable(product_u):
+        return PROFILE_ANNEX3
+    if profile_l == PROFILE_US_NWS_CONVECTIVE_SIGMET and product_u != "SIGMET":
+        return PROFILE_ANNEX3
+    if profile_l not in {PROFILE_IWXXM_US, PROFILE_CA_ECCC, PROFILE_IN_IMD}:
+        spec = lint_profile_spec(profile_l)
+        if spec is None or product_u not in spec.products:
+            return PROFILE_ANNEX3
+    return profile_l
 
 
 __all__ = [
@@ -89,10 +228,16 @@ __all__ = [
     "IWXXM_US_THIN_LINT_PRODUCTS",
     "PROFILE_ANNEX3",
     "PROFILE_CA_ECCC",
+    "PROFILE_CA_MSC_SIGMET",
     "PROFILE_IN_IMD",
     "PROFILE_IWXXM_US",
+    "PROFILE_US_NWS_CONVECTIVE_SIGMET",
+    "PROFILE_US_NWS_G_AIRMET",
+    "PROFILE_US_NWS_VONA",
     "SUPPORTED_PROFILES",
     "ca_eccc_applicable",
+    "canonical_lint_profile_id",
+    "effective_lint_profile",
     "in_imd_applicable",
     "iwxxm_us_applicable",
     "iwxxm_us_lint_applicable",

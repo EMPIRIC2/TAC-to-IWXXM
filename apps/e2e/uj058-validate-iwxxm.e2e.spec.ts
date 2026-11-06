@@ -7,6 +7,7 @@ import { expect, test } from '@playwright/test';
 import {
   dismissPrivacyNoticeIfPresent,
   openPublicConverter,
+  selectInputMode,
 } from './playwright-e2e-helpers';
 
 const GOOD_XML = `<?xml version="1.0" encoding="UTF-8"?>
@@ -29,15 +30,15 @@ test.describe('UJ-058: Validate existing IWXXM (TC-EV057-838)', () => {
     await openPublicConverter(page);
     await dismissPrivacyNoticeIfPresent(page);
 
-    await page.getByTestId('input-mode-validate_iwxxm').click();
+    await selectInputMode(page, 'validate_iwxxm');
     await expect(page.getByTestId('validate-iwxxm-help')).toBeVisible();
 
-    const editor = page.getByLabel(/Enter IWXXM XML manually/i);
+    const editor = page.getByLabel('Enter IWXXM XML manually', { exact: true });
     await editor.click();
     await page.keyboard.press(process.platform === 'darwin' ? 'Meta+A' : 'Control+A');
     await page.keyboard.insertText(BROKEN_XML);
 
-    await page.getByRole('button', { name: /Validate IWXXM XML/i }).click();
+    await page.getByRole('button', { name: 'Validate IWXXM XML', exact: true }).click();
 
     await expect(page.getByTestId('validate-iwxxm-report')).toBeVisible({
       timeout: 60_000,
@@ -49,13 +50,13 @@ test.describe('UJ-058: Validate existing IWXXM (TC-EV057-838)', () => {
     await openPublicConverter(page);
     await dismissPrivacyNoticeIfPresent(page);
 
-    await page.getByTestId('input-mode-validate_iwxxm').click();
-    const editor = page.getByLabel(/Enter IWXXM XML manually/i);
+    await selectInputMode(page, 'validate_iwxxm');
+    const editor = page.getByLabel('Enter IWXXM XML manually', { exact: true });
     await editor.click();
     await page.keyboard.press(process.platform === 'darwin' ? 'Meta+A' : 'Control+A');
     await page.keyboard.insertText(GOOD_XML);
 
-    await page.getByRole('button', { name: /Validate IWXXM XML/i }).click();
+    await page.getByRole('button', { name: 'Validate IWXXM XML', exact: true }).click();
 
     await expect(page.getByTestId('validate-iwxxm-report')).toBeVisible({
       timeout: 60_000,

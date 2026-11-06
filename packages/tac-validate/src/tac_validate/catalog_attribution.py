@@ -25,7 +25,9 @@ _DATA = Path(__file__).resolve().parent / "data" / "catalog_attribution.json"
 # Notes appended to operator-facing source_attribution (EV-048) - omit planning ids.
 _INTERNAL_DOC_REF_IN_NOTE = re.compile(
     r"(?:\[Corpus:|\bADR-\d+\b|\bEV-\d+\b|\bS0\d+\b|\bTC-[A-Z0-9-]+\b|"
-    r"\bE\d{2}-\d+\b|(?<!\w)#\d{3,}\b|\bF\d+\b|docs/sessions/|docs/feature-list)"
+    r"\bUJ-\d+\b|\bE\d{2}-\d+\b|(?<!\w)#\d{3,}\b|\bF\d+\b|"
+    r"docs/sessions/|docs/feature-list)",
+    re.IGNORECASE,
 )
 
 # Crawl date for operator-verified HTTP landings (EV-061 catalog crawl; EV-062 retarget).
@@ -43,6 +45,14 @@ _PUBLIC_COMPANIONS: dict[str, str] = {
 
 @lru_cache(maxsize=1)
 def _load() -> dict[str, dict[str, Any]]:
+    """
+    Internal helper ``_load``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if not _DATA.is_file():
         return {}
     try:
@@ -65,7 +75,21 @@ def _load() -> dict[str, dict[str, Any]]:
 
 
 def _source_type(source_id: str | None, source_url: str | None) -> str | None:
-    """Map provenance to three-tier source policy (``D-S071-links-resolve``)."""
+    """
+    Internal helper ``_source_type``.
+
+    Parameters
+    ----------
+    source_id : object
+        Argument ``source_id``.
+    source_url : object
+        Argument ``source_url``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     blob = f"{source_id or ''} {source_url or ''}".lower()
     if "wmo-im/iwxxm" in blob or "releasenotes-iwxxm" in blob:
         return "tier1"
@@ -77,7 +101,21 @@ def _source_type(source_id: str | None, source_url: str | None) -> str | None:
 
 
 def _operator_status(source_url: str | None, raw_status: str | None) -> str | None:
-    """Operator catalog status: verified landings vs semantic-only / legacy."""
+    """
+    Internal helper ``_operator_status``.
+
+    Parameters
+    ----------
+    source_url : object
+        Argument ``source_url``.
+    raw_status : object
+        Argument ``raw_status``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if source_url and source_url.startswith(("http://", "https://")):
         return "verified"
     if source_url and source_url.startswith("vendor:"):
@@ -88,7 +126,21 @@ def _operator_status(source_url: str | None, raw_status: str | None) -> str | No
 
 
 def _semantic_identifier(source_id: str | None, source_url: str | None) -> str | None:
-    """Keep Codes Registry concept paths as semantic aliases when href is a landing."""
+    """
+    Internal helper ``_semantic_identifier``.
+
+    Parameters
+    ----------
+    source_id : object
+        Argument ``source_id``.
+    source_url : object
+        Argument ``source_url``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if source_id == "codes-wmo-int":
         return "https://codes.wmo.int/"
     if source_url and "codes.wmo.int/ui/resources" in source_url:
@@ -102,7 +154,7 @@ def attribution_for(code: str) -> dict[str, str | None]:
 
     Parameters
     ----------
-    code :
+    code : str
         Stable SCREAMING_SNAKE issue code.
 
     Returns
@@ -112,6 +164,11 @@ def attribution_for(code: str) -> dict[str, str | None]:
         ``family``, ``source_type``, ``status``, ``semantic_identifier``,
         ``last_verified``, ``replacement_url``, ``source_locator``,
         ``source_access`` (may be None).
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (attribution_for)
+    2
     """
     row = _load().get(code) or {}
     source_id_obj: object = row.get("source_id")

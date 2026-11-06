@@ -2,7 +2,7 @@
 
 ## Overview
 
-Comprehensive end-to-end test suite for METAR-to-IWXXM backend API with real HTTP server and network I/O.
+End-to-end test suite for METAR-to-IWXXM backend API with real HTTP server and network I/O.
 
 **Test Framework**: pytest with asyncio, httpx for async HTTP requests  
 **Server**: Real uvicorn server started per test session on dynamic port  
@@ -141,9 +141,9 @@ Comprehensive end-to-end test suite for METAR-to-IWXXM backend API with real HTT
 
 ---
 
-### 10. TestE2EFullEndpointCoverage (9 tests) ✨ NEW
+### 10. TestE2EFullEndpointCoverage (9 tests) NEW
 
-**Purpose**: Comprehensive coverage of all major API endpoints  
+**Purpose**: Coverage of all major API endpoints  
 **Tests**:
 
 - ✅ `test_conversion_endpoint_post` - POST /api/v1/convert
@@ -195,16 +195,16 @@ Comprehensive end-to-end test suite for METAR-to-IWXXM backend API with real HTT
 
 ## API Endpoints Tested
 
-### ✅ Core Conversion
+### Core Conversion
 
 - `POST /api/v1/convert` - METAR to IWXXM conversion
 
-### ✅ Validation
+### Validation
 
 - `POST /api/v1/validation/tac` - TAC format validation
 - `POST /api/v1/validation/xml` - IWXXM XML validation
 
-### ✅ Information
+### Information
 
 - `GET /health` - Health check
 - `GET /api/v1/versions` - Supported versions
@@ -212,7 +212,7 @@ Comprehensive end-to-end test suite for METAR-to-IWXXM backend API with real HTT
 - `GET /api/v1/translation/centre-info` - Translation Centre info
 - `GET /api/v1/translation/airport-region/{code}` - Airport region lookup
 
-### ⏭️ Optional/Infrastructure-Dependent
+### Optional/Infrastructure-Dependent
 
 - `POST /api/v1/eval/jobs` - Create evaluation job (requires Supabase)
 - `GET /api/v1/eval/jobs` - List evaluation jobs (requires Supabase)
@@ -233,7 +233,7 @@ Comprehensive end-to-end test suite for METAR-to-IWXXM backend API with real HTT
 
 ### Test Coverage
 
-✅ 9 new comprehensive endpoint tests (100% passing)  
+✅ 9 new endpoint tests (100% passing)  
 ✅ Fixed missing `await` statements in async tests  
 ✅ Proper skip/graceful degradation for unavailable features  
 ✅ Clear documentation of infrastructure limitations
@@ -302,8 +302,8 @@ pytest tests/test_e2e_full_stack.py::TestE2EFullEndpointCoverage -v --no-cov
 
 ## Conclusion
 
-The E2E test suite now provides **comprehensive coverage of all core API endpoints** with real HTTP server and network I/O testing.
+The E2E test suite now covers **all core API endpoints** with real HTTP server and network I/O testing.
 
-**18 critical tests pass consistently**, validating the complete METAR-to-IWXXM conversion pipeline, error handling, and API contracts. Optional infrastructure-dependent features (evaluation jobs, statistics) gracefully skip when their prerequisites aren't available.
+**18 critical tests pass consistently**, validating the complete METAR-to-IWXXM conversion pipeline, error handling, and API contracts. Optional infrastructure-dependent features (evaluation jobs, statistics) skip when their prerequisites aren't available.
 
-The automatic server lifecycle management and real network testing ensure production-like test conditions without manual setup.
+The automatic server lifecycle management and real network testing give production-like test conditions without manual setup.

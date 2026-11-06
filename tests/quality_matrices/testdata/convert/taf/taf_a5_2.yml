@@ -1,0 +1,253 @@
+rule_id: taf_a5_2
+engine: convert
+cases:
+- bucket: happy
+  case_id: '01'
+  status: ready
+  tac: TAF AMD YUDO 161500Z 1600/1618 CNL=
+  expect:
+    encode_ok: true
+    require_xml: true
+  meta:
+    product: TAF
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: annex3_golden/taf_a5_2.tac
+- bucket: happy
+  case_id: '02'
+  status: ready
+  tac: TAF AMD YUDO 171500Z 1700/1718 CNL=
+  expect:
+    encode_ok: true
+    require_xml: true
+  meta:
+    product: TAF
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 variant of taf_a5_2
+- bucket: happy
+  case_id: '03'
+  status: ready
+  tac: TAF AMD YUDD 161500Z 1600/1618 CNL=
+  expect:
+    encode_ok: true
+    require_xml: true
+  meta:
+    product: TAF
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 variant of taf_a5_2
+- bucket: happy
+  case_id: '04'
+  status: ready
+  tac: TAF AMD YUDO 161200Z 1600/1618 CNL=
+  expect:
+    encode_ok: true
+    require_xml: true
+  meta:
+    product: TAF
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 variant of taf_a5_2
+- bucket: happy
+  case_id: '05'
+  status: ready
+  tac: TAF AMD YUDO 161500Z 1606/1618 CNL=
+  expect:
+    encode_ok: true
+    require_xml: true
+  meta:
+    product: TAF
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 variant of taf_a5_2
+- bucket: sad
+  case_id: '01'
+  status: ready
+  tac: GARBAGE
+  expect:
+    encode_ok: false
+    codes:
+    - PARSE_ERROR
+  meta:
+    product: TAF
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 garbage tokens
+- bucket: sad
+  case_id: '02'
+  status: ready
+  tac: .
+  expect:
+    encode_ok: false
+    codes:
+    - PARSE_ERROR
+  meta:
+    product: TAF
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 dot-only TAC
+- bucket: sad
+  case_id: '03'
+  status: ready
+  tac: METAR YUDO 151800Z 13005MPS 9000 BKN020 17/16 Q1018=
+  expect:
+    encode_ok: false
+    codes:
+    - PARSE_ERROR
+  meta:
+    product: TAF
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 METAR body under product TAF
+- bucket: sad
+  case_id: '04'
+  status: ready
+  tac: NOTAM YUDO CLOSED=
+  expect:
+    encode_ok: false
+    codes:
+    - PARSE_ERROR
+  meta:
+    product: TAF
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 non-TAF product token
+- bucket: sad
+  case_id: '05'
+  status: ready
+  tac: SIGMET YUDO
+  expect:
+    encode_ok: false
+    codes:
+    - PARSE_ERROR
+  meta:
+    product: TAF
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 SIGMET keyword under product TAF
+- bucket: edge_pass
+  case_id: '01'
+  status: ready
+  tac: TAF AMD YUDO 161500Z 1600/1618 CNL
+  expect:
+    encode_ok: true
+    require_xml: true
+  meta:
+    product: TAF
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 edge of taf_a5_2
+- bucket: edge_pass
+  case_id: '02'
+  status: ready
+  tac: '  TAF AMD YUDO 161500Z 1600/1618 CNL=  '
+  expect:
+    encode_ok: true
+    require_xml: true
+  meta:
+    product: TAF
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 edge of taf_a5_2
+- bucket: edge_pass
+  case_id: '03'
+  status: ready
+  tac: TAF AMD YUDO 161500Z 1600/1618 CNL =
+  expect:
+    encode_ok: true
+    require_xml: true
+  meta:
+    product: TAF
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 edge of taf_a5_2
+- bucket: edge_pass
+  case_id: '04'
+  status: ready
+  tac: TAF AMD YUDO 161800Z 1600/1618 CNL=
+  expect:
+    encode_ok: true
+    require_xml: true
+  meta:
+    product: TAF
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 edge of taf_a5_2
+- bucket: edge_pass
+  case_id: '05'
+  status: ready
+  tac: TAF AMD YUDD 171500Z 1700/1718 CNL=
+  expect:
+    encode_ok: true
+    require_xml: true
+  meta:
+    product: TAF
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 edge of taf_a5_2
+- bucket: edge_fail
+  case_id: '01'
+  status: ready
+  tac: SPECI YUDO 151800Z 13005MPS 9000 BKN020 17/16 Q1018=
+  expect:
+    encode_ok: false
+    codes:
+    - PARSE_ERROR
+  meta:
+    product: TAF
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 SPECI body under product TAF
+- bucket: edge_fail
+  case_id: '02'
+  status: ready
+  tac: SPECI
+  expect:
+    encode_ok: false
+    codes:
+    - PARSE_ERROR
+  meta:
+    product: TAF
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 keyword only SPECI
+- bucket: edge_fail
+  case_id: '03'
+  status: ready
+  tac: ????
+  expect:
+    encode_ok: false
+    codes:
+    - PARSE_ERROR
+  meta:
+    product: TAF
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 symbols
+- bucket: edge_fail
+  case_id: '04'
+  status: ready
+  tac: AIRMET YUDO
+  expect:
+    encode_ok: false
+    codes:
+    - PARSE_ERROR
+  meta:
+    product: TAF
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 AIRMET keyword under product TAF
+- bucket: edge_fail
+  case_id: '05'
+  status: ready
+  tac: METAR
+  expect:
+    encode_ok: false
+    codes:
+    - PARSE_ERROR
+  meta:
+    product: TAF
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 keyword only METAR

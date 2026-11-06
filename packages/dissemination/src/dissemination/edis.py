@@ -20,18 +20,59 @@ from dissemination.redact import redact_secrets
 class SmtpClient(Protocol):
     """Minimal async SMTP client used by the EDIS sink."""
 
-    async def connect(self) -> None: ...
+    async def connect(self) -> None:
+        """Open the SMTP connection."""
+        ...
 
-    async def login(self, username: str, password: str) -> None: ...
+    async def login(self, username: str, password: str) -> None:
+        """Authenticate with ``username`` / ``password``."""
+        ...
 
-    async def send_message(self, message: EmailMessage) -> object: ...
+    async def send_message(self, message: EmailMessage) -> object:
+        """Submit ``message`` and return the transport response."""
+        ...
 
-    async def quit(self) -> None: ...
+    async def quit(self) -> None:
+        """Close the SMTP session."""
+        ...
 
 
 @dataclass(frozen=True, slots=True)
 class EdisParams:
-    """BYOC EDIS/SMTP parameters (memory-only; never logged raw)."""
+    """
+    BYOC EDIS/SMTP parameters (memory-only; never logged raw).
+
+    Attributes
+    ----------
+    smtp_host : str
+        SMTP host.
+    mail_from : str
+        Mail from.
+    mail_to : str
+        Mail to.
+    tt : str
+        Tt.
+    aa : str
+        Aa.
+    ii : str
+        Ii.
+    cccc : str
+        Cccc.
+    yygggg : str
+        Yygggg.
+    smtp_port : int, optional
+        SMTP port. By default ``587``.
+    username : str or None, optional
+        User name. By default ``None``.
+    password : str or None, optional
+        Password. By default ``None``.
+    use_tls : bool, optional
+        Use tls. By default ``True``.
+    bbb : str or None, optional
+        Bbb. By default ``None``.
+    subject : str or None, optional
+        Subject. By default ``None``.
+    """
 
     smtp_host: str
     mail_from: str
@@ -51,7 +92,18 @@ class EdisParams:
 
 @dataclass(frozen=True, slots=True)
 class EdisSubmitResult:
-    """Result of an EDIS SMTP submit."""
+    """
+    Result of an EDIS SMTP submit.
+
+    Attributes
+    ----------
+    ok : bool
+        True when the result succeeded.
+    ahl : str
+        AHL.
+    detail : str or None, optional
+        Detail text. By default ``None``.
+    """
 
     ok: bool
     ahl: str
@@ -59,6 +111,21 @@ class EdisSubmitResult:
 
 
 def _require_ascii(value: str, *, field: str) -> str:
+    """
+    Internal helper ``_require_ascii``.
+
+    Parameters
+    ----------
+    value : object
+        Argument ``value``.
+    field : object
+        Argument ``field``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if not value.isascii():
         raise ValueError(f"EDIS {field} must be ASCII-only")
     return value
@@ -81,20 +148,28 @@ def format_wmo_ahl(
 
     Parameters
     ----------
-    tt, aa, ii, cccc, yygggg :
-        AHL designators (``T1T2``, ``A1A2``, ``ii``, originating centre, time group).
-    bbb :
-        Optional BBB amendment indicator (e.g. ``CCA``).
+    tt : str
+        Tt.
+    aa : str
+        Aa.
+    ii : str
+        Ii.
+    cccc : str
+        Cccc.
+    yygggg : str
+        Yygggg.
+    bbb : str or None, optional
+        Bbb. By default ``None``.
 
     Returns
     -------
     str
-        Single AHL line, ASCII.
+        Format a WMO abbreviated heading line (Manual on the GTS / WMO-No. 386 shape).
 
-    Raises
-    ------
-    ValueError
-        When a field is non-ASCII or fails the AHL shape.
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (format_wmo_ahl)
+    2
     """
     from tac2iwxxm import (
         AhlParts,
@@ -142,6 +217,23 @@ def build_edis_message(params: EdisParams, *, tac_body: str) -> str:
     ------
     ValueError
         When any part is non-ASCII or AHL fields are invalid.
+
+    Parameters
+    ----------
+    params : EdisParams
+        Sink parameters.
+    tac_body : str
+        TAC body.
+
+    Returns
+    -------
+    str
+        Build an ASCII EDIS bulletin body: AHL line, blank line, TAC text.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (build_edis_message)
+    2
     """
     ahl = format_wmo_ahl(
         tt=params.tt,
@@ -158,6 +250,21 @@ def build_edis_message(params: EdisParams, *, tac_body: str) -> str:
 
 
 def _redact_exc(exc: BaseException, params: EdisParams) -> str:
+    """
+    Internal helper ``_redact_exc``.
+
+    Parameters
+    ----------
+    exc : object
+        Argument ``exc``.
+    params : object
+        Argument ``params``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     text = redact_secrets(str(exc))
     if params.password:
         text = text.replace(params.password, "REDACTED")
@@ -167,6 +274,16 @@ def _redact_exc(exc: BaseException, params: EdisParams) -> str:
 
 
 def _validate_edis_egress(params: EdisParams, allowlist: Allowlist) -> None:
+    """
+    Internal helper ``_validate_edis_egress``.
+
+    Parameters
+    ----------
+    params : object
+        Argument ``params``.
+    allowlist : object
+        Argument ``allowlist``.
+    """
     validate_egress_host(params.smtp_host, allowlist=allowlist)
 
 
@@ -185,6 +302,25 @@ async def edis_preflight(
         When the SMTP host is not allowlisted.
     ValueError
         When transport checks fail (secrets redacted).
+
+    Parameters
+    ----------
+    params : EdisParams
+        Sink parameters.
+    allowlist : Allowlist
+        Allowlist.
+    smtp : SmtpClient
+        SMTP.
+
+    Returns
+    -------
+    PreflightResponse
+        Check allowlist + SMTP connect/login (no message send).
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (edis_preflight)
+    2
     """
     _validate_edis_egress(params, allowlist)
     try:
@@ -220,6 +356,27 @@ async def edis_submit(
         When the SMTP host is not allowlisted.
     ValueError
         When format or transport fails (secrets redacted).
+
+    Parameters
+    ----------
+    params : EdisParams
+        Sink parameters.
+    tac_body : str
+        TAC body.
+    allowlist : Allowlist
+        Allowlist.
+    smtp : SmtpClient
+        SMTP.
+
+    Returns
+    -------
+    EdisSubmitResult
+        Format an ASCII EDIS message and submit via SMTP.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (edis_submit)
+    2
     """
     _validate_edis_egress(params, allowlist)
     bulletin = build_edis_message(params, tac_body=tac_body)

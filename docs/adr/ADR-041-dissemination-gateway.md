@@ -32,7 +32,7 @@ Spike [#927](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/927) asks for a **s
 
    **Implementation (Planned):** thin registry dispatching to existing sink functions by `gateway_kind` (`edis` | `wis2` | `amhs` | `swim` | `afs` | `db` | …).
 
-3. **SinkAdapter remains** the drawer/backend dispatch Protocol; Gateway is the **epic #922 narrative facade** over the same adapters — not a second parallel interface in HTTP v1.
+3. **SinkAdapter remains** the drawer/backend dispatch Protocol; Gateway is the **epic #922 narrative facade** over the same adapters, not a second parallel interface in HTTP v1.
 
 4. **DisseminationPlan** (documented; runtime deferred to #931 / #936):
 
@@ -47,7 +47,7 @@ Spike [#927](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/927) asks for a **s
 
 6. **GatewayHealth minimum fields:** `ok`, `gateway`, `connectivity_ok`, `detail` (operator-safe).
 
-7. **EDIS / AFTN policy (#928):** Dissemination transport is **separate from IWXXM format**. Raw IWXXM XML is **not** AFTN/EDIS-safe as-is (binary/non-alphanumeric). EDIS path uses **ASCII AHL + TAC body** (`build_edis_message`). IWXXM-over-AFS requires explicit transform/bulletin policy — out of #927 spike code.
+7. **EDIS / AFTN policy (#928):** Dissemination transport is **separate from IWXXM format**. Raw IWXXM XML is **not** AFTN/EDIS-safe as-is (binary/non-alphanumeric). EDIS path uses **ASCII AHL + TAC body** (`build_edis_message`). IWXXM-over-AFS requires explicit transform/bulletin policy; out of #927 spike code.
 
 8. **WIS2box BYOC + DMZ (#929):** Topology: operator browser → backend API (allowlist) → egress to operator MQTT broker + dataset URL. Publisher emits **dataset PUT** then **WIS2 notification** (`build_wis2_notification`). No platform-hosted wis2box in prod (ADR-030 harness only).
 
@@ -82,9 +82,9 @@ Spike [#927](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/927) asks for a **s
 ### Negative / follow-ups
 
 - `health()` and Plan runtime = new build cycles
-- Live AFTN (#909) still distinct pathway — gateway contract does not imply live wire
+- Live AFTN (#909) still distinct pathway; gateway contract does not imply live wire
 
 ## References
 
-- Context: dissemination-gateway-927 (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate)
+- Context: dissemination-gateway-927 (archived; see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate)
 - EV-927 session report `927-dissemination-gateway.md`

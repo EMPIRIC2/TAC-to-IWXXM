@@ -11,15 +11,23 @@ from tac_validate import membership
 from tac_validate.issue_registry import issue_from
 from tac_validate.models import Issue
 
-_ICAO = re.compile(r"\b[A-Z]{4}\b")
+# Letter-first location indicator; digits allowed (US METAR e.g. K10U). #1476
+_ICAO = re.compile(r"\b[A-Z][A-Z0-9]{3}\b")
 _OBS_TIME = re.compile(r"\b\d{6}Z\b")
 _WIND = re.compile(r"\b(?:(?:VRB|\d{3})\d{2,3}(?:G\d{2,3})?(?:KT|MPS)|CALM)\b")
 # Extreme direction variation group (Guidance: counter-clockwise then clockwise).
 _WIND_DIR_VAR = re.compile(r"^\d{3}V\d{3}$")
-# R2: CAVOK | statute miles (incl. fractions / M|P prefix) | 4-digit meters (9999).
-_VIS_OK = re.compile(r"\b(?:CAVOK|P?\d{1,2}SM|[MP]?\d{1,2}/\d{1,2}SM|\d{1,2}\s+[MP]?\d{1,2}/\d{1,2}SM|\d{4})\b")
+# R2: CAVOK | statute miles (incl. fractions / M|P prefix) | 4-digit meters (9999)
+# | unobserved visibility //// or ////SM. A word boundary does not match before
+# a solidus, and the first four slashes of ////// are not a visibility group.
+_VIS_NOT_OBS = r"(?<![A-Z0-9/])////(?:SM)?(?![A-Z0-9/])"
+_VIS_OK = re.compile(
+    rf"(?:\b(?:CAVOK|P?\d{{1,2}}SM|[MP]?\d{{1,2}}/\d{{1,2}}SM|\d{{1,2}}\s+[MP]?\d{{1,2}}/\d{{1,2}}SM|\d{{4}})\b|{_VIS_NOT_OBS})"
+)
+# Reject KM / MILES / 5+ digit metre runs. Lookbehind skips CIS runway-state
+# groups like R19/010060 so the six-digit field is not read as visibility.
 _VIS_BAD = re.compile(
-    r"\b(\d+KM|\d+MILES|\d{5,})\b",
+    r"(?<![A-Z0-9/])(\d+KM|\d+MILES|\d{5,})\b",
     re.IGNORECASE,
 )
 # R3: WMO 306 Table 4678 subset - intensity / descriptor / phenomenon grammar.
@@ -56,13 +64,21 @@ _RVR = re.compile(r"^R\d{2}")
 # R8: RVR runway visual range (simplified ICAO/US shapes).
 # ICAO tendency U|D|N may follow the value (and optional FT for US). EV-040: R12/1000U
 # from WMO A3-1 is valid - prior pattern only allowed bare N/FT, not U/D.
-_RVR_OK = re.compile(r"^R\d{2}[LCR]?/(?:[MP]?\d{4}(?:V[MP]?\d{4})?|////)(?:FT)?[UDN]?$")
+# Canadian MANOBS may insert '/' before tendency (…FT/N, …FT/D).
+_RVR_OK = re.compile(r"^R\d{2}[LCR]?/(?:[MP]?\d{4}(?:V[MP]?\d{4})?|////)(?:FT)?(?:/[UDN]|[UDN])?$")
+# CIS/Russian runway-state deposit group (Rxx/dddddd) is not ICAO RVR — skip R8.
+_RVR_RUNWAY_STATE = re.compile(r"^R\d{2}[LCR]?/\d{6}$")
+# BoM AUTO dewpoint-not-observable (temp present, dewpoint solidus).
+# Trailing solidi are non-word chars, so do not use a trailing \\b.
+_TEMP_DEWPOINT_NIL = re.compile(r"\bM?\d{2}///(?=\s|$|=)")
 # WMO AHL heading: T1T2A1A2ii CCCC YYGGgg [BBB] - YYGGgg must not be treated as visibility.
 _AHL_HEADING_LINE = re.compile(r"^[A-Z]{2}[A-Z]{2}\d{2}\s+[A-Z]{4}\s+\d{6}(?:\s+[A-Z]{3})?\s*$")
 _WIND_TOKEN = re.compile(r"(?:KT|MPS)$|^CALM$")
 _CLOUD_START = re.compile(r"^(?:FEW|SCT|BKN|OVC|VV|NSC|NCD|SKC|CLR)")
 # R4: FEW|SCT|BKN|OVC + 3-digit height + optional CB|TCU; VV###|VV///; NSC|NCD|SKC|CLR.
-_CLOUD_OK = re.compile(r"^(?:(?:FEW|SCT|BKN|OVC)\d{3}(?:CB|TCU)?|VV(?:\d{3}|///)|NSC|NCD|SKC|CLR)$")
+_CLOUD_OK = re.compile(
+    r"^(?:(?:FEW|SCT|BKN|OVC)(?:\d{3}(?:CB|TCU|///)?|///(?:CB|TCU)?)|VV(?:\d{3}|///)|NSC|NCD|SKC|CLR)$"
+)
 _CLOUD_LIKE = re.compile(r"^(?:FEW|SCT|BKN|OVC|VV|NSC|NCD|SKC|CLR|[A-Z]{3}\d{3})")
 # Layered amounts only (NSC exclusivity / TC-EV023-001) - not VV/NSC/NCD/SKC/CLR.
 _LAYER_CLOUD_TOKEN = re.compile(r"^(?:FEW|SCT|BKN|OVC)\d{3}(?:CB|TCU)?$")
@@ -122,13 +138,19 @@ _NXT_MSG_LINE = re.compile(r"(?m)^\s*NXT\s+MSG\s*:\s*(.*)$", re.IGNORECASE)
 # F23 theme G1 - general SIGMET exceptional TAC shapes (#733).
 _SIGMET_POINT_COORD = re.compile(r"\b[NS]\d{4,5}\s+[EW]\d{5,7}\b")
 _SIGMET_LEVEL_RANGE = re.compile(
-    r"\b(?:FL\d{3}/\d{3}|SFC/FL\d{3}|\d{4}/\d{4}FT)\b",
+    r"\b(?:FL\d{3}/\d{3}|SFC/FL\d{3}|\d{4}/\d{4}FT|\d{3,4}(?:FT|M)/FL\d{2,3})\b",
 )
 _SIGMET_SINGLE_LEVEL = re.compile(r"\b(?:FL\d{3}|\d{4}(?:FT|M))\b")
 _SIGMET_TOP_ABV_BLW = re.compile(r"\bTOP\s+(?:ABV|BLW)\b")
 _SIGMET_WI = re.compile(r"\bWI\b")
 _SIGMET_STNR = re.compile(r"\bSTNR\b")
 _SIGMET_MOV = re.compile(r"\bMOV\b")
+# Habana-style idiom: MOV immediately followed by STNR (no direction/speed).
+_SIGMET_MOV_STNR_ADJACENT = re.compile(r"\bMOV\s+STNR\b")
+# Directional movement (compass) — conflicts with STNR when both appear.
+_SIGMET_MOV_DIR = re.compile(
+    r"\bMOV\s+(?:N|NE|E|SE|S|SW|W|NW)\b",
+)
 _SIGMET_CNL = re.compile(r"\bCNL\b")
 _SIGMET_COR = re.compile(r"\bCOR\b")
 _SIGMET_SEQ = re.compile(r"\bSIGMET\s+(\d{1,3})\b")
@@ -141,14 +163,22 @@ _SIGMET_OBS_FCST = re.compile(r"\b(?:OBS|FCST)\b")
 _SIGMET_INTENSITY = re.compile(r"\b(?:INTSF|WKN|NC)\b")
 _SIGMET_VA_TOKEN = re.compile(r"\bVA\b")
 _SIGMET_TC_TOKEN = re.compile(r"\bTC\b")
-_SIGMET_VA_VOLCANO = re.compile(r"\bMT\b.+\bPSN\b|\bPSN\b.+\bMT\b")
+# Volcano identity: Annex-3 ``MT … PSN``, or operational ``VA [ERUPTION] [MT] NAME PSN``
+# (MHTG live form omits ``MT`` / ``ERUPTION``). Do not treat ``VA CLD`` as a name.
+_SIGMET_VA_VOLCANO = re.compile(
+    r"\bMT\b.+\bPSN\b"
+    r"|\bPSN\b.+\bMT\b"
+    r"|\bVA(?:\s+ERUPTION)?(?:\s+MT)?\s+(?!CLD\b)[A-Z][A-Z0-9 \-]{0,40}?\bPSN\b"
+)
 _SIGMET_VA_CLD = re.compile(r"\bVA\s+CLD\b")
 _SIGMET_NO_VA_EXP = re.compile(r"\bNO\s+VA\s+EXP\b")
 _SIGMET_CNL_FIR_MOVED = re.compile(r"\b(?:AND|MOV)\s+TO\s+FIR\b")
 # TC SIGMET - name/PSN identity vs OF TC CENTRE geometry (#829).
-_SIGMET_TC_IDENTITY = re.compile(r"\bTC\s+(?!CENTRE\b)([A-Z][A-Z0-9-]*)\s+PSN\b")
+# Identity: ``TC name PSN`` (Annex 3) or ``TC name OBS AT`` (US WC without PSN).
+# Exclude CENTRE/CENTER so ``TC CENTRE PSN`` forecast lines are not names.
+_SIGMET_TC_IDENTITY = re.compile(r"\bTC\s+(?!CENTRE\b|CENTER\b)([A-Z][A-Z0-9-]*)\s+(?:PSN\b|OBS\s+AT\b)")
 _SIGMET_OF_TC_CENTRE = re.compile(r"\bOF\s+TC\s+CENTRE\b")
-_SIGMET_TC_NAME = re.compile(r"\bTC\s+(?!CENTRE\b)([A-Z][A-Z0-9-]*)\b")
+_SIGMET_TC_NAME = re.compile(r"\bTC\s+(?!CENTRE\b|CENTER\b)([A-Z][A-Z0-9-]*)\b")
 _WS_MAX_VALIDITY_HOURS = 4.0
 _WV_MAX_VALIDITY_HOURS = 6.0
 _WC_MAX_VALIDITY_HOURS = 6.0
@@ -206,13 +236,53 @@ _RESEARCH_REF_RE = re.compile(
     r"(?:\s*/\s*(?:[A-Za-z]?\d+|#\d+|iwxxm_us))*",
     re.IGNORECASE,
 )
+# Compound feature+theme crumbs first (e.g. ``F26 theme V1``, ``F28 theme SX1``).
+_FN_THEME_RE = re.compile(
+    r"\(?\bF\d+\s+theme\s+[A-Za-z]{0,2}\d+\)?",
+    re.IGNORECASE,
+)
+# Leftover theme crumbs after Fn scrub (``theme V1``).
+_THEME_CRUMB_RE = re.compile(r"\btheme\s+[A-Za-z]{0,2}\d+\b", re.IGNORECASE)
+# Operator-facing messages must not carry evolve / ticket / test ids (EV-048).
+# Keep short Annex-style ``#8`` cites; only strip ``#`` + 3+ digits.
+_PLANNING_REF_RE = re.compile(
+    r"(?:\bTC-[A-Z0-9-]+\b|\bEV-\d+\b|\bADR-\d+\b|\bS0\d+\b|\bUJ-\d+\b|"
+    r"\bE\d{2}-\d+\b|(?<!\w)#\d{3,}\b|\bF\d+\b)",
+    re.IGNORECASE,
+)
+_VAGUE_FILLER_RE = re.compile(r"\bstuff\b", re.IGNORECASE)
+_EMPTY_PARENS_RE = re.compile(r"\(\s*\)")
+_TRAILING_SEP_RE = re.compile(r"\s*[-" + "\u2013\u2014" + r";/]+\s*$")
+_DANGLING_SEP_RE = re.compile(r"\s*[-" + "\u2013\u2014" + r";/]\s*(?:/\s*)+$")
 
 
 def _strip_research_refs(message: str) -> str:
-    """Drop research milestone tokens (T3/S1/R8/…) from operator-facing messages."""
+    """
+    Strip research milestone and planning vocabulary from operator lint messages.
+
+    Parameters
+    ----------
+    message : str
+        Raw issue message (may include research or ticket suffixes).
+
+    Returns
+    -------
+    str
+        Operator-safe message; returns ``message`` unchanged when scrubbing would
+        empty the string.
+    """
     cleaned = _RESEARCH_REF_RE.sub("", message)
+    cleaned = _FN_THEME_RE.sub("", cleaned)
+    cleaned = _THEME_CRUMB_RE.sub("", cleaned)
+    cleaned = _PLANNING_REF_RE.sub("", cleaned)
+    cleaned = _VAGUE_FILLER_RE.sub("", cleaned)
+    cleaned = _EMPTY_PARENS_RE.sub("", cleaned)
+    cleaned = re.sub(r"\s*/\s*/+", " ", cleaned)
+    # Collapse `` - / `` left after removing a middle planning crumb.
+    cleaned = re.sub(r"\s+/\s+", " ", cleaned)
     cleaned = re.sub(r"\s{2,}", " ", cleaned)
-    cleaned = re.sub(r"\s*[-" + "\u2013\u2014" + r";/]+\s*$", "", cleaned).strip()
+    cleaned = _DANGLING_SEP_RE.sub("", cleaned)
+    cleaned = _TRAILING_SEP_RE.sub("", cleaned).strip()
     return cleaned if cleaned else message
 
 
@@ -224,7 +294,27 @@ def _issue(
     end: int,
     location: str = "body",
 ) -> Issue:
-    """Build an Issue via the registry (severity from IssueSpec; message preserved)."""
+    """
+    Internal helper ``_issue``.
+
+    Parameters
+    ----------
+    code : object
+        Argument ``code``.
+    message : object
+        Argument ``message``.
+    start : object
+        Argument ``start``.
+    end : object
+        Argument ``end``.
+    location : object
+        Argument ``location``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return issue_from(
         code,
         message=_strip_research_refs(message),
@@ -235,6 +325,19 @@ def _issue(
 
 
 def _body_span(tac: str) -> tuple[int, int, str]:
+    """
+    Internal helper ``_body_span``.
+
+    Parameters
+    ----------
+    tac : object
+        Argument ``tac``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     stripped = tac.strip()
     if not stripped:
         return 0, len(tac), ""
@@ -243,6 +346,21 @@ def _body_span(tac: str) -> tuple[int, int, str]:
 
 
 def _first_icao(tokens: list[str], skip: frozenset[str]) -> str | None:
+    """
+    Internal helper ``_first_icao``.
+
+    Parameters
+    ----------
+    tokens : object
+        Argument ``tokens``.
+    skip : object
+        Argument ``skip``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     for tok in tokens:
         if tok in skip:
             continue
@@ -252,6 +370,21 @@ def _first_icao(tokens: list[str], skip: frozenset[str]) -> str | None:
 
 
 def _token_index(tokens: list[str], matcher: re.Pattern[str]) -> int | None:
+    """
+    Internal helper ``_token_index``.
+
+    Parameters
+    ----------
+    tokens : object
+        Argument ``tokens``.
+    matcher : object
+        Argument ``matcher``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     for i, tok in enumerate(tokens):
         if matcher.fullmatch(tok):
             return i
@@ -259,6 +392,21 @@ def _token_index(tokens: list[str], matcher: re.Pattern[str]) -> int | None:
 
 
 def _first_icao_index(tokens: list[str], skip: frozenset[str]) -> int | None:
+    """
+    Internal helper ``_first_icao_index``.
+
+    Parameters
+    ----------
+    tokens : object
+        Argument ``tokens``.
+    skip : object
+        Argument ``skip``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     for i, tok in enumerate(tokens):
         if tok in skip:
             continue
@@ -268,10 +416,23 @@ def _first_icao_index(tokens: list[str], skip: frozenset[str]) -> int | None:
 
 
 def _consume_wx_descriptors(rest: str) -> str:
+    """
+    Internal helper ``_consume_wx_descriptors``.
+
+    Parameters
+    ----------
+    rest : object
+        Argument ``rest``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     while len(rest) >= 2:
         matched = False
         for desc in _WX_DESCRIPTORS:
-            if rest.startswith(desc):
+            if rest.startswith(desc) and len(rest) > len(desc):
                 rest = rest[len(desc) :]
                 matched = True
                 break
@@ -281,7 +442,19 @@ def _consume_wx_descriptors(rest: str) -> str:
 
 
 def _is_valid_weather_token(token: str) -> bool:
-    """Return True when ``token`` is a valid A3-2 present weather group (4678 subset)."""
+    """
+    Internal helper ``_is_valid_weather_token``.
+
+    Parameters
+    ----------
+    token : object
+        Argument ``token``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if token in _WX_SPECIAL:
         return True
     if not _WX_TOKEN_SHAPE.fullmatch(token):
@@ -295,6 +468,8 @@ def _is_valid_weather_token(token: str) -> bool:
         rest = rest[1:]
     if not rest:
         return False
+    if rest == "VCSH":
+        return True
     if rest.endswith(("+", "-")):
         return False
     rest = _consume_wx_descriptors(rest)
@@ -315,7 +490,19 @@ def _is_valid_weather_token(token: str) -> bool:
 
 
 def _weather_candidate_tokens(tokens: list[str]) -> list[tuple[int, str]]:
-    """Return (index, token) pairs for optional present-weather groups after visibility."""
+    """
+    Internal helper ``_weather_candidate_tokens``.
+
+    Parameters
+    ----------
+    tokens : object
+        Argument ``tokens``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     wind_i = _token_index(tokens, _WIND)
     if wind_i is None:
         return []
@@ -333,6 +520,23 @@ def _weather_candidate_tokens(tokens: list[str]) -> list[tuple[int, str]]:
 
 
 def _token_span_in_core(core: str, token: str, body_start: int) -> tuple[int, int] | None:
+    """
+    Internal helper ``_token_span_in_core``.
+
+    Parameters
+    ----------
+    core : object
+        Argument ``core``.
+    token : object
+        Argument ``token``.
+    body_start : object
+        Argument ``body_start``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     match = re.search(r"\b" + re.escape(token) + r"\b", core)
     if not match:
         return None
@@ -340,7 +544,19 @@ def _token_span_in_core(core: str, token: str, body_start: int) -> tuple[int, in
 
 
 def _is_valid_cloud_token(token: str) -> bool:
-    """Return True when ``token`` is a valid A3-2 cloud / VV / NSC-class group."""
+    """
+    Internal helper ``_is_valid_cloud_token``.
+
+    Parameters
+    ----------
+    token : object
+        Argument ``token``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return bool(_CLOUD_OK.fullmatch(token))
 
 
@@ -353,7 +569,29 @@ def _membership_issue(
     end: int,
     location: str,
 ) -> Issue:
-    """Build ``UNKNOWN_WMO_MEMBERSHIP`` for a token missing from a harvested family."""
+    """
+    Internal helper ``_membership_issue``.
+
+    Parameters
+    ----------
+    product : object
+        Argument ``product``.
+    token : object
+        Argument ``token``.
+    family : object
+        Argument ``family``.
+    start : object
+        Argument ``start``.
+    end : object
+        Argument ``end``.
+    location : object
+        Argument ``location``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return _issue(
         "UNKNOWN_WMO_MEMBERSHIP",
         f"{product} token {token!r} not in WMO register ({family})",
@@ -364,7 +602,19 @@ def _membership_issue(
 
 
 def _weather_in_register(token: str) -> bool:
-    """Return True when present-weather ``token`` is in harvested WMO sets."""
+    """
+    Internal helper ``_weather_in_register``.
+
+    Parameters
+    ----------
+    token : object
+        Argument ``token``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if token in {"//"}:
         return True
     return membership.is_member("present_or_forecast_weather", token) or membership.is_member("weather_306_4678", token)
@@ -377,7 +627,25 @@ def _check_phenomenon_membership(
     start: int,
     end: int,
 ) -> list[Issue]:
-    """Emit membership errors for SIGMET/AIRMET phenomenon candidates (EV-050)."""
+    """
+    Internal helper ``_check_phenomenon_membership``.
+
+    Parameters
+    ----------
+    upper : object
+        Argument ``upper``.
+    product : object
+        Argument ``product``.
+    start : object
+        Argument ``start``.
+    end : object
+        Argument ``end``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     family = "airwx_phenomena" if product == "AIRMET" else "sigwx_phenomena"
     pattern = _AIRMET_PHENOM_CANDIDATE if product == "AIRMET" else _SIGMET_PHENOM_CANDIDATE
     issues: list[Issue] = []
@@ -404,7 +672,19 @@ def _check_phenomenon_membership(
 
 
 def _cloud_candidate_tokens(tokens: list[str]) -> list[tuple[int, str]]:
-    """Return (index, token) pairs for cloud-like groups after wind / visibility / wx."""
+    """
+    Internal helper ``_cloud_candidate_tokens``.
+
+    Parameters
+    ----------
+    tokens : object
+        Argument ``tokens``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     wind_i = _token_index(tokens, _WIND)
     if wind_i is None:
         return []
@@ -433,6 +713,26 @@ def _append_remark_issue(
     body_end: int,
     token: str,
 ) -> None:
+    """
+    Internal helper ``_append_remark_issue``.
+
+    Parameters
+    ----------
+    issues : object
+        Argument ``issues``.
+    code : object
+        Argument ``code``.
+    message : object
+        Argument ``message``.
+    core : object
+        Argument ``core``.
+    body_start : object
+        Argument ``body_start``.
+    body_end : object
+        Argument ``body_end``.
+    token : object
+        Argument ``token``.
+    """
     span = _token_span_in_core(core, token, body_start)
     if span is None:
         start, end = body_start, body_end
@@ -450,10 +750,28 @@ def _check_us_remarks(
     body_end: int,
     profile: str = "annex3",
 ) -> list[Issue]:
-    """Lint US REMARKS after ``RMK`` (research R5 / iwxxm_us L5 overlay).
+    """
+    Internal helper ``_check_us_remarks``.
 
-    Malformed remark tokens are errors under both profiles. ``REMARK_US_EXTENSION``
-    info is emitted only under ``profile=iwxxm_us`` (EV-050 / AC8 true-error fix).
+    Parameters
+    ----------
+    tokens : object
+        Argument ``tokens``.
+    product : object
+        Argument ``product``.
+    core : object
+        Argument ``core``.
+    body_start : object
+        Argument ``body_start``.
+    body_end : object
+        Argument ``body_end``.
+    profile : object
+        Argument ``profile``.
+
+    Returns
+    -------
+    object
+        Return value.
     """
     if "RMK" not in tokens:
         return []
@@ -562,7 +880,29 @@ def _check_ca_manobs(
     body_end: int,
     profile: str = "annex3",
 ) -> list[Issue]:
-    """MANOBS overlay hints for ``profile=ca_eccc`` (EV-064 M3)."""
+    """
+    Internal helper ``_check_ca_manobs``.
+
+    Parameters
+    ----------
+    tokens : object
+        Argument ``tokens``.
+    product : object
+        Argument ``product``.
+    core : object
+        Argument ``core``.
+    body_start : object
+        Argument ``body_start``.
+    body_end : object
+        Argument ``body_end``.
+    profile : object
+        Argument ``profile``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if profile != "ca_eccc":
         return []
     issues: list[Issue] = []
@@ -693,7 +1033,29 @@ def _check_ca_manair(
     body_end: int,
     profile: str = "annex3",
 ) -> list[Issue]:
-    """MANAIR overlay hints for ``profile=ca_eccc`` (EV-064 M4)."""
+    """
+    Internal helper ``_check_ca_manair``.
+
+    Parameters
+    ----------
+    tokens : object
+        Argument ``tokens``.
+    product : object
+        Argument ``product``.
+    core : object
+        Argument ``core``.
+    body_start : object
+        Argument ``body_start``.
+    body_end : object
+        Argument ``body_end``.
+    profile : object
+        Argument ``profile``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if profile != "ca_eccc" or product != "TAF":
         return []
     issues: list[Issue] = []
@@ -731,7 +1093,29 @@ def _check_in_imd_taf(
     body_end: int,
     profile: str = "annex3",
 ) -> list[Issue]:
-    """IN_IMD overlay: info when TAF omits TX/TN (EV-094 M5 / #1098)."""
+    """
+    Internal helper ``_check_in_imd_taf``.
+
+    Parameters
+    ----------
+    tokens : object
+        Argument ``tokens``.
+    product : object
+        Argument ``product``.
+    core : object
+        Argument ``core``.
+    body_start : object
+        Argument ``body_start``.
+    body_end : object
+        Argument ``body_end``.
+    profile : object
+        Argument ``profile``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if profile != "in_imd" or product != "TAF":
         return []
     if any(_TAF_TX_TN.fullmatch(tok) for tok in tokens):
@@ -761,7 +1145,27 @@ def _check_ca_gfa_airmet(
     body_end: int,
     profile: str = "annex3",
 ) -> list[Issue]:
-    """MANAIR GFA overlay hints for ``profile=ca_eccc`` AIRMET (EV-064 M5)."""
+    """
+    Internal helper ``_check_ca_gfa_airmet``.
+
+    Parameters
+    ----------
+    product : object
+        Argument ``product``.
+    core : object
+        Argument ``core``.
+    body_start : object
+        Argument ``body_start``.
+    body_end : object
+        Argument ``body_end``.
+    profile : object
+        Argument ``profile``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if profile != "ca_eccc" or product != "AIRMET":
         return []
     issues: list[Issue] = []
@@ -800,6 +1204,26 @@ def _emit_token_info(
     body_end: int,
     token: str,
 ) -> None:
+    """
+    Internal helper ``_emit_token_info``.
+
+    Parameters
+    ----------
+    issues : object
+        Argument ``issues``.
+    code : object
+        Argument ``code``.
+    message : object
+        Argument ``message``.
+    core : object
+        Argument ``core``.
+    body_start : object
+        Argument ``body_start``.
+    body_end : object
+        Argument ``body_end``.
+    token : object
+        Argument ``token``.
+    """
     span = _token_span_in_core(core, token, body_start)
     if span is None:
         start, end = body_start, body_end
@@ -809,11 +1233,24 @@ def _emit_token_info(
 
 
 def _forecast_or_obs_segments(tokens: list[str]) -> list[list[str]]:
-    """Split tokens on TEMPO/BECMG/NOSIG/FM*/PROB* so exclusivity is per group."""
+    """
+    Internal helper ``_forecast_or_obs_segments``.
+
+    Parameters
+    ----------
+    tokens : object
+        Argument ``tokens``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     segments: list[list[str]] = []
     current: list[str] = []
     for tok in tokens:
-        if tok in {"TEMPO", "BECMG", "NOSIG"} or _TAF_FM.fullmatch(tok) or _TAF_PROB.fullmatch(tok):
+        # INTER is an AU change-group opener (FAQ §14.3 exclusivity is same-group only).
+        if tok in {"TEMPO", "BECMG", "NOSIG", "INTER"} or _TAF_FM.fullmatch(tok) or _TAF_PROB.fullmatch(tok):
             if current:
                 segments.append(current)
             current = [tok]
@@ -833,7 +1270,24 @@ def _emit_nsc_layer_exclusivity(
     body_start: int,
     body_end: int,
 ) -> None:
-    """Warn when NSC co-occurs with FEW/SCT/BKN/OVC in the same obs/change group."""
+    """
+    Internal helper ``_emit_nsc_layer_exclusivity``.
+
+    Parameters
+    ----------
+    issues : object
+        Argument ``issues``.
+    product : object
+        Argument ``product``.
+    tokens : object
+        Argument ``tokens``.
+    core : object
+        Argument ``core``.
+    body_start : object
+        Argument ``body_start``.
+    body_end : object
+        Argument ``body_end``.
+    """
     for segment in _forecast_or_obs_segments(tokens):
         if "NSC" not in segment:
             continue
@@ -848,7 +1302,7 @@ def _emit_nsc_layer_exclusivity(
         issues.append(
             _issue(
                 "NSC_WITH_CLOUD_LAYERS",
-                f"{product} NSC with FEW/SCT/BKN/OVC in same group - FAQ §14.3 exclusivity (TC-EV023-001)",
+                f"{product} NSC with FEW/SCT/BKN/OVC in same group - FAQ §14.3 exclusivity",
                 start=start,
                 end=end,
                 location="cloud",
@@ -865,7 +1319,27 @@ def _check_r8_pack(
     body_start: int,
     body_end: int,
 ) -> list[Issue]:
-    """AUTO/COR/NOSIG/TEMPO/RVR/VRB·gust info + INVALID_RVR/WIND (research R8)."""
+    """
+    Internal helper ``_check_r8_pack``.
+
+    Parameters
+    ----------
+    tokens : object
+        Argument ``tokens``.
+    product : object
+        Argument ``product``.
+    core : object
+        Argument ``core``.
+    body_start : object
+        Argument ``body_start``.
+    body_end : object
+        Argument ``body_end``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     issues: list[Issue] = []
     if "AUTO" in tokens:
         _emit_token_info(
@@ -910,6 +1384,12 @@ def _check_r8_pack(
 
     for tok in tokens:
         if not _RVR.match(tok):
+            continue
+        # Bare R14R after WS is a wind-shear runway designator, not an RVR group.
+        # True RVR always has '/' after the runway (R14R/P2000N).
+        if "/" not in tok:
+            continue
+        if _RVR_RUNWAY_STATE.fullmatch(tok):
             continue
         if _RVR_OK.fullmatch(tok):
             _emit_token_info(
@@ -967,7 +1447,25 @@ def _check_metar_speci_field_order(
     start: int,
     end: int,
 ) -> Issue | None:
-    """Warn when CCCC / ddhhmmZ / wind are present but not in A3-2 body order."""
+    """
+    Internal helper ``_check_metar_speci_field_order``.
+
+    Parameters
+    ----------
+    tokens : object
+        Argument ``tokens``.
+    product : object
+        Argument ``product``.
+    start : object
+        Argument ``start``.
+    end : object
+        Argument ``end``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     cccc_i = _first_icao_index(tokens, _METAR_SPECI_SKIP)
     time_i = _token_index(tokens, _OBS_TIME)
     wind_i = _token_index(tokens, _WIND)
@@ -987,16 +1485,37 @@ def _check_metar_speci_field_order(
 
 
 def _report_segment_count(body: str) -> int:
-    """Count '='-delimited TAC report segments in a bulletin body."""
+    """
+    Internal helper ``_report_segment_count``.
+
+    Parameters
+    ----------
+    body : object
+        Argument ``body``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return sum(1 for part in body.split("=") if part.strip())
 
 
 def _check_c1_multi_report(tac: str, product: str) -> list[Issue]:
     """
-    Emit MULTI_REPORT_BULLETIN when the input packs multiple TAC reports.
+    Internal helper ``_check_c1_multi_report``.
 
-    Guidance common / C1: one IWXXM report object per TAC report. CRS,
-    translationFailedTAC, and COLLECT packing remain convert-only (lint N/A).
+    Parameters
+    ----------
+    tac : object
+        Argument ``tac``.
+    product : object
+        Argument ``product``.
+
+    Returns
+    -------
+    object
+        Return value.
     """
     start, end, body = _body_span(tac)
     if _report_segment_count(body) < 2:
@@ -1055,6 +1574,7 @@ __all__ = [
     "_RMK_T_OK",
     "_RVR",
     "_RVR_OK",
+    "_RVR_RUNWAY_STATE",
     "_SIGMET_CNL",
     "_SIGMET_CNL_FIR_MOVED",
     "_SIGMET_COR",
@@ -1063,6 +1583,8 @@ __all__ = [
     "_SIGMET_INTENSITY",
     "_SIGMET_LEVEL_RANGE",
     "_SIGMET_MOV",
+    "_SIGMET_MOV_DIR",
+    "_SIGMET_MOV_STNR_ADJACENT",
     "_SIGMET_NO_SEQ",
     "_SIGMET_NO_VA_EXP",
     "_SIGMET_OBS_FCST",
@@ -1095,6 +1617,7 @@ __all__ = [
     "_TAF_VIS_SM",
     "_TC_LINE",
     "_TEMP",
+    "_TEMP_DEWPOINT_NIL",
     "_VAAC_LINE",
     "_VALID_PERIOD",
     "_VIS_BAD",

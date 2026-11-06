@@ -26,6 +26,13 @@ describe('profileWire', () => {
   });
 
   it('lists supported aerodrome products', () => {
-    expect(CA_ECCC_SUPPORTED_PRODUCTS).toEqual(['METAR', 'SPECI', 'TAF', 'AIRMET']);
+    expect(CA_ECCC_SUPPORTED_PRODUCTS).toEqual([
+      'METAR',
+      'SPECI',
+      'TAF',
+      'AIRMET',
+      'SIGMET',
+      'VAA',
+    ]);
   });
 });

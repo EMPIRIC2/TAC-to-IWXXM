@@ -28,23 +28,65 @@ _YUDO_ELEV_M = "12"
 
 
 def obs_timestamp(ir: dict[str, Any]) -> str:
-    """Build observation/issue time matching annex3 golden fixtures."""
+    """
+    Build observation/issue time matching annex3 golden fixtures.
+
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Parsed product fields.
+
+    Returns
+    -------
+    str
+        Observation/issue time matching annex3 golden fixtures.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (obs_timestamp)
+    2
+    """
+    from tac2iwxxm.time_anchor import iso_stamp
+
     day = int(ir["day"])
     hour = int(ir["hour"])
     minute = int(ir["minute"])
     # WMO YUDO examples (NIL + A3-1 / A3-2) use 2012-08; other pack cases use 2023-06.
-    if ir.get("station") == "YUDO":
-        return f"2012-08-{day:02d}T{hour:02d}:{minute:02d}:00Z"
-    return f"2023-06-{day:02d}T{hour:02d}:{minute:02d}:00Z"
+    legacy = "2012-08" if ir.get("station") == "YUDO" else "2023-06"
+    return iso_stamp(ir, day, hour, minute, legacy=legacy)
 
 
 def _fmt_cel(value: object) -> str:
-    """Format Celsius for IWXXM (WMO examples use one decimal place)."""
+    """
+    Internal helper ``_fmt_cel``.
+
+    Parameters
+    ----------
+    value : object
+        Argument ``value``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
     return f"{float(str(value)):.1f}"
 
 
 def _fmt_hpa(value: object) -> str:
-    """Format QNH: whole hPa without trailing .0; tenths otherwise."""
+    """
+    Internal helper ``_fmt_hpa``.
+
+    Parameters
+    ----------
+    value : object
+        Argument ``value``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
     fval = float(str(value))
     if fval == int(fval):
         return str(int(fval))
@@ -52,7 +94,22 @@ def _fmt_hpa(value: object) -> str:
 
 
 def _fmt_speed(value: object, *, force_one_decimal: bool = False) -> str:
-    """Format wind speed; WMO mean speeds often use one decimal."""
+    """
+    Internal helper ``_fmt_speed``.
+
+    Parameters
+    ----------
+    value : object
+        Argument ``value``.
+
+    force_one_decimal : bool, optional
+        Argument ``force_one_decimal``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
     fval = float(str(value))
     if force_one_decimal or fval != int(fval):
         return f"{fval:.1f}"
@@ -60,7 +117,22 @@ def _fmt_speed(value: object, *, force_one_decimal: bool = False) -> str:
 
 
 def _annex3_gml_id(ir: dict[str, Any], product: str) -> str:
-    """Stable gml:id for annex3 METAR/SPECI goldens (theme-aware for S3 / W1-W2)."""
+    """
+    Internal helper ``_annex3_gml_id``.
+
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Argument ``ir``.
+
+    product : str
+        Argument ``product``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
     root = product.lower()
     station = str(ir["station"]).lower()
     if ir.get("nil"):
@@ -90,6 +162,22 @@ def _annex3_gml_id(ir: dict[str, Any], product: str) -> str:
 
 
 def _visibility_block(ir: dict[str, Any], *, visibility_extension: str = "") -> str:
+    """
+    Internal helper ``_visibility_block``.
+
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Argument ``ir``.
+
+    visibility_extension : str, optional
+        Argument ``visibility_extension``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
     if ir.get("visibility_not_observable"):
         return f'      <iwxxm:visibility xsi:nil="true" nilReason="{NIL_NOT_OBS}"/>\n'
     vis_op = ""
@@ -115,11 +203,31 @@ def _visibility_block(ir: dict[str, Any], *, visibility_extension: str = "") -> 
 
 
 def _rvr_block(ir: dict[str, Any], *, rvr_extension: str = "") -> str:
+    """
+    Internal helper ``_rvr_block``.
+
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Argument ``ir``.
+
+    rvr_extension : str, optional
+        Argument ``rvr_extension``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
     rvr_raw = ir.get("rvr")
     if not isinstance(rvr_raw, dict):
         # Guidance / Amd79 CWFD: when vis is missing/notObservable and no RVR group,
         # emit empty rvr with common/nil/missing (sensors absent / not reported).
-        if ir.get("visibility_not_observable"):
+        # Schematron METAR_SPECI.MeteorologicalAerodromeObservation-2 also requires
+        # exists(iwxxm:rvr) whenever prevailing visibility is below 1500 m.
+        vis_m = ir.get("visibility_m")
+        low_vis = isinstance(vis_m, (int, float)) and float(vis_m) < 1500
+        if ir.get("visibility_not_observable") or low_vis:
             return f'      <iwxxm:rvr xsi:nil="true" nilReason="{NIL_MISSING}"/>\n'
         return ""
     rvr = cast(dict[str, Any], rvr_raw)
@@ -161,6 +269,19 @@ def _rvr_block(ir: dict[str, Any], *, rvr_extension: str = "") -> str:
 
 
 def _present_weather_block(ir: dict[str, Any]) -> str:
+    """
+    Internal helper ``_present_weather_block``.
+
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Argument ``ir``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
     if ir.get("present_weather_not_observable"):
         return f'      <iwxxm:presentWeather xsi:nil="true" nilReason="{NIL_NOT_OBS}"/>\n'
     codes_raw = ir.get("present_weather")
@@ -174,7 +295,47 @@ def _present_weather_block(ir: dict[str, Any]) -> str:
     return ("\n".join(parts) + "\n") if parts else ""
 
 
+def _recent_weather_block(ir: dict[str, Any]) -> str:
+    """
+    ICAO recent-weather groups (RETS, RESHRA) on the default profile.
+
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Parsed report. ``recent_weather`` is a list of 4678 codes.
+
+    Returns
+    -------
+    str
+        ``iwxxm:recentWeather`` elements, or an empty string.
+    """
+    codes_raw = ir.get("recent_weather")
+    if not isinstance(codes_raw, list):
+        return ""
+    parts: list[str] = []
+    for code in cast(list[Any], codes_raw):
+        href = escape(WX_HREF.format(code=str(code)))
+        parts.append(f'      <iwxxm:recentWeather xlink:href="{href}"/>')
+    return ("\n".join(parts) + "\n") if parts else ""
+
+
 def _cloud_block(ir: dict[str, Any], *, cloud_layer_extension: str = "") -> str:
+    """
+    Internal helper ``_cloud_block``.
+
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Argument ``ir``.
+
+    cloud_layer_extension : str, optional
+        Argument ``cloud_layer_extension``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
     if ir.get("nsc"):
         return f'      <iwxxm:cloud nilReason="{NIL_NSC}"/>\n'
     if ir.get("ncd"):
@@ -212,11 +373,15 @@ def _cloud_block(ir: dict[str, Any], *, cloud_layer_extension: str = "") -> str:
         ext = ""
         if cloud_layer_extension and i == ceil_idx:
             ext = f"\n{cloud_layer_extension}"
+        if layer.get("base_not_observable"):
+            base_xml = f'<iwxxm:base uom="N/A" xsi:nil="true" nilReason="{NIL_NOT_OBS}"/>'
+        else:
+            base_xml = f'<iwxxm:base uom="[ft_i]">{layer["base_ft"]}</iwxxm:base>'
         layer_xml.append(
             f"""          <iwxxm:layer>
             <iwxxm:CloudLayer>
               <iwxxm:amount xlink:href="{escape(href)}"/>
-              <iwxxm:base uom="[ft_i]">{layer["base_ft"]}</iwxxm:base>{ctype_xml}{ext}
+              {base_xml}{ctype_xml}{ext}
             </iwxxm:CloudLayer>
           </iwxxm:layer>"""
         )
@@ -230,6 +395,22 @@ def _cloud_block(ir: dict[str, Any], *, cloud_layer_extension: str = "") -> str:
 
 
 def _surface_wind_inner(ir: dict[str, Any], *, peak_extension: str = "") -> str:
+    """
+    Internal helper ``_surface_wind_inner``.
+
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Argument ``ir``.
+
+    peak_extension : str, optional
+        Argument ``peak_extension``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
     variable = bool(ir.get("wind_variable"))
     var_attr = "true" if variable else "false"
     if variable:
@@ -269,6 +450,22 @@ def _surface_wind_inner(ir: dict[str, Any], *, peak_extension: str = "") -> str:
 
 
 def _trend_phenomenon_time(trend: dict[str, Any], idx: int) -> str:
+    """
+    Internal helper ``_trend_phenomenon_time``.
+
+    Parameters
+    ----------
+    trend : dict[str, Any]
+        Argument ``trend``.
+
+    idx : int
+        Argument ``idx``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
     if trend.get("phenomenon_begin") and trend.get("phenomenon_end"):
         return f"""      <iwxxm:phenomenonTime>
         <gml:TimePeriod gml:id="t.trend.{idx}">
@@ -286,6 +483,19 @@ def _trend_phenomenon_time(trend: dict[str, Any], idx: int) -> str:
 
 
 def _trend_weather_block(trend: dict[str, Any]) -> str:
+    """
+    Internal helper ``_trend_weather_block``.
+
+    Parameters
+    ----------
+    trend : dict[str, Any]
+        Argument ``trend``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
     if trend.get("weather_nsw"):
         return f'\n      <iwxxm:weather nilReason="{NIL_NSC}"/>'
     codes_raw = trend.get("weather")
@@ -299,6 +509,19 @@ def _trend_weather_block(trend: dict[str, Any]) -> str:
 
 
 def _trend_forecasts(ir: dict[str, Any]) -> str:
+    """
+    Internal helper ``_trend_forecasts``.
+
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Argument ``ir``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
     parts: list[str] = []
     forecasts_raw = ir.get("trend_forecasts")
     forecasts: list[dict[str, Any]] = []
@@ -367,23 +590,33 @@ def build_observation_and_trends(
 
     Parameters
     ----------
-    ir :
+    ir : dict[str, Any]
         Parsed METAR/SPECI IR.
-    addendum_extension :
+
+    addendum_extension : str, optional
         Optional observation-level extension XML (iwxxm_us Addendum).
-    peak_extension :
+
+    peak_extension : str, optional
         Optional surface-wind extension XML (iwxxm_us peak wind).
-    rvr_extension :
+
+    rvr_extension : str, optional
         Optional RVR extension XML (iwxxm_us AerodromeVariableRVR).
-    visibility_extension :
+
+    visibility_extension : str, optional
         Optional horizontal-visibility extension XML (SectorVisibility / TowerVisibility).
-    cloud_layer_extension :
+
+    cloud_layer_extension : str, optional
         Optional CloudLayer extension XML (VariableCeilingHeight / VariableSkyCondition).
 
     Returns
     -------
     observation, trends
         XML fragments (each ending with newline when non-empty).
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (build_observation_and_trends)
+    2
     """
     if ir.get("nil"):
         return f'  <iwxxm:observation nilReason="{NIL_MISSING}"/>\n', ""
@@ -394,6 +627,7 @@ def build_observation_and_trends(
     rvr_block = ""
     wx_block = ""
     cloud = ""
+    recent = ""
     if ir.get("ca_minimal_observation"):
         cavok_attr = "false"
     elif not cavok:
@@ -401,6 +635,7 @@ def build_observation_and_trends(
         rvr_block = _rvr_block(ir, rvr_extension=rvr_extension)
         wx_block = _present_weather_block(ir)
         cloud = _cloud_block(ir, cloud_layer_extension=cloud_layer_extension)
+    recent = _recent_weather_block(ir)
 
     if ir.get("temp_not_observable"):
         temp_xml = f'      <iwxxm:airTemperature uom="N/A" xsi:nil="true" nilReason="{NIL_NOT_OBS}"/>\n'
@@ -419,13 +654,26 @@ def build_observation_and_trends(
 
     observation = f"""  <iwxxm:observation>
     <iwxxm:MeteorologicalAerodromeObservation gml:id="obs.1" cloudAndVisibilityOK="{cavok_attr}">
-{temp_xml}{dew_xml}{qnh_xml}{_surface_wind_inner(ir, peak_extension=peak_extension)}{vis_block}{rvr_block}{wx_block}{cloud}{addendum_extension}    </iwxxm:MeteorologicalAerodromeObservation>
+{temp_xml}{dew_xml}{qnh_xml}{_surface_wind_inner(ir, peak_extension=peak_extension)}{vis_block}{rvr_block}{wx_block}{cloud}{recent}{addendum_extension}    </iwxxm:MeteorologicalAerodromeObservation>
   </iwxxm:observation>
 """
     return observation, _trend_forecasts(ir)
 
 
 def _aerodrome_block(station: str) -> str:
+    """
+    Internal helper ``_aerodrome_block``.
+
+    Parameters
+    ----------
+    station : str
+        Argument ``station``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
     if station == "YUDO":
         return f"""  <iwxxm:aerodrome>
     <aixm:AirportHeliport gml:id="ad.{station.lower()}">
@@ -477,17 +725,24 @@ def emit_metar_speci_annex3(
 
     Parameters
     ----------
-    ir :
+    ir : dict[str, Any]
         Parsed METAR/SPECI IR.
-    product :
+
+    product : str
         ``METAR`` or ``SPECI``.
-    iwxxm_version :
+
+    iwxxm_version : str
         Release line (namespace selection).
 
     Returns
     -------
     str
         IWXXM XML document.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (emit_metar_speci_annex3)
+    2
     """
     ns = NS.get(iwxxm_version)
     if ns is None:

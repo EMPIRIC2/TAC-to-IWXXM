@@ -1,0 +1,248 @@
+rule_id: VA_CNL_FIR_MOVED
+engine: lint
+cases:
+- bucket: happy
+  case_id: '01'
+  status: ready
+  tac: FAJA SIGMET E01 VALID 231413/231800 FAOR- CNL SIGMET 1 231200/231600 AND TO
+    FIR EGTT=
+  expect:
+    accept: true
+    codes:
+    - VA_CNL_FIR_MOVED
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 VA_CNL_FIR_MOVED/happy NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'
+- bucket: happy
+  case_id: '02'
+  status: ready
+  tac: FAJO SIGMET A01 VALID 231417/231800 FAOR- CNL SIGMET 1 231200/231600 AND TO
+    FIR EGTT=
+  expect:
+    accept: true
+    codes:
+    - VA_CNL_FIR_MOVED
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 VA_CNL_FIR_MOVED/happy NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'
+- bucket: happy
+  case_id: '03'
+  status: ready
+  tac: FAJO SIGMET F01 VALID 231420/231800 FAOR- CNL SIGMET 1 231200/231600 AND TO
+    FIR EGTT=
+  expect:
+    accept: true
+    codes:
+    - VA_CNL_FIR_MOVED
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 VA_CNL_FIR_MOVED/happy NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'
+- bucket: happy
+  case_id: '04'
+  status: ready
+  tac: FAJO SIGMET H01 VALID 231420/231800 FAOR- CNL SIGMET 1 231200/231600 AND TO
+    FIR EGTT=
+  expect:
+    accept: true
+    codes:
+    - VA_CNL_FIR_MOVED
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 VA_CNL_FIR_MOVED/happy NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'
+- bucket: happy
+  case_id: '05'
+  status: ready
+  tac: SAVF SIGMET 4 VALID 231334/231734 SABE- CNL SIGMET 1 231200/231600 AND TO FIR
+    EGTT=
+  expect:
+    accept: true
+    codes:
+    - VA_CNL_FIR_MOVED
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 VA_CNL_FIR_MOVED/happy NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'
+- bucket: sad
+  case_id: '01'
+  status: ready
+  tac: FAJA SIGMET E01 VALID 231413/231800 FAOR- CNL SIGMET 1 231200/231600=
+  expect:
+    accept: true
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 VA_CNL_FIR_MOVED/sad NOAA tgftp + aviationweather.gov retrieved 2026-09-23'
+- bucket: sad
+  case_id: '02'
+  status: ready
+  tac: FAJO SIGMET A01 VALID 231417/231800 FAOR- CNL SIGMET 1 231200/231600=
+  expect:
+    accept: true
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 VA_CNL_FIR_MOVED/sad NOAA tgftp + aviationweather.gov retrieved 2026-09-23'
+- bucket: sad
+  case_id: '03'
+  status: ready
+  tac: FAJO SIGMET F01 VALID 231420/231800 FAOR- CNL SIGMET 1 231200/231600=
+  expect:
+    accept: true
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 VA_CNL_FIR_MOVED/sad NOAA tgftp + aviationweather.gov retrieved 2026-09-23'
+- bucket: sad
+  case_id: '04'
+  status: ready
+  tac: FAJO SIGMET H01 VALID 231420/231800 FAOR- CNL SIGMET 1 231200/231600=
+  expect:
+    accept: true
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 VA_CNL_FIR_MOVED/sad NOAA tgftp + aviationweather.gov retrieved 2026-09-23'
+- bucket: sad
+  case_id: '05'
+  status: ready
+  tac: SAVF SIGMET 4 VALID 231334/231734 SABE- CNL SIGMET 1 231200/231600=
+  expect:
+    accept: true
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 VA_CNL_FIR_MOVED/sad NOAA tgftp + aviationweather.gov retrieved 2026-09-23'
+- bucket: edge_pass
+  case_id: '01'
+  status: ready
+  tac: FAJA SIGMET E01 VALID 231413/231800 FAOR- CNL SIGMET 1 231200/231600 AND TO
+    FIR EGTT=
+  expect:
+    accept: true
+    codes:
+    - VA_CNL_FIR_MOVED
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 VA_CNL_FIR_MOVED/edge_pass NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'
+- bucket: edge_pass
+  case_id: '02'
+  status: ready
+  tac: FAJO SIGMET A01 VALID 231417/231800 FAOR- CNL SIGMET 1 231200/231600 AND TO
+    FIR EGTT=
+  expect:
+    accept: true
+    codes:
+    - VA_CNL_FIR_MOVED
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 VA_CNL_FIR_MOVED/edge_pass NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'
+- bucket: edge_pass
+  case_id: '03'
+  status: ready
+  tac: FAJO SIGMET F01 VALID 231420/231800 FAOR- CNL SIGMET 1 231200/231600 AND TO
+    FIR EGTT=
+  expect:
+    accept: true
+    codes:
+    - VA_CNL_FIR_MOVED
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 VA_CNL_FIR_MOVED/edge_pass NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'
+- bucket: edge_pass
+  case_id: '04'
+  status: ready
+  tac: FAJO SIGMET H01 VALID 231420/231800 FAOR- CNL SIGMET 1 231200/231600 AND TO
+    FIR EGTT=
+  expect:
+    accept: true
+    codes:
+    - VA_CNL_FIR_MOVED
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 VA_CNL_FIR_MOVED/edge_pass NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'
+- bucket: edge_pass
+  case_id: '05'
+  status: ready
+  tac: SAVF SIGMET 4 VALID 231334/231734 SABE- CNL SIGMET 1 231200/231600 AND TO FIR
+    EGTT=
+  expect:
+    accept: true
+    codes:
+    - VA_CNL_FIR_MOVED
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 VA_CNL_FIR_MOVED/edge_pass NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'
+- bucket: edge_fail
+  case_id: '01'
+  status: ready
+  tac: FAJA SIGMET E01 VALID 231413/231800 FAOR- CNL SIGMET 1 231200/231600=
+  expect:
+    accept: true
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 VA_CNL_FIR_MOVED/edge_fail NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'
+- bucket: edge_fail
+  case_id: '02'
+  status: ready
+  tac: FAJO SIGMET A01 VALID 231417/231800 FAOR- CNL SIGMET 1 231200/231600=
+  expect:
+    accept: true
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 VA_CNL_FIR_MOVED/edge_fail NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'
+- bucket: edge_fail
+  case_id: '03'
+  status: ready
+  tac: FAJO SIGMET F01 VALID 231420/231800 FAOR- CNL SIGMET 1 231200/231600=
+  expect:
+    accept: true
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 VA_CNL_FIR_MOVED/edge_fail NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'
+- bucket: edge_fail
+  case_id: '04'
+  status: ready
+  tac: FAJO SIGMET H01 VALID 231420/231800 FAOR- CNL SIGMET 1 231200/231600=
+  expect:
+    accept: true
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 VA_CNL_FIR_MOVED/edge_fail NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'
+- bucket: edge_fail
+  case_id: '05'
+  status: ready
+  tac: SAVF SIGMET 4 VALID 231334/231734 SABE- CNL SIGMET 1 231200/231600=
+  expect:
+    accept: true
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 VA_CNL_FIR_MOVED/edge_fail NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'

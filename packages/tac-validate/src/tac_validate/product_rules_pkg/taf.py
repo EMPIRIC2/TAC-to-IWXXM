@@ -8,10 +8,27 @@ import re
 
 from tac_validate.models import Issue
 from tac_validate.product_rules_pkg._common import *
+from tac_validate.station_scoped_policy import accepts_end_tx_tn
+from tac_validate.taf_amd import amd_modifier_present
+from tac_validate.taf_prob import ProbGroupKind, classify_probability_group
 
 
 def _check_taf(tac: str, *, profile: str = "annex3") -> list[Issue]:
-    """TAF checklist - A5-1 template gates + F20 T1 NIL/CNL/AMD/COR."""
+    """
+    Internal helper ``_check_taf``.
+
+    Parameters
+    ----------
+    tac : object
+        Argument ``tac``.
+    profile : object
+        Argument ``profile``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     # ruff: noqa: F403, F405
     start, end, body = _body_span(tac)
     upper = body.upper()
@@ -45,7 +62,7 @@ def _check_taf(tac: str, *, profile: str = "annex3") -> list[Issue]:
 
     # T1 NIL: missing forecast ends the message (A5-1 #4) - skip validity body gates.
     if "NIL" in tokens:
-        if "AMD" in tokens:
+        if amd_modifier_present(tokens):
             _emit_token_info(
                 issues,
                 code="AMD_PRESENT",
@@ -99,7 +116,7 @@ def _check_taf(tac: str, *, profile: str = "annex3") -> list[Issue]:
             )
         )
 
-    if "AMD" in tokens:
+    if amd_modifier_present(tokens):
         _emit_token_info(
             issues,
             code="AMD_PRESENT",
@@ -155,7 +172,7 @@ def _check_taf(tac: str, *, profile: str = "annex3") -> list[Issue]:
         body_start=start,
         body_end=end,
     )
-    # T3 - TX/TN base-only; CAVOK / NSC / NSW / VV/// (Guidance exceptional).
+    # T3 - TX/TN base-only (annex3); us_military accepts end TX/TN.
     _check_taf_t3_elements(
         issues,
         tokens=tokens,
@@ -163,6 +180,7 @@ def _check_taf(tac: str, *, profile: str = "annex3") -> list[Issue]:
         core=core,
         body_start=start,
         body_end=end,
+        profile=profile,
     )
     issues.extend(
         _check_ca_manair(
@@ -195,6 +213,31 @@ def _check_taf(tac: str, *, profile: str = "annex3") -> list[Issue]:
         )
     )
 
+    spaced_cavok = any(tokens[i : i + 5] == ["C", "A", "V", "O", "K"] for i in range(max(0, len(tokens) - 4)))
+    issues.extend(
+        _issue(
+            "MALFORMED_SOURCE_TOKEN",
+            f"{product} looks like a source typo or garbled group {tok!r}",
+            start=start,
+            end=end,
+            location="body",
+        )
+        for tok in tokens
+        if tok in {"-VCTSRA", "SC045", "BKN0206", "ECMG"}
+        or re.fullmatch(r"\d{4}/\d{5}", tok)
+        or re.fullmatch(r"(?:FEW|SCT|BKN|OVC)\d{4,}", tok)
+    )
+    if spaced_cavok:
+        issues.append(
+            _issue(
+                "MALFORMED_SOURCE_TOKEN",
+                f"{product} looks like a source typo or garbled group 'C A V O K'",
+                start=start,
+                end=end,
+                location="body",
+            )
+        )
+
     return issues
 
 
@@ -207,7 +250,29 @@ def _check_us_faa_nws_taf(
     body_end: int,
     profile: str = "annex3",
 ) -> list[Issue]:
-    """US_FAA_NWS TAF overlay rules for ``profile=iwxxm_us`` (#919 M13)."""
+    """
+    Internal helper ``_check_us_faa_nws_taf``.
+
+    Parameters
+    ----------
+    tokens : object
+        Argument ``tokens``.
+    product : object
+        Argument ``product``.
+    core : object
+        Argument ``core``.
+    body_start : object
+        Argument ``body_start``.
+    body_end : object
+        Argument ``body_end``.
+    profile : object
+        Argument ``profile``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if profile != "iwxxm_us" or product != "TAF":
         return []
     issues: list[Issue] = []
@@ -249,7 +314,19 @@ def _check_us_faa_nws_taf(
 
 
 def _taf_first_change_index(tokens: list[str]) -> int | None:
-    """Index of first FM/BECMG/TEMPO/PROB change indicator, if any."""
+    """
+    Internal helper ``_taf_first_change_index``.
+
+    Parameters
+    ----------
+    tokens : object
+        Argument ``tokens``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     for i, tok in enumerate(tokens):
         if tok in {"BECMG", "TEMPO"} or _TAF_FM.fullmatch(tok) or _TAF_PROB.fullmatch(tok):
             return i
@@ -264,14 +341,36 @@ def _check_taf_t3_elements(
     core: str,
     body_start: int,
     body_end: int,
+    profile: str = "annex3",
 ) -> None:
-    """Emit T3 info/error codes for TX/TN and CAVOK/NSC/NSW/VV///."""
+    """
+    Internal helper ``_check_taf_t3_elements``.
+
+    Parameters
+    ----------
+    issues : object
+        Argument ``issues``.
+    tokens : object
+        Argument ``tokens``.
+    product : object
+        Argument ``product``.
+    core : object
+        Argument ``core``.
+    body_start : object
+        Argument ``body_start``.
+    body_end : object
+        Argument ``body_end``.
+    profile : str, optional
+        Lint profile id. ``us_military`` and ``latam_taf`` allow TX/TN after
+        change groups.
+    """
     change_i = _taf_first_change_index(tokens)
     tx_tn_toks = [(i, t) for i, t in enumerate(tokens) if _TAF_TX_TN.fullmatch(t)]
     if tx_tn_toks:
         on_change = any(change_i is not None and i >= change_i for i, _t in tx_tn_toks)
         first_tok = tx_tn_toks[0][1]
-        if on_change:
+        # us_military / latam_taf: trailing TX/TN is info (EV-station-profile-tx-tn).
+        if on_change and not accepts_end_tx_tn(profile):
             _emit_token_info(
                 issues,
                 code="INVALID_TX_TN",
@@ -282,10 +381,11 @@ def _check_taf_t3_elements(
                 token=first_tok,
             )
         else:
+            placement = "after change groups" if on_change else "on base"
             _emit_token_info(
                 issues,
                 code="TX_TN_PRESENT",
-                message=f"{product} TX/TN temperature forecasts on base - research T3",
+                message=f"{product} TX/TN temperature forecasts {placement} - research T3",
                 core=core,
                 body_start=body_start,
                 body_end=body_end,
@@ -351,7 +451,24 @@ def _check_taf_change_groups(
     body_start: int,
     body_end: int,
 ) -> None:
-    """Emit T2 info/error codes for TAF change indicators."""
+    """
+    Internal helper ``_check_taf_change_groups``.
+
+    Parameters
+    ----------
+    issues : object
+        Argument ``issues``.
+    tokens : object
+        Argument ``tokens``.
+    product : object
+        Argument ``product``.
+    core : object
+        Argument ``core``.
+    body_start : object
+        Argument ``body_start``.
+    body_end : object
+        Argument ``body_end``.
+    """
     fm_tok = next((t for t in tokens if _TAF_FM.fullmatch(t)), None)
     if fm_tok is not None:
         _emit_token_info(
@@ -411,14 +528,18 @@ def _check_taf_change_groups(
         m = _TAF_PROB.fullmatch(tok)
         if m is None:
             continue
-        pct = m.group(1)
-        nxt = tokens[i + 1] if i + 1 < len(tokens) else ""
-        qualifies_forbidden = nxt == "BECMG" or bool(_TAF_FM.fullmatch(nxt))
-        if pct not in {"30", "40"} or qualifies_forbidden:
+        kind = classify_probability_group(tokens, i)
+        # Standalone PROB+period and INTER are valid Annex 3 / national forms —
+        # emit PROB_PRESENT info only (do not emit PROB_PERIOD_WITHOUT_TEMPO).
+        if kind in {
+            ProbGroupKind.TEMPO_OK,
+            ProbGroupKind.PERIOD_WITHOUT_TEMPO,
+            ProbGroupKind.INTER,
+        }:
             _emit_token_info(
                 issues,
-                code="INVALID_PROB",
-                message=(f"{product} invalid PROB (only 30|40; must not qualify BECMG/FM) - App 5 §1.4 / research T2"),
+                code="PROB_PRESENT",
+                message=f"{product} PROB30/40 change group present - research T2",
                 core=core,
                 body_start=body_start,
                 body_end=body_end,
@@ -427,8 +548,8 @@ def _check_taf_change_groups(
         else:
             _emit_token_info(
                 issues,
-                code="PROB_PRESENT",
-                message=f"{product} PROB30/40 change group present - research T2",
+                code="INVALID_PROB",
+                message=(f"{product} invalid PROB (only 30|40; must not qualify BECMG/FM) - App 5 §1.4 / research T2"),
                 core=core,
                 body_start=body_start,
                 body_end=body_end,

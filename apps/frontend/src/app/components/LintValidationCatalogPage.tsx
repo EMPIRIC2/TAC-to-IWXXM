@@ -6,28 +6,63 @@
  * for F7.v / #1014; distinct from the workbench browse panel.
  */
 
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Loader2 } from 'lucide-react';
 import { fetchLintIssueCatalog, fetchRuleCatalog } from '@/utils/api';
+import { shellFrameClass, useLiveConvertLayout } from '@/utils/liveConvertLayout';
 import type { LintIssueCatalogEntry } from '@/utils/openapiTypes';
 import { Card } from './ui/card';
+import {
+  catalogEntryMatchesQuery,
+  catalogFamilyLabel,
+  selectedCatalogCode,
+} from '@/utils/catalogPresentation';
 import {
   LINT_VALIDATION_CATALOG_ACCESS_LABEL,
   LINT_VALIDATION_CATALOG_COL_CODE,
   LINT_VALIDATION_CATALOG_COL_DESCRIPTION,
   LINT_VALIDATION_CATALOG_COL_LEVEL,
-  LINT_VALIDATION_CATALOG_COL_PROFILES,
   LINT_VALIDATION_CATALOG_COL_SOURCE,
   LINT_VALIDATION_CATALOG_COL_TYPE,
+  LINT_VALIDATION_CATALOG_DETAIL,
+  LINT_VALIDATION_CATALOG_EXAMPLE_FAIL,
+  LINT_VALIDATION_CATALOG_EXAMPLE_FAIL_UNAVAILABLE,
+  LINT_VALIDATION_CATALOG_EXAMPLE_NOTE,
+  LINT_VALIDATION_CATALOG_ISSUES_URL,
+  LINT_VALIDATION_CATALOG_EXAMPLE_PASS,
+  LINT_VALIDATION_CATALOG_EXAMPLE_PASS_UNAVAILABLE,
+  LINT_VALIDATION_CATALOG_EXAMPLES,
+  LINT_VALIDATION_CATALOG_EXAMPLES_UNAVAILABLE,
   LINT_VALIDATION_CATALOG_EMPTY,
+  LINT_VALIDATION_CATALOG_FAMILY_ALL,
+  LINT_VALIDATION_CATALOG_LOAD_ERROR,
+  LINT_VALIDATION_CATALOG_MISSING_RULE_LEAD,
+  LINT_VALIDATION_CATALOG_MISSING_RULE_LINK,
+  LINT_VALIDATION_CATALOG_RETRY,
+  catalogFilterLabel,
   LINT_VALIDATION_CATALOG_FAMILY_LABEL,
   LINT_VALIDATION_CATALOG_LEVEL_LABEL,
   LINT_VALIDATION_CATALOG_LOADING,
   LINT_VALIDATION_CATALOG_PAGE_SUBTITLE,
   LINT_VALIDATION_CATALOG_PAGE_TITLE,
+  LINT_VALIDATION_CATALOG_SEARCH,
   LINT_VALIDATION_CATALOG_SORT_LABEL,
   LINT_VALIDATION_CATALOG_TYPE_LABEL,
+  LINT_VALIDATION_CATALOG_VIEW_COMPACT,
+  LINT_VALIDATION_CATALOG_VIEW_DETAILED,
+  LINT_VALIDATION_CATALOG_VIEW_LABEL,
 } from '@/utils/lintValidationCatalogCopy';
+import {
+  readCatalogView,
+  writeCatalogView,
+  type CatalogView,
+} from '@/utils/catalogView';
+import { catalogLevelLabel } from '@/utils/readableStatus';
+import {
+  isInfoCatalogLevel,
+  plainInfoExample,
+  ruleExamplePair,
+} from '@/utils/ruleCatalogExamples';
 
 type FamilyFilter =
   | 'all'
@@ -36,10 +71,17 @@ type FamilyFilter =
   | 'conversion'
   | 'dissemination'
   | 'decoding';
+/**
+ * Type `SortKey`.
+ * @example
+ * const _ = true;
+ */
 export type SortKey = 'code' | 'level' | 'family' | 'issue_type' | 'source_access';
 
 const LEVEL_OPTIONS = ['all', 'critical', 'error', 'warning', 'info'] as const;
-const TYPE_OPTIONS = [
+
+/** EV-062 type filter set (TAC / IWXXM / Decoding). */
+export const EV062_TYPE_OPTIONS = [
   'all',
   'presence',
   'structure',
@@ -48,6 +90,51 @@ const TYPE_OPTIONS = [
   'iwxxm_schema',
   'other',
 ] as const;
+
+/** Conversion family type filter (D-REQ-05). */
+export const CONVERSION_TYPE_OPTIONS = ['all', 'profile', 'policy', 'other'] as const;
+
+/** Dissemination family type filter. Exchange rows ship as ``profile``. */
+export const DISSEMINATION_TYPE_OPTIONS = ['all', 'profile', 'other'] as const;
+
+/**
+ * Type options for Family=All: EV-062 ∪ {profile, policy} (D-TP-03).
+ * ``other`` already in EV-062.
+ */
+export const ALL_FAMILY_TYPE_OPTIONS = [
+  'all',
+  'presence',
+  'structure',
+  'content',
+  'consistency',
+  'iwxxm_schema',
+  'profile',
+  'policy',
+  'other',
+] as const;
+
+/**
+ * Family-aware catalog type filter options.
+ *
+ * @param family - Active family filter
+ * @returns Option values including ``all``
+ * @example
+ * const _ = true;
+ */
+export function typeOptionsForFamily(family: FamilyFilter): readonly string[] {
+  if (family === 'conversion') {
+    return CONVERSION_TYPE_OPTIONS;
+  }
+  if (family === 'dissemination') {
+    return DISSEMINATION_TYPE_OPTIONS;
+  }
+  if (family === 'all') {
+    return ALL_FAMILY_TYPE_OPTIONS;
+  }
+  // lint / iwxxm / decoding — TAC/IWXXM type list
+  return EV062_TYPE_OPTIONS;
+}
+
 const ACCESS_OPTIONS = ['all', 'public', 'paywall', 'login', 'semantic_only'] as const;
 const SORT_OPTIONS: { value: SortKey; label: string }[] = [
   { value: 'code', label: 'Code' },
@@ -81,35 +168,10 @@ function isClickableSource(entry: LintIssueCatalogEntry): boolean {
   return url.startsWith('http://') || url.startsWith('https://');
 }
 
-function profileList(value: string[] | null | undefined): string[] {
-  if (!Array.isArray(value)) {
-    return [];
-  }
-  return value.filter(
-    (item): item is string => typeof item === 'string' && item.trim().length > 0,
-  );
-}
-
-/**
- * Human-readable semantic/exchange profile lists for a catalog entry.
- *
- * @param entry - Lint issue catalog row
- * @returns Display strings (comma-joined or “All … profiles”)
- */
-export function formatApplicableProfiles(entry: LintIssueCatalogEntry): {
-  semantic: string;
-  exchange: string;
-} {
-  const semantic = profileList(entry.semantic_profiles);
-  const exchange = profileList(entry.exchange_profiles);
-  return {
-    semantic: semantic.length > 0 ? semantic.join(', ') : 'All semantic profiles',
-    exchange: exchange.length > 0 ? exchange.join(', ') : 'All exchange profiles',
-  };
-}
-
 /**
  * Read a sortable string field from a catalog row (non-level sorts).
+ * @example
+ * const _ = true;
  */
 export function sortFieldValue(entry: LintIssueCatalogEntry, sortBy: SortKey): string {
   switch (sortBy) {
@@ -128,6 +190,8 @@ export function sortFieldValue(entry: LintIssueCatalogEntry, sortBy: SortKey): s
 
 /**
  * Compare catalog rows for client-side sort.
+ * @example
+ * const _ = true;
  */
 export function compareEntries(
   a: LintIssueCatalogEntry,
@@ -157,31 +221,290 @@ export function compareEntries(
   return (a.code || '').localeCompare(b.code || '', undefined, { sensitivity: 'base' });
 }
 
-/** Whether a catalog row matches the selected level filter. */
+/**
+ * Whether a catalog row matches the selected level filter.
+ * Missing severity is not treated as info.
+ * @example
+ * const _ = true;
+ */
 export function entryMatchesLevelFilter(
   entry: LintIssueCatalogEntry,
   levelKey: string | null,
 ): boolean {
-  if (levelKey && (entry.severity || '').toLowerCase() !== levelKey) {
-    return false;
+  if (!levelKey) {
+    return true;
   }
-  return true;
+  const severity = (entry.severity || '').toLowerCase();
+  return severity.length > 0 && severity === levelKey;
+}
+
+/**
+ * Whether a catalog row matches the selected type filter.
+ * Missing type is not treated as other.
+ * @example
+ * const _ = true;
+ */
+export function entryMatchesTypeFilter(
+  entry: LintIssueCatalogEntry,
+  typeKey: string | null,
+): boolean {
+  if (!typeKey) {
+    return true;
+  }
+  const issueType = (entry.issue_type || '').toLowerCase();
+  return issueType.length > 0 && issueType === typeKey;
+}
+
+/**
+ * Whether a catalog row matches the selected access filter.
+ * Missing access is not treated as public.
+ * @example
+ * const _ = true;
+ */
+export function entryMatchesAccessFilter(
+  entry: LintIssueCatalogEntry,
+  accessKey: string | null,
+): boolean {
+  if (!accessKey) {
+    return true;
+  }
+  const access = (entry.source_access || '').toLowerCase();
+  return access.length > 0 && access === accessKey;
+}
+
+type RuleCatalogItemLike = {
+  id: string;
+  title: string;
+  summary?: string | null;
+  severity?: string | null;
+  tags?: string[] | null;
+  issue_type?: string | null;
+  source_url?: string | null;
+  source_attribution?: string | null;
+  source_access?: string | null;
+  source_locator?: string | null;
+  conform_note?: string | null;
+};
+
+/**
+ * Map a rule-catalog API row without inventing type, access, or severity.
+ *
+ * @param item - GET /rule-catalogs item
+ * @param family - Active family filter (conversion | dissemination | decoding)
+ * @returns Row shaped for the shared catalog table
+ * @example
+ * const _ = true;
+ */
+export function mapRuleCatalogItem(
+  item: RuleCatalogItemLike,
+  family: 'conversion' | 'dissemination' | 'decoding',
+): LintIssueCatalogEntry {
+  const severityRaw = typeof item.severity === 'string' ? item.severity.trim() : '';
+  const summary =
+    typeof item.summary === 'string' && item.summary.trim() ? item.summary.trim() : '';
+  const conform =
+    typeof item.conform_note === 'string' && item.conform_note.trim()
+      ? item.conform_note.trim()
+      : '';
+  const descriptionParts = [summary || item.title, conform].filter(
+    (part) => typeof part === 'string' && part.length > 0,
+  );
+  const issueType =
+    typeof item.issue_type === 'string' && item.issue_type.trim()
+      ? item.issue_type.trim()
+      : null;
+  const sourceUrl =
+    typeof item.source_url === 'string' && item.source_url.trim()
+      ? item.source_url.trim()
+      : null;
+  const sourceAttribution =
+    typeof item.source_attribution === 'string' && item.source_attribution.trim()
+      ? item.source_attribution.trim()
+      : null;
+  const sourceAccess =
+    typeof item.source_access === 'string' && item.source_access.trim()
+      ? item.source_access.trim()
+      : null;
+  const sourceLocator =
+    typeof item.source_locator === 'string' && item.source_locator.trim()
+      ? item.source_locator.trim()
+      : null;
+  return {
+    code: item.id,
+    // Empty string = severity absent (do not invent "info").
+    severity: severityRaw,
+    message_template: descriptionParts.join(' '),
+    product: null,
+    tags: item.tags ?? [],
+    family,
+    source_id: null,
+    source_url: sourceUrl,
+    source_attribution: sourceAttribution,
+    source_type: null,
+    // Leave status null so TAC/IWXXM click rules stay unchanged (TC-EV1308-004).
+    status: null,
+    semantic_identifier: null,
+    last_verified: null,
+    replacement_url: null,
+    issue_type: issueType,
+    source_access: sourceAccess,
+    source_locator: sourceLocator,
+  };
+}
+
+/**
+ * Extra fields for the selected rule in the detailed catalog view.
+ *
+ * @param props.entry - Selected catalog row
+ * @example
+ * const _ = true;
+ */
+function SelectedRuleFacts({ entry }: { entry: LintIssueCatalogEntry }) {
+  return (
+    <div
+      className="mt-3 space-y-1 text-sm text-gray-700 dark:text-gray-300"
+      data-testid="catalog-detail-facts"
+    >
+      <p>
+        {LINT_VALIDATION_CATALOG_COL_TYPE}: {entry.issue_type ?? '—'}
+      </p>
+      <p>
+        {LINT_VALIDATION_CATALOG_COL_SOURCE}: {entry.source_locator ?? '—'}
+      </p>
+    </div>
+  );
+}
+
+/**
+ * Reports for the selected rule.
+ *
+ * Info rules use one unlabeled sample. Other levels keep pass and fail headings.
+ *
+ * @param props.code - Selected catalog rule code
+ * @param props.severity - Catalog level token
+ * @example
+ * const _ = true;
+ */
+function RuleExamples({ code, severity }: { code: string; severity?: string | null }) {
+  const examples = ruleExamplePair(code);
+  if (isInfoCatalogLevel(severity)) {
+    const sample = plainInfoExample(examples);
+    return (
+      <section className="mt-4 space-y-3" aria-label={LINT_VALIDATION_CATALOG_EXAMPLES}>
+        <p className="text-sm text-gray-600 dark:text-gray-400">
+          {LINT_VALIDATION_CATALOG_EXAMPLE_NOTE}
+        </p>
+        <div>
+          <h3 className="text-sm font-semibold text-gray-800 dark:text-gray-200">
+            {LINT_VALIDATION_CATALOG_EXAMPLES}
+          </h3>
+          {sample ? (
+            <pre
+              data-testid="catalog-rule-example"
+              data-tone="example"
+              className="mt-1 overflow-x-auto rounded-md border border-gray-300 bg-gray-50 p-2 font-mono text-xs whitespace-pre-wrap text-gray-950 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-100"
+            >
+              {sample}
+            </pre>
+          ) : (
+            <p
+              data-testid="catalog-rule-example"
+              data-tone="unavailable"
+              className="mt-1 text-sm text-gray-600 dark:text-gray-400"
+            >
+              {LINT_VALIDATION_CATALOG_EXAMPLES_UNAVAILABLE}
+            </p>
+          )}
+        </div>
+      </section>
+    );
+  }
+  return (
+    <section className="mt-4 space-y-3" aria-label="Passing and failing examples">
+      <p className="text-sm text-gray-600 dark:text-gray-400">
+        {LINT_VALIDATION_CATALOG_EXAMPLE_NOTE}
+      </p>
+      <div>
+        <h3 className="text-sm font-semibold text-emerald-800 dark:text-emerald-300">
+          {LINT_VALIDATION_CATALOG_EXAMPLE_PASS}
+        </h3>
+        {examples.pass ? (
+          <pre
+            data-testid="catalog-rule-example-pass"
+            data-tone="pass"
+            className="mt-1 overflow-x-auto rounded-md border border-emerald-300 bg-emerald-50 p-2 font-mono text-xs whitespace-pre-wrap text-emerald-950 dark:border-emerald-800 dark:bg-emerald-950 dark:text-emerald-100"
+          >
+            {examples.pass}
+          </pre>
+        ) : (
+          <p
+            data-testid="catalog-rule-example-pass"
+            data-tone="unavailable"
+            className="mt-1 text-sm text-gray-600 dark:text-gray-400"
+          >
+            {LINT_VALIDATION_CATALOG_EXAMPLE_PASS_UNAVAILABLE}
+          </p>
+        )}
+      </div>
+      <div>
+        <h3 className="text-sm font-semibold text-red-800 dark:text-red-300">
+          {LINT_VALIDATION_CATALOG_EXAMPLE_FAIL}
+        </h3>
+        {examples.fail ? (
+          <pre
+            data-testid="catalog-rule-example-fail"
+            data-tone="fail"
+            className="mt-1 overflow-x-auto rounded-md border border-red-300 bg-red-50 p-2 font-mono text-xs whitespace-pre-wrap text-red-950 dark:border-red-800 dark:bg-red-950 dark:text-red-100"
+          >
+            {examples.fail}
+          </pre>
+        ) : (
+          <p
+            data-testid="catalog-rule-example-fail"
+            data-tone="unavailable"
+            className="mt-1 text-sm text-gray-600 dark:text-gray-400"
+          >
+            {LINT_VALIDATION_CATALOG_EXAMPLE_FAIL_UNAVAILABLE}
+          </p>
+        )}
+      </div>
+    </section>
+  );
 }
 
 /**
  * Browse TAC lint and IWXXM validation catalog rows from the public API.
+ * @example
+ * const _ = true;
  */
-export function LintValidationCatalogPage() {
-  const [familyFilter, setFamilyFilter] = useState<FamilyFilter>('all');
-  const [issueTypeFilter, setIssueTypeFilter] =
-    useState<(typeof TYPE_OPTIONS)[number]>('all');
+export function LintValidationCatalogPage({
+  focusCode,
+  initialFamily,
+  onFocusHandled,
+}: {
+  focusCode?: string;
+  initialFamily?: 'lint' | 'iwxxm';
+  onFocusHandled?: () => void;
+} = {}) {
+  const { layout } = useLiveConvertLayout();
+  const [familyFilter, setFamilyFilter] = useState<FamilyFilter>(
+    initialFamily ?? 'all',
+  );
+  const [issueTypeFilter, setIssueTypeFilter] = useState<string>('all');
   const [levelFilter, setLevelFilter] = useState<(typeof LEVEL_OPTIONS)[number]>('all');
   const [sourceAccessFilter, setSourceAccessFilter] =
     useState<(typeof ACCESS_OPTIONS)[number]>('all');
   const [sortBy, setSortBy] = useState<SortKey>('code');
+  const [query, setQuery] = useState('');
+  const [catalogView, setCatalogView] = useState<CatalogView>(() => readCatalogView());
+  const [selectedCode, setSelectedCode] = useState<string | null>(null);
   const [entries, setEntries] = useState<LintIssueCatalogEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [highlightedCode, setHighlightedCode] = useState<string | null>(null);
+  const focusHandledRef = useRef<string | null>(null);
+
+  const typeOptions = useMemo(() => typeOptionsForFamily(familyFilter), [familyFilter]);
 
   const loadCatalog = useCallback(async () => {
     setLoading(true);
@@ -193,36 +516,30 @@ export function LintValidationCatalogPage() {
         familyFilter === 'decoding'
       ) {
         const response = await fetchRuleCatalog({ family: familyFilter });
-        const mapped: LintIssueCatalogEntry[] = (response.items ?? []).map((item) => ({
-          code: item.id,
-          severity: (item.severity as LintIssueCatalogEntry['severity']) || 'info',
-          message_template: item.summary || item.title,
-          product: null,
-          tags: item.tags ?? [],
-          family: familyFilter,
-          source_id: null,
-          source_url: null,
-          source_attribution: null,
-          source_type: null,
-          status: null,
-          semantic_identifier: null,
-          last_verified: null,
-          replacement_url: null,
-          issue_type: 'other',
-          source_access: 'public',
-          source_locator: null,
-        }));
+        const mapped = (response.items ?? []).map((item) =>
+          mapRuleCatalogItem(item, familyFilter),
+        );
         setEntries(mapped);
         return;
       }
-      const response = await fetchLintIssueCatalog({
-        family: familyFilter === 'all' ? undefined : familyFilter,
-        issue_type: issueTypeFilter === 'all' ? undefined : issueTypeFilter,
-        source_access: sourceAccessFilter === 'all' ? undefined : sourceAccessFilter,
-      });
+      const params: {
+        family?: string;
+        issue_type?: string;
+        source_access?: string;
+      } = {};
+      if (familyFilter !== 'all') {
+        params.family = familyFilter;
+      }
+      if (issueTypeFilter !== 'all') {
+        params.issue_type = issueTypeFilter;
+      }
+      if (sourceAccessFilter !== 'all') {
+        params.source_access = sourceAccessFilter;
+      }
+      const response = await fetchLintIssueCatalog(params);
       setEntries(response.issues ?? []);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to load catalog');
+    } catch {
+      setError(LINT_VALIDATION_CATALOG_LOAD_ERROR);
       setEntries([]);
     } finally {
       setLoading(false);
@@ -237,18 +554,57 @@ export function LintValidationCatalogPage() {
 
   const sorted = useMemo(() => {
     const levelKey = levelFilter === 'all' ? null : levelFilter;
-    const filtered = entries.filter((entry) =>
-      entryMatchesLevelFilter(entry, levelKey),
+    const typeKey = issueTypeFilter === 'all' ? null : issueTypeFilter;
+    const accessKey = sourceAccessFilter === 'all' ? null : sourceAccessFilter;
+    const filtered = entries.filter(
+      (entry) =>
+        entryMatchesLevelFilter(entry, levelKey) &&
+        entryMatchesTypeFilter(entry, typeKey) &&
+        entryMatchesAccessFilter(entry, accessKey) &&
+        catalogEntryMatchesQuery(entry.code, entry.message_template, query),
     );
     return [...filtered].sort((a, b) => compareEntries(a, b, sortBy));
-  }, [entries, levelFilter, sortBy]);
+  }, [entries, levelFilter, issueTypeFilter, sourceAccessFilter, sortBy, query]);
+
+  const activeCode = selectedCatalogCode(
+    sorted.map((entry) => entry.code),
+    selectedCode,
+  );
+  const detail = sorted.find((entry) => entry.code === activeCode);
+
+  /* eslint-disable react-hooks/set-state-in-effect -- scroll/highlight focus target from shell deep-link */
+  useEffect(() => {
+    if (!focusCode || loading) {
+      return;
+    }
+    if (focusHandledRef.current === focusCode) {
+      return;
+    }
+    const el = document.querySelector(
+      `[data-testid="lint-validation-catalog-entry-${focusCode}"]`,
+    );
+    if (el instanceof HTMLElement) {
+      el.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+      setHighlightedCode(focusCode);
+      setSelectedCode(focusCode);
+      focusHandledRef.current = focusCode;
+      onFocusHandled?.();
+      return undefined;
+    }
+    focusHandledRef.current = focusCode;
+    onFocusHandled?.();
+    return undefined;
+  }, [focusCode, loading, sorted, onFocusHandled]);
+  /* eslint-enable react-hooks/set-state-in-effect */
 
   return (
     <div
-      className="min-h-screen bg-gray-50 p-6 dark:bg-gray-900"
+      className="min-h-screen bg-gray-50 dark:bg-gray-900"
       data-testid="lint-validation-catalog-page"
     >
-      <div className="mx-auto max-w-6xl space-y-6">
+      <div
+        className={`mx-auto w-full space-y-6 px-4 py-6 ${shellFrameClass(layout.span)}`}
+      >
         <div>
           <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
             {LINT_VALIDATION_CATALOG_PAGE_TITLE}
@@ -267,9 +623,16 @@ export function LintValidationCatalogPage() {
                 value={familyFilter}
                 data-testid="lint-validation-catalog-family-filter"
                 aria-label="Filter by family"
-                onChange={(e) => setFamilyFilter(e.target.value as FamilyFilter)}
+                onChange={(e) => {
+                  const next = e.target.value as FamilyFilter;
+                  setFamilyFilter(next);
+                  const nextTypes = typeOptionsForFamily(next);
+                  if (!nextTypes.includes(issueTypeFilter)) {
+                    setIssueTypeFilter('all');
+                  }
+                }}
               >
-                <option value="all">All lint / IWXXM</option>
+                <option value="all">{LINT_VALIDATION_CATALOG_FAMILY_ALL}</option>
                 <option value="lint">TAC validation</option>
                 <option value="iwxxm">IWXXM validation</option>
                 <option value="conversion">Conversion</option>
@@ -284,13 +647,11 @@ export function LintValidationCatalogPage() {
                 value={issueTypeFilter}
                 data-testid="lint-validation-catalog-type-filter"
                 aria-label="Filter by type"
-                onChange={(e) =>
-                  setIssueTypeFilter(e.target.value as (typeof TYPE_OPTIONS)[number])
-                }
+                onChange={(e) => setIssueTypeFilter(e.target.value)}
               >
-                {TYPE_OPTIONS.map((opt) => (
+                {typeOptions.map((opt) => (
                   <option key={opt} value={opt}>
-                    {opt === 'all' ? 'All' : opt.replace('_', ' ')}
+                    {catalogFilterLabel('type', opt)}
                   </option>
                 ))}
               </select>
@@ -328,10 +689,21 @@ export function LintValidationCatalogPage() {
               >
                 {ACCESS_OPTIONS.map((opt) => (
                   <option key={opt} value={opt}>
-                    {opt === 'all' ? 'All' : opt.replace('_', ' ')}
+                    {catalogFilterLabel('access', opt)}
                   </option>
                 ))}
               </select>
+            </label>
+            <label className="text-sm text-gray-700 dark:text-gray-300">
+              {LINT_VALIDATION_CATALOG_SEARCH}
+              <input
+                type="search"
+                className="ml-2 rounded border px-2 py-1 text-sm dark:bg-gray-800"
+                value={query}
+                data-testid="lint-validation-catalog-search"
+                aria-label={LINT_VALIDATION_CATALOG_SEARCH}
+                onChange={(e) => setQuery(e.target.value)}
+              />
             </label>
             <label className="text-sm text-gray-700 dark:text-gray-300">
               {LINT_VALIDATION_CATALOG_SORT_LABEL}
@@ -349,6 +721,36 @@ export function LintValidationCatalogPage() {
                 ))}
               </select>
             </label>
+            <div
+              className="flex rounded-md bg-gray-100 p-0.5 dark:bg-gray-800"
+              role="group"
+              aria-label={LINT_VALIDATION_CATALOG_VIEW_LABEL}
+            >
+              <button
+                type="button"
+                data-testid="lint-validation-catalog-view-detailed"
+                aria-pressed={catalogView === 'detailed'}
+                className="rounded px-2 py-1 text-xs font-medium text-gray-900 dark:text-gray-100"
+                onClick={() => {
+                  setCatalogView('detailed');
+                  writeCatalogView('detailed');
+                }}
+              >
+                {LINT_VALIDATION_CATALOG_VIEW_DETAILED}
+              </button>
+              <button
+                type="button"
+                data-testid="lint-validation-catalog-view-compact"
+                aria-pressed={catalogView === 'compact'}
+                className="rounded px-2 py-1 text-xs font-medium text-gray-900 dark:text-gray-100"
+                onClick={() => {
+                  setCatalogView('compact');
+                  writeCatalogView('compact');
+                }}
+              >
+                {LINT_VALIDATION_CATALOG_VIEW_COMPACT}
+              </button>
+            </div>
           </div>
 
           {loading && (
@@ -362,110 +764,179 @@ export function LintValidationCatalogPage() {
           )}
 
           {error && (
-            <p className="text-sm text-red-600 dark:text-red-400" role="alert">
-              {error}
-            </p>
+            <div className="flex flex-wrap items-center gap-3" role="alert">
+              <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
+              <button
+                type="button"
+                className="rounded border border-gray-300 px-2 py-1 text-sm text-gray-800 hover:bg-gray-100 dark:border-gray-600 dark:text-gray-100 dark:hover:bg-gray-800"
+                data-testid="lint-validation-catalog-retry"
+                onClick={() => {
+                  void loadCatalog();
+                }}
+              >
+                {LINT_VALIDATION_CATALOG_RETRY}
+              </button>
+            </div>
           )}
 
           {!loading && !error && (
-            <div className="overflow-x-auto" data-testid="lint-validation-catalog-list">
-              {sorted.length === 0 ? (
-                <p className="py-3 text-sm text-gray-500 dark:text-gray-400">
-                  {LINT_VALIDATION_CATALOG_EMPTY}
-                </p>
-              ) : (
-                <table className="w-full min-w-[48rem] border-collapse text-left text-sm">
-                  <thead>
-                    <tr className="border-b border-gray-200 text-gray-600 dark:border-gray-700 dark:text-gray-300">
-                      <th className="px-2 py-2 font-medium">
-                        {LINT_VALIDATION_CATALOG_COL_CODE}
-                      </th>
-                      <th className="px-2 py-2 font-medium">
-                        {LINT_VALIDATION_CATALOG_COL_TYPE}
-                      </th>
-                      <th className="px-2 py-2 font-medium">
-                        {LINT_VALIDATION_CATALOG_COL_LEVEL}
-                      </th>
-                      <th className="px-2 py-2 font-medium">
-                        {LINT_VALIDATION_CATALOG_COL_PROFILES}
-                      </th>
-                      <th className="px-2 py-2 font-medium">
-                        {LINT_VALIDATION_CATALOG_COL_DESCRIPTION}
-                      </th>
-                      <th className="px-2 py-2 font-medium">
-                        {LINT_VALIDATION_CATALOG_COL_SOURCE}
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
+            <div
+              className={
+                catalogView === 'compact'
+                  ? 'grid gap-4 lg:grid-cols-[minmax(0,1.4fr)_minmax(14rem,0.6fr)]'
+                  : 'grid gap-4 lg:grid-cols-[minmax(14rem,0.7fr)_minmax(0,1.3fr)]'
+              }
+              data-view={catalogView}
+            >
+              <div data-testid="lint-validation-catalog-list">
+                {sorted.length === 0 ? (
+                  <p className="py-3 text-sm text-gray-500 dark:text-gray-400">
+                    {LINT_VALIDATION_CATALOG_EMPTY}
+                  </p>
+                ) : (
+                  <ul className={catalogView === 'compact' ? 'space-y-1' : 'space-y-2'}>
                     {sorted.map((entry) => {
-                      const profiles = formatApplicableProfiles(entry);
+                      const selected = entry.code === activeCode;
                       return (
-                        <tr
-                          key={`${entry.family ?? 'lint'}-${entry.code}`}
-                          data-testid={`lint-validation-catalog-entry-${entry.code}`}
-                          className="align-top"
-                        >
-                          <td className="px-2 py-2 font-mono text-xs text-gray-900 dark:text-gray-100">
-                            {entry.code}
-                          </td>
-                          <td className="px-2 py-2 text-gray-700 dark:text-gray-300">
-                            {entry.issue_type ?? '—'}
-                          </td>
-                          <td className="px-2 py-2 text-gray-700 dark:text-gray-300">
-                            {entry.severity}
-                          </td>
-                          <td className="px-2 py-2 text-xs text-gray-700 dark:text-gray-300">
-                            <div className="space-y-1">
-                              <p>
-                                <span className="font-medium">Semantic:</span>{' '}
-                                {profiles.semantic}
-                              </p>
-                              <p>
-                                <span className="font-medium">Exchange:</span>{' '}
-                                {profiles.exchange}
-                              </p>
-                            </div>
-                          </td>
-                          <td className="px-2 py-2 text-gray-700 dark:text-gray-300">
-                            {entry.message_template}
-                          </td>
-                          <td className="px-2 py-2">
-                            <div className="space-y-1">
-                              {entry.source_locator ? (
-                                <p className="text-xs text-gray-600 dark:text-gray-400">
-                                  {entry.source_locator}
-                                </p>
-                              ) : null}
-                              {entry.source_access ? (
-                                <p className="text-xs text-gray-500 dark:text-gray-500">
-                                  Access: {entry.source_access.replace('_', ' ')}
-                                </p>
-                              ) : null}
-                              {isClickableSource(entry) ? (
-                                <a
-                                  href={entry.source_url!}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="break-all text-blue-700 underline hover:text-blue-900 dark:text-blue-400"
-                                >
-                                  {entry.source_url}
-                                </a>
-                              ) : entry.source_url ? (
-                                <span className="break-all text-gray-500 dark:text-gray-400">
-                                  {entry.source_url}
-                                </span>
+                        <li key={`${entry.family ?? 'lint'}-${entry.code}`}>
+                          <article
+                            data-testid={`lint-validation-catalog-entry-${entry.code}`}
+                            className={
+                              highlightedCode === entry.code || selected
+                                ? `rounded-md border border-sky-400 bg-sky-50 ring-2 ring-sky-400 dark:bg-sky-950/40 ${catalogView === 'compact' ? 'px-2 py-1' : 'p-3'}`
+                                : `rounded-md border border-gray-200 dark:border-gray-700 ${catalogView === 'compact' ? 'px-2 py-1' : 'p-3'}`
+                            }
+                          >
+                            <button
+                              type="button"
+                              className={
+                                catalogView === 'compact'
+                                  ? 'flex w-full items-baseline gap-2 text-left'
+                                  : 'w-full text-left'
+                              }
+                              aria-pressed={selected}
+                              onClick={() => setSelectedCode(entry.code)}
+                            >
+                              {catalogView === 'detailed' ? (
+                                <>
+                                  <span className="text-xs font-semibold uppercase tracking-wide text-gray-700 dark:text-gray-200">
+                                    {catalogLevelLabel(entry.severity)}
+                                  </span>
+                                  <span className="mt-1 block text-xs text-gray-600 dark:text-gray-400">
+                                    {catalogFamilyLabel(entry.family)}
+                                  </span>
+                                  <span className="mt-1 block font-mono text-xs text-gray-900 dark:text-gray-100">
+                                    {LINT_VALIDATION_CATALOG_COL_CODE}: {entry.code}
+                                  </span>
+                                  <span className="mt-1 block text-sm text-gray-800 dark:text-gray-200">
+                                    {entry.message_template}
+                                  </span>
+                                </>
                               ) : (
-                                <span className="text-gray-400">—</span>
+                                <>
+                                  <span className="shrink-0 font-mono text-xs text-gray-900 dark:text-gray-100">
+                                    {entry.code}
+                                  </span>
+                                  <span className="truncate text-sm text-gray-800 dark:text-gray-200">
+                                    {entry.message_template}
+                                  </span>
+                                </>
                               )}
-                            </div>
-                          </td>
-                        </tr>
+                            </button>
+                            {catalogView === 'detailed' ? (
+                              <div className="mt-2 space-y-1 text-xs text-gray-700 dark:text-gray-300">
+                                <p data-testid="catalog-entry-type">
+                                  {LINT_VALIDATION_CATALOG_COL_TYPE}:{' '}
+                                  {entry.issue_type ?? '—'}
+                                </p>
+                                <p data-testid="catalog-entry-level">
+                                  {LINT_VALIDATION_CATALOG_COL_LEVEL}:{' '}
+                                  {catalogLevelLabel(entry.severity)}
+                                </p>
+                                <p className="text-gray-800 dark:text-gray-200">
+                                  {LINT_VALIDATION_CATALOG_COL_DESCRIPTION}:{' '}
+                                  {entry.message_template}
+                                </p>
+                                <div>
+                                  <p className="font-medium">
+                                    {LINT_VALIDATION_CATALOG_COL_SOURCE}
+                                  </p>
+                                  {entry.source_locator ? (
+                                    <p className="text-gray-600 dark:text-gray-400">
+                                      {entry.source_locator}
+                                    </p>
+                                  ) : null}
+                                  {entry.source_access ? (
+                                    <p className="text-gray-500">
+                                      Access: {entry.source_access.replace('_', ' ')}
+                                    </p>
+                                  ) : null}
+                                  {isClickableSource(entry) ? (
+                                    <a
+                                      href={entry.source_url!}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="break-all text-blue-700 underline hover:text-blue-900 dark:text-blue-400"
+                                    >
+                                      {entry.source_url}
+                                    </a>
+                                  ) : entry.source_url ? (
+                                    <span className="break-all text-gray-500 dark:text-gray-400">
+                                      {entry.source_url}
+                                    </span>
+                                  ) : (
+                                    <span className="text-gray-400">—</span>
+                                  )}
+                                </div>
+                              </div>
+                            ) : null}
+                          </article>
+                        </li>
                       );
                     })}
-                  </tbody>
-                </table>
-              )}
+                  </ul>
+                )}
+              </div>
+              {detail ? (
+                <aside
+                  className="rounded-md border border-gray-200 bg-white p-4 lg:sticky lg:top-4 lg:max-h-[calc(100dvh-2rem)] lg:self-start lg:overflow-y-auto dark:border-gray-700 dark:bg-gray-950"
+                  data-testid="lint-validation-catalog-detail"
+                  aria-label={LINT_VALIDATION_CATALOG_DETAIL}
+                >
+                  <h2 className="text-sm font-semibold text-gray-900 dark:text-gray-100">
+                    {LINT_VALIDATION_CATALOG_DETAIL}
+                  </h2>
+                  <p className="mt-2 text-xs font-semibold uppercase tracking-wide text-gray-700 dark:text-gray-200">
+                    {catalogLevelLabel(detail.severity)}
+                  </p>
+                  <p className="mt-1 text-xs text-gray-600 dark:text-gray-400">
+                    {catalogFamilyLabel(detail.family)}
+                  </p>
+                  <p className="mt-2 font-mono text-sm text-gray-900 dark:text-gray-100">
+                    {detail.code}
+                  </p>
+                  <p className="mt-2 text-sm text-gray-800 dark:text-gray-200">
+                    {detail.message_template}
+                  </p>
+                  {catalogView === 'detailed' ? (
+                    <SelectedRuleFacts entry={detail} />
+                  ) : null}
+                  <RuleExamples code={detail.code} severity={detail.severity} />
+                  <p className="mt-4 border-t border-gray-200 pt-3 text-sm text-gray-600 dark:border-gray-700 dark:text-gray-400">
+                    {LINT_VALIDATION_CATALOG_MISSING_RULE_LEAD}
+                    <a
+                      href={LINT_VALIDATION_CATALOG_ISSUES_URL}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      data-testid="lint-validation-catalog-issues-link"
+                      className="text-blue-700 underline hover:text-blue-900 dark:text-blue-400"
+                    >
+                      {LINT_VALIDATION_CATALOG_MISSING_RULE_LINK}
+                    </a>
+                    .
+                  </p>
+                </aside>
+              ) : null}
             </div>
           )}
         </Card>

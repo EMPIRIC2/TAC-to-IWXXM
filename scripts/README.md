@@ -1,6 +1,7 @@
 # Scripts Directory
 
-This directory contains organized utility scripts, database setup scripts, and launch scripts for the METAR to IWXXM Converter project.
+This directory holds utility scripts, database setup scripts, and launch scripts
+for the TAC to IWXXM monorepo.
 
 ## Coverage gate (EV-080 / #1077)
 
@@ -17,18 +18,18 @@ Approved omits do not apply to these scripts themselves.
 
 ## Directory Structure
 
-### 📁 [launchers/](launchers/)
+### [launchers/](launchers/)
 Platform-specific launch scripts for starting the frontend (GUI) and backend (API) services.
-- Shell scripts for Linux/macOS (`.sh`)
+- macOS and Linux: repo-root `start-dev-servers.sh`
 - PowerShell scripts for Windows (`.ps1`)
 - Batch scripts for Windows Command Prompt (`.bat`)
 
-### 📁 [db-setup/](db-setup/)
+### [db-setup/](db-setup/)
 Database table creation and setup scripts for Supabase.
 - `create_evaluation_tables.sql` - Evaluation jobs and results tables
 - `create_translation_statistics_tables.sql` - Translation statistics tables
 
-### 📁 [utilities/](utilities/)
+### [utilities/](utilities/)
 Active utility scripts for data processing and administration.
 - `parse_airports_csv.py` - Parse airport data from CSV files
 - `extract_email_templates.py` - Extract email templates from Supabase
@@ -36,7 +37,7 @@ Active utility scripts for data processing and administration.
 - `create_admin_user.py` - Create admin users in the database
 - `syntax_check.py` - Validate Python file syntax before committing changes
 
-### 📦 Archived Scripts
+### Archived Scripts
 Historical debug, fix, and diagnostic scripts have been moved to `/docs/ARCHIVE/scripts/db-debug-fixes/` to keep this directory focused on active tools.
 
 ---
@@ -58,15 +59,11 @@ Platform-specific scripts for starting services are located in [launchers/](laun
 .\launchers\launch_gui.ps1
 ```
 
-#### Bash (Linux/macOS)
-**File**: `launchers/launch_gui.sh`
+#### macOS and Linux
+Use the repo-root launcher:
 
 ```bash
-# Make executable (first time only)
-chmod +x launchers/launch_gui.sh
-
-# Launch frontend dev server
-./launchers/launch_gui.sh
+./start-dev-servers.sh
 ```
 
 #### Command Prompt (Windows)
@@ -81,8 +78,8 @@ launchers\launch_gui.bat
 
 Similar launch scripts are available for the backend API:
 - `launchers/launch_api.ps1` (PowerShell)
-- `launchers/launch_api.sh` (Bash)
 - `launchers/launch_api.bat` (Command Prompt)
+- macOS and Linux: `./start-dev-servers.sh` from the repo root
 
 ---
 
@@ -204,10 +201,10 @@ All scripts require:
 
 ## What These Scripts Do
 
-1. ✅ Check if `apps/frontend` exists
-2. ✅ Install npm/pnpm dependencies if node_modules is missing
-3. ✅ Launch the Vite development server
-4. ✅ Server starts at `http://localhost:5173` (Vite default)
+1. Check if `apps/frontend` exists
+2. Install npm/pnpm dependencies if node_modules is missing
+3. Launch the Vite development server
+4. Server starts at `http://localhost:5173` (Vite default)
 
 The Vite dev server includes:
 - Hot Module Replacement (HMR) for instant updates
@@ -222,11 +219,14 @@ The Vite dev server includes:
 # PowerShell
 .\launch_gui.ps1
 
-# Bash
-./launch_gui.sh
-
 # Batch
 launch_gui.bat
+```
+
+macOS and Linux:
+
+```bash
+./start-dev-servers.sh
 ```
 
 The Vite development server automatically includes hot reloading and watches for file changes.
@@ -250,7 +250,7 @@ Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
 ### Bash Permission Denied
 If you see "Permission denied":
 ```bash
-chmod +x launch_gui.sh
+chmod +x start-dev-servers.sh
 ```
 
 ### Virtual Environment Not Found

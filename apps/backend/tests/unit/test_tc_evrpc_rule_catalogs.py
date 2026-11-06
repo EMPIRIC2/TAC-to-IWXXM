@@ -32,6 +32,12 @@ def test_rule_catalog_conversion_and_dissemination() -> None:
         response = client.get("/api/v1/rule-catalogs", params={"family": family})
         assert response.status_code == 200, family
         assert response.json()["family"] == family
+    dissem = client.get("/api/v1/rule-catalogs", params={"family": "dissemination"})
+    items = {row["id"]: row for row in dissem.json()["items"]}
+    assert items["GLOBAL_AFS"]["issue_type"] == "profile"
+    assert items["GLOBAL_AFS"]["summary"].startswith("Global AFS")
+    assert "Exchange / dissemination profile" not in items["GLOBAL_AFS"]["summary"]
+    assert items["global_afs"]["conform_note"] == "Alias of GLOBAL_AFS."
 
 
 def test_rule_catalog_unknown_family_400() -> None:
@@ -55,12 +61,20 @@ def test_catalog_for_family_rejects_unknown() -> None:
 
 
 def test_selection_options_all_kinds() -> None:
-    for kind in ("conversion", "dissemination", "decoding"):
+    for kind in (
+        "conversion",
+        "tac_validation",
+        "iwxxm_validation",
+        "decoding",
+        "dissemination",
+    ):
         response = client.get("/api/v1/selection-options", params={"kind": kind})
         assert response.status_code == 200, kind
         body = response.json()
         assert body["kind"] == kind
         assert body["options"]
+        prefix = f"LIB.{kind.upper()}."
+        assert all(opt["id"].startswith(prefix) for opt in body["options"]), kind
 
 
 def test_selection_options_unknown_kind_400() -> None:

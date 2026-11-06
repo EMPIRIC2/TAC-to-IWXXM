@@ -12,7 +12,10 @@ test.describe('Workbench viewport chrome', () => {
     await page.goto('/');
     await page.waitForLoadState('domcontentloaded');
     // Seed local draft so guest loss banner appears (layout stress).
-    const box = page.getByRole('textbox', { name: /Enter METAR|TAC/i }).first();
+    const box = page.getByRole('textbox', {
+      name: 'Enter METAR data manually',
+      exact: true,
+    });
     if (await box.isVisible().catch(() => false)) {
       await box.fill('METAR YUDO 221630Z 24004MPS 0600=');
       await page.waitForTimeout(500);

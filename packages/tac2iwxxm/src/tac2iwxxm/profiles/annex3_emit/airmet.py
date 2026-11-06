@@ -22,7 +22,28 @@ def _airmet_evolving_member_xml(
     member_suffix: str,
     inner_extension: str = "",
 ) -> str:
-    """Emit one ``AIRMETEvolvingCondition`` member."""
+    """
+    Internal helper ``_airmet_evolving_member_xml``.
+
+    Parameters
+    ----------
+    area_ir : dict[str, Any]
+        Argument ``area_ir``.
+
+    fir : str
+        Argument ``fir``.
+
+    member_suffix : str
+        Argument ``member_suffix``.
+
+    inner_extension : str, optional
+        Argument ``inner_extension``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
     # ruff: noqa: F403, F405
     intensity = str(area_ir.get("intensity_change", "NO_CHANGE"))
     geometry = _sigmet_geometry_xml(
@@ -46,7 +67,34 @@ def _airmet_analysis_collection_xml(
     areas: list[dict[str, Any]],
     member_extension_for: dict[str, str] | None = None,
 ) -> str:
-    """Emit one ``AIRMETEvolvingConditionCollection`` for the given area fragments."""
+    """
+    Internal helper ``_airmet_analysis_collection_xml``.
+
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Argument ``ir``.
+
+    fir : str
+        Argument ``fir``.
+
+    collection_suffix : str
+        Argument ``collection_suffix``.
+
+    time_indicator : str
+        Argument ``time_indicator``.
+
+    areas : list[dict[str, Any]]
+        Argument ``areas``.
+
+    member_extension_for : dict[str, str] | None, optional
+        Argument ``member_extension_for``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
     member_extension_for = member_extension_for or {}
     members = "\n".join(
         _airmet_evolving_member_xml(
@@ -72,7 +120,30 @@ def emit_airmet_annex3(
     iwxxm_version: str,
     phenomenon_href: str | None = None,
 ) -> str:
-    """Emit an IWXXM AIRMET document (F6.d / F24 A3 geometry fidelity / #731)."""
+    """
+    Emit an IWXXM AIRMET document (F6.d / F24 A3 geometry fidelity / #731).
+
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Parsed product fields.
+
+    iwxxm_version : str
+        IWXXM release line.
+
+    phenomenon_href : str | None, optional
+        Phenomenon codelist href.
+
+    Returns
+    -------
+    str
+        An IWXXM AIRMET document (F6.d / F24 A3 geometry fidelity / #731).
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (emit_airmet_annex3)
+    2
+    """
     ns = _ns(iwxxm_version)
     fir = str(ir["fir"])
     mwo = str(ir["mwo"])
@@ -145,13 +216,21 @@ def emit_airmet_annex3(
 """
 
     if cancel:
-        c_begin = (
-            f"2012-08-{int(ir['cancelled_from_day']):02d}T"
-            f"{int(ir['cancelled_from_hour']):02d}:{int(ir['cancelled_from_minute']):02d}:00Z"
+        from tac2iwxxm.time_anchor import iso_stamp
+
+        c_begin = iso_stamp(
+            ir,
+            int(ir["cancelled_from_day"]),
+            int(ir["cancelled_from_hour"]),
+            int(ir["cancelled_from_minute"]),
+            legacy="2012-08",
         )
-        c_end = (
-            f"2012-08-{int(ir['cancelled_to_day']):02d}T"
-            f"{int(ir['cancelled_to_hour']):02d}:{int(ir['cancelled_to_minute']):02d}:00Z"
+        c_end = iso_stamp(
+            ir,
+            int(ir["cancelled_to_day"]),
+            int(ir["cancelled_to_hour"]),
+            int(ir["cancelled_to_minute"]),
+            legacy="2012-08",
         )
         return (
             units.format(cancel_attr='\n    isCancelReport="true"')

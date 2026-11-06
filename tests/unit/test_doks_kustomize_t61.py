@@ -51,6 +51,8 @@ def test_api_secret_keys_include_database_and_auth() -> None:
     assert "SUPABASE_URL" in keys
     assert "SUPABASE_JWKS_URL" in keys
     assert "SUPABASE_PUBLISHABLE_KEY" in keys
+    assert "OPENAIP_API_KEY" in keys
+    assert doc["stringData"]["OPENAIP_API_KEY"] == ""
 
 
 @pytest.mark.unit

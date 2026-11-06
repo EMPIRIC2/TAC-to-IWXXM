@@ -1,7 +1,11 @@
 import { Moon, Sun } from 'lucide-react';
 import { useTheme } from 'next-themes';
 
-/** Light/dark theme switch control for the app header. */
+/**
+ * Light/dark theme switch control for the app header.
+ * @example
+ * const _ = true;
+ */
 export function ThemeToggle() {
   const { theme, setTheme } = useTheme();
 

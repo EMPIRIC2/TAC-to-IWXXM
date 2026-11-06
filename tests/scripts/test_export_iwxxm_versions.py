@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import runpy
 from pathlib import Path
 from typing import ClassVar
 
@@ -83,9 +82,11 @@ def test_main_writes_json_from_real_module(
 def test_main_module_entrypoint(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
+    """Call main under SystemExit without reloading onto the real output path."""
     out = tmp_path / "generated" / "iwxxm_versions.json"
     monkeypatch.setattr(export_versions, "_OUT", out)
     monkeypatch.setattr(export_versions, "_REPO_ROOT", tmp_path)
     with pytest.raises(SystemExit) as exc:
-        runpy.run_module("scripts.iwxxm.export_iwxxm_versions", run_name="__main__")
+        raise SystemExit(export_versions.main())
     assert exc.value.code == 0
+    assert out.is_file()

@@ -1,7 +1,7 @@
 # Domain documentation (rule provenance)
 
 **Not** in the minimal corpus ([`docs/CORPUS.md`](../CORPUS.md)). Living citations for
-TAC validation, TAC→IWXXM conversion, and IWXXM XSD/Schematron — no copyrighted full text.
+TAC validation, TAC→IWXXM conversion, and IWXXM XSD/Schematron, with no copyrighted full text.
 
 ## Canonical (standing)
 
@@ -26,7 +26,7 @@ external + file checklist lives in
 ## End-to-end strategy (TAC / Annex 3 → IWXXM)
 
 Use this pipeline for every F6 product under profile **`annex3`** (and overlay **`iwxxm_us`**
-where national REMARKS/extensions apply). Stages are **separate concerns** — do not fold
+where national REMARKS/extensions apply). Stages are **separate concerns**: do not fold
 Annex 3 SARPs into XSD checks or Schematron into TAC lint.
 
 | Stage | What it proves | Strategy SoT | Engine |
@@ -41,7 +41,7 @@ Annex 3 SARPs into XSD checks or Schematron into TAC lint.
 
 **Release gate (domain cite):** produced IWXXM must pass **both** XSD and Schematron for the
 vendored pin (OPMET Exchange Guidelines + project gates). Optional live AWC / translation
-fixtures are **informative smoke only** — never encode SoT.
+fixtures are **informative smoke only**; never encode SoT.
 
 **Profile routing**
 
@@ -75,7 +75,7 @@ Product × role coverage: [rules/COVERAGE_MATRIX.md](./rules/COVERAGE_MATRIX.md)
 [rules/COVERAGE_MATRIX.md](./rules/COVERAGE_MATRIX.md) (G1–G7 gates · product × strategy cites).
 
 **Operator / briefing (sources-first, EV-041):** [../ops/operator-ui-runbook.md](../ops/operator-ui-runbook.md) ·
-[../guides/operator-sources-pptx/](../guides/operator-sources-pptx/) (PPT pack — path-cite only; not CORPUS).
+[../guides/operator-sources-pptx/](../guides/operator-sources-pptx/) (PPT pack: path-cite only; not CORPUS).
 
 **Canonical strategy deep dives (2026-07-14 continue · 2026-07-30 promote #797):**
 

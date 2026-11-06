@@ -30,7 +30,7 @@ The pipeline uses **fix in place** — targeted patches rather than re-running e
 - Never reset phase status or re-run upstream stages unless the user explicitly requests it
 - Post-deployment fixes use [14-hotfix](14-hotfix/SKILL.md) — same fix-in-place principle, dedicated triage + branch workflow
 - Production investigation (deploy drift, API/DB health, ingest backlog) uses [15-service-health](15-service-health/SKILL.md) — report first; code fixes still go through 14-hotfix
-- **Every caught failure** uses [bug-investigation](bug-investigation/SKILL.md): one `docs/bug-reports/BUG-*.md` (logs + persistent investigation), one `tests/bugs/test_bug_*.py` (red → green), one fix; interactive gates via AskQuestion only
+- **Every caught failure** uses [bug-investigation](bug-investigation/SKILL.md): one `docs/bug-reports/BUG-*.md` (logs + persistent investigation), one `tests/bugs/<theme>/test_bug_*.py` (red → green), one fix; interactive gates via AskQuestion only
 
 ### Implementation throughput
 

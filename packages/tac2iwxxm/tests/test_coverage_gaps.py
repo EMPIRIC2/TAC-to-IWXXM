@@ -170,9 +170,13 @@ def test_convert_unsupported_profile_product_and_native_scan() -> None:
     assert bad_profile.ok is False
     assert bad_profile.issues[0].code == "UNSUPPORTED_PROFILE"
 
-    bad_us = convert("VA ADVISORY\nDTG: 20040925/1900Z", product="VAA", profile="iwxxm_us")
-    assert bad_us.ok is False
-    assert bad_us.issues[0].code == "UNSUPPORTED_PROFILE"
+    bad_nz = convert(
+        "YMMM SIGMET A1 VALID 010000/010400 YMMC- YMMM MELBOURNE FIR SEV TURB=",
+        product="SIGMET",
+        profile="nz_caa_met",
+    )
+    assert bad_nz.ok is False
+    assert bad_nz.issues[0].code == "UNSUPPORTED_PROFILE"
 
     with pytest.raises(ValueError, match="no emitter"):
         _emit("NOPE", "annex3", {}, "2025-2")
@@ -185,11 +189,18 @@ def test_convert_unsupported_profile_product_and_native_scan() -> None:
 
 
 def test_more_coverage_edges() -> None:
-    # Default phenomenon when no known token matches.
-    fog = parse_sigmet("YUDD SIGMET 1 VALID 101200/101600 YUSO- YUDD FIR FOG FCST=")
-    assert fog["phenomenon"] == "TS"
-    fog_a = parse_airmet("YUDD AIRMET 1 VALID 101200/101600 YUSO- YUDD FIR FOG OBS=")
-    assert fog_a["phenomenon"] == "TS"
+    # Unknown phenomenon tokens fail closed (do not invent TS).
+    with pytest.raises(ValueError, match="missing phenomenon"):
+        parse_sigmet("YUDD SIGMET 1 VALID 101200/101600 YUSO- YUDD FIR FOG FCST=")
+    with pytest.raises(ValueError, match="missing phenomenon"):
+        parse_airmet("YUDD AIRMET 1 VALID 101200/101600 YUSO- YUDD FIR FOG OBS=")
+    # AirWx MOD TURB on SIGMET stays fail-closed with a clearer operator message.
+    with pytest.raises(ValueError, match=r"MOD TURB|moderate turbulence"):
+        parse_sigmet(
+            "FQBE SIGMET A02 VALID 021126/021526 FQMA-\n"
+            "FQBE BEIRA FIR MOD TURB FCST WI S2619 E03142 - S2355 E03142 - "
+            "S2443 E03407 - S2654 E03434 - S2619 E03142 TOP FL400="
+        )
 
     # US NIL observation + namespace already present.
     nil_xml = emit_metar_speci_iwxxm_us(
@@ -204,7 +215,7 @@ def test_more_coverage_edges() -> None:
     assert again.count("xmlns:iwxxm-us=") == 1
 
     # TAF US with altimeter but missing forecast needle → early return.
-    import tac2iwxxm.profiles.annex3_products as ap
+    import tac2iwxxm.profiles.annex3_emit as ap
 
     orig = ap.emit_taf_annex3
 
@@ -237,8 +248,8 @@ def test_more_coverage_edges() -> None:
     finally:
         ap.emit_taf_annex3 = orig
 
-    # annex3_products: unsupported version + NIL TAF base forecast.
-    from tac2iwxxm.profiles.annex3_products import emit_sigmet_annex3, emit_taf_annex3
+    # annex3_emit: unsupported version + NIL TAF base forecast.
+    from tac2iwxxm.profiles.annex3_emit import emit_sigmet_annex3, emit_taf_annex3
 
     with pytest.raises(ValueError, match="unsupported iwxxm_version"):
         emit_taf_annex3(

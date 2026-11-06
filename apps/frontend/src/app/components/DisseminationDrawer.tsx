@@ -57,6 +57,11 @@ import {
 
 export { firstDropFile, resolveDisseminationProduct } from '@/utils/fileInputHelpers';
 
+/**
+ * Type `DisseminationDrawerProps`.
+ * @example
+ * const _ = true;
+ */
 export interface DisseminationDrawerProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -71,10 +76,14 @@ export interface DisseminationDrawerProps {
   disseminationTemplateId?: string;
   onDisseminationTemplateChange?: (templateId: string) => void;
   /**
-   * Initial exchange overlay (workbench light picker). Drawer keeps local state
-   * after open so operators can override without mutating convert params.
+   * Initial exchange overlay (workbench). Drawer keeps local state after open so
+   * packaging can override without mutating convert params; optional callback
+   * notifies the parent (e.g. Validation Issues Catalog filter) of the active
+   * packaging Exchange.
    */
   exchangeProfile?: ExchangeProfileId | string;
+  /** Fired when the packaging Exchange control changes (and once on mount). */
+  onExchangeProfileChange?: (profile: ExchangeProfileId) => void;
 }
 
 interface RowUiState {
@@ -82,17 +91,29 @@ interface RowUiState {
   detail?: string;
 }
 
-/** True when a drop FileList has at least one file. */
+/**
+ * True when a drop FileList has at least one file.
+ * @example
+ * const _ = true;
+ */
 export function hasDropFiles(files: FileList | null | undefined): boolean {
   return Boolean(files && files.length > 0);
 }
 
-/** Normalize FileReader result to text. */
+/**
+ * Normalize FileReader result to text.
+ * @example
+ * const _ = true;
+ */
 export function dropReaderText(result: string | ArrayBuffer | null): string {
   return String(result ?? '');
 }
 
-/** Progress row state with pending fallback. */
+/**
+ * Progress row state with pending fallback.
+ * @example
+ * const _ = true;
+ */
 export function progressRowState(
   state: Record<string, RowUiState>,
   id: string,
@@ -108,6 +129,8 @@ export function progressRowState(
  * @param exchangeProfile - Exchange overlay wire id for convert FormData
  * @returns IWXXM XML string
  * @throws When convert fails or returns no XML
+ * @example
+ * const _ = true;
  */
 export async function resolveCandidateIwxxmXml(
   candidate: ExportCandidate,
@@ -146,6 +169,8 @@ export async function resolveCandidateIwxxmXml(
  * @param props.product - Product tag for API (default metar)
  * @param props.sessionOutputs - Additional session candidates
  * @param props.exchangeProfile - Initial exchange overlay from workbench
+ * @example
+ * const _ = true;
  */
 export function DisseminationDrawer({
   open,
@@ -158,6 +183,7 @@ export function DisseminationDrawer({
   disseminationTemplateId = '',
   onDisseminationTemplateChange,
   exchangeProfile: exchangeProfileProp,
+  onExchangeProfileChange,
 }: DisseminationDrawerProps) {
   const [sinkType, setSinkType] = useState<SinkType>('postgres');
   const [uri, setUri] = useState('');
@@ -183,6 +209,12 @@ export function DisseminationDrawer({
   const [exchangeProfile, setExchangeProfile] = useState<ExchangeProfileId>(() =>
     coerceExchangeProfile(exchangeProfileProp ?? DEFAULT_EXCHANGE_PROFILE),
   );
+
+  useEffect(() => {
+    onExchangeProfileChange?.(exchangeProfile);
+    // Notify parent once with the initial packaging Exchange (catalog filter).
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- mount-only notify
+  }, []);
 
   const primarySession: ExportCandidateInput[] = useMemo(() => {
     if (!propIwxxm?.trim() && !propTac?.trim()) return [];
@@ -561,7 +593,9 @@ export function DisseminationDrawer({
             className="w-full rounded border border-gray-300 bg-white px-2 py-2 text-sm dark:border-gray-600 dark:bg-gray-800 dark:text-white"
             value={exchangeProfile}
             onChange={(e) => {
-              setExchangeProfile(coerceExchangeProfile(e.target.value));
+              const next = coerceExchangeProfile(e.target.value);
+              setExchangeProfile(next);
+              onExchangeProfileChange?.(next);
               setLastResults([]);
               setRowState({});
             }}

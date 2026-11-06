@@ -1,0 +1,106 @@
+# TAC template amendments — sibling of catalog.yaml (EV-1274 / #1274)
+# Corpus: domain-profiles · product F6 · product F15
+# A row records a template change. It does not change emitters.
+# tac_convertible false: TAC cannot carry the element. That is not missing converter work.
+schema_version: 1
+updated: "2026-09-24"
+status_legend:
+  done: "Current converters already match the cited change, or the row only records that TAC cannot carry it."
+  partial: "Some of the cited change is emitted. The rest is not."
+  not_started: "Converters still use the pre-change form."
+amendments:
+  - id: amd82-metar-runway-state-removed
+    source: "vendor/schemas/iwxxm/2025-2/IWXXM/ReleaseNotes-IWXXM.txt §2025-2 RC1 METAR/SPECI"
+    product: METAR/SPECI
+    change: "IWXXM removed runway state, deposits, contamination, and friction coefficient."
+    inherits: [annex3, iwxxm_us, ca_eccc]
+    status: done
+    tac_convertible: true
+
+  - id: amd82-metar-rvr-unbounded
+    source: "vendor/schemas/iwxxm/2025-2/IWXXM/ReleaseNotes-IWXXM.txt §2025-2 RC1 METAR/SPECI"
+    product: METAR/SPECI
+    change: "IWXXM RVR multiplicity is zero to many. TAC does not carry an unlimited number of RVR groups."
+    inherits: [annex3, iwxxm_us, ca_eccc]
+    status: done
+    tac_convertible: false
+
+  - id: amd82-metar-temp-tenths
+    source: "vendor/schemas/iwxxm/2025-2/IWXXM/ReleaseNotes-IWXXM.txt §2025-2 RC1 METAR/SPECI"
+    product: METAR/SPECI
+    change: "IWXXM may carry temperature and dew point in tenths of a degree. Annex 3 TAC temperature is whole degrees."
+    inherits: [annex3, iwxxm_us, ca_eccc]
+    status: done
+    tac_convertible: false
+
+  - id: amd82-vaa-source-elevation
+    source: "vendor/schemas/iwxxm/2025-2/IWXXM/ReleaseNotes-IWXXM.txt §2025-2 RC1 and RC2 Volcanic Ash Advisory"
+    product: VAA
+    change: "summitElevation became sourceElevation, then sourceElevationAMSL."
+    inherits: [annex3, iwxxm_us, ca_eccc]
+    status: done
+    tac_convertible: true
+
+  - id: amd82-vaa-colour-code-removed
+    source: "vendor/schemas/iwxxm/2025-2/IWXXM/ReleaseNotes-IWXXM.txt §2025-2 RC1 Volcanic Ash Advisory"
+    product: VAA
+    change: "colourCode was removed from the volcanic ash advisory."
+    inherits: [annex3, iwxxm_us, ca_eccc]
+    status: done
+    tac_convertible: true
+
+  - id: amd82-vaa-volcano-property
+    source: "vendor/schemas/iwxxm/2025-2/IWXXM/ReleaseNotes-IWXXM.txt §2025-2 RC2 Volcanic Ash Advisory"
+    product: VAA
+    change: "iwxxm:volcano uses a volcano property and the emitter writes metce:EruptingVolcano."
+    inherits: [annex3, iwxxm_us, ca_eccc]
+    status: done
+    tac_convertible: true
+
+  - id: amd82-swxa-effect
+    source: "vendor/schemas/iwxxm/2025-2/IWXXM/ReleaseNotes-IWXXM.txt §2025-2 RC1 Space Weather Advisory"
+    product: SWXA
+    change: "phenomenon was replaced by effect."
+    inherits: [annex3, iwxxm_us]
+    status: done
+    tac_convertible: true
+
+  - id: amd82-swxa-intensity-region
+    source: "vendor/schemas/iwxxm/2025-2/IWXXM/ReleaseNotes-IWXXM.txt §2025-2 RC1 Space Weather Advisory"
+    product: SWXA
+    change: "intensityAndRegion carries the intensity and coverage of a space weather event."
+    inherits: [annex3, iwxxm_us]
+    status: done
+    tac_convertible: true
+
+  - id: amd82-swxa-replaced-advisory-number
+    source: "vendor/schemas/iwxxm/2025-2/IWXXM/ReleaseNotes-IWXXM.txt §2025-2 RC1 Space Weather Advisory"
+    product: SWXA
+    change: "replacedAdvisoryNumber multiplicity is zero to four. The emitter writes one element per number present."
+    inherits: [annex3, iwxxm_us]
+    status: done
+    tac_convertible: true
+
+  - id: amd82-swxa-location-indicator
+    source: "vendor/schemas/iwxxm/2025-2/IWXXM/ReleaseNotes-IWXXM.txt §2025-2 RC2 Space Weather Advisory"
+    product: SWXA
+    change: "Advisory locationIndicator multiplicity is one to six. The emitter writes a locationIndicator on each region."
+    inherits: [annex3, iwxxm_us]
+    status: partial
+    tac_convertible: true
+
+  - id: amd82-qvaci-no-tac
+    source: "vendor/schemas/iwxxm/2025-2/IWXXM/ReleaseNotes-IWXXM.txt §2025-2 RC1 Quantitative Volcanic Ash Concentration Information"
+    product: QVACI
+    change: "Quantitative volcanic ash concentration information has no TAC form. Deferred."
+    inherits: []
+    status: done
+    tac_convertible: false
+
+  - id: amd82-wafs-sigwx-no-tac
+    source: "vendor/schemas/iwxxm/2025-2/IWXXM/ReleaseNotes-IWXXM.txt §2025-2 RC2 WAFS Significant Weather Forecast"
+    product: WAFS
+    change: "WAFS significant weather is IWXXM-only. Deferred."
+    inherits: []
+    status: done
+    tac_convertible: false

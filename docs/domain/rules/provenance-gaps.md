@@ -1,7 +1,7 @@
 # Re-mine pass — early gaps (S043 / EV-035)
 
 **Date:** 2026-08-05  
-**Disposition (user):** For all gaps — **re-mine first**; if that fails → **open a ticket**.  
+**Disposition (user):** For all gaps, **re-mine first**; if that fails → **open a ticket**.  
 **Decision id:** `D-S043-gaps` = re-mine→ticket
 
 ## Gap 1 — VONA encode (Guidance silent)
@@ -16,9 +16,9 @@
 | | • Peer `vona-A7-1.{tac,xml}` + `vona.xsd` + SCH (already cookbook SoT) |
 | Fail residual | **No product-token encode cookbook in Guidance** — encode remains cookbook + XSD/SCH |
 
-**Ticket:** open — upstream/Guidance-silent VONA encode cookbook residual (track under #846).
+**Ticket:** open; upstream/Guidance-silent VONA encode cookbook residual (track under #846).
 
-## Gap 2 — US REMARKS encode / validate ⚠
+## Gap 2 — US REMARKS encode / validate
 
 | Step | Result |
 |------|--------|
@@ -26,7 +26,7 @@
 | Vendor | `iwxxm-us/3.0/*.xsd` present; **no US Schematron package** in pin |
 | Fail residual | Validate path for US extensions = WMO base SCH + US XSD only — matrix ⚠ is accurate |
 
-**Ticket:** open — iwxxm_us validate-column provenance / SCH depth (document N/A vs deepen).
+**Ticket:** open; iwxxm_us validate-column provenance / SCH depth (document N/A vs deepen).
 
 ## Gap 3 — ISSUE_CATALOG thin cites
 
@@ -36,7 +36,7 @@
 | Re-mine | Many messages already embed Annex/table tags (`A3-2`, `A5-1`, App 5 §…) but **no machine link** to `RULE_SOURCE_URLS` rows |
 | Fail residual | Systematic code↔URL map is the EV-035 provenance deliverable; codes that remain unlinkable after 07 map → per-code or batch ticket |
 
-**Ticket:** open umbrella — ISSUE_CATALOG ↔ RULE_SOURCE_URLS linkage (closes as provenance map greens).
+**Ticket:** open umbrella; ISSUE_CATALOG ↔ RULE_SOURCE_URLS linkage (closes as provenance map greens).
 
 ## Gap 4 — Bulletin / non-METAR AHL matrix gaps
 
@@ -47,7 +47,7 @@
 | Fixtures | AHL fixtures exist for SPECI/TAF (`fixtures/ahl/sp_speci.txt`, `fc_taf_*`) — **matrix “gap” may be stale** for some families |
 | Fail residual | Families still `gap` in COVERAGE_MATRIX eight-family table after fixture/CI verify → ticket for bulletin body-split / fixture pack |
 
-**Ticket:** open — COVERAGE_MATRIX bulletin AHL residual families (after 07 matrix refresh).
+**Ticket:** open; COVERAGE_MATRIX bulletin AHL residual families (after 07 matrix refresh).
 
 # Promote in 07-build — **done** (S043 / EV-035)
 

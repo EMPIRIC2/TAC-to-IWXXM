@@ -39,6 +39,12 @@ vi.mock('/utils/api', () => ({
   EndpointNotImplementedError: class extends Error {},
   convertTafToIwxxm: vi.fn(),
   fetchLintIssueCatalog: vi.fn().mockResolvedValue({ issues: [] }),
+  fetchSelectionOptions: vi
+    .fn()
+    .mockImplementation(async ({ kind }: { kind: string }) => ({
+      kind,
+      options: [],
+    })),
   fetchSchemaStatus: vi.fn().mockResolvedValue({
     profile_pins: {
       ca_eccc: { extension_bundle_available: true, iwxxm_version: '3.0.0' },
@@ -106,6 +112,10 @@ describe('TC-EV064-005: CA_ECCC Conversion library picker', () => {
   };
 
   beforeEach(() => {
+    vi.stubGlobal(
+      'confirm',
+      vi.fn(() => true),
+    );
     vi.clearAllMocks();
     localStorage.clear();
   });
@@ -122,6 +132,7 @@ describe('TC-EV064-005: CA_ECCC Conversion library picker', () => {
   it('sends CA_ECCC conversionLibraryId and 3.0.0 version on convert', async () => {
     const user = userEvent.setup();
     render(<FileConverter {...defaultProps} />);
+    fireEvent.click(screen.getByTestId('live-iwxxm-toggle'));
 
     await user.selectOptions(
       screen.getByTestId('conversion-library-select'),

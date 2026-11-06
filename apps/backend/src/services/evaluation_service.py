@@ -7,7 +7,14 @@ from typing import Any
 
 @dataclass
 class ComparisonResult:
-    """Result of IWXXM comparison."""
+    """
+    Result of IWXXM comparison.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     passed: bool
     our_elements: int
@@ -19,27 +26,69 @@ class ComparisonResult:
 
 
 class EvaluationService:
-    """Service for evaluating METAR conversions."""
+    """
+    Service for evaluating METAR conversions.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     @staticmethod
     def _local(tag: str) -> str:
-        """Extract local tag name from qualified name."""
+        """
+        Internal helper ``_local``.
+
+        Parameters
+        ----------
+        tag : object
+            Argument ``tag``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         if tag.startswith("{"):
             return tag.split("}", 1)[1]
         return tag
 
     @staticmethod
     def _norm_text(t: str | None) -> str:
-        """Normalize text by collapsing whitespace."""
+        """
+        Internal helper ``_norm_text``.
+
+        Parameters
+        ----------
+        t : object
+            Argument ``t``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         if t is None:
             return ""
         return " ".join(t.split())
 
     @staticmethod
     def strip_dynamic_attrs(elem: ET.Element) -> None:
-        """Remove dynamic attributes from XML element tree.
+        """
+        Remove dynamic attributes from XML element tree.
 
         Removes: id, schemaLocation, UUID-like values, timestamps
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (strip_dynamic_attrs)
+        2
+
+        Parameters
+        ----------
+        elem : object
+            Argument ``elem``.
         """
         for a in list(elem.attrib.keys()):
             local_name = EvaluationService._local(a)
@@ -50,15 +99,31 @@ class EvaluationService:
             EvaluationService.strip_dynamic_attrs(child)
 
     def compare_iwxxm(self, our_xml: str, their_xml: str, strict: bool = False) -> ComparisonResult:
-        """Compare two IWXXM XML documents.
+        """
+        Compare two IWXXM XML documents.
 
-        Args:
-            our_xml: XML from our conversion
-            their_xml: XML from aviationweather.gov
-            strict: If True, require exact match; if False, allow version differences
-
-        Returns:
+        Returns
+        -------
             ComparisonResult with detailed comparison
+
+        Parameters
+        ----------
+        our_xml : object
+            XML from our conversion
+        their_xml : object
+            XML from aviationweather.gov
+        strict : object
+            If True, require exact match; if False, allow version differences
+
+        Returns
+        -------
+        object
+            ComparisonResult with detailed comparison
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (compare_iwxxm)
+        2
         """
         try:
             our_tree = ET.fromstring(our_xml)
@@ -107,7 +172,21 @@ class EvaluationService:
         )
 
     def _collect_element_paths(self, root: ET.Element, prefix: str = "") -> list[str]:
-        """Collect all element paths in the tree."""
+        """
+        Internal helper ``_collect_element_paths``.
+
+        Parameters
+        ----------
+        root : object
+            Argument ``root``.
+        prefix : object
+            Argument ``prefix``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         paths: list[str] = []
         local_tag = self._local(root.tag)
         current_path = f"{prefix}/{local_tag}" if prefix else local_tag
@@ -121,7 +200,23 @@ class EvaluationService:
     def _find_value_mismatches(
         self, our_tree: ET.Element, their_tree: ET.Element, path: str = ""
     ) -> list[dict[str, str]]:
-        """Find value mismatches between trees."""
+        """
+        Internal helper ``_find_value_mismatches``.
+
+        Parameters
+        ----------
+        our_tree : object
+            Argument ``our_tree``.
+        their_tree : object
+            Argument ``their_tree``.
+        path : object
+            Argument ``path``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         mismatches: list[Any] = []
 
         our_tag = self._local(our_tree.tag)

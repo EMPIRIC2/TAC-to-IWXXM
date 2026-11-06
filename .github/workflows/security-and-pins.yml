@@ -17,9 +17,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Install security tools
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: bash scripts/security/install-tools.sh
       - name: Hard-fail security suite
         env:
+          # Advisors run in supabase-sync.yml (needs SUPABASE_ACCESS_TOKEN). Skip here
+          # so this workflow stays secret-free; do not remove the dedicated advisors job.
           SEC_SKIP_SUPABASE_ADVISORS: "1"
           SEC_INSTALL: "0"
         run: bash scripts/security/run-all.sh

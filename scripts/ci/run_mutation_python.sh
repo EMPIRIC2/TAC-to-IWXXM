@@ -71,6 +71,14 @@ esac
 JSON_REPORT="${REPORT_DIR}/${TARGET}.json"
 LOG_FILE="${REPORT_DIR}/${TARGET}.log"
 
+# Isolate coverage.py SQLite DBs per chunk. Concurrent local runs (or a killed
+# prior job) can leave a half-written .coverage.* with "no such table: context",
+# which then aborts gremlins under filterwarnings=error (PluggyTeardownRaisedWarning).
+COVERAGE_DIR="${REPORT_DIR}/covdb-${TARGET}"
+rm -rf "${COVERAGE_DIR}"
+mkdir -p "${COVERAGE_DIR}"
+export COVERAGE_FILE="${COVERAGE_DIR}/coverage"
+
 CMD=(
   "${UV}" run pytest
   "${PYTEST_PATHS[@]}"
@@ -82,6 +90,10 @@ CMD=(
   --gremlin-report=json
   --gremlins-html-dir="${REPORT_DIR}/${TARGET}-html"
   --override-ini=addopts=
+  # ADR-048 warns-as-errors: gremlins empty-coverage pre-scan is advisory only
+  # (https://github.com/mikelane/pytest-gremlins/issues/113). Keep -W ignore here
+  # so mutation chunks stay green even if root pyproject filterwarnings drifts.
+  -W "ignore:Coverage collection returned no data:UserWarning"
   -m "not live and not live_api and not smoke and not integration"
   --tb=line
   -q
@@ -92,7 +104,7 @@ if [[ -n "${GREMLIN_EXTRA_ARGS:-}" ]]; then
   CMD+=("${EXTRA[@]}")
 fi
 
-echo "mutation_python target=${TARGET} mutate=${GREMLIN_TARGETS} tests=${PYTEST_PATHS[*]} timeout_sec=${TIMEOUT_SEC}"
+echo "mutation_python target=${TARGET} mutate=${GREMLIN_TARGETS} tests=${PYTEST_PATHS[*]} timeout_sec=${TIMEOUT_SEC} coverage_file=${COVERAGE_FILE}"
 
 TIMEOUT_BIN=""
 if [[ "${TIMEOUT_SEC}" != "0" ]]; then

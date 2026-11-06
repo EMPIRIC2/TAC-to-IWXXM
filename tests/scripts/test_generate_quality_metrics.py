@@ -37,7 +37,35 @@ def test_helpers() -> None:
     assert lint[0]["location"] == "loc"
     val = mod._serialize_validate_issues([issue])
     assert val[0]["layer"] == "xsd"
+    noise = SimpleNamespace(
+        severity="error",
+        code="SCHEMATRON_XPATH_UNSUPPORTED",
+        message="XPath error: id",
+        layer="schematron",
+    )
+    xpath = SimpleNamespace(
+        severity="error",
+        code="OTHER",
+        message="XPath error: gml:id",
+        layer="schematron",
+    )
+    assert mod._serialize_validate_issues([noise, xpath, issue]) == val
+    import_warn = SimpleNamespace(
+        severity="warning",
+        code="SCHEMA_IMPORT_WARNING",
+        message="unresolved",
+        layer="xsd",
+    )
+    bare = SimpleNamespace(severity="error", layer="xsd")
+    assert mod._is_spurious_validate_issue(import_warn) is True
+    assert mod._is_spurious_validate_issue(bare) is False
     assert mod._error_count([{"severity": "error"}, {"severity": "warn"}]) == 1
+    kept = SimpleNamespace(start=1, end=4, text=" QFE ")
+    blank = SimpleNamespace(start=0, end=0, text="   ")
+    missing = SimpleNamespace(start=0, end=0)
+    assert mod._serialize_residuals([kept, blank, missing]) == [
+        {"start": 1, "end": 4, "text": " QFE "}
+    ]
 
 
 def test_build_summaries_all_branches() -> None:
@@ -79,7 +107,7 @@ def test_build_summaries_all_branches() -> None:
     assert by["metar"]["lint_fail"] == 1
     assert by["metar"]["validate_fail"] == 1
     assert by["metar"]["pair_examples"] == 1
-    assert by["metar"]["unpaired_examples"] == 2
+    assert by["metar"]["unpaired_examples"] == 1
 
 
 def test_generate_corpus_metrics_branches(
@@ -137,10 +165,10 @@ def test_generate_corpus_metrics_branches(
 
     iwxxm_pkg = types_mod.ModuleType("iwxxm_validate")
     iwxxm_pkg.__path__ = []  # type: ignore[attr-defined]
-    c14n_mod = types_mod.ModuleType("iwxxm_validate.c14n")
-    c14n_mod.c14n_equal = lambda a, b: True  # type: ignore[attr-defined]
+    canon_mod = types_mod.ModuleType("iwxxm_validate.canonical_xml")
+    canon_mod.canonical_xml_equal = lambda a, b: True  # type: ignore[attr-defined]
     sys.modules["iwxxm_validate"] = iwxxm_pkg
-    sys.modules["iwxxm_validate.c14n"] = c14n_mod
+    sys.modules["iwxxm_validate.canonical_xml"] = canon_mod
     iwxxm_pkg.validate_for_quality_metrics = lambda *_a, **_k: SimpleNamespace(
         issues=[]
     )  # type: ignore[attr-defined]
@@ -200,8 +228,8 @@ def test_generate_corpus_metrics_vendor_and_failures(
     )
     monkeypatch.setitem(
         sys.modules,
-        "iwxxm_validate.c14n",
-        SimpleNamespace(c14n_equal=lambda *_a, **_k: False),
+        "iwxxm_validate.canonical_xml",
+        SimpleNamespace(canonical_xml_equal=lambda *_a, **_k: False),
     )
 
     doc = mod.generate_corpus_metrics()
@@ -249,8 +277,8 @@ def test_generate_corpus_metrics_missing_official_raises(
     )
     monkeypatch.setitem(
         sys.modules,
-        "iwxxm_validate.c14n",
-        SimpleNamespace(c14n_equal=lambda *_a, **_k: True),
+        "iwxxm_validate.canonical_xml",
+        SimpleNamespace(canonical_xml_equal=lambda *_a, **_k: True),
     )
 
     with pytest.raises(FileNotFoundError, match="No official XML"):
@@ -291,10 +319,10 @@ def test_generate_corpus_metrics_golden_fallback_and_unequal(
 
     iwxxm_pkg = types_mod.ModuleType("iwxxm_validate")
     iwxxm_pkg.__path__ = []  # type: ignore[attr-defined]
-    c14n_mod = types_mod.ModuleType("iwxxm_validate.c14n")
-    c14n_mod.c14n_equal = lambda *_a, **_k: False  # type: ignore[attr-defined]
+    canon_mod = types_mod.ModuleType("iwxxm_validate.canonical_xml")
+    canon_mod.canonical_xml_equal = lambda *_a, **_k: False  # type: ignore[attr-defined]
     sys.modules["iwxxm_validate"] = iwxxm_pkg
-    sys.modules["iwxxm_validate.c14n"] = c14n_mod
+    sys.modules["iwxxm_validate.canonical_xml"] = canon_mod
     iwxxm_pkg.validate_for_quality_metrics = lambda *_a, **_k: SimpleNamespace(
         issues=[]
     )  # type: ignore[attr-defined]

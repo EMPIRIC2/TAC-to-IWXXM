@@ -1,50 +1,71 @@
 # Feature List
 
-> **Project**: METAR to IWXXM Converter
+> **Project**: TAC to IWXXM
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
-> **Last updated**: 2026-09-21 (EV-yaml-full-configurability / #1226 — full YAML + emit Spec)
+> **Last updated**: 2026-10-07 (EV-live-map-24h-window: 24h share + time presets; prior EV-map-product-layers)
+
+## How to read this document
+
+This file is the **product** corpus (`[Corpus: product]`). It lists every approved
+feature (`F*`) and platform milestone (`M*`). Agents and engineers use it for
+scope: new work must map to a row below, or raise `[Scope Drift]`.
+
+| Part | Use it to… |
+|------|------------|
+| **Summary** table | See id, short name, status, and source at a glance |
+| **Product Feature Details** | Read acceptance, inputs/outputs, and deepen notes for one `F*` |
+| Status key (under the summary) | Decode Implemented / In progress / Planned / Deprecated |
+
+**Status key** (also repeated under the summary table): Implemented = production-ready;
+In progress = partial delivery on approved scope; Planned = approved in requirements
+interview; Experimental = works but not validated; Superseded / Deprecated = replaced
+by a later decision.
+
+When a row cites an evolve id (`EV-…`), session id (`S0…`), or issue (`#…`), those
+ids are engineering trace only. They are not operator-facing copy.
 
 ## Summary
 
 | # | Feature | Status | Category | Source |
 |---|---------|--------|----------|--------|
 | F1 | METAR → IWXXM conversion (GIFTs-era UX) | Superseded by F6 | Product | Historical; UI actions retained until F6 UI |
-| F2 | IWXXM validation | Implemented | Product | backend → `packages/iwxxm-validate`; **deepen** S064 / EV-055 #980/#979 (2025-2 Schematron/XSD); prior S046 / EV-038; **deepen** S071 / EV-061 readable item-by-item decode on validate (#1010); **deepen EV-yaml-engine-configurability / #1224**: overlay honesty matrix + cookbook/preflight (no Schematron-as-YAML); **deepen EV-yaml-full-configurability / #1226 / ADR-047**: every product IWXXM output-policy cell → **full**; pin↔Schematron asserts (vendor SCH SoT) |
+| F2 | IWXXM validation | Implemented | Product | backend → `packages/iwxxm-validate`; **deepen** S064 / EV-055 #980/#979 (2025-2 Schematron/XSD); prior S046 / EV-038; **deepen** S071 / EV-061 readable item-by-item decode on validate (#1010); **deepen EV-yaml-engine-configurability / #1224**: overlay honesty matrix + cookbook/preflight (no Schematron-as-YAML); **deepen EV-yaml-full-configurability / #1226 / ADR-047**: every product IWXXM output-policy cell → **full**; pin↔Schematron asserts (vendor SCH SoT); **deepen EV-layout-dx**: package-dx façade + `TC-DX-*` (Canonical XML primary names; `c14n_*` aliases) |
 | F3 | Airport data services | Implemented | Product | OpenAIP / reconciliation services |
-| F4 | IWXXM version handling | Implemented | Product | docs/domain/iwxxm/IWXXM_VERSION_SWITCHING.md; **deepen** S046 / EV-038 release-line SoT/UX (#851–#855) |
+| F4 | IWXXM version handling | Implemented | Product | docs/domain/iwxxm/IWXXM_VERSION_SWITCHING.md; **deepen** S046 / EV-038 release-line SoT/UX (#851–#855); **deepen EV-1273 / #1273**: profile package pin, Canada 3.0.0 stays profile-scoped |
 | F5 | User METAR work history | Implemented | Product | S038 / EV-031 / F31 hybrid: guest IndexedDB + logged-in DO Postgres |
-| F6 | General TAC→IWXXM (`tac2iwxxm`) | Implemented | Product | S008, ADR-013/014/019; bulletin split; **deepen** S055 / EV-046 #889; **deepen** S059 / EV-050 #959 annex3 vs iwxxm_us membership compare; **deepen** S071 / EV-061 AHL decode+convert (#1012) + live multipart `files` chore (#1011); **deepen EV-yaml-engine-configurability / #1224**: convert column honesty (emit stays Python; pack IR + profile overlays documented); **deepen EV-yaml-full-configurability / #1226 / ADR-047**: declarative **convert emit YAML**; every product pack-IR + emit → **full** |
-| F7 | Multi-product TAC operator UI / sessions | Implemented | Product | S011 + prior deepens; **EV-retire-profile-dissem-ui-catalogs / ADR-044**: hard-cutover retire Profile Builder + Dissemination Bench authoring → backend dropdowns + five package-owned trust catalogs (F7.v deepen); F7.w authoring UI **Retired** (runtime profiles remain); **deepen EV-profile-validate-decode-deepen / #1221**: finish ADR-044 FE residual + #1120/#1145 catalog UX |
+| F6 | General TAC→IWXXM (`tac2iwxxm`) | Implemented | Product | S008, ADR-013/014/019; bulletin split; **deepen** S055 / EV-046 #889; **deepen** S059 / EV-050 #959 annex3 vs iwxxm_us membership compare; **deepen** S071 / EV-061 AHL decode+convert (#1012) + live multipart `files` chore (#1011); **deepen EV-yaml-engine-configurability / #1224**: convert column honesty (emit stays Python; pack IR + profile overlays documented); **deepen EV-yaml-full-configurability / #1226 / ADR-047**: declarative **convert emit YAML**; every product pack-IR + emit → **full**; **deepen EV-1252-residual-yaml / #1252 / ADR-049**: emit `plugin:` overlay-swap goldens (Python builders stay); **deepen EV-1272 / #1272**: public-bulletin profile check (local command, manual live tier); **deepen EV-1279 / #1279**: letter-plus-digits SIGMET and AIRMET bulletin sequence; **deepen EV-1277 / #1277**: real heading on translation metadata and the `.xml.gz` filename; **deepen EV-1276 / #1276**: test and exercise bulletins are non-operational; **deepen EV-1274 / #1274**: TAC template amendments recorded beside the profile catalog; **deepen EV-1290 / #1290**: a failed translation with no heading omits the fictional centre; **deepen EV-1291 / #1291**: gzip bytes sit beside the IWXXM text when the suggested filename ends in `.xml.gz`; **deepen EV-1292 / #1292**: a failed shell carries the guidelines minimum identity fields for that product; **deepen EV-1275 / #1275**: exchange header audit, no converter change; **deepen EV-1267 / #1267**: selectable profiles for US convective SIGMET, G-AIRMET, US VONA, and Canadian SIGMET; **deepen EV-1266 / #1266**: standing docs for the 2026-09-23 operational TAC profile coverage delta (refreshed after #1267/#1265) |
+| F7 | Multi-product TAC operator UI / sessions | Implemented | Product | S011 + prior deepens; **EV-retire-profile-dissem-ui-catalogs / ADR-044**: hard-cutover retire Profile Builder + Dissemination Bench authoring → backend dropdowns + five package-owned trust catalogs (F7.v deepen); F7.w authoring UI **Retired** (runtime profiles remain); **deepen EV-profile-validate-decode-deepen / #1221**: finish ADR-044 FE residual + #1120/#1145 catalog UX; **deepen EV-yaml-config-light-ux / #1251**: full FE hard-cut redo + Convert **four**-engine light selects + trust/help (Dissem select only in Send drawer); residual YAML epic #1252; **deepen EV-1159 / #1159**: SIGMET (and all) UI examples — soft `OUTPUT_VALIDATION_WARNING` visibility + validate path audit; **deepen EV-1307 / #1308**: Decoding + Conversion catalog row enrichment (UJ-080); **deepen EV-1312 / #1312**: optional Only rules that list this profile catalog checkbox (UJ-081); **deepen EV-1313 / #1313**: workbench console → catalog deep links (UJ-082); **deepen EV-1314 / #1314**: conversion-params bar on hard Convert, live preview, and bulletin convert (UJ-083) |
 | F8 | Near-realtime TAC ingest → IWXXM gate | Implemented | Product | S008 ADR-018; **F30** writers → DO Postgres (not Supabase DB) |
-| F9 | Value-aware live decode + plain-language summary | Done | Product | S013 / EV-009 (#723); **deepen EV-retire-profile-dissem-ui-catalogs / ADR-044**: extract `packages/tac-decoding` (PyPI) as decode + Decoding catalog owner; **deepen EV-profile-validate-decode-deepen / #1221 / #724**: ICAO station → airport name (soft-fail); **deepen EV-yaml-engine-configurability / #1224**: pack/glossary overlay cookbook + examples; **deepen EV-yaml-full-configurability / #1226**: every product decode pack cell → **full**; starter templates + PyPI smoke |
+| F9 | Value-aware live decode + plain-language summary | Done | Product | S013 / EV-009 (#723); **deepen EV-retire-profile-dissem-ui-catalogs / ADR-044**: extract `packages/tac-decoding` (PyPI) as decode + Decoding catalog owner; **deepen EV-profile-validate-decode-deepen / #1221 / #724**: ICAO station → airport name (soft-fail); **deepen EV-yaml-engine-configurability / #1224**: pack/glossary overlay cookbook + examples; **deepen EV-yaml-full-configurability / #1226**: every product decode pack cell → **full**; starter templates + PyPI smoke; **deepen EV-1252-residual-yaml / #1252 / ADR-049**: file/env YAML ICAO→name table is SoT; `set_location_name_resolver` stays an optional override; **deepen EV-1307 / #1308**: Decoding catalog additive type/level/source/conform metadata; **deepen EV-decode-residuals-2026-11-03**: staging residual families TAF→METAR→SPECI→SIGMET (legacy + pack dual-write; typo NL); **deepen EV-decode-residual-conventions**: non-RMK convention + fragment explainers + malformed-source lint; **deepen EV-live-lint-decode-fixes-2026-11-04**: known-ignore CA/national TAF RMK trailers; decode `WS R…`, RVR `…FT/[UDN]`, fractional / VIS VRB ranges (live 30d) |
 | F10 | Workbench preview clarity (IWXXM pane + lint UX) | Done | Product | S013 / EV-009; shipped 2026-07-17 (#723); **deepen** S048 / EV-040 full lint console lines + preserve input on convert; **deepen** EV-beta-ux-export-auth info-only Conversion/Validation log chrome (not amber/red) |
 | F11 | Validation stack perf review + msgspec HTTP + XSD codegen | Implemented | Product | S014 / EV-010; #703 |
 | F12 | Publishable TAC product validation (`tac-validate`) | Implemented | Product | S014 / EV-010; #698; **deepen** S043 / EV-035 lint↔source provenance; **deepen** S055 / EV-046 ISSUE_CATALOG; **deepen** S059 / EV-050 #959 offline membership Validated; **deepen** EV-1150 CalVer + nightly TestPyPI (ADR-043); **deepen EV-yaml-engine-configurability / #1224**: policy/detector overlay docs + preflight (detector YAML deepen deferred); **deepen EV-yaml-full-configurability / #1226**: every product TAC quality + detector cells → **full** |
 | F13 | Fast IWXXM validate (Rust core + Schematron + PyPI) | Implemented | Product | S014 / EV-010; #699; **deepen** S054 / EV-045 Rust CI (#725); **deepen** S064 / EV-055 #980; **deepen** EV-1150 CalVer + nightly TestPyPI (ADR-043) |
 | F14 | Publish `tac2iwxxm` + validate extras + PyPI/release CI | Implemented | Product | S014 / EV-010; #693; **deepen** S054 / EV-045 Rust CI (#725); **deepen** EV-1150 CalVer + promote tags + nightly TestPyPI (ADR-043); **deepen EV-yaml-full-configurability / #1226**: README/install smoke for overlay + emit map templates |
-| F15 | Maintainable TAC lint issue registry + METAR/SPECI quality bar | Done | Product | S015 / EV-011; #732; **deepen** S055 / EV-046 #889 Lean; **deepen** S059 / EV-050 #959 Validated membership + RE*/cloud fixtures; **deepen** EV-062 #1017 catalog descriptions + provenance locators; **deepen** EV-beta-ux-export-auth operator messages = library codes only (no research T3/S1 tokens); **deepen EV-yaml-engine-configurability / #1224**: honesty matrix for policy vs detector YAML; **deepen EV-yaml-full-configurability / #1226**: METAR/SPECI lead then all products to **full** (M2–M4) |
+| F15 | Maintainable TAC lint issue registry + METAR/SPECI quality bar | Done | Product | S015 / EV-011; #732; **deepen** S055 / EV-046 #889 Lean; **deepen** S059 / EV-050 #959 Validated membership + RE*/cloud fixtures; **deepen** EV-062 #1017 catalog descriptions + provenance locators; **deepen** EV-beta-ux-export-auth operator messages = library codes only (no research T3/S1 tokens); **deepen EV-yaml-engine-configurability / #1224**: honesty matrix for policy vs detector YAML; **deepen EV-yaml-full-configurability / #1226**: METAR/SPECI lead then all products to **full** (M2–M4); **deepen EV-1252-residual-yaml / #1252 / ADR-049**: declarative detector rules replace Python hatches where the DSL can express them (`kind: python` escape only); **deepen EV-regional-profile-remainder**: CIS runway-state ≠ `INVALID_RVR` (C5); BoM `tt///` dewpoint-not-observable (C4); **deepen EV-packages-module-reorg**: lint-profile inherit casing + sticky/QM catalog-case keys (sticky table redesign follow-on); **deepen EV-decode-residuals-2026-11-03**: one **warning** code per residual typo pattern (no silent rewrite) |
 | F16 | Dissemination drawer + multi-DB upload (BYOC URI) | Done | Product | S019 / EV-014; #729; **deepen** S024 / EV-018 multi-select (#785); **deepen** S047 / EV-039 live local SQL; **deepen** S050 / EV-042 #897 UI-hide (API retained); **restore** EV-091 / #898 + #1089 exchange overlay; **deepen** EV-1150 operator **beta** badge + Issues feedback (ADR-043); **deepen** EV-beta-ux-export-auth remove Upload to Database button; Disseminate/Convert&Send remain beta |
 | F17 | WIS2 dissemination pathway | Done | Product | S019 / EV-014; #2; S050 / EV-042 hide; **restore** EV-091 / #898; **deepen** EV-1150 beta surfacing (ADR-043) |
 | F18 | EDIS → RTH Washington dissemination | Done | Product | S019 / EV-014; #6; S050 / EV-042 hide; **restore** EV-091 / #898; **deepen** EV-1150 beta surfacing (ADR-043) |
 | F19 | AMHS / SWIM / AFS adapters | Done | Product | S019 / EV-014; S050 / EV-042 hide; **restore** EV-091 / #898; **deepen** EV-1150 beta surfacing (ADR-043) |
-| F20 | TAF + SPECI quality bar (F15 sequel) | Done | Product | S020 / EV-015; #735/#734; #778; **deepen** S055 / EV-046 #889; **deepen** S059 / EV-050 #959 |
-| F21 | Public convert + optional Auth for long-term storage | Amended | Product | S023 #783; **S038 / EV-031 / F31** amend; **deepen** S057 / EV-048 #951 OpenAPI/error copy hygiene |
+| F20 | TAF + SPECI quality bar (F15 sequel) | Done | Product | S020 / EV-015; #735/#734; #778; **deepen** S055 / EV-046 #889; **deepen** S059 / EV-050 #959; **deepen EV-regional-profile-remainder**: PTRO/PTSA exact → `iwxxm_us` + Y* → `au_bom` PROB emit-key (C1/C2; C3 DECEA deferred); **deepen EV-live-lint-decode-fixes-2026-11-04**: stop emitting `PROB_PERIOD_WITHOUT_TEMPO` for Annex 3–valid standalone PROB+period; keep `INVALID_PROB` for PROB+BECMG/FM |
+| F21 | Public convert + optional Auth for long-term storage | Amended | Product | S023 #783; **S038 / EV-031 / F31** amend; **deepen** S057 / EV-048 #951 OpenAPI/error copy hygiene; **deepen EV-1315 / #1315**: quality disclaimer and site-terms gate before the public shell (UJ-084) |
 | F22 | Privacy preference center (Solution A + GPC) | Implemented | Product | S023 / EV-017; #783; **deepen** F31 storage gates |
-| F23 | SIGMET family quality bar (general + VA) | Done | Product | S025 / EV-019; #733/#739; PR #792; **deepen** S055 / EV-046 #889; **deepen** S059 / EV-050 #959 phenomena membership; **deepen** EV-074 / #1043 CA ops validate-first (no TAC convert) |
+| F23 | SIGMET family quality bar (general + VA) | Done | Product | S025 / EV-019; #733/#739; PR #792; **deepen** S055 / EV-046 #889; **deepen** S059 / EV-050 #959 phenomena membership; **deepen** EV-074 / #1043 CA ops validate-first (no TAC convert); **deepen EV-regional-profile-remainder**: `MOV STNR` adjacency → `STNR_MOVEMENT` (C6); US domestic WS SIGMET shape gate clears VALID/FIR/OBS triad (C7) |
 | F24 | AIRMET quality bar | Done | Product | S026 / EV-020; #731; PR #793; **deepen** S055 / EV-046 #889; **deepen** S059 / EV-050 #959 underscore phenomena fixtures |
 | F25 | WMO official example parity (METAR/SPECI/TAF) + UI gate | Done | Product | S026 / EV-020; PR #793 |
 | F26 | VAA quality bar (VolcanicAshAdvisory) | Done | Product | S027 / EV-021; #736; PR #794; **deepen** S055 / EV-046 #889; **deepen** EV-074 / #1043 CA ops validate-first (no TAC convert) |
 | F27 | TCA quality bar (TropicalCycloneAdvisory) | Done | Product | S027 / EV-021; #737; PR #794; **deepen** S055 / EV-046 #889 |
 | F28 | SWXA quality bar (SpaceWeatherAdvisory) | Done | Product | S036 / EV-029; #823/#740 closed; PR #828; **deepen** S055 / EV-046 #889; **deepen** S059 / EV-050 #959 SpaceWxPhenomena fixtures |
-| F29 | Parameterized lint/convert/validate rule matrices | Done | Product | S037 / EV-030; #831; shipped 2026-08-03 (#832) |
+| F29 | Parameterized lint/convert/validate rule matrices | Done | Product | S037 / EV-030; #831; shipped 2026-08-03 (#832); **deepen EV-1265 / #1265**: convert and validate matrices for TAF, SIGMET, AIRMET, VAA, TCA, SWXA, and VONA |
 | F30 | Platform independence (Auth / DO DB / DOKS) | Done | Platform | S038 / EV-031; S042 / EV-034 CD; S052 / EV-043 staging CD (#886); S053 / EV-044 dual DOKS; **deepen** S060 / EV-051 tag-driven prod Deploy; **deepen** S067 / EV-057 apex → app redirect (#948) |
 | F31 | Hybrid operator sessions (guest local + Auth long-term) | Done | Product | S038 / EV-031; amends F5/F7/F21/F22; **deepen** EV-beta-ux-export-auth restore working `/auth/register` + login verify (local + staging) |
 | F32 | VONA quality bar (VolcanoObservatoryNoticeForAviation) | Done | Product | S040 / EV-032; #741 closed; **deepen** S055 / EV-046 #889; prior S046 / EV-038; epic #846 |
 | F33 | Secure mass file/folder ingest | Implemented | Product | S050 / EV-042; #897; auth + caps + sniff/zip-bomb; multi-file + folder/zip; 11 approved |
-| F34 | Contract + mutation quality gates | Done | Platform | S069 / EV-059; epic #841 CLOSED; #727 Schemathesis; #874 Stryker + pytest-gremlins; **deepen** S071 / EV-061 stricter stage→main required checks (#1015); promote held |
+| F34 | Contract + mutation quality gates | Done | Platform | S069 / EV-059; epic #841 CLOSED; #727 Schemathesis; #874 Stryker + pytest-gremlins; **deepen** S071 / EV-061 stricter stage→main required checks (#1015); promote held; **deepen EV-101 / #1431**: local OpenAPI status and required-field check, coverage reports for tac2iwxxm, tac-validate, auth, and workflows, a Playwright coverage report, and named Playwright locators (#1448, #1433, #1436, #1435, #1432). Those five checks are already merged on `stage`. Epic #1431 stays open. [Corpus: tests] [Corpus: product] [Corpus: api] |
 | F35 | Semantic vs exchange profiles + canonical ID migration | Implemented | Product | EV-063 / PR #1026; #912 / #914; ADR-036 Accepted; alias cutover #1025 (2026-10-31); amends F6 wire; **deepen** EV-beta-ux-export-auth suppress operator-visible `DEPRECATED_PROFILE_ALIAS` notices; Conversion profiles UI marked **beta** (ADR-043) |
-| F36 | National semantic + regional exchange profile content | In progress | Product | EV-063 / #912; **#919 US closed (EV-085)**; **#916 CA_ECCC P1 closed (EV-078)**; **EV-098 CA_ECCC mining #1028–#1031**; **#1032 closed (EV-075)**; **#1061 SIGMET emit (EV-076)**; VAA TAC validate-first (EV-077); VAA exchange emit waived; **deepen EV-profile-validate-decode-deepen / #1221**: AU_BOM/NZ_CAA_MET → `implemented` + CA mining best-effort; exchange packaging deepen → **#1222** (OUT) |
-| M1 | Monorepo layout (`apps/` + `packages/` + `vendor/`) | Implemented | Platform | REQ-002–006 |
+| F36 | National semantic + regional exchange profile content | In progress | Product | EV-063 / #912; **#919 US closed (EV-085)**; **#916 CA_ECCC P1 closed (EV-078)**; **EV-098 CA_ECCC mining #1028–#1031 closed**; **#1032 closed (EV-075)**; **#1061 SIGMET emit (EV-076)**; VAA TAC validate-first (EV-077); VAA exchange emit waived; **EV-profile-validate-decode-deepen / #1221** AU/NZ → `implemented`; **deepen EV-1222 / #1222**: regional exchange overlays beyond COLLECT stubs (APAC_ROBEX first); **deepen EV-regional-profile-remainder**: exact PTRO/PTSA prefer; Y* `au_bom` + PROB emit; BR PROB deferred pending DECEA cite; **deepen EV-packages-module-reorg**: catalog-case profile ids for sticky/QM boundary |
+| F37 | Live TAC map on Decode visuals | In progress | Product | EV-live-map-24h-window: pull/store/share last 24h only; browser time presets 1h/3h/6h/12h/full; prior layers + country/region/phenomenon filters |
+| M1 | Monorepo layout (`apps/` + `packages/` + `vendor/`) | Implemented | Platform | REQ-002–006; **deepen EV-packages-module-reorg**: tac-validate/tac2iwxxm layout + shim-drop; **deepen EV-layout-dx**: package-dx naming bar + interfaces + `TC-DX-*` (pilot `iwxxm-validate` Canonical XML) |
 | M2 | Vendor snapshot sync (wmo-im iwxxm-*) | Planned | Platform | REQ-002, REQ-010 |
 | M3 | GIFTs as in-repo package | Deprecated (ADR-014) | Platform | REQ-003; removed with F6 cutover |
 | M4 | Auth library in backend API | Implemented | Platform | S038 / EV-031 — Supabase Auth-only restore; was Deprecated operator #783 |
@@ -76,12 +97,12 @@
 - **Inputs**: IWXXM XML, target IWXXM version.
 - **Outputs**: Validation report (pass/fail + messages).
 - **F6 delta**: Validation consumes WMO vendor pins and, when `profile=iwxxm_us`, combined
-  IWXXM-US XSD. **Official US Schematron is not published** (S045 / EV-037 / #870) — do not
+  IWXXM-US XSD. **Official US Schematron is not published** (S045 / EV-037 / #870); do not
   treat the whole US validate column as N/A; pipeline = WMO XSD + US XSD + WMO `iwxxm.sch` +
   project semantic rules + fixtures.
 - **S008 package amend**: Core logic moves to **`packages/iwxxm-validate`** (XSD + Schematron
   against `vendor/schemas/*`). `apps/backend` validation routes become a **thin HTTP wrapper**.
-  Schematron remains on **IWXXM only** — TAC quality is **F6/`packages/tac-validate`**, not F2.
+  Schematron remains on **IWXXM only**; TAC quality is **F6/`packages/tac-validate`**, not F2.
 - **S014 / EV-010 delta (F13)**: Engine gains a **Rust core** (well-formed + XSD + native
   Schematron/SVRL) with Python SDK; pinned schemas **bundled** in the wheel; published to
   PyPI as `iwxxm-validate` `0.1.0`. Backend `/validate` remains a thin wrapper. See F13.
@@ -101,10 +122,14 @@
   `D-S064-xsd-hard=1`): enable Schematron evaluation for 2025-2 xslt2 (prefer native) and
   fix `SCHEMA_IMPORT_WARNING` import resolution. Quality metrics consume outcomes. See F7.q
   EV-055 AC4–AC6 and F13.
-- **Source**: `apps/backend` validation routers; Context: realtime-tac-ingest (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate);
-  Context: package-publish-validation (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate);
-  **S043 / EV-035** · Context: rule-source-traceability (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate);
-  **S045 / EV-037** · Context: matrix-disposition-residuals (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate);
+- **Weekly staging validation catalog (CI deepen)**: Scheduled GHA Sunday 00:00 UTC probes
+  staging lint/validate catalogs + accept fixtures and uploads a severity/code report
+  artifact. **No new Fn**; public API shapes unchanged. See [Corpus: deploy] §Weekly
+  validation catalog and TC-WEEKLY-VAL-001.
+- **Source**: `apps/backend` validation routers; Context: realtime-tac-ingest (archived; see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate);
+  Context: package-publish-validation (archived; see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate);
+  **S043 / EV-035** · Context: rule-source-traceability (archived; see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate);
+  **S045 / EV-037** · Context: matrix-disposition-residuals (archived; see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate);
   **S064 / EV-055** · #980 / #979
 
 ### F3: Airport Data Services
@@ -112,6 +137,11 @@
 - **What it does**: Enriches station metadata via OpenAIP and reconciliation across sources.
 - **Inputs**: ICAO station identifiers, optional bbox queries.
 - **Outputs**: Airport coordinates, elevation, reconciled metadata.
+- **Convert policy (unknown ICAO)**: An aerodrome designator missing from the local
+  registry (e.g. fictional `ABCD` / unlisted `SWWW`) **does not block** METAR/SPECI/TAF
+  convert. Layer 1 emits warning code `UNKNOWN_ICAO` on the convert `issues[]` list;
+  severity is warning (notes on the result card) and does **not** alone block download
+  or publish. Missing or malformed ICAO remain blocking.
 - **Limitations**: External API availability and cache TTL.
 - **Source**: docs/guides/OPENAIP_INTEGRATION_PLAN.md, backend services
 
@@ -120,12 +150,12 @@
 - **What it does**: Supports multiple IWXXM release lines (e.g. 2023-1, 2025-2) with version-aware formatting; **deepen EV-908 / #908** migrates already-produced IWXXM XML between supported pairs (`product=iwxxm` on convert).
 - **Inputs**: Target version parameter, TAC product input **or** IWXXM XML pass-through.
 - **Outputs**: Version-appropriate IWXXM XML (encode or migrate).
-- **Limitations**: Only versions present in `vendor/schemas/` snapshots (WMO + iwxxm-us when pinned). Cross-version pair matrix: [CROSS_VERSION_CONVERSION.md](domain/iwxxm/CROSS_VERSION_CONVERSION.md) — reverse **2025-2 → 2023-1** fail-closed until specified.
+- **Limitations**: Only versions present in `vendor/schemas/` snapshots (WMO + iwxxm-us when pinned). Cross-version pair matrix: [CROSS_VERSION_CONVERSION.md](domain/iwxxm/CROSS_VERSION_CONVERSION.md); reverse **2025-2 → 2023-1** fail-closed until specified.
 - **Source**: docs/domain/iwxxm/IWXXM_VERSION_SWITCHING.md · VERSION_SUPPORT_POLICY.md · CROSS_VERSION_CONVERSION.md · #908
 
 ### F5: User METAR Work History
 
-- **Status**: **Implemented** — **hybrid storage** under S038 / EV-031 / **F31** (amends S023 / EV-017 IndexedDB-only).
+- **Status**: **Implemented**; **hybrid storage** under S038 / EV-031 / **F31** (amends S023 / EV-017 IndexedDB-only).
 - **What it does (EV-031)**:
   - **Guest (not logged in)**: Device-local **IndexedDB** (Draft → WIP → Finished / Failed); export/import JSON; no cross-device sync.
   - **Logged-in**: Long-term work sessions on **DigitalOcean Postgres**, keyed by Supabase Auth user id (F30 data plane). Convert/lint/validate APIs stay public (no JWT required).
@@ -138,12 +168,16 @@
   (reserve column space, contain overflow, and/or collapse). Expand/collapse remains
   available; narrow viewports may default collapsed.
 - **Legacy Supabase rows**: No product reads from Supabase DB; archive/export/delete policy under F30/#830.
-- **Source**: #555 / S004; F7; #783; **S038 / EV-031 / F31**; Context: platform-independence-842 (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate)
+- **Source**: #555 / S004; F7; #783; **S038 / EV-031 / F31**; Context: platform-independence-842 (archived; see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate)
 
 ### F6: General TAC→IWXXM Converter (`tac2iwxxm`)
 
-- **Status**: **Implemented** (S008 / EV-006 — ADR-019). Local/CI + T0 Playwright approved;
+- **Status**: **Implemented** (S008 / EV-006; ADR-019). Local/CI + T0 Playwright approved;
   live H4–H7 / full UI 7-product matrix deferred (12/13 skipped this cycle).
+- **National advisory allowlist (#1270, ADR-050)**: United States VAA, Australia SIGMET/TCA/space-weather,
+  New Zealand VAA/VONA, United Kingdom VAA/space-weather, and India TCA convert on those profiles.
+  The gate is package YAML loaded with Hydra and drift-checked against the profile catalog, not a new Python module.
+- **Reference lookup (ADR-051)**: Convert resolves a 3-letter VOR or navaid id and a 4-letter ICAO location indicator through `packages/reference-lookup` before it uses the checked-in coordinate table. The public source is OurAirports (`navaids.csv` for 3-letter ids, `airports.csv` for 4-letter ids). It is tried first. Any error from that source, including not-found and an ident that matches more than one row, falls back to the table. The code does not pick among matching rows. If the table also misses, convert still raises the existing unknown-VOR error.
 - **What it does**: Converts TAC for **AIRMET, METAR, SIGMET, SPECI, TAF, VAA, and TCA** to IWXXM
   XML via `packages/tac2iwxxm`, with Annex-3 (or product-equivalent) body encoding and optional
   IWXXM-US national extensions; exposes the same products/profiles on HTTP convert and UI pickers;
@@ -169,11 +203,13 @@
 | `iwxxm_version` | app default (e.g. `2025-2`) | Vendored pins only | Schema line |
 - **API**: Extend `POST /api/v1/convert` with `product` + `profile` (no per-product path prefix).
 - **UI**: Product + profile (+ version) pickers in v1; H4–H5 connectivity required.
-- **Input traceability (#655 / EV-007)**: Result cards always show Source TAC; TAC-derived
-  headline; multi-line index chip; client fallback when API omits `tac_input`.
+- **Input traceability (#655 / EV-007; UX-2026-10-29-downloads-file-mgmt)**: Downloads lists
+  files for manage actions (TAC-derived headline, download name, status chip, Line N of M);
+  conversion XML and assessment details live on Results → IWXXM. Editor keeps TAC after
+  convert; client still falls back when API omits `tac_input`.
 - **GIFTs**: On first PR that wires tac2iwxxm to `/api/v1/convert`, **remove `packages/gifts`**
   and stop all API use of gifts (hard cutover). REQ-014 / ADR-004 / M3 deprecated.
-- **Vendor**: Pin `vendor/schemas/iwxxm-us` via `vendor/manifest.json` — HTTP snapshot of
+- **Vendor**: Pin `vendor/schemas/iwxxm-us` via `vendor/manifest.json`: HTTP snapshot of
   [nws.weather.gov/schemas/iwxxm-us/3.0](https://nws.weather.gov/schemas/iwxxm-us/3.0/) with
   `source_url` + content hash (D-S008-05-batch1 / C07).
 - **Delivery phases** (v1 goal = all seven products; acceptance order):
@@ -210,7 +246,7 @@
   decode-panel / quality-metrics diagnostics only (UJ-026 unchanged). Profile-default hook is
   wired; **annex3 / ICAO_2025 default stays off**; no other profile defaults enabled this
   cycle. `/convert-zip` inherits the Form field. Does **not** flip F6 status; does **not**
-  implement UJ-040 structured remark codecs. See Context: propagate-residuals-to-remarks (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate);
+  implement UJ-040 structured remark codecs. See Context: propagate-residuals-to-remarks (archived; see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate);
   UJ-070; [evolve-decisions.md](decisions/evolve-decisions.md) §EV-981.
 - **EV-configurable-tac-decode-packs / ADR-045 (F6 deepen, not a status flip):** Convert IR
   for each core product comes from the same `tac-decoding` pack match as natural-language
@@ -224,7 +260,7 @@
   (METAR/SPECI first). Span IR stays in `tac-decoding`; `tac2iwxxm` maps spans→legacy
   convert slots and may emit IWXXM from that path. When METAR/SPECI vendor golden peers
   (`metar-A3-1`, `speci-A3-2`) stay byte-identical on every existing pin, flip METAR/SPECI
-  convert **default** to the pack-IR path — still **no** `products/*.py` delete (delete
+  convert **default** to the pack-IR path; still **no** `products/*.py` delete (delete
   gate needs a later evolve). Packages stay separate. [Corpus: adr/ADR-045]
 - **EV-pack-fill-delete-gate / ADR-045 deepen (F6, #1214):** Fill + wire remaining core packs
   (TAF, ordinary/VA/TC SIGMET, AIRMET, VAA, TCA, SWXA, VONA). Stricter in-bar peers include
@@ -234,7 +270,7 @@
   (all-or-nothing); keep failing files (zero deletes OK). METAR/SPECI may delete `metar_speci.py` if goldens
   still pass after mapper independence. WAFS/QVACI stay stubs. Packages stay separate.
   [Corpus: adr/ADR-045]
-- **Limitations**: US AIRMET/SIGMET docs thinner than METAR/TAF — may gate fixture depth inside
+- **Limitations**: US AIRMET/SIGMET docs thinner than METAR/TAF and may gate fixture depth inside
   F6.d; F5 not extended to other products in v1; exact AHL dialect coverage TBD in fixtures.
   Full FMH-1 remark catalog beyond AO/SLP/PK/T/P free-text is still scoped deepen work.
 - **S011 / F7 engine deltas** (packages stay under F6; operator UX under F7):
@@ -242,8 +278,8 @@
   - Optional integer `start`/`end` on lint-tac / validate issue objects (span highlight).
   - Soft-fail **preview** convert path returning best-effort IWXXM + failed-span markers
     (exact shape in api-contract / 04-tech-plan).
-- **Source**: S008 01-requirements; ADR-013; ADR-014; (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate);
-  (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate); S011 / EV-008; **S043 / EV-035** encode/AHL
+- **Source**: S008 01-requirements; ADR-013; ADR-014; (archived; see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate);
+  (archived; see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate); S011 / EV-008; **S043 / EV-035** encode/AHL
   provenance deepen (see deepen section below)
 
 ### F6 deepen (EV-925 — canonical IR + staged validation / #925)
@@ -252,7 +288,7 @@
   documents IR boundary (`ConvertResult.ir`) + ADR-039 PipelineResult contract. **No new Fn.**
 - **Acceptance**: Stage diagram, keep-in-place IR recommendation, multi-result contract, METAR-family gap list.
 - **Out of scope**: Typed IR package, unified runtime orchestrator, #938 UI.
-- **Source**: Context: canonical-met-staged-validation-925 (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate);
+- **Source**: Context: canonical-met-staged-validation-925 (archived; see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate);
   [evolve-decisions.md](decisions/evolve-decisions.md) §EV-925
 
 ### F6 deepen (EV-924 — ConversionProfile contract / #924)
@@ -262,7 +298,7 @@
   mapped onto existing registries + plugins. **No new Fn.**
 - **Acceptance**: Gap matrix, contract recommendation, overlay trust deferral, ADR-038.
 - **Out of scope**: Runtime loader, browser packs, #933 UI.
-- **Source**: Context: conversion-profile-contract-924 (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate);
+- **Source**: Context: conversion-profile-contract-924 (archived; see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate);
   [evolve-decisions.md](decisions/evolve-decisions.md) §EV-924
 
 ### F6 deepen (EV-922 — platform logical layers / #923)
@@ -272,24 +308,24 @@
   ADR-037–042; Option C (no renames). **No new Fn.**
 - **Acceptance**: Gap matrix, Option C ([ADR-037](adr/ADR-037-platform-logical-layers.md)),
   approved milestone sequence in `[Corpus: system-spec]` §Platform logical layers;
-  synthesis Context: epic-922-synthesis (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate).
+  synthesis Context: epic-922-synthesis (archived; see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate).
 - **Out of scope**: Package moves, PyPI renames, behavior change; runtime + UIs are follow-on cycles.
-- **Source**: Context: platform-package-layout-923 (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate);
-  Context: epic-922-synthesis (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate);
+- **Source**: Context: platform-package-layout-923 (archived; see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate);
+  Context: epic-922-synthesis (archived; see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate);
   [evolve-decisions.md](decisions/evolve-decisions.md) §EV-922 · §EV-922-synthesis
 
 ### F6 deepen (S043 / EV-035 — rule-source provenance)
 
 - **Status note**: F6 remains **Implemented**; this cycle **re-links** encode + bulletin/AHL
   rules already extracted to authoritative sources (canonicals + `RULE_SOURCE_URLS` + mining
-  digs) via a standing provenance map under `docs/domain/rules/` (**no new Fn** — G1=2).
+  digs) via a standing provenance map under `docs/domain/rules/` (**no new Fn**; G1=2).
 - **Acceptance (EV-035)**:
   1. Every encode / AHL / bulletin rule cited or revisited has ≥1 provenance row
      (`ok` | `gap` | `paywall` | `N/A`) with source URL or explicit raise
-  2. Dense CI asserts (many per rule / matrix cell) — reuse F29 harness patterns where useful
+  2. Dense CI asserts (many per rule / matrix cell); reuse F29 harness patterns where useful
   3. Unfindable sources raised to operator; no silent invent
 - **Out of scope**: New product encode; UI provenance UX; vendor hand-edits
-- **Source**: Context: rule-source-traceability (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate);
+- **Source**: Context: rule-source-traceability (archived; see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate);
   [evolve-decisions.md](decisions/evolve-decisions.md) §EV-035
 
 ### F6 deepen (S056 / EV-047 — converter perf regression harness / #834)
@@ -330,7 +366,7 @@
   **TC-EV037-***.
 - **Out of scope**: Full per-family body-split / fixture pack implementation beyond matrix
   redesign and residual child tickets
-- **Source**: Context: matrix-disposition-residuals (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate);
+- **Source**: Context: matrix-disposition-residuals (archived; see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate);
   [evolve-decisions.md](decisions/evolve-decisions.md) §EV-037; [COVERAGE_MATRIX](domain/rules/COVERAGE_MATRIX.md)
 
 ### F2 deepen (EV-validation-policy-layers / ADR-046 — #1216)
@@ -353,6 +389,34 @@
   2. A narrower policy drops a Schematron assert id (unit or API). The default annex3
      page issue list matches the unfiltered report.
 - **Source**: #1216; ADR-046 remainder; session EV-validation-policy-remainders.
+
+### F6 / F7 / F10 / F15 / F20 deepen (EV-1396 regional tester gaps)
+
+- **Status note**: No new feature. Seven shared mechanisms cover the October 2026 tester issues that still fail on staging ([#1396](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1396) and children [#1397](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1397)–[#1412](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1412)). The weather grammar is in. The time anchor uses the bulletin date, and an impossible day fails closed. Unobserved visibility is in the lint rules: `////` and `////SM` are not a missing group, and remark-only `NCD` is not a body cloud finding. A compass visibility such as `2000E` is 2000 metres to the east, not a missing group. Forecast variable wind keeps its speed and gust in the TAC unit. A multi-line TAF stays one forecast, and `AMD NOT SKED` stays a trailer. `PROB30` and `PROB40` stay on the temporary group they qualify. Bare `RESH` is recent showers and stays `SH`. A pasted abbreviated heading on the main convert path converts the reports under it. When both an altimeter setting and a QNH group are present, the reported QNH is encoded. A METAR or SPECI report is uppercased before parse, so a lowercase report matches its uppercase twin. TAF and SIGMET letter case stays as it is. A SIGMET that starts at `SIGMET` still converts when the validity line names the watch office and a body follows. `DECR` is weaken. A header with no body still fails. [Corpus: product §F6] [Corpus: product §F7] [Corpus: product §F10] [Corpus: product §F15] [Corpus: product §F20]
+- **Unobserved visibility (#1399)**: A visibility group of `////` or `////SM` is present and not observable. Lint does not raise `MISSING_VISIBILITY` for it. A report that omits the visibility group still does. `NCD` only after `RMK` does not raise `NCD_PRESENT`. `NCD` in the observation body still does. Convert keeps nil visibility with reason `notObservable`. Encoding `//////` as a nil cloud layer stays out of this slice. [Corpus: product §F6] [Corpus: product §F15] [Corpus: tests]
+- **Forecast variable wind (#1400)**: A TAF `VRB` group keeps `variableWindDirection` true and writes the speed in the TAC unit. `VRB03KT` is 3 knots. `VRB10G20KT` keeps a 10-knot mean and a 20-knot gust. METAR variable wind is unchanged. [Corpus: product §F6] [Corpus: tests]
+- **Multi-line TAF (#1401)**: Continuation lines join the forecast that opened them. A second station stays a second forecast. `AMD NOT SKED` does not set report status to amendment and does not raise `AMD_PRESENT`. `TAF AMD` still does both. A line that is not a TAF still fails with "unable to parse TAF header". [Corpus: product §F6] [Corpus: product §F20] [Corpus: tests]
+- **Temporary probability (#1402)**: `PROB40 TEMPO 0818/0822` keeps change indicator `PROBABILITY_40_TEMPORARY_FLUCTUATIONS` on that group. The temporary group's weather stays off the preceding `BECMG` group. `PROB30` without `TEMPO`, and `PROB` `TEMPO` without a time period, raise `INVALID_PROB` and are not folded into the previous forecast. [Corpus: product §F6] [Corpus: product §F20] [Corpus: tests]
+- **Recent weather (#1403)**: `RESHRA` is recent rain showers. `RETS` is a recent thunderstorm. Bare `RESH` is recent showers with code `SH`, and it is not rewritten to `SHUP`. [Corpus: product §F6] [Corpus: tests]
+- **Visibility 10 km (#1406)**: A mixed statute-mile group such as `1 1/2SM` uses the existing fraction parser and encodes as 2414 m, about 2400 m. `9999` and `10SM` both mean 10 km or more on METAR and on TAF: prevailing visibility 10000 metres with operator ABOVE. [Corpus: product §F6] [Corpus: tests §TC-F6-053]
+- **Convert result card (#1411)**: The page title is TAC to IWXXM. After two converts, the newest result is first. Status is valid, valid with notes, or needs attention. An invalid result says do not publish. Errors and notes are separate lists, and the status leads. The issue code stays under the message. [Corpus: product §F7] [Corpus: tests]
+- **Default remarks (#1404)**: Remarks after `RMK` stay out of the international report. The plain-language decode explains vicinity showers (`VCSH`) and a visibility in kilometres (`VIS16KM`, `VIS1KM`). Direction `S` stays South. The convert note does not name a national profile. `VIS100KM` stays unexplained. The remark is not written as present weather and is not turned into 16000 m. [Corpus: product §F6] [Corpus: tests]
+- **Unknown cloud base (#1407)**: `FEW///CB`, `SCT///CB`, and `BKN///TCU` are cloud groups with an unknown base and a convective type. Lint does not raise `CLOUD_CB_OR_TCU` or `INVALID_CLOUD_TOKEN` for them. A three-digit base with `CB` or `TCU` still raises `CLOUD_CB_OR_TCU`. `SCT(0)45` still raises `INVALID_CLOUD_TOKEN`. `FEW020///` still raises `CLOUD_TYPE_NOT_OBSERVABLE`. Convert encoding of these groups is unchanged. Encoding `//////` stays out of this slice. [Corpus: product §F6] [Corpus: product §F15] [Corpus: tests §TC-F6-050]
+- **Forecast time links (#1408)**: Each TAF forecast time points at an id in the same document. The base forecast phenomenon time links to the valid period. A failed TAF preview uses a nil base forecast. The issue catalog lists `OUTPUT_VALIDATION_WARNING` in plain language. [Corpus: product §F6] [Corpus: api] [Corpus: tests §TC-F6-051]
+- **Abbreviated heading in convert (#1409)**: Pasting `SAXX31 TNCM 081200` in front of a METAR converts that METAR from the main convert path. SPECI, TAF, and SIGMET headings do the same. A heading with no report fails with "No TAC reports found after the abbreviated heading." A malformed heading fails with a message that the abbreviated heading is not valid. [Corpus: product §F6] [Corpus: api] [Corpus: tests §TC-F6-054]
+- **Lowercase report keyword (#1405)**: A METAR or SPECI report is uppercased before the existing parsers. `metar tncm 081200z 14006kt 9999 few020 28/24 q1013=` converts with the same station, wind, visibility, cloud, temperature, and QNH as its uppercase twin. A lowercase SPECI keyword does the same. TAF and SIGMET stay case-sensitive. Each full TAC report from the October 2026 regional tester packet keeps the convert result it has today. [Corpus: product §F6] [Corpus: tests §TC-F6-055] [Corpus: tests §TC-F6-056]
+- **SIGMET body (#1410)**: A body normalizer runs in front of the encoder that already keeps tops, movement, intensity, and a bare cancellation. Coordinates continued on the next line stay one polygon. The flight information region keeps its name. The air traffic services unit stays a unit, not an aerodrome. `W-NW` is direction 292.5 degrees. A remark on a cancellation is ignored, so that remark is not a phenomenon. Lettered sequence numbers such as A1 and A4 stay sequence numbers. A message that omits the leading region indicator still converts when `VALID` is followed by the watch office, a hyphen, and a body. The region name is taken from the body, or from the watch office when the body has no named region. `DECR` is the same intensity change as `WKN`. A validity line with no body still fails with "unable to parse SIGMET header". [Corpus: product §F6] [Corpus: tests §TC-F6-052] [Corpus: tests §TC-F6-057]
+- **Directional visibility**: `2000E` is prevailing visibility 2000 metres and minimum visibility 2000 metres at 90 degrees. `9999 1200NE` stays 10 km or more, with minimum visibility 1200 metres at 45 degrees. Lint does not raise `MISSING_VISIBILITY` for the compass group. A report that omits the visibility group still does. [Corpus: product §F6] [Corpus: product §F15] [Corpus: tests §TC-F6-057]
+- **Mechanisms**:
+  1. One weather and cloud grammar, shared by lint and convert. A descriptor is not consumed when it is the phenomenon, so vicinity showers, vicinity thunderstorms, and a bare thunderstorm stay valid. Recent weather is written as recent weather. A cloud base may be unknown (`///`) and still carry cumulonimbus or towering cumulus.
+  2. One time anchor for every product. Day and clock come from the TAC. Year and month come from optional `bulletin_date` (`YYYY-MM-DD`). HTTP convert uses that date, or the current UTC date when it is omitted. Library `convert()` without `bulletin_date` keeps the example pins (`2012-08`, `2023-06`, and the SIGMET specials). A day that cannot fall in the anchor month fails conversion. The message names the day and the month. The issue time is not moved into another month.
+  3. One measure writer. Variable forecast wind keeps its speed and the TAC unit. Mixed statute-mile fractions use the existing fraction parser. `9999` and `10SM` both mean 10 km or more. A compass metre group such as `2000E` is visibility. When both an altimeter setting and a QNH group are present, the QNH group wins.
+  4. One report assembler. A pasted abbreviated heading uses bulletin convert. TAF continuation lines stay one forecast. `PROB30` and `PROB40` qualify the following change group. The report keyword is accepted in any case. Every forecast time link points at an id in the same document. `AMD NOT SKED` is a trailer.
+  5. A SIGMET body normalizer in front of the encoder that already keeps tops, movement, intensity, and a bare cancellation. It unwraps coordinates, keeps the flight-information-region name, accepts a compound direction, and ignores a remark on a cancellation. The leading region indicator may be omitted when the watch office and a body are present. `DECR` means weaken.
+  6. Remarks on the default profile stay out of the international body. The plain-language decode explains them. The lint note does not tell every operator to switch to the US profile.
+  7. One convert result card. The page title is TAC to IWXXM. The newest result is first. Status is valid, valid with notes, or needs attention. An invalid result says do not publish.
+- **Out of this deepen**: correction status, METAR variable wind in knots, wind-direction variation, a clean abbreviated heading on the bulletin endpoint, and simple SIGMET tops, movement, and intensity. Those already pass on staging.
+- **Source**: #1396–#1412; session EV-1396-tester-gap-solutions; [docs/decisions/evolve-decisions.md](decisions/evolve-decisions.md).
 
 ### F2 / F6 / F9 / F15 deepen (EV-yaml-extension-header)
 
@@ -446,17 +510,17 @@
   METAR_US validate cell no longer implies “all US validation ⚠”; TC-EV037-002 green.
 - **Out of scope**: Authoring a project Schematron to replace NOAA; claiming 2025-2
   certification of IWXXM-US 3.0 without a combined-catalog check note
-- **Source**: Context: matrix-disposition-residuals (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate);
+- **Source**: Context: matrix-disposition-residuals (archived; see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate);
   NOAA iwxxm-us 3.0 publication; [PROVENANCE_MAP](domain/rules/PROVENANCE_MAP.md)
 
 ### F7: Multi-Product TAC Operator UI / Sessions
 
-- **What it does**: Operator-facing UI for all **seven** F6 products — CodeMirror workbench,
+- **What it does**: Operator-facing UI for all **seven** F6 products: CodeMirror workbench,
   decode panel, failed-TAC / partial-preview UX, and **multi-product work sessions** (separate
   from F5). Shares the convert → lint → Schematron path with F6 packages over JWT HTTP APIs.
 - **Status**: **Implemented** (S011 / EV-008 + subsequent deepens). Remaining profile-catalog /
   composable-block work is tracked on open issues (#1120 / #1145–#1147), not an umbrella Planned
-  status — see [Corpus: now].
+  status; see [Corpus: now].
 - **Relationship to F5**: **Unified sessions** (S011 Spec Batch 2 / R2 amend). Canonical table
   `tac_work_sessions` covers all seven products. Existing F5 `metar_work_sessions` rows
   **migrate** into it (`product` = `metar`/`speci`); `metar_work_sessions` is deprecated and
@@ -477,7 +541,7 @@
   | F7.g | #780 | Pre-loaded golden examples (convert + validate) — S021 / EV-016 |
   | F7.h | #783 | IndexedDB local sessions (all products); drop JWT session APIs — S023 / EV-017 |
   | F7.i | #842 / F31 | Hybrid: guest IndexedDB + logged-in DO Postgres; auto-upload on login — S038 / EV-031 |
-  | F7.q | #836 / #982 / #988 / #983 / #981 | Quality metrics tab — official WMO corpus; W3C C14N match/diff (S063 / EV-054; S064 / EV-055); dedicated detail route + collapsible diffs (S066 / EV-056); selectable side-by-side vs inline XML diff (S068 / EV-058); **EV-981** residual fold indicator (`residuals_propagated_to_remarks`) |
+  | F7.q | #836 / #982 / #988 / #983 / #981 / #1316 | Quality metrics tab — official WMO corpus; W3C C14N match/diff (S063 / EV-054; S064 / EV-055); dedicated detail route + collapsible diffs (S066 / EV-056); selectable side-by-side vs inline XML diff (S068 / EV-058); **EV-981** residual fold indicator (`residuals_propagated_to_remarks`); **EV-1316** operator subtitle without pin or generated date, wrapped diagnostic panels, deferred stems excluded from unpaired counts |
   | F7.r | #903 | Accumulate back-to-back conversions → one ZIP (S067 / EV-057) |
   | F7.s | #838 | Validate existing IWXXM (paste / single `.xml` upload; no TAC) (S067 / EV-057) |
   | F7.t | #1003 | IWXXM as **product** pass-through (lint + F2 validate; no TAC convert) (S070 / EV-060); siblings #1001 AHL noise, #1002 profile picker, #1004 log_level, #1005 bulletin fields, #1006 Auth UAT |
@@ -488,6 +552,7 @@
   `iwxxm_version`; optional `bulletin_id` / `issuing_center` / `stop_on_error` /
   `validate_output` / `validation_level` (ADR-023); editor cursor and character spans
   for highlight/hover. **No operator JWT** after F21 (S023).
+- **Strict raise ([Corpus: adr/ADR-054])**: Operator Strict (default off) raises critical and error only. Strict on raises the full ladder and sets IWXXM validate when the validate step is on. The server returns all issues. Convert success with IWXXM errors stays downloadable with awareness. No decode step toggle in v1. Pipeline stage map: convert failure → `critical`; IWXXM validation failure → `error`; partial decode (unread TAC tokens) → TAC lint/convert warning `PARTIAL_DECODE`.
 - **Outputs**: Ordered decode segments (`start`/`end` + explanation); span-aware lint/validate
   issues; best-effort IWXXM + failed-span markers on soft-preview; F7 session rows for seven
   products; optional in-band XSD/Schematron when Strict Validation is on (hard Convert).
@@ -497,15 +562,15 @@
   (TAC / AHL / COLLECT) validated via UJ-025 / TC-F7-007 (Playwright **T1–T6** hard + Vitest + staging
   H4–H5 / AHL / COLLECT 501). Auto-switch required. Does **not** flip F7 → Implemented.
 - **Golden examples (S021 / EV-016 / #780)**: Frontend-only static catalog in
-  `apps/frontend` (copy from package goldens — no Python runtime import). Product-aware
+  `apps/frontend` (copy from package goldens; no Python runtime import). Product-aware
   Examples control in `FileConverter` loads TAC / AHL / happy-path IWXXM into existing
   input modes and sets `product` / `inputMode`. Soft-fail IWXXM and file-upload queue
   **out of v1**. Hazard products may ship **1** known-good when a second in-repo fixture
   is absent (do not invent TAC). UJ-032 / TC-F7-008. Does **not** flip F7 → Implemented.
 - **F6 engine companions (still F6 packages; UX under F7)**: decode segments; optional integer
   `start`/`end` on lint/validate issues; soft-preview / partial convert (flag or dedicated
-  endpoint — finalize in 04-tech-plan).
-- **Editor**: **CodeMirror 6** (new frontend dependency — inventory in 01; install in 04/07).
+  endpoint; finalize in 04-tech-plan).
+- **Editor**: **CodeMirror 6** (new frontend dependency: inventory in 01; install in 04/07).
 - **Parent tracker**: GitHub [#5](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/5)
   stays open; close/link child issues as slices land.
 - **Acceptance (F7 v1 done)**:
@@ -551,14 +616,52 @@
   2. No operator-visible UI string matches guard patterns (see test-plan TC-EV048).
   3. Automated guard covers FE string catalogs; comments/tests excluded.
   4. UJ-055 / TC-EV048-003 green.
+- **EV-calmer-convert-tutorial-caribbean deepen (Calmer Convert + first-visit tutorial)**:
+  Progressive-disclosure Convert chrome matching Calmer Convert screens (empty hero → live
+  preview → post-convert Download primary → profile drawer). First-visit tutorial is the empty
+  state plus Help checklist replay (not a blocking wizard; does not replace F22/F31 gates).
+  UX principles encoded as TC-UX-CALM-001..010. Caribbean tester images/DOCX/XLSX coverage
+  tracked in `[Corpus: tests]`. Does **not** flip F7 → Implemented; no new Fn.
+- **Acceptance (EV-calmer-convert-tutorial-caribbean — F7 calm UX)**:
+  1. Empty TAC: one hero + one primary Convert CTA + example chips; advanced profile in drawer.
+  2. After successful convert/validate: primary is Download IWXXM; Send… secondary; validity strip.
+  3. Help opens short in-app checklist; reopenable; EV-048 clean.
+  4. TC-UX-CALM-001..010 + UJ-088 green (Vitest + H4–H5 smoke).
+  5. Caribbean media table in test-plan: every PNG/XLSX on disk + map DOCX/JPEG addressed PASS
+     (or explicit DEFERRED/WAIVE).
+- **EV-convert-declutter-drawer deepen (Convert results drawer + 20/80 chrome)**:
+  Progressive disclosure beyond Calmer Convert: default Convert shows editor + vertical spine
+  actions + tiny upload + Settings cog; IWXXM results, Console, Decoder, Map, and Downloads live
+  in a bottom results drawer (one tab at a time). Drop Compare versions on Convert. Lint span
+  colors use theme tokens with Default + Colorblind-safe presets. Post-convert validity strip
+  moves into Console (no persistent strip). Does **not** flip F7 → Implemented; no new Fn.
+  See `docs/decisions/ev-convert-declutter-drawer.md`.
+- **Acceptance (EV-convert-declutter-drawer — F7 declutter UX)**:
+  1. Default Convert does not co-display decode + map + console + results as peer panels.
+  2. Results drawer tabs: IWXXM · Console · Decoder · Map · Downloads (queue/zip only).
+  3. Successful convert auto-opens drawer on IWXXM; Settings cog holds advanced/manual/lint colors.
+  4. Convert Compare versions gone; History compare may remain.
+  5. Lint highlights readable on dark + Colorblind-safe preset; EV-048 clean.
+  6. TC-UX-DECLUTTER + UJ-089 green (Vitest + H4–H5); UJ-088 still green where not superseded.
+- **EV-console-validate-status-strip deepen (Console XSD/Schematron pills)**: After hard
+  Convert with Strict Validation, Console status strip reflects in-band XML schema and
+  Schematron (passed/failed). Soft-preview and live IWXXM keep pills idle ("not run yet").
+  Does **not** flip F7 → Implemented; no new Fn. See
+  `docs/decisions/ev-console-validate-status-strip.md`.
+- **Acceptance (EV-console-validate-status-strip — F7/F10 Console strip)**:
+  1. Soft-preview Convert leaves schema/Schematron idle (`validate_output` off).
+  2. Hard Convert + Strict Validation flips Console schema/Schematron off idle when convert
+     finishes without error status.
+  3. Layer failures from conversion log issues (or validate report) show failed.
+  4. TC-EV-CONSOLE-STRIP + Vitest `qg-iwxxm-schematron-status-strip` green; EV-048 clean.
 - **S063 / EV-054 deepen (F7.q / #836 — Quality metrics tab)**: Primary **app shell tab**
-  (peer to Convert / History — not a panel inside the convert workbench) that browses the
+  (peer to Convert / History, not a panel inside the convert workbench) that browses the
   official WMO IWXXM example corpus by product/file type and surfaces **precomputed** match,
   residuals, lint, and validate diagnostics via public **`GET /api/v1/quality-metrics*`**
   (`D-S063-compute=1` + `D-S063-gateA=2`). Per-file detail includes **unified XML diff** of
   official vs our conversion (`D-S063-diff=2`). Does **not** flip F7 → Implemented;
   complements CI matrices (#815 / #831 / F29) without replacing them. EV-052 sticky PR
-  quality comments remain a **separate** CI surface (goldens + F29 inventory) — not a
+  quality comments remain a **separate** CI surface (goldens + F29 inventory), not a
   substitute for this tab’s `corpus_metrics.json` evaluation
   ([ev-970-s3-validate-fill.md](decisions/ev-970-s3-validate-fill.md)).
 - **Acceptance (EV-054 / #836 — F7.q)** — **approved** (`D-S063-01-ac=1`; Gate A amend
@@ -574,7 +677,7 @@
   6. H4–H5 or Playwright smoke: open tab → filter one product → open one passer → clean or
      expected diagnostics (**UJ-056** / TC-EV054).
   7. No Supabase and no live upstream WMO fetch; metrics come from our public API backed by
-     precomputed fixtures (same API host as convert — not FE-only bundle).
+     precomputed fixtures (same API host as convert, not FE-only bundle).
 - **S064 / EV-055 deepen (F7.q / #982 + validate follow-ups #980/#979)**: Compare official and
   converted XML with **W3C C14N** (`D-S064-c14n=1`) so `match_status` and unified diffs reflect
   semantic differences (`D-S064-normalize=1`). Shared normalize semantics in generator + FE
@@ -582,7 +685,7 @@
   to un-normalized (`D-S064-gateA-M2=override`). Regenerate precomputed `corpus_metrics`
   (`D-S064-regen=1`). **Hard** this cycle: enable Schematron for IWXXM **2025-2** xslt2 via
   native when required (`D-S064-sch-hard=1`) and **fix** `SCHEMA_IMPORT_WARNING` for 2025-2
-  (`D-S064-xsd-hard=1`) — overrides earlier soft “prefer/optional” intake. Engine changes in
+  (`D-S064-xsd-hard=1`); this overrides earlier soft “prefer/optional” intake. Engine changes in
   `packages/iwxxm-validate` (F2/F13); operator surface remains Quality metrics. Does **not**
   flip F7 → Implemented.
 - **Acceptance (EV-055 / #982/#980/#979 — F7.q + F2/F13)** — **approved** (`D-S064-01-ac=1`;
@@ -602,7 +705,7 @@
 - **S066 / EV-056 deepen (F7.q / #988 — detail page + collapsible diffs)**: After S065
   pretty-print hotfix (#987), replace inline Quality metrics detail+diff with a **dedicated
   shareable route** `/quality/:stem` (`D-S066-route-shape=1`) and **GitHub-style** unified
-  diff hunk folding (default **3** context lines; expand hunk / expand all —
+  diff hunk folding (default **3** context lines; expand hunk / expand all;
   `D-S066-context-n=1`). List navigates to detail; back returns to list (`D-S066-list=1`).
   Keep **C14N equality** / `match_status` unchanged; no API contract change unless shell
   routing needs it; reuse `unifiedLineDiff` + pretty C14N helpers (no new npm diff lib
@@ -614,12 +717,12 @@
   4. Unequal SIGMET stems remain navigable and readable on staging.
   5. UJ-056 / TC-EV056 updated; FE unit + Playwright smoke (H4–H5 via 13).
 - **S068 / EV-058 deepen (F7.q / #983 — side-by-side vs inline XML diff)**: On
-  `/quality/:stem`, add a **segmented control** — **Inline (unified)** | **Side-by-side** —
+  `/quality/:stem`, add a **segmented control** (**Inline (unified)** | **Side-by-side**)
   so operators can switch layouts without reload (`D-S068-01-control=3a`). Default remains
   **unified** (UJ-056 backward compatible). Side-by-side uses existing `unifiedLineDiff` /
   line-diff helpers (no new npm `diff` unless Gate B re-approved). Preference persists in
   **localStorage**. Synced scroll between side-by-side panes is **best-effort** (not a
-  blocking AC — `D-S068-01-ac=2b`). Keep raw TAC / diagnostics / collapse-equal-context.
+  blocking AC; `D-S068-01-ac=2b`). Keep raw TAC / diagnostics / collapse-equal-context.
   C14N / `match_status` unchanged; FE-only. Does **not** flip F7 → Implemented.
 - **Acceptance (EV-058 / #983 — F7.q)** — **approved** (`D-S068-01-ac=2b`):
   1. Operator switches Inline (unified) ↔ Side-by-side without reload.
@@ -638,15 +741,27 @@
   2. UI residuals panel reflects the field with operator-safe copy (no planning ids).
   3. Default corpus fixtures remain `false` compatible with prior UJ-056 assertions.
   4. TC-EV981-* + UJ-070 / UJ-056 deepen; H4–H5 after Build.
+- **EV-1316 / #1316 deepen (F7.q — quality-metrics honesty and overflow)**: The Quality
+  metrics subtitle stays the purpose sentence. `generated_at` and `iwxxm_pin` remain on
+  the API. Diagnostic lists wrap and scroll so long identifiers stay inside the panel.
+  Deferred stems increment deferred gaps only; they are not unpaired examples. Empty
+  residual text is not a residual. XPath-engine errors and schema-import warnings are
+  not shown as product validation failures and are dropped the next time the corpus
+  artifact is regenerated. The default IWXXM pin is unchanged.
+- **Acceptance (EV-1316 / #1316 — F7.q)** — **approved** (proceed on #1316):
+  1. Operator subtitle has no generated date and no IWXXM pin.
+  2. Validation-issues and other diagnostic panels wrap or scroll instead of overflowing.
+  3. Deferred / mismatch / residual counting notes and tests are in the corpus.
+  4. TC-EV1316-001; H4–H5 is the existing Quality metrics tab, not a new route.
 - **S067 / EV-057 deepen (F7.r / #903 — accumulate conversions → one ZIP)**: Successful
   converts **append** to the current result set instead of wiping prior successes so operators
   can convert A→B→C and **Download all** as one ZIP. Default archive basename when custom
   output name is empty: sanitize **first ~8 characters** of the **first** successful conversion’s
   TAC + timestamp (`{stem}_{yyyyMMddHHmmss}.zip`). Custom basename keeps `{base}.zip` (#664 /
   EV-005). Explicit clear/reset restores empty batch. Failed convert leaves prior successes.
-  Soft accumulate cap **≤200** results (`D-S067-903-cap=1c` — align with F33 file-count
+  Soft accumulate cap **≤200** results (`D-S067-903-cap=1c`; align with F33 file-count
   ceiling for sequential UI; clear error when over). Does **not** flip F7 → Implemented.
-  Notes F1/F6 download path only — no batch disseminate.
+  Notes F1/F6 download path only; no batch disseminate.
 - **Acceptance (EV-057 / #903 — F7.r)** — **approved** (`D-S067-01-ac=1`):
   1. N≥2 sequential successful converts remain visible without re-pasting earlier TAC.
   2. Download all packages every accumulated IWXXM into one ZIP (per-file naming unchanged).
@@ -718,14 +833,45 @@
   source access/tier). Descriptions are natural-language **what / why / severity** with
   section-level citations or explicit **Source section unavailable**. Prefer public primary
   `source_url`; label paywall; expose `source_locator` + `source_access`. Distinct from #996.
-- **EV-933 deepen (F7.w / #933)**: **ConversionProfile editor** for operators and admins —
+- **EV-1281 deepen (F7.v / #1281)**: Conversion / Dissemination / Decoding rule-catalog
+  families apply Type / Level / Access / Sort **client-side** from
+  `GET /rule-catalogs` fields only (no invented defaults; no new query params). TAC and
+  IWXXM validation continue to use the lint-issue catalog API filters.
+- **EV-1307 / #1308 deepen (F7.v / F9)**: Enrich **Decoding** and **Conversion**
+  `rule-catalogs` rows so they match TAC/IWXXM catalog trust quality: additive
+  `issue_type` / optional `severity` / `source_*` / optional `conform_note` on Decoding
+  (glossary rows; EV-062 type set; null when unknown; FE never invents). Conversion keeps
+  one row per semantic profile with a **1–3 sentence** operator `summary` and
+  `issue_type=profile` (`policy` reserved for a later child). Family-aware type-filter
+  options on the catalog UI. Journey **UJ-080**. Package SoT: `tac-decoding` +
+  `tac2iwxxm` via BE aggregator (ADR-044). Best-effort public source research only.
+  Dissemination fill, profile-only checkbox, console deep-links, ToS, quality-metrics UI,
+  and vendor-sync are **sibling epic children**, not this deepen.
+- **EV-1317 / #1317 deepen (F7.v / F16–F19)**: Dissemination `rule-catalogs` rows are
+  package-owned in `packages/dissemination`. Each exchange profile has a readable
+  summary, `issue_type=profile`, and a public source. Lowercase registry ids stay as
+  aliases of the wire id. The catalog UI does not invent type or source defaults.
+  Journey **UJ-086**. No new sinks and no credential fields.
+- **Acceptance (EV-1317 / #1317 — F7.v)** — **approved** (proceed on #1317):
+  1. Dissemination rows have readable summaries and typed metadata where known.
+  2. The frontend passes API fields through and does not invent defaults.
+  3. TC-EV1317-001; H4–H5 is the existing catalog route, not a new wire shape.
+- **EV-1318 / #1318 (M6)**: Weekly vendor sync checks out the pinned wmo-im commit
+  in full and keeps nested profile-line trees (`iwxxm/3.0.0`) so an unchanged pin
+  still matches `tree_sha256`. No hand-edits under `vendor/schemas/`.
+- **Acceptance (EV-1318 / #1318 — M6)** — **approved** (proceed on #1318):
+  1. Root cause of the unchanged-pin checksum mismatch is recorded.
+  2. A manual or scheduled vendor-sync of the current pins can finish the schema
+     replace without a checksum error.
+  3. TC-EV1318-001; H4–H5 N/A (no operator UI or HTTP change).
+- **EV-933 deepen (F7.w / #933)**: **ConversionProfile editor** for operators and admins:
   rule-pack CRUD (absorbed #915), read-only contract inspector (ADR-038 fields), then
   **signed / operator-scoped overlays** persisted on product Postgres with JWT ownership
-  (F30; Auth via Supabase JWT — not PostgREST writes). Phased in-cycle: **M1** rule-pack +
+  (F30; Auth via Supabase JWT, not PostgREST writes). Phased in-cycle: **M1** rule-pack +
   inspector; **M2** overlay persist + apply on convert (**landed**). Does **not** collapse #1024 light
   picker; does **not** bake live AFTN/WIS2 routes or credentials into profiles (ADR-021/029).
   ADR-038 amend for overlay trust. Journey **UJ-072**. Status: **Implemented** (M1–M3;
-  live H4–H5 PASS 2026-09-04 — see test-plan TC-EV933-006).
+  live H4–H5 PASS 2026-09-04; see test-plan TC-EV933-006).
 - **Acceptance (EV-933 / #933 — F7.w)** — **approved** (`D-EV933-01-ac=1`):
   1. M1: rule-pack editor (id, profile, product, stage, severity, when, message,
      standardReference) + share/export; inspector shows ADR-038 staged settings read-only
@@ -759,26 +905,31 @@
      restore one-shot destination credentials or URIs into the workbench.
   5. UJ-072 / UJ-074 and `TC-EV933-*` / `TC-EV1051-*` cover save, share, apply, ownership,
      and no-secret persistence paths.
-- **EV-1120 deepen (F7.v / F7.w / F15 / F35 — Phase A / #1120)** — **requirements locked**
-  (`D-EV1120-phaseA=1`):
+- **EV-1120 deepen (F7.v / F7.w / F15 / F35 — Phase A / #1120)** — **Done**
+  (epic [#1120](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1120) closed 2026-09-29;
+  children #1121–#1123/#1145 closed; residual polish [#1149](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1149)):
   1. **Catalog filters (#1121–#1123):** additive `semantic_profile` + `exchange_profile` on
      `GET /api/v1/lint-issue-catalog`; omit = current behavior; unknown → 400; workbench
      catalog follows Profile (+ Exchange when packaging); mined national-only rows for
      US_FAA_NWS + CA_ECCC (#1122) with provenance URLs only.
-  2. **Glanceable Profile UX (#1145):** one-composition summary on Conversion Profiles +
-     compact workbench twin (name/id, ≤3 vs-ICAO deltas, products, IWXXM line; guests see
-     pack/overlay count placeholders until signed in); **side-by-side compare of two semantic
-     profiles** on the Conversion Profiles summary surface (differing settings highlighted; the
-     workbench twin stays compact); ADR-038 sections as **inspect/jump blocks** (not a new
-     runtime loader); profile-aware example load for all registered semantic profiles + starter
-     seed packs/overlays (sync only if untouched); live refresh of summary + catalog without
-     resetting unrelated in-progress edits unless a profile-dependent control becomes invalid;
-     workflow = read-only links only.
+  2. **Glanceable Profile UX (#1145):** **workbench compact twin** shipped (name/id, ≤3
+     vs-ICAO deltas, products, IWXXM line; pack/overlay counts gated for guests).
+     Conversion Profiles page summary/compare/blocks **waived** after ADR-044 unmount;
+     live Profiles-page AC no longer applies. Profile-aware examples + live twin refresh
+     remain on Convert.
   3. **Out of Phase A:** composable convert assembly → [#1146](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1146);
      full workflow authoring → [#1147](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1147);
      marketplace; Learn/XP; soft-preview; #996 click-detail.
   4. Journeys UJ-072 deepen + UJ-073; TC-EV1120-*; H4–H5 when FE ships; EV-048 clean.
-  **Context**: profile-scoped-catalog-1120 (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate).
+  **Context**: profile-scoped-catalog-1120 (archived; see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate).
+- **EV-1312 deepen (F7.v / #1312 — listed-profile-only catalog checkbox)** — epic child of
+  [#1307](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1307):
+  1. Optional checkbox **Only rules that list this profile** on the Validation Issues Catalog
+     (plain-language; EV-048 clean).
+  2. When on and a semantic and/or exchange profile is selected: hide rows with empty /
+     unrestricted applicability on that axis; off keeps shared ∪ matching (API unchanged).
+  3. Client-side filter only; no change to `/lint-issue-catalog` default scoping.
+  4. UJ-081; TC-EV1312-001; H4–H5 deferred unless wire/copy needs live smoke.
 - **EV-080 deepen (F7.w / #1146) — Parameterizable conversion templates + TAC→IWXXM bridge**
   — **requirements locked** (`D-EV080-req=1`, 2026-09-14):
   1. **Default Conversion rule object** is a **parameterizable template** (ordered typed
@@ -808,7 +959,7 @@
      nilReason / ns / choice / uom / nesting / Schematron hooks in model) → mode
      **Convert | Decode-only | Skip** (+ gloss). Parametric typed captures. Live preview.
      Advanced pattern panel secondary.
-  3. **Validation:** Hybrid authoring — recipes + guided tokens + Advanced regex; issue /
+  3. **Validation:** Hybrid authoring (recipes + guided tokens + Advanced regex); issue /
      level / message; TAC + IWXXM library tabs with attached-profile chips.
   4. **Dissemination:** Ordered IWXXM post-process transform steps (DnD) + non-secret sink
      defaults; credentials memory-only at send. Discoverability journey = future-evolve notes
@@ -878,10 +1029,10 @@
      `vendor/schemas/iwxxm/externalSchema/schemas.wmo.int/.../rule/*.sch`). Additive asserts
      with `authority` tags; existing core assert ids remain stable; `--check` drift gate kept.
      OpenGIS / other `externalSchema` SCH out of scope this cycle.
-  2. **#1198:** National Conversion schema blocks for AU/BR/HK/IN/JP/KR/NZ/UK — **defer full
+  2. **#1198:** National Conversion schema blocks for AU/BR/HK/IN/JP/KR/NZ/UK: **defer full
      mine** until real vendor pins (M6 sync). Hooks landed; Stage 1 (2026-09-16) found
      **AU-TAF** public TAF-only XSD (partial; license/scope gate) and UK Colour State
-     registry OK but canonical XSD URL **404** — see
+     registry OK but canonical XSD URL **404**; see
      `docs/domain/profiles/mining/EV-1198-national-xsd-pinability.md`.
      **No invented national XSD trees**; keep #1198 open / blocked for mining.
   3. **Tests:** TC-EVPYL-MINE-006..008; no UI / H4–H5. ADR-038 amend (residuals). EV-048 N/A
@@ -926,17 +1077,17 @@
   | R2′ | **Override R2**: unified `tac_work_sessions` + migrate F5 rows (Spec Batch 2 A / 2026-07-13) |
   | R2″ | **Override R2′ storage**: browser IndexedDB (S023 / EV-017 / #783); server session table retired from public product |
   | R2‴ | **Override R2″**: hybrid — guest IndexedDB; logged-in DO Postgres via Supabase Auth (S038 / EV-031 / F31) |
-- **G1 amend (EV-017)**: Retire `DISABLE_AUTH` dual path when operator Auth is removed (F21) —
+- **G1 amend (EV-017)**: Retire `DISABLE_AUTH` dual path when operator Auth is removed (F21);
   public routes are the only operator path; F8 keeps separate machine credentials.
 - **Source**: S011 Phase 0 R1–R6; Feature List Batches 1–2 (2026-07-13);
-  Context: f7-operator-ui (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate); issues #694/#702/#665/#666/#697;
-  Context: golden-examples-ui (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate); #780 (S021 / EV-016);
-  Context: public-app-privacy (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate); #783 (S023 / EV-017)
+  Context: f7-operator-ui (archived; see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate); issues #694/#702/#665/#666/#697;
+  Context: golden-examples-ui (archived; see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate); #780 (S021 / EV-016);
+  Context: public-app-privacy (archived; see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate); #783 (S023 / EV-017)
 
 ### F8: Near-Realtime TAC Ingest → IWXXM Gate
 
-- **Status**: **Implemented** (S008 / EV-006 — ADR-018/019). Worker unit/pipeline approved;
-  live T7.4 staging smoke deferred (12/13 skipped this cycle). **Deepened EV-033 / S041** —
+- **Status**: **Implemented** (S008 / EV-006; ADR-018/019). Worker unit/pipeline approved;
+  live T7.4 staging smoke deferred (12/13 skipped this cycle). **Deepened EV-033 / S041**:
   DOKS poller URL fail-closed (code + preflight + docs fixture pin + CrashLoop check).
 - **What it does**: Continuous/near-realtime ingest of TAC (and bulletins) → `tac-validate` →
   `tac2iwxxm` → `iwxxm-validate` (Schematron/XSD) → **store**; **quarantine** on convert
@@ -948,18 +1099,18 @@
   replicas &gt; 0 (`scripts/deploy/doks_worker_poller_preflight.sh`).
 - **Non-goals (F8 worker path)**: public machine-ingest auth UX; **automatic** push of ingest
   results (operator dissemination sinks are **F16–F19**, not F8 auto-push).
-- **Source**: Context: realtime-tac-ingest (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate) R2–R15; ADR-018;
-  **S038 / EV-031 / F30** DO Postgres amend; Context: platform-independence-842 (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate);
+- **Source**: Context: realtime-tac-ingest (archived; see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate) R2–R15; ADR-018;
+  **S038 / EV-031 / F30** DO Postgres amend; Context: platform-independence-842 (archived; see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate);
   [deploy/doks/README-worker-hardening.md](../deploy/doks/README-worker-hardening.md)
 - **Workflow contract (EV-931 / #931):** F8 pipeline is the reference hard-coded path; migrates to
   `execute(message, workflow)` via ADR-042 + `workflows/f8-metar-ingest-default.yaml`.
-- **Runtime build (EV-1132 / #1132):** `packages/workflows` MVP executor + F8 cutover — **Implemented**
+- **Runtime build (EV-1132 / #1132):** `packages/workflows` MVP executor + F8 cutover: **Implemented**
   (ADR-042). Ingest path does **not** auto-disseminate (F16–F19 remain operator-triggered).
-  See Context: workflows-runtime-1132 (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate).
+  See Context: workflows-runtime-1132 (archived; see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate).
 
 
 - **EV-retire-profile-dissem-ui-catalogs / ADR-044 deepen (F7.v / F7.w / F9 / F16–F19)**:
-  **Hard cutover** — remove Profile Builder / five-library authoring / Dissemination Bench
+  **Hard cutover**: remove Profile Builder / five-library authoring / Dissemination Bench
   authoring UI. Selection uses **dropdowns** fed only by **backend-deployed** registries
   (code + deploy to extend; no browser-only add-ons; no YAML escape hatch).
   **Five trust catalogs** (tabbed shell, read-only): TAC Validation (`tac-validate`),
@@ -985,14 +1136,26 @@
   journeys UJ-076* / UJ-073. Decisions:
   [ev-profile-validate-decode-deepen.md](decisions/ev-profile-validate-decode-deepen.md).
   **Acceptance**: D-EVPVD AC1–2, AC6–7.
+- **EV-yaml-config-light-ux / #1251 (F7 deepen — Convert light select + ADR-044 FE hard-cut redo)**:
+  Delete remaining Profile Builder / library authoring FE (not merely unmounted). Convert
+  chrome: compact **four** selects (Decoding, TAC validation, IWXXM validation, Conversion)
+  from `GET /api/v1/selection-options` only; per-select trust/help + link to Rule catalogs;
+  Dissemination select **absent** on Convert (Send drawer retains pickers). Semantic profile
+  sets national-line defaults and, on change, confirms then resets the four selects. Guests
+  and auth share first-party options (no custom assets / no YAML paste). Two PRs required:
+  (1) FE cutover + E2E must-fix; (2) cookbook/starters/README quickstarts. Follow-up residual
+  YAML epic [#1252](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1252). Journeys: amend
+  UJ-076a. Session: `EV-yaml-config-light-ux`. Decisions:
+  [evolve-decisions.md](decisions/evolve-decisions.md) §EV-yaml-config-light-ux.
+  **Acceptance**: see #1251 AC checklist (R1–R16 lock).
 
-- **Status**: **Done** — shipped S013 / EV-009 (2026-07-17, PR #723).
+- **Status**: **Done**; shipped S013 / EV-009 (2026-07-17, PR #723).
 - **What it does**: Upgrades the F7 decode panel from generic group labels to **value-aware
   translations**, and adds a live **plain-language summary** of the whole report.
   - `packages/tac2iwxxm` `decode_tac` parses actual token values for all **seven** products:
     `24/18` → "Temperature 24 °C, dewpoint 18 °C"; `18004KT` → "Wind from 180° at 4 kt";
     `10SM` → "Visibility 10 statute miles"; `A3011` → "Altimeter 30.11 inHg"; etc.
-    METAR/SPECI/TAF rich; SIGMET/AIRMET/VAA/TCA best-effort (residuals stay explicit — G4).
+    METAR/SPECI/TAF rich; SIGMET/AIRMET/VAA/TCA best-effort (residuals stay explicit; G4).
   - `decode_tac` builds a **deterministic** natural-language `summary` string (one flowing
     paragraph from decoded values; no LLM). Unrecognized content appends a
     "Not decoded: …" clause naming residual spans. Sparse products emit a short best-effort
@@ -1004,7 +1167,7 @@
 - **Outputs**: Value-aware `segments[].explanation`; `summary` string; residuals unchanged.
 - **EV-981 / #981 note**: Decode residuals remain on the decode contract. Folding residual
   text into IWXXM remarks / HRT is a **convert** opt-in (`propagate_residuals_to_remarks`)
-  under F6 — not a change to `/decode-tac` response shape.
+  under F6, not a change to `/decode-tac` response shape.
 - **Out of scope**: LLM/AI-generated text; changing segment offsets contract; Layer 1–2 or
   Schematron semantics.
 - **EV-retire-profile-dissem-ui-catalogs / ADR-044**: Decode engine + glossary + Decoding
@@ -1026,13 +1189,15 @@
   depend on deleted `products/*.py` after selective delete-gate.
 - **EV-profile-validate-decode-deepen / #1221 / #724 (F9 deepen):** METAR/SPECI station
   token explanation and plain-language `summary` include full aerodrome name when the
-  existing airport lookup hits; miss soft-fails to ICAO designator only. No new `/decode-tac`
-  response keys. Reuse `tac_decoding.glossary` optional resolver + F3 airport data.
+  OpenAIP lookup hits for that one station; miss soft-fails to ICAO designator only.
+  The API remembers stations it has already asked for and does not load the airport
+  catalog for names. No new `/decode-tac` response keys. Reuse `tac_decoding.glossary`
+  optional resolver + F3 OpenAIP (`OPENAIP_API_KEY`).
   **Acceptance**: D-EVPVD AC4; TC-EVPVD-724-*.
 - **EV-conversion-profile-ux-libraries deepen (Decoding library stub):** Catalogued
   natural-language code definitions (reuse `decode_tac` / F9 explanations) as a first-class
   **Decoding library** asset, separate from Conversion / Validation / Dissemination.
-  **Decision recorded**; not Phase A Build — Phase C deepen. [Corpus: decisions §EVCPU]
+  **Decision recorded**; not Phase A Build; Phase C deepen. [Corpus: decisions §EVCPU]
 - **Acceptance (F9 v1 done)**:
   1. METAR/SPECI/TAF golden fixtures produce value-aware explanations for wind, visibility,
      temperature/dewpoint, altimeter/QNH, time, station, clouds, weather groups
@@ -1042,14 +1207,14 @@
   4. Decode response stays backward-compatible (additive `summary` only)
 - **S071 / EV-061 deepen (#1010)**: When Validate IWXXM (or product=IWXXM validate path)
   still produces decode, the UI shows the **same item-by-item readable description panel**
-  used for other TAC product types (parity with F9 decode rows / plain-language patterns) —
+  used for other TAC product types (parity with F9 decode rows / plain-language patterns),
   not a raw dump. F7.s validate-only and F7.t pass-through remain. UJ-064.
 - **Source**: S013 intake E9-2/E9-3/E9-4/E9-6; Batch 1 (all recommended, 2026-07-16);
   [evolve-decisions §EV-009](decisions/evolve-decisions.md); S071 / EV-061 #1010
 
 ### F10: Workbench Preview Clarity (IWXXM Pane + Lint UX)
 
-- **Status**: **Done** — shipped S013 / EV-009 (2026-07-17, PR #723).
+- **Status**: **Done**; shipped S013 / EV-009 (2026-07-17, PR #723).
 - **What it does**: Makes it obvious **where** Soft-preview / Live IWXXM output appears and
   removes confusing failure copy (user feedback on #665/#666/#694 surfaces).
   - **Side-by-side IWXXM preview pane** inside the workbench: pretty-printed IWXXM XML of
@@ -1076,7 +1241,7 @@
 
 ### F11: Validation Stack Perf Review + msgspec HTTP + XSD Codegen
 
-- **Status**: **Implemented** — S014 / EV-010 (#703 + ADR-026).
+- **Status**: **Implemented**; S014 / EV-010 (#703 + ADR-026).
 - **What it does**:
   1. **Layer cost matrix** — measure TAC lint, convert IR, XSD, Schematron, and HTTP DTO
      encode/decode (pydantic map vs msgspec) on single METAR, bulletin, and golden IWXXM;
@@ -1091,7 +1256,7 @@
      via **xsdata** (+ xsdata-pydantic) (ADR-027; modelling UML = provenance only);
      regenerate in CI on vendor pin bumps. Follow-on in-cycle tasks adapt generated models
      toward msgspec Structs and/or Rust types where convert builders benefit. Validate hot
-     path remains Rust XSD+Schematron (F13) — not full Python bind-on-validate. TAC has
+     path remains Rust XSD+Schematron (F13), not full Python bind-on-validate. TAC has
      **no** official model to import.
   4. Dedup orchestrator vs `iwxxm-validate` call paths so convert+validate does not double-run
      heavy layers.
@@ -1102,13 +1267,13 @@
      vs lxml baseline; msgspec HTTP ≤ prior pydantic map path; wheel smokes
   4. Codegen from XSD in CI (xsdata → pydantic models per ADR-027; TAC out of scope)
 - **Source**: Issues #703; E10-1..27; ADR-016 amended by ADR-026;
-  Context: package-publish-validation (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate)
+  Context: package-publish-validation (archived; see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate)
 
 ### F12: Publishable TAC Product Validation (`tac-validate`)
 
-- **Status**: **Implemented** — S014 / EV-010 (#698); deepen METAR/SPECI via F15 / EV-011;
+- **Status**: **Implemented**; S014 / EV-010 (#698); deepen METAR/SPECI via F15 / EV-011;
   EMPIRIC2 OIDC + consumer landing pages EV-028 / #781 (`0.1.1`).
-- **What it does**: Design + publish **`tac-validate`** to PyPI — standalone TAC
+- **What it does**: Design + publish **`tac-validate`** to PyPI: standalone TAC
   product validation for all seven F6 products with structured issues (code, severity, span).
   Aggressively encode mined rules from `docs/domain/` (cite-only for paywalled Annex text):
   **full depth** METAR/SPECI/TAF; SIGMET/AIRMET/VAA/TCA structured templates + coverage-matrix
@@ -1131,11 +1296,11 @@
   provenance map with dense CI asserts (completeness, URL shape, behavioral fixture where
   executable). Complements F15 catalog drift + F29 matrices.
 - **Acceptance**: See EV-035 ACs under F15 deepen / test-plan **TC-EV035-***.
-- **Source**: Context: rule-source-traceability (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate)
+- **Source**: Context: rule-source-traceability (archived; see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate)
 
 ### F13: Fast IWXXM Validate (Rust Core + Schematron + PyPI)
 
-- **Status**: **Implemented** — S014 / EV-010 (#699); EMPIRIC2 OIDC + consumer landing
+- **Status**: **Implemented**; S014 / EV-010 (#699); EMPIRIC2 OIDC + consumer landing
   pages EV-028 / #781 (`0.1.1`); **deepen** S054 / EV-045 ([#725](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/725)).
 - **What it does**: Publish **`iwxxm-validate`** with Rust core (PyO3/maturin):
   well-formed + XSD + **native Rust Schematron/SVRL**; Python SDK
@@ -1159,7 +1324,7 @@
   3. `cargo test` green for the crate on PR/push default CI
   4. Maturin/PyO3 integration smoke required for `iwxxm-validate` (not only `tac2iwxxm`)
   5. Required check name(s) documented so red Rust CI blocks merge (**ops** ruleset
-     apply may be deferred — D-S054-ac6-waive=2)
+     apply may be deferred; D-S054-ac6-waive=2)
 - **S064 / EV-055 deepen (#980 — Schematron 2025-2 xslt2)**: Native path must **enable**
   evaluation for vendor 2025-2 Schematron with `queryBinding="xslt2"` (`D-S064-sch-hard=1`);
   document lxml vs native matrix. Soft UX-only skip is **not** an acceptable cycle close.
@@ -1167,11 +1332,11 @@
 
 ### F14: Publish `tac2iwxxm` + Validate Extras + PyPI/Release CI
 
-- **Status**: **Implemented** — S014 / EV-010 (#693); EMPIRIC2 OIDC + consumer landing
+- **Status**: **Implemented**; S014 / EV-010 (#693); EMPIRIC2 OIDC + consumer landing
   pages EV-028 / #781 (`0.1.1`); **deepen** S054 / EV-045 ([#725](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/725)).
 - **What it does**: Publish **`tac2iwxxm`** to PyPI (conversion library + optional
   PyO3). Extra **`tac2iwxxm[validate]`** depends on `tac-validate` + `iwxxm-validate`.
-  Shared GitHub Actions **OIDC trusted publishing** — one workflow matrix on version
+  Shared GitHub Actions **OIDC trusted publishing**: one workflow matrix on version
   tags (`tac2iwxxm-v*`, `tac-validate-v*`, `iwxxm-validate-v*`) against
   `EMPIRIC2/TAC-to-IWXXM`. Documented public API + wheel smoke tests.
 - **Acceptance**:
@@ -1192,20 +1357,24 @@
 
 ### F15: Maintainable TAC Lint Issue Registry + METAR/SPECI Quality Bar
 
-- **Status**: **Done** — shipped S015 / EV-011 (2026-07-20, PR [#742](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/742));
+- **Status**: **Done**; shipped S015 / EV-011 (2026-07-20, PR [#742](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/742));
   issue [#732](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/732) closed on cycle close.
+  **Deepen (EV-packages-module-reorg):** lint-profile id casing helper
+  (`canonical_lint_profile_id`) + sticky/QM collector casefold toward catalog
+  lowercase; inherit DAG layout stays in `lint_profile_catalog` (sticky Match /
+  codes / region table redesign is a stacked follow-on, not this deepen).
 - **What it does**: Introduces a **maintainable issue registry** in `packages/tac-validate`
   (machine-readable `code` + default `severity` `info`|`warning`|`error` + message template).
   Rules import registry entries; a docs/generated catalog lists all codes for operators and
   maintainers. Raises **METAR and SPECI** TAC lint, convert, and IWXXM-validate quality to the
   F6.a/F6.b reference-product bar: expand accept/negative fixtures, golden TAC→IWXXM→XSD+Schematron,
   coverage-matrix METAR/SPECI row review, METAR↔SPECI adjacency, and opportunistic rule/convert
-  improvements from external METAR/IWXXM research (MetarCentral, AviationRef, iwxxmConverter —
+  improvements from external METAR/IWXXM research (MetarCentral, AviationRef, iwxxmConverter;
   cite-only for paywalled Annex text).
 - **Registry home**: `packages/tac-validate` module + docs/generated catalog (**ADR-028**).
   Product-agnostic shape from day one; **this cycle encodes METAR/SPECI deeply** (R1–R8 +
   opportunistic); other products may gain thin registry rows when rules already emit codes.
-- **Code stability**: Public issue codes are **stable** — renames require a deprecation note;
+- **Code stability**: Public issue codes are **stable**; renames require a deprecation note;
   default severities may tighten in minor releases (E11-10).
 - **Deepens**:
   | Feature | Role this cycle |
@@ -1215,7 +1384,7 @@
 - **Acceptance**:
   1. All METAR/**SPECI** lint emissions use registry codes; CI fails on unknown codes
   2. Adding a rule = registry row + fixture(s); no ad-hoc severity string literals in rule bodies
-  3. Coverage-matrix METAR/**SPECI** rows updated; **R1–R8 themes closed this cycle** (HARD —
+  3. Coverage-matrix METAR/**SPECI** rows updated; **R1–R8 themes closed this cycle** (HARD;
      E11-23/28); non–R-theme gaps only may defer with rationale + AskQuestion
   4. Accept METAR **and SPECI** → convert → `iwxxm-validate` XSD+Schematron pass (pinned
      versions) for expanded golden pack
@@ -1225,7 +1394,7 @@
      catalog tooltips via `GET /api/v1/lint-issue-catalog` (E11-31)
 - **Out of scope**: New products beyond the seven F6 set; COLLECT/dissemination; FlightPlanDatabase
   FMS as METAR authority; closing sibling product-quality tickets unless registry sharing requires it.
-- **Source**: #732; E11-1..E11-10; context/metar-lint-quality.md (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate);
+- **Source**: #732; E11-1..E11-10; context/metar-lint-quality.md (archived; see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate);
   ADR-028; `docs/domain/rules/COVERAGE_MATRIX.md`; **S043 / EV-035** ISSUE_CATALOG↔source
 
 ### F15 deepen (EV-validation-policy-layers / ADR-046 — #1216)
@@ -1266,9 +1435,9 @@
   1. Provenance artifact lists digs reviewed + rules extracted + source links
   2. Every in-scope `ISSUE_CATALOG` code has provenance status (`ok`/`gap`/`paywall`/`N/A`)
   3. Coverage-matrix cells for revisited products/roles cite URL or explicit gap
-  4. Dense asserts: many per cited/revisited rule (not single smoke) — TC-EV035-*
+  4. Dense asserts: many per cited/revisited rule (not single smoke); TC-EV035-*
   5. Encode/SCH/bulletin cites included when those rules are revisited (full stack)
-- **Source**: Context: rule-source-traceability (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate);
+- **Source**: Context: rule-source-traceability (archived; see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate);
   [evolve-decisions.md](decisions/evolve-decisions.md) §EV-035
 
 ### F7 / F10 / F15 deepen (S048 / EV-040 — workbench lint UX + catalog attribution)
@@ -1276,14 +1445,14 @@
 - **Status note**: F7 remains **Planned**; F10/F15 remain **Done**; **no new Fn**. Operator UX
   and catalog presentation deepen only.
 - **Acceptance (EV-040)**:
-  1. Lint console: one line per issue (no `+N more` truncation) — F10
-  2. Convert / Convert&Send does not clear manual TAC input — F7/F10
-  3. **New TAC** label; action strip below header, above selects, above bench — F7
-  4. UserPreferences slimmed to output name + extension (F22 Privacy unchanged) — F7
-  5. Examples include official-provenanced AHL bulletin + IWXXM Collect — F7.g
-  6. Lint catalog (MD/JSON/API/FE) shows WMO/ICAO/IWXXM source attribution — F15
-  7. WMO A3-1 + AHL demo lint without false-positive errors; FPs logged — F15
-- **Source**: Context: workbench-lint-ux (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate);
+  1. Lint console: one line per issue (no `+N more` truncation); F10
+  2. Convert / Convert&Send does not clear manual TAC input; F7/F10
+  3. **New TAC** label; action strip below header, above selects, above bench; F7
+  4. UserPreferences slimmed to output name + extension (F22 Privacy unchanged); F7
+  5. Examples include official-provenanced AHL bulletin + IWXXM Collect; F7.g
+  6. Lint catalog (MD/JSON/API/FE) shows WMO/ICAO/IWXXM source attribution; F15
+  7. WMO A3-1 + AHL demo lint without false-positive errors; FPs logged; F15
+- **Source**: Context: workbench-lint-ux (archived; see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate);
   [evolve-decisions.md](decisions/evolve-decisions.md) §EV-040
 
 ### F15 / F7.v deepen (EV-062 — Validation Issues Catalog / #1017)
@@ -1304,7 +1473,7 @@
 
 - **Status note**: F6 remains **Implemented**; this cycle **deepens METAR/SPECI** convert/golden
   fidelity under F15 acceptance (not a new Fn). Track gaps vs #732 known list (COR/NIL/remarks;
-  IWXXM-US AO2/SLP/PK WND; AHL+SPECI adjacency) — **R1–R8 themes must close** (HARD); other
+  IWXXM-US AO2/SLP/PK WND; AHL+SPECI adjacency); **R1–R8 themes must close** (HARD); other
   convert gaps outside those themes may defer only via AskQuestion + coverage note.
 
 ### F12 deepen (S015 / EV-011 — METAR)
@@ -1316,20 +1485,20 @@
 
 - **Status note**: F16 remains **Done**; spike [#926](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/926)
   documents **MappingConfig** + symmetric source/sink adapter contract ([ADR-040](adr/ADR-040-sql-adapters-mapping-config.md)).
-  **No new Fn** — extends dissemination architecture.
+  **No new Fn**; extends dissemination architecture.
 - **Acceptance**: Mapping schema sketch, engine matrix, extend-`dissemination` recommendation, #896 hybrid.
 - **Out of scope**: Oracle v1, runtime source poll, #935 UI.
-- **Source**: Context: sql-adapters-mapping-926 (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate);
+- **Source**: Context: sql-adapters-mapping-926 (archived; see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate);
   [evolve-decisions.md](decisions/evolve-decisions.md) §EV-926
 
 ### F16: Dissemination drawer + multi-DB upload (BYOC URI) — S019 / EV-014
 
 - **Status**: **Done** (EV-014 closed 2026-07-21; #771/#772). **Deepen** S024 / EV-018 /
-  [#785](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/785) — multi-file export selection.
-  **Deepen** S047 / EV-039 — live local multi-DB SQL ingest Playwright + teardown hygiene
+  [#785](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/785): multi-file export selection.
+  **Deepen** S047 / EV-039: live local multi-DB SQL ingest Playwright + teardown hygiene
   (in progress).
 - **What it does**: Unified **dissemination drawer** for Convert&Send / Upload: any **public**
-  operator (F21 — no login) pastes a **one-shot** destination URI (memory-only on API; never
+  operator (F21, no login) pastes a **one-shot** destination URI (memory-only on API; never
   persisted; no saved profiles). Backend-mediated preflight + send with structured schema diff;
   **block Send** until green. Supports **convert-then-send** and **drag-drop** of external
   IWXXM/TAC. **DDL / create-if-missing** against a versioned writer contract when the target
@@ -1344,17 +1513,17 @@
 - **Security (Q11=A+B)**: Backend-only egress; deny private/metadata ranges; DNS rebinding guard;
   TLS preferred; timeouts/size limits; secret redaction; rate limits; **required**
   `DISSEMINATION_EGRESS_ALLOWLIST` (empty ⇒ no user-URI egress).
-- **UI**: Sink chooser in same drawer — Postgres/MySQL/… (F16), WIS2 (F17), EDIS (F18),
+- **UI**: Sink chooser in same drawer: Postgres/MySQL/… (F16), WIS2 (F17), EDIS (F18),
   AMHS/SWIM/AFS (F19).
 - **EV-018 deepen (#785) — multi-file export selection**:
   1. **Export selection** panel lists eligible candidates (name, product type, size/status,
      source) from **current-session conversion outputs** and **dropped files** only (Finished
-     IndexedDB history **out of scope** for v1 — E18-4).
+     IndexedDB history **out of scope** for v1; E18-4).
   2. **Multi-select** — checkboxes + select-all / clear; Disseminate / Preflight-only operate on
      the **current selection only**.
   3. **Empty selection** disables Disseminate and Preflight-only with a clear message.
   4. Client runs **N sequential interleaved** `/preflight` then `/send` **per file**, then next
-     (E18-10); continues after failures and **aggregates** per-file pass/fail/skip — **no**
+     (E18-10); continues after failures and **aggregates** per-file pass/fail/skip; **no**
      batched multi-payload API in v1 (E18-5/11). Primary **Disseminate**; optional
      **Preflight only** (E18-15).
   5. Selection **count cap ≤20**; reuse existing body/size limits; clear error when over (E18-6).
@@ -1364,14 +1533,14 @@
      hide graphic and show text-only status (E18-14).
   7. F17–F19 **reuse the same selection contract** in the drawer (E18-2).
 - **EV-039 deepen (S047) — live local SQL ingest + teardown**:
-  1. Reuse **`docker-compose.mock-byoc.yml`** profile `mock-byoc` for disposable Postgres,
+  1. Reuse **`docker-compose.yml`** profile `mock-byoc` for disposable Postgres,
      MySQL, and SQL Server; SQLite uses a disposable file path (not a long-lived service).
   2. Playwright **live** (no HTTP route mocks) exercises drawer preflight→send against those
      local URIs for **all four** dialects and asserts a successful write (row / writer-contract
      equivalent).
   3. Mocked H6′ UJ-027 suite remains **separate** and must stay green.
   4. **Teardown** is mandatory across integration (Testcontainers), e2e/Playwright, and local
-     Compose make targets — no orphan containers, volumes (where safe), temp SQLite files, or
+     Compose make targets; no orphan containers, volumes (where safe), temp SQLite files, or
      lingering processes after pass/fail/skip.
   5. Document `make` / CI entrypoints; live suite may be opt-in in CI if SQL Server is heavy,
      but must be runnable locally for EV-039 close.
@@ -1414,21 +1583,21 @@
   over existing SinkAdapter modules. Absorbs #928/#929/#930. **No new Fn.**
 - **Acceptance**: Gateway gap table, package boundary, EDIS alphanumeric policy, WIS2 BYOC/DMZ sketch, plan/audit fields.
 - **Out of scope**: #909/#910/#911 features, #936 UI, `health()` implementation.
-- **Source**: Context: dissemination-gateway-927 (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate);
+- **Source**: Context: dissemination-gateway-927 (archived; see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate);
   [evolve-decisions.md](decisions/evolve-decisions.md) §EV-927
 
 ### F16–F19 deepen (EV-936 — Gateway runtime hooks + dissemination ops / #936)
 
-- **Status**: **In progress** (EV-936 Build — M1–M3 done; PR pending) — F16–F19 remain **Done** for drawer; this deepen
+- **Status**: **In progress** (EV-936 Build: M1–M3 done; PR pending); F16–F19 remain **Done** for drawer; this deepen
   adds Gateway façade runtime + ops UI. **No new Fn.** Absorbs #935/#937 into #936.
 - **What it does**:
   1. **DisseminationGateway** thin registry in `packages/dissemination` (`validate`→preflight,
-     `send`→send, **`health()`** connectivity-only) per ADR-041 — SinkAdapter HTTP v1 unchanged
+     `send`→send, **`health()`** connectivity-only) per ADR-041; SinkAdapter HTTP v1 unchanged
   2. **DisseminationPlan** execute + **delivery audit** persisted on product Postgres
      (`DATABASE_URL`), JWT-gated, secrets/URIs redacted at write
-  3. **SQL MappingConfig** configurator UI (ADR-040) — source vs sink; no prescribed national schema
+  3. **SQL MappingConfig** configurator UI (ADR-040): source vs sink; no prescribed national schema
   4. **Dissemination ops** operator surface (plan editor, audit list/detail, mapping, gateway
-     health) — complements destinations drawer (#898); does not replace one-shot BYOC send
+     health); complements destinations drawer (#898); does not replace one-shot BYOC send
 - **Acceptance** (MVP):
   1. Gateway façade unit tests for at least one DB + one non-DB kind; `health()` returns
      operator-safe `GatewayHealth`
@@ -1439,7 +1608,7 @@
 - **Out of scope**: #933/#934/#938; live AFTN (#909)/failover (#910)/wis2box buffer (#911)
   product features beyond façade; credential paste; re-split #935/#937; new top-level packages
 - **Source**: [#936](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/936);
-  Context: dissemination-ops-936 (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate);
+  Context: dissemination-ops-936 (archived; see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate);
   [ADR-041](adr/ADR-041-dissemination-gateway.md); [ADR-040](adr/ADR-040-sql-adapters-mapping-config.md);
   [evolve-decisions.md](decisions/evolve-decisions.md) §EV-936
 
@@ -1449,7 +1618,7 @@
   `D-S019-EV014-Q15-mock-waive`).
 - **What it does**: Publish converted IWXXM via **WIS2** (MQTT notification + HTTP dataset) from
   the dissemination drawer. **Test harness**: project **Docker Compose / CI** wis2box
-  (Q12=B / Q17 / E14-04=B — **not** a long-lived Render web service; may run on CI or a
+  (Q12=B / Q17 / E14-04=B; **not** a long-lived Render web service; may run on CI or a
   disposable Docker host). **Live**: user BYOC WIS2 node/endpoint credentials (memory-only);
   EV-014 close used mock/harness evidence instead of live destination demos (Q15/Q21 amended).
 - **Acceptance**: Staging wis2box e2e in CI/staging; mock BYOC close-gate evidence for EV-014;
@@ -1482,7 +1651,7 @@
 
 ### F20: TAF + SPECI Quality Bar (F15 Sequel) — S020 / EV-015
 
-- **Status**: **Done** — S020 / EV-015; PR [#778](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/778)
+- **Status**: **Done**; S020 / EV-015; PR [#778](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/778)
   merged `eae8bdc`; T5.7 H1–H5 + catalog taf/speci live 2026-07-22
   (`reports/deploy-smoke.md`). Phase 0 approved 2026-07-22 (E15-1..E15-8;
   `D-S020-EV015-route-1` Lean+build).
@@ -1491,7 +1660,7 @@
   + SPECI deepen as needed; no new registry architecture). Audits encode paths against WMO
   `TAC-to-XML-Guidance.txt` **plus** 2025-2 corrections (no removed `runwayState`). Expands
   accept/negative fixtures, golden TAC→IWXXM→XSD+Schematron, and coverage-matrix **TAF** +
-  **SPECI** rows. SPECI is a **full** parallel quality bar (#734), not residual-only — including
+  **SPECI** rows. SPECI is a **full** parallel quality bar (#734), not residual-only, including
   Auto-detect / lint never mis-classifying SPECI↔METAR.
 - **Issues**: [#735](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/735) (TAF),
   [#734](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/734) (SPECI).
@@ -1514,8 +1683,15 @@
      (F7 remains Planned; smoke only under F20); H1–H3 if API ships; H4–H5 when FE touched
 - **Out of scope**: Sibling product-quality tickets (#731, #733, #736–#741, …) unless shared
   common-rule touch; PyPI release bumps; F16–F19 changes; COLLECT; new products beyond F6 seven
-- **Source**: #735/#734; E15-1..E15-8; context/aerodrome-quality.md (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate);
+- **Source**: #735/#734; E15-1..E15-8; context/aerodrome-quality.md (archived; see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate);
   ADR-028; `docs/domain/rules/COVERAGE_MATRIX.md`; predecessor F15 / EV-011
+
+### F20 deepen (EV-us-military-taf-tx-tn — end-of-TAF TX/TN)
+
+- **Status note**: F20 remains **Done**. Under `us_military` and `latam_taf`, TX/TN
+  after BECMG/TEMPO/FM/PROB is `TX_TN_PRESENT` (info) for the stations listed on each
+  profile. Annex3 still emits `INVALID_TX_TN`. Convert stays core IWXXM.
+  [Corpus: product §F20] [Corpus: product §F36] [Corpus: decisions]
 
 ### F6 deepen (S020 / EV-015 — TAF + SPECI)
 
@@ -1535,13 +1711,13 @@
   flows remain **usable without login** (public APIs + abuse controls). **Optional Supabase Auth**
   login exists solely so operators can **keep long-term work history** on DO Postgres (F30/F31).
   Guests are warned in-UI that progress may be lost without login.
-- **What it did (EV-017 — historical)**: Fully public — no login/signup UX; no Bearer JWT for
+- **What it did (EV-017 — historical)**: Fully public: no login/signup UX; no Bearer JWT for
   operator flows; `/auth/*` retired; IndexedDB-only work history. **Superseded for Auth/sessions
   by EV-031 / F31** (optional Auth restored; convert remains public).
 - **Acceptance (amended)**:
   1. Unauthenticated user completes convert → validate → download/send without login
   2. Optional `/auth/*` (or equivalent) for login/logout; JWT required only for **server session** APIs
-  3. Logged-in work sessions live on DO Postgres — not Supabase DB
+  3. Logged-in work sessions live on DO Postgres, not Supabase DB
   4. Abuse-control + dissemination SSRF/allowlist unchanged in spirit
   5. Env/docs: Supabase **Auth** credentials for login path; product **DB** = DO `DATABASE_URL`
   6. E2E: public convert UJs plus login / guest-notice / privacy UJs (F31)
@@ -1549,10 +1725,14 @@
      only filled primary CTA; **Convert&Send** uses outline (or clearly muted non-fill) so it
      does not compete as a second solid CTA. Upload / Disseminate / Download stay outline;
      Clear stays ghost.
-- **Out of scope**: Forced login for convert; CMP; selling personal data
+  8. **Site terms gate (EV-1315 / #1315)**: The public shell (convert, history, quality
+     metrics, rule catalogs, dissemination ops) stays hidden until the operator checks
+     the quality disclaimer and continues. Acknowledgement is stored with privacy
+     preferences. Login, registration, and password reset stay outside that gate.
+- **Out of scope**: Forced login for convert; CMP; selling personal data; counsel-written terms
 - **S057 / EV-048 deepen (#951 — public OpenAPI / client error copy)**: Public OpenAPI
   path/operation summaries, parameter/schema `description` fields, runtime `/docs` / Redoc
-  text, and client-facing `detail`/error messages must use operator-friendly language —
+  text, and client-facing `detail`/error messages must use operator-friendly language:
   no `[Corpus:…]`, ADR/session/EV IDs, product `FNN` ids, `docs/` paths, TC/E## planning
   IDs, or GitHub issue `#NNN` citations. Developer comments and test docstrings remain allowed.
 - **Acceptance (EV-048 / #951 — F21 API slice)** — **approved** (`D-S057-01-ac=1`):
@@ -1560,7 +1740,7 @@
   2. OpenAPI export and error surfaces pass automated guard (TC-EV048-002/004/005).
   3. Soft-preview and related field descriptions preserve intent without ADR citations.
   4. Backend unit/OpenAPI snapshot tests updated.
-- **Source**: #783; E17-*; **S038 / EV-031**; Context: platform-independence-842 (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate);
+- **Source**: #783; E17-*; **S038 / EV-031**; Context: platform-independence-842 (archived; see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate);
   [#951](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/951) (S057 / EV-048)
 
 ### F22: Privacy Preference Center — S023 / EV-017
@@ -1570,13 +1750,13 @@
   `sessionStorage`/IndexedDB/CDN. Footer **Privacy settings** + short first-visit notice.
   One global preference schema (versioned); `necessary` always on; preferences/analytics/marketing
   default **false** and only shown if used. Honor **GPC**. Disclose IndexedDB work history.
-  No CMP. Do not imply sale/share if the product does not sell personal information — still honor GPC.
+  No CMP. Do not imply sale/share if the product does not sell personal information; still honor GPC.
 - **F31 deepen**: Preference schema must gate **guest local work-history** persistence and disclose
   **Auth session cookies** when login is used; loss-of-progress notice must not bypass declined
   non-necessary storage (if guest history is classified non-necessary).
 - **Acceptance**:
   1. Privacy settings reachable from footer; preferences persist and are withdrawable
-  2. Non-essential scripts (if any later) blocked until allowed — v1 has none
+  2. Non-essential scripts (if any later) blocked until allowed; v1 has none
   3. GPC detection forces sale/sharing opt-out flags when applicable
   4. Privacy/Cookie policy links with jurisdiction-aware language (engineering copy; counsel review OOS)
   5. UJ-033 + TC-F22-* cover notice + settings + GPC
@@ -1585,7 +1765,7 @@
 
 ### F23: SIGMET Family Quality Bar (General + VA) — S025 / EV-019
 
-- **Status**: **Done** — S025 / EV-019 closed 2026-07-29 (PR [#792](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/792)
+- **Status**: **Done**; S025 / EV-019 closed 2026-07-29 (PR [#792](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/792)
   merged `afffe86`; H1–H5 + live SIGMET catalog/lint/convert PASS).
 - **What it does**: Raises **General SIGMET** and **Volcanic-ash SIGMET** TAC lint, convert,
   and IWXXM-validate quality to the same bar F15/F20 set for aerodrome products. Reuses the
@@ -1594,7 +1774,7 @@
   corrections. Expands accept/negative fixtures, golden TAC→IWXXM→XSD+Schematron, and
   coverage-matrix themes **G1–G3 / V1–V3 / C1**. Distinguishes VA SIGMET
   (`iwxxm:VolcanicAshSIGMET`) from VAA advisory (`iwxxm:VolcanicAshAdvisory`).
-  API keeps `product=sigmet`; converter selects root from TAC (VA phenomenon / WV AHL) —
+  API keeps `product=sigmet`; converter selects root from TAC (VA phenomenon / WV AHL);
   **no new product enum** (E19-13=A).
 - **Issues**: [#733](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/733) (general SIGMET),
   [#739](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/739) (VA SIGMET).
@@ -1626,9 +1806,9 @@
 - **Out of scope**: [#738](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/738) TC SIGMET;
   [#731](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/731) AIRMET; [#736](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/736)
   VAA; [#737](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/737) TCA; #740 SWX; #741 VONA;
-  PyPI release bumps; F16–F19; COLLECT; new `product` enum values — unless shared
+  PyPI release bumps; F16–F19; COLLECT; new `product` enum values, unless shared
   common-rule touch (E19-6 / E19-13)
-- **Source**: #733/#739; E19-1..E19-18; context/sigmet-quality.md (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate);
+- **Source**: #733/#739; E19-1..E19-18; context/sigmet-quality.md (archived; see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate);
   ADR-028; `docs/domain/rules/COVERAGE_MATRIX.md`; predecessors F15 / EV-011, F20 / EV-015
 
 ### F6 deepen (S025 / EV-019 — SIGMET + VA SIGMET)
@@ -1645,7 +1825,7 @@
 
 ### F24: AIRMET Quality Bar — S026 / EV-020
 
-- **Status**: **Done** — S026 / EV-020 closed 2026-07-29 (PR [#793](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/793)
+- **Status**: **Done**; S026 / EV-020 closed 2026-07-29 (PR [#793](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/793)
   merged `0f77194`; H1–H5 + live AIRMET smoke PASS).
 - **What it does**: Raises **AIRMET** TAC lint, convert, and IWXXM-validate quality to the
   F15/F20/F23 bar. Target: WMO vendor `airmet-A6-1a-TS` TAC→IWXXM **`canonicalize_xml`-equal**
@@ -1666,7 +1846,7 @@
 
 ### F25: WMO Official Example Parity (METAR/SPECI/TAF) + UI Gate — S026 / EV-020
 
-- **Status**: **Done** — S026 / EV-020 closed 2026-07-29 (PR [#793](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/793)
+- **Status**: **Done**; S026 / EV-020 closed 2026-07-29 (PR [#793](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/793)
   merged `0f77194`; H1–H5 + live WMO METAR/SPECI/TAF + catalog smoke PASS).
 - **What it does**: Brings **METAR / SPECI / TAF** convert output to **`canonicalize_xml`-equal**
   match against WMO IWXXM `2025-2` vendor examples under **default** settings. Updates the F7.g
@@ -1675,15 +1855,20 @@
 - **Deepens**: **F6** encode fidelity; **F15** / **F20** quality bars; **F7.g** catalog policy.
 - **Acceptance**:
   1. Listed WMO TAC→XML cases equal under defaults (**TC-F25-001**; **E20-E1**: `metar-A3-1`,
-     `speci-A3-2`, `taf-A5-1`, `taf-A5-2` — A5-2 is WMO AMD/CNL cancel example)
+     `speci-A3-2`, `taf-A5-1`, `taf-A5-2`; A5-2 is WMO AMD/CNL cancel example)
   2. XSD+Schematron on those goldens (**TC-F25-002**)
   3. FE catalog: strict WMO-passers badged; provenance vendor/mirrored (**TC-F25-003**; deepen
-     TC-F7-008) — **EV-024 / UJ-039** also allows official **WMO reference** samples (ADR-032 amend)
+     TC-F7-008); **EV-024 / UJ-039** also allows official **WMO reference** samples (ADR-032 amend)
   4. Load example → convert smoke; H4–H5 when FE deploys (**TC-F25-004** / **UJ-036**)
 - **Journeys / tests**: **UJ-036**; **TC-F25-001..004**; deepen **UJ-032** / **TC-F7-008**
 - **Out of scope**: New SWX/VONA/VAA/TCA quality bars; forcing translation-failed examples to
   happy-path encode; non-default profile/version equality
 - **Source**: E20-A=2; E20-3; E20-D3; ADR-032; [evolve-decisions.md](decisions/evolve-decisions.md) §EV-020
+
+### F7 / F9 hotfix — convert panes and station map
+
+- **What it does**: The live convert row is TAC, decode, then Live IWXXM. Decode stays open in the center column. Decode visuals asks for a station ID, lets that field be cleared, and shows a world map of cached reports. **F37** is that map. The station field and wind cue stay.
+- **Acceptance**: Wide convert row keeps the decode panel and Live IWXXM beside the TAC. Clearing the station ID leaves the field empty. A known station ID shows a map marker.
 
 ### F9 deepen (S026 / EV-020 — decode glossary)
 
@@ -1692,29 +1877,123 @@
   OpenAIP) with a packaged YAML file as **overrides** only (E20-E2). Tests: **TC-F9-003/004**;
   journey deepen **UJ-020**. Policy: **ADR-032**.
 
+### F9 / F6 deepen (EV-sigmet-ru-forms — international SIGMET line, icing, speed)
+
+- **Status note**: F9 and F6 stay **Done** / **Implemented**. This cycle teaches the shared
+  SIGMET/AIRMET path the Annex 3 forms Russian and European bulletins already use. No new
+  product id and no Russia-only profile. [Corpus: product §F9] [Corpus: product §F6]
+- **Plain language**: `(FZRA)` on severe icing is freezing rain. `LINE` is a line of
+  coordinates (`E OF LINE`, `N OF LINE`). Movement accepts `KMH` and `KM/H` (including a
+  space before the unit), `KT`, and `MPS`, and the sixteen compass points. A direction
+  with no speed, such as `MOV NW`, is still a movement.
+- **Conversion**: `SEV ICE (FZRA)` maps to phenomenon `SEV_ICE_FZRA`. Kilometres per hour
+  stay `km/h` on `speedOfMotion` (the schema allows `km/h` or `[kn_i]`). Metres per second
+  become kilometres per hour for that element. A direction with no speed is emitted as
+  `directionOfMotion` alone. A line with a stated width becomes a corridor. A side of a
+  line, such as `E OF LINE`, becomes a thin ring on that side so the vertices are in the
+  horizontal projection; that ring is the boundary, not the whole flight information
+  region. Knots stay knots. Volcanic-ash cloud movement uses the same sixteen compass
+  points and the same speed units.
+
+### F9 / F15 deepen (EV-decode-residual-conventions — non-RMK live leftovers)
+
+- **Status note**: F9 and F15 stay **Done**. No new product id. Explains researched live
+  non-RMK residual conventions and parser fragment values in `tac-decoding`, and registers
+  lint codes for malformed source in `tac-validate` (lint, do not decode typos). Shipped as
+  three stage PRs: METAR/SPECI, then TAF, then SIGMET. [Corpus: product §F9]
+  [Corpus: product §F15]
+- **Decode (plain language)**: US/FMH variable visibility after `VIS`; SFC/TWR VIS values;
+  Canadian MANOBS remarks (`VIS VRB`/`HYR`/`LWR`, LAST STFD/OBS, SOG, CIG RAG, WIND EST,
+  INTMT, FOG QUAD, multi-layer cloud chains, RVR in feet with tendency); cloud-type `8/lmh`;
+  missing-value encodings; RTD/HZY/ISOL; WIND SKEID; CB/TCU location scraps; Australian TAF
+  `T`/`Q` supplements; Navy `FS`/`FN` IDs; METWATCH FROM; station-closing and AMD LTD
+  remarks; SIGMET LINE width, hail inch, FL scraps, speed ranges, trailing ellipsis.
+- **Lint (malformed only)**: spaced/typo CAVOK, broken TAF validity/cloud tokens, `-VCTSRA`,
+  bad T-groups, glued SIGMET coords / foreign bulletin text. Operator copy stays free of
+  planning ids (EV-048).
+- **Acceptance**: each decode family has a regression; each lint code has a detector test;
+  a fresh live residual probe shows lower non-RMK counts than the post-#1547 baseline.
+
+### F9 / F15 deepen (EV-live-map-residuals — live METAR, SPECI, and SIGMET leftovers)
+
+- **Status note**: F9 and F15 stay **Done**. This cycle explains the groups that were still
+  residuals on a live map sample after the southern-polygon and convective-SIGMET decode
+  passes. No new product id, no map redesign, and no IWXXM shape change. [Corpus: product §F9]
+  [Corpus: product §F15]
+- **Plain language**, one regression each:
+  1. Pressure tendency `5appp` (for example `53002`).
+  2. Hourly precipitation `P####` and `PNO`.
+  3. Distant weather `DSNT` and a remark cumulonimbus `CB`.
+  4. Canadian remark cloud amounts (`SF8`, `SC7`, `AC1CI1`, `ST3CU1CI1`).
+  5. Density altitude `DENSITY ALT`.
+  6. Correction `CCA` on METAR or SPECI.
+  7. Combined `OBS/FCST`.
+  8. A short FIR name such as `LA PAZ`.
+  9. Convective area states (`LA TX`) and `REF INTL SIGMET … SERIES`.
+  10. A navaid-to-navaid segment with no distance, such as `TRV-PBI`.
+  The same sample also covers peak wind, Canadian remark prose, a longitude glued to
+  a hyphen, `SFC/6000FT`, a nautical-mile radius, a tropical-cyclone name, `RRA`,
+  Great Lakes codes on a convective area line, and whole miles before a fraction.
+- **Acceptance**: each family has a decode regression, the explanation is plain language,
+  and a fresh sample of the same live cache no longer lists that token as undecoded.
+  Already-explained METAR, TAF, and SIGMET groups stay explained.
+
+### F9 deepen (EV-qfe-rvr-families — runway state and QFE)
+
+- **Status note**: F9 stays **Done**. This cycle explains two groups that the live map
+  still left as residuals on SPECI ULOO (Pskov). No new product id. [Corpus: product §F9]
+- **Plain language**, one regression each:
+  1. Legacy runway state `R19/290052` (and the cleared form `R06L/CLRD62`). Four-digit
+     runway visual range stays on its existing pattern.
+  2. Aerodrome pressure `QFE747` and `QFE747/0996`.
+- **Acceptance**: each family has a decode regression, the explanation is plain language,
+  and an already-explained runway visual range group stays a visual range.
+
+### F9 / F15 deepen (EV-decode-residuals-2026-11-03 — staging residual families)
+
+- **Status note**: F9 and F15 stay **Done**. No new product id. Covers residual families from
+  staging `decode_tac` partials (window ending 2026-11-03) in product order
+  **TAF → METAR → SPECI → SIGMET**. Dual-write: legacy `_explain_*` / remark matchers **and**
+  pack YAML (`packages/tac-decoding` packs). Pack engine does **not** emit lint.
+  [Corpus: product §F9] [Corpus: product §F15] [Corpus: adr/ADR-044] [Corpus: adr/ADR-045]
+  [Corpus: decisions/ev-decode-residuals-2026-11-03]
+- **Coverage classes**:
+  1. **Valid / national-practice** coded groups and multi-token remarks → plain-language
+     decode segments (sources from operator residual tables; **no source** rows decode with
+     plain meaning and no invented citation).
+  2. **Split** fragments → absorbed by multi-token rules when the full phrase is present.
+  3. **Typo** tokens → decode explains why the text is malformed; `tac-validate` emits a
+     dedicated **warning** code **per typo pattern** (no silent TAC rewrite; convert unchanged).
+- **Regression**: unit tests under `packages/tac-decoding/tests` and
+  `packages/tac-validate/tests` (required on PRs to `stage` via `ci-cd.yml` matrix).
+- **Operator UX**: Decoding library / lint catalog remain the trust surfaces; e2e covers
+  visibility of at least one new decode explanation and one new typo warning code (**UJ-090**).
+- **Acceptance**: AC-1…AC-7 in session requirements; **TC-EVDR-001..007**; public
+  `decode_tac` / lint catalog key shapes unchanged; operator copy free of planning ids.
+
 ### F7.g deepen (S026 / EV-020 — WMO-passing examples only)
 
 - **Status note**: F7.g remains under F7 Planned; S026 replaced catalog bodies/policy so the
   workbench Examples control offered **strict WMO-passing** demos for in-scope products
   (**UJ-036** / **TC-F25-003**). **Amended S031 / EV-024**: official WMO **reference** samples
-  may also appear and load (**UJ-039**; ADR-032 amend) — strict passers remain distinctly badged.
+  may also appear and load (**UJ-039**; ADR-032 amend); strict passers remain distinctly badged.
 
 ### F26: VAA Quality Bar — S027 / EV-021
 
-- **Status**: **Done** — shipped S027 / EV-021 (2026-07-30, PR [#794](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/794)); #736 closed.
+- **Status**: **Done**; shipped S027 / EV-021 (2026-07-30, PR [#794](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/794)); #736 closed.
 - **What it does**: Raises **Volcanic Ash Advisory** TAC lint, convert, and IWXXM-validate
   quality to the F15/F20/F23/F24 bar. Target: WMO vendor `va-advisory-A7-2` TAC→IWXXM
   **`canonicalize_xml`-equal** under **default** convert settings (`profile=annex3`, default
   pinned `iwxxm_version`). Root `iwxxm:VolcanicAshAdvisory`. Reuses **ADR-028** registry
   (new VAA codes as needed); golden policy **ADR-032**. Distinguishes VAA from VA SIGMET
-  (`iwxxm:VolcanicAshSIGMET` — F23 / #739).
+  (`iwxxm:VolcanicAshSIGMET`; F23 / #739).
 - **Issues**: [#736](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/736).
 - **Deepens**: **F6.f** (VAA encode), **F12** (VAA checklist), **F7.g** (Examples when passing).
 - **Acceptance**:
   1. Registry-backed VAA lint codes; CI fails on unknown codes (**TC-F26-001**)
   2. #736 exceptional-rule table (UNKNOWN/UNNAMED, nilReasons, OBS/FCST status, `NO VA EXP`,
      remarks NIL, `NO FURTHER ADVISORIES`, …) has accept + negative fixtures (or explicit
-     deferrals) (**F26 themes V1–V2**; TC-F26-002/004) — mine TAC themes from
+     deferrals) (**F26 themes V1–V2**; TC-F26-002/004); mine TAC themes from
      `iwxxm-translation` Amd79-80-2023; **no** byte-match of those XMLs under 2025-2 (E21-D4)
   3. Common rules: `reportStatus` / `permissibleUsage`, `translationFailedTAC`, geometry CRS,
      nilReasons, one-IWXXM-per-TAC-report (**F26 theme C1**)
@@ -1734,19 +2013,19 @@
 
 ### F27: TCA Quality Bar — S027 / EV-021
 
-- **Status**: **Done** — shipped S027 / EV-021 (2026-07-30, PR [#794](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/794)); #737 closed.
+- **Status**: **Done**; shipped S027 / EV-021 (2026-07-30, PR [#794](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/794)); #737 closed.
 - **What it does**: Raises **Tropical Cyclone Advisory** TAC lint, convert, and IWXXM-validate
   quality to the same bar. Target: WMO vendor `tc-advisory-A2-2` TAC→IWXXM
   **`canonicalize_xml`-equal** under **default** convert settings. Root
   `iwxxm:TropicalCycloneAdvisory`. Reuses **ADR-028** / **ADR-032**. Distinguishes TCA from
-  TC SIGMET (`iwxxm:TropicalCycloneSIGMET` — #738 OOS).
+  TC SIGMET (`iwxxm:TropicalCycloneSIGMET`; #738 OOS).
 - **Issues**: [#737](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/737).
 - **Deepens**: **F6.f** (TCA encode), **F12** (TCA checklist), **F7.g** (Examples when passing).
 - **Acceptance**:
   1. Registry-backed TCA lint codes; CI fails on unknown codes (**TC-F27-001**)
   2. #737 exceptional-rule table (`UNNAMED`, CB NIL, remarks NIL, `NO MSG EXP`, forecast wind
      &lt;34 kt, no-longer-TC position, …) has accept + negative fixtures (or explicit deferrals)
-     (**F27 themes T1–T2**; TC-F27-002/004) — mine TAC themes from translation package; no Amd79 XML
+     (**F27 themes T1–T2**; TC-F27-002/004); mine TAC themes from translation package; no Amd79 XML
      byte-match under 2025-2 (E21-D4)
   3. Common rules covered (**F27 theme C1**)
   4. WMO `tc-advisory-A2-2.tac` → convert (defaults) → `canonicalize_xml` == vendor XML;
@@ -1777,12 +2056,12 @@
 
 - **Status note**: Catalog only lists VAA/TCA demos that pass the F26/F27 golden bar (E21-3);
   hide `vaa_basic` / `tca_basic` until replaced by WMO passers (**UJ-037/038**; TC-F7-008 deepen).
-  **Unlock cadence (`D-S027-EV021-s02m2-1`)**: incremental per product — unlock VAA Examples
+  **Unlock cadence (`D-S027-EV021-s02m2-1`)**: incremental per product: unlock VAA Examples
   when F26 golden greens; TCA when F27 greens (may differ mid-cycle; peer E20-F4).
 
 ### F6 / F2 / F12 / F13 deepen (S030 / EV-023 — APAC FAQ + codes + WMO-306 encode deltas)
 
-- **Status**: **Done** — S030 / EV-023 closed 2026-07-30 (PR [#801](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/801)
+- **Status**: **Done**; S030 / EV-023 closed 2026-07-30 (PR [#801](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/801)
   `af98690`; closeout [#802](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/802) `5c7d3b5`; #800)
 - **Issue**: [#800](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/800) (supersedes #797 impl backlog)
 - **Runtime SoT**: `vendor/manifest.json` → IWXXM **v2025-2** (FAQ / 2019 Manual / translation suite are informative only)
@@ -1792,10 +2071,10 @@
 
 ### F6 / F2 / F4 / F12 / F13 / F25 deepen (S031 / EV-024 — IWXXM domain mine + WMO sample menu)
 
-- **Status**: **Done** (S031 / EV-024) — discovery + sample-menu wiring; children #809–#812
+- **Status**: **Done** (S031 / EV-024): discovery + sample-menu wiring; children #809–#812
 - **Issues**: [#804](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/804),
   [#807](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/807),
-  [#773](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/773) — **exclude** [#806](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/806)
+  [#773](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/773); **exclude** [#806](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/806)
 - **Runtime SoT**: `vendor/manifest.json` → IWXXM **v2025-2** (+ `iwxxm-us` pin for #773)
 - **What it does**:
   1. **#804** — Folder-by-folder relevancy of `IWXXM/` (+ sibling triage); official examples
@@ -1825,13 +2104,13 @@
   surfaces; thin backend loaders as needed
 - **Source**: E24-*; [evolve-decisions.md](decisions/evolve-decisions.md) §EV-024;
   [ADR-032](adr/ADR-032-wmo-default-golden-glossary.md) (amended)
-- **Follow-on**: S032 / EV-025 implemented #810–#812 (+ dig ❌ US); #809 soft path only —
+- **Follow-on**: S032 / EV-025 implemented #810–#812 (+ dig ❌ US); #809 soft path only;
   equality residual → S033 / EV-026
 
 ### F6 / F6.b / F12 / F2 / F13 + F23 deepen (S032 / EV-025 — iwxxm-us REMARKS encode + VA multi-location)
 
 - **Status**: **Done** (S032 / EV-025; PR [#816](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/816)
-  `2412312`) — Lane A complete; Lane B soft-compare shipped; #809 left open for equality
+  `2412312`); Lane A complete; Lane B soft-compare shipped; #809 left open for equality
 - **Issues**: [#810](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/810),
   [#811](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/811),
   [#812](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/812) **closed**;
@@ -1842,13 +2121,13 @@
   2. **Lane B** — #809 soft-compare golden + multi-location encode; catalog stayed
      `wmoReference` (`D-S032-EV025-s02m1-1`)
 - **Journeys / tests**: **UJ-040**; **UJ-041** (soft path); **TC-EV025-001..010**
-- **Follow-on**: S033 / EV-026 — ADR-032 equality → `wmoPass` (**UJ-041** promote)
+- **Follow-on**: S033 / EV-026: ADR-032 equality → `wmoPass` (**UJ-041** promote)
 - **Source**: E25-*; [evolve-report-EV-025.md](evolve-report-EV-025.md);
-  Context: va-multi-location-809 (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate)
+  Context: va-multi-location-809 (archived; see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate)
 
 ### F23 / F6 / F7.g deepen (S033 / EV-026 — #809 VA multi-location equality)
 
-- **Status**: **Done** (S033 / EV-026) — PR #817 / #818; #809 closed
+- **Status**: **Done** (S033 / EV-026); PR #817 / #818; #809 closed
 - **Issues**: [#809](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/809)
 - **Runtime SoT**: `vendor/manifest.json` → IWXXM **v2025-2**
 - **What it did**: Make `canonicalize_xml(convert(sigmet-multi-location-VA.tac))` equal
@@ -1860,12 +2139,12 @@
   3. FIXTURE_GAPS equality-pending note removed / closed
   4. GitHub #809 closed
 - **Journeys / tests**: deepen **UJ-041** / **UJ-034** / **UJ-039**; reuse **TC-EV025-008..009**
-  (EV-026 semantics — `E26-TC=1`)
+  (EV-026 semantics; `E26-TC=1`)
 - **Out of scope**: US REMARKS reopen; #738; sample-menu removal
 - **Packages / apps**: `packages/tac2iwxxm` encode + annex3 golden; frontend catalog /
   FIXTURE_GAPS / Vitest (no new UI surface)
 - **Source**: E26-*; [evolve-report-EV-026.md](evolve-report-EV-026.md);
-  Context: va-multi-location-809 (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate)
+  Context: va-multi-location-809 (archived; see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate)
 
 ### F6 deepen (S033 / EV-026)
 
@@ -1875,7 +2154,7 @@
 ### F7.g deepen (S033 / EV-026)
 
 - **Status note**: F7 remains **Planned**; catalog tier flip only (`wmoPass`) when equality
-  holds — no new UI surface. **Done** with EV-026.
+  holds; no new UI surface. **Done** with EV-026.
 
 ### F23 deepen (S033 / EV-026)
 
@@ -1884,7 +2163,7 @@
 
 ### F25 / F9 / F7.g deepen (S034 / EV-027 — #815 official WMO decode residual matrix)
 
-- **Status**: **Done** (S034 / EV-027) — PR [#821](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/821) merged `ad36aa0`; #815 closed; child [#820](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/820) open (VAA/TCA G4)
+- **Status**: **Done** (S034 / EV-027); PR [#821](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/821) merged `ad36aa0`; #815 closed; child [#820](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/820) open (VAA/TCA G4)
 - **Issues**: [#815](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/815) (closed); [#820](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/820) (open)
 - **Runtime SoT**: `vendor/manifest.json` → IWXXM **v2025-2**
 - **What it does**:
@@ -1892,7 +2171,7 @@
   2. Every in-scope peer loads from the sample menu **or** has an explicit gap + child issue
   3. Decode residual matrix: happy-path official TAC → `residuals == []` for all seven
      products (**S02.M2=2**); allowlist only when standing docs mark residuals intentional
-     (F9 **G4** / ADR-025) + linked child issue — fix when cheap otherwise (`E27-4`)
+     (F9 **G4** / ADR-025) + linked child issue; fix when cheap otherwise (`E27-4`)
   4. Unexpected residuals fail parametrized CI (not only manual UI checks)
 - **Acceptance**:
   1. Inventory SoT checked in (docs or generated list) matches catalog ∪ `FIXTURE_GAPS`
@@ -1907,7 +2186,7 @@
 - **Packages / apps**: `packages/tac2iwxxm` decode + fixtures; FE catalog / FIXTURE_GAPS /
   Vitest; optional H4–H5 when FE ships
 - **Source**: E27-*; [evolve-decisions.md](decisions/evolve-decisions.md) §EV-027;
-  Context: wmo-decode-residual-matrix (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate)
+  Context: wmo-decode-residual-matrix (archived; see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate)
 - **Supersedes**: S029 / EV-022 (parked) narrow SIGMET A6-1a residual work
 
 ### F25 deepen (S034 / EV-027)
@@ -1927,7 +2206,7 @@
 
 ### F28: SWXA Quality Bar — S036 / EV-029
 
-- **Status**: **Done** — S036 / EV-029; PR [#828](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/828);
+- **Status**: **Done**; S036 / EV-029; PR [#828](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/828);
   umbrella [#823](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/823) **closed**;
   [#740](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/740) **closed** (absorbed).
 - **What it does**: Raises **Space Weather Advisory** (SWXA / SWX) TAC lint, convert, and
@@ -1955,12 +2234,12 @@
 - **Journeys / tests**: **UJ-043**; **TC-F28-001..006**; cycle **TC-EV029-***
 - **Out of scope**: VONA #741; SIGWX / QVACI; dissemination sink UI; treating GIFTs as normative
 - **Source**: E29-*; [evolve-decisions.md](decisions/evolve-decisions.md) §EV-029;
-  Context: eight-family-ahl-rules-823 (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate);
+  Context: eight-family-ahl-rules-823 (archived; see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate);
   ADR-028; ADR-032; `docs/domain/rules/COVERAGE_MATRIX.md`
 
 ### F6 / F6.bulletin / F12 / F2 / F13 / F15 / F20 / F23 / F24 / F26 / F27 deepen (S036 / EV-029 — #823)
 
-- **Status**: **Done** (S036 / EV-029) — Phase A + Phase B complete; PR #828; residuals on children
+- **Status**: **Done** (S036 / EV-029); Phase A + Phase B complete; PR #828; residuals on children
 - **Issues**: [#823](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/823) **closed**;
   [#738](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/738) closed (TC SIGMET);
   [#740](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/740) closed (via **F28**);
@@ -1993,7 +2272,7 @@
 - **Packages / apps**: `packages/tac-validate`, `tac2iwxxm`, `iwxxm-validate`,
   `packages/dissemination` (AHL helpers only); domain docs; fixtures/CI; FE only if Examples unlock
 - **Source**: E29-*; [evolve-decisions.md](decisions/evolve-decisions.md) §EV-029;
-  Context: eight-family-ahl-rules-823 (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate); #823 body + COM addendum
+  Context: eight-family-ahl-rules-823 (archived; see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate); #823 body + COM addendum
 
 ### F23 deepen (S036 / EV-029 — TC SIGMET #738)
 
@@ -2015,14 +2294,14 @@
 
 ### F29: Parameterized Rule Quality Matrices — S037 / EV-030
 
-- **Status**: **Done** — shipped S037 / EV-030 (2026-08-03, PR #832).
+- **Status**: **Done**; shipped S037 / EV-030 (2026-08-03, PR #832).
 - **What it does**: Adds a maintainable, **parameterized** regression harness so lint
   (`tac-validate`), convert (`tac2iwxxm`), and IWXXM-validate (`iwxxm-validate`) rules each
   have a fixed case budget: **5 happy · 5 sad · 5 edge-pass · 5 edge-fail** (or explicit
   `needs-fixture` inventory slots). Stable IDs (`RULE_ID/happy/03`). Design-before-bulk:
   evaluation answers (#831) land in a session design note before flooding fixtures.
 - **Issues**: [#831](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/831) (priority-high)
-- **Deepens**: **F12** / **F2** / **F13** / **F15** (and product bars) via shared runners —
+- **Deepens**: **F12** / **F2** / **F13** / **F15** (and product bars) via shared runners;
   does not replace family quality packs; complements them.
 - **API**: No new public routes required for v1 (offline pytest/CI). Optional later CLI.
 - **Acceptance**:
@@ -2039,22 +2318,23 @@
   ×20; coupling matrix to live network
 - **EV-970 deepen (#970 — METAR/SPECI fixture fill + sticky Product hygiene)**: S1 convert and
   S2 lint cleared `needs-fixture` for `metar_speci`; **S3** cleared validate/metar_speci
-  (`860` ready / `0` oos / `0` NF — see
+  (`860` ready / `0` oos / `0` NF; see
   [ev-970-s3-validate-fill.md](decisions/ev-970-s3-validate-fill.md)). Sticky Product rollup
   must allowlist canonical products and map junk sad-fixture `meta.product` values to the
   pack parent (e.g. `metar_speci` → `METAR`) so opaque codes never appear as Product rows.
   Sticky outcomes are **not** the F7.q Quality metrics dashboard (`corpus_metrics.json`);
-  sticky Match includes ready inventory slots plus golden live compares — document that
+  sticky Match includes ready inventory slots plus golden live compares; document that
   distinction in the PR comment. [Corpus: decisions §ev-970-s3-validate-fill]
+- **EV-1265 deepen (#1265)**: Convert and validate matrices for TAF, SIGMET, AIRMET, VAA, TCA, SWXA, and VONA. Each in-scope rule has 20 slots or a cited out-of-scope. Ready lint packs for those products and for Canada stay as they are. METAR/SPECI stays closed, including its cited convert out-of-scope slots. No new feature id. No operator UI. [Corpus: product §F29] [Corpus: tests]
 - **S070 / EV-060 deepen (#1004)**: Conversion parameter `log_level` must set backend/package
   logger verbosity (not only client-echoed process-issue filter). DEBUG must not dump JWTs,
   passwords, or Authorization headers. UJ-063 / TC-EV060-1004-*.
 - **Source**: E30-*; [evolve-decisions.md](decisions/evolve-decisions.md) §EV-030;
-  Context: quality-residuals-831 (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate); #831
+  Context: quality-residuals-831 (archived; see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate); #831
 
 ### F30: Platform Independence (Auth / DO DB / DOKS) — S038 / EV-031
 
-- **Status**: **Done** (S038 / EV-031; `D-S038-13` = 1) — deepen S042 / EV-034 **completed**;
+- **Status**: **Done** (S038 / EV-031; `D-S038-13` = 1); deepen S042 / EV-034 **completed**;
   S052 / EV-043 staging + dual CD ([#886](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/886));
   **deepen** S053 / EV-044 separate staging DOKS + DO Project (in progress).
 - **What it does**: Splits platform lock-in under epic [#842](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/842):
@@ -2111,11 +2391,11 @@
   5. Deploy docs state prod FE Ingress extension; TC-EV057-948 / ops smoke.
 - **Out of scope**: Convert/validate engine rewrites; App Platform; multi-reviewer Environment
   approvals (solo uses tag/dispatch); changing canonical app host away from `app.`
-- **Source**: E31-*; E34-*; E43-*; E44-*; E51-*; E57-*; Context: platform-independence-842 (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate); #842/#830/#712/#886/#948; S042 / EV-034; S052 / EV-043; S053 / EV-044; S060 / EV-051; S067 / EV-057
+- **Source**: E31-*; E34-*; E43-*; E44-*; E51-*; E57-*; Context: platform-independence-842 (archived; see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate); #842/#830/#712/#886/#948; S042 / EV-034; S052 / EV-043; S053 / EV-044; S060 / EV-051; S067 / EV-057
 
 ### F31: Hybrid Operator Sessions — S038 / EV-031
 
-- **Status**: **Done** (S038 / EV-031; `D-S038-13` = 1) — T7.1 Playwright + 11/13 approved.
+- **Status**: **Done** (S038 / EV-031; `D-S038-13` = 1); T7.1 Playwright + 11/13 approved.
 - **What it does**: Optional Supabase Auth for **long-term** work storage; guests stay on local/IndexedDB with a persistent **loss-of-progress** notice; privacy preference center (F22) gates local storage and discloses Auth cookies.
   - Logged-in: session CRUD on **DO Postgres** keyed by Supabase user id.
   - Guest→login: **auto-upload** all eligible local drafts (no prompt) (`D-S038-guest-merge`=2).
@@ -2129,10 +2409,10 @@
   6. H4–H5 + UJs for notice, login, privacy interplay (**TC-F31-006**)
 - **Out of scope**: Forced login for convert; CMP; selling personal data
 - **Journeys / tests**: **UJ-045+** (assign in user-journeys delta); **TC-F30-*** / **TC-F31-***; **TC-EV031-***
-- **S070 / EV-060 deepen (#1006)**: Auth/Register UAT — Playwright register, login, logout,
+- **S070 / EV-060 deepen (#1006)**: Auth/Register UAT: Playwright register, login, logout,
   session persist; guest convert still works. Facilitated `uat` Spec then Build. UJ-003 /
   UJ-046 / TC-EV060-1006-*.
-- **Source**: E31-*; Context: platform-independence-842 (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate)
+- **Source**: E31-*; Context: platform-independence-842 (archived; see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate)
 
 ### F23 / F12 / F2 / F13 deepen (S037 / EV-030 — #829 TC SIGMET)
 
@@ -2140,7 +2420,7 @@
 - **Issues**: [#829](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/829)
 - **What it does**:
   1. Dedicated `tac-validate` TC SIGMET accept/negative pack (peer VA pack)
-  2. STNR / exceptional geometry negatives beyond A6-2-TC happy path — or explicit OOS with cite
+  2. STNR / exceptional geometry negatives beyond A6-2-TC happy path, or explicit OOS with cite
   3. Sample-menu / catalog tier decision for `sigmet-A6-2-TC` (UJ-039 / ADR-032)
 - **Acceptance**: #829 checkboxes; **TC-EV030-829-***; H4–H5 only if FE menu unlock ships
 
@@ -2179,21 +2459,21 @@
 - **What it does**: Raises **VONA** (Volcano Observatory Notice for Aviation) TAC lint,
   convert, and IWXXM-validate quality to the F15–F28 product bar. Root
   `iwxxm:VolcanoObservatoryNoticeForAviation`. **WMO `TAC-to-XML-Guidance.txt` has no VONA
-  section** — this is a **non-blocking upstream documentation gap** (S045 / EV-037 / #869),
+  section**; this is a **non-blocking upstream documentation gap** (S045 / EV-037 / #869),
   not an undefined conversion. Encode SoT hierarchy:
   1. ICAO PANS-MET / applicable ICAO provisions
   2. WMO FM 205 + IWXXM 2025-2 model (package `1.0.0`, `vona.xsd`)
   3. WMO `vona.xsd`, `iwxxm.sch`, code lists
   4. WMO aviation AHL (`WM`→`LM`)
   5. Official `vona-A7-1.xml` example (fixture, not sole SoT)
-  6. Project cookbook — **derived** implementation guide only
+  6. Project cookbook: **derived** implementation guide only
   Model volcano/ash as `MeteorologicalFeature` objects; colour codes via
   `AviationColourCode` vocabulary; bounding period/volume/phenomena per XSD.
   Reuses **ADR-028** registry + **ADR-032** golden policy. Catalog `vona_a7_1` → **`wmoPass`**.
 - **Issues**: [#741](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/741) closed; parent epic [#846](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/846);
   Guidance silence tracker [#869](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/869) (S045 disposition).
 - Deepen children: G-VONA-1 (vertical extent) [#849](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/849),
-  G-VONA-5 (resuspended ash) [#850](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/850) — under #846.
+  G-VONA-5 (resuspended ash) [#850](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/850), under #846.
 - **Deepens**: **F6** (VONA encode plugin), **F12** (VONA checklist), **F2/F13** (XSD+SCH),
   **F7** full product surface (picker + Examples unlocked), **F9** best-effort decode.
 - **API**: Additive wire value **`product=vona`** on convert / convert-bulletin / lint-tac /
@@ -2216,7 +2496,7 @@
 - **Out of scope**: Metrics UI #836; SIGWX / QVACI; hand-edit `vendor/schemas/*`; treating
   guidance-file runway-state rules as normative for other products
 - **Source**: E32-*; [evolve-decisions.md](decisions/evolve-decisions.md) §EV-032;
-  Context: iwxxm-corpus-quality-846 (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate); #741; ADR-028;
+  Context: iwxxm-corpus-quality-846 (archived; see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate); #741; ADR-028;
   ADR-032; `docs/domain/rules/COVERAGE_MATRIX.md`
 
 ### F32 deepen (S045 / EV-037 — VONA SoT / Guidance silence)
@@ -2239,7 +2519,7 @@
 - **Out of scope**: Editing upstream `TAC-to-XML-Guidance.txt`; inventing US Schematron;
   full AHL impl packs beyond matrix redesign
 - **Source**: E37-*; [evolve-decisions.md](decisions/evolve-decisions.md) §EV-037;
-  Context: matrix-disposition-residuals (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate); #869/#870/#872
+  Context: matrix-disposition-residuals (archived; see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate); #869/#870/#872
 
 ### F33: Secure mass file/folder ingest — S050 / EV-042
 
@@ -2247,7 +2527,7 @@
 - **What it does**: Authenticated operators ingest **many** TAC (and related text) files via
   multi-select and **folder/zip** upload, with progress and per-file errors, then feed the
   existing convert → lint → validate path (**no** operator dissemination destinations this
-  cycle — F16–F19 UI hidden). Server enforces size/count/MIME caps, rejects
+  cycle; F16–F19 UI hidden). Server enforces size/count/MIME caps, rejects
   binaries/executables, and applies **content sniff + zip-bomb guards**.
 - **Caps (R1)**: ≤**200** files / request; ≤**5 MiB** / file; ≤**50 MiB** total unzipped.
 - **Auth (R3)**: JWT required for folder/zip mass path; guests may keep existing small
@@ -2266,14 +2546,14 @@
 - **Out of scope**: Restoring F16–F19 destinations (#898); connector spike (#896);
   `DatabaseUploadDialog`; F8 auto-push; operator dissemination send; weakening SSRF allowlist.
 - **Source**: E42-*; [evolve-decisions.md](decisions/evolve-decisions.md) §EV-042;
-  Context: remove-db-tools-operator-throughput (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate);
+  Context: remove-db-tools-operator-throughput (archived; see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate);
   #897; ADR-029 / ADR-030
 
 ### F34: Contract + mutation quality gates — S069 / EV-059
 
 - **Status**: **Planned** (S069 / EV-059; Spec-development).
 - **What it does**: Adds developer/CI quality gates that complement line coverage:
-  1. **Schemathesis** property-based suite against `apps/backend` OpenAPI (ASGI) — no unexpected
+  1. **Schemathesis** property-based suite against `apps/backend` OpenAPI (ASGI): no unexpected
      5xx; response schema conformance; auth strategy so protected routes are exercised.
   2. **Mutation testing** — **pytest-gremlins** (Python) + **Stryker** (TypeScript) across
      packages/services, run as **nightly / `workflow_dispatch`** (not every PR).
@@ -2311,6 +2591,14 @@
   Staging gate alone: **full CI** (unit suites), **lint**, **typecheck**, and **full E2E**
   (not smoke-only) as required status checks before merge. Documented in deploy.md; GitHub
   branch protection / required checks as needed. No new app secrets. UJ-DEV-009 (doc/CI).
+- **EV-101 / #1431 deepen** (CI evidence only; no new operator feature): local OpenAPI
+  status and required-field check (#1432, [Corpus: api]), coverage artifacts and the sticky
+  coverage comment for `tac2iwxxm`, `tac-validate`, `auth`, and `workflows` (#1433),
+  named Playwright locators (#1436, #1435), and a Playwright coverage report under
+  `apps/e2e` (#1448). Test rows: **TC-EV101-001..005**. The 100% coverage floor stays.
+  Epic #1431 stays open. Implementation is already on `origin/stage` (PRs #1447, #1444,
+  #1446, #1441, #1449). This deepen records the corpus rows. It does not add a second
+  implementation. [Corpus: tests] [Corpus: product] [Corpus: api]
 - **Source**: E0–E8 / 01 intake; [evolve-decisions.md](decisions/evolve-decisions.md) §EV-059;
   #841 / #727 / #874; [Corpus: tests] [Corpus: tech-spec] [Corpus: api]; S071 / EV-061 #1015
 
@@ -2365,15 +2653,15 @@
   1. ≥1 P1 national issue (#916) **In Progress** with fixtures started
   2. #913 catalog row per targeted profile id in [Corpus: domain-profiles]
 - **Acceptance (Build)**:
-  1. `US_FAA_NWS` deepened per #919 scope — **closed EV-085** (RMK M7, SIGMET/AIRMET M8–M19, TAF lint M13, SWXA/TCA thin M22; M14 alias waived)
+  1. `US_FAA_NWS` deepened per #919 scope; **closed EV-085** (RMK M7, SIGMET/AIRMET M8–M19, TAF lint M13, SWXA/TCA thin M22; M14 alias waived)
   2. `CA_ECCC` — EV-064 / #916: vendor `iwxxm-ca` + IWXXM 3.0.0 pin; METAR/SPECI/TAF/AIRMET
      convert + validate paths; API + FE picker; fixtures under `profiles/CA_ECCC/`
-  3. One exchange overlay path (`GLOBAL_AFS` minimum) exercised in packaging tests — **EV-065**: `APAC_ROBEX` P0 stub added
+  3. One exchange overlay path (`GLOBAL_AFS` minimum) exercised in packaging tests; **EV-065**: `APAC_ROBEX` P0 stub added
   4. **EV-074 / #1043:** CA_ECCC SIGMET **validate-first** ops corpus (≥2 SIGMET IWXXM) against WMO 3.0.0; `ca_xsd` skipped N/A; no TAC convert
-  5. **EV-075 / #1032:** Umbrella closeout verified — aerodrome exchange output + COLLECT + ops met
+  5. **EV-075 / #1032:** Umbrella closeout verified: aerodrome exchange output + COLLECT + ops met
   6. **EV-076 / #1061:** SIGMET exchange output emit closed on `stage`
   7. **EV-077:** VAA validate-first via Montreal VAAC TAC (`D-EV074-vaa-waiver-tac`); +2 AIRMET ops fixtures
-  8. **EV-078 / #916:** P1 closeout verified — VAA exchange *emit* waived (`D-EV074-vaa-follow`); re-harvest when VAAC publishes ≥2
+  8. **EV-078 / #916:** P1 closeout verified: VAA exchange *emit* waived (`D-EV074-vaa-follow`); re-harvest when VAAC publishes ≥2
   9. **EV-079 / #919 M8:** US SIGMET/AIRMET phenomenon tokens + fixtures
   10. **EV-080 / #919 M9:** VOR reference geometry parser + fixtures
   11. **EV-081 / #919 M10–M13:** weather-hazard emit, convective SIGMET (WST), structured VIS verify, US TAF lint
@@ -2381,13 +2669,13 @@
   13. **EV-083 / #919 M17–M18:** CONUS `UPDT` header + FRZLVL `FreezingLevelForecast`
   14. **EV-084 / #919 M19:** WAUS multi-section AIRMET bulletin (ICE + OTLK + FRZLVL + VOR FROM)
   15. **EV-085 / #919 closeout:** acceptance audit (M20), SWXA/TCA thin US lint (M22); #919 closed with M14 + §12.7.2 additive RMK waivers
-  16. **EV-086 / #921:** `EUR_RODEX`, `AFI`, `CAR_SAM` exchange stubs — registry + GLOBAL_AFS COLLECT baseline + catalog stubs + TC-EV086 (APAC_ROBEX P0 pattern); #921 stays open for #898 drawer + #913 mining deepen
-  17. **EV-087 / #917+#918:** `AU_BOM` + `NZ_CAA_MET` P1 kickoff — catalog P1, semantic stubs, mining notes; INTER emit = `TEMPORARY_FLUCTUATIONS` + provenance (D-EV087-inter-emit); TAF3 as RMK flag; NZ domestic extras → IR + remarks; core IWXXM only (no national XSD); TC-EV087-*
+  16. **EV-086 / #921:** `EUR_RODEX`, `AFI`, `CAR_SAM` exchange stubs: registry + GLOBAL_AFS COLLECT baseline + catalog stubs + TC-EV086 (APAC_ROBEX P0 pattern); #921 stays open for #898 drawer + #913 mining deepen
+  17. **EV-087 / #917+#918:** `AU_BOM` + `NZ_CAA_MET` P1 kickoff: catalog P1, semantic stubs, mining notes; INTER emit = `TEMPORARY_FLUCTUATIONS` + provenance (D-EV087-inter-emit); TAF3 as RMK flag; NZ domestic extras → IR + remarks; core IWXXM only (no national XSD); TC-EV087-*
   18. **EV-088 / #1044:** National profile **onboarding playbook** + `_template/` stubs + scaffold
-     script (engineering enablement) — thin vs full paths; A–P ↔ CA reference map; no #920/#921
+     script (engineering enablement); thin vs full paths; A–P ↔ CA reference map; no #920/#921
      feature content that cycle
   19. **EV-089 / #920:** Thin/compat packs `UK_METOFFICE`, `BR_DECEA`, `KR_KMA`, `JP_JMA`,
-     `IN_IMD`, `HK_HKO` — catalog + semantic stubs + mining notes + fixtures + registry
+     `IN_IMD`, `HK_HKO`: catalog + semantic stubs + mining notes + fixtures + registry
      (EV-088 thin path); ship UK first; GAMET **parse-only** (no IWXXM emit); no national XSD invent;
      SAM packaging deepen stays #921
   20. **EV-090 / #921+#913+#1024:** Exchange mining promote (catalog/stubs/PROVENANCE from existing
@@ -2395,17 +2683,21 @@
      light picker (default `GLOBAL_AFS`; wire `exchange_profile` on package/bulletin paths;
      ignored on convert-only). Close #921 on land; spawn child for #898 drawer overlay selector.
      No new COLLECT/FTBP packaging rules this cycle.
-  21. **EV-093 / #1024:** Semantic Profile light picker deepen — canonical uppercase
+  21. **EV-093 / #1024:** Semantic Profile light picker deepen: canonical uppercase
      `semantic_profile` wire (`ICAO_2025`, `US_FAA_NWS`, `CA_ECCC`, `AU_BOM`, `NZ_CAA_MET`,
      thin packs); legacy `annex3`/`iwxxm_us` alias options through #1025 window; Profile trust
      copy via compact bar layout (icons/tooltips + under-bar summary + collapsed details);
      local UI preview; close #1024 on land (exchange picker already EV-090/091).
-  22. **EV-094 / #1098:** Deepen thin/compat packs (post-#920) — attributed real TAC corpora;
+  22. **EV-094 / #1098:** Deepen thin/compat packs (post-#920): attributed real TAC corpora;
      durable catalog/mining URLs; **SPECI** on `KR_KMA` + `JP_JMA`; **`in_imd` lint overlay**
      for TAF TX/TN omission awareness (convert stays core IWXXM); GAMET parse-only reaffirm;
      UK-first PRs; catalog `status: implemented` for six packs; **close #1098** on land
      (**do not reopen #920**).
-  23. **EV-098 / #1028–#1031:** CA_ECCC deep mining — datamart triage (#1028); MSC `doc/` PDFs
+  22b. **EV-us-military-taf-tx-tn / EV-station-profile-tx-tn:** `US_MILITARY` and
+     `LATAM_TAF` map listed ICAOs; TX/TN after change groups → `TX_TN_PRESENT` (info);
+     `resolve_profile_for_station`; annex3 keeps `INVALID_TX_TN`; emit annex3; not
+     `US_FAA_NWS` (BECMG forbidden there).
+  23. **EV-098 / #1028–#1031:** CA_ECCC deep mining: datamart triage (#1028); MSC `doc/` PDFs
      (#1031); MANOBS P0 TAC rules + fixtures (#1029); MANAIR TAF/AIRMET/GFA (#1030). Research via
      deep-research-domain-handoff (EV-097); promote via mine-domain-sources after gate C.
      No UI; no SIGMET national / VAA convert this cycle. **TC-EV098-***.
@@ -2427,7 +2719,7 @@
   VAA schema fork); **M14** alias cutover [#1025](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1025);
   inventing national IWXXM enums/XSDs; China unless public sources appear; GAMET→IWXXM
   conversion; #933 ConversionProfile editor as a separate feature lane from F36 content
-- **Related UI**: Light picker [#1024](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1024) —
+- **Related UI**: Light picker [#1024](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1024):
   semantic (**EV-093** canonical + nationals) + **exchange** control (EV-090 / drawer EV-091)
 - **Enablement**: [NATIONAL_PROFILE_PLAYBOOK.md](domain/profiles/NATIONAL_PROFILE_PLAYBOOK.md)
 - **Source**: Epic [#912](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/912); EV-063; EV-064;
@@ -2471,7 +2763,7 @@
 
 ### Corpus / WMO-source parity (S040 / EV-032 — #846)
 
-- **Status**: **In progress** — core children closed (S040); matrix residuals closed (S045);
+- **Status**: **In progress**; core children closed (S040); matrix residuals closed (S045);
   remaining **#849–#861** under S046 / EV-038
 - **What it does**: Continuous good results vs official IWXXM corpus and related WMO sources
   (wmo-im/iwxxm, iwxxm-translation, iwxxm-codelists, codes.wmo.int, iwxxm-modelling). File
@@ -2479,14 +2771,14 @@
 - **Acceptance**: **TC-EV032-005**; children linked from #846; deepen UJ-039 / UJ-042 /
   UJ-045 as applicable; **TC-EV038-001..014** for residual closeout
 - **Children (T4.1)**: #849–#861 (see [t4.1-846-children.md](sessions/S040-iwxxm-corpus-quality/reports/t4.1-846-children.md))
-- **XML-only OOS (corpus G5 / #858)**: **WAFS / QVACI / SIGWX** — durable row in
+- **XML-only OOS (corpus G5 / #858)**: **WAFS / QVACI / SIGWX**: durable row in
   [COVERAGE_MATRIX.md](domain/rules/COVERAGE_MATRIX.md) §XML-only products; not F6 convert
 - **Out of scope**: Metrics UI #836; re-doing closed mining #804/#807 as primary deliverable;
   WAFS/QVACI/SIGWX TAC→IWXXM encode (see G5 table)
 
 ### F2 / F4 / F6 / F7 / F32 deepen (S046 / EV-038 — #846 residuals #849–#861)
 
-- **Status**: **In progress** (S046 / EV-038) — deepen only; **no new Fn**
+- **Status**: **In progress** (S046 / EV-038); deepen only; **no new Fn**
 - **Epic**: [#846](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/846)
 - **Milestones** (`D-S046-mplan`):
   | M | Issues | Theme |
@@ -2498,7 +2790,7 @@
 - **Acceptance**: AC1–AC14 in
   [01-requirements-summary.md](sessions/S046-iwxxm-corpus-residuals/reports/01-requirements-summary.md);
   **TC-EV038-001..014**
-- **UI**: #854 — local non-deployed preview at M2 (`D-S046-mplan` Q2=1); H4–H5 at deploy
+- **UI**: #854: local non-deployed preview at M2 (`D-S046-mplan` Q2=1); H4–H5 at deploy
 - **SoT (#851)**: Python `iwxxm_versions.py` → generated committed JSON (roles
   `latest`/`previous`) → FE + OpenAPI/CI (`D-S046-sot`=1)
 - **US gate (#853)**: `make iwxxm-us-compat-smoke` + lag policy **D-S046-853** (ship
@@ -2538,7 +2830,7 @@
   `[docs/domain/rules/RULE_SOURCE_URLS.md]` · `[docs/domain/rules/COVERAGE_MATRIX.md]` ·
   `[docs/domain/mining/codes-wmo-int-aviation-mining-notes.md]`
 - **Follow-on**: [#959](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/959) / S059 / EV-050
-  (Validated — below)
+  (Validated; below)
 
 ### F6 / F12 / F15 / F20 / F23 / F24 / F28 deepen (S059 / EV-050 — #959 Validated)
 
@@ -2583,13 +2875,13 @@
   2. CI job: quality-matrix + annex3/`iwxxm_us` golden outcome summary → sticky PR comment
      (marker ≠ EV-036 coverage comment)
   3. Sentry SDK (API + FE + worker) behind DSN env; Developer free tier
-  4. Upstash Redis (`REDIS_URL` or approved Upstash env) as slowapi shared store — **no**
+  4. Upstash Redis (`REDIS_URL` or approved Upstash env) as slowapi shared store; **no**
      new DOKS Redis Deployment (`D-S061-redis=1`)
   5. `openapi-typescript` FE types from committed OpenAPI snapshot (`make openapi-refresh`;
-     `pnpm openapi:check` drift gate) — locked `D-S061-orval=1` (not full Orval)
+     `pnpm openapi:check` drift gate); locked `D-S061-orval=1` (not full Orval)
 - **EV-970 amend (sticky Product hygiene / dashboard clarity)**: Collect/format must
   **allowlist** canonical Product keys; junk sad-fixture products roll under pack parent.
-  Sticky must **not** be read as F7.q dashboard scores — footnote inventory vs golden live
+  Sticky must **not** be read as F7.q dashboard scores; footnote inventory vs golden live
   vs `/quality` corpus metrics. See [ev-970-s3-validate-fill.md](decisions/ev-970-s3-validate-fill.md);
   **TC-EV970-STICKY-001** (product allowlist) when Build lands.
 - **Acceptance**: AC1–AC12 in [evolve-decisions.md](decisions/evolve-decisions.md) §EV-052;
@@ -2646,8 +2938,18 @@
 
 ### M1: Monorepo Layout
 
-- **Status**: **Implemented** — the repository uses the monorepo target tree today (`apps/`, `packages/`, `vendor/`), `.gitmodules` is absent, and migration acceptance lives in `TC-M001` / `TC-M004`.
+- **Status**: **Implemented**: the repository uses the monorepo target tree today (`apps/`, `packages/`, `vendor/`), `.gitmodules` is absent, and migration acceptance lives in `TC-M001` / `TC-M004`.
 - **What it does**: Replaces six git submodules with a single-repo tree: `apps/`, `packages/`, `vendor/`.
+- **Deepen (EV-packages-module-reorg):** limited packages hygiene in
+  `tac-validate` / `tac2iwxxm` (profile-id casing + delete forwarding-only
+  `annex3_products` shim / strip `products` parse re-exports). Not a wholesale
+  package-tree rewrite.
+- **Deepen (EV-layout-dx):** package developer-experience bar
+  ([Corpus: package-dx]) — plain module/symbol names, package façades,
+  and DX scenario tests (`TC-DX-*`). Pilot: `iwxxm-validate` Canonical XML
+  helpers (replace opaque `c14n` primary path; keep aliases one CalVer).
+  Later: other packages, `apps/` clarity, root README/clutter. Does not
+  rename top-level `packages/<name>` dirs (ADR-037).
 - **F6 delta**: Approved tree gains `packages/tac2iwxxm`; loses `packages/gifts` at F6 cutover.
 - **S008 package amend**: Also gains `packages/tac-validate` and `packages/iwxxm-validate`.
 - **Key parameters**:
@@ -2670,7 +2972,7 @@
 
 - **What it does**: Copies tagged releases from authoritative upstreams into `vendor/schemas/` per `vendor/manifest.json`.
 - **F6 delta**: Also pins IWXXM-US (NOAA/MDL) alongside wmo-im iwxxm-*.
-- **Limitations**: Read-only — no monorepo commits to vendor content except sync PRs.
+- **Limitations**: Read-only; no monorepo commits to vendor content except sync PRs.
 - **Source**: REQ-002, REQ-012; ADR-013/014
 
 ### M3: GIFTs In-Repo Package — Deprecated
@@ -2682,12 +2984,13 @@
 ### M4: Auth Library in Backend API — Restore (S038 / EV-031)
 
 - **Status**: **Planned (restore)** under F30/F31. Was **Deprecated for operator Auth** (S023 / EV-017 / #783; `packages/auth` deleted ADR-031).
-- **EV-031**: Reintroduce Auth verify against **Supabase Auth only** (JWT for long-term session APIs). Product data remains on DO Postgres — not Supabase DB. F8 uses machine/`DATABASE_URL` credentials, not operator JWT.
+- **EV-031**: Reintroduce Auth verify against **Supabase Auth only** (JWT for long-term session APIs). Product data remains on DO Postgres, not Supabase DB. F8 uses machine/`DATABASE_URL` credentials, not operator JWT.
 - **Historical**: Collapsed auth microservice into backend via `packages/auth` (REQ-004); S003 key split (ADR-010); S011 removed `/admin/*` (#697); EV-017 deleted operator Auth.
 - **Source**: REQ-004; S023 / EV-017; **S038 / EV-031 / F30/F31**
 
 ### M5: Workspace Tooling
 
+- **ADR-056 deepen**: Hard CI file line budget ≤500 (grandfather allowlist) + Ruff/ESLint complexity caps; P0 splits deferred.
 - **What it does**: Root Makefile orchestrates uv (Python) and pnpm (JS) workspaces; pre-commit
   and GitHub Actions quality gates.
 - **F6 delta**: Workspace member `tac2iwxxm`; drop gifts from test matrix at cutover; **PyO3 /
@@ -2696,7 +2999,7 @@
 - **S044 / EV-036 deepen (local-first gates)**: Tiered local hooks save CI runner time:
   - **Commit (pre-commit)**: existing fast gates + **medium** `validate-ci` extras (de-duped).
   - **Push (husky pre-push)**: `make ci` = `ci-prepush` + Compose **integration** (ports
-    18000/18001; includes wis2box harness if wired into local integration target) — no second
+    18000/18001; includes wis2box harness if wired into local integration target); no second
     `validate-ci`.
   - **Remote (ci-cd.yml)**: drop **validate** + Compose **integration**; **keep** package
     **unit matrix + coverage** and post a sticky **PR coverage comment**; keep
@@ -2712,12 +3015,12 @@
 - **Source**: REQ-005; EV-002; ADR-014; S008 realtime amend; **S044 / EV-036**
 - **S056 / EV-047 deepen (#833 — slim husky)**: **Supersedes EV-036 day-to-day local hook
   weight** for developer commit/push. Target shape **A** (`D-S056-husky-shape=1`):
-  - **Commit (husky → pre-commit)**: **lint/format only** (ruff / prettier / eslint — align
+  - **Commit (husky → pre-commit)**: **lint/format only** (ruff / prettier / eslint; align
     `Makefile` `PY_LINT` / JS lint). No typecheck, catalog-check, issue-registry-guard,
     actionlint/yamllint, or medium `validate-ci` on the default commit path.
   - **Push (husky pre-push)**: **fast unit-test subset only** (explicit target; not full
     coverage-fail-under matrix / not `make validate-ci` / not Compose integration).
-  - **Remote CI**: unchanged merge strength — typecheck, catalog/registry, secrets/yaml,
+  - **Remote CI**: unchanged merge strength: typecheck, catalog/registry, secrets/yaml,
     unit coverage, integration/e2e, Rust checks remain enforced in `.github/workflows`.
   - Heavy local parity stays opt-in via `make validate-fast` / `validate-ci` / `ci-prepush`.
 - **Acceptance (EV-047 / #833)** — **approved** (`D-S056-01-ac=1`):
@@ -2781,6 +3084,127 @@
 | Accuracy metrics report | Yes | No (v1) | No (v1) | Gate |
 | Rust/PyO3 hotspots | **Required at cutover** | Via API image | — | Bench hard-pass |
 
+### F6 deepen (EV-1272 — public-bulletin profile check / #1272)
+
+- **Status note**: F6 remains **Implemented**. This cycle adds a maintainer command. No new feature id.
+- **Issue**: [#1272](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1272)
+- **What it does**: One local command pulls the public feeds that worked on 2026-09-23, takes one report per feed and product that feed actually carries, and runs that report under every **implemented** semantic profile that lists the product. International SIGMET skips a bulletin whose VALID period is longer than the Annex 3 maximum (4 hours, or 6 hours for VA or TC) and takes the next one. When every bulletin in that feed exceeds the maximum, the first is kept. It writes a pass/fail summary and exits non-zero when any check fails.
+- **Feeds**: Aviation Weather Center METAR, TAF, international SIGMET, and convective SIGMET; NOAA tgftp raw VAA (`FV`), TCA (`FK`), AIRMET (`WA`), VONA (`WM`, newest notice that still has an `SVO:` line), and space-weather files (`FN` names beginning `fnxx`); JMA Tokyo VAAC text.
+- **Profiles**: Implemented semantic profiles only (`ICAO_2025`, `US_FAA_NWS`, `CA_ECCC`, `AU_BOM`, `NZ_CAA_MET`, `UK_METOFFICE`, `BR_DECEA`, `KR_KMA`, `JP_JMA`, `IN_IMD`, `HK_HKO`, `US_MILITARY`, `LATAM_TAF`). Exchange profiles, including implemented `GLOBAL_AFS` and the stub overlays, stay out.
+- **Checks**: convert, IWXXM schema validation, lint, and decode. A fetch that cannot be completed fails the command and appears in the summary.
+- **Fail closed**: Non-zero exit on convert failure, document schema failure (`XSD_VALIDATION_ERROR`), lint **error**, or decode failure. `SCHEMA_PARSE_ERROR` is also non-zero and is printed on its own line, separate from document errors. Lint warnings do not fail the command.
+- **Misses**: The command does not edit the lint catalog or convert allowlists. A person adds a catalog row for a stable national lint difference, and an allowlist row for a stable convert miss. No new lint module.
+- **CI**: Manual live tier, same class as `TC-LIVE-FEEDS`. Not a merge gate. A scheduled job is in scope only after the local command is stable.
+- **Fold-in**: Uncommitted national-feed helpers, the national-feed compare test, quality-matrix YAML, and the related Makefile / hook edits travel with this cycle.
+- **Out of scope**: G-AIRMET until a TAC feed exists; promoting `stage` to `main`; stub profiles; catalog edits by the command; a new feature id; browser UI; deploy.
+- **Corpus**: [Corpus: product §F6] [Corpus: tests §TC-LIVE-FEEDS] [Corpus: adr/ADR-009] [Corpus: adr/ADR-036]
+
+### F6 deepen (EV-1279 — lettered SIGMET and AIRMET bulletin sequence / #1279)
+
+- **Status note**: F6 remains **Implemented**. This cycle widens bulletin split. No new feature id.
+- **Issue**: [#1279](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1279)
+- **What it does**: A SIGMET or AIRMET bulletin whose sequence is a letter plus digits (`A02`, `E01`) or a word plus digits (`ALPHA 02`) splits into reports and converts. Those are the same forms the single-report parser already accepts. A digits-only sequence such as `SIGMET 3` keeps the current split.
+- **Live sample**: When Aviation Weather Center is publishing an international SIGMET or AIRMET with that sequence, one sample is split and converted. If that hour has none, the checked-in fixtures still meet the acceptance checks and the live pass says it was not sampled.
+- **Out of scope**: US convective SIGMET ([#1267](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1267)); a new IWXXM sequence element; G-AIRMET, US VONA, and Canadian SIGMET; browser UI; deploy; promoting `stage` to `main`.
+- **Corpus**: [Corpus: product §F6] [Corpus: system-spec] [Corpus: tests]
+
+### F6 deepen (EV-1277 — real heading and IWXXM filename / #1277)
+
+- **Status note**: F6 remains **Implemented**. This cycle fills translation metadata and the suggested filename. No new feature id.
+- **Issue**: [#1277](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1277)
+- **What it does**: When translation-centre emit is requested, `translationTime`, `translatedBulletinID`, and `translatedBulletinReceptionTime` come from the parsed bulletin heading and the translation clock. Ordinary in-state convert still omits those fields. A failed translation keeps the original TAC and, when a heading was parsed, uses that heading and the configured centre instead of `TTAAiiCCCYYGGgg` and `YUZZ`. Bulletin convert returns `A_…xml.gz` from the existing filename helper, using the IWXXM T1T2. The Canada MSC name stays `.xml`.
+- **Out of scope**: Gzipping the XML bytes; an AMHS connection; inventing a heading for a paste with no heading line; parent [#1275](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1275); a new operator screen; promoting `stage` to `main`.
+- **Corpus**: [Corpus: product §F6] [Corpus: api] [Corpus: tests]
+
+### F6 deepen (EV-1276 — test and exercise usage / #1276)
+
+- **Status note**: F6 remains **Implemented**. This cycle marks an explicit test or exercise bulletin as non-operational. No new feature id.
+- **Issue**: [#1276](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1276)
+- **What it does**: A `STATUS: TEST` line, a remark that says this is a test, or the word `EXERCISE` sets `permissibleUsage` to `NON-OPERATIONAL`, with reason `TEST` or `EXERCISE` and a short supplementary note. The note is the remark when the bulletin has one, otherwise `Test bulletin` or `Exercise bulletin`. An exercise marker wins when both are present. Ordinary reports stay `OPERATIONAL` with those fields omitted. The same rule applies to every product we already convert. A failed translation stays operational.
+- **Out of scope**: AMHS send; changing in-state translation-centre omission; treating `VA TEST` source text as a test bulletin; parent [#1275](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1275); a new operator screen; promoting `stage` to `main`.
+- **Corpus**: [Corpus: product §F6] [Corpus: tests]
+
+### F6 deepen (EV-1274 — TAC template amendments / #1274)
+
+- **Status note**: F6 remains **Implemented**. This cycle records template changes. It does not change emitters. No new feature id.
+- **Issue**: [#1274](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1274)
+- **What it does**: `docs/domain/profiles/template-amendments.yaml` sits beside the profile catalog. A row names the source, the product, what changed, which profiles inherit it, and a status of done, partial, or not started. A separate flag records an element TAC cannot carry. Amendment 82 METAR/SPECI, volcanic ash advisory, and space weather advisory changes are the first list. Extra RVR groups, temperature in tenths, QVACI, and WAFS significant weather are recorded as not convertible from TAC. The national-profile playbook says a template update is a catalog row, reviewed the same way as a country lint delta.
+- **Out of scope**: Implementing Amendment 82 element changes; reopening the closed METAR/SPECI matrix; inventing national TAC rules; parent [#1267](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1267); a new operator screen; promoting `stage` to `main`.
+- **Corpus**: [Corpus: product §F6] [Corpus: product §F15] [Corpus: domain-profiles] [Corpus: tests]
+
+### F6 deepen (EV-1290 — no fictional translation centre / #1290)
+
+- **Status note**: F6 remains **Implemented**. This cycle stops inventing a centre on a failed translation that has no heading. No new feature id.
+- **Issue**: [#1290](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1290)
+- **What it does**: A failed translation with no parsed heading omits `translatedBulletinID`, `translationCentreDesignator`, and `translationCentreName` unless the caller supplied a centre. It does not write `YUZZ` or `Fictional translation centre`. A failed bulletin that has a heading still uses that heading and the caller's centre.
+- **Out of scope**: Inventing a heading; AMHS; gzipping the XML bytes ([#1291](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1291)); the minimum-field check ([#1292](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1292)); promoting `stage` to `main`.
+- **Corpus**: [Corpus: product §F6] [Corpus: tests]
+
+### F6 deepen (EV-1291 — gzip XML bytes / #1291)
+
+- **Status note**: F6 remains **Implemented**. This cycle compresses the bytes that match a `.xml.gz` name. The XML text stays beside those bytes. No new feature id.
+- **Issue**: [#1291](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1291)
+- **What it does**: When bulletin convert suggests a filename ending in `.xml.gz`, gzip bytes of the IWXXM document sit beside the XML text and decompress back to that text. A Canada name ending in `.xml` stays plain XML. A paste with no heading still has no filename.
+- **Out of scope**: Changing the filename pattern; AMHS; the minimum-field check ([#1292](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1292)); an operator screen or HTTP shape change; promoting `stage` to `main`.
+- **Corpus**: [Corpus: product §F6] [Corpus: tests]
+
+### F6 deepen (EV-1292 — failed-shell minimum fields / #1292)
+
+- **Status note**: F6 remains **Implemented**. This cycle adds a missing identity field on a failed shell. It does not add weather parameters. No new feature id.
+- **Issue**: [#1292](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1292)
+- **What it does**: METAR and SPECI failed shells already have issue time, aerodrome, and observation time. TAF gains a valid period. SIGMET and AIRMET gain an issuing air traffic services unit and a valid period. Volcanic ash, tropical cyclone, and space weather advisories gain their issuing centre. `translationFailedTAC` stays the original TAC. `permissibleUsage` stays operational.
+- **Out of scope**: Test and exercise usage ([#1276](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1276)); AMHS; weather parameters; promoting `stage` to `main`.
+- **Corpus**: [Corpus: product §F6] [Corpus: tests]
+
+### F6 deepen (EV-1275 — exchange header audit / #1275)
+
+- **Status note**: F6 remains **Implemented**. This cycle is a checklist. It does not change emitters. No new feature id.
+- **Issue**: [#1275](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1275)
+- **What it does**: [`docs/context/exchange-header-audit.md`](context/exchange-header-audit.md) marks each exchange header and translation-metadata item present, partial, or out of scope. The follow-ups for the fictional centre, gzip bytes, and failed-shell identity fields are on `stage`. AMHS stays on milestone 2.
+- **Out of scope**: A further converter change under this issue; AMHS; parent [#1267](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1267); promoting `stage` to `main`.
+- **Corpus**: [Corpus: product §F6] [Corpus: product §F16] [Corpus: domain-profiles]
+
+### F6 deepen (EV-1267 — selectable profiles / #1267)
+
+- **Status note**: F6 remains **Implemented**. F7 stays the operator dropdown. This cycle adds profiles. It does not add a feature id.
+- **Issue**: [#1267](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1267)
+- **What it does**: The Convert dropdown gains one new semantic profile each for US convective SIGMET, G-AIRMET, US VONA, and Canadian SIGMET. The names annex3, iwxxm_us, ca_eccc, and in_imd stay. US convective SIGMET converts and lints on its own grammar. G-AIRMET, US VONA, and Canadian SIGMET are listed. G-AIRMET and US VONA refuse convert and lint until a text bulletin is on file. Canadian SIGMET validates the published IWXXM 3.0 file and does not convert until a TAC source exists. Each profile gets a ready quality-matrix slot. Annex 3 output for an international SIGMET, AIRMET, VAA, TCA, SWXA, or VONA stays the same when the new profile is not selected.
+- **Out of scope**: A live map; in-app profile authoring; folding these formats into the four existing profiles; vendoring partner bulletins; pull request #1269; AMHS; promoting `stage` to `main`.
+- **Corpus**: [Corpus: product §F6] [Corpus: product §F7] [Corpus: domain-profiles] [Corpus: adr/ADR-036]
+
+### F6 deepen (EV-us-convective-sigmet-wst — live-map WST convert residuals)
+
+- **Status note**: F6 remains **Implemented**. No new feature id. Clears the remaining Stage live-map quality fails for KKCI national convective SIGMET (WST).
+- **What it does**: Bundled VOR table gains US fallbacks for ambiguous OurAirports idents used on live WST FROM-chains (TOU, MTU, PIR, LEV, and offline peers). The FROM-chain parser stops before NWS `LINE` / `DMSHG` hazard lead-ins so LINE TS bulletins convert. HTTP `product=sigmet` is unchanged.
+- **Out of scope**: Soft lint noise; WAFS/QVACI; LINE width corridor geometry beyond convert success; promoting `stage` to `main`.
+- **Corpus**: [Corpus: product §F6] [Corpus: product §F37] [Corpus: adr/ADR-051] [Corpus: tests]
+
+### F6 deepen (EV-1266 — operational TAC profile coverage delta / #1266)
+
+- **Status note**: F6 remains **Implemented**. Documentation only. No new feature id. No converter change.
+- **Issue**: [#1266](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1266)
+- **What it does**: Standing brief [`docs/context/operational-tac-delta.md`](context/operational-tac-delta.md) records the 2026-09-23 public-bulletin pass (what annex3 lint accepted) and refreshes the gap list after #1267 selectable profiles and #1265 product matrices landed on `stage`. Stale “no convert profile” / “lint matrices not committed” claims are corrected. G-AIRMET, US VONA, and Canadian SIGMET remain listed with source refusals where TAC is missing; US convective SIGMET converts on its own profile.
+- **Out of scope**: Building new profiles; live-feed operator tab (#1262–#1264); reopening METAR/SPECI convert residuals (#970); inventing national TAC; promoting `stage` to `main`.
+- **Corpus**: [Corpus: product §F6] [Corpus: product §F15] [Corpus: domain-profiles] [Corpus: tests]
+
+### F7 deepen (EV-1159 — SIGMET example validate visibility / #1159)
+
+- **Status note**: F7 remains **Implemented**. Deepens F7.g / F23 / F25. No new feature id.
+- **Issue**: [#1159](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1159)
+- **What it does**: Audit every shipped Examples-catalog row for convert + IWXXM validate. Fix SIGMET so soft `OUTPUT_VALIDATION_WARNING` either clears or lists actionable issue details in the Conversion/Validation log. Ensure Validate IWXXM succeeds or fails with visible diagnostics. Prefer display + example quality over weakening validation. Brief: [`docs/context/sigmet-example-validate.md`](context/sigmet-example-validate.md).
+- **Likely cause (confirmed in Build)**: post-convert soft validation re-ran METAR ICAO/TAC layers on SIGMET; convert also collapsed findings into one count warning. Fixed by excluding input layers from output validation and flattening details onto `issues[]`.
+- **Out of scope**: New SIGMET products; dissemination; picker redesign beyond issue visibility; vendor pin changes unless required; promoting `stage` to `main`.
+- **Corpus**: [Corpus: product §F7] [Corpus: product §F23] [Corpus: product §F25] [Corpus: api] [Corpus: journeys] [Corpus: tests]
+
+### F4 deepen (EV-1273 — older IWXXM on the publishing profile / #1273)
+
+- **Status note**: F4 remains **Implemented**. This cycle records each profile's package pin and checks an incoming file against the package it declares. No new feature id.
+- **Issue**: [#1273](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1273)
+- **What it does**: Canada stays on IWXXM 3.0.0. Every other catalogued semantic profile stays on the global window, 2025-2 by default and 2023-1 as the previous line. Package versions for a product come from the compatibility table for that profile's line. A Canada 3.0.0 METAR and a 2025-2 METAR each validate on their own pin. A file whose declared package is not allowed for the selected profile is rejected in plain language.
+- **Known limit**: A 3.0.0 schema that fails to compile stays a schema-parse limit. It is not a new defect in this cycle.
+- **Out of scope**: 2021-2, 2018, and 2016 on the global dropdown; 3.0.0 as a global convert default; a new vendored schema tree; Australia 3.0.1 until that pin is confirmed; QVACI; parent epic [#1267](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1267); a new version dropdown option; promoting `stage` to `main`.
+- **Corpus**: [Corpus: product §F4] [Corpus: domain-profiles] [Corpus: adr/ADR-036]
+
 ## Non-Goals (Migration)
 
 - No product feature rewrites during monorepo migration (REQ-016).
@@ -2794,24 +3218,24 @@
 - Separate **converter** microservice (HTTP convert stays on existing API).
 - Metrics fields on convert API responses in v1.
 - Extend F5 work history to non-METAR products in F6 v1. *(Superseded for persistence by S011
-  **R2′** / ADR-020 — unified `tac_work_sessions`; F6-era non-goal was pre-unify.)*
+  **R2′** / ADR-020: unified `tac_work_sessions`; F6-era non-goal was pre-unify.)*
 - Products beyond the seven listed (e.g. SWA) in F6 v1.
 
 **Amended by 04-tech-plan**: PyO3 is a **cutover acceptance gate** (ADR-017). F8 worker is
-**in scope** this cycle (ADR-018) — see Non-Goals amend below.
+**in scope** this cycle (ADR-018); see Non-Goals amend below.
 
 ## Non-Goals (S008 realtime / package amend — updated 2026-07-12 04)
 
-- ~~Building **F7** UI or multi-product sessions.~~ **Superseded** — F7 is **in scope** for
+- ~~Building **F7** UI or multi-product sessions.~~ **Superseded**: F7 is **in scope** for
   S011 / EV-008 (see Non-Goals F7 below).
-- ~~AMHS / SWIM / AFS ingest adapters.~~ **Superseded by S019 / EV-014 F19** — AMHS / SWIM /
+- ~~AMHS / SWIM / AFS ingest adapters.~~ **Superseded by S019 / EV-014 F19**: AMHS / SWIM /
   AFS **dissemination** adapters are **in scope** (Q20=D). F8 **ingest** remains store +
   quarantine only unless separately evolved.
 - ~~**Push sinks** (webhook/S3/AMHS) — store + quarantine only for F8 v1.~~ **Superseded for
-  operator dissemination (F16–F19)** — WIS2 / EDIS / AMHS / SWIM / AFS / multi-DB upload are
+  operator dissemination (F16–F19)**: WIS2 / EDIS / AMHS / SWIM / AFS / multi-DB upload are
   **in scope** under EV-014. F8 worker v1 still does **not** auto-push ingest results unless
   wired later.
-- Public machine-ingest auth UX (worker uses private `DATABASE_URL` / machine credentials —
+- Public machine-ingest auth UX (worker uses private `DATABASE_URL` / machine credentials;
   ADR-018 amended by ADR-033 / F30; not operator JWT).
 - Schematron applied to TAC (Schematron stays on IWXXM; TAC uses `tac-validate`).
 - Dedicated converter API service (rejected; F8 worker is the new deployable).
@@ -2822,7 +3246,7 @@
 - Click-row-to-edit TAC mutation; full IWXXM field mapping inside the decode table.
 - Extending **F5** as a permanent parallel METAR-only store after unified cutover (F5 UX remains
   as My METARs filter on `tac_work_sessions`).
-- Separate F7-only sessions table alongside `metar_work_sessions` (rejected — R2′).
+- Separate F7-only sessions table alongside `metar_work_sessions` (rejected; R2′).
 - ~~Per-user in-app “paste Supabase / DB keys” UI (BYO is deploy/env only — R6).~~ **Amended
   S019 / EV-014**: paste of **Supabase auth keys** remains a non-goal (ADR-021 / Q10A=D).
   Paste of **one-shot dissemination destination** credentials (DB URI / WIS2 / EDIS SMTP /
@@ -2838,12 +3262,18 @@
 - Storing destination secrets on `tac_work_sessions` or in logs (Q19=A / Q11).
 - Arbitrary SQL admin console / free-form DDL beyond the versioned writer-contract path.
 
+## Non-Goals (EV-drop-monitoring — repo observability configs)
+
+- Shipping or maintaining a repo-local Grafana / Prometheus / Loki stack under
+  `monitoring/` (removed; platform logs + optional Sentry stay — ADR-006 / EV-052).
+  Reintroduction needs a later evolve. [Corpus: deploy] [Corpus: adr/ADR-006]
+
 ## Non-Goals (S023 / EV-017 — public app + privacy)
 
 - Formal legal advice / DPIA (engineering supports counsel review).
 - ~~Removing F8 worker **service-role** credentials or Render↔Supabase machine auth.~~
   **Amended S038 / EV-031**: F8 writers move to DO `DATABASE_URL` (not Supabase PostgREST);
-  machine credentials remain private — not operator JWT.
+  machine credentials remain private, not operator JWT.
 - Reintroducing admin role UX (#697).
 - ~~Optional user accounts or anonymous server sessions in v1.~~
   **Amended S038 / EV-031 / F31**: Optional Supabase Auth accounts for **long-term** server
@@ -2851,6 +3281,76 @@
 - Cross-device sync **without** login (logged-in DO sessions are in scope via F31).
 - Full CMP / analytics / marketing tags (Solution B/C) unless a later evolve cycle adds them.
 - Per-US-state separate privacy UI variants (one global strict preference center).
+
+### F37: Live TAC map on Decode visuals — EV-globe-live-map
+
+- **Status**: **In progress** (EV-live-map-24h-window amends EV-globe-live-map). The documenting gate is closed until that cycle opens it. [Corpus: product §F37] [Corpus: adr/ADR-052]
+- **What it does**: Decode visuals is a Leaflet world map of current aviation weather. A guest opens it without signing in. The screen carries a Beta label and a feedback link until sign-off. Zooming out shows the whole flat world. Every geographically located report in the **last 24 hours** of cache is its own point, polygon, line, or circle. There is no clustering. Filters can hide a family. Space weather stays in a list beside the map.
+- **Feeds**: Public unauthenticated aviation feeds from the NOAA Aviation Weather Center Data API: METAR, TAF, AIRMET (`airsigmet`), international SIGMET (`isigmet`), and G-AIRMET (`gairmet`). A live check on 2026-10-03 returned coordinates or polygons for those products. The NWS active-alert API is public and is **not** a map feed: that same check returned marine and flood warnings, not aviation reports. There is no separate public ICAO live feed. Station names and coordinates use the existing OurAirports lookup. Feeds are informative live data, not goldens. The browser never calls them. [Corpus: adr/ADR-052]
+- **Pins**: Every cached report whose geometry intersects the current view, including the whole world at the lowest zoom. Not the curated Convert airport list.
+- **Geography**:
+
+  | Family | Drawn as | On the map |
+  |--------|----------|------------|
+  | METAR, SPECI | Airport point. SPECI shares that airport’s last three with METAR | Yes |
+  | TAF | Airport point | Yes |
+  | AIRMET | Polygon | When the report has a region |
+  | G-AIRMET | Polygon | When the report has a region. Its own layer, not AIRMET |
+  | SIGMET (ordinary, VA, TC) | Polygon, line, or circle | When the report has a geometry |
+  | Volcanic ash advisory | Volcano point plus ash polygon | When the report has a location |
+  | Tropical cyclone advisory | Storm point and radius | When the report has a location |
+  | Volcano observatory notice | Volcano point | When the report has a location |
+  | Space weather (including SWSK and SWSX) | No surface location | List beside the map, never a pin |
+
+- **Popup**: See the EV-map-product-layers amend. Hover opens a card. A click loads the converter. The pointer target hugs the station dot and a narrow band around a line, polygon, or circle. It does not add a wide halo, and the inside of a polygon or circle does not take the pointer, so the map stays easy to move. [Corpus: product §F37]
+- **Filters**: One map of everything current within the shared 24-hour window. Group headings stay. Each product is its own checkbox, color, and layer, and starts on. Turning one off hides that product only. Space weather is the list, not a map layer. Country, region, issue time, and hazard phenomenon are extra filters on the reports already loaded for the current view. They are not request parameters. Country and region start at All. Issue time starts at full (24 hours). Phenomenon checkboxes start off. They combine so a place must pass every active filter. [Corpus: product §F37]
+
+  | Filter | Choices | What it hides |
+  |--------|---------|----------------|
+  | Country | All, then each country named on an airport in the current view | Airport reports whose country is not the one chosen. Area reports stay |
+  | Region | All, then each continent and sub-region the map already uses | Places whose coordinate is outside that continent or sub-region |
+  | Issue time | Last 1 hour, 3 hours, 6 hours, 12 hours, full (24 hours) | Places whose newest report is older than the window versus UTC now. A time that cannot be read stays visible. There is no unbounded All |
+  | Phenomenon | IFR, Turbulence, Icing, Thunderstorms | AIRMET, G-AIRMET, and SIGMET whose newest TAC does not match a checked phenomenon. Other products stay |
+
+  | Group | Products | Color |
+  |-------|----------|-------|
+  | Observations | METAR | Blue |
+  | Observations | SPECI | Sky |
+  | Forecasts | TAF | Teal |
+  | Hazards | AIRMET | Orange |
+  | Hazards | G-AIRMET | Amber |
+  | Hazards | SIGMET | Red |
+  | Advisories | Volcanic ash | Purple |
+  | Advisories | Tropical cyclone | Pink |
+  | Advisories | Volcano notice | Indigo |
+  | List only | Space weather | Cyan |
+
+- **Station identifiers**: Search, decode, and this map resolve one ICAO to the same airport name and coordinate. The station field on Decode visuals stays. Clearing it leaves the field empty. A known identifier shows the airport name even when the live feed has not loaded.
+- **Refresh**: `metar-map-translator` on the existing cluster finishes one of the five refresh areas before the next. The API and the translator share `LIVE_MAP_CACHE_URL` (the product database). Staging runs one translator replica and turns the API timer off. The API timer, when it is on, still translates at most 40 reports. Import, cache retention, and `GET /api/v1/live-map` keep only reports whose issue time is within the last **24 hours** of UTC now. Each place keeps the latest report and two earlier ones inside that window. A stored place is drawn before its IWXXM exists. The ingest poller stays at **0** replicas. No new database server.
+- **Timer must not sit on the request path**: Translation runs in the translator process. Convert and validate stay on the API.
+- **Replaces**: The one-station minimap on Decode visuals. Convert, validate, History, guest access, and station search stay. Convert and validate response bodies stay as they are. The base map stays Leaflet with the existing tiles.
+- **Out of scope**: Browser calls to vendor feeds. A globe library. A pin-clustering library. Sign-in required to view. Pins for space weather. Credentialed feeds. A new database server or map vendor. Saving map history into work sessions. Changing Convert or validate responses. Turning on the ingest poller. Promoting staging to production.
+- **Amend (EV-map-renderer)**: The map list sent to the browser keeps the time and the TAC for each report. Stored IWXXM and issue notes stay in the cache and stay off that list. Station marks are canvas circles on Leaflet 1.9.4. The choice of point, line, polygon, or circle lives in `@metar/live-map-geometry`, which the app paints. A click still loads the report into the converter. The popup still shows the station id and the TAC. The map stays under the converter panes. [Corpus: product §F37] [Corpus: adr/ADR-052]
+- **Amend (EV-map-worker-cluster)**: World zoom shows one marker per continent that has reports. The next zoom shows sub-region markers. A closer zoom shows each station and shape. Those markers are Leaflet markers from a fixed list, not a clustering package. A region click only zooms. Hover, and a tap on a phone, opens a scrolling popup on the station and removes the panel under the map. The page and the popup say the reports are not validated for operational use and name the Aviation Weather Center. A separate Deployment on the existing cluster finishes one refresh area before the next. The API and that Deployment share `LIVE_MAP_CACHE_URL`. The ingest poller stays off. [Corpus: adr/ADR-052]
+- **Amend (EV-map-product-layers filters)**: Country, region, issue time, and hazard phenomenon filter the places already returned for the current view. The live-map request stays the box plus product ids. Country comes from the existing airport table and applies to ICAO stations. A chosen country does not remove Area reports. Region uses the continent and sub-region names the map already uses for zoom markers, matched from the stored coordinate. Choosing a region does not replace those zoom markers, and clicking a zoom marker still only zooms. Time presets are last hour, last 3 hours, last 6 hours, last 12 hours, and full (24 hours), compared with UTC now (see EV-live-map-24h-window). Phenomenon checkboxes are IFR, Turbulence, Icing, and Thunderstorms. They apply only to AIRMET, G-AIRMET, and SIGMET, and a hazard stays when its newest TAC matches any checked phenomenon. IFR matches the word IFR. Turbulence matches TURB. Icing matches ICE or ICING as a word. Thunderstorms matches THUNDERSTORM or a weather token that is TS, including TSRA and VCTS. METAR, SPECI, TAF, and the advisories are not removed by a phenomenon checkbox. No flight information region list, no custom from/to time, and no new country outline dataset. [Corpus: product §F37]
+- **Amend (EV-live-map-24h-window)**: Pull, store, and share only reports whose `observed_at` is within the last 24 hours of UTC now. METAR vendor requests use `hours=24`; other feeds keep their request shape and are age-filtered on ingest. The cache purges older rows on refresh/upsert. `GET /api/v1/live-map` never returns reports outside that window. Browser issue-time presets are 1h, 3h, 6h, 12h, and full (default full). Unbounded All is removed. Convert and validate bodies stay as they are. Staging ship only. [Corpus: product §F37] [Corpus: adr/ADR-052]
+- **Amend (EV-map-results-qa)**: Cross-product QA matrix of map outcomes (ok / error / residual) for every current pin layer plus convert-only SWXA fixtures. Does not add space-weather pins or a space-weather feed. Documents that `space_weather` may be an empty list until a later feed cycle. TC-F37-013 locks FE/BE pin-product parity. [Corpus: product §F37] [Corpus: decisions] `ev-map-results-qa.md`
+- **Amend (EV-map-product-layers)**: At the closer zoom, each product is its own Leaflet layer and its own color from the table above. Colors are fixed. G-AIRMET rows from that feed use product `gairmet`. A domestic row whose text is a SIGMET stays SIGMET. Continent and sub-region markers stay as they are. The hover card shows the product, the issue time, and the station, or Area when there is no airport. The TAC sits to the right of that block on a wide screen and below it on a narrow screen, in a scrollable area. The card opens on the newest of the three stored reports. A control switches to an earlier copy. Older copies are drawn faded. Hover highlights the shape. Clicking the shape or the card loads the copy the card is showing into the converter at the top. Co-located airport reports are offset and each has a type chip. The legend matches the checkboxes. Fills and outlines stay distinct. Space weather stays off the map. Its list, when it has rows, uses the cyan color. This cycle does not add a space-weather feed. The page still says the reports are not validated for operational use and names the Aviation Weather Center. [Corpus: product §F37] [Corpus: adr/ADR-052]
+- **Acceptance (Spec)**:
+  1. This row is the product scope
+  2. The geography table is the classification
+  3. Guests, the shared cache, continent then sub-region markers, three reports, and translation before the next area are recorded
+- **Acceptance (Build — after gate)**:
+  1. A guest on Decode visuals sees the Leaflet world map and the Beta label
+  2. World zoom draws one marker per continent, the next zoom draws sub-regions, and a closer zoom draws each station and shape. Space weather stays in the list
+  3. Hover opens a card with the product, issue time, station or Area, and scrollable TAC. Clicking the shape or the card loads that copy into the converter. The operational-use notice stays on the page
+  4. The same ICAO resolves to the same airport in search, decode, and the map
+  5. Browser traffic for the map goes to this app’s API; responses omit reports older than 24 hours
+  6. Issue-time control offers 1h / 3h / 6h / 12h / full and filters versus UTC now
+  7. The translator finishes one refresh area before the next and does not stall Convert or validate
+  8. Connectivity checks H4–H5 when the screen ships to staging
+- **Journeys / tests**: **UJ-087**; **TC-F37-001..012**
+- **Source**: EV-globe-live-map intake; EV-live-map-24h-window; [docs/context/globe-live-map.md](context/globe-live-map.md); prior EV-tac-map row in [docs/context/tac-live-map.md](context/tac-live-map.md)
 
 ## Planned Features (Post-Migration)
 

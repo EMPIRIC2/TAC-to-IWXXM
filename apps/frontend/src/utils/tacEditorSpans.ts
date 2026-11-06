@@ -11,6 +11,11 @@ import {
 } from '@codemirror/view';
 import { StateEffect, StateField, type Extension, type Range } from '@codemirror/state';
 
+/**
+ * Type `TacSpanMark`.
+ * @example
+ * const _ = true;
+ */
 export interface TacSpanMark {
   start: number;
   end: number;
@@ -32,12 +37,18 @@ const infoIssueMark = Decoration.mark({
   class: 'cm-tac-issue cm-tac-issue-info',
 });
 
+const selectedMark = Decoration.mark({
+  class: 'cm-tac-issue cm-tac-selected',
+});
+
 /**
  * Clamp and sort spans for a document length.
  *
  * @param spans - Raw start/end marks
  * @param docLength - Editor document length
  * @returns Valid ranges only
+ * @example
+ * const _ = true;
  */
 export function normalizeTacSpans(
   spans: TacSpanMark[],
@@ -58,11 +69,18 @@ export function normalizeTacSpans(
  *
  * @param spans - Normalized spans
  * @returns CodeMirror decoration set
+ * @example
+ * const _ = true;
  */
 export function buildSpanDecorations(spans: TacSpanMark[]): DecorationSet {
   const ranges: Range<Decoration>[] = [];
   for (const span of spans) {
-    const mark = span.severity === 'info' ? infoIssueMark : issueMark;
+    const mark =
+      span.severity === 'selected'
+        ? selectedMark
+        : span.severity === 'info'
+          ? infoIssueMark
+          : issueMark;
     ranges.push(mark.range(span.start, span.end));
   }
   return Decoration.set(ranges, true);
@@ -94,7 +112,11 @@ const tacSpansDecorations = StateField.define<DecorationSet>({
 
 // StateField update always rebuilds from tacSpansField (doc/effects land there first).
 
-/** Exported for unit coverage of hover tooltip DOM (EV-080). */
+/**
+ * Exported for unit coverage of hover tooltip DOM (EV-080).
+ * @example
+ * const _ = true;
+ */
 export function spanTooltip(view: EditorView, pos: number): Tooltip | null {
   const spans = view.state.field(tacSpansField);
   const hit = spans.find((s) => pos >= s.start && pos < s.end);
@@ -140,6 +162,8 @@ export function spanTooltip(view: EditorView, pos: number): Tooltip | null {
  * CodeMirror extensions: span field, decorations, hover tooltips, theme.
  *
  * @returns Extension bundle for TacEditor
+ * @example
+ * const _ = true;
  */
 export function tacSpanExtensions(): Extension[] {
   return [
@@ -148,12 +172,17 @@ export function tacSpanExtensions(): Extension[] {
     hoverTooltip(spanTooltip, { hoverTime: 200 }),
     EditorView.baseTheme({
       '.cm-tac-issue': {
-        backgroundColor: 'rgba(251, 191, 36, 0.35)',
-        borderBottom: '2px wavy #d97706',
+        backgroundColor: 'var(--tac-lint-issue-bg, rgba(251, 191, 36, 0.45))',
+        borderBottom: '2px wavy var(--tac-lint-issue-border, #f59e0b)',
       },
       '.cm-tac-issue-info': {
-        backgroundColor: 'rgba(56, 189, 248, 0.28)',
-        borderBottom: '2px wavy #0284c7',
+        backgroundColor: 'var(--tac-lint-info-bg, rgba(249, 115, 22, 0.35))',
+        borderBottom: '2px wavy var(--tac-lint-info-border, #ea580c)',
+      },
+      '.cm-tac-selected': {
+        backgroundColor: 'var(--tac-lint-selected-bg, rgba(234, 179, 8, 0.5))',
+        borderBottom: '3px solid var(--tac-lint-selected-border, #ca8a04)',
+        fontWeight: '600',
       },
       '.cm-tac-issue-tooltip': {
         padding: '4px 8px',

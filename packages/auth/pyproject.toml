@@ -1,7 +1,7 @@
 [project]
 name = "metar-auth"
 version = "0.2.0"
-description = "Supabase Auth JWKS verify + /auth/* routers (F31 / ADR-033)"
+description = "Verify Supabase Auth JSON Web Tokens (JWTs) and serve /auth HTTP routes"
 requires-python = ">=3.12"
 dependencies = [
   "fastapi>=0.110",
@@ -31,6 +31,11 @@ packages = ["src/metar_auth"]
 testpaths = ["tests"]
 pythonpath = ["src"]
 asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+
+filterwarnings = [
+  "error",
+]
 
 [tool.coverage.run]
 branch = true
@@ -39,3 +44,6 @@ source = ["src/metar_auth"]
 [tool.coverage.report]
 fail_under = 100
 show_missing = true
+
+[tool.ruff]
+extend = "../../pyproject.toml"

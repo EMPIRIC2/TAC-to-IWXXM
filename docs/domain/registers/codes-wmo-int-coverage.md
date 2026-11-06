@@ -58,11 +58,11 @@ Stable concept pattern: `http://codes.wmo.int/{register}/…/{notation}` (https 
 | `COVERAGE_MATRIX.md` | Fixture coverage % table (below / linked) |
 | Mining notes | EV-046 operational follow-on recorded |
 
-`UNKNOWN_PRODUCT` intentionally retains bare `https://codes.wmo.int/` (`status: N/A`) — not a registry notation check.
+`UNKNOWN_PRODUCT` intentionally retains bare `https://codes.wmo.int/` (`status: N/A`), not a registry notation check.
 
 ## AC3 — Cover (fixture token ∩ register)
 
-Method (Lean / coarse — M1 accepted): extract uppercase TAC tokens from
+Method (Lean / coarse; M1 accepted): extract uppercase TAC tokens from
 `packages/tac-validate/tests/fixtures/**/*.tac` (+ `packages/tac2iwxxm/**/*.tac`);
 intersect with vendor notations. **Not** encode-path coverage. NilReason URIs rarely
 appear as TAC tokens → 0% expected until Validated wiring (#959).
@@ -115,7 +115,7 @@ Post-M2 coverage numbers:
 
 Lean **waived** automated Validated checks (`D-S055-validated=1`). Follow-on
 [#959](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/959) / S059 / EV-050 **satisfied**
-Validated (`D-S059-validated=1`) — offline harvest + `tac-validate` membership CI; see
+Validated (`D-S059-validated=1`): offline harvest + `tac-validate` membership CI; see
 [evolve-decisions §EV-050 AC5](../../../decisions/evolve-decisions.md). No live HTML CI.
 
 ## TC checklist

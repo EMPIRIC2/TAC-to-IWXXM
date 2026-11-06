@@ -5,7 +5,11 @@
  * [Corpus: product §F6/F9/F7] [Corpus: journeys] [Corpus: tests]
  */
 import { expect, test } from '@playwright/test';
-import { fillManualTac, openPublicConverter } from './playwright-e2e-helpers';
+import {
+  fillManualTac,
+  openConvertSettings,
+  openPublicConverter,
+} from './playwright-e2e-helpers';
 
 test.describe('EV-981 — UJ-070 propagate residuals toggle', () => {
   test('TC-EV981-003: workbench toggle posts propagate_residuals_to_remarks', async ({
@@ -38,6 +42,7 @@ test.describe('EV-981 — UJ-070 propagate residuals toggle', () => {
     });
 
     await openPublicConverter(page);
+    await openConvertSettings(page);
     const toggle = page.getByTestId('propagate-residuals-toggle');
     await expect(toggle).toBeVisible();
     await toggle.check();

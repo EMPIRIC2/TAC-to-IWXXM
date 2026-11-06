@@ -23,25 +23,24 @@ def test_clean_venv_wheel_install_and_cli_smoke(tmp_path: Path) -> None:
 
     dist = tmp_path / "dist"
     dist.mkdir()
-    build = subprocess.run(
-        [
-            "uv",
-            "build",
-            "--package",
-            "tac-validate",
-            "-o",
-            str(dist),
-        ],
-        check=False,
-        capture_output=True,
-        text=True,
-        cwd=str(REPO_ROOT),
-    )
-    assert build.returncode == 0, f"uv build failed:\n{build.stdout}\n{build.stderr}"
+    # metar-shared is a workspace dep (ADR-055 inherit factory); build both wheels
+    # so a clean venv can resolve without PyPI (F12 smoke).
+    for package in ("metar-shared", "tac-validate"):
+        build = subprocess.run(
+            ["uv", "build", "--package", package, "-o", str(dist)],
+            check=False,
+            capture_output=True,
+            text=True,
+            cwd=str(REPO_ROOT),
+        )
+        assert build.returncode == 0, f"uv build {package} failed:\n{build.stdout}\n{build.stderr}"
 
-    wheels = sorted(dist.glob("*.whl"))
-    assert wheels, f"no wheel produced in {dist}: {list(dist.iterdir())}"
-    wheel = wheels[0]
+    shared_wheels = sorted(dist.glob("metar_shared-*.whl"))
+    tac_wheels = sorted(dist.glob("tac_validate-*.whl"))
+    assert shared_wheels, f"no metar-shared wheel in {dist}: {list(dist.iterdir())}"
+    assert tac_wheels, f"no tac-validate wheel in {dist}: {list(dist.iterdir())}"
+    shared_wheel = shared_wheels[0]
+    wheel = tac_wheels[0]
 
     venv_dir = tmp_path / "venv"
     create = subprocess.run(
@@ -56,7 +55,7 @@ def test_clean_venv_wheel_install_and_cli_smoke(tmp_path: Path) -> None:
     script = venv_dir / ("Scripts/tac-validate.exe" if sys.platform == "win32" else "bin/tac-validate")
 
     install = subprocess.run(
-        ["uv", "pip", "install", "--python", str(python), str(wheel)],
+        ["uv", "pip", "install", "--python", str(python), str(shared_wheel), str(wheel)],
         check=False,
         capture_output=True,
         text=True,

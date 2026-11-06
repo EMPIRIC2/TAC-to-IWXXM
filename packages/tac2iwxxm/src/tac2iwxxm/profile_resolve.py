@@ -19,10 +19,17 @@ from tac2iwxxm.profile_registry import resolve_semantic_profile
 _ANNEX3_POLICIES = ("annex3-metar-quality", "annex3-iwxxm-output")
 ENV_PROFILE_DIR = "TAC2IWXXM_PROFILE_DIR"
 
+# Shared TAF policy: PROB_PERIOD_WITHOUT_TEMPO → info (US / CA / UK / AU + children).
+# br_decea deferred until DECEA cite (EV-regional-profile-remainder C3).
+_TAF_PROB_PERIOD_INFO = "taf-prob-period-info-quality"
+_TAF_PROB_PERIOD_EMIT_KEYS = frozenset({"iwxxm_us", "ca_eccc", "uk_metoffice", "au_bom"})
+
 # National emit keys share the annex3 policy documents until a profile ships its own ids.
 _POLICY_BY_EMIT: dict[str, tuple[str, str]] = {
     "annex3": _ANNEX3_POLICIES,
     "iwxxm_us": _ANNEX3_POLICIES,
+    "us_military": _ANNEX3_POLICIES,
+    "latam_taf": _ANNEX3_POLICIES,
     "ca_eccc": _ANNEX3_POLICIES,
     "au_bom": _ANNEX3_POLICIES,
     "nz_caa_met": _ANNEX3_POLICIES,
@@ -32,16 +39,79 @@ _POLICY_BY_EMIT: dict[str, tuple[str, str]] = {
     "jp_jma": _ANNEX3_POLICIES,
     "in_imd": _ANNEX3_POLICIES,
     "hk_hko": _ANNEX3_POLICIES,
+    "us_nws_convective_sigmet": _ANNEX3_POLICIES,
+    "us_nws_g_airmet": _ANNEX3_POLICIES,
+    "us_nws_vona": _ANNEX3_POLICIES,
+    "ca_msc_sigmet": _ANNEX3_POLICIES,
 }
 
 
+def _emit_chain(emit_key: str) -> tuple[str, ...]:
+    """
+    Return lint-profile inherit chain for ``emit_key`` (root first).
+
+    Parameters
+    ----------
+    emit_key : str
+        Emit / lint profile id.
+
+    Returns
+    -------
+    tuple[str, ...]
+        Inherit chain.
+    """
+    try:
+        from tac_validate.lint_profile_catalog import profile_inherit_chain
+
+        return profile_inherit_chain(emit_key)
+    except Exception:
+        return (emit_key,)
+
+
+def _uses_taf_prob_period_info(emit_key: str) -> bool:
+    """
+    Return True when TAF should use the shared PROB-period info policy.
+
+    Parameters
+    ----------
+    emit_key : str
+        Emit / lint profile id.
+
+    Returns
+    -------
+    bool
+        True when the profile or an ancestor is US / CA / UK / AU.
+    """
+    return bool(_TAF_PROB_PERIOD_EMIT_KEYS.intersection(_emit_chain(emit_key)))
+
+
 class ProfileResolveError(ValueError):
-    """Conversion profile id is unknown or has no policy binding."""
+    """
+    Conversion profile id is unknown or has no policy binding.
+
+    Attributes
+    ----------
+    args : tuple
+        Arguments passed to the exception constructor.
+    """
 
 
 @dataclass(frozen=True, slots=True)
 class ResolvedValidationPolicies:
-    """Policy document ids bound to one conversion profile."""
+    """
+    Policy document ids bound to one conversion profile.
+
+    Attributes
+    ----------
+    canonical : str
+        Canonical.
+    emit_key : str
+        Emit key.
+    tac_quality_policy_id : str
+        TAC quality policy ID.
+    iwxxm_output_policy_id : str
+        IWXXM output policy ID.
+    """
 
     canonical: str
     emit_key: str
@@ -51,6 +121,8 @@ class ResolvedValidationPolicies:
 
 @dataclass(frozen=True, slots=True)
 class _ProfileOverlay:
+    """Internal helper ``_ProfileOverlay``."""
+
     profiles: tuple[str, ...]
     extends: str
     tac_quality_policy_id: str | None
@@ -58,6 +130,22 @@ class _ProfileOverlay:
 
 
 def _string_list(value: object, *, label: str) -> tuple[str, ...]:
+    """
+    Internal helper ``_string_list``.
+
+    Parameters
+    ----------
+    value : object
+        Argument ``value``.
+
+    label : str
+        Argument ``label``.
+
+    Returns
+    -------
+    tuple[str, ...]
+        Return value.
+    """
     if not isinstance(value, list) or not value:
         msg = label
         raise ProfileResolveError(msg)
@@ -71,6 +159,22 @@ def _string_list(value: object, *, label: str) -> tuple[str, ...]:
 
 
 def _optional_id(value: object, *, field: str) -> str | None:
+    """
+    Internal helper ``_optional_id``.
+
+    Parameters
+    ----------
+    value : object
+        Argument ``value``.
+
+    field : str
+        Argument ``field``.
+
+    Returns
+    -------
+    str | None
+        Return value.
+    """
     if value is None:
         return None
     if not isinstance(value, str) or not value.strip():
@@ -80,6 +184,14 @@ def _optional_id(value: object, *, field: str) -> str | None:
 
 
 def _load_profile_overlays() -> tuple[_ProfileOverlay, ...]:
+    """
+    Internal helper ``_load_profile_overlays``.
+
+    Returns
+    -------
+    tuple[_ProfileOverlay, ...]
+        Return value.
+    """
     raw_dir = os.environ.get(ENV_PROFILE_DIR, "").strip()
     if not raw_dir:
         return ()
@@ -138,15 +250,28 @@ def resolve_validation_policies(
 
     Parameters
     ----------
-    profile :
+    profile : str
         Canonical conversion profile id or legacy alias (``ICAO_2025``, ``annex3``).
-    product :
+
+    product : str | None, optional
         Optional F6 product id. When ``TAF`` / ``SIGMET`` and the emit key still
         binds the METAR quality document, swap to the product quality id (M4 / #1230).
-    tac_policy :
+
+    tac_policy : str | None, optional
         Optional override for the TAC quality policy id (CLI ``--policy``).
-    iwxxm_policy :
+
+    iwxxm_policy : str | None, optional
         Optional override for the IWXXM output policy id (CLI ``--policy``).
+
+    Returns
+    -------
+    ResolvedValidationPolicies
+        ``profile`` to TAC quality and IWXXM output policy ids.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (resolve_validation_policies)
+    2
     """
     resolved = resolve_semantic_profile(profile)
     if resolved is None:
@@ -159,7 +284,7 @@ def resolve_validation_policies(
     tac_id, iwxxm_id = pair
     product_u = (product or "").strip().upper()
     if product_u == "TAF" and tac_id == "annex3-metar-quality":
-        tac_id = "annex3-taf-quality"
+        tac_id = _TAF_PROB_PERIOD_INFO if _uses_taf_prob_period_info(resolved.emit_key) else "annex3-taf-quality"
     elif product_u == "SIGMET" and tac_id == "annex3-metar-quality":
         tac_id = "annex3-sigmet-quality"
     elif product_u == "AIRMET" and tac_id == "annex3-metar-quality":

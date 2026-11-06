@@ -1,0 +1,223 @@
+rule_id: US_TAF_TEMPO_MAX_4H
+engine: lint
+cases:
+- bucket: happy
+  case_id: '01'
+  status: ready
+  tac: TAF KORD 151800Z 1600/1618 31008KT 9999 FEW040 TEMPO 1606/1608 4000 RA=
+  expect:
+    accept: true
+  meta:
+    product: TAF
+    profile: iwxxm_us
+    cite: '#1265 profile US_TAF_TEMPO_MAX_4H/happy'
+- bucket: happy
+  case_id: '02'
+  status: ready
+  tac: TAF KJFK 151800Z 1600/1618 31008KT 9999 FEW040 TEMPO 1606/1608 4000 RA=
+  expect:
+    accept: true
+  meta:
+    product: TAF
+    profile: iwxxm_us
+    cite: '#1265 profile US_TAF_TEMPO_MAX_4H/happy'
+- bucket: happy
+  case_id: '03'
+  status: ready
+  tac: TAF KLAX 151800Z 1600/1618 31008KT 9999 FEW040 TEMPO 1606/1608 4000 RA=
+  expect:
+    accept: true
+  meta:
+    product: TAF
+    profile: iwxxm_us
+    cite: '#1265 profile US_TAF_TEMPO_MAX_4H/happy'
+- bucket: happy
+  case_id: '04'
+  status: ready
+  tac: TAF KDEN 151800Z 1600/1618 31008KT 9999 FEW040 TEMPO 1606/1608 4000 RA=
+  expect:
+    accept: true
+  meta:
+    product: TAF
+    profile: iwxxm_us
+    cite: '#1265 profile US_TAF_TEMPO_MAX_4H/happy'
+- bucket: happy
+  case_id: '05'
+  status: ready
+  tac: TAF KATL 151800Z 1600/1618 31008KT 9999 FEW040 TEMPO 1606/1608 4000 RA=
+  expect:
+    accept: true
+  meta:
+    product: TAF
+    profile: iwxxm_us
+    cite: '#1265 profile US_TAF_TEMPO_MAX_4H/happy'
+- bucket: sad
+  case_id: '01'
+  status: ready
+  tac: TAF KORD 151800Z 1600/1618 31008KT 9999 FEW040 TEMPO 1600/1606 4000 RA=
+  expect:
+    accept: false
+    codes:
+    - US_TAF_TEMPO_MAX_4H
+  meta:
+    product: TAF
+    profile: iwxxm_us
+    cite: '#1265 profile US_TAF_TEMPO_MAX_4H/sad'
+- bucket: sad
+  case_id: '02'
+  status: ready
+  tac: TAF KJFK 151800Z 1600/1618 31008KT 9999 FEW040 TEMPO 1600/1606 4000 RA=
+  expect:
+    accept: false
+    codes:
+    - US_TAF_TEMPO_MAX_4H
+  meta:
+    product: TAF
+    profile: iwxxm_us
+    cite: '#1265 profile US_TAF_TEMPO_MAX_4H/sad'
+- bucket: sad
+  case_id: '03'
+  status: ready
+  tac: TAF KLAX 151800Z 1600/1618 31008KT 9999 FEW040 TEMPO 1600/1606 4000 RA=
+  expect:
+    accept: false
+    codes:
+    - US_TAF_TEMPO_MAX_4H
+  meta:
+    product: TAF
+    profile: iwxxm_us
+    cite: '#1265 profile US_TAF_TEMPO_MAX_4H/sad'
+- bucket: sad
+  case_id: '04'
+  status: ready
+  tac: TAF KDEN 151800Z 1600/1618 31008KT 9999 FEW040 TEMPO 1600/1606 4000 RA=
+  expect:
+    accept: false
+    codes:
+    - US_TAF_TEMPO_MAX_4H
+  meta:
+    product: TAF
+    profile: iwxxm_us
+    cite: '#1265 profile US_TAF_TEMPO_MAX_4H/sad'
+- bucket: sad
+  case_id: '05'
+  status: ready
+  tac: TAF KATL 151800Z 1600/1618 31008KT 9999 FEW040 TEMPO 1600/1606 4000 RA=
+  expect:
+    accept: false
+    codes:
+    - US_TAF_TEMPO_MAX_4H
+  meta:
+    product: TAF
+    profile: iwxxm_us
+    cite: '#1265 profile US_TAF_TEMPO_MAX_4H/sad'
+- bucket: edge_pass
+  case_id: '01'
+  status: ready
+  tac: TAF KORD 151800Z 1600/1618 31008KT 9999 FEW040 TEMPO 1606/1608 4000 RA=
+  expect:
+    accept: true
+  meta:
+    product: TAF
+    profile: iwxxm_us
+    cite: '#1265 profile US_TAF_TEMPO_MAX_4H/edge_pass'
+- bucket: edge_pass
+  case_id: '02'
+  status: ready
+  tac: TAF KJFK 151800Z 1600/1618 31008KT 9999 FEW040 TEMPO 1606/1608 4000 RA=
+  expect:
+    accept: true
+  meta:
+    product: TAF
+    profile: iwxxm_us
+    cite: '#1265 profile US_TAF_TEMPO_MAX_4H/edge_pass'
+- bucket: edge_pass
+  case_id: '03'
+  status: ready
+  tac: TAF KLAX 151800Z 1600/1618 31008KT 9999 FEW040 TEMPO 1606/1608 4000 RA=
+  expect:
+    accept: true
+  meta:
+    product: TAF
+    profile: iwxxm_us
+    cite: '#1265 profile US_TAF_TEMPO_MAX_4H/edge_pass'
+- bucket: edge_pass
+  case_id: '04'
+  status: ready
+  tac: TAF KDEN 151800Z 1600/1618 31008KT 9999 FEW040 TEMPO 1606/1608 4000 RA=
+  expect:
+    accept: true
+  meta:
+    product: TAF
+    profile: iwxxm_us
+    cite: '#1265 profile US_TAF_TEMPO_MAX_4H/edge_pass'
+- bucket: edge_pass
+  case_id: '05'
+  status: ready
+  tac: TAF KATL 151800Z 1600/1618 31008KT 9999 FEW040 TEMPO 1606/1608 4000 RA=
+  expect:
+    accept: true
+  meta:
+    product: TAF
+    profile: iwxxm_us
+    cite: '#1265 profile US_TAF_TEMPO_MAX_4H/edge_pass'
+- bucket: edge_fail
+  case_id: '01'
+  status: ready
+  tac: TAF KORD 151800Z 1600/1618 31008KT 9999 FEW040 TEMPO 1600/1606 4000 RA=
+  expect:
+    accept: false
+    codes:
+    - US_TAF_TEMPO_MAX_4H
+  meta:
+    product: TAF
+    profile: iwxxm_us
+    cite: '#1265 profile US_TAF_TEMPO_MAX_4H/edge_fail'
+- bucket: edge_fail
+  case_id: '02'
+  status: ready
+  tac: TAF KJFK 151800Z 1600/1618 31008KT 9999 FEW040 TEMPO 1600/1606 4000 RA=
+  expect:
+    accept: false
+    codes:
+    - US_TAF_TEMPO_MAX_4H
+  meta:
+    product: TAF
+    profile: iwxxm_us
+    cite: '#1265 profile US_TAF_TEMPO_MAX_4H/edge_fail'
+- bucket: edge_fail
+  case_id: '03'
+  status: ready
+  tac: TAF KLAX 151800Z 1600/1618 31008KT 9999 FEW040 TEMPO 1600/1606 4000 RA=
+  expect:
+    accept: false
+    codes:
+    - US_TAF_TEMPO_MAX_4H
+  meta:
+    product: TAF
+    profile: iwxxm_us
+    cite: '#1265 profile US_TAF_TEMPO_MAX_4H/edge_fail'
+- bucket: edge_fail
+  case_id: '04'
+  status: ready
+  tac: TAF KDEN 151800Z 1600/1618 31008KT 9999 FEW040 TEMPO 1600/1606 4000 RA=
+  expect:
+    accept: false
+    codes:
+    - US_TAF_TEMPO_MAX_4H
+  meta:
+    product: TAF
+    profile: iwxxm_us
+    cite: '#1265 profile US_TAF_TEMPO_MAX_4H/edge_fail'
+- bucket: edge_fail
+  case_id: '05'
+  status: ready
+  tac: TAF KATL 151800Z 1600/1618 31008KT 9999 FEW040 TEMPO 1600/1606 4000 RA=
+  expect:
+    accept: false
+    codes:
+    - US_TAF_TEMPO_MAX_4H
+  meta:
+    product: TAF
+    profile: iwxxm_us
+    cite: '#1265 profile US_TAF_TEMPO_MAX_4H/edge_fail'

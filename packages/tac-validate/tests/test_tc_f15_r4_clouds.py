@@ -13,6 +13,7 @@ from typing import Any
 import pytest
 from tac_validate import lint
 from tac_validate.issue_registry import by_code
+from tac_validate.theme_checks import r4_cloud
 
 FIXTURES = Path(__file__).resolve().parent / "fixtures"
 MANIFEST_PATH = FIXTURES / "manifest.json"
@@ -73,6 +74,18 @@ def test_r4_invalid_cloud_emits_error(case: dict[str, Any]) -> None:
     if case.get("require_spans"):
         matched = [i for i in report.issues if i.code == "INVALID_CLOUD_TOKEN"]
         assert any(i.start is not None and i.end is not None and i.end > i.start for i in matched)
+
+
+def test_r4_cloud_type_solidi_is_info_not_error() -> None:
+    tac = "METAR NZAA 231230Z AUTO 11003KT 9999 SCT040/// 09/06 Q1027="
+    direct = r4_cloud(tac, "METAR")
+    assert any(issue.code == "CLOUD_TYPE_NOT_OBSERVABLE" for issue in direct)
+    report = lint(tac, product="METAR")
+    assert report.ok is True
+    assert not any(i.code == "INVALID_CLOUD_TOKEN" for i in report.issues)
+    info = [i for i in report.issues if i.code == "CLOUD_TYPE_NOT_OBSERVABLE"]
+    assert info
+    assert by_code("CLOUD_TYPE_NOT_OBSERVABLE").severity == "info"
 
 
 @pytest.mark.parametrize("case", _CB_TCU_INFO, ids=_case_ids(_CB_TCU_INFO))

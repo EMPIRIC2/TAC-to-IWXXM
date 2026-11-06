@@ -5,8 +5,10 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import {
   LIVE_ASSIST_DEBOUNCE_MS,
+  LIVE_ASSIST_TEST_DEBOUNCE_MS,
   LiveAssistScheduler,
   isAbortError,
+  resolveLiveAssistDebounceMs,
 } from './liveAssist';
 
 describe('LiveAssistScheduler (T4.1 / UJ-017)', () => {
@@ -20,6 +22,22 @@ describe('LiveAssistScheduler (T4.1 / UJ-017)', () => {
 
   it('exports a 300ms debounce constant', () => {
     expect(LIVE_ASSIST_DEBOUNCE_MS).toBe(300);
+  });
+
+  it('keeps the product debounce outside tests and under fake timers', () => {
+    expect(resolveLiveAssistDebounceMs('production', false)).toBe(
+      LIVE_ASSIST_DEBOUNCE_MS,
+    );
+    expect(resolveLiveAssistDebounceMs('test', true)).toBe(LIVE_ASSIST_DEBOUNCE_MS);
+    expect(resolveLiveAssistDebounceMs('production')).toBe(LIVE_ASSIST_DEBOUNCE_MS);
+  });
+
+  it('holds live assist during Vitest real timers', () => {
+    vi.useRealTimers();
+    expect(resolveLiveAssistDebounceMs()).toBe(LIVE_ASSIST_TEST_DEBOUNCE_MS);
+    expect(resolveLiveAssistDebounceMs('test', false)).toBe(
+      LIVE_ASSIST_TEST_DEBOUNCE_MS,
+    );
   });
 
   it('does not run the runner until the debounce window elapses', () => {

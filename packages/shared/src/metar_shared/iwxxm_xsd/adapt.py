@@ -48,8 +48,7 @@ def package_name(version: str) -> str:
 
 
 def import_version_leaf(version: str, leaf: str = "xlink") -> ModuleType:
-    """
-    Import a leaf module without executing the version package ``__init__``.
+    """Import a leaf module without executing the version package ``__init__``.
 
     Generated ``__init__`` re-exports trigger known GML circular imports; leaf
     modules such as ``xlink`` are the supported import surface until adapt work
@@ -80,13 +79,13 @@ def import_version_leaf(version: str, leaf: str = "xlink") -> ModuleType:
 
 
 def pydantic_to_msgspec(_model: object) -> object:
-    """
-    Placeholder for msgspec Struct adaptation (ADR-027 follow-on).
+    """Placeholder for msgspec Struct adaptation (ADR-027 follow-on).
 
     Raises
     ------
     NotImplementedError
         Always - convert builders wire this in a later task.
+
     """
     raise NotImplementedError(
         "msgspec adaptation of xsdata pydantic models is a follow-on (ADR-027)"
@@ -94,13 +93,13 @@ def pydantic_to_msgspec(_model: object) -> object:
 
 
 def pydantic_to_rust_hint(_model: object) -> str:
-    """
-    Placeholder for Rust type-hint export (ADR-027 follow-on).
+    """Placeholder for Rust type-hint export (ADR-027 follow-on).
 
     Raises
     ------
     NotImplementedError
         Always - native convert builders wire this in a later task.
+
     """
     raise NotImplementedError(
         "Rust adapt hints from xsdata pydantic models are a follow-on (ADR-027)"

@@ -39,7 +39,7 @@ def test_cli_prints_issue_spans(tmp_path: Path, monkeypatch: pytest.MonkeyPatch)
             )
         ],
     )
-    monkeypatch.setattr("tac_validate.cli.lint", lambda *_a, **_k: report)
+    monkeypatch.setattr("tac_validate.cli.lint_with_profile", lambda *_a, **_k: report)
     out = io.StringIO()
     with redirect_stdout(out):
         code = main(["--product", "METAR", str(tac)])
@@ -63,7 +63,7 @@ def test_cli_omits_incomplete_issue_span(tmp_path: Path, monkeypatch: pytest.Mon
             )
         ],
     )
-    monkeypatch.setattr("tac_validate.cli.lint", lambda *_a, **_k: report)
+    monkeypatch.setattr("tac_validate.cli.lint_with_profile", lambda *_a, **_k: report)
     out = io.StringIO()
 
     with redirect_stdout(out):
@@ -74,7 +74,16 @@ def test_cli_omits_incomplete_issue_span(tmp_path: Path, monkeypatch: pytest.Mon
 
 
 def test_cli_module_main_guard(monkeypatch: pytest.MonkeyPatch) -> None:
+    import warnings
+
+    sys.modules.pop("tac_validate.cli", None)
     monkeypatch.setattr(sys, "argv", ["tac-validate", "--help"])
-    with pytest.raises(SystemExit) as excinfo:
-        runpy.run_module("tac_validate.cli", run_name="__main__")
+    with warnings.catch_warnings():
+        warnings.filterwarnings(
+            "ignore",
+            message=r".*found in sys\.modules after import of the same name.*",
+            category=RuntimeWarning,
+        )
+        with pytest.raises(SystemExit) as excinfo:
+            runpy.run_module("tac_validate.cli", run_name="__main__", alter_sys=True)
     assert excinfo.value.code == 0

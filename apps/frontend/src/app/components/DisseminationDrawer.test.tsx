@@ -216,6 +216,25 @@ describe('DisseminationDrawer', () => {
     );
   });
 
+  it('TC-EV1120-009: notifies parent when packaging Exchange changes', async () => {
+    const user = userEvent.setup();
+    const onExchangeProfileChange = vi.fn();
+    render(
+      <DisseminationDrawer
+        {...defaultProps}
+        open
+        exchangeProfile="GLOBAL_AFS"
+        onExchangeProfileChange={onExchangeProfileChange}
+      />,
+    );
+    expect(onExchangeProfileChange).toHaveBeenCalledWith('GLOBAL_AFS');
+    await user.selectOptions(
+      screen.getByTestId('dissemination-exchange-profile'),
+      'APAC_ROBEX',
+    );
+    expect(onExchangeProfileChange).toHaveBeenCalledWith('APAC_ROBEX');
+  });
+
   it('renders nothing when closed', () => {
     const { container } = render(
       <DisseminationDrawer {...defaultProps} open={false} />,

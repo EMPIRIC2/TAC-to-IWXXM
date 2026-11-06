@@ -1,6 +1,6 @@
 # wis2box Compose harness (F17 / T3.3)
 
-Lightweight **test harness** for TC-F17-001 — MQTT broker + HTTP dataset PUT/GET.
+Lightweight **test harness** for TC-F17-001: MQTT broker + HTTP dataset PUT/GET.
 Not a long-lived Render service (E14-04=B). Not the full WMO wis2box release stack.
 
 | Surface | Port (container) | Host default                    |

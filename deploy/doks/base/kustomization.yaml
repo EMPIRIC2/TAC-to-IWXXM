@@ -16,6 +16,7 @@ resources:
   - service-frontend.yaml
   - ingress-frontend.yaml
   - deployment-worker.yaml
+  - deployment-map-translator.yaml
 labels:
   - pairs:
       app.kubernetes.io/part-of: metar-iwxxm

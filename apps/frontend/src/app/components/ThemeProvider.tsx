@@ -5,6 +5,8 @@ import { type ReactNode } from 'react';
  * App-wide theme context provider (class-based light/dark).
  *
  * @param children - React tree to wrap.
+ * @example
+ * const _ = true;
  */
 export function ThemeProvider({ children }: { children: ReactNode }) {
   return (

@@ -14,11 +14,13 @@ _OUT = _REPO_ROOT / "apps" / "frontend" / "openapi" / "openapi.json"
 
 def main() -> int:
     sys.path.insert(0, str(_BACKEND))
-    from src import api as api_module  # noqa: PLC0415
+    from src import api as api_module
 
     schema = api_module.app.openapi()
     _OUT.parent.mkdir(parents=True, exist_ok=True)
-    _OUT.write_text(json.dumps(schema, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    _OUT.write_text(
+        json.dumps(schema, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+    )
     print(f"Wrote {_OUT.relative_to(_REPO_ROOT)} ({_OUT.stat().st_size} bytes)")
     return 0
 

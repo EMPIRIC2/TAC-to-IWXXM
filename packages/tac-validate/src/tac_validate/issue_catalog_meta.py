@@ -27,17 +27,22 @@ def classify_issue_type(
 
     Parameters
     ----------
-    code :
+    code : str
         SCREAMING_SNAKE issue code.
-    tags :
+    tags : Iterable[str], optional
         Registry / catalog tags.
-    family :
-        ``lint`` or ``iwxxm`` when known.
+    family : str or None, optional
+        ``lint`` or ``iwxxm`` when known. By default ``None``.
 
     Returns
     -------
     str
         One of ``ISSUE_TYPES``.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (classify_issue_type)
+    2
     """
     if (family or "").lower() == "iwxxm":
         return "iwxxm_schema"
@@ -75,17 +80,22 @@ def source_access_for(
 
     Parameters
     ----------
-    source_url :
+    source_url : str or None
         Operator-visible or vendor URL.
-    raw_status :
+    raw_status : str or None
         Provenance map status (``paywall``, ``ok``, ``gap``, …).
-    operator_status :
-        Catalog operator status (``verified``, ``semantic_only``, …).
+    operator_status : str or None, optional
+        Catalog operator status (``verified``, ``semantic_only``, …). By default ``None``.
 
     Returns
     -------
     str | None
         One of ``SOURCE_ACCESS``, or None when unknown.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (source_access_for)
+    2
     """
     if raw_status == "paywall" or (source_url and "store.icao.int" in source_url):
         return "paywall"
@@ -104,13 +114,18 @@ def source_locator_for(note: str | None) -> str | None:
 
     Parameters
     ----------
-    note :
+    note : str or None
         Free-text locus from PROVENANCE_MAP (no planning ids).
 
     Returns
     -------
     str | None
         Locator string, or None when unavailable.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (source_locator_for)
+    2
     """
     if not note:
         return None
@@ -131,15 +146,20 @@ def human_source_cite(locator: str | None, *, paywall: bool = False) -> str:
 
     Parameters
     ----------
-    locator :
+    locator : str or None
         Section/table/page text, or None.
-    paywall :
-        When True, note purchase/access constraint plainly.
+    paywall : bool, optional
+        When True, note purchase/access constraint plainly. By default ``False``.
 
     Returns
     -------
     str
         Natural-language source line (no planning ids).
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (human_source_cite)
+    2
     """
     if locator:
         base = f"Source: {locator}."

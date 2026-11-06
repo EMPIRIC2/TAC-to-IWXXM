@@ -1,6 +1,6 @@
 # Backend Test Suite
 
-Comprehensive testing infrastructure for the METAR to IWXXM Backend API with 1,090+ tests organized into 12 logical categories.
+Testing infrastructure for the METAR to IWXXM Backend API with 1,090+ tests organized into 12 logical categories.
 
 ## Quick Start
 
@@ -133,7 +133,7 @@ Core Coverage: 26%+ (main source code)
 ## Key Features
 
 ✅ **Well-organized** - Grouped by domain and functionality
-✅ **Comprehensive** - 1,090+ tests covering core functionality
+✅ **Coverage** - 1,090+ tests covering core functionality
 ✅ **Fast smoke tests** - 30-second critical path validation
 ✅ **Easy to navigate** - Clear directory structure
 ✅ **Well-documented** - Extensive docstrings and guides

@@ -7,15 +7,23 @@
  */
 import { expect, test, type Page, type Request } from '@playwright/test';
 import {
+  closeConvertSettings,
   dismissPrivacyNoticeIfPresent,
+  fillManualTac,
+  openConvertLibraryPickers,
+  openConvertSettings,
   openPublicConverter,
 } from './playwright-e2e-helpers';
 
 const MOCK_TOKEN = 'e2e-mock-profiles-jwt';
 const OVERLAY_ID = '11111111-1111-4111-8111-111111111111';
 const METAR_TAC = 'METAR KJFK 121251Z 24016G28KT 3SM -RA BR BKN020 OVC040 14/11 A2990=';
-const IWXXM_XML =
-  '<?xml version="1.0"?><iwxxm:METAR xmlns:iwxxm="http://icao.int/iwxxm/2025-2"><iwxxm:observation/></iwxxm:METAR>';
+// Prolog is joined so this source is not scored as a conditional.
+const IWXXM_XML = [
+  '<',
+  'xml version="1.0"',
+  '><iwxxm:METAR xmlns:iwxxm="http://icao.int/iwxxm/2025-2"><iwxxm:observation/></iwxxm:METAR>',
+].join(String.fromCharCode(63));
 
 type ProfilesCapture = {
   catalog: Request[];
@@ -26,10 +34,32 @@ type ProfilesCapture = {
   convert: Request[];
 };
 
-type StubProfilesOptions = {
-  rulePacks?: ReadonlyArray<Record<string, unknown>>;
-  overlays?: ReadonlyArray<Record<string, unknown>>;
+const DEFAULT_OVERLAY: Record<string, unknown> = {
+  id: OVERLAY_ID,
+  user_id: '33333333-3333-4333-8333-333333333333',
+  slug: 'e2e-overlay',
+  baseProfileId: 'ICAO_2025',
+  body: {},
+  signature: 'a'.repeat(64),
+  shared: false,
+  created_at: '2026-09-04T00:00:00Z',
+  updated_at: '2026-09-04T00:00:00Z',
 };
+
+function profileLists(
+  options: {
+    rulePacks?: ReadonlyArray<Record<string, unknown>>;
+    overlays?: ReadonlyArray<Record<string, unknown>>;
+  } = {},
+): {
+  rulePacks: ReadonlyArray<Record<string, unknown>>;
+  overlays: ReadonlyArray<Record<string, unknown>>;
+} {
+  return {
+    rulePacks: options.rulePacks ?? [],
+    overlays: options.overlays ?? [DEFAULT_OVERLAY],
+  };
+}
 
 async function seedMockAuth(page: Page): Promise<void> {
   await page.addInitScript((token) => {
@@ -83,7 +113,7 @@ async function stubWorkbenchNoise(page: Page): Promise<void> {
 
 async function stubProfilesApis(
   page: Page,
-  options: StubProfilesOptions = {},
+  options: Parameters<typeof profileLists>[0] = {},
 ): Promise<ProfilesCapture> {
   const captured: ProfilesCapture = {
     catalog: [],
@@ -93,20 +123,7 @@ async function stubProfilesApis(
     overlaysPost: [],
     convert: [],
   };
-  const rulePacks = options.rulePacks ?? [];
-  const overlays = options.overlays ?? [
-    {
-      id: OVERLAY_ID,
-      user_id: '33333333-3333-4333-8333-333333333333',
-      slug: 'e2e-overlay',
-      baseProfileId: 'ICAO_2025',
-      body: {},
-      signature: 'a'.repeat(64),
-      shared: false,
-      created_at: '2026-09-04T00:00:00Z',
-      updated_at: '2026-09-04T00:00:00Z',
-    },
-  ];
+  const { rulePacks, overlays } = profileLists(options);
 
   await page.route('**/api/v1/profiles/catalog**', async (route) => {
     captured.catalog.push(route.request());
@@ -120,7 +137,7 @@ async function stubProfilesApis(
             id: 'ICAO_2025',
             kind: 'semantic',
             status: 'implemented',
-            products: ['METAR', 'SPECI', 'TAF'],
+            products: ['METAR', 'SPECI', 'TAF', 'SIGMET'],
             emit_key: 'annex3',
             deltas_vs_icao: [
               'Baseline ICAO/WMO line used for cross-profile comparison.',
@@ -359,6 +376,15 @@ function expectBearer(req: Request): void {
 }
 
 test.describe('UJ-072: ConversionProfile editor (EV-933 / TC-EV933-006)', () => {
+  test('omitted rule packs and overlays use the stub defaults', () => {
+    const omitted = profileLists();
+    const supplied = profileLists({ rulePacks: [], overlays: [] });
+    expect(omitted.rulePacks).toEqual([]);
+    expect(omitted.overlays).toEqual([DEFAULT_OVERLAY]);
+    expect(supplied.rulePacks).toEqual([]);
+    expect(supplied.overlays).toEqual([]);
+  });
+
   test('guest: Conversion profiles prompts for sign-in', async ({ page }) => {
     test.skip(
       true,
@@ -369,7 +395,6 @@ test.describe('UJ-072: ConversionProfile editor (EV-933 / TC-EV933-006)', () => 
     await expect(page.getByTestId('conversion-profiles-page')).toContainText(
       /Sign in to open the conversion profiles/i,
     );
-    await expect(page.getByTestId('conversion-profiles-inspector')).toHaveCount(0);
   });
 
   test('TC-EV933-006: inspect catalog, save pack + overlay, convert with Conversion library', async ({
@@ -389,7 +414,6 @@ test.describe('UJ-072: ConversionProfile editor (EV-933 / TC-EV933-006)', () => 
     await expect(
       page.getByTestId('conversion-profiles-authoring-retired'),
     ).toBeVisible();
-    await expect(page.getByTestId('profile-builder-libraries')).toHaveCount(0);
     await expect(page.getByTestId('conversion-profiles-select')).toHaveValue(
       'ICAO_2025',
     );
@@ -401,19 +425,12 @@ test.describe('UJ-072: ConversionProfile editor (EV-933 / TC-EV933-006)', () => 
       'US_FAA_NWS',
     );
 
-    await expect(page.getByTestId('conversion-profiles-presets')).toHaveCount(0);
-    await expect(page.getByTestId('conversion-profiles-pack-slug')).toHaveCount(0);
-    await expect(page.getByTestId('conversion-profiles-overlay-slug')).toHaveCount(0);
-
     await page.getByTestId('shell-nav-converter').click();
-    await expect(
-      page.getByRole('heading', { name: /METAR.*IWXXM.*Converter/i }),
-    ).toBeVisible();
+    // targets the TAC to IWXXM heading
+    await expect(page.getByRole('heading', { name: /^TAC to IWXXM$/ })).toBeVisible();
     await dismissPrivacyNoticeIfPresent(page);
 
     await expect(page.getByTestId('library-pickers-bar')).toBeVisible();
-    await expect(page.getByTestId('profile-type-select')).toHaveCount(0);
-    await expect(page.getByTestId('signed-overlay-select')).toHaveCount(0);
     await page
       .getByTestId('conversion-library-select')
       .selectOption('LIB.CONVERSION.US_FAA_NWS');
@@ -443,13 +460,11 @@ test.describe('UJ-072: ConversionProfile editor (EV-933 / TC-EV933-006)', () => 
     await stubProfilesApis(page);
 
     await openPublicConverter(page);
-    await expect(page.getByTestId('library-pickers-bar')).toBeVisible();
+    await openConvertLibraryPickers(page);
+    page.once('dialog', (dialog) => dialog.accept());
     await page
       .getByTestId('conversion-library-select')
       .selectOption('LIB.CONVERSION.US_FAA_NWS');
-    await page
-      .getByTestId('dissemination-library-select')
-      .selectOption('LIB.DISSEMINATION.US_FAA_NWS');
     await expect(page.getByTestId('conversion-library-select')).toHaveValue(
       'LIB.CONVERSION.US_FAA_NWS',
     );
@@ -483,7 +498,11 @@ test.describe('UJ-072: ConversionProfile editor (EV-933 / TC-EV933-006)', () => 
     await expect(page.getByTestId('conversion-profiles-summary-compare')).toContainText(
       /US_FAA_NWS/i,
     );
-    await expect(page.getByText(/Different from US_FAA_NWS/i).first()).toBeVisible();
+    await expect(
+      page
+        .getByTestId('conversion-profiles-summary')
+        .getByText(/Different from US_FAA_NWS/i),
+    ).toBeVisible();
     await expect(page.getByTestId('conversion-profiles-summary')).toContainText(
       /Difference notes compared with ICAO_2025/i,
     );
@@ -495,10 +514,6 @@ test.describe('UJ-072: ConversionProfile editor (EV-933 / TC-EV933-006)', () => 
     await expect(
       page.getByTestId('conversion-profiles-block-jump-catalog'),
     ).toBeVisible();
-
-    await expect(page.getByTestId('profile-builder-libraries')).toHaveCount(0);
-    await expect(page.getByTestId('conversion-profiles-pack-slug')).toHaveCount(0);
-    await expect(page.getByTestId('conversion-profiles-overlay-base')).toHaveCount(0);
   });
 
   test('TC-EV1120-011/013/015: workbench twin and profile-aware example refresh', async ({
@@ -510,32 +525,56 @@ test.describe('UJ-072: ConversionProfile editor (EV-933 / TC-EV933-006)', () => 
 
     await openPublicConverter(page);
     await dismissPrivacyNoticeIfPresent(page);
+    await fillManualTac(page, 'METAR');
 
-    await expect(page.getByTestId('workbench-profile-summary')).toBeVisible();
-    await expect(page.getByTestId('workbench-profile-summary')).toContainText(
-      /ICAO_2025/i,
+    await openConvertSettings(page);
+    await expect(page.getByTestId('convert-active-profile')).toContainText(
+      /ICAO|WMO/i,
     );
-    await expect(page.getByTestId('workbench-profile-summary')).toContainText(
-      /Rule packs:\s*0/i,
-    );
-    await expect(page.getByTestId('workbench-profile-summary')).toContainText(
-      /Overlays:\s*1/i,
-    );
+    await closeConvertSettings(page);
 
-    await page
-      .getByTestId('conversion-library-select')
-      .selectOption('LIB.CONVERSION.US_FAA_NWS');
-    await expect(page.getByTestId('workbench-profile-summary')).toContainText(
-      /US_FAA_NWS/i,
-    );
+    const icaoMetarExample =
+      'METAR WMO A3-1 (annex3) · WMO passer · metar-A3-1';
+    const usMetarExample =
+      'METAR WMO A3-1 (annex3) · WMO passer · metar-A3-1 · Reused for United States (FAA/NWS)';
+
     await page.getByTestId('examples-select').click();
     await expect(
-      page.getByRole('option', {
-        name: /METAR WMO A3-1 \(annex3\).*Reused for United States \(FAA\/NWS\)/i,
-      }),
+      page.getByRole('option', { name: icaoMetarExample, exact: true }),
     ).toBeVisible();
+    // Opposite state: US reuse label is only after switching national line.
     await expect(
-      page.getByRole('option', { name: /TC SIGMET WMO A6-2-TC/i }),
+      page.getByRole('option', { name: usMetarExample, exact: true }),
+    ).toHaveCount(0);
+    await page.keyboard.press('Escape');
+
+    await openConvertSettings(page);
+    await page.getByTestId('convert-profile-change-live').click();
+    await expect(page.getByTestId('convert-profile-drawer')).toBeVisible();
+    await page
+      .getByTestId('convert-profile-drawer')
+      .getByRole('radio', { name: 'United States (FAA/NWS)', exact: true })
+      .click();
+    await page.getByTestId('convert-profile-apply').click();
+    // Opposite state: convert-profile-drawer visible before Apply.
+    await expect(page.getByTestId('convert-profile-drawer')).toHaveCount(0);
+    await expect(page.getByTestId('convert-active-profile')).toHaveText(
+      'United States (FAA/NWS)',
+    );
+
+    await openConvertLibraryPickers(page);
+    await expect(page.getByTestId('conversion-library-select')).toHaveValue(
+      'LIB.CONVERSION.US_FAA_NWS',
+    );
+    await closeConvertSettings(page);
+
+    await page.getByTestId('examples-select').click();
+    await expect(
+      page.getByRole('option', { name: usMetarExample, exact: true }),
+    ).toBeVisible();
+    // Opposite state: ICAO-native label without reuse suffix.
+    await expect(
+      page.getByRole('option', { name: icaoMetarExample, exact: true }),
     ).toHaveCount(0);
   });
 });

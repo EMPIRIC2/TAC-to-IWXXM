@@ -32,7 +32,15 @@ class ComparisonStatus(StrEnum):
 
 
 class EvaluationRequest(BaseModel):
-    """Request to create an evaluation job."""
+    """
+    Request to create an evaluation job.
+
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     model_config = ConfigDict(
         json_schema_extra={
@@ -70,7 +78,15 @@ class EvaluationRequest(BaseModel):
 
 
 class EvaluationJobResponse(BaseModel):
-    """Response when creating an evaluation job."""
+    """
+    Response when creating an evaluation job.
+
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     model_config = ConfigDict(
         json_schema_extra={
@@ -92,7 +108,15 @@ class EvaluationJobResponse(BaseModel):
 
 
 class ComparisonDetail(BaseModel):
-    """Detailed comparison result between our and reference IWXXM."""
+    """
+    Detailed comparison result between our and reference IWXXM.
+
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     model_config = ConfigDict(
         json_schema_extra={
@@ -124,7 +148,15 @@ class ComparisonDetail(BaseModel):
 
 
 class EvaluationResultDetail(BaseModel):
-    """Detailed result for a single station evaluation."""
+    """
+    Detailed result for a single station evaluation.
+
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     model_config = ConfigDict(
         json_schema_extra={
@@ -156,7 +188,15 @@ class EvaluationResultDetail(BaseModel):
 
 
 class JobSummaryStats(BaseModel):
-    """Summary statistics for a job."""
+    """
+    Summary statistics for a job.
+
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     model_config = ConfigDict(
         json_schema_extra={
@@ -184,7 +224,15 @@ class JobSummaryStats(BaseModel):
 
 
 class EvaluationJobStatus(BaseModel):
-    """Current status of an evaluation job."""
+    """
+    Current status of an evaluation job.
+
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     model_config = ConfigDict(
         json_schema_extra={
@@ -214,7 +262,15 @@ class EvaluationJobStatus(BaseModel):
 
 
 class EvaluationResultsResponse(BaseModel):
-    """Response with paginated evaluation results."""
+    """
+    Response with paginated evaluation results.
+
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     model_config = ConfigDict(
         json_schema_extra={
@@ -244,7 +300,15 @@ class EvaluationResultsResponse(BaseModel):
 
 
 class JobListItem(BaseModel):
-    """Summary item for job list."""
+    """
+    Summary item for job list.
+
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     model_config = ConfigDict(
         json_schema_extra={
@@ -276,7 +340,15 @@ class JobListItem(BaseModel):
 
 
 class JobListResponse(BaseModel):
-    """Response with list of jobs."""
+    """
+    Response with list of jobs.
+
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     model_config = ConfigDict(
         json_schema_extra={

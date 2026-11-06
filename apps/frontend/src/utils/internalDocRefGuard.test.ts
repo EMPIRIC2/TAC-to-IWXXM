@@ -6,13 +6,19 @@
 
 import { describe, expect, it } from 'vitest';
 
-import { findInternalDocRefs, INTERNAL_DOC_REF_ALLOWLIST } from './internalDocRefGuard';
+import {
+  findInternalDocRefs,
+  findVagueFiller,
+  INTERNAL_DOC_REF_ALLOWLIST,
+  isPlanningEvolveTag,
+  scrubInternalDocRefs,
+} from './internalDocRefGuard';
 import { collectOperatorVisibleCopy } from './operatorVisibleCopy';
 
 describe('TC-EV048 internal doc ref guard (FE)', () => {
   it('TC-EV048-005: detects synthetic planning cites', () => {
     const poisoned =
-      'Soft-preview (ADR-022); see #702 and TC-F7-002 / E11-31 / EV-040 / S011 / F31 [Corpus: product]';
+      'Soft-preview (ADR-022); see #702 and TC-F7-002 / E11-31 / EV-040 / S011 / F31 / UJ-016 [Corpus: product]';
     const hits = findInternalDocRefs(poisoned);
     const names = new Set(hits.map((h) => h.name));
     expect(names.has('ADR')).toBe(true);
@@ -23,6 +29,49 @@ describe('TC-EV048 internal doc ref guard (FE)', () => {
     expect(names.has('S0')).toBe(true);
     expect(names.has('Corpus')).toBe(true);
     expect(names.has('Fn')).toBe(true);
+    expect(names.has('UJ')).toBe(true);
+  });
+
+  it('detects compact evolve tags such as ev030', () => {
+    const hits = findInternalDocRefs('tags: tc, cyclone, sigmet, ev030');
+    expect(
+      hits.some((h) => h.name === 'evTag' && h.token.toLowerCase() === 'ev030'),
+    ).toBe(true);
+  });
+
+  it('scrubs ticket and TC-EV suffixes from lint messages', () => {
+    expect(
+      scrubInternalDocRefs(
+        'TC SIGMET missing cyclone identity (TC … PSN) - #829 / TC-EV030-004',
+      ),
+    ).toBe('TC SIGMET missing cyclone identity (TC … PSN)');
+    expect(isPlanningEvolveTag('ev030')).toBe(true);
+    expect(isPlanningEvolveTag('cyclone')).toBe(false);
+  });
+
+  it('scrubs F26 theme crumbs and vague filler without dropping articles', () => {
+    expect(
+      scrubInternalDocRefs(
+        'VAA forecast NO VA EXP - status NO_VOLCANIC_ASH_EXPECTED (F26 theme V1)',
+      ),
+    ).toBe('VAA forecast NO VA EXP - status NO_VOLCANIC_ASH_EXPECTED');
+    expect(
+      scrubInternalDocRefs('VAA missing VOLCANO: template field - F26 theme V1 / A2-1'),
+    ).toBe('VAA missing VOLCANO: template field - A2-1');
+    expect(scrubInternalDocRefs('Do not paste random stuff here')).toBe(
+      'Do not paste random here',
+    );
+    // Grammatical articles stay — this scrub is not telegram prose.
+    expect(scrubInternalDocRefs('Paste the TAC into the editor')).toBe(
+      'Paste the TAC into the editor',
+    );
+    expect(findVagueFiller('random stuff')).toEqual([
+      { name: 'stuff', token: 'stuff' },
+    ]);
+    expect(isPlanningEvolveTag('f26')).toBe(true);
+    expect(isPlanningEvolveTag('v1')).toBe(true);
+    expect(isPlanningEvolveTag('sx1')).toBe(true);
+    expect(isPlanningEvolveTag('volcano')).toBe(false);
   });
 
   it('TC-EV048-005: clean operator copy passes', () => {

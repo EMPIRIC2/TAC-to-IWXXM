@@ -44,7 +44,6 @@ backend/
 │   ├── fetch_openaip_airports.py
 │   ├── generate_test_data.py
 │   ├── mirror_wmo_bundles.py
-│   ├── start_dev.sh
 │   ├── test_sprint1_data_integration.py
 │   ├── update_airports_db.py
 │   └── validate_generated_xml_schematron.py
@@ -85,7 +84,7 @@ Main Python application source code, including utilities, services, API routes, 
 
 ### tests/
 
-Comprehensive test suite with 1,090+ tests organized by functionality:
+Test suite with 1,090+ tests organized by functionality:
 
 - API endpoint tests
 - Conversion logic tests
@@ -113,7 +112,6 @@ docker build -f docker/Dockerfile.schematron -t metar-schematron .
 
 Utility scripts for development and maintenance:
 
-- `start_dev.sh` - Start development server
 - `mirror_wmo_bundles.py` - Mirror WMO schema bundles
 - `validate_generated_xml_schematron.py` - Validate generated XML
 - `generate_test_data.py` - Generate test data
@@ -175,9 +173,6 @@ Locked dependency versions for reproducible builds (managed by `uv` package mana
 ### Development
 
 ```bash
-# Start development server
-./scripts/start_dev.sh
-
 # Run all tests
 pytest
 
@@ -274,7 +269,7 @@ These files are kept as reference but should not be used.
 - ✅ Moved utility scripts to `scripts/`
 - ✅ Reorganized tests into 12 categories
 - ✅ Archived deprecated root-level files
-- ✅ Created comprehensive documentation
+- ✅ Created documentation
 
 ---
 

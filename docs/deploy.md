@@ -1,8 +1,23 @@
 # Deployment
 
-> **Project**: METAR to IWXXM Converter
+> **Project**: TAC to IWXXM
 > **Platform**: **DOKS** (F30 primary) · Render **suspended** (T6.5 / `D-S038-t65-waive`)
 > **Last updated**: 2026-08-16 (S067 / EV-057 — #948 apex → app; staging short-host mirror)
+
+This document describes how the product runs in DigitalOcean Kubernetes Service
+(**DOKS**), how Continuous Delivery (CD) rolls images, and how a **promote**
+moves code from staging to production. For current tip SHAs and live URLs, see
+[deploy-state.md](deploy-state.md). For environment variable names, see
+[env-contract.md](env-contract.md).
+
+**Quick map**
+
+| Role | Git branch | Cluster | Public hosts |
+|------|------------|---------|--------------|
+| Staging | `stage` | `metar-iwxxm-staging` | `api.staging…` / `app.staging…` |
+| Production | `main` + deploy tag | `metar-iwxxm` | `api.tac-to-iwxxm.com` / `app.tac-to-iwxxm.com` |
+
+Render services are **suspended**. Do not point production config at onrender.com.
 
 ## Topology (F30 — DOKS dual env / dual cluster)
 
@@ -17,19 +32,28 @@
 | staging | `stage` | **Staging TAC-to-IWXXM** | `metar-iwxxm-staging` | `metar-iwxxm-staging` | `https://api.staging.tac-to-iwxxm.com`, `https://app.staging.tac-to-iwxxm.com` |
 | prod | `main` | **TAC-to-IWXXM** | `metar-iwxxm` | `metar-iwxxm` | `https://api.tac-to-iwxxm.com`, `https://app.tac-to-iwxxm.com` |
 
-**IaC (T6.1 / #712 / EV-043 / EV-044):** Kustomize overlays at
-[`deploy/doks/overlays/{staging,prod}`](../deploy/doks/) —
+**Infrastructure as Code (IaC) (T6.1 / #712 / EV-043 / EV-044):** Kustomize overlays at
+[`deploy/doks/overlays/{staging,prod}`](../deploy/doks/):
 `kubectl apply -k deploy/doks/overlays/staging` (or `prod`) against the **matching** cluster.
-Secrets create out-of-band.
+Create secrets out of band.
 Staging DNS: [ops/doks-staging-dns-runbook.md](ops/doks-staging-dns-runbook.md). Promote path:
 [ADR-034](adr/ADR-034-doks-staging-promote-from-stage.md).
 
-**Release migrate (T6.2):** API Deployment **initContainer** runs idempotent
+**Release migrate (T6.2):** The API Deployment **initContainer** runs idempotent
 `alembic upgrade head` (same as `make db-migrate` / CI). Optional Job:
 `deploy/doks/base/job-alembic-upgrade.yaml`.
 
-**Product DB**: DigitalOcean Postgres (`DATABASE_URL`) — sessions + F8 store/quarantine.  
-**Auth**: Supabase Auth only (**JWKS**). No Supabase product DB on default path (ADR-033).
+**Product DB**: DigitalOcean Postgres (`DATABASE_URL`) for sessions, F8 store/quarantine,
+and F37 live-map cache.  
+**Auth**: Supabase Auth only (**JWKS**). No Supabase product DB on the default path
+(ADR-033).
+
+**F37 live map**: Staging runs `metar-map-translator` (backend image,
+`from src.map_translator import main`) at one replica. It is not a public Service.
+The API timer is off on staging (`LIVE_MAP_REFRESH=0`). Both processes use
+`LIVE_MAP_CACHE_URL` from the product `DATABASE_URL`. `metar-worker` stays at 0
+replicas. Production promotion is a separate step.
+[Corpus: product §F37] [Corpus: adr/ADR-052] [Corpus: deploy]
 
 ### DOKS public hostnames (T6.3 + EV-043 / EV-044 staging)
 
@@ -125,27 +149,50 @@ services without failing (see BUG-2026-08-03). GHCR push continues; DOKS is the 
 **Deploy** in `.github/workflows/ci-cd.yml` waits on full CI including **`e2e-smoke`**, then:
 
 1. Builds/pushes GHCR images tagged `TIMESTAMP-SHA` and `{stage\|main}-latest`.
-2. **Rolls DOKS** with `DOKS_NAMESPACE` + **env-scoped kubeconfig** via
+2. **Best-effort** marks GHCR packages public (`scripts/deploy/ghcr_ensure_public.sh`;
+   `GITHUB_TOKEN` often cannot change org package visibility — non-fatal).
+3. **Refreshes** the cluster `ghcr-pull` dockerconfig with the live job
+   `GITHUB_TOKEN` (`scripts/deploy/doks_refresh_ghcr_pull_secret.sh`) so DOKS can
+   pull private packages when the out-of-band PAT is expired/revoked (dead PAT →
+   `ImagePullBackOff` / GHCR token **403**).
+4. **Rolls DOKS** with `DOKS_NAMESPACE` + **env-scoped kubeconfig** via
    `scripts/deploy/doks_rollout_images.sh <tag>` (staging secret ≠ prod secret after EV-044).
-3. **Render hooks** (optional, **prod Deploy only**): `--skip-if-suspended` (`E34-4`).
+5. **Render hooks** (optional, **prod Deploy only**): `--skip-if-suspended` (`E34-4`).
 
-**Promote (required before any merge to `main`):** [Corpus: adr/ADR-034]
+**Ops escape hatch:** `workflow_dispatch` → `ops=ghcr-doks-pull` + `ops_image_tag=<TIMESTAMP-SHA>`
+refreshes `ghcr-pull` and re-rolls staging without full CI. Prefer a long-lived
+`read:packages` PAT in `ghcr-pull` for break-glass; Deploy refreshes the secret each CD run.
 
-1. Feature work → PR into **`stage`** (required CI green).
-2. Merge to `stage` → **Deploy (stage)** to staging cluster + **Staging smoke** green for that SHA
-   (HTTPS when Porkbun A records point at staging LB `143.244.202.13`; until then Host-header
-   probes via `STAGING_LB_IP` / `DOKS_LB_IP` are valid).
+### Promote (`stage` → `main` → deploy tag)
+
+**Promote** means: merge the `stage` branch into `main`, then ship production with a
+deploy tag. Feature branches must not merge directly into `main`. Required path:
+[Corpus: adr/ADR-034].
+
+**Evaluation metrics (required on stage→main PRs):** Do not ship a single opaque
+percent. Paste a **broken-down** live-eval (or equivalent) summary: lint by
+severity, convert pass/fail, IWXXM validate pass/fail, by product, top codes,
+promote dispositions, and a link to the session report. Checklist:
+[`.github/PULL_REQUEST_TEMPLATE/promote-stage-to-main.md`](../.github/PULL_REQUEST_TEMPLATE/promote-stage-to-main.md);
+guide: [guides/promote-eval-metrics.md](guides/promote-eval-metrics.md).
+
+1. Open a feature pull request into **`stage`**. Required CI must be green.
+2. Merge to `stage`. **Deploy (stage)** rolls the staging cluster. **Staging smoke**
+   must be green for that SHA (HTTPS when Porkbun A records point at staging LB
+   `143.244.202.13`; until then Host-header probes via `STAGING_LB_IP` /
+   `DOKS_LB_IP` are valid).
 3. **Release prep on `stage` (recommended):** bump publishable package **CalVer**
-   (`YYYY.MM.DD` / `YYYY.MM.DD.N` per ADR-043) when those
-   packages changed since the last release; cut `docs/CHANGELOG.md`; commit on `stage` so the
-   promote PR carries the release metadata (see checklist below).
-4. Open PR **`stage` → `main` only** (never feature → `main`). Job **Staging gate**
-   (`scripts/ci/staging_gate.sh` / TC-F30-012) must pass: head branch = `stage` and tip has a
-   successful **Staging smoke** check-run. The gate prints a **release reminder** (advisory).
-   **EV-061 / #1015 (stricter promote):** In addition, the promote PR must not merge until
-   **required** checks covering **full CI unit jobs**, **lint**, **typecheck**, and **full
-   E2E** (broader than smoke-only) are green on that PR. Branch protection / required-check
-   configuration may be updated accordingly (no new app secrets).
+   (`YYYY.MM.DD` / `YYYY.MM.DD.N` per ADR-043) when those packages changed since
+   the last release. Cut `docs/CHANGELOG.md`. Commit on `stage` so the promote PR
+   carries the release metadata (see checklist below).
+4. Open a pull request **`stage` → `main` only** (never feature → `main`). Job
+   **Staging gate** (`scripts/ci/staging_gate.sh` / TC-F30-012) must pass: head
+   branch = `stage` and tip has a successful **Staging smoke** check-run. The gate
+   prints a **release reminder** (advisory).
+   **EV-061 / #1015 (stricter promote):** Also, the promote PR must not merge until
+   **required** checks covering **full CI unit jobs**, **lint**, **typecheck**, and
+   **full E2E** (broader than smoke-only) are green on that PR. Branch protection /
+   required-check configuration may be updated accordingly (no new app secrets).
 
    | Required check context (exact `name:`) | Role |
    |----------------------------------------|------|
@@ -166,25 +213,25 @@ services without failing (see BUG-2026-08-03). GHCR push continues; DOKS is the 
    | `Staging gate` | Head=`stage` + tip Staging smoke (existing) |
    | Also retained | `Rust crates (fmt/clippy/test)`, `tac2iwxxm PyO3 (maturin)`, `iwxxm-validate PyO3 (maturin)`, `Converter perf (tac2iwxxm)` |
 
-   `E2E Smoke (Playwright)` remains for Deploy `needs` on `stage` pushes; smoke-only is
-   **insufficient** as the promote E2E bar (#1015).
+   `E2E Smoke (Playwright)` remains for Deploy `needs` on `stage` pushes. Smoke-only
+   is **insufficient** as the promote E2E bar (#1015).
 
    Apply / refresh rulesets (admin): `bash scripts/deploy/apply_gh_branch_rulesets.sh`
    (see [ops/doks-staging-dns-runbook.md](ops/doks-staging-dns-runbook.md) §GitHub admin).
-5. Merge to `main` → full CI on `main` (**no** prod Deploy).
+5. Merge to `main`. Full CI runs on `main`. That push does **not** run prod Deploy.
 6. **Ship prod:** on the merged `main` tip, `git tag vYYYY.MM.DD-deploy` &&
    `git push origin <tag>` (triggers prod Deploy after CI). Optional escape hatch:
    Actions → CI/CD Pipeline → **Run workflow** (`workflow_dispatch`, production).
-7. PyPI package tags (F12–F14) when publishing — separate from the deploy tag.
+7. PyPI package tags (F12–F14) when publishing are separate from the deploy tag.
 
-Solo-dev gates: (1) PR `stage`→`main`, (2) deploy tag or dispatch. No Environment reviewers.
-Do **not** promote while Staging smoke or Staging gate is red/missing. See
-[ADR-034](adr/ADR-034-doks-staging-promote-from-stage.md) and
+Solo-dev gates: (1) PR `stage`→`main`, (2) deploy tag or dispatch. No Environment
+reviewers. Do **not** promote while Staging smoke or Staging gate is red or missing.
+See [ADR-034](adr/ADR-034-doks-staging-promote-from-stage.md) and
 [ops/doks-staging-dns-runbook.md](ops/doks-staging-dns-runbook.md).
 
 ### Release checklist (`stage` → `main` → tag)
 
-Treat every prod cutover as a release:
+Treat every production cutover as a release:
 
 - [ ] Diff `stage` vs last deploy tag / last promote: note which of `packages/tac2iwxxm`,
       `packages/tac-validate`, `packages/iwxxm-validate` changed
@@ -193,7 +240,7 @@ Treat every prod cutover as a release:
 - [ ] Cut `docs/CHANGELOG.md` (dated section; link the promote PR when known)
 - [ ] Open/update PR `stage` → `main`; Staging smoke + Staging gate green
 - [ ] **EV-061 / #1015:** required checks for full CI unit + lint + typecheck + full E2E green
-      on the promote PR (stricter than smoke-only) — contexts in the table above
+      on the promote PR (stricter than smoke-only); contexts in the table above
 - [ ] Merge to `main`; wait for tip CI green (**Deploy must not run** on that push)
 - [ ] `git tag vYYYY.MM.DD-deploy` on `main` tip; `git push origin <tag>` → prod Deploy
 - [ ] If publishing to PyPI: per-package tags (`tac2iwxxm-v*`, `tac-validate-v*`,
@@ -217,8 +264,9 @@ Branch protection / Environments (admin): `bash scripts/deploy/apply_gh_branch_r
 **F21 Amended / F31**: Optional Auth restored via `packages/auth`. Convert remains public.
 F8 worker runs on DOKS.
 
-**Observability**: Platform logs (DOKS). Loki/Prometheus/Grafana remain out of Blueprint
-(ADR-006) unless a later evolve adds them.
+**Observability**: Platform logs (DOKS) plus optional Sentry when DSN is set (EV-052).
+Repo-local Grafana/Prometheus/Loki configs under `monitoring/` were removed (EV-drop-monitoring);
+they are not part of the Blueprint (ADR-006). Do not re-add a stack there without a later evolve.
 
 ## Integration
 
@@ -239,6 +287,7 @@ F8 worker runs on DOKS.
 | `RATE_LIMIT_DISSEMINATION_PER_MIN` | No (default 10) | Dissemination preflight/send rate limit |
 | `MAX_REQUEST_BODY_BYTES` | No (default 2 MiB) | Request body cap |
 | `DISSEMINATION_EGRESS_ALLOWLIST` | Yes for F16–F19 | Host/CIDR allowlist (empty ⇒ deny) |
+| `OPENAIP_API_KEY` | Yes for decode station names | OpenAIP key. Decode asks for one station at a time. Empty ⇒ code-only names. Set on the staging and prod `metar-api-secrets` Secret, and as a GitHub Actions secret for the live lookup job. |
 | `METAR_CONFIG_ENV` | Yes (prod) | `prod`; selects `config/prod.json` |
 
 **Static inject:** `SUPABASE_PUBLISHABLE_KEY` into `/config.json` for optional login.
@@ -252,7 +301,7 @@ F8 worker runs on DOKS.
 | `INGEST_POLLER_URL` | Yes | HTTPS JSON feed (or object-prefix listing). **Must** be `https://` — never `REPLACE_ME_*` |
 | `INGEST_POLL_INTERVAL_SEC` | Yes | Poll interval (seconds) |
 
-**Non-prod fixture URL (EV-033 — pin this when no operational feed):**
+**Non-prod fixture URL (EV-033; pin this when no operational feed):**
 
 ```
 https://raw.githubusercontent.com/EMPIRIC2/TAC-to-IWXXM/main/apps/worker/tests/fixtures/ingest_feed.json
@@ -311,7 +360,7 @@ Operator sync: [env-sync-runbook.md](ops/env-sync-runbook.md). Verify: `make env
 3. Rebuild **metar-frontend** with `/config.json` + publishable Auth key.
 4. Deploy **metar-worker** with `DATABASE_URL` + poller env.
 5. Run **H0–H5** (H4–H5 required) + H6 public + Auth session smoke + F8 store smoke.
-6. Soak + Render decommission (TC-F30-005) — **done** under `D-S038-t65-waive` (see archive).
+6. Soak + Render decommission (TC-F30-005): **done** under `D-S038-t65-waive` (see archive).
 
 See `.cursor/skills/connectivity-gates.md` for H-tier definitions.
 
@@ -330,7 +379,7 @@ Post-migration compose: **backend + frontend** (two services). Worker may run vi
 ### SQL Server ODBC (F16 / E14-06)
 
 BYOC SQL Server sinks use SQLAlchemy async + **aioodbc** (`mssql+aioodbc://`). A **system
-ODBC SQL Server driver** must be registered with the host ODBC manager — Python wheels alone
+ODBC SQL Server driver** must be registered with the host ODBC manager; Python wheels alone
 are not enough. Preferred driver: **Microsoft ODBC Driver 18 for SQL Server** (then 17);
 **FreeTDS** is accepted as a fallback. Probe helpers live in
 `packages/dissemination` (`dissemination.odbc`).
@@ -341,7 +390,7 @@ are not enough. Preferred driver: **Microsoft ODBC Driver 18 for SQL Server** (t
 uv run python -c "from dissemination.odbc import list_sqlserver_odbc_drivers, odbc_sqlserver_available; print(list_sqlserver_odbc_drivers()); print(odbc_sqlserver_available())"
 ```
 
-**Debian / Ubuntu (Microsoft Driver 18)** — follow current Microsoft docs for the distro
+**Debian / Ubuntu (Microsoft Driver 18)**: follow current Microsoft docs for the distro
 codename; typical shape:
 
 ```bash
@@ -362,7 +411,7 @@ mssql+aioodbc://USER:PASS@HOST:1433/DB?driver=ODBC+Driver+18+for+SQL+Server
 
 **CI / tests**: `make test-integration-dissemination` runs SQL Server cases only when Docker
 **and** an ODBC SQL Server driver are present; otherwise those cases **skip** (TC-F16-003 /
-E14-06). Default CI images may omit ODBC — that is expected.
+E14-06). Default CI images may omit ODBC; that is expected.
 
 **API Docker image**: `apps/backend/docker/Dockerfile` does **not** currently install
 `msodbcsql18`. Stock Render **metar-api** cannot open SQL Server BYOC URIs until the image
@@ -371,9 +420,9 @@ ODBC. Package README: [`packages/dissemination/README.md`](../packages/dissemina
 
 ### wis2box Compose harness (F17 / E14-04)
 
-Staging WIS2 uses a **Docker Compose / CI harness** — not a Render web service. Image build
+Staging WIS2 uses a **Docker Compose / CI harness**, not a Render web service. Image build
 context: `packages/dissemination/docker/wis2box-harness` (MQTT `:1883` + HTTP dataset
-`:8080` / host `:9080`). Overlay: `docker-compose.wis2box.yml` (profile `wis2box`).
+`:8080` / host `:9080`). Profile `wis2box` in `docker-compose.yml`.
 
 ```bash
 make compose-wis2box-up
@@ -392,7 +441,7 @@ DISSEMINATION_EGRESS_ALLOWLIST=wis2box,127.0.0.1,127.0.0.0/8,localhost
 
 **Render / prod:** leave empty (fail-closed) when not demoing. For live BYOC close-gate
 demos (TC-F17-002 / TC-F18-002), set only the exact operator Postgres / WIS2 / EDIS SMTP
-hostnames — never wildcards or destination secrets. Live WIS2 acceptance remains operator
+hostnames, never wildcards or destination secrets. Live WIS2 acceptance remains operator
 BYOC.
 
 ## Docker Build Context
@@ -403,11 +452,11 @@ BYOC.
 | Frontend | repo root | `apps/frontend/Dockerfile` |
 | Worker | repo root | `apps/worker/Dockerfile` (T6.2) |
 
-API image must include: apps/backend, packages/tac2iwxxm, packages/tac-decoding,
+API image must include: apps/backend, packages/tac2iwxxm, packages/reference-lookup, packages/tac-decoding,
 packages/tac-validate, packages/iwxxm-validate, packages/dissemination,
 packages/shared, packages/auth, vendor/schemas.
 
-Worker image must include: apps/worker, packages/tac2iwxxm, packages/tac-decoding,
+Worker image must include: apps/worker, packages/tac2iwxxm, packages/reference-lookup, packages/tac-decoding,
 packages/tac-validate, packages/iwxxm-validate, packages/workflows, packages/shared,
 vendor/schemas (no frontend).
 
@@ -429,7 +478,7 @@ Supabase migrations live in `supabase/migrations/` and are applied externally (n
 
 Server `tac_work_sessions` + Auth/RLS path is **retired** for the operator product (F21 /
 ADR-031). Work history is browser IndexedDB. Legacy rows may be archived ~30 days (ops note
-from T5.5) — not a product API.
+from T5.5); not a product API.
 
 Historical apply steps (archive only):
 
@@ -444,21 +493,53 @@ Operator reference: [env-sync-runbook.md](ops/env-sync-runbook.md), ADR-011, ADR
 ### Supabase CI sync
 
 `.github/workflows/supabase-sync.yml` applies schema changes and deploys legacy edge
-functions to project `ktvxijislbtgqapllmuk` on every push to `main` (and via manual
-dispatch). Pull requests against `main` run a read-only migration dry-run only.
+functions on every push to `main` or `stage` (and via manual dispatch). Pull requests
+against `main`/`stage` run a read-only migration dry-run and list local edge functions;
+they never write to the project.
+
+| Git base | Supabase target | Default project ref |
+|----------|-----------------|---------------------|
+| `main` (push / PR→main) | Primary project `metar-to-iwxxm` | `ktvxijislbtgqapllmuk` |
+| `stage` (push / PR→stage) | Preview branch **staging-env** (persistent, `git_branch=stage`) | `zvfhtcxjopwuesrozpvu` |
 
 | Job | What | Source path |
 |-----|------|-------------|
+| `resolve-target` | Pick primary vs staging-env ref from branch | vars below |
 | `migrations` | `supabase db push --linked` | `supabase/migrations/` |
-| `functions` | `supabase functions deploy` | `apps/frontend/supabase/functions/` |
+| `functions` | `supabase functions deploy --use-api` | `apps/frontend/supabase/functions/` |
+| `advisors` | Management API advisors; fail on ERROR. **Stage-only** (targets staging-env) | `scripts/security/run-supabase-advisors.sh` |
+
+**Edge deploy note:** CI uses `--use-api` so the runner does **not** pull
+`public.ecr.aws/supabase/edge-runtime` via Docker. Anonymous ECR quota exhaustion
+(`toomanyrequests: Data limit exceeded`) and Docker bundle OOM/kill (`exit 135`) were
+failing `Deploy edge functions` on stage pushes; server-side bundling avoids that path.
+The deploy step retries up to three times on transient API errors.
 
 **GitHub configuration** (Settings → Secrets and variables → Actions):
 
 | Kind | Name | Purpose |
 |------|------|---------|
-| Secret | `SUPABASE_ACCESS_TOKEN` | `sbp_…` CI token for Supabase CLI |
-| Secret | `SUPABASE_DB_PASSWORD` | Database password for `link` + `db push` |
+| Secret | `SUPABASE_ACCESS_TOKEN` | `sbp_…` CI token for Supabase CLI + advisors Management API |
+| Secret | `SUPABASE_DB_PASSWORD` | Primary project DB password (`link` + `db push` on `main`) |
+| Secret | `SUPABASE_DB_PASSWORD_STAGING` | staging-env preview DB password (`link` + `db push` on `stage`) |
 | Variable | `SUPABASE_PROJECT_REF` | Optional; defaults to `ktvxijislbtgqapllmuk` |
+| Variable | `SUPABASE_PROJECT_REF_STAGING` | Optional; defaults to `zvfhtcxjopwuesrozpvu` |
+
+**Advisors job:** Read-only on **stage** pushes, PRs targeting **stage**, and
+`workflow_dispatch` (skipped on `main`). Runs against the **staging-env** project ref.
+Calls `GET /v1/projects/{ref}/advisors/{security,performance,health}` (health skipped if
+404). Fails the workflow on lint `level=ERROR` ([Corpus: tech-spec] / CONSUMER-GATES). An
+invalid or expired `SUPABASE_ACCESS_TOKEN` fails migrations **and** advisors — rotate via
+Supabase Dashboard → Account → Access Tokens, then update the GitHub Actions secret (and
+local `.env` if used). Local check:
+`SUPABASE_PROJECT_REF=zvfhtcxjopwuesrozpvu bash scripts/security/run-supabase-advisors.sh`.
+
+**Advisor remediations (migrations):** `20261102000013` enables RLS on ConversionProfile
+tables; `20261102000014` existence-guarded revoke of anon GraphQL grants + SECURITY DEFINER
+EXECUTE trim; `20261102000015` enables RLS on legacy `metar_results` /
+`storage_files` / `validation_results` for preview parity. Remaining WARNs are intentional
+where noted in the migration headers. Performance findings are INFO-only — do not drop
+indexes solely from INFO unused-index noise.
 
 The `functions` job copies root `supabase/config.toml` into `apps/frontend/supabase/` at
 CI time (that tree has functions but no config). Auth routes run on metar-api; edge
@@ -466,16 +547,21 @@ functions remain only for the database-upload path until a follow-up retires the
 (ADR-010).
 
 Manual equivalent: `make supabase-push` (migrations) or `bash scripts/supabase/db-push.sh`.
+Local function deploy without Docker: `supabase functions deploy --use-api --project-ref …`
+from `apps/frontend` (after copying `supabase/config.toml` as CI does).
 
 ## Rollback
 
-Redeploy previous Render deploy from dashboard or revert git tag on main.
+Roll the previous image tag on the DOKS cluster for the target env
+(`https://api.staging.tac-to-iwxxm.com` / `https://app.staging.tac-to-iwxxm.com`,
+or `https://api.tac-to-iwxxm.com` / `https://app.tac-to-iwxxm.com`), or revert
+the git tag on `main` and push a new `vYYYY.MM.DD-deploy` tag. See §Promote.
 
 ## Checklist (pre-deploy)
 
 - [ ] CI green on main
 - [ ] E2E T2 pass locally
-- [ ] Env vars set on Render
+- [ ] Env vars set on the DOKS staging or prod cluster
 - [ ] CORS origins include production frontend URL
 - [ ] Frontend rebuilt after API URL known
 - [ ] F5: Supabase migrations through `20250623000007` applied (staging/prod)
@@ -499,7 +585,8 @@ make test-live-e2e            # H6 Playwright UJ-001–003
 make test-live                # H4–H5 → H3 → H6
 ```
 
-**Cold-start**: Live tests retry up to 3 times with 30s backoff when Render services are spun down.
+**Cold-start**: Live tests retry up to 3 times with 30s backoff when the DOKS
+API or frontend pod is not ready yet.
 
 **Rate limits**: Live API tests use exponential backoff on HTTP 429.
 
@@ -520,8 +607,8 @@ make test-live                # H4–H5 → H3 → H6
 2. Run connectivity + live signoff:
 
    ```bash
-   export LIVE_API_URL="https://metar-to-iwxxm-api.onrender.com"
-   export LIVE_FRONTEND_URL="https://metar-to-iwxxm-frontend-v4-web.onrender.com"
+   export LIVE_API_URL="https://api.staging.tac-to-iwxxm.com"
+   export LIVE_FRONTEND_URL="https://app.staging.tac-to-iwxxm.com"
    export PLAYWRIGHT_BASE_URL="${LIVE_FRONTEND_URL}"
    export VITE_API_BASE_URL="${LIVE_API_URL}"
    # F21: no E2E_USER_* — public convert
@@ -542,6 +629,35 @@ make test-live                # H4–H5 → H3 → H6
 | `PLAYWRIGHT_BASE_URL` | Playwright (H6) | Same as `LIVE_FRONTEND_URL` for remote runs |
 
 See [staging-secrets-matrix.md](ops/staging-secrets-matrix.md) for staging values.
+
+### Weekly validation catalog (scheduled quality window)
+
+GitHub Actions workflow [`.github/workflows/weekly-validation-catalog.yml`](../.github/workflows/weekly-validation-catalog.yml)
+runs **Sunday 00:00 UTC** (`0 0 * * 0`) and on `workflow_dispatch`. GHA runners call the
+DOKS **staging** API over HTTPS (Environment `staging` — same snapshot window as Deploy /
+Staging smoke). This is **not** a PR merge gate and does **not** spawn DigitalOcean App
+Platform jobs. Probe script: [`scripts/ci/weekly_validation_catalog.py`](../scripts/ci/weekly_validation_catalog.py)
+with fixture manifest [`scripts/ci/weekly_validation_catalog_manifest.json`](../scripts/ci/weekly_validation_catalog_manifest.json).
+
+| Step | Endpoint / action |
+|------|-------------------|
+| Health | `GET /health` (HTTPS, then Host-header via staging LB) |
+| Catalogs | `GET /api/v1/lint-issue-catalog` (+ `family=` filters); `GET /api/v1/rule-catalogs?family=tac\|iwxxm` |
+| Samples | `POST /api/v1/lint-tac` and `POST /api/v1/validate` for METAR/SPECI/TAF/SIGMET/AIRMET `*_basic.tac` accept fixtures |
+| Artifact | `weekly-validation-catalog-{run_id}` — JSON + Markdown: catalog severity totals, sample probes, and **Raised validation issues** (one row per distinct code+severity + total; 90-day retention) |
+
+**GitHub Environment `staging` configuration** (Settings → Environments → staging):
+
+| Kind | Name | Required | Purpose |
+|------|------|----------|---------|
+| Variable | `LIVE_API_URL` / `STAGING_API_URL` | No | Override API origin; default `https://api.staging.tac-to-iwxxm.com` |
+| Variable | `STAGING_LB_IP` | No | Host-header fallback; default `143.244.202.13` |
+| Secret | `STAGING_API_BEARER_TOKEN` | No | Optional `Authorization: Bearer …` for probes; **omit** for anonymous F21 public routes |
+| Secret | `STAGING_API_TOKEN` | No | Optional alias read by the probe script if Bearer secret unset |
+
+Do **not** commit real tokens. Public convert/lint/validate/catalog routes need no Bearer
+([Corpus: api] F21). Decision log: [decisions/ev-weekly-validation-catalog-gha.md](decisions/ev-weekly-validation-catalog-gha.md).
+Test id: [test-plan.md](test-plan.md) TC-WEEKLY-VAL-001.
 
 ## PyPI package publish (S014 / EV-010 / F12–F14; EMPIRIC2 cutover EV-028 / #781; EV-1150 / ADR-043)
 
@@ -584,7 +700,7 @@ Environments exist on `EMPIRIC2/TAC-to-IWXXM`. Workflows need `id-token: write`
 (see config-spec §F11–F14).
 
 **Public landing pages**: Package `README.md` (and `pyproject.toml` `description`) are the
-PyPI long/short description — write for library consumers; do not require internal ADR /
+PyPI long/short description. Write for library consumers; do not require internal ADR /
 feature-id / execution-plan identifiers. Monorepo tracing stays in corpus / session docs.
 
 **Render / DOKS**: PyPI publish does not replace app smokes. When msgspec **response** shapes
@@ -592,7 +708,7 @@ change, redeploy API then frontend and run H4–H5 + UJ-022.
 
 ## References
 
-- `render.yaml` — Render Blueprint (API + static frontend)
+- `deploy/doks/` — live staging and prod manifests. `render.yaml` is a suspended blueprint and is removed by the config-hygiene build; do not treat it as the current deploy path ([Corpus: decisions] `requirements-decisions.md` §EV-config-file-hygiene).
 - [staging-secrets-matrix.md](ops/staging-secrets-matrix.md) — staging env values
 - [user-journeys.md](user-journeys.md) UJ-OPS-001, UJ-023
 - [config-spec.md](config-spec.md) §F11–F14

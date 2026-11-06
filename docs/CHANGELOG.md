@@ -2,6 +2,95 @@
 
 All notable user-facing and deployable changes for TAC to IWXXM.
 
+## 2026-11-05 — Production release
+
+Promote `stage` → `main` after staging validation since the 2026-09-22 cut.
+Live-eval provenance: session `live-tac-eval-30d-2026-11-04-eve` (5996 reports;
+convert 5995/5996 ok; IWXXM validate 5994/5996 ok).
+
+### Added
+- STE user guide under `user-docs/` with Wiki link map and example journeys
+  ([#1570](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1570),
+  [#1571](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1571)).
+- Canonical XML primary-name layout DX façade tests
+  ([#1569](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1569)).
+- Partial decode mapped to TAC warning (ADR-054)
+  ([#1567](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1567)).
+- Live residual remark / non-RMK decode conventions for METAR, SPECI, TAF, SIGMET
+  ([#1547](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1547)–[#1550](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1550)).
+- Regional dialect profiles, severity ladder / Strict UI, promote-eval metrics
+  guidance, and denser live-map / Convert operator UX (see 2026-11-02 stage tip
+  and mid-window UX PRs).
+
+### Fixed
+- TAF emit residuals: CAVOK surface wind, P6SM/SM visibility, SKC/NSC/VV cloud
+  ([#1524](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1524)–[#1530](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1530),
+  [#1553](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1553)/[#1559](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1559)).
+- US convective SIGMET `analysisCollection`, DVLPG AREA qualifier, WST VOR seeds,
+  Hydra parallel-convert serialize
+  ([#1526](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1526),
+  [#1531](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1531)–[#1536](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1536)/[#1546](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1546),
+  [#1554](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1554)/[#1560](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1560),
+  [#1557](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1557)/[#1565](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1565)).
+- SIGMET/AIRMET minimum header lint skeleton
+  ([#1564](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1564)/[#1566](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1566)).
+- Supabase advisors fail-closed + staging-env Sync targeting (2026-11-02 tip).
+
+### Packages
+- `tac2iwxxm` **2026.9.22 → 2026.11.5**
+- `tac-validate` **2026.9.22 → 2026.11.5**
+- `iwxxm-validate` **2026.9.22 → 2026.11.5**
+- `tac-decoding` **2026.9.22 → 2026.11.5**
+
+### Deploy
+- Release-prep on `stage` before promote; Staging smoke must be green.
+- After `stage` → `main` merge + tip CI green: tag `v2026.11.05-deploy` for prod
+  (API / WebApp / worker Docker via GHCR `main-latest`).
+- PyPI tags (OIDC): `tac2iwxxm-v2026.11.5`, `tac-validate-v2026.11.5`,
+  `iwxxm-validate-v2026.11.5`, `tac-decoding-v2026.11.5`.
+
+## 2026-11-02 — Stage tip (UX density + Supabase staging)
+
+Stage tip `8ee3372e` after the merges below. Staging only; not a production promote.
+Ops dual-ref detail stays in `docs/ops/env-sync-runbook.md` (already updated).
+
+### Operator UX
+- Live map shows an **Aviation Weather Center** credit near the newest-observation status
+  ([#1514](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1514), `60c58ce7`).
+- Results drawer keeps the title, Hide control, and tab strip fixed while tab bodies scroll
+  ([#1515](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1515), `2e20bfb3`).
+- Map station cards are denser: product/station header, observation-time select, TAC collapsed
+  by default, and an explicit Send to converter
+  ([#1516](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1516), `7f4c7bff`).
+
+### Tests / CI / cleanup
+- Downloads two-week dump lint regressions under `tests/bugs/live_tac_eval/`
+  ([#1509](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1509), `28169ea4`).
+- Stage and main pushes always run family quality packs (path filters no longer skip them)
+  ([#1512](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1512), `c44029a0`).
+- Removed unused `monitoring/` Grafana / Prometheus / Loki tree (never wired into compose,
+  Makefile, or CI)
+  ([#1511](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1511), `dd4df373`).
+
+### Supabase
+- CI advisors job on Sync workflow fails closed on lint `ERROR` (security + performance;
+  health skipped when the API returns 404)
+  ([#1513](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1513), `544709e6`).
+- Existence-guarded advisor WARN hardening plus legacy-table RLS migrations (`014` / `015`)
+  ([#1517](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1517), `c7580cc7`).
+- Stage Sync and advisors target staging-env preview `zvfhtcxjopwuesrozpvu`; `main` stays on
+  primary `ktvxijislbtgqapllmuk`
+  ([#1518](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1518), `8ee3372e`).
+- Staging-env was mirrored from primary; advisors **ERROR=0** there. Stage pushes apply Sync
+  and advisors to staging-env only (not primary).
+
+### PR-ready summary
+
+Stage tip `8ee3372e` adds live-map AWC credit, sticky Results chrome, and denser map station
+cards; Downloads dump lint regressions; always-on stage quality packs; removal of unused
+`monitoring/`; and Supabase advisors CI with stage Sync pointed at staging-env preview
+`zvfhtcxjopwuesrozpvu` while `main` keeps primary. Staging-env advisors report ERROR=0.
+
 ## 2026-09-22 — Release prep (YAML full configurability)
 
 Full YAML configurability program on staging (epic #1226 / M1–M5): honesty matrix
@@ -112,7 +201,7 @@ Operator-facing and package improvements validated on staging since the 2026-09-
 
 ### Packages
 - No publishable package semver bumps this promote (`tac2iwxxm` / `tac-validate` /
-  `iwxxm-validate` remain **0.3.0** / **0.2.0** / **0.2.0** — coverage/tooling-only diffs).
+  `iwxxm-validate` remain **0.3.0** / **0.2.0** / **0.2.0**; coverage/tooling-only diffs).
 
 ### Deploy
 - Promote PR: [#1142](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1142) (merged).
@@ -148,9 +237,9 @@ Operator-facing improvements validated on staging, now promoting to production.
   jargon.
 
 ### Packages
-- `tac2iwxxm` **0.2.4 → 0.3.0** (AHL-aware decode — minor: additive bulletin capability)
-- `tac-validate` **0.1.3 → 0.2.0** (AHL helpers + catalog metadata — minor: new public APIs)
-- `iwxxm-validate` **0.1.2 → 0.2.0** (C14N helpers + 2025-2 Schematron path — minor: new public APIs)
+- `tac2iwxxm` **0.2.4 → 0.3.0** (AHL-aware decode; minor: additive bulletin capability)
+- `tac-validate` **0.1.3 → 0.2.0** (AHL helpers + catalog metadata; minor: new public APIs)
+- `iwxxm-validate` **0.1.2 → 0.2.0** (C14N helpers + 2025-2 Schematron path; minor: new public APIs)
 
 ### Deploy
 - Promote PR: [#1022](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1022) (`stage` → `main`).
@@ -175,7 +264,7 @@ Operator-facing improvements validated on staging, now promoting to production.
 - **EV-050 / F12–F15 / F20 / F23 / F24 / F28**: Offline WMO codes membership harvest +
   `tac-validate` Validated dual-profile lint (annex3 vs iwxxm_us); fixture matrix for
   RE*/cloud/phenomena/SpaceWx membership.
-- **EV-051 / F30**: Tag-driven prod Deploy — `main` push runs full CI only; prod rolls on
+- **EV-051 / F30**: Tag-driven prod Deploy: `main` push runs full CI only; prod rolls on
   `vYYYY.MM.DD-deploy` (or `workflow_dispatch`).
 - **EV-052 / F29 / M5 / F21**: Optional Sentry (API/FE/worker); Upstash-backed slowapi;
   openapi-typescript FE types + `openapi:check`; coverage inventory + ≥95 lines/stmts/funcs
@@ -209,7 +298,7 @@ Operator-facing improvements validated on staging, now promoting to production.
   + committed baselines; Python package + per-file coverage ≥95% (incl. auth/worker).
 - **EV-047 / F7**: Operator one-pager, handbook, and in-app Help (UJ-054).
 - **Process**: Release-on-promote guidance (semver + CHANGELOG on `stage`, deploy/PyPI tags
-  after merge) — ADR-034 amend; Staging-gate advisory reminder.
+  after merge); ADR-034 amend; Staging-gate advisory reminder.
 
 ### Changed
 - **EV-046 / F15**: `tac-validate` catalog attribution prefers stable source URL
@@ -308,7 +397,7 @@ Operator-facing improvements validated on staging, now promoting to production.
   `scripts/deploy/doks_rollout_images.sh` and Actions secret `KUBE_CONFIG`.
 
 ### Fixed
-- Deploy reject DigitalOcean `doctl` exec-auth kubeconfigs (runners lack `doctl`) — PR #868.
+- Deploy reject DigitalOcean `doctl` exec-auth kubeconfigs (runners lack `doctl`), PR #868.
 
 ### Deploy
 - Live proof: CI [31003268652](https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/31003268652);
@@ -321,7 +410,7 @@ Operator-facing improvements validated on staging, now promoting to production.
 ### Added
 - **F30**: DigitalOcean Postgres product DB (`DATABASE_URL`); DOKS API + static FE + F8
   worker IaC; Alembic under `apps/backend/` (CI/deploy idempotent `upgrade head`).
-- **F31**: Hybrid work sessions — guest IndexedDB + persistent loss-of-progress notice;
+- **F31**: Hybrid work sessions: guest IndexedDB + persistent loss-of-progress notice;
   optional Supabase Auth → DO Postgres `/api/v1/work-sessions*`; auto-upload on login.
 - Provisional DOKS live harness (Host-header / no `/etc/hosts`):
   `make test-live-e2e-doks-provisional`, `test-live-connectivity-doks-provisional`,
@@ -330,15 +419,15 @@ Operator-facing improvements validated on staging, now promoting to production.
 ### Changed
 - Supabase = **Auth only** (JWKS-only verify); no product PostgREST / Supabase DB writers
   on default path ([ADR-033](adr/ADR-033-platform-independence-auth-do-doks.md)).
-- F21 Amended — public convert retained; Auth restored for long-term storage.
+- F21 Amended: public convert retained; Auth restored for long-term storage.
 - F8 worker store/quarantine → SQLAlchemy / `DATABASE_URL` (ADR-018 amend).
 
 ### Deploy
 - Provisional cutover under `D-S038-t63-waive` (LB `168.144.12.70` + placeholder Hosts).
 - H4–H5 + Playwright F31 + TC-EV031 topology PASS on provisional DOKS (T7.1–T7.3).
 - **13-deploy-smoke** re-verify: Host-header 5/5, H0c/H4/H5, topology 3/3, pods Running,
-  Render `/health` **503** — [deploy-smoke.md](sessions/S038-platform-independence-842/reports/deploy-smoke.md).
-- **T6.5 / TC-F30-005**: Render API + FE + worker **suspended** (`D-S038-t65-waive` —
+  Render `/health` **503** ([deploy-smoke.md](sessions/S038-platform-independence-842/reports/deploy-smoke.md)).
+- **T6.5 / TC-F30-005**: Render API + FE + worker **suspended** (`D-S038-t65-waive`:
   soak waived day 0/7); historical URLs in
   [ops/render-decommission-archive.md](ops/render-decommission-archive.md);
   `config/prod.json` + CI Deploy retargeted to DOKS / GHCR-only (no Render hooks).
@@ -368,7 +457,7 @@ Operator-facing improvements validated on staging, now promoting to production.
 ## 2026-08-02 — S036 EV-029 (#823 eight-family AHL + F28 SWXA)
 
 ### Added
-- **F28**: SWXA quality bar — registry lint, `product=swxa` API, convert →
+- **F28**: SWXA quality bar: registry lint, `product=swxa` API, convert →
   `iwxxm:SpaceWeatherAdvisory`, XSD+SCH, Examples unlock `spacewx-A7-3` (`wmoReference`).
 - Eight-family AHL / `reportStatus` / product-order / report-state matrix smokes
   (TC-EV029-001..008).
@@ -415,9 +504,9 @@ Operator-facing improvements validated on staging, now promoting to production.
 ## 2026-07-30 — S027 EV-021 (F26 VAA + F27 TCA quality)
 
 ### Added
-- **F26**: VAA quality bar — registry lint, WMO `va-advisory-A7-2` golden convert,
+- **F26**: VAA quality bar: registry lint, WMO `va-advisory-A7-2` golden convert,
   XSD+SCH, workbench Examples unlock (`iwxxm:VolcanicAshAdvisory`).
-- **F27**: TCA quality bar — same bar for `tc-advisory-A2-2` /
+- **F27**: TCA quality bar: same bar for `tc-advisory-A2-2` /
   `iwxxm:TropicalCycloneAdvisory`.
 - Combined `wmo-quality.yml` pack extended for VAA+TCA (S02.L1).
 
@@ -434,7 +523,7 @@ Operator-facing improvements validated on staging, now promoting to production.
 ## 2026-07-28 — S023 EV-017 (F21 public app + F22 privacy)
 
 ### Added
-- **F21**: Public unauthenticated converter — no operator login/JWT; Auth routes 404.
+- **F21**: Public unauthenticated converter: no operator login/JWT; Auth routes 404.
 - **F7.h**: Work history in browser IndexedDB (local Draft/WIP/Finished); no `/api/v1/work-sessions`.
 - **F22**: Privacy notice + settings (Solution A) + Global Privacy Control honor; IndexedDB
   disclosure; preferences in localStorage only.
@@ -472,7 +561,7 @@ Operator-facing improvements validated on staging, now promoting to production.
 ## 2026-07-22 — S020 EV-015 (F20 TAF + SPECI quality bar)
 
 ### Added
-- **F20**: TAF + SPECI quality bar (F15 sequel) — registry deepen, accept/negative fixtures,
+- **F20**: TAF + SPECI quality bar (F15 sequel): registry deepen, accept/negative fixtures,
   Annex-3 / IWXXM-US goldens, FE catalog TAF tag filters, API catalog `product=taf|speci`.
 
 ### Changed

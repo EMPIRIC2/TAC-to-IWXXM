@@ -50,7 +50,8 @@ preflight="$(curl -sS -o /dev/null -w '%{http_code}' --max-time 30 \
   -H "Access-Control-Request-Method: POST" \
   -H "Access-Control-Request-Headers: content-type" || echo 000)"
 if [[ "${preflight}" != "200" && "${preflight}" != "204" ]]; then
-  echo "::warning::CORS preflight returned ${preflight} (continuing if health OK)"
+  echo "::error::CORS preflight returned ${preflight}"
+  exit 1
 else
   echo "CORS preflight → ${preflight}"
 fi

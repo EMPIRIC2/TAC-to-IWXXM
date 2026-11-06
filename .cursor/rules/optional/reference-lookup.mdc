@@ -1,0 +1,16 @@
+---
+description: Reference lookup stays a public-source-first fallback, not a vendored dump
+globs: packages/reference-lookup/**,packages/tac2iwxxm/**/reference_point.py
+alwaysApply: false
+---
+
+# Reference lookup
+
+[Corpus: product §F6] [Corpus: adr/ADR-051]
+
+- The lookup package lives under `packages/reference-lookup` and is called by `tac2iwxxm`. It does not import FastAPI or Supabase.
+- The public source is OurAirports `navaids.csv` and `airports.csv`. Do not commit a full dump.
+- Unit tests inject a fixture. They do not call the network.
+- An ident that matches more than one row is a source error. The checked-in table answers. Do not pick a row.
+- A table miss stays `UnknownVOR`. Do not invent a coordinate.
+- This deepens F6. Do not add a feature id, an HTTP product enum, or a browser journey.

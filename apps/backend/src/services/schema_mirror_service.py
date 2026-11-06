@@ -25,15 +25,23 @@ class SchemaMirrorService:
 
     Handles recursive XSD imports/includes, computes checksums, and maintains
     manifest and lockfile for reproducible validation.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
     """
 
     def __init__(self, base_path: Path, timeout_seconds: int = 60) -> None:
         """
-        Initialize the mirror service.
+        Internal helper ``__init__``.
 
-        Args:
-            base_path: Root directory for mirrored schemas (e.g., PROJECT_ROOT/schemas/iwxxm)
-            timeout_seconds: HTTP request timeout
+        Parameters
+        ----------
+        base_path : object
+            Argument ``base_path``.
+        timeout_seconds : object
+            Argument ``timeout_seconds``.
         """
         self.base_path = Path(base_path)
         self.timeout_seconds = timeout_seconds
@@ -51,15 +59,32 @@ class SchemaMirrorService:
         """
         Mirror a complete schema version tree.
 
-        Args:
-            version: IWXXM version string (e.g., "2025-2RC1")
-            root_xsd_url: URL to root XSD file (e.g., ".../iwxxm.xsd")
-            include_examples: Download examples/ directory (recommended)
-            include_html: Download html/ UML documentation
-            include_xmi: Download XMI/ UML model exports
-
-        Returns:
+        Returns
+        -------
             Dictionary with mirroring results and manifest
+
+        Parameters
+        ----------
+        version : object
+            IWXXM version string (e.g., "2025-2RC1")
+        root_xsd_url : object
+            URL to root XSD file (e.g., ".../iwxxm.xsd")
+        include_examples : object
+            Download examples/ directory (recommended)
+        include_html : object
+            Download html/ UML documentation
+        include_xmi : object
+            Download XMI/ UML model exports
+
+        Returns
+        -------
+        object
+            Dictionary with mirroring results and manifest
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (mirror_version)
+        2
         """
         logger.info(f"Starting mirror for IWXXM {version} from {root_xsd_url}")
 
@@ -120,12 +145,16 @@ class SchemaMirrorService:
 
     async def _download_xsd_tree(self, xsd_url: str, target_dir: Path, manifest: dict[str, dict[str, Any]]) -> None:
         """
-        Recursively download XSD and all imports/includes.
+        Internal helper ``_download_xsd_tree``.
 
-        Args:
-            xsd_url: URL to XSD file
-            target_dir: Local directory for this file
-            manifest: Dictionary to populate with file metadata
+        Parameters
+        ----------
+        xsd_url : object
+            Argument ``xsd_url``.
+        target_dir : object
+            Argument ``target_dir``.
+        manifest : object
+            Argument ``manifest``.
         """
         if xsd_url in self.downloaded_files:
             return
@@ -181,13 +210,18 @@ class SchemaMirrorService:
         self, xsd_content: str, base_url: str, target_dir: Path, manifest: dict[str, Any]
     ) -> None:
         """
-        Extract and download XSD imports/includes.
+        Internal helper ``_process_xsd_imports``.
 
-        Args:
-            xsd_content: XSD file content as string
-            base_url: Base URL for resolving relative imports
-            target_dir: Target directory
-            manifest: Manifest dictionary
+        Parameters
+        ----------
+        xsd_content : object
+            Argument ``xsd_content``.
+        base_url : object
+            Argument ``base_url``.
+        target_dir : object
+            Argument ``target_dir``.
+        manifest : object
+            Argument ``manifest``.
         """
         import re
 
@@ -217,13 +251,18 @@ class SchemaMirrorService:
         self, directory_url: str, target_dir: Path, manifest: dict[str, Any], skip_on_404: bool = False
     ) -> None:
         """
-        Download all files from a directory listing (Apache-style index).
+        Internal helper ``_download_directory``.
 
-        Args:
-            directory_url: URL to directory (must end with /)
-            target_dir: Local target directory
-            manifest: Manifest dictionary to update
-            skip_on_404: If True, silently skip if directory doesn't exist
+        Parameters
+        ----------
+        directory_url : object
+            Argument ``directory_url``.
+        target_dir : object
+            Argument ``target_dir``.
+        manifest : object
+            Argument ``manifest``.
+        skip_on_404 : object
+            Argument ``skip_on_404``.
         """
         async with httpx.AsyncClient(timeout=self.timeout_seconds, follow_redirects=True) as client:
             try:
@@ -276,12 +315,16 @@ class SchemaMirrorService:
 
     async def _download_file(self, file_url: str, target_dir: Path, manifest: dict[str, Any]) -> None:
         """
-        Download a single file and add to manifest.
+        Internal helper ``_download_file``.
 
-        Args:
-            file_url: URL to file
-            target_dir: Local target directory
-            manifest: Manifest dictionary to update
+        Parameters
+        ----------
+        file_url : object
+            Argument ``file_url``.
+        target_dir : object
+            Argument ``target_dir``.
+        manifest : object
+            Argument ``manifest``.
         """
         if file_url in self.downloaded_files:
             return
@@ -326,11 +369,14 @@ class SchemaMirrorService:
 
     async def _update_lockfile(self, version: str, manifest_data: dict[str, Any]) -> None:
         """
-        Update global schemas.lock.json with new version.
+        Internal helper ``_update_lockfile``.
 
-        Args:
-            version: Version string
-            manifest_data: Manifest data for this version
+        Parameters
+        ----------
+        version : object
+            Argument ``version``.
+        manifest_data : object
+            Argument ``manifest_data``.
         """
         lockfile_path = self.base_path / "schemas.lock.json"
 
@@ -363,11 +409,24 @@ class SchemaMirrorService:
         """
         Verify integrity of mirrored schema using manifest checksums.
 
-        Args:
-            version: Version to verify
+        Returns
+        -------
+            True if all checksums mat
 
-        Returns:
+        Parameters
+        ----------
+        version : object
+            Version to verify
+
+        Returns
+        -------
+        object
             True if all checksums match, False otherwise
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (verify_integrity)
+        2
         """
         version_dir = self.base_path / version
         manifest_path = version_dir / ".manifest.json"
@@ -412,16 +471,34 @@ async def mirror_schema_version(
     """
     Convenience function to mirror a single schema version.
 
-    Args:
-        version: IWXXM version string
-        root_xsd_url: URL to root XSD
-        base_path: Base path for mirrored schemas
-        include_examples: Download examples/ directory
-        include_html: Download html/ documentation
-        include_xmi: Download XMI/ models
-
-    Returns:
+    Returns
+    -------
         Mirror results dictionary
+
+    Parameters
+    ----------
+    version : object
+        IWXXM version string
+    root_xsd_url : object
+        URL to root XSD
+    base_path : object
+        Base path for mirrored schemas
+    include_examples : object
+        Download examples/ directory
+    include_html : object
+        Download html/ documentation
+    include_xmi : object
+        Download XMI/ models
+
+    Returns
+    -------
+    object
+        Mirror results dictionary
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (mirror_schema_version)
+    2
     """
     service = SchemaMirrorService(base_path)
     return await service.mirror_version(

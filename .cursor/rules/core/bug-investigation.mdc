@@ -15,7 +15,7 @@ Modal log error), follow [`.cursor/skills/bug-investigation/SKILL.md`](../skills
 | Artifact | Path |
 |----------|------|
 | Bug report | `docs/bug-reports/BUG-YYYY-MM-DD-[slug].md` (from `docs/bug-reports/_template.md`) |
-| Repro / regression test | `tests/bugs/test_bug_YYYY_MM_DD_[slug].py` |
+| Repro / regression test | `tests/bugs/<theme>/test_bug_YYYY_MM_DD_<slug>.py` |
 | Fix | Minimal change under `src/` (or approved config); one bug per PR when possible |
 
 Bug repro tests live under `tests/` and are in CI **Quality Gates** ruff format scope

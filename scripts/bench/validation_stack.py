@@ -24,13 +24,7 @@ from tac2iwxxm import convert
 
 RepoRoot = Path(__file__).resolve().parents[2]
 _FIXTURES = RepoRoot / "packages" / "tac2iwxxm" / "tests" / "fixtures"
-_REPORT_PATH = (
-    RepoRoot
-    / "docs"
-    / "engineering"
-    / "perf"
-    / "layer-cost-matrix.md"
-)
+_REPORT_PATH = RepoRoot / "docs" / "engineering" / "perf" / "layer-cost-matrix.md"
 
 LayerId = Literal[
     "lint",
@@ -323,9 +317,7 @@ def measure_layer(
         p50, p95 = _time_call(_convert, iterations)
         return LayerTiming(layer, fixture.id, p50, p95, "ok")
 
-    xml, xml_note = _resolve_xml(
-        fixture, iwxxm_version=iwxxm_version, profile=profile
-    )
+    xml, xml_note = _resolve_xml(fixture, iwxxm_version=iwxxm_version, profile=profile)
     if xml is None:
         return LayerTiming(
             layer=layer,
@@ -482,7 +474,9 @@ def write_layer_cost_report(
     for layer in LAYERS:
         row = [layer]
         for fid in FIXTURES:
-            cell = next(c for c in matrix.cells if c.layer == layer and c.fixture == fid)
+            cell = next(
+                c for c in matrix.cells if c.layer == layer and c.fixture == fid
+            )
             if cell.status != "ok":
                 row.append(cell.status)
             else:
@@ -501,7 +495,9 @@ def write_layer_cost_report(
     for layer in LAYERS:
         row = [layer]
         for fid in FIXTURES:
-            cell = next(c for c in matrix.cells if c.layer == layer and c.fixture == fid)
+            cell = next(
+                c for c in matrix.cells if c.layer == layer and c.fixture == fid
+            )
             if cell.status != "ok":
                 row.append(cell.status)
             else:
@@ -511,7 +507,9 @@ def write_layer_cost_report(
     lines.extend(["", "## Human-readable p95", ""])
     for layer in LAYERS:
         for fid in FIXTURES:
-            cell = next(c for c in matrix.cells if c.layer == layer and c.fixture == fid)
+            cell = next(
+                c for c in matrix.cells if c.layer == layer and c.fixture == fid
+            )
             lines.append(
                 f"- **{layer}** / **{fid}**: {_fmt_seconds(cell.p95_s)} "
                 f"({cell.status}"

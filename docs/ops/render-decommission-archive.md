@@ -44,7 +44,7 @@ See [doks-cutover-soak-checklist.md](doks-cutover-soak-checklist.md) and `config
 ## CI / Blueprint
 
 - `.github/workflows/ci-cd.yml` **Deploy** job pushes GHCR images only; **Render deploy hooks retired** (T6.5).
-- `render.yaml` retained as historical Blueprint reference until a later cleanup ticket deletes it.
+- `render.yaml` is removed. Live deploy is `deploy/doks/`.
 - Resume path (emergency only): Render Dashboard or `POST /v1/services/{id}/resume` with `RENDER_API_KEY`.
 
 ## Residual (not T6.5)

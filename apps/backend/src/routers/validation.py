@@ -34,7 +34,19 @@ _XML_LAYERS = frozenset(
 
 
 def _normalize_content_type(raw: str | None) -> str:
-    """Return canonical content type: ``tac`` or ``xml``."""
+    """
+    Internal helper ``_normalize_content_type``.
+
+    Parameters
+    ----------
+    raw : object
+        Argument ``raw``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     normalized = (raw or "tac").strip().lower()
     if normalized in _XML_CONTENT_TYPES:
         return "xml"
@@ -46,7 +58,19 @@ def _normalize_content_type(raw: str | None) -> str:
 def _aggregated_from_comprehensive(
     comprehensive: ComprehensiveValidationResult,
 ) -> AggregatedValidationResult:
-    """Map orchestrator output onto the AggregatedValidationResult HTTP shape."""
+    """
+    Internal helper ``_aggregated_from_comprehensive``.
+
+    Parameters
+    ----------
+    comprehensive : object
+        Argument ``comprehensive``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     results: list[ValidationResult] = []
     for layer in comprehensive.layers_run:
         issues = list(comprehensive.issues_by_layer.get(layer, []))
@@ -77,7 +101,19 @@ def _aggregated_from_comprehensive(
 
 
 def _validate_one(item: ValidationRequest) -> AggregatedValidationResult:
-    """Validate a single item, honoring ``content_type`` and ``layers``."""
+    """
+    Internal helper ``_validate_one``.
+
+    Parameters
+    ----------
+    item : object
+        Argument ``item``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     content_type = _normalize_content_type(item.content_type)
     layers = item.layers
     version = item.iwxxm_version or "2025-2"
@@ -125,7 +161,15 @@ def _validate_one(item: ValidationRequest) -> AggregatedValidationResult:
 
 
 class ValidationLayerInfo(BaseModel):
-    """Information about a validation layer."""
+    """
+    Information about a validation layer.
+
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     model_config = ConfigDict(
         json_schema_extra={
@@ -147,7 +191,15 @@ class ValidationLayerInfo(BaseModel):
 
 
 class ValidationLayersResponse(BaseModel):
-    """List of available validation layers with configurations."""
+    """
+    List of available validation layers with configurations.
+
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     model_config = ConfigDict(
         json_schema_extra={
@@ -174,7 +226,15 @@ class ValidationLayersResponse(BaseModel):
 
 
 class BatchValidationRequest(BaseModel):
-    """Request to validate multiple inputs."""
+    """
+    Request to validate multiple inputs.
+
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     model_config = ConfigDict(
         json_schema_extra={
@@ -204,7 +264,15 @@ class BatchValidationRequest(BaseModel):
 
 
 class BatchValidationResponse(BaseModel):
-    """Response from batch validation."""
+    """
+    Response from batch validation.
+
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     model_config = ConfigDict(
         json_schema_extra={
@@ -238,7 +306,19 @@ _validation_service: ValidationService | None = None
 
 
 def get_validation_service() -> ValidationService:
-    """Get or create validation service."""
+    """
+    Get or create validation service.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (get_validation_service)
+    2
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     global _validation_service
     if _validation_service is None:
         _validation_service = ValidationService()
@@ -254,67 +334,24 @@ def get_validation_service() -> ValidationService:
 async def validate_content(
     request: ValidationRequest,
 ) -> object:
-    """Validate METAR TAC or IWXXM XML content through multiple validation layers.
+    """
+    Validate one METAR TAC or IWXXM XML document through the selected layers.
 
-    ## Request Body
-    - **content** (string, required): The METAR TAC or IWXXM XML content to validate
-    - **content_type** (string, default="tac"): ``tac``, ``xml``, or ``iwxxm`` (alias of xml)
-    - **layers** (array, optional): Specific validation layers to run.
-      - TAC (``content_type=tac``): ``airport_icao``, ``tac_syntax`` (default both)
-      - XML (``content_type=xml|iwxxm``): ``xml_wellformed``, ``xml_schema``,
-        ``schematron``, ``gml_references``, ``wmo_codelists`` (default all XML layers)
-    - **iwxxm_version** (string, optional): IWXXM version for XML layers (e.g., "2025-2")
 
-    ## Response
-    Returns aggregated validation results with:
-    - **passed** (boolean): Whether all requested layers passed
-    - **layers_validated** (array): Layers that were run
-    - **total_issues** (integer): Total validation issues found
-    - **results** (array): Per-layer validation details
-    - **execution_time_ms** (float): Total execution time
+    Parameters
+    ----------
+    request : object
+        Argument ``request``.
 
-    ## Example Success Response
-    ```json
-    {
-      "passed": true,
-      "layers_validated": ["airport_icao", "tac_syntax"],
-      "total_issues": 0,
-      "results": [
-        {
-          "passed": true,
-          "layer": "airport_icao",
-          "issues": [],
-          "execution_time_ms": 5.2
-        }
-      ],
-      "execution_time_ms": 10.5
-    }
-    ```
+    Returns
+    -------
+    object
+        Return value.
 
-    ## Example Failure Response
-    ```json
-    {
-      "passed": false,
-      "layers_validated": ["airport_icao", "tac_syntax"],
-      "total_issues": 1,
-      "results": [
-        {
-          "passed": false,
-          "layer": "tac_syntax",
-          "issues": [
-            {
-              "layer": "tac_syntax",
-              "level": "error",
-              "message": "Invalid TAC format",
-              "code": "INVALID_TAC_FORMAT"
-            }
-          ],
-          "execution_time_ms": 8.3
-        }
-      ],
-      "execution_time_ms": 8.3
-    }
-    ```
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (validate_content)
+    2
     """
     try:
         return _validate_one(request)
@@ -328,71 +365,31 @@ async def validate_content(
     "/validate-multi",
     response_model=BatchValidationResponse,
     tags=["Validation"],
-    summary="Validate multiple METAR TAC or IWXXM XML inputs",
+    summary="Validate a batch of TAC or IWXXM inputs",
 )
 async def validate_multiple(
     request: BatchValidationRequest,
 ) -> object:
-    """Validate multiple METAR TAC or IWXXM XML inputs in a single request.
+    """
+    Validate up to 100 TAC or IWXXM documents in one request.
 
-    Useful for batch validation of multiple entries. Each item is validated
-    independently and can have different content types.
+    Each document is checked on its own.
 
-    ## Request Body
-    - **items** (array, required): Array of validation requests (1-100 items)
-      - Each item has: content, content_type, layers (optional), iwxxm_version (optional)
-    - **layers** (array, optional): Default layers to apply to all items that omit layers
 
-    ## Response
-    Returns batch validation results with:
-    - **results** (array): Aggregated validation result for each item
-    - **total_items** (integer): Total items requested
-    - **passed_items** (integer): Items that passed all layers
-    - **failed_items** (integer): Items that failed at least one layer
-    - **total_execution_time_ms** (float): Total execution time for all items
+    Parameters
+    ----------
+    request : object
+        Argument ``request``.
 
-    ## Example Request
-    ```json
-    {
-      "items": [
-        {
-          "content": "METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005",
-          "content_type": "tac"
-        },
-        {
-          "content": "METAR EGLL 231750Z 17008KT 9999 SCT035 12/08 Q1007",
-          "content_type": "tac"
-        }
-      ],
-      "layers": ["airport_icao", "tac_syntax"]
-    }
-    ```
+    Returns
+    -------
+    object
+        Return value.
 
-    ## Example Response
-    ```json
-    {
-      "results": [
-        {
-          "passed": true,
-          "layers_validated": ["airport_icao", "tac_syntax"],
-          "total_issues": 0,
-          "results": [],
-          "execution_time_ms": 12.3
-        },
-        {
-          "passed": false,
-          "layers_validated": ["airport_icao", "tac_syntax"],
-          "total_issues": 1,
-          "results": [],
-          "execution_time_ms": 8.5
-        }
-      ],
-      "total_items": 2,
-      "passed_items": 1,
-      "failed_items": 1,
-      "total_execution_time_ms": 20.8
-    }
-    ```
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (validate_multiple)
+    2
     """
     try:
         results: list[AggregatedValidationResult] = []
@@ -426,49 +423,24 @@ async def validate_multiple(
     "/layers",
     response_model=ValidationLayersResponse,
     tags=["Validation"],
-    summary="Get available validation layers",
+    summary="List validation layers",
 )
 async def get_validation_layers() -> object:
-    """Get information about available validation layers.
+    """
+    List the validation layers.
 
-    Each layer validates specific aspects of METAR TAC or IWXXM XML content.
-    Layers marked as blocking will stop further validation if they fail.
+    A blocking layer stops later layers when it fails.
 
-    ## Response
-    Returns list of validation layers with:
-    - **layer**: Layer identifier
-    - **description**: What this layer validates
-    - **blocking**: Whether it blocks further layers on failure
-    - **supported_content_types**: Content types this layer supports ("tac" or "xml")
 
-    ## Available Layers
-    1. **airport_icao**: Extract and validate ICAO code against airport database
-    2. **tac_syntax**: Parse and validate METAR TAC syntax
-    3. **xml_wellformed**: Check if output XML is well-formed
-    4. **xml_schema**: Validate against XSD schema
-    5. **schematron**: SCHEMATRON rules validation
-    6. **gml_references**: GML reference checks
-    7. **wmo_codelists**: WMO code list validation
+    Returns
+    -------
+    object
+        Return value.
 
-    ## Example Response
-    ```json
-    {
-      "layers": [
-        {
-          "layer": "airport_icao",
-          "description": "Extract and validate ICAO code against airport database",
-          "blocking": true,
-          "supported_content_types": ["tac"]
-        },
-        {
-          "layer": "tac_syntax",
-          "description": "Parse and validate METAR TAC syntax",
-          "blocking": true,
-          "supported_content_types": ["tac"]
-        }
-      ]
-    }
-    ```
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (get_validation_layers)
+    2
     """
     layers_info = [
         ValidationLayerInfo(

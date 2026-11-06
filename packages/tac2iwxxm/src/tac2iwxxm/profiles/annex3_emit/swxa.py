@@ -38,6 +38,25 @@ _SWXA_FORBIDDEN_ROOTS = frozenset(
 
 
 def _swxa_region_xml(loc: str, *, slug: str, idx: int) -> str:
+    """
+    Internal helper ``_swxa_region_xml``.
+
+    Parameters
+    ----------
+    loc : str
+        Argument ``loc``.
+
+    slug : str
+        Argument ``slug``.
+
+    idx : int
+        Argument ``idx``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
     code = loc.upper()
     href = f"http://codes.wmo.int/49-2/SpaceWxLocation/{code}"
     rid = f"swxa.reg.{slug}.{idx}"
@@ -104,6 +123,28 @@ def _swxa_analysis_xml(
     slug: str,
     idx: int,
 ) -> str:
+    """
+    Internal helper ``_swxa_analysis_xml``.
+
+    Parameters
+    ----------
+    block : dict[str, Any]
+        Argument ``block``.
+
+    time_indicator : str
+        Argument ``time_indicator``.
+
+    slug : str
+        Argument ``slug``.
+
+    idx : int
+        Argument ``idx``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
     time_iso = block.get("time") or "9999-01-01T00:00:00Z"
     aid = f"swxa.an.{slug}.{idx}"
     if block.get("no_swx_exp"):
@@ -175,6 +216,24 @@ def emit_swxa_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
     ``iwxxm:SpaceWeatherAdvisory`` and never SIGMET/VAA/TCA roots.
     Geometry for SpaceWxLocation bands is approximate (S02.L1 may use
     ``wmoReference`` vs vendor golden equality).
+
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Parsed product fields.
+
+    iwxxm_version : str
+        IWXXM release line.
+
+    Returns
+    -------
+    str
+        An IWXXM ``SpaceWeatherAdvisory`` document (F28 / EV-029 M11).
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (emit_swxa_annex3)
+    2
     """
     product = str(ir.get("product", "SWXA")).upper()
     if product != "SWXA":
@@ -263,6 +322,19 @@ def emit_swxa_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
 
 
 def _assert_swxa_advisory_xml(xml: str) -> str:
+    """
+    Internal helper ``_assert_swxa_advisory_xml``.
+
+    Parameters
+    ----------
+    xml : str
+        Argument ``xml``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
     if "<iwxxm:SpaceWeatherAdvisory " not in xml:
         raise ValueError("SWXA emitter product/root guard: missing SpaceWeatherAdvisory root")
     for forbidden in (

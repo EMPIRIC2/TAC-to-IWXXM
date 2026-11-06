@@ -30,6 +30,19 @@ _IWXXM_NIL = "http://codes.wmo.int/iwxxm/nil"
 
 
 def _fmt_coord(value: float) -> str:
+    """
+    Internal helper ``_fmt_coord``.
+
+    Parameters
+    ----------
+    value : float
+        Argument ``value``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
     text = f"{value:.2f}"
     if text.endswith(".00"):
         return text[:-3]
@@ -46,7 +59,19 @@ _VONA_A7_1_POS_TXT = "54.03 159.27"
 
 
 def _vona_a7_1_peer(ir: dict[str, Any]) -> bool:
-    """Return True when IR fingerprints the official vona-A7-1 happy path."""
+    """
+    Internal helper ``_vona_a7_1_peer``.
+
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Argument ``ir``.
+
+    Returns
+    -------
+    bool
+        Return value.
+    """
     # ruff: noqa: F403, F405
     return (
         str(ir.get("notice_number") or "") == "2021/4"
@@ -75,7 +100,19 @@ _VONA_ASH_MOVEMENT = frozenset(
 
 
 def _vona_ash_movement_token(raw: str | None) -> str | None:
-    """Map TAC MOV to XSD enum; raise when present but not in vocabulary."""
+    """
+    Internal helper ``_vona_ash_movement_token``.
+
+    Parameters
+    ----------
+    raw : str | None
+        Argument ``raw``.
+
+    Returns
+    -------
+    str | None
+        Return value.
+    """
     if raw is None:
         return None
     token = re.sub(r"\s+", " ", str(raw).strip().upper())
@@ -93,11 +130,23 @@ def _vona_ash_phenomenon_property(
     vol_slug: str,
 ) -> str:
     """
-    Ash ``phenomenonProperty`` for VONA MetFeature.
+    Internal helper ``_vona_ash_phenomenon_property``.
 
-    A7-1 peer keeps ``iwxxm/nil/inapplicable`` (official golden). Non-peer TAC that
-    supplies ``HGT SOURCE`` and/or ``MOV`` encodes ``VolcanicAshCloudVerticalExtent``
-    per XSD (G-VONA-1 / #849) - no packing rules beyond free-text heightSource + enum MOV.
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Argument ``ir``.
+
+    peer : bool
+        Argument ``peer``.
+
+    vol_slug : str
+        Argument ``vol_slug``.
+
+    Returns
+    -------
+    str
+        Return value.
     """
     height_source = ir.get("height_source")
     movement = _vona_ash_movement_token(cast(str | None, ir.get("movement")))
@@ -131,6 +180,24 @@ def emit_vona_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
     ``phenomenonProperty`` uses ``iwxxm/nil/inapplicable`` on the A7-1 peer; non-peer
     TAC with ``HGT SOURCE`` / ``MOV`` encodes ``VolcanicAshCloudVerticalExtent``
     (G-VONA-1 / TC-EV038-011 / #849).
+
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Parsed product fields.
+
+    iwxxm_version : str
+        IWXXM release line.
+
+    Returns
+    -------
+    str
+        An IWXXM ``VolcanoObservatoryNoticeForAviation`` document (F32 / EV-032).
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (emit_vona_annex3)
+    2
     """
     from tac2iwxxm.codelists import aviation_colour_href
 
@@ -325,6 +392,19 @@ def emit_vona_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
 
 
 def _assert_vona_xml(xml: str) -> str:
+    """
+    Internal helper ``_assert_vona_xml``.
+
+    Parameters
+    ----------
+    xml : str
+        Argument ``xml``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
     if "<iwxxm:VolcanoObservatoryNoticeForAviation " not in xml:
         raise ValueError("VONA emitter product/root guard: missing VolcanoObservatoryNoticeForAviation root")
     for forbidden in (

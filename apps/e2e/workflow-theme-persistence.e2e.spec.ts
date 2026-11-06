@@ -10,7 +10,10 @@ test.describe('Workflow: Theme Behavior And Persistence', () => {
   }) => {
     await openPublicConverter(page);
 
-    const themeSwitch = page.getByRole('switch', { name: /Switch to .* mode/i });
+    // targets the theme mode switch (light or dark)
+    const themeSwitch = page.getByRole('switch', {
+      name: /^Switch to (light|dark) mode$/,
+    });
     await expect(themeSwitch).toBeVisible();
 
     const initialState = await themeSwitch.getAttribute('aria-checked');
@@ -25,7 +28,10 @@ test.describe('Workflow: Theme Behavior And Persistence', () => {
     await page.reload();
     await openPublicConverter(page);
 
-    const afterReload = page.getByRole('switch', { name: /Switch to .* mode/i });
+    // targets the theme mode switch after reload
+    const afterReload = page.getByRole('switch', {
+      name: /^Switch to (light|dark) mode$/,
+    });
     await expect(afterReload).toHaveAttribute('aria-checked', toggledState ?? '');
   });
 });

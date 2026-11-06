@@ -51,8 +51,6 @@
 | `scripts/env/verify-sync.sh` | `tests/bats/env/verify-sync.bats` |
 | `scripts/frontend/audit-ci.sh` | `tests/bats/frontend/audit-ci.bats` |
 | `scripts/frontend/prepare-config.sh` | `tests/bats/frontend/prepare-config.bats` |
-| `scripts/launchers/launch_api.sh` | `tests/bats/launchers/launch_api.bats` |
-| `scripts/launchers/launch_gui.sh` | `tests/bats/launchers/launch_gui.bats` |
 | `scripts/openapi/check_openapi_types.sh` | `tests/bats/openapi/check_openapi_types.bats` |
 | `scripts/ops/apply_doks_work_session_ssl_fix.sh` | `tests/bats/ops/apply_doks_work_session_ssl_fix.bats` |
 | `scripts/supabase/apply-advisor-migrations.sh` | `tests/bats/supabase/apply-advisor-migrations.bats` |
@@ -61,4 +59,4 @@
 | `scripts/supabase/local-dev.sh` | `tests/bats/supabase/local-dev.bats` |
 | `scripts/vendor/sync-iwxxm.sh` | `tests/bats/vendor/sync-iwxxm.bats` |
 
-**Count:** 57 scripts / 57 bats
+**Count:** 55 scripts / 55 bats

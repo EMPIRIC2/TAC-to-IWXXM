@@ -3,6 +3,8 @@
  */
 import { describe, expect, it } from 'vitest';
 import {
+  convertFieldsFromParamsBar,
+  optionalTrim,
   consoleLevelPasses,
   isValidBulletinId,
   isValidIssuingCenter,
@@ -65,5 +67,53 @@ describe('convertParams', () => {
     expect(isValidIssuingCenter('')).toBe(true);
     expect(isValidIssuingCenter('kwbc')).toBe(true);
     expect(isValidIssuingCenter('KW1C')).toBe(false);
+  });
+
+  it('maps the params bar onto convert fields and omits blank identifiers', () => {
+    const bar = {
+      bulletinId: '  SAAA00 ',
+      issuingCenter: '',
+      reportVariant: ' SPECI ',
+      profile: 'icao',
+      exchangeProfile: 'default',
+      presetId: '',
+      conversionLibraryId: ' LIB.CONVERSION.ICAO_2025 ',
+      tacValidationLibraryId: '',
+      iwxxmValidationLibraryId: '',
+      disseminationLibraryId: '',
+      decodingLibraryId: '',
+      iwxxmVersion: '2025-2',
+      strictValidation: true,
+      includeNilReasons: true,
+      onError: 'fail' as const,
+      logLevel: 'WARNING' as const,
+    };
+    expect(
+      convertFieldsFromParamsBar(bar, {
+        softPreview: false,
+        propagateResidualsToRemarks: true,
+      }),
+    ).toMatchObject({
+      bulletinId: 'SAAA00',
+      issuingCenter: undefined,
+      reportVariant: 'SPECI',
+      conversionLibraryId: 'LIB.CONVERSION.ICAO_2025',
+      presetId: undefined,
+      validateOutput: true,
+      validationLevel: 'comprehensive',
+      stopOnError: true,
+      includeNilReasons: true,
+      logLevel: 'WARNING',
+      preview: false,
+      propagateResidualsToRemarks: true,
+    });
+    expect(
+      convertFieldsFromParamsBar(bar, {
+        softPreview: true,
+        propagateResidualsToRemarks: false,
+      }).validateOutput,
+    ).toBe(false);
+    expect(optionalTrim(undefined)).toBeUndefined();
+    expect(optionalTrim('   ')).toBeUndefined();
   });
 });

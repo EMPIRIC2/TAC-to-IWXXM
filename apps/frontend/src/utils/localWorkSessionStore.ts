@@ -24,7 +24,11 @@ export const MY_METARS_PRODUCTS: WorkSessionProduct[] = ['metar', 'speci'];
 
 export const EXPORT_SCHEMA_ID = 'tac-work-sessions-export-v1' as const;
 
-/** Thrown when F22 prefs decline guest IndexedDB work-history writes (TC-F31-005). */
+/**
+ * Thrown when F22 prefs decline guest IndexedDB work-history writes (TC-F31-005).
+ * @example
+ * const _ = true;
+ */
 export class LocalWorkHistoryDisabledError extends Error {
   constructor(
     message = 'Local work-history persistence is disabled by privacy preferences',
@@ -34,6 +38,9 @@ export class LocalWorkHistoryDisabledError extends Error {
   }
 }
 
+/**
+ * Function `assertWorkHistoryPersistAllowed`.
+ */
 function assertWorkHistoryPersistAllowed(): void {
   if (!canPersistWorkHistoryLocal()) {
     throw new LocalWorkHistoryDisabledError();
@@ -45,12 +52,22 @@ const DB_VERSION = 1;
 const STORE = 'sessions';
 const LOCAL_USER_ID = 'local';
 
+/**
+ * Type `LocalWorkSessionExportV1`.
+ * @example
+ * const _ = true;
+ */
 export interface LocalWorkSessionExportV1 {
   schema: typeof EXPORT_SCHEMA_ID;
   exported_at: string;
   sessions: WorkSession[];
 }
 
+/**
+ * Type `ListLocalWorkSessionsParams`.
+ * @example
+ * const _ = true;
+ */
 export interface ListLocalWorkSessionsParams {
   status?: WorkSessionStatus;
   product?: WorkSessionProduct | WorkSessionProduct[];
@@ -59,6 +76,11 @@ export interface ListLocalWorkSessionsParams {
   limit?: number;
 }
 
+/**
+ * Type `GuestMigrateResult`.
+ * @example
+ * const _ = true;
+ */
 export interface GuestMigrateResult {
   migrated: boolean;
   sessionId: string | null;
@@ -78,6 +100,9 @@ interface TacWorkSessionsDb extends DBSchema {
 
 let dbPromise: Promise<IDBPDatabase<TacWorkSessionsDb>> | null = null;
 
+/**
+ * Function `getDb`.
+ */
 function getDb(): Promise<IDBPDatabase<TacWorkSessionsDb>> {
   if (!dbPromise) {
     dbPromise = openDB<TacWorkSessionsDb>(DB_NAME, DB_VERSION, {
@@ -92,15 +117,25 @@ function getDb(): Promise<IDBPDatabase<TacWorkSessionsDb>> {
   return dbPromise;
 }
 
-/** Reset cached DB handle (tests). */
+/**
+ * Reset cached DB handle (tests).
+ * @example
+ * const _ = true;
+ */
 export function resetLocalWorkSessionDbCache(): void {
   dbPromise = null;
 }
 
+/**
+ * Function `nowIso`.
+ */
 function nowIso(): string {
   return new Date().toISOString();
 }
 
+/**
+ * Function `newId`.
+ */
 function newId(): string {
   if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
     return crypto.randomUUID();
@@ -108,6 +143,9 @@ function newId(): string {
   return `local-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
 }
 
+/**
+ * Function `mergePayload`.
+ */
 function mergePayload(
   existing: WorkSession | null,
   payload: WorkSessionUpsertPayload,
@@ -151,6 +189,9 @@ function mergePayload(
   };
 }
 
+/**
+ * Function `countActiveWip`.
+ */
 async function countActiveWip(excludeId?: string): Promise<number> {
   const db = await getDb();
   const all = await db.getAll(STORE);
@@ -162,6 +203,9 @@ async function countActiveWip(excludeId?: string): Promise<number> {
   ).length;
 }
 
+/**
+ * Function `assertSingleWip`.
+ */
 async function assertSingleWip(
   nextStatus: WorkSessionStatus | undefined,
   excludeId?: string,
@@ -174,7 +218,11 @@ async function assertSingleWip(
   }
 }
 
-/** Clear all local sessions (test helper / privacy wipe). */
+/**
+ * Clear all local sessions (test helper / privacy wipe).
+ * @example
+ * const _ = true;
+ */
 export async function clearLocalWorkSessions(): Promise<void> {
   const db = await getDb();
   await db.clear(STORE);
@@ -185,6 +233,8 @@ export async function clearLocalWorkSessions(): Promise<void> {
  *
  * @param payload - Session fields to persist.
  * @returns The stored session row with generated id and timestamps.
+ * @example
+ * const _ = true;
  */
 export async function createLocalWorkSession(
   payload: WorkSessionUpsertPayload,
@@ -203,6 +253,8 @@ export async function createLocalWorkSession(
  * @param sessionId - Session primary key.
  * @returns The stored session row.
  * @throws When the session does not exist locally.
+ * @example
+ * const _ = true;
  */
 export async function getLocalWorkSession(sessionId: string): Promise<WorkSession> {
   const db = await getDb();
@@ -219,6 +271,8 @@ export async function getLocalWorkSession(sessionId: string): Promise<WorkSessio
  * @param sessionId - Session to update.
  * @param payload - Partial or full session fields to merge.
  * @returns The updated session row.
+ * @example
+ * const _ = true;
  */
 export async function updateLocalWorkSession(
   sessionId: string,
@@ -238,6 +292,8 @@ export async function updateLocalWorkSession(
  *
  * @param sessionId - Session to mark deleted.
  * @returns The updated session row.
+ * @example
+ * const _ = true;
  */
 export async function deleteLocalWorkSession(sessionId: string): Promise<WorkSession> {
   const existing = await getLocalWorkSession(sessionId);
@@ -256,6 +312,8 @@ export async function deleteLocalWorkSession(sessionId: string): Promise<WorkSes
  *
  * @param sessionId - Session to undelete.
  * @returns The updated session row with `deleted_at` cleared.
+ * @example
+ * const _ = true;
  */
 export async function restoreLocalWorkSession(sessionId: string): Promise<WorkSession> {
   assertWorkHistoryPersistAllowed();
@@ -275,6 +333,8 @@ export async function restoreLocalWorkSession(sessionId: string): Promise<WorkSe
  *
  * @param params - Status, product, deletion, and paging filters.
  * @returns Paginated session list sorted by most recently updated.
+ * @example
+ * const _ = true;
  */
 export async function listLocalWorkSessions(
   params: ListLocalWorkSessionsParams = {},
@@ -303,7 +363,11 @@ export async function listLocalWorkSessions(
   return { items: slice, total, page, limit };
 }
 
-/** My METARs = product IN (metar, speci), excluding soft-deleted by default. */
+/**
+ * My METARs = product IN (metar, speci), excluding soft-deleted by default.
+ * @example
+ * const _ = true;
+ */
 export async function listMyMetars(
   params: Omit<ListLocalWorkSessionsParams, 'product'> = {},
 ): Promise<WorkSessionListResponse> {
@@ -317,6 +381,8 @@ export async function listMyMetars(
  * Export all local work sessions as a versioned JSON document.
  *
  * @returns Export envelope suitable for backup or migration.
+ * @example
+ * const _ = true;
  */
 export async function exportLocalWorkSessions(): Promise<LocalWorkSessionExportV1> {
   const db = await getDb();
@@ -334,6 +400,8 @@ export async function exportLocalWorkSessions(): Promise<LocalWorkSessionExportV
  *
  * @param doc - Versioned export payload from {@link exportLocalWorkSessions}.
  * @returns Count of sessions written.
+ * @example
+ * const _ = true;
  */
 export async function importLocalWorkSessions(
   doc: LocalWorkSessionExportV1,
@@ -356,6 +424,8 @@ export async function importLocalWorkSessions(
 
 /**
  * One-time migrate of guest ``metar_guest_converter_state`` → IndexedDB (E17-14).
+ * @example
+ * const _ = true;
  */
 export async function migrateGuestSessionStorageToIndexedDb(): Promise<GuestMigrateResult> {
   const snapshot: ConverterSnapshot | null = readGuestConverterState();

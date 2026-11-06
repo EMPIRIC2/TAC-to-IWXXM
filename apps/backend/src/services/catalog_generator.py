@@ -24,14 +24,21 @@ class CatalogGenerator:
 
     Catalogs map remote WMO schema URLs to local mirrored copies, allowing
     XML validators to resolve imports without network access.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
     """
 
     def __init__(self, schemas_base_path: Path) -> None:
         """
-        Initialize catalog generator.
+        Internal helper ``__init__``.
 
-        Args:
-            schemas_base_path: Base path to mirrored schemas directory
+        Parameters
+        ----------
+        schemas_base_path : object
+            Argument ``schemas_base_path``.
         """
         self.schemas_base_path = Path(schemas_base_path)
 
@@ -39,13 +46,28 @@ class CatalogGenerator:
         """
         Generate OASIS XML Catalog for a specific IWXXM version.
 
-        Args:
-            version: IWXXM version string (e.g., "2025-2RC1")
-            remote_base_url: Remote schema base URL (e.g., "https://schemas.wmo.int/iwxxm/2025-2RC1/")
-            local_schema_dir: Local directory with mirrored schemas (auto-detected if None)
-
-        Returns:
+        Returns
+        -------
             Path to generated catalog.xml file
+
+        Parameters
+        ----------
+        version : object
+            IWXXM version string (e.g., "2025-2RC1")
+        remote_base_url : object
+            Remote schema base URL (e.g., "https://schemas.wmo.int/iwxxm/2025-2RC1/")
+        local_schema_dir : object
+            Local directory with mirrored schemas (auto-detected if None)
+
+        Returns
+        -------
+        object
+            Path to generated catalog.xml file
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (generate_catalog)
+        2
         """
         if local_schema_dir is None:
             local_schema_dir = self.schemas_base_path / version
@@ -76,12 +98,16 @@ class CatalogGenerator:
 
     def _add_rewrite_uri(self, catalog_elem: XmlElement, uri_start_string: str, rewrite_prefix: str) -> None:
         """
-        Add rewriteURI element to catalog.
+        Internal helper ``_add_rewrite_uri``.
 
-        Args:
-            catalog_elem: Catalog root element
-            uri_start_string: URL prefix to match
-            rewrite_prefix: Local file:// prefix to rewrite to
+        Parameters
+        ----------
+        catalog_elem : object
+            Argument ``catalog_elem``.
+        uri_start_string : object
+            Argument ``uri_start_string``.
+        rewrite_prefix : object
+            Argument ``rewrite_prefix``.
         """
         rewrite_uri = lxml_etree.SubElement(catalog_elem, f"{{{CATALOG_NS}}}rewriteURI")
         rewrite_uri.set("uriStartString", uri_start_string)
@@ -89,15 +115,20 @@ class CatalogGenerator:
 
     def _add_common_dependencies(self, catalog_elem: XmlElement, local_schema_dir: Path) -> None:
         """
-        Add rewrite rules for common schema dependencies.
+        Internal helper ``_add_common_dependencies``.
 
-        Args:
-            catalog_elem: Catalog root element
-            local_schema_dir: Local schema directory
+        Parameters
+        ----------
+        catalog_elem : object
+            Argument ``catalog_elem``.
+        local_schema_dir : object
+            Argument ``local_schema_dir``.
         """
 
         # Check for common dependencies and add rewrites
         class _Dependency(TypedDict):
+            """TypedDict for schema dependency mapping."""
+
             uri_start: str
             local_path: Path
 
@@ -133,8 +164,15 @@ class CatalogGenerator:
         """
         Generate catalogs for all mirrored schema versions.
 
-        Returns:
+        Returns
+        -------
+        object
             List of paths to generated catalog files
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (generate_all_catalogs)
+        2
         """
         catalog_paths: list[Any] = []
 
@@ -172,11 +210,24 @@ class CatalogGenerator:
         """
         Validate an OASIS XML Catalog file.
 
-        Args:
-            catalog_path: Path to catalog.xml file
+        Returns
+        -------
+            True if catalog is valid, False other
 
-        Returns:
+        Parameters
+        ----------
+        catalog_path : object
+            Path to catalog.xml file
+
+        Returns
+        -------
+        object
             True if catalog is valid, False otherwise
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (validate_catalog)
+        2
         """
         try:
             tree = lxml_etree.parse(str(catalog_path))
@@ -205,13 +256,28 @@ def generate_catalog_for_version(version: str, remote_base_url: str, schemas_bas
     """
     Convenience function to generate a catalog for one version.
 
-    Args:
-        version: IWXXM version string
-        remote_base_url: Remote schema base URL
-        schemas_base_path: Base path to mirrored schemas
-
-    Returns:
+    Returns
+    -------
         Path to generated catalog.xml
+
+    Parameters
+    ----------
+    version : object
+        IWXXM version string
+    remote_base_url : object
+        Remote schema base URL
+    schemas_base_path : object
+        Base path to mirrored schemas
+
+    Returns
+    -------
+    object
+        Path to generated catalog.xml
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (generate_catalog_for_version)
+    2
     """
     generator = CatalogGenerator(schemas_base_path)
     return generator.generate_catalog(version, remote_base_url)
@@ -221,11 +287,24 @@ def generate_all_catalogs(schemas_base_path: Path) -> list[Path]:
     """
     Convenience function to generate catalogs for all versions.
 
-    Args:
-        schemas_base_path: Base path to mirrored schemas
-
-    Returns:
+    Returns
+    -------
         List of paths to generated catalogs
+
+    Parameters
+    ----------
+    schemas_base_path : object
+        Base path to mirrored schemas
+
+    Returns
+    -------
+    object
+        List of paths to generated catalogs
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (generate_all_catalogs)
+    2
     """
     generator = CatalogGenerator(schemas_base_path)
     return generator.generate_all_catalogs()

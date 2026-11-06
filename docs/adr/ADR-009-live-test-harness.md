@@ -30,7 +30,7 @@ local dev servers even when a remote base URL was configured.
 
 ## Consequences
 
-- Pre-release signoff is explicit and manual — not a PR merge gate.
+- Pre-release signoff is explicit and manual, not a PR merge gate.
 - Developers must populate `.env` with admin credentials; secrets never committed.
 - Live Playwright runs are slower (serial, retries) but exercise full UJ-001–003 on Render.
 - CI remains fast (T2 local only).

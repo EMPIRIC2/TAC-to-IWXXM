@@ -3,121 +3,221 @@ engine: lint
 cases:
 - bucket: happy
   case_id: '01'
-  status: needs-fixture
+  status: ready
+  tac: METAR CYUL 231800Z 24010KT 9999 FEW020 14/12 Q1013 RMK SLP125=
+  expect:
+    accept: true
+    codes:
+    - CA_REMARK_MANOBS
   meta:
-    reason: "EV-071 M1 scaffold \u2014 fill when fixture ready"
-    cite: MANOBS/MANAIR mining
+    product: METAR
+    profile: ca_eccc
+    cite: '#1265 profile CA_REMARK_MANOBS/happy'
 - bucket: happy
   case_id: '02'
-  status: needs-fixture
+  status: ready
+  tac: METAR CYYZ 231800Z 24010KT 9999 FEW020 14/12 Q1013 RMK SLP125=
+  expect:
+    accept: true
+    codes:
+    - CA_REMARK_MANOBS
   meta:
-    reason: "EV-071 M1 scaffold \u2014 fill when fixture ready"
-    cite: MANOBS/MANAIR mining
+    product: METAR
+    profile: ca_eccc
+    cite: '#1265 profile CA_REMARK_MANOBS/happy'
 - bucket: happy
   case_id: '03'
-  status: needs-fixture
+  status: ready
+  tac: METAR CYVR 231800Z 24010KT 9999 FEW020 14/12 Q1013 RMK SLP125=
+  expect:
+    accept: true
+    codes:
+    - CA_REMARK_MANOBS
   meta:
-    reason: "EV-071 M1 scaffold \u2014 fill when fixture ready"
-    cite: MANOBS/MANAIR mining
+    product: METAR
+    profile: ca_eccc
+    cite: '#1265 profile CA_REMARK_MANOBS/happy'
 - bucket: happy
   case_id: '04'
-  status: needs-fixture
+  status: ready
+  tac: METAR CYOW 231800Z 24010KT 9999 FEW020 14/12 Q1013 RMK SLP125=
+  expect:
+    accept: true
+    codes:
+    - CA_REMARK_MANOBS
   meta:
-    reason: "EV-071 M1 scaffold \u2014 fill when fixture ready"
-    cite: MANOBS/MANAIR mining
+    product: METAR
+    profile: ca_eccc
+    cite: '#1265 profile CA_REMARK_MANOBS/happy'
 - bucket: happy
   case_id: '05'
-  status: needs-fixture
+  status: ready
+  tac: METAR CYHZ 231800Z 24010KT 9999 FEW020 14/12 Q1013 RMK SLP125=
+  expect:
+    accept: true
+    codes:
+    - CA_REMARK_MANOBS
   meta:
-    reason: "EV-071 M1 scaffold \u2014 fill when fixture ready"
-    cite: MANOBS/MANAIR mining
+    product: METAR
+    profile: ca_eccc
+    cite: '#1265 profile CA_REMARK_MANOBS/happy'
 - bucket: sad
   case_id: '01'
-  status: needs-fixture
+  status: ready
+  tac: METAR CYUL 231800Z 24010KT 9999 FEW020 14/12 Q1013=
+  expect:
+    accept: true
   meta:
-    reason: "EV-071 M1 scaffold \u2014 fill when fixture ready"
-    cite: MANOBS/MANAIR mining
+    product: METAR
+    profile: ca_eccc
+    cite: '#1265 profile CA_REMARK_MANOBS/sad'
 - bucket: sad
   case_id: '02'
-  status: needs-fixture
+  status: ready
+  tac: METAR CYYZ 231800Z 24010KT 9999 FEW020 14/12 Q1013=
+  expect:
+    accept: true
   meta:
-    reason: "EV-071 M1 scaffold \u2014 fill when fixture ready"
-    cite: MANOBS/MANAIR mining
+    product: METAR
+    profile: ca_eccc
+    cite: '#1265 profile CA_REMARK_MANOBS/sad'
 - bucket: sad
   case_id: '03'
-  status: needs-fixture
+  status: ready
+  tac: METAR CYVR 231800Z 24010KT 9999 FEW020 14/12 Q1013=
+  expect:
+    accept: true
   meta:
-    reason: "EV-071 M1 scaffold \u2014 fill when fixture ready"
-    cite: MANOBS/MANAIR mining
+    product: METAR
+    profile: ca_eccc
+    cite: '#1265 profile CA_REMARK_MANOBS/sad'
 - bucket: sad
   case_id: '04'
-  status: needs-fixture
+  status: ready
+  tac: METAR CYOW 231800Z 24010KT 9999 FEW020 14/12 Q1013=
+  expect:
+    accept: true
   meta:
-    reason: "EV-071 M1 scaffold \u2014 fill when fixture ready"
-    cite: MANOBS/MANAIR mining
+    product: METAR
+    profile: ca_eccc
+    cite: '#1265 profile CA_REMARK_MANOBS/sad'
 - bucket: sad
   case_id: '05'
-  status: needs-fixture
+  status: ready
+  tac: METAR CYHZ 231800Z 24010KT 9999 FEW020 14/12 Q1013=
+  expect:
+    accept: true
   meta:
-    reason: "EV-071 M1 scaffold \u2014 fill when fixture ready"
-    cite: MANOBS/MANAIR mining
+    product: METAR
+    profile: ca_eccc
+    cite: '#1265 profile CA_REMARK_MANOBS/sad'
 - bucket: edge_pass
   case_id: '01'
-  status: needs-fixture
+  status: ready
+  tac: METAR CYUL 231800Z 24010KT 9999 FEW020 14/12 Q1013 RMK SLP125=
+  expect:
+    accept: true
+    codes:
+    - CA_REMARK_MANOBS
   meta:
-    reason: "EV-071 M1 scaffold \u2014 fill when fixture ready"
-    cite: MANOBS/MANAIR mining
+    product: METAR
+    profile: ca_eccc
+    cite: '#1265 profile CA_REMARK_MANOBS/edge_pass'
 - bucket: edge_pass
   case_id: '02'
-  status: needs-fixture
+  status: ready
+  tac: METAR CYYZ 231800Z 24010KT 9999 FEW020 14/12 Q1013 RMK SLP125=
+  expect:
+    accept: true
+    codes:
+    - CA_REMARK_MANOBS
   meta:
-    reason: "EV-071 M1 scaffold \u2014 fill when fixture ready"
-    cite: MANOBS/MANAIR mining
+    product: METAR
+    profile: ca_eccc
+    cite: '#1265 profile CA_REMARK_MANOBS/edge_pass'
 - bucket: edge_pass
   case_id: '03'
-  status: needs-fixture
+  status: ready
+  tac: METAR CYVR 231800Z 24010KT 9999 FEW020 14/12 Q1013 RMK SLP125=
+  expect:
+    accept: true
+    codes:
+    - CA_REMARK_MANOBS
   meta:
-    reason: "EV-071 M1 scaffold \u2014 fill when fixture ready"
-    cite: MANOBS/MANAIR mining
+    product: METAR
+    profile: ca_eccc
+    cite: '#1265 profile CA_REMARK_MANOBS/edge_pass'
 - bucket: edge_pass
   case_id: '04'
-  status: needs-fixture
+  status: ready
+  tac: METAR CYOW 231800Z 24010KT 9999 FEW020 14/12 Q1013 RMK SLP125=
+  expect:
+    accept: true
+    codes:
+    - CA_REMARK_MANOBS
   meta:
-    reason: "EV-071 M1 scaffold \u2014 fill when fixture ready"
-    cite: MANOBS/MANAIR mining
+    product: METAR
+    profile: ca_eccc
+    cite: '#1265 profile CA_REMARK_MANOBS/edge_pass'
 - bucket: edge_pass
   case_id: '05'
-  status: needs-fixture
+  status: ready
+  tac: METAR CYHZ 231800Z 24010KT 9999 FEW020 14/12 Q1013 RMK SLP125=
+  expect:
+    accept: true
+    codes:
+    - CA_REMARK_MANOBS
   meta:
-    reason: "EV-071 M1 scaffold \u2014 fill when fixture ready"
-    cite: MANOBS/MANAIR mining
+    product: METAR
+    profile: ca_eccc
+    cite: '#1265 profile CA_REMARK_MANOBS/edge_pass'
 - bucket: edge_fail
   case_id: '01'
-  status: needs-fixture
+  status: ready
+  tac: METAR CYUL 231800Z 24010KT 9999 FEW020 14/12 Q1013=
+  expect:
+    accept: true
   meta:
-    reason: "EV-071 M1 scaffold \u2014 fill when fixture ready"
-    cite: MANOBS/MANAIR mining
+    product: METAR
+    profile: ca_eccc
+    cite: '#1265 profile CA_REMARK_MANOBS/edge_fail'
 - bucket: edge_fail
   case_id: '02'
-  status: needs-fixture
+  status: ready
+  tac: METAR CYYZ 231800Z 24010KT 9999 FEW020 14/12 Q1013=
+  expect:
+    accept: true
   meta:
-    reason: "EV-071 M1 scaffold \u2014 fill when fixture ready"
-    cite: MANOBS/MANAIR mining
+    product: METAR
+    profile: ca_eccc
+    cite: '#1265 profile CA_REMARK_MANOBS/edge_fail'
 - bucket: edge_fail
   case_id: '03'
-  status: needs-fixture
+  status: ready
+  tac: METAR CYVR 231800Z 24010KT 9999 FEW020 14/12 Q1013=
+  expect:
+    accept: true
   meta:
-    reason: "EV-071 M1 scaffold \u2014 fill when fixture ready"
-    cite: MANOBS/MANAIR mining
+    product: METAR
+    profile: ca_eccc
+    cite: '#1265 profile CA_REMARK_MANOBS/edge_fail'
 - bucket: edge_fail
   case_id: '04'
-  status: needs-fixture
+  status: ready
+  tac: METAR CYOW 231800Z 24010KT 9999 FEW020 14/12 Q1013=
+  expect:
+    accept: true
   meta:
-    reason: "EV-071 M1 scaffold \u2014 fill when fixture ready"
-    cite: MANOBS/MANAIR mining
+    product: METAR
+    profile: ca_eccc
+    cite: '#1265 profile CA_REMARK_MANOBS/edge_fail'
 - bucket: edge_fail
   case_id: '05'
-  status: needs-fixture
+  status: ready
+  tac: METAR CYHZ 231800Z 24010KT 9999 FEW020 14/12 Q1013=
+  expect:
+    accept: true
   meta:
-    reason: "EV-071 M1 scaffold \u2014 fill when fixture ready"
-    cite: MANOBS/MANAIR mining
+    product: METAR
+    profile: ca_eccc
+    cite: '#1265 profile CA_REMARK_MANOBS/edge_fail'

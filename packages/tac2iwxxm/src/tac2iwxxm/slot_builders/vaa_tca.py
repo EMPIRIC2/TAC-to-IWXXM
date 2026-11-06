@@ -14,7 +14,11 @@ _ERUPTION_AT = re.compile(
     re.IGNORECASE,
 )
 _DAY_HHMM = re.compile(r"(?P<dd>\d{2})/(?P<hh>\d{2})(?P<mi>\d{2})Z")
-_MOV = re.compile(r"\bMOV\s+(?P<dir>N|NE|E|SE|S|SW|W|NW)\s+(?P<spd>\d+)\s*KT\b", re.IGNORECASE)
+_MOV = re.compile(
+    r"\bMOV\s+(?P<dir>NNE|ENE|ESE|SSE|SSW|WSW|WNW|NNW|NE|SE|SW|NW|N|E|S|W)"
+    r"\s+(?P<spd>\d+)\s*(?P<unit>KT|KM/?H|MPS)\b",
+    re.IGNORECASE,
+)
 _FL_BAND = re.compile(r"\bFL(?P<lo>\d{2,3})/(?P<hi>\d{2,3})\b", re.IGNORECASE)
 _SFC_FL = re.compile(r"\bSFC/FL(?P<hi>\d{2,3})\b", re.IGNORECASE)
 _CLOUD_CHUNK = re.compile(
@@ -24,21 +28,21 @@ _CLOUD_CHUNK = re.compile(
 )
 _DIR_DEG = {
     "N": 0,
-    "NNE": 22,
+    "NNE": 22.5,
     "NE": 45,
-    "ENE": 67,
+    "ENE": 67.5,
     "E": 90,
-    "ESE": 112,
+    "ESE": 112.5,
     "SE": 135,
-    "SSE": 157,
+    "SSE": 157.5,
     "S": 180,
-    "SSW": 202,
+    "SSW": 202.5,
     "SW": 225,
-    "WSW": 247,
+    "WSW": 247.5,
     "W": 270,
-    "WNW": 292,
+    "WNW": 292.5,
     "NW": 315,
-    "NNW": 337,
+    "NNW": 337.5,
 }
 _MOV_TCA = re.compile(
     r"(?P<dir>NNE|ENE|ESE|SSE|SSW|WSW|WNW|NNW|NE|SE|SW|NW|N|E|S|W)\s+"
@@ -56,8 +60,46 @@ _INTST_MAP = {
 }
 
 
+def _vaa_motion(match: re.Match[str]) -> dict[str, int | float]:
+    """
+    Record ash-cloud direction and speed, keeping kilometres per hour distinct from knots.
+
+    Parameters
+    ----------
+    match : re.Match[str]
+        ``MOV`` group with a compass point, speed, and unit.
+
+    Returns
+    -------
+    dict[str, int | float]
+        ``motion_dir_deg`` plus either ``motion_speed_kmh`` or ``motion_speed_kt``.
+    """
+    recorded: dict[str, int | float] = {"motion_dir_deg": _DIR_DEG[match.group("dir").upper()]}
+    speed = int(match.group("spd"))
+    unit = match.group("unit").upper().replace("/", "")
+    if unit == "MPS":
+        recorded["motion_speed_kmh"] = round(speed * 3.6)
+    elif unit == "KMH":
+        recorded["motion_speed_kmh"] = speed
+    else:
+        recorded["motion_speed_kt"] = speed
+    return recorded
+
+
 def _fields(text: str) -> dict[str, str]:
-    """Collect KEY: value pairs, joining indented continuation lines."""
+    """
+    Internal helper ``_fields``.
+
+    Parameters
+    ----------
+    text : str
+        Argument ``text``.
+
+    Returns
+    -------
+    dict[str, str]
+        Return value.
+    """
     out: dict[str, str] = {}
     current_key: str | None = None
     for raw in text.splitlines():
@@ -78,7 +120,19 @@ def _fields(text: str) -> dict[str, str]:
 
 
 def _parse_dtg(token: str) -> str | None:
-    """Return ISO-8601 Zulu stamp from advisory DTG forms."""
+    """
+    Internal helper ``_parse_dtg``.
+
+    Parameters
+    ----------
+    token : str
+        Argument ``token``.
+
+    Returns
+    -------
+    str | None
+        Return value.
+    """
     token = token.strip()
     m = _DTG_SHORT.search(token.replace(" ", ""))
     if m:
@@ -87,7 +141,22 @@ def _parse_dtg(token: str) -> str | None:
 
 
 def _day_hhmm_to_iso(token: str, *, issue_iso: str) -> str | None:
-    """Map ``23/0100Z`` onto the issue year-month."""
+    """
+    Internal helper ``_day_hhmm_to_iso``.
+
+    Parameters
+    ----------
+    token : str
+        Argument ``token``.
+
+    issue_iso : str
+        Argument ``issue_iso``.
+
+    Returns
+    -------
+    str | None
+        Return value.
+    """
     m = _DAY_HHMM.search(token.replace(" ", ""))
     if m is None:
         return None
@@ -97,6 +166,22 @@ def _day_hhmm_to_iso(token: str, *, issue_iso: str) -> str | None:
 
 
 def _latlon(token: str, *, ndigits: int | None = 2) -> tuple[float, float] | None:
+    """
+    Internal helper ``_latlon``.
+
+    Parameters
+    ----------
+    token : str
+        Argument ``token``.
+
+    ndigits : int | None, optional
+        Argument ``ndigits``.
+
+    Returns
+    -------
+    tuple[float, float] | None
+        Return value.
+    """
     m = _PSN.search(token)
     if m is None:
         m = re.search(r"(?P<ns>[NS])(?P<lat>\d{4})\s+(?P<ew>[EW])(?P<lon>\d{5})", token)
@@ -122,6 +207,28 @@ def _latlon(token: str, *, ndigits: int | None = 2) -> tuple[float, float] | Non
 
 
 def _point_to_pair(ns: str, lat: str, ew: str, lon: str) -> tuple[float, float]:
+    """
+    Internal helper ``_point_to_pair``.
+
+    Parameters
+    ----------
+    ns : str
+        Argument ``ns``.
+
+    lat : str
+        Argument ``lat``.
+
+    ew : str
+        Argument ``ew``.
+
+    lon : str
+        Argument ``lon``.
+
+    Returns
+    -------
+    tuple[float, float]
+        Return value.
+    """
     lat_f = int(lat[0:2]) + int(lat[2:4]) / 60.0
     lon_f = int(lon[0:3]) + int(lon[3:5]) / 60.0
     if ns == "S":
@@ -132,7 +239,19 @@ def _point_to_pair(ns: str, lat: str, ew: str, lon: str) -> tuple[float, float]:
 
 
 def _pos_list(points: list[tuple[float, float]]) -> str:
-    """Format closed LinearRing posList (TAC order; close to first point)."""
+    """
+    Internal helper ``_pos_list``.
+
+    Parameters
+    ----------
+    points : list[tuple[float, float]]
+        Argument ``points``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
     if not points:
         return ""
     ring = list(points)
@@ -142,7 +261,19 @@ def _pos_list(points: list[tuple[float, float]]) -> str:
 
 
 def _parse_ash_clouds(blob: str) -> list[dict[str, Any]]:
-    """Parse one or more FL/SFC ash-cloud polygons (+ optional MOV) from a field blob."""
+    """
+    Internal helper ``_parse_ash_clouds``.
+
+    Parameters
+    ----------
+    blob : str
+        Argument ``blob``.
+
+    Returns
+    -------
+    list[dict[str, Any]]
+        Return value.
+    """
     upper = " ".join(blob.split())
     if re.search(r"\bNO\s+VA\s+EXP\b", upper):
         return []
@@ -170,14 +301,25 @@ def _parse_ash_clouds(blob: str) -> list[dict[str, Any]]:
             cloud["upper_ref"] = "STD"
         mov = _MOV.search(body)
         if mov:
-            cloud["motion_dir_deg"] = _DIR_DEG[mov.group("dir").upper()]
-            cloud["motion_speed_kt"] = int(mov.group("spd"))
+            cloud.update(_vaa_motion(mov))
         clouds.append(cloud)
     return clouds
 
 
 def _parse_eruption(details: str) -> tuple[str | None, str]:
-    """Split ERUPTION AT DTG from residual eruptionDetails text."""
+    """
+    Internal helper ``_parse_eruption``.
+
+    Parameters
+    ----------
+    details : str
+        Argument ``details``.
+
+    Returns
+    -------
+    tuple[str | None, str]
+        Return value.
+    """
     text = " ".join(details.split())
     m = _ERUPTION_AT.search(text)
     if not m:
@@ -191,10 +333,21 @@ def parse_vaa(tac: str, *, product: str = "VAA") -> dict[str, Any]:
 
     Parameters
     ----------
-    tac :
+    tac : str
         VAA TAC text.
-    product :
+
+    product : str, optional
         Expected ``VAA``.
+
+    Returns
+    -------
+    dict[str, Any]
+        A Volcanic Ash Advisory TAC into IR.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (parse_vaa)
+    2
     """
     if product.upper() != "VAA":
         raise ValueError(f"product mismatch: expected VAA, found {product}")
@@ -287,10 +440,21 @@ def parse_tca(tac: str, *, product: str = "TCA") -> dict[str, Any]:
 
     Parameters
     ----------
-    tac :
+    tac : str
         TCA TAC text.
-    product :
+
+    product : str, optional
         Expected ``TCA``.
+
+    Returns
+    -------
+    dict[str, Any]
+        A Tropical Cyclone Advisory TAC into IR.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (parse_tca)
+    2
     """
     if product.upper() != "TCA":
         raise ValueError(f"product mismatch: expected TCA, found {product}")

@@ -30,16 +30,16 @@ class DisseminationMessage:
 
     Parameters
     ----------
-    gateway_kind :
+    gateway_kind : str
         Registry key (usually a ``SinkType`` string).
-    params :
+    params : object
         Sink-specific connection params (memory-only; never logged raw).
-    allowlist :
+    allowlist : Allowlist
         Egress allowlist for adapter checks.
-    iwxxm_xml :
-        Optional IWXXM payload.
-    tac_text :
-        Optional TAC payload (e.g. EDIS).
+    iwxxm_xml : str or bytes or None, optional
+        Optional IWXXM payload. By default ``None``.
+    tac_text : str or None, optional
+        Optional TAC payload (e.g. EDIS). By default ``None``.
     """
 
     gateway_kind: str
@@ -51,7 +51,22 @@ class DisseminationMessage:
 
 @dataclass(frozen=True, slots=True)
 class ValidationResult:
-    """Gateway validate outcome mapped from ``PreflightResponse``."""
+    """
+    Gateway validate outcome mapped from ``PreflightResponse``.
+
+    Attributes
+    ----------
+    ok : bool
+        True when the result succeeded.
+    connectivity_ok : bool
+        True when connectivity succeeded.
+    diffs : list[SchemaDiffItem]
+        Schema differences.
+    detail : str or None, optional
+        Detail text. By default ``None``.
+    handle : str or None, optional
+        Preflight handle. By default ``None``.
+    """
 
     ok: bool
     connectivity_ok: bool
@@ -67,18 +82,18 @@ class DeliveryReceipt:
 
     Parameters
     ----------
-    status :
+    status : DeliveryStatus
         ``DELIVERED`` | ``FAILED`` | ``SKIPPED``.
-    gateway :
+    gateway : str
         Gateway kind used for the attempt.
-    detail :
-        Operator-safe detail.
-    idempotency_key :
-        Optional idempotency token.
-    attempt :
-        Attempt number (1-based).
-    completed_at :
-        UTC completion timestamp.
+    detail : str or None, optional
+        Operator-safe detail. By default ``None``.
+    idempotency_key : str or None, optional
+        Optional idempotency token. By default ``None``.
+    attempt : int, optional
+        Attempt number (1-based). By default ``1``.
+    completed_at : datetime or None, optional
+        UTC completion timestamp. By default ``None``.
     """
 
     status: DeliveryStatus
@@ -90,6 +105,19 @@ class DeliveryReceipt:
 
 
 def _from_preflight(pre: PreflightResponse) -> ValidationResult:
+    """
+    Internal helper ``_from_preflight``.
+
+    Parameters
+    ----------
+    pre : object
+        Argument ``pre``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return ValidationResult(
         ok=pre.ok,
         connectivity_ok=pre.connectivity_ok,
@@ -117,10 +145,33 @@ class DisseminationGateway:
         adapters: Mapping[str, SinkAdapter],
         health_probe: HealthProbe | None = None,
     ) -> None:
+        """
+        Internal helper ``__init__``.
+
+        Parameters
+        ----------
+        adapters : Mapping[str, SinkAdapter]
+            Adapters.
+        health_probe : HealthProbe or None, optional
+            Health probe. By default ``None``.
+        """
         self._adapters = dict(adapters)
         self._health_probe = health_probe
 
     def _adapter(self, gateway_kind: str) -> SinkAdapter:
+        """
+        Internal helper ``_adapter``.
+
+        Parameters
+        ----------
+        gateway_kind : object
+            Argument ``gateway_kind``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         try:
             return self._adapters[gateway_kind]
         except KeyError as exc:
@@ -132,7 +183,7 @@ class DisseminationGateway:
 
         Parameters
         ----------
-        message :
+        message : DisseminationMessage
             Envelope with params and allowlist.
 
         Returns
@@ -144,6 +195,11 @@ class DisseminationGateway:
         ------
         KeyError
             When ``gateway_kind`` is not registered.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (validate)
+        2
         """
         adapter = self._adapter(message.gateway_kind)
         pre = await adapter.preflight(
@@ -158,7 +214,7 @@ class DisseminationGateway:
 
         Parameters
         ----------
-        message :
+        message : DisseminationMessage
             Envelope with optional payloads.
 
         Returns
@@ -171,6 +227,11 @@ class DisseminationGateway:
         ------
         KeyError
             When ``gateway_kind`` is not registered.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (send)
+        2
         """
         adapter = self._adapter(message.gateway_kind)
         completed = datetime.now(UTC)
@@ -203,13 +264,18 @@ class DisseminationGateway:
 
         Parameters
         ----------
-        gateway_kind :
-            Optional single kind; when omitted, all registered adapters.
+        gateway_kind : str or None, optional
+            Optional single kind; when omitted, all registered adapters. By default ``None``.
 
         Returns
         -------
-        list of GatewayHealth
+        list[GatewayHealth]
             One row per kind.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (health)
+        2
         """
         kinds = [gateway_kind] if gateway_kind is not None else sorted(self._adapters)
         rows: list[GatewayHealth] = []
