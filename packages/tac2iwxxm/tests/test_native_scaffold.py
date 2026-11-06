@@ -13,6 +13,14 @@ def test_rust_available_is_bool() -> None:
     assert isinstance(rust_available(), bool)
 
 
+def _pep440_calver_to_cargo(version: str) -> str:
+    """Map ``YYYY.M.D[.N]`` to Cargo SemVer (same-day ``.N`` → ``+N``)."""
+    parts = version.split(".")
+    if len(parts) == 4 and parts[3].isdigit():
+        return f"{parts[0]}.{parts[1]}.{parts[2]}+{parts[3]}"
+    return version
+
+
 def test_rust_module_none_or_extension() -> None:
     from importlib.metadata import version
 
@@ -20,7 +28,8 @@ def test_rust_module_none_or_extension() -> None:
     if rust_available():
         assert mod is not None
         assert mod.ping() == "pong"
-        assert mod.extension_version() == version("tac2iwxxm")
+        # Cargo embeds SemVer; Python metadata stays PEP 440 (ADR-043).
+        assert mod.extension_version() == _pep440_calver_to_cargo(version("tac2iwxxm"))
     else:
         assert mod is None
 
