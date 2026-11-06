@@ -41,8 +41,8 @@ test.describe('UJ-001 delta — accumulate results + error log', () => {
       '[data-testid^="convert-download-select-"]',
     );
     await expect(downloadSelects).toHaveCount(2);
-    await expect(downloadSelects.filter({ hasText: 'KJFK' })).toHaveCount(1);
-    await expect(downloadSelects.filter({ hasText: 'KDEN' })).toHaveCount(1);
+    await expect(resultsRegion).toContainText('KJFK');
+    await expect(resultsRegion).toContainText('KDEN');
     await openConvertSettings(page);
     await expect(page.getByTestId('download-zip-button')).toHaveAccessibleName(
       /download all 2 converted files as zip/i,

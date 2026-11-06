@@ -144,6 +144,19 @@ async function openDisseminationDrawer(page: Page): Promise<void> {
   ).toBeVisible();
 }
 
+/** Settings leave-hero seeds a session TAC candidate; clear it for drop-only asserts. */
+async function clearSeededSessionTac(page: Page): Promise<void> {
+  const editor = page.getByLabel('Enter METAR data manually', { exact: true });
+  if ((await editor.count()) === 0) {
+    return;
+  }
+  await editor.fill('');
+  // Status node unmounts when no candidates remain.
+  await expect(page.getByTestId('dissemination-payload-status')).toHaveCount(0, {
+    timeout: 10_000,
+  });
+}
+
 async function prepareWorkbench(page: Page): Promise<void> {
   await stubWorkbenchNoise(page);
   await stubConvert(page);
@@ -284,6 +297,7 @@ test.describe('T6.3 / UJ-027–030: dissemination drawer H6′ smokes', () => {
     });
 
     await openDisseminationDrawer(page);
+    await clearSeededSessionTac(page);
 
     await page.getByTestId('dissemination-sink-chooser').selectOption('sqlite');
     await page
@@ -291,9 +305,8 @@ test.describe('T6.3 / UJ-027–030: dissemination drawer H6′ smokes', () => {
       .fill('sqlite:////tmp/e2e-dissemination.db');
 
     await page.getByTestId('dissemination-file-input').setInputFiles(FIXTURE_TAC);
-    // Settings leave-hero seeds one TAC candidate; the drop adds a second.
     await expect(page.getByTestId('dissemination-payload-status')).toContainText(
-      /2 candidate/,
+      /1 candidate/,
     );
 
     await page.getByTestId('dissemination-send-button').click();
@@ -359,6 +372,7 @@ test.describe('T6.3 / UJ-027–030: dissemination drawer H6′ smokes', () => {
     });
 
     await openDisseminationDrawer(page);
+    await clearSeededSessionTac(page);
     await page.getByTestId('dissemination-sink-chooser').selectOption('sqlite');
     await page
       .getByTestId('dissemination-uri-input')
@@ -376,9 +390,9 @@ test.describe('T6.3 / UJ-027–030: dissemination drawer H6′ smokes', () => {
     await page.getByTestId('dissemination-select-all').click();
     await page.getByTestId('dissemination-send-button').click();
 
-    // Seed TAC + dropped file(s); one preflight fail then continue.
+    // One preflight fail then continue; remaining drop(s) succeed.
     await expect(page.getByTestId('dissemination-send-success')).toContainText(
-      /file/,
+      /1 file/,
     );
     const failRow = page.locator(
       '[data-testid^="dissemination-progress-row-"][data-status="failed"]',
