@@ -115,6 +115,24 @@ export async function openPublicConverter(page: Page): Promise<void> {
   await dismissPrivacyNoticeIfPresent(page);
 }
 
+/** Type into the CodeMirror TAC editor (aria-label on `.cm-content`). */
+export async function fillManualTac(page: Page, metar: string): Promise<void> {
+  const editor = page
+    .locator('.cm-content[aria-label="Enter METAR data manually"]')
+    .last();
+  await editor.click({ timeout: 15_000 });
+  await page.keyboard.press(process.platform === 'darwin' ? 'Meta+A' : 'Control+A');
+  await page.keyboard.insertText(metar);
+  await expect
+    .poll(async () => (await editor.innerText()).replace(/\s+/g, ' '), {
+      timeout: 10_000,
+    })
+    .toContain(metar.replace(/\s+/g, ' ').slice(0, 24));
+  await expect(page.getByTestId('convert-empty-hero')).toHaveCount(0, {
+    timeout: 15_000,
+  });
+}
+
 /**
  * Leave the Calmer Convert empty hero so convert-shell / Settings / Expand
  * parameters are available. Types a seed METAR (no example chip — #1436).
@@ -126,11 +144,7 @@ export async function leaveCalmEmptyHero(page: Page): Promise<void> {
   if ((await hero.count()) === 0) {
     return;
   }
-  // Prefer page-scoped label — hero subtree can race while the shell mounts.
-  const editor = page.getByLabel('Enter METAR data manually', { exact: true });
-  await editor.click({ timeout: 15_000 });
-  // fill() drives CodeMirror contenteditable more reliably than insertText alone.
-  await editor.fill('METAR KJFK 010000Z 00000KT 10SM SKC 10/00 A2992=');
+  await fillManualTac(page, 'METAR KJFK 010000Z 00000KT 10SM SKC 10/00 A2992=');
   await expect(hero).toHaveCount(0, { timeout: 15_000 });
   await expect(page.getByTestId('convert-button')).toBeVisible();
 }
@@ -304,17 +318,6 @@ export async function selectInputMode(page: Page, mode: E2eInputMode): Promise<v
  * @param page - Playwright page hosting the converter.
  * @param metar - TAC string to insert.
  */
-export async function fillManualTac(page: Page, metar: string): Promise<void> {
-  const editor = page.getByLabel('Enter METAR data manually', { exact: true });
-  await editor.click();
-  // fill() drives CodeMirror contenteditable more reliably than Meta+A + insertText.
-  await editor.fill(metar);
-  // CodeMirror is contenteditable — wait until calm empty hero (if any) dismisses.
-  await expect(page.getByTestId('convert-empty-hero')).toHaveCount(0, {
-    timeout: 15_000,
-  });
-}
-
 /**
  * Fill the manual TAC editor and click the convert button.
  *

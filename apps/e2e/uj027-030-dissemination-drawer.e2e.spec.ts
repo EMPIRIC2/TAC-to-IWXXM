@@ -146,11 +146,13 @@ async function openDisseminationDrawer(page: Page): Promise<void> {
 
 /** Settings leave-hero seeds a session TAC candidate; clear it for drop-only asserts. */
 async function clearSeededSessionTac(page: Page): Promise<void> {
-  const editor = page.getByLabel('Enter METAR data manually', { exact: true });
+  const editor = page.locator('.cm-content[aria-label="Enter METAR data manually"]');
   if ((await editor.count()) === 0) {
     return;
   }
-  await editor.fill('');
+  await editor.last().click();
+  await page.keyboard.press(process.platform === 'darwin' ? 'Meta+A' : 'Control+A');
+  await page.keyboard.press('Backspace');
   // Status node unmounts when no candidates remain.
   await expect(page.getByTestId('dissemination-payload-status')).toHaveCount(0, {
     timeout: 10_000,
