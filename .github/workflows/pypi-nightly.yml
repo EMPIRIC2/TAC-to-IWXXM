@@ -106,7 +106,11 @@ jobs:
           sccache: "true"
           manylinux: auto
 
+      # Prefer OIDC Trusted Publisher on TestPyPI (pending publishers OK for first
+      # upload). When unset/misconfigured, TESTPYPI_API_TOKEN on the `testpypi`
+      # environment is used — same pattern as pypi-publish.yml / PYPI_API_TOKEN.
       - name: Publish to TestPyPI (OIDC)
+        id: publish_oidc
         if: >-
           github.event_name == 'schedule'
           || (github.event_name == 'workflow_dispatch' && inputs.publish == true)
@@ -116,3 +120,38 @@ jobs:
           packages-dir: dist/
           repository-url: https://test.pypi.org/legacy/
           skip-existing: true
+
+      - name: Publish to TestPyPI (API token fallback)
+        id: publish_token
+        if: >-
+          steps.publish_oidc.outcome == 'failure'
+          && (github.event_name == 'schedule'
+              || (github.event_name == 'workflow_dispatch' && inputs.publish == true))
+        continue-on-error: true
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir: dist/
+          repository-url: https://test.pypi.org/legacy/
+          skip-existing: true
+          password: ${{ secrets.TESTPYPI_API_TOKEN }}
+
+      # Soft-fail publish until Trusted Publishers (or TESTPYPI_API_TOKEN) exist for
+      # every matrix package — build/maturin must still go green (native UV cache
+      # footgun is handled via enable-cache: false above).
+      - name: Report TestPyPI publish outcome
+        if: >-
+          (github.event_name == 'schedule'
+           || (github.event_name == 'workflow_dispatch' && inputs.publish == true))
+          && steps.publish_oidc.outcome != 'success'
+          && steps.publish_token.outcome != 'success'
+        env:
+          PACKAGE: ${{ matrix.package }}
+        run: |
+          set -euo pipefail
+          {
+            echo "::warning::TestPyPI publish skipped/failed for ${PACKAGE} (OIDC + token)."
+            echo "Register a Trusted Publisher (or pending publisher) on https://test.pypi.org/ :"
+            echo "  Owner: EMPIRIC2 / Repository: TAC-to-IWXXM"
+            echo "  Workflow: pypi-nightly.yml / Environment: testpypi"
+            echo "Or set secrets.TESTPYPI_API_TOKEN on the GitHub Environment testpypi."
+          }

@@ -700,6 +700,13 @@ same-day `.N` → `+N`) for maturin ([Corpus: adr/ADR-043]; [Corpus: decisions]
 | Workflow | `pypi-publish.yml` (prod) / `pypi-nightly.yml` (TestPyPI) |
 | Environment | `pypi` / `testpypi` |
 
+**TestPyPI nightlies:** projects may not exist yet — create a **pending** Trusted
+Publisher per package (`tac-validate`, `tac-decoding`, `iwxxm-validate`, `tac2iwxxm`)
+with the table above before the first successful upload. Until that lands,
+`pypi-nightly.yml` may fall back to `TESTPYPI_API_TOKEN` on the GitHub Environment
+`testpypi` (same idea as `PYPI_API_TOKEN` on `pypi` for prod). A missing publisher
+with no token yields a workflow warning; builds must still go green.
+
 Remove any stale publisher pointing at the pre-transfer GitHub owner/repo. Ensure GitHub
 Environments exist on `EMPIRIC2/TAC-to-IWXXM`. Workflows need `id-token: write`
 (see config-spec §F11–F14).

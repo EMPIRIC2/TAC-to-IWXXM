@@ -53,12 +53,20 @@ def test_pypi_nightly_workflow_schedule_and_testpypi() -> None:
     # Native maturin jobs leave UV_CACHE_DIR empty; setup-uv must not fail post-job.
     install_uv = next(s for s in job["steps"] if s.get("name") == "Install uv")
     assert (install_uv.get("with") or {}).get("enable-cache") is False
-    # No long-lived TestPyPI password in the workflow file.
-    assert "secrets.PYPI_API_TOKEN" not in WORKFLOW.read_text(encoding="utf-8")
-    assert "password" not in (
-        next(
-            s.get("with") or {}
-            for s in job["steps"]
-            if "pypi-publish" in str(s.get("uses", ""))
-        )
+
+    oidc = next(
+        s for s in job["steps"] if s.get("name") == "Publish to TestPyPI (OIDC)"
     )
+    assert "password" not in (oidc.get("with") or {})
+    assert oidc.get("continue-on-error") is True
+
+    token = next(
+        s
+        for s in job["steps"]
+        if s.get("name") == "Publish to TestPyPI (API token fallback)"
+    )
+    assert (token.get("with") or {}).get(
+        "password"
+    ) == "${{ secrets.TESTPYPI_API_TOKEN }}"
+    # Never wire the prod PyPI token into TestPyPI uploads.
+    assert "secrets.PYPI_API_TOKEN" not in WORKFLOW.read_text(encoding="utf-8")
