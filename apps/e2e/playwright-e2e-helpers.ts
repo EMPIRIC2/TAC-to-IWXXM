@@ -126,8 +126,9 @@ export async function leaveCalmEmptyHero(page: Page): Promise<void> {
   if ((await hero.count()) === 0) {
     return;
   }
-  const editor = hero.getByLabel('Enter METAR data manually', { exact: true });
-  await editor.click();
+  // Prefer page-scoped label — hero subtree can race while the shell mounts.
+  const editor = page.getByLabel('Enter METAR data manually', { exact: true });
+  await editor.click({ timeout: 15_000 });
   // fill() drives CodeMirror contenteditable more reliably than insertText alone.
   await editor.fill('METAR KJFK 010000Z 00000KT 10SM SKC 10/00 A2992=');
   await expect(hero).toHaveCount(0, { timeout: 15_000 });
@@ -306,8 +307,8 @@ export async function selectInputMode(page: Page, mode: E2eInputMode): Promise<v
 export async function fillManualTac(page: Page, metar: string): Promise<void> {
   const editor = page.getByLabel('Enter METAR data manually', { exact: true });
   await editor.click();
-  await page.keyboard.press(process.platform === 'darwin' ? 'Meta+A' : 'Control+A');
-  await page.keyboard.insertText(metar);
+  // fill() drives CodeMirror contenteditable more reliably than Meta+A + insertText.
+  await editor.fill(metar);
   // CodeMirror is contenteditable — wait until calm empty hero (if any) dismisses.
   await expect(page.getByTestId('convert-empty-hero')).toHaveCount(0, {
     timeout: 15_000,
