@@ -52,8 +52,12 @@ def test_packages_includes_tac_decoding() -> None:
         "iwxxm-validate",
         "tac2iwxxm",
         "tac-decoding",
+        "metar-shared",
+        "reference-lookup",
     }
     assert "cargo" not in bump.PACKAGES["tac-decoding"]
+    assert "init" not in bump.PACKAGES["metar-shared"]
+    assert "init" not in bump.PACKAGES["reference-lookup"]
 
 
 @pytest.mark.unit
@@ -120,6 +124,20 @@ def test_set_package_version_skips_missing_cargo(
     changed = bump.set_package_version("tac-validate", "2099.3.3")
     assert fake["cargo"] not in changed
     assert 'version = "2099.3.3"' in fake["pyproject"].read_text(encoding="utf-8")
+
+
+@pytest.mark.unit
+def test_set_package_version_pyproject_only_packages() -> None:
+    """metar-shared / reference-lookup have no ``__init__`` version stamp."""
+    for name in ("metar-shared", "reference-lookup"):
+        py = bump.PACKAGES[name]["pyproject"]
+        orig = py.read_text(encoding="utf-8")
+        try:
+            changed = bump.set_package_version(name, "2099.4.4")
+            assert changed == [py]
+            assert 'version = "2099.4.4"' in py.read_text(encoding="utf-8")
+        finally:
+            py.write_text(orig, encoding="utf-8")
 
 
 @pytest.mark.unit

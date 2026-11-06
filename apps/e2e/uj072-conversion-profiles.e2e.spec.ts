@@ -528,13 +528,10 @@ test.describe('UJ-072: ConversionProfile editor (EV-933 / TC-EV933-006)', () => 
     await fillManualTac(page, 'METAR');
 
     await openConvertSettings(page);
-    await expect(page.getByTestId('convert-active-profile')).toContainText(
-      /ICAO|WMO/i,
-    );
+    await expect(page.getByTestId('convert-active-profile')).toContainText(/ICAO|WMO/i);
     await closeConvertSettings(page);
 
-    const icaoMetarExample =
-      'METAR WMO A3-1 (annex3) · WMO passer · metar-A3-1';
+    const icaoMetarExample = 'METAR WMO A3-1 (annex3) · WMO passer · metar-A3-1';
     const usMetarExample =
       'METAR WMO A3-1 (annex3) · WMO passer · metar-A3-1 · Reused for United States (FAA/NWS)';
 

@@ -54,10 +54,13 @@ jobs:
         with:
           submodules: false
 
+      # Cache off for native jobs: maturin does not populate UV_CACHE_DIR; setup-uv's
+      # post step then fails the job even when build/publish continued (tac2iwxxm nightly).
       - name: Install uv
         uses: astral-sh/setup-uv@v6
         with:
           python-version: "3.12"
+          enable-cache: false
 
       - name: Bump CalVer .devN for this run
         env:

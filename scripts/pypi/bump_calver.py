@@ -60,6 +60,13 @@ PACKAGES: dict[str, dict[str, Path]] = {
         / "tac_decoding"
         / "__init__.py",
     },
+    # Runtime deps of F12–F14 wheels (must be on PyPI before consumers smoke/publish).
+    "metar-shared": {
+        "pyproject": REPO_ROOT / "packages" / "shared" / "pyproject.toml",
+    },
+    "reference-lookup": {
+        "pyproject": REPO_ROOT / "packages" / "reference-lookup" / "pyproject.toml",
+    },
 }
 
 VERSION_RE = re.compile(
@@ -170,12 +177,13 @@ def set_package_version(package: str, version: str) -> list[Path]:
         encoding="utf-8",
     )
     changed.append(py)
-    init = paths["init"]
-    init.write_text(
-        _replace_version(init.read_text(encoding="utf-8"), DUNDER_RE, version),
-        encoding="utf-8",
-    )
-    changed.append(init)
+    init = paths.get("init")
+    if init is not None and init.is_file():
+        init.write_text(
+            _replace_version(init.read_text(encoding="utf-8"), DUNDER_RE, version),
+            encoding="utf-8",
+        )
+        changed.append(init)
     cargo = paths.get("cargo")
     if cargo is not None and cargo.is_file():
         cargo_version = pep440_to_cargo_version(version)

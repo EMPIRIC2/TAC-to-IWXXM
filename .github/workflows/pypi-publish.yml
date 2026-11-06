@@ -14,6 +14,8 @@ on:
       - "iwxxm-validate-v*"
       - "tac2iwxxm-v*"
       - "tac-decoding-v*"
+      - "metar-shared-v*"
+      - "reference-lookup-v*"
   workflow_dispatch:
     inputs:
       package:
@@ -24,9 +26,11 @@ on:
           - iwxxm-validate
           - tac2iwxxm
           - tac-decoding
+          - metar-shared
+          - reference-lookup
         required: true
       publish:
-        description: Publish to PyPI via OIDC (requires Trusted Publisher)
+        description: Publish to PyPI via OIDC (or PYPI_API_TOKEN fallback)
         type: boolean
         default: false
 
@@ -72,6 +76,12 @@ jobs:
           elif [[ "${REF_NAME}" == tac-decoding-v* ]]; then
             package="tac-decoding"
             should_publish="true"
+          elif [[ "${REF_NAME}" == metar-shared-v* ]]; then
+            package="metar-shared"
+            should_publish="true"
+          elif [[ "${REF_NAME}" == reference-lookup-v* ]]; then
+            package="reference-lookup"
+            should_publish="true"
           else
             echo "::error::Unable to resolve package from ${EVENT_NAME} / ${REF_NAME}"
             exit 1
@@ -95,6 +105,16 @@ jobs:
               ;;
             tac-decoding)
               pure='[{"package":"tac-decoding","path":"packages/tac-decoding","tag_prefix":"tac-decoding-v"}]'
+              native='[]'
+              has_native='false'
+              ;;
+            metar-shared)
+              pure='[{"package":"metar-shared","path":"packages/shared","tag_prefix":"metar-shared-v"}]'
+              native='[]'
+              has_native='false'
+              ;;
+            reference-lookup)
+              pure='[{"package":"reference-lookup","path":"packages/reference-lookup","tag_prefix":"reference-lookup-v"}]'
               native='[]'
               has_native='false'
               ;;
@@ -277,9 +297,26 @@ jobs:
             echo "::error::No wheel found under dist/"
             exit 1
           fi
+          # Workspace runtime deps are not yet on PyPI during first publish; build
+          # them from this checkout so smoke matches a clean install after deps land.
+          mkdir -p .smoke-deps
+          case "${PACKAGE}" in
+            tac-validate|tac2iwxxm)
+              uv build --wheel --package metar-shared -o .smoke-deps
+              ;;
+          esac
+          case "${PACKAGE}" in
+            tac2iwxxm)
+              uv build --wheel --package reference-lookup -o .smoke-deps
+              ;;
+          esac
           uv venv .smoke-venv
           # shellcheck disable=SC1091
           source .smoke-venv/bin/activate
+          if compgen -G ".smoke-deps/*.whl" > /dev/null; then
+            # shellcheck disable=SC2046
+            uv pip install $(find .smoke-deps -type f -name '*.whl' | sort)
+          fi
           uv pip install "${wheel}"
           case "${PACKAGE}" in
             tac-validate)
@@ -296,6 +333,12 @@ jobs:
             tac-decoding)
               python -c "from tac_decoding import decode_tac; r=decode_tac('METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005=', product='METAR'); assert r.summary; print('tac-decoding ok')"
               tac-decoding --help >/dev/null
+              ;;
+            metar-shared)
+              python -c "from metar_shared.inherit_factory import should_prefer_station; print('metar-shared ok')"
+              ;;
+            reference-lookup)
+              python -c "from reference_lookup import lookup_coordinate; print('reference-lookup ok')"
               ;;
           esac
 
@@ -323,7 +366,10 @@ jobs:
           path: dist
           merge-multiple: true
 
-      - name: Publish to PyPI (OIDC)
+      # Prefer OIDC Trusted Publisher; when unset/misconfigured for a project,
+      # PYPI_API_TOKEN on the `pypi` environment is used as upload fallback.
+      - name: Publish to PyPI (OIDC or token)
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           packages-dir: dist/
+          password: ${{ secrets.PYPI_API_TOKEN }}

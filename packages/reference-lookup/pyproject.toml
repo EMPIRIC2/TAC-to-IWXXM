@@ -1,6 +1,6 @@
 [project]
 name = "reference-lookup"
-version = "2026.9.23"
+version = "2026.11.5"
 description = "Look up navaid and ICAO station coordinates for TAC to IWXXM work"
 readme = "README.md"
 license = { text = "MIT" }
