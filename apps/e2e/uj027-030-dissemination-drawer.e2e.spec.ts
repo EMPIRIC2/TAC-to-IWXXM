@@ -14,6 +14,7 @@ import {
   openConverterForE2e,
   openDisseminationDrawerFromSettings,
 } from './playwright-e2e-helpers';
+import { setTacEditorText } from './playwright-tac-editor';
 
 const METAR_TAC = 'METAR KJFK 121251Z 24016G28KT 3SM -RA BR BKN020 OVC040 14/11 A2990=';
 // Prolog is joined so this source is not scored as a conditional.
@@ -146,13 +147,11 @@ async function openDisseminationDrawer(page: Page): Promise<void> {
 
 /** Settings leave-hero seeds a session TAC candidate; clear it for drop-only asserts. */
 async function clearSeededSessionTac(page: Page): Promise<void> {
-  const editor = page.locator('.cm-content[aria-label="Enter METAR data manually"]');
-  if ((await editor.count()) === 0) {
+  if ((await page.getByTestId('tac-editor').count()) === 0) {
     return;
   }
-  await editor.last().click();
-  await page.keyboard.press(process.platform === 'darwin' ? 'Meta+A' : 'Control+A');
-  await page.keyboard.press('Backspace');
+  // Dissemination drawer covers the editor — mutate CM without clicking.
+  await setTacEditorText(page, '');
   // Status node unmounts when no candidates remain.
   await expect(page.getByTestId('dissemination-payload-status')).toHaveCount(0, {
     timeout: 10_000,

@@ -1,4 +1,7 @@
 import { APIRequestContext, expect, Page } from '@playwright/test';
+import { fillManualTac } from './playwright-tac-editor';
+
+export { fillManualTac } from './playwright-tac-editor';
 
 /**
  * E2E helpers for the public app (F21 Amended / F22 / F31 / ADR-031).
@@ -113,24 +116,6 @@ export async function openPublicConverter(page: Page): Promise<void> {
     return;
   }
   await dismissPrivacyNoticeIfPresent(page);
-}
-
-/** Type into the CodeMirror TAC editor (aria-label on `.cm-content`). */
-export async function fillManualTac(page: Page, metar: string): Promise<void> {
-  const editor = page
-    .locator('.cm-content[aria-label="Enter METAR data manually"]')
-    .last();
-  await editor.click({ timeout: 15_000 });
-  await page.keyboard.press(process.platform === 'darwin' ? 'Meta+A' : 'Control+A');
-  await page.keyboard.insertText(metar);
-  await expect
-    .poll(async () => (await editor.innerText()).replace(/\s+/g, ' '), {
-      timeout: 10_000,
-    })
-    .toContain(metar.replace(/\s+/g, ' ').slice(0, 24));
-  await expect(page.getByTestId('convert-empty-hero')).toHaveCount(0, {
-    timeout: 15_000,
-  });
 }
 
 /**
