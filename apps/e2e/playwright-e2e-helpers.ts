@@ -275,6 +275,32 @@ export async function openConvertSettings(page: Page): Promise<void> {
   await expect(settings).toHaveAttribute('open', '');
 }
 
+/** Collapse Convert Settings without clicking the cog (avoids overlay interception). */
+export async function closeConvertSettings(page: Page): Promise<void> {
+  const settings = page.getByTestId('convert-settings');
+  if ((await settings.getAttribute('open')) !== null) {
+    await settings.evaluate((el) => {
+      (el as HTMLDetailsElement).open = false;
+    });
+  }
+  await expect(settings).not.toHaveAttribute('open');
+}
+
+/**
+ * Open Settings → Customize each step so library pickers are visible.
+ *
+ * Library selects live under {@code convert-advanced-engines}, not Expand parameters.
+ */
+export async function openConvertLibraryPickers(page: Page): Promise<void> {
+  await openConvertSettings(page);
+  const engines = page.getByTestId('convert-advanced-engines');
+  if ((await engines.getAttribute('open')) === null) {
+    await engines.locator('summary').click();
+  }
+  await expect(engines).toHaveAttribute('open', '');
+  await expect(page.getByTestId('library-pickers-bar')).toBeVisible();
+}
+
 /**
  * Choose TAC, file, or bulletin input mode on the converter.
  *
@@ -427,11 +453,8 @@ export async function openDisseminationDrawerFromSettings(page: Page): Promise<v
   await expect(openBtn).toBeEnabled({ timeout: 15_000 });
   await openBtn.click();
   await expect(page.getByTestId('dissemination-drawer')).toBeVisible();
-  // Settings is an absolute popover — close it so drawer controls stay clickable.
-  const settings = page.getByTestId('convert-settings');
-  if ((await settings.getAttribute('open')) !== null) {
-    await page.getByTestId('convert-settings-cog').click();
-  }
+  // Drawer backdrop intercepts cog clicks — collapse Settings via the details API.
+  await closeConvertSettings(page);
 }
 
 /**

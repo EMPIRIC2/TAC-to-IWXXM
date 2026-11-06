@@ -6,7 +6,7 @@
  */
 import { expect, test } from '@playwright/test';
 import {
-  openConvertSettings,
+  openConvertLibraryPickers,
   openPublicConverter,
   selectInputMode,
 } from './playwright-e2e-helpers';
@@ -56,9 +56,7 @@ test.describe('EV-090 / EV-bridge — UJ-069 Dissemination library picker', () =
     });
 
     await openPublicConverter(page);
-    await openConvertSettings(page);
-    await page.getByLabel('Expand parameters', { exact: true }).click();
-    await expect(page.getByTestId('library-pickers-bar')).toBeVisible();
+    await openConvertLibraryPickers(page);
     page.once('dialog', (dialog) => dialog.accept());
     await page
       .getByTestId('conversion-library-select')

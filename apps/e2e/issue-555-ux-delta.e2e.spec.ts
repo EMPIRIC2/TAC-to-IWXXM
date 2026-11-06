@@ -30,14 +30,13 @@ test.describe('UJ-001 delta — accumulate results + error log', () => {
     });
     // F7.r / #903 — accumulate (do not replace) across successful converts.
     await expect(page.locator('[data-testid^="result-item-"]')).toHaveCount(2);
-    // targets the Show METAR KJFK row on IWXXM tab button
-    await expect(
-      resultsRegion.getByRole('button', { name: /Show METAR KJFK .* on IWXXM tab/i }),
-    ).toBeVisible();
-    // targets the Show METAR KDEN row on IWXXM tab button
-    await expect(
-      resultsRegion.getByRole('button', { name: /Show METAR KDEN .* on IWXXM tab/i }),
-    ).toBeVisible();
+    // Prefer converted-* rows; loaded-result-* can share the same aria-label.
+    const converted = resultsRegion.locator(
+      '[data-testid^="convert-download-select-converted-"]',
+    );
+    await expect(converted).toHaveCount(2);
+    await expect(converted.filter({ hasText: 'KJFK' })).toHaveCount(1);
+    await expect(converted.filter({ hasText: 'KDEN' })).toHaveCount(1);
     await openConvertSettings(page);
     await expect(page.getByTestId('download-zip-button')).toHaveAccessibleName(
       /download all 2 converted files as zip/i,

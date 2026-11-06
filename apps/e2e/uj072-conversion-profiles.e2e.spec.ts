@@ -7,8 +7,10 @@
  */
 import { expect, test, type Page, type Request } from '@playwright/test';
 import {
+  closeConvertSettings,
   dismissPrivacyNoticeIfPresent,
   fillManualTac,
+  openConvertLibraryPickers,
   openConvertSettings,
   openPublicConverter,
 } from './playwright-e2e-helpers';
@@ -458,9 +460,7 @@ test.describe('UJ-072: ConversionProfile editor (EV-933 / TC-EV933-006)', () => 
     await stubProfilesApis(page);
 
     await openPublicConverter(page);
-    await openConvertSettings(page);
-    await page.getByLabel('Expand parameters', { exact: true }).click();
-    await expect(page.getByTestId('library-pickers-bar')).toBeVisible();
+    await openConvertLibraryPickers(page);
     page.once('dialog', (dialog) => dialog.accept());
     await page
       .getByTestId('conversion-library-select')
@@ -526,9 +526,13 @@ test.describe('UJ-072: ConversionProfile editor (EV-933 / TC-EV933-006)', () => 
     await openPublicConverter(page);
     await dismissPrivacyNoticeIfPresent(page);
     await fillManualTac(page, 'METAR');
-    await openConvertSettings(page);
 
-    await expect(page.getByTestId('country-preset-select')).toHaveValue('ICAO_2025');
+    await openConvertSettings(page);
+    await expect(page.getByTestId('convert-active-profile')).toContainText(
+      /ICAO|WMO/i,
+    );
+    await closeConvertSettings(page);
+
     await page.getByTestId('examples-select').click();
     await expect(
       page.getByRole('option', {
@@ -537,10 +541,26 @@ test.describe('UJ-072: ConversionProfile editor (EV-933 / TC-EV933-006)', () => 
       }),
     ).toBeVisible();
     await page.keyboard.press('Escape');
-    await page.getByTestId('country-preset-select').selectOption('US_FAA_NWS');
+
+    await openConvertSettings(page);
+    await page.getByTestId('convert-profile-change-live').click();
+    await expect(page.getByTestId('convert-profile-drawer')).toBeVisible();
+    await page
+      .getByTestId('convert-profile-drawer')
+      .getByRole('radio', { name: /United States \(FAA\/NWS\)/i })
+      .click();
+    await page.getByTestId('convert-profile-apply').click();
+    await expect(page.getByTestId('convert-profile-drawer')).toHaveCount(0);
+    await expect(page.getByTestId('convert-active-profile')).toContainText(
+      /United States \(FAA\/NWS\)/i,
+    );
+
+    await openConvertLibraryPickers(page);
     await expect(page.getByTestId('conversion-library-select')).toHaveValue(
       'LIB.CONVERSION.US_FAA_NWS',
     );
+    await closeConvertSettings(page);
+
     await page.getByTestId('examples-select').click();
     await expect(
       page.getByRole('option', {
