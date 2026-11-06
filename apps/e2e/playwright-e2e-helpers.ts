@@ -248,23 +248,7 @@ const EMPTY_HERO_OTHER_TASK: Record<Exclude<E2eInputMode, 'tac'>, string> = {
   collect_iwxxm: 'Build a COLLECT bundle',
 };
 
-/**
- * Switch Convert input mode via empty-hero other-task links or Settings.
- *
- * Calm empty chrome hides the Settings cog; use Other tasks there. Once the
- * converter shell is open, modes live under the Settings cog (not the toolbar).
- *
- * @param page - Playwright page hosting the converter.
- * @param mode - Target operator input mode.
- */
-/**
- * Open the Convert Settings cog (secondary actions: Send, ZIP, Clear, …).
- *
- * Requires the converter shell (not the calm empty hero). Call after TAC is
- * present or after leaving empty chrome.
- *
- * @param page - Playwright page hosting the converter.
- */
+/** Open Convert Settings (shell required — not calm empty hero). */
 export async function openConvertSettings(page: Page): Promise<void> {
   await leaveCalmEmptyHero(page);
   const settings = page.getByTestId('convert-settings');
@@ -275,7 +259,7 @@ export async function openConvertSettings(page: Page): Promise<void> {
   await expect(settings).toHaveAttribute('open', '');
 }
 
-/** Collapse Convert Settings without clicking the cog (avoids overlay interception). */
+/** Collapse Settings via details API (cog click is blocked under overlays). */
 export async function closeConvertSettings(page: Page): Promise<void> {
   const settings = page.getByTestId('convert-settings');
   if ((await settings.getAttribute('open')) !== null) {
@@ -286,11 +270,7 @@ export async function closeConvertSettings(page: Page): Promise<void> {
   await expect(settings).not.toHaveAttribute('open');
 }
 
-/**
- * Open Settings → Customize each step so library pickers are visible.
- *
- * Library selects live under {@code convert-advanced-engines}, not Expand parameters.
- */
+/** Open Settings → Customize each step (library pickers). */
 export async function openConvertLibraryPickers(page: Page): Promise<void> {
   await openConvertSettings(page);
   const engines = page.getByTestId('convert-advanced-engines');
@@ -301,12 +281,7 @@ export async function openConvertLibraryPickers(page: Page): Promise<void> {
   await expect(page.getByTestId('library-pickers-bar')).toBeVisible();
 }
 
-/**
- * Choose TAC, file, or bulletin input mode on the converter.
- *
- * @param page - Playwright page hosting the converter.
- * @param mode - Input mode id under test.
- */
+/** Choose TAC / AHL / collect / validate input mode (hero Other tasks or Settings). */
 export async function selectInputMode(page: Page, mode: E2eInputMode): Promise<void> {
   const hero = page.getByTestId('convert-empty-hero');
   if (await hero.isVisible()) {

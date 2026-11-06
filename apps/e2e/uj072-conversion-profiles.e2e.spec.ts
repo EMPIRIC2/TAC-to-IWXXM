@@ -547,12 +547,13 @@ test.describe('UJ-072: ConversionProfile editor (EV-933 / TC-EV933-006)', () => 
     await expect(page.getByTestId('convert-profile-drawer')).toBeVisible();
     await page
       .getByTestId('convert-profile-drawer')
-      .getByRole('radio', { name: /United States \(FAA\/NWS\)/i })
+      .getByRole('radio', { name: 'United States (FAA/NWS)', exact: true })
       .click();
     await page.getByTestId('convert-profile-apply').click();
+    // Opposite state: convert-profile-drawer visible before Apply.
     await expect(page.getByTestId('convert-profile-drawer')).toHaveCount(0);
-    await expect(page.getByTestId('convert-active-profile')).toContainText(
-      /United States \(FAA\/NWS\)/i,
+    await expect(page.getByTestId('convert-active-profile')).toHaveText(
+      'United States (FAA/NWS)',
     );
 
     await openConvertLibraryPickers(page);
