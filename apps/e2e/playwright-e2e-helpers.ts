@@ -115,16 +115,72 @@ export async function openPublicConverter(page: Page): Promise<void> {
   await dismissPrivacyNoticeIfPresent(page);
 }
 
-/** Type into the CodeMirror TAC editor (aria-label on `.cm-content`). */
+/** Collapse Results drawer when open so it does not steal editor focus/clicks. */
+async function collapseConvertResultsDrawer(page: Page): Promise<void> {
+  const drawer = page.getByTestId('convert-results-drawer');
+  if ((await drawer.count()) === 0) {
+    return;
+  }
+  if ((await drawer.getAttribute('data-open')) === 'true') {
+    await page.getByTestId('convert-results-drawer-toggle').click();
+    await expect(drawer).not.toHaveAttribute('data-open', 'true');
+  }
+}
+
+type CmEditorRoot = HTMLElement & {
+  cmView?: {
+    view?: {
+      dispatch: (t: unknown) => void;
+      state: { doc: { length: number } };
+    };
+  };
+};
+
+/**
+ * Replace CodeMirror TAC text without OS select-all (flaky under Results /
+ * Dissemination overlays). Prefers CM dispatch; falls back to insertText.
+ */
 export async function fillManualTac(page: Page, metar: string): Promise<void> {
-  const editor = page
-    .locator('.cm-content[aria-label="Enter METAR data manually"]')
-    .last();
-  await editor.click({ timeout: 15_000 });
-  await page.keyboard.press(process.platform === 'darwin' ? 'Meta+A' : 'Control+A');
-  await page.keyboard.insertText(metar);
+  await collapseConvertResultsDrawer(page);
+  const host = page.getByTestId('tac-editor').last();
+  await expect(host).toBeVisible({ timeout: 15_000 });
+  await host.evaluate((root, text) => {
+    const content = root.querySelector('.cm-content') as HTMLElement | null;
+    if (!content) {
+      throw new Error('TAC editor .cm-content missing');
+    }
+    let el: Element | null = content;
+    let view:
+      | { dispatch: (t: unknown) => void; state: { doc: { length: number } } }
+      | undefined;
+    while (el && !view) {
+      const candidate = (el as CmEditorRoot).cmView?.view ?? (el as CmEditorRoot).cmView;
+      if (candidate && 'dispatch' in candidate && 'state' in candidate) {
+        view = candidate as {
+          dispatch: (t: unknown) => void;
+          state: { doc: { length: number } };
+        };
+        break;
+      }
+      el = el.parentElement;
+    }
+    if (view) {
+      view.dispatch({
+        changes: { from: 0, to: view.state.doc.length, insert: text },
+      });
+      return;
+    }
+    content.focus();
+    const selection = window.getSelection();
+    const range = document.createRange();
+    range.selectNodeContents(content);
+    selection?.removeAllRanges();
+    selection?.addRange(range);
+    document.execCommand('insertText', false, text);
+  }, metar);
+  const content = host.locator('.cm-content');
   await expect
-    .poll(async () => (await editor.innerText()).replace(/\s+/g, ' '), {
+    .poll(async () => (await content.innerText()).replace(/\s+/g, ' '), {
       timeout: 10_000,
     })
     .toContain(metar.replace(/\s+/g, ' ').slice(0, 24));

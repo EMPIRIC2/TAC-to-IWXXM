@@ -146,13 +146,53 @@ async function openDisseminationDrawer(page: Page): Promise<void> {
 
 /** Settings leave-hero seeds a session TAC candidate; clear it for drop-only asserts. */
 async function clearSeededSessionTac(page: Page): Promise<void> {
-  const editor = page.locator('.cm-content[aria-label="Enter METAR data manually"]');
-  if ((await editor.count()) === 0) {
+  const host = page.getByTestId('tac-editor');
+  if ((await host.count()) === 0) {
     return;
   }
-  await editor.last().click();
-  await page.keyboard.press(process.platform === 'darwin' ? 'Meta+A' : 'Control+A');
-  await page.keyboard.press('Backspace');
+  // Dissemination drawer covers the editor — mutate CM via evaluate (no click).
+  await host.last().evaluate((root) => {
+    const content = root.querySelector('.cm-content') as HTMLElement | null;
+    if (!content) {
+      return;
+    }
+    type CmRoot = HTMLElement & {
+      cmView?: {
+        view?: {
+          dispatch: (t: unknown) => void;
+          state: { doc: { length: number } };
+        };
+      };
+    };
+    let el: Element | null = content;
+    let view:
+      | { dispatch: (t: unknown) => void; state: { doc: { length: number } } }
+      | undefined;
+    while (el && !view) {
+      const candidate = (el as CmRoot).cmView?.view ?? (el as CmRoot).cmView;
+      if (candidate && 'dispatch' in candidate && 'state' in candidate) {
+        view = candidate as {
+          dispatch: (t: unknown) => void;
+          state: { doc: { length: number } };
+        };
+        break;
+      }
+      el = el.parentElement;
+    }
+    if (view) {
+      view.dispatch({
+        changes: { from: 0, to: view.state.doc.length, insert: '' },
+      });
+      return;
+    }
+    content.focus();
+    const selection = window.getSelection();
+    const range = document.createRange();
+    range.selectNodeContents(content);
+    selection?.removeAllRanges();
+    selection?.addRange(range);
+    document.execCommand('insertText', false, '');
+  });
   // Status node unmounts when no candidates remain.
   await expect(page.getByTestId('dissemination-payload-status')).toHaveCount(0, {
     timeout: 10_000,
