@@ -12,6 +12,7 @@ test.describe('UX-2026-11-07 convert chrome polish', () => {
   }) => {
     await openPublicConverter(page);
 
+    // Opposite state: convert-empty-hero can match if the marketing hero returns.
     await expect(page.getByTestId('convert-empty-hero')).toHaveCount(0);
     await expect(page.getByTestId('convert-shell')).toBeVisible({ timeout: 15_000 });
     await expect(page.getByTestId('convert-chrome-toolbar')).toBeVisible();
@@ -29,6 +30,7 @@ test.describe('UX-2026-11-07 convert chrome polish', () => {
 
     await expect(page.getByTestId('operator-footer')).toBeVisible();
     await page.getByTestId('operator-footer-collapse').click();
+    // Opposite state: footer visible before collapse.
     await expect(page.getByTestId('operator-footer')).toHaveCount(0);
     await expect(page.getByTestId('operator-footer-reveal')).toBeVisible();
     await page.getByTestId('operator-footer-reveal').click();

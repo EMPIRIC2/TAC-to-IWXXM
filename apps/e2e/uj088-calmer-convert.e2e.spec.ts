@@ -77,6 +77,7 @@ test.describe('UJ-088 — Calmer Convert + Help checklist', () => {
     await stubCalmConvertApis(page);
     await openPublicConverter(page);
 
+    // Opposite state: convert-empty-hero can match if the marketing hero returns.
     await expect(page.getByTestId('convert-empty-hero')).toHaveCount(0);
     await expect(page.getByTestId('convert-shell')).toBeVisible({
       timeout: 15_000,
@@ -89,23 +90,27 @@ test.describe('UJ-088 — Calmer Convert + Help checklist', () => {
     await page.getByTestId('convert-profile-change-live').click();
     await expect(page.getByTestId('convert-profile-drawer')).toBeVisible();
     await page.getByTestId('convert-profile-apply').click();
+    // Opposite state: drawer visible before Apply.
     await expect(page.getByTestId('convert-profile-drawer')).toHaveCount(0);
 
     await page.getByTestId('convert-help-open').click();
     await expect(page.getByTestId('convert-help-checklist')).toBeVisible();
     await expect(page.getByTestId('operator-help-link')).toBeVisible();
     await page.keyboard.press('Escape');
+    // Opposite state: checklist visible before Escape.
     await expect(page.getByTestId('convert-help-checklist')).toHaveCount(0);
 
     await page.getByTestId('convert-help-open').click();
     await expect(page.getByTestId('convert-help-checklist')).toBeVisible();
     await page.keyboard.press('Escape');
+    // Opposite state: checklist visible before the second Escape.
     await expect(page.getByTestId('convert-help-checklist')).toHaveCount(0);
 
     await expect(page.getByTestId('convert-button')).toBeVisible();
 
     await convertManualMetar(page, METAR_TAC);
     await openConvertDownloadsTab(page, 15_000);
+    // Opposite state: empty hero remains absent after convert.
     await expect(page.getByTestId('convert-empty-hero')).toHaveCount(0);
     await expect(page.getByTestId('convert-results-drawer')).toBeVisible();
     await expect(page.getByTestId('convert-results-tab-iwxxm')).toBeVisible();
