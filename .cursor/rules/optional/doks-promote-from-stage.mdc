@@ -1,5 +1,5 @@
 ---
-description: Dual DOKS env_role + promote-from-stage (EV-043/044 / ADR-034 / #886)
+description: Dual DOKS env_role + promote-from-stage (EV-043/044 / ADR-034 / #886; EV-cd-conjoined-calver-release)
 globs:
   - .github/workflows/ci-cd.yml
   - deploy/doks/**
@@ -17,47 +17,43 @@ alwaysApply: false
 | `staging` | `stage` | Staging TAC-to-IWXXM | `metar-iwxxm-staging` | `metar-iwxxm-staging` | `api\|app.staging.tac-to-iwxxm.com` |
 | `prod` | `main` | TAC-to-IWXXM | `metar-iwxxm` | `metar-iwxxm` | `api\|app.tac-to-iwxxm.com` |
 
-Do **not** label staging URLs as production. After EV-044, staging and prod are **separate
-DOKS clusters** (not only namespaces). Use env-scoped kubeconfigs.
+Do not label staging URLs as production. After EV-044, staging and prod are separate DOKS
+clusters (not only namespaces). Use env-scoped kubeconfigs.
 
 ## Promote path
 
 1. Feature → PR → `stage` (required CI).
-2. Merge to `stage` → auto Deploy **staging cluster** after full Deploy `needs` (incl.
-   `e2e-smoke`) + **Staging smoke** (HTTPS or Host-header via staging LB
-   `143.244.202.13` / `STAGING_LB_IP`).
-3. **Release prep on `stage` (recommended before every promote):** bump publishable
-   package **CalVer** (`YYYY.MM.DD` / `.N` per ADR-043) when those packages changed, cut
-   `docs/CHANGELOG.md`, commit on
-   `stage` — see §Release on promote and [Corpus: deploy] §Promote.
-4. Promote: PR **`stage` → `main` only**. CI **Staging gate** (`staging-gate`) must pass
-   (head=`stage` + tip Staging smoke green). No feature→`main`. **EV-061 / #1015:** also
-   require `Lint`, `Typecheck`, full `Test (*)`, and `E2E Full (Playwright)` (not smoke-only)
-   — see [Corpus: deploy] §Promote table and `scripts/deploy/apply_gh_branch_rulesets.sh`.
-5. Merge to `main` → **full CI only** (no auto prod Deploy — EV-051).
-6. **Ship prod:** push `vYYYY.MM.DD-deploy` on the merged `main` tip (triggers prod
-   Deploy after CI). Optional escape hatch: `workflow_dispatch` → production. Then any
-   PyPI package tags when publishing.
+2. Merge to `stage` → auto Deploy staging cluster after full Deploy `needs` (incl.
+   `e2e-smoke`) + Staging smoke (HTTPS or Host-header via staging LB
+   `143.244.202.13` / `STAGING_LB_IP`) + TestPyPI for packages that changed (`{CalVer}+test`).
+3. Release prep on `stage` (recommended before every promote): cut `docs/CHANGELOG.md`.
+   CalVer may be applied on `stage` or by CD ([Corpus: adr/ADR-043]).
+4. Promote: PR `stage` → `main` only. CI Staging gate (`staging-gate`) must pass
+   (head=`stage` + tip Staging smoke green). No feature→`main`. EV-061 / #1015: also
+   require `Lint`, `Typecheck`, full `Test (*)`, and `E2E Full (Playwright)` (not smoke-only).
+   See [Corpus: deploy] §Promote table and `scripts/deploy/apply_gh_branch_rulesets.sh`.
+5. Merge to `main` → full CI then prod CD (DOKS + GHCR + one GitHub Release + PyPI tags
+   for packages that changed). Docs-only or infra-only: DOKS + GHCR + Release; skip PyPI.
+6. Manual redeploy: `workflow_dispatch` → production. Do not use `v*-deploy` tags.
 
-Never push directly to `stage`/`main` when rulesets are enabled. Solo-dev gates: PR
-`stage`→`main`, then deploy tag (or dispatch). No Environment reviewers. Do not promote
-while Staging smoke or Staging gate is red/missing (or while #1015 required checks are
-red/missing on the promote PR).
+Never push directly to `stage`/`main` when rulesets are enabled. Solo-dev gate: PR
+`stage`→`main` (main CD ships). No Environment reviewers. Do not promote while Staging
+smoke or Staging gate is red or missing (or while #1015 required checks are red or missing on
+the promote PR).
 
 ## Release on promote
 
-Every **`stage` → `main`** promote should treat prod cutover as a **release** (not only a
-deploy). Recommendation (soft — Staging gate does not fail on missing bumps):
+Every `stage` → `main` promote is a release (DOKS + GHCR + packages in one CD run):
 
 | Step | When | Action |
 |------|------|--------|
-| CalVer | On `stage`, before opening/updating the promote PR | For each changed publishable package (`tac2iwxxm`, `tac-validate`, `iwxxm-validate`): set `YYYY.MM.DD` (or `.N` same-day); sync `pyproject.toml` + `__version__` + Cargo/locks when present ([Corpus: adr/ADR-043]) |
-| CHANGELOG | Same commit(s) on `stage` | Move Unreleased bullets into a dated section; note promote PR |
-| Deploy tag | After merge to `main` + tip CI green | `git tag vYYYY.MM.DD-deploy`; `git push origin <tag>` — **this** rolls prod (EV-051) |
-| PyPI tags | After merge when publishing | Per-package tags only (`tac2iwxxm-v*`, …); run **pypi-release-checklist** first |
+| CHANGELOG | On `stage`, before promote PR | Move Unreleased bullets into a dated section; note promote PR |
+| CalVer / PyPI | After merge to `main` + tip CI green | CD bumps CalVer for **changed** packages, creates `{pkg}-v{version}` → `pypi-publish.yml`; same-day `.N` auto-bump ([Corpus: adr/ADR-043]) |
+| GitHub Release | Same main CD | One Release `vYYYY.M.D[.N]` with digests + package list |
+| TestPyPI | On `stage` CD | Changed packages as `{CalVer}+test` |
 
-Docs-only / infra-only promotes with **no** package tree changes may skip package semver
-and PyPI tags, but still cut CHANGELOG + a deploy tag when shipping to prod.
+Docs-only / infra-only promotes with **no** package tree changes skip PyPI tags but still
+get DOKS + GHCR + GitHub Release.
 
 Details: [docs/deploy.md](../../docs/deploy.md) §Promote · skill
 `pypi-release-checklist` · [Corpus: product §F12–F14].
@@ -69,4 +65,4 @@ prod `metar-iwxxm` / `defaultdb`. Do not copy prod secrets into staging ConfigMa
 
 ## Citations
 
-[Corpus: product §F30] [Corpus: adr/ADR-034] [Corpus: deploy]
+[Corpus: product §F30] [Corpus: adr/ADR-034] [Corpus: adr/ADR-043] [Corpus: deploy]
