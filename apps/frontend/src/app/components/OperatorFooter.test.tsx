@@ -23,6 +23,11 @@ describe('OperatorFooter layout', () => {
   it('groups Privacy, Feedback, and Terms in one horizontal row', () => {
     render(<OperatorFooter onOpenPrivacy={vi.fn()} onOpenTerms={vi.fn()} />);
 
+    const footer = screen.getByTestId('operator-footer');
+    expect(footer.className).toMatch(/\bw-full\b/);
+    expect(footer.className).toMatch(/\bfixed\b/);
+    expect(footer.className).toMatch(/\bbottom-0\b/);
+
     const group = screen.getByRole('group', { name: 'Site links' });
     expect(group.className).toMatch(/\bflex\b/);
     expect(group.className).toMatch(/\bflex-row\b/);

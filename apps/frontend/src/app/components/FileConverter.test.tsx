@@ -370,6 +370,7 @@ vi.mock('./TacEditor', () => ({
     readOnly,
     'aria-label': ariaLabel,
     focusOffset,
+    onSpanFix,
   }: {
     id?: string;
     value: string;
@@ -378,6 +379,7 @@ vi.mock('./TacEditor', () => ({
     readOnly?: boolean;
     'aria-label'?: string;
     focusOffset?: number | null;
+    onSpanFix?: (fixCode: string) => void;
   }) => (
     <textarea
       id={id}
@@ -391,6 +393,7 @@ vi.mock('./TacEditor', () => ({
         const text = event.clipboardData?.getData('text') ?? '';
         if (text.trim()) onReportLoaded?.(text);
       }}
+      onDoubleClick={() => onSpanFix?.('add_terminator')}
     />
   ),
 }));
@@ -752,47 +755,34 @@ describe('FileConverter Component', () => {
       expect(help).toHaveAttribute('target', '_blank');
     });
 
-    it('UJ-088: empty hero other-task links switch input mode', async () => {
+    it('UJ-088: Settings input-mode tabs switch convert modes', async () => {
       mockReadGuestConverterState.mockReturnValue(null);
       const user = userEvent.setup();
       render(<FileConverter {...defaultProps} />);
-      expect(screen.getByTestId('convert-empty-hero')).toBeInTheDocument();
-      await user.click(
-        screen.getByRole('button', { name: 'Convert a full bulletin (AHL)' }),
-      );
-      // Mode tabs live in Settings; empty hero hides until mode leaves TAC.
+      expect(screen.queryByTestId('convert-empty-hero')).not.toBeInTheDocument();
+      expect(screen.getByTestId('convert-shell')).toBeInTheDocument();
       await user.click(screen.getByTestId('convert-settings-cog'));
+      await user.click(screen.getByTestId('input-mode-ahl_bulletin'));
       expect(screen.getByTestId('input-mode-ahl_bulletin')).toHaveClass('bg-blue-700');
       await user.click(screen.getByTestId('input-mode-tac'));
-      await waitFor(() => {
-        expect(screen.getByTestId('convert-empty-hero')).toBeInTheDocument();
-      });
-      await user.click(screen.getByRole('button', { name: 'Validate existing IWXXM' }));
-      await user.click(screen.getByTestId('convert-settings-cog'));
+      expect(screen.getByTestId('input-mode-tac')).toHaveClass('bg-blue-700');
+      await user.click(screen.getByTestId('input-mode-validate_iwxxm'));
       expect(screen.getByTestId('input-mode-validate_iwxxm')).toHaveClass(
         'bg-blue-700',
       );
       await user.click(screen.getByTestId('input-mode-tac'));
-      await waitFor(() => {
-        expect(screen.getByTestId('convert-empty-hero')).toBeInTheDocument();
-      });
-      await user.click(screen.getByRole('button', { name: 'Build a COLLECT bundle' }));
-      await user.click(screen.getByTestId('convert-settings-cog'));
+      await user.click(screen.getByTestId('input-mode-collect_iwxxm'));
       expect(screen.getByTestId('input-mode-collect_iwxxm')).toHaveClass('bg-blue-700');
     });
 
-    it('TC-UX-CALM-003: empty TAC hides advanced convert-setup chrome', () => {
+    it('TC-UX-CALM-003: empty TAC still shows bordered converter chrome', () => {
       mockReadGuestConverterState.mockReturnValue(null);
       render(<FileConverter {...defaultProps} />);
-      const hero = screen.getByTestId('convert-empty-hero');
-      expect(hero).toBeInTheDocument();
-      expect(screen.getByTestId('convert-setup')).not.toBeVisible();
-      expect(screen.getByTestId('live-convert-stage')).not.toBeVisible();
-      // Empty hero owns Convert CTA — strip is unmounted (strict E2E locators).
-      expect(screen.queryByTestId('action-button-strip')).not.toBeInTheDocument();
-      expect(
-        within(hero).getByLabelText('Enter METAR data manually'),
-      ).toBeInTheDocument();
+      expect(screen.queryByTestId('convert-empty-hero')).not.toBeInTheDocument();
+      expect(screen.getByTestId('convert-shell')).toBeInTheDocument();
+      expect(screen.getByTestId('live-convert-stage')).toBeVisible();
+      expect(screen.getByTestId('action-button-strip')).toBeInTheDocument();
+      expect(screen.getByLabelText('Enter METAR data manually')).toBeInTheDocument();
     });
 
     it('primary action strip exposes only New TAC, Convert, and Download latest', () => {
@@ -850,7 +840,7 @@ describe('FileConverter Component', () => {
       expect(downloadLatest.parentElement?.className).toContain('w-full');
     });
 
-    it('TC-UX-CALM: empty browse triggers the hidden file input', async () => {
+    it('TC-UX-CALM: Select files triggers the hidden file input', async () => {
       mockReadGuestConverterState.mockReturnValue(null);
       const user = userEvent.setup({ delay: null });
       const { container } = render(<FileConverter {...defaultProps} />);
@@ -858,7 +848,7 @@ describe('FileConverter Component', () => {
         'input[type="file"]',
       ) as HTMLInputElement;
       const clickSpy = vi.spyOn(fileInput, 'click').mockImplementation(() => undefined);
-      await user.click(screen.getByTestId('convert-empty-browse'));
+      await user.click(screen.getByTestId('select-files-button'));
       expect(clickSpy).toHaveBeenCalled();
       clickSpy.mockRestore();
     });
@@ -875,7 +865,8 @@ describe('FileConverter Component', () => {
       mockReadGuestConverterState.mockReturnValue(null);
       const user = userEvent.setup();
       render(<FileConverter {...defaultProps} />);
-      await user.click(screen.getByTestId('convert-profile-change'));
+      await user.click(screen.getByTestId('convert-settings-cog'));
+      await user.click(screen.getByTestId('convert-profile-change-live'));
       const drawer = await screen.findByTestId('convert-profile-drawer');
       expect(drawer).toBeInTheDocument();
       const radios = within(drawer).getAllByRole('radio');
@@ -887,13 +878,14 @@ describe('FileConverter Component', () => {
       await waitFor(() => {
         expect(screen.queryByTestId('convert-profile-drawer')).not.toBeInTheDocument();
       });
-      await user.click(screen.getByTestId('convert-profile-change'));
+      await user.click(screen.getByTestId('convert-settings-cog'));
+      await user.click(screen.getByTestId('convert-profile-change-live'));
       await screen.findByTestId('convert-profile-drawer');
       await user.click(screen.getByRole('button', { name: 'Reset to WMO defaults' }));
       await user.click(screen.getByTestId('convert-profile-apply'));
     });
 
-    it('UJ-088: example chip loads TAC; Download latest primary works', async () => {
+    it('UJ-088: golden example loads TAC; Download latest primary works', async () => {
       mockReadGuestConverterState.mockReturnValue(null);
       const user = userEvent.setup({ delay: null });
       mockConvertMetarToIwxxm.mockResolvedValue({
@@ -925,15 +917,13 @@ describe('FileConverter Component', () => {
         .mockImplementation(() => undefined);
 
       const { container } = render(<FileConverter {...defaultProps} />);
-      const hero = screen.getByTestId('convert-empty-hero');
-      const chips = within(hero).getAllByTestId(/convert-example-chip-/);
-      expect(chips[0]).toBeTruthy();
-      await user.click(chips[0]!);
-      await waitFor(() => {
-        expect(screen.queryByTestId('convert-empty-hero')).not.toBeInTheDocument();
-      });
+      expect(screen.queryByTestId('convert-empty-hero')).not.toBeInTheDocument();
+      await user.click(screen.getByTestId('examples-select'));
+      await user.click(await screen.findByRole('option', { name: /METAR WMO A3-1/i }));
       const textarea = container.querySelector('textarea') as HTMLTextAreaElement;
-      expect(textarea.value.length).toBeGreaterThan(0);
+      await waitFor(() => {
+        expect(textarea.value.length).toBeGreaterThan(0);
+      });
       await user.click(screen.getByTestId('convert-button'));
       await waitFor(() => {
         expect(screen.getByTestId('convert-download-iwxxm')).toBeInTheDocument();
@@ -1266,7 +1256,9 @@ describe('FileConverter Component', () => {
       );
       // Settings cog lives in the chrome toolbar; input mode is nested under it.
       expect(screen.queryByTestId('input-mode-bar')).not.toBeInTheDocument();
-      expect(screen.getByTestId('workbench-console')).toBeInTheDocument();
+      expect(screen.queryByTestId('workbench-console')).not.toBeInTheDocument();
+      expect(screen.queryByTestId('lint-issue-catalog-panel')).not.toBeInTheDocument();
+      expect(screen.getByTestId('product-type-select')).toBeVisible();
       expect(
         screen.queryByText(/drop files here or click to select/i),
       ).not.toBeInTheDocument();
@@ -1401,8 +1393,9 @@ describe('FileConverter Component', () => {
       });
       await user.click(clearBtn);
 
-      // Clear returns to empty hero; re-query the mounted editor.
-      expect(screen.getByTestId('convert-empty-hero')).toBeInTheDocument();
+      // Clear keeps converter chrome; re-query the mounted editor.
+      expect(screen.queryByTestId('convert-empty-hero')).not.toBeInTheDocument();
+      expect(screen.getByTestId('convert-shell')).toBeInTheDocument();
       expect(screen.getByTestId('tac-editor')).toHaveValue('');
     });
 
@@ -1416,7 +1409,7 @@ describe('FileConverter Component', () => {
         render(<FileConverter {...defaultProps} />);
 
         expect(screen.getByTestId('live-iwxxm-toggle')).toBeChecked();
-        expect(screen.getByTestId('workbench-console')).toBeInTheDocument();
+        expect(screen.queryByTestId('workbench-console')).not.toBeInTheDocument();
 
         const textarea = screen.getByTestId('tac-editor') as HTMLTextAreaElement;
         fireEvent.change(textarea, { target: { value: 'METAR KJFK' } });
@@ -1427,8 +1420,6 @@ describe('FileConverter Component', () => {
         expect(mockDecodeTac).toHaveBeenCalled();
 
         expect(screen.getByTestId('live-iwxxm-toggle')).toBeChecked();
-
-        expect(screen.getByTestId('workbench-console-lines')).toBeInTheDocument();
 
         // live IWXXM is on — soft-preview convert with failed spans
         mockConvertMetarToIwxxm.mockClear();
@@ -1463,14 +1454,15 @@ describe('FileConverter Component', () => {
           await Promise.resolve();
         });
 
-        // Whitespace-only TAC leaves the calm empty hero (no live convert call).
+        // Whitespace-only TAC keeps converter chrome (no live convert call).
         mockConvertMetarToIwxxm.mockClear();
         fireEvent.change(textarea, { target: { value: '   ' } });
         await act(async () => {
           await vi.advanceTimersByTimeAsync(350);
         });
         expect(mockConvertMetarToIwxxm).not.toHaveBeenCalled();
-        expect(screen.getByTestId('convert-empty-hero')).toBeInTheDocument();
+        expect(screen.queryByTestId('convert-empty-hero')).not.toBeInTheDocument();
+        expect(screen.getByTestId('convert-shell')).toBeInTheDocument();
       } finally {
         vi.useRealTimers();
       }
@@ -1942,17 +1934,16 @@ describe('FileConverter Component', () => {
       // Start empty so Convert begins disabled; seeding would enable it immediately.
       mockReadGuestConverterState.mockReturnValue(null);
       const { container } = render(<FileConverter {...defaultProps} />);
-      const hero = screen.getByTestId('convert-empty-hero');
-      expect(within(hero).getByTestId('convert-button')).toBeDisabled();
+      expect(screen.queryByTestId('convert-empty-hero')).not.toBeInTheDocument();
+      expect(screen.getByTestId('convert-button')).toBeDisabled();
 
       const textarea = container.querySelector('textarea') as HTMLTextAreaElement;
       // Instant set — per-keystroke type times out under full coverage load.
-      // Leaving the empty hero remounts Convert on the action strip.
       fireEvent.change(textarea, {
         target: { value: 'METAR KJFK 121651Z 18005KT 10SM FEW030 24/16 A2992' },
       });
       await waitFor(() => {
-        expect(screen.queryByTestId('convert-empty-hero')).not.toBeInTheDocument();
+        expect(screen.getByTestId('convert-button')).toBeEnabled();
       });
       fireEvent.click(screen.getByTestId('live-iwxxm-toggle'));
       const convertBtn = screen.getByTestId('convert-button');
@@ -5846,7 +5837,7 @@ describe('FileConverter Component', () => {
           await Promise.resolve();
         });
 
-        fireEvent.click(screen.getByTestId('console-action-add_terminator'));
+        fireEvent.doubleClick(screen.getByTestId('tac-editor'));
 
         expect(screen.getByTestId('tac-editor')).toHaveValue('METAR KJFK 121251Z');
       } finally {
@@ -5987,7 +5978,7 @@ describe('FileConverter Component', () => {
       expect(mockToast.info).toHaveBeenCalledWith('Starting a new TAC draft');
     });
 
-    it('applies lint fix replacement text from the workbench console', async () => {
+    it('applies lint fix replacement text from the TAC span-fix event', async () => {
       mockLintTac.mockResolvedValueOnce({
         ok: false,
         issues: [
@@ -6012,7 +6003,7 @@ describe('FileConverter Component', () => {
           await vi.advanceTimersByTimeAsync(350);
           await Promise.resolve();
         });
-        fireEvent.click(screen.getByTestId('console-action-add_terminator'));
+        fireEvent.doubleClick(screen.getByTestId('tac-editor'));
 
         expect(screen.getByTestId('tac-editor')).toHaveValue('METAR KJFK 121251Z=');
       } finally {
@@ -6282,17 +6273,13 @@ describe('FileConverter Component', () => {
       expect(scrollMock).toHaveBeenCalled();
     });
 
-    it('clears the workbench console via the clear control', async () => {
+    it('does not render the workbench console panel after chrome polish', async () => {
       const user = userEvent.setup({ delay: null });
       render(<FileConverter {...defaultProps} />);
 
       await user.type(screen.getByTestId('tac-editor'), 'METAR KJFK=');
-      await screen.findByTestId('workbench-console-lines');
-      await user.click(screen.getByTestId('workbench-console-clear'));
-
-      expect(screen.getByTestId('workbench-console-lines')).toHaveTextContent(
-        /no messages yet/i,
-      );
+      expect(screen.queryByTestId('workbench-console')).not.toBeInTheDocument();
+      expect(screen.queryByTestId('lint-issue-catalog-panel')).not.toBeInTheDocument();
     });
 
     it('loads golden examples without an explicit product as auto', async () => {

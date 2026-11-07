@@ -10,10 +10,10 @@ import {
 } from './convertCalmState';
 
 describe('deriveCalmConvertUi (TC-UX-CALM)', () => {
-  it('TC-UX-CALM-004: empty → hero + convert primary', () => {
+  it('TC-UX-CALM-004: empty → convert chrome (no marketing hero) + convert primary', () => {
     const ui = deriveCalmConvertUi({ hasInput: false, hasConverted: false });
     expect(ui.phase).toBe('empty');
-    expect(ui.showEmptyHero).toBe(true);
+    expect(ui.showEmptyHero).toBe(false);
     expect(ui.primaryKind).toBe('convert');
     expect(ui.hideAdvancedSetup).toBe(true);
     expect(ui.showValidityStrip).toBe(false);

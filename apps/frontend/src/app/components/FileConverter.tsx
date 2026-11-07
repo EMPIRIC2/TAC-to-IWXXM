@@ -29,7 +29,6 @@ import { LiveWorldMap } from './LiveWorldMap';
 import { LiveConvertStatusStrip } from './LiveConvertStatusStrip';
 import { TacLintJumps } from './TacLintJumps';
 import { StatusBanner } from './StatusBanner';
-import { WorkbenchConsole } from './WorkbenchConsole';
 import { ConvertResultsDrawer } from './ConvertResultsDrawer';
 import { ConvertSettingsCog } from './ConvertSettingsCog';
 import { VerticalResizeHandle } from './VerticalResizeHandle';
@@ -2528,8 +2527,6 @@ export function FileConverter({
     decodeProduct,
     decodeSummary,
     loading: decodeLoading,
-    consoleLines,
-    clearConsole,
   } = useLiveWorkbenchAssist({
     text: manualInput,
     product: liveAssistProduct,
@@ -2593,13 +2590,12 @@ export function FileConverter({
     strictLayersRan,
   );
 
-  const { entries: lintCatalogEntries, byCode: lintCatalogByCode } =
-    useLintIssueCatalog({
-      product: liveAssistProduct,
-      semanticProfile: conversionParams.profile,
-      exchangeProfile: packagingExchangeProfile ?? conversionParams.exchangeProfile,
-      enabled: !isReadOnly,
-    });
+  const { byCode: lintCatalogByCode } = useLintIssueCatalog({
+    product: liveAssistProduct,
+    semanticProfile: conversionParams.profile,
+    exchangeProfile: packagingExchangeProfile ?? conversionParams.exchangeProfile,
+    enabled: !isReadOnly,
+  });
 
   const applyLintFix = useCallback(
     (fixCode: string) => {
@@ -2740,7 +2736,7 @@ export function FileConverter({
       </header>
       <div
         data-testid="workbench-frame"
-        className={`mx-auto w-full px-4 py-4 ${shellFrameClass(liveLayout.span)}`}
+        className={`mx-auto w-full px-4 py-4 pb-28 ${shellFrameClass(liveLayout.span)}`}
       >
         <div className="mb-4">
           <p
@@ -3011,7 +3007,10 @@ export function FileConverter({
                     className="flex flex-col gap-1.5 border-b border-gray-200 px-2 py-1.5 dark:border-gray-700 lg:flex-row lg:items-center lg:justify-between"
                     data-testid="convert-chrome-toolbar"
                   >
-                    <div className="flex min-w-0 flex-wrap items-center gap-1.5">
+                    <div
+                      className="flex min-w-0 flex-wrap items-center gap-1.5"
+                      data-testid="convert-chrome-toolbar-start"
+                    >
                       <button
                         type="button"
                         data-testid="convert-panes-toggle"
@@ -3021,6 +3020,44 @@ export function FileConverter({
                       >
                         {converterOpen ? 'Hide converter' : 'Show converter'}
                       </button>
+                      <Label
+                        htmlFor="param-product"
+                        className="sr-only text-sm text-gray-700 dark:text-gray-300"
+                      >
+                        Product type
+                      </Label>
+                      <select
+                        id="param-product"
+                        aria-label="Product"
+                        data-testid="product-type-select"
+                        value={conversionParams.product}
+                        disabled={isReadOnly}
+                        onChange={(e) =>
+                          setConversionParams((prev) => ({
+                            ...prev,
+                            product: e.target.value as TacProductSelection,
+                            reportVariant: '',
+                          }))
+                        }
+                        className="min-w-[9.5rem] shrink-0 rounded-md border border-gray-300 bg-white px-2 py-1.5 text-sm text-gray-900 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+                      >
+                        <option value="auto">Auto-detect</option>
+                        <option value="AIRMET">AIRMET</option>
+                        <option value="METAR">METAR</option>
+                        <option value="SIGMET">SIGMET</option>
+                        <option value="SPECI">SPECI</option>
+                        <option value="TAF">TAF</option>
+                        <option value="VAA">VAA</option>
+                        <option value="TCA">TCA</option>
+                        <option value="SWXA">SWXA</option>
+                        <option value="VONA">VONA</option>
+                        <option value="IWXXM">IWXXM</option>
+                      </select>
+                    </div>
+                    <div
+                      className="flex shrink-0 items-center gap-1.5 lg:ml-auto"
+                      data-testid="convert-chrome-toolbar-end"
+                    >
                       <ConvertSettingsCog>
                         <div
                           className="flex max-w-full flex-wrap rounded-md border border-gray-300 dark:border-gray-600"
@@ -3080,39 +3117,6 @@ export function FileConverter({
                               className="flex min-w-0 flex-col gap-1.5 rounded-md border border-gray-300 bg-white px-2 py-1.5 dark:border-gray-600 dark:bg-gray-800 lg:flex-row lg:flex-wrap lg:items-center"
                               data-testid="product-profile-bar"
                             >
-                              <Label
-                                htmlFor="param-product"
-                                className="shrink-0 text-sm text-gray-700 dark:text-gray-300"
-                              >
-                                Product type
-                              </Label>
-                              <select
-                                id="param-product"
-                                aria-label="Product"
-                                data-testid="product-type-select"
-                                value={conversionParams.product}
-                                disabled={isReadOnly}
-                                onChange={(e) =>
-                                  setConversionParams((prev) => ({
-                                    ...prev,
-                                    product: e.target.value as TacProductSelection,
-                                    reportVariant: '',
-                                  }))
-                                }
-                                className="min-w-[9.5rem] shrink-0 rounded-md border border-gray-300 bg-white px-2 py-1.5 text-sm text-gray-900 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
-                              >
-                                <option value="auto">Auto-detect</option>
-                                <option value="AIRMET">AIRMET</option>
-                                <option value="METAR">METAR</option>
-                                <option value="SIGMET">SIGMET</option>
-                                <option value="SPECI">SPECI</option>
-                                <option value="TAF">TAF</option>
-                                <option value="VAA">VAA</option>
-                                <option value="TCA">TCA</option>
-                                <option value="SWXA">SWXA</option>
-                                <option value="VONA">VONA</option>
-                                <option value="IWXXM">IWXXM</option>
-                              </select>
                               <div className="flex min-w-0 flex-wrap items-center gap-2">
                                 <span className="text-sm text-gray-600 dark:text-gray-400">
                                   Profile:{' '}
@@ -4397,17 +4401,6 @@ export function FileConverter({
                           onOpenCatalog={onOpenCatalog}
                         />
                       ) : null}
-                      <WorkbenchConsole
-                        lines={consoleLines}
-                        minLogLevel={conversionParams.logLevel as ConvertLogLevel}
-                        onLineAction={applyLintFix}
-                        catalogByCode={lintCatalogByCode}
-                        catalogEntries={lintCatalogEntries}
-                        onOpenCatalog={onOpenCatalog}
-                        onClear={() => {
-                          clearConsole();
-                        }}
-                      />
                     </div>
                   }
                   decoder={
@@ -4787,11 +4780,6 @@ export function FileConverter({
                 </div>
               </div>
             )}
-
-            <OperatorFooter
-              onOpenPrivacy={() => setIsPrivacySettingsOpen(true)}
-              onOpenTerms={() => setIsSiteTermsOpen(true)}
-            />
           </div>
           {onLoadWorkSession && (
             <aside
@@ -4809,6 +4797,10 @@ export function FileConverter({
             </aside>
           )}
         </div>
+        <OperatorFooter
+          onOpenPrivacy={() => setIsPrivacySettingsOpen(true)}
+          onOpenTerms={() => setIsSiteTermsOpen(true)}
+        />
       </div>
 
       {isOperatorDisseminationDestinationsEnabled() ? (
