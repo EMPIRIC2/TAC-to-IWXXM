@@ -36,7 +36,9 @@ Cite `[Corpus: ui-style]` when you apply these norms.
 - Convert drop-zone chrome keeps Select files; do not show Mass Ingest beside it.
 - Convert primary action strip (New TAC / Convert / Download latest): full-width three equal columns on `sm+` so Convert stays in the middle column. Do not left-pack unequal `min-w-*` widths.
 - Convert TAC notes: no Groups chip strip under the editor; group selection lives in Decoder, not as horizontal chips above the notes summary.
-- Convert empty state: example chips sit in a bar above the TAC editor inside the main convert card; Other tasks sit in one tight row under that card — not a separate far strip.
+- Convert empty state uses the same bordered converter chrome as the filled state (no marketing hero). Product type stays on the toolbar. Settings cog is rightmost; icon affordances use slow-fade hover cards.
+- Operator footer is full-bleed across the bottom and collapsible to a right-edge reveal handle.
+- Results Console does not show the conversion/validation log shell or lint issue catalog panel (status strip / error log may remain).
 - Convert catalog Examples sit in a compact bar above the TAC editor — not inside the Settings product/profile panel.
 - Results → Downloads is file management only; conversion XML and result assessment details belong on Results → IWXXM.
 - Results drawer: title + Hide and the results tab strip stay pinned above the scrolling tab body (chrome outside the overflow scrollport).
@@ -111,3 +113,4 @@ Record the test path and red/green dates on `docs/ui-ux-tweaks/UX-YYYY-MM-DD-*.m
 | 2026-11-02 | [UX-2026-11-02-sticky-results-header](ui-ux-tweaks/UX-2026-11-02-sticky-results-header.md) | Results drawer: title + Hide and the results tab strip stay pinned above the scrolling tab body (chrome outside the overflow scrollport). |
 | 2026-11-02 | [UX-2026-11-02-compact-map-result-card](ui-ux-tweaks/UX-2026-11-02-compact-map-result-card.md) | Live map station cards: product + station header, observation-time select (not Newer/Earlier pills), TAC collapsed by default, Send to converter via existing handoff. |
 | 2026-11-02 | [UX-2026-11-02-preferences-visual](ui-ux-tweaks/UX-2026-11-02-preferences-visual.md) | Workbench Help / Preferences chrome and User Preferences modal: dark outline (primary blue border, transparent fill); Preferences stays display-name + output-extension only. |
+| 2026-11-07 | [UX-2026-11-07-convert-chrome-polish](ui-ux-tweaks/UX-2026-11-07-convert-chrome-polish.md) | Convert empty state uses the same bordered converter chrome (no marketing hero); product type always on the toolbar; Settings cog rightmost with slow-fade hover cards; drop Results console + lint catalog panels; full-bleed collapsible footer; output-extension caret nudged left. |
