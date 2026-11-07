@@ -89,16 +89,15 @@ pytest failure (e.g. `assert None is not None` on CA ECCC layered test).
 3. Daily matrix may be a **subset/rotate**; full matrix remains weekly/`workflow_dispatch`
    all ([Corpus: tests] TC-F34-005; [Corpus: decisions] `ev-ci-runtime-failures.md`).
 
-### 8. PyPI Nightly maturin / Cargo `unexpected character '.' after patch`
+### 8. TestPyPI / CalVer Cargo mapping (`+test` or local labels)
 
-**See:** `pypi-nightly.yml` fails on native packages with Cargo rejecting
-`version = "….devN"`.
+**See:** maturin/Cargo rejects PEP 440 local or multi-segment versions from CD.
 
 **Do:**
-1. Keep PEP 440 `.devN` in `pyproject.toml` / `__version__` for TestPyPI.
-2. Write Cargo as SemVer pre-release `YYYY.M.D-dev.N` via `bump_calver.py`
-   ([Corpus: adr/ADR-043]).
-3. Do not paste PEP 440 `.devN` into `Cargo.toml`.
+1. Keep PEP 440 `{CalVer}+test` (stage) / `{CalVer}` (prod) in `pyproject.toml`.
+2. Map to Cargo-safe forms via `bump_calver.py` ([Corpus: adr/ADR-043]).
+3. Do not paste raw PEP 440 local segments into `Cargo.toml`.
+4. Do **not** revive scheduled `pypi-nightly.yml`.
 
 ## Stage → main vs evolve
 
@@ -106,7 +105,7 @@ pytest failure (e.g. `assert None is not None` on CA ECCC layered test).
 |------|-------------|
 | Feature / evolve PR | Into **`stage`**; watch `ci-cd.yml` on the branch |
 | Promote | **`stage`→`main` only**; Staging gate + **E2E Full** (not smoke-only) |
-| Prod ship | After merge to `main` + tip CI: deploy tag `vYYYY.MM.DD-deploy` (EV-051) |
+| Prod ship | After merge to `main` + tip CI: **prod CD** (DOKS + GHCR + Release + PyPI); no `v*-deploy` |
 
 ## Related
 

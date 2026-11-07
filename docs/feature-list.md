@@ -39,9 +39,9 @@ ids are engineering trace only. They are not operator-facing copy.
 | F9 | Value-aware live decode + plain-language summary | Done | Product | S013 / EV-009 (#723); **deepen EV-retire-profile-dissem-ui-catalogs / ADR-044**: extract `packages/tac-decoding` (PyPI) as decode + Decoding catalog owner; **deepen EV-profile-validate-decode-deepen / #1221 / #724**: ICAO station → airport name (soft-fail); **deepen EV-yaml-engine-configurability / #1224**: pack/glossary overlay cookbook + examples; **deepen EV-yaml-full-configurability / #1226**: every product decode pack cell → **full**; starter templates + PyPI smoke; **deepen EV-1252-residual-yaml / #1252 / ADR-049**: file/env YAML ICAO→name table is SoT; `set_location_name_resolver` stays an optional override; **deepen EV-1307 / #1308**: Decoding catalog additive type/level/source/conform metadata; **deepen EV-decode-residuals-2026-11-03**: staging residual families TAF→METAR→SPECI→SIGMET (legacy + pack dual-write; typo NL); **deepen EV-decode-residual-conventions**: non-RMK convention + fragment explainers + malformed-source lint; **deepen EV-live-lint-decode-fixes-2026-11-04**: known-ignore CA/national TAF RMK trailers; decode `WS R…`, RVR `…FT/[UDN]`, fractional / VIS VRB ranges (live 30d) |
 | F10 | Workbench preview clarity (IWXXM pane + lint UX) | Done | Product | S013 / EV-009; shipped 2026-07-17 (#723); **deepen** S048 / EV-040 full lint console lines + preserve input on convert; **deepen** EV-beta-ux-export-auth info-only Conversion/Validation log chrome (not amber/red) |
 | F11 | Validation stack perf review + msgspec HTTP + XSD codegen | Implemented | Product | S014 / EV-010; #703 |
-| F12 | Publishable TAC product validation (`tac-validate`) | Implemented | Product | S014 / EV-010; #698; **deepen** S043 / EV-035 lint↔source provenance; **deepen** S055 / EV-046 ISSUE_CATALOG; **deepen** S059 / EV-050 #959 offline membership Validated; **deepen** EV-1150 CalVer + nightly TestPyPI (ADR-043); **deepen EV-yaml-engine-configurability / #1224**: policy/detector overlay docs + preflight (detector YAML deepen deferred); **deepen EV-yaml-full-configurability / #1226**: every product TAC quality + detector cells → **full** |
-| F13 | Fast IWXXM validate (Rust core + Schematron + PyPI) | Implemented | Product | S014 / EV-010; #699; **deepen** S054 / EV-045 Rust CI (#725); **deepen** S064 / EV-055 #980; **deepen** EV-1150 CalVer + nightly TestPyPI (ADR-043) |
-| F14 | Publish `tac2iwxxm` + validate extras + PyPI/release CI | Implemented | Product | S014 / EV-010; #693; **deepen** S054 / EV-045 Rust CI (#725); **deepen** EV-1150 CalVer + promote tags + nightly TestPyPI (ADR-043); **deepen EV-yaml-full-configurability / #1226**: README/install smoke for overlay + emit map templates |
+| F12 | Publishable TAC product validation (`tac-validate`) | Implemented | Product | S014 / EV-010; #698; **deepen** S043 / EV-035 lint↔source provenance; **deepen** S055 / EV-046 ISSUE_CATALOG; **deepen** S059 / EV-050 #959 offline membership Validated; **deepen** EV-1150 CalVer (ADR-043); **deepen** EV-cd-conjoined-calver-release CD TestPyPI `{CalVer}+test`; **deepen EV-yaml-engine-configurability / #1224**: policy/detector overlay docs + preflight (detector YAML deepen deferred); **deepen EV-yaml-full-configurability / #1226**: every product TAC quality + detector cells → **full** |
+| F13 | Fast IWXXM validate (Rust core + Schematron + PyPI) | Implemented | Product | S014 / EV-010; #699; **deepen** S054 / EV-045 Rust CI (#725); **deepen** S064 / EV-055 #980; **deepen** EV-1150 CalVer (ADR-043); **deepen** EV-cd-conjoined-calver-release |
+| F14 | Publish `tac2iwxxm` + validate extras + PyPI/release CI | Implemented | Product | S014 / EV-010; #693; **deepen** S054 / EV-045 Rust CI (#725); **deepen** EV-1150 CalVer + promote tags (ADR-043); **deepen** EV-cd-conjoined-calver-release main CD publish; **deepen EV-yaml-full-configurability / #1226**: README/install smoke for overlay + emit map templates |
 | F15 | Maintainable TAC lint issue registry + METAR/SPECI quality bar | Done | Product | S015 / EV-011; #732; **deepen** S055 / EV-046 #889 Lean; **deepen** S059 / EV-050 #959 Validated membership + RE*/cloud fixtures; **deepen** EV-062 #1017 catalog descriptions + provenance locators; **deepen** EV-beta-ux-export-auth operator messages = library codes only (no research T3/S1 tokens); **deepen EV-yaml-engine-configurability / #1224**: honesty matrix for policy vs detector YAML; **deepen EV-yaml-full-configurability / #1226**: METAR/SPECI lead then all products to **full** (M2–M4); **deepen EV-1252-residual-yaml / #1252 / ADR-049**: declarative detector rules replace Python hatches where the DSL can express them (`kind: python` escape only); **deepen EV-regional-profile-remainder**: CIS runway-state ≠ `INVALID_RVR` (C5); BoM `tt///` dewpoint-not-observable (C4); **deepen EV-packages-module-reorg**: lint-profile inherit casing + sticky/QM catalog-case keys (sticky table redesign follow-on); **deepen EV-decode-residuals-2026-11-03**: one **warning** code per residual typo pattern (no silent rewrite) |
 | F16 | Dissemination drawer + multi-DB upload (BYOC URI) | Done | Product | S019 / EV-014; #729; **deepen** S024 / EV-018 multi-select (#785); **deepen** S047 / EV-039 live local SQL; **deepen** S050 / EV-042 #897 UI-hide (API retained); **restore** EV-091 / #898 + #1089 exchange overlay; **deepen** EV-1150 operator **beta** badge + Issues feedback (ADR-043); **deepen** EV-beta-ux-export-auth remove Upload to Database button; Disseminate/Convert&Send remain beta |
 | F17 | WIS2 dissemination pathway | Done | Product | S019 / EV-014; #2; S050 / EV-042 hide; **restore** EV-091 / #898; **deepen** EV-1150 beta surfacing (ADR-043) |
@@ -57,7 +57,7 @@ ids are engineering trace only. They are not operator-facing copy.
 | F27 | TCA quality bar (TropicalCycloneAdvisory) | Done | Product | S027 / EV-021; #737; PR #794; **deepen** S055 / EV-046 #889 |
 | F28 | SWXA quality bar (SpaceWeatherAdvisory) | Done | Product | S036 / EV-029; #823/#740 closed; PR #828; **deepen** S055 / EV-046 #889; **deepen** S059 / EV-050 #959 SpaceWxPhenomena fixtures |
 | F29 | Parameterized lint/convert/validate rule matrices | Done | Product | S037 / EV-030; #831; shipped 2026-08-03 (#832); **deepen EV-1265 / #1265**: convert and validate matrices for TAF, SIGMET, AIRMET, VAA, TCA, SWXA, and VONA |
-| F30 | Platform independence (Auth / DO DB / DOKS) | Done | Platform | S038 / EV-031; S042 / EV-034 CD; S052 / EV-043 staging CD (#886); S053 / EV-044 dual DOKS; **deepen** S060 / EV-051 tag-driven prod Deploy; **deepen** S067 / EV-057 apex → app redirect (#948) |
+| F30 | Platform independence (Auth / DO DB / DOKS) | Done | Platform | S038 / EV-031; S042 / EV-034 CD; S052 / EV-043 staging CD (#886); S053 / EV-044 dual DOKS; S060 / EV-051 tag-driven prod Deploy (**superseded** by EV-cd-conjoined-calver-release — main CD); **deepen** S067 / EV-057 apex → app redirect (#948); **deepen** EV-cd-conjoined-calver-release (DOKS+GHCR+PyPI CalVer) |
 | F31 | Hybrid operator sessions (guest local + Auth long-term) | Done | Product | S038 / EV-031; amends F5/F7/F21/F22; **deepen** EV-beta-ux-export-auth restore working `/auth/register` + login verify (local + staging) |
 | F32 | VONA quality bar (VolcanoObservatoryNoticeForAviation) | Done | Product | S040 / EV-032; #741 closed; **deepen** S055 / EV-046 #889; prior S046 / EV-038; epic #846 |
 | F33 | Secure mass file/folder ingest | Implemented | Product | S050 / EV-042; #897; auth + caps + sniff/zip-bomb; multi-file + folder/zip; 11 approved |
@@ -2351,10 +2351,10 @@ ids are engineering trace only. They are not operator-facing copy.
   7. **Dual DOKS + DO Projects (EV-044)**: Staging cluster + managed PG under DO Project
      **Staging TAC-to-IWXXM**; prod cluster + PG under **TAC-to-IWXXM**. Amends ADR-034
      (supersedes same-cluster two-namespace staging).
-  8. **Tag-driven prod (EV-051 / S060)**: Push to `main` runs full CI **without** prod Deploy.
-     Prod Deploy runs after full CI on `vYYYY.MM.DD-deploy` tag push (pattern `v*-deploy`)
-     or optional `workflow_dispatch`. Deploy `needs` include `e2e-smoke`. Solo-dev “approval”
-     = cutting the deploy tag (or dispatch).
+  8. **Main-merge prod CD (EV-cd-conjoined-calver-release; replaces EV-051 tag gate)**:
+     A push or merge to `main` runs full CI, then prod CD (DOKS + GHCR + one GitHub Release +
+     PyPI tags for packages that changed). `workflow_dispatch` remains for manual redeploy.
+     Deploy `needs` include `e2e-smoke`. Solo-dev approval is merging the promote PR.
 - **Convert APIs**: Remain public (no JWT) for convert/lint/validate/disseminate (`D-S038-F30`).
 - **Acceptance**:
   1. Product path boots/smokes without Supabase **database** credentials (**TC-F30-001**)
@@ -2363,18 +2363,18 @@ ids are engineering trace only. They are not operator-facing copy.
   4. DOKS hosts API + worker + static; cutover runbook + H0–H5 against new endpoints (**TC-F30-004**)
   5. Render decommissioned after soak or residual ticket with checklist (**TC-F30-005**)
   6. Docs/CORPUS/env-contract no longer require Supabase as data plane (**TC-F30-006**)
-  7. Prod CD rolls DOKS images to the immutable tag without manual kubectl when a deploy
-     tag (or dispatch) runs (**TC-F30-007**)
+  7. Prod CD rolls DOKS images to the immutable tag without manual kubectl on `main` CD
+     (or dispatch) (**TC-F30-007**)
   8. Staging DOKS + isolated DB/secrets on DO Project **Staging TAC-to-IWXXM**; prod on
      **TAC-to-IWXXM** (**TC-F30-008** / **TC-F30-008′**)
   9. Staging DNS + TLS for `api|app.staging.tac-to-iwxxm.com` → staging LB (**TC-F30-009**)
-  10. `stage` auto-deploys staging after full CI; `main` push does **not** auto-deploy prod
-      (**TC-F30-010** amended EV-051)
+  10. `stage` auto-deploys staging after full CI; `main` push auto-deploys prod after CI
+      (**TC-F30-010** amended EV-cd-conjoined-calver-release)
   11. Branch protection / rulesets: PR required on `stage` and `main` (**TC-F30-011**)
   12. PRs to `main` require head=`stage` + Staging smoke green (**TC-F30-012**)
   13. Shared-cluster staging namespace removed after dual-cluster cutover (**TC-F30-013**)
-  14. Prod Deploy via `vYYYY.MM.DD-deploy` tag (or `workflow_dispatch`) after full CI incl.
-      `e2e-smoke` (**TC-F30-014** / TC-EV051-*)
+  14. Prod Deploy via `main` merge CD (or `workflow_dispatch`) after full CI incl.
+      `e2e-smoke`; `v*-deploy` retired (**TC-F30-014** / TC-EV-CD-* / amended TC-EV051-*)
 - **S067 / EV-057 deepen (#948 — apex → app redirect)**: Configure prod apex
   `https://tac-to-iwxxm.com` (and `www` when DNS/cert covers it) to permanently redirect to
   canonical `https://app.tac-to-iwxxm.com` via sibling Ingress **`metar-frontend-apex`**
@@ -2390,8 +2390,8 @@ ids are engineering trace only. They are not operator-facing copy.
   4. TLS covers apex (and `www` if enabled).
   5. Deploy docs state prod FE Ingress extension; TC-EV057-948 / ops smoke.
 - **Out of scope**: Convert/validate engine rewrites; App Platform; multi-reviewer Environment
-  approvals (solo uses tag/dispatch); changing canonical app host away from `app.`
-- **Source**: E31-*; E34-*; E43-*; E44-*; E51-*; E57-*; Context: platform-independence-842 (archived; see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate); #842/#830/#712/#886/#948; S042 / EV-034; S052 / EV-043; S053 / EV-044; S060 / EV-051; S067 / EV-057
+  approvals (solo uses promote PR + optional dispatch); changing canonical app host away from `app.`
+- **Source**: E31-*; E34-*; E43-*; E44-*; E51-*; E57-*; EV-cd-conjoined-calver-release; Context: platform-independence-842 (archived; see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate); #842/#830/#712/#886/#948; S042 / EV-034; S052 / EV-043; S053 / EV-044; S060 / EV-051; S067 / EV-057
 
 ### F31: Hybrid Operator Sessions — S038 / EV-031
 

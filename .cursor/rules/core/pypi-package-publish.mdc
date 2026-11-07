@@ -1,5 +1,5 @@
 ---
-description: Guardrails for PyPI package publish (F12–F14) — OIDC, tags, package boundaries, wheel contents
+description: Guardrails for PyPI package publish (F12–F14) — OIDC, CD tags, package boundaries, wheel contents
 globs:
   - packages/tac2iwxxm/**
   - packages/tac-validate/**
@@ -11,12 +11,12 @@ alwaysApply: false
 # PyPI Package Publish (F12–F14)
 
 Traces to `[Corpus: product]` F12–F14, `[Corpus: system-spec]` package components,
-`docs/config-spec.md` §F11–F14, and `docs/context/package-publish-validation.md`.
+`docs/config-spec.md` §F11–F14, and `[Corpus: adr/ADR-043]`.
 
 ## Trusted publishing only
 
 - Publish via **GitHub Actions OIDC trusted publishing**.
-- **One workflow** with a **package matrix** (three packages) — not three unrelated one-off files
+- **One workflow** with a **package matrix** — not three unrelated one-off files
   unless an ADR changes E10-37.
 - Do **not** add long-lived `PYPI_API_TOKEN` / password secrets when OIDC is configured.
 - Workflows need `id-token: write` and a PyPI Trusted Publisher linked to the workflow +
@@ -26,20 +26,20 @@ Traces to `[Corpus: product]` F12–F14, `[Corpus: system-spec]` package compone
 
 | Package | PyPI name | Tag pattern |
 |---------|-----------|-------------|
-| `packages/tac-validate` | `tac-validate` | `tac-validate-v*` (e.g. `tac-validate-v2026.09.10`) |
+| `packages/tac-validate` | `tac-validate` | `tac-validate-v*` (e.g. `tac-validate-v2026.9.10`) |
 | `packages/iwxxm-validate` | `iwxxm-validate` | `iwxxm-validate-v*` |
 | `packages/tac2iwxxm` | `tac2iwxxm` | `tac2iwxxm-v*` |
 | `packages/tac-decoding` | `tac-decoding` | `tac-decoding-v*` (ADR-044) |
+| `packages/shared` | `metar-shared` | `metar-shared-v*` |
+| `packages/reference-lookup` | `reference-lookup` | `reference-lookup-v*` |
 
-- **CalVer** `YYYY.MM.DD` (same-day `YYYY.MM.DD.N`); nightlies `YYYY.MM.DD.devN` → TestPyPI
-  only via `pypi-nightly.yml`.
-- Do not publish prod wheels from arbitrary branch pushes — **tag-driven** only
-  (`pypi-publish.yml`).
+- **CalVer** `YYYY.M.D` (same-day `YYYY.M.D.N`); stage TestPyPI uses `{CalVer}+test`.
+- **Do not** revive scheduled `pypi-nightly.yml` soft-fail nightlies.
+- Prod/stage publishes are **CD-created tags** → `pypi-publish.yml` (changed packages only).
 - Extra `tac2iwxxm[validate]` must depend on both validators (F14).
-- **Promote timing (recommended):** bump CalVer on `stage` before the
-  `stage`→`main` PR; push package tags from the merged `main` tip when publishing.
-  Deploy cutovers also use `vYYYY.MM.DD-deploy`. See [Corpus: deploy] §Promote,
-  `doks-promote-from-stage.mdc` §Release on promote, and [Corpus: adr/ADR-043].
+- **Promote timing:** merge `stage`→`main`; main CD creates Release + package tags.
+  See [Corpus: deploy] §Promote, `doks-promote-from-stage.mdc` §Release on promote,
+  and [Corpus: adr/ADR-043].
 
 ## Package boundaries
 

@@ -2161,16 +2161,16 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
   `/health` 200 on API; FE returns 200; cert-manager Certificate Ready
 - **Source**: F30 AC9; D-S052-dns; D-S053-dns
 
-### TC-F30-010: Dual-branch CD (amended EV-051)
+### TC-F30-010: Dual-branch CD (amended EV-cd-conjoined-calver-release)
 
 - **Level**: Ops / CI
-- **Objective**: Push/merge to `stage` deploys **staging cluster** after full Deploy
-  `needs` (incl. `e2e-smoke`). Push/merge to `main` runs full CI but **does not** Deploy
-  prod (EV-051).
-- **Pass criteria**: Staging Deploy bound to GH Environment `staging`; `main` push workflow
-  has no successful prod Deploy job for that event; env-scoped kubeconfig + `DOKS_NAMESPACE`
-  correct when Deploy runs
-- **Source**: F30 AC10; #886; EV-044; **EV-051 / S060** (`D-S060-scope=1`)
+- **Objective**: A push or merge to `stage` deploys the staging cluster after full Deploy
+  `needs` (incl. `e2e-smoke`) and publishes packages that changed to TestPyPI. A push or
+  merge to `main` runs full CI, then prod Deploy (DOKS + GHCR + Release + PyPI for packages
+  that changed).
+- **Pass criteria**: Staging Deploy uses GH Environment `staging`. A `main` push runs prod
+  Deploy after CI. Env-scoped kubeconfig and `DOKS_NAMESPACE` are correct when Deploy runs.
+- **Source**: F30 AC10; #886; EV-044; EV-cd-conjoined-calver-release (replaces EV-051 CI-only main)
 
 ### TC-F30-011: Branch protection on stage and main
 
@@ -2197,15 +2197,15 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
   empty/terminating with no Deployments); staging smoke uses staging cluster context only
 - **Source**: F30 AC13; D-S053-teardown
 
-### TC-F30-014: Tag-driven prod Deploy (EV-051)
+### TC-F30-014: Main-merge prod Deploy (EV-cd-conjoined-calver-release)
 
 - **Level**: Ops / CI
-- **Objective**: Prod Deploy runs only for `vYYYY.MM.DD-deploy` tag pushes (pattern
-  `v*-deploy`) or `workflow_dispatch` targeting production, after Deploy `needs`
-  including `e2e-smoke` pass. Solo-dev approval = tag/dispatch (no Environment reviewers).
-- **Pass criteria**: Workflow `on.push.tags` / `workflow_dispatch` documented; Deploy job
-  `if` excludes bare `main` push; `needs` includes `e2e-smoke`; ADR-034 + deploy.md match
-- **Source**: F30 AC14; EV-051 / S060; TC-EV051-001..006
+- **Objective**: Prod Deploy runs for a `main` push or merge after Deploy `needs` including
+  `e2e-smoke`, or for `workflow_dispatch` targeting production. Solo-dev approval is the
+  promote PR merge (no Environment reviewers). `v*-deploy` tags are not required.
+- **Pass criteria**: Deploy job `if` includes `refs/heads/main`. `needs` includes
+  `e2e-smoke`. ADR-034 and deploy.md match. Happy path does not depend on `v*-deploy`.
+- **Source**: F30 AC14; EV-cd-conjoined-calver-release; amended TC-EV051-*
 
 ### TC-EV051-001: Deploy needs include e2e-smoke
 
@@ -2221,35 +2221,62 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
 - **Pass criteria**: `deploy` `if` allows `refs/heads/stage` push; Environment `staging`
 - **Source**: EV-051 AC2
 
-### TC-EV051-003: main push does not Deploy prod
+### TC-EV051-003: main push Deploys prod (amended)
 
 - **Level**: Ops / CI
-- **Objective**: Bare `main` push is CI-only for Deploy purposes
-- **Pass criteria**: `deploy` `if` excludes `refs/heads/main`
-- **Source**: EV-051 AC3
+- **Objective**: Bare `main` push runs prod Deploy after CI (EV-cd-conjoined-calver-release)
+- **Pass criteria**: `deploy` `if` includes `refs/heads/main` (or equivalent) with
+  Environment `production`
+- **Source**: EV-051 AC3 replaced; EV-cd-conjoined-calver-release AC-CD-02
 
-### TC-EV051-004: deploy tag triggers prod Deploy
+### TC-EV051-004: deploy tag retired (amended)
 
 - **Level**: Ops / CI
-- **Objective**: Tag `v*-deploy` (e.g. `v2026.09.04-deploy`) triggers prod Deploy path
-- **Pass criteria**: `on.push.tags` includes `v*-deploy` (not the two-hyphen `v*-*-deploy`
-  glob, which misses dotted date tags); Deploy resolves `env_role=prod`
-- **Source**: EV-051 AC4; TC-F30-014
+- **Objective**: `v*-deploy` tags are not the prod ship gate
+- **Pass criteria**: Docs and workflows do not require `v*-deploy` for happy-path prod CD.
+  GitHub Release uses `vYYYY.M.D[.N]` without `-deploy`.
+- **Source**: EV-051 AC4 replaced; EV-cd-conjoined-calver-release Q5
 
-### TC-EV051-005: workflow_dispatch prod escape hatch
+### TC-EV051-005: workflow_dispatch prod manual redeploy
 
 - **Level**: Ops / CI
 - **Objective**: Manual `workflow_dispatch` can Deploy production
-- **Pass criteria**: `on.workflow_dispatch` present; Deploy `if` includes dispatch → production
+- **Pass criteria**: `on.workflow_dispatch` is present. Deploy `if` includes dispatch → production.
 - **Source**: EV-051 AC5
 
-### TC-EV051-006: Docs / ADR / rule parity
+### TC-EV051-006: Docs / ADR / rule parity (amended)
 
 - **Level**: T0
-- **Objective**: Standing docs describe tag-driven prod + full CI needs
-- **Pass criteria**: ADR-034, deploy.md §CD, doks-promote-from-stage.mdc, feature-list F30
-  AC10/AC14 consistent
-- **Source**: EV-051 AC6
+- **Objective**: Standing docs describe main-merge prod CD, full CI needs, and PyPI in the same CD run
+- **Pass criteria**: ADR-034, ADR-043, deploy.md §CD, doks-promote-from-stage.mdc, and
+  feature-list F30 AC10/AC14 agree
+- **Source**: EV-051 AC6; EV-cd-conjoined-calver-release AC-CD-05
+
+### TC-EV-CD-001: Stage CD publishes TestPyPI for packages that changed
+
+- **Level**: Ops / CI
+- **Objective**: After a successful stage Deploy, publishable packages that changed are tagged
+  `{CalVer}+test` and published to TestPyPI via `pypi-publish.yml`
+- **Pass criteria**: Packages that did not change are not republished. Trusted Publisher /
+  `testpypi` Environment is used. `pypi-nightly.yml` is not required.
+- **Source**: EV-cd-conjoined-calver-release AC-CD-01; [Corpus: adr/ADR-043]
+
+### TC-EV-CD-002: Main CD creates one GitHub Release + PyPI tags
+
+- **Level**: Ops / CI
+- **Objective**: After a successful main Deploy, one Release `vYYYY.M.D[.N]` exists and
+  packages that changed receive `{pkg}-v{version}` tags for prod PyPI
+- **Pass criteria**: Docs-only or infra-only ships skip PyPI but still create the Release.
+  A second ship on the same day uses `.N`.
+- **Source**: EV-cd-conjoined-calver-release AC-CD-02..04
+
+### TC-EV-CD-003: Nightly TestPyPI workflow retired
+
+- **Level**: T0
+- **Objective**: Scheduled soft-fail `pypi-nightly.yml` is removed or disabled
+- **Pass criteria**: No active schedule publishes `.devN` TestPyPI nightlies. deploy.md matches.
+- **Source**: EV-cd-conjoined-calver-release intake; AC-CD-01
+
 
 ### EV-052 / S061 — CI polish + quality PR stats + Sentry/Redis/Orval
 

@@ -2,20 +2,20 @@
 
 > **Project**: TAC to IWXXM
 > **Platform**: **DOKS** (F30 primary) · Render **suspended** (T6.5 / `D-S038-t65-waive`)
-> **Last updated**: 2026-08-16 (S067 / EV-057 — #948 apex → app; staging short-host mirror)
+> **Last updated**: 2026-11-07 (CD cycle: main merge ships prod; PyPI with the app)
 
-This document describes how the product runs in DigitalOcean Kubernetes Service
-(**DOKS**), how Continuous Delivery (CD) rolls images, and how a **promote**
-moves code from staging to production. For current tip SHAs and live URLs, see
-[deploy-state.md](deploy-state.md). For environment variable names, see
-[env-contract.md](env-contract.md).
+This document describes how the product runs on DigitalOcean Kubernetes Service
+(DOKS). It also describes Continuous Delivery (CD): how images and Python packages
+ship, and how a promote moves code from staging to production. For tip SHAs and
+live URLs, see [deploy-state.md](deploy-state.md). For environment variable names,
+see [env-contract.md](env-contract.md).
 
 **Quick map**
 
 | Role | Git branch | Cluster | Public hosts |
 |------|------------|---------|--------------|
 | Staging | `stage` | `metar-iwxxm-staging` | `api.staging…` / `app.staging…` |
-| Production | `main` + deploy tag | `metar-iwxxm` | `api.tac-to-iwxxm.com` / `app.tac-to-iwxxm.com` |
+| Production | `main` (CD on merge) | `metar-iwxxm` | `api.tac-to-iwxxm.com` / `app.tac-to-iwxxm.com` |
 
 Render services are **suspended**. Do not point production config at onrender.com.
 
@@ -138,35 +138,59 @@ Render archive: [ops/render-decommission-archive.md](ops/render-decommission-arc
 `--skip-if-suspended` / `RENDER_SKIP_IF_SUSPENDED` so main CI Deploy skips suspended Render
 services without failing (see BUG-2026-08-03). GHCR push continues; DOKS is the prod target.
 
-### CD — DOKS image rollout (S042 / EV-034 / EV-043 / EV-044 / EV-051 tag-driven prod)
+### CD — DOKS + GHCR + packages (S042 / EV-034 / EV-043 / EV-044; EV-cd-conjoined-calver-release)
 
-| Trigger | GH Environment | Cluster | Namespace | Latest tag | Post-deploy |
-|---------|----------------|---------|-----------|------------|-------------|
-| Push `stage` | `staging` | `metar-iwxxm-staging` | `metar-iwxxm-staging` | `stage-latest` | **Staging smoke** job |
-| Push `main` | — | — | — | — | **CI only** (no Deploy) |
-| Tag `vYYYY.MM.DD-deploy` (`v*-deploy`) or `workflow_dispatch` → production | `production` | `metar-iwxxm` | `metar-iwxxm` | `main-latest` | prod smoke via 13 / Makefile |
+Each CD run ships the Kubernetes app, the container images, and the Python packages
+together under one calendar version (CalVer). The three surfaces are:
 
-**Deploy** in `.github/workflows/ci-cd.yml` waits on full CI including **`e2e-smoke`**, then:
+- DOKS: the DigitalOcean Kubernetes Service clusters for staging and production
+- GHCR: GitHub Container Registry images for the API, frontend, and worker
+- PyPI / TestPyPI: published library wheels (`tac-validate`, `tac2iwxxm`, and related packages)
 
-1. Builds/pushes GHCR images tagged `TIMESTAMP-SHA` and `{stage\|main}-latest`.
-2. **Best-effort** marks GHCR packages public (`scripts/deploy/ghcr_ensure_public.sh`;
-   `GITHUB_TOKEN` often cannot change org package visibility — non-fatal).
-3. **Refreshes** the cluster `ghcr-pull` dockerconfig with the live job
-   `GITHUB_TOKEN` (`scripts/deploy/doks_refresh_ghcr_pull_secret.sh`) so DOKS can
-   pull private packages when the out-of-band PAT is expired/revoked (dead PAT →
+[Corpus: adr/ADR-043] [Corpus: adr/ADR-034]
+
+| Trigger | GH Environment | Cluster | Namespace | Latest tag | After deploy / publish |
+|---------|----------------|---------|-----------|------------|------------------------|
+| Push `stage` | `staging` | `metar-iwxxm-staging` | `metar-iwxxm-staging` | `stage-latest` | Staging smoke tests; TestPyPI for packages that changed (`{CalVer}+test`) |
+| Push `main` | `production` | `metar-iwxxm` | `metar-iwxxm` | `main-latest` | Prod DOKS; one GitHub Release (`vYYYY.M.D[.N]`); prod PyPI for packages that changed |
+| Manual workflow run → production | `production` | `metar-iwxxm` | `metar-iwxxm` | `main-latest` | Redeploy without a new merge |
+
+Do not use the old scheduled `pypi-nightly.yml` job. Do not use manual `v*-deploy` git
+tags to ship production (that gate was EV-051). For a manual redeploy, use Actions
+`workflow_dispatch` only.
+
+The Deploy job in `.github/workflows/ci-cd.yml` waits for full CI, including the
+`e2e-smoke` job. Then the job:
+
+1. Builds and pushes GHCR images tagged `TIMESTAMP-SHA` and `{stage\|main}-latest`.
+2. Tries to mark GHCR packages public (`scripts/deploy/ghcr_ensure_public.sh`).
+   Failure here is non-fatal when `GITHUB_TOKEN` cannot change org package visibility.
+3. Refreshes the cluster `ghcr-pull` docker config with the live job `GITHUB_TOKEN`
+   (`scripts/deploy/doks_refresh_ghcr_pull_secret.sh`). That refresh lets DOKS pull
+   private packages when an out-of-band PAT is expired or revoked (dead PAT causes
    `ImagePullBackOff` / GHCR token **403**).
-4. **Rolls DOKS** with `DOKS_NAMESPACE` + **env-scoped kubeconfig** via
-   `scripts/deploy/doks_rollout_images.sh <tag>` (staging secret ≠ prod secret after EV-044).
-5. **Render hooks** (optional, **prod Deploy only**): `--skip-if-suspended` (`E34-4`).
+4. Rolls DOKS with `DOKS_NAMESPACE` and the env-scoped kubeconfig via
+   `scripts/deploy/doks_rollout_images.sh <tag>` (staging secret is not the prod secret
+   after EV-044).
+5. For packages that changed only: CD creates `{pkg}-v{version}` tags. Those tags start
+   `.github/workflows/pypi-publish.yml` (OIDC). On `stage`, the version is PEP 440 local
+   `{CalVer}+test` on TestPyPI. On `main`, the version is `{CalVer}` on prod PyPI.
+   A second ship on the same calendar day bumps `YYYY.M.D.N`. A docs-only or infra-only
+   ship skips PyPI but still creates the GitHub Release on `main`.
+6. On `main` only: create one GitHub Release per ship (`vYYYY.M.D[.N]`). The Release lists
+   image digests and published package versions.
+7. Optional Render hooks on prod Deploy only: `--skip-if-suspended` (`E34-4`).
 
-**Ops escape hatch:** `workflow_dispatch` → `ops=ghcr-doks-pull` + `ops_image_tag=<TIMESTAMP-SHA>`
-refreshes `ghcr-pull` and re-rolls staging without full CI. Prefer a long-lived
-`read:packages` PAT in `ghcr-pull` for break-glass; Deploy refreshes the secret each CD run.
+Manual ops without full CI: `workflow_dispatch` with `ops=ghcr-doks-pull` and
+`ops_image_tag=<TIMESTAMP-SHA>` refreshes `ghcr-pull` and re-rolls staging. Prefer a
+long-lived `read:packages` PAT in `ghcr-pull` for emergency pulls. Deploy also refreshes
+that secret on each CD run.
 
-### Promote (`stage` → `main` → deploy tag)
+### Promote (`stage` → `main` → prod CD)
 
-**Promote** means: merge the `stage` branch into `main`, then ship production with a
-deploy tag. Feature branches must not merge directly into `main`. Required path:
+A promote is a merge of the `stage` branch into `main`. After CI is green on that merge,
+production ships: DOKS, GHCR, one GitHub Release, and PyPI for packages that changed.
+Do not merge feature branches directly into `main`. Required path:
 [Corpus: adr/ADR-034].
 
 **Evaluation metrics (required on stage→main PRs):** Do not ship a single opaque
@@ -181,10 +205,10 @@ guide: [guides/promote-eval-metrics.md](guides/promote-eval-metrics.md).
    must be green for that SHA (HTTPS when Porkbun A records point at staging LB
    `143.244.202.13`; until then Host-header probes via `STAGING_LB_IP` /
    `DOKS_LB_IP` are valid).
-3. **Release prep on `stage` (recommended):** bump publishable package **CalVer**
-   (`YYYY.MM.DD` / `YYYY.MM.DD.N` per ADR-043) when those packages changed since
-   the last release. Cut `docs/CHANGELOG.md`. Commit on `stage` so the promote PR
-   carries the release metadata (see checklist below).
+3. **Release prep on `stage` (recommended):** make the CHANGELOG Unreleased section ready.
+   Apply CalVer bumps for packages that changed on `stage`, or let CD set them on merge
+   (`YYYY.M.D` / `.N` / stage TestPyPI `{CalVer}+test` per ADR-043). Prefer CD version
+   math when the pipeline is automated.
 4. Open a pull request **`stage` → `main` only** (never feature → `main`). Job
    **Staging gate** (`scripts/ci/staging_gate.sh` / TC-F30-012) must pass: head
    branch = `stage` and tip has a successful **Staging smoke** check-run. The gate
@@ -213,40 +237,39 @@ guide: [guides/promote-eval-metrics.md](guides/promote-eval-metrics.md).
    | `Staging gate` | Head=`stage` + tip Staging smoke (existing) |
    | Also retained | `Rust crates (fmt/clippy/test)`, `tac2iwxxm PyO3 (maturin)`, `iwxxm-validate PyO3 (maturin)`, `Converter perf (tac2iwxxm)` |
 
-   `E2E Smoke (Playwright)` remains for Deploy `needs` on `stage` pushes. Smoke-only
-   is **insufficient** as the promote E2E bar (#1015).
+   `E2E Smoke (Playwright)` remains for Deploy `needs` on `stage` / `main` pushes.
+   Smoke-only is **insufficient** as the promote E2E bar (#1015).
 
    Apply / refresh rulesets (admin): `bash scripts/deploy/apply_gh_branch_rulesets.sh`
    (see [ops/doks-staging-dns-runbook.md](ops/doks-staging-dns-runbook.md) §GitHub admin).
-5. Merge to `main`. Full CI runs on `main`. That push does **not** run prod Deploy.
-6. **Ship prod:** on the merged `main` tip, `git tag vYYYY.MM.DD-deploy` &&
-   `git push origin <tag>` (triggers prod Deploy after CI). Optional escape hatch:
-   Actions → CI/CD Pipeline → **Run workflow** (`workflow_dispatch`, production).
-7. PyPI package tags (F12–F14) when publishing are separate from the deploy tag.
+5. Merge to `main`. Full CI runs. On success, prod CD rolls DOKS and GHCR, creates one
+   GitHub Release (`vYYYY.M.D[.N]`), and pushes `{pkg}-v{version}` tags for packages that
+   changed (those tags start `pypi-publish.yml`). For docs-only or infra-only merges: roll
+   DOKS and GHCR and create the Release; skip PyPI tags.
+6. Manual redeploy: Actions → CI/CD Pipeline → Run workflow (`workflow_dispatch`,
+   production) without a new merge. Do not use `v*-deploy` tags.
 
-Solo-dev gates: (1) PR `stage`→`main`, (2) deploy tag or dispatch. No Environment
-reviewers. Do **not** promote while Staging smoke or Staging gate is red or missing.
+Solo-dev gate: open a PR from `stage` to `main`, then let main CD ship. Do not require
+Environment reviewers. Do not promote while Staging smoke or Staging gate is red or missing.
 See [ADR-034](adr/ADR-034-doks-staging-promote-from-stage.md) and
 [ops/doks-staging-dns-runbook.md](ops/doks-staging-dns-runbook.md).
 
-### Release checklist (`stage` → `main` → tag)
+### Release checklist (`stage` → `main` → CD)
 
-Treat every production cutover as a release:
+Treat every production cutover as a release. Checklist:
 
-- [ ] Diff `stage` vs last deploy tag / last promote: note which of `packages/tac2iwxxm`,
-      `packages/tac-validate`, `packages/iwxxm-validate` changed
-- [ ] For each changed publishable package: decide **none / patch / minor / major**; sync
-      `pyproject.toml`, `__version__`, and Cargo/locks when present
+- [ ] Diff `stage` vs last GitHub Release / last promote: note which publishable packages
+      changed (`tac2iwxxm`, `tac-validate`, `iwxxm-validate`, `tac-decoding`,
+      `metar-shared`, `reference-lookup`, …)
 - [ ] Cut `docs/CHANGELOG.md` (dated section; link the promote PR when known)
 - [ ] Open/update PR `stage` → `main`; Staging smoke + Staging gate green
 - [ ] **EV-061 / #1015:** required checks for full CI unit + lint + typecheck + full E2E green
       on the promote PR (stricter than smoke-only); contexts in the table above
-- [ ] Merge to `main`; wait for tip CI green (**Deploy must not run** on that push)
-- [ ] `git tag vYYYY.MM.DD-deploy` on `main` tip; `git push origin <tag>` → prod Deploy
-- [ ] If publishing to PyPI: per-package tags (`tac2iwxxm-v*`, `tac-validate-v*`,
-      `iwxxm-validate-v*`) only after [pypi-release-checklist](../.cursor/skills/pypi-release-checklist/SKILL.md)
-- [ ] Docs-only / infra-only with no package diffs: skip package semver + PyPI tags; still
-      cut CHANGELOG + deploy tag when shipping to prod
+- [ ] Merge to `main`; tip CI green → **prod CD** (DOKS + GHCR + Release + changed-package tags)
+- [ ] Confirm GitHub Release `vYYYY.M.D[.N]` and PyPI versions for changed packages
+      (or skip PyPI when docs/infra-only)
+- [ ] Optional: [pypi-release-checklist](../.cursor/skills/pypi-release-checklist/SKILL.md)
+      before first cutover after workflow changes
 
 Rule: [`.cursor/rules/optional/doks-promote-from-stage.mdc`](../.cursor/rules/optional/doks-promote-from-stage.mdc)
 §Release on promote. [Corpus: product §F12–F14] [Corpus: product §F30]
@@ -659,10 +682,10 @@ Do **not** commit real tokens. Public convert/lint/validate/catalog routes need 
 ([Corpus: api] F21). Decision log: [decisions/ev-weekly-validation-catalog-gha.md](decisions/ev-weekly-validation-catalog-gha.md).
 Test id: [test-plan.md](test-plan.md) TC-WEEKLY-VAL-001.
 
-## PyPI package publish (S014 / EV-010 / F12–F14; EMPIRIC2 cutover EV-028 / #781; EV-1150 / ADR-043)
+## PyPI package publish (S014 / EV-010 / F12–F14; EMPIRIC2 cutover EV-028 / #781; ADR-043; EV-cd-conjoined-calver-release)
 
-Library packages publish **independently** of app Deploy via GitHub Actions **OIDC trusted
-publishing** on version tags:
+Library packages publish in the same CD run as the app. GitHub Actions uses OIDC trusted
+publishing on version tags that CD creates. There is no separate nightly schedule:
 
 | Package | Tag pattern | PyPI name |
 |---------|-------------|-----------|
@@ -676,20 +699,22 @@ publishing** on version tags:
 Publish **`metar-shared`** and **`reference-lookup`** before consumers that declare them
 (`tac-validate`, `tac2iwxxm`). Same Trusted Publisher settings as the other packages.
 
-**Versioning (ADR-043):** **CalVer** date components as PEP 440 integers **without
-leading zeros** (e.g. `2026.9.10`; same-day `2026.9.10.1`). Example tag:
-`tac-validate-v2026.9.10`. Legacy `0.x` wheels remain on PyPI.
+Versioning (ADR-043): CalVer date parts are PEP 440 integers without leading zeros
+(example: `2026.9.10`; same day: `2026.9.10.1`). Example prod tag:
+`tac-validate-v2026.9.10`. TestPyPI uses the same CalVer with a PEP 440 local segment:
+`2026.9.10+test` (tag `tac-validate-v2026.9.10+test`). Legacy `0.x` wheels remain on
+PyPI. Native packages map versions to Cargo via `bump_calver.py` /
+`pep440_to_cargo_version` ([Corpus: decisions] `ev-ci-runtime-failures.md`).
 
-**Prod publish:** bump CalVer on `stage` → merge promote → push `{name}-v{version}` from
-`main` tip. Workflow `.github/workflows/pypi-publish.yml` (package matrix) builds
-sdist+wheel (maturin for native crates), smoke-install, then OIDC publish. Prefer no
-long-lived `PYPI_API_TOKEN` when OIDC is configured.
+Prod publish: after a successful `main` CD run, for each package tree that changed since
+the last GitHub Release, set CalVer, create `{name}-v{version}`, and let
+`.github/workflows/pypi-publish.yml` build and publish with OIDC. Prefer OIDC over a
+long-lived `PYPI_API_TOKEN`.
 
-**Nightly (TestPyPI only):** `.github/workflows/pypi-nightly.yml` (schedule +
-`workflow_dispatch`) publishes PEP 440 `YYYY.M.D.devN` to TestPyPI. Native packages
-map the same bump to Cargo via `pep440_to_cargo_version` (`.devN` → `-dev.N`,
-same-day `.N` → `+N`) for maturin ([Corpus: adr/ADR-043]; [Corpus: decisions]
-`ev-ci-runtime-failures.md`). Never auto-publish nightlies to prod PyPI.
+Stage / TestPyPI: after a successful `stage` CD run, for each package that changed,
+publish `{CalVer}+test` to TestPyPI with the same tag path into `pypi-publish.yml`
+(Environment `testpypi`). Do not use scheduled soft-fail `pypi-nightly.yml` or `.devN`
+nightlies.
 
 **Trusted Publisher** (each PyPI / TestPyPI project → Publishing settings):
 
@@ -697,12 +722,12 @@ same-day `.N` → `+N`) for maturin ([Corpus: adr/ADR-043]; [Corpus: decisions]
 |-------|--------|
 | Owner | `EMPIRIC2` |
 | Repository | `TAC-to-IWXXM` |
-| Workflow | `pypi-publish.yml` (prod) / `pypi-nightly.yml` (TestPyPI) |
+| Workflow | `pypi-publish.yml` |
 | Environment | `pypi` / `testpypi` |
 
-Remove any stale publisher pointing at the pre-transfer GitHub owner/repo. Ensure GitHub
-Environments exist on `EMPIRIC2/TAC-to-IWXXM`. Workflows need `id-token: write`
-(see config-spec §F11–F14).
+Ensure GitHub Environments exist on `EMPIRIC2/TAC-to-IWXXM`. Workflows need
+`id-token: write` (see config-spec §F11–F14). Pending TestPyPI publishers (or
+`TESTPYPI_API_TOKEN` fallback) must be configured before first stage CD publish.
 
 **Public landing pages**: Package `README.md` (and `pyproject.toml` `description`) are the
 PyPI long/short description. Write for library consumers; do not require internal ADR /
