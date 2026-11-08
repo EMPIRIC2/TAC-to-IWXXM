@@ -13,6 +13,7 @@ import {
   openConvertSettings,
   openPublicConverter,
   playwrightApiFetch,
+  selectInputMode,
 } from './playwright-e2e-helpers';
 
 const AHL_WELL_FORMED = `SAUS31 KZNY 121200
@@ -101,10 +102,8 @@ test.describe('EV-061 T2 — UJ-064 Validate IWXXM decode', () => {
     page,
   }) => {
     await openPublicConverter(page);
-    // Empty calm chrome hides input-mode bar; use empty-hero other-task link.
-    await page
-      .getByRole('button', { name: 'Validate existing IWXXM', exact: true })
-      .click();
+    // Empty hero removed — input modes live under Settings.
+    await selectInputMode(page, 'validate_iwxxm');
     await expect(page.getByTestId('validate-iwxxm-help')).toBeVisible();
     const editor = page.getByLabel('Enter IWXXM XML manually', { exact: true });
     await editor.click();
@@ -128,10 +127,8 @@ function codeFromBulletinDetail(detail: unknown): string | undefined {
 test.describe('EV-061 T2 — UJ-065 AHL decode + convert', () => {
   test('UJ-065: AHL convert shows bulletin summary', async ({ page }) => {
     await openPublicConverter(page);
-    // Empty calm chrome hides input-mode bar; use empty-hero other-task link.
-    await page
-      .getByRole('button', { name: 'Convert a full bulletin (AHL)', exact: true })
-      .click();
+    // Empty hero removed — input modes live under Settings.
+    await selectInputMode(page, 'ahl_bulletin');
     await fillManualTac(page, AHL_WELL_FORMED);
     await page.getByTestId('convert-button').click();
     await expect(page.getByTestId('bulletin-summary')).toBeVisible({ timeout: 60_000 });
