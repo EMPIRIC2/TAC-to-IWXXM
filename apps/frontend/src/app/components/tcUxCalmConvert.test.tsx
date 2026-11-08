@@ -43,6 +43,7 @@ describe('TC-UX-CALM leaf components', () => {
         profileLabel="United States (FAA/NWS)"
         onChangeProfile={onChangeProfile}
         onOtherTask={onOtherTask}
+        onBrowseFiles={vi.fn()}
       >
         <textarea aria-label="TAC" />
       </CalmConvertEmptyHero>,
@@ -56,6 +57,7 @@ describe('TC-UX-CALM leaf components', () => {
     expect(onConvert).toHaveBeenCalled();
     await user.click(screen.getByTestId('convert-profile-change'));
     expect(onChangeProfile).toHaveBeenCalled();
+    await user.click(screen.getByTestId('convert-empty-browse'));
     await user.click(
       screen.getByRole('button', { name: 'Convert a full bulletin (AHL)' }),
     );

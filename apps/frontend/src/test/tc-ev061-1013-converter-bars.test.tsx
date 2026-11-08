@@ -126,7 +126,7 @@ describe('T4.1 / TC-EV061-1013: converter chrome bars', () => {
     );
   });
 
-  it('keeps Product Type + library pickers in Settings on one wrap-capable bar (TC-EV061-1013-001)', async () => {
+  it('keeps library pickers in Settings; Product Type stays on the toolbar (TC-EV061-1013-001)', async () => {
     const user = userEvent.setup();
     render(<FileConverter {...defaultProps} />);
     screen.getByTestId('convert-advanced-engines').setAttribute('open', '');
@@ -141,7 +141,10 @@ describe('T4.1 / TC-EV061-1013: converter chrome bars', () => {
     expect(settings).toContainElement(bar);
     expect(settings).toContainElement(screen.getByTestId('convert-setup'));
     expect(screen.getByTestId('convert-body')).not.toContainElement(bar);
-    expect(bar).toContainElement(product);
+    expect(screen.getByTestId('convert-chrome-toolbar-start')).toContainElement(
+      product,
+    );
+    expect(bar).not.toContainElement(product);
     expect(bar).toContainElement(libraries);
     expect(bar).toContainElement(conversion);
     expect(bar).toContainElement(screen.getByTestId('decoding-library-select'));

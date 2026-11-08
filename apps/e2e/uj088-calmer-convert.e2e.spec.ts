@@ -3,6 +3,7 @@
  *
  * Spec: docs/user-journeys.md UJ-088; docs/test-plan.md TC-UX-CALM-*; F7 deepen.
  * [Corpus: product §F7] [Corpus: journeys §UJ-088] [Corpus: tests]
+ * UX-2026-11-07: empty state uses bordered converter chrome (no marketing hero).
  */
 import { expect, test, type Page } from '@playwright/test';
 import {
@@ -70,20 +71,23 @@ async function stubCalmConvertApis(page: Page): Promise<void> {
 }
 
 test.describe('UJ-088 — Calmer Convert + Help checklist', () => {
-  test('empty hero, Help checklist, convert → Download + results drawer', async ({
+  test('converter chrome, Help checklist, convert → Download + results drawer', async ({
     page,
   }) => {
     await stubCalmConvertApis(page);
     await openPublicConverter(page);
 
-    await expect(page.getByTestId('convert-empty-hero')).toBeVisible({
+    // Opposite state: convert-empty-hero can match if the marketing hero returns.
+    await expect(page.getByTestId('convert-empty-hero')).toHaveCount(0);
+    await expect(page.getByTestId('convert-shell')).toBeVisible({
       timeout: 15_000,
     });
-    await expect(page.getByTestId('convert-example-chips')).toBeVisible();
+    await expect(page.getByTestId('product-type-select')).toBeVisible();
     await expect(page.getByTestId('convert-help-open')).toBeVisible();
 
     // G4 — profile Change opens drawer; Apply dismisses (TC-UX-CALM-005 H4–H5).
-    await page.getByTestId('convert-profile-change').click();
+    await page.getByTestId('convert-settings-cog').click();
+    await page.getByTestId('convert-profile-change-live').click();
     await expect(page.getByTestId('convert-profile-drawer')).toBeVisible();
     await page.getByTestId('convert-profile-apply').click();
     // Opposite state: drawer visible before Apply.
@@ -93,28 +97,20 @@ test.describe('UJ-088 — Calmer Convert + Help checklist', () => {
     await expect(page.getByTestId('convert-help-checklist')).toBeVisible();
     await expect(page.getByTestId('operator-help-link')).toBeVisible();
     await page.keyboard.press('Escape');
-    // Opposite state: the checklist dialog is visible before Escape.
+    // Opposite state: checklist visible before Escape.
     await expect(page.getByTestId('convert-help-checklist')).toHaveCount(0);
 
     await page.getByTestId('convert-help-open').click();
     await expect(page.getByTestId('convert-help-checklist')).toBeVisible();
     await page.keyboard.press('Escape');
-    // Opposite state: the checklist dialog is visible before the second Escape.
+    // Opposite state: checklist visible before the second Escape.
     await expect(page.getByTestId('convert-help-checklist')).toHaveCount(0);
 
-    // G5 — example chip loads TAC and dismisses empty hero.
-    const exampleChip = page
-      .getByTestId('convert-example-chips')
-      .getByRole('button', { name: 'METAR', exact: true });
-    await expect(exampleChip).toBeVisible();
-    await exampleChip.click();
-    await expect(page.getByTestId('convert-empty-hero')).toHaveCount(0);
-    // CodeMirror contenteditable — assert strip Convert is available with TAC loaded.
     await expect(page.getByTestId('convert-button')).toBeVisible();
 
     await convertManualMetar(page, METAR_TAC);
     await openConvertDownloadsTab(page, 15_000);
-    // Opposite state: the empty hero is visible before convert fills TAC.
+    // Opposite state: empty hero remains absent after convert.
     await expect(page.getByTestId('convert-empty-hero')).toHaveCount(0);
     await expect(page.getByTestId('convert-results-drawer')).toBeVisible();
     await expect(page.getByTestId('convert-results-tab-iwxxm')).toBeVisible();

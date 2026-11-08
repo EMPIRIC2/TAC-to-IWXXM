@@ -160,7 +160,7 @@ describe('T3.1 / TC-EV060-1002: Conversion library at converter top', () => {
       'conversion-library-select',
     ) as HTMLSelectElement;
 
-    expect(screen.getByTestId('convert-settings-dialog')).toContainElement(product);
+    expect(screen.getByTestId('convert-chrome-toolbar')).toContainElement(product);
     expect(product).toBeVisible();
     expect(screen.getByTestId('library-pickers-bar')).toBeVisible();
     expect(conversion).toBeVisible();
@@ -190,7 +190,10 @@ describe('T3.1 / TC-EV060-1002: Conversion library at converter top', () => {
     const conversion = screen.getByTestId('conversion-library-select');
     expect(conversion).toHaveAccessibleName(/^conversion$/i);
     expect(conversion.tagName).toBe('SELECT');
-    expect(product.parentElement).toContainElement(conversion);
+    expect(screen.getByTestId('convert-chrome-toolbar-start')).toContainElement(
+      product,
+    );
+    expect(screen.getByTestId('convert-settings-dialog')).toContainElement(conversion);
   });
 
   it('sends selected conversionLibraryId on convert without opening Conversion Parameters (TC-EV060-1002-001)', async () => {

@@ -376,6 +376,10 @@ export async function openConvertDownloadsTab(
       timeout: timeoutMs,
     })
     .toBeGreaterThan(0);
+  // Close Settings if left open — the right-aligned panel can intercept tab clicks.
+  await page.locator('[data-testid="convert-settings"]').evaluate((el) => {
+    el.removeAttribute('open');
+  });
   await page.getByTestId('convert-results-tab-downloads').click();
   await expect(
     page.getByRole('region', { name: 'Conversion results', exact: true }),

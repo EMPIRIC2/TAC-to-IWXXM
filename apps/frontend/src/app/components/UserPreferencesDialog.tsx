@@ -284,7 +284,11 @@ export function UserPreferencesDialog({
                     outputFileExtension: e.target.value,
                   })
                 }
-                className="mt-1 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+                className="mt-1 w-full appearance-none rounded-md border border-gray-300 bg-white bg-[length:1rem] bg-[position:calc(100%-0.85rem)_center] bg-no-repeat px-3 py-2 pr-9 text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+                style={{
+                  backgroundImage:
+                    "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E\")",
+                }}
               >
                 {EXTENSION_OPTIONS.map((ext) => (
                   <option key={ext} value={ext}>

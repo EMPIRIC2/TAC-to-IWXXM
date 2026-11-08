@@ -29,7 +29,6 @@ import { LiveWorldMap } from './LiveWorldMap';
 import { LiveConvertStatusStrip } from './LiveConvertStatusStrip';
 import { TacLintJumps } from './TacLintJumps';
 import { StatusBanner } from './StatusBanner';
-import { WorkbenchConsole } from './WorkbenchConsole';
 import { ConvertResultsDrawer } from './ConvertResultsDrawer';
 import { ConvertSettingsCog } from './ConvertSettingsCog';
 import { VerticalResizeHandle } from './VerticalResizeHandle';
@@ -243,7 +242,6 @@ import {
   CONVERT_AND_SEND_UPLOAD_OPTIONS,
   uploadConvertedFiles,
 } from '/utils/databaseUpload';
-import { CalmConvertEmptyHero } from './CalmConvertEmptyHero';
 import { ConvertHelpChecklist } from './ConvertHelpChecklist';
 import { ConvertProfileDrawer } from './ConvertProfileDrawer';
 import { ErrorLogPanel, type ConversionLog } from './ErrorLogPanel';
@@ -259,7 +257,6 @@ import { readGuestConverterState } from '/utils/guestConverterState';
 import {
   CALM_CONVERT_PRIMARY_LABEL,
   CALM_DOWNLOAD_PRIMARY_LABEL,
-  buildCalmExampleChips,
   deriveCalmConvertUi,
   resolveCalmProfileLabel,
 } from '/utils/convertCalmState';
@@ -268,7 +265,6 @@ import {
   PAGE_TITLE,
   type ResultIssueInput,
 } from '/utils/resultCard';
-import { getTacExamplesForProduct } from '@/fixtures/examples/examplesCatalog';
 import {
   ACCUMULATE_RESULT_CAP,
   appendConvertedWithinCap,
@@ -1836,6 +1832,11 @@ export function FileConverter({
   };
 
   const handleConvert = async () => {
+    // Close Settings so the right-aligned panel cannot intercept Results clicks.
+    document
+      .querySelector<HTMLDetailsElement>('[data-testid="convert-settings"]')
+      ?.removeAttribute('open');
+
     if (isReadOnly) {
       return;
     }
@@ -2418,21 +2419,9 @@ export function FileConverter({
     hasConverted,
     latestReadyToDownload,
   });
-  /** Empty hero is Convert TAC only — not validate-IWXXM / collect modes. */
-  const showCalmEmptyHero =
-    calmUi.showEmptyHero && inputMode === 'tac' && conversionParams.product !== 'IWXXM';
   const calmProfileLabel = resolveCalmProfileLabel(
     conversionParams.profile,
     SEMANTIC_PROFILE_OPTIONS,
-  );
-  const calmExampleChips = buildCalmExampleChips(
-    [
-      { label: 'METAR', product: 'METAR' },
-      { label: 'TAF', product: 'TAF' },
-      { label: 'SIGMET', product: 'SIGMET' },
-      { label: 'Volcanic ash advisory', product: 'VAA' },
-    ],
-    (product) => getTacExamplesForProduct(product as 'METAR')[0],
   );
   const caProfileBlocked =
     isCaEcccProfile(conversionParams.profile) && caExtensionBundleAvailable === false;
@@ -2528,8 +2517,6 @@ export function FileConverter({
     decodeProduct,
     decodeSummary,
     loading: decodeLoading,
-    consoleLines,
-    clearConsole,
   } = useLiveWorkbenchAssist({
     text: manualInput,
     product: liveAssistProduct,
@@ -2593,13 +2580,12 @@ export function FileConverter({
     strictLayersRan,
   );
 
-  const { entries: lintCatalogEntries, byCode: lintCatalogByCode } =
-    useLintIssueCatalog({
-      product: liveAssistProduct,
-      semanticProfile: conversionParams.profile,
-      exchangeProfile: packagingExchangeProfile ?? conversionParams.exchangeProfile,
-      enabled: !isReadOnly,
-    });
+  const { byCode: lintCatalogByCode } = useLintIssueCatalog({
+    product: liveAssistProduct,
+    semanticProfile: conversionParams.profile,
+    exchangeProfile: packagingExchangeProfile ?? conversionParams.exchangeProfile,
+    enabled: !isReadOnly,
+  });
 
   const applyLintFix = useCallback(
     (fixCode: string) => {
@@ -2740,7 +2726,7 @@ export function FileConverter({
       </header>
       <div
         data-testid="workbench-frame"
-        className={`mx-auto w-full px-4 py-4 ${shellFrameClass(liveLayout.span)}`}
+        className={`mx-auto w-full px-4 py-4 pb-28 ${shellFrameClass(liveLayout.span)}`}
       >
         <div className="mb-4">
           <p
@@ -2749,9 +2735,7 @@ export function FileConverter({
           >
             {inputMode === 'validate_iwxxm'
               ? VALIDATE_IWXXM_INTRO
-              : showCalmEmptyHero
-                ? 'Paste a TAC report to begin, or try an example below. Convert when ready.'
-                : 'Enter TAC in the console below (choose product type as needed), then Convert. Upload files from the compact drop zone under the console when preferred.'}
+              : 'Enter TAC in the console below (choose product type as needed), then Convert. Upload files from the compact drop zone under the console when preferred.'}
           </p>
           {showGuestLossNotice && (
             <StatusBanner
@@ -2785,91 +2769,88 @@ export function FileConverter({
           />
         </div>
 
-        {/* Action Buttons — omit while empty hero owns the Convert CTA (strict E2E locators). */}
-        {!showCalmEmptyHero ? (
-          <div className="mb-4" data-testid="action-button-strip">
-            <div
-              className="mb-2 flex h-5 items-center"
-              aria-live="polite"
-              data-testid="autosave-indicator"
-            >
-              {saveIndicatorLabel ? (
-                <span className="text-sm text-gray-600 dark:text-gray-400">
-                  {saveIndicatorLabel}
-                </span>
-              ) : (
-                <span className="sr-only">Autosave idle</span>
-              )}
-            </div>
-            <div
-              className="grid min-h-10 w-full grid-cols-1 gap-2 sm:grid-cols-3 sm:gap-3"
-              data-testid="convert-primary-actions"
-            >
-              <Button
-                type="button"
-                variant="outline"
-                onClick={handleNewMetar}
-                disabled={isBusy}
-                data-testid="new-tac-button"
-                aria-label="Start a new TAC session"
-                className="w-full"
-              >
-                New TAC
-              </Button>
-              <Button
-                data-testid="convert-button"
-                variant={calmUi.primaryKind === 'convert' ? 'default' : 'outline'}
-                onClick={handleConvert}
-                disabled={convertDisabled}
-                className="relative w-full text-base disabled:opacity-50 disabled:cursor-not-allowed"
-                aria-busy={isConverting}
-                aria-label={
-                  isConverting
-                    ? inputMode === 'validate_iwxxm' ||
-                      conversionParams.product === 'IWXXM'
-                      ? 'Validating IWXXM, please wait'
-                      : 'Converting files, please wait'
-                    : inputMode === 'validate_iwxxm'
-                      ? 'Validate IWXXM XML'
-                      : conversionParams.product === 'IWXXM'
-                        ? IWXXM_PRODUCT_CONVERT_ARIA
-                        : CALM_CONVERT_PRIMARY_LABEL
-                }
-              >
-                <Loader2
-                  className={`absolute left-3 h-4 w-4 animate-spin ${isConverting ? '' : 'invisible'}`}
-                  aria-hidden="true"
-                />
-                {inputMode === 'validate_iwxxm'
-                  ? 'Validate'
-                  : conversionParams.product === 'IWXXM'
-                    ? IWXXM_PRODUCT_CONVERT_LABEL
-                    : CALM_CONVERT_PRIMARY_LABEL}
-              </Button>
-              <span
-                className="min-w-0 w-full"
-                data-testid={
-                  calmUi.primaryKind === 'download' ? 'convert-primary-cta' : undefined
-                }
-              >
-                <Button
-                  variant={calmUi.primaryKind === 'download' ? 'default' : 'outline'}
-                  onClick={() => {
-                    if (!latestConverted) return;
-                    void handleDownloadSingle(latestConverted);
-                  }}
-                  disabled={isBusy || !latestConverted}
-                  className="w-full text-base disabled:opacity-40 disabled:cursor-not-allowed"
-                  aria-label={CALM_DOWNLOAD_PRIMARY_LABEL}
-                  data-testid="convert-download-iwxxm"
-                >
-                  <Download className="mr-2 h-4 w-4" aria-hidden="true" />
-                  {CALM_DOWNLOAD_PRIMARY_LABEL}
-                </Button>
+        <div className="mb-4" data-testid="action-button-strip">
+          <div
+            className="mb-2 flex h-5 items-center"
+            aria-live="polite"
+            data-testid="autosave-indicator"
+          >
+            {saveIndicatorLabel ? (
+              <span className="text-sm text-gray-600 dark:text-gray-400">
+                {saveIndicatorLabel}
               </span>
-            </div>
+            ) : (
+              <span className="sr-only">Autosave idle</span>
+            )}
           </div>
-        ) : null}
+          <div
+            className="grid min-h-10 w-full grid-cols-1 gap-2 sm:grid-cols-3 sm:gap-3"
+            data-testid="convert-primary-actions"
+          >
+            <Button
+              type="button"
+              variant="outline"
+              onClick={handleNewMetar}
+              disabled={isBusy}
+              data-testid="new-tac-button"
+              aria-label="Start a new TAC session"
+              className="w-full"
+            >
+              New TAC
+            </Button>
+            <Button
+              data-testid="convert-button"
+              variant={calmUi.primaryKind === 'convert' ? 'default' : 'outline'}
+              onClick={handleConvert}
+              disabled={convertDisabled}
+              className="relative w-full text-base disabled:opacity-50 disabled:cursor-not-allowed"
+              aria-busy={isConverting}
+              aria-label={
+                isConverting
+                  ? inputMode === 'validate_iwxxm' ||
+                    conversionParams.product === 'IWXXM'
+                    ? 'Validating IWXXM, please wait'
+                    : 'Converting files, please wait'
+                  : inputMode === 'validate_iwxxm'
+                    ? 'Validate IWXXM XML'
+                    : conversionParams.product === 'IWXXM'
+                      ? IWXXM_PRODUCT_CONVERT_ARIA
+                      : CALM_CONVERT_PRIMARY_LABEL
+              }
+            >
+              <Loader2
+                className={`absolute left-3 h-4 w-4 animate-spin ${isConverting ? '' : 'invisible'}`}
+                aria-hidden="true"
+              />
+              {inputMode === 'validate_iwxxm'
+                ? 'Validate'
+                : conversionParams.product === 'IWXXM'
+                  ? IWXXM_PRODUCT_CONVERT_LABEL
+                  : CALM_CONVERT_PRIMARY_LABEL}
+            </Button>
+            <span
+              className="min-w-0 w-full"
+              data-testid={
+                calmUi.primaryKind === 'download' ? 'convert-primary-cta' : undefined
+              }
+            >
+              <Button
+                variant={calmUi.primaryKind === 'download' ? 'default' : 'outline'}
+                onClick={() => {
+                  if (!latestConverted) return;
+                  void handleDownloadSingle(latestConverted);
+                }}
+                disabled={isBusy || !latestConverted}
+                className="w-full text-base disabled:opacity-40 disabled:cursor-not-allowed"
+                aria-label={CALM_DOWNLOAD_PRIMARY_LABEL}
+                data-testid="convert-download-iwxxm"
+              >
+                <Download className="mr-2 h-4 w-4" aria-hidden="true" />
+                {CALM_DOWNLOAD_PRIMARY_LABEL}
+              </Button>
+            </span>
+          </div>
+        </div>
 
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_280px]">
           <div className="min-w-0" data-testid="workbench-main-column">
@@ -2881,47 +2862,6 @@ export function FileConverter({
                   to start fresh.
                 </StatusBanner>
               )}
-              {showCalmEmptyHero ? (
-                <CalmConvertEmptyHero
-                  convertDisabled={convertDisabled}
-                  isConverting={isConverting}
-                  onConvert={handleConvert}
-                  exampleChips={calmExampleChips}
-                  onExampleChip={handleLoadGoldenExample}
-                  profileLabel={calmProfileLabel}
-                  onChangeProfile={() => setProfileDrawerOpen(true)}
-                  onBrowseFiles={() => fileInputRef.current?.click()}
-                  onOtherTask={(task) => {
-                    if (task === 'validate_iwxxm') {
-                      setInputMode('validate_iwxxm');
-                      return;
-                    }
-                    if (task === 'ahl') {
-                      setInputMode('ahl_bulletin');
-                      return;
-                    }
-                    setInputMode('collect_iwxxm');
-                  }}
-                >
-                  <TacEditor
-                    id="manual-input"
-                    value={manualInput}
-                    onReportLoaded={applyLoadedReportName}
-                    onChange={(value) => {
-                      setManualInput(value);
-                      setSelectedTrace(null);
-                      setLintJump(null);
-                      setLintFocusOffset(null);
-                    }}
-                    readOnly={isReadOnly}
-                    placeholder={
-                      'WSAZ31 LPMG 251142\nLPPO SIGMET T04 VALID 251145/251545 LPPT- …'
-                    }
-                    aria-label="Enter METAR data manually"
-                    className="min-h-44 border-0 shadow-none focus-within:ring-0"
-                  />
-                </CalmConvertEmptyHero>
-              ) : null}
               {/* Compact upload card sits above the convert box (UJ-089). */}
               <Card
                 className={`mb-1 border-2 border-dashed p-2 shadow-none transition-colors ${
@@ -2998,11 +2938,7 @@ export function FileConverter({
                   </div>
                 </div>
               </Card>
-              <div
-                className="flex flex-col gap-1"
-                data-testid="live-convert-stage"
-                hidden={showCalmEmptyHero}
-              >
+              <div className="flex flex-col gap-1" data-testid="live-convert-stage">
                 <div
                   className="rounded-lg border border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-900"
                   data-testid="convert-shell"
@@ -3011,7 +2947,10 @@ export function FileConverter({
                     className="flex flex-col gap-1.5 border-b border-gray-200 px-2 py-1.5 dark:border-gray-700 lg:flex-row lg:items-center lg:justify-between"
                     data-testid="convert-chrome-toolbar"
                   >
-                    <div className="flex min-w-0 flex-wrap items-center gap-1.5">
+                    <div
+                      className="flex min-w-0 flex-wrap items-center gap-1.5"
+                      data-testid="convert-chrome-toolbar-start"
+                    >
                       <button
                         type="button"
                         data-testid="convert-panes-toggle"
@@ -3021,6 +2960,44 @@ export function FileConverter({
                       >
                         {converterOpen ? 'Hide converter' : 'Show converter'}
                       </button>
+                      <Label
+                        htmlFor="param-product"
+                        className="sr-only text-sm text-gray-700 dark:text-gray-300"
+                      >
+                        Product type
+                      </Label>
+                      <select
+                        id="param-product"
+                        aria-label="Product"
+                        data-testid="product-type-select"
+                        value={conversionParams.product}
+                        disabled={isReadOnly}
+                        onChange={(e) =>
+                          setConversionParams((prev) => ({
+                            ...prev,
+                            product: e.target.value as TacProductSelection,
+                            reportVariant: '',
+                          }))
+                        }
+                        className="min-w-[9.5rem] shrink-0 rounded-md border border-gray-300 bg-white px-2 py-1.5 text-sm text-gray-900 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+                      >
+                        <option value="auto">Auto-detect</option>
+                        <option value="AIRMET">AIRMET</option>
+                        <option value="METAR">METAR</option>
+                        <option value="SIGMET">SIGMET</option>
+                        <option value="SPECI">SPECI</option>
+                        <option value="TAF">TAF</option>
+                        <option value="VAA">VAA</option>
+                        <option value="TCA">TCA</option>
+                        <option value="SWXA">SWXA</option>
+                        <option value="VONA">VONA</option>
+                        <option value="IWXXM">IWXXM</option>
+                      </select>
+                    </div>
+                    <div
+                      className="flex shrink-0 items-center gap-1.5 lg:ml-auto"
+                      data-testid="convert-chrome-toolbar-end"
+                    >
                       <ConvertSettingsCog>
                         <div
                           className="flex max-w-full flex-wrap rounded-md border border-gray-300 dark:border-gray-600"
@@ -3080,39 +3057,6 @@ export function FileConverter({
                               className="flex min-w-0 flex-col gap-1.5 rounded-md border border-gray-300 bg-white px-2 py-1.5 dark:border-gray-600 dark:bg-gray-800 lg:flex-row lg:flex-wrap lg:items-center"
                               data-testid="product-profile-bar"
                             >
-                              <Label
-                                htmlFor="param-product"
-                                className="shrink-0 text-sm text-gray-700 dark:text-gray-300"
-                              >
-                                Product type
-                              </Label>
-                              <select
-                                id="param-product"
-                                aria-label="Product"
-                                data-testid="product-type-select"
-                                value={conversionParams.product}
-                                disabled={isReadOnly}
-                                onChange={(e) =>
-                                  setConversionParams((prev) => ({
-                                    ...prev,
-                                    product: e.target.value as TacProductSelection,
-                                    reportVariant: '',
-                                  }))
-                                }
-                                className="min-w-[9.5rem] shrink-0 rounded-md border border-gray-300 bg-white px-2 py-1.5 text-sm text-gray-900 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
-                              >
-                                <option value="auto">Auto-detect</option>
-                                <option value="AIRMET">AIRMET</option>
-                                <option value="METAR">METAR</option>
-                                <option value="SIGMET">SIGMET</option>
-                                <option value="SPECI">SPECI</option>
-                                <option value="TAF">TAF</option>
-                                <option value="VAA">VAA</option>
-                                <option value="TCA">TCA</option>
-                                <option value="SWXA">SWXA</option>
-                                <option value="VONA">VONA</option>
-                                <option value="IWXXM">IWXXM</option>
-                              </select>
                               <div className="flex min-w-0 flex-wrap items-center gap-2">
                                 <span className="text-sm text-gray-600 dark:text-gray-400">
                                   Profile:{' '}
@@ -4208,49 +4152,47 @@ export function FileConverter({
                               : 'convert-tac-editable'
                           }
                         >
-                          {!showCalmEmptyHero ? (
-                            <TacEditor
-                              id="manual-input"
-                              value={manualInput}
-                              onReportLoaded={applyLoadedReportName}
-                              onChange={(value) => {
-                                setManualInput(value);
-                                setSelectedTrace(null);
-                                setLintJump(null);
-                                setLintFocusOffset(null);
-                                if (inputMode !== 'ahl_bulletin') {
-                                  return;
-                                }
-                                if (focusedBulletinReport === null) {
-                                  setBulletinSource(value);
-                                  return;
-                                }
-                                setBulletinSource((current) =>
-                                  replaceBulletinReport(
-                                    current,
-                                    focusedBulletinReport,
-                                    value,
-                                  ),
-                                );
-                              }}
-                              readOnly={calmTacReadOnly}
-                              placeholder={
-                                inputMode === 'validate_iwxxm'
-                                  ? '<iwxxm:METAR>...</iwxxm:METAR>'
-                                  : 'SPECI BGSF 282350Z 10RMF50MT 9999 SCT110 BKN130 0RN130 NN7/N11 Q1021'
+                          <TacEditor
+                            id="manual-input"
+                            value={manualInput}
+                            onReportLoaded={applyLoadedReportName}
+                            onChange={(value) => {
+                              setManualInput(value);
+                              setSelectedTrace(null);
+                              setLintJump(null);
+                              setLintFocusOffset(null);
+                              if (inputMode !== 'ahl_bulletin') {
+                                return;
                               }
-                              aria-label={
-                                inputMode === 'validate_iwxxm'
-                                  ? 'Enter IWXXM XML manually'
-                                  : 'Enter METAR data manually'
+                              if (focusedBulletinReport === null) {
+                                setBulletinSource(value);
+                                return;
                               }
-                              className="max-h-80 min-h-44 focus-within:ring-2 focus-within:ring-blue-500"
-                              failedSpans={failedSpans}
-                              issueSpans={editorSpans}
-                              onSpanFix={applyLintFix}
-                              focusOffset={lintFocusOffset}
-                            />
-                          ) : null}
+                              setBulletinSource((current) =>
+                                replaceBulletinReport(
+                                  current,
+                                  focusedBulletinReport,
+                                  value,
+                                ),
+                              );
+                            }}
+                            readOnly={calmTacReadOnly}
+                            placeholder={
+                              inputMode === 'validate_iwxxm'
+                                ? '<iwxxm:METAR>...</iwxxm:METAR>'
+                                : 'SPECI BGSF 282350Z 10RMF50MT 9999 SCT110 BKN130 0RN130 NN7/N11 Q1021'
+                            }
+                            aria-label={
+                              inputMode === 'validate_iwxxm'
+                                ? 'Enter IWXXM XML manually'
+                                : 'Enter METAR data manually'
+                            }
+                            className="max-h-80 min-h-44 focus-within:ring-2 focus-within:ring-blue-500"
+                            failedSpans={failedSpans}
+                            issueSpans={editorSpans}
+                            onSpanFix={applyLintFix}
+                            focusOffset={lintFocusOffset}
+                          />
                         </div>
                         {inputMode !== 'validate_iwxxm' ? (
                           <>
@@ -4397,17 +4339,6 @@ export function FileConverter({
                           onOpenCatalog={onOpenCatalog}
                         />
                       ) : null}
-                      <WorkbenchConsole
-                        lines={consoleLines}
-                        minLogLevel={conversionParams.logLevel as ConvertLogLevel}
-                        onLineAction={applyLintFix}
-                        catalogByCode={lintCatalogByCode}
-                        catalogEntries={lintCatalogEntries}
-                        onOpenCatalog={onOpenCatalog}
-                        onClear={() => {
-                          clearConsole();
-                        }}
-                      />
                     </div>
                   }
                   decoder={
@@ -4787,11 +4718,6 @@ export function FileConverter({
                 </div>
               </div>
             )}
-
-            <OperatorFooter
-              onOpenPrivacy={() => setIsPrivacySettingsOpen(true)}
-              onOpenTerms={() => setIsSiteTermsOpen(true)}
-            />
           </div>
           {onLoadWorkSession && (
             <aside
@@ -4809,6 +4735,10 @@ export function FileConverter({
             </aside>
           )}
         </div>
+        <OperatorFooter
+          onOpenPrivacy={() => setIsPrivacySettingsOpen(true)}
+          onOpenTerms={() => setIsSiteTermsOpen(true)}
+        />
       </div>
 
       {isOperatorDisseminationDestinationsEnabled() ? (
