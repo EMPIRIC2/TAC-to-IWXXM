@@ -331,4 +331,23 @@ describe('UserPreferencesDialog (EV-040 slim)', () => {
     ).resolves.toBeUndefined();
     vi.useRealTimers();
   });
+
+  it('replaces a pending save-status timeout when saving again', async () => {
+    vi.useFakeTimers({ shouldAdvanceTime: true });
+    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
+    render(<UserPreferencesDialog {...defaultProps} />);
+    await screen.findByLabelText(/display \/ output name/i);
+    const save = screen.getByRole('button', { name: /save preferences/i });
+    await user.click(save);
+    expect(screen.getByText(/preferences saved successfully/i)).toBeInTheDocument();
+    await user.click(save);
+    expect(screen.getByText(/preferences saved successfully/i)).toBeInTheDocument();
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(2000);
+    });
+    expect(
+      screen.queryByText(/preferences saved successfully/i),
+    ).not.toBeInTheDocument();
+    vi.useRealTimers();
+  });
 });
