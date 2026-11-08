@@ -35,25 +35,22 @@ export function OperatorFooter({ onOpenPrivacy, onOpenTerms }: OperatorFooterPro
 
   if (collapsed) {
     return (
-      <>
-        <button
-          type="button"
-          data-testid="operator-footer-reveal"
-          aria-label="Show site footer"
-          title="Show site footer"
-          className="fixed bottom-4 right-0 z-40 flex h-16 w-4 items-center justify-center rounded-l-md border border-r-0 border-gray-200 bg-white text-gray-600 shadow-md hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:hover:bg-gray-800"
-          onClick={() => setCollapsed(false)}
-        >
-          <ChevronRight className="h-3.5 w-3.5 rotate-180" aria-hidden="true" />
-        </button>
-        <FeedbackDialog isOpen={feedbackOpen} onClose={() => setFeedbackOpen(false)} />
-      </>
+      <button
+        type="button"
+        data-testid="operator-footer-reveal"
+        aria-label="Show site footer"
+        title="Show site footer"
+        className="fixed bottom-4 right-0 z-10 flex h-16 w-4 items-center justify-center rounded-l-md border border-r-0 border-gray-200 bg-white text-gray-600 shadow-md hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:hover:bg-gray-800"
+        onClick={() => setCollapsed(false)}
+      >
+        <ChevronRight className="h-3.5 w-3.5 rotate-180" aria-hidden="true" />
+      </button>
     );
   }
 
   return (
     <div
-      className="fixed inset-x-0 bottom-0 z-40 w-full border-t border-gray-200 bg-gray-50/95 px-4 py-3 text-center text-sm text-gray-500 shadow-[0_-4px_12px_rgba(0,0,0,0.04)] backdrop-blur-sm dark:border-gray-700 dark:bg-gray-900/95 dark:text-gray-400"
+      className="fixed inset-x-0 bottom-0 z-10 w-full border-t border-gray-200 bg-gray-50/95 px-4 py-3 text-center text-sm text-gray-500 shadow-[0_-4px_12px_rgba(0,0,0,0.04)] backdrop-blur-sm dark:border-gray-700 dark:bg-gray-900/95 dark:text-gray-400"
       data-testid="operator-footer"
     >
       <div className="relative mx-auto max-w-6xl">

@@ -45,6 +45,17 @@ describe('OperatorFooter layout', () => {
       within(group).getByRole('button', { name: 'Open terms of service' }),
     ).toHaveTextContent('Terms of service');
   });
+
+  it('collapses to a right-edge reveal handle and restores the footer', async () => {
+    const user = userEvent.setup();
+    render(<OperatorFooter onOpenPrivacy={vi.fn()} onOpenTerms={vi.fn()} />);
+
+    await user.click(screen.getByTestId('operator-footer-collapse'));
+    expect(screen.queryByTestId('operator-footer')).not.toBeInTheDocument();
+    expect(screen.getByTestId('operator-footer-reveal')).toBeInTheDocument();
+    await user.click(screen.getByTestId('operator-footer-reveal'));
+    expect(screen.getByTestId('operator-footer')).toBeInTheDocument();
+  });
 });
 
 describe('OperatorFooter feedback', () => {
