@@ -316,4 +316,19 @@ describe('UserPreferencesDialog (EV-040 slim)', () => {
     ).not.toBeInTheDocument();
     vi.useRealTimers();
   });
+
+  it('does not setState from save-status timeout after unmount', async () => {
+    vi.useFakeTimers({ shouldAdvanceTime: true });
+    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
+    const { unmount } = render(<UserPreferencesDialog {...defaultProps} />);
+    await screen.findByLabelText(/display \/ output name/i);
+    await user.click(screen.getByRole('button', { name: /save preferences/i }));
+    unmount();
+    await expect(
+      act(async () => {
+        await vi.advanceTimersByTimeAsync(2500);
+      }),
+    ).resolves.toBeUndefined();
+    vi.useRealTimers();
+  });
 });
