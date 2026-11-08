@@ -1,5 +1,5 @@
 /* eslint-disable react-refresh/only-export-components */
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { Button } from './ui/button';
 import { Label } from './ui/label';
 import { Input } from './ui/input';
@@ -100,6 +100,16 @@ export function UserPreferencesDialog({
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [saveStatus, setSaveStatus] = useState<'idle' | 'success' | 'error'>('idle');
+  const saveStatusResetRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (saveStatusResetRef.current !== null) {
+        clearTimeout(saveStatusResetRef.current);
+        saveStatusResetRef.current = null;
+      }
+    };
+  }, []);
 
   const loadPreferences = useCallback(() => {
     setIsLoading(true);
@@ -173,7 +183,11 @@ export function UserPreferencesDialog({
       setSaveStatus('success');
       toast.success('Preferences saved successfully');
 
-      setTimeout(() => {
+      if (saveStatusResetRef.current !== null) {
+        clearTimeout(saveStatusResetRef.current);
+      }
+      saveStatusResetRef.current = setTimeout(() => {
+        saveStatusResetRef.current = null;
         setSaveStatus('idle');
       }, 2000);
 
