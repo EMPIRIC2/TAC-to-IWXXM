@@ -1,6 +1,6 @@
 """CA_ECCC layered validation stages (EV-068 / #1035).
 
-Stage ids align with ``docs/domain/profiles/catalog.yaml`` ``validation_stages``.
+Stage ids align with ``config/profiles/catalog.yaml`` ``validation_stages``.
 M1 scaffold: bundle resolution + stage registry; full pipeline wired EV-068-069.
 """
 

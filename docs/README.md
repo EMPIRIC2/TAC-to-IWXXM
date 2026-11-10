@@ -1,49 +1,65 @@
-# Documentation
+# Documentation index
 
-This folder holds the tracked engineering spine for TAC-to-IWXXM. Agent skills
-read the corpus index in [AGENTS.md](../AGENTS.md) first.
+This folder holds the tracked engineering spine for TAC to IWXXM.
+Agents start at [AGENTS.md](../AGENTS.md). Writers follow
+[documentation-standards.md](documentation-standards.md).
 
-## Install and run
-
-Local install and run steps live in the local (gitignored) ops tree when present:
-`docs/ops/DEVELOPMENT.md`. Deploy manifests live under
-[deploy/doks/](../deploy/doks/). Runtime non-secret profiles live under
-[deploy/profiles/](../deploy/profiles/).
-
-## Public user guide
-
-Operator and integrator documentation lives in [`user-docs/`](../user-docs/)
-(MkDocs, Read the Docs theme). Build locally:
-
-```bash
-pip install mkdocs
-cd user-docs && mkdocs serve
-```
-
-Cross-page links point at the
-[GitHub Wiki](https://github.com/EMPIRIC2/TAC-to-IWXXM/wiki). This site is not
-the engineering HTTP contract. Use [api-contract.md](api-contract.md) and
-[api/openapi.json](../api/openapi.json) for field-level API truth.
-
-## Tracked spine
+## Root spine
 
 | Doc | Role |
 |-----|------|
-| [spec.md](spec.md) | System architecture (`system-spec`) |
-| [tech-spec.md](tech-spec.md) | Runtime / deploy / deps hub |
-| [env-variable.md](env-variable.md) | Environment variable names |
+| [product-requirements.md](product-requirements.md) | Project definition and behavioral requirements |
+| [technical-requirements.md](technical-requirements.md) | Functional and technical requirements and pass criteria |
+| [architecture.md](architecture.md) | System architecture and component boundaries |
+| [domain-contract.md](domain-contract.md) | TAC/IWXXM domain pipeline and profiles |
 | [api-contract.md](api-contract.md) | HTTP narrative contract |
-| [test-plan.md](test-plan.md) | Test matrix and gates |
-| [user-journeys.md](user-journeys.md) | End-user journeys |
+| [ops-contract.md](ops-contract.md) | Local, staging, and production ops contract |
+| [integration-contract.md](integration-contract.md) | External system integration rules |
+| [data-flows.md](data-flows.md) | Primary data paths |
+| [data-integrations.md](data-integrations.md) | Systems that supply or receive data |
 | [ui-style-guide.md](ui-style-guide.md) | Operator UI norms |
+| [documentation-standards.md](documentation-standards.md) | Writing and corpus rules |
+| [env-variable.md](env-variable.md) | Environment variable names |
+| [user-journeys.md](user-journeys.md) | Journey schema (matrix in CSV) |
+| [test-plan.md](test-plan.md) | Test schema and test tiers (matrix in CSV) |
 
-## Release notes
+## CSV matrices
 
-Release notes: [CHANGELOG.md](../CHANGELOG.md).
+| File | Role |
+|------|------|
+| [user-journeys.csv](user-journeys.csv) | Journey rows tied to tests |
+| [test-plan.csv](test-plan.csv) | Test-case and coverage rows |
+| [risks.csv](risks.csv) | Risks log |
+| [assumptions.csv](assumptions.csv) | Assumptions log |
+| [issues.csv](issues.csv) | Issues log |
+| [decisions.csv](decisions.csv) | Decisions log |
 
-## Local-only trees
+## Tracked config (not under docs)
 
-Architecture decisions, ops runbooks, domain mining notes, and STE dictionary
-files stay on the developer machine. They are not part of the public git tree.
-See [AGENTS.md](../AGENTS.md) §Local opt-in. Exception: `docs/domain/profiles/`
-stays tracked for the ConversionProfile catalog and the API Docker image.
+| Path | Role |
+|------|------|
+| [config/profiles/](../config/profiles) | Conversion profile catalog for the API |
+| [config/rules/](../config/rules) | Issue catalog and provenance map |
+| [config/engineering/](../config/engineering) | Coverage surface inventories |
+
+## Public user guide
+
+Operator and integrator docs for end users live in [`user-docs/`](../user-docs).
+That site is not the engineering HTTP contract.
+
+## Local feeders (not tracked)
+
+`docs/domain/`, `docs/engineering/`, `docs/ops/`, `docs/adr/`, decision notes, guides,
+UX logs, STE dictionary files, and `docs/local-feeders/` stay on the developer machine.
+See [AGENTS.md](../AGENTS.md) for the local opt-in list.
+
+## Compatibility pointers
+
+| Old path | Now |
+|----------|-----|
+| `docs/spec.md` | [architecture.md](architecture.md) |
+| `docs/tech-spec.md` | [technical-requirements.md](technical-requirements.md) |
+| `docs/domain/profiles/` | [config/profiles/](../config/profiles) + [domain-contract.md](domain-contract.md) |
+| `docs/domain/rules/` | [config/rules/](../config/rules) + [domain-contract.md](domain-contract.md) |
+| `docs/engineering/` coverage YAML | [config/engineering/](../config/engineering) |
+| `docs/ops/` runbooks | [ops-contract.md](ops-contract.md) |

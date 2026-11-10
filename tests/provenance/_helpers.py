@@ -6,11 +6,11 @@ import json
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[2]
-MAP_JSON = REPO / "docs" / "domain" / "rules" / "PROVENANCE_MAP.json"
-MAP_MD = REPO / "docs" / "domain" / "rules" / "PROVENANCE_MAP.md"
-CATALOG_JSON = REPO / "docs" / "domain" / "rules" / "ISSUE_CATALOG.json"
-MINING_DIR = REPO / "docs" / "domain" / "mining"
-GAP_REPORT = REPO / "docs" / "domain" / "rules" / "provenance-gaps.md"
+MAP_JSON = REPO / "config" / "rules" / "PROVENANCE_MAP.json"
+MAP_MD = REPO / "config" / "rules" / "PROVENANCE_MAP.md"
+CATALOG_JSON = REPO / "config" / "rules" / "ISSUE_CATALOG.json"
+MINING_DIR = REPO / "docs" / "domain" / "mining"  # local feeder (gitignored)
+GAP_REPORT = REPO / "config" / "rules" / "provenance-gaps.md"
 
 VALID_STATUSES = frozenset({"ok", "gap", "paywall", "N/A"})
 VALID_ROLES = frozenset(

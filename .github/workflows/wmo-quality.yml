@@ -12,7 +12,7 @@ on:
       - "packages/tac-validate/**"
       - "packages/tac2iwxxm/**"
       - "packages/iwxxm-validate/**"
-      - "docs/domain/rules/**"
+      - "config/rules/**"
       - "docs/sessions/S027-vaa-quality/**"
       - "docs/sessions/S026-airmet-quality-wmo-examples/**"
       - "docs/sessions/S025-sigmet-quality/**"

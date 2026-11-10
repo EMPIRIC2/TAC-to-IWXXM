@@ -1,6 +1,6 @@
 """TC-F15-001 / E11-22 - ISSUE_CATALOG drift vs ``issue_registry.ISSUES``.
 
-Committed ``docs/domain/rules/ISSUE_CATALOG.{md,json}`` must match a fresh
+Committed ``config/rules/ISSUE_CATALOG.{md,json}`` must match a fresh
 export from the registry (``make catalog-regen``).
 """
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Regenerate docs/domain/rules/ISSUE_CATALOG.md (+ JSON) from tac-validate registry.
+"""Regenerate config/rules/ISSUE_CATALOG.md (+ JSON) from tac-validate registry.
 
 Also writes packages/tac-validate/.../catalog_attribution.json from PROVENANCE_MAP
 (EV-040 source attribution for API/FE). Used by ``make catalog-regen``.

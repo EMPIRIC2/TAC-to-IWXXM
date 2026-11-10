@@ -8,8 +8,8 @@ cd "$ROOT"
 UV="${UV:-uv}"
 
 echo "==> EV-035 provenance canary"
-test -f docs/domain/rules/PROVENANCE_MAP.json
-test -f docs/domain/rules/PROVENANCE_MAP.md
+test -f config/rules/PROVENANCE_MAP.json
+test -f config/rules/PROVENANCE_MAP.md
 ${UV} run pytest \
   tests/provenance/test_tc_ev035_001_dig_inventory.py \
   tests/provenance/test_tc_ev035_006_gap_raise.py \

@@ -1,0 +1,5 @@
+id,date,status,summary,owner,links,corpus_cite,notes,decision
+D-001,2026-11-10,accepted,Root docs spine with CSV matrices for journeys and tests,operator,routing-plan,[Corpus: tests],,Adopt hybrid extract; README.md is index file
+D-002,2026-11-10,accepted,product-requirements vs technical-requirements split,operator,docs/product-requirements.md,[Corpus: product],,Behavioral+project definition in product-requirements; functional/technical pass criteria in technical-requirements
+D-003,2026-11-10,accepted,Untrack narrative docs folders; keep profiles runtime allowlist,operator,docs/README.md,[Corpus: system-spec],,gitignore local feeders and narrative trees; profiles remain tracked
+D-004,2026-11-10,accepted,"Ignore docs/domain, docs/engineering, docs/ops; relocate machine SoT to config/",operator,"config/profiles,config/rules,config/engineering",[Corpus: domain],Narrative backfilled into domain-contract and ops-contract,Track machine catalogs under config/; ignore docs feeders

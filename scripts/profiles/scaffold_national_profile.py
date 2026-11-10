@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Scaffold a national semantic profile from docs/domain/profiles/_template/.
+"""Scaffold a national semantic profile from config/profiles/_template/.
 
 Copies stub files and prints the remaining hand-edit checklist (registry, convert,
 OpenAPI, FE). Does **not** auto-edit profile_registry.py or frontend enums.
@@ -79,8 +79,8 @@ def planned_paths(profile_id: str) -> dict[str, Path]:
 def checklist(profile_id: str) -> list[str]:
     """Return post-scaffold hand-edit checklist lines."""
     return [
-        f"1. Merge catalog row from docs/domain/profiles/_scaffold_out/{profile_id}-catalog-row.yaml into catalog.yaml",
-        f"2. Fill docs/domain/profiles/semantic/{profile_id}.md",
+        f"1. Merge catalog row from config/profiles/_scaffold_out/{profile_id}-catalog-row.yaml into catalog.yaml",
+        f"2. Fill config/profiles/semantic/{profile_id}.md",
         "3. Fill mining notes under docs/domain/mining/; index mining/README.md",
         f"4. Add TAC fixtures under packages/tac2iwxxm/tests/fixtures/profiles/{profile_id}/",
         "5. Edit packages/tac2iwxxm/src/tac2iwxxm/profile_registry.py (canonical <-> emit maps)",
@@ -89,7 +89,7 @@ def checklist(profile_id: str) -> list[str]:
         "8. FE wire types / picker options if operator-visible",
         "9. Tests + docs/test-plan.md TC rows as needed",
         "10. Promote durable URLs → RULE_SOURCE_URLS / COVERAGE_MATRIX",
-        "See docs/domain/profiles/NATIONAL_PROFILE_PLAYBOOK.md",
+        "See config/profiles/NATIONAL_PROFILE_PLAYBOOK.md",
     ]
 
 
