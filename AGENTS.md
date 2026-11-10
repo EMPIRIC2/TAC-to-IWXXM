@@ -85,7 +85,7 @@ These paths stay on the developer machine. Clones do not receive them.
 | F33 | Secure mass file/folder ingest | Implemented |
 | F34 | Contract + mutation quality gates | Done |
 | F35 | Semantic vs exchange profiles | Implemented |
-| F36 | National semantic + regional exchange profiles | In progress |
+| F36 | National semantic + regional exchange profiles (incl. CA_ECCC; EV-077 VAA validate-first) | In progress |
 | F37 | Live TAC map on Decode visuals | In progress |
 | M1 | Monorepo layout (`apps/` + `packages/` + `vendor/`) | Implemented |
 | M2 | Vendor snapshot sync (wmo-im iwxxm-*) | Planned |
