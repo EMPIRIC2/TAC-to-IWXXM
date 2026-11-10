@@ -247,6 +247,30 @@ describe('WorkHistorySidebar', () => {
     expect(onCollapsedChange).toHaveBeenCalledWith(false);
   });
 
+  // UX-2026-11-10-recent-work-rail-results-fill — sticky ~½″ vertical rail
+  it('collapsed expand control is a sticky vertical half-inch rail', async () => {
+    render(
+      <WorkHistorySidebar
+        collapsed
+        onCollapsedChange={vi.fn()}
+        onSelectSession={onSelectSession}
+      />,
+    );
+
+    await waitFor(() => {
+      expect(screen.getByTestId('recent-work-expand')).toBeInTheDocument();
+    });
+    const rail = screen.getByTestId('recent-work-expand');
+    const classes = rail.className.split(/\s+/);
+    expect(classes).toContain('sticky');
+    expect(classes).toContain('w-12');
+    expect(classes).toContain('flex-col');
+    expect(classes).not.toContain('w-full');
+    expect(rail.querySelector('[data-testid="recent-work-rail-label"]')).toHaveClass(
+      '[writing-mode:vertical-rl]',
+    );
+  });
+
   it('exposes collapse control when expanded and onCollapsedChange is set', async () => {
     const onCollapsedChange = vi.fn();
     const user = userEvent.setup();

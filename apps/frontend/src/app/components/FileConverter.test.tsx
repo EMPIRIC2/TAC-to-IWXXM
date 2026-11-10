@@ -435,8 +435,25 @@ vi.mock('/utils/guestConverterState', () => ({
 }));
 
 vi.mock('./WorkHistorySidebar', () => ({
-  WorkHistorySidebar: ({ collapsed }: { collapsed?: boolean }) => (
-    <div data-testid="recent-work-collapsed" data-collapsed={collapsed ? '1' : '0'} />
+  WorkHistorySidebar: ({
+    collapsed,
+    onCollapsedChange,
+  }: {
+    collapsed?: boolean;
+    onCollapsedChange?: (collapsed: boolean) => void;
+  }) => (
+    <div>
+      <div data-testid="recent-work-collapsed" data-collapsed={collapsed ? '1' : '0'} />
+      {onCollapsedChange ? (
+        <button
+          type="button"
+          data-testid="recent-work-collapse-mock"
+          onClick={() => onCollapsedChange(true)}
+        >
+          Collapse recent work
+        </button>
+      ) : null}
+    </div>
   ),
 }));
 
@@ -5853,6 +5870,30 @@ describe('FileConverter Component', () => {
       );
 
       expect(container.querySelector('aside')).toBeInTheDocument();
+    });
+
+    // UX-2026-11-10-recent-work-rail-results-fill — slim grid when Recent work collapsed
+    it('slims the workbench grid when Recent work is collapsed', async () => {
+      const user = userEvent.setup({ delay: null });
+      render(<FileConverter {...defaultProps} onLoadWorkSession={vi.fn()} />);
+
+      const grid = screen.getByTestId('workbench-layout-grid');
+      if (
+        screen.getByTestId('recent-work-collapsed').getAttribute('data-collapsed') !==
+        '1'
+      ) {
+        await user.click(screen.getByTestId('recent-work-collapse-mock'));
+      }
+      await waitFor(() => {
+        expect(screen.getByTestId('recent-work-collapsed')).toHaveAttribute(
+          'data-collapsed',
+          '1',
+        );
+      });
+      expect(grid).toHaveAttribute('data-recent-work', 'collapsed');
+      expect(grid.className).toMatch(/lg:grid-cols-\[minmax\(0,1fr\)_3rem\]/);
+      expect(grid.className).not.toMatch(/lg:grid-cols-\[minmax\(0,1fr\)_280px\]/);
+      expect(screen.getByTestId('recent-work-aside').className).toMatch(/\blg:w-12\b/);
     });
 
     it('passes speci product to dissemination drawer when SPECI is selected', async () => {

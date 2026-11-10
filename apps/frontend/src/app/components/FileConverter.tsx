@@ -2853,7 +2853,23 @@ export function FileConverter({
           </div>
         </div>
 
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_280px]">
+        <div
+          className={
+            onLoadWorkSession
+              ? recentWorkCollapsed
+                ? 'grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_3rem]'
+                : 'grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_280px]'
+              : 'grid grid-cols-1 gap-6'
+          }
+          data-testid="workbench-layout-grid"
+          data-recent-work={
+            onLoadWorkSession
+              ? recentWorkCollapsed
+                ? 'collapsed'
+                : 'expanded'
+              : 'absent'
+          }
+        >
           <div className="min-w-0" data-testid="workbench-main-column">
             {/* Manual Input — primary workbench */}
             <div className="mb-6">
@@ -4248,7 +4264,7 @@ export function FileConverter({
                   iwxxm={
                     <div
                       data-testid="iwxxm-resize-pane"
-                      className="flex min-h-0 flex-col gap-3"
+                      className="flex h-full min-h-0 flex-col gap-3"
                     >
                       {inputMode !== 'validate_iwxxm' && focusedAssessment ? (
                         <ConvertResultStatus assessment={focusedAssessment} />
@@ -4349,7 +4365,7 @@ export function FileConverter({
                       </p>
                     ) : (
                       <div
-                        className="flex h-full min-h-0 min-w-0 flex-col overflow-auto"
+                        className="flex h-full min-h-0 min-w-0 flex-col overflow-hidden"
                         data-testid="decode-pane"
                       >
                         <DecodePanel
@@ -4723,7 +4739,11 @@ export function FileConverter({
           </div>
           {onLoadWorkSession && (
             <aside
-              className="relative z-0 w-full min-w-0 lg:sticky lg:top-20 lg:mt-8 lg:w-[280px] lg:max-w-[280px] lg:shrink-0 lg:self-start"
+              className={
+                recentWorkCollapsed
+                  ? 'relative z-0 w-full min-w-0 lg:sticky lg:top-20 lg:w-12 lg:max-w-12 lg:shrink-0 lg:self-start'
+                  : 'relative z-0 w-full min-w-0 lg:sticky lg:top-20 lg:mt-8 lg:w-[280px] lg:max-w-[280px] lg:shrink-0 lg:self-start'
+              }
               data-testid="recent-work-aside"
             >
               <WorkHistorySidebar

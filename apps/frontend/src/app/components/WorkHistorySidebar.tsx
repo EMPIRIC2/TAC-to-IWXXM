@@ -91,8 +91,7 @@ export function WorkHistorySidebar({
       <Button
         type="button"
         variant="outline"
-        size="sm"
-        className="w-full justify-start gap-2"
+        className="sticky top-20 flex h-[calc(100dvh-6rem)] w-12 min-h-[12rem] min-w-12 max-w-12 flex-col items-center justify-start gap-3 px-1 py-3 normal-case tracking-normal"
         data-testid="recent-work-expand"
         aria-expanded={false}
         aria-label="Expand recent work"
@@ -100,7 +99,12 @@ export function WorkHistorySidebar({
       >
         <ChevronRight className="h-4 w-4 shrink-0" aria-hidden="true" />
         <History className="h-4 w-4 shrink-0" aria-hidden="true" />
-        Recent work{countLabel}
+        <span
+          data-testid="recent-work-rail-label"
+          className="[writing-mode:vertical-rl] rotate-180 text-xs font-medium tracking-wide"
+        >
+          Recent work{countLabel}
+        </span>
       </Button>
     );
   }
