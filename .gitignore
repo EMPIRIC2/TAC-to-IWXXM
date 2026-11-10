@@ -251,7 +251,10 @@ third_party/
 /docs/adr/
 /docs/assets/
 /docs/guides/
+/docs/ops/
 /docs/integration/
 /docs/policies/
 /docs/ste/
 /docs/ui-ux-tweaks/
+/docs/domain/
+/docs/engineering/

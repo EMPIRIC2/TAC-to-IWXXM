@@ -1,7 +1,7 @@
 # API Contract
 
 > **Project**: TAC to IWXXM
-> **Last updated**: 2026-11-10 ( , api/ OpenAPI sync)
+> **Last updated**: 2026-11-10
 > **Delta**: Monorepo auth in API auth. general TAC conversion tac2iwxxm. operator workbench operator API. validation performance msgspec HTTP.
 > METAR and SPECI quality bar registry codes. TAF and SPECI quality bar TAF/SPECI quality. public operator app Amended public convert + optional
 > Auth. privacy preference center privacy. platform independence/hybrid operator sessions Auth-only Supabase + DO Postgres work-sessions
@@ -13,7 +13,7 @@ response shapes, auth rules, and known quirks for the backend in `apps/backend`.
 
 | Source | Authority |
 |--------|-----------|
-| Committed [api/openapi.json](./api/openapi.json) / [api/openapi.yaml](./api/openapi.yaml) | Machine-readable contract (refresh with `make openapi-refresh`) |
+| Committed [api/openapi.json](../api/openapi.json) / [api/openapi.yaml](../api/openapi.yaml) | Machine-readable contract (refresh with `make openapi-refresh`) |
 | Live OpenAPI `GET {API}/openapi.json` | Which routes are mounted in that environment |
 | This document | Contracts, field tables, and migration notes |
 | When they disagree | Prefer OpenAPI, then a decision interview before you patch callers |
