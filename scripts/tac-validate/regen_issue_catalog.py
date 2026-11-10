@@ -20,9 +20,9 @@ _INTERNAL_DOC_REF_IN_NOTE = re.compile(
     r"(?:\[Corpus:|\bADR-\d+\b|\bEV-\d+\b|\bS0\d+\b|\bTC-[A-Z0-9-]+\b|"
     r"\bE\d{2}-\d+\b|(?<!\w)#\d{3,}\b|\bF\d+\b|docs/sessions/|docs/feature-list)"
 )
-CATALOG_MD = REPO / "docs" / "domain" / "rules" / "ISSUE_CATALOG.md"
-CATALOG_JSON = REPO / "docs" / "domain" / "rules" / "ISSUE_CATALOG.json"
-PROVENANCE = REPO / "docs" / "domain" / "rules" / "PROVENANCE_MAP.json"
+CATALOG_MD = REPO / "config" / "rules" / "ISSUE_CATALOG.md"
+CATALOG_JSON = REPO / "config" / "rules" / "ISSUE_CATALOG.json"
+PROVENANCE = REPO / "config" / "rules" / "PROVENANCE_MAP.json"
 ATTRIBUTION_JSON = (
     REPO
     / "packages"

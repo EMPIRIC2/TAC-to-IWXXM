@@ -14,8 +14,8 @@ from tac_validate.catalog_attribution import attribution_for
 from tac_validate.issue_registry import ISSUES
 
 REPO = Path(__file__).resolve().parents[3]
-CATALOG_JSON = REPO / "docs" / "domain" / "rules" / "ISSUE_CATALOG.json"
-CATALOG_MD = REPO / "docs" / "domain" / "rules" / "ISSUE_CATALOG.md"
+CATALOG_JSON = REPO / "config" / "rules" / "ISSUE_CATALOG.json"
+CATALOG_MD = REPO / "config" / "rules" / "ISSUE_CATALOG.md"
 
 
 def _registry_rows() -> list[dict[str, object]]:

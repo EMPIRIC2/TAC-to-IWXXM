@@ -10,10 +10,10 @@ from pathlib import Path
 from tac2iwxxm.ca_ops_corpus import load_ops_manifest, ops_fixture_root
 
 _REPO = Path(__file__).resolve().parents[3]
-_CATALOG = _REPO / "docs" / "domain" / "profiles" / "catalog.yaml"
-_COVERAGE = _REPO / "docs" / "domain" / "rules" / "COVERAGE_MATRIX.md"
+_CATALOG = _REPO / "config" / "profiles" / "catalog.yaml"
+_COVERAGE = _REPO / "config" / "rules" / "COVERAGE_MATRIX.md"
 _FEATURE = _REPO / "AGENTS.md"
-_CA_ECCC = _REPO / "docs" / "domain" / "profiles" / "semantic" / "CA_ECCC.md"
+_CA_ECCC = _REPO / "config" / "profiles" / "semantic" / "CA_ECCC.md"
 _FIXTURES = ops_fixture_root(_REPO)
 
 

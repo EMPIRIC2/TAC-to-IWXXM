@@ -126,3 +126,10 @@ plus `deploy/doks/` and [env-variable.md](env-variable.md).
 2. Staging matches the architecture component map.
 3. Promote follows stage-first policy.
 4. Dissemination egress stays fail-closed without an allowlist.
+
+## Auth redirect hosts
+
+Prefer DigitalOcean Kubernetes Service (DOKS) hosts for live Auth redirect URLs,
+including `https://app.tac-to-iwxxm.com/**`. Do not re-add retired Render frontend
+hosts.
+

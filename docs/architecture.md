@@ -146,7 +146,7 @@ after contract spikes, close. **those spikes are now closed (–042, synthesis 2
 | Logical layer | Purpose | Current home(s) | Contract (ADR) | Runtime gap |
 |---------------|---------|-----------------|----------------|-------------|
 | **Core** | Shared IR types, constants, vendor helpers | `packages/shared`; IR inside `packages/tac2iwxxm` | Option C | Document boundaries only |
-| **Profiles** | Semantic + exchange profile contracts, content, and operator-managed profile assets | Code: `tac2iwxxm/profiles/*`, `tac_validate/profiles.py`, `dissemination/exchange_registry.py`; content: `docs/domain/profiles/` | | Cross-version conversion framing , operator sharing , and quality backlog closeout deepen on top of the existing resolver and UI; destination credentials remain outside stored profile objects |
+| **Profiles** | Semantic + exchange profile contracts, content, and operator-managed profile assets | Code: `tac2iwxxm/profiles/*`, `tac_validate/profiles.py`, `dissemination/exchange_registry.py`; content: `config/profiles/` | | Cross-version conversion framing , operator sharing , and quality backlog closeout deepen on top of the existing resolver and UI; destination credentials remain outside stored profile objects |
 | **Conversion** | TAC→IWXXM encode | `packages/tac2iwxxm` | | Exchange packaging vs dissemination |
 | **Decoding** | TAC→NL segments/summary + Decoding catalog | `packages/tac-decoding` (was tac2iwxxm) | / | Catalog export for operator workbench five-tab shell |
 | **Validation** | Staged TAC then IWXXM | `packages/tac-validate` + `packages/iwxxm-validate` | PipelineResult | Unified runtime; `ca_eccc` reference |

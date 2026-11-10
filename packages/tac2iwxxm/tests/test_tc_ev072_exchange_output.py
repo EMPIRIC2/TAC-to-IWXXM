@@ -23,7 +23,7 @@ from tac2iwxxm import convert, parse_ahl
 FIXTURES = Path(__file__).resolve().parent / "fixtures" / "profiles" / "CA_ECCC"
 PROFILE = "ca_eccc"
 IWXXM_VERSION = "3.0.0"
-CATALOG = Path(__file__).resolve().parents[3] / "docs" / "domain" / "profiles" / "catalog.yaml"
+CATALOG = Path(__file__).resolve().parents[3] / "config" / "profiles" / "catalog.yaml"
 _ISSUED = datetime(2023, 6, 23, 18, 0, 0, tzinfo=UTC)
 
 _AERODROME_PRODUCTS = (

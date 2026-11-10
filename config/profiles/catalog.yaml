@@ -93,7 +93,7 @@ profiles:
     mining_notes:
       - docs/domain/mining/fmh1-2019-mining-notes.md
       - docs/domain/mining/iwxxm-us-metar-speci-pdf-mining-notes.md
-      - docs/domain/profiles/mining/EV-M1-913-source-triage.md
+      - config/profiles/mining/EV-M1-913-source-triage.md
     stub: semantic/US_FAA_NWS.md
     gaps:
       - FMH-1 §12.7.2 additive RMK (T/P/6/7/$, ice accretion, sensor status) — post-#919; no profile-pack fixtures (EV-085 M21 waived)
@@ -490,7 +490,7 @@ profiles:
         proves: National IWXXM program context (#913 triage)
     mining_notes:
       - docs/domain/mining/kr-kma-tac-mining-notes.md
-      - docs/domain/profiles/mining/EV-M1-913-source-triage.md
+      - config/profiles/mining/EV-M1-913-source-triage.md
     stub: semantic/KR_KMA.md
     gaps:
       - No published KR IWXXM extension XSD (core-only emit)
@@ -575,7 +575,7 @@ profiles:
         proves: Candidate GEN 3.5 cite — date-stamped archive (unstable; harden durable pin)
     mining_notes:
       - docs/domain/mining/in-imd-tac-mining-notes.md
-      - docs/domain/profiles/mining/EV-M1-913-source-triage.md
+      - config/profiles/mining/EV-M1-913-source-triage.md
     stub: semantic/IN_IMD.md
     gaps:
       - No published IN IWXXM extension XSD (IMDIMET unpublished — do not invent)

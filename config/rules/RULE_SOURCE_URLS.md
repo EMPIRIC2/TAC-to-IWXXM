@@ -734,7 +734,7 @@ Full ranking: [mining/wmo-im-org-mining-notes.md](../mining/wmo-im-org-mining-no
 ## EV-M1-five-remaining / #913 promote (2026-09-09)
 
 Additional durable / candidate pins from mine-ticket closeout triage
-([`docs/domain/profiles/mining/EV-M1-913-source-triage.md`](../profiles/mining/EV-M1-913-source-triage.md)).
+([`config/profiles/mining/EV-M1-913-source-triage.md`](../profiles/mining/EV-M1-913-source-triage.md)).
 
 ### NWS forecast product samples (`US_FAA_NWS`)
 

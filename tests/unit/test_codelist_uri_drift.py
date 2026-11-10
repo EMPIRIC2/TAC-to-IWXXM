@@ -14,7 +14,7 @@ from scripts.iwxxm.codelist_uri_drift import (
 
 _REPO = Path(__file__).resolve().parents[2]
 _ADOPT = _REPO / "docs" / "domain" / "iwxxm" / "RELEASE_LINE_ADOPTABILITY.md"
-_RULES = _REPO / "docs" / "domain" / "rules" / "RULE_SOURCE_URLS.md"
+_RULES = _REPO / "config" / "rules" / "RULE_SOURCE_URLS.md"
 
 
 def test_diff_uri_sets_reports_stable_uris() -> None:

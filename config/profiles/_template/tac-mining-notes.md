@@ -29,6 +29,6 @@ L0 / L1 / …
 
 ## Promotion checklist
 
-- [ ] Durable URLs → `docs/domain/rules/RULE_SOURCE_URLS.md`
-- [ ] Coverage row → `docs/domain/rules/COVERAGE_MATRIX.md`
+- [ ] Durable URLs → `config/rules/RULE_SOURCE_URLS.md`
+- [ ] Coverage row → `config/rules/COVERAGE_MATRIX.md`
 - [ ] Fixture case + `rule_id` in profile `manifest.json`

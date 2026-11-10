@@ -15,8 +15,8 @@ import sys
 from pathlib import Path
 
 _REPO = Path(__file__).resolve().parents[2]
-_TEMPLATE = _REPO / "docs" / "domain" / "profiles" / "_template"
-_PROFILES = _REPO / "docs" / "domain" / "profiles"
+_TEMPLATE = _REPO / "config" / "profiles" / "_template"
+_PROFILES = _REPO / "config" / "profiles"
 _MINING = _REPO / "docs" / "domain" / "mining"
 _FIXTURES = _REPO / "packages" / "tac2iwxxm" / "tests" / "fixtures" / "profiles"
 

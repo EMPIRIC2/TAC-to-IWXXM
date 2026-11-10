@@ -16,7 +16,7 @@ WORKFLOW = ROOT / ".github" / "workflows" / "supabase-sync.yml"
 DOKS_API_CM = ROOT / "deploy" / "doks" / "base" / "configmap-api.yaml"
 DOKS_FE_CM = ROOT / "deploy" / "doks" / "base" / "configmap-frontend-runtime.yaml"
 PROD_CONFIG = ROOT / "deploy" / "profiles" / "prod.json"
-ENV_SYNC = ROOT / "docs" / "ops" / "env-sync-runbook.md"
+ENV_SYNC = ROOT / "docs" / "ops-contract.md"
 
 RENDER_FRONTEND = "https://metar-to-iwxxm-frontend-v4-web.onrender.com"
 PINNED_CLI = "2.111.0"

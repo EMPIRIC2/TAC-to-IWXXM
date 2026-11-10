@@ -20,7 +20,7 @@ import httpx
 import yaml
 
 _REPO = Path(__file__).resolve().parents[2]
-_CATALOG = _REPO / "docs" / "domain" / "profiles" / "catalog.yaml"
+_CATALOG = _REPO / "config" / "profiles" / "catalog.yaml"
 
 HTTP_TIMEOUT_SECONDS = 30.0
 DEFAULT_SUMMARY = Path("artifacts/live-profile/summary.json")

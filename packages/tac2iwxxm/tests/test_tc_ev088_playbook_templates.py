@@ -12,7 +12,7 @@ from pathlib import Path
 import yaml
 
 _REPO = Path(__file__).resolve().parents[3]
-_PROFILES = _REPO / "docs" / "domain" / "profiles"
+_PROFILES = _REPO / "config" / "profiles"
 _PLAYBOOK = _PROFILES / "NATIONAL_PROFILE_PLAYBOOK.md"
 _TEMPLATE = _PROFILES / "_template"
 _SCAFFOLD = _REPO / "scripts" / "profiles" / "scaffold_national_profile.py"

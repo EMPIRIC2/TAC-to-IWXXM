@@ -117,9 +117,9 @@ catalog-regen:
 	$(UV) run python scripts/tac-validate/regen_issue_catalog.py
 
 catalog-check: catalog-regen
-	@git diff --quiet -- docs/domain/rules/ISSUE_CATALOG.md docs/domain/rules/ISSUE_CATALOG.json \
+	@git diff --quiet -- config/rules/ISSUE_CATALOG.md config/rules/ISSUE_CATALOG.json \
 		packages/tac-validate/src/tac_validate/data/catalog_attribution.json \
-		|| (echo "ISSUE_CATALOG drift — run make catalog-regen and commit"; git diff --stat -- docs/domain/rules/ISSUE_CATALOG.md docs/domain/rules/ISSUE_CATALOG.json packages/tac-validate/src/tac_validate/data/catalog_attribution.json; exit 1)
+		|| (echo "ISSUE_CATALOG drift — run make catalog-regen and commit"; git diff --stat -- config/rules/ISSUE_CATALOG.md config/rules/ISSUE_CATALOG.json packages/tac-validate/src/tac_validate/data/catalog_attribution.json; exit 1)
 
 # S059 / EV-050 / AC1 — offline WMO membership harvest (no live codes.wmo.int HTML)
 # Prettier after dump so short arrays match workspace format-check (json.dumps expands them).

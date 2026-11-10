@@ -59,7 +59,7 @@ See [AGENTS.md](../AGENTS.md) for the local opt-in list.
 |----------|-----|
 | `docs/spec.md` | [architecture.md](architecture.md) |
 | `docs/tech-spec.md` | [technical-requirements.md](technical-requirements.md) |
-| `docs/domain/profiles/` | [config/profiles/](../config/profiles) + [domain-contract.md](domain-contract.md) |
-| `docs/domain/rules/` | [config/rules/](../config/rules) + [domain-contract.md](domain-contract.md) |
+| `config/profiles/` | [config/profiles/](../config/profiles) + [domain-contract.md](domain-contract.md) |
+| `config/rules/` | [config/rules/](../config/rules) + [domain-contract.md](domain-contract.md) |
 | `docs/engineering/` coverage YAML | [config/engineering/](../config/engineering) |
 | `docs/ops/` runbooks | [ops-contract.md](ops-contract.md) |

@@ -17,7 +17,7 @@ from tac_validate.profiles import PROFILE_ANNEX3, PROFILE_IWXXM_US
 
 FIXTURES = Path(__file__).resolve().parent / "fixtures" / "profiles" / "US_FAA_NWS"
 MANIFEST_PATH = FIXTURES / "manifest.json"
-CATALOG_PATH = Path(__file__).resolve().parents[3] / "docs" / "domain" / "profiles" / "catalog.yaml"
+CATALOG_PATH = Path(__file__).resolve().parents[3] / "config" / "profiles" / "catalog.yaml"
 PROFILE = "US_FAA_NWS"
 
 
