@@ -665,8 +665,7 @@ function conversionParamsFromStoredPreferences(
     bulletinId:
       (typeof prefs.bulletinIdExample === 'string' && prefs.bulletinIdExample) ||
       'SAAA00',
-    issuingCenter:
-      (typeof prefs.issuingCenter === 'string' && prefs.issuingCenter) || 'KWBC',
+    issuingCenter: typeof prefs.issuingCenter === 'string' ? prefs.issuingCenter : '',
     product: ((typeof prefs.product === 'string' && prefs.product) ||
       'auto') as TacProductSelection,
     profile,
