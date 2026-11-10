@@ -98,7 +98,7 @@ export function DecodePanel({
     <section
       className={
         pinned
-          ? 'flex max-h-80 min-h-0 min-w-0 flex-col overflow-auto rounded-md border border-gray-200 dark:border-gray-700'
+          ? 'flex h-full min-h-0 min-w-0 flex-col overflow-auto rounded-md border border-gray-200 dark:border-gray-700'
           : 'mt-3 rounded-md border border-gray-200 dark:border-gray-700'
       }
       aria-label="TAC decode panel"

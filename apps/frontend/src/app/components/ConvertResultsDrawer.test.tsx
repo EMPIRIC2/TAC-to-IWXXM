@@ -131,4 +131,29 @@ describe('ConvertResultsDrawer', () => {
     expect(scrollBody.className.split(/\s+/)).toContain('overflow-auto');
     expect(within(scrollBody).getByText('map-body')).toBeVisible();
   });
+
+  // UX-2026-11-10-live-decode-drawer-fill — flex height chain for Decoder tab
+  it('drawer body flex chain lets Decoder panel fill height', () => {
+    render(
+      <ConvertResultsDrawer
+        open
+        onOpenChange={() => undefined}
+        tab="decoder"
+        onTabChange={() => undefined}
+        height={320}
+        onHeightChange={() => undefined}
+        {...body}
+      />,
+    );
+
+    const scrollBody = screen.getByTestId('convert-results-drawer-body');
+    const bodyClasses = scrollBody.className.split(/\s+/);
+    expect(bodyClasses).toEqual(expect.arrayContaining(['flex', 'flex-col']));
+
+    const decoderPanel = screen.getByTestId('convert-results-panel-decoder');
+    const panelClasses = decoderPanel.className.split(/\s+/);
+    expect(panelClasses).toContain('h-full');
+    expect(panelClasses).toContain('min-h-0');
+    expect(within(decoderPanel).getByText('decoder-body')).toBeVisible();
+  });
 });

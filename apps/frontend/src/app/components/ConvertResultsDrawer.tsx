@@ -134,7 +134,7 @@ export function ConvertResultsDrawer({
             </TabsList>
           </div>
           <div
-            className="min-h-0 flex-1 overflow-auto px-3 pb-3"
+            className="flex min-h-0 flex-1 flex-col overflow-auto px-3 pb-3"
             data-testid="convert-results-drawer-body"
           >
             {(Object.keys(PANEL) as ConvertResultsTab[]).map((id) => (
@@ -144,7 +144,7 @@ export function ConvertResultsDrawer({
                 forceMount
                 hidden={tab !== id}
                 data-testid={`convert-results-panel-${id}`}
-                className={tab === id ? undefined : 'hidden'}
+                className={tab === id ? 'flex h-full min-h-0 flex-col' : 'hidden'}
               >
                 {bodies[id]}
               </TabsContent>
