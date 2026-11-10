@@ -13,7 +13,6 @@ _REPO = Path(__file__).resolve().parents[3]
 _CATALOG = _REPO / "docs" / "domain" / "profiles" / "catalog.yaml"
 _COVERAGE = _REPO / "docs" / "domain" / "rules" / "COVERAGE_MATRIX.md"
 _FEATURE = _REPO / "AGENTS.md"
-_CATALOG_DOC = _REPO / "docs" / "domain" / "profiles" / "catalog.yaml"
 _CA_ECCC = _REPO / "docs" / "domain" / "profiles" / "semantic" / "CA_ECCC.md"
 _FIXTURES = ops_fixture_root(_REPO)
 
