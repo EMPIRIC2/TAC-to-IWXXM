@@ -43,3 +43,10 @@ This file defines columns, test tiers, and linkage rules.
 4. Full legacy narrative may exist under local `docs/local-feeders/`.
 5. Some extracted rows still have empty assert or path cells. Treat those as
  open backfill work in [issues.csv](issues.csv).
+
+## Coverage metrics
+
+CI enforces **100%** line+branch coverage on the inventoried Python, Vitest, and
+`scripts/` surfaces (`fail_under = 100`). Standing gate docs:
+TC-EV080-009 and ADR-007 (local architecture decision copy when present).
+

@@ -42,7 +42,7 @@ and pass criteria. Behavioral product scope lives in
 
 | ID | Requirement | Pass criterion |
 |----|-------------|----------------|
-| TR-Q01 | Unit coverage is 100% line and branch on packages and apps | `fail_under = 100` holds in CI |
+| TR-Q01 | Unit coverage is **100%** line and branch on packages and apps | `fail_under = 100` holds in CI |
 | TR-Q02 | Every `scripts/*.sh` maps to a bats test | Script coverage inventory matches files |
 | TR-Q03 | Frontend Vitest coverage stays at 100% global thresholds | `pnpm --filter @metar/frontend run test:coverage` passes |
 | TR-Q04 | Contract and mutation gates stay in CI | Contract and mutation jobs run on the required schedules |
