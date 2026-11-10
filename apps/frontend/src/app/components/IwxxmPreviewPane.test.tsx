@@ -108,18 +108,21 @@ describe('IwxxmPreviewPane', () => {
       <IwxxmPreviewPane xml={SAMPLE_XML} status="passed" mode="soft-preview" />,
     );
     const root = container.querySelector('[data-testid="iwxxm-preview-pane"]');
-    expect(root?.className).toContain('max-h-80');
+    // UX-2026-11-10-recent-work-rail-results-fill — fill drawer by default
+    expect(root?.className).toContain('h-full');
+    expect(root?.className).not.toContain('max-h-80');
     expect(root?.className).not.toContain('min-h-[100dvh]');
   });
 
-  it('offers Expand preview and grows past the squat max-height when expanded', async () => {
+  it('offers Expand preview and grows past drawer fill when expanded', async () => {
     const user = userEvent.setup();
     render(<IwxxmPreviewPane xml={SAMPLE_XML} status="passed" mode="live" />);
     const root = screen.getByTestId('iwxxm-preview-pane');
     const expand = screen.getByTestId('iwxxm-preview-expand');
     expect(expand).toHaveAttribute('aria-expanded', 'false');
     expect(expand).toHaveAccessibleName(/expand preview/i);
-    expect(root.className).toContain('max-h-80');
+    expect(root.className).toContain('h-full');
+    expect(root.className).not.toContain('max-h-80');
     expect(root).toHaveAttribute('data-expanded', 'false');
 
     await user.click(expand);
@@ -129,6 +132,11 @@ describe('IwxxmPreviewPane', () => {
     expect(root).toHaveAttribute('data-expanded', 'true');
     expect(root.className).not.toContain('max-h-80');
     expect(root.className).toMatch(/max-h-\[min\(70dvh/);
+
+    await user.click(expand);
+    expect(root).toHaveAttribute('data-expanded', 'false');
+    expect(root.className).toContain('h-full');
+    expect(root.className).not.toContain('max-h-80');
   });
 
   it('numbers lines, names the conversion profile, and marks the selected group', () => {

@@ -43,6 +43,8 @@ Cite `[Corpus: ui-style]` when you apply these norms.
 - Results → Downloads is file management only; conversion XML and result assessment details belong on Results → IWXXM.
 - Results drawer: title + Hide and the results tab strip stay pinned above the scrolling tab body (chrome outside the overflow scrollport).
 - Results Decoder tab: pinned Live decode fills the drawer body height; scroll inside the panel (no squat max-height clamp).
+- Results IWXXM preview fills the drawer body by default (no squat max-height); Expand may grow further; Collapse returns to fill.
+- Collapsed Recent work is a sticky ~½″ vertical rail on the right spanning the workbench up to the primary action strip; expand restores the 280px panel and the main column reclaims width when collapsed.
 - Live map station cards: product + station in a compact header, observation-time select (not Newer/Earlier pills), TAC collapsed by default, explicit Send to converter via the existing map→workbench handoff.
 - Workbench Help / Preferences chrome and the User Preferences modal use dark outline controls (primary blue border, transparent fill); Preferences stays display-name + output-extension only (no validation knobs).
 
@@ -116,3 +118,4 @@ Record the test path and red/green dates on `docs/ui-ux-tweaks/UX-YYYY-MM-DD-*.m
 | 2026-11-02 | [UX-2026-11-02-preferences-visual](ui-ux-tweaks/UX-2026-11-02-preferences-visual.md) | Workbench Help / Preferences chrome and User Preferences modal: dark outline (primary blue border, transparent fill); Preferences stays display-name + output-extension only. |
 | 2026-11-07 | [UX-2026-11-07-convert-chrome-polish](ui-ux-tweaks/UX-2026-11-07-convert-chrome-polish.md) | Convert empty state uses the same bordered converter chrome (no marketing hero); product type always on the toolbar; Settings cog rightmost with slow-fade hover cards; drop Results console + lint catalog panels; full-bleed collapsible footer; output-extension caret nudged left. |
 | 2026-11-10 | [UX-2026-11-10-live-decode-drawer-fill](ui-ux-tweaks/UX-2026-11-10-live-decode-drawer-fill.md) | Results Decoder tab: pinned Live decode fills the drawer body height; scroll inside the panel (no squat max-height clamp). |
+| 2026-11-10 | [UX-2026-11-10-recent-work-rail-results-fill](ui-ux-tweaks/UX-2026-11-10-recent-work-rail-results-fill.md) | Collapsed Recent work: sticky ~½″ vertical rail up to the primary action strip; Results IWXXM fills drawer by default (Expand grows further; Collapse returns to fill). |
