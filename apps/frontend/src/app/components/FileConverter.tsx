@@ -4349,7 +4349,7 @@ export function FileConverter({
                       </p>
                     ) : (
                       <div
-                        className="flex max-h-96 min-h-0 min-w-0 flex-col overflow-auto"
+                        className="flex h-full min-h-0 min-w-0 flex-col overflow-auto"
                         data-testid="decode-pane"
                       >
                         <DecodePanel

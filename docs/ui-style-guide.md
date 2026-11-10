@@ -42,6 +42,7 @@ Cite `[Corpus: ui-style]` when you apply these norms.
 - Convert catalog Examples sit in a compact bar above the TAC editor — not inside the Settings product/profile panel.
 - Results → Downloads is file management only; conversion XML and result assessment details belong on Results → IWXXM.
 - Results drawer: title + Hide and the results tab strip stay pinned above the scrolling tab body (chrome outside the overflow scrollport).
+- Results Decoder tab: pinned Live decode fills the drawer body height; scroll inside the panel (no squat max-height clamp).
 - Live map station cards: product + station in a compact header, observation-time select (not Newer/Earlier pills), TAC collapsed by default, explicit Send to converter via the existing map→workbench handoff.
 - Workbench Help / Preferences chrome and the User Preferences modal use dark outline controls (primary blue border, transparent fill); Preferences stays display-name + output-extension only (no validation knobs).
 
@@ -114,3 +115,4 @@ Record the test path and red/green dates on `docs/ui-ux-tweaks/UX-YYYY-MM-DD-*.m
 | 2026-11-02 | [UX-2026-11-02-compact-map-result-card](ui-ux-tweaks/UX-2026-11-02-compact-map-result-card.md) | Live map station cards: product + station header, observation-time select (not Newer/Earlier pills), TAC collapsed by default, Send to converter via existing handoff. |
 | 2026-11-02 | [UX-2026-11-02-preferences-visual](ui-ux-tweaks/UX-2026-11-02-preferences-visual.md) | Workbench Help / Preferences chrome and User Preferences modal: dark outline (primary blue border, transparent fill); Preferences stays display-name + output-extension only. |
 | 2026-11-07 | [UX-2026-11-07-convert-chrome-polish](ui-ux-tweaks/UX-2026-11-07-convert-chrome-polish.md) | Convert empty state uses the same bordered converter chrome (no marketing hero); product type always on the toolbar; Settings cog rightmost with slow-fade hover cards; drop Results console + lint catalog panels; full-bleed collapsible footer; output-extension caret nudged left. |
+| 2026-11-10 | [UX-2026-11-10-live-decode-drawer-fill](ui-ux-tweaks/UX-2026-11-10-live-decode-drawer-fill.md) | Results Decoder tab: pinned Live decode fills the drawer body height; scroll inside the panel (no squat max-height clamp). |

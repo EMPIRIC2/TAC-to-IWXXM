@@ -294,6 +294,23 @@ describe('DecodePanel', () => {
     expect(onSelect).toHaveBeenCalledWith({ start: 6, end: 8, code: 'XX' });
   });
 
+  // UX-2026-11-10-live-decode-drawer-fill — fill Results drawer body height
+  it('pinned Live decode fills parent height without squat max-height', () => {
+    render(
+      <DecodePanel
+        pinned
+        product="SPECI"
+        segments={[{ start: 0, end: 5, code: 'SPECI', explanation: 'Report type' }]}
+        residuals={[]}
+      />,
+    );
+    const panel = screen.getByTestId('decode-panel');
+    const classes = panel.className.split(/\s+/);
+    expect(classes).not.toContain('max-h-80');
+    expect(classes).toContain('h-full');
+    expect(classes).toContain('min-h-0');
+  });
+
   it('compact density keeps Code | Explanation and omits plain language', () => {
     render(
       <DecodePanel
