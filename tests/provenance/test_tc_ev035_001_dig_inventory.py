@@ -38,7 +38,11 @@ def test_tc_ev035_001_dig_indexed(dig_path) -> None:
 
 
 def test_tc_ev035_001_no_extra_dig_rows() -> None:
-    """Map dig paths must exist on disk (no stale index)."""
+    """Map dig paths must exist on disk when the local mining feeder is present."""
+    from tests.provenance._helpers import MINING_DIR
+
+    if not MINING_DIR.is_dir():
+        pytest.skip("local docs/domain/mining feeder absent on this clone")
     data = load_map()
     on_disk = {f"docs/domain/mining/{p.name}" for p in mining_note_files()}
     for row in data["digs"]:

@@ -52,7 +52,7 @@ def test_tc_ev1222_001_apac_robex_respects_explicit_bulletin_identifier() -> Non
 
 def test_tc_ev1222_002_remaining_overlays_catalog_honesty() -> None:
     """TC-EV1222-002 — EUR/AFI/CAR_SAM stay stub with explicit gaps."""
-    catalog = Path("docs/domain/profiles/catalog.yaml")
+    catalog = Path("config/profiles/catalog.yaml")
     data = yaml.safe_load(catalog.read_text(encoding="utf-8"))
     by_id = {row["id"]: row for row in data["profiles"] if row.get("kind") == "exchange"}
     for wire_id in ("EUR_RODEX", "AFI", "CAR_SAM"):

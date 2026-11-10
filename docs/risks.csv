@@ -1,0 +1,3 @@
+id,date,status,summary,owner,links,corpus_cite,notes,likelihood,impact,mitigation
+R-001,2026-11-10,open,Untracking docs/domain narrative may hide mining notes from clones,docs,docs/README.md,[Corpus: system-spec],Mitigate with root contracts + local-feeders,med,med,Keep profiles/rules tracked; document local opt-in
+R-002,2026-11-10,open,CSV journey/test matrices may drift from real tests,docs,docs/test-plan.csv,[Corpus: tests],Need CI drift check later,high,high,Add linkage QA in follow-up

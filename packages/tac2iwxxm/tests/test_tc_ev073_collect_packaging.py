@@ -105,7 +105,7 @@ def test_tc_ev073_004_ops_fixture_shell_parity(case: dict) -> None:
 
 def test_tc_ev073_005_catalog_collect_envelope_implemented() -> None:
     """Catalog documents COLLECT envelope as EV-073 implemented."""
-    text = (_REPO / "docs/domain/profiles/catalog.yaml").read_text(encoding="utf-8")
+    text = (_REPO / "config/profiles/catalog.yaml").read_text(encoding="utf-8")
     assert "collect_envelope:" in text
     assert "ev_cycle: EV-073" in text
     assert "status: implemented" in text.split("collect_envelope:")[1][:200]

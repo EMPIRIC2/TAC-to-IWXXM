@@ -11,9 +11,9 @@ from __future__ import annotations
 from pathlib import Path
 
 _REPO = Path(__file__).resolve().parents[3]
-_MATRIX = _REPO / "docs" / "domain" / "rules" / "COVERAGE_MATRIX.md"
-_THEME = _REPO / "docs" / "domain" / "apac" / "apac-encode-theme-fixture-map.md"
-_T64 = _REPO / "docs" / "domain" / "apac" / "t6.4-optional-798-qa-matrix.md"
+_MATRIX = _REPO / "config" / "rules" / "COVERAGE_MATRIX.md"
+_THEME = _REPO / "config" / "rules" / "apac" / "apac-encode-theme-fixture-map.md"
+_T64 = _REPO / "config" / "rules" / "apac" / "t6.4-optional-798-qa-matrix.md"
 _GOLDEN = Path(__file__).resolve().parent / "fixtures" / "annex3_golden"
 
 

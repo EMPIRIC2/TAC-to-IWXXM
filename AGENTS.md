@@ -12,18 +12,30 @@ document sets.
 
 ## Minimal corpus (design and parity)
 
+Index: [docs/README.md](docs/README.md). Writing rules:
+[docs/documentation-standards.md](docs/documentation-standards.md).
+
 | ID | Role | Path | Skills use it to… |
 |----|------|------|-------------------|
-| **product** | Approved features and acceptance | This file §Product feature index | Scope (feature `F*` / milestone `M*`); reject out-of-list work |
-| **journeys** | End-user journeys | [docs/user-journeys.md](docs/user-journeys.md) | End-to-end / verify-impl sign-off (`UJ-*`) |
+| **product** | Project definition and behavioral requirements | [docs/product-requirements.md](docs/product-requirements.md) (+ this file §Product feature index mirror) | Scope (feature `F*` / milestone `M*`); reject out-of-list work |
+| **journeys** | End-user journeys | [docs/user-journeys.csv](docs/user-journeys.csv) + [docs/user-journeys.md](docs/user-journeys.md) | End-to-end / verify-impl sign-off (`UJ-*`) |
 | **ui-style** | Living operator UI style guide | [docs/ui-style-guide.md](docs/ui-style-guide.md) | UI/UX tweak norms; cite when polishing the frontend |
-| **system-spec** | Architecture, components, constraints | [docs/spec.md](docs/spec.md) | Design parity vs `apps/` + `packages/` + `vendor/` |
-| **tech-spec** | Runtime / config / deploy / deps hub | [docs/tech-spec.md](docs/tech-spec.md) | Config names, environment, deploy topology, dependency pins |
+| **system-spec** | Architecture, components, constraints | [docs/architecture.md](docs/architecture.md) | Design parity vs `apps/` + `packages/` + `vendor/` |
+| **tech-spec** | Functional/technical requirements and pass criteria | [docs/technical-requirements.md](docs/technical-requirements.md) | Config names, environment, deploy topology, dependency pins |
 | **api** | HTTP contract | [docs/api-contract.md](docs/api-contract.md) + [api/openapi.json](api/openapi.json) | Request / response / error shapes |
-| **tests** | Test matrix and gates | [docs/test-plan.md](docs/test-plan.md) | Parity checks, smoke test-case IDs, CI expectations |
+| **ops** | Ops contract | [docs/ops-contract.md](docs/ops-contract.md) | Local/staging/prod ops expectations |
+| **domain** | Domain contract (profiles, lint/convert/validate order) | [docs/domain-contract.md](docs/domain-contract.md) + [config/profiles/](config/profiles/) + [config/rules/](config/rules/) | Semantic/exchange profiles and rule catalogs |
+| **integration** | Integration contract | [docs/integration-contract.md](docs/integration-contract.md) | External system wiring |
+| **data-flows** | Data paths | [docs/data-flows.md](docs/data-flows.md) | Flow order through convert/decode/session/ingest/disseminate |
+| **data-integrations** | Data systems | [docs/data-integrations.md](docs/data-integrations.md) | Systems that supply or receive data |
+| **tests** | Test matrix and gates | [docs/test-plan.csv](docs/test-plan.csv) + [docs/test-plan.md](docs/test-plan.md) | Parity checks, smoke test-case IDs, CI expectations |
+| **raid** | Risks, assumptions, issues, decisions | [docs/risks.csv](docs/risks.csv), [docs/assumptions.csv](docs/assumptions.csv), [docs/issues.csv](docs/issues.csv), [docs/decisions.csv](docs/decisions.csv) | Evolve/RAID tracking |
+| **doc-standards** | Documentation standards | [docs/documentation-standards.md](docs/documentation-standards.md) | STE + avoid-ai + corpus citation rules |
 | **deps** | Live dependency inventory | [sbom/cyclonedx.json](sbom/cyclonedx.json) | Allowed packages; regenerate with `make sbom` |
-| **env** | Environment variable names | [docs/env-variable.md](docs/env-variable.md) (`env-variable.md`) | Env var contract by layer |
+| **env** | Environment variable names | [docs/env-variable.md](docs/env-variable.md) | Env var contract by layer |
 | **changelog** | Release notes | [CHANGELOG.md](CHANGELOG.md) | Release history |
+
+Compatibility pointers: `docs/spec.md` → architecture; `docs/tech-spec.md` → technical-requirements.
 
 ### Tech-spec satellites
 
@@ -31,6 +43,9 @@ document sets.
 |------|--------|
 | [docs/env-variable.md](docs/env-variable.md) | Environment variable contract |
 | [deploy/profiles/](deploy/profiles/) | Non-secret runtime JSON (`local` / `staging` / `prod` / `e2e`) |
+| [config/profiles/](config/profiles/) | ConversionProfile catalog (API image) |
+| [config/rules/](config/rules/) | Issue catalog and provenance map |
+| [config/engineering/](config/engineering/) | Coverage surface inventories |
 | [deploy/doks/](deploy/doks/) | DOKS deploy manifests and operator notes |
 | [sbom/cyclonedx.json](sbom/cyclonedx.json) | CycloneDX SBOM (CI drift-checked on push) |
 
@@ -40,13 +55,21 @@ These paths stay on the developer machine. Clones do not receive them.
 
 | Path | When |
 |------|------|
-| `docs/adr/` | Architecture decisions (`ADR-NNN`) |
+| `docs/adr/` | Architecture decisions (`ADR-NNN`) — local only, not tracked |
 | `docs/decisions/` | Interview / evolve decision logs |
-| `docs/engineering/` | NOW index, docstring bar, package DX |
-| `docs/domain/`, `docs/guides/`, `docs/ops/`, `docs/integration/`, `docs/policies/` | Domain and runbooks |
+| `docs/domain/`, `docs/engineering/`, `docs/ops/` | Domain mining, engineering notes, ops runbooks |
+| `docs/guides/`, `docs/integration/`, `docs/policies/` | Guides and policy notes |
 | `docs/bug-reports/`, `docs/context/`, `docs/ui-ux-tweaks/`, `docs/assets/`, `docs/ste/` | Hotfix, context dumps, UX logs, STE dictionary |
+| `docs/local-feeders/` | Full legacy dumps |
+
+Machine catalogs for profiles, rules, and coverage inventories live under
+`config/` and stay tracked.
 
 ## Product feature index
+
+Canonical behavioral table:
+[docs/product-requirements.md](docs/product-requirements.md).
+This section mirrors feature ids for quick agent load.
 
 | # | Feature | Status |
 |---|---------|--------|

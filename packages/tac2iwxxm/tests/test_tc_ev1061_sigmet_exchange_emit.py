@@ -19,7 +19,7 @@ from tac2iwxxm.exchange_output import (
 )
 
 _REPO = Path(__file__).resolve().parents[3]
-_CATALOG = _REPO / "docs" / "domain" / "profiles" / "catalog.yaml"
+_CATALOG = _REPO / "config" / "profiles" / "catalog.yaml"
 _FIXTURES = ops_fixture_root(_REPO)
 
 

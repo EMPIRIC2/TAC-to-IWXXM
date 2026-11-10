@@ -40,7 +40,7 @@ Convert goldens live under `packages/tac2iwxxm/tests/fixtures/{annex3_golden,iwx
 ## Expectation contract
 
 `manifest.json` cases list `expected_codes`. Every code must exist in the
-`tac-validate` issue registry after M2 (`docs/domain/rules/ISSUE_CATALOG.md`).
+`tac-validate` issue registry after M2 (`config/rules/ISSUE_CATALOG.md`).
 Diagnostics assertions require product-rule codes/spans from
 `check_product_rules`.
 

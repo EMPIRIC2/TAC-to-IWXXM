@@ -67,7 +67,7 @@
 
 Parent epic: [#846](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/846).
 
-**Map:** [`docs/domain/rules/PROVENANCE_MAP.md`](../../../domain/rules/PROVENANCE_MAP.md) · CI: `make test-provenance-quality`
+**Map:** [`config/rules/PROVENANCE_MAP.md`](../../../domain/rules/PROVENANCE_MAP.md) · CI: `make test-provenance-quality`
 
 ## EV-098 follow-on gaps (2026-09-02)
 

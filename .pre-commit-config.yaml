@@ -109,7 +109,7 @@ repos:
         entry: bash scripts/ci/run_provenance_canary.sh
         language: system
         pass_filenames: false
-        files: ^(docs/domain/rules/PROVENANCE_MAP\.(json|md)|docs/domain/rules/ISSUE_CATALOG\.json|docs/domain/rules/provenance-gaps\.md|docs/domain/mining/.*-mining-notes\.md|tests/provenance/.*|scripts/ci/run_provenance_(quality|canary)\.sh)$
+        files: ^(config/rules/PROVENANCE_MAP\.(json|md)|config/rules/ISSUE_CATALOG\.json|config/rules/provenance-gaps\.md|docs/domain/mining/.*-mining-notes\.md|tests/provenance/.*|scripts/ci/run_provenance_(quality|canary)\.sh)$
 
   - repo: https://github.com/rhysd/actionlint
     rev: v1.7.7

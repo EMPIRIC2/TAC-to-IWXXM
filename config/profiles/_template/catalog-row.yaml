@@ -1,4 +1,4 @@
-# Catalog row template — copy into docs/domain/profiles/catalog.yaml
+# Catalog row template — copy into config/profiles/catalog.yaml
 #
 # Replace PLACEHOLDER_* values. Keep kind: semantic for national TAC→IWXXM overlays.
 # See NATIONAL_PROFILE_PLAYBOOK.md §1.

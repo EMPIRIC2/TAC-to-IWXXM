@@ -13,6 +13,7 @@ ROOT = Path(__file__).resolve().parents[2]
 
 ADR = ROOT / "docs" / "adr" / "ADR-007-universal-coverage-gate.md"
 TECH = ROOT / "docs" / "tech-spec.md"
+TECH_REQ = ROOT / "docs" / "technical-requirements.md"
 TEST_PLAN = ROOT / "docs" / "test-plan.md"
 AGENTS = ROOT / "AGENTS.md"
 
@@ -32,8 +33,9 @@ class TestTcEv080StandingDocs:
     def test_typing_policy_coverage_section(self) -> None:
         # typing-policy.md removed; coverage floor lives in tech-spec + AGENTS.
         tech = TECH.read_text(encoding="utf-8")
+        tech_req = TECH_REQ.read_text(encoding="utf-8") if TECH_REQ.is_file() else ""
         agents = AGENTS.read_text(encoding="utf-8")
-        text = tech + "\n" + agents
+        text = tech + "\n" + tech_req + "\n" + agents
         assert "**100%** line and branch" in text or "100% line+branch" in text
         assert "fail_under = 100" in text or "fail_under **100**" in text
         assert (

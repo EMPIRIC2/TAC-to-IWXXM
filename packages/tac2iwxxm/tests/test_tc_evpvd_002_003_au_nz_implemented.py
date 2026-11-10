@@ -15,7 +15,7 @@ import yaml
 from tac2iwxxm import convert
 
 REPO_ROOT = Path(__file__).resolve().parents[3]
-CATALOG = REPO_ROOT / "docs" / "domain" / "profiles" / "catalog.yaml"
+CATALOG = REPO_ROOT / "config" / "profiles" / "catalog.yaml"
 FIXTURES = Path(__file__).resolve().parent / "fixtures" / "profiles"
 
 

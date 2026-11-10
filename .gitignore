@@ -203,6 +203,9 @@ packages/shared/src/metar_shared/iwxxm_xsd/**/__pycache__/
 deploy/doks/.env.access
 tmp/
 
+# EV-docs-spine — full legacy dumps (keep on disk; spine is root MD + CSV)
+/docs/local-feeders/
+
 # EV-088 profile scaffold working copies (merge into catalog.yaml by hand)
 docs/domain/profiles/_scaffold_out/
 
@@ -225,15 +228,15 @@ third_party/
 /docs/context/
 /docs/bug-reports/
 /docs/reports/
+# Domain, engineering, and ops feeders stay local. Machine SoT moved to config/.
 /docs/engineering/
-# Coverage inventories stay tracked (unit gate EV-052 / EV-080).
-!/docs/engineering/
-!/docs/engineering/coverage-surface-inventory.yaml
-!/docs/engineering/coverage-surface-inventory-s061.yaml
+/docs/engineering/**
+/docs/domain/
+/docs/domain/**
+/docs/ops/
+/docs/ops/**
 /docs/ARCHIVE/
-/docs/domain/mining/
 /docs/evolve-report-*.md
-# project-board.md is a CORPUS standing doc — track it (was ignored by mistake).
 /docs/hotfix-log.md
 /docs/skill-routing.md
 /.cursor/artifacts/execution-plan-live-e2e.md
@@ -244,29 +247,14 @@ third_party/
 .cursor/
 .vscode/
 
-# EV-repo-docs-cleanup — local agent/doc trees (keep on disk). Exception: domain profiles for API/Docker.
+# Local agent/doc trees (keep on disk).
 /docs/adr/
-!/docs/adr/ADR-036-semantic-vs-exchange-profiles.md
 /docs/assets/
 /docs/guides/
 /docs/ops/
-!/docs/ops/env-sync-runbook.md
 /docs/integration/
 /docs/policies/
 /docs/ste/
 /docs/ui-ux-tweaks/
-/docs/domain/**
-!/docs/domain/profiles/
-!/docs/domain/profiles/**
-# CI gates (tac-validate / tac2iwxxm / WMO quality / provenance) require these trees.
-!/docs/domain/rules/
-!/docs/domain/rules/**
-!/docs/domain/quality/
-!/docs/domain/quality/**
-!/docs/domain/apac/
-!/docs/domain/apac/**
-
-# Coverage inventories stay tracked (unit gate EV-052 / EV-080).
-!/docs/engineering/
-!/docs/engineering/coverage-surface-inventory.yaml
-!/docs/engineering/coverage-surface-inventory-s061.yaml
+/docs/domain/
+/docs/engineering/

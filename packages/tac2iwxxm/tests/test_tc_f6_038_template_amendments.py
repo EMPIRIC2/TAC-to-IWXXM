@@ -11,8 +11,8 @@ from pathlib import Path
 import yaml
 
 _REPO = Path(__file__).resolve().parents[3]
-_CATALOG = _REPO / "docs" / "domain" / "profiles" / "template-amendments.yaml"
-_PLAYBOOK = _REPO / "docs" / "domain" / "profiles" / "NATIONAL_PROFILE_PLAYBOOK.md"
+_CATALOG = _REPO / "config" / "profiles" / "template-amendments.yaml"
+_PLAYBOOK = _REPO / "config" / "profiles" / "NATIONAL_PROFILE_PLAYBOOK.md"
 _REQUIRED = {"id", "source", "product", "change", "inherits", "status", "tac_convertible"}
 _STATUSES = {"done", "partial", "not_started"}
 _NOT_CONVERTIBLE = {

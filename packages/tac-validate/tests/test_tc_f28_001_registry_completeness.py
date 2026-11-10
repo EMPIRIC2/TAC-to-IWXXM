@@ -22,8 +22,8 @@ PACKAGE_SRC = Path(__file__).resolve().parents[1] / "src" / "tac_validate"
 FIXTURES = Path(__file__).resolve().parent / "fixtures"
 MANIFEST_PATH = FIXTURES / "manifest.json"
 REPO = Path(__file__).resolve().parents[3]
-CATALOG_JSON = REPO / "docs" / "domain" / "rules" / "ISSUE_CATALOG.json"
-CATALOG_MD = REPO / "docs" / "domain" / "rules" / "ISSUE_CATALOG.md"
+CATALOG_JSON = REPO / "config" / "rules" / "ISSUE_CATALOG.json"
+CATALOG_MD = REPO / "config" / "rules" / "ISSUE_CATALOG.md"
 _RULE_MODULES = (PACKAGE_SRC / "rules.py", PACKAGE_SRC / "product_rules.py")
 
 

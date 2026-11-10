@@ -1,0 +1,3 @@
+id,date,status,summary,owner,links,corpus_cite,notes,severity
+I-001,2026-11-10,open,test-plan.csv TC rows are heading-extracted; many asserts/paths still empty,docs,docs/test-plan.csv,[Corpus: tests],Backfill from local-feeders/test-plan.full.md,med
+I-002,2026-11-10,open,Full STE pass on architecture body and api-contract still incomplete,docs,docs/architecture.md,[Corpus: system-spec],Lead sections STE-cleaned; body pending,low

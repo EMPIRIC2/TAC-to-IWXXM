@@ -18,7 +18,7 @@ name: Supabase Sync
 #   stage / PR→stage → SUPABASE_PROJECT_REF_STAGING (default zvfhtcxjopwuesrozpvu)
 #   main  / PR→main  → SUPABASE_PROJECT_REF (default ktvxijislbtgqapllmuk)
 #
-# Operator docs: docs/deploy.md §Supabase CI sync, docs/ops/env-sync-runbook.md §Step 5
+# Operator docs: docs/deploy.md §Supabase CI sync, docs/ops-contract.md §Step 5
 # Advisors API: https://supabase.com/docs/reference/api/v1-get-security-advisors
 #
 # Required configuration (Settings → Secrets and variables → Actions):

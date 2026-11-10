@@ -3,7 +3,7 @@
   "description": "TC-F12-001 / E10-21 / TC-F15-003 / TC-F20-004 / TC-F23-004 / TC-F24 / TC-F26 / TC-EV030-004 / TC-F32-001 fixture pack for tac-validate (F12 + F15 R1\u2013R8 + F20 TAF/SPECI + F23 SIGMET + F24 AIRMET + F26 VAA + EV-030 TC SIGMET + F32 VONA theme).",
   "cite": [
     "docs/domain/TAC_VALIDATION.md (A3-2, A5-1, A6, A2-1, A2-2 paraphrase)",
-    "docs/domain/rules/COVERAGE_MATRIX.md",
+    "config/rules/COVERAGE_MATRIX.md",
     "docs/sessions/S015-metar-lint-quality/reports/metar-research-catalog.md (R1\u2013R8)",
     "docs/sessions/S020-aerodrome-quality/reports/taf-speci-research-catalog.md (T1\u2013T4 / S1\u2013S3 / C1)",
     "docs/sessions/S025-sigmet-quality/reports/sigmet-research-catalog.md (G1\u2013G3 / V1\u2013V3 / C1)",
