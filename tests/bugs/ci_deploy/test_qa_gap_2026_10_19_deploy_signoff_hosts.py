@@ -1,10 +1,8 @@
 """Regression test: live signoff and rollback name the DOKS hosts.
 
-Fails while ``docs/deploy.md`` still signs off against the Render API or
-frontend host, or while the Rollback section tells the operator to redeploy
-a Render deploy. Passes once those sentences are gone and Rollback names a
-DOKS host. The staging hosts are ``api.staging.tac-to-iwxxm.com`` and
-``app.staging.tac-to-iwxxm.com``. [Corpus: deploy] [Corpus: tests]
+Tracked deploy truth is ``deploy/doks/README.md`` after EV-repo-docs-cleanup
+(``docs/deploy.md`` removed). Staging hosts are ``api.staging.tac-to-iwxxm.com``
+and ``app.staging.tac-to-iwxxm.com``. [Corpus: tech-spec] [Corpus: tests]
 """
 
 from __future__ import annotations
@@ -12,7 +10,7 @@ from __future__ import annotations
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[3]
-DEPLOY = ROOT / "docs" / "deploy.md"
+DEPLOY = ROOT / "deploy" / "doks" / "README.md"
 STAGING_HOSTS = (
     "https://api.staging.tac-to-iwxxm.com",
     "https://app.staging.tac-to-iwxxm.com",
@@ -41,7 +39,7 @@ def test_live_signoff_and_rollback_name_doks_hosts() -> None:
         problems.append("live signoff still uses the Render frontend host")
     if "Redeploy previous Render deploy" in rollback:
         problems.append("rollback still says to redeploy a Render deploy")
-    if not all(host in text for host in STAGING_HOSTS):
+    if not all(host.removeprefix("https://") in text for host in STAGING_HOSTS):
         problems.append("deploy doc does not name the staging DOKS hosts")
     if "tac-to-iwxxm.com" not in rollback and "DOKS" not in rollback:
         problems.append("rollback does not name a DOKS host")

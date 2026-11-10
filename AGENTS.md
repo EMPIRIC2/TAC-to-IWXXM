@@ -22,7 +22,7 @@ document sets.
 | **api** | HTTP contract | [docs/api-contract.md](docs/api-contract.md) + [api/openapi.json](api/openapi.json) | Request / response / error shapes |
 | **tests** | Test matrix and gates | [docs/test-plan.md](docs/test-plan.md) | Parity checks, smoke test-case IDs, CI expectations |
 | **deps** | Live dependency inventory | [sbom/cyclonedx.json](sbom/cyclonedx.json) | Allowed packages; regenerate with `make sbom` |
-| **env** | Environment variable names | [docs/env-variable.md](docs/env-variable.md) | Env var contract by layer |
+| **env** | Environment variable names | [docs/env-variable.md](docs/env-variable.md) (`env-variable.md`) | Env var contract by layer |
 | **changelog** | Release notes | [CHANGELOG.md](CHANGELOG.md) | Release history |
 
 ### Tech-spec satellites

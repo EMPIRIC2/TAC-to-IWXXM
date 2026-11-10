@@ -24,7 +24,7 @@ docs.
   Feature F22 privacy gates still apply.
 - Product DB is DigitalOcean Postgres via `DATABASE_URL` (sessions + feature F8
   ingest store).
-- Supabase holds Auth URL and keys only. It does not hold product PostgREST
+- Supabase is Auth URL + keys only. It is **not** product PostgREST / hosted app
   tables.
 - Compute is DOKS as primary after the F30 cutover. Render is suspended.
 - Dissemination BYOC credentials stay memory-only.
