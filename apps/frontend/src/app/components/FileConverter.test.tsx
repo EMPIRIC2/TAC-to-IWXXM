@@ -4848,7 +4848,8 @@ describe('FileConverter Component', () => {
         expect(mockConvertMetarToIwxxm).toHaveBeenCalledWith(
           expect.objectContaining({
             bulletinId: 'SAAA00',
-            issuingCenter: 'KWBC',
+            // Blank Issuing Center is omitted (AHL discover) — not hard-defaulted to KWBC.
+            issuingCenter: undefined,
             profile: 'ICAO_2025',
             includeNilReasons: false,
             logLevel: 'INFO',

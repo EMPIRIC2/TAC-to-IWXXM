@@ -811,7 +811,8 @@ ids are engineering trace only. They are not operator-facing copy.
   at converter **top** (not buried in params); applied to convert/lint/validate; keyboard
   accessible name+label. Not the #933 editor.
 - **S070 / EV-060 deepen (#1005 Bulletin ID / Issuing Center)**: Labeled, editable fields;
-  sent on convert; empty → discover-from-AHL or defaults; invalid CCCC/ID → one field error.
+  sent on convert; empty Issuing Center → discover-from-AHL (optional override only; do not
+  hard-default to `KWBC`); invalid CCCC/ID → one field error.
 - **S070 / EV-060 deepen (#1004 log_level)**: Existing UI/API log-level enum sets **logger
   verbosity** in backend + packages (not client-echo filter only). DEBUG must not dump JWTs,
   passwords, or Authorization headers.
@@ -3112,7 +3113,8 @@ ids are engineering trace only. They are not operator-facing copy.
 
 - **Status note**: F6 remains **Implemented**. This cycle fills translation metadata and the suggested filename. No new feature id.
 - **Issue**: [#1277](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1277)
-- **What it does**: When translation-centre emit is requested, `translationTime`, `translatedBulletinID`, and `translatedBulletinReceptionTime` come from the parsed bulletin heading and the translation clock. Ordinary in-state convert still omits those fields. A failed translation keeps the original TAC and, when a heading was parsed, uses that heading and the configured centre instead of `TTAAiiCCCYYGGgg` and `YUZZ`. Bulletin convert returns `A_…xml.gz` from the existing filename helper, using the IWXXM T1T2. The Canada MSC name stays `.xml`.
+- **What it does**: When translation-centre emit is requested, `translatedBulletinID` comes from the parsed bulletin heading. For METAR/SPECI, `translationTime` and `translatedBulletinReceptionTime` use the same exact observation datetime as `iwxxm:observationTime` (TAC day/hour/minute with the bulletin date anchor), not wall-clock now. Ordinary in-state convert still omits those fields. A failed translation keeps the original TAC and, when a heading was parsed, uses that heading and the configured centre instead of `TTAAiiCCCYYGGgg` and `YUZZ`. Bulletin convert returns `A_…xml.gz` from the existing filename helper, using the IWXXM T1T2. The Canada MSC name stays `.xml`.
+- **Hotfix (HF-translation-time-issuing-center)**: Aligns successful METAR/SPECI translation-time attrs with observation time; Issuing Center UI stays a blank optional override (discover from AHL when blank — no hard-default `KWBC`).
 - **Out of scope**: Gzipping the XML bytes; an AMHS connection; inventing a heading for a paste with no heading line; parent [#1275](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1275); a new operator screen; promoting `stage` to `main`.
 - **Corpus**: [Corpus: product §F6] [Corpus: api] [Corpus: tests]
 
