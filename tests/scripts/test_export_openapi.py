@@ -12,13 +12,50 @@ import scripts.openapi.export_openapi as export_openapi
 
 
 @pytest.mark.unit
+def test_to_yaml_covers_scalar_and_collection_branches() -> None:
+    """Exercise every ``_to_yaml`` branch used when writing api/openapi.yaml."""
+    yaml = export_openapi._to_yaml
+    assert yaml(None) == "null"
+    assert yaml(True) == "true"
+    assert yaml(False) == "false"
+    assert yaml(3) == "3"
+    assert yaml(1.5) == "1.5"
+    assert yaml("plain") == "plain"
+    assert yaml("") == '""'
+    assert yaml("a:b") == '"a:b"'
+    assert yaml([]) == "[]"
+    assert yaml({}) == "{}"
+    assert yaml({"k": []}) == "k: []"
+    nested = yaml({"outer": [{"inner": None}, "ok", [True]]})
+    assert "outer:" in nested
+    assert "null" in nested
+    assert "- ok" in nested
+    # Non-JSON-native fallback (tuple) hits the final dumps path.
+    assert yaml((1, 2)).startswith("[")  # type: ignore[arg-type]
+
+
+@pytest.mark.unit
 def test_main_writes_openapi(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     api_dir = tmp_path / "api"
     fe_out = tmp_path / "apps" / "frontend" / "openapi" / "openapi.json"
     api_json = api_dir / "openapi.json"
     api_yaml = api_dir / "openapi.yaml"
+    schema = {
+        "openapi": "3.1.0",
+        "info": {"title": "t", "version": "0"},
+        "paths": {
+            "/x": {
+                "get": {
+                    "summary": "a:b",
+                    "parameters": [],
+                    "responses": {"200": {"description": "ok"}},
+                }
+            }
+        },
+        "components": {},
+    }
     api_mod = types.ModuleType("src.api")
-    api_mod.app = SimpleNamespace(openapi=lambda: {"openapi": "3.1.0", "paths": {}})
+    api_mod.app = SimpleNamespace(openapi=lambda: schema)
     src_mod = types.ModuleType("src")
     src_mod.api = api_mod
 
