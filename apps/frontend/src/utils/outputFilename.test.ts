@@ -12,6 +12,7 @@ import {
   appendConvertedWithinCap,
   nextFirstAccumulatedTac,
   uniquifyZipMemberNames,
+  toIwxxmDownloadName,
 } from './outputFilename';
 
 describe('sanitizeOutputFilename', () => {
@@ -65,6 +66,22 @@ describe('manualOutputName', () => {
 
   it('sanitizes the base before applying a suffix', () => {
     expect(manualOutputName('my/out.xml', 0, 2)).toBe('out_1.txt');
+  });
+});
+
+describe('toIwxxmDownloadName', () => {
+  it('maps TAC input extensions to .xml', () => {
+    expect(toIwxxmDownloadName('bulletin_report_1.tac')).toBe('bulletin_report_1.xml');
+    expect(toIwxxmDownloadName('first.txt')).toBe('first.xml');
+    expect(toIwxxmDownloadName('obs.metar')).toBe('obs.xml');
+    expect(toIwxxmDownloadName('Report.TAC')).toBe('Report.xml');
+  });
+
+  it('keeps existing IWXXM extensions and falls back when blank', () => {
+    expect(toIwxxmDownloadName('already.xml')).toBe('already.xml');
+    expect(toIwxxmDownloadName('pack.iwxxm')).toBe('pack.iwxxm');
+    expect(toIwxxmDownloadName('')).toBe('download.xml');
+    expect(toIwxxmDownloadName('   ')).toBe('download.xml');
   });
 });
 

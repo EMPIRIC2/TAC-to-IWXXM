@@ -163,6 +163,25 @@ export function manualOutputName(base: string, index: number, total: number): st
 }
 
 /**
+ * Map a TAC/input result name to the IWXXM download filename.
+ *
+ * Converts common TAC input extensions to ``.xml``. Names that already use an
+ * IWXXM extension are left unchanged.
+ *
+ * @param name - Result or source filename (may be ``.tac`` / ``.txt`` / ``.metar``)
+ * @returns Download filename with ``.xml`` when the input used a TAC extension
+ * @example
+ * const _ = true;
+ */
+export function toIwxxmDownloadName(name: string): string {
+  const trimmed = name.trim();
+  if (!trimmed) {
+    return 'download.xml';
+  }
+  return trimmed.replace(/\.(txt|metar|tac)$/i, '.xml');
+}
+
+/**
  * Build the download XML filename from the *current* Output filename field.
  *
  * Used after convert when the operator renames the field (#904) — must not
@@ -180,7 +199,7 @@ export function manualDownloadXmlName(
   index: number,
   total: number,
 ): string {
-  return manualOutputName(base, index, total).replace(/\.(txt|metar)$/i, '.xml');
+  return toIwxxmDownloadName(manualOutputName(base, index, total));
 }
 
 /**

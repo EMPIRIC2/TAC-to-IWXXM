@@ -205,7 +205,7 @@ describe('BUG-2026-08-07 output filename download stale (#904)', () => {
     await waitFor(() => {
       expect(
         screen.getByRole('button', {
-          name: /download first_name\.txt as xml/i,
+          name: /download first_name\.xml as xml/i,
         }),
       ).toBeInTheDocument();
     });
@@ -215,10 +215,10 @@ describe('BUG-2026-08-07 output filename download stale (#904)', () => {
       'second_name.xml',
     );
 
-    // Card label may still show convert-time originalName; download attribute uses live field.
+    // Aria-label and download attribute both use the live Output filename field.
     await user.click(
       screen.getByRole('button', {
-        name: /download first_name\.txt as xml/i,
+        name: /download second_name\.xml as xml/i,
       }),
     );
 

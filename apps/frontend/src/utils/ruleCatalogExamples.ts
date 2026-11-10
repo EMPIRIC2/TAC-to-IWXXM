@@ -90,8 +90,9 @@ export function isInfoCatalogLevel(severity: string | null | undefined): boolean
 /**
  * Sample text for an info-level rule.
  *
- * Prefer the report that does not raise the rule. When that side is not on
- * file, keep the other report without calling it a failure.
+ * Prefer the report that raises the informational note (fixture ``fail``), so
+ * presence rules show the construct being noted (AMD, AT, …). When that side
+ * is not on file, keep the other report without calling it a failure.
  *
  * @param pair - Packaged reports for the rule
  * @returns Report text, or null when neither side is on file
@@ -102,5 +103,5 @@ export function plainInfoExample(pair: {
   pass: RuleExampleText;
   fail: RuleExampleText;
 }): RuleExampleText {
-  return pair.pass ?? pair.fail;
+  return pair.fail ?? pair.pass;
 }
