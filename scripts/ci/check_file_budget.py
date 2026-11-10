@@ -3,7 +3,7 @@
 
 Rules:
   - Budget: 500 physical lines (newline count).
-  - Paths on config/file-budget-allowlist.txt may exceed the budget (grandfathered).
+  - Paths on scripts/ci/policy/file-budget-allowlist.txt may exceed the budget (grandfathered).
   - Fixed exclusions: generated iwxxm_xsd, frontend generated/, shadcn components/ui/,
     build/coverage/vendor trees.
 
@@ -21,7 +21,7 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-ALLOWLIST_PATH = ROOT / "config" / "file-budget-allowlist.txt"
+ALLOWLIST_PATH = ROOT / "scripts" / "ci" / "policy" / "file-budget-allowlist.txt"
 BUDGET = 500
 SCAN_ROOTS = ("apps", "packages")
 SUFFIXES = {".py", ".ts", ".tsx", ".js", ".jsx", ".rs", ".mjs", ".cjs"}
@@ -159,7 +159,7 @@ def main(argv: list[str] | None = None) -> int:
             print(f"  {item}", file=sys.stderr)
         print(
             "Add splits or AskQuestion before expanding "
-            "config/file-budget-allowlist.txt",
+            "scripts/ci/policy/file-budget-allowlist.txt",
             file=sys.stderr,
         )
         return 1

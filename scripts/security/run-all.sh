@@ -43,7 +43,7 @@ need grype
 need sbom-tool
 
 # OpenGrep — write JSON; fail only on findings not in baseline (EV-049 migration).
-BASELINE="${ROOT}/config/security/opengrep-baseline.txt"
+BASELINE="${ROOT}/scripts/security/opengrep-baseline.txt"
 FILTER="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/filter-opengrep-baseline.py"
 run_opengrep() {
   set +e

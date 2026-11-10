@@ -971,7 +971,7 @@ jobs:
 
   # ============================================================================
   # E2E SMOKE — Playwright browser smoke (auth bootstrap + TAC conversion)
-  # Free on public repos (ubuntu-latest). Self-contained: config/local.json sets
+  # Free on public repos (ubuntu-latest). Self-contained: deploy/profiles/local.json sets
   # disableAuth=true, so no Supabase secrets are required (mock session path).
   # ============================================================================
   e2e-smoke:

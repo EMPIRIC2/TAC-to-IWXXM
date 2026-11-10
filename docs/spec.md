@@ -3,14 +3,14 @@
 > **Project**: TAC to IWXXM  
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM  
 > **Version**: monorepo + `tac2iwxxm` + operator UI (Quality metrics on stage)  
-> **Last updated**: 2026-09-12 (EV-docs-accuracy-audit — tree/status/link scrub)
+> **Last updated**: 2026-11-10 (EV-repo-docs-cleanup — corpus index → AGENTS.md)
 
 ## Overview
 
 This document is the **system specification** (corpus id `system-spec`). It describes
 architecture, components, and hard constraints. For runtime config and deploy hosts,
 use [tech-spec.md](tech-spec.md) and its satellites. For approved features, use
-[feature-list.md](feature-list.md).
+[AGENTS.md](../AGENTS.md) §Product feature index.
 
 **What the product does**
 
@@ -240,7 +240,7 @@ EV-922 session `reports/923-platform-package-layout.md`; EV-922-synthesis `repor
 - **Runtime**: Pure Python v0; optional **Rust/PyO3** hotspots after benchmarks (not Cython).
 - **License**: MIT.
 - **IR**: **msgspec.Struct** (ADR-016); HTTP high-churn paths also msgspec (ADR-026).
-- **Source**: [feature-list.md](feature-list.md) F6/F14/F20/F23/F26/F27; ADR-013; ADR-014; ADR-026;
+- **Source**: [AGENTS.md](../AGENTS.md) F6/F14/F20/F23/F26/F27; ADR-013; ADR-014; ADR-026;
   evolve-decisions EV-023; context/general-tac-iwxxm-converter.md (archived; see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate);
   context/package-publish-validation.md (archived; see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate);
   context/aerodrome-quality.md (archived; see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate);
@@ -355,7 +355,7 @@ with aliases during one CalVer window. DX tests: `TC-DX-001`…`TC-DX-004`.
 
 - **Purpose**: Shared API types (OpenAPI-derived TS), env URL helpers, constants (CORS origins,
   version enums, F6 product/profile enums).
-- **Config loader (S003)**: Loads `config/{local,prod}.json` by `METAR_CONFIG_ENV`; exposes merged
+- **Config loader (S003)**: Loads `deploy/profiles/{local,prod}.json` by `METAR_CONFIG_ENV`; exposes merged
   config to Python and TypeScript; secrets resolved from env only.
 - **Source**: REQ-010, ADR-010.
 
@@ -432,14 +432,14 @@ with aliases during one CalVer window. DX tests: `TC-DX-001`…`TC-DX-004`.
 ### Runtime configuration (`config/`)
 
 - **Purpose**: Non-secret per-environment settings (URLs, CORS, validation flags).
-- **Files**: `config/local.json`, `config/prod.json` (committed).
+- **Files**: `deploy/profiles/local.json`, `deploy/profiles/staging.json`, `deploy/profiles/prod.json`, `deploy/profiles/e2e.json` (committed).
 - **Frontend**: Static host serves `/config.json` (prod copy + publishable key injected at deploy).
 - **BYO (R6 / ADR-021)**: Operator deploy env supplies Supabase URL/keys (and optional app
   `DATABASE_URL` for legacy primary upload). **No** in-app paste of **Supabase auth** keys.
 - **Dissemination BYOC (S019 / EV-014)**: Users may paste **one-shot destination** credentials
   (DB URI / WIS2 / EDIS SMTP / AMHS params) in the dissemination drawer; API memory-only;
   required `DISSEMINATION_EGRESS_ALLOWLIST` (ADR-029).
-- **Source**: [config-spec.md](config-spec.md), S003 session; S011 / EV-008.
+- **Source**: [env-variable.md](env-variable.md), S003 session; S011 / EV-008.
 
 ### F5 — User METAR work history (S004; **hybrid — S038 / EV-031 / F31**)
 
@@ -489,7 +489,7 @@ with aliases during one CalVer window. DX tests: `TC-DX-001`…`TC-DX-004`.
 
 - **Purpose**: Keep convert/validate/lint/decode/preview/dissemination public; optional Supabase
   Auth only for long-term server sessions (F31). Abuse controls remain.
-- **Source**: #783; **F21 Amended** / F31; [feature-list.md](feature-list.md).
+- **Source**: #783; **F21 Amended** / F31; [AGENTS.md](../AGENTS.md).
 
 ### F22 — Privacy preference center (S023; deepen F31)
 
@@ -504,7 +504,7 @@ with aliases during one CalVer window. DX tests: `TC-DX-001`…`TC-DX-004`.
   `DATABASE_URL` (co-located with work sessions). No Supabase service-role DB writers.
 - **Non-goals (F8 worker path)**: public machine-ingest auth UX; **automatic** push of ingest
   results (operator dissemination sinks are **F16–F19**, not F8 auto-push).
-- **Source**: ADR-018; **F30**; [feature-list.md](feature-list.md) F8.
+- **Source**: ADR-018; **F30**; [AGENTS.md](../AGENTS.md) F8.
 - **EV-1132 / #1132**: Cut over to `packages/workflows.execute` + `workflows/f8-metar-ingest-default.yaml`
   (ADR-042). See Context: workflows-runtime-1132 (archived; see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate).
 
@@ -521,12 +521,12 @@ with aliases during one CalVer window. DX tests: `TC-DX-001`…`TC-DX-004`.
 ### F30 — Platform independence (S038 / EV-031)
 
 - **Purpose**: Supabase Auth-only; DO Postgres product DB; DOKS production cutover; amend #830.
-- **Source**: [feature-list.md](feature-list.md) F30; #842/#830/#712.
+- **Source**: [AGENTS.md](../AGENTS.md) F30; #842/#830/#712.
 
 ### F31 — Hybrid operator sessions (S038 / EV-031)
 
 - **Purpose**: Guest local + notice; logged-in DO sessions; auto-upload; F22 interaction.
-- **Source**: [feature-list.md](feature-list.md) F31.
+- **Source**: [AGENTS.md](../AGENTS.md) F31.
 
 ### F16–F19 deepen — Gateway hooks + ops UI (EV-936 / #936) — Planned
 
@@ -535,7 +535,7 @@ with aliases during one CalVer window. DX tests: `TC-DX-001`…`TC-DX-004`.
   **Dissemination ops** surface (plan/audit/SQL mapping/gateway health) alongside the destinations
   drawer. JWT for ops/plan/audit/mapping/health; public preflight/send unchanged (F21).
 - **Non-goals**: #933/#934/#938; live AFTN/failover features; secrets in audit UI; new packages.
-- **Source**: [feature-list.md](feature-list.md) §F16–F19 deepen (EV-936);
+- **Source**: [AGENTS.md](../AGENTS.md) §F16–F19 deepen (EV-936);
   Context: dissemination-ops-936 (archived; see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate); ADR-041 / ADR-040;
   [evolve-decisions.md](decisions/evolve-decisions.md) §EV-936; UJ-071.
 
@@ -566,7 +566,7 @@ with aliases during one CalVer window. DX tests: `TC-DX-001`…`TC-DX-004`.
   `packages/dissemination` unchanged; connection-first preflight retained.
 - **ADRs**: ADR-021 amend (destination paste); ADR-029 (SSRF / allowlist); ADR-030
   (`packages/dissemination` + sink/API/wis2box/EDIS).
-- **Source**: [feature-list.md](feature-list.md) F16–F19; #729 / #2 / #6; evolve-decisions EV-014;
+- **Source**: [AGENTS.md](../AGENTS.md) F16–F19; #729 / #2 / #6; evolve-decisions EV-014;
   **#785; evolve-decisions EV-018**; **S047 / evolve-decisions EV-039**; **S050 / EV-042 / #897**;
   **EV-091 / #898 / #1089**.
 
@@ -577,7 +577,7 @@ with aliases during one CalVer window. DX tests: `TC-DX-001`…`TC-DX-004`.
   dissemination destinations this cycle).
 - **Caps**: ≤200 files; ≤5 MiB each; ≤50 MiB total unzipped. May require raising
   `MAX_REQUEST_BODY_BYTES` or a dedicated mass-ingest limit (Gate A decision).
-- **Status**: **Planned**; [feature-list.md](feature-list.md) §F33; UJ-051; TC-F33-*.
+- **Status**: **Planned**; [AGENTS.md](../AGENTS.md) §F33; UJ-051; TC-F33-*.
 - **Source**: #897; evolve-decisions EV-042; [Corpus: api] mass ingest section.
 
 ### F20 — TAF + SPECI quality bar (S020 / EV-015) — Done
@@ -593,7 +593,7 @@ with aliases during one CalVer window. DX tests: `TC-DX-001`…`TC-DX-004`.
 - **Status**: **Done** (S020 / EV-015; #778).
 - **Non-goals**: Sibling product-quality tickets; PyPI bumps; F16–F19 changes; new ADR unless
   registry architecture changes.
-- **Source**: [feature-list.md](feature-list.md) F20; #735/#734; context/aerodrome-quality.md (archived; see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate);
+- **Source**: [AGENTS.md](../AGENTS.md) F20; #735/#734; context/aerodrome-quality.md (archived; see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate);
   evolve-decisions EV-015; ADR-028.
 
 ### F23 — SIGMET family quality bar (general + VA) (S025 / EV-019) — Done
@@ -615,7 +615,7 @@ with aliases during one CalVer window. DX tests: `TC-DX-001`…`TC-DX-004`.
 - **Non-goals**: #738 TC SIGMET; AIRMET / VAA / TCA / SWX / VONA; PyPI bumps; F16–F19;
   new `product` enum (E19-13). FE: **additive catalog filters for SIGMET/VA tags** in scope
   (E19-17=B amends E19-14); new ADR unless registry architecture changes.
-- **Source**: [feature-list.md](feature-list.md) F23; #733/#739;
+- **Source**: [AGENTS.md](../AGENTS.md) F23; #733/#739;
   context/sigmet-quality.md (archived; see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate); evolve-decisions EV-019; ADR-028.
 
 ### F24 — AIRMET quality bar (S026 / EV-020) — Done
@@ -797,7 +797,7 @@ with aliases during one CalVer window. DX tests: `TC-DX-001`…`TC-DX-004`.
 - **Component deltas**: see §packages/tac2iwxxm S013 delta, §packages/tac-validate S013 delta,
   §apps/frontend F9/F10 delta.
 - **Non-goals**: LLM-generated text; Layer 1–2 / Schematron semantic changes.
-- **Source**: [feature-list.md](feature-list.md) F9/F10; ADR-025; ADR-032;
+- **Source**: [AGENTS.md](../AGENTS.md) F9/F10; ADR-025; ADR-032;
   [evolve-decisions §EV-009](decisions/evolve-decisions.md) / §EV-020.
 
 ## Data Flow

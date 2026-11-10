@@ -2,7 +2,7 @@
 
 > **Project**: TAC to IWXXM
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
-> **Last updated**: 2026-10-30 (TC-WEEKLY-VAL-001 weekly staging validation catalog GHA)
+> **Last updated**: 2026-11-10 (EV-repo-docs-cleanup — feature index → AGENTS.md)
 
 ## How to read this document
 
@@ -14,7 +14,7 @@ This file is the **tests** corpus (`[Corpus: tests]`). It defines what to test, 
 | `TC-*` | Test case id (unit, API, e2e, or live) |
 | `UJ-*` | User journey id — see [user-journeys.md](user-journeys.md) |
 | `H0`…`H7` | Connectivity / live harness tier (table below) |
-| `F*` / `M*` | Product feature or milestone from [feature-list.md](feature-list.md) |
+| `F*` / `M*` | Product feature or milestone from [AGENTS.md](../AGENTS.md) §Product feature index |
 
 **Tiers at a glance**
 
@@ -221,7 +221,7 @@ JWT required only for `/api/v1/work-sessions*`. **H4–H5 required this cycle** 
 notice + DOKS URLs; `D-S038-tp`). **H7** remains bulletin ingest path (not F8 worker); see
 [connectivity-gates.md](../.cursor/skills/connectivity-gates.md).
 
-**Env wiring** (see [config-spec.md](config-spec.md); [env-contract.md](env-contract.md)):
+**Env wiring** (see [env-variable.md](env-variable.md); [env-variable.md](env-variable.md)):
 
 - `config.*.api.baseUrl` — API URL (includes `/api/v1` + `/auth`)
 - `config.*.api.corsOrigins` — backend allowed origins (DOKS FE origin after cutover)
@@ -270,7 +270,7 @@ EV-059.
   statements for the measured set, with branch data. Zero-hit lines that remain
   unreachable under the harness are dropped from the measured set.
 - Staging smoke does not set `STAGING_SMOKE_PYTEST` to `0`. A CORS preflight other than
-  200 or 204 exits 1. Live signoff hosts are the DOKS URLs in [deploy.md](deploy.md).
+  200 or 204 exits 1. Live signoff hosts are the DOKS URLs in [deploy/doks/](../deploy/doks/).
 
 ## Migration Test Cases
 
@@ -6580,7 +6580,7 @@ Manual signoff before release, not a PR merge gate. Developer runs `make test-li
 
 - **Level**: Docs / review. No new pytest module.
 - **Objective**: Standing docs state which operational TAC the current profiles accept (2026-09-23 pass) and which formats still lack a usable TAC source after #1267. Issue text that said “no convert profile” or “lint matrices not committed” is corrected.
-- **Pass criteria**: [`docs/context/operational-tac-delta.md`](context/operational-tac-delta.md) exists; [`docs/context/selectable-profiles.md`](context/selectable-profiles.md) matches the catalog refusals; F6 deepen EV-1266 is in `docs/feature-list.md`. Catalog ids and `_SOURCE_UNAVAILABLE` refusals stay aligned with the brief.
+- **Pass criteria**: [`docs/context/operational-tac-delta.md`](context/operational-tac-delta.md) exists; [`docs/context/selectable-profiles.md`](context/selectable-profiles.md) matches the catalog refusals; F6 deepen EV-1266 is in `AGENTS.md`. Catalog ids and `_SOURCE_UNAVAILABLE` refusals stay aligned with the brief.
 - **Out of scope**: New emitters. Live feeds. Reopening #970. Promoting `stage` to `main`.
 - **Source**: F6 deepen EV-1266 / #1266
 

@@ -7,8 +7,7 @@ Engineers and agents use this guide when they change screens, labels, or layout.
 
 **Audience:** engineering. Operators do not read this file. Operator-visible strings
 (labels, help, toasts, `aria-label`) must stay plain language. Do not put planning
-ids (`EV-`, `UJ-`, `ADR-`, `docs/…`) into those strings. See
-`no-internal-doc-refs-user-facing` / EV-048.
+ids (`EV-`, `UJ-`, `ADR-`, `docs/…`) into those strings.
 
 **How norms grow:** the **ui-ux-tweak** orchestrator closes a tweak, then appends one
 row under **Changelog of norms**. When two norms conflict, a consolidation pull
@@ -17,7 +16,7 @@ or merges.
 
 **Required artifacts (every ui-ux-tweak):**
 
-1. UX log under `docs/ui-ux-tweaks/` from `_template.md`
+1. UX log under local `docs/ui-ux-tweaks/` from `_template.md` (tree is gitignored)
 2. Regression test (Vitest or Playwright)
 3. Minimal frontend change plus a **Changelog of norms** row here that links that
    UX log id

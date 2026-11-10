@@ -238,3 +238,26 @@ third_party/
 /docs/skill-routing.md
 /.cursor/artifacts/execution-plan-live-e2e.md
 /.cursor/artifacts/execution-plan-monorepo.md
+
+# EV-repo-docs-cleanup — local tooling (keep on disk; not in git). Keep .github tracked.
+.claude/
+.cursor/
+.vscode/
+
+# EV-repo-docs-cleanup — local agent/doc trees (keep on disk). Exception: domain profiles for API/Docker.
+/docs/adr/
+/docs/assets/
+/docs/guides/
+/docs/ops/
+/docs/integration/
+/docs/policies/
+/docs/ste/
+/docs/ui-ux-tweaks/
+/docs/domain/**
+!/docs/domain/profiles/
+!/docs/domain/profiles/**
+
+# Coverage inventories stay tracked (unit gate EV-052 / EV-080).
+!/docs/engineering/
+!/docs/engineering/coverage-surface-inventory.yaml
+!/docs/engineering/coverage-surface-inventory-s061.yaml

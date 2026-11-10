@@ -1,0 +1,29 @@
+# EV-repo-docs-cleanup — regenerate check for CycloneDX SBOM on push/PR.
+name: SBOM
+
+on:
+  push:
+    branches: [main, stage, "evolve/**", "feat/**"]
+  pull_request:
+    branches: [stage, main]
+
+permissions:
+  contents: read
+
+jobs:
+  sbom-drift:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+      - name: Check SBOM drift
+        run: bash scripts/ci/check_sbom_drift.sh
+      - name: Upload SBOM artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cyclonedx-sbom
+          path: sbom/cyclonedx.json
+          if-no-files-found: ignore

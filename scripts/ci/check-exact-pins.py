@@ -5,7 +5,7 @@ Scans:
   - **/package.json  dependencies + devDependencies + optionalDependencies
   - **/pyproject.toml project.dependencies + project.optional-dependencies
 
-Allowlist: config/exact-pins-allowlist.txt (one path:name or glob per line; # comments).
+Allowlist: scripts/ci/policy/exact-pins-allowlist.txt (one path:name or glob per line; # comments).
 [Corpus: adr-037] [Corpus: deps]
 """
 
@@ -17,7 +17,7 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-ALLOWLIST_PATH = ROOT / "config" / "exact-pins-allowlist.txt"
+ALLOWLIST_PATH = ROOT / "scripts" / "ci" / "policy" / "exact-pins-allowlist.txt"
 
 RANGE_RE = re.compile(r"[\^~]|>=|>|<=|\*|^\s*$")
 # PEP 508 markers / extras ok; flag version specs with ranges
@@ -133,7 +133,7 @@ def main() -> int:
         for v in violations:
             print(f"  {v}", file=sys.stderr)
         print(
-            "Use exact versions (== / no ^~>=). Allowlist: config/exact-pins-allowlist.txt",
+            "Use exact versions (== / no ^~>=). Allowlist: scripts/ci/policy/exact-pins-allowlist.txt",
             file=sys.stderr,
         )
         return 1

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Run Ruff C901 gate via dedicated config (ADR-056).
 
-Uses ``config/ruff-complexity.toml`` so nested package ``pyproject.toml``
+Uses ``scripts/ci/policy/ruff-complexity.toml`` so nested package ``pyproject.toml``
 ``per-file-ignores`` cannot drop the complexity rule.
 
 [Corpus: adr/ADR-056] [Corpus: product §M5]
@@ -14,11 +14,11 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-CONFIG = ROOT / "config" / "ruff-complexity.toml"
+CONFIG = ROOT / "scripts" / "ci" / "policy" / "ruff-complexity.toml"
 
 
 def main() -> int:
-    """Invoke ``ruff check --config config/ruff-complexity.toml``."""
+    """Invoke ``ruff check --config scripts/ci/policy/ruff-complexity.toml``."""
     if not CONFIG.is_file():
         print(f"missing {CONFIG}", file=sys.stderr)
         return 2

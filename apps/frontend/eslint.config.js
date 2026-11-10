@@ -9,7 +9,7 @@ import jsdoc from "eslint-plugin-jsdoc";
 
 /** ADR-056 — FE paths grandfathered for max-lines / complexity. */
 const _repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
-const _allowlistPath = path.join(_repoRoot, "config/file-budget-allowlist.txt");
+const _allowlistPath = path.join(_repoRoot, "scripts/ci/policy/file-budget-allowlist.txt");
 const _budgetAllowlistFe = fs.existsSync(_allowlistPath)
   ? fs
       .readFileSync(_allowlistPath, "utf8")
@@ -20,7 +20,7 @@ const _budgetAllowlistFe = fs.existsSync(_allowlistPath)
   : [];
 const _complexityAllowlistPath = path.join(
   _repoRoot,
-  "config/eslint-complexity-allowlist.txt",
+  "scripts/ci/policy/eslint-complexity-allowlist.txt",
 );
 const _complexityAllowlistFe = fs.existsSync(_complexityAllowlistPath)
   ? fs
