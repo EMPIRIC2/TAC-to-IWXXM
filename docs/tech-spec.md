@@ -33,6 +33,13 @@ Do not copy those tables into this file.
 | [../api/openapi.json](../api/openapi.json) | Machine-readable OpenAPI |
 | Local `docs/adr/` | Architecture decisions that constrain tech choices (opt-in) |
 
+## Coverage gate (ADR-007 / EV-080)
+
+Unit coverage is a hard gate: **100%** line and branch on packages and apps
+(`fail_under = 100`). Script coverage covers `scripts/**/*.py` and maps every
+`scripts/**/*.sh` to a bats file under `tests/bats/`. See [test-plan.md](test-plan.md)
+§EV-080 / TC-EV080-009.
+
 ## Parity checklist (quick)
 
 When you change runtime behavior, configuration, or deploy topology:
