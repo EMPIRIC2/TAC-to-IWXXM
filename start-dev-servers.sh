@@ -343,7 +343,7 @@ run_backend() {
   if [[ -z "${SUPABASE_URL}" ]]; then
     SUPABASE_URL="$(
       cd "${ROOT_DIR}" && python3 -c \
-        'import json;print(json.load(open("config/local.json"))["supabase"]["url"])' \
+        'import json;print(json.load(open("deploy/profiles/local.json"))["supabase"]["url"])' \
         2>/dev/null || true
     )"
     export SUPABASE_URL

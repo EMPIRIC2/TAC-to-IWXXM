@@ -58,17 +58,23 @@ interim only, removed after BUG-2026-08-10; sslmode rewrite is in-image).
 | `stage` | `metar-iwxxm-staging` | `metar-iwxxm-staging` | `DOKS_NAMESPACE=metar-iwxxm-staging` + staging kubeconfig |
 | `main` | `metar-iwxxm` | `metar-iwxxm` | default + prod kubeconfig |
 
-Promote to `main` only after Staging smoke green; see ADR-034 / `docs/deploy.md` §Promote.
+Promote to `main` only after Staging smoke green; see ADR-034 (local) and
+[docs/tech-spec.md](../../docs/tech-spec.md).
 
 ```bash
 bash scripts/deploy/doks_rollout_images.sh 20260805003332-5245f8d
 DOKS_NAMESPACE=metar-iwxxm-staging bash scripts/deploy/doks_rollout_images.sh 20260805003332-5245f8d
 ```
 
-See [docs/deploy.md](../../docs/deploy.md) §CD — DOKS image rollout.
+## Rollback
+
+Roll back by re-applying a prior image digest on the DOKS cluster
+(`https://api.staging.tac-to-iwxxm.com` / `https://app.staging.tac-to-iwxxm.com`
+for staging; `https://api.tac-to-iwxxm.com` / `https://app.tac-to-iwxxm.com` for
+prod). Do not redeploy a Render service.
 
 ## Related
 
-- [docs/deploy.md](../../docs/deploy.md)
-- [docs/ops/doks-staging-dns-runbook.md](../../docs/ops/doks-staging-dns-runbook.md)
-- ADR-033, ADR-034
+- [docs/tech-spec.md](../../docs/tech-spec.md)
+- [docs/env-variable.md](../../docs/env-variable.md)
+- ADR-033, ADR-034 (local `docs/adr/` when present)

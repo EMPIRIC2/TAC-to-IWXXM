@@ -13,7 +13,7 @@ from pathlib import Path
 import pytest
 
 ROOT = Path(__file__).resolve().parent.parent
-CONFIG_DIR = ROOT / "config"
+CONFIG_DIR = ROOT / "deploy" / "profiles"
 FRONTEND_DIR = ROOT / "apps" / "frontend"
 
 
@@ -23,7 +23,7 @@ def _load_json(path: Path) -> dict[str, object]:
 
 
 class TestRuntimeConfigProfiles:
-    """Committed config/*.json profiles satisfy env-contract.md."""
+    """Committed deploy/profiles/*.json profiles satisfy env-contract.md."""
 
     @pytest.mark.parametrize("profile", ["local", "e2e", "prod"])
     def test_profile_has_required_keys(self, profile: str) -> None:

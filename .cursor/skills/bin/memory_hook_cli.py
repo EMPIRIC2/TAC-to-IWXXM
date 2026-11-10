@@ -1,1 +1,0 @@
-../../bin/memory_hook_cli.py

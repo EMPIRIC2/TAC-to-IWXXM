@@ -1,1 +1,0 @@
-../../bin/hook_telemetry.py

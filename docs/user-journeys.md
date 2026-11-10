@@ -1,13 +1,8 @@
 # User Journeys
 
 > **Project**: TAC to IWXXM
-> **Source**: feature-list.md; S008 F6 + realtime amend; S011 / EV-008 F7 operator UI;
-> S013 / EV-009 F9/F10 decode + preview UX; S014 / EV-010 package publish + msgspec HTTP;
-> S015 / EV-011 F15 METAR lint registry + #732 quality; S016 / EV-012 Manual TAC Input modes (#730);
-> S019 / EV-014 dissemination epic F16–F19; S020 / EV-015 F20 TAF+SPECI quality (#735/#734);
-> S023 / EV-017 public app + privacy (#783); S038 / EV-031 platform independence F30/F31;
-> S040 / EV-032 F32 VONA + #846 corpus
-> **Last updated**: 2026-09-23 (EV-1252-residual-yaml / #1252 — UJ-DEV-013)
+> **Source**: [AGENTS.md](../AGENTS.md) product index; prior evolve cycles for F6–F37
+> **Last updated**: 2026-11-10 (EV-repo-docs-cleanup — feature index → AGENTS.md)
 
 ## How to read this document
 
@@ -21,7 +16,7 @@ complete. End-to-end (E2E) and verify-impl stages sign off against these ids.
 | `UJ-DEV-*` | Developer / monorepo flow | Package CI, vendor sync, PyPI smoke |
 
 **How the index works:** the **Journey Index** table lists id, short name, entry
-point, linked feature (`F*` from [feature-list.md](feature-list.md)), and E2E
+point, linked feature (`F*` from [AGENTS.md](../AGENTS.md)), and E2E
 tier (`T0` / `T2` / `T3` / `H4–H5` / live). Detailed steps for each journey follow
 later in this file. Test case ids (`TC-*`) that implement a journey live in
 [test-plan.md](test-plan.md).

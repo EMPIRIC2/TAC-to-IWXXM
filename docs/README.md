@@ -1,11 +1,19 @@
 # Documentation
 
-Install and run the project with [ops/DEVELOPMENT.md](ops/DEVELOPMENT.md).
+This folder holds the tracked engineering spine for TAC-to-IWXXM. Agent skills
+read the corpus index in [AGENTS.md](../AGENTS.md) first.
 
-## Public user guide (Read the Docs format)
+## Install and run
+
+Local install and run steps live in the local (gitignored) ops tree when present:
+`docs/ops/DEVELOPMENT.md`. Deploy manifests live under
+[deploy/doks/](../deploy/doks/). Runtime non-secret profiles live under
+[deploy/profiles/](../deploy/profiles/).
+
+## Public user guide
 
 Operator and integrator documentation lives in [`user-docs/`](../user-docs/)
-(MkDocs, Read the Docs theme, ASD-STE100 prose). Build locally:
+(MkDocs, Read the Docs theme). Build locally:
 
 ```bash
 pip install mkdocs
@@ -13,27 +21,29 @@ cd user-docs && mkdocs serve
 ```
 
 Cross-page links point at the
-[GitHub Wiki](https://github.com/EMPIRIC2/TAC-to-IWXXM/wiki). Optional Read the
-Docs mirror: [user-docs/READTHEDOCS.md](../user-docs/READTHEDOCS.md) (project
-must be created on Read the Docs; none existed yet for slug `tac-to-iwxxm`).
-This site is **not** the engineering HTTP contract; use
-[api-contract.md](api-contract.md) and live OpenAPI for field-level API truth.
+[GitHub Wiki](https://github.com/EMPIRIC2/TAC-to-IWXXM/wiki). This site is not
+the engineering HTTP contract. Use [api-contract.md](api-contract.md) and
+[api/openapi.json](../api/openapi.json) for field-level API truth.
 
-## Operators (short sheets)
+## Tracked spine
 
-Operators who turn aviation weather text into IWXXM day to day:
-
-- [One-pager](guides/operator-one-pager.md) — one printed sheet
-- [Handbook](guides/operator-handbook.md) — sign-in, workbench use, history, troubleshooting
-
-## HTTP API
-
-HTTP reference index: [guides/API.md](guides/API.md).
-
-## Deploy
-
-Deploy and connectivity: [deploy.md](deploy.md).
+| Doc | Role |
+|-----|------|
+| [spec.md](spec.md) | System architecture (`system-spec`) |
+| [tech-spec.md](tech-spec.md) | Runtime / deploy / deps hub |
+| [env-variable.md](env-variable.md) | Environment variable names |
+| [api-contract.md](api-contract.md) | HTTP narrative contract |
+| [test-plan.md](test-plan.md) | Test matrix and gates |
+| [user-journeys.md](user-journeys.md) | End-user journeys |
+| [ui-style-guide.md](ui-style-guide.md) | Operator UI norms |
 
 ## Release notes
 
-Release notes: [CHANGELOG.md](CHANGELOG.md).
+Release notes: [CHANGELOG.md](../CHANGELOG.md).
+
+## Local-only trees
+
+Architecture decisions, ops runbooks, domain mining notes, and STE dictionary
+files stay on the developer machine. They are not part of the public git tree.
+See [AGENTS.md](../AGENTS.md) §Local opt-in. Exception: `docs/domain/profiles/`
+stays tracked for the ConversionProfile catalog and the API Docker image.

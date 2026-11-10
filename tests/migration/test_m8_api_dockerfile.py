@@ -47,8 +47,8 @@ class TestM8ApiDockerfileMonorepoContext:
         assert "COPY docs/domain/profiles" in dockerfile_text
 
     def test_dockerfile_copies_config_tree(self, dockerfile_text: str) -> None:
-        """S003 - API image must bake config/prod.json for METAR_CONFIG_ENV=prod."""
-        assert "COPY config" in dockerfile_text
+        """S003 - API image must bake deploy/profiles for METAR_CONFIG_ENV=prod."""
+        assert "COPY deploy/profiles" in dockerfile_text
 
     def test_dockerfile_does_not_reference_legacy_layout(
         self, dockerfile_text: str

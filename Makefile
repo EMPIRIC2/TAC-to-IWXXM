@@ -17,7 +17,7 @@ PY_LINT := apps/backend/src apps/backend/tests \
 	packages/workflows/src packages/workflows/tests \
 	tests
 
-.PHONY: install test test-unit vendor-sync export-iwxxm-versions openapi-refresh tip-diff-iwxxm \
+.PHONY: install test test-unit vendor-sync export-iwxxm-versions openapi-refresh sbom sbom-check tip-diff-iwxxm \
 	pypi-calver-bump \
 	iwxxm-us-compat-smoke codelist-uri-drift \
 	test-unit-workspace test-unit-workspace-py test-unit-shared-py test-unit-shared-js test-unit-workspace-js \
@@ -455,6 +455,13 @@ export-iwxxm-versions:
 openapi-refresh:
 	$(UV) run python scripts/openapi/export_openapi.py
 	$(PNPM) --filter @metar/frontend run openapi:generate
+
+# EV-repo-docs-cleanup — CycloneDX SBOM from uv export (replaces docs/dependency-inventory.md)
+sbom:
+	bash scripts/ci/generate_sbom.sh
+
+sbom-check:
+	bash scripts/ci/check_sbom_drift.sh
 
 # EV-1150 / ADR-043 — bump F12–F14 packages to CalVer (YYYY.MM.DD[.N][.devN])
 # Usage: make pypi-calver-bump ARGS='--all'
@@ -901,10 +908,10 @@ test-integration:
 	if [ -n "$${VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY:-}" ] && [ -z "$${SUPABASE_PUBLISHABLE_KEY:-}" ]; then \
 		export SUPABASE_PUBLISHABLE_KEY="$$VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY"; \
 	fi; \
-	export VITE_SUPABASE_URL="$${VITE_SUPABASE_URL:-$$(python3 -c 'import json;print(json.load(open("config/local.json"))["supabase"]["url"])')}"; \
+	export VITE_SUPABASE_URL="$${VITE_SUPABASE_URL:-$$(python3 -c 'import json;print(json.load(open("deploy/profiles/local.json"))["supabase"]["url"])')}"; \
 	export VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY="$${VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY:-$$SUPABASE_PUBLISHABLE_KEY}"; \
-	export VITE_API_BASE_URL="$${VITE_API_BASE_URL:-$$(python3 -c 'import json;print(json.load(open("config/local.json"))["api"]["baseUrl"])')}"; \
-	export VITE_APP_URL="$${VITE_APP_URL:-$$(python3 -c 'import json;print(json.load(open("config/local.json"))["api"]["frontendUrl"])')}"; \
+	export VITE_API_BASE_URL="$${VITE_API_BASE_URL:-$$(python3 -c 'import json;print(json.load(open("deploy/profiles/local.json"))["api"]["baseUrl"])')}"; \
+	export VITE_APP_URL="$${VITE_APP_URL:-$$(python3 -c 'import json;print(json.load(open("deploy/profiles/local.json"))["api"]["frontendUrl"])')}"; \
 	missing=""; \
 	for var in $$required_vars; do \
 		if [ -z "$${!var}" ]; then \
@@ -1018,7 +1025,7 @@ security-scan:
 	trap 'rm -f "$$tmp_req"' EXIT; \
 	$(UV) export --format requirements-txt --frozen --no-emit-workspace --all-groups > "$$tmp_req"; \
 	uvx pip-audit -r "$$tmp_req" --disable-pip \
-		$$(grep -v '^[[:space:]]*#' audit/pip-audit-ignore.txt | grep -v '^[[:space:]]*$$' | sed 's/^/--ignore-vuln /'); \
+		$$(grep -v '^[[:space:]]*#' scripts/ci/policy/pip-audit-ignore.txt | grep -v '^[[:space:]]*$$' | sed 's/^/--ignore-vuln /'); \
 	$(MAKE) secrets-check; \
 	$(MAKE) audit-frontend
 

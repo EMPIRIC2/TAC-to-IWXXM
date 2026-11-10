@@ -1,10 +1,10 @@
 # API Contract
 
 > **Project**: TAC to IWXXM
-> **Last updated**: 2026-09-20 (EV-validation-policy-layers / #1216 — endpoint review: no new lint/validate query fields; profile id only)
-> **Delta**: Monorepo M4 auth; F6 tac2iwxxm; F7 operator API; F11 msgspec HTTP (ADR-026);
-> F15 registry codes (ADR-028); F20 TAF/SPECI quality; **F21 Amended** public convert + optional
-> Auth; **F22** privacy; **F30/F31** Auth-only Supabase + DO Postgres work-sessions (ADR-033)
+> **Last updated**: 2026-11-10 (EV-repo-docs-cleanup — api/ OpenAPI sync)
+> **Delta**: Monorepo M4 auth; F6 tac2iwxxm; F7 operator API; F11 msgspec HTTP;
+> F15 registry codes; F20 TAF/SPECI quality; F21 Amended public convert + optional
+> Auth; F22 privacy; F30/F31 Auth-only Supabase + DO Postgres work-sessions
 
 ## How to read this document
 
@@ -13,6 +13,7 @@ response shapes, auth rules, and known quirks for the backend in `apps/backend`.
 
 | Source | Authority |
 |--------|-----------|
+| Committed [api/openapi.json](../api/openapi.json) / [api/openapi.yaml](../api/openapi.yaml) | Machine-readable contract (refresh with `make openapi-refresh`) |
 | Live OpenAPI `GET {API}/openapi.json` | Which routes are mounted in that environment |
 | This document | Contracts, field tables, and migration notes |
 | When they disagree | Prefer OpenAPI, then AskQuestion before you patch callers |
@@ -1068,7 +1069,7 @@ corpus/ADRs. Automated guard: TC-EV048-002/004/005. [Corpus: api] [Corpus: produ
 
 ## Frontend Integration
 
-Runtime config via `GET /config.json` (copied from `config/prod.json` at deploy; publishable
+Runtime config via `GET /config.json` (copied from `deploy/profiles/prod.json` at deploy; publishable
 Auth key injected from `SUPABASE_PUBLISHABLE_KEY`).
 
 | Config field | Purpose |
@@ -1107,7 +1108,7 @@ OpenAPI / shared TS codegen remains planned (P1); this contract is the requireme
 ## References
 
 - docs/guides/API.md (detailed examples; update paths during implementation)
-- docs/deploy.md §Integration
+- deploy/doks/ §Integration
 - ADR-014; [ADR-015](adr/ADR-015-validate-packages-bulletin-api-f7-f8.md); [ADR-020](adr/ADR-020-unified-tac-work-sessions.md); [ADR-033](adr/ADR-033-platform-independence-auth-do-doks.md)
 
 ### Session changelog

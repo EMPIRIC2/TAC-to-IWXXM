@@ -236,12 +236,21 @@ def test_stable_generated_and_writes(
     assert json.loads(js.read_text(encoding="utf-8"))["issues"][0]["code"] == "B"
 
     (tmp_path / "prov.json").write_text(
-        json.dumps({"catalog_codes": [{"code": "B", "source_id": "WMO", "note": "n"}]}),
+        json.dumps(
+            {
+                "catalog_codes": [
+                    {"code": "B", "source_id": "WMO", "note": "n"},
+                    # Orphan provenance code must be skipped (not in registry rows).
+                    {"code": "ORPHAN", "source_id": "X", "note": "skip"},
+                ]
+            }
+        ),
         encoding="utf-8",
     )
     regen._write_attribution_package([row], "2026-01-01")
     attr_data = json.loads(attr.read_text(encoding="utf-8"))
     assert attr_data["codes"]["B"]["source_id"] == "WMO"
+    assert "ORPHAN" not in attr_data["codes"]
 
 
 def test_main(

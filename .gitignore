@@ -238,3 +238,35 @@ third_party/
 /docs/skill-routing.md
 /.cursor/artifacts/execution-plan-live-e2e.md
 /.cursor/artifacts/execution-plan-monorepo.md
+
+# EV-repo-docs-cleanup — local tooling (keep on disk; not in git). Keep .github tracked.
+.claude/
+.cursor/
+.vscode/
+
+# EV-repo-docs-cleanup — local agent/doc trees (keep on disk). Exception: domain profiles for API/Docker.
+/docs/adr/
+!/docs/adr/ADR-036-semantic-vs-exchange-profiles.md
+/docs/assets/
+/docs/guides/
+/docs/ops/
+!/docs/ops/env-sync-runbook.md
+/docs/integration/
+/docs/policies/
+/docs/ste/
+/docs/ui-ux-tweaks/
+/docs/domain/**
+!/docs/domain/profiles/
+!/docs/domain/profiles/**
+# CI gates (tac-validate / tac2iwxxm / WMO quality / provenance) require these trees.
+!/docs/domain/rules/
+!/docs/domain/rules/**
+!/docs/domain/quality/
+!/docs/domain/quality/**
+!/docs/domain/apac/
+!/docs/domain/apac/**
+
+# Coverage inventories stay tracked (unit gate EV-052 / EV-080).
+!/docs/engineering/
+!/docs/engineering/coverage-surface-inventory.yaml
+!/docs/engineering/coverage-surface-inventory-s061.yaml
