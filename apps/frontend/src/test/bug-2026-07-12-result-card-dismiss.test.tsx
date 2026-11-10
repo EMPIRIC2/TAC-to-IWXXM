@@ -204,7 +204,7 @@ describe('BUG-2026-07-12 result card dismiss', () => {
       />,
     );
 
-    expect(screen.getByText(/manual_input\.txt/)).toBeInTheDocument();
+    expect(screen.getByText(/Download: manual_input\.xml/)).toBeInTheDocument();
 
     await user.click(
       screen.getByRole('button', {
@@ -214,7 +214,7 @@ describe('BUG-2026-07-12 result card dismiss', () => {
     );
 
     await waitFor(() => {
-      expect(screen.queryByText(/manual_input\.txt/)).not.toBeInTheDocument();
+      expect(screen.queryByText(/Download: manual_input\.xml/)).not.toBeInTheDocument();
     });
 
     // Stale autosave / persist completion pushes the pre-remove session back
@@ -234,7 +234,7 @@ describe('BUG-2026-07-12 result card dismiss', () => {
     );
 
     await waitFor(() => {
-      expect(screen.queryByText(/manual_input\.txt/)).not.toBeInTheDocument();
+      expect(screen.queryByText(/Download: manual_input\.xml/)).not.toBeInTheDocument();
     });
   });
 });
