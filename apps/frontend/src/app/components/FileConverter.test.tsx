@@ -1958,7 +1958,7 @@ describe('FileConverter Component', () => {
       expect(
         screen.getByRole('region', { name: /conversion results/i, hidden: true }),
       ).toBeInTheDocument();
-      expect(screen.getByText(/manual_input\.txt/)).toBeInTheDocument();
+      expect(screen.getByText(/Download: manual_input\.xml/)).toBeInTheDocument();
       expect(mockToast.success).toHaveBeenCalledWith(
         'Successfully converted 1 file(s)',
       );
@@ -2046,7 +2046,7 @@ describe('FileConverter Component', () => {
           hidden: true,
         }),
       ).not.toBeInTheDocument();
-      expect(screen.getByText(/Download: manual_input\.txt/)).toBeInTheDocument();
+      expect(screen.getByText(/Download: manual_input\.xml/)).toBeInTheDocument();
     });
 
     it('remembers decode density and XML wrapping for this browser', async () => {
@@ -2369,8 +2369,8 @@ describe('FileConverter Component', () => {
       await user.click(screen.getByTestId('convert-button'));
 
       await waitFor(() => {
-        expect(screen.getByText(/manual_input\.txt/)).toBeInTheDocument();
-        expect(screen.getAllByText(/uploaded\.metar/).length).toBeGreaterThanOrEqual(1);
+        expect(screen.getByText(/Download: manual_input\.xml/)).toBeInTheDocument();
+        expect(screen.getByText(/Download: uploaded\.xml/)).toBeInTheDocument();
       });
     });
 
@@ -2484,7 +2484,7 @@ describe('FileConverter Component', () => {
       await user.click(screen.getByTestId('convert-button'));
 
       await waitFor(() => {
-        expect(screen.getByText(/manual_input\.txt/)).toBeInTheDocument();
+        expect(screen.getByText(/Download: manual_input\.xml/)).toBeInTheDocument();
       });
 
       await user.click(
@@ -2544,7 +2544,7 @@ describe('FileConverter Component', () => {
       await user.click(screen.getByTestId('convert-button'));
 
       await waitFor(() => {
-        expect(screen.getByText(/manual_input\.txt/)).toBeInTheDocument();
+        expect(screen.getByText(/Download: manual_input\.xml/)).toBeInTheDocument();
       });
 
       await user.click(
@@ -2945,7 +2945,7 @@ describe('FileConverter Component', () => {
       });
 
       expect(screen.queryByText('Source TAC')).not.toBeInTheDocument();
-      expect(screen.getByText(/Download: first\.txt/)).toBeInTheDocument();
+      expect(screen.getByText(/Download: first\.xml/)).toBeInTheDocument();
       expect(screen.queryByText('second.txt')).not.toBeInTheDocument();
       expect(screen.getByTestId('iwxxm-preview-xml')).toHaveTextContent(
         '<iwxxm>first</iwxxm>',
@@ -3149,7 +3149,7 @@ describe('FileConverter Component', () => {
       await user.click(screen.getByTestId('convert-button'));
 
       await waitFor(() => {
-        expect(screen.getByText(/manual_input\.txt/)).toBeInTheDocument();
+        expect(screen.getByText(/Download: manual_input\.xml/)).toBeInTheDocument();
       });
 
       await user.click(
@@ -3186,7 +3186,7 @@ describe('FileConverter Component', () => {
       await user.click(screen.getByTestId('convert-button'));
 
       await waitFor(() => {
-        expect(screen.getByText(/manual_input\.txt/)).toBeInTheDocument();
+        expect(screen.getByText(/Download: manual_input\.xml/)).toBeInTheDocument();
       });
 
       await user.click(
@@ -3225,12 +3225,12 @@ describe('FileConverter Component', () => {
       await user.click(screen.getByTestId('convert-button'));
 
       await waitFor(() => {
-        expect(screen.getByText(/manual_input\.txt/)).toBeInTheDocument();
+        expect(screen.getByText(/Download: manual_input\.xml/)).toBeInTheDocument();
       });
 
       await user.click(
         screen.getByRole('button', {
-          name: /download manual_input\.txt as xml/i,
+          name: /download manual_input\.xml as xml/i,
           hidden: true,
         }),
       );
@@ -3412,7 +3412,7 @@ describe('FileConverter Component', () => {
       await user.click(screen.getByTestId('convert-button'));
 
       await waitFor(() => {
-        expect(screen.getByText(/manual_input\.txt/)).toBeInTheDocument();
+        expect(screen.getByText(/Download: manual_input\.xml/)).toBeInTheDocument();
       });
 
       await user.click(
@@ -3453,7 +3453,7 @@ describe('FileConverter Component', () => {
       await user.click(screen.getByTestId('convert-button'));
 
       await waitFor(() => {
-        expect(screen.getByText(/manual_input\.txt/)).toBeInTheDocument();
+        expect(screen.getByText(/Download: manual_input\.xml/)).toBeInTheDocument();
       });
 
       await user.click(
@@ -3884,11 +3884,11 @@ describe('FileConverter Component', () => {
       await user.click(screen.getByTestId('convert-button'));
 
       await waitFor(() => {
-        expect(screen.getByText(/report\.txt/)).toBeInTheDocument();
+        expect(screen.getByText(/Download: report\.xml/)).toBeInTheDocument();
       });
       expect(
         screen.getByRole('button', {
-          name: /download report\.txt as xml/i,
+          name: /download report\.xml as xml/i,
           hidden: true,
         }),
       ).toBeInTheDocument();
@@ -3912,8 +3912,8 @@ describe('FileConverter Component', () => {
       await user.click(screen.getByTestId('convert-button'));
 
       await waitFor(() => {
-        expect(screen.getByText(/report_1\.txt/)).toBeInTheDocument();
-        expect(screen.getByText(/report_2\.txt/)).toBeInTheDocument();
+        expect(screen.getByText(/Download: report_1\.xml/)).toBeInTheDocument();
+        expect(screen.getByText(/Download: report_2\.xml/)).toBeInTheDocument();
         expect(screen.getByText('Line 1 of 2')).toBeInTheDocument();
         expect(screen.getByText('Line 2 of 2')).toBeInTheDocument();
       });
@@ -3954,9 +3954,10 @@ describe('FileConverter Component', () => {
       await user.click(screen.getByTestId('convert-button'));
 
       await waitFor(() => {
-        expect(screen.getAllByText(/uploaded\.metar/).length).toBeGreaterThanOrEqual(1);
+        expect(screen.getByText(/Download: uploaded\.xml/)).toBeInTheDocument();
       });
       expect(screen.queryByText('report.txt')).not.toBeInTheDocument();
+      expect(screen.queryByText(/Download: report\.xml/)).not.toBeInTheDocument();
     });
 
     it('names the Download All ZIP archive after the custom base', async () => {
@@ -6036,7 +6037,7 @@ describe('FileConverter Component', () => {
       await user.click(screen.getByTestId('convert-button'));
 
       const downloadBtn = await screen.findByRole('button', {
-        name: /download out_1\.txt as xml/i,
+        name: /download out_1\.xml as xml/i,
         hidden: true,
       });
       await user.click(downloadBtn);
@@ -6348,7 +6349,7 @@ describe('FileConverter Component', () => {
       await user.click(screen.getByTestId('convert-button'));
 
       await waitFor(() => {
-        expect(screen.getAllByText(/extra-from-api\.tac/i).length).toBeGreaterThan(0);
+        expect(screen.getAllByText(/extra-from-api\.xml/i).length).toBeGreaterThan(0);
       });
     });
 
@@ -6371,7 +6372,7 @@ describe('FileConverter Component', () => {
       await user.click(screen.getByTestId('convert-button'));
 
       const downloadBtn = await screen.findByRole('button', {
-        name: /download report\.metar as xml/i,
+        name: /download report\.xml as xml/i,
         hidden: true,
       });
       await user.click(downloadBtn);

@@ -102,7 +102,7 @@ test.describe('TAC File Conversion', () => {
     await openConvertIwxxmTab(page, 10_000);
     await expect(page.getByTestId('iwxxm-preview-xml')).toContainText('mock-success');
     await openConvertDownloadsTab(page, 10_000);
-    await expect(page.getByText(/Download: manual_input\.txt/)).toBeVisible();
+    await expect(page.getByText(/Download: manual_input\.xml/)).toBeVisible();
     // Downloads is file management only — conversion XML stays on the IWXXM tab.
     await expect(page.getByTestId('convert-downloads-panel')).toBeVisible();
   });
@@ -146,10 +146,10 @@ test.describe('TAC File Conversion', () => {
     await page.getByTestId('convert-button').click();
 
     await openConvertDownloadsTab(page, 10_000);
-    await expect(page.getByText('report_1.txt')).toBeVisible();
-    await expect(page.getByText('report_2.txt')).toBeVisible();
+    await expect(page.getByText('Download: report_1.xml')).toBeVisible();
+    await expect(page.getByText('Download: report_2.xml')).toBeVisible();
     await expect(
-      page.getByRole('button', { name: 'Download report_1.txt as XML', exact: true }),
+      page.getByRole('button', { name: 'Download report_1.xml as XML', exact: true }),
     ).toBeVisible();
   });
 

@@ -869,8 +869,9 @@ describe('LintValidationCatalogPage', () => {
     const infoDetail = await screen.findByTestId('lint-validation-catalog-detail');
     const infoExample = within(infoDetail).getByTestId('catalog-rule-example');
     expect(infoExample).toHaveAttribute('data-tone', 'example');
-    expect(infoExample).toHaveTextContent('TAF KJFK');
-    expect(infoExample).not.toHaveTextContent('YUDO');
+    // First listed info rule (code sort) is AMD_PRESENT — show the sample with AMD.
+    expect(infoExample).toHaveTextContent('TAF AMD YUDO');
+    expect(infoExample).not.toHaveTextContent('FEW250');
     expect(
       within(infoDetail).getByRole('heading', { name: /^Examples$/ }),
     ).toBeInTheDocument();
@@ -933,9 +934,9 @@ describe('LintValidationCatalogPage', () => {
     );
     const atPresent = screen.getByTestId('lint-validation-catalog-detail');
     expect(within(atPresent).getByTestId('catalog-rule-example')).toHaveTextContent(
-      'TAF KJFK',
+      'AT1603',
     );
-    expect(within(atPresent).getByTestId('catalog-rule-example')).not.toHaveTextContent(
+    expect(within(atPresent).getByTestId('catalog-rule-example')).toHaveTextContent(
       'BECMG',
     );
     expect(

@@ -274,6 +274,7 @@ import {
   outputArchiveName,
   outputFilenameAfterReportLoad,
   sanitizeOutputFilename,
+  toIwxxmDownloadName,
   uniquifyZipMemberNames,
 } from '/utils/outputFilename';
 import { ConvertResultStatus } from './ConvertResultStatus';
@@ -2036,7 +2037,7 @@ export function FileConverter({
         file.liveOutputSlot.total,
       );
     }
-    return file.originalName.replace(/\.(txt|metar)$/i, '.xml');
+    return toIwxxmDownloadName(file.originalName);
   };
 
   const includeConversionMetadata = isConversionMetadataExportEnabled(metadataPrefs);
@@ -4453,9 +4454,10 @@ export function FileConverter({
                                         </span>
                                       ) : null}
                                     </div>
-                                    {file.displayTitle !== file.originalName ? (
+                                    {file.displayTitle !==
+                                    resolveDownloadXmlName(file) ? (
                                       <p className="mt-0.5 text-xs text-gray-500 dark:text-gray-400">
-                                        Download: {file.originalName}
+                                        Download: {resolveDownloadXmlName(file)}
                                       </p>
                                     ) : null}
                                   </button>
@@ -4474,10 +4476,10 @@ export function FileConverter({
                                       className="border-0 bg-blue-500 text-sm text-white hover:bg-blue-600 focus:ring-2 focus:ring-blue-500 disabled:opacity-50 dark:bg-blue-600 dark:hover:bg-blue-700"
                                       aria-label={
                                         resultAssessment.publishBlocked
-                                          ? `Do not publish — download disabled for ${file.originalName}`
+                                          ? `Do not publish — download disabled for ${resolveDownloadXmlName(file)}`
                                           : includeConversionMetadata
-                                            ? `Download ${file.originalName} as ZIP with metadata`
-                                            : `Download ${file.originalName} as XML`
+                                            ? `Download ${resolveDownloadXmlName(file)} as ZIP with metadata`
+                                            : `Download ${resolveDownloadXmlName(file)} as XML`
                                       }
                                     >
                                       <Download
