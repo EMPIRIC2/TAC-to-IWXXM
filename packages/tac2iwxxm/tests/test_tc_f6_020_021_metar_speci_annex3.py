@@ -5,7 +5,7 @@ docs/context/general-tac-iwxxm-converter.md accuracy metrics (M-parse / M-xsd / 
 M-golden / M-field); docs/feature-list.md F6.a.
 
 Oracle: package fixture pack ``fixtures/annex3_golden/`` (WMO-shaped IWXXM documents).
-Gifts ``test-data/golden/`` remains for TC-F6-022 archive / M-parity (GPL-3; not copied).
+Gifts ``data/_test-data/golden/`` remains for TC-F6-022 archive / M-parity (GPL-3; not copied).
 """
 
 from __future__ import annotations
