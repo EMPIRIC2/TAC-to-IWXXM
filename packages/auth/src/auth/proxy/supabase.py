@@ -8,7 +8,7 @@ from typing import Any, cast
 
 import httpx
 
-from metar_auth.models.errors import AuthProxyError
+from auth.models.errors import AuthProxyError
 
 __all__ = ["AuthProxyError", "SupabaseAuthProxy"]
 

@@ -11,7 +11,7 @@ import jwt
 from jwt import PyJWKSet
 from jwt.exceptions import InvalidTokenError
 
-from metar_auth.models.errors import JwtVerificationError
+from auth.models.errors import JwtVerificationError
 
 __all__ = [
     "JwtVerificationError",

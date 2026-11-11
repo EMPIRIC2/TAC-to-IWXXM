@@ -7,8 +7,9 @@ from unittest.mock import MagicMock
 
 import httpx
 import pytest
-from metar_auth.proxy import AuthProxyError, SupabaseAuthProxy
-from metar_auth.proxy.supabase import _normalize_session_payload
+
+from auth.proxy import AuthProxyError, SupabaseAuthProxy
+from auth.proxy.supabase import _normalize_session_payload
 
 
 def test_auth_proxy_error_stores_status_code() -> None:

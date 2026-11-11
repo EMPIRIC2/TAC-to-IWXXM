@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-from metar_auth.models.errors import AuthProxyError, JwtVerificationError
-from metar_auth.models.messages import (
+from auth.models.errors import AuthProxyError, JwtVerificationError
+from auth.models.messages import (
     AuthResponse,
     ConfirmRequest,
     LoginRequest,

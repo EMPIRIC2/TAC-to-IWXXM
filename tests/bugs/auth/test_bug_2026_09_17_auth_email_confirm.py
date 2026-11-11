@@ -11,7 +11,8 @@ from unittest.mock import MagicMock
 
 import httpx
 import pytest
-from metar_auth.proxy import AuthProxyError, SupabaseAuthProxy
+
+from auth.proxy import AuthProxyError, SupabaseAuthProxy
 
 
 @pytest.mark.unit

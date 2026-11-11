@@ -38,8 +38,13 @@ dev = [
   "tac-validate",
   "dissemination",
   "workflows",
+<<<<<<< HEAD
   "metar-auth",
   "testcontainers[mysql,postgres]==4.14.2",
+=======
+  "auth",
+  "testcontainers[mysql,postgres]>=4.8",
+>>>>>>> e4abb758 (refactor: rename metar-auth package to auth (F31))
   "schemathesis==4.24.3",
   "pytest-gremlins==1.9.0",
 ]
@@ -48,7 +53,7 @@ dev = [
 metar-shared = { workspace = true }
 metar-worker = { workspace = true }
 metar-backend = { workspace = true }
-metar-auth = { workspace = true }
+auth = { workspace = true }
 tac2iwxxm = { workspace = true }
 tac-decoding = { workspace = true }
 reference-lookup = { workspace = true }

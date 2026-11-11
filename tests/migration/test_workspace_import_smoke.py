@@ -24,8 +24,8 @@ class TestWorkspaceImportSmoke:
         module = importlib.import_module("tac2iwxxm")
         assert callable(getattr(module, "convert", None))
 
-    def test_auth_package_importable_as_metar_auth(self) -> None:
-        module = importlib.import_module("metar_auth")
+    def test_auth_package_importable_as_auth(self) -> None:
+        module = importlib.import_module("auth")
         assert callable(getattr(module, "verify_access_token", None))
         assert getattr(module, "create_auth_router", None) is None
 
@@ -37,7 +37,7 @@ class TestWorkspaceImportSmoke:
         assert "packages/gifts" not in content
         assert "metar-shared" in content
         assert "tac2iwxxm = { workspace = true }" in content
-        assert "metar-auth" in content
+        assert "auth" in content
 
     def test_pnpm_workspace_discovers_shared_package(self) -> None:
         content = (ROOT / "pnpm-workspace.yaml").read_text(encoding="utf-8")

@@ -3,7 +3,9 @@
 from __future__ import annotations
 
 import pytest
-from metar_auth.models import (
+from pydantic import ValidationError
+
+from auth.models import (
     AuthProxyError,
     ConfirmRequest,
     JwtVerificationError,
@@ -12,7 +14,6 @@ from metar_auth.models import (
     RegisterRequest,
     validate_email_permissive,
 )
-from pydantic import ValidationError
 
 
 @pytest.mark.unit

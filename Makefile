@@ -316,7 +316,7 @@ test-mutation: test-mutation-poc
 
 # F31 / EV-047 — auth package + per-file ≥95%.
 test-unit-auth:
-	$(UV) run pytest tests/unit/auth --cov=metar_auth \
+	$(UV) run pytest tests/unit/auth --cov=auth \
 		--cov-config=packages/auth/pyproject.toml --cov-branch \
 		--cov-report=json:packages/auth/coverage.json \
 		--cov-report=term-missing --cov-fail-under=100 -v

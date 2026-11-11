@@ -7,7 +7,7 @@ apps/backend/pyproject.toml:tac-decoding
 apps/backend/pyproject.toml:tac-validate
 apps/backend/pyproject.toml:iwxxm-validate
 apps/backend/pyproject.toml:dissemination
-apps/backend/pyproject.toml:metar-auth
+apps/backend/pyproject.toml:auth
 apps/worker/pyproject.toml:metar-shared
 apps/worker/pyproject.toml:tac2iwxxm
 apps/worker/pyproject.toml:tac-validate
