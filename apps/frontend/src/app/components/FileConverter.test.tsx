@@ -2114,14 +2114,9 @@ describe('FileConverter Component', () => {
       );
       await user.click(screen.getByTestId('convert-panes-toggle'));
       expect(screen.getByTestId('convert-body')).not.toHaveAttribute('hidden');
-      expect(screen.getByTestId('convert-results-tab-map')).toHaveTextContent('Map');
-      await user.click(screen.getByTestId('convert-results-tab-map'));
-      expect(screen.getByTestId('live-world-map')).toBeInTheDocument();
-      expect(
-        screen
-          .getByTestId('live-convert-panes')
-          .compareDocumentPosition(screen.getByTestId('convert-weather-map')),
-      ).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
+      expect(screen.queryByTestId('convert-results-tab-map')).not.toBeInTheDocument();
+      expect(screen.queryByTestId('live-world-map')).not.toBeInTheDocument();
+      expect(screen.queryByTestId('convert-weather-map')).not.toBeInTheDocument();
       expect(
         screen.queryByRole('tab', { name: 'Decode visuals' }),
       ).not.toBeInTheDocument();
@@ -2151,35 +2146,35 @@ describe('FileConverter Component', () => {
       );
     });
 
-    it('loads a map report into the TAC panes and scrolls up', async () => {
-      const user = userEvent.setup({ delay: null });
+    it('loads a Map shell handoff into the TAC panes and scrolls up', async () => {
       const scroll = vi.fn();
       const originalScroll = HTMLElement.prototype.scrollIntoView;
       HTMLElement.prototype.scrollIntoView = scroll;
-      render(<FileConverter {...defaultProps} />);
-      await user.click(screen.getByTestId('convert-results-tab-map'));
-      await user.click(screen.getByTestId('live-map-load-empty'));
-      await user.click(screen.getByTestId('live-map-load-blank'));
+      const onPendingMapTacConsumed = vi.fn();
+      const { rerender } = render(
+        <FileConverter
+          {...defaultProps}
+          pendingMapTac="   "
+          onPendingMapTacConsumed={onPendingMapTacConsumed}
+        />,
+      );
       expect(screen.getByLabelText('Enter METAR data manually')).toHaveValue('');
-      await user.click(screen.getByTestId('live-map-load-report'));
+      expect(onPendingMapTacConsumed).not.toHaveBeenCalled();
+
+      rerender(
+        <FileConverter
+          {...defaultProps}
+          pendingMapTac="METAR KJFK 121755Z 18010KT 10SM"
+          onPendingMapTacConsumed={onPendingMapTacConsumed}
+        />,
+      );
       expect(screen.getByLabelText('Enter METAR data manually')).toHaveValue(
         'METAR KJFK 121755Z 18010KT 10SM',
       );
       expect(screen.getByRole('combobox', { name: 'Product' })).toHaveValue('METAR');
-      // BUG-2026-11-10 map-send-keep-drawer: handoff must not collapse results/Map.
-      expect(screen.getByTestId('convert-results-drawer-shell')).not.toHaveAttribute(
-        'hidden',
-      );
-      expect(screen.getByTestId('convert-results-panel-map')).not.toHaveAttribute(
-        'hidden',
-      );
-      expect(screen.getByTestId('live-world-map')).toBeInTheDocument();
+      expect(onPendingMapTacConsumed).toHaveBeenCalledTimes(1);
       expect(scroll).toHaveBeenCalled();
-      screen.getByTestId('live-convert-panes').removeAttribute('data-testid');
-      await user.click(screen.getByTestId('live-map-load-report'));
-      expect(screen.getByTestId('convert-results-drawer-shell')).not.toHaveAttribute(
-        'hidden',
-      );
+      expect(screen.queryByTestId('convert-results-tab-map')).not.toBeInTheDocument();
       HTMLElement.prototype.scrollIntoView = originalScroll;
     });
 
@@ -2216,6 +2211,62 @@ describe('FileConverter Component', () => {
         />,
       );
       expect(onPendingMapTacConsumed).toHaveBeenCalledTimes(1);
+    });
+
+    it('runs soft-preview validation after a Map TAC handoff', async () => {
+      const user = userEvent.setup({ delay: null });
+      mockConvertMetarToIwxxm.mockResolvedValueOnce({
+        results: [
+          {
+            iwxxm_xml: '<soft-map/>',
+            tac_input: 'METAR KJFK 121755Z 18010KT 10SM',
+          },
+        ],
+        errors: [],
+        issues: [],
+        ok: false,
+        failed_spans: [{ start: 0, end: 5 }],
+      });
+      const onPendingMapTacConsumed = vi.fn();
+      render(
+        <FileConverter
+          {...defaultProps}
+          pendingMapTac="METAR KJFK 121755Z 18010KT 10SM"
+          onPendingMapTacConsumed={onPendingMapTacConsumed}
+        />,
+      );
+      expect(screen.getByLabelText('Enter METAR data manually')).toHaveValue(
+        'METAR KJFK 121755Z 18010KT 10SM',
+      );
+      await user.click(screen.getByTestId('soft-preview-toggle'));
+      await user.click(screen.getByTestId('convert-button'));
+      await waitFor(() => {
+        expect(mockConvertMetarToIwxxm).toHaveBeenCalledWith(
+          expect.objectContaining({ preview: true }),
+        );
+        expect(screen.getByTestId('iwxxm-preview-soft-fail')).toBeInTheDocument();
+      });
+    });
+
+    it('keeps Validate IWXXM mode available after a Map TAC handoff', async () => {
+      const user = userEvent.setup({ delay: null });
+      const onPendingMapTacConsumed = vi.fn();
+      render(
+        <FileConverter
+          {...defaultProps}
+          pendingMapTac="METAR KJFK 121755Z 18010KT 10SM"
+          onPendingMapTacConsumed={onPendingMapTacConsumed}
+        />,
+      );
+      await user.click(screen.getByTestId('convert-settings-cog'));
+      await user.click(screen.getByTestId('input-mode-validate_iwxxm'));
+      expect(screen.getByTestId('input-mode-validate_iwxxm')).toHaveClass(
+        'bg-blue-700',
+      );
+      expect(
+        screen.getByRole('heading', { name: 'Validate IWXXM' }),
+      ).toBeInTheDocument();
+      expect(screen.getByTestId('validate-iwxxm-help')).toBeInTheDocument();
     });
 
     it('TC-UX-DECLUTTER: no peer-pane resize separators (drawer replaces grid)', () => {

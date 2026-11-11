@@ -1,7 +1,7 @@
 /**
  * Operator-facing Source attribution: wrap long text and link http(s) URLs.
  *
- * Shared by Issue details (and any other surface that renders Source strings).
+ * Shared by Lint details (and any other surface that renders Source strings).
  * [Corpus: ui-style]
  */
 
