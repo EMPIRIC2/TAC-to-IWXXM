@@ -1477,7 +1477,6 @@ version = "0.2.0"
 source = { editable = "packages/auth" }
 dependencies = [
     { name = "email-validator" },
-    { name = "fastapi" },
     { name = "httpx" },
     { name = "pydantic" },
     { name = "pyjwt", extra = ["crypto"] },
@@ -1496,7 +1495,6 @@ dev = [
 requires-dist = [
     { name = "cryptography", marker = "extra == 'dev'", specifier = "==50.0.1" },
     { name = "email-validator", specifier = "==2.3.0" },
-    { name = "fastapi", specifier = "==0.137.0" },
     { name = "httpx", specifier = "==0.28.1" },
     { name = "httpx2", marker = "extra == 'dev'", specifier = "==2.4.0" },
     { name = "pydantic", specifier = "==2.13.4" },

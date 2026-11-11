@@ -1,6 +1,7 @@
-"""TC-M005 amended by F31 - Auth restored on backend host (ADR-033); convert stays public.
+"""TC-M005 amended by F31 FE-direct — Auth library on backend; no /auth HTTP.
 
-Historical F21 asserted Auth gone. EV-031 restores JWKS `/auth/*` without `/admin`.
+Historical F21 asserted Auth gone. EV-031 restored JWKS Auth; EV-auth-service-only
+moves login to the browser (Supabase JS) and keeps JWKS verify in packages/auth.
 """
 
 from __future__ import annotations
@@ -48,7 +49,7 @@ def _load_backend_api_module() -> ModuleType:
 
 @pytest.fixture
 def backend_client() -> Iterator[TestClient]:
-    """TestClient for apps/backend (public convert + Auth routes)."""
+    """TestClient for apps/backend (public convert; no /auth proxy)."""
     api_module = _load_backend_api_module()
     api_module.app.dependency_overrides.clear()
     client = TestClient(api_module.app)
@@ -58,18 +59,18 @@ def backend_client() -> Iterator[TestClient]:
 
 @pytest.mark.migration
 class TestTcM005AuthRestoredStructure:
-    """Structural checks for Auth-on-API topology after EV-031 restore."""
+    """Structural checks for Auth-as-library topology after FE-direct."""
 
     def test_security_module_does_not_use_auth_service_url(self) -> None:
         security_py = APPS_BACKEND / "src" / "utilities" / "security.py"
         content = security_py.read_text(encoding="utf-8")
         assert "AUTH_SERVICE_URL" not in content
 
-    def test_backend_mounts_auth_login_and_me(self) -> None:
+    def test_backend_does_not_mount_auth_http_helpers(self) -> None:
         api_module = _load_backend_api_module()
         paths = set(_iter_route_paths(api_module.app.routes))
-        assert "/auth/login" in paths
-        assert "/auth/me" in paths
+        assert "/auth/login" not in paths
+        assert "/auth/me" not in paths
         assert not any("/admin" in p for p in paths)
 
     def test_packages_auth_present(self) -> None:
@@ -86,15 +87,14 @@ class TestTcM005AuthRestoredStructure:
 
 @pytest.mark.migration
 class TestTcM005PublicConvertIntegration:
-    """In-process: Auth routes exist; convert still works without JWT."""
+    """In-process: /auth HTTP gone; convert still works without JWT."""
 
-    def test_auth_login_not_404(self, backend_client: TestClient) -> None:
+    def test_auth_login_is_404(self, backend_client: TestClient) -> None:
         response = backend_client.post(
             "/auth/login",
             json={"email": "merge@example.test", "password": "SecretPass1!"},
         )
-        # Missing Auth env → 401/503 from proxy, never route-missing 404.
-        assert response.status_code != 404
+        assert response.status_code == 404
 
     def test_convert_succeeds_without_authorization(
         self, backend_client: TestClient

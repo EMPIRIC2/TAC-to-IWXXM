@@ -23,12 +23,12 @@ def _iter_route_paths(routes, prefix: str = "") -> list[str]:
 
 
 @pytest.mark.unit
-def test_auth_routes_present_without_admin() -> None:
+def test_auth_http_helpers_absent_without_admin() -> None:
     from src.api import app
 
     paths = set(_iter_route_paths(app.routes))
-    assert "/auth/login" in paths
-    assert "/auth/me" in paths
+    assert "/auth/login" not in paths
+    assert "/auth/me" not in paths
     assert not any("/admin" in p for p in paths)
 
 
@@ -42,7 +42,7 @@ def test_work_sessions_routes_present() -> None:
 
 
 @pytest.mark.unit
-def test_auth_login_not_route_missing() -> None:
+def test_auth_login_route_missing() -> None:
     from src.api import app
 
     client = TestClient(app)
@@ -50,7 +50,7 @@ def test_auth_login_not_route_missing() -> None:
         "/auth/login",
         json={"email": "a@b.co", "password": "x"},
     )
-    assert response.status_code != 404
+    assert response.status_code == 404
 
 
 @pytest.mark.unit

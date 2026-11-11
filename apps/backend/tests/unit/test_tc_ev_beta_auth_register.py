@@ -1,62 +1,28 @@
-"""TC-EV-beta-007 — POST /auth/register via GoTrue proxy."""
+"""TC: registration is FE-direct; Auth proxy remains available as a library (F31)."""
 
 from __future__ import annotations
 
-from typing import Any
+from unittest.mock import MagicMock
 
 import pytest
-from fastapi import FastAPI
-from fastapi.testclient import TestClient
 from metar_auth.proxy import AuthProxyError, SupabaseAuthProxy
-from metar_auth.router import create_auth_router
-
-
-class _StubProxy(SupabaseAuthProxy):
-    def __init__(self) -> None:
-        super().__init__(
-            supabase_url="https://example.supabase.co",
-            publishable_key="test-anon",
-        )
-        self.signups: list[tuple[str, str]] = []
-
-    def sign_up(self, email: str, password: str) -> dict[str, Any]:
-        self.signups.append((email, password))
-        if email.startswith("dup@"):
-            raise AuthProxyError("registration failed: already registered", status_code=400)
-        return {
-            "user": {"id": "new-user", "email": email, "metadata": {}},
-            "session": {
-                "access_token": "at",
-                "refresh_token": "rt",
-                "expires_at": 1,
-            },
-        }
 
 
 @pytest.mark.unit
-def test_auth_register_success() -> None:
-    proxy = _StubProxy()
-    app = FastAPI()
-    app.include_router(create_auth_router(proxy=proxy))
-    client = TestClient(app)
-    res = client.post(
-        "/auth/register",
-        json={"email": "new@example.com", "password": "secret12"},
-    )
-    assert res.status_code == 200
-    body = res.json()
-    assert body["user"]["email"] == "new@example.com"
-    assert body["session"]["access_token"] == "at"
-    assert proxy.signups == [("new@example.com", "secret12")]
+def test_proxy_sign_up_success() -> None:
+    proxy = MagicMock(spec=SupabaseAuthProxy)
+    proxy.sign_up.return_value = {
+        "user": {"id": "1", "email": "a@b.com", "metadata": {}},
+        "session": None,
+    }
+    result = proxy.sign_up("a@b.com", "Password1")
+    assert result["user"]["email"] == "a@b.com"
+    proxy.sign_up.assert_called_once()
 
 
 @pytest.mark.unit
-def test_auth_register_maps_proxy_error() -> None:
-    app = FastAPI()
-    app.include_router(create_auth_router(proxy=_StubProxy()))
-    client = TestClient(app)
-    res = client.post(
-        "/auth/register",
-        json={"email": "dup@example.com", "password": "secret12"},
-    )
-    assert res.status_code == 400
+def test_proxy_sign_up_maps_error() -> None:
+    proxy = MagicMock(spec=SupabaseAuthProxy)
+    proxy.sign_up.side_effect = AuthProxyError("registration failed", status_code=400)
+    with pytest.raises(AuthProxyError):
+        proxy.sign_up("a@b.com", "Password1")

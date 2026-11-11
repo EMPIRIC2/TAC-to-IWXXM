@@ -1,10 +1,9 @@
 [project]
 name = "metar-auth"
 version = "0.2.0"
-description = "Verify Supabase Auth JSON Web Tokens (JWTs) and serve /auth HTTP routes"
+description = "The auth package makes sure that Supabase Auth JSON Web Tokens are valid."
 requires-python = ">=3.12"
 dependencies = [
-  "fastapi==0.137.0",
   "httpx==0.28.1",
   "PyJWT[crypto]==2.13.0",
   "pydantic==2.13.4",
@@ -47,3 +46,5 @@ source = ["src/metar_auth"]
 fail_under = 100
 show_missing = true
 
+[tool.ruff]
+extend = "../../pyproject.toml"

@@ -27,7 +27,7 @@ class TestWorkspaceImportSmoke:
     def test_auth_package_importable_as_metar_auth(self) -> None:
         module = importlib.import_module("metar_auth")
         assert callable(getattr(module, "verify_access_token", None))
-        assert callable(getattr(module, "create_auth_router", None))
+        assert getattr(module, "create_auth_router", None) is None
 
     def test_uv_workspace_member_declared_in_root_pyproject(self) -> None:
         content = (ROOT / "pyproject.toml").read_text(encoding="utf-8")

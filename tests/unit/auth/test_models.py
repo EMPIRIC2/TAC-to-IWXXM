@@ -27,6 +27,20 @@ def test_validate_email_permissive_rejects_empty() -> None:
 
 
 @pytest.mark.unit
+def test_validate_email_permissive_rejects_empty_local_or_domain() -> None:
+    with pytest.raises(ValueError, match="Invalid email"):
+        validate_email_permissive("@example.com")
+    with pytest.raises(ValueError, match="Invalid email"):
+        validate_email_permissive("user@")
+
+
+@pytest.mark.unit
+def test_validate_email_permissive_rejects_invalid_public_email() -> None:
+    with pytest.raises(ValueError, match="Invalid email"):
+        validate_email_permissive("not a valid@bad domain")
+
+
+@pytest.mark.unit
 def test_login_request_normalizes_dev_email() -> None:
     req = LoginRequest(email="User@Test.local", password="secret")
     assert req.email == "user@test.local"
@@ -48,6 +62,7 @@ def test_confirm_request_type_validation() -> None:
 @pytest.mark.unit
 def test_logout_scope_validation() -> None:
     assert LogoutRequest(scope="").scope is None
+    assert LogoutRequest(scope="global").scope == "global"
     with pytest.raises(ValidationError):
         LogoutRequest(scope="everywhere")
 

@@ -1,4 +1,4 @@
-"""Supabase Auth-only library - JWKS JWT verify + `/auth/*` routers (ADR-033)."""
+"""Supabase Auth service library — JWKS verify + Auth API proxy (no HTTP routes)."""
 
 from __future__ import annotations
 
@@ -8,12 +8,12 @@ from metar_auth.jwks import (
     verify_access_token,
 )
 from metar_auth.models import AuthProxyError
-from metar_auth.router import create_auth_router
+from metar_auth.proxy import SupabaseAuthProxy
 
 __all__ = [
     "AuthProxyError",
     "JwtVerificationError",
-    "create_auth_router",
+    "SupabaseAuthProxy",
     "jwks_url_from_supabase_url",
     "verify_access_token",
 ]

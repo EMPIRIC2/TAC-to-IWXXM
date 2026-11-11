@@ -96,13 +96,13 @@ class TestTcEv031003PublicRoutesJwtFree:
         # Validation may fail schema/schematron; must not be auth-gated.
         assert response.status_code in {200, 400, 422}, response.text
 
-    def test_auth_login_mounted_but_convert_stays_public(self, public_client: TestClient) -> None:
-        """Restoring /auth/* must not re-gate convert (TC-EV031-003 objective)."""
+    def test_auth_http_gone_but_convert_stays_public(self, public_client: TestClient) -> None:
+        """FE-direct removes /auth/*; convert must stay public (TC-EV031-003)."""
         login = public_client.post(
             "/auth/login",
             json={"email": "tc-ev031-003@example.test", "password": "x"},
         )
-        assert login.status_code != 404
+        assert login.status_code == 404
         convert = _multipart(
             public_client,
             "/api/v1/convert",
