@@ -6,6 +6,7 @@ import { Input } from './ui/input';
 import { Card } from './ui/card';
 import { Settings, Loader2, CheckCircle, AlertCircle, RotateCcw } from 'lucide-react';
 import { toast } from 'sonner';
+import { notifyGlossaryPrefsChanged } from './glossary/GlossaryScope';
 
 interface UserPreferencesDialogProps {
   isOpen: boolean;
@@ -14,17 +15,20 @@ interface UserPreferencesDialogProps {
   onPreferencesSaved?: () => void;
 }
 
-/** Slim prefs (EV-040): display/output name + file extension only. */
+/** Slim prefs (EV-040 + F38 glossary hover). */
 interface UserPreferences {
   displayName: string;
   email: string;
   outputFileExtension: string;
+  /** When false, Annex 3 glossary hover tips are off (default ON). */
+  glossaryHoverEnabled: boolean;
 }
 
 const DEFAULT_PREFERENCES: UserPreferences = {
   displayName: '',
   email: '',
   outputFileExtension: '.xml',
+  glossaryHoverEnabled: true,
 };
 
 const STORAGE_KEY = 'metar_converter_preferences';
@@ -127,6 +131,7 @@ export function UserPreferencesDialog({
             typeof parsed.outputFileExtension === 'string'
               ? parsed.outputFileExtension
               : DEFAULT_PREFERENCES.outputFileExtension,
+          glossaryHoverEnabled: parsed.glossaryHoverEnabled !== false,
           email: userEmail,
         });
       } else {
@@ -178,8 +183,10 @@ export function UserPreferencesDialog({
         displayName: prefs.displayName,
         email: userEmail,
         outputFileExtension: prefs.outputFileExtension,
+        glossaryHoverEnabled: prefs.glossaryHoverEnabled,
       };
       localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+      notifyGlossaryPrefsChanged();
       setSaveStatus('success');
       toast.success('Preferences saved successfully');
 
@@ -213,6 +220,7 @@ export function UserPreferencesDialog({
         displayName: emailLocalPart(userEmail),
       };
       localStorage.setItem(STORAGE_KEY, JSON.stringify(resetPrefs));
+      notifyGlossaryPrefsChanged();
       setPreferences(resetPrefs);
       toast.success('Preferences reset to defaults');
       onPreferencesSaved?.();
@@ -268,8 +276,8 @@ export function UserPreferencesDialog({
         ) : (
           <div className="space-y-6">
             <p className="text-sm text-gray-600 dark:text-gray-400">
-              Adjust your display name and output file extension. Conversion options
-              live on the workbench.
+              Adjust your display name, output file extension, and glossary tips.
+              Conversion options live on the workbench.
             </p>
             <div>
               <Label htmlFor="display-name" className="dark:text-white">
@@ -310,6 +318,29 @@ export function UserPreferencesDialog({
                   </option>
                 ))}
               </select>
+            </div>
+
+            <div className="flex items-start gap-2">
+              <input
+                id="glossary-hover-enabled"
+                type="checkbox"
+                className="mt-1"
+                checked={preferences.glossaryHoverEnabled}
+                onChange={(e) =>
+                  setPreferences({
+                    ...preferences,
+                    glossaryHoverEnabled: e.target.checked,
+                  })
+                }
+                data-testid="glossary-hover-enabled"
+              />
+              <Label htmlFor="glossary-hover-enabled" className="dark:text-white">
+                Show glossary tips on hover
+                <span className="mt-1 block text-xs font-normal text-gray-500 dark:text-gray-400">
+                  After a short pause on underlined terms, the app shows a short tip
+                  with a link to the Glossary. Clear this option if you want plain text.
+                </span>
+              </Label>
             </div>
 
             {saveStatus === 'success' && (
