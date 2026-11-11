@@ -284,7 +284,9 @@ describe('BUG-2026-08-07 output filename download stale (#904)', () => {
 
     await waitFor(() => {
       expect(zipEntries).toContain('second_name.xml');
+      expect(zipEntries).toContain('second_name.txt');
       expect(zipEntries).not.toContain('first_name.xml');
+      expect(zipEntries).not.toContain('first_name.txt');
     });
 
     createUrlSpy.mockRestore();

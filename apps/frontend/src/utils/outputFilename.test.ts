@@ -13,6 +13,8 @@ import {
   nextFirstAccumulatedTac,
   uniquifyZipMemberNames,
   toIwxxmDownloadName,
+  toTacSourceName,
+  alignConversionZipPairs,
 } from './outputFilename';
 
 describe('sanitizeOutputFilename', () => {
@@ -70,11 +72,12 @@ describe('manualOutputName', () => {
 });
 
 describe('toIwxxmDownloadName', () => {
-  it('maps TAC input extensions to .xml', () => {
+  it('maps TAC input extensions to .xml (success)', () => {
     expect(toIwxxmDownloadName('bulletin_report_1.tac')).toBe('bulletin_report_1.xml');
     expect(toIwxxmDownloadName('first.txt')).toBe('first.xml');
     expect(toIwxxmDownloadName('obs.metar')).toBe('obs.xml');
     expect(toIwxxmDownloadName('Report.TAC')).toBe('Report.xml');
+    expect(toIwxxmDownloadName('METARYUD.txt')).toBe('METARYUD.xml');
   });
 
   it('keeps existing IWXXM extensions and falls back when blank', () => {
@@ -82,6 +85,84 @@ describe('toIwxxmDownloadName', () => {
     expect(toIwxxmDownloadName('pack.iwxxm')).toBe('pack.iwxxm');
     expect(toIwxxmDownloadName('')).toBe('download.xml');
     expect(toIwxxmDownloadName('   ')).toBe('download.xml');
+  });
+
+  it('forces .xml for extensionless or unknown extensions (failure modes)', () => {
+    expect(toIwxxmDownloadName('noext')).toBe('noext.xml');
+    expect(toIwxxmDownloadName('report.foo')).toBe('report.xml');
+    expect(toIwxxmDownloadName('path/to/bulletin_report_1.tac')).toBe(
+      'bulletin_report_1.xml',
+    );
+    for (const name of ['a.tac', 'b.txt', 'c.metar', 'd', 'e.foo', '']) {
+      expect(toIwxxmDownloadName(name)).not.toMatch(/\.(txt|metar|tac)$/i);
+      expect(toIwxxmDownloadName(name)).toMatch(/\.(xml|iwxxm)$/i);
+    }
+  });
+});
+
+describe('toTacSourceName', () => {
+  it('keeps TAC-safe extensions (success)', () => {
+    expect(toTacSourceName('bulletin_report_1.tac')).toBe('bulletin_report_1.tac');
+    expect(toTacSourceName('METARYUD.txt')).toBe('METARYUD.txt');
+    expect(toTacSourceName('obs.metar')).toBe('obs.metar');
+    expect(toTacSourceName('Report.TAC')).toBe('Report.TAC');
+  });
+
+  it('never returns .xml; maps IWXXM / unknown / blank to .txt (failure modes)', () => {
+    expect(toTacSourceName('already.xml')).toBe('already.txt');
+    expect(toTacSourceName('pack.iwxxm')).toBe('pack.txt');
+    expect(toTacSourceName('noext')).toBe('noext.txt');
+    expect(toTacSourceName('report.foo')).toBe('report.txt');
+    expect(toTacSourceName('')).toBe('download.txt');
+    expect(toTacSourceName('   ')).toBe('download.txt');
+    expect(toTacSourceName('path/to/input.tac')).toBe('input.tac');
+    for (const name of ['a.tac', 'b.txt', 'c.xml', 'd', '']) {
+      expect(toTacSourceName(name)).toMatch(/\.(txt|metar|tac)$/i);
+      expect(toTacSourceName(name)).not.toMatch(/\.xml$/i);
+    }
+  });
+});
+
+describe('alignConversionZipPairs', () => {
+  it('pairs IWXXM .xml with TAC .txt/.tac members (success)', () => {
+    expect(
+      alignConversionZipPairs([
+        { xmlName: 'bulletin_report_1.tac', tacName: 'bulletin_report_1.tac' },
+        { xmlName: 'METARYUD.txt', tacName: 'METARYUD.txt' },
+      ]),
+    ).toEqual([
+      { xmlName: 'bulletin_report_1.xml', tacName: 'bulletin_report_1.tac' },
+      { xmlName: 'METARYUD.xml', tacName: 'METARYUD.txt' },
+    ]);
+  });
+
+  it('uniquifies collisions while keeping paired stems (failure / collision mode)', () => {
+    expect(
+      alignConversionZipPairs([
+        { xmlName: 'dup.tac', tacName: 'dup.tac' },
+        { xmlName: 'dup.tac', tacName: 'dup.tac' },
+        { xmlName: 'dup.txt', tacName: 'dup.txt' },
+      ]),
+    ).toEqual([
+      { xmlName: 'dup.xml', tacName: 'dup.tac' },
+      { xmlName: 'dup_2.xml', tacName: 'dup_2.tac' },
+      { xmlName: 'dup_3.xml', tacName: 'dup_3.txt' },
+    ]);
+  });
+
+  it('rejects TAC-as-xml and XML-as-tac outcomes', () => {
+    const pairs = alignConversionZipPairs([
+      { xmlName: '', tacName: '' },
+      { xmlName: 'x.xml', tacName: 'x.xml' },
+    ]);
+    for (const { xmlName, tacName } of pairs) {
+      expect(xmlName).toMatch(/\.(xml|iwxxm)$/i);
+      expect(xmlName).not.toMatch(/\.(txt|metar|tac)$/i);
+      expect(tacName).toMatch(/\.(txt|metar|tac)$/i);
+      expect(tacName).not.toMatch(/\.xml$/i);
+    }
+    expect(pairs[0]).toEqual({ xmlName: 'download.xml', tacName: 'download.txt' });
+    expect(pairs[1]).toEqual({ xmlName: 'x.xml', tacName: 'x.txt' });
   });
 });
 
