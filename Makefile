@@ -125,7 +125,7 @@ catalog-check: catalog-regen
 # Prettier after dump so short arrays match workspace format-check (json.dumps expands them).
 membership-regen:
 	$(UV) run python scripts/iwxxm/harvest_wmo_membership.py
-	pnpm exec prettier --config config/tooling/prettier.json --write packages/tac-validate/src/tac_validate/data/wmo_membership.json
+	pnpm exec prettier --config config/tooling/prettier.json --ignore-path .gitignore --write packages/tac-validate/src/tac_validate/data/wmo_membership.json
 
 # EV-054 / F7.q — regenerate precomputed Quality metrics corpus artifact
 generate-quality-metrics:
@@ -717,10 +717,10 @@ vendor-sync:
 	bash scripts/vendor/sync-iwxxm.sh
 
 dev:
-	bash ./start-dev-servers.sh
+	bash ./config/start-dev-servers.sh
 
 dev-kill:
-	bash ./start-dev-servers.sh --kill
+	bash ./config/start-dev-servers.sh --kill
 
 dev-servers: dev
 

@@ -37,7 +37,7 @@ docs.
 | DOKS static | Frontend URL; `/config.json` with `api.baseUrl` + Auth publishable bootstrap | Service-role / `DATABASE_URL` |
 | DOKS worker (ingest worker) | `DATABASE_URL`, poller URL and interval, machine credentials | Operator JWT; Supabase DB writers |
 | Supabase project | Auth users JWT issuance | App tables for sessions or ingest worker |
-| Repo | `config/deploy/profiles/*.json`, `.env.example`, this document | Live secret values |
+| Repo | `config/deploy/profiles/*.json`, `config/env.example`, this document | Live secret values |
 | Local | `.env` (gitignored), `METAR_CONFIG_ENV=local` | Production URLs unless live testing |
 
 ## Canonical names

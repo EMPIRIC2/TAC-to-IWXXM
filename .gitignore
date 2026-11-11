@@ -5,7 +5,7 @@
 # --- Secrets & local operator env (never commit) ---
 .env
 .env.*
-!.env.example
+!config/env.example
 prod.env
 .envrc
 

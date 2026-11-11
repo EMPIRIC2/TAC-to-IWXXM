@@ -48,7 +48,7 @@
 # --- Secrets (also in .gitignore) ---
 .env
 .env.*
-!.env.example
+!config/env.example
 
 # --- Legacy pre-migration trees (duplicate of target apps/ + packages/) ---
 # Keep indexed until cutover if you need migration diffs; exclude to save context.

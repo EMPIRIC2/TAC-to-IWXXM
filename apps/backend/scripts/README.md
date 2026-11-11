@@ -182,7 +182,7 @@ Shell script for comparing IWXXM version outputs.
 
 ```bash
 # From the repo root
-./start-dev-servers.sh
+./config/start-dev-servers.sh
 ```
 
 ### Update Data

@@ -22,14 +22,13 @@ class TestRootToolingConfigLayout:
 
     def test_root_no_longer_hosts_moved_tool_configs(self) -> None:
         assert not (ROOT / ".prettierrc").exists()
+        assert not (ROOT / ".prettierignore").exists()
         assert not (ROOT / "eslint.config.js").exists()
         assert not (ROOT / ".yamllint.yml").exists()
         assert not (ROOT / ".gitleaks.toml").exists()
         assert not (ROOT / "sbom").exists()
-        # Prettier only applies ignore patterns from a cwd-root file; keep a symlink.
-        ignore = ROOT / ".prettierignore"
-        assert ignore.is_symlink()
-        assert ignore.resolve() == (ROOT / "config" / "tooling" / "prettierignore").resolve()
+        assert not (ROOT / ".env.example").exists()
+        assert not (ROOT / "start-dev-servers.sh").exists()
 
     def test_package_json_points_at_tooling(self) -> None:
         data = json.loads((ROOT / "package.json").read_text(encoding="utf-8"))
@@ -37,6 +36,17 @@ class TestRootToolingConfigLayout:
         assert "config/tooling/prettier.json" in data["scripts"]["format:check"]
         assert "config/tooling/eslint.config.js" in data["scripts"]["lint:js"]
 
-    def test_sbom_under_config(self) -> None:
+    def test_sbom_and_env_and_launcher_under_config(self) -> None:
         assert (ROOT / "config" / "sbom" / "cyclonedx.json").is_file()
         assert (ROOT / "config" / "sbom" / "requirements.frozen.txt").is_file()
+        assert (ROOT / "config" / "env.example").is_file()
+        assert (ROOT / "config" / "start-dev-servers.sh").is_file()
+
+    def test_hard_require_files_remain_at_root(self) -> None:
+        assert (ROOT / "pyproject.toml").is_file()
+        assert (ROOT / "package.json").is_file()
+        assert (ROOT / ".python-version").is_file()
+        assert (ROOT / ".readthedocs.yaml").is_file()
+        assert (ROOT / ".pre-commit-config.yaml").is_file()
+        assert (ROOT / "Makefile").is_file()
+        assert (ROOT / "AGENTS.md").is_file()

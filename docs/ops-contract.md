@@ -31,7 +31,7 @@ On macOS, install system packages from the root `Brewfile`, then run
 
 ## Local quick start
 
-1. Copy `.env.example` to `.env`.
+1. Copy `config/env.example` to `.env`.
 2. Set Auth keys and `DATABASE_URL` per [env-variable.md](env-variable.md).
 3. Export `METAR_CONFIG_ENV=local`.
 4. Run `make install`.
@@ -49,7 +49,7 @@ Default local URLs:
 
 ## Docker Compose quick start
 
-1. Copy `.env.example` to `.env`.
+1. Copy `config/env.example` to `.env`.
 2. Run `docker compose up --build`.
 
 Compose runs Postgres, backend, and frontend. Auth stays inside the API image.

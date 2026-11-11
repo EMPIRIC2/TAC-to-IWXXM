@@ -36,6 +36,6 @@ class TestM7T2ProductE2eGate:
         assert "openConverterForE2e" in helpers
 
     def test_start_dev_servers_loads_repo_env(self) -> None:
-        script = (ROOT / "start-dev-servers.sh").read_text(encoding="utf-8")
+        script = (ROOT / "config/start-dev-servers.sh").read_text(encoding="utf-8")
         assert "load_repo_env" in script
         assert "VITE_SUPABASE_URL" in script

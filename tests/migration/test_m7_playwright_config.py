@@ -23,7 +23,7 @@ class TestM7PlaywrightMonorepoConfig:
         return (APPS_E2E / "playwright.global-setup.ts").read_text(encoding="utf-8")
 
     def test_playwright_uses_monorepo_dev_stack(self, playwright_config: str) -> None:
-        assert "start-dev-servers.sh" in playwright_config
+        assert "config/start-dev-servers.sh" in playwright_config
         assert (
             "PLAYWRIGHT_API_BASE_URL=${process.env.PLAYWRIGHT_API_BASE_URL || DEFAULT_API_BASE_URL}"
             in playwright_config

@@ -79,7 +79,7 @@ class TestFrontendEnvExamples:
         assert "VITE_BACKEND_URL" not in content
 
     def test_root_env_example_documents_canonical_supabase_keys(self) -> None:
-        example = ROOT / ".env.example"
+        example = ROOT / "config/env.example"
         assert example.is_file()
         content = example.read_text(encoding="utf-8")
         assert "SUPABASE_PUBLISHABLE_KEY=" in content

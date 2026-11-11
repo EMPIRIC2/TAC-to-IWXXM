@@ -139,5 +139,6 @@ Cite as: `[Corpus: <id>]` or `[Corpus: <path> §section]`.
 
 See [docs/README.md](docs/README.md). Runtime profiles live under
 `config/deploy/profiles/`. Formatter and lint settings live under
-`config/tooling/`. The SBOM lives under `config/sbom/`. CI allowlists live
-under `scripts/ci/policy/`.
+`config/tooling/`. The SBOM lives under `config/sbom/`. Copy
+`config/env.example` to `.env` for local secrets. Start the local stack with
+`config/start-dev-servers.sh`. CI allowlists live under `scripts/ci/policy/`.

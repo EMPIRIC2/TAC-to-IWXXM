@@ -2,7 +2,7 @@
 
 Platform-specific scripts that start the TAC to IWXXM local API and operator website.
 
-macOS and Linux use the repo-root `start-dev-servers.sh` launcher (API port 18001). This folder keeps the Windows scripts.
+macOS and Linux use the `config/start-dev-servers.sh` launcher (API port 18001). This folder keeps the Windows scripts.
 
 ## Frontend (GUI) Scripts
 
@@ -58,7 +58,7 @@ Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
 ```
 
 ### Port Already in Use
-- Local macOS/Linux stack: `start-dev-servers.sh` uses API port 18001 and the frontend port from that script.
+- Local macOS/Linux stack: `config/start-dev-servers.sh` uses API port 18001 and the frontend port from that script.
 
 ## Production Deployment
 
