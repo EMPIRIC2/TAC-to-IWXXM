@@ -275,7 +275,8 @@ import {
   outputFilenameAfterReportLoad,
   sanitizeOutputFilename,
   toIwxxmDownloadName,
-  uniquifyZipMemberNames,
+  toTacSourceName,
+  alignConversionZipPairs,
 } from '/utils/outputFilename';
 import { ConvertResultStatus } from './ConvertResultStatus';
 import { deriveTacDisplayTitle, resolveOriginalTac } from '/utils/resultTraceability';
@@ -2125,13 +2126,25 @@ export function FileConverter({
     if (convertedFiles.length === 0) return;
 
     const zip = new JSZip();
-    const memberNames = uniquifyZipMemberNames(
-      convertedFiles.map((file) => resolveDownloadXmlName(file)),
+    const pairs = alignConversionZipPairs(
+      convertedFiles.map((file) => ({
+        xmlName: resolveDownloadXmlName(file),
+        tacName: toTacSourceName(
+          file.liveOutputSlot
+            ? manualOutputName(
+                outputFilename,
+                file.liveOutputSlot.index,
+                file.liveOutputSlot.total,
+              )
+            : file.originalName,
+        ),
+      })),
     );
 
     convertedFiles.forEach((file, index) => {
-      const xmlName = memberNames[index]!;
+      const { xmlName, tacName } = pairs[index]!;
       zip.file(xmlName, file.convertedContent);
+      zip.file(tacName, file.originalContent);
       if (includeConversionMetadata) {
         zip.file(
           metaSidecarFileName(xmlName),

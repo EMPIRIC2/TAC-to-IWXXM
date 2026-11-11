@@ -373,7 +373,9 @@ with aliases during one CalVer window. DX tests: ``…``.
  stems. detail `/quality/:stem` with Official/Converted panes and GitHub-style collapsible
  unified diffs (C14N match. promote deferred).
 - **operator workbench accumulate ZIP **: Workbench accumulates sequential successful IWXXM
- results. Download all → one ZIP. default stem ≈ first 8 sanitized TAC chars of first
+ results. Download all → one ZIP with **IWXXM `.xml`** members plus matching **TAC source**
+ members (`.txt` / `.tac` / `.metar`). IWXXM download names never keep TAC extensions.
+ default stem ≈ first 8 sanitized TAC chars of first
  success + timestamp. clear/reset. soft cap **≤200**. Dissemination multi-select unchanged.
 - **operator workbench validate-only **: Dedicated Validate mode: paste or single `.xml`
  upload via existing `POST /api/v1/validate` (reuse unless 04 finds a gap). IWXXM version handling
