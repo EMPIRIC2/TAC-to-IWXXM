@@ -13,7 +13,7 @@ import scripts.openapi.export_openapi as export_openapi
 
 @pytest.mark.unit
 def test_to_yaml_covers_scalar_and_collection_branches() -> None:
-    """Exercise every ``_to_yaml`` branch used when writing api/openapi.yaml."""
+    """Exercise every ``_to_yaml`` branch used when writing docs/api/openapi.yaml."""
     yaml = export_openapi._to_yaml
     assert yaml(None) == "null"
     assert yaml(True) == "true"
@@ -36,7 +36,7 @@ def test_to_yaml_covers_scalar_and_collection_branches() -> None:
 
 @pytest.mark.unit
 def test_main_writes_openapi(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-    api_dir = tmp_path / "api"
+    api_dir = tmp_path / "docs" / "api"
     fe_out = tmp_path / "apps" / "frontend" / "openapi" / "openapi.json"
     api_json = api_dir / "openapi.json"
     api_yaml = api_dir / "openapi.yaml"
@@ -81,7 +81,7 @@ def test_main_module_entrypoint(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     """``python -m`` path: call main under SystemExit without writing repo paths."""
-    api_dir = tmp_path / "api"
+    api_dir = tmp_path / "docs" / "api"
     fe_out = tmp_path / "apps" / "frontend" / "openapi" / "openapi.json"
     api_json = api_dir / "openapi.json"
     api_yaml = api_dir / "openapi.yaml"
