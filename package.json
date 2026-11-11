@@ -8,10 +8,10 @@
   "packageManager": "pnpm@9.15.4",
   "scripts": {
     "prepare": "husky",
-    "format": "prettier --write \"apps/**/*.{ts,tsx,json,css,md}\" \"packages/**/*.{ts,tsx,json,md}\"",
-    "format:check": "prettier --check \"apps/**/*.{ts,tsx,json,css,md}\" \"packages/**/*.{ts,tsx,json,md}\"",
-    "lint:js": "eslint apps/frontend/src apps/e2e packages/shared/src packages/shared/tests packages/live-map-geometry/src packages/live-map-geometry/tests --max-warnings 0",
-    "lint:js:fix": "eslint apps/frontend/src apps/e2e packages/shared/src packages/shared/tests packages/live-map-geometry/src packages/live-map-geometry/tests --fix",
+    "format": "prettier --config config/tooling/prettier.json --write \"apps/**/*.{ts,tsx,json,css,md}\" \"packages/**/*.{ts,tsx,json,md}\"",
+    "format:check": "prettier --config config/tooling/prettier.json --check \"apps/**/*.{ts,tsx,json,css,md}\" \"packages/**/*.{ts,tsx,json,md}\"",
+    "lint:js": "eslint -c config/tooling/eslint.config.js apps/frontend/src apps/e2e packages/shared/src packages/shared/tests packages/live-map-geometry/src packages/live-map-geometry/tests --max-warnings 0",
+    "lint:js:fix": "eslint -c config/tooling/eslint.config.js apps/frontend/src apps/e2e packages/shared/src packages/shared/tests packages/live-map-geometry/src packages/live-map-geometry/tests --fix",
     "typecheck:js": "pnpm --filter @metar/frontend exec tsc --noEmit && pnpm --filter @metar/shared exec tsc --noEmit && pnpm --filter @metar/live-map-geometry exec tsc --noEmit && pnpm --filter @metar/e2e exec tsc --noEmit"
   },
   "devDependencies": {
@@ -42,5 +42,6 @@
       "qs@>=2.2.5 <6.16.0": ">=6.16.0 <7",
       "browserslist@<=4.28.6": ">=4.28.7"
     }
-  }
+  },
+  "prettier": "./config/tooling/prettier.json"
 }

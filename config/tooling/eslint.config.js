@@ -8,7 +8,11 @@ import reactRefresh from 'eslint-plugin-react-refresh';
 import jsdoc from 'eslint-plugin-jsdoc';
 
 /** ADR-056 — FE paths grandfathered for max-lines / complexity. */
-const _repoRoot = path.dirname(fileURLToPath(import.meta.url));
+// Config lives under config/tooling/; allowlists are repo-root relative.
+const _repoRoot = path.resolve(
+  path.dirname(fileURLToPath(import.meta.url)),
+  '../..',
+);
 const _allowlistPath = path.join(
   _repoRoot,
   'scripts/ci/policy/file-budget-allowlist.txt',
@@ -137,12 +141,17 @@ export default tseslint.config(
       complexity: 'off',
     },
   },
-  {
-    // ADR-056 — grandfather oversize / high-complexity FE modules
-    files: _feBudgetOverrides,
-    rules: {
-      'max-lines': 'off',
-      complexity: 'off',
-    },
-  },
+  // ADR-056 — grandfather oversize / high-complexity FE modules
+  // Omit when allowlists are missing (empty files[] is invalid in flat config).
+  ...(_feBudgetOverrides.length > 0
+    ? [
+        {
+          files: _feBudgetOverrides,
+          rules: {
+            'max-lines': 'off',
+            complexity: 'off',
+          },
+        },
+      ]
+    : []),
 );
