@@ -36,6 +36,28 @@ python-source = "src"
 module-name = "iwxxm_validate._rust"
 
 # Override (required): package sources are formatted at line-length 120; root is 88.
+[tool.pytest.ini_options]
+asyncio_default_fixture_loop_scope = "function"
+
+filterwarnings = [
+  "error",
+]
+testpaths = ["tests"]
+pythonpath = ["src"]
+markers = [
+  "unit: fast unit tests",
+  "slow: longer local/CI smokes (clean-venv wheel installs)",
+]
+
+[tool.coverage.run]
+branch = true
+source = ["src/iwxxm_validate"]
+
+[tool.coverage.report]
+fail_under = 100
+show_missing = true
+
+
 [tool.ruff]
 extend = "../../pyproject.toml"
 line-length = 120

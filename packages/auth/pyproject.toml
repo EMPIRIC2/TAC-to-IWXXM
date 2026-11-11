@@ -28,3 +28,22 @@ build-backend = "hatchling.build"
 packages = ["src/metar_auth"]
 
 # Ruff / pytest / coverage inherit from root pyproject.toml (EV-exact-dep-pins).
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+
+filterwarnings = [
+  "error",
+]
+
+[tool.coverage.run]
+branch = true
+source = ["src/metar_auth"]
+
+[tool.coverage.report]
+fail_under = 100
+show_missing = true
+

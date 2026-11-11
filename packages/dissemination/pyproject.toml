@@ -34,6 +34,28 @@ integration = [
 ]
 
 # Override (required): package sources are formatted at line-length 120; root is 88.
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+
+filterwarnings = [
+  "error",
+]
+markers = [
+  "integration: Compose/Testcontainers multi-DB + wis2box harness tests (E14-09)",
+]
+
+[tool.coverage.run]
+branch = true
+source = ["src/dissemination"]
+
+[tool.coverage.report]
+fail_under = 100
+show_missing = true
+
+
 [tool.ruff]
 extend = "../../pyproject.toml"
 line-length = 120
