@@ -9,7 +9,7 @@ cd "$ROOT"
 
 UV="${UV:-uv}"
 
-echo "==> TC-EV029-006: report-state matrix (BBB / CNL / NIL)"
+echo "==> report-state matrix (BBB / CNL / NIL)"
 ${UV} run pytest \
   packages/tac2iwxxm/tests/test_tc_ev029_006_report_state_matrix.py \
   --no-cov -v --tb=short

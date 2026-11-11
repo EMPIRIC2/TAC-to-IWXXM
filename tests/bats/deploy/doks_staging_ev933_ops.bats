@@ -7,7 +7,7 @@ load "${BATS_TEST_DIRNAME}/../helpers/load"
   rm -f "${BATS_TMPDIR}/kubectl-ev933-hmac-state"
   run bash scripts/deploy/doks_staging_ev933_ops.sh
   [ "$status" -eq 0 ]
-  [[ "$output" == *"EV-933 staging ops complete"* ]]
+  [[ "$output" == *"staging Alembic + overlay HMAC ops complete"* ]]
   [[ "$output" == *"HMAC via=deploy-env"* ]]
   [[ "$output" == *"migrate via=initContainer"* ]]
 }

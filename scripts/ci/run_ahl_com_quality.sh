@@ -8,7 +8,7 @@ cd "$ROOT"
 
 UV="${UV:-uv}"
 
-echo "==> tac2iwxxm: TC-EV029-003 AHL API + TC-F6-030 bulletin split"
+echo "==> tac2iwxxm: AHL API + bulletin split"
 ${UV} run pytest \
   packages/tac2iwxxm/tests/test_tc_ev029_003_ahl_api.py \
   packages/tac2iwxxm/tests/test_tc_f6_030_bulletin_split.py \

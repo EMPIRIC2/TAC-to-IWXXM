@@ -12,14 +12,14 @@ cd "$ROOT"
 
 UV="${UV:-uv}"
 
-echo "==> EV-032 / #835: A6-2-TC ADR-032 equality + catalog wmoPass (long pack)"
+echo "==> A6-2-TC equality + catalog wmoPass (long pack)"
 ${UV} run pytest \
   packages/tac2iwxxm/tests/test_tc_ev032_002_a6_2_tc_adr032_equality.py \
   packages/tac2iwxxm/tests/test_tc_ev032_003_a6_2_tc_catalog_wmo_pass.py \
   packages/tac2iwxxm/tests/test_tc_ev030_005_sigmet_a6_2_tc_catalog.py \
   --no-cov -v --tb=short
 
-echo "==> tac2iwxxm: TC-EV029-004/007 TC SIGMET gap fixtures + WC AHL BBB reportStatus"
+echo "==> tac2iwxxm: TC SIGMET gap fixtures + WC AHL BBB reportStatus"
 ${UV} run pytest \
   packages/tac2iwxxm/tests/test_tc_ev029_007_tc_sigmet_gap_fixtures.py \
   --no-cov -v --tb=short

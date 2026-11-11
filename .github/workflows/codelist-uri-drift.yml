@@ -1,4 +1,4 @@
-# S046 / EV-038 / #859 — optional codes.wmo.int SCH↔CSV URI drift (TC-EV038-008).
+# Optional codes.wmo.int Schematron RDF ↔ CSV URI drift gate.
 # Offline only — does not fetch HTML from codes.wmo.int (non-flake).
 name: codelist URI drift
 
@@ -19,7 +19,7 @@ on:
 jobs:
   codelist-uri-drift:
     runs-on: ubuntu-latest
-    name: codelist URI drift (TC-EV038-008)
+    name: codelist URI drift
     steps:
       - uses: actions/checkout@v5
         with:

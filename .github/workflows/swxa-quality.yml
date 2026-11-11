@@ -1,6 +1,5 @@
-# EV-029 / E29-T4=2 — SWXA quality pack (M11 / TC-F28 + F28 deepen / #740/#823).
+# SWXA quality pack (per-family; complements root CI).
 # Separate per-family workflow (FN / iwxxm:SpaceWeatherAdvisory); complements root ci.yml
-# and AHL COM pack (ahl-com-quality.yml).
 name: SWXA quality
 
 # Stage/main push: always run (no path filter). PR remains path-filtered for cost.

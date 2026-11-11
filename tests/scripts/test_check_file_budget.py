@@ -1,4 +1,4 @@
-"""Unit tests for scripts/ci/check_file_budget.py (ADR-056 / EV-file-budget-complexity)."""
+"""Unit tests for scripts/ci/check_file_budget.py."""
 
 from __future__ import annotations
 

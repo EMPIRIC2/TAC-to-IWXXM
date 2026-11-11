@@ -9,7 +9,7 @@ cd "$ROOT"
 
 UV="${UV:-uv}"
 
-echo "==> tac2iwxxm: TC-EV029-007 AIRMET gap fixtures + WA AHL BBB reportStatus"
+echo "==> tac2iwxxm: AIRMET gap fixtures + WA AHL BBB reportStatus"
 ${UV} run pytest \
   packages/tac2iwxxm/tests/test_tc_ev029_007_airmet_gap_fixtures.py \
   --no-cov -v --tb=short

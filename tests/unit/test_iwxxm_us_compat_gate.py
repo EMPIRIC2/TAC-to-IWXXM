@@ -1,4 +1,4 @@
-"""Unit tests for iwxxm-us compatibility gate (#853 / TC-EV038-006)."""
+"""Unit tests for iwxxm-us compatibility gate."""
 
 from __future__ import annotations
 

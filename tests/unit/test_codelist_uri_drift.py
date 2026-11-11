@@ -1,4 +1,4 @@
-"""Unit tests for codes.wmo.int vendor URI drift check (#859 / TC-EV038-008)."""
+"""Unit tests for codes.wmo.int vendor URI drift check."""
 
 from __future__ import annotations
 

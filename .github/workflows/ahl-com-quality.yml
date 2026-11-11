@@ -1,4 +1,4 @@
-# EV-029 / E29-T4=2 — AHL / COM / shared bulletin quality (M1 / TC-EV029-003).
+# AHL / COM / shared bulletin quality pack (complements root CI).
 # Separate per-family workflow; complements root ci.yml.
 name: AHL COM quality
 

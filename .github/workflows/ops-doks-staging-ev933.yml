@@ -1,6 +1,6 @@
-# One-shot / reusable staging ops for EV-933 (Alembic + overlay HMAC secret).
+# One-shot / reusable staging ops for Alembic head + overlay HMAC secret.
 # Uses environment "staging" → secrets.KUBE_CONFIG (ServiceAccount kubeconfig).
-name: Ops DOKS staging EV-933
+name: Ops DOKS staging Alembic + overlay HMAC
 
 on:
   workflow_dispatch:
@@ -38,7 +38,7 @@ jobs:
           fi
           kubectl version --client
 
-      - name: Run EV-933 staging ops
+      - name: Run staging Alembic and overlay HMAC ops
         env:
           DOKS_NAMESPACE: metar-iwxxm-staging
         run: bash scripts/deploy/doks_staging_ev933_ops.sh

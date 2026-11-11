@@ -1,8 +1,4 @@
-# F34 / EV-059 / #874 — Mutation testing (pytest-gremlins + Stryker).
-# Nightly / workflow_dispatch only — NOT required on every PR (D-S069-ci / TC-F34-005).
-# EV-ci-runtime-failures: Mon–Sat schedule = rotated subset; Sunday schedule +
-# workflow_dispatch target=all = full Python+TS matrix (D-S069-e4 preserved).
-# Matrix covers Python packages/services + TS surfaces; excludes e2e + Rust.
+# Mutation testing (pytest-gremlins + Stryker). Nightly / dispatch only.
 name: Mutation
 
 on:

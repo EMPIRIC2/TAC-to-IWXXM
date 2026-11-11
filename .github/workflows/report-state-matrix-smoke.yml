@@ -1,5 +1,5 @@
-# EV-029 / T12.2 — Report-state matrix smoke (TC-EV029-006 / M12).
-# BBB→reportStatus + CNL/NIL product paths; complements per-family packs.
+# Report-state matrix smoke: BBB→reportStatus + CNL/NIL product paths.
+# Complements per-family quality packs.
 name: Report-state matrix smoke
 
 # Stage/main push: always run (no path filter). PR remains path-filtered for cost.
@@ -18,7 +18,7 @@ on:
 jobs:
   report-state-matrix-smoke:
     runs-on: ubuntu-latest
-    name: Report-state matrix smoke (TC-EV029-006)
+    name: Report-state matrix smoke
     steps:
       - uses: actions/checkout@v5
         with:
