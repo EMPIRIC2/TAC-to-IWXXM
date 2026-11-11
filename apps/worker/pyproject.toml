@@ -9,12 +9,12 @@ dependencies = [
     "tac-validate",
     "iwxxm-validate",
     "workflows",
-    "httpx>=0.28.1",
-    "pydantic>=2.0.0",
-    "pydantic-settings>=2.14.2",
-    "sqlalchemy>=2.0.0",
-    "psycopg[binary]>=3.0.0",
-    "sentry-sdk>=2.0",
+    "httpx==0.28.1",
+    "pydantic==2.13.4",
+    "pydantic-settings==2.14.2",
+    "sqlalchemy==2.0.50",
+    "psycopg[binary]==3.3.4",
+    "sentry-sdk==2.66.1",
 ]
 
 [build-system]
@@ -30,27 +30,32 @@ include = ["*"]
 
 [dependency-groups]
 dev = [
-    "pytest>=8.4",
-    "pytest-cov>=6.0",
-    "respx>=0.21",
+    "pytest==9.1.0",
+    "pytest-cov==7.1.0",
+    "respx==0.23.1",
 ]
 
+# App-local paths/markers. Shared ruff/pytest/coverage defaults live in root pyproject.
 [tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
 asyncio_default_fixture_loop_scope = "function"
-
 filterwarnings = [
   "error",
 ]
-testpaths = ["tests"]
-pythonpath = ["src"]
 markers = [
   "unit: fast unit tests",
   "integration: Postgres / container integration",
 ]
 
+# Makefile worker coverage uses --cov-config=apps/worker/pyproject.toml.
 [tool.coverage.run]
 branch = true
 source = ["src/metar_worker"]
+
+[tool.coverage.report]
+fail_under = 100
+show_missing = true
 
 [tool.ruff]
 extend = "../../pyproject.toml"
@@ -59,6 +64,9 @@ extend = "../../pyproject.toml"
 # Poller accepts heterogeneous JSON payloads from ingest sources.
 "src/metar_worker/poller.py" = ["ANN401"]
 
-[tool.coverage.report]
-fail_under = 100
-show_missing = true
+[tool.uv.sources]
+metar-shared = { workspace = true }
+tac2iwxxm = { workspace = true }
+tac-validate = { workspace = true }
+iwxxm-validate = { workspace = true }
+workflows = { workspace = true }
