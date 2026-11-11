@@ -169,19 +169,6 @@ const TAC_SOURCE_EXT_RE = /\.(txt|metar|tac)$/i;
 const IWXXM_KEEP_EXT_RE = /\.(xml|iwxxm)$/i;
 
 /**
- * Map a TAC/input result name to the IWXXM download filename.
- *
- * TAC input extensions become ``.xml``. Names that already use an IWXXM
- * extension (``.xml`` / ``.iwxxm``) are left unchanged. Extensionless or
- * unknown extensions are forced to a sanitized ``.xml`` name so converted
- * downloads never keep ``.tac`` / ``.txt``.
- *
- * @param name - Result or source filename (may be ``.tac`` / ``.txt`` / ``.metar``)
- * @returns Download filename ending in ``.xml`` or ``.iwxxm``
- * @example
- * const _ = true;
- */
-/**
  * Last path segment of a filename; trailing separators fall back to the raw name.
  *
  * @param pathLike - Path or basename
@@ -194,6 +181,19 @@ function fileLeafName(pathLike: string): string {
   return leaf && leaf.length > 0 ? leaf : pathLike;
 }
 
+/**
+ * Map a TAC/input result name to the IWXXM download filename.
+ *
+ * TAC input extensions become ``.xml``. Names that already use an IWXXM
+ * extension (``.xml`` / ``.iwxxm``) are left unchanged. Extensionless or
+ * unknown extensions are forced to a sanitized ``.xml`` name so converted
+ * downloads never keep ``.tac`` / ``.txt``.
+ *
+ * @param name - Result or source filename (may be ``.tac`` / ``.txt`` / ``.metar``)
+ * @returns Download filename ending in ``.xml`` or ``.iwxxm``
+ * @example
+ * const _ = true;
+ */
 export function toIwxxmDownloadName(name: string): string {
   const trimmed = name.trim();
   if (!trimmed) {
