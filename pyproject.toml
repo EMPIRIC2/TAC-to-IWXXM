@@ -38,13 +38,8 @@ dev = [
   "tac-validate",
   "dissemination",
   "workflows",
-<<<<<<< HEAD
-  "metar-auth",
-  "testcontainers[mysql,postgres]==4.14.2",
-=======
   "auth",
-  "testcontainers[mysql,postgres]>=4.8",
->>>>>>> e4abb758 (refactor: rename metar-auth package to auth (F31))
+  "testcontainers[mysql,postgres]==4.14.2",
   "schemathesis==4.24.3",
   "pytest-gremlins==1.9.0",
 ]

@@ -4,9 +4,9 @@ requires-python = ">=3.12"
 
 [manifest]
 members = [
+    "auth",
     "dissemination",
     "iwxxm-validate",
-    "metar-auth",
     "metar-backend",
     "metar-iwxxm-workspace",
     "metar-shared",
@@ -171,6 +171,40 @@ sdist = { url = "https://files.pythonhosted.org/packages/9a/8e/82a0fe20a541c0314
 wheels = [
     { url = "https://files.pythonhosted.org/packages/64/b4/17d4b0b2a2dc85a6df63d1157e028ed19f90d4cd97c36717afef2bc2f395/attrs-26.1.0-py3-none-any.whl", hash = "sha256:c647aa4a12dfbad9333ca4e71fe62ddc36f4e63b2d260a37a8b83d2f043ac309", size = 67548, upload-time = "2026-03-19T14:22:23.645Z" },
 ]
+
+[[package]]
+name = "auth"
+version = "0.2.0"
+source = { editable = "packages/auth" }
+dependencies = [
+    { name = "email-validator" },
+    { name = "httpx" },
+    { name = "pydantic" },
+    { name = "pyjwt", extra = ["crypto"] },
+]
+
+[package.optional-dependencies]
+dev = [
+    { name = "cryptography" },
+    { name = "httpx2" },
+    { name = "pytest" },
+    { name = "pytest-asyncio" },
+    { name = "respx" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "cryptography", marker = "extra == 'dev'", specifier = "==50.0.1" },
+    { name = "email-validator", specifier = "==2.3.0" },
+    { name = "httpx", specifier = "==0.28.1" },
+    { name = "httpx2", marker = "extra == 'dev'", specifier = "==2.4.0" },
+    { name = "pydantic", specifier = "==2.13.4" },
+    { name = "pyjwt", extras = ["crypto"], specifier = "==2.13.0" },
+    { name = "pytest", marker = "extra == 'dev'", specifier = "==9.1.0" },
+    { name = "pytest-asyncio", marker = "extra == 'dev'", specifier = "==1.4.0" },
+    { name = "respx", marker = "extra == 'dev'", specifier = "==0.23.1" },
+]
+provides-extras = ["dev"]
 
 [[package]]
 name = "basedpyright"
@@ -1472,52 +1506,18 @@ wheels = [
 ]
 
 [[package]]
-name = "metar-auth"
-version = "0.2.0"
-source = { editable = "packages/auth" }
-dependencies = [
-    { name = "email-validator" },
-    { name = "httpx" },
-    { name = "pydantic" },
-    { name = "pyjwt", extra = ["crypto"] },
-]
-
-[package.optional-dependencies]
-dev = [
-    { name = "cryptography" },
-    { name = "httpx2" },
-    { name = "pytest" },
-    { name = "pytest-asyncio" },
-    { name = "respx" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "cryptography", marker = "extra == 'dev'", specifier = "==50.0.1" },
-    { name = "email-validator", specifier = "==2.3.0" },
-    { name = "httpx", specifier = "==0.28.1" },
-    { name = "httpx2", marker = "extra == 'dev'", specifier = "==2.4.0" },
-    { name = "pydantic", specifier = "==2.13.4" },
-    { name = "pyjwt", extras = ["crypto"], specifier = "==2.13.0" },
-    { name = "pytest", marker = "extra == 'dev'", specifier = "==9.1.0" },
-    { name = "pytest-asyncio", marker = "extra == 'dev'", specifier = "==1.4.0" },
-    { name = "respx", marker = "extra == 'dev'", specifier = "==0.23.1" },
-]
-provides-extras = ["dev"]
-
-[[package]]
 name = "metar-backend"
 version = "0.1.0"
 source = { editable = "apps/backend" }
 dependencies = [
     { name = "alembic" },
     { name = "asyncpg" },
+    { name = "auth" },
     { name = "dissemination" },
     { name = "fastapi" },
     { name = "httpx" },
     { name = "iwxxm-validate" },
     { name = "lxml" },
-    { name = "metar-auth" },
     { name = "metar-shared" },
     { name = "msgspec" },
     { name = "prometheus-client" },
@@ -1556,12 +1556,12 @@ dev = [
 requires-dist = [
     { name = "alembic", specifier = "==1.18.5" },
     { name = "asyncpg", specifier = "==0.31.0" },
+    { name = "auth", editable = "packages/auth" },
     { name = "dissemination", editable = "packages/dissemination" },
     { name = "fastapi", specifier = "==0.137.0" },
     { name = "httpx", specifier = "==0.28.1" },
     { name = "iwxxm-validate", editable = "packages/iwxxm-validate" },
     { name = "lxml", specifier = "==6.1.1" },
-    { name = "metar-auth", editable = "packages/auth" },
     { name = "metar-shared", editable = "packages/shared" },
     { name = "msgspec", specifier = "==0.21.1" },
     { name = "prometheus-client", specifier = "==0.25.0" },
@@ -1603,13 +1603,13 @@ source = { virtual = "." }
 
 [package.dev-dependencies]
 dev = [
+    { name = "auth" },
     { name = "basedpyright" },
     { name = "dissemination" },
     { name = "httpx" },
     { name = "httpx2" },
     { name = "iwxxm-validate" },
     { name = "maturin" },
-    { name = "metar-auth" },
     { name = "metar-backend" },
     { name = "metar-shared" },
     { name = "metar-worker" },
@@ -1635,13 +1635,13 @@ dev = [
 
 [package.metadata.requires-dev]
 dev = [
+    { name = "auth", editable = "packages/auth" },
     { name = "basedpyright", specifier = "==1.39.8" },
     { name = "dissemination", editable = "packages/dissemination" },
     { name = "httpx", specifier = "==0.28.1" },
     { name = "httpx2", specifier = "==2.4.0" },
     { name = "iwxxm-validate", editable = "packages/iwxxm-validate" },
     { name = "maturin", specifier = "==1.14.1" },
-    { name = "metar-auth", editable = "packages/auth" },
     { name = "metar-backend", editable = "apps/backend" },
     { name = "metar-shared", editable = "packages/shared" },
     { name = "metar-worker", editable = "apps/worker" },

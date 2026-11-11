@@ -1,8 +1,12 @@
 [project]
 name = "auth"
 version = "0.2.0"
-description = "The auth package makes sure that Supabase Auth JSON Web Tokens are valid."
+description = "The auth package makes sure that Supabase Auth JSON Web Tokens are valid. The package sends HTTP requests to the Supabase Auth API for account operations. The package includes service functions for sign-in, sign-up, sign-out, and token checks. HTTP route handlers stay in the backend application."
+readme = "README.md"
 requires-python = ">=3.12"
+authors = [
+  { name = "Joseph McGuire", email = "joseph.c.mcg@gmail.com" },
+]
 dependencies = [
   "httpx==0.28.1",
   "PyJWT[crypto]==2.13.0",
