@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Export FastAPI OpenAPI JSON/YAML for FE types and api/ corpus (EV-repo-docs-cleanup)."""
+"""Export FastAPI OpenAPI JSON/YAML for FE types and docs/api corpus."""
 
 from __future__ import annotations
 
@@ -10,7 +10,7 @@ from typing import Any
 
 _REPO_ROOT = Path(__file__).resolve().parents[2]
 _BACKEND = _REPO_ROOT / "apps" / "backend"
-_API_DIR = _REPO_ROOT / "api"
+_API_DIR = _REPO_ROOT / "docs" / "api"
 _FE_OUT = _REPO_ROOT / "apps" / "frontend" / "openapi" / "openapi.json"
 _API_JSON = _API_DIR / "openapi.json"
 _API_YAML = _API_DIR / "openapi.yaml"
@@ -59,7 +59,7 @@ def _to_yaml(value: Any, indent: int = 0) -> str:
 
 
 def main() -> int:
-    """Export OpenAPI schema to api/ and the frontend snapshot."""
+    """Export OpenAPI schema to docs/api and the frontend snapshot."""
     sys.path.insert(0, str(_BACKEND))
     from src import api as api_module
 

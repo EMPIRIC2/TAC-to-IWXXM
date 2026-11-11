@@ -22,7 +22,7 @@ Index: [docs/README.md](docs/README.md). Writing rules:
 | **ui-style** | Living operator UI style guide | [docs/ui-style-guide.md](docs/ui-style-guide.md) | UI/UX tweak norms; cite when polishing the frontend |
 | **system-spec** | Architecture, components, constraints | [docs/architecture.md](docs/architecture.md) | Design parity vs `apps/` + `packages/` + `vendor/` |
 | **tech-spec** | Functional/technical requirements and pass criteria | [docs/technical-requirements.md](docs/technical-requirements.md) | Config names, environment, deploy topology, dependency pins |
-| **api** | HTTP contract | [docs/api-contract.md](docs/api-contract.md) + [api/openapi.json](api/openapi.json) | Request / response / error shapes |
+| **api** | HTTP contract | [docs/api-contract.md](docs/api-contract.md) + [docs/api/openapi.json](docs/api/openapi.json) | Request / response / error shapes |
 | **ops** | Ops contract | [docs/ops-contract.md](docs/ops-contract.md) | Local/staging/prod ops expectations |
 | **domain** | Domain contract (profiles, lint/convert/validate order) | [docs/domain-contract.md](docs/domain-contract.md) + [config/profiles/](config/profiles/) + [config/rules/](config/rules/) | Semantic/exchange profiles and rule catalogs |
 | **integration** | Integration contract | [docs/integration-contract.md](docs/integration-contract.md) | External system wiring |

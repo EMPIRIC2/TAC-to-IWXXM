@@ -5,7 +5,7 @@
 
 This document states how external systems connect to TAC to IWXXM.
 HTTP field shapes remain in [api-contract.md](api-contract.md) and
-[api/openapi.json](../api/openapi.json).
+[api/openapi.json](api/openapi.json).
 
 ## Auth
 
