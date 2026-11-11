@@ -224,29 +224,6 @@
         "title": "AuditRecordOut",
         "type": "object"
       },
-      "AuthResponse": {
-        "description": "Login response.",
-        "properties": {
-          "session": {
-            "anyOf": [
-              {
-                "$ref": "#/components/schemas/SessionResponse"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "user": {
-            "$ref": "#/components/schemas/UserResponse"
-          }
-        },
-        "required": [
-          "user"
-        ],
-        "title": "AuthResponse",
-        "type": "object"
-      },
       "BatchValidationRequest": {
         "description": "Request to validate multiple inputs.",
         "example": {
@@ -1140,27 +1117,6 @@
         ],
         "title": "ComparisonStatus",
         "type": "string"
-      },
-      "ConfirmRequest": {
-        "description": "Email confirmation via GoTrue ``token_hash`` (Auth email link).",
-        "properties": {
-          "token_hash": {
-            "minLength": 1,
-            "title": "Token Hash",
-            "type": "string"
-          },
-          "type": {
-            "default": "email",
-            "minLength": 1,
-            "title": "Type",
-            "type": "string"
-          }
-        },
-        "required": [
-          "token_hash"
-        ],
-        "title": "ConfirmRequest",
-        "type": "object"
       },
       "ConversionIssue": {
         "description": "Structured issue for a single conversion input item.",
@@ -4271,44 +4227,6 @@
         "title": "LintTacResponse",
         "type": "object"
       },
-      "LoginRequest": {
-        "description": "Login credentials.",
-        "properties": {
-          "email": {
-            "title": "Email",
-            "type": "string"
-          },
-          "password": {
-            "title": "Password",
-            "type": "string"
-          }
-        },
-        "required": [
-          "email",
-          "password"
-        ],
-        "title": "LoginRequest",
-        "type": "object"
-      },
-      "LogoutRequest": {
-        "description": "Optional scoped logout body (FileConverter / AdminDashboard).",
-        "properties": {
-          "scope": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "description": "GoTrue logout scope: global, local, or others",
-            "title": "Scope"
-          }
-        },
-        "title": "LogoutRequest",
-        "type": "object"
-      },
       "MappingConfigCreate": {
         "description": "Create a field mapping. Connection secrets are not stored.",
         "properties": {
@@ -4420,20 +4338,6 @@
           }
         },
         "title": "MappingConfigUpdate",
-        "type": "object"
-      },
-      "Message": {
-        "description": "Simple success message.",
-        "properties": {
-          "message": {
-            "title": "Message",
-            "type": "string"
-          }
-        },
-        "required": [
-          "message"
-        ],
-        "title": "Message",
         "type": "object"
       },
       "MetarFamilyVariant": {
@@ -5585,26 +5489,6 @@
         "title": "QualityMetricsSummaryModel",
         "type": "object"
       },
-      "RegisterRequest": {
-        "description": "Registration credentials (Supabase GoTrue signup).",
-        "properties": {
-          "email": {
-            "title": "Email",
-            "type": "string"
-          },
-          "password": {
-            "minLength": 6,
-            "title": "Password",
-            "type": "string"
-          }
-        },
-        "required": [
-          "email",
-          "password"
-        ],
-        "title": "RegisterRequest",
-        "type": "object"
-      },
       "RuleCatalogItem": {
         "description": "One package-owned trust-catalog row.\n\nOptional additive metadata: ``issue_type``, ``source_*``, ``conform_note``.\nNull or omitted when unknown; clients must not invent defaults.",
         "properties": {
@@ -6031,30 +5915,6 @@
         "title": "SelectionOptionsResponse",
         "type": "object"
       },
-      "SessionResponse": {
-        "description": "Session tokens.",
-        "properties": {
-          "access_token": {
-            "title": "Access Token",
-            "type": "string"
-          },
-          "expires_at": {
-            "title": "Expires At",
-            "type": "integer"
-          },
-          "refresh_token": {
-            "title": "Refresh Token",
-            "type": "string"
-          }
-        },
-        "required": [
-          "access_token",
-          "refresh_token",
-          "expires_at"
-        ],
-        "title": "SessionResponse",
-        "type": "object"
-      },
       "TranslationCentreInfo": {
         "description": "Translation Centre identification metadata.",
         "example": {
@@ -6397,30 +6257,6 @@
           "end_date"
         ],
         "title": "TranslationStatisticsRequest",
-        "type": "object"
-      },
-      "UserResponse": {
-        "description": "Auth user projection.",
-        "properties": {
-          "email": {
-            "title": "Email",
-            "type": "string"
-          },
-          "id": {
-            "title": "Id",
-            "type": "string"
-          },
-          "metadata": {
-            "additionalProperties": true,
-            "title": "Metadata",
-            "type": "object"
-          }
-        },
-        "required": [
-          "id",
-          "email"
-        ],
-        "title": "UserResponse",
         "type": "object"
       },
       "ValidateIssueModel": {
@@ -11537,249 +11373,6 @@
         "summary": "Restore Work Session",
         "tags": [
           "Work Sessions"
-        ]
-      }
-    },
-    "/auth/confirm": {
-      "post": {
-        "description": "Confirm email (or related) via GoTrue token_hash verify.",
-        "operationId": "confirm_auth_confirm_post",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ConfirmRequest"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/AuthResponse"
-                }
-              }
-            },
-            "description": "Successful Response"
-          },
-          "422": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            },
-            "description": "Validation Error"
-          }
-        },
-        "summary": "Confirm",
-        "tags": [
-          "Auth"
-        ]
-      }
-    },
-    "/auth/login": {
-      "post": {
-        "description": "Authenticate via Supabase Auth password grant.",
-        "operationId": "login_auth_login_post",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/LoginRequest"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/AuthResponse"
-                }
-              }
-            },
-            "description": "Successful Response"
-          },
-          "422": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            },
-            "description": "Validation Error"
-          }
-        },
-        "summary": "Login",
-        "tags": [
-          "Auth"
-        ]
-      }
-    },
-    "/auth/logout": {
-      "post": {
-        "description": "Sign out via GoTrue; optional body ``{scope}`` for local/global/others.",
-        "operationId": "logout_auth_logout_post",
-        "parameters": [
-          {
-            "in": "header",
-            "name": "authorization",
-            "required": false,
-            "schema": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Authorization"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "anyOf": [
-                  {
-                    "$ref": "#/components/schemas/LogoutRequest"
-                  },
-                  {
-                    "type": "null"
-                  }
-                ],
-                "title": "Request"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Message"
-                }
-              }
-            },
-            "description": "Successful Response"
-          },
-          "422": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            },
-            "description": "Validation Error"
-          }
-        },
-        "summary": "Logout",
-        "tags": [
-          "Auth"
-        ]
-      }
-    },
-    "/auth/me": {
-      "get": {
-        "description": "Return the current user after JWKS verification.",
-        "operationId": "me_auth_me_get",
-        "parameters": [
-          {
-            "in": "header",
-            "name": "authorization",
-            "required": false,
-            "schema": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Authorization"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/UserResponse"
-                }
-              }
-            },
-            "description": "Successful Response"
-          },
-          "422": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            },
-            "description": "Validation Error"
-          }
-        },
-        "summary": "Me",
-        "tags": [
-          "Auth"
-        ]
-      }
-    },
-    "/auth/register": {
-      "post": {
-        "description": "Create an account via Supabase Auth signup.",
-        "operationId": "register_auth_register_post",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/RegisterRequest"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/AuthResponse"
-                }
-              }
-            },
-            "description": "Successful Response"
-          },
-          "422": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            },
-            "description": "Validation Error"
-          }
-        },
-        "summary": "Register",
-        "tags": [
-          "Auth"
         ]
       }
     },
