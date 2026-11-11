@@ -26,7 +26,7 @@ and pass criteria. Behavioral product scope lives in
 | Rule catalogs | [config/rules/](../config/rules) | Issue catalog and provenance map |
 | Coverage inventories | [config/engineering/](../config/engineering) | Unit coverage surface inventories |
 | DOKS manifests | [deploy/doks/](../deploy/doks) | Staging and prod topology |
-| SBOM | [sbom/cyclonedx.json](../sbom/cyclonedx.json) | Allowed dependency inventory |
+| SBOM | [config/sbom/cyclonedx.json](../config/sbom/cyclonedx.json) | Allowed dependency inventory |
 
 ## Platform requirements
 
