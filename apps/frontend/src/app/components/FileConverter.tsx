@@ -4420,7 +4420,7 @@ export function FileConverter({
                               product: detectTacProduct(tac),
                             }));
                             setConverterOpen(true);
-                            setResultsDrawerOpen(false);
+                            // Keep Map/results open after Send to converter (BUG-2026-11-10).
                             document
                               .querySelector('[data-testid="live-convert-panes"]')
                               ?.scrollIntoView({ behavior: 'auto', block: 'start' });

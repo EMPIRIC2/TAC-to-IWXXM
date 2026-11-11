@@ -2166,9 +2166,20 @@ describe('FileConverter Component', () => {
         'METAR KJFK 121755Z 18010KT 10SM',
       );
       expect(screen.getByRole('combobox', { name: 'Product' })).toHaveValue('METAR');
+      // BUG-2026-11-10 map-send-keep-drawer: handoff must not collapse results/Map.
+      expect(screen.getByTestId('convert-results-drawer-shell')).not.toHaveAttribute(
+        'hidden',
+      );
+      expect(screen.getByTestId('convert-results-panel-map')).not.toHaveAttribute(
+        'hidden',
+      );
+      expect(screen.getByTestId('live-world-map')).toBeInTheDocument();
       expect(scroll).toHaveBeenCalled();
       screen.getByTestId('live-convert-panes').removeAttribute('data-testid');
       await user.click(screen.getByTestId('live-map-load-report'));
+      expect(screen.getByTestId('convert-results-drawer-shell')).not.toHaveAttribute(
+        'hidden',
+      );
       HTMLElement.prototype.scrollIntoView = originalScroll;
     });
 
