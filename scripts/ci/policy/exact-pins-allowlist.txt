@@ -1,47 +1,6 @@
 # Temporary EV-049 migration allowlist — clear entries as packages are exact-pinned
 # [Corpus: adr-037] [Corpus: WAIVED — full exact-pin remmediation deferred for existing ranges; decided: EV-049]
 
-apps/e2e/package.json:@playwright/test
-apps/e2e/package.json:@types/node
-apps/e2e/package.json:typescript
-apps/frontend/package.json:@metar/shared
-apps/frontend/package.json:@sentry/react
-apps/frontend/package.json:@supabase/supabase-js
-apps/frontend/package.json:idb
-apps/frontend/package.json:jszip
-apps/frontend/package.json:@eslint/js
-apps/frontend/package.json:@playwright/test
-apps/frontend/package.json:@testing-library/dom
-apps/frontend/package.json:@testing-library/jest-dom
-apps/frontend/package.json:@testing-library/react
-apps/frontend/package.json:@testing-library/user-event
-apps/frontend/package.json:@types/react
-apps/frontend/package.json:@types/react-dom
-apps/frontend/package.json:@vitest/coverage-v8
-apps/frontend/package.json:eslint
-apps/frontend/package.json:eslint-plugin-react-hooks
-apps/frontend/package.json:eslint-plugin-react-refresh
-apps/frontend/package.json:fake-indexeddb
-apps/frontend/package.json:jsdom
-apps/frontend/package.json:openapi-typescript
-apps/frontend/package.json:tsx
-apps/frontend/package.json:typescript
-apps/frontend/package.json:typescript-eslint
-apps/frontend/package.json:vitest
-package.json:@eslint/js
-package.json:eslint
-package.json:eslint-plugin-react-hooks
-package.json:eslint-plugin-react-refresh
-package.json:husky
-package.json:prettier
-package.json:typescript
-package.json:typescript-eslint
-packages/shared/package.json:@eslint/js
-packages/shared/package.json:eslint
-packages/shared/package.json:typescript
-packages/shared/package.json:typescript-eslint
-packages/shared/package.json:@vitest/coverage-v8
-packages/shared/package.json:vitest
 apps/backend/pyproject.toml:metar-shared
 apps/backend/pyproject.toml:tac2iwxxm
 apps/backend/pyproject.toml:tac-decoding
