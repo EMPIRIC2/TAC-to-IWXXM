@@ -13,7 +13,7 @@ from pathlib import Path
 import pytest
 
 ROOT = Path(__file__).resolve().parent.parent
-CONFIG_DIR = ROOT / "deploy" / "profiles"
+CONFIG_DIR = ROOT / "config" / "deploy" / "profiles"
 FRONTEND_DIR = ROOT / "apps" / "frontend"
 
 

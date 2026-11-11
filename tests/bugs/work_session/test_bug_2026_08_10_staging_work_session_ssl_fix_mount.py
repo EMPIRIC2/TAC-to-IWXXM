@@ -10,7 +10,7 @@ from __future__ import annotations
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[3]
-DEPLOY_API = ROOT / "deploy" / "doks" / "base" / "deployment-api.yaml"
+DEPLOY_API = ROOT / "config" / "deploy" / "doks" / "base" / "deployment-api.yaml"
 SERVICE = ROOT / "apps" / "backend" / "src" / "services" / "work_session_service.py"
 
 

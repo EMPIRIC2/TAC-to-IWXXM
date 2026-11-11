@@ -10,7 +10,7 @@ from __future__ import annotations
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[3]
-DEPLOY = ROOT / "deploy" / "doks" / "README.md"
+DEPLOY = ROOT / "config" / "deploy" / "doks" / "README.md"
 STAGING_HOSTS = (
     "https://api.staging.tac-to-iwxxm.com",
     "https://app.staging.tac-to-iwxxm.com",
