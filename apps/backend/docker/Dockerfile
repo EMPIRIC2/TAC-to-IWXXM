@@ -40,7 +40,7 @@ COPY packages/iwxxm-validate packages/iwxxm-validate
 COPY packages/tac-validate packages/tac-validate
 COPY packages/dissemination packages/dissemination
 COPY apps/backend apps/backend
-COPY deploy/profiles deploy/profiles
+COPY config/deploy/profiles config/deploy/profiles
 COPY vendor/schemas vendor/schemas
 # EV-933 — ConversionProfile inspector reads config/profiles/catalog.yaml
 COPY config/profiles config/profiles

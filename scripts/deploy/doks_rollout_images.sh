@@ -43,7 +43,7 @@ kubectl -n "${NS}" set image "deploy/metar-worker" "worker=${WORKER_IMG}"
 # The map translator is a separate Deployment. Create it on staging if this
 # checkout is the first one that ships the manifest. Production is left alone.
 if [[ "${NS}" == *staging* ]]; then
-  sed 's/replicas: 0/replicas: 1/' deploy/doks/base/deployment-map-translator.yaml \
+  sed 's/replicas: 0/replicas: 1/' config/deploy/doks/base/deployment-map-translator.yaml \
     | kubectl -n "${NS}" apply -f -
   kubectl -n "${NS}" set image "deploy/metar-map-translator" "translator=${API_IMG}"
   kubectl -n "${NS}" set env "deploy/metar-api" "LIVE_MAP_REFRESH=0"

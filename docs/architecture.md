@@ -355,7 +355,7 @@ with aliases during one CalVer window. DX tests: ``…``.
 
 - **Purpose**: Shared API types (OpenAPI-derived TS), env URL helpers, constants (CORS origins,
  version enums, general TAC conversion product/profile enums).
-- **Config loader **: Loads `deploy/profiles/{local,prod}.json` by `METAR_CONFIG_ENV`. exposes merged
+- **Config loader **: Loads `config/deploy/profiles/{local,prod}.json` by `METAR_CONFIG_ENV`. exposes merged
  config to Python and TypeScript. secrets resolved from env only.
 - **Source**: REQ-010, .
 
@@ -434,7 +434,7 @@ with aliases during one CalVer window. DX tests: ``…``.
 ### Runtime configuration
 
 - **Purpose**: Non-secret per-environment settings (URLs, CORS, validation flags).
-- **Files**: `deploy/profiles/local.json`, `deploy/profiles/staging.json`, `deploy/profiles/prod.json`, `deploy/profiles/e2e.json` (committed).
+- **Files**: `config/deploy/profiles/local.json`, `config/deploy/profiles/staging.json`, `config/deploy/profiles/prod.json`, `config/deploy/profiles/e2e.json` (committed).
 - **Frontend**: Static host serves `/config.json` (prod copy + publishable key injected at deploy).
 - **BYO (R6)**: Operator deploy env supplies Supabase URL/keys (and optional app
  `DATABASE_URL` for legacy primary upload). **No** in-app paste of **Supabase auth** keys.

@@ -13,7 +13,7 @@ pip install iwxxm-validate
 ```
 
 You need Python 3.12 or newer. The default wheel is pure Python (`lxml`). An
-optional Rust extension can speed validation when you build from source.
+optional Rust extension can make validation faster when you build from source.
 
 ## Start here
 

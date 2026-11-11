@@ -23,9 +23,10 @@ This page describes saved sessions and local storage controls in the web app.
 
 ## Automated ingest
 
-Some sites operate an automated near-real-time ingest worker that feeds the
-store. Treat that pipeline as the primary path for routine traffic when it is
-active. Use manual paste and convert for ad-hoc fixes, training, and recovery.
+Some sites run an automated ingest worker that polls weather feeds and stores
+reports near real time. Treat that ingest path as the primary path for routine
+traffic when the worker is active. Use manual paste and convert for ad-hoc
+fixes, training, and recovery.
 
 Ask your systems contact whether ingest is active for your center.
 

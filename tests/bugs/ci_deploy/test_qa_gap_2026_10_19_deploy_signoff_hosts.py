@@ -1,6 +1,6 @@
 """Regression test: live signoff and rollback name the DOKS hosts.
 
-Tracked deploy truth is ``deploy/doks/README.md`` after EV-repo-docs-cleanup
+Tracked deploy truth is ``config/deploy/doks/README.md`` after EV-repo-docs-cleanup
 (``docs/deploy.md`` removed). Staging hosts are ``api.staging.tac-to-iwxxm.com``
 and ``app.staging.tac-to-iwxxm.com``. [Corpus: tech-spec] [Corpus: tests]
 """

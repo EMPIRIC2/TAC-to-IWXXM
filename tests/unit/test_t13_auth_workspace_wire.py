@@ -49,7 +49,9 @@ class TestT13AuthWorkspaceWire:
         assert "SUPABASE_JWKS_URL=${SUPABASE_JWKS_URL:-}" in compose
 
     def test_render_api_lists_auth_env_keys(self) -> None:
-        secret = (ROOT / "deploy/doks/base/secret-api.yaml").read_text(encoding="utf-8")
+        secret = (ROOT / "config/deploy/doks/base/secret-api.yaml").read_text(
+            encoding="utf-8"
+        )
         assert not (ROOT / "render.yaml").exists()
         assert "SUPABASE_URL" in secret
         assert "SUPABASE_JWKS_URL" in secret

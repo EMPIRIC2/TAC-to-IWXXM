@@ -21,18 +21,23 @@ and pass criteria. Behavioral product scope lives in
 | Surface | Path | Owns |
 |---------|------|------|
 | Environment names | [env-variable.md](env-variable.md) | Exact env var spelling by consumer |
-| Runtime deploy profiles | [deploy/profiles/](../deploy/profiles) | Non-secret local, staging, prod, and e2e JSON |
+| Runtime deploy profiles | [config/deploy/profiles/](../config/deploy/profiles) | Non-secret local, staging, prod, and e2e JSON |
 | Conversion profiles | [config/profiles/](../config/profiles) | Semantic and exchange catalog for the API |
 | Rule catalogs | [config/rules/](../config/rules) | Issue catalog and provenance map |
 | Coverage inventories | [config/engineering/](../config/engineering) | Unit coverage surface inventories |
+<<<<<<< HEAD
 | DOKS manifests | [deploy/doks/](../deploy/doks) | Staging and prod topology |
 | SBOM | [config/sbom/cyclonedx.json](../config/sbom/cyclonedx.json) | Allowed dependency inventory |
+=======
+| DOKS manifests | [config/deploy/doks/](../config/deploy/doks) | Staging and prod topology |
+| SBOM | [sbom/cyclonedx.json](../sbom/cyclonedx.json) | Allowed dependency inventory |
+>>>>>>> 6d387ec7 (docs: move deploy under config and rename user-docs to github-wikia)
 
 ## Platform requirements
 
 | ID | Requirement | Pass criterion |
 |----|-------------|----------------|
-| TR-P01 | Host API, frontend, and worker on DigitalOcean Kubernetes Service (DOKS) | Staging and prod manifests under `deploy/doks/` match running services |
+| TR-P01 | Host API, frontend, and worker on DigitalOcean Kubernetes Service (DOKS) | Staging and prod manifests under `config/deploy/doks/` match running services |
 | TR-P02 | Store product data in DigitalOcean Postgres via `DATABASE_URL` | Work sessions and worker writes use DO Postgres, not Supabase DB |
 | TR-P03 | Use Supabase only to verify Auth JWTs | Auth routes verify JWT; no product PostgREST dependency |
 | TR-P04 | Keep public convert, lint, validate, and disseminate routes free of JWT | Live and unit tests call those routes without Bearer tokens |
@@ -101,7 +106,7 @@ and pass criteria. Behavioral product scope lives in
 When you change runtime, config, or deploy topology:
 
 1. Match env names to [env-variable.md](env-variable.md).
-2. Match service names to [deploy/doks/](../deploy/doks).
+2. Match service names to [config/deploy/doks/](../config/deploy/doks).
 3. Add new libraries to the SBOM, or stop and decide first.
 4. Keep component boundaries aligned with [architecture.md](architecture.md).
 5. Record non-obvious trade-offs in the local decision log or [decisions.csv](decisions.csv).

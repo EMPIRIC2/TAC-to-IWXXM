@@ -7,7 +7,7 @@ from pathlib import Path
 import pytest
 import yaml
 
-DOKS_BASE = Path("deploy/doks/base")
+DOKS_BASE = Path("config/deploy/doks/base")
 REQUIRED_RESOURCES = (
     "namespace.yaml",
     "configmap-api.yaml",

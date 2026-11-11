@@ -8,7 +8,7 @@ Convert TAC to IWXXM does not need a JWT on the current product policy.
 Lint TAC does not need a JWT.
 Validate IWXXM does not need a JWT.
 Decode TAC does not need a JWT.
-Dissemination send paths that the deployment enables do not need a JWT.
+Send (dissemination) routes that your site enables do not need a JWT.
 
 Guests and signed-in users share the same public convert path.
 

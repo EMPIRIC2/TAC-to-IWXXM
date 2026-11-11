@@ -7,7 +7,7 @@ ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 NS="${DOKS_NAMESPACE:-metar-iwxxm}"
 
 echo "DEPRECATED: refusing to create work-session-ssl-fix."
-echo "Remove any leftover mount from deploy/doks/base/deployment-api.yaml (already done)."
+echo "Remove any leftover mount from config/deploy/doks/base/deployment-api.yaml (already done)."
 echo "Optional cleanup: kubectl -n $NS delete configmap work-session-ssl-fix --ignore-not-found"
 echo "Source of truth: $ROOT/apps/backend/src/services/work_session_service.py (in image)."
 exit 1

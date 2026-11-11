@@ -11,16 +11,16 @@ the same products.
 
 | Path | Use when |
 |------|----------|
-| [Web app](https://github.com/EMPIRIC2/TAC-to-IWXXM/wiki/Web-app) | You work in a browser. You convert reports, examine results, and download files. |
+| [Web app](https://github.com/EMPIRIC2/TAC-to-IWXXM/wiki/Web-app) | You work in a browser. You convert reports, read results, and download files. |
 | [HTTP API](https://github.com/EMPIRIC2/TAC-to-IWXXM/wiki/HTTP-API) | You call the conversion service from another system. |
-| [Python packages](https://github.com/EMPIRIC2/TAC-to-IWXXM/wiki/Python-packages) | You convert or examine reports in your own Python code. |
+| [Python packages](https://github.com/EMPIRIC2/TAC-to-IWXXM/wiki/Python-packages) | You convert or read reports in your own Python code. |
 
 ## Start here
 
 1. Read [Getting started](https://github.com/EMPIRIC2/TAC-to-IWXXM/wiki/Getting-started).
 2. Try an [example](https://github.com/EMPIRIC2/TAC-to-IWXXM/wiki/Examples) for the web app, HTTP API, or Python packages.
 3. Open the guide that matches your path.
-4. Keep official products on Convert and Validate results.
+4. Keep Convert and Validate results as the official product output.
 5. Do not treat soft preview alone as an official product.
 
 ## Language

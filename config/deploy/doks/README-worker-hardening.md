@@ -33,9 +33,9 @@ After DOKS cutover, Render worker/API services may be **suspended** and old
 
 - **Now (no Prometheus operator):** run `check_worker_crashloop.sh` in smoke/cron.
 - **When kube-prometheus-stack exists:**  
-  `kubectl apply -f deploy/doks/observability/prometheusrule-metar-worker.yaml`
+  `kubectl apply -f config/deploy/doks/observability/prometheusrule-metar-worker.yaml`
 
 ## Manifest defaults
 
-- `deploy/doks/base/deployment-worker.yaml` — `replicas: 0`
-- `deploy/doks/base/secret-worker.yaml` — stub only; never apply blindly over live secrets
+- `config/deploy/doks/base/deployment-worker.yaml` — `replicas: 0`
+- `config/deploy/doks/base/secret-worker.yaml` — stub only; never apply blindly over live secrets

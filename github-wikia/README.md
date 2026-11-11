@@ -1,13 +1,13 @@
-# User documentation (MkDocs / Read the Docs)
+# Public guide sources (MkDocs / Read the Docs)
 
-Public operator and integrator documentation for TAC to IWXXM.
+This directory holds operator and integrator guides for TAC to IWXXM.
+MkDocs builds the pages. You can also publish the same Markdown to the GitHub Wiki.
 
 | Item | Value |
 |------|-------|
 | Theme | MkDocs built-in `readthedocs` |
 | Cross-page links | Absolute GitHub Wiki URLs (`wiki-link-map.md`) |
 | Language | ASD-STE100 Issue 9 for editable prose |
-| CORPUS | `[Corpus: user-docs]` (opt-in; not a design gate) |
 | Config | `mkdocs.yml`, repo-root `.readthedocs.yaml` |
 | Wiki sidebar | `wiki/_Sidebar.md` (publish into `.wiki.git`) |
 
@@ -29,7 +29,7 @@ Cross-page navigation must point at the Wiki itself:
 See [wiki-link-map.md](wiki-link-map.md). Check with:
 
 ```bash
-python3 user-docs/scripts/check_wiki_links.py
+python3 github-wikia/scripts/check_wiki_links.py
 ```
 
 ## Publish to GitHub Wiki
@@ -49,12 +49,12 @@ still lands on the Wiki.
 ## Publish helpers
 
 ```bash
-python3 user-docs/scripts/check_wiki_links.py
-python3 user-docs/scripts/publish_wiki.py --wiki-dir /tmp/TAC-to-IWXXM.wiki
+python3 github-wikia/scripts/check_wiki_links.py
+python3 github-wikia/scripts/publish_wiki.py --wiki-dir /tmp/TAC-to-IWXXM.wiki
 ```
 
 ## STE note
 
 No tool guarantees ASD-STE100 compliance. A human must review Issue 9 against
-editable prose. Protected regions (fenced code, URLs, TAC/XML samples) stay as
+editable prose. Protected regions (fenced code, URLs, TAC or XML samples) stay as
 written.

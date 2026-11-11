@@ -1,6 +1,6 @@
 # Python packages overview
 
-These packages let you convert and examine aviation weather text in Python
+These packages let you convert and read aviation weather text in Python
 without the web app. Each package is MIT licensed and publishes to the Python
 Package Index (PyPI).
 

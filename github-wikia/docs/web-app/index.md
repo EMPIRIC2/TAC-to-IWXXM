@@ -1,7 +1,7 @@
 # Web app overview
 
 The **web app** is the browser interface for TAC to IWXXM. Operators paste or
-upload TAC, convert the text to IWXXM XML, examine results, and download files.
+upload TAC, convert the text to IWXXM XML, read results, and download files.
 
 ## Public hosts
 

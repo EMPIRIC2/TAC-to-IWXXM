@@ -35,15 +35,16 @@ for row in catalog_entries(limit=10):
     print(row["id"], row["summary"])
 ```
 
-## Glossary overlay
+## Optional glossary file
 
-You can point `TAC_DECODING_GLOSSARY_PATH` at optional glossary YAML. This
+You can set `TAC_DECODING_GLOSSARY_PATH` to an optional glossary YAML file. This
 package is the source of truth for the decode glossary.
 
-## Pack overlays
+## Optional pack files
 
-You can point `TAC_DECODING_PACK_DIR` at a directory of pack YAML files. See the
-monorepo overlay cookbook and the package `examples/` tree for starter files.
+You can set `TAC_DECODING_PACK_DIR` to a directory of pack YAML files. Pack
+files extend decode behavior for named products. See the package `examples/`
+tree for starter files.
 
 ## Links
 
