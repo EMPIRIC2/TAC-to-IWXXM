@@ -73,3 +73,29 @@ def test_typed_errors_carry_status() -> None:
     err = AuthProxyError("boom", status_code=503)
     assert err.status_code == 503
     assert str(JwtVerificationError("bad")) == "bad"
+
+
+@pytest.mark.unit
+def test_login_request_rejects_blank_email() -> None:
+    with pytest.raises(ValidationError):
+        LoginRequest(email="", password="secret")
+
+
+@pytest.mark.unit
+def test_register_request_normalizes_email_domain() -> None:
+    req = RegisterRequest(email="Ops@Example.COM", password="secret1")
+    assert req.email.endswith("@example.com")
+    assert "@" in req.email
+
+
+@pytest.mark.unit
+def test_confirm_request_requires_token_hash() -> None:
+    with pytest.raises(ValidationError):
+        ConfirmRequest(token_hash="", type="email")
+
+
+@pytest.mark.unit
+def test_auth_proxy_error_default_status() -> None:
+    err = AuthProxyError("proxy down")
+    assert err.status_code == 400
+    assert str(err) == "proxy down"

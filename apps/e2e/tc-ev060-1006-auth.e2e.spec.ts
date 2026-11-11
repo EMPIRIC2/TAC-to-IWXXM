@@ -4,10 +4,10 @@
  * Spec: docs/test-plan.md TC-EV060-1006-001..003; [Corpus: product §F31]
  * [Corpus: product §F21] [Corpus: journeys] [Corpus: tests].
  *
- * Register uses a unique @example.invalid address and stubs `/auth/register` so CI
- * does not create production accounts. Login persist still requires E2E_USER_* /
- * ADMIN_*. Logout in CI uses the committed non-production fixture and stubs
- * login plus POST /auth/logout. [Corpus: tests]
+ * Register uses a unique @example.invalid address and stubs Supabase
+ * `/auth/v1/signup` so CI does not create production accounts. Login persist
+ * still requires E2E_USER_* / ADMIN_*. Logout in CI uses the committed
+ * non-production fixture and stubs GoTrue token + logout. [Corpus: tests]
  */
 import fs from 'node:fs';
 import os from 'node:os';
@@ -85,21 +85,8 @@ function unsetLogoutFixtureResult(): string {
 }
 
 async function signOutWithFixture(page: Page, fixture: CiLogoutFixture): Promise<void> {
-  await page.route('**/auth/login', async (route) => {
-    await route.fulfill({
-      status: 200,
-      contentType: 'application/json',
-      body: JSON.stringify({
-        user: { id: 'e2e-logout-fixture', email: fixture.email, metadata: {} },
-        session: {
-          access_token: 'ci-logout-fixture-access',
-          refresh_token: 'ci-logout-fixture-refresh',
-          expires_at: Math.floor(Date.now() / 1000) + 60 * 60,
-        },
-      }),
-    });
-  });
-  await page.route('**/auth/logout', async (route) => {
+  // F31 FE-direct: stub Supabase GoTrue password grant + logout (not API /auth/*).
+  await page.route('**/auth/v1/token**', async (route) => {
     if (route.request().method() !== 'POST') {
       await route.fallback();
       return;
@@ -107,7 +94,23 @@ async function signOutWithFixture(page: Page, fixture: CiLogoutFixture): Promise
     await route.fulfill({
       status: 200,
       contentType: 'application/json',
-      body: JSON.stringify({ message: 'Successfully signed out' }),
+      body: JSON.stringify({
+        access_token: 'ci-logout-fixture-access',
+        refresh_token: 'ci-logout-fixture-refresh',
+        expires_at: Math.floor(Date.now() / 1000) + 60 * 60,
+        token_type: 'bearer',
+        user: { id: 'e2e-logout-fixture', email: fixture.email, user_metadata: {} },
+      }),
+    });
+  });
+  await page.route('**/auth/v1/logout**', async (route) => {
+    if (route.request().method() !== 'POST') {
+      await route.fallback();
+      return;
+    }
+    await route.fulfill({
+      status: 204,
+      body: '',
     });
   });
   await page.route('**/api/v1/work-sessions**', async (route) => {
@@ -207,13 +210,14 @@ test.describe('TC-EV060-1006 — Auth UAT Playwright', () => {
     page,
   }) => {
     const email = `e2e.s070.${Date.now()}@example.invalid`;
-    await page.route('**/auth/register', async (route) => {
+    await page.route('**/auth/v1/signup**', async (route) => {
       await route.fulfill({
         status: 200,
         contentType: 'application/json',
         body: JSON.stringify({
-          user: { id: 'e2e-user', email, metadata: {} },
-          session: null,
+          access_token: null,
+          refresh_token: null,
+          user: { id: 'e2e-user', email, user_metadata: {} },
         }),
       });
     });

@@ -1,8 +1,7 @@
 /**
- * F31 / F21 Amended — optional Auth surface (UJ-003 restored via UJ-046).
+ * F31 — optional Auth + public convert (FE-direct Supabase; JWKS-only API).
  *
- * Spec: docs/test-plan.md TC-F31-003; TC-EV031-003; S038 / EV-031.
- * Supersedes S023 TC-F21-auth-gone negatives (Auth routes restored).
+ * Spec: docs/test-plan.md TC-F31-003; TC-EV031-003.
  */
 import { expect, test } from '@playwright/test';
 import {
@@ -17,12 +16,11 @@ test.describe('F31 — optional Auth + public convert', () => {
     await openSignInFormThenReturn(page);
 
     await expect(page.getByTestId('sign-in-button')).toBeVisible();
-    // Opposite state: the email field and login view are on the sign-in form.
     await expect(page.locator('#email')).toHaveCount(0);
     await expect(page.getByTestId('login-view')).toHaveCount(0);
   });
 
-  test('Auth login rejects bad credentials; work-sessions require JWT', async ({
+  test('API /auth/login is gone; work-sessions still require JWT (F31)', async ({
     request,
   }) => {
     const login = await playwrightApiFetch(request, '/auth/login', {
@@ -31,7 +29,7 @@ test.describe('F31 — optional Auth + public convert', () => {
       data: { email: 'nobody@example.com', password: 'invalid' },
       timeout: 15_000,
     });
-    expect(login.status()).toBe(401);
+    expect(login.status()).toBe(404);
 
     const sessions = await playwrightApiFetch(request, '/api/v1/work-sessions', {
       method: 'GET',

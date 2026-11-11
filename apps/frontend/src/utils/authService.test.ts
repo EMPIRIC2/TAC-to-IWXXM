@@ -262,6 +262,32 @@ describe('authService', () => {
     });
   });
 
+  it('requestPasswordReset surfaces Supabase errors (F31 failure)', async () => {
+    authMock.resetPasswordForEmail.mockResolvedValue({
+      data: {},
+      error: { message: 'rate limited' },
+    });
+    await expect(requestPasswordReset(mockUser.email)).rejects.toThrow('rate limited');
+  });
+
+  it('confirmPasswordReset surfaces Supabase errors (F31 failure)', async () => {
+    authMock.updateUser.mockResolvedValue({
+      data: { user: null },
+      error: { message: 'weak password' },
+    });
+    await expect(confirmPasswordReset('tok', 'x')).rejects.toThrow('weak password');
+  });
+
+  it('login rejects when Supabase returns an error message (F31 failure)', async () => {
+    authMock.signInWithPassword.mockResolvedValue({
+      data: { user: null, session: null },
+      error: { message: 'Invalid login credentials' },
+    });
+    await expect(login({ email: mockUser.email, password: 'wrong' })).rejects.toThrow(
+      'Invalid login credentials',
+    );
+  });
+
   it('isLoggedIn reflects token presence and expiry', () => {
     expect(isLoggedIn()).toBe(false);
     localStorage.setItem('access_token', 'tok');

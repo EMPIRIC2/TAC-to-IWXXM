@@ -9,9 +9,12 @@ import {
   convertManualMetar,
   openConvertDownloadsTab,
   dismissPrivacyNoticeIfPresent,
+  E2E_SUPABASE_ANON_KEY,
+  E2E_SUPABASE_URL,
   E2E_USER_EMAIL,
   E2E_USER_PASSWORD,
   fillManualTac,
+  loginAccessTokenViaSupabase,
   loginAsE2EUser,
   openPublicConverter,
   playwrightApiFetch,
@@ -21,18 +24,17 @@ import {
 const SAMPLE_METAR =
   'METAR KJFK 121251Z 24016G28KT 3SM -RA BR BKN020 OVC040 14/11 A2990';
 
-function accessTokenFromLogin(body: unknown): string {
-  const record = body as {
-    session?: { access_token?: string };
-  };
-  return record.session?.access_token ?? '';
-}
-
 test.describe('T7.1 — F31 hybrid sessions (UJ-045..047)', () => {
-  test('login token is empty when the session is omitted', () => {
-    expect(accessTokenFromLogin({})).toBe('');
-    expect(accessTokenFromLogin({ session: {} })).toBe('');
-    expect(accessTokenFromLogin({ session: { access_token: 'tok' } })).toBe('tok');
+  test('API /auth/login returns 404 after FE-direct cutover (F31)', async ({
+    request,
+  }) => {
+    const login = await playwrightApiFetch(request, '/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: { email: 'a@b.com', password: 'x' },
+      timeout: 15_000,
+    });
+    expect(login.status()).toBe(404);
   });
 
   test('TC-F31-001/002: public convert + guest loss notice (UJ-045)', async ({
@@ -85,18 +87,18 @@ test.describe('T7.1 — F31 hybrid sessions (UJ-045..047)', () => {
     expect(unauth.status()).toBe(401);
 
     test.skip(
-      !E2E_USER_EMAIL || !E2E_USER_PASSWORD,
-      'E2E_USER_* / ADMIN_* required for Auth session CRUD',
+      !E2E_USER_EMAIL ||
+        !E2E_USER_PASSWORD ||
+        !E2E_SUPABASE_URL ||
+        !E2E_SUPABASE_ANON_KEY,
+      'E2E_USER_* + Supabase URL/anon key required for Auth session CRUD',
     );
 
-    const login = await playwrightApiFetch(request, '/auth/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      data: { email: E2E_USER_EMAIL, password: E2E_USER_PASSWORD },
-      timeout: 30_000,
-    });
-    expect(login.status()).toBe(200);
-    const token = accessTokenFromLogin(await login.json());
+    const token = await loginAccessTokenViaSupabase(
+      request,
+      E2E_USER_EMAIL,
+      E2E_USER_PASSWORD,
+    );
     expect(token.length).toBeGreaterThan(20);
 
     const sessions = await playwrightApiFetch(request, '/api/v1/work-sessions', {
