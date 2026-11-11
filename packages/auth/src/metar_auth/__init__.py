@@ -7,9 +7,11 @@ from metar_auth.jwks import (
     jwks_url_from_supabase_url,
     verify_access_token,
 )
+from metar_auth.models import AuthProxyError
 from metar_auth.router import create_auth_router
 
 __all__ = [
+    "AuthProxyError",
     "JwtVerificationError",
     "create_auth_router",
     "jwks_url_from_supabase_url",

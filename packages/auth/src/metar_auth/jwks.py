@@ -11,16 +11,15 @@ import jwt
 from jwt import PyJWKSet
 from jwt.exceptions import InvalidTokenError
 
+from metar_auth.models.errors import JwtVerificationError
 
-class JwtVerificationError(Exception):
-    """
-    Raised when a bearer token fails JWKS verification.
-
-    Attributes
-    ----------
-    args : tuple
-        Arguments passed to the exception constructor.
-    """
+__all__ = [
+    "JwtVerificationError",
+    "clear_jwks_client_cache",
+    "jwks_url_from_supabase_url",
+    "resolve_jwks_url",
+    "verify_access_token",
+]
 
 
 _JWKS_CACHE: dict[str, tuple[float, dict[str, Any]]] = {}

@@ -1,268 +1,41 @@
-"""FastAPI `/auth/*` routers - Auth-only; no admin (ADR-033 / F31)."""
+"""FastAPI `/auth/*` routers - Auth-only; no admin (ADR-033 / F31).
+
+Transitional: models live in ``metar_auth.models``; HTTP will leave this package.
+"""
 
 from __future__ import annotations
 
 from typing import Any
 
 from fastapi import APIRouter, Body, Depends, Header, HTTPException, status
-from pydantic import BaseModel, Field, field_validator
 
-from metar_auth.jwks import JwtVerificationError, verify_access_token
+from metar_auth.jwks import verify_access_token
+from metar_auth.models import (
+    AuthResponse,
+    ConfirmRequest,
+    JwtVerificationError,
+    LoginRequest,
+    LogoutRequest,
+    Message,
+    RegisterRequest,
+    UserResponse,
+    validate_email_permissive,
+)
 from metar_auth.proxy import AuthProxyError, SupabaseAuthProxy
 
-
-def validate_email_permissive(email: str) -> str:
-    """
-    Validate email; allow common development TLDs.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (validate_email_permissive)
-    2
-
-    Parameters
-    ----------
-    email : str
-        Email address.
-
-    Returns
-    -------
-    str
-        Normalized email address.
-    """
-    if not email or "@" not in email:
-        raise ValueError("Invalid email format")
-    local_part, domain = email.rsplit("@", 1)
-    if not local_part or not domain:
-        raise ValueError("Invalid email format")
-    allowed_dev = (".local", ".test", ".localhost", ".dev", ".example")
-    if any(domain.endswith(dev) or domain == dev[1:] for dev in allowed_dev):
-        return email.lower()
-    from email_validator import EmailNotValidError, validate_email
-
-    try:
-        return validate_email(email, check_deliverability=False).normalized
-    except EmailNotValidError as exc:
-        raise ValueError(f"Invalid email: {exc}") from exc
-
-
-class LoginRequest(BaseModel):
-    """
-    Login credentials.
-
-    Attributes
-    ----------
-    email : str
-        Email address.
-    password : str
-        Password.
-    """
-
-    email: str
-    password: str
-
-    @field_validator("email")
-    @classmethod
-    def _email(cls, value: str) -> str:
-        """
-        Internal helper ``_email``.
-
-        Parameters
-        ----------
-        value : object
-            Argument ``value``.
-
-        Returns
-        -------
-        object
-            Return value.
-        """
-        return validate_email_permissive(value)
-
-
-class RegisterRequest(BaseModel):
-    """
-    Registration credentials (Supabase GoTrue signup).
-
-    Attributes
-    ----------
-    email : str
-        Email address.
-    password : str
-        Password.
-    """
-
-    email: str
-    password: str = Field(min_length=6)
-
-    @field_validator("email")
-    @classmethod
-    def _email(cls, value: str) -> str:
-        """
-        Internal helper ``_email``.
-
-        Parameters
-        ----------
-        value : object
-            Argument ``value``.
-
-        Returns
-        -------
-        object
-            Return value.
-        """
-        return validate_email_permissive(value)
-
-
-class ConfirmRequest(BaseModel):
-    """
-    Email confirmation via GoTrue ``token_hash`` (Auth email link).
-
-    Attributes
-    ----------
-    token_hash : str
-        GoTrue email confirmation token hash.
-    type : str, optional
-        GoTrue confirmation type (``email``, ``signup``, ``invite``, ``magiclink``, ``recovery``, or ``email_change``). By default ``"email"``.
-    """
-
-    token_hash: str = Field(min_length=1)
-    type: str = Field(default="email", min_length=1)
-
-    @field_validator("type")
-    @classmethod
-    def _type(cls, value: str) -> str:
-        """
-        Internal helper ``_type``.
-
-        Parameters
-        ----------
-        value : object
-            Argument ``value``.
-
-        Returns
-        -------
-        object
-            Return value.
-        """
-        allowed = {
-            "email",
-            "signup",
-            "invite",
-            "magiclink",
-            "recovery",
-            "email_change",
-        }
-        normalized = value.strip().lower()
-        if normalized not in allowed:
-            raise ValueError(f"Unsupported confirmation type {value!r}")
-        return normalized
-
-
-class UserResponse(BaseModel):
-    """
-    Auth user projection.
-
-    Attributes
-    ----------
-    id : str
-        ID.
-    email : str
-        Email address.
-    metadata : dict[str, Any], optional
-        User metadata. By default an empty dict.
-    """
-
-    id: str
-    email: str
-    metadata: dict[str, Any] = Field(default_factory=dict)
-
-
-class SessionResponse(BaseModel):
-    """
-    Session tokens.
-
-    Attributes
-    ----------
-    access_token : str
-        Access token.
-    refresh_token : str
-        Refresh token.
-    expires_at : int
-        Expiry time.
-    """
-
-    access_token: str
-    refresh_token: str
-    expires_at: int
-
-
-class AuthResponse(BaseModel):
-    """
-    Login response.
-
-    Attributes
-    ----------
-    user : UserResponse
-        User.
-    session : SessionResponse or None, optional
-        Session.
-    """
-
-    user: UserResponse
-    session: SessionResponse | None = None
-
-
-class LogoutRequest(BaseModel):
-    """
-    Optional scoped logout body (FileConverter / AdminDashboard).
-
-    Attributes
-    ----------
-    scope : str or None, optional
-        GoTrue logout scope: ``global``, ``local``, or ``others``. By default ``None``.
-    """
-
-    scope: str | None = Field(
-        default=None,
-        description="GoTrue logout scope: global, local, or others",
-    )
-
-    @field_validator("scope")
-    @classmethod
-    def _scope(cls, value: str | None) -> str | None:
-        """
-        Internal helper ``_scope``.
-
-        Parameters
-        ----------
-        value : object
-            Argument ``value``.
-
-        Returns
-        -------
-        object
-            Return value.
-        """
-        if value is None or value == "":
-            return None
-        allowed = {"global", "local", "others"}
-        if value not in allowed:
-            raise ValueError(f"Unsupported logout scope {value!r}")
-        return value
-
-
-class Message(BaseModel):
-    """
-    Simple success message.
-
-    Attributes
-    ----------
-    message : str
-        Message text.
-    """
-
-    message: str
+# Re-export for tests that import validators/models from the router module.
+__all__ = [
+    "AuthResponse",
+    "ConfirmRequest",
+    "LoginRequest",
+    "LogoutRequest",
+    "Message",
+    "RegisterRequest",
+    "UserResponse",
+    "create_auth_router",
+    "get_token_from_header",
+    "validate_email_permissive",
+]
 
 
 def get_token_from_header(
