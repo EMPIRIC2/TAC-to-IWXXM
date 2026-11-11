@@ -181,19 +181,32 @@ const IWXXM_KEEP_EXT_RE = /\.(xml|iwxxm)$/i;
  * @example
  * const _ = true;
  */
+/**
+ * Last path segment of a filename; trailing separators fall back to the raw name.
+ *
+ * @param pathLike - Path or basename
+ * @returns Non-empty leaf when possible
+ * @example
+ * const _ = true;
+ */
+function fileLeafName(pathLike: string): string {
+  const leaf = pathLike.split(/[\\/]/).pop();
+  return leaf && leaf.length > 0 ? leaf : pathLike;
+}
+
 export function toIwxxmDownloadName(name: string): string {
   const trimmed = name.trim();
   if (!trimmed) {
     return 'download.xml';
   }
-  if (IWXXM_KEEP_EXT_RE.test(trimmed)) {
-    return trimmed.split(/[\\/]/).pop() || 'download.xml';
+  const leaf = fileLeafName(trimmed);
+  if (IWXXM_KEEP_EXT_RE.test(leaf)) {
+    return leaf;
   }
-  if (TAC_SOURCE_EXT_RE.test(trimmed)) {
-    const leaf = trimmed.split(/[\\/]/).pop() || trimmed;
+  if (TAC_SOURCE_EXT_RE.test(leaf)) {
     return leaf.replace(TAC_SOURCE_EXT_RE, '.xml');
   }
-  return `${sanitizeOutputFilename(trimmed)}.xml`;
+  return `${sanitizeOutputFilename(leaf)}.xml`;
 }
 
 /**
@@ -212,7 +225,7 @@ export function toTacSourceName(name: string): string {
   if (!trimmed) {
     return 'download.txt';
   }
-  const leaf = trimmed.split(/[\\/]/).pop() || trimmed;
+  const leaf = fileLeafName(trimmed);
   if (TAC_SOURCE_EXT_RE.test(leaf)) {
     return leaf;
   }
@@ -235,10 +248,11 @@ export function alignConversionZipPairs(
     pairs.map((p) => toIwxxmDownloadName(p.xmlName)),
   );
   return uniqueXml.map((xmlName, index) => {
-    const preferredTac = toTacSourceName(pairs[index]?.tacName ?? '');
-    const tacExt = preferredTac.match(TAC_SOURCE_EXT_RE)?.[0] ?? '.txt';
-    const stem = xmlName.replace(IWXXM_KEEP_EXT_RE, '') || 'download';
-    return { xmlName, tacName: `${stem}${tacExt}` };
+    const preferredTac = toTacSourceName(pairs[index]!.tacName);
+    // toTacSourceName always ends with .txt / .tac / .metar.
+    const tacExt = preferredTac.slice(preferredTac.lastIndexOf('.'));
+    const stem = xmlName.replace(IWXXM_KEEP_EXT_RE, '');
+    return { xmlName, tacName: `${stem.length > 0 ? stem : 'download'}${tacExt}` };
   });
 }
 

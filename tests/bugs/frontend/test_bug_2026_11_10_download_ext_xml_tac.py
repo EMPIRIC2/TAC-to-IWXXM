@@ -50,8 +50,7 @@ def test_bug_2026_11_10_fileconverter_zip_includes_tac_and_xml() -> None:
     src = FILE_CONVERTER.read_text(encoding="utf-8")
     assert "alignConversionZipPairs" in src
     assert "toTacSourceName" in src
-    assert "zip.file(tacName," in src
-    assert "file.originalContent" in src
+    assert "zip.file(tacName, file.originalContent)" in src
     assert "zip.file(xmlName, file.convertedContent)" in src
 
 

@@ -116,6 +116,11 @@ describe('toTacSourceName', () => {
     expect(toTacSourceName('')).toBe('download.txt');
     expect(toTacSourceName('   ')).toBe('download.txt');
     expect(toTacSourceName('path/to/input.tac')).toBe('input.tac');
+    // Trailing separators: empty pop leaf falls back to the raw path-like name.
+    expect(toTacSourceName('folder/')).toBe(`${DEFAULT_OUTPUT_BASENAME}.txt`);
+    expect(toIwxxmDownloadName('folder/')).toBe(`${DEFAULT_OUTPUT_BASENAME}.xml`);
+    expect(toIwxxmDownloadName('dir/already.xml')).toBe('already.xml');
+    expect(toIwxxmDownloadName('dir/obs.tac')).toBe('obs.xml');
     for (const name of ['a.tac', 'b.txt', 'c.xml', 'd', '']) {
       expect(toTacSourceName(name)).toMatch(/\.(txt|metar|tac)$/i);
       expect(toTacSourceName(name)).not.toMatch(/\.xml$/i);
@@ -164,6 +169,12 @@ describe('alignConversionZipPairs', () => {
     expect(pairs[0]).toEqual({ xmlName: 'download.xml', tacName: 'download.txt' });
     expect(pairs[1]).toEqual({ xmlName: 'x.xml', tacName: 'x.txt' });
   });
+
+  it('uses download stem when the XML basename is only an extension', () => {
+    expect(alignConversionZipPairs([{ xmlName: '.xml', tacName: 'keep.tac' }])).toEqual(
+      [{ xmlName: '.xml', tacName: 'download.tac' }],
+    );
+  });
 });
 
 describe('manualDownloadXmlName', () => {
@@ -190,6 +201,7 @@ describe('stemFromFirstTac', () => {
   it('falls back to converted when empty', () => {
     expect(stemFromFirstTac('')).toBe('converted');
     expect(stemFromFirstTac('   ')).toBe('converted');
+    expect(stemFromFirstTac('<>:"|?*')).toBe('converted');
   });
 });
 

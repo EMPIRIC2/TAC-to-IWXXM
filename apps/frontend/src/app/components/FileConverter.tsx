@@ -2144,7 +2144,7 @@ export function FileConverter({
     convertedFiles.forEach((file, index) => {
       const { xmlName, tacName } = pairs[index]!;
       zip.file(xmlName, file.convertedContent);
-      zip.file(tacName, file.originalContent ?? '');
+      zip.file(tacName, file.originalContent);
       if (includeConversionMetadata) {
         zip.file(
           metaSidecarFileName(xmlName),
