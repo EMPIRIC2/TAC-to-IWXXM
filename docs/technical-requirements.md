@@ -82,6 +82,7 @@ and pass criteria. Behavioral product scope lives in
 | TR-E01 | Prefer clear English names on new public package symbols | Package facade tests pass for listed start-here imports |
 | TR-E02 | Keep coverage surface inventories under `config/engineering/` | Coverage inventory unit tests pass |
 | TR-E03 | Do not put ticket or session ids in public import paths | Package READMEs and `__all__` stay free of those ids |
+| TR-E04 | Root `pyproject.toml` is the single source of truth for Ruff, pytest, coverage, and basedpyright; third-party `[project]` / `[dependency-groups]` entries use exact `==` pins from `uv.lock` | `scripts/ci/check-exact-pins.py` passes; member packages inherit root tool tables (extend or omit duplicates) |
 
 ## WMO membership and native crates
 
