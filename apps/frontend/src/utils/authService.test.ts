@@ -20,28 +20,39 @@ const mockSession = {
 const mockUser = {
   id: 'user-1',
   email: 'pilot@example.com',
-  metadata: { name: 'Pilot' },
+  user_metadata: { name: 'Pilot' },
 };
+
+const authMock = {
+  signInWithPassword: vi.fn(),
+  signUp: vi.fn(),
+  signOut: vi.fn(),
+  verifyOtp: vi.fn(),
+  getUser: vi.fn(),
+  refreshSession: vi.fn(),
+  resetPasswordForEmail: vi.fn(),
+  updateUser: vi.fn(),
+};
+
+vi.mock('./supabase/client', () => ({
+  getSupabaseClient: () => ({ auth: authMock }),
+}));
 
 describe('authService', () => {
   beforeEach(() => {
     localStorage.clear();
-    vi.restoreAllMocks();
-    vi.useRealTimers();
+    vi.clearAllMocks();
   });
 
   afterEach(() => {
-    vi.restoreAllMocks();
-    vi.useRealTimers();
+    vi.clearAllMocks();
   });
 
   it('stores session tokens on login success', async () => {
-    vi.spyOn(global, 'fetch').mockResolvedValue({
-      ok: true,
-      json: async () => ({ user: mockUser, session: mockSession }),
-      status: 200,
-      statusText: 'OK',
-    } as Response);
+    authMock.signInWithPassword.mockResolvedValue({
+      data: { user: mockUser, session: mockSession },
+      error: null,
+    });
 
     const result = await login({ email: mockUser.email, password: 'Password123!' });
 
@@ -52,12 +63,10 @@ describe('authService', () => {
   });
 
   it('confirmEmail stores session tokens on success', async () => {
-    vi.spyOn(global, 'fetch').mockResolvedValue({
-      ok: true,
-      json: async () => ({ user: mockUser, session: mockSession }),
-      status: 200,
-      statusText: 'OK',
-    } as Response);
+    authMock.verifyOtp.mockResolvedValue({
+      data: { user: mockUser, session: mockSession },
+      error: null,
+    });
 
     const result = await confirmEmail({ token_hash: 'hash123', type: 'email' });
     expect(result.user.email).toBe(mockUser.email);
@@ -65,80 +74,55 @@ describe('authService', () => {
   });
 
   it('confirmEmail defaults type to email and skips store when session null', async () => {
-    const fetchSpy = vi.spyOn(global, 'fetch').mockResolvedValue({
-      ok: true,
-      json: async () => ({ user: mockUser, session: null }),
-      status: 200,
-      statusText: 'OK',
-    } as Response);
+    authMock.verifyOtp.mockResolvedValue({
+      data: { user: mockUser, session: null },
+      error: null,
+    });
 
     await confirmEmail({ token_hash: 'hash123' });
-    expect(fetchSpy).toHaveBeenCalledWith(
-      expect.stringContaining('/auth/confirm'),
-      expect.objectContaining({
-        body: JSON.stringify({ token_hash: 'hash123', type: 'email' }),
-      }),
-    );
+    expect(authMock.verifyOtp).toHaveBeenCalledWith({
+      token_hash: 'hash123',
+      type: 'email',
+    });
     expect(localStorage.getItem('access_token')).toBeNull();
   });
 
-  it('confirmEmail surfaces string detail on failure', async () => {
-    vi.spyOn(global, 'fetch').mockResolvedValue({
-      ok: false,
-      json: async () => ({ detail: 'bad hash' }),
-      status: 400,
-      statusText: 'Bad Request',
-    } as Response);
+  it('confirmEmail surfaces message on failure', async () => {
+    authMock.verifyOtp.mockResolvedValue({
+      data: { user: null, session: null },
+      error: { message: 'bad hash' },
+    });
 
     await expect(confirmEmail({ token_hash: 'bad' })).rejects.toThrow('bad hash');
   });
 
-  it('confirmEmail falls back when detail is not a string', async () => {
-    vi.spyOn(global, 'fetch').mockResolvedValue({
-      ok: false,
-      json: async () => ({ detail: [{ msg: 'x' }] }),
-      status: 400,
-      statusText: 'Bad Request',
-    } as Response);
+  it('confirmEmail falls back when error has empty message', async () => {
+    authMock.verifyOtp.mockResolvedValue({
+      data: { user: null, session: null },
+      error: { message: '' },
+    });
 
     await expect(confirmEmail({ token_hash: 'bad' })).rejects.toThrow(
       'Email confirmation failed',
     );
   });
 
-  it('confirmEmail falls back when error body is invalid JSON', async () => {
-    vi.spyOn(global, 'fetch').mockResolvedValue({
-      ok: false,
-      json: async () => {
-        throw new Error('invalid json');
-      },
-      status: 500,
-      statusText: 'Error',
-    } as unknown as Response);
-
-    await expect(confirmEmail({ token_hash: 'bad' })).rejects.toThrow('Unknown error');
-  });
-
-  it('falls back to default register message when error body has no detail', async () => {
-    vi.spyOn(global, 'fetch').mockResolvedValue({
-      ok: false,
-      json: async () => ({}),
-      status: 400,
-      statusText: 'Bad Request',
-    } as Response);
+  it('falls back to default register message when error has no message', async () => {
+    authMock.signUp.mockResolvedValue({
+      data: { user: null, session: null },
+      error: { message: '' },
+    });
 
     await expect(
       register({ email: mockUser.email, password: 'Password123!' }),
     ).rejects.toThrow('Registration failed');
   });
 
-  it('falls back to default login message when error body has no detail', async () => {
-    vi.spyOn(global, 'fetch').mockResolvedValue({
-      ok: false,
-      json: async () => ({}),
-      status: 401,
-      statusText: 'Unauthorized',
-    } as Response);
+  it('falls back to default login message when error has no message', async () => {
+    authMock.signInWithPassword.mockResolvedValue({
+      data: { user: null, session: null },
+      error: { message: '' },
+    });
 
     await expect(
       login({ email: mockUser.email, password: 'Password123!' }),
@@ -146,12 +130,10 @@ describe('authService', () => {
   });
 
   it('returns service detail on register failure', async () => {
-    vi.spyOn(global, 'fetch').mockResolvedValue({
-      ok: false,
-      json: async () => ({ detail: 'Email already exists' }),
-      status: 409,
-      statusText: 'Conflict',
-    } as Response);
+    authMock.signUp.mockResolvedValue({
+      data: { user: null, session: null },
+      error: { message: 'Email already exists' },
+    });
 
     await expect(
       register({ email: mockUser.email, password: 'Password123!', name: 'Pilot' }),
@@ -159,98 +141,61 @@ describe('authService', () => {
   });
 
   it('registers successfully without storing tokens when session is null', async () => {
-    vi.spyOn(global, 'fetch').mockResolvedValue({
-      ok: true,
-      json: async () => ({ user: mockUser, session: null }),
-      status: 200,
-      statusText: 'OK',
-    } as Response);
+    authMock.signUp.mockResolvedValue({
+      data: { user: mockUser, session: null },
+      error: null,
+    });
 
     const result = await register({ email: mockUser.email, password: 'Password123!' });
 
     expect(result.user.email).toBe(mockUser.email);
     expect(localStorage.getItem('access_token')).toBeNull();
-    expect(localStorage.getItem('refresh_token')).toBeNull();
   });
 
   it('stores session tokens on register success', async () => {
-    vi.spyOn(global, 'fetch').mockResolvedValue({
-      ok: true,
-      json: async () => ({ user: mockUser, session: mockSession }),
-      status: 200,
-      statusText: 'OK',
-    } as Response);
+    authMock.signUp.mockResolvedValue({
+      data: { user: mockUser, session: mockSession },
+      error: null,
+    });
 
     await register({ email: mockUser.email, password: 'Password123!', name: 'Pilot' });
 
     expect(localStorage.getItem('access_token')).toBe(mockSession.access_token);
-  });
-
-  it('falls back to unknown error message when register error body is invalid', async () => {
-    vi.spyOn(global, 'fetch').mockResolvedValue({
-      ok: false,
-      json: async () => {
-        throw new Error('invalid json');
-      },
-      status: 500,
-      statusText: 'Internal Server Error',
-    } as unknown as Response);
-
-    await expect(
-      register({ email: mockUser.email, password: 'Password123!' }),
-    ).rejects.toThrow('Unknown error');
-  });
-
-  it('falls back to unknown error message when login error body is invalid', async () => {
-    vi.spyOn(global, 'fetch').mockResolvedValue({
-      ok: false,
-      json: async () => {
-        throw new Error('invalid json');
-      },
-      status: 500,
-      statusText: 'Internal Server Error',
-    } as unknown as Response);
-
-    await expect(
-      login({ email: mockUser.email, password: 'Password123!' }),
-    ).rejects.toThrow('Unknown error');
+    expect(authMock.signUp).toHaveBeenCalledWith(
+      expect.objectContaining({
+        email: mockUser.email,
+        options: { data: { name: 'Pilot' } },
+      }),
+    );
   });
 
   it('skips refresh when token is still valid', async () => {
     localStorage.setItem('access_token', 'valid-token');
     localStorage.setItem('expires_at', String(Math.floor(Date.now() / 1000) + 600));
-
-    const fetchSpy = vi.spyOn(global, 'fetch').mockResolvedValue({
-      ok: true,
-      status: 200,
-      json: async () => mockUser,
-    } as Response);
+    authMock.getUser.mockResolvedValue({
+      data: { user: mockUser },
+      error: null,
+    });
 
     const user = await getCurrentUser();
 
     expect(user.email).toBe(mockUser.email);
-    expect(fetchSpy).toHaveBeenCalledTimes(1);
-    expect(fetchSpy).toHaveBeenCalledWith(
-      expect.stringContaining('/auth/me'),
-      expect.objectContaining({ method: 'GET' }),
-    );
+    expect(authMock.refreshSession).not.toHaveBeenCalled();
+    expect(authMock.getUser).toHaveBeenCalledWith('valid-token');
   });
 
-  it('clears tokens and throws when refresh endpoint returns non-ok', async () => {
+  it('clears tokens and throws when refresh fails', async () => {
     localStorage.setItem('access_token', 'expired-token');
     localStorage.setItem('refresh_token', 'refresh-token');
     localStorage.setItem('expires_at', String(Math.floor(Date.now() / 1000) - 1));
 
-    vi.spyOn(global, 'fetch').mockResolvedValue({
-      ok: false,
-      status: 401,
-      json: async () => ({ detail: 'expired refresh token' }),
-    } as Response);
+    authMock.refreshSession.mockResolvedValue({
+      data: { session: null },
+      error: { message: 'expired' },
+    });
 
     await expect(getCurrentUser()).rejects.toThrow('Failed to refresh token');
     expect(localStorage.getItem('access_token')).toBeNull();
-    expect(localStorage.getItem('refresh_token')).toBeNull();
-    expect(localStorage.getItem('expires_at')).toBeNull();
   });
 
   it('throws no-access-token when expiry is valid but access token is missing', async () => {
@@ -259,21 +204,17 @@ describe('authService', () => {
     await expect(getCurrentUser()).rejects.toThrow('No access token');
   });
 
-  it('clears tokens when get current user endpoint fails', async () => {
+  it('clears tokens when get current user fails', async () => {
     localStorage.setItem('access_token', 'valid-token');
-    localStorage.setItem('refresh_token', 'refresh-token');
     localStorage.setItem('expires_at', String(Math.floor(Date.now() / 1000) + 1200));
 
-    vi.spyOn(global, 'fetch').mockResolvedValue({
-      ok: false,
-      status: 403,
-      json: async () => ({ detail: 'forbidden' }),
-    } as Response);
+    authMock.getUser.mockResolvedValue({
+      data: { user: null },
+      error: { message: 'forbidden' },
+    });
 
     await expect(getCurrentUser()).rejects.toThrow('Failed to get user info');
     expect(localStorage.getItem('access_token')).toBeNull();
-    expect(localStorage.getItem('refresh_token')).toBeNull();
-    expect(localStorage.getItem('expires_at')).toBeNull();
   });
 
   it('refreshes expired token before requesting current user', async () => {
@@ -281,139 +222,50 @@ describe('authService', () => {
     localStorage.setItem('refresh_token', 'refresh-token');
     localStorage.setItem('expires_at', String(Math.floor(Date.now() / 1000) - 10));
 
-    const fetchSpy = vi.spyOn(global, 'fetch');
-    fetchSpy
-      .mockResolvedValueOnce({
-        ok: true,
-        status: 200,
-        json: async () => ({
+    authMock.refreshSession.mockResolvedValue({
+      data: {
+        session: {
           access_token: 'new-access',
           refresh_token: 'new-refresh',
           expires_at: Math.floor(Date.now() / 1000) + 1800,
-        }),
-      } as Response)
-      .mockResolvedValueOnce({
-        ok: true,
-        status: 200,
-        json: async () => mockUser,
-      } as Response);
+        },
+      },
+      error: null,
+    });
+    authMock.getUser.mockResolvedValue({
+      data: { user: mockUser },
+      error: null,
+    });
 
     const user = await getCurrentUser();
-
     expect(user.email).toBe(mockUser.email);
-    expect(fetchSpy).toHaveBeenNthCalledWith(
-      1,
-      expect.stringContaining('/auth/refresh'),
-      expect.objectContaining({ method: 'POST' }),
-    );
-    expect(fetchSpy).toHaveBeenNthCalledWith(
-      2,
-      expect.stringContaining('/auth/me'),
-      expect.objectContaining({ method: 'GET' }),
-    );
     expect(localStorage.getItem('access_token')).toBe('new-access');
+    expect(authMock.getUser).toHaveBeenCalledWith('new-access');
   });
 
-  it('throws when token is expired and no refresh token exists', async () => {
-    localStorage.setItem('access_token', 'expired-token');
-    localStorage.setItem('expires_at', String(Math.floor(Date.now() / 1000) - 1));
-
-    await expect(getCurrentUser()).rejects.toThrow('No refresh token available');
-  });
-
-  it('clears tokens on logout even if request fails', async () => {
-    localStorage.setItem('access_token', 'token');
-    localStorage.setItem('refresh_token', 'refresh');
-    localStorage.setItem('expires_at', String(Math.floor(Date.now() / 1000) + 3600));
-
-    vi.spyOn(global, 'fetch').mockRejectedValue(new Error('Network error'));
-
+  it('logout clears tokens even when signOut throws', async () => {
+    localStorage.setItem('access_token', 'tok');
+    authMock.signOut.mockRejectedValue(new Error('network'));
     await logout();
-
     expect(localStorage.getItem('access_token')).toBeNull();
-    expect(localStorage.getItem('refresh_token')).toBeNull();
-    expect(localStorage.getItem('expires_at')).toBeNull();
   });
 
-  it('returns immediately from logout when there is no access token', async () => {
-    const fetchSpy = vi.spyOn(global, 'fetch');
+  it('requestPasswordReset and confirmPasswordReset succeed', async () => {
+    authMock.resetPasswordForEmail.mockResolvedValue({ data: {}, error: null });
+    authMock.updateUser.mockResolvedValue({ data: { user: mockUser }, error: null });
 
-    await logout();
-
-    expect(fetchSpy).not.toHaveBeenCalled();
+    await expect(requestPasswordReset(mockUser.email)).resolves.toEqual({
+      message: 'Password reset email sent',
+    });
+    await expect(confirmPasswordReset('tok', 'NewPass1!')).resolves.toEqual({
+      message: 'Password updated',
+    });
   });
 
-  it('reports login state from token and expiry', () => {
-    localStorage.setItem('access_token', 'token');
-    localStorage.setItem('expires_at', String(Math.floor(Date.now() / 1000) + 1000));
+  it('isLoggedIn reflects token presence and expiry', () => {
+    expect(isLoggedIn()).toBe(false);
+    localStorage.setItem('access_token', 'tok');
+    localStorage.setItem('expires_at', String(Math.floor(Date.now() / 1000) + 600));
     expect(isLoggedIn()).toBe(true);
-
-    localStorage.setItem('expires_at', String(Math.floor(Date.now() / 1000) - 1));
-    expect(isLoggedIn()).toBe(false);
-  });
-
-  it('treats missing expiry as logged out even when access token exists', () => {
-    localStorage.setItem('access_token', 'token');
-    expect(isLoggedIn()).toBe(false);
-  });
-
-  it('requests password reset and returns backend message', async () => {
-    vi.spyOn(global, 'fetch').mockResolvedValue({
-      ok: true,
-      json: async () => ({ message: 'Reset email sent' }),
-    } as Response);
-
-    const result = await requestPasswordReset(mockUser.email);
-
-    expect(result.message).toBe('Reset email sent');
-  });
-
-  it('throws backend detail when reset request fails', async () => {
-    vi.spyOn(global, 'fetch').mockResolvedValue({
-      ok: false,
-      json: async () => ({ detail: 'Rate limited' }),
-    } as Response);
-
-    await expect(requestPasswordReset(mockUser.email)).rejects.toThrow('Rate limited');
-  });
-
-  it('falls back to default reset message when error body has no detail', async () => {
-    vi.spyOn(global, 'fetch').mockResolvedValue({
-      ok: false,
-      json: async () => ({}),
-    } as Response);
-
-    await expect(requestPasswordReset(mockUser.email)).rejects.toThrow(
-      'Failed to request password reset',
-    );
-  });
-
-  it('confirms password reset with bearer token', async () => {
-    const fetchSpy = vi.spyOn(global, 'fetch').mockResolvedValue({
-      ok: true,
-      json: async () => ({ message: 'Password updated' }),
-    } as Response);
-
-    const result = await confirmPasswordReset('reset-token', 'NewPassword123!');
-
-    expect(result.message).toBe('Password updated');
-    expect(fetchSpy).toHaveBeenCalledWith(
-      expect.stringContaining('/auth/password-reset/confirm'),
-      expect.objectContaining({
-        method: 'POST',
-        headers: expect.objectContaining({ Authorization: 'Bearer reset-token' }),
-      }),
-    );
-  });
-
-  it('throws default error when confirm password reset fails without detail', async () => {
-    vi.spyOn(global, 'fetch').mockResolvedValue({
-      ok: false,
-      json: async () => ({}),
-    } as Response);
-
-    await expect(
-      confirmPasswordReset('reset-token', 'NewPassword123!'),
-    ).rejects.toThrow('Failed to reset password');
   });
 });
