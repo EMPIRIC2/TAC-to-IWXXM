@@ -6,8 +6,8 @@ readme = "README.md"
 license = { text = "MIT" }
 requires-python = ">=3.12"
 dependencies = [
-  "msgspec>=0.19",
-  "pyyaml>=6.0",
+  "msgspec==0.21.1",
+  "pyyaml==6.0.3",
 ]
 
 [project.scripts]
@@ -26,15 +26,13 @@ packages = ["src/tac_decoding"]
 "src/tac_decoding/data/packs/metar.yaml" = "tac_decoding/data/packs/metar.yaml"
 "src/tac_decoding/data/packs/speci.yaml" = "tac_decoding/data/packs/speci.yaml"
 
-[tool.pytest.ini_options]
-asyncio_default_fixture_loop_scope = "function"
+# Override (required): package sources are formatted at line-length 120; root is 88.
+[tool.ruff]
+extend = "../../pyproject.toml"
+line-length = 120
 
-filterwarnings = [
-  "error",
-]
-testpaths = ["tests"]
-pythonpath = ["src"]
-
+# Override (required): package coverage CLI uses this file as --cov-config; keep
+# pragma / TYPE_CHECKING excludes that are not on the root report table.
 [tool.coverage.run]
 branch = true
 source = ["src/tac_decoding"]
@@ -47,7 +45,3 @@ exclude_lines = [
   "if __name__ == .__main__.:",
   "if TYPE_CHECKING:",
 ]
-
-[tool.ruff]
-extend = "../../pyproject.toml"
-line-length = 120

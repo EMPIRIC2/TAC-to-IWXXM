@@ -6,8 +6,8 @@ readme = "README.md"
 license = { text = "MIT" }
 requires-python = ">=3.12"
 dependencies = [
-  "lxml>=4.9.0",
-  "msgspec>=0.19",
+  "lxml==6.1.1",
+  "msgspec==0.21.1",
   "pyyaml==6.0.3",
 ]
 
@@ -35,27 +35,7 @@ manifest-path = "rust/Cargo.toml"
 python-source = "src"
 module-name = "iwxxm_validate._rust"
 
-[tool.pytest.ini_options]
-asyncio_default_fixture_loop_scope = "function"
-
-filterwarnings = [
-  "error",
-]
-testpaths = ["tests"]
-pythonpath = ["src"]
-markers = [
-  "unit: fast unit tests",
-  "slow: longer local/CI smokes (clean-venv wheel installs)",
-]
-
-[tool.coverage.run]
-branch = true
-source = ["src/iwxxm_validate"]
-
-[tool.coverage.report]
-fail_under = 100
-show_missing = true
-
+# Override (required): package sources are formatted at line-length 120; root is 88.
 [tool.ruff]
 extend = "../../pyproject.toml"
 line-length = 120

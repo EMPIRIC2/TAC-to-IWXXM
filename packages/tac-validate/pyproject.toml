@@ -6,7 +6,7 @@ readme = "README.md"
 license = { text = "MIT" }
 requires-python = ">=3.12"
 dependencies = [
-  "msgspec>=0.19",
+  "msgspec==0.21.1",
   "metar-shared==2026.11.5",
   "pyyaml==6.0.3",
 ]
@@ -24,26 +24,7 @@ build-backend = "hatchling.build"
 [tool.hatch.build.targets.wheel]
 packages = ["src/tac_validate"]
 
-[tool.pytest.ini_options]
-asyncio_default_fixture_loop_scope = "function"
-
-filterwarnings = [
-  "error",
-]
-testpaths = ["tests"]
-pythonpath = ["src"]
-markers = [
-  "slow: longer local/CI smokes (clean-venv wheel installs)",
-]
-
-[tool.coverage.run]
-branch = true
-source = ["src/tac_validate"]
-
-[tool.coverage.report]
-fail_under = 100
-show_missing = true
-
+# Override (required): package sources are formatted at line-length 120; root is 88.
 [tool.ruff]
 extend = "../../pyproject.toml"
 line-length = 120
