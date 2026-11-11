@@ -25,5 +25,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: cyclonedx-sbom
-          path: sbom/cyclonedx.json
+          path: config/sbom/cyclonedx.json
           if-no-files-found: ignore

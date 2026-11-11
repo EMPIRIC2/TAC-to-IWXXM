@@ -31,7 +31,7 @@ Index: [docs/README.md](docs/README.md). Writing rules:
 | **tests** | Test matrix and gates | [docs/test-plan.csv](docs/test-plan.csv) + [docs/test-plan.md](docs/test-plan.md) | Parity checks, smoke test-case IDs, CI expectations |
 | **raid** | Risks, assumptions, issues, decisions | [docs/risks.csv](docs/risks.csv), [docs/assumptions.csv](docs/assumptions.csv), [docs/issues.csv](docs/issues.csv), [docs/decisions.csv](docs/decisions.csv) | Evolve/RAID tracking |
 | **doc-standards** | Documentation standards | [docs/documentation-standards.md](docs/documentation-standards.md) | STE + avoid-ai + corpus citation rules |
-| **deps** | Live dependency inventory | [sbom/cyclonedx.json](sbom/cyclonedx.json) | Allowed packages; regenerate with `make sbom` |
+| **deps** | Live dependency inventory | [config/sbom/cyclonedx.json](config/sbom/cyclonedx.json) | Allowed packages; regenerate with `make sbom` |
 | **env** | Environment variable names | [docs/env-variable.md](docs/env-variable.md) | Env var contract by layer |
 | **changelog** | Release notes | [CHANGELOG.md](CHANGELOG.md) | Release history |
 
@@ -47,7 +47,7 @@ Compatibility pointers: `docs/spec.md` → architecture; `docs/tech-spec.md` →
 | [config/rules/](config/rules/) | Issue catalog and provenance map |
 | [config/engineering/](config/engineering/) | Coverage surface inventories |
 | [deploy/doks/](deploy/doks/) | DOKS deploy manifests and operator notes |
-| [sbom/cyclonedx.json](sbom/cyclonedx.json) | CycloneDX SBOM (CI drift-checked on push) |
+| [config/sbom/cyclonedx.json](config/sbom/cyclonedx.json) | CycloneDX SBOM (CI drift-checked on push) |
 
 ## Local opt-in (not in git; keep local copies)
 
