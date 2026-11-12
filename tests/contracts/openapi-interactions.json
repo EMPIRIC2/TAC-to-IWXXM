@@ -792,25 +792,6 @@
     },
     {
       "method": "GET",
-      "path": "/auth/me",
-      "status": 200,
-      "request_fields": [],
-      "response_fields": [
-        "email",
-        "id"
-      ],
-      "covered_by": "apps/backend/tests/unit/test_tc_f21_auth_gone_unit.py"
-    },
-    {
-      "method": "GET",
-      "path": "/auth/me",
-      "status": 422,
-      "request_fields": [],
-      "response_fields": [],
-      "covered_by": "apps/backend/tests/unit/test_tc_f21_auth_gone_unit.py"
-    },
-    {
-      "method": "GET",
       "path": "/health",
       "status": 200,
       "request_fields": [],
@@ -1692,94 +1673,6 @@
       "request_fields": [],
       "response_fields": [],
       "covered_by": "tests/bugs/qa_gap/test_qa_gap_2026_10_19_openapi_path_templates.py"
-    },
-    {
-      "method": "POST",
-      "path": "/auth/confirm",
-      "status": 200,
-      "request_fields": [
-        "token_hash"
-      ],
-      "response_fields": [
-        "user"
-      ],
-      "covered_by": "apps/backend/tests/unit/test_auth_router_mount_unit.py"
-    },
-    {
-      "method": "POST",
-      "path": "/auth/confirm",
-      "status": 422,
-      "request_fields": [
-        "token_hash"
-      ],
-      "response_fields": [],
-      "covered_by": "apps/backend/tests/unit/test_auth_router_mount_unit.py"
-    },
-    {
-      "method": "POST",
-      "path": "/auth/login",
-      "status": 200,
-      "request_fields": [
-        "email",
-        "password"
-      ],
-      "response_fields": [
-        "user"
-      ],
-      "covered_by": "apps/backend/tests/unit/test_tc_f21_auth_gone_unit.py"
-    },
-    {
-      "method": "POST",
-      "path": "/auth/login",
-      "status": 422,
-      "request_fields": [
-        "email",
-        "password"
-      ],
-      "response_fields": [],
-      "covered_by": "apps/backend/tests/unit/test_tc_f21_auth_gone_unit.py"
-    },
-    {
-      "method": "POST",
-      "path": "/auth/logout",
-      "status": 200,
-      "request_fields": [],
-      "response_fields": [
-        "message"
-      ],
-      "covered_by": "apps/backend/tests/unit/test_auth_router_mount_unit.py"
-    },
-    {
-      "method": "POST",
-      "path": "/auth/logout",
-      "status": 422,
-      "request_fields": [],
-      "response_fields": [],
-      "covered_by": "apps/backend/tests/unit/test_auth_router_mount_unit.py"
-    },
-    {
-      "method": "POST",
-      "path": "/auth/register",
-      "status": 200,
-      "request_fields": [
-        "email",
-        "password"
-      ],
-      "response_fields": [
-        "user"
-      ],
-      "covered_by": "apps/backend/tests/unit/test_auth_router_mount_unit.py"
-    },
-    {
-      "method": "POST",
-      "path": "/auth/register",
-      "status": 422,
-      "request_fields": [
-        "email",
-        "password"
-      ],
-      "response_fields": [],
-      "covered_by": "apps/backend/tests/unit/test_auth_router_mount_unit.py"
     },
     {
       "method": "PUT",

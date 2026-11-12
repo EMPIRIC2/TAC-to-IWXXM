@@ -47,22 +47,13 @@ class TestH0iCorsPreflight:
         allow_methods = response.headers.get("access-control-allow-methods", "")
         assert "POST" in allow_methods.upper()
 
-    def test_options_auth_login_present(self, h0i_client: TestClient) -> None:
-        """F31: /auth/login is mounted on the API host (no separate auth service)."""
-        response = h0i_client.options(
-            "/auth/login",
-            headers={
-                "Origin": BROWSER_ORIGIN,
-                "Access-Control-Request-Method": "POST",
-            },
-        )
-        assert response.status_code in {200, 405}
+    def test_auth_login_not_mounted(self, h0i_client: TestClient) -> None:
+        """F31 FE-direct: API does not mount /auth/login (browser → Supabase)."""
         post = h0i_client.post(
             "/auth/login",
             json={"email": "h0i@example.test", "password": "x"},
         )
-        # Mounted but may 503 without SUPABASE_URL / publishable key in unit env.
-        assert post.status_code != 404
+        assert post.status_code == 404
 
     def test_options_work_sessions_jwt_gated(self, h0i_client: TestClient) -> None:
         """F31: work-sessions mounted; unauthenticated GET is 401/403 (not public 200)."""
@@ -127,12 +118,12 @@ class TestH0iPublicConversionWiring:
         assert payload["successful"] >= 1
         assert "<iwxxm" in payload["results"][0]["content"].lower()
 
-    def test_auth_login_route_mounted(self, h0i_client: TestClient) -> None:
+    def test_auth_login_route_absent(self, h0i_client: TestClient) -> None:
         response = h0i_client.post(
             "/auth/login",
             json={"email": "h0i@example.test", "password": "SecretPass1!"},
         )
-        assert response.status_code != 404
+        assert response.status_code == 404
 
 
 class TestH0iPublicEndpoints:

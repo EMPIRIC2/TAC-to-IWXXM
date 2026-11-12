@@ -142,14 +142,15 @@ async function signOutWithFixture(page: Page, fixture: CiLogoutFixture): Promise
   await expect(localSignOut).toBeVisible();
   const logoutResponse = page.waitForResponse(
     (response) =>
-      response.url().includes('/auth/logout') && response.request().method() === 'POST',
+      response.url().includes('/auth/v1/logout') &&
+      response.request().method() === 'POST',
     { timeout: 15_000 },
   );
   await localSignOut.click();
   const loggedOut = await logoutResponse;
   expect(
     loggedOut.ok(),
-    `POST /auth/logout returned ${loggedOut.status()}`,
+    `POST Supabase /auth/v1/logout returned ${loggedOut.status()}`,
   ).toBeTruthy();
   await expect(page.getByTestId('sign-in-button')).toBeVisible({ timeout: 20_000 });
   // Opposite state: the logout button is visible and clicked before sign-out.
@@ -275,7 +276,7 @@ test.describe('TC-EV060-1006 — Auth UAT Playwright', () => {
       await expect(localSignOut).toBeVisible();
       const logoutResponse = page.waitForResponse(
         (response) =>
-          response.url().includes('/auth/logout') &&
+          response.url().includes('/auth/v1/logout') &&
           response.request().method() === 'POST',
         { timeout: 15_000 },
       );
@@ -283,7 +284,7 @@ test.describe('TC-EV060-1006 — Auth UAT Playwright', () => {
       const loggedOut = await logoutResponse;
       expect(
         loggedOut.ok(),
-        `POST /auth/logout returned ${loggedOut.status()}`,
+        `POST Supabase /auth/v1/logout returned ${loggedOut.status()}`,
       ).toBeTruthy();
       await expect(page.getByTestId('sign-in-button')).toBeVisible({ timeout: 20_000 });
       // Opposite state: the logout button is visible and clicked before sign-out.

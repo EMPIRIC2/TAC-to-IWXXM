@@ -9,7 +9,7 @@ to verify endpoint availability and basic functionality. Suitable for:
 
 Configuration via environment variables:
 - LIVE_API_URL: Base URL of deployed API (required)
-- ADMIN_EMAIL / ADMIN_PASSWORD: Credentials for runtime JWT via POST /auth/login
+- ADMIN_EMAIL / ADMIN_PASSWORD: Credentials for runtime JWT via Supabase GoTrue
 - LIVE_API_TIMEOUT: Request timeout in seconds (default: 30)
 
 Run with: pytest -m live_api backend/tests/test_live_api_health.py -v
@@ -152,12 +152,12 @@ class TestLiveAPIAuthentication:
 
     @pytest.mark.live_api
     @pytest.mark.asyncio
-    async def test_auth_me_endpoint(self, live_client, verify_live_api_configured):
-        """Test /auth/me returns authenticated user profile."""
-        response = await live_client.get("/auth/me")
+    async def test_work_sessions_with_runtime_jwt(self, live_client, verify_live_api_configured):
+        """JWT from GoTrue authorizes work-sessions (F31; /auth/me removed)."""
+        response = await live_client.get("/api/v1/work-sessions")
         assert response.status_code == 200, response.text
         data = response.json()
-        assert "email" in data or "user" in data or "id" in data
+        assert "items" in data or isinstance(data, list)
 
     @pytest.mark.live_api
     @pytest.mark.asyncio

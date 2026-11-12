@@ -63,20 +63,9 @@ def test_live_soft_delete_and_restore_round_trip() -> None:
     ).rstrip("/")
     email = os.environ.get("E2E_USER_EMAIL") or os.environ["ADMIN_EMAIL"]
     password = os.environ.get("E2E_USER_PASSWORD") or os.environ["ADMIN_PASSWORD"]
-    login = httpx.post(
-        f"{base}/auth/login",
-        json={
-            "email": email,
-            "password": password,
-        },
-        timeout=30.0,
-    )
-    if login.status_code != 200:
-        pytest.skip(f"login failed: {login.status_code}")
-    payload = login.json()
-    token = (payload.get("session") or {}).get("access_token") or payload.get(
-        "access_token"
-    )
+    from tests.live_fixtures import login_with_backoff
+
+    token = login_with_backoff(base, email, password)
     headers = {"Authorization": f"Bearer {token}"}
 
     created = httpx.post(
