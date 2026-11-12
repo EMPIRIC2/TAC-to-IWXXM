@@ -72,7 +72,7 @@ describe('mapFullPage failure paths', () => {
     await user.click(screen.getByTestId('mock-send-whitespace-tac'));
     expect(onOpenPlace).toHaveBeenCalledWith({
       ...emptyReportsPlace,
-      reports: [{ tac: '   ', observed_at: null }],
+      reports: [{ tac: '   ', observed_at: '' }],
     });
     expect(onOpenPlace).toHaveBeenCalledTimes(2);
   });
