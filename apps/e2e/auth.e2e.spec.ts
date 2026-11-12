@@ -16,7 +16,9 @@ test.describe('F31 — optional Auth + public convert', () => {
     await openSignInFormThenReturn(page);
 
     await expect(page.getByTestId('sign-in-button')).toBeVisible();
+    // Opposite state: the email field is on the sign-in form (shown then dismissed).
     await expect(page.locator('#email')).toHaveCount(0);
+    // Opposite state: login-view is visible while the sign-in form is open.
     await expect(page.getByTestId('login-view')).toHaveCount(0);
   });
 
