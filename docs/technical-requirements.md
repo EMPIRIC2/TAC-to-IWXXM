@@ -1,7 +1,7 @@
 # Technical requirements
 
 > Index: [README.md](README.md) 
-> Last updated: 2026-11-10
+> Last updated: 2026-11-12
 
 This document states functional and technical requirements, required decisions,
 and pass criteria. Behavioral product scope lives in
@@ -27,6 +27,7 @@ and pass criteria. Behavioral product scope lives in
 | Coverage inventories | [config/engineering/](../config/engineering) | Unit coverage surface inventories |
 | DOKS manifests | [config/deploy/doks/](../config/deploy/doks) | Staging and prod topology |
 | SBOM | [config/sbom/cyclonedx.json](../config/sbom/cyclonedx.json) | Allowed dependency inventory |
+| Quality tooling | [config/tooling/](../config/tooling) | Config for import-linter, Knip, dependency-cruiser, and the other quality tools (see [Quality tooling inventory](#quality-tooling-inventory)) |
 
 ## Platform requirements
 
@@ -46,6 +47,35 @@ and pass criteria. Behavioral product scope lives in
 | TR-Q02 | Every `scripts/*.sh` maps to a bats test | Script coverage inventory matches files |
 | TR-Q03 | Frontend Vitest coverage stays at 100% global thresholds | `pnpm --filter @metar/frontend run test:coverage` passes |
 | TR-Q04 | Contract and mutation gates stay in CI | Contract and mutation jobs run on the required schedules |
+| TR-Q05 | Wave 1 quality tools run fail-closed in CI (import-linter, per-member deptry, dependency-cruiser, Knip, oasdiff, Schemathesis, coverage denominator audit) | `make check-fast` and the quality-tooling CI job pass on PRs to `stage` (TC-QV-001 to TC-QV-009) |
+| TR-Q06 | Do not exclude whole hand-written files or directories from lint, typecheck, or coverage; prefer line-level ignores; generated trees (for example `iwxxm_xsd/v*`) may stay excluded when documented | Root and member configs have no whole-file hand-written omits; generated excludes are documented (TC-QV-008) |
+| TR-Q07 | Pytest uses `--strict-config` and `xfail_strict`; the root `Coverage collection returned no data` warning filter is mutation-local only | Root `pyproject.toml` matches; mutation script keeps the advisory `-W` (TC-QV-009) |
+| TR-Q08 | Wave 2 security scanners (OSV-Scanner, Gitleaks, actionlint) run in CI; OpenGrep project baseline stays required | Security workflow or quality-tooling companion posts results; clear violations fail the job (TC-QV-010 to TC-QV-012) |
+
+### Quality tooling inventory
+
+No standing dependency inventory file exists. [config/sbom/cyclonedx.json](../config/sbom/cyclonedx.json)
+is the live inventory. Run `make sbom` after the tool pins land, then commit the result.
+Tool configs live in [config/tooling/](../config/tooling). Do not add copies at the
+repository root.
+
+| Tool | Wave | Requirement | Scope | State |
+|------|------|-------------|-------|-------|
+| import-linter | 1 | TR-Q05 | Python layer contracts | Config and CI job landed |
+| deptry | 1 | TR-Q05 | Python dependency use, per workspace member | Pinned with per-member config and CI |
+| dependency-cruiser | 1 | TR-Q05 | Frontend import rules | Pinned with config and CI |
+| Knip | 1 | TR-Q05 | Unused frontend files and exports | Pinned with config and CI |
+| oasdiff | 1 | TR-Q05 | OpenAPI breaking-change diff against `docs/api/` | Script and CI landed |
+| OSV-Scanner | 2 | TR-Q08 | Known vulnerabilities in lockfiles | Install script updated; CI planned |
+| Gitleaks | 2 | TR-Q08 | Secret scan (config exists) | Install script updated; CI planned |
+| actionlint | 2 | TR-Q08 | GitHub Actions workflow lint | Install script updated; CI planned |
+| Vulture | 2 | None yet | Dead Python code | Planned, advisory |
+| jscpd | 2 | None yet | Duplicate code | Planned, advisory |
+| Radon | 2 | None yet | Python complexity | Planned, advisory |
+
+Vulture, jscpd, and Radon stay advisory until a clean baseline exists. Add a TR row
+when one of them becomes fail-closed. Tools not listed here are deferred and have no
+requirement id.
 
 ## Conversion and validation
 

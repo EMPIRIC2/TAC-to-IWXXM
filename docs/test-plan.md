@@ -2,7 +2,7 @@
 
 > Matrix: [test-plan.csv](test-plan.csv) 
 > Journeys: [user-journeys.csv](user-journeys.csv) 
-> Last updated: 2026-11-10
+> Last updated: 2026-11-12
 
 The CSV matrix is the source of truth for test-case and coverage rows.
 This file defines columns, test tiers, and linkage rules.
@@ -33,6 +33,20 @@ This file defines columns, test tiers, and linkage rules.
 | Live browser | Playwright operator journeys | `make test-live-e2e` |
 | Live bulletin | Multi-report bulletin split, convert, and Schematron | `make test-live-bulletin` |
 | Full live sequence | Connectivity, then API, then browser, then bulletin | `make test-live` |
+
+## Quality tooling checks
+
+Rows `TC-QV-001` to `TC-QV-012` in [test-plan.csv](test-plan.csv) cover the quality
+tooling suite. Gate label: `quality-tooling`. Requirements: TR-Q05 to TR-Q08 in
+[technical-requirements.md](technical-requirements.md).
+
+| Wave | Rows | Checks |
+|------|------|--------|
+| 1 | `TC-QV-001` to `TC-QV-009` | import-linter, deptry, dependency-cruiser, Knip, oasdiff, Schemathesis report, coverage denominator audit, no whole-file excludes, pytest strict config |
+| 2 | `TC-QV-010` to `TC-QV-012` | OSV-Scanner, Gitleaks, actionlint |
+
+All rows have status `documented`. Change a row to `active` when its Make target and CI
+job exist. Run `make check-fast` for the local subset.
 
 ## Rules
 

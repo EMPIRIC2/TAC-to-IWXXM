@@ -24,7 +24,9 @@ def test_resolve_inherit_tree_rejects_blank_product_vs_named_root() -> None:
 
 def test_resolve_inherit_tree_rejects_case_mismatched_product_family() -> None:
     root = InheritNode(id="TAF")
-    with pytest.raises(ValueError, match=r"inherit root id 'TAF' does not match product 'METAR'"):
+    with pytest.raises(
+        ValueError, match=r"inherit root id 'TAF' does not match product 'METAR'"
+    ):
         resolve_inherit_tree(root, product="metar")
 
 
@@ -40,9 +42,9 @@ def test_merge_overrides_replace_allow_drops_parent_codes() -> None:
     child = LayerOverrides(allow_codes=frozenset({"C"}), replace_allow=True)
     merged = merge_overrides(parent, child)
     assert merged.allow_codes == frozenset({"C"})
-    assert merge_code_sets(frozenset({"A"}), frozenset({"B"}), replace=True) == frozenset(
-        {"B"}
-    )
+    assert merge_code_sets(
+        frozenset({"A"}), frozenset({"B"}), replace=True
+    ) == frozenset({"B"})
 
 
 def test_resolve_whitespace_only_layers_are_skipped() -> None:
