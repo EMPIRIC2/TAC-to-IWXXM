@@ -207,6 +207,59 @@ describe('authService', () => {
     expect(authMock.refreshSession).not.toHaveBeenCalled();
   });
 
+  it('maps sparse session and user fields after refresh', async () => {
+    localStorage.setItem('access_token', 'expired-token');
+    localStorage.setItem('refresh_token', 'refresh-token');
+    localStorage.setItem('expires_at', String(Math.floor(Date.now() / 1000) - 10));
+
+    authMock.refreshSession.mockResolvedValue({
+      data: {
+        session: {
+          access_token: 'sparse-access',
+          refresh_token: undefined,
+          expires_at: undefined,
+        },
+      },
+      error: null,
+    });
+    authMock.getUser.mockResolvedValue({
+      data: { user: { id: undefined, email: undefined, user_metadata: undefined } },
+      error: null,
+    });
+
+    const user = await getCurrentUser();
+    expect(user).toEqual({ id: '', email: '', metadata: {} });
+    expect(localStorage.getItem('access_token')).toBe('sparse-access');
+    expect(localStorage.getItem('refresh_token')).toBe('');
+    expect(localStorage.getItem('expires_at')).toBe('0');
+  });
+
+  it('registers with username metadata and skips store when login has no session', async () => {
+    authMock.signUp.mockResolvedValue({
+      data: { user: mockUser, session: mockSession },
+      error: null,
+    });
+    await register({
+      email: mockUser.email,
+      password: 'Password123!',
+      username: 'pilot1',
+    });
+    expect(authMock.signUp).toHaveBeenCalledWith(
+      expect.objectContaining({
+        options: { data: { username: 'pilot1' } },
+      }),
+    );
+
+    authMock.signInWithPassword.mockResolvedValue({
+      data: { user: mockUser, session: null },
+      error: null,
+    });
+    localStorage.clear();
+    const result = await login({ email: mockUser.email, password: 'Password123!' });
+    expect(result.session).toBeNull();
+    expect(localStorage.getItem('access_token')).toBeNull();
+  });
+
   it('throws no-access-token when expiry is valid but access token is missing', async () => {
     localStorage.setItem('expires_at', String(Math.floor(Date.now() / 1000) + 1200));
 
@@ -302,5 +355,32 @@ describe('authService', () => {
     localStorage.setItem('access_token', 'tok');
     localStorage.setItem('expires_at', String(Math.floor(Date.now() / 1000) + 600));
     expect(isLoggedIn()).toBe(true);
+  });
+
+  it('treats missing expiry as expired and skips store when refresh session has no access token', async () => {
+    localStorage.setItem('access_token', 'tok');
+    expect(isLoggedIn()).toBe(false);
+
+    localStorage.setItem('refresh_token', 'refresh-token');
+    localStorage.setItem('expires_at', String(Math.floor(Date.now() / 1000) - 10));
+    authMock.refreshSession.mockResolvedValue({
+      data: {
+        session: {
+          access_token: '',
+          refresh_token: 'refresh-token',
+          expires_at: Math.floor(Date.now() / 1000) + 600,
+        },
+      },
+      error: null,
+    });
+    authMock.getUser.mockResolvedValue({
+      data: { user: mockUser },
+      error: null,
+    });
+
+    const user = await getCurrentUser();
+    expect(user.email).toBe(mockUser.email);
+    // Refresh returned no usable access token, so the prior token remains.
+    expect(localStorage.getItem('access_token')).toBe('tok');
   });
 });
