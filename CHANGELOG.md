@@ -2,6 +2,53 @@
 
 All notable user-facing and deployable changes for TAC to IWXXM.
 
+## 2026-11-12 — Production release
+
+Promote `stage` → `main` after staging validation since the 2026-11-05 cut
+(`d9254709` tip). Live-eval provenance unchanged from the prior cut: session
+`live-tac-eval-30d-2026-11-04-eve` (5996 reports; convert 5995/5996 ok; IWXXM
+validate 5994/5996 ok). Family quality packs + Staging smoke green on tip.
+
+### Added
+- Decode visuals full-page map parity (F37)
+  ([#1617](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1617)).
+- Code names dictionary operator tab
+  ([#1616](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1616)).
+- Plain-language docs spine + config / deploy / SBOM / OpenAPI relocates
+  ([#1597](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1597)–[#1604](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1604),
+  [#1612](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1612)–[#1613](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1613)).
+- Exact-pin Python and JS workspace dependencies
+  ([#1605](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1605)–[#1608](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1608)).
+
+### Changed
+- Rename `metar_auth` package to `auth` (M4)
+  ([#1614](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1614)).
+- Strip tracking IDs from CI and test naming
+  ([#1610](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1610)).
+- CalVer CD docs story for DOKS + GHCR + PyPI
+  ([#1589](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1589)).
+
+### Fixed
+- Convert chrome / drawer / CodeMirror / E2E locator hardenings after the
+  2026-11-05 promote
+  ([#1575](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1575)–[#1584](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1584),
+  [#1591](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1591)–[#1600](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1600),
+  [#1615](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1615)).
+- Sticky Recent work rail and Live decode drawer fill
+  ([#1594](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1594),
+  [#1596](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1596)).
+
+### Packages
+- **none** — keep publishable pins already on stage:
+  `tac2iwxxm` / `tac-validate` / `iwxxm-validate` **2026.11.5.1**,
+  `tac-decoding` **2026.11.5** (no new PyPI bump this promote).
+
+### Deploy
+- Release-prep on `stage` before promote; Staging smoke must be green on tip.
+- After `stage` → `main` merge + tip CI green: tag `v2026.11.12-deploy` for prod
+  (API / WebApp / worker Docker via GHCR `main-latest`).
+- PyPI: no new package tags this promote (see Packages above).
+
 ## 2026-11-05 — Production release
 
 Promote `stage` → `main` after staging validation since the 2026-09-22 cut.
