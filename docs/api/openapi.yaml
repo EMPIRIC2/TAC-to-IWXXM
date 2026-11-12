@@ -2457,6 +2457,79 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HTTPValidationError"
+  /api/v1/code-name-dictionary:
+    get:
+      tags:
+        - Catalogs
+      summary: Get Code Name Dictionary
+      description: Export the Decoding glossary as a tagged code-name dictionary.
+      operationId: get_code_name_dictionary_api_v1_code_name_dictionary_get
+      parameters:
+        -
+                    name: q
+                    in: query
+                    required: false
+                    schema:
+                      anyOf:
+                        -
+                                          type: string
+                        -
+                                          type: null
+                      description: Search code or meaning
+                      title: Q
+                    description: Search code or meaning
+        -
+                    name: product
+                    in: query
+                    required: false
+                    schema:
+                      anyOf:
+                        -
+                                          type: string
+                        -
+                                          type: null
+                      description: Filter by product tag
+                      title: Product
+                    description: Filter by product tag
+        -
+                    name: country
+                    in: query
+                    required: false
+                    schema:
+                      anyOf:
+                        -
+                                          type: string
+                        -
+                                          type: null
+                      description: Filter by country tag
+                      title: Country
+                    description: Filter by country tag
+        -
+                    name: wmo_amendment
+                    in: query
+                    required: false
+                    schema:
+                      anyOf:
+                        -
+                                          type: string
+                        -
+                                          type: null
+                      description: Filter by WMO amendment label
+                      title: Wmo Amendment
+                    description: Filter by WMO amendment label
+      responses:
+        200:
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CodeNameDictionaryResponse"
+        422:
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
   /api/v1/convert-bulletin:
     post:
       tags:
@@ -3419,6 +3492,76 @@ components:
         - tac_input
       title: BulletinReportResultModel
       description: Per-report convert-bulletin result (partial success allowed).
+    CodeNameDictionaryFacets:
+      properties:
+        products:
+          items:
+            type: string
+          type: array
+          title: Products
+        countries:
+          items:
+            type: string
+          type: array
+          title: Countries
+        wmo_amendments:
+          items:
+            type: string
+          type: array
+          title: Wmo Amendments
+      type: object
+      title: CodeNameDictionaryFacets
+      description: Facet values for dictionary filters.
+    CodeNameDictionaryItem:
+      properties:
+        id:
+          type: string
+          title: Id
+        code:
+          type: string
+          title: Code
+        meaning:
+          type: string
+          title: Meaning
+          default: ""
+        products:
+          items:
+            type: string
+          type: array
+          title: Products
+        countries:
+          items:
+            type: string
+          type: array
+          title: Countries
+        wmo_amendment:
+          anyOf:
+            -
+                            type: string
+            -
+                            type: null
+          title: Wmo Amendment
+      type: object
+      required:
+        - id
+        - code
+      title: CodeNameDictionaryItem
+      description: One code-name dictionary row (Decoding glossary deepen).
+    CodeNameDictionaryResponse:
+      properties:
+        items:
+          items:
+            $ref: "#/components/schemas/CodeNameDictionaryItem"
+          type: array
+          title: Items
+        facets:
+          $ref: "#/components/schemas/CodeNameDictionaryFacets"
+      type: object
+      required:
+        - items
+        - facets
+      title: CodeNameDictionaryResponse
+      description: Response for GET /code-name-dictionary.
     ComparisonDetail:
       properties:
         passed:

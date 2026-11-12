@@ -1,6 +1,8 @@
-"""Rule catalogs + selection-options routes."""
+"""Rule catalogs + selection-options + code-name dictionary routes."""
 
 from __future__ import annotations
+
+from typing import Any
 
 from fastapi import APIRouter, HTTPException, Query
 from fastapi.responses import Response
@@ -164,3 +166,120 @@ async def get_selection_options(
         ) from exc
     options = [SelectionOption.model_validate(row) for row in raw]
     return msgspec_json_response(SelectionOptionsResponse(kind=kind.strip().lower(), options=options))
+
+
+class CodeNameDictionaryItem(BaseModel):
+    """
+    One code-name dictionary row (Decoding glossary deepen).
+
+    Attributes
+    ----------
+    id : str
+        Stable row id (uppercase TAC code).
+    code : str
+        TAC code name.
+    meaning : str
+        Plain-language meaning.
+    products : list[str]
+        Product tags.
+    countries : list[str]
+        Country tags (``INTL`` for international).
+    wmo_amendment : str | None
+        WMO amendment or edition label when known.
+    """
+
+    id: str
+    code: str
+    meaning: str = ""
+    products: list[str] = Field(default_factory=list)
+    countries: list[str] = Field(default_factory=list)
+    wmo_amendment: str | None = None
+
+
+class CodeNameDictionaryFacets(BaseModel):
+    """
+    Facet values for dictionary filters.
+
+    Attributes
+    ----------
+    products : list[str]
+        Known product tags.
+    countries : list[str]
+        Known country tags.
+    wmo_amendments : list[str]
+        Known amendment labels.
+    """
+
+    products: list[str] = Field(default_factory=list)
+    countries: list[str] = Field(default_factory=list)
+    wmo_amendments: list[str] = Field(default_factory=list)
+
+
+class CodeNameDictionaryResponse(BaseModel):
+    """
+    Response for GET /code-name-dictionary.
+
+    Attributes
+    ----------
+    items : list[CodeNameDictionaryItem]
+        Filtered rows.
+    facets : CodeNameDictionaryFacets
+        Facets from the full dictionary (not the filtered subset).
+    """
+
+    items: list[CodeNameDictionaryItem]
+    facets: CodeNameDictionaryFacets
+
+
+@router.get("/code-name-dictionary", response_model=CodeNameDictionaryResponse)
+async def get_code_name_dictionary(
+    q: str | None = Query(None, description="Search code or meaning"),
+    product: str | None = Query(None, description="Filter by product tag"),
+    country: str | None = Query(None, description="Filter by country tag"),
+    wmo_amendment: str | None = Query(None, description="Filter by WMO amendment label"),
+) -> Response:
+    """
+    Export the Decoding glossary as a tagged code-name dictionary.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (get_code_name_dictionary)
+    2
+
+    Parameters
+    ----------
+    q : object
+        Argument ``q``.
+    product : object
+        Argument ``product``.
+    country : object
+        Argument ``country``.
+    wmo_amendment : object
+        Argument ``wmo_amendment``.
+
+    Returns
+    -------
+    object
+        Filtered items plus facets.
+    """
+    from tac_decoding import dictionary_facets, filter_dictionary_entries
+
+    try:
+        rows: list[dict[str, Any]] = filter_dictionary_entries(
+            q=q,
+            product=product,
+            country=country,
+            wmo_amendment=wmo_amendment,
+        )
+        facets_raw = dictionary_facets()
+    except (OSError, TypeError, ValueError, RuntimeError) as exc:
+        raise HTTPException(
+            status_code=500,
+            detail={
+                "code": "code_name_dictionary_unavailable",
+                "message": "Code name dictionary is temporarily unavailable",
+            },
+        ) from exc
+    items = [CodeNameDictionaryItem.model_validate(row) for row in rows]
+    facets = CodeNameDictionaryFacets.model_validate(facets_raw)
+    return msgspec_json_response(CodeNameDictionaryResponse(items=items, facets=facets))

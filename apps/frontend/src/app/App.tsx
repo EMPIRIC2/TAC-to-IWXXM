@@ -2,6 +2,7 @@ import { useState, useEffect, useLayoutEffect, useRef, useCallback } from 'react
 import { FileConverter } from './components/FileConverter';
 import { MyMetarsPage } from './components/MyMetarsPage';
 import { LintValidationCatalogPage } from './components/LintValidationCatalogPage';
+import { CodeNameDictionaryPage } from './components/CodeNameDictionaryPage';
 import { AppShellNav, type ShellPrimaryView } from './components/AppShellNav';
 import { Login } from './components/auth/Login';
 import { Register } from './components/auth/Register';
@@ -56,7 +57,12 @@ type AppView =
  * Function `isPrimaryShellView`.
  */
 function isPrimaryShellView(view: AppView): view is ShellPrimaryView {
-  return view === 'converter' || view === 'history' || view === 'catalog';
+  return (
+    view === 'converter' ||
+    view === 'history' ||
+    view === 'catalog' ||
+    view === 'dictionary'
+  );
 }
 
 /**
@@ -314,7 +320,8 @@ function App() {
 
           {(currentView === 'converter' ||
             currentView === 'history' ||
-            currentView === 'catalog') && (
+            currentView === 'catalog' ||
+            currentView === 'dictionary') && (
             <div hidden={currentView !== 'converter'}>
               <FileConverter
                 onLogout={handleLogout}
@@ -365,6 +372,8 @@ function App() {
               }}
             />
           )}
+
+          {currentView === 'dictionary' && <CodeNameDictionaryPage />}
 
           {currentView === 'callback' && (
             <AuthCallback

@@ -593,6 +593,25 @@
     },
     {
       "method": "GET",
+      "path": "/api/v1/code-name-dictionary",
+      "status": 200,
+      "request_fields": [],
+      "response_fields": [
+        "facets",
+        "items"
+      ],
+      "covered_by": "apps/backend/tests/unit/test_code_name_dictionary_integration.py"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/code-name-dictionary",
+      "status": 422,
+      "request_fields": [],
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/unit/test_code_name_dictionary_integration.py"
+    },
+    {
+      "method": "GET",
       "path": "/api/v1/rule-catalogs",
       "status": 200,
       "request_fields": [],

@@ -4,6 +4,26 @@
  */
 
 export interface paths {
+    "/api/v1/code-name-dictionary": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Code Name Dictionary
+         * @description Export the Decoding glossary as a tagged code-name dictionary.
+         */
+        get: operations["get_code_name_dictionary_api_v1_code_name_dictionary_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/convert": {
         parameters: {
             query?: never;
@@ -2014,6 +2034,48 @@ export interface components {
             tac_input: string;
             /** Xml */
             xml?: string | null;
+        };
+        /**
+         * CodeNameDictionaryFacets
+         * @description Facet values for dictionary filters.
+         */
+        CodeNameDictionaryFacets: {
+            /** Countries */
+            countries?: string[];
+            /** Products */
+            products?: string[];
+            /** Wmo Amendments */
+            wmo_amendments?: string[];
+        };
+        /**
+         * CodeNameDictionaryItem
+         * @description One code-name dictionary row (Decoding glossary deepen).
+         */
+        CodeNameDictionaryItem: {
+            /** Code */
+            code: string;
+            /** Countries */
+            countries?: string[];
+            /** Id */
+            id: string;
+            /**
+             * Meaning
+             * @default
+             */
+            meaning: string;
+            /** Products */
+            products?: string[];
+            /** Wmo Amendment */
+            wmo_amendment?: string | null;
+        };
+        /**
+         * CodeNameDictionaryResponse
+         * @description Response for GET /code-name-dictionary.
+         */
+        CodeNameDictionaryResponse: {
+            facets: components["schemas"]["CodeNameDictionaryFacets"];
+            /** Items */
+            items: components["schemas"]["CodeNameDictionaryItem"][];
         };
         /**
          * ComparisonDetail
@@ -5065,6 +5127,44 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    get_code_name_dictionary_api_v1_code_name_dictionary_get: {
+        parameters: {
+            query?: {
+                /** @description Search code or meaning */
+                q?: string | null;
+                /** @description Filter by product tag */
+                product?: string | null;
+                /** @description Filter by country tag */
+                country?: string | null;
+                /** @description Filter by WMO amendment label */
+                wmo_amendment?: string | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CodeNameDictionaryResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     convert_api_v1_convert_post: {
         parameters: {
             query?: never;
