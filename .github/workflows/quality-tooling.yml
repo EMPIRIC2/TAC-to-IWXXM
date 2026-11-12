@@ -1,0 +1,134 @@
+# Wave 1 quality tooling (EV-quality-tooling-suite).
+# Import Linter, deptry, Knip, dependency-cruiser. oasdiff lives in quality-contracts.yml.
+# [Corpus: tech-spec] TR-Q05 [Corpus: tests]
+name: Quality tooling
+
+on:
+  pull_request:
+    branches: [stage, main]
+  push:
+    branches: [stage, main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: quality-tooling-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  wave1:
+    name: Wave 1 quality gates
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+
+      - name: Install Python dependencies
+        run: uv sync
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: pnpm
+
+      - name: Install JavaScript dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Import Linter
+        run: make check-import-linter
+
+      - name: deptry (per member)
+        run: make check-deptry
+
+      - name: Knip
+        run: make check-knip
+
+      - name: dependency-cruiser
+        run: make check-depcruise
+
+      - name: Coverage omit policy audit
+        run: make check-coverage-audit
+
+      - name: Upload reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: quality-tooling-reports
+          path: .quality-reports/
+          if-no-files-found: ignore
+
+      - name: Build sticky PR comment
+        if: github.event_name == 'pull_request' && always()
+        run: |
+          mkdir -p .quality-reports
+          {
+            echo '<!-- quality-tooling-pr-comment -->'
+            echo '## Quality tooling (Wave 1)'
+            echo
+            for name in import-linter deptry knip depcruise; do
+              echo "### ${name}"
+              echo '```'
+              if [[ -f ".quality-reports/${name}.txt" ]]; then
+                head -n 80 ".quality-reports/${name}.txt"
+              elif [[ -f ".quality-reports/${name}/summary.txt" ]]; then
+                cat ".quality-reports/${name}/summary.txt"
+              else
+                echo "(no report file; see job logs)"
+              fi
+              echo '```'
+              echo
+            done
+          } > quality-tooling-pr-comment.md
+
+      - name: Post sticky PR comment
+        if: github.event_name == 'pull_request' && always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const marker = '<!-- quality-tooling-pr-comment -->';
+            let body = marker + '\n## Quality tooling\nSee job logs.\n';
+            try { body = fs.readFileSync('quality-tooling-pr-comment.md', 'utf8'); } catch (_) {}
+            if (!body.includes(marker)) body = marker + '\n' + body;
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              per_page: 100,
+            });
+            const existing = comments.find(c => c.user.type === 'Bot' && c.body.includes(marker));
+            try {
+              if (existing) {
+                await github.rest.issues.updateComment({
+                  owner: context.repo.owner, repo: context.repo.repo,
+                  comment_id: existing.id, body,
+                });
+              } else {
+                await github.rest.issues.createComment({
+                  owner: context.repo.owner, repo: context.repo.repo,
+                  issue_number: context.issue.number, body,
+                });
+              }
+            } catch (err) {
+              const status = err.status || (err.response && err.response.status);
+              if ([500, 502, 503, 429].includes(status)) {
+                core.warning(`Quality tooling sticky comment skipped (GitHub API ${status})`);
+              } else { throw err; }
+            }

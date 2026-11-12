@@ -1,0 +1,79 @@
+{
+  "$schema": "https://unpkg.com/cursor-hooks@latest/schema/hooks.schema.json",
+  "version": 1,
+  "hooks": {
+    "beforeShellExecution": [
+      {
+        "command": "bash .cursor/hooks/ci-quality-guard.sh",
+        "matcher": "git\\s+(commit|push)",
+        "timeout": 600,
+        "failClosed": true
+      },
+      {
+        "command": "python3 .cursor/hooks/pypi_release_guard.py",
+        "matcher": "git\\s+tag",
+        "timeout": 10
+      },
+      {
+        "command": "bash .cursor/hooks/quality-fast-check.sh",
+        "matcher": "(^|\\s)(make\\s+check|uv\\s+add|pnpm\\s+add)(\\s|$)",
+        "timeout": 10
+      }
+    ],
+    "preToolUse": [
+      {
+        "command": "bash .cursor/hooks/pre-task-check.sh",
+        "matcher": "Write",
+        "timeout": 10
+      },
+      {
+        "command": "bash .cursor/hooks/pr-checklist.sh",
+        "matcher": "Shell",
+        "timeout": 10
+      },
+      {
+        "command": "python3 .cursor/hooks/pypi_release_guard.py",
+        "matcher": "Shell",
+        "timeout": 10
+      }
+    ],
+    "afterFileEdit": [
+      {
+        "command": "python3 .cursor/hooks/issue_registry_guard.py",
+        "matcher": "Write|TabWrite",
+        "timeout": 10
+      },
+      {
+        "command": "python3 .cursor/hooks/pypi_release_guard.py",
+        "matcher": "Write|TabWrite",
+        "timeout": 10
+      },
+      {
+        "command": "bash .cursor/hooks/coverage-advisory.sh",
+        "matcher": "Write|TabWrite",
+        "timeout": 10
+      },
+      {
+        "command": "bash .cursor/hooks/fast-ci-check.sh",
+        "matcher": "Write|TabWrite",
+        "timeout": 60
+      },
+      {
+        "command": "bash .cursor/hooks/typecheck.sh",
+        "matcher": "Write|TabWrite",
+        "timeout": 60
+      },
+      {
+        "command": "bash .cursor/hooks/quality-fast-check.sh",
+        "matcher": "Write|TabWrite",
+        "timeout": 60
+      }
+    ],
+    "afterShellExecution": [
+      {
+        "command": "bash .cursor/hooks/post-test-sync.sh",
+        "timeout": 10
+      }
+    ]
+  }
+}

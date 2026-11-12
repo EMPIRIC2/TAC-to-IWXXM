@@ -12,15 +12,19 @@
     "format:check": "prettier --config config/tooling/prettier.json --ignore-path .gitignore --check \"apps/e2e/**/*.{ts,tsx,json,md}\" \"apps/frontend/src/**/*.{ts,tsx,css,md}\" \"apps/frontend/*.{ts,tsx,json,css,md}\" \"packages/**/*.{ts,tsx,json,md}\" \"!apps/frontend/src/generated/**\" \"!apps/frontend/openapi/**\"",
     "lint:js": "eslint -c config/tooling/eslint.config.js apps/frontend/src apps/e2e packages/shared/src packages/shared/tests packages/live-map-geometry/src packages/live-map-geometry/tests --max-warnings 0",
     "lint:js:fix": "eslint -c config/tooling/eslint.config.js apps/frontend/src apps/e2e packages/shared/src packages/shared/tests packages/live-map-geometry/src packages/live-map-geometry/tests --fix",
-    "typecheck:js": "pnpm --filter @metar/frontend exec tsc --noEmit && pnpm --filter @metar/shared exec tsc --noEmit && pnpm --filter @metar/live-map-geometry exec tsc --noEmit && pnpm --filter @metar/e2e exec tsc --noEmit"
+    "typecheck:js": "pnpm --filter @metar/frontend exec tsc --noEmit && pnpm --filter @metar/shared exec tsc --noEmit && pnpm --filter @metar/live-map-geometry exec tsc --noEmit && pnpm --filter @metar/e2e exec tsc --noEmit",
+    "check:knip": "bash scripts/ci/run_knip.sh",
+    "check:depcruise": "bash scripts/ci/run_depcruise.sh"
   },
   "devDependencies": {
     "@eslint/js": "9.39.4",
+    "dependency-cruiser": "18.7.2",
     "eslint": "9.39.4",
     "eslint-plugin-jsdoc": "54.7.0",
     "eslint-plugin-react-hooks": "7.1.1",
     "eslint-plugin-react-refresh": "0.4.26",
     "husky": "9.1.7",
+    "knip": "6.45.1",
     "prettier": "3.8.4",
     "typescript": "5.9.3",
     "typescript-eslint": "8.61.0"

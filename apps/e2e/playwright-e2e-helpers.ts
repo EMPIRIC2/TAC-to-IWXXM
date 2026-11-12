@@ -29,11 +29,6 @@ export const E2E_USER_PASSWORD =
   process.env.ADMIN_PASSWORD ??
   '';
 
-/** @deprecated Use E2E_USER_EMAIL */
-export const ADMIN_EMAIL = E2E_USER_EMAIL;
-/** @deprecated Use E2E_USER_PASSWORD */
-export const ADMIN_PASSWORD = E2E_USER_PASSWORD;
-
 /** True when targeting provisional DOKS (Host-header / resolver-rules). */
 export function isDoksProvisionalPlaywright(): boolean {
   return (
@@ -209,19 +204,6 @@ export async function loginAsE2EUser(page: Page): Promise<void> {
   await expect(page.getByTestId('logout-button')).toBeVisible({ timeout: 20_000 });
   // Opposite state: the guest loss notice is visible when unsaved TAC is present.
   await expect(guestNotice).toHaveCount(0);
-}
-
-/** Alias for {@link loginAsE2EUser}. */
-export async function loginAsAdmin(page: Page): Promise<void> {
-  await loginAsE2EUser(page);
-}
-
-/** @deprecated Admin dashboard removed — assert converter heading only. */
-export async function openConverterFromAdmin(page: Page): Promise<void> {
-  // targets the TAC to IWXXM heading
-  await expect(page.getByRole('heading', { name: /^TAC to IWXXM$/ })).toBeVisible({
-    timeout: 10000,
-  });
 }
 
 /** @deprecated F21 — use {@link openPublicConverter}. */

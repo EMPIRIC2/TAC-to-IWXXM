@@ -42,3 +42,14 @@ show_missing = true
 omit = [
   "*/iwxxm_xsd/v*/**",
 ]
+
+# deptry: unused (DEP002), missing (DEP001), transitive (DEP003), misplaced-dev (DEP004).
+# [Corpus: tech-spec] docs/technical-requirements.md; [Corpus: system-spec] docs/architecture.md.
+# Run all members: scripts/ci/run_deptry_all.sh
+[tool.deptry]
+known_first_party = ["metar_shared"]
+pep621_dev_dependency_groups = ["dev"]
+
+[tool.deptry.per_rule_ignores]
+# xsdata is a hard dependency of the optional `xsd` extra (xsdata-pydantic); adapt.py guards the import.
+DEP003 = ["xsdata"]

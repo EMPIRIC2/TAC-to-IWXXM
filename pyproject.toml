@@ -12,7 +12,10 @@ dependencies = []
 
 [tool.uv]
 package = false
-# Python 3.12 pinned per ADR-005; S008 F6 members: tac2iwxxm, iwxxm-validate, tac-validate.
+# Python floor: requires-python >=3.12 (ADR-005); basedpyright pythonVersion and ruff
+# target-version stay at 3.12 so type-check and lint match the oldest supported runtime.
+# CI/dev interpreters may be newer; do not raise these without superseding ADR-005.
+# S008 F6 members: tac2iwxxm, iwxxm-validate, tac-validate.
 
 [dependency-groups]
 dev = [
@@ -42,6 +45,8 @@ dev = [
   "testcontainers[mysql,postgres]==4.14.2",
   "schemathesis==4.24.3",
   "pytest-gremlins==1.9.0",
+  "import-linter==2.16",
+  "deptry==0.25.1",
 ]
 
 [tool.uv.sources]
@@ -100,11 +105,14 @@ asyncio_mode = "auto"
 asyncio_default_fixture_loop_scope = "function"
 addopts = [
   "-v",
+  "--strict-config",
   "--strict-markers",
   "--tb=short",
 ]
-# E23-T4=2: keep informative iwxxm_translation suite soft (xfail strict=False in tests).
-xfail_strict = false
+# Unexpected passes (XPASS) fail the run. The only intentional soft suite is the EV-023
+# informative Amd79 convert test, which opts out per test with
+# @pytest.mark.xfail(strict=False) (E23-T4=2); no other xfail may be non-strict.
+xfail_strict = true
 markers = [
   "unit: unit tests",
   "integration: integration tests",
@@ -116,16 +124,16 @@ markers = [
   "iwxxm_translation_informative: Amd79-80-2023 TAC→2025-2 informative suite (EV-023; soft/xfail in CI)",
   "quality_matrix: F29 full pilot matrix slots (optional / make test-quality-matrices-full)",
   "ev032_smoke: EV-032 path-filtered pre-commit canary (A6-2 / VONA equality + enum; E32-T7)",
+  "edge_case: conversion/validation edge-case corpus (filter with -m edge_case)",
+  "schemathesis: OpenAPI property tests (make test-schemathesis)",
 ]
 # ADR-048 / TC-EVDOC-007: warnings are errors. Narrow third-party-only ignore for
 # passlib's crypt deprecation (stdlib path; not a product suppression).
-# pytest-gremlins (F34 / mutation.yml): empty coverage pre-scan is advisory
-# (https://github.com/mikelane/pytest-gremlins/issues/113). Also passed via -W in
-# scripts/ci/run_mutation_python.sh so local/CI chunks do not abort.
+# The pytest-gremlins "Coverage collection returned no data" warning is NOT ignored here;
+# it is passed only via -W in scripts/ci/run_mutation_python.sh (mutation chunks).
 filterwarnings = [
   "error",
   "ignore:'crypt' is deprecated and slated for removal in Python 3.13:DeprecationWarning:passlib.utils",
-  "ignore:Coverage collection returned no data:UserWarning",
 ]
 
 [tool.coverage.run]
@@ -165,16 +173,19 @@ cache = true
 [tool.ruff]
 target-version = "py312"
 line-length = 88
+# Import roots for isort first-party detection. Obsolete legacy roots (backend/, auth/,
+# GIFTs/) were removed in the monorepo cutover. Per-member roots
+# (apps/backend, apps/backend/src, apps/worker/src, packages/*/src) are the real import
+# roots, but listing them reclassifies ~549 imports across ~518 files (I001), so that
+# switch needs a dedicated `ruff check --select I --fix` PR. Until then keep the
+# repo-level roots below.
 src = [
   "apps",
   "packages",
   "tests",
-  "backend",
-  "auth",
-  "GIFTs",
 ]
 extend-exclude = [
-  # ADR-027 xsdata output — regenerate via make codegen-iwxxm-xsd
+  # ADR-027 generated xsdata output (only exclusion) — regenerate via make codegen-iwxxm-xsd
   "packages/shared/src/metar_shared/iwxxm_xsd",
   "packages/shared/src/metar_shared/iwxxm_xsd/v*",
 ]

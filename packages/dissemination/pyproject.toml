@@ -61,3 +61,16 @@ extend = "../../pyproject.toml"
 line-length = 120
 
 # Pytest / remaining coverage inherit from root; Makefile passes --cov=* CLI flags.
+
+# deptry: unused (DEP002), missing (DEP001), transitive (DEP003), misplaced-dev (DEP004).
+# [Corpus: tech-spec] docs/technical-requirements.md; [Corpus: system-spec] docs/architecture.md.
+# Run all members: scripts/ci/run_deptry_all.sh
+[tool.deptry]
+known_first_party = ["dissemination"]
+pep621_dev_dependency_groups = ["dev"]
+
+[tool.deptry.per_rule_ignores]
+# SQLAlchemy async driver plugins loaded by URL scheme; testcontainers is used only by the integration extra tests.
+DEP002 = ["asyncpg", "aiomysql", "aiosqlite", "aioodbc", "testcontainers"]
+# pyodbc is an optional import guarded by try/except in odbc.py (aioodbc dependency).
+DEP003 = ["pyodbc"]

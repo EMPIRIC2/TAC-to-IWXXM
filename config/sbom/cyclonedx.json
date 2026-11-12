@@ -332,7 +332,22 @@
     },
     {
       "bom-ref": "requirements-L23",
-      "description": "requirements line 23: distlib==0.4.3",
+      "description": "requirements line 23: deptry==0.25.1",
+      "externalReferences": [
+        {
+          "comment": "implicit dist url",
+          "type": "distribution",
+          "url": "https://pypi.org/simple/deptry/"
+        }
+      ],
+      "name": "deptry",
+      "purl": "pkg:pypi/deptry@0.25.1",
+      "type": "library",
+      "version": "0.25.1"
+    },
+    {
+      "bom-ref": "requirements-L24",
+      "description": "requirements line 24: distlib==0.4.3",
       "externalReferences": [
         {
           "comment": "implicit dist url",
@@ -346,8 +361,8 @@
       "version": "0.4.3"
     },
     {
-      "bom-ref": "requirements-L24",
-      "description": "requirements line 24: dnspython==2.8.0",
+      "bom-ref": "requirements-L25",
+      "description": "requirements line 25: dnspython==2.8.0",
       "externalReferences": [
         {
           "comment": "implicit dist url",
@@ -361,8 +376,8 @@
       "version": "2.8.0"
     },
     {
-      "bom-ref": "requirements-L25",
-      "description": "requirements line 25: docker==7.2.0",
+      "bom-ref": "requirements-L26",
+      "description": "requirements line 26: docker==7.2.0",
       "externalReferences": [
         {
           "comment": "implicit dist url",
@@ -376,8 +391,8 @@
       "version": "7.2.0"
     },
     {
-      "bom-ref": "requirements-L26",
-      "description": "requirements line 26: ecdsa==0.19.2",
+      "bom-ref": "requirements-L27",
+      "description": "requirements line 27: ecdsa==0.19.2",
       "externalReferences": [
         {
           "comment": "implicit dist url",
@@ -391,8 +406,8 @@
       "version": "0.19.2"
     },
     {
-      "bom-ref": "requirements-L27",
-      "description": "requirements line 27: email-validator==2.3.0",
+      "bom-ref": "requirements-L28",
+      "description": "requirements line 28: email-validator==2.3.0",
       "externalReferences": [
         {
           "comment": "implicit dist url",
@@ -406,8 +421,8 @@
       "version": "2.3.0"
     },
     {
-      "bom-ref": "requirements-L28",
-      "description": "requirements line 28: fastapi==0.137.0",
+      "bom-ref": "requirements-L29",
+      "description": "requirements line 29: fastapi==0.137.0",
       "externalReferences": [
         {
           "comment": "implicit dist url",
@@ -421,8 +436,8 @@
       "version": "0.137.0"
     },
     {
-      "bom-ref": "requirements-L29",
-      "description": "requirements line 29: filelock==3.29.4",
+      "bom-ref": "requirements-L30",
+      "description": "requirements line 30: filelock==3.29.4",
       "externalReferences": [
         {
           "comment": "implicit dist url",
@@ -436,8 +451,8 @@
       "version": "3.29.4"
     },
     {
-      "bom-ref": "requirements-L30",
-      "description": "requirements line 30: graphql-core==3.2.11",
+      "bom-ref": "requirements-L31",
+      "description": "requirements line 31: graphql-core==3.2.11",
       "externalReferences": [
         {
           "comment": "implicit dist url",
@@ -451,8 +466,8 @@
       "version": "3.2.11"
     },
     {
-      "bom-ref": "requirements-L31",
-      "description": "requirements line 31: greenlet==3.5.1",
+      "bom-ref": "requirements-L32",
+      "description": "requirements line 32: greenlet==3.5.1",
       "externalReferences": [
         {
           "comment": "implicit dist url",
@@ -466,8 +481,23 @@
       "version": "3.5.1"
     },
     {
-      "bom-ref": "requirements-L32",
-      "description": "requirements line 32: h11==0.16.0",
+      "bom-ref": "requirements-L33",
+      "description": "requirements line 33: grimp==3.19",
+      "externalReferences": [
+        {
+          "comment": "implicit dist url",
+          "type": "distribution",
+          "url": "https://pypi.org/simple/grimp/"
+        }
+      ],
+      "name": "grimp",
+      "purl": "pkg:pypi/grimp@3.19",
+      "type": "library",
+      "version": "3.19"
+    },
+    {
+      "bom-ref": "requirements-L34",
+      "description": "requirements line 34: h11==0.16.0",
       "externalReferences": [
         {
           "comment": "implicit dist url",
@@ -481,8 +511,8 @@
       "version": "0.16.0"
     },
     {
-      "bom-ref": "requirements-L33",
-      "description": "requirements line 33: harfile==0.5.0",
+      "bom-ref": "requirements-L35",
+      "description": "requirements line 35: harfile==0.5.0",
       "externalReferences": [
         {
           "comment": "implicit dist url",
@@ -496,8 +526,8 @@
       "version": "0.5.0"
     },
     {
-      "bom-ref": "requirements-L34",
-      "description": "requirements line 34: httpcore==1.0.9",
+      "bom-ref": "requirements-L36",
+      "description": "requirements line 36: httpcore==1.0.9",
       "externalReferences": [
         {
           "comment": "implicit dist url",
@@ -511,8 +541,8 @@
       "version": "1.0.9"
     },
     {
-      "bom-ref": "requirements-L35",
-      "description": "requirements line 35: httpcore2==2.4.0",
+      "bom-ref": "requirements-L37",
+      "description": "requirements line 37: httpcore2==2.4.0",
       "externalReferences": [
         {
           "comment": "implicit dist url",
@@ -526,8 +556,8 @@
       "version": "2.4.0"
     },
     {
-      "bom-ref": "requirements-L36",
-      "description": "requirements line 36: httpx==0.28.1",
+      "bom-ref": "requirements-L38",
+      "description": "requirements line 38: httpx==0.28.1",
       "externalReferences": [
         {
           "comment": "implicit dist url",
@@ -541,8 +571,8 @@
       "version": "0.28.1"
     },
     {
-      "bom-ref": "requirements-L37",
-      "description": "requirements line 37: httpx2==2.4.0",
+      "bom-ref": "requirements-L39",
+      "description": "requirements line 39: httpx2==2.4.0",
       "externalReferences": [
         {
           "comment": "implicit dist url",
@@ -556,8 +586,8 @@
       "version": "2.4.0"
     },
     {
-      "bom-ref": "requirements-L38",
-      "description": "requirements line 38: hydra-core==1.3.7",
+      "bom-ref": "requirements-L40",
+      "description": "requirements line 40: hydra-core==1.3.7",
       "externalReferences": [
         {
           "comment": "implicit dist url",
@@ -571,8 +601,8 @@
       "version": "1.3.7"
     },
     {
-      "bom-ref": "requirements-L39",
-      "description": "requirements line 39: hypothesis==6.165.10",
+      "bom-ref": "requirements-L41",
+      "description": "requirements line 41: hypothesis==6.165.10",
       "externalReferences": [
         {
           "comment": "implicit dist url",
@@ -586,8 +616,8 @@
       "version": "6.165.10"
     },
     {
-      "bom-ref": "requirements-L40",
-      "description": "requirements line 40: hypothesis-graphql==0.13.1",
+      "bom-ref": "requirements-L42",
+      "description": "requirements line 42: hypothesis-graphql==0.13.1",
       "externalReferences": [
         {
           "comment": "implicit dist url",
@@ -601,8 +631,8 @@
       "version": "0.13.1"
     },
     {
-      "bom-ref": "requirements-L41",
-      "description": "requirements line 41: hypothesis-jsonschema==0.23.1",
+      "bom-ref": "requirements-L43",
+      "description": "requirements line 43: hypothesis-jsonschema==0.23.1",
       "externalReferences": [
         {
           "comment": "implicit dist url",
@@ -616,8 +646,8 @@
       "version": "0.23.1"
     },
     {
-      "bom-ref": "requirements-L42",
-      "description": "requirements line 42: identify==2.6.19",
+      "bom-ref": "requirements-L44",
+      "description": "requirements line 44: identify==2.6.19",
       "externalReferences": [
         {
           "comment": "implicit dist url",
@@ -631,8 +661,8 @@
       "version": "2.6.19"
     },
     {
-      "bom-ref": "requirements-L43",
-      "description": "requirements line 43: idna==3.18",
+      "bom-ref": "requirements-L45",
+      "description": "requirements line 45: idna==3.18",
       "externalReferences": [
         {
           "comment": "implicit dist url",
@@ -646,8 +676,23 @@
       "version": "3.18"
     },
     {
-      "bom-ref": "requirements-L44",
-      "description": "requirements line 44: iniconfig==2.3.0",
+      "bom-ref": "requirements-L46",
+      "description": "requirements line 46: import-linter==2.16",
+      "externalReferences": [
+        {
+          "comment": "implicit dist url",
+          "type": "distribution",
+          "url": "https://pypi.org/simple/import-linter/"
+        }
+      ],
+      "name": "import-linter",
+      "purl": "pkg:pypi/import-linter@2.16",
+      "type": "library",
+      "version": "2.16"
+    },
+    {
+      "bom-ref": "requirements-L47",
+      "description": "requirements line 47: iniconfig==2.3.0",
       "externalReferences": [
         {
           "comment": "implicit dist url",
@@ -661,8 +706,8 @@
       "version": "2.3.0"
     },
     {
-      "bom-ref": "requirements-L45",
-      "description": "requirements line 45: jinja2==3.1.6",
+      "bom-ref": "requirements-L48",
+      "description": "requirements line 48: jinja2==3.1.6",
       "externalReferences": [
         {
           "comment": "implicit dist url",
@@ -676,8 +721,8 @@
       "version": "3.1.6"
     },
     {
-      "bom-ref": "requirements-L46",
-      "description": "requirements line 46: jplephem==2.24",
+      "bom-ref": "requirements-L49",
+      "description": "requirements line 49: jplephem==2.24",
       "externalReferences": [
         {
           "comment": "implicit dist url",
@@ -691,8 +736,8 @@
       "version": "2.24"
     },
     {
-      "bom-ref": "requirements-L47",
-      "description": "requirements line 47: jsonschema==4.26.0",
+      "bom-ref": "requirements-L50",
+      "description": "requirements line 50: jsonschema==4.26.0",
       "externalReferences": [
         {
           "comment": "implicit dist url",
@@ -706,8 +751,8 @@
       "version": "4.26.0"
     },
     {
-      "bom-ref": "requirements-L48",
-      "description": "requirements line 48: jsonschema-rs==0.49.9",
+      "bom-ref": "requirements-L51",
+      "description": "requirements line 51: jsonschema-rs==0.49.9",
       "externalReferences": [
         {
           "comment": "implicit dist url",
@@ -721,8 +766,8 @@
       "version": "0.49.9"
     },
     {
-      "bom-ref": "requirements-L49",
-      "description": "requirements line 49: jsonschema-specifications==2025.9.1",
+      "bom-ref": "requirements-L52",
+      "description": "requirements line 52: jsonschema-specifications==2025.9.1",
       "externalReferences": [
         {
           "comment": "implicit dist url",
@@ -736,8 +781,8 @@
       "version": "2025.9.1"
     },
     {
-      "bom-ref": "requirements-L50",
-      "description": "requirements line 50: limits==5.8.0",
+      "bom-ref": "requirements-L53",
+      "description": "requirements line 53: limits==5.8.0",
       "externalReferences": [
         {
           "comment": "implicit dist url",
@@ -751,8 +796,8 @@
       "version": "5.8.0"
     },
     {
-      "bom-ref": "requirements-L51",
-      "description": "requirements line 51: lxml==6.1.1",
+      "bom-ref": "requirements-L54",
+      "description": "requirements line 54: lxml==6.1.1",
       "externalReferences": [
         {
           "comment": "implicit dist url",
@@ -766,8 +811,8 @@
       "version": "6.1.1"
     },
     {
-      "bom-ref": "requirements-L52",
-      "description": "requirements line 52: mako==1.3.12",
+      "bom-ref": "requirements-L55",
+      "description": "requirements line 55: mako==1.3.12",
       "externalReferences": [
         {
           "comment": "implicit dist url",
@@ -781,8 +826,8 @@
       "version": "1.3.12"
     },
     {
-      "bom-ref": "requirements-L53",
-      "description": "requirements line 53: markdown-it-py==4.2.0",
+      "bom-ref": "requirements-L56",
+      "description": "requirements line 56: markdown-it-py==4.2.0",
       "externalReferences": [
         {
           "comment": "implicit dist url",
@@ -796,8 +841,8 @@
       "version": "4.2.0"
     },
     {
-      "bom-ref": "requirements-L54",
-      "description": "requirements line 54: markupsafe==3.0.3",
+      "bom-ref": "requirements-L57",
+      "description": "requirements line 57: markupsafe==3.0.3",
       "externalReferences": [
         {
           "comment": "implicit dist url",
@@ -811,8 +856,8 @@
       "version": "3.0.3"
     },
     {
-      "bom-ref": "requirements-L55",
-      "description": "requirements line 55: maturin==1.14.1",
+      "bom-ref": "requirements-L58",
+      "description": "requirements line 58: maturin==1.14.1",
       "externalReferences": [
         {
           "comment": "implicit dist url",
@@ -826,8 +871,8 @@
       "version": "1.14.1"
     },
     {
-      "bom-ref": "requirements-L56",
-      "description": "requirements line 56: mdurl==0.1.2",
+      "bom-ref": "requirements-L59",
+      "description": "requirements line 59: mdurl==0.1.2",
       "externalReferences": [
         {
           "comment": "implicit dist url",
@@ -841,8 +886,8 @@
       "version": "0.1.2"
     },
     {
-      "bom-ref": "requirements-L57",
-      "description": "requirements line 57: msgspec==0.21.1",
+      "bom-ref": "requirements-L60",
+      "description": "requirements line 60: msgspec==0.21.1",
       "externalReferences": [
         {
           "comment": "implicit dist url",
@@ -856,8 +901,8 @@
       "version": "0.21.1"
     },
     {
-      "bom-ref": "requirements-L58",
-      "description": "requirements line 58: nodeenv==1.10.0",
+      "bom-ref": "requirements-L61",
+      "description": "requirements line 61: nodeenv==1.10.0",
       "externalReferences": [
         {
           "comment": "implicit dist url",
@@ -871,8 +916,8 @@
       "version": "1.10.0"
     },
     {
-      "bom-ref": "requirements-L59",
-      "description": "requirements line 59: nodejs-wheel-binaries==24.16.0",
+      "bom-ref": "requirements-L62",
+      "description": "requirements line 62: nodejs-wheel-binaries==24.16.0",
       "externalReferences": [
         {
           "comment": "implicit dist url",
@@ -886,8 +931,8 @@
       "version": "24.16.0"
     },
     {
-      "bom-ref": "requirements-L60",
-      "description": "requirements line 60: numpy==2.4.6",
+      "bom-ref": "requirements-L63",
+      "description": "requirements line 63: numpy==2.4.6",
       "externalReferences": [
         {
           "comment": "implicit dist url",
@@ -901,8 +946,8 @@
       "version": "2.4.6"
     },
     {
-      "bom-ref": "requirements-L61",
-      "description": "requirements line 61: omegaconf==2.3.1",
+      "bom-ref": "requirements-L64",
+      "description": "requirements line 64: omegaconf==2.3.1",
       "externalReferences": [
         {
           "comment": "implicit dist url",
@@ -916,8 +961,8 @@
       "version": "2.3.1"
     },
     {
-      "bom-ref": "requirements-L62",
-      "description": "requirements line 62: packaging==26.2",
+      "bom-ref": "requirements-L65",
+      "description": "requirements line 65: packaging==26.2",
       "externalReferences": [
         {
           "comment": "implicit dist url",
@@ -931,8 +976,8 @@
       "version": "26.2"
     },
     {
-      "bom-ref": "requirements-L63",
-      "description": "requirements line 63: paho-mqtt==2.1.0",
+      "bom-ref": "requirements-L66",
+      "description": "requirements line 66: paho-mqtt==2.1.0",
       "externalReferences": [
         {
           "comment": "implicit dist url",
@@ -946,8 +991,8 @@
       "version": "2.1.0"
     },
     {
-      "bom-ref": "requirements-L64",
-      "description": "requirements line 64: platformdirs==4.10.0",
+      "bom-ref": "requirements-L67",
+      "description": "requirements line 67: platformdirs==4.10.0",
       "externalReferences": [
         {
           "comment": "implicit dist url",
@@ -961,8 +1006,8 @@
       "version": "4.10.0"
     },
     {
-      "bom-ref": "requirements-L65",
-      "description": "requirements line 65: pluggy==1.6.0",
+      "bom-ref": "requirements-L68",
+      "description": "requirements line 68: pluggy==1.6.0",
       "externalReferences": [
         {
           "comment": "implicit dist url",
@@ -976,8 +1021,8 @@
       "version": "1.6.0"
     },
     {
-      "bom-ref": "requirements-L66",
-      "description": "requirements line 66: pre-commit==4.6.0",
+      "bom-ref": "requirements-L69",
+      "description": "requirements line 69: pre-commit==4.6.0",
       "externalReferences": [
         {
           "comment": "implicit dist url",
@@ -991,8 +1036,8 @@
       "version": "4.6.0"
     },
     {
-      "bom-ref": "requirements-L67",
-      "description": "requirements line 67: prometheus-client==0.25.0",
+      "bom-ref": "requirements-L70",
+      "description": "requirements line 70: prometheus-client==0.25.0",
       "externalReferences": [
         {
           "comment": "implicit dist url",
@@ -1006,8 +1051,8 @@
       "version": "0.25.0"
     },
     {
-      "bom-ref": "requirements-L68",
-      "description": "requirements line 68: psycopg==3.3.4",
+      "bom-ref": "requirements-L71",
+      "description": "requirements line 71: psycopg==3.3.4",
       "externalReferences": [
         {
           "comment": "implicit dist url",
@@ -1021,8 +1066,8 @@
       "version": "3.3.4"
     },
     {
-      "bom-ref": "requirements-L69",
-      "description": "requirements line 69: psycopg-binary==3.3.4 ; implementation_name != 'pypy'",
+      "bom-ref": "requirements-L72",
+      "description": "requirements line 72: psycopg-binary==3.3.4 ; implementation_name != 'pypy'",
       "externalReferences": [
         {
           "comment": "implicit dist url",
@@ -1036,8 +1081,8 @@
       "version": "3.3.4"
     },
     {
-      "bom-ref": "requirements-L70",
-      "description": "requirements line 70: pyasn1==0.6.4",
+      "bom-ref": "requirements-L73",
+      "description": "requirements line 73: pyasn1==0.6.4",
       "externalReferences": [
         {
           "comment": "implicit dist url",
@@ -1051,8 +1096,8 @@
       "version": "0.6.4"
     },
     {
-      "bom-ref": "requirements-L71",
-      "description": "requirements line 71: pycparser==3.0 ; implementation_name != 'PyPy' and platform_python_implementation != 'PyPy'",
+      "bom-ref": "requirements-L74",
+      "description": "requirements line 74: pycparser==3.0 ; implementation_name != 'PyPy' and platform_python_implementation != 'PyPy'",
       "externalReferences": [
         {
           "comment": "implicit dist url",
@@ -1066,8 +1111,8 @@
       "version": "3.0"
     },
     {
-      "bom-ref": "requirements-L72",
-      "description": "requirements line 72: pydantic==2.13.4",
+      "bom-ref": "requirements-L75",
+      "description": "requirements line 75: pydantic==2.13.4",
       "externalReferences": [
         {
           "comment": "implicit dist url",
@@ -1081,8 +1126,8 @@
       "version": "2.13.4"
     },
     {
-      "bom-ref": "requirements-L73",
-      "description": "requirements line 73: pydantic-core==2.46.4",
+      "bom-ref": "requirements-L76",
+      "description": "requirements line 76: pydantic-core==2.46.4",
       "externalReferences": [
         {
           "comment": "implicit dist url",
@@ -1096,8 +1141,8 @@
       "version": "2.46.4"
     },
     {
-      "bom-ref": "requirements-L74",
-      "description": "requirements line 74: pydantic-settings==2.14.2",
+      "bom-ref": "requirements-L77",
+      "description": "requirements line 77: pydantic-settings==2.14.2",
       "externalReferences": [
         {
           "comment": "implicit dist url",
@@ -1111,8 +1156,8 @@
       "version": "2.14.2"
     },
     {
-      "bom-ref": "requirements-L75",
-      "description": "requirements line 75: pygments==2.20.0",
+      "bom-ref": "requirements-L78",
+      "description": "requirements line 78: pygments==2.20.0",
       "externalReferences": [
         {
           "comment": "implicit dist url",
@@ -1126,8 +1171,8 @@
       "version": "2.20.0"
     },
     {
-      "bom-ref": "requirements-L76",
-      "description": "requirements line 76: pyjwt==2.13.0",
+      "bom-ref": "requirements-L79",
+      "description": "requirements line 79: pyjwt==2.13.0",
       "externalReferences": [
         {
           "comment": "implicit dist url",
@@ -1141,8 +1186,8 @@
       "version": "2.13.0"
     },
     {
-      "bom-ref": "requirements-L77",
-      "description": "requirements line 77: pymysql==1.2.0",
+      "bom-ref": "requirements-L80",
+      "description": "requirements line 80: pymysql==1.2.0",
       "externalReferences": [
         {
           "comment": "implicit dist url",
@@ -1156,8 +1201,8 @@
       "version": "1.2.0"
     },
     {
-      "bom-ref": "requirements-L78",
-      "description": "requirements line 78: pyodbc==5.3.0",
+      "bom-ref": "requirements-L81",
+      "description": "requirements line 81: pyodbc==5.3.0",
       "externalReferences": [
         {
           "comment": "implicit dist url",
@@ -1171,8 +1216,8 @@
       "version": "5.3.0"
     },
     {
-      "bom-ref": "requirements-L79",
-      "description": "requirements line 79: pyrate-limiter==4.4.0",
+      "bom-ref": "requirements-L82",
+      "description": "requirements line 82: pyrate-limiter==4.4.0",
       "externalReferences": [
         {
           "comment": "implicit dist url",
@@ -1186,8 +1231,8 @@
       "version": "4.4.0"
     },
     {
-      "bom-ref": "requirements-L80",
-      "description": "requirements line 80: pytest==9.1.0",
+      "bom-ref": "requirements-L83",
+      "description": "requirements line 83: pytest==9.1.0",
       "externalReferences": [
         {
           "comment": "implicit dist url",
@@ -1201,8 +1246,8 @@
       "version": "9.1.0"
     },
     {
-      "bom-ref": "requirements-L81",
-      "description": "requirements line 81: pytest-asyncio==1.4.0",
+      "bom-ref": "requirements-L84",
+      "description": "requirements line 84: pytest-asyncio==1.4.0",
       "externalReferences": [
         {
           "comment": "implicit dist url",
@@ -1216,8 +1261,8 @@
       "version": "1.4.0"
     },
     {
-      "bom-ref": "requirements-L82",
-      "description": "requirements line 82: pytest-cov==7.1.0",
+      "bom-ref": "requirements-L85",
+      "description": "requirements line 85: pytest-cov==7.1.0",
       "externalReferences": [
         {
           "comment": "implicit dist url",
@@ -1231,8 +1276,8 @@
       "version": "7.1.0"
     },
     {
-      "bom-ref": "requirements-L83",
-      "description": "requirements line 83: pytest-gremlins==1.9.0",
+      "bom-ref": "requirements-L86",
+      "description": "requirements line 86: pytest-gremlins==1.9.0",
       "externalReferences": [
         {
           "comment": "implicit dist url",
@@ -1246,8 +1291,8 @@
       "version": "1.9.0"
     },
     {
-      "bom-ref": "requirements-L84",
-      "description": "requirements line 84: python-discovery==1.4.2",
+      "bom-ref": "requirements-L87",
+      "description": "requirements line 87: python-discovery==1.4.2",
       "externalReferences": [
         {
           "comment": "implicit dist url",
@@ -1261,8 +1306,8 @@
       "version": "1.4.2"
     },
     {
-      "bom-ref": "requirements-L85",
-      "description": "requirements line 85: python-dotenv==1.2.2",
+      "bom-ref": "requirements-L88",
+      "description": "requirements line 88: python-dotenv==1.2.2",
       "externalReferences": [
         {
           "comment": "implicit dist url",
@@ -1276,8 +1321,8 @@
       "version": "1.2.2"
     },
     {
-      "bom-ref": "requirements-L86",
-      "description": "requirements line 86: python-jose==3.5.0",
+      "bom-ref": "requirements-L89",
+      "description": "requirements line 89: python-jose==3.5.0",
       "externalReferences": [
         {
           "comment": "implicit dist url",
@@ -1291,8 +1336,8 @@
       "version": "3.5.0"
     },
     {
-      "bom-ref": "requirements-L87",
-      "description": "requirements line 87: python-multipart==0.0.32",
+      "bom-ref": "requirements-L90",
+      "description": "requirements line 90: python-multipart==0.0.32",
       "externalReferences": [
         {
           "comment": "implicit dist url",
@@ -1306,8 +1351,8 @@
       "version": "0.0.32"
     },
     {
-      "bom-ref": "requirements-L88",
-      "description": "requirements line 88: pywin32==312 ; sys_platform == 'win32'",
+      "bom-ref": "requirements-L91",
+      "description": "requirements line 91: pywin32==312 ; sys_platform == 'win32'",
       "externalReferences": [
         {
           "comment": "implicit dist url",
@@ -1321,8 +1366,8 @@
       "version": "312"
     },
     {
-      "bom-ref": "requirements-L89",
-      "description": "requirements line 89: pyyaml==6.0.3",
+      "bom-ref": "requirements-L92",
+      "description": "requirements line 92: pyyaml==6.0.3",
       "externalReferences": [
         {
           "comment": "implicit dist url",
@@ -1336,8 +1381,8 @@
       "version": "6.0.3"
     },
     {
-      "bom-ref": "requirements-L90",
-      "description": "requirements line 90: redis==8.1.0",
+      "bom-ref": "requirements-L93",
+      "description": "requirements line 93: redis==8.1.0",
       "externalReferences": [
         {
           "comment": "implicit dist url",
@@ -1351,8 +1396,8 @@
       "version": "8.1.0"
     },
     {
-      "bom-ref": "requirements-L91",
-      "description": "requirements line 91: referencing==0.37.0",
+      "bom-ref": "requirements-L94",
+      "description": "requirements line 94: referencing==0.37.0",
       "externalReferences": [
         {
           "comment": "implicit dist url",
@@ -1366,8 +1411,8 @@
       "version": "0.37.0"
     },
     {
-      "bom-ref": "requirements-L92",
-      "description": "requirements line 92: requests==2.34.2",
+      "bom-ref": "requirements-L95",
+      "description": "requirements line 95: requests==2.34.2",
       "externalReferences": [
         {
           "comment": "implicit dist url",
@@ -1381,8 +1426,23 @@
       "version": "2.34.2"
     },
     {
-      "bom-ref": "requirements-L93",
-      "description": "requirements line 93: respx==0.23.1",
+      "bom-ref": "requirements-L96",
+      "description": "requirements line 96: requirements-parser==0.13.1",
+      "externalReferences": [
+        {
+          "comment": "implicit dist url",
+          "type": "distribution",
+          "url": "https://pypi.org/simple/requirements-parser/"
+        }
+      ],
+      "name": "requirements-parser",
+      "purl": "pkg:pypi/requirements-parser@0.13.1",
+      "type": "library",
+      "version": "0.13.1"
+    },
+    {
+      "bom-ref": "requirements-L97",
+      "description": "requirements line 97: respx==0.23.1",
       "externalReferences": [
         {
           "comment": "implicit dist url",
@@ -1396,8 +1456,8 @@
       "version": "0.23.1"
     },
     {
-      "bom-ref": "requirements-L94",
-      "description": "requirements line 94: rich==15.0.0",
+      "bom-ref": "requirements-L98",
+      "description": "requirements line 98: rich==15.0.0",
       "externalReferences": [
         {
           "comment": "implicit dist url",
@@ -1411,8 +1471,8 @@
       "version": "15.0.0"
     },
     {
-      "bom-ref": "requirements-L95",
-      "description": "requirements line 95: rpds-py==2026.6.3",
+      "bom-ref": "requirements-L99",
+      "description": "requirements line 99: rpds-py==2026.6.3",
       "externalReferences": [
         {
           "comment": "implicit dist url",
@@ -1426,8 +1486,8 @@
       "version": "2026.6.3"
     },
     {
-      "bom-ref": "requirements-L96",
-      "description": "requirements line 96: rsa==4.9.1",
+      "bom-ref": "requirements-L100",
+      "description": "requirements line 100: rsa==4.9.1",
       "externalReferences": [
         {
           "comment": "implicit dist url",
@@ -1441,8 +1501,8 @@
       "version": "4.9.1"
     },
     {
-      "bom-ref": "requirements-L97",
-      "description": "requirements line 97: ruff==0.15.17",
+      "bom-ref": "requirements-L101",
+      "description": "requirements line 101: ruff==0.15.17",
       "externalReferences": [
         {
           "comment": "implicit dist url",
@@ -1456,8 +1516,8 @@
       "version": "0.15.17"
     },
     {
-      "bom-ref": "requirements-L98",
-      "description": "requirements line 98: schemathesis==4.24.3",
+      "bom-ref": "requirements-L102",
+      "description": "requirements line 102: schemathesis==4.24.3",
       "externalReferences": [
         {
           "comment": "implicit dist url",
@@ -1471,8 +1531,8 @@
       "version": "4.24.3"
     },
     {
-      "bom-ref": "requirements-L99",
-      "description": "requirements line 99: sentry-sdk==2.66.1",
+      "bom-ref": "requirements-L103",
+      "description": "requirements line 103: sentry-sdk==2.66.1",
       "externalReferences": [
         {
           "comment": "implicit dist url",
@@ -1486,8 +1546,8 @@
       "version": "2.66.1"
     },
     {
-      "bom-ref": "requirements-L100",
-      "description": "requirements line 100: sgp4==2.25",
+      "bom-ref": "requirements-L104",
+      "description": "requirements line 104: sgp4==2.25",
       "externalReferences": [
         {
           "comment": "implicit dist url",
@@ -1501,8 +1561,8 @@
       "version": "2.25"
     },
     {
-      "bom-ref": "requirements-L101",
-      "description": "requirements line 101: six==1.17.0",
+      "bom-ref": "requirements-L105",
+      "description": "requirements line 105: six==1.17.0",
       "externalReferences": [
         {
           "comment": "implicit dist url",
@@ -1516,8 +1576,8 @@
       "version": "1.17.0"
     },
     {
-      "bom-ref": "requirements-L102",
-      "description": "requirements line 102: skyfield==1.54",
+      "bom-ref": "requirements-L106",
+      "description": "requirements line 106: skyfield==1.54",
       "externalReferences": [
         {
           "comment": "implicit dist url",
@@ -1531,8 +1591,8 @@
       "version": "1.54"
     },
     {
-      "bom-ref": "requirements-L103",
-      "description": "requirements line 103: slowapi==0.1.10",
+      "bom-ref": "requirements-L107",
+      "description": "requirements line 107: slowapi==0.1.10",
       "externalReferences": [
         {
           "comment": "implicit dist url",
@@ -1546,8 +1606,8 @@
       "version": "0.1.10"
     },
     {
-      "bom-ref": "requirements-L104",
-      "description": "requirements line 104: sortedcontainers==2.4.0",
+      "bom-ref": "requirements-L108",
+      "description": "requirements line 108: sortedcontainers==2.4.0",
       "externalReferences": [
         {
           "comment": "implicit dist url",
@@ -1561,8 +1621,8 @@
       "version": "2.4.0"
     },
     {
-      "bom-ref": "requirements-L105",
-      "description": "requirements line 105: sqlalchemy==2.0.50",
+      "bom-ref": "requirements-L109",
+      "description": "requirements line 109: sqlalchemy==2.0.50",
       "externalReferences": [
         {
           "comment": "implicit dist url",
@@ -1576,8 +1636,8 @@
       "version": "2.0.50"
     },
     {
-      "bom-ref": "requirements-L106",
-      "description": "requirements line 106: starlette==1.3.1",
+      "bom-ref": "requirements-L110",
+      "description": "requirements line 110: starlette==1.3.1",
       "externalReferences": [
         {
           "comment": "implicit dist url",
@@ -1591,8 +1651,8 @@
       "version": "1.3.1"
     },
     {
-      "bom-ref": "requirements-L107",
-      "description": "requirements line 107: starlette-testclient==0.4.1",
+      "bom-ref": "requirements-L111",
+      "description": "requirements line 111: starlette-testclient==0.4.1",
       "externalReferences": [
         {
           "comment": "implicit dist url",
@@ -1606,8 +1666,8 @@
       "version": "0.4.1"
     },
     {
-      "bom-ref": "requirements-L108",
-      "description": "requirements line 108: testcontainers==4.14.2",
+      "bom-ref": "requirements-L112",
+      "description": "requirements line 112: testcontainers==4.14.2",
       "externalReferences": [
         {
           "comment": "implicit dist url",
@@ -1621,8 +1681,23 @@
       "version": "4.14.2"
     },
     {
-      "bom-ref": "requirements-L109",
-      "description": "requirements line 109: toposort==1.10",
+      "bom-ref": "requirements-L113",
+      "description": "requirements line 113: tomli==2.5.0 ; python_full_version < '3.15'",
+      "externalReferences": [
+        {
+          "comment": "implicit dist url",
+          "type": "distribution",
+          "url": "https://pypi.org/simple/tomli/"
+        }
+      ],
+      "name": "tomli",
+      "purl": "pkg:pypi/tomli@2.5.0",
+      "type": "library",
+      "version": "2.5.0"
+    },
+    {
+      "bom-ref": "requirements-L114",
+      "description": "requirements line 114: toposort==1.10",
       "externalReferences": [
         {
           "comment": "implicit dist url",
@@ -1636,8 +1711,8 @@
       "version": "1.10"
     },
     {
-      "bom-ref": "requirements-L110",
-      "description": "requirements line 110: truststore==0.10.4",
+      "bom-ref": "requirements-L115",
+      "description": "requirements line 115: truststore==0.10.4",
       "externalReferences": [
         {
           "comment": "implicit dist url",
@@ -1651,8 +1726,8 @@
       "version": "0.10.4"
     },
     {
-      "bom-ref": "requirements-L111",
-      "description": "requirements line 111: typing-extensions==4.15.0",
+      "bom-ref": "requirements-L116",
+      "description": "requirements line 116: typing-extensions==4.15.0",
       "externalReferences": [
         {
           "comment": "implicit dist url",
@@ -1666,8 +1741,8 @@
       "version": "4.15.0"
     },
     {
-      "bom-ref": "requirements-L112",
-      "description": "requirements line 112: typing-inspection==0.4.2",
+      "bom-ref": "requirements-L117",
+      "description": "requirements line 117: typing-inspection==0.4.2",
       "externalReferences": [
         {
           "comment": "implicit dist url",
@@ -1681,8 +1756,8 @@
       "version": "0.4.2"
     },
     {
-      "bom-ref": "requirements-L113",
-      "description": "requirements line 113: tzdata==2026.2 ; sys_platform == 'win32'",
+      "bom-ref": "requirements-L118",
+      "description": "requirements line 118: tzdata==2026.2 ; sys_platform == 'win32'",
       "externalReferences": [
         {
           "comment": "implicit dist url",
@@ -1696,8 +1771,8 @@
       "version": "2026.2"
     },
     {
-      "bom-ref": "requirements-L114",
-      "description": "requirements line 114: urllib3==2.7.0",
+      "bom-ref": "requirements-L119",
+      "description": "requirements line 119: urllib3==2.7.0",
       "externalReferences": [
         {
           "comment": "implicit dist url",
@@ -1711,8 +1786,8 @@
       "version": "2.7.0"
     },
     {
-      "bom-ref": "requirements-L115",
-      "description": "requirements line 115: uvicorn==0.49.0",
+      "bom-ref": "requirements-L120",
+      "description": "requirements line 120: uvicorn==0.49.0",
       "externalReferences": [
         {
           "comment": "implicit dist url",
@@ -1726,8 +1801,8 @@
       "version": "0.49.0"
     },
     {
-      "bom-ref": "requirements-L116",
-      "description": "requirements line 116: virtualenv==21.5.1",
+      "bom-ref": "requirements-L121",
+      "description": "requirements line 121: virtualenv==21.5.1",
       "externalReferences": [
         {
           "comment": "implicit dist url",
@@ -1741,8 +1816,8 @@
       "version": "21.5.1"
     },
     {
-      "bom-ref": "requirements-L117",
-      "description": "requirements line 117: werkzeug==3.1.8",
+      "bom-ref": "requirements-L122",
+      "description": "requirements line 122: werkzeug==3.1.8",
       "externalReferences": [
         {
           "comment": "implicit dist url",
@@ -1756,8 +1831,8 @@
       "version": "3.1.8"
     },
     {
-      "bom-ref": "requirements-L118",
-      "description": "requirements line 118: wrapt==2.2.2",
+      "bom-ref": "requirements-L123",
+      "description": "requirements line 123: wrapt==2.2.2",
       "externalReferences": [
         {
           "comment": "implicit dist url",
@@ -1771,8 +1846,8 @@
       "version": "2.2.2"
     },
     {
-      "bom-ref": "requirements-L119",
-      "description": "requirements line 119: xsdata==26.2",
+      "bom-ref": "requirements-L124",
+      "description": "requirements line 124: xsdata==26.2",
       "externalReferences": [
         {
           "comment": "implicit dist url",
@@ -1786,8 +1861,8 @@
       "version": "26.2"
     },
     {
-      "bom-ref": "requirements-L120",
-      "description": "requirements line 120: xsdata-pydantic==24.5",
+      "bom-ref": "requirements-L125",
+      "description": "requirements line 125: xsdata-pydantic==24.5",
       "externalReferences": [
         {
           "comment": "implicit dist url",
@@ -1876,6 +1951,21 @@
     },
     {
       "ref": "requirements-L120"
+    },
+    {
+      "ref": "requirements-L121"
+    },
+    {
+      "ref": "requirements-L122"
+    },
+    {
+      "ref": "requirements-L123"
+    },
+    {
+      "ref": "requirements-L124"
+    },
+    {
+      "ref": "requirements-L125"
     },
     {
       "ref": "requirements-L13"
