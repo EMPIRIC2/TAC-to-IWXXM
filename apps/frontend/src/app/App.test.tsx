@@ -49,6 +49,7 @@ vi.mock('sonner', () => ({
 vi.mock('./components/FileConverter', () => ({
   FileConverter: ({
     onOpenHistory,
+    onOpenVisuals,
     onRequestLogin,
     onLogout,
     onLoadWorkSession,
@@ -56,9 +57,12 @@ vi.mock('./components/FileConverter', () => ({
     onSessionUpdated,
     onActiveSessionIdChange,
     onOpenCatalog,
+    pendingMapTac,
+    onPendingMapTacConsumed,
     isGuest,
   }: {
     onOpenHistory?: () => void;
+    onOpenVisuals?: () => void;
     onRequestLogin?: () => void;
     onLogout?: () => void | Promise<void>;
     onLoadWorkSession?: (s: WorkSession) => void;
@@ -69,9 +73,27 @@ vi.mock('./components/FileConverter', () => ({
       family?: 'conversion' | 'lint' | 'iwxxm' | 'decoding',
       code?: string,
     ) => void;
+    pendingMapTac?: string | null;
+    onPendingMapTacConsumed?: () => void;
     isGuest?: boolean;
   }) => (
     <div data-testid="file-converter">
+      {pendingMapTac ? (
+        <button
+          type="button"
+          data-testid="consume-pending-map-tac"
+          onClick={() => onPendingMapTacConsumed?.()}
+        >
+          {pendingMapTac}
+        </button>
+      ) : null}
+      <button
+        type="button"
+        data-testid="open-visuals"
+        onClick={() => onOpenVisuals?.()}
+      >
+        Open visuals
+      </button>
       <button
         type="button"
         data-testid="open-history"
@@ -375,7 +397,70 @@ vi.mock('./components/ui/sonner', () => ({
 }));
 
 vi.mock('./components/LiveWorldMap', () => ({
-  LiveWorldMap: () => <div data-testid="live-world-map" />,
+  LiveWorldMap: ({
+    onOpenPlace,
+  }: {
+    onOpenPlace?: (place: {
+      place_key: string;
+      product: string;
+      latitude: number;
+      longitude: number;
+      reports: { tac: string; observed_at: string }[];
+    }) => void;
+  }) => (
+    <div data-testid="live-world-map">
+      <button
+        type="button"
+        data-testid="mock-map-send"
+        onClick={() =>
+          onOpenPlace?.({
+            place_key: 'KJFK',
+            product: 'metar',
+            latitude: 40.6,
+            longitude: -73.8,
+            reports: [
+              {
+                tac: 'METAR KJFK 121251Z 18010KT 10SM FEW250 22/12 A3012',
+                observed_at: '2026-11-12T12:51:00Z',
+              },
+            ],
+          })
+        }
+      >
+        Send
+      </button>
+      <button
+        type="button"
+        data-testid="mock-map-send-empty"
+        onClick={() =>
+          onOpenPlace?.({
+            place_key: 'KJFK',
+            product: 'metar',
+            latitude: 40.6,
+            longitude: -73.8,
+            reports: [{ tac: '   ', observed_at: '' }],
+          })
+        }
+      >
+        Send empty
+      </button>
+      <button
+        type="button"
+        data-testid="mock-map-send-no-reports"
+        onClick={() =>
+          onOpenPlace?.({
+            place_key: 'KJFK',
+            product: 'metar',
+            latitude: 40.6,
+            longitude: -73.8,
+            reports: [],
+          })
+        }
+      >
+        Send no reports
+      </button>
+    </div>
+  ),
 }));
 
 import App from './App';
@@ -516,6 +601,35 @@ describe('App Component (F31 optional Auth)', () => {
     expect(
       screen.queryByTestId('lint-validation-catalog-page'),
     ).not.toBeInTheDocument();
+  });
+
+  it('opens Decode visuals from Convert and sends map TAC into the converter', async () => {
+    const user = userEvent.setup();
+    render(<App />);
+    await user.click(screen.getByTestId('open-visuals'));
+    expect(screen.getByTestId('decode-visuals-page')).toBeInTheDocument();
+    expect(screen.getByTestId('shell-nav-visuals')).toHaveAttribute(
+      'aria-selected',
+      'true',
+    );
+
+    await user.click(screen.getByTestId('mock-map-send-empty'));
+    expect(screen.getByTestId('decode-visuals-page')).toBeInTheDocument();
+    expect(screen.queryByTestId('consume-pending-map-tac')).not.toBeInTheDocument();
+
+    await user.click(screen.getByTestId('mock-map-send-no-reports'));
+    expect(screen.getByTestId('decode-visuals-page')).toBeInTheDocument();
+
+    await user.click(screen.getByTestId('mock-map-send'));
+    expect(screen.getByTestId('shell-nav-converter')).toHaveAttribute(
+      'aria-selected',
+      'true',
+    );
+    expect(screen.getByTestId('consume-pending-map-tac')).toHaveTextContent(
+      'METAR KJFK',
+    );
+    await user.click(screen.getByTestId('consume-pending-map-tac'));
+    expect(screen.queryByTestId('consume-pending-map-tac')).not.toBeInTheDocument();
   });
 
   it('omits Dissemination ops from the shell nav', () => {
