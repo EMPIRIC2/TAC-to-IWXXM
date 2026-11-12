@@ -37,7 +37,7 @@ class TestT13AuthWorkspaceWire:
         assert "worker," in workflow or "\n            worker," in workflow
 
     def test_env_example_documents_jwks(self) -> None:
-        root_env = (ROOT / ".env.example").read_text(encoding="utf-8")
+        root_env = (ROOT / "config/env.example").read_text(encoding="utf-8")
         assert "SUPABASE_JWKS_URL=" in root_env
         assert "SUPABASE_URL=" in root_env
         pkg_env = (ROOT / "packages/auth/.env.example").read_text(encoding="utf-8")

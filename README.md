@@ -28,7 +28,7 @@ cd TAC-to-IWXXM
 # macOS system packages (python@3.12, node@22, uv, rust, and more) — see Brewfile
 brew bundle --file=Brewfile
 
-cp .env.example .env   # add Supabase and database credentials as needed
+cp config/env.example .env   # add Supabase and database credentials as needed
 make install           # uv sync + pnpm install
 ```
 

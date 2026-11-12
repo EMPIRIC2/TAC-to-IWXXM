@@ -20,4 +20,4 @@ Allowlist Compose/CI hosts when exercising the sink (ADR-029), recommended:
 
 `DISSEMINATION_EGRESS_ALLOWLIST=wis2box,127.0.0.1,127.0.0.0/8,localhost`
 
-(same default as `scripts/ci/run_wis2box_harness.sh` / `.env.example`).
+(same default as `scripts/ci/run_wis2box_harness.sh` / `config/env.example`).

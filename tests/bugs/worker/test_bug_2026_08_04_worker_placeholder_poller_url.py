@@ -30,7 +30,7 @@ def test_fetch_jobs_rejects_placeholder() -> None:
 
 def test_docs_pin_fixture_url() -> None:
     env_variable = (ROOT / "docs/env-variable.md").read_text(encoding="utf-8")
-    example = (ROOT / ".env.example").read_text(encoding="utf-8")
+    example = (ROOT / "config/env.example").read_text(encoding="utf-8")
     for text in (env_variable, example):
         assert DEFAULT_FIXTURE_INGEST_POLLER_URL in text or (
             "raw.githubusercontent.com/EMPIRIC2/TAC-to-IWXXM/main/"

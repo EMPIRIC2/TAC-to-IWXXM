@@ -181,7 +181,7 @@ export default defineConfig({
     ? {}
     : {
         webServer: {
-          command: `AUTO_KILL_PORTS=true METAR_CONFIG_ENV=${localConfigEnv} PLAYWRIGHT_API_BASE_URL=${process.env.PLAYWRIGHT_API_BASE_URL || DEFAULT_API_BASE_URL} ../../start-dev-servers.sh --kill`,
+          command: `AUTO_KILL_PORTS=true METAR_CONFIG_ENV=${localConfigEnv} PLAYWRIGHT_API_BASE_URL=${process.env.PLAYWRIGHT_API_BASE_URL || DEFAULT_API_BASE_URL} ../../config/start-dev-servers.sh --kill`,
           url: configuredBaseUrl,
           timeout: 300000,
           reuseExistingServer: !process.env.CI,

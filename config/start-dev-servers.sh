@@ -2,7 +2,7 @@
 
 set -euo pipefail
 
-ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
 load_repo_env() {
   local env_file="${ROOT_DIR}/.env"
@@ -35,7 +35,7 @@ AUTO_KILL_PORTS="${AUTO_KILL_PORTS:-prompt}"
 
 usage() {
   cat <<'EOF'
-Usage: ./start-dev-servers.sh [OPTION]
+Usage: ./config/start-dev-servers.sh [OPTION]
 
 Options:
   --kill, -k      Automatically kill processes using required ports.

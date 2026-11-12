@@ -20,7 +20,7 @@ Approved omits do not apply to these scripts themselves.
 
 ### [launchers/](launchers/)
 Platform-specific launch scripts for starting the frontend (GUI) and backend (API) services.
-- macOS and Linux: repo-root `start-dev-servers.sh`
+- macOS and Linux: `config/start-dev-servers.sh`
 - PowerShell scripts for Windows (`.ps1`)
 - Batch scripts for Windows Command Prompt (`.bat`)
 
@@ -63,7 +63,7 @@ Platform-specific scripts for starting services are located in [launchers/](laun
 Use the repo-root launcher:
 
 ```bash
-./start-dev-servers.sh
+./config/start-dev-servers.sh
 ```
 
 #### Command Prompt (Windows)
@@ -79,7 +79,7 @@ launchers\launch_gui.bat
 Similar launch scripts are available for the backend API:
 - `launchers/launch_api.ps1` (PowerShell)
 - `launchers/launch_api.bat` (Command Prompt)
-- macOS and Linux: `./start-dev-servers.sh` from the repo root
+- macOS and Linux: `./config/start-dev-servers.sh` from the repo root
 
 ---
 
@@ -226,7 +226,7 @@ launch_gui.bat
 macOS and Linux:
 
 ```bash
-./start-dev-servers.sh
+./config/start-dev-servers.sh
 ```
 
 The Vite development server automatically includes hot reloading and watches for file changes.
@@ -250,7 +250,7 @@ Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
 ### Bash Permission Denied
 If you see "Permission denied":
 ```bash
-chmod +x start-dev-servers.sh
+chmod +x config/start-dev-servers.sh
 ```
 
 ### Virtual Environment Not Found
