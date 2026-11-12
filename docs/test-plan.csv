@@ -873,3 +873,8 @@ COV-LIVE-general TAC conversion-030,Journey coverage for LIVE-general TAC conver
 COV-UJ-OPS-002,Journey coverage for UJ-OPS-002,coverage,platform independence deepen,UJ-OPS-002,,Prod apex → app redirect,ops / T3,,mapped,tc=
 COV-UJ-DEV-007,Journey coverage for UJ-DEV-007,coverage,workspace tooling deepen,UJ-DEV-007,,Slim husky lint commit + fast-unit push,—,,mapped,tc=
 COV-UJ-DEV-008,Journey coverage for UJ-DEV-008,coverage,general TAC conversion deepen,UJ-DEV-008,,Converter perf regression blocks PR,CI,,mapped,tc=
+TC-EV-CND-001,Code names shell tab and dictionary table,,,UJ-020,,,,,documented,heading_level=3
+TC-EV-CND-002,Code name dictionary tag validation (product/country/amendment),,,UJ-020,,,,,documented,heading_level=3
+TC-EV-CND-003,Code name dictionary filter success paths,,,UJ-020,,,,,documented,heading_level=3
+TC-EV-CND-004,Code name dictionary API failure surfaces,,,UJ-020,,,,,documented,heading_level=3
+TC-EV-CND-005,Code name dictionary HTTP integration,,,UJ-020,,,,,documented,heading_level=3

@@ -1032,6 +1032,104 @@
         "title": "BulletinReportResultModel",
         "type": "object"
       },
+      "CodeNameDictionaryFacets": {
+        "description": "Facet values for dictionary filters.",
+        "properties": {
+          "countries": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Countries",
+            "type": "array"
+          },
+          "products": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Products",
+            "type": "array"
+          },
+          "wmo_amendments": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Wmo Amendments",
+            "type": "array"
+          }
+        },
+        "title": "CodeNameDictionaryFacets",
+        "type": "object"
+      },
+      "CodeNameDictionaryItem": {
+        "description": "One code-name dictionary row (Decoding glossary deepen).",
+        "properties": {
+          "code": {
+            "title": "Code",
+            "type": "string"
+          },
+          "countries": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Countries",
+            "type": "array"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "meaning": {
+            "default": "",
+            "title": "Meaning",
+            "type": "string"
+          },
+          "products": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Products",
+            "type": "array"
+          },
+          "wmo_amendment": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Wmo Amendment"
+          }
+        },
+        "required": [
+          "id",
+          "code"
+        ],
+        "title": "CodeNameDictionaryItem",
+        "type": "object"
+      },
+      "CodeNameDictionaryResponse": {
+        "description": "Response for GET /code-name-dictionary.",
+        "properties": {
+          "facets": {
+            "$ref": "#/components/schemas/CodeNameDictionaryFacets"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/CodeNameDictionaryItem"
+            },
+            "title": "Items",
+            "type": "array"
+          }
+        },
+        "required": [
+          "items",
+          "facets"
+        ],
+        "title": "CodeNameDictionaryResponse",
+        "type": "object"
+      },
       "ComparisonDetail": {
         "description": "Detailed comparison result between our and reference IWXXM.",
         "example": {
@@ -7380,6 +7478,112 @@
   },
   "openapi": "3.1.0",
   "paths": {
+    "/api/v1/code-name-dictionary": {
+      "get": {
+        "description": "Export the Decoding glossary as a tagged code-name dictionary.",
+        "operationId": "get_code_name_dictionary_api_v1_code_name_dictionary_get",
+        "parameters": [
+          {
+            "description": "Search code or meaning",
+            "in": "query",
+            "name": "q",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Search code or meaning",
+              "title": "Q"
+            }
+          },
+          {
+            "description": "Filter by product tag",
+            "in": "query",
+            "name": "product",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter by product tag",
+              "title": "Product"
+            }
+          },
+          {
+            "description": "Filter by country tag",
+            "in": "query",
+            "name": "country",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter by country tag",
+              "title": "Country"
+            }
+          },
+          {
+            "description": "Filter by WMO amendment label",
+            "in": "query",
+            "name": "wmo_amendment",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter by WMO amendment label",
+              "title": "Wmo Amendment"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CodeNameDictionaryResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Code Name Dictionary",
+        "tags": [
+          "Catalogs"
+        ]
+      }
+    },
     "/api/v1/convert": {
       "post": {
         "description": "Convert METAR/SPECI TAC text to IWXXM XML.",

@@ -259,6 +259,10 @@ Context: epic-922-synthesis (archived. see session-store `~/.cursor/workflow/EMP
  `conform_note`. Null/omit when unknown; FE must not invent defaults. Prefer `content`
  for glossary tokens that explain TAC groups/codes. best-effort public sources only.
  Aggregated via `GET /api/v1/rule-catalogs?family=decoding` .
+- **code-name dictionary deepen**: Glossary tokens may also carry operator dictionary
+ tags — `products` (list), `countries` (list; `INTL` for international), and
+ `wmo_amendment` (string or null). Exposed via `GET /api/v1/code-name-dictionary` for
+ the primary shell **Code names** tab (filter/search). Does not replace rule-catalogs.
 - **Migration**: Logic moves from `tac2iwxxm.decode` / `glossary`; `tac2iwxxm` re-exports for
  one release then deprecates those entry points. **** keeps the shims, the legacy
  parsers, and the multi-pin compares.

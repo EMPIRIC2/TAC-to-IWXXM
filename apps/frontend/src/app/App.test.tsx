@@ -388,6 +388,12 @@ vi.mock('./components/LintValidationCatalogPage', () => ({
   ),
 }));
 
+vi.mock('./components/CodeNameDictionaryPage', () => ({
+  CodeNameDictionaryPage: () => (
+    <div data-testid="code-name-dictionary-page">Code names</div>
+  ),
+}));
+
 vi.mock('./components/ThemeProvider', () => ({
   ThemeProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>,
 }));
@@ -601,6 +607,13 @@ describe('App Component (F31 optional Auth)', () => {
     expect(
       screen.queryByTestId('lint-validation-catalog-page'),
     ).not.toBeInTheDocument();
+
+    await user.click(screen.getByTestId('shell-nav-dictionary'));
+    expect(screen.getByTestId('code-name-dictionary-page')).toBeInTheDocument();
+    expect(screen.getByTestId('shell-nav-dictionary')).toHaveAttribute(
+      'aria-selected',
+      'true',
+    );
   });
 
   it('opens Decode visuals from Convert and sends map TAC into the converter', async () => {

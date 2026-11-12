@@ -3,6 +3,7 @@ import { FileConverter } from './components/FileConverter';
 import { MyMetarsPage } from './components/MyMetarsPage';
 import { LintValidationCatalogPage } from './components/LintValidationCatalogPage';
 import { DecodeVisualsPage } from './components/DecodeVisualsPage';
+import { CodeNameDictionaryPage } from './components/CodeNameDictionaryPage';
 import { AppShellNav, type ShellPrimaryView } from './components/AppShellNav';
 import type { LivePlace } from '@/utils/liveMap';
 import { Login } from './components/auth/Login';
@@ -62,7 +63,8 @@ function isPrimaryShellView(view: AppView): view is ShellPrimaryView {
     view === 'converter' ||
     view === 'visuals' ||
     view === 'history' ||
-    view === 'catalog'
+    view === 'catalog' ||
+    view === 'dictionary'
   );
 }
 
@@ -337,7 +339,8 @@ function App() {
           {(currentView === 'converter' ||
             currentView === 'visuals' ||
             currentView === 'history' ||
-            currentView === 'catalog') && (
+            currentView === 'catalog' ||
+            currentView === 'dictionary') && (
             <div hidden={currentView !== 'converter'}>
               <FileConverter
                 onLogout={handleLogout}
@@ -395,6 +398,8 @@ function App() {
               }}
             />
           )}
+
+          {currentView === 'dictionary' && <CodeNameDictionaryPage />}
 
           {currentView === 'callback' && (
             <AuthCallback

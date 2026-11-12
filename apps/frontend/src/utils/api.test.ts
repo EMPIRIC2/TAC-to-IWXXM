@@ -11,6 +11,7 @@ import {
   EndpointNotImplementedError,
   fetchAirportRegion,
   fetchLintIssueCatalog,
+  fetchCodeNameDictionary,
   fetchRuleCatalog,
   fetchSelectionOptions,
   fetchSchemaStatus,
@@ -1306,6 +1307,62 @@ describe('API Utils', () => {
       });
       await expect(fetchRuleCatalog({ family: 'decoding' })).rejects.toThrow(
         'rule-catalogs failed: 400',
+      );
+    });
+
+    it('GETs code-name-dictionary with filters', async () => {
+      mockFetchResponse({
+        items: [
+          {
+            id: 'TS',
+            code: 'TS',
+            meaning: 'thunderstorm',
+            products: ['METAR'],
+            countries: ['INTL'],
+            wmo_amendment: 'WMO No. 306',
+          },
+        ],
+        facets: {
+          products: ['METAR'],
+          countries: ['INTL'],
+          wmo_amendments: ['WMO No. 306'],
+        },
+      });
+      const result = await fetchCodeNameDictionary({
+        q: ' thunder ',
+        product: ' METAR ',
+        country: ' INTL ',
+        wmo_amendment: ' WMO No. 306 ',
+      });
+      expect(result.items[0]!.code).toBe('TS');
+      expect(global.fetch).toHaveBeenCalledWith(
+        expect.stringMatching(
+          /\/code-name-dictionary\?q=thunder&product=METAR&country=INTL&wmo_amendment=WMO\+No\.\+306$/,
+        ),
+        expect.objectContaining({ method: 'GET' }),
+      );
+    });
+
+    it('GETs code-name-dictionary without query when filters are empty', async () => {
+      mockFetchResponse({
+        items: [],
+        facets: { products: [], countries: [], wmo_amendments: [] },
+      });
+      await fetchCodeNameDictionary({});
+      expect(global.fetch).toHaveBeenCalledWith(
+        expect.stringMatching(/\/code-name-dictionary$/),
+        expect.objectContaining({ method: 'GET' }),
+      );
+    });
+
+    it('throws when code-name-dictionary fails', async () => {
+      (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
+        ok: false,
+        status: 500,
+        json: vi.fn().mockResolvedValueOnce({}),
+      });
+      await expect(fetchCodeNameDictionary({ q: 'TS' })).rejects.toThrow(
+        'code-name-dictionary failed: 500',
       );
     });
 
