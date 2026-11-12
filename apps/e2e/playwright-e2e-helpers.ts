@@ -1,7 +1,7 @@
 import { APIRequestContext, expect, Page } from '@playwright/test';
 import { fillManualTac } from './playwright-tac-editor';
 
-export { fillManualTac } from './playwright-tac-editor';
+export { applyTacSpanFix, fillManualTac } from './playwright-tac-editor';
 export {
   E2E_SUPABASE_ANON_KEY,
   E2E_SUPABASE_URL,
@@ -404,7 +404,10 @@ export async function openConvertDecoderTab(page: Page): Promise<void> {
 }
 
 /**
- * Open Results → Console (workbench console + conversion error log).
+ * Open Results → Console (status strip + conversion error log when present).
+ *
+ * Post-F37 / calm Convert: WorkbenchConsole was removed from this tab; the shell
+ * is `convert-console-panel` (LiveConvertStatusStrip + optional ErrorLogPanel).
  *
  * @param page - Playwright page hosting the converter.
  */
@@ -412,7 +415,7 @@ export async function openConvertConsoleTab(page: Page): Promise<void> {
   await leaveCalmEmptyHero(page);
   await ensureConvertResultsDrawerOpen(page);
   await page.getByTestId('convert-results-tab-console').click();
-  await expect(page.getByTestId('workbench-console')).toBeVisible();
+  await expect(page.getByTestId('convert-console-panel')).toBeVisible();
 }
 
 /**

@@ -105,7 +105,9 @@ def test_validate_http_bundle_rejects_non_string_archive_sha() -> None:
     errors = validate_manifest_schema(
         {"schema_version": MANIFEST_SCHEMA_VERSION, "bundles": bundles}
     )
-    assert any("archive_sha256 must be 64 hex chars when present" in err for err in errors)
+    assert any(
+        "archive_sha256 must be 64 hex chars when present" in err for err in errors
+    )
 
 
 def test_validate_profile_line_missing_parent_bundle_field() -> None:
