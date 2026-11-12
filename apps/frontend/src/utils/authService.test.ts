@@ -198,6 +198,15 @@ describe('authService', () => {
     expect(localStorage.getItem('access_token')).toBeNull();
   });
 
+  it('clears tokens and throws when refresh token is missing', async () => {
+    localStorage.setItem('access_token', 'expired-token');
+    localStorage.setItem('expires_at', String(Math.floor(Date.now() / 1000) - 1));
+
+    await expect(getCurrentUser()).rejects.toThrow('No refresh token available');
+    expect(localStorage.getItem('access_token')).toBeNull();
+    expect(authMock.refreshSession).not.toHaveBeenCalled();
+  });
+
   it('throws no-access-token when expiry is valid but access token is missing', async () => {
     localStorage.setItem('expires_at', String(Math.floor(Date.now() / 1000) + 1200));
 

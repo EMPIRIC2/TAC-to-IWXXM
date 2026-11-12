@@ -84,9 +84,28 @@ function unsetLogoutFixtureResult(): string {
   }
 }
 
+/** Minimal JWT-shaped token so supabase-js accepts the stubbed session. */
+function fakeGoTrueJwt(email: string): string {
+  const encode = (value: object): string =>
+    Buffer.from(JSON.stringify(value)).toString('base64url');
+  const now = Math.floor(Date.now() / 1000);
+  return `${encode({ alg: 'none', typ: 'JWT' })}.${encode({
+    sub: 'e2e-logout-fixture',
+    email,
+    role: 'authenticated',
+    aud: 'authenticated',
+    iat: now,
+    exp: now + 3600,
+  })}.e2e`;
+}
+
 async function signOutWithFixture(page: Page, fixture: CiLogoutFixture): Promise<void> {
   // F31 FE-direct: stub Supabase GoTrue password grant + logout (not API /auth/*).
-  await page.route('**/auth/v1/token**', async (route) => {
+  // Match `/auth/v1/token?grant_type=password` with a regex — glob `**/token**` can miss
+  // the query string on some Playwright versions.
+  const expiresAt = Math.floor(Date.now() / 1000) + 60 * 60;
+  const accessToken = fakeGoTrueJwt(fixture.email);
+  await page.route(/\/auth\/v1\/token(?:\?|$)/, async (route) => {
     if (route.request().method() !== 'POST') {
       await route.fallback();
       return;
@@ -95,15 +114,23 @@ async function signOutWithFixture(page: Page, fixture: CiLogoutFixture): Promise
       status: 200,
       contentType: 'application/json',
       body: JSON.stringify({
-        access_token: 'ci-logout-fixture-access',
+        access_token: accessToken,
         refresh_token: 'ci-logout-fixture-refresh',
-        expires_at: Math.floor(Date.now() / 1000) + 60 * 60,
+        expires_in: 3600,
+        expires_at: expiresAt,
         token_type: 'bearer',
-        user: { id: 'e2e-logout-fixture', email: fixture.email, user_metadata: {} },
+        user: {
+          id: 'e2e-logout-fixture',
+          aud: 'authenticated',
+          role: 'authenticated',
+          email: fixture.email,
+          user_metadata: {},
+          app_metadata: {},
+        },
       }),
     });
   });
-  await page.route('**/auth/v1/logout**', async (route) => {
+  await page.route(/\/auth\/v1\/logout(?:\?|$)/, async (route) => {
     if (route.request().method() !== 'POST') {
       await route.fallback();
       return;
@@ -113,7 +140,7 @@ async function signOutWithFixture(page: Page, fixture: CiLogoutFixture): Promise
       body: '',
     });
   });
-  await page.route('**/api/v1/work-sessions**', async (route) => {
+  await page.route(/\/api\/v1\/work-sessions/, async (route) => {
     if (route.request().method() !== 'GET') {
       await route.fallback();
       return;
@@ -128,7 +155,18 @@ async function signOutWithFixture(page: Page, fixture: CiLogoutFixture): Promise
   await gotoLogin(page);
   await page.locator('#email').fill(fixture.email);
   await page.locator('#password').fill(fixture.password);
+  const tokenResponse = page.waitForResponse(
+    (response) =>
+      /\/auth\/v1\/token/.test(response.url()) &&
+      response.request().method() === 'POST',
+    { timeout: 20_000 },
+  );
   await page.getByRole('button', { name: 'Sign in to account', exact: true }).click();
+  const granted = await tokenResponse;
+  expect(
+    granted.ok(),
+    `POST Supabase /auth/v1/token returned ${granted.status()}`,
+  ).toBeTruthy();
   // targets the TAC to IWXXM heading
   await expect(page.getByRole('heading', { name: /^TAC to IWXXM$/ })).toBeVisible({
     timeout: 30_000,
