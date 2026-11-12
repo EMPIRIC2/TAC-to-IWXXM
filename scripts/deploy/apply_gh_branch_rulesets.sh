@@ -29,7 +29,7 @@ checks = [
     {"context": "Test (dissemination)", "integration_id": 0},
     {"context": "Test (worker)", "integration_id": 0},
     {"context": "Test (bugs)", "integration_id": 0},
-    {"context": "Test (alembic / TC-EV031-002)", "integration_id": 0},
+    {"context": "Test (alembic upgrade idempotency)", "integration_id": 0},
     {"context": "Lint", "integration_id": 0},
     {"context": "Typecheck", "integration_id": 0},
     {"context": "Rust crates (fmt/clippy/test)", "integration_id": 0},

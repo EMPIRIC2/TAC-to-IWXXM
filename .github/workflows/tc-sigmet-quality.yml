@@ -1,7 +1,5 @@
-# EV-029 / E29-T4=2 — TC SIGMET quality pack (M7 / TC-EV029-004 + F23 deepen / #738).
-# EV-032 / E32-T7 — also covers #835 A6-2-TC ADR-032 equality + catalog wmoPass.
+# TC SIGMET quality pack (per-family; complements root CI).
 # Separate per-family workflow (WC / TropicalCycloneSIGMET); complements root ci.yml
-# and gen/VA SIGMET packs (sigmet-quality.yml, va-sigmet-quality.yml).
 name: TC SIGMET quality
 
 # Stage/main push: always run (no path filter). PR remains path-filtered for cost.

@@ -1,4 +1,4 @@
-# EV-030 / E30-T7 / TC-F29-006 — F29 quality matrices PR smoke (#831).
+# Quality matrices PR smoke (complements per-family workflows).
 # Path-filtered companion to per-family workflows; does not replace ci-cd.yml.
 # Full matrix: make test-quality-matrices-full (optional / workflow_dispatch).
 name: Quality matrices smoke

@@ -5,11 +5,11 @@ name: CI/CD Pipeline
 # (incl. Test (bugs) → pytest tests/bugs, covering live_tac_eval), e2e-smoke, etc.
 # No path filters — stage tip always executes the required unit/regression surface.
 # Intentionally skip on stage push (not tests): Staging gate + E2E Full (promote /
-# main-PR only), Coverage/Quality PR comments (PR only), Ops EV-933 (dispatch).
+# main-PR only), Coverage/Quality PR comments (PR only), staging Alembic ops (dispatch).
 on:
   push:
     branches: [main, stage]
-    # EV-051 — prod Deploy gate (solo): tag on main tip, not bare main push.
+    # Prod Deploy gate (solo): tag on main tip, not bare main push.
     # Use `v*-deploy` (not `v*-*-deploy`): dotted tags like `v2026.09.04-deploy`
     # have a single hyphen before `deploy` and do not match two-segment globs.
     tags:
@@ -29,7 +29,7 @@ on:
         type: choice
         options:
           - none
-          - ev933-staging
+          - staging-alembic-hmac
           - ghcr-doks-pull
         default: none
       ops_image_tag:
@@ -56,13 +56,13 @@ env:
   FRONTEND_VITE_API_BASE_URL: https://api.tac-to-iwxxm.com
 
 jobs:
-  # EV-933 — staging Alembic head + PROFILE_OVERLAY_HMAC_SECRET (workflow_dispatch ops).
-  ops-ev933-staging:
-    name: Ops EV-933 staging (Alembic + HMAC)
+  # Staging Alembic head + PROFILE_OVERLAY_HMAC_SECRET (workflow_dispatch ops).
+  ops-staging-alembic-hmac:
+    name: Ops staging Alembic + overlay HMAC
     runs-on: ubuntu-latest
     if: >
       github.event_name == 'workflow_dispatch' &&
-      github.event.inputs.ops == 'ev933-staging'
+      github.event.inputs.ops == 'staging-alembic-hmac'
     environment: staging
     permissions:
       contents: read
@@ -88,7 +88,7 @@ jobs:
             exit 1
           fi
           kubectl version --client
-      - name: Run EV-933 staging ops
+      - name: Run staging Alembic and overlay HMAC ops
         env:
           DOKS_NAMESPACE: metar-iwxxm-staging
         run: bash scripts/deploy/doks_staging_ev933_ops.sh
@@ -221,7 +221,7 @@ jobs:
       - name: Run lint
         run: make lint
 
-      - name: ADR-056 file budget + complexity
+      - name: File budget and complexity
         run: |
           make file-budget
           make file-complexity
@@ -229,7 +229,7 @@ jobs:
       - name: Validation catalog drift
         run: make validation-catalog-check
 
-      - name: ADR-048 documentation bar (checkers)
+      - name: Documentation bar (checkers)
         run: |
           make check-docs
           make check-docs-ts
@@ -763,11 +763,11 @@ jobs:
               throw err;
             }
 
-  # F30 / EV-031 T2.3 — Postgres service + idempotent alembic upgrade head (TC-EV031-002).
+  # Postgres service + idempotent alembic upgrade head.
   test-alembic:
     if: ${{ !(github.event_name == 'workflow_dispatch' && github.event.inputs.ops != 'none') }}
     runs-on: ubuntu-latest
-    name: Test (alembic / TC-EV031-002)
+    name: Test (alembic upgrade idempotency)
     services:
       postgres:
         image: postgres:16
@@ -806,7 +806,7 @@ jobs:
           make db-migrate
           make db-migrate
 
-      - name: TC-EV031-002 layout + live upgrade tests
+      - name: Alembic layout and live upgrade tests
         run: make test-alembic
 
   # ============================================================================
@@ -1107,7 +1107,7 @@ jobs:
     name: Deploy (${{ github.ref_name }})
     needs: [test, test-alembic, rust-crates-gate, tac2iwxxm-native, converter-perf, e2e-smoke, openaip-station-lookup]
     if: |
-      (github.event.inputs.ops != 'ev933-staging' && github.event.inputs.ops != 'ghcr-doks-pull') && (
+      (github.event.inputs.ops != 'staging-alembic-hmac' && github.event.inputs.ops != 'ghcr-doks-pull') && (
       (github.event_name == 'push' && github.ref == 'refs/heads/stage') ||
       (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/') && startsWith(github.ref_name, 'v') && endsWith(github.ref_name, '-deploy')) ||
       (github.event_name == 'workflow_dispatch' && github.event.inputs.target == 'production')

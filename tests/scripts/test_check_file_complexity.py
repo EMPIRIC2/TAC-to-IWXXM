@@ -1,4 +1,4 @@
-"""Unit tests for scripts/ci/check_file_complexity.py (ADR-056)."""
+"""Unit tests for scripts/ci/check_file_complexity.py."""
 
 from __future__ import annotations
 

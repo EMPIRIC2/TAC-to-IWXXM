@@ -1,4 +1,4 @@
-# S046 / EV-038 / #853 — optional iwxxm-us compatibility gate (TC-EV038-006).
+# Optional iwxxm-us compatibility gate.
 # Runs when WMO / US vendor trees or US profile / gate scripts change.
 name: iwxxm-us compat smoke
 
@@ -23,7 +23,7 @@ on:
 jobs:
   iwxxm-us-compat-smoke:
     runs-on: ubuntu-latest
-    name: iwxxm-us compat smoke (TC-EV038-006)
+    name: iwxxm-us compat smoke
     steps:
       - uses: actions/checkout@v5
         with:

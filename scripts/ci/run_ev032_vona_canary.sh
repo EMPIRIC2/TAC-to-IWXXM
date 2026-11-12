@@ -8,11 +8,11 @@ cd "$ROOT"
 
 UV="${UV:-uv}"
 
-echo "==> EV-032 VONA canary (ev032_smoke)"
+echo "==> VONA canary (ev032_smoke)"
 ${UV} run pytest \
   packages/tac2iwxxm/tests/test_tc_f32_004_vona_validate_golden.py \
   apps/backend/tests/unit/test_tc_f32_vona_product_enum.py \
   -m ev032_smoke \
   --no-cov -q --tb=short
 
-echo "==> EV-032 VONA canary green"
+echo "==> VONA canary green"

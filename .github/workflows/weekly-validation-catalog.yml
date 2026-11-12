@@ -3,7 +3,6 @@
 # Not a PR merge gate. Report artifact = what validation issues are raised now.
 #
 # Secrets / vars: see docs/deploy.md §Weekly validation catalog
-# [Corpus: deploy] [Corpus: api] [Corpus: tests] [Corpus: product §F2] [Corpus: product §F15]
 name: Weekly Validation Catalog
 
 on:

@@ -15,4 +15,4 @@ ${UV} run pytest \
   tests/provenance/test_tc_ev035_006_gap_raise.py \
   -q --no-cov --tb=line
 
-echo "==> EV-035 provenance canary green"
+echo "==> provenance canary green"

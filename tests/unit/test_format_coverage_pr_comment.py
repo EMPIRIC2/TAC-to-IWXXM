@@ -1,4 +1,4 @@
-"""Unit tests for scripts/ci/format_coverage_pr_comment.py (EV-036)."""
+"""Unit tests for scripts/ci/format_coverage_pr_comment.py."""
 
 from __future__ import annotations
 

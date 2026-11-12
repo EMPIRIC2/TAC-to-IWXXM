@@ -1,5 +1,4 @@
-# F26/F27 / EV-021 — combined WMO quality pack (extends E20-F3 / S02.L1)
-# SIGMET (F23 keep-green) + AIRMET + METAR/SPECI/TAF + VAA + TCA.
+# Combined WMO quality pack (SIGMET, AIRMET, METAR/SPECI/TAF, VAA, TCA).
 # Complements ci-cd.yml; does not replace it.
 name: WMO quality
 

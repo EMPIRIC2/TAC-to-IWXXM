@@ -10,4 +10,4 @@ UV="${UV:-uv}"
 echo "==> EV-035 provenance quality (TC-EV035-001..006)"
 ${UV} run pytest tests/provenance/ -q --no-cov --tb=short
 
-echo "==> EV-035 provenance quality green"
+echo "==> provenance quality green"

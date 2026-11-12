@@ -154,7 +154,7 @@ def main(argv: list[str] | None = None) -> int:
         return 0
     violations = check_budget(budget=args.budget)
     if violations:
-        print("ADR-056 file budget violations:", file=sys.stderr)
+        print("File budget violations:", file=sys.stderr)
         for item in violations:
             print(f"  {item}", file=sys.stderr)
         print(
@@ -163,7 +163,7 @@ def main(argv: list[str] | None = None) -> int:
             file=sys.stderr,
         )
         return 1
-    print("file budget OK (ADR-056)")
+    print("file budget OK")
     return 0
 
 

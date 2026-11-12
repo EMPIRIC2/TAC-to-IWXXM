@@ -58,6 +58,6 @@ See [docs/deploy.md](../../docs/deploy.md) §Promote · Evaluation metrics and
 - [ ] Staging gate green on this pull request
 - [ ] Full CI unit jobs (`Test (*)`), `Lint`, `Typecheck`, and
       **`E2E Full (Playwright)`** (not smoke-only) green; see `docs/deploy.md`
-      §Promote table (tracking: EV-061 / issue #1015)
+      §Promote table
 - [ ] After merge: confirm tip CI on `main` is green (**Deploy must not run** on
       a bare `main` push); ship production with a `vYYYY.MM.DD-deploy` tag
