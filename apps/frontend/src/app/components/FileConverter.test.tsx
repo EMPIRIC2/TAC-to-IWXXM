@@ -2183,6 +2183,41 @@ describe('FileConverter Component', () => {
       HTMLElement.prototype.scrollIntoView = originalScroll;
     });
 
+    it('applies pending map TAC and opens Decode visuals from the Map tab', async () => {
+      const user = userEvent.setup({ delay: null });
+      const onOpenVisuals = vi.fn();
+      const onPendingMapTacConsumed = vi.fn();
+      const view = render(
+        <FileConverter
+          {...defaultProps}
+          onOpenVisuals={onOpenVisuals}
+          pendingMapTac="METAR KJFK 121755Z 18010KT 10SM"
+          onPendingMapTacConsumed={onPendingMapTacConsumed}
+        />,
+      );
+      await waitFor(() => {
+        expect(screen.getByLabelText('Enter METAR data manually')).toHaveValue(
+          'METAR KJFK 121755Z 18010KT 10SM',
+        );
+      });
+      expect(onPendingMapTacConsumed).toHaveBeenCalled();
+      expect(screen.getByRole('combobox', { name: 'Product' })).toHaveValue('METAR');
+
+      await user.click(screen.getByTestId('convert-results-tab-map'));
+      await user.click(screen.getByTestId('convert-open-decode-visuals'));
+      expect(onOpenVisuals).toHaveBeenCalledTimes(1);
+
+      view.rerender(
+        <FileConverter
+          {...defaultProps}
+          onOpenVisuals={onOpenVisuals}
+          pendingMapTac="   "
+          onPendingMapTacConsumed={onPendingMapTacConsumed}
+        />,
+      );
+      expect(onPendingMapTacConsumed).toHaveBeenCalledTimes(1);
+    });
+
     it('TC-UX-DECLUTTER: no peer-pane resize separators (drawer replaces grid)', () => {
       seedLiveConvertChrome();
       render(<FileConverter {...defaultProps} />);

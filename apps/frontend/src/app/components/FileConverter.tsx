@@ -362,12 +362,18 @@ interface FileConverterProps {
   /** Open optional login UX (F31 / F21 Amended). */
   onRequestLogin?: () => void;
   onOpenHistory?: () => void;
+  /** Open full-page Decode visuals (live TAC map). */
+  onOpenVisuals?: () => void;
   onLoadWorkSession?: (session: WorkSession) => void;
   onNewMetar?: () => void;
   onSessionUpdated?: (session: WorkSession) => void;
   onActiveSessionIdChange?: (id: string | null) => void;
   activeWorkSessionId?: string | null;
   loadedWorkSession?: WorkSession | null;
+  /** TAC from Decode visuals Send — applied once then cleared. */
+  pendingMapTac?: string | null;
+  /** Clear pending map TAC after it is applied to the editor. */
+  onPendingMapTacConsumed?: () => void;
   /** Open Rule catalogs (optional family hint for Convert trust links). */
   onOpenCatalog?: (
     family?: 'conversion' | 'lint' | 'iwxxm' | 'decoding',
@@ -731,12 +737,15 @@ export function FileConverter({
   onLogout,
   onRequestLogin,
   onOpenHistory,
+  onOpenVisuals,
   onLoadWorkSession,
   onNewMetar,
   onSessionUpdated,
   onActiveSessionIdChange,
   activeWorkSessionId,
   loadedWorkSession,
+  pendingMapTac = null,
+  onPendingMapTacConsumed,
   onOpenCatalog,
 }: FileConverterProps) {
   const [pendingFiles, setPendingFiles] = useState<PendingFile[]>([]);
@@ -2547,6 +2556,26 @@ export function FileConverter({
       })),
     });
   }, [manualInput, decodeSegments]);
+
+  /* eslint-disable react-hooks/set-state-in-effect -- hydrate TAC editor from Decode visuals Send */
+  useEffect(() => {
+    const tac = pendingMapTac?.trim() ?? '';
+    if (!tac) {
+      return;
+    }
+    setInputMode('tac');
+    setManualInput(tac);
+    setSelectedTrace(null);
+    setLintJump(null);
+    setLintFocusOffset(null);
+    setConversionParams((prev) => ({
+      ...prev,
+      product: detectTacProduct(tac),
+    }));
+    setConverterOpen(true);
+    onPendingMapTacConsumed?.();
+  }, [pendingMapTac, onPendingMapTacConsumed]);
+  /* eslint-enable react-hooks/set-state-in-effect */
 
   const tacLintSummary =
     manualInput.trim().length === 0
@@ -4403,7 +4432,22 @@ export function FileConverter({
                   }
                   map={
                     <div data-testid="convert-weather-map">
-                      <div data-testid="convert-weather-map-panel">
+                      <div
+                        data-testid="convert-weather-map-panel"
+                        className="space-y-2"
+                      >
+                        {onOpenVisuals ? (
+                          <div className="flex justify-end">
+                            <button
+                              type="button"
+                              data-testid="convert-open-decode-visuals"
+                              className="text-sm font-medium text-gray-700 underline-offset-2 hover:underline dark:text-gray-200"
+                              onClick={onOpenVisuals}
+                            >
+                              Open Decode visuals
+                            </button>
+                          </div>
+                        ) : null}
                         <LiveWorldMap
                           onOpenPlace={(place: LivePlace) => {
                             const tac = place.reports[0]?.tac?.trim() ?? '';

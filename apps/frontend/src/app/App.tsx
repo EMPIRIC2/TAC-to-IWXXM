@@ -2,8 +2,10 @@ import { useState, useEffect, useLayoutEffect, useRef, useCallback } from 'react
 import { FileConverter } from './components/FileConverter';
 import { MyMetarsPage } from './components/MyMetarsPage';
 import { LintValidationCatalogPage } from './components/LintValidationCatalogPage';
+import { DecodeVisualsPage } from './components/DecodeVisualsPage';
 import { CodeNameDictionaryPage } from './components/CodeNameDictionaryPage';
 import { AppShellNav, type ShellPrimaryView } from './components/AppShellNav';
+import type { LivePlace } from '@/utils/liveMap';
 import { Login } from './components/auth/Login';
 import { Register } from './components/auth/Register';
 import { EmailVerification } from './components/auth/EmailVerification';
@@ -59,6 +61,7 @@ type AppView =
 function isPrimaryShellView(view: AppView): view is ShellPrimaryView {
   return (
     view === 'converter' ||
+    view === 'visuals' ||
     view === 'history' ||
     view === 'catalog' ||
     view === 'dictionary'
@@ -84,6 +87,8 @@ function App() {
   );
   const [activeWorkSessionId, setActiveWorkSessionId] = useState<string | null>(null);
   const [loadedWorkSession, setLoadedWorkSession] = useState<WorkSession | null>(null);
+  /** TAC handed off from Decode visuals / Map Send → Convert. */
+  const [pendingMapTac, setPendingMapTac] = useState<string | null>(null);
   const sessionInitRef = useRef<string | null>(null);
 
   useEffect(() => {
@@ -248,6 +253,19 @@ function App() {
     setCurrentView(view);
   };
 
+  const handleOpenVisuals = () => {
+    setCurrentView('visuals');
+  };
+
+  const handleMapOpenPlace = (place: LivePlace) => {
+    const tac = place.reports[0]?.tac?.trim() ?? '';
+    if (!tac) {
+      return;
+    }
+    setPendingMapTac(tac);
+    setCurrentView('converter');
+  };
+
   const handleRequestLogin = () => {
     setCurrentView('login');
   };
@@ -319,6 +337,7 @@ function App() {
           )}
 
           {(currentView === 'converter' ||
+            currentView === 'visuals' ||
             currentView === 'history' ||
             currentView === 'catalog' ||
             currentView === 'dictionary') && (
@@ -330,12 +349,15 @@ function App() {
                 isGuest={isGuest}
                 onRequestLogin={handleRequestLogin}
                 onOpenHistory={handleOpenHistory}
+                onOpenVisuals={handleOpenVisuals}
                 onLoadWorkSession={handleLoadWorkSession}
                 onNewMetar={handleNewMetar}
                 onSessionUpdated={handleSessionUpdated}
                 onActiveSessionIdChange={setActiveWorkSessionId}
                 activeWorkSessionId={activeWorkSessionId}
                 loadedWorkSession={loadedWorkSession}
+                pendingMapTac={pendingMapTac}
+                onPendingMapTacConsumed={() => setPendingMapTac(null)}
                 onOpenCatalog={(family, code) => {
                   if (code) {
                     setCatalogFocusCode(code);
@@ -351,6 +373,10 @@ function App() {
                 }}
               />
             </div>
+          )}
+
+          {currentView === 'visuals' && (
+            <DecodeVisualsPage onOpenPlace={handleMapOpenPlace} />
           )}
 
           {currentView === 'history' && (

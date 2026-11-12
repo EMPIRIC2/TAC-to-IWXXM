@@ -7,7 +7,42 @@ import userEvent from '@testing-library/user-event';
 import { DecodeVisualsPage } from './DecodeVisualsPage';
 
 vi.mock('@/app/components/LiveWorldMap', () => ({
-  LiveWorldMap: () => <div data-testid="live-world-map" />,
+  LiveWorldMap: ({
+    focusStation,
+    onOpenPlace,
+  }: {
+    focusStation?: string;
+    onOpenPlace?: (place: {
+      place_key: string;
+      product: string;
+      latitude: number;
+      longitude: number;
+      reports: { tac: string; observed_at: string | null }[];
+    }) => void;
+  }) => (
+    <div data-testid="live-world-map" data-focus-station={focusStation ?? ''}>
+      <button
+        type="button"
+        data-testid="mock-send-place"
+        onClick={() =>
+          onOpenPlace?.({
+            place_key: 'KJFK',
+            product: 'metar',
+            latitude: 40.6,
+            longitude: -73.8,
+            reports: [
+              {
+                tac: 'METAR KJFK 121251Z 18010KT 10SM FEW250 22/12 A3012',
+                observed_at: '2026-11-12T12:51:00Z',
+              },
+            ],
+          })
+        }
+      >
+        Send
+      </button>
+    </div>
+  ),
 }));
 import { RegionSchematic } from './RegionSchematic';
 import { WindCue } from './WindCue';
@@ -113,6 +148,24 @@ describe('DecodeVisualsPage', () => {
     expect(screen.getByTestId('decode-visuals-station')).toHaveValue('KJFK');
     expect(screen.getByTestId('decode-visuals-heading')).toHaveTextContent('Kennedy');
     writeStationDraft(null);
+  });
+
+  it('sends a map place to Convert when Send is used', async () => {
+    publishDecodeVisuals({ station: '', segments: [] });
+    const user = userEvent.setup();
+    const onOpenPlace = vi.fn();
+    render(<DecodeVisualsPage onOpenPlace={onOpenPlace} />);
+    await user.click(screen.getByTestId('mock-send-place'));
+    expect(onOpenPlace).toHaveBeenCalledWith(
+      expect.objectContaining({
+        place_key: 'KJFK',
+        reports: [
+          expect.objectContaining({
+            tac: expect.stringContaining('METAR KJFK'),
+          }),
+        ],
+      }),
+    );
   });
 
   it('uses the tight column when Convert is set to tighter', () => {
