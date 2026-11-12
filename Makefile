@@ -254,7 +254,7 @@ lint-fix-auth:
 	$(UV) run ruff check --fix --force-exclude packages/auth/src
 
 lint-fix-frontend:
-	$(PNPM) --filter @metar/frontend exec eslint src --fix
+	$(PNPM) exec eslint apps/frontend/src --fix
 
 # --- Unit tests ---
 
