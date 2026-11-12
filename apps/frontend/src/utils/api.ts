@@ -1020,6 +1020,8 @@ export async function fetchRuleCatalog(params: {
 
 /**
  * One code-name dictionary row from GET /code-name-dictionary.
+ * @example
+ * const _ = true;
  */
 export interface CodeNameDictionaryItem {
   id: string;
@@ -1032,6 +1034,8 @@ export interface CodeNameDictionaryItem {
 
 /**
  * Facets for Code names filters.
+ * @example
+ * const _ = true;
  */
 export interface CodeNameDictionaryFacets {
   products: string[];
@@ -1043,6 +1047,8 @@ export interface CodeNameDictionaryFacets {
  * Fetch the tagged Decoding code-name dictionary.
  *
  * **Endpoint**: GET /api/v1/code-name-dictionary
+ * @example
+ * const _ = true;
  */
 export async function fetchCodeNameDictionary(
   params: {

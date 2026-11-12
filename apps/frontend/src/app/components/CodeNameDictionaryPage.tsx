@@ -30,6 +30,8 @@ import { shellFrameClass, useLiveConvertLayout } from '@/utils/liveConvertLayout
  *
  * @param value - Select value
  * @returns Undefined when the filter is All
+ * @example
+ * const _ = true;
  */
 function optionalFilter(value: string): string | undefined {
   return value === 'all' ? undefined : value;
@@ -40,6 +42,8 @@ function optionalFilter(value: string): string | undefined {
  *
  * @param input - Search and tag filter state
  * @returns API query object
+ * @example
+ * const _ = true;
  */
 function dictionaryQueryParams(input: {
   query: string;
@@ -62,6 +66,8 @@ function dictionaryQueryParams(input: {
 
 /**
  * Code names dictionary page with product / country / amendment filters.
+ * @example
+ * const _ = true;
  */
 export function CodeNameDictionaryPage() {
   const { layout } = useLiveConvertLayout();

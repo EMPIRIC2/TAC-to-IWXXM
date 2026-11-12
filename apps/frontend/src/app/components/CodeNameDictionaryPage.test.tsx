@@ -88,4 +88,77 @@ describe('CodeNameDictionaryPage', () => {
       );
     });
   });
+
+  it('refetches when search, country, and amendment filters change', async () => {
+    const user = userEvent.setup();
+    render(<CodeNameDictionaryPage />);
+    await waitFor(() => {
+      expect(fetchCodeNameDictionary).toHaveBeenCalled();
+    });
+    fetchCodeNameDictionary.mockClear();
+    fetchCodeNameDictionary.mockResolvedValue(samplePayload);
+    await user.type(screen.getByTestId('code-name-dictionary-search'), 'TS');
+    await waitFor(() => {
+      expect(fetchCodeNameDictionary).toHaveBeenCalledWith(
+        expect.objectContaining({ q: 'TS' }),
+      );
+    });
+    fetchCodeNameDictionary.mockClear();
+    fetchCodeNameDictionary.mockResolvedValue(samplePayload);
+    await user.selectOptions(
+      screen.getByTestId('code-name-dictionary-country'),
+      'INTL',
+    );
+    await waitFor(() => {
+      expect(fetchCodeNameDictionary).toHaveBeenCalledWith(
+        expect.objectContaining({ country: 'INTL' }),
+      );
+    });
+    fetchCodeNameDictionary.mockClear();
+    fetchCodeNameDictionary.mockResolvedValue(samplePayload);
+    await user.selectOptions(
+      screen.getByTestId('code-name-dictionary-amendment'),
+      'WMO No. 306',
+    );
+    await waitFor(() => {
+      expect(fetchCodeNameDictionary).toHaveBeenCalledWith(
+        expect.objectContaining({ wmo_amendment: 'WMO No. 306' }),
+      );
+    });
+  });
+
+  it('tolerates missing items/facets and blank tag cells', async () => {
+    fetchCodeNameDictionary.mockResolvedValue({
+      items: [
+        {
+          id: 'BLANK',
+          code: 'BLANK',
+          meaning: 'untagged',
+          products: [],
+          countries: [],
+          wmo_amendment: null,
+        },
+      ],
+      facets: undefined,
+    });
+    render(<CodeNameDictionaryPage />);
+    await waitFor(() => {
+      expect(screen.getByTestId('code-name-row-BLANK')).toBeInTheDocument();
+    });
+    const row = screen.getByTestId('code-name-row-BLANK');
+    expect(row).toHaveTextContent('—');
+    expect(screen.getByTestId('code-name-dictionary-count')).toHaveTextContent(
+      '1 code name',
+    );
+  });
+
+  it('falls back when items is omitted from the response', async () => {
+    fetchCodeNameDictionary.mockResolvedValue({
+      facets: samplePayload.facets,
+    });
+    render(<CodeNameDictionaryPage />);
+    await waitFor(() => {
+      expect(screen.getByTestId('code-name-dictionary-empty')).toBeInTheDocument();
+    });
+  });
 });

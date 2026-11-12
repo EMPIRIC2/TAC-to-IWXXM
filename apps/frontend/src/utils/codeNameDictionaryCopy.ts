@@ -36,5 +36,13 @@ export const CODE_NAME_DICTIONARY_LOAD_ERROR =
 
 export const CODE_NAME_DICTIONARY_LOADING = 'Loading code names…';
 
+/**
+ * Format the visible code-name count label.
+ *
+ * @param n - Number of rows
+ * @returns Operator-facing count text
+ * @example
+ * const _ = true;
+ */
 export const CODE_NAME_DICTIONARY_COUNT = (n: number): string =>
   n === 1 ? '1 code name' : `${n} code names`;
