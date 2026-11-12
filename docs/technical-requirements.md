@@ -25,13 +25,8 @@ and pass criteria. Behavioral product scope lives in
 | Conversion profiles | [config/profiles/](../config/profiles) | Semantic and exchange catalog for the API |
 | Rule catalogs | [config/rules/](../config/rules) | Issue catalog and provenance map |
 | Coverage inventories | [config/engineering/](../config/engineering) | Unit coverage surface inventories |
-<<<<<<< HEAD
-| DOKS manifests | [deploy/doks/](../deploy/doks) | Staging and prod topology |
-| SBOM | [config/sbom/cyclonedx.json](../config/sbom/cyclonedx.json) | Allowed dependency inventory |
-=======
 | DOKS manifests | [config/deploy/doks/](../config/deploy/doks) | Staging and prod topology |
-| SBOM | [sbom/cyclonedx.json](../sbom/cyclonedx.json) | Allowed dependency inventory |
->>>>>>> 6d387ec7 (docs: move deploy under config and rename user-docs to github-wikia)
+| SBOM | [config/sbom/cyclonedx.json](../config/sbom/cyclonedx.json) | Allowed dependency inventory |
 
 ## Platform requirements
 

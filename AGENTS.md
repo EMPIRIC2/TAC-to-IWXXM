@@ -46,13 +46,8 @@ Compatibility pointers: `docs/spec.md` → architecture; `docs/tech-spec.md` →
 | [config/profiles/](config/profiles/) | ConversionProfile catalog (API image) |
 | [config/rules/](config/rules/) | Issue catalog and provenance map |
 | [config/engineering/](config/engineering/) | Coverage surface inventories |
-<<<<<<< HEAD
-| [deploy/doks/](deploy/doks/) | DOKS deploy manifests and operator notes |
-| [config/sbom/cyclonedx.json](config/sbom/cyclonedx.json) | CycloneDX SBOM (CI drift-checked on push) |
-=======
 | [config/deploy/doks/](config/deploy/doks/) | DOKS deploy manifests and operator notes |
-| [sbom/cyclonedx.json](sbom/cyclonedx.json) | CycloneDX SBOM (CI drift-checked on push) |
->>>>>>> 6d387ec7 (docs: move deploy under config and rename user-docs to github-wikia)
+| [config/sbom/cyclonedx.json](config/sbom/cyclonedx.json) | CycloneDX SBOM (CI drift-checked on push) |
 
 ## Local opt-in (not in git; keep local copies)
 
