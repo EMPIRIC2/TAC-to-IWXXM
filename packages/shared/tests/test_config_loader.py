@@ -30,6 +30,7 @@ def test_config_path_points_at_repo_config() -> None:
     assert path.name == "prod.json"
     assert path.parent.name == "profiles"
     assert path.parent.parent.name == "deploy"
+    assert path.parent.parent.parent.name == "config"
 
 
 def test_load_config_prod_has_supabase_url() -> None:
@@ -42,13 +43,13 @@ def test_load_config_prod_has_supabase_url() -> None:
 def test_load_config_missing_profile(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    missing = tmp_path / "deploy" / "profiles" / "missing.json"
+    missing = tmp_path / "config" / "deploy" / "profiles" / "missing.json"
     monkeypatch.setattr(
         "metar_shared.config_loader._REPO_ROOT",
         tmp_path,
         raising=False,
     )
-    (tmp_path / "deploy" / "profiles").mkdir(parents=True)
+    (tmp_path / "config" / "deploy" / "profiles").mkdir(parents=True)
     missing.write_text(json.dumps({"environment": "missing"}), encoding="utf-8")
     assert load_config("missing")["environment"] == "missing"
 
@@ -87,7 +88,7 @@ def test_load_config_file_not_found(
 
 
 def _write_config(tmp_path: Path, profile: str, payload: object) -> None:
-    config_dir = tmp_path / "deploy" / "profiles"
+    config_dir = tmp_path / "config" / "deploy" / "profiles"
     config_dir.mkdir(parents=True, exist_ok=True)
     (config_dir / f"{profile}.json").write_text(json.dumps(payload), encoding="utf-8")
 
@@ -111,7 +112,7 @@ def test_get_supabase_url_from_config_handles_invalid_json(
     monkeypatch.setattr(
         "metar_shared.config_loader._REPO_ROOT", tmp_path, raising=False
     )
-    config_dir = tmp_path / "deploy" / "profiles"
+    config_dir = tmp_path / "config" / "deploy" / "profiles"
     config_dir.mkdir(parents=True, exist_ok=True)
     (config_dir / "broken.json").write_text("{not-json", encoding="utf-8")
     assert get_supabase_url_from_config("broken") == ""
