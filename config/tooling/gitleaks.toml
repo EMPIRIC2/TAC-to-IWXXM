@@ -6,7 +6,12 @@ paths = [
   '''^auth/tests/''',
   '''^tests/''',
   '''^frontend/dist/''',
-  '''^frontend/utils/supabase/info\.tsx$'''
+  '''^frontend/utils/supabase/info\.tsx$''',
+  '''^\.quality-reports/''',
+  '''^\.security-reports/''',
+  '''^\.cursor/''',
+  '''(^|/)\.venv/''',
+  '''(^|/)node_modules/'''
 ]
 regexes = [
   '''eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9\.\.\.''',
