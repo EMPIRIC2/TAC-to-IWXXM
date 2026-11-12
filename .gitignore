@@ -23,6 +23,8 @@ auth/.env
 frontend/.env
 
 # --- Python (uv workspace: apps/backend, packages/*) ---
+# Root uv.lock is the workspace SoT; do not keep per-app locks.
+apps/*/uv.lock
 __pycache__/
 *.py[codz]
 *$py.class

@@ -11,26 +11,26 @@ dependencies = [
     "iwxxm-validate",
     "dissemination",
     "metar-auth",
-    "fastapi>=0.110",
-    "uvicorn>=0.23",
-    "python-multipart>=0.0.20",
-    "pydantic>=2.0.0",
-    "pydantic-settings>=2.14.2",
-    "msgspec>=0.19",
-    "pyjwt>=2.8.0",
-    "python-jose[cryptography]>=3.3.0",
-    "httpx>=0.28.1",
-    "requests>=2.31.0",
-    "prometheus-client>=0.22.1",
-    "lxml>=4.9.0",
-    "skyfield>=1.45",
-    "sqlalchemy>=2.0.0",
-    "alembic>=1.13,<2",
-    "asyncpg>=0.29.0",
-    "psycopg[binary]>=3.0.0",
-    "slowapi>=0.1.10",
-    "redis>=5.0",
-    "sentry-sdk[fastapi]>=2.0",
+    "fastapi==0.137.0",
+    "uvicorn==0.49.0",
+    "python-multipart==0.0.32",
+    "pydantic==2.13.4",
+    "pydantic-settings==2.14.2",
+    "msgspec==0.21.1",
+    "pyjwt==2.13.0",
+    "python-jose[cryptography]==3.5.0",
+    "httpx==0.28.1",
+    "requests==2.34.2",
+    "prometheus-client==0.25.0",
+    "lxml==6.1.1",
+    "skyfield==1.54",
+    "sqlalchemy==2.0.50",
+    "alembic==1.18.5",
+    "asyncpg==0.31.0",
+    "psycopg[binary]==3.3.4",
+    "slowapi==0.1.10",
+    "redis==8.1.0",
+    "sentry-sdk[fastapi]==2.66.1",
 ]
 
 [build-system]
@@ -46,17 +46,19 @@ include = ["*"]
 
 [dependency-groups]
 dev = [
-    "pytest>=8.4.2",
-    "pytest-cov>=4.1.0",
-    "pytest-asyncio>=0.23.0",
-    "locust>=2.32.8",
-    "httpx>=0.28.1",
-    "httpx2>=2.0",
-    "requests>=2.31.0",
-    "skyfield>=1.45",
-    "fakeredis>=2.0",
+    "pytest==9.1.0",
+    "pytest-cov==7.1.0",
+    "pytest-asyncio==1.4.0",
+    "locust==2.44.3",
+    "httpx==0.28.1",
+    "httpx2==2.4.0",
+    "requests==2.34.2",
+    "skyfield==1.54",
+    "fakeredis==2.37.0",
 ]
 
+# App-local paths/markers for `cd apps/backend` runs. Shared ruff/pytest/coverage
+# defaults live in the root pyproject (ADR-048 / ADR-037).
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = [".", "src"]
@@ -84,11 +86,11 @@ markers = [
     "ev032_smoke: EV-032 path-filtered pre-commit canary (A6-2 / VONA; E32-T7)",
     "schemathesis: F34 Schemathesis OpenAPI property suite (EV-059 / #727)",
 ]
-# ADR-048 / TC-EVDOC-007: warnings are errors (no blanket suppressions).
 filterwarnings = [
     "error",
 ]
 
+# Makefile `test-unit-backend` uses --cov-config=pyproject.toml (this file).
 [tool.coverage.run]
 branch = true
 source = ["src"]
