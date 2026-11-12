@@ -5885,6 +5885,7 @@ describe('FileConverter Component', () => {
     });
 
     // UX-2026-11-10-recent-work-rail-results-fill — slim grid when Recent work collapsed
+    // UX-2026-11-12-vertical-sidebar — keep right column at every width (no bottom stack)
     it('slims the workbench grid when Recent work is collapsed', async () => {
       const user = userEvent.setup({ delay: null });
       render(<FileConverter {...defaultProps} onLoadWorkSession={vi.fn()} />);
@@ -5903,9 +5904,39 @@ describe('FileConverter Component', () => {
         );
       });
       expect(grid).toHaveAttribute('data-recent-work', 'collapsed');
-      expect(grid.className).toMatch(/lg:grid-cols-\[minmax\(0,1fr\)_3rem\]/);
-      expect(grid.className).not.toMatch(/lg:grid-cols-\[minmax\(0,1fr\)_280px\]/);
-      expect(screen.getByTestId('recent-work-aside').className).toMatch(/\blg:w-12\b/);
+      expect(grid.className).toMatch(/grid-cols-\[minmax\(0,1fr\)_3rem\]/);
+      expect(grid.className).not.toMatch(/grid-cols-\[minmax\(0,1fr\)_280px\]/);
+      // Narrow/portrait must not use single-column stack (sidebar would sit at bottom)
+      expect(grid.className.split(/\s+/)).not.toContain('grid-cols-1');
+      const aside = screen.getByTestId('recent-work-aside');
+      expect(aside.className.split(/\s+/)).toContain('w-12');
+      expect(aside.className.split(/\s+/)).not.toContain('w-full');
+    });
+
+    it('keeps expanded Recent work in a right column instead of stacking under convert', () => {
+      vi.spyOn(window, 'matchMedia').mockImplementation(
+        (query: string) =>
+          ({
+            matches: false,
+            media: query,
+            addEventListener: vi.fn(),
+            removeEventListener: vi.fn(),
+            addListener: vi.fn(),
+            removeListener: vi.fn(),
+            dispatchEvent: vi.fn(),
+            onchange: null,
+          }) as unknown as MediaQueryList,
+      );
+
+      render(<FileConverter {...defaultProps} onLoadWorkSession={vi.fn()} />);
+
+      const grid = screen.getByTestId('workbench-layout-grid');
+      expect(grid).toHaveAttribute('data-recent-work', 'expanded');
+      expect(grid.className).toMatch(/grid-cols-\[minmax\(0,1fr\)_280px\]/);
+      expect(grid.className.split(/\s+/)).not.toContain('grid-cols-1');
+      const aside = screen.getByTestId('recent-work-aside');
+      expect(aside.className).toMatch(/w-\[280px\]/);
+      expect(aside.className.split(/\s+/)).not.toContain('w-full');
     });
 
     it('passes speci product to dissemination drawer when SPECI is selected', async () => {
