@@ -374,6 +374,10 @@ vi.mock('./components/ui/sonner', () => ({
   Toaster: () => <div data-testid="toaster" />,
 }));
 
+vi.mock('./components/LiveWorldMap', () => ({
+  LiveWorldMap: () => <div data-testid="live-world-map" />,
+}));
+
 import App from './App';
 import { acknowledgeSiteTerms } from '@/utils/privacyPreferences';
 
@@ -486,7 +490,13 @@ describe('App Component (F31 optional Auth)', () => {
 
     expect(screen.getByTestId('app-shell-nav')).toBeInTheDocument();
     expect(screen.queryByTestId('shell-nav-quality')).not.toBeInTheDocument();
-    expect(screen.queryByTestId('shell-nav-visuals')).not.toBeInTheDocument();
+    expect(screen.getByTestId('shell-nav-visuals')).toBeInTheDocument();
+    await user.click(screen.getByTestId('shell-nav-visuals'));
+    expect(screen.getByTestId('decode-visuals-page')).toBeInTheDocument();
+    expect(screen.getByTestId('shell-nav-visuals')).toHaveAttribute(
+      'aria-selected',
+      'true',
+    );
     await user.click(screen.getByTestId('shell-nav-converter'));
     expect(screen.getByTestId('shell-nav-converter')).toHaveAttribute(
       'aria-selected',

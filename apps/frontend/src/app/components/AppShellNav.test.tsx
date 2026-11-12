@@ -4,13 +4,16 @@ import userEvent from '@testing-library/user-event';
 import { AppShellNav, SHELL_NAV_LABELS } from './AppShellNav';
 
 describe('AppShellNav', () => {
-  it('renders Convert, History, and Rule catalogs without Dissemination ops', async () => {
+  it('renders Convert, Decode visuals, History, and Rule catalogs without Dissemination ops', async () => {
     const user = userEvent.setup();
     const onNavigate = vi.fn();
     render(<AppShellNav activeView="converter" onNavigate={onNavigate} />);
 
     expect(screen.getByTestId('shell-nav-converter')).toHaveTextContent(
       SHELL_NAV_LABELS.converter,
+    );
+    expect(screen.getByTestId('shell-nav-visuals')).toHaveTextContent(
+      SHELL_NAV_LABELS.visuals,
     );
     expect(screen.getByTestId('shell-nav-history')).toHaveTextContent(
       SHELL_NAV_LABELS.history,
@@ -20,7 +23,8 @@ describe('AppShellNav', () => {
     );
     expect(screen.queryByTestId('shell-nav-dissemination-ops')).not.toBeInTheDocument();
     expect(screen.queryByTestId('shell-nav-profiles')).not.toBeInTheDocument();
-    expect(screen.queryByTestId('shell-nav-visuals')).not.toBeInTheDocument();
+    await user.click(screen.getByTestId('shell-nav-visuals'));
+    expect(onNavigate).toHaveBeenCalledWith('visuals');
     await user.click(screen.getByTestId('shell-nav-catalog'));
     expect(onNavigate).toHaveBeenCalledWith('catalog');
   });
