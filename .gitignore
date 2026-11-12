@@ -1,6 +1,5 @@
 # =============================================================================
 # METAR → IWXXM monorepo — apps/, packages/, vendor/
-# =============================================================================
 
 # --- Secrets & local operator env (never commit) ---
 .env
@@ -246,17 +245,22 @@ third_party/
 
 # EV-repo-docs-cleanup — local tooling (keep on disk; not in git). Keep .github tracked.
 .claude/
-.cursor/
-.vscode/
+# Ignore .cursor contents but allow tracked project hooks (parent-dir ignore
+# would block negation). [Corpus: tech-spec] EV-quality-tooling-suite
+.cursor/*
+!.cursor/hooks.json
+!.cursor/hooks/
+!.cursor/hooks/**
 
 # Local agent/doc trees (keep on disk).
 /docs/adr/
 /docs/assets/
 /docs/guides/
-/docs/ops/
 /docs/integration/
 /docs/policies/
 /docs/ste/
 /docs/ui-ux-tweaks/
-/docs/domain/
-/docs/engineering/
+
+# Quality tooling local/CI reports (EV-quality-tooling-suite)
+.quality-reports/
+.cursor/hooks/**/__pycache__/
