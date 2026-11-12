@@ -2869,8 +2869,8 @@ export function FileConverter({
           className={
             onLoadWorkSession
               ? recentWorkCollapsed
-                ? 'grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_3rem]'
-                : 'grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_280px]'
+                ? 'grid grid-cols-[minmax(0,1fr)_3rem] gap-6'
+                : 'grid grid-cols-[minmax(0,1fr)_280px] gap-6'
               : 'grid grid-cols-1 gap-6'
           }
           data-testid="workbench-layout-grid"
@@ -4753,8 +4753,8 @@ export function FileConverter({
             <aside
               className={
                 recentWorkCollapsed
-                  ? 'relative z-0 w-full min-w-0 lg:sticky lg:top-20 lg:w-12 lg:max-w-12 lg:shrink-0 lg:self-start'
-                  : 'relative z-0 w-full min-w-0 lg:sticky lg:top-20 lg:mt-8 lg:w-[280px] lg:max-w-[280px] lg:shrink-0 lg:self-start'
+                  ? 'relative z-0 sticky top-20 w-12 min-w-0 max-w-12 shrink-0 self-start'
+                  : 'relative z-0 sticky top-20 mt-8 w-[280px] min-w-0 max-w-[280px] shrink-0 self-start'
               }
               data-testid="recent-work-aside"
             >
