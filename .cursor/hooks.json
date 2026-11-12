@@ -13,14 +13,14 @@
         "command": "python3 .cursor/hooks/pypi_release_guard.py",
         "matcher": "git\\s+tag",
         "timeout": 10
+      },
+      {
+        "command": "bash .cursor/hooks/quality-fast-check.sh",
+        "matcher": "(^|\\s)(make\\s+check|uv\\s+add|pnpm\\s+add)(\\s|$)",
+        "timeout": 10
       }
     ],
     "preToolUse": [
-      {
-        "command": "python3 .cursor/hooks/pack/scope_check.py",
-        "matcher": "Write",
-        "timeout": 10
-      },
       {
         "command": "bash .cursor/hooks/pre-task-check.sh",
         "matcher": "Write",
@@ -38,11 +38,6 @@
       }
     ],
     "afterFileEdit": [
-      {
-        "command": "python3 .cursor/hooks/pack/feature_drift.py",
-        "matcher": "Write|TabWrite",
-        "timeout": 10
-      },
       {
         "command": "python3 .cursor/hooks/issue_registry_guard.py",
         "matcher": "Write|TabWrite",
@@ -67,30 +62,17 @@
         "command": "bash .cursor/hooks/typecheck.sh",
         "matcher": "Write|TabWrite",
         "timeout": 60
+      },
+      {
+        "command": "bash .cursor/hooks/quality-fast-check.sh",
+        "matcher": "Write|TabWrite",
+        "timeout": 60
       }
     ],
     "afterShellExecution": [
       {
         "command": "bash .cursor/hooks/post-test-sync.sh",
         "timeout": 10
-      }
-    ],
-    "workspaceOpen": [
-      {
-        "command": ".cursor/hooks/register-workspace-plugins.sh"
-      },
-      {
-        "command": ".cursor/hooks/pack/bootstrap-engineering-memory.sh"
-      }
-    ],
-    "sessionStart": [
-      {
-        "command": ".cursor/hooks/pack/cursor-session-start.sh"
-      }
-    ],
-    "sessionEnd": [
-      {
-        "command": ".cursor/hooks/pack/cursor-session-end.sh"
       }
     ]
   }

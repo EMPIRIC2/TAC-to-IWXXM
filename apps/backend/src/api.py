@@ -523,19 +523,17 @@ try:
 except Exception as e:  # pragma: no cover - defensive
     logger.error(f"DEBUG: Failed to include TD-3b routers: {e}", exc_info=True)
 
+# F31 / ADR-033 amend: FE-direct Supabase Auth; packages/auth is JWKS + proxy only.
+# Ensure SUPABASE_URL is available for JWKS verification on work-sessions.
 try:
-    from metar_auth import create_auth_router
-
     from metar_shared.supabase_env import get_supabase_url
 
     _supabase_url = get_supabase_url()
     if _supabase_url and not (os.environ.get("SUPABASE_URL") or "").strip():
         os.environ["SUPABASE_URL"] = _supabase_url
-
-    app.include_router(create_auth_router(supabase_url=_supabase_url or None))
-    logger.info("DEBUG: included metar_auth /auth router successfully")
+    logger.info("DEBUG: auth JWKS env primed (no /auth HTTP router; FE-direct)")
 except Exception as e:  # pragma: no cover - defensive
-    logger.error(f"DEBUG: Failed to include auth router: {e}", exc_info=True)
+    logger.error(f"DEBUG: Failed to prime auth JWKS env: {e}", exc_info=True)
 
 logger.info(f"DEBUG: total routes = {len(app.routes)}")
 

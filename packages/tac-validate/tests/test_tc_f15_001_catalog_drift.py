@@ -1,6 +1,6 @@
 """TC-F15-001 / E11-22 - ISSUE_CATALOG drift vs ``issue_registry.ISSUES``.
 
-Committed ``docs/domain/rules/ISSUE_CATALOG.{md,json}`` must match a fresh
+Committed ``config/rules/ISSUE_CATALOG.{md,json}`` must match a fresh
 export from the registry (``make catalog-regen``).
 """
 
@@ -14,8 +14,8 @@ from tac_validate.catalog_attribution import attribution_for
 from tac_validate.issue_registry import ISSUES
 
 REPO = Path(__file__).resolve().parents[3]
-CATALOG_JSON = REPO / "docs" / "domain" / "rules" / "ISSUE_CATALOG.json"
-CATALOG_MD = REPO / "docs" / "domain" / "rules" / "ISSUE_CATALOG.md"
+CATALOG_JSON = REPO / "config" / "rules" / "ISSUE_CATALOG.json"
+CATALOG_MD = REPO / "config" / "rules" / "ISSUE_CATALOG.md"
 
 
 def _registry_rows() -> list[dict[str, object]]:

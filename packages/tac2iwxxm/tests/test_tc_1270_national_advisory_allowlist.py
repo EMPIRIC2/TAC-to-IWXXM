@@ -20,7 +20,7 @@ from tac2iwxxm.convert_allowlist import (
 from tac2iwxxm import convert
 
 _REPO = Path(__file__).resolve().parents[3]
-_CATALOG = _REPO / "docs" / "domain" / "profiles" / "catalog.yaml"
+_CATALOG = _REPO / "config" / "profiles" / "catalog.yaml"
 _FIXTURES = Path(__file__).resolve().parent / "fixtures" / "annex3_golden"
 
 _ROWS = (

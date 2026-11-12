@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 # Non-prod fixture used after DOKS cutover when no operational feed is configured.
-# Keep in sync with docs/deploy.md / docs/env-contract.md / .env.example.
+# Keep in sync with docs/deploy.md / docs/env-contract.md / config/env.example.
 DEFAULT_FIXTURE_INGEST_POLLER_URL = (
     "https://raw.githubusercontent.com/EMPIRIC2/TAC-to-IWXXM/main/"
     "apps/worker/tests/fixtures/ingest_feed.json"

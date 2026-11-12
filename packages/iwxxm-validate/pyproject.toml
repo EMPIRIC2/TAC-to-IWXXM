@@ -6,8 +6,8 @@ readme = "README.md"
 license = { text = "MIT" }
 requires-python = ">=3.12"
 dependencies = [
-  "lxml>=4.9.0",
-  "msgspec>=0.19",
+  "lxml==6.1.1",
+  "msgspec==0.21.1",
   "pyyaml==6.0.3",
 ]
 
@@ -35,6 +35,7 @@ manifest-path = "rust/Cargo.toml"
 python-source = "src"
 module-name = "iwxxm_validate._rust"
 
+# Override (required): package sources are formatted at line-length 120; root is 88.
 [tool.pytest.ini_options]
 asyncio_default_fixture_loop_scope = "function"
 
@@ -56,6 +57,20 @@ source = ["src/iwxxm_validate"]
 fail_under = 100
 show_missing = true
 
+
 [tool.ruff]
 extend = "../../pyproject.toml"
 line-length = 120
+
+# deptry: unused (DEP002), missing (DEP001), transitive (DEP003), misplaced-dev (DEP004).
+# [Corpus: tech-spec] docs/technical-requirements.md; [Corpus: system-spec] docs/architecture.md.
+# Run all members: scripts/ci/run_deptry_all.sh
+[tool.deptry]
+known_first_party = ["iwxxm_validate"]
+pep621_dev_dependency_groups = ["dev"]
+
+[tool.deptry.per_rule_ignores]
+# hatchling is the build backend (hatch_build.py hook), not a runtime import.
+DEP001 = ["hatchling"]
+# Baseline debt: cli.py lazily imports tac2iwxxm profile resolution (optional `validate` flow); not a declared dependency.
+DEP003 = ["tac2iwxxm"]

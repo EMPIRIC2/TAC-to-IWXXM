@@ -8,7 +8,7 @@ cd "$ROOT"
 
 UV="${UV:-uv}"
 
-echo "==> TC-EV038-008: codes.wmo.int URI drift (D-S046-859)"
+echo "==> codes.wmo.int URI drift"
 ${UV} run python scripts/iwxxm/codelist_uri_drift.py
 
 echo "==> codelist URI drift green"

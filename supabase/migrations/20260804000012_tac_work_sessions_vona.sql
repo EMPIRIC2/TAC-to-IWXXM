@@ -1,4 +1,4 @@
--- S040 / EV-032 / F32 — allow product=vona on tac_work_sessions (T2.7).
+-- Allow product=vona on tac_work_sessions.
 ALTER TABLE public.tac_work_sessions
   DROP CONSTRAINT IF EXISTS tac_work_sessions_product_check;
 

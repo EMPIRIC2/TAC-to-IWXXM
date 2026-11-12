@@ -1,0 +1,125 @@
+{
+  "$schema": "https://unpkg.com/knip@6/schema.json",
+  "ignoreExportsUsedInFile": true,
+  "workspaces": {
+    ".": {
+      "project": [
+        "config/tooling/*.js"
+      ],
+      "ignoreDependencies": [
+        "dependency-cruiser"
+      ]
+    },
+    "apps/frontend": {
+      "entry": [
+        "src/**/*.test.{ts,tsx}",
+        "stryker*.config.mjs",
+        "postcss.config.mjs",
+        "vite.tunnel.config.ts"
+      ],
+      "project": [
+        "src/**/*.{ts,tsx}",
+        "*.{ts,mjs}"
+      ],
+      "ignoreDependencies": [
+        "@codemirror/commands",
+        "@codemirror/language",
+        "@emotion/react",
+        "@emotion/styled",
+        "@mui/icons-material",
+        "@mui/material",
+        "@popperjs/core",
+        "@radix-ui/react-alert-dialog",
+        "@radix-ui/react-aspect-ratio",
+        "@radix-ui/react-avatar",
+        "@radix-ui/react-context-menu",
+        "@radix-ui/react-dropdown-menu",
+        "@radix-ui/react-menubar",
+        "@radix-ui/react-navigation-menu",
+        "@radix-ui/react-progress",
+        "@radix-ui/react-scroll-area",
+        "cmdk",
+        "date-fns",
+        "embla-carousel-react",
+        "react-day-picker",
+        "react-dnd",
+        "react-dnd-html5-backend",
+        "react-popper",
+        "react-resizable-panels",
+        "react-responsive-masonry",
+        "react-slick",
+        "recharts",
+        "vaul",
+        "tailwindcss",
+        "tw-animate-css",
+        "@stryker-mutator/api"
+      ]
+    },
+    "apps/e2e": {
+      "entry": [
+        "*.e2e.spec.ts"
+      ],
+      "project": [
+        "*.ts"
+      ]
+    },
+    "packages/shared": {
+      "entry": [
+        "tests/**/*.test.ts"
+      ],
+      "project": [
+        "src/**/*.ts",
+        "tests/**/*.ts",
+        "*.{ts,mjs}"
+      ],
+      "ignoreDependencies": [
+        "@stryker-mutator/api"
+      ]
+    },
+    "packages/live-map-geometry": {
+      "entry": [
+        "tests/**/*.test.ts"
+      ],
+      "project": [
+        "src/**/*.ts",
+        "tests/**/*.ts",
+        "*.ts"
+      ]
+    }
+  },
+  "ignoreIssues": {
+    "apps/frontend/src/**": [
+      "exports",
+      "types",
+      "nsExports",
+      "nsTypes",
+      "duplicates"
+    ]
+  },
+  "ignore": [
+    "apps/frontend/src/app/components/figma/ImageWithFallback.tsx",
+    "apps/frontend/src/app/components/ui/alert-dialog.tsx",
+    "apps/frontend/src/app/components/ui/aspect-ratio.tsx",
+    "apps/frontend/src/app/components/ui/avatar.tsx",
+    "apps/frontend/src/app/components/ui/breadcrumb.tsx",
+    "apps/frontend/src/app/components/ui/calendar.tsx",
+    "apps/frontend/src/app/components/ui/carousel.tsx",
+    "apps/frontend/src/app/components/ui/chart.tsx",
+    "apps/frontend/src/app/components/ui/command.tsx",
+    "apps/frontend/src/app/components/ui/context-menu.tsx",
+    "apps/frontend/src/app/components/ui/drawer.tsx",
+    "apps/frontend/src/app/components/ui/dropdown-menu.tsx",
+    "apps/frontend/src/app/components/ui/form.tsx",
+    "apps/frontend/src/app/components/ui/menubar.tsx",
+    "apps/frontend/src/app/components/ui/navigation-menu.tsx",
+    "apps/frontend/src/app/components/ui/pagination.tsx",
+    "apps/frontend/src/app/components/ui/progress.tsx",
+    "apps/frontend/src/app/components/ui/resizable.tsx",
+    "apps/frontend/src/app/components/ui/scroll-area.tsx",
+    "apps/frontend/src/app/components/ui/sheet.tsx",
+    "apps/frontend/src/app/components/ui/sidebar.tsx",
+    "apps/frontend/src/app/components/ui/skeleton.tsx",
+    "apps/frontend/src/app/components/ui/table.tsx",
+    "apps/frontend/src/app/components/ui/use-mobile.ts"
+  ]
+}

@@ -1,5 +1,5 @@
--- F8: near-RT ingest results + quarantine (ADR-018 / UJ-014)
--- Writers: Supabase service-role JWT from apps/worker (Q20=C)
+-- Near-realtime ingest results and quarantine tables.
+-- Writers: Supabase service-role JWT from apps/worker.
 
 BEGIN;
 

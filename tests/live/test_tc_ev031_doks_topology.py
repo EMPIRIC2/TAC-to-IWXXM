@@ -16,6 +16,7 @@ from tests.live_env import (
     live_api_url,
     warn_deprecated_env,
 )
+from tests.live_fixtures import login_with_backoff
 
 pytestmark = [pytest.mark.live, pytest.mark.live_api]
 
@@ -77,23 +78,12 @@ def test_tc_ev031_003_work_sessions_require_jwt_on_doks() -> None:
 
 
 def test_tc_ev031_004_login_session_list_on_doks() -> None:
-    """TC-EV031-004 - login + list work-sessions against DO Postgres on DOKS."""
+    """TC-EV031-004 - GoTrue login + list work-sessions against DO Postgres on DOKS."""
     api = _require_provisional_api()
     email, password = _e2e_credentials()
     host_headers = live_api_host_headers()
+    token = login_with_backoff(api, email, password)
     with httpx.Client(timeout=45.0) as client:
-        login = client.post(
-            f"{api}/auth/login",
-            headers={**host_headers, "Content-Type": "application/json"},
-            json={"email": email, "password": password},
-        )
-        assert login.status_code == 200, login.text[:400]
-        body = login.json()
-        token = body.get("access_token") or body.get("accessToken")
-        if not token and isinstance(body.get("session"), dict):
-            token = body["session"].get("access_token")
-        assert token, f"login response missing access_token: {sorted(body.keys())}"
-
         sessions = client.get(
             f"{api}/api/v1/work-sessions",
             headers={**host_headers, "Authorization": f"Bearer {token}"},

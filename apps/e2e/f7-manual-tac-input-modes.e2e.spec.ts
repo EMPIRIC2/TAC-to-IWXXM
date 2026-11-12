@@ -152,8 +152,9 @@ test.describe('TC-F7-007 / UJ-025: Manual TAC Input modes', () => {
     const captured = await stubModeApis(page);
     await openConverterForE2e(page);
 
-    // Modes live under Settings (or empty-hero Other tasks); TAC is the default.
-    await expect(page.getByTestId('convert-empty-hero')).toBeVisible();
+    // Modes live under Settings; TAC is the default (empty hero removed).
+    // Opposite state: convert-empty-hero can match if the marketing hero returns.
+    await expect(page.getByTestId('convert-empty-hero')).toHaveCount(0);
     await fillManualTac(page, METAR_TAC);
     await expect(page.getByTestId('convert-settings')).toBeVisible();
     await page.getByTestId('convert-settings-cog').click();

@@ -1,39 +1,65 @@
-# Documentation
+# Documentation index
 
-Install and run the project with [ops/DEVELOPMENT.md](ops/DEVELOPMENT.md).
+This folder holds the tracked engineering spine for TAC to IWXXM.
+Agents start at [AGENTS.md](../AGENTS.md). Writers follow
+[documentation-standards.md](documentation-standards.md).
 
-## Public user guide (Read the Docs format)
+## Root spine
 
-Operator and integrator documentation lives in [`user-docs/`](../user-docs/)
-(MkDocs, Read the Docs theme, ASD-STE100 prose). Build locally:
+| Doc | Role |
+|-----|------|
+| [product-requirements.md](product-requirements.md) | Project definition and behavioral requirements |
+| [technical-requirements.md](technical-requirements.md) | Functional and technical requirements and pass criteria |
+| [architecture.md](architecture.md) | System architecture and component boundaries |
+| [domain-contract.md](domain-contract.md) | TAC/IWXXM domain pipeline and profiles |
+| [api-contract.md](api-contract.md) | HTTP narrative contract |
+| [ops-contract.md](ops-contract.md) | Local, staging, and production ops contract |
+| [integration-contract.md](integration-contract.md) | External system integration rules |
+| [data-flows.md](data-flows.md) | Primary data paths |
+| [data-integrations.md](data-integrations.md) | Systems that supply or receive data |
+| [ui-style-guide.md](ui-style-guide.md) | Operator UI norms |
+| [documentation-standards.md](documentation-standards.md) | Writing and corpus rules |
+| [env-variable.md](env-variable.md) | Environment variable names |
+| [user-journeys.md](user-journeys.md) | Journey schema (matrix in CSV) |
+| [test-plan.md](test-plan.md) | Test schema and test tiers (matrix in CSV) |
 
-```bash
-pip install mkdocs
-cd user-docs && mkdocs serve
-```
+## CSV matrices
 
-Cross-page links point at the
-[GitHub Wiki](https://github.com/EMPIRIC2/TAC-to-IWXXM/wiki). Optional Read the
-Docs mirror: [user-docs/READTHEDOCS.md](../user-docs/READTHEDOCS.md) (project
-must be created on Read the Docs; none existed yet for slug `tac-to-iwxxm`).
-This site is **not** the engineering HTTP contract; use
-[api-contract.md](api-contract.md) and live OpenAPI for field-level API truth.
+| File | Role |
+|------|------|
+| [user-journeys.csv](user-journeys.csv) | Journey rows tied to tests |
+| [test-plan.csv](test-plan.csv) | Test-case and coverage rows |
+| [risks.csv](risks.csv) | Risks log |
+| [assumptions.csv](assumptions.csv) | Assumptions log |
+| [issues.csv](issues.csv) | Issues log |
+| [decisions.csv](decisions.csv) | Decisions log |
 
-## Operators (short sheets)
+## Tracked config (not under docs)
 
-Operators who turn aviation weather text into IWXXM day to day:
+| Path | Role |
+|------|------|
+| [config/profiles/](../config/profiles) | Conversion profile catalog for the API |
+| [config/rules/](../config/rules) | Issue catalog and provenance map |
+| [config/engineering/](../config/engineering) | Coverage surface inventories |
 
-- [One-pager](guides/operator-one-pager.md) — one printed sheet
-- [Handbook](guides/operator-handbook.md) — sign-in, workbench use, history, troubleshooting
+## Public user guide
 
-## HTTP API
+Operator and integrator docs for end users live in [`github-wikia/`](../github-wikia).
+That site is not the engineering HTTP contract.
 
-HTTP reference index: [guides/API.md](guides/API.md).
+## Local feeders (not tracked)
 
-## Deploy
+`docs/domain/`, `docs/engineering/`, `docs/ops/`, `docs/adr/`, decision notes, guides,
+UX logs, STE dictionary files, and `docs/local-feeders/` stay on the developer machine.
+See [AGENTS.md](../AGENTS.md) for the local opt-in list.
 
-Deploy and connectivity: [deploy.md](deploy.md).
+## Compatibility pointers
 
-## Release notes
-
-Release notes: [CHANGELOG.md](CHANGELOG.md).
+| Old path | Now |
+|----------|-----|
+| `docs/spec.md` | [architecture.md](architecture.md) |
+| `docs/tech-spec.md` | [technical-requirements.md](technical-requirements.md) |
+| `config/profiles/` | [config/profiles/](../config/profiles) + [domain-contract.md](domain-contract.md) |
+| `config/rules/` | [config/rules/](../config/rules) + [domain-contract.md](domain-contract.md) |
+| `docs/engineering/` coverage YAML | [config/engineering/](../config/engineering) |
+| `docs/ops/` runbooks | [ops-contract.md](ops-contract.md) |

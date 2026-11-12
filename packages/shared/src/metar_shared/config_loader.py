@@ -1,4 +1,4 @@
-"""Load committed non-secret configuration from ``config/{env}.json``."""
+"""Load committed non-secret configuration from ``config/deploy/profiles/{env}.json``."""
 
 from __future__ import annotations
 
@@ -29,7 +29,7 @@ def get_config_env() -> str:
 
 def config_path(env: str | None = None) -> Path:
     """
-    Path to ``config/{env}.json`` under the repository root.
+    Path to ``config/deploy/profiles/{env}.json`` under the repository root.
 
     Parameters
     ----------
@@ -39,7 +39,7 @@ def config_path(env: str | None = None) -> Path:
     Returns
     -------
     Path
-        Path to ``config/{env}.json`` under the repository root.
+        Path to ``config/deploy/profiles/{env}.json`` under the repository root.
 
     Examples
     --------
@@ -47,7 +47,7 @@ def config_path(env: str | None = None) -> Path:
     2
     """
     profile = (env or get_config_env()).strip() or "local"
-    return _REPO_ROOT / "config" / f"{profile}.json"
+    return _REPO_ROOT / "config" / "deploy" / "profiles" / f"{profile}.json"
 
 
 def load_config(env: str | None = None) -> dict[str, Any]:

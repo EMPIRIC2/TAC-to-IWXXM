@@ -1,4 +1,4 @@
-"""Load docs/domain/profiles/catalog.yaml for ConversionProfile inspector (EV-933)."""
+"""Load config/profiles/catalog.yaml for ConversionProfile inspector (EV-933)."""
 
 from __future__ import annotations
 
@@ -17,7 +17,7 @@ from ..schemas.conversion_profiles import (
 )
 
 _REPO_ROOT = Path(__file__).resolve().parents[4]
-_DEFAULT_CATALOG = _REPO_ROOT / "docs" / "domain" / "profiles" / "catalog.yaml"
+_DEFAULT_CATALOG = _REPO_ROOT / "config" / "profiles" / "catalog.yaml"
 
 
 def catalog_path() -> Path:

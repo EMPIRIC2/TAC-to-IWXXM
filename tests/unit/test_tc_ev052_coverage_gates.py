@@ -12,7 +12,7 @@ import pytest
 import yaml
 
 ROOT = Path(__file__).resolve().parents[2]
-INVENTORY = ROOT / "docs" / "engineering" / "coverage-surface-inventory-s061.yaml"
+INVENTORY = ROOT / "config" / "engineering" / "coverage-surface-inventory-s061.yaml"
 CI_YML = ROOT / ".github" / "workflows" / "ci-cd.yml"
 FRONTEND_VITEST = ROOT / "apps" / "frontend" / "vitest.config.ts"
 

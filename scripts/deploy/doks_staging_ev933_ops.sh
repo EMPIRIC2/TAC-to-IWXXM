@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# EV-933 staging ops: Alembic head + PROFILE_OVERLAY_HMAC_SECRET on staging API.
+# Staging ops: Alembic head + PROFILE_OVERLAY_HMAC_SECRET on staging API.
 #
 # Requires kubectl context for metar-iwxxm-staging (CI: staging env KUBE_CONFIG).
 # Prefer Secret patch; if RBAC denies secrets, fall back to Deployment literal env.
@@ -9,10 +9,10 @@
 set -euo pipefail
 
 NS="${DOKS_NAMESPACE:-metar-iwxxm-staging}"
-JOB_NAME="${ALEMBIC_JOB_NAME:-metar-alembic-upgrade-ev933}"
+JOB_NAME="${ALEMBIC_JOB_NAME:-metar-alembic-upgrade-staging}"
 SECRET_NAME="${API_SECRET_NAME:-metar-api-secrets}"
 
-echo "EV-933 staging ops ns=${NS}"
+echo "staging Alembic + overlay HMAC ops ns=${NS}"
 
 API_IMG="$(
   kubectl -n "${NS}" get deploy metar-api \
@@ -125,4 +125,4 @@ INIT_IMG="$(
 echo "confirm: HMAC via=${HMAC_SET_VIA}"
 echo "confirm: migrate via=${MIGRATE_VIA}"
 echo "confirm: initContainer image=${INIT_IMG}"
-echo "EV-933 staging ops complete"
+echo "staging Alembic + overlay HMAC ops complete"

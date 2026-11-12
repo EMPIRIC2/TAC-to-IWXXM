@@ -1,4 +1,4 @@
-# EV-029 / E29-T4=2 — TAF quality pack (M4 / TC-EV029-007 + F20 deepen).
+# TAF quality pack (per-family; complements root CI).
 # Separate per-family workflow; complements root ci.yml.
 name: TAF quality
 

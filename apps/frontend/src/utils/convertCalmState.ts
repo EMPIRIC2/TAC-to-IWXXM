@@ -59,7 +59,8 @@ export function deriveCalmConvertUi(input: CalmConvertInputs): CalmConvertUi {
     return {
       phase: 'empty',
       primaryKind: 'convert',
-      showEmptyHero: true,
+      // UX-2026-11-07: empty state uses the same bordered converter chrome.
+      showEmptyHero: false,
       showValidityStrip: false,
       hideAdvancedSetup: true,
     };

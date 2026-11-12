@@ -1,5 +1,5 @@
-# EV-029 / T12.1 — Product-order regression smoke (TC-EV029-007 / M12).
-# One accept fixture per family in Phase B CI order; complements per-family packs.
+# Product-order regression smoke: one accept fixture per family in CI order.
+# Complements per-family quality packs.
 name: Product-order smoke
 
 # Stage/main push: always run (no path filter). PR remains path-filtered for cost.
@@ -20,7 +20,7 @@ on:
 jobs:
   product-order-smoke:
     runs-on: ubuntu-latest
-    name: Product-order smoke (TC-EV029-007)
+    name: Product-order smoke
     steps:
       - uses: actions/checkout@v5
         with:

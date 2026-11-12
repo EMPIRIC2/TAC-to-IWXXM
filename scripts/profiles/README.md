@@ -7,4 +7,4 @@ python3 scripts/profiles/scaffold_national_profile.py --id UK_METOFFICE --dry-ru
 python3 scripts/profiles/scaffold_national_profile.py --id UK_METOFFICE
 ```
 
-See `docs/domain/profiles/NATIONAL_PROFILE_PLAYBOOK.md`.
+See `config/profiles/NATIONAL_PROFILE_PLAYBOOK.md`.

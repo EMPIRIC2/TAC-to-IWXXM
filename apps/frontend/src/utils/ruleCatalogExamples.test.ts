@@ -37,9 +37,16 @@ describe('ruleCatalogExamples', () => {
     expect(isInfoCatalogLevel(null)).toBe(false);
     expect(isInfoCatalogLevel(undefined)).toBe(false);
 
-    expect(plainInfoExample({ pass: 'TAF OK=', fail: 'TAF BAD=' })).toBe('TAF OK=');
-    expect(plainInfoExample({ pass: null, fail: 'TAF BAD=' })).toBe('TAF BAD=');
+    expect(plainInfoExample({ pass: 'TAF OK=', fail: 'TAF AMD YUDO=' })).toBe(
+      'TAF AMD YUDO=',
+    );
+    expect(plainInfoExample({ pass: null, fail: 'TAF AMD YUDO=' })).toBe(
+      'TAF AMD YUDO=',
+    );
     expect(plainInfoExample({ pass: 'TAF OK=', fail: null })).toBe('TAF OK=');
     expect(plainInfoExample({ pass: null, fail: null })).toBeNull();
+    expect(ruleExamplePair('AMD_PRESENT').fail).toMatch(/\bAMD\b/);
+    expect(plainInfoExample(ruleExamplePair('AMD_PRESENT'))).toMatch(/\bAMD\b/);
+    expect(plainInfoExample(ruleExamplePair('AT_PRESENT'))).toMatch(/\bAT\d{4}\b/);
   });
 });

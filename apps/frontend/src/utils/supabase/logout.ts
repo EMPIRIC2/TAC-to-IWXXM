@@ -1,10 +1,10 @@
-import { authUrl } from '../apiBase';
 import { getAccessToken } from '../authService';
+import { getSupabaseClient } from './client';
 
 /**
  * Sign out the user with the requested Supabase scope.
  *
- * Delegates to merged API auth routes for session management.
+ * Uses the browser Supabase client (FE-direct Auth).
  *
  * @example
  * const _ = true;
@@ -18,21 +18,11 @@ export async function signOutWithScope(
   }
 
   try {
-    const response = await fetch(authUrl('/logout'), {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({ scope }),
-      credentials: 'include',
-    });
-
-    if (!response.ok) {
-      console.error('Logout failed:', response.status, response.statusText);
+    const { error } = await getSupabaseClient().auth.signOut({ scope });
+    if (error) {
+      console.error('Logout failed:', error.message);
       return false;
     }
-
     return true;
   } catch (error) {
     console.error('Logout error:', error);

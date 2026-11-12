@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Export TC-M003 golden conversion baselines into test-data/golden/.
+"""Export TC-M003 golden conversion baselines into data/_test-data/golden/.
 
 Run from repo root::
 
@@ -24,7 +24,7 @@ from tests.migration.gifts_baseline import (  # noqa: E402
 
 from metar_shared.xml_canonical import canonicalize_xml  # noqa: E402
 
-GOLDEN_DIR = ROOT / "test-data" / "golden"
+GOLDEN_DIR = ROOT / "data" / "_test-data" / "golden"
 CASES_DIR = GOLDEN_DIR / "cases"
 
 # Representative METAR/SPECI set — migration-plan.md Step 0 golden export.

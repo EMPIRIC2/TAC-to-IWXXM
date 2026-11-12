@@ -1,7 +1,5 @@
-# F34 / EV-059 / #727 — Schemathesis OpenAPI property suite (TC-F34-002 / TC-F34-007).
+# Schemathesis OpenAPI property suite (path-filtered).
 # Path-filtered required gate: suite runs only when backend/OpenAPI paths change;
-# `schemathesis-gate` always reports so branch protection can require it.
-# Budget: Hypothesis max-examples ≤ 25; job timeout ≤ 10 min (D-S069-01-budget).
 name: Schemathesis
 
 on:

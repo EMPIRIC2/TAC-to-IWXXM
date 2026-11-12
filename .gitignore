@@ -1,11 +1,10 @@
 # =============================================================================
 # METAR → IWXXM monorepo — apps/, packages/, vendor/
-# =============================================================================
 
 # --- Secrets & local operator env (never commit) ---
 .env
 .env.*
-!.env.example
+!config/env.example
 prod.env
 .envrc
 
@@ -23,6 +22,8 @@ auth/.env
 frontend/.env
 
 # --- Python (uv workspace: apps/backend, packages/*) ---
+# Root uv.lock is the workspace SoT; do not keep per-app locks.
+apps/*/uv.lock
 __pycache__/
 *.py[codz]
 *$py.class
@@ -139,7 +140,7 @@ Thumbs.db
 # --- Docs site builds ---
 docs/_build/
 /site
-user-docs/site/
+github-wikia/site/
 
 # --- Local tooling binaries / artifacts ---
 .tools/
@@ -200,8 +201,11 @@ packages/shared/src/metar_shared/iwxxm_xsd/**/__pycache__/
 
 
 # Local DOKS kube/access secrets (never commit)
-deploy/doks/.env.access
+config/deploy/doks/.env.access
 tmp/
+
+# EV-docs-spine — full legacy dumps (keep on disk; spine is root MD + CSV)
+/docs/local-feeders/
 
 # EV-088 profile scaffold working copies (merge into catalog.yaml by hand)
 docs/domain/profiles/_scaffold_out/
@@ -225,16 +229,38 @@ third_party/
 /docs/context/
 /docs/bug-reports/
 /docs/reports/
+# Domain, engineering, and ops feeders stay local. Machine SoT moved to config/.
 /docs/engineering/
-# Coverage inventories stay tracked (unit gate EV-052 / EV-080).
-!/docs/engineering/
-!/docs/engineering/coverage-surface-inventory.yaml
-!/docs/engineering/coverage-surface-inventory-s061.yaml
+/docs/engineering/**
+/docs/domain/
+/docs/domain/**
+/docs/ops/
+/docs/ops/**
 /docs/ARCHIVE/
-/docs/domain/mining/
 /docs/evolve-report-*.md
-# project-board.md is a CORPUS standing doc — track it (was ignored by mistake).
 /docs/hotfix-log.md
 /docs/skill-routing.md
 /.cursor/artifacts/execution-plan-live-e2e.md
 /.cursor/artifacts/execution-plan-monorepo.md
+
+# EV-repo-docs-cleanup — local tooling (keep on disk; not in git). Keep .github tracked.
+.claude/
+# Ignore .cursor contents but allow tracked project hooks (parent-dir ignore
+# would block negation). [Corpus: tech-spec] EV-quality-tooling-suite
+.cursor/*
+!.cursor/hooks.json
+!.cursor/hooks/
+!.cursor/hooks/**
+
+# Local agent/doc trees (keep on disk).
+/docs/adr/
+/docs/assets/
+/docs/guides/
+/docs/integration/
+/docs/policies/
+/docs/ste/
+/docs/ui-ux-tweaks/
+
+# Quality tooling local/CI reports (EV-quality-tooling-suite)
+.quality-reports/
+.cursor/hooks/**/__pycache__/

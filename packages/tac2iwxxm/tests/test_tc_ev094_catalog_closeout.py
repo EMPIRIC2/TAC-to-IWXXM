@@ -10,7 +10,7 @@ from pathlib import Path
 import yaml
 
 _REPO = Path(__file__).resolve().parents[3]
-_CATALOG = _REPO / "docs" / "domain" / "profiles" / "catalog.yaml"
+_CATALOG = _REPO / "config" / "profiles" / "catalog.yaml"
 
 THIN_COMPAT_IDS = (
     "UK_METOFFICE",

@@ -12,8 +12,8 @@ import yaml
 from dissemination.exchange_registry import known_exchange_profile_ids
 
 _REPO = Path(__file__).resolve().parents[3]
-_CATALOG = _REPO / "docs" / "domain" / "profiles" / "catalog.yaml"
-_EXCHANGE_DIR = _REPO / "docs" / "domain" / "profiles" / "exchange"
+_CATALOG = _REPO / "config" / "profiles" / "catalog.yaml"
+_EXCHANGE_DIR = _REPO / "config" / "profiles" / "exchange"
 
 _EXCHANGE_IDS = (
     "GLOBAL_AFS",

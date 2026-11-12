@@ -1,0 +1,33 @@
+# Build the public user guide (MkDocs) on pull requests that touch it.
+name: GitHub Wikia (MkDocs)
+
+on:
+  pull_request:
+    paths:
+      - "github-wikia/**"
+      - ".readthedocs.yaml"
+      - ".github/workflows/github-wikia.yml"
+  push:
+    branches: [stage, main]
+    paths:
+      - "github-wikia/**"
+      - ".readthedocs.yaml"
+      - ".github/workflows/github-wikia.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  mkdocs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install MkDocs
+        run: pip install -r github-wikia/requirements.txt
+      - name: Wiki link check
+        run: python3 github-wikia/scripts/check_wiki_links.py
+      - name: MkDocs strict build
+        run: mkdocs build --config-file github-wikia/mkdocs.yml --strict

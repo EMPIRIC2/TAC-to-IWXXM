@@ -37,7 +37,7 @@ class TestT13AuthWorkspaceWire:
         assert "worker," in workflow or "\n            worker," in workflow
 
     def test_env_example_documents_jwks(self) -> None:
-        root_env = (ROOT / ".env.example").read_text(encoding="utf-8")
+        root_env = (ROOT / "config/env.example").read_text(encoding="utf-8")
         assert "SUPABASE_JWKS_URL=" in root_env
         assert "SUPABASE_URL=" in root_env
         pkg_env = (ROOT / "packages/auth/.env.example").read_text(encoding="utf-8")
@@ -49,7 +49,9 @@ class TestT13AuthWorkspaceWire:
         assert "SUPABASE_JWKS_URL=${SUPABASE_JWKS_URL:-}" in compose
 
     def test_render_api_lists_auth_env_keys(self) -> None:
-        secret = (ROOT / "deploy/doks/base/secret-api.yaml").read_text(encoding="utf-8")
+        secret = (ROOT / "config/deploy/doks/base/secret-api.yaml").read_text(
+            encoding="utf-8"
+        )
         assert not (ROOT / "render.yaml").exists()
         assert "SUPABASE_URL" in secret
         assert "SUPABASE_JWKS_URL" in secret

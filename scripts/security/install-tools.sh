@@ -32,7 +32,7 @@ download() {
   if [[ -n "${token}" && "${url}" == https://github.com/* ]]; then
     hdr+=(-H "Authorization: Bearer ${token}")
   fi
-  curl -fsSL "${hdr[@]}" "${url}" -o "${dest}"
+  curl -fsSL ${hdr[@]+"${hdr[@]}"} "${url}" -o "${dest}"
 }
 
 github_api() {
@@ -46,7 +46,7 @@ github_api() {
   if [[ -n "${token}" ]]; then
     hdr+=(-H "Authorization: Bearer ${token}")
   fi
-  curl -fsSL "${hdr[@]}" "${url}"
+  curl -fsSL ${hdr[@]+"${hdr[@]}"} "${url}"
 }
 
 log "installing → ${BIN_DIR} (${OS}/${ARCH})"
@@ -134,6 +134,51 @@ if [[ ! -x "${BIN_DIR}/sbom-tool" || "${SEC_FORCE:-0}" == "1" ]]; then
   esac
   download "https://github.com/microsoft/sbom-tool/releases/latest/download/${A}" "${BIN_DIR}/sbom-tool"
   chmod 0755 "${BIN_DIR}/sbom-tool"
+fi
+
+
+# Wave 2 (EV-quality-tooling-suite): osv-scanner, gitleaks, actionlint.
+latest_tag() {
+  local repo="$1"
+  github_api "https://api.github.com/repos/${repo}/releases/latest" | python3 -c 'import json,sys; print(json.load(sys.stdin)["tag_name"])'
+}
+
+if [[ ! -x "${BIN_DIR}/osv-scanner" || "${SEC_FORCE:-0}" == "1" ]]; then
+  case "${OS}" in linux | darwin) ;; *) err "no osv-scanner os ${OS}"; exit 1 ;; esac
+  ver="${SEC_OSV_SCANNER_VERSION:-$(latest_tag google/osv-scanner)}"
+  asset="osv-scanner_${OS}_${ARCH}"
+  log "osv-scanner ${ver} (${asset})"
+  tmp="$(mktemp -d)"
+  download "https://github.com/google/osv-scanner/releases/download/${ver}/${asset}" "${tmp}/${asset}"
+  install -m 0755 "${tmp}/${asset}" "${BIN_DIR}/osv-scanner"
+  rm -rf "${tmp}"
+fi
+
+if [[ ! -x "${BIN_DIR}/gitleaks" || "${SEC_FORCE:-0}" == "1" ]]; then
+  case "${OS}" in linux | darwin) ;; *) err "no gitleaks os ${OS}"; exit 1 ;; esac
+  gl_arch="${ARCH}"; [[ "${ARCH}" == "amd64" ]] && gl_arch="x64"
+  ver="${SEC_GITLEAKS_VERSION:-$(latest_tag gitleaks/gitleaks)}"
+  ver_num="${ver#v}"
+  asset="gitleaks_${ver_num}_${OS}_${gl_arch}.tar.gz"
+  log "gitleaks ${ver} (${asset})"
+  tmp="$(mktemp -d)"
+  download "https://github.com/gitleaks/gitleaks/releases/download/${ver}/${asset}" "${tmp}/${asset}"
+  tar -xzf "${tmp}/${asset}" -C "${tmp}" gitleaks
+  install -m 0755 "${tmp}/gitleaks" "${BIN_DIR}/gitleaks"
+  rm -rf "${tmp}"
+fi
+
+if [[ ! -x "${BIN_DIR}/actionlint" || "${SEC_FORCE:-0}" == "1" ]]; then
+  case "${OS}" in linux | darwin) ;; *) err "no actionlint os ${OS}"; exit 1 ;; esac
+  ver="${SEC_ACTIONLINT_VERSION:-$(latest_tag rhysd/actionlint)}"
+  ver_num="${ver#v}"
+  asset="actionlint_${ver_num}_${OS}_${ARCH}.tar.gz"
+  log "actionlint ${ver} (${asset})"
+  tmp="$(mktemp -d)"
+  download "https://github.com/rhysd/actionlint/releases/download/${ver}/${asset}" "${tmp}/${asset}"
+  tar -xzf "${tmp}/${asset}" -C "${tmp}" actionlint
+  install -m 0755 "${tmp}/actionlint" "${BIN_DIR}/actionlint"
+  rm -rf "${tmp}"
 fi
 
 log "done — export PATH=\"${BIN_DIR}:\$PATH\""

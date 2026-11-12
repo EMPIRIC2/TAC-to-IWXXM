@@ -13,7 +13,7 @@ warn() { echo "WARN: $*" >&2; }
 fail() { echo "ERROR: $*" >&2; exit 1; }
 
 # --- config JSON ---
-CONFIG_PATH="$ROOT/config/${CONFIG_ENV}.json"
+CONFIG_PATH="$ROOT/config/deploy/profiles/${CONFIG_ENV}.json"
 [[ -f "$CONFIG_PATH" ]] || fail "Missing config file: $CONFIG_PATH"
 
 python3 - <<'PY' "$CONFIG_PATH"

@@ -32,6 +32,7 @@ from tac2iwxxm.profile_registry import (
     supported_iwxxm_versions_for_profile,
     supported_report_variants_for_profile,
 )
+from tac2iwxxm.profiles.annex3 import obs_timestamp
 from tac2iwxxm.profiles.annex3_emit import (
     emit_swxa_annex3,
     emit_vona_annex3,
@@ -1439,11 +1440,15 @@ def convert(
         emit_translation_centre = True
 
     if emit_translation_centre:
+        # METAR/SPECI: translationTime attrs match observationTime (TAC stamp), not wall clock.
+        translation_stamp = issued_text
+        if product_u in {"METAR", "SPECI"}:
+            translation_stamp = obs_timestamp(ir)
         xml = _inject_translation_centre(
             xml,
             designator=translation_centre_designator,
             name=translation_centre_name,
-            heading=(bulletin_id, issued_text) if bulletin_id is not None else None,
+            heading=(bulletin_id, translation_stamp) if bulletin_id is not None else None,
         )
 
     xml = _apply_permissible_usage(xml, tac)

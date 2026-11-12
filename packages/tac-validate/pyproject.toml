@@ -6,7 +6,7 @@ readme = "README.md"
 license = { text = "MIT" }
 requires-python = ">=3.12"
 dependencies = [
-  "msgspec>=0.19",
+  "msgspec==0.21.1",
   "metar-shared==2026.11.5",
   "pyyaml==6.0.3",
 ]
@@ -24,6 +24,7 @@ build-backend = "hatchling.build"
 [tool.hatch.build.targets.wheel]
 packages = ["src/tac_validate"]
 
+# Override (required): package sources are formatted at line-length 120; root is 88.
 [tool.pytest.ini_options]
 asyncio_default_fixture_loop_scope = "function"
 
@@ -44,6 +45,14 @@ source = ["src/tac_validate"]
 fail_under = 100
 show_missing = true
 
+
 [tool.ruff]
 extend = "../../pyproject.toml"
 line-length = 120
+
+# deptry: unused (DEP002), missing (DEP001), transitive (DEP003), misplaced-dev (DEP004).
+# [Corpus: tech-spec] docs/technical-requirements.md; [Corpus: system-spec] docs/architecture.md.
+# Run all members: scripts/ci/run_deptry_all.sh
+[tool.deptry]
+known_first_party = ["tac_validate"]
+pep621_dev_dependency_groups = ["dev"]

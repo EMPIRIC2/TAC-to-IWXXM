@@ -6,7 +6,7 @@ Required environment variables (repo-root ``.env``):
     ADMIN_EMAIL — Email address for the admin user
     ADMIN_PASSWORD — Password for the admin user
 
-Supabase project URL is read from ``config/local.json`` or ``config/prod.json``
+Supabase project URL is read from ``config/deploy/profiles/local.json`` or ``config/deploy/profiles/prod.json``
 (``METAR_CONFIG_ENV``) unless ``SUPABASE_URL`` is set.
 """
 
@@ -30,7 +30,7 @@ ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD")
 if not all([SUPABASE_URL, SERVICE_KEY, ADMIN_EMAIL, ADMIN_PASSWORD]):
     print("❌ Error: Missing required environment variables")
     print("   Required: SUPABASE_SECRET_KEY, ADMIN_EMAIL, ADMIN_PASSWORD")
-    print("   Supabase URL: config/*.json supabase.url or SUPABASE_URL")
+    print("   Supabase URL: config/deploy/profiles/*.json supabase.url or SUPABASE_URL")
     sys.exit(1)
 
 

@@ -9,6 +9,7 @@ import os
 
 import httpx
 import pytest
+from tests.live_fixtures import login_with_backoff
 
 pytestmark = [pytest.mark.live, pytest.mark.live_api]
 
@@ -34,22 +35,8 @@ def live_headers(live_api: str) -> dict[str, str]:
     headers: dict[str, str] = {}
     if not email or not password:
         return headers
-    with httpx.Client(timeout=30.0) as client:
-        resp = client.post(
-            f"{live_api}/auth/login",
-            json={"email": email, "password": password},
-        )
-        if resp.status_code != 200:
-            pytest.skip(f"live login failed: {resp.status_code}")
-        data = resp.json()
-        token = (
-            data.get("access_token")
-            or data.get("token")
-            or (data.get("session") or {}).get("access_token")
-        )
-        if not token:
-            pytest.skip("live login response missing access_token")
-        headers["Authorization"] = f"Bearer {token}"
+    token = login_with_backoff(live_api, email, password)
+    headers["Authorization"] = f"Bearer {token}"
     return headers
 
 

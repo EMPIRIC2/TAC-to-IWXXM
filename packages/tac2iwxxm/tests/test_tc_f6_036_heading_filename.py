@@ -45,6 +45,13 @@ def test_tc_f6_036_on_behalf_metar_uses_the_real_heading() -> None:
     assert issued is not None
     assert _TIME.fullmatch(issued)
     assert received == issued
+    obs = re.search(
+        r"<iwxxm:observationTime>.*?<gml:timePosition>([^<]+)</gml:timePosition>",
+        xml,
+        re.DOTALL,
+    )
+    assert obs is not None
+    assert issued == obs.group(1)
     assert _attr(xml, "translationCentreDesignator") == _CENTRE
     assert "TTAAiiCCCYYGGgg" not in xml
     assert "YUZZ" not in xml

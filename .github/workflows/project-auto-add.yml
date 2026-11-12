@@ -4,7 +4,6 @@
 # classic PAT with blanket `repo` scope.
 # When PROJECT_TOKEN is unset, skip with a warning (do not fail the job red) —
 # prefer Project → Workflows → Auto-add to project (is:issue) as the complement.
-# [Corpus: project-board]
 
 name: Project auto-add
 

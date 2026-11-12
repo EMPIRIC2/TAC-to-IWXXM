@@ -22,8 +22,8 @@ from tac2iwxxm.ca_ops_corpus import (
 )
 
 _REPO = Path(__file__).resolve().parents[3]
-_CATALOG = _REPO / "docs" / "domain" / "profiles" / "catalog.yaml"
-_COVERAGE = _REPO / "docs" / "domain" / "rules" / "COVERAGE_MATRIX.md"
+_CATALOG = _REPO / "config" / "profiles" / "catalog.yaml"
+_COVERAGE = _REPO / "config" / "rules" / "COVERAGE_MATRIX.md"
 _HARVEST = _REPO / "scripts" / "iwxxm" / "harvest_ca_eccc_ops.py"
 _FIXTURES = ops_fixture_root(_REPO)
 _VENDOR_SIGMET = _REPO / "vendor" / "schemas" / "iwxxm" / "3.0.0" / "IWXXM" / "examples" / "sigmet-A6-1a-TS.xml"

@@ -11,17 +11,14 @@
     "test:coverage": "vitest run --coverage",
     "test:mutation": "stryker run stryker.config.mjs",
     "typecheck": "tsc --noEmit",
-    "lint": "eslint src tests --max-warnings 0",
-    "format:check": "prettier --check \"src/**/*.ts\" \"tests/**/*.ts\""
+    "lint": "pnpm -w exec eslint packages/shared/src packages/shared/tests --max-warnings 0",
+    "format:check": "pnpm -w exec prettier --check \"packages/shared/src/**/*.ts\" \"packages/shared/tests/**/*.ts\""
   },
   "devDependencies": {
-    "@eslint/js": "^9.0.0",
     "@stryker-mutator/core": "10.0.0",
     "@stryker-mutator/vitest-runner": "10.0.0",
-    "eslint": "^9.0.0",
-    "typescript": "^5.8.3",
-    "typescript-eslint": "^8.0.0",
-    "@vitest/coverage-v8": "^4.1.9",
-    "vitest": "^4.1.9"
+    "typescript": "5.9.3",
+    "@vitest/coverage-v8": "4.1.11",
+    "vitest": "4.1.11"
   }
 }

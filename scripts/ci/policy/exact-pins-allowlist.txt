@@ -1,0 +1,15 @@
+# Temporary EV-049 migration allowlist — clear entries as packages are exact-pinned
+# [Corpus: adr-037] [Corpus: WAIVED — full exact-pin remmediation deferred for existing ranges; decided: EV-049]
+
+apps/backend/pyproject.toml:metar-shared
+apps/backend/pyproject.toml:tac2iwxxm
+apps/backend/pyproject.toml:tac-decoding
+apps/backend/pyproject.toml:tac-validate
+apps/backend/pyproject.toml:iwxxm-validate
+apps/backend/pyproject.toml:dissemination
+apps/backend/pyproject.toml:auth
+apps/worker/pyproject.toml:metar-shared
+apps/worker/pyproject.toml:tac2iwxxm
+apps/worker/pyproject.toml:tac-validate
+apps/worker/pyproject.toml:iwxxm-validate
+apps/worker/pyproject.toml:workflows

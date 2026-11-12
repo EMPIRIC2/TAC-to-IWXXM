@@ -1,6 +1,5 @@
-# EV-029 / E29-T4=2 — general SIGMET quality pack (M5 / TC-EV029-007 + F23 deepen).
+# General SIGMET quality pack (per-family; complements root CI).
 # Separate per-family workflow; complements root ci.yml.
-# Supersedes the EV-020 deprecated redirect-to-wmo-quality stub.
 name: SIGMET quality
 
 # Stage/main push: always run (no path filter). PR remains path-filtered for cost.
@@ -51,7 +50,7 @@ jobs:
       - name: Install Rust toolchain
         uses: dtolnay/rust-toolchain@stable
 
-      - name: Build iwxxm-validate native for CA_ECCC SIGMET ops (EV-068)
+      - name: Build iwxxm-validate native for CA_ECCC SIGMET ops
         run: bash scripts/ci/ensure_iwxxm_validate_native.sh
 
       - name: Run SIGMET quality pack

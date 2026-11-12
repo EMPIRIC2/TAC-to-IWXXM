@@ -1,6 +1,6 @@
--- F7.e / ADR-020: expand-cutover metar_work_sessions → tac_work_sessions
--- S011 / EV-008 — unified multi-product sessions; one WIP per user total.
--- Admin browse policies intentionally omitted (ADR-021).
+-- Rename and expand metar_work_sessions into tac_work_sessions for multi-product use.
+-- One WIP session per user total.
+-- Admin browse policies intentionally omitted.
 
 BEGIN;
 
@@ -36,7 +36,7 @@ CREATE UNIQUE INDEX IF NOT EXISTS tac_work_sessions_one_wip_per_user
   ON public.tac_work_sessions (user_id)
   WHERE status = 'wip' AND deleted_at IS NULL;
 
--- Copy legacy F5 rows; default product=metar when conversion_params lacks product.
+-- Copy legacy METAR session rows; default product=metar when conversion_params lacks product.
 INSERT INTO public.tac_work_sessions (
   id,
   user_id,
@@ -168,7 +168,7 @@ BEGIN
 END;
 $$;
 
--- Cutover: drop legacy F5 table (expand-cutover; no dual-write window).
+-- Drop legacy metar_work_sessions after copy; no dual-write window.
 DROP TRIGGER IF EXISTS metar_work_sessions_set_updated_at ON public.metar_work_sessions;
 DROP TABLE IF EXISTS public.metar_work_sessions CASCADE;
 DROP FUNCTION IF EXISTS public.purge_stale_metar_work_sessions();

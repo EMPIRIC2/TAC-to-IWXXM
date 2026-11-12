@@ -24,7 +24,7 @@ LIVE_API_TIMEOUT = 30.0
 
 @pytest.fixture(scope="session")
 def live_api_token() -> str:
-    """Obtain bearer token via POST /auth/login (runtime - do not persist)."""
+    """Obtain bearer token via Supabase GoTrue (runtime — do not persist)."""
     return obtain_live_api_token()
 
 

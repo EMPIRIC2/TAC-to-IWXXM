@@ -13,7 +13,7 @@ ROOT = Path(__file__).resolve().parents[3]
 API_BASE = ROOT / "apps" / "frontend" / "src" / "utils" / "apiBase.ts"
 DOCKERFILE = ROOT / "apps" / "frontend" / "Dockerfile"
 CI_CD = ROOT / ".github" / "workflows" / "ci-cd.yml"
-PROD_CONFIG = ROOT / "config" / "prod.json"
+PROD_CONFIG = ROOT / "config" / "deploy" / "profiles" / "prod.json"
 
 
 def test_bug_2026_08_04_api_base_uses_runtime_config() -> None:

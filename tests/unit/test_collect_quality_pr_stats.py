@@ -1,4 +1,4 @@
-"""Unit tests for scripts/ci/collect_quality_pr_stats.py (EV-052 / TC-EV052-005)."""
+"""Unit tests for scripts/ci/collect_quality_pr_stats.py."""
 
 from __future__ import annotations
 

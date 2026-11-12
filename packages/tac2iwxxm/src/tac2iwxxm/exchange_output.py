@@ -2,7 +2,7 @@
 
 MSC datamart filename pattern, WMO AHL designators, distribution path template,
 and profile-gated translation centre defaults. Constants mirror
-``docs/domain/profiles/catalog.yaml`` ``CA_ECCC.exchange_output``.
+``config/profiles/catalog.yaml`` ``CA_ECCC.exchange_output``.
 
 [Corpus: product §F36] [Corpus: domain-profiles §CA_ECCC]
 """

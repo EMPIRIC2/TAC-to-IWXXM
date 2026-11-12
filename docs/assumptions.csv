@@ -1,0 +1,5 @@
+id,date,status,summary,owner,links,corpus_cite,notes
+A-001,2026-11-10,accepted,AGENTS.md remains the agent corpus index until docs/CORPUS.md is restored,docs,AGENTS.md,[Corpus: product],
+A-002,2026-11-10,accepted,OpenAPI remains field-level HTTP source of truth; api-contract stays narrative,docs,docs/api/openapi.json,[Corpus: api],
+A-003,2026-11-10,accepted,Machine profile/rule/coverage catalogs live under config/ while docs feeders stay local,docs,"config/profiles,config/rules,config/engineering",[Corpus: system-spec],docs/domain|engineering|ops gitignored
+A-004,2026-11-10,accepted,Local docs/ops and docs/domain remain on disk as feeders after untrack,docs,docs/local-feeders,[Corpus: ops],

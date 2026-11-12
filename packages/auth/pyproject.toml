@@ -1,23 +1,26 @@
 [project]
-name = "metar-auth"
+name = "auth"
 version = "0.2.0"
-description = "Verify Supabase Auth JSON Web Tokens (JWTs) and serve /auth HTTP routes"
+description = "The auth package makes sure that Supabase Auth JSON Web Tokens are valid. The package sends HTTP requests to the Supabase Auth API for account operations. The package includes service functions for sign-in, sign-up, sign-out, and token checks. HTTP route handlers stay in the backend application."
+readme = "README.md"
 requires-python = ">=3.12"
+authors = [
+  { name = "Joseph McGuire", email = "joseph.c.mcg@gmail.com" },
+]
 dependencies = [
-  "fastapi>=0.110",
-  "httpx>=0.28",
-  "PyJWT[crypto]>=2.8",
-  "pydantic>=2.0",
-  "email-validator>=2.0",
+  "httpx==0.28.1",
+  "PyJWT[crypto]==2.13.0",
+  "pydantic==2.13.4",
+  "email-validator==2.3.0",
 ]
 
 [project.optional-dependencies]
 dev = [
-  "pytest>=8.4",
-  "pytest-asyncio>=0.24",
-  "httpx2>=2.0",
-  "respx>=0.21",
-  "cryptography>=42",
+  "pytest==9.1.0",
+  "pytest-asyncio==1.4.0",
+  "httpx2==2.4.0",
+  "respx==0.23.1",
+  "cryptography==50.0.1",
 ]
 
 [build-system]
@@ -25,7 +28,9 @@ requires = ["hatchling>=1.25"]
 build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/metar_auth"]
+packages = ["src/auth"]
+
+# Ruff / pytest / coverage inherit from root pyproject.toml (EV-exact-dep-pins).
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
@@ -39,7 +44,7 @@ filterwarnings = [
 
 [tool.coverage.run]
 branch = true
-source = ["src/metar_auth"]
+source = ["src/auth"]
 
 [tool.coverage.report]
 fail_under = 100
@@ -47,3 +52,10 @@ show_missing = true
 
 [tool.ruff]
 extend = "../../pyproject.toml"
+
+# deptry: unused (DEP002), missing (DEP001), transitive (DEP003), misplaced-dev (DEP004).
+# [Corpus: tech-spec] docs/technical-requirements.md; [Corpus: system-spec] docs/architecture.md.
+# Run all members: scripts/ci/run_deptry_all.sh
+[tool.deptry]
+known_first_party = ["auth"]
+pep621_dev_dependency_groups = ["dev"]

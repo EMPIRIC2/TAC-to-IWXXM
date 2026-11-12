@@ -8,7 +8,7 @@ from pathlib import Path
 import pytest
 from tests.provenance._helpers import REPO, load_map
 
-COVERAGE = REPO / "docs" / "domain" / "rules" / "COVERAGE_MATRIX.md"
+COVERAGE = REPO / "config" / "rules" / "COVERAGE_MATRIX.md"
 
 AHL_FAMILIES = [
     "METAR",

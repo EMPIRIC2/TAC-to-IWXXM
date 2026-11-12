@@ -3,9 +3,9 @@
  */
 import { expect, test } from '@playwright/test';
 import {
+  applyTacSpanFix,
   ensureConvertResultsDrawerOpen,
   leaveCalmEmptyHero,
-  openConvertConsoleTab,
   openConvertDecoderTab,
   openConverterForE2e,
 } from './playwright-e2e-helpers';
@@ -128,10 +128,14 @@ test.describe('T3.7 / UJ-020 + UJ-021: live decode summary + preview UX', () => 
     await editor.click();
     await editor.fill(METAR_NO_EQ);
 
-    await openConvertConsoleTab(page);
-    const addEq = page.getByTestId('console-action-add_terminator');
-    await expect(addEq).toBeVisible({ timeout: 5000 });
-    await addEq.click();
+    // Wait for live lint to attach the MISSING_TERMINATOR span fix, then apply
+    // via the editor event (Console quick-fix row was removed with WorkbenchConsole).
+    await expect(page.getByTestId('tac-editor')).toHaveAttribute(
+      'data-issue-span-count',
+      '1',
+      { timeout: 5000 },
+    );
+    await applyTacSpanFix(page, 'add_terminator');
 
     await expect
       .poll(

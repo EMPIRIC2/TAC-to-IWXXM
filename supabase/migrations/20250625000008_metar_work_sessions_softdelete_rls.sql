@@ -1,5 +1,4 @@
--- F5 fix: allow owner soft-delete/restore of METAR work sessions.
--- BUG-2026-06-25-work-session-soft-delete-rls-42501
+-- Allow owner soft-delete and restore of METAR work sessions.
 --
 -- PostgreSQL enforces a table's SELECT policy USING expression as an implicit
 -- WITH CHECK on UPDATE. The original SELECT policy required `deleted_at IS NULL`,

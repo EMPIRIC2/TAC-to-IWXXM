@@ -10,14 +10,14 @@ from typing import Any
 
 try:
     from ..services.openaip_service import OpenAIPService
-except ImportError:
+except ImportError:  # pragma: no cover - flat-path import when run outside the src package
     from services.openaip_service import OpenAIPService
 
 from .airport_record_builder import AirportRecordBuilder
 
 try:
     from ..schemas.airport import get_airport_validator
-except ImportError:
+except ImportError:  # pragma: no cover - flat-path import when run outside the src package
     from schemas.airport import get_airport_validator
 
 logger = logging.getLogger(__name__)

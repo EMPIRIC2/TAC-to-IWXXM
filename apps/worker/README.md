@@ -23,11 +23,11 @@ Tests: `make test-unit-worker`
 
 ## Deploy
 
-Worker deploy is `deploy/doks/` (Docker context repo root). The Render blueprint is removed.
+Worker deploy is `config/deploy/doks/` (Docker context repo root). The Render blueprint is removed.
 Required secrets: `DATABASE_URL`, `INGEST_POLLER_URL`. Product schema from
 `apps/backend` Alembic (`make db-migrate` / CI `alembic upgrade head`).
 
-DOKS: `metar-worker` (see [deploy/doks/README-worker-hardening.md](../../deploy/doks/README-worker-hardening.md)).
+DOKS: `metar-worker` (see [config/deploy/doks/README-worker-hardening.md](../../config/deploy/doks/README-worker-hardening.md)).
 
 **INGEST_POLLER_URL (EV-033):** must be `https://` (not `REPLACE_ME_*`). Non-prod fixture:
 

@@ -14,13 +14,15 @@ import {
 } from '/utils/resultCard';
 import { Button } from './ui/button';
 
-/** Operator-facing expand control label (collapsed → grow preview). */
+/** Operator-facing expand control label (drawer fill → grow taller). */
 export const EXPAND_PREVIEW_LABEL = 'Expand preview';
-/** Operator-facing expand control label (expanded → restore squat clamp). */
+/** Operator-facing expand control label (taller → restore drawer fill). */
 export const COLLAPSE_PREVIEW_LABEL = 'Collapse preview';
 
-const COMPACT_HEIGHT_CLASS = 'max-h-80';
-const EXPANDED_HEIGHT_CLASS = 'max-h-[min(70dvh,40rem)]';
+/** Default: fill Results drawer body (UX-2026-11-10-recent-work-rail-results-fill). */
+const FILL_HEIGHT_CLASS = 'h-full min-h-0';
+/** Optional: grow past the drawer fill height. */
+const EXPANDED_HEIGHT_CLASS = 'max-h-[min(70dvh,40rem)] min-h-full';
 
 /**
  * Type `IwxxmPreviewStatus`.
@@ -105,7 +107,7 @@ export function IwxxmPreviewPane({
     ),
   );
   const lines = pretty ? pretty.split('\n') : [];
-  const heightClass = expanded ? EXPANDED_HEIGHT_CLASS : COMPACT_HEIGHT_CLASS;
+  const heightClass = expanded ? EXPANDED_HEIGHT_CLASS : FILL_HEIGHT_CLASS;
   const expandLabel = expanded ? COLLAPSE_PREVIEW_LABEL : EXPAND_PREVIEW_LABEL;
 
   return (

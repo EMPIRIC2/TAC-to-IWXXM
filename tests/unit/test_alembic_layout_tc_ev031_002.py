@@ -1,4 +1,4 @@
-"""T2.1 / TC-EV031-002 - Alembic layout under apps/backend (F30 / ADR-033).
+"""Alembic layout under apps/backend (structural checks).
 
 Structural checks always run. Live empty→head + second upgrade idempotency lives in
 ``tests/integration/test_alembic_upgrade_idempotent.py``.

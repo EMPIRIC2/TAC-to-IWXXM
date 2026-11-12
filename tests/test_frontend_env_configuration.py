@@ -13,7 +13,7 @@ from pathlib import Path
 import pytest
 
 ROOT = Path(__file__).resolve().parent.parent
-CONFIG_DIR = ROOT / "config"
+CONFIG_DIR = ROOT / "config" / "deploy" / "profiles"
 FRONTEND_DIR = ROOT / "apps" / "frontend"
 
 
@@ -23,7 +23,7 @@ def _load_json(path: Path) -> dict[str, object]:
 
 
 class TestRuntimeConfigProfiles:
-    """Committed config/*.json profiles satisfy env-contract.md."""
+    """Committed config/deploy/profiles/*.json profiles satisfy env-contract.md."""
 
     @pytest.mark.parametrize("profile", ["local", "e2e", "prod"])
     def test_profile_has_required_keys(self, profile: str) -> None:
@@ -79,7 +79,7 @@ class TestFrontendEnvExamples:
         assert "VITE_BACKEND_URL" not in content
 
     def test_root_env_example_documents_canonical_supabase_keys(self) -> None:
-        example = ROOT / ".env.example"
+        example = ROOT / "config/env.example"
         assert example.is_file()
         content = example.read_text(encoding="utf-8")
         assert "SUPABASE_PUBLISHABLE_KEY=" in content

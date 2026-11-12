@@ -101,6 +101,10 @@ dependencies = [
 ]
 [project.optional-dependencies]
 dev = ["ruff==0.1.0", "pytest>=8"]
+[dependency-groups]
+dev = ["httpx>=0.28", "ws-pkg", "ok==1.2.3"]
+[tool.uv.sources]
+ws-pkg = { workspace = true }
 """,
         encoding="utf-8",
     )
@@ -111,10 +115,14 @@ dev = ["ruff==0.1.0", "pytest>=8"]
     assert "bad" in joined
     assert "bare" in joined
     assert "pytest" in joined
+    assert "httpx" in joined
+    assert "dependency-groups.dev" in joined
     assert "good" not in joined
     assert "ruff" not in joined
     assert "marked" not in joined
     assert "allowedpkg" not in joined
+    assert "ws-pkg" not in joined
+    assert "ok" not in joined
 
     # Hit == exact continue inside PY_RANGE branch (normally unreachable)
     monkeypatch.setattr(pins, "PY_RANGE_RE", re.compile(r"=="))
@@ -123,6 +131,14 @@ dev = ["ruff==0.1.0", "pytest>=8"]
     py3.write_text('[project]\ndependencies = ["z==9.9.9"]\n', encoding="utf-8")
     pins.check_pyproject(py3, set(), violations3)
     assert violations3 == []
+
+
+@pytest.mark.unit
+def test_workspace_source_names(pins: Any) -> None:
+    assert pins.workspace_source_names(
+        {"tool": {"uv": {"sources": {"a": {"workspace": True}, "b": {"path": "."}}}}}
+    ) == {"a"}
+    assert pins.workspace_source_names({}) == set()
 
 
 @pytest.mark.unit

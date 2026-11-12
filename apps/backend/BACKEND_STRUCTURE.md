@@ -49,7 +49,6 @@ backend/
 │   └── validate_generated_xml_schematron.py
 │
 ├── schemas/           # Schema files (IWXXM, etc.)
-├── test-data/         # Test data files
 ├── test-reports/      # Generated test reports
 │
 ├── .archive/          # Archived/deprecated files
@@ -126,9 +125,10 @@ See [scripts/README.md](scripts/README.md) for details.
 
 IWXXM and data schemas for validation and code generation.
 
-### test-data/
+### Test fixtures (monorepo)
 
-Sample METAR strings, XML documents, and other test data files.
+Sample METAR strings, XML documents, and other test data files live at
+repo-root `data/_test-data/` (not under `apps/backend/`).
 
 ### .archive/
 

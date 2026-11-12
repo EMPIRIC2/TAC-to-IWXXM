@@ -1,6 +1,6 @@
 BEGIN;
 
--- S003: Remaining METAR advisor fixes (idempotent).
+-- Remaining METAR advisor fixes (idempotent).
 
 ALTER FUNCTION public.is_admin() SET search_path = public;
 ALTER FUNCTION public.lookup_email_by_username(text) SET search_path = public;

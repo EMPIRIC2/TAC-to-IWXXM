@@ -278,14 +278,14 @@ def test_convert_zip_returns_application_zip(client: TestClient, monkeypatch: py
 # --- Auth routes restored (F31) - pydantic, not msgspec -----------------------------
 
 
-def test_auth_login_route_present() -> None:
-    """F31 / ADR-033: /auth/login is mounted (pydantic Auth path)."""
-    route = _route_for("/auth/login")
-    assert route is not None
+def test_auth_login_route_absent() -> None:
+    """F31 FE-direct: /auth/login is not mounted on the API."""
+    paths = {route.path for route in _iter_api_routes(api_module.app.routes) if "POST" in (route.methods or set())}
+    assert "/auth/login" not in paths
 
 
-def test_auth_login_does_not_use_msgspec(client: TestClient, monkeypatch: pytest.MonkeyPatch) -> None:
-    """POST /auth/login stays pydantic; msgspec helper must not encode the response."""
+def test_auth_login_404_does_not_use_msgspec(client: TestClient, monkeypatch: pytest.MonkeyPatch) -> None:
+    """Missing /auth/login must not touch msgspec_json_response."""
     from src import msgspec_http
 
     calls: list[Any] = []
@@ -303,7 +303,7 @@ def test_auth_login_does_not_use_msgspec(client: TestClient, monkeypatch: pytest
         "/auth/login",
         json={"email": "nobody@example.com", "password": "not-a-real-password"},
     )
-    assert response.status_code != 404
+    assert response.status_code == 404
     assert calls == [], f"auth path must not use msgspec_json_response, got {len(calls)} calls"
 
 

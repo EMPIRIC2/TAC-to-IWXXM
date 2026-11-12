@@ -1,7 +1,12 @@
 import { APIRequestContext, expect, Page } from '@playwright/test';
 import { fillManualTac } from './playwright-tac-editor';
 
-export { fillManualTac } from './playwright-tac-editor';
+export { applyTacSpanFix, fillManualTac } from './playwright-tac-editor';
+export {
+  E2E_SUPABASE_ANON_KEY,
+  E2E_SUPABASE_URL,
+  loginAccessTokenViaSupabase,
+} from './playwright-supabase-auth';
 
 /**
  * E2E helpers for the public app (F21 Amended / F22 / F31 / ADR-031).
@@ -23,11 +28,6 @@ export const E2E_USER_PASSWORD =
   process.env.PLAYWRIGHT_ADMIN_PASSWORD ??
   process.env.ADMIN_PASSWORD ??
   '';
-
-/** @deprecated Use E2E_USER_EMAIL */
-export const ADMIN_EMAIL = E2E_USER_EMAIL;
-/** @deprecated Use E2E_USER_PASSWORD */
-export const ADMIN_PASSWORD = E2E_USER_PASSWORD;
 
 /** True when targeting provisional DOKS (Host-header / resolver-rules). */
 export function isDoksProvisionalPlaywright(): boolean {
@@ -206,19 +206,6 @@ export async function loginAsE2EUser(page: Page): Promise<void> {
   await expect(guestNotice).toHaveCount(0);
 }
 
-/** Alias for {@link loginAsE2EUser}. */
-export async function loginAsAdmin(page: Page): Promise<void> {
-  await loginAsE2EUser(page);
-}
-
-/** @deprecated Admin dashboard removed — assert converter heading only. */
-export async function openConverterFromAdmin(page: Page): Promise<void> {
-  // targets the TAC to IWXXM heading
-  await expect(page.getByRole('heading', { name: /^TAC to IWXXM$/ })).toBeVisible({
-    timeout: 10000,
-  });
-}
-
 /** @deprecated F21 — use {@link openPublicConverter}. */
 export async function loginAndOpenConverter(page: Page): Promise<void> {
   await openPublicConverter(page);
@@ -376,6 +363,10 @@ export async function openConvertDownloadsTab(
       timeout: timeoutMs,
     })
     .toBeGreaterThan(0);
+  // Close Settings if left open — the right-aligned panel can intercept tab clicks.
+  await page.locator('[data-testid="convert-settings"]').evaluate((el) => {
+    el.removeAttribute('open');
+  });
   await page.getByTestId('convert-results-tab-downloads').click();
   await expect(
     page.getByRole('region', { name: 'Conversion results', exact: true }),
@@ -395,7 +386,10 @@ export async function openConvertDecoderTab(page: Page): Promise<void> {
 }
 
 /**
- * Open Results → Console (workbench console + conversion error log).
+ * Open Results → Console (status strip + conversion error log when present).
+ *
+ * Post-F37 / calm Convert: WorkbenchConsole was removed from this tab; the shell
+ * is `convert-console-panel` (LiveConvertStatusStrip + optional ErrorLogPanel).
  *
  * @param page - Playwright page hosting the converter.
  */
@@ -403,7 +397,7 @@ export async function openConvertConsoleTab(page: Page): Promise<void> {
   await leaveCalmEmptyHero(page);
   await ensureConvertResultsDrawerOpen(page);
   await page.getByTestId('convert-results-tab-console').click();
-  await expect(page.getByTestId('workbench-console')).toBeVisible();
+  await expect(page.getByTestId('convert-console-panel')).toBeVisible();
 }
 
 /**

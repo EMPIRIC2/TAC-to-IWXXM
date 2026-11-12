@@ -12,12 +12,12 @@ from tests.scripts.conftest import REPO_ROOT, load_script
 SPEC = REPO_ROOT / "apps" / "frontend" / "openapi" / "openapi.json"
 INTERACTIONS = REPO_ROOT / "tests" / "contracts" / "openapi-interactions.json"
 
-# 2026-10-18 scan of apps/frontend/openapi/openapi.json with an empty pact:
-# 88 operations, 165 status codes, 41 required request fields, 330 response fields.
-SCAN_OPERATIONS = 88
-SCAN_STATUSES = 165
-SCAN_REQUEST_FIELDS = 41
-SCAN_RESPONSE_FIELDS = 330
+# 2026-11-12 scan after Code names GET /code-name-dictionary:
+# 84 operations, 157 status codes, 36 required request fields, 326 response fields.
+SCAN_OPERATIONS = 84
+SCAN_STATUSES = 157
+SCAN_REQUEST_FIELDS = 36
+SCAN_RESPONSE_FIELDS = 326
 
 
 @pytest.fixture

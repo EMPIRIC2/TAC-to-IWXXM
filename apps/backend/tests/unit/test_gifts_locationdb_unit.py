@@ -115,3 +115,14 @@ class TestGiftsLocationDBAdapterValidate:
         adapter.record_builder.get_gifts_format.return_value = None
 
         assert adapter.validate_airport("XXXX") is False
+
+
+class TestGiftsLocationDBAdapterCachedAirports:
+    def test_get_cached_airports_delegates_to_openaip_service(self):
+        mock_service = MagicMock()
+        mock_service.get_all_airports.return_value = {"KJFK": {"name": "JFK"}}
+
+        adapter = _make_adapter(openaip_service=mock_service)
+
+        assert adapter.get_cached_airports() == {"KJFK": {"name": "JFK"}}
+        mock_service.get_all_airports.assert_called_once_with()

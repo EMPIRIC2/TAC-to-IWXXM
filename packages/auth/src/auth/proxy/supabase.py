@@ -1,0 +1,374 @@
+"""Thin Supabase Auth HTTP proxy for login/logout/refresh (no product DB)."""
+
+from __future__ import annotations
+
+import json
+import os
+from typing import Any, cast
+
+import httpx
+
+from auth.models.errors import AuthProxyError
+
+__all__ = ["AuthProxyError", "SupabaseAuthProxy"]
+
+_OPERATOR_EMAIL_NOT_CONFIRMED = (
+    "Please confirm your email before signing in. "
+    "Check your inbox for the confirmation link."
+)
+
+
+class SupabaseAuthProxy:
+    """
+    Password-grant Auth API client (publishable key only).
+
+    Attributes
+    ----------
+    supabase_url : str or None
+        Supabase project URL.
+    publishable_key : str or None
+        Supabase publishable key.
+    """
+
+    def __init__(
+        self,
+        *,
+        supabase_url: str | None = None,
+        publishable_key: str | None = None,
+        client: httpx.Client | None = None,
+    ) -> None:
+        # Explicit ``""`` means unset (tests); ``None`` falls back to env / Vite shims.
+        """
+        Internal helper ``__init__``.
+
+        Parameters
+        ----------
+        supabase_url : str or None, optional
+            Supabase project URL. By default ``None``.
+        publishable_key : str or None, optional
+            Supabase publishable key. By default ``None``.
+        client : httpx.Client or None, optional
+            HTTP client. By default ``None``.
+        """
+        if supabase_url is not None:
+            self.supabase_url = supabase_url.rstrip("/")
+        else:
+            self.supabase_url = (
+                os.getenv("SUPABASE_URL")
+                or os.getenv("FRONTEND_VITE_SUPABASE_URL")
+                or os.getenv("VITE_SUPABASE_URL")
+                or ""
+            ).rstrip("/")
+        if publishable_key is not None:
+            self.publishable_key = publishable_key
+        else:
+            self.publishable_key = (
+                os.getenv("SUPABASE_PUBLISHABLE_KEY")
+                or os.getenv("SUPABASE_ANON_KEY")
+                or os.getenv("FRONTEND_VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY")
+                or os.getenv("VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY")
+                or ""
+            )
+        self._client = client
+        self._owns_client = client is None
+
+    def _http(self) -> httpx.Client:
+        """
+        Internal helper ``_http``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
+        if self._client is None:
+            self._client = httpx.Client(timeout=30.0)
+        return self._client
+
+    def close(self) -> None:
+        """
+        Close the owned HTTP client.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (close)
+        2
+        """
+        if self._owns_client and self._client is not None:
+            self._client.close()
+            self._client = None
+
+    def _headers(self) -> dict[str, str]:
+        """
+        Internal helper ``_headers``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
+        if not self.supabase_url or not self.publishable_key:
+            raise AuthProxyError(
+                "SUPABASE_URL and SUPABASE_PUBLISHABLE_KEY required for Auth",
+                status_code=503,
+            )
+        return {
+            "apikey": self.publishable_key,
+            "Authorization": f"Bearer {self.publishable_key}",
+            "Content-Type": "application/json",
+        }
+
+    def sign_in(self, email: str, password: str) -> dict[str, Any]:
+        """
+        Authenticate via Supabase password grant.
+
+        Parameters
+        ----------
+        email : str
+            User email.
+        password : str
+            User password.
+
+        Returns
+        -------
+        dict[str, Any]
+            Normalized ``user`` + ``session`` payload.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (sign_in)
+        2
+        """
+        url = f"{self.supabase_url}/auth/v1/token?grant_type=password"
+        response = self._http().post(
+            url,
+            headers=self._headers(),
+            json={"email": email, "password": password},
+        )
+        if response.status_code >= 400:
+            raise AuthProxyError(
+                _login_error_message(response.text),
+                status_code=401 if response.status_code in {400, 401} else 502,
+            )
+        data = response.json()
+        return _normalize_session_payload(data)
+
+    def verify_email(self, token_hash: str, type_: str = "email") -> dict[str, Any]:
+        """
+        Confirm an email (or recovery) token hash via GoTrue verify.
+
+        Parameters
+        ----------
+        token_hash : str
+            ``token_hash`` from the Auth email link query string.
+        type_ : str, optional
+            GoTrue verify type (``email``, ``signup``, ``recovery``, …). By default ``'email'``.
+
+        Returns
+        -------
+        dict[str, Any]
+            Normalized ``user`` + ``session`` payload.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (verify_email)
+        2
+        """
+        url = f"{self.supabase_url}/auth/v1/verify"
+        response = self._http().post(
+            url,
+            headers=self._headers(),
+            json={"token_hash": token_hash, "type": type_},
+        )
+        if response.status_code >= 400:
+            detail = response.text
+            raise AuthProxyError(
+                f"email confirmation failed: {detail}",
+                status_code=400 if response.status_code < 500 else 502,
+            )
+        data = cast(dict[str, Any], response.json())
+        return _normalize_session_payload(data)
+
+    def sign_up(self, email: str, password: str) -> dict[str, Any]:
+        """
+        Register via Supabase GoTrue signup.
+
+        Parameters
+        ----------
+        email : str
+            User email.
+        password : str
+            User password.
+
+        Returns
+        -------
+        dict[str, Any]
+            Normalized ``user`` + optional ``session`` (null when email confirm
+            is required).
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (sign_up)
+        2
+        """
+        url = f"{self.supabase_url}/auth/v1/signup"
+        response = self._http().post(
+            url,
+            headers=self._headers(),
+            json={"email": email, "password": password},
+        )
+        if response.status_code >= 400:
+            detail = response.text
+            raise AuthProxyError(
+                f"registration failed: {detail}",
+                status_code=400 if response.status_code < 500 else 502,
+            )
+        data = cast(dict[str, Any], response.json())
+        return _normalize_session_payload(data)
+
+    def sign_out(
+        self, access_token: str, *, scope: str | None = None
+    ) -> dict[str, str]:
+        """
+        Revoke the session via GoTrue ``POST /auth/v1/logout``.
+
+        Parameters
+        ----------
+        access_token : str
+            User access token (Bearer).
+        scope : str or None, optional
+            Optional GoTrue logout scope: ``global``, ``local``, or ``others``. By default ``None``.
+
+        Returns
+        -------
+        dict[str, str]
+            Success message payload for the API response.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (sign_out)
+        2
+        """
+        url = f"{self.supabase_url}/auth/v1/logout"
+        params: dict[str, str] = {}
+        if scope:
+            params["scope"] = scope
+        headers = self._headers()
+        headers["Authorization"] = f"Bearer {access_token}"
+        response = self._http().post(url, headers=headers, params=params or None)
+        # Idempotent: already-invalid sessions still count as signed out for the UI.
+        if response.status_code in {401, 403, 404}:
+            return {"message": "Successfully signed out"}
+        if response.status_code >= 400:
+            raise AuthProxyError(
+                f"logout failed: {response.text}",
+                status_code=502 if response.status_code >= 500 else 400,
+            )
+        return {"message": "Successfully signed out"}
+
+    def get_user(self, access_token: str) -> dict[str, Any]:
+        """
+        Fetch the Auth user for ``access_token``.
+
+        Parameters
+        ----------
+        access_token : str
+            Bearer access token (already JWKS-verified by the router).
+
+        Returns
+        -------
+        dict[str, Any]
+            User dict with ``id`` / ``email`` / ``metadata``.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (get_user)
+        2
+        """
+        url = f"{self.supabase_url}/auth/v1/user"
+        headers = self._headers()
+        headers["Authorization"] = f"Bearer {access_token}"
+        response = self._http().get(url, headers=headers)
+        if response.status_code >= 400:
+            raise AuthProxyError("user lookup failed", status_code=401)
+        data = cast(dict[str, Any], response.json())
+        return {
+            "id": data.get("id") or "",
+            "email": data.get("email") or "",
+            "metadata": data.get("user_metadata") or {},
+        }
+
+
+def _login_error_message(raw: str) -> str:
+    """
+    Internal helper ``_login_error_message``.
+
+    Parameters
+    ----------
+    raw : object
+        Argument ``raw``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
+    try:
+        decoded: object = json.loads(raw)
+    except json.JSONDecodeError:
+        decoded = None
+    if isinstance(decoded, dict):
+        payload = cast(dict[str, Any], decoded)
+        error_code = str(payload.get("error_code") or "")
+        if error_code == "email_not_confirmed":
+            return _OPERATOR_EMAIL_NOT_CONFIRMED
+    if "email_not_confirmed" in raw:
+        return _OPERATOR_EMAIL_NOT_CONFIRMED
+    return f"login failed: {raw}"
+
+
+def _normalize_session_payload(data: dict[str, Any]) -> dict[str, Any]:
+    """
+    Internal helper ``_normalize_session_payload``.
+
+    Parameters
+    ----------
+    data : object
+        Argument ``data``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
+    user_obj = data.get("user")
+    if isinstance(user_obj, dict):
+        user_raw: dict[str, Any] = cast(dict[str, Any], user_obj)
+    elif data.get("id") or data.get("email"):
+        user_raw = data
+    else:
+        user_raw = {}
+    access_token = str(data.get("access_token") or "")
+    refresh_token = str(data.get("refresh_token") or "")
+    expires_at = int(data.get("expires_at") or 0)
+    nested_obj = data.get("session")
+    if not access_token and isinstance(nested_obj, dict):
+        nested = cast(dict[str, Any], nested_obj)
+        access_token = str(nested.get("access_token") or "")
+        refresh_token = str(nested.get("refresh_token") or refresh_token)
+        expires_at = int(nested.get("expires_at") or expires_at)
+    session: dict[str, Any] | None = None
+    if access_token:
+        session = {
+            "access_token": access_token,
+            "refresh_token": refresh_token,
+            "expires_at": expires_at,
+        }
+    return {
+        "user": {
+            "id": user_raw.get("id") or "",
+            "email": user_raw.get("email") or "",
+            "metadata": user_raw.get("user_metadata") or {},
+        },
+        "session": session,
+    }

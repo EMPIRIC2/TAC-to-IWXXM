@@ -1,5 +1,5 @@
 /**
- * Decode visuals tab: station map and wind cue (F7 / F9).
+ * Full-page Decode visuals: live TAC map, station search, and wind cue (F37 / F9).
  */
 
 import { useSyncExternalStore } from 'react';
@@ -21,17 +21,24 @@ import {
   subscribeStationDraft,
   writeStationDraft,
 } from '@/utils/decodeVisualsStore';
+import type { LivePlace } from '@/utils/liveMap';
 import { shellFrameClass, useLiveConvertLayout } from '@/utils/liveConvertLayout';
 
 const STATION_ID = /^[A-Z][A-Z0-9]{3}$/;
 
+interface DecodeVisualsPageProps {
+  /** Send a map report into Convert (parity with Results → Map). */
+  onOpenPlace?: (place: LivePlace) => void;
+}
+
 /**
- * Map and wind cue for the station last seen on Convert, or one typed here.
+ * Full-page live map with station search and wind cue.
  *
+ * @param props.onOpenPlace - Optional Send-to-converter handoff
  * @example
  * const _ = true;
  */
-export function DecodeVisualsPage() {
+export function DecodeVisualsPage({ onOpenPlace }: DecodeVisualsPageProps = {}) {
   const published = useSyncExternalStore(
     subscribeDecodeVisuals,
     readDecodeVisuals,
@@ -71,7 +78,7 @@ export function DecodeVisualsPage() {
       >
         {DECODE_VISUALS_EMPTY}
       </p>
-      <LiveWorldMap focusStation={complete ? station : ''} />
+      <LiveWorldMap focusStation={complete ? station : ''} onOpenPlace={onOpenPlace} />
       {complete ? (
         <>
           <p

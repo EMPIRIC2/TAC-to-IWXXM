@@ -1,0 +1,13 @@
+node_modules/
+dist/
+coverage/
+vendor/
+playwright-report/
+pnpm-lock.yaml
+uv.lock
+*.xml
+*.xsd
+*.xsl
+# OpenAPI generated artifacts — do not reformat (exact drift checks)
+apps/frontend/openapi/
+apps/frontend/src/generated/openapi.d.ts

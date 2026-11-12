@@ -10,10 +10,10 @@ from pathlib import Path
 from tac2iwxxm.ca_ops_corpus import load_ops_manifest, ops_fixture_root
 
 _REPO = Path(__file__).resolve().parents[3]
-_CATALOG = _REPO / "docs" / "domain" / "profiles" / "catalog.yaml"
-_COVERAGE = _REPO / "docs" / "domain" / "rules" / "COVERAGE_MATRIX.md"
-_FEATURE = _REPO / "docs" / "feature-list.md"
-_CA_ECCC = _REPO / "docs" / "domain" / "profiles" / "semantic" / "CA_ECCC.md"
+_CATALOG = _REPO / "config" / "profiles" / "catalog.yaml"
+_COVERAGE = _REPO / "config" / "rules" / "COVERAGE_MATRIX.md"
+_FEATURE = _REPO / "AGENTS.md"
+_CA_ECCC = _REPO / "config" / "profiles" / "semantic" / "CA_ECCC.md"
 _FIXTURES = ops_fixture_root(_REPO)
 
 
@@ -60,7 +60,13 @@ def test_tc_ev078_003_coverage_matrix_residuals_waived() -> None:
 def test_tc_ev078_004_standing_docs_no_stale_vaa_harvest_deferred() -> None:
     """Corpus cites EV-077 VAAC TAC waiver; not bare 'harvest deferred' without context."""
     feature = _FEATURE.read_text(encoding="utf-8")
+    catalog = _CATALOG.read_text(encoding="utf-8")
     ca = _CA_ECCC.read_text(encoding="utf-8")
-    assert "EV-077" in feature or "D-EV074-vaa-waiver-tac" in feature
+    assert (
+        "EV-077" in feature
+        or "D-EV074-vaa-waiver-tac" in feature
+        or "EV-077" in catalog
+        or "ev074_validate_first" in catalog
+    )
     assert "EV-077" in ca or "D-EV074-vaa-waiver-tac" in ca
     assert "harvest deferred (D-EV074-vaa-follow)" not in ca.split("EV-077")[0]

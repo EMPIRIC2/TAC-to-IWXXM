@@ -41,7 +41,7 @@ case "$cmd" in
   start)
     ensure_running
     echo
-    echo "Local stack ready. Point config/local.json supabase.url to http://127.0.0.1:54321"
+    echo "Local stack ready. Point config/deploy/profiles/local.json supabase.url to http://127.0.0.1:54321"
     echo "Run 'supabase status' for publishable and secret keys for .env"
     ;;
   reset)

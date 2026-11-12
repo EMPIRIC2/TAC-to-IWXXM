@@ -1,22 +1,30 @@
 /**
- * Primary operator shell navigation — Convert, History, and Rule catalogs.
+ * Primary operator shell navigation — Convert, Decode visuals, History, Rule catalogs, Code names.
  *
  * Peer tabs for the operator shell; not a FileConverter panel.
  */
 
-import { shellFrameClass, useLiveConvertLayout } from '/utils/liveConvertLayout';
+import { DECODE_VISUALS_TITLE } from '@/utils/decodeVisualsCopy';
+import { shellFrameClass, useLiveConvertLayout } from '@/utils/liveConvertLayout';
 
 /**
  * Type `ShellPrimaryView`.
  * @example
  * const _ = true;
  */
-export type ShellPrimaryView = 'converter' | 'history' | 'catalog';
+export type ShellPrimaryView =
+  | 'converter'
+  | 'visuals'
+  | 'history'
+  | 'catalog'
+  | 'dictionary';
 
 export const SHELL_NAV_LABELS = {
   converter: 'Convert',
+  visuals: DECODE_VISUALS_TITLE,
   history: 'History',
   catalog: 'Rule catalogs',
+  dictionary: 'Code names',
 } as const;
 
 interface AppShellNavProps {
@@ -26,10 +34,16 @@ interface AppShellNavProps {
   onNavigate: (view: ShellPrimaryView) => void;
 }
 
-const TABS: ShellPrimaryView[] = ['converter', 'history', 'catalog'];
+const TABS: ShellPrimaryView[] = [
+  'converter',
+  'visuals',
+  'history',
+  'catalog',
+  'dictionary',
+];
 
 /**
- * Render Convert, History, and Rule catalogs.
+ * Render Convert, Decode visuals, History, Rule catalogs, and Code names.
  *
  * @param props.activeView - Currently selected shell view
  * @param props.onNavigate - View change handler

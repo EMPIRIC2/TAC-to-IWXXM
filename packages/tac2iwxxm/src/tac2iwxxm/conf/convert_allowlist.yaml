@@ -1,5 +1,5 @@
 # Runtime convert allowlist keyed by emit key.
-# Keep in step with docs/domain/profiles/catalog.yaml products for these keys.
+# Keep in step with config/profiles/catalog.yaml products for these keys.
 # annex3 is not listed: every supported product stays allowed.
 schema_version: 1
 profiles:

@@ -11,6 +11,7 @@ from pathlib import Path
 
 import httpx
 import pytest
+from tests.live_fixtures import login_with_backoff
 
 FIXTURE = (
     Path(__file__).resolve().parents[1]
@@ -24,14 +25,6 @@ pytestmark = [pytest.mark.live, pytest.mark.live_api]
 
 def _live_api_base() -> str | None:
     return os.environ.get("LIVE_API_URL") or os.environ.get("STAGING_API_URL")
-
-
-def _extract_token(payload: dict) -> str | None:
-    return (
-        payload.get("access_token")
-        or payload.get("token")
-        or (payload.get("session") or {}).get("access_token")
-    )
 
 
 @pytest.fixture(scope="module")
@@ -48,16 +41,7 @@ def live_token(live_api: str) -> str | None:
     password = os.environ.get("ADMIN_PASSWORD")
     if not email or not password:
         return None
-    with httpx.Client(timeout=30.0) as client:
-        resp = client.post(
-            f"{live_api}/auth/login", json={"email": email, "password": password}
-        )
-        if resp.status_code != 200:
-            pytest.skip(f"live login failed: {resp.status_code}")
-        token = _extract_token(resp.json())
-        if not token:
-            pytest.skip("live login response missing access_token")
-        return token
+    return login_with_backoff(live_api, email, password)
 
 
 def test_tc_live_f6_030_convert_bulletin(live_api: str, live_token: str | None) -> None:

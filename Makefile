@@ -17,7 +17,7 @@ PY_LINT := apps/backend/src apps/backend/tests \
 	packages/workflows/src packages/workflows/tests \
 	tests
 
-.PHONY: install test test-unit vendor-sync export-iwxxm-versions openapi-refresh tip-diff-iwxxm \
+.PHONY: install test test-unit vendor-sync export-iwxxm-versions openapi-refresh sbom sbom-check tip-diff-iwxxm \
 	pypi-calver-bump \
 	iwxxm-us-compat-smoke codelist-uri-drift \
 	test-unit-workspace test-unit-workspace-py test-unit-shared-py test-unit-shared-js test-unit-workspace-js \
@@ -69,6 +69,8 @@ PY_LINT := apps/backend/src apps/backend/tests \
 	coverage coverage-backend coverage-frontend coverage-shared \
 	coverage-dissemination coverage-modules coverage-all ci acci badge-audit audit-frontend \
 	validate-fast validate-yaml secrets-check security-scan config-guard validate-ci env-check \
+	check check-fast check-import-linter check-deptry check-depcruise check-knip \
+	check-oasdiff check-coverage-audit \
 	install-hooks pre-commit-run pre-push-run ci-prepush \
 	catalog-regen catalog-check \
 	membership-regen membership-check \
@@ -117,15 +119,15 @@ catalog-regen:
 	$(UV) run python scripts/tac-validate/regen_issue_catalog.py
 
 catalog-check: catalog-regen
-	@git diff --quiet -- docs/domain/rules/ISSUE_CATALOG.md docs/domain/rules/ISSUE_CATALOG.json \
+	@git diff --quiet -- config/rules/ISSUE_CATALOG.md config/rules/ISSUE_CATALOG.json \
 		packages/tac-validate/src/tac_validate/data/catalog_attribution.json \
-		|| (echo "ISSUE_CATALOG drift — run make catalog-regen and commit"; git diff --stat -- docs/domain/rules/ISSUE_CATALOG.md docs/domain/rules/ISSUE_CATALOG.json packages/tac-validate/src/tac_validate/data/catalog_attribution.json; exit 1)
+		|| (echo "ISSUE_CATALOG drift — run make catalog-regen and commit"; git diff --stat -- config/rules/ISSUE_CATALOG.md config/rules/ISSUE_CATALOG.json packages/tac-validate/src/tac_validate/data/catalog_attribution.json; exit 1)
 
 # S059 / EV-050 / AC1 — offline WMO membership harvest (no live codes.wmo.int HTML)
 # Prettier after dump so short arrays match workspace format-check (json.dumps expands them).
 membership-regen:
 	$(UV) run python scripts/iwxxm/harvest_wmo_membership.py
-	pnpm exec prettier --write packages/tac-validate/src/tac_validate/data/wmo_membership.json
+	pnpm exec prettier --config config/tooling/prettier.json --ignore-path .gitignore --write packages/tac-validate/src/tac_validate/data/wmo_membership.json
 
 # EV-054 / F7.q — regenerate precomputed Quality metrics corpus artifact
 generate-quality-metrics:
@@ -254,7 +256,7 @@ lint-fix-auth:
 	$(UV) run ruff check --fix --force-exclude packages/auth/src
 
 lint-fix-frontend:
-	$(PNPM) --filter @metar/frontend exec eslint src --fix
+	$(PNPM) exec eslint apps/frontend/src --fix
 
 # --- Unit tests ---
 
@@ -288,11 +290,12 @@ test-unit-backend:
 # Knobs: SCHEMATHESIS_MAX_EXAMPLES (≤25), Hypothesis seed via --hypothesis-seed.
 # Budget ceiling locked — do not raise max-examples above 25 without AskQuestion.
 test-schemathesis:
+	@mkdir -p .quality-reports
 	(cd apps/backend && SCHEMATHESIS_MAX_EXAMPLES=$${SCHEMATHESIS_MAX_EXAMPLES:-25} \
 		$(UV) run pytest tests/contract/test_schemathesis_openapi.py \
 		-m schemathesis --override-ini addopts= \
 		--override-ini "filterwarnings=default" -v \
-		--tb=short)
+		--tb=short) 2>&1 | tee .quality-reports/schemathesis.txt
 
 # F34 / EV-059 / #874 — Mutation testing (TC-F34-003..005). Nightly/manual only.
 # Usage: make test-mutation-python TARGET=poc-shared-env
@@ -316,7 +319,7 @@ test-mutation: test-mutation-poc
 
 # F31 / EV-047 — auth package + per-file ≥95%.
 test-unit-auth:
-	$(UV) run pytest tests/unit/auth --cov=metar_auth \
+	$(UV) run pytest tests/unit/auth --cov=auth \
 		--cov-config=packages/auth/pyproject.toml --cov-branch \
 		--cov-report=json:packages/auth/coverage.json \
 		--cov-report=term-missing --cov-fail-under=100 -v
@@ -455,6 +458,13 @@ export-iwxxm-versions:
 openapi-refresh:
 	$(UV) run python scripts/openapi/export_openapi.py
 	$(PNPM) --filter @metar/frontend run openapi:generate
+
+# EV-repo-docs-cleanup — CycloneDX SBOM from uv export (replaces docs/dependency-inventory.md)
+sbom:
+	bash scripts/ci/generate_sbom.sh
+
+sbom-check:
+	bash scripts/ci/check_sbom_drift.sh
 
 # EV-1150 / ADR-043 — bump F12–F14 packages to CalVer (YYYY.MM.DD[.N][.devN])
 # Usage: make pypi-calver-bump ARGS='--all'
@@ -650,7 +660,7 @@ test-unit-worker:
 	fi
 
 # EV-080 / #1077 — scripts Python coverage (D-TP080-3). fail_under 100 + per-file.
-# Hyphenated dirs (tac-validate, test-data) are not importable subpackages — extra --cov=.
+# Hyphenated dirs under scripts/ (tac-validate, test-data) are not importable — extra --cov=.
 test-coverage-scripts:
 	@set -e; \
 	if ! find tests/scripts -type f \( -name 'test_*.py' -o -name '*_test.py' \) 2>/dev/null | grep -q .; then \
@@ -710,10 +720,10 @@ vendor-sync:
 	bash scripts/vendor/sync-iwxxm.sh
 
 dev:
-	bash ./start-dev-servers.sh
+	bash ./config/start-dev-servers.sh
 
 dev-kill:
-	bash ./start-dev-servers.sh --kill
+	bash ./config/start-dev-servers.sh --kill
 
 dev-servers: dev
 
@@ -901,10 +911,10 @@ test-integration:
 	if [ -n "$${VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY:-}" ] && [ -z "$${SUPABASE_PUBLISHABLE_KEY:-}" ]; then \
 		export SUPABASE_PUBLISHABLE_KEY="$$VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY"; \
 	fi; \
-	export VITE_SUPABASE_URL="$${VITE_SUPABASE_URL:-$$(python3 -c 'import json;print(json.load(open("config/local.json"))["supabase"]["url"])')}"; \
+	export VITE_SUPABASE_URL="$${VITE_SUPABASE_URL:-$$(python3 -c 'import json;print(json.load(open("config/deploy/profiles/local.json"))["supabase"]["url"])')}"; \
 	export VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY="$${VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY:-$$SUPABASE_PUBLISHABLE_KEY}"; \
-	export VITE_API_BASE_URL="$${VITE_API_BASE_URL:-$$(python3 -c 'import json;print(json.load(open("config/local.json"))["api"]["baseUrl"])')}"; \
-	export VITE_APP_URL="$${VITE_APP_URL:-$$(python3 -c 'import json;print(json.load(open("config/local.json"))["api"]["frontendUrl"])')}"; \
+	export VITE_API_BASE_URL="$${VITE_API_BASE_URL:-$$(python3 -c 'import json;print(json.load(open("config/deploy/profiles/local.json"))["api"]["baseUrl"])')}"; \
+	export VITE_APP_URL="$${VITE_APP_URL:-$$(python3 -c 'import json;print(json.load(open("config/deploy/profiles/local.json"))["api"]["frontendUrl"])')}"; \
 	missing=""; \
 	for var in $$required_vars; do \
 		if [ -z "$${!var}" ]; then \
@@ -957,6 +967,31 @@ overlay-preflight:
 	$(UV) run python scripts/overlays/preflight.py --all-examples
 
 validate-fast: format-check typecheck lint secrets-check validate-yaml catalog-check validation-catalog-check issue-registry-guard cursor-no-home-paths-guard pnpm-action-package-manager-guard overlay-preflight file-budget file-complexity
+
+# EV-quality-tooling-suite — Wave 1 local gates [Corpus: tech-spec] TR-Q05..Q07
+check-import-linter:
+	bash scripts/ci/run_import_linter.sh
+
+check-deptry:
+	bash scripts/ci/run_deptry_all.sh
+
+check-depcruise:
+	bash scripts/ci/run_depcruise.sh
+
+check-knip:
+	bash scripts/ci/run_knip.sh
+
+check-oasdiff:
+	bash scripts/ci/run_oasdiff.sh
+
+check-coverage-audit:
+	$(UV) run python scripts/ci/audit_coverage_denominator.py --omits-only
+
+# Fast Wave 1 subset for local loops (no full unit matrix).
+check-fast: check-import-linter check-deptry check-depcruise check-knip check-coverage-audit
+
+# Full local quality tooling gate (Wave 1 + oasdiff).
+check: check-fast check-oasdiff
 
 config-guard:
 	$(UV) run pytest tests/test_config_placeholders.py tests/smoke/test_h5_runtime_config.py -v
@@ -1018,7 +1053,7 @@ security-scan:
 	trap 'rm -f "$$tmp_req"' EXIT; \
 	$(UV) export --format requirements-txt --frozen --no-emit-workspace --all-groups > "$$tmp_req"; \
 	uvx pip-audit -r "$$tmp_req" --disable-pip \
-		$$(grep -v '^[[:space:]]*#' audit/pip-audit-ignore.txt | grep -v '^[[:space:]]*$$' | sed 's/^/--ignore-vuln /'); \
+		$$(grep -v '^[[:space:]]*#' scripts/ci/policy/pip-audit-ignore.txt | grep -v '^[[:space:]]*$$' | sed 's/^/--ignore-vuln /'); \
 	$(MAKE) secrets-check; \
 	$(MAKE) audit-frontend
 

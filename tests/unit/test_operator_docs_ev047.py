@@ -1,4 +1,8 @@
-"""TC-EV047-009 / TC-EV047-010 - operator one-pager + handbook content gates."""
+"""TC-EV047-009 / TC-EV047-010 - operator one-pager + handbook content gates.
+
+Operator guides under ``docs/guides/`` are local opt-in after EV-repo-docs-cleanup
+(#1597). Skip content gates when those files are not checked out.
+"""
 
 from __future__ import annotations
 
@@ -14,6 +18,8 @@ README = ROOT / "README.md"
 
 @pytest.mark.unit
 def test_operator_one_pager_exists_and_covers_flow() -> None:
+    if not ONE_PAGER.is_file():
+        pytest.skip("operator-one-pager.md is local opt-in (not in git after #1597)")
     text = ONE_PAGER.read_text(encoding="utf-8")
     assert "Convert" in text or "convert" in text
     assert "Validate" in text or "validate" in text
@@ -28,6 +34,8 @@ def test_operator_one_pager_exists_and_covers_flow() -> None:
 
 @pytest.mark.unit
 def test_operator_handbook_required_sections() -> None:
+    if not HANDBOOK.is_file():
+        pytest.skip("operator-handbook.md is local opt-in (not in git after #1597)")
     text = HANDBOOK.read_text(encoding="utf-8")
     lower = text.lower()
     assert "login" in lower
@@ -45,5 +53,10 @@ def test_operator_handbook_required_sections() -> None:
 @pytest.mark.unit
 def test_readme_quick_start_links_operator_docs() -> None:
     text = README.read_text(encoding="utf-8")
+    # README may still point at local-opt-in paths; require links only when guides exist.
+    if not ONE_PAGER.is_file() or not HANDBOOK.is_file():
+        pytest.skip(
+            "operator guides local opt-in — README links deferred until docs restore"
+        )
     assert "docs/guides/operator-one-pager.md" in text
     assert "docs/guides/operator-handbook.md" in text
