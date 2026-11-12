@@ -9,6 +9,7 @@ import warnings
 import pytest
 import requests
 from tests.live_env import live_api_url, live_frontend_url, warn_deprecated_env
+from tests.live_fixtures import login_with_backoff
 
 
 def _load_env_file() -> None:
@@ -53,18 +54,7 @@ if os.getenv("E2E_FRONTEND_URL") and not os.getenv("LIVE_FRONTEND_URL"):
 def _live_auth_headers() -> dict[str, str]:
     if not ADMIN_EMAIL or not ADMIN_PASSWORD:
         pytest.skip("ADMIN_EMAIL/ADMIN_PASSWORD not configured")
-    response = requests.post(
-        f"{BACKEND_URL.rstrip('/')}/auth/login",
-        json={"email": ADMIN_EMAIL, "password": ADMIN_PASSWORD},
-        headers={"Content-Type": "application/json"},
-        timeout=30,
-    )
-    assert response.status_code == 200, response.text
-    payload = response.json()
-    token = payload.get("session", {}).get("access_token") or payload.get(
-        "access_token"
-    )
-    assert token
+    token = login_with_backoff(BACKEND_URL.rstrip("/"), ADMIN_EMAIL, ADMIN_PASSWORD)
     return {"Authorization": f"Bearer {token}", "Content-Type": "application/json"}
 
 

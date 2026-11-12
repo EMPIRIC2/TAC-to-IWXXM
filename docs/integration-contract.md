@@ -12,7 +12,7 @@ HTTP field shapes remain in [api-contract.md](api-contract.md) and
 | Rule | Detail |
 |------|--------|
 | Provider | Supabase Auth issues JWTs |
-| API role | `packages/auth` verifies JWTs and serves `/auth/*` on the API |
+| API role | `packages/auth` verifies JWTs (JWKS); FE talks to Supabase Auth directly |
 | Public routes | Convert, lint, validate, decode, preview, and disseminate stay public |
 | Protected routes | Long-term work sessions require a Bearer JWT |
 

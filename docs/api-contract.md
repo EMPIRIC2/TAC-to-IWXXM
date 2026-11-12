@@ -21,8 +21,9 @@ response shapes, auth rules, and known quirks for the backend in `apps/backend`.
 **Auth model (public operator app Amended / hybrid operator sessions):** Convert, lint, validate, and disseminate stay
 **public** (no JWT). A JWT is required only for `/api/v1/work-sessions*`. Guests
 use IndexedDB. Logged-in users use DigitalOcean Postgres sessions. `/admin/*`
-remains **gone** (404). The frontend uses one API base for `/api/v1/*` and
-`/auth/*`.
+remains **gone** (404). The frontend uses one API base for `/api/v1/*`.
+Operator login/register uses Supabase Auth in the browser (`@supabase/supabase-js`);
+the API verifies JWTs via JWKS in `packages/auth` for work-sessions only.
 
 Sections below start with **Base URLs**, then **Services**, then per-endpoint
 tables. Code samples and JSON schemas in those sections are normative. do not
@@ -41,7 +42,7 @@ rewrite them casually.
 | Service | Pre-migration | Post-migration | |
 |---------|---------------|----------------|--------|
 | Conversion API | backend:8001 | apps/backend | Public + abuse controls |
-| Auth | auth:8003 | apps/backend (`packages/auth`) | **Restored** (Auth-only Supabase) |
+| Auth | auth:8003 | FE `@supabase/supabase-js` + BE JWKS (`packages/auth`) | **Auth-only Supabase** (no `/auth/*` proxy) |
 | Frontend | frontend:5173/8000 | apps/frontend | Optional login + guest notice |
 | Worker | — | apps/worker | `DATABASE_URL` → DO Postgres |
 
@@ -53,7 +54,7 @@ rewrite them casually.
 |---------|---------|---------|
 | High-churn **responses** (`/convert`, `/convert-zip`, `/convert-bulletin`, `/validate`, `/lint-tac`, `/decode-tac`, `/lint-issue-catalog`, `/quality-metrics*`) | **msgspec** encode (+ optional Struct validate after assemble) | Thin **pydantic** aliases / JSON Schema export , **no** dual runtime validation |
 | High-churn **requests** (same routes) | **multipart/form-data** via FastAPI `Form`/`File` (unchanged intake) | Form fields documented as today |
-| `/auth/*`, work-sessions | **pydantic** (restored hybrid operator sessions) | pydantic |
+| work-sessions | **pydantic** (hybrid operator sessions; JWT via JWKS) | pydantic |
 | airports, ICAO OPMET stats | **pydantic** | pydantic (unchanged) |
 
 Breaking JSON **response** field changes on high-churn routes are allowed in. frontend
@@ -77,27 +78,18 @@ GET /health
 
 **Breaking (general TAC conversion cutover)**: `gifts_available` removed; clients must use `tac2iwxxm_available`.
 
-### Authentication , Restored (hybrid operator sessions. was Removed public operator app)
+### Authentication (hybrid operator sessions — FE-direct)
 
-```
-POST /auth/register # mounted in code + staging; **prod returned 404 as of 2026-09-12** (deploy lag — last prod tag `v2026.09.`; register shipped on `main` via — roll with next `v*-deploy` tag)
-POST /auth/login
-POST /auth/confirm # GoTrue token_hash verify (email confirm / recovery); HF-auth-register-login
-POST /auth/logout
-GET /auth/me
-```
+Operator login, register, email confirm, logout, and password reset run in the
+browser against Supabase Auth (`@supabase/supabase-js`). The API does **not**
+mount `/auth/*` proxy routes.
 
-**Status**: **Restored** for optional long-term storage. Supabase Auth issues JWTs. API verifies
-via `packages/auth`. Convert/lint/validate/disseminate **do not** require JWT. Use **`GET /health`**
-for liveness (there is no live `/auth/health` route).
+The backend verifies access tokens with JWKS (`packages/auth`) for
+`/api/v1/work-sessions*` only. Convert/lint/validate/disseminate stay public
+(no JWT). Use **`GET /health`** for liveness.
 
-**Prod skew ( R1):** Not a code omission. `create_auth_router` always
-registers `POST /auth/register` (unit: `test_auth_router_mount_unit`). Staging OpenAPI lists it
-and returns 422 on empty body. prod OpenAPI omits it and returns **404** until the next tag-driven
-DOKS prod rollout ( §CD).
-
-**ingest worker**: Worker uses machine/`DATABASE_URL` credentials **off** the operator Auth path (
-amend).
+**ingest worker**: Worker uses machine/`DATABASE_URL` credentials **off** the
+operator Auth path.
 
 ### Admin , Removed 
 

@@ -62,7 +62,7 @@ apps/frontend (static — DOKS/CDN or Vite dev)
  │ runtime /config.json → API base URL
  ▼
 apps/backend (FastAPI — DOKS)
- ├── packages/auth — Supabase Auth JWT verify + /auth/*
+ ├── packages/auth — Supabase Auth JWT verify (JWKS); FE-direct login
  ├── public /api/v1/* (convert/validate/lint/decode/preview/dissemination) + abuse controls
  ├── /api/v1/work-sessions* → DigitalOcean Postgres (owner = Supabase user id)
  ├── packages/tac-validate | tac2iwxxm | iwxxm-validate | dissemination
@@ -121,7 +121,7 @@ dependencies. Later sections (**Component Details**) expand each row.
 | Backend API | Conversion, validation, auth; **Done** dissemination drawer through AMHS SWIM AFS adapters dissemination preflight/send (BYOC, memory-only); rule-catalog aggregator | `apps/backend/` | tac2iwxxm, tac-decoding, tac-validate, iwxxm-validate, dissemination, auth, shared, vendor |
 | Frontend | Operator UI (workbench, decode, operator workbench sessions, five trust catalogs; dissemination drawer through AMHS SWIM AFS adapters drawer; **** Profile Builder authoring retired → dropdowns) | `apps/frontend/` | shared (types); CodeMirror 6 |
 | E2E workspace | Cross-app tests | `apps/e2e/` | backend, frontend |
-| Auth library | Supabase Auth JWT middleware (Auth-only) | `packages/auth/` | supabase-py / JWT verify |
+| Auth library | Supabase Auth JWT verify (Auth-only, JWKS) | `packages/auth/` | PyJWT + httpx JWKS |
 | tac2iwxxm | TAC → IWXXM (7 products, bulletin split, profiles); decode re-export window | `packages/tac2iwxxm/` | tac-validate (optional), tac-decoding (re-export), reference-lookup, vendor; PyO3 required at cutover |
 | reference-lookup | Station and navaid coordinates for convert (general TAC conversion) | `packages/reference-lookup/` | OurAirports public-domain files; checked-in table remains the fallback |
 | tac-decoding | TAC → natural-language decode + glossary + Decoding catalog (live decode) | `packages/tac-decoding/` | , (no FastAPI/Supabase); MIT; PyPI `tac-decoding` |
@@ -171,7 +171,7 @@ Context: epic-922-synthesis (archived. see session-store `~/.cursor/workflow/EMP
 ### apps/backend
 
 - **Purpose**: Single HTTP API for health, conversion, validation, lint, decode, soft-preview,
- dissemination, **optional Auth** (`/auth/*` via `packages/auth`), and **JWT-gated**
+ dissemination, **optional Auth** (FE Supabase + BE JWKS via `packages/auth`), and **JWT-gated**
  `/api/v1/work-sessions*` (hybrid operator sessions). Convert/lint/validate/disseminate remain **public** (no JWT)
  with abuse controls (public operator app Amended). **No** `/admin/*` (operator workbench).
 - **Data**: Product DB = **DigitalOcean Postgres** (`DATABASE_URL`). Supabase used only to
@@ -824,7 +824,7 @@ with aliases during one CalVer window. DX tests: ``…``.
 |-------|-------|----------------|--------|
 | U1. Edit | TAC text/files + product/profile/version | CodeMirror workbench | Live editor state |
 | U1b. Live assist | Editor text (debounced) | Public POST lint / decode (preview) | Spans + decode rows + Failed-TAC cue |
-| U2. Auth | Optional login (hybrid operator sessions) | Supabase Auth → JWT via `/auth/*`; convert stays public | JWT only for session APIs |
+| U2. Auth | Optional login (hybrid operator sessions) | Supabase Auth in browser; BE JWKS verify; convert stays public | JWT only for session APIs |
 | U3–U4 | Convert / validate | Unified pipeline stages 0–4 | IWXXM + validation |
 | U5. Display | JSON response | Frontend render | Copy/download + Source TAC + console |
 | U6. Persist (guest) | Any of 7 products + results | **IndexedDB** upsert (operator workbench / hybrid operator sessions) + loss-of-progress notice | Draft/WIP/Finished/Failed |
@@ -850,7 +850,7 @@ See [migration-plan.md](ops/migration-plan.md) for step-by-step big-bang procedu
 | — | `packages/tac-validate` | New package ( amend) |
 | — | `packages/iwxxm-validate` | New package , IWXXM validation engine extract ( amend) |
 | `frontend` | `apps/frontend` | Full source in monorepo |
-| `auth/` (root, not submodule) | `packages/auth` | Library; routes in backend |
+| `auth/` (root, not submodule) | `packages/auth` | JWKS/service library (`auth`); FE-direct login |
 | `backend/` | `apps/backend` | Move + wire workspace deps |
 
 ### Legacy repositories
@@ -884,7 +884,7 @@ Separate GitHub repos (Metartoiwxxmfrontend, GIFTs fork, iwxxm forks) will be **
 ## Security & Privacy
 
 - **Public convert API** (public operator app Amended): no JWT on convert/lint/validate/disseminate. abuse controls.
-- **Optional Auth** (hybrid operator sessions): Supabase Auth JWT for `/auth/*` + `/api/v1/work-sessions*`. disclose
+- **Optional Auth** (hybrid operator sessions): Supabase Auth in browser; BE JWKS for `/api/v1/work-sessions*`. disclose
  Auth cookies in privacy preference center. guest IndexedDB gated by privacy prefs where classified non-necessary.
 - **Admin API / `is_admin` product surface removed** (operator workbench).
 - CORS from `config.*.api.corsOrigins` on backend.

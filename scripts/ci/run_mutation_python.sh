@@ -35,7 +35,7 @@ case "${TARGET}" in
     PYTEST_PATHS=("${ROOT}/apps/worker/tests")
     ;;
   auth)
-    GREMLIN_TARGETS="${ROOT}/packages/auth/src/metar_auth"
+    GREMLIN_TARGETS="${ROOT}/packages/auth/src/auth"
     PYTEST_PATHS=("${ROOT}/tests/unit/auth")
     ;;
   shared)

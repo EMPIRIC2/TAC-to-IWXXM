@@ -35,7 +35,6 @@ max-complexity = 10
 "apps/backend/tests/edge_cases/test_task_3_5_extended_coverage.py" = ["C901"]
 "apps/backend/tests/integration/test_e2e_full_stack.py" = ["C901"]
 "apps/backend/tests/unit/test_ev080_m2b_coverage_gaps.py" = ["C901"]
-"packages/auth/src/metar_auth/router.py" = ["C901"]
 "packages/dissemination/src/dissemination/allowlist.py" = ["C901"]
 "packages/iwxxm-validate/src/iwxxm_validate/api.py" = ["C901"]
 "packages/iwxxm-validate/src/iwxxm_validate/ca_eccc_validate.py" = ["C901"]

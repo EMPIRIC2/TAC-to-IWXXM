@@ -2,6 +2,11 @@ import { APIRequestContext, expect, Page } from '@playwright/test';
 import { fillManualTac } from './playwright-tac-editor';
 
 export { fillManualTac } from './playwright-tac-editor';
+export {
+  E2E_SUPABASE_ANON_KEY,
+  E2E_SUPABASE_URL,
+  loginAccessTokenViaSupabase,
+} from './playwright-supabase-auth';
 
 /**
  * E2E helpers for the public app (F21 Amended / F22 / F31 / ADR-031).

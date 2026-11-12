@@ -69,7 +69,6 @@ apps/frontend/src/utils/operatorVisibleCopy.ts  # 949
 apps/frontend/supabase/functions/make-server-2e3cda33/index.ts  # 1033
 apps/frontend/supabase/functions/server/index.ts  # 801
 apps/frontend/supabase/functions/server/index.tsx  # 780
-packages/auth/src/metar_auth/router.py  # 531
 packages/iwxxm-validate/rust/src/lib.rs  # 1320
 packages/iwxxm-validate/src/iwxxm_validate/ca_eccc_validate.py  # 676
 packages/iwxxm-validate/src/iwxxm_validate/policy.py  # 579

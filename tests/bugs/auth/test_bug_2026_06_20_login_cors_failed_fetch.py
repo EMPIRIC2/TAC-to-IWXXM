@@ -1,7 +1,8 @@
-"""BUG-2026-06-20 - production login Failed to fetch (CORS).
+"""BUG-2026-06-20 - production browser Failed to fetch (CORS).
 
-Browser symptom: TypeError: Failed to fetch on POST /auth/login from the
-production frontend origin. Root cause: deployed API missing METAR_CORS_ORIGINS.
+Historical symptom was TypeError: Failed to fetch on API auth login. F31 moved
+login to Supabase; this live probe now checks CORS on public convert (same
+METAR_CORS_ORIGINS root cause).
 
 Live probe (requires STAGING_* env vars):
 
@@ -31,14 +32,14 @@ def _require_env(name: str, default: str) -> str:
 
 
 @pytest.mark.asyncio
-async def test_bug_login_cors_preflight_allows_production_frontend() -> None:
-    """Repro: OPTIONS /auth/login from frontend origin must succeed (H4)."""
+async def test_bug_convert_cors_preflight_allows_production_frontend() -> None:
+    """Repro: OPTIONS /api/v1/convert from frontend origin must succeed (H4)."""
     api_url = _require_env("STAGING_API_URL", PRODUCTION_API).rstrip("/")
     origin = _require_env("STAGING_FRONTEND_ORIGIN", PRODUCTION_FRONTEND)
 
     async with httpx.AsyncClient(timeout=30.0) as client:
         response = await client.options(
-            f"{api_url}/auth/login",
+            f"{api_url}/api/v1/convert",
             headers={
                 "Origin": origin,
                 "Access-Control-Request-Method": "POST",

@@ -7,8 +7,9 @@ from unittest.mock import patch
 import pytest
 from fastapi import HTTPException
 from fastapi.security import HTTPAuthorizationCredentials
-from metar_auth.jwks import JwtVerificationError
 from src.utilities import security as sec
+
+from auth.jwks import JwtVerificationError
 
 
 @pytest.mark.unit
@@ -108,5 +109,5 @@ async def test_verify_optional_invalid_returns_none(
 @pytest.mark.unit
 @pytest.mark.asyncio
 async def test_fetch_jwks_removed() -> None:
-    with pytest.raises(NotImplementedError, match="metar_auth"):
+    with pytest.raises(NotImplementedError, match="auth"):
         await sec.fetch_jwks()

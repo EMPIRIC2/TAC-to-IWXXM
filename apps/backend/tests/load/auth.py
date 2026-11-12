@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import os
 import threading
 from abc import ABC, abstractmethod
 
@@ -25,7 +26,7 @@ class BypassAuthProvider(AuthProvider):
 
 
 class BearerAuthProvider(AuthProvider):
-    """Bearer token provider using auth service login endpoint."""
+    """Bearer token via Supabase GoTrue password grant (F31 FE-direct)."""
 
     def __init__(self, profile: LoadProfile):
         self._profile = profile
@@ -47,16 +48,35 @@ class BearerAuthProvider(AuthProvider):
         email = _required_env("LOCUST_AUTH_EMAIL")
         password = _required_env("LOCUST_AUTH_PASSWORD")
         timeout = float(_required_env("LOCUST_AUTH_TIMEOUT", default="20"))
+        supabase_url = (
+            os.getenv("SUPABASE_URL") or os.getenv("LOCUST_SUPABASE_URL") or self._profile.auth_base_url
+        ).rstrip("/")
+        publishable = (
+            os.getenv("SUPABASE_PUBLISHABLE_KEY")
+            or os.getenv("SUPABASE_ANON_KEY")
+            or os.getenv("LOCUST_SUPABASE_ANON_KEY")
+            or ""
+        ).strip()
+        if not supabase_url or not publishable:
+            raise RuntimeError(
+                "Bearer load auth requires SUPABASE_URL + SUPABASE_PUBLISHABLE_KEY "
+                "(or LOCUST_SUPABASE_* / LOCUST_AUTH_BASE_URL)"
+            )
 
         response = requests.post(
-            f"{self._profile.auth_base_url}/auth/login",
+            f"{supabase_url}/auth/v1/token?grant_type=password",
             json={"email": email, "password": password},
+            headers={
+                "Content-Type": "application/json",
+                "apikey": publishable,
+                "Authorization": f"Bearer {publishable}",
+            },
             timeout=timeout,
         )
         response.raise_for_status()
         payload = response.json()
 
-        token = payload.get("session", {}).get("access_token", "")
+        token = payload.get("access_token", "")
         if not token:
             raise RuntimeError("Auth login succeeded but no access token returned")
         return token
@@ -81,6 +101,4 @@ def _required_env(name: str, default: str | None = None) -> str:
 
 
 def _safe_env(name: str, default: str) -> str:
-    import os
-
     return os.getenv(name, default).strip()

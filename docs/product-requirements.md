@@ -88,7 +88,7 @@ Status values: Implemented, In progress, Planned, Superseded, Deprecated, Done.
 | Monorepo layout | Implemented | `apps/`, `packages/`, and `vendor/` |
 | Vendor snapshot sync | Planned | Upstream IWXXM schema sync |
 | Legacy GIFTs in-repo package | Deprecated | Removed at general TAC conversion cutover |
-| Auth library in the backend API | Implemented | `/auth/*` on the API deployable |
+| Auth library in the backend API | Implemented | JWKS service library (`packages/auth`); FE-direct Supabase login |
 | Workspace tooling | Planned | uv, pnpm, and Makefile depth |
 | Vendor upstream sync process | Planned | Ongoing vendor sync process |
 

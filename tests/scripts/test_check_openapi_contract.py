@@ -12,12 +12,12 @@ from tests.scripts.conftest import REPO_ROOT, load_script
 SPEC = REPO_ROOT / "apps" / "frontend" / "openapi" / "openapi.json"
 INTERACTIONS = REPO_ROOT / "tests" / "contracts" / "openapi-interactions.json"
 
-# 2026-10-18 scan of apps/frontend/openapi/openapi.json with an empty pact:
-# 88 operations, 165 status codes, 41 required request fields, 330 response fields.
-SCAN_OPERATIONS = 88
-SCAN_STATUSES = 165
-SCAN_REQUEST_FIELDS = 41
-SCAN_RESPONSE_FIELDS = 330
+# 2026-11-11 scan after F31 FE-direct dropped /auth/* from OpenAPI:
+# 83 operations, 155 status codes, 36 required request fields, 324 response fields.
+SCAN_OPERATIONS = 83
+SCAN_STATUSES = 155
+SCAN_REQUEST_FIELDS = 36
+SCAN_RESPONSE_FIELDS = 324
 
 
 @pytest.fixture

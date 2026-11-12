@@ -39,14 +39,14 @@ test.describe('Merged API Auth integration (F31)', () => {
     expect(body.tac2iwxxm_available).toBe(true);
   });
 
-  test('auth login rejects bad credentials (TC-F31-003)', async ({ request }) => {
+  test('API /auth/login is not mounted (F31 FE-direct)', async ({ request }) => {
     const response = await request.post(`${API_BASE_URL}/auth/login`, {
       data: { email: 'missing@example.com', password: 'invalid' },
       timeout: 15_000,
     });
 
-    // Route exists (F31); invalid credentials → 401 (not 404/503).
-    expect(response.status()).toBe(401);
+    // Login is browser → Supabase; API helper routes are gone.
+    expect(response.status()).toBe(404);
   });
 
   test('app load does not call Auth HTTP bootstrap endpoints', async ({ page }) => {

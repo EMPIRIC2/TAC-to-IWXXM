@@ -12,7 +12,8 @@ import respx
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric import rsa
 from httpx import Response
-from metar_auth.jwks import (
+
+from auth.jwks import (
     JwtVerificationError,
     clear_jwks_client_cache,
     resolve_jwks_url,
@@ -243,7 +244,7 @@ def test_verify_generic_exception_wrapped(
     token = _sign(private_key)
     with (
         patch(
-            "metar_auth.jwks.PyJWKSet.from_dict",
+            "auth.jwks.PyJWKSet.from_dict",
             side_effect=RuntimeError("boom"),
         ),
         pytest.raises(JwtVerificationError, match="boom"),

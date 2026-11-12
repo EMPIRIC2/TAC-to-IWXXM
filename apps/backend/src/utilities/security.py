@@ -8,8 +8,8 @@ from typing import Any
 
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
-from metar_auth.jwks import JwtVerificationError, verify_access_token
 
+from auth.jwks import JwtVerificationError, verify_access_token
 from metar_shared.supabase_env import get_supabase_url
 
 logger = logging.getLogger(__name__)
@@ -131,7 +131,7 @@ async def fetch_jwks() -> dict[str, Any]:
     Raises
     ------
     NotImplementedError
-        Always; callers should use ``metar_auth.jwks.verify_access_token``.
+        Always; callers should use ``auth.jwks.verify_access_token``.
 
     Examples
     --------
@@ -143,7 +143,7 @@ async def fetch_jwks() -> dict[str, Any]:
     object
         Return value.
     """
-    raise NotImplementedError("Use metar_auth.jwks.verify_access_token (ADR-033 JWKS-only)")
+    raise NotImplementedError("Use auth.jwks.verify_access_token (ADR-033 JWKS-only)")
 
 
 __all__ = [

@@ -37,7 +37,7 @@ class TestCoverageConfig:
         assert not (ROOT / ".codecov.yml").exists()
         root = (ROOT / "pyproject.toml").read_text(encoding="utf-8")
         assert "packages/auth" in root
-        assert "metar-auth" in root
+        assert "auth" in root
 
     def test_auth_and_worker_fail_under_100(self) -> None:
         """EV-080 — auth + worker hard package floors at 100%."""

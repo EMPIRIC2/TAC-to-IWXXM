@@ -359,7 +359,7 @@ jobs:
       - name: Run auth unit tests with coverage
         if: matrix.package == 'auth'
         run: |
-          uv run pytest tests/unit/auth --cov=metar_auth \
+          uv run pytest tests/unit/auth --cov=auth \
             --cov-config=packages/auth/pyproject.toml --cov-branch \
             --cov-report=xml:packages/auth/coverage.xml \
             --cov-report=json:packages/auth/coverage.json \

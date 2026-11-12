@@ -457,16 +457,6 @@
       }
     },
     {
-      "description": "GET /auth/me",
-      "request": {
-        "method": "GET",
-        "path": "/auth/me"
-      },
-      "response": {
-        "status": 200
-      }
-    },
-    {
       "description": "GET /health",
       "request": {
         "method": "GET",
@@ -821,46 +811,6 @@
       "request": {
         "method": "POST",
         "path": "/api/v1/work-sessions/{session_id}/restore"
-      },
-      "response": {
-        "status": 200
-      }
-    },
-    {
-      "description": "POST /auth/confirm",
-      "request": {
-        "method": "POST",
-        "path": "/auth/confirm"
-      },
-      "response": {
-        "status": 200
-      }
-    },
-    {
-      "description": "POST /auth/login",
-      "request": {
-        "method": "POST",
-        "path": "/auth/login"
-      },
-      "response": {
-        "status": 200
-      }
-    },
-    {
-      "description": "POST /auth/logout",
-      "request": {
-        "method": "POST",
-        "path": "/auth/logout"
-      },
-      "response": {
-        "status": 200
-      }
-    },
-    {
-      "description": "POST /auth/register",
-      "request": {
-        "method": "POST",
-        "path": "/auth/register"
       },
       "response": {
         "status": 200

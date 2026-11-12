@@ -10,7 +10,7 @@ dependencies = [
     "tac-validate",
     "iwxxm-validate",
     "dissemination",
-    "metar-auth",
+    "auth",
     "fastapi==0.137.0",
     "uvicorn==0.49.0",
     "python-multipart==0.0.32",
@@ -137,7 +137,7 @@ extend-ignore = ["E741"]
 tac2iwxxm = { workspace = true }
 tac-decoding = { workspace = true }
 metar-shared = { workspace = true }
-metar-auth = { workspace = true }
+auth = { workspace = true }
 tac-validate = { workspace = true }
 iwxxm-validate = { workspace = true }
 dissemination = { workspace = true }

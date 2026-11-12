@@ -8,7 +8,7 @@ intentionally has no Bearer scheme - F21 / ADR-031). Hypothesis budget:
 Exclusions (explicit - not silent large skips):
 - ``/api/v1/work-sessions*`` - needs Postgres session store
 - ``/api/v1/eval/*`` - needs job/persistence store
-- ``/auth/*`` - needs live Supabase Auth proxy
+- ``/auth/*`` - removed under F31 FE-direct (exclude kept as belt-and-suspenders)
 - Dissemination **ops** JWT/DB routes (plans / audit / mappings / gateways) —
   need Postgres ``DATABASE_URL`` + UUID ``sub`` (EV-936). Public
   ``/dissemination/preflight`` + ``/send`` stay in scope.

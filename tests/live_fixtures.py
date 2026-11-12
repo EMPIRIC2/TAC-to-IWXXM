@@ -40,21 +40,33 @@ def wake_live_api(base_url: str | None = None) -> str:
 
 
 def login_with_backoff(base_url: str, email: str, password: str) -> str:
-    """Obtain bearer token via POST /auth/login with 429 backoff."""
+    """Obtain bearer token via Supabase Auth password grant (FE-direct)."""
+    supabase_url = (os.environ.get("SUPABASE_URL") or "").rstrip("/")
+    publishable = (
+        os.environ.get("SUPABASE_PUBLISHABLE_KEY")
+        or os.environ.get("SUPABASE_ANON_KEY")
+        or ""
+    ).strip()
+    if not supabase_url or not publishable:
+        pytest.skip(
+            "SUPABASE_URL and SUPABASE_PUBLISHABLE_KEY required for live Auth login"
+        )
     last_response: httpx.Response | None = None
     for attempt in range(1, WAKE_ATTEMPTS + 1):
         response = httpx.post(
-            f"{base_url}/auth/login",
+            f"{supabase_url}/auth/v1/token?grant_type=password",
             json={"email": email, "password": password},
-            headers={"Content-Type": "application/json"},
+            headers={
+                "Content-Type": "application/json",
+                "apikey": publishable,
+                "Authorization": f"Bearer {publishable}",
+            },
             timeout=30.0,
         )
         last_response = response
         if response.status_code == 200:
             payload = response.json()
-            token = payload.get("session", {}).get("access_token") or payload.get(
-                "access_token"
-            )
+            token = payload.get("access_token")
             if token:
                 return str(token)
             raise RuntimeError("Login succeeded but no access_token in response")
@@ -63,7 +75,7 @@ def login_with_backoff(base_url: str, email: str, password: str) -> str:
             continue
         break
     detail = last_response.text if last_response is not None else "no response"
-    pytest.skip(f"Could not obtain live JWT from {base_url}/auth/login: {detail}")
+    pytest.skip(f"Could not obtain live JWT from Supabase Auth: {detail}")
     return ""  # unreachable
 
 

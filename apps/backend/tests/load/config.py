@@ -31,22 +31,23 @@ def _build_profile(name: str) -> LoadProfile:
         "local_bypass": {
             "host": "http://localhost:8001",
             "auth_mode": "bypass",
-            "auth_base_url": "http://localhost:8002",
+            # GoTrue project URL when bearer mode is forced locally (F31).
+            "auth_base_url": "",
         },
         "local_auth": {
             "host": "http://localhost:8001",
             "auth_mode": "bearer",
-            "auth_base_url": "http://localhost:8002",
+            "auth_base_url": "",
         },
         "staging_bypass": {
             "host": "https://metar-to-iwxxm.onrender.com",
             "auth_mode": "bypass",
-            "auth_base_url": "https://metar-to-iwxxm-auth.onrender.com",
+            "auth_base_url": "",
         },
         "staging_auth": {
             "host": "https://metar-to-iwxxm.onrender.com",
             "auth_mode": "bearer",
-            "auth_base_url": "https://metar-to-iwxxm-auth.onrender.com",
+            "auth_base_url": "",
         },
     }
 
@@ -57,7 +58,10 @@ def _build_profile(name: str) -> LoadProfile:
     selected = defaults[name]
     host = os.getenv("LOCUST_HOST", selected["host"])
     auth_mode = os.getenv("LOCUST_AUTH_MODE", selected["auth_mode"]).lower().strip()
-    auth_base_url = os.getenv("LOCUST_AUTH_BASE_URL", selected["auth_base_url"])
+    auth_base_url = os.getenv(
+        "LOCUST_AUTH_BASE_URL",
+        os.getenv("SUPABASE_URL", selected["auth_base_url"]),
+    )
 
     return LoadProfile(
         name=name,

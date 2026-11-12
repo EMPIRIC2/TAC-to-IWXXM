@@ -8,35 +8,14 @@ from typing import Any, cast
 
 import httpx
 
+from auth.models.errors import AuthProxyError
+
+__all__ = ["AuthProxyError", "SupabaseAuthProxy"]
+
 _OPERATOR_EMAIL_NOT_CONFIRMED = (
     "Please confirm your email before signing in. "
     "Check your inbox for the confirmation link."
 )
-
-
-class AuthProxyError(Exception):
-    """
-    Supabase Auth HTTP call failed.
-
-    Attributes
-    ----------
-    status_code : int
-        HTTP status code.
-    """
-
-    def __init__(self, message: str, *, status_code: int = 400) -> None:
-        """
-        Internal helper ``__init__``.
-
-        Parameters
-        ----------
-        message : str
-            Message text.
-        status_code : int, optional
-            HTTP status code. By default ``400``.
-        """
-        super().__init__(message)
-        self.status_code = status_code
 
 
 class SupabaseAuthProxy:

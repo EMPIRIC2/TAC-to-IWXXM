@@ -147,16 +147,13 @@ test.describe('T7.1 — Public app + privacy (F21/F22)', () => {
     await expect(page.getByTestId('privacy-gpc-active')).toBeVisible();
   });
 
-  test('TC-F31-003: /auth/login rejects bad credentials (Auth restored)', async ({
-    request,
-  }) => {
+  test('TC-F31-003: API /auth/login is gone (FE-direct Auth)', async ({ request }) => {
     const response = await playwrightApiFetch(request, '/auth/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       data: { email: 'x@y.z', password: 'nope' },
       timeout: 15_000,
     });
-    // F21 Amended / F31 — route exists; invalid credentials → 401 (not 404).
-    expect(response.status()).toBe(401);
+    expect(response.status()).toBe(404);
   });
 });

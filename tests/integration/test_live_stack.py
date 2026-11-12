@@ -99,12 +99,12 @@ async def test_live_convert_then_validate_round_trip(live_client) -> None:
 
 
 @pytest.mark.asyncio
-async def test_live_auth_login_rejects_bad_credentials() -> None:
-    """Auth route on merged API rejects invalid credentials."""
+async def test_live_api_auth_login_gone() -> None:
+    """F31 FE-direct: merged API no longer mounts /auth/login."""
     api_url = wake_live_api()
     async with httpx.AsyncClient(timeout=30.0) as client:
         response = await client.post(
             f"{api_url}/auth/login",
             json={"email": "not-a-real-user@example.com", "password": "wrong-password"},
         )
-    assert response.status_code in (401, 403, 422)
+    assert response.status_code == 404

@@ -12,7 +12,8 @@ import respx
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric import rsa
 from httpx import Response
-from metar_auth.jwks import (
+
+from auth.jwks import (
     JwtVerificationError,
     clear_jwks_client_cache,
     jwks_url_from_supabase_url,
