@@ -6,17 +6,20 @@ readme = "README.md"
 license = { text = "MIT" }
 requires-python = ">=3.12"
 dependencies = [
-  "sqlalchemy[asyncio]>=2.0",
-  "asyncpg>=0.29",
-  "aiomysql>=0.2.0",
-  "aiosqlite>=0.20.0",
-  "aioodbc>=0.5.0",
-  "aiosmtplib>=3.0.0",
-  "msgspec>=0.19",
-  "httpx>=0.28",
-  "aiomqtt>=2.3.0,<3",
-  "tac2iwxxm",
+  "sqlalchemy[asyncio]==2.0.50",
+  "asyncpg==0.31.0",
+  "aiomysql==0.3.2",
+  "aiosqlite==0.22.1",
+  "aioodbc==0.5.0",
+  "aiosmtplib==5.1.2",
+  "msgspec==0.21.1",
+  "httpx==0.28.1",
+  "aiomqtt==2.5.1",
+  "tac2iwxxm==2026.11.5.1",
 ]
+
+[tool.uv.sources]
+tac2iwxxm = { workspace = true }
 
 [build-system]
 requires = ["hatchling>=1.25"]
@@ -27,9 +30,10 @@ packages = ["src/dissemination"]
 
 [project.optional-dependencies]
 integration = [
-  "testcontainers[mysql,postgres]>=4.8",
+  "testcontainers[mysql,postgres]==4.14.2",
 ]
 
+# Override (required): package sources are formatted at line-length 120; root is 88.
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["src"]
@@ -51,6 +55,9 @@ source = ["src/dissemination"]
 fail_under = 100
 show_missing = true
 
+
 [tool.ruff]
 extend = "../../pyproject.toml"
 line-length = 120
+
+# Pytest / remaining coverage inherit from root; Makefile passes --cov=* CLI flags.

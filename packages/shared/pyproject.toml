@@ -9,7 +9,7 @@ dependencies = []
 
 [project.optional-dependencies]
 # ADR-027 — import generated iwxxm_xsd pydantic models (not validate hot path)
-xsd = ["pydantic>=2.0", "xsdata-pydantic>=24.5"]
+xsd = ["pydantic==2.13.4", "xsdata-pydantic==24.5"]
 
 [build-system]
 requires = ["hatchling>=1.25"]
@@ -18,28 +18,20 @@ build-backend = "hatchling.build"
 [tool.hatch.build.targets.wheel]
 packages = ["src/metar_shared"]
 
-[tool.pytest.ini_options]
-testpaths = ["tests"]
-pythonpath = ["src"]
-asyncio_mode = "auto"
-asyncio_default_fixture_loop_scope = "function"
-
-filterwarnings = [
-  "error",
-]
-
-# ADR-027 — when `make lint` passes `packages/shared`, Ruff uses this pyproject as
-# project root (root extend-exclude does not apply). Keep generated trees out of lint.
+# Override (required): when `make lint` passes `packages/shared`, Ruff uses this
+# pyproject as project root so root extend-exclude paths do not apply. Keep
+# ADR-027 generated xsdata trees out of lint. [Corpus: product §F11]
 [tool.ruff]
 extend = "../../pyproject.toml"
 extend-exclude = [
   "src/metar_shared/iwxxm_xsd/v*",
 ]
 
+# Override (required): Makefile uses --cov-config=packages/shared/pyproject.toml;
+# omit generated trees that are not unit-tested line-by-line (T3.7a).
 [tool.coverage.run]
 branch = true
 source = ["src/metar_shared"]
-# ADR-027 generated xsdata trees — not unit-tested line-by-line (T3.7a smoke covers regen)
 omit = [
   "*/iwxxm_xsd/v*/**",
 ]
