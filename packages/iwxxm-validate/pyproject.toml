@@ -61,3 +61,16 @@ show_missing = true
 [tool.ruff]
 extend = "../../pyproject.toml"
 line-length = 120
+
+# deptry: unused (DEP002), missing (DEP001), transitive (DEP003), misplaced-dev (DEP004).
+# [Corpus: tech-spec] docs/technical-requirements.md; [Corpus: system-spec] docs/architecture.md.
+# Run all members: scripts/ci/run_deptry_all.sh
+[tool.deptry]
+known_first_party = ["iwxxm_validate"]
+pep621_dev_dependency_groups = ["dev"]
+
+[tool.deptry.per_rule_ignores]
+# hatchling is the build backend (hatch_build.py hook), not a runtime import.
+DEP001 = ["hatchling"]
+# Baseline debt: cli.py lazily imports tac2iwxxm profile resolution (optional `validate` flow); not a declared dependency.
+DEP003 = ["tac2iwxxm"]

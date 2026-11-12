@@ -69,6 +69,8 @@ PY_LINT := apps/backend/src apps/backend/tests \
 	coverage coverage-backend coverage-frontend coverage-shared \
 	coverage-dissemination coverage-modules coverage-all ci acci badge-audit audit-frontend \
 	validate-fast validate-yaml secrets-check security-scan config-guard validate-ci env-check \
+	check check-fast check-import-linter check-deptry check-depcruise check-knip \
+	check-oasdiff check-coverage-audit \
 	install-hooks pre-commit-run pre-push-run ci-prepush \
 	catalog-regen catalog-check \
 	membership-regen membership-check \
@@ -288,11 +290,12 @@ test-unit-backend:
 # Knobs: SCHEMATHESIS_MAX_EXAMPLES (≤25), Hypothesis seed via --hypothesis-seed.
 # Budget ceiling locked — do not raise max-examples above 25 without AskQuestion.
 test-schemathesis:
+	@mkdir -p .quality-reports
 	(cd apps/backend && SCHEMATHESIS_MAX_EXAMPLES=$${SCHEMATHESIS_MAX_EXAMPLES:-25} \
 		$(UV) run pytest tests/contract/test_schemathesis_openapi.py \
 		-m schemathesis --override-ini addopts= \
 		--override-ini "filterwarnings=default" -v \
-		--tb=short)
+		--tb=short) 2>&1 | tee .quality-reports/schemathesis.txt
 
 # F34 / EV-059 / #874 — Mutation testing (TC-F34-003..005). Nightly/manual only.
 # Usage: make test-mutation-python TARGET=poc-shared-env
@@ -964,6 +967,31 @@ overlay-preflight:
 	$(UV) run python scripts/overlays/preflight.py --all-examples
 
 validate-fast: format-check typecheck lint secrets-check validate-yaml catalog-check validation-catalog-check issue-registry-guard cursor-no-home-paths-guard pnpm-action-package-manager-guard overlay-preflight file-budget file-complexity
+
+# EV-quality-tooling-suite — Wave 1 local gates [Corpus: tech-spec] TR-Q05..Q07
+check-import-linter:
+	bash scripts/ci/run_import_linter.sh
+
+check-deptry:
+	bash scripts/ci/run_deptry_all.sh
+
+check-depcruise:
+	bash scripts/ci/run_depcruise.sh
+
+check-knip:
+	bash scripts/ci/run_knip.sh
+
+check-oasdiff:
+	bash scripts/ci/run_oasdiff.sh
+
+check-coverage-audit:
+	$(UV) run python scripts/ci/audit_coverage_denominator.py --omits-only
+
+# Fast Wave 1 subset for local loops (no full unit matrix).
+check-fast: check-import-linter check-deptry check-depcruise check-knip check-coverage-audit
+
+# Full local quality tooling gate (Wave 1 + oasdiff).
+check: check-fast check-oasdiff
 
 config-guard:
 	$(UV) run pytest tests/test_config_placeholders.py tests/smoke/test_h5_runtime_config.py -v

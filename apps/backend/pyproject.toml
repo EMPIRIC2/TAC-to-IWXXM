@@ -101,10 +101,6 @@ omit = [
     "*/test_*.py",
     "tests/*",
     "*/tests/*",
-    # Transitional gifts bridge retained for tests; not on F6 convert path (ADR-014 cutover).
-    "src/utilities/gifts_locationdb_adapter.py",
-    # Protocol-only lxml typing boundary; runtime uses cast(lxml_etree).
-    "src/utilities/xml_types.py",
 ]
 
 [tool.coverage.report]
@@ -116,6 +112,8 @@ exclude_lines = [
     "raise NotImplementedError",
     "if __name__ == .__main__.:",
     "if TYPE_CHECKING:",
+    # typing.Protocol method stubs (e.g. src/utilities/xml_types.py) have no runtime body.
+    "^\\s+\\.\\.\\.$",
 ]
 precision = 2
 
@@ -141,3 +139,18 @@ auth = { workspace = true }
 tac-validate = { workspace = true }
 iwxxm-validate = { workspace = true }
 dissemination = { workspace = true }
+
+# deptry: unused (DEP002), missing (DEP001), transitive (DEP003), misplaced-dev (DEP004).
+# [Corpus: tech-spec] docs/technical-requirements.md; [Corpus: system-spec] docs/architecture.md.
+# Run all members: scripts/ci/run_deptry_all.sh
+[tool.deptry]
+known_first_party = ["api", "api_deps", "api_wire", "clients", "config", "metar_iwxxm_api", "models", "msgspec_http", "routers", "schemas", "services", "utilities", "validation", "src"]
+pep621_dev_dependency_groups = ["dev"]
+
+[tool.deptry.per_rule_ignores]
+# python-multipart: FastAPI form parsing; psycopg/asyncpg: SQLAlchemy driver plugins. Baseline debt: python-jose, pyjwt, redis, skyfield have no import in src/ (tests only or dead) — prune in a follow-up.
+DEP002 = ["python-multipart", "python-jose", "pyjwt", "psycopg", "asyncpg", "redis", "skyfield"]
+# Baseline debt: starlette (via fastapi), yaml (pyyaml), dotenv are imported but not declared directly.
+DEP003 = ["starlette", "yaml", "dotenv"]
+# Baseline debt: a src/ module imports pytest (testing helpers).
+DEP004 = ["pytest"]

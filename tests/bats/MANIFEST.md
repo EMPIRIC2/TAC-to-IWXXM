@@ -15,6 +15,15 @@
 | `scripts/ci/run_metar_quality.sh` | `tests/bats/ci/run_metar_quality.bats` |
 | `scripts/ci/run_mutation_js.sh` | `tests/bats/ci/run_mutation_js.bats` |
 | `scripts/ci/run_mutation_python.sh` | `tests/bats/ci/run_mutation_python.bats` |
+| `scripts/ci/run_depcruise.sh` | `tests/bats/ci/run_depcruise.bats` |
+| `scripts/ci/run_deptry_all.sh` | `tests/bats/ci/run_deptry_all.bats` |
+| `scripts/ci/run_import_linter.sh` | `tests/bats/ci/run_import_linter.bats` |
+| `scripts/ci/run_knip.sh` | `tests/bats/ci/run_knip.bats` |
+| `scripts/ci/run_oasdiff.sh` | `tests/bats/ci/run_oasdiff.bats` |
+| `scripts/ci/run_depcruise.sh` | `tests/bats/ci/run_depcruise.bats` |
+| `scripts/ci/run_deptry_all.sh` | `tests/bats/ci/run_deptry_all.bats` |
+| `scripts/ci/run_import_linter.sh` | `tests/bats/ci/run_import_linter.bats` |
+| `scripts/ci/run_knip.sh` | `tests/bats/ci/run_knip.bats` |
 | `scripts/ci/run_product_order_smoke.sh` | `tests/bats/ci/run_product_order_smoke.bats` |
 | `scripts/ci/run_provenance_canary.sh` | `tests/bats/ci/run_provenance_canary.bats` |
 | `scripts/ci/run_provenance_quality.sh` | `tests/bats/ci/run_provenance_quality.bats` |
@@ -59,4 +68,4 @@
 | `scripts/supabase/local-dev.sh` | `tests/bats/supabase/local-dev.bats` |
 | `scripts/vendor/sync-iwxxm.sh` | `tests/bats/vendor/sync-iwxxm.bats` |
 
-**Count:** 55 scripts / 55 bats
+**Count:** 71 scripts / 71 bats
