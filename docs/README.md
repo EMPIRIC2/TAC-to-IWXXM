@@ -44,7 +44,7 @@ Agents start at [AGENTS.md](../AGENTS.md). Writers follow
 
 ## Public user guide
 
-Operator and integrator docs for end users live in [`user-docs/`](../user-docs).
+Operator and integrator docs for end users live in [`github-wikia/`](../github-wikia).
 That site is not the engineering HTTP contract.
 
 ## Local feeders (not tracked)

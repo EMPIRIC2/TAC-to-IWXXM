@@ -37,16 +37,16 @@ docs.
 | DOKS static | Frontend URL; `/config.json` with `api.baseUrl` + Auth publishable bootstrap | Service-role / `DATABASE_URL` |
 | DOKS worker (ingest worker) | `DATABASE_URL`, poller URL and interval, machine credentials | Operator JWT; Supabase DB writers |
 | Supabase project | Auth users JWT issuance | App tables for sessions or ingest worker |
-| Repo | `deploy/profiles/*.json`, `.env.example`, this document | Live secret values |
+| Repo | `config/deploy/profiles/*.json`, `.env.example`, this document | Live secret values |
 | Local | `.env` (gitignored), `METAR_CONFIG_ENV=local` | Production URLs unless live testing |
 
 ## Canonical names
 
 | Concern | Canonical | Where set |
 |---------|-----------|-----------|
-| API public URL | `config.*.api.baseUrl` | `deploy/profiles/*.json` (`/api/v1` and `/auth`) |
-| Frontend public URL | `config.*.api.frontendUrl` | `deploy/profiles/*.json` |
-| CORS | `config.*.api.corsOrigins` | `deploy/profiles/*.json` (include DOKS FE origin) |
+| API public URL | `config.*.api.baseUrl` | `config/deploy/profiles/*.json` (`/api/v1` and `/auth`) |
+| Frontend public URL | `config.*.api.frontendUrl` | `config/deploy/profiles/*.json` |
+| CORS | `config.*.api.corsOrigins` | `config/deploy/profiles/*.json` (include DOKS FE origin) |
 | Product Postgres | `DATABASE_URL` | API + worker env (required for sessions + ingest worker) |
 | Supabase Auth URL | `SUPABASE_URL` / `config.*.supabase.url` | API + FE bootstrap |
 | FE Auth publishable key | `SUPABASE_PUBLISHABLE_KEY` → `/config.json` | Static deploy inject |
@@ -67,7 +67,7 @@ docs.
 | ingest worker poll interval | `INGEST_POLL_INTERVAL_SEC` | Worker ConfigMap (default `30`) |
 | Live API URL | `LIVE_API_URL` | Local/CI live harness |
 | Live frontend URL | `LIVE_FRONTEND_URL` | Local/CI live harness |
-| DOKS prod DNS (prod + live) | `https://api.tac-to-iwxxm.com` / `https://app.tac-to-iwxxm.com` | `deploy/profiles/prod.json` + `LIVE_*` |
+| DOKS prod DNS (prod + live) | `https://api.tac-to-iwxxm.com` / `https://app.tac-to-iwxxm.com` | `config/deploy/profiles/prod.json` + `LIVE_*` |
 | E2E Auth fixture | `E2E_USER_EMAIL` / `E2E_USER_PASSWORD` | Live/local Auth session tests only |
 | Default semantic profile (semantic and exchange profiles) | `DEFAULT_SEMANTIC_PROFILE` | API / `.env`, default `ICAO_2025` |
 | Default exchange profile (semantic and exchange profiles) | `DEFAULT_EXCHANGE_PROFILE` | API / `.env`, default `GLOBAL_AFS` when packaging invoked |
@@ -151,5 +151,5 @@ make test-live-connectivity # – connectivity
 
 - [AGENTS.md](../AGENTS.md) (``, ``)
 - [docs/tech-spec.md](tech-spec.md)
-- [deploy/profiles/](../deploy/profiles)
-- [deploy/doks/](../deploy/doks)
+- [config/deploy/profiles/](../config/deploy/profiles)
+- [config/deploy/doks/](../config/deploy/doks)

@@ -1,9 +1,9 @@
 # Wiki link map
 
-Cross-page links in `user-docs/docs/` must target the **GitHub Wiki**, not
+Cross-page links in `github-wikia/docs/` must target the GitHub Wiki, not
 relative MkDocs paths.
 
-**Wiki base:** `https://github.com/EMPIRIC2/TAC-to-IWXXM/wiki`
+Wiki base: `https://github.com/EMPIRIC2/TAC-to-IWXXM/wiki`
 
 | Source file | Wiki page URL |
 |-------------|---------------|
@@ -37,5 +37,5 @@ relative MkDocs paths.
 ## Check
 
 ```bash
-python3 user-docs/scripts/check_wiki_links.py
+python3 github-wikia/scripts/check_wiki_links.py
 ```

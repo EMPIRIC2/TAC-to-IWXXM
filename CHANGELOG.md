@@ -9,7 +9,7 @@ Live-eval provenance: session `live-tac-eval-30d-2026-11-04-eve` (5996 reports;
 convert 5995/5996 ok; IWXXM validate 5994/5996 ok).
 
 ### Added
-- STE user guide under `user-docs/` with Wiki link map and example journeys
+- STE user guide under `github-wikia/` with Wiki link map and example journeys
   ([#1570](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1570),
   [#1571](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1571)).
 - Canonical XML primary-name layout DX façade tests

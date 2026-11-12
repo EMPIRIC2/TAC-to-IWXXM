@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Copy user-docs pages into a GitHub Wiki working tree with mapped titles.
+"""Copy github-wikia pages into a GitHub Wiki working tree with mapped titles.
 
 Usage:
-  python3 user-docs/scripts/publish_wiki.py --wiki-dir /tmp/TAC-to-IWXXM.wiki
+  python3 github-wikia/scripts/publish_wiki.py --wiki-dir /tmp/TAC-to-IWXXM.wiki
 
 Does not push. After review:
   cd /tmp/TAC-to-IWXXM.wiki && git add -A && git commit && git push

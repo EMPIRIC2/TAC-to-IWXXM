@@ -26,9 +26,9 @@ def test_f_adv_load_02_locustfile_exports_user_classes() -> None:
 def test_f_adv_load_01_staging_api_replicas_and_ingress_timeouts() -> None:
     """Staging API should run ≥2 replicas with longer ingress timeouts (F-ADV-LOAD-01)."""
     resources = yaml.safe_load_all(
-        (REPO_ROOT / "deploy/doks/overlays/staging/patch-resources.yaml").read_text(
-            encoding="utf-8"
-        )
+        (
+            REPO_ROOT / "config/deploy/doks/overlays/staging/patch-resources.yaml"
+        ).read_text(encoding="utf-8")
     )
     api_patch = next(
         doc
@@ -38,9 +38,9 @@ def test_f_adv_load_01_staging_api_replicas_and_ingress_timeouts() -> None:
     assert api_patch["spec"]["replicas"] >= 2
 
     ingress = yaml.safe_load(
-        (REPO_ROOT / "deploy/doks/overlays/staging/patch-ingress-api.yaml").read_text(
-            encoding="utf-8"
-        )
+        (
+            REPO_ROOT / "config/deploy/doks/overlays/staging/patch-ingress-api.yaml"
+        ).read_text(encoding="utf-8")
     )
     annotations = ingress["metadata"]["annotations"]
     assert int(annotations["nginx.ingress.kubernetes.io/proxy-read-timeout"]) >= 120

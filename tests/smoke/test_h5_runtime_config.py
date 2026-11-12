@@ -11,7 +11,7 @@ ROOT = Path(__file__).resolve().parents[2]
 
 
 def _load_config_profile(name: str) -> dict[str, object]:
-    path = ROOT / "deploy" / "profiles" / f"{name}.json"
+    path = ROOT / "config" / "deploy" / "profiles" / f"{name}.json"
     with path.open(encoding="utf-8") as handle:
         return json.load(handle)
 

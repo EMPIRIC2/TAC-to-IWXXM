@@ -6,7 +6,7 @@ set -eu
 
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 CONFIG_ENV="${METAR_CONFIG_ENV:-prod}"
-SRC="${CONFIG_SRC:-$ROOT/deploy/profiles/${CONFIG_ENV}.json}"
+SRC="${CONFIG_SRC:-$ROOT/config/deploy/profiles/${CONFIG_ENV}.json}"
 DEST_DIR="${DEST_DIR:-$ROOT/apps/frontend/public}"
 DEST="$DEST_DIR/config.json"
 

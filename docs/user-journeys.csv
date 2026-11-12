@@ -123,4 +123,4 @@ UJ-DEV-005,pip install published packages + convert/validate,clean venv,TAC vali
 UJ-DEV-006,Rust crate CI (fmt/clippy/test + maturin),`make rust-check` / CI,"IWXXM validate package, published converter packages",T0 / CI,TC-EV045-001..007,Rust fmt/clippy/`cargo test` + maturin both crates,active,live_e2e=CI
 UJ-DEV-007,Slim husky — lint commit + fast-unit push,husky / make install-hooks,workspace tooling deepen,T0,TC-EV047-001..004,Slim husky lint commit + fast-unit push,active,live_e2e=—
 UJ-DEV-008,Converter perf regression blocks PR,CI perf gate,general TAC conversion deepen,T0 / CI,TC-EV047-005..008,Converter perf regression blocks PR,active,live_e2e=CI
-UJ-OPS-001,Deploy DOKS stack (API + static + worker),deploy/doks,"auth in API, ingest worker",T3 (staging),,,active,
+UJ-OPS-001,Deploy DOKS stack (API + static + worker),config/deploy/doks,"auth in API, ingest worker",T3 (staging),,,active,

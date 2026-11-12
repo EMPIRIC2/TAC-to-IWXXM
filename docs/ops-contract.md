@@ -13,7 +13,7 @@ production. Long runbooks may stay in the local `docs/ops/` feeder.
 |------|---------|
 | DOKS | DigitalOcean Kubernetes Service |
 | BYOC | Bring Your Own Credentials for one dissemination send |
-| Profile JSON | Non-secret runtime config under `deploy/profiles/` |
+| Profile JSON | Non-secret runtime config under `config/deploy/profiles/` |
 
 ## Tooling bar
 
@@ -66,7 +66,7 @@ to point at another Postgres host.
 | `apps/e2e` | Playwright tests |
 | `packages/*` | Libraries |
 | `vendor/schemas` | Read-only schema snapshots |
-| `deploy/doks` | Staging and prod Kubernetes overlays |
+| `config/deploy/doks` | Staging and prod Kubernetes overlays |
 | `config/profiles` | Conversion profile catalog for the API image |
 | `config/rules` | Issue catalog and provenance map |
 | `config/engineering` | Coverage surface inventories |
@@ -74,7 +74,7 @@ to point at another Postgres host.
 ## Environment sync (required outcomes)
 
 1. Keep secret names aligned across local `.env`, DOKS secrets, and CI.
-2. Keep non-secret URLs and CORS lists in `deploy/profiles/` JSON.
+2. Keep non-secret URLs and CORS lists in `config/deploy/profiles/` JSON.
 3. Run `make env-check` after local secret edits.
 4. Do not commit secrets.
 5. Prefer DOKS hosts for live Auth redirect URLs. Do not re-add retired Render
@@ -95,7 +95,7 @@ Do not set retired Auth key aliases after the shim window ends. See
 
 ## Staging and production
 
-1. Deploy through manifests under `deploy/doks/`.
+1. Deploy through manifests under `config/deploy/doks/`.
 2. Keep API, frontend, and worker on the same component boundaries as
  [architecture.md](architecture.md).
 3. Open feature pull requests into `stage` first when `origin/stage` exists.
@@ -112,13 +112,13 @@ Do not set retired Auth key aliases after the shim window ends. See
 ## Observability
 
 1. Keep health endpoints mounted on the API.
-2. Keep Prometheus rules aligned with `deploy/doks/observability/` when present.
+2. Keep Prometheus rules aligned with `config/deploy/doks/observability/` when present.
 
 ## Cutover and migration notes
 
 Historical Render decommission notes and one-time database migration checklists
 may remain in local `docs/ops/`. Standing truth for current ops is this contract
-plus `deploy/doks/` and [env-variable.md](env-variable.md).
+plus `config/deploy/doks/` and [env-variable.md](env-variable.md).
 
 ## Required outcomes
 

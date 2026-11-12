@@ -139,7 +139,7 @@ Thumbs.db
 # --- Docs site builds ---
 docs/_build/
 /site
-user-docs/site/
+github-wikia/site/
 
 # --- Local tooling binaries / artifacts ---
 .tools/
@@ -200,7 +200,7 @@ packages/shared/src/metar_shared/iwxxm_xsd/**/__pycache__/
 
 
 # Local DOKS kube/access secrets (never commit)
-deploy/doks/.env.access
+config/deploy/doks/.env.access
 tmp/
 
 # EV-docs-spine — full legacy dumps (keep on disk; spine is root MD + CSV)

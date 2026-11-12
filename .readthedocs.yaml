@@ -8,8 +8,8 @@ build:
     python: "3.12"
 
 mkdocs:
-  configuration: user-docs/mkdocs.yml
+  configuration: github-wikia/mkdocs.yml
 
 python:
   install:
-    - requirements: user-docs/requirements.txt
+    - requirements: github-wikia/requirements.txt

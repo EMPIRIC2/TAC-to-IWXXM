@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Fail if user-docs cross-page links are not GitHub Wiki URLs."""
+"""Fail if github-wikia cross-page links are not GitHub Wiki URLs."""
 
 from __future__ import annotations
 

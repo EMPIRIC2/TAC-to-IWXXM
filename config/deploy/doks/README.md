@@ -21,13 +21,13 @@ Apply overlays with the matching kube context (`do-nyc1-metar-iwxxm` vs `do-nyc1
 
 ```bash
 # Secrets first (out-of-band), then:
-kubectl apply -k deploy/doks/overlays/staging
-kubectl apply -k deploy/doks/overlays/prod
+kubectl apply -k config/deploy/doks/overlays/staging
+kubectl apply -k config/deploy/doks/overlays/prod
 # preview:
-kubectl kustomize deploy/doks/overlays/staging
+kubectl kustomize config/deploy/doks/overlays/staging
 ```
 
-`deploy/doks/base` remains the shared resource set; prefer overlays for apply.
+`config/deploy/doks/base` remains the shared resource set; prefer overlays for apply.
 
 ## Secrets (create out-of-band)
 

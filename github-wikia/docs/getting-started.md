@@ -37,7 +37,7 @@ The machine-readable OpenAPI document is `{API}/openapi.json`.
 | TAF | Terminal aerodrome forecast in TAC |
 | Convert | Turn TAC text into IWXXM XML |
 | Validate | Make sure that IWXXM XML meets schema rules |
-| Lint | Examine TAC text against product rules before convert |
+| Lint | Check TAC text against product rules before convert |
 
 ## Examples (same sample METAR)
 

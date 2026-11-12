@@ -38,7 +38,7 @@ class TestTcF30006EnvContractCorpus:
         assert "env-variable.md" in corpus
 
     def test_deploy_doks_readme_pins_database_url_and_adr_033(self) -> None:
-        readme = (ROOT / "deploy/doks/README.md").read_text(encoding="utf-8")
+        readme = (ROOT / "config/deploy/doks/README.md").read_text(encoding="utf-8")
         assert "DATABASE_URL" in readme
         assert "ADR-033" in readme
         assert "SUPABASE_URL" in readme  # Auth secrets only

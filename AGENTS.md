@@ -42,11 +42,11 @@ Compatibility pointers: `docs/spec.md` → architecture; `docs/tech-spec.md` →
 | Path | Topic |
 |------|--------|
 | [docs/env-variable.md](docs/env-variable.md) | Environment variable contract |
-| [deploy/profiles/](deploy/profiles/) | Non-secret runtime JSON (`local` / `staging` / `prod` / `e2e`) |
+| [config/deploy/profiles/](config/deploy/profiles/) | Non-secret runtime JSON (`local` / `staging` / `prod` / `e2e`) |
 | [config/profiles/](config/profiles/) | ConversionProfile catalog (API image) |
 | [config/rules/](config/rules/) | Issue catalog and provenance map |
 | [config/engineering/](config/engineering/) | Coverage surface inventories |
-| [deploy/doks/](deploy/doks/) | DOKS deploy manifests and operator notes |
+| [config/deploy/doks/](config/deploy/doks/) | DOKS deploy manifests and operator notes |
 | [config/sbom/cyclonedx.json](config/sbom/cyclonedx.json) | CycloneDX SBOM (CI drift-checked on push) |
 
 ## Local opt-in (not in git; keep local copies)
@@ -138,4 +138,4 @@ Cite as: `[Corpus: <id>]` or `[Corpus: <path> §section]`.
 ## Folder layout
 
 See [docs/README.md](docs/README.md). Runtime profiles live under
-`deploy/profiles/`. CI allowlists live under `scripts/ci/policy/`.
+`config/deploy/profiles/`. CI allowlists live under `scripts/ci/policy/`.

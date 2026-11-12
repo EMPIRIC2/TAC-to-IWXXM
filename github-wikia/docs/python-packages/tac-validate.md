@@ -41,11 +41,11 @@ tac-validate --product METAR --json path/to/report.tac
 Exit code `0` means lint is OK. Exit code `1` means error-severity issues are
 present, or the file cannot be read.
 
-## Policy overlays
+## Optional policy files
 
-You can point `TAC_VALIDATE_POLICY_DIR` at optional TAC quality policy YAML.
-Detector packs can use `TAC_VALIDATE_DETECTOR_DIR`. See the monorepo overlay
-cookbook and the package `examples/` tree for starter files.
+You can set `TAC_VALIDATE_POLICY_DIR` to a directory of TAC quality policy YAML
+files. You can set `TAC_VALIDATE_DETECTOR_DIR` to a directory of detector YAML
+files. See the package `examples/` tree for starter files.
 
 ## Links
 

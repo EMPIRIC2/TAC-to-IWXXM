@@ -1,6 +1,6 @@
 """Regression test: live signoff and rollback name the DOKS hosts.
 
-Tracked deploy truth is ``deploy/doks/README.md`` after EV-repo-docs-cleanup
+Tracked deploy truth is ``config/deploy/doks/README.md`` after EV-repo-docs-cleanup
 (``docs/deploy.md`` removed). Staging hosts are ``api.staging.tac-to-iwxxm.com``
 and ``app.staging.tac-to-iwxxm.com``. [Corpus: tech-spec] [Corpus: tests]
 """
@@ -10,7 +10,7 @@ from __future__ import annotations
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[3]
-DEPLOY = ROOT / "deploy" / "doks" / "README.md"
+DEPLOY = ROOT / "config" / "deploy" / "doks" / "README.md"
 STAGING_HOSTS = (
     "https://api.staging.tac-to-iwxxm.com",
     "https://app.staging.tac-to-iwxxm.com",

@@ -5,7 +5,7 @@ site_description: Convert Traditional Alphanumeric Code (TAC) aviation weather t
 # Set site_url after the Read the Docs project exists (do not invent a host).
 repo_url: https://github.com/EMPIRIC2/TAC-to-IWXXM
 repo_name: EMPIRIC2/TAC-to-IWXXM
-edit_uri: edit/stage/user-docs/docs/
+edit_uri: edit/stage/github-wikia/docs/
 
 docs_dir: docs
 site_dir: site

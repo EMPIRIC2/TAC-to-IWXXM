@@ -1065,7 +1065,7 @@ internal design notes. Automated guards in the OpenAPI and frontend copy tests e
 
 ## Frontend Integration
 
-Runtime config via `GET /config.json` (copied from `deploy/profiles/prod.json` at deploy. publishable
+Runtime config via `GET /config.json` (copied from `config/deploy/profiles/prod.json` at deploy. publishable
 Auth key injected from `SUPABASE_PUBLISHABLE_KEY`).
 
 | Config field | Purpose |
@@ -1104,7 +1104,7 @@ OpenAPI / shared TS codegen remains planned (P1). this contract is the requireme
 ## References
 
 - docs/guides/API.md (detailed examples. update paths during implementation)
-- deploy/doks/ §Integration
+- config/deploy/doks/ §Integration
 -. [](adr/-validate-packages-bulletin-api-f7-f8.md). [](adr/-unified-tac-work-sessions.md). [](adr/-platform-independence-auth-do-doks.md)
 
 ### Session changelog

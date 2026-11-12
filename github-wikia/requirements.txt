@@ -1,0 +1,2 @@
+# Dev / Read the Docs build for github-wikia (MkDocs + built-in readthedocs theme).
+mkdocs>=1.6,<2
