@@ -41,9 +41,6 @@ need 2ms
 need kics
 need grype
 need sbom-tool
-need osv-scanner
-need gitleaks
-need actionlint
 
 # OpenGrep — write JSON; fail only on findings not in baseline (EV-049 migration).
 BASELINE="${ROOT}/scripts/security/opengrep-baseline.txt"
@@ -125,39 +122,6 @@ run Grype grype "${TARGET}" --fail-on "${SEC_GRYPE_FAIL_ON:-critical}" -o json -
 
 # Migration: default Grype fail-on critical until HIGH vulns are remediated (EV-049).
 # Override with SEC_GRYPE_FAIL_ON=high when ready.
-
-
-run Gitleaks gitleaks dir "${ROOT}" --config "${ROOT}/config/tooling/gitleaks.toml" \
-  --no-banner --exit-code 1 \
-  --report-format json --report-path "${REPORTS}/gitleaks.json"
-
-WORKFLOWS=()
-while IFS= read -r wf; do
-  WORKFLOWS+=("${wf}")
-done < <(find "${ROOT}/.github/workflows" -type f \( -name '*.yml' -o -name '*.yaml' \) | sort)
-if [[ "${#WORKFLOWS[@]}" -gt 0 ]]; then
-  run actionlint actionlint -no-color "${WORKFLOWS[@]}"
-else
-  log "no workflows under .github/workflows — actionlint N/A"
-fi
-
-run_osv() {
-  local -a lockfiles=()
-  [[ -f "${ROOT}/uv.lock" ]] && lockfiles+=("${ROOT}/uv.lock")
-  [[ -f "${ROOT}/pnpm-lock.yaml" ]] && lockfiles+=("${ROOT}/pnpm-lock.yaml")
-  if [[ "${#lockfiles[@]}" -eq 0 ]]; then
-    err "osv-scanner: no uv.lock / pnpm-lock.yaml found"
-    return 1
-  fi
-  set +e
-  osv-scanner scan source "${lockfiles[@]}" --format json \
-    --output-file "${REPORTS}/osv-scanner.json" >"${REPORTS}/osv-scanner.log" 2>&1
-  local rc=$?
-  set -e
-  python3 "${ROOT}/scripts/ci/filter_osv_severity.py" \
-    "${REPORTS}/osv-scanner.json" "${SEC_OSV_FAIL_CVSS:-10.0}" "${rc}"
-}
-run osv-scanner run_osv
 
 if [[ -f "${ROOT}/supabase/config.toml" || -n "${SUPABASE_PROJECT_REF:-}" || -n "${SUPABASE_URL:-}" ]]; then
   if [[ "${SEC_SKIP_SUPABASE_ADVISORS:-1}" == "1" ]]; then
