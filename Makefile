@@ -657,7 +657,7 @@ test-unit-worker:
 	fi
 
 # EV-080 / #1077 — scripts Python coverage (D-TP080-3). fail_under 100 + per-file.
-# Hyphenated dirs (tac-validate, test-data) are not importable subpackages — extra --cov=.
+# Hyphenated dirs under scripts/ (tac-validate, test-data) are not importable — extra --cov=.
 test-coverage-scripts:
 	@set -e; \
 	if ! find tests/scripts -type f \( -name 'test_*.py' -o -name '*_test.py' \) 2>/dev/null | grep -q .; then \

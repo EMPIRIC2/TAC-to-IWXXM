@@ -266,7 +266,7 @@ class METARTestGenerator:
             gifts_data_path=data_dir / "af-airports.csv",
         )
 
-        self.cache_dir = cache_dir or Path("test-data/generated-tests")
+        self.cache_dir = cache_dir or Path("data/_test-data/generated-tests")
         self.cache_dir.mkdir(parents=True, exist_ok=True)
 
         self.coverage = CoverageReport()

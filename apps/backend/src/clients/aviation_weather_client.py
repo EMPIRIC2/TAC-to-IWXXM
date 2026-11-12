@@ -565,7 +565,7 @@ class CachedAviationWeatherClient(AviationWeatherClient):
             Argument ``timeout``.
         """
         super().__init__(timeout=timeout)
-        self.cache_dir = cache_dir or Path("test-data/aviation-weather-cache")
+        self.cache_dir = cache_dir or Path("data/_test-data/aviation-weather-cache")
         self.ttl = ttl  # Time to live in seconds
         self.cache_dir.mkdir(parents=True, exist_ok=True)
 
