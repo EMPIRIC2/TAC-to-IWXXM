@@ -25,6 +25,11 @@ def validate_email_permissive(email: str) -> str:
     ------
     ValueError
         If the email format is invalid.
+
+    Examples
+    --------
+    >>> validate_email_permissive("User@Example.local")
+    'user@example.local'
     """
     if not email or "@" not in email:
         raise ValueError("Invalid email format")
@@ -60,6 +65,19 @@ class LoginRequest(BaseModel):
     @field_validator("email")
     @classmethod
     def _email(cls, value: str) -> str:
+        """
+        Normalize and validate login email.
+
+        Parameters
+        ----------
+        value : str
+            Raw email field.
+
+        Returns
+        -------
+        str
+            Normalized email address.
+        """
         return validate_email_permissive(value)
 
 
@@ -81,6 +99,19 @@ class RegisterRequest(BaseModel):
     @field_validator("email")
     @classmethod
     def _email(cls, value: str) -> str:
+        """
+        Normalize and validate registration email.
+
+        Parameters
+        ----------
+        value : str
+            Raw email field.
+
+        Returns
+        -------
+        str
+            Normalized email address.
+        """
         return validate_email_permissive(value)
 
 
@@ -102,6 +133,19 @@ class ConfirmRequest(BaseModel):
     @field_validator("type")
     @classmethod
     def _type(cls, value: str) -> str:
+        """
+        Normalize GoTrue confirmation type.
+
+        Parameters
+        ----------
+        value : str
+            Raw confirmation type.
+
+        Returns
+        -------
+        str
+            Lowercased allowed confirmation type.
+        """
         allowed = {
             "email",
             "signup",
@@ -188,6 +232,19 @@ class LogoutRequest(BaseModel):
     @field_validator("scope")
     @classmethod
     def _scope(cls, value: str | None) -> str | None:
+        """
+        Normalize optional GoTrue logout scope.
+
+        Parameters
+        ----------
+        value : str or None
+            Raw logout scope, empty string, or ``None``.
+
+        Returns
+        -------
+        str or None
+            Allowed scope, or ``None`` when unset.
+        """
         if value is None or value == "":
             return None
         allowed = {"global", "local", "others"}
