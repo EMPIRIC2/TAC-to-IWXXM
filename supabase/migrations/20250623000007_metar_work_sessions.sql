@@ -1,5 +1,4 @@
--- F5: per-user METAR work sessions (Draft → WIP → Finished + Failed)
--- ADR-011, ADR-012
+-- Per-user METAR work sessions (draft, wip, finished, failed).
 
 BEGIN;
 

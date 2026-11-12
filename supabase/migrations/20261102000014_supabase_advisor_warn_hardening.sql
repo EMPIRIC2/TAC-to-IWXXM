@@ -5,7 +5,6 @@
 --   - authenticated SELECT on owner-scoped product tables (RLS / PostgREST)
 -- Performance advisors are INFO-only (unused indexes / auth pool) — not in this migration.
 -- Existence-guarded so preview/staging branches missing legacy tables still apply.
--- [Corpus: tech-spec] [Corpus: deploy]
 
 BEGIN;
 

@@ -2,7 +2,6 @@
 -- without the older advisor remediations that ran only on primary.
 -- No anon/authenticated policies: service_role / DATABASE_URL bypass RLS.
 -- Clears security ERROR rls_disabled_in_public on staging-env.
--- [Corpus: tech-spec] [Corpus: deploy]
 
 BEGIN;
 

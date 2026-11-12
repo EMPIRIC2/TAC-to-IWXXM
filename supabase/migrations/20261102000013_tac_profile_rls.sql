@@ -1,9 +1,9 @@
--- Enable RLS on ConversionProfile tables created via Alembic (F7.w).
+-- Enable RLS on ConversionProfile tables created via Alembic.
 -- Clears security advisor ERROR rls_disabled_in_public on:
 --   public.tac_profile_rule_packs
 --   public.tac_profile_overlays
 -- Backend product paths use DATABASE_URL (role bypasses RLS); policies
--- protect PostgREST / direct JWT access. [Corpus: tech-spec] [Corpus: product §F7]
+-- protect PostgREST / direct JWT access.
 
 BEGIN;
 
