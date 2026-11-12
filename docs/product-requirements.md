@@ -54,9 +54,9 @@ Status values: Implemented, In progress, Planned, Superseded, Deprecated, Done.
 | IWXXM version handling | Implemented | Operator selects a vendor-pinned IWXXM release line |
 | Work history | Implemented | Sessions persist for guests (local) and logged-in users (server) |
 | General TAC to IWXXM conversion | Implemented | Supported products convert through `tac2iwxxm` |
-| Multi-product operator workbench | Implemented | One workbench covers product entry and session flows |
+| Multi-product operator workbench | Implemented | One workbench covers product entry and session flows; primary shell includes Convert, History, Rule catalogs, and Code names |
 | Near-realtime ingest worker | Implemented | Worker stores or quarantines ingest results |
-| Value-aware live decode | Done | Decode shows values and a plain-language summary |
+| Value-aware live decode | Done | Decode shows values and a plain-language summary; Code names tab lists glossary codes tagged by product, country, and WMO amendment |
 | Workbench IWXXM preview | Done | Preview and soft-fail lint UX are clear |
 | Validation stack performance | Implemented | Fast HTTP encoding and validate path meet plan gates |
 | Publishable tac-validate package | Implemented | Package installs from PyPI release tags |

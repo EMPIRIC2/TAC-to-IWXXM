@@ -460,6 +460,34 @@ optional `fixes[]`. New/migrated METAR/SPECI lint `code` values come from the
 `tac-validate` issue registry. no new response fields on this route.
 
 
+### Code name dictionary
+
+```
+GET /api/v1/code-name-dictionary
+```
+
+**Purpose**: Tagged Decoding glossary export for the operator **Code names** shell tab
+(product / country / WMO amendment filters). Source of truth is `packages/tac-decoding`
+(glossary + catalog meta). **Read-only**. Deepens live decode / Decoding catalog surfaces;
+does not invent a new product capability id.
+
+**Auth**: **None** (public operator app), same as `rule-catalogs`.
+
+**Query**:
+
+| Param | Required | Description |
+|-------|----------|-------------|
+| `q` | no | Case-insensitive substring on code or meaning |
+| `product` | no | Product tag (e.g. `METAR`, `SIGMET`) |
+| `country` | no | Country tag (e.g. `INTL`, `CA`) |
+| `wmo_amendment` | no | Exact amendment / edition label |
+
+**Response** (msgspec): `{ "items": [ … ], "facets": { "products": [], "countries": [], "wmo_amendments": [] } }`.
+
+Item keys: `id`, `code`, `meaning`, `products` (string[]), `countries` (string[]),
+`wmo_amendment` (string \| null). Facets are computed from the full dictionary (not the
+filtered subset). Operator-facing strings only — no planning ids.
+
 ### Rule catalogs 
 
 ```
@@ -468,7 +496,8 @@ GET /api/v1/rule-catalogs
 
 **Purpose**: Family-aware export of package-owned trust catalogs for the five-tab operator
 shell (TAC Validation, IWXXM Validation, Conversion, Dissemination, Decoding). Aggregates
-Python catalog APIs from owning packages. **Read-only**.
+Python catalog APIs from owning packages. **Read-only**. The separate **Code names** shell
+tab uses `GET /api/v1/code-name-dictionary` rather than overloading this route.
 
 **Auth**: **None** (public operator app public), same as `lint-issue-catalog`.
 

@@ -79,9 +79,9 @@ This section mirrors feature ids for quick agent load.
 | F4 | IWXXM version handling | Implemented |
 | F5 | User METAR work history | Implemented |
 | F6 | General TAC→IWXXM (`tac2iwxxm`) | Implemented |
-| F7 | Multi-product TAC operator UI / sessions | Implemented |
+| F7 | Multi-product TAC operator UI / sessions | Implemented (shell: Convert, History, Rule catalogs, Code names) |
 | F8 | Near-realtime TAC ingest → IWXXM gate | Implemented |
-| F9 | Value-aware live decode + plain-language summary | Done |
+| F9 | Value-aware live decode + plain-language summary | Done (Code names dictionary deepen) |
 | F10 | Workbench preview clarity (IWXXM pane + lint UX) | Done |
 | F11 | Validation stack perf + msgspec HTTP + XSD codegen | Implemented |
 | F12 | Publishable TAC product validation (`tac-validate`) | Implemented |

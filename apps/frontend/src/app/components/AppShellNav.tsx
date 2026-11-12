@@ -1,5 +1,5 @@
 /**
- * Primary operator shell navigation — Convert, History, and Rule catalogs.
+ * Primary operator shell navigation — Convert, History, Rule catalogs, Code names.
  *
  * Peer tabs for the operator shell; not a FileConverter panel.
  */
@@ -11,12 +11,13 @@ import { shellFrameClass, useLiveConvertLayout } from '/utils/liveConvertLayout'
  * @example
  * const _ = true;
  */
-export type ShellPrimaryView = 'converter' | 'history' | 'catalog';
+export type ShellPrimaryView = 'converter' | 'history' | 'catalog' | 'dictionary';
 
 export const SHELL_NAV_LABELS = {
   converter: 'Convert',
   history: 'History',
   catalog: 'Rule catalogs',
+  dictionary: 'Code names',
 } as const;
 
 interface AppShellNavProps {
@@ -26,10 +27,10 @@ interface AppShellNavProps {
   onNavigate: (view: ShellPrimaryView) => void;
 }
 
-const TABS: ShellPrimaryView[] = ['converter', 'history', 'catalog'];
+const TABS: ShellPrimaryView[] = ['converter', 'history', 'catalog', 'dictionary'];
 
 /**
- * Render Convert, History, and Rule catalogs.
+ * Render Convert, History, Rule catalogs, and Code names.
  *
  * @param props.activeView - Currently selected shell view
  * @param props.onNavigate - View change handler

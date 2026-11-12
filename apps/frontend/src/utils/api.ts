@@ -1019,6 +1019,71 @@ export async function fetchRuleCatalog(params: {
 }
 
 /**
+ * One code-name dictionary row from GET /code-name-dictionary.
+ */
+export interface CodeNameDictionaryItem {
+  id: string;
+  code: string;
+  meaning: string;
+  products: string[];
+  countries: string[];
+  wmo_amendment: string | null;
+}
+
+/**
+ * Facets for Code names filters.
+ */
+export interface CodeNameDictionaryFacets {
+  products: string[];
+  countries: string[];
+  wmo_amendments: string[];
+}
+
+/**
+ * Fetch the tagged Decoding code-name dictionary.
+ *
+ * **Endpoint**: GET /api/v1/code-name-dictionary
+ */
+export async function fetchCodeNameDictionary(
+  params: {
+    q?: string;
+    product?: string;
+    country?: string;
+    wmo_amendment?: string;
+    signal?: AbortSignal;
+  } = {},
+): Promise<{
+  items: CodeNameDictionaryItem[];
+  facets: CodeNameDictionaryFacets;
+}> {
+  const query = new URLSearchParams();
+  if (params.q?.trim()) {
+    query.set('q', params.q.trim());
+  }
+  if (params.product?.trim()) {
+    query.set('product', params.product.trim());
+  }
+  if (params.country?.trim()) {
+    query.set('country', params.country.trim());
+  }
+  if (params.wmo_amendment?.trim()) {
+    query.set('wmo_amendment', params.wmo_amendment.trim());
+  }
+  const suffix = query.toString() ? `?${query.toString()}` : '';
+  const response = await fetch(apiUrl(`/code-name-dictionary${suffix}`), {
+    method: 'GET',
+    signal: params.signal,
+  });
+  if (!response.ok) {
+    throw new Error(`code-name-dictionary failed: ${response.status}`);
+  }
+  return response.json() as Promise<{
+    items: CodeNameDictionaryItem[];
+    facets: CodeNameDictionaryFacets;
+  }>;
+}
+
+/**
  * Selection-option kinds for Convert (four) + Send drawer (dissemination).
  * @example
  * const _ = true;
