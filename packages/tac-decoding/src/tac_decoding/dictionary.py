@@ -8,13 +8,15 @@ from __future__ import annotations
 
 from collections.abc import Mapping
 from functools import lru_cache
-from importlib import resources
 from pathlib import Path
 from typing import Any, cast
 
 import yaml
 
 from tac_decoding.glossary import load_glossary
+
+_DATA_DIR = Path(__file__).resolve().parent / "data"
+_CATALOG_META_PATH = _DATA_DIR / "catalog_meta.yaml"
 
 _CORE_OBS = ("METAR", "SPECI")
 _CORE_FCST = ("TAF",)
@@ -112,6 +114,35 @@ def _string_list(raw: object) -> list[str]:
     return out
 
 
+def _token_fields_from_value(value_map: Mapping[Any, Any]) -> dict[str, Any]:
+    """
+    Extract dictionary tag fields from one YAML token map.
+
+    Parameters
+    ----------
+    value_map : Mapping[Any, Any]
+        Token entry from ``catalog_meta.yaml``.
+
+    Returns
+    -------
+    dict[str, Any]
+        Non-empty override fields only.
+    """
+    fields: dict[str, Any] = {}
+    if "products" in value_map:
+        fields["products"] = [p.upper() for p in _string_list(value_map.get("products"))]
+    if "countries" in value_map:
+        fields["countries"] = [c.upper() for c in _string_list(value_map.get("countries"))]
+    if "wmo_amendment" not in value_map:
+        return fields
+    amendment = value_map.get("wmo_amendment")
+    if isinstance(amendment, str) and amendment.strip():
+        fields["wmo_amendment"] = amendment.strip()
+    elif amendment is None:
+        fields["wmo_amendment"] = None
+    return fields
+
+
 def _tokens_dictionary_from_mapping(raw: object) -> dict[str, dict[str, Any]]:
     """
     Parse dictionary tag fields from ``catalog_meta.yaml``.
@@ -132,24 +163,11 @@ def _tokens_dictionary_from_mapping(raw: object) -> dict[str, dict[str, Any]]:
     tokens_raw = mapping.get("tokens", {})
     if not isinstance(tokens_raw, dict):
         return {}
-    token_map = cast(Mapping[Any, Any], tokens_raw)
     out: dict[str, dict[str, Any]] = {}
-    for key, value in token_map.items():
-        if not isinstance(key, str) or not key.strip():
+    for key, value in cast(Mapping[Any, Any], tokens_raw).items():
+        if not isinstance(key, str) or not key.strip() or not isinstance(value, dict):
             continue
-        if not isinstance(value, dict):
-            continue
-        value_map = cast(Mapping[Any, Any], value)
-        fields: dict[str, Any] = {}
-        if "products" in value_map:
-            fields["products"] = [p.upper() for p in _string_list(value_map.get("products"))]
-        if "countries" in value_map:
-            fields["countries"] = [c.upper() for c in _string_list(value_map.get("countries"))]
-        amendment = value_map.get("wmo_amendment")
-        if isinstance(amendment, str) and amendment.strip():
-            fields["wmo_amendment"] = amendment.strip()
-        elif amendment is None and "wmo_amendment" in value_map:
-            fields["wmo_amendment"] = None
+        fields = _token_fields_from_value(cast(Mapping[Any, Any], value))
         if fields:
             out[key.strip().upper()] = fields
     return out
@@ -164,22 +182,12 @@ def _load_raw_catalog_meta_doc() -> object:
     object
         Parsed YAML or empty mapping.
     """
+    if not _CATALOG_META_PATH.is_file():
+        return {}
     try:
-        root = resources.files("tac_decoding")
-        data = root.joinpath("data", "catalog_meta.yaml")
-        if not data.is_file():
-            fallback = Path(__file__).resolve().parent / "data" / "catalog_meta.yaml"
-            text = fallback.read_text(encoding="utf-8")
-        else:
-            text = data.read_text(encoding="utf-8")
-    except (OSError, TypeError, ValueError):
-        fallback = Path(__file__).resolve().parent / "data" / "catalog_meta.yaml"
-        if not fallback.is_file():
-            return {}
-        text = fallback.read_text(encoding="utf-8")
-    try:
+        text = _CATALOG_META_PATH.read_text(encoding="utf-8")
         loaded = yaml.safe_load(text)
-    except yaml.YAMLError:
+    except (OSError, TypeError, ValueError, yaml.YAMLError):
         return {}
     return loaded if loaded is not None else {}
 
