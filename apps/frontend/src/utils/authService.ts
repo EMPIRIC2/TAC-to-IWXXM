@@ -57,12 +57,14 @@ export interface LoginRequest {
   password: string;
 }
 
+/** Persist session tokens in localStorage for API Bearer use. */
 function storeTokens(session: AuthSession): void {
   localStorage.setItem('access_token', session.access_token);
   localStorage.setItem('refresh_token', session.refresh_token);
   localStorage.setItem('expires_at', session.expires_at.toString());
 }
 
+/** Clear stored session tokens from localStorage. */
 function clearTokens(): void {
   localStorage.removeItem('access_token');
   localStorage.removeItem('refresh_token');
@@ -76,10 +78,12 @@ export function getAccessToken(): string | null {
   return localStorage.getItem('access_token');
 }
 
+/** Get stored refresh token. */
 function getRefreshToken(): string | null {
   return localStorage.getItem('refresh_token');
 }
 
+/** Return true when the access token is missing or near expiry. */
 function isTokenExpired(): boolean {
   const expiresAt = localStorage.getItem('expires_at');
   if (!expiresAt) return true;
@@ -88,6 +92,7 @@ function isTokenExpired(): boolean {
   return currentTime >= expiryTime - 60;
 }
 
+/** Map a Supabase user to the operator AuthUser shape. */
 function mapUser(user: User | null | undefined): AuthUser {
   return {
     id: user?.id || '',
@@ -96,6 +101,7 @@ function mapUser(user: User | null | undefined): AuthUser {
   };
 }
 
+/** Map a Supabase session to the operator AuthSession shape. */
 function mapSession(session: Session | null | undefined): AuthSession | null {
   if (!session?.access_token) {
     return null;
@@ -107,6 +113,7 @@ function mapSession(session: Session | null | undefined): AuthSession | null {
   };
 }
 
+/** Build an AuthResponse from Supabase user and session. */
 function mapAuthResponse(
   user: User | null | undefined,
   session: Session | null | undefined,
@@ -117,11 +124,13 @@ function mapAuthResponse(
   };
 }
 
+/** Prefer Supabase error text; otherwise use the fallback. */
 function authErrorMessage(error: AuthError | null, fallback: string): string {
   const message = error?.message?.trim();
   return message || fallback;
 }
 
+/** Refresh the access token when it is expired or near expiry. */
 async function refreshTokenIfNeeded(): Promise<void> {
   if (!isTokenExpired()) {
     return;

@@ -850,7 +850,7 @@ See [migration-plan.md](ops/migration-plan.md) for step-by-step big-bang procedu
 | — | `packages/tac-validate` | New package ( amend) |
 | — | `packages/iwxxm-validate` | New package , IWXXM validation engine extract ( amend) |
 | `frontend` | `apps/frontend` | Full source in monorepo |
-| `auth/` (root, not submodule) | `packages/auth` | Library; routes in backend |
+| `auth/` (root, not submodule) | `packages/auth` | JWKS/service library (`auth`); FE-direct login |
 | `backend/` | `apps/backend` | Move + wire workspace deps |
 
 ### Legacy repositories
