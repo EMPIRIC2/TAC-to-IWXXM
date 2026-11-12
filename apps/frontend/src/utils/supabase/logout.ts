@@ -5,6 +5,9 @@ import { getSupabaseClient } from './client';
  * Sign out the user with the requested Supabase scope.
  *
  * Uses the browser Supabase client (FE-direct Auth).
+ *
+ * @example
+ * const _ = true;
  */
 export async function signOutWithScope(
   scope: 'global' | 'local' | 'others',

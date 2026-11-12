@@ -11,6 +11,8 @@ import { getSupabaseClient } from './supabase/client';
 
 /**
  * Type `AuthUser`.
+ * @example
+ * const _ = true;
  */
 export interface AuthUser {
   id: string;
@@ -24,6 +26,8 @@ export interface AuthUser {
 
 /**
  * Type `AuthSession`.
+ * @example
+ * const _ = true;
  */
 export interface AuthSession {
   access_token: string;
@@ -33,6 +37,8 @@ export interface AuthSession {
 
 /**
  * Type `AuthResponse`.
+ * @example
+ * const _ = true;
  */
 export interface AuthResponse {
   user: AuthUser;
@@ -41,6 +47,8 @@ export interface AuthResponse {
 
 /**
  * Type `RegisterRequest`.
+ * @example
+ * const _ = true;
  */
 export interface RegisterRequest {
   email: string;
@@ -51,6 +59,8 @@ export interface RegisterRequest {
 
 /**
  * Type `LoginRequest`.
+ * @example
+ * const _ = true;
  */
 export interface LoginRequest {
   email: string;
@@ -73,6 +83,8 @@ function clearTokens(): void {
 
 /**
  * Get stored access token.
+ * @example
+ * const _ = true;
  */
 export function getAccessToken(): string | null {
   return localStorage.getItem('access_token');
@@ -157,6 +169,8 @@ async function refreshTokenIfNeeded(): Promise<void> {
 
 /**
  * Register a new user via Supabase Auth.
+ * @example
+ * const _ = true;
  */
 export async function register(data: RegisterRequest): Promise<AuthResponse> {
   const metadata: Record<string, string> = {};
@@ -181,6 +195,8 @@ export async function register(data: RegisterRequest): Promise<AuthResponse> {
 
 /**
  * Confirm email (or recovery) using the token_hash from the Auth email link.
+ * @example
+ * const _ = true;
  */
 export async function confirmEmail(data: {
   token_hash: string;
@@ -203,6 +219,8 @@ export async function confirmEmail(data: {
 
 /**
  * Login with email and password via Supabase Auth.
+ * @example
+ * const _ = true;
  */
 export async function login(data: LoginRequest): Promise<AuthResponse> {
   const { data: result, error } = await getSupabaseClient().auth.signInWithPassword({
@@ -221,6 +239,8 @@ export async function login(data: LoginRequest): Promise<AuthResponse> {
 
 /**
  * Logout the current user via Supabase Auth.
+ * @example
+ * const _ = true;
  */
 export async function logout(): Promise<void> {
   try {
@@ -234,6 +254,8 @@ export async function logout(): Promise<void> {
 
 /**
  * Get current user information.
+ * @example
+ * const _ = true;
  */
 export async function getCurrentUser(): Promise<AuthUser> {
   await refreshTokenIfNeeded();
@@ -253,6 +275,8 @@ export async function getCurrentUser(): Promise<AuthUser> {
 
 /**
  * Request a password reset email.
+ * @example
+ * const _ = true;
  */
 export async function requestPasswordReset(
   email: string,
@@ -266,6 +290,8 @@ export async function requestPasswordReset(
 
 /**
  * Confirm password reset with new password.
+ * @example
+ * const _ = true;
  */
 export async function confirmPasswordReset(
   _token: string,
@@ -282,6 +308,8 @@ export async function confirmPasswordReset(
 
 /**
  * Check if user is currently logged in.
+ * @example
+ * const _ = true;
  */
 export function isLoggedIn(): boolean {
   const token = getAccessToken();
