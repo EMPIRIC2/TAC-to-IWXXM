@@ -1,3 +1,8 @@
+# Root Python workspace: exact-pin third-party deps to uv.lock (==).
+# Tooling SSOT for the monorepo — [tool.ruff], [tool.pytest.ini_options],
+# [tool.coverage.*], [tool.basedpyright]. Member packages should `extend`
+# this file (or omit duplicate tables) so CI inherits one policy.
+# [Corpus: tech-spec] TR-E04
 [project]
 name = "metar-iwxxm-workspace"
 version = "0.0.0"
@@ -11,18 +16,18 @@ package = false
 
 [dependency-groups]
 dev = [
-  "pre-commit>=4.0",
-  "ruff>=0.9",
-  "basedpyright>=1.29",
-  "pytest>=8.4",
-  "pytest-cov>=6.0",
-  "pytest-asyncio>=0.24",
-  "httpx>=0.28",
-  "httpx2>=2.0",
-  "respx>=0.21",
-  "maturin>=1.7",
-  "xsdata[cli]>=24.5",
-  "xsdata-pydantic>=24.5",
+  "pre-commit==4.6.0",
+  "ruff==0.15.17",
+  "basedpyright==1.39.8",
+  "pytest==9.1.0",
+  "pytest-cov==7.1.0",
+  "pytest-asyncio==1.4.0",
+  "httpx==0.28.1",
+  "httpx2==2.4.0",
+  "respx==0.23.1",
+  "maturin==1.14.1",
+  "xsdata[cli]==26.2",
+  "xsdata-pydantic==24.5",
   "metar-shared",
   "metar-backend",
   "metar-worker",
@@ -34,7 +39,7 @@ dev = [
   "dissemination",
   "workflows",
   "metar-auth",
-  "testcontainers[mysql,postgres]>=4.8",
+  "testcontainers[mysql,postgres]==4.14.2",
   "schemathesis==4.24.3",
   "pytest-gremlins==1.9.0",
 ]

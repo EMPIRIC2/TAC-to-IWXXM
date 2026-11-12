@@ -28,6 +28,13 @@ apps/backend/pyproject.toml:psycopg
 apps/backend/pyproject.toml:slowapi
 apps/backend/pyproject.toml:redis
 apps/backend/pyproject.toml:sentry-sdk
+# Backend dependency-groups.dev (sibling-owned ranges; root pins only)
+apps/backend/pyproject.toml:pytest
+apps/backend/pyproject.toml:pytest-cov
+apps/backend/pyproject.toml:pytest-asyncio
+apps/backend/pyproject.toml:locust
+apps/backend/pyproject.toml:httpx2
+apps/backend/pyproject.toml:fakeredis
 apps/worker/pyproject.toml:metar-shared
 apps/worker/pyproject.toml:tac2iwxxm
 apps/worker/pyproject.toml:tac-validate
@@ -39,3 +46,7 @@ apps/worker/pyproject.toml:pydantic-settings
 apps/worker/pyproject.toml:sqlalchemy
 apps/worker/pyproject.toml:psycopg
 apps/worker/pyproject.toml:sentry-sdk
+# Worker dependency-groups.dev (sibling-owned ranges; root pins only)
+apps/worker/pyproject.toml:pytest
+apps/worker/pyproject.toml:pytest-cov
+apps/worker/pyproject.toml:respx

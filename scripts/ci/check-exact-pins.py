@@ -4,9 +4,13 @@
 Scans:
   - **/package.json  dependencies + devDependencies + optionalDependencies
   - **/pyproject.toml project.dependencies + project.optional-dependencies
+    + dependency-groups (PEP 735 / uv)
 
-Allowlist: scripts/ci/policy/exact-pins-allowlist.txt (one path:name or glob per line; # comments).
-[Corpus: adr-037] [Corpus: deps]
+Workspace path deps listed under ``tool.uv.sources`` with ``workspace = true``
+may be bare names (no version). Allowlist:
+``scripts/ci/policy/exact-pins-allowlist.txt`` (one path:name or glob per line;
+``#`` comments).
+[Corpus: adr-037] [Corpus: deps] [Corpus: tech-spec] TR-E04
 """
 
 from __future__ import annotations
@@ -15,6 +19,7 @@ import json
 import re
 import sys
 from pathlib import Path
+from typing import Any
 
 ROOT = Path(__file__).resolve().parents[2]
 ALLOWLIST_PATH = ROOT / "scripts" / "ci" / "policy" / "exact-pins-allowlist.txt"
@@ -25,6 +30,7 @@ PY_RANGE_RE = re.compile(r"(>=|<=|~=|\^|>[^|=]|<[^|=]|\*)")
 
 
 def load_allowlist() -> set[str]:
+    """Load allowlisted path:name keys for non-exact pins."""
     if not ALLOWLIST_PATH.is_file():
         return set()
     out: set[str] = set()
@@ -37,6 +43,7 @@ def load_allowlist() -> set[str]:
 
 
 def allowed(allow: set[str], rel: str, name: str) -> bool:
+    """Return True when a dependency is allowlisted."""
     key = f"{rel}:{name}"
     if key in allow or name in allow or rel in allow:
         return True
@@ -48,7 +55,18 @@ def allowed(allow: set[str], rel: str, name: str) -> bool:
     return False
 
 
+def workspace_source_names(data: dict[str, Any]) -> set[str]:
+    """Return package names declared as uv workspace path sources."""
+    sources = (data.get("tool") or {}).get("uv", {}).get("sources") or {}
+    names: set[str] = set()
+    for name, spec in sources.items():
+        if isinstance(spec, dict) and spec.get("workspace") is True:
+            names.add(name)
+    return names
+
+
 def check_package_json(path: Path, allow: set[str], violations: list[str]) -> None:
+    """Collect non-exact pins from a package.json."""
     rel = str(path.relative_to(ROOT))
     data = json.loads(path.read_text(encoding="utf-8"))
     for section in ("dependencies", "devDependencies", "optionalDependencies"):
@@ -72,7 +90,37 @@ def check_package_json(path: Path, allow: set[str], violations: list[str]) -> No
                 violations.append(f"{rel} {section} {name}={ver!r}")
 
 
+def _check_py_req(
+    rel: str,
+    group: str,
+    req: str,
+    allow: set[str],
+    workspace_names: set[str],
+    violations: list[str],
+) -> None:
+    # strip markers
+    base = req.split(";")[0].strip()
+    # name[extras]==ver
+    m = re.match(r"^([A-Za-z0-9_.-]+)(\[[^\]]+\])?(.*)$", base)
+    if not m:
+        return
+    name, _extras, rest = m.group(1), m.group(2), m.group(3).strip()
+    if allowed(allow, rel, name):
+        return
+    if name in workspace_names and not rest:
+        return
+    if not rest:
+        violations.append(f"{rel} {group} {name} (unpinned)")
+        return
+    if PY_RANGE_RE.search(rest) or "," in rest:
+        # allow exact == only
+        if re.fullmatch(r"==[^,<=>~\^\*]+", rest):
+            return
+        violations.append(f"{rel} {group} {name}{rest!r}")
+
+
 def check_pyproject(path: Path, allow: set[str], violations: list[str]) -> None:
+    """Collect non-exact pins from a pyproject.toml."""
     rel = str(path.relative_to(ROOT))
     try:
         import tomllib
@@ -80,34 +128,22 @@ def check_pyproject(path: Path, allow: set[str], violations: list[str]) -> None:
         import tomli as tomllib  # type: ignore
 
     data = tomllib.loads(path.read_text(encoding="utf-8"))
+    workspace_names = workspace_source_names(data)
     project = data.get("project") or {}
     deps = list(project.get("dependencies") or [])
     opt = project.get("optional-dependencies") or {}
+    dep_groups = data.get("dependency-groups") or {}
     for group, items in [
         ("dependencies", deps),
         *[(f"optional-dependencies.{k}", v) for k, v in opt.items()],
+        *[(f"dependency-groups.{k}", v) for k, v in dep_groups.items()],
     ]:
         for req in items:
-            # strip markers
-            base = req.split(";")[0].strip()
-            # name[extras]==ver
-            m = re.match(r"^([A-Za-z0-9_.-]+)(\[[^\]]+\])?(.*)$", base)
-            if not m:
-                continue
-            name, _extras, rest = m.group(1), m.group(2), m.group(3).strip()
-            if allowed(allow, rel, name):
-                continue
-            if not rest:
-                violations.append(f"{rel} {group} {name} (unpinned)")
-                continue
-            if PY_RANGE_RE.search(rest) or "," in rest:
-                # allow exact == only
-                if re.fullmatch(r"==[^,<=>~\^\*]+", rest):
-                    continue
-                violations.append(f"{rel} {group} {name}{rest!r}")
+            _check_py_req(rel, group, req, allow, workspace_names, violations)
 
 
 def main() -> int:
+    """Run the exact-pin check across the workspace."""
     allow = load_allowlist()
     violations: list[str] = []
     skip_dirs = {
@@ -119,6 +155,8 @@ def main() -> int:
         ".security-reports",
         "dist",
         "build",
+        # Local opt-in / gitignored trees (not part of the product pin surface)
+        "third_party",
     }
     for path in ROOT.rglob("package.json"):
         if any(p in skip_dirs for p in path.parts):
