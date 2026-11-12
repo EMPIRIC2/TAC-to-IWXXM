@@ -1,7 +1,7 @@
 import { APIRequestContext, expect, Page } from '@playwright/test';
 import { fillManualTac } from './playwright-tac-editor';
 
-export { fillManualTac } from './playwright-tac-editor';
+export { applyTacSpanFix, fillManualTac } from './playwright-tac-editor';
 export {
   E2E_SUPABASE_ANON_KEY,
   E2E_SUPABASE_URL,
@@ -416,28 +416,6 @@ export async function openConvertConsoleTab(page: Page): Promise<void> {
   await ensureConvertResultsDrawerOpen(page);
   await page.getByTestId('convert-results-tab-console').click();
   await expect(page.getByTestId('convert-console-panel')).toBeVisible();
-}
-
-/**
- * Apply a live TAC lint span fix (e.g. add_terminator) via the editor event.
- *
- * Console quick-fix buttons were removed with WorkbenchConsole; fixes still
- * surface on CodeMirror spans and listen for `tac-span-fix`.
- *
- * @param page - Playwright page hosting the converter.
- * @param fixCode - Lint fix id (e.g. ``add_terminator``).
- */
-export async function applyTacSpanFix(page: Page, fixCode: string): Promise<void> {
-  const editor = page.getByTestId('tac-editor').last();
-  await expect(editor).toBeVisible();
-  await editor.locator('.cm-editor').evaluate((el, code) => {
-    el.dispatchEvent(
-      new CustomEvent('tac-span-fix', {
-        bubbles: true,
-        detail: { fixCode: code },
-      }),
-    );
-  }, fixCode);
 }
 
 /**
