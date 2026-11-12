@@ -75,12 +75,13 @@ test.describe('T4.4 / TC-F7-001 + TC-F7-004: live workbench', () => {
     await expect(page.getByTestId('tac-editor')).toBeVisible();
     await expect(page.getByTestId('decode-panel')).toBeVisible();
     await openConvertConsoleTab(page);
-    await expect(page.getByTestId('workbench-console')).toBeVisible();
+    await expect(page.getByTestId('convert-console-panel')).toBeVisible();
+    await expect(page.getByTestId('convert-status-strip')).toBeVisible();
     await openConvertSettings(page);
     // Product default: live IWXXM assist is on.
     await expect(page.getByTestId('live-iwxxm-toggle')).toBeChecked();
 
-    const product = page.locator('#param-product');
+    const product = page.getByTestId('product-type-select');
     await expect(product).toBeVisible();
     for (const value of [
       'auto',
@@ -124,8 +125,9 @@ test.describe('T4.4 / TC-F7-001 + TC-F7-004: live workbench', () => {
     );
 
     await openConvertConsoleTab(page);
-    await expect(page.getByTestId('workbench-console-lines')).toContainText(
-      /lint-tac|issue/i,
-    );
+    // Console tab no longer hosts WorkbenchConsole lines; status strip + lint
+    // summary still reflect the live lint pass.
+    await expect(page.getByTestId('convert-status-strip')).toBeVisible();
+    await expect(page.getByTestId('tac-lint-summary')).toBeVisible();
   });
 });

@@ -219,6 +219,8 @@ test.describe('EV-060 T2 — UJ-062 bulletin fields', () => {
     await page.getByTestId('issuing-center-input').fill('KW1C');
     await fillManualTac(page, METAR_TAC);
     await page.getByTestId('convert-button').click();
+    // Convert closes Settings; field error lives inside the Settings panel.
+    await openConvertSettings(page);
     await expect(page.getByTestId('issuing-center-field-error')).toBeVisible();
     await expect(page.getByTestId('issuing-center-field-error')).toContainText(
       /4-letter ICAO/i,

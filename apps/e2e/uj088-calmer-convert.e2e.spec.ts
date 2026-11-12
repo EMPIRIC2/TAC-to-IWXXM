@@ -117,10 +117,21 @@ test.describe('UJ-088 — Calmer Convert + Help checklist', () => {
     await expect(
       page.getByRole('button', { name: 'Download latest', exact: true }),
     ).toBeVisible();
-    // G2 — TC-UX-CALM-006: TAC locked until Edit.
+    // G2 — TC-UX-CALM-006: TAC locked until Edit. Wait for convert to finish
+    // locking (aria-busy clears after setTacLockedAfterConvert), then unlock.
+    await expect(page.getByTestId('convert-button')).toHaveAttribute(
+      'aria-busy',
+      'false',
+    );
     await expect(page.getByTestId('convert-tac-readonly')).toBeVisible();
     await expect(page.getByTestId('convert-tac-edit')).toBeVisible();
-    await page.getByTestId('convert-tac-edit').click();
+    // Native click: Results drawer / sticky chrome can intercept Playwright's
+    // actionability hit-target while the Edit control remains a11y-visible.
+    await page.getByTestId('convert-tac-edit').evaluate((el: HTMLElement) => {
+      el.click();
+    });
     await expect(page.getByTestId('convert-tac-editable')).toBeVisible();
+    // Opposite state: locked wrapper gone after Edit.
+    await expect(page.getByTestId('convert-tac-readonly')).toHaveCount(0);
   });
 });

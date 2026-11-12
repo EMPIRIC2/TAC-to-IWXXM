@@ -404,7 +404,10 @@ export async function openConvertDecoderTab(page: Page): Promise<void> {
 }
 
 /**
- * Open Results → Console (workbench console + conversion error log).
+ * Open Results → Console (status strip + conversion error log when present).
+ *
+ * Post-F37 / calm Convert: WorkbenchConsole was removed from this tab; the shell
+ * is `convert-console-panel` (LiveConvertStatusStrip + optional ErrorLogPanel).
  *
  * @param page - Playwright page hosting the converter.
  */
@@ -412,7 +415,29 @@ export async function openConvertConsoleTab(page: Page): Promise<void> {
   await leaveCalmEmptyHero(page);
   await ensureConvertResultsDrawerOpen(page);
   await page.getByTestId('convert-results-tab-console').click();
-  await expect(page.getByTestId('workbench-console')).toBeVisible();
+  await expect(page.getByTestId('convert-console-panel')).toBeVisible();
+}
+
+/**
+ * Apply a live TAC lint span fix (e.g. add_terminator) via the editor event.
+ *
+ * Console quick-fix buttons were removed with WorkbenchConsole; fixes still
+ * surface on CodeMirror spans and listen for `tac-span-fix`.
+ *
+ * @param page - Playwright page hosting the converter.
+ * @param fixCode - Lint fix id (e.g. ``add_terminator``).
+ */
+export async function applyTacSpanFix(page: Page, fixCode: string): Promise<void> {
+  const editor = page.getByTestId('tac-editor').last();
+  await expect(editor).toBeVisible();
+  await editor.locator('.cm-editor').evaluate((el, code) => {
+    el.dispatchEvent(
+      new CustomEvent('tac-span-fix', {
+        bubbles: true,
+        detail: { fixCode: code },
+      }),
+    );
+  }, fixCode);
 }
 
 /**
