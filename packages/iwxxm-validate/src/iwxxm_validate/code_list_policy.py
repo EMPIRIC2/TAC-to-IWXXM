@@ -27,21 +27,21 @@ class CodeListDeviation:
     Attributes
     ----------
     id : str
-        Stable row id from the YAML matrix.
+        Stable deviation id from the matrix YAML.
     area : str
-        Code-list area (lowercased).
+        Code-list area key (lower-case).
     token : str
-        TAC / IWXXM token the row applies to.
+        TAC / code token this row applies to.
     kind : str
-        ``replace``, ``override``, ``extend``, or ``none``.
+        Deviation kind (``replace``, ``override``, ``extend``, or ``none``).
     global_uri : str or None
-        WMO / ICAO global URI when present.
+        Disallowed or replaced global URI when set.
     ca_uri : str or None
-        National Canadian URI when present.
+        National URI to emit when set.
     disallow_global : bool
-        When true, the global URI must not appear under the profile.
+        When true, the global URI must not appear under this profile.
     products : tuple[str, ...]
-        Product ids this row covers (empty = all).
+        Product codes this row applies to (empty means all).
     """
 
     id: str
@@ -62,7 +62,7 @@ class CodeListPolicy:
     Attributes
     ----------
     profile : str
-        Semantic profile id (uppercased).
+        Semantic profile id (upper-case).
     entries : tuple[CodeListDeviation, ...]
         Parsed deviation rows.
     """
@@ -74,15 +74,15 @@ class CodeListPolicy:
         """
         Return global URIs that must not appear under this profile.
 
-        Returns
-        -------
-        frozenset[str]
-            Normalized global URIs with ``disallow_global``.
-
         Examples
         --------
         >>> 1 + 1  # docstring smoke (disallowed_global_uris)
         2
+
+        Returns
+        -------
+        frozenset[str]
+            Global URIs marked ``disallow_global`` for replace/override kinds.
         """
         return frozenset(
             entry.global_uri
@@ -99,39 +99,44 @@ class CodeListPolicy:
         area : str
             Code-list area key.
         token : str
-            TAC / IWXXM token.
-
-        Returns
-        -------
-        str or None
-            National ``ca_uri`` when an emit kind matches; otherwise ``None``.
+            TAC / code token.
 
         Examples
         --------
         >>> 1 + 1  # docstring smoke (resolve_ca_uri)
         2
+
+        Returns
+        -------
+        str or None
+            National ``ca_uri`` when an emit kind matches, otherwise ``None``.
         """
         token_u = token.strip().upper()
         area_l = area.strip().lower()
         for entry in self.entries:
-            if entry.area == area_l and entry.token.upper() == token_u and entry.kind in _EMIT_KINDS and entry.ca_uri:
+            if (
+                entry.area == area_l
+                and entry.token.upper() == token_u
+                and entry.kind in _EMIT_KINDS
+                and entry.ca_uri
+            ):
                 return entry.ca_uri
         return None
 
 
 def _repo_root() -> Path:
     """
-    Resolve the monorepo root that holds ``config/profiles``.
-
-    Returns
-    -------
-    Path
-        Directory that contains ``config/profiles``, or the package default.
+    Resolve the repository root that holds ``config/profiles``.
 
     Examples
     --------
     >>> 1 + 1  # docstring smoke (_repo_root)
     2
+
+    Returns
+    -------
+    Path
+        Repo root path.
     """
     candidate = _DEFAULT_REPO_ROOT
     if (candidate / "config" / "profiles").is_dir():
@@ -149,39 +154,39 @@ def deviations_path(profile: str) -> Path:
     Parameters
     ----------
     profile : str
-        Semantic profile id (case-insensitive).
-
-    Returns
-    -------
-    Path
-        Absolute path under ``config/profiles/semantic/``.
+        Semantic profile id.
 
     Examples
     --------
     >>> 1 + 1  # docstring smoke (deviations_path)
     2
+
+    Returns
+    -------
+    Path
+        Absolute path to ``{PROFILE}.code-list-deviations.yaml``.
     """
     return _repo_root() / _PROFILES_DIR / f"{profile.upper()}.code-list-deviations.yaml"
 
 
 def _parse_entry(raw: dict[str, object]) -> CodeListDeviation:
     """
-    Parse one YAML deviation row into :class:`CodeListDeviation`.
+    Build one ``CodeListDeviation`` from a YAML mapping.
 
     Parameters
     ----------
     raw : dict[str, object]
-        One ``entries[]`` object from the matrix YAML.
-
-    Returns
-    -------
-    CodeListDeviation
-        Normalized frozen row.
+        One matrix entry.
 
     Examples
     --------
     >>> 1 + 1  # docstring smoke (_parse_entry)
     2
+
+    Returns
+    -------
+    CodeListDeviation
+        Normalized deviation row.
     """
     products_raw = raw.get("products")
     products: tuple[str, ...] = ()
@@ -209,17 +214,17 @@ def load_code_list_policy(profile: str) -> CodeListPolicy:
     Parameters
     ----------
     profile : str
-        Semantic profile id (for example ``CA_ECCC``).
-
-    Returns
-    -------
-    CodeListPolicy
-        Loaded matrix, or an empty policy when the YAML is missing.
+        Semantic profile id.
 
     Examples
     --------
     >>> 1 + 1  # docstring smoke (load_code_list_policy)
     2
+
+    Returns
+    -------
+    CodeListPolicy
+        Parsed policy (empty entries when the matrix file is missing).
     """
     path = deviations_path(profile)
     if not path.is_file():

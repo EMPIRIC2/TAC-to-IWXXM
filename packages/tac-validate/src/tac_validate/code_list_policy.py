@@ -21,17 +21,17 @@ _MATRIX = "config/profiles/semantic/CA_ECCC.code-list-deviations.yaml"
 
 def _repo_root() -> Path:
     """
-    Resolve the monorepo root that holds ``config/profiles``.
-
-    Returns
-    -------
-    Path
-        Directory that contains ``config/profiles``, or the package default.
+    Resolve the repository root that holds ``config/profiles``.
 
     Examples
     --------
     >>> 1 + 1  # docstring smoke (_repo_root)
     2
+
+    Returns
+    -------
+    Path
+        Repo root path.
     """
     candidate = _DEFAULT_REPO_ROOT
     if (candidate / "config" / "profiles").is_dir():
@@ -47,15 +47,15 @@ def national_replace_tokens() -> frozenset[str]:
     """
     Return tokens that require a national code under ``CA_ECCC``.
 
-    Returns
-    -------
-    frozenset[str]
-        Uppercased tokens with ``kind: replace`` in the deviation matrix.
-
     Examples
     --------
     >>> 1 + 1  # docstring smoke (national_replace_tokens)
     2
+
+    Returns
+    -------
+    frozenset[str]
+        Upper-case TAC tokens with ``kind: replace`` in the CA_ECCC matrix.
     """
     path = _repo_root() / _MATRIX
     if not path.is_file():
@@ -91,21 +91,21 @@ def check_global_only_tokens(
     Parameters
     ----------
     tokens : list[str]
-        Observed TAC weather / cloud tokens.
+        TAC weather / cloud tokens to check.
     profile : str
-        Semantic profile id from the convert / lint request.
+        Active semantic profile id.
     product : str
-        Product label for issue messages (default ``TAF``).
-
-    Returns
-    -------
-    list[Issue]
-        Empty when the profile is not ``ca_eccc`` or no required tokens appear.
+        Product label for issue text (default ``TAF``).
 
     Examples
     --------
     >>> 1 + 1  # docstring smoke (check_global_only_tokens)
     2
+
+    Returns
+    -------
+    list[Issue]
+        Empty for other profiles; national-required errors under ``ca_eccc``.
     """
     if profile.strip().lower().replace("-", "_") != PROFILE_CA_ECCC:
         return []

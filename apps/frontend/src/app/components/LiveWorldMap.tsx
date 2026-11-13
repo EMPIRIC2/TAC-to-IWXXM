@@ -21,7 +21,6 @@ import {
   copyOpacity,
   fetchLivePlaces,
   filterPlaces,
-  formatObservedAt,
   LIVE_MAP_ALL_COUNTRIES,
   LIVE_MAP_ALL_REGIONS,
   LIVE_MAP_CANVAS,
@@ -32,7 +31,6 @@ import {
   LIVE_MAP_FILTER_REGION,
   LIVE_MAP_FILTER_TIME,
   LIVE_MAP_FULL_WINDOW,
-  LIVE_MAP_ISSUE_COPY,
   LIVE_MAP_LAST_12_HOURS,
   LIVE_MAP_LAST_3_HOURS,
   LIVE_MAP_LAST_6_HOURS,
@@ -41,16 +39,12 @@ import {
   LIVE_MAP_NOTICE,
   LIVE_MAP_PHENOMENA,
   LIVE_MAP_REFRESH_MS,
-  LIVE_MAP_SEND_TO_CONVERTER,
   LIVE_MAP_SPACE,
-  LIVE_MAP_TAC,
   LIVE_MAP_VIEWS,
   LIVE_MAP_ZOOM_HINT,
   pinColor,
   placeShowingReport,
-  placeTitle,
   pointerSlack,
-  pointNudge,
   popupWidth,
   productLabel,
   selectedLayerQuery,
@@ -66,15 +60,23 @@ import {
 } from '@/utils/liveMap';
 import { placeRegion, regionFilterNames } from '@/utils/liveMapRegions';
 import {
-  LIVE_MAP_STATION_CLUSTER_PICKER,
-  LIVE_MAP_TAC_LAYER_LABEL,
-  LIVE_MAP_TAC_LAYERS,
-  passesTacLayers,
-  placeToClusterPick,
-  stationClusterFilePicker,
-  type StationClusterPick,
+  clusterAriaLabel,
+  clusterByStation,
+  clusterReportChoices,
+  isStationPointPlace,
+  type StationCluster,
+} from '@/utils/liveMapStationCluster';
+import {
+  defaultTacOverlayVisibility,
+  toggleTacOverlay,
+  type TacOverlayVisibility,
 } from '@/utils/liveMapTacLayers';
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from './ui/collapsible';
+import { paintTacOverlays } from '@/utils/liveMapOverlayPaint';
+import { LiveMapTacOverlayToggles } from './LiveMapTacOverlayToggles';
+import { StationClusterPopup } from './StationClusterPopup';
+import { StationPopup } from './StationPopup';
+
+export { StationPopup } from './StationPopup';
 
 const EMPTY_PLACES: LivePlace[] = [];
 
@@ -230,8 +232,8 @@ function drawPlace(
     fitPointerTarget(layer, draw.kind);
     return layer.addTo(map);
   }
-  const [latitude, longitude] = at ?? [draw.latitude, draw.longitude];
-  const layer = L.circleMarker(shiftLatLng(latitude, longitude, lngOffset), {
+  const pointAt = at as [number, number];
+  const layer = L.circleMarker(shiftLatLng(pointAt[0], pointAt[1], lngOffset), {
     radius: 6,
     ...paint,
     fillOpacity: copyOpacity(0),
@@ -275,150 +277,72 @@ function redrawCanvas(map: L.Map): void {
 }
 
 /**
- * Compact station id for the map card header (ICAO key when present).
- *
- * @param placeKey - Station or area id
- * @param airportName - Optional airport display name
- * @returns Short station label for the dense card
- * @example
- * const _ = true;
- */
-function stationCardLabel(placeKey: string, airportName: string | undefined): string {
-  if (/^[A-Z][A-Z0-9]{3}$/.test(placeKey)) {
-    return placeKey;
-  }
-  return placeTitle(placeKey, airportName);
-}
-
-/**
- * Station text inside the map card.
- *
- * Compact header (product + station + issue-time select), TAC collapsed by
- * default, and Send to converter via the existing onLoad handoff.
- *
- * @param place - Cached place
- * @param layout - Side by side on a wide map, stacked on a narrow one
- * @param onShowing - Remembers the copy on the card
- * @param onLoad - Loads that copy into the converter
- * @example
- * const _ = true;
- */
-export function StationPopup({
-  place,
-  layout = 'side',
-  onShowing,
-  onLoad,
-}: {
-  place: LivePlace;
-  layout?: 'side' | 'stack';
-  onShowing?: (tac: string) => void;
-  onLoad?: (tac: string) => void;
-}) {
-  const [index, setIndex] = useState(0);
-  const [tacOpen, setTacOpen] = useState(false);
-  const report = place.reports[index];
-  useEffect(() => {
-    if (report) {
-      onShowing?.(report.tac);
-    }
-  }, [onShowing, report]);
-  if (!report) {
-    return null;
-  }
-  const airportName = airports.findWhere({ icao: place.place_key })?.name;
-  const station = stationCardLabel(place.place_key, airportName);
-  return (
-    <div
-      data-testid="live-map-detail"
-      className="max-h-48 overflow-y-auto text-sm text-gray-900"
-    >
-      <div
-        data-testid="live-map-card"
-        data-layout={layout}
-        className="flex flex-col gap-2"
-      >
-        <div className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1">
-          <p className="text-sm font-semibold" data-testid="live-map-product">
-            <span
-              aria-hidden="true"
-              className="mr-1.5 inline-block h-2.5 w-2.5 rounded-full align-middle"
-              style={{ backgroundColor: pinColor(place.product) }}
-            />
-            {productLabel(place.product)}
-          </p>
-          <p className="font-medium" data-testid="live-map-station">
-            {station}
-          </p>
-          {place.reports.length > 1 ? (
-            <select
-              className="h-7 min-w-[9rem] max-w-full rounded-md border border-gray-200 bg-white px-1.5 text-xs text-gray-900"
-              data-testid="live-map-issue-time"
-              aria-label={LIVE_MAP_ISSUE_COPY}
-              value={String(index)}
-              onClick={(event) => {
-                event.stopPropagation();
-              }}
-              onChange={(event) => {
-                event.stopPropagation();
-                setIndex(Number(event.target.value));
-              }}
-            >
-              {place.reports.map((copy, copyIndex) => (
-                <option
-                  key={`${copy.observed_at}-${copyIndex}`}
-                  value={String(copyIndex)}
-                >
-                  {formatObservedAt(copy.observed_at)}
-                </option>
-              ))}
-            </select>
-          ) : (
-            <p className="text-xs text-gray-600" data-testid="live-map-issued">
-              {formatObservedAt(report.observed_at)}
-            </p>
-          )}
-        </div>
-        <Collapsible
-          className="min-w-0"
-          data-testid="live-map-tac-section"
-          open={tacOpen}
-          onOpenChange={setTacOpen}
-        >
-          <CollapsibleTrigger
-            className="cursor-pointer text-xs font-medium text-gray-800"
-            data-testid="live-map-tac-toggle"
-          >
-            {LIVE_MAP_TAC}
-          </CollapsibleTrigger>
-          <CollapsibleContent>
-            <pre
-              className="mt-1 max-h-28 overflow-y-auto rounded-md bg-gray-50 p-2 whitespace-pre-wrap font-mono text-xs text-gray-800"
-              data-testid="live-map-tac"
-            >
-              {report.tac}
-            </pre>
-          </CollapsibleContent>
-        </Collapsible>
-        <button
-          type="button"
-          className="self-start rounded-md bg-gray-900 px-2.5 py-1 text-xs font-medium text-white hover:bg-gray-800"
-          data-testid="live-map-send-to-converter"
-          onClick={(event) => {
-            event.stopPropagation();
-            onLoad?.(report.tac);
-          }}
-        >
-          {LIVE_MAP_SEND_TO_CONVERTER}
-        </button>
-      </div>
-    </div>
-  );
-}
-
-/**
- * Open a scrolling popup on a station. A cluster does not use this.
+ * Open a scrolling popup on a station or same-station cluster.
  *
  * @param layer - Station layer
+ * @param cluster - Same-station members
+ * @param roots - React roots to unmount with the layer
+ * @example
+ * const _ = true;
+ */
+function showClusterPopup(
+  layer: L.Layer,
+  cluster: StationCluster,
+  roots: Root[],
+  map: L.Map,
+  onShowing: (tac: string) => void,
+  onLoad: (tac: string) => void,
+) {
+  const choices = clusterReportChoices(cluster);
+  if (choices.length === 0) {
+    return;
+  }
+  const stale = roots.splice(0);
+  stale.forEach((root) => {
+    root.unmount();
+  });
+  const node = document.createElement('div');
+  const root = createRoot(node);
+  const layout = cardLayout(map.getSize().x);
+  const sole = choices[0];
+  flushSync(() => {
+    root.render(
+      choices.length > 1 || !sole ? (
+        <StationClusterPopup
+          cluster={cluster}
+          layout={layout}
+          onShowing={onShowing}
+          onLoad={onLoad}
+        />
+      ) : (
+        <StationPopup
+          place={sole.place}
+          layout={layout}
+          onShowing={onShowing}
+          onLoad={onLoad}
+        />
+      ),
+    );
+  });
+  roots.push(root);
+  const width = popupWidth(map.getSize().x);
+  layer.bindPopup(node, {
+    maxWidth: width,
+    minWidth: Math.min(280, width),
+    autoPan: false,
+    keepInView: false,
+    autoClose: true,
+    closeOnClick: true,
+    className: 'live-map-popup',
+  });
+  layer.openPopup();
+  layer.getPopup()?.update();
+}
+
+/**
+ * Open a scrolling popup on an area shape (one place).
+ *
+ * @param layer - Drawn shape
  * @param place - Cached place
  * @param roots - React roots to unmount with the layer
  * @example
@@ -436,10 +360,8 @@ function showPopup(
     return;
   }
   const stale = roots.splice(0);
-  queueMicrotask(() => {
-    stale.forEach((root) => {
-      root.unmount();
-    });
+  stale.forEach((root) => {
+    root.unmount();
   });
   const node = document.createElement('div');
   const root = createRoot(node);
@@ -492,8 +414,9 @@ export function LiveWorldMap({
   const [region, setRegion] = useState('all');
   const [timePreset, setTimePreset] = useState<MapTimePreset>('full');
   const [phenomena, setPhenomena] = useState<ReadonlySet<string>>(new Set());
-  const [tacLayers, setTacLayers] = useState<ReadonlySet<string>>(new Set());
-  const [clusterPicker, setClusterPicker] = useState<StationClusterPick[]>([]);
+  const [tacOverlays, setTacOverlays] = useState<TacOverlayVisibility>(
+    defaultTacOverlayVisibility,
+  );
   const [bounds, setBounds] = useState<MapBounds | null>(null);
   const [zoom, setZoom] = useState(2);
   const [places, setPlaces] = useState<LivePlace[]>([]);
@@ -514,8 +437,6 @@ export function LiveWorldMap({
     region,
     time: timePreset,
     phenomena,
-    tacLayers,
-    passesTacLayers,
     countryOf: (placeKey) => airports.findWhere({ icao: placeKey })?.country,
     regionOf: (latitude, longitude) => placeRegion(latitude, longitude),
   });
@@ -544,55 +465,112 @@ export function LiveWorldMap({
     const roots: Root[] = [];
     const layers: L.Layer[] = [];
     let focused = false;
-    const cohorts = new Map<string, LivePlace[]>();
-    visible.forEach((place) => {
-      if (drawForPlace(place).kind !== 'point') {
-        return;
-      }
-      const key = `${place.latitude.toFixed(3)},${place.longitude.toFixed(3)}`;
-      const group = cohorts.get(key) ?? [];
-      group.push(place);
-      cohorts.set(key, group);
-    });
+    const clusters = clusterByStation(visible);
+    const clusterOf = new Map(
+      clusters.map((cluster) => [cluster.stationKey, cluster] as const),
+    );
+
     WORLD_COPY_LNG_OFFSETS.forEach((lngOffset) => {
+      const drawnStations = new Set<string>();
       visible.forEach((place) => {
-        const draw = drawForPlace(place);
-        const key = `${place.latitude.toFixed(3)},${place.longitude.toFixed(3)}`;
-        const group = cohorts.get(key) ?? [];
-        const slot = Math.max(0, group.indexOf(place));
-        const nudge = pointNudge(slot, group.length);
-        const moved = nudge.latitude !== 0 || nudge.longitude !== 0;
-        const at: [number, number] | undefined =
-          draw.kind === 'point' &&
-          (moved || place.reports.length > 1 || group.length > 1)
-            ? [draw.latitude + nudge.latitude, draw.longitude + nudge.longitude]
-            : undefined;
-        const layer = drawPlace(map, place, at, lngOffset);
-        if (at && place.reports.length > 1) {
-          place.reports.slice(1).forEach((_, reportIndex) => {
+        if (isStationPointPlace(place)) {
+          if (drawnStations.has(place.place_key)) {
+            return;
+          }
+          drawnStations.add(place.place_key);
+          const cluster = clusterOf.get(place.place_key);
+          /* v8 ignore start -- clusterOf is built from the same visible station set */
+          if (!cluster) {
+            return;
+          }
+          /* v8 ignore stop */
+          const anchor = cluster.members[0] as LivePlace;
+          const choices = clusterReportChoices(cluster);
+          const layer = drawPlace(
+            map,
+            anchor,
+            [cluster.latitude, cluster.longitude],
+            lngOffset,
+          );
+          if (choices.length > 1 && zoom >= 6) {
             layers.push(
-              L.circleMarker(shiftLatLng(at[0], at[1], lngOffset), {
-                radius: 4,
-                ...shapePaint(place.product),
-                fillOpacity: copyOpacity(reportIndex + 1),
+              L.marker(shiftLatLng(cluster.latitude, cluster.longitude, lngOffset), {
                 interactive: false,
+                keyboard: false,
+                icon: L.divIcon({
+                  className: 'live-map-cluster-chip',
+                  html: `<span style="display:inline-flex;align-items:center;height:16px;padding:0 6px;border-radius:999px;background:#111827;color:#fff;font:600 10px/16px ui-sans-serif,system-ui,sans-serif">${choices.length}</span>`,
+                  iconSize: [28, 16],
+                }),
               }).addTo(map),
             );
+          }
+          let cardOpen = false;
+          const firstChoice = choices[0];
+          let showingTac =
+            firstChoice?.place.reports[firstChoice.reportIndex]?.tac ?? '';
+          let showingPlace = firstChoice?.place ?? anchor;
+          const remember = (tac: string) => {
+            showingTac = tac;
+          };
+          const loadShowing = (tac: string) => {
+            showingTac = tac;
+            openPlaceRef.current?.(placeShowingReport(showingPlace, tac));
+          };
+          const reveal = () => {
+            showClusterPopup(layer, cluster, roots, map, remember, (tac) => {
+              const match = choices.find(
+                (row) => row.place.reports[row.reportIndex]?.tac === tac,
+              );
+              /* v8 ignore start -- converter send always uses a chosen report TAC */
+              showingPlace = match?.place ?? showingPlace;
+              /* v8 ignore stop */
+              loadShowing(tac);
+            });
+            if (choices.length > 0) {
+              cardOpen = true;
+            }
+          };
+          layer.on('mouseover', () => {
+            paintHover(layer, anchor, true);
+            if (!cardOpen) {
+              reveal();
+            }
           });
+          layer.on('mouseout', () => {
+            paintHover(layer, anchor, false);
+          });
+          layer.on('click', () => {
+            if (cardOpen) {
+              loadShowing(showingTac);
+            } else {
+              reveal();
+            }
+          });
+          layer.on('keydown', (event) => {
+            openOnKey(event, () => {
+              if (cardOpen) {
+                loadShowing(showingTac);
+              } else {
+                reveal();
+              }
+            });
+          });
+          nameLayer(layer, clusterAriaLabel(cluster));
+          if (
+            lngOffset === 0 &&
+            !focused &&
+            focusStation &&
+            cluster.stationKey === focusStation
+          ) {
+            focused = true;
+            reveal();
+          }
+          layers.push(layer);
+          layers.push(...paintTacOverlays(map, cluster, tacOverlays));
+          return;
         }
-        if (at && group.length > 1 && zoom >= 6) {
-          layers.push(
-            L.marker(shiftLatLng(at[0], at[1], lngOffset), {
-              interactive: false,
-              keyboard: false,
-              icon: L.divIcon({
-                className: 'live-map-type-chip',
-                html: `<span style="display:inline-flex;align-items:center;height:16px;padding:0 6px;border-radius:999px;background:#111827;color:#fff;font:600 10px/16px ui-sans-serif,system-ui,sans-serif">${productLabel(place.product)}</span>`,
-                iconSize: [72, 16],
-              }),
-            }).addTo(map),
-          );
-        }
+        const layer = drawPlace(map, place, undefined, lngOffset);
         let cardOpen = false;
         let showingTac = place.reports[0]?.tac ?? '';
         const remember = (tac: string) => {
@@ -634,15 +612,6 @@ export function LiveWorldMap({
           });
         });
         nameLayer(layer, `${place.place_key} ${productLabel(place.product)}`);
-        if (
-          lngOffset === 0 &&
-          !focused &&
-          focusStation &&
-          place.place_key === focusStation
-        ) {
-          focused = true;
-          reveal();
-        }
         layers.push(layer);
       });
     });
@@ -656,7 +625,7 @@ export function LiveWorldMap({
         });
       });
     };
-  }, [visible, focusStation, zoom]);
+  }, [visible, focusStation, zoom, tacOverlays]);
 
   useEffect(() => {
     const node = host.current as HTMLDivElement;
@@ -875,79 +844,13 @@ export function LiveWorldMap({
             );
           })}
         </div>
-        <div className="mt-3 flex flex-wrap items-center gap-2">
-          <span className="text-[11px] font-semibold tracking-wide text-gray-400 uppercase">
-            {LIVE_MAP_TAC_LAYER_LABEL}
-          </span>
-          {LIVE_MAP_TAC_LAYERS.map((item) => {
-            const on = tacLayers.has(item.id);
-            return (
-              <label
-                key={item.id}
-                className={`inline-flex cursor-pointer items-center rounded-md border px-3 py-1 text-sm font-medium transition ${
-                  on
-                    ? 'border-sky-800 bg-sky-800 text-white dark:border-sky-200 dark:bg-sky-200 dark:text-gray-900'
-                    : 'border-gray-200 bg-white text-gray-600 hover:border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300'
-                }`}
-              >
-                <input
-                  type="checkbox"
-                  className="sr-only"
-                  checked={on}
-                  data-testid={`tac-layer-${item.id}`}
-                  onChange={() => {
-                    const next = new Set(tacLayers);
-                    if (next.has(item.id)) {
-                      next.delete(item.id);
-                    } else {
-                      next.add(item.id);
-                    }
-                    setTacLayers(next);
-                    const picks = stationClusterFilePicker(
-                      visible
-                        .filter((place) =>
-                          passesTacLayers(place.reports[0]?.tac ?? '', next),
-                        )
-                        .map((place) => placeToClusterPick(place)),
-                    );
-                    setClusterPicker(next.size > 0 ? picks : []);
-                  }}
-                />
-                {item.label}
-              </label>
-            );
-          })}
-        </div>
-        {clusterPicker.length > 0 ? (
-          <div
-            className="mt-3 max-h-40 overflow-y-auto border border-gray-200 bg-white p-2 text-sm dark:border-gray-700 dark:bg-gray-950"
-            data-testid="station-cluster-file-picker"
-          >
-            <p className="mb-1 text-[11px] font-semibold tracking-wide text-gray-400 uppercase">
-              {LIVE_MAP_STATION_CLUSTER_PICKER}
-            </p>
-            <ul className="space-y-1">
-              {clusterPicker.map((row) => (
-                <li key={`${row.icao}-${row.observedAt}`}>
-                  <button
-                    type="button"
-                    className="w-full truncate text-left text-gray-700 hover:underline dark:text-gray-200"
-                    data-testid={`cluster-pick-${row.icao}`}
-                    onClick={() => {
-                      const place = visible.find((p) => p.place_key === row.icao);
-                      if (!place) {
-                        return;
-                      }
-                      openPlaceRef.current?.(placeShowingReport(place, row.tac));
-                    }}
-                  >
-                    {row.icao} · {row.product} · {row.observedAt}
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </div>
-        ) : null}
+        <LiveMapTacOverlayToggles
+          visibility={tacOverlays}
+          places={visible}
+          onToggle={(id) => {
+            setTacOverlays((current) => toggleTacOverlay(current, id));
+          }}
+        />
       </div>
       <div className="flex flex-wrap items-center justify-between gap-2 px-1">
         <p
