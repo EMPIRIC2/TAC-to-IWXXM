@@ -20,7 +20,11 @@ import {
   windIntensityBand,
   windIntensityRadius,
 } from '@/utils/liveMapTacLayers';
-import { parseTacOverlayFields, tempTokenToC } from '@/utils/liveMapTacParse';
+import {
+  newestTac,
+  parseTacOverlayFields,
+  tempTokenToC,
+} from '@/utils/liveMapTacParse';
 
 const metarTs: LivePlace = {
   place_key: 'KJFK',
@@ -163,14 +167,36 @@ describe('TAC overlay visibility', () => {
       ),
     ).toBe(0);
     expect(placeFeedsOverlay(metarTs.reports, 'thunder')).toBe(true);
+    expect(placeFeedsOverlay(metarTs.reports, 'precip')).toBe(true);
+    expect(placeFeedsOverlay(metarTs.reports, 'temp')).toBe(true);
     expect(placeFeedsOverlay(metarIce.reports, 'ice')).toBe(true);
     expect(overlayApplies(parseTacOverlayFields(thunderTac), 'windVector')).toBe(true);
+    expect(overlayApplies(parseTacOverlayFields(thunderTac), 'precip')).toBe(true);
+    expect(overlayApplies(parseTacOverlayFields(thunderTac), 'temp')).toBe(true);
+    expect(overlayApplies(parseTacOverlayFields(thunderTac), 'thunder')).toBe(true);
+    expect(overlayApplies(parseTacOverlayFields(iceTac), 'ice')).toBe(true);
     expect(
       overlayApplies(parseTacOverlayFields('METAR KAAA VRB03KT'), 'windVector'),
     ).toBe(false);
     expect(
       overlayApplies(parseTacOverlayFields('METAR KAAA VRB03KT'), 'windIntensity'),
     ).toBe(true);
+  });
+});
+
+describe('newestTac and gust parsing', () => {
+  it('returns empty when there are no reports and keeps gustKt when present', () => {
+    expect(newestTac([])).toBe('');
+    const withGust = parseTacOverlayFields(
+      'METAR KJFK 131200Z 18025G35KT 1SM TSRA 12/08',
+    );
+    expect(withGust.wind?.gustKt).toBe(35);
+    const withoutGust = parseTacOverlayFields('METAR KJFK 131200Z 18012KT 10SM 12/08');
+    expect(withoutGust.wind?.gustKt).toBeNull();
+    const duplicatePrecip = parseTacOverlayFields(
+      'METAR KJFK 131200Z 18012KT TSRA TSRA 12/08',
+    );
+    expect(duplicatePrecip.precipCodes).toEqual(['TSRA']);
   });
 });
 
@@ -214,5 +240,14 @@ describe('clusterByStation', () => {
   it('returns an empty list when there are no station points', () => {
     expect(clusterByStation([])).toEqual([]);
     expect(clusterByStation([areaSigmet])).toEqual([]);
+  });
+
+  it('labels a single-report station with only the station key', () => {
+    const alone = clusterByStation([metarIce])[0];
+    expect(alone).toBeDefined();
+    if (!alone) {
+      return;
+    }
+    expect(clusterAriaLabel(alone)).toBe('CYYZ');
   });
 });

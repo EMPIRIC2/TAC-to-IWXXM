@@ -822,7 +822,7 @@ describe('LiveWorldMap', () => {
     expect(await screen.findByTestId('live-map-error')).toBeInTheDocument();
   });
 
-  it('filters by TAC precip layer and opens a station from the cluster picker', async () => {
+  it('paints TAC precip overlays and opens a rainy station from the map', async () => {
     const user = userEvent.setup();
     const onOpenPlace = vi.fn();
     const rainy: LivePlace = {
@@ -860,23 +860,88 @@ describe('LiveWorldMap', () => {
         json: async () => ({ places: [rainy, clear] }),
       }),
     );
+    vi.mocked(L.divIcon).mockClear();
+    vi.mocked(L.marker).mockClear();
     render(<LiveWorldMap onOpenPlace={onOpenPlace} />);
-    expect(await screen.findByTestId('tac-layer-precip')).toBeInTheDocument();
-    await user.click(screen.getByTestId('tac-layer-precip'));
-    expect(
-      await screen.findByTestId('station-cluster-file-picker'),
-    ).toBeInTheDocument();
-    expect(screen.getByTestId('cluster-pick-KJFK')).toBeInTheDocument();
-    expect(screen.queryByTestId('cluster-pick-KBOS')).not.toBeInTheDocument();
-    await user.click(screen.getByTestId('cluster-pick-KJFK'));
+    expect(await screen.findByTestId('tac-overlay-precip')).toBeInTheDocument();
+    expect(screen.queryByTestId('live-map-tac-overlay-empty')).not.toBeInTheDocument();
+    await user.click(screen.getByTestId('tac-overlay-precip'));
+    await waitFor(() => {
+      expect(L.divIcon).toHaveBeenCalledWith(
+        expect.objectContaining({
+          className: expect.stringContaining('live-map-tac-overlay'),
+        }),
+      );
+    });
+    expect(L.marker).toHaveBeenCalled();
+    expect(screen.queryByTestId('live-map-tac-overlay-empty')).not.toBeInTheDocument();
+    const preventDefault = vi.fn();
+    await waitFor(() => expect(keys.length).toBeGreaterThan(0));
+    act(() => {
+      keys[0]?.({ originalEvent: { key: 'Enter', preventDefault } });
+    });
+    expect(preventDefault).toHaveBeenCalled();
+    expect(await screen.findByTestId('live-map-station')).toHaveTextContent('KJFK');
+    act(() => {
+      keys[0]?.({ originalEvent: { key: 'Enter', preventDefault } });
+    });
+    await user.click(screen.getByTestId('live-map-send-to-converter'));
     expect(onOpenPlace).toHaveBeenCalledWith(
       expect.objectContaining({ place_key: 'KJFK' }),
     );
-    await user.click(screen.getByTestId('tac-layer-precip'));
+    await user.click(screen.getByTestId('tac-overlay-precip'));
     await waitFor(() => {
-      expect(
-        screen.queryByTestId('station-cluster-file-picker'),
-      ).not.toBeInTheDocument();
+      expect(screen.getByTestId('tac-overlay-precip')).not.toBeChecked();
     });
+  });
+
+  it('opens an empty-report area without a card and loads on area keydown', async () => {
+    const emptyArea: LivePlace = {
+      place_key: 'sigmet-empty',
+      product: 'sigmet',
+      latitude: 40,
+      longitude: -74,
+      geometry: {
+        kind: 'polygon',
+        coordinates: [
+          [40, -74],
+          [41, -73],
+          [40, -72],
+        ],
+      },
+      reports: [],
+    };
+    const filledArea: LivePlace = {
+      ...hazard,
+      place_key: 'sigmet-filled',
+    };
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue({
+        ok: true,
+        json: async () => ({ places: [emptyArea, filledArea] }),
+      }),
+    );
+    const onOpenPlace = vi.fn();
+    render(<LiveWorldMap onOpenPlace={onOpenPlace} />);
+    await paintedPolygon();
+    await waitFor(() => expect(keys.length).toBeGreaterThan(0));
+    act(() => {
+      hovers[0]?.();
+    });
+    expect(screen.queryByTestId('live-map-card')).not.toBeInTheDocument();
+    act(() => {
+      leaves[0]?.();
+    });
+    act(() => {
+      hovers[1]?.();
+    });
+    expect(await screen.findByTestId('live-map-station')).toHaveTextContent('Area');
+    const preventDefault = vi.fn();
+    act(() => {
+      keys[1]?.({ originalEvent: { key: 'Enter', preventDefault } });
+    });
+    expect(preventDefault).toHaveBeenCalled();
+    expect(onOpenPlace).toHaveBeenCalled();
   });
 });

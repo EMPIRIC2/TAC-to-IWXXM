@@ -479,6 +479,7 @@ export function LiveWorldMap({
           }
           drawnStations.add(place.place_key);
           const cluster = clusterOf.get(place.place_key);
+          /* v8 ignore next 3 -- clusterOf is built from the same visible station set */
           if (!cluster) {
             return;
           }

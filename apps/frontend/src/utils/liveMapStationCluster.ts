@@ -62,19 +62,14 @@ export function clusterByStation(places: readonly LivePlace[]): StationCluster[]
     group.push(place);
     buckets.set(place.place_key, group);
   }
-  return [...buckets.entries()].flatMap(([stationKey, members]) => {
-    const anchor = members[0];
-    if (!anchor) {
-      return [];
-    }
-    return [
-      {
-        stationKey,
-        latitude: anchor.latitude,
-        longitude: anchor.longitude,
-        members,
-      },
-    ];
+  return [...buckets.entries()].map(([stationKey, members]) => {
+    const anchor = members[0] as LivePlace;
+    return {
+      stationKey,
+      latitude: anchor.latitude,
+      longitude: anchor.longitude,
+      members,
+    };
   });
 }
 

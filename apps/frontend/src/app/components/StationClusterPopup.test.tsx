@@ -4,10 +4,20 @@
 
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { LivePlace } from '@/utils/liveMap';
 import { clusterByStation } from '@/utils/liveMapStationCluster';
 import { StationClusterPopup } from './StationClusterPopup';
+
+vi.mock('@/utils/liveMapStationCluster', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@/utils/liveMapStationCluster')>();
+  return {
+    ...actual,
+    placeWithReportIndex: vi.fn(actual.placeWithReportIndex),
+  };
+});
+
+import { placeWithReportIndex } from '@/utils/liveMapStationCluster';
 
 const metar: LivePlace = {
   place_key: 'KJFK',
@@ -29,6 +39,16 @@ const speci: LivePlace = {
 };
 
 describe('StationClusterPopup', () => {
+  beforeEach(() => {
+    vi.mocked(placeWithReportIndex).mockImplementation((place, reportIndex) => {
+      const report = place.reports[reportIndex];
+      if (!report) {
+        return null;
+      }
+      return { ...place, reports: [report] };
+    });
+  });
+
   it('lists cluster reports and loads the picked TAC into the converter', async () => {
     const user = userEvent.setup();
     const onLoad = vi.fn();
@@ -69,6 +89,17 @@ describe('StationClusterPopup', () => {
         }}
       />,
     );
+    expect(screen.getByTestId('live-map-cluster-empty')).toBeInTheDocument();
+  });
+
+  it('shows empty when narrowing the picked report fails', () => {
+    vi.mocked(placeWithReportIndex).mockReturnValue(null);
+    const cluster = clusterByStation([metar])[0];
+    expect(cluster).toBeDefined();
+    if (!cluster) {
+      return;
+    }
+    render(<StationClusterPopup cluster={cluster} />);
     expect(screen.getByTestId('live-map-cluster-empty')).toBeInTheDocument();
   });
 });
