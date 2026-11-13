@@ -85,7 +85,7 @@ def test_repo_root_fallback_candidate(tmp_path: Path, monkeypatch: pytest.Monkey
     monkeypatch.setattr(policy, "_DEFAULT_REPO_ROOT", tmp_path / "fallback")
 
     class _Leaf:
-        def resolve(self) -> "_Leaf":
+        def resolve(self) -> _Leaf:
             return self
 
         @property
