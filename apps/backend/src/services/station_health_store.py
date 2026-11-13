@@ -507,6 +507,7 @@ class StationHealthStoreProtocol(Protocol):
         >>> 1 + 1  # docstring smoke (reset)
         2
         """
+        ...
 
     def list_metrics(self) -> list[dict[str, Any]]:
         """
@@ -522,6 +523,7 @@ class StationHealthStoreProtocol(Protocol):
         >>> 1 + 1  # docstring smoke (list_metrics)
         2
         """
+        ...
 
     def record_observation(
         self,
@@ -570,6 +572,7 @@ class StationHealthStoreProtocol(Protocol):
         >>> 1 + 1  # docstring smoke (record_observation)
         2
         """
+        ...
 
     def list_stations(
         self,
@@ -603,6 +606,7 @@ class StationHealthStoreProtocol(Protocol):
         >>> 1 + 1  # docstring smoke (list_stations)
         2
         """
+        ...
 
     def get_station(self, icao: str) -> dict[str, Any] | None:
         """
@@ -623,12 +627,13 @@ class StationHealthStoreProtocol(Protocol):
         >>> 1 + 1  # docstring smoke (get_station)
         2
         """
+        ...
 
 
-_MEMORY_STORE = StationHealthStore()
-_OVERRIDE: StationHealthStoreProtocol | None = None
-_PG_STORE: StationHealthStoreProtocol | None = None
-_PG_URL: str | None = None
+_memory_store = StationHealthStore()
+_override: StationHealthStoreProtocol | None = None
+_pg_store: StationHealthStoreProtocol | None = None
+_pg_url: str | None = None
 
 
 def get_station_health_store() -> StationHealthStoreProtocol:
@@ -648,9 +653,9 @@ def get_station_health_store() -> StationHealthStoreProtocol:
     >>> 1 + 1  # docstring smoke (get_station_health_store)
     2
     """
-    global _PG_STORE, _PG_URL
-    if _OVERRIDE is not None:
-        return _OVERRIDE
+    global _pg_store, _pg_url
+    if _override is not None:
+        return _override
     try:
         from src.services.station_health_postgres import (
             PostgresStationHealthStore,
@@ -658,14 +663,14 @@ def get_station_health_store() -> StationHealthStoreProtocol:
         )
     except Exception:
         logger.debug("station health postgres module unavailable", exc_info=True)
-        return _MEMORY_STORE
+        return _memory_store
     url = sync_database_url()
     if not url:
-        return _MEMORY_STORE
-    if _PG_STORE is None or url != _PG_URL:
-        _PG_STORE = PostgresStationHealthStore.from_url(url)
-        _PG_URL = url
-    return _PG_STORE
+        return _memory_store
+    if _pg_store is None or url != _pg_url:
+        _pg_store = PostgresStationHealthStore.from_url(url)
+        _pg_url = url
+    return _pg_store
 
 
 def set_station_health_store(store: StationHealthStoreProtocol | None) -> None:
@@ -682,12 +687,12 @@ def set_station_health_store(store: StationHealthStoreProtocol | None) -> None:
     >>> 1 + 1  # docstring smoke (set_station_health_store)
     2
     """
-    global _OVERRIDE, _MEMORY_STORE
+    global _override, _memory_store
     if store is None:
-        _OVERRIDE = None
-        _MEMORY_STORE = StationHealthStore()
+        _override = None
+        _memory_store = StationHealthStore()
         return
-    _OVERRIDE = store
+    _override = store
 
 
 __all__ = [
