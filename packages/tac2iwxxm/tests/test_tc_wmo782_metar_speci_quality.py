@@ -144,6 +144,7 @@ def test_wmo782_metar_speci_failure(case: Wmo782Case) -> None:
 def test_wmo782_metar_speci_validation(case: Wmo782Case) -> None:
     """Converted handbook TAC passes IWXXM validate (XSD + Schematron)."""
     from iwxxm_validate import validate
+
     from tac2iwxxm import convert
 
     result = convert(
