@@ -96,4 +96,10 @@ describe('liveMapTacLayers validation', () => {
       tacMatchesLayer(METAR_RAIN, 'unknown' as Parameters<typeof tacMatchesLayer>[1]),
     ).toBe(false);
   });
+
+  it('treats blank TAC as no tokens', () => {
+    expect(tacMatchesLayer('', 'precip')).toBe(false);
+    expect(tacMatchesLayer('   ', 'wind')).toBe(false);
+    expect(tacMatchesLayer('---', 'precip')).toBe(false);
+  });
 });

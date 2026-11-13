@@ -2192,6 +2192,34 @@ describe('FileConverter Component', () => {
       HTMLElement.prototype.scrollIntoView = originalScroll;
     });
 
+    it('loads Map Send TAC into the panes and ignores empty reports', async () => {
+      const user = userEvent.setup({ delay: null });
+      const scroll = vi.fn();
+      const originalScroll = HTMLElement.prototype.scrollIntoView;
+      HTMLElement.prototype.scrollIntoView = scroll;
+      seedLiveConvertChrome();
+      render(<FileConverter {...defaultProps} />);
+      const seeded = 'METAR KJFK 121251Z 18004KT 10SM FEW020 18/12 A3012=';
+      expect(screen.getByLabelText('Enter METAR data manually')).toHaveValue(seeded);
+
+      await user.click(screen.getByTestId('convert-results-tab-map'));
+      await user.click(screen.getByTestId('live-map-load-empty'));
+      expect(screen.getByLabelText('Enter METAR data manually')).toHaveValue(seeded);
+      await user.click(screen.getByTestId('live-map-load-blank'));
+      expect(screen.getByLabelText('Enter METAR data manually')).toHaveValue(seeded);
+
+      await user.click(screen.getByTestId('live-map-load-report'));
+      expect(screen.getByLabelText('Enter METAR data manually')).toHaveValue(
+        'METAR KJFK 121755Z 18010KT 10SM',
+      );
+      expect(screen.getByRole('combobox', { name: 'Product' })).toHaveValue('METAR');
+      expect(scroll).toHaveBeenCalled();
+      expect(screen.getByTestId('convert-results-drawer-shell')).not.toHaveAttribute(
+        'hidden',
+      );
+      HTMLElement.prototype.scrollIntoView = originalScroll;
+    });
+
     it('applies pending map TAC and opens Decode visuals from the Map tab', async () => {
       const user = userEvent.setup({ delay: null });
       const onOpenVisuals = vi.fn();

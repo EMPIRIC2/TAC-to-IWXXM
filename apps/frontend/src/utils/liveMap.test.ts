@@ -550,5 +550,22 @@ describe('live map helpers', () => {
         layers.has('precip') && /\bRA\b|\bDZ\b|\bSN\b/.test(tac),
     });
     expect(withTac.every((place) => place.reports[0]?.tac)).toBe(true);
+
+    const withTacReject = filterPlaces(loaded, {
+      ...base,
+      tacLayers: new Set(['precip']),
+      passesTacLayers: () => false,
+    });
+    expect(withTacReject).toEqual([]);
+
+    expect(
+      filterPlaces(loaded, {
+        ...base,
+        tacLayers: new Set(['precip']),
+      }),
+    ).toEqual(filterPlaces(loaded, base));
+    expect(
+      filterPlaces(loaded, { ...base, tacLayers: new Set() }),
+    ).toEqual(filterPlaces(loaded, base));
   });
 });

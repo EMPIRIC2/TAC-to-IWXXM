@@ -907,12 +907,16 @@ export function LiveWorldMap({
                         .filter((place) =>
                           passesTacLayers(place.reports[0]?.tac ?? '', next),
                         )
-                        .map((place) => ({
-                          icao: place.place_key,
-                          product: place.product,
-                          tac: place.reports[0]?.tac ?? '',
-                          observedAt: place.reports[0]?.observed_at ?? '',
-                        })),
+                        .map((place) => {
+                          // Overlay filter only keeps places with a matching TAC report.
+                          const report = place.reports[0]!;
+                          return {
+                            icao: place.place_key,
+                            product: place.product,
+                            tac: report.tac,
+                            observedAt: report.observed_at || '',
+                          };
+                        }),
                     );
                     setClusterPicker(next.size > 0 ? picks : []);
                   }}
@@ -939,9 +943,10 @@ export function LiveWorldMap({
                     data-testid={`cluster-pick-${row.icao}`}
                     onClick={() => {
                       const place = visible.find((p) => p.place_key === row.icao);
-                      if (place) {
-                        openPlaceRef.current?.(placeShowingReport(place, row.tac));
+                      if (!place) {
+                        return;
                       }
+                      openPlaceRef.current?.(placeShowingReport(place, row.tac));
                     }}
                   >
                     {row.icao} · {row.product} · {row.observedAt}

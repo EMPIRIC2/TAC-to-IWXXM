@@ -73,5 +73,10 @@ describe('GlossaryScope (TC-F38-004)', () => {
       window.dispatchEvent(new StorageEvent('storage', { key: null }));
     });
     expect(screen.getByTestId('glossary-term-sigmet')).toBeInTheDocument();
+
+    act(() => {
+      window.dispatchEvent(new StorageEvent('storage', { key: 'unrelated-key' }));
+    });
+    expect(screen.getByTestId('glossary-term-sigmet')).toBeInTheDocument();
   });
 });
