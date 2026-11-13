@@ -855,6 +855,24 @@ def _precip_amount(token: str) -> str | None:
     return f"Precipitation {hundredths / 100:.2f} inches in the past hour"
 
 
+def _us_precip_addenda(token: str) -> str | None:
+    """US precip addenda: ``P####``, truncated ``P###``, or ``PP###`` (mm).
+
+    These may appear with or without an explicit ``RMK`` keyword on live TAC.
+    """
+    if phrase := _precip_amount(token):
+        return phrase
+    if match := _SHORT_PRECIP.match(token):
+        hundredths = int(match.group("amt"))
+        if hundredths == 0:
+            return "Precipitation trace in the past hour"
+        return f"Precipitation {hundredths / 100:.2f} inches in the past hour"
+    if match := _PP_PRECIP_MM.match(token):
+        tenths = int(match.group("amt"))
+        return f"Precipitation {tenths / 10:.1f} mm"
+    return None
+
+
 def _okta_phrase(kind: str, amount: str) -> str:
     """One Canadian remark cloud type and its coverage in oktas.
 
@@ -1527,6 +1545,9 @@ def _explain_metar_speci(token: str, *, product: str, seen: dict[str, int]) -> s
         return f"Temperature {_tenths_c(m.group('t'))} °C, dewpoint {_tenths_c(m.group('td'))} °C in tenths"
     if m := _T_TEMP_ONLY.match(upper):
         return f"Temperature {_tenths_c(m.group('body'))} °C (dewpoint not reported)"
+    # US AO sensor variants are handled above; precip addenda also clear without RMK.
+    if phrase := _us_precip_addenda(upper):
+        return phrase
     if seen.get("rmk"):
         remark = _explain_metar_remark(upper, seen)
         if remark:
@@ -1578,7 +1599,7 @@ def _explain_metar_remark(upper: str, seen: dict[str, int]) -> str | None:
         return f"24-hour precipitation {hundredths / 100:.2f} inches"
     if phrase := _pressure_tendency(upper):
         return phrase
-    if phrase := _precip_amount(upper):
+    if phrase := _us_precip_addenda(upper):
         return phrase
     if phrase := _canadian_clouds(upper):
         return phrase
@@ -1622,14 +1643,6 @@ def _explain_metar_remark(upper: str, seen: dict[str, int]) -> str | None:
         if hundredths == 0:
             return "Ice accretion: trace"
         return f"Ice accretion {hundredths / 100:.2f} inches"
-    if m := _SHORT_PRECIP.match(upper):
-        hundredths = int(m.group("amt"))
-        if hundredths == 0:
-            return "Precipitation trace in the past hour"
-        return f"Precipitation {hundredths / 100:.2f} inches in the past hour"
-    if m := _PP_PRECIP_MM.match(upper):
-        tenths = int(m.group("amt"))
-        return f"Precipitation {tenths / 10:.1f} mm"
     if m := _TX_DECIMAL.match(upper):
         return f"Maximum temperature {m.group('val')} °C"
     if m := _CLOUD_TYPE_8.match(upper):
