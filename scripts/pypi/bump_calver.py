@@ -67,6 +67,16 @@ PACKAGES: dict[str, dict[str, Path]] = {
     "reference-lookup": {
         "pyproject": REPO_ROOT / "packages" / "reference-lookup" / "pyproject.toml",
     },
+    # F16 packaging (#777) — PyPI name iwxxm-dissemination; import path dissemination.
+    "iwxxm-dissemination": {
+        "pyproject": REPO_ROOT / "packages" / "dissemination" / "pyproject.toml",
+        "init": REPO_ROOT
+        / "packages"
+        / "dissemination"
+        / "src"
+        / "dissemination"
+        / "__init__.py",
+    },
 }
 
 VERSION_RE = re.compile(

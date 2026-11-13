@@ -17,6 +17,7 @@ EXPECTED_PACKAGES = frozenset(
         "tac-decoding",
         "metar-shared",
         "reference-lookup",
+        "iwxxm-dissemination",
     }
 )
 EXPECTED_TAG_PREFIXES = frozenset(
@@ -27,6 +28,7 @@ EXPECTED_TAG_PREFIXES = frozenset(
         "tac-decoding-v*",
         "metar-shared-v*",
         "reference-lookup-v*",
+        "iwxxm-dissemination-v*",
     }
 )
 

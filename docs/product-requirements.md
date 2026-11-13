@@ -67,6 +67,7 @@ Status values: Implemented, In progress, Planned, Superseded, Deprecated, Done.
 | WIS2 dissemination | Done | WIS2 pathway works from the drawer |
 | EDIS to RTH Washington dissemination | Done | EDIS pathway works from the drawer |
 | AMHS, SWIM, and AFS dissemination | Done | Named adapters work from the drawer |
+| Publishable iwxxm-dissemination package | In progress | Packaging and OIDC publish wiring for `packages/dissemination` as PyPI `iwxxm-dissemination` (import path `dissemination`); first tag `iwxxm-dissemination-v0.1.0` |
 | TAF and SPECI quality bar | Done | Lint, convert, and validate goldens meet the bar |
 | Public convert with optional Auth | Amended | Convert stays public; Auth gates long-term storage |
 | Privacy preference center | Implemented | Privacy controls gate local persistence |

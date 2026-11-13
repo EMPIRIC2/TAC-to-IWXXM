@@ -9,7 +9,7 @@ dependencies = [
     "tac-decoding",
     "tac-validate",
     "iwxxm-validate",
-    "dissemination",
+    "iwxxm-dissemination",
     "auth",
     "fastapi==0.137.0",
     "uvicorn==0.49.0",
@@ -138,7 +138,7 @@ metar-shared = { workspace = true }
 auth = { workspace = true }
 tac-validate = { workspace = true }
 iwxxm-validate = { workspace = true }
-dissemination = { workspace = true }
+iwxxm-dissemination = { workspace = true }
 
 # deptry: unused (DEP002), missing (DEP001), transitive (DEP003), misplaced-dev (DEP004).
 # [Corpus: tech-spec] docs/technical-requirements.md; [Corpus: system-spec] docs/architecture.md.

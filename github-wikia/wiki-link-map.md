@@ -24,6 +24,7 @@ Wiki base: `https://github.com/EMPIRIC2/TAC-to-IWXXM/wiki`
 | `docs/python-packages/tac-validate.md` | `https://github.com/EMPIRIC2/TAC-to-IWXXM/wiki/Package-tac-validate` |
 | `docs/python-packages/iwxxm-validate.md` | `https://github.com/EMPIRIC2/TAC-to-IWXXM/wiki/Package-iwxxm-validate` |
 | `docs/python-packages/tac-decoding.md` | `https://github.com/EMPIRIC2/TAC-to-IWXXM/wiki/Package-tac-decoding` |
+| `docs/python-packages/iwxxm-dissemination.md` | `https://github.com/EMPIRIC2/TAC-to-IWXXM/wiki/Package-iwxxm-dissemination` |
 
 ## Rules
 
