@@ -7,10 +7,7 @@ import {
   useMemo,
 } from 'react';
 import { stationFromReport } from '@/utils/decodeVisuals';
-import { DECODE_VISUALS_OPEN } from '@/utils/decodeVisualsCopy';
 import { publishDecodeVisuals } from '@/utils/decodeVisualsStore';
-import { type LivePlace } from '@/utils/liveMap';
-import { LiveWorldMap } from './LiveWorldMap';
 import { Button } from './ui/button';
 import { Card } from './ui/card';
 import { Input } from './ui/input';
@@ -363,8 +360,6 @@ interface FileConverterProps {
   /** Open optional login UX (F31 / F21 Amended). */
   onRequestLogin?: () => void;
   onOpenHistory?: () => void;
-  /** Open full-page Live map (live TAC map). */
-  onOpenVisuals?: () => void;
   onLoadWorkSession?: (session: WorkSession) => void;
   onNewMetar?: () => void;
   onSessionUpdated?: (session: WorkSession) => void;
@@ -728,7 +723,7 @@ function activeMetarFamilyVariants(
  * @param props.onActiveSessionIdChange - Reports the active F5 session id
  * @param props.activeWorkSessionId - Current F5 session id when known
  * @param props.loadedWorkSession - Hydration payload for the active session
- * @param props.pendingMapTac - TAC from the Map shell page (Send to converter)
+ * @param props.pendingMapTac - TAC from the Live map page (Send to converter)
  * @param props.onPendingMapTacConsumed - Clears pending Map TAC after apply
  * @param props.onOpenCatalog - Opens Rule catalogs from Convert trust links
  * @example
@@ -741,7 +736,6 @@ export function FileConverter({
   onLogout,
   onRequestLogin,
   onOpenHistory,
-  onOpenVisuals,
   onLoadWorkSession,
   onNewMetar,
   onSessionUpdated,
@@ -4461,49 +4455,6 @@ export function FileConverter({
                         />
                       </div>
                     )
-                  }
-                  map={
-                    <div data-testid="convert-weather-map">
-                      <div
-                        data-testid="convert-weather-map-panel"
-                        className="space-y-2"
-                      >
-                        {onOpenVisuals ? (
-                          <div className="flex justify-end">
-                            <button
-                              type="button"
-                              data-testid="convert-open-decode-visuals"
-                              className="text-sm font-medium text-gray-700 underline-offset-2 hover:underline dark:text-gray-200"
-                              onClick={onOpenVisuals}
-                            >
-                              {DECODE_VISUALS_OPEN}
-                            </button>
-                          </div>
-                        ) : null}
-                        <LiveWorldMap
-                          onOpenPlace={(place: LivePlace) => {
-                            const tac = place.reports[0]?.tac?.trim() ?? '';
-                            if (!tac) {
-                              return;
-                            }
-                            setInputMode('tac');
-                            setManualInput(tac);
-                            setSelectedTrace(null);
-                            setLintJump(null);
-                            setLintFocusOffset(null);
-                            setConversionParams((prev) => ({
-                              ...prev,
-                              product: detectTacProduct(tac),
-                            }));
-                            setConverterOpen(true);
-                            // Keep Map/results open after Send to converter (BUG-2026-11-10).
-                            document
-                              .querySelector('[data-testid="live-convert-panes"]')
-                              ?.scrollIntoView({ behavior: 'auto', block: 'start' });
-                          }}
-                        />
-                      </div>
-                    </div>
                   }
                   downloads={
                     <div data-testid="convert-downloads-panel" className="space-y-3">
