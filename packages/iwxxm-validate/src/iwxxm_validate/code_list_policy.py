@@ -102,7 +102,7 @@ def load_code_list_policy(profile: str) -> CodeListPolicy:
     if not isinstance(loaded_raw, dict):
         return CodeListPolicy(profile=profile.upper(), entries=())
     loaded = cast(dict[str, object], loaded_raw)
-    raw_entries = loaded.get("entries") or []
+    raw_entries = loaded.get("entries")
     entries: tuple[CodeListDeviation, ...] = ()
     if isinstance(raw_entries, list):
         parsed: list[CodeListDeviation] = []

@@ -39,7 +39,7 @@ def national_replace_tokens() -> frozenset[str]:
     if not isinstance(loaded_raw, dict):
         return frozenset()
     loaded = cast(dict[str, object], loaded_raw)
-    raw = loaded.get("entries") or []
+    raw = loaded.get("entries")
     tokens: set[str] = set()
     if isinstance(raw, list):
         for item in cast(list[object], raw):

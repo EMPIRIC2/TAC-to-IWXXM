@@ -36,7 +36,7 @@ def _entries() -> tuple[dict[str, object], ...]:
     if not isinstance(loaded_raw, dict):
         return ()
     loaded = cast(dict[str, object], loaded_raw)
-    raw = loaded.get("entries") or []
+    raw = loaded.get("entries")
     if not isinstance(raw, list):
         return ()
     parsed: list[dict[str, object]] = []
