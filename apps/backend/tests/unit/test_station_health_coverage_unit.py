@@ -237,6 +237,8 @@ def test_get_store_falls_back_without_database(
     )
     store_mod._pg_store = None
     store_mod._pg_url = None
+    # Temporarily clear memory-safe teardown override to exercise PG routing.
+    store_mod._override = None
     pg = get_station_health_store()
     assert type(pg).__name__ == "PostgresStationHealthStore"
     # Cache hit with same URL.
@@ -259,9 +261,7 @@ def test_postgres_store_paths_and_exceptions() -> None:
     original_create = pg_mod.create_engine
     pg_mod.create_engine = lambda *_a, **_k: engine  # type: ignore[assignment]
     try:
-        store_from_url = PostgresStationHealthStore.from_url(
-            "postgresql+psycopg://u:p@h/db"
-        )
+        store_from_url = PostgresStationHealthStore.from_url("postgresql+psycopg://u:p@h/db")
     finally:
         pg_mod.create_engine = original_create  # type: ignore[assignment]
     assert isinstance(store_from_url, PostgresStationHealthStore)

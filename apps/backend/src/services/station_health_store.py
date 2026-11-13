@@ -335,14 +335,30 @@ def get_station_health_store() -> StationHealthStoreProtocol:
     if not url:
         return _memory_store
     if _pg_store is None or url != _pg_url:
+        _dispose_postgres_store()
         _pg_store = PostgresStationHealthStore.from_url(url)
         _pg_url = url
     return _pg_store
 
 
+def _dispose_postgres_store() -> None:
+    """Drop cached Postgres store/engine so unit tests do not leak connections."""
+    global _pg_store, _pg_url
+    store = _pg_store
+    _pg_store = None
+    _pg_url = None
+    engine = getattr(store, "_engine", None)
+    if engine is not None:
+        try:
+            engine.dispose()
+        except Exception:
+            logger.debug("station health postgres dispose failed", exc_info=True)
+
+
 def set_station_health_store(store: StationHealthStoreProtocol | None) -> None:
     """
-    Replace the process store (tests). ``None`` restores the default routing.
+    Replace the process store (tests). ``None`` restores memory-only routing
+    and disposes any cached Postgres engine.
 
     Parameters
     ----------
@@ -355,9 +371,12 @@ def set_station_health_store(store: StationHealthStoreProtocol | None) -> None:
     2
     """
     global _override, _memory_store
+    _dispose_postgres_store()
     if store is None:
-        _override = None
+        # Keep an explicit memory override so API-test teardown does not reopen
+        # DATABASE_URL pools in the same pytest process.
         _memory_store = StationHealthStore()
+        _override = _memory_store
         return
     _override = store
 
