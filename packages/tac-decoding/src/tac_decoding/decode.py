@@ -796,6 +796,84 @@ def _spaced_cavok_span(
     return tokens[index][0], tokens[index + 4][1]
 
 
+_FIR_NAME_STOP = frozenset({"FIR", "UIR", "FIR/UIR", "OCEANIC"})
+
+
+def _fir_name_continuation_token(token: str) -> bool:
+    """
+    Return True when ``token`` may extend an open multi-word FIR name.
+
+    Stops at FIR / UIR / OCEANIC markers and glossary-backed words so hazards
+    and qualifiers are not absorbed into the name span.
+
+    Parameters
+    ----------
+    token : str
+        Next TAC token after a FIR-name head.
+
+    Returns
+    -------
+    bool
+        Whether the token continues the FIR proper name.
+    """
+    upper = token.upper()
+    if upper in _FIR_NAME_STOP:
+        return False
+    head = upper.split("-", 1)[0]
+    if meaning_for(head):
+        return False
+    letters = upper.replace("-", "")
+    return bool(letters.isalpha() and len(upper) >= 2)
+
+
+def _extend_fir_name_span(
+    tokens: list[tuple[int, int, str]],
+    index: int,
+    *,
+    tac: str,
+) -> tuple[int, int, str, str, int] | None:
+    """
+    Join consecutive FIR-name words into one character span.
+
+    Caller must have classified ``tokens[index]`` as a FIR name head. Lookahead
+    stops before FIR / UIR / OCEANIC / glossary tokens.
+
+    Parameters
+    ----------
+    tokens : list[tuple[int, int, str]]
+        Token spans from :func:`_iter_tokens`.
+
+    index : int
+        Index of the first FIR-name token.
+
+    tac : str
+        Full TAC text (preserves original spacing in ``code``).
+
+    Returns
+    -------
+    tuple[int, int, str, str, int] | None
+        ``(start, end, code, explanation, token_count)`` when two or more name
+        words join; ``None`` when only the head token applies.
+    """
+    if index >= len(tokens):
+        return None
+    start, end, first = tokens[index]
+    parts = [first]
+    last_end = end
+    j = index + 1
+    while j < len(tokens):
+        _tok_start, tok_end, tok = tokens[j]
+        if not _fir_name_continuation_token(tok):
+            break
+        parts.append(tok)
+        last_end = tok_end
+        j += 1
+    if len(parts) < 2:
+        return None
+    display = " ".join(part.upper() for part in parts)
+    return start, last_end, tac[start:last_end], f"FIR name ({display})", len(parts)
+
+
 def _tenths_c(raw: str) -> str:
     """FMH-1 temperature in tenths, with a leading sign digit.
 
@@ -3294,6 +3372,23 @@ def _decode_single_report(tac: str, *, product: str) -> DecodeResult:
             following = tokens[idx + 1][2] if idx + 1 < len(tokens) else ""
             explanation = _whole_miles(token, following)
         if explanation is None:
+            continue
+        # Multi-word FIR proper names (NEW YORK, LA PAZ, KOTA KINABALU).
+        if (
+            product in {"SIGMET", "AIRMET"}
+            and explanation.startswith("FIR name (")
+            and (span := _extend_fir_name_span(tokens, idx, tac=tac)) is not None
+        ):
+            span_start, span_end, span_code, span_expl, span_n = span
+            segments.append(
+                DecodeSegment(
+                    start=span_start,
+                    end=span_end,
+                    code=span_code,
+                    explanation=span_expl,
+                )
+            )
+            explained.update(range(idx, idx + span_n))
             continue
         segments.append(
             DecodeSegment(

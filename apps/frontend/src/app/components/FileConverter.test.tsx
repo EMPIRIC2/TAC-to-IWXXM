@@ -2122,9 +2122,7 @@ describe('FileConverter Component', () => {
           .getByTestId('live-convert-panes')
           .compareDocumentPosition(screen.getByTestId('convert-weather-map')),
       ).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
-      expect(
-        screen.queryByRole('tab', { name: 'Live map' }),
-      ).not.toBeInTheDocument();
+      expect(screen.queryByRole('tab', { name: 'Live map' })).not.toBeInTheDocument();
       expect(screen.getByTestId('convert-settings-dialog')).toContainElement(
         screen.getByTestId('convert-setup'),
       );

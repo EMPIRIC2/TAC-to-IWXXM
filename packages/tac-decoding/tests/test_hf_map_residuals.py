@@ -92,8 +92,7 @@ def test_oceanic_sigmet_series_periods_and_second_fir_name() -> None:
         product="SIGMET",
     )
     names = {segment.code: segment.explanation for segment in kinabalu.segments}
-    assert names["KOTA"] == "FIR name (KOTA)"
-    assert names["KINABALU"] == "FIR name (KINABALU)"
+    assert names["KOTA KINABALU"] == "FIR name (KOTA KINABALU)"
     lima = decode_tac(
         "SPIM SIGMET A9 VALID 052132/052350 SPJC- SPIM LIMA FIR EMBD TS=",
         product="SIGMET",

@@ -13,10 +13,7 @@ import userEvent from '@testing-library/user-event';
 
 import { AppShellNav, SHELL_NAV_LABELS } from './AppShellNav';
 import { DecodeVisualsPage } from './DecodeVisualsPage';
-import {
-  DECODE_VISUALS_OPEN,
-  DECODE_VISUALS_TITLE,
-} from '@/utils/decodeVisualsCopy';
+import { DECODE_VISUALS_OPEN, DECODE_VISUALS_TITLE } from '@/utils/decodeVisualsCopy';
 import { publishDecodeVisuals, writeStationDraft } from '@/utils/decodeVisualsStore';
 
 vi.mock('@/app/components/LiveWorldMap', () => ({
@@ -92,9 +89,7 @@ describe('Live map nav label matrix', () => {
       render(<DecodeVisualsPage />);
       expect(screen.getByTestId('decode-visuals-page')).toBeInTheDocument();
       expect(screen.getByTestId('live-world-map')).toBeInTheDocument();
-      expect(
-        screen.getByRole('heading', { name: NEW_LABEL }),
-      ).toBeInTheDocument();
+      expect(screen.getByRole('heading', { name: NEW_LABEL })).toBeInTheDocument();
       expect(document.body.textContent ?? '').not.toContain(OLD_LABEL);
     });
   });
@@ -138,15 +133,10 @@ describe('Live map nav label matrix', () => {
           } else {
             document.documentElement.classList.remove('dark');
           }
-          render(
-            <AppShellNav activeView={activeView} onNavigate={() => undefined} />,
-          );
+          render(<AppShellNav activeView={activeView} onNavigate={() => undefined} />);
           const tab = screen.getByTestId('shell-nav-visuals');
           assertLiveMapLabel(tab);
-          expect(tab).toHaveAttribute(
-            'aria-selected',
-            selected ? 'true' : 'false',
-          );
+          expect(tab).toHaveAttribute('aria-selected', selected ? 'true' : 'false');
           expect(within(tab).queryByText(OLD_LABEL)).not.toBeInTheDocument();
         });
       }
