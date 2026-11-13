@@ -14,8 +14,9 @@ INTERACTIONS = REPO_ROOT / "tests" / "contracts" / "openapi-interactions.json"
 
 # 2026-11-13 scan after WIS2 exchange-admin + station-health GET routes:
 # placeholders recomputed after rebase against merged OpenAPI.
-SCAN_OPERATIONS = 91
-SCAN_STATUSES = 167
+# 2026-11-13 after WIS2 exchange-admin + station-health routes on stage.
+SCAN_OPERATIONS = 94
+SCAN_STATUSES = 174
 SCAN_REQUEST_FIELDS = 36
 SCAN_RESPONSE_FIELDS = 329
 

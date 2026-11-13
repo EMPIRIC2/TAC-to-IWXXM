@@ -41,9 +41,7 @@ def test_router_coercion_helpers_cover_branches() -> None:
     assert router_mod._product_dict("x") is None
     assert router_mod._product_dict({"product": "METAR"})["product"] == "METAR"
     assert router_mod._products_from_raw("nope") == []
-    assert router_mod._products_from_raw([{"product": "METAR"}, "skip"]) == [
-        {"product": "METAR"}
-    ]
+    assert router_mod._products_from_raw([{"product": "METAR"}, "skip"]) == [{"product": "METAR"}]
     models = router_mod._product_models([{"product": "metar", "grade": "A"}])
     assert models[0].product == "metar"
 
@@ -72,14 +70,38 @@ def test_router_list_and_detail_tolerate_malformed_payloads(
             }
 
     monkeypatch.setattr(router_mod, "get_station_health_store", lambda: _WeirdStore())
-    listed = router_mod.list_station_health(
-        window="6h", product=None, grade=None, limit=100
-    )
+    listed = router_mod.list_station_health(window="6h", product=None, grade=None, limit=100)
     assert listed.stations[0].icao == "KJFK"
     assert listed.summary.station_count == 0
     detail = router_mod.get_station_health("KJFK")
     assert "1d" in detail.windows
     assert "6h" not in detail.windows
+
+    class _NonCollectionStore:
+        def list_metrics(self) -> list[dict[str, Any]]:
+            return []
+
+        def list_stations(self, **_kwargs: Any) -> dict[str, Any]:
+            return {
+                "window": "6h",
+                "computed_at": "t",
+                "stations": "not-a-list",
+                "summary": {"station_count": 0, "grade_counts": "bad"},
+            }
+
+        def get_station(self, icao: str) -> dict[str, Any] | None:
+            return {
+                "icao": icao,
+                "name": None,
+                "windows": "not-a-dict",
+                "record_count": 0,
+            }
+
+    monkeypatch.setattr(router_mod, "get_station_health_store", lambda: _NonCollectionStore())
+    empty_list = router_mod.list_station_health(window="6h", product=None, grade=None, limit=100)
+    assert empty_list.stations == []
+    empty_detail = router_mod.get_station_health("KJFK")
+    assert empty_detail.windows == {}
 
 
 def test_aggregate_naive_timestamps_and_empty_overall() -> None:
