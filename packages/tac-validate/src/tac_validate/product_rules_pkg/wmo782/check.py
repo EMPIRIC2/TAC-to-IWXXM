@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+# pyright: reportPrivateUsage=false, reportUnknownMemberType=false, reportUnknownVariableType=false, reportUnknownArgumentType=false
 from tac_validate.models import Issue
 from tac_validate.product_rules_pkg.wmo782._emit import dedupe, split_obs_trend
 from tac_validate.product_rules_pkg.wmo782.cavok_rvr_vis import check_cavok_rvr_vis
@@ -27,15 +28,54 @@ def check_wmo782_extended(
         body = body[: body.index("RMK")]
 
     obs, trend = split_obs_trend(body)
-    kw = {
-        "product": product,
-        "core": core,
-        "body_start": body_start,
-        "body_end": body_end,
-    }
-    issues.extend(check_cavok_rvr_vis(obs, is_auto=is_auto, **kw))
-    issues.extend(check_weather(obs, is_auto=is_auto, **kw))
-    issues.extend(check_cloud_temp_qnh(obs, is_auto=is_auto, **kw))
-    issues.extend(check_wind_shear(obs, **kw))
-    issues.extend(check_trend_remarks(obs, trend, tokens, **kw))
+    issues.extend(
+        check_cavok_rvr_vis(
+            obs,
+            is_auto=is_auto,
+            product=product,
+            core=core,
+            body_start=body_start,
+            body_end=body_end,
+        )
+    )
+    issues.extend(
+        check_weather(
+            obs,
+            is_auto=is_auto,
+            product=product,
+            core=core,
+            body_start=body_start,
+            body_end=body_end,
+        )
+    )
+    issues.extend(
+        check_cloud_temp_qnh(
+            obs,
+            is_auto=is_auto,
+            product=product,
+            core=core,
+            body_start=body_start,
+            body_end=body_end,
+        )
+    )
+    issues.extend(
+        check_wind_shear(
+            obs,
+            product=product,
+            core=core,
+            body_start=body_start,
+            body_end=body_end,
+        )
+    )
+    issues.extend(
+        check_trend_remarks(
+            obs,
+            trend,
+            tokens,
+            product=product,
+            core=core,
+            body_start=body_start,
+            body_end=body_end,
+        )
+    )
     return dedupe(issues)

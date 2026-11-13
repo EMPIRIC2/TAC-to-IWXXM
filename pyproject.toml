@@ -188,6 +188,8 @@ extend-exclude = [
   # ADR-027 generated xsdata output (only exclusion) — regenerate via make codegen-iwxxm-xsd
   "packages/shared/src/metar_shared/iwxxm_xsd",
   "packages/shared/src/metar_shared/iwxxm_xsd/v*",
+  # Exec-chunk package stubs (Any-heavy API surface for basedpyright)
+  "**/*.pyi",
 ]
 
 [tool.ruff.lint]

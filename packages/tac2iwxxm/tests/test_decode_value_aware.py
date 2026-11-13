@@ -45,8 +45,8 @@ def test_metar_altimeter_inhg() -> None:
 
 def test_metar_observation_time() -> None:
     text = _explanation_for(METAR_GOLDEN, "METAR", "121251Z")
-    assert "day 12" in text
-    assert "12:51 UTC" in text
+    # WMO-No. 782 handbook-style phrasing (hours and minutes UTC).
+    assert "on 12th of the month at 12 hours and 51 minutes UTC" in text
 
 
 def test_metar_visibility_statute_miles() -> None:

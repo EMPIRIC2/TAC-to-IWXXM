@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+# pyright: reportPrivateUsage=false, reportUnknownMemberType=false, reportUnknownVariableType=false, reportUnknownArgumentType=false
 from tac_validate.models import Issue
 from tac_validate.product_rules_pkg.wmo782._emit import (
     CLOUD_BAD_SUFFIX,

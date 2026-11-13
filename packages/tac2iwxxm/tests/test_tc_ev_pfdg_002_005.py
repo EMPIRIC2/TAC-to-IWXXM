@@ -123,11 +123,19 @@ def test_swxa_alternate_inventory_present() -> None:
     assert pack.xml == legacy.xml
 
 
+def _slot_module_present(module_py: str) -> bool:
+    """True when ``module.py`` or package ``module/`` remains under slot_builders."""
+    if (_SLOT / module_py).is_file():
+        return True
+    stem = module_py.removesuffix(".py")
+    return (_SLOT / stem / "__init__.py").is_file()
+
+
 @pytest.mark.parametrize("name", _DELETED_PRODUCT_MODULES)
 def test_selective_delete_removed_product_modules(name: str) -> None:
     """TC-EV-PFDG-004 all-or-nothing deletes after goldens passed."""
     assert not (_PRODUCTS / name).is_file()
-    assert (_SLOT / name).is_file()
+    assert _slot_module_present(name)
 
 
 def test_fir_geometry_remains_under_products() -> None:

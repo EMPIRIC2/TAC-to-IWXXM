@@ -40,5 +40,5 @@ Registry codes and default severities live in `config/rules/ISSUE_CATALOG.json`.
 ## Tests
 
 Unit tests under `packages/tac-validate/tests/test_wmo_782_*.py` cover emitters.
-Permutation shards for handbook dimensions live in the local evolve session store
-and are optional on machines that keep that session path.
+Optional permutation shards for handbook dimensions may exist on a developer
+machine. Those shards are not required for a fresh clone.
