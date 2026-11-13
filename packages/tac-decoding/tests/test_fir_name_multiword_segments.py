@@ -6,7 +6,11 @@ span joining in ``tac-decoding``. Cite evolve-auto ``test-matrix.md``.
 
 from __future__ import annotations
 
-from tac_decoding.decode import decode_tac
+from tac_decoding.decode import (
+    _extend_fir_name_span,
+    _fir_name_continuation_token,
+    decode_tac,
+)
 
 
 def _by_code(tac: str, product: str = "SIGMET") -> dict[str, str]:
@@ -168,3 +172,37 @@ def test_mutation_insert_second_oceanic_fir_name() -> None:
         ("MIAMI", "FIR name (MIAMI)"),
         ("HOUSTON", "FIR name (HOUSTON)"),
     ]
+
+# --- Helper branch coverage (CI 100% gate) ---
+
+
+def test_extend_fir_name_span_rejects_out_of_range_index() -> None:
+    """Guard: index past the token list returns None without raising."""
+    assert _extend_fir_name_span([], 0, tac="") is None
+    assert _extend_fir_name_span([(0, 3, "NEW")], 1, tac="NEW") is None
+
+
+def test_extend_fir_name_span_joins_through_end_of_token_list() -> None:
+    """While-loop exit when continuation tokens run to the end of the list."""
+    tac = "NEW YORK"
+    tokens = [(0, 3, "NEW"), (4, 8, "YORK")]
+    span = _extend_fir_name_span(tokens, 0, tac=tac)
+    assert span is not None
+    start, end, code, explanation, count = span
+    assert (start, end, code, explanation, count) == (
+        0,
+        8,
+        "NEW YORK",
+        "FIR name (NEW YORK)",
+        2,
+    )
+
+
+def test_fir_name_continuation_rejects_stop_and_glossary_tokens() -> None:
+    """Continuation helper stops on FIR markers and glossary-backed words."""
+    assert _fir_name_continuation_token("YORK") is True
+    assert _fir_name_continuation_token("FIR") is False
+    assert _fir_name_continuation_token("OCEANIC") is False
+    assert _fir_name_continuation_token("EMBD") is False
+    assert _fir_name_continuation_token("X") is False
+
