@@ -305,124 +305,131 @@ function App() {
   return (
     <ThemeProvider>
       <GlossaryScope openGlossaryEntry={handleOpenGlossaryEntry}>
-      {showTermsGate ? (
-        <TermsConsentGate
-          onAcknowledge={() => {
-            acknowledgeSiteTerms();
-            setTermsAcknowledged(true);
-          }}
-        />
-      ) : (
-        <>
-          {isPrimaryShellView(currentView) && (
-            <AppShellNav activeView={currentView} onNavigate={handleShellNavigate} />
-          )}
+        {showTermsGate ? (
+          <TermsConsentGate
+            onAcknowledge={() => {
+              acknowledgeSiteTerms();
+              setTermsAcknowledged(true);
+            }}
+          />
+        ) : (
+          <>
+            {isPrimaryShellView(currentView) && (
+              <AppShellNav activeView={currentView} onNavigate={handleShellNavigate} />
+            )}
 
-          {currentView === 'login' && (
-            <Login
-              onLogin={handleLogin}
-              onSwitchToRegister={() => setCurrentView('register')}
-              onForgotPassword={() => setCurrentView('reset')}
-              onContinueAsGuest={handleContinueAsGuest}
-            />
-          )}
+            {currentView === 'login' && (
+              <Login
+                onLogin={handleLogin}
+                onSwitchToRegister={() => setCurrentView('register')}
+                onForgotPassword={() => setCurrentView('reset')}
+                onContinueAsGuest={handleContinueAsGuest}
+              />
+            )}
 
-          {currentView === 'register' && (
-            <Register
-              onRegister={handleRegister}
-              onSwitchToLogin={() => setCurrentView('login')}
-            />
-          )}
+            {currentView === 'register' && (
+              <Register
+                onRegister={handleRegister}
+                onSwitchToLogin={() => setCurrentView('login')}
+              />
+            )}
 
-          {currentView === 'reset' && (
-            <PasswordReset onBackToLogin={() => setCurrentView('login')} />
-          )}
+            {currentView === 'reset' && (
+              <PasswordReset onBackToLogin={() => setCurrentView('login')} />
+            )}
 
-          {currentView === 'verify' && (
-            <EmailVerification
-              email={userEmail}
-              onVerified={handleVerified}
-              onBackToLogin={() => setCurrentView('login')}
-            />
-          )}
+            {currentView === 'verify' && (
+              <EmailVerification
+                email={userEmail}
+                onVerified={handleVerified}
+                onBackToLogin={() => setCurrentView('login')}
+              />
+            )}
 
-          {(currentView === 'converter' ||
-            currentView === 'visuals' ||
-            currentView === 'history' ||
-            currentView === 'catalog' ||
-            currentView === 'dictionary' ||
-            currentView === 'glossary') && (
-            <div hidden={currentView !== 'converter'}>
-              <FileConverter
-                onLogout={handleLogout}
-                userEmail={isGuest ? 'Guest' : userEmail || 'Operator'}
+            {(currentView === 'converter' ||
+              currentView === 'visuals' ||
+              currentView === 'history' ||
+              currentView === 'catalog' ||
+              currentView === 'dictionary' ||
+              currentView === 'glossary') && (
+              <div hidden={currentView !== 'converter'}>
+                <FileConverter
+                  onLogout={handleLogout}
+                  userEmail={isGuest ? 'Guest' : userEmail || 'Operator'}
+                  accessToken={isAuthenticated ? accessToken : undefined}
+                  isGuest={isGuest}
+                  onRequestLogin={handleRequestLogin}
+                  onOpenHistory={handleOpenHistory}
+                  onOpenVisuals={handleOpenVisuals}
+                  onLoadWorkSession={handleLoadWorkSession}
+                  onNewMetar={handleNewMetar}
+                  onSessionUpdated={handleSessionUpdated}
+                  onActiveSessionIdChange={setActiveWorkSessionId}
+                  activeWorkSessionId={activeWorkSessionId}
+                  loadedWorkSession={loadedWorkSession}
+                  pendingMapTac={pendingMapTac}
+                  onPendingMapTacConsumed={() => setPendingMapTac(null)}
+                  onOpenCatalog={(family, code) => {
+                    if (code) {
+                      setCatalogFocusCode(code);
+                    } else {
+                      setCatalogFocusCode(null);
+                    }
+                    if (family === 'lint' || family === 'iwxxm') {
+                      setCatalogFocusFamily(family);
+                    } else {
+                      setCatalogFocusFamily(null);
+                    }
+                    setCurrentView('catalog');
+                  }}
+                />
+              </div>
+            )}
+
+            {currentView === 'visuals' && (
+              <DecodeVisualsPage onOpenPlace={handleMapOpenPlace} />
+            )}
+
+            {currentView === 'history' && (
+              <MyMetarsPage
                 accessToken={isAuthenticated ? accessToken : undefined}
-                isGuest={isGuest}
-                onRequestLogin={handleRequestLogin}
-                onOpenHistory={handleOpenHistory}
-                onOpenVisuals={handleOpenVisuals}
-                onLoadWorkSession={handleLoadWorkSession}
-                onNewMetar={handleNewMetar}
-                onSessionUpdated={handleSessionUpdated}
-                onActiveSessionIdChange={setActiveWorkSessionId}
-                activeWorkSessionId={activeWorkSessionId}
-                loadedWorkSession={loadedWorkSession}
-                pendingMapTac={pendingMapTac}
-                onPendingMapTacConsumed={() => setPendingMapTac(null)}
-                onOpenCatalog={(family, code) => {
-                  if (code) {
-                    setCatalogFocusCode(code);
-                  } else {
-                    setCatalogFocusCode(null);
-                  }
-                  if (family === 'lint' || family === 'iwxxm') {
-                    setCatalogFocusFamily(family);
-                  } else {
-                    setCatalogFocusFamily(null);
-                  }
-                  setCurrentView('catalog');
+                userEmail={isAuthenticated ? userEmail || 'Operator' : 'Local history'}
+                onBack={handleSwitchToConverter}
+                onOpenSession={handleLoadWorkSession}
+              />
+            )}
+
+            {currentView === 'catalog' && (
+              <LintValidationCatalogPage
+                focusCode={catalogFocusCode ?? undefined}
+                initialFamily={catalogFocusFamily ?? undefined}
+                onFocusHandled={() => {
+                  setCatalogFocusCode(null);
+                  setCatalogFocusFamily(null);
                 }}
               />
-            </div>
-          )}
+            )}
 
-          {currentView === 'visuals' && (
-            <DecodeVisualsPage onOpenPlace={handleMapOpenPlace} />
-          )}
+            {currentView === 'dictionary' && <CodeNameDictionaryPage />}
 
-          {currentView === 'history' && (
-            <MyMetarsPage
-              accessToken={isAuthenticated ? accessToken : undefined}
-              userEmail={isAuthenticated ? userEmail || 'Operator' : 'Local history'}
-              onBack={handleSwitchToConverter}
-              onOpenSession={handleLoadWorkSession}
-            />
-          )}
+            {currentView === 'glossary' && (
+              <Annex3GlossaryPage
+                focusTermId={glossaryFocusTermId}
+                onFocusHandled={() => setGlossaryFocusTermId(null)}
+              />
+            )}
 
-          {currentView === 'catalog' && (
-            <LintValidationCatalogPage
-              focusCode={catalogFocusCode ?? undefined}
-              initialFamily={catalogFocusFamily ?? undefined}
-              onFocusHandled={() => {
-                setCatalogFocusCode(null);
-                setCatalogFocusFamily(null);
-              }}
-            />
-          )}
+            {currentView === 'callback' && (
+              <AuthCallback
+                onLogin={handleLogin}
+                onRegister={handleRegister}
+                onVerified={handleVerified}
+              />
+            )}
+          </>
+        )}
 
-          {currentView === 'dictionary' && <CodeNameDictionaryPage />}
-
-          {currentView === 'callback' && (
-            <AuthCallback
-              onLogin={handleLogin}
-              onRegister={handleRegister}
-              onVerified={handleVerified}
-            />
-          )}
-        </>
-      )}
-
-      <Toaster />
+        <Toaster />
       </GlossaryScope>
     </ThemeProvider>
   );

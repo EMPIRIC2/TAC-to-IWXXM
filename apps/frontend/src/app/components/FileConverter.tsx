@@ -8,6 +8,8 @@ import {
 } from 'react';
 import { stationFromReport } from '@/utils/decodeVisuals';
 import { publishDecodeVisuals } from '@/utils/decodeVisualsStore';
+import { type LivePlace } from '@/utils/liveMap';
+import { LiveWorldMap } from './LiveWorldMap';
 import { Button } from './ui/button';
 import { Card } from './ui/card';
 import { Input } from './ui/input';
