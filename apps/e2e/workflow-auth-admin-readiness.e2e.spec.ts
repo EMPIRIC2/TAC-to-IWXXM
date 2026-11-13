@@ -13,8 +13,10 @@ test.describe('Workflow: Auth readiness', () => {
     await expect(page.getByTestId('convert-button')).toBeVisible({
       timeout: 30_000,
     });
+    // Opposite state: Convert is visible, so admin dashboard chrome is absent.
+    // Locators can match only if the removed admin surface returns.
     await expect(
-      page.getByRole('heading', { name: /admin dashboard/i }),
+      page.getByRole('heading', { name: 'Admin Dashboard', exact: true }),
     ).toHaveCount(0);
     await expect(page.getByTestId('admin-nav')).toHaveCount(0);
   });
