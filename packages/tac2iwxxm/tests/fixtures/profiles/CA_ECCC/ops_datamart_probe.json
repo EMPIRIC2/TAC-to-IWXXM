@@ -1,0 +1,46 @@
+{
+  "profile": "CA_ECCC",
+  "probed_at": "2026-11-13T12:54:45Z",
+  "datamart_base": "https://dd.weather.gc.ca",
+  "iwxxm_root": {
+    "http_status": 200,
+    "children": ["airmet", "code-ca", "doc", "schema", "sigmet", "taf"]
+  },
+  "products": {
+    "taf": {
+      "http_status": 200,
+      "children": ["cwao"]
+    },
+    "airmet": {
+      "http_status": 200,
+      "children": ["czeg", "czvr"]
+    },
+    "sigmet": {
+      "http_status": 200,
+      "children": ["czeg", "czvr"]
+    },
+    "metar": {
+      "http_status": 404,
+      "children": []
+    },
+    "speci": {
+      "http_status": 404,
+      "children": []
+    },
+    "vaa": {
+      "http_status": 404,
+      "children": []
+    }
+  },
+  "schema": {
+    "http_status": 200,
+    "children": [
+      "airmet-ca.xsd",
+      "common-ca.xsd",
+      "iwxxm-ca.xsd",
+      "metar-speci-ca.xsd",
+      "taf-ca.xsd"
+    ]
+  },
+  "blocker_note": "METAR/SPECI IWXXM trees return HTTP 404 on MSC datamart at probe time; ops METAR/SPECI fixtures remain encoder_reference paired TAC+IWXXM under ops/. TAF/AIRMET/SIGMET publish live COLLECT IWXXM; recorded pin_date fixtures stay offline for CI."
+}

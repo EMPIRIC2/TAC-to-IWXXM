@@ -1,9 +1,14 @@
 #!/usr/bin/env python3
 """Harvest CA_ECCC MSC datamart ops IWXXM fixtures (EV-072 M2 / #1036).
 
-Fetches TAF/AIRMET (and METAR/SPECI when published) from the MSC datamart tree for a
-pin date, writes offline fixtures + ``ops_manifest.json``. CI uses committed fixtures
-only — no live network in tests.
+Fetches TAF/AIRMET/SIGMET from the MSC datamart tree for a pin date, writes
+offline fixtures + ``ops_manifest.json``. METAR/SPECI IWXXM trees are absent
+on the datamart (HTTP 404) — encoder-reference paired TAC+IWXXM fixtures fill
+that tier. CI uses committed fixtures only — no live network in unit tests.
+
+Prefer the parameterized entrypoint::
+
+    uv run python scripts/iwxxm/harvest_ops_corpus.py --profile CA_ECCC --product TAF
 
 Respect MSC open-data terms: conservative rate limit, pin-date reproducibility.
 
@@ -35,7 +40,8 @@ DEFAULT_BASE = "https://dd.weather.gc.ca"
 DEFAULT_RATE_LIMIT = 1.0
 
 # Pin-date harvest plan — datamart URLs verified 2026-08-24.
-# METAR/SPECI IWXXM paths return 404 on MSC datamart at pin_date; bootstrap uses encoder reference.
+# ``/today/`` rotates; committed fixtures are the recorded pin-date samples.
+# METAR/SPECI IWXXM paths return 404 on MSC datamart; bootstrap uses encoder reference.
 _PINNED_FETCHES: list[dict[str, str]] = [
     {
         "id": "taf_cwao_12_001",
@@ -96,54 +102,73 @@ _ENCODER_REFERENCE: list[dict[str, str]] = [
         "id": "metar_basic_ops",
         "product": "METAR",
         "rel_path": "METAR/ops/metar_basic_ops.xml",
+        "ops_tac": "METAR/ops/metar_basic_ops.tac",
         "golden_tac": "METAR/valid/metar_basic.tac",
     },
     {
         "id": "metar_auto_ops",
         "product": "METAR",
         "rel_path": "METAR/ops/metar_auto_ops.xml",
+        "ops_tac": "METAR/ops/metar_auto_ops.tac",
         "golden_tac": "METAR/valid/metar_auto.tac",
     },
     {
         "id": "metar_lwis_ops",
         "product": "METAR",
         "rel_path": "METAR/ops/metar_lwis_ops.xml",
+        "ops_tac": "METAR/ops/metar_lwis_ops.tac",
         "golden_tac": "METAR/valid/metar_lwis.tac",
     },
     {
         "id": "metar_sawr_ops",
         "product": "METAR",
         "rel_path": "METAR/ops/metar_sawr_ops.xml",
+        "ops_tac": "METAR/ops/metar_sawr_ops.tac",
         "golden_tac": "METAR/valid/metar_sawr.tac",
     },
     {
         "id": "metar_vis_sm_ops",
         "product": "METAR",
         "rel_path": "METAR/ops/metar_vis_sm_ops.xml",
+        "ops_tac": "METAR/ops/metar_vis_sm_ops.tac",
         "golden_tac": "METAR/valid/metar_vis_sm.tac",
     },
     {
         "id": "speci_basic_ops",
         "product": "SPECI",
         "rel_path": "SPECI/ops/speci_basic_ops.xml",
+        "ops_tac": "SPECI/ops/speci_basic_ops.tac",
         "tac_inline": "SPECI CYUL 231800Z 24010KT 9999 FEW240 22/12 A3012=",
     },
     {
         "id": "speci_auto_ops",
         "product": "SPECI",
         "rel_path": "SPECI/ops/speci_auto_ops.xml",
+        "ops_tac": "SPECI/ops/speci_auto_ops.tac",
         "tac_inline": "SPECI CYUL 231800Z AUTO 24010KT 9999 FEW240 22/12 A3012=",
     },
 ]
 
 _METAR_SPECI_WAIVER = (
-    "METAR/SPECI IWXXM not published on MSC datamart at pin_date; "
-    "encoder reference for layer-6 packaging checks only"
+    "METAR/SPECI IWXXM not published on MSC datamart (HTTP 404 at pin + probe); "
+    "paired encoder-reference TAC+IWXXM for layer-6 packaging checks only"
 )
 _DATAMART_WAIVER = (
     "MSC operational COLLECT members omit translationCentre* attrs; "
     "filename + reportStatus checks only"
 )
+_METAR_SPECI_BLOCKER = (
+    "MSC datamart trees today/aviation/iwxxm/metar/ and .../speci/ return HTTP 404 "
+    "(probed 2026-08-24 and 2026-11-13). Acceptance ≥5 METAR ops fixtures satisfied "
+    "via paired encoder_reference samples under METAR/ops/; re-harvest when trees publish."
+)
+
+
+def _product_matches(product: str, product_filter: str) -> bool:
+    wanted = product_filter.strip().upper()
+    if wanted in {"", "ALL", "*"}:
+        return True
+    return product.upper() == wanted
 
 
 def _fetch_url(url: str, *, timeout: float = 30.0) -> bytes:
@@ -155,19 +180,23 @@ def _fetch_url(url: str, *, timeout: float = 30.0) -> bytes:
 
 
 def _bootstrap_encoder_reference(
-    fixtures_root: Path, *, dry_run: bool
+    fixtures_root: Path, *, dry_run: bool, product_filter: str
 ) -> list[dict[str, Any]]:
     from tac2iwxxm import convert
 
     cases: list[dict[str, Any]] = []
     for row in _ENCODER_REFERENCE:
+        if not _product_matches(row["product"], product_filter):
+            continue
         dest = fixtures_root / row["rel_path"]
+        tac_dest = fixtures_root / row["ops_tac"]
         tac = row.get("tac_inline")
         if tac is None:
             tac_path = fixtures_root / row["golden_tac"]
             tac = tac_path.read_text(encoding="utf-8").strip()
         if not dry_run:
             dest.parent.mkdir(parents=True, exist_ok=True)
+            tac_dest.write_text(tac.rstrip() + "\n", encoding="utf-8")
             result = convert(
                 tac, product=row["product"], profile="ca_eccc", iwxxm_version="3.0.0"
             )
@@ -182,8 +211,10 @@ def _bootstrap_encoder_reference(
                 "product": row["product"],
                 "tier": "wmoReference",
                 "ops_xml": row["rel_path"],
+                "ops_tac": row["ops_tac"],
                 "source": "encoder_reference",
                 "packaging_waiver": _METAR_SPECI_WAIVER,
+                "pair_kind": "encoder_reference_tac_iwxxm",
             }
         )
     return cases
@@ -197,6 +228,7 @@ def harvest(
     rate_limit: float,
     dry_run: bool,
     skip_network: bool,
+    product_filter: str = "ALL",
 ) -> dict[str, Any]:
     """
     Harvest datamart ops fixtures and write ``ops_manifest.json``.
@@ -215,52 +247,95 @@ def harvest(
         When ``True``, do not write files.
     skip_network :
         When ``True``, skip datamart fetches (manifest + encoder reference only).
+        Existing committed datamart ops XML files are still listed in the manifest.
+    product_filter :
+        ``ALL`` or a single product name.
 
     Returns
     -------
     dict[str, Any]
-        Ops manifest payload (without checksum field).
+        Ops manifest payload (with checksum field).
     """
     cases: list[dict[str, Any]] = []
 
-    if not skip_network:
-        for row in _PINNED_FETCHES:
-            url = row["url"].replace(DEFAULT_BASE, datamart_base.rstrip("/"))
-            dest = fixtures_root / row["rel_path"]
-            if not dry_run:
-                try:
-                    payload = _fetch_url(url)
-                except urllib.error.HTTPError as exc:
-                    raise RuntimeError(f"fetch failed {url}: HTTP {exc.code}") from exc
-                dest.parent.mkdir(parents=True, exist_ok=True)
-                dest.write_bytes(payload)
-                time.sleep(rate_limit)
-            source_filename = msc_filename_from_url(url)
-            entry: dict[str, Any] = {
-                "id": row["id"],
-                "product": row["product"],
-                "tier": "wmoReference",
-                "ops_xml": row["rel_path"],
-                "source_url": url,
-                "source_filename": source_filename,
-                "packaging_waiver": _DATAMART_WAIVER,
-            }
-            if "sigmet_kind" in row:
-                entry["sigmet_kind"] = row["sigmet_kind"]
-            cases.append(entry)
+    for row in _PINNED_FETCHES:
+        if not _product_matches(row["product"], product_filter):
+            continue
+        url = row["url"].replace(DEFAULT_BASE, datamart_base.rstrip("/"))
+        dest = fixtures_root / row["rel_path"]
+        if not skip_network and not dry_run:
+            try:
+                payload = _fetch_url(url)
+            except urllib.error.HTTPError as exc:
+                raise RuntimeError(f"fetch failed {url}: HTTP {exc.code}") from exc
+            dest.parent.mkdir(parents=True, exist_ok=True)
+            dest.write_bytes(payload)
+            time.sleep(rate_limit)
+        elif skip_network and not dest.is_file() and not dry_run:
+            raise RuntimeError(
+                f"skip-network requires committed fixture: {dest.relative_to(fixtures_root)}"
+            )
+        source_filename = msc_filename_from_url(url)
+        entry: dict[str, Any] = {
+            "id": row["id"],
+            "product": row["product"],
+            "tier": "wmoReference",
+            "ops_xml": row["rel_path"],
+            "source_url": url,
+            "source_filename": source_filename,
+            "packaging_waiver": _DATAMART_WAIVER,
+            "pair_kind": "iwxxm_only_no_public_tac_feed",
+        }
+        if "sigmet_kind" in row:
+            entry["sigmet_kind"] = row["sigmet_kind"]
+        cases.append(entry)
 
-    cases.extend(_bootstrap_encoder_reference(fixtures_root, dry_run=dry_run))
+    cases.extend(
+        _bootstrap_encoder_reference(
+            fixtures_root, dry_run=dry_run, product_filter=product_filter
+        )
+    )
+
+    vaa_harvest = "deferred_no_datamart_tree"
+    vaa_harvest_note = (
+        "Run harvest_ca_eccc_vaac_tac.py for Montreal VAAC TAC "
+        "(D-EV074-vaa-waiver-tac)."
+    )
+    existing_path = fixtures_root / "ops_manifest.json"
+    if existing_path.is_file():
+        existing = json.loads(existing_path.read_text(encoding="utf-8"))
+        if existing.get("vaa_harvest"):
+            vaa_harvest = existing["vaa_harvest"]
+        if existing.get("vaa_harvest_note"):
+            vaa_harvest_note = existing["vaa_harvest_note"]
+        # Product filter rewrites only matching products; keep siblings intact.
+        if not _product_matches("ALL", product_filter):
+            kept = [
+                case
+                for case in existing.get("cases", [])
+                if not _product_matches(str(case.get("product", "")), product_filter)
+            ]
+            cases = kept + cases
+        else:
+            for case in existing.get("cases", []):
+                if case.get("product") == "VAA":
+                    cases.append(case)
 
     manifest: dict[str, Any] = {
         "schema_version": 1,
-        "description": "EV-072 M2 — CA_ECCC MSC datamart ops conformance corpus",
+        "description": (
+            "EV-072 M2 / #1036 — CA_ECCC MSC datamart ops conformance corpus "
+            "(paired TAC+IWXXM where available)"
+        ),
         "profile": "CA_ECCC",
         "pin_date": pin_date,
         "datamart_base": datamart_base.rstrip("/"),
         "rate_limit_seconds": rate_limit,
+        "harvest_entrypoint": "scripts/iwxxm/harvest_ops_corpus.py",
         "cases": cases,
-        "vaa_harvest": "deferred_no_datamart_tree",
-        "vaa_harvest_note": "Run harvest_ca_eccc_vaac_tac.py for Montreal VAAC TAC (D-EV074-vaa-waiver-tac).",
+        "metar_speci_datamart_blocker": _METAR_SPECI_BLOCKER,
+        "vaa_harvest": vaa_harvest,
+        "vaa_harvest_note": vaa_harvest_note,
     }
     manifest["manifest_sha256"] = manifest_checksum(manifest)
     if not dry_run:
@@ -272,7 +347,18 @@ def harvest(
 
 
 def main() -> int:
+    """CLI entry for the CA_ECCC-specific harvest alias."""
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--profile",
+        default="CA_ECCC",
+        help="Must be CA_ECCC (use harvest_ops_corpus.py for the shared CLI)",
+    )
+    parser.add_argument(
+        "--product",
+        default="ALL",
+        help="Product filter: ALL or METAR/SPECI/TAF/AIRMET/SIGMET",
+    )
     parser.add_argument(
         "--pin-date", default=DEFAULT_PIN_DATE, help="Pin date (YYYY-MM-DD)"
     )
@@ -284,7 +370,7 @@ def main() -> int:
     parser.add_argument(
         "--fixtures-root",
         type=Path,
-        default=ops_fixture_root(_REPO),
+        default=None,
         help="CA_ECCC fixture root",
     )
     parser.add_argument(
@@ -303,15 +389,25 @@ def main() -> int:
     )
     args = parser.parse_args()
 
+    if args.profile.strip().upper() != "CA_ECCC":
+        print(
+            f"harvest_ca_eccc_ops.py is CA_ECCC-only; got {args.profile!r}. "
+            "Use scripts/iwxxm/harvest_ops_corpus.py --profile …",
+            file=sys.stderr,
+        )
+        return 2
+
+    fixtures_root = args.fixtures_root or ops_fixture_root(_REPO)
     manifest = harvest(
-        fixtures_root=args.fixtures_root,
+        fixtures_root=fixtures_root,
         pin_date=args.pin_date,
         datamart_base=args.datamart_base,
         rate_limit=args.rate_limit,
         dry_run=args.dry_run,
         skip_network=args.skip_network,
+        product_filter=args.product,
     )
-    rel = args.fixtures_root / "ops_manifest.json"
+    rel = fixtures_root / "ops_manifest.json"
     print(f"{'would write' if args.dry_run else 'wrote'} {rel.relative_to(_REPO)}")
     print(
         f"cases={len(manifest['cases'])} checksum={manifest['manifest_sha256'][:12]}…"

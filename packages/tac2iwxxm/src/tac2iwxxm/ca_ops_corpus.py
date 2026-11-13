@@ -155,19 +155,21 @@ def manifest_checksum(manifest: dict[str, Any]) -> str:
     return hashlib.sha256(canonical.encode("utf-8")).hexdigest()
 
 
-def ops_fixture_root(repo_root: Path | None = None) -> Path:
+def ops_fixture_root(repo_root: Path | None = None, *, profile: str = "CA_ECCC") -> Path:
     """
-    Return the CA_ECCC profile fixture root.
+    Return a national profile fixture root (default ``CA_ECCC``).
 
     Parameters
     ----------
     repo_root : Path | None, optional
         Repository root; defaults to four parents above this module.
+    profile : str, optional
+        Semantic profile id (directory under ``fixtures/profiles/``).
 
     Returns
     -------
     Path
-        ``packages/tac2iwxxm/tests/fixtures/profiles/CA_ECCC``.
+        ``packages/tac2iwxxm/tests/fixtures/profiles/<profile>``.
 
     Examples
     --------
@@ -175,7 +177,7 @@ def ops_fixture_root(repo_root: Path | None = None) -> Path:
     2
     """
     root = repo_root or Path(__file__).resolve().parents[4]
-    return root / "packages" / "tac2iwxxm" / "tests" / "fixtures" / "profiles" / "CA_ECCC"
+    return root / "packages" / "tac2iwxxm" / "tests" / "fixtures" / "profiles" / profile
 
 
 __all__ = [
