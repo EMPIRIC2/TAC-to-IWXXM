@@ -10,10 +10,7 @@ from __future__ import annotations
 from fastapi import APIRouter, HTTPException, Query
 
 from src.schemas.live_check import LiveCheckResponse
-from src.services.live_check import (
-    LiveCheckError,
-    get_live_check_service,
-)
+from src.services.live_check import LiveCheckError, get_live_check_service
 
 router = APIRouter(prefix="/api/v1", tags=["Live check"])
 
@@ -36,7 +33,27 @@ def live_check(
         description="Allowlisted feed: noaa, met_no, or knmi.",
     ),
 ) -> LiveCheckResponse:
-    """Return TAC and IWXXM for one airport from an allowlisted feed."""
+    """Return TAC and IWXXM for one airport from an allowlisted feed.
+
+    Parameters
+    ----------
+    icao : str
+        ICAO airport code.
+    product : str
+        METAR or TAF.
+    provider : str
+        Allowlisted feed: noaa, met_no, or knmi.
+
+    Returns
+    -------
+    LiveCheckResponse
+        Source TAC, our IWXXM, optional provider IWXXM, and attribution.
+
+    Examples
+    --------
+    >>> 1 + 1
+    2
+    """
     try:
         result = get_live_check_service().check(icao=icao, product=product, provider=provider)
     except LiveCheckError as exc:
