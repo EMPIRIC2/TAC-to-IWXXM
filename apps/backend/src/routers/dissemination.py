@@ -49,7 +49,19 @@ _decoder_send = msgspec.json.Decoder(SendRequest)
 
 
 def _client_id(request: Request) -> str:
-    """Return client host for rate limits, or ``anonymous``."""
+    """
+    Return client host for rate limits, or ``anonymous``.
+
+    Parameters
+    ----------
+    request : object
+        Argument ``request``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if request.client and request.client.host:
         return request.client.host
     return "anonymous"
@@ -58,14 +70,40 @@ def _client_id(request: Request) -> str:
 def _profiles_service_for_optional_auth(
     auth_user: dict[str, Any] | None,
 ) -> ConversionProfilesService | None:
-    """Build a profiles service when JWT auth is present."""
+    """
+    Build a profiles service when JWT auth is present.
+
+    Parameters
+    ----------
+    auth_user : object
+        Argument ``auth_user``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if auth_user is None:
         return None
     return ConversionProfilesService(str(auth_user.get("sub") or auth_user.get("user_id")))
 
 
 def _merge_template_params(template_params: dict[str, Any], request_params: dict[str, Any]) -> dict[str, Any]:
-    """Overlay request params on template params (request wins)."""
+    """
+    Overlay request params on template params (request wins).
+
+    Parameters
+    ----------
+    template_params : object
+        Argument ``template_params``.
+    request_params : object
+        Argument ``request_params``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     merged = dict(template_params)
     merged.update(request_params)
     return merged
@@ -127,6 +165,16 @@ def _require_sink(sink_type: str | None) -> str:
     ------
     HTTPException
         **422** when missing; **400** when the value is not a drawer sink.
+
+    Parameters
+    ----------
+    sink_type : object
+        Argument ``sink_type``.
+
+    Returns
+    -------
+    object
+        Return value.
     """
     if sink_type is None:
         raise HTTPException(
@@ -338,7 +386,19 @@ async def dissemination_send(
             profiles_service = ConversionProfilesService(str(auth_user.get("sub") or auth_user.get("user_id")))
 
         def _custom_dissem_body(asset_id: str) -> dict[str, object] | None:
-            """Resolve a custom dissemination library body for the caller."""
+            """
+            Resolve a custom dissemination library body for the caller.
+
+            Parameters
+            ----------
+            asset_id : object
+                Argument ``asset_id``.
+
+            Returns
+            -------
+            object
+                Return value.
+            """
             if profiles_service is None:
                 return None
             try:

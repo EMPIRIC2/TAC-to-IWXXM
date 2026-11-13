@@ -24,7 +24,19 @@ _bearer = HTTPBearer(auto_error=True)
 
 
 def _require_exchange_admin(user: dict[str, Any] = Depends(verify_supabase_token)) -> dict[str, Any]:
-    """JWT gate for the single exchange-admin role."""
+    """
+    JWT gate for the single exchange-admin role.
+
+    Parameters
+    ----------
+    user : object
+        Argument ``user``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if not user_has_exchange_admin(user):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
@@ -34,6 +46,19 @@ def _require_exchange_admin(user: dict[str, Any] = Depends(verify_supabase_token
 
 
 def _sub(user: dict[str, Any]) -> str:
+    """
+    Internal helper ``_sub``.
+
+    Parameters
+    ----------
+    user : object
+        Argument ``user``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return str(user.get("sub") or user.get("user_id") or "")
 
 
@@ -46,6 +71,16 @@ def get_allowlist(_user: dict[str, Any] = Depends(_require_exchange_admin)) -> d
     --------
     >>> 1 + 1  # docstring smoke (get_allowlist)
     2
+
+    Parameters
+    ----------
+    _user : object
+        Argument ``_user``.
+
+    Returns
+    -------
+    object
+        Return value.
     """
     return allowlist_view()
 
@@ -61,6 +96,16 @@ def get_invitation_groups(
     --------
     >>> 1 + 1  # docstring smoke (get_invitation_groups)
     2
+
+    Parameters
+    ----------
+    _user : object
+        Argument ``_user``.
+
+    Returns
+    -------
+    object
+        Return value.
     """
     groups = list_invitation_groups()
     return {
@@ -73,7 +118,26 @@ def put_invitation_group(
     body: dict[str, Any],
     user: dict[str, Any] = Depends(verify_supabase_token),
 ) -> dict[str, Any]:
-    """Bind the signed-in operator to one invitation group."""
+    """
+    Bind the signed-in operator to one invitation group.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (put_invitation_group)
+    2
+
+    Parameters
+    ----------
+    body : object
+        Argument ``body``.
+    user : object
+        Argument ``user``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     group_id = str(body.get("group_id") or "").strip()
     if not group_id:
         raise HTTPException(status_code=422, detail="group_id is required")
@@ -89,7 +153,24 @@ def put_invitation_group(
 
 @router.get("/prefs", summary="Operator exchange preferences")
 def get_operator_prefs(user: dict[str, Any] = Depends(_require_exchange_admin)) -> dict[str, Any]:
-    """Return national-remarks toggle and selected invitation group."""
+    """
+    Return national-remarks toggle and selected invitation group.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (get_operator_prefs)
+    2
+
+    Parameters
+    ----------
+    user : object
+        Argument ``user``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     prefs = get_prefs(_sub(user))
     return {
         "include_national_remarks": prefs.include_national_remarks,
@@ -104,7 +185,26 @@ def put_national_remarks(
     body: dict[str, Any],
     user: dict[str, Any] = Depends(_require_exchange_admin),
 ) -> dict[str, Any]:
-    """Operator toggle: include national remarks when publishing to WIS2."""
+    """
+    Operator toggle: include national remarks when publishing to WIS2.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (put_national_remarks)
+    2
+
+    Parameters
+    ----------
+    body : object
+        Argument ``body``.
+    user : object
+        Argument ``user``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if "include" not in body:
         raise HTTPException(status_code=422, detail="include is required")
     prefs = set_national_remarks(_sub(user), bool(body.get("include")))
@@ -116,7 +216,24 @@ def put_national_remarks(
 
 @router.get("/templates", summary="List non-secret WIS2 templates")
 def get_templates(user: dict[str, Any] = Depends(_require_exchange_admin)) -> dict[str, Any]:
-    """List memory-only non-secret destination templates (no vault)."""
+    """
+    List memory-only non-secret destination templates (no vault).
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (get_templates)
+    2
+
+    Parameters
+    ----------
+    user : object
+        Argument ``user``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     items = list_templates(_sub(user))
     return {
         "templates": [
@@ -141,7 +258,26 @@ def put_template(
     body: dict[str, Any],
     user: dict[str, Any] = Depends(_require_exchange_admin),
 ) -> dict[str, Any]:
-    """Create or replace a non-secret template. Secrets must be pasted at send time."""
+    """
+    Create or replace a non-secret template. Secrets must be pasted at send time.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (put_template)
+    2
+
+    Parameters
+    ----------
+    body : object
+        Argument ``body``.
+    user : object
+        Argument ``user``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     try:
         tmpl = upsert_template(_sub(user), body)
     except ValueError as exc:

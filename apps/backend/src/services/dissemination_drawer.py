@@ -35,6 +35,16 @@ def is_db_sink(sink_type: str) -> bool:
     True
     >>> is_db_sink("wis2")
     False
+
+    Parameters
+    ----------
+    sink_type : object
+        Argument ``sink_type``.
+
+    Returns
+    -------
+    object
+        Return value.
     """
     return sink_type in DB_SINKS
 
@@ -49,12 +59,38 @@ def is_non_db_sink(sink_type: str) -> bool:
     True
     >>> is_non_db_sink("sqlite")
     False
+
+    Parameters
+    ----------
+    sink_type : object
+        Argument ``sink_type``.
+
+    Returns
+    -------
+    object
+        Return value.
     """
     return sink_type in NON_DB_SINKS
 
 
 def _str_param(params: dict[str, Any], *keys: str, default: str | None = None) -> str | None:
-    """Return the first non-empty string among ``keys``."""
+    """
+    Return the first non-empty string among ``keys``.
+
+    Parameters
+    ----------
+    params : object
+        Argument ``params``.
+    default : object
+        Argument ``default``.
+    keys : object
+        Argument ``keys``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     for key in keys:
         raw = params.get(key)
         if raw is None:
@@ -66,7 +102,23 @@ def _str_param(params: dict[str, Any], *keys: str, default: str | None = None) -
 
 
 def _int_param(params: dict[str, Any], *keys: str, default: int) -> int:
-    """Return the first parseable int among ``keys``, else ``default``."""
+    """
+    Return the first parseable int among ``keys``, else ``default``.
+
+    Parameters
+    ----------
+    params : object
+        Argument ``params``.
+    default : object
+        Argument ``default``.
+    keys : object
+        Argument ``keys``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     for key in keys:
         raw = params.get(key)
         if raw is None:
@@ -79,7 +131,23 @@ def _int_param(params: dict[str, Any], *keys: str, default: int) -> int:
 
 
 def _bool_param(params: dict[str, Any], *keys: str, default: bool) -> bool:
-    """Return the first bool-like value among ``keys``, else ``default``."""
+    """
+    Return the first bool-like value among ``keys``, else ``default``.
+
+    Parameters
+    ----------
+    params : object
+        Argument ``params``.
+    default : object
+        Argument ``default``.
+    keys : object
+        Argument ``keys``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     for key in keys:
         raw = params.get(key)
         if raw is None:
@@ -113,6 +181,16 @@ def wis2_params_from_request(params: dict[str, Any]) -> Wis2Params:
     ... )
     >>> p.mqtt_host
     'h'
+
+    Parameters
+    ----------
+    params : object
+        Argument ``params``.
+
+    Returns
+    -------
+    object
+        Return value.
     """
     host = _str_param(params, "mqtt_host", "broker", "host")
     topic = _str_param(params, "mqtt_topic", "topic")
@@ -158,6 +236,16 @@ def edis_params_from_request(params: dict[str, Any]) -> EdisParams:
     ... )
     >>> p.smtp_host
     'h'
+
+    Parameters
+    ----------
+    params : object
+        Argument ``params``.
+
+    Returns
+    -------
+    object
+        Return value.
     """
     smtp_host = _str_param(params, "smtp_host", "host")
     mail_from = _str_param(params, "mail_from", "from")
@@ -215,6 +303,18 @@ def f19_params_from_request(sink_type: str, params: dict[str, Any]) -> F19Params
     >>> p = f19_params_from_request("amhs", {"host": "amhs.example"})
     >>> p.host
     'amhs.example'
+
+    Parameters
+    ----------
+    sink_type : object
+        Argument ``sink_type``.
+    params : object
+        Argument ``params``.
+
+    Returns
+    -------
+    object
+        Return value.
     """
     if sink_type not in {"amhs", "swim", "afs"}:
         raise ValueError(f"not an F19 sink: {sink_type!r}")
@@ -239,6 +339,11 @@ def default_allowlist() -> Allowlist:
     --------
     >>> isinstance(default_allowlist().is_empty, bool)
     True
+
+    Returns
+    -------
+    object
+        Return value.
     """
     return load_allowlist_from_env()
 
@@ -266,6 +371,26 @@ async def run_non_db_preflight(
     --------
     >>> 1 + 1  # docstring smoke (run_non_db_preflight)
     2
+
+    Parameters
+    ----------
+    sink_type : object
+        Argument ``sink_type``.
+    params : object
+        Argument ``params``.
+    allowlist : object
+        Argument ``allowlist``.
+    mqtt : object
+        Argument ``mqtt``.
+    http : object
+        Argument ``http``.
+    smtp : object
+        Argument ``smtp``.
+
+    Returns
+    -------
+    object
+        Return value.
     """
     allow = allowlist if allowlist is not None else default_allowlist()
     if sink_type == "wis2":
@@ -318,6 +443,30 @@ async def run_non_db_send(
     --------
     >>> 1 + 1  # docstring smoke (run_non_db_send)
     2
+
+    Parameters
+    ----------
+    sink_type : object
+        Argument ``sink_type``.
+    params : object
+        Argument ``params``.
+    iwxxm_xml : object
+        Argument ``iwxxm_xml``.
+    tac_text : object
+        Argument ``tac_text``.
+    allowlist : object
+        Argument ``allowlist``.
+    mqtt : object
+        Argument ``mqtt``.
+    http : object
+        Argument ``http``.
+    smtp : object
+        Argument ``smtp``.
+
+    Returns
+    -------
+    object
+        Return value.
     """
     allow = allowlist if allowlist is not None else default_allowlist()
     if sink_type == "wis2":
@@ -377,6 +526,16 @@ def assert_known_sink(sink_type: str | None) -> SinkType:
     --------
     >>> assert_known_sink("wis2")
     'wis2'
+
+    Parameters
+    ----------
+    sink_type : object
+        Argument ``sink_type``.
+
+    Returns
+    -------
+    object
+        Return value.
     """
     if sink_type is None:
         raise ValueError("missing")

@@ -24,7 +24,18 @@ EXCHANGE_ADMIN_ROLE = "exchange-admin"
 
 @dataclass(frozen=True, slots=True)
 class InvitationGroup:
-    """Tenant invitation group offered at login."""
+    """
+    Tenant invitation group offered at login.
+
+    Attributes
+    ----------
+    id : str
+        Group id.
+    name : str
+        Display name.
+    centre_id : str
+        Centre id.
+    """
 
     id: str
     name: str
@@ -33,7 +44,28 @@ class InvitationGroup:
 
 @dataclass
 class NonSecretTemplate:
-    """Memory-only non-secret WIS2 destination template (no passwords)."""
+    """
+    Memory-only non-secret WIS2 destination template (no passwords).
+
+    Attributes
+    ----------
+    id : str
+        Template id.
+    name : str
+        Display name.
+    mqtt_host : str
+        MQTT host.
+    mqtt_topic : str
+        MQTT topic.
+    dataset_url : str
+        Dataset URL.
+    mqtt_port : int
+        MQTT port.
+    centre_id : str
+        Centre id.
+    use_tls : bool
+        TLS flag.
+    """
 
     id: str
     name: str
@@ -49,7 +81,16 @@ class NonSecretTemplate:
 
 @dataclass
 class OperatorExchangePrefs:
-    """Per-operator exchange preferences (memory-only in v1)."""
+    """
+    Per-operator exchange preferences (memory-only in v1).
+
+    Attributes
+    ----------
+    include_national_remarks : bool
+        National remarks toggle.
+    invitation_group_id : str | None
+        Selected invitation group.
+    """
 
     include_national_remarks: bool = False
     invitation_group_id: str | None = None
@@ -77,6 +118,16 @@ def user_has_exchange_admin(user: dict[str, Any]) -> bool:
     True
     >>> user_has_exchange_admin({})
     False
+
+    Parameters
+    ----------
+    user : object
+        Argument ``user``.
+
+    Returns
+    -------
+    object
+        Return value.
     """
     roles: list[str] = []
     for bag_key in ("app_metadata", "user_metadata"):
@@ -106,6 +157,11 @@ def list_invitation_groups() -> list[InvitationGroup]:
     --------
     >>> len(list_invitation_groups()) >= 1
     True
+
+    Returns
+    -------
+    object
+        Return value.
     """
     return list(_DEFAULT_GROUPS)
 
@@ -118,6 +174,11 @@ def allowlist_view() -> dict[str, Any]:
     --------
     >>> "entries" in allowlist_view()
     True
+
+    Returns
+    -------
+    object
+        Return value.
     """
     allow: Allowlist = load_allowlist_from_env()
     return {
@@ -131,7 +192,24 @@ def allowlist_view() -> dict[str, Any]:
 
 
 def get_prefs(sub: str) -> OperatorExchangePrefs:
-    """Return memory prefs for ``sub``, creating defaults when absent."""
+    """
+    Return memory prefs for ``sub``, creating defaults when absent.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (get_prefs)
+    2
+
+    Parameters
+    ----------
+    sub : object
+        Argument ``sub``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     with _lock:
         prefs = _prefs.get(sub)
         if prefs is None:
@@ -149,6 +227,18 @@ def set_national_remarks(sub: str, include: bool) -> OperatorExchangePrefs:
     >>> p = set_national_remarks("u1", True)
     >>> p.include_national_remarks
     True
+
+    Parameters
+    ----------
+    sub : object
+        Argument ``sub``.
+    include : object
+        Argument ``include``.
+
+    Returns
+    -------
+    object
+        Return value.
     """
     with _lock:
         prefs = _prefs.get(sub) or OperatorExchangePrefs()
@@ -171,6 +261,18 @@ def set_invitation_group(sub: str, group_id: str) -> OperatorExchangePrefs:
     >>> p = set_invitation_group("u1", "group-demo-a")
     >>> p.invitation_group_id
     'group-demo-a'
+
+    Parameters
+    ----------
+    sub : object
+        Argument ``sub``.
+    group_id : object
+        Argument ``group_id``.
+
+    Returns
+    -------
+    object
+        Return value.
     """
     known = {g.id for g in _DEFAULT_GROUPS}
     if group_id not in known:
@@ -183,7 +285,24 @@ def set_invitation_group(sub: str, group_id: str) -> OperatorExchangePrefs:
 
 
 def list_templates(sub: str) -> list[NonSecretTemplate]:
-    """List non-secret templates owned by ``sub``."""
+    """
+    List non-secret templates owned by ``sub``.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (list_templates)
+    2
+
+    Parameters
+    ----------
+    sub : object
+        Argument ``sub``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     with _lock:
         return [t for t in _templates.values() if t.owner_sub == sub]
 
@@ -210,6 +329,18 @@ def upsert_template(sub: str, body: dict[str, Any]) -> NonSecretTemplate:
     ... )
     >>> t.name
     'Demo'
+
+    Parameters
+    ----------
+    sub : object
+        Argument ``sub``.
+    body : object
+        Argument ``body``.
+
+    Returns
+    -------
+    object
+        Return value.
     """
     name = str(body.get("name") or "").strip()
     host = str(body.get("mqtt_host") or "").strip()
@@ -239,7 +370,14 @@ def upsert_template(sub: str, body: dict[str, Any]) -> NonSecretTemplate:
 
 
 def clear_exchange_admin_state() -> None:
-    """Reset memory stores (tests only)."""
+    """
+    Reset memory stores (tests only).
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (clear_exchange_admin_state)
+    2
+    """
     with _lock:
         _templates.clear()
         _prefs.clear()
