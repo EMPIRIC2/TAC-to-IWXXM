@@ -39,7 +39,6 @@ class TestTcF30006EnvContractCorpus:
         env = (ROOT / "docs/env-variable.md").read_text(encoding="utf-8")
         assert "DATABASE_URL" in env
 
-
     def test_corpus_lists_env_variable(self) -> None:
         corpus = (ROOT / "AGENTS.md").read_text(encoding="utf-8")
         assert "env-variable.md" in corpus
