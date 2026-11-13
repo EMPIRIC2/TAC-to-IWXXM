@@ -72,3 +72,22 @@ def test_record_convert_station_health_failure_is_swallowed(
     acc = _ConvertAccumulator()
     acc.results.append(_FakeResult("METAR KJFK 010000Z 18008KT 10SM FEW040 15/07 A3005="))  # type: ignore[arg-type]
     _record_convert_station_health(acc, product="METAR")
+
+
+def test_record_convert_station_health_import_failure_is_noop(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Cover conversion.py import guard when recorder module is unavailable."""
+    import builtins
+
+    real_import = builtins.__import__
+
+    def _boom(name: str, *args: Any, **kwargs: Any) -> Any:
+        if name == "src.services.station_health_recorder":
+            raise ImportError("forced missing recorder")
+        return real_import(name, *args, **kwargs)
+
+    monkeypatch.setattr(builtins, "__import__", _boom)
+    acc = _ConvertAccumulator()
+    acc.results.append(_FakeResult("METAR KJFK 010000Z 18008KT 10SM FEW040 15/07 A3005="))  # type: ignore[arg-type]
+    _record_convert_station_health(acc, product="METAR", lint_report=None)

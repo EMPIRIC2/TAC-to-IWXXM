@@ -253,8 +253,18 @@ def test_postgres_store_paths_and_exceptions() -> None:
     assert "sslmode=require" in (sync_database_url("postgresql://u:p@h/db?ssl=require") or "")
 
     engine = MagicMock()
-    store = PostgresStationHealthStore.from_url("postgresql+psycopg://u:p@h/db")
-    assert isinstance(store, PostgresStationHealthStore)
+    # Avoid opening a real DB pool from from_url during unit tests.
+    from src.services import station_health_postgres as pg_mod
+
+    original_create = pg_mod.create_engine
+    pg_mod.create_engine = lambda *_a, **_k: engine  # type: ignore[assignment]
+    try:
+        store_from_url = PostgresStationHealthStore.from_url(
+            "postgresql+psycopg://u:p@h/db"
+        )
+    finally:
+        pg_mod.create_engine = original_create  # type: ignore[assignment]
+    assert isinstance(store_from_url, PostgresStationHealthStore)
     store = PostgresStationHealthStore(engine)
     store.reset()
     assert store.record_observation(icao="BAD", product="metar", tac_text="x", source="t") is None
