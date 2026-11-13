@@ -4,13 +4,11 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('./apiBase', () => ({
-  apiUrl: (path: string) => `https://api.example.test/api/v1${path.startsWith('/') ? path : `/${path}`}`,
+  apiUrl: (path: string) =>
+    `https://api.example.test/api/v1${path.startsWith('/') ? path : `/${path}`}`,
 }));
 
-import {
-  fetchStationHealthList,
-  fetchStationHealthMetrics,
-} from './stationHealthApi';
+import { fetchStationHealthList, fetchStationHealthMetrics } from './stationHealthApi';
 
 describe('stationHealthApi', () => {
   afterEach(() => {

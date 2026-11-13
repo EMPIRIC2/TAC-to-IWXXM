@@ -99,7 +99,9 @@ describe('StationHealthPage', () => {
     await waitFor(() => {
       expect(screen.getByTestId('station-health-empty')).toBeInTheDocument();
     });
-    expect(screen.queryByTestId('station-health-metric-availability')).not.toBeInTheDocument();
+    expect(
+      screen.queryByTestId('station-health-metric-availability'),
+    ).not.toBeInTheDocument();
   });
 
   it('renders a station row without a display name', async () => {
@@ -121,7 +123,9 @@ describe('StationHealthPage', () => {
     await waitFor(() => {
       expect(screen.getByTestId('station-health-row-KNONAME')).toBeInTheDocument();
     });
-    expect(screen.getByTestId('station-health-row-KNONAME')).toHaveTextContent('KNONAME');
+    expect(screen.getByTestId('station-health-row-KNONAME')).toHaveTextContent(
+      'KNONAME',
+    );
     expect(screen.getByTestId('station-health-row-KNONAME')).not.toHaveTextContent(
       'John F Kennedy',
     );

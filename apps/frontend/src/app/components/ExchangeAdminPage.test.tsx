@@ -96,7 +96,10 @@ describe('ExchangeAdminPage', () => {
     });
     render(<ExchangeAdminPage token="tok" />);
     await screen.findByTestId('exchange-admin-allowlist');
-    await user.selectOptions(screen.getByTestId('exchange-admin-group'), 'group-demo-b');
+    await user.selectOptions(
+      screen.getByTestId('exchange-admin-group'),
+      'group-demo-b',
+    );
     await waitFor(() => {
       expect(api.selectInvitationGroup).toHaveBeenCalledWith('tok', 'group-demo-b');
     });
@@ -109,10 +112,15 @@ describe('ExchangeAdminPage', () => {
       { id: 'group-demo-a', name: 'Demo Centre A', centre_id: 'demo-a' },
       { id: 'group-demo-b', name: 'Demo Centre B', centre_id: 'demo-b' },
     ]);
-    vi.mocked(api.selectInvitationGroup).mockRejectedValue(new Error('group save failed'));
+    vi.mocked(api.selectInvitationGroup).mockRejectedValue(
+      new Error('group save failed'),
+    );
     render(<ExchangeAdminPage token="tok" />);
     await screen.findByTestId('exchange-admin-allowlist');
-    await user.selectOptions(screen.getByTestId('exchange-admin-group'), 'group-demo-b');
+    await user.selectOptions(
+      screen.getByTestId('exchange-admin-group'),
+      'group-demo-b',
+    );
     expect(await screen.findByTestId('exchange-admin-error')).toHaveTextContent(
       'group save failed',
     );
@@ -127,7 +135,10 @@ describe('ExchangeAdminPage', () => {
     vi.mocked(api.selectInvitationGroup).mockRejectedValue('boom');
     render(<ExchangeAdminPage token="tok" />);
     await screen.findByTestId('exchange-admin-allowlist');
-    await user.selectOptions(screen.getByTestId('exchange-admin-group'), 'group-demo-b');
+    await user.selectOptions(
+      screen.getByTestId('exchange-admin-group'),
+      'group-demo-b',
+    );
     expect(await screen.findByTestId('exchange-admin-error')).toHaveTextContent(
       'Could not save group',
     );
@@ -135,7 +146,9 @@ describe('ExchangeAdminPage', () => {
 
   it('failure: remarks toggle rolls back on error', async () => {
     const user = userEvent.setup();
-    vi.mocked(api.setNationalRemarks).mockRejectedValue(new Error('remarks save failed'));
+    vi.mocked(api.setNationalRemarks).mockRejectedValue(
+      new Error('remarks save failed'),
+    );
     render(<ExchangeAdminPage token="tok" />);
     await screen.findByTestId('exchange-admin-allowlist');
     const box = screen.getByTestId('exchange-admin-remarks');

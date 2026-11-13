@@ -143,7 +143,8 @@ def test_recorder_extract_and_invalid_icao(monkeypatch: pytest.MonkeyPatch) -> N
         product="METAR",
         source="convert",
     )
-    assert out is not None and out["icao"] == "KJFK"
+    assert out is not None
+    assert out["icao"] == "KJFK"
 
     def _boom(*_a: Any, **_k: Any) -> str:
         raise RuntimeError("parse fail")
@@ -355,7 +356,8 @@ def test_postgres_store_paths_and_exceptions() -> None:
     detail_records.mappings.return_value = record_result.mappings.return_value
     conn.execute.side_effect = [meta, detail_records]
     detail = store.get_station("kjfk")
-    assert detail is not None and detail["icao"] == "KJFK"
+    assert detail is not None
+    assert detail["icao"] == "KJFK"
 
     meta.mappings.return_value.first.return_value = None
     conn.execute.side_effect = [meta]
@@ -367,7 +369,8 @@ def test_postgres_store_paths_and_exceptions() -> None:
     # _load_window exception path
     conn.execute.side_effect = RuntimeError("list down")
     stations, rows = store._load_window(cutoff=now - timedelta(hours=1), product_filter=None)
-    assert stations == {} and rows == []
+    assert stations == {}
+    assert rows == []
 
     # product filter query path
     station_result = MagicMock()
