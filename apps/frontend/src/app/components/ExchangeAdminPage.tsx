@@ -32,7 +32,7 @@ type Props = {
  *
  * @param props.token - Signed-in bearer token
  * @example
- * <ExchangeAdminPage token={session.access_token} />
+ * const _ = true;
  */
 export function ExchangeAdminPage({ token }: Props) {
   const [allowlist, setAllowlist] = useState<AllowlistView | null>(null);

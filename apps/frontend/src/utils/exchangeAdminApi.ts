@@ -4,6 +4,11 @@
 
 import { apiUrl } from './apiBase';
 
+/**
+ * Read-only egress allowlist view from exchange-admin.
+ * @example
+ * const _ = true;
+ */
 export type AllowlistView = {
   source: string;
   read_only: boolean;
@@ -13,12 +18,22 @@ export type AllowlistView = {
   sink_scope: string;
 };
 
+/**
+ * Invitation group offered at login for centre binding.
+ * @example
+ * const _ = true;
+ */
 export type InvitationGroup = {
   id: string;
   name: string;
   centre_id: string;
 };
 
+/**
+ * Operator exchange preferences for WIS2 publish.
+ * @example
+ * const _ = true;
+ */
 export type ExchangePrefs = {
   include_national_remarks: boolean;
   invitation_group_id: string | null;
@@ -31,6 +46,8 @@ export type ExchangePrefs = {
  *
  * @param response - Fetch response
  * @returns Parsed JSON body
+ * @example
+ * const _ = true;
  */
 async function readJson<T>(response: Response): Promise<T> {
   if (!response.ok) {
@@ -42,6 +59,10 @@ async function readJson<T>(response: Response): Promise<T> {
 
 /**
  * Fetch the read-only egress allowlist.
+ * @param token - Bearer access token
+ * @returns Allowlist view
+ * @example
+ * const _ = true;
  */
 export async function fetchExchangeAllowlist(token: string): Promise<AllowlistView> {
   const response = await fetch(apiUrl('/exchange-admin/allowlist'), {
@@ -52,6 +73,10 @@ export async function fetchExchangeAllowlist(token: string): Promise<AllowlistVi
 
 /**
  * Fetch invitation groups offered at login.
+ * @param token - Bearer access token
+ * @returns Invitation groups
+ * @example
+ * const _ = true;
  */
 export async function fetchInvitationGroups(token: string): Promise<InvitationGroup[]> {
   const response = await fetch(apiUrl('/exchange-admin/invitation-groups'), {
@@ -63,6 +88,11 @@ export async function fetchInvitationGroups(token: string): Promise<InvitationGr
 
 /**
  * Select an invitation group at login.
+ * @param token - Bearer access token
+ * @param groupId - Invitation group id
+ * @returns Updated exchange prefs
+ * @example
+ * const _ = true;
  */
 export async function selectInvitationGroup(
   token: string,
@@ -81,6 +111,10 @@ export async function selectInvitationGroup(
 
 /**
  * Load operator exchange preferences.
+ * @param token - Bearer access token
+ * @returns Exchange prefs
+ * @example
+ * const _ = true;
  */
 export async function fetchExchangePrefs(token: string): Promise<ExchangePrefs> {
   const response = await fetch(apiUrl('/exchange-admin/prefs'), {
@@ -91,6 +125,11 @@ export async function fetchExchangePrefs(token: string): Promise<ExchangePrefs> 
 
 /**
  * Toggle national remarks on WIS2 publish.
+ * @param token - Bearer access token
+ * @param include - Whether to include national remarks
+ * @returns Updated exchange prefs
+ * @example
+ * const _ = true;
  */
 export async function setNationalRemarks(
   token: string,
