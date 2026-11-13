@@ -15,7 +15,7 @@ import threading
 import time
 import uuid
 from dataclasses import dataclass, field
-from typing import Any
+from typing import Any, cast
 
 from dissemination.allowlist import Allowlist, load_allowlist_from_env
 
@@ -82,11 +82,16 @@ def user_has_exchange_admin(user: dict[str, Any]) -> bool:
     for bag_key in ("app_metadata", "user_metadata"):
         bag = user.get(bag_key)
         if isinstance(bag, dict):
-            raw = bag.get("roles") or bag.get("role")
+            typed_bag = cast(dict[str, object], bag)
+            raw = typed_bag.get("roles")
+            if raw is None:
+                raw = typed_bag.get("role")
             if isinstance(raw, str):
                 roles.append(raw)
-            elif isinstance(raw, (list, tuple)):
-                roles.extend(str(r) for r in raw)
+            elif isinstance(raw, list):
+                roles.extend(str(item) for item in cast(list[object], raw))
+            elif isinstance(raw, tuple):
+                roles.extend(str(item) for item in cast(tuple[object, ...], raw))
     top = user.get("role")
     if isinstance(top, str):
         roles.append(top)

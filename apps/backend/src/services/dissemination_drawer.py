@@ -9,11 +9,17 @@ from __future__ import annotations
 from typing import Any
 
 from dissemination.allowlist import Allowlist, load_allowlist_from_env
-from dissemination.edis import EdisParams, edis_preflight, edis_submit
+from dissemination.edis import EdisParams, SmtpClient, edis_preflight, edis_submit
 from dissemination.f19_stubs import F19Params, get_staging_sink
 from dissemination.models import PreflightResponse, SendResponse, SinkType
 from dissemination.transports import AiomqttClient, AiosmtpClient, HttpxDatasetClient
-from dissemination.wis2 import Wis2Params, wis2_preflight, wis2_publish
+from dissemination.wis2 import (
+    HttpDatasetClient,
+    MqttClient,
+    Wis2Params,
+    wis2_preflight,
+    wis2_publish,
+)
 
 NON_DB_SINKS: frozenset[str] = frozenset({"wis2", "edis", "amhs", "swim", "afs"})
 DB_SINKS: frozenset[str] = frozenset({"postgres", "mysql", "sqlserver", "sqlite"})
@@ -242,9 +248,9 @@ async def run_non_db_preflight(
     params: dict[str, Any],
     *,
     allowlist: Allowlist | None = None,
-    mqtt: object | None = None,
-    http: object | None = None,
-    smtp: object | None = None,
+    mqtt: MqttClient | None = None,
+    http: HttpDatasetClient | None = None,
+    smtp: SmtpClient | None = None,
 ) -> PreflightResponse:
     """
     Run WIS2 / EDIS / F19 preflight for the public drawer.
@@ -294,9 +300,9 @@ async def run_non_db_send(
     iwxxm_xml: str,
     tac_text: str | None = None,
     allowlist: Allowlist | None = None,
-    mqtt: object | None = None,
-    http: object | None = None,
-    smtp: object | None = None,
+    mqtt: MqttClient | None = None,
+    http: HttpDatasetClient | None = None,
+    smtp: SmtpClient | None = None,
 ) -> SendResponse:
     """
     Deliver IWXXM through WIS2 / EDIS / F19 after allowlist checks.
