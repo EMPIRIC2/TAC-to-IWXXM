@@ -892,7 +892,7 @@ allowlist. Abuse controls apply (rate limits / body size).
 |-------|-------|
 | Request | JSON: `sink_type` (`postgres` \| `mysql` \| `sqlserver` \| `sqlite` \| `wis2` \| `edis` \| `amhs` \| `swim` \| `afs`) + sink-specific connection params (DB URI or WIS2/EDIS/AMHS fields) + optional `payload` metadata (product, schema version) + `ddl` flag for create-if-missing + **single** IWXXM/TAC body (or in-session/drop reference) |
 | Success | Structured preflight result: connectivity OK, schema/writer-contract diff (empty when green), optional short-lived opaque `handle` |
-| Failure | **422** when `sink_type` is omitted/`null` (client error); **501** when `sink_type` is a known drawer value not yet implemented for this route (e.g. `wis2`); 400/403 structured errors (allowlist/SSRF, auth to dest, schema mismatch, missing columns); secrets redacted |
+| Failure | **422** when `sink_type` is omitted/`null` (client error); **400** when `sink_type` is unknown or BYOC params are incomplete (WIS2/EDIS/F19 now wired on this public route); 400/403 structured errors (allowlist/SSRF, auth to dest, schema mismatch, missing columns); secrets redacted |
 
 ### `POST /api/v1/dissemination/send`
 
@@ -900,7 +900,7 @@ allowlist. Abuse controls apply (rate limits / body size).
 |-------|-------|
 | Request | JSON: either `handle` from green preflight **or** full sink params again + **single** IWXXM/TAC body (or reference to in-session convert result / drag-drop content) |
 | Success | Sink ack + optional `kv_upload_key` metadata for local Finished (no dest secrets stored) |
-| Failure | Same structured/redacted errors as preflight (**422** missing/`nullsink_type` when no valid handle supplies it; **501** unimplemented sink); block if preflight would not be green |
+| Failure | Same structured/redacted errors as preflight (**422** missing/`null` `sink_type` when no valid handle supplies it; **400** unknown sink or incomplete BYOC params); block if preflight would not be green |
 
 ### Multi-file selection , client contract
 
@@ -919,8 +919,26 @@ aliases only (=A). CORS: no new origins. reuse existing
 
 ### / , Dissemination ops + Gateway hooks (JWT)
 
-Public `POST /dissemination/preflight` + `/send` **unchanged** (public operator app. memory-only BYOC).
-New **authenticated** routes (Bearer JWT, same posture as work-sessions):
+Public `POST /dissemination/preflight` + `/send` support DB sinks and WIS2/EDIS/F19
+drawer sinks (memory-only BYOC). New **authenticated** routes (Bearer JWT, same
+posture as work-sessions):
+
+### `/api/v1/exchange-admin` (WIS2-only, exchange-admin role)
+
+| Method | Path | Notes |
+|--------|------|-------|
+| `GET` | `/api/v1/exchange-admin/allowlist` | Read-only GitOps allowlist projection; no mutate |
+| `GET` | `/api/v1/exchange-admin/invitation-groups` | Multi-tenant invitation groups for login |
+| `PUT` | `/api/v1/exchange-admin/invitation-group` | Bind signed-in operator to one group |
+| `GET` | `/api/v1/exchange-admin/prefs` | National-remarks toggle + selected group; `admin_replay=false` |
+| `PUT` | `/api/v1/exchange-admin/prefs/national-remarks` | Operator toggle for national remarks on WIS2 publish |
+| `GET`/`PUT` | `/api/v1/exchange-admin/templates` | Memory-only non-secret WIS2 templates (no vault; secrets rejected) |
+
+**Auth**: JWT with role `exchange-admin` for allowlist/prefs/templates; invitation
+group list/select accepts any signed-in operator. **Non-goals (v1)**: admin
+replay, vault-backed secrets, non-WIS2 admin sinks.
+
+New **authenticated** dissemination ops routes (Bearer JWT, same posture as work-sessions):
 
 | Method | Path | Notes |
 |--------|------|-------|

@@ -8621,6 +8621,273 @@
         ]
       }
     },
+    "/api/v1/exchange-admin/allowlist": {
+      "get": {
+        "description": "Return the configured egress allowlist. Editing is GitOps-only.",
+        "operationId": "get_allowlist_api_v1_exchange_admin_allowlist_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response Get Allowlist Api V1 Exchange Admin Allowlist Get",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Read-only egress allowlist (GitOps)",
+        "tags": [
+          "Exchange Admin"
+        ]
+      }
+    },
+    "/api/v1/exchange-admin/invitation-group": {
+      "put": {
+        "description": "Bind the signed-in operator to one invitation group.",
+        "operationId": "put_invitation_group_api_v1_exchange_admin_invitation_group_put",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "additionalProperties": true,
+                "title": "Body",
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response Put Invitation Group Api V1 Exchange Admin Invitation Group Put",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Select invitation group at login",
+        "tags": [
+          "Exchange Admin"
+        ]
+      }
+    },
+    "/api/v1/exchange-admin/invitation-groups": {
+      "get": {
+        "description": "List multi-tenant invitation groups offered at login.",
+        "operationId": "get_invitation_groups_api_v1_exchange_admin_invitation_groups_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response Get Invitation Groups Api V1 Exchange Admin Invitation Groups Get",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Invitation groups for login",
+        "tags": [
+          "Exchange Admin"
+        ]
+      }
+    },
+    "/api/v1/exchange-admin/prefs": {
+      "get": {
+        "description": "Return national-remarks toggle and selected invitation group.",
+        "operationId": "get_operator_prefs_api_v1_exchange_admin_prefs_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response Get Operator Prefs Api V1 Exchange Admin Prefs Get",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Operator exchange preferences",
+        "tags": [
+          "Exchange Admin"
+        ]
+      }
+    },
+    "/api/v1/exchange-admin/prefs/national-remarks": {
+      "put": {
+        "description": "Operator toggle: include national remarks when publishing to WIS2.",
+        "operationId": "put_national_remarks_api_v1_exchange_admin_prefs_national_remarks_put",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "additionalProperties": true,
+                "title": "Body",
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response Put National Remarks Api V1 Exchange Admin Prefs National Remarks Put",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Toggle national remarks on WIS2 publish",
+        "tags": [
+          "Exchange Admin"
+        ]
+      }
+    },
+    "/api/v1/exchange-admin/templates": {
+      "get": {
+        "description": "List memory-only non-secret destination templates (no vault).",
+        "operationId": "get_templates_api_v1_exchange_admin_templates_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response Get Templates Api V1 Exchange Admin Templates Get",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "List non-secret WIS2 templates",
+        "tags": [
+          "Exchange Admin"
+        ]
+      },
+      "put": {
+        "description": "Create or replace a non-secret template. Secrets must be pasted at send time.",
+        "operationId": "put_template_api_v1_exchange_admin_templates_put",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "additionalProperties": true,
+                "title": "Body",
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response Put Template Api V1 Exchange Admin Templates Put",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Upsert non-secret WIS2 template",
+        "tags": [
+          "Exchange Admin"
+        ]
+      }
+    },
     "/api/v1/ingest-collect": {
       "post": {
         "description": "Accept a COLLECT upload, including gzip text, and return HTTP 501.\n\nMember extraction is not available.",

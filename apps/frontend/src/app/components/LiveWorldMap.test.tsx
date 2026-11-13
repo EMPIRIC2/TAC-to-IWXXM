@@ -824,11 +824,19 @@ describe('LiveWorldMap', () => {
         },
       ],
     };
+    const emptyReports: LivePlace = {
+      place_key: 'KNULL',
+      product: 'metar',
+      latitude: 41.0,
+      longitude: -72.0,
+      geometry: { kind: 'point' },
+      reports: [],
+    };
     vi.stubGlobal(
       'fetch',
       vi.fn().mockResolvedValue({
         ok: true,
-        json: async () => ({ places: [rainy, clear] }),
+        json: async () => ({ places: [rainy, clear, emptyReports] }),
       }),
     );
     render(<LiveWorldMap onOpenPlace={onOpenPlace} />);
@@ -843,6 +851,12 @@ describe('LiveWorldMap', () => {
     expect(onOpenPlace).toHaveBeenCalledWith(
       expect.objectContaining({ place_key: 'KJFK' }),
     );
+    // Stale picker row after a region filter removes the station: miss path.
+    onOpenPlace.mockClear();
+    await user.selectOptions(screen.getByTestId('live-map-region'), 'Antarctica');
+    await user.click(screen.getByTestId('cluster-pick-KJFK'));
+    expect(onOpenPlace).not.toHaveBeenCalled();
+    await user.selectOptions(screen.getByTestId('live-map-region'), 'all');
     await user.click(screen.getByTestId('tac-layer-precip'));
     await waitFor(() => {
       expect(

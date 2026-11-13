@@ -133,6 +133,30 @@ export function passesTacLayers(tac: string, layers: ReadonlySet<string>): boole
 }
 
 /**
+ * Map one live place into a station-cluster picker row.
+ *
+ * Missing reports fall back to empty TAC / time strings.
+ *
+ * @param place - Live map place
+ * @returns Picker row for the newest report
+ * @example
+ * const _ = true;
+ */
+export function placeToClusterPick(place: {
+  place_key: string;
+  product: string;
+  reports: ReadonlyArray<{ tac?: string | null; observed_at?: string | null }>;
+}): StationClusterPick {
+  const report = place.reports[0];
+  return {
+    icao: place.place_key,
+    product: place.product,
+    tac: report?.tac ?? '',
+    observedAt: report?.observed_at ?? '',
+  };
+}
+
+/**
  * Build file-picker rows from places that already passed TAC overlays.
  *
  * @param rows - ICAO / product / TAC / time tuples

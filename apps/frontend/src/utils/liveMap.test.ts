@@ -39,6 +39,7 @@ import {
   LIVE_MAP_REFRESHING,
   LIVE_MAP_PRODUCTS,
   LIVE_MAP_VIEWS,
+  type LivePlace,
 } from './liveMap';
 
 const bounds = { west: -80, south: 40, east: -70, north: 41 };
@@ -585,5 +586,24 @@ describe('live map helpers', () => {
     expect(
       filterPlaces(loaded, { ...base, tacLayers: new Set() }),
     ).toEqual(filterPlaces(loaded, base));
+
+    const emptyReports: LivePlace = {
+      place_key: 'KEMPTY',
+      product: 'metar',
+      latitude: 40,
+      longitude: -74,
+      geometry: { kind: 'point' },
+      reports: [],
+    };
+    const seenTac: string[] = [];
+    filterPlaces([emptyReports], {
+      ...base,
+      tacLayers: new Set(['precip']),
+      passesTacLayers: (tac) => {
+        seenTac.push(tac);
+        return false;
+      },
+    });
+    expect(seenTac).toEqual(['']);
   });
 });

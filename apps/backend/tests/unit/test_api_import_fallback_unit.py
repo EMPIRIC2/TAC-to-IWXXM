@@ -283,6 +283,7 @@ def test_api_module_top_level_fallback_imports(monkeypatch):
         dissemination=fake_router_module,
         dissemination_ops=fake_router_module,
         evaluation=fake_router_module,
+        exchange_admin=fake_router_module,
         health=fake_health_router,
         icao_opmet=fake_router_module,
         live_map=fake_router_module,

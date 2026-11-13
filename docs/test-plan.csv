@@ -894,3 +894,6 @@ TC-QV-010,OSV-Scanner lockfile vulnerability scan,coverage,F34,,No unwaived know
 TC-QV-011,Gitleaks secret scan,coverage,F34,,No secrets found using config/tooling/gitleaks.toml,config/tooling/gitleaks.toml,,quality-tooling,documented,TR-Q08; Wave 2; command and CI job planned
 TC-QV-012,Actionlint workflow lint,coverage,F34,,No errors in .github/workflows,scripts/security/install-tools.sh,,quality-tooling,documented,TR-Q08; Wave 2; command and CI job planned
 TC-F37-TAC-001,Live map TAC weather layers + station cluster picker,,,UJ-MAP,,apps/frontend/src/utils/liveMapTacLayers.test.ts,,,documented,heading_level=3
+TC-WIS2-ADMIN-001,Public WIS2 preflight/send wired (no 501),,,UJ-DISS,,apps/backend/tests/unit/test_dissemination_api.py,,,documented,heading_level=3
+TC-WIS2-ADMIN-002,Exchange-admin allowlist read-only + role gate,,,UJ-DISS,,apps/backend/tests/unit/test_exchange_admin.py,,,documented,heading_level=3
+TC-WIS2-ADMIN-003,Invitation groups + national remarks toggle,,,UJ-DISS,,apps/backend/tests/unit/test_exchange_admin.py,,,documented,heading_level=3
