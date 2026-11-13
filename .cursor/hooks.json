@@ -22,6 +22,11 @@
     ],
     "preToolUse": [
       {
+        "command": "python3 .cursor/hooks/test_file_naming_guard.py",
+        "matcher": "Write",
+        "timeout": 10
+      },
+      {
         "command": "bash .cursor/hooks/pre-task-check.sh",
         "matcher": "Write",
         "timeout": 10
@@ -38,6 +43,11 @@
       }
     ],
     "afterFileEdit": [
+      {
+        "command": "python3 .cursor/hooks/test_file_naming_guard.py",
+        "matcher": "Write|TabWrite",
+        "timeout": 10
+      },
       {
         "command": "python3 .cursor/hooks/issue_registry_guard.py",
         "matcher": "Write|TabWrite",
