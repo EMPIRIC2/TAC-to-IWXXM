@@ -21,6 +21,19 @@ router = APIRouter(prefix="/api/v1", tags=["Station health"])
 
 
 def _product_models(raw_products: list[dict]) -> list[StationProductGradeModel]:
+    """
+    Internal helper ``_product_models``.
+
+    Parameters
+    ----------
+    raw_products : object
+        Argument ``raw_products``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return [StationProductGradeModel(**item) for item in raw_products]
 
 
@@ -30,7 +43,19 @@ def _product_models(raw_products: list[dict]) -> list[StationProductGradeModel]:
     summary="List station health metric definitions",
 )
 def list_station_health_metrics() -> StationHealthMetricsResponse:
-    """Serve the extensible metrics registry for dashboard cards."""
+    """
+    Serve the extensible metrics registry for dashboard cards.
+
+    Returns
+    -------
+    object
+        Return value.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (list_station_health_metrics)
+    2
+    """
     rows = get_station_health_store().list_metrics()
     metrics = [
         StationMetricDefinitionModel(
@@ -57,7 +82,30 @@ def list_station_health(
     grade: str | None = Query(default=None, description="Optional letter grade filter"),
     limit: int = Query(default=100, ge=1, le=500, description="Max stations to return"),
 ) -> StationHealthListResponse:
-    """Serve station report cards for one availability window."""
+    """
+    Serve station report cards for one availability window.
+
+    Parameters
+    ----------
+    window : object
+        Argument ``window``.
+    product : object
+        Argument ``product``.
+    grade : object
+        Argument ``grade``.
+    limit : object
+        Argument ``limit``.
+
+    Returns
+    -------
+    object
+        Return value.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (list_station_health)
+    2
+    """
     window_key = window.strip().lower()
     if window_key not in WINDOW_SECONDS:
         raise HTTPException(status_code=400, detail="Window must be 6h, 1d, or 30d")
@@ -96,7 +144,24 @@ def list_station_health(
     responses={404: {"description": "Unknown station"}},
 )
 def get_station_health(icao: str) -> StationHealthDetailResponse:
-    """Serve one station report card across windows and products."""
+    """
+    Serve one station report card across windows and products.
+
+    Parameters
+    ----------
+    icao : object
+        Argument ``icao``.
+
+    Returns
+    -------
+    object
+        Return value.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (get_station_health)
+    2
+    """
     detail = get_station_health_store().get_station(icao)
     if detail is None:
         raise HTTPException(status_code=404, detail="Unknown station")

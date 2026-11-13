@@ -6,7 +6,32 @@ from pydantic import BaseModel, Field
 
 
 class StationProductGradeModel(BaseModel):
-    """One product grade inside a station window."""
+    """
+    One product grade inside a station window.
+
+    Attributes
+    ----------
+    product : object
+        Field ``product``.
+    grade : object
+        Field ``grade``.
+    overall_score : object
+        Field ``overall_score``.
+    availability_score : object
+        Field ``availability_score``.
+    actual_count : object
+        Field ``actual_count``.
+    expected_count : object
+        Field ``expected_count``.
+    solidus_rate : object
+        Field ``solidus_rate``.
+    missing_digit_rate : object
+        Field ``missing_digit_rate``.
+    lint_severity_score : object
+        Field ``lint_severity_score``.
+    lint_error_count : object
+        Field ``lint_error_count``.
+    """
 
     product: str
     grade: str
@@ -21,7 +46,22 @@ class StationProductGradeModel(BaseModel):
 
 
 class StationListItemModel(BaseModel):
-    """One station row on the dashboard list."""
+    """
+    One station row on the dashboard list.
+
+    Attributes
+    ----------
+    icao : object
+        Field ``icao``.
+    name : object
+        Field ``name``.
+    overall_grade : object
+        Field ``overall_grade``.
+    overall_score : object
+        Field ``overall_score``.
+    products : object
+        Field ``products``.
+    """
 
     icao: str
     name: str | None = None
@@ -31,14 +71,36 @@ class StationListItemModel(BaseModel):
 
 
 class StationHealthSummaryModel(BaseModel):
-    """Rollup counts for the list response."""
+    """
+    Rollup counts for the list response.
+
+    Attributes
+    ----------
+    station_count : object
+        Field ``station_count``.
+    grade_counts : object
+        Field ``grade_counts``.
+    """
 
     station_count: int = 0
     grade_counts: dict[str, int] = Field(default_factory=dict)
 
 
 class StationHealthListResponse(BaseModel):
-    """Response for GET /api/v1/station-health."""
+    """
+    Response for GET /api/v1/station-health.
+
+    Attributes
+    ----------
+    window : object
+        Field ``window``.
+    computed_at : object
+        Field ``computed_at``.
+    stations : object
+        Field ``stations``.
+    summary : object
+        Field ``summary``.
+    """
 
     window: str
     computed_at: str
@@ -47,7 +109,18 @@ class StationHealthListResponse(BaseModel):
 
 
 class StationWindowModel(BaseModel):
-    """One window block on the station detail page."""
+    """
+    One window block on the station detail page.
+
+    Attributes
+    ----------
+    overall_grade : object
+        Field ``overall_grade``.
+    overall_score : object
+        Field ``overall_score``.
+    products : object
+        Field ``products``.
+    """
 
     overall_grade: str
     overall_score: float = 0.0
@@ -55,7 +128,20 @@ class StationWindowModel(BaseModel):
 
 
 class StationHealthDetailResponse(BaseModel):
-    """Response for GET /api/v1/station-health/{icao}."""
+    """
+    Response for GET /api/v1/station-health/{icao}.
+
+    Attributes
+    ----------
+    icao : object
+        Field ``icao``.
+    name : object
+        Field ``name``.
+    windows : object
+        Field ``windows``.
+    record_count : object
+        Field ``record_count``.
+    """
 
     icao: str
     name: str | None = None
@@ -64,7 +150,22 @@ class StationHealthDetailResponse(BaseModel):
 
 
 class StationMetricDefinitionModel(BaseModel):
-    """One extensible dashboard metric card."""
+    """
+    One extensible dashboard metric card.
+
+    Attributes
+    ----------
+    id : object
+        Field ``id``.
+    label : object
+        Field ``label``.
+    description : object
+        Field ``description``.
+    unit : object
+        Field ``unit``.
+    higher_is_better : object
+        Field ``higher_is_better``.
+    """
 
     id: str
     label: str
@@ -74,6 +175,13 @@ class StationMetricDefinitionModel(BaseModel):
 
 
 class StationHealthMetricsResponse(BaseModel):
-    """Response for GET /api/v1/station-health/metrics."""
+    """
+    Response for GET /api/v1/station-health/metrics.
+
+    Attributes
+    ----------
+    metrics : object
+        Field ``metrics``.
+    """
 
     metrics: list[StationMetricDefinitionModel] = Field(default_factory=list)

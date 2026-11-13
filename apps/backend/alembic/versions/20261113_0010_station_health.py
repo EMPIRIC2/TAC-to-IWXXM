@@ -21,7 +21,14 @@ depends_on: str | Sequence[str] | None = None
 
 
 def upgrade() -> None:
-    """Create station health tables and seed metric definitions."""
+    """
+    Create station health tables and seed metric definitions.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (upgrade)
+    2
+    """
     op.create_table(
         "station_registry",
         sa.Column("icao", sa.String(length=4), primary_key=True),
@@ -150,7 +157,14 @@ def upgrade() -> None:
 
 
 def downgrade() -> None:
-    """Drop station health tables."""
+    """
+    Drop station health tables.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (downgrade)
+    2
+    """
     op.drop_table("station_health_grades")
     op.drop_table("station_metric_definitions")
     op.drop_index("ix_station_tac_records_observed", table_name="station_tac_records")

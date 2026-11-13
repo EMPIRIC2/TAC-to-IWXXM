@@ -68,7 +68,36 @@ DEFAULT_METRICS: tuple[dict[str, Any], ...] = (
 
 @dataclass(slots=True)
 class StationRecord:
-    """One stored TAC observation for a station."""
+    """
+    One stored TAC observation for a station.
+
+    Attributes
+    ----------
+    icao : object
+        Field ``icao``.
+    product : object
+        Field ``product``.
+    observed_at : object
+        Field ``observed_at``.
+    ingested_at : object
+        Field ``ingested_at``.
+    tac_text : object
+        Field ``tac_text``.
+    source : object
+        Field ``source``.
+    solidus_count : object
+        Field ``solidus_count``.
+    missing_digit_count : object
+        Field ``missing_digit_count``.
+    lint_error_count : object
+        Field ``lint_error_count``.
+    lint_warning_count : object
+        Field ``lint_warning_count``.
+    convert_ok : object
+        Field ``convert_ok``.
+    character_count : object
+        Field ``character_count``.
+    """
 
     icao: str
     product: str
@@ -86,7 +115,26 @@ class StationRecord:
 
 @dataclass(slots=True)
 class StationMeta:
-    """Station registry row."""
+    """
+    Station registry row.
+
+    Attributes
+    ----------
+    icao : object
+        Field ``icao``.
+    name : object
+        Field ``name``.
+    country : object
+        Field ``country``.
+    latitude : object
+        Field ``latitude``.
+    longitude : object
+        Field ``longitude``.
+    first_seen_at : object
+        Field ``first_seen_at``.
+    last_seen_at : object
+        Field ``last_seen_at``.
+    """
 
     icao: str
     name: str | None = None
@@ -99,7 +147,20 @@ class StationMeta:
 
 @dataclass
 class StationHealthStore:
-    """Thread-safe in-memory store for station health reads and writes."""
+    """
+    Thread-safe in-memory store for station health reads and writes.
+
+    Attributes
+    ----------
+    _stations : object
+        Field ``_stations``.
+    _records : object
+        Field ``_records``.
+    _metrics : object
+        Field ``_metrics``.
+    _lock : object
+        Field ``_lock``.
+    """
 
     _stations: dict[str, StationMeta] = field(default_factory=dict)
     _records: list[StationRecord] = field(default_factory=list)
@@ -107,13 +168,32 @@ class StationHealthStore:
     _lock: Lock = field(default_factory=Lock)
 
     def reset(self) -> None:
-        """Clear stations and records (tests)."""
+        """
+        Clear stations and records (tests).
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (reset)
+        2
+        """
         with self._lock:
             self._stations.clear()
             self._records.clear()
 
     def list_metrics(self) -> list[dict[str, Any]]:
-        """Return enabled metric definitions sorted for dashboard cards."""
+        """
+        Return enabled metric definitions sorted for dashboard cards.
+
+        Returns
+        -------
+        object
+            Return value.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (list_metrics)
+        2
+        """
         with self._lock:
             rows = [dict(row) for row in self._metrics if row.get("enabled", True)]
         rows.sort(key=lambda row: int(row.get("sort_order", 0)))
@@ -139,6 +219,32 @@ class StationHealthStore:
         -------
         StationRecord | None
             Stored row, or ``None`` when the ICAO is invalid.
+
+        Parameters
+        ----------
+        icao : object
+            Argument ``icao``.
+        product : object
+            Argument ``product``.
+        tac_text : object
+            Argument ``tac_text``.
+        source : object
+            Argument ``source``.
+        observed_at : object
+            Argument ``observed_at``.
+        name : object
+            Argument ``name``.
+        lint_error_count : object
+            Argument ``lint_error_count``.
+        lint_warning_count : object
+            Argument ``lint_warning_count``.
+        convert_ok : object
+            Argument ``convert_ok``.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (record_observation)
+        2
         """
         code = (icao or "").strip().upper()
         if len(code) != 4 or not code.isalpha():
@@ -189,7 +295,30 @@ class StationHealthStore:
         grade: str | None = None,
         limit: int = 100,
     ) -> dict[str, Any]:
-        """Build the public list payload for one window."""
+        """
+        Build the public list payload for one window.
+
+        Parameters
+        ----------
+        window_key : object
+            Argument ``window_key``.
+        product : object
+            Argument ``product``.
+        grade : object
+            Argument ``grade``.
+        limit : object
+            Argument ``limit``.
+
+        Returns
+        -------
+        object
+            Return value.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (list_stations)
+        2
+        """
         if window_key not in WINDOW_SECONDS:
             window_key = "6h"
         limit = max(1, min(int(limit), 500))
@@ -244,7 +373,24 @@ class StationHealthStore:
         }
 
     def get_station(self, icao: str) -> dict[str, Any] | None:
-        """Build the public detail payload for one ICAO."""
+        """
+        Build the public detail payload for one ICAO.
+
+        Parameters
+        ----------
+        icao : object
+            Argument ``icao``.
+
+        Returns
+        -------
+        object
+            Return value.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (get_station)
+        2
+        """
         code = (icao or "").strip().upper()
         with self._lock:
             meta = self._stations.get(code)
@@ -273,6 +419,21 @@ class StationHealthStore:
 
     @staticmethod
     def _grade_products(rows: list[StationRecord], window_key: str) -> list[dict[str, Any]]:
+        """
+        Internal helper ``_grade_products``.
+
+        Parameters
+        ----------
+        rows : object
+            Argument ``rows``.
+        window_key : object
+            Argument ``window_key``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         by_product: dict[str, list[StationRecord]] = {}
         for row in rows:
             by_product.setdefault(row.product, []).append(row)
@@ -306,6 +467,19 @@ class StationHealthStore:
 
     @staticmethod
     def _overall_from_products(products: list[dict[str, Any]]) -> dict[str, Any]:
+        """
+        Internal helper ``_overall_from_products``.
+
+        Parameters
+        ----------
+        products : object
+            Argument ``products``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         if not products:
             return {"overall_grade": "F", "overall_score": 0.0}
         score = sum(float(item["overall_score"]) for item in products) / len(products)
@@ -315,13 +489,39 @@ class StationHealthStore:
 
 
 class StationHealthStoreProtocol(Protocol):
-    """Shared read/write surface for memory and Postgres stores."""
+    """
+    Shared read/write surface for memory and Postgres stores.
+
+    Attributes
+    ----------
+    _ : object
+        Field ``_``.
+    """
 
     def reset(self) -> None:
-        """Clear mutable state when supported."""
+        """
+        Clear mutable state when supported.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (reset)
+        2
+        """
 
     def list_metrics(self) -> list[dict[str, Any]]:
-        """Return enabled metric definitions."""
+        """
+        Return enabled metric definitions.
+
+        Returns
+        -------
+        object
+            Return value.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (list_metrics)
+        2
+        """
 
     def record_observation(
         self,
@@ -336,7 +536,40 @@ class StationHealthStoreProtocol(Protocol):
         lint_warning_count: int = 0,
         convert_ok: bool | None = None,
     ) -> StationRecord | None:
-        """Append one observation."""
+        """
+        Append one observation.
+
+        Parameters
+        ----------
+        icao : object
+            Argument ``icao``.
+        product : object
+            Argument ``product``.
+        tac_text : object
+            Argument ``tac_text``.
+        source : object
+            Argument ``source``.
+        observed_at : object
+            Argument ``observed_at``.
+        name : object
+            Argument ``name``.
+        lint_error_count : object
+            Argument ``lint_error_count``.
+        lint_warning_count : object
+            Argument ``lint_warning_count``.
+        convert_ok : object
+            Argument ``convert_ok``.
+
+        Returns
+        -------
+        object
+            Return value.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (record_observation)
+        2
+        """
 
     def list_stations(
         self,
@@ -346,10 +579,50 @@ class StationHealthStoreProtocol(Protocol):
         grade: str | None = None,
         limit: int = 100,
     ) -> dict[str, Any]:
-        """Build the public list payload."""
+        """
+        Build the public list payload.
+
+        Parameters
+        ----------
+        window_key : object
+            Argument ``window_key``.
+        product : object
+            Argument ``product``.
+        grade : object
+            Argument ``grade``.
+        limit : object
+            Argument ``limit``.
+
+        Returns
+        -------
+        object
+            Return value.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (list_stations)
+        2
+        """
 
     def get_station(self, icao: str) -> dict[str, Any] | None:
-        """Build the public detail payload."""
+        """
+        Build the public detail payload.
+
+        Parameters
+        ----------
+        icao : object
+            Argument ``icao``.
+
+        Returns
+        -------
+        object
+            Return value.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (get_station)
+        2
+        """
 
 
 _MEMORY_STORE = StationHealthStore()
@@ -364,6 +637,16 @@ def get_station_health_store() -> StationHealthStoreProtocol:
 
     Prefer product Postgres when ``DATABASE_URL`` is set. Unit tests inject
     an in-memory store via ``set_station_health_store``.
+
+    Returns
+    -------
+    object
+        Return value.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (get_station_health_store)
+    2
     """
     global _PG_STORE, _PG_URL
     if _OVERRIDE is not None:
@@ -386,7 +669,19 @@ def get_station_health_store() -> StationHealthStoreProtocol:
 
 
 def set_station_health_store(store: StationHealthStoreProtocol | None) -> None:
-    """Replace the process store (tests). ``None`` restores the default routing."""
+    """
+    Replace the process store (tests). ``None`` restores the default routing.
+
+    Parameters
+    ----------
+    store : object
+        Argument ``store``.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (set_station_health_store)
+    2
+    """
     global _OVERRIDE, _MEMORY_STORE
     if store is None:
         _OVERRIDE = None

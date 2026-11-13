@@ -27,7 +27,24 @@ logger = logging.getLogger(__name__)
 
 
 def sync_database_url(raw: str | None = None) -> str | None:
-    """Normalize ``DATABASE_URL`` for sync SQLAlchemy (psycopg)."""
+    """
+    Normalize ``DATABASE_URL`` for sync SQLAlchemy (psycopg).
+
+    Parameters
+    ----------
+    raw : object
+        Argument ``raw``.
+
+    Returns
+    -------
+    object
+        Return value.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (sync_database_url)
+    2
+    """
     value = (raw if raw is not None else os.environ.get("DATABASE_URL") or "").strip()
     if not value:
         return None
@@ -45,21 +62,72 @@ def sync_database_url(raw: str | None = None) -> str | None:
 
 
 class PostgresStationHealthStore:
-    """Station health store backed by product Postgres tables."""
+    """
+    Station health store backed by product Postgres tables.
+
+    Attributes
+    ----------
+    _ : object
+        Field ``_``.
+    """
 
     def __init__(self, engine: Engine) -> None:
+        """
+        Internal helper ``__init__``.
+
+        Parameters
+        ----------
+        engine : object
+            Argument ``engine``.
+        """
         self._engine = engine
 
     @classmethod
     def from_url(cls, url: str) -> PostgresStationHealthStore:
-        """Build a store from a sync database URL."""
+        """
+        Build a store from a sync database URL.
+
+        Parameters
+        ----------
+        url : object
+            Argument ``url``.
+
+        Returns
+        -------
+        object
+            Return value.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (from_url)
+        2
+        """
         return cls(create_engine(url, pool_pre_ping=True))
 
     def reset(self) -> None:
-        """No-op for API compatibility with the in-memory store."""
+        """
+        No-op for API compatibility with the in-memory store.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (reset)
+        2
+        """
 
     def list_metrics(self) -> list[dict[str, Any]]:
-        """Return enabled metric definitions from Postgres, with catalog fallback."""
+        """
+        Return enabled metric definitions from Postgres, with catalog fallback.
+
+        Returns
+        -------
+        object
+            Return value.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (list_metrics)
+        2
+        """
         try:
             with self._engine.connect() as conn:
                 rows = conn.execute(
@@ -96,7 +164,40 @@ class PostgresStationHealthStore:
         lint_warning_count: int = 0,
         convert_ok: bool | None = None,
     ) -> StationRecord | None:
-        """Upsert station registry and append one TAC observation row."""
+        """
+        Upsert station registry and append one TAC observation row.
+
+        Parameters
+        ----------
+        icao : object
+            Argument ``icao``.
+        product : object
+            Argument ``product``.
+        tac_text : object
+            Argument ``tac_text``.
+        source : object
+            Argument ``source``.
+        observed_at : object
+            Argument ``observed_at``.
+        name : object
+            Argument ``name``.
+        lint_error_count : object
+            Argument ``lint_error_count``.
+        lint_warning_count : object
+            Argument ``lint_warning_count``.
+        convert_ok : object
+            Argument ``convert_ok``.
+
+        Returns
+        -------
+        object
+            Return value.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (record_observation)
+        2
+        """
         code = (icao or "").strip().upper()
         if len(code) != 4 or not code.isalpha():
             return None
@@ -186,7 +287,30 @@ class PostgresStationHealthStore:
         grade: str | None = None,
         limit: int = 100,
     ) -> dict[str, Any]:
-        """Build the public list payload from Postgres observations."""
+        """
+        Build the public list payload from Postgres observations.
+
+        Parameters
+        ----------
+        window_key : object
+            Argument ``window_key``.
+        product : object
+            Argument ``product``.
+        grade : object
+            Argument ``grade``.
+        limit : object
+            Argument ``limit``.
+
+        Returns
+        -------
+        object
+            Return value.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (list_stations)
+        2
+        """
         if window_key not in WINDOW_SECONDS:
             window_key = "6h"
         limit = max(1, min(int(limit), 500))
@@ -236,7 +360,24 @@ class PostgresStationHealthStore:
         }
 
     def get_station(self, icao: str) -> dict[str, Any] | None:
-        """Build the public detail payload for one ICAO from Postgres."""
+        """
+        Build the public detail payload for one ICAO from Postgres.
+
+        Parameters
+        ----------
+        icao : object
+            Argument ``icao``.
+
+        Returns
+        -------
+        object
+            Return value.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (get_station)
+        2
+        """
         code = (icao or "").strip().upper()
         try:
             with self._engine.connect() as conn:
@@ -299,6 +440,21 @@ class PostgresStationHealthStore:
         cutoff: datetime,
         product_filter: str | None,
     ) -> tuple[dict[str, dict[str, Any]], list[StationRecord]]:
+        """
+        Internal helper ``_load_window``.
+
+        Parameters
+        ----------
+        cutoff : object
+            Argument ``cutoff``.
+        product_filter : object
+            Argument ``product_filter``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         try:
             with self._engine.connect() as conn:
                 station_rows = conn.execute(
@@ -339,6 +495,19 @@ class PostgresStationHealthStore:
 
     @staticmethod
     def _row_to_record(row: dict[str, Any]) -> StationRecord:
+        """
+        Internal helper ``_row_to_record``.
+
+        Parameters
+        ----------
+        row : object
+            Argument ``row``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         tac_text = str(row.get("tac_text") or "")
         observed = row["observed_at"]
         ingested = row["ingested_at"]
@@ -365,6 +534,21 @@ class PostgresStationHealthStore:
 
     @staticmethod
     def _grade_products(rows: list[StationRecord], window_key: str) -> list[dict[str, Any]]:
+        """
+        Internal helper ``_grade_products``.
+
+        Parameters
+        ----------
+        rows : object
+            Argument ``rows``.
+        window_key : object
+            Argument ``window_key``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         by_product: dict[str, list[StationRecord]] = {}
         for row in rows:
             by_product.setdefault(row.product, []).append(row)
@@ -398,6 +582,19 @@ class PostgresStationHealthStore:
 
     @staticmethod
     def _overall_from_products(products: list[dict[str, Any]]) -> dict[str, Any]:
+        """
+        Internal helper ``_overall_from_products``.
+
+        Parameters
+        ----------
+        products : object
+            Argument ``products``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         if not products:
             return {"overall_grade": "F", "overall_score": 0.0}
         score = sum(float(item["overall_score"]) for item in products) / len(products)

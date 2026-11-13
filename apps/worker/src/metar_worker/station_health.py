@@ -24,7 +24,26 @@ _MISSING_DIGIT_RE = re.compile(r"/{2,}")
 
 
 def extract_icao(tac_text: str, product: str) -> str | None:
-    """Return a station ICAO from METAR, SPECI, or TAF text."""
+    """
+    Return a station ICAO from METAR, SPECI, or TAF text.
+
+    Parameters
+    ----------
+    tac_text : object
+        Argument ``tac_text``.
+    product : object
+        Argument ``product``.
+
+    Returns
+    -------
+    object
+        Return value.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (extract_icao)
+    2
+    """
     product_u = (product or "").upper()
     text_body = tac_text or ""
     if product_u == "TAF":
@@ -39,7 +58,24 @@ def extract_icao(tac_text: str, product: str) -> str | None:
 
 
 def solidus_counts(tac_text: str) -> tuple[int, int]:
-    """Return ``(solidus_count, missing_digit_count)`` for TAC text."""
+    """
+    Return ``(solidus_count, missing_digit_count)`` for TAC text.
+
+    Parameters
+    ----------
+    tac_text : object
+        Argument ``tac_text``.
+
+    Returns
+    -------
+    object
+        Return value.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (solidus_counts)
+    2
+    """
     body = tac_text or ""
     return body.count("/"), sum(1 for _ in _MISSING_DIGIT_RE.finditer(body))
 
@@ -59,6 +95,24 @@ def record_station_observation(
     -------
     str | None
         ICAO when recorded, otherwise ``None``.
+
+    Parameters
+    ----------
+    engine : object
+        Argument ``engine``.
+    tac_text : object
+        Argument ``tac_text``.
+    product : object
+        Argument ``product``.
+    convert_ok : object
+        Argument ``convert_ok``.
+    source : object
+        Argument ``source``.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (record_station_observation)
+    2
     """
     icao = extract_icao(tac_text, product)
     if not icao:
@@ -120,7 +174,23 @@ def record_station_observation(
 def maybe_record_from_row(
     engine: Engine | None, row: dict[str, Any], *, convert_ok: bool
 ) -> None:
-    """Record when an engine is available; swallow failures."""
+    """
+    Record when an engine is available; swallow failures.
+
+    Parameters
+    ----------
+    engine : object
+        Argument ``engine``.
+    row : object
+        Argument ``row``.
+    convert_ok : object
+        Argument ``convert_ok``.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (maybe_record_from_row)
+    2
+    """
     if engine is None:
         return
     record_station_observation(

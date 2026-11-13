@@ -1676,7 +1676,18 @@ def _record_convert_station_health(
     product: str,
     lint_report: LintReport | None = None,
 ) -> None:
-    """Best-effort station health write for convert results (F39)."""
+    """
+    Best-effort station health write for convert results (F39).
+
+    Parameters
+    ----------
+    acc : object
+        Argument ``acc``.
+    product : object
+        Argument ``product``.
+    lint_report : object
+        Argument ``lint_report``.
+    """
     try:
         from src.services.station_health_recorder import record_tac_observation
     except Exception:
