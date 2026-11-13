@@ -39,11 +39,7 @@ def _entries() -> tuple[dict[str, object], ...]:
     raw = loaded.get("entries")
     if not isinstance(raw, list):
         return ()
-    parsed: list[dict[str, object]] = []
-    for item in cast(list[object], raw):
-        if isinstance(item, dict):
-            parsed.append(cast(dict[str, object], item))
-    return tuple(parsed)
+    return tuple(cast(dict[str, object], item) for item in cast(list[object], raw) if isinstance(item, dict))
 
 
 def resolve_national_href(*, area: str, token: str) -> str | None:
