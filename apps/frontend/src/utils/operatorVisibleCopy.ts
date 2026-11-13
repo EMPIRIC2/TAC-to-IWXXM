@@ -73,6 +73,11 @@ import {
   productLabel,
 } from '@/utils/liveMap';
 import {
+  LIVE_MAP_STATION_CLUSTER_PICKER,
+  LIVE_MAP_TAC_LAYER_LABEL,
+  LIVE_MAP_TAC_LAYERS,
+} from '@/utils/liveMapTacLayers';
+import {
   IWXXM_PRODUCT_CONVERT_ARIA,
   IWXXM_PRODUCT_CONVERT_LABEL,
   IWXXM_PRODUCT_HELP,
@@ -454,6 +459,15 @@ export function collectOperatorVisibleCopy(): OperatorVisibleCopyEntry[] {
       id: `live-map.phenomenon.${item.id}`,
       text: item.label,
     })),
+    { id: 'live-map.tac-layer-label', text: LIVE_MAP_TAC_LAYER_LABEL },
+    ...LIVE_MAP_TAC_LAYERS.map((item) => ({
+      id: `live-map.tac-layer.${item.id}`,
+      text: item.label,
+    })),
+    {
+      id: 'live-map.station-cluster-picker',
+      text: LIVE_MAP_STATION_CLUSTER_PICKER,
+    },
     { id: 'live-map.panel', text: LIVE_MAP_PANEL },
     {
       id: 'lint-validation-catalog.title',

@@ -66,6 +66,7 @@ import {
 } from '@/utils/liveMap';
 import { placeRegion, regionFilterNames } from '@/utils/liveMapRegions';
 import {
+  LIVE_MAP_STATION_CLUSTER_PICKER,
   LIVE_MAP_TAC_LAYER_LABEL,
   LIVE_MAP_TAC_LAYERS,
   passesTacLayers,
@@ -927,7 +928,7 @@ export function LiveWorldMap({
             data-testid="station-cluster-file-picker"
           >
             <p className="mb-1 text-[11px] font-semibold tracking-wide text-gray-400 uppercase">
-              Station files
+              {LIVE_MAP_STATION_CLUSTER_PICKER}
             </p>
             <ul className="space-y-1">
               {clusterPicker.map((row) => (

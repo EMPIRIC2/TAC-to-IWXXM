@@ -14,6 +14,9 @@ export const LIVE_MAP_TAC_LAYERS = [
   { id: 'ice', label: 'Ice' },
 ] as const;
 
+/**
+ * Id of one TAC overlay layer operators can toggle.
+ */
 export type LiveMapTacLayerId = (typeof LIVE_MAP_TAC_LAYERS)[number]['id'];
 
 export const LIVE_MAP_TAC_LAYER_LABEL = 'TAC layers';
