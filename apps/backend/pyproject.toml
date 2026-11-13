@@ -146,6 +146,7 @@ iwxxm-dissemination = { workspace = true }
 [tool.deptry]
 known_first_party = ["api", "api_deps", "api_wire", "clients", "config", "metar_iwxxm_api", "models", "msgspec_http", "routers", "schemas", "services", "utilities", "validation", "src"]
 pep621_dev_dependency_groups = ["dev"]
+package_module_name_map = { "iwxxm-dissemination" = "dissemination" }
 
 [tool.deptry.per_rule_ignores]
 # python-multipart: FastAPI form parsing; psycopg/asyncpg: SQLAlchemy driver plugins. Baseline debt: python-jose, pyjwt, redis, skyfield have no import in src/ (tests only or dead) — prune in a follow-up.

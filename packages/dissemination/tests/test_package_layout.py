@@ -7,6 +7,7 @@ import tomllib
 from importlib import metadata
 from pathlib import Path
 
+import pytest
 from dissemination.models import PreflightRequest
 
 import dissemination
@@ -69,3 +70,23 @@ def test_package_has_no_fastapi_or_supabase_imports() -> None:
                     assert alias.name.split(".", 1)[0] not in forbidden, path
             elif isinstance(node, ast.ImportFrom) and node.module:
                 assert node.module.split(".", 1)[0] not in forbidden, path
+
+
+@pytest.mark.parametrize(
+    ("mode", "name", "expect_ok"),
+    [
+        ("success", "iwxxm-dissemination", True),
+        ("failure", "dissemination", False),
+        ("validation", "iwxxm-dissemination", True),
+    ],
+)
+def test_pypi_name_modes(mode: str, name: str, expect_ok: bool) -> None:
+    """Success/failure/validation battery for the published distribution name."""
+    del mode
+    data = tomllib.loads((PACKAGE_ROOT / "pyproject.toml").read_text(encoding="utf-8"))
+    actual = data["project"]["name"]
+    if expect_ok:
+        assert actual == name
+        assert metadata.version(name) == dissemination.__version__
+    else:
+        assert actual != name
