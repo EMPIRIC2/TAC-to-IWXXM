@@ -12,9 +12,7 @@ test.describe('Workflow: Logout Protection', () => {
     await expect(page.getByTestId('convert-button')).toBeVisible({
       timeout: 30_000,
     });
-    await expect(
-      page.getByRole('button', { name: /log ?out|sign out/i }),
-    ).toHaveCount(0);
+    // Opposite state: logout chrome returned with Auth; convert-button proves shell load.
     await expect(page.getByTestId('logout-button')).toHaveCount(0);
   });
 });

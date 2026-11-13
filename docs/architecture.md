@@ -3,7 +3,7 @@
 > **Project**: TAC to IWXXM 
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM 
 > **Version**: monorepo + `tac2iwxxm` + operator UI (Quality metrics on stage) 
-> **Last updated**: 2026-11-10
+> **Last updated**: 2026-11-13
 
 ## Overview
 
@@ -513,6 +513,31 @@ with aliases during one CalVer window. DX tests: ``…``.
 - **Source**: . **platform independence**. [AGENTS.md](../AGENTS.md) ingest worker.
 - : Cut over to `packages/workflows.execute` + `workflows/f8-metar-ingest-default.yaml`
  . See Context: workflows-runtime-1132 (archived. see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`. not a design document set design gate).
+
+
+### Station health dashboard
+
+- **Purpose**: Track station TAC issuance over time. Grade availability and quality for
+ operators on a public shell tab. Deepens airport data services, near-realtime ingest,
+ TAC quality bars, and the multi-product operator shell.
+- **Design choice**: Dedicated product-Postgres tables, not a derive-only view of
+ `tac_work_sessions`. Work sessions are operator drafts. They are not a station
+ issuance clock and they omit guest and ingest traffic. Ingest store rows alone also
+ lack station ICAO and quality signals. The pipeline and convert path write observation
+ rows; the API reads grades from product Postgres (`DATABASE_URL`), computing window
+ grades from `station_tac_records` (in-memory store remains for unit tests only).
+- **Tables**: `station_registry`, `station_tac_records`, `station_metric_definitions`,
+ `station_health_grades` (Alembic on `DATABASE_URL`).
+- **Windows**: last 6 hours, last 1 day, last 1 month (30 days).
+- **Products**: METAR, SPECI, TAF, and other station-scoped products when the ICAO
+ can be parsed.
+- **Quality signals**: solidus (`/`) counts, missing-digit patterns, lint severity
+ counts when stored. Overall letter grade blends availability and quality.
+- **Metrics registry**: `station_metric_definitions` lists dashboard cards so new
+ metrics can ship without a new API shape.
+- **Auth**: public GET for aggregates and grades. Writes come only from ingest or
+ convert services (no public write route).
+- **UI**: shell tab **Station health** (plain language; no planning ids).
 
 ### packages/workflows
 

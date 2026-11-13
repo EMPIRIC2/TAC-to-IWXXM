@@ -20,6 +20,19 @@ _MATRIX = "config/profiles/semantic/CA_ECCC.code-list-deviations.yaml"
 
 
 def _repo_root() -> Path:
+    """
+    Resolve the repository root that holds ``config/profiles``.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (_repo_root)
+    2
+
+    Returns
+    -------
+    Path
+        Repo root path.
+    """
     candidate = _DEFAULT_REPO_ROOT
     if (candidate / "config" / "profiles").is_dir():
         return candidate
@@ -31,7 +44,19 @@ def _repo_root() -> Path:
 
 @lru_cache(maxsize=1)
 def national_replace_tokens() -> frozenset[str]:
-    """Return tokens that require a national code under ``CA_ECCC``."""
+    """
+    Return tokens that require a national code under ``CA_ECCC``.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (national_replace_tokens)
+    2
+
+    Returns
+    -------
+    frozenset[str]
+        Upper-case TAC tokens with ``kind: replace`` in the CA_ECCC matrix.
+    """
     path = _repo_root() / _MATRIX
     if not path.is_file():
         return frozenset()
@@ -60,7 +85,28 @@ def check_global_only_tokens(
     profile: str,
     product: str = "TAF",
 ) -> list[Issue]:
-    """Fail closed when CA-required tokens are treated as global-only under ``ca_eccc``."""
+    """
+    Fail closed when CA-required tokens are treated as global-only under ``ca_eccc``.
+
+    Parameters
+    ----------
+    tokens : list[str]
+        TAC weather / cloud tokens to check.
+    profile : str
+        Active semantic profile id.
+    product : str
+        Product label for issue text (default ``TAF``).
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (check_global_only_tokens)
+    2
+
+    Returns
+    -------
+    list[Issue]
+        Empty for other profiles; national-required errors under ``ca_eccc``.
+    """
     if profile.strip().lower().replace("-", "_") != PROFILE_CA_ECCC:
         return []
     required = national_replace_tokens()

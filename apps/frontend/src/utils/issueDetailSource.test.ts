@@ -1,5 +1,5 @@
 /**
- * Source attribution segment splitting for Issue details.
+ * Source attribution segment splitting for Lint details.
  */
 import { describe, expect, it } from 'vitest';
 import { splitSourceSegments } from './issueDetailSource';

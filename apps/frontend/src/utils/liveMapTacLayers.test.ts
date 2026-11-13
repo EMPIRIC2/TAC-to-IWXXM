@@ -1,99 +1,253 @@
 /**
- * TAC overlay layers + station cluster picker — success / failure / validation.
+ * TAC overlay parse, toggle, and station-cluster helpers.
  */
 
 import { describe, expect, it } from 'vitest';
+import type { LivePlace } from '@/utils/liveMap';
 import {
-  isMultiStationCluster,
-  passesTacLayers,
-  stationClusterFilePicker,
-  tacMatchesLayer,
+  clusterAriaLabel,
+  clusterByStation,
+  clusterReportChoices,
+  placeWithReportIndex,
+} from '@/utils/liveMapStationCluster';
+import {
+  defaultTacOverlayVisibility,
+  overlayApplies,
+  overlayMatchCount,
+  placeFeedsOverlay,
+  TAC_OVERLAY_LAYERS,
+  toggleTacOverlay,
+  windIntensityBand,
+  windIntensityRadius,
 } from '@/utils/liveMapTacLayers';
+import {
+  newestTac,
+  parseTacOverlayFields,
+  tempTokenToC,
+} from '@/utils/liveMapTacParse';
 
-const METAR_RAIN =
-  'METAR KJFK 231851Z 20015G25KT 3SM -RA BR BKN012 OVC025 12/11 A2998=';
-const METAR_TS = 'METAR KORD 231955Z 27020G35KT 2SM TSRA BKN025CB 18/16 A2985=';
-const METAR_CLEAR = 'METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005=';
+const metarTs: LivePlace = {
+  place_key: 'KJFK',
+  product: 'metar',
+  latitude: 40.6,
+  longitude: -73.8,
+  reports: [
+    {
+      observed_at: '2026-11-13T12:00:00Z',
+      tac: 'METAR KJFK 131200Z 18025G35KT 1SM TSRA BR BKN015 12/08',
+    },
+  ],
+};
 
-describe('liveMapTacLayers success', () => {
-  it('matches precip, temp, wind, thunder, and ice tokens', () => {
-    expect(tacMatchesLayer(METAR_RAIN, 'precip')).toBe(true);
-    expect(tacMatchesLayer(METAR_RAIN, 'temp')).toBe(true);
-    expect(tacMatchesLayer(METAR_RAIN, 'wind')).toBe(true);
-    expect(tacMatchesLayer(METAR_TS, 'thunder')).toBe(true);
+const metarIce: LivePlace = {
+  place_key: 'CYYZ',
+  product: 'metar',
+  latitude: 43.7,
+  longitude: -79.6,
+  reports: [
+    {
+      observed_at: '2026-11-13T11:00:00Z',
+      tac: 'METAR CYYZ 131100Z 01008KT 1/2SM FZDZ FG M05/M06',
+    },
+  ],
+};
+
+const speciSameStation: LivePlace = {
+  place_key: 'KJFK',
+  product: 'speci',
+  latitude: 40.6,
+  longitude: -73.8,
+  reports: [
+    {
+      observed_at: '2026-11-13T12:15:00Z',
+      tac: 'SPECI KJFK 131215Z 19010KT 3SM -RA 11/07',
+    },
+  ],
+};
+
+const areaSigmet: LivePlace = {
+  place_key: 'area-1',
+  product: 'sigmet',
+  latitude: 40,
+  longitude: -70,
+  geometry: {
+    kind: 'polygon',
+    coordinates: [
+      [40, -70],
+      [41, -70],
+      [41, -69],
+    ],
+  },
+  reports: [{ observed_at: '2026-11-13T10:00:00Z', tac: 'SIGMET TS' }],
+};
+
+const thunderTac =
+  metarTs.reports[0]?.tac ?? 'METAR KJFK 131200Z 18025G35KT 1SM TSRA BR BKN015 12/08';
+const iceTac =
+  metarIce.reports[0]?.tac ?? 'METAR CYYZ 131100Z 01008KT 1/2SM FZDZ FG M05/M06';
+
+describe.each([
+  {
+    name: 'thunderstorm METAR',
+    tac: thunderTac,
+    expectThunder: true,
+    expectIce: false,
+    expectPrecip: true,
+    temp: 12,
+    windDir: 180,
+    windKt: 25,
+  },
+  {
+    name: 'freezing drizzle',
+    tac: iceTac,
+    expectThunder: false,
+    expectIce: true,
+    expectPrecip: true,
+    temp: -5,
+    windDir: 10,
+    windKt: 8,
+  },
+  {
+    name: 'empty / no weather',
+    tac: 'METAR KAAA 131200Z CAVOK',
+    expectThunder: false,
+    expectIce: false,
+    expectPrecip: false,
+    temp: null,
+    windDir: null,
+    windKt: null,
+  },
+] as const)('parseTacOverlayFields ($name)', (row) => {
+  it('extracts overlay fields from raw TAC', () => {
+    const parsed = parseTacOverlayFields(row.tac);
+    expect(parsed.hasThunder).toBe(row.expectThunder);
+    expect(parsed.hasIce).toBe(row.expectIce);
+    expect(parsed.precipCodes.length > 0).toBe(row.expectPrecip);
+    expect(parsed.temperatureC).toBe(row.temp);
+    if (row.windKt === null) {
+      expect(parsed.wind).toBeNull();
+    } else {
+      expect(parsed.wind?.speedKt).toBe(row.windKt);
+      expect(parsed.wind?.directionDeg).toBe(row.windDir);
+    }
+  });
+});
+
+describe('tempTokenToC', () => {
+  it.each([
+    ['12', 12],
+    ['M05', -5],
+    ['00', 0],
+    ['M00', -0],
+  ] as const)('maps %s → %s', (token, expected) => {
+    expect(tempTokenToC(token)).toBe(expected);
+  });
+});
+
+describe('TAC overlay visibility', () => {
+  it('defaults every overlay off and toggles one id independently', () => {
+    const initial = defaultTacOverlayVisibility();
+    for (const layer of TAC_OVERLAY_LAYERS) {
+      expect(initial[layer.id]).toBe(false);
+    }
+    const thunderOn = toggleTacOverlay(initial, 'thunder');
+    expect(thunderOn.thunder).toBe(true);
+    expect(thunderOn.ice).toBe(false);
+    expect(thunderOn.precip).toBe(false);
+    const thunderOff = toggleTacOverlay(thunderOn, 'thunder');
+    expect(thunderOff.thunder).toBe(false);
+  });
+
+  it('reports empty match counts when no TAC feeds the overlay', () => {
+    expect(overlayMatchCount([], 'thunder')).toBe(0);
     expect(
-      tacMatchesLayer('METAR KJFK 231751Z 00000KT 1/2SM IC 15/07 A3005=', 'ice'),
+      overlayMatchCount(
+        [{ reports: [{ tac: 'METAR KAAA 131200Z CAVOK' }] }],
+        'thunder',
+      ),
+    ).toBe(0);
+    expect(placeFeedsOverlay(metarTs.reports, 'thunder')).toBe(true);
+    expect(placeFeedsOverlay(metarTs.reports, 'precip')).toBe(true);
+    expect(placeFeedsOverlay(metarTs.reports, 'temp')).toBe(true);
+    expect(placeFeedsOverlay(metarIce.reports, 'ice')).toBe(true);
+    expect(overlayApplies(parseTacOverlayFields(thunderTac), 'windVector')).toBe(true);
+    expect(overlayApplies(parseTacOverlayFields(thunderTac), 'precip')).toBe(true);
+    expect(overlayApplies(parseTacOverlayFields(thunderTac), 'temp')).toBe(true);
+    expect(overlayApplies(parseTacOverlayFields(thunderTac), 'thunder')).toBe(true);
+    expect(overlayApplies(parseTacOverlayFields(iceTac), 'ice')).toBe(true);
+    expect(
+      overlayApplies(parseTacOverlayFields('METAR KAAA VRB03KT'), 'windVector'),
+    ).toBe(false);
+    expect(
+      overlayApplies(parseTacOverlayFields('METAR KAAA VRB03KT'), 'windIntensity'),
     ).toBe(true);
   });
+});
 
-  it('keeps TAC that hits a selected overlay', () => {
-    expect(passesTacLayers(METAR_RAIN, new Set(['precip']))).toBe(true);
-    expect(passesTacLayers(METAR_TS, new Set(['thunder']))).toBe(true);
-  });
-
-  it('builds station cluster file picker rows', () => {
-    const items = stationClusterFilePicker([
-      {
-        icao: 'KJFK',
-        product: 'metar',
-        tac: METAR_RAIN,
-        observedAt: '2026-11-13T18:00:00Z',
-      },
-      {
-        icao: 'KJFK',
-        product: 'speci',
-        tac: METAR_CLEAR,
-        observedAt: '2026-11-13T17:00:00Z',
-      },
-    ]);
-    expect(items).toHaveLength(2);
-    expect(items[0]?.icao).toBe('KJFK');
-    expect(isMultiStationCluster(2, 1)).toBe(true);
+describe('newestTac and gust parsing', () => {
+  it('returns empty when there are no reports and keeps gustKt when present', () => {
+    expect(newestTac([])).toBe('');
+    const withGust = parseTacOverlayFields(
+      'METAR KJFK 131200Z 18025G35KT 1SM TSRA 12/08',
+    );
+    expect(withGust.wind?.gustKt).toBe(35);
+    const withoutGust = parseTacOverlayFields('METAR KJFK 131200Z 18012KT 10SM 12/08');
+    expect(withoutGust.wind?.gustKt).toBeNull();
+    const duplicatePrecip = parseTacOverlayFields(
+      'METAR KJFK 131200Z 18012KT TSRA TSRA 12/08',
+    );
+    expect(duplicatePrecip.precipCodes).toEqual(['TSRA']);
   });
 });
 
-describe('liveMapTacLayers failure', () => {
-  it('rejects clear METAR when precip overlay is on', () => {
-    expect(passesTacLayers(METAR_CLEAR, new Set(['precip']))).toBe(false);
-  });
-
-  it('rejects unknown overlay tokens', () => {
-    expect(tacMatchesLayer(METAR_CLEAR, 'precip')).toBe(false);
-    expect(tacMatchesLayer(METAR_CLEAR, 'thunder')).toBe(false);
-  });
-
-  it('does not open a picker for a single-report station', () => {
-    expect(isMultiStationCluster(1, 1)).toBe(false);
+describe('wind intensity encoding', () => {
+  it.each([
+    [0, 'calm', 4],
+    [10, 'light', 6],
+    [20, 'moderate', 8],
+    [30, 'strong', 10],
+    [40, 'gale', 12],
+  ] as const)('speed %s → band %s radius %s', (kt, band, radius) => {
+    expect(windIntensityBand(kt)).toBe(band);
+    expect(windIntensityRadius(kt)).toBe(radius);
   });
 });
 
-describe('liveMapTacLayers validation', () => {
-  it('empty overlay set keeps every TAC', () => {
-    expect(passesTacLayers(METAR_CLEAR, new Set())).toBe(true);
-  });
-
-  it('skips blank TAC rows in the cluster picker', () => {
-    const items = stationClusterFilePicker([
-      {
-        icao: 'KJFK',
-        product: 'metar',
-        tac: '   ',
-        observedAt: '2026-11-13T18:00:00Z',
-      },
-      {
-        icao: 'KJFK',
-        product: 'metar',
-        tac: METAR_CLEAR,
-        observedAt: '2026-11-13T17:00:00Z',
-      },
+describe('clusterByStation', () => {
+  it('merges same-station products into one cluster and skips area shapes', () => {
+    const clusters = clusterByStation([
+      metarTs,
+      speciSameStation,
+      areaSigmet,
+      metarIce,
     ]);
-    expect(items).toHaveLength(1);
-    expect(items[0]?.tac).toBe(METAR_CLEAR);
+    expect(clusters).toHaveLength(2);
+    const jfk = clusters.find((item) => item.stationKey === 'KJFK');
+    expect(jfk).toBeDefined();
+    if (!jfk) {
+      return;
+    }
+    expect(jfk.members).toHaveLength(2);
+    const choices = clusterReportChoices(jfk);
+    expect(choices).toHaveLength(2);
+    expect(choices[0]?.label).toMatch(/METAR|SPECI/);
+    expect(clusterAriaLabel(jfk)).toContain('KJFK');
+    expect(clusterAriaLabel(jfk)).toMatch(/2/);
+    expect(placeWithReportIndex(metarTs, 0)?.reports).toHaveLength(1);
+    expect(placeWithReportIndex(metarTs, 9)).toBeNull();
   });
 
-  it('returns false for an unknown overlay id cast', () => {
-    expect(
-      tacMatchesLayer(METAR_RAIN, 'unknown' as Parameters<typeof tacMatchesLayer>[1]),
-    ).toBe(false);
+  it('returns an empty list when there are no station points', () => {
+    expect(clusterByStation([])).toEqual([]);
+    expect(clusterByStation([areaSigmet])).toEqual([]);
+  });
+
+  it('labels a single-report station with only the station key', () => {
+    const alone = clusterByStation([metarIce])[0];
+    expect(alone).toBeDefined();
+    if (!alone) {
+      return;
+    }
+    expect(clusterAriaLabel(alone)).toBe('CYYZ');
   });
 });

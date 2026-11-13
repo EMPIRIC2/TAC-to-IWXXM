@@ -79,7 +79,7 @@ This section mirrors feature ids for quick agent load.
 | F4 | IWXXM version handling | Implemented |
 | F5 | User METAR work history | Implemented |
 | F6 | General TAC→IWXXM (`tac2iwxxm`) | Implemented |
-| F7 | Multi-product TAC operator UI / sessions | Implemented (shell: Convert, History, Rule catalogs, Code names) |
+| F7 | Multi-product TAC operator UI / sessions | Implemented (shell: Convert, Decode visuals, History, Rule catalogs, Code names; Station health in progress) |
 | F8 | Near-realtime TAC ingest → IWXXM gate | Implemented |
 | F9 | Value-aware live decode + plain-language summary | Done (Code names dictionary deepen) |
 | F10 | Workbench preview clarity (IWXXM pane + lint UX) | Done |
@@ -110,6 +110,7 @@ This section mirrors feature ids for quick agent load.
 | F35 | Semantic vs exchange profiles | Implemented |
 | F36 | National semantic + regional exchange profiles (incl. CA_ECCC; EV-077 VAA validate-first) | In progress |
 | F37 | Live TAC map on Decode visuals | In progress |
+| F39 | Station health dashboard (availability + quality grades) | In progress |
 | M1 | Monorepo layout (`apps/` + `packages/` + `vendor/`) | Implemented |
 | M2 | Vendor snapshot sync (wmo-im iwxxm-*) | Planned |
 | M3 | GIFTs as in-repo package | Deprecated |
