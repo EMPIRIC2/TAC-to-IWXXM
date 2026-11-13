@@ -87,6 +87,46 @@ describe('StationHealthPage', () => {
     });
   });
 
+  it('falls back when list and metrics omit optional collections', async () => {
+    fetchStationHealthList.mockResolvedValue({
+      window: '6h',
+      computed_at: '2026-11-13T12:00:00Z',
+      stations: undefined,
+      summary: undefined,
+    });
+    fetchStationHealthMetrics.mockResolvedValue({ metrics: undefined });
+    render(<StationHealthPage />);
+    await waitFor(() => {
+      expect(screen.getByTestId('station-health-empty')).toBeInTheDocument();
+    });
+    expect(screen.queryByTestId('station-health-metric-availability')).not.toBeInTheDocument();
+  });
+
+  it('renders a station row without a display name', async () => {
+    fetchStationHealthList.mockResolvedValue({
+      window: '6h',
+      computed_at: '2026-11-13T12:00:00Z',
+      stations: [
+        {
+          icao: 'KNONAME',
+          name: null,
+          overall_grade: 'C',
+          overall_score: 70,
+          products: [],
+        },
+      ],
+      summary: { station_count: 1, grade_counts: { A: 0, B: 0, C: 1, D: 0, F: 0 } },
+    });
+    render(<StationHealthPage />);
+    await waitFor(() => {
+      expect(screen.getByTestId('station-health-row-KNONAME')).toBeInTheDocument();
+    });
+    expect(screen.getByTestId('station-health-row-KNONAME')).toHaveTextContent('KNONAME');
+    expect(screen.getByTestId('station-health-row-KNONAME')).not.toHaveTextContent(
+      'John F Kennedy',
+    );
+  });
+
   it('shows load error when the API fails', async () => {
     fetchStationHealthList.mockRejectedValue(new Error('network'));
     render(<StationHealthPage />);
