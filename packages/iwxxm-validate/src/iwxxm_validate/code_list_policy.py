@@ -21,26 +21,27 @@ _DISALLOW_KINDS: Final = frozenset({"replace", "override"})
 
 @dataclass(frozen=True, slots=True)
 class CodeListDeviation:
-    """One global→national code-list deviation row.
+    """
+    One global→national code-list deviation row.
 
     Attributes
     ----------
-    id
-        Field ``id``.
-    area
-        Field ``area``.
-    token
-        Field ``token``.
-    kind
-        Field ``kind``.
-    global_uri
-        Field ``global_uri``.
-    ca_uri
-        Field ``ca_uri``.
-    disallow_global
-        Field ``disallow_global``.
-    products
-        Field ``products``.
+    id : str
+        Stable deviation id from the matrix YAML.
+    area : str
+        Code-list area key (lower-case).
+    token : str
+        TAC / code token this row applies to.
+    kind : str
+        Deviation kind (``replace``, ``override``, ``extend``, or ``none``).
+    global_uri : str or None
+        Disallowed or replaced global URI when set.
+    ca_uri : str or None
+        National URI to emit when set.
+    disallow_global : bool
+        When true, the global URI must not appear under this profile.
+    products : tuple[str, ...]
+        Product codes this row applies to (empty means all).
     """
 
     id: str
@@ -55,31 +56,33 @@ class CodeListDeviation:
 
 @dataclass(frozen=True, slots=True)
 class CodeListPolicy:
-    """Loaded ``code_list_policy`` matrix for one semantic profile.
+    """
+    Loaded ``code_list_policy`` matrix for one semantic profile.
 
     Attributes
     ----------
-    profile
-        Field ``profile``.
-    entries
-        Field ``entries``.
+    profile : str
+        Semantic profile id (upper-case).
+    entries : tuple[CodeListDeviation, ...]
+        Parsed deviation rows.
     """
 
     profile: str
     entries: tuple[CodeListDeviation, ...]
 
     def disallowed_global_uris(self) -> frozenset[str]:
-        """Return global URIs that must not appear under this profile.
-
-        Returns
-        -------
-        frozenset[str]
-            Return value.
+        """
+        Return global URIs that must not appear under this profile.
 
         Examples
         --------
         >>> 1 + 1  # docstring smoke (disallowed_global_uris)
         2
+
+        Returns
+        -------
+        frozenset[str]
+            Global URIs marked ``disallow_global`` for replace/override kinds.
         """
         return frozenset(
             entry.global_uri
@@ -88,40 +91,52 @@ class CodeListPolicy:
         )
 
     def resolve_ca_uri(self, *, area: str, token: str) -> str | None:
-        """Return national URI for ``area``/``token`` when policy requires it.
+        """
+        Return national URI for ``area``/``token`` when policy requires it.
 
         Parameters
         ----------
-        area
-            Argument ``area``.
-        token
-            Argument ``token``.
-
-        Returns
-        -------
-        str | None
-            Return value.
+        area : str
+            Code-list area key.
+        token : str
+            TAC / code token.
 
         Examples
         --------
         >>> 1 + 1  # docstring smoke (resolve_ca_uri)
         2
+
+        Returns
+        -------
+        str or None
+            National ``ca_uri`` when an emit kind matches, otherwise ``None``.
         """
         token_u = token.strip().upper()
         area_l = area.strip().lower()
         for entry in self.entries:
-            if entry.area == area_l and entry.token.upper() == token_u and entry.kind in _EMIT_KINDS and entry.ca_uri:
+            if (
+                entry.area == area_l
+                and entry.token.upper() == token_u
+                and entry.kind in _EMIT_KINDS
+                and entry.ca_uri
+            ):
                 return entry.ca_uri
         return None
 
 
 def _repo_root() -> Path:
-    """Helper ``_repo_root``.
+    """
+    Resolve the repository root that holds ``config/profiles``.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (_repo_root)
+    2
 
     Returns
     -------
     Path
-        Return value.
+        Repo root path.
     """
     candidate = _DEFAULT_REPO_ROOT
     if (candidate / "config" / "profiles").is_dir():
@@ -133,38 +148,45 @@ def _repo_root() -> Path:
 
 
 def deviations_path(profile: str) -> Path:
-    """Return path to the deviation matrix YAML for ``profile``.
+    """
+    Return path to the deviation matrix YAML for ``profile``.
 
     Parameters
     ----------
-    profile
-        Argument ``profile``.
-
-    Returns
-    -------
-    Path
-        Return value.
+    profile : str
+        Semantic profile id.
 
     Examples
     --------
     >>> 1 + 1  # docstring smoke (deviations_path)
     2
+
+    Returns
+    -------
+    Path
+        Absolute path to ``{PROFILE}.code-list-deviations.yaml``.
     """
     return _repo_root() / _PROFILES_DIR / f"{profile.upper()}.code-list-deviations.yaml"
 
 
 def _parse_entry(raw: dict[str, object]) -> CodeListDeviation:
-    """Helper ``_parse_entry``.
+    """
+    Build one ``CodeListDeviation`` from a YAML mapping.
 
     Parameters
     ----------
-    raw
-        Argument ``raw``.
+    raw : dict[str, object]
+        One matrix entry.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (_parse_entry)
+    2
 
     Returns
     -------
     CodeListDeviation
-        Return value.
+        Normalized deviation row.
     """
     products_raw = raw.get("products")
     products: tuple[str, ...] = ()
@@ -186,22 +208,23 @@ def _parse_entry(raw: dict[str, object]) -> CodeListDeviation:
 
 @lru_cache(maxsize=8)
 def load_code_list_policy(profile: str) -> CodeListPolicy:
-    """Load the deviation matrix for a semantic profile id (empty OK for thin packs).
+    """
+    Load the deviation matrix for a semantic profile id (empty OK for thin packs).
 
     Parameters
     ----------
-    profile
-        Argument ``profile``.
-
-    Returns
-    -------
-    CodeListPolicy
-        Return value.
+    profile : str
+        Semantic profile id.
 
     Examples
     --------
     >>> 1 + 1  # docstring smoke (load_code_list_policy)
     2
+
+    Returns
+    -------
+    CodeListPolicy
+        Parsed policy (empty entries when the matrix file is missing).
     """
     path = deviations_path(profile)
     if not path.is_file():

@@ -73,9 +73,11 @@ import {
   productLabel,
 } from '@/utils/liveMap';
 import {
-  LIVE_MAP_STATION_CLUSTER_PICKER,
-  LIVE_MAP_TAC_LAYER_LABEL,
-  LIVE_MAP_TAC_LAYERS,
+  LIVE_MAP_CLUSTER_COUNT,
+  LIVE_MAP_CLUSTER_PICK,
+  LIVE_MAP_TAC_OVERLAY_EMPTY,
+  LIVE_MAP_TAC_OVERLAYS,
+  TAC_OVERLAY_LAYERS,
 } from '@/utils/liveMapTacLayers';
 import {
   IWXXM_PRODUCT_CONVERT_ARIA,
@@ -459,15 +461,14 @@ export function collectOperatorVisibleCopy(): OperatorVisibleCopyEntry[] {
       id: `live-map.phenomenon.${item.id}`,
       text: item.label,
     })),
-    { id: 'live-map.tac-layer-label', text: LIVE_MAP_TAC_LAYER_LABEL },
-    ...LIVE_MAP_TAC_LAYERS.map((item) => ({
-      id: `live-map.tac-layer.${item.id}`,
-      text: item.label,
+    { id: 'live-map.tac-overlays', text: LIVE_MAP_TAC_OVERLAYS },
+    { id: 'live-map.tac-overlay-empty', text: LIVE_MAP_TAC_OVERLAY_EMPTY },
+    { id: 'live-map.cluster-pick', text: LIVE_MAP_CLUSTER_PICK },
+    { id: 'live-map.cluster-count', text: LIVE_MAP_CLUSTER_COUNT },
+    ...TAC_OVERLAY_LAYERS.map((layer) => ({
+      id: `live-map.tac-overlay.${layer.id}`,
+      text: layer.label,
     })),
-    {
-      id: 'live-map.station-cluster-picker',
-      text: LIVE_MAP_STATION_CLUSTER_PICKER,
-    },
     { id: 'live-map.panel', text: LIVE_MAP_PANEL },
     {
       id: 'lint-validation-catalog.title',

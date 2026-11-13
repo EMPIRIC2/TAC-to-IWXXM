@@ -18,12 +18,18 @@ _EMIT_KINDS = frozenset({"replace", "override", "extend"})
 
 
 def _repo_root() -> Path:
-    """Helper ``_repo_root``.
+    """
+    Resolve the repository root that holds ``config/profiles``.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (_repo_root)
+    2
 
     Returns
     -------
     Path
-        Return value.
+        Repo root path.
     """
     candidate = _DEFAULT_REPO_ROOT
     if (candidate / "config" / "profiles").is_dir():
@@ -36,12 +42,18 @@ def _repo_root() -> Path:
 
 @lru_cache(maxsize=1)
 def _entries() -> tuple[dict[str, object], ...]:
-    """Helper ``_entries``.
+    """
+    Load CA_ECCC deviation rows from the semantic matrix YAML.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (_entries)
+    2
 
     Returns
     -------
     tuple[dict[str, object], ...]
-        Return value.
+        Raw YAML entry mappings (empty when the matrix is missing).
     """
     path = _repo_root() / _MATRIX
     if not path.is_file():
@@ -53,28 +65,33 @@ def _entries() -> tuple[dict[str, object], ...]:
     raw = loaded.get("entries")
     if not isinstance(raw, list):
         return ()
-    return tuple(cast(dict[str, object], item) for item in cast(list[object], raw) if isinstance(item, dict))
+    return tuple(
+        cast(dict[str, object], item)
+        for item in cast(list[object], raw)
+        if isinstance(item, dict)
+    )
 
 
 def resolve_national_href(*, area: str, token: str) -> str | None:
-    """Return national ``ca_uri`` when policy requires it for ``area``/``token``.
+    """
+    Return national ``ca_uri`` when policy requires it for ``area``/``token``.
 
     Parameters
     ----------
-    area
-        Argument ``area``.
-    token
-        Argument ``token``.
-
-    Returns
-    -------
-    str | None
-        Return value.
+    area : str
+        Code-list area key.
+    token : str
+        TAC / code token.
 
     Examples
     --------
     >>> 1 + 1  # docstring smoke (resolve_national_href)
     2
+
+    Returns
+    -------
+    str or None
+        National URI when an emit kind matches, otherwise ``None``.
     """
     area_l = area.strip().lower()
     token_u = token.strip().upper()

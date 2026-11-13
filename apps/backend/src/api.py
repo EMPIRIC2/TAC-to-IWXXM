@@ -131,12 +131,14 @@ try:
         dissemination,
         dissemination_ops,
         evaluation,
+        exchange_admin,
         health,
         icao_opmet,
         live_map,
         mass_ingest,
         quality_metrics,
         rule_catalogs,
+        station_health,
         tac_quality,
         validation,
         work_sessions,
@@ -150,12 +152,14 @@ except ImportError:
         dissemination,
         dissemination_ops,
         evaluation,
+        exchange_admin,
         health,
         icao_opmet,
         live_map,
         mass_ingest,
         quality_metrics,
         rule_catalogs,
+        station_health,
         tac_quality,
         validation,
         work_sessions,
@@ -488,6 +492,12 @@ except Exception as e:  # pragma: no cover - defensive
     logger.error(f"DEBUG: Failed to include dissemination_ops router: {e}", exc_info=True)
 
 try:
+    app.include_router(exchange_admin.router)
+    logger.info("DEBUG: included exchange_admin router successfully")
+except Exception as e:  # pragma: no cover - defensive
+    logger.error(f"DEBUG: Failed to include exchange_admin router: {e}", exc_info=True)
+
+try:
     app.include_router(conversion_profiles.router)
     logger.info("DEBUG: included conversion_profiles router successfully")
 except Exception as e:  # pragma: no cover - defensive
@@ -519,6 +529,7 @@ try:
     app.include_router(conversion.router)
     app.include_router(comprehensive_validation.router)
     app.include_router(live_map.router)
+    app.include_router(station_health.router)
     logger.info("DEBUG: included TD-3b routers successfully")
 except Exception as e:  # pragma: no cover - defensive
     logger.error(f"DEBUG: Failed to include TD-3b routers: {e}", exc_info=True)

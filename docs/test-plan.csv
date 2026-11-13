@@ -894,3 +894,14 @@ TC-QV-010,OSV-Scanner lockfile vulnerability scan,coverage,F34,,No unwaived know
 TC-QV-011,Gitleaks secret scan,coverage,F34,,No secrets found using config/tooling/gitleaks.toml,config/tooling/gitleaks.toml,,quality-tooling,documented,TR-Q08; Wave 2; command and CI job planned
 TC-QV-012,Actionlint workflow lint,coverage,F34,,No errors in .github/workflows,scripts/security/install-tools.sh,,quality-tooling,documented,TR-Q08; Wave 2; command and CI job planned
 TC-F37-TAC-001,Live map TAC weather layers + station cluster picker,,,UJ-MAP,,apps/frontend/src/utils/liveMapTacLayers.test.ts,,,documented,heading_level=3
+TC-WIS2-ADMIN-001,Public WIS2 preflight/send wired (no 501),,,UJ-DISS,,apps/backend/tests/unit/test_dissemination_api.py,,,documented,heading_level=3
+TC-WIS2-ADMIN-002,Exchange-admin allowlist read-only + role gate,,,UJ-DISS,,apps/backend/tests/unit/test_exchange_admin.py,,,documented,heading_level=3
+TC-WIS2-ADMIN-003,Invitation groups + national remarks toggle,,,UJ-DISS,,apps/backend/tests/unit/test_exchange_admin.py,,,documented,heading_level=3
+TC-SH-001,Station health list API returns grades,,,UJ-096,,test_station_health_api.py,,,documented,window=6h
+TC-SH-002,Station health detail and unknown ICAO,,,UJ-096,,test_station_health_api.py,,,documented,
+TC-SH-003,Solidus and missing-digit counters,,,UJ-096,,test_station_health_metrics.py,,,documented,
+TC-SH-004,Grade letter thresholds and availability,,,UJ-096,,test_station_health_metrics.py,,,documented,
+TC-SH-005,Station health shell tab and empty state,,,UJ-096,,StationHealthPage.test.tsx,,,documented,heading_level=3
+TC-SH-006,Station health API success/failure/validation matrix,,,UJ-096,,test_station_health_api.py,,,documented,parametrized
+TC-SH-007,Station health Postgres store routing,,,UJ-096,,test_station_health_postgres.py,,,documented,
+TC-SH-008,Convert path station health recorder wire,,,UJ-096,,test_station_health_convert_wire.py,,,documented,

@@ -12,6 +12,9 @@ _ROOT = Path(__file__).resolve().parents[3]
 _MAP = (_ROOT / "apps/frontend/src/app/components/LiveWorldMap.tsx").read_text(
     encoding="utf-8"
 )
+_STATION_POPUP = (
+    _ROOT / "apps/frontend/src/app/components/StationPopup.tsx"
+).read_text(encoding="utf-8")
 _CONVERTER = (_ROOT / "apps/frontend/src/app/components/FileConverter.tsx").read_text(
     encoding="utf-8"
 )
@@ -25,8 +28,9 @@ def test_bug_2026_10_04_map_draws_features_without_clusters_or_upward_pan() -> N
     assert "panBy" not in _MAP
     assert "autoPan: false" in _MAP
     assert "L.polygon" in _MAP
-    assert "live-map-tac" in _MAP
-    assert "live-map-station" in _MAP
+    assert "StationPopup" in _MAP
+    assert "live-map-tac" in _STATION_POPUP
+    assert "live-map-station" in _STATION_POPUP
     assert "decodeTac" not in _MAP
     assert "mouseover" in _MAP
     assert "onOpenPlace" in _MAP

@@ -114,6 +114,7 @@ export function IwxxmPreviewPane({
     <section
       data-testid="iwxxm-preview-pane"
       data-expanded={expanded ? 'true' : 'false'}
+      data-glossary-exclude="true"
       aria-label="IWXXM preview"
       className={`flex min-h-0 flex-col overflow-hidden rounded-md border border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-900 ${heightClass} ${className}`}
     >

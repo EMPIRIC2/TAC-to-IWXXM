@@ -9,6 +9,7 @@ import {
 import { stationFromReport } from '@/utils/decodeVisuals';
 import { publishDecodeVisuals } from '@/utils/decodeVisualsStore';
 import { type LivePlace } from '@/utils/liveMap';
+import { LiveWorldMap } from './LiveWorldMap';
 import { Button } from './ui/button';
 import { Card } from './ui/card';
 import { Input } from './ui/input';
@@ -27,7 +28,6 @@ import { PropagateResidualsControl } from './PropagateResidualsControl';
 import { IncludeNationalRemarksControl } from './IncludeNationalRemarksControl';
 import { LiveIwxxmToggle } from './LiveIwxxmToggle';
 import { BulletinReportList } from './BulletinReportList';
-import { LiveWorldMap } from './LiveWorldMap';
 import { LiveConvertStatusStrip } from './LiveConvertStatusStrip';
 import { TacLintJumps } from './TacLintJumps';
 import { StatusBanner } from './StatusBanner';
@@ -729,6 +729,9 @@ function activeMetarFamilyVariants(
  * @param props.onActiveSessionIdChange - Reports the active F5 session id
  * @param props.activeWorkSessionId - Current F5 session id when known
  * @param props.loadedWorkSession - Hydration payload for the active session
+ * @param props.pendingMapTac - TAC from the Map shell page (Send to converter)
+ * @param props.onPendingMapTacConsumed - Clears pending Map TAC after apply
+ * @param props.onOpenCatalog - Opens Rule catalogs from Convert trust links
  * @example
  * const _ = true;
  */
@@ -1265,6 +1268,31 @@ export function FileConverter({
       setOutputVersions([]);
     }
   }, [loadedWorkSession, updateConversionLog]);
+  /* eslint-enable react-hooks/set-state-in-effect */
+
+  /* eslint-disable react-hooks/set-state-in-effect -- Map shell → Convert handoff */
+  useLayoutEffect(() => {
+    const tac = pendingMapTac?.trim() ?? '';
+    if (!tac) {
+      return;
+    }
+    setInputMode('tac');
+    setManualInput(tac);
+    setSelectedTrace(null);
+    setLintJump(null);
+    setLintFocusOffset(null);
+    setConversionParams((prev) => ({
+      ...prev,
+      product: detectTacProduct(tac),
+    }));
+    setConverterOpen(true);
+    // Keep Map/results open after Send to converter (BUG-2026-11-10).
+    setResultsDrawerOpen(true);
+    onPendingMapTacConsumed?.();
+    document
+      .querySelector('[data-testid="live-convert-panes"]')
+      ?.scrollIntoView({ behavior: 'auto', block: 'start' });
+  }, [pendingMapTac, onPendingMapTacConsumed]);
   /* eslint-enable react-hooks/set-state-in-effect */
 
   useEffect(() => {
@@ -2591,6 +2619,8 @@ export function FileConverter({
       product: detectTacProduct(tac),
     }));
     setConverterOpen(true);
+    // Keep Map/results open after Send to converter (BUG-2026-11-10).
+    setResultsDrawerOpen(true);
     onPendingMapTacConsumed?.();
   }, [pendingMapTac, onPendingMapTacConsumed]);
   /* eslint-enable react-hooks/set-state-in-effect */
@@ -4287,6 +4317,7 @@ export function FileConverter({
                               ? 'convert-tac-readonly'
                               : 'convert-tac-editable'
                           }
+                          data-glossary-exclude="true"
                         >
                           <TacEditor
                             id="manual-input"

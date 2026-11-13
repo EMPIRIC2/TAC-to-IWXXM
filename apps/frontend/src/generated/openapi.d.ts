@@ -386,6 +386,130 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/exchange-admin/allowlist": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Read-only egress allowlist (GitOps)
+         * @description Return the configured egress allowlist. Editing is GitOps-only.
+         */
+        get: operations["get_allowlist_api_v1_exchange_admin_allowlist_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/exchange-admin/invitation-group": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Select invitation group at login
+         * @description Bind the signed-in operator to one invitation group.
+         */
+        put: operations["put_invitation_group_api_v1_exchange_admin_invitation_group_put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/exchange-admin/invitation-groups": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Invitation groups for login
+         * @description List multi-tenant invitation groups offered at login.
+         */
+        get: operations["get_invitation_groups_api_v1_exchange_admin_invitation_groups_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/exchange-admin/prefs": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Operator exchange preferences
+         * @description Return national-remarks toggle and selected invitation group.
+         */
+        get: operations["get_operator_prefs_api_v1_exchange_admin_prefs_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/exchange-admin/prefs/national-remarks": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Toggle national remarks on WIS2 publish
+         * @description Operator toggle: include national remarks when publishing to WIS2.
+         */
+        put: operations["put_national_remarks_api_v1_exchange_admin_prefs_national_remarks_put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/exchange-admin/templates": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List non-secret WIS2 templates
+         * @description List memory-only non-secret destination templates (no vault).
+         */
+        get: operations["get_templates_api_v1_exchange_admin_templates_get"];
+        /**
+         * Upsert non-secret WIS2 template
+         * @description Create or replace a non-secret template. Secrets must be pasted at send time.
+         */
+        put: operations["put_template_api_v1_exchange_admin_templates_put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/ingest-collect": {
         parameters: {
             query?: never;
@@ -974,6 +1098,66 @@ export interface paths {
          * @description List deployed registry ids for workbench / dissemination dropdowns.
          */
         get: operations["get_selection_options_api_v1_selection_options_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/station-health": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List station health grades
+         * @description Serve station report cards for one availability window.
+         */
+        get: operations["list_station_health_api_v1_station_health_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/station-health/metrics": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List station health metric definitions
+         * @description Serve the extensible metrics registry for dashboard cards.
+         */
+        get: operations["list_station_health_metrics_api_v1_station_health_metrics_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/station-health/{icao}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Station health detail
+         * @description Serve one station report card across windows and products.
+         */
+        get: operations["get_station_health_api_v1_station_health__icao__get"];
         put?: never;
         post?: never;
         delete?: never;
@@ -4359,6 +4543,164 @@ export interface components {
             options: components["schemas"]["SelectionOption"][];
         };
         /**
+         * StationHealthDetailResponse
+         * @description Response for GET /api/v1/station-health/{icao}.
+         */
+        StationHealthDetailResponse: {
+            /** Icao */
+            icao: string;
+            /** Name */
+            name?: string | null;
+            /**
+             * Record Count
+             * @default 0
+             */
+            record_count: number;
+            /** Windows */
+            windows?: {
+                [key: string]: components["schemas"]["StationWindowModel"];
+            };
+        };
+        /**
+         * StationHealthListResponse
+         * @description Response for GET /api/v1/station-health.
+         */
+        StationHealthListResponse: {
+            /** Computed At */
+            computed_at: string;
+            /** Stations */
+            stations?: components["schemas"]["StationListItemModel"][];
+            summary?: components["schemas"]["StationHealthSummaryModel"];
+            /** Window */
+            window: string;
+        };
+        /**
+         * StationHealthMetricsResponse
+         * @description Response for GET /api/v1/station-health/metrics.
+         */
+        StationHealthMetricsResponse: {
+            /** Metrics */
+            metrics?: components["schemas"]["StationMetricDefinitionModel"][];
+        };
+        /**
+         * StationHealthSummaryModel
+         * @description Rollup counts for the list response.
+         */
+        StationHealthSummaryModel: {
+            /** Grade Counts */
+            grade_counts?: {
+                [key: string]: number;
+            };
+            /**
+             * Station Count
+             * @default 0
+             */
+            station_count: number;
+        };
+        /**
+         * StationListItemModel
+         * @description One station row on the dashboard list.
+         */
+        StationListItemModel: {
+            /** Icao */
+            icao: string;
+            /** Name */
+            name?: string | null;
+            /** Overall Grade */
+            overall_grade: string;
+            /**
+             * Overall Score
+             * @default 0
+             */
+            overall_score: number;
+            /** Products */
+            products?: components["schemas"]["StationProductGradeModel"][];
+        };
+        /**
+         * StationMetricDefinitionModel
+         * @description One extensible dashboard metric card.
+         */
+        StationMetricDefinitionModel: {
+            /** Description */
+            description: string;
+            /**
+             * Higher Is Better
+             * @default true
+             */
+            higher_is_better: boolean;
+            /** Id */
+            id: string;
+            /** Label */
+            label: string;
+            /** Unit */
+            unit?: string | null;
+        };
+        /**
+         * StationProductGradeModel
+         * @description One product grade inside a station window.
+         */
+        StationProductGradeModel: {
+            /**
+             * Actual Count
+             * @default 0
+             */
+            actual_count: number;
+            /**
+             * Availability Score
+             * @default 0
+             */
+            availability_score: number;
+            /**
+             * Expected Count
+             * @default 0
+             */
+            expected_count: number;
+            /** Grade */
+            grade: string;
+            /**
+             * Lint Error Count
+             * @default 0
+             */
+            lint_error_count: number;
+            /**
+             * Lint Severity Score
+             * @default 100
+             */
+            lint_severity_score: number;
+            /**
+             * Missing Digit Rate
+             * @default 0
+             */
+            missing_digit_rate: number;
+            /**
+             * Overall Score
+             * @default 0
+             */
+            overall_score: number;
+            /** Product */
+            product: string;
+            /**
+             * Solidus Rate
+             * @default 0
+             */
+            solidus_rate: number;
+        };
+        /**
+         * StationWindowModel
+         * @description One window block on the station detail page.
+         */
+        StationWindowModel: {
+            /** Overall Grade */
+            overall_grade: string;
+            /**
+             * Overall Score
+             * @default 0
+             */
+            overall_score: number;
+            /** Products */
+            products?: components["schemas"]["StationProductGradeModel"][];
+        };
+        /**
          * TranslationCentreInfo
          * @description Translation Centre identification metadata.
          * @example {
@@ -5807,6 +6149,205 @@ export interface operations {
             };
         };
     };
+    get_allowlist_api_v1_exchange_admin_allowlist_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+        };
+    };
+    put_invitation_group_api_v1_exchange_admin_invitation_group_put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    [key: string]: unknown;
+                };
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_invitation_groups_api_v1_exchange_admin_invitation_groups_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+        };
+    };
+    get_operator_prefs_api_v1_exchange_admin_prefs_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+        };
+    };
+    put_national_remarks_api_v1_exchange_admin_prefs_national_remarks_put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    [key: string]: unknown;
+                };
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_templates_api_v1_exchange_admin_templates_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+        };
+    };
+    put_template_api_v1_exchange_admin_templates_put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    [key: string]: unknown;
+                };
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     ingest_collect_api_v1_ingest_collect_post: {
         parameters: {
             query?: never;
@@ -7154,6 +7695,109 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["SelectionOptionsResponse"];
                 };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_station_health_api_v1_station_health_get: {
+        parameters: {
+            query?: {
+                /** @description Time window: 6h, 1d, or 30d */
+                window?: string;
+                /** @description Optional product filter */
+                product?: string | null;
+                /** @description Optional letter grade filter */
+                grade?: string | null;
+                /** @description Max stations to return */
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StationHealthListResponse"];
+                };
+            };
+            /** @description Invalid window */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_station_health_metrics_api_v1_station_health_metrics_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StationHealthMetricsResponse"];
+                };
+            };
+        };
+    };
+    get_station_health_api_v1_station_health__icao__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                icao: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StationHealthDetailResponse"];
+                };
+            };
+            /** @description Unknown station */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
             /** @description Validation Error */
             422: {
