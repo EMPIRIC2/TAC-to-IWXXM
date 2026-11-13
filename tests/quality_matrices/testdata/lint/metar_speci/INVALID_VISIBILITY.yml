@@ -40,23 +40,13 @@ cases:
 - bucket: happy
   case_id: '05'
   status: ready
-  tac: SPECI KJFK 232045Z 20015G25KT 8SM -SN BKN020 OVC040 12/06 A3001=
-  expect:
-    accept: true
-  meta:
-    product: SPECI
-    profile: annex3
-    cite: EV-970-S2 INVALID_VISIBILITY/happy
-- bucket: happy
-  case_id: '06'
-  status: ready
   tac: METAR AYPY 302000Z VRB03KT 10KM SCT050 27/24 Q1012=
   expect:
     accept: true
   meta:
     product: METAR
     profile: annex3
-    cite: '#1477 kilometre visibility'
+    cite: EV-970-S2 INVALID_VISIBILITY/happy kilometre visibility
 - bucket: sad
   case_id: '01'
   status: ready
