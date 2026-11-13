@@ -550,5 +550,23 @@ describe('live map helpers', () => {
         layers.has('precip') && /\bRA\b|\bDZ\b|\bSN\b/.test(tac),
     });
     expect(withTac.every((place) => place.reports[0]?.tac)).toBe(true);
+
+    const emptyReports = {
+      place_key: 'KORD',
+      product: 'metar',
+      latitude: 50,
+      longitude: 0,
+      reports: [] as { observed_at: string; tac: string }[],
+    };
+    const seenEmptyTac: string[] = [];
+    filterPlaces([emptyReports], {
+      ...base,
+      tacLayers: new Set(['precip']),
+      passesTacLayers: (tac) => {
+        seenEmptyTac.push(tac);
+        return true;
+      },
+    });
+    expect(seenEmptyTac).toEqual(['']);
   });
 });

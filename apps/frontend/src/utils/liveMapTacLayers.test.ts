@@ -4,6 +4,7 @@
 
 import { describe, expect, it } from 'vitest';
 import {
+  clusterPickFields,
   isMultiStationCluster,
   passesTacLayers,
   stationClusterFilePicker,
@@ -95,5 +96,49 @@ describe('liveMapTacLayers validation', () => {
     expect(
       tacMatchesLayer(METAR_RAIN, 'unknown' as Parameters<typeof tacMatchesLayer>[1]),
     ).toBe(false);
+  });
+
+  it('treats TAC with no alphanumeric tokens as a non-match', () => {
+    expect(tacMatchesLayer('', 'precip')).toBe(false);
+    expect(tacMatchesLayer('--- !!!', 'wind')).toBe(false);
+  });
+
+  it('fills empty TAC fields when a place has no reports', () => {
+    expect(
+      clusterPickFields({
+        place_key: 'KORD',
+        product: 'metar',
+        reports: [],
+      }),
+    ).toEqual({
+      icao: 'KORD',
+      product: 'metar',
+      tac: '',
+      observedAt: '',
+    });
+    expect(
+      clusterPickFields({
+        place_key: 'KSEA',
+        product: 'metar',
+        reports: [{}],
+      }),
+    ).toEqual({
+      icao: 'KSEA',
+      product: 'metar',
+      tac: '',
+      observedAt: '',
+    });
+    expect(
+      clusterPickFields({
+        place_key: 'KJFK',
+        product: 'metar',
+        reports: [{ tac: METAR_CLEAR, observed_at: '2026-11-13T18:00:00Z' }],
+      }),
+    ).toEqual({
+      icao: 'KJFK',
+      product: 'metar',
+      tac: METAR_CLEAR,
+      observedAt: '2026-11-13T18:00:00Z',
+    });
   });
 });

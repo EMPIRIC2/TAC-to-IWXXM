@@ -824,11 +824,19 @@ describe('LiveWorldMap', () => {
         },
       ],
     };
+    const emptyReports: LivePlace = {
+      place_key: 'KORD',
+      product: 'metar',
+      latitude: 41.9,
+      longitude: -87.9,
+      geometry: { kind: 'point' },
+      reports: [],
+    };
     vi.stubGlobal(
       'fetch',
       vi.fn().mockResolvedValue({
         ok: true,
-        json: async () => ({ places: [rainy, clear] }),
+        json: async () => ({ places: [rainy, clear, emptyReports] }),
       }),
     );
     render(<LiveWorldMap onOpenPlace={onOpenPlace} />);
@@ -839,15 +847,28 @@ describe('LiveWorldMap', () => {
     ).toBeInTheDocument();
     expect(screen.getByTestId('cluster-pick-KJFK')).toBeInTheDocument();
     expect(screen.queryByTestId('cluster-pick-KBOS')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('cluster-pick-KORD')).not.toBeInTheDocument();
     await user.click(screen.getByTestId('cluster-pick-KJFK'));
     expect(onOpenPlace).toHaveBeenCalledWith(
       expect.objectContaining({ place_key: 'KJFK' }),
     );
+    // Clearing overlays keeps every visible place in the map (incl. empty reports).
     await user.click(screen.getByTestId('tac-layer-precip'));
     await waitFor(() => {
       expect(
         screen.queryByTestId('station-cluster-file-picker'),
       ).not.toBeInTheDocument();
     });
+    await user.click(screen.getByTestId('tac-layer-precip'));
+    expect(
+      await screen.findByTestId('station-cluster-file-picker'),
+    ).toBeInTheDocument();
+    // Turn every product off so visible empties while the picker row stays.
+    for (const product of LIVE_MAP_PRODUCTS) {
+      await user.click(screen.getByTestId(`layer-${product}`));
+    }
+    const opened = onOpenPlace.mock.calls.length;
+    await user.click(screen.getByTestId('cluster-pick-KJFK'));
+    expect(onOpenPlace).toHaveBeenCalledTimes(opened);
   });
 });

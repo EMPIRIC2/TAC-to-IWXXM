@@ -69,6 +69,7 @@ import {
   LIVE_MAP_STATION_CLUSTER_PICKER,
   LIVE_MAP_TAC_LAYER_LABEL,
   LIVE_MAP_TAC_LAYERS,
+  clusterPickFields,
   passesTacLayers,
   stationClusterFilePicker,
   type StationClusterPick,
@@ -907,12 +908,7 @@ export function LiveWorldMap({
                         .filter((place) =>
                           passesTacLayers(place.reports[0]?.tac ?? '', next),
                         )
-                        .map((place) => ({
-                          icao: place.place_key,
-                          product: place.product,
-                          tac: place.reports[0]?.tac ?? '',
-                          observedAt: place.reports[0]?.observed_at ?? '',
-                        })),
+                        .map(clusterPickFields),
                     );
                     setClusterPicker(next.size > 0 ? picks : []);
                   }}
