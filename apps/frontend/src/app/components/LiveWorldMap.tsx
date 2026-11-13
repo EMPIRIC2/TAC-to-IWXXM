@@ -65,6 +65,13 @@ import {
   type MapTimePreset,
 } from '@/utils/liveMap';
 import { placeRegion, regionFilterNames } from '@/utils/liveMapRegions';
+import {
+  LIVE_MAP_TAC_LAYER_LABEL,
+  LIVE_MAP_TAC_LAYERS,
+  passesTacLayers,
+  stationClusterFilePicker,
+  type StationClusterPick,
+} from '@/utils/liveMapTacLayers';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from './ui/collapsible';
 
 const EMPTY_PLACES: LivePlace[] = [];
@@ -483,6 +490,8 @@ export function LiveWorldMap({
   const [region, setRegion] = useState('all');
   const [timePreset, setTimePreset] = useState<MapTimePreset>('full');
   const [phenomena, setPhenomena] = useState<ReadonlySet<string>>(new Set());
+  const [tacLayers, setTacLayers] = useState<ReadonlySet<string>>(new Set());
+  const [clusterPicker, setClusterPicker] = useState<StationClusterPick[]>([]);
   const [bounds, setBounds] = useState<MapBounds | null>(null);
   const [zoom, setZoom] = useState(2);
   const [places, setPlaces] = useState<LivePlace[]>([]);
@@ -503,6 +512,8 @@ export function LiveWorldMap({
     region,
     time: timePreset,
     phenomena,
+    tacLayers,
+    passesTacLayers,
     countryOf: (placeKey) => airports.findWhere({ icao: placeKey })?.country,
     regionOf: (latitude, longitude) => placeRegion(latitude, longitude),
   });
@@ -862,6 +873,83 @@ export function LiveWorldMap({
             );
           })}
         </div>
+        <div className="mt-3 flex flex-wrap items-center gap-2">
+          <span className="text-[11px] font-semibold tracking-wide text-gray-400 uppercase">
+            {LIVE_MAP_TAC_LAYER_LABEL}
+          </span>
+          {LIVE_MAP_TAC_LAYERS.map((item) => {
+            const on = tacLayers.has(item.id);
+            return (
+              <label
+                key={item.id}
+                className={`inline-flex cursor-pointer items-center rounded-md border px-3 py-1 text-sm font-medium transition ${
+                  on
+                    ? 'border-sky-800 bg-sky-800 text-white dark:border-sky-200 dark:bg-sky-200 dark:text-gray-900'
+                    : 'border-gray-200 bg-white text-gray-600 hover:border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300'
+                }`}
+              >
+                <input
+                  type="checkbox"
+                  className="sr-only"
+                  checked={on}
+                  data-testid={`tac-layer-${item.id}`}
+                  onChange={() => {
+                    const next = new Set(tacLayers);
+                    if (next.has(item.id)) {
+                      next.delete(item.id);
+                    } else {
+                      next.add(item.id);
+                    }
+                    setTacLayers(next);
+                    const picks = stationClusterFilePicker(
+                      visible
+                        .filter((place) =>
+                          passesTacLayers(place.reports[0]?.tac ?? '', next),
+                        )
+                        .map((place) => ({
+                          icao: place.place_key,
+                          product: place.product,
+                          tac: place.reports[0]?.tac ?? '',
+                          observedAt: place.reports[0]?.observed_at ?? '',
+                        })),
+                    );
+                    setClusterPicker(next.size > 0 ? picks : []);
+                  }}
+                />
+                {item.label}
+              </label>
+            );
+          })}
+        </div>
+        {clusterPicker.length > 0 ? (
+          <div
+            className="mt-3 max-h-40 overflow-y-auto border border-gray-200 bg-white p-2 text-sm dark:border-gray-700 dark:bg-gray-950"
+            data-testid="station-cluster-file-picker"
+          >
+            <p className="mb-1 text-[11px] font-semibold tracking-wide text-gray-400 uppercase">
+              Station files
+            </p>
+            <ul className="space-y-1">
+              {clusterPicker.map((row) => (
+                <li key={`${row.icao}-${row.observedAt}`}>
+                  <button
+                    type="button"
+                    className="w-full truncate text-left text-gray-700 hover:underline dark:text-gray-200"
+                    data-testid={`cluster-pick-${row.icao}`}
+                    onClick={() => {
+                      const place = visible.find((p) => p.place_key === row.icao);
+                      if (place) {
+                        openPlaceRef.current?.(placeShowingReport(place, row.tac));
+                      }
+                    }}
+                  >
+                    {row.icao} · {row.product} · {row.observedAt}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ) : null}
       </div>
       <div className="flex flex-wrap items-center justify-between gap-2 px-1">
         <p
