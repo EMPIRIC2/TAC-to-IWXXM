@@ -17,7 +17,7 @@ export const LIVE_MAP_TAC_LAYERS = [
 /**
  * Id of one TAC overlay layer operators can toggle.
  * @example
- * const id: LiveMapTacLayerId = 'precip';
+ * const _ = true;
  */
 export type LiveMapTacLayerId = (typeof LIVE_MAP_TAC_LAYERS)[number]['id'];
 
