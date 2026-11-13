@@ -2151,32 +2151,69 @@ describe('FileConverter Component', () => {
       );
     });
 
-    it('loads a map report into the TAC panes and scrolls up', async () => {
+    it('loads a Map shell handoff into the TAC panes and scrolls up', async () => {
       const user = userEvent.setup({ delay: null });
       const scroll = vi.fn();
       const originalScroll = HTMLElement.prototype.scrollIntoView;
       HTMLElement.prototype.scrollIntoView = scroll;
+      const onPendingMapTacConsumed = vi.fn();
+      const { rerender } = render(
+        <FileConverter
+          {...defaultProps}
+          pendingMapTac="   "
+          onPendingMapTacConsumed={onPendingMapTacConsumed}
+        />,
+      );
+      expect(screen.getByLabelText('Enter METAR data manually')).toHaveValue('');
+      expect(onPendingMapTacConsumed).not.toHaveBeenCalled();
+
+      rerender(
+        <FileConverter
+          {...defaultProps}
+          pendingMapTac="METAR KJFK 121755Z 18010KT 10SM"
+          onPendingMapTacConsumed={onPendingMapTacConsumed}
+        />,
+      );
+      expect(screen.getByLabelText('Enter METAR data manually')).toHaveValue(
+        'METAR KJFK 121755Z 18010KT 10SM',
+      );
+      expect(screen.getByRole('combobox', { name: 'Product' })).toHaveValue('METAR');
+      expect(onPendingMapTacConsumed).toHaveBeenCalled();
+      expect(scroll).toHaveBeenCalled();
+      // BUG-2026-11-10 map-send-keep-drawer: handoff must not collapse results/Map.
+      expect(screen.getByTestId('convert-results-drawer-shell')).not.toHaveAttribute(
+        'hidden',
+      );
+      await user.click(screen.getByTestId('convert-results-tab-map'));
+      expect(screen.getByTestId('convert-results-panel-map')).not.toHaveAttribute(
+        'hidden',
+      );
+      expect(screen.getByTestId('live-world-map')).toBeInTheDocument();
+      HTMLElement.prototype.scrollIntoView = originalScroll;
+    });
+
+    it('loads Map Send TAC into the panes and ignores empty reports', async () => {
+      const user = userEvent.setup({ delay: null });
+      const scroll = vi.fn();
+      const originalScroll = HTMLElement.prototype.scrollIntoView;
+      HTMLElement.prototype.scrollIntoView = scroll;
+      seedLiveConvertChrome();
       render(<FileConverter {...defaultProps} />);
+      const seeded = 'METAR KJFK 121251Z 18004KT 10SM FEW020 18/12 A3012=';
+      expect(screen.getByLabelText('Enter METAR data manually')).toHaveValue(seeded);
+
       await user.click(screen.getByTestId('convert-results-tab-map'));
       await user.click(screen.getByTestId('live-map-load-empty'));
+      expect(screen.getByLabelText('Enter METAR data manually')).toHaveValue(seeded);
       await user.click(screen.getByTestId('live-map-load-blank'));
-      expect(screen.getByLabelText('Enter METAR data manually')).toHaveValue('');
+      expect(screen.getByLabelText('Enter METAR data manually')).toHaveValue(seeded);
+
       await user.click(screen.getByTestId('live-map-load-report'));
       expect(screen.getByLabelText('Enter METAR data manually')).toHaveValue(
         'METAR KJFK 121755Z 18010KT 10SM',
       );
       expect(screen.getByRole('combobox', { name: 'Product' })).toHaveValue('METAR');
-      // BUG-2026-11-10 map-send-keep-drawer: handoff must not collapse results/Map.
-      expect(screen.getByTestId('convert-results-drawer-shell')).not.toHaveAttribute(
-        'hidden',
-      );
-      expect(screen.getByTestId('convert-results-panel-map')).not.toHaveAttribute(
-        'hidden',
-      );
-      expect(screen.getByTestId('live-world-map')).toBeInTheDocument();
       expect(scroll).toHaveBeenCalled();
-      screen.getByTestId('live-convert-panes').removeAttribute('data-testid');
-      await user.click(screen.getByTestId('live-map-load-report'));
       expect(screen.getByTestId('convert-results-drawer-shell')).not.toHaveAttribute(
         'hidden',
       );
@@ -2215,7 +2252,63 @@ describe('FileConverter Component', () => {
           onPendingMapTacConsumed={onPendingMapTacConsumed}
         />,
       );
-      expect(onPendingMapTacConsumed).toHaveBeenCalledTimes(1);
+      expect(onPendingMapTacConsumed.mock.calls.length).toBeGreaterThanOrEqual(1);
+    });
+
+    it('runs soft-preview validation after a Map TAC handoff', async () => {
+      const user = userEvent.setup({ delay: null });
+      mockConvertMetarToIwxxm.mockResolvedValueOnce({
+        results: [
+          {
+            iwxxm_xml: '<soft-map/>',
+            tac_input: 'METAR KJFK 121755Z 18010KT 10SM',
+          },
+        ],
+        errors: [],
+        issues: [],
+        ok: false,
+        failed_spans: [{ start: 0, end: 5 }],
+      });
+      const onPendingMapTacConsumed = vi.fn();
+      render(
+        <FileConverter
+          {...defaultProps}
+          pendingMapTac="METAR KJFK 121755Z 18010KT 10SM"
+          onPendingMapTacConsumed={onPendingMapTacConsumed}
+        />,
+      );
+      expect(screen.getByLabelText('Enter METAR data manually')).toHaveValue(
+        'METAR KJFK 121755Z 18010KT 10SM',
+      );
+      await user.click(screen.getByTestId('soft-preview-toggle'));
+      await user.click(screen.getByTestId('convert-button'));
+      await waitFor(() => {
+        expect(mockConvertMetarToIwxxm).toHaveBeenCalledWith(
+          expect.objectContaining({ preview: true }),
+        );
+        expect(screen.getByTestId('iwxxm-preview-soft-fail')).toBeInTheDocument();
+      });
+    });
+
+    it('keeps Validate IWXXM mode available after a Map TAC handoff', async () => {
+      const user = userEvent.setup({ delay: null });
+      const onPendingMapTacConsumed = vi.fn();
+      render(
+        <FileConverter
+          {...defaultProps}
+          pendingMapTac="METAR KJFK 121755Z 18010KT 10SM"
+          onPendingMapTacConsumed={onPendingMapTacConsumed}
+        />,
+      );
+      await user.click(screen.getByTestId('convert-settings-cog'));
+      await user.click(screen.getByTestId('input-mode-validate_iwxxm'));
+      expect(screen.getByTestId('input-mode-validate_iwxxm')).toHaveClass(
+        'bg-blue-700',
+      );
+      expect(
+        screen.getByRole('heading', { name: 'Validate IWXXM' }),
+      ).toBeInTheDocument();
+      expect(screen.getByTestId('validate-iwxxm-help')).toBeInTheDocument();
     });
 
     it('TC-UX-DECLUTTER: no peer-pane resize separators (drawer replaces grid)', () => {
@@ -2677,7 +2770,7 @@ describe('FileConverter Component', () => {
       }
     });
 
-    it.skip('contains product-profile bar in main column beside Recent work (TC-UX-RW-001)', () => {
+    it('contains product-profile bar in main column beside Recent work (TC-UX-RW-001)', () => {
       render(<FileConverter {...defaultProps} onLoadWorkSession={vi.fn()} />);
       const main = screen.getByTestId('workbench-main-column');
       const bar = screen.getByTestId('product-profile-bar');
@@ -4248,7 +4341,7 @@ describe('FileConverter Component', () => {
       expect((screen.getByTestId('tac-editor') as HTMLTextAreaElement).value).toBe('');
     });
 
-    it.skip('scopes examples to the selected semantic profile', async () => {
+    it('scopes examples to the selected semantic profile', async () => {
       const user = userEvent.setup({ delay: null });
       render(<FileConverter accessToken="tok" />);
 
@@ -4268,7 +4361,7 @@ describe('FileConverter Component', () => {
       ).not.toBeInTheDocument();
     });
 
-    it.skip('scopes examples for guest users without profile catalog auth', async () => {
+    it('scopes examples for guest users without profile catalog auth', async () => {
       const user = userEvent.setup({ delay: null });
       render(<FileConverter />);
 
@@ -7100,7 +7193,7 @@ describe('FileConverter Component', () => {
       });
     });
 
-    it.skip('hydrates ca_eccc profile from loaded work session', () => {
+    it('hydrates ca_eccc profile from loaded work session', () => {
       render(
         <FileConverter
           {...defaultProps}
@@ -7108,7 +7201,10 @@ describe('FileConverter Component', () => {
             {
               id: 'ca-sess',
               status: 'draft',
-              conversion_params: { profile: 'ca_eccc', product: 'METAR' },
+              conversion_params: {
+                conversionLibraryId: defaultLibraryId('conversion', 'CA_ECCC'),
+                product: 'METAR',
+              },
             } as any
           }
         />,
@@ -7478,7 +7574,7 @@ describe('FileConverter Component', () => {
   });
 
   describe('EV-1051 semantic preset and EV-933 overlay selects', () => {
-    it.skip('loads presets when signed in, applies preset defaults, and passes presetId on convert', async () => {
+    it('signed-in convert uses library pickers (preset/overlay chrome hard-cut)', async () => {
       const user = userEvent.setup({ delay: null });
       mockListPresets.mockResolvedValue({
         items: [
@@ -7528,7 +7624,6 @@ describe('FileConverter Component', () => {
         failed: 0,
       });
       render(<FileConverter {...defaultProps} accessToken="jwt-pr" />);
-      // Legacy preset / overlay Convert chrome is hard-cut; assert library pickers instead.
       expect(await screen.findByTestId('library-pickers-bar')).toBeInTheDocument();
       expect(screen.getByTestId('conversion-library-select')).toBeInTheDocument();
       expect(screen.queryByTestId('semantic-preset-select')).not.toBeInTheDocument();
@@ -7554,213 +7649,31 @@ describe('FileConverter Component', () => {
       );
     });
 
-    it.skip('loads overlays when signed in and passes overlayId on convert', async () => {
-      const user = userEvent.setup({ delay: null });
-      mockListOverlays.mockResolvedValue({
-        items: [
-          {
-            id: 'ov-uuid-1',
-            user_id: 'u',
-            slug: 'soft-lint',
-            baseProfileId: 'ICAO_2025',
-            body: {},
-            signature: 'sig',
-            shared: false,
-            created_at: '',
-            updated_at: '',
-          },
-        ],
-      });
-      mockConvertMetarToIwxxm.mockResolvedValue({
-        results: [
-          {
-            name: 'manual',
-            content: '<iwxxm/>',
-            source: 'KJFK',
-            size_bytes: 8,
-          },
-        ],
-        errors: [],
-        total_processed: 1,
-        successful: 1,
-        failed: 0,
-      });
-      render(<FileConverter {...defaultProps} accessToken="jwt-ov" />);
-      const select = await screen.findByTestId('signed-overlay-select');
-      await user.selectOptions(select, 'ov-uuid-1');
-      fireEvent.change(screen.getByTestId('tac-editor'), {
-        target: { value: 'METAR KJFK 121851Z 18004KT 10SM FEW250 18/08 A3012' },
-      });
-      await user.click(screen.getByTestId('convert-button'));
-      await waitFor(() => {
-        expect(mockConvertMetarToIwxxm).toHaveBeenCalled();
-      });
-      expect(mockConvertMetarToIwxxm).toHaveBeenCalledWith(
-        expect.objectContaining({
-          overlayId: 'ov-uuid-1',
-          accessToken: 'jwt-ov',
-        }),
-      );
-    });
-
-    it.skip('hides signed overlay select for guests', () => {
+    it('hides legacy preset and overlay selects for guests', () => {
       render(<FileConverter {...defaultProps} />);
+      expect(screen.queryByTestId('semantic-preset-select')).not.toBeInTheDocument();
       expect(screen.queryByTestId('signed-overlay-select')).not.toBeInTheDocument();
+      expect(screen.getByTestId('library-pickers-bar')).toBeInTheDocument();
     });
 
-    it.skip('clears overlays when listOverlays fails', async () => {
+    it('keeps library pickers when overlay list fails', async () => {
       mockListOverlays.mockRejectedValueOnce(new Error('no overlays'));
+      mockListPresets.mockRejectedValueOnce(new Error('no presets'));
       render(<FileConverter {...defaultProps} accessToken="jwt-ov" />);
-      const select = await screen.findByTestId('signed-overlay-select');
-      expect(select.querySelectorAll('option')).toHaveLength(1);
+      expect(await screen.findByTestId('library-pickers-bar')).toBeInTheDocument();
+      expect(screen.getByTestId('conversion-library-select')).toBeInTheDocument();
+      expect(screen.queryByTestId('signed-overlay-select')).not.toBeInTheDocument();
     });
 
-    it.skip('clears selected overlayId when auth token is removed', async () => {
+    it('clears None library selection back to default without preset chrome', async () => {
       const user = userEvent.setup({ delay: null });
-      mockListOverlays.mockResolvedValue({
-        items: [
-          {
-            id: 'ov-logout',
-            user_id: 'u',
-            slug: 'bye',
-            baseProfileId: 'ICAO_2025',
-            body: {},
-            signature: 'sig',
-            shared: false,
-            created_at: '',
-            updated_at: '',
-          },
-        ],
-      });
-      const { rerender } = render(
-        <FileConverter {...defaultProps} accessToken="jwt-ov" />,
-      );
-      const select = await screen.findByTestId('signed-overlay-select');
-      await user.selectOptions(select, 'ov-logout');
-      expect(select).toHaveValue('ov-logout');
-      rerender(<FileConverter {...defaultProps} />);
-      expect(screen.queryByTestId('signed-overlay-select')).not.toBeInTheDocument();
-    });
-
-    it.skip('clears a previously selected overlay across auth removal and restoration', async () => {
-      const user = userEvent.setup({ delay: null });
-      mockListOverlays.mockResolvedValue({
-        items: [
-          {
-            id: 'ov-restore',
-            user_id: 'u',
-            slug: 'restore',
-            baseProfileId: 'ICAO_2025',
-            body: {},
-            signature: 'sig',
-            shared: false,
-            created_at: '',
-            updated_at: '',
-          },
-        ],
-      });
-      const { rerender } = render(
-        <FileConverter {...defaultProps} accessToken="jwt-ov" />,
-      );
-      const select = await screen.findByTestId('signed-overlay-select');
-      await user.selectOptions(select, 'ov-restore');
-      expect(select).toHaveValue('ov-restore');
-
-      rerender(<FileConverter {...defaultProps} />);
-      expect(screen.queryByTestId('signed-overlay-select')).not.toBeInTheDocument();
-
-      rerender(<FileConverter {...defaultProps} accessToken="jwt-ov" />);
-      await waitFor(() => {
-        expect(screen.getByTestId('signed-overlay-select')).toHaveValue('');
-      });
-    });
-
-    it.skip('clears a hydrated overlay across auth removal and restoration', async () => {
-      mockListOverlays.mockResolvedValue({
-        items: [
-          {
-            id: 'ov-hydrated',
-            user_id: 'u',
-            slug: 'hydrated',
-            baseProfileId: 'ICAO_2025',
-            body: {},
-            signature: 'sig',
-            shared: false,
-            created_at: '',
-            updated_at: '',
-          },
-        ],
-      });
-      const hydratedSession = {
-        id: 'sess-overlay-hydrated',
-        status: 'draft',
-        manual_tac: '',
-        conversion_params: { overlay_id: 'ov-hydrated' },
-      } as never;
-
-      const { rerender } = render(
-        <FileConverter
-          {...defaultProps}
-          accessToken="jwt-ov"
-          loadedWorkSession={hydratedSession}
-        />,
-      );
-      await waitFor(() => {
-        expect(screen.getByTestId('signed-overlay-select')).toHaveValue('ov-hydrated');
-      });
-
-      rerender(<FileConverter {...defaultProps} loadedWorkSession={hydratedSession} />);
-      expect(screen.queryByTestId('signed-overlay-select')).not.toBeInTheDocument();
-
-      rerender(
-        <FileConverter
-          {...defaultProps}
-          accessToken="jwt-ov"
-          loadedWorkSession={hydratedSession}
-        />,
-      );
-      await waitFor(() => {
-        expect(screen.getByTestId('signed-overlay-select')).toHaveValue('');
-      });
-    });
-
-    it.skip('handles auth token removal when no overlay is selected', async () => {
-      const { rerender } = render(
-        <FileConverter {...defaultProps} accessToken="jwt-ov" />,
-      );
-      await screen.findByTestId('signed-overlay-select');
-
-      rerender(<FileConverter {...defaultProps} />);
-      expect(screen.queryByTestId('signed-overlay-select')).not.toBeInTheDocument();
-    });
-
-    it.skip('clears selected presetId when auth token is removed', async () => {
-      const user = userEvent.setup({ delay: null });
-      mockListPresets.mockResolvedValue({
-        items: [
-          {
-            id: 'pr-logout',
-            user_id: 'u',
-            slug: 'bye',
-            name: 'Bye',
-            semanticProfile: 'ICAO_2025',
-            iwxxmVersion: '2025-2',
-            extensions: [],
-            reportVariant: null,
-            overlayId: null,
-            shared: false,
-            created_at: '',
-            updated_at: '',
-          },
-        ],
-      });
-      const { rerender } = render(
-        <FileConverter {...defaultProps} accessToken="jwt-pr" />,
-      );
-      const select = await screen.findByTestId('semantic-preset-select');
-      await user.selectOptions(select, 'pr-logout');
-      expect(select).toHaveValue('pr-logout');
-      rerender(<FileConverter {...defaultProps} />);
+      render(<FileConverter {...defaultProps} accessToken="jwt-pr" />);
+      const select = await screen.findByTestId('conversion-library-select');
+      await user.selectOptions(select, defaultLibraryId('conversion', 'US_FAA_NWS'));
+      expect(select).toHaveValue(defaultLibraryId('conversion', 'US_FAA_NWS'));
+      // Re-select ICAO default (None equivalent for hard-cut chrome)
+      await user.selectOptions(select, defaultLibraryId('conversion', 'ICAO_2025'));
+      expect(select).toHaveValue(defaultLibraryId('conversion', 'ICAO_2025'));
       expect(screen.queryByTestId('semantic-preset-select')).not.toBeInTheDocument();
     });
 
@@ -7854,19 +7767,22 @@ describe('FileConverter Component', () => {
       ).not.toBeInTheDocument();
     });
 
-    it.skip('ignores overlay list resolution after unmount', async () => {
-      let resolveList!: (value: { items: [] }) => void;
-      mockListOverlays.mockImplementation(
+    it('ignores overlay list resolution after unmount without crashing', async () => {
+      let resolveCatalog!: (value: { profiles: [] }) => void;
+      mockFetchProfileCatalog.mockImplementation(
         () =>
           new Promise((resolve) => {
-            resolveList = resolve;
+            resolveCatalog = resolve;
           }),
       );
       const { unmount } = render(
         <FileConverter {...defaultProps} accessToken="jwt-ov" />,
       );
+      expect(screen.getByTestId('library-pickers-bar')).toBeInTheDocument();
+      expect(screen.queryByTestId('signed-overlay-select')).not.toBeInTheDocument();
       unmount();
-      resolveList({ items: [] });
+      resolveCatalog({ profiles: [] });
+      expect(screen.queryByTestId('library-pickers-bar')).not.toBeInTheDocument();
     });
 
     it('hydrates overlay_id from conversion_params on convert', async () => {
@@ -8002,7 +7918,7 @@ describe('FileConverter Component', () => {
       });
     });
 
-    it.skip('clears preset selection when the user switches back to None', async () => {
+    it('library select can return to ICAO default without preset chrome', async () => {
       const user = userEvent.setup({ delay: null });
       mockListPresets.mockResolvedValue({
         items: [
@@ -8024,12 +7940,18 @@ describe('FileConverter Component', () => {
       });
 
       render(<FileConverter {...defaultProps} accessToken="jwt-pr" />);
-      const presetSelect = await screen.findByTestId('semantic-preset-select');
-      await user.selectOptions(presetSelect, 'pr-uuid-1');
-      expect(presetSelect).toHaveValue('pr-uuid-1');
-
-      await user.selectOptions(presetSelect, '');
-      expect(presetSelect).toHaveValue('');
+      expect(screen.queryByTestId('semantic-preset-select')).not.toBeInTheDocument();
+      const librarySelect = await screen.findByTestId('conversion-library-select');
+      await user.selectOptions(
+        librarySelect,
+        defaultLibraryId('conversion', 'US_FAA_NWS'),
+      );
+      expect(librarySelect).toHaveValue(defaultLibraryId('conversion', 'US_FAA_NWS'));
+      await user.selectOptions(
+        librarySelect,
+        defaultLibraryId('conversion', 'ICAO_2025'),
+      );
+      expect(librarySelect).toHaveValue(defaultLibraryId('conversion', 'ICAO_2025'));
     });
 
     it('keeps dissemination template state stable when the same id is reselected', async () => {

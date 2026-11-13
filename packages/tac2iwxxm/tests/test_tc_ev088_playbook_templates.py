@@ -24,6 +24,7 @@ _TEMPLATE_FILES = (
     "tac-mining-notes.md",
     "iwxxm-mining-notes.md",
     "manifest.json.example",
+    "code-list-deviations.yaml",
 )
 
 

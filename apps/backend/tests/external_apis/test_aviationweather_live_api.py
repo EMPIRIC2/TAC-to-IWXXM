@@ -244,7 +244,6 @@ async def test_live_metar_metadata_enrichment():
 
 
 @pytest.mark.live_api
-@pytest.mark.skip(reason="Live API test - network dependent, may fail in CI/CD")
 @pytest.mark.asyncio
 async def test_live_api_rate_limiting():
     """

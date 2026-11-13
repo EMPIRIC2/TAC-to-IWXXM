@@ -508,12 +508,16 @@ export function filterPlaces(
     region: string;
     time: MapTimePreset;
     phenomena: ReadonlySet<string>;
+    /** Optional TAC weather overlays (precip/temp/wind/thunder/ice). */
+    tacLayers?: ReadonlySet<string>;
     now?: number;
     countryOf: (placeKey: string) => string | undefined;
     regionOf: (
       latitude: number,
       longitude: number,
     ) => { name: string; continent: string };
+    /** Optional TAC layer predicate; injected to avoid a circular import. */
+    passesTacLayers?: (tac: string, layers: ReadonlySet<string>) => boolean;
   },
 ): LivePlace[] {
   const now = filters.now ?? Date.now();
@@ -527,11 +531,16 @@ export function filterPlaces(
     if (!passesIssueWindow(place.reports[0]?.observed_at ?? '', filters.time, now)) {
       return false;
     }
-    return passesPhenomenon(
-      place.product,
-      place.reports[0]?.tac ?? '',
-      filters.phenomena,
-    );
+    if (
+      !passesPhenomenon(place.product, place.reports[0]?.tac ?? '', filters.phenomena)
+    ) {
+      return false;
+    }
+    const tacLayers = filters.tacLayers;
+    if (tacLayers && tacLayers.size > 0 && filters.passesTacLayers) {
+      return filters.passesTacLayers(place.reports[0]?.tac ?? '', tacLayers);
+    }
+    return true;
   });
 }
 

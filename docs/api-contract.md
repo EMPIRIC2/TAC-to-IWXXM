@@ -1,7 +1,7 @@
 # API Contract
 
 > **Project**: TAC to IWXXM
-> **Last updated**: 2026-11-10
+> **Last updated**: 2026-11-13
 > **Delta**: Monorepo auth in API auth. general TAC conversion tac2iwxxm. operator workbench operator API. validation performance msgspec HTTP.
 > METAR and SPECI quality bar registry codes. TAF and SPECI quality bar TAF/SPECI quality. public operator app Amended public convert + optional
 > Auth. privacy preference center privacy. platform independence/hybrid operator sessions Auth-only Supabase + DO Postgres work-sessions
@@ -892,7 +892,7 @@ allowlist. Abuse controls apply (rate limits / body size).
 |-------|-------|
 | Request | JSON: `sink_type` (`postgres` \| `mysql` \| `sqlserver` \| `sqlite` \| `wis2` \| `edis` \| `amhs` \| `swim` \| `afs`) + sink-specific connection params (DB URI or WIS2/EDIS/AMHS fields) + optional `payload` metadata (product, schema version) + `ddl` flag for create-if-missing + **single** IWXXM/TAC body (or in-session/drop reference) |
 | Success | Structured preflight result: connectivity OK, schema/writer-contract diff (empty when green), optional short-lived opaque `handle` |
-| Failure | **422** when `sink_type` is omitted/`null` (client error); **501** when `sink_type` is a known drawer value not yet implemented for this route (e.g. `wis2`); 400/403 structured errors (allowlist/SSRF, auth to dest, schema mismatch, missing columns); secrets redacted |
+| Failure | **422** when `sink_type` is omitted/`null` (client error); **400** when `sink_type` is unknown or BYOC params are incomplete (WIS2/EDIS/F19 now wired on this public route); 400/403 structured errors (allowlist/SSRF, auth to dest, schema mismatch, missing columns); secrets redacted |
 
 ### `POST /api/v1/dissemination/send`
 
@@ -900,7 +900,7 @@ allowlist. Abuse controls apply (rate limits / body size).
 |-------|-------|
 | Request | JSON: either `handle` from green preflight **or** full sink params again + **single** IWXXM/TAC body (or reference to in-session convert result / drag-drop content) |
 | Success | Sink ack + optional `kv_upload_key` metadata for local Finished (no dest secrets stored) |
-| Failure | Same structured/redacted errors as preflight (**422** missing/`nullsink_type` when no valid handle supplies it; **501** unimplemented sink); block if preflight would not be green |
+| Failure | Same structured/redacted errors as preflight (**422** missing/`null` `sink_type` when no valid handle supplies it; **400** unknown sink or incomplete BYOC params); block if preflight would not be green |
 
 ### Multi-file selection , client contract
 
@@ -919,8 +919,26 @@ aliases only (=A). CORS: no new origins. reuse existing
 
 ### / , Dissemination ops + Gateway hooks (JWT)
 
-Public `POST /dissemination/preflight` + `/send` **unchanged** (public operator app. memory-only BYOC).
-New **authenticated** routes (Bearer JWT, same posture as work-sessions):
+Public `POST /dissemination/preflight` + `/send` support DB sinks and WIS2/EDIS/F19
+drawer sinks (memory-only BYOC). New **authenticated** routes (Bearer JWT, same
+posture as work-sessions):
+
+### `/api/v1/exchange-admin` (WIS2-only, exchange-admin role)
+
+| Method | Path | Notes |
+|--------|------|-------|
+| `GET` | `/api/v1/exchange-admin/allowlist` | Read-only GitOps allowlist projection; no mutate |
+| `GET` | `/api/v1/exchange-admin/invitation-groups` | Multi-tenant invitation groups for login |
+| `PUT` | `/api/v1/exchange-admin/invitation-group` | Bind signed-in operator to one group |
+| `GET` | `/api/v1/exchange-admin/prefs` | National-remarks toggle + selected group; `admin_replay=false` |
+| `PUT` | `/api/v1/exchange-admin/prefs/national-remarks` | Operator toggle for national remarks on WIS2 publish |
+| `GET`/`PUT` | `/api/v1/exchange-admin/templates` | Memory-only non-secret WIS2 templates (no vault; secrets rejected) |
+
+**Auth**: JWT with role `exchange-admin` for allowlist/prefs/templates; invitation
+group list/select accepts any signed-in operator. **Non-goals (v1)**: admin
+replay, vault-backed secrets, non-WIS2 admin sinks.
+
+New **authenticated** dissemination ops routes (Bearer JWT, same posture as work-sessions):
 
 | Method | Path | Notes |
 |--------|------|-------|
@@ -1471,6 +1489,89 @@ GET /api/v1/live-map?west=&south=&east=&north=&products=
 **Amend **: Every `observed_at` on this route is within the last 24 hours of UTC now. Places with no remaining in-window reports are omitted. Query parameters are unchanged. Client-only presets (1h / 3h / 6h / 12h / full) further narrow the loaded view and are not query parameters. 
 
 The route reads the cache. It does not call a vendor during the request.
+
+### Station health (public aggregates)
+
+Public read API for the operator **Station health** tab. Serves station
+availability and quality grades from product Postgres. Writers are the ingest
+and convert pipelines only. There is no public write route.
+
+**Auth**: **None** (public), same as convert / quality-metrics / live-map.
+
+```
+GET /api/v1/station-health
+```
+
+**Purpose**: List stations with overall grades for one time window.
+
+**Query** (optional):
+
+| Param | Required | Description |
+|-------|----------|-------------|
+| `window` | no | `6h` (default), `1d`, or `30d` |
+| `product` | no | Filter to one product (`metar`, `speci`, `taf`, …) |
+| `grade` | no | Filter to one letter (`A`–`F`) |
+| `limit` | no | Max rows (default 100, max 500) |
+
+**Response** (minimum fields):
+
+```json
+{
+  "window": "6h",
+  "computed_at": "2026-11-13T12:00:00Z",
+  "stations": [
+    {
+      "icao": "KJFK",
+      "name": "John F Kennedy International",
+      "overall_grade": "B",
+      "overall_score": 84.5,
+      "products": [
+        {
+          "product": "metar",
+          "grade": "B",
+          "availability_score": 83.3,
+          "actual_count": 5,
+          "expected_count": 6,
+          "solidus_rate": 0.02,
+          "missing_digit_rate": 0.0,
+          "lint_error_count": 0
+        }
+      ]
+    }
+  ],
+  "summary": {
+    "station_count": 1,
+    "grade_counts": { "A": 0, "B": 1, "C": 0, "D": 0, "F": 0 }
+  }
+}
+```
+
+```
+GET /api/v1/station-health/{icao}
+```
+
+**Purpose**: One station report card across windows and products.
+
+**Response**: `icao`, optional `name`, `windows` map (`6h` / `1d` / `30d`) each with
+product rows and an overall grade, plus recent `record_count`.
+
+```
+GET /api/v1/station-health/metrics
+```
+
+**Purpose**: Extensible metrics registry for dashboard cards.
+
+Grade rules (server-side, plain language for operators):
+
+- Availability score = `min(100, 100 * actual / expected)` when expected > 0.
+  METAR expects one report per hour. TAF expects one report per six hours. SPECI
+  and irregular products score presence bands instead of a fixed cadence.
+- Solidus rate = solidus characters (`/`) per TAC character in the window.
+- Missing-digit rate = counts of `//` and longer solidus runs per record.
+- Overall score weights availability 50%, solidus quality 25%, missing-digit
+  quality 15%, lint severity 10%. Letter grades: A ≥ 90, B ≥ 80, C ≥ 70, D ≥ 60,
+  else F.
+
 
 ## Local OpenAPI status and required-field check 
 

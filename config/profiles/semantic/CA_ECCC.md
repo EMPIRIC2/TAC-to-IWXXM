@@ -78,6 +78,15 @@ Structured MANOBS remarks and metadata map to `metar-speci-ca.xsd` Addendum chil
 free-text-only RMK). Catalogued in [`catalog.yaml`](../catalog.yaml) under
 `metar_speci_ca_addendum`.
 
+## Code list policy (#1034)
+
+Machine matrix: [`CA_ECCC.code-list-deviations.yaml`](CA_ECCC.code-list-deviations.yaml)
+(`catalog.yaml` → `code_list_policy`). Kinds: **replace** / **override** / **extend** /
+**none**. When `disallow_global: true`, `iwxxm-validate` emits
+`CODE_LIST_GLOBAL_DISALLOWED` (e.g. WMO `306/4678/IC`, FMH `AO*`). GFA compounds emit
+`code-ca/airmet_weather_phenomena/*` without banning non-GFA WMO `AirWxPhenomena`.
+Template: [`_template/code-list-deviations.yaml`](../_template/code-list-deviations.yaml).
+
 ## Authoritative sources
 
 | Source | Access | Proves |

@@ -243,6 +243,7 @@ profiles:
       - AerodromeVariableRVR / ObservedLightning (P2 / #1039)
       - Layered ca_eccc validation stack — EV-068 / #1035 (+ #1027 bundle wire) **done**
       - code-ca vocabulary membership stage — #1033 **done (EV-069)**
+      - code-list deviation matrix / override policy — #1034 **done**
       - SIGMET/VAA TAC convert overlay — out of EV-074; validate-first SIGMET ops in EV-074 / #1043; VAA harvest deferred (D-EV074-vaa-follow, no MSC VAA tree at pin)
     validation_stages:
       - id: wellformed
@@ -266,6 +267,13 @@ profiles:
         label: Exchange packaging checks
         optional: true
         issue: "#1032"
+    code_list_policy:
+      issue: "#1034"
+      status: implemented
+      deviations: semantic/CA_ECCC.code-list-deviations.yaml
+      notes: >-
+        Global→CA deviation matrix (replace/override/extend/none). Fail-closed on
+        disallow_global URIs in iwxxm-validate (CODE_LIST_GLOBAL_DISALLOWED).
     exchange_output:
       issue: "#1032"
       status: implemented

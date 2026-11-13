@@ -89,7 +89,6 @@ class TestWMOCanonicalExamplesValidation:
         assert result.is_valid, f"XSD validation failed for {example.example_id}:\n{[i.message for i in result.issues]}"
 
     @pytest.mark.parametrize(("version", "example"), WMO_EXAMPLES)
-    @pytest.mark.skip(reason="Schematron validator enhancement pending")
     def test_example_schematron_validation(self, version: str, example: WMOExample):
         """Verify example passes Schematron validation with local RDF codelists."""
         from src.services.iwxxm_validation_adapter import validate_schematron
@@ -97,13 +96,14 @@ class TestWMOCanonicalExamplesValidation:
         xml_content = example.xml_path.read_text()
         result = validate_schematron(xml_content, version=version)
 
-        # Translation-failed examples are expected to fail
+        # Translation-failed examples are expected to fail Schematron
         if example.is_translation_failed:
+            assert result is not None
             return
 
         assert result.is_valid, (
             f"Schematron validation failed for {example.example_id}:\n"
-            f"Failed rules: {[r.rule_id for r in result.failed_rules]}"
+            f"Issues: {[getattr(i, 'message', i) for i in getattr(result, 'issues', [])]}"
         )
 
     @pytest.mark.parametrize(("version", "example"), WMO_EXAMPLES)

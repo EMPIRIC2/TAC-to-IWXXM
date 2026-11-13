@@ -1,0 +1,14 @@
+# Code-list deviation matrix (playbook §6 / type H)
+# Empty matrix is a valid thin-pack starter — fill when national vocab differs from WMO.
+# kinds: replace | override | extend | none
+#
+# replace  — national URI required; listed global_uri is disallowed under this profile
+# override — emit national URI when token matches (global may still validate elsewhere)
+# extend   — national codes add to global; both namespaces allowed
+# none     — use global WMO / ICAO URI; no national override
+schema_version: 1
+profile: PLACEHOLDER_ID
+code_list_policy:
+  issue: null
+  status: planned
+entries: []

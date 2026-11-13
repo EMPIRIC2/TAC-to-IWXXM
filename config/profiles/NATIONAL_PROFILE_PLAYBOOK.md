@@ -132,8 +132,10 @@ Nationals add **plugins/config**, not forked engines.
 | Artifact | Location |
 |----------|----------|
 | National vocab vendor pin | `vendor/schemas/<national>/…` |
-| Deviation matrix | `semantic/<ID>.md` §Code list policy |
-| Semantic checks | `iwxxm-validate` profile hook |
+| Deviation matrix (machine) | `semantic/<ID>.code-list-deviations.yaml` — template [`_template/code-list-deviations.yaml`](_template/code-list-deviations.yaml) (empty matrix OK for thin packs) |
+| Deviation matrix (human) | `semantic/<ID>.md` §Code list policy |
+| Catalog field | `code_list_policy` on the profile row |
+| Semantic checks | `iwxxm-validate` profile hook (`CODE_LIST_GLOBAL_DISALLOWED`) |
 
 CA reference: [#1033](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1033), [#1034](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1034).
 

@@ -1,4 +1,4 @@
-"""MSC code-ca vocabulary membership validation (EV-069 / #1033)."""
+"""MSC code-ca vocabulary membership + deviation checks (EV-069 / #1033 / #1034)."""
 
 from __future__ import annotations
 
@@ -8,25 +8,29 @@ import lxml.etree as _lxml_etree
 
 from iwxxm_validate.ca_eccc_layers import STAGE_CODE_CA
 from iwxxm_validate.code_ca_registry import code_ca_membership_ok, is_code_ca_href, normalize_code_ca_href
+from iwxxm_validate.code_list_policy import load_code_list_policy
 from iwxxm_validate.models import Issue
 
 etree: Any = _lxml_etree
 _XLINK_NS = "http://www.w3.org/1999/xlink"
+_DEFAULT_PROFILE = "CA_ECCC"
 
 
-def validate_code_ca_membership(xml_content: str) -> list[Issue]:
+def validate_code_ca_membership(xml_content: str, *, profile: str = _DEFAULT_PROFILE) -> list[Issue]:
     """
-    Validate Canadian code list membership for ``xlink:href`` values.
+    Validate Canadian code list membership and disallowed global URIs.
 
     Parameters
     ----------
     xml_content : str
         IWXXM XML document.
+    profile : str
+        Semantic profile id (default ``CA_ECCC``).
 
     Returns
     -------
     list[Issue]
-        Empty when all code-ca hrefs resolve to known vocabulary members.
+        Empty when code-ca hrefs are known and no disallowed global URIs appear.
 
     Examples
     --------
@@ -45,22 +49,41 @@ def validate_code_ca_membership(xml_content: str) -> list[Issue]:
             )
         ]
 
+    policy = load_code_list_policy(profile)
+    disallowed = policy.disallowed_global_uris()
     issues: list[Issue] = []
-    seen: set[str] = set()
+    seen_ca: set[str] = set()
+    seen_global: set[str] = set()
     for element in root.iter():
         href = element.get(f"{{{_XLINK_NS}}}href")
-        if not href or not is_code_ca_href(href):
+        if not href:
             continue
         normalized = normalize_code_ca_href(href)
-        if normalized in seen:
+        if is_code_ca_href(href):
+            if normalized in seen_ca:
+                continue
+            seen_ca.add(normalized)
+            if not code_ca_membership_ok(href):
+                issues.append(
+                    Issue(
+                        severity="error",
+                        code="CODE_CA_UNKNOWN",
+                        message=f"Canadian code list member not recognized: {normalized}",
+                        layer=STAGE_CODE_CA,
+                        location=element.tag,
+                    )
+                )
             continue
-        seen.add(normalized)
-        if not code_ca_membership_ok(href):
+        if normalized in disallowed and normalized not in seen_global:
+            seen_global.add(normalized)
             issues.append(
                 Issue(
                     severity="error",
-                    code="CODE_CA_UNKNOWN",
-                    message=f"Canadian code list member not recognized: {normalized}",
+                    code="CODE_LIST_GLOBAL_DISALLOWED",
+                    message=(
+                        f"Global code URI disallowed under profile {policy.profile}; "
+                        f"use the national code-list URI instead: {normalized}"
+                    ),
                     layer=STAGE_CODE_CA,
                     location=element.tag,
                 )

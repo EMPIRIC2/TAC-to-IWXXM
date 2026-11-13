@@ -159,13 +159,43 @@ def test_preflight_rejects_invalid_json_body(client: TestClient) -> None:
     assert resp.status_code == 422
 
 
-def test_preflight_unimplemented_sink(client: TestClient) -> None:
+def test_preflight_wis2_validation_missing_params(client: TestClient) -> None:
+    """Public WIS2 preflight rejects incomplete BYOC params (no longer 501)."""
     resp = client.post(
         "/api/v1/dissemination/preflight",
-        content=json.dumps({"sink_type": "wis2", "uri": "mqtt://example.com"}),
+        content=json.dumps({"sink_type": "wis2", "params": {}}),
         headers={"Content-Type": "application/json", "Authorization": "Bearer t"},
     )
-    assert resp.status_code == 501
+    assert resp.status_code == 400
+    assert "mqtt" in resp.text.lower() or "params" in resp.text.lower()
+
+
+def test_preflight_wis2_success_mocked(client: TestClient, monkeypatch: pytest.MonkeyPatch) -> None:
+    from dissemination.models import PreflightResponse
+
+    async def _ok(_sink: str, _params: dict, **_kwargs):
+        return PreflightResponse(ok=True, connectivity_ok=True, diffs=[], detail="ok")
+
+    monkeypatch.setenv("DISSEMINATION_EGRESS_ALLOWLIST", "wis2box,127.0.0.1")
+    monkeypatch.setattr(diss_router, "run_non_db_preflight", _ok)
+    resp = client.post(
+        "/api/v1/dissemination/preflight",
+        content=json.dumps(
+            {
+                "sink_type": "wis2",
+                "params": {
+                    "mqtt_host": "wis2box",
+                    "mqtt_topic": "origin/a/wis2",
+                    "dataset_url": "http://127.0.0.1/ds",
+                },
+            }
+        ),
+        headers={"Content-Type": "application/json", "Authorization": "Bearer t"},
+    )
+    assert resp.status_code == 200, resp.text
+    body = resp.json()
+    assert body["ok"] is True
+    assert body["handle"]
 
 
 def test_preflight_missing_sink_type_is_422(client: TestClient) -> None:
@@ -241,20 +271,168 @@ def test_send_rate_limit_denies(client: TestClient, monkeypatch: pytest.MonkeyPa
     assert resp.status_code == 429
 
 
-def test_send_unimplemented_sink_inline(client: TestClient) -> None:
+def test_send_wis2_failure_missing_params(client: TestClient) -> None:
     resp = client.post(
         "/api/v1/dissemination/send",
         content=json.dumps(
             {
                 "sink_type": "wis2",
-                "uri": "mqtt://example.com",
+                "params": {},
                 "iwxxm_xml": "<x/>",
                 "product": "metar",
             }
         ),
         headers={"Content-Type": "application/json", "Authorization": "Bearer t"},
     )
-    assert resp.status_code == 501
+    assert resp.status_code == 400
+
+
+def test_send_wis2_success_mocked(client: TestClient, monkeypatch: pytest.MonkeyPatch) -> None:
+    from dissemination.models import SendResponse
+
+    async def _ok(_sink: str, _params: dict, **_kwargs):
+        return SendResponse(ok=True, kv_upload_key=None, detail="wis2 published")
+
+    monkeypatch.setattr(diss_router, "run_non_db_send", _ok)
+    resp = client.post(
+        "/api/v1/dissemination/send",
+        content=json.dumps(
+            {
+                "sink_type": "wis2",
+                "params": {
+                    "mqtt_host": "wis2box",
+                    "mqtt_topic": "origin/a/wis2",
+                    "dataset_url": "http://127.0.0.1/ds",
+                },
+                "iwxxm_xml": "<x/>",
+                "product": "metar",
+            }
+        ),
+        headers={"Content-Type": "application/json", "Authorization": "Bearer t"},
+    )
+    assert resp.status_code == 200, resp.text
+    assert resp.json()["ok"] is True
+
+
+def test_send_wis2_handle_merges_params_and_pops(
+    client: TestClient, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Handle params merge into send params; successful send consumes the handle."""
+    from dissemination.models import PreflightResponse, SendResponse
+
+    async def _preflight(_sink: str, _params: dict, **_kwargs):
+        return PreflightResponse(ok=True, connectivity_ok=True, diffs=[], detail="ok")
+
+    seen: dict[str, object] = {}
+
+    async def _send(_sink: str, params: dict, **_kwargs):
+        seen["params"] = dict(params)
+        return SendResponse(ok=True, kv_upload_key=None, detail="wis2 published")
+
+    monkeypatch.setenv("DISSEMINATION_EGRESS_ALLOWLIST", "wis2box,127.0.0.1")
+    monkeypatch.setattr(diss_router, "run_non_db_preflight", _preflight)
+    monkeypatch.setattr(diss_router, "run_non_db_send", _send)
+    pre = client.post(
+        "/api/v1/dissemination/preflight",
+        content=json.dumps(
+            {
+                "sink_type": "wis2",
+                "params": {
+                    "mqtt_host": "wis2box",
+                    "mqtt_topic": "origin/a/wis2",
+                    "dataset_url": "http://127.0.0.1/ds",
+                    "centre_id": "from-handle",
+                },
+            }
+        ),
+        headers={"Content-Type": "application/json", "Authorization": "Bearer t"},
+    )
+    assert pre.status_code == 200, pre.text
+    handle = pre.json()["handle"]
+    assert handle
+    send = client.post(
+        "/api/v1/dissemination/send",
+        content=json.dumps(
+            {
+                "handle": handle,
+                "params": {"topic": "override-topic"},
+                "iwxxm_xml": "<x/>",
+                "product": "metar",
+            }
+        ),
+        headers={"Content-Type": "application/json", "Authorization": "Bearer t"},
+    )
+    assert send.status_code == 200, send.text
+    merged = seen["params"]
+    assert isinstance(merged, dict)
+    assert merged.get("centre_id") == "from-handle"
+    assert merged.get("topic") == "override-topic"
+    reuse = client.post(
+        "/api/v1/dissemination/send",
+        content=json.dumps(
+            {
+                "handle": handle,
+                "iwxxm_xml": "<x/>",
+                "product": "metar",
+            }
+        ),
+        headers={"Content-Type": "application/json", "Authorization": "Bearer t"},
+    )
+    assert reuse.status_code == 400
+    assert "handle" in reuse.text.lower()
+
+
+def test_send_wis2_egress_denied(client: TestClient, monkeypatch: pytest.MonkeyPatch) -> None:
+    from dissemination.allowlist import EgressDenied
+
+    async def _deny(_sink: str, _params: dict, **_kwargs):
+        raise EgressDenied("fail-closed: empty allowlist")
+
+    monkeypatch.setattr(diss_router, "run_non_db_send", _deny)
+    resp = client.post(
+        "/api/v1/dissemination/send",
+        content=json.dumps(
+            {
+                "sink_type": "wis2",
+                "params": {
+                    "mqtt_host": "wis2box",
+                    "mqtt_topic": "origin/a/wis2",
+                    "dataset_url": "http://127.0.0.1/ds",
+                },
+                "iwxxm_xml": "<x/>",
+                "product": "metar",
+            }
+        ),
+        headers={"Content-Type": "application/json", "Authorization": "Bearer t"},
+    )
+    assert resp.status_code == 403
+
+
+def test_send_wis2_unexpected_error_becomes_500(
+    client: TestClient, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    async def _boom(_sink: str, _params: dict, **_kwargs):
+        raise RuntimeError("broker down")
+
+    monkeypatch.setattr(diss_router, "run_non_db_send", _boom)
+    resp = client.post(
+        "/api/v1/dissemination/send",
+        content=json.dumps(
+            {
+                "sink_type": "wis2",
+                "params": {
+                    "mqtt_host": "wis2box",
+                    "mqtt_topic": "origin/a/wis2",
+                    "dataset_url": "http://127.0.0.1/ds",
+                },
+                "iwxxm_xml": "<x/>",
+                "product": "metar",
+            }
+        ),
+        headers={"Content-Type": "application/json", "Authorization": "Bearer t"},
+    )
+    assert resp.status_code == 500
+    assert "send failed" in resp.text.lower()
 
 
 def test_send_egress_denied(client: TestClient, monkeypatch: pytest.MonkeyPatch) -> None:
@@ -379,14 +557,13 @@ def test_preflight_unknown_template_id_returns_400(client: TestClient, monkeypat
         return {"sub": str(template.user_id)}
 
     class _Svc:
-        def __init__(self, _user_id: str) -> None:
-            pass
-
         def get_template(self, _template_id):
             raise ValueError("bad template")
 
     api_module.app.dependency_overrides[verify_optional_supabase_token] = _auth
-    monkeypatch.setattr(diss_router, "ConversionProfilesService", _Svc)
+    monkeypatch.setattr(
+        diss_router, "profiles_service_for_optional_auth", lambda _auth: _Svc()
+    )
 
     resp = client.post(
         "/api/v1/dissemination/preflight",
@@ -412,14 +589,13 @@ def test_preflight_template_applies_defaults_and_explicit_fields_win(
         return PreflightResponse(ok=True, connectivity_ok=True, diffs=[], detail=None)
 
     class _Svc:
-        def __init__(self, _user_id: str) -> None:
-            pass
-
         def get_template(self, _template_id):
             return template
 
     api_module.app.dependency_overrides[verify_optional_supabase_token] = _auth
-    monkeypatch.setattr(diss_router, "ConversionProfilesService", _Svc)
+    monkeypatch.setattr(
+        diss_router, "profiles_service_for_optional_auth", lambda _auth: _Svc()
+    )
     monkeypatch.setattr(diss_router, "run_db_preflight", _ok)
     uri = _sqlite_uri(tmp_path)
     resp = client.post(
@@ -467,14 +643,13 @@ def test_send_unknown_template_id_returns_400(client: TestClient, monkeypatch: p
         return {"sub": str(template.user_id)}
 
     class _Svc:
-        def __init__(self, _user_id: str) -> None:
-            pass
-
         def get_template(self, _template_id):
             raise ValueError("bad template")
 
     api_module.app.dependency_overrides[verify_optional_supabase_token] = _auth
-    monkeypatch.setattr(diss_router, "ConversionProfilesService", _Svc)
+    monkeypatch.setattr(
+        diss_router, "profiles_service_for_optional_auth", lambda _auth: _Svc()
+    )
 
     resp = client.post(
         "/api/v1/dissemination/send",
@@ -504,14 +679,13 @@ def test_send_template_applies_defaults(client: TestClient, monkeypatch: pytest.
         return PreflightResponse(ok=True, connectivity_ok=True, diffs=[], detail=None)
 
     class _Svc:
-        def __init__(self, _user_id: str) -> None:
-            pass
-
         def get_template(self, _template_id):
             return template
 
     api_module.app.dependency_overrides[verify_optional_supabase_token] = _auth
-    monkeypatch.setattr(diss_router, "ConversionProfilesService", _Svc)
+    monkeypatch.setattr(
+        diss_router, "profiles_service_for_optional_auth", lambda _auth: _Svc()
+    )
     monkeypatch.setattr(diss_router, "run_db_preflight", _ok)
     uri = _sqlite_uri(tmp_path)
     resp = client.post(

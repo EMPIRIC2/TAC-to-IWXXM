@@ -1,0 +1,27 @@
+# CA_ECCC code-list deviations (#1034 / playbook §6 type H) [Corpus: product §F36]
+# kinds: replace|override|extend|none — disallow_global fails closed in iwxxm-validate
+schema_version: 1
+profile: CA_ECCC
+code_list_policy:
+  issue: "#1034"
+  status: implemented
+  sources:
+    - https://dd.weather.gc.ca/today/aviation/iwxxm/code-ca/
+    - https://dd.weather.gc.ca/today/aviation/iwxxm/doc/Canadian_Code_Registry_1A_En.pdf
+entries:
+  - {id: ca.obs.lwis, area: observing_system, token: LWIS, global_uri: null, ca_uri: https://dd.weather.gc.ca/today/aviation/iwxxm/code-ca/ObservingSystemType/LWIS, kind: replace, disallow_global: false, products: [METAR], notes: "MANOBS LWIS — code-ca only"}
+  - {id: ca.obs.sawr, area: observing_system, token: SAWR, global_uri: null, ca_uri: https://dd.weather.gc.ca/today/aviation/iwxxm/code-ca/ObservingSystemType/SAWR, kind: replace, disallow_global: false, products: [METAR], notes: "SAWR — code-ca observingSystemType"}
+  - {id: ca.obs.awos, area: observing_system, token: AWOS, global_uri: https://codes.nws.noaa.gov/FMH-1/ObservingSystemType/AO2, ca_uri: https://dd.weather.gc.ca/today/aviation/iwxxm/code-ca/ObservingSystemType/AWOS, kind: replace, disallow_global: true, products: [METAR, SPECI], notes: "CA AUTO → AWOS; FMH AO* disallowed"}
+  - {id: ca.obs.ao1, area: observing_system, token: AO1, global_uri: https://codes.nws.noaa.gov/FMH-1/ObservingSystemType/AO1, ca_uri: https://dd.weather.gc.ca/today/aviation/iwxxm/code-ca/ObservingSystemType/AWOS, kind: replace, disallow_global: true, products: [METAR, SPECI], notes: "Pair with AO2"}
+  - {id: ca.airmet.gfa.frq_tcu_isol_ts, area: airmet_phenomena, token: FRQ_TCU_ISOL_TS, global_uri: http://codes.wmo.int/49-2/AirWxPhenomena/TS, ca_uri: https://dd.weather.gc.ca/today/aviation/iwxxm/code-ca/airmet_weather_phenomena/FRQ_TCU_ISOL_TS, kind: replace, disallow_global: false, products: [AIRMET], notes: "GFA emit code-ca; WMO TS OK non-GFA"}
+  - {id: ca.airmet.gfa.frq_tcu_isol_tsgr, area: airmet_phenomena, token: FRQ_TCU_ISOL_TSGR, global_uri: http://codes.wmo.int/49-2/AirWxPhenomena/TSGR, ca_uri: https://dd.weather.gc.ca/today/aviation/iwxxm/code-ca/airmet_weather_phenomena/FRQ_TCU_ISOL_TSGR, kind: replace, disallow_global: false, products: [AIRMET], notes: "GFA compound; no silent WMO fallback"}
+  - {id: ca.airmet.gfa.ocnl_tcu_isol_ts, area: airmet_phenomena, token: OCNL_TCU_ISOL_TS, global_uri: null, ca_uri: https://dd.weather.gc.ca/today/aviation/iwxxm/code-ca/airmet_weather_phenomena/OCNL_TCU_ISOL_TS, kind: replace, disallow_global: false, products: [AIRMET], notes: "National-only GFA"}
+  - {id: ca.airmet.gfa.ocnl_tcu_isol_tsgr, area: airmet_phenomena, token: OCNL_TCU_ISOL_TSGR, global_uri: null, ca_uri: https://dd.weather.gc.ca/today/aviation/iwxxm/code-ca/airmet_weather_phenomena/OCNL_TCU_ISOL_TSGR, kind: replace, disallow_global: false, products: [AIRMET], notes: "National-only GFA"}
+  - {id: ca.airmet.gfa.sfc_vis_bkn, area: airmet_phenomena, token: SFC_VIS_and_BKN_CLD, global_uri: http://codes.wmo.int/49-2/AirWxPhenomena/SFC_VIS, ca_uri: https://dd.weather.gc.ca/today/aviation/iwxxm/code-ca/airmet_weather_phenomena/SFC_VIS_and_BKN_CLD, kind: override, disallow_global: false, products: [AIRMET], notes: "GFA code-ca; WMO SFC_VIS OK non-GFA"}
+  - {id: ca.airmet.gfa.sfc_vis_ovc, area: airmet_phenomena, token: SFC_VIS_and_OVC_CLD, global_uri: http://codes.wmo.int/49-2/AirWxPhenomena/BKN_CLD, ca_uri: https://dd.weather.gc.ca/today/aviation/iwxxm/code-ca/airmet_weather_phenomena/SFC_VIS_and_OVC_CLD, kind: override, disallow_global: false, products: [AIRMET], notes: "GFA compound; WMO alone OK non-GFA"}
+  - {id: ca.wx.ic, area: forecast_weather, token: IC, global_uri: http://codes.wmo.int/306/4678/IC, ca_uri: https://dd.weather.gc.ca/today/aviation/iwxxm/code-ca/present_and_forecast_weather/IC, kind: replace, disallow_global: true, products: [TAF, METAR, SPECI], notes: "IC requires code-ca; WMO 4678/IC fails closed"}
+  - {id: ca.pres.falling, area: pressure_change, token: FALLING, global_uri: null, ca_uri: https://dd.weather.gc.ca/today/aviation/iwxxm/code-ca/PressureChangingRapidly/FALLING, kind: extend, disallow_global: false, products: [METAR, SPECI], notes: "PRESFR Addendum"}
+  - {id: ca.pres.rising, area: pressure_change, token: RISING, global_uri: null, ca_uri: https://dd.weather.gc.ca/today/aviation/iwxxm/code-ca/PressureChangingRapidly/RISING, kind: extend, disallow_global: false, products: [METAR, SPECI], notes: "PRESRR Addendum"}
+  - {id: ca.icing.lgt, area: aerodrome_icing, token: LGT, global_uri: null, ca_uri: https://dd.weather.gc.ca/today/aviation/iwxxm/code-ca/AerodromeIcing/LGT, kind: extend, disallow_global: false, products: [METAR, SPECI], notes: "National icing"}
+  - {id: ca.airmet.wmo.ts, area: airmet_phenomena, token: TS, global_uri: http://codes.wmo.int/49-2/AirWxPhenomena/TS, ca_uri: null, kind: none, disallow_global: false, products: [AIRMET], notes: "Non-GFA keeps WMO TS"}
+  - {id: ca.sigmet.phenomena, area: sigmet_phenomena, token: "*", global_uri: http://codes.wmo.int/49-2/SigWxPhenomena, ca_uri: https://dd.weather.gc.ca/today/aviation/iwxxm/code-ca/sigmet_weather_phenomena, kind: extend, disallow_global: false, products: [SIGMET], notes: "code-ca SIGMET deferred deepen"}

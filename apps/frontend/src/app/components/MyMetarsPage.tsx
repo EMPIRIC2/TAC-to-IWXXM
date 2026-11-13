@@ -21,6 +21,7 @@ import { Button } from './ui/button';
 import { Card } from './ui/card';
 import { OutputVersionCompare } from './OutputVersionCompare';
 import { readOutputVersions } from '/utils/outputVersions';
+import { GlossaryRichText } from './glossary/GlossaryRichText';
 
 interface MyMetarsPageProps {
   /** JWT — when set, list/mutate DO Postgres sessions (F31). */
@@ -191,6 +192,11 @@ export function MyMetarsPage({
               My METARs
             </h1>
             <p className="text-sm text-gray-600 dark:text-gray-400">{userEmail}</p>
+            <GlossaryRichText
+              as="p"
+              className="mt-1 text-sm text-gray-600 dark:text-gray-400"
+              text="Browse saved conversion sessions. Forecast products and observation products stay in your history until you remove them."
+            />
           </div>
           <Button variant="outline" onClick={onBack}>
             <ArrowLeft className="mr-2 h-4 w-4" aria-hidden="true" />

@@ -63,6 +63,7 @@ import {
   plainInfoExample,
   ruleExamplePair,
 } from '@/utils/ruleCatalogExamples';
+import { GlossaryRichText } from './glossary/GlossaryRichText';
 
 type FamilyFilter =
   | 'all'
@@ -609,9 +610,11 @@ export function LintValidationCatalogPage({
           <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
             {LINT_VALIDATION_CATALOG_PAGE_TITLE}
           </h1>
-          <p className="text-sm text-gray-600 dark:text-gray-400">
-            {LINT_VALIDATION_CATALOG_PAGE_SUBTITLE}
-          </p>
+          <GlossaryRichText
+            as="p"
+            className="text-sm text-gray-600 dark:text-gray-400"
+            text={LINT_VALIDATION_CATALOG_PAGE_SUBTITLE}
+          />
         </div>
 
         <Card className="p-4">

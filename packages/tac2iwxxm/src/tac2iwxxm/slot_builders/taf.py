@@ -200,8 +200,14 @@ def _ca_forecast_weather_hrefs(wx_tokens: list[str]) -> list[str]:
     list[str]
         Return value.
     """
+    from tac2iwxxm.code_list_policy import resolve_national_href
+
     hrefs: list[str] = []
-    hrefs.extend(f"{_CODE_CA_PRESENT_FORECAST_WEATHER}/IC" for token in wx_tokens if token.upper() == "IC")
+    for token in wx_tokens:
+        if token.upper() != "IC":
+            continue
+        href = resolve_national_href(area="forecast_weather", token="IC")
+        hrefs.append(href or f"{_CODE_CA_PRESENT_FORECAST_WEATHER}/IC")
     return hrefs
 
 
