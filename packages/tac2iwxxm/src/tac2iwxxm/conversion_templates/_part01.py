@@ -334,6 +334,9 @@ def _builtin_catalog() -> dict[str, ConversionTemplate]:
     return {t.id: t for t in (wind, cloud, vis)}
 
 
+FIRST_PARTY_TEMPLATES: dict[str, ConversionTemplate] = _builtin_catalog()
+
+
 def list_first_party_templates() -> list[ConversionTemplate]:
     """
     Return built-in first-party conversion templates.
