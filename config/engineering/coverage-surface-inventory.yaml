@@ -193,4 +193,4 @@ intentional_non_surfaces:
   - id: bugs
     reason: "tests/bugs runs with --no-cov"
   - id: e2e-playwright
-    reason: "Out of scope for unit coverage gate"
+    reason: "Not a Vitest unit surface; suite Istanbul via make collect-e2e-coverage (bugs job artifact e2e-coverage-report)"

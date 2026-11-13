@@ -66,6 +66,7 @@ PY_LINT := apps/backend/src apps/backend/tests \
 	test-e2e-f16-live-sql \
 	test-live-connectivity test-live-connectivity-doks-provisional test-live-topology-doks-provisional test-live-api test-live-integration test-live-e2e test-live-e2e-doks-provisional test-live-bulletin test-live-feeds test-live-profile test-live \
 	test-integration test-coverage-scripts test-bats check-openapi-contract \
+	collect-e2e-coverage \
 	coverage coverage-backend coverage-frontend coverage-shared \
 	coverage-dissemination coverage-modules coverage-all ci acci badge-audit audit-frontend \
 	validate-fast validate-yaml secrets-check security-scan config-guard validate-ci env-check \
@@ -684,6 +685,11 @@ check-openapi-contract:
 	$(UV) run python scripts/ci/check_openapi_contract.py \
 		--spec apps/frontend/openapi/openapi.json \
 		--interactions tests/contracts/openapi-interactions.json
+
+# #1448 — Playwright suite Istanbul report for apps/e2e (bugs CI job).
+# [Corpus: tests]
+collect-e2e-coverage:
+	node scripts/ci/collect_e2e_coverage.mjs
 
 # EV-080 / #1077 — bats-core for every scripts/**/*.sh (D-TP080-2).
 test-bats:

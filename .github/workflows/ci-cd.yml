@@ -468,7 +468,15 @@ jobs:
 
       - name: Collect Playwright suite coverage
         if: matrix.package == 'bugs'
-        run: node scripts/ci/collect_e2e_coverage.mjs
+        run: make collect-e2e-coverage
+
+      - name: Upload Playwright e2e coverage artifact
+        if: matrix.package == 'bugs'
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-coverage-report
+          path: apps/e2e/coverage/coverage-final.json
+          if-no-files-found: error
 
       - name: Check OpenAPI status and required-field contracts
         if: matrix.package == 'bugs'
@@ -614,6 +622,13 @@ jobs:
         with:
           name: frontend-coverage-report
           path: coverage-artifacts/frontend
+
+      - name: Download Playwright e2e coverage artifact
+        continue-on-error: true
+        uses: actions/download-artifact@v4
+        with:
+          name: e2e-coverage-report
+          path: coverage-artifacts/e2e
 
       - name: Set up Python
         uses: actions/setup-python@v5
