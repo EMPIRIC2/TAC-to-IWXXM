@@ -7,7 +7,6 @@ import uuid
 from typing import Any, cast
 from uuid import UUID
 
-import msgspec
 from dissemination.db_preflight import (
     EgressDenied,
     dialect_for_sink,
@@ -30,163 +29,22 @@ from sqlalchemy.ext.asyncio import create_async_engine
 
 from ..msgspec_http import msgspec_json_response
 from ..services.conversion_profiles_service import ConversionProfilesService
-from ..services.dissemination_drawer import (
-    is_db_sink,
-    is_non_db_sink,
-    run_non_db_preflight,
-    run_non_db_send,
-)
+from ..services.dissemination_drawer import is_non_db_sink, run_non_db_preflight, run_non_db_send
 from ..utilities.abuse_controls import dissemination_limit, get_limiter
 from ..utilities.security import verify_optional_supabase_token
+from .dissemination_router_helpers import (
+    client_id,
+    merge_template_params,
+    profiles_service_for_optional_auth,
+    read_preflight,
+    read_send,
+    require_sink,
+)
 
 logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/api/v1/dissemination", tags=["Dissemination"])
 _limiter = get_limiter()
-
-_decoder_preflight = msgspec.json.Decoder(PreflightRequest)
-_decoder_send = msgspec.json.Decoder(SendRequest)
-
-
-def _client_id(request: Request) -> str:
-    """
-    Return client host for rate limits, or ``anonymous``.
-
-    Parameters
-    ----------
-    request : object
-        Argument ``request``.
-
-    Returns
-    -------
-    object
-        Return value.
-    """
-    if request.client and request.client.host:
-        return request.client.host
-    return "anonymous"
-
-
-def _profiles_service_for_optional_auth(
-    auth_user: dict[str, Any] | None,
-) -> ConversionProfilesService | None:
-    """
-    Build a profiles service when JWT auth is present.
-
-    Parameters
-    ----------
-    auth_user : object
-        Argument ``auth_user``.
-
-    Returns
-    -------
-    object
-        Return value.
-    """
-    if auth_user is None:
-        return None
-    return ConversionProfilesService(str(auth_user.get("sub") or auth_user.get("user_id")))
-
-
-def _merge_template_params(template_params: dict[str, Any], request_params: dict[str, Any]) -> dict[str, Any]:
-    """
-    Overlay request params on template params (request wins).
-
-    Parameters
-    ----------
-    template_params : object
-        Argument ``template_params``.
-    request_params : object
-        Argument ``request_params``.
-
-    Returns
-    -------
-    object
-        Return value.
-    """
-    merged = dict(template_params)
-    merged.update(request_params)
-    return merged
-
-
-async def _read_preflight(request: Request) -> PreflightRequest:
-    """
-    Internal helper ``_read_preflight``.
-
-    Parameters
-    ----------
-    request : object
-        Argument ``request``.
-
-    Returns
-    -------
-    object
-        Return value.
-    """
-    raw = await request.body()
-    try:
-        return _decoder_preflight.decode(raw)
-    except msgspec.DecodeError as exc:
-        raise HTTPException(
-            status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
-            detail=redact_secrets(f"invalid request body: {exc}"),
-        ) from exc
-
-
-async def _read_send(request: Request) -> SendRequest:
-    """
-    Internal helper ``_read_send``.
-
-    Parameters
-    ----------
-    request : object
-        Argument ``request``.
-
-    Returns
-    -------
-    object
-        Return value.
-    """
-    raw = await request.body()
-    try:
-        return _decoder_send.decode(raw)
-    except msgspec.DecodeError as exc:
-        raise HTTPException(
-            status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
-            detail=redact_secrets(f"invalid request body: {exc}"),
-        ) from exc
-
-
-def _require_sink(sink_type: str | None) -> str:
-    """
-    Require a known drawer sink type.
-
-    Raises
-    ------
-    HTTPException
-        **422** when missing; **400** when the value is not a drawer sink.
-
-    Parameters
-    ----------
-    sink_type : object
-        Argument ``sink_type``.
-
-    Returns
-    -------
-    object
-        Return value.
-    """
-    if sink_type is None:
-        raise HTTPException(
-            status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
-            detail="sink_type is required",
-        )
-    if not (is_db_sink(sink_type) or is_non_db_sink(sink_type)):
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"unknown sink_type {sink_type!r}",
-        )
-    return sink_type
 
 
 @router.post("/preflight")
@@ -195,28 +53,8 @@ async def dissemination_preflight(
     request: Request,
     auth_user: dict[str, Any] | None = Depends(verify_optional_supabase_token),
 ) -> object:
-    """
-    Run sink preflight; return schema diffs and optional memory-only handle.
-
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (dissemination_preflight)
-    2
-
-    Parameters
-    ----------
-    request : object
-        Argument ``request``.
-    auth_user : object
-        Argument ``auth_user``.
-
-    Returns
-    -------
-    object
-        Return value.
-    """
-    uid = _client_id(request)
+    """Run sink preflight; return schema diffs and optional memory-only handle."""
+    uid = client_id(request)
     try:
         default_rate_limiter.check(uid)
     except RateLimitExceeded as exc:
@@ -225,8 +63,8 @@ async def dissemination_preflight(
             detail=str(exc),
         ) from exc
 
-    req = await _read_preflight(request)
-    profiles_service = _profiles_service_for_optional_auth(auth_user)
+    req = await read_preflight(request)
+    profiles_service = profiles_service_for_optional_auth(auth_user)
     if req.dissemination_template_id:
         if profiles_service is None:
             raise HTTPException(
@@ -246,10 +84,10 @@ async def dissemination_preflight(
             ddl=req.ddl if req.ddl is not None else template.ddl,
             product=req.product or template.product,
             iwxxm_version=req.iwxxm_version,
-            params=_merge_template_params(template.params, dict(req.params)),
+            params=merge_template_params(template.params, dict(req.params)),
         )
 
-    sink_type = _require_sink(req.sink_type)
+    sink_type = require_sink(req.sink_type)
 
     try:
         if is_non_db_sink(sink_type):
@@ -297,28 +135,8 @@ async def dissemination_send(
     request: Request,
     auth_user: dict[str, Any] | None = Depends(verify_optional_supabase_token),
 ) -> object:
-    """
-    Send IWXXM via a green preflight handle or inline sink params.
-
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (dissemination_send)
-    2
-
-    Parameters
-    ----------
-    request : object
-        Argument ``request``.
-    auth_user : object
-        Argument ``auth_user``.
-
-    Returns
-    -------
-    object
-        Return value.
-    """
-    uid = _client_id(request)
+    """Send IWXXM via a green preflight handle or inline sink params."""
+    uid = client_id(request)
     try:
         default_rate_limiter.check(uid)
     except RateLimitExceeded as exc:
@@ -327,8 +145,8 @@ async def dissemination_send(
             detail=str(exc),
         ) from exc
 
-    req = await _read_send(request)
-    profiles_service = _profiles_service_for_optional_auth(auth_user)
+    req = await read_send(request)
+    profiles_service = profiles_service_for_optional_auth(auth_user)
     if req.dissemination_template_id:
         if profiles_service is None:
             raise HTTPException(
@@ -350,7 +168,7 @@ async def dissemination_send(
             tac_text=req.tac_text,
             product=req.product or template.product,
             iwxxm_version=req.iwxxm_version,
-            params=_merge_template_params(template.params, dict(req.params)),
+            params=merge_template_params(template.params, dict(req.params)),
         )
 
     sink_type = req.sink_type
@@ -368,7 +186,7 @@ async def dissemination_send(
         if rec.params:
             send_params = {**dict(rec.params), **send_params}
 
-    sink_type = _require_sink(sink_type)
+    sink_type = require_sink(sink_type)
     if not req.iwxxm_xml:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -381,28 +199,17 @@ async def dissemination_send(
         from dissemination.transforms import apply_dissemination_transforms
         from metar_iwxxm_api.convert_library_hard_cut import resolve_dissemination_transforms
 
-        profiles_service: ConversionProfilesService | None = None
+        profiles_for_lib: ConversionProfilesService | None = None
         if auth_user is not None:
-            profiles_service = ConversionProfilesService(str(auth_user.get("sub") or auth_user.get("user_id")))
+            profiles_for_lib = ConversionProfilesService(
+                str(auth_user.get("sub") or auth_user.get("user_id"))
+            )
 
         def _custom_dissem_body(asset_id: str) -> dict[str, object] | None:
-            """
-            Resolve a custom dissemination library body for the caller.
-
-            Parameters
-            ----------
-            asset_id : object
-                Argument ``asset_id``.
-
-            Returns
-            -------
-            object
-                Return value.
-            """
-            if profiles_service is None:
+            if profiles_for_lib is None:
                 return None
             try:
-                asset = profiles_service.get_library_asset(asset_id)
+                asset = profiles_for_lib.get_library_asset(asset_id)
             except ValueError:
                 raise
             except Exception:
@@ -464,7 +271,6 @@ async def dissemination_send(
             detail="uri or valid handle required",
         )
 
-    # Re-check allowlist / contract before write.
     try:
         pre = await run_db_preflight(
             PreflightRequest(sink_type=sink_type, uri=uri, ddl=True)  # type: ignore[arg-type]
