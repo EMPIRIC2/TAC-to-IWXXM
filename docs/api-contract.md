@@ -1472,6 +1472,24 @@ GET /api/v1/live-map?west=&south=&east=&north=&products=
 
 The route reads the cache. It does not call a vendor during the request.
 
+## Live check (open aviation feeds)
+
+Public. No JWT. The browser must not call provider hosts; this route mediates egress.
+
+```
+GET /api/v1/live-check?icao=&product=&provider=
+```
+
+| Query | Rule |
+|-------|------|
+| `icao` | Four-letter ICAO code |
+| `product` | `METAR` (default) or `TAF`. `knmi` accepts `METAR` only |
+| `provider` | Allowlisted feed id: `noaa`, `met_no`, or `knmi` (default `noaa`). Other values are 400 |
+
+**Response** (JSON): `icao`, `product`, `provider`, `profile` (`iwxxm_us` for `K*`, `ca_eccc` for `CY*`, else `annex3`), `source_tac`, `our_iwxxm`, `provider_iwxxm` (when the feed returned a pair), `attribution`, `cached`, `convert_ok`, `convert_issues`.
+
+Egress hosts are fixed (`aviationweather.gov`, `api.met.no`, `api.dataplatform.knmi.nl`, plus validated KNMI download hosts). Callers never supply a URL. `KNMI_OPEN_DATA_API_KEY` stays server-side. Short cache and per-provider pacing stay inside published feed limits. Live network checks remain on `make test-live-feeds`, not pull-request CI.
+
 ## Local OpenAPI status and required-field check 
 
  
