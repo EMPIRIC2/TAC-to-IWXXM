@@ -55,12 +55,8 @@ def test_role_detection_failure() -> None:
 def test_role_detection_singular_role_and_tuple_bags() -> None:
     """Cover role / roles bag shapes used by Auth metadata."""
     assert user_has_exchange_admin({"app_metadata": {"role": "exchange-admin"}})
-    assert user_has_exchange_admin(
-        {"user_metadata": {"roles": ("exchange-admin",)}}
-    )
-    assert user_has_exchange_admin(
-        {"app_metadata": {"roles": None, "role": "operator"}, "role": "exchange-admin"}
-    )
+    assert user_has_exchange_admin({"user_metadata": {"roles": ("exchange-admin",)}})
+    assert user_has_exchange_admin({"app_metadata": {"roles": None, "role": "operator"}, "role": "exchange-admin"})
     assert user_has_exchange_admin({"role": "exchange-admin"})
     # Non str/list/tuple roles values are ignored (fall through the isinstance chain).
     assert user_has_exchange_admin({"app_metadata": {"roles": 1}, "role": "exchange-admin"})
@@ -192,4 +188,3 @@ def test_exchange_admin_put_validation(
     else:
         resp = admin_client.put(path, json=payload)
     assert resp.status_code == expected
-
