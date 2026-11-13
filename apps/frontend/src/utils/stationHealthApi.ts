@@ -4,6 +4,22 @@
 
 import { apiUrl } from './apiBase';
 
+/**
+ * Per-product grade row for one station window.
+ * @example
+ * const row: StationProductGrade = {
+ *   product: 'metar',
+ *   grade: 'A',
+ *   overall_score: 95,
+ *   availability_score: 100,
+ *   actual_count: 6,
+ *   expected_count: 6,
+ *   solidus_rate: 0,
+ *   missing_digit_rate: 0,
+ *   lint_severity_score: 100,
+ *   lint_error_count: 0,
+ * };
+ */
 export interface StationProductGrade {
   product: string;
   grade: string;
@@ -17,6 +33,16 @@ export interface StationProductGrade {
   lint_error_count: number;
 }
 
+/**
+ * One station row in the health list payload.
+ * @example
+ * const item: StationHealthListItem = {
+ *   icao: 'KJFK',
+ *   overall_grade: 'B',
+ *   overall_score: 84,
+ *   products: [],
+ * };
+ */
 export interface StationHealthListItem {
   icao: string;
   name?: string | null;
@@ -25,6 +51,16 @@ export interface StationHealthListItem {
   products: StationProductGrade[];
 }
 
+/**
+ * List response for `/api/v1/station-health`.
+ * @example
+ * const body: StationHealthListResponse = {
+ *   window: '6h',
+ *   computed_at: '2026-11-13T12:00:00Z',
+ *   stations: [],
+ *   summary: { station_count: 0, grade_counts: {} },
+ * };
+ */
 export interface StationHealthListResponse {
   window: string;
   computed_at: string;
@@ -35,6 +71,16 @@ export interface StationHealthListResponse {
   };
 }
 
+/**
+ * Metric definition row for the health dashboard.
+ * @example
+ * const metric: StationHealthMetric = {
+ *   id: 'availability',
+ *   label: 'Availability',
+ *   description: 'Share of expected TAC reports',
+ *   higher_is_better: true,
+ * };
+ */
 export interface StationHealthMetric {
   id: string;
   label: string;
@@ -43,6 +89,11 @@ export interface StationHealthMetric {
   higher_is_better: boolean;
 }
 
+/**
+ * Query parameters for the station health list client.
+ * @example
+ * const params: StationHealthListParams = { window: '6h', limit: 50 };
+ */
 export interface StationHealthListParams {
   window?: string;
   product?: string;
