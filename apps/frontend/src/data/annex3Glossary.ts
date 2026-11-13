@@ -66,9 +66,9 @@ export const ANNEX3_GLOSSARY_ENTRIES: readonly Annex3GlossaryEntry[] = [
     id: 'sigmet',
     term: 'SIGMET',
     shortBlurb:
-      'A meteorological watch office sends this warning about specified en-route weather that can affect aircraft safety.',
+      'A watch office sends this warning about specified en-route weather that can affect aircraft safety.',
     pageBody:
-      'A SIGMET is information from a meteorological watch office about specified en-route weather that can affect the safety of aircraft operations.',
+      'A SIGMET is information from a watch office about specified en-route weather that can affect the safety of aircraft operations.',
     citation: ANNEX3_GLOSSARY_CITATION,
   },
   {
@@ -92,12 +92,12 @@ export const ANNEX3_GLOSSARY_ENTRIES: readonly Annex3GlossaryEntry[] = [
   },
   {
     id: 'mwo',
-    term: 'Meteorological watch office',
-    aliases: ['MWO'],
+    term: 'Watch office',
+    aliases: ['MWO', 'Meteorological watch office'],
     shortBlurb:
       'An office that watches weather that affects flight and that sends SIGMET and related information.',
     pageBody:
-      'A meteorological watch office watches meteorological conditions that affect flight operations and sends SIGMET and related information as required.',
+      'A watch office watches weather that affects flight operations and sends SIGMET and related information as required.',
     citation: ANNEX3_GLOSSARY_CITATION,
   },
   {
