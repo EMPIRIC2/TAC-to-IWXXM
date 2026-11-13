@@ -175,6 +175,18 @@ Canonical companions:
 - **Label:** historical (SARPs moved to Annex 3)
 - **Caveat:** Linked Data register path **`49-2`** on codes.wmo.int remains the **vocabulary** namespace, distinct from the discontinued regulation text
 
+
+### WMO-No. 782 — Aerodrome Reports and Forecasts (METAR/SPECI/TAF) Users' Handbook
+
+- **Publisher:** WMO
+- **URL:** https://library.wmo.int/idurl/4/35728
+- **Access:** WMO e-Library (captcha); **do not commit PDF**
+- **Applies to:** products=[METAR,SPECI]; profiles=[annex3]; role=[validation,conversion]
+- **Gap vs GIFTs:** Operator handbook for FM 15/16 field order, weather-group grammar (Code table 4678), SPECI trigger form, CAVOK
+- **Consumer:** `tac-validate`, `tac2iwxxm` (WMO-782 METAR/SPECI quality pack)
+- **Label:** guidance (handbook; Annex 3 / WMO-No. 306 remain normative)
+- **Tests:** `packages/tac2iwxxm/tests/test_tc_wmo782_metar_speci_quality.py`
+
 ### WMO aviation resource hub
 
 - **URL:** https://community.wmo.int/site/knowledge-hub/programmes-and-initiatives/aviation/aviation-resources-technical-regulations-guidance-and-other-reference-materials
