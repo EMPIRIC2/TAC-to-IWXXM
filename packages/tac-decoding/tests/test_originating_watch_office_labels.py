@@ -6,10 +6,9 @@ for MWO segment explanations on SIGMET / AIRMET families.
 
 from __future__ import annotations
 
-from collections.abc import Callable
+from collections.abc import Callable, Iterator
 
 import pytest
-
 from tac_decoding import DecodeResult, decode_tac, set_location_name_resolver
 
 _OLD_PHRASE = "meteorological watch office"
@@ -21,7 +20,7 @@ TacBuilder = Callable[[str], str]
 
 
 @pytest.fixture(autouse=True)
-def _clear_location_resolver() -> None:
+def _clear_location_resolver() -> Iterator[None]:
     set_location_name_resolver(None)
     yield
     set_location_name_resolver(None)
@@ -52,7 +51,7 @@ def _airmet(office: str, fir: str = "YUDD") -> str:
 
 
 @pytest.mark.parametrize("office", _OFFICE_CODES)
-@pytest.mark.parametrize("product,builder", [("SIGMET", _sigmet), ("AIRMET", _airmet)])
+@pytest.mark.parametrize(("product", "builder"), [("SIGMET", _sigmet), ("AIRMET", _airmet)])
 def test_success_originating_watch_office_label(
     office: str,
     product: str,
@@ -80,12 +79,12 @@ def test_success_place_name_variant_uses_new_label() -> None:
     assert _OLD_PHRASE not in explanation.lower()
 
 
-@pytest.mark.parametrize("product,builder", [("SIGMET", _sigmet), ("AIRMET", _airmet)])
+@pytest.mark.parametrize(("product", "builder"), [("SIGMET", _sigmet), ("AIRMET", _airmet)])
 def test_mutation_redecode_swaps_office_label(
     product: str,
     builder: TacBuilder,
 ) -> None:
-    """M × S / V+: re-decode after TAC office change; old label stays absent."""
+    """M x S / V+: re-decode after TAC office change; old label stays absent."""
     first = decode_tac(builder("KKCI"), product=product)
     first_by = {seg.code: seg.explanation for seg in first.segments}
     assert _NEW_PHRASE in first_by["KKCI-"]
@@ -100,7 +99,7 @@ def test_mutation_redecode_swaps_office_label(
 
 
 def test_mutation_product_switch_sigmet_to_airmet() -> None:
-    """M × S: same office on a different product still uses the new label."""
+    """M x S: same office on a different product still uses the new label."""
     sig = decode_tac(_sigmet("NZKL"), product="SIGMET")
     air = decode_tac(_airmet("NZKL"), product="AIRMET")
     for result in (sig, air):
@@ -110,7 +109,7 @@ def test_mutation_product_switch_sigmet_to_airmet() -> None:
 
 
 def test_failure_short_invalid_office_token_does_not_crash() -> None:
-    """F / V−: non-ICAO short token is not labeled as MWO; decode stays safe."""
+    """F / V-: non-ICAO short token is not labeled as MWO; decode stays safe."""
     tac = "YUDD SIGMET 2 VALID 101200/101600 AB- YUDD FIR TS="
     result = decode_tac(tac, product="SIGMET")
     explanations = [seg.explanation for seg in result.segments]
@@ -130,7 +129,7 @@ def test_failure_unknown_but_valid_icao_office_still_labels() -> None:
 
 
 def test_validation_reject_path_missing_hyphen_office_still_safe() -> None:
-    """V− / F: malformed header without hyphenated MWO does not crash."""
+    """V- / F: malformed header without hyphenated MWO does not crash."""
     tac = "YUDD SIGMET 2 VALID 101200/101600 YUSO YUDD FIR TS FCST="
     result = decode_tac(tac, product="SIGMET")
     joined = " ".join(seg.explanation for seg in result.segments)
@@ -141,7 +140,7 @@ def test_validation_reject_path_missing_hyphen_office_still_safe() -> None:
 
 
 def test_validation_all_products_old_phrase_absent() -> None:
-    """Permutation: SIGMET + AIRMET × offices — old phrase never appears."""
+    """Permutation: SIGMET + AIRMET x offices - old phrase never appears."""
     for product, builder in (("SIGMET", _sigmet), ("AIRMET", _airmet)):
         for office in _OFFICE_CODES:
             result = decode_tac(builder(office), product=product)
