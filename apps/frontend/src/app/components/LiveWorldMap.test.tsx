@@ -177,7 +177,7 @@ const place: LivePlace = {
   ],
 };
 
-const hazard = {
+const hazard: LivePlace = {
   place_key: 'sigmet-abc',
   product: 'sigmet',
   latitude: 40,
@@ -893,6 +893,15 @@ describe('LiveWorldMap', () => {
     await waitFor(() => {
       expect(screen.getByTestId('tac-overlay-precip')).not.toBeChecked();
     });
+    vi.mocked(L.divIcon).mockClear();
+    vi.mocked(L.circleMarker).mockClear();
+    await user.click(screen.getByTestId('tac-overlay-temp'));
+    await user.click(screen.getByTestId('tac-overlay-windVector'));
+    await user.click(screen.getByTestId('tac-overlay-windIntensity'));
+    await waitFor(() => {
+      expect(L.divIcon).toHaveBeenCalled();
+      expect(L.circleMarker).toHaveBeenCalled();
+    });
   });
 
   it('opens an empty-report area without a card and loads on area keydown', async () => {
@@ -937,6 +946,9 @@ describe('LiveWorldMap', () => {
       hovers[1]?.();
     });
     expect(await screen.findByTestId('live-map-station')).toHaveTextContent('Area');
+    act(() => {
+      hovers[1]?.();
+    });
     const preventDefault = vi.fn();
     act(() => {
       keys[1]?.({ originalEvent: { key: 'Enter', preventDefault } });

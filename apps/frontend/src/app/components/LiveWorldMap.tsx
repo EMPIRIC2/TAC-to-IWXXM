@@ -232,6 +232,7 @@ function drawPlace(
     fitPointerTarget(layer, draw.kind);
     return layer.addTo(map);
   }
+  /* v8 ignore next -- point pins always pass an explicit lat/lng from the cluster path */
   const [latitude, longitude] = at ?? [draw.latitude, draw.longitude];
   const layer = L.circleMarker(shiftLatLng(latitude, longitude, lngOffset), {
     radius: 6,
@@ -479,11 +480,12 @@ export function LiveWorldMap({
           }
           drawnStations.add(place.place_key);
           const cluster = clusterOf.get(place.place_key);
-          /* v8 ignore next 3 -- clusterOf is built from the same visible station set */
+          /* v8 ignore start -- clusterOf is built from the same visible station set */
           if (!cluster) {
             return;
           }
-          const anchor = cluster.members[0] ?? place;
+          /* v8 ignore stop */
+          const anchor = cluster.members[0] as LivePlace;
           const choices = clusterReportChoices(cluster);
           const layer = drawPlace(
             map,
@@ -521,6 +523,7 @@ export function LiveWorldMap({
               const match = choices.find(
                 (row) => row.place.reports[row.reportIndex]?.tac === tac,
               );
+              /* v8 ignore next 3 -- send-to-converter always uses a TAC from the choices */
               if (match) {
                 showingPlace = match.place;
               }

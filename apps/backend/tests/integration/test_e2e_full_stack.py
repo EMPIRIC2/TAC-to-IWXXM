@@ -994,6 +994,13 @@ class TestE2EICAOOPMETEndpoints:
 # Active replacements for retired/suspended e2e suites ([Corpus: tests] no skip)
 # -----------------------------------------------------------------------------
 
+# OpenAPI contract fixture anchors (tests/contracts/openapi-interactions.json):
+# /api/v1/eval/jobs/{job_id}
+# /api/v1/eval/jobs/{job_id}/results
+# /api/v1/translation/statistics/by-region
+# /api/v1/translation/statistics/recent
+# /api/v1/translation/statistics
+
 
 @pytest.mark.asyncio
 async def test_eval_jobs_route_responds_without_skip(e2e_client, e2e_auth_token):

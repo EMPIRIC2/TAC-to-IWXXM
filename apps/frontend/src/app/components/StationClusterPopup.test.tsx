@@ -102,4 +102,23 @@ describe('StationClusterPopup', () => {
     render(<StationClusterPopup cluster={cluster} />);
     expect(screen.getByTestId('live-map-cluster-empty')).toBeInTheDocument();
   });
+
+  it('skips the report picker when the station has one report', () => {
+    const sole: LivePlace = {
+      place_key: 'KBOS',
+      product: 'metar',
+      latitude: 42.3,
+      longitude: -71,
+      reports: [{ observed_at: '2026-11-13T12:00:00Z', tac: 'METAR KBOS 18010KT' }],
+    };
+    const cluster = clusterByStation([sole])[0];
+    expect(cluster).toBeDefined();
+    if (!cluster) {
+      return;
+    }
+    render(<StationClusterPopup cluster={cluster} />);
+    expect(screen.getByTestId('live-map-cluster')).toBeInTheDocument();
+    expect(screen.queryByTestId('live-map-cluster-pick')).not.toBeInTheDocument();
+    expect(screen.getByTestId('live-map-station')).toHaveTextContent('KBOS');
+  });
 });

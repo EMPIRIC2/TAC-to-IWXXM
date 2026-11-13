@@ -39,6 +39,7 @@ import {
   LIVE_MAP_REFRESHING,
   LIVE_MAP_PRODUCTS,
   LIVE_MAP_VIEWS,
+  type LivePlace,
 } from './liveMap';
 
 const bounds = { west: -80, south: 40, east: -70, north: 41 };
@@ -550,5 +551,19 @@ describe('live map helpers', () => {
         layers.has('precip') && /\bRA\b|\bDZ\b|\bSN\b/.test(tac),
     });
     expect(withTac.every((place) => place.reports[0]?.tac)).toBe(true);
+    const emptyTacPlace: LivePlace = {
+      place_key: 'EMPTY-TAC',
+      product: 'metar',
+      latitude: 1,
+      longitude: 2,
+      reports: [{ observed_at: 'now', tac: '' }],
+    };
+    const emptyFiltered = filterPlaces([emptyTacPlace], {
+      ...base,
+      tacLayers: new Set(['precip']),
+      passesTacLayers: (tac, layers) =>
+        layers.has('precip') && tac.length > 0 && /\bRA\b/.test(tac),
+    });
+    expect(emptyFiltered).toEqual([]);
   });
 });
