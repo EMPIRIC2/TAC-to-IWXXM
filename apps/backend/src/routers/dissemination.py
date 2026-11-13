@@ -30,6 +30,12 @@ from sqlalchemy.ext.asyncio import create_async_engine
 
 from ..msgspec_http import msgspec_json_response
 from ..services.conversion_profiles_service import ConversionProfilesService
+from ..services.dissemination_drawer import (
+    is_db_sink,
+    is_non_db_sink,
+    run_non_db_preflight,
+    run_non_db_send,
+)
 from ..utilities.abuse_controls import dissemination_limit, get_limiter
 from ..utilities.security import verify_optional_supabase_token
 
@@ -38,25 +44,12 @@ logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/v1/dissemination", tags=["Dissemination"])
 _limiter = get_limiter()
 
-_DB_SINKS = frozenset({"postgres", "mysql", "sqlserver", "sqlite"})
 _decoder_preflight = msgspec.json.Decoder(PreflightRequest)
 _decoder_send = msgspec.json.Decoder(SendRequest)
 
 
 def _client_id(request: Request) -> str:
-    """
-    Internal helper ``_client_id``.
-
-    Parameters
-    ----------
-    request : object
-        Argument ``request``.
-
-    Returns
-    -------
-    object
-        Return value.
-    """
+    """Return client host for rate limits, or ``anonymous``."""
     if request.client and request.client.host:
         return request.client.host
     return "anonymous"
@@ -65,40 +58,14 @@ def _client_id(request: Request) -> str:
 def _profiles_service_for_optional_auth(
     auth_user: dict[str, Any] | None,
 ) -> ConversionProfilesService | None:
-    """
-    Internal helper ``_profiles_service_for_optional_auth``.
-
-    Parameters
-    ----------
-    auth_user : object
-        Argument ``auth_user``.
-
-    Returns
-    -------
-    object
-        Return value.
-    """
+    """Build a profiles service when JWT auth is present."""
     if auth_user is None:
         return None
     return ConversionProfilesService(str(auth_user.get("sub") or auth_user.get("user_id")))
 
 
 def _merge_template_params(template_params: dict[str, Any], request_params: dict[str, Any]) -> dict[str, Any]:
-    """
-    Internal helper ``_merge_template_params``.
-
-    Parameters
-    ----------
-    template_params : object
-        Argument ``template_params``.
-    request_params : object
-        Argument ``request_params``.
-
-    Returns
-    -------
-    object
-        Return value.
-    """
+    """Overlay request params on template params (request wins)."""
     merged = dict(template_params)
     merged.update(request_params)
     return merged
@@ -152,35 +119,24 @@ async def _read_send(request: Request) -> SendRequest:
         ) from exc
 
 
-def _require_db_sink(sink_type: str | None) -> str:
+def _require_sink(sink_type: str | None) -> str:
     """
-    Map missing vs unimplemented sink types to the correct client status.
-
-    Parameters
-    ----------
-    sink_type :
-        Requested sink, or ``None`` when omitted (and not supplied by template/handle).
-
-    Returns
-    -------
-    str
-        A sink type in ``_DB_SINKS``.
+    Require a known drawer sink type.
 
     Raises
     ------
     HTTPException
-        **422** when ``sink_type`` is missing/`None`; **501** when the value is a
-        known drawer sink not implemented on this DB route.
+        **422** when missing; **400** when the value is not a drawer sink.
     """
     if sink_type is None:
         raise HTTPException(
             status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
             detail="sink_type is required",
         )
-    if sink_type not in _DB_SINKS:
+    if not (is_db_sink(sink_type) or is_non_db_sink(sink_type)):
         raise HTTPException(
-            status_code=status.HTTP_501_NOT_IMPLEMENTED,
-            detail=f"sink_type {sink_type!r} not implemented in this milestone",
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"unknown sink_type {sink_type!r}",
         )
     return sink_type
 
@@ -245,10 +201,13 @@ async def dissemination_preflight(
             params=_merge_template_params(template.params, dict(req.params)),
         )
 
-    sink_type = _require_db_sink(req.sink_type)
+    sink_type = _require_sink(req.sink_type)
 
     try:
-        result = await run_db_preflight(req)
+        if is_non_db_sink(sink_type):
+            result = await run_non_db_preflight(sink_type, dict(req.params))
+        else:
+            result = await run_db_preflight(req)
     except EgressDenied as exc:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
@@ -348,6 +307,7 @@ async def dissemination_send(
 
     sink_type = req.sink_type
     uri = req.uri
+    send_params = dict(req.params)
     if req.handle:
         rec = default_handle_store.get(req.handle, user_id=uid)
         if rec is None:
@@ -357,13 +317,10 @@ async def dissemination_send(
             )
         sink_type = rec.sink_type  # type: ignore[assignment]
         uri = rec.uri
+        if rec.params:
+            send_params = {**dict(rec.params), **send_params}
 
-    sink_type = _require_db_sink(sink_type)
-    if not uri:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="uri or valid handle required",
-        )
+    sink_type = _require_sink(sink_type)
     if not req.iwxxm_xml:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -381,19 +338,7 @@ async def dissemination_send(
             profiles_service = ConversionProfilesService(str(auth_user.get("sub") or auth_user.get("user_id")))
 
         def _custom_dissem_body(asset_id: str) -> dict[str, object] | None:
-            """
-            Internal helper ``_custom_dissem_body``.
-
-            Parameters
-            ----------
-            asset_id : object
-                Argument ``asset_id``.
-
-            Returns
-            -------
-            object
-                Return value.
-            """
+            """Resolve a custom dissemination library body for the caller."""
             if profiles_service is None:
                 return None
             try:
@@ -415,8 +360,8 @@ async def dissemination_send(
             transformed = apply_dissemination_transforms(
                 iwxxm_xml,
                 body_transforms,
-                bulletin_identifier=str(req.params.get("bulletin_identifier") or "") or None,
-                topic=str(req.params.get("topic") or "") or None,
+                bulletin_identifier=str(send_params.get("bulletin_identifier") or "") or None,
+                topic=str(send_params.get("topic") or "") or None,
             )
         except ValueError as exc:
             raise HTTPException(
@@ -424,6 +369,40 @@ async def dissemination_send(
                 detail=str(exc),
             ) from exc
         iwxxm_xml = transformed.xml
+
+    if is_non_db_sink(sink_type):
+        try:
+            sent = await run_non_db_send(
+                sink_type,
+                send_params,
+                iwxxm_xml=iwxxm_xml,
+                tac_text=req.tac_text,
+            )
+        except EgressDenied as exc:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail=redact_secrets(str(exc)),
+            ) from exc
+        except ValueError as exc:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=redact_secrets(str(exc)),
+            ) from exc
+        except Exception as exc:
+            logger.exception("dissemination send failed: %s", redact_secrets(str(exc)))
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=redact_secrets(f"send failed: {exc}"),
+            ) from exc
+        if req.handle:
+            default_handle_store.pop(req.handle, user_id=uid)
+        return msgspec_json_response(sent)
+
+    if not uri:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="uri or valid handle required",
+        )
 
     # Re-check allowlist / contract before write.
     try:

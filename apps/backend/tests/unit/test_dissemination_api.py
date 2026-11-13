@@ -159,13 +159,43 @@ def test_preflight_rejects_invalid_json_body(client: TestClient) -> None:
     assert resp.status_code == 422
 
 
-def test_preflight_unimplemented_sink(client: TestClient) -> None:
+def test_preflight_wis2_validation_missing_params(client: TestClient) -> None:
+    """Public WIS2 preflight rejects incomplete BYOC params (no longer 501)."""
     resp = client.post(
         "/api/v1/dissemination/preflight",
-        content=json.dumps({"sink_type": "wis2", "uri": "mqtt://example.com"}),
+        content=json.dumps({"sink_type": "wis2", "params": {}}),
         headers={"Content-Type": "application/json", "Authorization": "Bearer t"},
     )
-    assert resp.status_code == 501
+    assert resp.status_code == 400
+    assert "mqtt" in resp.text.lower() or "params" in resp.text.lower()
+
+
+def test_preflight_wis2_success_mocked(client: TestClient, monkeypatch: pytest.MonkeyPatch) -> None:
+    from dissemination.models import PreflightResponse
+
+    async def _ok(_sink: str, _params: dict, **_kwargs):
+        return PreflightResponse(ok=True, connectivity_ok=True, diffs=[], detail="ok")
+
+    monkeypatch.setenv("DISSEMINATION_EGRESS_ALLOWLIST", "wis2box,127.0.0.1")
+    monkeypatch.setattr(diss_router, "run_non_db_preflight", _ok)
+    resp = client.post(
+        "/api/v1/dissemination/preflight",
+        content=json.dumps(
+            {
+                "sink_type": "wis2",
+                "params": {
+                    "mqtt_host": "wis2box",
+                    "mqtt_topic": "origin/a/wis2",
+                    "dataset_url": "http://127.0.0.1/ds",
+                },
+            }
+        ),
+        headers={"Content-Type": "application/json", "Authorization": "Bearer t"},
+    )
+    assert resp.status_code == 200, resp.text
+    body = resp.json()
+    assert body["ok"] is True
+    assert body["handle"]
 
 
 def test_preflight_missing_sink_type_is_422(client: TestClient) -> None:
@@ -241,20 +271,47 @@ def test_send_rate_limit_denies(client: TestClient, monkeypatch: pytest.MonkeyPa
     assert resp.status_code == 429
 
 
-def test_send_unimplemented_sink_inline(client: TestClient) -> None:
+def test_send_wis2_failure_missing_params(client: TestClient) -> None:
     resp = client.post(
         "/api/v1/dissemination/send",
         content=json.dumps(
             {
                 "sink_type": "wis2",
-                "uri": "mqtt://example.com",
+                "params": {},
                 "iwxxm_xml": "<x/>",
                 "product": "metar",
             }
         ),
         headers={"Content-Type": "application/json", "Authorization": "Bearer t"},
     )
-    assert resp.status_code == 501
+    assert resp.status_code == 400
+
+
+def test_send_wis2_success_mocked(client: TestClient, monkeypatch: pytest.MonkeyPatch) -> None:
+    from dissemination.models import SendResponse
+
+    async def _ok(_sink: str, _params: dict, **_kwargs):
+        return SendResponse(ok=True, kv_upload_key=None, detail="wis2 published")
+
+    monkeypatch.setattr(diss_router, "run_non_db_send", _ok)
+    resp = client.post(
+        "/api/v1/dissemination/send",
+        content=json.dumps(
+            {
+                "sink_type": "wis2",
+                "params": {
+                    "mqtt_host": "wis2box",
+                    "mqtt_topic": "origin/a/wis2",
+                    "dataset_url": "http://127.0.0.1/ds",
+                },
+                "iwxxm_xml": "<x/>",
+                "product": "metar",
+            }
+        ),
+        headers={"Content-Type": "application/json", "Authorization": "Bearer t"},
+    )
+    assert resp.status_code == 200, resp.text
+    assert resp.json()["ok"] is True
 
 
 def test_send_egress_denied(client: TestClient, monkeypatch: pytest.MonkeyPatch) -> None:
