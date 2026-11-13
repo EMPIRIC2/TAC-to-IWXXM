@@ -20,10 +20,7 @@ import {
   windIntensityBand,
   windIntensityRadius,
 } from '@/utils/liveMapTacLayers';
-import {
-  parseTacOverlayFields,
-  tempTokenToC,
-} from '@/utils/liveMapTacParse';
+import { parseTacOverlayFields, tempTokenToC } from '@/utils/liveMapTacParse';
 
 const metarTs: LivePlace = {
   place_key: 'KJFK',
@@ -81,11 +78,9 @@ const areaSigmet: LivePlace = {
 };
 
 const thunderTac =
-  metarTs.reports[0]?.tac ??
-  'METAR KJFK 131200Z 18025G35KT 1SM TSRA BR BKN015 12/08';
+  metarTs.reports[0]?.tac ?? 'METAR KJFK 131200Z 18025G35KT 1SM TSRA BR BKN015 12/08';
 const iceTac =
-  metarIce.reports[0]?.tac ??
-  'METAR CYYZ 131100Z 01008KT 1/2SM FZDZ FG M05/M06';
+  metarIce.reports[0]?.tac ?? 'METAR CYYZ 131100Z 01008KT 1/2SM FZDZ FG M05/M06';
 
 describe.each([
   {
@@ -169,9 +164,7 @@ describe('TAC overlay visibility', () => {
     ).toBe(0);
     expect(placeFeedsOverlay(metarTs.reports, 'thunder')).toBe(true);
     expect(placeFeedsOverlay(metarIce.reports, 'ice')).toBe(true);
-    expect(overlayApplies(parseTacOverlayFields(thunderTac), 'windVector')).toBe(
-      true,
-    );
+    expect(overlayApplies(parseTacOverlayFields(thunderTac), 'windVector')).toBe(true);
     expect(
       overlayApplies(parseTacOverlayFields('METAR KAAA VRB03KT'), 'windVector'),
     ).toBe(false);
@@ -196,7 +189,12 @@ describe('wind intensity encoding', () => {
 
 describe('clusterByStation', () => {
   it('merges same-station products into one cluster and skips area shapes', () => {
-    const clusters = clusterByStation([metarTs, speciSameStation, areaSigmet, metarIce]);
+    const clusters = clusterByStation([
+      metarTs,
+      speciSameStation,
+      areaSigmet,
+      metarIce,
+    ]);
     expect(clusters).toHaveLength(2);
     const jfk = clusters.find((item) => item.stationKey === 'KJFK');
     expect(jfk).toBeDefined();

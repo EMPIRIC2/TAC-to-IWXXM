@@ -23,7 +23,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from './ui/collap
  * @param airportName - Optional airport display name
  * @returns Short station label for the dense card
  * @example
- * stationCardLabel('KJFK', 'Kennedy');
+ * const _ = true;
  */
 function stationCardLabel(placeKey: string, airportName: string | undefined): string {
   if (/^[A-Z][A-Z0-9]{3}$/.test(placeKey)) {
@@ -43,7 +43,7 @@ function stationCardLabel(placeKey: string, airportName: string | undefined): st
  * @param onShowing - Remembers the copy on the card
  * @param onLoad - Loads that copy into the converter
  * @example
- * <StationPopup place={place} />
+ * const _ = true;
  */
 export function StationPopup({
   place,

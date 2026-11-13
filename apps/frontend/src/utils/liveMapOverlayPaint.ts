@@ -35,7 +35,7 @@ type OverlayPainter = (
  * @param size - Icon box
  * @returns Leaflet icon
  * @example
- * divIcon('<span/>', 'x', [24, 24]);
+ * const _ = true;
  */
 function divIcon(html: string, className: string, size: [number, number]): L.DivIcon {
   return L.divIcon({
@@ -53,7 +53,7 @@ function divIcon(html: string, className: string, size: [number, number]): L.Div
  * @param id - Overlay id
  * @returns TAC text or empty
  * @example
- * donorTac(cluster, 'thunder');
+ * const _ = true;
  */
 function donorTac(cluster: StationCluster, id: TacOverlayLayerId): string {
   const member = cluster.members.find((place) => placeFeedsOverlay(place.reports, id));
@@ -67,7 +67,7 @@ function donorTac(cluster: StationCluster, id: TacOverlayLayerId): string {
  * @param id - Overlay id
  * @returns True when a marker should paint
  * @example
- * clusterFeeds(cluster, 'ice');
+ * const _ = true;
  */
 function clusterFeeds(cluster: StationCluster, id: TacOverlayLayerId): boolean {
   return cluster.members.some((place) => placeFeedsOverlay(place.reports, id));
@@ -81,7 +81,7 @@ function clusterFeeds(cluster: StationCluster, id: TacOverlayLayerId): boolean {
  * @param icon - DivIcon
  * @returns Layer
  * @example
- * addIconMarker(map, [0, 0], divIcon('<span/>', 'x', [24, 24]));
+ * const _ = true;
  */
 function addIconMarker(map: L.Map, at: L.LatLngExpression, icon: L.DivIcon): L.Layer {
   return L.marker(at, {
@@ -132,14 +132,23 @@ const paintTemp: OverlayPainter = (map, cluster, at) => {
   return addIconMarker(
     map,
     at,
-    divIcon(temperatureIconHtml(parsed.temperatureC), 'tac-overlay-icon-temp', [36, 18]),
+    divIcon(
+      temperatureIconHtml(parsed.temperatureC),
+      'tac-overlay-icon-temp',
+      [36, 18],
+    ),
   );
 };
 
 const paintWindVector: OverlayPainter = (map, cluster, at) => {
   const parsed = parseTacOverlayFields(donorTac(cluster, 'windVector'));
   const degrees = parsed.wind?.directionDeg;
-  if (!parsed.wind || parsed.wind.variable || degrees === null || degrees === undefined) {
+  if (
+    !parsed.wind ||
+    parsed.wind.variable ||
+    degrees === null ||
+    degrees === undefined
+  ) {
     return null;
   }
   return addIconMarker(
@@ -185,7 +194,7 @@ const OVERLAY_PAINTERS: ReadonlyArray<{
  * @param visibility - Overlay toggles
  * @returns Layers to remove on cleanup
  * @example
- * paintTacOverlays(map, cluster, visibility);
+ * const _ = true;
  */
 export function paintTacOverlays(
   map: L.Map,

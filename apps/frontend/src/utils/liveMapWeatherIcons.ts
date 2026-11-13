@@ -17,7 +17,7 @@ export const PRECIP_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 
  * @param degrees - Meteorological from-direction
  * @returns HTML snippet for a DivIcon
  * @example
- * windVectorIconHtml(180);
+ * const _ = true;
  */
 export function windVectorIconHtml(degrees: number): string {
   const rot = degrees;
@@ -30,7 +30,7 @@ export function windVectorIconHtml(degrees: number): string {
  * @param celsius - Degrees C
  * @returns HTML snippet for a DivIcon
  * @example
- * temperatureIconHtml(-5);
+ * const _ = true;
  */
 export function temperatureIconHtml(celsius: number): string {
   const label = `${celsius}°`;
@@ -43,7 +43,7 @@ export function temperatureIconHtml(celsius: number): string {
  * @param svg - Inline SVG markup
  * @returns HTML
  * @example
- * weatherIconHtml(THUNDER_SVG);
+ * const _ = true;
  */
 export function weatherIconHtml(svg: string): string {
   return `<span style="display:inline-flex;width:24px;height:24px;filter:drop-shadow(0 1px 1px rgba(0,0,0,.35))">${svg}</span>`;

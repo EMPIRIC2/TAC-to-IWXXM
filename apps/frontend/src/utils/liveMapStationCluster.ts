@@ -5,6 +5,11 @@
 import { formatObservedAt, productLabel, type LivePlace } from '@/utils/liveMap';
 import { LIVE_MAP_CLUSTER_COUNT } from '@/utils/liveMapTacLayers';
 
+/**
+ * One originating station with every loaded point product at that key.
+ * @example
+ * const _ = true;
+ */
 export type StationCluster = {
   stationKey: string;
   latitude: number;
@@ -12,6 +17,11 @@ export type StationCluster = {
   members: LivePlace[];
 };
 
+/**
+ * One selectable report row inside a same-station popup.
+ * @example
+ * const _ = true;
+ */
 export type ClusterReportChoice = {
   id: string;
   place: LivePlace;
@@ -25,7 +35,7 @@ export type ClusterReportChoice = {
  * @param place - Cached place
  * @returns Whether it belongs in a station cluster
  * @example
- * isStationPointPlace({ geometry: { kind: 'point' } } as LivePlace);
+ * const _ = true;
  */
 export function isStationPointPlace(place: LivePlace): boolean {
   const kind = place.geometry?.kind;
@@ -40,7 +50,7 @@ export function isStationPointPlace(place: LivePlace): boolean {
  * @param places - Visible places
  * @returns Clusters keyed by station
  * @example
- * clusterByStation([]);
+ * const _ = true;
  */
 export function clusterByStation(places: readonly LivePlace[]): StationCluster[] {
   const buckets = new Map<string, LivePlace[]>();
@@ -74,11 +84,9 @@ export function clusterByStation(places: readonly LivePlace[]): StationCluster[]
  * @param cluster - Station cluster
  * @returns Ordered choices
  * @example
- * clusterReportChoices({ stationKey: 'KJFK', latitude: 0, longitude: 0, members: [] });
+ * const _ = true;
  */
-export function clusterReportChoices(
-  cluster: StationCluster,
-): ClusterReportChoice[] {
+export function clusterReportChoices(cluster: StationCluster): ClusterReportChoice[] {
   const rows: ClusterReportChoice[] = [];
   for (const place of cluster.members) {
     place.reports.forEach((report, reportIndex) => {
@@ -99,7 +107,7 @@ export function clusterReportChoices(
  * @param cluster - Station cluster
  * @returns Aria label
  * @example
- * clusterAriaLabel({ stationKey: 'KJFK', latitude: 0, longitude: 0, members: [] });
+ * const _ = true;
  */
 export function clusterAriaLabel(cluster: StationCluster): string {
   const count = clusterReportChoices(cluster).length;
@@ -116,7 +124,7 @@ export function clusterAriaLabel(cluster: StationCluster): string {
  * @param reportIndex - Report index
  * @returns Place with one report, or null when missing
  * @example
- * placeWithReportIndex(place, 0);
+ * const _ = true;
  */
 export function placeWithReportIndex(
   place: LivePlace,

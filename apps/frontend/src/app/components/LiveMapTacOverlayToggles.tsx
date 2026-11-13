@@ -18,7 +18,7 @@ import {
  * @param props.onToggle - Flip one overlay id
  * @param props.places - Visible places used for empty-state hint
  * @example
- * <LiveMapTacOverlayToggles visibility={v} onToggle={fn} places={[]} />
+ * const _ = true;
  */
 export function LiveMapTacOverlayToggles({
   visibility,

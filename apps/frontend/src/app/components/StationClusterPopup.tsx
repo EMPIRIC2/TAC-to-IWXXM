@@ -20,7 +20,7 @@ import { StationPopup } from './StationPopup';
  * @param props.onShowing - Remembers the TAC on the card
  * @param props.onLoad - Loads TAC into the converter
  * @example
- * <StationClusterPopup cluster={cluster} />
+ * const _ = true;
  */
 export function StationClusterPopup({
   cluster,

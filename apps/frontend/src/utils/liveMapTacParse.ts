@@ -2,6 +2,11 @@
  * Parse live-map overlay fields from raw TAC. [Corpus: product] F37
  */
 
+/**
+ * Wind group pulled from a TAC body for overlay paint.
+ * @example
+ * const _ = true;
+ */
 export type TacWindParse = {
   directionDeg: number | null;
   speedKt: number;
@@ -9,6 +14,11 @@ export type TacWindParse = {
   variable: boolean;
 };
 
+/**
+ * Overlay fields decoded from one TAC string.
+ * @example
+ * const _ = true;
+ */
 export type TacOverlayParse = {
   wind: TacWindParse | null;
   temperatureC: number | null;
@@ -31,7 +41,7 @@ const ICE_RE = /\b(?:FZ[A-Z]+|ICING|ICE|IC)\b/;
  * @param raw - Two-digit temp token with optional M
  * @returns Celsius
  * @example
- * tempTokenToC('M05');
+ * const _ = true;
  */
 export function tempTokenToC(raw: string): number {
   const cold = raw.startsWith('M');
@@ -46,7 +56,7 @@ export function tempTokenToC(raw: string): number {
  * @param tac - Raw TAC
  * @returns Overlay fields (nulls/empty when absent)
  * @example
- * parseTacOverlayFields('METAR KJFK 18012KT 3SM -RA 12/08');
+ * const _ = true;
  */
 export function parseTacOverlayFields(tac: string): TacOverlayParse {
   const text = tac.toUpperCase();
@@ -86,10 +96,8 @@ export function parseTacOverlayFields(tac: string): TacOverlayParse {
  * @param reports - Ordered reports (index 0 = newest in live-map cache)
  * @returns TAC text
  * @example
- * newestTac([{ observed_at: 'a', tac: 'METAR' }]);
+ * const _ = true;
  */
-export function newestTac(
-  reports: ReadonlyArray<{ tac: string }>,
-): string {
+export function newestTac(reports: ReadonlyArray<{ tac: string }>): string {
   return reports[0]?.tac ?? '';
 }

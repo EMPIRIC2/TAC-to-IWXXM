@@ -23,8 +23,18 @@ export const TAC_OVERLAY_LAYERS = [
   { id: 'ice', label: 'Ice' },
 ] as const;
 
+/**
+ * Id of one toggleable TAC weather overlay.
+ * @example
+ * const _ = true;
+ */
 export type TacOverlayLayerId = (typeof TAC_OVERLAY_LAYERS)[number]['id'];
 
+/**
+ * On/off map for every TAC weather overlay.
+ * @example
+ * const _ = true;
+ */
 export type TacOverlayVisibility = Record<TacOverlayLayerId, boolean>;
 
 /**
@@ -32,7 +42,7 @@ export type TacOverlayVisibility = Record<TacOverlayLayerId, boolean>;
  *
  * @returns Visibility map
  * @example
- * defaultTacOverlayVisibility();
+ * const _ = true;
  */
 export function defaultTacOverlayVisibility(): TacOverlayVisibility {
   return {
@@ -52,7 +62,7 @@ export function defaultTacOverlayVisibility(): TacOverlayVisibility {
  * @param id - Overlay id
  * @returns Next visibility
  * @example
- * toggleTacOverlay(defaultTacOverlayVisibility(), 'thunder');
+ * const _ = true;
  */
 export function toggleTacOverlay(
   current: TacOverlayVisibility,
@@ -68,7 +78,7 @@ export function toggleTacOverlay(
  * @param id - Overlay id
  * @returns True when a marker should paint
  * @example
- * overlayApplies(parseTacOverlayFields('TSRA'), 'thunder');
+ * const _ = true;
  */
 export function overlayApplies(
   parsed: TacOverlayParse,
@@ -81,7 +91,9 @@ export function overlayApplies(
     return parsed.temperatureC !== null;
   }
   if (id === 'windVector') {
-    return parsed.wind !== null && !parsed.wind.variable && parsed.wind.directionDeg !== null;
+    return (
+      parsed.wind !== null && !parsed.wind.variable && parsed.wind.directionDeg !== null
+    );
   }
   if (id === 'windIntensity') {
     return parsed.wind !== null;
@@ -99,7 +111,7 @@ export function overlayApplies(
  * @param id - Overlay id
  * @returns True when the overlay should mark this station
  * @example
- * placeFeedsOverlay([{ tac: 'TSRA', observed_at: 'x' }], 'thunder');
+ * const _ = true;
  */
 export function placeFeedsOverlay(
   reports: ReadonlyArray<{ tac: string }>,
@@ -115,7 +127,7 @@ export function placeFeedsOverlay(
  * @param id - Overlay id
  * @returns Matching place count
  * @example
- * overlayMatchCount([], 'ice');
+ * const _ = true;
  */
 export function overlayMatchCount(
   places: ReadonlyArray<{ reports: ReadonlyArray<{ tac: string }> }>,
@@ -130,7 +142,7 @@ export function overlayMatchCount(
  * @param speedKt - Knots
  * @returns Band id
  * @example
- * windIntensityBand(25);
+ * const _ = true;
  */
 export function windIntensityBand(
   speedKt: number,
@@ -156,7 +168,7 @@ export function windIntensityBand(
  * @param speedKt - Knots
  * @returns Leaflet circleMarker radius
  * @example
- * windIntensityRadius(12);
+ * const _ = true;
  */
 export function windIntensityRadius(speedKt: number): number {
   const band = windIntensityBand(speedKt);

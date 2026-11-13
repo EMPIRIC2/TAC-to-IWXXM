@@ -741,7 +741,9 @@ describe('LiveWorldMap', () => {
       hovers[0]?.();
     });
     const clusterUser = userEvent.setup();
-    const clusterPick = screen.getByTestId('live-map-cluster-pick') as HTMLSelectElement;
+    const clusterPick = screen.getByTestId(
+      'live-map-cluster-pick',
+    ) as HTMLSelectElement;
     const tafOption = [...clusterPick.options].find((option) =>
       option.textContent?.includes('TAF'),
     );
