@@ -124,3 +124,6 @@ UJ-DEV-006,Rust crate CI (fmt/clippy/test + maturin),`make rust-check` / CI,"IWX
 UJ-DEV-007,Slim husky — lint commit + fast-unit push,husky / make install-hooks,workspace tooling deepen,T0,TC-EV047-001..004,Slim husky lint commit + fast-unit push,active,live_e2e=—
 UJ-DEV-008,Converter perf regression blocks PR,CI perf gate,general TAC conversion deepen,T0 / CI,TC-EV047-005..008,Converter perf regression blocks PR,active,live_e2e=CI
 UJ-OPS-001,Deploy DOKS stack (API + static + worker),config/deploy/doks,"auth in API, ingest worker",T3 (staging),,,active,
+UJ-GLOSS-001,Open Annex 3 Glossary from shell nav,apps/frontend,Annex 3 Glossary (F38),T2 / T3,"TC-F38-001, TC-F38-007",apps/e2e/uj-gloss.e2e.spec.ts,active,Shell sibling of Decode visuals; citation on page
+UJ-GLOSS-002,Delayed glossary tip then open Glossary entry,apps/frontend,Annex 3 Glossary (F38),T2 / T3,"TC-F38-002, TC-F38-003, TC-F38-005",apps/frontend glossary Vitest,active,2s hover or keyboard; exclude TAC/XML editors
+UJ-GLOSS-003,Opt out of glossary hover tips,apps/frontend,Annex 3 Glossary (F38),T2,"TC-F38-004",Vitest prefs + e2e uj-gloss,active,Default ON; metar_converter_preferences.glossaryHoverEnabled

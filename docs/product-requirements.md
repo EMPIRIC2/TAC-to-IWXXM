@@ -85,6 +85,7 @@ Status values: Implemented, In progress, Planned, Superseded, Deprecated, Done.
 | Semantic vs exchange profiles | Implemented | Profiles separate semantic content from exchange packaging |
 | National and regional profiles | In progress | National semantic and regional exchange profiles |
 | Live TAC map on Decode | In progress | Shell Decode visuals full page is primary; Results Map tab stays an embedded twin |
+| Annex 3 Glossary (page + hover) | Implemented | Top-level Glossary with copyright-safe paraphrases, delayed hover tips, prefs opt-out, and terminology hygiene (F38) |
 | Monorepo layout | Implemented | `apps/`, `packages/`, and `vendor/` |
 | Vendor snapshot sync | Planned | Upstream IWXXM schema sync |
 | Legacy GIFTs in-repo package | Deprecated | Removed at general TAC conversion cutover |

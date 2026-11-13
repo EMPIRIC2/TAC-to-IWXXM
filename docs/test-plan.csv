@@ -890,3 +890,11 @@ TC-QV-009,Pytest strict config and strict xfail,unit,F34,,Pytest runs with --str
 TC-QV-010,OSV-Scanner lockfile vulnerability scan,coverage,F34,,No unwaived known vulnerabilities in lockfiles,scripts/security/install-tools.sh,,quality-tooling,documented,TR-Q08; Wave 2; command and CI job planned
 TC-QV-011,Gitleaks secret scan,coverage,F34,,No secrets found using config/tooling/gitleaks.toml,config/tooling/gitleaks.toml,,quality-tooling,documented,TR-Q08; Wave 2; command and CI job planned
 TC-QV-012,Actionlint workflow lint,coverage,F34,,No errors in .github/workflows,scripts/security/install-tools.sh,,quality-tooling,documented,TR-Q08; Wave 2; command and CI job planned
+TC-F38-001,Glossary shell nav and page render with citation,,,UJ-GLOSS-001,,,,,documented,heading_level=3
+TC-F38-002,Hover tip opens after 2s with short blurb and Glossary link,,,UJ-GLOSS-002,,,,,documented,heading_level=3
+TC-F38-003,Matcher longest-match and editor/XML exclusion,,,UJ-GLOSS-002,,,,,documented,heading_level=3
+TC-F38-004,Prefs default ON and opt-out disables tips,,,UJ-GLOSS-003,,,,,documented,heading_level=3
+TC-F38-005,Keyboard focus opens glossary tip,,,UJ-GLOSS-002,,,,,documented,heading_level=3
+TC-F38-006,Section 1.2 limited-meaning verbs are not hover targets,,,UJ-GLOSS-001,,,,,documented,heading_level=3
+TC-F38-007,Glossary page limited-meaning subsection present,,,UJ-GLOSS-001,,,,,documented,heading_level=3
+TC-F38-008,No substantial verbatim Annex 3 definition corpus in fixtures,,,UJ-GLOSS-001,,,,,documented,heading_level=3

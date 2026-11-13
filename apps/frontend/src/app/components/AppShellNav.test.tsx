@@ -4,7 +4,7 @@ import userEvent from '@testing-library/user-event';
 import { AppShellNav, SHELL_NAV_LABELS } from './AppShellNav';
 
 describe('AppShellNav', () => {
-  it('renders Convert, Decode visuals, History, Rule catalogs, and Code names without Dissemination ops', async () => {
+  it('renders Convert, Decode visuals, History, Rule catalogs, Code names, and Glossary without Dissemination ops', async () => {
     const user = userEvent.setup();
     const onNavigate = vi.fn();
     render(<AppShellNav activeView="converter" onNavigate={onNavigate} />);
@@ -24,6 +24,9 @@ describe('AppShellNav', () => {
     expect(screen.getByTestId('shell-nav-dictionary')).toHaveTextContent(
       SHELL_NAV_LABELS.dictionary,
     );
+    expect(screen.getByTestId('shell-nav-glossary')).toHaveTextContent(
+      SHELL_NAV_LABELS.glossary,
+    );
     expect(screen.queryByTestId('shell-nav-dissemination-ops')).not.toBeInTheDocument();
     expect(screen.queryByTestId('shell-nav-profiles')).not.toBeInTheDocument();
     await user.click(screen.getByTestId('shell-nav-visuals'));
@@ -32,6 +35,8 @@ describe('AppShellNav', () => {
     expect(onNavigate).toHaveBeenCalledWith('catalog');
     await user.click(screen.getByTestId('shell-nav-dictionary'));
     expect(onNavigate).toHaveBeenCalledWith('dictionary');
+    await user.click(screen.getByTestId('shell-nav-glossary'));
+    expect(onNavigate).toHaveBeenCalledWith('glossary');
   });
 
   it('follows a tighter Convert layout in this browser', () => {

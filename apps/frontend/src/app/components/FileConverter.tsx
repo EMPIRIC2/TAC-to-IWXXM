@@ -4209,6 +4209,7 @@ export function FileConverter({
                               ? 'convert-tac-readonly'
                               : 'convert-tac-editable'
                           }
+                          data-glossary-exclude="true"
                         >
                           <TacEditor
                             id="manual-input"
