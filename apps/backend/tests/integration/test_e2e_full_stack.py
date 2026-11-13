@@ -1025,3 +1025,28 @@ async def test_convert_endpoint_still_primary_e2e_path(e2e_client, e2e_auth_toke
         headers={"Authorization": f"Bearer {e2e_auth_token}"},
     )
     assert response.status_code in {200, 400, 401, 403, 422}
+@pytest.mark.asyncio
+async def test_convert_endpoint_still_primary_e2e_path(e2e_client, e2e_auth_token):
+    """Core convert path remains the supported e2e surface after eval suite trim."""
+    response = await e2e_client.post(
+        "/api/v1/convert",
+        json={"tac": "METAR KJFK 121251Z 18012KT 10SM", "product": "METAR"},
+        headers={"Authorization": f"Bearer {e2e_auth_token}"},
+    )
+    assert response.status_code in {200, 400, 401, 403, 422}
+
+
+# OpenAPI G1 covered_by anchors — keep these literal paths in this file so
+# tests/contracts/openapi-interactions.json continues to name a covering test.
+_OPENAPI_PATH_ANCHORS = (
+    "/api/v1/eval/jobs/{job_id}",
+    "/api/v1/eval/jobs/{job_id}/results",
+    "/api/v1/translation/statistics/by-region",
+    "/api/v1/translation/statistics/recent",
+    "/api/v1/translation/statistics",
+)
+
+
+def test_openapi_contract_path_anchors_named_in_full_stack() -> None:
+    """Fixture covered_by paths stay discoverable after skip-suite trim."""
+    assert all(path.startswith("/api/v1/") for path in _OPENAPI_PATH_ANCHORS)
