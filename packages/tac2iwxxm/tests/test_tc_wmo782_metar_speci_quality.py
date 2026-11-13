@@ -144,6 +144,7 @@ def test_wmo782_metar_speci_failure(case: Wmo782Case) -> None:
 def test_wmo782_metar_speci_validation(case: Wmo782Case) -> None:
     """Converted handbook TAC passes IWXXM validate (XSD + Schematron)."""
     from iwxxm_validate import validate
+
     from tac2iwxxm import convert
 
     result = convert(
@@ -159,14 +160,9 @@ def test_wmo782_metar_speci_validation(case: Wmo782Case) -> None:
         profile=PROFILE,
         levels=("xsd", "schematron"),
     )
-    blocking = [
-        i
-        for i in outcome.issues
-        if i.severity == "error" and i.code not in {"SCHEMATRON_SKIPPED"}
-    ]
+    blocking = [i for i in outcome.issues if i.severity == "error" and i.code not in {"SCHEMATRON_SKIPPED"}]
     assert not blocking, (
-        f"{case.case_id}: validate failed cite={case.cite} "
-        f"issues={[(i.code, i.message) for i in blocking]}"
+        f"{case.case_id}: validate failed cite={case.cite} issues={[(i.code, i.message) for i in blocking]}"
     )
 
 
