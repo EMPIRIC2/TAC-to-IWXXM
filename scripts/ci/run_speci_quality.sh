@@ -29,4 +29,9 @@ ${UV} run pytest packages/tac2iwxxm/tests \
   -k "speci or SPECI" \
   --no-cov -v --tb=short
 
+echo "==> tac2iwxxm: WMO-No. 782 METAR/SPECI success/failure/validation"
+${UV} run pytest \
+  packages/tac2iwxxm/tests/test_tc_wmo782_metar_speci_quality.py \
+  --no-cov -v --tb=short
+
 echo "==> speci-quality pack green"
