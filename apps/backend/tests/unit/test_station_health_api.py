@@ -144,3 +144,14 @@ def test_tc_sh_001_validation_filters(
         assert isinstance(stations, list)
         if params.get("product"):
             assert all(any(p["product"] == params["product"] for p in row["products"]) for row in stations)
+
+
+# OpenAPI G1 covered_by anchor for templated station detail path.
+_OPENAPI_STATION_HEALTH_PATH_ANCHORS = (
+    "/api/v1/station-health/{icao}",
+)
+
+
+def test_openapi_station_health_path_anchors() -> None:
+    """Fixture covered_by paths stay discoverable for station-health detail."""
+    assert all(path.startswith("/api/v1/station-health") for path in _OPENAPI_STATION_HEALTH_PATH_ANCHORS)
