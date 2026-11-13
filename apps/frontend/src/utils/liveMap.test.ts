@@ -565,5 +565,31 @@ describe('live map helpers', () => {
         layers.has('precip') && tac.length > 0 && /\bRA\b/.test(tac),
     });
     expect(emptyFiltered).toEqual([]);
+    const noReportPlace: LivePlace = {
+      place_key: 'NO-REPORT',
+      product: 'metar',
+      latitude: 1,
+      longitude: 2,
+      reports: [],
+    };
+    const missingTacFiltered = filterPlaces([noReportPlace], {
+      ...base,
+      tacLayers: new Set(['precip']),
+      passesTacLayers: (tac, layers) => layers.has('precip') && tac.length > 0,
+    });
+    expect(missingTacFiltered).toEqual([]);
+    expect(
+      filterPlaces([emptyTacPlace], {
+        ...base,
+        tacLayers: new Set(),
+        passesTacLayers: () => false,
+      }),
+    ).toEqual([emptyTacPlace]);
+    expect(
+      filterPlaces([emptyTacPlace], {
+        ...base,
+        tacLayers: new Set(['precip']),
+      }),
+    ).toEqual([emptyTacPlace]);
   });
 });
