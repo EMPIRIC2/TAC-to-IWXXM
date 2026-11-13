@@ -1,0 +1,444 @@
+def _sigmet_geometry_xml(
+    ir: dict[str, Any],
+    *,
+    fir: str,
+    gid: str | None = None,
+    geometry: dict[str, Any] | None = None,
+    include_limits: bool = True,
+    wmo_multi_location_va_ring: bool = False,
+) -> str:
+    """
+    Internal helper ``_sigmet_geometry_xml``.
+
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Argument ``ir``.
+
+    fir : str
+        Argument ``fir``.
+
+    gid : str | None, optional
+        Argument ``gid``.
+
+    geometry : dict[str, Any] | None, optional
+        Argument ``geometry``.
+
+    include_limits : bool, optional
+        Argument ``include_limits``.
+
+    wmo_multi_location_va_ring : bool, optional
+        Argument ``wmo_multi_location_va_ring``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
+    if ir.get("no_va_exp") and geometry is None:
+        return """
+              <iwxxm:geometry nilReason="http://codes.wmo.int/common/nil/nothingOfOperationalSignificance"/>"""
+
+    suffix = gid if gid is not None else fir.lower()
+    geom = geometry if geometry is not None else ir.get("geometry")
+    top_fl = ir.get("top_fl")
+    lower_fl = ir.get("lower_fl")
+    upper_fl = ir.get("upper_fl", top_fl)
+    if top_fl is not None and upper_fl is None:
+        upper_fl = top_fl
+
+    limits = ""
+    if include_limits:
+        if ir.get("lower_surface") in {"SFC", "GND"} and upper_fl is not None:
+            limits = f"""
+              <aixm:lowerLimit>GND</aixm:lowerLimit>
+              <aixm:lowerLimitReference>SFC</aixm:lowerLimitReference>
+              <aixm:upperLimit uom="FL">{int(upper_fl)}</aixm:upperLimit>
+              <aixm:upperLimitReference>STD</aixm:upperLimitReference>"""
+        elif ir.get("lower_surface") == "FRZLVL" and upper_fl is not None:
+            inline_lo = ir.get("inline_frzlvl_lo")
+            if inline_lo is not None:
+                limits = f"""
+              <aixm:lowerLimit uom="FL">{int(inline_lo)}</aixm:lowerLimit>
+              <aixm:lowerLimitReference>STD</aixm:lowerLimitReference>
+              <aixm:upperLimit uom="FL">{int(upper_fl)}</aixm:upperLimit>
+              <aixm:upperLimitReference>STD</aixm:upperLimitReference>"""
+            else:
+                limits = f"""
+              <aixm:upperLimit uom="FL">{int(upper_fl)}</aixm:upperLimit>
+              <aixm:upperLimitReference>STD</aixm:upperLimitReference>"""
+        elif ir.get("lower_ft") is not None and upper_fl is not None:
+            unit = "[ft_i]" if str(ir.get("lower_unit", "FT")).upper() == "FT" else "m"
+            limits = f"""
+              <aixm:lowerLimit uom="{unit}">{int(ir["lower_ft"])}</aixm:lowerLimit>
+              <aixm:lowerLimitReference>MSL</aixm:lowerLimitReference>
+              <aixm:upperLimit uom="FL">{int(upper_fl)}</aixm:upperLimit>
+              <aixm:upperLimitReference>STD</aixm:upperLimitReference>"""
+        elif lower_fl is not None and upper_fl is not None:
+            limits = f"""
+              <aixm:lowerLimit uom="FL">{int(lower_fl)}</aixm:lowerLimit>
+              <aixm:lowerLimitReference>STD</aixm:lowerLimitReference>
+              <aixm:upperLimit uom="FL">{int(upper_fl)}</aixm:upperLimit>
+              <aixm:upperLimitReference>STD</aixm:upperLimitReference>"""
+        elif upper_fl is not None:
+            limits = f"""
+              <aixm:upperLimit uom="FL">{int(upper_fl)}</aixm:upperLimit>
+              <aixm:upperLimitReference>STD</aixm:upperLimitReference>"""
+            if ir.get("top_qualifier") == "ABV":
+                # WMO Guidance / airmet-A6-1a-TS: TOP ABV → maximumLimit nil unknown.
+                limits += """
+              <aixm:maximumLimit xsi:nil="true" nilReason="unknown"/>"""
+            elif ir.get("top_qualifier") == "BLW":
+                limits += """
+              <aixm:minimumLimit xsi:nil="true" nilReason="unknown"/>"""
+
+    if isinstance(geom, dict):
+        g = cast(dict[str, Any], geom)
+        if g.get("kind") in {"point", "circle"}:
+            lat = float(g["lat"])
+            lon = float(g["lon"])
+            radius = int(g["radius_nm"]) if g.get("kind") == "circle" and "radius_nm" in g else 0
+            # TC SIGMET circles follow A6-2-TC pos formatting (#835); other products keep .4f.
+            pos_txt = (
+                _sigmet_tc_format_pos(lat, lon)
+                if _sigmet_root_local(ir) == "TropicalCycloneSIGMET"
+                else f"{lat:.4f} {lon:.4f}"
+            )
+            return f"""
+              <iwxxm:geometry>
+                <aixm:AirspaceVolume gml:id="vol.{suffix}">{limits}
+                  <aixm:horizontalProjection>
+                    <aixm:Surface gml:id="sfc.{suffix}" srsDimension="2" axisLabels="Lat Long" srsName="http://www.opengis.net/def/crs/EPSG/0/4326">
+                      <gml:patches>
+                        <gml:PolygonPatch>
+                          <gml:exterior>
+                            <gml:Ring>
+                              <gml:curveMember>
+                                <gml:Curve gml:id="curve.{suffix}">
+                                  <gml:segments>
+                                    <gml:CircleByCenterPoint numArc="1">
+                                      <gml:pos>{pos_txt}</gml:pos>
+                                      <gml:radius uom="[nmi_i]">{radius}</gml:radius>
+                                    </gml:CircleByCenterPoint>
+                                  </gml:segments>
+                                </gml:Curve>
+                              </gml:curveMember>
+                            </gml:Ring>
+                          </gml:exterior>
+                        </gml:PolygonPatch>
+                      </gml:patches>
+                    </aixm:Surface>
+                  </aixm:horizontalProjection>
+                </aixm:AirspaceVolume>
+              </iwxxm:geometry>"""
+
+        if g.get("kind") == "polygon":
+            pos_list = str(g["pos_list"])
+            if wmo_multi_location_va_ring:
+                pos_list = _wmo_multi_location_va_pos_list(pos_list)
+            return f"""
+              <iwxxm:geometry>
+                <aixm:AirspaceVolume gml:id="vol.{suffix}">{limits}
+                  <aixm:horizontalProjection>
+                    <aixm:Surface gml:id="sfc.{suffix}" srsDimension="2" axisLabels="Lat Long" srsName="http://www.opengis.net/def/crs/EPSG/0/4326">
+                      <gml:patches>
+                        <gml:PolygonPatch>
+                          <gml:exterior>
+                            <gml:LinearRing>
+                              <gml:posList>{escape(pos_list)}</gml:posList>
+                            </gml:LinearRing>
+                          </gml:exterior>
+                        </gml:PolygonPatch>
+                      </gml:patches>
+                    </aixm:Surface>
+                  </aixm:horizontalProjection>
+                </aixm:AirspaceVolume>
+              </iwxxm:geometry>"""
+
+    if limits:
+        return f"""
+              <iwxxm:geometry>
+                <aixm:AirspaceVolume gml:id="vol.{suffix}">{limits}
+                </aixm:AirspaceVolume>
+              </iwxxm:geometry>"""
+
+    return """
+              <iwxxm:geometry nilReason="http://codes.wmo.int/common/nil/missing"/>"""
+
+
+def _sigmet_location_analysis_xml(
+    loc: dict[str, Any],
+    *,
+    fir: str,
+    index: int,
+    issue: str,
+    begin: str,
+    end: str,
+    wmo_multi_location_va_ring: bool = False,
+    wmo_va_eggx_ring: bool = False,
+) -> str:
+    """
+    Internal helper ``_sigmet_location_analysis_xml``.
+
+    Parameters
+    ----------
+    loc : dict[str, Any]
+        Argument ``loc``.
+
+    fir : str
+        Argument ``fir``.
+
+    index : int
+        Argument ``index``.
+
+    issue : str
+        Argument ``issue``.
+
+    begin : str
+        Argument ``begin``.
+
+    end : str
+        Argument ``end``.
+
+    wmo_multi_location_va_ring : bool, optional
+        Argument ``wmo_multi_location_va_ring``.
+
+    wmo_va_eggx_ring : bool, optional
+        Argument ``wmo_va_eggx_ring``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
+    suffix = f"{fir.lower()}.{index}"
+    intensity = str(loc.get("intensity_change", "NO_CHANGE"))
+    obs_ir = {
+        "lower_fl": loc.get("lower_fl"),
+        "upper_fl": loc.get("upper_fl"),
+        "lower_surface": loc.get("lower_surface"),
+    }
+    obs_geometry_override = cast(dict[str, Any], loc["geometry"])
+    if wmo_va_eggx_ring:
+        obs_geometry_override = {"kind": "polygon", "pos_list": _EGGX_OBS_POS}
+    geometry = _sigmet_geometry_xml(
+        obs_ir,
+        fir=fir,
+        gid=suffix,
+        geometry=obs_geometry_override,
+        wmo_multi_location_va_ring=wmo_multi_location_va_ring,
+    )
+    obs_hhmm = str(loc.get("obs_hhmm") or begin[11:13] + begin[14:16])
+    obs_time = f"{begin[:10]}T{obs_hhmm[0:2]}:{obs_hhmm[2:4]}:00Z"
+    # WMO multi-location VA: materialize OBS/FCST instants once; later collections
+    # xlink:href them (vendor density / ADR-032 canonical empty phenomenonTime).
+    reuse_times = wmo_multi_location_va_ring and index > 0
+    if reuse_times:
+        obs_phenomenon_time = f'<iwxxm:phenomenonTime xlink:href="#{_WMO_MULTI_VA_OBS_TIME_ID}"/>'
+    elif wmo_multi_location_va_ring:
+        obs_phenomenon_time = f"""<iwxxm:phenomenonTime>
+            <gml:TimeInstant gml:id="{_WMO_MULTI_VA_OBS_TIME_ID}">
+              <gml:timePosition>{obs_time}</gml:timePosition>
+            </gml:TimeInstant>
+          </iwxxm:phenomenonTime>"""
+    else:
+        obs_phenomenon_time = f"""<iwxxm:phenomenonTime>
+            <gml:TimeInstant gml:id="t.obs.{suffix}">
+              <gml:timePosition>{obs_time}</gml:timePosition>
+            </gml:TimeInstant>
+          </iwxxm:phenomenonTime>"""
+    forecast_xml = ""
+    forecast_raw = loc.get("forecast")
+    if isinstance(forecast_raw, dict):
+        forecast = cast(dict[str, Any], forecast_raw)
+        fcst_geometry = forecast.get("geometry")
+        if wmo_va_eggx_ring:
+            fcst_geometry = {"kind": "polygon", "pos_list": _EGGX_FCST_POS}
+        if isinstance(fcst_geometry, dict):
+            hhmm_raw = forecast.get("hhmm")
+            fcst_hhmm = str(hhmm_raw if hhmm_raw is not None else end[11:13] + end[14:16])
+            fcst_time = f"{end[:10]}T{fcst_hhmm[0:2]}:{fcst_hhmm[2:4]}:00Z"
+            fcst_geom = _sigmet_geometry_xml(
+                {},
+                fir=fir,
+                gid=f"{suffix}.fcst",
+                geometry=cast(dict[str, Any], fcst_geometry),
+                include_limits=False,
+                wmo_multi_location_va_ring=wmo_multi_location_va_ring,
+            )
+            if reuse_times:
+                fcst_phenomenon_time = f'<iwxxm:phenomenonTime xlink:href="#{_WMO_MULTI_VA_FCST_TIME_ID}"/>'
+            elif wmo_multi_location_va_ring:
+                fcst_phenomenon_time = f"""<iwxxm:phenomenonTime>
+            <gml:TimeInstant gml:id="{_WMO_MULTI_VA_FCST_TIME_ID}">
+              <gml:timePosition>{fcst_time}</gml:timePosition>
+            </gml:TimeInstant>
+          </iwxxm:phenomenonTime>"""
+            else:
+                fcst_phenomenon_time = f"""<iwxxm:phenomenonTime>
+            <gml:TimeInstant gml:id="t.fcst.{suffix}">
+              <gml:timePosition>{fcst_time}</gml:timePosition>
+            </gml:TimeInstant>
+          </iwxxm:phenomenonTime>"""
+            # Vendor multi-location VA uses approximateLocation; VA-EGGX omits it (#856).
+            approx_attr = "" if wmo_va_eggx_ring else ' approximateLocation="true"'
+            forecast_xml = f"""
+      <iwxxm:forecastPositionAnalysis>
+        <iwxxm:SIGMETPositionCollection gml:id="fcst.{suffix}">
+          {fcst_phenomenon_time}
+          <iwxxm:member>
+            <iwxxm:SIGMETPosition gml:id="pos.{suffix}"{approx_attr}>{fcst_geom}
+            </iwxxm:SIGMETPosition>
+          </iwxxm:member>
+        </iwxxm:SIGMETPositionCollection>
+      </iwxxm:forecastPositionAnalysis>"""
+
+    return f"""  <iwxxm:analysisCollection>
+    <iwxxm:analysisAndForecastPositionAnalysis gml:id="analysis.{suffix}">
+      <iwxxm:analysis>
+        <iwxxm:SIGMETEvolvingConditionCollection gml:id="evolving.{suffix}" timeIndicator="OBSERVATION">
+          {obs_phenomenon_time}
+          <iwxxm:member>
+            <iwxxm:SIGMETEvolvingCondition gml:id="cond.{suffix}" intensityChange="{escape(intensity)}">{geometry}
+            </iwxxm:SIGMETEvolvingCondition>
+          </iwxxm:member>
+        </iwxxm:SIGMETEvolvingConditionCollection>
+      </iwxxm:analysis>{forecast_xml}
+    </iwxxm:analysisAndForecastPositionAnalysis>
+  </iwxxm:analysisCollection>
+"""
+
+
+def _sigmet_volcano_xml(ir: dict[str, Any]) -> str:
+    """
+    Internal helper ``_sigmet_volcano_xml``.
+
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Argument ``ir``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
+    volcano_raw = ir.get("volcano")
+    if not isinstance(volcano_raw, dict):
+        return ""
+    volcano = cast(dict[str, Any], volcano_raw)
+    name = str(volcano.get("name", "")).strip()
+    if not name:
+        return ""
+    lat = float(volcano["lat"])
+    lon = float(volcano["lon"])
+    # Multi-location VA (#809) or single OBS(+FCST) VA cloud path (#856 EGGX).
+    pos_fmt = (
+        _EGGX_VOLCANO_POS
+        if _is_wmo_sigmet_va_eggx(ir)
+        else (f"{lat:.2f} {lon:.2f}" if _is_wmo_sigmet_multi_location_va_yudd(ir) else f"{lat:.4f} {lon:.4f}")
+    )
+    return f"""  <iwxxm:eruptingVolcano>
+    <metce:Volcano gml:id="volcano.1">
+      <metce:name>{escape(name)}</metce:name>
+      <metce:position>
+        <gml:Point gml:id="volcano.pos.1" srsDimension="2" axisLabels="Lat Long" srsName="http://www.opengis.net/def/crs/EPSG/0/4326">
+          <gml:pos>{pos_fmt}</gml:pos>
+        </gml:Point>
+      </metce:position>
+    </metce:Volcano>
+  </iwxxm:eruptingVolcano>
+"""
+
+
+def _motion_deg_text(degrees: int | float) -> str:
+    """
+    Format a motion bearing, keeping half-degree compass points.
+
+    Parameters
+    ----------
+    degrees : int | float
+        Bearing from true north.
+
+    Returns
+    -------
+    str
+        Whole degrees as an integer, otherwise one decimal place.
+    """
+    number = float(degrees)
+    if number.is_integer():
+        return str(int(number))
+    return f"{number:.1f}"
+
+
+def _sigmet_motion_xml(ir: dict[str, Any]) -> str:
+    """
+    Internal helper ``_sigmet_motion_xml``.
+
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Argument ``ir``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
+    if ir.get("stationary"):
+        return """
+              <iwxxm:directionOfMotion uom="deg" xsi:nil="true" nilReason="http://codes.wmo.int/common/nil/inapplicable"/>
+              <iwxxm:speedOfMotion uom="[kn_i]">0</iwxxm:speedOfMotion>"""
+    if "motion_dir_deg" in ir and "motion_speed_kmh" in ir:
+        return f"""
+              <iwxxm:directionOfMotion uom="deg">{_motion_deg_text(ir["motion_dir_deg"])}</iwxxm:directionOfMotion>
+              <iwxxm:speedOfMotion uom="km/h">{int(ir["motion_speed_kmh"])}</iwxxm:speedOfMotion>"""
+    if "motion_dir_deg" in ir and "motion_speed_kt" in ir:
+        return f"""
+              <iwxxm:directionOfMotion uom="deg">{_motion_deg_text(ir["motion_dir_deg"])}</iwxxm:directionOfMotion>
+              <iwxxm:speedOfMotion uom="[kn_i]">{int(ir["motion_speed_kt"])}</iwxxm:speedOfMotion>"""
+    if "motion_dir_deg" in ir:
+        return f"""
+              <iwxxm:directionOfMotion uom="deg">{_motion_deg_text(ir["motion_dir_deg"])}</iwxxm:directionOfMotion>"""
+    return ""
+
+
+def _sigmet_tropical_cyclone_xml(ir: dict[str, Any]) -> str:
+    """
+    Internal helper ``_sigmet_tropical_cyclone_xml``.
+
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Argument ``ir``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
+    name = ir.get("tropical_cyclone_name")
+    if not isinstance(name, str) or not name.strip():
+        return ""
+    slug = re.sub(r"[^a-z0-9]+", "", name.lower()) or "tc"
+    return f"""
+  <iwxxm:tropicalCyclone>
+    <metce:TropicalCyclone gml:id="tc.{slug}">
+      <metce:name>{escape(name.strip())}</metce:name>
+    </metce:TropicalCyclone>
+  </iwxxm:tropicalCyclone>
+"""
+
+
+def _sigmet_tc_position_xml(ir: dict[str, Any], *, gid: str) -> str:
+    """
+    Internal helper ``_sigmet_tc_position_xml``.
+
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Argument ``ir``.
+
+    gid : str
+        Argument ``gid``.
+

@@ -1,0 +1,65 @@
+def _suppressed(issue: Issue, spec: LintProfileSpec, product: str) -> bool:
+    """
+    Internal helper ``_suppressed``.
+
+    Parameters
+    ----------
+    issue : Issue
+        Engine finding.
+    spec : LintProfileSpec
+        Profile being linted.
+    product : str
+        Product id.
+
+    Returns
+    -------
+    bool
+        True when a delta drops this finding.
+    """
+    quoted = _TOKEN_RE.search(issue.message or "")
+    if quoted is None:
+        return False
+    token = quoted.group(1)
+    for delta in spec.deltas:
+        if product not in delta.products or issue.code not in delta.suppress_codes:
+            continue
+        if delta.token_pattern.fullmatch(token):
+            return True
+    return False
+
+
+def apply_profile_deltas(report: LintReport, *, profile: str, product: str) -> LintReport:
+    """
+    Drop engine findings that this profile records as allowed.
+
+    Parameters
+    ----------
+    report : LintReport
+        Engine result.
+    profile : str
+        Requested profile id.
+    product : str
+        Product id.
+
+    Returns
+    -------
+    LintReport
+        Findings for ``profile``. The ``profile`` field is the requested id.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (apply_profile_deltas)
+    2
+    """
+    spec = resolved_lint_profile(profile)
+    issues = list(report.issues)
+    if spec is not None and spec.deltas:
+        issues = [issue for issue in issues if not _suppressed(issue, spec, product.upper())]
+    ok = not any(issue.severity == "error" for issue in issues)
+    return LintReport(
+        ok=ok,
+        product=report.product,
+        issues=issues,
+        fixes=list(report.fixes),
+        profile=profile,
+    )

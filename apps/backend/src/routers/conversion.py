@@ -750,6 +750,7 @@ class _ConvertRuntime:
     translation_centre_designator: str
     translation_centre_name: str
     propagate_residuals_to_remarks: bool | None
+    include_national_remarks: bool
     bulletin_date: str
     validation_service: Any
     validation_orchestrator: Any
@@ -892,6 +893,7 @@ async def _process_json_metars(
                     translation_centre_designator=runtime.translation_centre_designator,
                     translation_centre_name=runtime.translation_centre_name,
                     propagate_residuals_to_remarks=runtime.propagate_residuals_to_remarks,
+                    include_national_remarks=runtime.include_national_remarks,
                 )
                 acc.absorb_soft_preview(soft_preview_buf, preview=runtime.preview, source=metar_name)
                 if runtime.preview and soft_preview_buf.get("ok") is False:
@@ -1183,6 +1185,7 @@ async def _process_manual_entries(
                 translation_centre_designator=runtime.translation_centre_designator,
                 translation_centre_name=runtime.translation_centre_name,
                 propagate_residuals_to_remarks=runtime.propagate_residuals_to_remarks,
+                include_national_remarks=runtime.include_national_remarks,
             )
             acc.absorb_soft_preview(
                 soft_preview_buf,
@@ -1465,6 +1468,7 @@ async def _process_uploaded_files(
                 translation_centre_designator=runtime.translation_centre_designator,
                 translation_centre_name=runtime.translation_centre_name,
                 propagate_residuals_to_remarks=runtime.propagate_residuals_to_remarks,
+                include_national_remarks=runtime.include_national_remarks,
             )
             acc.absorb_soft_preview(soft_preview_buf, preview=runtime.preview, source=source_name)
             if runtime.preview and soft_preview_buf.get("ok") is False:
@@ -2219,6 +2223,13 @@ async def convert(
             "When true, append decode residual token text into remarks / humanReadableText "
             "when the profile supports that path; annex3 documents no XML target. "
             "Omitted uses the profile default (annex3 / ICAO_2025 off)."
+        ),
+    ),
+    include_national_remarks: bool = Form(
+        default=True,
+        description=(
+            "When false, omit national remarks after RMK from IWXXM output even for "
+            "profiles that normally keep remarks."
         ),
     ),
     bulletin_date: str = Form(
@@ -3011,6 +3022,7 @@ async def convert(
         translation_centre_designator=translation_centre_designator,
         translation_centre_name=translation_centre_name,
         propagate_residuals_to_remarks=propagate_residuals_to_remarks,
+        include_national_remarks=include_national_remarks,
         bulletin_date=bulletin_date,
         validation_service=validation_service,
         validation_orchestrator=validation_orchestrator,

@@ -44,7 +44,7 @@
       "source_url": "https://github.com/wmo-im/iwxxm",
       "source_id": "opmet-guidelines-5th",
       "ticket": null,
-      "note": "Landing/cite — see RULE_SOURCE_URLS for exact PDF"
+      "note": "Landing/cite \u2014 see RULE_SOURCE_URLS for exact PDF"
     },
     {
       "path": "docs/domain/mining/PPT-02-IWXXM-Framework-WMO-mining-notes.md",
@@ -84,7 +84,7 @@
       "source_url": "https://library.wmo.int/",
       "source_id": "wmo-306-i3-2019",
       "ticket": null,
-      "note": "historical dig 1–272 complete · #798"
+      "note": "historical dig 1\u2013272 complete \u00b7 #798"
     },
     {
       "path": "docs/domain/mining/WMO-306-vI-3-2023-mining-notes.md",
@@ -183,7 +183,7 @@
       "source_url": "https://nws.weather.gov/schemas/iwxxm-us/3.0/",
       "source_id": "fmh-1",
       "ticket": null,
-      "note": "FMH-1 US national; URL may redirect — cite RULE_SOURCE_URLS"
+      "note": "FMH-1 US national; URL may redirect \u2014 cite RULE_SOURCE_URLS"
     },
     {
       "path": "docs/domain/mining/icao-annex-3-mining-notes.md",
@@ -328,7 +328,7 @@
       "source_url": "https://nws.weather.gov/schemas/iwxxm-us/3.0/",
       "source_id": "iwxxm-us",
       "ticket": null,
-      "note": "validate column ⚠ — no US SCH in pin · #870"
+      "note": "validate column \u26a0 \u2014 no US SCH in pin \u00b7 #870"
     },
     {
       "path": "docs/domain/mining/schemas-wmo-int-metce-mining-notes.md",
@@ -386,7 +386,7 @@
       "source_url": "https://schemas.wmo.int/rule/",
       "source_id": "schemas-rule-index",
       "ticket": null,
-      "note": "index only — pin uses vendor rule/iwxxm.sch"
+      "note": "index only \u2014 pin uses vendor rule/iwxxm.sch"
     },
     {
       "path": "docs/domain/mining/schemas-wmo-int-saf-mining-notes.md",
@@ -433,7 +433,7 @@
       "source_url": "vendor:documentation/webpages/AHL.asciidoc",
       "source_id": "vona-ahl-fm205",
       "ticket": null,
-      "note": "Guidance silent · #869; AHL WM/LM + FM205 promote"
+      "note": "Guidance silent \u00b7 #869; AHL WM/LM + FM205 promote"
     },
     {
       "path": "docs/domain/mining/wmo-im-iwxxm-IWXXM-tree-mining-notes.md",
@@ -713,6 +713,16 @@
       "note": "App 5 / Table A5-1"
     },
     {
+      "code": "AUTO_MISPLACED",
+      "status": "paywall",
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
+      "ticket": "",
+      "note": "WMO-No. 782 identification: AUTO must follow the date/time group."
+    },
+    {
       "code": "AUTO_PRESENT",
       "status": "paywall",
       "source_id": "icao-annex-3",
@@ -731,6 +741,36 @@
       "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
       "ticket": null,
       "note": "App 5 / Table A5-1"
+    },
+    {
+      "code": "CAVOK_CONDITIONS_NOT_MET",
+      "status": "paywall",
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
+      "ticket": "",
+      "note": "WMO-No. 782 Part A: CAVOK requires visibility, cloud, and weather conditions at the same time."
+    },
+    {
+      "code": "CAVOK_EXCLUDES_RVR",
+      "status": "paywall",
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
+      "ticket": "",
+      "note": "WMO-No. 782 METAR/SPECI rule (43)"
+    },
+    {
+      "code": "CAVOK_NSC_BOUNDARY",
+      "status": "paywall",
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
+      "ticket": "",
+      "note": "WMO-No. 782 METAR/SPECI rule (13-14,33)"
     },
     {
       "code": "CAVOK_PRESENT",
@@ -791,6 +831,16 @@
       "dig": "docs/domain/mining/manobs-manair-ca-mining-notes.md",
       "ticket": "#1029",
       "note": "Schema-backed SAWR substitution in metar-speci-ca; not a MANOBS code form"
+    },
+    {
+      "code": "CA_METAR_UP_AWOS_ONLY",
+      "status": "ok",
+      "source_id": "manobs-ca",
+      "source_url": "https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manobs-surface-observations.html",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/profiles/mining/EV-1120-profile-scoped-catalog.md",
+      "ticket": "https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1122",
+      "note": "MANOBS present-weather UP (unknown precipitation) is AWOS-only"
     },
     {
       "code": "CA_REMARK_MANOBS",
@@ -870,8 +920,38 @@
       "consumer": "tac-validate",
       "dig": "docs/domain/mining/codes-wmo-int-aviation-mining-notes.md",
       "ticket": null,
-      "source_attribution": "codes-wmo-int — https://codes.wmo.int/49-2/SigConvectiveCloudType · prior landing: https://codes.wmo.int/49-2/SigConvectiveCloudType",
+      "source_attribution": "codes-wmo-int \u2014 https://codes.wmo.int/49-2/SigConvectiveCloudType \u00b7 prior landing: https://codes.wmo.int/49-2/SigConvectiveCloudType",
       "note": "CB/TCU convective type register"
+    },
+    {
+      "code": "CLOUD_COMMON_BASE_CB_TCU",
+      "status": "paywall",
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
+      "ticket": "",
+      "note": "WMO-No. 782 METAR/SPECI rule (13-14)"
+    },
+    {
+      "code": "CLOUD_HEIGHT_NOT_ASCENDING",
+      "status": "paywall",
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
+      "ticket": "",
+      "note": "WMO-No. 782 METAR/SPECI rule (13-14)"
+    },
+    {
+      "code": "CLOUD_LAYER_COUNT_EXCEEDED",
+      "status": "paywall",
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
+      "ticket": "",
+      "note": "WMO-No. 782 METAR/SPECI rule (13-14)"
     },
     {
       "code": "CLOUD_TYPE_NOT_OBSERVABLE",
@@ -881,8 +961,18 @@
       "consumer": "tac-validate",
       "dig": "docs/domain/mining/codes-wmo-int-aviation-mining-notes.md",
       "ticket": null,
-      "source_attribution": "codes-wmo-int — https://codes.wmo.int/common/nil/notObservable · prior landing: https://codes.wmo.int/common/nil",
+      "source_attribution": "codes-wmo-int \u2014 https://codes.wmo.int/common/nil/notObservable \u00b7 prior landing: https://codes.wmo.int/common/nil",
       "note": "AUTO cloud group solidi /// means convective cloud type was not observed"
+    },
+    {
+      "code": "CLOUD_TYPE_SUFFIX_ONLY_CB_TCU",
+      "status": "paywall",
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
+      "ticket": "",
+      "note": "WMO-No. 782 METAR/SPECI rule (43)"
     },
     {
       "code": "CNL_REPORT",
@@ -895,6 +985,16 @@
       "note": "App 5 / Table A5-1"
     },
     {
+      "code": "COR_MISPLACED",
+      "status": "paywall",
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
+      "ticket": "",
+      "note": "WMO-No. 782 identification: COR must follow the code name before CCCC and time."
+    },
+    {
       "code": "COR_PRESENT",
       "status": "paywall",
       "source_id": "icao-annex-3",
@@ -905,6 +1005,16 @@
       "note": "App 5 / Table A5-1"
     },
     {
+      "code": "DVLPG_AREA_QUALIFIER",
+      "status": "ok",
+      "source_id": "fmh-1",
+      "source_url": "https://aviationweather.gov/data/products/sigmet/",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/fmh1-2019-mining-notes.md",
+      "ticket": null,
+      "note": "NWS convective SIGMET developing-area: accept canonical DVLPG AREA; error on FROM-ring or incomplete DVLPG"
+    },
+    {
       "code": "EMPTY_TAC",
       "status": "paywall",
       "source_id": "icao-annex-3",
@@ -913,6 +1023,16 @@
       "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
       "ticket": null,
       "note": "Table A3-2 / App 3"
+    },
+    {
+      "code": "FIRST_GROUPS_FORMAT",
+      "status": "paywall",
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
+      "ticket": "",
+      "note": "WMO-No. 782 identification: accepted METAR/SPECI header shapes for the first groups."
     },
     {
       "code": "FIR_OR_CTA",
@@ -962,7 +1082,7 @@
       "consumer": "tac-validate",
       "dig": "docs/domain/mining/codes-wmo-int-aviation-mining-notes.md",
       "ticket": null,
-      "source_attribution": "codes-wmo-int — https://codes.wmo.int/49-2/CloudAmountReportedAtAerodrome · prior landing: https://codes.wmo.int/49-2/CloudAmountReportedAtAerodrome",
+      "source_attribution": "codes-wmo-int \u2014 https://codes.wmo.int/49-2/CloudAmountReportedAtAerodrome \u00b7 prior landing: https://codes.wmo.int/49-2/CloudAmountReportedAtAerodrome",
       "note": "Cloud amount register landing"
     },
     {
@@ -1006,16 +1126,6 @@
       "note": "App 5 / Table A5-1; true defects only (BECMG/FM, bad percent)"
     },
     {
-      "code": "PROB_PERIOD_WITHOUT_TEMPO",
-      "status": "paywall",
-      "source_id": "icao-annex-3",
-      "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
-      "consumer": "tac-validate",
-      "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
-      "ticket": "#1487",
-      "note": "App 5 / Table A5-1; standalone PROB+period emission retired — engines emit PROB_PRESENT; code kept for catalog continuity"
-    },
-    {
       "code": "INVALID_REMARK",
       "status": "ok",
       "source_id": "fmh-1",
@@ -1025,16 +1135,6 @@
       "ticket": null
     },
     {
-      "code": "MALFORMED_SOURCE_TOKEN",
-      "status": "ok",
-      "source_id": "live-eval",
-      "source_url": "https://www.icao.int/",
-      "consumer": "tac-validate",
-      "dig": null,
-      "ticket": null,
-      "note": "Source typo or garbled TAC group from live traffic"
-    },
-    {
       "code": "INVALID_RVR",
       "status": "ok",
       "source_id": "codes-wmo-int",
@@ -1042,8 +1142,8 @@
       "consumer": "tac-validate",
       "dig": "docs/domain/mining/codes-wmo-int-aviation-mining-notes.md",
       "ticket": null,
-      "source_attribution": "codes-wmo-int — https://codes.wmo.int/49-2 (no dedicated RVR notation register; Annex 3 / FMH for grammar) · prior landing: https://codes.wmo.int/49-2",
-      "note": "No single RVR concept register — cite 49-2 family + grammar sources"
+      "source_attribution": "codes-wmo-int \u2014 https://codes.wmo.int/49-2 (no dedicated RVR notation register; Annex 3 / FMH for grammar) \u00b7 prior landing: https://codes.wmo.int/49-2",
+      "note": "No single RVR concept register \u2014 cite 49-2 family + grammar sources"
     },
     {
       "code": "INVALID_SIGMET_CNL",
@@ -1076,16 +1176,6 @@
       "note": "EUR Doc 014 public; Annex 3 paywall companion"
     },
     {
-      "code": "DVLPG_AREA_QUALIFIER",
-      "status": "ok",
-      "source_id": "fmh-1",
-      "source_url": "https://aviationweather.gov/data/products/sigmet/",
-      "consumer": "tac-validate",
-      "dig": "docs/domain/mining/fmh1-2019-mining-notes.md",
-      "ticket": null,
-      "note": "NWS convective SIGMET developing-area: accept canonical DVLPG AREA; error on FROM-ring or incomplete DVLPG"
-    },
-    {
       "code": "INVALID_TX_TN",
       "status": "paywall",
       "source_id": "icao-annex-3",
@@ -1113,7 +1203,7 @@
       "consumer": "tac-validate",
       "dig": "docs/domain/mining/codes-wmo-int-aviation-mining-notes.md",
       "ticket": null,
-      "source_attribution": "codes-wmo-int — https://codes.wmo.int/49-2 (visibility grammar; WeatherCausingVisibilityReduction for obscuration codes) · prior landing: https://codes.wmo.int/49-2",
+      "source_attribution": "codes-wmo-int \u2014 https://codes.wmo.int/49-2 (visibility grammar; WeatherCausingVisibilityReduction for obscuration codes) \u00b7 prior landing: https://codes.wmo.int/49-2",
       "note": "Vis grammar vs WeatherCausingVisibilityReduction for AIRMET obscurations"
     },
     {
@@ -1124,7 +1214,7 @@
       "consumer": "tac-validate",
       "dig": "docs/domain/mining/codes-wmo-int-aviation-mining-notes.md",
       "ticket": null,
-      "source_attribution": "codes-wmo-int — https://codes.wmo.int/49-2/AerodromePresentOrForecastWeather (concept IDs often http://codes.wmo.int/306/4678/{TAC}) · prior landing: https://codes.wmo.int/49-2/AerodromePresentOrForecastWeather",
+      "source_attribution": "codes-wmo-int \u2014 https://codes.wmo.int/49-2/AerodromePresentOrForecastWeather (concept IDs often http://codes.wmo.int/306/4678/{TAC}) \u00b7 prior landing: https://codes.wmo.int/49-2/AerodromePresentOrForecastWeather",
       "note": "Prefer register landing + 306/4678 concept pattern over bare root"
     },
     {
@@ -1135,7 +1225,7 @@
       "consumer": "tac-validate",
       "dig": "docs/domain/mining/codes-wmo-int-aviation-mining-notes.md",
       "ticket": null,
-      "source_attribution": "codes-wmo-int — https://codes.wmo.int/49-2 (wind group grammar; not a weather-notation list) · prior landing: https://codes.wmo.int/49-2",
+      "source_attribution": "codes-wmo-int \u2014 https://codes.wmo.int/49-2 (wind group grammar; not a weather-notation list) \u00b7 prior landing: https://codes.wmo.int/49-2",
       "note": "Wind not in AerodromePresentWeather list"
     },
     {
@@ -1147,6 +1237,16 @@
       "dig": "docs/domain/mining/in-imd-tac-mining-notes.md",
       "ticket": "#1098",
       "note": "India IMD TAF often omits TX/TN temperature extremes"
+    },
+    {
+      "code": "MALFORMED_SOURCE_TOKEN",
+      "status": "ok",
+      "source_id": "live-eval",
+      "source_url": "https://www.icao.int/",
+      "consumer": "tac-validate",
+      "dig": null,
+      "ticket": null,
+      "note": "Source typo or garbled TAC group from live traffic"
     },
     {
       "code": "MISSING_CCCC",
@@ -1187,6 +1287,16 @@
       "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
       "ticket": null,
       "note": "App 5 / Table A5-1"
+    },
+    {
+      "code": "MISSING_MANDATORY_DIGIT_AS_SOLIDUS",
+      "status": "paywall",
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
+      "ticket": "",
+      "note": "WMO-No. 782 Part A: solidus replaces each missing mandatory digit; warn for non-AUTO reports."
     },
     {
       "code": "MISSING_MAX_WIND",
@@ -1409,6 +1519,16 @@
       "note": "EUR Doc 014 public; Annex 3 paywall companion"
     },
     {
+      "code": "NATIONAL_RMK_NOT_INTERNATIONAL",
+      "status": "paywall",
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
+      "ticket": "",
+      "note": "WMO-No. 782 METAR/SPECI rule (4,19)"
+    },
+    {
       "code": "NCD_PRESENT",
       "status": "ok",
       "source_id": "codes-wmo-int",
@@ -1416,8 +1536,48 @@
       "consumer": "tac-validate",
       "dig": "docs/domain/mining/codes-wmo-int-aviation-mining-notes.md",
       "ticket": null,
-      "source_attribution": "codes-wmo-int — https://codes.wmo.int/49-2/CloudAmountReportedAtAerodrome · prior landing: https://codes.wmo.int/49-2/CloudAmountReportedAtAerodrome",
+      "source_attribution": "codes-wmo-int \u2014 https://codes.wmo.int/49-2/CloudAmountReportedAtAerodrome \u00b7 prior landing: https://codes.wmo.int/49-2/CloudAmountReportedAtAerodrome",
       "note": "NCD cloud amount notation family"
+    },
+    {
+      "code": "NCD_REQUIRES_AUTO",
+      "status": "paywall",
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
+      "ticket": "",
+      "note": "WMO-No. 782 METAR/SPECI rule (43)"
+    },
+    {
+      "code": "NDV_REQUIRES_AUTO",
+      "status": "paywall",
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
+      "ticket": "",
+      "note": "WMO-No. 782 METAR/SPECI rule (43)"
+    },
+    {
+      "code": "NIL_AUTO_CONFLICT",
+      "status": "paywall",
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
+      "ticket": "",
+      "note": "WMO-No. 782 identification: NIL and AUTO must not appear together."
+    },
+    {
+      "code": "NIL_MISPLACED",
+      "status": "paywall",
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
+      "ticket": "",
+      "note": "WMO-No. 782 identification: NIL placement and standalone missing-report body rules."
     },
     {
       "code": "NIL_REPORT",
@@ -1492,12 +1652,12 @@
     {
       "code": "ODD_FIELD_ORDER",
       "status": "paywall",
-      "source_id": "icao-annex-3",
+      "source_id": "wmo-782",
       "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
       "consumer": "tac-validate",
       "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
       "ticket": null,
-      "note": "Table A3-2 / App 3"
+      "note": "WMO-No. 782 METAR/SPECI group order; wrong order is an error."
     },
     {
       "code": "POINT_LOCATION",
@@ -1520,6 +1680,26 @@
       "note": "EUR Doc 014 public; Annex 3 paywall companion"
     },
     {
+      "code": "PRECIP_INTENSITY_VIS_PLAUSIBILITY",
+      "status": "paywall",
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
+      "ticket": "",
+      "note": "WMO-No. 782 METAR/SPECI rule (42)"
+    },
+    {
+      "code": "PROB_PERIOD_WITHOUT_TEMPO",
+      "status": "paywall",
+      "source_id": "icao-annex-3",
+      "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
+      "ticket": "#1487",
+      "note": "App 5 / Table A5-1; standalone PROB+period emission retired \u2014 engines emit PROB_PRESENT; code kept for catalog continuity"
+    },
+    {
       "code": "PROB_PRESENT",
       "status": "paywall",
       "source_id": "icao-annex-3",
@@ -1528,6 +1708,46 @@
       "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
       "ticket": null,
       "note": "App 5 / Table A5-1"
+    },
+    {
+      "code": "QNH_MISSING_AS_SOLIDUS",
+      "status": "paywall",
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
+      "ticket": "",
+      "note": "WMO-No. 782 METAR/SPECI rule (16)"
+    },
+    {
+      "code": "QNH_PREFIX_UNIT_MISMATCH",
+      "status": "paywall",
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
+      "ticket": "",
+      "note": "WMO-No. 782 METAR/SPECI rule (43)"
+    },
+    {
+      "code": "RECENT_WEATHER_LIMITS",
+      "status": "paywall",
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
+      "ticket": "",
+      "note": "WMO-No. 782 METAR/SPECI rule (17-18)"
+    },
+    {
+      "code": "RECENT_WEATHER_NO_INTENSITY",
+      "status": "paywall",
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
+      "ticket": "",
+      "note": "WMO-No. 782 METAR/SPECI rule (43)"
     },
     {
       "code": "REMARK_US_EXTENSION",
@@ -1539,6 +1759,36 @@
       "ticket": null
     },
     {
+      "code": "REUP_REQUIRES_AUTO",
+      "status": "paywall",
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
+      "ticket": "",
+      "note": "WMO-No. 782 METAR/SPECI rule (17-18)"
+    },
+    {
+      "code": "RVR_MAX_GROUPS",
+      "status": "paywall",
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
+      "ticket": "",
+      "note": "WMO-No. 782 METAR/SPECI rule (9-10)"
+    },
+    {
+      "code": "RVR_MISSING_AS_SOLIDUS",
+      "status": "paywall",
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
+      "ticket": "",
+      "note": "WMO-No. 782 METAR/SPECI rule (9-10)"
+    },
+    {
       "code": "RVR_PRESENT",
       "status": "paywall",
       "source_id": "icao-annex-3",
@@ -1547,6 +1797,36 @@
       "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
       "ticket": null,
       "note": "Table A3-2 / App 3"
+    },
+    {
+      "code": "RVR_SCALE_STEP",
+      "status": "paywall",
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
+      "ticket": "",
+      "note": "WMO-No. 782 METAR/SPECI rule (9-10)"
+    },
+    {
+      "code": "RVR_TENDENCY_FORMAT",
+      "status": "paywall",
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
+      "ticket": "",
+      "note": "WMO-No. 782 METAR/SPECI rule (9-10)"
+    },
+    {
+      "code": "SEA_SURFACE_GROUP_FORMAT",
+      "status": "paywall",
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
+      "ticket": "",
+      "note": "WMO-No. 782 METAR/SPECI rule (43)"
     },
     {
       "code": "SIGMET_CNL",
@@ -1689,6 +1969,16 @@
       "note": "App 5 / Table A5-1"
     },
     {
+      "code": "TEMP_DEWPOINT_INVERSION",
+      "status": "paywall",
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
+      "ticket": "",
+      "note": "WMO-No. 782 METAR/SPECI rule (15)"
+    },
+    {
       "code": "TL_PRESENT",
       "status": "paywall",
       "source_id": "icao-annex-3",
@@ -1709,6 +1999,86 @@
       "note": "EUR Doc 014 public; Annex 3 paywall companion"
     },
     {
+      "code": "TREND_CLOUD_LAYERS_INCOMPLETE",
+      "status": "paywall",
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
+      "ticket": "",
+      "note": "WMO-No. 782 METAR/SPECI rule (17-24)"
+    },
+    {
+      "code": "TREND_FM_FORMAT",
+      "status": "paywall",
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
+      "ticket": "",
+      "note": "WMO-No. 782 METAR/SPECI rule (17-24)"
+    },
+    {
+      "code": "TREND_NCD_OR_SOLIDUS_FORBIDDEN",
+      "status": "paywall",
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
+      "ticket": "",
+      "note": "WMO-No. 782 METAR/SPECI rule (17-24)"
+    },
+    {
+      "code": "TREND_NOSIG_EXCLUSIVITY",
+      "status": "paywall",
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
+      "ticket": "",
+      "note": "WMO-No. 782 METAR/SPECI rule (43)"
+    },
+    {
+      "code": "TREND_NSW_ONLY_IN_CHANGE",
+      "status": "paywall",
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
+      "ticket": "",
+      "note": "WMO-No. 782 METAR/SPECI rule (17-24)"
+    },
+    {
+      "code": "TREND_PROB_FORBIDDEN",
+      "status": "paywall",
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
+      "ticket": "",
+      "note": "WMO-No. 782 METAR/SPECI rule (17-24)"
+    },
+    {
+      "code": "TREND_UNIT_MISMATCH",
+      "status": "paywall",
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
+      "ticket": "",
+      "note": "WMO-No. 782 METAR/SPECI rule (17-24)"
+    },
+    {
+      "code": "TREND_WIND_V_GROUP_FORBIDDEN",
+      "status": "paywall",
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
+      "ticket": "",
+      "note": "WMO-No. 782 METAR/SPECI rule (17-24)"
+    },
+    {
       "code": "TX_TN_PRESENT",
       "status": "paywall",
       "source_id": "icao-annex-3",
@@ -1726,8 +2096,8 @@
       "consumer": "tac-validate",
       "dig": "docs/domain/mining/codes-wmo-int-aviation-mining-notes.md",
       "ticket": null,
-      "source_attribution": "codes-wmo-int — https://codes.wmo.int/ (product routing N/A to aviation weather registers)",
-      "note": "Intentional bare root — not a registry notation check"
+      "source_attribution": "codes-wmo-int \u2014 https://codes.wmo.int/ (product routing N/A to aviation weather registers)",
+      "note": "Intentional bare root \u2014 not a registry notation check"
     },
     {
       "code": "UNKNOWN_WMO_MEMBERSHIP",
@@ -1737,8 +2107,28 @@
       "consumer": "tac-validate",
       "dig": "docs/domain/mining/codes-wmo-int-aviation-mining-notes.md",
       "ticket": "https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/959",
-      "source_attribution": "codes-wmo-int — https://codes.wmo.int/49-2 (offline vendor CSV/RDF membership) · prior landing: https://codes.wmo.int/49-2",
+      "source_attribution": "codes-wmo-int \u2014 https://codes.wmo.int/49-2 (offline vendor CSV/RDF membership) \u00b7 prior landing: https://codes.wmo.int/49-2",
       "note": "Validated: tac-validate membership gate vs harvested wmo_membership.json"
+    },
+    {
+      "code": "US_METAR_INHG_ALTIMETER",
+      "status": "ok",
+      "source_id": "faa-aim",
+      "source_url": "https://www.faa.gov/air_traffic/publications/atpubs/aim_html/chap7_section_1.html",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/profiles/mining/EV-1120-profile-scoped-catalog.md",
+      "ticket": "https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1122",
+      "note": "US METAR/SPECI altimeter uses inches of mercury A#### (national overlay)"
+    },
+    {
+      "code": "US_METAR_STATUTE_MILE_VIS",
+      "status": "ok",
+      "source_id": "faa-aim",
+      "source_url": "https://www.faa.gov/air_traffic/publications/atpubs/aim_html/chap7_section_1.html",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/profiles/mining/EV-1120-profile-scoped-catalog.md",
+      "ticket": "https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1122",
+      "note": "US METAR/SPECI report prevailing visibility in statute miles with SM"
     },
     {
       "code": "US_SWXA_SATCOM_NOT_ISSUED",
@@ -1761,16 +2151,6 @@
       "note": "US TAF does not use BECMG change groups (FAA GEN 1.7 / national overlay)"
     },
     {
-      "code": "US_TAF_TEMPO_MAX_4H",
-      "status": "ok",
-      "source_id": "fmh-1",
-      "source_url": "https://www.faa.gov/air_traffic/publications/atpubs/aip_html/part1_gen_section_1.7.html",
-      "consumer": "tac-validate",
-      "dig": "docs/domain/mining/fmh1-2019-mining-notes.md",
-      "ticket": "https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/919",
-      "note": "US TAF TEMPO groups limited to 4 hours (national overlay)"
-    },
-    {
       "code": "US_TAF_PROB40_NOT_USED",
       "status": "ok",
       "source_id": "faa-aim",
@@ -1781,34 +2161,14 @@
       "note": "NWS TAFs do not use PROB40 (FAA AIM meteorology / ICAO weather formats)"
     },
     {
-      "code": "US_METAR_STATUTE_MILE_VIS",
+      "code": "US_TAF_TEMPO_MAX_4H",
       "status": "ok",
-      "source_id": "faa-aim",
-      "source_url": "https://www.faa.gov/air_traffic/publications/atpubs/aim_html/chap7_section_1.html",
+      "source_id": "fmh-1",
+      "source_url": "https://www.faa.gov/air_traffic/publications/atpubs/aip_html/part1_gen_section_1.7.html",
       "consumer": "tac-validate",
-      "dig": "docs/domain/profiles/mining/EV-1120-profile-scoped-catalog.md",
-      "ticket": "https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1122",
-      "note": "US METAR/SPECI report prevailing visibility in statute miles with SM"
-    },
-    {
-      "code": "US_METAR_INHG_ALTIMETER",
-      "status": "ok",
-      "source_id": "faa-aim",
-      "source_url": "https://www.faa.gov/air_traffic/publications/atpubs/aim_html/chap7_section_1.html",
-      "consumer": "tac-validate",
-      "dig": "docs/domain/profiles/mining/EV-1120-profile-scoped-catalog.md",
-      "ticket": "https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1122",
-      "note": "US METAR/SPECI altimeter uses inches of mercury A#### (national overlay)"
-    },
-    {
-      "code": "CA_METAR_UP_AWOS_ONLY",
-      "status": "ok",
-      "source_id": "manobs-ca",
-      "source_url": "https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manobs-surface-observations.html",
-      "consumer": "tac-validate",
-      "dig": "docs/domain/profiles/mining/EV-1120-profile-scoped-catalog.md",
-      "ticket": "https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1122",
-      "note": "MANOBS present-weather UP (unknown precipitation) is AWOS-only"
+      "dig": "docs/domain/mining/fmh1-2019-mining-notes.md",
+      "ticket": "https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/919",
+      "note": "US TAF TEMPO groups limited to 4 hours (national overlay)"
     },
     {
       "code": "US_TCA_OBSERVED_CB_NOT_PROVIDED",
@@ -1901,6 +2261,16 @@
       "note": "EUR Doc 014 public; Annex 3 paywall companion"
     },
     {
+      "code": "VISIBILITY_MISSING_AS_SOLIDUS",
+      "status": "paywall",
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
+      "ticket": "",
+      "note": "WMO-No. 782 METAR/SPECI rule (8)"
+    },
+    {
       "code": "VONA_DUR_NIL",
       "status": "ok",
       "source_id": "vona-ahl-fm205",
@@ -1921,6 +2291,16 @@
       "note": "Guidance silent residual; AHL/FM205/XSD cites ok"
     },
     {
+      "code": "VV_EXCLUDES_CLOUD_LAYERS",
+      "status": "paywall",
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
+      "ticket": "",
+      "note": "WMO-No. 782 METAR/SPECI rule (43)"
+    },
+    {
       "code": "VV_NOT_OBSERVABLE",
       "status": "ok",
       "source_id": "codes-wmo-int",
@@ -1928,7 +2308,7 @@
       "consumer": "tac-validate",
       "dig": "docs/domain/mining/codes-wmo-int-aviation-mining-notes.md",
       "ticket": null,
-      "source_attribution": "codes-wmo-int — https://codes.wmo.int/common/nil/notObservable · prior landing: https://codes.wmo.int/common/nil",
+      "source_attribution": "codes-wmo-int \u2014 https://codes.wmo.int/common/nil/notObservable \u00b7 prior landing: https://codes.wmo.int/common/nil",
       "note": "Vertical visibility missingness via nil"
     },
     {
@@ -1942,6 +2322,106 @@
       "note": "App 5 / Table A5-1"
     },
     {
+      "code": "WEATHER_AUTO_UP_OR_SH",
+      "status": "paywall",
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
+      "ticket": "",
+      "note": "WMO-No. 782 METAR/SPECI rule (11-12)"
+    },
+    {
+      "code": "WEATHER_BR_VIS_BAND",
+      "status": "paywall",
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
+      "ticket": "",
+      "note": "WMO-No. 782 METAR/SPECI rule (40-41)"
+    },
+    {
+      "code": "WEATHER_DESCRIPTOR_PAIRING",
+      "status": "paywall",
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
+      "ticket": "",
+      "note": "WMO-No. 782 METAR/SPECI rule (40-42)"
+    },
+    {
+      "code": "WEATHER_FG_VIS_THRESHOLD",
+      "status": "paywall",
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
+      "ticket": "",
+      "note": "WMO-No. 782 METAR/SPECI rule (40-41)"
+    },
+    {
+      "code": "WEATHER_FZ_REQUIRES_SUBZERO",
+      "status": "paywall",
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
+      "ticket": "",
+      "note": "WMO-No. 782 METAR/SPECI rule (42)"
+    },
+    {
+      "code": "WEATHER_SHPL_FORBIDDEN",
+      "status": "paywall",
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
+      "ticket": "",
+      "note": "WMO-No. 782 METAR/SPECI rule (11-12)"
+    },
+    {
+      "code": "WEATHER_SQ_MIN_SPEED",
+      "status": "paywall",
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
+      "ticket": "",
+      "note": "WMO-No. 782 METAR/SPECI rule (41)"
+    },
+    {
+      "code": "WEATHER_VC_COMBINATION",
+      "status": "paywall",
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
+      "ticket": "",
+      "note": "WMO-No. 782 METAR/SPECI rule (43)"
+    },
+    {
+      "code": "WEATHER_VIS_OBSCURATION_THRESHOLD",
+      "status": "paywall",
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
+      "ticket": "",
+      "note": "WMO-No. 782 METAR/SPECI rule (11-12)"
+    },
+    {
+      "code": "WIND_CALM_MISENCODE",
+      "status": "paywall",
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
+      "ticket": "",
+      "note": "WMO-No. 782 METAR/SPECI rule (7)"
+    },
+    {
       "code": "WIND_DIR_VARIATION",
       "status": "paywall",
       "source_id": "icao-annex-3",
@@ -1950,6 +2430,66 @@
       "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
       "ticket": null,
       "note": "Table A3-2 / App 3"
+    },
+    {
+      "code": "WIND_GUST_BELOW_THRESHOLD",
+      "status": "paywall",
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
+      "ticket": "",
+      "note": "WMO-No. 782 METAR/SPECI rule (6-7)"
+    },
+    {
+      "code": "WIND_HIGH_SPEED_P_INDICATOR",
+      "status": "paywall",
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
+      "ticket": "",
+      "note": "WMO-No. 782 METAR/SPECI rule (7)"
+    },
+    {
+      "code": "WIND_PHYSICAL_RANGE",
+      "status": "paywall",
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
+      "ticket": "",
+      "note": "Product warning for hurricane-force METAR mean wind or unusually large gust spread."
+    },
+    {
+      "code": "WIND_SHEAR_FORMAT",
+      "status": "paywall",
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
+      "ticket": "",
+      "note": "WMO-No. 782 METAR/SPECI rule (17-18)"
+    },
+    {
+      "code": "WIND_VARIATION_SPAN",
+      "status": "paywall",
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
+      "ticket": "",
+      "note": "WMO-No. 782 METAR/SPECI rule (6)"
+    },
+    {
+      "code": "WIND_VRB_MISUSE",
+      "status": "paywall",
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
+      "ticket": "",
+      "note": "WMO-No. 782 surface wind special cases: VRB must not appear with a directed variation group."
     },
     {
       "code": "WIND_VRB_OR_GUST",
@@ -1962,6 +2502,26 @@
       "note": "Table A3-2 / App 3"
     },
     {
+      "code": "WS_ALL_RWY_EXCLUSIVE",
+      "status": "paywall",
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
+      "ticket": "",
+      "note": "WMO-No. 782 METAR/SPECI rule (43)"
+    },
+    {
+      "code": "WX_COLUMN_SEQUENCE",
+      "status": "paywall",
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
+      "ticket": "",
+      "note": "WMO-No. 782 METAR/SPECI rule (43)"
+    },
+    {
       "code": "WX_NOT_OBSERVABLE",
       "status": "ok",
       "source_id": "codes-wmo-int",
@@ -1969,7 +2529,7 @@
       "consumer": "tac-validate",
       "dig": "docs/domain/mining/codes-wmo-int-aviation-mining-notes.md",
       "ticket": null,
-      "source_attribution": "codes-wmo-int — https://codes.wmo.int/common/nil/notObservable (dual iwxxm/nil) · prior landing: https://codes.wmo.int/common/nil",
+      "source_attribution": "codes-wmo-int \u2014 https://codes.wmo.int/common/nil/notObservable (dual iwxxm/nil) \u00b7 prior landing: https://codes.wmo.int/common/nil",
       "note": "nilReason notObservable; prefer iwxxm/nil when pin policy says so"
     }
   ],
@@ -2371,7 +2931,7 @@
       "status": "ok",
       "pin_version": "2025-2",
       "ticket": null,
-      "note": "WM→LM ok; #869 is Guidance silence tracker only"
+      "note": "WM\u2192LM ok; #869 is Guidance silence tracker only"
     },
     {
       "rule_id": "VONA_FM205_PACKAGE",
@@ -2392,7 +2952,7 @@
       "status": "N/A",
       "pin_version": "2025-2",
       "ticket": "#869",
-      "note": "Upstream Guidance silence — non-blocking encode; SoT hierarchy documented"
+      "note": "Upstream Guidance silence \u2014 non-blocking encode; SoT hierarchy documented"
     },
     {
       "rule_id": "IWXXM_SCH_PIN",
@@ -2413,7 +2973,7 @@
       "status": "N/A",
       "pin_version": "3.0",
       "ticket": "#870",
-      "note": "Official US Schematron not published — N/A artifact ()"
+      "note": "Official US Schematron not published \u2014 N/A artifact ()"
     },
     {
       "rule_id": "AHL_SPECI_SP_LP",
@@ -2424,7 +2984,7 @@
       "status": "ok",
       "pin_version": "2025-2",
       "ticket": null,
-      "note": "fixtures/ahl/sp_speci — matrix refresh may close #872"
+      "note": "fixtures/ahl/sp_speci \u2014 matrix refresh may close #872"
     },
     {
       "rule_id": "CA-ECCC-FILENAME",
@@ -2468,7 +3028,7 @@
       "status": "ok",
       "pin_version": "3.0.0",
       "ticket": "#1031",
-      "note": "MSC ⊂ WMO filename grammar"
+      "note": "MSC \u2282 WMO filename grammar"
     },
     {
       "rule_id": "CA_ALTIMETER_NOT_OBS",
@@ -2490,7 +3050,7 @@
       "status": "ok",
       "pin_version": "3.0.0",
       "ticket": "#1030",
-      "note": "MANAIR Amd15 §2.6.9"
+      "note": "MANAIR Amd15 \u00a72.6.9"
     },
     {
       "rule_id": "CA_AIRMET_GFA",
@@ -2501,7 +3061,7 @@
       "status": "ok",
       "pin_version": "3.0.0",
       "ticket": "#1030",
-      "note": "MANAIR Amd15 §6.8.8"
+      "note": "MANAIR Amd15 \u00a76.8.8"
     },
     {
       "rule_id": "CA_METAR_IWXXM_DUAL",
@@ -2512,7 +3072,7 @@
       "status": "ok",
       "pin_version": "3.0.0",
       "ticket": "#1029",
-      "note": "MANOBS §11.1"
+      "note": "MANOBS \u00a711.1"
     }
   ],
   "revisited_executable": [

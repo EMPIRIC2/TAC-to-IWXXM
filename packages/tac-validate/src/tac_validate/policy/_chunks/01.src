@@ -1,0 +1,38 @@
+def _default_codes_for_product(product: str | None) -> frozenset[str]:
+    """
+    Internal helper ``_default_codes_for_product``.
+
+    Parameters
+    ----------
+    product : object
+        Argument ``product``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
+    if product is None:
+        return frozenset(spec.code for spec in ISSUES)
+    return frozenset(spec.code for spec in catalog_entries(product=product))
+
+
+def _unknown(code: str) -> bool:
+    """
+    Internal helper ``_unknown``.
+
+    Parameters
+    ----------
+    code : object
+        Argument ``code``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
+    try:
+        by_code(code)
+    except KeyError:
+        return True
+    return False

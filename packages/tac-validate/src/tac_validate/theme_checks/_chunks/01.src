@@ -1,0 +1,20 @@
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (hatch_r1_order)
+    2
+
+    Parameters
+    ----------
+    tac_text : str
+        TAC text.
+    product : str
+        Product id.
+
+    Returns
+    -------
+    list[Issue]
+        Declarative R1 residual: field-order only (CCCC / time via YAML).
+    """
+    start, end, _core, tokens = _tokens(tac_text)
+    order_issue = _check_metar_speci_field_order(tokens, product=product, start=start, end=end)
+    return [order_issue] if order_issue is not None else []

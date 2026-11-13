@@ -1,0 +1,24 @@
+def _parse_variable_visibility_remark(remarks: str) -> dict[str, Any] | None:
+    """
+    Internal helper ``_parse_variable_visibility_remark``.
+
+    Parameters
+    ----------
+    remarks : str
+        Argument ``remarks``.
+
+    Returns
+    -------
+    dict[str, Any] | None
+        Return value.
+    """
+    m = _VIS_VAR.search(remarks)
+    if m is None:
+        return None
+    entry: dict[str, Any] = {
+        "minimum_m": _sm_float_to_m(_parse_sm_fraction(m.group("min"))),
+        "maximum_m": _sm_float_to_m(_parse_sm_fraction(m.group("max"))),
+    }
+    if m.group("lt"):
+        entry["below_minimum"] = True
+    return entry

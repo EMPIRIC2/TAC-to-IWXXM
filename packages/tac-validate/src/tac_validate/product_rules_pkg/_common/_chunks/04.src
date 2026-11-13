@@ -1,0 +1,351 @@
+def _check_r8_pack(
+    tokens: list[str],
+    *,
+    product: str,
+    core: str,
+    body_start: int,
+    body_end: int,
+) -> list[Issue]:
+    """
+    Internal helper ``_check_r8_pack``.
+
+    Parameters
+    ----------
+    tokens : object
+        Argument ``tokens``.
+    product : object
+        Argument ``product``.
+    core : object
+        Argument ``core``.
+    body_start : object
+        Argument ``body_start``.
+    body_end : object
+        Argument ``body_end``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
+    issues: list[Issue] = []
+    if "AUTO" in tokens:
+        _emit_token_info(
+            issues,
+            code="AUTO_PRESENT",
+            message=f"{product} AUTO modifier present - research R8",
+            core=core,
+            body_start=body_start,
+            body_end=body_end,
+            token="AUTO",
+        )
+    if "COR" in tokens:
+        _emit_token_info(
+            issues,
+            code="COR_PRESENT",
+            message=f"{product} COR modifier present - research R8",
+            core=core,
+            body_start=body_start,
+            body_end=body_end,
+            token="COR",
+        )
+    if "NOSIG" in tokens:
+        _emit_token_info(
+            issues,
+            code="NOSIG_PRESENT",
+            message=f"{product} NOSIG trend present - research R8",
+            core=core,
+            body_start=body_start,
+            body_end=body_end,
+            token="NOSIG",
+        )
+    if "TEMPO" in tokens:
+        _emit_token_info(
+            issues,
+            code="TEMPO_PRESENT",
+            message=f"{product} TEMPO trend present - research R8",
+            core=core,
+            body_start=body_start,
+            body_end=body_end,
+            token="TEMPO",
+        )
+
+    for tok in tokens:
+        if not _RVR.match(tok):
+            continue
+        # Bare R14R after WS is a wind-shear runway designator, not an RVR group.
+        # True RVR always has '/' after the runway (R14R/P2000N).
+        if "/" not in tok:
+            continue
+        if _RVR_RUNWAY_STATE.fullmatch(tok):
+            continue
+        if _RVR_OK.fullmatch(tok):
+            _emit_token_info(
+                issues,
+                code="RVR_PRESENT",
+                message=f"{product} RVR group {tok!r} present - research R8",
+                core=core,
+                body_start=body_start,
+                body_end=body_end,
+                token=tok,
+            )
+        else:
+            _emit_token_info(
+                issues,
+                code="INVALID_RVR",
+                message=f"{product} invalid RVR token {tok!r} - research R8",
+                core=core,
+                body_start=body_start,
+                body_end=body_end,
+                token=tok,
+            )
+
+    wind_tokens = [t for t in tokens if t == "CALM" or t.endswith(("KT", "MPS"))]
+    bad_winds = [t for t in wind_tokens if not _WIND.fullmatch(t)]
+    good_winds = [t for t in wind_tokens if _WIND.fullmatch(t)]
+    for tok in bad_winds:
+        _emit_token_info(
+            issues,
+            code="INVALID_WIND",
+            message=f"{product} invalid wind token {tok!r} - research R8",
+            core=core,
+            body_start=body_start,
+            body_end=body_end,
+            token=tok,
+        )
+    for tok in good_winds:
+        if tok.startswith("VRB") or "G" in tok:
+            _emit_token_info(
+                issues,
+                code="WIND_VRB_OR_GUST",
+                message=f"{product} wind {tok!r} uses VRB and/or gust - research R8",
+                core=core,
+                body_start=body_start,
+                body_end=body_end,
+                token=tok,
+            )
+            break
+    return issues
+
+
+def _check_metar_speci_field_order(
+    tokens: list[str],
+    *,
+    product: str,
+    start: int,
+    end: int,
+) -> Issue | None:
+    """
+    Internal helper ``_check_metar_speci_field_order``.
+
+    Parameters
+    ----------
+    tokens : object
+        Argument ``tokens``.
+    product : object
+        Argument ``product``.
+    start : object
+        Argument ``start``.
+    end : object
+        Argument ``end``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
+    cccc_i = _first_icao_index(tokens, _METAR_SPECI_SKIP)
+    time_i = _token_index(tokens, _OBS_TIME)
+    wind_i = _token_index(tokens, _WIND)
+    present = [(i, name) for i, name in ((cccc_i, "CCCC"), (time_i, "time"), (wind_i, "wind")) if i is not None]
+    if len(present) < 2:
+        return None
+    indices = [i for i, _ in present]
+    if indices == sorted(indices):
+        return None
+    return _issue(
+        "ODD_FIELD_ORDER",
+        f"{product} groups out of A3-2 order (CCCC → ddhhmmZ → wind) - research R1",
+        start=start,
+        end=end,
+        location="order",
+    )
+
+
+def _report_segment_count(body: str) -> int:
+    """
+    Internal helper ``_report_segment_count``.
+
+    Parameters
+    ----------
+    body : object
+        Argument ``body``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
+    return sum(1 for part in body.split("=") if part.strip())
+
+
+def _check_c1_multi_report(tac: str, product: str) -> list[Issue]:
+    """
+    Internal helper ``_check_c1_multi_report``.
+
+    Parameters
+    ----------
+    tac : object
+        Argument ``tac``.
+    product : object
+        Argument ``product``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
+    start, end, body = _body_span(tac)
+    if _report_segment_count(body) < 2:
+        return []
+    return [
+        _issue(
+            "MULTI_REPORT_BULLETIN",
+            f"{product} bulletin has multiple TAC reports - one IWXXM report per TAC (Guidance C1)",
+            start=start,
+            end=end,
+            location="bulletin",
+        )
+    ]
+
+
+__all__ = [
+    "_AHL_HEADING_LINE",
+    "_AIRMET_FAMILIES",
+    "_AIRMET_NO_SEQ",
+    "_AIRMET_PHENOM_CANDIDATE",
+    "_AIRMET_SEQ",
+    "_ALT_INHG_BODY",
+    "_ALT_NOT_OBS_BODY",
+    "_CA_GFA_PHENOM",
+    "_CB_LINE",
+    "_CLOUD_LIKE",
+    "_CLOUD_OK",
+    "_CLOUD_START",
+    "_DTG_LINE",
+    "_DUR_LINE",
+    "_GFA_CHART",
+    "_ICAO",
+    "_LAYER_CLOUD_PARTS",
+    "_LAYER_CLOUD_TOKEN",
+    "_MAX_WIND_LINE",
+    "_METAR_SPECI_SKIP",
+    "_NCLWS_TAC",
+    "_NO_SWX_EXP",
+    "_NO_VA_EXP",
+    "_NXT_ADVISORY_LINE",
+    "_NXT_MSG_LINE",
+    "_OBS_SWX_LINE",
+    "_OBS_TIME",
+    "_ONSET_LINE",
+    "_QNH",
+    "_QNH_NOT_OBS",
+    "_RECENT_WX",
+    "_RMK_AO",
+    "_RMK_LINE",
+    "_RMK_NOSPECI",
+    "_RMK_PK_VAL",
+    "_RMK_PRES_CA",
+    "_RMK_P_OK",
+    "_RMK_SECTOR_VIS_IN_TEXT",
+    "_RMK_SLP_OK",
+    "_RMK_T_OK",
+    "_RVR",
+    "_RVR_OK",
+    "_RVR_RUNWAY_STATE",
+    "_SIGMET_CNL",
+    "_SIGMET_CNL_FIR_MOVED",
+    "_SIGMET_COR",
+    "_SIGMET_FAMILIES",
+    "_SIGMET_FIR_CTA",
+    "_SIGMET_INTENSITY",
+    "_SIGMET_LEVEL_RANGE",
+    "_SIGMET_MOV",
+    "_SIGMET_MOV_DIR",
+    "_SIGMET_MOV_STNR_ADJACENT",
+    "_SIGMET_NO_SEQ",
+    "_SIGMET_NO_VA_EXP",
+    "_SIGMET_OBS_FCST",
+    "_SIGMET_OF_TC_CENTRE",
+    "_SIGMET_PHENOM_CANDIDATE",
+    "_SIGMET_POINT_COORD",
+    "_SIGMET_SEQ",
+    "_SIGMET_SINGLE_LEVEL",
+    "_SIGMET_STNR",
+    "_SIGMET_TC_IDENTITY",
+    "_SIGMET_TC_NAME",
+    "_SIGMET_TC_TOKEN",
+    "_SIGMET_TOP_ABV_BLW",
+    "_SIGMET_VALID_PAIR",
+    "_SIGMET_VA_CLD",
+    "_SIGMET_VA_TOKEN",
+    "_SIGMET_VA_VOLCANO",
+    "_SIGMET_WI",
+    "_SVO_LINE",
+    "_SWXC_LINE",
+    "_SWX_EFFECT_LINE",
+    "_SWX_EFFECT_PREFIX",
+    "_TAF_AT",
+    "_TAF_FM",
+    "_TAF_PROB",
+    "_TAF_SKIP",
+    "_TAF_TL",
+    "_TAF_TX_TN",
+    "_TAF_VALIDITY",
+    "_TAF_VIS_SM",
+    "_TC_LINE",
+    "_TEMP",
+    "_TEMP_DEWPOINT_NIL",
+    "_VAAC_LINE",
+    "_VALID_PERIOD",
+    "_VIS_BAD",
+    "_VIS_OK",
+    "_VOLCANO_LINE",
+    "_WC_MAX_VALIDITY_HOURS",
+    "_WIND",
+    "_WIND_DIR_VAR",
+    "_WIND_TOKEN",
+    "_WS_MAX_VALIDITY_HOURS",
+    "_WV_MAX_VALIDITY_HOURS",
+    "_WX_DESCRIPTORS",
+    "_WX_PHENOMENA",
+    "_WX_SPECIAL",
+    "_WX_STANDALONE",
+    "_WX_TOKEN_SHAPE",
+    "_append_remark_issue",
+    "_body_span",
+    "_check_c1_multi_report",
+    "_check_ca_gfa_airmet",
+    "_check_ca_manair",
+    "_check_ca_manobs",
+    "_check_in_imd_taf",
+    "_check_metar_speci_field_order",
+    "_check_phenomenon_membership",
+    "_check_r8_pack",
+    "_check_us_remarks",
+    "_cloud_candidate_tokens",
+    "_consume_wx_descriptors",
+    "_emit_nsc_layer_exclusivity",
+    "_emit_token_info",
+    "_first_icao",
+    "_first_icao_index",
+    "_forecast_or_obs_segments",
+    "_is_valid_cloud_token",
+    "_is_valid_weather_token",
+    "_issue",
+    "_membership_issue",
+    "_report_segment_count",
+    "_token_index",
+    "_token_span_in_core",
+    "_weather_candidate_tokens",
+    "_weather_in_register",
+]

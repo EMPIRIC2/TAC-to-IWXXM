@@ -1,0 +1,53 @@
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (resolved_lint_profile)
+    2
+    """
+    rows = load_lint_profiles()
+    leaf = canonical_lint_profile_id(profile_id)
+    spec = rows.get(leaf)
+    if spec is None:
+        return None
+    chain = profile_inherit_chain(leaf)
+    deltas: list[LintDelta] = []
+    recorded: list[str] = []
+    seen_delta: set[str] = set()
+    seen_recorded: set[str] = set()
+    differs = False
+    for pid in chain:
+        row = rows[pid]
+        differs = differs or row.differs
+        for delta in row.deltas:
+            if delta.rule_id in seen_delta:
+                deltas = [item for item in deltas if item.rule_id != delta.rule_id]
+            seen_delta.add(delta.rule_id)
+            deltas.append(delta)
+        for rid in row.recorded:
+            if rid in seen_recorded:
+                recorded = [item for item in recorded if item != rid]
+            seen_recorded.add(rid)
+            recorded.append(rid)
+    return LintProfileSpec(
+        profile_id=leaf,
+        engine=spec.engine,
+        products=spec.products,
+        differs=differs,
+        deltas=tuple(deltas),
+        recorded=tuple(recorded),
+        inherits=spec.inherits,
+        stations=spec.stations,
+        station_prefixes=spec.station_prefixes,
+        accept_end_tx_tn=spec.accept_end_tx_tn,
+    )
+
+
+__all__ = [
+    "MAX_INHERIT_DEPTH",
+    "LintDelta",
+    "LintProfileSpec",
+    "apply_profile_deltas",
+    "lint_profile_spec",
+    "load_lint_profiles",
+    "profile_inherit_chain",
+    "resolved_lint_profile",
+]

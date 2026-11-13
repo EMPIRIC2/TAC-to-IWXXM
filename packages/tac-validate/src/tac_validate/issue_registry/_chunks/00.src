@@ -1,0 +1,73 @@
+"""Maintainable TAC lint issue registry (F15 / ADR-028).
+
+Rules import ``IssueSpec`` rows via ``by_code`` / ``issue_from`` instead of inventing
+severity or code string literals. Catalog export (``make catalog-regen``) iterates
+``ISSUES``.
+"""
+from __future__ import annotations
+import msgspec
+
+from tac_validate.models import Issue
+
+
+class IssueSpec(msgspec.Struct, frozen=True):
+    """
+    One registered lint issue definition.
+
+    Parameters
+    ----------
+    code : str
+        Stable SCREAMING_SNAKE public id.
+    severity : str
+        Default ``error``, ``warning``, or ``info``.
+    message_template : str
+        Human message; may include ``str.format`` placeholders (e.g. ``{product}``).
+    product : str or None
+        Optional product tag for catalog filtering (``None`` = shared / multi-product).
+    tags : tuple[str, ...]
+        Optional catalog / FE tags (not part of the public code string).
+    """
+
+    code: str
+    severity: str
+    message_template: str
+    product: str | None = None
+    tags: tuple[str, ...] = ()
+
+
+def _row(
+    code: str,
+    severity: str,
+    message_template: str,
+    *,
+    product: str | None = None,
+    tags: tuple[str, ...] = (),
+) -> IssueSpec:
+    """
+    Internal helper ``_row``.
+
+    Parameters
+    ----------
+    code : object
+        Argument ``code``.
+    severity : object
+        Argument ``severity``.
+    message_template : object
+        Argument ``message_template``.
+    product : object
+        Argument ``product``.
+    tags : object
+        Argument ``tags``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
+    return IssueSpec(
+        code=code,
+        severity=severity,
+        message_template=message_template,
+        product=product,
+        tags=tags,
+    )

@@ -1,0 +1,334 @@
+def _trend_phenomenon_time(trend: dict[str, Any], idx: int) -> str:
+    """
+    Internal helper ``_trend_phenomenon_time``.
+
+    Parameters
+    ----------
+    trend : dict[str, Any]
+        Argument ``trend``.
+
+    idx : int
+        Argument ``idx``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
+    if trend.get("phenomenon_begin") and trend.get("phenomenon_end"):
+        return f"""      <iwxxm:phenomenonTime>
+        <gml:TimePeriod gml:id="t.trend.{idx}">
+          <gml:beginPosition>{trend["phenomenon_begin"]}</gml:beginPosition>
+          <gml:endPosition>{trend["phenomenon_end"]}</gml:endPosition>
+        </gml:TimePeriod>
+      </iwxxm:phenomenonTime>"""
+    if trend.get("phenomenon_at"):
+        return f"""      <iwxxm:phenomenonTime>
+        <gml:TimeInstant gml:id="t.trend.{idx}">
+          <gml:timePosition>{trend["phenomenon_at"]}</gml:timePosition>
+        </gml:TimeInstant>
+      </iwxxm:phenomenonTime>"""
+    return f'      <iwxxm:phenomenonTime nilReason="{NIL_MISSING}"/>'
+
+
+def _trend_weather_block(trend: dict[str, Any]) -> str:
+    """
+    Internal helper ``_trend_weather_block``.
+
+    Parameters
+    ----------
+    trend : dict[str, Any]
+        Argument ``trend``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
+    if trend.get("weather_nsw"):
+        return f'\n      <iwxxm:weather nilReason="{NIL_NSC}"/>'
+    codes_raw = trend.get("weather")
+    if not isinstance(codes_raw, list):
+        return ""
+    parts: list[str] = []
+    for raw_code in cast(list[Any], codes_raw):
+        href = escape(WX_HREF.format(code=str(raw_code)))
+        parts.append(f'\n      <iwxxm:weather xlink:href="{href}"/>')
+    return "".join(parts)
+
+
+def _trend_forecasts(ir: dict[str, Any]) -> str:
+    """
+    Internal helper ``_trend_forecasts``.
+
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Argument ``ir``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
+    parts: list[str] = []
+    forecasts_raw = ir.get("trend_forecasts")
+    forecasts: list[dict[str, Any]] = []
+    if isinstance(forecasts_raw, list) and forecasts_raw:
+        forecasts.extend(
+            cast(dict[str, Any], item) for item in cast(list[Any], forecasts_raw) if isinstance(item, dict)
+        )
+    else:
+        # Legacy F20 path: nosig + single tempo_trend.
+        if ir.get("nosig") and not forecasts:
+            parts.append(f'  <iwxxm:trendForecast nilReason="{NIL_NOSIG}"/>\n')
+        tempo_raw = ir.get("tempo_trend")
+        if isinstance(tempo_raw, dict):
+            forecasts = [cast(dict[str, Any], tempo_raw)]
+
+    for idx, trend in enumerate(forecasts, start=1):
+        if trend.get("nil_nosig"):
+            parts.append(f'  <iwxxm:trendForecast nilReason="{NIL_NOSIG}"/>\n')
+            continue
+        indicator = str(trend.get("change_indicator") or "TEMPORARY_FLUCTUATIONS")
+        cavok = bool(trend.get("cavok"))
+        cavok_attr = ' cloudAndVisibilityOK="true"' if cavok else ' cloudAndVisibilityOK="false"'
+        # Second METAR BECMG AT1800 omits cloudAndVisibilityOK in vendor - keep false when weather/vis present.
+        if indicator == "BECOMING" and trend.get("weather_nsw") and not trend.get("cloud_nsc"):
+            # Vendor metar-A3-1 second trend has no cloudAndVisibilityOK attribute.
+            cavok_attr = ""
+
+        phen = _trend_phenomenon_time(trend, idx)
+        time_ind = ""
+        if trend.get("time_indicator"):
+            time_ind = f"\n      <iwxxm:timeIndicator>{trend['time_indicator']}</iwxxm:timeIndicator>"
+
+        vis = ""
+        if trend.get("visibility_m") is not None:
+            vis = f'\n      <iwxxm:prevailingVisibility uom="m">{trend["visibility_m"]}</iwxxm:prevailingVisibility>'
+            if trend.get("visibility_above"):
+                vis += "\n      <iwxxm:prevailingVisibilityOperator>ABOVE</iwxxm:prevailingVisibilityOperator>"
+
+        weather = _trend_weather_block(trend)
+        cloud = ""
+        if trend.get("cloud_nsc"):
+            cloud = f'\n      <iwxxm:cloud nilReason="{NIL_NSC}"/>'
+
+        parts.append(
+            f"""  <iwxxm:trendForecast>
+    <iwxxm:MeteorologicalAerodromeTrendForecast gml:id="trend.{idx}" changeIndicator="{indicator}"{cavok_attr}>
+{phen}{time_ind}{vis}{weather}{cloud}
+    </iwxxm:MeteorologicalAerodromeTrendForecast>
+  </iwxxm:trendForecast>
+"""
+        )
+    return "".join(parts)
+
+
+def build_observation_and_trends(
+    ir: dict[str, Any],
+    *,
+    addendum_extension: str = "",
+    peak_extension: str = "",
+    rvr_extension: str = "",
+    visibility_extension: str = "",
+    cloud_layer_extension: str = "",
+) -> tuple[str, str]:
+    """
+    Build IWXXM observation element and trailing trendForecast elements.
+
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Parsed METAR/SPECI IR.
+
+    addendum_extension : str, optional
+        Optional observation-level extension XML (iwxxm_us Addendum).
+
+    peak_extension : str, optional
+        Optional surface-wind extension XML (iwxxm_us peak wind).
+
+    rvr_extension : str, optional
+        Optional RVR extension XML (iwxxm_us AerodromeVariableRVR).
+
+    visibility_extension : str, optional
+        Optional horizontal-visibility extension XML (SectorVisibility / TowerVisibility).
+
+    cloud_layer_extension : str, optional
+        Optional CloudLayer extension XML (VariableCeilingHeight / VariableSkyCondition).
+
+    Returns
+    -------
+    observation, trends
+        XML fragments (each ending with newline when non-empty).
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (build_observation_and_trends)
+    2
+    """
+    if ir.get("nil"):
+        return f'  <iwxxm:observation nilReason="{NIL_MISSING}"/>\n', ""
+
+    cavok = bool(ir.get("cavok"))
+    cavok_attr = "true" if cavok else "false"
+    vis_block = ""
+    rvr_block = ""
+    wx_block = ""
+    cloud = ""
+    recent = ""
+    if ir.get("ca_minimal_observation"):
+        cavok_attr = "false"
+    elif not cavok:
+        vis_block = _visibility_block(ir, visibility_extension=visibility_extension)
+        rvr_block = _rvr_block(ir, rvr_extension=rvr_extension)
+        wx_block = _present_weather_block(ir)
+        cloud = _cloud_block(ir, cloud_layer_extension=cloud_layer_extension)
+    recent = _recent_weather_block(ir)
+
+    if ir.get("temp_not_observable"):
+        temp_xml = f'      <iwxxm:airTemperature uom="N/A" xsi:nil="true" nilReason="{NIL_NOT_OBS}"/>\n'
+    else:
+        temp_xml = f'      <iwxxm:airTemperature uom="Cel">{_fmt_cel(ir["temp_c"])}</iwxxm:airTemperature>\n'
+    if ir.get("dewpoint_not_observable"):
+        dew_xml = f'      <iwxxm:dewpointTemperature uom="N/A" xsi:nil="true" nilReason="{NIL_NOT_OBS}"/>\n'
+    else:
+        dew_xml = (
+            f'      <iwxxm:dewpointTemperature uom="Cel">{_fmt_cel(ir["dewpoint_c"])}</iwxxm:dewpointTemperature>\n'
+        )
+    if ir.get("qnh_not_observable"):
+        qnh_xml = f'      <iwxxm:qnh uom="N/A" xsi:nil="true" nilReason="{NIL_NOT_OBS}"/>\n'
+    else:
+        qnh_xml = f'      <iwxxm:qnh uom="hPa">{_fmt_hpa(ir["qnh_hpa"])}</iwxxm:qnh>\n'
+
+    observation = f"""  <iwxxm:observation>
+    <iwxxm:MeteorologicalAerodromeObservation gml:id="obs.1" cloudAndVisibilityOK="{cavok_attr}">
+{temp_xml}{dew_xml}{qnh_xml}{_surface_wind_inner(ir, peak_extension=peak_extension)}{vis_block}{rvr_block}{wx_block}{cloud}{recent}{addendum_extension}    </iwxxm:MeteorologicalAerodromeObservation>
+  </iwxxm:observation>
+"""
+    return observation, _trend_forecasts(ir)
+
+
+def _aerodrome_block(station: str) -> str:
+    """
+    Internal helper ``_aerodrome_block``.
+
+    Parameters
+    ----------
+    station : str
+        Argument ``station``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
+    if station == "YUDO":
+        return f"""  <iwxxm:aerodrome>
+    <aixm:AirportHeliport gml:id="ad.{station.lower()}">
+      <aixm:timeSlice>
+        <aixm:AirportHeliportTimeSlice gml:id="ad.ts.{station.lower()}">
+          <gml:validTime/>
+          <aixm:interpretation>SNAPSHOT</aixm:interpretation>
+          <aixm:designator>{station}</aixm:designator>
+          <aixm:name>{_YUDO_NAME}</aixm:name>
+          <aixm:locationIndicatorICAO>{station}</aixm:locationIndicatorICAO>
+          <aixm:ARP>
+            <aixm:ElevatedPoint gml:id="arp.{station.lower()}" srsDimension="2" axisLabels="Lat Long" srsName="http://www.opengis.net/def/crs/EPSG/0/4326">
+              <gml:pos>{_YUDO_POS}</gml:pos>
+              <aixm:elevation uom="M">{_YUDO_ELEV_M}</aixm:elevation>
+              <aixm:verticalDatum>EGM_96</aixm:verticalDatum>
+            </aixm:ElevatedPoint>
+          </aixm:ARP>
+        </aixm:AirportHeliportTimeSlice>
+      </aixm:timeSlice>
+    </aixm:AirportHeliport>
+  </iwxxm:aerodrome>
+"""
+    return f"""  <iwxxm:aerodrome>
+    <aixm:AirportHeliport gml:id="ad.{station.lower()}">
+      <aixm:timeSlice>
+        <aixm:AirportHeliportTimeSlice gml:id="ad.ts.{station.lower()}">
+          <gml:validTime/>
+          <aixm:interpretation>SNAPSHOT</aixm:interpretation>
+          <aixm:designator>{station}</aixm:designator>
+          <aixm:locationIndicatorICAO>{station}</aixm:locationIndicatorICAO>
+        </aixm:AirportHeliportTimeSlice>
+      </aixm:timeSlice>
+    </aixm:AirportHeliport>
+  </iwxxm:aerodrome>
+"""
+
+
+aerodrome_block = _aerodrome_block
+
+
+def emit_metar_speci_annex3(
+    ir: dict[str, Any],
+    *,
+    product: str,
+    iwxxm_version: str,
+) -> str:
+    """
+    Emit a full IWXXM METAR/SPECI document for the annex3 profile.
+
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Parsed METAR/SPECI IR.
+
+    product : str
+        ``METAR`` or ``SPECI``.
+
+    iwxxm_version : str
+        Release line (namespace selection).
+
+    Returns
+    -------
+    str
+        IWXXM XML document.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (emit_metar_speci_annex3)
+    2
+    """
+    ns = NS.get(iwxxm_version)
+    if ns is None:
+        raise ValueError(f"unsupported iwxxm_version for annex3 emit: {iwxxm_version}")
+
+    station = str(ir["station"])
+    stamp = obs_timestamp(ir)
+    root = product.upper()
+    gml_id = _annex3_gml_id(ir, root)
+    override = ir.get("report_status")
+    if override in {"NORMAL", "AMENDMENT", "CORRECTION"}:
+        report_status = str(override)
+    else:
+        report_status = "CORRECTION" if ir.get("correction") else "NORMAL"
+    automated = "true" if ir.get("auto") else "false"
+    observation, trends = build_observation_and_trends(ir)
+    aerodrome = _aerodrome_block(station)
+
+    return f"""<?xml version="1.0" encoding="UTF-8"?>
+<iwxxm:{root} xmlns:iwxxm="{ns}"
+    xmlns:xlink="http://www.w3.org/1999/xlink"
+    xmlns:gml="http://www.opengis.net/gml/3.2"
+    xmlns:aixm="http://www.aixm.aero/schema/5.1.1"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    gml:id="{gml_id}"
+    reportStatus="{report_status}"
+    permissibleUsage="OPERATIONAL"
+    automatedStation="{automated}">
+  <iwxxm:issueTime>
+    <gml:TimeInstant gml:id="t.issue">
+      <gml:timePosition>{stamp}</gml:timePosition>
+    </gml:TimeInstant>
+  </iwxxm:issueTime>
+{aerodrome}  <iwxxm:observationTime>
+    <gml:TimeInstant gml:id="t.obs">
+      <gml:timePosition>{stamp}</gml:timePosition>
+    </gml:TimeInstant>
+  </iwxxm:observationTime>
+{observation}{trends}</iwxxm:{root}>
+"""

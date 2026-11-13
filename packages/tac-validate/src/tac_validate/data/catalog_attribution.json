@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated": "2026-11-04",
+  "generated": "2026-11-12",
   "source": "PROVENANCE_MAP.json catalog_codes",
   "codes": {
     "AMD_PRESENT": {
@@ -17,6 +17,13 @@
       "note": "App 5 / Table A5-1",
       "source_attribution": "icao-annex-3 - access:paywall - https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 - App 5 / Table A5-1"
     },
+    "AUTO_MISPLACED": {
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "status": "paywall",
+      "note": "WMO-No. 782 identification: AUTO must follow the date/time group.",
+      "source_attribution": "wmo-782 - access:paywall - https://library.wmo.int/ - WMO-No. 782 identification: AUTO must follow the date/time group."
+    },
     "AUTO_PRESENT": {
       "source_id": "icao-annex-3",
       "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
@@ -24,12 +31,40 @@
       "note": "Table A3-2 / App 3",
       "source_attribution": "icao-annex-3 - access:paywall - https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 - Table A3-2 / App 3"
     },
+    "AUTO_VISIBILITY_NOT_OBSERVABLE": {
+      "source_id": null,
+      "source_url": null,
+      "status": null,
+      "note": null,
+      "source_attribution": null
+    },
     "BECMG_PRESENT": {
       "source_id": "icao-annex-3",
       "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
       "status": "paywall",
       "note": "App 5 / Table A5-1",
       "source_attribution": "icao-annex-3 - access:paywall - https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 - App 5 / Table A5-1"
+    },
+    "CAVOK_CONDITIONS_NOT_MET": {
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "status": "paywall",
+      "note": "WMO-No. 782 Part A: CAVOK requires visibility, cloud, and weather conditions at the same time.",
+      "source_attribution": "wmo-782 - access:paywall - https://library.wmo.int/ - WMO-No. 782 Part A: CAVOK requires visibility, cloud, and weather conditions at the same time."
+    },
+    "CAVOK_EXCLUDES_RVR": {
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "status": "paywall",
+      "note": "WMO-No. 782 METAR/SPECI rule (43)",
+      "source_attribution": "wmo-782 - access:paywall - https://library.wmo.int/ - WMO-No. 782 METAR/SPECI rule (43)"
+    },
+    "CAVOK_NSC_BOUNDARY": {
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "status": "paywall",
+      "note": "WMO-No. 782 METAR/SPECI rule (13-14,33)",
+      "source_attribution": "wmo-782 - access:paywall - https://library.wmo.int/ - WMO-No. 782 METAR/SPECI rule (13-14,33)"
     },
     "CAVOK_PRESENT": {
       "source_id": "icao-annex-3",
@@ -136,6 +171,27 @@
       "note": "CB/TCU convective type register",
       "source_attribution": "codes-wmo-int - https://codes.wmo.int/ui/resources/WMO-Codes-Registry_user-guide-v1.0.pdf - CB/TCU convective type register"
     },
+    "CLOUD_COMMON_BASE_CB_TCU": {
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "status": "paywall",
+      "note": "WMO-No. 782 METAR/SPECI rule (13-14)",
+      "source_attribution": "wmo-782 - access:paywall - https://library.wmo.int/ - WMO-No. 782 METAR/SPECI rule (13-14)"
+    },
+    "CLOUD_HEIGHT_NOT_ASCENDING": {
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "status": "paywall",
+      "note": "WMO-No. 782 METAR/SPECI rule (13-14)",
+      "source_attribution": "wmo-782 - access:paywall - https://library.wmo.int/ - WMO-No. 782 METAR/SPECI rule (13-14)"
+    },
+    "CLOUD_LAYER_COUNT_EXCEEDED": {
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "status": "paywall",
+      "note": "WMO-No. 782 METAR/SPECI rule (13-14)",
+      "source_attribution": "wmo-782 - access:paywall - https://library.wmo.int/ - WMO-No. 782 METAR/SPECI rule (13-14)"
+    },
     "CLOUD_TYPE_NOT_OBSERVABLE": {
       "source_id": "codes-wmo-int",
       "source_url": "https://github.com/wmo-im/iwxxm/blob/master/IWXXM/ReleaseNotes-IWXXM.txt",
@@ -143,12 +199,26 @@
       "note": "AUTO cloud group solidi /// means convective cloud type was not observed",
       "source_attribution": "codes-wmo-int - https://github.com/wmo-im/iwxxm/blob/master/IWXXM/ReleaseNotes-IWXXM.txt - AUTO cloud group solidi /// means convective cloud type was not observed"
     },
+    "CLOUD_TYPE_SUFFIX_ONLY_CB_TCU": {
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "status": "paywall",
+      "note": "WMO-No. 782 METAR/SPECI rule (43)",
+      "source_attribution": "wmo-782 - access:paywall - https://library.wmo.int/ - WMO-No. 782 METAR/SPECI rule (43)"
+    },
     "CNL_REPORT": {
       "source_id": "icao-annex-3",
       "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
       "status": "paywall",
       "note": "App 5 / Table A5-1",
       "source_attribution": "icao-annex-3 - access:paywall - https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 - App 5 / Table A5-1"
+    },
+    "COR_MISPLACED": {
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "status": "paywall",
+      "note": "WMO-No. 782 identification: COR must follow the code name before CCCC and time.",
+      "source_attribution": "wmo-782 - access:paywall - https://library.wmo.int/ - WMO-No. 782 identification: COR must follow the code name before CCCC and time."
     },
     "COR_PRESENT": {
       "source_id": "icao-annex-3",
@@ -158,6 +228,13 @@
       "source_attribution": "icao-annex-3 - access:paywall - https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 - App 5 / Table A5-1"
     },
     "DEWPOINT_NOT_OBSERVABLE": {
+      "source_id": null,
+      "source_url": null,
+      "status": null,
+      "note": null,
+      "source_attribution": null
+    },
+    "DIRECTIONAL_VISIBILITY_FORMAT": {
       "source_id": null,
       "source_url": null,
       "status": null,
@@ -177,6 +254,13 @@
       "status": "paywall",
       "note": "Table A3-2 / App 3",
       "source_attribution": "icao-annex-3 - access:paywall - https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 - Table A3-2 / App 3"
+    },
+    "FIRST_GROUPS_FORMAT": {
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "status": "paywall",
+      "note": "WMO-No. 782 identification: accepted METAR/SPECI header shapes for the first groups.",
+      "source_attribution": "wmo-782 - access:paywall - https://library.wmo.int/ - WMO-No. 782 identification: accepted METAR/SPECI header shapes for the first groups."
     },
     "FIR_OR_CTA": {
       "source_id": "icao-eur-doc-014",
@@ -360,6 +444,13 @@
       "note": "App 5 / Table A5-1",
       "source_attribution": "icao-annex-3 - access:paywall - https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 - App 5 / Table A5-1"
     },
+    "MISSING_MANDATORY_DIGIT_AS_SOLIDUS": {
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "status": "paywall",
+      "note": "WMO-No. 782 Part A: solidus replaces each missing mandatory digit; warn for non-AUTO reports.",
+      "source_attribution": "wmo-782 - access:paywall - https://library.wmo.int/ - WMO-No. 782 Part A: solidus replaces each missing mandatory digit; warn for non-AUTO reports."
+    },
     "MISSING_MAX_WIND": {
       "source_id": "icao-annex-3",
       "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
@@ -514,12 +605,47 @@
       "note": "EUR Doc 014 public; Annex 3 paywall companion",
       "source_attribution": "icao-eur-doc-014 - https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf - EUR Doc 014 public; Annex 3 paywall companion"
     },
+    "NATIONAL_RMK_NOT_INTERNATIONAL": {
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "status": "paywall",
+      "note": "WMO-No. 782 METAR/SPECI rule (4,19)",
+      "source_attribution": "wmo-782 - access:paywall - https://library.wmo.int/ - WMO-No. 782 METAR/SPECI rule (4,19)"
+    },
     "NCD_PRESENT": {
       "source_id": "codes-wmo-int",
       "source_url": "https://codes.wmo.int/ui/resources/WMO-Codes-Registry_user-guide-v1.0.pdf",
       "status": "ok",
       "note": "NCD cloud amount notation family",
       "source_attribution": "codes-wmo-int - https://codes.wmo.int/ui/resources/WMO-Codes-Registry_user-guide-v1.0.pdf - NCD cloud amount notation family"
+    },
+    "NCD_REQUIRES_AUTO": {
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "status": "paywall",
+      "note": "WMO-No. 782 METAR/SPECI rule (43)",
+      "source_attribution": "wmo-782 - access:paywall - https://library.wmo.int/ - WMO-No. 782 METAR/SPECI rule (43)"
+    },
+    "NDV_REQUIRES_AUTO": {
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "status": "paywall",
+      "note": "WMO-No. 782 METAR/SPECI rule (43)",
+      "source_attribution": "wmo-782 - access:paywall - https://library.wmo.int/ - WMO-No. 782 METAR/SPECI rule (43)"
+    },
+    "NIL_AUTO_CONFLICT": {
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "status": "paywall",
+      "note": "WMO-No. 782 identification: NIL and AUTO must not appear together.",
+      "source_attribution": "wmo-782 - access:paywall - https://library.wmo.int/ - WMO-No. 782 identification: NIL and AUTO must not appear together."
+    },
+    "NIL_MISPLACED": {
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "status": "paywall",
+      "note": "WMO-No. 782 identification: NIL placement and standalone missing-report body rules.",
+      "source_attribution": "wmo-782 - access:paywall - https://library.wmo.int/ - WMO-No. 782 identification: NIL placement and standalone missing-report body rules."
     },
     "NIL_REPORT": {
       "source_id": "icao-annex-3",
@@ -571,11 +697,11 @@
       "source_attribution": "icao-eur-doc-014 - https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf - EUR Doc 014 public; Annex 3 paywall companion"
     },
     "ODD_FIELD_ORDER": {
-      "source_id": "icao-annex-3",
+      "source_id": "wmo-782",
       "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
       "status": "paywall",
-      "note": "Table A3-2 / App 3",
-      "source_attribution": "icao-annex-3 - access:paywall - https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 - Table A3-2 / App 3"
+      "note": "WMO-No. 782 METAR/SPECI group order; wrong order is an error.",
+      "source_attribution": "wmo-782 - access:paywall - https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 - WMO-No. 782 METAR/SPECI group order; wrong order is an error."
     },
     "PARTIAL_DECODE": {
       "source_id": null,
@@ -598,6 +724,13 @@
       "note": "EUR Doc 014 public; Annex 3 paywall companion",
       "source_attribution": "icao-eur-doc-014 - https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf - EUR Doc 014 public; Annex 3 paywall companion"
     },
+    "PRECIP_INTENSITY_VIS_PLAUSIBILITY": {
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "status": "paywall",
+      "note": "WMO-No. 782 METAR/SPECI rule (42)",
+      "source_attribution": "wmo-782 - access:paywall - https://library.wmo.int/ - WMO-No. 782 METAR/SPECI rule (42)"
+    },
     "PROB_PERIOD_WITHOUT_TEMPO": {
       "source_id": "icao-annex-3",
       "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
@@ -612,6 +745,34 @@
       "note": "App 5 / Table A5-1",
       "source_attribution": "icao-annex-3 - access:paywall - https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 - App 5 / Table A5-1"
     },
+    "QNH_MISSING_AS_SOLIDUS": {
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "status": "paywall",
+      "note": "WMO-No. 782 METAR/SPECI rule (16)",
+      "source_attribution": "wmo-782 - access:paywall - https://library.wmo.int/ - WMO-No. 782 METAR/SPECI rule (16)"
+    },
+    "QNH_PREFIX_UNIT_MISMATCH": {
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "status": "paywall",
+      "note": "WMO-No. 782 METAR/SPECI rule (43)",
+      "source_attribution": "wmo-782 - access:paywall - https://library.wmo.int/ - WMO-No. 782 METAR/SPECI rule (43)"
+    },
+    "RECENT_WEATHER_LIMITS": {
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "status": "paywall",
+      "note": "WMO-No. 782 METAR/SPECI rule (17-18)",
+      "source_attribution": "wmo-782 - access:paywall - https://library.wmo.int/ - WMO-No. 782 METAR/SPECI rule (17-18)"
+    },
+    "RECENT_WEATHER_NO_INTENSITY": {
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "status": "paywall",
+      "note": "WMO-No. 782 METAR/SPECI rule (43)",
+      "source_attribution": "wmo-782 - access:paywall - https://library.wmo.int/ - WMO-No. 782 METAR/SPECI rule (43)"
+    },
     "REMARK_US_EXTENSION": {
       "source_id": "fmh-1",
       "source_url": "https://nws.weather.gov/schemas/iwxxm-us/3.0/",
@@ -619,12 +780,54 @@
       "note": null,
       "source_attribution": "fmh-1 - https://nws.weather.gov/schemas/iwxxm-us/3.0/"
     },
+    "REUP_REQUIRES_AUTO": {
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "status": "paywall",
+      "note": "WMO-No. 782 METAR/SPECI rule (17-18)",
+      "source_attribution": "wmo-782 - access:paywall - https://library.wmo.int/ - WMO-No. 782 METAR/SPECI rule (17-18)"
+    },
+    "RVR_MAX_GROUPS": {
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "status": "paywall",
+      "note": "WMO-No. 782 METAR/SPECI rule (9-10)",
+      "source_attribution": "wmo-782 - access:paywall - https://library.wmo.int/ - WMO-No. 782 METAR/SPECI rule (9-10)"
+    },
+    "RVR_MISSING_AS_SOLIDUS": {
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "status": "paywall",
+      "note": "WMO-No. 782 METAR/SPECI rule (9-10)",
+      "source_attribution": "wmo-782 - access:paywall - https://library.wmo.int/ - WMO-No. 782 METAR/SPECI rule (9-10)"
+    },
     "RVR_PRESENT": {
       "source_id": "icao-annex-3",
       "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
       "status": "paywall",
       "note": "Table A3-2 / App 3",
       "source_attribution": "icao-annex-3 - access:paywall - https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 - Table A3-2 / App 3"
+    },
+    "RVR_SCALE_STEP": {
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "status": "paywall",
+      "note": "WMO-No. 782 METAR/SPECI rule (9-10)",
+      "source_attribution": "wmo-782 - access:paywall - https://library.wmo.int/ - WMO-No. 782 METAR/SPECI rule (9-10)"
+    },
+    "RVR_TENDENCY_FORMAT": {
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "status": "paywall",
+      "note": "WMO-No. 782 METAR/SPECI rule (9-10)",
+      "source_attribution": "wmo-782 - access:paywall - https://library.wmo.int/ - WMO-No. 782 METAR/SPECI rule (9-10)"
+    },
+    "SEA_SURFACE_GROUP_FORMAT": {
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "status": "paywall",
+      "note": "WMO-No. 782 METAR/SPECI rule (43)",
+      "source_attribution": "wmo-782 - access:paywall - https://library.wmo.int/ - WMO-No. 782 METAR/SPECI rule (43)"
     },
     "SIGMET_CNL": {
       "source_id": "icao-eur-doc-014",
@@ -724,6 +927,13 @@
       "note": "App 5 / Table A5-1",
       "source_attribution": "icao-annex-3 - access:paywall - https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 - App 5 / Table A5-1"
     },
+    "TEMP_DEWPOINT_INVERSION": {
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "status": "paywall",
+      "note": "WMO-No. 782 METAR/SPECI rule (15)",
+      "source_attribution": "wmo-782 - access:paywall - https://library.wmo.int/ - WMO-No. 782 METAR/SPECI rule (15)"
+    },
     "TL_PRESENT": {
       "source_id": "icao-annex-3",
       "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
@@ -737,6 +947,62 @@
       "status": "ok",
       "note": "EUR Doc 014 public; Annex 3 paywall companion",
       "source_attribution": "icao-eur-doc-014 - https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf - EUR Doc 014 public; Annex 3 paywall companion"
+    },
+    "TREND_CLOUD_LAYERS_INCOMPLETE": {
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "status": "paywall",
+      "note": "WMO-No. 782 METAR/SPECI rule (17-24)",
+      "source_attribution": "wmo-782 - access:paywall - https://library.wmo.int/ - WMO-No. 782 METAR/SPECI rule (17-24)"
+    },
+    "TREND_FM_FORMAT": {
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "status": "paywall",
+      "note": "WMO-No. 782 METAR/SPECI rule (17-24)",
+      "source_attribution": "wmo-782 - access:paywall - https://library.wmo.int/ - WMO-No. 782 METAR/SPECI rule (17-24)"
+    },
+    "TREND_NCD_OR_SOLIDUS_FORBIDDEN": {
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "status": "paywall",
+      "note": "WMO-No. 782 METAR/SPECI rule (17-24)",
+      "source_attribution": "wmo-782 - access:paywall - https://library.wmo.int/ - WMO-No. 782 METAR/SPECI rule (17-24)"
+    },
+    "TREND_NOSIG_EXCLUSIVITY": {
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "status": "paywall",
+      "note": "WMO-No. 782 METAR/SPECI rule (43)",
+      "source_attribution": "wmo-782 - access:paywall - https://library.wmo.int/ - WMO-No. 782 METAR/SPECI rule (43)"
+    },
+    "TREND_NSW_ONLY_IN_CHANGE": {
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "status": "paywall",
+      "note": "WMO-No. 782 METAR/SPECI rule (17-24)",
+      "source_attribution": "wmo-782 - access:paywall - https://library.wmo.int/ - WMO-No. 782 METAR/SPECI rule (17-24)"
+    },
+    "TREND_PROB_FORBIDDEN": {
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "status": "paywall",
+      "note": "WMO-No. 782 METAR/SPECI rule (17-24)",
+      "source_attribution": "wmo-782 - access:paywall - https://library.wmo.int/ - WMO-No. 782 METAR/SPECI rule (17-24)"
+    },
+    "TREND_UNIT_MISMATCH": {
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "status": "paywall",
+      "note": "WMO-No. 782 METAR/SPECI rule (17-24)",
+      "source_attribution": "wmo-782 - access:paywall - https://library.wmo.int/ - WMO-No. 782 METAR/SPECI rule (17-24)"
+    },
+    "TREND_WIND_V_GROUP_FORBIDDEN": {
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "status": "paywall",
+      "note": "WMO-No. 782 METAR/SPECI rule (17-24)",
+      "source_attribution": "wmo-782 - access:paywall - https://library.wmo.int/ - WMO-No. 782 METAR/SPECI rule (17-24)"
     },
     "TX_TN_PRESENT": {
       "source_id": "icao-annex-3",
@@ -864,6 +1130,20 @@
       "note": "EUR Doc 014 public; Annex 3 paywall companion",
       "source_attribution": "icao-eur-doc-014 - https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf - EUR Doc 014 public; Annex 3 paywall companion"
     },
+    "VISIBILITY_MISSING_AS_SOLIDUS": {
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "status": "paywall",
+      "note": "WMO-No. 782 METAR/SPECI rule (8)",
+      "source_attribution": "wmo-782 - access:paywall - https://library.wmo.int/ - WMO-No. 782 METAR/SPECI rule (8)"
+    },
+    "VISIBILITY_SCALE_STEP": {
+      "source_id": null,
+      "source_url": null,
+      "status": null,
+      "note": null,
+      "source_attribution": null
+    },
     "VONA_DUR_NIL": {
       "source_id": "vona-ahl-fm205",
       "source_url": "vendor:documentation/webpages/AHL.asciidoc",
@@ -877,6 +1157,13 @@
       "status": "ok",
       "note": "Guidance silent residual; AHL/FM205/XSD cites ok",
       "source_attribution": "vona-ahl-fm205 - vendor:documentation/webpages/AHL.asciidoc - Guidance silent residual; AHL/FM205/XSD cites ok"
+    },
+    "VV_EXCLUDES_CLOUD_LAYERS": {
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "status": "paywall",
+      "note": "WMO-No. 782 METAR/SPECI rule (43)",
+      "source_attribution": "wmo-782 - access:paywall - https://library.wmo.int/ - WMO-No. 782 METAR/SPECI rule (43)"
     },
     "VV_NOT_OBSERVABLE": {
       "source_id": "codes-wmo-int",
@@ -892,6 +1179,76 @@
       "note": "App 5 / Table A5-1",
       "source_attribution": "icao-annex-3 - access:paywall - https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 - App 5 / Table A5-1"
     },
+    "WEATHER_AUTO_UP_OR_SH": {
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "status": "paywall",
+      "note": "WMO-No. 782 METAR/SPECI rule (11-12)",
+      "source_attribution": "wmo-782 - access:paywall - https://library.wmo.int/ - WMO-No. 782 METAR/SPECI rule (11-12)"
+    },
+    "WEATHER_BR_VIS_BAND": {
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "status": "paywall",
+      "note": "WMO-No. 782 METAR/SPECI rule (40-41)",
+      "source_attribution": "wmo-782 - access:paywall - https://library.wmo.int/ - WMO-No. 782 METAR/SPECI rule (40-41)"
+    },
+    "WEATHER_DESCRIPTOR_PAIRING": {
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "status": "paywall",
+      "note": "WMO-No. 782 METAR/SPECI rule (40-42)",
+      "source_attribution": "wmo-782 - access:paywall - https://library.wmo.int/ - WMO-No. 782 METAR/SPECI rule (40-42)"
+    },
+    "WEATHER_FG_VIS_THRESHOLD": {
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "status": "paywall",
+      "note": "WMO-No. 782 METAR/SPECI rule (40-41)",
+      "source_attribution": "wmo-782 - access:paywall - https://library.wmo.int/ - WMO-No. 782 METAR/SPECI rule (40-41)"
+    },
+    "WEATHER_FZ_REQUIRES_SUBZERO": {
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "status": "paywall",
+      "note": "WMO-No. 782 METAR/SPECI rule (42)",
+      "source_attribution": "wmo-782 - access:paywall - https://library.wmo.int/ - WMO-No. 782 METAR/SPECI rule (42)"
+    },
+    "WEATHER_SHPL_FORBIDDEN": {
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "status": "paywall",
+      "note": "WMO-No. 782 METAR/SPECI rule (11-12)",
+      "source_attribution": "wmo-782 - access:paywall - https://library.wmo.int/ - WMO-No. 782 METAR/SPECI rule (11-12)"
+    },
+    "WEATHER_SQ_MIN_SPEED": {
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "status": "paywall",
+      "note": "WMO-No. 782 METAR/SPECI rule (41)",
+      "source_attribution": "wmo-782 - access:paywall - https://library.wmo.int/ - WMO-No. 782 METAR/SPECI rule (41)"
+    },
+    "WEATHER_VC_COMBINATION": {
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "status": "paywall",
+      "note": "WMO-No. 782 METAR/SPECI rule (43)",
+      "source_attribution": "wmo-782 - access:paywall - https://library.wmo.int/ - WMO-No. 782 METAR/SPECI rule (43)"
+    },
+    "WEATHER_VIS_OBSCURATION_THRESHOLD": {
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "status": "paywall",
+      "note": "WMO-No. 782 METAR/SPECI rule (11-12)",
+      "source_attribution": "wmo-782 - access:paywall - https://library.wmo.int/ - WMO-No. 782 METAR/SPECI rule (11-12)"
+    },
+    "WIND_CALM_MISENCODE": {
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "status": "paywall",
+      "note": "WMO-No. 782 METAR/SPECI rule (7)",
+      "source_attribution": "wmo-782 - access:paywall - https://library.wmo.int/ - WMO-No. 782 METAR/SPECI rule (7)"
+    },
     "WIND_DIR_VARIATION": {
       "source_id": "icao-annex-3",
       "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
@@ -899,12 +1256,68 @@
       "note": "Table A3-2 / App 3",
       "source_attribution": "icao-annex-3 - access:paywall - https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 - Table A3-2 / App 3"
     },
+    "WIND_GUST_BELOW_THRESHOLD": {
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "status": "paywall",
+      "note": "WMO-No. 782 METAR/SPECI rule (6-7)",
+      "source_attribution": "wmo-782 - access:paywall - https://library.wmo.int/ - WMO-No. 782 METAR/SPECI rule (6-7)"
+    },
+    "WIND_HIGH_SPEED_P_INDICATOR": {
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "status": "paywall",
+      "note": "WMO-No. 782 METAR/SPECI rule (7)",
+      "source_attribution": "wmo-782 - access:paywall - https://library.wmo.int/ - WMO-No. 782 METAR/SPECI rule (7)"
+    },
+    "WIND_PHYSICAL_RANGE": {
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "status": "paywall",
+      "note": "Product warning for hurricane-force METAR mean wind or unusually large gust spread.",
+      "source_attribution": "wmo-782 - access:paywall - https://library.wmo.int/ - Product warning for hurricane-force METAR mean wind or unusually large gust spread."
+    },
+    "WIND_SHEAR_FORMAT": {
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "status": "paywall",
+      "note": "WMO-No. 782 METAR/SPECI rule (17-18)",
+      "source_attribution": "wmo-782 - access:paywall - https://library.wmo.int/ - WMO-No. 782 METAR/SPECI rule (17-18)"
+    },
+    "WIND_VARIATION_SPAN": {
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "status": "paywall",
+      "note": "WMO-No. 782 METAR/SPECI rule (6)",
+      "source_attribution": "wmo-782 - access:paywall - https://library.wmo.int/ - WMO-No. 782 METAR/SPECI rule (6)"
+    },
+    "WIND_VRB_MISUSE": {
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "status": "paywall",
+      "note": "WMO-No. 782 surface wind special cases: VRB must not appear with a directed variation group.",
+      "source_attribution": "wmo-782 - access:paywall - https://library.wmo.int/ - WMO-No. 782 surface wind special cases: VRB must not appear with a directed variation group."
+    },
     "WIND_VRB_OR_GUST": {
       "source_id": "icao-annex-3",
       "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
       "status": "paywall",
       "note": "Table A3-2 / App 3",
       "source_attribution": "icao-annex-3 - access:paywall - https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 - Table A3-2 / App 3"
+    },
+    "WS_ALL_RWY_EXCLUSIVE": {
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "status": "paywall",
+      "note": "WMO-No. 782 METAR/SPECI rule (43)",
+      "source_attribution": "wmo-782 - access:paywall - https://library.wmo.int/ - WMO-No. 782 METAR/SPECI rule (43)"
+    },
+    "WX_COLUMN_SEQUENCE": {
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "status": "paywall",
+      "note": "WMO-No. 782 METAR/SPECI rule (43)",
+      "source_attribution": "wmo-782 - access:paywall - https://library.wmo.int/ - WMO-No. 782 METAR/SPECI rule (43)"
     },
     "WX_NOT_OBSERVABLE": {
       "source_id": "codes-wmo-int",

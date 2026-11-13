@@ -1,0 +1,380 @@
+def _weather_candidate_tokens(tokens: list[str]) -> list[tuple[int, str]]:
+    """
+    Internal helper ``_weather_candidate_tokens``.
+
+    Parameters
+    ----------
+    tokens : object
+        Argument ``tokens``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
+    wind_i = _token_index(tokens, _WIND)
+    if wind_i is None:
+        return []
+    candidates: list[tuple[int, str]] = []
+    for i, tok in enumerate(tokens[wind_i + 1 :], start=wind_i + 1):
+        if _CLOUD_START.match(tok) or _TEMP.fullmatch(tok) or _QNH.fullmatch(tok):
+            break
+        if tok in _METAR_SPECI_SKIP or _RVR.match(tok):
+            continue
+        if _WIND.fullmatch(tok) or _VIS_OK.fullmatch(tok) or _VIS_BAD.fullmatch(tok):
+            continue
+        if _WX_TOKEN_SHAPE.fullmatch(tok):
+            candidates.append((i, tok))
+    return candidates
+
+
+def _token_span_in_core(core: str, token: str, body_start: int) -> tuple[int, int] | None:
+    """
+    Internal helper ``_token_span_in_core``.
+
+    Parameters
+    ----------
+    core : object
+        Argument ``core``.
+    token : object
+        Argument ``token``.
+    body_start : object
+        Argument ``body_start``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
+    match = re.search(r"\b" + re.escape(token) + r"\b", core)
+    if not match:
+        return None
+    return body_start + match.start(), body_start + match.end()
+
+
+def _is_valid_cloud_token(token: str) -> bool:
+    """
+    Internal helper ``_is_valid_cloud_token``.
+
+    Parameters
+    ----------
+    token : object
+        Argument ``token``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
+    return bool(_CLOUD_OK.fullmatch(token))
+
+
+def _membership_issue(
+    *,
+    product: str,
+    token: str,
+    family: str,
+    start: int,
+    end: int,
+    location: str,
+) -> Issue:
+    """
+    Internal helper ``_membership_issue``.
+
+    Parameters
+    ----------
+    product : object
+        Argument ``product``.
+    token : object
+        Argument ``token``.
+    family : object
+        Argument ``family``.
+    start : object
+        Argument ``start``.
+    end : object
+        Argument ``end``.
+    location : object
+        Argument ``location``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
+    return _issue(
+        "UNKNOWN_WMO_MEMBERSHIP",
+        f"{product} token {token!r} not in WMO register ({family})",
+        start=start,
+        end=end,
+        location=location,
+    )
+
+
+def _weather_in_register(token: str) -> bool:
+    """
+    Internal helper ``_weather_in_register``.
+
+    Parameters
+    ----------
+    token : object
+        Argument ``token``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
+    if token in {"//"}:
+        return True
+    return membership.is_member("present_or_forecast_weather", token) or membership.is_member("weather_306_4678", token)
+
+
+def _check_phenomenon_membership(
+    upper: str,
+    *,
+    product: str,
+    start: int,
+    end: int,
+) -> list[Issue]:
+    """
+    Internal helper ``_check_phenomenon_membership``.
+
+    Parameters
+    ----------
+    upper : object
+        Argument ``upper``.
+    product : object
+        Argument ``product``.
+    start : object
+        Argument ``start``.
+    end : object
+        Argument ``end``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
+    family = "airwx_phenomena" if product == "AIRMET" else "sigwx_phenomena"
+    pattern = _AIRMET_PHENOM_CANDIDATE if product == "AIRMET" else _SIGMET_PHENOM_CANDIDATE
+    issues: list[Issue] = []
+    seen: set[str] = set()
+    for match in pattern.finditer(upper):
+        raw = match.group(1)
+        key = membership.normalize_register_notation(raw)
+        if key in seen:
+            continue
+        seen.add(key)
+        if membership.is_member_normalized(family, raw):
+            continue
+        issues.append(
+            _membership_issue(
+                product=product,
+                token=raw,
+                family=family,
+                start=start + match.start(1),
+                end=start + match.end(1),
+                location="phenomenon",
+            )
+        )
+    return issues
+
+
+def _cloud_candidate_tokens(tokens: list[str]) -> list[tuple[int, str]]:
+    """
+    Internal helper ``_cloud_candidate_tokens``.
+
+    Parameters
+    ----------
+    tokens : object
+        Argument ``tokens``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
+    wind_i = _token_index(tokens, _WIND)
+    if wind_i is None:
+        return []
+    candidates: list[tuple[int, str]] = []
+    for i, tok in enumerate(tokens[wind_i + 1 :], start=wind_i + 1):
+        if _TEMP.fullmatch(tok) or _QNH.fullmatch(tok) or tok == "RMK":
+            break
+        if tok in _METAR_SPECI_SKIP or _RVR.match(tok):
+            continue
+        if _WIND.fullmatch(tok) or _VIS_OK.fullmatch(tok) or _VIS_BAD.fullmatch(tok):
+            continue
+        if _WX_TOKEN_SHAPE.fullmatch(tok) and _is_valid_weather_token(tok):
+            continue
+        if _CLOUD_LIKE.match(tok) or _CLOUD_START.match(tok):
+            candidates.append((i, tok))
+    return candidates
+
+
+def _append_remark_issue(
+    issues: list[Issue],
+    *,
+    code: str,
+    message: str,
+    core: str,
+    body_start: int,
+    body_end: int,
+    token: str,
+) -> None:
+    """
+    Internal helper ``_append_remark_issue``.
+
+    Parameters
+    ----------
+    issues : object
+        Argument ``issues``.
+    code : object
+        Argument ``code``.
+    message : object
+        Argument ``message``.
+    core : object
+        Argument ``core``.
+    body_start : object
+        Argument ``body_start``.
+    body_end : object
+        Argument ``body_end``.
+    token : object
+        Argument ``token``.
+    """
+    span = _token_span_in_core(core, token, body_start)
+    if span is None:
+        start, end = body_start, body_end
+    else:
+        start, end = span
+    issues.append(_issue(code, message, start=start, end=end, location="remark"))
+
+
+def _check_us_remarks(
+    tokens: list[str],
+    *,
+    product: str,
+    core: str,
+    body_start: int,
+    body_end: int,
+    profile: str = "annex3",
+) -> list[Issue]:
+    """
+    Internal helper ``_check_us_remarks``.
+
+    Parameters
+    ----------
+    tokens : object
+        Argument ``tokens``.
+    product : object
+        Argument ``product``.
+    core : object
+        Argument ``core``.
+    body_start : object
+        Argument ``body_start``.
+    body_end : object
+        Argument ``body_end``.
+    profile : object
+        Argument ``profile``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
+    if "RMK" not in tokens:
+        return []
+    rmk_i = tokens.index("RMK")
+    remark = tokens[rmk_i + 1 :]
+    issues: list[Issue] = []
+    saw_us = False
+    i = 0
+    while i < len(remark):
+        tok = remark[i]
+        if tok in _RMK_AO:
+            saw_us = True
+            i += 1
+            continue
+        if _RMK_SLP_OK.fullmatch(tok):
+            saw_us = True
+            i += 1
+            continue
+        if tok.startswith("SLP") and tok[3:].isdigit():
+            _append_remark_issue(
+                issues,
+                code="INVALID_REMARK",
+                message=f"{product} malformed remark {tok!r} (SLP needs 3 digits)",
+                core=core,
+                body_start=body_start,
+                body_end=body_end,
+                token=tok,
+            )
+            i += 1
+            continue
+        if _RMK_P_OK.fullmatch(tok):
+            saw_us = True
+            i += 1
+            continue
+        if len(tok) > 1 and tok[0] == "P" and tok[1:].isdigit():
+            _append_remark_issue(
+                issues,
+                code="INVALID_REMARK",
+                message=f"{product} malformed remark {tok!r} (P precip needs 4 digits)",
+                core=core,
+                body_start=body_start,
+                body_end=body_end,
+                token=tok,
+            )
+            i += 1
+            continue
+        if _RMK_T_OK.fullmatch(tok):
+            saw_us = True
+            i += 1
+            continue
+        if len(tok) > 1 and tok[0] == "T" and tok[1:].isdigit():
+            _append_remark_issue(
+                issues,
+                code="INVALID_REMARK",
+                message=f"{product} malformed remark {tok!r} (T tenths needs 8 digits)",
+                core=core,
+                body_start=body_start,
+                body_end=body_end,
+                token=tok,
+            )
+            i += 1
+            continue
+        if tok == "PK":
+            has_wnd = i + 1 < len(remark) and remark[i + 1] == "WND"
+            has_val = has_wnd and i + 2 < len(remark) and _RMK_PK_VAL.fullmatch(remark[i + 2])
+            if has_val:
+                saw_us = True
+                i += 3
+                continue
+            span_tok = "WND" if has_wnd else "PK"
+            _append_remark_issue(
+                issues,
+                code="INVALID_REMARK",
+                message=f"{product} malformed remark PK WND (need dddss/tt)",
+                core=core,
+                body_start=body_start,
+                body_end=body_end,
+                token=span_tok,
+            )
+            if has_wnd:
+                i += 2
+            else:
+                i += 1
+            continue
+        i += 1
+
+    if saw_us and profile == "iwxxm_us":
+        _append_remark_issue(
+            issues,
+            code="REMARK_US_EXTENSION",
+            message=(f"{product} US remarks present (AO1/AO2/SLP/P/T/PK WND) - iwxxm_us profile awareness"),
+            core=core,
+            body_start=body_start,
+            body_end=body_end,
+            token="RMK",
+        )
+    return issues

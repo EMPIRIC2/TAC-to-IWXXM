@@ -1,0 +1,16 @@
+# WMO-782 helpers shared with product_rules_pkg.wmo782.* (kept here for import stability).
+_VIS_METERS = re.compile(r"^\d{4}$")
+_VIS_SOLIDUS = re.compile(r"^////(?:SM)?$")
+_WIND_PARSE = re.compile(
+    r"^(?:(?P<dir>VRB|\d{3}))(?P<spd>\d{2,3})(?:G(?P<gust>\d{2,3}))?(?P<unit>KT|MPS)$"
+)
+_WX_SIGNIFICANT = re.compile(
+    r"^(?:[+-]|VC)?(?:MI|BC|PR|DR|BL|SH|TS|FZ)?(?:DZ|RA|SN|SG|IC|PL|GR|GS|UP|BR|FG|FU|VA|DU|SA|HZ|PY|PO|SQ|FC|SS|DS)+$"
+)
+
+__all__ = list(__all__) + [
+    "_VIS_METERS",
+    "_VIS_SOLIDUS",
+    "_WIND_PARSE",
+    "_WX_SIGNIFICANT",
+]

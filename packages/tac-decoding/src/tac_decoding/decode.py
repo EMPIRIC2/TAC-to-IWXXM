@@ -563,7 +563,12 @@ def _fmt_time(m: re.Match[str], *, label: str) -> str:
     str
         Return value.
     """
-    return f"{label} on day {int(m.group('dd'))} at {m.group('hh')}:{m.group('mm')} UTC"
+    day = int(m.group("dd"))
+    hour = int(m.group("hh"))
+    minute = int(m.group("mm"))
+    # WMO-No. 782 handbook style (e.g. "on 21st of the month at 10 hours and 25 minutes UTC").
+    ordinal = _ordinal_day(day).removeprefix("the ").strip()
+    return f"{label} on {ordinal} of the month at {hour} hours and {minute} minutes UTC"
 
 
 def _fmt_vis_sm(m: re.Match[str], *, label: str) -> str:

@@ -1,0 +1,283 @@
+def _chain_docs(
+    doc: PolicyDocument,
+    policies: Mapping[str, PolicyDocument],
+) -> tuple[PolicyDocument, ...]:
+    """
+    Internal helper ``_chain_docs``.
+
+    Parameters
+    ----------
+    doc : object
+        Argument ``doc``.
+    policies : object
+        Argument ``policies``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
+
+    def depth_of(current: PolicyDocument, seen: frozenset[str]) -> int:
+        """
+        Return the ``extends`` depth of ``current``.
+
+        Parameters
+        ----------
+        current : PolicyDocument
+            Policy document to measure.
+        seen : frozenset[str]
+            Ancestor policy ids already visited.
+
+        Returns
+        -------
+        int
+            ``0`` when ``current`` has no parents, otherwise one more than the deepest parent.
+
+        Raises
+        ------
+        PolicyCycleError
+            When ``current.id`` is already in ``seen``.
+        PolicyError
+            When a parent id is missing from ``policies``.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (symbol: depth_of)
+        2
+        """
+        if current.id in seen:
+            msg = f"extends cycle involving {current.id!r}"
+            raise PolicyCycleError(msg)
+        if not current.extends:
+            return 0
+        depths: list[int] = []
+        for parent_id in current.extends:
+            parent = policies.get(parent_id)
+            if parent is None:
+                msg = f"unknown extends parent {parent_id!r}"
+                raise PolicyError(msg)
+            depths.append(depth_of(parent, seen | {current.id}))
+        return 1 + max(depths)
+
+    if depth_of(doc, frozenset()) > MAX_EXTENDS_DEPTH:
+        msg = f"extends depth exceeds {MAX_EXTENDS_DEPTH}"
+        raise PolicyDepthError(msg)
+
+    def walk(current: PolicyDocument, stack: tuple[str, ...]) -> list[PolicyDocument]:
+        # Cycles already rejected by depth_of; stack is for ordered ancestry only.
+        """
+        Return ancestors of ``current``, then ``current``.
+
+        Parameters
+        ----------
+        current : PolicyDocument
+            Policy document to expand.
+        stack : tuple[str, ...]
+            Ancestor ids already on this path.
+
+        Returns
+        -------
+        list[PolicyDocument]
+            Parents in extend order, with ``current`` last.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (symbol: walk)
+        2
+        """
+        out: list[PolicyDocument] = []
+        for parent_id in current.extends:
+            parent = policies[parent_id]
+            out.extend(walk(parent, (*stack, current.id)))
+        out.append(current)
+        return out
+
+    return tuple(walk(doc, ()))
+
+
+def _validate_code_refs(
+    codes: set[str],
+    *,
+    lifecycle: PolicyLifecycle,
+    activate: bool,
+) -> tuple[str, ...]:
+    """
+    Internal helper ``_validate_code_refs``.
+
+    Parameters
+    ----------
+    codes : object
+        Argument ``codes``.
+    lifecycle : object
+        Argument ``lifecycle``.
+    activate : object
+        Argument ``activate``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
+    unknown = sorted(code for code in codes if _unknown(code))
+    warnings = [f"unknown registry code {code!r}" for code in unknown]
+    if unknown and (activate or lifecycle == "activated"):
+        msg = "; ".join(warnings)
+        raise PolicyActivationError(msg)
+    return tuple(warnings)
+
+
+def resolve_policy(
+    doc: PolicyDocument,
+    *,
+    policies: Mapping[str, PolicyDocument],
+    activate: bool = False,
+) -> ResolvedPolicy:
+    """
+    Merge ``extends`` and compute enabled codes.
+
+    Parameters
+    ----------
+    doc : PolicyDocument
+        Leaf policy document.
+    policies : Mapping[str, PolicyDocument]
+        Catalog keyed by policy id (must include ``doc`` and parents).
+    activate : bool, optional
+        When True, treat as activation even if ``lifecycle`` is draft (fail closed). By default ``False``.
+
+    Returns
+    -------
+    ResolvedPolicy
+        Merged view with warnings / activation status.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (resolve_policy)
+    2
+    """
+    chain = _chain_docs(doc, policies)
+    select: list[str] = []
+    ignore: set[str] = set()
+    severity: dict[str, str] = {}
+    preview: set[str] = set()
+    detectors: list[str] = []
+    product = doc.product
+    for item in chain:
+        if item.product is not None:
+            product = item.product
+        if item.select:
+            select = list(item.select)
+        ignore |= set(item.ignore)
+        severity.update(dict(item.severity))
+        preview |= set(item.preview)
+        if item.detectors:
+            detectors = list(item.detectors)
+
+    referenced = set(select) | ignore | set(severity) | preview
+    warnings = list(
+        _validate_code_refs(
+            referenced,
+            lifecycle=doc.lifecycle,
+            activate=activate,
+        )
+    )
+
+    defaults = _default_codes_for_product(product)
+    enabled = set(select) if select else set(defaults) - preview
+    enabled -= ignore
+    enabled = {code for code in enabled if not _unknown(code)}
+
+    can_activate = not any("unknown registry code" in w for w in warnings)
+
+    return ResolvedPolicy(
+        id=doc.id,
+        lifecycle=doc.lifecycle,
+        product=product,
+        enabled_codes=frozenset(enabled),
+        severity_overrides=dict(severity),
+        preview_codes=frozenset(preview),
+        detector_ids=tuple(detectors),
+        warnings=tuple(warnings),
+        can_activate=can_activate,
+        chain=tuple(item.id for item in chain),
+    )
+
+
+def apply_policy_to_report(
+    report: LintReport,
+    policy_id: str,
+    *,
+    profile: str | None = None,
+) -> LintReport:
+    """
+    Keep issues selected by ``policy_id`` and apply severity overrides.
+
+    Parameters
+    ----------
+    report : LintReport
+        Lint report before policy filtering.
+    policy_id : str
+        TAC quality policy document id.
+    profile : str or None, optional
+        Profile id. By default ``None``.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (apply_policy_to_report)
+    2
+
+    Returns
+    -------
+    LintReport
+        Keep issues selected by ``policy_id`` and apply severity overrides.
+    """
+    catalog = load_policy_catalog(profile)
+    doc = catalog.get(policy_id)
+    if doc is None:
+        msg = f"unknown TAC quality policy {policy_id!r}"
+        raise PolicyError(msg)
+    resolved = resolve_policy(doc, policies=catalog, activate=(doc.lifecycle == "activated"))
+    selectable = _default_codes_for_product(resolved.product) | resolved.preview_codes
+    kept: list[Issue] = []
+    for issue in report.issues:
+        # Parse-gate / AHL codes outside the product catalog always pass.
+        if issue.code not in resolved.enabled_codes and issue.code in selectable:
+            continue
+        severity = resolved.severity_overrides.get(issue.code, issue.severity)
+        if severity == issue.severity:
+            kept.append(issue)
+            continue
+        kept.append(
+            Issue(
+                severity=severity,
+                code=issue.code,
+                message=issue.message,
+                location=issue.location,
+                start=issue.start,
+                end=issue.end,
+            )
+        )
+    ok = not any(item.severity == "error" for item in kept)
+    return LintReport(
+        ok=ok,
+        product=report.product,
+        issues=kept,
+        fixes=list(report.fixes),
+        profile=report.profile,
+    )
+
+
+__all__ = [
+    "ENV_POLICY_DIR",
+    "MAX_EXTENDS_DEPTH",
+    "PolicyActivationError",
+    "PolicyCycleError",
+    "PolicyDepthError",
+    "PolicyDocument",
+    "PolicyError",
+    "ResolvedPolicy",
+    "apply_policy_to_report",
+    "load_policy",
+    "load_policy_catalog",
+    "resolve_policy",
+]

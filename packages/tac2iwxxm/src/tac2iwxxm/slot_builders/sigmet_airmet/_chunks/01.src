@@ -1,0 +1,41 @@
+    Parameters
+    ----------
+    body : str
+        Argument ``body``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
+    upper = body.upper()
+    for token, code in _INTENSITY.items():
+        if re.search(rf"\b{token}\b", upper):
+            return code
+    return "NO_CHANGE"
+
+
+def _point_lat_lon(match: re.Match[str]) -> tuple[float, float]:
+    """
+    Internal helper ``_point_lat_lon``.
+
+    Parameters
+    ----------
+    match : re.Match[str]
+        Argument ``match``.
+
+    Returns
+    -------
+    tuple[float, float]
+        Return value.
+    """
+    lat = int(match.group("lat_deg")) + int(match.group("lat_min")) / 60.0
+    lon = int(match.group("lon_deg")) + int(match.group("lon_min")) / 60.0
+    groups = match.groupdict()
+    if (groups.get("lat_hemi") or "N").upper() == "S":
+        lat = -lat
+    if (groups.get("lon_hemi") or "E").upper() == "W":
+        lon = -lon
+    if abs(lat) > 90.0 or abs(lon) > 180.0:
+        raise ValueError(f"coordinate out of range: lat={lat}, lon={lon}")
+    return lat, lon

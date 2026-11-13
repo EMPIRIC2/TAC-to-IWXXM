@@ -1,0 +1,25 @@
+
+def _sigmet_region_indicator(match: re.Match[str], body: str) -> str:
+    """
+    Return the flight information region indicator for a SIGMET header.
+
+    Parameters
+    ----------
+    match : re.Match[str]
+        Header match. The leading indicator may be absent.
+
+    body : str
+        SIGMET body after the watch-office hyphen.
+
+    Returns
+    -------
+    str
+        Leading indicator, else the four-letter token before ``FIR``, else the watch office.
+    """
+    raw = match.group("fir")
+    if raw:
+        return raw.upper()
+    named = _BODY_FIR.search(body.upper())
+    if named is not None:
+        return named.group("fir")
+    return match.group("mwo").upper()

@@ -1,0 +1,120 @@
+def _check_sigmet_airmet(tac: str, product: str, *, profile: str = "annex3") -> list[Issue]:
+    """
+    Internal helper ``_check_sigmet_airmet``.
+
+    Parameters
+    ----------
+    tac : object
+        Argument ``tac``.
+    product : object
+        Argument ``product``.
+    profile : object
+        Argument ``profile``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
+    start, end, body = _body_span(tac)
+    upper = body.upper()
+    core = upper[:-1] if upper.endswith("=") else upper
+    issues: list[Issue] = []
+    # F23 theme C1 - one IWXXM report per TAC report (shared with METAR/SPECI/TAF).
+    issues.extend(_check_c1_multi_report(tac, product))
+
+    if product == "SIGMET" and _CONVECTIVE_SIGMET_BULLETIN.search(upper):
+        issues.extend(_check_convective_sigmet(start=start, end=end, upper=upper))
+        return issues
+
+    if product == "SIGMET" and _is_us_domestic_ws_sigmet(upper):
+        issues.extend(_check_us_domestic_ws_sigmet(start=start, end=end, upper=upper))
+        return issues
+
+    # Minimum Annex 3 skeleton: CCCC SIGMET|AIRMET … VALID YYGGgg/YYGGgg.
+    # US convective / domestic WS return above (VALID UNTIL forms).
+    if product in {"SIGMET", "AIRMET"} and not _SIGMET_AIRMET_CCCC_IDENTITY.search(upper):
+        issues.append(
+            _issue(
+                "MISSING_CCCC",
+                f"{product} missing ICAO location (CCCC) before {product}",
+                start=start,
+                end=end,
+                location="header",
+            )
+        )
+
+    if not _VALID_PERIOD.search(upper):
+        issues.append(
+            _issue(
+                "MISSING_VALID",
+                f"{product} missing VALID ddhhmm/ddhhmm period - A6 identity",
+                start=start,
+                end=end,
+                location="valid",
+            )
+        )
+
+    if product == "SIGMET":
+        issues.extend(_check_sigmet_g1(start=start, end=end, upper=upper))
+        # CNL reports intentionally omit phenomenon - skip multi-family + G2 body gates.
+        if _SIGMET_CNL.search(upper[:-1] if upper.endswith("=") else upper):
+            return issues
+        is_va = bool(_SIGMET_VA_TOKEN.search(upper))
+        is_tc = bool(_SIGMET_TC_TOKEN.search(upper))
+        issues.extend(_check_sigmet_g2(start=start, end=end, upper=upper, is_va=is_va, is_tc=is_tc))
+        if is_va:
+            issues.extend(_check_sigmet_v1(start=start, end=end, upper=upper))
+        if is_tc and not is_va:
+            issues.extend(_check_sigmet_tc(start=start, end=end, upper=upper))
+    elif product == "AIRMET":
+        # F24 theme A1 - sequence + FIR (CNL still needs identity; skip multi-family below).
+        issues.extend(_check_airmet_a1(start=start, end=end, upper=upper))
+        if _SIGMET_CNL.search(upper[:-1] if upper.endswith("=") else upper):
+            return issues
+        # F24 theme A2 - OBS/STNR/intensity/TOP ABV (phenomenon families below).
+        issues.extend(_check_airmet_a2(start=start, end=end, upper=upper))
+        issues.extend(
+            _check_ca_gfa_airmet(
+                product=product,
+                core=core,
+                body_start=start,
+                body_end=end,
+                profile=profile,
+            )
+        )
+
+    families = _SIGMET_FAMILIES if product == "SIGMET" else _AIRMET_FAMILIES
+    hit = _count_families(upper, families)
+    if len(hit) > 1:
+        issues.append(
+            _issue(
+                "MULTIPLE_PHENOMENA",
+                f"{product} encodes multiple phenomenon families {hit} - A6 one-phenomenon gate",
+                start=start,
+                end=end,
+                location="phenomenon",
+            )
+        )
+
+    # EV-050 - AirWx/SigWx register membership (underscore↔space normalize).
+    issues.extend(_check_phenomenon_membership(upper, product=product, start=start, end=end))
+
+    tokens = core.replace("=", " ").replace("\n", " ").split()
+    malformed: list[Issue] = []
+    for tok in tokens:
+        lat = re.fullmatch(r"[NS](?P<deg>\d{2})(?P<min>\d{2})", tok)
+        bad_lat = bool(lat and (int(lat.group("deg")) > 90 or int(lat.group("min")) > 59))
+        if tok.endswith("-?") or tok == "METAR" or re.fullmatch(r"AT\d{4}Z", tok) or bad_lat:
+            malformed.append(
+                _issue(
+                    "MALFORMED_SOURCE_TOKEN",
+                    f"{product} looks like a source typo or garbled group {tok!r}",
+                    start=start,
+                    end=end,
+                    location="body",
+                )
+            )
+    issues.extend(malformed)
+
+    return issues

@@ -62,7 +62,9 @@ Status values: Implemented, In progress, Planned, Superseded, Deprecated, Done.
 | Publishable tac-validate package | Implemented | Package installs from PyPI release tags |
 | Fast iwxxm-validate package | Implemented | Rust and Schematron path ships on PyPI |
 | Publishable tac2iwxxm package | Implemented | Package and extras ship with release CI |
-| TAC lint registry for METAR and SPECI | Done | Catalogued issues drive the lint quality bar |
+| TAC lint registry for METAR and SPECI | Done | Catalogued issues drive the lint quality bar; WMO handbook METAR/SPECI combination rules deepen group order, CAVOK, wind, visibility, RVR, weather, cloud, TREND, and remarks handling |
+| Structured METAR/SPECI entry on Convert | Implemented | Operators can fill handbook group fields, insert TAC into the editor, and convert on the existing path |
+| Optional omit of national remarks on convert | Implemented | Convert may drop remarks after RMK from IWXXM when the operator turns that option off |
 | Multi-database dissemination upload | Done | Bring-your-own-credentials URI upload works from the drawer |
 | WIS2 dissemination | Done | WIS2 pathway works from the drawer |
 | EDIS to RTH Washington dissemination | Done | EDIS pathway works from the drawer |
