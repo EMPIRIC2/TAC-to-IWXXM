@@ -57,7 +57,36 @@ DEFAULT_METRICS: tuple[dict[str, Any], ...] = (
 
 @dataclass(slots=True)
 class StationRecord:
-    """One stored TAC observation for a station."""
+    """
+    One stored TAC observation for a station.
+
+    Attributes
+    ----------
+    icao : str
+        Station ICAO identifier.
+    product : str
+        Lowercase product family (metar, speci, taf, ...).
+    observed_at : datetime
+        Observation time (UTC).
+    ingested_at : datetime
+        Ingest timestamp (UTC).
+    tac_text : str
+        Raw TAC body.
+    source : str
+        Ingest source label.
+    solidus_count : int
+        Solidus character count.
+    missing_digit_count : int
+        Missing-digit solidus runs.
+    lint_error_count : int
+        Stored lint error count.
+    lint_warning_count : int
+        Stored lint warning count.
+    convert_ok : bool | None
+        Conversion success flag when known.
+    character_count : int
+        Length of ``tac_text``.
+    """
 
     icao: str
     product: str
@@ -75,7 +104,26 @@ class StationRecord:
 
 @dataclass(slots=True)
 class StationMeta:
-    """Station registry row."""
+    """
+    Station registry row.
+
+    Attributes
+    ----------
+    icao : str
+        Station ICAO identifier.
+    name : str | None
+        Optional station name.
+    country : str | None
+        Optional ISO country code.
+    latitude : float | None
+        Optional latitude.
+    longitude : float | None
+        Optional longitude.
+    first_seen_at : datetime | None
+        First observation time.
+    last_seen_at : datetime | None
+        Latest observation time.
+    """
 
     icao: str
     name: str | None = None

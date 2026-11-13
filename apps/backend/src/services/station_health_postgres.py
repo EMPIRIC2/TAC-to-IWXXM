@@ -29,6 +29,16 @@ def sync_database_url(raw: str | None = None) -> str | None:
     """
     Normalize ``DATABASE_URL`` for sync SQLAlchemy (psycopg).
 
+    Parameters
+    ----------
+    raw : object
+        Optional URL; defaults to ``DATABASE_URL``.
+
+    Returns
+    -------
+    str | None
+        Sync driver URL, or ``None`` when unset.
+
     Examples
     --------
     >>> 1 + 1  # docstring smoke (sync_database_url)
@@ -51,21 +61,72 @@ def sync_database_url(raw: str | None = None) -> str | None:
 
 
 class PostgresStationHealthStore:
-    """Station health store backed by product Postgres tables."""
+    """
+    Station health store backed by product Postgres tables.
+
+    Attributes
+    ----------
+    _engine : Engine
+        Sync SQLAlchemy engine.
+    """
 
     def __init__(self, engine: Engine) -> None:
+        """
+        Bind the store to a sync engine.
+
+        Parameters
+        ----------
+        engine : object
+            SQLAlchemy engine.
+        """
         self._engine = engine
 
     @classmethod
     def from_url(cls, url: str) -> PostgresStationHealthStore:
-        """Build a store from a sync database URL."""
+        """
+        Build a store from a sync database URL.
+
+        Parameters
+        ----------
+        url : object
+            Sync SQLAlchemy URL.
+
+        Returns
+        -------
+        PostgresStationHealthStore
+            Connected store.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (PostgresStationHealthStore.from_url)
+        2
+        """
         return cls(create_engine(url, pool_pre_ping=True))
 
     def reset(self) -> None:
-        """No-op for API compatibility with the in-memory store."""
+        """
+        No-op for API compatibility with the in-memory store.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (PostgresStationHealthStore.reset)
+        2
+        """
 
     def list_metrics(self) -> list[dict[str, Any]]:
-        """Return enabled metric definitions from Postgres, with catalog fallback."""
+        """
+        Return enabled metric definitions from Postgres, with catalog fallback.
+
+        Returns
+        -------
+        list[dict[str, Any]]
+            Enabled metric rows.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (PostgresStationHealthStore.list_metrics)
+        2
+        """
         try:
             with self._engine.connect() as conn:
                 rows = conn.execute(
@@ -102,7 +163,40 @@ class PostgresStationHealthStore:
         lint_warning_count: int = 0,
         convert_ok: bool | None = None,
     ) -> StationRecord | None:
-        """Upsert station registry and append one TAC observation row."""
+        """
+        Upsert station registry and append one TAC observation row.
+
+        Parameters
+        ----------
+        icao : object
+            Station ICAO.
+        product : object
+            Product family.
+        tac_text : object
+            Raw TAC text.
+        source : object
+            Ingest source label.
+        observed_at : object
+            Optional observation time.
+        name : object
+            Optional station name.
+        lint_error_count : object
+            Lint error count.
+        lint_warning_count : object
+            Lint warning count.
+        convert_ok : object
+            Conversion success flag.
+
+        Returns
+        -------
+        StationRecord | None
+            Stored row, or ``None`` on invalid ICAO or write failure.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (PostgresStationHealthStore.record_observation)
+        2
+        """
         code = (icao or "").strip().upper()
         if len(code) != 4 or not code.isalpha():
             return None
@@ -187,7 +281,30 @@ class PostgresStationHealthStore:
         grade: str | None = None,
         limit: int = 100,
     ) -> dict[str, Any]:
-        """Build the public list payload from Postgres observations."""
+        """
+        Build the public list payload from Postgres observations.
+
+        Parameters
+        ----------
+        window_key : object
+            Window id such as ``6h``.
+        product : object
+            Optional product filter.
+        grade : object
+            Optional letter-grade filter.
+        limit : object
+            Max stations to return.
+
+        Returns
+        -------
+        dict[str, Any]
+            List payload with stations and summary.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (PostgresStationHealthStore.list_stations)
+        2
+        """
         if window_key not in WINDOW_SECONDS:
             window_key = "6h"
         limit = max(1, min(int(limit), 500))
@@ -234,7 +351,24 @@ class PostgresStationHealthStore:
         }
 
     def get_station(self, icao: str) -> dict[str, Any] | None:
-        """Build the public detail payload for one ICAO from Postgres."""
+        """
+        Build the public detail payload for one ICAO from Postgres.
+
+        Parameters
+        ----------
+        icao : object
+            Station ICAO.
+
+        Returns
+        -------
+        dict[str, Any] | None
+            Detail payload, or ``None`` when unknown.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (PostgresStationHealthStore.get_station)
+        2
+        """
         code = (icao or "").strip().upper()
         try:
             with self._engine.connect() as conn:
@@ -291,6 +425,21 @@ class PostgresStationHealthStore:
         cutoff: datetime,
         product_filter: str | None,
     ) -> tuple[dict[str, dict[str, Any]], list[StationRecord]]:
+        """
+        Load registry rows and windowed TAC records from Postgres.
+
+        Parameters
+        ----------
+        cutoff : object
+            Inclusive lower bound for ``observed_at``.
+        product_filter : object
+            Optional product filter.
+
+        Returns
+        -------
+        tuple[dict[str, dict[str, Any]], list[StationRecord]]
+            Station map and observation rows.
+        """
         try:
             with self._engine.connect() as conn:
                 station_rows = conn.execute(

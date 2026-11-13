@@ -410,6 +410,12 @@ vi.mock('./components/CodeNameDictionaryPage', () => ({
   ),
 }));
 
+vi.mock('./components/StationHealthPage', () => ({
+  StationHealthPage: () => (
+    <div data-testid="station-health-page">Station health</div>
+  ),
+}));
+
 vi.mock('./components/ThemeProvider', () => ({
   ThemeProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>,
 }));
@@ -634,6 +640,13 @@ describe('App Component (F31 optional Auth)', () => {
     await user.click(screen.getByTestId('shell-nav-glossary'));
     expect(screen.getByTestId('annex3-glossary-page')).toBeInTheDocument();
     expect(screen.getByTestId('shell-nav-glossary')).toHaveAttribute(
+      'aria-selected',
+      'true',
+    );
+
+    await user.click(screen.getByTestId('shell-nav-stations'));
+    expect(screen.getByTestId('station-health-page')).toBeInTheDocument();
+    expect(screen.getByTestId('shell-nav-stations')).toHaveAttribute(
       'aria-selected',
       'true',
     );

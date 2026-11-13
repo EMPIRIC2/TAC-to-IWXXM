@@ -290,6 +290,7 @@ def test_api_module_top_level_fallback_imports(monkeypatch):
         mass_ingest=fake_mass_ingest_router,
         quality_metrics=fake_router_module,
         rule_catalogs=fake_router_module,
+        station_health=fake_router_module,
         tac_quality=fake_tac_quality_router,
         validation=fake_router_module,
         work_sessions=fake_router_module,

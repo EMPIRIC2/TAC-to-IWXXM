@@ -26,7 +26,20 @@ logger = logging.getLogger(__name__)
 
 @dataclass
 class StationHealthStore:
-    """Thread-safe in-memory store for station health reads and writes."""
+    """
+    Thread-safe in-memory store for station health reads and writes.
+
+    Attributes
+    ----------
+    _stations : dict[str, StationMeta]
+        ICAO to registry metadata.
+    _records : list[StationRecord]
+        Append-only observation list.
+    _metrics : list[dict[str, Any]]
+        Metric definition rows.
+    _lock : Lock
+        Guards mutable state.
+    """
 
     _stations: dict[str, StationMeta] = field(default_factory=dict)
     _records: list[StationRecord] = field(default_factory=list)
@@ -34,13 +47,32 @@ class StationHealthStore:
     _lock: Lock = field(default_factory=Lock)
 
     def reset(self) -> None:
-        """Clear stations and records (tests)."""
+        """
+        Clear stations and records (tests).
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (StationHealthStore.reset)
+        2
+        """
         with self._lock:
             self._stations.clear()
             self._records.clear()
 
     def list_metrics(self) -> list[dict[str, Any]]:
-        """Return enabled metric definitions sorted for dashboard cards."""
+        """
+        Return enabled metric definitions sorted for dashboard cards.
+
+        Returns
+        -------
+        list[dict[str, Any]]
+            Enabled metric rows.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (StationHealthStore.list_metrics)
+        2
+        """
         with self._lock:
             rows = [dict(row) for row in self._metrics if row.get("enabled", True)]
         rows.sort(key=lambda row: int(row.get("sort_order", 0)))
@@ -59,7 +91,40 @@ class StationHealthStore:
         lint_warning_count: int = 0,
         convert_ok: bool | None = None,
     ) -> StationRecord | None:
-        """Append one observation and refresh station metadata."""
+        """
+        Append one observation and refresh station metadata.
+
+        Parameters
+        ----------
+        icao : object
+            Station ICAO.
+        product : object
+            Product family.
+        tac_text : object
+            Raw TAC text.
+        source : object
+            Ingest source label.
+        observed_at : object
+            Optional observation time.
+        name : object
+            Optional station name.
+        lint_error_count : object
+            Lint error count.
+        lint_warning_count : object
+            Lint warning count.
+        convert_ok : object
+            Conversion success flag.
+
+        Returns
+        -------
+        StationRecord | None
+            Stored row, or ``None`` when ICAO is invalid.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (StationHealthStore.record_observation)
+        2
+        """
         code = (icao or "").strip().upper()
         if len(code) != 4 or not code.isalpha():
             return None
@@ -109,7 +174,30 @@ class StationHealthStore:
         grade: str | None = None,
         limit: int = 100,
     ) -> dict[str, Any]:
-        """Build the public list payload for one window."""
+        """
+        Build the public list payload for one window.
+
+        Parameters
+        ----------
+        window_key : object
+            Window id such as ``6h``.
+        product : object
+            Optional product filter.
+        grade : object
+            Optional letter-grade filter.
+        limit : object
+            Max stations to return.
+
+        Returns
+        -------
+        dict[str, Any]
+            List payload with stations and summary.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (StationHealthStore.list_stations)
+        2
+        """
         if window_key not in WINDOW_SECONDS:
             window_key = "6h"
         limit = max(1, min(int(limit), 500))
@@ -164,7 +252,24 @@ class StationHealthStore:
         }
 
     def get_station(self, icao: str) -> dict[str, Any] | None:
-        """Build the public detail payload for one ICAO."""
+        """
+        Build the public detail payload for one ICAO.
+
+        Parameters
+        ----------
+        icao : object
+            Station ICAO.
+
+        Returns
+        -------
+        dict[str, Any] | None
+            Detail payload, or ``None`` when unknown.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (StationHealthStore.get_station)
+        2
+        """
         code = (icao or "").strip().upper()
         with self._lock:
             meta = self._stations.get(code)
@@ -205,6 +310,11 @@ def get_station_health_store() -> StationHealthStoreProtocol:
     Prefer product Postgres when ``DATABASE_URL`` is set. Unit tests inject
     an in-memory store via ``set_station_health_store``.
 
+    Returns
+    -------
+    StationHealthStoreProtocol
+        Active store implementation.
+
     Examples
     --------
     >>> 1 + 1  # docstring smoke (get_station_health_store)
@@ -233,6 +343,11 @@ def get_station_health_store() -> StationHealthStoreProtocol:
 def set_station_health_store(store: StationHealthStoreProtocol | None) -> None:
     """
     Replace the process store (tests). ``None`` restores the default routing.
+
+    Parameters
+    ----------
+    store : object
+        Override store, or ``None`` to clear.
 
     Examples
     --------

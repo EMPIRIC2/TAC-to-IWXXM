@@ -3,6 +3,7 @@
  */
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { StationHealthPage } from './StationHealthPage';
 import { STATION_HEALTH_PAGE_TITLE } from '@/utils/stationHealthCopy';
 
@@ -92,6 +93,35 @@ describe('StationHealthPage', () => {
     await waitFor(() => {
       expect(screen.getByTestId('station-health-error')).toBeInTheDocument();
     });
+  });
+
+  it('reloads when window, product, and grade filters change', async () => {
+    const user = userEvent.setup();
+    fetchStationHealthList.mockResolvedValue({
+      window: '6h',
+      computed_at: '2026-11-13T12:00:00Z',
+      stations: [],
+      summary: { station_count: 0, grade_counts: { A: 0, B: 0, C: 0, D: 0, F: 0 } },
+    });
+    render(<StationHealthPage />);
+    await waitFor(() => {
+      expect(fetchStationHealthList).toHaveBeenCalled();
+    });
+    const callsBefore = fetchStationHealthList.mock.calls.length;
+    await user.selectOptions(screen.getByTestId('station-health-window'), '1d');
+    await user.selectOptions(screen.getByTestId('station-health-product'), 'metar');
+    await user.selectOptions(screen.getByTestId('station-health-grade'), 'B');
+    await waitFor(() => {
+      expect(fetchStationHealthList.mock.calls.length).toBeGreaterThan(callsBefore);
+    });
+    const last = fetchStationHealthList.mock.calls.at(-1)?.[0] as {
+      window?: string;
+      product?: string;
+      grade?: string;
+    };
+    expect(last.window).toBe('1d');
+    expect(last.product).toBe('metar');
+    expect(last.grade).toBe('B');
   });
 });
 
