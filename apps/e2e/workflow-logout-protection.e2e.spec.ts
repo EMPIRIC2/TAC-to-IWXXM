@@ -12,8 +12,11 @@ test.describe('Workflow: Logout Protection', () => {
     await expect(page.getByTestId('convert-button')).toBeVisible({
       timeout: 30_000,
     });
+    // Opposite state: Convert is visible, so logout chrome is absent.
+    // Locators can match only if the removed Auth logout control returns.
+    // targets the retired logout control
     await expect(
-      page.getByRole('button', { name: /log ?out|sign out/i }),
+      page.getByRole('button', { name: 'Log out', exact: true }),
     ).toHaveCount(0);
     await expect(page.getByTestId('logout-button')).toHaveCount(0);
   });

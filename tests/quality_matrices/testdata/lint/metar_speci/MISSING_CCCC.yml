@@ -116,23 +116,23 @@ cases:
 - bucket: edge_pass
   case_id: '01'
   status: ready
-  tac: METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005=
+  tac: METAR K10U 302035Z AUTO 23005KT 10SM FEW023 OVC100 12/05 A2989 RMK AO2
   expect:
     accept: true
   meta:
     product: METAR
     profile: annex3
-    cite: EV-970-S2 MISSING_CCCC/edge_pass
+    cite: '#1476 MISSING_CCCC/digit_icao'
 - bucket: edge_pass
   case_id: '02'
   status: ready
-  tac: METAR KSEA 231800Z 27008KT 10SM SCT025 14/06 A3004=
+  tac: METAR K05U 302055Z AUTO 17012KT 10SM CLR 13/06 A2989 RMK AO2
   expect:
     accept: true
   meta:
     product: METAR
     profile: annex3
-    cite: EV-970-S2 MISSING_CCCC/edge_pass
+    cite: '#1476 MISSING_CCCC/digit_icao'
 - bucket: edge_pass
   case_id: '03'
   status: ready
