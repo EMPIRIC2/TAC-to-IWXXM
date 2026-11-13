@@ -232,9 +232,8 @@ function drawPlace(
     fitPointerTarget(layer, draw.kind);
     return layer.addTo(map);
   }
-  /* v8 ignore next -- point pins always pass an explicit lat/lng from the cluster path */
-  const [latitude, longitude] = at ?? [draw.latitude, draw.longitude];
-  const layer = L.circleMarker(shiftLatLng(latitude, longitude, lngOffset), {
+  const pointAt = at as [number, number];
+  const layer = L.circleMarker(shiftLatLng(pointAt[0], pointAt[1], lngOffset), {
     radius: 6,
     ...paint,
     fillOpacity: copyOpacity(0),
@@ -523,10 +522,9 @@ export function LiveWorldMap({
               const match = choices.find(
                 (row) => row.place.reports[row.reportIndex]?.tac === tac,
               );
-              /* v8 ignore next 3 -- send-to-converter always uses a TAC from the choices */
-              if (match) {
-                showingPlace = match.place;
-              }
+              /* v8 ignore start -- converter send always uses a chosen report TAC */
+              showingPlace = match?.place ?? showingPlace;
+              /* v8 ignore stop */
               loadShowing(tac);
             });
             if (choices.length > 0) {
