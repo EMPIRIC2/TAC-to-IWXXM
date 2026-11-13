@@ -2,7 +2,7 @@
  * Operator copy for the issue-detail dialog (F7 / F10 / F15).
  */
 
-export const ISSUE_DETAIL_TITLE = 'Issue details';
+export const ISSUE_DETAIL_TITLE = 'Lint details';
 export const ISSUE_DETAIL_CLOSE = 'Close';
 export const ISSUE_DETAIL_OPEN = 'Show issue details';
 export const ISSUE_DETAIL_BUTTON = 'Details';

@@ -824,19 +824,11 @@ describe('LiveWorldMap', () => {
         },
       ],
     };
-    const emptyReports: LivePlace = {
-      place_key: 'KORD',
-      product: 'metar',
-      latitude: 41.9,
-      longitude: -87.9,
-      geometry: { kind: 'point' },
-      reports: [],
-    };
     vi.stubGlobal(
       'fetch',
       vi.fn().mockResolvedValue({
         ok: true,
-        json: async () => ({ places: [rainy, clear, emptyReports] }),
+        json: async () => ({ places: [rainy, clear] }),
       }),
     );
     render(<LiveWorldMap onOpenPlace={onOpenPlace} />);
@@ -847,28 +839,91 @@ describe('LiveWorldMap', () => {
     ).toBeInTheDocument();
     expect(screen.getByTestId('cluster-pick-KJFK')).toBeInTheDocument();
     expect(screen.queryByTestId('cluster-pick-KBOS')).not.toBeInTheDocument();
-    expect(screen.queryByTestId('cluster-pick-KORD')).not.toBeInTheDocument();
     await user.click(screen.getByTestId('cluster-pick-KJFK'));
     expect(onOpenPlace).toHaveBeenCalledWith(
       expect.objectContaining({ place_key: 'KJFK' }),
     );
-    // Clearing overlays keeps every visible place in the map (incl. empty reports).
     await user.click(screen.getByTestId('tac-layer-precip'));
     await waitFor(() => {
       expect(
         screen.queryByTestId('station-cluster-file-picker'),
       ).not.toBeInTheDocument();
     });
+  });
+
+  it('filters blank TAC reports when building the cluster picker', async () => {
+    const user = userEvent.setup();
+    const rainy: LivePlace = {
+      place_key: 'KJFK',
+      product: 'metar',
+      latitude: 40.6,
+      longitude: -73.7,
+      geometry: { kind: 'point' },
+      reports: [
+        {
+          observed_at: '',
+          tac: 'METAR KJFK 231851Z 20015G25KT 3SM -RA BR BKN012 12/11 A2998=',
+          iwxxm: null,
+        },
+      ],
+    };
+    const emptyReports: LivePlace = {
+      place_key: 'KXYZ',
+      product: 'metar',
+      latitude: 41.0,
+      longitude: -74.0,
+      geometry: { kind: 'point' },
+      reports: [],
+    };
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue({
+        ok: true,
+        json: async () => ({ places: [rainy, emptyReports] }),
+      }),
+    );
+    render(<LiveWorldMap />);
+    expect(await screen.findByTestId('tac-layer-precip')).toBeInTheDocument();
     await user.click(screen.getByTestId('tac-layer-precip'));
     expect(
       await screen.findByTestId('station-cluster-file-picker'),
     ).toBeInTheDocument();
-    // Turn every product off so visible empties while the picker row stays.
-    for (const product of LIVE_MAP_PRODUCTS) {
-      await user.click(screen.getByTestId(`layer-${product}`));
-    }
-    const opened = onOpenPlace.mock.calls.length;
+    expect(screen.getByTestId('cluster-pick-KJFK')).toBeInTheDocument();
+    expect(screen.queryByTestId('cluster-pick-KXYZ')).not.toBeInTheDocument();
+  });
+
+  it('ignores stale cluster picks after the place leaves the filter', async () => {
+    const user = userEvent.setup();
+    const onOpenPlace = vi.fn();
+    const rainy: LivePlace = {
+      place_key: 'KJFK',
+      product: 'metar',
+      latitude: 40.6,
+      longitude: -73.7,
+      geometry: { kind: 'point' },
+      reports: [
+        {
+          observed_at: '2026-11-13T18:00:00Z',
+          tac: 'METAR KJFK 231851Z 20015G25KT 3SM -RA BR BKN012 12/11 A2998=',
+          iwxxm: null,
+        },
+      ],
+    };
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue({
+        ok: true,
+        json: async () => ({ places: [rainy] }),
+      }),
+    );
+    render(<LiveWorldMap onOpenPlace={onOpenPlace} />);
+    expect(await screen.findByTestId('tac-layer-precip')).toBeInTheDocument();
+    await user.click(screen.getByTestId('tac-layer-precip'));
+    expect(
+      await screen.findByTestId('station-cluster-file-picker'),
+    ).toBeInTheDocument();
+    await user.selectOptions(screen.getByTestId('live-map-region'), 'Europe');
     await user.click(screen.getByTestId('cluster-pick-KJFK'));
-    expect(onOpenPlace).toHaveBeenCalledTimes(opened);
+    expect(onOpenPlace).not.toHaveBeenCalled();
   });
 });

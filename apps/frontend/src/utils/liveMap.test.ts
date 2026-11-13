@@ -568,5 +568,22 @@ describe('live map helpers', () => {
       },
     });
     expect(seenEmptyTac).toEqual(['']);
+
+    const withTacReject = filterPlaces(loaded, {
+      ...base,
+      tacLayers: new Set(['precip']),
+      passesTacLayers: () => false,
+    });
+    expect(withTacReject).toEqual([]);
+
+    expect(
+      filterPlaces(loaded, {
+        ...base,
+        tacLayers: new Set(['precip']),
+      }),
+    ).toEqual(filterPlaces(loaded, base));
+    expect(
+      filterPlaces(loaded, { ...base, tacLayers: new Set() }),
+    ).toEqual(filterPlaces(loaded, base));
   });
 });
