@@ -4,6 +4,8 @@ import { MyMetarsPage } from './components/MyMetarsPage';
 import { LintValidationCatalogPage } from './components/LintValidationCatalogPage';
 import { DecodeVisualsPage } from './components/DecodeVisualsPage';
 import { CodeNameDictionaryPage } from './components/CodeNameDictionaryPage';
+import { Annex3GlossaryPage } from './components/Annex3GlossaryPage';
+import { GlossaryScope } from './components/glossary/GlossaryScope';
 import { AppShellNav, type ShellPrimaryView } from './components/AppShellNav';
 import type { LivePlace } from '@/utils/liveMap';
 import { Login } from './components/auth/Login';
@@ -64,7 +66,8 @@ function isPrimaryShellView(view: AppView): view is ShellPrimaryView {
     view === 'visuals' ||
     view === 'history' ||
     view === 'catalog' ||
-    view === 'dictionary'
+    view === 'dictionary' ||
+    view === 'glossary'
   );
 }
 
@@ -79,6 +82,7 @@ function App() {
   const [catalogFocusFamily, setCatalogFocusFamily] = useState<'lint' | 'iwxxm' | null>(
     null,
   );
+  const [glossaryFocusTermId, setGlossaryFocusTermId] = useState<string | null>(null);
   const [termsAcknowledged, setTermsAcknowledged] = useState(hasAcknowledgedSiteTerms);
   const [userEmail, setUserEmail] = useState('');
   const [isAuthenticated, setIsAuthenticated] = useState(initiallyLoggedIn);
@@ -257,6 +261,11 @@ function App() {
     setCurrentView('visuals');
   };
 
+  const handleOpenGlossaryEntry = useCallback((entryId: string) => {
+    setGlossaryFocusTermId(entryId);
+    setCurrentView('glossary');
+  }, []);
+
   const handleMapOpenPlace = (place: LivePlace) => {
     const tac = place.reports[0]?.tac?.trim() ?? '';
     if (!tac) {
@@ -295,6 +304,7 @@ function App() {
 
   return (
     <ThemeProvider>
+      <GlossaryScope openGlossaryEntry={handleOpenGlossaryEntry}>
       {showTermsGate ? (
         <TermsConsentGate
           onAcknowledge={() => {
@@ -340,7 +350,8 @@ function App() {
             currentView === 'visuals' ||
             currentView === 'history' ||
             currentView === 'catalog' ||
-            currentView === 'dictionary') && (
+            currentView === 'dictionary' ||
+            currentView === 'glossary') && (
             <div hidden={currentView !== 'converter'}>
               <FileConverter
                 onLogout={handleLogout}
@@ -412,6 +423,7 @@ function App() {
       )}
 
       <Toaster />
+      </GlossaryScope>
     </ThemeProvider>
   );
 }

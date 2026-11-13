@@ -29,6 +29,8 @@ test.describe('Glossary shell page (F38 / UJ-GLOSS)', () => {
     await openPublicConverter(page);
     await dismissPrivacyNoticeIfPresent(page);
     await page.getByTestId('shell-nav-glossary').click();
+    // Opposite state: SIGMET entry is visible before a no-match search.
+    await expect(page.getByTestId('glossary-entry-sigmet')).toBeVisible();
     await page.getByTestId('glossary-search').fill('zzzz-no-match-xyz');
     await expect(page.getByTestId('glossary-entry-sigmet')).toHaveCount(0);
     await expect(page.getByTestId('glossary-entry-list')).toBeVisible();
