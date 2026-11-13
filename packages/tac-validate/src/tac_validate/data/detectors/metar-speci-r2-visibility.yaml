@@ -13,8 +13,9 @@ rules:
       exclude_ahl_lines: true
       strip_terminator: true
     # Do not treat CIS/Russian runway-state Rxx/dddddd digit runs as visibility
-    # (lookbehind rejects a solidus before a 5+ digit group).
-    pattern: '(?<![A-Z0-9/])(\d+KM|\d+MILES|\d{5,})\b'
+    # (lookbehind rejects a solidus before a 5+ digit group). 1-3 digit KM is
+    # valid (#1477); reject MILES / 5+ digit metres / absurd 4+ digit KM.
+    pattern: '(?<![A-Z0-9/])(\d{4,}KM|\d+MILES|\d{5,})\b'
     flags:
       - IGNORECASE
     on_match:
@@ -31,7 +32,7 @@ rules:
       strip_terminator: true
     skip_if_codes:
       - INVALID_VISIBILITY
-    pattern: '(?:\b(?:CAVOK|P?\d{1,2}SM|[MP]?\d{1,2}/\d{1,2}SM|\d{1,2}\s+[MP]?\d{1,2}/\d{1,2}SM|\d{4}(?:NE|SE|SW|NW|N|E|S|W)?)\b|(?<![A-Z0-9/])////(?:SM)?(?![A-Z0-9/]))'
+    pattern: '(?:\b(?:CAVOK|P?\d{1,2}SM|[MP]?\d{1,2}/\d{1,2}SM|\d{1,2}\s+[MP]?\d{1,2}/\d{1,2}SM|\d{4}(?:NE|SE|SW|NW|N|E|S|W)?|\d{1,3}KM)\b|(?<![A-Z0-9/])////(?:SM)?(?![A-Z0-9/]))'
     on_fail:
       code: MISSING_VISIBILITY
       location: visibility

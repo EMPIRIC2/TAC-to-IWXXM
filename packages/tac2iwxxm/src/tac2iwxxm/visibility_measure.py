@@ -66,3 +66,30 @@ def prevailing_from_metre_group(metres: int) -> tuple[int, bool]:
     if metres >= 9999:
         return 10000, True
     return metres, False
+
+
+def prevailing_from_kilometres(kilometres: int) -> tuple[int, bool]:
+    """
+    Convert a kilometre visibility token (``10KM``) to prevailing metres.
+
+    Ten kilometres or more uses the same ABOVE convention as ``10SM`` / ``9999``.
+
+    Parameters
+    ----------
+    kilometres : int
+        Integer kilometres from a ``NNKM`` / ``NNNKM`` body group.
+
+    Returns
+    -------
+    tuple[int, bool]
+        Metres, and whether the reading is 10 km or more.
+
+    Examples
+    --------
+    >>> prevailing_from_kilometres(10)
+    (10000, True)
+    >>> prevailing_from_kilometres(5)
+    (5000, False)
+    """
+    metres = kilometres * 1000
+    return metres, kilometres >= 10

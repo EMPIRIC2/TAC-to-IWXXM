@@ -152,7 +152,7 @@ ISSUES: tuple[IssueSpec, ...] = (
     _row(
         "INVALID_VISIBILITY",
         "error",
-        "{product} invalid visibility token (use SM, meters, or CAVOK)",
+        "{product} invalid visibility token (use SM, meters, KM, or CAVOK)",
         tags=("visibility", "metar", "speci"),
     ),
     _row(

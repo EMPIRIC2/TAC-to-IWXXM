@@ -609,7 +609,7 @@
     {
       "code": "INVALID_VISIBILITY",
       "severity": "error",
-      "message_template": "{product} invalid visibility token (use SM, meters, or CAVOK)",
+      "message_template": "{product} invalid visibility token (use SM, meters, KM, or CAVOK)",
       "product": null,
       "tags": [
         "visibility",
