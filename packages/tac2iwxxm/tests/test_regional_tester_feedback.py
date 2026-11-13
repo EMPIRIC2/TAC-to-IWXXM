@@ -113,16 +113,25 @@ def test_truncated_sigmet_header_still_fails() -> None:
 
 
 def test_incomplete_tac_from_the_packet_still_fails_closed() -> None:
+    # Malformed wind / partial temp stay fail-closed. Clean visibility omission
+    # converts with nilReason missing (#1562) — covered in test_tc_1562_*.
     cases = {
         _TAF_NO_PERIOD: ("TAF", "unable to parse TAF header"),
         _METAR_TYPO_WIND: ("METAR", "missing wind group"),
         _METAR_BAD_WIND: ("METAR", "missing wind group"),
         _METAR_NO_DEWPOINT: ("METAR", "missing temperature/dewpoint group"),
-        _METAR_NO_VIS: ("METAR", "missing visibility (SM/m/CAVOK) group"),
     }
     for tac, (product, message) in cases.items():
         result = convert(tac, product=product)
         assert any(issue.message == message for issue in result.issues), (product, message, result.issues)
+
+
+def test_omitted_visibility_from_the_packet_emits_nilreason() -> None:
+    result = convert(_METAR_NO_VIS, product="METAR", bulletin_date="2026-10-26")
+    assert result.ok is True
+    assert result.xml is not None
+    assert 'nilReason="http://codes.wmo.int/common/nil/missing"' in result.xml
+    assert not any(issue.code == "TRANSLATION_FAILED" for issue in result.issues)
 
 
 def test_tester_regression_workflow_runs_the_feedback_suite() -> None:

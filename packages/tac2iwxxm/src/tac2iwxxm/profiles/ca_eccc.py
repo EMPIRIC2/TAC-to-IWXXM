@@ -91,7 +91,7 @@ def _prepare_ca_ir(ir: dict[str, Any]) -> dict[str, Any]:
         Return value.
     """
     out = dict(ir)
-    if out.get("cavok") or out.get("visibility_not_observable"):
+    if out.get("cavok") or out.get("visibility_not_observable") or out.get("visibility_missing"):
         return out
     vis_sm = out.get("visibility_sm")
     if vis_sm is not None:
@@ -351,7 +351,7 @@ def _prepare_ca_taf_ir(ir: dict[str, Any]) -> dict[str, Any]:
         Return value.
     """
     out = dict(ir)
-    if out.get("cavok") or out.get("visibility_not_observable"):
+    if out.get("cavok") or out.get("visibility_not_observable") or out.get("visibility_missing"):
         return out
     vis_sm = out.get("visibility_sm")
     if vis_sm is not None:

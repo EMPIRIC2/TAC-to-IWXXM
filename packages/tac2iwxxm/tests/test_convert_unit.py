@@ -132,23 +132,24 @@ def test_parse_product_mismatch() -> None:
 
 
 def test_parse_missing_wind() -> None:
-    with pytest.raises(ValueError, match="missing wind"):
-        parse_metar_speci("METAR KJFK 231751Z 10SM 15/07 A3005=", product="METAR")
+    ir = parse_metar_speci("METAR KJFK 231751Z 10SM 15/07 A3005=", product="METAR")
+    assert ir.get("wind_missing") is True
 
 
 def test_parse_missing_visibility() -> None:
-    with pytest.raises(ValueError, match="missing visibility"):
-        parse_metar_speci("METAR KJFK 231751Z 18012KT 15/07 A3005=", product="METAR")
+    ir = parse_metar_speci("METAR KJFK 231751Z 18012KT 15/07 A3005=", product="METAR")
+    assert ir.get("visibility_missing") is True
 
 
 def test_parse_missing_temp() -> None:
-    with pytest.raises(ValueError, match="missing temperature"):
-        parse_metar_speci("METAR KJFK 231751Z 18012KT 10SM A3005=", product="METAR")
+    ir = parse_metar_speci("METAR KJFK 231751Z 18012KT 10SM A3005=", product="METAR")
+    assert ir.get("temp_missing") is True
+    assert ir.get("dewpoint_missing") is True
 
 
 def test_parse_missing_altimeter() -> None:
-    with pytest.raises(ValueError, match="missing altimeter"):
-        parse_metar_speci("METAR KJFK 231751Z 18012KT 10SM 15/07=", product="METAR")
+    ir = parse_metar_speci("METAR KJFK 231751Z 18012KT 10SM 15/07=", product="METAR")
+    assert ir.get("qnh_missing") is True
 
 
 def test_parse_vrb_and_mps_and_negative_temps() -> None:
