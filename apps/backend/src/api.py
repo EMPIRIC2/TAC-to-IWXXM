@@ -137,6 +137,7 @@ try:
         mass_ingest,
         quality_metrics,
         rule_catalogs,
+        station_health,
         tac_quality,
         validation,
         work_sessions,
@@ -156,6 +157,7 @@ except ImportError:
         mass_ingest,
         quality_metrics,
         rule_catalogs,
+        station_health,
         tac_quality,
         validation,
         work_sessions,
@@ -519,6 +521,7 @@ try:
     app.include_router(conversion.router)
     app.include_router(comprehensive_validation.router)
     app.include_router(live_map.router)
+    app.include_router(station_health.router)
     logger.info("DEBUG: included TD-3b routers successfully")
 except Exception as e:  # pragma: no cover - defensive
     logger.error(f"DEBUG: Failed to include TD-3b routers: {e}", exc_info=True)
