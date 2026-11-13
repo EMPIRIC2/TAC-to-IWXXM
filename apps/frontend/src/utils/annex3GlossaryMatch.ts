@@ -86,19 +86,17 @@ export function segmentGlossaryText(
       segments.push({ kind: 'text', value: text.slice(lastIndex, start) });
     }
     const lower = value.toLowerCase();
-    const row = patterns.find((p) => p.phrase.toLowerCase() === lower);
-    if (row) {
-      segments.push({ kind: 'term', value, entry: row.entry });
-    } else {
-      segments.push({ kind: 'text', value });
-    }
+    // Regex alternation is built from `patterns`, so find always hits.
+    const row = patterns.find((p) => p.phrase.toLowerCase() === lower)!;
+    segments.push({ kind: 'term', value, entry: row.entry });
     lastIndex = start + value.length;
     match = re.exec(text);
   }
   if (lastIndex < text.length) {
     segments.push({ kind: 'text', value: text.slice(lastIndex) });
   }
-  return segments.length > 0 ? segments : [{ kind: 'text', value: text }];
+  // Non-empty input always yields at least one segment above.
+  return segments;
 }
 
 /**
