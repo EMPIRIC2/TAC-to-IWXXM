@@ -276,6 +276,7 @@ def convert_metar_tac_with_metadata(
     report_status: str | None = None,
     report_variant: str | None = None,
     propagate_residuals_to_remarks: bool | None = None,
+    include_national_remarks: bool = True,
 ) -> tuple[str, ComprehensiveValidationResult | None]:
     """
     Convert TAC to IWXXM via ``tac2iwxxm`` and optionally validate.
@@ -323,6 +324,9 @@ def convert_metar_tac_with_metadata(
     propagate_residuals_to_remarks :
         When ``True``, fold decode residuals into remarks/HRT (or document no XML
         target on annex3). When ``None``, use the profile default (annex3 off).
+    include_national_remarks :
+        When ``False``, omit national RMK content from IWXXM even for profiles that
+        normally keep remarks.
 
     Returns
     -------
@@ -365,6 +369,7 @@ def convert_metar_tac_with_metadata(
         report_status=report_status,
         report_variant=report_variant,
         propagate_residuals_to_remarks=propagate_residuals_to_remarks,
+        include_national_remarks=include_national_remarks,
         bulletin_date=bulletin_date,
     )
     if not result.ok or not result.xml:

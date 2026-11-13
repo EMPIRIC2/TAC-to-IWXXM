@@ -222,6 +222,8 @@ export async function convertMetarToIwxxm(params: {
   preview?: boolean;
   /** When true, fold decode residuals into remarks/HRT (omit for profile default). */
   propagateResidualsToRemarks?: boolean;
+  /** When false, omit national RMK content from IWXXM (default true when omitted). */
+  includeNationalRemarks?: boolean;
   extensions?: string[];
   exchangeOutput?: boolean;
   /** Exchange packaging profile (ignored on convert-only; used when packaging). */
@@ -322,6 +324,12 @@ export async function convertMetarToIwxxm(params: {
     formData.append('propagate_residuals_to_remarks', 'false');
   }
 
+  if (params.includeNationalRemarks === true) {
+    formData.append('include_national_remarks', 'true');
+  } else if (params.includeNationalRemarks === false) {
+    formData.append('include_national_remarks', 'false');
+  }
+
   if (params.extensions?.length) {
     for (const token of params.extensions) {
       formData.append('extensions', token);
@@ -417,6 +425,8 @@ export async function convertBulletin(params: {
   lint?: boolean;
   /** When true, fold decode residuals into remarks/HRT (omit for profile default). */
   propagateResidualsToRemarks?: boolean;
+  /** When false, omit national RMK content from IWXXM (default true when omitted). */
+  includeNationalRemarks?: boolean;
   /** National extension tokens (for example IWXXM_CA). */
   extensions?: string[];
   accessToken?: string;
@@ -450,6 +460,11 @@ export async function convertBulletin(params: {
     formData.append('propagate_residuals_to_remarks', 'true');
   } else if (params.propagateResidualsToRemarks === false) {
     formData.append('propagate_residuals_to_remarks', 'false');
+  }
+  if (params.includeNationalRemarks === true) {
+    formData.append('include_national_remarks', 'true');
+  } else if (params.includeNationalRemarks === false) {
+    formData.append('include_national_remarks', 'false');
   }
   if (params.extensions?.length) {
     for (const token of params.extensions) {

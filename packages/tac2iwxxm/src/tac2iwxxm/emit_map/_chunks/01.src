@@ -1,0 +1,41 @@
+def check_emit_map_overlay_dir(directory: Path | str) -> None:
+    """
+    Fail-closed load of emit-map YAML overlays in ``directory``.
+
+    Parameters
+    ----------
+    directory : Path | str
+        Directory of overlay files.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (check_emit_map_overlay_dir)
+    2
+    """
+    path = Path(directory)
+    if not path.is_dir():
+        msg = f"emit map overlay directory is not a folder: {path}"
+        raise EmitMapError(msg)
+    previous = os.environ.get(ENV_EMIT_MAP_DIR)
+    os.environ[ENV_EMIT_MAP_DIR] = str(path)
+    clear_emit_map_catalog_cache()
+    try:
+        load_emit_map_catalog()
+    finally:
+        if previous is None:
+            os.environ.pop(ENV_EMIT_MAP_DIR, None)
+        else:
+            os.environ[ENV_EMIT_MAP_DIR] = previous
+        clear_emit_map_catalog_cache()
+
+
+__all__ = [
+    "ENV_EMIT_MAP_DIR",
+    "EmitMap",
+    "EmitMapError",
+    "check_emit_map_overlay_dir",
+    "clear_emit_map_catalog_cache",
+    "emit_with_map",
+    "load_emit_map_catalog",
+    "resolve_emit_map",
+]

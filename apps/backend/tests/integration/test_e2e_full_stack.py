@@ -571,9 +571,7 @@ class TestE2EErrorHandlingAndRecovery:
     """Test error handling and recovery with real services."""
 
     @pytest.mark.asyncio
-
     @pytest.mark.asyncio
-
     @pytest.mark.asyncio
     async def test_malformed_request_handling(self, e2e_client):
         """Test handling of malformed requests."""
@@ -606,14 +604,11 @@ class TestE2EPerformanceAndScalability:
         start_time = time.time()
         responses = []
         for _ in range(3):
-            response = await e2e_client.post(
-                "/api/v1/convert", json={"metars": metars, "version": "2023-1"}
-            )
+            response = await e2e_client.post("/api/v1/convert", json={"metars": metars, "version": "2023-1"})
             responses.append(response)
         elapsed_time = time.time() - start_time
         assert all(r.status_code in {200, 400, 422} for r in responses)
         assert elapsed_time < 60.0
-
 
 
 class TestE2EFullEndpointCoverage:

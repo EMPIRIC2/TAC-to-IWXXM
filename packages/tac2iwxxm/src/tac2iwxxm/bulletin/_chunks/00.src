@@ -1,0 +1,492 @@
+"""WMO AHL bulletin helpers and splitter (F6.bulletin / TC-EV029-003).
+
+Shared parse / format / ``T1T2`` map / BBB→``reportStatus`` / IWXXM filename
+helpers live here so ``packages/dissemination`` can import them without
+duplicating AHL rules (EV-029 / E29-T2).
+"""
+from __future__ import annotations
+import re
+from datetime import UTC, datetime
+from typing import Literal
+
+from tac2iwxxm.models import AhlParts, BulletinMeta, BulletinSplit
+
+ReportStatus = Literal["NORMAL", "AMENDMENT", "CORRECTION"]
+
+# TAC → IWXXM T1T2 (docs/domain/IWXXM_CONVERSION.md §AHL / bulletin EV-029)
+_TAC_TO_IWXXM: dict[str, str] = {
+    "SA": "LA",
+    "SP": "LP",
+    "FC": "LC",
+    "FT": "LT",
+    "FK": "LK",
+    "FN": "LN",
+    "FV": "LU",
+    "WA": "LW",
+    "WS": "LS",
+    "WC": "LY",
+    "WV": "LV",
+    "WM": "LM",  # VONA (F32 / G-VONA-4)
+}
+
+_AHL_LINE = re.compile(
+    r"^(?P<tt>[A-Z]{2})(?P<aa>[A-Z]{2})(?P<ii>\d{2})\s+"
+    r"(?P<cccc>[A-Z]{4})\s+(?P<yygggg>\d{6})"
+    r"(?:\s+(?P<bbb>[A-Z]{1,3}))?\s*$"
+)
+
+# AHL page v1.0.1 prefix families: RRx / AAx / CCx with x ∈ A…X (not Y/Z).
+_BBB_VALID = re.compile(r"^(?:AA|CC|RR)[A-X]$")
+
+# gifts METAR.re_TAC - report starts at METAR|SPECI and ends at '='
+_TAC_METAR_SPECI = re.compile(
+    r"^(?:METAR|SPECI)\s+(?:COR\s+)?[A-Z][A-Z0-9]{3}\s.+?=",
+    re.MULTILINE | re.DOTALL | re.IGNORECASE,
+)
+
+# TAF body - optional AMD/COR after TAF; ends at '=' (design-note §3.2)
+_TAC_TAF = re.compile(
+    r"^TAF\s+(?:(?:AMD|COR)\s+)?[A-Z][A-Z0-9]{3}\s.+?=",
+    re.MULTILINE | re.DOTALL,
+)
+
+# Sequence forms already accepted by the single-report parser: a word plus
+# digits (ALPHA 02), then one optional letter plus digits (A02 or 3).
+_TAC_SEQUENCE = r"(?:[A-Z]+\s+\d+|[A-Z]?\d+)"
+
+# Stop before the next bulletin/report when ``=`` is omitted (multi-paste).
+_SIGMET_BODY_STOP = (
+    r"(?="
+    r"=\s*$"
+    r"|(?:^|\n)(?:WS|WV|WC)[A-Z]{2}\d{2}\s+[A-Z]{4}\s+\d{6}\b"
+    r"|(?:^|\n)(?:[A-Z]{4}\s+)+SIGMET\s+"
+    r"|(?:^|\n)CONVECTIVE\s+SIGMET\s+"
+    r"|\Z"
+    r")"
+)
+
+# Paste sometimes glues the next AHL onto the previous line (``FL330.WSUS32``).
+_GLUED_SIGMET_AHL = re.compile(
+    r"(?<=\S)(?=(?:WS|WV|WC)[A-Z]{2}\d{2}\s+[A-Z]{4}\s+\d{6}\b)",
+)
+
+# SIGMET body - one or more FIR ids, then SIGMET seq VALID … MWO[-] …
+# Live TAC often spaces before the MWO hyphen (``OEJN -``) or omits it.
+# (= preferred; single block may omit; stop at next AHL / report).
+_TAC_SIGMET = re.compile(
+    r"^(?:[A-Z]{4}\s+)+SIGMET\s+" + _TAC_SEQUENCE + r"\s+VALID\s+\d{6}/\d{6}\s+[A-Z]{4}\s*-?\s*.+?" + _SIGMET_BODY_STOP,
+    re.MULTILINE | re.DOTALL | re.IGNORECASE,
+)
+
+# US CONVECTIVE SIGMET (WST) — optional WST / SIGx preamble lines.
+_TAC_CONVECTIVE_SIGMET = re.compile(
+    r"^(?:(?:[A-Z]{4}\s+WST\s+\d{6}|SIG(?!MET)[A-Z0-9]*)\s*\n+)*"
+    r"CONVECTIVE\s+SIGMET\s+\S+\s+"
+    r"VALID\s+UNTIL\s+\d{4,6}Z\b"
+    r".+?" + _SIGMET_BODY_STOP,
+    re.MULTILINE | re.DOTALL | re.IGNORECASE,
+)
+
+# AIRMET body - FIR AIRMET seq VALID … MWO- … (= preferred; single block may omit)
+_TAC_AIRMET = re.compile(
+    r"^[A-Z]{4}\s+AIRMET\s+" + _TAC_SEQUENCE + r"\s+VALID\s+\d{6}/\d{6}\s+[A-Z]{4}-\s*.+?(?:=\s*$|\Z)",
+    re.MULTILINE | re.DOTALL | re.IGNORECASE,
+)
+
+# VAA body - VA ADVISORY … = (``=`` preferred for multi; single block may omit - §3.2 / M9)
+_TAC_VAA = re.compile(
+    r"^VA\s+ADVISORY\b.+?(?:=\s*$|\Z)",
+    re.MULTILINE | re.DOTALL | re.IGNORECASE,
+)
+
+# TCA body - TC ADVISORY … = (``=`` preferred for multi; single block may omit - §3.2 / M10)
+_TAC_TCA = re.compile(
+    r"^TC\s+ADVISORY\b.+?(?:=\s*$|\Z)",
+    re.MULTILINE | re.DOTALL | re.IGNORECASE,
+)
+
+# SWXA body - SWX ADVISORY … = (``=`` preferred for multi; single block may omit - §3.2 / M11)
+_TAC_SWXA = re.compile(
+    r"^SWX\s+ADVISORY\b.+?(?:=\s*$|\Z)",
+    re.MULTILINE | re.DOTALL | re.IGNORECASE,
+)
+
+# VONA body - VONA … labeled report (keep-whole; optional ``=`` - F32 / G-VONA-4)
+_TAC_VONA = re.compile(
+    r"^VONA\b.+?(?:=\s*$|\Z)",
+    re.MULTILINE | re.DOTALL | re.IGNORECASE,
+)
+
+_PRODUCT_TT: dict[str, frozenset[str]] = {
+    "METAR": frozenset({"SA"}),
+    "SPECI": frozenset({"SP"}),
+    "TAF": frozenset({"FC", "FT"}),
+    # WS general + WV volcanic ash + WC tropical cyclone (content-selected root;
+    # E19-13 / EV-029 M5-M7).
+    "SIGMET": frozenset({"WS", "WV", "WC"}),
+    "AIRMET": frozenset({"WA"}),
+    "VAA": frozenset({"FV"}),
+    "TCA": frozenset({"FK"}),
+    "SWXA": frozenset({"FN"}),
+    "VONA": frozenset({"WM"}),
+}
+
+_PRODUCT_BODY_RE: dict[str, re.Pattern[str]] = {
+    "METAR": _TAC_METAR_SPECI,
+    "SPECI": _TAC_METAR_SPECI,
+    "TAF": _TAC_TAF,
+    "SIGMET": _TAC_SIGMET,
+    "AIRMET": _TAC_AIRMET,
+    "VAA": _TAC_VAA,
+    "TCA": _TAC_TCA,
+    "SWXA": _TAC_SWXA,
+    "VONA": _TAC_VONA,
+}
+
+
+class BulletinSplitError(ValueError):
+    """
+    Bulletin or AHL could not be parsed.
+
+    Parameters
+    ----------
+    code : str
+        Machine-readable error (``bulletin_split_failed``, ``empty_bulletin``,
+        or ``invalid_bbb``).
+
+    message : str
+        Human-readable description.
+    """
+
+    def __init__(self, code: str, message: str) -> None:
+        """
+        Store ``code`` and ``message``.
+
+        Parameters
+        ----------
+        code : str
+            Machine-readable error code.
+
+        message : str
+            Human-readable message.
+        """
+        self.code = code
+        self.message = message
+        super().__init__(message)
+
+
+def _unglue_sigmet_ahl(text: str) -> str:
+    """
+    Insert a newline before an AHL glued onto the previous token.
+
+    Parameters
+    ----------
+    text : str
+        Bulletin body after the first heading.
+
+    Returns
+    -------
+    str
+        Body with glued ``…FL330.WSUS32…`` boundaries separated.
+    """
+    return _GLUED_SIGMET_AHL.sub("\n", text)
+
+
+def _is_kept_sigmet_report(report: str) -> bool:
+    """
+    Return True when a candidate body is a FIR or CONVECTIVE SIGMET report.
+
+    Parameters
+    ----------
+    report : str
+        Candidate TAC report text.
+
+    Returns
+    -------
+    bool
+        True for multi-FIR / FIR ``SIGMET`` or US ``CONVECTIVE SIGMET`` bodies.
+    """
+    return bool(
+        re.match(r"^(?:[A-Z]{4}\s+)+SIGMET\s+", report, re.IGNORECASE)
+        or re.search(r"(?i)(?:^|\n)CONVECTIVE\s+SIGMET\s+", report)
+    )
+
+
+def _span_overlaps_prior(start: int, last_end: int) -> bool:
+    """
+    Return True when a candidate span starts inside a prior exclusive-end span.
+
+    Abutting spans (``start == last_end``) are not overlaps and must both be kept
+    so consecutive SIGMET reports in one paste stay distinct.
+
+    Parameters
+    ----------
+    start : int
+        Candidate match start offset.
+
+    last_end : int
+        Exclusive end of the last accepted match (``-1`` before any accept).
+
+    Returns
+    -------
+    bool
+        True when the candidate overlaps the prior span.
+    """
+    return start < last_end
+
+
+def _find_sigmet_reports(body_text: str) -> list[str]:
+    """
+    Find ordinary and CONVECTIVE SIGMET report strings in a bulletin body.
+
+    Parameters
+    ----------
+    body_text : str
+        Text after the first WMO abbreviated heading.
+
+    Returns
+    -------
+    list[str]
+        Ordered, non-overlapping report strings.
+    """
+    normalized = _unglue_sigmet_ahl(body_text)
+    spans: list[tuple[int, int, str]] = [
+        (match.start(), match.end(), match.group(0).strip())
+        for pattern in (_TAC_SIGMET, _TAC_CONVECTIVE_SIGMET)
+        for match in pattern.finditer(normalized)
+    ]
+    spans.sort(key=lambda item: (item[0], item[1]))
+    reports: list[str] = []
+    last_end = -1
+    for start, end, report in spans:
+        if _span_overlaps_prior(start, last_end):
+            continue
+        if report:
+            reports.append(report)
+            last_end = end
+    return reports
+
+
+def map_t1t2(tac_tt: str) -> str:
+    """
+    Map a TAC ``T1T2`` designator to the IWXXM (L*) designator.
+
+    Parameters
+    ----------
+    tac_tt : str
+        Two-letter TAC data type designator (e.g. ``SA``, ``FN``).
+
+    Returns
+    -------
+    str
+        IWXXM ``T1T2`` (e.g. ``LA``, ``LN``).
+
+    Raises
+    ------
+    ValueError
+        When ``tac_tt`` is not in the EV-029 aviation map.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (map_t1t2)
+    2
+    """
+    key = tac_tt.strip().upper()
+    try:
+        return _TAC_TO_IWXXM[key]
+    except KeyError as exc:
+        raise ValueError(f"unsupported TAC T1T2 for IWXXM map: {tac_tt!r}") from exc
+
+
+def bbb_to_report_status(bbb: str | None) -> ReportStatus:
+    """
+    Map optional BBB to IWXXM ``reportStatus``.
+
+    Parameters
+    ----------
+    bbb : str | None
+        BBB indicator (``AAx`` / ``CCx`` / ``RRx`` with x ∈ A…X), or ``None``.
+
+    Returns
+    -------
+    ReportStatus
+        ``NORMAL``, ``AMENDMENT``, or ``CORRECTION``.
+
+    Raises
+    ------
+    BulletinSplitError
+        When ``bbb`` is present but not an accepted prefix family.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (bbb_to_report_status)
+    2
+    """
+    if bbb is None or bbb == "":
+        return "NORMAL"
+    token = bbb.strip().upper()
+    if not _BBB_VALID.match(token):
+        raise BulletinSplitError(
+            "invalid_bbb",
+            f"invalid WMO AHL BBB (expected AA/CC/RR + A…X): {bbb!r}",
+        )
+    if token.startswith("AA"):
+        return "AMENDMENT"
+    if token.startswith("CC"):
+        return "CORRECTION"
+    return "NORMAL"
+
+
+def parse_ahl(line_or_text: str) -> AhlParts:
+    """
+    Parse a WMO abbreviated heading line (first matching line).
+
+    Parameters
+    ----------
+    line_or_text : str
+        A single AHL line, or text whose first non-empty line is the AHL.
+
+    Returns
+    -------
+    AhlParts
+        Parsed fields plus derived ``iwxxm_tt`` and ``report_status``.
+
+    Raises
+    ------
+    BulletinSplitError
+        When the heading cannot be parsed, ``T1T2`` is unknown, or BBB is invalid.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (parse_ahl)
+    2
+    """
+    raw = line_or_text.strip()
+    if not raw:
+        raise BulletinSplitError("bulletin_split_failed", "Empty AHL input")
+    first = raw.splitlines()[0].strip()
+    match = _AHL_LINE.match(first)
+    if match is None:
+        raise BulletinSplitError(
+            "bulletin_split_failed",
+            f"Cannot parse WMO AHL header: {first!r}",
+        )
+    groups = match.groupdict()
+    tt = groups["tt"]
+    if tt not in _TAC_TO_IWXXM:
+        raise BulletinSplitError(
+            "bulletin_split_failed",
+            f"Unsupported TAC T1T2 in AHL: {tt!r}",
+        )
+    bbb_raw = groups.get("bbb")
+    bbb: str | None
+    if bbb_raw:
+        bbb = bbb_raw.upper()
+        # Validate via reportStatus map (rejects Y/Z third letter and non-families)
+        status = bbb_to_report_status(bbb)
+    else:
+        bbb = None
+        status = "NORMAL"
+    iwxxm_tt = _TAC_TO_IWXXM[tt]
+    return AhlParts(
+        ahl=first,
+        tt=tt,
+        aa=groups["aa"],
+        ii=groups["ii"],
+        cccc=groups["cccc"],
+        yygggg=groups["yygggg"],
+        bbb=bbb,
+        iwxxm_tt=iwxxm_tt,
+        report_status=status,
+    )
+
+
+def format_ahl(parts: AhlParts) -> str:
+    """
+    Format ``AhlParts`` as a single WMO AHL line (TAC ``T1T2``).
+
+    Parameters
+    ----------
+    parts : AhlParts
+        Parsed or constructed AHL parts.
+
+    Returns
+    -------
+    str
+        ``T1T2A1A2ii CCCC YYGGgg [BBB]``.
+
+    Raises
+    ------
+    BulletinSplitError
+        When BBB is present but invalid.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (format_ahl)
+    2
+    """
+    tt = parts.tt.strip().upper()
+    aa = parts.aa.strip().upper()
+    ii = parts.ii.strip()
+    cccc = parts.cccc.strip().upper()
+    yygggg = parts.yygggg.strip()
+    if not re.fullmatch(r"[A-Z]{2}", tt):
+        raise BulletinSplitError("bulletin_split_failed", f"invalid AHL tt: {parts.tt!r}")
+    if not re.fullmatch(r"[A-Z]{2}", aa):
+        raise BulletinSplitError("bulletin_split_failed", f"invalid AHL aa: {parts.aa!r}")
+    if not re.fullmatch(r"\d{2}", ii):
+        raise BulletinSplitError("bulletin_split_failed", f"invalid AHL ii: {parts.ii!r}")
+    if not re.fullmatch(r"[A-Z]{4}", cccc):
+        raise BulletinSplitError("bulletin_split_failed", f"invalid AHL cccc: {parts.cccc!r}")
+    if not re.fullmatch(r"\d{6}", yygggg):
+        raise BulletinSplitError("bulletin_split_failed", f"invalid AHL yygggg: {parts.yygggg!r}")
+    line = f"{tt}{aa}{ii} {cccc} {yygggg}"
+    if parts.bbb:
+        bbb_u = parts.bbb.strip().upper()
+        bbb_to_report_status(bbb_u)  # validate
+        line = f"{line} {bbb_u}"
+    return line
+
+
+def iwxxm_filename(
+    parts: AhlParts,
+    *,
+    issued_at: datetime,
+    gzip: bool = False,
+    fractional: str | None = None,
+) -> str:
+    """
+    Build an IWXXM AMHS / FTBP filename using the **IWXXM** ``T1T2``.
+
+    Parameters
+    ----------
+    parts : AhlParts
+        AHL parts (must include ``iwxxm_tt``).
+
+    issued_at : datetime
+        UTC (or aware) issue timestamp for the ``_C_CCCC_yyyyMMddhhmmss`` segment.
+
+    gzip : bool, optional
+        When ``True``, append ``.gz``.
+
+    fractional : str | None, optional
+        Optional fractional-second / sequence suffix ``ffffff``.
+
+    Returns
+    -------
+    str
+        ``A_…xml`` or ``A_…xml.gz``.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (iwxxm_filename)
+    2
+    """
+    ts = issued_at.astimezone(UTC).strftime("%Y%m%d%H%M%S")
+    bbb = (parts.bbb or "").strip().upper()
+    head = f"A_{parts.iwxxm_tt}{parts.aa}{parts.ii}{parts.cccc}{parts.yygggg}{bbb}"
+    mid = f"_C_{parts.cccc}_{ts}"
+    if fractional:
+        mid = f"{mid}_{fractional}"
+    suffix = ".xml.gz" if gzip else ".xml"
+    return f"{head}{mid}{suffix}"

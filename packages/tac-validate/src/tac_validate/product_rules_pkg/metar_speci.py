@@ -1,6 +1,6 @@
 """Product rules - metar_speci."""
 
-# pyright: reportWildcardImportFromLibrary=false, reportUnusedFunction=false
+# pyright: reportUndefinedVariable=false, reportUnknownMemberType=false, reportUnknownVariableType=false, reportUnknownArgumentType=false, reportPrivateUsage=false, reportWildcardImportFromLibrary=false, reportUnusedFunction=false
 
 from __future__ import annotations
 
@@ -8,6 +8,10 @@ import re
 
 from tac_validate.models import Issue
 from tac_validate.product_rules_pkg._common import *
+from tac_validate.product_rules_pkg.wmo782.quality_core import (
+    _check_wmo782_first_groups_and_modifiers,
+    _check_wmo782_metar_speci_quality,
+)
 from tac_validate.theme_checks import (
     lint_profile,
     r1_identity_order,
@@ -58,6 +62,16 @@ def _check_metar_speci(tac: str, product: str, *, profile: str = "annex3") -> li
             else:
                 nil_issues = r8_nil_gate(tac, product) or []
                 issues.extend(nil_issues)
+            # Still apply WMO-782 identification matrix (NIL/AUTO conflict, placement).
+            issues.extend(
+                _check_wmo782_first_groups_and_modifiers(
+                    tokens,
+                    product=product,
+                    core=core,
+                    body_start=start,
+                    body_end=end,
+                )
+            )
             return issues
 
         if use_detectors:
@@ -167,6 +181,15 @@ def _check_metar_speci(tac: str, product: str, *, profile: str = "annex3") -> li
         )
         issues.extend(
             _check_s1_exceptional(
+                tokens,
+                product=product,
+                core=core,
+                body_start=start,
+                body_end=end,
+            )
+        )
+        issues.extend(
+            _check_wmo782_metar_speci_quality(
                 tokens,
                 product=product,
                 core=core,

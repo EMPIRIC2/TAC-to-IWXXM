@@ -1,0 +1,27 @@
+    Returns
+    -------
+    str
+        Return value.
+    """
+    hrefs_raw = ir.get("inoperative_sensor_hrefs")
+    if not isinstance(hrefs_raw, list) or not hrefs_raw:
+        return ""
+    hrefs = [f"{item}" for item in cast(list[object], hrefs_raw)]
+    failed_parts: list[str] = [
+        "          <iwxxm-us:failedSensors>",
+        "            <iwxxm-us:FailedSensors>",
+    ]
+    failed_parts.extend(f'              <iwxxm-us:parameter xlink:href="{escape(href)}"/>' for href in hrefs)
+    failed_parts.extend(
+        [
+            "            </iwxxm-us:FailedSensors>",
+            "          </iwxxm-us:failedSensors>",
+        ]
+    )
+    body = "\n".join(failed_parts)
+    return f"""      <iwxxm:extension>
+        <iwxxm-us:InoperativeSensors>
+{body}
+        </iwxxm-us:InoperativeSensors>
+      </iwxxm:extension>
+"""

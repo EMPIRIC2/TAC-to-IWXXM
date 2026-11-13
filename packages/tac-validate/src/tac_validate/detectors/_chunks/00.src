@@ -1,0 +1,442 @@
+"""Declarative detector packs (ADR-046 / #1216 M2).
+
+Small DSL v1: ``finditer`` + ``require_search`` + ``token_scan`` with preprocess
+(before / exclude AHL). Optional ``skip_if_match`` gates rules on a window regex.
+Python hatch: ``python:module:attr`` registered callables.
+"""
+from __future__ import annotations
+# pyright: reportPrivateUsage=false
+
+
+import importlib
+import os
+import re
+from collections.abc import Callable, Mapping, Sequence
+from dataclasses import dataclass
+from importlib import resources
+from pathlib import Path
+from typing import Any, Literal, cast
+
+import yaml
+
+from tac_validate.issue_registry import issue_from
+from tac_validate.match_port import match_port_spans
+from tac_validate.models import Issue
+from tac_validate.product_rules_pkg._common import _strip_research_refs
+from tac_validate.theme_checks import lint_profile
+
+DetectorStage = Literal["parse_gate", "token", "cross_field"]
+DetectorKind = Literal["finditer", "require_search", "python", "token_scan"]
+
+ENV_DETECTOR_DIR = "TAC_VALIDATE_DETECTOR_DIR"
+ENV_DETECTOR_MODE = "TAC_VALIDATE_DETECTOR_MODE"  # legacy | shadow | detector
+DEFAULT_LINT_BUDGET = 10_000
+
+_AHL_HEADING_LINE = re.compile(r"^[A-Z]{2}[A-Z]{2}\d{2}\s+[A-Z]{4}\s+\d{6}(?:\s+[A-Z]{3})?\s*$")
+_TOKEN_RE = re.compile(r"\S+")
+
+PythonDetector = Callable[[str, str], list[Issue]]
+
+
+class DetectorError(ValueError):
+    """
+    Invalid detector pack or rule.
+
+    Attributes
+    ----------
+    args : tuple
+        Arguments passed to the exception constructor.
+    """
+
+
+@dataclass(frozen=True, slots=True)
+class PreprocessSpec:
+    """
+    Text windowing before a rule runs.
+
+    Attributes
+    ----------
+    before : str or None, optional
+        When this marker is found, keep only the text before it. By default ``None``.
+    after : str or None, optional
+        When this marker is found, keep only the text after it. By default ``None``.
+    exclude_ahl_lines : bool, optional
+        Drop lines that match an AHL heading. By default ``False``.
+    strip_terminator : bool, optional
+        Drop a trailing ``=``. By default ``True``.
+    """
+
+    before: str | None = None
+    after: str | None = None
+    exclude_ahl_lines: bool = False
+    strip_terminator: bool = True
+
+
+@dataclass(frozen=True, slots=True)
+class EmitSpec:
+    """
+    Issue emission on match or fail.
+
+    Attributes
+    ----------
+    code : str
+        Code.
+    location : str or None
+        Location.
+    message_template : str
+        Message template.
+    capture_group : int, optional
+        Capture group. By default ``0``.
+    span : Literal['match', 'body'], optional
+        Span. By default ``'match'``.
+    """
+
+    code: str
+    location: str | None
+    message_template: str
+    capture_group: int = 0
+    span: Literal["match", "body"] = "match"
+
+
+@dataclass(frozen=True, slots=True)
+class DetectorRule:
+    """
+    One detector rule inside a pack.
+
+    Attributes
+    ----------
+    id : str
+        ID.
+    kind : DetectorKind
+        ``finditer``, ``require_search``, ``python``, or ``token_scan``.
+    preprocess : PreprocessSpec
+        Preprocess.
+    pattern : str or None
+        Pattern.
+    flags : int
+        Flags.
+    skip_if_codes : tuple[str, ...]
+        Skip if codes.
+    on_match : EmitSpec or None
+        On match.
+    on_fail : EmitSpec or None
+        On fail.
+    python_ref : str or None
+        Python ref.
+    skip_if_match : str or None, optional
+        Skip if match. By default ``None``.
+    select_pattern : str or None, optional
+        Select pattern. By default ``None``.
+    ok_pattern : str or None, optional
+        OK pattern. By default ``None``.
+    on_ok : EmitSpec or None, optional
+        On OK. By default ``None``.
+    max_emits : int or None, optional
+        Max emits. By default ``None``.
+    """
+
+    id: str
+    kind: DetectorKind
+    preprocess: PreprocessSpec
+    pattern: str | None
+    flags: int
+    skip_if_codes: tuple[str, ...]
+    on_match: EmitSpec | None
+    on_fail: EmitSpec | None
+    python_ref: str | None
+    skip_if_match: str | None = None
+    select_pattern: str | None = None
+    ok_pattern: str | None = None
+    on_ok: EmitSpec | None = None
+    max_emits: int | None = None
+
+
+@dataclass(frozen=True, slots=True)
+class DetectorPack:
+    """
+    Loaded detector pack document.
+
+    Attributes
+    ----------
+    id : str
+        ID.
+    stage : DetectorStage
+        Stage.
+    products : frozenset[str]
+        Products.
+    rules : tuple[DetectorRule, ...]
+        Rules.
+    source_path : str or None, optional
+        Source path. By default ``None``.
+    """
+
+    id: str
+    stage: DetectorStage
+    products: frozenset[str]
+    rules: tuple[DetectorRule, ...]
+    source_path: str | None = None
+
+
+@dataclass(frozen=True, slots=True)
+class ShadowCompareResult:
+    """
+    Legacy vs detector issue sets for one code family.
+
+    Attributes
+    ----------
+    matched : bool
+        Matched.
+    legacy_keys : frozenset[tuple[str, int or None, int or None]]
+        Legacy keys.
+    detector_keys : frozenset[tuple[str, int or None, int or None]]
+        Detector keys.
+    """
+
+    matched: bool
+    legacy_keys: frozenset[tuple[str, int | None, int | None]]
+    detector_keys: frozenset[tuple[str, int | None, int | None]]
+
+
+def _re_flags(names: Sequence[object]) -> int:
+    """
+    Internal helper ``_re_flags``.
+
+    Parameters
+    ----------
+    names : object
+        Argument ``names``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
+    flags = 0
+    for name in names:
+        if not isinstance(name, str):
+            msg = "flags entries must be strings"
+            raise DetectorError(msg)
+        key = name.strip().upper()
+        if key == "IGNORECASE":
+            flags |= re.IGNORECASE
+        elif key == "MULTILINE":
+            flags |= re.MULTILINE
+        elif key == "DOTALL":
+            flags |= re.DOTALL
+        else:
+            msg = f"unsupported flag {name!r}"
+            raise DetectorError(msg)
+    return flags
+
+
+def _parse_preprocess(raw: object) -> PreprocessSpec:
+    """
+    Internal helper ``_parse_preprocess``.
+
+    Parameters
+    ----------
+    raw : object
+        Argument ``raw``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
+    if raw is None:
+        return PreprocessSpec()
+    if not isinstance(raw, dict):
+        msg = "preprocess must be a mapping"
+        raise DetectorError(msg)
+    data = cast(dict[str, object], raw)
+    before = data.get("before")
+    before_s = before.strip() if isinstance(before, str) and before.strip() else None
+    after = data.get("after")
+    after_s = after.strip() if isinstance(after, str) and after.strip() else None
+    exclude = bool(data.get("exclude_ahl_lines", False))
+    strip_term = bool(data.get("strip_terminator", True))
+    return PreprocessSpec(
+        before=before_s,
+        after=after_s,
+        exclude_ahl_lines=exclude,
+        strip_terminator=strip_term,
+    )
+
+
+def _parse_emit(raw: object, *, required: bool) -> EmitSpec | None:
+    """
+    Internal helper ``_parse_emit``.
+
+    Parameters
+    ----------
+    raw : object
+        Argument ``raw``.
+    required : object
+        Argument ``required``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
+    if raw is None:
+        if required:
+            msg = "emit spec required"
+            raise DetectorError(msg)
+        return None
+    if not isinstance(raw, dict):
+        msg = "emit spec must be a mapping"
+        raise DetectorError(msg)
+    data = cast(dict[str, object], raw)
+    code = data.get("code")
+    if not isinstance(code, str) or not code.strip():
+        msg = "emit.code is required"
+        raise DetectorError(msg)
+    location_raw = data.get("location")
+    location = location_raw.strip() if isinstance(location_raw, str) and location_raw.strip() else None
+    message = data.get("message_template")
+    if not isinstance(message, str) or not message.strip():
+        msg = "emit.message_template is required"
+        raise DetectorError(msg)
+    group_raw = data.get("capture_group", 0)
+    if not isinstance(group_raw, int) or group_raw < 0:
+        msg = "capture_group must be a non-negative int"
+        raise DetectorError(msg)
+    span_raw = data.get("span", "match")
+    if span_raw not in ("match", "body"):
+        msg = "span must be match or body"
+        raise DetectorError(msg)
+    span: Literal["match", "body"] = "body" if span_raw == "body" else "match"
+    return EmitSpec(
+        code=code.strip(),
+        location=location,
+        message_template=message,
+        capture_group=group_raw,
+        span=span,
+    )
+
+
+def _parse_rule(raw: object) -> DetectorRule:
+    """
+    Internal helper ``_parse_rule``.
+
+    Parameters
+    ----------
+    raw : object
+        Argument ``raw``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
+    if not isinstance(raw, dict):
+        msg = "rule must be a mapping"
+        raise DetectorError(msg)
+    data = cast(dict[str, object], raw)
+    rid = data.get("id")
+    if not isinstance(rid, str) or not rid.strip():
+        msg = "rule.id is required"
+        raise DetectorError(msg)
+    kind_raw = data.get("kind")
+    if kind_raw not in ("finditer", "require_search", "python", "token_scan"):
+        msg = "rule.kind must be finditer, require_search, python, or token_scan"
+        raise DetectorError(msg)
+    kind: DetectorKind
+    if kind_raw == "finditer":
+        kind = "finditer"
+    elif kind_raw == "require_search":
+        kind = "require_search"
+    elif kind_raw == "token_scan":
+        kind = "token_scan"
+    else:
+        kind = "python"
+    skip_raw: object = data.get("skip_if_codes") or []
+    if not isinstance(skip_raw, list) or not all(isinstance(x, str) for x in cast(list[object], skip_raw)):
+        msg = "skip_if_codes must be a list of strings"
+        raise DetectorError(msg)
+    skip = tuple(str(x).strip() for x in cast(list[object], skip_raw) if str(x).strip())
+    skip_match_raw = data.get("skip_if_match")
+    skip_match = skip_match_raw.strip() if isinstance(skip_match_raw, str) and skip_match_raw.strip() else None
+    max_raw = data.get("max_emits")
+    max_emits: int | None
+    if max_raw is None:
+        max_emits = None
+    elif isinstance(max_raw, int) and max_raw > 0:
+        max_emits = max_raw
+    else:
+        msg = "max_emits must be a positive int"
+        raise DetectorError(msg)
+    pattern = data.get("pattern")
+    pattern_s = pattern if isinstance(pattern, str) and pattern else None
+    flags_raw: object = data.get("flags") or []
+    if not isinstance(flags_raw, list):
+        msg = "flags must be a list"
+        raise DetectorError(msg)
+    flags_list = cast(list[object], flags_raw)
+    python_ref = data.get("python")
+    python_s = python_ref.strip() if isinstance(python_ref, str) and python_ref.strip() else None
+    if kind == "python":
+        if not python_s:
+            msg = "python kind requires python: ref"
+            raise DetectorError(msg)
+        return DetectorRule(
+            id=rid.strip(),
+            kind=kind,
+            preprocess=_parse_preprocess(data.get("preprocess")),
+            pattern=None,
+            flags=0,
+            skip_if_codes=skip,
+            on_match=None,
+            on_fail=None,
+            python_ref=python_s,
+            skip_if_match=skip_match,
+            max_emits=max_emits,
+        )
+    if kind == "token_scan":
+        select_raw = data.get("select") or pattern
+        select_s = select_raw if isinstance(select_raw, str) and select_raw else None
+        ok_raw = data.get("ok")
+        ok_s = ok_raw if isinstance(ok_raw, str) and ok_raw else None
+        if not select_s or not ok_s:
+            msg = "token_scan requires select (or pattern) and ok"
+            raise DetectorError(msg)
+        on_ok = _parse_emit(data.get("on_ok"), required=False)
+        on_fail = _parse_emit(data.get("on_fail"), required=False)
+        if on_ok is None and on_fail is None:
+            msg = "token_scan requires on_ok and/or on_fail"
+            raise DetectorError(msg)
+        return DetectorRule(
+            id=rid.strip(),
+            kind=kind,
+            preprocess=_parse_preprocess(data.get("preprocess")),
+            pattern=None,
+            flags=_re_flags(flags_list),
+            skip_if_codes=skip,
+            on_match=None,
+            on_fail=on_fail,
+            python_ref=None,
+            skip_if_match=skip_match,
+            select_pattern=select_s,
+            ok_pattern=ok_s,
+            on_ok=on_ok,
+            max_emits=max_emits,
+        )
+    if not pattern_s:
+        msg = f"{kind} requires pattern"
+        raise DetectorError(msg)
+    on_match = _parse_emit(data.get("on_match"), required=(kind == "finditer"))
+    on_fail = _parse_emit(data.get("on_fail"), required=(kind == "require_search"))
+    return DetectorRule(
+        id=rid.strip(),
+        kind=kind,
+        preprocess=_parse_preprocess(data.get("preprocess")),
+        pattern=pattern_s,
+        flags=_re_flags(flags_list),
+        skip_if_codes=skip,
+        on_match=on_match,
+        on_fail=on_fail,
+        python_ref=None,
+        skip_if_match=skip_match,
+        max_emits=max_emits,
+    )

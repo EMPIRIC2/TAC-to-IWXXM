@@ -1,0 +1,113 @@
+def _check_taf_change_groups(
+    issues: list[Issue],
+    *,
+    tokens: list[str],
+    product: str,
+    core: str,
+    body_start: int,
+    body_end: int,
+) -> None:
+    """
+    Internal helper ``_check_taf_change_groups``.
+
+    Parameters
+    ----------
+    issues : object
+        Argument ``issues``.
+    tokens : object
+        Argument ``tokens``.
+    product : object
+        Argument ``product``.
+    core : object
+        Argument ``core``.
+    body_start : object
+        Argument ``body_start``.
+    body_end : object
+        Argument ``body_end``.
+    """
+    fm_tok = next((t for t in tokens if _TAF_FM.fullmatch(t)), None)
+    if fm_tok is not None:
+        _emit_token_info(
+            issues,
+            code="FM_PRESENT",
+            message=f"{product} FM change group present - research T2",
+            core=core,
+            body_start=body_start,
+            body_end=body_end,
+            token=fm_tok,
+        )
+    if "BECMG" in tokens:
+        _emit_token_info(
+            issues,
+            code="BECMG_PRESENT",
+            message=f"{product} BECMG change group present - research T2",
+            core=core,
+            body_start=body_start,
+            body_end=body_end,
+            token="BECMG",
+        )
+    if "TEMPO" in tokens:
+        _emit_token_info(
+            issues,
+            code="TEMPO_PRESENT",
+            message=f"{product} TEMPO change group present - research T2",
+            core=core,
+            body_start=body_start,
+            body_end=body_end,
+            token="TEMPO",
+        )
+
+    tl_tok = next((t for t in tokens if _TAF_TL.fullmatch(t)), None)
+    if tl_tok is not None:
+        _emit_token_info(
+            issues,
+            code="TL_PRESENT",
+            message=f"{product} TL time group present - research T2",
+            core=core,
+            body_start=body_start,
+            body_end=body_end,
+            token=tl_tok,
+        )
+    at_tok = next((t for t in tokens if _TAF_AT.fullmatch(t)), None)
+    if at_tok is not None:
+        _emit_token_info(
+            issues,
+            code="AT_PRESENT",
+            message=f"{product} AT time group present - research T2",
+            core=core,
+            body_start=body_start,
+            body_end=body_end,
+            token=at_tok,
+        )
+
+    for i, tok in enumerate(tokens):
+        m = _TAF_PROB.fullmatch(tok)
+        if m is None:
+            continue
+        kind = classify_probability_group(tokens, i)
+        # Standalone PROB+period and INTER are valid Annex 3 / national forms —
+        # emit PROB_PRESENT info only (do not emit PROB_PERIOD_WITHOUT_TEMPO).
+        if kind in {
+            ProbGroupKind.TEMPO_OK,
+            ProbGroupKind.PERIOD_WITHOUT_TEMPO,
+            ProbGroupKind.INTER,
+        }:
+            _emit_token_info(
+                issues,
+                code="PROB_PRESENT",
+                message=f"{product} PROB30/40 change group present - research T2",
+                core=core,
+                body_start=body_start,
+                body_end=body_end,
+                token=tok,
+            )
+        else:
+            _emit_token_info(
+                issues,
+                code="INVALID_PROB",
+                message=(f"{product} invalid PROB (only 30|40; must not qualify BECMG/FM) - App 5 §1.4 / research T2"),
+                core=core,
+                body_start=body_start,
+                body_end=body_end,
+                token=tok,
+            )

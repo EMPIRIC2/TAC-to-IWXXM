@@ -85,6 +85,14 @@ def test_shadow_xml_byte_identical_on_every_existing_pin(
     assert shadow.profile == legacy.profile
 
 
+def _slot_module_present(slot: Path, module_py: str) -> bool:
+    """True when ``module.py`` or package ``module/`` remains under slot_builders."""
+    if (slot / module_py).is_file():
+        return True
+    stem = module_py.removesuffix(".py")
+    return (slot / stem / "__init__.py").is_file()
+
+
 def test_legacy_parsers_remain() -> None:
     slot = Path(__file__).resolve().parents[1] / "src" / "tac2iwxxm" / "slot_builders"
     for name in (
@@ -95,7 +103,7 @@ def test_legacy_parsers_remain() -> None:
         "swxa.py",
         "vona.py",
     ):
-        assert (slot / name).is_file(), name
+        assert _slot_module_present(slot, name), name
         assert not (_PRODUCTS / name).is_file(), name
 
 

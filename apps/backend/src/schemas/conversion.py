@@ -428,3 +428,11 @@ class ConversionRequest(BaseModel):
             "Omitted uses the profile default (annex3 / ICAO_2025 off)."
         ),
     )
+    include_national_remarks: bool = Field(
+        default=True,
+        description=(
+            "When false, omit national remarks after RMK from IWXXM output even for "
+            "profiles that normally keep remarks. National remarks are not for "
+            "international dissemination."
+        ),
+    )

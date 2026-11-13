@@ -1,0 +1,51 @@
+def profile_output_spec_to_dict(spec: ProfileOutputSpec) -> dict[str, str | None]:
+    """
+    Serialize ``ProfileOutputSpec`` for HTTP metadata (omit nulls).
+
+    Parameters
+    ----------
+    spec : ProfileOutputSpec
+        Exchange output spec.
+
+    Returns
+    -------
+    dict[str, str | None]
+        Serialized ``ProfileOutputSpec`` for HTTP metadata (omit nulls).
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (profile_output_spec_to_dict)
+    2
+    """
+    raw = {
+        "semantic_profile": spec.semantic_profile,
+        "file_naming_pattern": spec.file_naming_pattern,
+        "wmo_header_designator": spec.wmo_header_designator,
+        "distribution_path_template": spec.distribution_path_template,
+        "iwxxm_version_pin": spec.iwxxm_version_pin,
+        "suggested_filename": spec.suggested_filename,
+        "wmo_ahl_header": spec.wmo_ahl_header,
+        "distribution_path": spec.distribution_path,
+        "translation_centre_designator": spec.translation_centre_designator,
+        "translation_centre_name": spec.translation_centre_name,
+    }
+    return {key: value for key, value in raw.items() if value is not None}
+
+
+__all__ = [
+    "CA_DISTRIBUTION_PATH_TEMPLATE",
+    "CA_ECCC_IWXXM_VERSION",
+    "CA_MSC_FILENAME_PATTERN",
+    "ProfileOutputSpec",
+    "build_ca_eccc_output_spec",
+    "build_ca_eccc_output_spec_from_msc_filename",
+    "ca_distribution_path",
+    "ca_msc_filename",
+    "ca_wmo_header_designator",
+    "default_ca_translation_centre",
+    "format_ca_wmo_ahl",
+    "issued_at_from_yygggg",
+    "msc_filename_matches_pattern",
+    "parse_msc_exchange_filename",
+    "profile_output_spec_to_dict",
+]

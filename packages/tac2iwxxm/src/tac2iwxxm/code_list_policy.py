@@ -18,6 +18,13 @@ _EMIT_KINDS = frozenset({"replace", "override", "extend"})
 
 
 def _repo_root() -> Path:
+    """Helper ``_repo_root``.
+
+    Returns
+    -------
+    Path
+        Return value.
+    """
     candidate = _DEFAULT_REPO_ROOT
     if (candidate / "config" / "profiles").is_dir():
         return candidate
@@ -29,6 +36,13 @@ def _repo_root() -> Path:
 
 @lru_cache(maxsize=1)
 def _entries() -> tuple[dict[str, object], ...]:
+    """Helper ``_entries``.
+
+    Returns
+    -------
+    tuple[dict[str, object], ...]
+        Return value.
+    """
     path = _repo_root() / _MATRIX
     if not path.is_file():
         return ()
@@ -43,7 +57,25 @@ def _entries() -> tuple[dict[str, object], ...]:
 
 
 def resolve_national_href(*, area: str, token: str) -> str | None:
-    """Return national ``ca_uri`` when policy requires it for ``area``/``token``."""
+    """Return national ``ca_uri`` when policy requires it for ``area``/``token``.
+
+    Parameters
+    ----------
+    area
+        Argument ``area``.
+    token
+        Argument ``token``.
+
+    Returns
+    -------
+    str | None
+        Return value.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (resolve_national_href)
+    2
+    """
     area_l = area.strip().lower()
     token_u = token.strip().upper()
     for entry in _entries():

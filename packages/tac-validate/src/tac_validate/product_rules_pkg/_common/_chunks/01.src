@@ -1,0 +1,42 @@
+    Parameters
+    ----------
+    token : object
+        Argument ``token``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
+    if token in _WX_SPECIAL:
+        return True
+    if not _WX_TOKEN_SHAPE.fullmatch(token):
+        return False
+    rest = token
+    if rest and rest[0] in "-+":
+        if len(rest) > 1 and rest[1] in "-+":
+            return False
+        if "VC" in rest:
+            return False
+        rest = rest[1:]
+    if not rest:
+        return False
+    if rest == "VCSH":
+        return True
+    if rest.endswith(("+", "-")):
+        return False
+    rest = _consume_wx_descriptors(rest)
+    if not rest:
+        return False
+    if rest in _WX_STANDALONE or rest in _WX_PHENOMENA:
+        return True
+    while rest:
+        matched = False
+        for phen in sorted(_WX_PHENOMENA, key=len, reverse=True):
+            if rest.startswith(phen):
+                rest = rest[len(phen) :]
+                matched = True
+                break
+        if not matched:
+            return False
+    return True

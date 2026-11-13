@@ -13,6 +13,7 @@ import { Button } from './ui/button';
 import { Card } from './ui/card';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
+import { MetarSpeciStructuredForm } from './MetarSpeciStructuredForm';
 import { TacEditor } from './TacEditor';
 import { DecodePanel } from './DecodePanel';
 import { FailedTacCue } from './FailedTacCue';
@@ -23,6 +24,7 @@ import {
 } from './IwxxmPreviewPane';
 import { SoftPreviewControl } from './SoftPreviewControl';
 import { PropagateResidualsControl } from './PropagateResidualsControl';
+import { IncludeNationalRemarksControl } from './IncludeNationalRemarksControl';
 import { LiveIwxxmToggle } from './LiveIwxxmToggle';
 import { BulletinReportList } from './BulletinReportList';
 import { LiveWorldMap } from './LiveWorldMap';
@@ -766,6 +768,7 @@ export function FileConverter({
   const [decodeError, setDecodeError] = useState<string | null>(null);
   const [softPreview, setSoftPreview] = useState(false);
   const [propagateResiduals, setPropagateResiduals] = useState(false);
+  const [includeNationalRemarks, setIncludeNationalRemarks] = useState(true);
   const [liveIwxxm, setLiveIwxxm] = useState(true);
   const [selectedTrace, setSelectedTrace] = useState<LiveTraceTarget | null>(null);
   const [lintJump, setLintJump] = useState<number | null>(null);
@@ -1372,6 +1375,8 @@ export function FileConverter({
   const performConversion = async (opts?: {
     pendingSubset?: PendingFile[];
     includeManual?: boolean;
+    /** Prefer this TAC when converting from the structured entry form. */
+    manualOverride?: string;
   }): Promise<{
     files: ConvertedFile[];
     hasErrors: boolean;
@@ -1380,9 +1385,10 @@ export function FileConverter({
     const queueFiles = opts?.pendingSubset ?? pendingFiles;
     const includeManual = opts?.includeManual !== false;
     const manualText = includeManual
-      ? inputMode === 'ahl_bulletin' && focusedBulletinReport !== null
-        ? bulletinSource.trim()
-        : manualInput.trim()
+      ? (opts?.manualOverride?.trim() ??
+        (inputMode === 'ahl_bulletin' && focusedBulletinReport !== null
+          ? bulletinSource.trim()
+          : manualInput.trim()))
       : '';
     const rememberHardConvert = (files: ConvertedFile[]) => {
       if (softPreview) {
@@ -1512,6 +1518,7 @@ export function FileConverter({
           iwxxmVersion: conversionParams.iwxxmVersion,
           lint: true,
           propagateResidualsToRemarks: propagateResiduals,
+          includeNationalRemarks,
           extensions: nationalExtensionsForProfile(conversionParams.profile),
           ...(accessToken?.trim() ? { accessToken: accessToken.trim() } : {}),
         });
@@ -1607,7 +1614,11 @@ export function FileConverter({
 
       const barFields = convertFieldsFromParamsBar(
         paramsBarFromState(conversionParams, activeReportVariant),
-        { softPreview, propagateResidualsToRemarks: propagateResiduals },
+        {
+          softPreview,
+          propagateResidualsToRemarks: propagateResiduals,
+          includeNationalRemarks,
+        },
       );
 
       const response = await callBackendConversion({
@@ -1841,7 +1852,7 @@ export function FileConverter({
     }
   };
 
-  const handleConvert = async () => {
+  const handleConvert = async (manualOverride?: string) => {
     // Close Settings so the right-aligned panel cannot intercept Results clicks.
     document
       .querySelector<HTMLDetailsElement>('[data-testid="convert-settings"]')
@@ -1863,7 +1874,9 @@ export function FileConverter({
     }
     setIsConverting(true);
     try {
-      const result = await performConversion();
+      const result = await performConversion(
+        manualOverride ? { manualOverride } : undefined,
+      );
       if (result) {
         if (result.softFail) {
           toast.warning(
@@ -2469,7 +2482,11 @@ export function FileConverter({
           product: liveAssistProduct,
           ...convertFieldsFromParamsBar(
             paramsBarFromState(conversionParams, activeReportVariant),
-            { softPreview: true, propagateResidualsToRemarks: propagateResiduals },
+            {
+              softPreview: true,
+              propagateResidualsToRemarks: propagateResiduals,
+              includeNationalRemarks,
+            },
           ),
           extensions: nationalExtensionsForProfile(conversionParams.profile),
           exchangeOutput: exchangeOutputForProfile(conversionParams.profile),
@@ -2527,6 +2544,7 @@ export function FileConverter({
       activeReportVariant,
       accessToken,
       propagateResiduals,
+      includeNationalRemarks,
     ],
   );
 
@@ -2843,7 +2861,7 @@ export function FileConverter({
             <Button
               data-testid="convert-button"
               variant={calmUi.primaryKind === 'convert' ? 'default' : 'outline'}
-              onClick={handleConvert}
+              onClick={() => void handleConvert()}
               disabled={convertDisabled}
               className="relative w-full text-base disabled:opacity-50 disabled:cursor-not-allowed"
               aria-busy={isConverting}
@@ -3474,6 +3492,11 @@ export function FileConverter({
                             <PropagateResidualsControl
                               checked={propagateResiduals}
                               onChange={setPropagateResiduals}
+                              disabled={isReadOnly || isBusy}
+                            />
+                            <IncludeNationalRemarksControl
+                              checked={includeNationalRemarks}
+                              onChange={setIncludeNationalRemarks}
                               disabled={isReadOnly || isBusy}
                             />
                             <LiveIwxxmToggle
@@ -4202,6 +4225,61 @@ export function FileConverter({
                               }}
                             />
                           </div>
+                        ) : null}
+                        {inputMode === 'tac' &&
+                        (conversionParams.product === 'METAR' ||
+                          conversionParams.product === 'SPECI' ||
+                          conversionParams.product === 'auto') ? (
+                          <details
+                            className="mb-2 rounded border border-gray-200 p-2 dark:border-gray-700"
+                            data-testid="structured-entry-panel"
+                          >
+                            <summary className="cursor-pointer text-sm font-medium text-gray-900 dark:text-white">
+                              Structured METAR/SPECI entry
+                            </summary>
+                            <div className="mt-2">
+                              <MetarSpeciStructuredForm
+                                disabled={isReadOnly}
+                                defaultProduct={
+                                  conversionParams.product === 'SPECI'
+                                    ? 'SPECI'
+                                    : 'METAR'
+                                }
+                                lintIssues={lintIssues.map((issue) => ({
+                                  code: issue.code,
+                                  severity: issue.severity,
+                                  message: issue.message,
+                                }))}
+                                onInsertTac={(tac) => {
+                                  setManualInput(tac);
+                                  setConversionParams((prev) => ({
+                                    ...prev,
+                                    product: tac.startsWith('SPECI')
+                                      ? 'SPECI'
+                                      : 'METAR',
+                                  }));
+                                  setSelectedTrace(null);
+                                  setLintJump(null);
+                                  setLintFocusOffset(null);
+                                  setTacLockedAfterConvert(false);
+                                }}
+                                onConvertWithTac={(tac) => {
+                                  setManualInput(tac);
+                                  setConversionParams((prev) => ({
+                                    ...prev,
+                                    product: tac.startsWith('SPECI')
+                                      ? 'SPECI'
+                                      : 'METAR',
+                                  }));
+                                  setSelectedTrace(null);
+                                  setLintJump(null);
+                                  setLintFocusOffset(null);
+                                  setTacLockedAfterConvert(false);
+                                  void handleConvert(tac);
+                                }}
+                              />
+                            </div>
+                          </details>
                         ) : null}
                         <div
                           data-testid={

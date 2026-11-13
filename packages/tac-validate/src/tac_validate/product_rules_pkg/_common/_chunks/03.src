@@ -1,0 +1,438 @@
+def _check_ca_manobs(
+    tokens: list[str],
+    *,
+    product: str,
+    core: str,
+    body_start: int,
+    body_end: int,
+    profile: str = "annex3",
+) -> list[Issue]:
+    """
+    Internal helper ``_check_ca_manobs``.
+
+    Parameters
+    ----------
+    tokens : object
+        Argument ``tokens``.
+    product : object
+        Argument ``product``.
+    core : object
+        Argument ``core``.
+    body_start : object
+        Argument ``body_start``.
+    body_end : object
+        Argument ``body_end``.
+    profile : object
+        Argument ``profile``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
+    if profile != "ca_eccc":
+        return []
+    issues: list[Issue] = []
+    lead = tokens[0].upper() if tokens else ""
+    if lead == "LWIS":
+        _emit_token_info(
+            issues,
+            code="CA_METAR_LWIS",
+            message=f"{product} Limited Weather Information System (LWIS) report - MANOBS CA overlay",
+            core=core,
+            body_start=body_start,
+            body_end=body_end,
+            token="LWIS",
+        )
+    elif lead == "SAWR":
+        _emit_token_info(
+            issues,
+            code="CA_METAR_SAWR",
+            message=f"{product} Surface Aviation Weather Report (SAWR) - MANOBS CA overlay",
+            core=core,
+            body_start=body_start,
+            body_end=body_end,
+            token="SAWR",
+        )
+    for tok in tokens:
+        if tok.endswith("SM"):
+            vis_part = tok[:-2]
+            if vis_part.isdigit() or (vis_part.startswith("P") and vis_part[1:].isdigit()):
+                _emit_token_info(
+                    issues,
+                    code="CA_STATUTE_MILE_VIS",
+                    message=f"{product} statute-mile visibility ({tok}) - MANOBS CA overlay",
+                    core=core,
+                    body_start=body_start,
+                    body_end=body_end,
+                    token=tok,
+                )
+                break
+    alt = _ALT_INHG_BODY.search(core)
+    if alt is not None:
+        _emit_token_info(
+            issues,
+            code="CA_ALTIMETER_INHG",
+            message=f"{product} inch-of-mercury altimeter ({alt.group(0)}) - MANOBS CA overlay",
+            core=core,
+            body_start=body_start,
+            body_end=body_end,
+            token=alt.group(0),
+        )
+    elif _ALT_NOT_OBS_BODY.search(core):
+        _emit_token_info(
+            issues,
+            code="CA_ALTIMETER_NOT_OBS",
+            message=f"{product} altimeter not observable (A////) - MANOBS CA overlay",
+            core=core,
+            body_start=body_start,
+            body_end=body_end,
+            token="A////",
+        )
+    if "RMK" in tokens:
+        rmk_i = tokens.index("RMK")
+        remark = tokens[rmk_i + 1 :]
+        saw_slp = any(_RMK_SLP_OK.fullmatch(t) for t in remark)
+        saw_presfr = any(t == "PRESFR" for t in remark)
+        saw_presrr = any(t == "PRESRR" for t in remark)
+        saw_nospeci = any(_RMK_NOSPECI.fullmatch(t) for t in remark)
+        remark_text = " ".join(remark)
+        sector_vis = _RMK_SECTOR_VIS_IN_TEXT.search(remark_text)
+        if saw_slp or saw_presfr or saw_presrr:
+            _append_remark_issue(
+                issues,
+                code="CA_REMARK_MANOBS",
+                message=f"{product} Canadian REMARKS (SLP/PRESFR/PRESRR) - ca_eccc profile awareness",
+                core=core,
+                body_start=body_start,
+                body_end=body_end,
+                token="RMK",
+            )
+        if saw_presrr:
+            _append_remark_issue(
+                issues,
+                code="CA_REMARK_PRESRR",
+                message=f"{product} MANOBS pressure rising rapidly (PRESRR) - ca_eccc profile awareness",
+                core=core,
+                body_start=body_start,
+                body_end=body_end,
+                token="PRESRR",
+            )
+        if saw_presfr:
+            _append_remark_issue(
+                issues,
+                code="CA_REMARK_PRESFR",
+                message=f"{product} MANOBS pressure falling rapidly (PRESFR) - ca_eccc profile awareness",
+                core=core,
+                body_start=body_start,
+                body_end=body_end,
+                token="PRESFR",
+            )
+        if saw_nospeci:
+            _append_remark_issue(
+                issues,
+                code="CA_REMARK_NOSPECI",
+                message=f"{product} MANOBS no-specials remark (NOSPECI) - ca_eccc profile awareness",
+                core=core,
+                body_start=body_start,
+                body_end=body_end,
+                token="NOSPECI",
+            )
+        if sector_vis is not None:
+            _append_remark_issue(
+                issues,
+                code="CA_REMARK_SECTOR_VIS",
+                message=f"{product} MANOBS sector visibility ({sector_vis.group(0)}) - ca_eccc profile awareness",
+                core=core,
+                body_start=body_start,
+                body_end=body_end,
+                token=sector_vis.group(0),
+            )
+    return issues
+
+
+def _check_ca_manair(
+    tokens: list[str],
+    *,
+    product: str,
+    core: str,
+    body_start: int,
+    body_end: int,
+    profile: str = "annex3",
+) -> list[Issue]:
+    """
+    Internal helper ``_check_ca_manair``.
+
+    Parameters
+    ----------
+    tokens : object
+        Argument ``tokens``.
+    product : object
+        Argument ``product``.
+    core : object
+        Argument ``core``.
+    body_start : object
+        Argument ``body_start``.
+    body_end : object
+        Argument ``body_end``.
+    profile : object
+        Argument ``profile``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
+    if profile != "ca_eccc" or product != "TAF":
+        return []
+    issues: list[Issue] = []
+    for tok in tokens:
+        if _NCLWS_TAC.fullmatch(tok):
+            _emit_token_info(
+                issues,
+                code="CA_TAF_NCLWS",
+                message=f"{product} MANAIR low-level wind shear ({tok}) - ca_eccc profile awareness",
+                core=core,
+                body_start=body_start,
+                body_end=body_end,
+                token=tok,
+            )
+            break
+        if _TAF_VIS_SM.fullmatch(tok):
+            _emit_token_info(
+                issues,
+                code="CA_STATUTE_MILE_VIS",
+                message=f"{product} statute-mile visibility ({tok}) - MANAIR CA overlay",
+                core=core,
+                body_start=body_start,
+                body_end=body_end,
+                token=tok,
+            )
+    return issues
+
+
+def _check_in_imd_taf(
+    tokens: list[str],
+    *,
+    product: str,
+    core: str,
+    body_start: int,
+    body_end: int,
+    profile: str = "annex3",
+) -> list[Issue]:
+    """
+    Internal helper ``_check_in_imd_taf``.
+
+    Parameters
+    ----------
+    tokens : object
+        Argument ``tokens``.
+    product : object
+        Argument ``product``.
+    core : object
+        Argument ``core``.
+    body_start : object
+        Argument ``body_start``.
+    body_end : object
+        Argument ``body_end``.
+    profile : object
+        Argument ``profile``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
+    if profile != "in_imd" or product != "TAF":
+        return []
+    if any(_TAF_TX_TN.fullmatch(tok) for tok in tokens):
+        return []
+    issues: list[Issue] = []
+    issues.append(
+        _issue(
+            "IN_TAF_TX_TN_OMITTED",
+            (
+                f"{product} does not include TX/TN temperature forecast groups. "
+                "Informational: India Meteorological Department TAFs often omit temperature "
+                "extremes; this does not by itself block conversion."
+            ),
+            start=body_start,
+            end=body_end,
+            location="body",
+        )
+    )
+    return issues
+
+
+def _check_ca_gfa_airmet(
+    *,
+    product: str,
+    core: str,
+    body_start: int,
+    body_end: int,
+    profile: str = "annex3",
+) -> list[Issue]:
+    """
+    Internal helper ``_check_ca_gfa_airmet``.
+
+    Parameters
+    ----------
+    product : object
+        Argument ``product``.
+    core : object
+        Argument ``core``.
+    body_start : object
+        Argument ``body_start``.
+    body_end : object
+        Argument ``body_end``.
+    profile : object
+        Argument ``profile``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
+    if profile != "ca_eccc" or product != "AIRMET":
+        return []
+    issues: list[Issue] = []
+    phenom = _CA_GFA_PHENOM.search(core)
+    if phenom is not None:
+        _emit_token_info(
+            issues,
+            code="CA_AIRMET_GFA",
+            message=f"{product} MANAIR GFA compound phenomenon ({phenom.group(0).strip()}) - ca_eccc profile awareness",
+            core=core,
+            body_start=body_start,
+            body_end=body_end,
+            token=phenom.group(0).strip(),
+        )
+    chart = _GFA_CHART.search(core)
+    if chart is not None:
+        _emit_token_info(
+            issues,
+            code="CA_AIRMET_GFA",
+            message=f"{product} GFA chart remark ({chart.group(0).strip()}) - ca_eccc profile awareness",
+            core=core,
+            body_start=body_start,
+            body_end=body_end,
+            token=chart.group(0).strip(),
+        )
+    return issues
+
+
+def _emit_token_info(
+    issues: list[Issue],
+    *,
+    code: str,
+    message: str,
+    core: str,
+    body_start: int,
+    body_end: int,
+    token: str,
+) -> None:
+    """
+    Internal helper ``_emit_token_info``.
+
+    Parameters
+    ----------
+    issues : object
+        Argument ``issues``.
+    code : object
+        Argument ``code``.
+    message : object
+        Argument ``message``.
+    core : object
+        Argument ``core``.
+    body_start : object
+        Argument ``body_start``.
+    body_end : object
+        Argument ``body_end``.
+    token : object
+        Argument ``token``.
+    """
+    span = _token_span_in_core(core, token, body_start)
+    if span is None:
+        start, end = body_start, body_end
+    else:
+        start, end = span
+    issues.append(_issue(code, message, start=start, end=end, location="modifier"))
+
+
+def _forecast_or_obs_segments(tokens: list[str]) -> list[list[str]]:
+    """
+    Internal helper ``_forecast_or_obs_segments``.
+
+    Parameters
+    ----------
+    tokens : object
+        Argument ``tokens``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
+    segments: list[list[str]] = []
+    current: list[str] = []
+    for tok in tokens:
+        # INTER is an AU change-group opener (FAQ §14.3 exclusivity is same-group only).
+        if tok in {"TEMPO", "BECMG", "NOSIG", "INTER"} or _TAF_FM.fullmatch(tok) or _TAF_PROB.fullmatch(tok):
+            if current:
+                segments.append(current)
+            current = [tok]
+        else:
+            current.append(tok)
+    if current:
+        segments.append(current)
+    return segments
+
+
+def _emit_nsc_layer_exclusivity(
+    issues: list[Issue],
+    *,
+    product: str,
+    tokens: list[str],
+    core: str,
+    body_start: int,
+    body_end: int,
+) -> None:
+    """
+    Internal helper ``_emit_nsc_layer_exclusivity``.
+
+    Parameters
+    ----------
+    issues : object
+        Argument ``issues``.
+    product : object
+        Argument ``product``.
+    tokens : object
+        Argument ``tokens``.
+    core : object
+        Argument ``core``.
+    body_start : object
+        Argument ``body_start``.
+    body_end : object
+        Argument ``body_end``.
+    """
+    for segment in _forecast_or_obs_segments(tokens):
+        if "NSC" not in segment:
+            continue
+        layer = next((t for t in segment if _LAYER_CLOUD_TOKEN.fullmatch(t)), None)
+        if layer is None:
+            continue
+        span = _token_span_in_core(core, "NSC", body_start)
+        if span is None:
+            start, end = body_start, body_end
+        else:
+            start, end = span
+        issues.append(
+            _issue(
+                "NSC_WITH_CLOUD_LAYERS",
+                f"{product} NSC with FEW/SCT/BKN/OVC in same group - FAQ §14.3 exclusivity",
+                start=start,
+                end=end,
+                location="cloud",
+            )
+        )
+        break

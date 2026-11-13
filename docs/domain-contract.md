@@ -74,6 +74,26 @@ Machine catalog: [config/profiles/catalog.yaml](../config/profiles/catalog.yaml)
 | Source URLs | `config/rules/RULE_SOURCE_URLS.md` | Master URL inventory |
 | Access policy | `config/rules/ACCESS_AND_CITATION.md` | Paywall and citation rules |
 
+## METAR and SPECI handbook quality (WMO-No. 782)
+
+`tac-validate` applies combination checks for METAR and SPECI that follow the
+aerodrome report handbook code format. Key behaviors:
+
+1. Group order is fixed: identification, wind, visibility, RVR, weather, cloud,
+   temperature, QNH, supplementary, optional TREND, then national remarks.
+2. Wrong station / time / wind order is an error.
+3. CAVOK requires visibility, cloud, and weather conditions at the same time.
+4. VRB must not appear with a directed variation group.
+5. Missing mandatory digits as solidus warn on non-AUTO reports.
+6. Visibility reporting steps, directional minimum format, AUTO `////`, RVR
+   limits, weather pairing, cloud height order, TREND limits, and wind calm /
+   gust / high-speed forms emit registry codes.
+7. A remarks section after RMK is national. Convert may omit it from IWXXM when
+   the operator turns off national remarks.
+
+Operator catalog examples for each code live in the frontend rule-catalog
+example map. Session extraction notes are not a substitute for this contract.
+
 ## Labeling
 
 | Label | Meaning |

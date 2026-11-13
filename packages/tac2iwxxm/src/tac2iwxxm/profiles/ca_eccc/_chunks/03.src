@@ -1,0 +1,41 @@
+    aerodrome = aerodrome_block(station)
+    return f"""<?xml version="1.0" encoding="UTF-8"?>
+<{ns_prefix}:{root_tag} xmlns:iwxxm="{ns}"
+    xmlns:iwxxm-ca="{CA_NS}"
+    xmlns:xlink="http://www.w3.org/1999/xlink"
+    xmlns:gml="http://www.opengis.net/gml/3.2"
+    xmlns:aixm="http://www.aixm.aero/schema/5.1.1"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    gml:id="{gml_id}"
+    reportStatus="{report_status}"
+    permissibleUsage="OPERATIONAL"
+    automatedStation="{automated}">
+  <iwxxm:issueTime>
+    <gml:TimeInstant gml:id="t.issue">
+      <gml:timePosition>{stamp}</gml:timePosition>
+    </gml:TimeInstant>
+  </iwxxm:issueTime>
+{aerodrome}  <iwxxm:observationTime>
+    <gml:TimeInstant gml:id="t.obs">
+      <gml:timePosition>{stamp}</gml:timePosition>
+    </gml:TimeInstant>
+  </iwxxm:observationTime>
+{observation}{trends}</{ns_prefix}:{root_tag}>
+"""
+
+
+__all__ = [
+    "CA_IWXXM_CA_SUBSTITUTION_ROOTS",
+    "CA_IWXXM_VERSION",
+    "CA_METAR_FAMILY_TAC_LEADS",
+    "CA_NS",
+    "CA_OBS_AWOS",
+    "CA_OBS_LWIS",
+    "CA_OBS_SAWR",
+    "CA_PRES_FALLING",
+    "CA_PRES_RISING",
+    "_nclws_extension",
+    "emit_airmet_ca_eccc",
+    "emit_metar_speci_ca_eccc",
+    "emit_taf_ca_eccc",
+]

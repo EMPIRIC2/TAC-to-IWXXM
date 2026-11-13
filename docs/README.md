@@ -12,6 +12,7 @@ Agents start at [AGENTS.md](../AGENTS.md). Writers follow
 | [technical-requirements.md](technical-requirements.md) | Functional and technical requirements and pass criteria |
 | [architecture.md](architecture.md) | System architecture and component boundaries |
 | [domain-contract.md](domain-contract.md) | TAC/IWXXM domain pipeline and profiles |
+| [wmo-782-metar-speci-quality.md](wmo-782-metar-speci-quality.md) | METAR/SPECI handbook quality (lint, form, remarks) |
 | [api-contract.md](api-contract.md) | HTTP narrative contract |
 | [ops-contract.md](ops-contract.md) | Local, staging, and production ops contract |
 | [integration-contract.md](integration-contract.md) | External system integration rules |

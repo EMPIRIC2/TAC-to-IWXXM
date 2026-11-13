@@ -1,0 +1,76 @@
+    Returns
+    -------
+    list[dict[str, Any]]
+        Return value.
+    """
+    changes: list[dict[str, Any]] = []
+    for raw in _CHANGE_GROUP.findall(body):
+        chunk = raw.strip()
+        becmg = _BECMG.match(chunk)
+        if becmg is not None:
+            change = {
+                "change_indicator": "BECOMING",
+                "phenomenon_begin": _taf_day_hour_stamp(ir, becmg.group("from")),
+                "phenomenon_end": _taf_day_hour_stamp(ir, becmg.group("to")),
+            }
+            change.update(_parse_forecast_body(becmg.group("body")))
+            changes.append(change)
+            continue
+        probable = probability_tempo_parts(chunk)
+        if probable is not None:
+            indicator, kind, begin, end, forecast_body = probable
+            change = {
+                "change_indicator": indicator,
+                "phenomenon_begin": _taf_day_hour_stamp(ir, begin),
+                "phenomenon_end": _taf_day_hour_stamp(ir, end),
+            }
+            if kind == "EMPO":
+                change["tac_change_indicator"] = "EMPO"
+            change.update(_parse_forecast_body(forecast_body))
+            changes.append(change)
+            continue
+        if is_unqualified_probability(chunk):
+            continue
+        tempo = _TEMPO.match(chunk)
+        if tempo is not None:
+            change: dict[str, Any] = {
+                "change_indicator": "TEMPORARY_FLUCTUATIONS",
+                "phenomenon_begin": _taf_day_hour_stamp(ir, tempo.group("from")),
+                "phenomenon_end": _taf_day_hour_stamp(ir, tempo.group("to")),
+            }
+            if chunk.upper().startswith("EMPO"):
+                change["tac_change_indicator"] = "EMPO"
+            change.update(_parse_forecast_body(tempo.group("body")))
+            changes.append(change)
+            continue
+        inter = _INTER.match(chunk)
+        if inter is not None:
+            # BoM INTER (<30 min). IWXXM has no INTER enum — emit TEMPORARY_FLUCTUATIONS
+            # and retain TAC token for remarks/diagnostics (D-EV087-inter-emit).
+            change = {
+                "change_indicator": "TEMPORARY_FLUCTUATIONS",
+                "tac_change_indicator": "INTER",
+                "phenomenon_begin": _taf_day_hour_stamp(ir, inter.group("from")),
+                "phenomenon_end": _taf_day_hour_stamp(ir, inter.group("to")),
+            }
+            change.update(_parse_forecast_body(inter.group("body")))
+            changes.append(change)
+            continue
+        fm = _FM.match(chunk)
+        if fm is not None:
+            stamp = fm.group("stamp")
+            legacy = "2012-08" if ir.get("station") == "YUDO" else "2023-06"
+            change = {
+                "change_indicator": "FROM",
+                "phenomenon_begin": iso_stamp(
+                    ir,
+                    int(stamp[0:2]),
+                    int(stamp[2:4]),
+                    int(stamp[4:6]),
+                    legacy=legacy,
+                ),
+                "phenomenon_end": _taf_valid_end_stamp(ir),
+            }
+            change.update(_parse_forecast_body(fm.group("body")))
+            changes.append(change)
+    return changes

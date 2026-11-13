@@ -52,10 +52,18 @@ def test_failed_convert_has_no_pack_ir() -> None:
     assert shadow.legacy_ir is None
 
 
+def _slot_module_present(slot: Path, module_py: str) -> bool:
+    """True when ``module.py`` or package ``module/`` remains under slot_builders."""
+    if (slot / module_py).is_file():
+        return True
+    stem = module_py.removesuffix(".py")
+    return (slot / stem / "__init__.py").is_file()
+
+
 def test_parsers_and_pins_still_present_after_ir_projection() -> None:
     slot = Path(__file__).resolve().parents[1] / "src" / "tac2iwxxm" / "slot_builders"
-    assert (slot / "metar_speci.py").is_file()
-    assert (slot / "sigmet_airmet.py").is_file()
+    assert _slot_module_present(slot, "metar_speci.py")
+    assert _slot_module_present(slot, "sigmet_airmet.py")
     assert not (_PRODUCTS / "metar_speci.py").is_file()
     from tac2iwxxm.profile_registry import supported_iwxxm_versions_for_profile
 

@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "source": "generated from tac_validate.issue_registry + PROVENANCE_MAP",
-  "generated": "2026-11-04",
+  "generated": "2026-11-12",
   "issues": [
     {
       "code": "AMD_PRESENT",
@@ -31,6 +31,21 @@
       "source_attribution": "icao-annex-3 - access:paywall - https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 - App 5 / Table A5-1"
     },
     {
+      "code": "AUTO_MISPLACED",
+      "severity": "error",
+      "message_template": "{product} places AUTO outside the accepted identification slot after the code name and date/time group, or combines AUTO with NIL.",
+      "product": null,
+      "tags": [
+        "metar",
+        "speci",
+        "wmo782",
+        "modifier"
+      ],
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "source_attribution": "wmo-782 - access:paywall - https://library.wmo.int/ - WMO-No. 782 identification: AUTO must follow the date/time group."
+    },
+    {
       "code": "AUTO_PRESENT",
       "severity": "info",
       "message_template": "{product} includes the AUTO modifier, meaning the observation was produced by an automatic station. Informational: noted for operator awareness; does not by itself block conversion. Source: ICAO Annex 3 Table A3-2 / App 3. Full normative text may require purchase.",
@@ -45,6 +60,21 @@
       "source_attribution": "icao-annex-3 - access:paywall - https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 - Table A3-2 / App 3"
     },
     {
+      "code": "AUTO_VISIBILITY_NOT_OBSERVABLE",
+      "severity": "warning",
+      "message_template": "{product} AUTO report encodes visibility as //// (temporarily missing or incorrect). In AUTO reports, prevailing visibility is the best practicable runway and touchdown indication.",
+      "product": null,
+      "tags": [
+        "metar",
+        "speci",
+        "wmo782",
+        "visibility"
+      ],
+      "source_id": null,
+      "source_url": null,
+      "source_attribution": null
+    },
+    {
       "code": "BECMG_PRESENT",
       "severity": "info",
       "message_template": "{product} includes a BECMG (becoming) change group describing a gradual change. Informational: noted for operator awareness; does not by itself block conversion. Source: ICAO Annex 3 App 5 / Table A5-1. Full normative text may require purchase.",
@@ -57,6 +87,51 @@
       "source_id": "icao-annex-3",
       "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
       "source_attribution": "icao-annex-3 - access:paywall - https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 - App 5 / Table A5-1"
+    },
+    {
+      "code": "CAVOK_CONDITIONS_NOT_MET",
+      "severity": "warning",
+      "message_template": "{product} includes CAVOK but visibility, cloud of operational significance, or significant weather does not meet all CAVOK conditions at once.",
+      "product": null,
+      "tags": [
+        "metar",
+        "speci",
+        "wmo782",
+        "visibility"
+      ],
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "source_attribution": "wmo-782 - access:paywall - https://library.wmo.int/ - WMO-No. 782 Part A: CAVOK requires visibility, cloud, and weather conditions at the same time."
+    },
+    {
+      "code": "CAVOK_EXCLUDES_RVR",
+      "severity": "error",
+      "message_template": "{product} CAVOK present with RVR groups",
+      "product": null,
+      "tags": [
+        "metar",
+        "speci",
+        "wmo782",
+        "rvr"
+      ],
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "source_attribution": "wmo-782 - access:paywall - https://library.wmo.int/ - WMO-No. 782 METAR/SPECI rule (43)"
+    },
+    {
+      "code": "CAVOK_NSC_BOUNDARY",
+      "severity": "warning",
+      "message_template": "{product} uses 9999 with NSC or NCD when CAVOK would replace visibility, weather, and cloud; or uses NSC when CAVOK conditions are met.",
+      "product": null,
+      "tags": [
+        "metar",
+        "speci",
+        "wmo782",
+        "visibility"
+      ],
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "source_attribution": "wmo-782 - access:paywall - https://library.wmo.int/ - WMO-No. 782 METAR/SPECI rule (13-14,33)"
     },
     {
       "code": "CAVOK_PRESENT",
@@ -299,6 +374,51 @@
       "source_attribution": "codes-wmo-int - https://codes.wmo.int/ui/resources/WMO-Codes-Registry_user-guide-v1.0.pdf - CB/TCU convective type register"
     },
     {
+      "code": "CLOUD_COMMON_BASE_CB_TCU",
+      "severity": "warning",
+      "message_template": "{product} should merge CB and TCU that share a common base into one cloud group when required.",
+      "product": null,
+      "tags": [
+        "metar",
+        "speci",
+        "wmo782",
+        "cloud"
+      ],
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "source_attribution": "wmo-782 - access:paywall - https://library.wmo.int/ - WMO-No. 782 METAR/SPECI rule (13-14)"
+    },
+    {
+      "code": "CLOUD_HEIGHT_NOT_ASCENDING",
+      "severity": "warning",
+      "message_template": "{product} cloud layer heights are not in ascending order.",
+      "product": null,
+      "tags": [
+        "metar",
+        "speci",
+        "wmo782",
+        "cloud"
+      ],
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "source_attribution": "wmo-782 - access:paywall - https://library.wmo.int/ - WMO-No. 782 METAR/SPECI rule (13-14)"
+    },
+    {
+      "code": "CLOUD_LAYER_COUNT_EXCEEDED",
+      "severity": "warning",
+      "message_template": "{product} reports more than three cloud groups without a CB/TCU fourth-layer exemption.",
+      "product": null,
+      "tags": [
+        "metar",
+        "speci",
+        "wmo782",
+        "cloud"
+      ],
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "source_attribution": "wmo-782 - access:paywall - https://library.wmo.int/ - WMO-No. 782 METAR/SPECI rule (13-14)"
+    },
+    {
       "code": "CLOUD_TYPE_NOT_OBSERVABLE",
       "severity": "info",
       "message_template": "{product} cloud group uses /// because the convective cloud type was not observed. Informational: noted for operator awareness; does not by itself block conversion. Source: nilReason notObservable.",
@@ -314,6 +434,21 @@
       "source_attribution": "codes-wmo-int - https://github.com/wmo-im/iwxxm/blob/master/IWXXM/ReleaseNotes-IWXXM.txt - AUTO cloud group solidi /// means convective cloud type was not observed"
     },
     {
+      "code": "CLOUD_TYPE_SUFFIX_ONLY_CB_TCU",
+      "severity": "error",
+      "message_template": "{product} Cloud type suffix outside CB TCU or AUTO ///",
+      "product": null,
+      "tags": [
+        "metar",
+        "speci",
+        "wmo782",
+        "cloud"
+      ],
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "source_attribution": "wmo-782 - access:paywall - https://library.wmo.int/ - WMO-No. 782 METAR/SPECI rule (43)"
+    },
+    {
       "code": "CNL_REPORT",
       "severity": "info",
       "message_template": "{product} is a CNL (cancel) report that withdraws a previously issued forecast. Informational: noted for operator awareness; does not by itself block conversion. Source: ICAO Annex 3 App 5 / Table A5-1. Full normative text may require purchase.",
@@ -325,6 +460,21 @@
       "source_id": "icao-annex-3",
       "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
       "source_attribution": "icao-annex-3 - access:paywall - https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 - App 5 / Table A5-1"
+    },
+    {
+      "code": "COR_MISPLACED",
+      "severity": "error",
+      "message_template": "{product} places COR outside the accepted identification slot after the code name (and before CCCC / YYGGggZ as required).",
+      "product": null,
+      "tags": [
+        "metar",
+        "speci",
+        "wmo782",
+        "modifier"
+      ],
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "source_attribution": "wmo-782 - access:paywall - https://library.wmo.int/ - WMO-No. 782 identification: COR must follow the code name before CCCC and time."
     },
     {
       "code": "COR_PRESENT",
@@ -357,6 +507,21 @@
       "source_attribution": null
     },
     {
+      "code": "DIRECTIONAL_VISIBILITY_FORMAT",
+      "severity": "warning",
+      "message_template": "{product} directional minimum visibility {token!r} should be four digits plus a direction (for example 1400SW) when minimum visibility differs from prevailing and is under 1 500 m or under 50 percent of prevailing.",
+      "product": null,
+      "tags": [
+        "metar",
+        "speci",
+        "wmo782",
+        "visibility"
+      ],
+      "source_id": null,
+      "source_url": null,
+      "source_attribution": null
+    },
+    {
       "code": "DVLPG_AREA_QUALIFIER",
       "severity": "error",
       "message_template": "Convective SIGMET has a misplaced or incomplete DVLPG (developing) qualifier. Use DVLPG AREA after the FROM ring; DVLPG is a hazard qualifier, not a VOR offset.",
@@ -383,6 +548,21 @@
       "source_id": "icao-annex-3",
       "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
       "source_attribution": "icao-annex-3 - access:paywall - https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 - Table A3-2 / App 3"
+    },
+    {
+      "code": "FIRST_GROUPS_FORMAT",
+      "severity": "warning",
+      "message_template": "{product} identification groups do not match an accepted METAR/SPECI \u00b1 COR/AUTO/NIL and CCCC YYGGggZ shape.",
+      "product": null,
+      "tags": [
+        "metar",
+        "speci",
+        "wmo782",
+        "order"
+      ],
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "source_attribution": "wmo-782 - access:paywall - https://library.wmo.int/ - WMO-No. 782 identification: accepted METAR/SPECI header shapes for the first groups."
     },
     {
       "code": "FIR_OR_CTA",
@@ -754,6 +934,21 @@
       "source_attribution": "icao-annex-3 - access:paywall - https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 - App 5 / Table A5-1"
     },
     {
+      "code": "MISSING_MANDATORY_DIGIT_AS_SOLIDUS",
+      "severity": "warning",
+      "message_template": "{product} uses solidus (/) for a temporarily missing or incorrect mandatory digit. For non-AUTO reports this is a warning until the element is restored.",
+      "product": null,
+      "tags": [
+        "metar",
+        "speci",
+        "wmo782",
+        "parse"
+      ],
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "source_attribution": "wmo-782 - access:paywall - https://library.wmo.int/ - WMO-No. 782 Part A: solidus replaces each missing mandatory digit; warn for non-AUTO reports."
+    },
+    {
       "code": "MISSING_MAX_WIND",
       "severity": "error",
       "message_template": "TCA missing MAX WIND: template field - A2-2",
@@ -1059,6 +1254,21 @@
       "source_attribution": "icao-eur-doc-014 - https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf - EUR Doc 014 public; Annex 3 paywall companion"
     },
     {
+      "code": "NATIONAL_RMK_NOT_INTERNATIONAL",
+      "severity": "info",
+      "message_template": "{product} includes a national RMK section that should not be disseminated internationally; conversion may omit national remarks when requested.",
+      "product": null,
+      "tags": [
+        "metar",
+        "speci",
+        "wmo782",
+        "remarks"
+      ],
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "source_attribution": "wmo-782 - access:paywall - https://library.wmo.int/ - WMO-No. 782 METAR/SPECI rule (4,19)"
+    },
+    {
       "code": "NCD_PRESENT",
       "severity": "info",
       "message_template": "{product} includes NCD (no cloud detected), typically from AUTO stations. Informational: noted for operator awareness; does not by itself block conversion. Source: NCD cloud amount notation family.",
@@ -1072,6 +1282,66 @@
       "source_id": "codes-wmo-int",
       "source_url": "https://codes.wmo.int/ui/resources/WMO-Codes-Registry_user-guide-v1.0.pdf",
       "source_attribution": "codes-wmo-int - https://codes.wmo.int/ui/resources/WMO-Codes-Registry_user-guide-v1.0.pdf - NCD cloud amount notation family"
+    },
+    {
+      "code": "NCD_REQUIRES_AUTO",
+      "severity": "error",
+      "message_template": "{product} NCD without AUTO",
+      "product": null,
+      "tags": [
+        "metar",
+        "speci",
+        "wmo782",
+        "modifier"
+      ],
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "source_attribution": "wmo-782 - access:paywall - https://library.wmo.int/ - WMO-No. 782 METAR/SPECI rule (43)"
+    },
+    {
+      "code": "NDV_REQUIRES_AUTO",
+      "severity": "error",
+      "message_template": "{product} NDV directional-visibility marker without AUTO",
+      "product": null,
+      "tags": [
+        "metar",
+        "speci",
+        "wmo782",
+        "modifier"
+      ],
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "source_attribution": "wmo-782 - access:paywall - https://library.wmo.int/ - WMO-No. 782 METAR/SPECI rule (43)"
+    },
+    {
+      "code": "NIL_AUTO_CONFLICT",
+      "severity": "error",
+      "message_template": "{product} includes both NIL and AUTO; a missing report cannot be a fully automated observation.",
+      "product": null,
+      "tags": [
+        "metar",
+        "speci",
+        "wmo782",
+        "modifier"
+      ],
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "source_attribution": "wmo-782 - access:paywall - https://library.wmo.int/ - WMO-No. 782 identification: NIL and AUTO must not appear together."
+    },
+    {
+      "code": "NIL_MISPLACED",
+      "severity": "error",
+      "message_template": "{product} places NIL outside the accepted identification slot, or combines NIL with AUTO or meteorological body groups incorrectly.",
+      "product": null,
+      "tags": [
+        "metar",
+        "speci",
+        "wmo782",
+        "nil"
+      ],
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "source_attribution": "wmo-782 - access:paywall - https://library.wmo.int/ - WMO-No. 782 identification: NIL placement and standalone missing-report body rules."
     },
     {
       "code": "NIL_REPORT",
@@ -1178,7 +1448,7 @@
     },
     {
       "code": "ODD_FIELD_ORDER",
-      "severity": "warning",
+      "severity": "error",
       "message_template": "{product} groups out of A3-2 order (CCCC \u2192 ddhhmmZ \u2192 wind)",
       "product": null,
       "tags": [
@@ -1188,9 +1458,9 @@
         "metar",
         "speci"
       ],
-      "source_id": "icao-annex-3",
+      "source_id": "wmo-782",
       "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
-      "source_attribution": "icao-annex-3 - access:paywall - https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 - Table A3-2 / App 3"
+      "source_attribution": "wmo-782 - access:paywall - https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 - WMO-No. 782 METAR/SPECI group order; wrong order is an error."
     },
     {
       "code": "PARTIAL_DECODE",
@@ -1234,6 +1504,21 @@
       "source_attribution": "icao-eur-doc-014 - https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf - EUR Doc 014 public; Annex 3 paywall companion"
     },
     {
+      "code": "PRECIP_INTENSITY_VIS_PLAUSIBILITY",
+      "severity": "warning",
+      "message_template": "{product} Precipitation intensity inconsistent with visibility band in handbook table",
+      "product": null,
+      "tags": [
+        "metar",
+        "speci",
+        "wmo782",
+        "visibility"
+      ],
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "source_attribution": "wmo-782 - access:paywall - https://library.wmo.int/ - WMO-No. 782 METAR/SPECI rule (42)"
+    },
+    {
       "code": "PROB_PERIOD_WITHOUT_TEMPO",
       "severity": "warning",
       "message_template": "{product} historically flagged standalone PROB30/40 + period (or INTER) without TEMPO. Annex 3 allows standalone PROB; emission retired \u2014 engines emit PROB_PRESENT info instead. True defects stay INVALID_PROB. Source: ICAO Annex 3 App 5 / Table A5-1 and live eval.",
@@ -1262,6 +1547,66 @@
       "source_attribution": "icao-annex-3 - access:paywall - https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 - App 5 / Table A5-1"
     },
     {
+      "code": "QNH_MISSING_AS_SOLIDUS",
+      "severity": "warning",
+      "message_template": "{product} encodes missing QNH as Q//// when pressure is temporarily missing or incorrect.",
+      "product": null,
+      "tags": [
+        "metar",
+        "speci",
+        "wmo782",
+        "pressure"
+      ],
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "source_attribution": "wmo-782 - access:paywall - https://library.wmo.int/ - WMO-No. 782 METAR/SPECI rule (16)"
+    },
+    {
+      "code": "QNH_PREFIX_UNIT_MISMATCH",
+      "severity": "error",
+      "message_template": "{product} Q with inHg-like digits or A with hPa-like digits",
+      "product": null,
+      "tags": [
+        "metar",
+        "speci",
+        "wmo782",
+        "pressure"
+      ],
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "source_attribution": "wmo-782 - access:paywall - https://library.wmo.int/ - WMO-No. 782 METAR/SPECI rule (43)"
+    },
+    {
+      "code": "RECENT_WEATHER_LIMITS",
+      "severity": "warning",
+      "message_template": "{product} recent weather REw'w' does not meet accepted Code table 4678 recent-weather limits.",
+      "product": null,
+      "tags": [
+        "metar",
+        "speci",
+        "wmo782",
+        "weather"
+      ],
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "source_attribution": "wmo-782 - access:paywall - https://library.wmo.int/ - WMO-No. 782 METAR/SPECI rule (17-18)"
+    },
+    {
+      "code": "RECENT_WEATHER_NO_INTENSITY",
+      "severity": "error",
+      "message_template": "{product} REw'w' includes - + or VC",
+      "product": null,
+      "tags": [
+        "metar",
+        "speci",
+        "wmo782",
+        "weather"
+      ],
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "source_attribution": "wmo-782 - access:paywall - https://library.wmo.int/ - WMO-No. 782 METAR/SPECI rule (43)"
+    },
+    {
       "code": "REMARK_US_EXTENSION",
       "severity": "info",
       "message_template": "{product} US remarks present - iwxxm_us profile awareness",
@@ -1277,6 +1622,51 @@
       "source_attribution": "fmh-1 - https://nws.weather.gov/schemas/iwxxm-us/3.0/"
     },
     {
+      "code": "REUP_REQUIRES_AUTO",
+      "severity": "warning",
+      "message_template": "{product} includes REUP without AUTO; unknown precipitation recent weather is an automated-system form.",
+      "product": null,
+      "tags": [
+        "metar",
+        "speci",
+        "wmo782",
+        "modifier"
+      ],
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "source_attribution": "wmo-782 - access:paywall - https://library.wmo.int/ - WMO-No. 782 METAR/SPECI rule (17-18)"
+    },
+    {
+      "code": "RVR_MAX_GROUPS",
+      "severity": "warning",
+      "message_template": "{product} includes more than four RVR groups; at most four alphanumeric RVR groups are accepted.",
+      "product": null,
+      "tags": [
+        "metar",
+        "speci",
+        "wmo782",
+        "rvr"
+      ],
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "source_attribution": "wmo-782 - access:paywall - https://library.wmo.int/ - WMO-No. 782 METAR/SPECI rule (9-10)"
+    },
+    {
+      "code": "RVR_MISSING_AS_SOLIDUS",
+      "severity": "warning",
+      "message_template": "{product} encodes missing RVR digits with solidi (for example R24/////) when RVR is temporarily missing or incorrect.",
+      "product": null,
+      "tags": [
+        "metar",
+        "speci",
+        "wmo782",
+        "rvr"
+      ],
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "source_attribution": "wmo-782 - access:paywall - https://library.wmo.int/ - WMO-No. 782 METAR/SPECI rule (9-10)"
+    },
+    {
       "code": "RVR_PRESENT",
       "severity": "info",
       "message_template": "{product} includes one or more runway visual range (RVR) groups. Informational: noted for operator awareness; does not by itself block conversion. Source: ICAO Annex 3 Table A3-2 / App 3. Full normative text may require purchase.",
@@ -1289,6 +1679,51 @@
       "source_id": "icao-annex-3",
       "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
       "source_attribution": "icao-annex-3 - access:paywall - https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 - Table A3-2 / App 3"
+    },
+    {
+      "code": "RVR_SCALE_STEP",
+      "severity": "warning",
+      "message_template": "{product} RVR value does not follow the accepted reporting steps, including P2000 / M lower-bound forms.",
+      "product": null,
+      "tags": [
+        "metar",
+        "speci",
+        "wmo782",
+        "rvr"
+      ],
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "source_attribution": "wmo-782 - access:paywall - https://library.wmo.int/ - WMO-No. 782 METAR/SPECI rule (9-10)"
+    },
+    {
+      "code": "RVR_TENDENCY_FORMAT",
+      "severity": "warning",
+      "message_template": "{product} RVR tendency must be U, D, or N when a tendency is reported.",
+      "product": null,
+      "tags": [
+        "metar",
+        "speci",
+        "wmo782",
+        "rvr"
+      ],
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "source_attribution": "wmo-782 - access:paywall - https://library.wmo.int/ - WMO-No. 782 METAR/SPECI rule (9-10)"
+    },
+    {
+      "code": "SEA_SURFACE_GROUP_FORMAT",
+      "severity": "error",
+      "message_template": "{product} WTsTs paired incorrectly with S' vs HHsHsHs",
+      "product": null,
+      "tags": [
+        "metar",
+        "speci",
+        "wmo782",
+        "sea"
+      ],
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "source_attribution": "wmo-782 - access:paywall - https://library.wmo.int/ - WMO-No. 782 METAR/SPECI rule (43)"
     },
     {
       "code": "SIGMET_CNL",
@@ -1485,6 +1920,21 @@
       "source_attribution": "icao-annex-3 - access:paywall - https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 - App 5 / Table A5-1"
     },
     {
+      "code": "TEMP_DEWPOINT_INVERSION",
+      "severity": "warning",
+      "message_template": "{product} dew-point temperature is higher than air temperature (Td must be less than or equal to T).",
+      "product": null,
+      "tags": [
+        "metar",
+        "speci",
+        "wmo782",
+        "temperature"
+      ],
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "source_attribution": "wmo-782 - access:paywall - https://library.wmo.int/ - WMO-No. 782 METAR/SPECI rule (15)"
+    },
+    {
       "code": "TL_PRESENT",
       "severity": "info",
       "message_template": "{product} includes a TL (until) time qualifier on a change group. Informational: noted for operator awareness; does not by itself block conversion. Source: ICAO Annex 3 App 5 / Table A5-1. Full normative text may require purchase.",
@@ -1512,6 +1962,126 @@
       "source_id": "icao-eur-doc-014",
       "source_url": "https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf",
       "source_attribution": "icao-eur-doc-014 - https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf - EUR Doc 014 public; Annex 3 paywall companion"
+    },
+    {
+      "code": "TREND_CLOUD_LAYERS_INCOMPLETE",
+      "severity": "warning",
+      "message_template": "{product} TREND that changes cloud must repeat all cloud layers, not only the changed layer.",
+      "product": null,
+      "tags": [
+        "metar",
+        "speci",
+        "wmo782",
+        "cloud"
+      ],
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "source_attribution": "wmo-782 - access:paywall - https://library.wmo.int/ - WMO-No. 782 METAR/SPECI rule (17-24)"
+    },
+    {
+      "code": "TREND_FM_FORMAT",
+      "severity": "error",
+      "message_template": "{product} TREND FM time must be four-digit FMGGgg, not TAF FMYYGGgg.",
+      "product": null,
+      "tags": [
+        "metar",
+        "speci",
+        "wmo782",
+        "trend"
+      ],
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "source_attribution": "wmo-782 - access:paywall - https://library.wmo.int/ - WMO-No. 782 METAR/SPECI rule (17-24)"
+    },
+    {
+      "code": "TREND_NCD_OR_SOLIDUS_FORBIDDEN",
+      "severity": "error",
+      "message_template": "{product} TREND must not use NCD or cloud solidus forms reserved for the observation body / AUTO.",
+      "product": null,
+      "tags": [
+        "metar",
+        "speci",
+        "wmo782",
+        "trend"
+      ],
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "source_attribution": "wmo-782 - access:paywall - https://library.wmo.int/ - WMO-No. 782 METAR/SPECI rule (17-24)"
+    },
+    {
+      "code": "TREND_NOSIG_EXCLUSIVITY",
+      "severity": "error",
+      "message_template": "{product} NOSIG with BECMG TEMPO or trend elements",
+      "product": null,
+      "tags": [
+        "metar",
+        "speci",
+        "wmo782",
+        "trend"
+      ],
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "source_attribution": "wmo-782 - access:paywall - https://library.wmo.int/ - WMO-No. 782 METAR/SPECI rule (43)"
+    },
+    {
+      "code": "TREND_NSW_ONLY_IN_CHANGE",
+      "severity": "error",
+      "message_template": "{product} NSW is only allowed inside TREND change groups, not in the base observation body.",
+      "product": null,
+      "tags": [
+        "metar",
+        "speci",
+        "wmo782",
+        "trend"
+      ],
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "source_attribution": "wmo-782 - access:paywall - https://library.wmo.int/ - WMO-No. 782 METAR/SPECI rule (17-24)"
+    },
+    {
+      "code": "TREND_PROB_FORBIDDEN",
+      "severity": "error",
+      "message_template": "{product} TREND forecast must not use PROB; PROB belongs to TAF change groups.",
+      "product": null,
+      "tags": [
+        "metar",
+        "speci",
+        "wmo782",
+        "trend"
+      ],
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "source_attribution": "wmo-782 - access:paywall - https://library.wmo.int/ - WMO-No. 782 METAR/SPECI rule (17-24)"
+    },
+    {
+      "code": "TREND_UNIT_MISMATCH",
+      "severity": "error",
+      "message_template": "{product} TREND wind or visibility units must match the parent METAR/SPECI body.",
+      "product": null,
+      "tags": [
+        "metar",
+        "speci",
+        "wmo782",
+        "trend"
+      ],
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "source_attribution": "wmo-782 - access:paywall - https://library.wmo.int/ - WMO-No. 782 METAR/SPECI rule (17-24)"
+    },
+    {
+      "code": "TREND_WIND_V_GROUP_FORBIDDEN",
+      "severity": "error",
+      "message_template": "{product} TREND wind must not include a directional variation V-group.",
+      "product": null,
+      "tags": [
+        "metar",
+        "speci",
+        "wmo782",
+        "wind"
+      ],
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "source_attribution": "wmo-782 - access:paywall - https://library.wmo.int/ - WMO-No. 782 METAR/SPECI rule (17-24)"
     },
     {
       "code": "TX_TN_PRESENT",
@@ -1772,6 +2342,36 @@
       "source_attribution": "icao-eur-doc-014 - https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf - EUR Doc 014 public; Annex 3 paywall companion"
     },
     {
+      "code": "VISIBILITY_MISSING_AS_SOLIDUS",
+      "severity": "warning",
+      "message_template": "{product} encodes missing or temporarily incorrect visibility as //// (or ////SM); non-AUTO use is a solidus warning; AUTO use is expected sensor-unavailable.",
+      "product": null,
+      "tags": [
+        "metar",
+        "speci",
+        "wmo782",
+        "visibility"
+      ],
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "source_attribution": "wmo-782 - access:paywall - https://library.wmo.int/ - WMO-No. 782 METAR/SPECI rule (8)"
+    },
+    {
+      "code": "VISIBILITY_SCALE_STEP",
+      "severity": "warning",
+      "message_template": "{product} visibility value {token!r} does not follow the reporting scale (50 m below 800 m; 100 m from 800 m to under 5 km; 1 000 m from 5 km to under 10 km; 10 km when 10 km or more).",
+      "product": null,
+      "tags": [
+        "metar",
+        "speci",
+        "wmo782",
+        "visibility"
+      ],
+      "source_id": null,
+      "source_url": null,
+      "source_attribution": null
+    },
+    {
       "code": "VONA_DUR_NIL",
       "severity": "info",
       "message_template": "VONA DUR NIL - duration omitted",
@@ -1798,6 +2398,21 @@
       "source_id": "vona-ahl-fm205",
       "source_url": "vendor:documentation/webpages/AHL.asciidoc",
       "source_attribution": "vona-ahl-fm205 - vendor:documentation/webpages/AHL.asciidoc - Guidance silent residual; AHL/FM205/XSD cites ok"
+    },
+    {
+      "code": "VV_EXCLUDES_CLOUD_LAYERS",
+      "severity": "error",
+      "message_template": "{product} VV group mixed with cloud layers NSC NCD or CAVOK",
+      "product": null,
+      "tags": [
+        "metar",
+        "speci",
+        "wmo782",
+        "cloud"
+      ],
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "source_attribution": "wmo-782 - access:paywall - https://library.wmo.int/ - WMO-No. 782 METAR/SPECI rule (43)"
     },
     {
       "code": "VV_NOT_OBSERVABLE",
@@ -1829,6 +2444,156 @@
       "source_attribution": "icao-annex-3 - access:paywall - https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 - App 5 / Table A5-1"
     },
     {
+      "code": "WEATHER_AUTO_UP_OR_SH",
+      "severity": "warning",
+      "message_template": "{product} AUTO present-weather uses UP or SH forms that require automated-system rules.",
+      "product": null,
+      "tags": [
+        "metar",
+        "speci",
+        "wmo782",
+        "weather"
+      ],
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "source_attribution": "wmo-782 - access:paywall - https://library.wmo.int/ - WMO-No. 782 METAR/SPECI rule (11-12)"
+    },
+    {
+      "code": "WEATHER_BR_VIS_BAND",
+      "severity": "warning",
+      "message_template": "{product} BR outside 1000\u20135000 m band",
+      "product": null,
+      "tags": [
+        "metar",
+        "speci",
+        "wmo782",
+        "visibility"
+      ],
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "source_attribution": "wmo-782 - access:paywall - https://library.wmo.int/ - WMO-No. 782 METAR/SPECI rule (40-41)"
+    },
+    {
+      "code": "WEATHER_DESCRIPTOR_PAIRING",
+      "severity": "error",
+      "message_template": "{product} MI/BC/PR not paired with FG only, or DR/BL not with DU/SA/SN",
+      "product": null,
+      "tags": [
+        "metar",
+        "speci",
+        "wmo782",
+        "weather"
+      ],
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "source_attribution": "wmo-782 - access:paywall - https://library.wmo.int/ - WMO-No. 782 METAR/SPECI rule (40-42)"
+    },
+    {
+      "code": "WEATHER_FG_VIS_THRESHOLD",
+      "severity": "warning",
+      "message_template": "{product} FG with prevailing visibility at or above 1000 m",
+      "product": null,
+      "tags": [
+        "metar",
+        "speci",
+        "wmo782",
+        "visibility"
+      ],
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "source_attribution": "wmo-782 - access:paywall - https://library.wmo.int/ - WMO-No. 782 METAR/SPECI rule (40-41)"
+    },
+    {
+      "code": "WEATHER_FZ_REQUIRES_SUBZERO",
+      "severity": "warning",
+      "message_template": "{product} FZFG/FZDZ/FZRA without sub-zero temperature evidence",
+      "product": null,
+      "tags": [
+        "metar",
+        "speci",
+        "wmo782",
+        "weather"
+      ],
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "source_attribution": "wmo-782 - access:paywall - https://library.wmo.int/ - WMO-No. 782 METAR/SPECI rule (42)"
+    },
+    {
+      "code": "WEATHER_SHPL_FORBIDDEN",
+      "severity": "error",
+      "message_template": "{product} includes SHPL, which is not an accepted present-weather combination.",
+      "product": null,
+      "tags": [
+        "metar",
+        "speci",
+        "wmo782",
+        "weather"
+      ],
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "source_attribution": "wmo-782 - access:paywall - https://library.wmo.int/ - WMO-No. 782 METAR/SPECI rule (11-12)"
+    },
+    {
+      "code": "WEATHER_SQ_MIN_SPEED",
+      "severity": "warning",
+      "message_template": "{product} SQ with mean wind under 22 kt",
+      "product": null,
+      "tags": [
+        "metar",
+        "speci",
+        "wmo782",
+        "weather"
+      ],
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "source_attribution": "wmo-782 - access:paywall - https://library.wmo.int/ - WMO-No. 782 METAR/SPECI rule (41)"
+    },
+    {
+      "code": "WEATHER_VC_COMBINATION",
+      "severity": "error",
+      "message_template": "{product} VC with intensity or with a phenomenon not allowed in vicinity",
+      "product": null,
+      "tags": [
+        "metar",
+        "speci",
+        "wmo782",
+        "weather"
+      ],
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "source_attribution": "wmo-782 - access:paywall - https://library.wmo.int/ - WMO-No. 782 METAR/SPECI rule (43)"
+    },
+    {
+      "code": "WEATHER_VIS_OBSCURATION_THRESHOLD",
+      "severity": "warning",
+      "message_template": "{product} visibility below 5 000 m should include an obscuration or weather cause; encoded 5000 without FU/HZ/DU/SA/BR can be valid when observed visibility was 5 001\u20135 999 m.",
+      "product": null,
+      "tags": [
+        "metar",
+        "speci",
+        "wmo782",
+        "visibility"
+      ],
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "source_attribution": "wmo-782 - access:paywall - https://library.wmo.int/ - WMO-No. 782 METAR/SPECI rule (11-12)"
+    },
+    {
+      "code": "WIND_CALM_MISENCODE",
+      "severity": "error",
+      "message_template": "{product} calm wind must be 00000KT or 00000MPS; directed calm, calm with gust, or calm with a V-group is not allowed.",
+      "product": null,
+      "tags": [
+        "metar",
+        "speci",
+        "wmo782",
+        "wind"
+      ],
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "source_attribution": "wmo-782 - access:paywall - https://library.wmo.int/ - WMO-No. 782 METAR/SPECI rule (7)"
+    },
+    {
       "code": "WIND_DIR_VARIATION",
       "severity": "info",
       "message_template": "{product} includes wind direction variation in dddVddd form. Informational: noted for operator awareness; does not by itself block conversion. Source: ICAO Annex 3 Table A3-2 / App 3. Full normative text may require purchase.",
@@ -1843,6 +2608,96 @@
       "source_attribution": "icao-annex-3 - access:paywall - https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 - Table A3-2 / App 3"
     },
     {
+      "code": "WIND_GUST_BELOW_THRESHOLD",
+      "severity": "warning",
+      "message_template": "{product} gust is reported when the maximum does not exceed the mean by at least 10 kt (5 m/s).",
+      "product": null,
+      "tags": [
+        "metar",
+        "speci",
+        "wmo782",
+        "wind"
+      ],
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "source_attribution": "wmo-782 - access:paywall - https://library.wmo.int/ - WMO-No. 782 METAR/SPECI rule (6-7)"
+    },
+    {
+      "code": "WIND_HIGH_SPEED_P_INDICATOR",
+      "severity": "error",
+      "message_template": "{product} speeds at or above 100 kt (50 m/s) must use P99KT or P49MPS; wrong P-threshold or unit is not allowed.",
+      "product": null,
+      "tags": [
+        "metar",
+        "speci",
+        "wmo782",
+        "wind"
+      ],
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "source_attribution": "wmo-782 - access:paywall - https://library.wmo.int/ - WMO-No. 782 METAR/SPECI rule (7)"
+    },
+    {
+      "code": "WIND_PHYSICAL_RANGE",
+      "severity": "warning",
+      "message_template": "{product} wind speed or gust spread is outside the usual physical range for this product (for example hurricane-force mean wind in METAR, or gust far above the mean).",
+      "product": null,
+      "tags": [
+        "metar",
+        "speci",
+        "wmo782",
+        "wind"
+      ],
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "source_attribution": "wmo-782 - access:paywall - https://library.wmo.int/ - Product warning for hurricane-force METAR mean wind or unusually large gust spread."
+    },
+    {
+      "code": "WIND_SHEAR_FORMAT",
+      "severity": "warning",
+      "message_template": "{product} wind shear group should be WS RDRDR or WS ALL RWY.",
+      "product": null,
+      "tags": [
+        "metar",
+        "speci",
+        "wmo782",
+        "wind"
+      ],
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "source_attribution": "wmo-782 - access:paywall - https://library.wmo.int/ - WMO-No. 782 METAR/SPECI rule (17-18)"
+    },
+    {
+      "code": "WIND_VARIATION_SPAN",
+      "severity": "error",
+      "message_template": "{product} directional variation group dndndnVdxdxdx requires mean speed at least 3 kt and a direction span of 60 degrees to less than 180 degrees.",
+      "product": null,
+      "tags": [
+        "metar",
+        "speci",
+        "wmo782",
+        "wind"
+      ],
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "source_attribution": "wmo-782 - access:paywall - https://library.wmo.int/ - WMO-No. 782 METAR/SPECI rule (6)"
+    },
+    {
+      "code": "WIND_VRB_MISUSE",
+      "severity": "error",
+      "message_template": "{product} uses VRB with a directed wind-variation group. VRB is only for light variable wind under 3 kt (1.5 m/s), or for variation of 180\u00b0 or more when a single direction cannot be given.",
+      "product": null,
+      "tags": [
+        "metar",
+        "speci",
+        "wmo782",
+        "wind"
+      ],
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "source_attribution": "wmo-782 - access:paywall - https://library.wmo.int/ - WMO-No. 782 surface wind special cases: VRB must not appear with a directed variation group."
+    },
+    {
       "code": "WIND_VRB_OR_GUST",
       "severity": "info",
       "message_template": "{product} wind group uses variable direction (VRB) and/or a gust value. Informational: noted for operator awareness; does not by itself block conversion. Source: ICAO Annex 3 Table A3-2 / App 3. Full normative text may require purchase.",
@@ -1855,6 +2710,36 @@
       "source_id": "icao-annex-3",
       "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
       "source_attribution": "icao-annex-3 - access:paywall - https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 - Table A3-2 / App 3"
+    },
+    {
+      "code": "WS_ALL_RWY_EXCLUSIVE",
+      "severity": "error",
+      "message_template": "{product} WS ALL RWY with individual WS runway groups",
+      "product": null,
+      "tags": [
+        "metar",
+        "speci",
+        "wmo782",
+        "wind"
+      ],
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "source_attribution": "wmo-782 - access:paywall - https://library.wmo.int/ - WMO-No. 782 METAR/SPECI rule (43)"
+    },
+    {
+      "code": "WX_COLUMN_SEQUENCE",
+      "severity": "error",
+      "message_template": "{product} w'w' violates intensity-descriptor-phenomenon column order",
+      "product": null,
+      "tags": [
+        "metar",
+        "speci",
+        "wmo782",
+        "weather"
+      ],
+      "source_id": "wmo-782",
+      "source_url": "https://library.wmo.int/",
+      "source_attribution": "wmo-782 - access:paywall - https://library.wmo.int/ - WMO-No. 782 METAR/SPECI rule (43)"
     },
     {
       "code": "WX_NOT_OBSERVABLE",

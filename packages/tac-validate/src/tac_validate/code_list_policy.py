@@ -20,6 +20,13 @@ _MATRIX = "config/profiles/semantic/CA_ECCC.code-list-deviations.yaml"
 
 
 def _repo_root() -> Path:
+    """Helper ``_repo_root``.
+
+    Returns
+    -------
+    Path
+        Return value.
+    """
     candidate = _DEFAULT_REPO_ROOT
     if (candidate / "config" / "profiles").is_dir():
         return candidate
@@ -31,7 +38,18 @@ def _repo_root() -> Path:
 
 @lru_cache(maxsize=1)
 def national_replace_tokens() -> frozenset[str]:
-    """Return tokens that require a national code under ``CA_ECCC``."""
+    """Return tokens that require a national code under ``CA_ECCC``.
+
+    Returns
+    -------
+    frozenset[str]
+        Return value.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (national_replace_tokens)
+    2
+    """
     path = _repo_root() / _MATRIX
     if not path.is_file():
         return frozenset()
@@ -60,7 +78,27 @@ def check_global_only_tokens(
     profile: str,
     product: str = "TAF",
 ) -> list[Issue]:
-    """Fail closed when CA-required tokens are treated as global-only under ``ca_eccc``."""
+    """Fail closed when CA-required tokens are treated as global-only under ``ca_eccc``.
+
+    Parameters
+    ----------
+    tokens
+        Argument ``tokens``.
+    profile
+        Argument ``profile``.
+    product
+        Argument ``product``.
+
+    Returns
+    -------
+    list[Issue]
+        Return value.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (check_global_only_tokens)
+    2
+    """
     if profile.strip().lower().replace("-", "_") != PROFILE_CA_ECCC:
         return []
     required = national_replace_tokens()

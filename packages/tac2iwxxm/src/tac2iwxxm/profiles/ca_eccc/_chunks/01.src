@@ -1,0 +1,40 @@
+    Returns
+    -------
+    str
+        Return value.
+    """
+    inner = "\n".join(
+        block
+        for block in (
+            _nclws_extension_inner(ir),
+            _ca_taf_weather_extension_inner(ir),
+        )
+        if block
+    )
+    if not inner:
+        return ""
+    return "\n".join(
+        [
+            "      <iwxxm:extension>",
+            inner,
+            "      </iwxxm:extension>",
+            "",
+        ]
+    )
+
+
+def _nclws_extension(ir: dict[str, Any]) -> str:
+    """
+    Internal helper ``_nclws_extension``.
+
+    Parameters
+    ----------
+    ir : dict[str, Any]
+        Argument ``ir``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
+    return _taf_forecast_extension(ir)
