@@ -52,6 +52,20 @@ def test_role_detection_failure() -> None:
     assert user_has_exchange_admin({"app_metadata": {"roles": ["operator"]}}) is False
 
 
+def test_role_detection_singular_role_and_tuple_bags() -> None:
+    """Cover role / roles bag shapes used by Auth metadata."""
+    assert user_has_exchange_admin({"app_metadata": {"role": "exchange-admin"}})
+    assert user_has_exchange_admin(
+        {"user_metadata": {"roles": ("exchange-admin",)}}
+    )
+    assert user_has_exchange_admin(
+        {"app_metadata": {"roles": None, "role": "operator"}, "role": "exchange-admin"}
+    )
+    assert user_has_exchange_admin({"role": "exchange-admin"})
+    # Non str/list/tuple roles values are ignored (fall through the isinstance chain).
+    assert user_has_exchange_admin({"app_metadata": {"roles": 1}, "role": "exchange-admin"})
+
+
 def test_allowlist_success_read_only(admin_client: TestClient) -> None:
     resp = admin_client.get("/api/v1/exchange-admin/allowlist")
     assert resp.status_code == 200
@@ -82,6 +96,32 @@ def test_invitation_groups_and_select_success(plain_client: TestClient) -> None:
 def test_invitation_group_validation_missing(plain_client: TestClient) -> None:
     resp = plain_client.put("/api/v1/exchange-admin/invitation-group", json={})
     assert resp.status_code == 422
+
+
+def test_invitation_group_unknown_returns_400(plain_client: TestClient) -> None:
+    resp = plain_client.put(
+        "/api/v1/exchange-admin/invitation-group",
+        json={"group_id": "group-does-not-exist"},
+    )
+    assert resp.status_code == 400
+    assert "unknown" in resp.text.lower()
+
+
+def test_template_validation_missing_fields(admin_client: TestClient) -> None:
+    resp = admin_client.put(
+        "/api/v1/exchange-admin/templates",
+        json={"name": "Incomplete", "mqtt_host": "wis2box"},
+    )
+    assert resp.status_code == 400
+    assert "required" in resp.text.lower()
+
+
+def test_prefs_default_created_on_first_read(admin_client: TestClient) -> None:
+    prefs = admin_client.get("/api/v1/exchange-admin/prefs")
+    assert prefs.status_code == 200
+    body = prefs.json()
+    assert body["include_national_remarks"] is False
+    assert body["invitation_group_id"] is None
 
 
 def test_national_remarks_toggle_success(admin_client: TestClient) -> None:

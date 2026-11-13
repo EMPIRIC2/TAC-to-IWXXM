@@ -6,6 +6,7 @@ import { describe, expect, it } from 'vitest';
 import {
   isMultiStationCluster,
   passesTacLayers,
+  placeToClusterPick,
   stationClusterFilePicker,
   tacMatchesLayer,
 } from '@/utils/liveMapTacLayers';
@@ -101,5 +102,33 @@ describe('liveMapTacLayers validation', () => {
     expect(tacMatchesLayer('', 'precip')).toBe(false);
     expect(tacMatchesLayer('   ', 'wind')).toBe(false);
     expect(tacMatchesLayer('---', 'precip')).toBe(false);
+  });
+
+  it('treats punctuation-only TAC as no tokens', () => {
+    expect(tacMatchesLayer('!!! --- ???', 'precip')).toBe(false);
+    expect(passesTacLayers('!!!', new Set(['precip']))).toBe(false);
+  });
+
+  it('maps missing reports to empty picker fields', () => {
+    expect(
+      placeToClusterPick({ place_key: 'KJFK', product: 'metar', reports: [] }),
+    ).toEqual({
+      icao: 'KJFK',
+      product: 'metar',
+      tac: '',
+      observedAt: '',
+    });
+    expect(
+      placeToClusterPick({
+        place_key: 'KJFK',
+        product: 'metar',
+        reports: [{ tac: null, observed_at: null }],
+      }),
+    ).toEqual({
+      icao: 'KJFK',
+      product: 'metar',
+      tac: '',
+      observedAt: '',
+    });
   });
 });

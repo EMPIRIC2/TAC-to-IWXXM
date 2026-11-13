@@ -46,6 +46,18 @@ describe('exchangeAdminApi', () => {
     await expect(fetchExchangeAllowlist('tok')).rejects.toThrow(/exchange-admin/);
   });
 
+  it('failure: empty error body falls back to HTTP status', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async () => ({
+        ok: false,
+        status: 502,
+        text: async () => '',
+      })),
+    );
+    await expect(fetchExchangeAllowlist('tok')).rejects.toThrow('HTTP 502');
+  });
+
   it('validation: invitation group select posts group_id', async () => {
     const fetchMock = vi.fn();
     vi.stubGlobal('fetch', fetchMock);

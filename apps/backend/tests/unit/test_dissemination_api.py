@@ -314,6 +314,127 @@ def test_send_wis2_success_mocked(client: TestClient, monkeypatch: pytest.Monkey
     assert resp.json()["ok"] is True
 
 
+def test_send_wis2_handle_merges_params_and_pops(
+    client: TestClient, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Handle params merge into send params; successful send consumes the handle."""
+    from dissemination.models import PreflightResponse, SendResponse
+
+    async def _preflight(_sink: str, _params: dict, **_kwargs):
+        return PreflightResponse(ok=True, connectivity_ok=True, diffs=[], detail="ok")
+
+    seen: dict[str, object] = {}
+
+    async def _send(_sink: str, params: dict, **_kwargs):
+        seen["params"] = dict(params)
+        return SendResponse(ok=True, kv_upload_key=None, detail="wis2 published")
+
+    monkeypatch.setenv("DISSEMINATION_EGRESS_ALLOWLIST", "wis2box,127.0.0.1")
+    monkeypatch.setattr(diss_router, "run_non_db_preflight", _preflight)
+    monkeypatch.setattr(diss_router, "run_non_db_send", _send)
+    pre = client.post(
+        "/api/v1/dissemination/preflight",
+        content=json.dumps(
+            {
+                "sink_type": "wis2",
+                "params": {
+                    "mqtt_host": "wis2box",
+                    "mqtt_topic": "origin/a/wis2",
+                    "dataset_url": "http://127.0.0.1/ds",
+                    "centre_id": "from-handle",
+                },
+            }
+        ),
+        headers={"Content-Type": "application/json", "Authorization": "Bearer t"},
+    )
+    assert pre.status_code == 200, pre.text
+    handle = pre.json()["handle"]
+    assert handle
+    send = client.post(
+        "/api/v1/dissemination/send",
+        content=json.dumps(
+            {
+                "handle": handle,
+                "params": {"topic": "override-topic"},
+                "iwxxm_xml": "<x/>",
+                "product": "metar",
+            }
+        ),
+        headers={"Content-Type": "application/json", "Authorization": "Bearer t"},
+    )
+    assert send.status_code == 200, send.text
+    merged = seen["params"]
+    assert isinstance(merged, dict)
+    assert merged.get("centre_id") == "from-handle"
+    assert merged.get("topic") == "override-topic"
+    reuse = client.post(
+        "/api/v1/dissemination/send",
+        content=json.dumps(
+            {
+                "handle": handle,
+                "iwxxm_xml": "<x/>",
+                "product": "metar",
+            }
+        ),
+        headers={"Content-Type": "application/json", "Authorization": "Bearer t"},
+    )
+    assert reuse.status_code == 400
+    assert "handle" in reuse.text.lower()
+
+
+def test_send_wis2_egress_denied(client: TestClient, monkeypatch: pytest.MonkeyPatch) -> None:
+    from dissemination.allowlist import EgressDenied
+
+    async def _deny(_sink: str, _params: dict, **_kwargs):
+        raise EgressDenied("fail-closed: empty allowlist")
+
+    monkeypatch.setattr(diss_router, "run_non_db_send", _deny)
+    resp = client.post(
+        "/api/v1/dissemination/send",
+        content=json.dumps(
+            {
+                "sink_type": "wis2",
+                "params": {
+                    "mqtt_host": "wis2box",
+                    "mqtt_topic": "origin/a/wis2",
+                    "dataset_url": "http://127.0.0.1/ds",
+                },
+                "iwxxm_xml": "<x/>",
+                "product": "metar",
+            }
+        ),
+        headers={"Content-Type": "application/json", "Authorization": "Bearer t"},
+    )
+    assert resp.status_code == 403
+
+
+def test_send_wis2_unexpected_error_becomes_500(
+    client: TestClient, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    async def _boom(_sink: str, _params: dict, **_kwargs):
+        raise RuntimeError("broker down")
+
+    monkeypatch.setattr(diss_router, "run_non_db_send", _boom)
+    resp = client.post(
+        "/api/v1/dissemination/send",
+        content=json.dumps(
+            {
+                "sink_type": "wis2",
+                "params": {
+                    "mqtt_host": "wis2box",
+                    "mqtt_topic": "origin/a/wis2",
+                    "dataset_url": "http://127.0.0.1/ds",
+                },
+                "iwxxm_xml": "<x/>",
+                "product": "metar",
+            }
+        ),
+        headers={"Content-Type": "application/json", "Authorization": "Bearer t"},
+    )
+    assert resp.status_code == 500
+    assert "send failed" in resp.text.lower()
+
+
 def test_send_egress_denied(client: TestClient, monkeypatch: pytest.MonkeyPatch) -> None:
     from dissemination.allowlist import EgressDenied
 
