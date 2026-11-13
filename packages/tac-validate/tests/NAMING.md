@@ -19,11 +19,11 @@ marker, or a comment. Do not put those ids in the file name.
 
 Do not add new files whose basename matches:
 
-| Pattern | Meaning |
-| ------- | ------- |
-| `test_ev_*`, `test_ev`, `test_ev<digits>_*` | Evolve-session dump stems |
-| `test_tc_ev*` | Test-case archive tied to an evolve id |
-| `test_m<digits>_*` | Milestone / detector-routing stem |
+| Pattern                                     | Meaning                                |
+| ------------------------------------------- | -------------------------------------- |
+| `test_ev_*`, `test_ev`, `test_ev<digits>_*` | Evolve-session dump stems              |
+| `test_tc_ev*`                               | Test-case archive tied to an evolve id |
+| `test_m<digits>_*`                          | Milestone / detector-routing stem      |
 
 The guard is `scripts/ci/check_test_file_naming.py` (also
 `make test-file-naming-guard`). It fails closed on **new** paths versus the
@@ -37,13 +37,13 @@ with an explicit map and import updates.
 
 ## Carve-outs (not banned)
 
-| Kind | Example | Note |
-| ---- | ------- | ---- |
-| Behavior names | `test_rvr_trend_slash_accepted.py` | Preferred |
-| Eval product modules | `test_evaluation_*.py` | Not a planning `test_ev_` stem |
-| Words that share letters | `test_every_*`, `test_event_*` | Not planning dumps |
-| WMO AHL `fc_*` fixtures | `fc_taf_with_body.txt` | TTAAii `FC` designator; keep |
-| Visibility / TAC samples | `metar_*_m_prefix*` | Not `test_mN_` |
+| Kind                     | Example                            | Note                           |
+| ------------------------ | ---------------------------------- | ------------------------------ |
+| Behavior names           | `test_rvr_trend_slash_accepted.py` | Preferred                      |
+| Eval product modules     | `test_evaluation_*.py`             | Not a planning `test_ev_` stem |
+| Words that share letters | `test_every_*`, `test_event_*`     | Not planning dumps             |
+| WMO AHL `fc_*` fixtures  | `fc_taf_with_body.txt`             | TTAAii `FC` designator; keep   |
+| Visibility / TAC samples | `metar_*_m_prefix*`                | Not `test_mN_`                 |
 
 ## Agent guidance
 

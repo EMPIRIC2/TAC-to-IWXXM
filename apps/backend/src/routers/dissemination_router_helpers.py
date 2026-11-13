@@ -66,9 +66,7 @@ def profiles_service_for_optional_auth(
     return ConversionProfilesService(str(auth_user.get("sub") or auth_user.get("user_id")))
 
 
-def merge_template_params(
-    template_params: dict[str, Any], request_params: dict[str, Any]
-) -> dict[str, Any]:
+def merge_template_params(template_params: dict[str, Any], request_params: dict[str, Any]) -> dict[str, Any]:
     """
     Overlay request params on template params (request wins).
 

@@ -239,11 +239,7 @@ async def test_edis_preflight_and_send_success_mocked() -> None:
     }
     with patch(
         "src.services.dissemination_drawer.edis_preflight",
-        new=AsyncMock(
-            return_value=PreflightResponse(
-                ok=True, connectivity_ok=True, diffs=[], detail="edis ok"
-            )
-        ),
+        new=AsyncMock(return_value=PreflightResponse(ok=True, connectivity_ok=True, diffs=[], detail="edis ok")),
     ) as preflight:
         result = await run_non_db_preflight("edis", edis_body, allowlist=allow, smtp=smtp)
     assert result.ok is True
@@ -251,9 +247,7 @@ async def test_edis_preflight_and_send_success_mocked() -> None:
 
     with patch(
         "src.services.dissemination_drawer.edis_submit",
-        new=AsyncMock(
-            return_value=EdisSubmitResult(ok=True, ahl="SAXX01 KABC 121200", detail="edis submitted")
-        ),
+        new=AsyncMock(return_value=EdisSubmitResult(ok=True, ahl="SAXX01 KABC 121200", detail="edis submitted")),
     ) as submit:
         sent = await run_non_db_send(
             "edis",
@@ -357,17 +351,11 @@ async def test_default_transport_clients_constructed() -> None:
         ),
         patch(
             "src.services.dissemination_drawer.edis_submit",
-            new=AsyncMock(
-                return_value=EdisSubmitResult(ok=True, ahl="SAXX01 KABC 121200", detail=None)
-            ),
+            new=AsyncMock(return_value=EdisSubmitResult(ok=True, ahl="SAXX01 KABC 121200", detail=None)),
         ),
     ):
-        wis2_sent = await run_non_db_send(
-            "wis2", wis2_params, iwxxm_xml="<METAR/>", allowlist=allow
-        )
-        edis_sent = await run_non_db_send(
-            "edis", edis_params, iwxxm_xml="<METAR/>", allowlist=allow
-        )
+        wis2_sent = await run_non_db_send("wis2", wis2_params, iwxxm_xml="<METAR/>", allowlist=allow)
+        edis_sent = await run_non_db_send("edis", edis_params, iwxxm_xml="<METAR/>", allowlist=allow)
     assert wis2_sent.ok is True
     assert edis_sent.ok is True
     assert edis_sent.detail == "edis submitted"
