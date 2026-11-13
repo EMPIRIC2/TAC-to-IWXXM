@@ -16,6 +16,7 @@ on:
       - "tac-decoding-v*"
       - "metar-shared-v*"
       - "reference-lookup-v*"
+      - "iwxxm-dissemination-v*"
   workflow_dispatch:
     inputs:
       package:
@@ -28,6 +29,7 @@ on:
           - tac-decoding
           - metar-shared
           - reference-lookup
+          - iwxxm-dissemination
         required: true
       publish:
         description: Publish to PyPI via OIDC (or PYPI_API_TOKEN fallback)
@@ -82,6 +84,9 @@ jobs:
           elif [[ "${REF_NAME}" == reference-lookup-v* ]]; then
             package="reference-lookup"
             should_publish="true"
+          elif [[ "${REF_NAME}" == iwxxm-dissemination-v* ]]; then
+            package="iwxxm-dissemination"
+            should_publish="true"
           else
             echo "::error::Unable to resolve package from ${EVENT_NAME} / ${REF_NAME}"
             exit 1
@@ -115,6 +120,11 @@ jobs:
               ;;
             reference-lookup)
               pure='[{"package":"reference-lookup","path":"packages/reference-lookup","tag_prefix":"reference-lookup-v"}]'
+              native='[]'
+              has_native='false'
+              ;;
+            iwxxm-dissemination)
+              pure='[{"package":"iwxxm-dissemination","path":"packages/dissemination","tag_prefix":"iwxxm-dissemination-v"}]'
               native='[]'
               has_native='false'
               ;;
@@ -339,6 +349,9 @@ jobs:
               ;;
             reference-lookup)
               python -c "from reference_lookup import lookup_coordinate; print('reference-lookup ok')"
+              ;;
+            iwxxm-dissemination)
+              python -c "from dissemination import parse_allowlist, validate_egress_host, writer_contract_ddl, __version__; from dissemination.models import PreflightRequest; assert __version__; allow=parse_allowlist('example.org'); validate_egress_host('example.org', allowlist=allow); assert writer_contract_ddl('sqlite'); assert PreflightRequest is not None; print('iwxxm-dissemination ok')"
               ;;
           esac
 

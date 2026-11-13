@@ -127,7 +127,7 @@ dependencies. Later sections (**Component Details**) expand each row.
 | tac-decoding | TAC → natural-language decode + glossary + Decoding catalog (live decode) | `packages/tac-decoding/` | , (no FastAPI/Supabase); MIT; PyPI `tac-decoding` |
 | tac-validate | TAC lint / shared rule pack | `packages/tac-validate/` | , (no FastAPI/Supabase) |
 | iwxxm-validate | XSD + Schematron (IWXXM validation engine) | `packages/iwxxm-validate/` | vendor schemas (read-only) |
-| Dissemination | Sink adapters, writer-contract DDL, SSRF helpers (dissemination drawer through AMHS SWIM AFS adapters) | `packages/dissemination/` | SQLAlchemy async + dialect drivers; aiosmtplib |
+| Dissemination | Sink adapters, writer-contract DDL, SSRF helpers (dissemination drawer through AMHS SWIM AFS adapters); PyPI `iwxxm-dissemination` (import `dissemination`) | `packages/dissemination/` | SQLAlchemy async + dialect drivers; aiosmtplib; depends on `tac2iwxxm` |
 | Shared | Cross-cutting utils/types | `packages/shared/` | — |
 | Vendor schemas | Authoritative IWXXM SoT | `vendor/schemas/*` | wmo-im + iwxxm-us snapshots |
 | Work history (work history/hybrid operator sessions) | Guest IndexedDB + logged-in DO Postgres sessions | FE IndexedDB + `tac_work_sessions` on DO | operator workbench / hybrid operator sessions; Auth JWT |

@@ -54,6 +54,7 @@ def test_packages_includes_tac_decoding() -> None:
         "tac-decoding",
         "metar-shared",
         "reference-lookup",
+        "iwxxm-dissemination",
     }
     assert "cargo" not in bump.PACKAGES["tac-decoding"]
     assert "init" not in bump.PACKAGES["metar-shared"]

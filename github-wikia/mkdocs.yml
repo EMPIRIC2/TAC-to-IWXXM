@@ -39,6 +39,7 @@ nav:
       - tac-validate: python-packages/tac-validate.md
       - iwxxm-validate: python-packages/iwxxm-validate.md
       - tac-decoding: python-packages/tac-decoding.md
+      - iwxxm-dissemination: python-packages/iwxxm-dissemination.md
 
 markdown_extensions:
   - toc:

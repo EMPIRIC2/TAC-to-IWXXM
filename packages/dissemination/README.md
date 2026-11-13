@@ -1,25 +1,32 @@
-# dissemination
+# iwxxm-dissemination
 
 Library helpers for publishing IWXXM / bulletin payloads to operator destinations:
 multi-database writer-contract DDL, WIS2 and EDIS sinks, AMHS/SWIM/AFS staging stubs, and
 egress host allowlisting. MIT licensed.
 
-**Not yet on PyPI**: install from this monorepo (a public `iwxxm-dissemination` release is
-planned separately). Import path remains `dissemination`.
+PyPI name: **`iwxxm-dissemination`**. Import path: **`dissemination`** (unchanged for monorepo
+and library callers).
 
 This package has **no** FastAPI or Supabase imports. HTTP APIs that call it live in the
-host application.
+host application. One-shot destination credentials are **caller-owned and memory-only**;
+do not persist them in this library.
 
-## Install (from source)
+## Install
 
 ```bash
-# from the monorepo root
-uv sync --package dissemination
-# or
-pip install -e packages/dissemination
+pip install iwxxm-dissemination
+# or from the monorepo root:
+uv sync --package iwxxm-dissemination
 ```
 
 Requires Python ≥ 3.12.
+
+### System dependencies (not in the wheel)
+
+SQL Server via `aioodbc` needs a host ODBC driver (prefer Microsoft ODBC Driver 18).
+Other dialects use the declared async drivers (`asyncpg`, `aiomysql`, `aiosqlite`).
+
+Optional `[integration]` extra pulls Testcontainers for Compose/harness tests only.
 
 ## Allowlist / SSRF helpers
 
@@ -31,23 +38,20 @@ from dissemination import load_allowlist_from_env, parse_allowlist, validate_egr
 
 allow = load_allowlist_from_env()  # DISSEMINATION_EGRESS_ALLOWLIST
 # or: allow = parse_allowlist("example.org,10.0.0.0/8")
-validate_egress_host("broker.example.org", allow)
+validate_egress_host("example.org", allowlist=allow)
 ```
-
-One-shot destination credentials are **caller-owned and memory-only**; do not persist
-them in this library.
 
 ## Writer contract
 
 ```python
 from dissemination import writer_contract_ddl, apply_writer_contract, diff_writer_contract
 
-ddl = writer_contract_ddl()
+ddl = writer_contract_ddl("sqlite")
 # apply_writer_contract / diff_writer_contract against a SQLAlchemy async engine
 ```
 
 Supported database dialects include PostgreSQL, MySQL, SQLite, and SQL Server (via
-`aioodbc`). SQL Server needs a system ODBC driver (prefer Microsoft ODBC Driver 18).
+`aioodbc`).
 
 ## Sinks
 
@@ -68,6 +72,14 @@ and HTTP stand-in. The reference WIS2 node is
 
 `dissemination.collect_namespaces` helps detect `collect:MeteorologicalBulletin` and list
 per-member IWXXM namespace URIs for multi-version bulletins.
+
+## Release tags
+
+Publish is tag-driven via `.github/workflows/pypi-publish.yml`:
+
+- Tag: `iwxxm-dissemination-v0.1.0` (must match `pyproject.toml` version)
+- Auth: PyPI OpenID Connect trusted publisher for project `iwxxm-dissemination`
+  (no long-lived API token when OIDC is configured)
 
 ## Links
 
