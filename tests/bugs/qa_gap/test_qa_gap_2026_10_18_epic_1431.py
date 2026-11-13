@@ -158,3 +158,18 @@ def test_qa_gap_1439_product_picker_absence_fails_the_test() -> None:
         0
     ]
     assert "test.skip" not in helper, "product-picker absence still skips (#1439)"
+
+
+def test_qa_gap_1448_playwright_coverage_report_is_published() -> None:
+    """#1448: CI collects and uploads apps/e2e Istanbul coverage."""
+    collector = ROOT / "scripts" / "ci" / "collect_e2e_coverage.mjs"
+    assert collector.is_file(), "missing scripts/ci/collect_e2e_coverage.mjs (#1448)"
+    makefile = MAKEFILE.read_text(encoding="utf-8")
+    workflow = WORKFLOW.read_text(encoding="utf-8")
+    assert "collect-e2e-coverage:" in makefile, "Makefile missing collect-e2e-coverage"
+    assert "make collect-e2e-coverage" in workflow, (
+        "ci-cd.yml bugs job does not run make collect-e2e-coverage (#1448)"
+    )
+    assert "e2e-coverage-report" in workflow, (
+        "ci-cd.yml does not upload e2e-coverage-report (#1448)"
+    )

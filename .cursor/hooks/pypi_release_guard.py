@@ -16,7 +16,10 @@ import sys
 from pathlib import Path, PurePosixPath
 
 TAG_RE = re.compile(
-    r"git\s+tag\b.*\b(tac-validate-v|iwxxm-validate-v|tac2iwxxm-v|v?\d+\.\d+)",
+    r"git\s+tag\b.*\b("
+    r"tac-validate-v|iwxxm-validate-v|tac2iwxxm-v|tac-decoding-v|"
+    r"metar-shared-v|reference-lookup-v|iwxxm-dissemination-v|v?\d+\.\d+"
+    r")",
     re.IGNORECASE,
 )
 ANY_GIT_TAG_RE = re.compile(r"git\s+tag\b", re.IGNORECASE)
@@ -29,9 +32,11 @@ PUBLISH_PATH_HINTS = (
 )
 
 PACKAGE_TAG_HINT = (
-    "Expected tags: tac-validate-v*, iwxxm-validate-v*, tac2iwxxm-v* "
-    "(e.g. tac-validate-v0.1.0). OIDC trusted publishing only — no long-lived "
-    "PYPI_API_TOKEN when OIDC is configured. Run skill pypi-release-checklist."
+    "Expected tags: tac-validate-v*, iwxxm-validate-v*, tac2iwxxm-v*, "
+    "tac-decoding-v*, metar-shared-v*, reference-lookup-v*, "
+    "iwxxm-dissemination-v* (e.g. iwxxm-dissemination-v0.1.0). "
+    "OIDC trusted publishing only — no long-lived PYPI_API_TOKEN when OIDC is "
+    "configured. Run skill pypi-release-checklist."
 )
 
 
@@ -70,11 +75,19 @@ def context_for_file(rel: str) -> str | None:
         )
     if rel.startswith("packages/") and rel.endswith("pyproject.toml"):
         pkg = rel.split("/")[1] if "/" in rel else ""
-        if pkg in {"tac2iwxxm", "tac-validate", "iwxxm-validate"}:
+        if pkg in {
+            "tac2iwxxm",
+            "tac-validate",
+            "iwxxm-validate",
+            "tac-decoding",
+            "shared",
+            "reference-lookup",
+            "dissemination",
+        }:
             return (
                 f"[pypi-release-guard] Editing '{rel}' (PyPI package metadata). "
-                "Keep name/version aligned with F12–F14; cite-only Annex text in wheels; "
-                "run skill pypi-release-checklist before tagging."
+                "Keep name/version aligned with publish tags; cite-only Annex text in "
+                "wheels; run skill pypi-release-checklist before tagging."
             )
     # Rust / maturin advisory (F13 / F14)
     if (

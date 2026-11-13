@@ -12,6 +12,7 @@ Package Index (PyPI).
 | [tac-validate](https://github.com/EMPIRIC2/TAC-to-IWXXM/wiki/Package-tac-validate) | Lint TAC text against product rules |
 | [iwxxm-validate](https://github.com/EMPIRIC2/TAC-to-IWXXM/wiki/Package-iwxxm-validate) | Make sure that IWXXM XML meets well-formed, XSD, and Schematron rules |
 | [tac-decoding](https://github.com/EMPIRIC2/TAC-to-IWXXM/wiki/Package-tac-decoding) | Decode TAC into plain-language segments and a summary |
+| [iwxxm-dissemination](https://github.com/EMPIRIC2/TAC-to-IWXXM/wiki/Package-iwxxm-dissemination) | Send IWXXM to operator destinations (import `dissemination`) |
 
 ## Shared rules
 
@@ -28,6 +29,8 @@ Package Index (PyPI).
 2. Convert with `tac2iwxxm`.
 3. Validate IWXXM with `iwxxm-validate` when your procedure needs schema checks.
 4. Use `tac-decoding` when you need a plain-language summary for operators.
+5. Use `iwxxm-dissemination` when you need sink / allowlist helpers outside the
+   hosted API.
 
 The optional extra `tac2iwxxm[validate]` installs `tac-validate` and
 `iwxxm-validate` together.

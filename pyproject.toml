@@ -39,7 +39,7 @@ dev = [
   "reference-lookup",
   "iwxxm-validate",
   "tac-validate",
-  "dissemination",
+  "iwxxm-dissemination",
   "workflows",
   "auth",
   "testcontainers[mysql,postgres]==4.14.2",
@@ -59,7 +59,7 @@ tac-decoding = { workspace = true }
 reference-lookup = { workspace = true }
 iwxxm-validate = { workspace = true }
 tac-validate = { workspace = true }
-dissemination = { workspace = true }
+iwxxm-dissemination = { workspace = true }
 workflows = { workspace = true }
 
 [tool.uv.workspace]

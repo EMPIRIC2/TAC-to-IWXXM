@@ -5,7 +5,7 @@ requires-python = ">=3.12"
 [manifest]
 members = [
     "auth",
-    "dissemination",
+    "iwxxm-dissemination",
     "iwxxm-validate",
     "metar-backend",
     "metar-iwxxm-workspace",
@@ -620,44 +620,6 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/7a/6a/3f82f7a06217778282bc4456af1b4ffb3bc4b2c8e7891d00e8323f9ad0b8/deptry-0.25.1-cp310-abi3-win_amd64.whl", hash = "sha256:b59a560cb7dffb21832a98bb80d33d614cfb5630ea36ce21833eabf4eae3df99", size = 1718489, upload-time = "2026-03-18T23:22:28.589Z" },
     { url = "https://files.pythonhosted.org/packages/c7/7f/cd6b3ac8cf95f2f1c5c7a74ff6452e9098af89a9b56607381f677880641e/deptry-0.25.1-cp310-abi3-win_arm64.whl", hash = "sha256:6efffd8116fb9d2c45a251382ce4ce1c38dbb17179f581ec9231ed5390f7fc12", size = 1647020, upload-time = "2026-03-18T23:22:23.311Z" },
 ]
-
-[[package]]
-name = "dissemination"
-version = "0.1.0"
-source = { editable = "packages/dissemination" }
-dependencies = [
-    { name = "aiomqtt" },
-    { name = "aiomysql" },
-    { name = "aioodbc" },
-    { name = "aiosmtplib" },
-    { name = "aiosqlite" },
-    { name = "asyncpg" },
-    { name = "httpx" },
-    { name = "msgspec" },
-    { name = "sqlalchemy", extra = ["asyncio"] },
-    { name = "tac2iwxxm" },
-]
-
-[package.optional-dependencies]
-integration = [
-    { name = "testcontainers", extra = ["mysql"] },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "aiomqtt", specifier = "==2.5.1" },
-    { name = "aiomysql", specifier = "==0.3.2" },
-    { name = "aioodbc", specifier = "==0.5.0" },
-    { name = "aiosmtplib", specifier = "==5.1.2" },
-    { name = "aiosqlite", specifier = "==0.22.1" },
-    { name = "asyncpg", specifier = "==0.31.0" },
-    { name = "httpx", specifier = "==0.28.1" },
-    { name = "msgspec", specifier = "==0.21.1" },
-    { name = "sqlalchemy", extras = ["asyncio"], specifier = "==2.0.50" },
-    { name = "tac2iwxxm", editable = "packages/tac2iwxxm" },
-    { name = "testcontainers", extras = ["mysql", "postgres"], marker = "extra == 'integration'", specifier = "==4.14.2" },
-]
-provides-extras = ["integration"]
 
 [[package]]
 name = "distlib"
@@ -1291,6 +1253,44 @@ wheels = [
 ]
 
 [[package]]
+name = "iwxxm-dissemination"
+version = "0.1.0"
+source = { editable = "packages/dissemination" }
+dependencies = [
+    { name = "aiomqtt" },
+    { name = "aiomysql" },
+    { name = "aioodbc" },
+    { name = "aiosmtplib" },
+    { name = "aiosqlite" },
+    { name = "asyncpg" },
+    { name = "httpx" },
+    { name = "msgspec" },
+    { name = "sqlalchemy", extra = ["asyncio"] },
+    { name = "tac2iwxxm" },
+]
+
+[package.optional-dependencies]
+integration = [
+    { name = "testcontainers", extra = ["mysql"] },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "aiomqtt", specifier = "==2.5.1" },
+    { name = "aiomysql", specifier = "==0.3.2" },
+    { name = "aioodbc", specifier = "==0.5.0" },
+    { name = "aiosmtplib", specifier = "==5.1.2" },
+    { name = "aiosqlite", specifier = "==0.22.1" },
+    { name = "asyncpg", specifier = "==0.31.0" },
+    { name = "httpx", specifier = "==0.28.1" },
+    { name = "msgspec", specifier = "==0.21.1" },
+    { name = "sqlalchemy", extras = ["asyncio"], specifier = "==2.0.50" },
+    { name = "tac2iwxxm", editable = "packages/tac2iwxxm" },
+    { name = "testcontainers", extras = ["mysql", "postgres"], marker = "extra == 'integration'", specifier = "==4.14.2" },
+]
+provides-extras = ["integration"]
+
+[[package]]
 name = "iwxxm-validate"
 version = "2026.11.5.1"
 source = { editable = "packages/iwxxm-validate" }
@@ -1634,9 +1634,9 @@ dependencies = [
     { name = "alembic" },
     { name = "asyncpg" },
     { name = "auth" },
-    { name = "dissemination" },
     { name = "fastapi" },
     { name = "httpx" },
+    { name = "iwxxm-dissemination" },
     { name = "iwxxm-validate" },
     { name = "lxml" },
     { name = "metar-shared" },
@@ -1678,9 +1678,9 @@ requires-dist = [
     { name = "alembic", specifier = "==1.18.5" },
     { name = "asyncpg", specifier = "==0.31.0" },
     { name = "auth", editable = "packages/auth" },
-    { name = "dissemination", editable = "packages/dissemination" },
     { name = "fastapi", specifier = "==0.137.0" },
     { name = "httpx", specifier = "==0.28.1" },
+    { name = "iwxxm-dissemination", editable = "packages/dissemination" },
     { name = "iwxxm-validate", editable = "packages/iwxxm-validate" },
     { name = "lxml", specifier = "==6.1.1" },
     { name = "metar-shared", editable = "packages/shared" },
@@ -1727,10 +1727,10 @@ dev = [
     { name = "auth" },
     { name = "basedpyright" },
     { name = "deptry" },
-    { name = "dissemination" },
     { name = "httpx" },
     { name = "httpx2" },
     { name = "import-linter" },
+    { name = "iwxxm-dissemination" },
     { name = "iwxxm-validate" },
     { name = "maturin" },
     { name = "metar-backend" },
@@ -1761,10 +1761,10 @@ dev = [
     { name = "auth", editable = "packages/auth" },
     { name = "basedpyright", specifier = "==1.39.8" },
     { name = "deptry", specifier = "==0.25.1" },
-    { name = "dissemination", editable = "packages/dissemination" },
     { name = "httpx", specifier = "==0.28.1" },
     { name = "httpx2", specifier = "==2.4.0" },
     { name = "import-linter", specifier = "==2.16" },
+    { name = "iwxxm-dissemination", editable = "packages/dissemination" },
     { name = "iwxxm-validate", editable = "packages/iwxxm-validate" },
     { name = "maturin", specifier = "==1.14.1" },
     { name = "metar-backend", editable = "apps/backend" },

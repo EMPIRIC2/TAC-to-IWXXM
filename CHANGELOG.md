@@ -2,6 +2,12 @@
 
 All notable user-facing and deployable changes for TAC to IWXXM.
 
+## Unreleased
+
+### Packages
+- Wire `packages/dissemination` for PyPI as **`iwxxm-dissemination`** `0.1.0`
+  (import path remains `dissemination`; tag `iwxxm-dissemination-v*`).
+
 ## 2026-11-12 — Production release
 
 Promote `stage` → `main` after staging validation since the 2026-11-05 cut

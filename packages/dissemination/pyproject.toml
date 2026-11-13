@@ -1,5 +1,5 @@
 [project]
-name = "dissemination"
+name = "iwxxm-dissemination"
 version = "0.1.0"
 description = "IWXXM send sinks, writer-contract SQL helpers, and egress host allowlist helpers"
 readme = "README.md"

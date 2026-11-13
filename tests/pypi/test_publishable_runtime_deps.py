@@ -24,17 +24,25 @@ PUBLISH_MATRIX: frozenset[str] = frozenset(
         "tac-decoding",
         "metar-shared",
         "reference-lookup",
+        "iwxxm-dissemination",
     }
 )
 
 # Direct deps that already exist on public indexes (not monorepo members).
 THIRD_PARTY: frozenset[str] = frozenset(
     {
+        "aiomqtt",
+        "aiomysql",
+        "aioodbc",
+        "aiosmtplib",
+        "aiosqlite",
+        "asyncpg",
         "hydra-core",
         "httpx",
         "lxml",
         "msgspec",
         "pyyaml",
+        "sqlalchemy",
     }
 )
 
@@ -47,6 +55,7 @@ _PUBLISHABLE_PYPROJECTS: dict[str, Path] = {
     "tac-decoding": REPO_ROOT / "packages" / "tac-decoding" / "pyproject.toml",
     "metar-shared": REPO_ROOT / "packages" / "shared" / "pyproject.toml",
     "reference-lookup": REPO_ROOT / "packages" / "reference-lookup" / "pyproject.toml",
+    "iwxxm-dissemination": REPO_ROOT / "packages" / "dissemination" / "pyproject.toml",
 }
 
 
