@@ -72,6 +72,12 @@ import {
   type TacOverlayVisibility,
 } from '@/utils/liveMapTacLayers';
 import { paintTacOverlays } from '@/utils/liveMapOverlayPaint';
+import {
+  LIVE_MAP_ACTIVE_EMPTY,
+  LIVE_MAP_FILTER_ACTIVE,
+  defaultActiveReportsOn,
+  placeIsActiveNow,
+} from '@/utils/liveMapValidity';
 import { LiveMapTacOverlayToggles } from './LiveMapTacOverlayToggles';
 import { StationClusterPopup } from './StationClusterPopup';
 import { StationPopup } from './StationPopup';
@@ -417,6 +423,8 @@ export function LiveWorldMap({
   const [tacOverlays, setTacOverlays] = useState<TacOverlayVisibility>(
     defaultTacOverlayVisibility,
   );
+  const [activeTouched, setActiveTouched] = useState(false);
+  const [activeOnlyManual, setActiveOnlyManual] = useState(false);
   const [bounds, setBounds] = useState<MapBounds | null>(null);
   const [zoom, setZoom] = useState(2);
   const [places, setPlaces] = useState<LivePlace[]>([]);
@@ -425,6 +433,7 @@ export function LiveWorldMap({
   const [refreshTick, setRefreshTick] = useState(0);
   const products = selectedLayerQuery(off);
   const loaded = bounds && products ? places : EMPTY_PLACES;
+  const activeOnly = activeTouched ? activeOnlyManual : defaultActiveReportsOn(loaded);
   const countries = [
     ...new Set(
       loaded
@@ -437,13 +446,17 @@ export function LiveWorldMap({
     region,
     time: timePreset,
     phenomena,
+    activeOnly,
+    placeIsActiveNow,
     countryOf: (placeKey) => airports.findWhere({ icao: placeKey })?.country,
     regionOf: (latitude, longitude) => placeRegion(latitude, longitude),
   });
   const message = products ? error : '';
   const status = !products
     ? LIVE_MAP_LAYERS_OFF
-    : viewStatus(visible, phase === 'loading', phase === 'refreshing');
+    : activeOnly && loaded.length > 0 && visible.length === 0
+      ? LIVE_MAP_ACTIVE_EMPTY
+      : viewStatus(visible, phase === 'loading', phase === 'refreshing');
 
   useEffect(() => {
     const map = mapRef.current;
@@ -843,6 +856,30 @@ export function LiveWorldMap({
               </label>
             );
           })}
+        </div>
+        <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-gray-100 pt-3 dark:border-gray-800">
+          <label
+            className={`inline-flex cursor-pointer items-center gap-2 rounded-full border px-3 py-1 text-sm font-medium transition ${
+              activeOnly
+                ? 'border-gray-900 bg-gray-900 text-white dark:border-white dark:bg-white dark:text-gray-900'
+                : 'border-gray-200 bg-white text-gray-600 hover:border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300'
+            }`}
+          >
+            <input
+              type="checkbox"
+              role="switch"
+              className="sr-only"
+              checked={activeOnly}
+              aria-checked={activeOnly}
+              aria-label={LIVE_MAP_FILTER_ACTIVE}
+              data-testid="live-map-filter-active-reports"
+              onChange={() => {
+                setActiveTouched(true);
+                setActiveOnlyManual(!activeOnly);
+              }}
+            />
+            {LIVE_MAP_FILTER_ACTIVE}
+          </label>
         </div>
         <LiveMapTacOverlayToggles
           visibility={tacOverlays}
