@@ -45,7 +45,14 @@ def format_operator_message(template: str, **kwargs: object) -> str:
         Formatted operator text with no unresolved ``{…}`` field names when
         defaults cover the template.
     """
-    merged: dict[str, object] = {**_OPERATOR_FORMAT_DEFAULTS, **kwargs}
+    merged: dict[str, object] = dict(_OPERATOR_FORMAT_DEFAULTS)
+    for key, raw in kwargs.items():
+        if raw is None:
+            continue
+        text = str(raw).strip()
+        if not text:
+            continue
+        merged[key] = text.upper() if key == "product" else text
     for _literal, field_name, _format_spec, _conversion in string.Formatter().parse(template):
         if field_name and field_name not in merged:
             # Omit unknown fields rather than echo the field name or braces.
