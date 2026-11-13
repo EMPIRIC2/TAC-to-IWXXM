@@ -436,14 +436,13 @@ def test_preflight_unknown_template_id_returns_400(client: TestClient, monkeypat
         return {"sub": str(template.user_id)}
 
     class _Svc:
-        def __init__(self, _user_id: str) -> None:
-            pass
-
         def get_template(self, _template_id):
             raise ValueError("bad template")
 
     api_module.app.dependency_overrides[verify_optional_supabase_token] = _auth
-    monkeypatch.setattr(diss_router, "ConversionProfilesService", _Svc)
+    monkeypatch.setattr(
+        diss_router, "profiles_service_for_optional_auth", lambda _auth: _Svc()
+    )
 
     resp = client.post(
         "/api/v1/dissemination/preflight",
@@ -469,14 +468,13 @@ def test_preflight_template_applies_defaults_and_explicit_fields_win(
         return PreflightResponse(ok=True, connectivity_ok=True, diffs=[], detail=None)
 
     class _Svc:
-        def __init__(self, _user_id: str) -> None:
-            pass
-
         def get_template(self, _template_id):
             return template
 
     api_module.app.dependency_overrides[verify_optional_supabase_token] = _auth
-    monkeypatch.setattr(diss_router, "ConversionProfilesService", _Svc)
+    monkeypatch.setattr(
+        diss_router, "profiles_service_for_optional_auth", lambda _auth: _Svc()
+    )
     monkeypatch.setattr(diss_router, "run_db_preflight", _ok)
     uri = _sqlite_uri(tmp_path)
     resp = client.post(
@@ -524,14 +522,13 @@ def test_send_unknown_template_id_returns_400(client: TestClient, monkeypatch: p
         return {"sub": str(template.user_id)}
 
     class _Svc:
-        def __init__(self, _user_id: str) -> None:
-            pass
-
         def get_template(self, _template_id):
             raise ValueError("bad template")
 
     api_module.app.dependency_overrides[verify_optional_supabase_token] = _auth
-    monkeypatch.setattr(diss_router, "ConversionProfilesService", _Svc)
+    monkeypatch.setattr(
+        diss_router, "profiles_service_for_optional_auth", lambda _auth: _Svc()
+    )
 
     resp = client.post(
         "/api/v1/dissemination/send",
@@ -561,14 +558,13 @@ def test_send_template_applies_defaults(client: TestClient, monkeypatch: pytest.
         return PreflightResponse(ok=True, connectivity_ok=True, diffs=[], detail=None)
 
     class _Svc:
-        def __init__(self, _user_id: str) -> None:
-            pass
-
         def get_template(self, _template_id):
             return template
 
     api_module.app.dependency_overrides[verify_optional_supabase_token] = _auth
-    monkeypatch.setattr(diss_router, "ConversionProfilesService", _Svc)
+    monkeypatch.setattr(
+        diss_router, "profiles_service_for_optional_auth", lambda _auth: _Svc()
+    )
     monkeypatch.setattr(diss_router, "run_db_preflight", _ok)
     uri = _sqlite_uri(tmp_path)
     resp = client.post(
