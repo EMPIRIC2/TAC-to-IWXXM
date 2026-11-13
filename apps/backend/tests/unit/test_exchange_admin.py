@@ -125,3 +125,30 @@ def test_template_upsert_success_and_secret_rejected(admin_client: TestClient) -
     )
     assert bad.status_code == 400
     assert "secret" in bad.text.lower()
+
+
+@pytest.mark.parametrize(
+    ("path", "payload", "expected"),
+    [
+        ("/api/v1/exchange-admin/invitation-group", {}, 422),
+        ("/api/v1/exchange-admin/prefs/national-remarks", {}, 422),
+        ("/api/v1/exchange-admin/templates", "not-json", 422),
+    ],
+    ids=["invitation-group", "national-remarks", "templates"],
+)
+def test_exchange_admin_put_validation(
+    admin_client: TestClient,
+    path: str,
+    payload: object,
+    expected: int,
+) -> None:
+    """Validation mode: malformed PUT bodies return 422."""
+    if payload == "not-json":
+        resp = admin_client.put(
+            path,
+            content=b"not-json",
+            headers={"content-type": "application/json"},
+        )
+    else:
+        resp = admin_client.put(path, json=payload)
+    assert resp.status_code == expected
