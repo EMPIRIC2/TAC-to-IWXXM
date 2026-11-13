@@ -8,7 +8,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from functools import lru_cache
 from pathlib import Path
-from typing import Any, Final
+from typing import Final, cast
 
 import yaml
 
@@ -73,9 +73,11 @@ def deviations_path(profile: str) -> Path:
     return _repo_root() / _PROFILES_DIR / f"{profile.upper()}.code-list-deviations.yaml"
 
 
-def _parse_entry(raw: dict[str, Any]) -> CodeListDeviation:
-    products_raw = raw.get("products") or []
-    products = tuple(str(p).upper() for p in products_raw) if isinstance(products_raw, list) else ()
+def _parse_entry(raw: dict[str, object]) -> CodeListDeviation:
+    products_raw = raw.get("products")
+    products: tuple[str, ...] = ()
+    if isinstance(products_raw, list):
+        products = tuple(str(p).upper() for p in cast(list[object], products_raw))
     global_uri = raw.get("global_uri")
     ca_uri = raw.get("ca_uri")
     return CodeListDeviation(
@@ -96,14 +98,20 @@ def load_code_list_policy(profile: str) -> CodeListPolicy:
     path = deviations_path(profile)
     if not path.is_file():
         return CodeListPolicy(profile=profile.upper(), entries=())
-    loaded = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+    loaded_raw: object = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+    if not isinstance(loaded_raw, dict):
+        return CodeListPolicy(profile=profile.upper(), entries=())
+    loaded = cast(dict[str, object], loaded_raw)
     raw_entries = loaded.get("entries") or []
-    entries = (
-        tuple(_parse_entry(item) for item in raw_entries if isinstance(item, dict))
-        if isinstance(raw_entries, list)
-        else ()
-    )
-    return CodeListPolicy(profile=str(loaded.get("profile") or profile).upper(), entries=entries)
+    entries: tuple[CodeListDeviation, ...] = ()
+    if isinstance(raw_entries, list):
+        parsed: list[CodeListDeviation] = []
+        for item in cast(list[object], raw_entries):
+            if isinstance(item, dict):
+                parsed.append(_parse_entry(cast(dict[str, object], item)))
+        entries = tuple(parsed)
+    profile_name = str(loaded.get("profile") or profile).upper()
+    return CodeListPolicy(profile=profile_name, entries=entries)
 
 
 __all__ = [

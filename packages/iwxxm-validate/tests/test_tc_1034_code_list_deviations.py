@@ -7,6 +7,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
+import pytest
 import yaml
 from iwxxm_validate.ca_eccc_layers import STAGE_CODE_CA
 from iwxxm_validate.code_ca_validate import validate_code_ca_membership
@@ -14,10 +15,7 @@ from iwxxm_validate.code_list_policy import load_code_list_policy
 
 _REPO = Path(__file__).resolve().parents[3]
 _MATRIX = _REPO / "config" / "profiles" / "semantic" / "CA_ECCC.code-list-deviations.yaml"
-_IC_GOLDEN = (
-    _REPO
-    / "packages/tac2iwxxm/tests/fixtures/profiles/CA_ECCC/TAF/valid/taf_ic_weather.golden.xml"
-)
+_IC_GOLDEN = _REPO / "packages/tac2iwxxm/tests/fixtures/profiles/CA_ECCC/TAF/valid/taf_ic_weather.golden.xml"
 _KINDS = frozenset({"replace", "override", "extend", "none"})
 _CA_IC = "https://dd.weather.gc.ca/today/aviation/iwxxm/code-ca/present_and_forecast_weather/IC"
 _WMO_IC = "http://codes.wmo.int/306/4678/IC"
@@ -59,3 +57,25 @@ def test_tc_1034_003_policy_resolve_ic_and_gfa() -> None:
     assert "airmet_weather_phenomena/FRQ_TCU_ISOL_TS" in gfa
     disallowed = policy.disallowed_global_uris()
     assert "http://codes.wmo.int/306/4678/IC" in disallowed
+
+
+@pytest.mark.parametrize(
+    ("mode", "xml_uri", "expect_disallowed"),
+    [
+        ("success", _CA_IC, False),
+        ("failure", _WMO_IC, True),
+        ("validation", _WMO_IC, True),
+    ],
+)
+def test_tc_1034_modes_code_ca_membership(mode: str, xml_uri: str, expect_disallowed: bool) -> None:
+    """Success/failure/validation battery for CA code-list membership."""
+    del mode
+    xml = _IC_GOLDEN.read_text(encoding="utf-8")
+    if xml_uri != _CA_IC:
+        xml = xml.replace(_CA_IC, xml_uri)
+    issues = validate_code_ca_membership(xml, profile="CA_ECCC")
+    disallowed = [i for i in issues if i.code == "CODE_LIST_GLOBAL_DISALLOWED"]
+    if expect_disallowed:
+        assert disallowed
+    else:
+        assert not disallowed

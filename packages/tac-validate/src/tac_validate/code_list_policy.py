@@ -7,6 +7,7 @@ from __future__ import annotations
 
 from functools import lru_cache
 from pathlib import Path
+from typing import cast
 
 import yaml
 
@@ -34,14 +35,20 @@ def national_replace_tokens() -> frozenset[str]:
     path = _repo_root() / _MATRIX
     if not path.is_file():
         return frozenset()
-    loaded = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+    loaded_raw: object = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+    if not isinstance(loaded_raw, dict):
+        return frozenset()
+    loaded = cast(dict[str, object], loaded_raw)
     raw = loaded.get("entries") or []
     tokens: set[str] = set()
     if isinstance(raw, list):
-        for item in raw:
-            if not isinstance(item, dict) or str(item.get("kind") or "").lower() != "replace":
+        for item in cast(list[object], raw):
+            if not isinstance(item, dict):
                 continue
-            token = str(item.get("token") or "").strip().upper()
+            entry = cast(dict[str, object], item)
+            if str(entry.get("kind") or "").lower() != "replace":
+                continue
+            token = str(entry.get("token") or "").strip().upper()
             if token and token != "*":
                 tokens.add(token)
     return frozenset(tokens)

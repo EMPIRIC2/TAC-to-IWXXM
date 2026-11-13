@@ -7,7 +7,7 @@ from __future__ import annotations
 
 from functools import lru_cache
 from pathlib import Path
-from typing import Any
+from typing import cast
 
 import yaml
 
@@ -28,13 +28,22 @@ def _repo_root() -> Path:
 
 
 @lru_cache(maxsize=1)
-def _entries() -> tuple[dict[str, Any], ...]:
+def _entries() -> tuple[dict[str, object], ...]:
     path = _repo_root() / _MATRIX
     if not path.is_file():
         return ()
-    loaded = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+    loaded_raw: object = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+    if not isinstance(loaded_raw, dict):
+        return ()
+    loaded = cast(dict[str, object], loaded_raw)
     raw = loaded.get("entries") or []
-    return tuple(item for item in raw if isinstance(item, dict)) if isinstance(raw, list) else ()
+    if not isinstance(raw, list):
+        return ()
+    parsed: list[dict[str, object]] = []
+    for item in cast(list[object], raw):
+        if isinstance(item, dict):
+            parsed.append(cast(dict[str, object], item))
+    return tuple(parsed)
 
 
 def resolve_national_href(*, area: str, token: str) -> str | None:
