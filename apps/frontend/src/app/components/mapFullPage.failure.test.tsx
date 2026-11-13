@@ -1,5 +1,5 @@
 /**
- * Decode visuals full-page failure paths (Send without handler, empty TAC forward, map error chrome).
+ * Live map full-page failure paths (Send without handler, empty TAC forward, map error chrome).
  *
  * Empty/whitespace TAC guard lives in App.handleMapOpenPlace — DecodeVisualsPage always
  * forwards the place; App ignores empty TAC. This file asserts page forwarding only.

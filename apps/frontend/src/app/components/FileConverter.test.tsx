@@ -2123,7 +2123,7 @@ describe('FileConverter Component', () => {
           .compareDocumentPosition(screen.getByTestId('convert-weather-map')),
       ).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
       expect(
-        screen.queryByRole('tab', { name: 'Decode visuals' }),
+        screen.queryByRole('tab', { name: 'Live map' }),
       ).not.toBeInTheDocument();
       expect(screen.getByTestId('convert-settings-dialog')).toContainElement(
         screen.getByTestId('convert-setup'),
@@ -2220,7 +2220,7 @@ describe('FileConverter Component', () => {
       HTMLElement.prototype.scrollIntoView = originalScroll;
     });
 
-    it('applies pending map TAC and opens Decode visuals from the Map tab', async () => {
+    it('applies pending map TAC and opens Live map from the Map tab', async () => {
       const user = userEvent.setup({ delay: null });
       const onOpenVisuals = vi.fn();
       const onPendingMapTacConsumed = vi.fn();

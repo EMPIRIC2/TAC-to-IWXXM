@@ -28,7 +28,7 @@ HTTP field shapes remain in [api-contract.md](api-contract.md) and
 
 | Rule | Detail |
 |------|--------|
-| Purpose | Station and airspace context for convert and Decode visuals |
+| Purpose | Station and airspace context for convert and Live map |
 | Constraint | Browser keys and provider attribution must follow UI style and privacy rules |
 
 ## Dissemination sinks

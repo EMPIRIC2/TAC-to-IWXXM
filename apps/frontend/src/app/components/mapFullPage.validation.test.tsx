@@ -1,5 +1,5 @@
 /**
- * Decode visuals station input guard rails (full-page map).
+ * Live map station input guard rails (full-page map).
  *
  * Incomplete codes must not open the heading / WindCue path. Complete codes
  * matching STATION_ID (/^[A-Z][A-Z0-9]{3}$/) still take that path even when

@@ -1,5 +1,5 @@
 /**
- * Decode visuals tab, region sketch, and wind cue.
+ * Live map page, region sketch, and wind cue.
  */
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';

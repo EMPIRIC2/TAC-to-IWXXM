@@ -4,6 +4,10 @@ All notable user-facing and deployable changes for TAC to IWXXM.
 
 ## Unreleased
 
+### Changed
+- Shell nav and Live map page chrome use **Live map** (was Decode visuals).
+  Test id `shell-nav-visuals` is unchanged.
+
 ### Packages
 - Wire `packages/dissemination` for PyPI as **`iwxxm-dissemination`** `0.1.0`
   (import path remains `dissemination`; tag `iwxxm-dissemination-v*`).

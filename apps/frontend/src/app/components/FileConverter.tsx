@@ -7,6 +7,7 @@ import {
   useMemo,
 } from 'react';
 import { stationFromReport } from '@/utils/decodeVisuals';
+import { DECODE_VISUALS_OPEN } from '@/utils/decodeVisualsCopy';
 import { publishDecodeVisuals } from '@/utils/decodeVisualsStore';
 import { type LivePlace } from '@/utils/liveMap';
 import { LiveWorldMap } from './LiveWorldMap';
@@ -362,7 +363,7 @@ interface FileConverterProps {
   /** Open optional login UX (F31 / F21 Amended). */
   onRequestLogin?: () => void;
   onOpenHistory?: () => void;
-  /** Open full-page Decode visuals (live TAC map). */
+  /** Open full-page Live map (live TAC map). */
   onOpenVisuals?: () => void;
   onLoadWorkSession?: (session: WorkSession) => void;
   onNewMetar?: () => void;
@@ -370,7 +371,7 @@ interface FileConverterProps {
   onActiveSessionIdChange?: (id: string | null) => void;
   activeWorkSessionId?: string | null;
   loadedWorkSession?: WorkSession | null;
-  /** TAC from Decode visuals Send — applied once then cleared. */
+  /** TAC from Live map Send — applied once then cleared. */
   pendingMapTac?: string | null;
   /** Clear pending map TAC after it is applied to the editor. */
   onPendingMapTacConsumed?: () => void;
@@ -2585,7 +2586,7 @@ export function FileConverter({
     });
   }, [manualInput, decodeSegments]);
 
-  /* eslint-disable react-hooks/set-state-in-effect -- hydrate TAC editor from Decode visuals Send */
+  /* eslint-disable react-hooks/set-state-in-effect -- hydrate TAC editor from Live map Send */
   useEffect(() => {
     const tac = pendingMapTac?.trim() ?? '';
     if (!tac) {
@@ -4475,7 +4476,7 @@ export function FileConverter({
                               className="text-sm font-medium text-gray-700 underline-offset-2 hover:underline dark:text-gray-200"
                               onClick={onOpenVisuals}
                             >
-                              Open Decode visuals
+                              {DECODE_VISUALS_OPEN}
                             </button>
                           </div>
                         ) : null}

@@ -664,7 +664,7 @@ describe('App Component (F31 optional Auth)', () => {
     });
   });
 
-  it('opens Decode visuals from Convert and sends map TAC into the converter', async () => {
+  it('opens Live map from Convert and sends map TAC into the converter', async () => {
     const user = userEvent.setup();
     render(<App />);
     await user.click(screen.getByTestId('open-visuals'));
