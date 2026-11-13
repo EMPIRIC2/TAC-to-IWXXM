@@ -1,0 +1,333 @@
+"""Split part body (exec'd into package namespace)."""
+
+from __future__ import annotations
+
+
+def parse_metar_speci(tac: str, *, product: str) -> dict[str, Any]:
+    """
+    Parse a single METAR/SPECI TAC report into a versioned IR dict.
+
+    Parameters
+    ----------
+    tac : str
+        TAC text (optional AHL line ignored; first METAR/SPECI…= used).
+
+    product : str
+        Expected ``METAR`` or ``SPECI``.
+
+    Returns
+    -------
+    dict[str, Any]
+        Intermediate representation for annex3 / iwxxm_us XML emission and M-field.
+
+    Raises
+    ------
+    ValueError
+        When the TAC cannot be decoded.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (parse_metar_speci)
+    2
+    """
+    text = fold_observation_case(tac).strip()
+    product_u = product.upper()
+    # Allow COR before station or immediately after observation time (ICAO #594).
+    report_match = re.search(
+        r"((?:LWIS|SAWR|METAR|SPECI)\s+(?:COR\s+)?[A-Z][A-Z0-9]{3}\s+\d{6}Z(?:\s+COR)?\b.*?)=",
+        text,
+        re.DOTALL,
+    )
+    if report_match is None:
+        report_match = re.search(
+            r"((?:LWIS|SAWR|METAR|SPECI)\s+(?:COR\s+)?[A-Z][A-Z0-9]{3}\s+\d{6}Z(?:\s+COR)?\b.*)",
+            text,
+            re.DOTALL,
+        )
+    # Bare ICAO observation: inject the caller product hint (METAR/SPECI only).
+    # Does not silent-swap when an explicit opposite keyword is present (F20).
+    if report_match is None and product_u in {"METAR", "SPECI"}:
+        bare = _BARE_OBS.match(text.rstrip("=").strip())
+        if bare is not None:
+            text = f"{product_u} {bare.group(1).strip()}"
+            report_match = re.search(
+                r"((?:METAR|SPECI)\s+(?:COR\s+)?[A-Z][A-Z0-9]{3}\s+\d{6}Z(?:\s+COR)?\b.*)",
+                text,
+                re.DOTALL,
+            )
+    if report_match is None:
+        raise ValueError("no METAR/SPECI report found in TAC")
+
+    report = " ".join(report_match.group(1).split())
+    m = _REPORT.match(report)
+    if m is None:
+        raise ValueError(f"unable to parse METAR/SPECI report: {report!r}")
+
+    rtype = m.group("rtype")
+    if not _product_matches_rtype(product, rtype):
+        raise ValueError(f"product mismatch: expected {product}, found {rtype}")
+
+    ca_root = rtype.upper()
+    is_lwis = ca_root == "LWIS"
+    is_sawr = ca_root == "SAWR"
+
+    station = m.group("station")
+    ddhhmm = m.group("ddhhmm")
+    day = int(ddhhmm[0:2])
+    hour = int(ddhhmm[2:4])
+    minute = int(ddhhmm[4:6])
+    rest = m.group("body")
+    correction = bool(m.group("cor_pre"))
+    if _COR_AFTER_TIME.match(rest):
+        correction = True
+        rest = _COR_AFTER_TIME.sub("", rest, count=1)
+
+    ir: dict[str, Any] = {
+        "station": station,
+        "report_type": rtype,
+        "day": day,
+        "hour": hour,
+        "minute": minute,
+        "nil": bool(_NIL.search(rest)),
+        "correction": correction,
+        "auto": bool(_AUTO.search(rest)) or is_lwis,
+    }
+    if ca_root in _CA_SURFACE_TYPES:  # pragma: no branch — rtypes are always CA surface family
+        # National report variant for CA_ECCC emit - see catalog.yaml metar_family_variants.
+        ir["ca_iwxxm_root"] = ca_root
+    if is_lwis:
+        ir["ca_minimal_observation"] = True
+
+    if ir["nil"]:
+        return ir
+
+    wind = _WIND.search(rest)
+    if wind is None:
+        raise ValueError("missing wind group")
+    if wind.group("dir") == "VRB":
+        ir["wind_dir_deg"] = None
+        ir["wind_variable"] = True
+    else:
+        ir["wind_dir_deg"] = int(wind.group("dir"))
+        ir["wind_variable"] = False
+    ir["wind_speed_kt"] = int(wind.group("spd"))
+    if wind.group("uom") == "MPS":
+        ir["wind_speed_mps"] = int(wind.group("spd"))
+        ir["wind_speed_kt"] = round(int(wind.group("spd")) * 1.94384)
+    if wind.group("gust"):
+        gust_raw = int(wind.group("gust"))
+        if wind.group("uom") == "MPS":
+            ir["wind_gust_mps"] = gust_raw
+            ir["wind_gust_kt"] = round(gust_raw * 1.94384)
+        else:
+            ir["wind_gust_kt"] = gust_raw
+
+    if is_lwis:
+        pass
+    elif _CAVOK.search(rest):
+        ir["cavok"] = True
+        ir["visibility_m"] = 10000
+        ir["visibility_above"] = True
+    elif _VIS_SM_NOT_OBS.search(rest) or _VIS_M_NOT_OBS.search(rest):
+        # Guidance / TC-EV023-002: AUTO missing vis → common/nil/notObservable.
+        ir["visibility_not_observable"] = True
+    else:
+        if not _assign_reported_visibility(ir, rest):
+            raise ValueError("missing visibility (SM/m/CAVOK) group")
+
+    if _TEMP_NOT_OBS.search(rest):
+        ir["temp_not_observable"] = True
+        ir["dewpoint_not_observable"] = True
+    else:
+        temp = _TEMP.search(rest)
+        if temp is None:
+            raise ValueError("missing temperature/dewpoint group")
+        ir["temp_c"] = _celsius(temp.group("temp"))
+        ir["dewpoint_c"] = _celsius(temp.group("dew"))
+
+    if _ALT_NOT_OBS.search(rest) or _QNH_NOT_OBS.search(rest):
+        ir["qnh_not_observable"] = True
+    else:
+        alt = _ALT_INHG.search(rest)
+        qnh = _QNH_HPA.search(rest)
+        if qnh is not None:
+            # #1412: a reported Q group is already hectopascals. Prefer it when an
+            # altimeter (A) group is also present; Q-only stays the reported value.
+            ir["qnh_hpa"] = float(qnh.group("qnh"))
+            if alt is not None:
+                ir["altimeter_inhg"] = int(alt.group("alt")) / 100.0
+        elif alt is not None:
+            ir["altimeter_inhg"] = int(alt.group("alt")) / 100.0
+            ir["qnh_hpa"] = _inhg_to_hpa(alt.group("alt"))
+        else:
+            raise ValueError("missing altimeter (Axxxx/Qxxxx) group")
+
+    # Strip REMARKS; split observation vs trend groups before exceptional tokens.
+    body_for_wx = _RMK.split(rest, maxsplit=1)[0]
+    obs_body, trend_matches = _split_obs_and_trends(body_for_wx)
+
+    if is_lwis:
+        rmk = _RMK.search(rest)
+        if rmk is not None:
+            remarks = rmk.group("rmk")
+            ir["remarks_present"] = True
+            ir["remarks_text"] = remarks.strip().rstrip("=").strip()
+            _parse_ca_remarks(remarks, ir)
+            leftover = _remarks_free_text(remarks)
+            if leftover:
+                ir["remarks_free_text"] = leftover
+        return ir
+
+    # Re-bind visibility from observation only (avoid trend 9999 / TL times).
+    if not ir.get("cavok"):
+        if _VIS_SM_NOT_OBS.search(obs_body) or _VIS_M_NOT_OBS.search(obs_body):
+            ir["visibility_not_observable"] = True
+            ir.pop("visibility_m", None)
+            ir.pop("visibility_sm", None)
+            ir.pop("visibility_above", None)
+        else:
+            _assign_reported_visibility(ir, obs_body)
+
+    min_vis = _VIS_MIN.search(obs_body)
+    if min_vis is not None:
+        ir["min_visibility_m"] = int(min_vis.group("vis"))
+        ir["min_visibility_dir_deg"] = _COMPASS_DEG[min_vis.group("dir")]
+
+    cloud_layers: list[dict[str, Any]] = []
+    for c in _CLOUD.finditer(obs_body):
+        layer: dict[str, Any] = {"amount": c.group("amt")}
+        base = c.group("base")
+        if base == "///":
+            layer["base_not_observable"] = True
+        else:
+            layer["base_ft"] = int(base) * 100
+        ctype = c.group("ctype")
+        if ctype:
+            layer["cloud_type"] = ctype
+        cloud_layers.append(layer)
+    ir["clouds"] = cloud_layers
+    if cloud_layers:
+        ir["cloud_amount"] = cloud_layers[0]["amount"]
+        if "base_ft" in cloud_layers[0]:
+            ir["cloud_base_ft"] = cloud_layers[0]["base_ft"]
+
+    nosig_m = _NOSIG.search(body_for_wx)
+    if nosig_m is not None:
+        ir["nosig"] = True
+        if nosig_m.group(0).upper() == "NOISG":
+            ir["nosig_typo_alias"] = True
+    if _NSC.search(obs_body):
+        # FAQ §14.3 / TC-EV023-001: NSC is exclusive - drop any FEW/SCT/… layers.
+        ir["nsc"] = True
+        ir["clouds"] = []
+        ir.pop("cloud_amount", None)
+        ir.pop("cloud_base_ft", None)
+    if _NCD.search(obs_body):
+        ir["ncd"] = True
+    if _VV_NOT_OBS.search(obs_body):
+        ir["vertical_visibility_not_observable"] = True
+
+    sector = _WIND_SECTOR.search(obs_body)
+    if sector is not None:
+        ir["wind_dir_ccw_deg"] = int(sector.group("ccw"))
+        ir["wind_dir_cw_deg"] = int(sector.group("cw"))
+
+    rvr_var = _RVR_VAR.search(obs_body)
+    if rvr_var is not None:
+        min_raw = int(rvr_var.group("min"))
+        max_raw = int(rvr_var.group("max"))
+        ft = rvr_var.group("ft") or rvr_var.group("ft_ca")
+        tend = rvr_var.group("tend") or rvr_var.group("tend_ca") or ""
+        if ft:
+            min_m = round(min_raw * 0.3048)
+            max_m = round(max_raw * 0.3048)
+        else:
+            min_m = min_raw
+            max_m = max_raw
+        ir["rvr"] = {
+            "runway": rvr_var.group("rwy"),
+            "variable": True,
+            "min_m": min_m,
+            "max_m": max_m,
+            "below_sensor_minimum": rvr_var.group("min_op") == "M",
+            "above_sensor_maximum": rvr_var.group("max_op") == "P",
+            "tendency": {"U": "UPWARD", "D": "DOWNWARD", "N": "NO_CHANGE"}.get(tend),
+        }
+    else:
+        rvr = _RVR.search(obs_body)
+        if rvr is not None:
+            val = int(rvr.group("val"))
+            ft = rvr.group("ft") or rvr.group("ft_ca")
+            tend = rvr.group("tend") or rvr.group("tend_ca") or ""
+            # US / CA FT → metres; ICAO metre groups stay as-is.
+            metres = round(val * 0.3048) if ft else val
+            ir["rvr"] = {
+                "runway": rvr.group("rwy"),
+                "mean_m": metres,
+                "operator": {"P": "ABOVE", "M": "BELOW"}.get(rvr.group("op") or ""),
+                "tendency": {"U": "UPWARD", "D": "DOWNWARD", "N": "NO_CHANGE"}.get(tend),
+            }
+
+    present: list[str] = []
+    wx_not_obs = False
+    for wx_m in _WX_TOKEN.finditer(obs_body):
+        token = wx_m.group("wx")
+        if token == "//":
+            wx_not_obs = True
+        else:
+            present.append(token)
+    if wx_not_obs:
+        ir["present_weather_not_observable"] = True
+    if present:
+        ir["present_weather"] = present
+    recent: list[str] = []
+    for recent_match in _RECENT_BODY.finditer(obs_body):
+        code = accept_recent_code(recent_match.group("wx")[2:], weather_token=_WX_TOKEN)
+        if code is not None:
+            recent.append(code)
+    if recent:
+        ir["recent_weather"] = recent
+
+    trends: list[dict[str, Any]] = []
+    for tm in trend_matches:
+        parsed = _parse_trend_group(ir, tm.group("kind"), tm.group("body"))
+        if parsed is not None:  # pragma: no branch — trend parser always returns a dict
+            trends.append(parsed)
+    if trends:
+        ir["trend_forecasts"] = trends
+        # Back-compat for F20 SPECI tempo-only emitters / gml:id helpers.
+        for t in trends:
+            if t.get("change_indicator") == "TEMPORARY_FLUCTUATIONS":
+                legacy: dict[str, Any] = {
+                    "change_indicator": "TEMPORARY_FLUCTUATIONS",
+                }
+                if t.get("visibility_m") is not None:
+                    legacy["visibility_m"] = t["visibility_m"]
+                if t.get("weather_nsw"):
+                    legacy["weather_nsw"] = True
+                ir["tempo_trend"] = legacy
+                break
+        if any(t.get("nil_nosig") for t in trends):
+            ir["nosig"] = True
+
+    _parse_remarks(rest, ir)
+    rmk = _RMK.search(rest)
+    if rmk is not None:
+        remarks = rmk.group("rmk")
+        _parse_ca_remarks(remarks, ir)
+        leftover = str(ir.get("remarks_free_text") or "").strip()
+        if ir.get("density_altitude_ft") is not None or ir.get("density_altitude_missing"):
+            leftover = _CA_DENSITY_ALT.sub(" ", leftover)
+            leftover = _CA_DENSITY_ALT_MISG.sub(" ", leftover)
+        if ir.get("ca_icing_href"):
+            leftover = _CA_ICE_REMARK.sub(" ", leftover)
+        leftover = re.sub(r"\s+", " ", leftover).strip(" =")
+        if leftover:
+            ir["remarks_free_text"] = leftover
+        elif ir.get("density_altitude_ft") is not None or ir.get("ca_icing_href"):
+            ir.pop("remarks_free_text", None)
+    if is_sawr:
+        ir["ca_observing_system_href"] = (
+            "https://dd.weather.gc.ca/today/aviation/iwxxm/code-ca/ObservingSystemType/SAWR"
+        )
+    return ir
