@@ -44,6 +44,7 @@ Apply these norms when you change the operator UI.
 - Collapsed Recent work is a sticky ~½″ vertical rail on the right spanning the workbench up to the primary action strip. expand restores the 280px panel and the main column reclaims width when collapsed.
 - Recent work stays a right-column sidebar at every viewport width (collapsed rail or expanded panel). Do not stack it under the convert body on narrow / portrait layouts.
 - Shell primary nav includes Decode visuals for the full-page live TAC map; Results → Map remains an embedded twin with an Open Decode visuals affordance.
+- Shell primary nav includes Station health for the public station availability and quality report card. Use plain grade letters and product names; no planning ids.
 - Live map station cards: product + station in a compact header, observation-time select (not Newer/Earlier pills), TAC collapsed by default, explicit Send to converter via the existing map→workbench handoff.
 - Live map TAC overlays (precip, temperature, wind vector, wind intensity, thunder, ice) are independent toggles beside product layers; same-station reports share one cluster point then a report picker — not fan-out pins.
 - Workbench Help Preferences chrome and the User Preferences modal use dark outline controls (primary blue border, transparent fill). Preferences stays display-name + output-extension only (no validation knobs).

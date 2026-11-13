@@ -591,5 +591,27 @@ describe('live map helpers', () => {
         tacLayers: new Set(['precip']),
       }),
     ).toEqual([emptyTacPlace]);
+    expect(filterPlaces(loaded, { ...base, tacLayers: new Set() })).toEqual(
+      filterPlaces(loaded, base),
+    );
+
+    const emptyReports: LivePlace = {
+      place_key: 'KEMPTY',
+      product: 'metar',
+      latitude: 40,
+      longitude: -74,
+      geometry: { kind: 'point' },
+      reports: [],
+    };
+    const seenTac: string[] = [];
+    filterPlaces([emptyReports], {
+      ...base,
+      tacLayers: new Set(['precip']),
+      passesTacLayers: (tac) => {
+        seenTac.push(tac);
+        return false;
+      },
+    });
+    expect(seenTac).toEqual(['']);
   });
 });

@@ -6013,6 +6013,272 @@
         "title": "SelectionOptionsResponse",
         "type": "object"
       },
+      "StationHealthDetailResponse": {
+        "description": "Response for GET /api/v1/station-health/{icao}.",
+        "properties": {
+          "icao": {
+            "title": "Icao",
+            "type": "string"
+          },
+          "name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Name"
+          },
+          "record_count": {
+            "default": 0,
+            "title": "Record Count",
+            "type": "integer"
+          },
+          "windows": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/StationWindowModel"
+            },
+            "title": "Windows",
+            "type": "object"
+          }
+        },
+        "required": [
+          "icao"
+        ],
+        "title": "StationHealthDetailResponse",
+        "type": "object"
+      },
+      "StationHealthListResponse": {
+        "description": "Response for GET /api/v1/station-health.",
+        "properties": {
+          "computed_at": {
+            "title": "Computed At",
+            "type": "string"
+          },
+          "stations": {
+            "items": {
+              "$ref": "#/components/schemas/StationListItemModel"
+            },
+            "title": "Stations",
+            "type": "array"
+          },
+          "summary": {
+            "$ref": "#/components/schemas/StationHealthSummaryModel"
+          },
+          "window": {
+            "title": "Window",
+            "type": "string"
+          }
+        },
+        "required": [
+          "window",
+          "computed_at"
+        ],
+        "title": "StationHealthListResponse",
+        "type": "object"
+      },
+      "StationHealthMetricsResponse": {
+        "description": "Response for GET /api/v1/station-health/metrics.",
+        "properties": {
+          "metrics": {
+            "items": {
+              "$ref": "#/components/schemas/StationMetricDefinitionModel"
+            },
+            "title": "Metrics",
+            "type": "array"
+          }
+        },
+        "title": "StationHealthMetricsResponse",
+        "type": "object"
+      },
+      "StationHealthSummaryModel": {
+        "description": "Rollup counts for the list response.",
+        "properties": {
+          "grade_counts": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "title": "Grade Counts",
+            "type": "object"
+          },
+          "station_count": {
+            "default": 0,
+            "title": "Station Count",
+            "type": "integer"
+          }
+        },
+        "title": "StationHealthSummaryModel",
+        "type": "object"
+      },
+      "StationListItemModel": {
+        "description": "One station row on the dashboard list.",
+        "properties": {
+          "icao": {
+            "title": "Icao",
+            "type": "string"
+          },
+          "name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Name"
+          },
+          "overall_grade": {
+            "title": "Overall Grade",
+            "type": "string"
+          },
+          "overall_score": {
+            "default": 0.0,
+            "title": "Overall Score",
+            "type": "number"
+          },
+          "products": {
+            "items": {
+              "$ref": "#/components/schemas/StationProductGradeModel"
+            },
+            "title": "Products",
+            "type": "array"
+          }
+        },
+        "required": [
+          "icao",
+          "overall_grade"
+        ],
+        "title": "StationListItemModel",
+        "type": "object"
+      },
+      "StationMetricDefinitionModel": {
+        "description": "One extensible dashboard metric card.",
+        "properties": {
+          "description": {
+            "title": "Description",
+            "type": "string"
+          },
+          "higher_is_better": {
+            "default": true,
+            "title": "Higher Is Better",
+            "type": "boolean"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "unit": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Unit"
+          }
+        },
+        "required": [
+          "id",
+          "label",
+          "description"
+        ],
+        "title": "StationMetricDefinitionModel",
+        "type": "object"
+      },
+      "StationProductGradeModel": {
+        "description": "One product grade inside a station window.",
+        "properties": {
+          "actual_count": {
+            "default": 0,
+            "title": "Actual Count",
+            "type": "integer"
+          },
+          "availability_score": {
+            "default": 0.0,
+            "title": "Availability Score",
+            "type": "number"
+          },
+          "expected_count": {
+            "default": 0,
+            "title": "Expected Count",
+            "type": "integer"
+          },
+          "grade": {
+            "title": "Grade",
+            "type": "string"
+          },
+          "lint_error_count": {
+            "default": 0,
+            "title": "Lint Error Count",
+            "type": "integer"
+          },
+          "lint_severity_score": {
+            "default": 100.0,
+            "title": "Lint Severity Score",
+            "type": "number"
+          },
+          "missing_digit_rate": {
+            "default": 0.0,
+            "title": "Missing Digit Rate",
+            "type": "number"
+          },
+          "overall_score": {
+            "default": 0.0,
+            "title": "Overall Score",
+            "type": "number"
+          },
+          "product": {
+            "title": "Product",
+            "type": "string"
+          },
+          "solidus_rate": {
+            "default": 0.0,
+            "title": "Solidus Rate",
+            "type": "number"
+          }
+        },
+        "required": [
+          "product",
+          "grade"
+        ],
+        "title": "StationProductGradeModel",
+        "type": "object"
+      },
+      "StationWindowModel": {
+        "description": "One window block on the station detail page.",
+        "properties": {
+          "overall_grade": {
+            "title": "Overall Grade",
+            "type": "string"
+          },
+          "overall_score": {
+            "default": 0.0,
+            "title": "Overall Score",
+            "type": "number"
+          },
+          "products": {
+            "items": {
+              "$ref": "#/components/schemas/StationProductGradeModel"
+            },
+            "title": "Products",
+            "type": "array"
+          }
+        },
+        "required": [
+          "overall_grade"
+        ],
+        "title": "StationWindowModel",
+        "type": "object"
+      },
       "TranslationCentreInfo": {
         "description": "Translation Centre identification metadata.",
         "example": {
@@ -10964,6 +11230,173 @@
         "summary": "Get Selection Options",
         "tags": [
           "Catalogs"
+        ]
+      }
+    },
+    "/api/v1/station-health": {
+      "get": {
+        "description": "Serve station report cards for one availability window.",
+        "operationId": "list_station_health_api_v1_station_health_get",
+        "parameters": [
+          {
+            "description": "Time window: 6h, 1d, or 30d",
+            "in": "query",
+            "name": "window",
+            "required": false,
+            "schema": {
+              "default": "6h",
+              "description": "Time window: 6h, 1d, or 30d",
+              "title": "Window",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Optional product filter",
+            "in": "query",
+            "name": "product",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Optional product filter",
+              "title": "Product"
+            }
+          },
+          {
+            "description": "Optional letter grade filter",
+            "in": "query",
+            "name": "grade",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Optional letter grade filter",
+              "title": "Grade"
+            }
+          },
+          {
+            "description": "Max stations to return",
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 100,
+              "description": "Max stations to return",
+              "maximum": 500,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StationHealthListResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "400": {
+            "description": "Invalid window"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List station health grades",
+        "tags": [
+          "Station health"
+        ]
+      }
+    },
+    "/api/v1/station-health/metrics": {
+      "get": {
+        "description": "Serve the extensible metrics registry for dashboard cards.",
+        "operationId": "list_station_health_metrics_api_v1_station_health_metrics_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StationHealthMetricsResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "List station health metric definitions",
+        "tags": [
+          "Station health"
+        ]
+      }
+    },
+    "/api/v1/station-health/{icao}": {
+      "get": {
+        "description": "Serve one station report card across windows and products.",
+        "operationId": "get_station_health_api_v1_station_health__icao__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "icao",
+            "required": true,
+            "schema": {
+              "title": "Icao",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StationHealthDetailResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "404": {
+            "description": "Unknown station"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Station health detail",
+        "tags": [
+          "Station health"
         ]
       }
     },

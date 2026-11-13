@@ -61,126 +61,126 @@ vi.mock('./components/FileConverter', async () => {
     );
   }
   return {
-  FileConverter: ({
-    onOpenHistory,
-    onOpenVisuals,
-    onRequestLogin,
-    onLogout,
-    onLoadWorkSession,
-    onNewMetar,
-    onSessionUpdated,
-    onActiveSessionIdChange,
-    onOpenCatalog,
-    pendingMapTac,
-    onPendingMapTacConsumed,
-    isGuest,
-  }: {
-    onOpenHistory?: () => void;
-    onOpenVisuals?: () => void;
-    onRequestLogin?: () => void;
-    onLogout?: () => void | Promise<void>;
-    onLoadWorkSession?: (s: WorkSession) => void;
-    onNewMetar?: () => void;
-    onSessionUpdated?: (s: WorkSession) => void;
-    onActiveSessionIdChange?: (id: string | null) => void;
-    onOpenCatalog?: (
-      family?: 'conversion' | 'lint' | 'iwxxm' | 'decoding',
-      code?: string,
-    ) => void;
-    pendingMapTac?: string | null;
-    onPendingMapTacConsumed?: () => void;
-    isGuest?: boolean;
-  }) => (
-    <div data-testid="file-converter">
-      <GlossaryOpenProbe />
-      {pendingMapTac ? (
+    FileConverter: ({
+      onOpenHistory,
+      onOpenVisuals,
+      onRequestLogin,
+      onLogout,
+      onLoadWorkSession,
+      onNewMetar,
+      onSessionUpdated,
+      onActiveSessionIdChange,
+      onOpenCatalog,
+      pendingMapTac,
+      onPendingMapTacConsumed,
+      isGuest,
+    }: {
+      onOpenHistory?: () => void;
+      onOpenVisuals?: () => void;
+      onRequestLogin?: () => void;
+      onLogout?: () => void | Promise<void>;
+      onLoadWorkSession?: (s: WorkSession) => void;
+      onNewMetar?: () => void;
+      onSessionUpdated?: (s: WorkSession) => void;
+      onActiveSessionIdChange?: (id: string | null) => void;
+      onOpenCatalog?: (
+        family?: 'conversion' | 'lint' | 'iwxxm' | 'decoding',
+        code?: string,
+      ) => void;
+      pendingMapTac?: string | null;
+      onPendingMapTacConsumed?: () => void;
+      isGuest?: boolean;
+    }) => (
+      <div data-testid="file-converter">
+        <GlossaryOpenProbe />
+        {pendingMapTac ? (
+          <button
+            type="button"
+            data-testid="consume-pending-map-tac"
+            onClick={() => onPendingMapTacConsumed?.()}
+          >
+            {pendingMapTac}
+          </button>
+        ) : null}
         <button
           type="button"
-          data-testid="consume-pending-map-tac"
-          onClick={() => onPendingMapTacConsumed?.()}
+          data-testid="open-visuals"
+          onClick={() => onOpenVisuals?.()}
         >
-          {pendingMapTac}
+          Open visuals
         </button>
-      ) : null}
-      <button
-        type="button"
-        data-testid="open-visuals"
-        onClick={() => onOpenVisuals?.()}
-      >
-        Open visuals
-      </button>
-      <button
-        type="button"
-        data-testid="open-history"
-        onClick={() => onOpenHistory?.()}
-      >
-        History
-      </button>
-      {isGuest ? (
-        <button type="button" data-testid="sign-in-button" onClick={onRequestLogin}>
-          Sign in
-        </button>
-      ) : (
         <button
           type="button"
-          data-testid="logout-button"
-          onClick={() => void onLogout?.()}
+          data-testid="open-history"
+          onClick={() => onOpenHistory?.()}
         >
-          Logout
+          History
         </button>
-      )}
-      <button type="button" data-testid="new-metar" onClick={() => onNewMetar?.()}>
-        New
-      </button>
-      <button
-        type="button"
-        data-testid="open-catalog"
-        onClick={() => onOpenCatalog?.()}
-      >
-        Catalog
-      </button>
-      <button
-        type="button"
-        data-testid="open-catalog-with-code"
-        onClick={() => onOpenCatalog?.('lint', 'MISSING_TERMINATOR')}
-      >
-        Catalog with code
-      </button>
-      <button
-        type="button"
-        data-testid="session-updated"
-        onClick={() =>
-          onSessionUpdated?.({
-            id: 'updated-1',
-            status: 'wip',
-            deleted_at: null,
-          } as WorkSession)
-        }
-      >
-        Session updated
-      </button>
-      <button
-        type="button"
-        data-testid="active-session-id"
-        onClick={() => onActiveSessionIdChange?.('active-from-child')}
-      >
-        Set active
-      </button>
-      <button
-        type="button"
-        data-testid="load-session-fc"
-        onClick={() =>
-          onLoadWorkSession?.({
-            id: 'fc-sess',
-            status: 'wip',
-            deleted_at: null,
-          } as WorkSession)
-        }
-      >
-        Load FC
-      </button>
-    </div>
-  ),
+        {isGuest ? (
+          <button type="button" data-testid="sign-in-button" onClick={onRequestLogin}>
+            Sign in
+          </button>
+        ) : (
+          <button
+            type="button"
+            data-testid="logout-button"
+            onClick={() => void onLogout?.()}
+          >
+            Logout
+          </button>
+        )}
+        <button type="button" data-testid="new-metar" onClick={() => onNewMetar?.()}>
+          New
+        </button>
+        <button
+          type="button"
+          data-testid="open-catalog"
+          onClick={() => onOpenCatalog?.()}
+        >
+          Catalog
+        </button>
+        <button
+          type="button"
+          data-testid="open-catalog-with-code"
+          onClick={() => onOpenCatalog?.('lint', 'MISSING_TERMINATOR')}
+        >
+          Catalog with code
+        </button>
+        <button
+          type="button"
+          data-testid="session-updated"
+          onClick={() =>
+            onSessionUpdated?.({
+              id: 'updated-1',
+              status: 'wip',
+              deleted_at: null,
+            } as WorkSession)
+          }
+        >
+          Session updated
+        </button>
+        <button
+          type="button"
+          data-testid="active-session-id"
+          onClick={() => onActiveSessionIdChange?.('active-from-child')}
+        >
+          Set active
+        </button>
+        <button
+          type="button"
+          data-testid="load-session-fc"
+          onClick={() =>
+            onLoadWorkSession?.({
+              id: 'fc-sess',
+              status: 'wip',
+              deleted_at: null,
+            } as WorkSession)
+          }
+        >
+          Load FC
+        </button>
+      </div>
+    ),
   };
 });
 
@@ -410,6 +410,10 @@ vi.mock('./components/CodeNameDictionaryPage', () => ({
   ),
 }));
 
+vi.mock('./components/StationHealthPage', () => ({
+  StationHealthPage: () => <div data-testid="station-health-page">Station health</div>,
+}));
+
 vi.mock('./components/ThemeProvider', () => ({
   ThemeProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>,
 }));
@@ -634,6 +638,13 @@ describe('App Component (F31 optional Auth)', () => {
     await user.click(screen.getByTestId('shell-nav-glossary'));
     expect(screen.getByTestId('annex3-glossary-page')).toBeInTheDocument();
     expect(screen.getByTestId('shell-nav-glossary')).toHaveAttribute(
+      'aria-selected',
+      'true',
+    );
+
+    await user.click(screen.getByTestId('shell-nav-stations'));
+    expect(screen.getByTestId('station-health-page')).toBeInTheDocument();
+    expect(screen.getByTestId('shell-nav-stations')).toHaveAttribute(
       'aria-selected',
       'true',
     );

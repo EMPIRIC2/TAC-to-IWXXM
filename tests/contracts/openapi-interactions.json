@@ -1831,6 +1831,73 @@
       "request_fields": [],
       "response_fields": [],
       "covered_by": "apps/backend/tests/unit/test_exchange_admin.py"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/station-health",
+      "status": 200,
+      "request_fields": [],
+      "response_fields": [
+        "window",
+        "computed_at",
+        "stations",
+        "summary"
+      ],
+      "covered_by": "apps/backend/tests/unit/test_station_health_api.py"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/station-health",
+      "status": 422,
+      "request_fields": [],
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/unit/test_station_health_api.py"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/station-health/{icao}",
+      "status": 200,
+      "request_fields": [],
+      "response_fields": [
+        "icao",
+        "windows",
+        "record_count"
+      ],
+      "covered_by": "apps/backend/tests/unit/test_station_health_api.py"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/station-health/{icao}",
+      "status": 422,
+      "request_fields": [],
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/unit/test_station_health_api.py"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/station-health/metrics",
+      "status": 200,
+      "request_fields": [],
+      "response_fields": [
+        "metrics"
+      ],
+      "covered_by": "apps/backend/tests/unit/test_station_health_api.py"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/station-health",
+      "status": 400,
+      "request_fields": [],
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/unit/test_station_health_api.py"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/station-health/{icao}",
+      "status": 404,
+      "request_fields": [],
+      "response_fields": [],
+      "covered_by": "apps/backend/tests/unit/test_station_health_api.py"
     }
   ],
   "source": "consumer-tests"
