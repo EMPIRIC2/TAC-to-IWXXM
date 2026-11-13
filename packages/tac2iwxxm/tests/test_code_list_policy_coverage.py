@@ -78,3 +78,26 @@ def test_repo_root_walk(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None
     monkeypatch.setattr(policy, "_DEFAULT_REPO_ROOT", tmp_path / "no-profiles-here")
     root = policy._repo_root()
     assert (root / "config" / "profiles").is_dir()
+
+
+def test_repo_root_fallback_candidate(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    """Cover final return when no parent tree has config/profiles."""
+    monkeypatch.setattr(policy, "_DEFAULT_REPO_ROOT", tmp_path / "fallback")
+
+    class _Leaf:
+        def resolve(self) -> "_Leaf":
+            return self
+
+        @property
+        def parents(self) -> tuple[Path, ...]:
+            return (tmp_path / "alone",)
+
+    real_path_ctor = policy.Path
+
+    def _factory(*args, **kwargs):  # type: ignore[no-untyped-def]
+        if args:
+            return _Leaf()
+        return real_path_ctor(*args, **kwargs)
+
+    monkeypatch.setattr(policy, "Path", _factory)
+    assert policy._repo_root() == tmp_path / "fallback"
