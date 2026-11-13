@@ -24,7 +24,9 @@ def test_profiles_service_for_optional_auth_none() -> None:
 
 
 def test_profiles_service_for_optional_auth_success() -> None:
-    svc = helpers.profiles_service_for_optional_auth({"sub": "11111111-1111-1111-1111-111111111111"})
+    svc = helpers.profiles_service_for_optional_auth(
+        {"sub": "11111111-1111-1111-1111-111111111111"}
+    )
     assert svc is not None
 
 

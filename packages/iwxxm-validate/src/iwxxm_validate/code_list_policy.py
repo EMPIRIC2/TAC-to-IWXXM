@@ -114,7 +114,12 @@ class CodeListPolicy:
         token_u = token.strip().upper()
         area_l = area.strip().lower()
         for entry in self.entries:
-            if entry.area == area_l and entry.token.upper() == token_u and entry.kind in _EMIT_KINDS and entry.ca_uri:
+            if (
+                entry.area == area_l
+                and entry.token.upper() == token_u
+                and entry.kind in _EMIT_KINDS
+                and entry.ca_uri
+            ):
                 return entry.ca_uri
         return None
 

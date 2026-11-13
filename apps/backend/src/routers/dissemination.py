@@ -239,7 +239,9 @@ async def dissemination_send(
 
         profiles_for_lib: ConversionProfilesService | None = None
         if auth_user is not None:
-            profiles_for_lib = ConversionProfilesService(str(auth_user.get("sub") or auth_user.get("user_id")))
+            profiles_for_lib = ConversionProfilesService(
+                str(auth_user.get("sub") or auth_user.get("user_id"))
+            )
 
         def _custom_dissem_body(asset_id: str) -> dict[str, object] | None:
             """

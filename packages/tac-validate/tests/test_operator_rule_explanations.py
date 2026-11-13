@@ -182,7 +182,7 @@ def test_format_mutation_validation_permutations(
     needle: str,
     forbidden: str,
 ) -> None:
-    """Mutation × validation permutations for ``format_operator_message``."""
+    """Mutation x validation permutations for ``format_operator_message``."""
     text = format_operator_message(template, **kwargs)
     assert needle in text
     assert forbidden not in text
@@ -205,8 +205,13 @@ def test_issue_from_message_override_is_update_success() -> None:
     assert issue.code == "AMD_PRESENT"
 
 
-def test_issue_from_message_override_rejects_blank_as_keep_template() -> None:
-    """Update + validation fail path: blank override does not wipe template."""
-    issue = issue_from("AMD_PRESENT", product="TAF", message="")
-    # Empty string is falsy → registry keeps formatted template.
+def test_issue_from_none_message_keeps_formatted_template() -> None:
+    """Update + validation pass: ``message=None`` keeps formatted template."""
+    issue = issue_from("AMD_PRESENT", product="TAF", message=None)
     assert "amendment (AMD)" in issue.message
+
+
+def test_issue_from_blank_message_override_is_honored() -> None:
+    """Update edge: explicit empty override is stored (caller-owned)."""
+    issue = issue_from("AMD_PRESENT", product="TAF", message="")
+    assert issue.message == ""

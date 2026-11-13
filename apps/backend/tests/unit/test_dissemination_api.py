@@ -314,7 +314,9 @@ def test_send_wis2_success_mocked(client: TestClient, monkeypatch: pytest.Monkey
     assert resp.json()["ok"] is True
 
 
-def test_send_wis2_handle_merges_params_and_pops(client: TestClient, monkeypatch: pytest.MonkeyPatch) -> None:
+def test_send_wis2_handle_merges_params_and_pops(
+    client: TestClient, monkeypatch: pytest.MonkeyPatch
+) -> None:
     """Handle params merge into send params; successful send consumes the handle."""
     from dissemination.models import PreflightResponse, SendResponse
 
@@ -406,7 +408,9 @@ def test_send_wis2_egress_denied(client: TestClient, monkeypatch: pytest.MonkeyP
     assert resp.status_code == 403
 
 
-def test_send_wis2_unexpected_error_becomes_500(client: TestClient, monkeypatch: pytest.MonkeyPatch) -> None:
+def test_send_wis2_unexpected_error_becomes_500(
+    client: TestClient, monkeypatch: pytest.MonkeyPatch
+) -> None:
     async def _boom(_sink: str, _params: dict, **_kwargs):
         raise RuntimeError("broker down")
 
@@ -557,7 +561,9 @@ def test_preflight_unknown_template_id_returns_400(client: TestClient, monkeypat
             raise ValueError("bad template")
 
     api_module.app.dependency_overrides[verify_optional_supabase_token] = _auth
-    monkeypatch.setattr(diss_router, "profiles_service_for_optional_auth", lambda _auth: _Svc())
+    monkeypatch.setattr(
+        diss_router, "profiles_service_for_optional_auth", lambda _auth: _Svc()
+    )
 
     resp = client.post(
         "/api/v1/dissemination/preflight",
@@ -587,7 +593,9 @@ def test_preflight_template_applies_defaults_and_explicit_fields_win(
             return template
 
     api_module.app.dependency_overrides[verify_optional_supabase_token] = _auth
-    monkeypatch.setattr(diss_router, "profiles_service_for_optional_auth", lambda _auth: _Svc())
+    monkeypatch.setattr(
+        diss_router, "profiles_service_for_optional_auth", lambda _auth: _Svc()
+    )
     monkeypatch.setattr(diss_router, "run_db_preflight", _ok)
     uri = _sqlite_uri(tmp_path)
     resp = client.post(
@@ -639,7 +647,9 @@ def test_send_unknown_template_id_returns_400(client: TestClient, monkeypatch: p
             raise ValueError("bad template")
 
     api_module.app.dependency_overrides[verify_optional_supabase_token] = _auth
-    monkeypatch.setattr(diss_router, "profiles_service_for_optional_auth", lambda _auth: _Svc())
+    monkeypatch.setattr(
+        diss_router, "profiles_service_for_optional_auth", lambda _auth: _Svc()
+    )
 
     resp = client.post(
         "/api/v1/dissemination/send",
@@ -673,7 +683,9 @@ def test_send_template_applies_defaults(client: TestClient, monkeypatch: pytest.
             return template
 
     api_module.app.dependency_overrides[verify_optional_supabase_token] = _auth
-    monkeypatch.setattr(diss_router, "profiles_service_for_optional_auth", lambda _auth: _Svc())
+    monkeypatch.setattr(
+        diss_router, "profiles_service_for_optional_auth", lambda _auth: _Svc()
+    )
     monkeypatch.setattr(diss_router, "run_db_preflight", _ok)
     uri = _sqlite_uri(tmp_path)
     resp = client.post(
