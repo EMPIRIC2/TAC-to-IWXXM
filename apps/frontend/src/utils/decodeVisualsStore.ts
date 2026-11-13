@@ -1,5 +1,5 @@
 /**
- * Last station and decode rows shared by Convert and Decode visuals.
+ * Last station and decode rows shared by Convert and Live map.
  */
 
 /**
@@ -16,7 +16,7 @@ const EMPTY: DecodeVisualsSnapshot = { station: '', segments: [] };
 let snapshot: DecodeVisualsSnapshot = EMPTY;
 const listeners = new Set<() => void>();
 
-/** Station typed on Decode visuals. Survives leaving the tab. */
+/** Station typed on Live map. Survives leaving the tab. */
 let stationDraft: string | null = null;
 const draftListeners = new Set<() => void>();
 
@@ -59,7 +59,7 @@ export function subscribeDecodeVisuals(listener: () => void): () => void {
 }
 
 /**
- * Station typed on Decode visuals, or null when the published station is showing.
+ * Station typed on Live map, or null when the published station is showing.
  *
  * @returns Draft station text
  * @example
@@ -70,7 +70,7 @@ export function readStationDraft(): string | null {
 }
 
 /**
- * Remember a station typed on Decode visuals.
+ * Remember a station typed on Live map.
  *
  * @param next - Draft text, or null to follow the published station
  * @example

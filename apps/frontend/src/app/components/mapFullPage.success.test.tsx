@@ -1,5 +1,5 @@
 /**
- * Decode visuals full-page success paths (map Send handoff + station focus).
+ * Live map full-page success paths (map Send handoff + station focus).
  */
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';

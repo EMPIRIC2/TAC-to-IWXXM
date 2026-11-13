@@ -1,5 +1,5 @@
 /**
- * Map-as-full-page regressions: shell Decode visuals nav + DecodeVisualsPage map/search.
+ * Map-as-full-page regressions: shell Live map nav + DecodeVisualsPage map/search.
  *
  * [Corpus: ui-style] [Corpus: tests] [Corpus: product §F37]
  */
@@ -24,13 +24,16 @@ describe('mapFullPage regression', () => {
     publishDecodeVisuals({ station: '', segments: [] });
   });
 
-  it('AppShellNav exposes shell-nav-visuals with Decode visuals label', () => {
+  it('AppShellNav exposes shell-nav-visuals with Live map label', () => {
     render(<AppShellNav activeView="converter" onNavigate={() => undefined} />);
 
     expect(screen.getByTestId('shell-nav-visuals')).toHaveTextContent(
       SHELL_NAV_LABELS.visuals,
     );
-    expect(screen.getByTestId('shell-nav-visuals')).toHaveTextContent('Decode visuals');
+    expect(screen.getByTestId('shell-nav-visuals')).toHaveTextContent('Live map');
+    expect(screen.getByTestId('shell-nav-visuals')).not.toHaveTextContent(
+      'Decode visuals',
+    );
   });
 
   it('DecodeVisualsPage renders live-world-map and station search', () => {

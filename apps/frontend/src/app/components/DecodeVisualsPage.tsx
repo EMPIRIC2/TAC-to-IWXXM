@@ -1,5 +1,5 @@
 /**
- * Full-page Decode visuals: live TAC map, station search, and wind cue (F37 / F9).
+ * Full-page Live map: live TAC map, station search, and wind cue (F37 / F9).
  */
 
 import { useSyncExternalStore } from 'react';

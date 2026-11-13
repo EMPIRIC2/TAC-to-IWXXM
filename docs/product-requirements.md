@@ -85,7 +85,7 @@ Status values: Implemented, In progress, Planned, Superseded, Deprecated, Done.
 | Contract and mutation quality gates | Done | Contract and mutation gates run in CI |
 | Semantic vs exchange profiles | Implemented | Profiles separate semantic content from exchange packaging |
 | National and regional profiles | In progress | National semantic and regional exchange profiles |
-| Live TAC map on Decode | In progress | Shell Decode visuals full page is primary; Results Map tab stays an embedded twin |
+| Live TAC map on Decode | In progress | Shell Live map full page is primary; Results Map tab stays an embedded twin |
 | Station health dashboard | In progress | Public station availability and quality grades over 6 hours, 1 day, and 1 month; product breakdown; extensible metrics registry (deepens airport data, ingest, TAC quality, and operator shell) |
 | Monorepo layout | Implemented | `apps/`, `packages/`, and `vendor/` |
 | Vendor snapshot sync | Planned | Upstream IWXXM schema sync |
