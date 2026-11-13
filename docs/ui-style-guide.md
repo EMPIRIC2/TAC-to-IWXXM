@@ -47,6 +47,7 @@ Apply these norms when you change the operator UI.
 - Recent work stays a right-column sidebar at every viewport width (collapsed rail or expanded panel). Do not stack it under the convert body on narrow / portrait layouts.
 - Shell primary nav includes Decode visuals for the full-page live TAC map; Results → Map remains an embedded twin with an Open Decode visuals affordance.
 - Live map station cards: product + station in a compact header, observation-time select (not Newer/Earlier pills), TAC collapsed by default, explicit Send to converter via the existing map→workbench handoff.
+- Live map TAC overlays (precip, temperature, wind vector, wind intensity, thunder, ice) are independent toggles beside product layers; same-station reports share one cluster point then a report picker — not fan-out pins.
 - Workbench Help Preferences chrome and the User Preferences modal use dark outline controls (primary blue border, transparent fill). Preferences stays display-name + output-extension only (no validation knobs).
 
 ## Copy / tone
@@ -123,3 +124,4 @@ Record the test path and red/green dates on `docs/ui-ux-tweaks/UX-YYYY-MM-DD-*.m
 | 2026-11-12 | [UX-2026-11-12-vertical-sidebar](ui-ux-tweaks/UX-2026-11-12-vertical-sidebar.md) | Recent work stays a right-column sidebar at every viewport width; do not stack it under the convert body on narrow / portrait layouts. |
 | 2026-11-12 | [UX-2026-11-12-map-full-page](ui-ux-tweaks/UX-2026-11-12-map-full-page.md) | Shell primary nav exposes Decode visuals as the full-page live TAC map home; Results → Map stays an embedded twin with Open Decode visuals chrome. |
 | 2026-11-12 | [UX-2026-11-12-code-name-dictionary](ui-ux-tweaks/UX-2026-11-12-code-name-dictionary.md) | Primary shell **Code names** tab: searchable dictionary table with Product / Country / WMO amendment filters; additive nav peer to Convert, History, and Rule catalogs (not nested under Rule catalogs). |
+| 2026-11-13 | [UX-2026-11-13-decode-map-tac-layers](ui-ux-tweaks/UX-2026-11-13-decode-map-tac-layers.md) | Live map TAC overlays (precip, temperature, wind vector, wind intensity, thunder, ice) are independent toggles beside product layers; same-station reports share one cluster point then a report picker — not fan-out pins. |

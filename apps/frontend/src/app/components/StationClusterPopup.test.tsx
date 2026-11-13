@@ -1,0 +1,74 @@
+/**
+ * Same-station cluster → report picker.
+ */
+
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { describe, expect, it, vi } from 'vitest';
+import type { LivePlace } from '@/utils/liveMap';
+import { clusterByStation } from '@/utils/liveMapStationCluster';
+import { StationClusterPopup } from './StationClusterPopup';
+
+const metar: LivePlace = {
+  place_key: 'KJFK',
+  product: 'metar',
+  latitude: 40.6,
+  longitude: -73.8,
+  reports: [
+    { observed_at: '2026-11-13T12:00:00Z', tac: 'METAR KJFK 18012KT' },
+    { observed_at: '2026-11-13T11:00:00Z', tac: 'METAR KJFK 17010KT' },
+  ],
+};
+
+const speci: LivePlace = {
+  place_key: 'KJFK',
+  product: 'speci',
+  latitude: 40.6,
+  longitude: -73.8,
+  reports: [{ observed_at: '2026-11-13T12:15:00Z', tac: 'SPECI KJFK 19008KT' }],
+};
+
+describe('StationClusterPopup', () => {
+  it('lists cluster reports and loads the picked TAC into the converter', async () => {
+    const user = userEvent.setup();
+    const onLoad = vi.fn();
+    const cluster = clusterByStation([metar, speci])[0];
+    expect(cluster).toBeDefined();
+    if (!cluster) {
+      return;
+    }
+    render(<StationClusterPopup cluster={cluster} onLoad={onLoad} />);
+    const pick = screen.getByTestId('live-map-cluster-pick');
+    expect(pick).toBeInTheDocument();
+    expect(screen.getByTestId('live-map-cluster')).toBeInTheDocument();
+    const second = (pick as HTMLSelectElement).options[1]?.value;
+    expect(second).toBeDefined();
+    await user.selectOptions(pick, second ?? '');
+    await user.click(screen.getByTestId('live-map-send-to-converter'));
+    expect(onLoad).toHaveBeenCalled();
+    const sent = String(onLoad.mock.calls[0]?.[0] ?? '');
+    expect(sent.length).toBeGreaterThan(0);
+  });
+
+  it('shows a calm empty state when the cluster has no reports', () => {
+    render(
+      <StationClusterPopup
+        cluster={{
+          stationKey: 'KJFK',
+          latitude: 40,
+          longitude: -70,
+          members: [
+            {
+              place_key: 'KJFK',
+              product: 'metar',
+              latitude: 40,
+              longitude: -70,
+              reports: [],
+            },
+          ],
+        }}
+      />,
+    );
+    expect(screen.getByTestId('live-map-cluster-empty')).toBeInTheDocument();
+  });
+});

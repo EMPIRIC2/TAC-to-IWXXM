@@ -10,6 +10,23 @@ import { OSM_TILE_ATTRIBUTION, OSM_TILE_URL } from '@/utils/mapTileAttribution';
 import { LiveWorldMap, StationPopup } from './LiveWorldMap';
 
 /**
+ * Read a `<select>` option value, failing closed when the index is empty.
+ *
+ * @param select - Select element
+ * @param index - Option index
+ * @returns Option value
+ * @example
+ * selectOptionValue(select, 0);
+ */
+function selectOptionValue(select: HTMLSelectElement, index: number): string {
+  const option = select.options.item(index);
+  if (!option) {
+    throw new Error(`expected option at index ${index}`);
+  }
+  return option.value;
+}
+
+/**
  * Wait until a polygon has been drawn.
  *
  * @example
@@ -82,10 +99,13 @@ const marker = {
   }),
   remove: vi.fn(),
   bindPopup: vi.fn((node: HTMLElement) => {
-    document.querySelectorAll('[data-testid="live-map-detail"]').forEach((el) => {
-      el.parentElement?.remove();
-    });
-    document.body.append(node);
+    let host = document.getElementById('live-map-popup-test-host');
+    if (!host) {
+      host = document.createElement('div');
+      host.id = 'live-map-popup-test-host';
+      document.body.append(host);
+    }
+    host.replaceChildren(node);
     return marker;
   }),
   openPopup: vi.fn(),
@@ -214,9 +234,7 @@ describe('LiveWorldMap', () => {
     vi.mocked(window.setInterval).mockRestore();
     vi.useRealTimers();
     cleanup();
-    document.querySelectorAll('[data-testid="live-map-detail"]').forEach((el) => {
-      el.parentElement?.remove();
-    });
+    document.getElementById('live-map-popup-test-host')?.replaceChildren();
     clicks.length = 0;
     hovers.length = 0;
     map.panBy.mockClear();
@@ -431,9 +449,11 @@ describe('LiveWorldMap', () => {
     circleLayer._radius = 10;
     expect(circleLayer._containsPoint({ distanceTo: () => 10 } as never)).toBe(true);
     expect(circleLayer._containsPoint({ distanceTo: () => 40 } as never)).toBe(false);
-    expect(L.circleMarker).toHaveBeenCalledWith(
-      expect.any(Array),
-      expect.objectContaining({ interactive: false, radius: 4 }),
+    expect(L.divIcon).toHaveBeenCalledWith(
+      expect.objectContaining({
+        className: expect.stringContaining('live-map-cluster-chip'),
+        html: expect.stringContaining('2'),
+      }),
     );
     expect(canvasUpdate).toHaveBeenCalled();
     await waitFor(() => expect(clicks.length).toBeGreaterThan(0));
@@ -444,7 +464,7 @@ describe('LiveWorldMap', () => {
       'not validated for operational use',
     );
     expect(screen.getByTestId('live-map-product')).toHaveTextContent('METAR');
-    expect(screen.getByTestId('live-map-issue-time')).toHaveDisplayValue('newest');
+    expect(screen.getByTestId('live-map-cluster-pick')).toBeInTheDocument();
     expect(screen.getByTestId('live-map-station')).toHaveTextContent('KJFK');
     expect(screen.getByTestId('live-map-card')).toHaveAttribute('data-layout', 'side');
     expect(screen.getByTestId('live-map-detail')).toHaveTextContent('KJFK');
@@ -622,6 +642,7 @@ describe('LiveWorldMap', () => {
     );
     const onOpenPlace = vi.fn();
     render(<LiveWorldMap onOpenPlace={onOpenPlace} />);
+    await waitFor(() => expect(L.circleMarker).toHaveBeenCalled());
     await waitFor(() => expect(hovers.length).toBeGreaterThan(1));
     act(() => {
       hovers[0]?.();
@@ -631,15 +652,18 @@ describe('LiveWorldMap', () => {
     });
     expect(screen.getByTestId('live-map-card')).toHaveAttribute('data-layout', 'stack');
     expect(screen.getByTestId('live-map-product')).toHaveTextContent('METAR');
-    expect(screen.getByTestId('live-map-issue-time')).toHaveDisplayValue('newest');
+    expect(screen.getByTestId('live-map-cluster-pick')).toBeInTheDocument();
     expect(onOpenPlace).not.toHaveBeenCalled();
-    await user.selectOptions(screen.getByTestId('live-map-issue-time'), '1');
+    const pickOne = screen.getByTestId('live-map-cluster-pick') as HTMLSelectElement;
+    await user.selectOptions(pickOne, selectOptionValue(pickOne, 1));
     await user.click(screen.getByTestId('live-map-tac-toggle'));
     expect(screen.getByTestId('live-map-tac')).toHaveTextContent('VRB03KT');
     expect(onOpenPlace).not.toHaveBeenCalled();
-    await user.selectOptions(screen.getByTestId('live-map-issue-time'), '0');
+    const pickTwo = screen.getByTestId('live-map-cluster-pick') as HTMLSelectElement;
+    await user.selectOptions(pickTwo, selectOptionValue(pickTwo, 0));
     expect(screen.getByTestId('live-map-tac')).toHaveTextContent('18012KT');
-    await user.selectOptions(screen.getByTestId('live-map-issue-time'), '1');
+    const pickThree = screen.getByTestId('live-map-cluster-pick') as HTMLSelectElement;
+    await user.selectOptions(pickThree, selectOptionValue(pickThree, 1));
     await user.click(screen.getByTestId('live-map-send-to-converter'));
     expect(onOpenPlace).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -658,7 +682,7 @@ describe('LiveWorldMap', () => {
     expect(onOpenPlace).toHaveBeenCalledTimes(1);
   });
 
-  it('offsets shared airport dots, chips them, and fades earlier copies', async () => {
+  it('clusters same-station products into one point with a count chip', async () => {
     vi.stubGlobal(
       'fetch',
       vi.fn().mockResolvedValue({
@@ -692,18 +716,14 @@ describe('LiveWorldMap', () => {
     });
     await waitFor(() => expect(L.divIcon).toHaveBeenCalled());
     expect(L.circleMarker).toHaveBeenCalledWith(
-      [40.6, expect.closeTo(-73.74, 2)],
-      expect.objectContaining({ fillOpacity: 0.45 }),
-    );
-    expect(L.circleMarker).toHaveBeenCalledWith(
-      [40.6, expect.closeTo(-73.66, 2)],
-      expect.anything(),
+      [40.6, -73.7],
+      expect.objectContaining({ fillOpacity: 1, radius: 6 }),
     );
     expect(L.divIcon).toHaveBeenCalledWith(
-      expect.objectContaining({ html: expect.stringContaining('METAR') }),
-    );
-    expect(L.divIcon).toHaveBeenCalledWith(
-      expect.objectContaining({ html: expect.stringContaining('TAF') }),
+      expect.objectContaining({
+        className: expect.stringContaining('live-map-cluster-chip'),
+        html: expect.stringContaining('3'),
+      }),
     );
     act(() => {
       hovers[0]?.();
@@ -718,19 +738,26 @@ describe('LiveWorldMap', () => {
       expect.objectContaining({ weight: 2 }),
     );
     act(() => {
-      clicks[1]?.();
+      hovers[0]?.();
     });
-    act(() => {
-      clicks[1]?.();
-    });
+    const clusterUser = userEvent.setup();
+    const clusterPick = screen.getByTestId('live-map-cluster-pick') as HTMLSelectElement;
+    const tafOption = [...clusterPick.options].find((option) =>
+      option.textContent?.includes('TAF'),
+    );
+    if (!tafOption) {
+      throw new Error('expected a TAF cluster option');
+    }
+    await clusterUser.selectOptions(clusterPick, tafOption.value);
+    await clusterUser.click(screen.getByTestId('live-map-send-to-converter'));
     expect(onOpenPlace).toHaveBeenCalledWith(
       expect.objectContaining({ product: 'taf' }),
     );
     act(() => {
-      hovers[2]?.();
+      hovers[1]?.();
     });
     act(() => {
-      leaves[2]?.();
+      leaves[1]?.();
     });
     expect(screen.getByTestId('live-map-station')).toHaveTextContent('Area');
   });
