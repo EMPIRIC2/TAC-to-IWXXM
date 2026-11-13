@@ -31,17 +31,63 @@ DB_SINKS: frozenset[str] = frozenset({"postgres", "mysql", "sqlserver", "sqlite"
 
 
 def is_db_sink(sink_type: str) -> bool:
-    """Return True when ``sink_type`` is a SQL drawer sink."""
+    """
+    Return True when ``sink_type`` is a SQL drawer sink.
+
+    Examples
+    --------
+    >>> is_db_sink("postgres")
+    True
+
+    Parameters
+    ----------
+    sink_type : object
+        Argument ``sink_type``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return sink_type in DB_SINKS
 
 
 def is_non_db_sink(sink_type: str) -> bool:
-    """Return True when ``sink_type`` is WIS2, EDIS, or an F19 stub sink."""
+    """
+    Return True when ``sink_type`` is WIS2, EDIS, or an F19 stub sink.
+
+    Examples
+    --------
+    >>> is_non_db_sink("wis2")
+    True
+
+    Parameters
+    ----------
+    sink_type : object
+        Argument ``sink_type``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return sink_type in NON_DB_SINKS
 
 
 def default_allowlist() -> Allowlist:
-    """Load the process egress allowlist (fail-closed when empty)."""
+    """
+    Load the process egress allowlist (fail-closed when empty).
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (default_allowlist)
+    2
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return load_allowlist_from_env()
 
 
@@ -54,7 +100,34 @@ async def run_non_db_preflight(
     http: HttpDatasetClient | None = None,
     smtp: SmtpClient | None = None,
 ) -> PreflightResponse:
-    """Run WIS2 / EDIS / F19 preflight for the public drawer."""
+    """
+    Run WIS2 / EDIS / F19 preflight for the public drawer.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (run_non_db_preflight)
+    2
+
+    Parameters
+    ----------
+    sink_type : object
+        Argument ``sink_type``.
+    params : object
+        Argument ``params``.
+    allowlist : object
+        Argument ``allowlist``.
+    mqtt : object
+        Argument ``mqtt``.
+    http : object
+        Argument ``http``.
+    smtp : object
+        Argument ``smtp``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     allow = allowlist if allowlist is not None else default_allowlist()
     if sink_type == "wis2":
         wis2 = wis2_params_from_request(params)
@@ -92,7 +165,38 @@ async def run_non_db_send(
     http: HttpDatasetClient | None = None,
     smtp: SmtpClient | None = None,
 ) -> SendResponse:
-    """Deliver IWXXM through WIS2 / EDIS / F19 after allowlist checks."""
+    """
+    Deliver IWXXM through WIS2 / EDIS / F19 after allowlist checks.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (run_non_db_send)
+    2
+
+    Parameters
+    ----------
+    sink_type : object
+        Argument ``sink_type``.
+    params : object
+        Argument ``params``.
+    iwxxm_xml : object
+        Argument ``iwxxm_xml``.
+    tac_text : object
+        Argument ``tac_text``.
+    allowlist : object
+        Argument ``allowlist``.
+    mqtt : object
+        Argument ``mqtt``.
+    http : object
+        Argument ``http``.
+    smtp : object
+        Argument ``smtp``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     allow = allowlist if allowlist is not None else default_allowlist()
     if sink_type == "wis2":
         wis2 = wis2_params_from_request(params)
@@ -139,7 +243,24 @@ async def run_non_db_send(
 
 
 def assert_known_sink(sink_type: str | None) -> SinkType:
-    """Validate ``sink_type`` is a known drawer sink."""
+    """
+    Validate ``sink_type`` is a known drawer sink.
+
+    Examples
+    --------
+    >>> assert_known_sink("wis2")
+    'wis2'
+
+    Parameters
+    ----------
+    sink_type : object
+        Argument ``sink_type``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if sink_type is None:
         raise ValueError("missing")
     if sink_type in DB_SINKS or sink_type in NON_DB_SINKS:

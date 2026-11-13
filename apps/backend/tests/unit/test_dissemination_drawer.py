@@ -61,9 +61,66 @@ def test_edis_params_validation_missing() -> None:
 
 
 def test_f19_params_success() -> None:
-    params = f19_params_from_request("amhs", {"host": "amhs.example", "port": 102})
+    params = f19_params_from_request("amhs", {"host": "amhs.example", "port": "102"})
     assert params.host == "amhs.example"
     assert params.port == 102
+
+
+def test_f19_params_validation_bad_sink() -> None:
+    with pytest.raises(ValueError, match="not an F19"):
+        f19_params_from_request("wis2", {"host": "x"})
+
+
+def test_f19_params_validation_missing_host() -> None:
+    with pytest.raises(ValueError, match="require host"):
+        f19_params_from_request("swim", {"port": 1})
+
+
+def test_edis_params_success() -> None:
+    params = edis_params_from_request(
+        {
+            "smtp_host": "smtp.example",
+            "mail_from": "a@b.c",
+            "mail_to": "d@e.f",
+            "tt": "SA",
+            "aa": "XX",
+            "ii": "01",
+            "cccc": "KABC",
+            "yygggg": "121200",
+            "use_tls": "yes",
+            "smtp_port": "bad",
+        }
+    )
+    assert params.smtp_host == "smtp.example"
+    assert params.use_tls is True
+    assert params.smtp_port == 587
+
+
+def test_wis2_params_bool_and_int_branches() -> None:
+    params = wis2_params_from_request(
+        {
+            "mqtt_host": "wis2box",
+            "mqtt_topic": "t",
+            "dataset_url": "http://127.0.0.1/ds",
+            "mqtt_port": "not-int",
+            "use_tls": "off",
+            "mqtt_username": "u",
+            "mqtt_password": "p",
+        }
+    )
+    assert params.mqtt_port == 8883
+    assert params.use_tls is False
+    params2 = wis2_params_from_request(
+        {
+            "mqtt_host": "wis2box",
+            "mqtt_topic": "t",
+            "dataset_url": "http://127.0.0.1/ds",
+            "use_tls": True,
+            "mqtt_port": 1883,
+        }
+    )
+    assert params2.use_tls is True
+    assert params2.mqtt_port == 1883
 
 
 @pytest.mark.asyncio

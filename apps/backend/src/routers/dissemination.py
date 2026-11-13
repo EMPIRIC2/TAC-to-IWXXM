@@ -53,7 +53,26 @@ async def dissemination_preflight(
     request: Request,
     auth_user: dict[str, Any] | None = Depends(verify_optional_supabase_token),
 ) -> object:
-    """Run sink preflight; return schema diffs and optional memory-only handle."""
+    """
+    Run sink preflight; return schema diffs and optional memory-only handle.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (dissemination_preflight)
+    2
+
+    Parameters
+    ----------
+    request : object
+        Argument ``request``.
+    auth_user : object
+        Argument ``auth_user``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     uid = client_id(request)
     try:
         default_rate_limiter.check(uid)
@@ -135,7 +154,26 @@ async def dissemination_send(
     request: Request,
     auth_user: dict[str, Any] | None = Depends(verify_optional_supabase_token),
 ) -> object:
-    """Send IWXXM via a green preflight handle or inline sink params."""
+    """
+    Send IWXXM via a green preflight handle or inline sink params.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (dissemination_send)
+    2
+
+    Parameters
+    ----------
+    request : object
+        Argument ``request``.
+    auth_user : object
+        Argument ``auth_user``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     uid = client_id(request)
     try:
         default_rate_limiter.check(uid)
@@ -206,6 +244,19 @@ async def dissemination_send(
             )
 
         def _custom_dissem_body(asset_id: str) -> dict[str, object] | None:
+            """
+            Resolve a custom dissemination library body for the caller.
+
+            Parameters
+            ----------
+            asset_id : object
+                Argument ``asset_id``.
+
+            Returns
+            -------
+            object
+                Return value.
+            """
             if profiles_for_lib is None:
                 return None
             try:

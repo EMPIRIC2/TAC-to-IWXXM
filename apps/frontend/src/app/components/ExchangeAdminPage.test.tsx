@@ -80,4 +80,33 @@ describe('ExchangeAdminPage', () => {
       await screen.findByTestId('exchange-admin-allowlist-empty'),
     ).toBeInTheDocument();
   });
+
+  it('failure: group select surfaces save error', async () => {
+    const user = userEvent.setup();
+    vi.mocked(api.fetchInvitationGroups).mockResolvedValue([
+      { id: 'group-demo-a', name: 'Demo Centre A', centre_id: 'demo-a' },
+      { id: 'group-demo-b', name: 'Demo Centre B', centre_id: 'demo-b' },
+    ]);
+    vi.mocked(api.selectInvitationGroup).mockRejectedValue(new Error('group save failed'));
+    render(<ExchangeAdminPage token="tok" />);
+    await screen.findByTestId('exchange-admin-allowlist');
+    await user.selectOptions(screen.getByTestId('exchange-admin-group'), 'group-demo-b');
+    expect(await screen.findByTestId('exchange-admin-error')).toHaveTextContent(
+      'group save failed',
+    );
+  });
+
+  it('failure: remarks toggle rolls back on error', async () => {
+    const user = userEvent.setup();
+    vi.mocked(api.setNationalRemarks).mockRejectedValue(new Error('remarks save failed'));
+    render(<ExchangeAdminPage token="tok" />);
+    await screen.findByTestId('exchange-admin-allowlist');
+    const box = screen.getByTestId('exchange-admin-remarks');
+    expect(box).not.toBeChecked();
+    await user.click(box);
+    expect(await screen.findByTestId('exchange-admin-error')).toHaveTextContent(
+      'remarks save failed',
+    );
+    expect(box).not.toBeChecked();
+  });
 });

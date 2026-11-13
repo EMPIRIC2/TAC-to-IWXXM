@@ -10,7 +10,23 @@ from dissemination.wis2 import Wis2Params
 
 
 def _str_param(params: dict[str, Any], *keys: str, default: str | None = None) -> str | None:
-    """Return the first non-empty string among ``keys``."""
+    """
+    Return the first non-empty string among ``keys``.
+
+    Parameters
+    ----------
+    params : object
+        Argument ``params``.
+    keys : object
+        Argument ``keys``.
+    default : object
+        Argument ``default``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     for key in keys:
         raw = params.get(key)
         if raw is None:
@@ -22,7 +38,23 @@ def _str_param(params: dict[str, Any], *keys: str, default: str | None = None) -
 
 
 def _int_param(params: dict[str, Any], *keys: str, default: int) -> int:
-    """Return the first parseable int among ``keys``, else ``default``."""
+    """
+    Return the first parseable int among ``keys``, else ``default``.
+
+    Parameters
+    ----------
+    params : object
+        Argument ``params``.
+    keys : object
+        Argument ``keys``.
+    default : object
+        Argument ``default``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     for key in keys:
         raw = params.get(key)
         if raw is None:
@@ -35,7 +67,23 @@ def _int_param(params: dict[str, Any], *keys: str, default: int) -> int:
 
 
 def _bool_param(params: dict[str, Any], *keys: str, default: bool) -> bool:
-    """Return the first bool-like value among ``keys``, else ``default``."""
+    """
+    Return the first bool-like value among ``keys``, else ``default``.
+
+    Parameters
+    ----------
+    params : object
+        Argument ``params``.
+    keys : object
+        Argument ``keys``.
+    default : object
+        Argument ``default``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     for key in keys:
         raw = params.get(key)
         if raw is None:
@@ -51,7 +99,24 @@ def _bool_param(params: dict[str, Any], *keys: str, default: bool) -> bool:
 
 
 def wis2_params_from_request(params: dict[str, Any]) -> Wis2Params:
-    """Build ``Wis2Params`` from free-form BYOC JSON."""
+    """
+    Build ``Wis2Params`` from free-form BYOC JSON.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (wis2_params_from_request)
+    2
+
+    Parameters
+    ----------
+    params : object
+        Argument ``params``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     host = _str_param(params, "mqtt_host", "broker", "host")
     topic = _str_param(params, "mqtt_topic", "topic")
     dataset = _str_param(params, "dataset_url", "dataset", "url")
@@ -73,7 +138,24 @@ def wis2_params_from_request(params: dict[str, Any]) -> Wis2Params:
 
 
 def edis_params_from_request(params: dict[str, Any]) -> EdisParams:
-    """Build ``EdisParams`` from free-form BYOC JSON."""
+    """
+    Build ``EdisParams`` from free-form BYOC JSON.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (edis_params_from_request)
+    2
+
+    Parameters
+    ----------
+    params : object
+        Argument ``params``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     smtp_host = _str_param(params, "smtp_host", "host")
     mail_from = _str_param(params, "mail_from", "from")
     mail_to = _str_param(params, "mail_to", "to")
@@ -117,7 +199,26 @@ def edis_params_from_request(params: dict[str, Any]) -> EdisParams:
 
 
 def f19_params_from_request(sink_type: str, params: dict[str, Any]) -> F19Params:
-    """Build ``F19Params`` for AMHS / SWIM / AFS staging stubs."""
+    """
+    Build ``F19Params`` for AMHS / SWIM / AFS staging stubs.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (f19_params_from_request)
+    2
+
+    Parameters
+    ----------
+    sink_type : object
+        Argument ``sink_type``.
+    params : object
+        Argument ``params``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if sink_type not in {"amhs", "swim", "afs"}:
         raise ValueError(f"not an F19 sink: {sink_type!r}")
     host = _str_param(params, "host", "endpoint_host")

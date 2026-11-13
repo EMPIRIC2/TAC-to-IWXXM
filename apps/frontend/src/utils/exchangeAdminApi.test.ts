@@ -1,6 +1,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import {
   fetchExchangeAllowlist,
+  fetchExchangePrefs,
   fetchInvitationGroups,
   selectInvitationGroup,
   setNationalRemarks,
@@ -80,5 +81,17 @@ describe('exchangeAdminApi', () => {
     });
     const remarks = await setNationalRemarks('tok', true);
     expect(remarks.include_national_remarks).toBe(true);
+
+    fetchMock.mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({
+        include_national_remarks: false,
+        invitation_group_id: 'group-demo-a',
+        admin_replay: false,
+        sink_scope: 'wis2',
+      }),
+    });
+    const prefsOnly = await fetchExchangePrefs('tok');
+    expect(prefsOnly.sink_scope).toBe('wis2');
   });
 });

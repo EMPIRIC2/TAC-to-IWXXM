@@ -64,11 +64,12 @@ def test_bug_2026_09_09_missing_sink_type_is_422(
     assert "sink_type" in str(detail).lower()
 
 
-def test_bug_2026_09_09_unimplemented_sink_still_501(client: TestClient) -> None:
-    """Known drawer sinks that are not live on this route remain 501."""
+def test_bug_2026_09_09_wis2_missing_params_is_400(client: TestClient) -> None:
+    """WIS2 is live on the drawer; incomplete BYOC params return 400 (not 501)."""
     resp = client.post(
         "/api/v1/dissemination/preflight",
         content=json.dumps({"sink_type": "wis2", "uri": "mqtt://example.com"}),
         headers={"Content-Type": "application/json", "Authorization": "Bearer t"},
     )
-    assert resp.status_code == 501, resp.text
+    assert resp.status_code == 400, resp.text
+    assert "mqtt_host" in resp.text or "broker" in resp.text
