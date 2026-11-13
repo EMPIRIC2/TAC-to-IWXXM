@@ -1,8 +1,4 @@
-"""Postgres-backed station health reads and writes (F39).
-
-Uses ``DATABASE_URL`` product Postgres. Grades are computed from
-``station_tac_records`` on read (same rules as the in-memory store).
-"""
+"""Postgres-backed station health reads and writes (F39)."""
 
 from __future__ import annotations
 
@@ -14,14 +10,17 @@ from typing import Any
 from sqlalchemy import create_engine, text
 from sqlalchemy.engine import Engine
 
+from src.services.station_health_aggregate import (
+    grade_products_from_records,
+    overall_from_products,
+    row_to_station_record,
+)
 from src.services.station_health_metrics import (
     WINDOW_SECONDS,
     count_solidus_signals,
-    grade_product_window,
-    letter_grade,
     window_timedelta,
 )
-from src.services.station_health_store import DEFAULT_METRICS, StationRecord
+from src.services.station_health_types import DEFAULT_METRICS, StationRecord
 
 logger = logging.getLogger(__name__)
 
@@ -29,16 +28,6 @@ logger = logging.getLogger(__name__)
 def sync_database_url(raw: str | None = None) -> str | None:
     """
     Normalize ``DATABASE_URL`` for sync SQLAlchemy (psycopg).
-
-    Parameters
-    ----------
-    raw : object
-        Argument ``raw``.
-
-    Returns
-    -------
-    object
-        Return value.
 
     Examples
     --------
@@ -62,72 +51,21 @@ def sync_database_url(raw: str | None = None) -> str | None:
 
 
 class PostgresStationHealthStore:
-    """
-    Station health store backed by product Postgres tables.
-
-    Attributes
-    ----------
-    _ : object
-        Field ``_``.
-    """
+    """Station health store backed by product Postgres tables."""
 
     def __init__(self, engine: Engine) -> None:
-        """
-        Internal helper ``__init__``.
-
-        Parameters
-        ----------
-        engine : object
-            Argument ``engine``.
-        """
         self._engine = engine
 
     @classmethod
     def from_url(cls, url: str) -> PostgresStationHealthStore:
-        """
-        Build a store from a sync database URL.
-
-        Parameters
-        ----------
-        url : object
-            Argument ``url``.
-
-        Returns
-        -------
-        object
-            Return value.
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (from_url)
-        2
-        """
+        """Build a store from a sync database URL."""
         return cls(create_engine(url, pool_pre_ping=True))
 
     def reset(self) -> None:
-        """
-        No-op for API compatibility with the in-memory store.
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (reset)
-        2
-        """
+        """No-op for API compatibility with the in-memory store."""
 
     def list_metrics(self) -> list[dict[str, Any]]:
-        """
-        Return enabled metric definitions from Postgres, with catalog fallback.
-
-        Returns
-        -------
-        object
-            Return value.
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (list_metrics)
-        2
-        """
+        """Return enabled metric definitions from Postgres, with catalog fallback."""
         try:
             with self._engine.connect() as conn:
                 rows = conn.execute(
@@ -164,40 +102,7 @@ class PostgresStationHealthStore:
         lint_warning_count: int = 0,
         convert_ok: bool | None = None,
     ) -> StationRecord | None:
-        """
-        Upsert station registry and append one TAC observation row.
-
-        Parameters
-        ----------
-        icao : object
-            Argument ``icao``.
-        product : object
-            Argument ``product``.
-        tac_text : object
-            Argument ``tac_text``.
-        source : object
-            Argument ``source``.
-        observed_at : object
-            Argument ``observed_at``.
-        name : object
-            Argument ``name``.
-        lint_error_count : object
-            Argument ``lint_error_count``.
-        lint_warning_count : object
-            Argument ``lint_warning_count``.
-        convert_ok : object
-            Argument ``convert_ok``.
-
-        Returns
-        -------
-        object
-            Return value.
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (record_observation)
-        2
-        """
+        """Upsert station registry and append one TAC observation row."""
         code = (icao or "").strip().upper()
         if len(code) != 4 or not code.isalpha():
             return None
@@ -239,12 +144,7 @@ class PostgresStationHealthStore:
                             name = COALESCE(station_registry.name, EXCLUDED.name)
                         """
                     ),
-                    {
-                        "icao": code,
-                        "name": name,
-                        "observed_at": observed,
-                        "now": now,
-                    },
+                    {"icao": code, "name": name, "observed_at": observed, "now": now},
                 )
                 conn.execute(
                     text(
@@ -287,30 +187,7 @@ class PostgresStationHealthStore:
         grade: str | None = None,
         limit: int = 100,
     ) -> dict[str, Any]:
-        """
-        Build the public list payload from Postgres observations.
-
-        Parameters
-        ----------
-        window_key : object
-            Argument ``window_key``.
-        product : object
-            Argument ``product``.
-        grade : object
-            Argument ``grade``.
-        limit : object
-            Argument ``limit``.
-
-        Returns
-        -------
-        object
-            Return value.
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (list_stations)
-        2
-        """
+        """Build the public list payload from Postgres observations."""
         if window_key not in WINDOW_SECONDS:
             window_key = "6h"
         limit = max(1, min(int(limit), 500))
@@ -328,12 +205,12 @@ class PostgresStationHealthStore:
         grade_counts = {"A": 0, "B": 0, "C": 0, "D": 0, "F": 0}
         for icao, meta in sorted(stations.items()):
             icao_rows = by_icao.get(icao, [])
-            products = self._grade_products(icao_rows, window_key)
+            products = grade_products_from_records(icao_rows, window_key)
             if product_filter:
                 products = [item for item in products if item["product"] == product_filter]
                 if not products:
                     continue
-            overall = self._overall_from_products(products)
+            overall = overall_from_products(products)
             if grade_filter and overall["overall_grade"] != grade_filter:
                 continue
             grade_counts[overall["overall_grade"]] = grade_counts.get(overall["overall_grade"], 0) + 1
@@ -353,43 +230,17 @@ class PostgresStationHealthStore:
             "window": window_key,
             "computed_at": now.isoformat().replace("+00:00", "Z"),
             "stations": truncated,
-            "summary": {
-                "station_count": len(truncated),
-                "grade_counts": grade_counts,
-            },
+            "summary": {"station_count": len(truncated), "grade_counts": grade_counts},
         }
 
     def get_station(self, icao: str) -> dict[str, Any] | None:
-        """
-        Build the public detail payload for one ICAO from Postgres.
-
-        Parameters
-        ----------
-        icao : object
-            Argument ``icao``.
-
-        Returns
-        -------
-        object
-            Return value.
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (get_station)
-        2
-        """
+        """Build the public detail payload for one ICAO from Postgres."""
         code = (icao or "").strip().upper()
         try:
             with self._engine.connect() as conn:
                 meta_row = (
                     conn.execute(
-                        text(
-                            """
-                            SELECT icao, name
-                            FROM station_registry
-                            WHERE icao = :icao
-                            """
-                        ),
+                        text("SELECT icao, name FROM station_registry WHERE icao = :icao"),
                         {"icao": code},
                     )
                     .mappings()
@@ -410,7 +261,7 @@ class PostgresStationHealthStore:
                     ),
                     {"icao": code},
                 ).mappings()
-                records = [self._row_to_record(dict(row)) for row in record_rows]
+                records = [row_to_station_record(dict(row)) for row in record_rows]
         except Exception:
             logger.exception("station health detail query failed for %s", code)
             return None
@@ -420,8 +271,8 @@ class PostgresStationHealthStore:
         for window_key in WINDOW_SECONDS:
             cutoff = now - window_timedelta(window_key)
             window_rows = [row for row in records if row.observed_at >= cutoff]
-            products = self._grade_products(window_rows, window_key)
-            overall = self._overall_from_products(products)
+            products = grade_products_from_records(window_rows, window_key)
+            overall = overall_from_products(products)
             windows[window_key] = {
                 "overall_grade": overall["overall_grade"],
                 "overall_score": overall["overall_score"],
@@ -440,21 +291,6 @@ class PostgresStationHealthStore:
         cutoff: datetime,
         product_filter: str | None,
     ) -> tuple[dict[str, dict[str, Any]], list[StationRecord]]:
-        """
-        Internal helper ``_load_window``.
-
-        Parameters
-        ----------
-        cutoff : object
-            Argument ``cutoff``.
-        product_filter : object
-            Argument ``product_filter``.
-
-        Returns
-        -------
-        object
-            Return value.
-        """
         try:
             with self._engine.connect() as conn:
                 station_rows = conn.execute(
@@ -487,118 +323,11 @@ class PostgresStationHealthStore:
                         ),
                         {"cutoff": cutoff},
                     ).mappings()
-                records = [self._row_to_record(dict(row)) for row in record_rows]
+                records = [row_to_station_record(dict(row)) for row in record_rows]
         except Exception:
             logger.exception("station health list query failed")
             return {}, []
         return stations, records
-
-    @staticmethod
-    def _row_to_record(row: dict[str, Any]) -> StationRecord:
-        """
-        Internal helper ``_row_to_record``.
-
-        Parameters
-        ----------
-        row : object
-            Argument ``row``.
-
-        Returns
-        -------
-        object
-            Return value.
-        """
-        tac_text = str(row.get("tac_text") or "")
-        observed = row["observed_at"]
-        ingested = row["ingested_at"]
-        if getattr(observed, "tzinfo", None) is None:
-            observed = observed.replace(tzinfo=UTC)
-        if getattr(ingested, "tzinfo", None) is None:
-            ingested = ingested.replace(tzinfo=UTC)
-        solidus_count = int(row.get("solidus_count") or 0)
-        missing_digit_count = int(row.get("missing_digit_count") or 0)
-        return StationRecord(
-            icao=str(row["icao"]).upper(),
-            product=str(row["product"]).lower(),
-            observed_at=observed,
-            ingested_at=ingested,
-            tac_text=tac_text,
-            source=str(row.get("source") or "unknown"),
-            solidus_count=solidus_count,
-            missing_digit_count=missing_digit_count,
-            lint_error_count=int(row.get("lint_error_count") or 0),
-            lint_warning_count=int(row.get("lint_warning_count") or 0),
-            convert_ok=row.get("convert_ok"),
-            character_count=len(tac_text),
-        )
-
-    @staticmethod
-    def _grade_products(rows: list[StationRecord], window_key: str) -> list[dict[str, Any]]:
-        """
-        Internal helper ``_grade_products``.
-
-        Parameters
-        ----------
-        rows : object
-            Argument ``rows``.
-        window_key : object
-            Argument ``window_key``.
-
-        Returns
-        -------
-        object
-            Return value.
-        """
-        by_product: dict[str, list[StationRecord]] = {}
-        for row in rows:
-            by_product.setdefault(row.product, []).append(row)
-        graded: list[dict[str, Any]] = []
-        for product, product_rows in sorted(by_product.items()):
-            grade = grade_product_window(
-                product=product,
-                window_key=window_key,
-                actual_count=len(product_rows),
-                solidus_count=sum(row.solidus_count for row in product_rows),
-                character_count=sum(row.character_count for row in product_rows),
-                missing_digit_count=sum(row.missing_digit_count for row in product_rows),
-                lint_error_count=sum(row.lint_error_count for row in product_rows),
-                lint_warning_count=sum(row.lint_warning_count for row in product_rows),
-            )
-            graded.append(
-                {
-                    "product": grade.product,
-                    "grade": grade.overall_grade,
-                    "overall_score": grade.overall_score,
-                    "availability_score": grade.availability_score,
-                    "actual_count": grade.actual_count,
-                    "expected_count": grade.expected_count,
-                    "solidus_rate": grade.solidus_rate,
-                    "missing_digit_rate": grade.missing_digit_rate,
-                    "lint_severity_score": grade.lint_severity_score,
-                    "lint_error_count": sum(row.lint_error_count for row in product_rows),
-                }
-            )
-        return graded
-
-    @staticmethod
-    def _overall_from_products(products: list[dict[str, Any]]) -> dict[str, Any]:
-        """
-        Internal helper ``_overall_from_products``.
-
-        Parameters
-        ----------
-        products : object
-            Argument ``products``.
-
-        Returns
-        -------
-        object
-            Return value.
-        """
-        if not products:
-            return {"overall_grade": "F", "overall_score": 0.0}
-        score = sum(float(item["overall_score"]) for item in products) / len(products)
-        return {"overall_grade": letter_grade(score), "overall_score": round(score, 2)}
 
 
 __all__ = ["PostgresStationHealthStore", "sync_database_url"]

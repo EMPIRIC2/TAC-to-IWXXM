@@ -195,9 +195,7 @@ def _product_models(
             expected_count=_as_int(item.get("expected_count")),
             solidus_rate=_as_float(item.get("solidus_rate")),
             missing_digit_rate=_as_float(item.get("missing_digit_rate")),
-            lint_severity_score=_as_float(
-                item.get("lint_severity_score"), 100.0
-            ),
+            lint_severity_score=_as_float(item.get("lint_severity_score"), 100.0),
             lint_error_count=_as_int(item.get("lint_error_count")),
         )
         for item in raw_products
@@ -329,24 +327,18 @@ def list_station_health(
                     name=_as_optional_str(item.get("name")),
                     overall_grade=_as_str(item.get("overall_grade")),
                     overall_score=_as_float(item.get("overall_score")),
-                    products=_product_models(
-                        _products_from_raw(item.get("products"))
-                    ),
+                    products=_product_models(_products_from_raw(item.get("products"))),
                 )
             )
     summary_candidate = payload.get("summary")
     summary_raw: dict[str, object] = (
-        cast(dict[str, object], summary_candidate)
-        if isinstance(summary_candidate, dict)
-        else {}
+        cast(dict[str, object], summary_candidate) if isinstance(summary_candidate, dict) else {}
     )
     grade_candidate = summary_raw.get("grade_counts")
     grade_counts: dict[str, int] = {}
     if isinstance(grade_candidate, dict):
         typed_grades = cast(dict[object, object], grade_candidate)
-        grade_counts = {
-            _as_str(key): _as_int(value) for key, value in typed_grades.items()
-        }
+        grade_counts = {_as_str(key): _as_int(value) for key, value in typed_grades.items()}
     return StationHealthListResponse(
         window=_as_str(payload.get("window")),
         computed_at=_as_str(payload.get("computed_at")),
@@ -397,9 +389,7 @@ def get_station_health(icao: str) -> StationHealthDetailResponse:
             windows[_as_str(key)] = StationWindowModel(
                 overall_grade=_as_str(typed_block.get("overall_grade")),
                 overall_score=_as_float(typed_block.get("overall_score")),
-                products=_product_models(
-                    _products_from_raw(typed_block.get("products"))
-                ),
+                products=_product_models(_products_from_raw(typed_block.get("products"))),
             )
     return StationHealthDetailResponse(
         icao=_as_str(detail.get("icao")),

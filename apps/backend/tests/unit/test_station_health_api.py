@@ -147,9 +147,7 @@ def test_tc_sh_001_validation_filters(
 
 
 # OpenAPI G1 covered_by anchor for templated station detail path.
-_OPENAPI_STATION_HEALTH_PATH_ANCHORS = (
-    "/api/v1/station-health/{icao}",
-)
+_OPENAPI_STATION_HEALTH_PATH_ANCHORS = ("/api/v1/station-health/{icao}",)
 
 
 def test_openapi_station_health_path_anchors() -> None:
