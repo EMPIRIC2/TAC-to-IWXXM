@@ -119,8 +119,20 @@ class PostgresStore:
             )
             """
         )
-        with self._get_engine().begin() as conn:
+        engine = self._get_engine()
+        with engine.begin() as conn:
             conn.execute(stmt, payload)
+        try:
+            from metar_worker.station_health import maybe_record_from_row
+
+            maybe_record_from_row(
+                engine,
+                payload,
+                convert_ok=table == RESULTS_TABLE,
+            )
+        except Exception:
+            # Station health must not fail ingest persistence.
+            pass
 
     def fetch_by_job_id(self, table: str, job_id: str) -> list[dict[str, Any]]:
         """

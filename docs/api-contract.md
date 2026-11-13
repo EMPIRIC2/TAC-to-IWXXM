@@ -1,7 +1,7 @@
 # API Contract
 
 > **Project**: TAC to IWXXM
-> **Last updated**: 2026-11-10
+> **Last updated**: 2026-11-13
 > **Delta**: Monorepo auth in API auth. general TAC conversion tac2iwxxm. operator workbench operator API. validation performance msgspec HTTP.
 > METAR and SPECI quality bar registry codes. TAF and SPECI quality bar TAF/SPECI quality. public operator app Amended public convert + optional
 > Auth. privacy preference center privacy. platform independence/hybrid operator sessions Auth-only Supabase + DO Postgres work-sessions
@@ -1489,6 +1489,89 @@ GET /api/v1/live-map?west=&south=&east=&north=&products=
 **Amend **: Every `observed_at` on this route is within the last 24 hours of UTC now. Places with no remaining in-window reports are omitted. Query parameters are unchanged. Client-only presets (1h / 3h / 6h / 12h / full) further narrow the loaded view and are not query parameters. 
 
 The route reads the cache. It does not call a vendor during the request.
+
+### Station health (public aggregates)
+
+Public read API for the operator **Station health** tab. Serves station
+availability and quality grades from product Postgres. Writers are the ingest
+and convert pipelines only. There is no public write route.
+
+**Auth**: **None** (public), same as convert / quality-metrics / live-map.
+
+```
+GET /api/v1/station-health
+```
+
+**Purpose**: List stations with overall grades for one time window.
+
+**Query** (optional):
+
+| Param | Required | Description |
+|-------|----------|-------------|
+| `window` | no | `6h` (default), `1d`, or `30d` |
+| `product` | no | Filter to one product (`metar`, `speci`, `taf`, …) |
+| `grade` | no | Filter to one letter (`A`–`F`) |
+| `limit` | no | Max rows (default 100, max 500) |
+
+**Response** (minimum fields):
+
+```json
+{
+  "window": "6h",
+  "computed_at": "2026-11-13T12:00:00Z",
+  "stations": [
+    {
+      "icao": "KJFK",
+      "name": "John F Kennedy International",
+      "overall_grade": "B",
+      "overall_score": 84.5,
+      "products": [
+        {
+          "product": "metar",
+          "grade": "B",
+          "availability_score": 83.3,
+          "actual_count": 5,
+          "expected_count": 6,
+          "solidus_rate": 0.02,
+          "missing_digit_rate": 0.0,
+          "lint_error_count": 0
+        }
+      ]
+    }
+  ],
+  "summary": {
+    "station_count": 1,
+    "grade_counts": { "A": 0, "B": 1, "C": 0, "D": 0, "F": 0 }
+  }
+}
+```
+
+```
+GET /api/v1/station-health/{icao}
+```
+
+**Purpose**: One station report card across windows and products.
+
+**Response**: `icao`, optional `name`, `windows` map (`6h` / `1d` / `30d`) each with
+product rows and an overall grade, plus recent `record_count`.
+
+```
+GET /api/v1/station-health/metrics
+```
+
+**Purpose**: Extensible metrics registry for dashboard cards.
+
+Grade rules (server-side, plain language for operators):
+
+- Availability score = `min(100, 100 * actual / expected)` when expected > 0.
+  METAR expects one report per hour. TAF expects one report per six hours. SPECI
+  and irregular products score presence bands instead of a fixed cadence.
+- Solidus rate = solidus characters (`/`) per TAC character in the window.
+- Missing-digit rate = counts of `//` and longer solidus runs per record.
+- Overall score weights availability 50%, solidus quality 25%, missing-digit
+  quality 15%, lint severity 10%. Letter grades: A ≥ 90, B ≥ 80, C ≥ 70, D ≥ 60,
+  else F.
+
 
 ## Local OpenAPI status and required-field check 
 

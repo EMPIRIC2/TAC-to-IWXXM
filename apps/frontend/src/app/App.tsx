@@ -6,6 +6,7 @@ import { DecodeVisualsPage } from './components/DecodeVisualsPage';
 import { CodeNameDictionaryPage } from './components/CodeNameDictionaryPage';
 import { Annex3GlossaryPage } from './components/Annex3GlossaryPage';
 import { GlossaryScope } from './components/glossary/GlossaryScope';
+import { StationHealthPage } from './components/StationHealthPage';
 import { AppShellNav, type ShellPrimaryView } from './components/AppShellNav';
 import type { LivePlace } from '@/utils/liveMap';
 import { Login } from './components/auth/Login';
@@ -67,7 +68,8 @@ function isPrimaryShellView(view: AppView): view is ShellPrimaryView {
     view === 'history' ||
     view === 'catalog' ||
     view === 'dictionary' ||
-    view === 'glossary'
+    view === 'glossary' ||
+    view === 'stations'
   );
 }
 
@@ -351,7 +353,8 @@ function App() {
               currentView === 'history' ||
               currentView === 'catalog' ||
               currentView === 'dictionary' ||
-              currentView === 'glossary') && (
+              currentView === 'glossary' ||
+              currentView === 'stations') && (
               <div hidden={currentView !== 'converter'}>
                 <FileConverter
                   onLogout={handleLogout}
@@ -418,6 +421,8 @@ function App() {
                 onFocusHandled={() => setGlossaryFocusTermId(null)}
               />
             )}
+
+            {currentView === 'stations' && <StationHealthPage />}
 
             {currentView === 'callback' && (
               <AuthCallback

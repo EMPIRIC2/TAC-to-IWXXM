@@ -1,7 +1,7 @@
 # Product requirements
 
 > Index: [README.md](README.md) 
-> Last updated: 2026-11-10
+> Last updated: 2026-11-13
 
 This document defines the product and the behavioral requirements.
 Technical pass criteria live in [technical-requirements.md](technical-requirements.md).
@@ -86,6 +86,7 @@ Status values: Implemented, In progress, Planned, Superseded, Deprecated, Done.
 | Semantic vs exchange profiles | Implemented | Profiles separate semantic content from exchange packaging |
 | National and regional profiles | In progress | National semantic and regional exchange profiles |
 | Live TAC map on Decode | In progress | Shell Decode visuals full page is primary; Results Map tab stays an embedded twin |
+| Station health dashboard | In progress | Public station availability and quality grades over 6 hours, 1 day, and 1 month; product breakdown; extensible metrics registry (deepens airport data, ingest, TAC quality, and operator shell) |
 | Monorepo layout | Implemented | `apps/`, `packages/`, and `vendor/` |
 | Vendor snapshot sync | Planned | Upstream IWXXM schema sync |
 | Legacy GIFTs in-repo package | Deprecated | Removed at general TAC conversion cutover |
