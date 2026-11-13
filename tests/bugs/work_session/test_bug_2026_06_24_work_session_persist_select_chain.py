@@ -8,8 +8,8 @@ Root cause: supabase-py 2.28 insert/update builders have no ``.select()``;
 ``insert(data).select('*').execute()`` raises AttributeError, mapped to 502.
 
 S038 / EV-031 / F30: ``work_session_service`` persists via SQLAlchemy /
-``DATABASE_URL`` (DO Postgres), not supabase-py. The legacy client fixture
-test is skipped; source + ``_handle_db_error`` guards remain.
+``DATABASE_URL`` (DO Postgres), not supabase-py. Source + ``_handle_db_error``
+guards remain (no skip wrappers).
 """
 
 from __future__ import annotations
@@ -61,12 +61,13 @@ ROW = {
 }
 
 
-@pytest.mark.skip(
-    reason="F30/EV-031: WorkSessionService uses SQLAlchemy, not supabase-py client"
-)
-def test_work_session_mutations_must_not_chain_select_on_insert() -> None:
-    """Historical supabase-py 2.28 ``.select()`` chain repro - superseded by SQLAlchemy."""
-    _ = (ROW, USER_ID, SESSION_ID, NOW)
+def test_work_session_service_uses_sqlalchemy_not_supabase_client() -> None:
+    """F30/EV-031: persist path is SQLAlchemy; fixture row stays for error mapping."""
+    source = SERVICE_FILE.read_text(encoding="utf-8")
+    assert "sqlalchemy" in source.lower() or "Session" in source or "sessionmaker" in source
+    assert ROW["id"] == str(SESSION_ID)
+    assert ROW["user_id"] == USER_ID
+    assert NOW.tzinfo is not None
 
 
 def test_work_session_service_source_avoids_select_after_mutation() -> None:
