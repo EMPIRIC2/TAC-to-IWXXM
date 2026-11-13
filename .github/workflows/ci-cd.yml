@@ -194,6 +194,8 @@ jobs:
       - uses: actions/checkout@v5
         with:
           submodules: false
+          # Full history so test-file-naming-guard can merge-base against stage.
+          fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -228,6 +230,12 @@ jobs:
 
       - name: Validation catalog drift
         run: make validation-catalog-check
+
+      - name: Test file naming (no planning-id stems on new files)
+        run: |
+          set -euo pipefail
+          git fetch --no-tags origin stage:refs/remotes/origin/stage || true
+          make test-file-naming-guard
 
       - name: Documentation bar (checkers)
         run: |
