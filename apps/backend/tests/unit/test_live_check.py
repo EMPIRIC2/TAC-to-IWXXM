@@ -280,9 +280,9 @@ def test_rate_limit_trips(monkeypatch: pytest.MonkeyPatch) -> None:
     def http_get(url: str, *, params=None, headers=None):
         return _FakeResponse(_TAC)
 
-    from src.services import live_check as mod
+    from src.services import live_check_models as models
 
-    monkeypatch.setitem(mod._PROVIDER_LIMITS, "noaa", (1, 60.0))
+    monkeypatch.setitem(models._PROVIDER_LIMITS, "noaa", (1, 60.0))
     svc = LiveCheckService(
         http_get=http_get,  # type: ignore[arg-type]
         convert_fn=_ok_convert,
@@ -296,6 +296,8 @@ def test_rate_limit_trips(monkeypatch: pytest.MonkeyPatch) -> None:
 
 
 def test_default_http_get_uses_httpx(monkeypatch: pytest.MonkeyPatch) -> None:
+    from src.services.live_check_feeds import FeedFetcher
+
     seen: dict[str, object] = {}
 
     class _Client:
@@ -313,7 +315,7 @@ def test_default_http_get_uses_httpx(monkeypatch: pytest.MonkeyPatch) -> None:
             return httpx.Response(200, text="ok", request=httpx.Request("GET", url))
 
     monkeypatch.setattr(httpx, "Client", _Client)
-    response = LiveCheckService._default_http_get(
+    response = FeedFetcher._default_http_get(
         "https://aviationweather.gov/api/data/metar",
         params={"ids": "KJFK"},
     )
