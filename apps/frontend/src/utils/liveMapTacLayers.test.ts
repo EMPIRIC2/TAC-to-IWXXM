@@ -90,4 +90,10 @@ describe('liveMapTacLayers validation', () => {
     expect(items).toHaveLength(1);
     expect(items[0]?.tac).toBe(METAR_CLEAR);
   });
+
+  it('returns false for an unknown overlay id cast', () => {
+    expect(
+      tacMatchesLayer(METAR_RAIN, 'unknown' as Parameters<typeof tacMatchesLayer>[1]),
+    ).toBe(false);
+  });
 });
