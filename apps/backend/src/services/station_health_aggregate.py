@@ -11,24 +11,23 @@ from src.services.station_health_types import StationRecord
 
 def row_to_station_record(row: dict[str, Any]) -> StationRecord:
     """
-Map a SQL/mapping row into a ``StationRecord``.
+    Map a SQL/mapping row into a ``StationRecord``.
 
-Parameters
-----------
-row : object
-    SQLAlchemy mapping or dict row.
+    Parameters
+    ----------
+    row : object
+        SQLAlchemy mapping or dict row.
 
-Returns
--------
-StationRecord
-    Normalized observation record.
+    Returns
+    -------
+    StationRecord
+        Normalized observation record.
 
-Examples
---------
-    >>> 1 + 1  # docstring smoke
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (row_to_station_record)
     2
-
-"""
+    """
     tac_text = str(row.get("tac_text") or "")
     observed = row["observed_at"]
     ingested = row["ingested_at"]
@@ -54,26 +53,25 @@ Examples
 
 def grade_products_from_records(rows: list[StationRecord], window_key: str) -> list[dict[str, Any]]:
     """
-Grade each product present in ``rows`` for one window.
+    Grade each product present in ``rows`` for one window.
 
-Parameters
-----------
-rows : object
-    Observation rows in the window.
-window_key : object
-    Window id such as ``6h``.
+    Parameters
+    ----------
+    rows : object
+        Observation rows in the window.
+    window_key : object
+        Window id such as ``6h``.
 
-Returns
--------
-list[dict[str, Any]]
-    Per-product grade dictionaries.
+    Returns
+    -------
+    list[dict[str, Any]]
+        Per-product grade dictionaries.
 
-Examples
---------
-    >>> 1 + 1  # docstring smoke
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (grade_products_from_records)
     2
-
-"""
+    """
     by_product: dict[str, list[StationRecord]] = {}
     for row in rows:
         by_product.setdefault(row.product, []).append(row)
@@ -108,24 +106,23 @@ Examples
 
 def overall_from_products(products: list[dict[str, Any]]) -> dict[str, Any]:
     """
-Average product scores into one station overall grade.
+    Average product scores into one station overall grade.
 
-Parameters
-----------
-products : object
-    Per-product grade dictionaries.
+    Parameters
+    ----------
+    products : object
+        Per-product grade dictionaries.
 
-Returns
--------
-dict[str, Any]
-    Overall grade and score.
+    Returns
+    -------
+    dict[str, Any]
+        Overall grade and score.
 
-Examples
---------
-    >>> 1 + 1  # docstring smoke
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (overall_from_products)
     2
-
-"""
+    """
     if not products:
         return {"overall_grade": "F", "overall_score": 0.0}
     score = sum(float(item["overall_score"]) for item in products) / len(products)
