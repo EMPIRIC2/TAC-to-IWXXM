@@ -119,7 +119,7 @@ export function GoldenExamplesSelect({
         htmlFor="examples-select"
         className="shrink-0 text-sm text-gray-700 dark:text-gray-300"
       >
-        Examples
+        Current Examples
       </Label>
       <Select
         disabled={disabled}
