@@ -152,3 +152,4 @@ def test_exchange_admin_put_validation(
     else:
         resp = admin_client.put(path, json=payload)
     assert resp.status_code == expected
+
