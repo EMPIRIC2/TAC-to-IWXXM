@@ -2022,6 +2022,10 @@ def _explain_sigmet_airmet(token: str, *, product: str, seen: dict[str, int]) ->
     if upper == "TORNADOES":
         seen["hail_size"] = 1
         return "Tornadoes possible"
+    # Before ICAO/FIR matching: POSS is a 4-letter token that would otherwise
+    # look like a location indicator on US convective hazard trails.
+    if upper == "POSS":
+        return "Possible"
     if upper.isdigit() and len(upper) <= 2 and seen.get("hail_size"):
         return f"{int(upper)} inch hail"
     if m := _SIG_WIND_RANGE.match(upper):
@@ -2182,9 +2186,8 @@ def _explain_sigmet_airmet(token: str, *, product: str, seen: dict[str, int]) ->
             return f"{head} and {tail.lower()} possible"
         return f"{head} possible"
     if _IN_WIND_ELLIPSIS.match(upper):
+        seen["hail_size"] = 1
         return "Hail size in inches; wind gusts follow"
-    if upper == "POSS":
-        return "Possible"
     if upper == "TO" and seen.get("hail_size"):
         return "To"
     if upper.startswith("IN") and seen.get("hail_size") and not _IN_WIND_ELLIPSIS.match(upper):
@@ -3271,6 +3274,21 @@ def _decode_single_report(tac: str, *, product: str) -> DecodeResult:
                 explained.add(idx)
                 explained.add(idx + 1)
                 continue
+        # US convective SIGMET: ``1 IN...WIND`` / ``2 IN...WIND`` — digit precedes
+        # the ellipsis token, so arm hail-size before single-token classify.
+        if (
+            product in {"SIGMET", "AIRMET"}
+            and token.isdigit()
+            and len(token) <= 2
+            and idx + 1 < len(tokens)
+            and (idx + 1) not in explained
+        ):
+            next_tok = tokens[idx + 1][2]
+            next_u = next_tok.upper().rstrip(":")
+            if re.search(r"(?<!\.)\.$", next_u):
+                next_u = next_u[:-1]
+            if _IN_WIND_ELLIPSIS.match(next_u):
+                seen["hail_size"] = 1
         explanation = classify(token, seen)
         if explanation is None and product in {"METAR", "SPECI", "TAF"}:
             following = tokens[idx + 1][2] if idx + 1 < len(tokens) else ""

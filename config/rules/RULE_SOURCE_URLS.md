@@ -175,6 +175,18 @@ Canonical companions:
 - **Label:** historical (SARPs moved to Annex 3)
 - **Caveat:** Linked Data register path **`49-2`** on codes.wmo.int remains the **vocabulary** namespace, distinct from the discontinued regulation text
 
+
+### WMO-No. 782 — Aerodrome Reports and Forecasts (METAR/SPECI/TAF) Users' Handbook
+
+- **Publisher:** WMO
+- **URL:** https://library.wmo.int/idurl/4/35728
+- **Access:** WMO e-Library (captcha); **do not commit PDF**
+- **Applies to:** products=[METAR,SPECI]; profiles=[annex3]; role=[validation,conversion]
+- **Gap vs GIFTs:** Operator handbook for FM 15/16 field order, weather-group grammar (Code table 4678), SPECI trigger form, CAVOK
+- **Consumer:** `tac-validate`, `tac2iwxxm` (WMO-782 METAR/SPECI quality pack)
+- **Label:** guidance (handbook; Annex 3 / WMO-No. 306 remain normative)
+- **Tests:** `packages/tac2iwxxm/tests/test_tc_wmo782_metar_speci_quality.py`
+
 ### WMO aviation resource hub
 
 - **URL:** https://community.wmo.int/site/knowledge-hub/programmes-and-initiatives/aviation/aviation-resources-technical-regulations-guidance-and-other-reference-materials
@@ -609,6 +621,17 @@ Full ranking: [mining/wmo-im-org-mining-notes.md](../mining/wmo-im-org-mining-no
 - **Label:** normative-schema (national) + normative-exchange (datamart readme)
 - **Caveats:** Canada pins **IWXXM package 3.0.0** on WMO landing `https://schemas.wmo.int/iwxxm/3.0/`, not app default 2025-2 (ADR-036). Observed CA XSDs: `iwxxm-ca.xsd`, `common-ca.xsd`, `metar-speci-ca.xsd`, `taf-ca.xsd`, `airmet-ca.xsd` (no dedicated `sigmet-ca` / `vaa-ca`). Vendor: `vendor/schemas/iwxxm-ca` + `vendor/schemas/iwxxm/3.0.0`. Dig: [mining/eccc-iwxxm-ca-mining-notes.md](../mining/eccc-iwxxm-ca-mining-notes.md), [mining/manobs-manair-ca-mining-notes.md](../mining/manobs-manair-ca-mining-notes.md). **EV-098 / #1028** triage: mined `schema/`, `code-ca/`, ops TAF/AIRMET/SIGMET; redirected METAR/SPECI/VAA/`doc/`/QVACI; dead=none.
 - **Mined:** 2026-08-22 (EV-064 / #916) · deepen 2026-09-02 (EV-098 / #1028 Gate C)
+
+### CA_ECCC code-list deviations from global WMO (#1034)
+
+- **Publisher:** ECCC / MSC · WMO (global peers)
+- **URL:** https://dd.weather.gc.ca/today/aviation/iwxxm/code-ca/ · `…/doc/Canadian_Code_Registry_1A_En.pdf`
+- **Access:** public
+- **Applies to:** products=[METAR,SPECI,TAF,AIRMET,SIGMET]; profiles=[**ca_eccc**]; role=[conversion, iwxxm-validation, tac-validation]
+- **Consumer:** `iwxxm-validate` (`CODE_LIST_GLOBAL_DISALLOWED`), `tac2iwxxm` emit resolve, `tac-validate` national-required check
+- **Label:** normative-national (deviation policy)
+- **Caveats:** Matrix [`CA_ECCC.code-list-deviations.yaml`](../profiles/semantic/CA_ECCC.code-list-deviations.yaml); § in [`CA_ECCC.md`](../profiles/semantic/CA_ECCC.md). Selective `disallow_global` (e.g. `4678/IC`, FMH `AO*`) keeps non-GFA WMO AIRMET valid.
+- **Mined:** 2026-11-13 (#1034)
 
 ### MSC IWXXM exchange filename + product AHL families (Canada)
 

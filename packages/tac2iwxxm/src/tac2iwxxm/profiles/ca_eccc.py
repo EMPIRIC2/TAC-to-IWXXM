@@ -648,7 +648,9 @@ def _ca_airmet_phenomenon_href(ir: dict[str, Any]) -> str | None:
     code = ir.get("ca_gfa_phenomenon")
     if not isinstance(code, str):
         return None
-    return f"{CA_AIRMET_PHENOM_BASE}/{code}"
+    from tac2iwxxm.code_list_policy import resolve_national_href
+
+    return resolve_national_href(area="airmet_phenomena", token=code) or f"{CA_AIRMET_PHENOM_BASE}/{code}"
 
 
 def _inject_ca_airmet_namespace(xml: str, *, iwxxm_version: str) -> str:

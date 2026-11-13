@@ -23,12 +23,18 @@ class TestTcEv080StandingDocs:
     """AC6 / TC-EV080-009 — docs greppable for 100% gate."""
 
     def test_adr_007_title_and_floor(self) -> None:
-        if not ADR.is_file():
-            pytest.skip("local ADR tree not in git (EV-repo-docs-cleanup)")
-        text = ADR.read_text(encoding="utf-8")
-        assert "100%" in text
-        assert "Universal 100% Coverage Gate" in text
-        assert "fail_under = 100" in text or "fail_under **100**" in text
+        if ADR.is_file():
+            text = ADR.read_text(encoding="utf-8")
+            assert "100%" in text
+            assert "Universal 100% Coverage Gate" in text
+            assert "fail_under = 100" in text or "fail_under **100**" in text
+            return
+        # ADR local opt-in: standing coverage floor remains in tracked docs.
+        agents = AGENTS.read_text(encoding="utf-8")
+        assert "docs/adr/" in agents
+        tech = TECH.read_text(encoding="utf-8")
+        assert "100%" in tech or "fail_under" in tech
+
 
     def test_typing_policy_coverage_section(self) -> None:
         # typing-policy.md removed; coverage floor lives in tech-spec + AGENTS.

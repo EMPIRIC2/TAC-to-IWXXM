@@ -1,10 +1,20 @@
 /**
  * Logout protection workflow — **retired F21** (no Auth / logout chrome).
+ * [Corpus: tests] — no skip wrappers; assert logout controls are absent.
  */
-import { test } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 
 test.describe('Workflow: Logout Protection', () => {
-  test('logout options are visible and this-device logout returns user to login form', async () => {
-    test.skip(true, 'Retired F21 — operator Auth / logout removed (TC-F21-auth-gone)');
+  test('operator logout chrome is absent on the public Convert shell', async ({
+    page,
+  }) => {
+    await page.goto('/');
+    await expect(page.getByTestId('convert-button')).toBeVisible({
+      timeout: 30_000,
+    });
+    await expect(
+      page.getByRole('button', { name: /log ?out|sign out/i }),
+    ).toHaveCount(0);
+    await expect(page.getByTestId('logout-button')).toHaveCount(0);
   });
 });

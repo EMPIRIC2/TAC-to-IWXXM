@@ -73,6 +73,9 @@ def planned_paths(profile_id: str) -> dict[str, Path]:
         "catalog_snippet": _PROFILES
         / "_scaffold_out"
         / f"{profile_id}-catalog-row.yaml",
+        "code_list_deviations": _PROFILES
+        / "semantic"
+        / f"{profile_id}.code-list-deviations.yaml",
     }
 
 
@@ -89,6 +92,7 @@ def checklist(profile_id: str) -> list[str]:
         "8. FE wire types / picker options if operator-visible",
         "9. Tests + docs/test-plan.md TC rows as needed",
         "10. Promote durable URLs → RULE_SOURCE_URLS / COVERAGE_MATRIX",
+        "11. Fill semantic/<ID>.code-list-deviations.yaml when national vocab differs (playbook §6 / type H)",
         "See config/profiles/NATIONAL_PROFILE_PLAYBOOK.md",
     ]
 
@@ -136,6 +140,7 @@ def scaffold(
         (_TEMPLATE / "iwxxm-mining-notes.md", paths["iwxxm_mining"]),
         (_TEMPLATE / "catalog-row.yaml", paths["catalog_snippet"]),
         (_TEMPLATE / "manifest.json.example", paths["manifest"]),
+        (_TEMPLATE / "code-list-deviations.yaml", paths["code_list_deviations"]),
     ]
 
     for src, dest in copies:
