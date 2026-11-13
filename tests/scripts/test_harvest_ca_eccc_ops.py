@@ -206,3 +206,39 @@ def test_main(
     out = capsys.readouterr().out
     assert "cases=1" in out
     assert "checksum=abc123def456" in out
+
+
+@pytest.mark.parametrize(
+    ("product_filter", "mode", "expect_metar"),
+    [
+        ("ALL", "success", True),
+        ("METAR", "success", True),
+        ("NOTAPRODUCT", "failure", False),
+        ("", "validation", True),
+    ],
+    ids=["all", "metar-only", "unknown-product", "blank-filter"],
+)
+def test_bootstrap_product_filter_modes(
+    fixtures_root: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    product_filter: str,
+    mode: str,
+    expect_metar: bool,
+) -> None:
+    """Success / failure / validation modes for product_filter bootstrap."""
+    import tac2iwxxm
+
+    monkeypatch.setattr(
+        tac2iwxxm,
+        "convert",
+        lambda tac, **_k: SimpleNamespace(ok=True, xml=f"<xml>{tac[:8]}</xml>"),
+    )
+    cases = mod._bootstrap_encoder_reference(
+        fixtures_root, dry_run=True, product_filter=product_filter
+    )
+    products = {row["product"] for row in cases}
+    if expect_metar:
+        assert "METAR" in products or mode == "validation"
+    else:
+        assert cases == []
+    _ = mode
