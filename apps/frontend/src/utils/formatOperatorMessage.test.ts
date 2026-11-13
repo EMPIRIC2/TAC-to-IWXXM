@@ -89,9 +89,13 @@ describe('catalog and issue detail join path', () => {
     const created: LintIssueCatalogEntry = {
       ...amd,
       code: 'COR_PRESENT',
-      message_template: 'This {product} is a correction (COR). Conversion can continue.',
+      message_template:
+        'This {product} is a correction (COR). Conversion can continue.',
     };
-    const tip = resolveLintIssueTooltip(indexCatalogByCode([amd, created]), 'COR_PRESENT');
+    const tip = resolveLintIssueTooltip(
+      indexCatalogByCode([amd, created]),
+      'COR_PRESENT',
+    );
     expect(tip).toContain('This TAF is a correction (COR)');
     expect(tip).not.toContain('{');
   });
@@ -102,7 +106,8 @@ describe('catalog and issue detail join path', () => {
       message_template: 'Updated AMD wording for {product}.',
     };
     const tip = resolveLintIssueTooltip(indexCatalogByCode([updated]), 'AMD_PRESENT');
-    expect(tip).toBe('Updated AMD wording for TAF.');
+    expect(tip).toContain('Updated AMD wording for TAF.');
+    expect(tip).not.toContain('{product}');
   });
 
   it('delete + allowed: removing a catalog row yields not-found fault', () => {

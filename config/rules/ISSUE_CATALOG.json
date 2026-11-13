@@ -1134,7 +1134,7 @@
     {
       "code": "NSC_WITH_CLOUD_LAYERS",
       "severity": "warning",
-      "message_template": "This {product} combines NSC with FEW/SCT/BKN/OVC in the same group. Review before you publish.",
+      "message_template": "This {product} combines NSC with FEW/SCT/BKN/OVC in the same group (FAQ 14.3 exclusivity). Review before you publish.",
       "product": null,
       "tags": [
         "cloud",

@@ -215,3 +215,32 @@ def test_issue_from_blank_message_override_is_honored() -> None:
     """Update edge: explicit empty override is stored (caller-owned)."""
     issue = issue_from("AMD_PRESENT", product="TAF", message="")
     assert issue.message == ""
+
+
+def test_format_operator_message_strip_fallback_path() -> None:
+    """Failure path: invalid format specs fall back without braces."""
+    text = format_operator_message("Broken {product:z} keep {token!r}.", token="AB")
+    assert "{" not in text
+    assert "AB" in text
+    assert "report" in text
+
+
+def test_format_operator_message_skips_blank_kwargs() -> None:
+    """Validation: blank kwargs do not override defaults."""
+    text = format_operator_message("This {product} ok.", product="  ")
+    assert text == "This report ok."
+
+
+def test_format_operator_message_conversion_variants() -> None:
+    """Success: !r / !s / !a conversions render without braces."""
+    assert '"X"' in format_operator_message("{token!r}", token="X") or "'X'" in format_operator_message(
+        "{token!r}", token="X"
+    )
+    assert format_operator_message("{token!s}", token="X") == "X"
+    assert "X" in format_operator_message("{token!a}", token="X")
+
+
+def test_issue_from_message_override_skips_template() -> None:
+    """Mutation: explicit message override bypasses template formatting."""
+    issue = issue_from("AMD_PRESENT", message="Custom AMD note")
+    assert issue.message == "Custom AMD note"

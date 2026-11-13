@@ -95,15 +95,18 @@ def _strip_unresolved_braces(template: str, values: dict[str, object]) -> str:
             continue
         if field_name in values:
             value = values[field_name]
-            if conversion == "r":
-                parts.append(repr(value))
-            elif conversion == "s":
-                parts.append(str(value))
-            elif conversion == "a":
-                parts.append(ascii(value))
-            elif format_spec:
-                parts.append(format(value, format_spec))
-            else:
+            try:
+                if conversion == "r":
+                    parts.append(repr(value))
+                elif conversion == "s":
+                    parts.append(str(value))
+                elif conversion == "a":
+                    parts.append(ascii(value))
+                elif format_spec:
+                    parts.append(format(value, format_spec))
+                else:
+                    parts.append(str(value))
+            except (ValueError, TypeError):
                 parts.append(str(value))
         else:
             # Omit unknown fields rather than show braces.
@@ -625,7 +628,7 @@ ISSUES: tuple[IssueSpec, ...] = (
     _row(
         "NSC_WITH_CLOUD_LAYERS",
         "warning",
-        "This {product} combines NSC with FEW/SCT/BKN/OVC in the same group. Review before you publish.",
+        "This {product} combines NSC with FEW/SCT/BKN/OVC in the same group (FAQ 14.3 exclusivity). Review before you publish.",
         tags=("cloud", "metar", "speci", "taf"),
     ),
     _row(
