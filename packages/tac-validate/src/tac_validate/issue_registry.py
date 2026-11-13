@@ -44,6 +44,11 @@ def format_operator_message(template: str, **kwargs: object) -> str:
     str
         Formatted operator text with no unresolved ``{…}`` field names when
         defaults cover the template.
+
+    Examples
+    --------
+    >>> format_operator_message("This {product} is an amendment (AMD).", product="taf")
+    'This TAF is an amendment (AMD).'
     """
     merged: dict[str, object] = dict(_OPERATOR_FORMAT_DEFAULTS)
     for key, raw in kwargs.items():
@@ -64,7 +69,21 @@ def format_operator_message(template: str, **kwargs: object) -> str:
 
 
 def _strip_unresolved_braces(template: str, values: dict[str, object]) -> str:
-    """Best-effort substitute then remove leftover ``{name}`` / ``{name!r}``."""
+    """
+    Best-effort substitute then remove leftover ``{name}`` / ``{name!r}``.
+
+    Parameters
+    ----------
+    template : str
+        Message template that failed normal ``str.format``.
+    values : dict[str, object]
+        Placeholder values already merged with operator defaults.
+
+    Returns
+    -------
+    str
+        Operator text with known fields filled and unknown fields omitted.
+    """
     text = template
     for key, value in values.items():
         text = text.replace(f"{{{key}!r}}", repr(value))

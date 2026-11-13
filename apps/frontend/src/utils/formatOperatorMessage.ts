@@ -38,7 +38,7 @@ export type FormatOperatorMessageOptions = {
 export function operatorProductLabel(product: string | null | undefined): string {
   const trimmed = (product ?? '').trim();
   if (!trimmed) {
-    return DEFAULTS.product;
+    return DEFAULTS.product ?? 'report';
   }
   return trimmed.toUpperCase();
 }
