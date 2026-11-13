@@ -25,13 +25,20 @@ class TestTcF30006EnvContractCorpus:
 
     def test_adr_033_accepted_and_references_cutover(self) -> None:
         adr = ROOT / "docs/adr/ADR-033-platform-independence-auth-do-doks.md"
-        if not adr.is_file():
-            pytest.skip("local ADR tree not in git (EV-repo-docs-cleanup)")
-        text = adr.read_text(encoding="utf-8")
-        assert "Accepted" in text
-        assert "DATABASE_URL" in text
-        assert "Supabase = Auth only" in text or "Auth-only" in text
-        assert "DOKS" in text
+        agents = (ROOT / "AGENTS.md").read_text(encoding="utf-8")
+        if adr.is_file():
+            text = adr.read_text(encoding="utf-8")
+            assert "Accepted" in text
+            assert "DATABASE_URL" in text
+            assert "Supabase = Auth only" in text or "Auth-only" in text
+            assert "DOKS" in text
+            return
+        # ADR tree is local opt-in; tracked corpus still pins F30 Auth/DO/DOKS.
+        assert "docs/adr/" in agents
+        assert "F30" in agents
+        env = (ROOT / "docs/env-variable.md").read_text(encoding="utf-8")
+        assert "DATABASE_URL" in env
+
 
     def test_corpus_lists_env_variable(self) -> None:
         corpus = (ROOT / "AGENTS.md").read_text(encoding="utf-8")

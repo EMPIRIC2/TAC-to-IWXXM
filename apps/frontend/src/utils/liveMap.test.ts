@@ -542,5 +542,13 @@ describe('live map helpers', () => {
         (place) => place.place_key,
       ),
     ).not.toContain('sigmet-1');
+
+    const withTac = filterPlaces(loaded, {
+      ...base,
+      tacLayers: new Set(['precip']),
+      passesTacLayers: (tac, layers) =>
+        layers.has('precip') && /\bRA\b|\bDZ\b|\bSN\b/.test(tac),
+    });
+    expect(withTac.every((place) => place.reports[0]?.tac)).toBe(true);
   });
 });

@@ -792,4 +792,62 @@ describe('LiveWorldMap', () => {
     render(<LiveWorldMap />);
     expect(await screen.findByTestId('live-map-error')).toBeInTheDocument();
   });
+
+  it('filters by TAC precip layer and opens a station from the cluster picker', async () => {
+    const user = userEvent.setup();
+    const onOpenPlace = vi.fn();
+    const rainy: LivePlace = {
+      place_key: 'KJFK',
+      product: 'metar',
+      latitude: 40.6,
+      longitude: -73.7,
+      geometry: { kind: 'point' },
+      reports: [
+        {
+          observed_at: '2026-11-13T18:00:00Z',
+          tac: 'METAR KJFK 231851Z 20015G25KT 3SM -RA BR BKN012 12/11 A2998=',
+          iwxxm: null,
+        },
+      ],
+    };
+    const clear: LivePlace = {
+      place_key: 'KBOS',
+      product: 'metar',
+      latitude: 42.3,
+      longitude: -71.0,
+      geometry: { kind: 'point' },
+      reports: [
+        {
+          observed_at: '2026-11-13T18:00:00Z',
+          tac: 'METAR KBOS 231851Z 18012KT 10SM FEW040 15/07 A3005=',
+          iwxxm: null,
+        },
+      ],
+    };
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue({
+        ok: true,
+        json: async () => ({ places: [rainy, clear] }),
+      }),
+    );
+    render(<LiveWorldMap onOpenPlace={onOpenPlace} />);
+    expect(await screen.findByTestId('tac-layer-precip')).toBeInTheDocument();
+    await user.click(screen.getByTestId('tac-layer-precip'));
+    expect(
+      await screen.findByTestId('station-cluster-file-picker'),
+    ).toBeInTheDocument();
+    expect(screen.getByTestId('cluster-pick-KJFK')).toBeInTheDocument();
+    expect(screen.queryByTestId('cluster-pick-KBOS')).not.toBeInTheDocument();
+    await user.click(screen.getByTestId('cluster-pick-KJFK'));
+    expect(onOpenPlace).toHaveBeenCalledWith(
+      expect.objectContaining({ place_key: 'KJFK' }),
+    );
+    await user.click(screen.getByTestId('tac-layer-precip'));
+    await waitFor(() => {
+      expect(
+        screen.queryByTestId('station-cluster-file-picker'),
+      ).not.toBeInTheDocument();
+    });
+  });
 });

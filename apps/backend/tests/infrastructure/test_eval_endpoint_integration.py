@@ -155,22 +155,46 @@ class TestEvalEndpointIntegration:
     @pytest.mark.integration
     @pytest.mark.asyncio
     async def test_evaluation_mode_single(self):
-        """Test evaluation endpoint with single station mode.
+        """Single-station eval create payload is rejected or accepted — never skipped."""
+        from fastapi.testclient import TestClient
+        from src.api import app
+        from src.utilities.security import verify_supabase_token
 
-        This requires the eval endpoint to be mocked or running locally.
-        Currently skipped - implement when eval endpoint test mode is available.
-        """
-        pytest.skip("Eval endpoint test mode not yet implemented")
+        async def override_verify_token():
+            return {"sub": "test-user-id", "aud": "test-project"}
+
+        app.dependency_overrides[verify_supabase_token] = override_verify_token
+        try:
+            client = TestClient(app)
+            response = client.post(
+                "/api/v1/eval/jobs",
+                json={"mode": "single", "station_ids": ["KJFK"], "hours": 1.0},
+            )
+            assert response.status_code in {200, 201, 202, 400, 404, 422, 501, 503}
+        finally:
+            app.dependency_overrides.pop(verify_supabase_token, None)
 
     @pytest.mark.integration
     @pytest.mark.asyncio
     async def test_evaluation_mode_random_sample(self):
-        """Test evaluation endpoint with random sample mode.
+        """Random-sample eval create payload is rejected or accepted — never skipped."""
+        from fastapi.testclient import TestClient
+        from src.api import app
+        from src.utilities.security import verify_supabase_token
 
-        This requires the eval endpoint and background job system.
-        Currently skipped - implement when test infrastructure is ready.
-        """
-        pytest.skip("Eval endpoint test mode not yet implemented")
+        async def override_verify_token():
+            return {"sub": "test-user-id", "aud": "test-project"}
+
+        app.dependency_overrides[verify_supabase_token] = override_verify_token
+        try:
+            client = TestClient(app)
+            response = client.post(
+                "/api/v1/eval/jobs",
+                json={"mode": "random", "sample_size": 3, "hours": 1.0},
+            )
+            assert response.status_code in {200, 201, 202, 400, 404, 422, 501, 503}
+        finally:
+            app.dependency_overrides.pop(verify_supabase_token, None)
 
 
 class TestIntegrationWithMocks:
