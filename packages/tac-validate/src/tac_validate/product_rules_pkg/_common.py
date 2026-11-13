@@ -18,16 +18,18 @@ _WIND = re.compile(r"\b(?:(?:VRB|\d{3})\d{2,3}(?:G\d{2,3})?(?:KT|MPS)|CALM)\b")
 # Extreme direction variation group (Guidance: counter-clockwise then clockwise).
 _WIND_DIR_VAR = re.compile(r"^\d{3}V\d{3}$")
 # R2: CAVOK | statute miles (incl. fractions / M|P prefix) | 4-digit meters (9999)
-# | unobserved visibility //// or ////SM. A word boundary does not match before
-# a solidus, and the first four slashes of ////// are not a visibility group.
+# | 1-3 digit kilometres (10KM) | unobserved visibility //// or ////SM.
+# A word boundary does not match before a solidus, and the first four slashes
+# of ////// are not a visibility group.
 _VIS_NOT_OBS = r"(?<![A-Z0-9/])////(?:SM)?(?![A-Z0-9/])"
 _VIS_OK = re.compile(
-    rf"(?:\b(?:CAVOK|P?\d{{1,2}}SM|[MP]?\d{{1,2}}/\d{{1,2}}SM|\d{{1,2}}\s+[MP]?\d{{1,2}}/\d{{1,2}}SM|\d{{4}})\b|{_VIS_NOT_OBS})"
+    rf"(?:\b(?:CAVOK|P?\d{{1,2}}SM|[MP]?\d{{1,2}}/\d{{1,2}}SM|\d{{1,2}}\s+[MP]?\d{{1,2}}/\d{{1,2}}SM|\d{{4}}|\d{{1,3}}KM)\b|{_VIS_NOT_OBS})",
+    re.IGNORECASE,
 )
-# Reject KM / MILES / 5+ digit metre runs. Lookbehind skips CIS runway-state
-# groups like R19/010060 so the six-digit field is not read as visibility.
+# Reject MILES word / 5+ digit metre runs / absurd 4+ digit KM. Lookbehind
+# skips CIS runway-state groups like R19/010060 (#1477 accepts 1-3 digit KM).
 _VIS_BAD = re.compile(
-    r"(?<![A-Z0-9/])(\d+KM|\d+MILES|\d{5,})\b",
+    r"(?<![A-Z0-9/])(\d{4,}KM|\d+MILES|\d{5,})\b",
     re.IGNORECASE,
 )
 # R3: WMO 306 Table 4678 subset - intensity / descriptor / phenomenon grammar.
