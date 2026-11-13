@@ -3,11 +3,8 @@
 from __future__ import annotations
 
 # Imports/constants consumed by exec'd part bodies.
-
 import re
-
 from typing import Any, cast
-
 from xml.sax.saxutils import escape
 
 from tac2iwxxm.profiles.annex3_emit._common import *

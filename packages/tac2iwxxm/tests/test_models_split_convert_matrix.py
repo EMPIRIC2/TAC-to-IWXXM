@@ -23,7 +23,7 @@ from tac2iwxxm.models import (
 )
 from tac2iwxxm.slot_builders.metar_speci import parse_metar_speci
 
-from tac2iwxxm import convert, split_bulletin
+from tac2iwxxm import BulletinSplitError, convert, split_bulletin
 
 METAR_OK = "METAR KJFK 121251Z 18004KT 10SM FEW250 08/M01 A3012="
 TAF_OK = "TAF KJFK 121130Z 1212/1318 18010KT P6SM FEW050="
@@ -114,8 +114,6 @@ def test_bulletin_split_success_and_empty_failure() -> None:
     split = split_bulletin(f"SAUS31 KJFK 121251\n{METAR_OK}")
     assert split.meta.report_count == 1
     assert split.reports[0].startswith("METAR")
-    from tac2iwxxm import BulletinSplitError
-
     with pytest.raises(BulletinSplitError):
         split_bulletin("")
 

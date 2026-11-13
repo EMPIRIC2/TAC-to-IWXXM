@@ -8,15 +8,10 @@ may replace a builtin via ``extends`` or add a new map id.
 from __future__ import annotations
 
 # Imports/constants consumed by exec'd part bodies.
-
 import importlib
-
 import os
-
 from collections.abc import Callable
-
 from pathlib import Path
-
 from typing import Any, cast
 
 import yaml

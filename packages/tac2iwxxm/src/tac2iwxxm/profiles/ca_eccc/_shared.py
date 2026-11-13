@@ -11,15 +11,11 @@ shear (NCLWS) in TAF base forecasts.
 from __future__ import annotations
 
 # Imports/constants consumed by exec'd part bodies.
-
 import re
-
 from typing import Any, cast
-
 from xml.sax.saxutils import escape
 
 from tac2iwxxm.profiles.annex3 import NS, aerodrome_block, build_observation_and_trends, obs_timestamp
-
 from tac2iwxxm.profiles.annex3_emit import (
     emit_airmet_annex3,
     emit_sigmet_annex3,

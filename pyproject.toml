@@ -234,6 +234,9 @@ max-complexity = 10
 "**/conftest.py" = ["ANN", "D"]
 # lxml / PyO3 boundaries — third-party handles without complete stubs (typing-policy)
 "packages/iwxxm-validate/src/iwxxm_validate/{canonical_xml,c14n,native,schematron,xsd}.py" = ["ANN401"]
+# tac2iwxxm exec-namespace splits: _shared imports feed _part bodies via package globals
+"packages/tac2iwxxm/src/tac2iwxxm/**/_shared.py" = ["F401", "F403"]
+"packages/tac2iwxxm/src/tac2iwxxm/**/_part*.py" = ["F821"]
 
 [tool.ruff.lint.isort]
 known-first-party = ["gifts", "auth", "shared", "metar_shared"]

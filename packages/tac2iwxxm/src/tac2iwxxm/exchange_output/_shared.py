@@ -10,15 +10,11 @@ and profile-gated translation centre defaults. Constants mirror
 from __future__ import annotations
 
 # Imports/constants consumed by exec'd part bodies.
-
 import os
-
 import re
-
 from datetime import UTC, datetime
 
 from tac2iwxxm.bulletin import bbb_to_report_status, iwxxm_filename
-
 from tac2iwxxm.models import AhlParts, ProfileOutputSpec
 
 CA_ECCC_IWXXM_VERSION = "3.0.0"

@@ -3,19 +3,13 @@
 from __future__ import annotations
 
 # Imports/constants consumed by exec'd part bodies.
-
 import re
-
 from typing import Any
 
 from tac2iwxxm.bulletin import BulletinSplitError, parse_ahl
-
 from tac2iwxxm.slot_builders.metar_speci import parse_statute_mile_fraction
-
 from tac2iwxxm.taf_prob import is_unqualified_probability, probability_tempo_parts
-
 from tac2iwxxm.time_anchor import iso_stamp
-
 from tac2iwxxm.visibility_measure import (
     TAF_STATUTE_MILE_GROUP,
     prevailing_from_metre_group,

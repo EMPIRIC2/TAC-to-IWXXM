@@ -3,39 +3,24 @@
 from __future__ import annotations
 
 # Imports/constants consumed by exec'd part bodies.
-
 import gzip
-
 import os
-
 import re
-
 from collections.abc import Callable
-
 from datetime import UTC, datetime
-
 from typing import Any, cast
-
 from xml.sax.saxutils import escape
 
 from tac_decoding.match import MatchContext, match_tac
-
 from tac_decoding.packs import load_packs
 
 from tac2iwxxm.bulletin import BulletinSplitError, iwxxm_filename, parse_ahl
-
 from tac2iwxxm.convert_allowlist import products_for
-
 from tac2iwxxm.decode import decode_tac
-
 from tac2iwxxm.emit_map import emit_with_map
-
 from tac2iwxxm.exchange_output import default_ca_translation_centre
-
 from tac2iwxxm.geometry.reference_point import UnknownVOR
-
 from tac2iwxxm.ir_source import IR_SOURCE_ENV, resolve_ir_source
-
 from tac2iwxxm.models import (
     AhlParts,
     ConvertIr,
@@ -43,9 +28,7 @@ from tac2iwxxm.models import (
     ConvertResult,
     PropagateResidualsConfig,
 )
-
 from tac2iwxxm.pack_ir_map import PackIrMapError, map_spans_to_convert_ir, pack_id_for_product
-
 from tac2iwxxm.profile_registry import (
     EMIT_ANNEX3,
     EMIT_CA_ECCC,
@@ -56,30 +39,19 @@ from tac2iwxxm.profile_registry import (
     supported_iwxxm_versions_for_profile,
     supported_report_variants_for_profile,
 )
-
 from tac2iwxxm.profiles.annex3 import obs_timestamp
-
 from tac2iwxxm.profiles.annex3_emit import (
     emit_swxa_annex3,
     emit_vona_annex3,
 )
-
 from tac2iwxxm.profiles.ca_eccc import CA_IWXXM_VERSION
-
 from tac2iwxxm.slot_builders.metar_speci import fold_observation_case, parse_metar_speci
-
 from tac2iwxxm.slot_builders.sigmet_airmet import parse_airmet, parse_sigmet
-
 from tac2iwxxm.slot_builders.swxa import parse_swxa
-
 from tac2iwxxm.slot_builders.taf import parse_taf
-
 from tac2iwxxm.slot_builders.vaa_tca import parse_tca, parse_vaa
-
 from tac2iwxxm.slot_builders.vona import parse_vona
-
 from tac2iwxxm.taf_time_links import failed_preview_nil_element
-
 from tac2iwxxm.time_anchor import (
     ImpossibleTacDay,
     anchor_from_bulletin_date,

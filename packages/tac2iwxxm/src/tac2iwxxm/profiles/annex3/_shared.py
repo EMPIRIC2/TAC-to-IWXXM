@@ -3,9 +3,7 @@
 from __future__ import annotations
 
 # Imports/constants consumed by exec'd part bodies.
-
 from typing import Any, cast
-
 from xml.sax.saxutils import escape
 
 NS = {

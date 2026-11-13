@@ -81,7 +81,11 @@ def split_module(rel: str, *, max_body: int = MAX_BODY_LINES) -> None:
             continue
         if isinstance(node, ast.Assign):
             targets = node.targets
-            if len(targets) == 1 and isinstance(targets[0], ast.Name) and targets[0].id == "__all__":
+            if (
+                len(targets) == 1
+                and isinstance(targets[0], ast.Name)
+                and targets[0].id == "__all__"
+            ):
                 continue
             preamble.append(node)
             continue

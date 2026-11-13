@@ -8,11 +8,8 @@ duplicating AHL rules (EV-029 / E29-T2).
 from __future__ import annotations
 
 # Imports/constants consumed by exec'd part bodies.
-
 import re
-
 from datetime import UTC, datetime
-
 from typing import Literal
 
 from tac2iwxxm.models import AhlParts, BulletinMeta, BulletinSplit

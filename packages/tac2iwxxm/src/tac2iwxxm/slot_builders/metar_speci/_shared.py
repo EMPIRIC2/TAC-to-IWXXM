@@ -3,13 +3,10 @@
 from __future__ import annotations
 
 # Imports/constants consumed by exec'd part bodies.
-
 import re
-
 from typing import Any
 
 from tac2iwxxm.recent_weather import accept_recent_code
-
 from tac2iwxxm.visibility_measure import (
     METAR_STATUTE_MILE_GROUP,
     prevailing_from_metre_group,

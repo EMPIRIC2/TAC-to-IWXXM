@@ -3,15 +3,11 @@
 from __future__ import annotations
 
 # Imports/constants consumed by exec'd part bodies.
-
 import math
-
 import re
-
 from typing import Any, cast
 
 from tac2iwxxm.geometry.reference_point import parse_vor_reference_geometry
-
 from tac2iwxxm.slot_builders.sigmet_body import (
     compound_movement_degrees,
     flight_information_region_name,

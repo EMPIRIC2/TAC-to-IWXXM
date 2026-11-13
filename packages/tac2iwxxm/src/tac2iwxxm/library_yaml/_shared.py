@@ -8,11 +8,12 @@ Activate requires zero Fail; Draft may include Fail.
 from __future__ import annotations
 
 # Imports/constants consumed by exec'd part bodies.
-
 import re
-
 from typing import Any, cast
 
+import yaml
+
+from tac2iwxxm.library_assets import LIBRARY_KINDS, LibraryKind
 from tac2iwxxm.models import (
     CaptureSummary,
     LibraryLifecycle,
@@ -20,11 +21,6 @@ from tac2iwxxm.models import (
     RegexDiagnostic,
     RegexSeverity,
 )
-
-import yaml
-
-from tac2iwxxm.library_assets import LIBRARY_KINDS, LibraryKind
-
 from tac2iwxxm.numeric_checks import evaluate_numeric_check, validate_numeric_check_shape
 
 _NESTED_QUANTIFIER = re.compile(r"[+*][?+]|\{\d+,\}\+|\{0,")
