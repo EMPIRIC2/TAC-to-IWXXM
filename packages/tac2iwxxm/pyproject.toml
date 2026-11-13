@@ -109,3 +109,5 @@ pep621_dev_dependency_groups = ["dev"]
 [tool.deptry.per_rule_ignores]
 # Baseline debt: lxml / omegaconf arrive via hydra-core and optional extras; declare explicitly in a follow-up.
 DEP003 = ["lxml", "omegaconf"]
+# Optional validate extra; runtime import is lazy inside convert/_chunks (deptry misses .src).
+DEP002 = ["iwxxm-validate"]

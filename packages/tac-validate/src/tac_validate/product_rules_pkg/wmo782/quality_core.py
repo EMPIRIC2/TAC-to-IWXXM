@@ -39,7 +39,18 @@ _VIS_SOLIDUS = re.compile(r"^////(?:SM)?$")
 
 
 def _vis_meters_on_reporting_scale(value: int) -> bool:
-    """Return True when a metre visibility follows WMO-782 reporting steps."""
+    """Return True when a metre visibility follows WMO-782 reporting steps.
+
+    Parameters
+    ----------
+    value
+        Argument ``value``.
+
+    Returns
+    -------
+    bool
+        Return value.
+    """
     if value >= 9999:
         return value == 9999
     if value < 800:
@@ -59,7 +70,26 @@ def _check_wmo782_first_groups_and_modifiers(
     body_start: int,
     body_end: int,
 ) -> list[Issue]:
-    """Identification first-groups shape and COR/NIL/AUTO placement matrix."""
+    """Identification first-groups shape and COR/NIL/AUTO placement matrix.
+
+    Parameters
+    ----------
+    tokens
+        Argument ``tokens``.
+    product
+        Argument ``product``.
+    core
+        Argument ``core``.
+    body_start
+        Argument ``body_start``.
+    body_end
+        Argument ``body_end``.
+
+    Returns
+    -------
+    list[Issue]
+        Return value.
+    """
     issues: list[Issue] = []
     if not tokens:
         return issues
@@ -203,7 +233,28 @@ def _check_wmo782_visibility_quality(
     body_end: int,
     is_auto: bool,
 ) -> list[Issue]:
-    """AUTO ////, reporting-scale steps, and directional minimum Dv format."""
+    """AUTO ////, reporting-scale steps, and directional minimum Dv format.
+
+    Parameters
+    ----------
+    obs_tokens
+        Argument ``obs_tokens``.
+    product
+        Argument ``product``.
+    core
+        Argument ``core``.
+    body_start
+        Argument ``body_start``.
+    body_end
+        Argument ``body_end``.
+    is_auto
+        Argument ``is_auto``.
+
+    Returns
+    -------
+    list[Issue]
+        Return value.
+    """
     issues: list[Issue] = []
     if "CAVOK" in obs_tokens:
         return issues

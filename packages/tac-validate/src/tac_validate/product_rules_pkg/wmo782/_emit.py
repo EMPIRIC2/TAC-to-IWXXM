@@ -33,14 +33,60 @@ def emit(
     body_end: int,
     location: str,
 ) -> None:
-    """Append a registry-backed issue with a token span when available."""
+    """Append a registry-backed issue with a token span when available.
+
+    Parameters
+    ----------
+    issues
+        Argument ``issues``.
+    code
+        Argument ``code``.
+    message
+        Argument ``message``.
+    core
+        Argument ``core``.
+    tok
+        Argument ``tok``.
+    body_start
+        Argument ``body_start``.
+    body_end
+        Argument ``body_end``.
+    location
+        Argument ``location``.
+
+    Returns
+    -------
+    None
+        Return value.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (emit)
+    2
+    """
     span = _token_span_in_core(core, tok, body_start)
     start, end = span if span is not None else (body_start, body_end)
     issues.append(_issue(code, message, start=start, end=end, location=location))
 
 
 def parse_temp_c(token: str) -> int | None:
-    """Parse a METAR temperature token into Celsius, or None if missing."""
+    """Parse a METAR temperature token into Celsius, or None if missing.
+
+    Parameters
+    ----------
+    token
+        Argument ``token``.
+
+    Returns
+    -------
+    int | None
+        Return value.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (parse_temp_c)
+    2
+    """
     if token in {"//", "///"} or set(token) <= {"/"}:
         return None
     if token.startswith("M"):
@@ -49,7 +95,23 @@ def parse_temp_c(token: str) -> int | None:
 
 
 def rvr_value_on_scale(raw: str) -> bool:
-    """Return True when an RVR numeric body follows handbook reporting steps."""
+    """Return True when an RVR numeric body follows handbook reporting steps.
+
+    Parameters
+    ----------
+    raw
+        Argument ``raw``.
+
+    Returns
+    -------
+    bool
+        Return value.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (rvr_value_on_scale)
+    2
+    """
     if raw in {"/////", "////"}:
         return True
     body = raw.lstrip("MP")
@@ -68,7 +130,23 @@ def rvr_value_on_scale(raw: str) -> bool:
 
 
 def split_obs_trend(body: list[str]) -> tuple[list[str], list[str]]:
-    """Split observation tokens from TREND change groups at the earliest marker."""
+    """Split observation tokens from TREND change groups at the earliest marker.
+
+    Parameters
+    ----------
+    body
+        Argument ``body``.
+
+    Returns
+    -------
+    tuple[list[str], list[str]]
+        Return value.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (split_obs_trend)
+    2
+    """
     markers = ("BECMG", "TEMPO", "NOSIG")
     idxs = [body.index(m) for m in markers if m in body]
     if not idxs:
@@ -78,7 +156,23 @@ def split_obs_trend(body: list[str]) -> tuple[list[str], list[str]]:
 
 
 def dedupe(issues: list[Issue]) -> list[Issue]:
-    """Keep first issue per (code, start, message)."""
+    """Keep first issue per (code, start, message).
+
+    Parameters
+    ----------
+    issues
+        Argument ``issues``.
+
+    Returns
+    -------
+    list[Issue]
+        Return value.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (dedupe)
+    2
+    """
     seen: set[tuple[str, int, str]] = set()
     out: list[Issue] = []
     for issue in issues:

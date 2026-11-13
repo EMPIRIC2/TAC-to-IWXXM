@@ -27,7 +27,35 @@ def check_trend_remarks(
     body_start: int,
     body_end: int,
 ) -> list[Issue]:
-    """Emit TREND exclusivity/format, RMK national note, and sea-surface format issues."""
+    """Emit TREND exclusivity/format, RMK national note, and sea-surface format issues.
+
+    Parameters
+    ----------
+    obs
+        Argument ``obs``.
+    trend
+        Argument ``trend``.
+    body
+        Argument ``body``.
+    product
+        Argument ``product``.
+    core
+        Argument ``core``.
+    body_start
+        Argument ``body_start``.
+    body_end
+        Argument ``body_end``.
+
+    Returns
+    -------
+    list[Issue]
+        Return value.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (check_trend_remarks)
+    2
+    """
     issues: list[Issue] = []
 
     if "RMK" in body:

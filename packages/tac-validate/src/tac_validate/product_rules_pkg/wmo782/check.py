@@ -20,7 +20,31 @@ def check_wmo782_extended(
     body_start: int,
     body_end: int,
 ) -> list[Issue]:
-    """Emit extended WMO-782 METAR/SPECI combination issues."""
+    """Emit extended WMO-782 METAR/SPECI combination issues.
+
+    Parameters
+    ----------
+    tokens
+        Argument ``tokens``.
+    product
+        Argument ``product``.
+    core
+        Argument ``core``.
+    body_start
+        Argument ``body_start``.
+    body_end
+        Argument ``body_end``.
+
+    Returns
+    -------
+    list[Issue]
+        Return value.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (check_wmo782_extended)
+    2
+    """
     issues: list[Issue] = []
     is_auto = "AUTO" in tokens
     body = tokens

@@ -13,9 +13,12 @@ test.describe('Workflow: Auth readiness', () => {
     await expect(page.getByTestId('convert-button')).toBeVisible({
       timeout: 30_000,
     });
+    // Opposite state: admin dashboard heading can match if Auth admin chrome returns.
+    // targets the retired Admin Dashboard heading
     await expect(page.getByRole('heading', { name: /admin dashboard/i })).toHaveCount(
       0,
     );
+    // Opposite state: admin-nav can match if the admin shell nav returns.
     await expect(page.getByTestId('admin-nav')).toHaveCount(0);
   });
 });

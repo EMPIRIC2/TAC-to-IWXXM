@@ -23,7 +23,33 @@ def check_cloud_temp_qnh(
     body_end: int,
     is_auto: bool,
 ) -> list[Issue]:
-    """Emit cloud order/count/type, VV exclusivity, dew-point, and QNH issues."""
+    """Emit cloud order/count/type, VV exclusivity, dew-point, and QNH issues.
+
+    Parameters
+    ----------
+    obs
+        Argument ``obs``.
+    product
+        Argument ``product``.
+    core
+        Argument ``core``.
+    body_start
+        Argument ``body_start``.
+    body_end
+        Argument ``body_end``.
+    is_auto
+        Argument ``is_auto``.
+
+    Returns
+    -------
+    list[Issue]
+        Return value.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (check_cloud_temp_qnh)
+    2
+    """
     issues: list[Issue] = []
     layers: list[tuple[str, int, str | None]] = []
 

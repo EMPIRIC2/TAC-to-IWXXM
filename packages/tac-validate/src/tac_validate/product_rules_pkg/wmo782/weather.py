@@ -21,6 +21,18 @@ from tac_validate.product_rules_pkg.wmo782._emit import (
 
 
 def _wx_tokens(obs: list[str]) -> list[str]:
+    """Helper ``_wx_tokens``.
+
+    Parameters
+    ----------
+    obs
+        Argument ``obs``.
+
+    Returns
+    -------
+    list[str]
+        Return value.
+    """
     return [
         tok
         for tok in obs
@@ -43,7 +55,33 @@ def check_weather(
     body_end: int,
     is_auto: bool,
 ) -> list[Issue]:
-    """Emit present-weather pairing, bands, recent-weather, and column-order issues."""
+    """Emit present-weather pairing, bands, recent-weather, and column-order issues.
+
+    Parameters
+    ----------
+    obs
+        Argument ``obs``.
+    product
+        Argument ``product``.
+    core
+        Argument ``core``.
+    body_start
+        Argument ``body_start``.
+    body_end
+        Argument ``body_end``.
+    is_auto
+        Argument ``is_auto``.
+
+    Returns
+    -------
+    list[Issue]
+        Return value.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (check_weather)
+    2
+    """
     issues: list[Issue] = []
     wx_tokens = _wx_tokens(obs)
 

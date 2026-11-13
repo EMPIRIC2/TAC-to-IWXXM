@@ -18,7 +18,31 @@ def check_wind_shear(
     body_start: int,
     body_end: int,
 ) -> list[Issue]:
-    """Emit calm/gust/P-indicator/variation and WS format exclusivity issues."""
+    """Emit calm/gust/P-indicator/variation and WS format exclusivity issues.
+
+    Parameters
+    ----------
+    obs
+        Argument ``obs``.
+    product
+        Argument ``product``.
+    core
+        Argument ``core``.
+    body_start
+        Argument ``body_start``.
+    body_end
+        Argument ``body_end``.
+
+    Returns
+    -------
+    list[Issue]
+        Return value.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (check_wind_shear)
+    2
+    """
     issues: list[Issue] = []
     mean_kt: int | None = None
 

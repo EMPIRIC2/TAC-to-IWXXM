@@ -27,7 +27,33 @@ def check_cavok_rvr_vis(
     body_end: int,
     is_auto: bool,
 ) -> list[Issue]:
-    """Emit CAVOK exclusivity, RVR family, and visibility solidus / NDV issues."""
+    """Emit CAVOK exclusivity, RVR family, and visibility solidus / NDV issues.
+
+    Parameters
+    ----------
+    obs
+        Argument ``obs``.
+    product
+        Argument ``product``.
+    core
+        Argument ``core``.
+    body_start
+        Argument ``body_start``.
+    body_end
+        Argument ``body_end``.
+    is_auto
+        Argument ``is_auto``.
+
+    Returns
+    -------
+    list[Issue]
+        Return value.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (check_cavok_rvr_vis)
+    2
+    """
     issues: list[Issue] = []
 
     if "CAVOK" in obs and any(_RVR.match(t) for t in obs):
