@@ -218,8 +218,8 @@ def test_get_store_falls_back_without_database(
     store = get_station_health_store()
     assert isinstance(store, StationHealthStore)
 
-    # Import failure path returns memory store.
-    set_station_health_store(None)
+    # Import failure path returns memory store (override must be cleared).
+    store_mod._override = None
     real_pg_mod = sys.modules.get("src.services.station_health_postgres")
     monkeypatch.setitem(sys.modules, "src.services.station_health_postgres", None)
     assert isinstance(get_station_health_store(), StationHealthStore)
@@ -227,6 +227,11 @@ def test_get_store_falls_back_without_database(
         monkeypatch.setitem(sys.modules, "src.services.station_health_postgres", real_pg_mod)
     else:
         monkeypatch.delitem(sys.modules, "src.services.station_health_postgres", raising=False)
+
+    # No DATABASE_URL returns memory store when override is cleared.
+    store_mod._override = None
+    monkeypatch.delenv("DATABASE_URL", raising=False)
+    assert isinstance(get_station_health_store(), StationHealthStore)
 
     # Postgres URL path constructs a store via from_url/create_engine.
     set_station_health_store(None)
@@ -243,8 +248,14 @@ def test_get_store_falls_back_without_database(
     assert type(pg).__name__ == "PostgresStationHealthStore"
     # Cache hit with same URL.
     assert get_station_health_store() is pg
-    store_mod._pg_store = None
-    store_mod._pg_url = None
+
+    # Dispose exception path must not raise.
+    broken = MagicMock()
+    broken.dispose.side_effect = RuntimeError("dispose fail")
+    store_mod._pg_store = MagicMock(_engine=broken)
+    store_mod._pg_url = "postgresql://u:p@h/db"
+    store_mod._dispose_postgres_store()
+    assert store_mod._pg_store is None
     set_station_health_store(None)
 
 
