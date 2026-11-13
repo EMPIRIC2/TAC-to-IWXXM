@@ -1,11 +1,12 @@
-"""In-memory station health store used by the API and unit tests (F39)."""
+"""Station health store facade: in-memory for tests, Postgres when configured (F39)."""
 
 from __future__ import annotations
 
+import logging
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
 from threading import Lock
-from typing import Any
+from typing import Any, Protocol
 
 from src.services.station_health_metrics import (
     WINDOW_SECONDS,
@@ -13,6 +14,8 @@ from src.services.station_health_metrics import (
     grade_product_window,
     window_timedelta,
 )
+
+logger = logging.getLogger(__name__)
 
 DEFAULT_METRICS: tuple[dict[str, Any], ...] = (
     {
@@ -212,6 +215,8 @@ class StationHealthStore:
             products = self._grade_products(icao_rows, window_key)
             if product_filter:
                 products = [item for item in products if item["product"] == product_filter]
+                if not products:
+                    continue
             overall = self._overall_from_products(products)
             if grade_filter and overall["overall_grade"] != grade_filter:
                 continue
@@ -309,23 +314,91 @@ class StationHealthStore:
         return {"overall_grade": letter_grade(score), "overall_score": round(score, 2)}
 
 
-_STORE = StationHealthStore()
+class StationHealthStoreProtocol(Protocol):
+    """Shared read/write surface for memory and Postgres stores."""
+
+    def reset(self) -> None:
+        """Clear mutable state when supported."""
+
+    def list_metrics(self) -> list[dict[str, Any]]:
+        """Return enabled metric definitions."""
+
+    def record_observation(
+        self,
+        *,
+        icao: str,
+        product: str,
+        tac_text: str,
+        source: str,
+        observed_at: datetime | None = None,
+        name: str | None = None,
+        lint_error_count: int = 0,
+        lint_warning_count: int = 0,
+        convert_ok: bool | None = None,
+    ) -> StationRecord | None:
+        """Append one observation."""
+
+    def list_stations(
+        self,
+        *,
+        window_key: str = "6h",
+        product: str | None = None,
+        grade: str | None = None,
+        limit: int = 100,
+    ) -> dict[str, Any]:
+        """Build the public list payload."""
+
+    def get_station(self, icao: str) -> dict[str, Any] | None:
+        """Build the public detail payload."""
 
 
-def get_station_health_store() -> StationHealthStore:
-    """Return the process-wide in-memory store."""
-    return _STORE
+_MEMORY_STORE = StationHealthStore()
+_OVERRIDE: StationHealthStoreProtocol | None = None
+_PG_STORE: StationHealthStoreProtocol | None = None
+_PG_URL: str | None = None
 
 
-def set_station_health_store(store: StationHealthStore | None) -> None:
-    """Replace the process store (tests)."""
-    global _STORE
-    _STORE = store if store is not None else StationHealthStore()
+def get_station_health_store() -> StationHealthStoreProtocol:
+    """
+    Return the process station health store.
+
+    Prefer product Postgres when ``DATABASE_URL`` is set. Unit tests inject
+    an in-memory store via ``set_station_health_store``.
+    """
+    global _PG_STORE, _PG_URL
+    if _OVERRIDE is not None:
+        return _OVERRIDE
+    try:
+        from src.services.station_health_postgres import (
+            PostgresStationHealthStore,
+            sync_database_url,
+        )
+    except Exception:
+        logger.debug("station health postgres module unavailable", exc_info=True)
+        return _MEMORY_STORE
+    url = sync_database_url()
+    if not url:
+        return _MEMORY_STORE
+    if _PG_STORE is None or url != _PG_URL:
+        _PG_STORE = PostgresStationHealthStore.from_url(url)
+        _PG_URL = url
+    return _PG_STORE
+
+
+def set_station_health_store(store: StationHealthStoreProtocol | None) -> None:
+    """Replace the process store (tests). ``None`` restores the default routing."""
+    global _OVERRIDE, _MEMORY_STORE
+    if store is None:
+        _OVERRIDE = None
+        _MEMORY_STORE = StationHealthStore()
+        return
+    _OVERRIDE = store
 
 
 __all__ = [
     "DEFAULT_METRICS",
     "StationHealthStore",
+    "StationHealthStoreProtocol",
     "StationMeta",
     "StationRecord",
     "get_station_health_store",

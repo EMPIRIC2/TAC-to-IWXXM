@@ -27,60 +27,120 @@ def client() -> TestClient:
         tac_text="METAR KJFK 010100Z 18008KT 10SM FEW040 15/07 A3005=",
         source="ingest",
     )
+    store.record_observation(
+        icao="KLAX",
+        product="taf",
+        tac_text="TAF KLAX 010000Z 0100/0206 25010KT P6SM FEW020=",
+        source="convert",
+        name="Los Angeles International",
+    )
     set_station_health_store(store)
     with TestClient(api_module.app) as test_client:
         yield test_client
-    set_station_health_store(StationHealthStore())
-
-
-def test_tc_sh_001_list_and_metrics(client: TestClient) -> None:
-    metrics = client.get("/api/v1/station-health/metrics")
-    assert metrics.status_code == 200
-    body = metrics.json()
-    assert any(row["id"] == "availability" for row in body["metrics"])
-
-    listed = client.get("/api/v1/station-health", params={"window": "6h"})
-    assert listed.status_code == 200
-    payload = listed.json()
-    assert payload["window"] == "6h"
-    assert payload["summary"]["station_count"] >= 1
-    assert payload["stations"][0]["icao"] == "KJFK"
-    assert payload["stations"][0]["overall_grade"] in {"A", "B", "C", "D", "F"}
-    assert payload["stations"][0]["products"]
-
-    bad = client.get("/api/v1/station-health", params={"window": "2h"})
-    assert bad.status_code == 400
-
-
-def test_tc_sh_002_detail_and_unknown(client: TestClient) -> None:
-    ok = client.get("/api/v1/station-health/KJFK")
-    assert ok.status_code == 200
-    detail = ok.json()
-    assert detail["icao"] == "KJFK"
-    assert "6h" in detail["windows"]
-    assert detail["record_count"] >= 2
-
-    missing = client.get("/api/v1/station-health/ZZZZ")
-    assert missing.status_code == 404
-    assert "Unknown" in missing.json()["detail"]
+    set_station_health_store(None)
 
 
 @pytest.mark.parametrize(
-    ("mode", "path", "params", "expect_status"),
+    ("path", "params", "status_code", "checks"),
     [
-        ("success", "/api/v1/station-health", {"window": "6h"}, 200),
-        ("failure", "/api/v1/station-health/ZZZZ", {}, 404),
-        ("validation", "/api/v1/station-health", {"window": "2h"}, 400),
+        (
+            "/api/v1/station-health/metrics",
+            {},
+            200,
+            ("metrics_has_availability",),
+        ),
+        (
+            "/api/v1/station-health",
+            {"window": "6h"},
+            200,
+            ("list_has_kjfk", "summary_nonzero"),
+        ),
+        (
+            "/api/v1/station-health",
+            {"window": "1d", "product": "metar"},
+            200,
+            ("list_has_kjfk",),
+        ),
+        (
+            "/api/v1/station-health",
+            {"window": "30d", "limit": 1},
+            200,
+            ("list_limited",),
+        ),
+        (
+            "/api/v1/station-health/KJFK",
+            {},
+            200,
+            ("detail_kjfk",),
+        ),
     ],
 )
-def test_station_health_modes(
+def test_tc_sh_001_success_paths(
     client: TestClient,
-    mode: str,
     path: str,
-    params: dict[str, str],
-    expect_status: int,
+    params: dict[str, object],
+    status_code: int,
+    checks: tuple[str, ...],
 ) -> None:
-    """Success / failure / validation battery for station-health HTTP."""
-    del mode
-    resp = client.get(path, params=params or None)
-    assert resp.status_code == expect_status
+    response = client.get(path, params=params or None)
+    assert response.status_code == status_code
+    body = response.json()
+    if "metrics_has_availability" in checks:
+        assert any(row["id"] == "availability" for row in body["metrics"])
+    if "list_has_kjfk" in checks:
+        assert any(row["icao"] == "KJFK" for row in body["stations"])
+        assert body["stations"][0]["overall_grade"] in {"A", "B", "C", "D", "F"}
+    if "summary_nonzero" in checks:
+        assert body["summary"]["station_count"] >= 1
+    if "list_limited" in checks:
+        assert len(body["stations"]) <= 1
+    if "detail_kjfk" in checks:
+        assert body["icao"] == "KJFK"
+        assert "6h" in body["windows"]
+        assert body["record_count"] >= 2
+
+
+@pytest.mark.parametrize(
+    ("path", "params", "status_code", "detail_substr"),
+    [
+        ("/api/v1/station-health", {"window": "2h"}, 400, "Window"),
+        ("/api/v1/station-health", {"window": "99d"}, 400, "Window"),
+        ("/api/v1/station-health/ZZZZ", {}, 404, "Unknown"),
+        ("/api/v1/station-health/ABCD", {}, 404, "Unknown"),
+    ],
+)
+def test_tc_sh_002_failure_paths(
+    client: TestClient,
+    path: str,
+    params: dict[str, object],
+    status_code: int,
+    detail_substr: str,
+) -> None:
+    response = client.get(path, params=params or None)
+    assert response.status_code == status_code
+    assert detail_substr in str(response.json().get("detail", ""))
+
+
+@pytest.mark.parametrize(
+    ("params", "expect_empty"),
+    [
+        ({"window": "6h", "product": "speci"}, True),
+        ({"window": "6h", "grade": "Z"}, True),
+        ({"window": "6h", "product": "metar", "grade": "A"}, False),
+        ({"window": "6h", "limit": 500}, False),
+    ],
+)
+def test_tc_sh_001_validation_filters(
+    client: TestClient,
+    params: dict[str, object],
+    expect_empty: bool,
+) -> None:
+    response = client.get("/api/v1/station-health", params=params)
+    assert response.status_code == 200
+    stations = response.json()["stations"]
+    if expect_empty:
+        assert stations == []
+    else:
+        assert isinstance(stations, list)
+        if params.get("product"):
+            assert all(any(p["product"] == params["product"] for p in row["products"]) for row in stations)

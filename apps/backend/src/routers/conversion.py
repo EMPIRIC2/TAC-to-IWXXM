@@ -1670,6 +1670,43 @@ def _append_pre_convert_lint_issues(
         )
 
 
+def _record_convert_station_health(
+    acc: _ConvertAccumulator,
+    *,
+    product: str,
+    lint_report: LintReport | None = None,
+) -> None:
+    """Best-effort station health write for convert results (F39)."""
+    try:
+        from src.services.station_health_recorder import record_tac_observation
+    except Exception:
+        return
+    lint_error_count = 0
+    lint_warning_count = 0
+    if lint_report is not None:
+        for issue in lint_report.issues:
+            severity = str(getattr(issue, "severity", "") or "").lower()
+            if severity in {"error", "critical"}:
+                lint_error_count += 1
+            elif severity == "warning":
+                lint_warning_count += 1
+    for result in acc.results:
+        tac = (result.tac_input or "").strip()
+        if not tac:
+            continue
+        try:
+            record_tac_observation(
+                tac_text=tac,
+                product=product,
+                source="convert",
+                lint_error_count=lint_error_count,
+                lint_warning_count=lint_warning_count,
+                convert_ok=True,
+            )
+        except Exception:
+            logger.debug("station health convert record failed", exc_info=True)
+
+
 @router.post(
     "/convert-bulletin",
     tags=["Conversion"],
@@ -3091,6 +3128,12 @@ async def convert(
             promoted_issues.append(issue)
         else:
             promoted_issues.append(issue.model_copy(update={"severity": ConversionIssueSeverity(promoted)}))
+
+    _record_convert_station_health(
+        acc,
+        product=product,
+        lint_report=pre_convert_lint_report,
+    )
 
     return api_surface.msgspec_json_response(
         ConversionResponse(

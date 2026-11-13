@@ -523,8 +523,9 @@ with aliases during one CalVer window. DX tests: ``…``.
 - **Design choice**: Dedicated product-Postgres tables, not a derive-only view of
  `tac_work_sessions`. Work sessions are operator drafts. They are not a station
  issuance clock and they omit guest and ingest traffic. Ingest store rows alone also
- lack station ICAO and quality signals. The pipeline writes observation rows; the API
- reads precomputed window grades.
+ lack station ICAO and quality signals. The pipeline and convert path write observation
+ rows; the API reads grades from product Postgres (`DATABASE_URL`), computing window
+ grades from `station_tac_records` (in-memory store remains for unit tests only).
 - **Tables**: `station_registry`, `station_tac_records`, `station_metric_definitions`,
  `station_health_grades` (Alembic on `DATABASE_URL`).
 - **Windows**: last 6 hours, last 1 day, last 1 month (30 days).

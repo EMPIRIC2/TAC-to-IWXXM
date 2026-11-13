@@ -902,3 +902,6 @@ TC-SH-002,Station health detail and unknown ICAO,,,UJ-096,,test_station_health_a
 TC-SH-003,Solidus and missing-digit counters,,,UJ-096,,test_station_health_metrics.py,,,documented,
 TC-SH-004,Grade letter thresholds and availability,,,UJ-096,,test_station_health_metrics.py,,,documented,
 TC-SH-005,Station health shell tab and empty state,,,UJ-096,,StationHealthPage.test.tsx,,,documented,heading_level=3
+TC-SH-006,Station health API success/failure/validation matrix,,,UJ-096,,test_station_health_api.py,,,documented,parametrized
+TC-SH-007,Station health Postgres store routing,,,UJ-096,,test_station_health_postgres.py,,,documented,
+TC-SH-008,Convert path station health recorder wire,,,UJ-096,,test_station_health_convert_wire.py,,,documented,

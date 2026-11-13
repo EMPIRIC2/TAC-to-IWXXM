@@ -49,6 +49,7 @@ def list_station_health_metrics() -> StationHealthMetricsResponse:
     "/station-health",
     response_model=StationHealthListResponse,
     summary="List station health grades",
+    responses={400: {"description": "Invalid window"}},
 )
 def list_station_health(
     window: str = Query(default="6h", description="Time window: 6h, 1d, or 30d"),
@@ -92,6 +93,7 @@ def list_station_health(
     "/station-health/{icao}",
     response_model=StationHealthDetailResponse,
     summary="Station health detail",
+    responses={404: {"description": "Unknown station"}},
 )
 def get_station_health(icao: str) -> StationHealthDetailResponse:
     """Serve one station report card across windows and products."""
