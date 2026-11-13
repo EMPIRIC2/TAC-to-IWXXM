@@ -11,7 +11,12 @@ async function bootstrap() {
   await initRuntimeConfig();
   initSentry();
   const { default: App } = await import('./app/App.tsx');
-  createRoot(document.getElementById('root')!).render(<App />);
+  const { AppErrorBoundary } = await import('./app/components/AppErrorBoundary.tsx');
+  createRoot(document.getElementById('root')!).render(
+    <AppErrorBoundary>
+      <App />
+    </AppErrorBoundary>,
+  );
 }
 
 void bootstrap();
