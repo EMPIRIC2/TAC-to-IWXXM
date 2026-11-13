@@ -39,6 +39,7 @@ import {
   LIVE_MAP_REFRESHING,
   LIVE_MAP_PRODUCTS,
   LIVE_MAP_VIEWS,
+  type LivePlace,
 } from './liveMap';
 
 const bounds = { west: -80, south: 40, east: -70, north: 41 };
