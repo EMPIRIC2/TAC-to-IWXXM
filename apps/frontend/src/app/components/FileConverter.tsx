@@ -1283,6 +1283,8 @@ export function FileConverter({
       product: detectTacProduct(tac),
     }));
     setConverterOpen(true);
+    // Keep Map/results open after Send to converter (BUG-2026-11-10).
+    setResultsDrawerOpen(true);
     onPendingMapTacConsumed?.();
     document
       .querySelector('[data-testid="live-convert-panes"]')
@@ -2599,6 +2601,8 @@ export function FileConverter({
       product: detectTacProduct(tac),
     }));
     setConverterOpen(true);
+    // Keep Map/results open after Send to converter (BUG-2026-11-10).
+    setResultsDrawerOpen(true);
     onPendingMapTacConsumed?.();
   }, [pendingMapTac, onPendingMapTacConsumed]);
   /* eslint-enable react-hooks/set-state-in-effect */

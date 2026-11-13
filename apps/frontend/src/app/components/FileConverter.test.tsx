@@ -2114,9 +2114,14 @@ describe('FileConverter Component', () => {
       );
       await user.click(screen.getByTestId('convert-panes-toggle'));
       expect(screen.getByTestId('convert-body')).not.toHaveAttribute('hidden');
-      expect(screen.queryByTestId('convert-results-tab-map')).not.toBeInTheDocument();
-      expect(screen.queryByTestId('live-world-map')).not.toBeInTheDocument();
-      expect(screen.queryByTestId('convert-weather-map')).not.toBeInTheDocument();
+      expect(screen.getByTestId('convert-results-tab-map')).toHaveTextContent('Map');
+      await user.click(screen.getByTestId('convert-results-tab-map'));
+      expect(screen.getByTestId('live-world-map')).toBeInTheDocument();
+      expect(
+        screen
+          .getByTestId('live-convert-panes')
+          .compareDocumentPosition(screen.getByTestId('convert-weather-map')),
+      ).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
       expect(
         screen.queryByRole('tab', { name: 'Decode visuals' }),
       ).not.toBeInTheDocument();
@@ -2147,6 +2152,7 @@ describe('FileConverter Component', () => {
     });
 
     it('loads a Map shell handoff into the TAC panes and scrolls up', async () => {
+      const user = userEvent.setup({ delay: null });
       const scroll = vi.fn();
       const originalScroll = HTMLElement.prototype.scrollIntoView;
       HTMLElement.prototype.scrollIntoView = scroll;
@@ -2174,7 +2180,15 @@ describe('FileConverter Component', () => {
       expect(screen.getByRole('combobox', { name: 'Product' })).toHaveValue('METAR');
       expect(onPendingMapTacConsumed).toHaveBeenCalledTimes(1);
       expect(scroll).toHaveBeenCalled();
-      expect(screen.queryByTestId('convert-results-tab-map')).not.toBeInTheDocument();
+      // BUG-2026-11-10 map-send-keep-drawer: handoff must not collapse results/Map.
+      expect(screen.getByTestId('convert-results-drawer-shell')).not.toHaveAttribute(
+        'hidden',
+      );
+      await user.click(screen.getByTestId('convert-results-tab-map'));
+      expect(screen.getByTestId('convert-results-panel-map')).not.toHaveAttribute(
+        'hidden',
+      );
+      expect(screen.getByTestId('live-world-map')).toBeInTheDocument();
       HTMLElement.prototype.scrollIntoView = originalScroll;
     });
 
