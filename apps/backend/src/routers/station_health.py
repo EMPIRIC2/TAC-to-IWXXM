@@ -185,25 +185,23 @@ def _product_models(
     >>> _product_models([])
     []
     """
-    models: list[StationProductGradeModel] = []
-    for item in raw_products:
-        models.append(
-            StationProductGradeModel(
-                product=_as_str(item.get("product")),
-                grade=_as_str(item.get("grade")),
-                overall_score=_as_float(item.get("overall_score")),
-                availability_score=_as_float(item.get("availability_score")),
-                actual_count=_as_int(item.get("actual_count")),
-                expected_count=_as_int(item.get("expected_count")),
-                solidus_rate=_as_float(item.get("solidus_rate")),
-                missing_digit_rate=_as_float(item.get("missing_digit_rate")),
-                lint_severity_score=_as_float(
-                    item.get("lint_severity_score"), 100.0
-                ),
-                lint_error_count=_as_int(item.get("lint_error_count")),
-            )
+    return [
+        StationProductGradeModel(
+            product=_as_str(item.get("product")),
+            grade=_as_str(item.get("grade")),
+            overall_score=_as_float(item.get("overall_score")),
+            availability_score=_as_float(item.get("availability_score")),
+            actual_count=_as_int(item.get("actual_count")),
+            expected_count=_as_int(item.get("expected_count")),
+            solidus_rate=_as_float(item.get("solidus_rate")),
+            missing_digit_rate=_as_float(item.get("missing_digit_rate")),
+            lint_severity_score=_as_float(
+                item.get("lint_severity_score"), 100.0
+            ),
+            lint_error_count=_as_int(item.get("lint_error_count")),
         )
-    return models
+        for item in raw_products
+    ]
 
 
 def _products_from_raw(raw: object) -> list[dict[str, object]]:
