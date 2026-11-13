@@ -133,6 +133,7 @@ try:
         evaluation,
         health,
         icao_opmet,
+        live_check,
         live_map,
         mass_ingest,
         quality_metrics,
@@ -152,6 +153,7 @@ except ImportError:
         evaluation,
         health,
         icao_opmet,
+        live_check,
         live_map,
         mass_ingest,
         quality_metrics,
@@ -519,6 +521,7 @@ try:
     app.include_router(conversion.router)
     app.include_router(comprehensive_validation.router)
     app.include_router(live_map.router)
+    app.include_router(live_check.router)
     logger.info("DEBUG: included TD-3b routers successfully")
 except Exception as e:  # pragma: no cover - defensive
     logger.error(f"DEBUG: Failed to include TD-3b routers: {e}", exc_info=True)
