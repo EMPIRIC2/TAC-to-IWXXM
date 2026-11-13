@@ -35,7 +35,6 @@ class TestTcEv080StandingDocs:
         tech = TECH.read_text(encoding="utf-8")
         assert "100%" in tech or "fail_under" in tech
 
-
     def test_typing_policy_coverage_section(self) -> None:
         # typing-policy.md removed; coverage floor lives in tech-spec + AGENTS.
         tech = TECH.read_text(encoding="utf-8")

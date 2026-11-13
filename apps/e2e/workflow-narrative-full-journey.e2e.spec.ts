@@ -14,8 +14,11 @@ test.describe('Workflow: Narrative Full Journey', () => {
       timeout: 30_000,
     });
     await expect(page.getByTestId('tac-editor')).toBeVisible();
+    // Opposite state: Convert editor is visible, so Auth logout chrome is absent.
+    // Locators can match only if the removed Auth logout control returns.
+    // targets the retired logout control
     await expect(
-      page.getByRole('button', { name: /log ?out|sign out/i }),
+      page.getByRole('button', { name: 'Log out', exact: true }),
     ).toHaveCount(0);
   });
 });

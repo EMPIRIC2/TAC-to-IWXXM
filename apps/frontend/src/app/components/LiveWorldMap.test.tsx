@@ -850,4 +850,80 @@ describe('LiveWorldMap', () => {
       ).not.toBeInTheDocument();
     });
   });
+
+  it('filters blank TAC reports when building the cluster picker', async () => {
+    const user = userEvent.setup();
+    const rainy: LivePlace = {
+      place_key: 'KJFK',
+      product: 'metar',
+      latitude: 40.6,
+      longitude: -73.7,
+      geometry: { kind: 'point' },
+      reports: [
+        {
+          observed_at: '',
+          tac: 'METAR KJFK 231851Z 20015G25KT 3SM -RA BR BKN012 12/11 A2998=',
+          iwxxm: null,
+        },
+      ],
+    };
+    const emptyReports: LivePlace = {
+      place_key: 'KXYZ',
+      product: 'metar',
+      latitude: 41.0,
+      longitude: -74.0,
+      geometry: { kind: 'point' },
+      reports: [],
+    };
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue({
+        ok: true,
+        json: async () => ({ places: [rainy, emptyReports] }),
+      }),
+    );
+    render(<LiveWorldMap />);
+    expect(await screen.findByTestId('tac-layer-precip')).toBeInTheDocument();
+    await user.click(screen.getByTestId('tac-layer-precip'));
+    expect(
+      await screen.findByTestId('station-cluster-file-picker'),
+    ).toBeInTheDocument();
+    expect(screen.getByTestId('cluster-pick-KJFK')).toBeInTheDocument();
+    expect(screen.queryByTestId('cluster-pick-KXYZ')).not.toBeInTheDocument();
+  });
+
+  it('ignores stale cluster picks after the place leaves the filter', async () => {
+    const user = userEvent.setup();
+    const onOpenPlace = vi.fn();
+    const rainy: LivePlace = {
+      place_key: 'KJFK',
+      product: 'metar',
+      latitude: 40.6,
+      longitude: -73.7,
+      geometry: { kind: 'point' },
+      reports: [
+        {
+          observed_at: '2026-11-13T18:00:00Z',
+          tac: 'METAR KJFK 231851Z 20015G25KT 3SM -RA BR BKN012 12/11 A2998=',
+          iwxxm: null,
+        },
+      ],
+    };
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue({
+        ok: true,
+        json: async () => ({ places: [rainy] }),
+      }),
+    );
+    render(<LiveWorldMap onOpenPlace={onOpenPlace} />);
+    expect(await screen.findByTestId('tac-layer-precip')).toBeInTheDocument();
+    await user.click(screen.getByTestId('tac-layer-precip'));
+    expect(
+      await screen.findByTestId('station-cluster-file-picker'),
+    ).toBeInTheDocument();
+    await user.selectOptions(screen.getByTestId('live-map-region'), 'Europe');
+    await user.click(screen.getByTestId('cluster-pick-KJFK'));
+    expect(onOpenPlace).not.toHaveBeenCalled();
+  });
 });

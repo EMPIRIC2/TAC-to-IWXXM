@@ -1,5 +1,5 @@
 /**
- * Primary operator shell navigation — Convert, Decode visuals, History, Rule catalogs, Code names.
+ * Primary operator shell navigation — Convert, Decode visuals, History, Rule catalogs, Code names, Glossary.
  *
  * Peer tabs for the operator shell; not a FileConverter panel.
  */
@@ -17,7 +17,8 @@ export type ShellPrimaryView =
   | 'visuals'
   | 'history'
   | 'catalog'
-  | 'dictionary';
+  | 'dictionary'
+  | 'glossary';
 
 export const SHELL_NAV_LABELS = {
   converter: 'Convert',
@@ -25,6 +26,7 @@ export const SHELL_NAV_LABELS = {
   history: 'History',
   catalog: 'Rule catalogs',
   dictionary: 'Code names',
+  glossary: 'Glossary',
 } as const;
 
 interface AppShellNavProps {
@@ -40,10 +42,11 @@ const TABS: ShellPrimaryView[] = [
   'history',
   'catalog',
   'dictionary',
+  'glossary',
 ];
 
 /**
- * Render Convert, Decode visuals, History, Rule catalogs, and Code names.
+ * Render Convert, Decode visuals, History, Rule catalogs, Code names, and Glossary.
  *
  * @param props.activeView - Currently selected shell view
  * @param props.onNavigate - View change handler
