@@ -27,17 +27,15 @@ import {
 } from '@/utils/codeNameDictionaryCopy';
 import {
   DECODE_VISUALS_BETA,
-  DECODE_VISUALS_EMPTY,
   DECODE_VISUALS_FEEDBACK,
   DECODE_VISUALS_INTRO,
   DECODE_VISUALS_MAP_LOADING,
   DECODE_VISUALS_NO_MAP,
   DECODE_VISUALS_NO_REGION,
+  DECODE_VISUALS_NO_STATION,
   DECODE_VISUALS_NO_WIND,
   DECODE_VISUALS_OPEN,
   DECODE_VISUALS_REGION_CAPTION,
-  DECODE_VISUALS_SEARCH_PLACEHOLDER,
-  DECODE_VISUALS_STATION_LABEL,
   DECODE_VISUALS_TITLE,
   DECODE_VISUALS_WIND_VARIABLE,
 } from '@/utils/decodeVisualsCopy';
@@ -413,12 +411,7 @@ export function collectOperatorVisibleCopy(): OperatorVisibleCopyEntry[] {
     { id: 'decode-visuals.intro', text: DECODE_VISUALS_INTRO },
     { id: 'decode-visuals.beta', text: DECODE_VISUALS_BETA },
     { id: 'decode-visuals.feedback', text: DECODE_VISUALS_FEEDBACK },
-    { id: 'decode-visuals.station', text: DECODE_VISUALS_STATION_LABEL },
-    {
-      id: 'decode-visuals.search-placeholder',
-      text: DECODE_VISUALS_SEARCH_PLACEHOLDER,
-    },
-    { id: 'decode-visuals.empty', text: DECODE_VISUALS_EMPTY },
+    { id: 'decode-visuals.no-station', text: DECODE_VISUALS_NO_STATION },
     { id: 'decode-visuals.no-map', text: DECODE_VISUALS_NO_MAP },
     { id: 'decode-visuals.map-loading', text: DECODE_VISUALS_MAP_LOADING },
     { id: 'decode-visuals.no-region', text: DECODE_VISUALS_NO_REGION },

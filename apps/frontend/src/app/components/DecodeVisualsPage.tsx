@@ -1,26 +1,17 @@
 /**
- * Full-page Live map: live TAC map, station search, and wind cue (F37 / F9).
+ * Full-page Live map: live TAC map and wind cue from Convert context (F37 / F9).
  */
 
 import { useSyncExternalStore } from 'react';
-import { IcaoAutocomplete } from '@/app/components/IcaoAutocomplete';
 import { LiveWorldMap } from '@/app/components/LiveWorldMap';
 import { WindCue } from '@/app/components/WindCue';
 import { stationDisplayName } from '@/utils/decodeVisuals';
 import {
-  DECODE_VISUALS_EMPTY,
   DECODE_VISUALS_INTRO,
-  DECODE_VISUALS_SEARCH_PLACEHOLDER,
-  DECODE_VISUALS_STATION_LABEL,
+  DECODE_VISUALS_NO_STATION,
   DECODE_VISUALS_TITLE,
 } from '@/utils/decodeVisualsCopy';
-import {
-  readDecodeVisuals,
-  readStationDraft,
-  subscribeDecodeVisuals,
-  subscribeStationDraft,
-  writeStationDraft,
-} from '@/utils/decodeVisualsStore';
+import { readDecodeVisuals, subscribeDecodeVisuals } from '@/utils/decodeVisualsStore';
 import type { LivePlace } from '@/utils/liveMap';
 import { shellFrameClass, useLiveConvertLayout } from '@/utils/liveConvertLayout';
 
@@ -32,7 +23,7 @@ interface DecodeVisualsPageProps {
 }
 
 /**
- * Full-page live map with station search and wind cue.
+ * Full-page live map with wind cue from the Convert / decode station.
  *
  * @param props.onOpenPlace - Optional Send-to-converter handoff
  * @example
@@ -44,13 +35,8 @@ export function DecodeVisualsPage({ onOpenPlace }: DecodeVisualsPageProps = {}) 
     readDecodeVisuals,
     readDecodeVisuals,
   );
-  const draft = useSyncExternalStore(
-    subscribeStationDraft,
-    readStationDraft,
-    readStationDraft,
-  );
   const { layout } = useLiveConvertLayout();
-  const station = (draft ?? published.station).trim().toUpperCase();
+  const station = published.station.trim().toUpperCase();
   const complete = STATION_ID.test(station);
   const heading = complete ? stationDisplayName(station) : '';
 
@@ -63,21 +49,14 @@ export function DecodeVisualsPage({ onOpenPlace }: DecodeVisualsPageProps = {}) 
         {DECODE_VISUALS_TITLE}
       </h1>
       <p className="text-sm text-gray-600 dark:text-gray-300">{DECODE_VISUALS_INTRO}</p>
-      <IcaoAutocomplete
-        id="decode-visuals-station-input"
-        label={DECODE_VISUALS_STATION_LABEL}
-        value={draft ?? published.station}
-        onChange={(value) => writeStationDraft(value.toUpperCase())}
-        inputTestId="decode-visuals-station"
-        placeholder={DECODE_VISUALS_SEARCH_PLACEHOLDER}
-        className="max-w-xl"
-      />
-      <p
-        className="text-sm text-gray-600 dark:text-gray-300"
-        data-testid="decode-visuals-empty"
-      >
-        {DECODE_VISUALS_EMPTY}
-      </p>
+      {!complete ? (
+        <p
+          className="text-sm text-gray-600 dark:text-gray-300"
+          data-testid="decode-visuals-empty"
+        >
+          {DECODE_VISUALS_NO_STATION}
+        </p>
+      ) : null}
       <LiveWorldMap focusStation={complete ? station : ''} onOpenPlace={onOpenPlace} />
       {complete ? (
         <>
@@ -87,7 +66,7 @@ export function DecodeVisualsPage({ onOpenPlace }: DecodeVisualsPageProps = {}) 
           >
             {heading}
           </p>
-          <WindCue segments={draft === null ? published.segments : []} />
+          <WindCue segments={published.segments} />
         </>
       ) : null}
     </section>
