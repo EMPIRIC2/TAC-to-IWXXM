@@ -139,6 +139,7 @@ try:
         exchange_admin,
         health,
         icao_opmet,
+        live_check,
         live_map,
         mass_ingest,
         quality_metrics,
@@ -160,6 +161,7 @@ except ImportError:
         exchange_admin,
         health,
         icao_opmet,
+        live_check,
         live_map,
         mass_ingest,
         quality_metrics,
@@ -363,6 +365,7 @@ try:
     app.include_router(conversion.router)
     app.include_router(comprehensive_validation.router)
     app.include_router(live_map.router)
+    app.include_router(live_check.router)
     app.include_router(station_health.router)
     logger.info("DEBUG: included TD-3b routers successfully")
 except Exception as e:  # pragma: no cover - defensive
