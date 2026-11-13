@@ -1,11 +1,21 @@
 /**
  * Auth readiness workflow — **retired F21** (operator Auth removed).
  * Coverage moved to auth.e2e.spec.ts / public-app-f21-f22.e2e.spec.ts (TC-F21-auth-gone).
+ * [Corpus: tests] — no skip wrappers; assert public Convert shell instead.
  */
-import { test } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 
 test.describe('Workflow: Auth readiness', () => {
-  test('startup and login reach converter (no admin dashboard)', async () => {
-    test.skip(true, 'Retired F21 — operator Auth UX removed (TC-F21-auth-gone)');
+  test('public Convert shell loads without admin dashboard chrome', async ({
+    page,
+  }) => {
+    await page.goto('/');
+    await expect(page.getByTestId('convert-button')).toBeVisible({
+      timeout: 30_000,
+    });
+    await expect(page.getByRole('heading', { name: /admin dashboard/i })).toHaveCount(
+      0,
+    );
+    await expect(page.getByTestId('admin-nav')).toHaveCount(0);
   });
 });
