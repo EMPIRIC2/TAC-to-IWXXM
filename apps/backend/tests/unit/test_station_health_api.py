@@ -63,3 +63,24 @@ def test_tc_sh_002_detail_and_unknown(client: TestClient) -> None:
     missing = client.get("/api/v1/station-health/ZZZZ")
     assert missing.status_code == 404
     assert "Unknown" in missing.json()["detail"]
+
+
+@pytest.mark.parametrize(
+    ("mode", "path", "params", "expect_status"),
+    [
+        ("success", "/api/v1/station-health", {"window": "6h"}, 200),
+        ("failure", "/api/v1/station-health/ZZZZ", {}, 404),
+        ("validation", "/api/v1/station-health", {"window": "2h"}, 400),
+    ],
+)
+def test_station_health_modes(
+    client: TestClient,
+    mode: str,
+    path: str,
+    params: dict[str, str],
+    expect_status: int,
+) -> None:
+    """Success / failure / validation battery for station-health HTTP."""
+    del mode
+    resp = client.get(path, params=params or None)
+    assert resp.status_code == expect_status

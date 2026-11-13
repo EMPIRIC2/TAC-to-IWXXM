@@ -94,3 +94,52 @@ describe('StationHealthPage', () => {
     });
   });
 });
+
+describe('StationHealthPage modes', () => {
+  it.each([
+    {
+      mode: 'success' as const,
+      list: {
+        window: '6h',
+        computed_at: '2026-11-13T12:00:00Z',
+        stations: [
+          {
+            icao: 'KJFK',
+            name: 'John F Kennedy International',
+            overall_grade: 'A',
+            overall_score: 95,
+            products: [],
+          },
+        ],
+        summary: { station_count: 1, grade_counts: { A: 1, B: 0, C: 0, D: 0, F: 0 } },
+      },
+      testId: 'station-health-row-KJFK',
+    },
+    {
+      mode: 'failure' as const,
+      reject: true,
+      testId: 'station-health-error',
+    },
+    {
+      mode: 'validation' as const,
+      list: {
+        window: '6h',
+        computed_at: '2026-11-13T12:00:00Z',
+        stations: [],
+        summary: { station_count: 0, grade_counts: { A: 0, B: 0, C: 0, D: 0, F: 0 } },
+      },
+      testId: 'station-health-empty',
+    },
+  ])('$mode mode renders $testId', async ({ mode, list, reject, testId }) => {
+    void mode;
+    if (reject) {
+      fetchStationHealthList.mockRejectedValue(new Error('network'));
+    } else {
+      fetchStationHealthList.mockResolvedValue(list);
+    }
+    render(<StationHealthPage />);
+    await waitFor(() => {
+      expect(screen.getByTestId(testId)).toBeInTheDocument();
+    });
+  });
+});
