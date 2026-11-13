@@ -131,6 +131,7 @@ try:
         dissemination,
         dissemination_ops,
         evaluation,
+        exchange_admin,
         health,
         icao_opmet,
         live_map,
@@ -150,6 +151,7 @@ except ImportError:
         dissemination,
         dissemination_ops,
         evaluation,
+        exchange_admin,
         health,
         icao_opmet,
         live_map,
@@ -486,6 +488,12 @@ try:
     logger.info("DEBUG: included dissemination_ops router successfully")
 except Exception as e:  # pragma: no cover - defensive
     logger.error(f"DEBUG: Failed to include dissemination_ops router: {e}", exc_info=True)
+
+try:
+    app.include_router(exchange_admin.router)
+    logger.info("DEBUG: included exchange_admin router successfully")
+except Exception as e:  # pragma: no cover - defensive
+    logger.error(f"DEBUG: Failed to include exchange_admin router: {e}", exc_info=True)
 
 try:
     app.include_router(conversion_profiles.router)

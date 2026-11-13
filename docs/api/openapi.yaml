@@ -907,6 +907,180 @@ paths:
       security:
         -
                     HTTPBearer: []
+  /api/v1/exchange-admin/allowlist:
+    get:
+      tags:
+        - Exchange Admin
+      summary: Read-only egress allowlist (GitOps)
+      description: Return the configured egress allowlist. Editing is GitOps-only.
+      operationId: get_allowlist_api_v1_exchange_admin_allowlist_get
+      responses:
+        200:
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                additionalProperties: true
+                type: object
+                title: Response Get Allowlist Api V1 Exchange Admin Allowlist Get
+      security:
+        -
+                    HTTPBearer: []
+  /api/v1/exchange-admin/invitation-groups:
+    get:
+      tags:
+        - Exchange Admin
+      summary: Invitation groups for login
+      description: List multi-tenant invitation groups offered at login.
+      operationId: get_invitation_groups_api_v1_exchange_admin_invitation_groups_get
+      responses:
+        200:
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                additionalProperties: true
+                type: object
+                title: Response Get Invitation Groups Api V1 Exchange Admin Invitation Groups Get
+      security:
+        -
+                    HTTPBearer: []
+  /api/v1/exchange-admin/invitation-group:
+    put:
+      tags:
+        - Exchange Admin
+      summary: Select invitation group at login
+      description: Bind the signed-in operator to one invitation group.
+      operationId: put_invitation_group_api_v1_exchange_admin_invitation_group_put
+      requestBody:
+        content:
+          application/json:
+            schema:
+              additionalProperties: true
+              type: object
+              title: Body
+        required: true
+      responses:
+        200:
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                additionalProperties: true
+                type: object
+                title: Response Put Invitation Group Api V1 Exchange Admin Invitation Group Put
+        422:
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
+      security:
+        -
+                    HTTPBearer: []
+  /api/v1/exchange-admin/prefs:
+    get:
+      tags:
+        - Exchange Admin
+      summary: Operator exchange preferences
+      description: Return national-remarks toggle and selected invitation group.
+      operationId: get_operator_prefs_api_v1_exchange_admin_prefs_get
+      responses:
+        200:
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                additionalProperties: true
+                type: object
+                title: Response Get Operator Prefs Api V1 Exchange Admin Prefs Get
+      security:
+        -
+                    HTTPBearer: []
+  /api/v1/exchange-admin/prefs/national-remarks:
+    put:
+      tags:
+        - Exchange Admin
+      summary: Toggle national remarks on WIS2 publish
+      description: "Operator toggle: include national remarks when publishing to WIS2."
+      operationId: put_national_remarks_api_v1_exchange_admin_prefs_national_remarks_put
+      requestBody:
+        content:
+          application/json:
+            schema:
+              additionalProperties: true
+              type: object
+              title: Body
+        required: true
+      responses:
+        200:
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                additionalProperties: true
+                type: object
+                title: Response Put National Remarks Api V1 Exchange Admin Prefs National Remarks Put
+        422:
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
+      security:
+        -
+                    HTTPBearer: []
+  /api/v1/exchange-admin/templates:
+    get:
+      tags:
+        - Exchange Admin
+      summary: List non-secret WIS2 templates
+      description: List memory-only non-secret destination templates (no vault).
+      operationId: get_templates_api_v1_exchange_admin_templates_get
+      responses:
+        200:
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                additionalProperties: true
+                type: object
+                title: Response Get Templates Api V1 Exchange Admin Templates Get
+      security:
+        -
+                    HTTPBearer: []
+    put:
+      tags:
+        - Exchange Admin
+      summary: Upsert non-secret WIS2 template
+      description: Create or replace a non-secret template. Secrets must be pasted at send time.
+      operationId: put_template_api_v1_exchange_admin_templates_put
+      requestBody:
+        content:
+          application/json:
+            schema:
+              additionalProperties: true
+              type: object
+              title: Body
+        required: true
+      responses:
+        200:
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                additionalProperties: true
+                type: object
+                title: Response Put Template Api V1 Exchange Admin Templates Put
+        422:
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
+      security:
+        -
+                    HTTPBearer: []
   /api/v1/profiles/catalog:
     get:
       tags:

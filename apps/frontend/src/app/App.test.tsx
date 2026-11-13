@@ -46,7 +46,21 @@ vi.mock('sonner', () => ({
   toast: toastMocks,
 }));
 
-vi.mock('./components/FileConverter', () => ({
+vi.mock('./components/FileConverter', async () => {
+  const { useGlossaryScope } = await import('./components/glossary/GlossaryScope');
+  function GlossaryOpenProbe() {
+    const { openGlossaryEntry } = useGlossaryScope();
+    return (
+      <button
+        type="button"
+        data-testid="open-glossary-entry"
+        onClick={() => openGlossaryEntry('sigmet')}
+      >
+        Open glossary entry
+      </button>
+    );
+  }
+  return {
   FileConverter: ({
     onOpenHistory,
     onOpenVisuals,
@@ -78,6 +92,7 @@ vi.mock('./components/FileConverter', () => ({
     isGuest?: boolean;
   }) => (
     <div data-testid="file-converter">
+      <GlossaryOpenProbe />
       {pendingMapTac ? (
         <button
           type="button"
@@ -166,7 +181,8 @@ vi.mock('./components/FileConverter', () => ({
       </button>
     </div>
   ),
-}));
+  };
+});
 
 vi.mock('./components/auth/Login', () => ({
   Login: ({
@@ -614,6 +630,27 @@ describe('App Component (F31 optional Auth)', () => {
       'aria-selected',
       'true',
     );
+
+    await user.click(screen.getByTestId('shell-nav-glossary'));
+    expect(screen.getByTestId('annex3-glossary-page')).toBeInTheDocument();
+    expect(screen.getByTestId('shell-nav-glossary')).toHaveAttribute(
+      'aria-selected',
+      'true',
+    );
+  });
+
+  it('opens a glossary entry from Convert and clears focus after scroll', async () => {
+    const user = userEvent.setup();
+    render(<App />);
+    await user.click(screen.getByTestId('open-glossary-entry'));
+    expect(screen.getByTestId('annex3-glossary-page')).toBeInTheDocument();
+    expect(screen.getByTestId('shell-nav-glossary')).toHaveAttribute(
+      'aria-selected',
+      'true',
+    );
+    await waitFor(() => {
+      expect(document.getElementById('glossary-entry-sigmet')).toBeTruthy();
+    });
   });
 
   it('opens Decode visuals from Convert and sends map TAC into the converter', async () => {

@@ -121,9 +121,24 @@ describe('UserPreferencesDialog (EV-040 slim)', () => {
     );
     expect(stored.displayName).toBe('Workflow User');
     expect(stored.outputFileExtension).toBe('.iwxxm');
+    expect(stored.glossaryHoverEnabled).toBe(true);
     expect(mockToast.success).toHaveBeenCalledWith('Preferences saved successfully');
     expect(onPreferencesSaved).toHaveBeenCalledTimes(1);
     expect(screen.getByText(/preferences saved successfully/i)).toBeInTheDocument();
+  });
+
+  it('persists glossary hover opt-out (TC-F38-004)', async () => {
+    const user = userEvent.setup();
+    render(<UserPreferencesDialog {...defaultProps} />);
+    const toggle = await screen.findByTestId('glossary-hover-enabled');
+    expect(toggle).toBeChecked();
+    await user.click(toggle);
+    expect(toggle).not.toBeChecked();
+    await user.click(screen.getByRole('button', { name: /save preferences/i }));
+    const stored = JSON.parse(
+      localStorage.getItem('metar_converter_preferences') || '{}',
+    );
+    expect(stored.glossaryHoverEnabled).toBe(false);
   });
 
   it('preserves legacy keys when saving slim fields', async () => {
