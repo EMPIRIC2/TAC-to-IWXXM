@@ -67,6 +67,20 @@ describe('GlossaryTerm (TC-F38-002 / TC-F38-005)', () => {
     expect(screen.getByText('A SIGMET warning')).toBeInTheDocument();
   });
 
+  it('GlossaryTerm itself returns children when hover is disabled', () => {
+    localStorage.setItem(
+      'metar_converter_preferences',
+      JSON.stringify({ glossaryHoverEnabled: false }),
+    );
+    render(
+      <GlossaryScope openGlossaryEntry={() => undefined}>
+        <GlossaryTerm entry={entry}>SIGMET</GlossaryTerm>
+      </GlossaryScope>,
+    );
+    expect(screen.queryByTestId('glossary-term-sigmet')).not.toBeInTheDocument();
+    expect(screen.getByText('SIGMET')).toBeInTheDocument();
+  });
+
   it('does not open tip when hover ends before 2s (TC-F38-002 failure)', async () => {
     const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
     render(

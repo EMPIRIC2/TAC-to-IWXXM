@@ -73,7 +73,7 @@ export function GlossaryScope({
   const hoverEnabled = useSyncExternalStore(
     subscribePrefs,
     isGlossaryHoverEnabled,
-    () => true,
+    isGlossaryHoverEnabled,
   );
 
   const stableOpen = useCallback(

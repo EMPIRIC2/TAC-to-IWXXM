@@ -32,6 +32,8 @@ describe('annex3GlossaryMatch', () => {
     expect(isLimitedMeaningHoverExcluded('provide')).toBe(true);
     expect(isLimitedMeaningHoverExcluded('issue')).toBe(true);
     expect(isLimitedMeaningHoverExcluded('supply')).toBe(true);
+    expect(isLimitedMeaningHoverExcluded('SIGMET')).toBe(false);
+    expect(isLimitedMeaningHoverExcluded('  Issue  ')).toBe(true);
     const segments = segmentGlossaryText('Please provide and issue or supply data');
     expect(segments.every((s) => s.kind === 'text')).toBe(true);
   });
