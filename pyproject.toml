@@ -15,7 +15,7 @@ package = false
 # Python floor: requires-python >=3.12 (ADR-005); basedpyright pythonVersion and ruff
 # target-version stay at 3.12 so type-check and lint match the oldest supported runtime.
 # CI/dev interpreters may be newer; do not raise these without superseding ADR-005.
-# S008 F6 members: tac2iwxxm, iwxxm-validate, tac-validate.
+# Workspace F6 members: tac2iwxxm, iwxxm-validate, tac-validate.
 
 [dependency-groups]
 dev = [
