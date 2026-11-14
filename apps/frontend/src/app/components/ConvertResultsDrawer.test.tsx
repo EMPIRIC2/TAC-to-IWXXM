@@ -14,7 +14,6 @@ const body = {
   iwxxm: <div>iwxxm-body</div>,
   console: <div>console-body</div>,
   decoder: <div>decoder-body</div>,
-  map: <div>map-body</div>,
   downloads: <div>downloads-body</div>,
 };
 
@@ -111,7 +110,7 @@ describe('ConvertResultsDrawer', () => {
       <ConvertResultsDrawer
         open
         onOpenChange={() => undefined}
-        tab="map"
+        tab="iwxxm"
         onTabChange={() => undefined}
         height={320}
         onHeightChange={() => undefined}
@@ -129,7 +128,50 @@ describe('ConvertResultsDrawer', () => {
     expect(scrollBody).not.toContainElement(toggle);
     expect(scrollBody).not.toContainElement(tablist);
     expect(scrollBody.className.split(/\s+/)).toContain('overflow-auto');
-    expect(within(scrollBody).getByText('map-body')).toBeVisible();
+    expect(within(scrollBody).getByText('iwxxm-body')).toBeVisible();
+    expect(screen.queryByTestId('convert-results-tab-map')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('convert-results-panel-map')).not.toBeInTheDocument();
+  });
+
+  it('never exposes a Map tab trigger or panel', () => {
+    const tabs = ['iwxxm', 'console', 'decoder', 'downloads'] as const;
+    for (const tab of tabs) {
+      const { unmount } = render(
+        <ConvertResultsDrawer
+          open
+          onOpenChange={() => undefined}
+          tab={tab}
+          onTabChange={() => undefined}
+          height={280}
+          onHeightChange={() => undefined}
+          {...body}
+        />,
+      );
+      expect(screen.queryByTestId('convert-results-tab-map')).not.toBeInTheDocument();
+      expect(screen.queryByRole('tab', { name: 'Map' })).not.toBeInTheDocument();
+      expect(screen.queryByTestId('convert-results-panel-map')).not.toBeInTheDocument();
+      expect(screen.getByTestId('convert-results-tab-iwxxm')).toBeInTheDocument();
+      expect(screen.getByTestId('convert-results-tab-console')).toBeInTheDocument();
+      expect(screen.getByTestId('convert-results-tab-decoder')).toBeInTheDocument();
+      expect(screen.getByTestId('convert-results-tab-downloads')).toBeInTheDocument();
+      unmount();
+    }
+  });
+
+  it('closed drawer chrome still omits Map even when Show would expand', () => {
+    render(
+      <ConvertResultsDrawer
+        open={false}
+        onOpenChange={() => undefined}
+        tab="console"
+        onTabChange={() => undefined}
+        height={320}
+        onHeightChange={() => undefined}
+        {...body}
+      />,
+    );
+    expect(screen.getByTestId('convert-results-drawer-chrome')).toBeInTheDocument();
+    expect(screen.queryByTestId('convert-results-tab-map')).not.toBeInTheDocument();
   });
 
   // UX-2026-11-10-live-decode-drawer-fill — flex height chain for Decoder tab

@@ -1,7 +1,9 @@
 /**
  * Bottom Convert results drawer — one tab panel visible at a time (UJ-089).
  *
- * [Corpus: product §F7] [Corpus: journeys §UJ-089]
+ * Map is on the Live map page only (not a Results tab).
+ *
+ * [Corpus: product §F7] [Corpus: product §F37] [Corpus: journeys §UJ-089]
  */
 
 import type { ReactNode } from 'react';
@@ -30,23 +32,19 @@ export interface ConvertResultsDrawerProps {
   iwxxm: ReactNode;
   console: ReactNode;
   decoder: ReactNode;
-  map: ReactNode;
   downloads: ReactNode;
 }
 
-const PANEL: Record<
-  ConvertResultsTab,
-  'iwxxm' | 'console' | 'decoder' | 'map' | 'downloads'
-> = {
-  iwxxm: 'iwxxm',
-  console: 'console',
-  decoder: 'decoder',
-  map: 'map',
-  downloads: 'downloads',
-};
+const PANEL: Record<ConvertResultsTab, 'iwxxm' | 'console' | 'decoder' | 'downloads'> =
+  {
+    iwxxm: 'iwxxm',
+    console: 'console',
+    decoder: 'decoder',
+    downloads: 'downloads',
+  };
 
 /**
- * Collapsible results host with IWXXM / Console / Decoder / Map / Downloads tabs.
+ * Collapsible results host with IWXXM / Console / Decoder / Downloads tabs.
  *
  * Title + Hide and the tab strip stay outside the scrolling tab body so chrome
  * remains visible while panel content scrolls.
@@ -66,14 +64,12 @@ export function ConvertResultsDrawer({
   iwxxm,
   console: consolePanel,
   decoder,
-  map,
   downloads,
 }: ConvertResultsDrawerProps) {
   const bodies: Record<ConvertResultsTab, ReactNode> = {
     iwxxm,
     console: consolePanel,
     decoder,
-    map,
     downloads,
   };
 

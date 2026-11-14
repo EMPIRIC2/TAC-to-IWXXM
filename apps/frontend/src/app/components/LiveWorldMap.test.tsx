@@ -959,7 +959,7 @@ describe('LiveWorldMap', () => {
 
   it('Active reports switch filters and shows empty copy', async () => {
     const user = userEvent.setup();
-    const taf: LivePlace = {
+    const expiredTaf: LivePlace = {
       place_key: 'KJFK',
       product: 'taf',
       latitude: 40.6,
@@ -970,7 +970,7 @@ describe('LiveWorldMap', () => {
           observed_at: '2026-11-13T12:00:00Z',
           tac: 'TAF KJFK 131200Z 1312/1412 18010KT',
           valid_from: '2026-11-13T12:00:00Z',
-          valid_to: '2026-11-13T18:00:00Z',
+          valid_to: '2026-11-13T14:00:00Z',
         },
       ],
     };
@@ -991,23 +991,33 @@ describe('LiveWorldMap', () => {
       'fetch',
       vi.fn().mockResolvedValue({
         ok: true,
-        json: async () => ({ places: [taf, metar] }),
+        json: async () => ({ places: [expiredTaf, metar] }),
       }),
     );
     const nowSpy = vi
       .spyOn(Date, 'now')
       .mockReturnValue(Date.parse('2026-11-13T15:00:00Z'));
+    const { LIVE_MAP_ACTIVE_EMPTY } = await import('@/utils/liveMapValidity');
     render(<LiveWorldMap />);
     const toggle = await screen.findByTestId('live-map-filter-active-reports');
     expect(toggle).toHaveAttribute('role', 'switch');
     expect(toggle).toHaveAttribute('aria-label', 'Active reports');
-    // Default ON when validity exists
+    // Default ON when validity fields exist; expired + METAR-without-validity → empty
     await waitFor(() => expect(toggle).toBeChecked());
-    // METAR lacks validity → empty or TAF-only status; toggle OFF shows all
+    await waitFor(() => {
+      expect(screen.getByTestId('live-map-status')).toHaveTextContent(
+        LIVE_MAP_ACTIVE_EMPTY,
+      );
+    });
     await user.click(toggle);
     await waitFor(() => expect(toggle).not.toBeChecked());
     await user.click(toggle);
     await waitFor(() => expect(toggle).toBeChecked());
+    await waitFor(() => {
+      expect(screen.getByTestId('live-map-status')).toHaveTextContent(
+        LIVE_MAP_ACTIVE_EMPTY,
+      );
+    });
     nowSpy.mockRestore();
   });
 });
