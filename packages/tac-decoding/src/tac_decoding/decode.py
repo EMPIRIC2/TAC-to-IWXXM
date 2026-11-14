@@ -566,6 +566,53 @@ def _fmt_time(m: re.Match[str], *, label: str) -> str:
     return f"{label} on day {int(m.group('dd'))} at {m.group('hh')}:{m.group('mm')} UTC"
 
 
+
+def _fmt_valid_period(
+    *,
+    day1: int,
+    hour1: str,
+    minute1: str,
+    day2: int,
+    hour2: str,
+    minute2: str,
+) -> str:
+    """
+    Format a TAF or SIGMET/AIRMET validity period for the decode panel.
+
+    Day numbers are calendar days of the current month (TAC has no month
+    field in these groups). Same-day and cross-day periods use distinct
+    templates so operators see that clearly.
+
+    Parameters
+    ----------
+    day1 : int
+        Start day of month (1-31 from the TAC group).
+    hour1 : str
+        Start hour digits (``HH``).
+    minute1 : str
+        Start minute digits (``MM``; TAF uses ``00``).
+    day2 : int
+        End day of month.
+    hour2 : str
+        End hour digits.
+    minute2 : str
+        End minute digits.
+
+    Returns
+    -------
+    str
+        Operator-visible validity sentence with UTC times.
+    """
+    start = f"{hour1}:{minute1}"
+    end = f"{hour2}:{minute2}"
+    if day1 == day2:
+        return f"Valid on day {day1} of the current month from {start} UTC to {end} UTC"
+    return (
+        f"Valid from day {day1} of the current month at {start} UTC "
+        f"to day {day2} of the current month at {end} UTC"
+    )
+
+
 def _fmt_vis_sm(m: re.Match[str], *, label: str) -> str:
     """
     Internal helper ``_fmt_vis_sm``.
@@ -794,6 +841,84 @@ def _spaced_cavok_span(
     if letters != _SPACED_CAVOK_LETTERS:
         return None
     return tokens[index][0], tokens[index + 4][1]
+
+
+_FIR_NAME_STOP = frozenset({"FIR", "UIR", "FIR/UIR", "OCEANIC"})
+
+
+def _fir_name_continuation_token(token: str) -> bool:
+    """
+    Return True when ``token`` may extend an open multi-word FIR name.
+
+    Stops at FIR / UIR / OCEANIC markers and glossary-backed words so hazards
+    and qualifiers are not absorbed into the name span.
+
+    Parameters
+    ----------
+    token : str
+        Next TAC token after a FIR-name head.
+
+    Returns
+    -------
+    bool
+        Whether the token continues the FIR proper name.
+    """
+    upper = token.upper()
+    if upper in _FIR_NAME_STOP:
+        return False
+    head = upper.split("-", 1)[0]
+    if meaning_for(head):
+        return False
+    letters = upper.replace("-", "")
+    return bool(letters.isalpha() and len(upper) >= 2)
+
+
+def _extend_fir_name_span(
+    tokens: list[tuple[int, int, str]],
+    index: int,
+    *,
+    tac: str,
+) -> tuple[int, int, str, str, int] | None:
+    """
+    Join consecutive FIR-name words into one character span.
+
+    Caller must have classified ``tokens[index]`` as a FIR name head. Lookahead
+    stops before FIR / UIR / OCEANIC / glossary tokens.
+
+    Parameters
+    ----------
+    tokens : list[tuple[int, int, str]]
+        Token spans from :func:`_iter_tokens`.
+
+    index : int
+        Index of the first FIR-name token.
+
+    tac : str
+        Full TAC text (preserves original spacing in ``code``).
+
+    Returns
+    -------
+    tuple[int, int, str, str, int] | None
+        ``(start, end, code, explanation, token_count)`` when two or more name
+        words join; ``None`` when only the head token applies.
+    """
+    if index >= len(tokens):
+        return None
+    start, end, first = tokens[index]
+    parts = [first]
+    last_end = end
+    j = index + 1
+    while j < len(tokens):
+        _tok_start, tok_end, tok = tokens[j]
+        if not _fir_name_continuation_token(tok):
+            break
+        parts.append(tok)
+        last_end = tok_end
+        j += 1
+    if len(parts) < 2:
+        return None
+    display = " ".join(part.upper() for part in parts)
+    return start, last_end, tac[start:last_end], f"FIR name ({display})", len(parts)
 
 
 def _tenths_c(raw: str) -> str:
@@ -1740,9 +1865,13 @@ def _explain_taf(token: str, *, seen: dict[str, int]) -> str | None:
     if m := _TIME_Z.match(upper):
         return _fmt_time(m, label="Issue time")
     if m := _TAF_VALID.match(upper):
-        return (
-            f"Valid from day {int(m.group('d1'))} {m.group('h1')}:00 UTC"
-            f" to day {int(m.group('d2'))} {m.group('h2')}:00 UTC"
+        return _fmt_valid_period(
+            day1=int(m.group("d1")),
+            hour1=m.group("h1"),
+            minute1="00",
+            day2=int(m.group("d2")),
+            hour2=m.group("h2"),
+            minute2="00",
         )
     if m := _WIND.match(upper):
         return _fmt_wind(m, label="Forecast wind")
@@ -1963,9 +2092,13 @@ def _explain_sigmet_airmet(token: str, *, product: str, seen: dict[str, int]) ->
         return f"Cancelled sequence number ({int(upper)})"
     if m := _SIG_VALID.match(upper):
         seen["valid_period"] = 1
-        return (
-            f"Valid day {int(m.group('d1'))} {m.group('h1')}:{m.group('m1')} UTC"
-            f" to day {int(m.group('d2'))} {m.group('h2')}:{m.group('m2')} UTC"
+        return _fmt_valid_period(
+            day1=int(m.group("d1")),
+            hour1=m.group("h1"),
+            minute1=m.group("m1"),
+            day2=int(m.group("d2")),
+            hour2=m.group("h2"),
+            minute2=m.group("m2"),
         )
 
     if upper == "FROM" and seen.get("rtype"):
@@ -3294,6 +3427,23 @@ def _decode_single_report(tac: str, *, product: str) -> DecodeResult:
             following = tokens[idx + 1][2] if idx + 1 < len(tokens) else ""
             explanation = _whole_miles(token, following)
         if explanation is None:
+            continue
+        # Multi-word FIR proper names (NEW YORK, LA PAZ, KOTA KINABALU).
+        if (
+            product in {"SIGMET", "AIRMET"}
+            and explanation.startswith("FIR name (")
+            and (span := _extend_fir_name_span(tokens, idx, tac=tac)) is not None
+        ):
+            span_start, span_end, span_code, span_expl, span_n = span
+            segments.append(
+                DecodeSegment(
+                    start=span_start,
+                    end=span_end,
+                    code=span_code,
+                    explanation=span_expl,
+                )
+            )
+            explained.update(range(idx, idx + span_n))
             continue
         segments.append(
             DecodeSegment(

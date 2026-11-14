@@ -102,7 +102,10 @@ function tryTc(
 }
 
 /**
- * Try FIR name + FIR marker.
+ * Try one or more FIR name segments (+ optional oceanic) + FIR marker.
+ *
+ * Also merges adjacent split FIR-name rows (e.g. NEW + YORK) when the wire
+ * still emits one token per word.
  *
  * @param segments - Full list
  * @param i - Cursor
@@ -112,26 +115,70 @@ function tryFirName(
   segments: DecodeSegmentLike[],
   i: number,
 ): { phrase: DecodeSegmentLike; next: number } | null {
-  const a = segments[i];
-  const b = segments[i + 1];
-  if (!a || !b) {
+  const nameSegs: DecodeSegmentLike[] = [];
+  const nameParts: string[] = [];
+  let j = i;
+  while (j < segments.length) {
+    const cur = segments[j];
+    if (!cur) {
+      break;
+    }
+    const part = RE_FIR_NAME.exec(cur.explanation)?.[1];
+    if (!part) {
+      break;
+    }
+    nameSegs.push(cur);
+    nameParts.push(part);
+    j += 1;
+  }
+  if (nameSegs.length === 0) {
     return null;
   }
-  const name = RE_FIR_NAME.exec(a.explanation)?.[1];
-  if (!name) {
+
+  const joinedName = nameParts.join(' ');
+  let k = j;
+  const oceanic = segments[k];
+  const hasOceanic = Boolean(
+    oceanic && /^Oceanic FIR qualifier$/i.test(oceanic.explanation),
+  );
+  if (hasOceanic) {
+    k += 1;
+  }
+
+  const fir = segments[k];
+  if (fir && /^Flight information region$/i.test(fir.explanation)) {
+    const members = [...nameSegs];
+    if (hasOceanic && oceanic) {
+      members.push(oceanic);
+    }
+    members.push(fir);
+    const last = members[members.length - 1]!;
+    return {
+      phrase: {
+        start: nameSegs[0]!.start,
+        end: last.end,
+        code: joinCodes(members),
+        explanation: hasOceanic
+          ? `${joinedName} oceanic flight information region`
+          : `${joinedName} flight information region`,
+      },
+      next: k + 1,
+    };
+  }
+
+  // No FIR follow-on: still collapse split multi-word FIR name rows.
+  if (nameSegs.length < 2) {
     return null;
   }
-  if (!/^Flight information region$/i.test(b.explanation)) {
-    return null;
-  }
+  const lastName = nameSegs[nameSegs.length - 1]!;
   return {
     phrase: {
-      start: a.start,
-      end: b.end,
-      code: joinCodes([a, b]),
-      explanation: `${name} flight information region`,
+      start: nameSegs[0]!.start,
+      end: lastName.end,
+      code: joinCodes(nameSegs),
+      explanation: `FIR name (${joinedName})`,
     },
-    next: i + 2,
+    next: j,
   };
 }
 
