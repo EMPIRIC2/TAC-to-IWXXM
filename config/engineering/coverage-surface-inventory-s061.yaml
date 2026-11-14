@@ -1,7 +1,7 @@
 # EV-052 / S061 / #950 — coverage surface inventory (AC1 / TC-EV052-001)
-# Corpus: [Corpus: adr/ADR-007] [Corpus: tests] [Corpus: product]
-#
-# target_floor: universal minimum (ADR-007). Higher package floors (98) are OK.
+# Corpus: [Corpus: tests] [Corpus: product]
+
+# target_floor: universal minimum . Higher package floors (98) are OK.
 # current_* fields document measured config at inventory time; T1.4 raises soft gates.
 
 target_floor: 95
@@ -101,7 +101,7 @@ surfaces:
     soft_gate: false
     branch_waiver:
       decision: D-S061-cov-branches=3
-      status: resolved  # EV-053 / #968 — AC2+AC5 green @ tip b3416505 (2026-08-10)
+      status: resolved # EV-053 / #968 — AC2+AC5 green @ tip b3416505 (2026-08-10)
       prior_threshold: 84
       child_issue: 968
       resolve_cycle: EV-053
@@ -133,4 +133,4 @@ intentional_non_surfaces:
   - id: bugs
     reason: "tests/bugs runs with --no-cov (regression suite, not a package coverage surface)"
   - id: e2e-playwright
-    reason: "Out of scope for ADR-007 unit line/statement gates (#950)"
+    reason: "Out of scope for unit line/statement gates (#950)"

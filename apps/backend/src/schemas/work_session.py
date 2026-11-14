@@ -1,4 +1,4 @@
-"""Pydantic schemas for F5/F7 unified TAC work session API (ADR-020)."""
+"""Pydantic schemas for F5/F7 unified TAC work session API ."""
 
 from __future__ import annotations
 
@@ -87,7 +87,7 @@ def sanitize_work_session_title(value: object) -> object:
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (sanitize_work_session_title)
+    >>> 1 + 1 # docstring smoke (sanitize_work_session_title)
     2
     """
     if value is None or not isinstance(value, str):

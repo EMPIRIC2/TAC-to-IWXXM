@@ -1,5 +1,5 @@
 /**
- * TC-004 — Local IndexedDB work session lifecycle (F7.h / F21 / ADR-031).
+ * TC-004 — Local IndexedDB work session lifecycle (F7.h / F21).
  * TC-F31-005 — privacy gate on IndexedDB writes (T4.4).
  */
 
@@ -25,7 +25,7 @@ import {
 import { clearPrivacyPreferences, savePrivacyPreferences } from './privacyPreferences';
 
 /**
- *
+
  */
 function draftPayload(
   overrides: Partial<WorkSessionUpsertPayload> = {},

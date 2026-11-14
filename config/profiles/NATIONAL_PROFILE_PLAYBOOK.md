@@ -1,7 +1,7 @@
 # National profile onboarding playbook
 
-> **Corpus**: [Corpus: domain-profiles] · **Issue**: [#1044](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1044) · **ADR**: [ADR-036](../../adr/ADR-036-semantic-vs-exchange-profiles.md)  
-> **Reference implementation**: `CA_ECCC` ([#916](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/916))  
+> **Corpus**: [Corpus: domain-profiles] · **Issue**: [#1044](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1044) · **ADR**: architecture decision
+> **Reference implementation**: `CA_ECCC` ([#916](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/916))
 > **Feature**: [Corpus: product §F36]
 
 Repeatable, country-agnostic process for adding a **semantic** national profile.
@@ -53,7 +53,7 @@ Edit **once** in [`packages/tac-validate/.../lint_profiles.yaml`](../../../packa
 | `recorded` | Durable notes without severity remaps |
 | `differs` | True when national lint diverges from annex3 |
 
-CI (`test_profile_product_matrix.py`) asserts lint products ⊆ convert allowlist for lintable products. Policy severity remaps stay in ADR-046 policy YAML (`extends`), not per-country Python subclasses.
+CI (`test_profile_product_matrix.py`) asserts lint products ⊆ convert allowlist for lintable products. Policy severity remaps stay in policy YAML (`extends`), not per-country Python subclasses.
 
 Shared runtime: `lint_with_profile` (convert pre-lint + `POST /lint-tac`).
 
@@ -112,7 +112,7 @@ Reference: `CA_ECCC` (full), `AU_BOM` / `NZ_CAA_MET` (thin kickoff).
 
 ## 5. Staged validation pipeline
 
-Align ADR-036 §4 and spike [#925](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/925):
+Align §4 and spike [#925](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/925):
 
 ```text
 TAC lexical → profile semantic (tac-validate overlay)
@@ -259,6 +259,6 @@ canonical deepen is [#1024](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1024
 ## References
 
 - [profiles/README.md](README.md)
-- [ADR-036](../../adr/ADR-036-semantic-vs-exchange-profiles.md)
+- architecture decision
 - Epic [#912](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/912)
 - Playbook issue [#1044](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1044)

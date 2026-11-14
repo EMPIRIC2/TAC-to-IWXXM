@@ -1,4 +1,4 @@
-"""TC-EV1150 / ADR-043: PyPI nightly TestPyPI workflow structural gate."""
+"""TC-EV1150 / : PyPI nightly TestPyPI workflow structural gate."""
 
 from __future__ import annotations
 
@@ -48,7 +48,7 @@ def test_pypi_nightly_workflow_schedule_and_testpypi() -> None:
     assert "test.pypi.org" in steps_blob
     assert (
         "python3.12" in steps_blob
-    )  # manylinux interpreter pin (EV-ci-runtime-failures)
+    ) # manylinux interpreter pin (EV-ci-runtime-failures)
     assert "continue-on-error" in WORKFLOW.read_text(encoding="utf-8")
     # Native maturin jobs leave UV_CACHE_DIR empty; setup-uv must not fail post-job.
     install_uv = next(s for s in job["steps"] if s.get("name") == "Install uv")

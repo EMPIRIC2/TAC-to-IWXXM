@@ -1,8 +1,8 @@
 ---
 name: Vendor Schema Sync
 
-# Weekly check for new wmo-im iwxxm-* releases; open PR when pins change (M6, ADR-001).
-# GIFTs upstream is manual only — not included (REQ-014, ADR-004).
+# Weekly check for new wmo-im iwxxm-* releases; open PR when pins change (M6, ).
+# GIFTs upstream is manual only — not included (REQ-014, ).
 
 on:
   schedule:
@@ -55,7 +55,7 @@ jobs:
       - name: Run vendor integrity tests (TC-M002)
         run: uv run pytest tests/vendor -v
 
-      # ADR-027 / E10-23 / E10-40 — regenerate pydantic models when pins change (T3.6).
+      # E10-23 / E10-40 — regenerate pydantic models when pins change (T3.6).
       # An unchanged pin used to die before this step. Codegen is not a no-op
       # on the committed models, so skip it unless the snapshot actually moved.
       - name: Regenerate IWXXM XSD pydantic models (xsdata)
@@ -77,9 +77,9 @@ jobs:
 
             - Updates `vendor/manifest.json` pins from wmo-im latest releases
             - Refreshes `vendor/schemas/*` read-only snapshots
-            - Regenerates `metar_shared.iwxxm_xsd` via xsdata (ADR-027 / T3.6)
+            - Regenerates `metar_shared.iwxxm_xsd` via xsdata (T3.6)
             - TC-M002 integrity tests included in workflow
 
-            **GIFTs excluded** — manual merges only (ADR-004).
+            **GIFTs excluded** — manual merges only .
           branch: automated/vendor-sync
           delete-branch: true

@@ -1,7 +1,7 @@
 """TC-F6-003 / T5.4: iwxxm_us TAF (+ thin SIGMET/AIRMET) (F6.c-d).
 
 Spec: docs/test-plan.md TC-F6-003; docs/feature-list.md F6.c-d / F6.b US pattern;
-ADR-013 extension blocks. SIGMET/AIRMET US surface is intentionally thin (feature-list
+ extension blocks. SIGMET/AIRMET US surface is intentionally thin (feature-list
 limitations).
 """
 

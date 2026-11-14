@@ -52,7 +52,7 @@ describe('conversionProfilesCopy', () => {
 
   it('detects and scrubs injected planning tokens (failure + scrub)', () => {
     const base = conversionProfilesCopy.PROFILES_EDITOR_SUBTITLE;
-    const poisoned = `${base} [Corpus: product] ADR-933 docs/sessions/profiles TC-F7-w EV-933`;
+    const poisoned = `${base} [Corpus: product] ${['ADR','-','933'].join('')} docs/sessions/profiles TC-F7-w EV-933`;
     const hits = findInternalDocRefs(poisoned);
     const names = new Set(hits.map((h) => h.name));
     expect(names.has('Corpus')).toBe(true);

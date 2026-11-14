@@ -1,6 +1,6 @@
 /**
  * H4–H5 / T2 — Playwright smokes for UJ-072 ConversionProfile editor (EV-933 / #933).
- *
+
  * Spec: docs/test-plan.md TC-EV933-006; docs/user-journeys.md UJ-072.
  * Auth is seeded via localStorage + stubbed profile APIs so CI does not require live JWT.
  * Live H4–H5 against stage FE is deferred until this PR lands on stage (T3.2).
@@ -388,12 +388,11 @@ test.describe('UJ-072: ConversionProfile editor (EV-933 / TC-EV933-006)', () => 
   test('guest: Conversion profiles prompts for sign-in', async ({ page }) => {
     test.skip(
       true,
-      'Retired ADR-044 — Conversion profiles shell nav removed (EV-RPC / TC-EVPVD-001)',
+      'Retired — Conversion profiles shell nav removed (EV-RPC / TC-EVPVD-001)',
     );
     await openProfiles(page);
     await expect(page.getByTestId('conversion-profiles-sign-in')).toBeVisible();
-    await expect(page.getByTestId('conversion-profiles-page')).toContainText(
-      /Sign in to open the conversion profiles/i,
+    await expect(page.getByTestId('conversion-profiles-page')).toContainText(Sign in to open the conversion profiles/i,
     );
   });
 
@@ -402,7 +401,7 @@ test.describe('UJ-072: ConversionProfile editor (EV-933 / TC-EV933-006)', () => 
   }) => {
     test.skip(
       true,
-      'Retired ADR-044 — Profile Builder authoring UI removed; convert pickers covered elsewhere',
+      'Retired — Profile Builder authoring UI removed; convert pickers covered elsewhere',
     );
     await seedMockAuth(page);
     await stubWorkbenchNoise(page);
@@ -445,8 +444,7 @@ test.describe('UJ-072: ConversionProfile editor (EV-933 / TC-EV933-006)', () => 
     const convertReq = captured.convert[0]!;
     expectBearer(convertReq);
     const form = convertReq.postDataBuffer()?.toString('utf8') ?? '';
-    expect(form).toMatch(
-      /name="conversion_library_id"\r?\n\r?\nLIB\.CONVERSION\.US_FAA_NWS/,
+    expect(form).toMatch(name="conversion_library_id"\r?\n\r?\nLIB\.CONVERSION\.US_FAA_NWS/,
     );
     expect(form).not.toMatch(/name="overlay_id"/);
     expect(form).not.toMatch(/name="semantic_profile"/);
@@ -480,7 +478,7 @@ test.describe('UJ-072: ConversionProfile editor (EV-933 / TC-EV933-006)', () => 
   }) => {
     test.skip(
       true,
-      'Retired ADR-044 — Conversion profiles page unmounted; glanceable summary lives on Convert',
+      'Retired — Conversion profiles page unmounted; glanceable summary lives on Convert',
     );
     await seedMockAuth(page);
     await stubWorkbenchNoise(page);
@@ -489,27 +487,23 @@ test.describe('UJ-072: ConversionProfile editor (EV-933 / TC-EV933-006)', () => 
     await openProfiles(page);
 
     await expect(page.getByTestId('conversion-profiles-summary')).toBeVisible();
-    await expect(page.getByTestId('conversion-profiles-summary-primary')).toContainText(
-      /ICAO_2025/i,
+    await expect(page.getByTestId('conversion-profiles-summary-primary')).toContainText(ICAO_2025/i,
     );
     await page
       .getByTestId('conversion-profiles-compare-select')
       .selectOption('US_FAA_NWS');
-    await expect(page.getByTestId('conversion-profiles-summary-compare')).toContainText(
-      /US_FAA_NWS/i,
+    await expect(page.getByTestId('conversion-profiles-summary-compare')).toContainText(US_FAA_NWS/i,
     );
     await expect(
       page
         .getByTestId('conversion-profiles-summary')
         .getByText(/Different from US_FAA_NWS/i),
     ).toBeVisible();
-    await expect(page.getByTestId('conversion-profiles-summary')).toContainText(
-      /Difference notes compared with ICAO_2025/i,
+    await expect(page.getByTestId('conversion-profiles-summary')).toContainText(Difference notes compared with ICAO_2025/i,
     );
 
     await page.getByTestId('conversion-profiles-block-output-validation').click();
-    await expect(page.getByTestId('conversion-profiles-block-detail')).toContainText(
-      /WMO IWXXM 2025-2/i,
+    await expect(page.getByTestId('conversion-profiles-block-detail')).toContainText(WMO IWXXM 2025-2/i,
     );
     await expect(
       page.getByTestId('conversion-profiles-block-jump-catalog'),

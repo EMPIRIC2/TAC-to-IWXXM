@@ -1,6 +1,6 @@
-"""T5.1 / TC-F11-001: msgspec high-churn HTTP parity (UJ-022 / ADR-026).
+"""T5.1 / TC-F11-001: msgspec high-churn HTTP parity (UJ-022 ).
 
-Spec: docs/test-plan.md TC-F11-001; docs/adr/ADR-026-msgspec-http-openapi.md;
+Spec: docs/test-plan.md TC-F11-001; docs/adr/-msgspec-http-openapi.md;
 docs/api-contract.md §Serialization boundary; E10-28, E10-38.
 
 Expected red until T5.2 adds ``src.msgspec_http.msgspec_json_response`` and wires
@@ -89,7 +89,7 @@ def test_msgspec_http_helper_module_exists() -> None:
 
 
 def test_msgspec_http_helper_reuses_encoder() -> None:
-    """ADR-026 / ADR-016: reuse Encoder on hot paths (no per-call construction)."""
+    """ / : reuse Encoder on hot paths (no per-call construction)."""
     from src import msgspec_http
 
     assert hasattr(msgspec_http, "json_encoder")
@@ -218,7 +218,7 @@ def test_high_churn_json_routes_call_msgspec_helper(
 
 
 def test_high_churn_openapi_keeps_pydantic_response_aliases() -> None:
-    """ADR-026: OpenAPI still publishes pydantic aliases - no dual runtime validation."""
+    """: OpenAPI still publishes pydantic aliases - no dual runtime validation."""
     schema = api_module.app.openapi()
     components = schema.get("components", {}).get("schemas", {})
     for name in (
@@ -251,7 +251,7 @@ def test_multipart_intake_unchanged_rejects_json_on_lint(client: TestClient) -> 
 
 
 def test_convert_zip_returns_application_zip(client: TestClient, monkeypatch: pytest.MonkeyPatch) -> None:
-    """ADR-026 lists convert-zip as high-churn; live contract remains application/zip."""
+    """ lists convert-zip as high-churn; live contract remains application/zip."""
 
     def fake_convert(tac: str, **_kwargs: Any):
         return f"<iwxxm:METAR>{tac[:24]}</iwxxm:METAR>", None

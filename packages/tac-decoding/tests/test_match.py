@@ -1,6 +1,4 @@
 """T1.2 — token-stream and label-field matchers. Version stays with the caller.
-
-[Corpus: adr/ADR-045]
 """
 
 from __future__ import annotations
@@ -146,45 +144,45 @@ rules:
     [
         ("id: m\nlayout: token_stream\nrules: nope\n", "list"),
         (
-            "id: wafs-bad\nprofiles: [annex3]\nextends: wafs\nlayout: stub\nrules:\n  - id: a\n    explain: x\n",
+            "id: wafs-bad\nprofiles: [annex3]\nextends: wafs\nlayout: stub\nrules:\n - id: a\n explain: x\n",
             "stub",
         ),
-        ("id: m\nlayout: token_stream\nrules:\n  - nope\n", "mapping"),
+        ("id: m\nlayout: token_stream\nrules:\n - nope\n", "mapping"),
         (
-            "id: m\nlayout: token_stream\nrules:\n  - id: a\n    explain: x\n    extra: 1\n",
+            "id: m\nlayout: token_stream\nrules:\n - id: a\n explain: x\n extra: 1\n",
             "unknown field",
         ),
-        ("id: m\nlayout: token_stream\nrules:\n  - explain: x\n", "string id"),
+        ("id: m\nlayout: token_stream\nrules:\n - explain: x\n", "string id"),
         (
-            "id: m\nlayout: token_stream\nrules:\n  - id: a\n    pattern: ['A']\n    explain: '{0}'\n"
-            "  - id: a\n    pattern: ['B']\n    explain: '{0}'\n",
+            "id: m\nlayout: token_stream\nrules:\n - id: a\n pattern: ['A']\n explain: '{0}'\n"
+            " - id: a\n pattern: ['B']\n explain: '{0}'\n",
             "duplicated",
         ),
-        ("id: m\nlayout: token_stream\nrules:\n  - id: a\n    pattern: ['A']\n", "explain"),
+        ("id: m\nlayout: token_stream\nrules:\n - id: a\n pattern: ['A']\n", "explain"),
         (
-            "id: m\nlayout: token_stream\nrules:\n  - id: a\n    explain: x\n    label: METAR\n    pattern: ['A']\n",
+            "id: m\nlayout: token_stream\nrules:\n - id: a\n explain: x\n label: METAR\n pattern: ['A']\n",
             "cannot have a label",
         ),
-        ("id: m\nlayout: token_stream\nrules:\n  - id: a\n    explain: '{0}'\n    pattern: []\n", "pattern"),
+        ("id: m\nlayout: token_stream\nrules:\n - id: a\n explain: '{0}'\n pattern: []\n", "pattern"),
         (
-            "id: m\nlayout: token_stream\nrules:\n  - id: a\n    explain: '{0}'\n    pattern: ['']\n",
+            "id: m\nlayout: token_stream\nrules:\n - id: a\n explain: '{0}'\n pattern: ['']\n",
             "strings",
         ),
         (
-            "id: m\nlayout: token_stream\nrules:\n  - id: a\n    explain: '{0}'\n    pattern: ['[']\n",
+            "id: m\nlayout: token_stream\nrules:\n - id: a\n explain: '{0}'\n pattern: ['[']\n",
             "invalid pattern",
         ),
         (
-            "id: m\nlayout: token_stream\nrules:\n  - id: a\n    explain: '{value}'\n    pattern: ['A']\n",
+            "id: m\nlayout: token_stream\nrules:\n - id: a\n explain: '{value}'\n pattern: ['A']\n",
             "template",
         ),
         (
-            "id: m\nlayout: label_fields\nrules:\n  - id: a\n    explain: '{value}'\n    label: A\n    pattern: ['A']\n",
+            "id: m\nlayout: label_fields\nrules:\n - id: a\n explain: '{value}'\n label: A\n pattern: ['A']\n",
             "cannot have a pattern",
         ),
-        ("id: m\nlayout: label_fields\nrules:\n  - id: a\n    explain: '{value}'\n", "needs a label"),
+        ("id: m\nlayout: label_fields\nrules:\n - id: a\n explain: '{value}'\n", "needs a label"),
         (
-            "id: m\nlayout: label_fields\nrules:\n  - id: a\n    label: A\n    explain: '{0}'\n",
+            "id: m\nlayout: label_fields\nrules:\n - id: a\n label: A\n explain: '{0}'\n",
             "template",
         ),
     ],

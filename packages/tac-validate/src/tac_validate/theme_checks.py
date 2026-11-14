@@ -1,6 +1,6 @@
 """METAR/SPECI R-theme check bodies shared by legacy dispatch and detector hatches.
 
-ADR-046 / #1216 M3: thin-wrap behind detector pack ids (D-VPL-G3). Profile for R5
+ / #1216 M3: thin-wrap behind detector pack ids (D-VPL-G3). Profile for R5
 is supplied via ``lint_profile`` contextvar (hatches only receive tac + product).
 """
 
@@ -83,7 +83,7 @@ def r1_identity_order(tac_text: str, product: str) -> list[Issue]:
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (r1_identity_order)
+    >>> 1 + 1 # docstring smoke (r1_identity_order)
     2
 
     Parameters
@@ -132,7 +132,7 @@ def r3_weather(tac_text: str, product: str) -> list[Issue]:
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (r3_weather)
+    >>> 1 + 1 # docstring smoke (r3_weather)
     2
 
     Parameters
@@ -201,7 +201,7 @@ def r4_cloud(tac_text: str, product: str) -> list[Issue]:
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (r4_cloud)
+    >>> 1 + 1 # docstring smoke (r4_cloud)
     2
 
     Parameters
@@ -289,7 +289,7 @@ def r5_remarks(tac_text: str, product: str) -> list[Issue]:
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (r5_remarks)
+    >>> 1 + 1 # docstring smoke (r5_remarks)
     2
 
     Parameters
@@ -321,7 +321,7 @@ def r8_nil_gate(tac_text: str, product: str) -> list[Issue] | None:
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (r8_nil_gate)
+    >>> 1 + 1 # docstring smoke (r8_nil_gate)
     2
 
     Parameters
@@ -390,7 +390,7 @@ def r8_modifiers(tac_text: str, product: str) -> list[Issue]:
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (r8_modifiers)
+    >>> 1 + 1 # docstring smoke (r8_modifiers)
     2
 
     Parameters
@@ -423,7 +423,7 @@ def hatch_r1(tac_text: str, product: str) -> list[Issue]:
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (hatch_r1)
+    >>> 1 + 1 # docstring smoke (hatch_r1)
     2
 
     Parameters
@@ -447,7 +447,7 @@ def hatch_r1_order(tac_text: str, product: str) -> list[Issue]:
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (hatch_r1_order)
+    >>> 1 + 1 # docstring smoke (hatch_r1_order)
     2
 
     Parameters
@@ -473,7 +473,7 @@ def hatch_r3(tac_text: str, product: str) -> list[Issue]:
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (hatch_r3)
+    >>> 1 + 1 # docstring smoke (hatch_r3)
     2
 
     Parameters
@@ -497,7 +497,7 @@ def hatch_r4(tac_text: str, product: str) -> list[Issue]:
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (hatch_r4)
+    >>> 1 + 1 # docstring smoke (hatch_r4)
     2
 
     Parameters
@@ -521,7 +521,7 @@ def hatch_r4_membership(tac_text: str, product: str) -> list[Issue]:
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (hatch_r4_membership)
+    >>> 1 + 1 # docstring smoke (hatch_r4_membership)
     2
 
     Parameters
@@ -581,7 +581,7 @@ def hatch_r5(tac_text: str, product: str) -> list[Issue]:
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (hatch_r5)
+    >>> 1 + 1 # docstring smoke (hatch_r5)
     2
 
     Parameters
@@ -605,7 +605,7 @@ def hatch_r5_pk_and_extension(tac_text: str, product: str) -> list[Issue]:
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (hatch_r5_pk_and_extension)
+    >>> 1 + 1 # docstring smoke (hatch_r5_pk_and_extension)
     2
 
     Parameters
@@ -708,7 +708,7 @@ def hatch_r8(tac_text: str, product: str) -> list[Issue]:
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (hatch_r8)
+    >>> 1 + 1 # docstring smoke (hatch_r8)
     2
 
     Parameters
@@ -735,7 +735,7 @@ def hatch_taf(tac_text: str, product: str) -> list[Issue]:
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (hatch_taf)
+    >>> 1 + 1 # docstring smoke (hatch_taf)
     2
 
     Parameters
@@ -750,7 +750,7 @@ def hatch_taf(tac_text: str, product: str) -> list[Issue]:
     list[Issue]
         Detector hatch for TAF core checklist (A5-1 + F20 gates).
     """
-    del product  # pack products: [TAF]; profile via lint_profile contextvar
+    del product # pack products: [TAF]; profile via lint_profile contextvar
     from tac_validate.product_rules_pkg.taf import _check_taf
 
     return _check_taf(tac_text, profile=lint_profile.get())
@@ -762,7 +762,7 @@ def hatch_sigmet(tac_text: str, product: str) -> list[Issue]:
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (hatch_sigmet)
+    >>> 1 + 1 # docstring smoke (hatch_sigmet)
     2
 
     Parameters
@@ -788,7 +788,7 @@ def hatch_airmet(tac_text: str, product: str) -> list[Issue]:
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (hatch_airmet)
+    >>> 1 + 1 # docstring smoke (hatch_airmet)
     2
 
     Parameters
@@ -814,7 +814,7 @@ def hatch_vaa(tac_text: str, product: str) -> list[Issue]:
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (hatch_vaa)
+    >>> 1 + 1 # docstring smoke (hatch_vaa)
     2
 
     Parameters
@@ -841,7 +841,7 @@ def hatch_tca(tac_text: str, product: str) -> list[Issue]:
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (hatch_tca)
+    >>> 1 + 1 # docstring smoke (hatch_tca)
     2
 
     Parameters

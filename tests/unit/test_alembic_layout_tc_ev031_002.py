@@ -57,7 +57,7 @@ def test_alembic_has_at_least_one_revision() -> None:
 
 @pytest.mark.unit
 def test_initial_revision_defines_tac_work_sessions_and_f8_tables() -> None:
-    """ADR-020 wire shapes + F8 co-located tables (ADR-033 single DATABASE_URL)."""
+    """ wire shapes + F8 co-located tables ( single DATABASE_URL)."""
     bodies = "\n".join(
         p.read_text(encoding="utf-8")
         for p in sorted(_VERSIONS.glob("*.py"))
@@ -70,7 +70,7 @@ def test_initial_revision_defines_tac_work_sessions_and_f8_tables() -> None:
         assert col in bodies, f"revision body missing column token {col!r}"
     for product in REQUIRED_PRODUCTS:
         assert product in bodies, f"revision body missing product {product!r}"
-    # DO Postgres: no Supabase Auth user FK (Auth-only Supabase - ADR-033).
+    # DO Postgres: no Supabase Auth user FK (Auth-only Supabase - ).
     assert "REFERENCES auth.users" not in bodies
     assert 'ForeignKey("auth.users' not in bodies
     assert "ForeignKey('auth.users" not in bodies

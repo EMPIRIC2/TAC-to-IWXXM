@@ -1,5 +1,5 @@
 {
-  "$comment": "Committed MOCK destination shapes for S019/EV-014 BYOC testing. Not real credentials. Pass as memory-only preflight/send body params (ADR-021/029). Do not use against production RTH/WIS2/DB hosts.",
+  "$comment": "Committed MOCK destination shapes for S019/EV-014 BYOC testing. Not real credentials. Pass as memory-only preflight/send body params (/029). Do not use against production RTH/WIS2/DB hosts.",
   "live_api_sqlite_standin": {
     "sink_type": "sqlite",
     "uri": "sqlite+aiosqlite:////tmp/live-mock-byoc.db",
@@ -16,21 +16,21 @@
   },
   "postgres_compose": {
     "sink_type": "postgres",
-    "uri": "postgresql+asyncpg://byoc:byoc-mock-password-not-real@127.0.0.1:25432/byoc",
+    "uri": "postgresql+asyncpg: / byoc:byoc-mock-password-not-real@127.0.0.1:25432/byoc",
     "ddl": true,
     "product": "metar",
     "note": "docker-compose.yml mock-byoc profile service byoc-postgres (host port BYOC_POSTGRES_HOST_PORT, default 25432)."
   },
   "mysql_compose": {
     "sink_type": "mysql",
-    "uri": "mysql+aiomysql://byoc:byoc-mock-password-not-real@127.0.0.1:13306/byoc",
+    "uri": "mysql+aiomysql: / byoc:byoc-mock-password-not-real@127.0.0.1:13306/byoc",
     "ddl": true,
     "product": "metar",
     "note": "docker-compose.yml mock-byoc profile service byoc-mysql (host port BYOC_MYSQL_HOST_PORT)."
   },
   "sqlserver_compose": {
     "sink_type": "sqlserver",
-    "uri": "mssql+aioodbc://sa:Byoc_Mock_Passw0rd%21@127.0.0.1:11433/master?TrustServerCertificate=yes",
+    "uri": "mssql+aioodbc: / sa:Byoc_Mock_Passw0rd%21@127.0.0.1:11433/master?TrustServerCertificate=yes",
     "ddl": true,
     "product": "metar",
     "note": "byoc-sqlserver on :11433. Requires Microsoft ODBC Driver 18 on the host. Password URL-encoded (! → %21)."
@@ -134,7 +134,7 @@
   },
   "negative_allowlist": {
     "sink_type": "postgres",
-    "uri": "postgresql+asyncpg://u:p@evil.example.com:5432/db",
+    "uri": "postgresql+asyncpg: / u:p@evil.example.com:5432/db",
     "ddl": false,
     "product": "metar",
     "expect_status": 403,

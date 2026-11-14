@@ -1,4 +1,4 @@
-# Builtin annex3 METAR/SPECI TAC quality policy (ADR-046 / #1216).
+# Builtin annex3 METAR/SPECI TAC quality policy (#1216).
 # Empty select = all non-preview registry codes for product metar (includes speci tags).
 schema_version: 1
 id: annex3-metar-quality

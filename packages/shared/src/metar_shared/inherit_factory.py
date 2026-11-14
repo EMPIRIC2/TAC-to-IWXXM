@@ -1,7 +1,7 @@
-"""Product → region → country → station inheritance factory (ADR-055).
+"""Product → region → country → station inheritance factory .
 
 Shared **merge** helpers and resolve walk; types/ports live in
-``inherit_factory_types``. [Corpus: adr/ADR-055] [Corpus: pack-engine-boundary]
+``inherit_factory_types``. [Corpus: pack-engine-boundary]
 """
 
 from __future__ import annotations
@@ -41,7 +41,7 @@ def normalize_product(product: str) -> str:
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (normalize_product)
+    >>> 1 + 1 # docstring smoke (normalize_product)
     2
     """
     return (product or "").strip().upper()
@@ -63,7 +63,7 @@ def normalize_profile_id(profile: str) -> str:
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (normalize_profile_id)
+    >>> 1 + 1 # docstring smoke (normalize_profile_id)
     2
     """
     return (profile or "").strip().lower()
@@ -87,7 +87,7 @@ def should_prefer_station(*, profile: str, product: str) -> bool:
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (should_prefer_station)
+    >>> 1 + 1 # docstring smoke (should_prefer_station)
     2
     """
     product_u = normalize_product(product)
@@ -117,7 +117,7 @@ def merge_scalar_maps(
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (merge_scalar_maps)
+    >>> 1 + 1 # docstring smoke (merge_scalar_maps)
     2
     """
     out: dict[str, str] = dict(parent)
@@ -150,7 +150,7 @@ def merge_code_sets(
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (merge_code_sets)
+    >>> 1 + 1 # docstring smoke (merge_code_sets)
     2
     """
     if replace:
@@ -160,7 +160,7 @@ def merge_code_sets(
 
 def merge_overrides(parent: LayerOverrides, child: LayerOverrides) -> LayerOverrides:
     """
-    Merge two override bags per ADR-055 rules.
+    Merge two override bags per rules.
 
     Parameters
     ----------
@@ -176,7 +176,7 @@ def merge_overrides(parent: LayerOverrides, child: LayerOverrides) -> LayerOverr
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (merge_overrides)
+    >>> 1 + 1 # docstring smoke (merge_overrides)
     2
     """
     return LayerOverrides(
@@ -282,7 +282,7 @@ def resolve_inherit_tree(
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (resolve_inherit_tree)
+    >>> 1 + 1 # docstring smoke (resolve_inherit_tree)
     2
     """
     product_u = normalize_product(product)
@@ -339,7 +339,7 @@ def empty_bundle(product: str) -> EffectiveBundle:
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (empty_bundle)
+    >>> 1 + 1 # docstring smoke (empty_bundle)
     2
     """
     product_u = normalize_product(product)
@@ -367,7 +367,7 @@ def apply_scalar_keys(
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (apply_scalar_keys)
+    >>> 1 + 1 # docstring smoke (apply_scalar_keys)
     2
     """
     scalars: MutableMapping[str, str] = dict(bundle.scalars)

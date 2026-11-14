@@ -2,7 +2,7 @@
 
 Loads the live FastAPI OpenAPI document in-process (no network). Auth-protected
 product routes use ``verify_supabase_token`` dependency override (published OpenAPI
-intentionally has no Bearer scheme - F21 / ADR-031). Hypothesis budget:
+intentionally has no Bearer scheme - F21). Hypothesis budget:
 ``max_examples`` ≤ 25 (``D-S069-01-budget`` / TC-F34-007).
 
 Exclusions (explicit - not silent large skips):

@@ -94,7 +94,7 @@ async def validate_comprehensive(
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (validate_comprehensive)
+    >>> 1 + 1 # docstring smoke (validate_comprehensive)
     2
     """
     try:
@@ -115,7 +115,7 @@ async def validate_comprehensive(
             json_exchange = getattr(request_body, "exchange_profile", None)
             json_extensions = getattr(request_body, "extensions", None)
             json_product = getattr(request_body, "product", None)
-            manual_text = ""  # Don't use form input
+            manual_text = "" # Don't use form input
 
             # Map validation_level to layers
             if validation_level == "comprehensive":
@@ -176,7 +176,7 @@ async def validate_comprehensive(
             except ConversionError as e:
                 raise HTTPException(status_code=400, detail=f"Failed to convert TAC to XML: {e!s}") from e
 
-        # Thin wrapper: always invoke packages/iwxxm-validate (TC-F6-033 / ADR-015)
+        # Thin wrapper: always invoke packages/iwxxm-validate (TC-F6-033 )
         validation_level_name = ""
         if request_body is not None:
             validation_level_name = request_body.validation_level or "comprehensive"

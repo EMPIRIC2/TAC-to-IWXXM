@@ -7,7 +7,7 @@ Standalone PROB+period emits ``PROB_PRESENT`` info (emission of
 keep priority. ``CW*`` stays annex3 (no ``CW`` prefix). HKJK / LGTS keep
 ``INVALID_PROB`` because PROB qualifies BECMG/FM (Annex 3 App 5 §1.4).
 
-[Corpus: product §F20] [Corpus: product §F36] [Corpus: adr/ADR-046] [Corpus: adr/ADR-055] [Corpus: tests]
+[Corpus: product §F20] [Corpus: product §F36] [Corpus: tests]
 """
 
 from __future__ import annotations

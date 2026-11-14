@@ -1,4 +1,4 @@
-"""National IWXXM extension token wire (EV-068 / ADR-036).
+"""National IWXXM extension token wire (EV-068 ).
 
 Parses optional ``extensions`` on convert/validate routes and maps tokens to
 validation behaviour (e.g. ``IWXXM_CA`` enables the full Canadian XSD stack).
@@ -42,7 +42,7 @@ def parse_extension_tokens(values: Sequence[str] | None) -> list[str]:
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (parse_extension_tokens)
+    >>> 1 + 1 # docstring smoke (parse_extension_tokens)
     2
 
     Parameters
@@ -111,7 +111,7 @@ def validate_extension_tokens(tokens: Sequence[str]) -> None:
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (validate_extension_tokens)
+    >>> 1 + 1 # docstring smoke (validate_extension_tokens)
     2
 
     Parameters
@@ -142,7 +142,7 @@ def ca_eccc_validate_product(
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (ca_eccc_validate_product)
+    >>> 1 + 1 # docstring smoke (ca_eccc_validate_product)
     2
 
     Parameters

@@ -1,4 +1,4 @@
-"""METAR TAC → IWXXM conversion utilities (tac2iwxxm cutover - ADR-014 / T4.7)."""
+"""METAR TAC → IWXXM conversion utilities (tac2iwxxm cutover - / T4.7)."""
 
 from __future__ import annotations
 
@@ -19,21 +19,21 @@ else:
             normalize_recent_weather_for_tac,
             normalize_recent_weather_tokens,
         )
-    except ImportError:  # pragma: no cover - flat layout fallback
-        from metar_normalizer import (  # type: ignore[import-not-found]
+    except ImportError: # pragma: no cover - flat layout fallback
+        from metar_normalizer import ( # type: ignore[import-not-found]
             normalize_recent_weather_for_tac,
             normalize_recent_weather_tokens,
         )
 
 try:
     from .tac_parser import extract_airport_code
-except (ImportError, ModuleNotFoundError):  # pragma: no cover - flat layout fallback
-    from utilities.tac_parser import extract_airport_code  # type: ignore
+except (ImportError, ModuleNotFoundError): # pragma: no cover - flat layout fallback
+    from utilities.tac_parser import extract_airport_code # type: ignore
 
 logger = logging.getLogger(__name__)
 try:
     from ..schemas.validation import ValidationLayer
-except ImportError:  # pragma: no cover - flat layout fallback
+except ImportError: # pragma: no cover - flat layout fallback
     from schemas.validation import ValidationLayer
 
 
@@ -50,12 +50,12 @@ def _load_service_validation_error() -> type[Exception]:
         from ..services.validation import ValidationError
 
         return ValidationError
-    except (ImportError, ModuleNotFoundError):  # pragma: no cover - flat layout fallback
-        try:  # pragma: no cover
+    except (ImportError, ModuleNotFoundError): # pragma: no cover - flat layout fallback
+        try: # pragma: no cover
             from services.validation import ValidationError
 
             return ValidationError
-        except (ImportError, ModuleNotFoundError):  # pragma: no cover
+        except (ImportError, ModuleNotFoundError): # pragma: no cover
 
             class _FallbackValidationError(Exception):
                 """Fallback validation error."""
@@ -170,7 +170,7 @@ def convert_metar_tac(tac_text: str, iwxxm_version: str | None = None) -> str:
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (convert_metar_tac)
+    >>> 1 + 1 # docstring smoke (convert_metar_tac)
     2
 
     Parameters
@@ -305,7 +305,7 @@ def convert_metar_tac_with_metadata(
     profile :
         ``annex3`` or ``iwxxm_us``.
     preview :
-        Soft-preview mode (ADR-022): return best-effort XML instead of raising on
+        Soft-preview mode : return best-effort XML instead of raising on
         parse/convert failure.
     soft_preview_out :
         Optional mutable dict. When ``preview=True``, filled with ``ok`` and
@@ -336,10 +336,10 @@ def convert_metar_tac_with_metadata(
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (convert_metar_tac_with_metadata)
+    >>> 1 + 1 # docstring smoke (convert_metar_tac_with_metadata)
     2
     """
-    _ = use_test_overrides  # gifts-era knob; no-op after cutover
+    _ = use_test_overrides # gifts-era knob; no-op after cutover
     bulletin_date = _bulletin_date_arg(reference_time)
 
     try:
@@ -417,7 +417,7 @@ def convert_metar_tac_with_metadata(
         try:
             try:
                 from ..services.validation_orchestrator import get_validation_orchestrator
-            except (ImportError, ValueError):  # pragma: no cover - flat layout fallback
+            except (ImportError, ValueError): # pragma: no cover - flat layout fallback
                 from services.validation_orchestrator import get_validation_orchestrator
 
             orchestrator = get_validation_orchestrator()

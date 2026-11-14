@@ -2,7 +2,7 @@
 
 The pack matcher may run beside the legacy parser. XML still comes from that
 parser. Annex 3 keeps ``2023-1`` and ``2025-2``. ``ca_eccc`` keeps ``3.0.0``.
-A pack does not choose the pin. [Corpus: tests] [Corpus: adr/ADR-045]
+A pack does not choose the pin. [Corpus: tests]
 """
 
 from __future__ import annotations

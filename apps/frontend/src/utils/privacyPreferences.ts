@@ -1,6 +1,6 @@
 /**
- * Privacy preference store (F22 / ADR-031 / E17-7/16/17; deepened F31 / TC-F31-005).
- *
+ * Privacy preference store (F22 / E17-7/16/17; deepened F31 / TC-F31-005).
+
  * Preferences live in `localStorage`. Guest work-history IndexedDB is **gateable**.
  * GPC detect/apply (E17-16) is completed in T6.3.
  */
@@ -13,7 +13,7 @@ export const PRIVACY_SCHEMA_VERSION = 2 as const;
 
 /**
  * Solution A preference schema (F22) + F31 guest work-history gate.
- *
+
  * `necessary` is always on. Non-essential categories default false.
  * @example
  * const _ = true;
@@ -246,7 +246,7 @@ export function acknowledgePrivacyNotice(): PrivacyPreferences {
 
 /**
  * Whether the first-visit notice should show.
- *
+
  * True when never acknowledged, or when `schemaVersion` bumped past the
  * acknowledged version.
  * @example
@@ -263,7 +263,7 @@ export function shouldShowPrivacyNotice(): boolean {
 /**
  * Detect Global Privacy Control from `navigator.globalPrivacyControl` and/or an
  * explicit Sec-GPC signal (E17-16).
- *
+
  * @param options.navigatorGpc - `navigator.globalPrivacyControl` when available
  * @param options.secGpc - request/header Sec-GPC value (`"1"` ⇒ enabled)
  * @example
@@ -325,16 +325,16 @@ export function applyGpcToPreferences(
 
 /**
  * Whether guest work-history may be written to IndexedDB (TC-F31-005 / UJ-047).
- *
+
  * Parameters
  * ----------
  * prefs :
- *     Loaded privacy preferences (optional — loads from storage when omitted).
- *
+ * Loaded privacy preferences (optional — loads from storage when omitted).
+
  * Returns
  * -------
  * boolean
- *     ``false`` when the user declined local work-history persistence.
+ * ``false`` when the user declined local work-history persistence.
  * @example
  * const _ = true;
  */

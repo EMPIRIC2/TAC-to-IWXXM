@@ -1,7 +1,7 @@
 /**
  * TC-EV093-001 / TC-EV093-003 — semantic profile catalog + coerce/hydrate (EV-093).
- *
- * [Corpus: tests] [Corpus: product §F35] [Corpus: adr/ADR-036]
+
+ * [Corpus: tests] [Corpus: product §F35]
  */
 import { describe, expect, it } from 'vitest';
 import {

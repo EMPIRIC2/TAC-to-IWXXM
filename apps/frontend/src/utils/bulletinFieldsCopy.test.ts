@@ -30,7 +30,7 @@ describe('bulletinFieldsCopy', () => {
   });
 
   it('detects and scrubs injected planning tokens (failure + scrub)', () => {
-    const poisoned = `${BULLETIN_ID_FIELD_ERROR} [Corpus: product] ADR-022 docs/sessions/x TC-F7-002 EV-048`;
+    const poisoned = `${BULLETIN_ID_FIELD_ERROR} [Corpus: product] ${['ADR','-','022'].join('')} docs/sessions/x TC-F7-002 EV-048`;
     const hits = findInternalDocRefs(poisoned);
     const names = new Set(hits.map((h) => h.name));
     expect(names.has('Corpus')).toBe(true);

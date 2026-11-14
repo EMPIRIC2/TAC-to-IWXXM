@@ -94,7 +94,7 @@ def _attribution_fields(prov: dict[str, object] | None) -> dict[str, str | None]
 def _load_rows() -> tuple[list[dict[str, object]], str]:
     sys.path.insert(0, str(SRC))
     try:
-        from tac_validate.issue_registry import ISSUES  # type: ignore[import-not-found]
+        from tac_validate.issue_registry import ISSUES # type: ignore[import-not-found]
     except ModuleNotFoundError as exc:
         missing = exc.name or ""
         if missing in {
@@ -192,9 +192,9 @@ def _write_md(rows: list[dict[str, object]], source: str, generated: str) -> Non
     lines = [
         "# TAC lint issue catalog",
         "",
-        f"> **Source**: {source}  ",
-        f"> **Generated**: {generated} via `make catalog-regen`  ",
-        "> **ADR**: ADR-028 / F15 / EV-011 / F20 / EV-015 / F23 / EV-019 / EV-040",
+        f"> **Source**: {source} ",
+        f"> **Generated**: {generated} via `make catalog-regen` ",
+        "> **ADR**: / F15 / EV-011 / F20 / EV-015 / F23 / EV-019 / EV-040",
         "",
         "Public `code` values are stable. Default severities may tighten in minor releases.",
         "Do not invent ad-hoc `severity=` literals in rule bodies — import from the registry.",

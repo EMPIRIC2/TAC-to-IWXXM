@@ -1,6 +1,4 @@
-"""TC-EV080-002 / TC-EV080-003 — Python coverage gates at 100% (EV-080 / ADR-007).
-
-[Corpus: adr/ADR-007] [Corpus: tests]
+"""TC-EV080-002 / TC-EV080-003 — Python coverage gates at 100% (EV-080 ). [Corpus: tests]
 """
 
 from __future__ import annotations

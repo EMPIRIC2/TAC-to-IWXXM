@@ -1,7 +1,7 @@
 # AU_BOM — Australia BoM semantic overlay (P1)
 
-> **Profile id**: `AU_BOM` · **Kind**: semantic · **Priority**: P1 · **Status**: implemented (EV-087 / [#917](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/917); deepen EV-regional-dialect-profiles)  
-> **Catalog row**: [`catalog.yaml`](../catalog.yaml) · **ADR**: [ADR-036](../../../adr/ADR-036-semantic-vs-exchange-profiles.md) · [ADR-046](../../../adr/ADR-046-validation-policy-layers.md)
+> **Profile id**: `AU_BOM` · **Kind**: semantic · **Priority**: P1 · **Status**: implemented (EV-087 / [#917](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/917); deepen EV-regional-dialect-profiles)
+> **Catalog row**: [`catalog.yaml`](../catalog.yaml) · **ADR**: architecture decision · architecture decision
 
 Bureau of Meteorology national semantic overlay: TAF change-group `INTER`, TAF3 service
 marker in RMK, forecast T/Q remarks, and AUTO METAR/SPECI tokens (`NCD`, `UP`, solidi).

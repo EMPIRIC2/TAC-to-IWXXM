@@ -1,8 +1,7 @@
 """COLLECT and IWXXM XML read path for decode.
 
 Contained ``translationFailedTAC`` is decoded as TAC. Otherwise leaf XML
-fields are walked. This module never encodes IWXXM.
-[Corpus: adr/ADR-045] [Corpus: system-spec]
+fields are walked. This module never encodes IWXXM. [Corpus: system-spec]
 """
 
 from __future__ import annotations
@@ -229,7 +228,7 @@ def is_collect_input(text: str) -> bool:
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (is_collect_input)
+    >>> 1 + 1 # docstring smoke (is_collect_input)
     2
     """
     if not _looks_like_xml(text) or _has_forbidden_dtd(text):
@@ -279,7 +278,7 @@ def _read_from_root(root: ET.Element) -> CollectRead:
 
         Examples
         --------
-        >>> 1 + 1  # docstring smoke (walk)
+        >>> 1 + 1 # docstring smoke (walk)
         2
         """
         nonlocal bulletin_identifier, nodes, saw_failed_attr
@@ -340,7 +339,7 @@ def read_collect(xml: str) -> CollectRead:
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (read_collect)
+    >>> 1 + 1 # docstring smoke (read_collect)
     2
     """
     return _read_from_root(_parse_root(xml))
@@ -402,7 +401,7 @@ def decode_collect(xml: str, *, product: str, read: CollectRead | None = None) -
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (decode_collect)
+    >>> 1 + 1 # docstring smoke (decode_collect)
     2
     """
     from tac_decoding.decode import (
@@ -477,7 +476,7 @@ def try_decode_collect(xml: str, *, product: str) -> DecodeResult | None:
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (try_decode_collect)
+    >>> 1 + 1 # docstring smoke (try_decode_collect)
     2
     """
     if not _looks_like_xml(xml) or _has_forbidden_dtd(xml):

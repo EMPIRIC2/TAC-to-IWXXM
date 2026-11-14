@@ -1,6 +1,6 @@
 /**
  * Backend API Client
- *
+
  * Handles all communication with the METAR to IWXXM backend API.
  * All endpoints use the versioned base path: /api/v1/
  */
@@ -102,7 +102,7 @@ export interface ApiError {
 
 /**
  * Structured hard-convert failure surfaced by the backend.
- *
+
  * Preserves ``detail.errors`` / ``detail.issues`` from non-2xx convert responses so
  * the workbench can render the same operator-facing log panel it uses for 200 responses
  * with partial or failed conversion details.
@@ -158,7 +158,7 @@ function apiErrorMessage(
 
 /**
  * Check backend health status
- *
+
  * **Endpoint**: GET /health
  * @example
  * const _ = true;
@@ -182,11 +182,11 @@ export async function checkHealth(): Promise<HealthResponse> {
 
 /**
  * Convert METAR/SPECI text to IWXXM XML
- *
+
  * Supports both manual text input and file uploads.
- *
+
  * **Endpoint**: POST /api/v1/convert
- *
+
  * @param params - Conversion parameters
  * @param params.manualText - Optional: METAR text to convert
  * @param params.files - Optional: File list to convert
@@ -394,7 +394,7 @@ export async function convertMetarToIwxxm(params: {
 
 /**
  * Split a WMO AHL bulletin and convert each TAC report.
- *
+
  * **Endpoint**: POST /api/v1/convert-bulletin
  * @example
  * const _ = true;
@@ -507,7 +507,7 @@ export class EndpointNotImplementedError extends Error {
 
 /**
  * Ingest / validate IWXXM COLLECT (or gzipped COLLECT).
- *
+
  * **Endpoint**: POST /api/v1/ingest-collect (placeholder until implemented).
  * @example
  * const _ = true;
@@ -564,9 +564,9 @@ export async function ingestCollect(params: {
 
 /**
  * Lint TAC via tac-validate (parse gate + shared rules — not Schematron).
- *
+
  * **Endpoint**: POST /api/v1/lint-tac
- *
+
  * @param params.manualText - TAC text
  * @param params.product - Optional product hint
  * @param params.signal - AbortSignal for live workbench cancellation
@@ -607,9 +607,9 @@ export async function lintTac(params: {
 
 /**
  * Run layered IWXXM validation (TAC and/or XML).
- *
+
  * **Endpoint**: POST /api/v1/validate
- *
+
  * @param params.manualText - Optional TAC to convert then validate
  * @param params.xmlContent - Optional IWXXM XML to validate directly
  * @returns Layered validation report (`ValidateResponse`)
@@ -670,7 +670,7 @@ export async function validateIwxxm(params: {
 
 /**
  * Fetch IWXXM schema / profile pin status from the API.
- *
+
  * **Endpoint**: GET /api/v1/schema-status
  * @example
  * const _ = true;
@@ -699,7 +699,7 @@ export async function fetchSchemaStatus(): Promise<{
 
 /**
  * Fetch the tac-validate issue registry catalog (F15 / E11-31).
- *
+
  * **Endpoint**: GET /api/v1/lint-issue-catalog
  * @example
  * const _ = true;
@@ -754,9 +754,9 @@ export async function fetchLintIssueCatalog(params?: {
 
 /**
  * Decode TAC into ordered Code | Explanation segments.
- *
+
  * **Endpoint**: POST /api/v1/decode-tac
- *
+
  * @param params.manualText - TAC text
  * @param params.product - Required F6 product id
  * @returns Ordered segments and residuals
@@ -794,12 +794,12 @@ export async function decodeTac(params: {
 
 /**
  * Convert METAR/SPECI text to IWXXM XML in a ZIP file
- *
+
  * Supports batch conversion with both text and files.
  * Returns a ZIP archive containing converted XML files.
- *
+
  * **Endpoint**: POST /api/v1/convert-zip
- *
+
  * @param params - Conversion parameters
  * @param params.manualText - Optional: METAR text to convert
  * @param params.files - Optional: File list to convert
@@ -846,7 +846,7 @@ export async function convertMetarToIwxxmZip(params: {
 
 /**
  * Fetch ICAO region for an airport code (F3 airport data services).
- *
+
  * **Endpoint**: GET /api/v1/translation/airport-region/{icao}
  * @example
  * const _ = true;
@@ -866,7 +866,7 @@ export async function fetchAirportRegion(icao: string): Promise<AirportRegionRes
 
 /**
  * Download file from blob
- *
+
  * @param blob - File blob to download
  * @param filename - Filename for the download
  * @example
@@ -909,12 +909,12 @@ export interface MassIngestResponse {
 
 /**
  * Auth-gated mass file/folder ingest with server-side caps and sniff guards.
- *
+
  * **Endpoint**: POST /api/v1/ingest/mass
- *
+
  * Client expands folder picks to files before upload; zip archives may be sent
  * as-is for server unpack ([Corpus: product §F33], [Corpus: api]).
- *
+
  * @param params.files - Multipart files and/or ``.zip`` archives
  * @param params.accessToken - Required Bearer JWT
  * @param params.signal - Optional abort signal
@@ -962,8 +962,8 @@ export async function massIngestFiles(params: {
 }
 
 /**
- * Fetch a package-owned trust catalog by family (ADR-044).
- *
+ * Fetch a package-owned trust catalog by family .
+
  * **Endpoint**: GET /api/v1/rule-catalogs
  * @example
  * const _ = true;
@@ -1045,7 +1045,7 @@ export interface CodeNameDictionaryFacets {
 
 /**
  * Fetch the tagged Decoding code-name dictionary.
- *
+
  * **Endpoint**: GET /api/v1/code-name-dictionary
  * @example
  * const _ = true;
@@ -1102,8 +1102,8 @@ export type SelectionOptionKind =
   | 'dissemination';
 
 /**
- * Fetch deployed selection options for dropdowns (ADR-044 / TP-YCL-01).
- *
+ * Fetch deployed selection options for dropdowns (TP-YCL-01).
+
  * **Endpoint**: GET /api/v1/selection-options
  * @example
  * const _ = true;

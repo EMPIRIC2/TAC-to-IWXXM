@@ -1,6 +1,6 @@
 """Unit tests for live write-assert helpers (EV-039 / T2.3 / AC2).
 
-[Corpus: product §F16] [Corpus: tests] TC-F16-LIVE [Corpus: adr/ADR-030]
+[Corpus: product §F16] [Corpus: tests] TC-F16-LIVE
 """
 
 from __future__ import annotations

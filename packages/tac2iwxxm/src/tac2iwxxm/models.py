@@ -1,4 +1,4 @@
-"""msgspec models for bulletin split and convert results (F6 / ADR-016)."""
+"""msgspec models for bulletin split and convert results (F6)."""
 
 from __future__ import annotations
 

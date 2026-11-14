@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 /**
- * Mechanically backfill minimal ADR-048-compliant TSDoc on in-scope TS/TSX.
- *
- * [Corpus: adr/ADR-048]
+ * Mechanically backfill minimal -compliant TSDoc on in-scope TS/TSX.
+
+
  */
 import fs from "node:fs";
 import path from "node:path";
@@ -151,7 +151,7 @@ function enrichJsdocLines(docLines, needExample) {
     const out = [...docLines];
     const lastIdx = out.length - 1;
     const closing = out[lastIdx];
-    const indent = closing.match(/^(\s*)\*\//)?.[1] ?? "";
+    const indent = closing.match(/^(\s*)\*\ )?.[1] ?? "";
     out.splice(lastIdx, 0, `${indent} * @example`, `${indent} * const _ = true;`);
     return out;
   }

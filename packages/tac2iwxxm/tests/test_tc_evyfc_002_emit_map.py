@@ -1,4 +1,4 @@
-"""TC-EVYFC-002 — Convert emit YAML parity / routing (#1229 / ADR-047)."""
+"""TC-EVYFC-002 — Convert emit YAML parity / routing (#1229 )."""
 
 from __future__ import annotations
 
@@ -190,7 +190,7 @@ def test_bad_plugin_string() -> None:
                 "id": "x",
                 "profiles": ["annex3"],
                 "products": ["METAR"],
-                "plugin": "   ",
+                "plugin": " ",
             },
             source_path="x",
         )

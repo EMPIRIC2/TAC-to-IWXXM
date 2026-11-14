@@ -1,4 +1,4 @@
-# scripts/ci/run_ev032_a6_2_tc_canary.sh — bats coverage (EV-080 / ADR-007)
+# scripts/ci/run_ev032_a6_2_tc_canary.sh — bats coverage (EV-080 )
 # NFR-EV080-006: stub PATH helpers; no live network or cloud credentials.
 
 load "${BATS_TEST_DIRNAME}/../helpers/load"

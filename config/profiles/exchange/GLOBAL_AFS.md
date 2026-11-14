@@ -1,7 +1,7 @@
 # GLOBAL_AFS — default exchange overlay
 
-> **Profile id**: `GLOBAL_AFS` · **Kind**: exchange · **Priority**: P0 · **Status**: **implemented** (EV-065 / #921)  
-> **Catalog row**: [`catalog.yaml`](../catalog.yaml) · **ADR**: [ADR-036](../../../adr/ADR-036-semantic-vs-exchange-profiles.md)
+> **Profile id**: `GLOBAL_AFS` · **Kind**: exchange · **Priority**: P0 · **Status**: **implemented** (EV-065 / #921)
+> **Catalog row**: [`catalog.yaml`](../catalog.yaml) · **ADR**: architecture decision
 
 Default **exchange** profile when packaging or disseminate-prep paths are invoked without an
 explicit exchange id. Selects bulletin headers, COLLECT aggregation, FTBP filename conventions,

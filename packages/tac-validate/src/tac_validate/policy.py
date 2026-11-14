@@ -1,4 +1,4 @@
-"""TAC quality policy load + resolve (ADR-046 / #1216).
+"""TAC quality policy load + resolve (#1216).
 
 Draft lifecycle warns on unknown registry codes; activate fails closed.
 """
@@ -309,7 +309,7 @@ def load_policy(path: Path | str) -> PolicyDocument:
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (load_policy)
+    >>> 1 + 1 # docstring smoke (load_policy)
     2
     """
     file_path = Path(path)
@@ -329,7 +329,7 @@ def load_policy_catalog(profile: str | None = None) -> dict[str, PolicyDocument]
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (load_policy_catalog)
+    >>> 1 + 1 # docstring smoke (load_policy_catalog)
     2
 
     Parameters
@@ -530,7 +530,7 @@ def _chain_docs(
 
         Examples
         --------
-        >>> 1 + 1  # docstring smoke (symbol: depth_of)
+        >>> 1 + 1 # docstring smoke (symbol: depth_of)
         2
         """
         if current.id in seen:
@@ -570,7 +570,7 @@ def _chain_docs(
 
         Examples
         --------
-        >>> 1 + 1  # docstring smoke (symbol: walk)
+        >>> 1 + 1 # docstring smoke (symbol: walk)
         2
         """
         out: list[PolicyDocument] = []
@@ -639,7 +639,7 @@ def resolve_policy(
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (resolve_policy)
+    >>> 1 + 1 # docstring smoke (resolve_policy)
     2
     """
     chain = _chain_docs(doc, policies)
@@ -710,7 +710,7 @@ def apply_policy_to_report(
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (apply_policy_to_report)
+    >>> 1 + 1 # docstring smoke (apply_policy_to_report)
     2
 
     Returns

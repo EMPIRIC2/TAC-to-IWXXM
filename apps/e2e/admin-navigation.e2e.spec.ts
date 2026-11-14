@@ -1,5 +1,5 @@
 /**
- * TC-F7-006 / UJ-019 — admin product surface removed (S011 / ADR-021).
+ * TC-F7-006 / UJ-019 — admin product surface removed (S011 ).
  */
 import { expect, test } from '@playwright/test';
 

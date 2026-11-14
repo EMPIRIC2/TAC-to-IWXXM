@@ -21,7 +21,7 @@ def download_ourairports_data(output_path: Path) -> None:
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (download_ourairports_data)
+    >>> 1 + 1 # docstring smoke (download_ourairports_data)
     2
 
     Parameters
@@ -41,7 +41,7 @@ def convert_csv_to_json(csv_path: Path, json_path: Path) -> None:
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (convert_csv_to_json)
+    >>> 1 + 1 # docstring smoke (convert_csv_to_json)
     2
 
     Parameters
@@ -73,7 +73,7 @@ def convert_csv_to_json(csv_path: Path, json_path: Path) -> None:
 
         for row in reader:
             # Prefer icao_code; fall back to ident when it is a 4-char designator
-            # (aligns with ADR-051 reference-lookup matching on ident).
+            # (aligns with reference-lookup matching on ident).
             icao = row.get("icao_code", "").strip().upper()
             if not icao:
                 ident = row.get("ident", "").strip().upper()
@@ -122,7 +122,7 @@ def convert_csv_to_json(csv_path: Path, json_path: Path) -> None:
                             pass
 
                     # Add vertical datum based on country
-                    vertical_datum = "EGM_96"  # Default
+                    vertical_datum = "EGM_96" # Default
                     if country and country in datum_defaults:
                         raw_datum = datum_defaults[country]
                         # Normalize to IWXXM format
@@ -168,7 +168,7 @@ def convert_csv_to_json(csv_path: Path, json_path: Path) -> None:
         json.dump(airports, f, indent=2, ensure_ascii=False)
 
     print(f"✓ Successfully created {json_path}")
-    print(f"  Total airports: {len(airports)}")
+    print(f" Total airports: {len(airports)}")
 
 
 def verify_bgbw(json_path: Path) -> None:
@@ -177,7 +177,7 @@ def verify_bgbw(json_path: Path) -> None:
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (verify_bgbw)
+    >>> 1 + 1 # docstring smoke (verify_bgbw)
     2
 
     Parameters
@@ -196,12 +196,12 @@ def verify_bgbw(json_path: Path) -> None:
 
     if bgbw:
         print("\n✓ BGBW found in database:")
-        print(f"  Name: {bgbw.get('name')}")
-        print(f"  IATA: {bgbw.get('iata')}")
+        print(f" Name: {bgbw.get('name')}")
+        print(f" IATA: {bgbw.get('iata')}")
         if "coordinates" in bgbw:
             coords = bgbw["coordinates"]
-            print(f"  Coordinates: {coords.get('latitude')}, {coords.get('longitude')}")
-            print(f"  Elevation: {coords.get('elevation_ft')} ft")
+            print(f" Coordinates: {coords.get('latitude')}, {coords.get('longitude')}")
+            print(f" Elevation: {coords.get('elevation_ft')} ft")
     else:
         print("\n✗ BGBW not found in database")
 
@@ -212,7 +212,7 @@ def main():
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (main)
+    >>> 1 + 1 # docstring smoke (main)
     2
     """
     # Determine paths

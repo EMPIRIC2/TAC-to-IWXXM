@@ -1,4 +1,4 @@
-"""TC-F20-001 - TAF/SPECI registry completeness (UJ-031 / ADR-028).
+"""TC-F20-001 - TAF/SPECI registry completeness (UJ-031 ).
 
 Pass criteria (docs/test-plan.md §TC-F20-001):
 
@@ -52,7 +52,7 @@ def _taf_speci_cases(manifest: dict[str, Any]) -> list[dict[str, Any]]:
 
 
 def _assert_registered(code: str) -> None:
-    by_code(code)  # raises KeyError if unknown
+    by_code(code) # raises KeyError if unknown
 
 
 def _taf_speci_registry_rows() -> list[Any]:
@@ -106,7 +106,7 @@ def test_taf_product_registry_rows_appear_in_fixtures() -> None:
 
 
 def test_catalog_includes_taf_speci_registry_rows() -> None:
-    """ISSUE_CATALOG export lists every taf/speci-tagged registry code (ADR-028)."""
+    """ISSUE_CATALOG export lists every taf/speci-tagged registry code ."""
     assert CATALOG_JSON.is_file(), "missing ISSUE_CATALOG.json - run make catalog-regen"
     assert CATALOG_MD.is_file(), "missing ISSUE_CATALOG.md - run make catalog-regen"
 

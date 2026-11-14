@@ -1,4 +1,4 @@
-"""TC-EVYRY-003: emit-map plugin swap changes IWXXM (ADR-049 / #1256)."""
+"""TC-EVYRY-003: emit-map plugin swap changes IWXXM (#1256)."""
 
 from __future__ import annotations
 

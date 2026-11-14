@@ -1,4 +1,4 @@
-"""TC-F16-OPS-001..003 — DisseminationGateway façade, health, plan execute (EV-936 / ADR-041)."""
+"""TC-F16-OPS-001..003 — DisseminationGateway façade, health, plan execute (EV-936 )."""
 
 from __future__ import annotations
 
@@ -52,7 +52,7 @@ def adapter() -> _FakeAdapter:
 
 @pytest.fixture
 def gateway(adapter: _FakeAdapter) -> DisseminationGateway:
-    return DisseminationGateway(adapters={"postgres": adapter})  # type: ignore[arg-type]
+    return DisseminationGateway(adapters={"postgres": adapter}) # type: ignore[arg-type]
 
 
 def test_fake_adapter_satisfies_sink_protocol(adapter: _FakeAdapter) -> None:
@@ -63,7 +63,7 @@ def test_fake_adapter_satisfies_sink_protocol(adapter: _FakeAdapter) -> None:
 async def test_validate_dispatches_to_adapter_preflight(gateway: DisseminationGateway, adapter: _FakeAdapter) -> None:
     msg = DisseminationMessage(
         gateway_kind="postgres",
-        params={"uri": "postgresql://u:p@127.0.0.1/db"},
+        params={"uri": "postgresql: / u:p@127.0.0.1/db"},
         allowlist=_allowlist("127.0.0.1"),
     )
     result = await gateway.validate(msg)
@@ -77,7 +77,7 @@ async def test_validate_dispatches_to_adapter_preflight(gateway: DisseminationGa
 async def test_send_maps_ok_to_delivered(gateway: DisseminationGateway, adapter: _FakeAdapter) -> None:
     msg = DisseminationMessage(
         gateway_kind="postgres",
-        params={"uri": "postgresql://u:p@127.0.0.1/db"},
+        params={"uri": "postgresql: / u:p@127.0.0.1/db"},
         allowlist=_allowlist("127.0.0.1"),
         iwxxm_xml="<x/>",
     )
@@ -148,8 +148,8 @@ def test_default_health_db_kind_not_probed() -> None:
 async def test_health_all_kinds_uses_defaults() -> None:
     gw = DisseminationGateway(
         adapters={
-            "postgres": _FakeAdapter("postgres"),  # type: ignore[arg-type]
-            "amhs": _FakeAdapter("amhs"),  # type: ignore[arg-type]
+            "postgres": _FakeAdapter("postgres"), # type: ignore[arg-type]
+            "amhs": _FakeAdapter("amhs"), # type: ignore[arg-type]
         }
     )
     results = await gw.health()
@@ -165,7 +165,7 @@ async def test_health_single_kind_with_custom_probe() -> None:
         return GatewayHealth(ok=True, gateway=kind, connectivity_ok=True, detail="reachable")
 
     gw = DisseminationGateway(
-        adapters={"wis2": _FakeAdapter("wis2")},  # type: ignore[arg-type]
+        adapters={"wis2": _FakeAdapter("wis2")}, # type: ignore[arg-type]
         health_probe=probe,
     )
     results = await gw.health("wis2")
@@ -275,7 +275,7 @@ async def test_execute_plan_multi_destination() -> None:
     pg = _FakeAdapter("postgres")
     wis2 = _FakeAdapter("wis2")
     gw = DisseminationGateway(
-        adapters={"postgres": pg, "wis2": wis2},  # type: ignore[arg-type]
+        adapters={"postgres": pg, "wis2": wis2}, # type: ignore[arg-type]
     )
     plan = DisseminationPlan(
         plan_id="p4",

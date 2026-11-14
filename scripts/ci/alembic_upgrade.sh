@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Idempotent Alembic upgrade against DATABASE_URL / ALEMBIC_DATABASE_URL (F30 / ADR-033).
+# Idempotent Alembic upgrade against DATABASE_URL / ALEMBIC_DATABASE_URL (F30).
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"

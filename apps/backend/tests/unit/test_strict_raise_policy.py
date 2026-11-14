@@ -1,4 +1,4 @@
-"""Unit tests for Strict raise helpers (ADR-054 / EV-severity-strict-ui)."""
+"""Unit tests for Strict raise helpers (EV-severity-strict-ui)."""
 
 from __future__ import annotations
 

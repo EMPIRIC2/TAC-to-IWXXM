@@ -5,7 +5,7 @@ that navaid as ``PXR``, and the checked-in fallback table lacked ``PHX``, so
 convert failed closed with ``unknown VOR reference 'PHX'`` / HTTP 400
 “All conversions failed”.
 
-[Corpus: product §F6] [Corpus: adr/ADR-051] [Corpus: tests]
+[Corpus: product §F6] [Corpus: tests]
 """
 
 from __future__ import annotations

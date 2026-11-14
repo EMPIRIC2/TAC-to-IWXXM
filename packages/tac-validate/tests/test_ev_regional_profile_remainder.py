@@ -1,6 +1,6 @@
 """EV-regional-profile-remainder — C1/C2/C4/C5/C6/C7 fixtures.
 
-[Corpus: product §F15/§F20/§F23/§F36] [Corpus: adr/ADR-046]
+[Corpus: product §F15/§F20/§F23/§F36]
 [Corpus: tests §TC-EV-RPR-001..007]
 """
 

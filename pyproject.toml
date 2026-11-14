@@ -12,9 +12,9 @@ dependencies = []
 
 [tool.uv]
 package = false
-# Python floor: requires-python >=3.12 (ADR-005); basedpyright pythonVersion and ruff
+# Python floor: requires-python >=3.12 ; basedpyright pythonVersion and ruff
 # target-version stay at 3.12 so type-check and lint match the oldest supported runtime.
-# CI/dev interpreters may be newer; do not raise these without superseding ADR-005.
+# CI/dev interpreters may be newer; do not raise these without superseding .
 # S008 F6 members: tac2iwxxm, iwxxm-validate, tac-validate.
 
 [dependency-groups]
@@ -91,7 +91,7 @@ exclude = [
   "vendor",
   "apps/frontend/dist",
   "frontend/dist",
-  # ADR-027 generated xsdata trees (T3.7)
+  # generated xsdata trees (T3.7)
   "packages/shared/src/metar_shared/iwxxm_xsd/v*",
 ]
 reportMissingTypeStubs = false
@@ -127,7 +127,7 @@ markers = [
   "edge_case: conversion/validation edge-case corpus (filter with -m edge_case)",
   "schemathesis: OpenAPI property tests (make test-schemathesis)",
 ]
-# ADR-048 / TC-EVDOC-007: warnings are errors. Narrow third-party-only ignore for
+# TC-EVDOC-007: warnings are errors. Narrow third-party-only ignore for
 # passlib's crypt deprecation (stdlib path; not a product suppression).
 # The pytest-gremlins "Coverage collection returned no data" warning is NOT ignored here;
 # it is passed only via -W in scripts/ci/run_mutation_python.sh (mutation chunks).
@@ -141,7 +141,7 @@ branch = true
 source = ["apps", "packages"]
 omit = [
   "**/tests/**",
-  # ADR-027 generated xsdata trees (T3.7)
+  # generated xsdata trees (T3.7)
   "*/iwxxm_xsd/v*/**",
 ]
 
@@ -168,8 +168,8 @@ report = ["console", "json"]
 workers = 2
 cache = true
 
-# Ruff configuration — root workspace (ADR-005, ADR-053).
-# ADR-048: pydocstyle (D) fail-closed with NumPy convention.
+# Ruff configuration — root workspace (, ).
+# : pydocstyle (D) fail-closed with NumPy convention.
 [tool.ruff]
 target-version = "py312"
 line-length = 88
@@ -185,29 +185,29 @@ src = [
   "tests",
 ]
 extend-exclude = [
-  # ADR-027 generated xsdata output (only exclusion) — regenerate via make codegen-iwxxm-xsd
+  # generated xsdata output (only exclusion) — regenerate via make codegen-iwxxm-xsd
   "packages/shared/src/metar_shared/iwxxm_xsd",
   "packages/shared/src/metar_shared/iwxxm_xsd/v*",
 ]
 
 [tool.ruff.lint]
 select = [
-  "E",     # pycodestyle errors
-  "F",     # pyflakes
-  "I",     # isort
-  "UP",    # pyupgrade
-  "B",     # flake8-bugbear
-  "SIM",   # flake8-simplify
-  "RUF",   # ruff-specific
-  "PERF",  # perflint
+  "E", # pycodestyle errors
+  "F", # pyflakes
+  "I", # isort
+  "UP", # pyupgrade
+  "B", # flake8-bugbear
+  "SIM", # flake8-simplify
+  "RUF", # ruff-specific
+  "PERF", # perflint
   "ASYNC", # flake8-async
-  "PT",    # flake8-pytest-style
-  "ANN",   # flake8-annotations (src only; tests ignored below)
-  "D",     # pydocstyle — ADR-048 / TC-EVDOC-008
+  "PT", # flake8-pytest-style
+  "ANN", # flake8-annotations (src only; tests ignored below)
+  "D", # pydocstyle — / TC-EVDOC-008
 ]
 ignore = [
   "E501", # line length handled by formatter
-  # NumPy / ADR-048 backfill style: summary on second line; D203 conflicts with D211
+  # NumPy / backfill style: summary on second line; D203 conflicts with D211
   "D203",
   "D212",
   # Descriptive summaries (not imperative verbs) are intentional in this corpus
@@ -223,7 +223,7 @@ ignore = [
 [tool.ruff.lint.pydocstyle]
 convention = "numpy"
 
-# ADR-056: max-complexity documented here; CI enforces via
+# : max-complexity documented here; CI enforces via
 # config/ruff-complexity.toml + make file-complexity.
 [tool.ruff.lint.mccabe]
 max-complexity = 10

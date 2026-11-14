@@ -102,7 +102,7 @@ IWXXM output policy document ids. Pass `--policy` on the `tac-validate` or
 ## Profile binding overlays
 
 Optional directory via `TAC2IWXXM_PROFILE_DIR` layers policy ids onto a builtin emit
-binding for listed profile ids (ADR-046). See the monorepo
+binding for listed profile ids . See the monorepo
 [Overlay cookbook](https://github.com/EMPIRIC2/TAC-to-IWXXM/blob/stage/docs/domain/overlays/overlay-cookbook.md),
 `examples/overlays/`, and copy-paste `examples/starters/`.
 

@@ -1,6 +1,6 @@
 /**
- * Strict master checkbox and optional per-step raise toggles (ADR-054).
- *
+ * Strict master checkbox and optional per-step raise toggles .
+
  * Plain-language operator copy only — no planning ids.
  */
 
@@ -22,7 +22,7 @@ export interface StrictControlsProps {
 
 /**
  * Validation Options Strict control for the conversion parameters bar.
- *
+
  * @param props - Controlled Strict + step flags
  * @returns Strict checkbox group
  * @example

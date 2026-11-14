@@ -1,4 +1,4 @@
-"""Optional PyO3 extension loader (F13 / E10-36; mirrors tac2iwxxm ADR-017).
+"""Optional PyO3 extension loader (F13 / E10-36; mirrors tac2iwxxm ).
 
 The ``iwxxm_validate._rust`` module is built by maturin. Pure-Python lxml paths keep
 working when the extension is absent (local without rustc); CI rust job requires it.
@@ -15,7 +15,7 @@ def rust_available() -> bool:
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (rust_available)
+    >>> 1 + 1 # docstring smoke (rust_available)
     2
 
     Returns
@@ -24,10 +24,10 @@ def rust_available() -> bool:
         True when the compiled ``iwxxm_validate._rust`` extension imports.
     """
     try:
-        from iwxxm_validate import _rust  # type: ignore[attr-defined]
+        from iwxxm_validate import _rust # type: ignore[attr-defined]
     except ImportError:
         return False
-    return _rust is not None  # pragma: no cover
+    return _rust is not None # pragma: no cover
 
 
 def clear_schema_caches() -> None:
@@ -36,7 +36,7 @@ def clear_schema_caches() -> None:
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (clear_schema_caches)
+    >>> 1 + 1 # docstring smoke (clear_schema_caches)
     2
     """
     mod = rust_module()
@@ -58,11 +58,11 @@ def rust_module() -> Any | None:
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (rust_module)
+    >>> 1 + 1 # docstring smoke (rust_module)
     2
     """
     try:
-        from iwxxm_validate import _rust  # type: ignore[attr-defined]
+        from iwxxm_validate import _rust # type: ignore[attr-defined]
     except ImportError:
         return None
-    return _rust  # type: ignore[no-any-return]  # pragma: no cover
+    return _rust # type: ignore[no-any-return] # pragma: no cover

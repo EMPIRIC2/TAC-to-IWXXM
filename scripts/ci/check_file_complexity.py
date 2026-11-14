@@ -1,10 +1,8 @@
 #!/usr/bin/env python3
-"""Run Ruff C901 gate via dedicated config (ADR-056).
+"""Run Ruff C901 gate via dedicated config .
 
 Uses ``scripts/ci/policy/ruff-complexity.toml`` so nested package ``pyproject.toml``
-``per-file-ignores`` cannot drop the complexity rule.
-
-[Corpus: adr/ADR-056] [Corpus: product §M5]
+``per-file-ignores`` cannot drop the complexity rule. [Corpus: product §M5]
 """
 
 from __future__ import annotations

@@ -1,6 +1,6 @@
 """T3.1 / TC-F7-003: soft-preview via preview=true on POST /api/v1/convert (S011 / EV-008).
 
-Spec: docs/adr/ADR-022-convert-preview-flag.md; docs/api-contract.md Soft-preview;
+Spec: docs/adr/-convert-preview-flag.md; docs/api-contract.md Soft-preview;
 docs/test-plan.md TC-F7-003; UJ-016.
 Expected red until T3.2 implements the preview form flag + soft-preview path.
 """
@@ -66,7 +66,7 @@ def _assert_failed_spans(payload: dict) -> None:
 def test_convert_preview_partial_failure_returns_200_failed_spans_and_xml(
     client: TestClient,
 ) -> None:
-    """ADR-022: preview=true → HTTP 200, ok=false, failed_spans, best-effort IWXXM."""
+    """: preview=true → HTTP 200, ok=false, failed_spans, best-effort IWXXM."""
     response = _multipart_convert(client, manual_text=BAD_METAR_TAC, preview="true")
     assert response.status_code == 200, response.text[:500]
     payload = response.json()
@@ -84,7 +84,7 @@ def test_convert_without_preview_unreliable_tac_quarantines(client: TestClient) 
     """EV-023 / TC-EV023-003: product-shaped unreliable TAC → quarantine (not soft-preview).
 
     Default convert emits ``translationFailedTAC`` shell with HTTP 200 / successful=1.
-    Soft-preview ``ok:false`` + ``failed_spans`` remains preview=true only (ADR-022).
+    Soft-preview ``ok:false`` + ``failed_spans`` remains preview=true only .
     """
     response = _multipart_convert(client, manual_text=BAD_METAR_TAC, preview=None)
     assert response.status_code == 200, response.text[:500]
@@ -93,7 +93,7 @@ def test_convert_without_preview_unreliable_tac_quarantines(client: TestClient) 
     assert not body.get("failed_spans")
     xml = (body.get("results") or [{}])[0].get("content") or ""
     assert "translationFailedTAC" in xml
-    assert body.get("ok") is not False  # not soft-preview envelope
+    assert body.get("ok") is not False # not soft-preview envelope
 
 
 def test_convert_preview_false_unreliable_tac_quarantines(client: TestClient) -> None:
@@ -110,7 +110,7 @@ def test_convert_preview_false_unreliable_tac_quarantines(client: TestClient) ->
 def test_convert_without_preview_keeps_hard_fail_for_unsupported_product(
     client: TestClient,
 ) -> None:
-    """ADR-022: non-quarantine failures still hard-fail when preview is omitted."""
+    """: non-quarantine failures still hard-fail when preview is omitted."""
     response = _multipart_convert(
         client,
         manual_text="METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005=",

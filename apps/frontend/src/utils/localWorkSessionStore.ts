@@ -1,6 +1,6 @@
 /**
- * Local IndexedDB work-session store (F7.h / F21 / ADR-031).
- *
+ * Local IndexedDB work-session store (F7.h / F21).
+
  * Uses Jake Archibald's ``idb`` wrapper. No JWT / server session calls.
  */
 
@@ -230,7 +230,7 @@ export async function clearLocalWorkSessions(): Promise<void> {
 
 /**
  * Create a new work session in local IndexedDB storage.
- *
+
  * @param payload - Session fields to persist.
  * @returns The stored session row with generated id and timestamps.
  * @example
@@ -249,7 +249,7 @@ export async function createLocalWorkSession(
 
 /**
  * Fetch one local work session by id.
- *
+
  * @param sessionId - Session primary key.
  * @returns The stored session row.
  * @throws When the session does not exist locally.
@@ -267,7 +267,7 @@ export async function getLocalWorkSession(sessionId: string): Promise<WorkSessio
 
 /**
  * Update an existing local work session.
- *
+
  * @param sessionId - Session to update.
  * @param payload - Partial or full session fields to merge.
  * @returns The updated session row.
@@ -289,7 +289,7 @@ export async function updateLocalWorkSession(
 
 /**
  * Soft-delete a local work session by setting `deleted_at`.
- *
+
  * @param sessionId - Session to mark deleted.
  * @returns The updated session row.
  * @example
@@ -309,7 +309,7 @@ export async function deleteLocalWorkSession(sessionId: string): Promise<WorkSes
 
 /**
  * Restore a soft-deleted local work session.
- *
+
  * @param sessionId - Session to undelete.
  * @returns The updated session row with `deleted_at` cleared.
  * @example
@@ -330,7 +330,7 @@ export async function restoreLocalWorkSession(sessionId: string): Promise<WorkSe
 
 /**
  * List local work sessions with optional filters and pagination.
- *
+
  * @param params - Status, product, deletion, and paging filters.
  * @returns Paginated session list sorted by most recently updated.
  * @example
@@ -379,7 +379,7 @@ export async function listMyMetars(
 
 /**
  * Export all local work sessions as a versioned JSON document.
- *
+
  * @returns Export envelope suitable for backup or migration.
  * @example
  * const _ = true;
@@ -397,7 +397,7 @@ export async function exportLocalWorkSessions(): Promise<LocalWorkSessionExportV
 
 /**
  * Import sessions from a local export document into IndexedDB.
- *
+
  * @param doc - Versioned export payload from {@link exportLocalWorkSessions}.
  * @returns Count of sessions written.
  * @example

@@ -1,6 +1,6 @@
 """TC-EV1222 — regional exchange packaging deepen (#1222).
 
-[Corpus: product §F36] [Corpus: adr/ADR-036] [Corpus: tests]
+[Corpus: product §F36] [Corpus: tests]
 """
 
 from __future__ import annotations

@@ -114,7 +114,7 @@ def _params() -> Wis2Params:
 
 
 def _allowlist():
-    # Literal loopback IP + CIDR for DNS-rebinding guard (ADR-029).
+    # Literal loopback IP + CIDR for DNS-rebinding guard .
     return parse_allowlist("127.0.0.1,127.0.0.0/8,localhost,wis2box")
 
 
@@ -147,7 +147,7 @@ async def test_wis2_harness_preflight_and_publish_retrievable(wis2box_harness: N
             await sub.disconnect()
 
     sub_task = asyncio.create_task(_subscribe())
-    await asyncio.sleep(0.3)  # allow subscribe to land before publish
+    await asyncio.sleep(0.3) # allow subscribe to land before publish
 
     pre = await wis2_preflight(params, allowlist=allowlist, mqtt=mqtt, http=http)
     assert pre.ok is True

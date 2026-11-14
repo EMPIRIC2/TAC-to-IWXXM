@@ -2,7 +2,7 @@
 
 Asserts vendor ``metar-A3-1`` / ``speci-A3-2`` are in the annex3 pack and
 ``canonicalize_xml(convert(...))`` equals vendor golden under default convert
-settings (ADR-032 / E20-D3).
+settings (E20-D3).
 """
 
 from __future__ import annotations

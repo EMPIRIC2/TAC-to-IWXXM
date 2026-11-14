@@ -1,7 +1,7 @@
 # HK_HKO — Hong Kong Observatory compat overlay (P2)
 
-> **Profile id**: `HK_HKO` · **Kind**: semantic · **Priority**: P2 · **Status**: implemented (EV-094 deepen / [#1098](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1098); kickoff EV-089 / [#920](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/920))  
-> **Path**: compat · **ADR**: [ADR-036](../../../adr/ADR-036-semantic-vs-exchange-profiles.md)
+> **Profile id**: `HK_HKO` · **Kind**: semantic · **Priority**: P2 · **Status**: implemented (EV-094 deepen / [#1098](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1098); kickoff EV-089 / [#920](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/920))
+> **Path**: compat · **ADR**: architecture decision
 
 APAC interoperability fixture pack: METAR/SPECI/TAF/SIGMET/VAA under `ICAO_2025`.
 Overrides expected **empty**; HKO TAFs include TX/TN (Annex-conformant). Chinese-language

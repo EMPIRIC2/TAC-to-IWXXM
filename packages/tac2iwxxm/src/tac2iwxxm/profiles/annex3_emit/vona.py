@@ -49,7 +49,7 @@ def _fmt_coord(value: float) -> str:
     return text
 
 
-# WMO vona-A7-1 peer stamps (ADR-032 / S02.M1 example-specific; not default API).
+# WMO vona-A7-1 peer stamps (S02.M1 example-specific; not default API).
 # Official XML uses degrees.minutes display (54.03 159.27) rather than true decimal
 # degrees from N5403 E15927 (54.05 159.45), plus fixed gml:identifier UUIDs.
 _VONA_A7_1_COLLECTIVE_ID = "a9d53294-7fcf-4a73-9dd2-63df64041800"
@@ -155,14 +155,14 @@ def _vona_ash_phenomenon_property(
         return f'<iwxxm:phenomenonProperty nilReason="{_IWXXM_NIL}/inapplicable"></iwxxm:phenomenonProperty>'
 
     hs_xml = (
-        f"\n                    <iwxxm:heightSource>{escape(str(height_source))}</iwxxm:heightSource>"
+        f"\n <iwxxm:heightSource>{escape(str(height_source))}</iwxxm:heightSource>"
         if height_source
-        else f'\n                    <iwxxm:heightSource xsi:nil="true" nilReason="{_IWXXM_NIL}/unknown"/>'
+        else f'\n <iwxxm:heightSource xsi:nil="true" nilReason="{_IWXXM_NIL}/unknown"/>'
     )
     mov_xml = (
-        f"\n                    <iwxxm:movement>{escape(movement)}</iwxxm:movement>"
+        f"\n <iwxxm:movement>{escape(movement)}</iwxxm:movement>"
         if movement
-        else f'\n                    <iwxxm:movement xsi:nil="true" nilReason="{_IWXXM_NIL}/unknown"/>'
+        else f'\n <iwxxm:movement xsi:nil="true" nilReason="{_IWXXM_NIL}/unknown"/>'
     )
     return f"""<iwxxm:phenomenonProperty>
                 <iwxxm:VolcanicAshCloudVerticalExtent gml:id="vona.ash.extent.{vol_slug}">{hs_xml}{mov_xml}
@@ -176,7 +176,7 @@ def emit_vona_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
 
     Matches A7-1 field shape (MetFeature volcano + ash, ``iwxxm/AviationColourCode``).
     Official ``vona-A7-1`` peer uses example-specific identifier/coord stamps for
-    ADR-032 ``canonicalize_xml`` equality (TC-F32-004 / T2.6). Ash
+     ``canonicalize_xml`` equality (TC-F32-004 / T2.6). Ash
     ``phenomenonProperty`` uses ``iwxxm/nil/inapplicable`` on the A7-1 peer; non-peer
     TAC with ``HGT SOURCE`` / ``MOV`` encodes ``VolcanicAshCloudVerticalExtent``
     (G-VONA-1 / TC-EV038-011 / #849).
@@ -196,7 +196,7 @@ def emit_vona_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (emit_vona_annex3)
+    >>> 1 + 1 # docstring smoke (emit_vona_annex3)
     2
     """
     from tac2iwxxm.codelists import aviation_colour_href
@@ -236,7 +236,7 @@ def emit_vona_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
     previous_xml = ""
     if ir.get("previous_colour"):
         prev_href = aviation_colour_href(str(ir["previous_colour"]), iwxxm_version=iwxxm_version)
-        previous_xml = f'\n    <iwxxm:previousColourCode xlink:href="{escape(prev_href)}"/>'
+        previous_xml = f'\n <iwxxm:previousColourCode xlink:href="{escape(prev_href)}"/>'
 
     source_elev = ir.get("source_elevation_m")
     ash_hgt = ir.get("ash_cloud_height_m")
@@ -245,12 +245,12 @@ def emit_vona_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
 
     designator = ir.get("originating_centre_designator")
     designator_xml = (
-        f"\n                    <aixm:designator>{escape(str(designator))}</aixm:designator>" if designator else ""
+        f"\n <aixm:designator>{escape(str(designator))}</aixm:designator>" if designator else ""
     )
 
     iavcei = ir.get("iavcei_number")
     iavcei_xml = (
-        f"\n                    <iwxxm:IAVCEINumber>{escape(str(iavcei))}</iwxxm:IAVCEINumber>" if iavcei else ""
+        f"\n <iwxxm:IAVCEINumber>{escape(str(iavcei))}</iwxxm:IAVCEINumber>" if iavcei else ""
     )
 
     onset_xml = ""
@@ -263,7 +263,7 @@ def emit_vona_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
                     </iwxxm:onsetTime>"""
     duration_xml = ""
     if ir.get("duration"):
-        duration_xml = f"\n                    <iwxxm:duration>{escape(str(ir['duration']))}</iwxxm:duration>"
+        duration_xml = f"\n <iwxxm:duration>{escape(str(ir['duration']))}</iwxxm:duration>"
 
     source_elev_xml = ""
     if source_elev is not None:
@@ -278,7 +278,7 @@ def emit_vona_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
     ash_feature = ""
     phenomena_ash = ""
     if ash_hgt is not None:
-        phenomena_ash = f'\n    <iwxxm:phenomenaList xlink:href="{_MET_FEATURE}/VOLCANIC_ASH"/>'
+        phenomena_ash = f'\n <iwxxm:phenomenaList xlink:href="{_MET_FEATURE}/VOLCANIC_ASH"/>'
         ash_feature = f"""
     <iwxxm:feature>
         <iwxxm:MeteorologicalFeature gml:id="vona.feat.ash.{vol_slug}">
@@ -300,10 +300,10 @@ def emit_vona_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
         </iwxxm:MeteorologicalFeature>
     </iwxxm:feature>"""
 
-    contacts_xml = f"\n    <iwxxm:contacts>{escape(str(ir['contacts']))}</iwxxm:contacts>" if ir.get("contacts") else ""
-    remarks_xml = f"\n    <iwxxm:remarks>{escape(str(ir['remarks']))}</iwxxm:remarks>" if ir.get("remarks") else ""
+    contacts_xml = f"\n <iwxxm:contacts>{escape(str(ir['contacts']))}</iwxxm:contacts>" if ir.get("contacts") else ""
+    remarks_xml = f"\n <iwxxm:remarks>{escape(str(ir['remarks']))}</iwxxm:remarks>" if ir.get("remarks") else ""
     next_xml = (
-        f"\n    <iwxxm:nextNotice>{escape(str(ir['next_notice']))}</iwxxm:nextNotice>" if ir.get("next_notice") else ""
+        f"\n <iwxxm:nextNotice>{escape(str(ir['next_notice']))}</iwxxm:nextNotice>" if ir.get("next_notice") else ""
     )
     region = str(ir.get("state_or_region") or "")
     notice = str(ir.get("notice_number") or "")

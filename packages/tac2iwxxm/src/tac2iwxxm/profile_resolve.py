@@ -1,4 +1,4 @@
-"""Map a conversion profile to TAC quality and IWXXM output policy ids (ADR-046 / #1216 M5).
+"""Map a conversion profile to TAC quality and IWXXM output policy ids (#1216 M5).
 
 Validators stay dumb loaders. This module only resolves document ids.
 An optional ``TAC2IWXXM_PROFILE_DIR`` overlay layers policy ids onto one builtin
@@ -270,7 +270,7 @@ def resolve_validation_policies(
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (resolve_validation_policies)
+    >>> 1 + 1 # docstring smoke (resolve_validation_policies)
     2
     """
     resolved = resolve_semantic_profile(profile)

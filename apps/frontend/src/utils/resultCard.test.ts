@@ -31,7 +31,7 @@ describe('result card status', () => {
     expect(isErrorSeverity('note')).toBe(false);
   });
 
-  it('codeBlocksPublish stays empty under ADR-054 (no code alone blocks download)', () => {
+  it('codeBlocksPublish stays empty under (no code alone blocks download)', () => {
     expect(codeBlocksPublish(undefined)).toBe(false);
     expect(codeBlocksPublish(null)).toBe(false);
     expect(codeBlocksPublish('OUTPUT_VALIDATION_WARNING')).toBe(false);
@@ -41,7 +41,7 @@ describe('result card status', () => {
   it('blocks publish for blank or tagless XML and allows tag-shaped documents', () => {
     expect(xmlBlocksPublish(undefined)).toBe(false);
     expect(xmlBlocksPublish(null)).toBe(false);
-    expect(xmlBlocksPublish('   ')).toBe(true);
+    expect(xmlBlocksPublish(' ')).toBe(true);
     expect(xmlBlocksPublish('<iwxxm')).toBe(true);
     expect(xmlBlocksPublish('<iwxxm>ok</iwxxm>')).toBe(false);
     expect(xmlBlocksPublish('<iwxxm:METAR>line-one</iwxxm:METAR>')).toBe(false);
@@ -58,12 +58,12 @@ describe('result card status', () => {
   it('is valid with notes when only informational issues are present', () => {
     const card = assessResultCard({
       xml: '<iwxxm>ok</iwxxm>',
-      errors: ['  '],
+      errors: [' '],
       issues: [
         { severity: 'info', message: 'Remark stays in the decode', code: 'RMK_NOTE' },
-        { severity: 'warning', message: '  ' },
+        { severity: 'warning', message: ' ' },
         { severity: 'info', message: null },
-        { severity: 'warning', message: 'Check the cloud group', code: '   ' },
+        { severity: 'warning', message: 'Check the cloud group', code: ' ' },
       ],
     });
     expect(card.statusLabel).toBe(RESULT_STATUS_NOTES);

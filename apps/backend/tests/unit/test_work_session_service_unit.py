@@ -1,4 +1,4 @@
-"""Unit tests for WorkSessionService URL helpers + DB error mapping (F31 / ADR-033)."""
+"""Unit tests for WorkSessionService URL helpers + DB error mapping (F31)."""
 
 from __future__ import annotations
 
@@ -20,9 +20,9 @@ from src.services import work_session_service as svc
 def test_sync_database_url_rewrites_asyncpg(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setenv(
         "DATABASE_URL",
-        "postgresql+asyncpg://u:p@localhost:5432/db",
+        "postgresql+asyncpg: / u:p@localhost:5432/db",
     )
-    assert svc._sync_database_url().startswith("postgresql+psycopg://")
+    assert svc._sync_database_url().startswith("postgresql+psycopg: / ")
 
 
 def test_sync_database_url_rewrites_asyncpg_ssl_to_sslmode(
@@ -31,25 +31,25 @@ def test_sync_database_url_rewrites_asyncpg_ssl_to_sslmode(
     """DOKS ``?ssl=require`` must become ``sslmode=require`` for psycopg (T7.1)."""
     monkeypatch.setenv(
         "DATABASE_URL",
-        "postgresql+asyncpg://u:p@host:25060/db?ssl=require",
+        "postgresql+asyncpg: / u:p@host:25060/db?ssl=require",
     )
     out = svc._sync_database_url()
-    assert out.startswith("postgresql+psycopg://")
+    assert out.startswith("postgresql+psycopg: / ")
     assert "sslmode=require" in out
     assert "ssl=require" not in out
 
 
 def test_sync_database_url_plain_and_psycopg2(monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setenv("DATABASE_URL", "postgresql://u:p@localhost/db")
-    assert svc._sync_database_url().startswith("postgresql+psycopg://")
-    monkeypatch.setenv("DATABASE_URL", "postgresql+psycopg2://u:p@localhost/db")
-    assert svc._sync_database_url().startswith("postgresql+psycopg://")
-    monkeypatch.setenv("DATABASE_URL", "postgresql+psycopg://u:p@localhost/db")
-    assert svc._sync_database_url() == "postgresql+psycopg://u:p@localhost/db"
+    monkeypatch.setenv("DATABASE_URL", "postgresql: / u:p@localhost/db")
+    assert svc._sync_database_url().startswith("postgresql+psycopg: / ")
+    monkeypatch.setenv("DATABASE_URL", "postgresql+psycopg2: / u:p@localhost/db")
+    assert svc._sync_database_url().startswith("postgresql+psycopg: / ")
+    monkeypatch.setenv("DATABASE_URL", "postgresql+psycopg: / u:p@localhost/db")
+    assert svc._sync_database_url() == "postgresql+psycopg: / u:p@localhost/db"
 
 
 def test_get_engine_and_table_cache(monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setenv("DATABASE_URL", "postgresql+psycopg://u:p@localhost/db")
+    monkeypatch.setenv("DATABASE_URL", "postgresql+psycopg: / u:p@localhost/db")
     svc._engine = None
     svc._sessions_table = None
     fake_engine = MagicMock()
@@ -114,7 +114,7 @@ def test_payload_dict_normalizes_enums() -> None:
 
 
 def test_create_session_inserts_row(monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setenv("DATABASE_URL", "postgresql+psycopg://u:p@localhost/db")
+    monkeypatch.setenv("DATABASE_URL", "postgresql+psycopg: / u:p@localhost/db")
     session_id = uuid4()
     user_id = uuid4()
     now = datetime.now(UTC)
@@ -166,7 +166,7 @@ def test_create_session_inserts_row(monkeypatch: pytest.MonkeyPatch) -> None:
 
 
 def test_get_session_not_found(monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setenv("DATABASE_URL", "postgresql+psycopg://u:p@localhost/db")
+    monkeypatch.setenv("DATABASE_URL", "postgresql+psycopg: / u:p@localhost/db")
     mock_conn = MagicMock()
     mock_conn.__enter__ = MagicMock(return_value=mock_conn)
     mock_conn.__exit__ = MagicMock(return_value=False)
@@ -189,7 +189,7 @@ def test_get_session_not_found(monkeypatch: pytest.MonkeyPatch) -> None:
 
 
 def test_soft_delete_sets_deleted_at(monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setenv("DATABASE_URL", "postgresql+psycopg://u:p@localhost/db")
+    monkeypatch.setenv("DATABASE_URL", "postgresql+psycopg: / u:p@localhost/db")
     session_id = uuid4()
     user_id = uuid4()
     now = datetime.now(UTC)
@@ -243,7 +243,7 @@ def test_soft_delete_sets_deleted_at(monkeypatch: pytest.MonkeyPatch) -> None:
 
 
 def test_list_sessions_returns_items(monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setenv("DATABASE_URL", "postgresql+psycopg://u:p@localhost/db")
+    monkeypatch.setenv("DATABASE_URL", "postgresql+psycopg: / u:p@localhost/db")
     user_id = uuid4()
     now = datetime.now(UTC)
     row = {
@@ -294,7 +294,7 @@ def test_list_sessions_returns_items(monkeypatch: pytest.MonkeyPatch) -> None:
 
 
 def test_update_and_restore(monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setenv("DATABASE_URL", "postgresql+psycopg://u:p@localhost/db")
+    monkeypatch.setenv("DATABASE_URL", "postgresql+psycopg: / u:p@localhost/db")
     session_id = uuid4()
     user_id = uuid4()
     now = datetime.now(UTC)
@@ -355,7 +355,7 @@ def test_update_and_restore(monkeypatch: pytest.MonkeyPatch) -> None:
 def test_sqlalchemy_errors_map_on_crud(monkeypatch: pytest.MonkeyPatch) -> None:
     from sqlalchemy.exc import SQLAlchemyError
 
-    monkeypatch.setenv("DATABASE_URL", "postgresql+psycopg://u:p@localhost/db")
+    monkeypatch.setenv("DATABASE_URL", "postgresql+psycopg: / u:p@localhost/db")
     mock_conn = MagicMock()
     mock_conn.__enter__ = MagicMock(return_value=mock_conn)
     mock_conn.__exit__ = MagicMock(return_value=False)
@@ -391,7 +391,7 @@ def test_sqlalchemy_errors_map_on_crud(monkeypatch: pytest.MonkeyPatch) -> None:
 
 
 def test_update_session_rowcount_zero(monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setenv("DATABASE_URL", "postgresql+psycopg://u:p@localhost/db")
+    monkeypatch.setenv("DATABASE_URL", "postgresql+psycopg: / u:p@localhost/db")
     session_id = uuid4()
     user_id = uuid4()
     now = datetime.now(UTC)
@@ -441,7 +441,7 @@ def test_update_session_rowcount_zero(monkeypatch: pytest.MonkeyPatch) -> None:
 
 
 def test_list_sessions_date_filters(monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setenv("DATABASE_URL", "postgresql+psycopg://u:p@localhost/db")
+    monkeypatch.setenv("DATABASE_URL", "postgresql+psycopg: / u:p@localhost/db")
     user_id = uuid4()
     now = datetime.now(UTC)
     mock_conn = MagicMock()
@@ -485,7 +485,7 @@ def test_list_sessions_date_filters(monkeypatch: pytest.MonkeyPatch) -> None:
 def test_soft_delete_db_error(monkeypatch: pytest.MonkeyPatch) -> None:
     from sqlalchemy.exc import SQLAlchemyError
 
-    monkeypatch.setenv("DATABASE_URL", "postgresql+psycopg://u:p@localhost/db")
+    monkeypatch.setenv("DATABASE_URL", "postgresql+psycopg: / u:p@localhost/db")
     session_id = uuid4()
     user_id = uuid4()
     now = datetime.now(UTC)

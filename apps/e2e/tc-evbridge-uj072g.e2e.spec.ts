@@ -1,8 +1,8 @@
 /**
  * EV-bridge T2 / H4–H5 — UJ-072g five Libraries + Mapping bridge + hard cut.
- *
+
  * Spec: docs/test-plan.md TC-EVBRIDGE-005..007, 010; docs/user-journeys.md UJ-072g.
- * [Corpus: product §F7.w] [Corpus: journeys] [Corpus: tests] [Corpus: adr/ADR-043]
+ * [Corpus: product §F7.w] [Corpus: journeys] [Corpus: tests]
  */
 import { expect, test, type Page } from '@playwright/test';
 import {
@@ -179,7 +179,7 @@ test.describe('EV-bridge — UJ-072g Libraries + hard cut', () => {
   }) => {
     test.skip(
       true,
-      'Retired ADR-044 — five-library Profile Builder + Mapping bridge unmounted (TC-EVPVD-001)',
+      'Retired — five-library Profile Builder + Mapping bridge unmounted (TC-EVPVD-001)',
     );
     await seedMockAuth(page);
     await stubLibraryNoise(page);

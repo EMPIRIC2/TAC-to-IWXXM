@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Fail when hand-written apps/packages files exceed the line budget (ADR-056).
+"""Fail when hand-written apps/packages files exceed the line budget .
 
 Rules:
   - Budget: 500 physical lines (newline count).
@@ -9,9 +9,7 @@ Rules:
 
 Usage:
   python3 scripts/ci/check_file_budget.py
-  python3 scripts/ci/check_file_budget.py --bootstrap  # print sorted oversize paths
-
-[Corpus: adr/ADR-056] [Corpus: product §M5]
+  python3 scripts/ci/check_file_budget.py --bootstrap # print sorted oversize paths [Corpus: product §M5]
 """
 
 from __future__ import annotations
@@ -150,13 +148,13 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
     if args.bootstrap:
         for rel, lines in find_oversize(budget=args.budget):
-            print(f"{rel}  # {lines}")
+            print(f"{rel} # {lines}")
         return 0
     violations = check_budget(budget=args.budget)
     if violations:
         print("File budget violations:", file=sys.stderr)
         for item in violations:
-            print(f"  {item}", file=sys.stderr)
+            print(f" {item}", file=sys.stderr)
         print(
             "Add splits or AskQuestion before expanding "
             "scripts/ci/policy/file-budget-allowlist.txt",

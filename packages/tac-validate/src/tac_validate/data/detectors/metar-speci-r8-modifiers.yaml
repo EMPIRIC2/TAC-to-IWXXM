@@ -1,4 +1,4 @@
-# R8 NIL / modifiers detectors for METAR/SPECI (ADR-046 / #1228 M2).
+# R8 NIL / modifiers detectors for METAR/SPECI (#1228 M2).
 # Declarative finditer + token_scan (parity with theme_checks.r8_*).
 schema_version: 1
 id: metar-speci-r8-modifiers

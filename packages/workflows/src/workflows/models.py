@@ -1,4 +1,4 @@
-"""Workflow models — ADR-042."""
+"""Workflow models — ."""
 
 from __future__ import annotations
 

@@ -1,4 +1,4 @@
-"""Maintainable TAC lint issue registry (F15 / ADR-028).
+"""Maintainable TAC lint issue registry (F15).
 
 Rules import ``IssueSpec`` rows via ``by_code`` / ``issue_from`` instead of inventing
 severity or code string literals. Catalog export (``make catalog-regen``) iterates
@@ -953,7 +953,7 @@ def catalog_entries(*, product: str | None = None) -> tuple[IssueSpec, ...]:
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (catalog_entries)
+    >>> 1 + 1 # docstring smoke (catalog_entries)
     2
     """
     if product is None or not str(product).strip():
@@ -990,7 +990,7 @@ def by_code(code: str) -> IssueSpec:
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (by_code)
+    >>> 1 + 1 # docstring smoke (by_code)
     2
     """
     try:
@@ -1040,7 +1040,7 @@ def issue_from(
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (issue_from)
+    >>> 1 + 1 # docstring smoke (issue_from)
     2
     """
     spec = by_code(code)

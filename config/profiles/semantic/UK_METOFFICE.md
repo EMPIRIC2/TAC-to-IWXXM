@@ -1,7 +1,7 @@
 # UK_METOFFICE — UK Met Office / CAA thin overlay (P2)
 
-> **Profile id**: `UK_METOFFICE` · **Kind**: semantic · **Priority**: P2 · **Status**: implemented (EV-094 deepen / [#1098](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1098); EV-regional-dialect-profiles recorded)  
-> **Catalog row**: [`catalog.yaml`](../catalog.yaml) · **Path**: thin · **ADR**: [ADR-036](../../../adr/ADR-036-semantic-vs-exchange-profiles.md) · [ADR-046](../../../adr/ADR-046-validation-policy-layers.md)
+> **Profile id**: `UK_METOFFICE` · **Kind**: semantic · **Priority**: P2 · **Status**: implemented (EV-094 deepen / [#1098](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1098); EV-regional-dialect-profiles recorded)
+> **Catalog row**: [`catalog.yaml`](../catalog.yaml) · **Path**: thin · **ADR**: architecture decision · architecture decision
 
 UK national semantic overlay extending `ICAO_2025`: CAP 746 aerodrome MET conventions for
 METAR/SPECI/TAF. Core IWXXM only; no published UK extension XSD.

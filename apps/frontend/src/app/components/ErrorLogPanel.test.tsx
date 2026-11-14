@@ -87,7 +87,7 @@ describe('ErrorLogPanel', () => {
               source: 'parser',
               message: 'Schema failed - TC-F7-002 / EV-040',
               severity: 'error',
-              hint: 'See ADR-022',
+              hint: 'See ',
               code: 'XML_SCHEMA',
             },
             {
@@ -112,7 +112,7 @@ describe('ErrorLogPanel', () => {
 
     const errorCard = errorOpen.closest('li');
     expect(errorCard).toHaveAttribute('data-error-emphasis', 'true');
-    expect(errorCard?.className).toMatch(/bg-destructive\//);
+    expect(errorCard?.className).toMatch(/bg-destructive\ );
 
     const noteOpen = screen.getByTestId('issue-detail-open-1');
     expect(noteOpen).toHaveTextContent('Cloud group unusual');

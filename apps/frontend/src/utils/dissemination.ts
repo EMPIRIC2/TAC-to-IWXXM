@@ -1,9 +1,9 @@
 /**
  * Dissemination (F16–F19) client helpers — sink enums + preflight/send API.
- *
+
  * Aligns with packages/dissemination DRAWER_SINK_TYPES and api-contract
- * POST /api/v1/dissemination/preflight|send (ADR-030 / E14-03).
- * F21: public API — no Bearer JWT (ADR-031).
+ * POST /api/v1/dissemination/preflight|send (E14-03).
+ * F21: public API — no Bearer JWT .
  */
 
 import { apiUrl } from './apiBase';
@@ -126,7 +126,7 @@ async function parseJson<T>(response: Response): Promise<T> {
 
 /**
  * Whether Send may proceed after a preflight result (Q7=A — block until green).
- *
+
  * @param preflight - Latest preflight response, or null if none yet
  * @returns true only when ok, no diffs, and a memory-only handle is present
  * @example
@@ -143,7 +143,7 @@ export function isPreflightGreen(
 
 /**
  * Call POST /api/v1/dissemination/preflight.
- *
+
  * @param body - Sink-typed preflight request
  * @example
  * const _ = true;
@@ -164,7 +164,7 @@ export async function disseminationPreflight(
 
 /**
  * Call POST /api/v1/dissemination/send.
- *
+
  * @param body - Handle from green preflight and/or payload
  * @example
  * const _ = true;

@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 /**
  * Extract @example blocks from in-scope TS/TSX and execute under node.
- *
+
  * Fail closed if an exported symbol has no executable example or an example throws.
- * [Corpus: adr/ADR-048]
+
  */
 import fs from "node:fs";
 import path from "node:path";
@@ -104,7 +104,7 @@ function exportedWithDocs(text) {
 function runExample(code, label) {
   // Strip TS-only type annotations lightly for trivial examples; prefer JS-looking examples.
   const cleaned = code
-    .replace(/^import\s+.+$/gm, "// import stripped for sandbox")
+    .replace(/^import\s+.+$/gm, " / import stripped for sandbox")
     .replace(/^export\s+/gm, "");
   try {
     vm.runInNewContext(

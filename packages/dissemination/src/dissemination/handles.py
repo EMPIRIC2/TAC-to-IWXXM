@@ -1,4 +1,4 @@
-"""Memory-only opaque handles for green preflight results (ADR-029 / ADR-030)."""
+"""Memory-only opaque handles for green preflight results ()."""
 
 from __future__ import annotations
 
@@ -90,7 +90,7 @@ class HandleStore:
 
         Examples
         --------
-        >>> 1 + 1  # docstring smoke (create)
+        >>> 1 + 1 # docstring smoke (create)
         2
         """
         token = secrets.token_urlsafe(24)
@@ -133,7 +133,7 @@ class HandleStore:
 
         Examples
         --------
-        >>> 1 + 1  # docstring smoke (get)
+        >>> 1 + 1 # docstring smoke (get)
         2
         """
         ts = time.time() if now is None else now
@@ -167,7 +167,7 @@ class HandleStore:
 
         Examples
         --------
-        >>> 1 + 1  # docstring smoke (pop)
+        >>> 1 + 1 # docstring smoke (pop)
         2
         """
         with self._lock:
@@ -182,7 +182,7 @@ class HandleStore:
 
         Examples
         --------
-        >>> 1 + 1  # docstring smoke (clear)
+        >>> 1 + 1 # docstring smoke (clear)
         2
         """
         with self._lock:

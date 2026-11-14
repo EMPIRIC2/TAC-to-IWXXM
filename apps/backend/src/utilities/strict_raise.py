@@ -1,5 +1,5 @@
 """
-Strict raise policy helpers for convert/lint/validate (ADR-054).
+Strict raise policy helpers for convert/lint/validate .
 
 Server returns all issues; raised_severities describes which severities the
 client should treat as raised given Strict and step flags.
@@ -30,7 +30,7 @@ def apply_strict_validate_flags(
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (apply_strict_validate_flags)
+    >>> 1 + 1 # docstring smoke (apply_strict_validate_flags)
     2
 
     Parameters
@@ -77,7 +77,7 @@ def compute_raised_severities(
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (compute_raised_severities)
+    >>> 1 + 1 # docstring smoke (compute_raised_severities)
     2
 
     Parameters
@@ -109,7 +109,7 @@ def promote_convert_failure_severity(severity: str, *, layer: str | None, code: 
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (promote_convert_failure_severity)
+    >>> 1 + 1 # docstring smoke (promote_convert_failure_severity)
     2
 
     Parameters

@@ -556,7 +556,7 @@ def _sigmet_location_analysis_xml(
     obs_hhmm = str(loc.get("obs_hhmm") or begin[11:13] + begin[14:16])
     obs_time = f"{begin[:10]}T{obs_hhmm[0:2]}:{obs_hhmm[2:4]}:00Z"
     # WMO multi-location VA: materialize OBS/FCST instants once; later collections
-    # xlink:href them (vendor density / ADR-032 canonical empty phenomenonTime).
+    # xlink:href them (vendor density / canonical empty phenomenonTime).
     reuse_times = wmo_multi_location_va_ring and index > 0
     if reuse_times:
         obs_phenomenon_time = f'<iwxxm:phenomenonTime xlink:href="#{_WMO_MULTI_VA_OBS_TIME_ID}"/>'
@@ -618,7 +618,7 @@ def _sigmet_location_analysis_xml(
         </iwxxm:SIGMETPositionCollection>
       </iwxxm:forecastPositionAnalysis>"""
 
-    return f"""  <iwxxm:analysisCollection>
+    return f""" <iwxxm:analysisCollection>
     <iwxxm:analysisAndForecastPositionAnalysis gml:id="analysis.{suffix}">
       <iwxxm:analysis>
         <iwxxm:SIGMETEvolvingConditionCollection gml:id="evolving.{suffix}" timeIndicator="OBSERVATION">
@@ -663,7 +663,7 @@ def _sigmet_volcano_xml(ir: dict[str, Any]) -> str:
         if _is_wmo_sigmet_va_eggx(ir)
         else (f"{lat:.2f} {lon:.2f}" if _is_wmo_sigmet_multi_location_va_yudd(ir) else f"{lat:.4f} {lon:.4f}")
     )
-    return f"""  <iwxxm:eruptingVolcano>
+    return f""" <iwxxm:eruptingVolcano>
     <metce:Volcano gml:id="volcano.1">
       <metce:name>{escape(name)}</metce:name>
       <metce:position>
@@ -864,7 +864,7 @@ def emit_convective_sigmet_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> 
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (emit_convective_sigmet_annex3)
+    >>> 1 + 1 # docstring smoke (emit_convective_sigmet_annex3)
     2
     """
     ns = _ns(iwxxm_version)
@@ -1003,7 +1003,7 @@ def emit_sigmet_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (emit_sigmet_annex3)
+    >>> 1 + 1 # docstring smoke (emit_sigmet_annex3)
     2
     """
     if ir.get("convective"):
@@ -1040,11 +1040,11 @@ def emit_sigmet_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
             legacy="2012-08",
         )
         head = _sigmet_header_units(ir, ns=ns, gml_id=gml_id, issue=issue).format(
-            cancel_attr='\n    isCancelReport="true"'
+            cancel_attr='\n isCancelReport="true"'
         )
         return (
             head
-            + f"""  <iwxxm:validPeriod>
+            + f""" <iwxxm:validPeriod>
     <gml:TimePeriod gml:id="t.valid">
       <gml:beginPosition>{begin}</gml:beginPosition>
       <gml:endPosition>{end}</gml:endPosition>
@@ -1073,7 +1073,7 @@ def emit_sigmet_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
     is_tc = root == "TropicalCycloneSIGMET"
     eggx = _is_wmo_sigmet_va_eggx(ir)
     need_metce = is_tc or (use_locations and isinstance(ir.get("volcano"), dict))
-    extra_xmlns = '\n    xmlns:metce="http://def.wmo.int/metce/2013"' if need_metce else ""
+    extra_xmlns = '\n xmlns:metce="http://def.wmo.int/metce/2013"' if need_metce else ""
     motion = _sigmet_motion_xml(ir)
     head = _sigmet_header_units(ir, ns=ns, gml_id=gml_id, issue=issue, extra_xmlns=extra_xmlns).format(cancel_attr="")
 
@@ -1095,7 +1095,7 @@ def emit_sigmet_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
         volcano_xml = _sigmet_volcano_xml(ir)
         return (
             head
-            + f"""  <iwxxm:validPeriod>
+            + f""" <iwxxm:validPeriod>
     <gml:TimePeriod gml:id="t.valid">
       <gml:beginPosition>{begin}</gml:beginPosition>
       <gml:endPosition>{end}</gml:endPosition>
@@ -1127,7 +1127,7 @@ def emit_sigmet_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
     )
     return (
         head
-        + f"""  <iwxxm:validPeriod>
+        + f""" <iwxxm:validPeriod>
     <gml:TimePeriod gml:id="t.valid">
       <gml:beginPosition>{begin}</gml:beginPosition>
       <gml:endPosition>{end}</gml:endPosition>

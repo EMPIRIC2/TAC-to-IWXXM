@@ -3,7 +3,7 @@
 HTTP and ``convert`` keep one SIGMET product. Ordinary, volcanic-ash, and
 tropical-cyclone reports select different packs from the legacy parse.
 Annex 3 keeps ``2023-1`` and ``2025-2``. ``ca_eccc`` keeps ``3.0.0`` for TAF
-and AIRMET, and still rejects SIGMET. [Corpus: tests] [Corpus: adr/ADR-045] [Corpus: api]
+and AIRMET, and still rejects SIGMET. [Corpus: tests] [Corpus: api]
 """
 
 from __future__ import annotations

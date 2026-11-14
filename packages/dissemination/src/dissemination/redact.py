@@ -1,11 +1,11 @@
-"""Secret redaction for dissemination errors and logs (ADR-029)."""
+"""Secret redaction for dissemination errors and logs ."""
 
 from __future__ import annotations
 
 import re
 from urllib.parse import urlparse, urlunparse
 
-_URI_USERINFO = re.compile(r"(://[^:/?#]+:)([^@/?#]+)(@)")
+_URI_USERINFO = re.compile(r"(: / [^:/?#]+:)([^@/?#]+)(@)")
 _PASSWORD_JSON = re.compile(r'(?i)("?(?:password|passwd|secret|token|api[_-]?key)"?\s*[:=]\s*")([^"]*)(")')
 
 
@@ -25,7 +25,7 @@ def redact_uri(uri: str) -> str:
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (redact_uri)
+    >>> 1 + 1 # docstring smoke (redact_uri)
     2
     """
     redacted = _URI_USERINFO.sub(r"\1***\3", uri)
@@ -49,7 +49,7 @@ def redact_secrets(text: str) -> str:
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (redact_secrets)
+    >>> 1 + 1 # docstring smoke (redact_secrets)
     2
 
     Parameters

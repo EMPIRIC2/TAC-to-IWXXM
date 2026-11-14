@@ -5,13 +5,13 @@ for the TAC to IWXXM monorepo.
 
 ## Coverage gate (EV-080 / #1077)
 
-Per [ADR-007](../docs/adr/ADR-007-universal-coverage-gate.md): every `scripts/**/*.py` is
+Per architecture decision: every `scripts/**/*.py` is
 measured under a dedicated **100%** line+branch coverage job; every `scripts/**/*.sh` has
 ≥1 **bats-core** test in CI (`tests/bats/`). Local entrypoints (EV-080 tech-tooling):
 
 ```bash
-make test-coverage-scripts   # pytest tests/scripts --cov=scripts (scaffold until M4)
-make test-bats               # bats tests/bats (scaffold until M4)
+make test-coverage-scripts # pytest tests/scripts --cov=scripts (scaffold until M4)
+make test-bats # bats tests/bats (scaffold until M4)
 ```
 
 Approved omits do not apply to these scripts themselves.
@@ -157,8 +157,8 @@ Checking 72 Python file(s)...
 
 ======================================================================
 Checked: 72 files
-Passed:  71 files
-Failed:  1 files
+Passed: 71 files
+Failed: 1 files
 
 ======================================================================
 SYNTAX ERRORS:
@@ -272,8 +272,7 @@ pip install fastapi uvicorn tpg python-multipart
 
 Once launched, open your browser to:
 
-- **Main Application**: http://localhost:8000/
-- **Interactive API Documentation (Swagger UI)**: http://localhost:8000/docs
+- **Main Application**: http://localhost:8000- **Interactive API Documentation (Swagger UI)**: http://localhost:8000/docs
 - **Alternative API Documentation (ReDoc)**: http://localhost:8000/redoc
 - **Health Check**: http://localhost:8000/health
 

@@ -18,7 +18,7 @@ def test_tac_work_sessions_migration_expand_cutover() -> None:
     assert "FROM public.metar_work_sessions" in sql
     assert "DROP TABLE IF EXISTS public.metar_work_sessions" in sql
     assert "ENABLE ROW LEVEL SECURITY" in sql
-    # ADR-020 / ADR-021: owner-only RLS (no admin browse)
+    # : owner-only RLS (no admin browse)
     assert "is_admin()" not in sql
     assert "purge_stale_tac_work_sessions" in sql
     for product in ("metar", "speci", "taf", "sigmet", "airmet", "vaa", "tca"):

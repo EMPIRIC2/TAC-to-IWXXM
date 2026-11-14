@@ -1,4 +1,4 @@
-"""T3.1: PyO3 / maturin scaffold smoke (E10-36; ADR-017 pattern)."""
+"""T3.1: PyO3 / maturin scaffold smoke (E10-36; pattern)."""
 
 from __future__ import annotations
 
@@ -27,7 +27,7 @@ def test_rust_module_none_or_extension() -> None:
     if rust_available():
         assert mod is not None
         assert mod.ping() == "pong"
-        # Cargo embeds SemVer; Python metadata stays PEP 440 (ADR-043).
+        # Cargo embeds SemVer; Python metadata stays PEP 440 .
         assert mod.extension_version() == _pep440_calver_to_cargo(version("iwxxm-validate"))
     else:
         assert mod is None

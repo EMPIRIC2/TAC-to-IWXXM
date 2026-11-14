@@ -1,4 +1,4 @@
-# F8 default ingest workflow — packages/workflows.execute (ADR-042 / EV-1132)
+# F8 default ingest workflow — packages/workflows.execute (EV-1132)
 # Runtime: Implemented — F8 worker process_job calls execute(message, this id).
 
 id: f8-metar-ingest-default

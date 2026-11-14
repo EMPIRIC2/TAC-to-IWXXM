@@ -1,6 +1,6 @@
 # Access friction & citation rules
 
-**Ticket:** [#719](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/719)  
+**Ticket:** [#719](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/719)
 **Policy:** URLs and paraphrased citations only; **never** commit full Annex 3 / Manual on Codes / Doc 8896 PDF text.
 
 ---
@@ -47,7 +47,7 @@ Schema: https://schemas.wmo.int/iwxxm/2025-2/metarSpeci.xsd
 - Paste multi-page excerpts from Annex 3 / Doc 8896 / Manual on Codes into git
 - Scrape ICAO Store PDFs into `docs/` or fixtures
 - Treat unofficial mirror PDFs (third-party sites) as normative SoT
-- Treat GIFTs sources as ongoing SoT (ADR-014)
+- Treat GIFTs sources as ongoing SoT
 - Leave two conflicting statements as equal SoT in standing catalogs after a refresh pass
 
 ---

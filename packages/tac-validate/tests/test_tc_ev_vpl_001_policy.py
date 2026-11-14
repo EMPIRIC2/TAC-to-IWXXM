@@ -1,4 +1,4 @@
-"""TC-EV-VPL-001: TAC quality policy activate fail-closed (ADR-046 / #1216)."""
+"""TC-EV-VPL-001: TAC quality policy activate fail-closed (#1216)."""
 
 from __future__ import annotations
 
@@ -26,8 +26,8 @@ def test_load_activated_policy_with_known_codes(tmp_path: Path) -> None:
                 "lifecycle: activated",
                 "product: metar",
                 "select:",
-                "  - INVALID_VISIBILITY",
-                "  - MISSING_VISIBILITY",
+                " - INVALID_VISIBILITY",
+                " - MISSING_VISIBILITY",
                 "ignore: []",
                 "severity: {}",
                 "preview: []",
@@ -54,7 +54,7 @@ def test_draft_warns_on_unknown_code(tmp_path: Path) -> None:
                 "id: test-draft",
                 "lifecycle: draft",
                 "select:",
-                "  - NOT_A_REAL_CODE_XYZ",
+                " - NOT_A_REAL_CODE_XYZ",
             ]
         ),
         encoding="utf-8",
@@ -76,7 +76,7 @@ def test_activate_fails_closed_on_unknown_code(tmp_path: Path) -> None:
                 "id: test-bad",
                 "lifecycle: activated",
                 "select:",
-                "  - NOT_A_REAL_CODE_XYZ",
+                " - NOT_A_REAL_CODE_XYZ",
             ]
         ),
         encoding="utf-8",
@@ -95,7 +95,7 @@ def test_extends_merges_and_later_wins(tmp_path: Path) -> None:
                 "id: base",
                 "lifecycle: activated",
                 "select:",
-                "  - INVALID_VISIBILITY",
+                " - INVALID_VISIBILITY",
                 "ignore: []",
             ]
         ),
@@ -109,11 +109,11 @@ def test_extends_merges_and_later_wins(tmp_path: Path) -> None:
                 "id: child",
                 "lifecycle: activated",
                 "extends:",
-                "  - base",
+                " - base",
                 "ignore:",
-                "  - INVALID_VISIBILITY",
+                " - INVALID_VISIBILITY",
                 "select:",
-                "  - MISSING_VISIBILITY",
+                " - MISSING_VISIBILITY",
             ]
         ),
         encoding="utf-8",
@@ -174,7 +174,7 @@ def test_empty_select_enables_non_preview_defaults(tmp_path: Path) -> None:
                 "product: metar",
                 "select: []",
                 "preview:",
-                "  - AUTO_PRESENT",
+                " - AUTO_PRESENT",
             ]
         ),
         encoding="utf-8",
@@ -194,9 +194,9 @@ def test_severity_unknown_code_fails_activate(tmp_path: Path) -> None:
                 "id: sev",
                 "lifecycle: activated",
                 "select:",
-                "  - INVALID_VISIBILITY",
+                " - INVALID_VISIBILITY",
                 "severity:",
-                "  BOGUS_CODE: warning",
+                " BOGUS_CODE: warning",
             ]
         ),
         encoding="utf-8",
@@ -296,7 +296,7 @@ def test_detectors_and_severity_merge(tmp_path: Path) -> None:
                 "lifecycle: activated",
                 "detectors: [d1]",
                 "severity:",
-                "  INVALID_VISIBILITY: warning",
+                " INVALID_VISIBILITY: warning",
             ]
         ),
         encoding="utf-8",

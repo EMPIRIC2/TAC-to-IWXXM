@@ -1,4 +1,4 @@
-"""Codec reuse smoke tests for tac2iwxxm (ADR-016 / T1.4)."""
+"""Codec reuse smoke tests for tac2iwxxm (T1.4)."""
 
 from __future__ import annotations
 

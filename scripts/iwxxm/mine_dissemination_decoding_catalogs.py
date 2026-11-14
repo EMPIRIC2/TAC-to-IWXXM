@@ -30,7 +30,7 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 DATA = REPO_ROOT / "packages" / "tac2iwxxm" / "src" / "tac2iwxxm" / "data"
 DISSEM_OUT = DATA / "dissemination_transforms.yaml"
 DECODE_OUT = DATA / "decoding_library_entries.yaml"
-GLOSSARY = DATA / "decode_glossary.yaml"  # overlay only; full table via load_glossary()
+GLOSSARY = DATA / "decode_glossary.yaml" # overlay only; full table via load_glossary()
 
 FIRST_PARTY_TRANSFORMS: tuple[dict[str, str], ...] = (
     {
@@ -64,7 +64,7 @@ def mine_dissemination() -> dict[str, Any]:
     """Build dissemination transform catalog."""
     return {
         "schema_version": 1,
-        "source": "first-party pattern-only transforms (ADR-021/029/030)",
+        "source": "first-party pattern-only transforms (/029/030)",
         "transforms": list(FIRST_PARTY_TRANSFORMS),
         "annotations": [],
     }

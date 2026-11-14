@@ -5,7 +5,7 @@ line: statute-mile visibility, inch-of-mercury altimeter (via QNH), AUTO observi
 systems, Canadian REMARKS in ``iwxxm-ca:Addendum``, and non-convective low-level wind
 shear (NCLWS) in TAF base forecasts.
 
-[Corpus: product §F36] [Corpus: domain-profiles §CA_ECCC] [Corpus: adr/ADR-036]
+[Corpus: product §F36] [Corpus: domain-profiles §CA_ECCC]
 """
 
 from __future__ import annotations
@@ -189,11 +189,11 @@ def _density_altitude_xml(ir: dict[str, Any]) -> str:
         Return value.
     """
     if ir.get("density_altitude_missing"):
-        return '          <iwxxm-ca:densityAltitude uom="[ft_i]" xsi:nil="true" nilReason="missing"/>\n'
+        return ' <iwxxm-ca:densityAltitude uom="[ft_i]" xsi:nil="true" nilReason="missing"/>\n'
     ft = ir.get("density_altitude_ft")
     if ft is None:
         return ""
-    return f'          <iwxxm-ca:densityAltitude uom="[ft_i]">{int(ft)}</iwxxm-ca:densityAltitude>\n'
+    return f' <iwxxm-ca:densityAltitude uom="[ft_i]">{int(ft)}</iwxxm-ca:densityAltitude>\n'
 
 
 def _icing_addendum_xml(ir: dict[str, Any]) -> str:
@@ -213,7 +213,7 @@ def _icing_addendum_xml(ir: dict[str, Any]) -> str:
     href = ir.get("ca_icing_href")
     if not isinstance(href, str) or not href:
         return ""
-    return f'          <iwxxm-ca:icing xlink:href="{escape(href)}"/>\n'
+    return f' <iwxxm-ca:icing xlink:href="{escape(href)}"/>\n'
 
 
 def _processed_quantity_addendum_inner(ir: dict[str, Any]) -> str:
@@ -245,7 +245,7 @@ def _processed_quantity_addendum_inner(ir: dict[str, Any]) -> str:
         val = row.get("processed_value")
         val_txt = f"{float(str(val)):.2f}" if val is not None else "0"
         parts.append(
-            f"""          <iwxxm-ca:processedQuantity>
+            f""" <iwxxm-ca:processedQuantity>
             <iwxxm-ca:ProcessedProperty>
               <iwxxm-ca:processedWeatherElement xlink:href="{elem}"/>
               <iwxxm-ca:valueType xlink:href="{vtype}"/>
@@ -283,29 +283,29 @@ def _addendum_extension(ir: dict[str, Any]) -> str:
         return ""
 
     parts: list[str] = [
-        "      <iwxxm:extension>",
-        "        <iwxxm-ca:Addendum>",
+        " <iwxxm:extension>",
+        " <iwxxm-ca:Addendum>",
     ]
     if obs_href:
-        parts.append(f'          <iwxxm-ca:observingSystemType xlink:href="{escape(obs_href)}"/>')
+        parts.append(f' <iwxxm-ca:observingSystemType xlink:href="{escape(obs_href)}"/>')
     if free_text:
-        parts.append(f"          <iwxxm-ca:humanReadableText>{escape(free_text)}</iwxxm-ca:humanReadableText>")
+        parts.append(f" <iwxxm-ca:humanReadableText>{escape(free_text)}</iwxxm-ca:humanReadableText>")
     if has_slp:
         parts.append(
-            f'          <iwxxm-ca:seaLevelPressure uom="hPa">{ir["sea_level_pressure_hpa"]}</iwxxm-ca:seaLevelPressure>'
+            f' <iwxxm-ca:seaLevelPressure uom="hPa">{ir["sea_level_pressure_hpa"]}</iwxxm-ca:seaLevelPressure>'
         )
     if density_xml:
         parts.append(density_xml)
     if icing_xml:
         parts.append(icing_xml)
     if pres_href:
-        parts.append(f'          <iwxxm-ca:pressureChangeIndicator xlink:href="{escape(pres_href)}"/>')
+        parts.append(f' <iwxxm-ca:pressureChangeIndicator xlink:href="{escape(pres_href)}"/>')
     if processed_xml:
         parts.append(processed_xml)
     parts.extend(
         [
-            "        </iwxxm-ca:Addendum>",
-            "      </iwxxm:extension>",
+            " </iwxxm-ca:Addendum>",
+            " </iwxxm:extension>",
         ]
     )
     return "\n".join(parts) + "\n"
@@ -384,14 +384,14 @@ def _nclws_extension_inner(ir: dict[str, Any]) -> str:
     wind_kt = int(nclws_data["wind_speed_kt"])
     return "\n".join(
         [
-            f'        <iwxxm-ca:NonConvectiveLowLevelWindShear gml:id="nclws.{station}">',
-            f'          <iwxxm-ca:windDirection uom="deg">{wind_dir}</iwxxm-ca:windDirection>',
-            f'          <iwxxm-ca:windSpeed uom="[kn_i]">{wind_kt}</iwxxm-ca:windSpeed>',
-            "          <iwxxm-ca:layerAboveAerodrome>",
-            '            <iwxxm-ca:lowerLimit uom="[ft_i]">0</iwxxm-ca:lowerLimit>',
-            f'            <iwxxm-ca:upperLimit uom="[ft_i]">{top_ft}</iwxxm-ca:upperLimit>',
-            "          </iwxxm-ca:layerAboveAerodrome>",
-            "        </iwxxm-ca:NonConvectiveLowLevelWindShear>",
+            f' <iwxxm-ca:NonConvectiveLowLevelWindShear gml:id="nclws.{station}">',
+            f' <iwxxm-ca:windDirection uom="deg">{wind_dir}</iwxxm-ca:windDirection>',
+            f' <iwxxm-ca:windSpeed uom="[kn_i]">{wind_kt}</iwxxm-ca:windSpeed>',
+            " <iwxxm-ca:layerAboveAerodrome>",
+            ' <iwxxm-ca:lowerLimit uom="[ft_i]">0</iwxxm-ca:lowerLimit>',
+            f' <iwxxm-ca:upperLimit uom="[ft_i]">{top_ft}</iwxxm-ca:upperLimit>',
+            " </iwxxm-ca:layerAboveAerodrome>",
+            " </iwxxm-ca:NonConvectiveLowLevelWindShear>",
         ]
     )
 
@@ -417,7 +417,7 @@ def _ca_taf_weather_extension_inner(ir: dict[str, Any]) -> str:
     for href_obj in cast(list[object], hrefs):
         if not isinstance(href_obj, str) or not href_obj:
             continue
-        parts.append(f'        <iwxxm-ca:weather xlink:href="{escape(href_obj)}"/>')
+        parts.append(f' <iwxxm-ca:weather xlink:href="{escape(href_obj)}"/>')
     return "\n".join(parts)
 
 
@@ -447,9 +447,9 @@ def _taf_forecast_extension(ir: dict[str, Any]) -> str:
         return ""
     return "\n".join(
         [
-            "      <iwxxm:extension>",
+            " <iwxxm:extension>",
             inner,
-            "      </iwxxm:extension>",
+            " </iwxxm:extension>",
             "",
         ]
     )
@@ -494,7 +494,7 @@ def _inject_ca_taf_namespace(xml: str, *, iwxxm_version: str) -> str:
         return xml
     return xml.replace(
         needle,
-        f'{needle}\n    xmlns:iwxxm-ca="{CA_NS}"',
+        f'{needle}\n xmlns:iwxxm-ca="{CA_NS}"',
         1,
     )
 
@@ -538,7 +538,7 @@ def _gfa_structured_extension(ir: dict[str, Any]) -> str:
         return ""
     data = cast(dict[str, Any], structured)
     fir = str(ir["fir"]).lower()
-    parts: list[str] = ["      <iwxxm:extension>"]
+    parts: list[str] = [" <iwxxm:extension>"]
     vis = data.get("surface_visibility_m")
     if isinstance(vis, dict):
         vis_rng = cast(dict[str, Any], vis)
@@ -546,10 +546,10 @@ def _gfa_structured_extension(ir: dict[str, Any]) -> str:
         hi = int(vis_rng.get("higher", lo))
         parts.extend(
             [
-                f'        <iwxxm-ca:surfaceVisibility gml:id="gfa.vis.{fir}">',
-                f'          <iwxxm-ca:surfaceVisibilityLower uom="m">{lo}</iwxxm-ca:surfaceVisibilityLower>',
-                f'          <iwxxm-ca:surfaceVisibilityHigher uom="m">{hi}</iwxxm-ca:surfaceVisibilityHigher>',
-                "        </iwxxm-ca:surfaceVisibility>",
+                f' <iwxxm-ca:surfaceVisibility gml:id="gfa.vis.{fir}">',
+                f' <iwxxm-ca:surfaceVisibilityLower uom="m">{lo}</iwxxm-ca:surfaceVisibilityLower>',
+                f' <iwxxm-ca:surfaceVisibilityHigher uom="m">{hi}</iwxxm-ca:surfaceVisibilityHigher>',
+                " </iwxxm-ca:surfaceVisibility>",
             ]
         )
     cloud = data.get("cloud_base_ft")
@@ -559,10 +559,10 @@ def _gfa_structured_extension(ir: dict[str, Any]) -> str:
         hi_ft = int(cloud_rng.get("higher", lo_ft))
         parts.extend(
             [
-                f'        <iwxxm-ca:cloudBase gml:id="gfa.cld.{fir}">',
-                f'          <iwxxm-ca:cloudBaseLower uom="[ft_i]">{lo_ft}</iwxxm-ca:cloudBaseLower>',
-                f'          <iwxxm-ca:cloudBaseHigher uom="[ft_i]">{hi_ft}</iwxxm-ca:cloudBaseHigher>',
-                "        </iwxxm-ca:cloudBase>",
+                f' <iwxxm-ca:cloudBase gml:id="gfa.cld.{fir}">',
+                f' <iwxxm-ca:cloudBaseLower uom="[ft_i]">{lo_ft}</iwxxm-ca:cloudBaseLower>',
+                f' <iwxxm-ca:cloudBaseHigher uom="[ft_i]">{hi_ft}</iwxxm-ca:cloudBaseHigher>',
+                " </iwxxm-ca:cloudBase>",
             ]
         )
     wind = data.get("surface_wind_kt")
@@ -572,15 +572,15 @@ def _gfa_structured_extension(ir: dict[str, Any]) -> str:
         hi_kt = int(wind_rng.get("higher", lo_kt))
         parts.extend(
             [
-                f'        <iwxxm-ca:surfaceWindSpeed gml:id="gfa.wind.{fir}">',
-                f'          <iwxxm-ca:surfaceWindSpeedLower uom="[kn_i]">{lo_kt}</iwxxm-ca:surfaceWindSpeedLower>',
-                f'          <iwxxm-ca:surfaceWindSpeedHigher uom="[kn_i]">{hi_kt}</iwxxm-ca:surfaceWindSpeedHigher>',
-                "        </iwxxm-ca:surfaceWindSpeed>",
+                f' <iwxxm-ca:surfaceWindSpeed gml:id="gfa.wind.{fir}">',
+                f' <iwxxm-ca:surfaceWindSpeedLower uom="[kn_i]">{lo_kt}</iwxxm-ca:surfaceWindSpeedLower>',
+                f' <iwxxm-ca:surfaceWindSpeedHigher uom="[kn_i]">{hi_kt}</iwxxm-ca:surfaceWindSpeedHigher>',
+                " </iwxxm-ca:surfaceWindSpeed>",
             ]
         )
     if len(parts) == 1:
         return ""
-    parts.append("      </iwxxm:extension>")
+    parts.append(" </iwxxm:extension>")
     return "\n".join(parts) + "\n"
 
 
@@ -606,7 +606,7 @@ def _inject_airmet_gfa_extension(xml: str, extension: str) -> str:
     needle = "</iwxxm:AIRMETEvolvingCondition>"
     if needle not in xml:
         return xml
-    return xml.replace(needle, f"{extension}        {needle}", 1)
+    return xml.replace(needle, f"{extension} {needle}", 1)
 
 
 def _ca_airmet_gml_id(ir: dict[str, Any]) -> str:
@@ -675,7 +675,7 @@ def _inject_ca_airmet_namespace(xml: str, *, iwxxm_version: str) -> str:
         return xml
     return xml.replace(
         needle,
-        f'{needle}\n    xmlns:iwxxm-ca="{CA_NS}"',
+        f'{needle}\n xmlns:iwxxm-ca="{CA_NS}"',
         1,
     )
 
@@ -740,7 +740,7 @@ def emit_sigmet_ca_eccc(ir: dict[str, Any], *, iwxxm_version: str) -> str:
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (emit_sigmet_ca_eccc)
+    >>> 1 + 1 # docstring smoke (emit_sigmet_ca_eccc)
     2
     """
     _require_ca_pin(iwxxm_version)
@@ -766,7 +766,7 @@ def emit_vaa_ca_eccc(ir: dict[str, Any], *, iwxxm_version: str) -> str:
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (emit_vaa_ca_eccc)
+    >>> 1 + 1 # docstring smoke (emit_vaa_ca_eccc)
     2
     """
     _require_ca_pin(iwxxm_version)
@@ -797,7 +797,7 @@ def emit_airmet_ca_eccc(ir: dict[str, Any], *, iwxxm_version: str) -> str:
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (emit_airmet_ca_eccc)
+    >>> 1 + 1 # docstring smoke (emit_airmet_ca_eccc)
     2
     """
     if iwxxm_version != CA_IWXXM_VERSION:
@@ -837,7 +837,7 @@ def emit_taf_ca_eccc(ir: dict[str, Any], *, iwxxm_version: str) -> str:
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (emit_taf_ca_eccc)
+    >>> 1 + 1 # docstring smoke (emit_taf_ca_eccc)
     2
     """
     if iwxxm_version != CA_IWXXM_VERSION:
@@ -882,7 +882,7 @@ def emit_metar_speci_ca_eccc(
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (emit_metar_speci_ca_eccc)
+    >>> 1 + 1 # docstring smoke (emit_metar_speci_ca_eccc)
     2
     """
     if iwxxm_version != CA_IWXXM_VERSION:
@@ -921,7 +921,7 @@ def emit_metar_speci_ca_eccc(
       <gml:timePosition>{stamp}</gml:timePosition>
     </gml:TimeInstant>
   </iwxxm:issueTime>
-{aerodrome}  <iwxxm:observationTime>
+{aerodrome} <iwxxm:observationTime>
     <gml:TimeInstant gml:id="t.obs">
       <gml:timePosition>{stamp}</gml:timePosition>
     </gml:TimeInstant>

@@ -1,4 +1,4 @@
-# R2 visibility detectors for METAR/SPECI (ADR-046 / #1216 M2).
+# R2 visibility detectors for METAR/SPECI (#1216 M2).
 schema_version: 1
 id: metar-speci-r2-visibility
 stage: token

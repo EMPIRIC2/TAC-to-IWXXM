@@ -1,4 +1,4 @@
-# Builtin swxa label-fields pack (ADR-045 / EV-pack-fill-delete-gate).
+# Builtin swxa label-fields pack (EV-pack-fill-delete-gate).
 id: swxa
 layout: label_fields
 rules:

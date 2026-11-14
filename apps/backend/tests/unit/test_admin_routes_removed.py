@@ -1,4 +1,4 @@
-"""TC-F7-006: product ``/admin/*`` routes must be absent (S011 / ADR-021)."""
+"""TC-F7-006: product ``/admin/*`` routes must be absent (S011 )."""
 
 from __future__ import annotations
 

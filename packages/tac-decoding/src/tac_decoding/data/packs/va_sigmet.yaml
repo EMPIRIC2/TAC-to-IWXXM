@@ -1,4 +1,4 @@
-# Builtin va_sigmet token-stream pack (ADR-045 / M4 #1230).
+# Builtin va_sigmet token-stream pack (M4 #1230).
 # VA A6 groups; residual catch-all for ash cloud / geometry body tokens.
 id: va_sigmet
 layout: token_stream

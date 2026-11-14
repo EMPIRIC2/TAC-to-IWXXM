@@ -96,7 +96,7 @@ def _output_validation_orch_layers() -> list[ValidationLayer]:
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (_output_validation_orch_layers)
+    >>> 1 + 1 # docstring smoke (_output_validation_orch_layers)
     2
 
     Returns
@@ -119,7 +119,7 @@ def _initial_layers_passed(product: str | None) -> list[str]:
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (_initial_layers_passed)
+    >>> 1 + 1 # docstring smoke (_initial_layers_passed)
     2
 
     Parameters
@@ -186,7 +186,7 @@ def _run_pre_convert_validation(
     """
     validate = cast(
         Callable[..., AggregatedValidationResult],
-        validation_service.validate_all_layers,  # type: ignore[attr-defined]
+        validation_service.validate_all_layers, # type: ignore[attr-defined]
     )
     try:
         return validate(tac_text, layers=layers)
@@ -421,7 +421,7 @@ class _ConvertAccumulator:
 
         Examples
         --------
-        >>> 1 + 1  # docstring smoke (add_issue)
+        >>> 1 + 1 # docstring smoke (add_issue)
         2
         """
         self.issues.append(
@@ -442,7 +442,7 @@ class _ConvertAccumulator:
 
         Examples
         --------
-        >>> 1 + 1  # docstring smoke (absorb_convert_issues)
+        >>> 1 + 1 # docstring smoke (absorb_convert_issues)
         2
 
         Parameters
@@ -486,7 +486,7 @@ class _ConvertAccumulator:
 
         Examples
         --------
-        >>> 1 + 1  # docstring smoke (absorb_soft_preview)
+        >>> 1 + 1 # docstring smoke (absorb_soft_preview)
         2
 
         Parameters
@@ -525,11 +525,11 @@ class _ConvertAccumulator:
         base_offset: int = 0,
     ) -> None:
         """
-        Mark soft-preview Layer 1-2 failure and copy spans when present (ADR-022).
+        Mark soft-preview Layer 1-2 failure and copy spans when present .
 
         Examples
         --------
-        >>> 1 + 1  # docstring smoke (record_preview_layer12_soft_fail)
+        >>> 1 + 1 # docstring smoke (record_preview_layer12_soft_fail)
         2
 
         Parameters
@@ -574,7 +574,7 @@ class _ConvertAccumulator:
 
         Examples
         --------
-        >>> 1 + 1  # docstring smoke (add_aggregated_validation_issues)
+        >>> 1 + 1 # docstring smoke (add_aggregated_validation_issues)
         2
 
         Parameters
@@ -596,7 +596,7 @@ class _ConvertAccumulator:
 
         Examples
         --------
-        >>> 1 + 1  # docstring smoke (add_validation_issue_list)
+        >>> 1 + 1 # docstring smoke (add_validation_issue_list)
         2
 
         Parameters
@@ -617,7 +617,7 @@ class _ConvertAccumulator:
 
         Examples
         --------
-        >>> 1 + 1  # docstring smoke (_append_validation_issue)
+        >>> 1 + 1 # docstring smoke (_append_validation_issue)
         2
 
         Parameters
@@ -658,7 +658,7 @@ class _ConvertAccumulator:
 
         Examples
         --------
-        >>> 1 + 1  # docstring smoke (emit_output_validation_soft_warning)
+        >>> 1 + 1 # docstring smoke (emit_output_validation_soft_warning)
         2
 
         Parameters
@@ -706,7 +706,7 @@ class _ConvertAccumulator:
 
         Examples
         --------
-        >>> 1 + 1  # docstring smoke (emit_recent_wx_issues)
+        >>> 1 + 1 # docstring smoke (emit_recent_wx_issues)
         2
 
         Parameters
@@ -1805,7 +1805,7 @@ async def convert_bulletin(
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (convert_bulletin)
+    >>> 1 + 1 # docstring smoke (convert_bulletin)
     2
 
     Parameters
@@ -2323,7 +2323,7 @@ async def convert(
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (convert)
+    >>> 1 + 1 # docstring smoke (convert)
     2
 
     Parameters
@@ -2499,8 +2499,8 @@ async def convert(
         body_decode = getattr(request_body, "decoding_library_id", None)
         if body_decode is not None:
             decoding_library_id = str(body_decode)
-        manual_text = ""  # Override form input
-        files = None  # Override file input
+        manual_text = "" # Override form input
+        files = None # Override file input
 
         logger.info(
             "[CONVERT] JSON mode metars=%s version=%s validation_level=%s preview=%s",
@@ -2662,7 +2662,7 @@ async def convert(
 
                 Examples
                 --------
-                >>> 1 + 1  # docstring smoke (ca_eccc_bundle_available)
+                >>> 1 + 1 # docstring smoke (ca_eccc_bundle_available)
                 2
 
                 Parameters
@@ -2952,7 +2952,7 @@ async def convert(
     if not include_nil_reasons:
         logger.info(
             "[CONVERT] include_nil_reasons=false accepted; tac2iwxxm may still emit "
-            "nilReason on NIL reports until engine honors the flag (ADR-024 placeholder)",
+            "nilReason on NIL reports until engine honors the flag ( placeholder)",
         )
 
     acc = _ConvertAccumulator()
@@ -3201,7 +3201,7 @@ async def convert_zip(
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (convert_zip)
+    >>> 1 + 1 # docstring smoke (convert_zip)
     2
 
     Parameters
@@ -3239,8 +3239,8 @@ async def convert_zip(
     if request_body is not None:
         metars_list = request_body.metars or []
         iwxxm_version = request_body.version
-        manual_text = ""  # Override form input
-        files = None  # Override file input
+        manual_text = "" # Override form input
+        files = None # Override file input
     else:
         metars_list: list[Any] = []
 
@@ -3282,7 +3282,7 @@ async def convert_zip(
 
     results: list[tuple[str, str]] = []
     errors: list[str] = []
-    translation_ids: list[str] = []  # Track for bulk notification
+    translation_ids: list[str] = [] # Track for bulk notification
     validation_service = api_surface.ValidationService()
     validation_orchestrator = api_surface.get_validation_orchestrator()
 
@@ -3391,7 +3391,7 @@ async def convert_zip(
                         iwxxm_output=xml_text,
                         iwxxm_version=iwxxm_version,
                         translation_status=TranslationStatus.SUCCESS,
-                        validation_layers_passed=[],  # Zip endpoint doesn't validate
+                        validation_layers_passed=[], # Zip endpoint doesn't validate
                         validation_errors=None,
                         translation_duration_ms=duration_ms,
                         icao_airport_code=extract_airport_code(data or ""),
@@ -3490,7 +3490,7 @@ async def convert_zip(
                         )
                     except Exception as log_err:
                         logger.error(f"Failed to log failed translation: {log_err}")
-                    continue  # Skip to next METAR
+                    continue # Skip to next METAR
             except ValidationServiceError as ve:
                 errors.append(f"{metar_name}: {ve!s}")
                 # Log validation error
@@ -3515,7 +3515,7 @@ async def convert_zip(
                     )
                 except Exception as log_err:
                     logger.error(f"Failed to log validation error: {log_err}")
-                continue  # Skip to next METAR
+                continue # Skip to next METAR
 
             # Start timing
 

@@ -1,4 +1,4 @@
-"""Optional PyO3 extension loader (ADR-017 / T4.3-T4.5).
+"""Optional PyO3 extension loader (T4.3-T4.5).
 
 The ``tac2iwxxm._rust`` module is built by maturin. Pure-Python paths keep working when
 the extension is absent (local without rustc); CI rust job requires it.
@@ -20,14 +20,14 @@ def rust_available() -> bool:
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (rust_available)
+    >>> 1 + 1 # docstring smoke (rust_available)
     2
     """
     try:
-        from tac2iwxxm import _rust  # type: ignore[attr-defined]
+        from tac2iwxxm import _rust # type: ignore[attr-defined]
     except ImportError:
         return False
-    return _rust is not None  # pragma: no cover
+    return _rust is not None # pragma: no cover
 
 
 def rust_module() -> object | None:
@@ -41,14 +41,14 @@ def rust_module() -> object | None:
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (rust_module)
+    >>> 1 + 1 # docstring smoke (rust_module)
     2
     """
     try:
-        from tac2iwxxm import _rust  # type: ignore[attr-defined]
+        from tac2iwxxm import _rust # type: ignore[attr-defined]
     except ImportError:
         return None
-    return _rust  # type: ignore[no-any-return]  # pragma: no cover
+    return _rust # type: ignore[no-any-return] # pragma: no cover
 
 
 def scan_metar_tokens(tac: str) -> list[str]:
@@ -72,7 +72,7 @@ def scan_metar_tokens(tac: str) -> list[str]:
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (scan_metar_tokens)
+    >>> 1 + 1 # docstring smoke (scan_metar_tokens)
     2
     """
     mod = rust_module()

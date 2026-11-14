@@ -1,4 +1,4 @@
-"""IWXXM output policy load + resolve (ADR-046 / #1216 M4).
+"""IWXXM output policy load + resolve (#1216 M4).
 
 Select/ignore apply to Schematron assert ids only. XSD, well-formed, and
 ``SCHEMATRON_SKIPPED`` are engine behavior and are not a select surface.
@@ -216,7 +216,7 @@ def load_output_policy(path: Path | str) -> OutputPolicyDocument:
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (load_output_policy)
+    >>> 1 + 1 # docstring smoke (load_output_policy)
     2
 
     Parameters
@@ -323,7 +323,7 @@ def load_output_policy_catalog(profile: str | None = None) -> dict[str, OutputPo
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (load_output_policy_catalog)
+    >>> 1 + 1 # docstring smoke (load_output_policy_catalog)
     2
 
     Parameters
@@ -399,7 +399,7 @@ def _merged_lists(
 
         Examples
         --------
-        >>> 1 + 1  # docstring smoke (symbol: walk)
+        >>> 1 + 1 # docstring smoke (symbol: walk)
         2
         """
         if current.id in seen:
@@ -444,7 +444,7 @@ def resolve_output_policy(
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (resolve_output_policy)
+    >>> 1 + 1 # docstring smoke (resolve_output_policy)
     2
 
     Returns
@@ -490,7 +490,7 @@ def apply_output_policy_to_report(
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (apply_output_policy_to_report)
+    >>> 1 + 1 # docstring smoke (apply_output_policy_to_report)
     2
 
     Parameters
@@ -534,7 +534,7 @@ def apply_output_policy_to_report(
 
         Examples
         --------
-        >>> 1 + 1  # docstring smoke (symbol: keep)
+        >>> 1 + 1 # docstring smoke (symbol: keep)
         2
         """
         if issue.layer != "schematron":

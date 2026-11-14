@@ -1,6 +1,4 @@
 """T1.1 — pack directory unset uses built-ins; unknown keys fail closed.
-
-[Corpus: adr/ADR-045]
 """
 
 from __future__ import annotations
@@ -60,12 +58,12 @@ def test_overlay_extends_one_builtin_for_profile(monkeypatch: pytest.MonkeyPatch
                 "extends: metar",
                 "layout: token_stream",
                 "rules:",
-                "  - id: wind",
-                '    pattern: ["VRB00KT"]',
-                '    explain: "Overlay wind {0}"',
-                "  - id: extra_group",
-                '    pattern: ["EXTRA"]',
-                '    explain: "Extra {0}"',
+                " - id: wind",
+                ' pattern: ["VRB00KT"]',
+                ' explain: "Overlay wind {0}"',
+                " - id: extra_group",
+                ' pattern: ["EXTRA"]',
+                ' explain: "Extra {0}"',
             )
         ),
         encoding="utf-8",
@@ -131,7 +129,7 @@ def test_builtin_dir_skips_notes_and_rejects_blank_id(monkeypatch: pytest.Monkey
     packs = {pack.id: pack for pack in load_packs()}
     assert packs["fixture"].layout == "stub"
     (builtin / "a.yaml").unlink()
-    (builtin / "bad.yaml").write_text("id: '   '\nlayout: token_stream\nrules: []\n", encoding="utf-8")
+    (builtin / "bad.yaml").write_text("id: ' '\nlayout: token_stream\nrules: []\n", encoding="utf-8")
     clear_pack_cache()
     with pytest.raises(PackSchemaError, match="string id"):
         load_packs()
@@ -168,7 +166,7 @@ def test_overlay_rejects_bad_files(monkeypatch: pytest.MonkeyPatch, tmp_path: Pa
     with pytest.raises(PackSchemaError, match="string id"):
         load_packs()
 
-    (tmp_path / "nope.yaml").write_text("id: '   '\nlayout: token_stream\n", encoding="utf-8")
+    (tmp_path / "nope.yaml").write_text("id: ' '\nlayout: token_stream\n", encoding="utf-8")
     with pytest.raises(PackSchemaError, match="string id"):
         load_packs()
 
@@ -178,6 +176,6 @@ def test_overlay_rejects_bad_files(monkeypatch: pytest.MonkeyPatch, tmp_path: Pa
 
 
 def test_blank_pack_dir_matches_unset(monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setenv("TAC_DECODING_PACK_DIR", "  ")
+    monkeypatch.setenv("TAC_DECODING_PACK_DIR", " ")
     packs = {pack.id: pack for pack in load_packs()}
     assert "metar" in packs

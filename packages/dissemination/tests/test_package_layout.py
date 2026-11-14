@@ -1,4 +1,4 @@
-"""Package layout and boundary smoke tests for packages/dissemination (T1.1 / ADR-030)."""
+"""Package layout and boundary smoke tests for packages/dissemination (T1.1 )."""
 
 from __future__ import annotations
 
@@ -58,7 +58,7 @@ def test_package_src_layout_exists() -> None:
 
 
 def test_package_has_no_fastapi_or_supabase_imports() -> None:
-    """ADR-030 - sinks live in the package; FastAPI/Supabase stay in apps/backend."""
+    """ - sinks live in the package; FastAPI/Supabase stay in apps/backend."""
     forbidden = {"fastapi", "supabase"}
     py_files = list(PACKAGE_SRC.rglob("*.py"))
     assert py_files, "expected dissemination package sources"

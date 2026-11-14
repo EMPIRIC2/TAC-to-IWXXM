@@ -1,4 +1,4 @@
-"""ADR-048 OK module."""
+""" OK module."""
 
 
 def greet(name: str) -> str:

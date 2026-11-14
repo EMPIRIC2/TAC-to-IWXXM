@@ -130,7 +130,7 @@ class TestUiSoftPreviewConnection:
         assert isinstance(payload["total_processed"], int)
         assert isinstance(payload["successful"], int)
         assert isinstance(payload["failed"], int)
-        # Soft-preview envelope (ADR-022 / FailedTacCue)
+        # Soft-preview envelope (FailedTacCue)
         assert "ok" in payload
         assert isinstance(payload["failed_spans"], list)
         assert payload["ok"] is False or len(payload["failed_spans"]) >= 1

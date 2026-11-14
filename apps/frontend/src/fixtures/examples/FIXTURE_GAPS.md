@@ -2,19 +2,19 @@
 
 Per E16-8 / E16-13 / S02.M2 / **UJ-039** / **UJ-043**: use in-repo WMO official package
 goldens only; do **not** invent TAC. Catalog may list **strict passers** (`wmoPass`) and
-**WMO reference** samples (`wmoReference`) per ADR-032 amend.
+**WMO reference** samples (`wmoReference`) per amend.
 
-| Product  | TAC examples in catalog                                                               | Gap                                                                                                                                                  |
+| Product | TAC examples in catalog | Gap |
 | -------- | ------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
-| METAR    | 1 (`annex3_golden/metar_a3_1.tac`)                                                    | Second WMO METAR — none in vendor pin                                                                                                                |
-| SPECI    | 1 (`annex3_golden/speci_a3_2.tac`)                                                    | Second WMO SPECI — none in vendor pin                                                                                                                |
-| TAF      | 2 (`taf_a5_1` + `taf_a5_2`)                                                           | none                                                                                                                                                 |
-| SIGMET   | 5 (A6-1a-TS + A6-1b-CNL + VA-EGGX passer + A6-2-TC passer + multi-location-VA passer) | **#856** / EV-038: `sigmet-VA-EGGX` promoted to `wmoPass` (ADR-032 equality green); **#835** A6-2-TC `wmoPass`; **#809** multi-location-VA `wmoPass` |
-| AIRMET   | 1 (`airmet_a6_1a_ts`)                                                                 | CNL peer — none in vendor pin                                                                                                                        |
-| **VAA**  | **1** (`annex3_golden/vaa_a7_2.tac`)                                                  | Second WMO VAA — none in vendor pin                                                                                                                  |
-| **TCA**  | **1** (`annex3_golden/tca_a2_2.tac`)                                                  | Second WMO TCA — none in vendor pin                                                                                                                  |
-| **SWXA** | **3** (`swxa_a7_3` / `swxa_a7_4` / `swxa_a7_5`, all `wmoReference`)                   | A7-3/4/5 vendor peers unlocked S046/#857 (TC-EV038-010); further SWXA peers deferred                                                                 |
-| **VONA** | **1** (`annex3_golden/vona_a7_1.tac`, `wmoPass`)                                      | Single-seed F32 / TC-F32-005; additional VONA peers deferred                                                                                         |
+| METAR | 1 (`annex3_golden/metar_a3_1.tac`) | Second WMO METAR — none in vendor pin |
+| SPECI | 1 (`annex3_golden/speci_a3_2.tac`) | Second WMO SPECI — none in vendor pin |
+| TAF | 2 (`taf_a5_1` + `taf_a5_2`) | none |
+| SIGMET | 5 (A6-1a-TS + A6-1b-CNL + VA-EGGX passer + A6-2-TC passer + multi-location-VA passer) | **#856** / EV-038: `sigmet-VA-EGGX` promoted to `wmoPass` ( equality green); **#835** A6-2-TC `wmoPass`; **#809** multi-location-VA `wmoPass` |
+| AIRMET | 1 (`airmet_a6_1a_ts`) | CNL peer — none in vendor pin |
+| **VAA** | **1** (`annex3_golden/vaa_a7_2.tac`) | Second WMO VAA — none in vendor pin |
+| **TCA** | **1** (`annex3_golden/tca_a2_2.tac`) | Second WMO TCA — none in vendor pin |
+| **SWXA** | **3** (`swxa_a7_3` / `swxa_a7_4` / `swxa_a7_5`, all `wmoReference`) | A7-3/4/5 vendor peers unlocked S046/#857 (TC-EV038-010); further SWXA peers deferred |
+| **VONA** | **1** (`annex3_golden/vona_a7_1.tac`, `wmoPass`) | Single-seed F32 / TC-F32-005; additional VONA peers deferred |
 
 ### Stem-level deferrals (EV-027 / #815 inventory · EV-029 shape note)
 
@@ -22,13 +22,13 @@ Happy-path sample menu covers all in-scope single-report official peers under pi
 `2025-2`. Explicit non-menu stems (package inventory SoT
 `packages/tac2iwxxm/tests/fixtures/wmo_official_tac_inventory.py`):
 
-| Stem                                    | Reason                                                                                                                                |
+| Stem | Reason |
 | --------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
-| `sigmet-A6-2-TC`                        | **Unlocked** EV-032 as `wmoPass` (`sigmet_a6_2_tc`); ADR-032 equality via [#835](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/835) |
-| `metar-NIL-collect` / `taf-NIL-collect` | COLLECT / validate shape — not sample-menu happy-path (EV-024)                                                                        |
-| `*-translation-failed*`                 | quarantine                                                                                                                            |
-| `spacewx-A7-4` / `spacewx-A7-5`         | **Unlocked** as `wmoReference` (S046/#857) — vendor peers; convert+XSD/SCH bar matched A7-3                                           |
-| `vona-A7-1`                             | **Unlocked** EV-032 as `wmoPass` (`vona_a7_1`); ADR-032 equality via [#741](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/741)      |
+| `sigmet-A6-2-TC` | **Unlocked** EV-032 as `wmoPass` (`sigmet_a6_2_tc`); equality via [#835](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/835) |
+| `metar-NIL-collect` / `taf-NIL-collect` | COLLECT / validate shape — not sample-menu happy-path (EV-024) |
+| `*-translation-failed*` | quarantine |
+| `spacewx-A7-4` / `spacewx-A7-5` | **Unlocked** as `wmoReference` (S046/#857) — vendor peers; convert+XSD/SCH bar matched A7-3 |
+| `vona-A7-1` | **Unlocked** EV-032 as `wmoPass` (`vona_a7_1`); equality via [#741](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/741) |
 
 **AHL / multi-report shapes (EV-029 / TC-EV029-002):** FE catalogs METAR multi-AHL only
 (`ahl_metar_multi`). Non-METAR AHL + multi-report gaps are documented in

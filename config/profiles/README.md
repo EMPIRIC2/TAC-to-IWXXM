@@ -1,9 +1,9 @@
 # Profile source catalog (semantic + exchange)
 
-> **Corpus id**: `domain-profiles` ([CORPUS.md](../../CORPUS.md))  
-> **Status**: P0/P1 catalog landed (EV-063 M5 / #913 — deepen continues in mining notes)  
-> **Epic**: [#912](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/912)  
-> **ADR**: [ADR-036](../adr/ADR-036-semantic-vs-exchange-profiles.md) (Accepted)
+> **Corpus id**: `domain-profiles` ([CORPUS.md](../../CORPUS.md))
+> **Status**: P0/P1 catalog landed (EV-063 M5 / #913 — deepen continues in mining notes)
+> **Epic**: [#912](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/912)
+> **ADR**: architecture decision (Accepted)
 
 Authoritative-source catalog for **semantic** (TAC→IWXXM) and **exchange** (routing/packaging)
 profiles. This directory is the standing SoT for profile *evidence*; implementation lives in
@@ -22,20 +22,20 @@ profiles. This directory is the standing SoT for profile *evidence*; implementat
 
 ```
 profiles/
-  README.md                      # this file
-  NATIONAL_PROFILE_PLAYBOOK.md   # onboarding playbook (#1044 / EV-088)
-  _template/                     # copy stubs for new nationals
-  catalog.yaml                   # machine index (URLs, gaps, priority)
+  README.md # this file
+  NATIONAL_PROFILE_PLAYBOOK.md # onboarding playbook (#1044 / EV-088)
+  _template/ # copy stubs for new nationals
+  catalog.yaml # machine index (URLs, gaps, priority)
   semantic/
-    ICAO_2025.md                 # P0 implemented
-    US_FAA_NWS.md                # P0 implemented (#919 deepen)
-    CA_ECCC.md                   # P1 implemented (#916) — reference impl
-    AU_BOM.md / NZ_CAA_MET.md    # P1 thin kickoff (EV-087)
-    UK_METOFFICE.md … HK_HKO.md  # P2 thin/compat (#920 / EV-089)
+    ICAO_2025.md # P0 implemented
+    US_FAA_NWS.md # P0 implemented (#919 deepen)
+    CA_ECCC.md # P1 implemented (#916) — reference impl
+    AU_BOM.md / NZ_CAA_MET.md # P1 thin kickoff (EV-087)
+    UK_METOFFICE.md … HK_HKO.md # P2 thin/compat (#920 / EV-089)
     ...
   exchange/
-    GLOBAL_AFS.md                # P0 implemented (EV-065 / #921)
-    APAC_ROBEX.md … CAR_SAM.md   # P2 stubs (EV-065/086)
+    GLOBAL_AFS.md # P0 implemented (EV-065 / #921)
+    APAC_ROBEX.md … CAR_SAM.md # P2 stubs (EV-065/086)
     ...
 ```
 
@@ -99,21 +99,21 @@ Runtime contract:
 Closeout triage: [`mining/EV-M1-913-source-triage.md`](mining/EV-M1-913-source-triage.md)
 (EV-M1-five-remaining / 2026-09-09).
 
-- [x] `catalog.yaml` with URL + access tier + gap status per profile id  
-- [x] Semantic stubs for `ICAO_2025`, `US_FAA_NWS`, `CA_ECCC`  
-- [x] AU TAF INTER/TAF3/RMK T/Q refs for `AU_BOM` (EV-087 mining kickoff)  
-- [x] NZ domestic vs international TAF refs for `NZ_CAA_MET` (EV-087 mining kickoff)  
-- [x] Thin/compat catalog + stubs for #920 ids (EV-089; deepen [#1098](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1098) / EV-094)  
-- [x] Thin/compat **deepen** corpora + KR/JP SPECI + `in_imd` lint overlay (#1098 / EV-094)  
-- [x] Regional exchange **source pins** for ROBEX / RODEX / AFI (EV-090); `CAR_SAM` handbook **deferred gap**  
-- [ ] CA MANOBS/MANAIR **section-level** rule stubs: **re-homed** to [#1028](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1028) / [#1031](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1031) (not `#913` close blocker)  
+- [x] `catalog.yaml` with URL + access tier + gap status per profile id
+- [x] Semantic stubs for `ICAO_2025`, `US_FAA_NWS`, `CA_ECCC`
+- [x] AU TAF INTER/TAF3/RMK T/Q refs for `AU_BOM` (EV-087 mining kickoff)
+- [x] NZ domestic vs international TAF refs for `NZ_CAA_MET` (EV-087 mining kickoff)
+- [x] Thin/compat catalog + stubs for #920 ids (EV-089; deepen [#1098](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1098) / EV-094)
+- [x] Thin/compat **deepen** corpora + KR/JP SPECI + `in_imd` lint overlay (#1098 / EV-094)
+- [x] Regional exchange **source pins** for ROBEX / RODEX / AFI (EV-090); `CAR_SAM` handbook **deferred gap**
+- [ ] CA MANOBS/MANAIR **section-level** rule stubs: **re-homed** to [#1028](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1028) / [#1031](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1031) (not `#913` close blocker)
 - [ ] ROBEX/RODEX **full handbook rule matrices**: exchange deepen residual (URLs mined; matrices outside `#913` AC)
 
 ## References
 
 - [NATIONAL_PROFILE_PLAYBOOK.md](NATIONAL_PROFILE_PLAYBOOK.md) — [#1044](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1044)
 - [GAMET-spike.md](GAMET-spike.md) — EV-089 parse-only; EV-094 reaffirm
-- [ADR-036](../../adr/ADR-036-semantic-vs-exchange-profiles.md)
+- architecture decision
 - [#913 Mine ticket](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/913)
 - [#1098 Thin/compat deepen](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1098)
 - [#1025 Alias cutover](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1025)

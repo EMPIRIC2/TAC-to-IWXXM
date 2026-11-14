@@ -7,7 +7,7 @@ import reactHooks from 'eslint-plugin-react-hooks';
 import reactRefresh from 'eslint-plugin-react-refresh';
 import jsdoc from 'eslint-plugin-jsdoc';
 
-/** ADR-056 — FE paths grandfathered for max-lines / complexity. */
+/** — FE paths grandfathered for max-lines / complexity. */
 // Config lives under config/tooling/; allowlists are repo-root relative.
 const _repoRoot = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),
@@ -90,10 +90,10 @@ export default tseslint.config(
       ...sharedRules,
       ...reactHooks.configs.recommended.rules,
       'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
-      // ADR-056 file budget + complexity (allowlisted / ui overridden below)
+      // file budget + complexity (allowlisted / ui overridden below)
       'max-lines': ['error', { max: 500, skipBlankLines: false, skipComments: false }],
       complexity: ['error', 10],
-      // ADR-048 / EV-adr048-doc-linters (TC-EVDOC-009) — presence via eslint-plugin-jsdoc.
+      // EV-adr048-doc-linters (TC-EVDOC-009) — presence via eslint-plugin-jsdoc.
       // Executable @example remains enforced by scripts/docs/check_docs_ts.mjs + harness.
       'jsdoc/require-jsdoc': [
         'error',
@@ -134,14 +134,14 @@ export default tseslint.config(
     },
   },
   {
-    // ADR-056 — shadcn UI kit excluded from line/complexity budget
+    /— shadcn UI kit excluded from line/complexity budget
     files: ['apps/frontend/src/app/components/ui/**/*.{ts,tsx}'],
     rules: {
       'max-lines': 'off',
       complexity: 'off',
     },
   },
-  // ADR-056 — grandfather oversize / high-complexity FE modules
+  /— grandfather oversize / high-complexity FE modules
   // Omit when allowlists are missing (empty files[] is invalid in flat config).
   ...(_feBudgetOverrides.length > 0
     ? [

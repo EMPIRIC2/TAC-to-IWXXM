@@ -1,8 +1,8 @@
 # CA_ECCC — Canada semantic overlay (P1)
 
-> **Profile id**: `CA_ECCC` · **Kind**: semantic · **Priority**: P1 · **Status**: implemented (EV-064–067 / #916, #1039 P1)  
-> **Implementation**: [#916](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/916), [#1039](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1039)  
-> **Catalog row**: [`catalog.yaml`](../catalog.yaml) · **ADR**: [ADR-036](../../../adr/ADR-036-semantic-vs-exchange-profiles.md)
+> **Profile id**: `CA_ECCC` · **Kind**: semantic · **Priority**: P1 · **Status**: implemented (EV-064–067 / #916, #1039 P1)
+> **Implementation**: [#916](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/916), [#1039](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1039)
+> **Catalog row**: [`catalog.yaml`](../catalog.yaml) · **ADR**: architecture decision
 
 Environment and Climate Change Canada (ECCC / MSC) national semantic overlay: MANOBS
 surface observations, MANAIR aviation forecasts, and Canadian IWXXM extension schemas.
@@ -37,7 +37,7 @@ defined in MANOBS §11.3; SAWR is a **Canadian national product** modeled in
 
 ### Why LWIS/SAWR use `product=METAR` in the API
 
-Per [ADR-036](../../../adr/ADR-036-semantic-vs-exchange-profiles.md), three layers stay separate:
+Per architecture decision, three layers stay separate:
 
 1. **`semanticProfile`** (`CA_ECCC`) — national parse/emit overlay (MANOBS + `*-ca.xsd`).
 2. **`product`** — converter dispatch family (`METAR` \| `SPECI` \| `TAF` \| …). LWIS/SAWR are
@@ -104,7 +104,7 @@ Template: [`_template/code-list-deviations.yaml`](../_template/code-list-deviati
 ## IWXXM version line
 
 MSC operational practice pins **IWXXM 3.0.0** core (`http://icao.int/iwxxm/3.0`) plus CA
-extensions, independent of the app default **2025-2** SoT line ([ADR-036](../../../adr/ADR-036-semantic-vs-exchange-profiles.md)).
+extensions, independent of the app default **2025-2** SoT line (architecture decision).
 
 ## Implementation
 

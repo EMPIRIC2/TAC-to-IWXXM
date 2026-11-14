@@ -78,7 +78,7 @@ def _check_metar_speci(tac: str, product: str, *, profile: str = "annex3") -> li
                 )
             )
 
-        # ADR-046 M2/M3: R2 via detector pack by default; legacy keeps inline path for compares.
+        # M2/M3: R2 via detector pack by default; legacy keeps inline path for compares.
         if use_detectors:
             issues.extend(run_r2_visibility_detectors(tac, product))
         else:

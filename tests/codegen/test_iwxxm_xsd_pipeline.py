@@ -1,4 +1,4 @@
-"""T3.6 / ADR-027: xsdata codegen pipeline config + CI hook wiring."""
+"""T3.6 / : xsdata codegen pipeline config + CI hook wiring."""
 
 from __future__ import annotations
 

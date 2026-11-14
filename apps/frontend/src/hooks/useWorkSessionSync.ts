@@ -1,5 +1,5 @@
 /**
- * F5/F7.h debounced auto-save for the converter — browser IndexedDB (ADR-031).
+ * F5/F7.h debounced auto-save for the converter — browser IndexedDB .
  * Honors F22 / TC-F31-005 guest work-history privacy gate.
  */
 
@@ -41,9 +41,9 @@ export interface UseWorkSessionSyncOptions {
 
 /**
  * Debounced auto-save hook for converter work sessions in local IndexedDB.
- *
+
  * Respects privacy preferences and read-only finished sessions.
- *
+
  * @param options - Session id, status, and save callbacks.
  * @returns Save indicator state and persist/schedule helpers.
  * @example

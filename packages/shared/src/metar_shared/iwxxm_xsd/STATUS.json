@@ -1,6 +1,6 @@
 {
   "generator": "xsdata+xsdata-pydantic",
-  "adr": "ADR-027",
+  "adr": "",
   "versions": ["2023-1", "2025-2"],
   "manifest_pin": {
     "upstream_repo": "wmo-im/iwxxm",

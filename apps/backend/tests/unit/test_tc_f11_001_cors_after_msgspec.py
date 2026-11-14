@@ -1,4 +1,4 @@
-"""T5.6 / TC-F11-001: H0c CORS re-check after msgspec high-churn HTTP (ADR-026).
+"""T5.6 / TC-F11-001: H0c CORS re-check after msgspec high-churn HTTP .
 
 Msgspec response encode must not introduce new CORS knobs; high-churn POST routes
 still answer browser OPTIONS preflight under existing ``METAR_CORS_ORIGINS`` /
@@ -62,7 +62,7 @@ def test_high_churn_options_preflight_allows_post(client: TestClient, allowed_or
 
 
 def test_msgspec_http_introduces_no_new_cors_env_knobs() -> None:
-    """ADR-026 / T5.6: msgspec encode path must not add CORS-specific env vars."""
+    """ / T5.6: msgspec encode path must not add CORS-specific env vars."""
     import msgspec_http
 
     helper_src = inspect.getsource(msgspec_http)

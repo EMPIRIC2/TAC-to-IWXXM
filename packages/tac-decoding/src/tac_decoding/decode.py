@@ -404,9 +404,9 @@ _WX = re.compile(
 _RVR = re.compile(r"^R(?P<rw>\d{2}[LCR]?)/(?P<vis>[MP]?\d{4})(?P<unit>FT)?(?:/(?P<trend>[UDN]))?(?P<trend2>[UDN])?$")
 # Legacy runway state group: runway, deposit, extent, depth, friction (e.g. R19/290052).
 _RUNWAY_STATE = re.compile(
-    r"^R(?P<rw>\d{2}[LCR]?)/(?P<dep>[0-9/])(?P<ext>[1259/])(?P<depth>\d{2}|//)(?P<fric>\d{2}|//)$"
+    r"^R(?P<rw>\d{2}[LCR]?)/(?P<dep>[0-9/])(?P<ext>[1259/])(?P<depth>\d{2}| )(?P<fric>\d{2}| )$"
 )
-_RUNWAY_CLEARED = re.compile(r"^R(?P<rw>\d{2}[LCR]?)/CLRD(?P<fric>\d{2}|//)$")
+_RUNWAY_CLEARED = re.compile(r"^R(?P<rw>\d{2}[LCR]?)/CLRD(?P<fric>\d{2}| )$")
 _QFE = re.compile(r"^QFE(?P<mm>\d{3})(?:/(?P<hpa>\d{4}))?$")
 _RUNWAY_DEPOSIT = {
     "0": "clear and dry",
@@ -1103,14 +1103,14 @@ def _depth_phrase(raw: str) -> str | None:
     Parameters
     ----------
     raw : str
-        Two digits, or ``//`` when the depth is not significant.
+        Two digits, or `` / `` when the depth is not significant.
 
     Returns
     -------
     str | None
         The depth in plain language, or None when the code is unused.
     """
-    if raw == "//":
+    if raw == " / ":
         return "depth not significant"
     if raw == "00":
         return "depth less than 1 mm"
@@ -1133,14 +1133,14 @@ def _friction_phrase(raw: str) -> str | None:
     Parameters
     ----------
     raw : str
-        Two digits, or ``//`` when friction is not reported.
+        Two digits, or `` / `` when friction is not reported.
 
     Returns
     -------
     str | None
         The friction in plain language, or None when the code is unused.
     """
-    if raw == "//":
+    if raw == " / ":
         return "friction not reported"
     braking = _RUNWAY_BRAKING.get(raw)
     if braking:
@@ -3251,7 +3251,7 @@ def set_bulletin_splitter(splitter: Callable[[str, str], object] | None) -> None
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (set_bulletin_splitter)
+    >>> 1 + 1 # docstring smoke (set_bulletin_splitter)
     2
     """
     global _bulletin_splitter
@@ -3480,7 +3480,7 @@ def decode_single_report(tac: str, *, product: str) -> DecodeResult:
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (decode_single_report)
+    >>> 1 + 1 # docstring smoke (decode_single_report)
     2
     """
     return _decode_single_report(tac, product=product)
@@ -3505,7 +3505,7 @@ def shift_decode(result: DecodeResult, offset: int) -> DecodeResult:
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (shift_decode)
+    >>> 1 + 1 # docstring smoke (shift_decode)
     2
     """
     return _shift_decode(result, offset)
@@ -3553,17 +3553,17 @@ def decode_tac(tac: str, *, product: str) -> DecodeResult:
     -------
     DecodeResult
         ``segments`` for recognized groups; ``residuals`` for undecoded spans;
-        ``summary`` plain-language paragraph (F9 / ADR-025).
+        ``summary`` plain-language paragraph (F9).
         METAR/SPECI/TAF aim for rich segments; VAA/TCA/SWXA/VONA use structured
         LABEL fields (EV-030 / EV-099) with explicit residuals for leftovers (G4).
         Multi-report AHL bulletins are split so each report is decoded independently
         (heading is a bulletin-framing segment, not a product residual).
         COLLECT documents decode contained TAC when present, otherwise walk XML
-        fields (ADR-045).
+        fields .
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (decode_tac)
+    >>> 1 + 1 # docstring smoke (decode_tac)
     2
     """
     product_u = product.upper()

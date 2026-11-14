@@ -2,7 +2,7 @@
 
 Bulletin split stays injected. COLLECT decodes contained TAC when present,
 otherwise walks XML fields. No IWXXM encoder and no ``tac2iwxxm`` import.
-[Corpus: tests] [Corpus: adr/ADR-045] [Corpus: system-spec]
+[Corpus: tests] [Corpus: system-spec]
 """
 
 from __future__ import annotations
@@ -135,8 +135,8 @@ def test_collect_xml_only_walks_fields() -> None:
         '<?xml version="1.0" encoding="UTF-8"?>\n'
         '<collect:MeteorologicalBulletin xmlns:collect="http://def.wmo.int/collect/2014" '
         'xmlns:gml="http://www.opengis.net/gml/3.2" gml:id="uuid.ops">\n'
-        f"  <collect:meteorologicalInformation>\n{body}\n  </collect:meteorologicalInformation>\n"
-        "  <collect:bulletinIdentifier>A_TEST.xml</collect:bulletinIdentifier>\n"
+        f" <collect:meteorologicalInformation>\n{body}\n </collect:meteorologicalInformation>\n"
+        " <collect:bulletinIdentifier>A_TEST.xml</collect:bulletinIdentifier>\n"
         "</collect:MeteorologicalBulletin>\n"
     )
     read = read_collect(collect_xml)
@@ -217,7 +217,7 @@ def test_entity_encoded_field_walk_offsets() -> None:
         '<?xml version="1.0"?>\n'
         '<iwxxm:METAR xmlns:iwxxm="http://icao.int/iwxxm/2025-2" '
         'xmlns:aixm="http://www.aixm.aero/schema/5.1.1">\n'
-        "  <aixm:designator>&#67;YUL</aixm:designator>\n"
+        " <aixm:designator>&#67;YUL</aixm:designator>\n"
         "</iwxxm:METAR>\n"
     )
     read = read_collect(xml)
@@ -232,7 +232,7 @@ def test_entity_encoded_field_walk_offsets() -> None:
 def test_xml_walk_truncates_long_summary() -> None:
     from tac_decoding.collect import decode_collect
 
-    leaves = "\n".join(f"  <f{i}>{i}</f{i}>" for i in range(9))
+    leaves = "\n".join(f" <f{i}>{i}</f{i}>" for i in range(9))
     xml = f'<?xml version="1.0"?>\n<iwxxm:METAR xmlns:iwxxm="http://icao.int/iwxxm/2025-2">\n{leaves}\n</iwxxm:METAR>\n'
     result = decode_collect(xml, product="METAR")
     assert len(result.segments) == 9
@@ -296,8 +296,8 @@ def test_doctype_entity_is_rejected() -> None:
     bomb = (
         '<?xml version="1.0"?>\n'
         "<!DOCTYPE lolz [\n"
-        '  <!ENTITY lol "lol">\n'
-        '  <!ENTITY lol2 "&lol;&lol;&lol;&lol;&lol;&lol;&lol;&lol;&lol;&lol;">\n'
+        ' <!ENTITY lol "lol">\n'
+        ' <!ENTITY lol2 "&lol;&lol;&lol;&lol;&lol;&lol;&lol;&lol;&lol;&lol;">\n'
         "]>\n"
         '<iwxxm:METAR xmlns:iwxxm="http://icao.int/iwxxm/2025-2">&lol2;</iwxxm:METAR>\n'
     )
@@ -312,7 +312,7 @@ def test_leaf_cap_is_enforced(monkeypatch: pytest.MonkeyPatch) -> None:
     from tac_decoding.collect import CollectError, read_collect
 
     monkeypatch.setattr(collect_mod, "_MAX_LEAVES", 3)
-    leaves = "\n".join(f"  <f{i}>{i}</f{i}>" for i in range(5))
+    leaves = "\n".join(f" <f{i}>{i}</f{i}>" for i in range(5))
     xml = f'<?xml version="1.0"?>\n<iwxxm:METAR xmlns:iwxxm="http://icao.int/iwxxm/2025-2">\n{leaves}\n</iwxxm:METAR>\n'
     with pytest.raises(CollectError, match="leaf-field"):
         read_collect(xml)
@@ -366,7 +366,7 @@ def test_source_span_empty_needle() -> None:
 def test_empty_failed_tac_attr_is_xml_walk() -> None:
     from tac_decoding.collect import read_collect
 
-    xml = '<wrapper translationFailedTAC="   "><leaf>x</leaf></wrapper>'
+    xml = '<wrapper translationFailedTAC=" "><leaf>x</leaf></wrapper>'
     read = read_collect(xml)
     assert read.mode == "xml_walk"
     assert read.tac_reports == ()

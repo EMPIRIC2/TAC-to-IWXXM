@@ -1,4 +1,4 @@
-"""SQLAlchemy CRUD for ``tac_work_sessions`` on ``DATABASE_URL`` (F31 / ADR-033)."""
+"""SQLAlchemy CRUD for ``tac_work_sessions`` on ``DATABASE_URL`` (F31)."""
 
 from __future__ import annotations
 
@@ -47,12 +47,12 @@ def _sync_database_url() -> str:
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
             detail="Work session service unavailable - missing DATABASE_URL",
         )
-    if raw.startswith("postgresql+asyncpg://"):
-        url = "postgresql+psycopg://" + raw.removeprefix("postgresql+asyncpg://")
-    elif raw.startswith("postgresql+psycopg2://"):
-        url = "postgresql+psycopg://" + raw.removeprefix("postgresql+psycopg2://")
-    elif raw.startswith("postgresql://"):
-        url = "postgresql+psycopg://" + raw.removeprefix("postgresql://")
+    if raw.startswith("postgresql+asyncpg: / "):
+        url = "postgresql+psycopg: / " + raw.removeprefix("postgresql+asyncpg: / ")
+    elif raw.startswith("postgresql+psycopg2: / "):
+        url = "postgresql+psycopg: / " + raw.removeprefix("postgresql+psycopg2: / ")
+    elif raw.startswith("postgresql: / "):
+        url = "postgresql+psycopg: / " + raw.removeprefix("postgresql: / ")
     else:
         url = raw
     # asyncpg query param ``ssl=`` is invalid for psycopg (use sslmode=).
@@ -236,7 +236,7 @@ class WorkSessionService:
 
         Examples
         --------
-        >>> 1 + 1  # docstring smoke (list_sessions)
+        >>> 1 + 1 # docstring smoke (list_sessions)
         2
         """
         table = _table()
@@ -272,7 +272,7 @@ class WorkSessionService:
 
         Examples
         --------
-        >>> 1 + 1  # docstring smoke (get_session)
+        >>> 1 + 1 # docstring smoke (get_session)
         2
 
         Parameters
@@ -310,7 +310,7 @@ class WorkSessionService:
 
         Examples
         --------
-        >>> 1 + 1  # docstring smoke (create_session)
+        >>> 1 + 1 # docstring smoke (create_session)
         2
 
         Parameters
@@ -347,7 +347,7 @@ class WorkSessionService:
 
         Examples
         --------
-        >>> 1 + 1  # docstring smoke (update_session)
+        >>> 1 + 1 # docstring smoke (update_session)
         2
 
         Parameters
@@ -391,7 +391,7 @@ class WorkSessionService:
 
         Examples
         --------
-        >>> 1 + 1  # docstring smoke (soft_delete)
+        >>> 1 + 1 # docstring smoke (soft_delete)
         2
 
         Parameters
@@ -412,7 +412,7 @@ class WorkSessionService:
 
         Examples
         --------
-        >>> 1 + 1  # docstring smoke (restore_session)
+        >>> 1 + 1 # docstring smoke (restore_session)
         2
 
         Parameters

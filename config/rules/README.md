@@ -29,7 +29,7 @@ Do not implement against mining digs alone.
 | `iwxxm-validation` | Is produced XML valid for the pin? | [IWXXM_VALIDATION.md](../IWXXM_VALIDATION.md) WF→XSD→SCH | `iwxxm-validate` |
 | `bulletin` | COLLECT / AHL / FTBP packaging | Conversion + [ICAO_OPMET_COMPLIANCE.md](../iwxxm/ICAO_OPMET_COMPLIANCE.md) | ops / F8 |
 
-**Order:** TAC lint → convert → well-formed → **XSD** → **Schematron** → golden examples.  
+**Order:** TAC lint → convert → well-formed → **XSD** → **Schematron** → golden examples.
 Schematron is **blocking for release** (OPMET Guidelines). Conflict → defer to latest pin
 ([ACCESS_AND_CITATION.md](./ACCESS_AND_CITATION.md)).
 
@@ -58,7 +58,7 @@ Gates: [COVERAGE_MATRIX.md](./COVERAGE_MATRIX.md) **G1–G7**. Hub E2E: [../READ
 | **normative-examples** | Official paired TAC/XML examples |
 | **normative-exchange** | OPMET exchange / AMHS / Translation Centre guidelines |
 | **informative** | Fixtures / community — not binding |
-| **historical-GIFTs** | Gap baseline only (ADR-014) |
+| **historical-GIFTs** | Gap baseline only |
 
 ## Vendor pin
 

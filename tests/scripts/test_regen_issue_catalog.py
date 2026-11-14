@@ -49,7 +49,7 @@ def test_attribution_fields_branches(capsys: pytest.CaptureFixture[str]) -> None
     assert "ICAO" in full["source_attribution"]
     assert "access:paywall" in full["source_attribution"]
 
-    regen._attribution_fields({"note": "see ADR-028 for details"})
+    regen._attribution_fields({"note": "see for details"})
     assert "omitting provenance note" in capsys.readouterr().err
 
 

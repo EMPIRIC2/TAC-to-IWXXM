@@ -1,11 +1,11 @@
 /**
  * Semantic IWXXM profile ids for the operator Profile picker (EV-093 / #1024).
- *
+
  * Canonical wire values are uppercase OpenAPI ids. Legacy aliases `annex3` /
  * `iwxxm_us` remain selectable through the #1025 deprecation window so alias
- * metrics still fire when chosen. Separate from exchange profiles (ADR-036).
- *
- * [Corpus: product §F35] [Corpus: product §F36] [Corpus: adr/ADR-036] [Corpus: api]
+ * metrics still fire when chosen. Separate from exchange profiles .
+
+ * [Corpus: product §F35] [Corpus: product §F36] [Corpus: api]
  */
 
 /** Registered canonical semantic profile ids (uppercase OpenAPI). */
@@ -88,7 +88,7 @@ export const SEMANTIC_PROFILE_OPTIONS: readonly {
 
 /**
  * Normalize a profile id for equality checks (lowercase, hyphen → underscore).
- *
+
  * @param value - Raw profile id
  * @returns Normalized lowercase id
  * @example
@@ -100,7 +100,7 @@ export function normalizeSemanticProfileId(value: string): string {
 
 /**
  * Whether the profile is CA_ECCC (any accepted casing).
- *
+
  * @param profile - UI or stored profile id
  * @example
  * const _ = true;
@@ -111,9 +111,9 @@ export function isCaEcccProfile(profile: string): boolean {
 
 /**
  * Map a stored alias to its canonical display id; leave other known ids as-is.
- *
+
  * Used when hydrating prefs / work sessions (FR-04).
- *
+
  * @param value - Candidate profile string
  * @returns Profile suitable for the select (canonical preferred over alias)
  * @example
@@ -129,10 +129,10 @@ export function hydrateSemanticProfile(value: unknown): IwxxmProfile {
 
 /**
  * Narrow stored/UI profile strings to a supported select value.
- *
+
  * Keeps legacy aliases as distinct values so alias convert metrics still fire.
  * Lowercase canonicals (e.g. ``ca_eccc``) become uppercase OpenAPI ids.
- *
+
  * @param value - Candidate profile string
  * @returns Supported profile id (default {@link DEFAULT_SEMANTIC_PROFILE})
  * @example
@@ -162,9 +162,9 @@ export function coerceIwxxmProfile(value: unknown): IwxxmProfile {
 
 /**
  * FormData / OpenAPI wire value for ``semantic_profile``.
- *
+
  * Canonical options stay uppercase; legacy aliases stay lowercase emit keys.
- *
+
  * @param profile - Current Profile select value
  * @returns Wire string for multipart ``semantic_profile``
  * @example

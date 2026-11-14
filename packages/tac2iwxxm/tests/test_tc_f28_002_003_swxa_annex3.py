@@ -2,7 +2,7 @@
 
 Asserts WMO ``spacewx-A7-3`` is in the annex3 pack, root
 ``iwxxm:SpaceWeatherAdvisory``, convert → M-xsd/M-sch under default settings.
-Golden equality is not required when ``wmoReference`` is set (S02.L1 / ADR-032).
+Golden equality is not required when ``wmoReference`` is set (S02.L1 ).
 
 Always write "F28 theme SX3" (not SPECI S1) - D-S036 / EV-029 M11.
 """

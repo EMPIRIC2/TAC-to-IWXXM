@@ -1,4 +1,4 @@
-"""Reusable msgspec JSON codec instances for hot paths (ADR-016).
+"""Reusable msgspec JSON codec instances for hot paths .
 
 Instantiate :class:`msgspec.json.Encoder` / :class:`msgspec.json.Decoder` once
 and reuse them instead of constructing per call

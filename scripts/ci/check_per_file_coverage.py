@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Fail if any measured source file is under a coverage floor (EV-047 / ADR-007).
+"""Fail if any measured source file is under a coverage floor (EV-047 ).
 
 Reads ``coverage.json`` produced by ``coverage json`` (or pytest-cov's
 ``--cov-report=json``). For each file with ``num_statements > 0``, requires
@@ -109,7 +109,7 @@ def check_report(
         file=sys.stderr,
     )
     for path, pct in below:
-        print(f"  {pct:6.2f}%  {path}", file=sys.stderr)
+        print(f" {pct:6.2f}% {path}", file=sys.stderr)
     return 1
 
 

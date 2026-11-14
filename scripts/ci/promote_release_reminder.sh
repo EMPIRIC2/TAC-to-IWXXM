@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Advisory reminder for stage→main promote PRs: bump semver + tag a release.
-# Always exits 0 — does not block Staging gate (ADR-034 release-on-promote).
+# Always exits 0 — does not block Staging gate ( release-on-promote).
 # Traces: docs/deploy.md §Promote · doks-promote-from-stage.mdc §Release on promote
 set -euo pipefail
 

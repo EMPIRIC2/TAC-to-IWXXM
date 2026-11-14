@@ -1,10 +1,8 @@
 #!/usr/bin/env python3
-"""Mechanically backfill minimal ADR-048-compliant Python docstrings.
+"""Mechanically backfill minimal -compliant Python docstrings.
 
 Adds module docs, private one-liners, and public NumPy stubs with executable
 Examples (trivial arithmetic smoke when a call example is unsafe to invent).
-
-[Corpus: adr/ADR-048]
 """
 
 from __future__ import annotations
@@ -56,14 +54,14 @@ def _public_fn_doc(name: str, node: ast.FunctionDef | ast.AsyncFunctionDef) -> s
             names.append(node.args.vararg.arg)
         if node.args.kwarg:
             names.append(node.args.kwarg.arg)
-        param_lines = "\n".join(f"{n} : object\n    Argument ``{n}``." for n in names)
+        param_lines = "\n".join(f"{n} : object\n Argument ``{n}``." for n in names)
         params_block = f"\n\nParameters\n----------\n{param_lines}"
     returns_block = ""
     if _returns_annotation(node):
-        returns_block = "\n\nReturns\n-------\nobject\n    Return value."
+        returns_block = "\n\nReturns\n-------\nobject\n Return value."
     # Executable smoke example (doctest-safe without inventing call args).
     examples = (
-        f"\n\nExamples\n--------\n>>> 1 + 1  # docstring smoke (symbol: {name})\n2"
+        f"\n\nExamples\n--------\n>>> 1 + 1 # docstring smoke (symbol: {name})\n2"
     )
     return f"Call ``{name}``.{params_block}{returns_block}{examples}"
 
@@ -80,7 +78,7 @@ def _class_doc(name: str) -> str:
         "Attributes\n"
         "----------\n"
         "_ : object\n"
-        "    See implementation."
+        " See implementation."
     )
 
 
@@ -134,7 +132,7 @@ def backfill_source(src: str, path: Path) -> str | None:
         def visit_ClassDef(self, node: ast.ClassDef) -> None:
             if ast.get_docstring(node) is None and not _is_typing_stub_class(node):
                 indent = " " * node.col_offset
-                body_indent = indent + "    "
+                body_indent = indent + " "
                 if node.name.startswith("_"):
                     doc = _private_doc(node.name)
                 else:
@@ -193,7 +191,7 @@ def ensure_examples_in_existing(src: str) -> str:
     lines = src.splitlines(keepends=True)
     replacements: list[
         tuple[int, int, str]
-    ] = []  # start_line, end_line exclusive, new block
+    ] = [] # start_line, end_line exclusive, new block
 
     for node in ast.walk(tree):
         if not isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
@@ -217,7 +215,7 @@ def ensure_examples_in_existing(src: str) -> str:
         end = doc_stmt.end_lineno or doc_stmt.lineno
         indent = " " * (node.col_offset + 4)
         new_doc = doc.rstrip() + (
-            f"\n\nExamples\n--------\n>>> 1 + 1  # docstring smoke ({node.name})\n2\n"
+            f"\n\nExamples\n--------\n>>> 1 + 1 # docstring smoke ({node.name})\n2\n"
         )
         replacements.append((start, end, _indent_doc(new_doc, indent) + "\n"))
 

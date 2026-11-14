@@ -1,8 +1,8 @@
 # EV-1120 / #1122 — Profile-scoped catalog mining notes
 
-**Status**: Phase A complete on stage (#1148); deepen pass 2026-09-29 (EV-1121-1122)  
-**Session**: `EV-1121-1122-catalog-profile-filters`  
-**Corpus**: [Corpus: domain-profiles] · [Corpus: product] F15/F36 · [Corpus: adr/ADR-028]
+**Status**: Phase A complete on stage (#1148); deepen pass 2026-09-29 (EV-1121-1122)
+**Session**: `EV-1121-1122-catalog-profile-filters`
+**Corpus**: [Corpus: domain-profiles] · [Corpus: product] F15/F36 ·
 
 ## Filter semantics (API #1121)
 
@@ -40,5 +40,5 @@ Full national convert/validate detectors for every new code; thin-pack national 
 
 - #1123 closed via #1302 (Rule catalogs + workbench Profile/Exchange binding; TC-EV1120-009).
 - Fail-closed regression locks: TC-EV1120-018.
-- #1145 closed: workbench twin retained; Profiles-page AC waived (ADR-044).
+- #1145 closed: workbench twin retained; Profiles-page AC waived .
 - Epic #1120 closed 2026-09-29. Residual: #1149 count/error clarity.

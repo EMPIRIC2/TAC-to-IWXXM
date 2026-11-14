@@ -4,7 +4,7 @@
 # (not inherited). ICAO prefer resolves exact stations first, then the longest
 # station_prefix (e.g. military KBIX beats the US K prefix).
 # engine: rule pack id. deltas: token suppressions. recorded: noted differences.
-# [Corpus: product §F36] [Corpus: adr/ADR-046]
+# [Corpus: product §F36]
 
 schema_version: 1
 profiles:

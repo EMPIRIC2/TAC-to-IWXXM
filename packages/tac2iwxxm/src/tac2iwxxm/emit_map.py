@@ -1,4 +1,4 @@
-"""Declarative convert emit maps (ADR-047 / #1229).
+"""Declarative convert emit maps (#1229).
 
 Builtin YAML under ``data/emit_maps/`` selects the python plugin for
 ``profile x product x iwxxm_version``. Optional ``TAC2IWXXM_EMIT_MAP_DIR`` overlays
@@ -288,7 +288,7 @@ def load_emit_map_catalog() -> dict[str, EmitMap]:
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (load_emit_map_catalog)
+    >>> 1 + 1 # docstring smoke (load_emit_map_catalog)
     2
     """
     overlay_key = os.environ.get(ENV_EMIT_MAP_DIR, "").strip()
@@ -354,7 +354,7 @@ def resolve_emit_map(
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (resolve_emit_map)
+    >>> 1 + 1 # docstring smoke (resolve_emit_map)
     2
     """
     maps = catalog if catalog is not None else load_emit_map_catalog()
@@ -407,7 +407,7 @@ def emit_plugin_sentinel(
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (emit_plugin_sentinel)
+    >>> 1 + 1 # docstring smoke (emit_plugin_sentinel)
     2
     """
     del ir
@@ -449,7 +449,7 @@ def emit_with_map(
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (emit_with_map)
+    >>> 1 + 1 # docstring smoke (emit_with_map)
     2
     """
     mapped = resolve_emit_map(
@@ -470,7 +470,7 @@ def clear_emit_map_catalog_cache() -> None:
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (clear_emit_map_catalog_cache)
+    >>> 1 + 1 # docstring smoke (clear_emit_map_catalog_cache)
     2
     """
     _CATALOG_CACHE.clear()
@@ -488,7 +488,7 @@ def check_emit_map_overlay_dir(directory: Path | str) -> None:
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (check_emit_map_overlay_dir)
+    >>> 1 + 1 # docstring smoke (check_emit_map_overlay_dir)
     2
     """
     path = Path(directory)

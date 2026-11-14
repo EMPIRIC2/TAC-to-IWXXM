@@ -1,7 +1,5 @@
 #!/usr/bin/env python3
-"""ADR-048 Python docstring presence + Examples + NumPy shape checker.
-
-[Corpus: adr/ADR-048] [Corpus: docstrings]
+""" Python docstring presence + Examples + NumPy shape checker. [Corpus: docstrings]
 
 Scans in-scope product trees. Exit 0 when clean; prints violations otherwise.
 """
@@ -51,7 +49,7 @@ ATTRIBUTES_RE = re.compile(r"(?m)^Attributes\s*\n----------+")
 
 
 def _should_skip(path: Path) -> bool:
-    """Return True when ``path`` is outside the ADR-048 product scan."""
+    """Return True when ``path`` is outside the product scan."""
     parts = path.as_posix()
     if any(part in parts for part in SKIP_PATH_PARTS):
         return True
@@ -152,7 +150,7 @@ def _doc_ok_public_class(doc: str | None) -> list[str]:
         return ["missing docstring"]
     if ATTRIBUTES_RE.search(doc) or PARAMS_RE.search(doc):
         return []
-    # Module-style one-liner classes still need Attributes OR Parameters per ADR-048
+    # Module-style one-liner classes still need Attributes OR Parameters per
     return ["missing Attributes or Parameters section"]
 
 
@@ -177,7 +175,7 @@ def check_file(path: Path) -> list[str]:
     missing: list[str] = []
 
     class Visitor(ast.NodeVisitor):
-        """Walk AST collecting ADR-048 docstring violations."""
+        """Walk AST collecting docstring violations."""
 
         def __init__(self) -> None:
             self._stub_depth = 0
@@ -253,7 +251,7 @@ def iter_in_scope(root: Path) -> list[Path]:
     files: list[Path] = []
     for pattern in IN_SCOPE_GLOBS:
         for base in root.glob(pattern):
-            if not base.exists():  # pragma: no cover - Path.glob never yields missing paths
+            if not base.exists(): # pragma: no cover - Path.glob never yields missing paths
                 continue
             if base.is_file() and base.suffix == ".py" and not _should_skip(base):
                 files.append(base)

@@ -18,7 +18,7 @@ _PLANNING_IDS = re.compile(
 )
 
 # Exception text must not be copied into the operator-visible error body.
-_POISON = "ADR-022 EV-048 #951 TC-F7-002 [Corpus: api] docs/sessions/x docs/feature-list S011 UJ-016 E11-31 F21"
+_POISON = " EV-048 #951 TC-F7-002 [Corpus: api] docs/sessions/x docs/feature-list S011 UJ-016 E11-31 F21"
 
 _LOAD_ERRORS = (OSError, TypeError, ValueError, RuntimeError)
 _TARGETS = (
