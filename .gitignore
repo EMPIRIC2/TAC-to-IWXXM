@@ -246,3 +246,6 @@ third_party/
 
 # Quality tooling local/CI reports (EV-quality-tooling-suite)
 .quality-reports.cursor/hooks/**/__pycache__/
+
+# setuptools metadata (never commit)
+*.egg-info/
