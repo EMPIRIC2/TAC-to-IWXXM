@@ -8,7 +8,6 @@ in-repo tests that previously imported them via the deleted
 from __future__ import annotations
 
 # pyright: reportPrivateUsage=false
-from tac2iwxxm.profiles.annex3_emit.airmet import emit_airmet_annex3
 from tac2iwxxm.profiles.annex3_emit.sigmet import (
     _is_wmo_sigmet_multi_location_va_yudd,
     _is_wmo_sigmet_va_eggx,
@@ -21,6 +20,7 @@ from tac2iwxxm.profiles.annex3_emit.sigmet import (
     emit_convective_sigmet_annex3,
     emit_sigmet_annex3,
 )
+from tac2iwxxm.profiles.annex3_emit.airmet import emit_airmet_annex3
 from tac2iwxxm.profiles.annex3_emit.swxa import (
     _assert_swxa_advisory_xml,
     _swxa_analysis_xml,

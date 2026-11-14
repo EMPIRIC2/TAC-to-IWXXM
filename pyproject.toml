@@ -93,6 +93,24 @@ exclude = [
   "frontend/dist",
   # ADR-027 generated xsdata trees (T3.7)
   "packages/shared/src/metar_shared/iwxxm_xsd/v*",
+  # tac2iwxxm split parts/shared/loaders exec'd into package ns (EV-tac2iwxxm-models-split)
+  # Public types come from sibling __init__.pyi stubs.
+  "packages/tac2iwxxm/src/tac2iwxxm/**/_part*.py",
+  "packages/tac2iwxxm/src/tac2iwxxm/**/_shared.py",
+  "packages/tac2iwxxm/src/tac2iwxxm/bulletin/__init__.py",
+  "packages/tac2iwxxm/src/tac2iwxxm/conversion_templates/__init__.py",
+  "packages/tac2iwxxm/src/tac2iwxxm/convert/__init__.py",
+  "packages/tac2iwxxm/src/tac2iwxxm/emit_map/__init__.py",
+  "packages/tac2iwxxm/src/tac2iwxxm/exchange_output/__init__.py",
+  "packages/tac2iwxxm/src/tac2iwxxm/library_yaml/__init__.py",
+  "packages/tac2iwxxm/src/tac2iwxxm/profiles/annex3/__init__.py",
+  "packages/tac2iwxxm/src/tac2iwxxm/profiles/annex3_emit/sigmet/__init__.py",
+  "packages/tac2iwxxm/src/tac2iwxxm/profiles/ca_eccc/__init__.py",
+  "packages/tac2iwxxm/src/tac2iwxxm/profiles/iwxxm_us/__init__.py",
+  "packages/tac2iwxxm/src/tac2iwxxm/slot_builders/metar_speci/__init__.py",
+  "packages/tac2iwxxm/src/tac2iwxxm/slot_builders/sigmet_airmet/__init__.py",
+  "packages/tac2iwxxm/src/tac2iwxxm/slot_builders/taf/__init__.py",
+  "packages/tac2iwxxm/src/tac2iwxxm/slot_builders/vaa_tca/__init__.py",
 ]
 reportMissingTypeStubs = false
 reportUnknownMemberType = "error"
@@ -235,8 +253,9 @@ max-complexity = 10
 # lxml / PyO3 boundaries — third-party handles without complete stubs (typing-policy)
 "packages/iwxxm-validate/src/iwxxm_validate/{canonical_xml,c14n,native,schematron,xsd}.py" = ["ANN401"]
 # tac2iwxxm exec-namespace splits: _shared imports feed _part bodies via package globals
-"packages/tac2iwxxm/src/tac2iwxxm/**/_shared.py" = ["F401", "F403"]
-"packages/tac2iwxxm/src/tac2iwxxm/**/_part*.py" = ["F821"]
+"packages/tac2iwxxm/src/tac2iwxxm/**/_shared.py" = ["F401", "F403", "I001", "E402"]
+"packages/tac2iwxxm/src/tac2iwxxm/**/_part*.py" = ["F401", "F403", "F405", "F821", "E402", "I001", "D"]
+"packages/tac2iwxxm/src/tac2iwxxm/**/__init__.py" = ["F401", "F403", "F405", "F821", "E402", "I001", "S102"]
 
 [tool.ruff.lint.isort]
 known-first-party = ["gifts", "auth", "shared", "metar_shared"]

@@ -5,6 +5,9 @@ from __future__ import annotations
 from importlib import import_module as _import_module
 from pathlib import Path as _Path
 
+from tac2iwxxm.models import EmitMap as EmitMap
+from tac2iwxxm.models import EmitMapError as EmitMapError
+
 __all__ = [
     "ENV_EMIT_MAP_DIR",
     "EmitMap",

@@ -3,37 +3,6 @@
 from __future__ import annotations
 
 
-class BulletinSplitError(ValueError):
-    """
-    Bulletin or AHL could not be parsed.
-
-    Parameters
-    ----------
-    code : str
-        Machine-readable error (``bulletin_split_failed``, ``empty_bulletin``,
-        or ``invalid_bbb``).
-
-    message : str
-        Human-readable description.
-    """
-
-    def __init__(self, code: str, message: str) -> None:
-        """
-        Store ``code`` and ``message``.
-
-        Parameters
-        ----------
-        code : str
-            Machine-readable error code.
-
-        message : str
-            Human-readable message.
-        """
-        self.code = code
-        self.message = message
-        super().__init__(message)
-
-
 def _unglue_sigmet_ahl(text: str) -> str:
     """
     Insert a newline before an AHL glued onto the previous token.

@@ -16,6 +16,38 @@ from tac2iwxxm.models import AhlParts, BulletinMeta, BulletinSplit
 
 ReportStatus = Literal["NORMAL", "AMENDMENT", "CORRECTION"]
 
+
+class BulletinSplitError(ValueError):
+    """
+    Bulletin or AHL could not be parsed.
+
+    Parameters
+    ----------
+    code : str
+        Machine-readable error (``bulletin_split_failed``, ``empty_bulletin``,
+        or ``invalid_bbb``).
+
+    message : str
+        Human-readable description.
+    """
+
+    def __init__(self, code: str, message: str) -> None:
+        """
+        Store ``code`` and ``message``.
+
+        Parameters
+        ----------
+        code : str
+            Machine-readable error code.
+
+        message : str
+            Human-readable message.
+        """
+        self.code = code
+        self.message = message
+        super().__init__(message)
+
+
 _TAC_TO_IWXXM: dict[str, str] = {
     "SA": "LA",
     "SP": "LP",
