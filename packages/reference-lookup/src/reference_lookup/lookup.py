@@ -3,281 +3,38 @@
 3-letter ids are read from ``navaids.csv``. 4-letter ids are read from
 ``airports.csv`` column ``ident``. A miss, an ambiguous ident, or any
 download error is ``SourceUnavailable``.
+
+Public import paths stay on this module; implementations live in
+``sources``, ``csv_index``, and ``models``.
 """
 
 from __future__ import annotations
 
-import csv
-import io
 import os
-from typing import Protocol, cast
+from typing import cast
 
-import httpx
+from reference_lookup.csv_index import index_csv
+from reference_lookup.exceptions import SourceUnavailable
+from reference_lookup.sources import (
+    AIRPORTS_URL,
+    NAVAIDS_URL,
+    TIMEOUT_SECONDS,
+    CoordinateSource,
+    CsvCoordinateSource,
+    LiveOurAirportsSource,
+    UnavailableSource,
+    read_csvs,
+)
 
-NAVAIDS_URL = "https://davidmegginson.github.io/ourairports-data/navaids.csv"
-AIRPORTS_URL = "https://davidmegginson.github.io/ourairports-data/airports.csv"
-TIMEOUT_SECONDS = 10.0
-
-_IDENT = "ident"
-_LAT = "latitude_deg"
-_LON = "longitude_deg"
-
-
-class SourceUnavailable(Exception):
-    """
-    The public coordinate source could not answer this id.
-
-    Attributes
-    ----------
-    args :
-        Ident or error text passed to the exception.
-    """
-
-
-class CoordinateSource(Protocol):
-    """Something that returns one latitude and longitude for an id."""
-
-    def lookup(self, ident: str) -> tuple[float, float]:
-        """
-        Return ``(lat, lon)`` or raise ``SourceUnavailable``.
-
-        Parameters
-        ----------
-        ident : str
-            3-letter navaid id or 4-letter ICAO indicator.
-
-        Returns
-        -------
-        tuple[float, float]
-            Latitude and longitude in decimal degrees.
-        """
-        ...
-
-
-class _Unavailable:
-    """Closed source used while pytest is running."""
-
-    def lookup(self, ident: str) -> tuple[float, float]:
-        """
-        Refuse every id.
-
-        Parameters
-        ----------
-        ident : str
-            Requested identifier.
-
-        Returns
-        -------
-        tuple[float, float]
-            Never returns.
-
-        Raises
-        ------
-        SourceUnavailable
-            Always.
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (lookup)
-        2
-        """
-        raise SourceUnavailable(ident)
-
-
-class CsvCoordinateSource:
-    """
-    Coordinate maps built from OurAirports CSV text.
-
-    Attributes
-    ----------
-    _navaids :
-        3-letter ident to coordinate rows.
-    _airports :
-        4-letter ident to coordinate rows.
-    """
-
-    def __init__(self, navaids_csv: str, airports_csv: str) -> None:
-        """
-        Index navaid and airport rows.
-
-        Parameters
-        ----------
-        navaids_csv : str
-            CSV text with an ``ident`` column.
-
-        airports_csv : str
-            CSV text with an ``ident`` column.
-        """
-        self._navaids = _index(navaids_csv)
-        self._airports = _index(airports_csv)
-
-    def lookup(self, ident: str) -> tuple[float, float]:
-        """
-        Return the one coordinate for ``ident``.
-
-        Parameters
-        ----------
-        ident : str
-            3-letter navaid id or 4-letter ICAO indicator.
-
-        Returns
-        -------
-        tuple[float, float]
-            Latitude and longitude in decimal degrees.
-
-        Raises
-        ------
-        SourceUnavailable
-            When the id is missing, ambiguous, or the wrong shape.
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (lookup)
-        2
-        """
-        key = ident.strip().upper()
-        if len(key) == 3 and key.isalpha():
-            groups = self._navaids
-        elif len(key) == 4 and key.isalnum():
-            groups = self._airports
-        else:
-            raise SourceUnavailable(key)
-        rows = groups.get(key, [])
-        if len(rows) != 1:
-            raise SourceUnavailable(key)
-        return rows[0]
-
-
-class LiveOurAirportsSource:
-    """
-    Download each OurAirports file once per instance, then reuse the maps.
-
-    Attributes
-    ----------
-    _client :
-        Optional injected HTTP client.
-    _parsed :
-        Cached maps after the first successful download.
-    """
-
-    def __init__(self, client: httpx.Client | None = None) -> None:
-        """
-        __init__.
-
-        Parameters
-        ----------
-        client : httpx.Client | None, optional
-            Optional HTTP client. The default client uses a 10-second timeout.
-        """
-        self._client = client
-        self._parsed: CsvCoordinateSource | None = None
-
-    def lookup(self, ident: str) -> tuple[float, float]:
-        """
-        Download on the first call, then answer from memory.
-
-        Parameters
-        ----------
-        ident : str
-            3-letter navaid id or 4-letter ICAO indicator.
-
-        Returns
-        -------
-        tuple[float, float]
-            Latitude and longitude in decimal degrees.
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (lookup)
-        2
-        """
-        if self._parsed is None:
-            self._parsed = self._download()
-        return self._parsed.lookup(ident)
-
-    def _download(self) -> CsvCoordinateSource:
-        """
-        Fetch both CSV files.
-
-        Returns
-        -------
-        CsvCoordinateSource
-            Parsed maps.
-
-        Raises
-        ------
-        SourceUnavailable
-            When the download or the CSV text fails.
-        """
-        if self._client is None:
-            with httpx.Client(timeout=TIMEOUT_SECONDS) as client:
-                return _read(client)
-        return _read(self._client)
-
-
-def _index(csv_text: str) -> dict[str, list[tuple[float, float]]]:
-    """
-    Group coordinate rows by ident.
-
-    Parameters
-    ----------
-    csv_text : str
-        OurAirports CSV text.
-
-    Returns
-    -------
-    dict[str, list[tuple[float, float]]]
-        Ident to every parsed coordinate. More than one row is ambiguous.
-    """
-    reader = csv.DictReader(io.StringIO(csv_text))
-    names = reader.fieldnames or []
-    if _IDENT not in names or _LAT not in names or _LON not in names:
-        raise SourceUnavailable("missing coordinate columns")
-    grouped: dict[str, list[tuple[float, float]]] = {}
-    for row in reader:
-        ident = (row.get(_IDENT) or "").strip().upper()
-        if not ident:
-            continue
-        lat_text = (row.get(_LAT) or "").strip()
-        lon_text = (row.get(_LON) or "").strip()
-        if not lat_text or not lon_text:
-            continue
-        try:
-            point = (float(lat_text), float(lon_text))
-        except ValueError as exc:
-            raise SourceUnavailable(ident) from exc
-        grouped.setdefault(ident, []).append(point)
-    return grouped
-
-
-def _read(client: httpx.Client) -> CsvCoordinateSource:
-    """
-    Download both files with ``client`` and parse them.
-
-    Parameters
-    ----------
-    client : httpx.Client
-        HTTP client.
-
-    Returns
-    -------
-    CsvCoordinateSource
-        Parsed maps.
-    """
-    try:
-        navaids = client.get(NAVAIDS_URL)
-        airports = client.get(AIRPORTS_URL)
-        navaids.raise_for_status()
-        airports.raise_for_status()
-        return CsvCoordinateSource(navaids.text, airports.text)
-    except (httpx.HTTPError, ValueError, csv.Error) as exc:
-        raise SourceUnavailable(str(exc)) from exc
-
+# Compatibility aliases for private helpers used by existing tests.
+_index = index_csv
+_read = read_csvs
+_Unavailable = UnavailableSource
 
 _override: CoordinateSource | None = None
 _override_set = False
 _live: LiveOurAirportsSource | None = None
-_UNAVAILABLE = _Unavailable()
+_UNAVAILABLE = UnavailableSource()
 
 
 def set_coordinate_source(source: CoordinateSource | None) -> None:
@@ -370,3 +127,19 @@ def lookup_coordinate(ident: str) -> tuple[float, float]:
         raise
     except Exception as exc:
         raise SourceUnavailable(ident) from exc
+
+
+__all__ = [
+    "AIRPORTS_URL",
+    "NAVAIDS_URL",
+    "TIMEOUT_SECONDS",
+    "CoordinateSource",
+    "CsvCoordinateSource",
+    "LiveOurAirportsSource",
+    "SourceUnavailable",
+    "UnavailableSource",
+    "current_source",
+    "live_source",
+    "lookup_coordinate",
+    "set_coordinate_source",
+]
