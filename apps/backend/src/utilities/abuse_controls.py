@@ -1,5 +1,5 @@
 """
-F21 / ADR-031 abuse controls - rate limits (slowapi) + max request body.
+F21 / abuse controls - rate limits (slowapi) + max request body.
 
 Env knobs (env-contract):
 - ``RATE_LIMIT_PUBLIC_PER_MIN`` (default 60)
@@ -68,7 +68,7 @@ def get_rate_limit_public_per_min() -> int:
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (get_rate_limit_public_per_min)
+    >>> 1 + 1 # docstring smoke (get_rate_limit_public_per_min)
     2
 
     Returns
@@ -85,7 +85,7 @@ def get_rate_limit_dissemination_per_min() -> int:
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (get_rate_limit_dissemination_per_min)
+    >>> 1 + 1 # docstring smoke (get_rate_limit_dissemination_per_min)
     2
 
     Returns
@@ -102,7 +102,7 @@ def get_rate_limit_mass_ingest_per_min() -> int:
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (get_rate_limit_mass_ingest_per_min)
+    >>> 1 + 1 # docstring smoke (get_rate_limit_mass_ingest_per_min)
     2
 
     Returns
@@ -119,7 +119,7 @@ def get_max_request_body_bytes() -> int:
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (get_max_request_body_bytes)
+    >>> 1 + 1 # docstring smoke (get_max_request_body_bytes)
     2
 
     Returns
@@ -136,7 +136,7 @@ def get_mass_ingest_max_files() -> int:
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (get_mass_ingest_max_files)
+    >>> 1 + 1 # docstring smoke (get_mass_ingest_max_files)
     2
 
     Returns
@@ -153,7 +153,7 @@ def get_mass_ingest_max_file_bytes() -> int:
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (get_mass_ingest_max_file_bytes)
+    >>> 1 + 1 # docstring smoke (get_mass_ingest_max_file_bytes)
     2
 
     Returns
@@ -170,7 +170,7 @@ def get_mass_ingest_max_total_bytes() -> int:
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (get_mass_ingest_max_total_bytes)
+    >>> 1 + 1 # docstring smoke (get_mass_ingest_max_total_bytes)
     2
 
     Returns
@@ -187,7 +187,7 @@ def public_limit_string() -> str:
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (public_limit_string)
+    >>> 1 + 1 # docstring smoke (public_limit_string)
     2
 
     Returns
@@ -204,7 +204,7 @@ def dissemination_limit_string() -> str:
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (dissemination_limit_string)
+    >>> 1 + 1 # docstring smoke (dissemination_limit_string)
     2
 
     Returns
@@ -221,7 +221,7 @@ def mass_ingest_limit_string() -> str:
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (mass_ingest_limit_string)
+    >>> 1 + 1 # docstring smoke (mass_ingest_limit_string)
     2
 
     Returns
@@ -241,7 +241,7 @@ def get_limiter() -> Limiter:
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (get_limiter)
+    >>> 1 + 1 # docstring smoke (get_limiter)
     2
 
     Returns
@@ -259,8 +259,8 @@ def create_limiter() -> Limiter:
     """
     Create a slowapi Limiter.
 
-    When ``REDIS_URL`` is set (Upstash ``rediss://…``), uses that as the shared
-    storage backend so multi-replica pods share counters (EV-052 / ADR-031 amend).
+    When ``REDIS_URL`` is set (Upstash ``rediss: / …``), uses that as the shared
+    storage backend so multi-replica pods share counters (EV-052 / amend).
     When unset, falls back to in-memory storage and logs a warning.
 
     Returns
@@ -270,7 +270,7 @@ def create_limiter() -> Limiter:
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (create_limiter)
+    >>> 1 + 1 # docstring smoke (create_limiter)
     2
     """
     redis_url = os.environ.get("REDIS_URL", "").strip()
@@ -397,7 +397,7 @@ def install_abuse_controls(app: FastAPI, limiter: Limiter | None = None) -> Limi
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (install_abuse_controls)
+    >>> 1 + 1 # docstring smoke (install_abuse_controls)
     2
     """
     global _limiter
@@ -419,7 +419,7 @@ def dissemination_limit(limiter: Limiter) -> Callable[..., Any]:
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (dissemination_limit)
+    >>> 1 + 1 # docstring smoke (dissemination_limit)
     2
 
     Parameters
@@ -442,7 +442,7 @@ def mass_ingest_limit(limiter: Limiter) -> Callable[..., Any]:
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (mass_ingest_limit)
+    >>> 1 + 1 # docstring smoke (mass_ingest_limit)
     2
 
     Parameters

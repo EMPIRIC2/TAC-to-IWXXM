@@ -3,7 +3,7 @@
 Offline callers inject bulletins and a check function. The live command is
 ``make test-live-profile``.
 
-[Corpus: tests §TC-LIVE-PROFILE] [Corpus: product §F6] [Corpus: adr/ADR-036]
+[Corpus: tests §TC-LIVE-PROFILE] [Corpus: product §F6]
 """
 
 from __future__ import annotations

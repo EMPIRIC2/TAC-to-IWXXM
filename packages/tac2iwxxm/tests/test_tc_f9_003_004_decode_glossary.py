@@ -1,7 +1,7 @@
 """TC-F9-003 / TC-F9-004 - decode glossary registry (S026 / EV-020 T5.1 / F9 deepen).
 
 Plain-English token meanings from official/near-official tables with YAML
-overrides (ADR-032 / E20-E2). OpenAIP/F3 miss keeps ICAO designator (no fail).
+overrides (E20-E2). OpenAIP/F3 miss keeps ICAO designator (no fail).
 """
 
 from __future__ import annotations
@@ -46,7 +46,7 @@ def test_tc_f9_003_airmet_isol_stnr_wkn_meanings() -> None:
     stnr = _explanation_for(AIRMET_GOLDEN, "AIRMET", "STNR")
     wkn = _explanation_for(AIRMET_GOLDEN, "AIRMET", "WKN")
     assert "isolated" in isol.lower()
-    assert "stationar" in stnr.lower()  # stationary / stationary
+    assert "stationar" in stnr.lower() # stationary / stationary
     assert "weaken" in wkn.lower()
 
 
@@ -110,7 +110,7 @@ def test_tc_f9_004_yaml_override_wins(tmp_path: Path, monkeypatch: pytest.Monkey
 
     override = tmp_path / "decode_glossary.yaml"
     override.write_text(
-        "tokens:\n  OBSC: totally hidden for test\n  ZZTEST: custom override only\n",
+        "tokens:\n OBSC: totally hidden for test\n ZZTEST: custom override only\n",
         encoding="utf-8",
     )
     monkeypatch.setenv("TAC2IWXXM_DECODE_GLOSSARY_PATH", str(override))

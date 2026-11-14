@@ -1,6 +1,6 @@
 """TC-F15-001 - CI gate: every emitted Issue.code must be registered (E11-27).
 
-Fails CI when rules emit an unknown code (ADR-028 / F15). Complements the registry
+Fails CI when rules emit an unknown code (F15). Complements the registry
 API tests in ``test_tc_f15_001_issue_registry.py``.
 """
 
@@ -22,7 +22,7 @@ _RULE_MODULES = (PACKAGE_SRC / "rules.py", PACKAGE_SRC / "product_rules.py")
 
 
 def _assert_registered(code: str) -> None:
-    by_code(code)  # raises KeyError if unknown
+    by_code(code) # raises KeyError if unknown
 
 
 def test_unknown_code_gate_rejects_unregistered_issue() -> None:
@@ -53,7 +53,7 @@ def test_lint_fixture_emissions_are_registered() -> None:
     ):
         product_arg = product if product in PRODUCTS or product == "NOPE" else "METAR"
         report = (
-            lint(tac, product="NOPE")  # type: ignore[arg-type]
+            lint(tac, product="NOPE") # type: ignore[arg-type]
             if product == "NOPE"
             else lint(tac, product=product_arg)
         )

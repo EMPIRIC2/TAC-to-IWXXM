@@ -1,4 +1,4 @@
-"""In-memory per-user rate limiter for dissemination preflight/send (ADR-029)."""
+"""In-memory per-user rate limiter for dissemination preflight/send ."""
 
 from __future__ import annotations
 
@@ -66,7 +66,7 @@ class DisseminationRateLimiter:
 
         Examples
         --------
-        >>> 1 + 1  # docstring smoke (check)
+        >>> 1 + 1 # docstring smoke (check)
         2
         """
         ts = time.time() if now is None else now
@@ -85,7 +85,7 @@ class DisseminationRateLimiter:
 
         Examples
         --------
-        >>> 1 + 1  # docstring smoke (reset)
+        >>> 1 + 1 # docstring smoke (reset)
         2
 
         Parameters

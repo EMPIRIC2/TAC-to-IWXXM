@@ -9,8 +9,8 @@ export {
 } from './playwright-supabase-auth';
 
 /**
- * E2E helpers for the public app (F21 Amended / F22 / F31 / ADR-031).
- *
+ * E2E helpers for the public app (F21 Amended / F22 / F31).
+
  * Guest convert remains public ({@link openPublicConverter}). Optional Auth login
  * fixtures are restored for UJ-046 / TC-F31-003..004 (E2E_USER_* or ADMIN_*).
  */
@@ -41,7 +41,7 @@ export function isDoksProvisionalPlaywright(): boolean {
 
 /**
  * Extra headers for API request fixture against provisional DOKS LB IP.
- *
+
  * Chromium resolves placeholder FE/API hosts via `--host-resolver-rules`; Node's
  * request context does not — callers hit `LIVE_API_URL` (LB IP) with Host.
  */
@@ -121,7 +121,7 @@ export async function openPublicConverter(page: Page): Promise<void> {
 /**
  * Leave the Calmer Convert empty hero so convert-shell / Settings / Expand
  * parameters are available. Types a seed METAR (no example chip — #1436).
- *
+
  * Prefer {@link openPublicConverter} alone when a test asserts empty-hero UX.
  */
 export async function leaveCalmEmptyHero(page: Page): Promise<void> {
@@ -180,7 +180,7 @@ export async function gotoRegister(page: Page): Promise<void> {
 
 /**
  * Sign in with E2E_USER_* / ADMIN_* and return to the converter (UJ-046).
- *
+
  * Requires credentials in the environment; used for TC-F31-003/004 live paths.
  */
 export async function loginAsE2EUser(page: Page): Promise<void> {
@@ -218,7 +218,7 @@ export async function openConverterWithMockSession(page: Page): Promise<void> {
 
 /**
  * Local T2 path: F21 public app — open converter without login/JWT.
- *
+
  * Leaves the calm empty hero intact. Call {@link leaveCalmEmptyHero},
  * {@link fillManualTac}, or {@link openConvertSettings} when shell chrome is required.
  */
@@ -286,13 +286,13 @@ export async function selectInputMode(page: Page, mode: E2eInputMode): Promise<v
 
 /**
  * Replace the manual TAC editor contents with the given METAR/SPECI text.
- *
+
  * @param page - Playwright page hosting the converter.
  * @param metar - TAC string to insert.
  */
 /**
  * Fill the manual TAC editor and click the convert button.
- *
+
  * @param page - Playwright page hosting the converter.
  * @param metar - TAC string to convert.
  */
@@ -303,7 +303,7 @@ export async function convertManualMetar(page: Page, metar: string): Promise<voi
 
 /**
  * Ensure the Results drawer is open after convert.
- *
+
  * @param page - Playwright page hosting the converter.
  * @param timeoutMs - Max wait for the drawer after convert.
  */
@@ -321,7 +321,7 @@ export async function ensureConvertResultsDrawerOpen(
 
 /**
  * Open the Results → IWXXM tab and wait for Live IWXXM XML (conversion output).
- *
+
  * @param page - Playwright page hosting the converter.
  * @param timeoutMs - Max wait for preview XML after convert.
  */
@@ -343,10 +343,10 @@ export async function openConvertIwxxmTab(
 
 /**
  * Open the Results drawer Downloads tab (file management rows only).
- *
+
  * After convert the drawer defaults to IWXXM preview; Downloads lists files for
  * download/copy/remove. Conversion XML lives on the IWXXM tab.
- *
+
  * @param page - Playwright page hosting the converter.
  * @param timeoutMs - Max wait for the drawer after convert.
  */
@@ -375,7 +375,7 @@ export async function openConvertDownloadsTab(
 
 /**
  * Open Results → Decoder (decode panel lives in the declutter drawer).
- *
+
  * @param page - Playwright page hosting the converter.
  */
 export async function openConvertDecoderTab(page: Page): Promise<void> {
@@ -387,10 +387,10 @@ export async function openConvertDecoderTab(page: Page): Promise<void> {
 
 /**
  * Open Results → Console (status strip + conversion error log when present).
- *
+
  * Post-F37 / calm Convert: WorkbenchConsole was removed from this tab; the shell
  * is `convert-console-panel` (LiveConvertStatusStrip + optional ErrorLogPanel).
- *
+
  * @param page - Playwright page hosting the converter.
  */
 export async function openConvertConsoleTab(page: Page): Promise<void> {
@@ -402,7 +402,7 @@ export async function openConvertConsoleTab(page: Page): Promise<void> {
 
 /**
  * Open Settings and click Disseminate / open-dissemination-drawer.
- *
+
  * @param page - Playwright page hosting the converter.
  */
 export async function openDisseminationDrawerFromSettings(page: Page): Promise<void> {
@@ -417,7 +417,7 @@ export async function openDisseminationDrawerFromSettings(page: Page): Promise<v
 
 /**
  * Clear pending files and manual TAC via Settings (Clear is no longer top-bar).
- *
+
  * @param page - Playwright page hosting the converter.
  */
 export async function clearConvertWorkbench(page: Page): Promise<void> {
@@ -432,7 +432,7 @@ export async function clearConvertWorkbench(page: Page): Promise<void> {
 
 /**
  * Seed a work session into the F21 IndexedDB store (`tac-work-sessions`).
- *
+
  * Must run after the origin is loaded (same origin as the app).
  */
 export async function seedLocalWorkSession(

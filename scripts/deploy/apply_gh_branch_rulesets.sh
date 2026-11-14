@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Apply GitHub rulesets for stage + main (requires repo admin).
-# Traces: F30 AC11 / TC-F30-011 / ADR-034 / #886
+# Traces: F30 AC11 / TC-F30-011 / #886
 # EV-061 / #1015 / TC-EV061-1015 / D-S071-ci — stricter stage→main required checks.
 set -euo pipefail
 

@@ -1,5 +1,5 @@
 /**
- * Soft-preview checkbox for convert ``preview=true`` (UJ-016 / ADR-022).
+ * Soft-preview checkbox for convert ``preview=true`` (UJ-016 ).
  */
 
 /** Operator-visible label (scanned by TC-EV048-003). */
@@ -22,7 +22,7 @@ export interface SoftPreviewControlProps {
 
 /**
  * Toggle soft-preview mode on convert requests.
- *
+
  * @param props.checked - Whether soft-preview is enabled
  * @param props.onChange - Called with the next checked state
  * @example

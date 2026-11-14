@@ -1,7 +1,7 @@
 # IN_IMD — India IMD compat overlay (P2)
 
-> **Profile id**: `IN_IMD` · **Kind**: semantic · **Priority**: P2 · **Status**: implemented (EV-094 deepen / [#1098](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1098); kickoff EV-089 / [#920](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/920))  
-> **Path**: compat · **ADR**: [ADR-036](../../../adr/ADR-036-semantic-vs-exchange-profiles.md)
+> **Profile id**: `IN_IMD` · **Kind**: semantic · **Priority**: P2 · **Status**: implemented (EV-094 deepen / [#1098](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1098); kickoff EV-089 / [#920](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/920))
+> **Path**: compat · **ADR**: architecture decision
 
 Compat pack for IMD METAR/SPECI/TAF/SIGMET. Indian TAFs commonly omit TX/TN temperature
 extremes. EV-094 adds a **lint profile overlay** (`in_imd` / `IN_IMD`) that emits a

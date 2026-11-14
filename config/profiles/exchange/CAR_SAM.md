@@ -1,7 +1,7 @@
 # CAR_SAM — Caribbean / South America regional exchange overlay
 
-> **Profile id**: `CAR_SAM` · **Kind**: exchange · **Priority**: P2 · **Status**: **stub** (EV-086 P0 / EV-090 mining promote / [#921](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/921))  
-> **Catalog row**: [`catalog.yaml`](../catalog.yaml) · **ADR**: [ADR-036](../../../adr/ADR-036-semantic-vs-exchange-profiles.md)
+> **Profile id**: `CAR_SAM` · **Kind**: exchange · **Priority**: P2 · **Status**: **stub** (EV-086 P0 / EV-090 mining promote / [#921](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/921))
+> **Catalog row**: [`catalog.yaml`](../catalog.yaml) · **ADR**: architecture decision
 
 Regional **exchange** overlay for ICAO CAR/SAM. P0 stub delegates to the
 `GLOBAL_AFS` COLLECT baseline. Shared AFS exchange baseline is the OPMET Guidelines;

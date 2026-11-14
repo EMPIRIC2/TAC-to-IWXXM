@@ -1,7 +1,7 @@
 # AU_BOM — Australia BoM semantic overlay (P1)
 
-> **Profile id**: `AU_BOM` · **Kind**: semantic · **Priority**: P1 · **Status**: implemented (EV-087 / [#917](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/917); deepen EV-regional-dialect-profiles)  
-> **Catalog row**: [`catalog.yaml`](../catalog.yaml) · **ADR**: [ADR-036](../../../adr/ADR-036-semantic-vs-exchange-profiles.md) · [ADR-046](../../../adr/ADR-046-validation-policy-layers.md)
+> **Profile id**: `AU_BOM` · **Kind**: semantic · **Priority**: P1 · **Status**: implemented (EV-087 / [#917](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/917); deepen EV-regional-dialect-profiles)
+> **Catalog row**: [`catalog.yaml`](../catalog.yaml) · **ADR**: architecture decision · architecture decision
 
 Bureau of Meteorology national semantic overlay: TAF change-group `INTER`, TAF3 service
 marker in RMK, forecast T/Q remarks, and AUTO METAR/SPECI tokens (`NCD`, `UP`, solidi).
@@ -11,7 +11,7 @@ marker in RMK, forecast T/Q remarks, and AUTO METAR/SPECI tokens (`NCD`, `UP`, s
 `station_prefixes: [Y]` — default-`annex3` Australian `Y*` TAFs prefer `au_bom`, and
 `au_bom` binds the shared `taf-prob-period-info-quality` policy so standalone
 `PROB`/`PROB`+`INTER` period without TEMPO is **info** (not a soft warning). Annex 3
-still keeps full missing `tt/td` as error; BoM AUTO dewpoint-nil `tt///` is
+still keeps full missing `tt/td` as error; BoM AUTO dewpoint-nil `tt / /` is
 **dewpoint-not-observable info** (narrow grammar), not a blanket `MISSING_TEMP_DEWPOINT`
 severity remap.
 

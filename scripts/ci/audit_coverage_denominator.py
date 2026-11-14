@@ -54,7 +54,7 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[2]
 
 # Whole-file omit patterns that are allowed (generated code and test files only).
-# ADR-027: generated xsdata trees under iwxxm_xsd/v*.
+# : generated xsdata trees under iwxxm_xsd/v*.
 ALLOWED_OMIT_MARKERS = (
     "iwxxm_xsd/v",
     "tests/",

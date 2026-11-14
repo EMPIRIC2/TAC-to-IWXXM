@@ -1,4 +1,4 @@
-"""MET workflow YAML executor — ``execute(message, workflow)`` (ADR-042)."""
+"""MET workflow YAML executor — ``execute(message, workflow)`` ."""
 
 from __future__ import annotations
 

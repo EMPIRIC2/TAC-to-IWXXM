@@ -1,6 +1,6 @@
 """TC-F37-013 inventory locks for EV-map-results-qa.
 
-[Corpus: product §F37] [Corpus: product §F28] [Corpus: adr/ADR-052] [Corpus: tests]
+[Corpus: product §F37] [Corpus: product §F28] [Corpus: tests]
 """
 
 from __future__ import annotations

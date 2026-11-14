@@ -1,7 +1,7 @@
 # EUR_RODEX — European regional exchange overlay
 
-> **Profile id**: `EUR_RODEX` · **Kind**: exchange · **Priority**: P2 · **Status**: **stub** (EV-086 P0 / EV-090 mining promote / [#921](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/921))  
-> **Catalog row**: [`catalog.yaml`](../catalog.yaml) · **ADR**: [ADR-036](../../../adr/ADR-036-semantic-vs-exchange-profiles.md)
+> **Profile id**: `EUR_RODEX` · **Kind**: exchange · **Priority**: P2 · **Status**: **stub** (EV-086 P0 / EV-090 mining promote / [#921](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/921))
+> **Catalog row**: [`catalog.yaml`](../catalog.yaml) · **ADR**: architecture decision
 
 Regional **exchange** overlay for EUR RODEX / IWXXM OPMET practice. P0 stub
 delegates to the `GLOBAL_AFS` COLLECT baseline: same bulletin shell, registry id,

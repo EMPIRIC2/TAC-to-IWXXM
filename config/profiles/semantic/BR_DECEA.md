@@ -1,7 +1,7 @@
 # BR_DECEA — Brazil DECEA thin overlay (P2)
 
-> **Profile id**: `BR_DECEA` · **Kind**: semantic · **Priority**: P2 · **Status**: implemented (EV-094 deepen / [#1098](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1098); prior EV-089 / #920 closed)  
-> **Catalog row**: [`catalog.yaml`](../catalog.yaml) · **Path**: thin · **ADR**: [ADR-036](../../../adr/ADR-036-semantic-vs-exchange-profiles.md)
+> **Profile id**: `BR_DECEA` · **Kind**: semantic · **Priority**: P2 · **Status**: implemented (EV-094 deepen / [#1098](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1098); prior EV-089 / #920 closed)
+> **Catalog row**: [`catalog.yaml`](../catalog.yaml) · **Path**: thin · **ADR**: architecture decision
 
 Brazil DECEA/ANAC semantic overlay extending `ICAO_2025` for METAR/SPECI/TAF/SIGMET/AIRMET.
 SAM regional exchange packaging is **noted** only; deepen stays on [#921](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/921).

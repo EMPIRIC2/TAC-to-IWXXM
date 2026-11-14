@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Portable install: OpenGrep, 2ms, KICS, Grype, Microsoft SBOM Tool.
-# Vendored for CI (no ~/.cursor/skills dependency). [Corpus: adr-037]
+# Vendored for CI (no ~/.cursor/skills dependency). [Corpus: ]
 # Installs to ~/.local/share/security-static-analysis/{bin,assets} (or SEC_TOOLS_DIR).
 set -euo pipefail
 

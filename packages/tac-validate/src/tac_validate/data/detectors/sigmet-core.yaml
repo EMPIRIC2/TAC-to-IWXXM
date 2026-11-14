@@ -1,4 +1,4 @@
-# SIGMET core detectors (ADR-046 / M4 #1230).
+# SIGMET core detectors (M4 #1230).
 # Residual: A6 / F23 checklist stays in hatch_sigmet (python) — same honesty class
 # as TAF hatch_taf. Pack id is the YAML SoT entrypoint.
 schema_version: 1

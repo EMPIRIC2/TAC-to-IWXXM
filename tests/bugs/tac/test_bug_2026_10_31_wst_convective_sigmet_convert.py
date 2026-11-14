@@ -7,7 +7,7 @@ Two modes:
 1. Ambiguous OurAirports VOR ids missing from the bundled table (e.g. TOU).
 2. FROM-chain parser not terminating on ``LINE`` / ``DMSHG`` hazard text.
 
-[Corpus: product §F6] [Corpus: adr/ADR-051] [Corpus: tests]
+[Corpus: product §F6] [Corpus: tests]
 """
 
 from __future__ import annotations

@@ -37,7 +37,7 @@ export interface DecodeResidualView {
 export interface DecodePanelProps {
   segments: DecodeSegmentView[];
   residuals: DecodeResidualView[];
-  /** Deterministic plain-language paragraph from decode-tac (F9 / ADR-025). */
+  /** Deterministic plain-language paragraph from decode-tac (F9). */
   summary?: string;
   product?: string;
   loading?: boolean;
@@ -60,7 +60,7 @@ export interface DecodePanelProps {
 
 /**
  * Renders ordered decode segments and explicit residuals.
- *
+
  * @param props.segments - Annotated TAC spans
  * @param props.residuals - Undecoded spans (G4)
  * @param props.summary - Optional plain-language report summary (F9)

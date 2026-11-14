@@ -167,7 +167,7 @@ def test_get_work_session_by_id(work_session_client: TestClient) -> None:
 
 
 def test_admin_list_work_sessions_removed(work_session_client: TestClient) -> None:
-    """S011 / ADR-021: admin work-sessions list is not mounted."""
+    """S011 / : admin work-sessions list is not mounted."""
     response = work_session_client.get(
         "/admin/work-sessions",
         headers={"Authorization": "Bearer test-token"},
@@ -177,7 +177,7 @@ def test_admin_list_work_sessions_removed(work_session_client: TestClient) -> No
 
 def test_parse_product_filter_valid_and_invalid() -> None:
     assert ws_router._parse_product_filter(None) is None
-    assert ws_router._parse_product_filter("  ") is None
+    assert ws_router._parse_product_filter(" ") is None
     assert ws_router._parse_product_filter("metar,speci") == [
         WorkSessionProduct.METAR,
         WorkSessionProduct.SPECI,

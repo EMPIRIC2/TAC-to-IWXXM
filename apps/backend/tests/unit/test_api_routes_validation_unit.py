@@ -19,7 +19,7 @@ from starlette.responses import Response
 
 
 def _json_payload(response: Any) -> dict[str, Any]:
-    """Decode msgspec/FastAPI Response bodies or pass through plain mappings (ADR-026)."""
+    """Decode msgspec/FastAPI Response bodies or pass through plain mappings ."""
     if isinstance(response, Response):
         return json.loads(response.body)
     if isinstance(response, dict):

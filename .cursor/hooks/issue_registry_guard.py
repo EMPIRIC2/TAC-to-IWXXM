@@ -25,7 +25,7 @@ _SKIP_NAME_PARTS = (
     "/tests/",
     "\\tests\\",
     "conftest.py",
-    "models.py",  # Issue.severity field type docs / Struct
+    "models.py", # Issue.severity field type docs / Struct
 )
 
 
@@ -103,7 +103,7 @@ def main() -> int:
     context = (
         f"[issue-registry-guard] '{rel_str}' contains severity string literal(s) "
         f"near line(s) {', '.join(map(str, line_nos))}. "
-        "Per F15/ADR-028, prefer importing default severity from the tac-validate "
+        "Per F15/, prefer importing default severity from the tac-validate "
         "issue registry (not ad-hoc severity= in rule bodies). "
         "Registry module and tests are exempt."
     )

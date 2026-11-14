@@ -1,4 +1,4 @@
-"""Extensible decode glossary - official tables + YAML overrides (F9 / ADR-032).
+"""Extensible decode glossary - official tables + YAML overrides (F9).
 
 Merge order: official/near-official meanings first, then YAML overlay
 (``decode_glossary.yaml`` / ``TAC_DECODING_GLOSSARY_PATH`` or legacy
@@ -130,7 +130,7 @@ def set_location_name_resolver(resolver: LocationNameResolver | None) -> None:
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (set_location_name_resolver)
+    >>> 1 + 1 # docstring smoke (set_location_name_resolver)
     2
     """
     global _location_name_resolver
@@ -196,7 +196,7 @@ def resolve_location_name(icao: str) -> str | None:
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (resolve_location_name)
+    >>> 1 + 1 # docstring smoke (resolve_location_name)
     2
     """
     designator = icao.strip().upper()
@@ -283,7 +283,7 @@ def load_glossary() -> dict[str, str]:
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (load_glossary)
+    >>> 1 + 1 # docstring smoke (load_glossary)
     2
     """
     overlay: dict[str, str] = {}
@@ -305,7 +305,7 @@ def reload_glossary() -> dict[str, str]:
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (reload_glossary)
+    >>> 1 + 1 # docstring smoke (reload_glossary)
     2
     """
     load_glossary.cache_clear()
@@ -328,7 +328,7 @@ def meaning_for(token: str) -> str:
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (meaning_for)
+    >>> 1 + 1 # docstring smoke (meaning_for)
     2
     """
     return load_glossary().get(token.upper(), "")
@@ -353,7 +353,7 @@ def explain_glossary_token(token: str, *, fallback: str | None = None) -> str | 
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (explain_glossary_token)
+    >>> 1 + 1 # docstring smoke (explain_glossary_token)
     2
     """
     meaning = meaning_for(token)

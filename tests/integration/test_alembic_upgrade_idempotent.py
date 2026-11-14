@@ -40,12 +40,12 @@ REQUIRED_SESSION_COLUMNS = frozenset(
 
 def _to_psycopg_url(url: str) -> str:
     """Normalize container/env URLs to SQLAlchemy psycopg v3 dialect."""
-    if url.startswith("postgresql+asyncpg://"):
-        return "postgresql+psycopg://" + url.removeprefix("postgresql+asyncpg://")
-    if url.startswith("postgresql+psycopg2://"):
-        return "postgresql+psycopg://" + url.removeprefix("postgresql+psycopg2://")
-    if url.startswith("postgresql://"):
-        return "postgresql+psycopg://" + url.removeprefix("postgresql://")
+    if url.startswith("postgresql+asyncpg: / "):
+        return "postgresql+psycopg: / " + url.removeprefix("postgresql+asyncpg: / ")
+    if url.startswith("postgresql+psycopg2: / "):
+        return "postgresql+psycopg: / " + url.removeprefix("postgresql+psycopg2: / ")
+    if url.startswith("postgresql: / "):
+        return "postgresql+psycopg: / " + url.removeprefix("postgresql: / ")
     return url
 
 
@@ -91,7 +91,7 @@ def test_alembic_upgrade_head_twice_idempotent(alembic_database_url: str) -> Non
         conn.execute(text("CREATE SCHEMA public"))
 
     _run_upgrade_head(url)
-    _run_upgrade_head(url)  # second pass must be a no-op (Alembic version table)
+    _run_upgrade_head(url) # second pass must be a no-op (Alembic version table)
 
     insp = inspect(engine)
     assert "tac_work_sessions" in insp.get_table_names()
@@ -104,8 +104,8 @@ def test_alembic_upgrade_head_twice_idempotent(alembic_database_url: str) -> Non
 
     with engine.connect() as conn:
         ver = conn.execute(text("SELECT version_num FROM alembic_version")).scalar_one()
-        assert ver  # at head
-        # Product CHECK includes swxa (F28 / ADR-020 deepen).
+        assert ver # at head
+        # Product CHECK includes swxa (F28 / deepen).
         check_rows = conn.execute(
             text(
                 """

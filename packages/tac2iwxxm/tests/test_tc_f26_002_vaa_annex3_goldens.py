@@ -2,7 +2,7 @@
 
 Asserts WMO ``va-advisory-A7-2`` is in the annex3 pack, root
 ``iwxxm:VolcanicAshAdvisory``, convert → M-xsd/M-sch, and ``canonicalize_xml``
-equals vendor golden under default convert settings (ADR-032 / E21-2).
+equals vendor golden under default convert settings (E21-2).
 
 Always write "F26 theme V3" (not F23 VA-SIGMET V3) - D-S027-EV021-s02m1-1.
 """

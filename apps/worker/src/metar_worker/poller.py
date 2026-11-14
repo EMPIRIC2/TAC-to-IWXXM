@@ -1,4 +1,4 @@
-"""HTTPS / object-prefix ingest poller (Q16=A / ADR-018)."""
+"""HTTPS / object-prefix ingest poller (Q16=A )."""
 
 from __future__ import annotations
 
@@ -43,7 +43,7 @@ def safe_url_for_log(url: str) -> str:
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (safe_url_for_log)
+    >>> 1 + 1 # docstring smoke (safe_url_for_log)
     2
 
     Parameters
@@ -135,7 +135,7 @@ def fetch_jobs(
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (fetch_jobs)
+    >>> 1 + 1 # docstring smoke (fetch_jobs)
     2
     """
     url = validate_ingest_poller_url(url)

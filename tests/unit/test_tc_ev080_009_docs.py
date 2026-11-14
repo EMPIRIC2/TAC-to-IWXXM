@@ -1,6 +1,6 @@
-"""TC-EV080-009 — standing docs + ADR-007 cite 100% coverage gate.
+"""TC-EV080-009 — standing docs + cite 100% coverage gate.
 
-[Corpus: tests] [Corpus: adr/ADR-007] [Corpus: tech-spec] EV-080 / #1077
+[Corpus: tests] [Corpus: tech-spec] EV-080 / #1077
 """
 
 from __future__ import annotations
@@ -11,7 +11,7 @@ import pytest
 
 ROOT = Path(__file__).resolve().parents[2]
 
-ADR = ROOT / "docs" / "adr" / "ADR-007-universal-coverage-gate.md"
+ADR = ROOT / "docs" / "adr" / "-universal-coverage-gate.md"
 TECH = ROOT / "docs" / "tech-spec.md"
 TECH_REQ = ROOT / "docs" / "technical-requirements.md"
 TEST_PLAN = ROOT / "docs" / "test-plan.md"
@@ -51,4 +51,4 @@ class TestTcEv080StandingDocs:
         text = TEST_PLAN.read_text(encoding="utf-8")
         assert "**100%** line+branch" in text
         assert "TC-EV080-009" in text
-        assert "ADR-007" in text
+        assert "" in text

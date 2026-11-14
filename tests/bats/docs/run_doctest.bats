@@ -1,4 +1,4 @@
-# scripts/docs/run_doctest.sh — bats coverage (ADR-048)
+# scripts/docs/run_doctest.sh — bats coverage
 
 load "${BATS_TEST_DIRNAME}/../helpers/load"
 

@@ -1,4 +1,4 @@
-"""Shared sink adapter Protocol for F16-F19 dissemination (E14-05 / ADR-030).
+"""Shared sink adapter Protocol for F16-F19 dissemination (E14-05 ).
 
 Concrete sinks (DB, WIS2, EDIS, F19 staging stubs) expose the same preflight/send
 shape so the drawer and thin backend routers can dispatch by ``sink_type``.
@@ -28,7 +28,7 @@ class SinkAdapter(Protocol):
 
         Examples
         --------
-        >>> 1 + 1  # docstring smoke (sink_type)
+        >>> 1 + 1 # docstring smoke (sink_type)
         2
 
         Returns
@@ -55,7 +55,7 @@ class SinkAdapter(Protocol):
 
         Examples
         --------
-        >>> 1 + 1  # docstring smoke (preflight)
+        >>> 1 + 1 # docstring smoke (preflight)
         2
 
         Parameters
@@ -91,7 +91,7 @@ class SinkAdapter(Protocol):
 
         Examples
         --------
-        >>> 1 + 1  # docstring smoke (send)
+        >>> 1 + 1 # docstring smoke (send)
         2
 
         Parameters

@@ -1,4 +1,4 @@
-"""Follow-on adapters from xsdata pydantic models (ADR-027 / T3.7).
+"""Follow-on adapters from xsdata pydantic models (T3.7).
 
 Validate hot path stays Rust (`iwxxm-validate`). These helpers expose version
 discovery and a stable seam for later msgspec/Rust adapt tasks - they do not
@@ -71,7 +71,7 @@ def import_version_leaf(version: str, leaf: str = "xlink") -> ModuleType:
     if existing is None or not hasattr(existing, "__path__"):
         stub = types.ModuleType(pkg)
         stub.__file__ = str(version_dir / "__init__.py")
-        stub.__path__ = [str(version_dir)]  # type: ignore[attr-defined]
+        stub.__path__ = [str(version_dir)] # type: ignore[attr-defined]
         stub.__package__ = pkg
         sys.modules[pkg] = stub
 
@@ -79,7 +79,7 @@ def import_version_leaf(version: str, leaf: str = "xlink") -> ModuleType:
 
 
 def pydantic_to_msgspec(_model: object) -> object:
-    """Placeholder for msgspec Struct adaptation (ADR-027 follow-on).
+    """Placeholder for msgspec Struct adaptation ( follow-on).
 
     Raises
     ------
@@ -88,12 +88,12 @@ def pydantic_to_msgspec(_model: object) -> object:
 
     """
     raise NotImplementedError(
-        "msgspec adaptation of xsdata pydantic models is a follow-on (ADR-027)"
+        "msgspec adaptation of xsdata pydantic models is a follow-on "
     )
 
 
 def pydantic_to_rust_hint(_model: object) -> str:
-    """Placeholder for Rust type-hint export (ADR-027 follow-on).
+    """Placeholder for Rust type-hint export ( follow-on).
 
     Raises
     ------
@@ -102,5 +102,5 @@ def pydantic_to_rust_hint(_model: object) -> str:
 
     """
     raise NotImplementedError(
-        "Rust adapt hints from xsdata pydantic models are a follow-on (ADR-027)"
+        "Rust adapt hints from xsdata pydantic models are a follow-on "
     )

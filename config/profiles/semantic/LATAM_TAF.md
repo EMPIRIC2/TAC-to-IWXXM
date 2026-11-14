@@ -1,8 +1,8 @@
 # LATAM_TAF — Latin America TAF lint
 
-> **Profile id**: `LATAM_TAF` · **Wire / lint id**: `latam_taf`  
-> **Kind**: semantic · **Priority**: P2 · **Status**: implemented (EV-regional-dialect-profiles)  
-> **Catalog row**: [`catalog.yaml`](../catalog.yaml) · **ADR**: [ADR-036](../../../adr/ADR-036-semantic-vs-exchange-profiles.md) · [ADR-046](../../../adr/ADR-046-validation-policy-layers.md)
+> **Profile id**: `LATAM_TAF` · **Wire / lint id**: `latam_taf`
+> **Kind**: semantic · **Priority**: P2 · **Status**: implemented (EV-regional-dialect-profiles)
+> **Catalog row**: [`catalog.yaml`](../catalog.yaml) · **ADR**: architecture decision · architecture decision
 
 Lint profile for Latin American TAFs that put TX/TN after FM/BECMG/TEMPO.
 Convert uses core IWXXM (`annex3`). This is not `BR_DECEA`; the stations are in

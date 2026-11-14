@@ -1,4 +1,4 @@
-"""Generated IWXXM pydantic models (xsdata / ADR-027).
+"""Generated IWXXM pydantic models (xsdata ).
 
 Regenerate with ``make codegen-iwxxm-xsd``. Prefer leaf imports via
 ``metar_shared.iwxxm_xsd.adapt.import_version_leaf`` - version package

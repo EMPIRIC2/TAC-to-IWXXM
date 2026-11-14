@@ -1,6 +1,6 @@
 """TC-EV053-001 / T1.3 - Vitest branches ≥95; FileConverter in coverage set.
 
-[Corpus: tests] [Corpus: adr/ADR-007] EV-053 / #968
+[Corpus: tests] EV-053 / #968
 """
 
 from __future__ import annotations

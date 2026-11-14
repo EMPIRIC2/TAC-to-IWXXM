@@ -1,5 +1,5 @@
 # Temporary EV-049 migration allowlist — clear entries as packages are exact-pinned
-# [Corpus: adr-037] [Corpus: WAIVED — full exact-pin remmediation deferred for existing ranges; decided: EV-049]
+# [Corpus: ] [Corpus: WAIVED — full exact-pin remmediation deferred for existing ranges; decided: EV-049]
 
 apps/backend/pyproject.toml:metar-shared
 apps/backend/pyproject.toml:tac2iwxxm

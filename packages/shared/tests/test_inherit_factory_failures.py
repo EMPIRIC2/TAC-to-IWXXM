@@ -1,4 +1,4 @@
-"""Inherit-factory FAILURE / validation edges (ADR-055)."""
+"""Inherit-factory FAILURE / validation edges ."""
 
 from __future__ import annotations
 
@@ -19,7 +19,7 @@ from metar_shared.inherit_factory import (
 def test_resolve_inherit_tree_rejects_blank_product_vs_named_root() -> None:
     root = InheritNode(id="METAR")
     with pytest.raises(ValueError, match="does not match product"):
-        resolve_inherit_tree(root, product="   ")
+        resolve_inherit_tree(root, product=" ")
 
 
 def test_resolve_inherit_tree_rejects_case_mismatched_product_family() -> None:
@@ -31,9 +31,9 @@ def test_resolve_inherit_tree_rejects_case_mismatched_product_family() -> None:
 
 
 def test_normalize_helpers_treat_none_like_empty() -> None:
-    assert normalize_product(None) == ""  # type: ignore[arg-type]
-    assert normalize_profile_id(None) == ""  # type: ignore[arg-type]
-    assert should_prefer_station(profile="  ", product="METAR") is False
+    assert normalize_product(None) == "" # type: ignore[arg-type]
+    assert normalize_profile_id(None) == "" # type: ignore[arg-type]
+    assert should_prefer_station(profile=" ", product="METAR") is False
     assert should_prefer_station(profile="annex3", product="") is False
 
 
@@ -56,7 +56,7 @@ def test_resolve_whitespace_only_layers_are_skipped() -> None:
     bundle = resolve_inherit_tree(
         root,
         product="METAR",
-        region="   ",
+        region=" ",
         country="",
         station="\t",
     )

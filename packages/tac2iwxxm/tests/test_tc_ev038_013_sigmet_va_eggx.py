@@ -1,4 +1,4 @@
-"""TC-EV038-013 - promote sigmet-VA-EGGX to ADR-032 equality (#856 / G3).
+"""TC-EV038-013 - promote sigmet-VA-EGGX to equality (#856 / G3).
 
 Strict gate: convert annex3 of vendor-aligned TAC → ``canonicalize_xml`` equals
 vendor ``sigmet-VA-EGGX.xml`` under default pin. Catalog ``wmoPass`` is TC follow-on
@@ -34,7 +34,7 @@ def test_tc_ev038_013_package_tac_matches_vendor() -> None:
 
 
 def test_tc_ev038_013_canonicalize_equals_vendor() -> None:
-    """ADR-032 strict equality vs vendor (S046 / EV-038 / #856)."""
+    """ strict equality vs vendor (S046 / EV-038 / #856)."""
     from tac2iwxxm.slot_builders.sigmet_airmet import parse_sigmet
 
     from tac2iwxxm import convert

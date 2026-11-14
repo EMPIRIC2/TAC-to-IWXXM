@@ -1,7 +1,6 @@
 """Bind lint/emit profile ids to TAC quality policy document ids.
 
-Owned by tac-validate so lint paths do not import tac2iwxxm (ADR-055).
-[Corpus: adr/ADR-055] [Corpus: adr/ADR-046] [Corpus: product §F15]
+Owned by tac-validate so lint paths do not import tac2iwxxm . [Corpus: product §F15]
 """
 
 from __future__ import annotations
@@ -46,7 +45,7 @@ def resolve_tac_quality_policy_id(
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (resolve_tac_quality_policy_id)
+    >>> 1 + 1 # docstring smoke (resolve_tac_quality_policy_id)
     2
     """
     override = tac_policy.strip() if isinstance(tac_policy, str) and tac_policy.strip() else ""

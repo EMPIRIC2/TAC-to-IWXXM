@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 # S019 / EV-014 T0.1 — coverage gate for packages/dissemination (F16–F19).
-#
+
 # Until T1.1/T1.2 scaffold the package, this script exits 0 with a skip notice
 # so CI matrix / Makefile targets can land in 06-tech-tooling without failing.
 # When the package exists, enforce 95% branch coverage (sibling package bar;
-# ADR-007 universal ≥95%).
+# universal ≥95%).
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"

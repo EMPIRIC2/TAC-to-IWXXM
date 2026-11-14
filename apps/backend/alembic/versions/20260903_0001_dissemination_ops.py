@@ -1,4 +1,4 @@
-"""Dissemination ops tables (EV-936 / ADR-041 / ADR-040).
+"""Dissemination ops tables (EV-936 ).
 
 Revision ID: 20260903_0001
 Revises: 20260803_0001
@@ -28,7 +28,7 @@ def upgrade() -> None:
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (upgrade)
+    >>> 1 + 1 # docstring smoke (upgrade)
     2
     """
     op.create_table(
@@ -165,7 +165,7 @@ def downgrade() -> None:
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (downgrade)
+    >>> 1 + 1 # docstring smoke (downgrade)
     2
     """
     op.drop_table("tac_mapping_configs")

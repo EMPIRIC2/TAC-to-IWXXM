@@ -1,4 +1,4 @@
-"""M4 layout checks - packages/auth restored (F31 / ADR-033 / EV-031)."""
+"""M4 layout checks - packages/auth restored (F31 / EV-031)."""
 
 from __future__ import annotations
 
@@ -16,7 +16,7 @@ class TestM4AuthPackageRestored:
 
     def test_packages_auth_directory_present(self) -> None:
         assert PACKAGES_AUTH.is_dir(), (
-            "packages/auth must exist (F31 / ADR-033 / EV-031)"
+            "packages/auth must exist (F31 / EV-031)"
         )
         assert (PACKAGES_AUTH / "pyproject.toml").is_file()
         assert (PACKAGES_AUTH / "src" / "auth" / "jwks.py").is_file()

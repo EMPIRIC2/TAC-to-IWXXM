@@ -1,4 +1,4 @@
-"""Family-aware rule catalog aggregator (ADR-044)."""
+"""Family-aware rule catalog aggregator ."""
 
 from __future__ import annotations
 
@@ -26,7 +26,7 @@ def known_families() -> frozenset[str]:
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (known_families)
+    >>> 1 + 1 # docstring smoke (known_families)
     2
 
     Returns
@@ -60,7 +60,7 @@ def catalog_for_family(family: str, *, product: str | None = None) -> list[dict[
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (catalog_for_family)
+    >>> 1 + 1 # docstring smoke (catalog_for_family)
     2
     """
     key = family.strip().lower()
@@ -132,7 +132,7 @@ def selection_options(kind: str) -> list[dict[str, Any]]:
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (selection_options)
+    >>> 1 + 1 # docstring smoke (selection_options)
     2
     """
     key = kind.strip().lower()

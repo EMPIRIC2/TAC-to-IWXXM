@@ -1,7 +1,6 @@
 """Map pack match spans into convert IR slots.
 
 Span IR stays in ``tac-decoding``. Slot builders (not ``products/*.py``) fill IR.
-[Corpus: adr/ADR-045]
 """
 
 from __future__ import annotations
@@ -69,7 +68,7 @@ def pack_id_for_product(product: str, tac: str) -> str:
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (pack_id_for_product)
+    >>> 1 + 1 # docstring smoke (pack_id_for_product)
     2
     """
     product_u = product.upper()
@@ -119,7 +118,7 @@ def map_spans_to_convert_ir(
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (map_spans_to_convert_ir)
+    >>> 1 + 1 # docstring smoke (map_spans_to_convert_ir)
     2
     """
     product_u = product.upper()

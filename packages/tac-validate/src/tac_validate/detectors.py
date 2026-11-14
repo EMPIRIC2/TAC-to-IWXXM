@@ -1,4 +1,4 @@
-"""Declarative detector packs (ADR-046 / #1216 M2).
+"""Declarative detector packs (#1216 M2).
 
 Small DSL v1: ``finditer`` + ``require_search`` + ``token_scan`` with preprocess
 (before / exclude AHL). Optional ``skip_if_match`` gates rules on a window regex.
@@ -30,7 +30,7 @@ DetectorStage = Literal["parse_gate", "token", "cross_field"]
 DetectorKind = Literal["finditer", "require_search", "python", "token_scan"]
 
 ENV_DETECTOR_DIR = "TAC_VALIDATE_DETECTOR_DIR"
-ENV_DETECTOR_MODE = "TAC_VALIDATE_DETECTOR_MODE"  # legacy | shadow | detector
+ENV_DETECTOR_MODE = "TAC_VALIDATE_DETECTOR_MODE" # legacy | shadow | detector
 DEFAULT_LINT_BUDGET = 10_000
 
 _AHL_HEADING_LINE = re.compile(r"^[A-Z]{2}[A-Z]{2}\d{2}\s+[A-Z]{4}\s+\d{6}(?:\s+[A-Z]{3})?\s*$")
@@ -503,7 +503,7 @@ def load_detector_pack(path: Path | str) -> DetectorPack:
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (load_detector_pack)
+    >>> 1 + 1 # docstring smoke (load_detector_pack)
     2
 
     Parameters
@@ -673,7 +673,7 @@ def load_detector_catalog(profile: str | None = None) -> dict[str, DetectorPack]
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (load_detector_catalog)
+    >>> 1 + 1 # docstring smoke (load_detector_catalog)
     2
 
     Parameters
@@ -714,7 +714,7 @@ def detector_mode() -> Literal["legacy", "shadow", "detector"]:
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (detector_mode)
+    >>> 1 + 1 # docstring smoke (detector_mode)
     2
 
     Returns
@@ -906,7 +906,7 @@ def run_detector_pack(
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (run_detector_pack)
+    >>> 1 + 1 # docstring smoke (run_detector_pack)
     2
 
     Returns
@@ -1018,7 +1018,7 @@ def issue_keys(issues: Sequence[Issue]) -> frozenset[tuple[str, int | None, int 
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (issue_keys)
+    >>> 1 + 1 # docstring smoke (issue_keys)
     2
 
     Parameters
@@ -1045,7 +1045,7 @@ def compare_shadow(
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (compare_shadow)
+    >>> 1 + 1 # docstring smoke (compare_shadow)
     2
 
     Parameters
@@ -1073,7 +1073,7 @@ def run_r2_visibility_detectors(tac_text: str, product: str) -> list[Issue]:
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (run_r2_visibility_detectors)
+    >>> 1 + 1 # docstring smoke (run_r2_visibility_detectors)
     2
 
     Parameters
@@ -1109,7 +1109,7 @@ def run_theme_pack(pack_id: str, tac_text: str, product: str) -> list[Issue]:
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (run_theme_pack)
+    >>> 1 + 1 # docstring smoke (run_theme_pack)
     2
 
     Parameters
@@ -1171,7 +1171,7 @@ def example_python_hatch(tac_text: str, product: str) -> list[Issue]:
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (example_python_hatch)
+    >>> 1 + 1 # docstring smoke (example_python_hatch)
     2
 
     Parameters
@@ -1196,7 +1196,7 @@ def example_python_hatch_emit(tac_text: str, product: str) -> list[Issue]:
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (example_python_hatch_emit)
+    >>> 1 + 1 # docstring smoke (example_python_hatch_emit)
     2
 
     Parameters

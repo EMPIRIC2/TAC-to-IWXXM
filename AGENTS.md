@@ -5,7 +5,7 @@ hotfix triage work, read the rows below that apply. Do not invent alternate
 document sets.
 
 > Skills and rules must cite paths from this file (for example
-> `[Corpus: system-spec]`, `[Corpus: adr/ADR-00N]` when a local ADR copy exists).
+> `[Corpus: system-spec]` (and other CORPUS.md rows)).
 >
 > Default load is the **engineering spine** only. Local trees listed under
 > **Local opt-in** are not in git. Keep them on disk for agent work when needed.
@@ -55,7 +55,7 @@ These paths stay on the developer machine. Clones do not receive them.
 
 | Path | When |
 |------|------|
-| `docs/adr/` | Architecture decisions (`ADR-NNN`) — local only, not tracked |
+| `docs/adr/` | Architecture decision records — local only, not tracked |
 | `docs/decisions/` | Interview / evolve decision logs |
 | `docs/domain/`, `docs/engineering/`, `docs/ops/` | Domain mining, engineering notes, ops runbooks |
 | `docs/guides/`, `docs/integration/`, `docs/policies/` | Guides and policy notes |

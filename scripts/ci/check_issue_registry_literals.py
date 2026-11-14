@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Hard-fail (when strict) on ad-hoc severity literals in tac-validate rule modules.
 
-Pre-commit / CI helper for F15 (ADR-028). Set ``ISSUE_REGISTRY_GUARD_STRICT=1``
+Pre-commit / CI helper for F15 . Set ``ISSUE_REGISTRY_GUARD_STRICT=1``
 (T2.2a) to exit non-zero on hits; without it, prints WARN and exits 0.
 """
 
@@ -47,19 +47,19 @@ def main(argv: list[str]) -> int:
         for i, line in enumerate(text.splitlines(), 1):
             if _SEVERITY_LIT.search(line):
                 findings.append(
-                    f"{path}:{i}: severity literal — use issue registry (F15/ADR-028)"
+                    f"{path}:{i}: severity literal — use issue registry (F15)"
                 )
 
     if findings:
         mode = "ERROR" if strict else "WARN"
         print(f"[issue-registry-guard:{mode}] {len(findings)} hit(s):")
         for f in findings[:20]:
-            print(f"  {f}")
+            print(f" {f}")
         if len(findings) > 20:
-            print(f"  … +{len(findings) - 20} more")
+            print(f" … +{len(findings) - 20} more")
         if strict:
             return 1
-        print("  (advisory — set ISSUE_REGISTRY_GUARD_STRICT=1 for hard-fail)")
+        print(" (advisory — set ISSUE_REGISTRY_GUARD_STRICT=1 for hard-fail)")
     return 0
 
 

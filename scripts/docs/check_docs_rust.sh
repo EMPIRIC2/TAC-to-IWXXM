@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
-# ADR-048 Rust documentation gate.
+# Rust documentation gate.
 # Prefer: missing_docs deny + cargo test --doc (pure-Rust examples, no Python).
-# [Corpus: adr/ADR-048]
+
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"

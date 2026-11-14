@@ -2,7 +2,7 @@
 name = "tac2iwxxm_rust"
 version = "2026.11.5+1"
 edition = "2021"
-description = "PyO3 native hotspots for tac2iwxxm (ADR-017)"
+description = "PyO3 native hotspots for tac2iwxxm "
 license = "MIT"
 rust-version = "1.74"
 

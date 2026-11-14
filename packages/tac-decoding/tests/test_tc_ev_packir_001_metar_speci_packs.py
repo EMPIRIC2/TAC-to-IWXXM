@@ -1,6 +1,6 @@
 """TC-EV-PACKIR-001 — METAR/SPECI builtin packs cover vendor golden peers.
 
-[Corpus: tests] [Corpus: adr/ADR-045]
+[Corpus: tests]
 """
 
 from __future__ import annotations

@@ -1,4 +1,4 @@
-"""Ingest pipeline: workflows.execute (F8 / ADR-018 / ADR-042)."""
+"""Ingest pipeline: workflows.execute (F8)."""
 
 from __future__ import annotations
 
@@ -8,7 +8,7 @@ from typing import Any
 from metar_worker.poller import IngestJob
 from workflows import WorkflowMessage, execute
 
-# Map ADR-042 stage ids → legacy PipelineResult.stage_failed / issue stage names.
+# Map stage ids → legacy PipelineResult.stage_failed / issue stage names.
 _LEGACY_STAGE = {
     "validate-tac": "lint",
     "convert-iwxxm": "convert",
@@ -58,14 +58,14 @@ def process_job(
     workflow_id: str = "f8-metar-ingest-default",
 ) -> PipelineResult:
     """
-    Run ``execute(message, workflow)`` for one job (ADR-042).
+    Run ``execute(message, workflow)`` for one job .
 
     Failures quarantine (caller writes quarantine row); success is store-ready.
     ``profile`` / ``iwxxm_version`` override YAML when provided (worker Settings).
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (process_job)
+    >>> 1 + 1 # docstring smoke (process_job)
     2
 
     Parameters

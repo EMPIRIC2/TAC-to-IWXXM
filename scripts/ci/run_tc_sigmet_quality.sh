@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # EV-029 / E29-T4 — TC SIGMET quality pack (M7 / TC-EV029-004 + F23 deepen / #738).
-# EV-032 / E32-T7 / T1.5 — also runs #835 A6-2-TC ADR-032 equality + catalog wmoPass.
+# EV-032 / E32-T7 / T1.5 — also runs #835 A6-2-TC equality + catalog wmoPass.
 # Separate per-family pack (WC / TropicalCycloneSIGMET); complements gen + VA packs.
 # Path-filtered companion to per-family workflows; does not replace ci.yml.
 # Note: no dedicated tac-validate F23 TC registry pack yet — lint coverage is via
@@ -14,7 +14,7 @@ UV="${UV:-uv}"
 
 echo "==> A6-2-TC equality + catalog wmoPass (long pack)"
 ${UV} run pytest \
-  packages/tac2iwxxm/tests/test_tc_ev032_002_a6_2_tc_adr032_equality.py \
+  packages/tac2iwxxm/tests/test_tc_ev032_002_a6_2_tc_equality.py \
   packages/tac2iwxxm/tests/test_tc_ev032_003_a6_2_tc_catalog_wmo_pass.py \
   packages/tac2iwxxm/tests/test_tc_ev030_005_sigmet_a6_2_tc_catalog.py \
   --no-cov -v --tb=short

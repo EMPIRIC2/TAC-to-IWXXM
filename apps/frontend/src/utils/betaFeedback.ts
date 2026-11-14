@@ -1,6 +1,6 @@
 /**
- * Shared beta feedback URL and operator copy (EV-1150 / ADR-043).
- *
+ * Shared beta feedback URL and operator copy (EV-1150 ).
+
  * Plain-language only — no internal planning vocabulary.
  */
 

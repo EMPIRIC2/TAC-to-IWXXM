@@ -1,4 +1,4 @@
-"""Semantic profile id registry (F35 / ADR-036).
+"""Semantic profile id registry (F35).
 
 Canonical semantic ids map to internal emitter keys (`annex3` / `iwxxm_us`).
 Legacy aliases remain accepted during the deprecation window ([#1025](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1025)).
@@ -119,7 +119,7 @@ def normalize_profile_id(profile: str) -> str:
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (normalize_profile_id)
+    >>> 1 + 1 # docstring smoke (normalize_profile_id)
     2
     """
     return profile.strip().lower().replace("-", "_")
@@ -141,7 +141,7 @@ def resolve_semantic_profile(profile: str) -> ResolvedSemanticProfile | None:
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (resolve_semantic_profile)
+    >>> 1 + 1 # docstring smoke (resolve_semantic_profile)
     2
     """
     norm = normalize_profile_id(profile)
@@ -172,7 +172,7 @@ def known_semantic_profile_ids() -> frozenset[str]:
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (known_semantic_profile_ids)
+    >>> 1 + 1 # docstring smoke (known_semantic_profile_ids)
     2
     """
     return _KNOWN_WIRE_IDS
@@ -189,7 +189,7 @@ def canonical_semantic_profile_wire_ids() -> tuple[str, ...]:
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (canonical_semantic_profile_wire_ids)
+    >>> 1 + 1 # docstring smoke (canonical_semantic_profile_wire_ids)
     2
     """
     return tuple(sorted(key.upper() for key in _CANONICAL_TO_EMIT))
@@ -211,7 +211,7 @@ def supported_iwxxm_versions_for_profile(profile: str) -> frozenset[str]:
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (supported_iwxxm_versions_for_profile)
+    >>> 1 + 1 # docstring smoke (supported_iwxxm_versions_for_profile)
     2
     """
     resolved = resolve_semantic_profile(profile)
@@ -238,7 +238,7 @@ def supported_report_variants_for_profile(profile: str, product: str) -> frozens
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (supported_report_variants_for_profile)
+    >>> 1 + 1 # docstring smoke (supported_report_variants_for_profile)
     2
     """
     resolved = resolve_semantic_profile(profile)

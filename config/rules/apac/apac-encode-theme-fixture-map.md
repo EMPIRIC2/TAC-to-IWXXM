@@ -1,16 +1,16 @@
 # APAC encode theme → fixture map — S030 / EV-023 (T0.1)
 
-**Date**: 2026-07-30  
-**Task**: T0.1  
-**Issue**: [#800](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/800)  
+**Date**: 2026-07-30
+**Task**: T0.1
+**Issue**: [#800](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/800)
 **Authority**: Runtime SoT `vendor/manifest.json` → IWXXM **v2025-2**. FAQ / 2019 Manual /
 translation suite XML = **informative** only.
 
-**Seeds**:  
-- [icao-apac-iwxxm-faqs-3rd-2025-mining-notes.md](../../../domain/mining/icao-apac-iwxxm-faqs-3rd-2025-mining-notes.md)  
-- [codes-wmo-int-aviation-mining-notes.md](../../../domain/mining/codes-wmo-int-aviation-mining-notes.md)  
-- [iwxxm-translation-parity-mining-notes.md](../../../domain/mining/iwxxm-translation-parity-mining-notes.md)  
-- [WMO-306-vI-3-2019-upd-2021-mining-notes.md](../../../domain/mining/WMO-306-vI-3-2019-upd-2021-mining-notes.md)  
+**Seeds**:
+- [icao-apac-iwxxm-faqs-3rd-2025-mining-notes.md](../../../domain/mining/icao-apac-iwxxm-faqs-3rd-2025-mining-notes.md)
+- [codes-wmo-int-aviation-mining-notes.md](../../../domain/mining/codes-wmo-int-aviation-mining-notes.md)
+- [iwxxm-translation-parity-mining-notes.md](../../../domain/mining/iwxxm-translation-parity-mining-notes.md)
+- [WMO-306-vI-3-2019-upd-2021-mining-notes.md](../../../domain/mining/WMO-306-vI-3-2019-upd-2021-mining-notes.md)
 - Standing: `IWXXM_CONVERSION.md`, `IWXXM_VALIDATION.md`, `COVERAGE_MATRIX.md`
 
 ## Keep-green (regression)
@@ -21,7 +21,7 @@ translation suite XML = **informative** only.
 | F23–F25 WMO packs | S025/S026 |
 | F26/F27 VAA/TCA | S027 |
 
-Do **not** treat `*-translation-failed.*` as happy-path goldens (ADR-032 / prior quality bars).
+Do **not** treat `*-translation-failed.*` as happy-path goldens (prior quality bars).
 
 ---
 
@@ -46,7 +46,7 @@ Do **not** treat `*-translation-failed.*` as happy-path goldens (ADR-032 / prior
 | Role | Path / cue |
 |------|------------|
 | No WX group | `Amd79-80-2023/metar/LTCN-282350Z.tac`; `EDDH-290020Z.tac` (NSW / empty weather) |
-| AUTO `//` WX | `…/metar/CWFD-290000Z.tac` → `notObservable` / related AUTO nils |
+| AUTO ` / ` WX | `…/metar/CWFD-290000Z.tac` → `notObservable` / related AUTO nils |
 | AUTO vis | `…/metar/ENFB-282350Z.tac` |
 | URI families | Prefer official 2025-2 example vocabulary: usually `codes.wmo.int/common/nil/…`; use `iwxxm/nil` only where XSD `vocabulary=` requires |
 | Guidance | `vendor/schemas/iwxxm/2025-2/IWXXM/examples/TAC-to-XML-Guidance.txt` |

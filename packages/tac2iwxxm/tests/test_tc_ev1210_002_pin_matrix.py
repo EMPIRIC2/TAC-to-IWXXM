@@ -2,7 +2,7 @@
 
 Compare every vendor example that is already on disk. Shadow must not change
 convert XML. Do not fetch missing older copies. Do not delete legacy parsers
-or the version matrix. [Corpus: tests] [Corpus: adr/ADR-045]
+or the version matrix. [Corpus: tests]
 """
 
 from __future__ import annotations

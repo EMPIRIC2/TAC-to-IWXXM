@@ -37,7 +37,7 @@ def _scan_text(path: Path, pattern: re.Pattern[str]) -> list[str]:
 
 @pytest.mark.migration
 class TestTcM004NoSubmoduleReferences:
-    """Big-bang PR removes all submodule machinery (ADR-003)."""
+    """Big-bang PR removes all submodule machinery ."""
 
     def test_gitmodules_file_absent(self) -> None:
         gitmodules = ROOT / ".gitmodules"

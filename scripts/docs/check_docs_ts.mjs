@@ -1,12 +1,12 @@
 #!/usr/bin/env node
 /**
- * ADR-048 TypeScript documentation checker.
- *
+ * TypeScript documentation checker.
+
  * Presence: every function/class/method (exported and non-exported) needs TSDoc.
  * Exported symbols also need an executable @example (run via run_ts_examples.mjs).
  * Class methods and interface/type members are included (D-EVDOC-LINT-03).
- *
- * [Corpus: adr/ADR-048]
+
+
  */
 import fs from "node:fs";
 import path from "node:path";
@@ -170,14 +170,13 @@ export function analyze(text) {
         }
       }
     } else if (block === "iface") {
-      // Interface method signatures: name(...): Type  (not call sites like foo(false);)
-      const methodSig = line.match(
-        /^\s+(?:readonly\s+)?([A-Za-z_]\w*)\s*\([^)]*\)\s*:/,
+      // Interface method signatures: name(...): Type (not call sites like foo(false);)
+      const methodSig = line.match(^\s+(?:readonly\s+)?([A-Za-z_]\w*)\s*\([^)]*\)\s*:/,
       );
       const name = methodSig?.[1];
       if (name && name !== "constructor" && !CONTROL.has(name)) {
         const indent = line.match(/^\s*/)?.[0].length ?? 0;
-        if (indent > blockIndent && !trimmed.startsWith("//") && !trimmed.startsWith("*")) {
+        if (indent > blockIndent && !trimmed.startsWith(" / ") && !trimmed.startsWith("*")) {
           record(lines, i, name, false, "member", missingDoc, missingExample);
         }
       }
@@ -230,7 +229,7 @@ function precedingJsdoc(lines, lineIdx) {
   }
   if (!chunk.length) return null;
   const text = chunk.join("\n");
-  return /\/\*\*[\s\S]*?\*\//.test(text) ? text : null;
+  return /\/\*\*[\s\S]*?\*\ .test(text) ? text : null;
 }
 
 function main() {

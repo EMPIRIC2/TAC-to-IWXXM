@@ -1,7 +1,7 @@
 """AMHS / SWIM / AFS staging sink stubs (F19 / S-EV014-M2 / E14-05).
 
 Staging/test path is required this cycle; live AMHS/SWIM/AFS demos are optional.
-Stubs enforce the shared ``SinkAdapter`` contract + ADR-029 allowlist without
+Stubs enforce the shared ``SinkAdapter`` contract + allowlist without
 calling live protocol libraries.
 """
 
@@ -164,7 +164,7 @@ class StagingSinkAdapter:
 
         Examples
         --------
-        >>> 1 + 1  # docstring smoke (sink_type)
+        >>> 1 + 1 # docstring smoke (sink_type)
         2
 
         Returns
@@ -192,7 +192,7 @@ class StagingSinkAdapter:
 
         Examples
         --------
-        >>> 1 + 1  # docstring smoke (preflight)
+        >>> 1 + 1 # docstring smoke (preflight)
         2
 
         Parameters
@@ -237,7 +237,7 @@ class StagingSinkAdapter:
 
         Examples
         --------
-        >>> 1 + 1  # docstring smoke (send)
+        >>> 1 + 1 # docstring smoke (send)
         2
 
         Parameters
@@ -290,12 +290,12 @@ def get_staging_sink(sink_type: F19SinkName | str) -> StagingSinkAdapter:
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (get_staging_sink)
+    >>> 1 + 1 # docstring smoke (get_staging_sink)
     2
     """
     if sink_type not in F19_SINK_TYPES:
         raise ValueError(f"sink_type {sink_type!r} is not an F19 staging adapter")
-    return StagingSinkAdapter(sink_type=sink_type)  # type: ignore[arg-type]
+    return StagingSinkAdapter(sink_type=sink_type) # type: ignore[arg-type]
 
 
 __all__ = [

@@ -4,14 +4,14 @@ Canonical XML means W3C Canonical XML 1.0 (also called C14N). This module
 strips volatile IWXXM attributes, removes whitespace-only text nodes, then
 applies Canonical XML so two documents can match when only formatting differs.
 
-Pipeline (ADR-035 / ``D-S064-c14n-volatile=1``):
+Pipeline (``D-S064-c14n-volatile=1``):
 
 1. Strip volatile attributes (same local-name / UUID-href / ``codes.wmo.int`` href
-   rules as ADR-032 - duplicated here; do not import ``metar_shared``).
+   rules as - duplicated here; do not import ``metar_shared``).
 2. Remove whitespace-only text nodes.
 3. Apply W3C Canonical XML 1.0 (lxml ``method='c14n'``).
 
-Does **not** replace ADR-032 ``metar_shared.xml_canonical.canonicalize_xml`` (no
+Does **not** replace ``metar_shared.xml_canonical.canonicalize_xml`` (no
 sibling reordering; output is real XML, not a Python ``repr``).
 
 Alias names ``c14n_xml`` and ``c14n_equal`` remain for one CalVer window
@@ -27,7 +27,7 @@ import lxml.etree as _lxml_etree
 
 etree: Any = _lxml_etree
 
-# Dynamic IWXXM/GML attributes omitted from Quality-metrics equality (ADR-032 parity).
+# Dynamic IWXXM/GML attributes omitted from Quality-metrics equality ( parity).
 VOLATILE_ATTRS: frozenset[str] = frozenset(
     {
         "id",
@@ -179,7 +179,7 @@ def to_canonical_xml(xml_content: str) -> str:
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (to_canonical_xml)
+    >>> 1 + 1 # docstring smoke (to_canonical_xml)
     2
     """
     try:
@@ -209,7 +209,7 @@ def canonical_xml_equal(left: str, right: str) -> bool:
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (canonical_xml_equal)
+    >>> 1 + 1 # docstring smoke (canonical_xml_equal)
     2
     """
     return to_canonical_xml(left) == to_canonical_xml(right)

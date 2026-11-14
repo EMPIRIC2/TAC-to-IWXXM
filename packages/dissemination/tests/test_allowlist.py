@@ -1,4 +1,4 @@
-"""Allowlist / SSRF helpers - fail-closed + private/metadata deny (T1.3 / ADR-029)."""
+"""Allowlist / SSRF helpers - fail-closed + private/metadata deny (T1.3 )."""
 
 from __future__ import annotations
 
@@ -18,7 +18,7 @@ from dissemination.allowlist import (
 def test_parse_allowlist_empty_or_whitespace_is_empty() -> None:
     assert parse_allowlist(None).entries == ()
     assert parse_allowlist("").entries == ()
-    assert parse_allowlist("  , , ").entries == ()
+    assert parse_allowlist(" , , ").entries == ()
 
 
 def test_parse_allowlist_hosts_and_cidrs() -> None:
@@ -97,7 +97,7 @@ def test_parse_allowlist_rejects_garbage_token() -> None:
 def test_validate_denies_empty_host() -> None:
     al = parse_allowlist("example.com")
     with pytest.raises(EgressDenied, match="empty host"):
-        validate_egress_host("  ", allowlist=al)
+        validate_egress_host(" ", allowlist=al)
 
 
 def test_validate_allows_literal_ip_on_allowlist() -> None:

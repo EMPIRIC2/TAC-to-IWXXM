@@ -1,6 +1,6 @@
 /**
  * Plain-language status for one convert result.
- *
+
  * Valid, valid with notes, or needs attention. An invalid result must not be published.
  */
 
@@ -64,12 +64,12 @@ export interface ResultIssueInput {
 
 const NOTE_SEVERITIES = new Set(['info', 'warning', 'warn', 'note']);
 
-/** Codes that still force needs-attention without blocking download alone (empty: ADR-054). */
+/** Codes that still force needs-attention without blocking download alone (empty: ). */
 const PUBLISH_BLOCKING_CODES = new Set<string>();
 
 /**
  * Error severity blocks publish. Missing severity is an error. Info and warnings are notes.
- *
+
  * @param severity - Engine severity token
  * @returns True when the issue belongs with errors
  * @example
@@ -82,7 +82,7 @@ export function isErrorSeverity(severity: string | null | undefined): boolean {
 
 /**
  * True when an issue code means the XML must not be published.
- *
+
  * @param code - Issue code from convert/validate
  * @returns Whether this code alone blocks publish
  * @example
@@ -95,7 +95,7 @@ export function codeBlocksPublish(code: string | null | undefined): boolean {
 
 /**
  * True when XML text is missing or not well-formed.
- *
+
  * @param xml - Converted XML, when the caller has it
  * @returns True when this text must not be published
  * @example
@@ -120,7 +120,7 @@ export function xmlBlocksPublish(xml: string | null | undefined): boolean {
 
 /**
  * Split errors from notes and choose the card status.
- *
+
  * @param input.errors - Plain error strings from the convert response
  * @param input.issues - Structured issues
  * @param input.xml - IWXXM text for this result
@@ -152,7 +152,7 @@ export function assessResultCard(input: {
     }
     const code = issue.code?.trim();
     const line: ResultCardLine = code ? { message, code } : { message };
-    // ADR-054: code alone never blocks download (PUBLISH_BLOCKING_CODES empty).
+    // : code alone never blocks download (PUBLISH_BLOCKING_CODES empty).
     if (isErrorSeverity(issue.severity)) {
       errors.push(line);
     } else {
@@ -163,7 +163,7 @@ export function assessResultCard(input: {
   const hasCritical = (input.issues ?? []).some(
     (issue) => (issue.severity ?? '').trim().toLowerCase() === 'critical',
   );
-  // ADR-054: IWXXM validation errors are raised but download is allowed with awareness.
+  // : IWXXM validation errors are raised but download is allowed with awareness.
   // Only convert-critical findings, soft-preview ok=false, or unusable XML block download.
   const publishBlocked =
     hasCritical ||
@@ -210,7 +210,7 @@ export function assessResultCard(input: {
 
 /**
  * Assess a converted file, including older cards that have no stored issues.
- *
+
  * @param file.convertedContent - IWXXM text
  * @param file.resultCard - Issues captured when this result was converted
  * @returns Card assessment

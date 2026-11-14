@@ -1,7 +1,7 @@
 """IWXXM-US profile XML writer for METAR/SPECI (F6.b).
 
 Emits WMO annex3 body plus ``iwxxm-us`` extension blocks (Addendum, AerodromePeakWind,
-AerodromeWindShift, AerodromeVariableRVR) per ADR-013 / docs/context/general-tac-iwxxm-converter.md.
+AerodromeWindShift, AerodromeVariableRVR) per / docs/context/general-tac-iwxxm-converter.md.
 """
 
 from __future__ import annotations
@@ -138,37 +138,37 @@ def _observed_lightning_xml(lightning: dict[str, Any]) -> str:
     str
         Return value.
     """
-    parts: list[str] = ["              <iwxxm-us:ObservedLightning>"]
+    parts: list[str] = [" <iwxxm-us:ObservedLightning>"]
     dist = lightning.get("qualitative_distance_href")
     if dist:
-        parts.append(f'                <iwxxm-us:qualitativeDistance xlink:href="{escape(str(dist))}"/>')
+        parts.append(f' <iwxxm-us:qualitativeDistance xlink:href="{escape(str(dist))}"/>')
     freq = lightning.get("frequency_href")
     if freq:
-        parts.append(f'                <iwxxm-us:frequency xlink:href="{escape(str(freq))}"/>')
+        parts.append(f' <iwxxm-us:frequency xlink:href="{escape(str(freq))}"/>')
     typ = lightning.get("type_href")
     if typ:
-        parts.append(f'                <iwxxm-us:type xlink:href="{escape(str(typ))}"/>')
+        parts.append(f' <iwxxm-us:type xlink:href="{escape(str(typ))}"/>')
     sector_raw = lightning.get("sector")
     if isinstance(sector_raw, dict):
         sector = cast(dict[str, Any], sector_raw)
         if sector.get("in_all_quadrants"):
-            parts.append("                <iwxxm-us:sector>")
-            parts.append('                  <iwxxm-us:Sector inAllQuadrants="true"/>')
-            parts.append("                </iwxxm-us:sector>")
+            parts.append(" <iwxxm-us:sector>")
+            parts.append(' <iwxxm-us:Sector inAllQuadrants="true"/>')
+            parts.append(" </iwxxm-us:sector>")
         elif "ccw_deg" in sector and "cw_deg" in sector:
             ccw = _fmt_deg(float(str(sector["ccw_deg"])))
             cw = _fmt_deg(float(str(sector["cw_deg"])))
-            parts.append("                <iwxxm-us:sector>")
-            parts.append("                  <iwxxm-us:Sector>")
+            parts.append(" <iwxxm-us:sector>")
+            parts.append(" <iwxxm-us:Sector>")
             parts.append(
-                f'                    <iwxxm-us:extremeCCWDirection uom="deg">{ccw}</iwxxm-us:extremeCCWDirection>'
+                f' <iwxxm-us:extremeCCWDirection uom="deg">{ccw}</iwxxm-us:extremeCCWDirection>'
             )
             parts.append(
-                f'                    <iwxxm-us:extremeCWDirection uom="deg">{cw}</iwxxm-us:extremeCWDirection>'
+                f' <iwxxm-us:extremeCWDirection uom="deg">{cw}</iwxxm-us:extremeCWDirection>'
             )
-            parts.append("                  </iwxxm-us:Sector>")
-            parts.append("                </iwxxm-us:sector>")
-    parts.append("              </iwxxm-us:ObservedLightning>")
+            parts.append(" </iwxxm-us:Sector>")
+            parts.append(" </iwxxm-us:sector>")
+    parts.append(" </iwxxm-us:ObservedLightning>")
     return "\n".join(parts)
 
 
@@ -193,9 +193,9 @@ def _cloud_character_elem(tag: str, href: str | None, nil_reason: str | None) ->
         Return value.
     """
     if href:
-        return f'              <iwxxm-us:{tag} xlink:href="{escape(href)}"/>'
+        return f' <iwxxm-us:{tag} xlink:href="{escape(href)}"/>'
     if nil_reason:
-        return f'              <iwxxm-us:{tag} nilReason="{escape(nil_reason)}"/>'
+        return f' <iwxxm-us:{tag} nilReason="{escape(nil_reason)}"/>'
     return ""
 
 
@@ -228,7 +228,7 @@ def _character_of_the_sky_xml(sky: dict[str, Any]) -> str:
         sky.get("high_href") if isinstance(sky.get("high_href"), str) else None,
         sky.get("high_nil_reason") if isinstance(sky.get("high_nil_reason"), str) else None,
     )
-    return f"""              <iwxxm-us:CharacterOfTheSky>
+    return f""" <iwxxm-us:CharacterOfTheSky>
 {low}
 {mid}
 {high}
@@ -249,38 +249,38 @@ def _convective_cloud_xml(conv: dict[str, Any]) -> str:
     str
         Return value.
     """
-    parts: list[str] = ["              <iwxxm-us:ConvectiveCloudLocation>"]
+    parts: list[str] = [" <iwxxm-us:ConvectiveCloudLocation>"]
     ctype = conv.get("cloud_type_href")
     if ctype:
-        parts.append(f'                <iwxxm-us:cloudType xlink:href="{escape(str(ctype))}"/>')
+        parts.append(f' <iwxxm-us:cloudType xlink:href="{escape(str(ctype))}"/>')
     dist = conv.get("qualitative_distance_href")
     if dist:
-        parts.append(f'                <iwxxm-us:qualitativeDistance xlink:href="{escape(str(dist))}"/>')
+        parts.append(f' <iwxxm-us:qualitativeDistance xlink:href="{escape(str(dist))}"/>')
     sector_raw = conv.get("sector")
     if isinstance(sector_raw, dict):
         sector = cast(dict[str, Any], sector_raw)
         if sector.get("in_all_quadrants"):
-            parts.append("                <iwxxm-us:sector>")
-            parts.append('                  <iwxxm-us:Sector inAllQuadrants="true"/>')
-            parts.append("                </iwxxm-us:sector>")
+            parts.append(" <iwxxm-us:sector>")
+            parts.append(' <iwxxm-us:Sector inAllQuadrants="true"/>')
+            parts.append(" </iwxxm-us:sector>")
         elif "ccw_deg" in sector and "cw_deg" in sector:
             ccw = _fmt_deg(float(str(sector["ccw_deg"])))
             cw = _fmt_deg(float(str(sector["cw_deg"])))
-            parts.append("                <iwxxm-us:sector>")
-            parts.append("                  <iwxxm-us:Sector>")
+            parts.append(" <iwxxm-us:sector>")
+            parts.append(" <iwxxm-us:Sector>")
             parts.append(
-                f'                    <iwxxm-us:extremeCCWDirection uom="deg">{ccw}</iwxxm-us:extremeCCWDirection>'
+                f' <iwxxm-us:extremeCCWDirection uom="deg">{ccw}</iwxxm-us:extremeCCWDirection>'
             )
             parts.append(
-                f'                    <iwxxm-us:extremeCWDirection uom="deg">{cw}</iwxxm-us:extremeCWDirection>'
+                f' <iwxxm-us:extremeCWDirection uom="deg">{cw}</iwxxm-us:extremeCWDirection>'
             )
-            parts.append("                  </iwxxm-us:Sector>")
-            parts.append("                </iwxxm-us:sector>")
+            parts.append(" </iwxxm-us:Sector>")
+            parts.append(" </iwxxm-us:sector>")
     motion = conv.get("direction_of_motion_deg")
     if motion is not None:
         motion_txt = _fmt_deg(float(str(motion)))
-        parts.append(f'                <iwxxm-us:directionOfMotion uom="deg">{motion_txt}</iwxxm-us:directionOfMotion>')
-    parts.append("              </iwxxm-us:ConvectiveCloudLocation>")
+        parts.append(f' <iwxxm-us:directionOfMotion uom="deg">{motion_txt}</iwxxm-us:directionOfMotion>')
+    parts.append(" </iwxxm-us:ConvectiveCloudLocation>")
     return "\n".join(parts)
 
 
@@ -310,45 +310,45 @@ def _vop_addendum_inner(ir: dict[str, Any]) -> str:
         return ""
 
     inner_parts: list[str] = [
-        "          <iwxxm-us:visuallyObservablePhenomena>",
-        "            <iwxxm-us:VisuallyObservablePhenomena>",
+        " <iwxxm-us:visuallyObservablePhenomena>",
+        " <iwxxm-us:VisuallyObservablePhenomena>",
     ]
     if has_lightning:
         lightning = cast(dict[str, Any], lightning_raw)
         ol = _observed_lightning_xml(lightning)
-        inner_parts.append("              <iwxxm-us:lightning>")
+        inner_parts.append(" <iwxxm-us:lightning>")
         inner_parts.append(ol)
-        inner_parts.append("              </iwxxm-us:lightning>")
+        inner_parts.append(" </iwxxm-us:lightning>")
     if has_convective:
         convective = cast(dict[str, Any], convective_raw)
         conv_xml = _convective_cloud_xml(convective)
-        inner_parts.append("              <iwxxm-us:convection>")
+        inner_parts.append(" <iwxxm-us:convection>")
         inner_parts.append(conv_xml)
-        inner_parts.append("              </iwxxm-us:convection>")
+        inner_parts.append(" </iwxxm-us:convection>")
     if has_sky:
         sky = cast(dict[str, Any], sky_raw)
         sky_xml = _character_of_the_sky_xml(sky)
-        inner_parts.append("              <iwxxm-us:characterOfTheSky>")
+        inner_parts.append(" <iwxxm-us:characterOfTheSky>")
         inner_parts.append(sky_xml)
-        inner_parts.append("              </iwxxm-us:characterOfTheSky>")
+        inner_parts.append(" </iwxxm-us:characterOfTheSky>")
     if has_obscuration:
         obsc = cast(dict[str, Any], obscuration_raw)
         height = int(str(obsc["height_ft"]))
         amt = escape(str(obsc["amount_href"]))
         wx = escape(str(obsc["weather_href"]))
-        inner_parts.append("              <iwxxm-us:obscuration>")
-        inner_parts.append("                <iwxxm-us:Obscurations>")
+        inner_parts.append(" <iwxxm-us:obscuration>")
+        inner_parts.append(" <iwxxm-us:Obscurations>")
         inner_parts.append(
-            f'                  <iwxxm-us:heightOfWeatherPhenomenon uom="[ft_i]">{height}</iwxxm-us:heightOfWeatherPhenomenon>'
+            f' <iwxxm-us:heightOfWeatherPhenomenon uom="[ft_i]">{height}</iwxxm-us:heightOfWeatherPhenomenon>'
         )
-        inner_parts.append(f'                  <iwxxm-us:obscurationAmount xlink:href="{amt}"/>')
-        inner_parts.append(f'                  <iwxxm-us:weatherCausingObscuration xlink:href="{wx}"/>')
-        inner_parts.append("                </iwxxm-us:Obscurations>")
-        inner_parts.append("              </iwxxm-us:obscuration>")
+        inner_parts.append(f' <iwxxm-us:obscurationAmount xlink:href="{amt}"/>')
+        inner_parts.append(f' <iwxxm-us:weatherCausingObscuration xlink:href="{wx}"/>')
+        inner_parts.append(" </iwxxm-us:Obscurations>")
+        inner_parts.append(" </iwxxm-us:obscuration>")
     inner_parts.extend(
         [
-            "            </iwxxm-us:VisuallyObservablePhenomena>",
-            "          </iwxxm-us:visuallyObservablePhenomena>",
+            " </iwxxm-us:VisuallyObservablePhenomena>",
+            " </iwxxm-us:visuallyObservablePhenomena>",
         ]
     )
     return "\n".join(inner_parts) + "\n"
@@ -375,10 +375,10 @@ def _hailstone_size_addendum_inner(ir: dict[str, Any]) -> str:
     diam = hail.get("maximum_diameter_in")
     if diam is None:
         return ""
-    diam_txt = _fmt_deg(float(str(diam)))  # reuse compact float formatting
+    diam_txt = _fmt_deg(float(str(diam))) # reuse compact float formatting
     op = hail.get("size_operator")
-    op_xml = f"\n                <iwxxm-us:sizeOperator>{escape(str(op))}</iwxxm-us:sizeOperator>" if op else ""
-    return f"""          <iwxxm-us:hailstoneSize>
+    op_xml = f"\n <iwxxm-us:sizeOperator>{escape(str(op))}</iwxxm-us:sizeOperator>" if op else ""
+    return f""" <iwxxm-us:hailstoneSize>
             <iwxxm-us:HailstoneSize>
               <iwxxm-us:maximumDiameter uom="[in_i]">{diam_txt}</iwxxm-us:maximumDiameter>{op_xml}
             </iwxxm-us:HailstoneSize>
@@ -409,7 +409,7 @@ def _snow_increase_addendum_inner(ir: dict[str, Any]) -> str:
     elem = escape(str(snow["processed_weather_element_href"]))
     vtype = escape(str(snow["value_type_href"]))
     period = escape(str(snow.get("value_period") or "PT1H"))
-    return f"""          <iwxxm-us:snowIncrease>
+    return f""" <iwxxm-us:snowIncrease>
             <iwxxm-us:SnowIncrease>
               <iwxxm-us:snowDepthIncrease>
                 <iwxxm-us:ProcessedProperty>
@@ -444,18 +444,18 @@ def _inoperative_sensors_extension(ir: dict[str, Any]) -> str:
         return ""
     hrefs = [f"{item}" for item in cast(list[object], hrefs_raw)]
     failed_parts: list[str] = [
-        "          <iwxxm-us:failedSensors>",
-        "            <iwxxm-us:FailedSensors>",
+        " <iwxxm-us:failedSensors>",
+        " <iwxxm-us:FailedSensors>",
     ]
-    failed_parts.extend(f'              <iwxxm-us:parameter xlink:href="{escape(href)}"/>' for href in hrefs)
+    failed_parts.extend(f' <iwxxm-us:parameter xlink:href="{escape(href)}"/>' for href in hrefs)
     failed_parts.extend(
         [
-            "            </iwxxm-us:FailedSensors>",
-            "          </iwxxm-us:failedSensors>",
+            " </iwxxm-us:FailedSensors>",
+            " </iwxxm-us:failedSensors>",
         ]
     )
     body = "\n".join(failed_parts)
-    return f"""      <iwxxm:extension>
+    return f""" <iwxxm:extension>
         <iwxxm-us:InoperativeSensors>
 {body}
         </iwxxm-us:InoperativeSensors>
@@ -485,28 +485,28 @@ def _second_location_addendum_inner(ir: dict[str, Any]) -> str:
     if second.get("visibility_below_sensor_minimum"):
         attrs = ' visibilityBelowSensorMinimum="true"'
     parts: list[str] = [
-        "          <iwxxm-us:observedAtSecondLocation>",
-        f"            <iwxxm-us:ObservedAtSecondLocation{attrs}>",
+        " <iwxxm-us:observedAtSecondLocation>",
+        f" <iwxxm-us:ObservedAtSecondLocation{attrs}>",
     ]
     if second.get("ceiling_height_ft") is not None:
         parts.append(
-            f'              <iwxxm-us:ceilingHeight uom="[ft_i]">{int(str(second["ceiling_height_ft"]))}</iwxxm-us:ceilingHeight>'
+            f' <iwxxm-us:ceilingHeight uom="[ft_i]">{int(str(second["ceiling_height_ft"]))}</iwxxm-us:ceilingHeight>'
         )
     if second.get("visibility_ft") is not None:
         parts.append(
-            f'              <iwxxm-us:visibility uom="[ft_i]">{int(str(second["visibility_ft"]))}</iwxxm-us:visibility>'
+            f' <iwxxm-us:visibility uom="[ft_i]">{int(str(second["visibility_ft"]))}</iwxxm-us:visibility>'
         )
     desc = second.get("location_description")
     if desc:
-        parts.append("              <iwxxm-us:location>")
-        parts.append("                <iwxxm-us:SensorLocation>")
-        parts.append(f"                  <iwxxm-us:description>{escape(str(desc))}</iwxxm-us:description>")
-        parts.append("                </iwxxm-us:SensorLocation>")
-        parts.append("              </iwxxm-us:location>")
+        parts.append(" <iwxxm-us:location>")
+        parts.append(" <iwxxm-us:SensorLocation>")
+        parts.append(f" <iwxxm-us:description>{escape(str(desc))}</iwxxm-us:description>")
+        parts.append(" </iwxxm-us:SensorLocation>")
+        parts.append(" </iwxxm-us:location>")
     parts.extend(
         [
-            "            </iwxxm-us:ObservedAtSecondLocation>",
-            "          </iwxxm-us:observedAtSecondLocation>",
+            " </iwxxm-us:ObservedAtSecondLocation>",
+            " </iwxxm-us:observedAtSecondLocation>",
         ]
     )
     return "\n".join(parts) + "\n"
@@ -532,9 +532,9 @@ def _visibility_us_extension(ir: dict[str, Any]) -> str:
         sector = cast(dict[str, Any], sector_raw)
         below = ""
         if sector.get("below_sensor_minimum"):
-            below = "\n              <iwxxm-us:belowSensorMinimum>true</iwxxm-us:belowSensorMinimum>"
+            below = "\n <iwxxm-us:belowSensorMinimum>true</iwxxm-us:belowSensorMinimum>"
         chunks.append(
-            f"""          <iwxxm:extension>
+            f""" <iwxxm:extension>
             <iwxxm-us:SectorVisibility>
               <iwxxm-us:visibility uom="m">{int(str(sector["visibility_m"]))}</iwxxm-us:visibility>
               <iwxxm-us:direction uom="deg">{_fmt_deg(float(str(sector["direction_deg"])))}</iwxxm-us:direction>{below}
@@ -546,9 +546,9 @@ def _visibility_us_extension(ir: dict[str, Any]) -> str:
         tower = cast(dict[str, Any], tower_raw)
         less = ""
         if tower.get("less_than"):
-            less = "\n              <iwxxm-us:lessThan>true</iwxxm-us:lessThan>"
+            less = "\n <iwxxm-us:lessThan>true</iwxxm-us:lessThan>"
         chunks.append(
-            f"""          <iwxxm:extension>
+            f""" <iwxxm:extension>
             <iwxxm-us:TowerVisibility>
               <iwxxm-us:towerVisibility uom="m">{int(str(tower["visibility_m"]))}</iwxxm-us:towerVisibility>{less}
             </iwxxm-us:TowerVisibility>
@@ -559,7 +559,7 @@ def _visibility_us_extension(ir: dict[str, Any]) -> str:
         var_vis = cast(dict[str, Any], var_vis_raw)
         attrs = ' belowMinimum="true"' if var_vis.get("below_minimum") else ""
         chunks.append(
-            f"""          <iwxxm:extension>
+            f""" <iwxxm:extension>
             <iwxxm-us:VariableVisibility{attrs}>
               <iwxxm-us:minimumVisibility uom="m">{int(str(var_vis["minimum_m"]))}</iwxxm-us:minimumVisibility>
               <iwxxm-us:maximumVisibility uom="m">{int(str(var_vis["maximum_m"]))}</iwxxm-us:maximumVisibility>
@@ -590,7 +590,7 @@ def _cloud_layer_us_extension(ir: dict[str, Any]) -> str:
     if isinstance(cig_raw, dict):
         cig = cast(dict[str, Any], cig_raw)
         chunks.append(
-            f"""              <iwxxm:extension>
+            f""" <iwxxm:extension>
                 <iwxxm-us:VariableCeilingHeight>
                   <iwxxm-us:minimumHeight uom="[ft_i]">{int(str(cig["minimum_ft"]))}</iwxxm-us:minimumHeight>
                   <iwxxm-us:maximumHeight uom="[ft_i]">{int(str(cig["maximum_ft"]))}</iwxxm-us:maximumHeight>
@@ -603,7 +603,7 @@ def _cloud_layer_us_extension(ir: dict[str, Any]) -> str:
         first = escape(str(sky["first_amount_href"]))
         second = escape(str(sky["second_amount_href"]))
         chunks.append(
-            f"""              <iwxxm:extension>
+            f""" <iwxxm:extension>
                 <iwxxm-us:VariableSkyCondition>
                   <iwxxm-us:firstSkyCoverValue xlink:href="{first}"/>
                   <iwxxm-us:secondSkyCoverValue xlink:href="{second}"/>
@@ -641,7 +641,7 @@ def _max_min_temperatures_addendum_inner(ir: dict[str, Any]) -> str:
         max_xml = _measure_or_nil("maxTemperature", row.get("max_c"), uom="Cel")
         min_xml = _measure_or_nil("minTemperature", row.get("min_c"), uom="Cel")
         parts.append(
-            f"""          <iwxxm-us:maxMinTemperatures>
+            f""" <iwxxm-us:maxMinTemperatures>
             <iwxxm-us:MaxMinTemperatures>
               <iwxxm-us:precedingPeriod>{period}</iwxxm-us:precedingPeriod>
               {max_xml}
@@ -709,12 +709,12 @@ def _processed_quantity_addendum_inner(ir: dict[str, Any]) -> str:
         val_txt = _fmt_deg(float(str(val))) if val is not None else "0"
         qualifier = row.get("qualifier")
         qual_xml = (
-            f"\n                  <iwxxm-us:qualifier>{escape(str(qualifier))}</iwxxm-us:qualifier>"
+            f"\n <iwxxm-us:qualifier>{escape(str(qualifier))}</iwxxm-us:qualifier>"
             if qualifier
             else ""
         )
         parts.append(
-            f"""          <iwxxm-us:processedQuantity>
+            f""" <iwxxm-us:processedQuantity>
             <iwxxm-us:ProcessedProperty>
               <iwxxm-us:processedWeatherElement xlink:href="{elem}"/>
               <iwxxm-us:valueType xlink:href="{vtype}"/>
@@ -749,7 +749,7 @@ def _recent_weather_addendum_inner(ir: dict[str, Any]) -> str:
     day = int(ir["day"])
     obs_hour = int(ir["hour"])
     legacy = "2012-08" if str(ir.get("station")) == "YUDO" else "2023-06"
-    parts: list[str] = ["          <iwxxm-us:recentWeather>"]
+    parts: list[str] = [" <iwxxm-us:recentWeather>"]
     for idx, row_obj in enumerate(cast(list[object], rows_raw)):
         if not isinstance(row_obj, dict):
             continue
@@ -771,7 +771,7 @@ def _recent_weather_addendum_inner(ir: dict[str, Any]) -> str:
             end_xml = '<gml:endPosition indeterminatePosition="unknown"/>'
         gid = f"t.recent.{idx}"
         parts.append(
-            f"""            <iwxxm-us:RecentWeather>
+            f""" <iwxxm-us:RecentWeather>
               <iwxxm-us:weatherPhenomenon xlink:href="{href}"/>
               <iwxxm-us:timeOfEvent>
                 <gml:TimePeriod gml:id="{gid}">
@@ -782,7 +782,7 @@ def _recent_weather_addendum_inner(ir: dict[str, Any]) -> str:
             </iwxxm-us:RecentWeather>
 """
         )
-    parts.append("          </iwxxm-us:recentWeather>")
+    parts.append(" </iwxxm-us:recentWeather>")
     return "\n".join(parts) + "\n"
 
 
@@ -834,19 +834,19 @@ def _addendum_extension(ir: dict[str, Any]) -> str:
         and not has_flags
     ):
         return ""
-    parts: list[str] = ["      <iwxxm:extension>", "        <iwxxm-us:Addendum>"]
+    parts: list[str] = [" <iwxxm:extension>", " <iwxxm-us:Addendum>"]
     if ir.get("observing_system_href"):
         href = escape(str(ir["observing_system_href"]))
-        parts.append(f'          <iwxxm-us:observingSystemType xlink:href="{href}"/>')
+        parts.append(f' <iwxxm-us:observingSystemType xlink:href="{href}"/>')
     if free_text:
-        parts.append(f"          <iwxxm-us:humanReadableText>{escape(free_text)}</iwxxm-us:humanReadableText>")
+        parts.append(f" <iwxxm-us:humanReadableText>{escape(free_text)}</iwxxm-us:humanReadableText>")
     if ir.get("sea_level_pressure_hpa") is not None:
         parts.append(
-            f'          <iwxxm-us:seaLevelPressure uom="hPa">{ir["sea_level_pressure_hpa"]}</iwxxm-us:seaLevelPressure>'
+            f' <iwxxm-us:seaLevelPressure uom="hPa">{ir["sea_level_pressure_hpa"]}</iwxxm-us:seaLevelPressure>'
         )
     if ir.get("pressure_change_href"):
         href = escape(str(ir["pressure_change_href"]))
-        parts.append(f'          <iwxxm-us:pressureChangeIndicator xlink:href="{href}"/>')
+        parts.append(f' <iwxxm-us:pressureChangeIndicator xlink:href="{href}"/>')
     snow = _snow_increase_addendum_inner(ir)
     if snow:
         parts.append(snow.rstrip("\n"))
@@ -866,17 +866,17 @@ def _addendum_extension(ir: dict[str, Any]) -> str:
     if second:
         parts.append(second.rstrip("\n"))
     if ir.get("condensation_trail"):
-        parts.append("          <iwxxm-us:condensationTrail>true</iwxxm-us:condensationTrail>")
+        parts.append(" <iwxxm-us:condensationTrail>true</iwxxm-us:condensationTrail>")
     if ir.get("aurora"):
-        parts.append("          <iwxxm-us:aurora>true</iwxxm-us:aurora>")
+        parts.append(" <iwxxm-us:aurora>true</iwxxm-us:aurora>")
     if ir.get("no_specials"):
-        parts.append("          <iwxxm-us:noSpecials>true</iwxxm-us:noSpecials>")
+        parts.append(" <iwxxm-us:noSpecials>true</iwxxm-us:noSpecials>")
     hail = _hailstone_size_addendum_inner(ir)
     if hail:
         parts.append(hail.rstrip("\n"))
     if ir.get("maintenance_indicator"):
-        parts.append("          <iwxxm-us:maintenanceIndicator>true</iwxxm-us:maintenanceIndicator>")
-    parts.extend(["        </iwxxm-us:Addendum>", "      </iwxxm:extension>"])
+        parts.append(" <iwxxm-us:maintenanceIndicator>true</iwxxm-us:maintenanceIndicator>")
+    parts.extend([" </iwxxm-us:Addendum>", " </iwxxm:extension>"])
     return "\n".join(parts) + "\n"
 
 
@@ -897,7 +897,7 @@ def _peak_wind_extension(ir: dict[str, Any]) -> str:
     if ir.get("peak_wind_dir_deg") is None:
         return ""
     stamp = _peak_timestamp(ir)
-    return f"""          <iwxxm:extension>
+    return f""" <iwxxm:extension>
             <iwxxm-us:AerodromePeakWind>
               <iwxxm-us:windDirection uom="deg">{ir["peak_wind_dir_deg"]}</iwxxm-us:windDirection>
               <iwxxm-us:windSpeed uom="[kn_i]">{ir["peak_wind_speed_kt"]}</iwxxm-us:windSpeed>
@@ -929,7 +929,7 @@ def _wind_shift_extension(ir: dict[str, Any]) -> str:
         return ""
     stamp = _wind_shift_timestamp(ir)
     attrs = ' frontalPassage="true"' if ir.get("wind_shift_frontal_passage") else ""
-    return f"""          <iwxxm:extension>
+    return f""" <iwxxm:extension>
             <iwxxm-us:AerodromeWindShift{attrs}>
               <iwxxm-us:timeOfWindShift>
                 <gml:TimeInstant gml:id="t.wshft">
@@ -967,7 +967,7 @@ def _variable_rvr_extension(ir: dict[str, Any]) -> str:
     if rvr.get("above_sensor_maximum"):
         attrs.append('aboveSensorMaximum="true"')
     attr_s = (" " + " ".join(attrs)) if attrs else ""
-    return f"""          <iwxxm:extension>
+    return f""" <iwxxm:extension>
             <iwxxm-us:AerodromeVariableRVR{attr_s}>
               <iwxxm-us:minimumRVR uom="m">{rvr["min_m"]}</iwxxm-us:minimumRVR>
               <iwxxm-us:maximumRVR uom="m">{rvr["max_m"]}</iwxxm-us:maximumRVR>
@@ -1003,7 +1003,7 @@ def emit_metar_speci_iwxxm_us(
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (emit_metar_speci_iwxxm_us)
+    >>> 1 + 1 # docstring smoke (emit_metar_speci_iwxxm_us)
     2
     """
     ns = NS.get(iwxxm_version)
@@ -1093,7 +1093,7 @@ def _with_us_namespace(xml: str) -> str:
     """
     if "xmlns:iwxxm-us=" in xml:
         return xml
-    return xml.replace("xmlns:iwxxm=", f"{_US_NS}\n    xmlns:iwxxm=", 1)
+    return xml.replace("xmlns:iwxxm=", f"{_US_NS}\n xmlns:iwxxm=", 1)
 
 
 def _inject_evolving_extension(xml: str, extension: str, closing_tag: str) -> str:
@@ -1118,7 +1118,7 @@ def _inject_evolving_extension(xml: str, extension: str, closing_tag: str) -> st
     """
     if not extension or closing_tag not in xml:
         return xml
-    return xml.replace(closing_tag, f"{extension}\n            {closing_tag}", 1)
+    return xml.replace(closing_tag, f"{extension}\n {closing_tag}", 1)
 
 
 def _airmet_subperiod_extension(parent_ir: dict[str, Any], outlook: dict[str, Any]) -> str:
@@ -1161,7 +1161,7 @@ def _airmet_subperiod_extension(parent_ir: dict[str, Any], outlook: dict[str, An
     inline_hi = outlook.get("inline_frzlvl_hi")
     if inline_lo is not None and inline_hi is not None:
         freezing_levels = _inline_freezing_levels_xml(int(inline_lo), int(inline_hi), prefix="outlook")
-    return f"""              <iwxxm:extension>
+    return f""" <iwxxm:extension>
                 <iwxxm-us:AIRMETEvolvingConditionExtension>
                   <iwxxm-us:validTimeSubPeriod>
                     <gml:TimePeriod gml:id="t.subperiod.outlook">
@@ -1192,12 +1192,12 @@ def _flight_level_layer_xml(alt: str, gml_id: str) -> str:
         Return value.
     """
     if alt.upper() == "SFC":
-        return f"""                    <aixm:AirspaceLayer gml:id="{gml_id}">
+        return f""" <aixm:AirspaceLayer gml:id="{gml_id}">
                       <aixm:lowerLimit>GND</aixm:lowerLimit>
                       <aixm:lowerLimitReference>SFC</aixm:lowerLimitReference>
                     </aixm:AirspaceLayer>"""
     fl = int(alt)
-    return f"""                    <aixm:AirspaceLayer gml:id="{gml_id}">
+    return f""" <aixm:AirspaceLayer gml:id="{gml_id}">
                       <aixm:upperLimit uom="FL">{fl}</aixm:upperLimit>
                       <aixm:upperLimitReference>STD</aixm:upperLimitReference>
                     </aixm:AirspaceLayer>"""
@@ -1259,7 +1259,7 @@ def _freezing_level_isopleth_xml(isopleth: dict[str, Any], idx: int, *, multiple
         Return value.
     """
     alt = str(isopleth["alt"])
-    return f"""          <iwxxm-us:isopleth>
+    return f""" <iwxxm-us:isopleth>
             <iwxxm-us:FreezingLevel>
               <iwxxm-us:flightLevel>
 {_flight_level_layer_xml(alt, f"fl.isopleth.{idx}")}
@@ -1312,7 +1312,7 @@ def _airmet_freezing_level_forecast_extension(ir: dict[str, Any]) -> str:
     members = "\n".join(
         _freezing_level_isopleth_xml(item, idx, multiple=multiple) for idx, item in enumerate(typed_isopleths, start=1)
     )
-    return f"""  <iwxxm:extension>
+    return f""" <iwxxm:extension>
     <iwxxm-us:FreezingLevelForecast>
       <iwxxm-us:validTimeSubPeriod>
         <gml:TimePeriod gml:id="t.frzlvl">
@@ -1345,7 +1345,7 @@ def _inject_first_evolving_extension(xml: str, inner: str) -> str:
     """
     if not inner:
         return xml
-    wrapped = f"""              <iwxxm:extension>
+    wrapped = f""" <iwxxm:extension>
                 <iwxxm-us:AIRMETEvolvingConditionExtension>{inner}
                 </iwxxm-us:AIRMETEvolvingConditionExtension>
               </iwxxm:extension>
@@ -1384,7 +1384,7 @@ def _airmet_weather_hazards_extension(ir: dict[str, Any]) -> str:
     if hazard.get("causing_llws_conditions"):
         attrs.append('causingLLWSConditions="true"')
     attr_txt = f" {' '.join(attrs)}" if attrs else ""
-    return f"""          <iwxxm:extension>
+    return f""" <iwxxm:extension>
             <iwxxm-us:AIRMETWeatherHazards{attr_txt}>
               <iwxxm-us:weatherPhenomenon xlink:href="{escape(href)}"/>
             </iwxxm-us:AIRMETWeatherHazards>
@@ -1420,7 +1420,7 @@ def _sigmet_weather_hazards_extension(ir: dict[str, Any]) -> str:
     if hazard.get("is_severe") is True:
         attrs.append('isSevere="true"')
     attr_txt = f" {' '.join(attrs)}" if attrs else ""
-    return f"""              <iwxxm:extension>
+    return f""" <iwxxm:extension>
                 <iwxxm-us:SIGMETWeatherHazards{attr_txt}>
                   <iwxxm-us:weatherPhenomenon xlink:href="{escape(href)}"/>
                 </iwxxm-us:SIGMETWeatherHazards>
@@ -1447,7 +1447,7 @@ def emit_taf_iwxxm_us(ir: dict[str, Any], *, iwxxm_version: str) -> str:
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (emit_taf_iwxxm_us)
+    >>> 1 + 1 # docstring smoke (emit_taf_iwxxm_us)
     2
     """
     from tac2iwxxm.profiles.annex3_emit import emit_taf_annex3
@@ -1460,13 +1460,13 @@ def emit_taf_iwxxm_us(ir: dict[str, Any], *, iwxxm_version: str) -> str:
     if alt is None:
         return xml
 
-    extension = f"""      <iwxxm:extension>
+    extension = f""" <iwxxm:extension>
         <iwxxm-us:MeteorologicalAerodromeForecastExtension>
           <iwxxm-us:altimeter uom="[in_i'Hg]">{alt:.2f}</iwxxm-us:altimeter>
         </iwxxm-us:MeteorologicalAerodromeForecastExtension>
       </iwxxm:extension>
 """
-    needle = "    </iwxxm:MeteorologicalAerodromeForecast>"
+    needle = " </iwxxm:MeteorologicalAerodromeForecast>"
     if needle not in xml:
         return xml
     return xml.replace(needle, extension + needle, 1)
@@ -1491,7 +1491,7 @@ def emit_sigmet_iwxxm_us(ir: dict[str, Any], *, iwxxm_version: str) -> str:
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (emit_sigmet_iwxxm_us)
+    >>> 1 + 1 # docstring smoke (emit_sigmet_iwxxm_us)
     2
     """
     from tac2iwxxm.profiles.annex3_emit import emit_sigmet_annex3
@@ -1523,7 +1523,7 @@ def emit_airmet_iwxxm_us(ir: dict[str, Any], *, iwxxm_version: str) -> str:
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (emit_airmet_iwxxm_us)
+    >>> 1 + 1 # docstring smoke (emit_airmet_iwxxm_us)
     2
     """
     from tac2iwxxm.profiles.annex3_emit import emit_airmet_annex3

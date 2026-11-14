@@ -1,6 +1,6 @@
-# EV-080 / #1077 — coverage surface inventory (ADR-007 @ 100%)
-# Corpus: [Corpus: adr/ADR-007] [Corpus: tests] [Corpus: tech-spec]
-#
+# EV-080 / #1077 — coverage surface inventory ( @ 100%)
+# Corpus: [Corpus: tests] [Corpus: tech-spec]
+
 # target_floor: universal minimum after EV-080. measured_* updated M3 (2026-08-28).
 
 target_floor: 100
@@ -155,11 +155,7 @@ surfaces:
       - src/fixtures/**
       - src/generated/**
       - "**/*.d.ts"
-      - src/test/
-      - node_modules/
-      - dist/
-      - tests/
-      - "**/*.spec.ts"
+      - src/test- node_modules- dist- tests- "**/*.spec.ts"
 
   - id: per-file-checker
     config_path: scripts/ci/check_per_file_coverage.py
@@ -187,9 +183,9 @@ surfaces:
 
 intentional_non_surfaces:
   - id: vendor
-    reason: "Read-only third-party schemas (ADR-007 approved omit)"
+    reason: "Read-only third-party schemas ( approved omit)"
   - id: iwxxm_xsd_generated
-    reason: "ADR-027 generated trees (ADR-007 approved omit)"
+    reason: " generated trees ( approved omit)"
   - id: bugs
     reason: "tests/bugs runs with --no-cov"
   - id: e2e-playwright

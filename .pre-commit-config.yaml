@@ -2,8 +2,8 @@
 # - husky pre-commit: this file (fast) + make validate-ci-medium
 # - husky pre-push: make ci (ci-prepush + Compose integration)
 # - remote CI: unit matrix + coverage (no validate job; no Compose integration)
-# Install: make install-hooks  (husky + pre-commit)
-#
+# Install: make install-hooks (husky + pre-commit)
+
 # pre-commit 4.x default_stages includes every hook type; pin to pre-commit so
 # omitted stages do not also fire on push. Long suites live in .husky/pre-push.
 default_stages: [pre-commit]
@@ -91,14 +91,14 @@ repos:
         files: ^(\.github/workflows/ci-cd\.yml|scripts/deploy/check_no_bare_curl_imgurl\.sh)$
       # EV-032 / E32-T7 — path-filtered (no always_run): A6-2 equality + catalog canary
       - id: ev032-a6-2-tc-canary
-        name: EV-032 A6-2-TC ADR-032 + catalog canary (#835)
+        name: EV-032 A6-2-TC + catalog canary (#835)
         entry: bash scripts/ci/run_ev032_a6_2_tc_canary.sh
         language: system
         pass_filenames: false
         files: ^(packages/tac2iwxxm/src/tac2iwxxm/profiles/annex3_products\.py|packages/tac2iwxxm/src/tac2iwxxm/convert\.py|packages/tac2iwxxm/tests/test_tc_ev032_00[23]_.*\.py|packages/tac2iwxxm/tests/fixtures/annex3_golden/sigmet_a6_2_tc\.tac|packages/shared/src/metar_shared/xml_canonical\.py|apps/frontend/src/fixtures/examples/examplesCatalog\.ts|apps/frontend/src/fixtures/examples/FIXTURE_GAPS\.md|scripts/ci/run_ev032_a6_2_tc_canary\.sh)$
-      # EV-032 / E32-T7 / T2.8 — path-filtered VONA ADR-032 + product=vona canary
+      # EV-032 / E32-T7 / T2.8 — path-filtered VONA + product=vona canary
       - id: ev032-vona-canary
-        name: EV-032 VONA ADR-032 + product=vona canary (#741)
+        name: EV-032 VONA + product=vona canary (#741)
         entry: bash scripts/ci/run_ev032_vona_canary.sh
         language: system
         pass_filenames: false

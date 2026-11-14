@@ -1,6 +1,6 @@
 """Helpers for the manual national-feed check (TC-LIVE-FEEDS).
 
-[Corpus: tests §TC-LIVE-FEEDS] [Corpus: product §F6] [Corpus: adr/ADR-009]
+[Corpus: tests §TC-LIVE-FEEDS] [Corpus: product §F6]
 """
 
 from __future__ import annotations

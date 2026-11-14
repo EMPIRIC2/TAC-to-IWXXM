@@ -136,8 +136,8 @@ function nationalLineFromLibId(id: string): string | undefined {
 }
 
 /**
- * Four library selects for the Convert product bar (ADR-044 / #1251).
- *
+ * Four library selects for the Convert product bar (#1251).
+
  * @param props.values - Selected library ids
  * @param props.onChange - Emits ids + Conversion engine profile when Conversion changes
  * @param props.disabled - Read-only workbench

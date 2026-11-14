@@ -33,8 +33,7 @@ build/
 develop-eggs/
 dist/
 downloads/
-eggs/
-.eggs/
+eggs.eggs/
 lib/
 lib64/
 parts/
@@ -42,8 +41,7 @@ sdist/
 var/
 wheels/
 share/python-wheels/
-*.egg-info/
-.installed.cfg
+*.egg-info.installed.cfg
 *.egg
 MANIFEST
 *.manifest
@@ -59,14 +57,11 @@ env/
 !tests/bats/env/**
 ENV/
 env.bak/
-venv.bak/
-.pdm-python
-.pdm-build/
-.pixi
+venv.bak.pdm-python
+.pdm-build.pixi
 
 # --- Node / pnpm workspace (apps/*, packages/*) ---
-**/node_modules/
-.pnp
+**/node_modules.pnp
 .pnp.js
 .pnpm-store/
 npm-debug.log*
@@ -88,9 +83,7 @@ pnpm-debug.log*
 **/.svelte-kit/
 
 # --- Test & coverage ---
-.tox/
-.nox/
-.coverage
+.tox.nox.coverage
 .coverage.*
 .coverage-baseline.json
 .cache
@@ -101,10 +94,7 @@ coverage.xml
 *.py.cover
 htmlcov/
 htmlcov_ann/
-cover/
-.hypothesis/
-.pytest_cache/
-.nyc_output
+cover.hypothesis.pytest_cache.nyc_output
 **/coverage/
 **/.stryker-tmp/
 **/reports/mutation/
@@ -120,17 +110,13 @@ coverage/stryker/
 **/playwright/.cache/
 
 # --- Typecheck & lint caches ---
-.mypy_cache/
-.dmypy.json
+.mypy_cache.dmypy.json
 dmypy.json
-.pyre/
-.pytype/
-.ruff_cache/
+.pyre.pytype.ruff_cache/
 cython_debug/
 
 # --- IDE & OS ---
-.vscode/
-.idea/
+.vscode.idea/
 *.swp
 *.swo
 *~
@@ -143,8 +129,7 @@ docs/_build/
 github-wikia/site/
 
 # --- Local tooling binaries / artifacts ---
-.tools/
-.local/
+.tools.local/
 
 # --- Cursor (local indexing prefs only; .cursorignore is tracked) ---
 .cursorindexingignore
@@ -159,16 +144,14 @@ evidence/
 local_settings.py
 db.sqlite3
 db.sqlite3-journal
-instance/
-.webassets-cache
+instance.webassets-cache
 .scrapy
 .ipynb_checkpoints
 profile_default/
 ipython_config.py
 celerybeat-schedule
 celerybeat.pid
-.abstra/
-.pypirc
+.abstra.pypirc
 marimo/_static/
 marimo/_lsp/
 __marimo__/
@@ -196,7 +179,7 @@ packages/iwxxm-validate/src/iwxxm_validate/schemas/iwxxm/
 packages/iwxxm-validate/src/iwxxm_validate/schemas/iwxxm-us/
 packages/iwxxm-validate/src/iwxxm_validate/schemas/LAST_SYNC.json
 
-# ADR-027 — xsdata pydantic trees are committed (T3.7); ignore only bytecode
+# — xsdata pydantic trees are committed (T3.7); ignore only bytecode
 packages/shared/src/metar_shared/iwxxm_xsd/**/__pycache__/
 
 
@@ -262,5 +245,4 @@ third_party/
 /docs/ui-ux-tweaks/
 
 # Quality tooling local/CI reports (EV-quality-tooling-suite)
-.quality-reports/
-.cursor/hooks/**/__pycache__/
+.quality-reports.cursor/hooks/**/__pycache__/

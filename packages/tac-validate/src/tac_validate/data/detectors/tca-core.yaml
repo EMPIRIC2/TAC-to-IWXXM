@@ -1,4 +1,4 @@
-# TCA core detectors (ADR-046 / M4 #1230).
+# TCA core detectors (M4 #1230).
 schema_version: 1
 id: tca-core
 stage: token

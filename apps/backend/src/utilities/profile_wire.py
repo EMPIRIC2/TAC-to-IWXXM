@@ -1,4 +1,4 @@
-"""HTTP profile wire resolution (F35 / EV-063 / ADR-036).
+"""HTTP profile wire resolution (F35 / EV-063 ).
 
 Resolves multipart ``semantic_profile`` / ``exchange_profile`` and legacy ``profile``
 into tac2iwxxm emit keys. Unknown ids fail closed with HTTP 400.
@@ -43,7 +43,7 @@ def profile_wire_v2_enabled() -> bool:
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (profile_wire_v2_enabled)
+    >>> 1 + 1 # docstring smoke (profile_wire_v2_enabled)
     2
 
     Returns
@@ -60,7 +60,7 @@ def default_semantic_profile() -> str:
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (default_semantic_profile)
+    >>> 1 + 1 # docstring smoke (default_semantic_profile)
     2
 
     Returns
@@ -79,7 +79,7 @@ def default_exchange_profile() -> str:
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (default_exchange_profile)
+    >>> 1 + 1 # docstring smoke (default_exchange_profile)
     2
 
     Returns
@@ -192,7 +192,7 @@ def resolve_route_profiles(
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (resolve_route_profiles)
+    >>> 1 + 1 # docstring smoke (resolve_route_profiles)
     2
     """
     semantic_raw = _clean(semantic_profile)

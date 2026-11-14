@@ -1,7 +1,7 @@
 """TC-004 / F21 - server work-sessions API removed (IndexedDB is the operator store).
 
 Historical TC-004 covered authenticated CRUD against ``tac_work_sessions``.
-EV-017 / ADR-031 moves history to browser IndexedDB; the HTTP surface returns 404.
+EV-017 / moves history to browser IndexedDB; the HTTP surface returns 404.
 """
 
 from __future__ import annotations

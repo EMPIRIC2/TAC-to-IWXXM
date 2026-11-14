@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Fail PRs to main unless head is stage and tip has a green Staging smoke run.
-# Traces: F30 AC12 / TC-F30-012 / ADR-034 / #886 / EV-044 (staging LB Host-header)
+# Traces: F30 AC12 / TC-F30-012 / #886 / EV-044 (staging LB Host-header)
 set -euo pipefail
 
 REPO="${GITHUB_REPOSITORY:?}"
@@ -26,7 +26,7 @@ if [[ "${BASE_REF}" != "main" ]]; then
 fi
 
 if [[ "${HEAD_REF}" != "stage" ]]; then
-  echo "::error::PRs to main must come from branch 'stage' (got '${HEAD_REF}'). Promote via stage→main only (ADR-034)."
+  echo "::error::PRs to main must come from branch 'stage' (got '${HEAD_REF}'). Promote via stage→main only ."
   exit 1
 fi
 
@@ -96,7 +96,7 @@ if [[ "${code}" != "200" ]]; then
 fi
 echo "staging-gate: staging /health → 200"
 
-# Soft release reminder (never fails the gate) — ADR-034 §Release on promote.
+# Soft release reminder (never fails the gate) — §Release on promote.
 if [[ -f "${GITHUB_WORKSPACE:-.}/scripts/ci/promote_release_reminder.sh" ]]; then
   bash "${GITHUB_WORKSPACE:-.}/scripts/ci/promote_release_reminder.sh" || true
 elif [[ -f "scripts/ci/promote_release_reminder.sh" ]]; then

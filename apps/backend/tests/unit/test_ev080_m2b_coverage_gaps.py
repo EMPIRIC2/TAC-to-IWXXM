@@ -1,6 +1,4 @@
-"""EV-080 M2b: fill remaining apps/backend unit line/branch gaps to 100%.
-
-[Corpus: adr/ADR-007] [Corpus: tests]
+"""EV-080 M2b: fill remaining apps/backend unit line/branch gaps to 100%. [Corpus: tests]
 """
 
 from __future__ import annotations
@@ -43,7 +41,7 @@ def convert_client(monkeypatch: pytest.MonkeyPatch):
 
 
 def test_clean_env_blank_after_strip(monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setenv("TRANSLATION_CENTRE_NAME", "   ")
+    monkeypatch.setenv("TRANSLATION_CENTRE_NAME", " ")
     assert icao_cfg._clean_env("TRANSLATION_CENTRE_NAME") is None
 
 
@@ -160,7 +158,7 @@ def test_resolve_request_extensions_json_path() -> None:
 
 
 def test_manual_entries_multiline_whitespace_only() -> None:
-    assert api_wire.manual_entries_with_offsets("  \n\n  ") == []
+    assert api_wire.manual_entries_with_offsets(" \n\n ") == []
 
 
 def test_iwxxm_readable_empty_field_amount_and_root_amount() -> None:
@@ -195,7 +193,7 @@ def test_dissemination_preflight_ok_false(convert_client: TestClient, monkeypatc
     monkeypatch.setattr(diss_router, "run_db_preflight", fake_preflight)
     resp = convert_client.post(
         "/api/v1/dissemination/preflight",
-        content=b'{"sink_type":"sqlite","uri":"sqlite+aiosqlite:////tmp/x.db","ddl":false}',
+        content=b'{"sink_type":"sqlite","uri":"sqlite+aiosqlite: / / tmp/x.db","ddl":false}',
         headers={"Content-Type": "application/json", "Authorization": "Bearer t"},
     )
     assert resp.status_code == 200
@@ -211,7 +209,7 @@ def test_dissemination_send_without_handle(
     monkeypatch.setattr(diss_router, "default_rate_limiter", DisseminationRateLimiter(max_per_minute=1000))
     monkeypatch.setenv("DISSEMINATION_EGRESS_ALLOWLIST", "localhost,127.0.0.1")
     db = tmp_path / "send.db"
-    uri = f"sqlite+aiosqlite:///{db}"
+    uri = f"sqlite+aiosqlite: / /{db}"
 
     async def fake_preflight(_req):
         return SimpleNamespace(ok=True, connectivity_ok=True, diffs=[], detail="ok")
@@ -811,7 +809,7 @@ def test_work_sessions_parse_product_filter_skips_empty_tokens() -> None:
 def test_api_wire_remaining_branches() -> None:
     from tac2iwxxm import BulletinSplitError
 
-    assert api_wire.manual_entries_with_offsets("   \n  ", product="SIGMET") == []
+    assert api_wire.manual_entries_with_offsets(" \n ", product="SIGMET") == []
     assert api_wire._resolve_request_profiles(route="", profile="annex3").emit_key
 
     err = api_wire.bulletin_split_http_error(BulletinSplitError("weird_code", "boom"))
@@ -855,7 +853,7 @@ async def test_api_wire_nbsp_only_file_hits_post_decode_empty() -> None:
         async def read(self, _n: int = -1) -> bytes:
             return b"\xc2\xa0"
 
-    content, err = await api_wire.read_uploaded_text(_Up())  # type: ignore[arg-type]
+    content, err = await api_wire.read_uploaded_text(_Up()) # type: ignore[arg-type]
     assert content is None
     assert err == "empty file"
 
@@ -1086,7 +1084,7 @@ async def test_abuse_controls_invalid_content_length(monkeypatch: pytest.MonkeyP
 async def test_database_close_dispose_branches(monkeypatch: pytest.MonkeyPatch) -> None:
     from src.services import database as db
 
-    db._engine = SimpleNamespace()  # no dispose attr / not callable
+    db._engine = SimpleNamespace() # no dispose attr / not callable
     db._async_session_maker = object()
     await db.close_db_engine()
     assert db._engine is None
@@ -1216,7 +1214,7 @@ def test_observability_counter_cache_hit_and_drain_empty(monkeypatch: pytest.Mon
         def put(self, *_a: Any, **_k: Any) -> None:
             return None
 
-    handler._queue = _Q()  # type: ignore[assignment]
+    handler._queue = _Q() # type: ignore[assignment]
     handler._worker_loop()
 
     prior_levels = {n: logging.getLogger(n).level for n in obs._REQUEST_LOGGERS}
@@ -1313,7 +1311,7 @@ def test_version_migration_remove_zero_matches() -> None:
     root = ET.fromstring("<root><child/></root>")
     m._remove_elements(
         root,
-        {"element": "Missing", "xpath": "//Missing", "action": "remove", "reason": "gone"},
+        {"element": "Missing", "xpath": " / Missing", "action": "remove", "reason": "gone"},
     )
     assert m.warnings == []
 
@@ -1330,7 +1328,7 @@ def test_work_session_payload_pending_files_plain_dicts() -> None:
     data = payload.model_dump(exclude_unset=True)
     data["pending_files"] = [{"name": "a.tac", "content": "x"}]
     fake = SimpleNamespace(model_dump=lambda **_k: data)
-    out = svc._payload_dict(fake)  # type: ignore[arg-type]
+    out = svc._payload_dict(fake) # type: ignore[arg-type]
     assert out["pending_files"][0]["name"] == "a.tac"
 
 
@@ -1400,7 +1398,7 @@ async def test_convert_bulletin_non_multipart_and_upload_err(
 
     resp3 = convert_client.post(
         "/api/v1/convert-bulletin",
-        files={"product": (None, "METAR"), "manual_text": (None, "   ")},
+        files={"product": (None, "METAR"), "manual_text": (None, " ")},
     )
     assert resp3.status_code == 400
 

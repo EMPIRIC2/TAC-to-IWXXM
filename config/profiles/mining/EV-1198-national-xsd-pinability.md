@@ -1,10 +1,10 @@
 # National IWXXM Extension Schema Trees — Pinability Assessment
 
-**Ticket:** [#1198](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1198)  
-**Dates:** Stage 0 2026-09-16 · **Stage 1 live web re-verify 2026-09-16**  
-**Session:** `EV-1198-stage1-national-xsd-web-reverify`  
-**Status:** Stage 1 complete: **#1198 stays blocked for Conversion mining**; **AU = partial candidate (license + scope gate)**; no M6 vendor-sync PR opened this pass  
-**Corpus:** [Corpus: product §F7.w] [Corpus: product §M6] [Corpus: adr/ADR-038] [Corpus: domain-profiles]
+**Ticket:** [#1198](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1198)
+**Dates:** Stage 0 2026-09-16 · **Stage 1 live web re-verify 2026-09-16**
+**Session:** `EV-1198-stage1-national-xsd-web-reverify`
+**Status:** Stage 1 complete: **#1198 stays blocked for Conversion mining**; **AU = partial candidate (license + scope gate)**; no M6 vendor-sync PR opened this pass
+**Corpus:** [Corpus: product §F7.w] [Corpus: product §M6] [Corpus: domain-profiles]
 
 ## Bottom line
 
@@ -102,7 +102,7 @@ Illustrative **future** AU entry (do **not** commit until license + scope AskQue
 "iwxxm-au": {
   "source_url": "https://eur-rodex.austrocontrol.at/IWXXM-Files/taf.zip",
   "tag": "1.0",
-  "maps_to_iwxxm_release": "3.0.1",  // NOT 2025-2 — explicit mismatch
+  "maps_to_iwxxm_release": "3.0.1", / NOT 2025-2 — explicit mismatch
   "license": "<REQUIRED before pin>",
   "namespace": "http://www.bom.gov.au/aviation/iwxxm-au/1.0"
 }

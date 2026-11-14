@@ -1,4 +1,4 @@
-# Shared bats setup for scripts/**/*.sh (EV-080 / ADR-007).
+# Shared bats setup for scripts/**/*.sh (EV-080 ).
 # NFR-EV080-006: stub external CLIs — no live network or cloud credentials.
 
 bats_load_helpers() {

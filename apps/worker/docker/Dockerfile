@@ -1,4 +1,4 @@
-# F8 ingest worker — monorepo root context (ADR-018)
+# F8 ingest worker — monorepo root context
 FROM python:3.12-slim
 
 ENV PYTHONDONTWRITEBYTECODE=1 \

@@ -1,6 +1,6 @@
 """TC-F6-031 / UJ-012: tac-validate msgspec issues + optional fixes.
 
-Spec: docs/test-plan.md TC-F6-031; docs/api-contract.md lint-tac; ADR-015/016 (Q9=C).
+Spec: docs/test-plan.md TC-F6-031; docs/api-contract.md lint-tac; /016 (Q9=C).
 """
 
 from __future__ import annotations

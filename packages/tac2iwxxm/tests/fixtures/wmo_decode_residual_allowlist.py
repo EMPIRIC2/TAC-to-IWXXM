@@ -1,6 +1,6 @@
 """Expected-residual allowlist for EV-027 / TC-EV027-003 (S02.M1 package SoT).
 
-Entries require standing-doc intent (F9 G4 / ADR-025) and a linked child issue.
+Entries require standing-doc intent (F9 G4 ) and a linked child issue.
 Unexpected residuals must not be papered over here.
 """
 
@@ -14,10 +14,10 @@ class ExpectedResidual:
     """Allowlisted residual policy for a catalog-registered official peer."""
 
     catalog_id: str
-    doc_intent: str  # e.g. "F9 G4" / "ADR-025"
+    doc_intent: str # e.g. "F9 G4" / ""
     issue: str
-    residual_text: str | None = None  # exact match when set
-    allow_any: bool = False  # G4 best-effort - any residual text permitted
+    residual_text: str | None = None # exact match when set
+    allow_any: bool = False # G4 best-effort - any residual text permitted
 
 
 # Doc-intentional G4 peers - fuller advisory decode tracked separately.

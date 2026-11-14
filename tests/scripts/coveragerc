@@ -3,7 +3,7 @@
 branch = true
 source = scripts
 omit =
-    # One-shot ADR-048 backfill helpers (not runtime product paths).
+    # One-shot backfill helpers (not runtime product paths).
     */scripts/docs/backfill_*.py
 
 [report]

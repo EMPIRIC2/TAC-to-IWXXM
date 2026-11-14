@@ -1,4 +1,4 @@
-"""Coverage for scripts/docs/check_docs_py.py ADR-048 branches (scripts cov gate)."""
+"""Coverage for scripts/docs/check_docs_py.py branches (scripts cov gate)."""
 
 from __future__ import annotations
 
@@ -32,7 +32,7 @@ def test_should_skip_tests_and_vendor_dirs() -> None:
 def test_typing_stub_and_args_and_returns_helpers() -> None:
     import ast
 
-    stub = ast.parse("class P(Protocol):\n    pass\n").body[0]
+    stub = ast.parse("class P(Protocol):\n pass\n").body[0]
     assert isinstance(stub, ast.ClassDef)
     # Protocol not imported — Name base
     stub.bases = [ast.Name(id="Protocol", ctx=ast.Load())]
@@ -55,20 +55,20 @@ def test_typing_stub_and_args_and_returns_helpers() -> None:
     stub.bases = [ast.Name(id="object", ctx=ast.Load())]
     assert not _is_typing_stub_class(stub)
 
-    fn = ast.parse("def f(self, x):\n    pass\n").body[0]
+    fn = ast.parse("def f(self, x):\n pass\n").body[0]
     assert isinstance(fn, ast.FunctionDef)
     assert _has_args(fn)
-    bare = ast.parse("def g(self):\n    pass\n").body[0]
+    bare = ast.parse("def g(self):\n pass\n").body[0]
     assert isinstance(bare, ast.FunctionDef)
     assert not _has_args(bare)
 
-    none_ret = ast.parse("def h() -> None:\n    pass\n").body[0]
+    none_ret = ast.parse("def h() -> None:\n pass\n").body[0]
     assert isinstance(none_ret, ast.FunctionDef)
     assert not _returns_annotation(none_ret)
-    int_ret = ast.parse("def i() -> int:\n    return 1\n").body[0]
+    int_ret = ast.parse("def i() -> int:\n return 1\n").body[0]
     assert isinstance(int_ret, ast.FunctionDef)
     assert _returns_annotation(int_ret)
-    no_ann = ast.parse("def j():\n    pass\n").body[0]
+    no_ann = ast.parse("def j():\n pass\n").body[0]
     assert isinstance(no_ann, ast.FunctionDef)
     assert not _returns_annotation(no_ann)
 
@@ -184,7 +184,7 @@ def test_iter_in_scope_and_main_paths() -> None:
     # relative --paths dir walk
     assert main([str(base), "--paths", "packages/demo/src"]) == 0
     empty = base / "empty.py"
-    empty.write_text("def f(x: int) -> int:\n    return x\n", encoding="utf-8")
+    empty.write_text("def f(x: int) -> int:\n return x\n", encoding="utf-8")
     assert main([str(base), "--paths", str(empty)]) == 1
 
 
@@ -201,7 +201,7 @@ def test_remaining_branch_coverage() -> None:
     assert _should_skip(base / "node_modules" / "pkg" / "a.py")
 
     # returns annotation Name None (line 123)
-    none_name = ast.parse("def k() -> None:\n    pass\n").body[0]
+    none_name = ast.parse("def k() -> None:\n pass\n").body[0]
     # Force Name node rather than Constant for older/alternate parse
     assert isinstance(none_name, ast.FunctionDef)
     none_name.returns = ast.Name(id="None", ctx=ast.Load())
@@ -210,7 +210,7 @@ def test_remaining_branch_coverage() -> None:
     # stub class missing docstring (line 158) — Enum by name short-circuit
     stub = base / "stub.py"
     stub.write_text(
-        '"""m."""\nclass Enum:\n    pass\n',
+        '"""m."""\nclass Enum:\n pass\n',
         encoding="utf-8",
     )
     issues = check_file(stub)
@@ -219,7 +219,7 @@ def test_remaining_branch_coverage() -> None:
     # Protocol stub missing docstring
     stub2 = base / "stub2.py"
     stub2.write_text(
-        '"""m."""\nfrom typing import Protocol\nclass Hook(Protocol):\n    pass\n',
+        '"""m."""\nfrom typing import Protocol\nclass Hook(Protocol):\n pass\n',
         encoding="utf-8",
     )
     assert any("Hook" in i and "missing docstring" in i for i in check_file(stub2))
@@ -228,10 +228,10 @@ def test_remaining_branch_coverage() -> None:
     nest = base / "nest.py"
     nest.write_text(
         '"""m."""\nfrom typing import Protocol\n'
-        'class Hook(Protocol):\n    """Hook."""\n    class Nested:\n        """Nested."""\n',
+        'class Hook(Protocol):\n """Hook."""\n class Nested:\n """Nested."""\n',
         encoding="utf-8",
     )
-    assert check_file(nest) == []  # Nested skipped under stub_depth
+    assert check_file(nest) == [] # Nested skipped under stub_depth
 
     # module missing docstring (line 198)
     nodoc = base / "nodoc.py"
@@ -272,7 +272,7 @@ def test_remaining_branch_coverage() -> None:
     # public class missing Attributes/Parameters (line 172)
     pub = base / "pub.py"
     pub.write_text(
-        '"""m."""\nclass PublicBad:\n    """title only"""\n', encoding="utf-8"
+        '"""m."""\nclass PublicBad:\n """title only"""\n', encoding="utf-8"
     )
     assert any("PublicBad" in i for i in check_file(pub))
 
@@ -285,6 +285,6 @@ def test_remaining_branch_coverage() -> None:
     flood = base / "flood"
     flood.mkdir()
     lines = ['"""m."""\n']
-    lines.extend(f"def f{i}(x: int) -> int:\n    return x\n" for i in range(90))
+    lines.extend(f"def f{i}(x: int) -> int:\n return x\n" for i in range(90))
     (flood / "many.py").write_text("".join(lines), encoding="utf-8")
     assert main([str(base), "--paths", str(flood / "many.py")]) == 1

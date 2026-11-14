@@ -115,7 +115,7 @@ def test_convert_parse_error_returns_ok_false() -> None:
 
 
 def test_convert_preview_parse_error_returns_stub_xml() -> None:
-    """S011 / ADR-022: soft-preview keeps best-effort XML + spans on parse failure."""
+    """S011 / : soft-preview keeps best-effort XML + spans on parse failure."""
     tac = "METAR XXXX NOT_A_REAL_REPORT GARBAGE="
     result = convert(tac, product="METAR", preview=True)
     assert result.ok is False

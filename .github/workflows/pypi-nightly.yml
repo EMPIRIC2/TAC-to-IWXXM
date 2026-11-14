@@ -1,6 +1,6 @@
-# EV-1150 / ADR-043 — nightly TestPyPI builds for F12–F14 (CalVer .devN).
+# EV-1150 — nightly TestPyPI builds for F12–F14 (CalVer .devN).
 # Prod PyPI remains tag-driven via pypi-publish.yml.
-#
+
 # Requires GitHub Environment `testpypi` + Trusted Publisher on each TestPyPI
 # project pointing at this workflow.
 name: PyPI Nightly (TestPyPI)

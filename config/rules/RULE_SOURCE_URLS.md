@@ -1,7 +1,7 @@
 # Rule source URL catalog
 
-**Status:** living catalog (discovery from [#719](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/719)).  
-**Updated:** 2026-09-02 (EV-098 / #1029 MANOBS + #1030 MANAIR Amd15 · prior #1031 PDF · #1028 datamart) · prior 2026-08-18 (EV-061 catalog source retarget; see mining/ev061-catalog-source-replacements-2026-08-18.md) (… · WMO-306 I.3 2019/upd-2021 dig **1–272 complete** · #798).  
+**Status:** living catalog (discovery from [#719](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/719)).
+**Updated:** 2026-09-02 (EV-098 / #1029 MANOBS + #1030 MANAIR Amd15 · prior #1031 PDF · #1028 datamart) · prior 2026-08-18 (EV-061 catalog source retarget; see mining/ev061-catalog-source-replacements-2026-08-18.md) (… · WMO-306 I.3 2019/upd-2021 dig **1–272 complete** · #798).
 **Vendor pin:** `vendor/manifest.json` → `iwxxm` **v2025-2** (app default), plus profile-scoped **`iwxxm-3.0.0`** + **`iwxxm-ca`** for `CA_ECCC`, `iwxxm-codelists` **49-2**, `iwxxm-us` **3.0**.
 
 **Inventory pass:** [mining/iwxxm-2025-2-reference-set-mining-notes.md](../mining/iwxxm-2025-2-reference-set-mining-notes.md)
@@ -40,9 +40,9 @@ Canonical companions:
 ```text
 ### {title}
 - Publisher:
-- URL:                    # prefer permanent / landing that survives version bumps
+- URL: # prefer permanent / landing that survives version bumps
 - Stable concept pattern: # when applicable (codes.wmo.int, namespaces)
-- Access:                 # public / register / paywall
+- Access: # public / register / paywall
 - Applies to: products=[…]; profiles=[annex3|iwxxm_us]; role=[validation|conversion|iwxxm-validation]
 - Gap vs GIFTs:
 - Consumer: tac-validate | tac2iwxxm | iwxxm-validate | UI-decode | bulletin
@@ -57,7 +57,7 @@ Canonical companions:
 ### ICAO Annex 3 — Meteorological Service for International Air Navigation
 
 - **Publisher:** ICAO
-- **URL:** https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1  
+- **URL:** https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1
   (also listing: https://store.icao.int/en/annexes/annex-3)
 - **Edition note:** Store may list **21st Edition, August 2025**; verify before citing. **Local dig (2026-07-14):** Twentieth Edition, July 2018 + amendments through **No. 81** (applicable 28 Nov 2024); `.local/reference/icao-annex-3/` (gitignored)
 - **Access:** **paywall** (ICAO Store); do not redistribute PDF
@@ -133,7 +133,7 @@ Canonical companions:
 ### WMO-No. 306 Vol. I.1 — Manual on Codes (alphanumeric / Part A)
 
 - **Publisher:** WMO
-- **URL:** https://library.wmo.int/idurl/4/35713  
+- **URL:** https://library.wmo.int/idurl/4/35713
   (record: https://library.wmo.int/records/item/35713-manual-on-codes-volume-i-1-international-codes)
 - **Access:** WMO e-Library (often captcha); public catalog; **do not commit PDF**
 - **Applies to:** products=[METAR,SPECI,TAF,…]; profiles=[annex3]; role=[validation]
@@ -200,8 +200,7 @@ Canonical companions:
 ### codes.wmo.int (root)
 
 - **Publisher:** WMO Codes Registry
-- **URL:** https://codes.wmo.int/
-- **Stable concept pattern:** `http://codes.wmo.int/{register}/{…}/{notation}`
+- **URL:** https://codes.wmo.int- **Stable concept pattern:** `http://codes.wmo.int/{register}/{…}/{notation}`
 - **Access:** public Linked Data (TTL/RDF/XML/JSON-LD/CSV); no registration
 - **Applies to:** products=[all F6]; profiles=[annex3, iwxxm_us]; role=[validation, conversion]
 - **Gap vs GIFTs:** machine enumerations + nilReasons GIFTs did not systematically encode
@@ -282,9 +281,8 @@ Canonical companions:
 ### wmo-im/iwxxm (source) + schemas.wmo.int (publish)
 
 - **Publisher:** WMO TT-AvXML
-- **URL:** https://github.com/wmo-im/iwxxm (tag **`v2025-2`**)  
-  Publish: https://schemas.wmo.int/iwxxm/2025-2/
-- **Namespace:** `http://icao.int/iwxxm/2025-2`
+- **URL:** https://github.com/wmo-im/iwxxm (tag **`v2025-2`**)
+  Publish: https://schemas.wmo.int/iwxxm/2025-2- **Namespace:** `http://icao.int/iwxxm/2025-2`
 - **Access:** public HTTP + GitHub; no registration
 - **Applies to:** products=[METAR,SPECI,TAF,SIGMET,AIRMET,VAA,TCA,…]; profiles=[annex3]; role=[conversion, iwxxm-validation]
 - **Gap vs GIFTs:** multi-product XSDs/examples/Schematron; runwayState **removed** in 2025-2 RC1
@@ -295,9 +293,8 @@ Canonical companions:
 
 ### TAC-to-XML encoding guidance
 
-- **URL:** https://github.com/wmo-im/iwxxm/blob/v2025-2/IWXXM/examples/TAC-to-XML-Guidance.txt  
-  Also: https://schemas.wmo.int/iwxxm/2025-2/examples/
-- **Access:** public
+- **URL:** https://github.com/wmo-im/iwxxm/blob/v2025-2/IWXXM/examples/TAC-to-XML-Guidance.txt
+  Also: https://schemas.wmo.int/iwxxm/2025-2/examples- **Access:** public
 - **Applies to:** products=[METAR,SPECI,TAF,SIGMET,AIRMET,VAA,TCA,SWX]; role=[conversion]
 - **Gap vs GIFTs:** nilReason map for NOSIG/NSC/NSW/NCD/NIL/CNL/STNR/…
 - **Consumer:** `tac2iwxxm`, `tac-validate`, UI-decode
@@ -307,7 +304,7 @@ Canonical companions:
 ### WMO METCE (foundation meteorology schema)
 
 - **Publisher:** WMO
-- **URL:** https://schemas.wmo.int/metce/  
+- **URL:** https://schemas.wmo.int/metce/
   Runtime import used by IWXXM **v2025-2:** https://schemas.wmo.int/metce/1.2/metce.xsd
 - **Stable concept pattern:** namespace `http://def.wmo.int/metce/2013`; package versions under `/metce/{1.0|1.1|1.2}/`
 - **Access:** public
@@ -322,7 +319,7 @@ Canonical companions:
 ### WMO OPM (Observable Property Model)
 
 - **Publisher:** WMO
-- **URL:** https://schemas.wmo.int/opm/  
+- **URL:** https://schemas.wmo.int/opm/
   Runtime import used by METCE **1.2** (not by IWXXM product XSDs): https://schemas.wmo.int/opm/1.2/opm.xsd
 - **Stable concept pattern:** namespace `http://def.wmo.int/opm/2013`; package versions under `/opm/{1.0|1.1|1.2}/`
 - **Access:** public
@@ -337,8 +334,8 @@ Canonical companions:
 ### WMO SAF (Simple Aeronautical Features) — historical
 
 - **Publisher:** WMO
-- **URL:** https://schemas.wmo.int/saf/  
-  Packages: https://schemas.wmo.int/saf/1.0/ · https://schemas.wmo.int/saf/1.1/  
+- **URL:** https://schemas.wmo.int/saf/
+  Packages: https://schemas.wmo.int/saf/1.0/ · https://schemas.wmo.int/saf/1.1/
   (**No** `/saf/1.2/`; **not** imported by IWXXM **v2025-2**)
 - **Stable concept pattern:** namespaces `http://icao.int/saf/{1.0|1.1}`
 - **Access:** public
@@ -353,8 +350,8 @@ Canonical companions:
 ### OGC TimeseriesML (TSML) — schemas.wmo.int mirror
 
 - **Publisher:** Open Geospatial Consortium (content); WMO hosts [schemas.wmo.int/tsml](https://schemas.wmo.int/tsml/)
-- **URL:** https://schemas.wmo.int/tsml/  
-  Package: https://schemas.wmo.int/tsml/1.0/  
+- **URL:** https://schemas.wmo.int/tsml/
+  Package: https://schemas.wmo.int/tsml/1.0/
   Prefer instance `schemaLocation`: http://schemas.opengis.net/tsml/1.0/timeseriesML.xsd
 - **Stable concept pattern:** namespace `http://www.opengis.net/tsml/1.0`; requirements `http://www.opengis.net/spec/timeseriesml/1.0/req/…`
 - **Access:** public
@@ -369,7 +366,7 @@ Canonical companions:
 ### WMO schemas.wmo.int/rule (centralized Schematron index)
 
 - **Publisher:** WMO
-- **URL:** https://schemas.wmo.int/rule/  
+- **URL:** https://schemas.wmo.int/rule/
   Packages: https://schemas.wmo.int/rule/1.0/ · [1.1](https://schemas.wmo.int/rule/1.1/) · [1.2](https://schemas.wmo.int/rule/1.2/)
 - **Stable concept pattern:** `/rule/{1.0|1.1|1.2}/*.sch` (package numbers, **not** IWXXM year lines)
 - **Access:** public
@@ -383,8 +380,7 @@ Canonical companions:
 
 ### Official TAC↔IWXXM example pairs
 
-- **URL:** https://schemas.wmo.int/iwxxm/2025-2/examples/
-- **Access:** public
+- **URL:** https://schemas.wmo.int/iwxxm/2025-2/examples- **Access:** public
 - **Applies to:** products=[METAR,SPECI,TAF,SIGMET,AIRMET,VAA,TCA,VONA,SWX]; role=[conversion-fixtures, validation-fixtures]
 - **Gap vs GIFTs:** CNL/NIL/collect/`translationFailedTAC` pairs; TC+VA SIGMET
 - **Consumer:** golden encode/validate, e2e samples
@@ -407,7 +403,7 @@ Canonical companions:
 
 ### IWXXM AHL / bulletin headings
 
-- **URL:** https://community.wmo.int/site/knowledge-hub/programmes-and-initiatives/wmo-information-system-wis/about-manual-gts/ahls-aviation-data-over-icao-afs  
+- **URL:** https://community.wmo.int/site/knowledge-hub/programmes-and-initiatives/wmo-information-system-wis/about-manual-gts/ahls-aviation-data-over-icao-afs
   (short redirects still seen: `/ahls-aviation-data-over-icao-afs`, `/en/activity-areas/wis/iwxxm/ahl-icao-data`)
 - **Edition:** **v1.0.1** (2025-08-11); confirmed live fetch **2026-08-01** (S036/EV-029 T0.2)
 - **Access:** public
@@ -484,10 +480,10 @@ Full ranking: [mining/wmo-im-org-mining-notes.md](../mining/wmo-im-org-mining-no
 
 ### WMO community IWXXM home
 
-- **URL (intended live):** https://community.wmo.int/en/activity-areas/wis/iwxxm  
+- **URL (intended live):** https://community.wmo.int/en/activity-areas/wis/iwxxm
   (short form: https://community.wmo.int/iwxxm)
 - **Access:** **broken as of 2026-07-14**: both paths return **HTTP 404**. Parent `/en/activity-areas/wis` still resolves to the WIS knowledge hub.
-- **Best recovered snapshot (defer-to-latest while live is down):** https://web.archive.org/web/20260314162354/https://community.wmo.int/iwxxm  
+- **Best recovered snapshot (defer-to-latest while live is down):** https://web.archive.org/web/20260314162354/https://community.wmo.int/iwxxm
   (page text “last updated **26 November 2025**”; “Latest release” → https://schemas.wmo.int/iwxxm/2025-2/; package table column **2025-2** final, Annex 3 Amd **82**)
 - **Earlier snapshot (superseded):** https://web.archive.org/web/20251015180706/https://community.wmo.int/en/activity-areas/wis/iwxxm (still labelled **2025-2 RC2** / latest → 2023-1)
 - **Live related hubs:** https://community.wmo.int/site/knowledge-hub/programmes-and-initiatives/aviation · https://community.wmo.int/site/knowledge-hub/programmes-and-initiatives/wmo-information-system-wis
@@ -545,7 +541,7 @@ Full ranking: [mining/wmo-im-org-mining-notes.md](../mining/wmo-im-org-mining-no
 ### Federal Meteorological Handbook No. 1 (FMH-1)
 
 - **Publisher:** OFCM / ICAMS
-- **URL:** https://www.icams-portal.gov/resources/ofcm/fmh/FMH1/fmh1_2019.pdf  
+- **URL:** https://www.icams-portal.gov/resources/ofcm/fmh/FMH1/fmh1_2019.pdf
   Index: https://www.icams-portal.gov/resources/ofcm/fmh/allfmh2.htm
 - **Access:** public PDF (US federal handbook)
 - **Applies to:** products=[METAR,SPECI]; profiles=[**iwxxm_us**]; role=[validation, conversion]
@@ -566,9 +562,9 @@ Full ranking: [mining/wmo-im-org-mining-notes.md](../mining/wmo-im-org-mining-no
 ### United States’ Extensions to IWXXM (iwxxm-us 3.0)
 
 - **Publisher:** NOAA / NWS MDL
-- **URL:** https://nws.weather.gov/schemas/iwxxm-us/  
-  Package: https://nws.weather.gov/schemas/iwxxm-us/3.0/  
-  Examples: https://nws.weather.gov/schemas/iwxxm-us/3.0/examples/  
+- **URL:** https://nws.weather.gov/schemas/iwxxm-us/
+  Package: https://nws.weather.gov/schemas/iwxxm-us/3.0/
+  Examples: https://nws.weather.gov/schemas/iwxxm-us/3.0/examples/
   Archive (vendor pin): https://nws.weather.gov/schemas/iwxxm-us/3.0/iwxxm-us-3.0-schemas.tgz
 - **Namespace:** `http://www.weather.gov/iwxxm-us/3.0`
 - **Access:** public
@@ -583,7 +579,7 @@ Full ranking: [mining/wmo-im-org-mining-notes.md](../mining/wmo-im-org-mining-no
 ### IWXXM-US METAR and SPECI.pdf (MDL model documentation v3.0)
 
 - **Publisher:** NOAA / NWS MDL
-- **URL:** https://vlab.noaa.gov/web/mdl/data-modeling  
+- **URL:** https://vlab.noaa.gov/web/mdl/data-modeling
   Document: `METAR and SPECI.pdf` (VLab documents/6609493/…; Data Modeling Report 23 Dec 2022)
 - **Access:** public PDF via VLab
 - **Applies to:** products=[METAR,SPECI]; profiles=[**iwxxm_us**]; role=[conversion, iwxxm-validation]
@@ -607,11 +603,11 @@ Full ranking: [mining/wmo-im-org-mining-notes.md](../mining/wmo-im-org-mining-no
 ### MSC IWXXM-CA extension schemas (Canada)
 
 - **Publisher:** Environment and Climate Change Canada / MSC
-- **URL:** https://dd.weather.gc.ca/today/aviation/iwxxm/schema/  
-  Code lists: https://dd.weather.gc.ca/today/aviation/iwxxm/code-ca/  
-  Documentation: https://dd.weather.gc.ca/today/aviation/iwxxm/doc/ (PDF bodies → [#1031](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1031))  
-  Datamart readme: https://eccc-msc.github.io/open-data/msc-data/aviation/iwxxm/readme_aviation-iwxxm-datamart_en/  
-  Operational current pattern: `https://dd.weather.gc.ca/today/aviation/iwxxm/{product}/{code_issuer}/{HH}`  
+- **URL:** https://dd.weather.gc.ca/today/aviation/iwxxm/schema/
+  Code lists: https://dd.weather.gc.ca/today/aviation/iwxxm/code-ca/
+  Documentation: https://dd.weather.gc.ca/today/aviation/iwxxm/doc/ (PDF bodies → [#1031](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1031))
+  Datamart readme: https://eccc-msc.github.io/open-data/msc-data/aviation/iwxxm/readme_aviation-iwxxm-datamart_en/
+  Operational current pattern: `https://dd.weather.gc.ca/today/aviation/iwxxm/{product}/{code_issuer}/{HH}`
   Dated archive / fixture provenance: `https://dd.meteo.gc.ca/{YYYYMMdd}/WXO-DD/aviation/iwxxm/…`
 - **Namespace:** ECCC datamart / IWXXM-CA extensions (see vendor `iwxxm-ca`); WMO core `http://icao.int/iwxxm/3.0`
 - **Access:** public HTTPS (some research clients see 403 on directory listing; use dated archives)
@@ -619,7 +615,7 @@ Full ranking: [mining/wmo-im-org-mining-notes.md](../mining/wmo-im-org-mining-no
 - **Gap vs GIFTs:** LWIS/SAWR/Addendum, Canadian RMK, GFA AIRMET phenomena, NCLWS TAF; not in historical GIFTs
 - **Consumer:** `tac2iwxxm`, `iwxxm-validate`, bulletin/exchange naming
 - **Label:** normative-schema (national) + normative-exchange (datamart readme)
-- **Caveats:** Canada pins **IWXXM package 3.0.0** on WMO landing `https://schemas.wmo.int/iwxxm/3.0/`, not app default 2025-2 (ADR-036). Observed CA XSDs: `iwxxm-ca.xsd`, `common-ca.xsd`, `metar-speci-ca.xsd`, `taf-ca.xsd`, `airmet-ca.xsd` (no dedicated `sigmet-ca` / `vaa-ca`). Vendor: `vendor/schemas/iwxxm-ca` + `vendor/schemas/iwxxm/3.0.0`. Dig: [mining/eccc-iwxxm-ca-mining-notes.md](../mining/eccc-iwxxm-ca-mining-notes.md), [mining/manobs-manair-ca-mining-notes.md](../mining/manobs-manair-ca-mining-notes.md). **EV-098 / #1028** triage: mined `schema/`, `code-ca/`, ops TAF/AIRMET/SIGMET; redirected METAR/SPECI/VAA/`doc/`/QVACI; dead=none.
+- **Caveats:** Canada pins **IWXXM package 3.0.0** on WMO landing `https://schemas.wmo.int/iwxxm/3.0/`, not app default 2025-2 . Observed CA XSDs: `iwxxm-ca.xsd`, `common-ca.xsd`, `metar-speci-ca.xsd`, `taf-ca.xsd`, `airmet-ca.xsd` (no dedicated `sigmet-ca` / `vaa-ca`). Vendor: `vendor/schemas/iwxxm-ca` + `vendor/schemas/iwxxm/3.0.0`. Dig: [mining/eccc-iwxxm-ca-mining-notes.md](../mining/eccc-iwxxm-ca-mining-notes.md), [mining/manobs-manair-ca-mining-notes.md](../mining/manobs-manair-ca-mining-notes.md). **EV-098 / #1028** triage: mined `schema/`, `code-ca/`, ops TAF/AIRMET/SIGMET; redirected METAR/SPECI/VAA/`doc/`/QVACI; dead=none.
 - **Mined:** 2026-08-22 (EV-064 / #916) · deepen 2026-09-02 (EV-098 / #1028 Gate C)
 
 ### CA_ECCC code-list deviations from global WMO (#1034)
@@ -636,8 +632,8 @@ Full ranking: [mining/wmo-im-org-mining-notes.md](../mining/wmo-im-org-mining-no
 ### MSC IWXXM exchange filename + product AHL families (Canada)
 
 - **Publisher:** Environment and Climate Change Canada / MSC · WMO (AHL grammar)
-- **URL:** https://eccc-msc.github.io/open-data/msc-data/aviation/iwxxm/readme_aviation-iwxxm-datamart_en/ (File naming + Data Address)  
-  MSC bulletin/file guide: https://dd.weather.gc.ca/today/aviation/iwxxm/doc/TAC_Bulletins_IWXXM_Files_2A_En.pdf (Version 2A; informative national)  
+- **URL:** https://eccc-msc.github.io/open-data/msc-data/aviation/iwxxm/readme_aviation-iwxxm-datamart_en/ (File naming + Data Address)
+  MSC bulletin/file guide: https://dd.weather.gc.ca/today/aviation/iwxxm/doc/TAC_Bulletins_IWXXM_Files_2A_En.pdf (Version 2A; informative national)
   WMO AHL / IWXXM attachment grammar: https://community.wmo.int/site/knowledge-hub/programmes-and-initiatives/wmo-information-system-wis/about-manual-gts/ahls-aviation-data-over-icao-afs (v1.0.1)
 - **Stable concept pattern:** `A_{TTAAiiCCCCYYGGgg[BBB]}_C_{CCCC}_{yyyyMMddhhmmss}.xml`; repeated issuer is WMO **CCCC** (not a width-3 `{CCC}` field). Product header families: METAR `A_LACN`, SPECI `A_LPCN`, TAF `A_LTCN`, AIRMET `A_LWCN`/`A_LWNT`, SIGMET `A_LSCN-A`/`A_LYCN`/`A_LVCN` (family notation; e.g. `A_LSCN23…`), VAA `A_LUCN`, QVACI TBD. MSC datamart pattern is a **subset** of full WMO filename (optional `[_ffffff]` / `[.compression]` remain WMO-legal outside strict CA ingest).
 - **Access:** public (MSC `doc/` PDFs may 403 to some clients; use dated `dd.meteo.gc.ca/{YYYYMMdd}/WXO-DD/aviation/iwxxm/doc/` as access fallback; keep `today/` as semantic id)
@@ -651,12 +647,11 @@ Full ranking: [mining/wmo-im-org-mining-notes.md](../mining/wmo-im-org-mining-no
 ### MSC IWXXM `doc/` implementation PDFs (Canada)
 
 - **Publisher:** Environment and Climate Change Canada / MSC
-- **URL:** https://dd.weather.gc.ca/today/aviation/iwxxm/doc/  
-  - AIRMET: `…/IWXXM_AIRMET_1A_En.pdf` (Version 1A, Jan 2026)  
-  - SIGMET: `…/IWXXM_SIGMET_1A_En.pdf` (Version 1A, Jan 2026)  
-  - TAF: `…/IWXXM_TAF_v2.8_En.pdf` (Version 2.8, Feb 2026)  
-  - Code registry: `…/Canadian_Code_Registry_1A_En.pdf` (Version 1A)  
-  - Bulletins/files: `…/TAC_Bulletins_IWXXM_Files_2A_En.pdf` (Version 2A)  
+- **URL:** https://dd.weather.gc.ca/today/aviation/iwxxm/doc- AIRMET: `…/IWXXM_AIRMET_1A_En.pdf` (Version 1A, Jan 2026)
+  - SIGMET: `…/IWXXM_SIGMET_1A_En.pdf` (Version 1A, Jan 2026)
+  - TAF: `…/IWXXM_TAF_v2.8_En.pdf` (Version 2.8, Feb 2026)
+  - Code registry: `…/Canadian_Code_Registry_1A_En.pdf` (Version 1A)
+  - Bulletins/files: `…/TAC_Bulletins_IWXXM_Files_2A_En.pdf` (Version 2A)
   Archive fallback example: `https://dd.meteo.gc.ca/20260819/WXO-DD/aviation/iwxxm/doc/` (mtime evidence 2026-05-19)
 - **Access:** public; directory/PDF fetch may 403; inventory confirmed via dated archive + search index
 - **Applies to:** products=[TAF,AIRMET,SIGMET] primary; METAR/SPECI/VAA lack dedicated guides; profiles=[**ca_eccc**]; role=[conversion, bulletin, iwxxm-validation]
@@ -669,7 +664,7 @@ Full ranking: [mining/wmo-im-org-mining-notes.md](../mining/wmo-im-org-mining-no
 ### CA_ECCC × QVACI version gap
 
 - **Publisher:** ECCC (product list) · WMO (package compatibility)
-- **URL:** https://eccc-msc.github.io/open-data/msc-data/aviation/iwxxm/readme_aviation-iwxxm-datamart_en/  
+- **URL:** https://eccc-msc.github.io/open-data/msc-data/aviation/iwxxm/readme_aviation-iwxxm-datamart_en/
   WMO compatibility: https://community.wmo.int/iwxxm
 - **Access:** public
 - **Applies to:** products=[QVACI]; profiles=[**ca_eccc**]; role=[iwxxm-validation, conversion]
@@ -683,21 +678,21 @@ Full ranking: [mining/wmo-im-org-mining-notes.md](../mining/wmo-im-org-mining-no
 
 - **Publisher:** Environment and Climate Change Canada / Meteorological Service of Canada
 - **Edition:** Eighth Edition, Amendment 2 (February 2023); Canada.ca states the MSC-published version is official
-- **URL:** https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manobs-surface-observations.html  
+- **URL:** https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manobs-surface-observations.html
   PDF copy: https://publications.gc.ca/collections/collection_2023/eccc/En56-238-2-2022-1-eng.pdf
 - **Access:** public (section pointers + paraphrase only; no body dump)
 - **Applies to:** products=[METAR,SPECI]; profiles=[**ca_eccc**]; role=[validation, conversion]
 - **Gap vs GIFTs:** Statute-mile `SM` visibility; `A`+four-digit altimeter; `AUTO`; Canadian RMK (`PRESRR`/`PRESFR`/`SLP`); LWIS; sector / variable VIS / variable RVR splits; dual IWXXM+TAC dissemination (§11.1)
 - **Consumer:** `tac-validate`, `tac2iwxxm`
 - **Label:** normative-national
-- **Caveats:** Pair with MANAIR for forecasts. **EV-098 / #1029:** reaffirm `CA.METAR.VIS.SM` / `ALT.A` / `AUTO` / LWIS / pressure RMKs; **reopen** `CA.METAR.ALT.NOT_OBS` (`A////` vs MANOBS `A`+4 digits); SAWR provenance is **XSD** (`metar-speci-ca.xsd`), not MANOBS; do not promote monolithic Addendum as TAC; lightning TAC ≠ 1:1 `ObservedLightning`. Fixture backlog: repair `metar_basic.tac` `9999`; quarantine `A////` positive. Dig: [mining/manobs-manair-ca-mining-notes.md](../mining/manobs-manair-ca-mining-notes.md).
+- **Caveats:** Pair with MANAIR for forecasts. **EV-098 / #1029:** reaffirm `CA.METAR.VIS.SM` / `ALT.A` / `AUTO` / LWIS / pressure RMKs; **reopen** `CA.METAR.ALT.NOT_OBS` (`A / / ` vs MANOBS `A`+4 digits); SAWR provenance is **XSD** (`metar-speci-ca.xsd`), not MANOBS; do not promote monolithic Addendum as TAC; lightning TAC ≠ 1:1 `ObservedLightning`. Fixture backlog: repair `metar_basic.tac` `9999`; quarantine `A / / ` positive. Dig: [mining/manobs-manair-ca-mining-notes.md](../mining/manobs-manair-ca-mining-notes.md).
 - **Mined:** 2026-08-22 (EV-064 / #916) · deepened 2026-09-02 (EV-098 / #1029 Gate C)
 
 ### MANAIR — Manual of Standards and Procedures for Aviation Weather Forecasts (Canada)
 
 - **Publisher:** Environment and Climate Change Canada / Meteorological Service of Canada
 - **Edition:** Eighth Edition, **Amendment 15** (July 2026; supersedes prior amendments effective 2026-07-09); defer-to-latest vs older Amd 2 baselines
-- **URL:** https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manair-standards-procedures-aviation-weather-forecasts-8th-ed.html  
+- **URL:** https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manair-standards-procedures-aviation-weather-forecasts-8th-ed.html
   PDF copy: https://publications.gc.ca/collections/collection_2026/eccc/En58-29-15-2026-eng.pdf
 - **Access:** public (section pointers + paraphrase only)
 - **Applies to:** products=[TAF,AIRMET]; profiles=[**ca_eccc**]; role=[validation, conversion]
@@ -710,10 +705,9 @@ Full ranking: [mining/wmo-im-org-mining-notes.md](../mining/wmo-im-org-mining-no
 ### Aviation Weather Center Data API (live fixtures)
 
 - **Publisher:** NOAA / NWS Aviation Weather Center
-- **URL:** https://aviationweather.gov/data/api/  
-  OpenAPI: https://aviationweather.gov/data/schema/openapi.yaml  
-  REST base: https://aviationweather.gov/api/data/
-- **Stable concept pattern:** `/api/data/{metar|taf|…}?ids=…&format={raw|json|geojson|xml|iwxxm}&hours=…`
+- **URL:** https://aviationweather.gov/data/api/
+  OpenAPI: https://aviationweather.gov/data/schema/openapi.yaml
+  REST base: https://aviationweather.gov/api/data- **Stable concept pattern:** `/api/data/{metar|taf|…}?ids=…&format={raw|json|geojson|xml|iwxxm}&hours=…`
 - **Access:** public HTTPS; rate-limited (~100 req/min); set a custom User-Agent; **no CORS**
 - **Applies to:** products=[METAR,TAF,(AIRMET Alaska)]; profiles=[iwxxm_us useful]; role=[conversion, iwxxm-validation] (**fixtures / live smoke only**)
 - **Gap vs GIFTs:** live worldwide METAR/TAF including **IWXXM** format; US REMARKS in TAC comments
@@ -728,7 +722,7 @@ Full ranking: [mining/wmo-im-org-mining-notes.md](../mining/wmo-im-org-mining-no
 
 - **Label:** historical-GIFTs
 - **Role:** baseline of what was **not** covered (non-METAR F6, REMARKS, iwxxm-us, deep TAF CNL/NIL)
-- **Do not** use as ongoing rule SoT (ADR-014 / F6 cutover)
+- **Do not** use as ongoing rule SoT (F6 cutover)
 - **Consumer:** gap columns in [COVERAGE_MATRIX.md](./COVERAGE_MATRIX.md) only
 
 ---

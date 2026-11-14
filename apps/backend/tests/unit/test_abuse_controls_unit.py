@@ -1,4 +1,4 @@
-"""T3.1 / ADR-031 - rate-limit (429) and max-body (413) unit tests."""
+"""T3.1 - rate-limit (429) and max-body (413) unit tests."""
 
 from __future__ import annotations
 

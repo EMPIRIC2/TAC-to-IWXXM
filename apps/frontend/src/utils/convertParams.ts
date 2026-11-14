@@ -1,6 +1,6 @@
 /**
  * Map FileConverter conversion parameters onto `/api/v1/convert` multipart fields
- * and client-side conversion/validation/lint log filtering (ADR-023 / ADR-024).
+ * and client-side conversion/validation/lint log filtering ().
  * @example
  * const _ = true;
  */
@@ -37,7 +37,7 @@ export interface ConvertValidationFlags {
 
 /**
  * Soft-preview never runs post-convert Schematron/XSD; hard convert honors Strict.
- *
+
  * @param strict - UI Strict master checkbox
  * @param softPreview - Soft-preview / preview=true mode
  * @example
@@ -58,7 +58,7 @@ export function mapStrictToValidation(
 
 /**
  * Map On Error Behavior to API ``stop_on_error``.
- *
+
  * @param onError - UI select value
  * @example
  * const _ = true;
@@ -69,7 +69,7 @@ export function mapOnErrorToStopOnError(onError: ConvertOnError): boolean {
 
 /**
  * Operator Conversion Parameters bar values that map onto convert multipart fields.
- *
+
  * @example
  * const _ = true;
  */
@@ -100,10 +100,10 @@ export interface ConvertParamsBar {
 
 /**
  * Multipart-bound fields shared by hard Convert and live preview.
- *
+
  * Soft-preview forces validation off. Empty strings are omitted by the caller
  * via {@link optionalTrim}.
- *
+
  * @example
  * const _ = true;
  */
@@ -114,7 +114,7 @@ export function optionalTrim(value: string | undefined): string | undefined {
 
 /**
  * Map the Conversion Parameters bar onto `/convert` request fields.
- *
+
  * @example
  * const _ = true;
  */
@@ -194,9 +194,9 @@ const MIN_RANK: Record<ConvertLogLevel, number> = {
 
 /**
  * Whether a workbench console line should show given the operator log-level select.
- *
+
  * Filters conversion / validation / lint process messages (not server env ``LOG_LEVEL``).
- *
+
  * @param lineLevel - Console line severity
  * @param minLevel - Operator Log Level preference
  * @example
@@ -211,7 +211,7 @@ export function consoleLevelPasses(
 
 /**
  * Map issue severity string onto console ranks.
- *
+
  * @param severity - Issue severity from convert/lint/validate
  * @example
  * const _ = true;
@@ -232,7 +232,7 @@ export function issueSeverityRank(severity: IssueSeverity | undefined): number {
 
 /**
  * Whether a conversion/validation/lint issue should appear for the operator log level.
- *
+
  * @param severity - Issue severity
  * @param minLevel - Operator Log Level (filters process log for input/output)
  * @example

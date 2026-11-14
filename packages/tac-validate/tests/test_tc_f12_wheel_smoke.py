@@ -23,7 +23,7 @@ def test_clean_venv_wheel_install_and_cli_smoke(tmp_path: Path) -> None:
 
     dist = tmp_path / "dist"
     dist.mkdir()
-    # metar-shared is a workspace dep (ADR-055 inherit factory); build both wheels
+    # metar-shared is a workspace dep ( inherit factory); build both wheels
     # so a clean venv can resolve without PyPI (F12 smoke).
     for package in ("metar-shared", "tac-validate"):
         build = subprocess.run(

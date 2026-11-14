@@ -14,7 +14,7 @@ Kustomize **base** + **overlays** for DigitalOcean Kubernetes: API, static FE (n
 | staging | `metar-iwxxm-staging` (DO Project **Staging TAC-to-IWXXM**) | `143.244.202.13` |
 
 Staging DNS at Porkbun; see [docs/ops/doks-staging-dns-runbook.md](../../docs/ops/doks-staging-dns-runbook.md).
-Promote path: [ADR-034](../../docs/adr/ADR-034-doks-staging-promote-from-stage.md).
+Promote path: architecture decision.
 Apply overlays with the matching kube context (`do-nyc1-metar-iwxxm` vs `do-nyc1-metar-iwxxm-staging`).
 
 ## Apply
@@ -36,7 +36,7 @@ Staging must use the **staging** Postgres instance `metar-iwxxm-staging` (never 
 
 ```bash
 kubectl --context do-nyc1-metar-iwxxm-staging -n metar-iwxxm-staging create secret generic metar-api-secrets \
-  --from-literal=DATABASE_URL='postgresql+asyncpg://…@metar-iwxxm-staging-….db.ondigitalocean.com:25060/defaultdb?ssl=require' \
+  --from-literal=DATABASE_URL='postgresql+asyncpg: / …@metar-iwxxm-staging-….db.ondigitalocean.com:25060/defaultdb?ssl=require' \
   --from-literal=SUPABASE_URL='https://….supabase.co' \
   --from-literal=SUPABASE_JWKS_URL='' \
   --from-literal=SUPABASE_PUBLISHABLE_KEY='…' \
@@ -58,7 +58,7 @@ interim only, removed after BUG-2026-08-10; sslmode rewrite is in-image).
 | `stage` | `metar-iwxxm-staging` | `metar-iwxxm-staging` | `DOKS_NAMESPACE=metar-iwxxm-staging` + staging kubeconfig |
 | `main` | `metar-iwxxm` | `metar-iwxxm` | default + prod kubeconfig |
 
-Promote to `main` only after Staging smoke green; see ADR-034 (local) and
+Promote to `main` only after Staging smoke green; see (local) and
 [docs/tech-spec.md](../../docs/tech-spec.md).
 
 ```bash
@@ -77,4 +77,4 @@ prod). Do not redeploy a Render service.
 
 - [docs/tech-spec.md](../../docs/tech-spec.md)
 - [docs/env-variable.md](../../docs/env-variable.md)
-- ADR-033, ADR-034 (local `docs/adr/` when present)
+- , (local `docs/adr/` when present)

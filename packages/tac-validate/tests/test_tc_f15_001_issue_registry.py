@@ -1,4 +1,4 @@
-"""TC-F15-001 - issue registry API (S015 / EV-011, F15 / ADR-028).
+"""TC-F15-001 - issue registry API (S015 / EV-011, F15).
 
 Contract for ``tac_validate.issue_registry``:
 
@@ -61,7 +61,7 @@ def test_issue_spec_is_frozen_msgspec_struct() -> None:
     assert spec.product is None
     assert tuple(spec.tags) == ()
     with pytest.raises(AttributeError):
-        spec.code = "OTHER"  # type: ignore[misc]
+        spec.code = "OTHER" # type: ignore[misc]
 
 
 def test_issues_sequence_nonempty_and_unique_codes() -> None:
@@ -154,7 +154,7 @@ def test_registry_rows_use_screaming_snake_and_valid_severity() -> None:
 
 
 def test_missing_terminator_default_severity_is_info() -> None:
-    """ADR-025 / ADR-028 - MISSING_TERMINATOR remains info."""
+    """ - MISSING_TERMINATOR remains info."""
     from tac_validate.issue_registry import by_code
 
     assert by_code("MISSING_TERMINATOR").severity == "info"
@@ -165,7 +165,7 @@ def test_catalog_entries_returns_full_registry_when_unfiltered() -> None:
 
     assert catalog_entries() is ISSUES
     assert catalog_entries(product=None) is ISSUES
-    assert catalog_entries(product="  ") is ISSUES
+    assert catalog_entries(product=" ") is ISSUES
 
 
 def test_catalog_entries_filters_by_product_tag_or_field() -> None:
@@ -183,7 +183,7 @@ def test_catalog_entries_filters_by_product_tag_or_field() -> None:
 
 def _missing(code: str, by_code: object) -> bool:
     try:
-        by_code(code)  # type: ignore[operator]
+        by_code(code) # type: ignore[operator]
     except KeyError:
         return True
     return False

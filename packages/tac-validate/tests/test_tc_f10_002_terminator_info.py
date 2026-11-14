@@ -1,6 +1,6 @@
 """TC-F10-002 §1-2 - MISSING_TERMINATOR is info-level with add_terminator fix (S013 / EV-009).
 
-Spec: docs/test-plan.md TC-F10-002; ADR-025 §2; api-contract §lint-tac.
+Spec: docs/test-plan.md TC-F10-002; §2; api-contract §lint-tac.
 ``ok`` stays keyed to error-severity only - an otherwise-clean single report without
 ``=`` must lint ``ok: true``.
 """

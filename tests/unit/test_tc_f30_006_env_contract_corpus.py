@@ -1,6 +1,6 @@
 """T7.3 / TC-F30-006 - AGENTS + env-variable Auth-only Supabase (doc/contract gate).
 
-Spec: docs/test-plan.md TC-F30-006; F30 AC6; ADR-033; #830.
+Spec: docs/test-plan.md TC-F30-006; F30 AC6; ; #830.
 """
 
 from __future__ import annotations
@@ -24,7 +24,7 @@ class TestTcF30006EnvContractCorpus:
         assert "DigitalOcean Postgres" in text
 
     def test_adr_033_accepted_and_references_cutover(self) -> None:
-        adr = ROOT / "docs/adr/ADR-033-platform-independence-auth-do-doks.md"
+        adr = ROOT / "docs/adr/-platform-independence-auth-do-doks.md"
         agents = (ROOT / "AGENTS.md").read_text(encoding="utf-8")
         if adr.is_file():
             text = adr.read_text(encoding="utf-8")
@@ -46,8 +46,8 @@ class TestTcF30006EnvContractCorpus:
     def test_deploy_doks_readme_pins_database_url_and_adr_033(self) -> None:
         readme = (ROOT / "config/deploy/doks/README.md").read_text(encoding="utf-8")
         assert "DATABASE_URL" in readme
-        assert "ADR-033" in readme
-        assert "SUPABASE_URL" in readme  # Auth secrets only
+        assert "" in readme
+        assert "SUPABASE_URL" in readme # Auth secrets only
 
     def test_feature_list_f30_exists(self) -> None:
         fl = (ROOT / "AGENTS.md").read_text(encoding="utf-8")

@@ -41,8 +41,7 @@ describe('conversionLogEnrichment', () => {
 
   it('cleans catalog templates into log hints with product fill and no source tail', () => {
     const hint = catalogTemplateToLogHint(RVR_CATALOG.message_template, 'METAR');
-    expect(hint).toMatch(
-      /METAR includes one or more runway visual range \(RVR\) groups/i,
+    expect(hint).toMatch(METAR includes one or more runway visual range \(RVR\) groups/i,
     );
     expect(hint).toMatch(/does not by itself block conversion/i);
     expect(hint).not.toMatch(/Source:/i);
@@ -104,9 +103,9 @@ describe('conversionLogEnrichment', () => {
     expect(
       resolveConversionLogHint({
         code: 'X',
-        hint: 'Fix the group — see EV-048 / ADR-022',
+        hint: 'Fix the group — see EV-048 / ',
       }),
-    ).not.toMatch(/EV-048|ADR-022/);
+    ).not.toMatch(/EV-048|/);
   });
 
   it('returns null for sparse uncatalogued codes without a fallback', () => {

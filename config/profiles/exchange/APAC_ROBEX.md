@@ -1,7 +1,7 @@
 # APAC_ROBEX — APAC regional exchange overlay
 
-> **Profile id**: `APAC_ROBEX` · **Kind**: exchange · **Priority**: P2 · **Status**: **in_progress** (EV-1222 / [#1222](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1222))  
-> **Catalog row**: [`catalog.yaml`](../catalog.yaml) · **ADR**: [ADR-036](../../../adr/ADR-036-semantic-vs-exchange-profiles.md)
+> **Profile id**: `APAC_ROBEX` · **Kind**: exchange · **Priority**: P2 · **Status**: **in_progress** (EV-1222 / [#1222](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1222))
+> **Catalog row**: [`catalog.yaml`](../catalog.yaml) · **ADR**: architecture decision
 
 Regional **exchange** overlay for APAC ROBEX / IWXXM OPMET practice. COLLECT XML
 shell follows OPMET IWXXM Exchange Guidelines (ROBEX HB §6.6.1). EV-1222 adds a

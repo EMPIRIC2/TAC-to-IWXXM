@@ -1,4 +1,4 @@
-"""Unit tests for 100% coverage gate configuration (EV-080 / ADR-007)."""
+"""Unit tests for 100% coverage gate configuration (EV-080 )."""
 
 from __future__ import annotations
 

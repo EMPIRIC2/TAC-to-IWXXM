@@ -11,7 +11,7 @@ ROOT = Path(__file__).resolve().parents[2]
 
 @pytest.mark.unit
 class TestUvWorkspaceConfig:
-    """Root pyproject.toml satisfies spec.md §Repository and ADR-005."""
+    """Root pyproject.toml satisfies spec.md §Repository and ."""
 
     def test_python_version_file_pins_3_12(self) -> None:
         version_file = ROOT / ".python-version"

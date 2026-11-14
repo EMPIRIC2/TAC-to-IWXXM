@@ -1,6 +1,6 @@
 /**
- * Strict raise policy for workbench issue chrome (ADR-054).
- *
+ * Strict raise policy for workbench issue chrome .
+
  * Server returns all issues; the client raises attention chrome only for the
  * raised severity set. Strict OFF → critical + error. Strict ON → full ladder.
  */
@@ -35,7 +35,7 @@ const ON_SET = new Set<string>([
 
 /**
  * Severities considered raised for the current Strict settings.
- *
+
  * @param strict - Master Strict checkbox
  * @param steps - Optional step flags (ignored when Strict is off)
  * @returns Set of normalized severity tokens
@@ -57,7 +57,7 @@ export function raisedSeveritySet(
 
 /**
  * Whether an issue severity should use raised (attention) chrome.
- *
+
  * @param severity - Issue severity from convert/lint/validate
  * @param strict - Master Strict checkbox
  * @param steps - Optional step flags
@@ -84,7 +84,7 @@ export function isSeverityRaised(
 
 /**
  * Convert failures (critical) block publish/download. IWXXM validation errors do not.
- *
+
  * @param severity - Issue severity
  * @returns True when this severity alone blocks download
  * @example

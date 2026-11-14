@@ -448,7 +448,7 @@ jobs:
         if: matrix.package == 'dissemination'
         run: make test-integration-dissemination
 
-      # ADR-042 / EV-1132 — workflows executor unit + 100% coverage.
+      # EV-1132 — workflows executor unit + 100% coverage.
       - name: Run workflows unit tests with coverage
         if: matrix.package == 'workflows'
         run: make test-unit-workflows
@@ -806,8 +806,8 @@ jobs:
         ports:
           - 5432:5432
     env:
-      DATABASE_URL: postgresql+psycopg://postgres:postgres@localhost:5432/tac_alembic_test
-      ALEMBIC_TEST_DATABASE_URL: postgresql+psycopg://postgres:postgres@localhost:5432/tac_alembic_test
+      DATABASE_URL: postgresql+psycopg: / postgres:postgres@localhost:5432/tac_alembic_test
+      ALEMBIC_TEST_DATABASE_URL: postgresql+psycopg: / postgres:postgres@localhost:5432/tac_alembic_test
     steps:
       - uses: actions/checkout@v5
         with:
@@ -900,7 +900,7 @@ jobs:
           test "${result}" = "success"
 
   # ============================================================================
-  # NATIVE — PyO3 / maturin smokes (ADR-017 / T4.3; EV-045 extends iwxxm-validate)
+  # NATIVE — PyO3 / maturin smokes (T4.3; EV-045 extends iwxxm-validate)
   # Job id stays tac2iwxxm-native for EV-036 contract tests; display names are locked.
   # ============================================================================
   tac2iwxxm-native:
@@ -1122,7 +1122,7 @@ jobs:
   # DEPLOY — build/push GHCR images, then roll DOKS (F30 / EV-034 / EV-043 / EV-044 / EV-051).
   # stage push → staging (auto). main push → CI only (no Deploy).
   # Prod Deploy: tag v*-*-deploy or workflow_dispatch → production (solo gate).
-  # Promote to main only via PR stage→main after Staging smoke + staging-gate (ADR-034).
+  # Promote to main only via PR stage→main after Staging smoke + staging-gate .
   # Render hooks optional (prod Deploy only).
   # ============================================================================
   deploy:

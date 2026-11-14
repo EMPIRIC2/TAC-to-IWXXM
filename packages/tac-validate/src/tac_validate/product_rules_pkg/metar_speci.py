@@ -78,7 +78,7 @@ def _check_metar_speci(tac: str, product: str, *, profile: str = "annex3") -> li
                 )
             )
 
-        # ADR-046 M2/M3: R2 via detector pack by default; legacy keeps inline path for compares.
+        # M2/M3: R2 via detector pack by default; legacy keeps inline path for compares.
         if use_detectors:
             issues.extend(run_r2_visibility_detectors(tac, product))
         else:
@@ -118,7 +118,7 @@ def _check_metar_speci(tac: str, product: str, *, profile: str = "annex3") -> li
             issues.append(
                 _issue(
                     "DEWPOINT_NOT_OBSERVABLE",
-                    f"{product} dewpoint not observable (tt///) - temperature present",
+                    f"{product} dewpoint not observable (tt / /) - temperature present",
                     start=start + dewpoint_nil.start(),
                     end=start + dewpoint_nil.end(),
                     location="temperature",
@@ -277,25 +277,25 @@ def _check_s1_exceptional(
             body_end=body_end,
             token="NSW",
         )
-    if "VV///" in tokens:
+    if "VV / /" in tokens:
         _emit_token_info(
             issues,
             code="VV_NOT_OBSERVABLE",
-            message=f"{product} VV/// - verticalVisibility nil notObservable - research S1",
+            message=f"{product} VV / - verticalVisibility nil notObservable - research S1",
             core=core,
             body_start=body_start,
             body_end=body_end,
-            token="VV///",
+            token="VV / /",
         )
-    if "//" in tokens:
+    if " / " in tokens:
         _emit_token_info(
             issues,
             code="WX_NOT_OBSERVABLE",
-            message=f"{product} present weather // - nil notObservable - research S1",
+            message=f"{product} present weather - nil notObservable - research S1",
             core=core,
             body_start=body_start,
             body_end=body_end,
-            token="//",
+            token=" / ",
         )
     for tok in tokens:
         if _WIND_DIR_VAR.fullmatch(tok):

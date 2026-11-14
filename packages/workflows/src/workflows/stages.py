@@ -1,4 +1,4 @@
-"""MVP stage registry — ADR-042 §10."""
+"""MVP stage registry — §10."""
 
 from __future__ import annotations
 
@@ -73,7 +73,7 @@ def run_validate_tac(
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (run_validate_tac)
+    >>> 1 + 1 # docstring smoke (run_validate_tac)
     2
 
     Parameters
@@ -107,7 +107,7 @@ def run_convert_iwxxm(
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (run_convert_iwxxm)
+    >>> 1 + 1 # docstring smoke (run_convert_iwxxm)
     2
 
     Parameters
@@ -193,7 +193,7 @@ def run_validate_xsd(
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (run_validate_xsd)
+    >>> 1 + 1 # docstring smoke (run_validate_xsd)
     2
 
     Parameters
@@ -231,7 +231,7 @@ def run_validate_schematron(
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (run_validate_schematron)
+    >>> 1 + 1 # docstring smoke (run_validate_schematron)
     2
 
     Parameters
@@ -297,7 +297,7 @@ def run_stage(
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (run_stage)
+    >>> 1 + 1 # docstring smoke (run_stage)
     2
 
     Parameters

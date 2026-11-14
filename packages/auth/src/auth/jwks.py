@@ -1,4 +1,4 @@
-"""JWKS-only Supabase Auth JWT verification (ADR-033 / D-S038-04-b1)."""
+"""JWKS-only Supabase Auth JWT verification (D-S038-04-b1)."""
 
 from __future__ import annotations
 
@@ -42,7 +42,7 @@ def jwks_url_from_supabase_url(supabase_url: str) -> str:
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (jwks_url_from_supabase_url)
+    >>> 1 + 1 # docstring smoke (jwks_url_from_supabase_url)
     2
     """
     base = supabase_url.rstrip("/")
@@ -76,7 +76,7 @@ def resolve_jwks_url(
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (resolve_jwks_url)
+    >>> 1 + 1 # docstring smoke (resolve_jwks_url)
     2
     """
     explicit = (jwks_url or os.getenv("SUPABASE_JWKS_URL") or "").strip()
@@ -96,7 +96,7 @@ def clear_jwks_client_cache() -> None:
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (clear_jwks_client_cache)
+    >>> 1 + 1 # docstring smoke (clear_jwks_client_cache)
     2
     """
     _JWKS_CACHE.clear()
@@ -168,7 +168,7 @@ def verify_access_token(
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (verify_access_token)
+    >>> 1 + 1 # docstring smoke (verify_access_token)
     2
     """
     if not token or not token.strip():

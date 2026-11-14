@@ -1,6 +1,6 @@
 """T1.5 / TC-F9-002: POST /api/v1/decode-tac returns additive ``summary`` (S013 / EV-009).
 
-Spec: docs/api-contract.md §decode-tac; ADR-025. Existing segment/residual fields
+Spec: docs/api-contract.md §decode-tac; . Existing segment/residual fields
 remain unchanged (backward-compatible additive contract).
 """
 

@@ -1,4 +1,4 @@
-"""Reusable msgspec JSON codec for LintReport (ADR-016)."""
+"""Reusable msgspec JSON codec for LintReport ."""
 
 from __future__ import annotations
 

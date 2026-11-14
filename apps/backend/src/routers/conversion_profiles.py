@@ -47,7 +47,7 @@ from ..utilities.security import verify_supabase_token
 
 router = APIRouter(prefix="/api/v1/profiles", tags=["Conversion Profiles"])
 
-# ADR-044: operator library YAML authoring retired (hard cutover).
+# : operator library YAML authoring retired (hard cutover).
 _LIBRARY_AUTHORING_GONE = {
     "code": "library_authoring_retired",
     "message": "Library authoring is no longer available. Use deployed package catalogs and selection dropdowns.",
@@ -77,7 +77,7 @@ def profiles_service(
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (profiles_service)
+    >>> 1 + 1 # docstring smoke (profiles_service)
     2
 
     Parameters
@@ -106,7 +106,7 @@ def get_catalog(
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (get_catalog)
+    >>> 1 + 1 # docstring smoke (get_catalog)
     2
 
     Parameters
@@ -158,7 +158,7 @@ def list_rule_packs(
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (list_rule_packs)
+    >>> 1 + 1 # docstring smoke (list_rule_packs)
     2
 
     Parameters
@@ -185,7 +185,7 @@ def create_rule_pack(
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (create_rule_pack)
+    >>> 1 + 1 # docstring smoke (create_rule_pack)
     2
 
     Parameters
@@ -214,7 +214,7 @@ def get_rule_pack(
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (get_rule_pack)
+    >>> 1 + 1 # docstring smoke (get_rule_pack)
     2
 
     Parameters
@@ -244,7 +244,7 @@ def patch_rule_pack(
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (patch_rule_pack)
+    >>> 1 + 1 # docstring smoke (patch_rule_pack)
     2
 
     Parameters
@@ -275,7 +275,7 @@ def delete_rule_pack(
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (delete_rule_pack)
+    >>> 1 + 1 # docstring smoke (delete_rule_pack)
     2
 
     Parameters
@@ -298,7 +298,7 @@ def list_presets(
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (list_presets)
+    >>> 1 + 1 # docstring smoke (list_presets)
     2
 
     Parameters
@@ -325,7 +325,7 @@ def create_preset(
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (create_preset)
+    >>> 1 + 1 # docstring smoke (create_preset)
     2
 
     Parameters
@@ -354,7 +354,7 @@ def get_preset(
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (get_preset)
+    >>> 1 + 1 # docstring smoke (get_preset)
     2
 
     Parameters
@@ -384,7 +384,7 @@ def patch_preset(
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (patch_preset)
+    >>> 1 + 1 # docstring smoke (patch_preset)
     2
 
     Parameters
@@ -415,7 +415,7 @@ def delete_preset(
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (delete_preset)
+    >>> 1 + 1 # docstring smoke (delete_preset)
     2
 
     Parameters
@@ -438,7 +438,7 @@ def list_templates(
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (list_templates)
+    >>> 1 + 1 # docstring smoke (list_templates)
     2
 
     Parameters
@@ -465,7 +465,7 @@ def create_template(
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (create_template)
+    >>> 1 + 1 # docstring smoke (create_template)
     2
 
     Parameters
@@ -494,7 +494,7 @@ def get_template(
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (get_template)
+    >>> 1 + 1 # docstring smoke (get_template)
     2
 
     Parameters
@@ -524,7 +524,7 @@ def patch_template(
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (patch_template)
+    >>> 1 + 1 # docstring smoke (patch_template)
     2
 
     Parameters
@@ -555,7 +555,7 @@ def delete_template(
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (delete_template)
+    >>> 1 + 1 # docstring smoke (delete_template)
     2
 
     Parameters
@@ -578,7 +578,7 @@ def list_overlays(
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (list_overlays)
+    >>> 1 + 1 # docstring smoke (list_overlays)
     2
 
     Parameters
@@ -605,7 +605,7 @@ def create_overlay(
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (create_overlay)
+    >>> 1 + 1 # docstring smoke (create_overlay)
     2
 
     Parameters
@@ -634,7 +634,7 @@ def get_overlay(
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (get_overlay)
+    >>> 1 + 1 # docstring smoke (get_overlay)
     2
 
     Parameters
@@ -664,7 +664,7 @@ def patch_overlay(
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (patch_overlay)
+    >>> 1 + 1 # docstring smoke (patch_overlay)
     2
 
     Parameters
@@ -695,7 +695,7 @@ def delete_overlay(
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (delete_overlay)
+    >>> 1 + 1 # docstring smoke (delete_overlay)
     2
 
     Parameters
@@ -718,7 +718,7 @@ def list_conversion_templates(
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (list_conversion_templates)
+    >>> 1 + 1 # docstring smoke (list_conversion_templates)
     2
 
     Parameters
@@ -745,7 +745,7 @@ def create_conversion_template(
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (create_conversion_template)
+    >>> 1 + 1 # docstring smoke (create_conversion_template)
     2
 
     Parameters
@@ -777,7 +777,7 @@ def preview_conversion_template(
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (preview_conversion_template)
+    >>> 1 + 1 # docstring smoke (preview_conversion_template)
     2
 
     Parameters
@@ -833,7 +833,7 @@ def get_conversion_template(
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (get_conversion_template)
+    >>> 1 + 1 # docstring smoke (get_conversion_template)
     2
 
     Parameters
@@ -863,7 +863,7 @@ def patch_conversion_template(
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (patch_conversion_template)
+    >>> 1 + 1 # docstring smoke (patch_conversion_template)
     2
 
     Parameters
@@ -894,7 +894,7 @@ def delete_conversion_template(
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (delete_conversion_template)
+    >>> 1 + 1 # docstring smoke (delete_conversion_template)
     2
 
     Parameters
@@ -918,7 +918,7 @@ def list_library_assets(
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (list_library_assets)
+    >>> 1 + 1 # docstring smoke (list_library_assets)
     2
 
     Parameters
@@ -947,7 +947,7 @@ def create_library_asset(
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (create_library_asset)
+    >>> 1 + 1 # docstring smoke (create_library_asset)
     2
 
     Parameters
@@ -976,7 +976,7 @@ def validate_library_yaml(
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (validate_library_yaml)
+    >>> 1 + 1 # docstring smoke (validate_library_yaml)
     2
 
     Parameters
@@ -1005,7 +1005,7 @@ def preview_library_rule(
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (preview_library_rule)
+    >>> 1 + 1 # docstring smoke (preview_library_rule)
     2
 
     Parameters
@@ -1034,7 +1034,7 @@ def get_library_asset(
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (get_library_asset)
+    >>> 1 + 1 # docstring smoke (get_library_asset)
     2
 
     Parameters
@@ -1064,7 +1064,7 @@ def update_library_asset(
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (update_library_asset)
+    >>> 1 + 1 # docstring smoke (update_library_asset)
     2
 
     Parameters
@@ -1095,7 +1095,7 @@ def delete_library_asset(
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (delete_library_asset)
+    >>> 1 + 1 # docstring smoke (delete_library_asset)
     2
 
     Parameters

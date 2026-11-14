@@ -77,16 +77,16 @@ add_origin_if_missing = api_wire.add_origin_if_missing
 add_loopback_origin_variants = api_wire.add_loopback_origin_variants
 get_cors_origins = api_wire.get_cors_origins
 get_cors_allowed_headers = api_wire.get_cors_allowed_headers
-_is_named_upload = api_wire._is_named_upload  # pyright: ignore[reportPrivateUsage]
+_is_named_upload = api_wire._is_named_upload # pyright: ignore[reportPrivateUsage]
 parse_files = api_wire.parse_files
 normalize_api_product = api_wire.normalize_api_product
-_coerce_form_list = api_wire._coerce_form_list  # pyright: ignore[reportPrivateUsage]
-_coerce_form_str = api_wire._coerce_form_str  # pyright: ignore[reportPrivateUsage]
-_resolve_request_extensions = api_wire._resolve_request_extensions  # pyright: ignore[reportPrivateUsage]
-_package_issue_payload = api_wire._package_issue_payload  # pyright: ignore[reportPrivateUsage]
-_package_stages_payload = api_wire._package_stages_payload  # pyright: ignore[reportPrivateUsage]
-_resolve_request_profiles = api_wire._resolve_request_profiles  # pyright: ignore[reportPrivateUsage]
-_is_multiline_template_product = api_wire._is_multiline_template_product  # pyright: ignore[reportPrivateUsage]
+_coerce_form_list = api_wire._coerce_form_list # pyright: ignore[reportPrivateUsage]
+_coerce_form_str = api_wire._coerce_form_str # pyright: ignore[reportPrivateUsage]
+_resolve_request_extensions = api_wire._resolve_request_extensions # pyright: ignore[reportPrivateUsage]
+_package_issue_payload = api_wire._package_issue_payload # pyright: ignore[reportPrivateUsage]
+_package_stages_payload = api_wire._package_stages_payload # pyright: ignore[reportPrivateUsage]
+_resolve_request_profiles = api_wire._resolve_request_profiles # pyright: ignore[reportPrivateUsage]
+_is_multiline_template_product = api_wire._is_multiline_template_product # pyright: ignore[reportPrivateUsage]
 split_manual_entries = api_wire.split_manual_entries
 manual_entries_with_offsets = api_wire.manual_entries_with_offsets
 is_xml_input = api_wire.is_xml_input
@@ -94,8 +94,8 @@ normalize_code = api_wire.normalize_code
 parse_optional_bulletin_id = api_wire.parse_optional_bulletin_id
 parse_optional_issuing_center = api_wire.parse_optional_issuing_center
 normalize_validation_level = api_wire.normalize_validation_level
-_product_uses_metar_tac_layers = api_wire._product_uses_metar_tac_layers  # pyright: ignore[reportPrivateUsage]
-_product_uses_aerodrome_icao_layer = api_wire._product_uses_aerodrome_icao_layer  # pyright: ignore[reportPrivateUsage]
+_product_uses_metar_tac_layers = api_wire._product_uses_metar_tac_layers # pyright: ignore[reportPrivateUsage]
+_product_uses_aerodrome_icao_layer = api_wire._product_uses_aerodrome_icao_layer # pyright: ignore[reportPrivateUsage]
 parse_optional_files = api_wire.parse_optional_files
 bulletin_split_http_error = api_wire.bulletin_split_http_error
 MAX_BULLETIN_REPORTS = api_wire.MAX_BULLETIN_REPORTS
@@ -261,7 +261,7 @@ class ConvertRequestLoggingMiddleware:
 
             Examples
             --------
-            >>> 1 + 1  # docstring smoke (send_wrapper)
+            >>> 1 + 1 # docstring smoke (send_wrapper)
             2
 
             Parameters
@@ -336,7 +336,7 @@ async def add_translation_centre_headers(
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (add_translation_centre_headers)
+    >>> 1 + 1 # docstring smoke (add_translation_centre_headers)
     2
 
     Parameters
@@ -426,7 +426,7 @@ def custom_openapi() -> dict[str, Any]:
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (custom_openapi)
+    >>> 1 + 1 # docstring smoke (custom_openapi)
     2
     """
     if app.openapi_schema:
@@ -460,13 +460,13 @@ logger.info(f"DEBUG: evaluation.router = {evaluation.router}")
 try:
     app.include_router(validation.router, prefix="/api/v1/validation", tags=["Validation"])
     logger.info("DEBUG: included validation router successfully")
-except Exception as e:  # pragma: no cover - defensive
+except Exception as e: # pragma: no cover - defensive
     logger.error(f"DEBUG: Failed to include validation router: {e}", exc_info=True)
 
 try:
     app.include_router(evaluation.router, prefix="/api/v1/eval", tags=["Evaluation"])
     logger.info("DEBUG: included evaluation router successfully")
-except Exception as e:  # pragma: no cover - defensive
+except Exception as e: # pragma: no cover - defensive
     logger.error(f"DEBUG: Failed to include evaluation router: {e}", exc_info=True)
 
 try:
@@ -476,49 +476,49 @@ try:
         tags=["Work Sessions"],
     )
     logger.info("DEBUG: included work_sessions router successfully")
-except Exception as e:  # pragma: no cover - defensive
+except Exception as e: # pragma: no cover - defensive
     logger.error(f"DEBUG: Failed to include work_sessions router: {e}", exc_info=True)
 
 try:
     app.include_router(dissemination.router)
     logger.info("DEBUG: included dissemination router successfully")
-except Exception as e:  # pragma: no cover - defensive
+except Exception as e: # pragma: no cover - defensive
     logger.error(f"DEBUG: Failed to include dissemination router: {e}", exc_info=True)
 
 try:
     app.include_router(dissemination_ops.router)
     logger.info("DEBUG: included dissemination_ops router successfully")
-except Exception as e:  # pragma: no cover - defensive
+except Exception as e: # pragma: no cover - defensive
     logger.error(f"DEBUG: Failed to include dissemination_ops router: {e}", exc_info=True)
 
 try:
     app.include_router(exchange_admin.router)
     logger.info("DEBUG: included exchange_admin router successfully")
-except Exception as e:  # pragma: no cover - defensive
+except Exception as e: # pragma: no cover - defensive
     logger.error(f"DEBUG: Failed to include exchange_admin router: {e}", exc_info=True)
 
 try:
     app.include_router(conversion_profiles.router)
     logger.info("DEBUG: included conversion_profiles router successfully")
-except Exception as e:  # pragma: no cover - defensive
+except Exception as e: # pragma: no cover - defensive
     logger.error(f"DEBUG: Failed to include conversion_profiles router: {e}", exc_info=True)
 
 try:
     app.include_router(mass_ingest.router)
     logger.info("DEBUG: included mass_ingest router successfully")
-except Exception as e:  # pragma: no cover - defensive
+except Exception as e: # pragma: no cover - defensive
     logger.error(f"DEBUG: Failed to include mass_ingest router: {e}", exc_info=True)
 
 try:
     app.include_router(icao_opmet.router)
     logger.info("DEBUG: included ICAO OPMET router successfully")
-except Exception as e:  # pragma: no cover - defensive
+except Exception as e: # pragma: no cover - defensive
     logger.error(f"DEBUG: Failed to include ICAO OPMET router: {e}", exc_info=True)
 
 try:
     app.include_router(quality_metrics.router)
     logger.info("DEBUG: included quality_metrics router successfully")
-except Exception as e:  # pragma: no cover - defensive
+except Exception as e: # pragma: no cover - defensive
     logger.error(f"DEBUG: Failed to include quality_metrics router: {e}", exc_info=True)
 
 try:
@@ -531,10 +531,10 @@ try:
     app.include_router(live_map.router)
     app.include_router(station_health.router)
     logger.info("DEBUG: included TD-3b routers successfully")
-except Exception as e:  # pragma: no cover - defensive
+except Exception as e: # pragma: no cover - defensive
     logger.error(f"DEBUG: Failed to include TD-3b routers: {e}", exc_info=True)
 
-# F31 / ADR-033 amend: FE-direct Supabase Auth; packages/auth is JWKS + proxy only.
+# F31 / amend: FE-direct Supabase Auth; packages/auth is JWKS + proxy only.
 # Ensure SUPABASE_URL is available for JWKS verification on work-sessions.
 try:
     from metar_shared.supabase_env import get_supabase_url
@@ -543,7 +543,7 @@ try:
     if _supabase_url and not (os.environ.get("SUPABASE_URL") or "").strip():
         os.environ["SUPABASE_URL"] = _supabase_url
     logger.info("DEBUG: auth JWKS env primed (no /auth HTTP router; FE-direct)")
-except Exception as e:  # pragma: no cover - defensive
+except Exception as e: # pragma: no cover - defensive
     logger.error(f"DEBUG: Failed to prime auth JWKS env: {e}", exc_info=True)
 
 logger.info(f"DEBUG: total routes = {len(app.routes)}")

@@ -1,4 +1,4 @@
-"""T2.7: soft-fail sub-second benches for lint + validate alone (ADR-016 Q11=C).
+"""T2.7: soft-fail sub-second benches for lint + validate alone ( Q11=C).
 
 Soft until cutover - failures are reported as warnings / xfail-soft, not hard CI red.
 """
@@ -28,7 +28,7 @@ def _soft_assert_under_budget(elapsed: float, label: str) -> None:
     if elapsed > SOFT_BUDGET_S:
         warnings.warn(
             f"SOFT PERF: {label} took {elapsed:.3f}s (budget {SOFT_BUDGET_S}s); "
-            "hard-fail deferred to cutover (ADR-016 Q11=C)",
+            "hard-fail deferred to cutover ( Q11=C)",
             stacklevel=2,
         )
 

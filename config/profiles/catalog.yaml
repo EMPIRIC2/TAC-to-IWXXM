@@ -1,5 +1,5 @@
 # Profile source catalog — machine index (EV-063 / #913)
-# Corpus: domain-profiles · ADR-036 §7
+# Corpus: domain-profiles · §7
 # Human stubs: semantic/*.md · exchange/*.md
 schema_version: 2
 cycle: EV-M1-five-remaining
@@ -287,7 +287,7 @@ profiles:
         SPECI: "A_LPCN"
         TAF: "A_LTCN"
         AIRMET: "A_LWCN"
-        SIGMET: "A_LSCN"  # also A_LYCN (TC), A_LVCN (VA)
+        SIGMET: "A_LSCN" # also A_LYCN (TC), A_LVCN (VA)
         VAA: "A_LUCN"
       ev072_slice: [METAR, SPECI, TAF, AIRMET]
       ev076_slice: [SIGMET]

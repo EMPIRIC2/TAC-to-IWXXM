@@ -249,7 +249,7 @@
       "theme": "V3",
       "tac": "sigmet_multi_location_va.tac",
       "seed": "sigmet-multi-location-VA",
-      "note": "TC-EV025-008 / #809 ADR-032 equality (EV-026); promote catalog = TC-EV025-009",
+      "note": "TC-EV025-008 / #809 equality (EV-026); promote catalog = TC-EV025-009",
       "golden": "sigmet_multi_location_va.golden.xml"
     },
     {
@@ -307,7 +307,7 @@
       "tac": "vona_a7_1.tac",
       "golden": "vona_a7_1.golden.xml",
       "seed": "vona-A7-1",
-      "note": "F32 theme V3 \u2014 WMO vona-A7-1 peer (TC-F32-002/003/004); ADR-032 canonicalize equality (T2.6); G-VONA-2 UHPP designator fixture constant for KVERT"
+      "note": "F32 theme V3 \u2014 WMO vona-A7-1 peer (TC-F32-002/003/004); canonicalize equality (T2.6); G-VONA-2 UHPP designator fixture constant for KVERT"
     }
   ]
 }

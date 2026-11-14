@@ -1,4 +1,4 @@
-# TAF core detectors (ADR-046 / M4 #1230).
+# TAF core detectors (M4 #1230).
 # Residual: full A5-1 checklist stays in hatch_taf (python) — same honesty class
 # as METAR R3 weather grammar. Pack id is the YAML SoT entrypoint.
 schema_version: 1

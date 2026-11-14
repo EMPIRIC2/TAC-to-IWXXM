@@ -1,6 +1,6 @@
 """HF-sigmet-tc-dashed-names — convert keeps hyphenated TC names (F23 / F6).
 
-``product=SIGMET`` only; no new product enum (ADR-045 pack-engine boundary).
+``product=SIGMET`` only; no new product enum ( pack-engine boundary).
 """
 
 from __future__ import annotations

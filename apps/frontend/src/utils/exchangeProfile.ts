@@ -1,10 +1,10 @@
 /**
- * Exchange packaging profile ids (ADR-036 / F35–F36).
- *
+ * Exchange packaging profile ids (F35–F36).
+
  * Separate from semantic Profile (see semanticProfile.ts) — do not coerce GLOBAL_AFS
  * into ICAO_2025 / annex3.
- *
- * [Corpus: product §F36] [Corpus: adr/ADR-036] [Corpus: api]
+
+ * [Corpus: product §F36] [Corpus: api]
  * @example
  * const _ = true;
  */
@@ -33,7 +33,7 @@ const KNOWN = new Set<string>(EXCHANGE_PROFILE_OPTIONS.map((o) => o.value));
 
 /**
  * Coerce an unknown value to a known exchange profile wire id.
- *
+
  * @param value - Raw select / session / preference value
  * @returns Canonical wire id (defaults to GLOBAL_AFS)
  * @example
@@ -48,7 +48,7 @@ export function coerceExchangeProfile(value: unknown): ExchangeProfileId {
 
 /**
  * Operator-visible label for an exchange profile wire id (select ``title``).
- *
+
  * @param id - Wire id (may be unknown in defensive UI paths)
  * @returns Catalog label, or the raw id when unrecognized
  * @example

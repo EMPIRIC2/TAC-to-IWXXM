@@ -1,7 +1,7 @@
 """Project convert IR slots from a pack match.
 
 This is the convert side of a match. It does not emit XML and does not import
-``tac2iwxxm``. [Corpus: adr/ADR-045]
+``tac2iwxxm``.
 """
 
 from __future__ import annotations
@@ -37,7 +37,7 @@ def project_ir(
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (project_ir)
+    >>> 1 + 1 # docstring smoke (project_ir)
     2
     """
     return {

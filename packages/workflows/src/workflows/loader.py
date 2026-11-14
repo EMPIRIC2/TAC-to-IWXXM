@@ -1,4 +1,4 @@
-"""Load and validate WorkflowDefinition YAML (ADR-042)."""
+"""Load and validate WorkflowDefinition YAML ."""
 
 from __future__ import annotations
 
@@ -13,7 +13,7 @@ from workflows.models import WorkflowDefinition
 
 _ENV_REF = re.compile(r"\$\{ENV:([A-Za-z_][A-Za-z0-9_]*)\}")
 _CREDENTIAL_URL = re.compile(
-    r"(?i)(?:[a-z][a-z0-9+.-]*://)[^/\s:@]+:[^/\s:@]+@",
+    r"(?i)(?:[a-z][a-z0-9+.-]*: )[^/\s:@]+:[^/\s:@]+@",
 )
 
 
@@ -59,7 +59,7 @@ def default_workflows_dir() -> Path:
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (default_workflows_dir)
+    >>> 1 + 1 # docstring smoke (default_workflows_dir)
     2
 
     Returns
@@ -88,7 +88,7 @@ def resolve_env_refs(
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (resolve_env_refs)
+    >>> 1 + 1 # docstring smoke (resolve_env_refs)
     2
 
     Parameters
@@ -145,7 +145,7 @@ def assert_no_embedded_credentials(value: object, *, path: str = "$") -> None:
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (assert_no_embedded_credentials)
+    >>> 1 + 1 # docstring smoke (assert_no_embedded_credentials)
     2
     """
     if isinstance(value, str):
@@ -206,7 +206,7 @@ def parse_workflow_mapping(data: dict[str, object]) -> WorkflowDefinition:
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (parse_workflow_mapping)
+    >>> 1 + 1 # docstring smoke (parse_workflow_mapping)
     2
 
     Parameters
@@ -279,7 +279,7 @@ def load_workflow(
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (load_workflow)
+    >>> 1 + 1 # docstring smoke (load_workflow)
     2
 
     Returns

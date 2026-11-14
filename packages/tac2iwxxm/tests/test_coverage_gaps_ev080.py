@@ -1,6 +1,4 @@
-"""Per-file 100% line+branch fill for EV-080 M2b T2.2 (fill-before-flip).
-
-[Corpus: adr/ADR-007] [Corpus: tests]
+"""Per-file 100% line+branch fill for EV-080 M2b T2.2 (fill-before-flip). [Corpus: tests]
 """
 
 from __future__ import annotations
@@ -61,7 +59,7 @@ def test_reference_point_empty_from_chain(monkeypatch: pytest.MonkeyPatch) -> No
     # Regex rarely yields whitespace-only chain; force the empty-strip guard.
     class _Match:
         def group(self, _name: str) -> str:
-            return "   "
+            return " "
 
     monkeypatch.setattr(
         "tac2iwxxm.geometry.reference_point._FROM_CHAIN",
@@ -164,8 +162,8 @@ def test_bulletin_format_ahl_with_bbb_and_vona_empty(monkeypatch: pytest.MonkeyP
 
 
 def test_vona_fields_blank_volcano_and_spaced_activity() -> None:
-    assert vona_mod._fields("FOO: bar\n\n  cont\n")["FOO"] == "bar cont"
-    assert vona_mod._parse_volcano("   ") == ("", None)
+    assert vona_mod._fields("FOO: bar\n\n cont\n")["FOO"] == "bar cont"
+    assert vona_mod._parse_volcano(" ") == ("", None)
     # Spaced form maps via underscore compact key (cleaned form not in map)
     assert vona_mod._map_activity("DECREASED ACTIVITY") == "DECREASED_ACTIVITY"
     # Blank lines skipped inside a full parse
@@ -188,7 +186,7 @@ def test_vona_fields_blank_volcano_and_spaced_activity() -> None:
 
 
 def test_swxa_fields_continuation_and_intensity_flush() -> None:
-    fields = swxa_mod._fields("DTG: 20161108/0100Z\n\n  EXTRA\n")
+    fields = swxa_mod._fields("DTG: 20161108/0100Z\n\n EXTRA\n")
     assert "EXTRA" in fields["DTG"]
     # intensity with locations flushed at end
     groups = swxa_mod._parse_intensity_regions("MOD HNH HSH")
@@ -199,7 +197,7 @@ def test_swxa_fields_continuation_and_intensity_flush() -> None:
 
 
 def test_vaa_tca_dtg_alt_form_and_fields_blank() -> None:
-    assert vt._fields("DTG: 20040925/1900Z\n\n  note\n")["DTG"].endswith("note")
+    assert vt._fields("DTG: 20040925/1900Z\n\n note\n")["DTG"].endswith("note")
     assert vt._parse_dtg("20040925/1900Z") == "2004-09-25T19:00:00Z"
     assert vt._parse_dtg("not-a-dtg") is None
     # TCA MOV neither pattern nor STNR → elif false
@@ -716,7 +714,7 @@ def test_ev080_remaining_branch_fill(monkeypatch: pytest.MonkeyPatch) -> None:
         {"us_airmet_hazard": {"href": "http://x/IFR"}}
     )
     assert "SIGMETWeatherHazards" in us._sigmet_weather_hazards_extension(
-        {"us_sigmet_hazard": {"href": "http://x/TS", "tag": "  "}}
+        {"us_sigmet_hazard": {"href": "http://x/TS", "tag": " "}}
     )
     parent = {
         "product": "AIRMET",
@@ -802,12 +800,12 @@ def test_ev080_remaining_branch_fill(monkeypatch: pytest.MonkeyPatch) -> None:
     assert fg._ensure_closed_ring([(1.0, 2.0), (1.0, 2.0)]) == [(1.0, 2.0), (1.0, 2.0)]
     assert fg._ensure_closed_ring([(1.0, 2.0), (3.0, 4.0)])[0] == (1.0, 2.0)
 
-    # metar: // wx skip; lightning no sector; second-loc without M; max-only 6h;
+    # metar: / wx skip; lightning no sector; second-loc without M; max-only 6h;
     # no metre/SM vis; trend parse None
     trend = ms._parse_trend_group(
         {"day": 1, "hour": 12, "minute": 0, "station": "KJFK"},
         "TEMPO",
-        "TL1300 //",
+        "TL1300 / ",
     )
     assert trend is not None
     # sector absent → skip sector assign (428→430 false)

@@ -1,4 +1,4 @@
-# R8 NIL / modifiers detectors for METAR/SPECI (ADR-046 / #1228 M2).
+# R8 NIL / modifiers detectors for METAR/SPECI (#1228 M2).
 # Declarative finditer + token_scan (parity with theme_checks.r8_*).
 schema_version: 1
 id: metar-speci-r8-modifiers
@@ -64,7 +64,7 @@ rules:
     # Exclude CIS/Russian runway-state Rxx/dddddd (not ICAO RVR).
     select: '^(?!R\d{2}[LCR]?/\d{6}$)R\d{2}[LCR]?/\S*$'
     # Optional '/' before U|D|N (Canadian MANOBS …FT/N); ICAO …FTN / …N still OK.
-    ok: '^R\d{2}[LCR]?/(?:[MP]?\d{4}(?:V[MP]?\d{4})?|////)(?:FT)?(?:/[UDN]|[UDN])?$'
+    ok: '^R\d{2}[LCR]?/(?:[MP]?\d{4}(?:V[MP]?\d{4})?| / )(?:FT)?(?:/[UDN]|[UDN])?$'
     on_ok:
       code: RVR_PRESENT
       location: modifier

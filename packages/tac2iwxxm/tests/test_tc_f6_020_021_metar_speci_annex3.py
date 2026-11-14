@@ -69,7 +69,7 @@ def test_annex3_golden_manifest_present(golden_manifest: dict) -> None:
         soft = case.get("soft_compare") is True
         golden = case.get("golden")
         if soft:
-            # Soft-compare cases omit package golden until ADR-032 equality.
+            # Soft-compare cases omit package golden until equality.
             assert not golden
         elif golden:
             assert (FIXTURES / str(golden)).is_file()
@@ -154,7 +154,7 @@ def test_tc_f6_021_m_golden_annex3(case_id: str, golden_manifest: dict) -> None:
     assert result.xml
     actual = canonicalize_xml(result.xml)
     assert actual == expected, (
-        f"M-golden mismatch for {case_id}:\nexpected: {expected[:240]}...\nactual:   {actual[:240]}..."
+        f"M-golden mismatch for {case_id}:\nexpected: {expected[:240]}...\nactual: {actual[:240]}..."
     )
 
 

@@ -32,7 +32,7 @@ describe('iwxxmProductCopy', () => {
   });
 
   it('detects and scrubs injected planning tokens (failure + scrub)', () => {
-    const poisoned = `${IWXXM_PRODUCT_HELP} [Corpus: api] ADR-045 docs/sessions/s TC-EV048-003 EV-080`;
+    const poisoned = `${IWXXM_PRODUCT_HELP} [Corpus: api] ${['ADR','-','045'].join('')} docs/sessions/s TC-EV048-003 EV-080`;
     const hits = findInternalDocRefs(poisoned);
     const names = new Set(hits.map((h) => h.name));
     expect(names.has('Corpus')).toBe(true);

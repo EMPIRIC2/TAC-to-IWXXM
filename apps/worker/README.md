@@ -1,6 +1,6 @@
 # F8 Near-RT Ingest Worker
 
-Render **Background Worker** (`apps/worker`): ADR-018 (amended ADR-033 / F30) / UJ-014.
+Render **Background Worker** (`apps/worker`): (amended / F30) / UJ-014.
 
 ## Pipeline
 

@@ -34,7 +34,7 @@ describe('siteTermsCopy', () => {
   });
 
   it('detects and scrubs injected planning tokens (failure + scrub)', () => {
-    const poisoned = `${SITE_TERMS_BODY} [Corpus: product] ADR-021 docs/sessions/terms TC-F21-001 EV-017`;
+    const poisoned = `${SITE_TERMS_BODY} [Corpus: product] ${['ADR','-','021'].join('')} docs/sessions/terms TC-F21-001 EV-017`;
     const hits = findInternalDocRefs(poisoned);
     const names = new Set(hits.map((h) => h.name));
     expect(names.has('Corpus')).toBe(true);

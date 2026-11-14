@@ -16,12 +16,12 @@ extension speeds up validation when built from source (see below).
 
 ## Start here
 
-| I want to…                                                            | Import                                                             |
+| I want to… | Import |
 | --------------------------------------------------------------------- | ------------------------------------------------------------------ |
-| Validate IWXXM XML (XSD + Schematron)                                 | `from iwxxm_validate import validate`                              |
-| Prefer the Rust engine when it is built                               | `from iwxxm_validate import validate_iwxxm, rust_available`        |
+| Validate IWXXM XML (XSD + Schematron) | `from iwxxm_validate import validate` |
+| Prefer the Rust engine when it is built | `from iwxxm_validate import validate_iwxxm, rust_available` |
 | Compare two IWXXM documents for Quality Metrics and ignore formatting | `from iwxxm_validate import to_canonical_xml, canonical_xml_equal` |
-| Run validation tuned for Quality Metrics                              | `from iwxxm_validate import validate_for_quality_metrics`          |
+| Run validation tuned for Quality Metrics | `from iwxxm_validate import validate_for_quality_metrics` |
 
 Canonical XML means W3C Canonical XML 1.0 (also called C14N). The short names
 `c14n_xml` and `c14n_equal` remain as aliases for one package CalVer window.
@@ -62,7 +62,7 @@ Exit `0` when `report.ok`; `1` on validation or I/O errors.
 
 ## Output policy overlays
 
-Optional IWXXM output policy YAML via `IWXXM_VALIDATE_POLICY_DIR` (ADR-046). Vendor
+Optional IWXXM output policy YAML via `IWXXM_VALIDATE_POLICY_DIR` . Vendor
 XSD/Schematron remain the source of truth; policies select/ignore assert ids. See the
 monorepo [Overlay cookbook](https://github.com/EMPIRIC2/TAC-to-IWXXM/blob/stage/docs/domain/overlays/overlay-cookbook.md),
 `examples/overlays/`, and copy-paste `examples/starters/`.

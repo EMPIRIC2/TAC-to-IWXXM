@@ -1,4 +1,4 @@
-"""Thin FastAPI routers for dissemination preflight/send (F16-F19 / ADR-030)."""
+"""Thin FastAPI routers for dissemination preflight/send (F16-F19)."""
 
 from __future__ import annotations
 
@@ -58,7 +58,7 @@ async def dissemination_preflight(
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (dissemination_preflight)
+    >>> 1 + 1 # docstring smoke (dissemination_preflight)
     2
 
     Parameters
@@ -159,7 +159,7 @@ async def dissemination_send(
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (dissemination_send)
+    >>> 1 + 1 # docstring smoke (dissemination_send)
     2
 
     Parameters
@@ -219,7 +219,7 @@ async def dissemination_send(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="invalid or expired preflight handle",
             )
-        sink_type = rec.sink_type  # type: ignore[assignment]
+        sink_type = rec.sink_type # type: ignore[assignment]
         uri = rec.uri
         if rec.params:
             send_params = {**dict(rec.params), **send_params}
@@ -322,7 +322,7 @@ async def dissemination_send(
 
     try:
         pre = await run_db_preflight(
-            PreflightRequest(sink_type=sink_type, uri=uri, ddl=True)  # type: ignore[arg-type]
+            PreflightRequest(sink_type=sink_type, uri=uri, ddl=True) # type: ignore[arg-type]
         )
     except EgressDenied as exc:
         raise HTTPException(

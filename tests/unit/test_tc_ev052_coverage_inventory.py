@@ -1,6 +1,6 @@
 """TC-EV052-001 / T1.1 - coverage surface inventory exists and is complete.
 
-[Corpus: tests] [Corpus: adr/ADR-007] [Corpus: product] EV-052 / #950
+[Corpus: tests] [Corpus: product] EV-052 / #950
 """
 
 from __future__ import annotations

@@ -1,4 +1,4 @@
-"""TC-EV025-008 - #809 sigmet-multi-location-VA ADR-032 equality (S033 / EV-026 T1.1).
+"""TC-EV025-008 - #809 sigmet-multi-location-VA equality (S033 / EV-026 T1.1).
 
 Strict gate (E26-TC=1): convert annex3 → ``canonicalize_xml`` equals vendor XML under
 default pin. Soft-compare / inequality assert removed. Catalog promote remains TC-EV025-009.
@@ -53,7 +53,7 @@ def test_tc_ev025_008_package_and_vendor_fixtures_present() -> None:
 
 
 def test_tc_ev025_008_canonicalize_equals_vendor() -> None:
-    """ADR-032 strict equality vs vendor (EV-026)."""
+    """ strict equality vs vendor (EV-026)."""
     from tac2iwxxm.slot_builders.sigmet_airmet import parse_sigmet
 
     from tac2iwxxm import convert
@@ -84,15 +84,15 @@ def test_tc_ev025_008_canonicalize_equals_vendor() -> None:
     assert len(actual_collections) == len(vendor_collections)
 
     for coll in actual_collections:
-        assert coll.find(f".//{IW}SIGMETEvolvingConditionCollection") is not None
-        evolving = coll.find(f".//{IW}SIGMETEvolvingConditionCollection")
+        assert coll.find(f". / {IW}SIGMETEvolvingConditionCollection") is not None
+        evolving = coll.find(f". / {IW}SIGMETEvolvingConditionCollection")
         assert evolving is not None
         assert evolving.get("timeIndicator") == "OBSERVATION"
         assert coll.find(f"{IW}analysisAndForecastPositionAnalysis/{IW}forecastPositionAnalysis") is not None
-        assert coll.find(f".//{IW}SIGMETPositionCollection") is not None
+        assert coll.find(f". / {IW}SIGMETPositionCollection") is not None
 
-    actual_pos = actual.findall(f".//{GML}posList")
-    vendor_pos = vendor.findall(f".//{GML}posList")
+    actual_pos = actual.findall(f". / {GML}posList")
+    vendor_pos = vendor.findall(f". / {GML}posList")
     assert len(actual_pos) >= 4
     assert len(actual_pos) == len(vendor_pos)
 

@@ -1,6 +1,4 @@
 """T1.4 — English locale hook and sandboxed templates.
-
-[Corpus: adr/ADR-045]
 """
 
 from __future__ import annotations
@@ -76,9 +74,9 @@ rules:
     _overlay(
         monkeypatch,
         tmp_path,
-        "id: fixture_metar\nlayout: token_stream\nrules:\n  - id: kind\n    pattern: ['"
+        "id: fixture_metar\nlayout: token_stream\nrules:\n - id: kind\n pattern: ['"
         + ("A" * 201)
-        + "']\n    explain: '{0}'\n",
+        + "']\n explain: '{0}'\n",
     )
     with pytest.raises(PackSchemaError, match="too long"):
         load_packs()

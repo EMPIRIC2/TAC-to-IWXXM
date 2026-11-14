@@ -1,6 +1,6 @@
 """TC-EV052-002 / T1.3 - every coverage surface enforces ≥95%; soft gates gone.
 
-[Corpus: tests] [Corpus: adr/ADR-007] EV-052 / #950
+[Corpus: tests] EV-052 / #950
 """
 
 from __future__ import annotations

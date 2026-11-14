@@ -1,6 +1,4 @@
-# Scripts Python coverage harness (EV-080 / #1077)
-
-[Corpus: adr/ADR-007] [Corpus: tests]
+# Scripts Python coverage harness (EV-080 / #1077) [Corpus: tests]
 
 Unit tests for `scripts/**/*.py`. Run via:
 

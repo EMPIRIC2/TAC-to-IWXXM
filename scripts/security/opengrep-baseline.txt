@@ -1,6 +1,6 @@
 # Temporary OpenGrep baseline for EV-049 consumer-gate land.
-# Format: check_id\tpath  (fail only on findings not listed here).
-# Clear entries as findings are fixed. [Corpus: adr-037]
+# Format: check_id\tpath (fail only on findings not listed here).
+# Clear entries as findings are fixed. [Corpus: ]
 
 dockerfile.security.missing-user-entrypoint.missing-user-entrypoint	packages/dissemination/docker/wis2box-harness/Dockerfile
 dockerfile.security.missing-user.missing-user	apps/frontend/Dockerfile

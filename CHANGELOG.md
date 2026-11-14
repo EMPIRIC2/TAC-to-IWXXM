@@ -71,7 +71,7 @@ convert 5995/5996 ok; IWXXM validate 5994/5996 ok).
   [#1571](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1571)).
 - Canonical XML primary-name layout DX façade tests
   ([#1569](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1569)).
-- Partial decode mapped to TAC warning (ADR-054)
+- Partial decode mapped to TAC warning
   ([#1567](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1567)).
 - Live residual remark / non-RMK decode conventions for METAR, SPECI, TAF, SIGMET
   ([#1547](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1547)–[#1550](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1550)).
@@ -151,10 +151,10 @@ cards; Downloads dump lint regressions; always-on stage quality packs; removal o
 ## 2026-09-22 — Release prep (YAML full configurability)
 
 Full YAML configurability program on staging (epic #1226 / M1–M5): honesty matrix
-all-full, ADR-047 emit maps, pin↔Schematron asserts, overlay DX.
+all-full, emit maps, pin↔Schematron asserts, overlay DX.
 
 ### Added
-- **Convert emit YAML** (ADR-047) for METAR/SPECI/TAF/SIGMET/AIRMET/VAA/TCA.
+- **Convert emit YAML** for METAR/SPECI/TAF/SIGMET/AIRMET/VAA/TCA.
 - **IWXXM pin↔Schematron** fail-closed checks on convert/validate (`PIN_SCH_MISMATCH`;
   soft-preview waived).
 - **Matrix CI lock** TC-EVYFC-001 (all-full) and product row locks TC-EVYFC-005…008.
@@ -218,7 +218,7 @@ Operator-facing and package improvements validated on staging since the 2026-09-
 - **Workbench chrome** — Recent work, profile glance, exchange profile, StatusBanner tones,
   Convert&Send outline, and mobile/guest adversarial UX polish on staging.
 - **Beta Dissemination / Send** — Operator dissemination surfaces marked beta with GitHub
-  Issues feedback path (ADR-043).
+  Issues feedback path .
 
 ### Changed
 - Fail-closed unsupported IWXXM migrate pairs.
@@ -229,8 +229,8 @@ Operator-facing and package improvements validated on staging since the 2026-09-
 
 ### Packages
 - `tac2iwxxm` **0.3.0 → 2026.9.10** (CalVer; profile convert / registry + fixtures)
-- `tac-validate` **0.2.0 → 2026.9.10** (CalVer bump; ADR-043)
-- `iwxxm-validate` **0.2.0 → 2026.9.10** (CalVer bump; ADR-043)
+- `tac-validate` **0.2.0 → 2026.9.10** (CalVer bump; )
+- `iwxxm-validate` **0.2.0 → 2026.9.10** (CalVer bump; )
 - Nightly TestPyPI workflow + `make pypi-calver-bump` (ops: Trusted Publishers / `testpypi` env)
 
 ### Deploy
@@ -355,7 +355,7 @@ Operator-facing improvements validated on staging, now promoting to production.
   + committed baselines; Python package + per-file coverage ≥95% (incl. auth/worker).
 - **EV-047 / F7**: Operator one-pager, handbook, and in-app Help (UJ-054).
 - **Process**: Release-on-promote guidance (semver + CHANGELOG on `stage`, deploy/PyPI tags
-  after merge); ADR-034 amend; Staging-gate advisory reminder.
+  after merge); amend; Staging-gate advisory reminder.
 
 ### Changed
 - **EV-046 / F15**: `tac-validate` catalog attribution prefers stable source URL
@@ -437,7 +437,7 @@ Operator-facing improvements validated on staging, now promoting to production.
 ### Added
 - **F32**: VONA TAC lint → convert → XSD+SCH; FE Examples `vona_a7_1` (`wmoPass`); API
   `product=vona` (PR #848).
-- **#835**: TC SIGMET A6-2-TC ADR-032 equality promoted to `wmoPass`.
+- **#835**: TC SIGMET A6-2-TC equality promoted to `wmoPass`.
 
 ### Docs
 - Release-line adoptability / staff guide (#808/#847); #846 corpus children filed (epic remains open).
@@ -475,9 +475,9 @@ Operator-facing improvements validated on staging, now promoting to production.
 
 ### Changed
 - Supabase = **Auth only** (JWKS-only verify); no product PostgREST / Supabase DB writers
-  on default path ([ADR-033](adr/ADR-033-platform-independence-auth-do-doks.md)).
+  on default path (architecture decision).
 - F21 Amended: public convert retained; Auth restored for long-term storage.
-- F8 worker store/quarantine → SQLAlchemy / `DATABASE_URL` (ADR-018 amend).
+- F8 worker store/quarantine → SQLAlchemy / `DATABASE_URL` ( amend).
 
 ### Deploy
 - Provisional cutover under `D-S038-t63-waive` (LB `168.144.12.70` + placeholder Hosts).
@@ -548,7 +548,7 @@ Operator-facing improvements validated on staging, now promoting to production.
 
 ### Changed
 - **F23 / F6 / F7**: WMO `sigmet-multi-location-VA` encoder matches vendor under annex3
-  defaults (ADR-032 `canonicalize_xml` equality): calendar/ATS–MWO stamps, ring order +
+  defaults ( `canonicalize_xml` equality): calendar/ATS–MWO stamps, ring order +
   2dp coords, phenomenonTime xlink reuse.
 - Examples catalog `sigmet_multi_location_va` promoted **wmoReference → wmoPass** (UJ-041).
 
@@ -590,7 +590,7 @@ Operator-facing improvements validated on staging, now promoting to production.
 - Deleted `packages/auth`; retired `DISABLE_AUTH` / `api.disableAuth` dual path.
 - Live E2E / H6: no `E2E_USER_*` login fixture (`TC-F21-auth-gone`).
 - Deploy + env-contract rewritten for public API + F8 worker secrets only ([deploy.md](deploy.md),
-  [env-contract.md](env-contract.md)); ADR-031 Accepted (supersedes ADR-020 for operator history).
+  [env-contract.md](env-contract.md)); Accepted (supersedes for operator history).
 
 ### Deploy
 - Cutover PRs [#786](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/786) /
@@ -635,13 +635,13 @@ Operator-facing improvements validated on staging, now promoting to production.
 - **F16–F19**: Operator dissemination drawer (Convert&Send / Upload) with backend-mediated
   `POST /api/v1/dissemination/preflight` + `/send`; multi-DB writer-contract (Postgres, MySQL,
   SQL Server, SQLite); WIS2 + EDIS sinks; AMHS/SWIM/AFS staging stubs (`packages/dissemination`).
-- SSRF egress allowlist (`DISSEMINATION_EGRESS_ALLOWLIST`, ADR-029); Compose wis2box CI harness.
+- SSRF egress allowlist (`DISSEMINATION_EGRESS_ALLOWLIST`, ); Compose wis2box CI harness.
 - Playwright UJ-027–030 + `make test-mock-byoc-smoke` close-gate evidence.
 
 ### Changed
 - Feature-list F16–F19 → **Done**; Q15/Q21 close gate amended to mock/harness BYOC for EV-014
   (`D-S019-EV014-Q15-mock-waive`). Live destination demos deferred (optional follow-up).
-- ADR-021 amended (destination secrets memory-only); ADR-030 package/API cut.
+- amended (destination secrets memory-only); package/API cut.
 
 ### Deploy
 - PRs [#771](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/771) /
@@ -658,7 +658,7 @@ Operator-facing improvements validated on staging, now promoting to production.
 
 ### Changed
 - Workbench: toast on convert-time AHL/COLLECT auto-switch; classify COLLECT after gzip inflate.
-- Specs: UJ-025 + TC-F7-007; F7 remains **Planned**; COLLECT stays **501** (ADR-024).
+- Specs: UJ-025 + TC-F7-007; F7 remains **Planned**; COLLECT stays **501** .
 
 ### Deploy
 - PR [#746](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/746) merged (`37be5f8`);
@@ -670,7 +670,7 @@ Operator-facing improvements validated on staging, now promoting to production.
 ### Added
 - **F15**: Maintainable `tac-validate` issue registry (`IssueSpec` / SCREAMING_SNAKE codes +
   `info`|`warning`|`error`); docs/JSON catalog with CI drift gates; R1–R8 METAR/SPECI accept +
-  negative fixtures; `GET /api/v1/lint-issue-catalog` + workbench catalog tooltips/panel (ADR-028).
+  negative fixtures; `GET /api/v1/lint-issue-catalog` + workbench catalog tooltips/panel .
 - Convert goldens: expanded Annex-3 / IWXXM-US METAR/SPECI (AUTO/CAVOK/COR adjacency) + R6/R7 tests.
 
 ### Changed
@@ -686,8 +686,8 @@ Operator-facing improvements validated on staging, now promoting to production.
 ## 2026-07-19 — S014 EV-010 (F11 msgspec HTTP + F12–F14 packages)
 
 ### Added
-- **F11**: msgspec response encode on high-churn convert/validate/lint/decode routes (ADR-026);
-  Rust `iwxxm-validate` SDK path; xsdata `iwxxm_xsd` models (ADR-027).
+- **F11**: msgspec response encode on high-churn convert/validate/lint/decode routes ;
+  Rust `iwxxm-validate` SDK path; xsdata `iwxxm_xsd` models .
 - **F12–F14**: Publishable `tac-validate` / `iwxxm-validate` / `tac2iwxxm[+validate]` packaging
   + PyPI OIDC workflow (matrix); **0.1.0** live on PyPI (token bootstrap; OIDC for later tags).
 
@@ -710,7 +710,7 @@ Operator-facing improvements validated on staging, now promoting to production.
   workbench decode panel (UJ-020).
 - **F10**: Side-by-side IWXXM preview pane (`IwxxmPreviewPane`) with Soft-preview / Passed
   badge; `MISSING_TERMINATOR` downgraded to `info` with one-click "Add `=`" quick fix
-  (UJ-021; ADR-025).
+  (UJ-021; ).
 
 ### Changed
 - Decode/lint contracts additive-only (`summary`, `info` severity + `fixes[]` already present).
@@ -727,7 +727,7 @@ Operator-facing improvements validated on staging, now promoting to production.
 - **F6 `tac2iwxxm`**: seven-product annex3 convert (AIRMET, METAR, SIGMET, SPECI, TAF, VAA, TCA)
   plus `iwxxm_us` for METAR/SPECI/TAF (thin SIGMET/AIRMET US namespace).
 - **F8 `apps/worker`**: Render Background Worker poller → lint → convert → validate →
-  Supabase `iwxxm_ingest_results` / `iwxxm_ingest_quarantine` (ADR-018).
+  Supabase `iwxxm_ingest_results` / `iwxxm_ingest_quarantine` .
 - Live gates: H7 bulletin smoke (`make test-live-bulletin`), H3 convert/lint smoke,
   worker ingest table probe (T7.2–T7.4).
 

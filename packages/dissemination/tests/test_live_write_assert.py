@@ -1,6 +1,6 @@
 """Unit tests for live write-assert helpers (EV-039 / T2.3 / AC2).
 
-[Corpus: product §F16] [Corpus: tests] TC-F16-LIVE [Corpus: adr/ADR-030]
+[Corpus: product §F16] [Corpus: tests] TC-F16-LIVE
 """
 
 from __future__ import annotations
@@ -19,7 +19,7 @@ from sqlalchemy.ext.asyncio import create_async_engine
 @pytest.mark.asyncio
 async def test_assert_live_write_sqlite_tmp(tmp_path: Path) -> None:
     db = tmp_path / "live-assert.db"
-    uri = f"sqlite+aiosqlite:///{db}"
+    uri = f"sqlite+aiosqlite: / /{db}"
     engine = create_async_engine(uri)
     upload_key = f"kv_{uuid.uuid4().hex}"
     try:
@@ -58,7 +58,7 @@ async def test_assert_live_write_sqlite_tmp(tmp_path: Path) -> None:
 @pytest.mark.asyncio
 async def test_assert_live_write_fails_when_empty(tmp_path: Path) -> None:
     db = tmp_path / "empty.db"
-    uri = f"sqlite+aiosqlite:///{db}"
+    uri = f"sqlite+aiosqlite: / /{db}"
     engine = create_async_engine(uri)
     try:
         await apply_writer_contract(engine, dialect="sqlite")
@@ -71,7 +71,7 @@ async def test_assert_live_write_fails_when_empty(tmp_path: Path) -> None:
 
 def test_cli_main_ok_and_fail(tmp_path: Path, capsys: pytest.CaptureFixture[str]) -> None:
     db = tmp_path / "cli.db"
-    uri = f"sqlite+aiosqlite:///{db}"
+    uri = f"sqlite+aiosqlite: / /{db}"
 
     async def _seed() -> None:
         engine = create_async_engine(uri)
@@ -100,7 +100,7 @@ def test_cli_main_ok_and_fail(tmp_path: Path, capsys: pytest.CaptureFixture[str]
     assert out["count"] == 1
 
     empty = tmp_path / "cli-empty.db"
-    empty_uri = f"sqlite+aiosqlite:///{empty}"
+    empty_uri = f"sqlite+aiosqlite: / /{empty}"
 
     async def _empty() -> None:
         engine = create_async_engine(empty_uri)
@@ -123,7 +123,7 @@ def test_cli_main_generic_error_exits_2(monkeypatch: pytest.MonkeyPatch, capsys:
         "dissemination.live_write_assert.assert_live_write",
         _boom,
     )
-    assert main(["--sink-type", "sqlite", "--uri", "sqlite+aiosqlite:///:memory:"]) == 2
+    assert main(["--sink-type", "sqlite", "--uri", "sqlite+aiosqlite: / /:memory:"]) == 2
     err = json.loads(capsys.readouterr().err)
     assert err["ok"] is False
     assert "exploded" in err["error"]
@@ -149,7 +149,7 @@ def test_cli_module_main_guard(monkeypatch: pytest.MonkeyPatch) -> None:
             "--sink-type",
             "sqlite",
             "--uri",
-            "sqlite+aiosqlite:///:memory:",
+            "sqlite+aiosqlite: / /:memory:",
         ],
     )
     sys.modules.pop("dissemination.live_write_assert", None)

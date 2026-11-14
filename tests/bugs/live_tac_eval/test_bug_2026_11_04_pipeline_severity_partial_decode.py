@@ -3,9 +3,9 @@
 Partial decode (decode residuals remain) must surface as TAC validate warning
 ``PARTIAL_DECODE``. Convert hard fail stays critical and IWXXM validate fail
 stays error per the accepted severity ladder — covered here for the partial
-decode gap only; convert/IWXXM promotion already has ADR-054 unit coverage.
+decode gap only; convert/IWXXM promotion already has unit coverage.
 
-[Corpus: product] [Corpus: api] [Corpus: tests] [Corpus: adr/ADR-054]
+[Corpus: product] [Corpus: api] [Corpus: tests]
 """
 
 from __future__ import annotations

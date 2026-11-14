@@ -1,10 +1,10 @@
-"""Initial product schema on DO Postgres (F30/F31 / ADR-033).
+"""Initial product schema on DO Postgres (F30/F31).
 
 Revision ID: 20260803_0001
 Revises:
 Create Date: 2026-08-03
 
-Creates ``tac_work_sessions`` (ADR-020 wire shapes + swxa) and F8 ingest store /
+Creates ``tac_work_sessions`` ( wire shapes + swxa) and F8 ingest store /
 quarantine tables. No Supabase Auth user FK — Auth remains on Supabase; product DB is DO.
 """
 
@@ -40,7 +40,7 @@ def upgrade() -> None:
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (upgrade)
+    >>> 1 + 1 # docstring smoke (upgrade)
     2
     """
     op.execute(sa.text('CREATE EXTENSION IF NOT EXISTS "pgcrypto"'))
@@ -221,7 +221,7 @@ def downgrade() -> None:
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (downgrade)
+    >>> 1 + 1 # docstring smoke (downgrade)
     2
     """
     op.execute(sa.text("DROP INDEX IF EXISTS idx_iwxxm_ingest_quarantine_job_created"))

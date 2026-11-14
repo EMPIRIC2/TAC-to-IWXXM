@@ -2,7 +2,7 @@
 
 Asserts WMO ``airmet-A6-1a-TS`` is in the annex3 pack, root ``iwxxm:AIRMET``,
 geometry is not nil-only, convert → M-xsd/M-sch, and ``canonicalize_xml`` equals
-vendor golden under default convert settings (ADR-032 / E20-D3).
+vendor golden under default convert settings (E20-D3).
 """
 
 from __future__ import annotations
@@ -119,7 +119,7 @@ def test_tc_f24_002_a6_1a_ts_encode_shape() -> None:
     assert 'timeIndicator="OBSERVATION"' in xml
     assert 'intensityChange="WEAKEN"' in xml
     assert 'upperLimit uom="FL">100</aixm:upperLimit>' in xml
-    assert 'nilReason="unknown"' in xml  # TOP ABV → maximumLimit nil unknown
+    assert 'nilReason="unknown"' in xml # TOP ABV → maximumLimit nil unknown
     assert "gml:posList" in xml
     # #731 shared STNR rule (encoder golden; vendor XML omits motion fields).
     assert 'nilReason="http://codes.wmo.int/common/nil/inapplicable"' in xml

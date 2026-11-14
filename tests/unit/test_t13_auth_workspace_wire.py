@@ -11,7 +11,7 @@ ROOT = Path(__file__).resolve().parents[2]
 
 @pytest.mark.unit
 class TestT13AuthWorkspaceWire:
-    """Config gates for Auth package restore wiring (env-contract / ADR-033)."""
+    """Config gates for Auth package restore wiring (env-contract )."""
 
     def test_dockerfile_copies_packages_auth(self) -> None:
         text = (ROOT / "apps/backend/docker/Dockerfile").read_text(encoding="utf-8")
@@ -29,12 +29,12 @@ class TestT13AuthWorkspaceWire:
 
     def test_ci_matrix_includes_auth_package(self) -> None:
         workflow = (ROOT / ".github/workflows/ci-cd.yml").read_text(encoding="utf-8")
-        assert "auth," in workflow or "\n            auth," in workflow
+        assert "auth," in workflow or "\n auth," in workflow
         assert "matrix.package == 'auth'" in workflow
         assert "tests/unit/auth" in workflow
         assert "--cov-fail-under=100" in workflow
         assert "check_per_file_coverage.py" in workflow
-        assert "worker," in workflow or "\n            worker," in workflow
+        assert "worker," in workflow or "\n worker," in workflow
 
     def test_env_example_documents_jwks(self) -> None:
         root_env = (ROOT / "config/env.example").read_text(encoding="utf-8")

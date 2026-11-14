@@ -1,4 +1,4 @@
-"""Maintainable TAC lint issue registry (F15 / ADR-028).
+"""Maintainable TAC lint issue registry (F15).
 
 Rules import ``IssueSpec`` rows via ``by_code`` / ``issue_from`` instead of inventing
 severity or code string literals. Catalog export (``make catalog-regen``) iterates
@@ -170,7 +170,7 @@ ISSUES: tuple[IssueSpec, ...] = (
     _row(
         "DEWPOINT_NOT_OBSERVABLE",
         "info",
-        "{product} dewpoint not observable (tt///) - temperature present",
+        "{product} dewpoint not observable (tt / /) - temperature present",
         tags=("temperature", "metar", "speci", "auto"),
     ),
     _row(
@@ -194,7 +194,7 @@ ISSUES: tuple[IssueSpec, ...] = (
     _row(
         "CLOUD_TYPE_NOT_OBSERVABLE",
         "info",
-        "{product} cloud group uses /// because the convective cloud type was not observed. Informational: noted for operator awareness; does not by itself block conversion. Source: nilReason notObservable.",
+        "{product} cloud group uses / / because the convective cloud type was not observed. Informational: noted for operator awareness; does not by itself block conversion. Source: nilReason notObservable.",
         tags=("cloud", "metar", "speci", "auto"),
     ),
     _row(
@@ -266,7 +266,7 @@ ISSUES: tuple[IssueSpec, ...] = (
     _row(
         "CA_ALTIMETER_NOT_OBS",
         "info",
-        "{product} altimeter not observable (A////) - MANOBS Canadian overlay",
+        "{product} altimeter not observable (A / ) - MANOBS Canadian overlay",
         tags=("pressure", "metar", "speci", "ca_eccc", "manobs"),
     ),
     _row(
@@ -544,20 +544,20 @@ ISSUES: tuple[IssueSpec, ...] = (
     _row(
         "VV_OMIT",
         "info",
-        "{product} uses VV///; vertical visibility should be omitted without a nil reason in this product context. Informational: noted for operator awareness; does not by itself block conversion. Source: ICAO Annex 3 App 5 / Table A5-1. Full normative text may require purchase.",
+        "{product} uses VV / /; vertical visibility should be omitted without a nil reason in this product context. Informational: noted for operator awareness; does not by itself block conversion. Source: ICAO Annex 3 App 5 / Table A5-1. Full normative text may require purchase.",
         product="taf",
         tags=("cloud", "taf", "vv"),
     ),
     _row(
         "VV_NOT_OBSERVABLE",
         "info",
-        "{product} uses VV/// meaning vertical visibility is not observable. Informational: noted for operator awareness; does not by itself block conversion. Source: Vertical visibility missingness via nil.",
+        "{product} uses VV / / meaning vertical visibility is not observable. Informational: noted for operator awareness; does not by itself block conversion. Source: Vertical visibility missingness via nil.",
         tags=("cloud", "metar", "speci", "vv"),
     ),
     _row(
         "WX_NOT_OBSERVABLE",
         "info",
-        "{product} present weather uses // meaning weather phenomena are not observable. Informational: noted for operator awareness; does not by itself block conversion. Source: nilReason notObservable; prefer iwxxm/nil when pin policy says so.",
+        "{product} present weather uses / meaning weather phenomena are not observable. Informational: noted for operator awareness; does not by itself block conversion. Source: nilReason notObservable; prefer iwxxm/nil when pin policy says so.",
         tags=("weather", "metar", "speci"),
     ),
     _row(
@@ -953,7 +953,7 @@ def catalog_entries(*, product: str | None = None) -> tuple[IssueSpec, ...]:
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (catalog_entries)
+    >>> 1 + 1 # docstring smoke (catalog_entries)
     2
     """
     if product is None or not str(product).strip():
@@ -990,7 +990,7 @@ def by_code(code: str) -> IssueSpec:
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (by_code)
+    >>> 1 + 1 # docstring smoke (by_code)
     2
     """
     try:
@@ -1040,7 +1040,7 @@ def issue_from(
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (issue_from)
+    >>> 1 + 1 # docstring smoke (issue_from)
     2
     """
     spec = by_code(code)

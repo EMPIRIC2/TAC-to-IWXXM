@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Fail if OpenGrep JSON has findings not listed in the baseline file.
 
-Baseline format (tab-separated): check_id\\tpath  (repo-relative path)
-[Corpus: adr-037]
+Baseline format (tab-separated): check_id\\tpath (repo-relative path)
+[Corpus: ]
 """
 
 from __future__ import annotations
@@ -60,7 +60,7 @@ def main() -> int:
     if new:
         print(f"[security] OpenGrep NEW findings ({len(new)}):", file=sys.stderr)
         for cid, path in sorted(new):
-            print(f"  {cid}  {path}", file=sys.stderr)
+            print(f" {cid} {path}", file=sys.stderr)
         return 1
 
     print(f"[security] OpenGrep OK — {len(results)} finding(s), all baselined or none")

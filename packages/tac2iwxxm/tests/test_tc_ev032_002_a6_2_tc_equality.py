@@ -1,4 +1,4 @@
-"""TC-EV032-002 - #835 A6-2-TC ADR-032 equality (S040 / EV-032 T1.1).
+"""TC-EV032-002 - #835 A6-2-TC equality (S040 / EV-032 T1.1).
 
 Strict bar (E32-T2): ``canonicalize_xml(convert(annex3 A6-2-TC))`` must equal
 vendor ``sigmet-A6-2-TC.xml`` under the default pin before catalog ``wmoPass``.
@@ -22,7 +22,7 @@ PROFILE = "annex3"
 
 @pytest.mark.ev032_smoke
 def test_tc_ev032_002_a6_2_tc_adr032_equality() -> None:
-    """Convert annex3 A6-2-TC TAC → vendor XML under ADR-032 canonicalize."""
+    """Convert annex3 A6-2-TC TAC → vendor XML under canonicalize."""
     from tac2iwxxm import convert
 
     tac = (FIXTURES / "sigmet_a6_2_tc.tac").read_text(encoding="utf-8")

@@ -55,7 +55,7 @@ vi.mock('./LiveWorldMap', () => ({
             product: 'metar',
             latitude: 0,
             longitude: 0,
-            reports: [{ observed_at: 'empty', tac: '   ', iwxxm: null }],
+            reports: [{ observed_at: 'empty', tac: ' ', iwxxm: null }],
           })
         }
       >
@@ -460,13 +460,13 @@ vi.mock('./WorkHistorySidebar', () => ({
 vi.mock('jszip', () => ({
   default: class JSZip {
     /**
-     *
+
      */
     file() {
       return this;
     }
     /**
-     *
+
      */
     generateAsync() {
       return Promise.resolve(new Blob(['test']));
@@ -524,7 +524,7 @@ vi.mock('./ui/sonner', () => ({
 
 describe('FileConverter Component', () => {
   /**
-   *
+
    */
   async function openConvertDownloadsTab(user: {
     click: (el: Element) => Promise<void>;
@@ -1041,8 +1041,7 @@ describe('FileConverter Component', () => {
         target: { value: 'METAR KJFK' },
       });
       expect(screen.getByTestId('guest-loss-notice')).toBeInTheDocument();
-      expect(screen.getByTestId('guest-loss-notice').textContent || '').not.toMatch(
-        /until you log in/i,
+      expect(screen.getByTestId('guest-loss-notice').textContent || '').not.toMatch(until you log in/i,
       );
       expect(screen.getByTestId('workbench-header-actions')).toBeInTheDocument();
 
@@ -1473,7 +1472,7 @@ describe('FileConverter Component', () => {
 
         // Whitespace-only TAC keeps converter chrome (no live convert call).
         mockConvertMetarToIwxxm.mockClear();
-        fireEvent.change(textarea, { target: { value: '   ' } });
+        fireEvent.change(textarea, { target: { value: ' ' } });
         await act(async () => {
           await vi.advanceTimersByTimeAsync(350);
         });
@@ -1906,7 +1905,7 @@ describe('FileConverter Component', () => {
       // The word "error" appears in UI labels like "On Error Behavior"
       const errorLabels = screen.queryAllByText(/error/i);
       // Should only be labels, not error messages
-      expect(errorLabels.length).toBeGreaterThan(0); // UI labels exist
+      expect(errorLabels.length).toBeGreaterThan(0); / UI labels exist
     });
 
     it('shows toast notification when convert is clicked with no input', async () => {
@@ -1927,8 +1926,7 @@ describe('FileConverter Component', () => {
       render(<FileConverter {...defaultProps} />);
 
       // Use aria-label to find the download button uniquely
-      const downloadBtn = screen.getByLabelText(
-        /download all.*converted files as zip/i,
+      const downloadBtn = screen.getByLabelText(download all.*converted files as zip/i,
       );
       expect(downloadBtn).toBeDisabled();
 
@@ -2005,7 +2003,7 @@ describe('FileConverter Component', () => {
       fireEvent.change(fileInput, {
         target: {
           files: {
-            0: { name: 'blank.tac', text: vi.fn().mockResolvedValue('   ') },
+            0: { name: 'blank.tac', text: vi.fn().mockResolvedValue(' ') },
             length: 1,
           },
         },
@@ -2134,8 +2132,7 @@ describe('FileConverter Component', () => {
       screen.getByTestId('convert-settings').setAttribute('open', '');
       screen.getByTestId('convert-advanced-engines').setAttribute('open', '');
       expect(screen.getByTestId('library-pickers-shared-reason')).toBeVisible();
-      expect(screen.getByTestId('live-convert-stage').className).not.toMatch(
-        /(^|\s)overflow-hidden(\s|$)/,
+      expect(screen.getByTestId('live-convert-stage').className).not.toMatch((^|\s)overflow-hidden(\s|$)/,
       );
       await user.click(screen.getByRole('button', { name: 'Tighter' }));
       expect(frame).toHaveClass('max-w-6xl');
@@ -2158,7 +2155,7 @@ describe('FileConverter Component', () => {
       const { rerender } = render(
         <FileConverter
           {...defaultProps}
-          pendingMapTac="   "
+          pendingMapTac=" "
           onPendingMapTacConsumed={onPendingMapTacConsumed}
         />,
       );
@@ -2246,7 +2243,7 @@ describe('FileConverter Component', () => {
         <FileConverter
           {...defaultProps}
           onOpenVisuals={onOpenVisuals}
-          pendingMapTac="   "
+          pendingMapTac=" "
           onPendingMapTacConsumed={onPendingMapTacConsumed}
         />,
       );
@@ -2609,8 +2606,7 @@ describe('FileConverter Component', () => {
       render(<FileConverter {...defaultProps} />);
 
       const dropZone = screen.getByRole('button', { name: /file drop zone/i });
-      const hiddenInput = screen.getByLabelText(
-        /select tac files to upload/i,
+      const hiddenInput = screen.getByLabelText(select tac files to upload/i,
       ) as HTMLInputElement;
       const clickSpy = vi
         .spyOn(hiddenInput, 'click')
@@ -3236,9 +3232,9 @@ describe('FileConverter Component', () => {
     it('skips blank hard-convert messages when building the visible error log', async () => {
       const user = userEvent.setup({ delay: null });
       mockConvertMetarToIwxxm.mockRejectedValueOnce(
-        new MockConvertApiError('   ', {
+        new MockConvertApiError(' ', {
           status: 400,
-          errors: ['', '  ', 'manual_input: Validation failed'],
+          errors: ['', ' ', 'manual_input: Validation failed'],
           issues: [
             {
               source: 'manual_input',
@@ -3523,8 +3519,7 @@ describe('FileConverter Component', () => {
       fireEvent.change(textarea, { target: { value: 'METAR DOWNLOAD ALL ZIP' } });
       await user.click(screen.getByTestId('convert-button'));
 
-      const downloadZipBtn = await screen.findByLabelText(
-        /download all 1 converted files as zip/i,
+      const downloadZipBtn = await screen.findByLabelText(download all 1 converted files as zip/i,
       );
       expect(downloadZipBtn).toBeEnabled();
 
@@ -3691,7 +3686,7 @@ describe('FileConverter Component', () => {
       ).toBe('DEBUG');
 
       // Validation checkboxes (not soft-preview / live IWXXM toggles).
-      // ADR-054: Strict master defaults OFF; label is "Strict".
+      // : Strict master defaults OFF; label is "Strict".
       const strictCheck = screen.getByTestId(
         'strict-validation-checkbox',
       ) as HTMLInputElement;
@@ -3850,8 +3845,7 @@ describe('FileConverter Component', () => {
       const items = within(region).getAllByTestId(/^result-item-/);
       expect(items).toHaveLength(2);
       expect(within(region).getAllByTestId(/convert-download-select-/)).toHaveLength(2);
-      expect(screen.getByTestId('download-zip-button')).toHaveAccessibleName(
-        /download all 2 converted files as zip/i,
+      expect(screen.getByTestId('download-zip-button')).toHaveAccessibleName(download all 2 converted files as zip/i,
       );
       expect(
         items[0]!.compareDocumentPosition(items[1]!) & Node.DOCUMENT_POSITION_FOLLOWING,
@@ -4141,8 +4135,7 @@ describe('FileConverter Component', () => {
       });
       await user.click(screen.getByTestId('convert-button'));
 
-      const downloadZipBtn = await screen.findByLabelText(
-        /download all 1 converted files as zip/i,
+      const downloadZipBtn = await screen.findByLabelText(download all 1 converted files as zip/i,
       );
       await user.click(downloadZipBtn);
 
@@ -4181,7 +4174,7 @@ describe('FileConverter Component', () => {
     });
 
     /**
-     *
+
      */
     async function selectGoldenExample(label: RegExp) {
       const user = userEvent.setup({ delay: null });
@@ -4220,8 +4213,7 @@ describe('FileConverter Component', () => {
       const editor = screen.getByTestId('tac-editor') as HTMLTextAreaElement;
       expect(editor.value).toContain('METAR YUDO');
       expect(screen.getByTestId('product-type-select')).toHaveValue('METAR');
-      expect(screen.getByTestId('demo-example-banner')).toHaveTextContent(
-        /Demo \/ non-operational example: METAR WMO A3-1 \(annex3\)/i,
+      expect(screen.getByTestId('demo-example-banner')).toHaveTextContent(Demo \/ non-operational example: METAR WMO A3-1 \(annex3\)/i,
       );
       expect(mockToast.info).toHaveBeenCalledWith(
         expect.stringContaining('Loaded METAR WMO A3-1 (annex3)'),
@@ -4278,8 +4270,7 @@ describe('FileConverter Component', () => {
       expect(editor.value).toMatch(/TC GLORIA/);
       expect(editor.value).toMatch(/WI 250NM OF TC CENTRE/);
       expect(screen.getByTestId('product-type-select')).toHaveValue('SIGMET');
-      expect(screen.getByTestId('demo-example-banner')).toHaveTextContent(
-        /Demo \/ non-operational example: TC SIGMET WMO A6-2-TC/i,
+      expect(screen.getByTestId('demo-example-banner')).toHaveTextContent(Demo \/ non-operational example: TC SIGMET WMO A6-2-TC/i,
       );
     });
 
@@ -4387,7 +4378,7 @@ describe('FileConverter Component', () => {
       '<?xml version="1.0"?>\n<collect:MeteorologicalBulletin xmlns:collect="http://def.wmo.int/collect/1.2" xmlns:iwxxm="http://icao.int/iwxxm/3.0">';
 
     /**
-     *
+
      */
     function invokeReactOnClick(element: HTMLElement) {
       const propsKey = Object.keys(element).find((key) =>
@@ -4401,7 +4392,7 @@ describe('FileConverter Component', () => {
     }
 
     /**
-     *
+
      */
     async function addQueueFile(container: HTMLElement, name: string, content: string) {
       const fileInput = container.querySelector(
@@ -6684,8 +6675,7 @@ describe('FileConverter Component', () => {
       await waitFor(() => {
         expect(mockConvertMetarToIwxxm).toHaveBeenCalledTimes(2);
       });
-      expect(screen.getByTestId('download-zip-button')).toHaveAccessibleName(
-        /download all 2 converted files as zip/i,
+      expect(screen.getByTestId('download-zip-button')).toHaveAccessibleName(download all 2 converted files as zip/i,
       );
 
       await user.click(screen.getByTestId('clear-queue-button'));
@@ -6728,8 +6718,7 @@ describe('FileConverter Component', () => {
       await waitFor(() => {
         expect(mockConvertMetarToIwxxm).toHaveBeenCalledTimes(2);
       });
-      expect(screen.getByTestId('download-zip-button')).toHaveAccessibleName(
-        /download all 1 converted files as zip/i,
+      expect(screen.getByTestId('download-zip-button')).toHaveAccessibleName(download all 1 converted files as zip/i,
       );
     });
 
@@ -6805,8 +6794,7 @@ describe('FileConverter Component', () => {
           expect.stringMatching(/Cannot keep more than 200 conversions/i),
         );
       });
-      expect(screen.getByTestId('download-zip-button')).toHaveAccessibleName(
-        /download all 1 converted files as zip/i,
+      expect(screen.getByTestId('download-zip-button')).toHaveAccessibleName(download all 1 converted files as zip/i,
       );
     });
 
@@ -7001,8 +6989,7 @@ describe('FileConverter Component', () => {
       await user.click(screen.getByRole('button', { name: /validate iwxxm xml/i }));
 
       await waitFor(() => {
-        expect(screen.getByTestId('validate-iwxxm-status')).toHaveTextContent(
-          /Invalid/i,
+        expect(screen.getByTestId('validate-iwxxm-status')).toHaveTextContent(Invalid/i,
         );
       });
       expect(screen.getByTestId('validate-iwxxm-schema')).toHaveTextContent(
@@ -7014,8 +7001,7 @@ describe('FileConverter Component', () => {
       expect(screen.getByTestId('validate-iwxxm-failed-layers')).toHaveTextContent(
         'XML_SCHEMA',
       );
-      expect(screen.getByTestId('validate-iwxxm-issues')).toHaveTextContent(
-        /Element METAR unexpected/i,
+      expect(screen.getByTestId('validate-iwxxm-issues')).toHaveTextContent(Element METAR unexpected/i,
       );
     });
 
@@ -7067,14 +7053,11 @@ describe('FileConverter Component', () => {
       const select = screen.getByTestId('product-type-select');
       expect(screen.getByRole('option', { name: 'IWXXM' })).toBeInTheDocument();
       await user.selectOptions(select, 'IWXXM');
-      expect(screen.getByTestId('iwxxm-product-help')).toHaveTextContent(
-        /pass-through/i,
+      expect(screen.getByTestId('iwxxm-product-help')).toHaveTextContent(pass-through/i,
       );
-      expect(screen.getByTestId('convert-button')).toHaveAccessibleName(
-        /Lint and validate IWXXM XML/i,
+      expect(screen.getByTestId('convert-button')).toHaveAccessibleName(Lint and validate IWXXM XML/i,
       );
-      expect(screen.getByTestId('convert-button')).toHaveTextContent(
-        /Lint & validate/i,
+      expect(screen.getByTestId('convert-button')).toHaveTextContent(Lint & validate/i,
       );
     });
 
@@ -8189,8 +8172,7 @@ describe('FileConverter Component', () => {
 
       const preset = screen.getByTestId('country-preset-select');
       expect(preset).toHaveValue('ICAO_2025');
-      expect(screen.getByTestId('country-preset-help')).toHaveTextContent(
-        /change any one of them afterward/i,
+      expect(screen.getByTestId('country-preset-help')).toHaveTextContent(change any one of them afterward/i,
       );
       expect(mockFetchProfileCatalog).toHaveBeenCalledWith('tok');
 

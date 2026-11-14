@@ -1,4 +1,4 @@
-"""F8 near-realtime TAC ingest worker (ADR-018)."""
+"""F8 near-realtime TAC ingest worker ."""
 
 from __future__ import annotations
 

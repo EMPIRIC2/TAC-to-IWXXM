@@ -1,5 +1,5 @@
 /**
- * Unit tests for Strict raise helpers (ADR-054).
+ * Unit tests for Strict raise helpers .
  */
 import { describe, expect, it } from 'vitest';
 import {
@@ -44,7 +44,7 @@ describe('strictRaise', () => {
 
   it('treats missing severity as raised error and rejects unknown tokens', () => {
     expect(isSeverityRaised(undefined, false)).toBe(true);
-    expect(isSeverityRaised('   ', true)).toBe(true);
+    expect(isSeverityRaised(' ', true)).toBe(true);
     expect(isSeverityRaised('mystery', true)).toBe(false);
   });
 });

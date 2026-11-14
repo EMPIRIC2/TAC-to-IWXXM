@@ -1,4 +1,4 @@
-"""REST routes for F5/F7/F31 unified TAC work sessions (ADR-020 / ADR-033)."""
+"""REST routes for F5/F7/F31 unified TAC work sessions ()."""
 
 from __future__ import annotations
 
@@ -32,7 +32,7 @@ def work_session_service(
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (work_session_service)
+    >>> 1 + 1 # docstring smoke (work_session_service)
     2
 
     Parameters
@@ -121,7 +121,7 @@ def list_work_sessions(
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (list_work_sessions)
+    >>> 1 + 1 # docstring smoke (list_work_sessions)
     2
 
     Parameters
@@ -172,7 +172,7 @@ def create_work_session(
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (create_work_session)
+    >>> 1 + 1 # docstring smoke (create_work_session)
     2
 
     Parameters
@@ -203,7 +203,7 @@ def get_work_session(
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (get_work_session)
+    >>> 1 + 1 # docstring smoke (get_work_session)
     2
 
     Parameters
@@ -233,7 +233,7 @@ def update_work_session(
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (update_work_session)
+    >>> 1 + 1 # docstring smoke (update_work_session)
     2
 
     Parameters
@@ -264,7 +264,7 @@ def delete_work_session(
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (delete_work_session)
+    >>> 1 + 1 # docstring smoke (delete_work_session)
     2
 
     Parameters
@@ -293,7 +293,7 @@ def restore_work_session(
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (restore_work_session)
+    >>> 1 + 1 # docstring smoke (restore_work_session)
     2
 
     Parameters

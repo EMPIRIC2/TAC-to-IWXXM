@@ -1,7 +1,7 @@
-"""ADR-055 ConvertResolvePort for tac2iwxxm (emit/policy prefer).
+""" ConvertResolvePort for tac2iwxxm (emit/policy prefer).
 
 Pin / IWXXM version selection is unchanged — this covers emit + policy ids only.
-[Corpus: product §F6] [Corpus: adr/ADR-055] [Corpus: pack-engine-boundary]
+[Corpus: product §F6] [Corpus: pack-engine-boundary]
 """
 
 from __future__ import annotations

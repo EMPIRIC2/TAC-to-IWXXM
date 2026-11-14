@@ -159,7 +159,7 @@ def resolve_propagate_residuals_to_remarks(
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (resolve_propagate_residuals_to_remarks)
+    >>> 1 + 1 # docstring smoke (resolve_propagate_residuals_to_remarks)
     2
     """
     if value is not None:
@@ -329,8 +329,8 @@ def _preview_stub_xml(product: str, iwxxm_version: str, reason: str) -> str:
         '<?xml version="1.0" encoding="UTF-8"?>\n'
         f'<iwxxm:{root} xmlns:iwxxm="{ns}" xmlns:gml="http://www.opengis.net/gml/3.2" '
         f'gml:id="{gml_id}" reportStatus="NORMAL">\n'
-        f"  <!-- soft-preview: {note} -->\n"
-        f'  <iwxxm:{nil_element} nilReason="http://codes.wmo.int/common/nil/missing"/>\n'
+        f" <!-- soft-preview: {note} -->\n"
+        f' <iwxxm:{nil_element} nilReason="http://codes.wmo.int/common/nil/missing"/>\n'
         f"</iwxxm:{root}>\n"
     )
 
@@ -547,7 +547,7 @@ def _valid_period_xml(tac: str, now: str) -> str:
     four = None if six else _VALID_4.search(tac)
     match = six or four
     if match is None:
-        return f'  <iwxxm:validPeriod nilReason="{_NIL_MISSING}"/>\n'
+        return f' <iwxxm:validPeriod nilReason="{_NIL_MISSING}"/>\n'
     parts = match.groups()
     if len(parts) == 6:
         bday, bhour, bmin, eday, ehour, emin = parts
@@ -556,17 +556,17 @@ def _valid_period_xml(tac: str, now: str) -> str:
         bmin = emin = "00"
     # Same-day inverted / zero-length VALID must not enter the quarantine shell.
     if bday == eday and (ehour, emin) <= (bhour, bmin):
-        return f'  <iwxxm:validPeriod nilReason="{_NIL_MISSING}"/>\n'
+        return f' <iwxxm:validPeriod nilReason="{_NIL_MISSING}"/>\n'
     year_month = now[:7]
     begin = f"{year_month}-{bday}T{bhour}:{bmin}:00Z"
     end = f"{year_month}-{eday}T{ehour}:{emin}:00Z"
     return (
-        "  <iwxxm:validPeriod>\n"
-        '    <gml:TimePeriod gml:id="t.valid">\n'
-        f"      <gml:beginPosition>{begin}</gml:beginPosition>\n"
-        f"      <gml:endPosition>{end}</gml:endPosition>\n"
-        "    </gml:TimePeriod>\n"
-        "  </iwxxm:validPeriod>\n"
+        " <iwxxm:validPeriod>\n"
+        ' <gml:TimePeriod gml:id="t.valid">\n'
+        f" <gml:beginPosition>{begin}</gml:beginPosition>\n"
+        f" <gml:endPosition>{end}</gml:endPosition>\n"
+        " </gml:TimePeriod>\n"
+        " </iwxxm:validPeriod>\n"
     )
 
 
@@ -591,24 +591,24 @@ def _unit_xml(tag: str, name: str | None, *, unit_type: str) -> str:
         The unit element, nil when ``name`` is absent.
     """
     if not name:
-        return f'  <iwxxm:{tag} nilReason="{_NIL_MISSING}"/>\n'
+        return f' <iwxxm:{tag} nilReason="{_NIL_MISSING}"/>\n'
     safe = escape(name)
     designator = ""
     if re.fullmatch(r"[A-Z0-9]{4}", name):
-        designator = f"\n        <aixm:designator>{safe}</aixm:designator>"
+        designator = f"\n <aixm:designator>{safe}</aixm:designator>"
     return (
-        f"  <iwxxm:{tag}>\n"
-        f'    <aixm:Unit gml:id="unit.{tag}">\n'
-        "      <aixm:timeSlice>\n"
-        f'        <aixm:UnitTimeSlice gml:id="unit.ts.{tag}">\n'
-        "          <gml:validTime/>\n"
-        "          <aixm:interpretation>SNAPSHOT</aixm:interpretation>\n"
-        f"          <aixm:name>{safe}</aixm:name>\n"
-        f"          <aixm:type>{unit_type}</aixm:type>{designator}\n"
-        "        </aixm:UnitTimeSlice>\n"
-        "      </aixm:timeSlice>\n"
-        "    </aixm:Unit>\n"
-        f"  </iwxxm:{tag}>\n"
+        f" <iwxxm:{tag}>\n"
+        f' <aixm:Unit gml:id="unit.{tag}">\n'
+        " <aixm:timeSlice>\n"
+        f' <aixm:UnitTimeSlice gml:id="unit.ts.{tag}">\n'
+        " <gml:validTime/>\n"
+        " <aixm:interpretation>SNAPSHOT</aixm:interpretation>\n"
+        f" <aixm:name>{safe}</aixm:name>\n"
+        f" <aixm:type>{unit_type}</aixm:type>{designator}\n"
+        " </aixm:UnitTimeSlice>\n"
+        " </aixm:timeSlice>\n"
+        " </aixm:Unit>\n"
+        f" </iwxxm:{tag}>\n"
     )
 
 
@@ -718,7 +718,7 @@ def _quarantine_xml(
     station = station_m.group("station").upper() if station_m else "YUDO"
     aerodrome = ""
     if product in {"METAR", "SPECI", "TAF"}:
-        aerodrome = f"""  <iwxxm:aerodrome>
+        aerodrome = f""" <iwxxm:aerodrome>
     <aixm:AirportHeliport gml:id="ad.{station.lower()}">
       <aixm:timeSlice>
         <aixm:AirportHeliportTimeSlice gml:id="ad.ts.{station.lower()}">
@@ -731,14 +731,14 @@ def _quarantine_xml(
     </aixm:AirportHeliport>
   </iwxxm:aerodrome>
 """
-    time_block = f"""  <iwxxm:issueTime>
+    time_block = f""" <iwxxm:issueTime>
     <gml:TimeInstant gml:id="t.issue">
       <gml:timePosition>{now}</gml:timePosition>
     </gml:TimeInstant>
   </iwxxm:issueTime>
 """
     if product in {"METAR", "SPECI"}:
-        time_block += f"""  <iwxxm:observationTime>
+        time_block += f""" <iwxxm:observationTime>
     <gml:TimeInstant gml:id="t.obs">
       <gml:timePosition>{now}</gml:timePosition>
     </gml:TimeInstant>
@@ -957,7 +957,7 @@ def _emit(product: str, profile: str, ir: dict[str, Any], iwxxm_version: str) ->
         Return value.
     """
     if product in {"METAR", "SPECI", "TAF", "SIGMET", "AIRMET", "VAA", "TCA"}:
-        # ADR-047: core F6 products emit via YAML maps (python plugins remain builders).
+        # : core F6 products emit via YAML maps (python plugins remain builders).
         return emit_with_map(ir, product=product, profile=profile, iwxxm_version=iwxxm_version)
     if product == "SWXA":
         return emit_swxa_annex3(ir, iwxxm_version=iwxxm_version)
@@ -993,13 +993,13 @@ def _inject_translation_centre(
     str
         XML with centre attributes on the first ``iwxxm:*`` root start tag.
     """
-    extra = f'\n    translationCentreDesignator="{escape(designator)}"\n    translationCentreName="{escape(name)}"'
+    extra = f'\n translationCentreDesignator="{escape(designator)}"\n translationCentreName="{escape(name)}"'
     if heading is not None:
         bulletin_id, translation_time = heading
         extra += (
-            f'\n    translatedBulletinID="{escape(bulletin_id)}"'
-            f'\n    translatedBulletinReceptionTime="{escape(translation_time)}"'
-            f'\n    translationTime="{escape(translation_time)}"'
+            f'\n translatedBulletinID="{escape(bulletin_id)}"'
+            f'\n translatedBulletinReceptionTime="{escape(translation_time)}"'
+            f'\n translationTime="{escape(translation_time)}"'
         )
     match = _ROOT_OPEN.search(xml)
     if match is None:
@@ -1069,7 +1069,7 @@ def convert(
 
     preview : bool, optional
         When ``True``, fatal parse/profile failures still return best-effort stub XML
-        (soft-preview / ADR-022). Does not imply Schematron-passed publish.
+        (soft-preview ). Does not imply Schematron-passed publish.
 
     emit_translation_centre : bool, optional
         When ``True``, emit ``translationCentreDesignator`` / ``translationCentreName``
@@ -1111,7 +1111,7 @@ def convert(
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (convert)
+    >>> 1 + 1 # docstring smoke (convert)
     2
     """
     product_u = product.upper()
@@ -1375,7 +1375,7 @@ def convert(
     # to operators (EV-beta-ux-export-auth / D-EV-beta-05).
     if propagate_issue is not None:
         issues.append(propagate_issue)
-    # Pipeline overlay: decode residuals → TAC warning (ADR-054 ladder; live-eval map).
+    # Pipeline overlay: decode residuals → TAC warning ( ladder; live-eval map).
     decoded_for_partial = decode_tac(tac, product=product_u)
     residual_spans = [r for r in decoded_for_partial.residuals if r.text and r.text.strip()]
     if residual_spans:

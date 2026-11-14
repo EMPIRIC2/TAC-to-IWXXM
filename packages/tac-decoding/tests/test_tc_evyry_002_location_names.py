@@ -1,4 +1,4 @@
-"""TC-EVYRY-002: YAML ICAO name table (ADR-049 / #1255)."""
+"""TC-EVYRY-002: YAML ICAO name table (#1255)."""
 
 from __future__ import annotations
 
@@ -54,7 +54,7 @@ def test_table_skips_malformed_entries(tmp_path: Path, monkeypatch: pytest.Monke
     monkeypatch.setenv(ENV_LOCATION_NAMES_PATH, str(table))
     assert resolve_location_name("KJFK") is None
     table.write_text(
-        "names:\n  1: two\n  ' ': skipped\n  KJFK: '   '\n  KORD: O Hare\n",
+        "names:\n 1: two\n ' ': skipped\n KJFK: ' '\n KORD: O Hare\n",
         encoding="utf-8",
     )
     assert resolve_location_name("KJFK") is None
@@ -65,7 +65,7 @@ def test_table_skips_malformed_entries(tmp_path: Path, monkeypatch: pytest.Monke
 
 def test_decode_uses_table_name(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     table = tmp_path / "names.yaml"
-    table.write_text("names:\n  KJFK: Test Field\n", encoding="utf-8")
+    table.write_text("names:\n KJFK: Test Field\n", encoding="utf-8")
     monkeypatch.setenv(ENV_LOCATION_NAMES_PATH, str(table))
     decoded = decode_tac("METAR KJFK 121255Z 10SM=", product="METAR")
     station = next(segment for segment in decoded.segments if segment.code.upper() == "KJFK")

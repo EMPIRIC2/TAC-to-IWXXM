@@ -1,4 +1,4 @@
-"""TC-EVYRY-001: a detector overlay can replace a python hatch (ADR-049 / #1254)."""
+"""TC-EVYRY-001: a detector overlay can replace a python hatch (#1254)."""
 
 from __future__ import annotations
 

@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""IWXXM XSD → pydantic codegen via xsdata (ADR-027 / E10-40 / T3.6).
+"""IWXXM XSD → pydantic codegen via xsdata (E10-40 / T3.6).
 
 Reads pinned ``vendor/schemas/iwxxm/{version}/IWXXM/*.xsd`` and writes pydantic
 models under ``packages/shared/src/metar_shared/iwxxm_xsd/``. Validate hot path
-stays Rust (ADR-027) — these models are for typed bind / convert follow-on (T3.7).
+stays Rust — these models are for typed bind / convert follow-on (T3.7).
 
 Usage
 -----
@@ -12,7 +12,7 @@ Usage
     make codegen-iwxxm-xsd
     # or:
     uv run python scripts/codegen/iwxxm_xsd.py --version 2025-2
-    uv run python scripts/codegen/iwxxm_xsd.py --check   # config / pins only
+    uv run python scripts/codegen/iwxxm_xsd.py --check # config / pins only
 """
 
 from __future__ import annotations
@@ -92,7 +92,7 @@ def resolve_versions(requested: list[str] | None) -> list[str]:
 
 def _patch_xsdata_generators() -> None:
     """Register pydantic output and soften ruff / circular-import hard fails."""
-    import xsdata_pydantic.hooks.cli  # noqa: F401
+    import xsdata_pydantic.hooks.cli # noqa: F401
     from xsdata.formats.dataclass.generator import DataclassGenerator
 
     orig_ruff = DataclassGenerator.ruff_code
@@ -118,8 +118,8 @@ def _patch_xsdata_generators() -> None:
                 file=sys.stderr,
             )
 
-    DataclassGenerator.ruff_code = ruff_code  # type: ignore[method-assign]
-    DataclassGenerator.validate_imports = validate_imports  # type: ignore[method-assign]
+    DataclassGenerator.ruff_code = ruff_code # type: ignore[method-assign]
+    DataclassGenerator.validate_imports = validate_imports # type: ignore[method-assign]
 
 
 def generate_version(
@@ -219,7 +219,7 @@ def write_package_init(versions: list[str]) -> None:
     init = OUT_ROOT / "__init__.py"
     if not init.is_file():
         init.write_text(
-            '"""Generated IWXXM pydantic models (xsdata / ADR-027). '
+            '"""Generated IWXXM pydantic models (xsdata ). '
             'Run make codegen-iwxxm-xsd."""\n',
             encoding="utf-8",
         )
@@ -228,14 +228,14 @@ def write_package_init(versions: list[str]) -> None:
         readme.write_text(
             "# iwxxm_xsd (generated)\n\n"
             "Pydantic models from pinned `vendor/schemas/iwxxm` via "
-            "`scripts/codegen/iwxxm_xsd.py` (ADR-027).\n\n"
+            "`scripts/codegen/iwxxm_xsd.py` .\n\n"
             "Regenerate: `make codegen-iwxxm-xsd`\n\n"
             "Do not hand-edit generated modules — re-run codegen on vendor pin bumps.\n",
             encoding="utf-8",
         )
     status: dict[str, Any] = {
         "generator": "xsdata+xsdata-pydantic",
-        "adr": "ADR-027",
+        "adr": "",
         "versions": versions,
         "manifest_pin": None,
     }
