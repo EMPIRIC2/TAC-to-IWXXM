@@ -5,6 +5,7 @@
  */
 
 import type { LintIssueCatalogEntry } from '@/utils/api';
+import { formatOperatorMessageTemplate } from '@/utils/formatOperatorMessage';
 import { isPlanningEvolveTag, scrubInternalDocRefs } from '@/utils/internalDocRefGuard';
 import { ISSUE_DETAIL_EMPTY } from '@/utils/issueDetailCopy';
 
@@ -114,7 +115,12 @@ function locationLabel(
 export function buildIssueDetail(input: IssueDetailInput): IssueDetailModel {
   const catalog = input.catalog ?? null;
   const message = filled(input.message);
-  const ruleRaw = scrubInternalDocRefs((catalog?.message_template ?? '').trim());
+  const ruleFormatted = catalog?.message_template
+    ? formatOperatorMessageTemplate(catalog.message_template, {
+        product: catalog.product,
+      })
+    : '';
+  const ruleRaw = scrubInternalDocRefs(ruleFormatted.trim());
   const rule =
     ruleRaw && ruleRaw !== scrubInternalDocRefs((input.message ?? '').trim())
       ? ruleRaw

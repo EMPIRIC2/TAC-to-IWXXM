@@ -9,7 +9,8 @@ from tac_validate.issue_registry import by_code
 def test_tc_ev023_001_registry_nsc_with_cloud_layers() -> None:
     spec = by_code("NSC_WITH_CLOUD_LAYERS")
     assert spec.severity == "warning"
-    assert "14.3" in spec.message_template or "exclusivity" in spec.message_template.lower()
+    assert "NSC" in spec.message_template
+    assert "FEW/SCT/BKN/OVC" in spec.message_template
 
 
 def test_tc_ev023_001_nsc_only_no_exclusivity_warning() -> None:
