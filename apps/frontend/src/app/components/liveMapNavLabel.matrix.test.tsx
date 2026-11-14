@@ -14,7 +14,7 @@ import userEvent from '@testing-library/user-event';
 import { AppShellNav, SHELL_NAV_LABELS } from './AppShellNav';
 import { DecodeVisualsPage } from './DecodeVisualsPage';
 import { DECODE_VISUALS_OPEN, DECODE_VISUALS_TITLE } from '@/utils/decodeVisualsCopy';
-import { publishDecodeVisuals, writeStationDraft } from '@/utils/decodeVisualsStore';
+import { publishDecodeVisuals } from '@/utils/decodeVisualsStore';
 
 vi.mock('@/app/components/LiveWorldMap', () => ({
   LiveWorldMap: ({ focusStation }: { focusStation?: string }) => (
@@ -32,7 +32,6 @@ function assertLiveMapLabel(el: HTMLElement): void {
 
 describe('Live map nav label matrix', () => {
   beforeEach(() => {
-    writeStationDraft(null);
     publishDecodeVisuals({ station: '', segments: [] });
     document.documentElement.classList.remove('dark');
   });
