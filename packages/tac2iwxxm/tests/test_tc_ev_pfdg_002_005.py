@@ -127,7 +127,10 @@ def test_swxa_alternate_inventory_present() -> None:
 def test_selective_delete_removed_product_modules(name: str) -> None:
     """TC-EV-PFDG-004 all-or-nothing deletes after goldens passed."""
     assert not (_PRODUCTS / name).is_file()
-    assert (_SLOT / name).is_file()
+    stem = name.removesuffix(".py")
+    slot_file = _SLOT / name
+    slot_pkg = _SLOT / stem
+    assert slot_file.is_file() or (slot_pkg.is_dir() and (slot_pkg / "__init__.py").is_file())
 
 
 def test_fir_geometry_remains_under_products() -> None:
