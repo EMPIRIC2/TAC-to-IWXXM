@@ -27,7 +27,7 @@ import { shellFrameClass, useLiveConvertLayout } from '@/utils/liveConvertLayout
 const STATION_ID = /^[A-Z][A-Z0-9]{3}$/;
 
 interface DecodeVisualsPageProps {
-  /** Send a map report into Convert (parity with Results → Map). */
+  /** Send a map report into Convert. */
   onOpenPlace?: (place: LivePlace) => void;
 }
 

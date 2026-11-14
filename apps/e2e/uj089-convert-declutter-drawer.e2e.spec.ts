@@ -68,11 +68,19 @@ test.describe('UJ-089 — Convert results drawer declutter', () => {
     await expect(page.getByTestId('convert-results-tab-iwxxm')).toBeVisible();
     await expect(page.getByTestId('convert-results-tab-console')).toBeVisible();
     await expect(page.getByTestId('convert-results-tab-decoder')).toBeVisible();
-    await expect(page.getByTestId('convert-results-tab-map')).toBeVisible();
     await expect(page.getByTestId('convert-results-tab-downloads')).toBeVisible();
+    await expect(page.getByTestId('convert-results-tab-map')).toHaveCount(0);
+    await expect(page.getByRole('tab', { name: 'Map' })).toHaveCount(0);
 
     await page.getByTestId('convert-results-tab-downloads').click();
     await expect(page.getByTestId('convert-downloads-panel')).toBeVisible();
+
+    // Map remains on the dedicated Live map page only.
+    await page.getByTestId('shell-nav-visuals').click();
+    await expect(page.getByTestId('decode-visuals-page')).toBeVisible({
+      timeout: 15_000,
+    });
+    await expect(page.getByTestId('live-world-map')).toBeVisible({ timeout: 15_000 });
 
     await expect(page.getByTestId('convert-settings-cog')).toHaveAttribute(
       'aria-label',

@@ -1,7 +1,9 @@
 /**
  * Convert results drawer tab model (UJ-089 / EV-convert-declutter-drawer).
  *
- * [Corpus: product §F7] [Corpus: journeys §UJ-089]
+ * Map lives on the Live map page only — not in Results.
+ *
+ * [Corpus: product §F7] [Corpus: product §F37] [Corpus: journeys §UJ-089]
  */
 
 /**
@@ -9,7 +11,7 @@
  * @example
  * const _ = true;
  */
-export type ConvertResultsTab = 'iwxxm' | 'console' | 'decoder' | 'map' | 'downloads';
+export type ConvertResultsTab = 'iwxxm' | 'console' | 'decoder' | 'downloads';
 
 /** Ordered drawer tabs shown to operators. */
 export const CONVERT_RESULTS_TABS: readonly {
@@ -19,7 +21,6 @@ export const CONVERT_RESULTS_TABS: readonly {
   { id: 'iwxxm', label: 'IWXXM' },
   { id: 'console', label: 'Console' },
   { id: 'decoder', label: 'Decoder' },
-  { id: 'map', label: 'Map' },
   { id: 'downloads', label: 'Downloads' },
 ] as const;
 
