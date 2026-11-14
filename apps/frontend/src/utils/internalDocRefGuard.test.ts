@@ -22,8 +22,7 @@ function syntheticAdr(n: string): string {
 
 describe('TC-EV048 internal doc ref guard (FE)', () => {
   it('TC-EV048-005: detects synthetic planning cites', () => {
-    const poisoned =
-      `Soft-preview (${syntheticAdr('022')}); see #702 and TC-F7-002 / E11-31 / EV-040 / S011 / F31 / UJ-016 [Corpus: product]`;
+    const poisoned = `Soft-preview (${syntheticAdr('022')}); see #702 and TC-F7-002 / E11-31 / EV-040 / S011 / F31 / UJ-016 [Corpus: product]`;
     const hits = findInternalDocRefs(poisoned);
     const names = new Set(hits.map((h) => h.name));
     expect(names.has('ADR')).toBe(true);

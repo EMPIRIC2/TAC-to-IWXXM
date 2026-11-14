@@ -62,7 +62,7 @@ def test_high_churn_options_preflight_allows_post(client: TestClient, allowed_or
 
 
 def test_msgspec_http_introduces_no_new_cors_env_knobs() -> None:
-    """ / T5.6: msgspec encode path must not add CORS-specific env vars."""
+    """/ T5.6: msgspec encode path must not add CORS-specific env vars."""
     import msgspec_http
 
     helper_src = inspect.getsource(msgspec_http)

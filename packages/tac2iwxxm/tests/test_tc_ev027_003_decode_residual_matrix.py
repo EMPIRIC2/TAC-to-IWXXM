@@ -12,12 +12,12 @@ _FIXTURES = Path(__file__).resolve().parent / "fixtures"
 if str(_FIXTURES) not in sys.path:
     sys.path.insert(0, str(_FIXTURES))
 
-from wmo_decode_residual_allowlist import ( # noqa: E402
+from wmo_decode_residual_allowlist import (  # noqa: E402
     EXPECTED_RESIDUALS,
     allowlisted_texts,
     allows_any_residual,
 )
-from wmo_official_tac_inventory import annex3_path, registered_peers # noqa: E402
+from wmo_official_tac_inventory import annex3_path, registered_peers  # noqa: E402
 
 
 def test_tc_ev027_003_allowlist_entries_have_doc_intent_and_issue() -> None:

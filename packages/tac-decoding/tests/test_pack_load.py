@@ -1,5 +1,4 @@
-"""T1.1 — pack directory unset uses built-ins; unknown keys fail closed.
-"""
+"""T1.1 — pack directory unset uses built-ins; unknown keys fail closed."""
 
 from __future__ import annotations
 

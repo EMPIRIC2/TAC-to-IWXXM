@@ -24,10 +24,10 @@ def rust_available() -> bool:
         True when the compiled ``iwxxm_validate._rust`` extension imports.
     """
     try:
-        from iwxxm_validate import _rust # type: ignore[attr-defined]
+        from iwxxm_validate import _rust  # type: ignore[attr-defined]
     except ImportError:
         return False
-    return _rust is not None # pragma: no cover
+    return _rust is not None  # pragma: no cover
 
 
 def clear_schema_caches() -> None:
@@ -62,7 +62,7 @@ def rust_module() -> Any | None:
     2
     """
     try:
-        from iwxxm_validate import _rust # type: ignore[attr-defined]
+        from iwxxm_validate import _rust  # type: ignore[attr-defined]
     except ImportError:
         return None
-    return _rust # type: ignore[no-any-return] # pragma: no cover
+    return _rust  # type: ignore[no-any-return] # pragma: no cover

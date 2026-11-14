@@ -1,4 +1,4 @@
-""" LintResolvePort + prefer beyond TAF (tac-validate evolve).
+"""LintResolvePort + prefer beyond TAF (tac-validate evolve).
 
 [Corpus: product §F15] [Corpus: product §F6] [Corpus: tests]
 """

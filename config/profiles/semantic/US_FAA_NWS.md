@@ -19,20 +19,20 @@ No blanket `PT*` / `P*` prefix.
 
 ## Owns
 
-| Area | Scope |
-|------|-------|
-| TAC parse / normalize | FMH-1 Ch.12 body order + RMK §12.7 |
-| SPECI criteria | FMH-1 §2.5.2 (US statute miles / feet thresholds) |
-| IWXXM extensions | `iwxxm-us` 3.0 — RMK → `extension` blocks, US-specific elements |
-| Products | **METAR, SPECI** (primary); **SIGMET/AIRMET** national layer (M8–M19); **TAF** lint overlay (M13); **SWXA/TCA** thin US validation policy (M22) |
+| Area                  | Scope                                                                                                                                           |
+| --------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| TAC parse / normalize | FMH-1 Ch.12 body order + RMK §12.7                                                                                                              |
+| SPECI criteria        | FMH-1 §2.5.2 (US statute miles / feet thresholds)                                                                                               |
+| IWXXM extensions      | `iwxxm-us` 3.0 — RMK → `extension` blocks, US-specific elements                                                                                 |
+| Products              | **METAR, SPECI** (primary); **SIGMET/AIRMET** national layer (M8–M19); **TAF** lint overlay (M13); **SWXA/TCA** thin US validation policy (M22) |
 
 ## Authoritative sources
 
-| Source | Access | Proves |
-|--------|--------|--------|
-| [FMH-1 (2019)](https://www.icams-portal.gov/resources/ofcm/fmh/FMH1/fmh1_2019.pdf) | public | US METAR/SPECI + RMK coding |
-| [IWXXM-US 3.0](https://nws.weather.gov/schemas/iwxxm-us/3.0/) | public | National extension XSD + UML |
-| [FAA GEN 1.7](https://www.faa.gov/air_traffic/publications/atpubs/aip_html/part1_gen_section_1.7.html) | public | US differences from ICAO |
+| Source                                                                                                 | Access | Proves                       |
+| ------------------------------------------------------------------------------------------------------ | ------ | ---------------------------- |
+| [FMH-1 (2019)](https://www.icams-portal.gov/resources/ofcm/fmh/FMH1/fmh1_2019.pdf)                     | public | US METAR/SPECI + RMK coding  |
+| [IWXXM-US 3.0](https://nws.weather.gov/schemas/iwxxm-us/3.0/)                                          | public | National extension XSD + UML |
+| [FAA GEN 1.7](https://www.faa.gov/air_traffic/publications/atpubs/aip_html/part1_gen_section_1.7.html) | public | US differences from ICAO     |
 
 ## Mining notes (transitory)
 
@@ -41,13 +41,13 @@ No blanket `PT*` / `P*` prefix.
 
 ## Implementation
 
-| Component | Location |
-|-----------|----------|
-| Registry | `packages/tac2iwxxm/src/tac2iwxxm/profile_registry.py` |
-| Emitter | `packages/tac2iwxxm/src/tac2iwxxm/profiles/iwxxm_us.py` |
-| Vendor pin | `vendor/manifest.json` → `iwxxm-us` **3.0** |
+| Component        | Location                                                 |
+| ---------------- | -------------------------------------------------------- |
+| Registry         | `packages/tac2iwxxm/src/tac2iwxxm/profile_registry.py`   |
+| Emitter          | `packages/tac2iwxxm/src/tac2iwxxm/profiles/iwxxm_us.py`  |
+| Vendor pin       | `vendor/manifest.json` → `iwxxm-us` **3.0**              |
 | Profile fixtures | `packages/tac2iwxxm/tests/fixtures/profiles/US_FAA_NWS/` |
-| Legacy goldens | `packages/tac2iwxxm/tests/fixtures/iwxxm_us_golden/` |
+| Legacy goldens   | `packages/tac2iwxxm/tests/fixtures/iwxxm_us_golden/`     |
 
 ## Delivered (#919 EV-079..085)
 
@@ -59,9 +59,9 @@ No blanket `PT*` / `P*` prefix.
 
 ## Residual gaps (explicit)
 
-| Gap | Disposition |
-|-----|-------------|
-| FMH-1 §12.7.2 additive RMK (T/P/6/7/$, ice accretion, `$` maintenance) | Post-#919 — no mined profile-pack fixtures (EV-085 M21) |
-| M14 alias cutover `iwxxm_us` → `US_FAA_NWS` | Deferred [#1025](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1025) → 2026-10-31 |
-| `codes.nws.noaa.gov/FMH-1` machine registry | Probe timed out 2026-07-14 — retry when reachable |
-| US examples in WMO-only sample catalog | UJ-039 policy — US samples stay in profile pack only |
+| Gap                                                                    | Disposition                                                                         |
+| ---------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| FMH-1 §12.7.2 additive RMK (T/P/6/7/$, ice accretion, `$` maintenance) | Post-#919 — no mined profile-pack fixtures (EV-085 M21)                             |
+| M14 alias cutover `iwxxm_us` → `US_FAA_NWS`                            | Deferred [#1025](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1025) → 2026-10-31 |
+| `codes.nws.noaa.gov/FMH-1` machine registry                            | Probe timed out 2026-07-14 — retry when reachable                                   |
+| US examples in WMO-only sample catalog                                 | UJ-039 policy — US samples stay in profile pack only                                |

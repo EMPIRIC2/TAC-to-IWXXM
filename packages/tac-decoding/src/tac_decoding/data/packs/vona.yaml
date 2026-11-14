@@ -3,56 +3,56 @@ id: vona
 layout: label_fields
 rules:
   - id: dtg
-    label: "DTG"
-    explain: "DTG {value}"
+    label: 'DTG'
+    explain: 'DTG {value}'
   - id: volcano
-    label: "VOLCANO"
-    explain: "VOLCANO {value}"
+    label: 'VOLCANO'
+    explain: 'VOLCANO {value}'
   - id: psn
-    label: "PSN"
-    explain: "PSN {value}"
+    label: 'PSN'
+    explain: 'PSN {value}'
   - id: area
-    label: "AREA"
-    explain: "AREA {value}"
+    label: 'AREA'
+    explain: 'AREA {value}'
   - id: source_elev
-    label: "SOURCE ELEV"
-    explain: "SOURCE ELEV {value}"
+    label: 'SOURCE ELEV'
+    explain: 'SOURCE ELEV {value}'
   - id: notice_nr
-    label: "NOTICE NR"
-    explain: "NOTICE NR {value}"
+    label: 'NOTICE NR'
+    explain: 'NOTICE NR {value}'
   - id: current_colour_code
-    label: "CURRENT COLOUR CODE"
-    explain: "CURRENT COLOUR CODE {value}"
+    label: 'CURRENT COLOUR CODE'
+    explain: 'CURRENT COLOUR CODE {value}'
   - id: previous_colour_code
-    label: "PREVIOUS COLOUR CODE"
-    explain: "PREVIOUS COLOUR CODE {value}"
+    label: 'PREVIOUS COLOUR CODE'
+    explain: 'PREVIOUS COLOUR CODE {value}'
   - id: svo
-    label: "SVO"
-    explain: "SVO {value}"
+    label: 'SVO'
+    explain: 'SVO {value}'
   - id: act_sts
-    label: "ACT STS"
-    explain: "ACT STS {value}"
+    label: 'ACT STS'
+    explain: 'ACT STS {value}'
   - id: onset
-    label: "ONSET"
-    explain: "ONSET {value}"
+    label: 'ONSET'
+    explain: 'ONSET {value}'
   - id: dur
-    label: "DUR"
-    explain: "DUR {value}"
+    label: 'DUR'
+    explain: 'DUR {value}'
   - id: va_cld_hgt
-    label: "VA CLD HGT"
-    explain: "VA CLD HGT {value}"
+    label: 'VA CLD HGT'
+    explain: 'VA CLD HGT {value}'
   - id: hgt_source
-    label: "HGT SOURCE"
-    explain: "HGT SOURCE {value}"
+    label: 'HGT SOURCE'
+    explain: 'HGT SOURCE {value}'
   - id: mov
-    label: "MOV"
-    explain: "MOV {value}"
+    label: 'MOV'
+    explain: 'MOV {value}'
   - id: ctc
-    label: "CTC"
-    explain: "CTC {value}"
+    label: 'CTC'
+    explain: 'CTC {value}'
   - id: rmk
-    label: "RMK"
-    explain: "RMK {value}"
+    label: 'RMK'
+    explain: 'RMK {value}'
   - id: nxt_notice
-    label: "NXT NOTICE"
-    explain: "NXT NOTICE {value}"
+    label: 'NXT NOTICE'
+    explain: 'NXT NOTICE {value}'

@@ -5,5 +5,5 @@ profiles: [annex3]
 layout: token_stream
 rules:
   - id: demo_token
-    pattern: ["DEMO"]
-    explain: "Demo group {0}"
+    pattern: ['DEMO']
+    explain: 'Demo group {0}'

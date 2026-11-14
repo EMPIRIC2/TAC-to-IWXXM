@@ -24,16 +24,16 @@ Live web verification (2026-09-16) confirms:
 
 Checked:
 
-| Probe | Result |
-|-------|--------|
-| ICAO/EUR Global Extension Repository | `https://eur-rodex.austrocontrol.at/IWXXM-ext.php` — lists **AU-TAF** + FR MFLocalReport only |
-| AU zip | `https://eur-rodex.austrocontrol.at/IWXXM-Files/taf.zip` → **HTTP 200**, contains `taf.xsd` |
-| Met Office IWXXM extensions register | Registry entry for `ukColourStateExtension.xsd` (**experimental**); dereference → **HTTP 404** |
-| GitHub `iwxxm-{jp,kr,br,hk,nz,in,uk}` style repos | No national extension trees located |
-| `schemas.wmo.int/iwxxm/2025-2/` | WMO **core** only |
-| US/CA precedent URLs (re-verify) | US tarball **200**; CA schema dir **200** |
-| JMA `xml.kishou.go.jp` | Domestic JMX — **not** aviation IWXXM (trap confirmed) |
-| KMA ICAO IP (2026) | IWXXM exchange plans; **no** national XSD published in that paper |
+| Probe                                             | Result                                                                                         |
+| ------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| ICAO/EUR Global Extension Repository              | `https://eur-rodex.austrocontrol.at/IWXXM-ext.php` — lists **AU-TAF** + FR MFLocalReport only  |
+| AU zip                                            | `https://eur-rodex.austrocontrol.at/IWXXM-Files/taf.zip` → **HTTP 200**, contains `taf.xsd`    |
+| Met Office IWXXM extensions register              | Registry entry for `ukColourStateExtension.xsd` (**experimental**); dereference → **HTTP 404** |
+| GitHub `iwxxm-{jp,kr,br,hk,nz,in,uk}` style repos | No national extension trees located                                                            |
+| `schemas.wmo.int/iwxxm/2025-2/`                   | WMO **core** only                                                                              |
+| US/CA precedent URLs (re-verify)                  | US tarball **200**; CA schema dir **200**                                                      |
+| JMA `xml.kishou.go.jp`                            | Domestic JMX — **not** aviation IWXXM (trap confirmed)                                         |
+| KMA ICAO IP (2026)                                | IWXXM exchange plans; **no** national XSD published in that paper                              |
 
 Evidence (session): `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-1198-stage1-national-xsd-web-reverify/evidence/stage1-2026-09-16/`
 
@@ -41,16 +41,16 @@ Evidence (session): `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-1198-s
 
 ## TL;DR
 
-| Line | Stage 1 class | Pin for M6? |
-|------|---------------|-------------|
-| **AU_BOM** | **Partial candidate** — public TAF-only XSD (`iwxxm-au` 1.0) | **Not yet** — license unknown; leaf-only; related IWXXM **3.0.1** not 2025-2 |
-| **BR_DECEA** | No public XSD found (live-checked) | No |
-| **HK_HKO** | No public XSD found (live-checked) | No |
-| **IN_IMD** | No public XSD found (live-checked; portal opaque) | No |
-| **JP_JMA** | No aviation IWXXM extension XSD; JMX ≠ IWXXM | No |
-| **KR_KMA** | No public extension XSD (OPMET/IWXXM ops papers only) | No |
-| **NZ_CAA_MET** | No public XSD found (live-checked) | No |
-| **UK_METOFFICE** | Registry lists Colour State ext; **XSD URL 404** | No |
+| Line             | Stage 1 class                                                | Pin for M6?                                                                  |
+| ---------------- | ------------------------------------------------------------ | ---------------------------------------------------------------------------- |
+| **AU_BOM**       | **Partial candidate** — public TAF-only XSD (`iwxxm-au` 1.0) | **Not yet** — license unknown; leaf-only; related IWXXM **3.0.1** not 2025-2 |
+| **BR_DECEA**     | No public XSD found (live-checked)                           | No                                                                           |
+| **HK_HKO**       | No public XSD found (live-checked)                           | No                                                                           |
+| **IN_IMD**       | No public XSD found (live-checked; portal opaque)            | No                                                                           |
+| **JP_JMA**       | No aviation IWXXM extension XSD; JMX ≠ IWXXM                 | No                                                                           |
+| **KR_KMA**       | No public extension XSD (OPMET/IWXXM ops papers only)        | No                                                                           |
+| **NZ_CAA_MET**   | No public XSD found (live-checked)                           | No                                                                           |
+| **UK_METOFFICE** | Registry lists Colour State ext; **XSD URL 404**             | No                                                                           |
 
 **Disposition:** remain **defer / blocked** for #1198 Conversion mining. Optional follow-on: AskQuestion for **AU Stage 2** only after license + TAF-only scope acceptance.
 
@@ -72,16 +72,16 @@ Evidence (session): `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-1198-s
 
 ## Per-country table (Stage 1)
 
-| Line | Stage 1 class | Publisher | Canonical URL | Version | License | Conf. | Notes |
-|---|---|---|---|---|---|---|---|
-| **AU_BOM** | Partial candidate (TAF-only XSD) | BOM via EUR DMG | `https://eur-rodex.austrocontrol.at/IWXXM-Files/taf.zip` | ext **1.0** / related IWXXM **3.0.1** | **Not stated** in XSD/zip | **H** | `targetNamespace` `http://www.bom.gov.au/aviation/iwxxm-au/1.0` |
-| **BR_DECEA** | No public XSD found | DECEA / REDEMET | — | — | — | **M** | Content APIs ≠ schema |
-| **HK_HKO** | No public XSD found | HKO | — | — | — | **M** | Open data = products |
-| **IN_IMD** | No public XSD found | IMD | — | — | — | **L** | Opaque/credentialed |
-| **JP_JMA** | No public XSD found | JMA | — | — | — | **H** | JMX domestic XML trap |
-| **KR_KMA** | No public XSD found | KMA AMO | — | — | — | **M** | IWXXM ops; no ext XSD |
-| **NZ_CAA_MET** | No public XSD found | MetService / CAA | — | — | — | **L** | Commercial/credentialed |
-| **UK_METOFFICE** | Registry only; XSD 404 | UK Met Office | register OK; XSD **404** | experimental Colour State | Crown / unknown | **H** | Not pin-ready |
+| Line             | Stage 1 class                    | Publisher        | Canonical URL                                            | Version                               | License                   | Conf. | Notes                                                           |
+| ---------------- | -------------------------------- | ---------------- | -------------------------------------------------------- | ------------------------------------- | ------------------------- | ----- | --------------------------------------------------------------- |
+| **AU_BOM**       | Partial candidate (TAF-only XSD) | BOM via EUR DMG  | `https://eur-rodex.austrocontrol.at/IWXXM-Files/taf.zip` | ext **1.0** / related IWXXM **3.0.1** | **Not stated** in XSD/zip | **H** | `targetNamespace` `http://www.bom.gov.au/aviation/iwxxm-au/1.0` |
+| **BR_DECEA**     | No public XSD found              | DECEA / REDEMET  | —                                                        | —                                     | —                         | **M** | Content APIs ≠ schema                                           |
+| **HK_HKO**       | No public XSD found              | HKO              | —                                                        | —                                     | —                         | **M** | Open data = products                                            |
+| **IN_IMD**       | No public XSD found              | IMD              | —                                                        | —                                     | —                         | **L** | Opaque/credentialed                                             |
+| **JP_JMA**       | No public XSD found              | JMA              | —                                                        | —                                     | —                         | **H** | JMX domestic XML trap                                           |
+| **KR_KMA**       | No public XSD found              | KMA AMO          | —                                                        | —                                     | —                         | **M** | IWXXM ops; no ext XSD                                           |
+| **NZ_CAA_MET**   | No public XSD found              | MetService / CAA | —                                                        | —                                     | —                         | **L** | Commercial/credentialed                                         |
+| **UK_METOFFICE** | Registry only; XSD 404           | UK Met Office    | register OK; XSD **404**                                 | experimental Colour State             | Crown / unknown           | **H** | Not pin-ready                                                   |
 
 ---
 
@@ -151,14 +151,14 @@ Still the path for BR/HK/IN/JP/KR/NZ/UK (and UK XSD repair). **Operator cannot p
 
 ## Decision log
 
-| ID | Outcome |
-|----|---------|
-| D-EVPYL-R-11..13 | Stage 0 (prior) |
-| D-EV1198-S1-01 | Stage 1 live web re-verify completed 2026-09-16 |
-| D-EV1198-S1-02 | AU-TAF verified downloadable; namespace `iwxxm-au` 1.0; TAF-only |
-| D-EV1198-S1-03 | UK Colour State registry found; XSD URL 404 — not pin-ready |
-| D-EV1198-S1-04 | BR/HK/IN/JP/KR/NZ — no public extension XSD found this pass |
-| D-EV1198-S1-05 | #1198 remains blocked for Conversion mining; no M6 PR |
-| D-EV1198-S1-06 | US/CA precedent URLs re-verified HTTP 200 |
-| D-EV1198-S1-07 | Stage 3 outreach deferred (operator constraint) |
-| D-EV1198-S1-08 | AU Stage 2 requires separate AskQuestion (license + TAF-only scope) |
+| ID               | Outcome                                                             |
+| ---------------- | ------------------------------------------------------------------- |
+| D-EVPYL-R-11..13 | Stage 0 (prior)                                                     |
+| D-EV1198-S1-01   | Stage 1 live web re-verify completed 2026-09-16                     |
+| D-EV1198-S1-02   | AU-TAF verified downloadable; namespace `iwxxm-au` 1.0; TAF-only    |
+| D-EV1198-S1-03   | UK Colour State registry found; XSD URL 404 — not pin-ready         |
+| D-EV1198-S1-04   | BR/HK/IN/JP/KR/NZ — no public extension XSD found this pass         |
+| D-EV1198-S1-05   | #1198 remains blocked for Conversion mining; no M6 PR               |
+| D-EV1198-S1-06   | US/CA precedent URLs re-verified HTTP 200                           |
+| D-EV1198-S1-07   | Stage 3 outreach deferred (operator constraint)                     |
+| D-EV1198-S1-08   | AU Stage 2 requires separate AskQuestion (license + TAF-only scope) |

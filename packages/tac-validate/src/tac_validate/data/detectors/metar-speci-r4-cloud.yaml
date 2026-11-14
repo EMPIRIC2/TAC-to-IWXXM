@@ -19,7 +19,7 @@ rules:
     on_fail:
       code: INVALID_CLOUD_TOKEN
       location: cloud
-      message_template: "{product} invalid cloud/VV token {capture!r} - A3-2 #9 / research R4"
+      message_template: '{product} invalid cloud/VV token {capture!r} - A3-2 #9 / research R4'
       span: match
   - id: cloud_cb_or_tcu
     kind: finditer
@@ -33,7 +33,7 @@ rules:
     on_match:
       code: CLOUD_CB_OR_TCU
       location: cloud
-      message_template: "{product} cloud group {capture!r} includes convective type - research R4"
+      message_template: '{product} cloud group {capture!r} includes convective type - research R4'
       span: match
   - id: cloud_type_not_observable
     kind: finditer
@@ -45,7 +45,7 @@ rules:
     on_match:
       code: CLOUD_TYPE_NOT_OBSERVABLE
       location: cloud
-      message_template: "{product} cloud group {capture!r} uses /// because the convective cloud type was not observed"
+      message_template: '{product} cloud group {capture!r} uses /// because the convective cloud type was not observed'
       span: match
   - id: r4_membership
     kind: python

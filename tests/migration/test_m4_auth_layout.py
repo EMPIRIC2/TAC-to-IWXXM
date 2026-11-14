@@ -15,9 +15,7 @@ class TestM4AuthPackageRestored:
     """Operator Auth library is restored for JWKS-only login (EV-031)."""
 
     def test_packages_auth_directory_present(self) -> None:
-        assert PACKAGES_AUTH.is_dir(), (
-            "packages/auth must exist (F31 / EV-031)"
-        )
+        assert PACKAGES_AUTH.is_dir(), "packages/auth must exist (F31 / EV-031)"
         assert (PACKAGES_AUTH / "pyproject.toml").is_file()
         assert (PACKAGES_AUTH / "src" / "auth" / "jwks.py").is_file()
 

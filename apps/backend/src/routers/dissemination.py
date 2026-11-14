@@ -219,7 +219,7 @@ async def dissemination_send(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="invalid or expired preflight handle",
             )
-        sink_type = rec.sink_type # type: ignore[assignment]
+        sink_type = rec.sink_type  # type: ignore[assignment]
         uri = rec.uri
         if rec.params:
             send_params = {**dict(rec.params), **send_params}
@@ -322,7 +322,7 @@ async def dissemination_send(
 
     try:
         pre = await run_db_preflight(
-            PreflightRequest(sink_type=sink_type, uri=uri, ddl=True) # type: ignore[arg-type]
+            PreflightRequest(sink_type=sink_type, uri=uri, ddl=True)  # type: ignore[arg-type]
         )
     except EgressDenied as exc:
         raise HTTPException(

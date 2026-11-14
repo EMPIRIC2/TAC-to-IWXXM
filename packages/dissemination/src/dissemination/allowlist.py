@@ -16,9 +16,9 @@ ENV_ALLOWLIST = "DISSEMINATION_EGRESS_ALLOWLIST"
 
 # Always blocked - cloud instance metadata / link-local IMDS style targets.
 _BLOCKED_NETWORKS: tuple[ipaddress.IPv4Network | ipaddress.IPv6Network, ...] = (
-    ipaddress.ip_network("169.254.0.0/16"), # link-local / AWS IMDS
-    ipaddress.ip_network("fe80::/10"), # IPv6 link-local
-    ipaddress.ip_network("fd00:ec2::/32"), # AWS IPv6 IMDS prefix (common)
+    ipaddress.ip_network("169.254.0.0/16"),  # link-local / AWS IMDS
+    ipaddress.ip_network("fe80::/10"),  # IPv6 link-local
+    ipaddress.ip_network("fd00:ec2::/32"),  # AWS IPv6 IMDS prefix (common)
 )
 
 _BLOCKED_HOSTNAMES = frozenset(

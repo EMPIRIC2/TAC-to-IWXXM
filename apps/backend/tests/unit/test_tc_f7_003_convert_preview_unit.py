@@ -93,7 +93,7 @@ def test_convert_without_preview_unreliable_tac_quarantines(client: TestClient) 
     assert not body.get("failed_spans")
     xml = (body.get("results") or [{}])[0].get("content") or ""
     assert "translationFailedTAC" in xml
-    assert body.get("ok") is not False # not soft-preview envelope
+    assert body.get("ok") is not False  # not soft-preview envelope
 
 
 def test_convert_preview_false_unreliable_tac_quarantines(client: TestClient) -> None:

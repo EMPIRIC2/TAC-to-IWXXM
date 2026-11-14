@@ -3,14 +3,14 @@
 Kustomize **base** + **overlays** for DigitalOcean Kubernetes: API, static FE (nginx), and F8 worker.
 **Dual cluster** (EV-044): staging and prod are separate DOKS clusters + DO Projects.
 
-| Overlay | Namespace | Hosts |
-|---------|-----------|-------|
-| `overlays/prod` | `metar-iwxxm` | `api.tac-to-iwxxm.com`, `app.tac-to-iwxxm.com`, apex/`www` → app via `metar-frontend-apex` + `metar-apex-redirect` |
-| `overlays/staging` | `metar-iwxxm-staging` | `api.staging.tac-to-iwxxm.com`, `app.staging.tac-to-iwxxm.com` |
+| Overlay            | Namespace             | Hosts                                                                                                              |
+| ------------------ | --------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| `overlays/prod`    | `metar-iwxxm`         | `api.tac-to-iwxxm.com`, `app.tac-to-iwxxm.com`, apex/`www` → app via `metar-frontend-apex` + `metar-apex-redirect` |
+| `overlays/staging` | `metar-iwxxm-staging` | `api.staging.tac-to-iwxxm.com`, `app.staging.tac-to-iwxxm.com`                                                     |
 
-| Env | Cluster | LB |
-|-----|---------|-----|
-| prod | `metar-iwxxm` | `168.144.12.70` |
+| Env     | Cluster                                                     | LB               |
+| ------- | ----------------------------------------------------------- | ---------------- |
+| prod    | `metar-iwxxm`                                               | `168.144.12.70`  |
 | staging | `metar-iwxxm-staging` (DO Project **Staging TAC-to-IWXXM**) | `143.244.202.13` |
 
 Staging DNS at Porkbun; see [docs/ops/doks-staging-dns-runbook.md](../../docs/ops/doks-staging-dns-runbook.md).
@@ -53,10 +53,10 @@ interim only, removed after BUG-2026-08-10; sslmode rewrite is in-image).
 
 ## CD image rollout (EV-034 / EV-043 / EV-044)
 
-| Branch | Cluster | Namespace | Script env |
-|--------|---------|-----------|------------|
+| Branch  | Cluster               | Namespace             | Script env                                                |
+| ------- | --------------------- | --------------------- | --------------------------------------------------------- |
 | `stage` | `metar-iwxxm-staging` | `metar-iwxxm-staging` | `DOKS_NAMESPACE=metar-iwxxm-staging` + staging kubeconfig |
-| `main` | `metar-iwxxm` | `metar-iwxxm` | default + prod kubeconfig |
+| `main`  | `metar-iwxxm`         | `metar-iwxxm`         | default + prod kubeconfig                                 |
 
 Promote to `main` only after Staging smoke green; see (local) and
 [docs/tech-spec.md](../../docs/tech-spec.md).

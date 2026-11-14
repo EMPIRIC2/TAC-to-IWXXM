@@ -74,11 +74,7 @@ def _private_doc(name: str) -> str:
 def _class_doc(name: str) -> str:
     """Minimal public class docstring with Attributes."""
     return (
-        f"Class ``{name}``.\n\n"
-        "Attributes\n"
-        "----------\n"
-        "_ : object\n"
-        " See implementation."
+        f"Class ``{name}``.\n\nAttributes\n----------\n_ : object\n See implementation."
     )
 
 
@@ -191,7 +187,7 @@ def ensure_examples_in_existing(src: str) -> str:
     lines = src.splitlines(keepends=True)
     replacements: list[
         tuple[int, int, str]
-    ] = [] # start_line, end_line exclusive, new block
+    ] = []  # start_line, end_line exclusive, new block
 
     for node in ast.walk(tree):
         if not isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):

@@ -9,10 +9,10 @@ AFI-specific handbook sources remain TBD (#913).
 
 ## Owns (target)
 
-| Area | Scope |
-|------|-------|
+| Area               | Scope                                 |
+| ------------------ | ------------------------------------- |
 | Regional packaging | AFI bulletin conventions atop COLLECT |
-| Registry id | `AFI` wire + `afi` canonical |
+| Registry id        | `AFI` wire + `afi` canonical          |
 
 ## Does not own
 
@@ -22,9 +22,9 @@ AFI-specific handbook sources remain TBD (#913).
 
 ## Authoritative sources
 
-| Source | Access | Proves |
-|--------|--------|--------|
-| [OPMET IWXXM Exchange Guidelines (5th Ed.)](https://www.icao.int/sites/default/files/METP/Documents/Guidlines-for-the-Implementation-of-OPMET-Data-Exchange-using-IWXXM_5th-Edition.pdf) | public | Shared COLLECT / AFS baseline |
+| Source                                                                                                                                                                                                                      | Access | Proves                                                                       |
+| --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------ | ---------------------------------------------------------------------------- |
+| [OPMET IWXXM Exchange Guidelines (5th Ed.)](https://www.icao.int/sites/default/files/METP/Documents/Guidlines-for-the-Implementation-of-OPMET-Data-Exchange-using-IWXXM_5th-Edition.pdf)                                    | public | Shared COLLECT / AFS baseline                                                |
 | [AFI IWXXM Implementation Guideline (Ed. 1, Dec 2020)](https://www.icao.int/sites/default/files/sp-files/ESAF/Documents/AFI%20IWXXM%20Guideline%20Documents/AFI%20IWXXM%20Implementation%20Guideline%20Doc%20Ed.1_2020.pdf) | public | AFI regional IWXXM exchange transition guidance, including AMHS/FTBP posture |
 
 ## Mining notes
@@ -33,11 +33,11 @@ AFI-specific handbook sources remain TBD (#913).
 
 ## Implementation (EV-086 P0)
 
-| Target | Location |
-|--------|----------|
-| Registry | `exchange_registry.py` — `CANONICAL_AFI` |
+| Target    | Location                                                |
+| --------- | ------------------------------------------------------- |
+| Registry  | `exchange_registry.py` — `CANONICAL_AFI`                |
 | Packaging | `packaging.py` — COLLECT wrap via `GLOBAL_AFS` baseline |
-| Tests | TC-EV086-001..002 |
+| Tests     | TC-EV086-001..002                                       |
 
 ## Gaps
 

@@ -9,11 +9,11 @@ bulletin variants not required for v1.
 
 ## Owns (target)
 
-| Area | Scope |
-|------|-------|
-| Products | METAR, SPECI, TAF, SIGMET, VAA |
-| IWXXM | Core only |
-| Overrides | none (empty) |
+| Area      | Scope                          |
+| --------- | ------------------------------ |
+| Products  | METAR, SPECI, TAF, SIGMET, VAA |
+| IWXXM     | Core only                      |
+| Overrides | none (empty)                   |
 
 ## Gaps
 

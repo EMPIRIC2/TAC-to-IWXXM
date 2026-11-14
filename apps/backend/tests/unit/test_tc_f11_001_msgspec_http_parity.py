@@ -89,7 +89,7 @@ def test_msgspec_http_helper_module_exists() -> None:
 
 
 def test_msgspec_http_helper_reuses_encoder() -> None:
-    """ / : reuse Encoder on hot paths (no per-call construction)."""
+    """/ : reuse Encoder on hot paths (no per-call construction)."""
     from src import msgspec_http
 
     assert hasattr(msgspec_http, "json_encoder")
@@ -251,7 +251,7 @@ def test_multipart_intake_unchanged_rejects_json_on_lint(client: TestClient) -> 
 
 
 def test_convert_zip_returns_application_zip(client: TestClient, monkeypatch: pytest.MonkeyPatch) -> None:
-    """ lists convert-zip as high-churn; live contract remains application/zip."""
+    """lists convert-zip as high-churn; live contract remains application/zip."""
 
     def fake_convert(tac: str, **_kwargs: Any):
         return f"<iwxxm:METAR>{tac[:24]}</iwxxm:METAR>", None

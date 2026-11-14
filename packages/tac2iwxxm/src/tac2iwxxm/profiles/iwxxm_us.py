@@ -160,12 +160,8 @@ def _observed_lightning_xml(lightning: dict[str, Any]) -> str:
             cw = _fmt_deg(float(str(sector["cw_deg"])))
             parts.append(" <iwxxm-us:sector>")
             parts.append(" <iwxxm-us:Sector>")
-            parts.append(
-                f' <iwxxm-us:extremeCCWDirection uom="deg">{ccw}</iwxxm-us:extremeCCWDirection>'
-            )
-            parts.append(
-                f' <iwxxm-us:extremeCWDirection uom="deg">{cw}</iwxxm-us:extremeCWDirection>'
-            )
+            parts.append(f' <iwxxm-us:extremeCCWDirection uom="deg">{ccw}</iwxxm-us:extremeCCWDirection>')
+            parts.append(f' <iwxxm-us:extremeCWDirection uom="deg">{cw}</iwxxm-us:extremeCWDirection>')
             parts.append(" </iwxxm-us:Sector>")
             parts.append(" </iwxxm-us:sector>")
     parts.append(" </iwxxm-us:ObservedLightning>")
@@ -268,12 +264,8 @@ def _convective_cloud_xml(conv: dict[str, Any]) -> str:
             cw = _fmt_deg(float(str(sector["cw_deg"])))
             parts.append(" <iwxxm-us:sector>")
             parts.append(" <iwxxm-us:Sector>")
-            parts.append(
-                f' <iwxxm-us:extremeCCWDirection uom="deg">{ccw}</iwxxm-us:extremeCCWDirection>'
-            )
-            parts.append(
-                f' <iwxxm-us:extremeCWDirection uom="deg">{cw}</iwxxm-us:extremeCWDirection>'
-            )
+            parts.append(f' <iwxxm-us:extremeCCWDirection uom="deg">{ccw}</iwxxm-us:extremeCCWDirection>')
+            parts.append(f' <iwxxm-us:extremeCWDirection uom="deg">{cw}</iwxxm-us:extremeCWDirection>')
             parts.append(" </iwxxm-us:Sector>")
             parts.append(" </iwxxm-us:sector>")
     motion = conv.get("direction_of_motion_deg")
@@ -375,7 +367,7 @@ def _hailstone_size_addendum_inner(ir: dict[str, Any]) -> str:
     diam = hail.get("maximum_diameter_in")
     if diam is None:
         return ""
-    diam_txt = _fmt_deg(float(str(diam))) # reuse compact float formatting
+    diam_txt = _fmt_deg(float(str(diam)))  # reuse compact float formatting
     op = hail.get("size_operator")
     op_xml = f"\n <iwxxm-us:sizeOperator>{escape(str(op))}</iwxxm-us:sizeOperator>" if op else ""
     return f""" <iwxxm-us:hailstoneSize>
@@ -493,9 +485,7 @@ def _second_location_addendum_inner(ir: dict[str, Any]) -> str:
             f' <iwxxm-us:ceilingHeight uom="[ft_i]">{int(str(second["ceiling_height_ft"]))}</iwxxm-us:ceilingHeight>'
         )
     if second.get("visibility_ft") is not None:
-        parts.append(
-            f' <iwxxm-us:visibility uom="[ft_i]">{int(str(second["visibility_ft"]))}</iwxxm-us:visibility>'
-        )
+        parts.append(f' <iwxxm-us:visibility uom="[ft_i]">{int(str(second["visibility_ft"]))}</iwxxm-us:visibility>')
     desc = second.get("location_description")
     if desc:
         parts.append(" <iwxxm-us:location>")
@@ -708,11 +698,7 @@ def _processed_quantity_addendum_inner(ir: dict[str, Any]) -> str:
         val = row.get("processed_value")
         val_txt = _fmt_deg(float(str(val))) if val is not None else "0"
         qualifier = row.get("qualifier")
-        qual_xml = (
-            f"\n <iwxxm-us:qualifier>{escape(str(qualifier))}</iwxxm-us:qualifier>"
-            if qualifier
-            else ""
-        )
+        qual_xml = f"\n <iwxxm-us:qualifier>{escape(str(qualifier))}</iwxxm-us:qualifier>" if qualifier else ""
         parts.append(
             f""" <iwxxm-us:processedQuantity>
             <iwxxm-us:ProcessedProperty>

@@ -125,9 +125,7 @@ def check_budget(
             continue
         violations.append(f"{rel}: {lines} lines (budget {budget})")
     missing = sorted(p for p in allow if not (base_root / p).is_file())
-    violations.extend(
-        f"allowlist path missing on disk: {rel}" for rel in missing
-    )
+    violations.extend(f"allowlist path missing on disk: {rel}" for rel in missing)
     return violations
 
 

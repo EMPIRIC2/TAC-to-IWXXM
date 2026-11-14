@@ -31,8 +31,8 @@ def test_resolve_inherit_tree_rejects_case_mismatched_product_family() -> None:
 
 
 def test_normalize_helpers_treat_none_like_empty() -> None:
-    assert normalize_product(None) == "" # type: ignore[arg-type]
-    assert normalize_profile_id(None) == "" # type: ignore[arg-type]
+    assert normalize_product(None) == ""  # type: ignore[arg-type]
+    assert normalize_profile_id(None) == ""  # type: ignore[arg-type]
     assert should_prefer_station(profile=" ", product="METAR") is False
     assert should_prefer_station(profile="annex3", product="") is False
 

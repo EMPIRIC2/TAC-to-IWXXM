@@ -1,4 +1,4 @@
-""" OK module."""
+"""OK module."""
 
 
 def greet(name: str) -> str:

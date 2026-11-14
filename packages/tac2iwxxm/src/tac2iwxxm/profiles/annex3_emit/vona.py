@@ -244,14 +244,10 @@ def emit_vona_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
     upper_elev = int(ash_hgt) if ash_hgt is not None else lower_elev
 
     designator = ir.get("originating_centre_designator")
-    designator_xml = (
-        f"\n <aixm:designator>{escape(str(designator))}</aixm:designator>" if designator else ""
-    )
+    designator_xml = f"\n <aixm:designator>{escape(str(designator))}</aixm:designator>" if designator else ""
 
     iavcei = ir.get("iavcei_number")
-    iavcei_xml = (
-        f"\n <iwxxm:IAVCEINumber>{escape(str(iavcei))}</iwxxm:IAVCEINumber>" if iavcei else ""
-    )
+    iavcei_xml = f"\n <iwxxm:IAVCEINumber>{escape(str(iavcei))}</iwxxm:IAVCEINumber>" if iavcei else ""
 
     onset_xml = ""
     if ir.get("onset_time"):

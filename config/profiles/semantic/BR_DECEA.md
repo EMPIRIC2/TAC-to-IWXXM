@@ -9,23 +9,23 @@ GAMET: **parse-only** fixtures; no IWXXM emit (see [GAMET-spike.md](../GAMET-spi
 
 ## Owns (target)
 
-| Area | Scope |
-|------|-------|
-| TAC parse / normalize | ICAO baseline + BR corpora |
-| IWXXM encode | **Core WMO only** |
-| Products (convert) | METAR, SPECI, TAF, SIGMET, AIRMET |
-| GAMET | Fixtures / archival parse only — **not** convert allowlist |
-| Overrides | **Empty** |
-| Exchange | Pointer to `CAR_SAM` / #921 — no packaging code here |
+| Area                  | Scope                                                      |
+| --------------------- | ---------------------------------------------------------- |
+| TAC parse / normalize | ICAO baseline + BR corpora                                 |
+| IWXXM encode          | **Core WMO only**                                          |
+| Products (convert)    | METAR, SPECI, TAF, SIGMET, AIRMET                          |
+| GAMET                 | Fixtures / archival parse only — **not** convert allowlist |
+| Overrides             | **Empty**                                                  |
+| Exchange              | Pointer to `CAR_SAM` / #921 — no packaging code here       |
 
 ## Standards hierarchy (L0–L6)
 
-| Level | Source | Status |
-|-------|--------|--------|
-| L0 | DECEA / ANAC / AISWEB AIP | mined |
-| L1–L3 | via ICAO_2025 | baseline |
-| L4–L5 | National XSD / vocab | **N/A** |
-| L6 | AWC / AISWEB ops | METAR + TAF attributed (M2); SPECI/SIG/AIR gaps |
+| Level | Source                    | Status                                          |
+| ----- | ------------------------- | ----------------------------------------------- |
+| L0    | DECEA / ANAC / AISWEB AIP | mined                                           |
+| L1–L3 | via ICAO_2025             | baseline                                        |
+| L4–L5 | National XSD / vocab      | **N/A**                                         |
+| L6    | AWC / AISWEB ops          | METAR + TAF attributed (M2); SPECI/SIG/AIR gaps |
 
 ## Gaps
 
@@ -35,8 +35,8 @@ GAMET: **parse-only** fixtures; no IWXXM emit (see [GAMET-spike.md](../GAMET-spi
 - [ ] Attributed SPECI / Brazilian FIR SIGMET / AIRMET
 - [x] Catalog `status: implemented` (EV-094 M7 / #1098)
 - [ ] **Standalone TAF PROB-period severity** (`PROB_PERIOD_WITHOUT_TEMPO` → info via
-  `br_decea` emit-key + `SB*` prefer) — **deferred** until a DECEA/AIP or mining cite
-  lands (EV-regional-profile-remainder C3). Until then Annex 3 warning stands.
+      `br_decea` emit-key + `SB*` prefer) — **deferred** until a DECEA/AIP or mining cite
+      lands (EV-regional-profile-remainder C3). Until then Annex 3 warning stands.
 
 ## References
 

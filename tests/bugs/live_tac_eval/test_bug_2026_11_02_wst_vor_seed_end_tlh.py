@@ -105,13 +105,13 @@ _LIVE_FIXTURE = (
 )
 
 _EXPECTED_US = {
-    "END": (36.2, 36.5, -98.0, -97.8), # Vance VORTAC
-    "ALS": (37.2, 37.5, -106.0, -105.7), # Alamosa
-    "ORL": (28.4, 28.7, -81.5, -81.2), # Orlando
-    "FAR": (46.6, 46.9, -97.0, -96.7), # Fargo
-    "GRB": (44.4, 44.7, -88.4, -88.0), # Green Bay
-    "BRD": (46.2, 46.5, -94.2, -93.9), # Brainerd
-    "TLH": (30.4, 30.7, -84.5, -84.2), # Seminole SZW under TLH key
+    "END": (36.2, 36.5, -98.0, -97.8),  # Vance VORTAC
+    "ALS": (37.2, 37.5, -106.0, -105.7),  # Alamosa
+    "ORL": (28.4, 28.7, -81.5, -81.2),  # Orlando
+    "FAR": (46.6, 46.9, -97.0, -96.7),  # Fargo
+    "GRB": (44.4, 44.7, -88.4, -88.0),  # Green Bay
+    "BRD": (46.2, 46.5, -94.2, -93.9),  # Brainerd
+    "TLH": (30.4, 30.7, -84.5, -84.2),  # Seminole SZW under TLH key
 }
 
 

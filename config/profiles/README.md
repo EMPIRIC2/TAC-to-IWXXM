@@ -6,15 +6,15 @@
 > **ADR**: architecture decision (Accepted)
 
 Authoritative-source catalog for **semantic** (TAC→IWXXM) and **exchange** (routing/packaging)
-profiles. This directory is the standing SoT for profile *evidence*; implementation lives in
+profiles. This directory is the standing SoT for profile _evidence_; implementation lives in
 `packages/tac2iwxxm`, `packages/dissemination`, and national fixture trees.
 
 ## Scope
 
-| Kind | Examples | Owns |
-|------|----------|------|
-| **Semantic** | `ICAO_2025`, `US_FAA_NWS`, `CA_ECCC`, `AU_BOM`, `NZ_CAA_MET`, thin/compat (#920) | TAC parse rules, RMK policy, national IWXXM extensions |
-| **Exchange** | `GLOBAL_AFS`, `APAC_ROBEX`, `EUR_RODEX`, `AFI`, `CAR_SAM` | Bulletin/filename/routing packaging — **not** TAC grammar |
+| Kind         | Examples                                                                         | Owns                                                      |
+| ------------ | -------------------------------------------------------------------------------- | --------------------------------------------------------- |
+| **Semantic** | `ICAO_2025`, `US_FAA_NWS`, `CA_ECCC`, `AU_BOM`, `NZ_CAA_MET`, thin/compat (#920) | TAC parse rules, RMK policy, national IWXXM extensions    |
+| **Exchange** | `GLOBAL_AFS`, `APAC_ROBEX`, `EUR_RODEX`, `AFI`, `CAR_SAM`                        | Bulletin/filename/routing packaging — **not** TAC grammar |
 
 **Not here:** F16–F19 dissemination **destination** credentials (memory-only BYOC).
 
@@ -53,10 +53,10 @@ source row. Do not treat mining notes alone as profile SoT.
 
 ## Initial canonical map (F35)
 
-| Canonical semantic ID | Legacy alias (until #1025) | Primary sources (starter) |
-|-----------------------|----------------------------|---------------------------|
-| `ICAO_2025` | `annex3` | ICAO Annex 3; WMO IWXXM 2025-2; PANS-MET |
-| `US_FAA_NWS` | `iwxxm_us` | IWXXM-US; FMH-1; NWS schemas pin |
+| Canonical semantic ID | Legacy alias (until #1025) | Primary sources (starter)                |
+| --------------------- | -------------------------- | ---------------------------------------- |
+| `ICAO_2025`           | `annex3`                   | ICAO Annex 3; WMO IWXXM 2025-2; PANS-MET |
+| `US_FAA_NWS`          | `iwxxm_us`                 | IWXXM-US; FMH-1; NWS schemas pin         |
 
 Exchange default: `GLOBAL_AFS`; see [`exchange/GLOBAL_AFS.md`](exchange/GLOBAL_AFS.md).
 
@@ -71,14 +71,14 @@ For semantic profiles whose METAR/SPECI family includes national IWXXM roots bey
 API `product` enum, `catalog.yaml` may define `metar_family_variants` rows. Each row is
 normative and describes one TAC lead / emit pairing within the selected semantic profile:
 
-| Field | Required | Meaning |
-|-------|----------|---------|
-| `tac_lead` | yes | TAC report lead token as observed on the wire (`METAR`, `SPECI`, `LWIS`, `SAWR`) |
-| `api_product` | yes | Global API dispatch family used by convert/validate (`METAR`, `SPECI`, `TAF`, ...) |
-| `iwxxm_root` | yes | Resolved IWXXM root element emitted for that row |
-| `rule_id` or `rule_id_prefix` | yes | Lint/fixture rule linkage for the variant or family |
-| `minimal_observation` | no | Marks sparse/minimal-observation reports whose omission set is profile-defined |
-| `manobs` / `notes` | no | Human citation / implementation note; informative, not runtime dispatch keys |
+| Field                         | Required | Meaning                                                                            |
+| ----------------------------- | -------- | ---------------------------------------------------------------------------------- |
+| `tac_lead`                    | yes      | TAC report lead token as observed on the wire (`METAR`, `SPECI`, `LWIS`, `SAWR`)   |
+| `api_product`                 | yes      | Global API dispatch family used by convert/validate (`METAR`, `SPECI`, `TAF`, ...) |
+| `iwxxm_root`                  | yes      | Resolved IWXXM root element emitted for that row                                   |
+| `rule_id` or `rule_id_prefix` | yes      | Lint/fixture rule linkage for the variant or family                                |
+| `minimal_observation`         | no       | Marks sparse/minimal-observation reports whose omission set is profile-defined     |
+| `manobs` / `notes`            | no       | Human citation / implementation note; informative, not runtime dispatch keys       |
 
 Runtime contract:
 
@@ -88,11 +88,11 @@ Runtime contract:
   resolved value in response metadata.
 - Profiles without `metar_family_variants` keep `report_variant` absent / not applicable.
 
-| Priority | Semantic | Exchange |
-|----------|----------|----------|
-| **P0** | `ICAO_2025`, `US_FAA_NWS` | `GLOBAL_AFS` (default) |
-| **P1** | `CA_ECCC`, `AU_BOM`, `NZ_CAA_MET` | — |
-| **P2** | `UK_METOFFICE`, `BR_DECEA`, `KR_KMA`, `JP_JMA`, `IN_IMD`, `HK_HKO`, `US_MILITARY`, `LATAM_TAF` | `APAC_ROBEX`, `EUR_RODEX`, `AFI`, `CAR_SAM` |
+| Priority | Semantic                                                                                       | Exchange                                    |
+| -------- | ---------------------------------------------------------------------------------------------- | ------------------------------------------- |
+| **P0**   | `ICAO_2025`, `US_FAA_NWS`                                                                      | `GLOBAL_AFS` (default)                      |
+| **P1**   | `CA_ECCC`, `AU_BOM`, `NZ_CAA_MET`                                                              | —                                           |
+| **P2**   | `UK_METOFFICE`, `BR_DECEA`, `KR_KMA`, `JP_JMA`, `IN_IMD`, `HK_HKO`, `US_MILITARY`, `LATAM_TAF` | `APAC_ROBEX`, `EUR_RODEX`, `AFI`, `CAR_SAM` |
 
 ## Open gaps (#913 deepen)
 

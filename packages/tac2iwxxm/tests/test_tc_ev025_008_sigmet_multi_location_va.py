@@ -53,7 +53,7 @@ def test_tc_ev025_008_package_and_vendor_fixtures_present() -> None:
 
 
 def test_tc_ev025_008_canonicalize_equals_vendor() -> None:
-    """ strict equality vs vendor (EV-026)."""
+    """strict equality vs vendor (EV-026)."""
     from tac2iwxxm.slot_builders.sigmet_airmet import parse_sigmet
 
     from tac2iwxxm import convert

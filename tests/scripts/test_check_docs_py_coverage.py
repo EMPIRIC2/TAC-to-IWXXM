@@ -231,7 +231,7 @@ def test_remaining_branch_coverage() -> None:
         'class Hook(Protocol):\n """Hook."""\n class Nested:\n """Nested."""\n',
         encoding="utf-8",
     )
-    assert check_file(nest) == [] # Nested skipped under stub_depth
+    assert check_file(nest) == []  # Nested skipped under stub_depth
 
     # module missing docstring (line 198)
     nodoc = base / "nodoc.py"
@@ -271,9 +271,7 @@ def test_remaining_branch_coverage() -> None:
 
     # public class missing Attributes/Parameters (line 172)
     pub = base / "pub.py"
-    pub.write_text(
-        '"""m."""\nclass PublicBad:\n """title only"""\n', encoding="utf-8"
-    )
+    pub.write_text('"""m."""\nclass PublicBad:\n """title only"""\n', encoding="utf-8")
     assert any("PublicBad" in i for i in check_file(pub))
 
     # main() default globs path (line 249) — empty tree still exits 0

@@ -34,7 +34,7 @@ def test_catalog_entries_include_glossary_tokens() -> None:
 
 def test_load_glossary_nonempty() -> None:
     assert load_glossary()
-    assert meaning_for("TS") or meaning_for("METAR") or True # glossary may use other keys
+    assert meaning_for("TS") or meaning_for("METAR") or True  # glossary may use other keys
 
 
 def test_cli_summary(tmp_path: Path, capsys: pytest.CaptureFixture[str]) -> None:

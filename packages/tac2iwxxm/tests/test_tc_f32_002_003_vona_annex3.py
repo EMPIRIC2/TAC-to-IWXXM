@@ -53,7 +53,7 @@ def test_tc_f32_002_annex3_vona_theme_present() -> None:
             assert f"{IWXXM_COLOUR}ORANGE" in golden
             assert f"{MET_FEATURE}VOLCANO" in golden
             assert f"{MET_FEATURE}VOLCANIC_ASH" in golden
-            assert "UHPP" in golden # G-VONA-2 designator not in TAC
+            assert "UHPP" in golden  # G-VONA-2 designator not in TAC
             assert "49-2/AviationColourCode" not in golden
 
 
@@ -115,7 +115,7 @@ def test_tc_f32_003_vona_metfeature_and_colour_codes(case_id: str) -> None:
     assert "boundingVolume" in xml
     assert "ElevatedEnvelope" in xml
     assert "iwxxm/nil/inapplicable" in xml
-    assert "UHPP" in xml # G-VONA-2 fixture/registry constant
+    assert "UHPP" in xml  # G-VONA-2 fixture/registry constant
 
 
 def test_tc_f32_002_vona_a7_1_content_signals() -> None:

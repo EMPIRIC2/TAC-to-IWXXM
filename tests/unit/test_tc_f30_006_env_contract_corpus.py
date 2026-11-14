@@ -47,7 +47,7 @@ class TestTcF30006EnvContractCorpus:
         readme = (ROOT / "config/deploy/doks/README.md").read_text(encoding="utf-8")
         assert "DATABASE_URL" in readme
         assert "" in readme
-        assert "SUPABASE_URL" in readme # Auth secrets only
+        assert "SUPABASE_URL" in readme  # Auth secrets only
 
     def test_feature_list_f30_exists(self) -> None:
         fl = (ROOT / "AGENTS.md").read_text(encoding="utf-8")

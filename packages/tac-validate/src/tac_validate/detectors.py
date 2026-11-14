@@ -30,7 +30,7 @@ DetectorStage = Literal["parse_gate", "token", "cross_field"]
 DetectorKind = Literal["finditer", "require_search", "python", "token_scan"]
 
 ENV_DETECTOR_DIR = "TAC_VALIDATE_DETECTOR_DIR"
-ENV_DETECTOR_MODE = "TAC_VALIDATE_DETECTOR_MODE" # legacy | shadow | detector
+ENV_DETECTOR_MODE = "TAC_VALIDATE_DETECTOR_MODE"  # legacy | shadow | detector
 DEFAULT_LINT_BUDGET = 10_000
 
 _AHL_HEADING_LINE = re.compile(r"^[A-Z]{2}[A-Z]{2}\d{2}\s+[A-Z]{4}\s+\d{6}(?:\s+[A-Z]{3})?\s*$")

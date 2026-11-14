@@ -76,7 +76,7 @@ def _ensure_namespace_pkg(pkg_name: str, version_dir: Path) -> None:
 
     stub = types.ModuleType(pkg_name)
     stub.__file__ = str(version_dir / "__init__.py")
-    stub.__path__ = [str(version_dir)] # type: ignore[attr-defined]
+    stub.__path__ = [str(version_dir)]  # type: ignore[attr-defined]
     stub.__package__ = pkg_name
     sys.modules[pkg_name] = stub
 

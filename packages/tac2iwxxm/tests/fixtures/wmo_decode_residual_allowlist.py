@@ -14,10 +14,10 @@ class ExpectedResidual:
     """Allowlisted residual policy for a catalog-registered official peer."""
 
     catalog_id: str
-    doc_intent: str # e.g. "F9 G4" / ""
+    doc_intent: str  # e.g. "F9 G4" / ""
     issue: str
-    residual_text: str | None = None # exact match when set
-    allow_any: bool = False # G4 best-effort - any residual text permitted
+    residual_text: str | None = None  # exact match when set
+    allow_any: bool = False  # G4 best-effort - any residual text permitted
 
 
 # Doc-intentional G4 peers - fuller advisory decode tracked separately.

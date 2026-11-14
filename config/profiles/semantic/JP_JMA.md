@@ -9,11 +9,11 @@ Core IWXXM only; no national VA schema fork.
 
 ## Owns (target)
 
-| Area | Scope |
-|------|-------|
+| Area     | Scope                          |
+| -------- | ------------------------------ |
 | Products | METAR, SPECI, TAF, SIGMET, VAA |
-| AIRMET | Out of v1 |
-| IWXXM | Core / existing VAA paths |
+| AIRMET   | Out of v1                      |
+| IWXXM    | Core / existing VAA paths      |
 
 ## Gaps
 

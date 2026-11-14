@@ -295,7 +295,7 @@ def get_staging_sink(sink_type: F19SinkName | str) -> StagingSinkAdapter:
     """
     if sink_type not in F19_SINK_TYPES:
         raise ValueError(f"sink_type {sink_type!r} is not an F19 staging adapter")
-    return StagingSinkAdapter(sink_type=sink_type) # type: ignore[arg-type]
+    return StagingSinkAdapter(sink_type=sink_type)  # type: ignore[arg-type]
 
 
 __all__ = [

@@ -122,7 +122,7 @@ def convert_csv_to_json(csv_path: Path, json_path: Path) -> None:
                             pass
 
                     # Add vertical datum based on country
-                    vertical_datum = "EGM_96" # Default
+                    vertical_datum = "EGM_96"  # Default
                     if country and country in datum_defaults:
                         raw_datum = datum_defaults[country]
                         # Normalize to IWXXM format

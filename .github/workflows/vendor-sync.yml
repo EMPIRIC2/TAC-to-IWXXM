@@ -70,8 +70,8 @@ jobs:
         uses: peter-evans/create-pull-request@v7
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          commit-message: "chore(vendor): sync wmo-im iwxxm schema snapshots"
-          title: "chore(vendor): sync wmo-im iwxxm schema snapshots"
+          commit-message: 'chore(vendor): sync wmo-im iwxxm schema snapshots'
+          title: 'chore(vendor): sync wmo-im iwxxm schema snapshots'
           body: |
             Automated weekly vendor sync (M6).
 

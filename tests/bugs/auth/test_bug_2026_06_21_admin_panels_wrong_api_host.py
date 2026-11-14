@@ -16,7 +16,7 @@ BACKEND_ROOT = REPO_ROOT / "apps" / "backend"
 if str(BACKEND_ROOT) not in sys.path:
     sys.path.insert(0, str(BACKEND_ROOT))
 
-from src.api import app # noqa: E402
+from src.api import app  # noqa: E402
 
 ADMIN_PATHS = (
     "/admin/settings",

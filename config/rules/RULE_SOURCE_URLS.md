@@ -16,7 +16,6 @@ identifiers** (may 404 as HTML). Operator-visible catalog hrefs use verified lan
 [APAC IWXXM FAQs 3rd Ed](https://www.icao.int/sites/default/files/APAC/Documents/edocs/MET/2025-03_IWXXM-FAQs_3rd-Ed.pdf).
 Detail: [mining/ev061-catalog-source-replacements-2026-08-18.md](../mining/ev061-catalog-source-replacements-2026-08-18.md).
 
-
 **How to apply URLs:**
 
 1. Filter by **Applies to** (`products`, `profiles`, `role`).
@@ -174,7 +173,6 @@ Canonical companions:
 - **Applies to:** role=[validation] (historical cite only)
 - **Label:** historical (SARPs moved to Annex 3)
 - **Caveat:** Linked Data register path **`49-2`** on codes.wmo.int remains the **vocabulary** namespace, distinct from the discontinued regulation text
-
 
 ### WMO-No. 782 — Aerodrome Reports and Forecasts (METAR/SPECI/TAF) Users' Handbook
 
@@ -420,11 +418,11 @@ Canonical companions:
 
 ### Sibling repos (already vendored)
 
-| Repo | URL | Role | Label |
-|------|-----|------|-------|
-| iwxxm-codelists | https://github.com/wmo-im/iwxxm-codelists | RDF → codes.wmo.int | normative-vocabulary |
-| iwxxm-modelling | https://github.com/wmo-im/iwxxm-modelling/tree/v2025-2 | UML / EA→XSD+SCH generation (not runtime) | informative (tooling) — [mining notes](../mining/iwxxm-modelling-v2025-2-mining-notes.md) |
-| iwxxm-translation | https://github.com/wmo-im/iwxxm-translation | Extra TAC/XML pairs + translator list | **informative** (README: no official WMO/ICAO status) — tip Amd79-80-2023 / IWXXM **2023-1**; parity policy [mining](../mining/iwxxm-translation-parity-mining-notes.md) · #797 |
+| Repo              | URL                                                    | Role                                      | Label                                                                                                                                                                           |
+| ----------------- | ------------------------------------------------------ | ----------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| iwxxm-codelists   | https://github.com/wmo-im/iwxxm-codelists              | RDF → codes.wmo.int                       | normative-vocabulary                                                                                                                                                            |
+| iwxxm-modelling   | https://github.com/wmo-im/iwxxm-modelling/tree/v2025-2 | UML / EA→XSD+SCH generation (not runtime) | informative (tooling) — [mining notes](../mining/iwxxm-modelling-v2025-2-mining-notes.md)                                                                                       |
+| iwxxm-translation | https://github.com/wmo-im/iwxxm-translation            | Extra TAC/XML pairs + translator list     | **informative** (README: no official WMO/ICAO status) — tip Amd79-80-2023 / IWXXM **2023-1**; parity policy [mining](../mining/iwxxm-translation-parity-mining-notes.md) · #797 |
 
 ### wmo-im/iwxxm-modelling (UML + EA→XSD/SCH tooling)
 
@@ -444,19 +442,19 @@ Canonical companions:
 
 Full ranking: [mining/wmo-im-org-mining-notes.md](../mining/wmo-im-org-mining-notes.md). **~103** public repos under https://github.com/wmo-im ; only the IWXXM family above is primary for encode/validate. Annex 3 SARP PDFs are **not** hosted in this org.
 
-| Repo | URL | Role | Label | Caveats |
-|------|-----|------|-------|---------|
-| collect | https://github.com/wmo-im/collect | bulletin lineage | historical (content = pin) | `1.2/collect.xsd` **byte-identical** to vendor `externalSchema/.../collect/1.2/`; prefer vendor for CI |
-| wis2box (reference node) | https://github.com/World-Meteorological-Organization/wis2box | F17 runtime home | informative | Canonical node is the **WMO org** repo, not `wmo-im`. Project harness stays the Compose stand-in |
-| wis2-cookbook (aviation) | https://github.com/wmo-im/wis2-cookbook (`publishing-aviation-data.adoc`) | WIS2 publish / Annex 3 use-rights | informative | Recommended policy + license; not TAC grammar |
-| wis2-topic-hierarchy | https://github.com/wmo-im/wis2-topic-hierarchy | F8 topic routing | normative-exchange (WIS2) | Aviation leaves **only** `metar`, `taf`, `qvaci` (re-read 2026-10-02) |
-| wis2-notification-message | https://github.com/wmo-im/wis2-notification-message | MQP notification | normative-exchange (WIS2) | Encoding spec. The harness does not emit this GeoJSON |
-| wis2-guide (§2.8.1.1) | https://github.com/wmo-im/wis2-guide | WIS2↔SWIM / IWXXM format | informative | IWXXM for SWIM; WIS2 **does not** group bulletins; COLLECT AHL as optional unique ID |
-| GTStoWIS2 | https://github.com/wmo-im/GTStoWIS2 | historical AHL→topic | historical | Archived; richer T1T2 than current WTH — lineage only |
-| CCT | https://github.com/wmo-im/CCT | 306 Vol I.2 common tables | normative-vocabulary | Not aviation TAC FM / 4678 |
-| saf / metce / opm / met-basic | github.com/wmo-im/{saf,metce,opm,met-basic} | schema lineage | historical | Prefer **publish** https://schemas.wmo.int/{metce,opm,saf}/ + vendor `externalSchema`; saf **deprecated** (1.0–1.1 only; obsolete since IWXXM 2.0RC1); opm repo **archived**. METCE/OPM runtime = **1.2**; SAF = historical — [METCE](../mining/schemas-wmo-int-metce-mining-notes.md) · [OPM](../mining/schemas-wmo-int-opm-mining-notes.md) · [SAF](../mining/schemas-wmo-int-saf-mining-notes.md) |
+| Repo                          | URL                                                                       | Role                              | Label                      | Caveats                                                                                                                                                                                                                                                                                                                                                                                              |
+| ----------------------------- | ------------------------------------------------------------------------- | --------------------------------- | -------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| collect                       | https://github.com/wmo-im/collect                                         | bulletin lineage                  | historical (content = pin) | `1.2/collect.xsd` **byte-identical** to vendor `externalSchema/.../collect/1.2/`; prefer vendor for CI                                                                                                                                                                                                                                                                                               |
+| wis2box (reference node)      | https://github.com/World-Meteorological-Organization/wis2box              | F17 runtime home                  | informative                | Canonical node is the **WMO org** repo, not `wmo-im`. Project harness stays the Compose stand-in                                                                                                                                                                                                                                                                                                     |
+| wis2-cookbook (aviation)      | https://github.com/wmo-im/wis2-cookbook (`publishing-aviation-data.adoc`) | WIS2 publish / Annex 3 use-rights | informative                | Recommended policy + license; not TAC grammar                                                                                                                                                                                                                                                                                                                                                        |
+| wis2-topic-hierarchy          | https://github.com/wmo-im/wis2-topic-hierarchy                            | F8 topic routing                  | normative-exchange (WIS2)  | Aviation leaves **only** `metar`, `taf`, `qvaci` (re-read 2026-10-02)                                                                                                                                                                                                                                                                                                                                |
+| wis2-notification-message     | https://github.com/wmo-im/wis2-notification-message                       | MQP notification                  | normative-exchange (WIS2)  | Encoding spec. The harness does not emit this GeoJSON                                                                                                                                                                                                                                                                                                                                                |
+| wis2-guide (§2.8.1.1)         | https://github.com/wmo-im/wis2-guide                                      | WIS2↔SWIM / IWXXM format          | informative                | IWXXM for SWIM; WIS2 **does not** group bulletins; COLLECT AHL as optional unique ID                                                                                                                                                                                                                                                                                                                 |
+| GTStoWIS2                     | https://github.com/wmo-im/GTStoWIS2                                       | historical AHL→topic              | historical                 | Archived; richer T1T2 than current WTH — lineage only                                                                                                                                                                                                                                                                                                                                                |
+| CCT                           | https://github.com/wmo-im/CCT                                             | 306 Vol I.2 common tables         | normative-vocabulary       | Not aviation TAC FM / 4678                                                                                                                                                                                                                                                                                                                                                                           |
+| saf / metce / opm / met-basic | github.com/wmo-im/{saf,metce,opm,met-basic}                               | schema lineage                    | historical                 | Prefer **publish** https://schemas.wmo.int/{metce,opm,saf}/ + vendor `externalSchema`; saf **deprecated** (1.0–1.1 only; obsolete since IWXXM 2.0RC1); opm repo **archived**. METCE/OPM runtime = **1.2**; SAF = historical — [METCE](../mining/schemas-wmo-int-metce-mining-notes.md) · [OPM](../mining/schemas-wmo-int-opm-mining-notes.md) · [SAF](../mining/schemas-wmo-int-saf-mining-notes.md) |
 
-**Not useful for Annex 3 TAC / IWXXM conversion:** BUFR4, GRIB2, WMDR/WCMP*, Hydro/WHOS, pymetdecoder (SYNOP-only), VolumeC1 (CCCC freeze). wis2box is not an encode source; its runtime home for F17 citation is the WMO org repository above.
+**Not useful for Annex 3 TAC / IWXXM conversion:** BUFR4, GRIB2, WMDR/WCMP\*, Hydro/WHOS, pymetdecoder (SYNOP-only), VolumeC1 (CCCC freeze). wis2box is not an encode source; its runtime home for F17 citation is the WMO org repository above.
 
 ### Tier A local clones (deep mine 2026-07-14)
 
@@ -657,7 +655,7 @@ Full ranking: [mining/wmo-im-org-mining-notes.md](../mining/wmo-im-org-mining-no
   - TAF: `…/IWXXM_TAF_v2.8_En.pdf` (Version 2.8, Feb 2026)
   - Code registry: `…/Canadian_Code_Registry_1A_En.pdf` (Version 1A)
   - Bulletins/files: `…/TAC_Bulletins_IWXXM_Files_2A_En.pdf` (Version 2A)
-  Archive fallback example: `https://dd.meteo.gc.ca/20260819/WXO-DD/aviation/iwxxm/doc/` (mtime evidence 2026-05-19)
+    Archive fallback example: `https://dd.meteo.gc.ca/20260819/WXO-DD/aviation/iwxxm/doc/` (mtime evidence 2026-05-19)
 - **Access:** public; directory/PDF fetch may 403; inventory confirmed via dated archive + search index
 - **Applies to:** products=[TAF,AIRMET,SIGMET] primary; METAR/SPECI/VAA lack dedicated guides; profiles=[**ca_eccc**]; role=[conversion, bulletin, iwxxm-validation]
 - **Gap vs GIFTs:** Canadian AIRMET/SIGMET location/level + extension/registry guidance; TAF change-group mapping notes
@@ -733,24 +731,23 @@ Full ranking: [mining/wmo-im-org-mining-notes.md](../mining/wmo-im-org-mining-no
 
 ---
 
-## What this catalog does *not* replace
+## What this catalog does _not_ replace
 
-| Need | Still elsewhere |
-|------|-----------------|
-| Full Annex 3 / Doc 8896 prose | Paywalled ICAO PDFs (cite only) |
+| Need                              | Still elsewhere                                                        |
+| --------------------------------- | ---------------------------------------------------------------------- |
+| Full Annex 3 / Doc 8896 prose     | Paywalled ICAO PDFs (cite only)                                        |
 | Active machine validation for pin | `vendor/schemas/iwxxm` + [IWXXM_VALIDATION.md](../IWXXM_VALIDATION.md) |
-| Package API design | #698 / #699 |
-| Converter implementation | #693 / `packages/tac2iwxxm` |
+| Package API design                | #698 / #699                                                            |
+| Converter implementation          | #693 / `packages/tac2iwxxm`                                            |
 
 ## Related tickets
 
-| Ticket | Boundary |
-|--------|----------|
-| [#698](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/698) | TAC validation package — consumes this catalog |
-| [#699](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/699) | IWXXM validation package — schema release pointers |
-| [#693](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/693) | Converter — conversion citations |
-| [#702](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/702) / [#714](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/714) | Decode / F7 UX provenance |
-
+| Ticket                                                                                                                                        | Boundary                                           |
+| --------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------- |
+| [#698](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/698)                                                                         | TAC validation package — consumes this catalog     |
+| [#699](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/699)                                                                         | IWXXM validation package — schema release pointers |
+| [#693](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/693)                                                                         | Converter — conversion citations                   |
+| [#702](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/702) / [#714](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/714) | Decode / F7 UX provenance                          |
 
 ---
 

@@ -750,7 +750,7 @@ def hatch_taf(tac_text: str, product: str) -> list[Issue]:
     list[Issue]
         Detector hatch for TAF core checklist (A5-1 + F20 gates).
     """
-    del product # pack products: [TAF]; profile via lint_profile contextvar
+    del product  # pack products: [TAF]; profile via lint_profile contextvar
     from tac_validate.product_rules_pkg.taf import _check_taf
 
     return _check_taf(tac_text, profile=lint_profile.get())

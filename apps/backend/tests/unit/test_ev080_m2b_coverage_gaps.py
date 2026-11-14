@@ -1,5 +1,4 @@
-"""EV-080 M2b: fill remaining apps/backend unit line/branch gaps to 100%. [Corpus: tests]
-"""
+"""EV-080 M2b: fill remaining apps/backend unit line/branch gaps to 100%. [Corpus: tests]"""
 
 from __future__ import annotations
 
@@ -853,7 +852,7 @@ async def test_api_wire_nbsp_only_file_hits_post_decode_empty() -> None:
         async def read(self, _n: int = -1) -> bytes:
             return b"\xc2\xa0"
 
-    content, err = await api_wire.read_uploaded_text(_Up()) # type: ignore[arg-type]
+    content, err = await api_wire.read_uploaded_text(_Up())  # type: ignore[arg-type]
     assert content is None
     assert err == "empty file"
 
@@ -1084,7 +1083,7 @@ async def test_abuse_controls_invalid_content_length(monkeypatch: pytest.MonkeyP
 async def test_database_close_dispose_branches(monkeypatch: pytest.MonkeyPatch) -> None:
     from src.services import database as db
 
-    db._engine = SimpleNamespace() # no dispose attr / not callable
+    db._engine = SimpleNamespace()  # no dispose attr / not callable
     db._async_session_maker = object()
     await db.close_db_engine()
     assert db._engine is None
@@ -1214,7 +1213,7 @@ def test_observability_counter_cache_hit_and_drain_empty(monkeypatch: pytest.Mon
         def put(self, *_a: Any, **_k: Any) -> None:
             return None
 
-    handler._queue = _Q() # type: ignore[assignment]
+    handler._queue = _Q()  # type: ignore[assignment]
     handler._worker_loop()
 
     prior_levels = {n: logging.getLogger(n).level for n in obs._REQUEST_LOGGERS}
@@ -1328,7 +1327,7 @@ def test_work_session_payload_pending_files_plain_dicts() -> None:
     data = payload.model_dump(exclude_unset=True)
     data["pending_files"] = [{"name": "a.tac", "content": "x"}]
     fake = SimpleNamespace(model_dump=lambda **_k: data)
-    out = svc._payload_dict(fake) # type: ignore[arg-type]
+    out = svc._payload_dict(fake)  # type: ignore[arg-type]
     assert out["pending_files"][0]["name"] == "a.tac"
 
 

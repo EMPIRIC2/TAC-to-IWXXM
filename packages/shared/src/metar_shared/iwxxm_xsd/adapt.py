@@ -71,7 +71,7 @@ def import_version_leaf(version: str, leaf: str = "xlink") -> ModuleType:
     if existing is None or not hasattr(existing, "__path__"):
         stub = types.ModuleType(pkg)
         stub.__file__ = str(version_dir / "__init__.py")
-        stub.__path__ = [str(version_dir)] # type: ignore[attr-defined]
+        stub.__path__ = [str(version_dir)]  # type: ignore[attr-defined]
         stub.__package__ = pkg
         sys.modules[pkg] = stub
 

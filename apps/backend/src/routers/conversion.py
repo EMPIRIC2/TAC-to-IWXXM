@@ -186,7 +186,7 @@ def _run_pre_convert_validation(
     """
     validate = cast(
         Callable[..., AggregatedValidationResult],
-        validation_service.validate_all_layers, # type: ignore[attr-defined]
+        validation_service.validate_all_layers,  # type: ignore[attr-defined]
     )
     try:
         return validate(tac_text, layers=layers)
@@ -2499,8 +2499,8 @@ async def convert(
         body_decode = getattr(request_body, "decoding_library_id", None)
         if body_decode is not None:
             decoding_library_id = str(body_decode)
-        manual_text = "" # Override form input
-        files = None # Override file input
+        manual_text = ""  # Override form input
+        files = None  # Override file input
 
         logger.info(
             "[CONVERT] JSON mode metars=%s version=%s validation_level=%s preview=%s",
@@ -3239,8 +3239,8 @@ async def convert_zip(
     if request_body is not None:
         metars_list = request_body.metars or []
         iwxxm_version = request_body.version
-        manual_text = "" # Override form input
-        files = None # Override file input
+        manual_text = ""  # Override form input
+        files = None  # Override file input
     else:
         metars_list: list[Any] = []
 
@@ -3282,7 +3282,7 @@ async def convert_zip(
 
     results: list[tuple[str, str]] = []
     errors: list[str] = []
-    translation_ids: list[str] = [] # Track for bulk notification
+    translation_ids: list[str] = []  # Track for bulk notification
     validation_service = api_surface.ValidationService()
     validation_orchestrator = api_surface.get_validation_orchestrator()
 
@@ -3391,7 +3391,7 @@ async def convert_zip(
                         iwxxm_output=xml_text,
                         iwxxm_version=iwxxm_version,
                         translation_status=TranslationStatus.SUCCESS,
-                        validation_layers_passed=[], # Zip endpoint doesn't validate
+                        validation_layers_passed=[],  # Zip endpoint doesn't validate
                         validation_errors=None,
                         translation_duration_ms=duration_ms,
                         icao_airport_code=extract_airport_code(data or ""),
@@ -3490,7 +3490,7 @@ async def convert_zip(
                         )
                     except Exception as log_err:
                         logger.error(f"Failed to log failed translation: {log_err}")
-                    continue # Skip to next METAR
+                    continue  # Skip to next METAR
             except ValidationServiceError as ve:
                 errors.append(f"{metar_name}: {ve!s}")
                 # Log validation error
@@ -3515,7 +3515,7 @@ async def convert_zip(
                     )
                 except Exception as log_err:
                     logger.error(f"Failed to log validation error: {log_err}")
-                continue # Skip to next METAR
+                continue  # Skip to next METAR
 
             # Start timing
 

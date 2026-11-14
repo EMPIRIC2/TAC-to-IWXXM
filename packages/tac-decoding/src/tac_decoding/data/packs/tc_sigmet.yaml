@@ -4,32 +4,32 @@ id: tc_sigmet
 layout: token_stream
 rules:
   - id: report_type
-    pattern: ["SIGMET"]
-    explain: "SIGMET {0}"
+    pattern: ['SIGMET']
+    explain: 'SIGMET {0}'
   - id: tc
-    pattern: ["TC"]
-    explain: "Tropical cyclone"
+    pattern: ['TC']
+    explain: 'Tropical cyclone'
   - id: sequence
     pattern: ["[A-Z]?\\d{1,2}"]
-    explain: "Sequence {0}"
+    explain: 'Sequence {0}'
   - id: valid
-    pattern: ["VALID"]
-    explain: "Validity marker"
+    pattern: ['VALID']
+    explain: 'Validity marker'
   - id: valid_period
     pattern: ["\\d{6}/\\d{6}"]
-    explain: "Validity period {0}"
+    explain: 'Validity period {0}'
   - id: fir
-    pattern: ["[A-Z]{4}"]
-    explain: "FIR/location {0}"
+    pattern: ['[A-Z]{4}']
+    explain: 'FIR/location {0}'
   - id: obs_or_fcst
-    pattern: ["(?:OBS|FCST)"]
-    explain: "Observation/forecast {0}"
+    pattern: ['(?:OBS|FCST)']
+    explain: 'Observation/forecast {0}'
   - id: cnl
-    pattern: ["CNL"]
-    explain: "Cancelled"
+    pattern: ['CNL']
+    explain: 'Cancelled'
   - id: equal
-    pattern: ["="]
-    explain: "Report terminator"
+    pattern: ['=']
+    explain: 'Report terminator'
   - id: token
-    pattern: [".+"]
-    explain: "Token {0}"
+    pattern: ['.+']
+    explain: 'Token {0}'

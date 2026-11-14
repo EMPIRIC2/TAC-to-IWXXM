@@ -50,7 +50,7 @@ def _swxa_cases(manifest: dict[str, Any]) -> list[dict[str, Any]]:
 
 
 def _assert_registered(code: str) -> None:
-    by_code(code) # raises KeyError if unknown
+    by_code(code)  # raises KeyError if unknown
 
 
 def _swxa_registry_rows() -> list[Any]:

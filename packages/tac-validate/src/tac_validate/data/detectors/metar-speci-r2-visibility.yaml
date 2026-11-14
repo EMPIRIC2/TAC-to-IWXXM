@@ -20,7 +20,7 @@ rules:
     on_match:
       code: INVALID_VISIBILITY
       location: visibility
-      message_template: "{product} invalid visibility token {capture!r} - research R2"
+      message_template: '{product} invalid visibility token {capture!r} - research R2'
       capture_group: 1
       span: match
   - id: missing_visibility
@@ -35,5 +35,5 @@ rules:
     on_fail:
       code: MISSING_VISIBILITY
       location: visibility
-      message_template: "{product} missing visibility or CAVOK - A3-2 #6"
+      message_template: '{product} missing visibility or CAVOK - A3-2 #6'
       span: body

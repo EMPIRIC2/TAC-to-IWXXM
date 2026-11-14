@@ -9,11 +9,11 @@ and AFS routing defaults, **not** TAC grammar (semantic profiles own that).
 
 ## Owns (target)
 
-| Area | Scope |
-|------|-------|
-| Bulletin packaging | COLLECT `MeteorologicalBulletin` aggregation |
-| Filename / routing | FTBP `A_TTAAii…xml.gz` patterns per OPMET Guidelines |
-| Product designators | AHL T1T2 mapping (LA/LP/LC/… per product) |
+| Area                 | Scope                                                      |
+| -------------------- | ---------------------------------------------------------- |
+| Bulletin packaging   | COLLECT `MeteorologicalBulletin` aggregation               |
+| Filename / routing   | FTBP `A_TTAAii…xml.gz` patterns per OPMET Guidelines       |
+| Product designators  | AHL T1T2 mapping (LA/LP/LC/… per product)                  |
 | Translation metadata | `translationCentre*` attrs when on behalf of another State |
 
 ## Does not own
@@ -24,11 +24,11 @@ and AFS routing defaults, **not** TAC grammar (semantic profiles own that).
 
 ## Authoritative sources
 
-| Source | Access | Proves |
-|--------|--------|--------|
+| Source                                                                                                                                                                                 | Access | Proves                                       |
+| -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------ | -------------------------------------------- |
 | [OPMET IWXXM Exchange Guidelines 5th Ed.](https://www.icao.int/sites/default/files/METP/Documents/Guidlines-for-the-Implementation-of-OPMET-Data-Exchange-using-IWXXM_5th-Edition.pdf) | public | COLLECT, AMHS/FTBP, translation centre rules |
-| [WMO AHL / AFS](https://community.wmo.int/site/knowledge-hub/programmes-and-initiatives/wmo-information-system-wis/about-manual-gts/ahls-aviation-data-over-icao-afs) | public | AHL product type designators |
-| [wmo-im/iwxxm](https://github.com/wmo-im/iwxxm) | public | `collect.xsd` |
+| [WMO AHL / AFS](https://community.wmo.int/site/knowledge-hub/programmes-and-initiatives/wmo-information-system-wis/about-manual-gts/ahls-aviation-data-over-icao-afs)                  | public | AHL product type designators                 |
+| [wmo-im/iwxxm](https://github.com/wmo-im/iwxxm)                                                                                                                                        | public | `collect.xsd`                                |
 
 ## Mining notes (transitory)
 
@@ -36,13 +36,13 @@ and AFS routing defaults, **not** TAC grammar (semantic profiles own that).
 
 ## Implementation (EV-065)
 
-| Target | Location |
-|--------|----------|
-| Exchange registry | `packages/dissemination/src/dissemination/exchange_registry.py` |
-| COLLECT packaging | `packages/dissemination/src/dissemination/packaging.py` |
-| API wire | `POST /api/v1/convert-bulletin` — default `exchange_profile=GLOBAL_AFS` |
-| Fixtures | `packages/dissemination/tests/fixtures/profiles/GLOBAL_AFS/` |
-| Tests | TC-EV063-004, TC-EV063-005, TC-EV065-001 |
+| Target            | Location                                                                |
+| ----------------- | ----------------------------------------------------------------------- |
+| Exchange registry | `packages/dissemination/src/dissemination/exchange_registry.py`         |
+| COLLECT packaging | `packages/dissemination/src/dissemination/packaging.py`                 |
+| API wire          | `POST /api/v1/convert-bulletin` — default `exchange_profile=GLOBAL_AFS` |
+| Fixtures          | `packages/dissemination/tests/fixtures/profiles/GLOBAL_AFS/`            |
+| Tests             | TC-EV063-004, TC-EV063-005, TC-EV065-001                                |
 
 ## Gaps
 

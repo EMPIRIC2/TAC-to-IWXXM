@@ -9,11 +9,11 @@ Research (EV-094): KMA states no significant Annex 3 differences; empty override
 
 ## Owns (target)
 
-| Area | Scope |
-|------|-------|
-| Products | METAR, SPECI, TAF, SIGMET, AIRMET |
-| IWXXM | Core only |
-| Overrides | Expected empty |
+| Area      | Scope                             |
+| --------- | --------------------------------- |
+| Products  | METAR, SPECI, TAF, SIGMET, AIRMET |
+| IWXXM     | Core only                         |
+| Overrides | Expected empty                    |
 
 ## Gaps
 

@@ -17,28 +17,28 @@ UK `EG*` TAFs prefer `uk_metoffice`, so standalone `PROB + period`
 
 ## Owns (target)
 
-| Area | Scope |
-|------|-------|
-| TAC parse / normalize | ICAO baseline; CAP 746 deltas via fixtures (± empty override list) |
-| IWXXM encode | **Core WMO only** |
-| Products | METAR, SPECI, TAF |
-| Overrides | **Empty severity remaps** (civil ICAO; military colour OOS — D-EV094-uk-mil); VV omit noted under `recorded` |
+| Area                  | Scope                                                                                                        |
+| --------------------- | ------------------------------------------------------------------------------------------------------------ |
+| TAC parse / normalize | ICAO baseline; CAP 746 deltas via fixtures (± empty override list)                                           |
+| IWXXM encode          | **Core WMO only**                                                                                            |
+| Products              | METAR, SPECI, TAF                                                                                            |
+| Overrides             | **Empty severity remaps** (civil ICAO; military colour OOS — D-EV094-uk-mil); VV omit noted under `recorded` |
 
 ## Standards hierarchy (L0–L6)
 
-| Level | Source | Status |
-|-------|--------|--------|
-| L0 | CAP 746 | mined (kickoff + EV-094) |
-| L1 | WMO-No. 306 | via ICAO_2025 |
-| L2–L3 | IWXXM core pin | via ICAO_2025 |
-| L4–L5 | National XSD / vocab | **N/A — do not invent** |
-| L6 | Ops corpus (AWC / Met Office) | METAR + TAF attributed (M1); SPECI gap |
+| Level | Source                        | Status                                 |
+| ----- | ----------------------------- | -------------------------------------- |
+| L0    | CAP 746                       | mined (kickoff + EV-094)               |
+| L1    | WMO-No. 306                   | via ICAO_2025                          |
+| L2–L3 | IWXXM core pin                | via ICAO_2025                          |
+| L4–L5 | National XSD / vocab          | **N/A — do not invent**                |
+| L6    | Ops corpus (AWC / Met Office) | METAR + TAF attributed (M1); SPECI gap |
 
 ## Code list policy
 
-| Code / list | Global SoT | National override | Notes |
-|-------------|------------|-------------------|-------|
-| Standard METAR/TAF tokens | ICAO / WMO | none | ATIS specials → fixtures |
+| Code / list               | Global SoT | National override | Notes                    |
+| ------------------------- | ---------- | ----------------- | ------------------------ |
+| Standard METAR/TAF tokens | ICAO / WMO | none              | ATIS specials → fixtures |
 
 ## Fixtures
 

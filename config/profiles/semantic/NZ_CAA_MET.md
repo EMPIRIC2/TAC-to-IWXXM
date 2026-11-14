@@ -8,24 +8,24 @@ AUTO conventions (`NCD`, `UP`, solidi / `///`).
 
 ## Owns (target)
 
-| Area | Scope |
-|------|-------|
+| Area                  | Scope                                                                                              |
+| --------------------- | -------------------------------------------------------------------------------------------------- |
 | TAC parse / normalize | Domestic extras (`30KM`, cloud &gt;1500 ft, `2000FT WIND`, `QNH MNM/MAX`); intl Annex 3-shaped TAF |
-| IWXXM encode | **Core WMO only** — no published NZ extension XSD (EV-087 research) |
-| Products | TAF, METAR, SPECI |
-| SIGMET | ICAO base unless later mining shows deltas |
+| IWXXM encode          | **Core WMO only** — no published NZ extension XSD (EV-087 research)                                |
+| Products              | TAF, METAR, SPECI                                                                                  |
+| SIGMET                | ICAO base unless later mining shows deltas                                                         |
 
 ## Key policy (locked)
 
-| Topic | Rule | Decision |
-|-------|------|----------|
+| Topic           | Rule                                                                            | Decision            |
+| --------------- | ------------------------------------------------------------------------------- | ------------------- |
 | Domestic extras | Parse to IR + fixtures; core IWXXM only if attested; else remarks + diagnostics | D-EV087-nz-domestic |
-| National XSD | None — do not invent | D-EV087-xsd |
+| National XSD    | None — do not invent                                                            | D-EV087-xsd         |
 
 ## Authoritative sources
 
-| Source | Access | Proves |
-|--------|--------|--------|
+| Source                                                                                                                          | Access | Proves                                     |
+| ------------------------------------------------------------------------------------------------------------------------------- | ------ | ------------------------------------------ |
 | [NZ CAA aviation weather products](https://www.aviation.govt.nz/airspace-and-aerodromes/meteorology/aviation-weather-products/) | public | Domestic vs international TAF; AUTO policy |
 
 ## Mining notes
@@ -34,10 +34,10 @@ AUTO conventions (`NCD`, `UP`, solidi / `///`).
 
 ## Implementation (Build)
 
-| Component | Location |
-|-----------|----------|
-| Registry | `packages/tac2iwxxm/src/tac2iwxxm/profile_registry.py` (`nz_caa_met`) |
-| Fixtures | `packages/tac2iwxxm/tests/fixtures/profiles/NZ_CAA_MET/` |
+| Component | Location                                                              |
+| --------- | --------------------------------------------------------------------- |
+| Registry  | `packages/tac2iwxxm/src/tac2iwxxm/profile_registry.py` (`nz_caa_met`) |
+| Fixtures  | `packages/tac2iwxxm/tests/fixtures/profiles/NZ_CAA_MET/`              |
 
 ## Gaps
 

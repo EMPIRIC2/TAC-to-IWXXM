@@ -15,8 +15,8 @@ repos:
     hooks:
       - id: gitleaks
         args:
-          - "--config=config/tooling/gitleaks.toml"
-          - "--redact"
+          - '--config=config/tooling/gitleaks.toml'
+          - '--redact'
 
   - repo: local
     hooks:

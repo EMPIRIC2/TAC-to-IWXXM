@@ -94,7 +94,7 @@ def _attribution_fields(prov: dict[str, object] | None) -> dict[str, str | None]
 def _load_rows() -> tuple[list[dict[str, object]], str]:
     sys.path.insert(0, str(SRC))
     try:
-        from tac_validate.issue_registry import ISSUES # type: ignore[import-not-found]
+        from tac_validate.issue_registry import ISSUES  # type: ignore[import-not-found]
     except ModuleNotFoundError as exc:
         missing = exc.name or ""
         if missing in {

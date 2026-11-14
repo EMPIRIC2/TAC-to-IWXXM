@@ -12,20 +12,20 @@ Convert uses core IWXXM (`annex3`). This is not `US_FAA_NWS` / `iwxxm_us`
 
 ## Owns
 
-| Area | Scope |
-|------|-------|
-| Products | TAF |
-| Lint | TX/TN after change groups → `TX_TN_PRESENT` (info), not `INVALID_TX_TN` |
+| Area     | Scope                                                                                 |
+| -------- | ------------------------------------------------------------------------------------- |
+| Products | TAF                                                                                   |
+| Lint     | TX/TN after change groups → `TX_TN_PRESENT` (info), not `INVALID_TX_TN`               |
 | Stations | KBIX, KCVS, KDOV, KGRK, KNID, KNYL, KPOE, KSZL (YAML `stations` + `accept_end_tx_tn`) |
-| IWXXM | Core annex3 emit only (no military XSD) |
+| IWXXM    | Core annex3 emit only (no military XSD)                                               |
 
 ## Observed in live TAC
 
-| Signal | Notes |
-|--------|-------|
+| Signal         | Notes                                        |
+| -------------- | -------------------------------------------- |
 | Trailing TX/TN | After BECMG/TEMPO/FM (e.g. KBIX, KCVS, KNYL) |
-| Altimeter | `QNH####INS` on these bulletins |
-| Tail remarks | e.g. `LAST NO AMDS` on some samples |
+| Altimeter      | `QNH####INS` on these bulletins              |
+| Tail remarks   | e.g. `LAST NO AMDS` on some samples          |
 
 Annex 3 Table A5-1 places TX/TN on the base forecast. Use `ICAO_2025` / `annex3`
 when you want that rule enforced as an error.
@@ -36,13 +36,13 @@ BECMG-forbidding `iwxxm_us` pack (EV-taf-national-prefer-prob).
 
 ## Code
 
-| Piece | Path |
-|-------|------|
+| Piece          | Path                                                               |
+| -------------- | ------------------------------------------------------------------ |
 | Station policy | `packages/tac-validate/.../station_scoped_policy.py` (YAML-backed) |
-| Lint catalog | `packages/tac-validate/.../lint_profiles.yaml` → `us_military` |
-| Shared helper | `packages/tac-validate/.../api.py` → `lint_with_profile` |
-| T3 check | `packages/tac-validate/.../taf.py` (`accepts_end_tx_tn`) |
-| Registry | `packages/tac2iwxxm/.../profile_registry.py` |
+| Lint catalog   | `packages/tac-validate/.../lint_profiles.yaml` → `us_military`     |
+| Shared helper  | `packages/tac-validate/.../api.py` → `lint_with_profile`           |
+| T3 check       | `packages/tac-validate/.../taf.py` (`accepts_end_tx_tn`)           |
+| Registry       | `packages/tac2iwxxm/.../profile_registry.py`                       |
 
 ## Gaps
 

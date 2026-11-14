@@ -92,7 +92,7 @@ def resolve_versions(requested: list[str] | None) -> list[str]:
 
 def _patch_xsdata_generators() -> None:
     """Register pydantic output and soften ruff / circular-import hard fails."""
-    import xsdata_pydantic.hooks.cli # noqa: F401
+    import xsdata_pydantic.hooks.cli  # noqa: F401
     from xsdata.formats.dataclass.generator import DataclassGenerator
 
     orig_ruff = DataclassGenerator.ruff_code
@@ -118,8 +118,8 @@ def _patch_xsdata_generators() -> None:
                 file=sys.stderr,
             )
 
-    DataclassGenerator.ruff_code = ruff_code # type: ignore[method-assign]
-    DataclassGenerator.validate_imports = validate_imports # type: ignore[method-assign]
+    DataclassGenerator.ruff_code = ruff_code  # type: ignore[method-assign]
+    DataclassGenerator.validate_imports = validate_imports  # type: ignore[method-assign]
 
 
 def generate_version(

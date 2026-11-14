@@ -115,7 +115,7 @@ async def validate_comprehensive(
             json_exchange = getattr(request_body, "exchange_profile", None)
             json_extensions = getattr(request_body, "extensions", None)
             json_product = getattr(request_body, "product", None)
-            manual_text = "" # Don't use form input
+            manual_text = ""  # Don't use form input
 
             # Map validation_level to layers
             if validation_level == "comprehensive":

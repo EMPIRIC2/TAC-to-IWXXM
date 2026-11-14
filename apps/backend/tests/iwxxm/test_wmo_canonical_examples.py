@@ -149,7 +149,7 @@ EV024_IN_SCOPE_STEMS = (
 # A6-2-TC: removed after EV-032 / #835 (equality + catalog wmoPass).
 EV024_CONVERT_DEFERRED_STEMS = frozenset(
     {
-        "sigmet-multi-location-VA", # equality green; prune candidate
+        "sigmet-multi-location-VA",  # equality green; prune candidate
     }
 )
 

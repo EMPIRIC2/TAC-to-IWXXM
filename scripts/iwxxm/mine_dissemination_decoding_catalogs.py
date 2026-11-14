@@ -30,7 +30,7 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 DATA = REPO_ROOT / "packages" / "tac2iwxxm" / "src" / "tac2iwxxm" / "data"
 DISSEM_OUT = DATA / "dissemination_transforms.yaml"
 DECODE_OUT = DATA / "decoding_library_entries.yaml"
-GLOSSARY = DATA / "decode_glossary.yaml" # overlay only; full table via load_glossary()
+GLOSSARY = DATA / "decode_glossary.yaml"  # overlay only; full table via load_glossary()
 
 FIRST_PARTY_TRANSFORMS: tuple[dict[str, str], ...] = (
     {

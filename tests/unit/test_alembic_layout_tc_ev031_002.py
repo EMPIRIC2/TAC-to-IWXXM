@@ -57,7 +57,7 @@ def test_alembic_has_at_least_one_revision() -> None:
 
 @pytest.mark.unit
 def test_initial_revision_defines_tac_work_sessions_and_f8_tables() -> None:
-    """ wire shapes + F8 co-located tables ( single DATABASE_URL)."""
+    """wire shapes + F8 co-located tables ( single DATABASE_URL)."""
     bodies = "\n".join(
         p.read_text(encoding="utf-8")
         for p in sorted(_VERSIONS.glob("*.py"))

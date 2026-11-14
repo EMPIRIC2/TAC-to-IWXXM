@@ -566,7 +566,6 @@ def _fmt_time(m: re.Match[str], *, label: str) -> str:
     return f"{label} on day {int(m.group('dd'))} at {m.group('hh')}:{m.group('mm')} UTC"
 
 
-
 def _fmt_valid_period(
     *,
     day1: int,
@@ -607,10 +606,7 @@ def _fmt_valid_period(
     end = f"{hour2}:{minute2}"
     if day1 == day2:
         return f"Valid on day {day1} of the current month from {start} UTC to {end} UTC"
-    return (
-        f"Valid from day {day1} of the current month at {start} UTC "
-        f"to day {day2} of the current month at {end} UTC"
-    )
+    return f"Valid from day {day1} of the current month at {start} UTC to day {day2} of the current month at {end} UTC"
 
 
 def _fmt_vis_sm(m: re.Match[str], *, label: str) -> str:

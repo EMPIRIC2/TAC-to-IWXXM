@@ -10,11 +10,11 @@ convert remains core IWXXM (no unpublished IMDIMET XSD). No AIRMET/GAMET in v1.
 
 ## Owns (target)
 
-| Area | Scope |
-|------|-------|
-| Products | METAR, SPECI, TAF, SIGMET |
-| Lint | `in_imd` — TAF TX/TN omission awareness (D-EV094-in-taf) |
-| IWXXM | Core only |
+| Area     | Scope                                                    |
+| -------- | -------------------------------------------------------- |
+| Products | METAR, SPECI, TAF, SIGMET                                |
+| Lint     | `in_imd` — TAF TX/TN omission awareness (D-EV094-in-taf) |
+| IWXXM    | Core only                                                |
 
 ## Gaps
 

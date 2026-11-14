@@ -46,7 +46,7 @@ def test_tc_f9_003_airmet_isol_stnr_wkn_meanings() -> None:
     stnr = _explanation_for(AIRMET_GOLDEN, "AIRMET", "STNR")
     wkn = _explanation_for(AIRMET_GOLDEN, "AIRMET", "WKN")
     assert "isolated" in isol.lower()
-    assert "stationar" in stnr.lower() # stationary / stationary
+    assert "stationar" in stnr.lower()  # stationary / stationary
     assert "weaken" in wkn.lower()
 
 

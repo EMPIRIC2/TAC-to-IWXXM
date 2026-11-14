@@ -18,10 +18,10 @@ One pipeline (ICAO canonical IR + overlays)
 
 ## Paths: thin vs full
 
-| Path | When | Minimum artifacts | Code changes |
-|------|------|-------------------|--------------|
-| **Thin / compat** (#920) | Overrides + fixtures only; core IWXXM emit | Catalog row, semantic stub, TAC mining note, fixture tree + `manifest.json`, registry + convert allowlist | No national XSD pin; no `profiles/<id>.py` emitter |
-| **Full national** (CA pattern) | Published national XSD / vocab / ops corpus | Thin set **plus** IWXXM mining note, vendor pins, extension emitters, validate stack, ops harvest | Extension token + vendor sync |
+| Path                           | When                                        | Minimum artifacts                                                                                         | Code changes                                       |
+| ------------------------------ | ------------------------------------------- | --------------------------------------------------------------------------------------------------------- | -------------------------------------------------- |
+| **Thin / compat** (#920)       | Overrides + fixtures only; core IWXXM emit  | Catalog row, semantic stub, TAC mining note, fixture tree + `manifest.json`, registry + convert allowlist | No national XSD pin; no `profiles/<id>.py` emitter |
+| **Full national** (CA pattern) | Published national XSD / vocab / ops corpus | Thin set **plus** IWXXM mining note, vendor pins, extension emitters, validate stack, ops harvest         | Extension token + vendor sync                      |
 
 Templates: [`_template/`](_template/). Scaffold: `scripts/profiles/scaffold_national_profile.py --id XX_YYY`.
 
@@ -45,13 +45,13 @@ Human stub: `semantic/<ID>.md` from [`_template/semantic-profile.md`](_template/
 
 Edit **once** in [`packages/tac-validate/.../lint_profiles.yaml`](../../../packages/tac-validate/src/tac_validate/data/lint_profiles.yaml):
 
-| Field | Role |
-|-------|------|
-| `inherits` | Single-parent DAG (no mixins). Child may narrow `products`. |
-| `stations` / `accept_end_tx_tn` | Leaf-only station dialect flags |
-| `station_prefixes` | Leaf-only ICAO country prefixes for TAF ICAO prefer (exact `stations` win; longest prefix wins). E.g. `iwxxm_us` `[K]`, `ca_eccc` `[CY]`. |
-| `recorded` | Durable notes without severity remaps |
-| `differs` | True when national lint diverges from annex3 |
+| Field                           | Role                                                                                                                                      |
+| ------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| `inherits`                      | Single-parent DAG (no mixins). Child may narrow `products`.                                                                               |
+| `stations` / `accept_end_tx_tn` | Leaf-only station dialect flags                                                                                                           |
+| `station_prefixes`              | Leaf-only ICAO country prefixes for TAF ICAO prefer (exact `stations` win; longest prefix wins). E.g. `iwxxm_us` `[K]`, `ca_eccc` `[CY]`. |
+| `recorded`                      | Durable notes without severity remaps                                                                                                     |
+| `differs`                       | True when national lint diverges from annex3                                                                                              |
 
 CI (`test_profile_product_matrix.py`) asserts lint products ⊆ convert allowlist for lintable products. Policy severity remaps stay in policy YAML (`extends`), not per-country Python subclasses.
 
@@ -69,11 +69,11 @@ A new or changed TAC group is a row in that file (source, product, what changed,
 
 ## 2. Mining notes (transitory → promote)
 
-| Note | Template | Purpose |
-|------|----------|---------|
-| `<slug>-tac-mining-notes.md` | [`_template/tac-mining-notes.md`](_template/tac-mining-notes.md) | National TAC manuals |
-| `<slug>-iwxxm-mining-notes.md` | [`_template/iwxxm-mining-notes.md`](_template/iwxxm-mining-notes.md) | National XSD, codes, datamart (full path; optional for thin) |
-| `<slug>-doc-pdfs-mining-notes.md` | optional | Implementation PDF index |
+| Note                              | Template                                                             | Purpose                                                      |
+| --------------------------------- | -------------------------------------------------------------------- | ------------------------------------------------------------ |
+| `<slug>-tac-mining-notes.md`      | [`_template/tac-mining-notes.md`](_template/tac-mining-notes.md)     | National TAC manuals                                         |
+| `<slug>-iwxxm-mining-notes.md`    | [`_template/iwxxm-mining-notes.md`](_template/iwxxm-mining-notes.md) | National XSD, codes, datamart (full path; optional for thin) |
+| `<slug>-doc-pdfs-mining-notes.md` | optional                                                             | Implementation PDF index                                     |
 
 **Promotion rule:** mining row → `rule_id` → fixture → [`RULE_SOURCE_URLS.md`](../rules/RULE_SOURCE_URLS.md) → [`COVERAGE_MATRIX.md`](../rules/COVERAGE_MATRIX.md). Never leave durable rules only in mining notes.
 
@@ -129,13 +129,13 @@ Nationals add **plugins/config**, not forked engines.
 
 ## 6. Vocabulary / code-list layer
 
-| Artifact | Location |
-|----------|----------|
-| National vocab vendor pin | `vendor/schemas/<national>/…` |
+| Artifact                   | Location                                                                                                                                                           |
+| -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| National vocab vendor pin  | `vendor/schemas/<national>/…`                                                                                                                                      |
 | Deviation matrix (machine) | `semantic/<ID>.code-list-deviations.yaml` — template [`_template/code-list-deviations.yaml`](_template/code-list-deviations.yaml) (empty matrix OK for thin packs) |
-| Deviation matrix (human) | `semantic/<ID>.md` §Code list policy |
-| Catalog field | `code_list_policy` on the profile row |
-| Semantic checks | `iwxxm-validate` profile hook (`CODE_LIST_GLOBAL_DISALLOWED`) |
+| Deviation matrix (human)   | `semantic/<ID>.md` §Code list policy                                                                                                                               |
+| Catalog field              | `code_list_policy` on the profile row                                                                                                                              |
+| Semantic checks            | `iwxxm-validate` profile hook (`CODE_LIST_GLOBAL_DISALLOWED`)                                                                                                      |
 
 CA reference: [#1033](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1033), [#1034](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1034).
 
@@ -145,12 +145,12 @@ CA reference: [#1033](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1033), [#1
 
 Profile / catalog fields (national fills values; engine reads config):
 
-| Field | Role |
-|-------|------|
-| `wmo_header_template` | Per-product WMO header pattern |
-| `file_naming_pattern` | Exchange filename |
-| `distribution_url_pattern` | Informative / ops URL shape |
-| `station_reporting_rules` | Station / reporting policy |
+| Field                                | Role                           |
+| ------------------------------------ | ------------------------------ |
+| `wmo_header_template`                | Per-product WMO header pattern |
+| `file_naming_pattern`                | Exchange filename              |
+| `distribution_url_pattern`           | Informative / ops URL shape    |
+| `station_reporting_rules`            | Station / reporting policy     |
 | `translation_centre_metadata_policy` | Translator metadata on convert |
 
 **#924 cross-check:** these map to `ConversionProfile.dissemination` / output packaging
@@ -163,24 +163,24 @@ Custom operator overlays remain #924 trust-model OOS for this playbook.
 
 Spawn the **same stack** per P1+ national; swap sources only.
 
-| Type | Playbook § | CA reference | Reusable deliverable |
-|------|------------|--------------|----------------------|
-| A | 1, vendor | [#1027](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1027) | `vendor/manifest.json` + sync |
-| B | 2 | [#1028](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1028) | IWXXM mining + RULE_SOURCE_URLS |
-| C | 2 | [#1029](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1029) | TAC surface mining |
-| D | 2 | [#1030](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1030) | TAC forecast mining |
-| E | 2 | [#1031](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1031) | PDF index note |
-| F | 7 | [#1032](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1032) | Exchange output fields + hooks |
-| G | 6 | [#1033](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1033) | Vocab registry |
-| H | 6 | [#1034](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1034) | Deviation matrix |
-| I | 5 | [#1035](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1035) | Layered validate wiring |
-| J | 4, 10 | [#1036](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1036) | Ops corpus + harvest |
-| K | 5 | [#1038](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1038) | tac-validate overlay |
-| L | emitters | [#1039](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1039), [#1041](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1041) | Product convert mappers |
-| M | 7 | [#1040](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1040) | Translation metadata policy |
-| N | wiring | [#1042](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1042) | API/FE registry pattern |
-| O | spike | [#1037](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1037) | IWXXM-only product scope |
-| P | 5 | [#1043](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1043) | Validate-first secondary products |
+| Type | Playbook § | CA reference                                                                                                                 | Reusable deliverable              |
+| ---- | ---------- | ---------------------------------------------------------------------------------------------------------------------------- | --------------------------------- |
+| A    | 1, vendor  | [#1027](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1027)                                                                | `vendor/manifest.json` + sync     |
+| B    | 2          | [#1028](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1028)                                                                | IWXXM mining + RULE_SOURCE_URLS   |
+| C    | 2          | [#1029](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1029)                                                                | TAC surface mining                |
+| D    | 2          | [#1030](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1030)                                                                | TAC forecast mining               |
+| E    | 2          | [#1031](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1031)                                                                | PDF index note                    |
+| F    | 7          | [#1032](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1032)                                                                | Exchange output fields + hooks    |
+| G    | 6          | [#1033](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1033)                                                                | Vocab registry                    |
+| H    | 6          | [#1034](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1034)                                                                | Deviation matrix                  |
+| I    | 5          | [#1035](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1035)                                                                | Layered validate wiring           |
+| J    | 4, 10      | [#1036](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1036)                                                                | Ops corpus + harvest              |
+| K    | 5          | [#1038](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1038)                                                                | tac-validate overlay              |
+| L    | emitters   | [#1039](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1039), [#1041](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1041) | Product convert mappers           |
+| M    | 7          | [#1040](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1040)                                                                | Translation metadata policy       |
+| N    | wiring     | [#1042](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1042)                                                                | API/FE registry pattern           |
+| O    | spike      | [#1037](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1037)                                                                | IWXXM-only product scope          |
+| P    | 5          | [#1043](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1043)                                                                | Validate-first secondary products |
 
 **Thin packs (#920):** typically C (+ optional D), N (registry), fixtures; defer A/B/G–J/L unless evidence requires.
 
@@ -199,13 +199,13 @@ Spawn the **same stack** per P1+ national; swap sources only.
 
 ## 10. CI / reproducibility
 
-| Check | Pattern |
-|-------|---------|
-| Vendor manifest integrity | National pin in manifest tests |
-| Vocabulary drift | Parameterized sync (when vocab exists) |
-| Ops corpus refresh | Prefer profile-id harvest (CA script is reference; generalize when second corpus lands) |
-| Coverage matrix | One row per profile × product |
-| Contract smoke | Templates exist; catalog parses (EV-088) |
+| Check                     | Pattern                                                                                 |
+| ------------------------- | --------------------------------------------------------------------------------------- |
+| Vendor manifest integrity | National pin in manifest tests                                                          |
+| Vocabulary drift          | Parameterized sync (when vocab exists)                                                  |
+| Ops corpus refresh        | Prefer profile-id harvest (CA script is reference; generalize when second corpus lands) |
+| Coverage matrix           | One row per profile × product                                                           |
+| Contract smoke            | Templates exist; catalog parses (EV-088)                                                |
 
 Exchange packaging tests: copy parameterized pattern in
 `packages/dissemination/tests/test_tc_ev086_exchange_profiles.py`; do not fork per region.
@@ -232,7 +232,7 @@ After copying `_template/` into place:
 ## Exchange boundary (#921)
 
 This playbook does **not** define regional exchange overlays. Exchange IDs live under
-`exchange/*.md` and `packages/dissemination` registries. Semantic onboarding may *reference*
+`exchange/*.md` and `packages/dissemination` registries. Semantic onboarding may _reference_
 a default `exchange.profile` in catalog metadata; packaging deepen stays on #921 / EV-090.
 
 **Operator UI:** light **Exchange profile** picker shipped EV-090/091; **semantic** Profile
@@ -245,14 +245,14 @@ canonical deepen is [#1024](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1024
 
 ## Related tickets (consumers)
 
-| Ticket | How playbook helps |
-|--------|--------------------|
-| [#913](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/913) | §2 promotion path for mined URLs |
-| [#920](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/920) | Thin path + A–P subset |
-| [#921](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/921) | Exchange stubs + EV-090 mining/picker; TC-EV086/TC-EV090 |
+| Ticket                                                        | How playbook helps                                                        |
+| ------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| [#913](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/913)   | §2 promotion path for mined URLs                                          |
+| [#920](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/920)   | Thin path + A–P subset                                                    |
+| [#921](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/921)   | Exchange stubs + EV-090 mining/picker; TC-EV086/TC-EV090                  |
 | [#1024](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1024) | Type N wiring pattern from #1042; exchange EV-090; semantic deepen EV-093 |
-| [#924](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/924) | §7 field map |
-| [#1050](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1050) | Report variants stay catalog/IR (see CA LWIS/SAWR) until API deepen |
+| [#924](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/924)   | §7 field map                                                              |
+| [#1050](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1050) | Report variants stay catalog/IR (see CA LWIS/SAWR) until API deepen       |
 
 ---
 

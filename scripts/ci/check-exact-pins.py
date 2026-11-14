@@ -125,7 +125,7 @@ def check_pyproject(path: Path, allow: set[str], violations: list[str]) -> None:
     try:
         import tomllib
     except ImportError:
-        import tomli as tomllib # type: ignore
+        import tomli as tomllib  # type: ignore
 
     data = tomllib.loads(path.read_text(encoding="utf-8"))
     workspace_names = workspace_source_names(data)

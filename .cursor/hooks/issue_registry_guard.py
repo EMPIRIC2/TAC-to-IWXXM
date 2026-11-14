@@ -25,7 +25,7 @@ _SKIP_NAME_PARTS = (
     "/tests/",
     "\\tests\\",
     "conftest.py",
-    "models.py", # Issue.severity field type docs / Struct
+    "models.py",  # Issue.severity field type docs / Struct
 )
 
 

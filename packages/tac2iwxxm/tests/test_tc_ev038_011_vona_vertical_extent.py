@@ -73,7 +73,7 @@ def test_tc_ev038_011_negative_unknown_mov_token() -> None:
 
     tac = ACCEPT_TAC.read_text(encoding="utf-8").replace("MOV:\t\t\tSW", "MOV:\t\t\tXYZ")
     result = convert(tac, product="VONA", profile=PROFILE, iwxxm_version=IWXXM_VERSION)
-    assert result.ok is True # translationFailedTAC quarantine shell
+    assert result.ok is True  # translationFailedTAC quarantine shell
     assert "translationFailedTAC" in result.xml
     assert "VolcanicAshCloudVerticalExtent" not in result.xml
     joined = " ".join(f"{i.code}:{i.message}" for i in (result.issues or []))

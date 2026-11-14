@@ -1,5 +1,4 @@
-"""T1.4 — English locale hook and sandboxed templates.
-"""
+"""T1.4 — English locale hook and sandboxed templates."""
 
 from __future__ import annotations
 
