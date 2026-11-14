@@ -69,8 +69,8 @@ test.describe('UJ-089 — Convert results drawer declutter', () => {
     await expect(page.getByTestId('convert-results-tab-console')).toBeVisible();
     await expect(page.getByTestId('convert-results-tab-decoder')).toBeVisible();
     await expect(page.getByTestId('convert-results-tab-downloads')).toBeVisible();
+    // Opposite state: IWXXM / Console / Decoder / Downloads stay; Map tab is gone.
     await expect(page.getByTestId('convert-results-tab-map')).toHaveCount(0);
-    await expect(page.getByRole('tab', { name: 'Map' })).toHaveCount(0);
 
     await page.getByTestId('convert-results-tab-downloads').click();
     await expect(page.getByTestId('convert-downloads-panel')).toBeVisible();
