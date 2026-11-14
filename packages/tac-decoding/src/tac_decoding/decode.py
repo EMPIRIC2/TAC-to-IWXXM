@@ -404,9 +404,9 @@ _WX = re.compile(
 _RVR = re.compile(r"^R(?P<rw>\d{2}[LCR]?)/(?P<vis>[MP]?\d{4})(?P<unit>FT)?(?:/(?P<trend>[UDN]))?(?P<trend2>[UDN])?$")
 # Legacy runway state group: runway, deposit, extent, depth, friction (e.g. R19/290052).
 _RUNWAY_STATE = re.compile(
-    r"^R(?P<rw>\d{2}[LCR]?)/(?P<dep>[0-9/])(?P<ext>[1259/])(?P<depth>\d{2}| )(?P<fric>\d{2}| )$"
+    r"^R(?P<rw>\d{2}[LCR]?)/(?P<dep>[0-9/])(?P<ext>[1259/])(?P<depth>\d{2}|//)(?P<fric>\d{2}|//)$"
 )
-_RUNWAY_CLEARED = re.compile(r"^R(?P<rw>\d{2}[LCR]?)/CLRD(?P<fric>\d{2}| )$")
+_RUNWAY_CLEARED = re.compile(r"^R(?P<rw>\d{2}[LCR]?)/CLRD(?P<fric>\d{2}|//)$")
 _QFE = re.compile(r"^QFE(?P<mm>\d{3})(?:/(?P<hpa>\d{4}))?$")
 _RUNWAY_DEPOSIT = {
     "0": "clear and dry",
@@ -564,6 +564,53 @@ def _fmt_time(m: re.Match[str], *, label: str) -> str:
         Return value.
     """
     return f"{label} on day {int(m.group('dd'))} at {m.group('hh')}:{m.group('mm')} UTC"
+
+
+
+def _fmt_valid_period(
+    *,
+    day1: int,
+    hour1: str,
+    minute1: str,
+    day2: int,
+    hour2: str,
+    minute2: str,
+) -> str:
+    """
+    Format a TAF or SIGMET/AIRMET validity period for the decode panel.
+
+    Day numbers are calendar days of the current month (TAC has no month
+    field in these groups). Same-day and cross-day periods use distinct
+    templates so operators see that clearly.
+
+    Parameters
+    ----------
+    day1 : int
+        Start day of month (1-31 from the TAC group).
+    hour1 : str
+        Start hour digits (``HH``).
+    minute1 : str
+        Start minute digits (``MM``; TAF uses ``00``).
+    day2 : int
+        End day of month.
+    hour2 : str
+        End hour digits.
+    minute2 : str
+        End minute digits.
+
+    Returns
+    -------
+    str
+        Operator-visible validity sentence with UTC times.
+    """
+    start = f"{hour1}:{minute1}"
+    end = f"{hour2}:{minute2}"
+    if day1 == day2:
+        return f"Valid on day {day1} of the current month from {start} UTC to {end} UTC"
+    return (
+        f"Valid from day {day1} of the current month at {start} UTC "
+        f"to day {day2} of the current month at {end} UTC"
+    )
 
 
 def _fmt_vis_sm(m: re.Match[str], *, label: str) -> str:
@@ -1056,14 +1103,14 @@ def _depth_phrase(raw: str) -> str | None:
     Parameters
     ----------
     raw : str
-        Two digits, or `` / `` when the depth is not significant.
+        Two digits, or ``//`` when the depth is not significant.
 
     Returns
     -------
     str | None
         The depth in plain language, or None when the code is unused.
     """
-    if raw == " / ":
+    if raw == "//":
         return "depth not significant"
     if raw == "00":
         return "depth less than 1 mm"
@@ -1086,14 +1133,14 @@ def _friction_phrase(raw: str) -> str | None:
     Parameters
     ----------
     raw : str
-        Two digits, or `` / `` when friction is not reported.
+        Two digits, or ``//`` when friction is not reported.
 
     Returns
     -------
     str | None
         The friction in plain language, or None when the code is unused.
     """
-    if raw == " / ":
+    if raw == "//":
         return "friction not reported"
     braking = _RUNWAY_BRAKING.get(raw)
     if braking:
@@ -1818,9 +1865,13 @@ def _explain_taf(token: str, *, seen: dict[str, int]) -> str | None:
     if m := _TIME_Z.match(upper):
         return _fmt_time(m, label="Issue time")
     if m := _TAF_VALID.match(upper):
-        return (
-            f"Valid from day {int(m.group('d1'))} {m.group('h1')}:00 UTC"
-            f" to day {int(m.group('d2'))} {m.group('h2')}:00 UTC"
+        return _fmt_valid_period(
+            day1=int(m.group("d1")),
+            hour1=m.group("h1"),
+            minute1="00",
+            day2=int(m.group("d2")),
+            hour2=m.group("h2"),
+            minute2="00",
         )
     if m := _WIND.match(upper):
         return _fmt_wind(m, label="Forecast wind")
@@ -2041,9 +2092,13 @@ def _explain_sigmet_airmet(token: str, *, product: str, seen: dict[str, int]) ->
         return f"Cancelled sequence number ({int(upper)})"
     if m := _SIG_VALID.match(upper):
         seen["valid_period"] = 1
-        return (
-            f"Valid day {int(m.group('d1'))} {m.group('h1')}:{m.group('m1')} UTC"
-            f" to day {int(m.group('d2'))} {m.group('h2')}:{m.group('m2')} UTC"
+        return _fmt_valid_period(
+            day1=int(m.group("d1")),
+            hour1=m.group("h1"),
+            minute1=m.group("m1"),
+            day2=int(m.group("d2")),
+            hour2=m.group("h2"),
+            minute2=m.group("m2"),
         )
 
     if upper == "FROM" and seen.get("rtype"):
@@ -3498,13 +3553,13 @@ def decode_tac(tac: str, *, product: str) -> DecodeResult:
     -------
     DecodeResult
         ``segments`` for recognized groups; ``residuals`` for undecoded spans;
-        ``summary`` plain-language paragraph (F9).
+        ``summary`` plain-language paragraph (F9 / ).
         METAR/SPECI/TAF aim for rich segments; VAA/TCA/SWXA/VONA use structured
         LABEL fields (EV-030 / EV-099) with explicit residuals for leftovers (G4).
         Multi-report AHL bulletins are split so each report is decoded independently
         (heading is a bulletin-framing segment, not a product residual).
         COLLECT documents decode contained TAC when present, otherwise walk XML
-        fields .
+        fields ().
 
     Examples
     --------

@@ -1905,7 +1905,7 @@ describe('FileConverter Component', () => {
       // The word "error" appears in UI labels like "On Error Behavior"
       const errorLabels = screen.queryAllByText(/error/i);
       // Should only be labels, not error messages
-      expect(errorLabels.length).toBeGreaterThan(0); / UI labels exist
+      expect(errorLabels.length).toBeGreaterThan(0); // UI labels exist
     });
 
     it('shows toast notification when convert is clicked with no input', async () => {

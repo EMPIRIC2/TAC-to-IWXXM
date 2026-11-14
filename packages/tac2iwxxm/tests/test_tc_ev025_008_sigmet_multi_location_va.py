@@ -84,15 +84,15 @@ def test_tc_ev025_008_canonicalize_equals_vendor() -> None:
     assert len(actual_collections) == len(vendor_collections)
 
     for coll in actual_collections:
-        assert coll.find(f". / {IW}SIGMETEvolvingConditionCollection") is not None
-        evolving = coll.find(f". / {IW}SIGMETEvolvingConditionCollection")
+        assert coll.find(f".//{IW}SIGMETEvolvingConditionCollection") is not None
+        evolving = coll.find(f".//{IW}SIGMETEvolvingConditionCollection")
         assert evolving is not None
         assert evolving.get("timeIndicator") == "OBSERVATION"
         assert coll.find(f"{IW}analysisAndForecastPositionAnalysis/{IW}forecastPositionAnalysis") is not None
-        assert coll.find(f". / {IW}SIGMETPositionCollection") is not None
+        assert coll.find(f".//{IW}SIGMETPositionCollection") is not None
 
-    actual_pos = actual.findall(f". / {GML}posList")
-    vendor_pos = vendor.findall(f". / {GML}posList")
+    actual_pos = actual.findall(f".//{GML}posList")
+    vendor_pos = vendor.findall(f".//{GML}posList")
     assert len(actual_pos) >= 4
     assert len(actual_pos) == len(vendor_pos)
 
