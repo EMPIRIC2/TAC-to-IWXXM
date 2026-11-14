@@ -27,6 +27,8 @@ _CA_DENSITY_ALT = re.compile(r"\bDENSITY\s+ALT(?:ITUDE)?\s+(?P<ft>\d{3,5})FT\b",
 _CA_DENSITY_ALT_MISG = re.compile(r"\bDENSITY\s+ALT(?:ITUDE)?\s+MISG\b", re.I)
 _CA_ICE_REMARK = re.compile(r"\bICE\s+(?P<intensity>TRC|LGT|MOD|SEV|HVY)\b", re.I)
 _WIND = re.compile(r"\b(?P<dir>\d{3}|VRB)(?P<spd>\d{2,3})(?:G(?P<gust>\d{2,3}))?(?P<uom>KT|MPS)\b")
+# Malformed wind attempts still carry KT/MPS (typos like VBR02KT) — keep fail-closed.
+_WIND_UOM_HINT = re.compile(r"(?<![A-Z])(?:KT|MPS)\b")
 # Mixed fractions share this pattern so ``1 1/2SM`` is not read as ``2SM``.
 _VIS_SM = METAR_STATUTE_MILE_GROUP
 _VIS_M = re.compile(r"\b(?P<vis>\d{4})\b")
@@ -36,6 +38,8 @@ _VIS_SM_NOT_OBS = re.compile(r"(?<![A-Z0-9/])////SM(?![A-Z0-9/])")
 _VIS_M_NOT_OBS = re.compile(r"(?<![A-Z0-9/])////(?!SM)(?![A-Z0-9/])")
 _CAVOK = re.compile(r"\bCAVOK\b")
 _TEMP = re.compile(r"\b(?P<temp>M?\d{2})/(?P<dew>M?\d{2})\b")
+# Partial tt/ or /td stays fail-closed (not a clean omission).
+_TEMP_PARTIAL = re.compile(r"\bM?\d{2}/(?![M]?\d{2}\b)|(?<![A-Z0-9/])/(?:M?\d{2})\b")
 # AUTO missing temperature/dewpoint group (five slashes).
 _TEMP_NOT_OBS = re.compile(r"(?<![A-Z0-9/])/////(?![A-Z0-9/])")
 _ALT_INHG = re.compile(r"\bA(?P<alt>\d{4})\b")
@@ -1606,26 +1610,31 @@ def parse_metar_speci(tac: str, *, product: str) -> dict[str, Any]:
     if ir["nil"]:
         return ir
 
+    # Omitted wind → IR flag for common/nil/missing (#1562). Malformed KT/MPS stays raise.
+    body_before_rmk = _RMK.split(rest, maxsplit=1)[0]
     wind = _WIND.search(rest)
     if wind is None:
-        raise ValueError("missing wind group")
-    if wind.group("dir") == "VRB":
-        ir["wind_dir_deg"] = None
-        ir["wind_variable"] = True
+        if _WIND_UOM_HINT.search(body_before_rmk):
+            raise ValueError("missing wind group")
+        ir["wind_missing"] = True
     else:
-        ir["wind_dir_deg"] = int(wind.group("dir"))
-        ir["wind_variable"] = False
-    ir["wind_speed_kt"] = int(wind.group("spd"))
-    if wind.group("uom") == "MPS":
-        ir["wind_speed_mps"] = int(wind.group("spd"))
-        ir["wind_speed_kt"] = round(int(wind.group("spd")) * 1.94384)
-    if wind.group("gust"):
-        gust_raw = int(wind.group("gust"))
-        if wind.group("uom") == "MPS":
-            ir["wind_gust_mps"] = gust_raw
-            ir["wind_gust_kt"] = round(gust_raw * 1.94384)
+        if wind.group("dir") == "VRB":
+            ir["wind_dir_deg"] = None
+            ir["wind_variable"] = True
         else:
-            ir["wind_gust_kt"] = gust_raw
+            ir["wind_dir_deg"] = int(wind.group("dir"))
+            ir["wind_variable"] = False
+        ir["wind_speed_kt"] = int(wind.group("spd"))
+        if wind.group("uom") == "MPS":
+            ir["wind_speed_mps"] = int(wind.group("spd"))
+            ir["wind_speed_kt"] = round(int(wind.group("spd")) * 1.94384)
+        if wind.group("gust"):
+            gust_raw = int(wind.group("gust"))
+            if wind.group("uom") == "MPS":
+                ir["wind_gust_mps"] = gust_raw
+                ir["wind_gust_kt"] = round(gust_raw * 1.94384)
+            else:
+                ir["wind_gust_kt"] = gust_raw
 
     if is_lwis:
         pass
@@ -1634,11 +1643,12 @@ def parse_metar_speci(tac: str, *, product: str) -> dict[str, Any]:
         ir["visibility_m"] = 10000
         ir["visibility_above"] = True
     elif _VIS_SM_NOT_OBS.search(rest) or _VIS_M_NOT_OBS.search(rest):
-        # Guidance / TC-EV023-002: AUTO missing vis → common/nil/notObservable.
+        # Guidance / TC-EV023-002: AUTO //// vis → common/nil/notObservable.
         ir["visibility_not_observable"] = True
     else:
         if not _assign_reported_visibility(ir, rest):
-            raise ValueError("missing visibility (SM/m/CAVOK) group")
+            # Clean omission → nilReason missing (#1562); lint MISSING_VISIBILITY stays error.
+            ir["visibility_missing"] = True
 
     if _TEMP_NOT_OBS.search(rest):
         ir["temp_not_observable"] = True
@@ -1646,9 +1656,13 @@ def parse_metar_speci(tac: str, *, product: str) -> dict[str, Any]:
     else:
         temp = _TEMP.search(rest)
         if temp is None:
-            raise ValueError("missing temperature/dewpoint group")
-        ir["temp_c"] = _celsius(temp.group("temp"))
-        ir["dewpoint_c"] = _celsius(temp.group("dew"))
+            if _TEMP_PARTIAL.search(body_before_rmk):
+                raise ValueError("missing temperature/dewpoint group")
+            ir["temp_missing"] = True
+            ir["dewpoint_missing"] = True
+        else:
+            ir["temp_c"] = _celsius(temp.group("temp"))
+            ir["dewpoint_c"] = _celsius(temp.group("dew"))
 
     if _ALT_NOT_OBS.search(rest) or _QNH_NOT_OBS.search(rest):
         ir["qnh_not_observable"] = True
@@ -1665,7 +1679,7 @@ def parse_metar_speci(tac: str, *, product: str) -> dict[str, Any]:
             ir["altimeter_inhg"] = int(alt.group("alt")) / 100.0
             ir["qnh_hpa"] = _inhg_to_hpa(alt.group("alt"))
         else:
-            raise ValueError("missing altimeter (Axxxx/Qxxxx) group")
+            ir["qnh_missing"] = True
 
     # Strip REMARKS; split observation vs trend groups before exceptional tokens.
     body_for_wx = _RMK.split(rest, maxsplit=1)[0]
@@ -1687,11 +1701,17 @@ def parse_metar_speci(tac: str, *, product: str) -> dict[str, Any]:
     if not ir.get("cavok"):
         if _VIS_SM_NOT_OBS.search(obs_body) or _VIS_M_NOT_OBS.search(obs_body):
             ir["visibility_not_observable"] = True
+            ir.pop("visibility_missing", None)
             ir.pop("visibility_m", None)
             ir.pop("visibility_sm", None)
             ir.pop("visibility_above", None)
-        else:
-            _assign_reported_visibility(ir, obs_body)
+        elif _assign_reported_visibility(ir, obs_body):
+            ir.pop("visibility_missing", None)
+        elif not ir.get("visibility_not_observable"):
+            ir["visibility_missing"] = True
+            ir.pop("visibility_m", None)
+            ir.pop("visibility_sm", None)
+            ir.pop("visibility_above", None)
 
     min_vis = _VIS_MIN.search(obs_body)
     if min_vis is not None:
