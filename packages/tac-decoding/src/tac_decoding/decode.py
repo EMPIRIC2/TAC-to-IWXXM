@@ -566,6 +566,53 @@ def _fmt_time(m: re.Match[str], *, label: str) -> str:
     return f"{label} on day {int(m.group('dd'))} at {m.group('hh')}:{m.group('mm')} UTC"
 
 
+
+def _fmt_valid_period(
+    *,
+    day1: int,
+    hour1: str,
+    minute1: str,
+    day2: int,
+    hour2: str,
+    minute2: str,
+) -> str:
+    """
+    Format a TAF or SIGMET/AIRMET validity period for the decode panel.
+
+    Day numbers are calendar days of the current month (TAC has no month
+    field in these groups). Same-day and cross-day periods use distinct
+    templates so operators see that clearly.
+
+    Parameters
+    ----------
+    day1 : int
+        Start day of month (1-31 from the TAC group).
+    hour1 : str
+        Start hour digits (``HH``).
+    minute1 : str
+        Start minute digits (``MM``; TAF uses ``00``).
+    day2 : int
+        End day of month.
+    hour2 : str
+        End hour digits.
+    minute2 : str
+        End minute digits.
+
+    Returns
+    -------
+    str
+        Operator-visible validity sentence with UTC times.
+    """
+    start = f"{hour1}:{minute1}"
+    end = f"{hour2}:{minute2}"
+    if day1 == day2:
+        return f"Valid on day {day1} of the current month from {start} UTC to {end} UTC"
+    return (
+        f"Valid from day {day1} of the current month at {start} UTC "
+        f"to day {day2} of the current month at {end} UTC"
+    )
+
+
 def _fmt_vis_sm(m: re.Match[str], *, label: str) -> str:
     """
     Internal helper ``_fmt_vis_sm``.
@@ -1818,9 +1865,13 @@ def _explain_taf(token: str, *, seen: dict[str, int]) -> str | None:
     if m := _TIME_Z.match(upper):
         return _fmt_time(m, label="Issue time")
     if m := _TAF_VALID.match(upper):
-        return (
-            f"Valid from day {int(m.group('d1'))} {m.group('h1')}:00 UTC"
-            f" to day {int(m.group('d2'))} {m.group('h2')}:00 UTC"
+        return _fmt_valid_period(
+            day1=int(m.group("d1")),
+            hour1=m.group("h1"),
+            minute1="00",
+            day2=int(m.group("d2")),
+            hour2=m.group("h2"),
+            minute2="00",
         )
     if m := _WIND.match(upper):
         return _fmt_wind(m, label="Forecast wind")
@@ -2041,9 +2092,13 @@ def _explain_sigmet_airmet(token: str, *, product: str, seen: dict[str, int]) ->
         return f"Cancelled sequence number ({int(upper)})"
     if m := _SIG_VALID.match(upper):
         seen["valid_period"] = 1
-        return (
-            f"Valid day {int(m.group('d1'))} {m.group('h1')}:{m.group('m1')} UTC"
-            f" to day {int(m.group('d2'))} {m.group('h2')}:{m.group('m2')} UTC"
+        return _fmt_valid_period(
+            day1=int(m.group("d1")),
+            hour1=m.group("h1"),
+            minute1=m.group("m1"),
+            day2=int(m.group("d2")),
+            hour2=m.group("h2"),
+            minute2=m.group("m2"),
         )
 
     if upper == "FROM" and seen.get("rtype"):
