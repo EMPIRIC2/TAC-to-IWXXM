@@ -956,4 +956,58 @@ describe('LiveWorldMap', () => {
     expect(preventDefault).toHaveBeenCalled();
     expect(onOpenPlace).toHaveBeenCalled();
   });
+
+  it('Active reports switch filters and shows empty copy', async () => {
+    const user = userEvent.setup();
+    const taf: LivePlace = {
+      place_key: 'KJFK',
+      product: 'taf',
+      latitude: 40.6,
+      longitude: -73.7,
+      geometry: { kind: 'point' },
+      reports: [
+        {
+          observed_at: '2026-11-13T12:00:00Z',
+          tac: 'TAF KJFK 131200Z 1312/1412 18010KT',
+          valid_from: '2026-11-13T12:00:00Z',
+          valid_to: '2026-11-13T18:00:00Z',
+        },
+      ],
+    };
+    const metar: LivePlace = {
+      place_key: 'KBOS',
+      product: 'metar',
+      latitude: 42.3,
+      longitude: -71.0,
+      geometry: { kind: 'point' },
+      reports: [
+        {
+          observed_at: '2026-11-13T14:51:00Z',
+          tac: 'METAR KBOS 131451Z 18010KT=',
+        },
+      ],
+    };
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue({
+        ok: true,
+        json: async () => ({ places: [taf, metar] }),
+      }),
+    );
+    const nowSpy = vi
+      .spyOn(Date, 'now')
+      .mockReturnValue(Date.parse('2026-11-13T15:00:00Z'));
+    render(<LiveWorldMap />);
+    const toggle = await screen.findByTestId('live-map-filter-active-reports');
+    expect(toggle).toHaveAttribute('role', 'switch');
+    expect(toggle).toHaveAttribute('aria-label', 'Active reports');
+    // Default ON when validity exists
+    await waitFor(() => expect(toggle).toBeChecked());
+    // METAR lacks validity → empty or TAF-only status; toggle OFF shows all
+    await user.click(toggle);
+    await waitFor(() => expect(toggle).not.toBeChecked());
+    await user.click(toggle);
+    await waitFor(() => expect(toggle).toBeChecked());
+    nowSpy.mockRestore();
+  });
 });

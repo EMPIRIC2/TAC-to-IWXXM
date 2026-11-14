@@ -12,6 +12,10 @@ import { apiUrl } from '@/utils/apiBase';
 export type LiveReport = {
   observed_at: string;
   tac: string;
+  /** Inclusive validity start (ISO UTC), when the feed or parse supplies one. */
+  valid_from?: string | null;
+  /** Exclusive validity end (ISO UTC), when the feed or parse supplies one. */
+  valid_to?: string | null;
   iwxxm?: string | null;
   issues?: string[];
 };
@@ -508,6 +512,8 @@ export function filterPlaces(
     region: string;
     time: MapTimePreset;
     phenomena: ReadonlySet<string>;
+    /** When true, keep only places whose newest report is active now. */
+    activeOnly?: boolean;
     /** Optional TAC weather overlays (precip/temp/wind/thunder/ice). */
     tacLayers?: ReadonlySet<string>;
     now?: number;
@@ -518,6 +524,8 @@ export function filterPlaces(
     ) => { name: string; continent: string };
     /** Optional TAC layer predicate; injected to avoid a circular import. */
     passesTacLayers?: (tac: string, layers: ReadonlySet<string>) => boolean;
+    /** Optional active-now predicate; injected to avoid a circular import. */
+    placeIsActiveNow?: (place: LivePlace, nowMs: number) => boolean;
   },
 ): LivePlace[] {
   const now = filters.now ?? Date.now();
@@ -535,6 +543,14 @@ export function filterPlaces(
       !passesPhenomenon(place.product, place.reports[0]?.tac ?? '', filters.phenomena)
     ) {
       return false;
+    }
+    if (filters.activeOnly) {
+      const active = filters.placeIsActiveNow
+        ? filters.placeIsActiveNow(place, now)
+        : false;
+      if (!active) {
+        return false;
+      }
     }
     const tacLayers = filters.tacLayers;
     if (tacLayers && tacLayers.size > 0 && filters.passesTacLayers) {
@@ -895,10 +911,21 @@ export async function fetchLivePlaces(
   }
   return body.places.filter(isLivePlace).map((place) => ({
     ...place,
-    reports: place.reports.filter(
-      (report) =>
-        typeof report?.tac === 'string' && typeof report.observed_at === 'string',
-    ),
+    reports: place.reports
+      .filter(
+        (report) =>
+          typeof report?.tac === 'string' && typeof report.observed_at === 'string',
+      )
+      .map((report) => ({
+        observed_at: report.observed_at,
+        tac: report.tac,
+        ...(typeof report.valid_from === 'string'
+          ? { valid_from: report.valid_from }
+          : {}),
+        ...(typeof report.valid_to === 'string' ? { valid_to: report.valid_to } : {}),
+        ...(report.iwxxm !== undefined ? { iwxxm: report.iwxxm } : {}),
+        ...(report.issues !== undefined ? { issues: report.issues } : {}),
+      })),
   }));
 }
 
