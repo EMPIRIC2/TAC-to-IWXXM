@@ -72,6 +72,7 @@ import {
   LIVE_MAP_ZOOM_HINT,
   productLabel,
 } from '@/utils/liveMap';
+import { LIVE_MAP_ACTIVE_EMPTY, LIVE_MAP_FILTER_ACTIVE } from '@/utils/liveMapValidity';
 import {
   LIVE_MAP_CLUSTER_COUNT,
   LIVE_MAP_CLUSTER_PICK,
@@ -457,6 +458,8 @@ export function collectOperatorVisibleCopy(): OperatorVisibleCopyEntry[] {
     { id: 'live-map.filter-region', text: LIVE_MAP_FILTER_REGION },
     { id: 'live-map.filter-time', text: LIVE_MAP_FILTER_TIME },
     { id: 'live-map.filter-phenomenon', text: LIVE_MAP_FILTER_PHENOMENON },
+    { id: 'live-map.filter-active', text: LIVE_MAP_FILTER_ACTIVE },
+    { id: 'live-map.active-empty', text: LIVE_MAP_ACTIVE_EMPTY },
     ...LIVE_MAP_PHENOMENA.map((item) => ({
       id: `live-map.phenomenon.${item.id}`,
       text: item.label,

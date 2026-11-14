@@ -138,6 +138,10 @@ def _places_for_browser(
 ) -> list[dict[str, object]]:
     """Leave stored XML and issue notes off the map list.
 
+    Each report keeps ``observed_at`` and ``tac``. When the cache row already
+    carries ``valid_from`` / ``valid_to``, those stamps are passed through for
+    the Active reports filter on Decode visuals.
+
     Parameters
     ----------
     places : Sequence[Mapping[str, object]]
@@ -146,7 +150,8 @@ def _places_for_browser(
     Returns
     -------
     list[dict[str, object]]
-        The same places, with each report reduced to its time and TAC.
+        The same places, with each report reduced to time, TAC, and optional
+        validity stamps.
 
     Examples
     --------
@@ -156,10 +161,18 @@ def _places_for_browser(
     slim: list[dict[str, object]] = []
     for place in places:
         reports = cast(list[dict[str, object]], place["reports"])
-        slim.append(
-            {
-                **place,
-                "reports": [{"observed_at": report["observed_at"], "tac": report["tac"]} for report in reports],
+        slim_reports: list[dict[str, object]] = []
+        for report in reports:
+            row: dict[str, object] = {
+                "observed_at": report["observed_at"],
+                "tac": report["tac"],
             }
-        )
+            valid_from = report.get("valid_from")
+            valid_to = report.get("valid_to")
+            if isinstance(valid_from, str) and valid_from.strip():
+                row["valid_from"] = valid_from
+            if isinstance(valid_to, str) and valid_to.strip():
+                row["valid_to"] = valid_to
+            slim_reports.append(row)
+        slim.append({**place, "reports": slim_reports})
     return slim
