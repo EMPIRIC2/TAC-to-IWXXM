@@ -6,41 +6,41 @@
 
 use pyo3::prelude::*;
 
-//Extension package version (mirrors `Cargo.toml`).
+/// Extension package version (mirrors `Cargo.toml`).
 ///
-//# Examples
+/// # Examples
 ///
-//```
-//assert!(!_rust::extension_version().is_empty());
-//```
+/// ```
+/// assert!(!_rust::extension_version().is_empty());
+/// ```
 #[pyfunction]
 pub fn extension_version() -> &'static str {
     env!("CARGO_PKG_VERSION")
 }
 
-//Health check used by CI / import smoke tests.
+/// Health check used by CI / import smoke tests.
 ///
-//# Examples
+/// # Examples
 ///
-//```
-//assert_eq!(_rust::ping(), "pong");
-//```
+/// ```
+/// assert_eq!(_rust::ping(), "pong");
+/// ```
 #[pyfunction]
 pub fn ping() -> &'static str {
     "pong"
 }
 
-//Split METAR/SPECI TAC into whitespace tokens (hotspot scaffold for T4.5+).
+/// Split METAR/SPECI TAC into whitespace tokens (hotspot scaffold for T4.5+).
 ///
-//Strips a trailing ``=`` terminator when present. Does not yet implement a full
-//remark-aware lexer — that lands with further PyO3 work.
+/// Strips a trailing ``=`` terminator when present. Does not yet implement a full
+/// remark-aware lexer — that lands with further PyO3 work.
 ///
-//# Examples
+/// # Examples
 ///
-//```
-//let tokens = _rust::scan_metar_tokens("METAR EGLL 121020Z =");
-//assert_eq!(tokens, ["METAR", "EGLL", "121020Z"]);
-//```
+/// ```
+/// let tokens = _rust::scan_metar_tokens("METAR EGLL 121020Z =");
+/// assert_eq!(tokens, ["METAR", "EGLL", "121020Z"]);
+/// ```
 #[pyfunction]
 pub fn scan_metar_tokens(tac: &str) -> Vec<String> {
     let trimmed = tac.trim().trim_end_matches('=').trim();
@@ -50,7 +50,7 @@ pub fn scan_metar_tokens(tac: &str) -> Vec<String> {
         .collect()
 }
 
-//Registers the compiled extension module (`tac2iwxxm._rust`).
+/// Registers the compiled extension module (`tac2iwxxm._rust`).
 #[pymodule]
 fn _rust(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add("__version__", env!("CARGO_PKG_VERSION"))?;

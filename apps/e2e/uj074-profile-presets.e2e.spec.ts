@@ -1,7 +1,7 @@
 /**
  * H4–H5 / T2 — Playwright smokes for UJ-074 semantic presets + dissemination templates
  * (EV-1051 / #1051 closeout).
-
+ *
  * Spec: docs/test-plan.md TC-EV1051-005..006; docs/user-journeys.md UJ-074.
  * Auth is seeded via localStorage + stubbed profile/dissemination APIs (no live JWT).
  * Live H4–H5 against stage FE is deferred until this closeout lands on stage.
@@ -359,7 +359,8 @@ test.describe('UJ-074: semantic presets + dissemination templates (EV-1051)', ()
     const convertReq = captured.convert[0]!;
     expectBearer(convertReq);
     const form = convertReq.postDataBuffer()?.toString('utf8') ?? '';
-    expect(form).toMatch(name="conversion_library_id"\r?\n\r?\nLIB\.CONVERSION\.CA_ECCC/,
+    expect(form).toMatch(
+      /name="conversion_library_id"\r?\n\r?\nLIB\.CONVERSION\.CA_ECCC/,
     );
     expect(form).not.toMatch(/name="preset_id"/);
     await expect(page.getByText(/Successfully converted 1 file/i)).toBeVisible({
@@ -378,9 +379,10 @@ test.describe('UJ-074: semantic presets + dissemination templates (EV-1051)', ()
 
     await page
       .getByTestId('dissemination-uri-input')
-      .fill('sqlite: / / tmp/e2e-uj074.db');
+      .fill('sqlite:////tmp/e2e-uj074.db');
     await page.getByTestId('dissemination-file-input').setInputFiles(FIXTURE_TAC);
-    await expect(page.getByTestId('dissemination-payload-status')).toContainText(1 candidate/i,
+    await expect(page.getByTestId('dissemination-payload-status')).toContainText(
+      /1 candidate/i,
     );
     await expect(page.getByTestId('dissemination-preflight-button')).toBeEnabled();
     await page.getByTestId('dissemination-preflight-button').click();

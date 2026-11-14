@@ -118,7 +118,7 @@ def _check_metar_speci(tac: str, product: str, *, profile: str = "annex3") -> li
             issues.append(
                 _issue(
                     "DEWPOINT_NOT_OBSERVABLE",
-                    f"{product} dewpoint not observable (tt / /) - temperature present",
+                    f"{product} dewpoint not observable (tt///) - temperature present",
                     start=start + dewpoint_nil.start(),
                     end=start + dewpoint_nil.end(),
                     location="temperature",
@@ -277,15 +277,15 @@ def _check_s1_exceptional(
             body_end=body_end,
             token="NSW",
         )
-    if "VV / /" in tokens:
+    if "VV///" in tokens:
         _emit_token_info(
             issues,
             code="VV_NOT_OBSERVABLE",
-            message=f"{product} VV / - verticalVisibility nil notObservable - research S1",
+            message=f"{product} VV/// - verticalVisibility nil notObservable - research S1",
             core=core,
             body_start=body_start,
             body_end=body_end,
-            token="VV / /",
+            token="VV///",
         )
     if " / " in tokens:
         _emit_token_info(

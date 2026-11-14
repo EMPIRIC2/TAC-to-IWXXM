@@ -170,7 +170,7 @@ ISSUES: tuple[IssueSpec, ...] = (
     _row(
         "DEWPOINT_NOT_OBSERVABLE",
         "info",
-        "{product} dewpoint not observable (tt / /) - temperature present",
+        "{product} dewpoint not observable (tt///) - temperature present",
         tags=("temperature", "metar", "speci", "auto"),
     ),
     _row(
@@ -194,7 +194,7 @@ ISSUES: tuple[IssueSpec, ...] = (
     _row(
         "CLOUD_TYPE_NOT_OBSERVABLE",
         "info",
-        "{product} cloud group uses / / because the convective cloud type was not observed. Informational: noted for operator awareness; does not by itself block conversion. Source: nilReason notObservable.",
+        "{product} cloud group uses /// because the convective cloud type was not observed. Informational: noted for operator awareness; does not by itself block conversion. Source: nilReason notObservable.",
         tags=("cloud", "metar", "speci", "auto"),
     ),
     _row(
@@ -266,7 +266,7 @@ ISSUES: tuple[IssueSpec, ...] = (
     _row(
         "CA_ALTIMETER_NOT_OBS",
         "info",
-        "{product} altimeter not observable (A / ) - MANOBS Canadian overlay",
+        "{product} altimeter not observable (A////) - MANOBS Canadian overlay",
         tags=("pressure", "metar", "speci", "ca_eccc", "manobs"),
     ),
     _row(
@@ -544,14 +544,14 @@ ISSUES: tuple[IssueSpec, ...] = (
     _row(
         "VV_OMIT",
         "info",
-        "{product} uses VV / /; vertical visibility should be omitted without a nil reason in this product context. Informational: noted for operator awareness; does not by itself block conversion. Source: ICAO Annex 3 App 5 / Table A5-1. Full normative text may require purchase.",
+        "{product} uses VV///; vertical visibility should be omitted without a nil reason in this product context. Informational: noted for operator awareness; does not by itself block conversion. Source: ICAO Annex 3 App 5 / Table A5-1. Full normative text may require purchase.",
         product="taf",
         tags=("cloud", "taf", "vv"),
     ),
     _row(
         "VV_NOT_OBSERVABLE",
         "info",
-        "{product} uses VV / / meaning vertical visibility is not observable. Informational: noted for operator awareness; does not by itself block conversion. Source: Vertical visibility missingness via nil.",
+        "{product} uses VV/// meaning vertical visibility is not observable. Informational: noted for operator awareness; does not by itself block conversion. Source: Vertical visibility missingness via nil.",
         tags=("cloud", "metar", "speci", "vv"),
     ),
     _row(

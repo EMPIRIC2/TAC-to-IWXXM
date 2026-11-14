@@ -193,7 +193,7 @@ def test_dissemination_preflight_ok_false(convert_client: TestClient, monkeypatc
     monkeypatch.setattr(diss_router, "run_db_preflight", fake_preflight)
     resp = convert_client.post(
         "/api/v1/dissemination/preflight",
-        content=b'{"sink_type":"sqlite","uri":"sqlite+aiosqlite: / / tmp/x.db","ddl":false}',
+        content=b'{"sink_type":"sqlite","uri":"sqlite+aiosqlite:////tmp/x.db","ddl":false}',
         headers={"Content-Type": "application/json", "Authorization": "Bearer t"},
     )
     assert resp.status_code == 200
@@ -209,7 +209,7 @@ def test_dissemination_send_without_handle(
     monkeypatch.setattr(diss_router, "default_rate_limiter", DisseminationRateLimiter(max_per_minute=1000))
     monkeypatch.setenv("DISSEMINATION_EGRESS_ALLOWLIST", "localhost,127.0.0.1")
     db = tmp_path / "send.db"
-    uri = f"sqlite+aiosqlite: / /{db}"
+    uri = f"sqlite+aiosqlite:///{db}"
 
     async def fake_preflight(_req):
         return SimpleNamespace(ok=True, connectivity_ok=True, diffs=[], detail="ok")
@@ -1311,7 +1311,7 @@ def test_version_migration_remove_zero_matches() -> None:
     root = ET.fromstring("<root><child/></root>")
     m._remove_elements(
         root,
-        {"element": "Missing", "xpath": " / Missing", "action": "remove", "reason": "gone"},
+        {"element": "Missing", "xpath": "//Missing", "action": "remove", "reason": "gone"},
     )
     assert m.warnings == []
 

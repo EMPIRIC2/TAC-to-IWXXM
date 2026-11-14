@@ -4,7 +4,7 @@
 > **Catalog row**: [`catalog.yaml`](../catalog.yaml) · **ADR**: architecture decision
 
 New Zealand national semantic overlay: **domestic vs international TAF** dialects and METAR
-AUTO conventions (`NCD`, `UP`, solidi / ` / /`).
+AUTO conventions (`NCD`, `UP`, solidi / `///`).
 
 ## Owns (target)
 

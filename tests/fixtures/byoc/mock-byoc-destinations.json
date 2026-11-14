@@ -2,14 +2,14 @@
   "$comment": "Committed MOCK destination shapes for S019/EV-014 BYOC testing. Not real credentials. Pass as memory-only preflight/send body params (/029). Do not use against production RTH/WIS2/DB hosts.",
   "live_api_sqlite_standin": {
     "sink_type": "sqlite",
-    "uri": "sqlite+aiosqlite: / / tmp/live-mock-byoc.db",
+    "uri": "sqlite+aiosqlite:////tmp/live-mock-byoc.db",
     "ddl": true,
     "product": "metar",
     "note": "Works against live Render API (ephemeral FS). Preferred live smoke when no public BYOC host is allowlisted."
   },
   "postgres_sqlite_standin": {
     "sink_type": "sqlite",
-    "uri": "sqlite+aiosqlite: / / tmp/s019-mock-byoc.db",
+    "uri": "sqlite+aiosqlite:////tmp/s019-mock-byoc.db",
     "ddl": true,
     "product": "metar",
     "note": "In-process SQLite stands in for Postgres when Docker/Testcontainers unavailable."

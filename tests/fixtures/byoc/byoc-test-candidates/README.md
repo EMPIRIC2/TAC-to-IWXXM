@@ -51,7 +51,7 @@ Send requires **IWXXM XML** (convert first, or drag-drop `sample-metar.iwxxm.xml
 **SQLite (live smoke)**
 
 - Sink: SQLite
-- URI: `sqlite+aiosqlite: / / tmp/live-mock-byoc.db`
+- URI: `sqlite+aiosqlite:////tmp/live-mock-byoc.db`
 - DDL: on
 
 **Postgres (local compose)**

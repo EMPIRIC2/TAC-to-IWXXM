@@ -79,7 +79,7 @@ profiles:
     station_prefixes: [Y]
     recorded:
       - id: AU_WX_NOT_OBSERVABLE
-        note: METAR/SPECI / / weather is WX_NOT_OBSERVABLE info under annex3 detectors.
+        note: METAR/SPECI //// weather is WX_NOT_OBSERVABLE info under annex3 detectors.
       - id: AU_NATIONAL_TAC_PROVENANCE
         note: National / BoM heading provenance infos on AU and Pacific stations.
       - id: AU_Y_PREFIX_TAF_PREFER
@@ -88,7 +88,7 @@ profiles:
           PROB_PERIOD_WITHOUT_TEMPO is info via the shared PROB-period policy.
       - id: AU_DEWPOINT_NIL
         note: >-
-          BoM AUTO tt / / (dewpoint not observable) is DEWPOINT_NOT_OBSERVABLE info
+          BoM AUTO tt/// (dewpoint not observable) is DEWPOINT_NOT_OBSERVABLE info
           under annex3 grammar; full missing tt/td stays MISSING_TEMP_DEWPOINT.
   nz_caa_met:
     inherits: annex3
@@ -99,10 +99,10 @@ profiles:
       - id: NZ_CLOUD_TYPE_UNOBSERVED
         products: [METAR, SPECI]
         suppress_codes: [INVALID_CLOUD_TOKEN]
-        token_pattern: '^(?:FEW|SCT|BKN|OVC)\d{3} / /$'
+        token_pattern: '^(?:FEW|SCT|BKN|OVC)\d{3}///$'
     recorded:
       - id: NZ_CLOUD_TYPE_INFO_ALIGN
-        note: FEW/SCT/BKN/OVC### / aligns with annex3 CLOUD_TYPE_NOT_OBSERVABLE.
+        note: FEW/SCT/BKN/OVC###/// aligns with annex3 CLOUD_TYPE_NOT_OBSERVABLE.
   uk_metoffice:
     inherits: annex3
     engine: annex3
@@ -111,7 +111,7 @@ profiles:
     station_prefixes: [EG]
     recorded:
       - id: UK_VV_OMIT_EXPECTED
-        note: VV omit / VV / / common on UK TAFs (CAP 746 context); annex3 emits VV_OMIT info.
+        note: VV omit / VV/// common on UK TAFs (CAP 746 context); annex3 emits VV_OMIT info.
       - id: UK_EG_PREFIX_TAF_PREFER
         note: >-
           UK EG* TAF stations prefer uk_metoffice under ICAO prefer so

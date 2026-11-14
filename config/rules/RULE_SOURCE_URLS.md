@@ -200,7 +200,8 @@ Canonical companions:
 ### codes.wmo.int (root)
 
 - **Publisher:** WMO Codes Registry
-- **URL:** https://codes.wmo.int- **Stable concept pattern:** `http://codes.wmo.int/{register}/{…}/{notation}`
+- **URL:** https://codes.wmo.int/
+- **Stable concept pattern:** `http://codes.wmo.int/{register}/{…}/{notation}`
 - **Access:** public Linked Data (TTL/RDF/XML/JSON-LD/CSV); no registration
 - **Applies to:** products=[all F6]; profiles=[annex3, iwxxm_us]; role=[validation, conversion]
 - **Gap vs GIFTs:** machine enumerations + nilReasons GIFTs did not systematically encode
@@ -282,7 +283,8 @@ Canonical companions:
 
 - **Publisher:** WMO TT-AvXML
 - **URL:** https://github.com/wmo-im/iwxxm (tag **`v2025-2`**)
-  Publish: https://schemas.wmo.int/iwxxm/2025-2- **Namespace:** `http://icao.int/iwxxm/2025-2`
+  Publish: https://schemas.wmo.int/iwxxm/2025-2/
+- **Namespace:** `http://icao.int/iwxxm/2025-2`
 - **Access:** public HTTP + GitHub; no registration
 - **Applies to:** products=[METAR,SPECI,TAF,SIGMET,AIRMET,VAA,TCA,…]; profiles=[annex3]; role=[conversion, iwxxm-validation]
 - **Gap vs GIFTs:** multi-product XSDs/examples/Schematron; runwayState **removed** in 2025-2 RC1
@@ -294,7 +296,8 @@ Canonical companions:
 ### TAC-to-XML encoding guidance
 
 - **URL:** https://github.com/wmo-im/iwxxm/blob/v2025-2/IWXXM/examples/TAC-to-XML-Guidance.txt
-  Also: https://schemas.wmo.int/iwxxm/2025-2/examples- **Access:** public
+  Also: https://schemas.wmo.int/iwxxm/2025-2/examples/
+- **Access:** public
 - **Applies to:** products=[METAR,SPECI,TAF,SIGMET,AIRMET,VAA,TCA,SWX]; role=[conversion]
 - **Gap vs GIFTs:** nilReason map for NOSIG/NSC/NSW/NCD/NIL/CNL/STNR/…
 - **Consumer:** `tac2iwxxm`, `tac-validate`, UI-decode
@@ -380,7 +383,8 @@ Canonical companions:
 
 ### Official TAC↔IWXXM example pairs
 
-- **URL:** https://schemas.wmo.int/iwxxm/2025-2/examples- **Access:** public
+- **URL:** https://schemas.wmo.int/iwxxm/2025-2/examples/
+- **Access:** public
 - **Applies to:** products=[METAR,SPECI,TAF,SIGMET,AIRMET,VAA,TCA,VONA,SWX]; role=[conversion-fixtures, validation-fixtures]
 - **Gap vs GIFTs:** CNL/NIL/collect/`translationFailedTAC` pairs; TC+VA SIGMET
 - **Consumer:** golden encode/validate, e2e samples
@@ -615,7 +619,7 @@ Full ranking: [mining/wmo-im-org-mining-notes.md](../mining/wmo-im-org-mining-no
 - **Gap vs GIFTs:** LWIS/SAWR/Addendum, Canadian RMK, GFA AIRMET phenomena, NCLWS TAF; not in historical GIFTs
 - **Consumer:** `tac2iwxxm`, `iwxxm-validate`, bulletin/exchange naming
 - **Label:** normative-schema (national) + normative-exchange (datamart readme)
-- **Caveats:** Canada pins **IWXXM package 3.0.0** on WMO landing `https://schemas.wmo.int/iwxxm/3.0/`, not app default 2025-2 . Observed CA XSDs: `iwxxm-ca.xsd`, `common-ca.xsd`, `metar-speci-ca.xsd`, `taf-ca.xsd`, `airmet-ca.xsd` (no dedicated `sigmet-ca` / `vaa-ca`). Vendor: `vendor/schemas/iwxxm-ca` + `vendor/schemas/iwxxm/3.0.0`. Dig: [mining/eccc-iwxxm-ca-mining-notes.md](../mining/eccc-iwxxm-ca-mining-notes.md), [mining/manobs-manair-ca-mining-notes.md](../mining/manobs-manair-ca-mining-notes.md). **EV-098 / #1028** triage: mined `schema/`, `code-ca/`, ops TAF/AIRMET/SIGMET; redirected METAR/SPECI/VAA/`doc/`/QVACI; dead=none.
+- **Caveats:** Canada pins **IWXXM package 3.0.0** on WMO landing `https://schemas.wmo.int/iwxxm/3.0/`, not app default 2025-2 (). Observed CA XSDs: `iwxxm-ca.xsd`, `common-ca.xsd`, `metar-speci-ca.xsd`, `taf-ca.xsd`, `airmet-ca.xsd` (no dedicated `sigmet-ca` / `vaa-ca`). Vendor: `vendor/schemas/iwxxm-ca` + `vendor/schemas/iwxxm/3.0.0`. Dig: [mining/eccc-iwxxm-ca-mining-notes.md](../mining/eccc-iwxxm-ca-mining-notes.md), [mining/manobs-manair-ca-mining-notes.md](../mining/manobs-manair-ca-mining-notes.md). **EV-098 / #1028** triage: mined `schema/`, `code-ca/`, ops TAF/AIRMET/SIGMET; redirected METAR/SPECI/VAA/`doc/`/QVACI; dead=none.
 - **Mined:** 2026-08-22 (EV-064 / #916) · deepen 2026-09-02 (EV-098 / #1028 Gate C)
 
 ### CA_ECCC code-list deviations from global WMO (#1034)
@@ -647,7 +651,8 @@ Full ranking: [mining/wmo-im-org-mining-notes.md](../mining/wmo-im-org-mining-no
 ### MSC IWXXM `doc/` implementation PDFs (Canada)
 
 - **Publisher:** Environment and Climate Change Canada / MSC
-- **URL:** https://dd.weather.gc.ca/today/aviation/iwxxm/doc- AIRMET: `…/IWXXM_AIRMET_1A_En.pdf` (Version 1A, Jan 2026)
+- **URL:** https://dd.weather.gc.ca/today/aviation/iwxxm/doc/
+  - AIRMET: `…/IWXXM_AIRMET_1A_En.pdf` (Version 1A, Jan 2026)
   - SIGMET: `…/IWXXM_SIGMET_1A_En.pdf` (Version 1A, Jan 2026)
   - TAF: `…/IWXXM_TAF_v2.8_En.pdf` (Version 2.8, Feb 2026)
   - Code registry: `…/Canadian_Code_Registry_1A_En.pdf` (Version 1A)
@@ -685,7 +690,7 @@ Full ranking: [mining/wmo-im-org-mining-notes.md](../mining/wmo-im-org-mining-no
 - **Gap vs GIFTs:** Statute-mile `SM` visibility; `A`+four-digit altimeter; `AUTO`; Canadian RMK (`PRESRR`/`PRESFR`/`SLP`); LWIS; sector / variable VIS / variable RVR splits; dual IWXXM+TAC dissemination (§11.1)
 - **Consumer:** `tac-validate`, `tac2iwxxm`
 - **Label:** normative-national
-- **Caveats:** Pair with MANAIR for forecasts. **EV-098 / #1029:** reaffirm `CA.METAR.VIS.SM` / `ALT.A` / `AUTO` / LWIS / pressure RMKs; **reopen** `CA.METAR.ALT.NOT_OBS` (`A / / ` vs MANOBS `A`+4 digits); SAWR provenance is **XSD** (`metar-speci-ca.xsd`), not MANOBS; do not promote monolithic Addendum as TAC; lightning TAC ≠ 1:1 `ObservedLightning`. Fixture backlog: repair `metar_basic.tac` `9999`; quarantine `A / / ` positive. Dig: [mining/manobs-manair-ca-mining-notes.md](../mining/manobs-manair-ca-mining-notes.md).
+- **Caveats:** Pair with MANAIR for forecasts. **EV-098 / #1029:** reaffirm `CA.METAR.VIS.SM` / `ALT.A` / `AUTO` / LWIS / pressure RMKs; **reopen** `CA.METAR.ALT.NOT_OBS` (`A////` vs MANOBS `A`+4 digits); SAWR provenance is **XSD** (`metar-speci-ca.xsd`), not MANOBS; do not promote monolithic Addendum as TAC; lightning TAC ≠ 1:1 `ObservedLightning`. Fixture backlog: repair `metar_basic.tac` `9999`; quarantine `A////` positive. Dig: [mining/manobs-manair-ca-mining-notes.md](../mining/manobs-manair-ca-mining-notes.md).
 - **Mined:** 2026-08-22 (EV-064 / #916) · deepened 2026-09-02 (EV-098 / #1029 Gate C)
 
 ### MANAIR — Manual of Standards and Procedures for Aviation Weather Forecasts (Canada)
@@ -707,7 +712,8 @@ Full ranking: [mining/wmo-im-org-mining-notes.md](../mining/wmo-im-org-mining-no
 - **Publisher:** NOAA / NWS Aviation Weather Center
 - **URL:** https://aviationweather.gov/data/api/
   OpenAPI: https://aviationweather.gov/data/schema/openapi.yaml
-  REST base: https://aviationweather.gov/api/data- **Stable concept pattern:** `/api/data/{metar|taf|…}?ids=…&format={raw|json|geojson|xml|iwxxm}&hours=…`
+  REST base: https://aviationweather.gov/api/data/
+- **Stable concept pattern:** `/api/data/{metar|taf|…}?ids=…&format={raw|json|geojson|xml|iwxxm}&hours=…`
 - **Access:** public HTTPS; rate-limited (~100 req/min); set a custom User-Agent; **no CORS**
 - **Applies to:** products=[METAR,TAF,(AIRMET Alaska)]; profiles=[iwxxm_us useful]; role=[conversion, iwxxm-validation] (**fixtures / live smoke only**)
 - **Gap vs GIFTs:** live worldwide METAR/TAF including **IWXXM** format; US REMARKS in TAC comments
@@ -722,7 +728,7 @@ Full ranking: [mining/wmo-im-org-mining-notes.md](../mining/wmo-im-org-mining-no
 
 - **Label:** historical-GIFTs
 - **Role:** baseline of what was **not** covered (non-METAR F6, REMARKS, iwxxm-us, deep TAF CNL/NIL)
-- **Do not** use as ongoing rule SoT (F6 cutover)
+- **Do not** use as ongoing rule SoT ( / F6 cutover)
 - **Consumer:** gap columns in [COVERAGE_MATRIX.md](./COVERAGE_MATRIX.md) only
 
 ---

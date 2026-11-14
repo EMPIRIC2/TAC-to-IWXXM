@@ -28,7 +28,7 @@ _VIS_SM = re.compile(r"^(?P<mod>[PM])?(?P<val>\d{1,2})SM$")
 _VIS_M = re.compile(r"^\d{4}$")
 # Minimum visibility with compass sector (e.g. 1200NE) - after prevailing metres.
 _VIS_MIN = re.compile(r"^(?P<vis>\d{4})(?P<dir>N|NE|E|SE|S|SW|W|NW)$")
-_CLOUD = re.compile(r"^(?P<amt>FEW|SCT|BKN|OVC|SKC|CLR|NSC|NCD)(?P<hgt>\d{3})?(?P<ctype>CB|TCU)?(?P<unk> / /)?$")
+_CLOUD = re.compile(r"^(?P<amt>FEW|SCT|BKN|OVC|SKC|CLR|NSC|NCD)(?P<hgt>\d{3})?(?P<ctype>CB|TCU)?(?P<unk>///)?$")
 _WIND_VAR = re.compile(r"^(?P<a>\d{3})V(?P<b>\d{3})$")
 _VIS_FRAC = re.compile(r"^(?P<num>\d)/(?P<den>\d)SM$")
 _T_GROUP = re.compile(r"^T(?P<t>[01]\d{3})(?P<td>[01]\d{3})$")
@@ -45,7 +45,7 @@ _DENSITY_FT = re.compile(r"^(?P<n>-?\d+)FT$")
 _WIND_ALOFT_FT = re.compile(r"^(?P<ft>\d{3,5})FT$")
 _SEA_STATE = re.compile(r"^W(?P<wave>\d{1,2}|/{2,3})/S(?P<swell>\d)$")
 _ICE_ACCRETION = re.compile(r"^I(?P<amt>\d{4})$")
-_MISSING_TEMP_DEW = re.compile(r"^(?P<body>\d{2}) / /$")
+_MISSING_TEMP_DEW = re.compile(r"^(?P<body>\d{2})///$")
 _TEMP_MISSING_DEW = re.compile(r"^(?P<body>M?\d{2})/$")
 _SHORT_PRECIP = re.compile(r"^P(?P<amt>\d{3})$")
 _PP_PRECIP_MM = re.compile(r"^PP(?P<amt>\d{3})$")
@@ -107,7 +107,7 @@ _AU_QNH_DIGIT = re.compile(r"^\d{4}$")
 _TAF_AFT_HH = re.compile(r"^(?P<dd>\d{2})(?P<hh>\d{2})(?P<mm>\d{2})?$")
 _MX_PRESS_9 = re.compile(r"^9(?P<body>\d{2})$")
 _CIG_HUNDREDS = re.compile(r"^(?P<h>\d{3})$")
-_VV = re.compile(r"^VV(?P<h>\d{3}| / /)$")
+_VV = re.compile(r"^VV(?P<h>\d{3}|///)$")
 _MISSING_CLOUD = re.compile(r"^(?P<slashes>/{4,}|(?:/+)(?P<ctype>CB|TCU))$")
 _MM_AMOUNT = re.compile(r"^(?P<n>\d+(?:\.\d+)?)MM$")
 _WX_TIME_NAME = {
@@ -1566,7 +1566,7 @@ def _explain_metar_speci(token: str, *, product: str, seen: dict[str, int]) -> s
     if phrase := _qfe(upper):
         return phrase
     if m := _VV.match(upper):
-        if m.group("h") == " / /":
+        if m.group("h") == "///":
             return "Vertical visibility not reported"
         return f"Vertical visibility {int(m.group('h')) * 100} ft"
     if m := _MISSING_CLOUD.match(upper):
@@ -1585,7 +1585,7 @@ def _explain_metar_speci(token: str, *, product: str, seen: dict[str, int]) -> s
     if upper == "WSHFT":
         seen["wshft_expect"] = 1
         return "Wind shift"
-    if upper in {" / ", " / /"}:
+    if upper in {"//", "///"}:
         return "Missing data"
     if upper == "TS":
         return "Thunderstorm"
@@ -1640,7 +1640,7 @@ def _explain_metar_remark(upper: str, seen: dict[str, int]) -> str | None:
         return f"24-hour maximum {_tenths_c(m.group('max'))} °C, minimum {_tenths_c(m.group('min'))} °C"
     if m := _PRECIP_3_6H.match(upper):
         amt = m.group("amt")
-        if amt == " / / ":
+        if amt == "////":
             return "3- or 6-hour precipitation not determinable"
         hundredths = int(amt)
         if hundredths == 0:
@@ -1648,7 +1648,7 @@ def _explain_metar_remark(upper: str, seen: dict[str, int]) -> str | None:
         return f"3- or 6-hour precipitation {hundredths / 100:.2f} inches"
     if m := _PRECIP_24H.match(upper):
         amt = m.group("amt")
-        if amt == " / / ":
+        if amt == "////":
             return "24-hour precipitation not determinable"
         hundredths = int(amt)
         if hundredths == 0:
@@ -1879,7 +1879,7 @@ def _explain_taf(token: str, *, seen: dict[str, int]) -> str | None:
     if upper == "NSW":
         return "No significant weather"
     if m := _VV.match(upper):
-        if m.group("h") == " / /":
+        if m.group("h") == "///":
             return "Vertical visibility not reported"
         return f"Vertical visibility {int(m.group('h')) * 100} ft"
     if m := _TAF_TX_TN.match(upper):
@@ -1902,13 +1902,13 @@ def _explain_taf(token: str, *, seen: dict[str, int]) -> str | None:
     if m := _TAF_TURB.match(upper):
         base = m.group("base")
         thick = m.group("thick")
-        base_txt = "base not reported" if base == " / /" else f"base {int(base) * 100} ft"
+        base_txt = "base not reported" if base == "///" else f"base {int(base) * 100} ft"
         thick_txt = "thickness not reported" if thick == "/" else f"thickness {int(thick) * 1000} ft"
         return f"Forecast turbulence (intensity {m.group('intensity')}), {base_txt}, {thick_txt}"
     if m := _TAF_ICING.match(upper):
         base = m.group("base")
         thick = m.group("thick")
-        base_txt = "base not reported" if base == " / /" else f"base {int(base) * 100} ft"
+        base_txt = "base not reported" if base == "///" else f"base {int(base) * 100} ft"
         thick_txt = "thickness not reported" if thick == "/" else f"thickness {int(thick) * 1000} ft"
         return f"Forecast icing (intensity {m.group('intensity')}), {base_txt}, {thick_txt}"
     if m := _TAF_PROB.match(upper):

@@ -41,7 +41,7 @@ Profiles: **`annex3`** (ICAO/WMO core) · **`iwxxm_us`** (US national extensions
 | Product | TAC strategy cite | Convert cite | Validate cite |
 |---------|-------------------|--------------|---------------|
 | METAR / SPECI | **A3-2 checklist** · App 3 §2.3 (SPECI) · vocab | Guidance METAR; CAVOK/NSC/… | `metarSpeci.xsd` · `metar-A3-1` / `speci-A3-2` |
-| TAF | **A5-1 checklist** · App 5 §1.3 · A5-2 | CNL/NIL; `VV / /` absent | `taf.xsd` · `taf-A5-*` |
+| TAF | **A5-1 checklist** · App 5 §1.3 · A5-2 | CNL/NIL; `VV///` absent | `taf.xsd` · `taf-A5-*` |
 | SIGMET / AIRMET | **A6 one-phenomenon** · Ch.7 · SigWx/AirWx · [EUR Doc 014](../mining/icao-eur-doc-14-sigmet-airmet-2023-mining-notes.md) (public TAC shape) | Guidance volumes + hrefs · EUR Doc 014 T1T2 map | `sigmet.xsd` / `airmet.xsd` |
 | VAA | App 2 §3.1.2 · **A2-1 checklist** | Colour registry · METCE Volcano | `volcanicAshAdvisory.xsd` · `va-advisory-A7-2` |
 | TCA | App 2 §5.1.1/§5.1.3 · **A2-2 checklist** | METCE TropicalCyclone | `tropicalCycloneAdvisory.xsd` · `tc-advisory-A2-2` |
@@ -227,7 +227,7 @@ TAF NCLWS, AIRMET GFA). Codes live in [ISSUE_CATALOG.md](./ISSUE_CATALOG.md) /
 
 | Theme | Lint (F12/F15/F36) | Convert (F6) | Validate / goldens | Status |
 |-------|--------------------|--------------|--------------------|--------|
-| **C1** Statute-mile visibility + altimeter (`A` + 4 digits) | `CA_STATUTE_MILE_VIS` / `CA_ALTIMETER_INHG` / `CA_ALTIMETER_NOT_OBS` | `ca_eccc` emit (EV-064–067) | `metar-speci-ca.xsd` | ✅ M1 closed · **EV-098/#1029:** `CA_ALTIMETER_NOT_OBS` **reopened** (MANOBS vs `A / / `); fixture `9999` cleanup backlog |
+| **C1** Statute-mile visibility + altimeter (`A` + 4 digits) | `CA_STATUTE_MILE_VIS` / `CA_ALTIMETER_INHG` / `CA_ALTIMETER_NOT_OBS` | `ca_eccc` emit (EV-064–067) | `metar-speci-ca.xsd` | ✅ M1 closed · **EV-098/#1029:** `CA_ALTIMETER_NOT_OBS` **reopened** (MANOBS vs `A////`); fixture `9999` cleanup backlog |
 | **C2** MANOBS RMK family (SLP/PRESFR/PRESRR/NOSPECI/sector vis) | `CA_REMARK_*` codes | Addendum emit | XSD | ✅ closed M1 · #1029 deepen PRES*/SLP; split VIS.VAR / RVR.VAR stubs |
 | **C3** National METAR leads LWIS / SAWR | `CA_METAR_LWIS` / `CA_METAR_SAWR` + parse gate | `iwxxm-ca` roots | layered validate | ✅ closed M1 · #1029 SAWR provenance → XSD (not MANOBS) |
 | **C4** TAF NCLWS | `CA_TAF_NCLWS` | NCLWS convert (EV-064/070) | `taf-ca.xsd` | ✅ closed M1 · **#1030** MANAIR Amd15 §2.6.9 deepen |
@@ -289,7 +289,7 @@ mining notes (see catalog Sources). Codes extend [ISSUE_CATALOG.md](./ISSUE_CATA
 |-------|----------------|--------------|--------------------|--------|
 | **T1** TAF NIL / CNL / AMD / COR | Registry + negatives | `reportStatus` / cancel / nil baseForecast | SCH | ✅ closed (lint M1; convert goldens M2) |
 | **T2** TAF change groups FM/BECMG/TEMPO/PROB + TL/AT | Validity / PROB rules | Ordered `changeForecast` | SCH | ✅ lint closed (M1); **deferred** convert deepen — no FM/BECMG/TEMPO/PROB golden pack this cycle (follow-on) |
-| **T3** TAF TX/TN on base only; CAVOK/NSC/NSW/VV / / | Checklist | Guidance exceptional map | XSD/SCH | ✅ closed (lint M1; CAVOK convert golden M2) |
+| **T3** TAF TX/TN on base only; CAVOK/NSC/NSW/VV/// | Checklist | Guidance exceptional map | XSD/SCH | ✅ closed (lint M1; CAVOK convert golden M2) |
 | **T4** TAF golden convert + SCH | — | Expanded annex3 (+ iwxxm_us) | M-xsd / M-sch / M-golden | ✅ closed annex3 pack (M2) + `taf_us_altimeter` baseline; **deferred** additional `iwxxm_us` TAF cases (follow-on) |
 | **S1** SPECI exceptional rules (shared METAR/SPECI) | Deepen pack + negatives | `iwxxm:SPECI` root | Existing + expand | ✅ closed (lint M3 T3.1–T3.2; convert via S3 goldens) |
 | **S2** SPECI↔METAR mis-classification | Product hint / Auto-detect | Per-report identity | TC-F20-006 | ✅ closed (MISSING_PRODUCT_KEYWORD + convert mismatch; TC-F20-006) |

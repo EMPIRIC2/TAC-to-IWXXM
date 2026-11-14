@@ -235,11 +235,11 @@ def r4_cloud(tac_text: str, product: str) -> list[Issue]:
                 )
             )
             continue
-        if cloud_tok.endswith(" / /") and cloud_tok[:3] in {"FEW", "SCT", "BKN", "OVC"}:
+        if cloud_tok.endswith("///") and cloud_tok[:3] in {"FEW", "SCT", "BKN", "OVC"}:
             issues.append(
                 _issue(
                     "CLOUD_TYPE_NOT_OBSERVABLE",
-                    f"{product} cloud group {cloud_tok!r} uses / / because the convective cloud type was not observed",
+                    f"{product} cloud group {cloud_tok!r} uses /// because the convective cloud type was not observed",
                     start=cloud_start,
                     end=cloud_end,
                     location="cloud",

@@ -32,7 +32,7 @@ def client(monkeypatch: pytest.MonkeyPatch):
 
 def _sqlite_uri(tmp_path: Path) -> str:
     db = tmp_path / "dissem.db"
-    return f"sqlite+aiosqlite: / /{db}"
+    return f"sqlite+aiosqlite:///{db}"
 
 
 def _template() -> DisseminationTemplateOut:
@@ -254,7 +254,7 @@ def test_preflight_value_error_becomes_400(client: TestClient, monkeypatch: pyte
     monkeypatch.setattr(diss_router, "run_db_preflight", _boom)
     resp = client.post(
         "/api/v1/dissemination/preflight",
-        content=json.dumps({"sink_type": "sqlite", "uri": "sqlite+aiosqlite: / /:memory:", "ddl": False}),
+        content=json.dumps({"sink_type": "sqlite", "uri": "sqlite+aiosqlite:///:memory:", "ddl": False}),
         headers={"Content-Type": "application/json", "Authorization": "Bearer t"},
     )
     assert resp.status_code == 400
@@ -443,7 +443,7 @@ def test_send_egress_denied(client: TestClient, monkeypatch: pytest.MonkeyPatch)
         content=json.dumps(
             {
                 "sink_type": "sqlite",
-                "uri": "sqlite+aiosqlite: / /:memory:",
+                "uri": "sqlite+aiosqlite:///:memory:",
                 "iwxxm_xml": "<x/>",
                 "product": "metar",
             }
@@ -465,7 +465,7 @@ def test_send_writer_contract_conflict(client: TestClient, monkeypatch: pytest.M
         content=json.dumps(
             {
                 "sink_type": "sqlite",
-                "uri": "sqlite+aiosqlite: / /:memory:",
+                "uri": "sqlite+aiosqlite:///:memory:",
                 "iwxxm_xml": "<x/>",
                 "product": "metar",
             }
@@ -482,7 +482,7 @@ def test_preflight_unexpected_error_becomes_500(client: TestClient, monkeypatch:
     monkeypatch.setattr(diss_router, "run_db_preflight", _boom)
     resp = client.post(
         "/api/v1/dissemination/preflight",
-        content=json.dumps({"sink_type": "sqlite", "uri": "sqlite+aiosqlite: / /:memory:", "ddl": False}),
+        content=json.dumps({"sink_type": "sqlite", "uri": "sqlite+aiosqlite:///:memory:", "ddl": False}),
         headers={"Content-Type": "application/json", "Authorization": "Bearer t"},
     )
     assert resp.status_code == 500
@@ -498,7 +498,7 @@ def test_send_value_error_becomes_400(client: TestClient, monkeypatch: pytest.Mo
         content=json.dumps(
             {
                 "sink_type": "sqlite",
-                "uri": "sqlite+aiosqlite: / /:memory:",
+                "uri": "sqlite+aiosqlite:///:memory:",
                 "iwxxm_xml": "<x/>",
                 "product": "metar",
             }
