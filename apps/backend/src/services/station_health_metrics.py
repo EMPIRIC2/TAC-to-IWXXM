@@ -11,7 +11,12 @@ WINDOW_SECONDS: Final[dict[str, int]] = {
     "6h": 6 * 3600,
     "1d": 24 * 3600,
     "30d": 30 * 24 * 3600,
+    "90d": 90 * 24 * 3600,
 }
+
+# Rolling retention: keep at most the last 3 months of station health rows.
+RETENTION_SECONDS: Final[int] = WINDOW_SECONDS["90d"]
+RETENTION_WINDOW_KEY: Final[str] = "90d"
 
 EXPECTED_PER_HOUR: Final[dict[str, float]] = {
     "metar": 1.0,
@@ -413,6 +418,8 @@ def window_timedelta(window_key: str) -> timedelta:
 
 __all__ = [
     "EXPECTED_PER_HOUR",
+    "RETENTION_SECONDS",
+    "RETENTION_WINDOW_KEY",
     "WINDOW_SECONDS",
     "ProductWindowGrade",
     "TacQualitySignals",

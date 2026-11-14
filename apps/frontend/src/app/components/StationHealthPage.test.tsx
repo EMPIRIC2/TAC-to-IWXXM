@@ -1,5 +1,5 @@
 /**
- * TC-SH-005 — Station health shell page regressions.
+ * TC-SH-005 - Station health shell page regressions.
  */
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
@@ -40,6 +40,7 @@ describe('StationHealthPage', () => {
         {
           icao: 'KJFK',
           name: 'John F Kennedy International',
+          wmo_region: 'IV',
           overall_grade: 'B',
           overall_score: 84.5,
           products: [
@@ -66,9 +67,33 @@ describe('StationHealthPage', () => {
     await waitFor(() => {
       expect(screen.getByTestId('station-health-row-KJFK')).toBeInTheDocument();
     });
+    expect(screen.getByTestId('station-health-region-KJFK')).toHaveTextContent(
+      /Region IV/,
+    );
     expect(screen.getByTestId('station-health-grade-count-B')).toHaveTextContent(
       'B: 1',
     );
+    expect(screen.getByTestId('station-health-col-availability')).toHaveTextContent(
+      'Availability',
+    );
+    expect(screen.getByTestId('station-health-col-solidus')).toHaveTextContent(
+      'Solidus rate',
+    );
+    expect(screen.getByTestId('station-health-col-missing')).toHaveTextContent(
+      'Missing digits',
+    );
+    expect(screen.getByTestId('station-health-col-lint')).toHaveTextContent(
+      'Lint severity',
+    );
+    expect(screen.queryByText('Score')).not.toBeInTheDocument();
+    expect(screen.getByTestId('station-health-availability-KJFK')).toHaveTextContent(
+      '83.3',
+    );
+    expect(screen.getByTestId('station-health-solidus-KJFK')).toHaveTextContent(
+      '0.020',
+    );
+    expect(screen.getByTestId('station-health-lint-KJFK')).toHaveTextContent('100.0');
+    expect(screen.getByTestId('station-health-score-help')).toBeInTheDocument();
     expect(
       screen.getByTestId('station-health-metric-availability'),
     ).toBeInTheDocument();
@@ -129,6 +154,10 @@ describe('StationHealthPage', () => {
     expect(screen.getByTestId('station-health-row-KNONAME')).not.toHaveTextContent(
       'John F Kennedy',
     );
+    expect(screen.getByTestId('station-health-availability-KNONAME')).toHaveTextContent(
+      '-',
+    );
+    expect(screen.getByTestId('station-health-solidus-KNONAME')).toHaveTextContent('-');
   });
 
   it('shows load error when the API fails', async () => {
@@ -139,7 +168,7 @@ describe('StationHealthPage', () => {
     });
   });
 
-  it('reloads when window, product, and grade filters change', async () => {
+  it('reloads when window, product, grade, and region filters change', async () => {
     const user = userEvent.setup();
     fetchStationHealthList.mockResolvedValue({
       window: '6h',
@@ -152,9 +181,10 @@ describe('StationHealthPage', () => {
       expect(fetchStationHealthList).toHaveBeenCalled();
     });
     const callsBefore = fetchStationHealthList.mock.calls.length;
-    await user.selectOptions(screen.getByTestId('station-health-window'), '1d');
+    await user.selectOptions(screen.getByTestId('station-health-window'), '90d');
     await user.selectOptions(screen.getByTestId('station-health-product'), 'metar');
     await user.selectOptions(screen.getByTestId('station-health-grade'), 'B');
+    await user.selectOptions(screen.getByTestId('station-health-region'), 'IV');
     await waitFor(() => {
       expect(fetchStationHealthList.mock.calls.length).toBeGreaterThan(callsBefore);
     });
@@ -162,10 +192,37 @@ describe('StationHealthPage', () => {
       window?: string;
       product?: string;
       grade?: string;
+      region?: string;
+      limit?: number;
     };
-    expect(last.window).toBe('1d');
+    expect(last.window).toBe('90d');
     expect(last.product).toBe('metar');
     expect(last.grade).toBe('B');
+    expect(last.region).toBe('IV');
+    expect(last.limit).toBe(5000);
+  });
+
+  it('shows Unknown region when the API omits wmo_region', async () => {
+    fetchStationHealthList.mockResolvedValue({
+      window: '90d',
+      computed_at: '2026-11-13T12:00:00Z',
+      stations: [
+        {
+          icao: 'ZZZZ',
+          name: null,
+          overall_grade: 'F',
+          overall_score: 0,
+          products: [],
+        },
+      ],
+      summary: { station_count: 1, grade_counts: { A: 0, B: 0, C: 0, D: 0, F: 1 } },
+    });
+    render(<StationHealthPage />);
+    await waitFor(() => {
+      expect(screen.getByTestId('station-health-region-ZZZZ')).toHaveTextContent(
+        'Unknown region',
+      );
+    });
   });
 });
 

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 import logging
 import os
 from datetime import UTC, datetime
@@ -10,17 +11,20 @@ from typing import Any
 from sqlalchemy import create_engine, text
 from sqlalchemy.engine import Engine
 
-from src.services.station_health_aggregate import (
-    grade_products_from_records,
-    overall_from_products,
-    row_to_station_record,
-)
+from src.services.station_health_aggregate import enrich_station_window, row_to_station_record
 from src.services.station_health_metrics import (
+    RETENTION_SECONDS,
     WINDOW_SECONDS,
     count_solidus_signals,
     window_timedelta,
 )
-from src.services.station_health_types import DEFAULT_METRICS, StationRecord
+from src.services.station_health_signals import (
+    detect_file_format,
+    extract_maintenance_tags,
+    normalize_issue_codes,
+)
+from src.services.station_health_types import DEFAULT_METRICS, StationMeta, StationRecord
+from src.services.station_health_wmo_region import wmo_region_for_icao
 
 logger = logging.getLogger(__name__)
 
@@ -162,41 +166,9 @@ class PostgresStationHealthStore:
         lint_error_count: int = 0,
         lint_warning_count: int = 0,
         convert_ok: bool | None = None,
+        issue_codes: list[str] | tuple[str, ...] | None = None,
     ) -> StationRecord | None:
-        """
-        Upsert station registry and append one TAC observation row.
-
-        Parameters
-        ----------
-        icao : object
-            Station ICAO.
-        product : object
-            Product family.
-        tac_text : object
-            Raw TAC text.
-        source : object
-            Ingest source label.
-        observed_at : object
-            Optional observation time.
-        name : object
-            Optional station name.
-        lint_error_count : object
-            Lint error count.
-        lint_warning_count : object
-            Lint warning count.
-        convert_ok : object
-            Conversion success flag.
-
-        Returns
-        -------
-        StationRecord | None
-            Stored row, or ``None`` on invalid ICAO or write failure.
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (PostgresStationHealthStore.record_observation)
-        2
-        """
+        """Upsert station registry and append one TAC observation row."""
         code = (icao or "").strip().upper()
         if len(code) != 4 or not code.isalpha():
             return None
@@ -205,20 +177,30 @@ class PostgresStationHealthStore:
         observed = observed_at or now
         if observed.tzinfo is None:
             observed = observed.replace(tzinfo=UTC)
+        if observed < now - window_timedelta("90d"):
+            return None
         signals = count_solidus_signals(tac_text)
+        body = tac_text or ""
+        source_l = (source or "unknown").strip().lower() or "unknown"
+        codes = normalize_issue_codes(issue_codes)
+        file_format = detect_file_format(body, source=source_l)
+        maintenance_tags = extract_maintenance_tags(body)
         row = StationRecord(
             icao=code,
             product=product_l,
             observed_at=observed,
             ingested_at=now,
-            tac_text=tac_text or "",
-            source=(source or "unknown").strip().lower() or "unknown",
+            tac_text=body,
+            source=source_l,
             solidus_count=signals.solidus_count,
             missing_digit_count=signals.missing_digit_count,
             lint_error_count=max(0, int(lint_error_count)),
             lint_warning_count=max(0, int(lint_warning_count)),
             convert_ok=convert_ok,
             character_count=signals.character_count,
+            file_format=file_format,
+            maintenance_tags=maintenance_tags,
+            issue_codes=codes,
         )
         try:
             with self._engine.begin() as conn:
@@ -246,11 +228,13 @@ class PostgresStationHealthStore:
                         INSERT INTO station_tac_records (
                             icao, product, observed_at, ingested_at, tac_text, source,
                             solidus_count, missing_digit_count,
-                            lint_error_count, lint_warning_count, convert_ok
+                            lint_error_count, lint_warning_count, convert_ok,
+                            file_format, issue_codes
                         ) VALUES (
                             :icao, :product, :observed_at, :ingested_at, :tac_text, :source,
                             :solidus_count, :missing_digit_count,
-                            :lint_error_count, :lint_warning_count, :convert_ok
+                            :lint_error_count, :lint_warning_count, :convert_ok,
+                            :file_format, CAST(:issue_codes AS json)
                         )
                         """
                     ),
@@ -266,7 +250,18 @@ class PostgresStationHealthStore:
                         "lint_error_count": row.lint_error_count,
                         "lint_warning_count": row.lint_warning_count,
                         "convert_ok": row.convert_ok,
+                        "file_format": row.file_format,
+                        "issue_codes": json.dumps(list(row.issue_codes)),
                     },
+                )
+                conn.execute(
+                    text(
+                        """
+                        DELETE FROM station_tac_records
+                        WHERE observed_at < :cutoff
+                        """
+                    ),
+                    {"cutoff": now - window_timedelta("90d")},
                 )
         except Exception:
             logger.exception("station health postgres write failed for %s", code)
@@ -279,6 +274,7 @@ class PostgresStationHealthStore:
         window_key: str = "6h",
         product: str | None = None,
         grade: str | None = None,
+        region: str | None = None,
         limit: int = 100,
     ) -> dict[str, Any]:
         """
@@ -292,6 +288,8 @@ class PostgresStationHealthStore:
             Optional product filter.
         grade : object
             Optional letter-grade filter.
+        region : object
+            Optional WMO region filter (``I``-``VI`` or ``unknown``).
         limit : object
             Max stations to return.
 
@@ -307,11 +305,19 @@ class PostgresStationHealthStore:
         """
         if window_key not in WINDOW_SECONDS:
             window_key = "6h"
-        limit = max(1, min(int(limit), 500))
+        max_limit = 5000 if region else 500
+        limit = max(1, min(int(limit), max_limit))
         now = datetime.now(UTC)
-        cutoff = now - window_timedelta(window_key)
+        retention_cutoff = now - window_timedelta("90d")
+        cutoff = max(now - window_timedelta(window_key), retention_cutoff)
         product_filter = product.strip().lower() if product else None
         grade_filter = grade.strip().upper() if grade else None
+        if region and region.strip().lower() == "unknown":
+            region_key = "unknown"
+        elif region:
+            region_key = region.strip().upper()
+        else:
+            region_key = None
 
         stations, records = self._load_window(cutoff=cutoff, product_filter=product_filter)
         by_icao: dict[str, list[StationRecord]] = {}
@@ -321,23 +327,48 @@ class PostgresStationHealthStore:
         station_rows: list[dict[str, Any]] = []
         grade_counts = {"A": 0, "B": 0, "C": 0, "D": 0, "F": 0}
         for icao, meta in sorted(stations.items()):
+            country = meta.get("country")
+            country_s = str(country) if country is not None else None
+            wmo_region = wmo_region_for_icao(icao, country=country_s)
+            if region_key is not None and wmo_region != region_key:
+                continue
             icao_rows = by_icao.get(icao, [])
-            products = grade_products_from_records(icao_rows, window_key)
+            station_meta = StationMeta(
+                icao=icao,
+                name=str(meta["name"]) if meta.get("name") is not None else None,
+                country=country_s,
+            )
+            enriched = enrich_station_window(
+                meta=station_meta,
+                rows=icao_rows,
+                window_key=window_key,
+            )
+            products = enriched["products"]
             if product_filter:
                 products = [item for item in products if item["product"] == product_filter]
                 if not products:
                     continue
-            overall = overall_from_products(products)
-            if grade_filter and overall["overall_grade"] != grade_filter:
+                enriched = enrich_station_window(
+                    meta=station_meta,
+                    rows=icao_rows,
+                    window_key=window_key,
+                    products=products,
+                )
+            if grade_filter and enriched["overall_grade"] != grade_filter:
                 continue
-            grade_counts[overall["overall_grade"]] = grade_counts.get(overall["overall_grade"], 0) + 1
+            grade_counts[enriched["overall_grade"]] = grade_counts.get(enriched["overall_grade"], 0) + 1
             station_rows.append(
                 {
                     "icao": icao,
                     "name": meta.get("name"),
-                    "overall_grade": overall["overall_grade"],
-                    "overall_score": overall["overall_score"],
-                    "products": products,
+                    "wmo_region": wmo_region,
+                    "overall_grade": enriched["overall_grade"],
+                    "overall_score": enriched["overall_score"],
+                    "products": enriched["products"],
+                    "maintenance_tag_counts": enriched["maintenance_tag_counts"],
+                    "file_format_counts": enriched["file_format_counts"],
+                    "issue_code_counts": enriched["issue_code_counts"],
+                    "centennial_metrics": enriched["centennial_metrics"],
                 }
             )
 
@@ -374,7 +405,7 @@ class PostgresStationHealthStore:
             with self._engine.connect() as conn:
                 meta_row = (
                     conn.execute(
-                        text("SELECT icao, name FROM station_registry WHERE icao = :icao"),
+                        text("SELECT icao, name, country FROM station_registry WHERE icao = :icao"),
                         {"icao": code},
                     )
                     .mappings()
@@ -387,13 +418,14 @@ class PostgresStationHealthStore:
                         """
                         SELECT icao, product, observed_at, ingested_at, tac_text, source,
                                solidus_count, missing_digit_count,
-                               lint_error_count, lint_warning_count, convert_ok
+                               lint_error_count, lint_warning_count, convert_ok,
+                               file_format, issue_codes
                         FROM station_tac_records
-                        WHERE icao = :icao
+                        WHERE icao = :icao AND observed_at >= :cutoff
                         ORDER BY observed_at ASC
                         """
                     ),
-                    {"icao": code},
+                    {"icao": code, "cutoff": datetime.now(UTC) - window_timedelta("90d")},
                 ).mappings()
                 records = [row_to_station_record(dict(row)) for row in record_rows]
         except Exception:
@@ -402,22 +434,48 @@ class PostgresStationHealthStore:
 
         windows: dict[str, Any] = {}
         now = datetime.now(UTC)
+        retention_cutoff = now - window_timedelta("90d")
+        country = meta_row.get("country")
+        country_s = str(country) if country is not None else None
+        station_meta = StationMeta(
+            icao=code,
+            name=str(meta_row["name"]) if meta_row.get("name") is not None else None,
+            country=country_s,
+        )
         for window_key in WINDOW_SECONDS:
-            cutoff = now - window_timedelta(window_key)
+            cutoff = max(now - window_timedelta(window_key), retention_cutoff)
             window_rows = [row for row in records if row.observed_at >= cutoff]
-            products = grade_products_from_records(window_rows, window_key)
-            overall = overall_from_products(products)
-            windows[window_key] = {
-                "overall_grade": overall["overall_grade"],
-                "overall_score": overall["overall_score"],
-                "products": products,
-            }
+            windows[window_key] = enrich_station_window(
+                meta=station_meta,
+                rows=window_rows,
+                window_key=window_key,
+            )
         return {
             "icao": code,
             "name": meta_row.get("name"),
+            "wmo_region": wmo_region_for_icao(code, country=country_s),
             "windows": windows,
             "record_count": len(records),
+            "maintenance_tag_counts": windows.get("90d", {}).get("maintenance_tag_counts", {}),
+            "file_format_counts": windows.get("90d", {}).get("file_format_counts", {}),
+            "issue_code_counts": windows.get("90d", {}).get("issue_code_counts", {}),
+            "centennial_metrics": windows.get("90d", {}).get("centennial_metrics", []),
         }
+
+    def purge_expired(self) -> int:
+        """Delete Postgres observations older than 90 days."""
+        cutoff = datetime.now(UTC) - window_timedelta("90d")
+        _ = RETENTION_SECONDS
+        try:
+            with self._engine.begin() as conn:
+                result = conn.execute(
+                    text("DELETE FROM station_tac_records WHERE observed_at < :cutoff"),
+                    {"cutoff": cutoff},
+                )
+                return int(result.rowcount or 0)
+        except Exception:
+            logger.exception("station health retention purge failed")
+            return 0
 
     def _load_window(
         self,
@@ -443,7 +501,7 @@ class PostgresStationHealthStore:
         try:
             with self._engine.connect() as conn:
                 station_rows = conn.execute(
-                    text("SELECT icao, name FROM station_registry ORDER BY icao ASC")
+                    text("SELECT icao, name, country FROM station_registry ORDER BY icao ASC")
                 ).mappings()
                 stations = {str(row["icao"]): dict(row) for row in station_rows}
                 if product_filter:
@@ -452,7 +510,8 @@ class PostgresStationHealthStore:
                             """
                             SELECT icao, product, observed_at, ingested_at, tac_text, source,
                                    solidus_count, missing_digit_count,
-                                   lint_error_count, lint_warning_count, convert_ok
+                                   lint_error_count, lint_warning_count, convert_ok,
+                                   file_format, issue_codes
                             FROM station_tac_records
                             WHERE observed_at >= :cutoff AND product = :product
                             """
@@ -465,7 +524,8 @@ class PostgresStationHealthStore:
                             """
                             SELECT icao, product, observed_at, ingested_at, tac_text, source,
                                    solidus_count, missing_digit_count,
-                                   lint_error_count, lint_warning_count, convert_ok
+                                   lint_error_count, lint_warning_count, convert_ok,
+                                   file_format, issue_codes
                             FROM station_tac_records
                             WHERE observed_at >= :cutoff
                             """

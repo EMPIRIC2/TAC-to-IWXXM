@@ -905,3 +905,8 @@ TC-SH-005,Station health shell tab and empty state,,,UJ-096,,StationHealthPage.t
 TC-SH-006,Station health API success/failure/validation matrix,,,UJ-096,,test_station_health_api.py,,,documented,parametrized
 TC-SH-007,Station health Postgres store routing,,,UJ-096,,test_station_health_postgres.py,,,documented,
 TC-SH-008,Convert path station health recorder wire,,,UJ-096,,test_station_health_convert_wire.py,,,documented,
+TC-SH-009,Station health 90d window and WMO region grades,,,UJ-096,,test_station_health_live_window_region_matrix.py,,,documented,window=90d
+TC-SH-010,Station health WMO region map and unknown fail-closed,,,UJ-096,,test_station_health_wmo_region.py,,,documented,
+TC-SH-011,Station health window×product×region permutations,,,UJ-096,,test_station_health_live_window_region_matrix.py,,,documented,parametrized
+TC-SH-012,Station health maintenance formats issues retention centennial matrix,,,UJ-096,,test_station_health_signals_matrix.py,,,documented,parametrized
+

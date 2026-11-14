@@ -2908,10 +2908,10 @@ paths:
                     required: false
                     schema:
                       type: string
-                      description: "Time window: 6h, 1d, or 30d"
+                      description: "Time window: 6h, 1d, 30d, or 90d"
                       default: 6h
                       title: Window
-                    description: "Time window: 6h, 1d, or 30d"
+                    description: "Time window: 6h, 1d, 30d, or 90d"
         -
                     name: product
                     in: query
@@ -2939,17 +2939,30 @@ paths:
                       title: Grade
                     description: Optional letter grade filter
         -
+                    name: region
+                    in: query
+                    required: false
+                    schema:
+                      anyOf:
+                        -
+                                          type: string
+                        -
+                                          type: null
+                      description: "Optional WMO region filter: I, II, III, IV, V, VI, or unknown"
+                      title: Region
+                    description: "Optional WMO region filter: I, II, III, IV, V, VI, or unknown"
+        -
                     name: limit
                     in: query
                     required: false
                     schema:
                       type: integer
-                      maximum: 500
+                      maximum: 5000
                       minimum: 1
-                      description: Max stations to return
+                      description: Max stations to return (higher when filtering by region)
                       default: 100
                       title: Limit
-                    description: Max stations to return
+                    description: Max stations to return (higher when filtering by region)
       responses:
         200:
           description: Successful Response
@@ -7413,6 +7426,36 @@ components:
         - options
       title: SelectionOptionsResponse
       description: Response for GET /selection-options.
+    StationCentennialMetricModel:
+      properties:
+        id:
+          type: string
+          title: Id
+        label:
+          type: string
+          title: Label
+        status:
+          type: string
+          title: Status
+          description: available or insufficient_data
+        score:
+          anyOf:
+            -
+                            type: number
+            -
+                            type: null
+          title: Score
+        detail:
+          type: string
+          title: Detail
+          default: ""
+      type: object
+      required:
+        - id
+        - label
+        - status
+      title: StationCentennialMetricModel
+      description: One Centennial recognition-criteria proxy or insufficient-data row.
     StationHealthDetailResponse:
       properties:
         icao:
@@ -7425,6 +7468,11 @@ components:
             -
                             type: null
           title: Name
+        wmo_region:
+          type: string
+          title: Wmo Region
+          description: WMO Regional Association id (I-VI) or unknown
+          default: unknown
         windows:
           additionalProperties:
             $ref: "#/components/schemas/StationWindowModel"
@@ -7434,6 +7482,26 @@ components:
           type: integer
           title: Record Count
           default: 0
+        maintenance_tag_counts:
+          additionalProperties:
+            type: integer
+          type: object
+          title: Maintenance Tag Counts
+        file_format_counts:
+          additionalProperties:
+            type: integer
+          type: object
+          title: File Format Counts
+        issue_code_counts:
+          additionalProperties:
+            type: integer
+          type: object
+          title: Issue Code Counts
+        centennial_metrics:
+          items:
+            $ref: "#/components/schemas/StationCentennialMetricModel"
+          type: array
+          title: Centennial Metrics
       type: object
       required:
         - icao
@@ -7496,6 +7564,11 @@ components:
             -
                             type: null
           title: Name
+        wmo_region:
+          type: string
+          title: Wmo Region
+          description: WMO Regional Association id (I-VI) or unknown
+          default: unknown
         overall_grade:
           type: string
           title: Overall Grade
@@ -7508,6 +7581,26 @@ components:
             $ref: "#/components/schemas/StationProductGradeModel"
           type: array
           title: Products
+        maintenance_tag_counts:
+          additionalProperties:
+            type: integer
+          type: object
+          title: Maintenance Tag Counts
+        file_format_counts:
+          additionalProperties:
+            type: integer
+          type: object
+          title: File Format Counts
+        issue_code_counts:
+          additionalProperties:
+            type: integer
+          type: object
+          title: Issue Code Counts
+        centennial_metrics:
+          items:
+            $ref: "#/components/schemas/StationCentennialMetricModel"
+          type: array
+          title: Centennial Metrics
       type: object
       required:
         - icao
@@ -7603,6 +7696,26 @@ components:
             $ref: "#/components/schemas/StationProductGradeModel"
           type: array
           title: Products
+        maintenance_tag_counts:
+          additionalProperties:
+            type: integer
+          type: object
+          title: Maintenance Tag Counts
+        file_format_counts:
+          additionalProperties:
+            type: integer
+          type: object
+          title: File Format Counts
+        issue_code_counts:
+          additionalProperties:
+            type: integer
+          type: object
+          title: Issue Code Counts
+        centennial_metrics:
+          items:
+            $ref: "#/components/schemas/StationCentennialMetricModel"
+          type: array
+          title: Centennial Metrics
       type: object
       required:
         - overall_grade

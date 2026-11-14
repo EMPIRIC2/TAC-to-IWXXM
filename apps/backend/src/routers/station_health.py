@@ -7,6 +7,7 @@ from typing import cast
 from fastapi import APIRouter, HTTPException, Query
 
 from src.schemas.station_health import (
+    StationCentennialMetricModel,
     StationHealthDetailResponse,
     StationHealthListResponse,
     StationHealthMetricsResponse,
@@ -18,6 +19,38 @@ from src.schemas.station_health import (
 )
 from src.services.station_health_metrics import WINDOW_SECONDS
 from src.services.station_health_store import get_station_health_store
+from src.services.station_health_wmo_region import normalize_wmo_region
+
+
+def _count_map(raw: object) -> dict[str, int]:
+    """Coerce a count map payload to ``dict[str, int]``."""
+    if not isinstance(raw, dict):
+        return {}
+    return {_as_str(key): _as_int(value) for key, value in cast(dict[object, object], raw).items()}
+
+
+def _centennial_models(raw: object) -> list[StationCentennialMetricModel]:
+    """Map Centennial metric rows."""
+    if not isinstance(raw, list):
+        return []
+    out: list[StationCentennialMetricModel] = []
+    for entry in cast(list[object], raw):
+        if not isinstance(entry, dict):
+            continue
+        item = cast(dict[str, object], entry)
+        score_raw = item.get("score")
+        score: float | None = None if score_raw is None else _as_float(score_raw)
+        out.append(
+            StationCentennialMetricModel(
+                id=_as_str(item.get("id")),
+                label=_as_str(item.get("label")),
+                status=_as_str(item.get("status"), "insufficient_data"),
+                score=score,
+                detail=_as_str(item.get("detail")),
+            )
+        )
+    return out
+
 
 router = APIRouter(prefix="/api/v1", tags=["Station health"])
 
@@ -273,10 +306,22 @@ def list_station_health_metrics() -> StationHealthMetricsResponse:
     responses={400: {"description": "Invalid window"}},
 )
 def list_station_health(
-    window: str = Query(default="6h", description="Time window: 6h, 1d, or 30d"),
+    window: str = Query(
+        default="6h",
+        description="Time window: 6h, 1d, 30d, or 90d",
+    ),
     product: str | None = Query(default=None, description="Optional product filter"),
     grade: str | None = Query(default=None, description="Optional letter grade filter"),
-    limit: int = Query(default=100, ge=1, le=500, description="Max stations to return"),
+    region: str | None = Query(
+        default=None,
+        description="Optional WMO region filter: I, II, III, IV, V, VI, or unknown",
+    ),
+    limit: int = Query(
+        default=100,
+        ge=1,
+        le=5000,
+        description="Max stations to return (higher when filtering by region)",
+    ),
 ) -> StationHealthListResponse:
     """
     Serve station report cards for one availability window.
@@ -289,6 +334,8 @@ def list_station_health(
         Argument ``product``.
     grade : object
         Argument ``grade``.
+    region : object
+        Argument ``region``.
     limit : object
         Argument ``limit``.
 
@@ -304,14 +351,24 @@ def list_station_health(
     """
     window_key = window.strip().lower()
     if window_key not in WINDOW_SECONDS:
-        raise HTTPException(status_code=400, detail="Window must be 6h, 1d, or 30d")
+        raise HTTPException(
+            status_code=400,
+            detail="Window must be 6h, 1d, 30d, or 90d",
+        )
+    try:
+        region_key = normalize_wmo_region(region)
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+    # Without a region filter, keep the historical 500 cap.
+    effective_limit = limit if region_key is not None else min(limit, 500)
     payload = cast(
         dict[str, object],
         get_station_health_store().list_stations(
             window_key=window_key,
             product=product,
             grade=grade,
-            limit=limit,
+            region=region_key,
+            limit=effective_limit,
         ),
     )
     stations_raw = payload.get("stations")
@@ -325,9 +382,14 @@ def list_station_health(
                 StationListItemModel(
                     icao=_as_str(item.get("icao")),
                     name=_as_optional_str(item.get("name")),
+                    wmo_region=_as_str(item.get("wmo_region"), "unknown"),
                     overall_grade=_as_str(item.get("overall_grade")),
                     overall_score=_as_float(item.get("overall_score")),
                     products=_product_models(_products_from_raw(item.get("products"))),
+                    maintenance_tag_counts=_count_map(item.get("maintenance_tag_counts")),
+                    file_format_counts=_count_map(item.get("file_format_counts")),
+                    issue_code_counts=_count_map(item.get("issue_code_counts")),
+                    centennial_metrics=_centennial_models(item.get("centennial_metrics")),
                 )
             )
     summary_candidate = payload.get("summary")
@@ -390,10 +452,19 @@ def get_station_health(icao: str) -> StationHealthDetailResponse:
                 overall_grade=_as_str(typed_block.get("overall_grade")),
                 overall_score=_as_float(typed_block.get("overall_score")),
                 products=_product_models(_products_from_raw(typed_block.get("products"))),
+                maintenance_tag_counts=_count_map(typed_block.get("maintenance_tag_counts")),
+                file_format_counts=_count_map(typed_block.get("file_format_counts")),
+                issue_code_counts=_count_map(typed_block.get("issue_code_counts")),
+                centennial_metrics=_centennial_models(typed_block.get("centennial_metrics")),
             )
     return StationHealthDetailResponse(
         icao=_as_str(detail.get("icao")),
         name=_as_optional_str(detail.get("name")),
+        wmo_region=_as_str(detail.get("wmo_region"), "unknown"),
         windows=windows,
         record_count=_as_int(detail.get("record_count")),
+        maintenance_tag_counts=_count_map(detail.get("maintenance_tag_counts")),
+        file_format_counts=_count_map(detail.get("file_format_counts")),
+        issue_code_counts=_count_map(detail.get("issue_code_counts")),
+        centennial_metrics=_centennial_models(detail.get("centennial_metrics")),
     )

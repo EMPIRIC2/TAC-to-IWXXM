@@ -6013,12 +6013,81 @@
         "title": "SelectionOptionsResponse",
         "type": "object"
       },
+      "StationCentennialMetricModel": {
+        "description": "One Centennial recognition-criteria proxy or insufficient-data row.",
+        "properties": {
+          "detail": {
+            "default": "",
+            "title": "Detail",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "score": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Score"
+          },
+          "status": {
+            "description": "available or insufficient_data",
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "label",
+          "status"
+        ],
+        "title": "StationCentennialMetricModel",
+        "type": "object"
+      },
       "StationHealthDetailResponse": {
         "description": "Response for GET /api/v1/station-health/{icao}.",
         "properties": {
+          "centennial_metrics": {
+            "items": {
+              "$ref": "#/components/schemas/StationCentennialMetricModel"
+            },
+            "title": "Centennial Metrics",
+            "type": "array"
+          },
+          "file_format_counts": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "title": "File Format Counts",
+            "type": "object"
+          },
           "icao": {
             "title": "Icao",
             "type": "string"
+          },
+          "issue_code_counts": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "title": "Issue Code Counts",
+            "type": "object"
+          },
+          "maintenance_tag_counts": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "title": "Maintenance Tag Counts",
+            "type": "object"
           },
           "name": {
             "anyOf": [
@@ -6042,6 +6111,12 @@
             },
             "title": "Windows",
             "type": "object"
+          },
+          "wmo_region": {
+            "default": "unknown",
+            "description": "WMO Regional Association id (I-VI) or unknown",
+            "title": "Wmo Region",
+            "type": "string"
           }
         },
         "required": [
@@ -6115,9 +6190,37 @@
       "StationListItemModel": {
         "description": "One station row on the dashboard list.",
         "properties": {
+          "centennial_metrics": {
+            "items": {
+              "$ref": "#/components/schemas/StationCentennialMetricModel"
+            },
+            "title": "Centennial Metrics",
+            "type": "array"
+          },
+          "file_format_counts": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "title": "File Format Counts",
+            "type": "object"
+          },
           "icao": {
             "title": "Icao",
             "type": "string"
+          },
+          "issue_code_counts": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "title": "Issue Code Counts",
+            "type": "object"
+          },
+          "maintenance_tag_counts": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "title": "Maintenance Tag Counts",
+            "type": "object"
           },
           "name": {
             "anyOf": [
@@ -6145,6 +6248,12 @@
             },
             "title": "Products",
             "type": "array"
+          },
+          "wmo_region": {
+            "default": "unknown",
+            "description": "WMO Regional Association id (I-VI) or unknown",
+            "title": "Wmo Region",
+            "type": "string"
           }
         },
         "required": [
@@ -6256,6 +6365,34 @@
       "StationWindowModel": {
         "description": "One window block on the station detail page.",
         "properties": {
+          "centennial_metrics": {
+            "items": {
+              "$ref": "#/components/schemas/StationCentennialMetricModel"
+            },
+            "title": "Centennial Metrics",
+            "type": "array"
+          },
+          "file_format_counts": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "title": "File Format Counts",
+            "type": "object"
+          },
+          "issue_code_counts": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "title": "Issue Code Counts",
+            "type": "object"
+          },
+          "maintenance_tag_counts": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "title": "Maintenance Tag Counts",
+            "type": "object"
+          },
           "overall_grade": {
             "title": "Overall Grade",
             "type": "string"
@@ -11239,13 +11376,13 @@
         "operationId": "list_station_health_api_v1_station_health_get",
         "parameters": [
           {
-            "description": "Time window: 6h, 1d, or 30d",
+            "description": "Time window: 6h, 1d, 30d, or 90d",
             "in": "query",
             "name": "window",
             "required": false,
             "schema": {
               "default": "6h",
-              "description": "Time window: 6h, 1d, or 30d",
+              "description": "Time window: 6h, 1d, 30d, or 90d",
               "title": "Window",
               "type": "string"
             }
@@ -11287,14 +11424,32 @@
             }
           },
           {
-            "description": "Max stations to return",
+            "description": "Optional WMO region filter: I, II, III, IV, V, VI, or unknown",
+            "in": "query",
+            "name": "region",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Optional WMO region filter: I, II, III, IV, V, VI, or unknown",
+              "title": "Region"
+            }
+          },
+          {
+            "description": "Max stations to return (higher when filtering by region)",
             "in": "query",
             "name": "limit",
             "required": false,
             "schema": {
               "default": 100,
-              "description": "Max stations to return",
-              "maximum": 500,
+              "description": "Max stations to return (higher when filtering by region)",
+              "maximum": 5000,
               "minimum": 1,
               "title": "Limit",
               "type": "integer"

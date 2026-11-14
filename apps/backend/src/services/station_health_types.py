@@ -52,6 +52,62 @@ DEFAULT_METRICS: tuple[dict[str, Any], ...] = (
         "enabled": True,
         "sort_order": 50,
     },
+    {
+        "id": "maintenance_tags",
+        "label": "Maintenance tags",
+        "description": "Counts of maintenance and sensor-outage tags in TAC text",
+        "unit": "count",
+        "higher_is_better": False,
+        "enabled": True,
+        "sort_order": 60,
+    },
+    {
+        "id": "file_formats",
+        "label": "File formats",
+        "description": "Counts of stored payload formats per station",
+        "unit": "count",
+        "higher_is_better": True,
+        "enabled": True,
+        "sort_order": 70,
+    },
+    {
+        "id": "issue_codes",
+        "label": "Lint and validation issues",
+        "description": "Counts of lint and validation issue identifiers",
+        "unit": "count",
+        "higher_is_better": False,
+        "enabled": True,
+        "sort_order": 80,
+    },
+    {
+        "id": "centennial_continuity",
+        "label": "Observing continuity",
+        "description": (
+            "Availability proxy aligned with Centennial continuity (90 percent or better when a report cadence exists)"
+        ),
+        "unit": "percent",
+        "higher_is_better": True,
+        "enabled": True,
+        "sort_order": 90,
+    },
+    {
+        "id": "centennial_metadata",
+        "label": "Station metadata",
+        "description": "Completeness of live station registry fields",
+        "unit": "percent",
+        "higher_is_better": True,
+        "enabled": True,
+        "sort_order": 100,
+    },
+    {
+        "id": "centennial_quality",
+        "label": "Observation quality",
+        "description": "Quality proxy from solidus, missing digits, and lint severity",
+        "unit": "percent",
+        "higher_is_better": True,
+        "enabled": True,
+        "sort_order": 110,
+    },
 )
 
 
@@ -86,6 +142,12 @@ class StationRecord:
         Conversion success flag when known.
     character_count : int
         Length of ``tac_text``.
+    file_format : str
+        Stored payload format token.
+    maintenance_tags : tuple[str, ...]
+        Maintenance / problem tags detected in ``tac_text``.
+    issue_codes : tuple[str, ...]
+        Lint / validation catalog issue ids for this observation.
     """
 
     icao: str
@@ -100,6 +162,9 @@ class StationRecord:
     lint_warning_count: int
     convert_ok: bool | None
     character_count: int
+    file_format: str = "tac"
+    maintenance_tags: tuple[str, ...] = ()
+    issue_codes: tuple[str, ...] = ()
 
 
 @dataclass(slots=True)
@@ -157,6 +222,7 @@ class StationHealthStoreProtocol(Protocol):
         lint_error_count: int = 0,
         lint_warning_count: int = 0,
         convert_ok: bool | None = None,
+        issue_codes: list[str] | tuple[str, ...] | None = None,
     ) -> StationRecord | None:
         """Append one observation."""
         ...
@@ -167,6 +233,7 @@ class StationHealthStoreProtocol(Protocol):
         window_key: str = "6h",
         product: str | None = None,
         grade: str | None = None,
+        region: str | None = None,
         limit: int = 100,
     ) -> dict[str, Any]:
         """Build the public list payload."""
@@ -174,6 +241,10 @@ class StationHealthStoreProtocol(Protocol):
 
     def get_station(self, icao: str) -> dict[str, Any] | None:
         """Build the public detail payload."""
+        ...
+
+    def purge_expired(self) -> int:
+        """Delete observations older than the rolling retention window."""
         ...
 
 
