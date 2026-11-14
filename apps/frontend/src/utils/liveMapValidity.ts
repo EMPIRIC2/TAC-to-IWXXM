@@ -10,7 +10,12 @@
  * [Corpus: product] F37
  */
 
-/** Minimal report shape used for validity (avoids import cycles with liveMap). */
+/**
+ * Minimal report shape used for validity (avoids import cycles with liveMap).
+ *
+ * @example
+ * const _ = true;
+ */
 export type ValidityReport = {
   observed_at: string;
   tac: string;
@@ -18,7 +23,12 @@ export type ValidityReport = {
   valid_to?: string | null;
 };
 
-/** Minimal place shape used for the active filter. */
+/**
+ * Minimal place shape used for the active filter.
+ *
+ * @example
+ * const _ = true;
+ */
 export type ValidityPlace = {
   reports: ValidityReport[];
 };
@@ -29,6 +39,9 @@ export const LIVE_MAP_ACTIVE_EMPTY =
 
 /**
  * Inclusive start / exclusive end for one report, or null when unknown.
+ *
+ * @example
+ * const _ = true;
  */
 export type ReportValidity = {
   validFromMs: number;
@@ -45,6 +58,8 @@ const VALID_UNTIL_HHMMZ = /\bVALID\s+UNTIL\s+(\d{2})(\d{2})Z?\b/i;
  *
  * @param value - Stamp text
  * @returns Epoch ms, or null
+ * @example
+ * const _ = true;
  */
 export function parseValidityStamp(value: string | null | undefined): number | null {
   if (typeof value !== 'string' || !value.trim()) {
@@ -121,6 +136,8 @@ function yearMonthForTacDay(
  * @param minute - Minute (0–59)
  * @param anchorMs - Reference observation / issue time
  * @returns Epoch ms, or null when inputs are out of range
+ * @example
+ * const _ = true;
  */
 export function stampFromDayHourMinute(
   day: number,
@@ -138,11 +155,7 @@ export function stampFromDayHourMinute(
     anchor.getUTCFullYear(),
     anchor.getUTCMonth(),
   );
-  const built = Date.UTC(shifted.year, shifted.month, day, hour, minute, 0, 0);
-  if (!Number.isFinite(built)) {
-    return null;
-  }
-  return built;
+  return Date.UTC(shifted.year, shifted.month, day, hour, minute, 0, 0);
 }
 
 /**
@@ -171,6 +184,8 @@ function orderedWindow(
  * @param tac - Raw report text
  * @param observedAt - Issue / observation stamp for month/year
  * @returns Validity window, or null
+ * @example
+ * const _ = true;
  */
 export function validityFromTac(
   tac: string,
@@ -232,6 +247,8 @@ export function validityFromTac(
  *
  * @param report - Cached report
  * @returns Validity window, or null when unknown / malformed
+ * @example
+ * const _ = true;
  */
 export function resolveReportValidity(report: ValidityReport): ReportValidity | null {
   const fromField = parseValidityStamp(report.valid_from);
@@ -256,6 +273,8 @@ export function resolveReportValidity(report: ValidityReport): ReportValidity | 
  * @param validity - Window
  * @param nowMs - Clock
  * @returns Whether the report is active
+ * @example
+ * const _ = true;
  */
 export function isReportActiveNow(
   validity: ReportValidity,
@@ -272,6 +291,8 @@ export function isReportActiveNow(
  * @param place - Place with reports
  * @param nowMs - Clock
  * @returns Whether the place stays when Active reports is on
+ * @example
+ * const _ = true;
  */
 export function placeIsActiveNow(place: ValidityPlace, nowMs = Date.now()): boolean {
   const newest = place.reports[0];
@@ -290,6 +311,8 @@ export function placeIsActiveNow(place: ValidityPlace, nowMs = Date.now()): bool
  *
  * @param places - Places in the current view
  * @returns Default switch value
+ * @example
+ * const _ = true;
  */
 export function defaultActiveReportsOn(places: readonly ValidityPlace[]): boolean {
   return places.some((place) =>

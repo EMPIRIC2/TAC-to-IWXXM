@@ -191,6 +191,67 @@ describe('liveMapValidity — failure modes', () => {
     expect(stampFromDayHourMinute(1, 24, 0, NOW)).toBeNull();
     expect(stampFromDayHourMinute(1, 0, 60, NOW)).toBeNull();
   });
+
+  it('F: VALID UNTIL ddhhmm uses issue time as start', () => {
+    const validity = validityFromTac(
+      'YUDD SIGMET 2 VALID UNTIL 131800 YUSO- TS =',
+      '2026-11-13T12:00:00Z',
+    );
+    expect(validity).toEqual({
+      validFromMs: Date.parse('2026-11-13T12:00:00Z'),
+      validToMs: Date.parse('2026-11-13T18:00:00Z'),
+    });
+  });
+
+  it('F: VALID range with impossible day fails closed', () => {
+    expect(
+      validityFromTac(
+        'YUDD SIGMET 2 VALID 321200/321800 YUSO- TS =',
+        '2026-11-13T12:00:00Z',
+      ),
+    ).toBeNull();
+  });
+
+  it('F: blank validity fields fall through to TAC', () => {
+    const validity = resolveReportValidity({
+      observed_at: '2026-11-13T12:00:00Z',
+      tac: 'TAF KJFK 131200Z 1312/1412 18010KT',
+      valid_from: '  ',
+      valid_to: '',
+    });
+    expect(validity).not.toBeNull();
+  });
+
+  it('F: month wrap when TAC day is far before/after anchor', () => {
+    // Day 30 vs anchor day 1 → previous month
+    expect(
+      stampFromDayHourMinute(30, 12, 0, Date.parse('2026-12-01T12:00:00Z')),
+    ).toBe(Date.parse('2026-11-30T12:00:00Z'));
+    // Day 1 vs anchor day 30 → next month
+    expect(
+      stampFromDayHourMinute(1, 12, 0, Date.parse('2026-11-30T12:00:00Z')),
+    ).toBe(Date.parse('2026-12-01T12:00:00Z'));
+    // January wrap to previous year
+    expect(
+      stampFromDayHourMinute(30, 12, 0, Date.parse('2026-01-01T12:00:00Z')),
+    ).toBe(Date.parse('2025-12-30T12:00:00Z'));
+    // December wrap to next year
+    expect(
+      stampFromDayHourMinute(1, 12, 0, Date.parse('2026-12-31T12:00:00Z')),
+    ).toBe(Date.parse('2027-01-01T12:00:00Z'));
+  });
+
+  it('F: activeOnly without placeIsActiveNow callback excludes all', () => {
+    const active = place(
+      'taf',
+      'TAF KJFK 131200Z 1312/1412 18010KT',
+      '2026-11-13T12:00:00Z',
+    );
+    const { placeIsActiveNow: _drop, ...noCallback } = identityFilters;
+    expect(
+      filterPlaces([active], { ...noCallback, activeOnly: true }),
+    ).toEqual([]);
+  });
 });
 
 describe('liveMapValidity — mutation modes', () => {
