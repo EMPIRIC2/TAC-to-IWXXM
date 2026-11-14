@@ -244,3 +244,24 @@ def test_issue_from_message_override_skips_template() -> None:
     """Mutation: explicit message override bypasses template formatting."""
     issue = issue_from("AMD_PRESENT", message="Custom AMD note")
     assert issue.message == "Custom AMD note"
+
+
+def test_format_operator_message_skips_none_kwargs() -> None:
+    """Validation: ``None`` kwargs leave defaults in place."""
+    text = format_operator_message("This {product} ok.", product=None)
+    assert text == "This report ok."
+
+
+def test_strip_unresolved_braces_conversion_and_omit_paths() -> None:
+    """Failure path: strip helper covers !r/!s/!a/plain/unknown field branches."""
+    from tac_validate.issue_registry import _strip_unresolved_braces
+
+    values: dict[str, object] = {"token": "X", "product": "METAR"}
+    # ``{token!r:>1}`` bypasses the exact ``{token!r}`` pre-replace so parse
+    # still sees conversion ``r``.
+    assert "X" in _strip_unresolved_braces("{token!r:>1}", values)
+    assert _strip_unresolved_braces("{token!s}", values) == "X"
+    assert "X" in _strip_unresolved_braces("{token!a}", values)
+    # ``{product:}`` bypasses the exact ``{product}`` pre-replace (plain else).
+    assert _strip_unresolved_braces("{product:}", values) == "METAR"
+    assert _strip_unresolved_braces("keep {orphan} end", values) == "keep  end"

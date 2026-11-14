@@ -27,6 +27,22 @@ describe('formatOperatorMessageTemplate', () => {
     expect(text).toBe('This report includes CAVOK. Conversion can continue.');
   });
 
+  it('skips null option values and keeps defaults (validation)', () => {
+    const text = formatOperatorMessageTemplate(
+      'This {product} includes CAVOK. Conversion can continue.',
+      { product: null },
+    );
+    expect(text).toBe('This report includes CAVOK. Conversion can continue.');
+  });
+
+  it('skips blank option values and keeps defaults (validation)', () => {
+    const text = formatOperatorMessageTemplate(
+      'This {product} includes CAVOK. Conversion can continue.',
+      { product: '   ' },
+    );
+    expect(text).toBe('This report includes CAVOK. Conversion can continue.');
+  });
+
   it('formats token!r without leaving braces (validation)', () => {
     const text = formatOperatorMessageTemplate(
       'Invalid token {token!r} on {product}.',

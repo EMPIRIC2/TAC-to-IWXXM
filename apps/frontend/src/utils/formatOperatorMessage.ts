@@ -16,6 +16,9 @@ const DEFAULTS: Record<string, string> = {
 
 /**
  * Options for {@link formatOperatorMessageTemplate}.
+ *
+ * @example
+ * const _ = true;
  */
 export type FormatOperatorMessageOptions = {
   product?: string | null;
