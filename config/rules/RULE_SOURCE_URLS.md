@@ -737,7 +737,8 @@ Full ranking: [mining/wmo-im-org-mining-notes.md](../mining/wmo-im-org-mining-no
 
 | Need | Still elsewhere |
 |------|-----------------|
-| Full Annex 3 / Doc 8896 prose | Paywalled ICAO PDFs (cite only) |
+| Full Annex 3 / Doc 8896 / PANS-MET (Doc 10157) prose | Paywalled ICAO PDFs (cite only) |
+| Public machine-readable TAC grammar or Annex 3 / PANS-MET API | **None known** — see [docs/domain-contract.md §Automation gaps](../../docs/domain-contract.md#automation-gaps-outside-live-feed-refresh) ([#884](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/884)) |
 | Active machine validation for pin | `vendor/schemas/iwxxm` + [IWXXM_VALIDATION.md](../IWXXM_VALIDATION.md) |
 | Package API design | #698 / #699 |
 | Converter implementation | #693 / `packages/tac2iwxxm` |
@@ -750,6 +751,7 @@ Full ranking: [mining/wmo-im-org-mining-notes.md](../mining/wmo-im-org-mining-no
 | [#699](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/699) | IWXXM validation package — schema release pointers |
 | [#693](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/693) | Converter — conversion citations |
 | [#702](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/702) / [#714](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/714) | Decode / F7 UX provenance |
+| [#884](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/884) | Docs: non-automatable TAC grammar + Annex 3 / PANS-MET gaps (parent [#876](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/876)) |
 
 
 ---

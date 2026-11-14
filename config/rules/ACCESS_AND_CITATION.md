@@ -76,6 +76,13 @@ When a rule needs Annex 3 prose and only a store URL exists:
 
 ---
 
+## Automation gaps (cite-only boundary)
+
+There is no known public TAC grammar API and no Annex 3 / PANS-MET API. Live
+feed and WMO pin refresh do not close that gap. Standing note:
+[docs/domain-contract.md §Automation gaps](../../docs/domain-contract.md#automation-gaps-outside-live-feed-refresh)
+([#884](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/884)).
+
 ## License notes (non-legal summary)
 
 | Content | Practical handling |
