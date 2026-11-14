@@ -557,7 +557,7 @@ ISSUES: tuple[IssueSpec, ...] = (
     _row(
         "WX_NOT_OBSERVABLE",
         "info",
-        "{product} present weather uses / meaning weather phenomena are not observable. Informational: noted for operator awareness; does not by itself block conversion. Source: nilReason notObservable; prefer iwxxm/nil when pin policy says so.",
+        "{product} present weather uses // meaning weather phenomena are not observable. Informational: noted for operator awareness; does not by itself block conversion. Source: nilReason notObservable; prefer iwxxm/nil when pin policy says so.",
         tags=("weather", "metar", "speci"),
     ),
     _row(

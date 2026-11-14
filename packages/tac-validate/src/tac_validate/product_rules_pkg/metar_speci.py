@@ -287,15 +287,15 @@ def _check_s1_exceptional(
             body_end=body_end,
             token="VV///",
         )
-    if " / " in tokens:
+    if "//" in tokens:
         _emit_token_info(
             issues,
             code="WX_NOT_OBSERVABLE",
-            message=f"{product} present weather - nil notObservable - research S1",
+            message=f"{product} present weather // - nil notObservable - research S1",
             core=core,
             body_start=body_start,
             body_end=body_end,
-            token=" / ",
+            token="//",
         )
     for tok in tokens:
         if _WIND_DIR_VAR.fullmatch(tok):
