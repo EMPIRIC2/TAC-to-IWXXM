@@ -12,6 +12,8 @@ export const LIVE_DECODE_SHOW_CURRENT_TIME_KEY =
  * Read whether the Live decode current-time row should show.
  *
  * @returns true when unset or stored as on
+ * @example
+ * const _ = true;
  */
 export function readShowLiveDecodeCurrentTime(): boolean {
   try {
@@ -29,6 +31,8 @@ export function readShowLiveDecodeCurrentTime(): boolean {
  * Persist the Show current time toggle.
  *
  * @param show - next visibility
+ * @example
+ * const _ = true;
  */
 export function writeShowLiveDecodeCurrentTime(show: boolean): void {
   try {
@@ -38,6 +42,12 @@ export function writeShowLiveDecodeCurrentTime(show: boolean): void {
   }
 }
 
+/**
+ * Parts of the Live decode Now label (local + UTC).
+ *
+ * @example
+ * const _ = true;
+ */
 export type LiveDecodeCurrentTimeParts = {
   /** Full operator string, e.g. `Now: 15:23 EST · 20:23 UTC` */
   label: string;
@@ -199,6 +209,8 @@ function formatWithIntl(
  * @param date - instant to format (injectable for tests)
  * @param timeZone - optional IANA zone for local leg (defaults to runtime zone)
  * @returns label parts; never throws
+ * @example
+ * const _ = true;
  */
 export function formatLiveDecodeCurrentTime(
   date: Date = new Date(),

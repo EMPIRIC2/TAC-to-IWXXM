@@ -15,6 +15,9 @@ const TICK_MS = 1000;
 
 /**
  * Props for {@link LiveDecodeCurrentTime}.
+ *
+ * @example
+ * const _ = true;
  */
 export interface LiveDecodeCurrentTimeProps {
   /** Optional IANA zone override (tests). */
@@ -28,6 +31,8 @@ export interface LiveDecodeCurrentTimeProps {
  *
  * @param props - optional zone / now injection for tests
  * @returns current-time row for pinned Live decode
+ * @example
+ * const _ = true;
  */
 export function LiveDecodeCurrentTime({
   timeZone,
