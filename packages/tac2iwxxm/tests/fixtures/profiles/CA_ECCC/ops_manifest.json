@@ -1,10 +1,11 @@
 {
   "schema_version": 1,
-  "description": "EV-072 M2 \u2014 CA_ECCC MSC datamart ops conformance corpus",
+  "description": "EV-072 M2 / #1036 \u2014 CA_ECCC MSC datamart ops conformance corpus (paired TAC+IWXXM where available)",
   "profile": "CA_ECCC",
   "pin_date": "2026-08-24",
   "datamart_base": "https://dd.weather.gc.ca",
   "rate_limit_seconds": 1.0,
+  "harvest_entrypoint": "scripts/iwxxm/harvest_ops_corpus.py",
   "cases": [
     {
       "id": "taf_cwao_12_001",
@@ -13,7 +14,8 @@
       "ops_xml": "TAF/ops/taf_cwao_12_001.xml",
       "source_url": "https://dd.weather.gc.ca/today/aviation/iwxxm/taf/cwao/12/A_LTCN22CWAO241200_C_CWAO_20260824120000.xml",
       "source_filename": "A_LTCN22CWAO241200_C_CWAO_20260824120000.xml",
-      "packaging_waiver": "MSC operational COLLECT members omit translationCentre* attrs; filename + reportStatus checks only"
+      "packaging_waiver": "MSC operational COLLECT members omit translationCentre* attrs; filename + reportStatus checks only",
+      "pair_kind": "iwxxm_only_no_public_tac_feed"
     },
     {
       "id": "taf_cwao_12_002",
@@ -22,7 +24,8 @@
       "ops_xml": "TAF/ops/taf_cwao_12_002.xml",
       "source_url": "https://dd.weather.gc.ca/today/aviation/iwxxm/taf/cwao/12/A_LTCN31CWAO241200_C_CWAO_20260824120000.xml",
       "source_filename": "A_LTCN31CWAO241200_C_CWAO_20260824120000.xml",
-      "packaging_waiver": "MSC operational COLLECT members omit translationCentre* attrs; filename + reportStatus checks only"
+      "packaging_waiver": "MSC operational COLLECT members omit translationCentre* attrs; filename + reportStatus checks only",
+      "pair_kind": "iwxxm_only_no_public_tac_feed"
     },
     {
       "id": "airmet_czul_05_001",
@@ -31,7 +34,8 @@
       "ops_xml": "AIRMET/ops/airmet_czul_05_001.xml",
       "source_url": "https://dd.weather.gc.ca/today/aviation/iwxxm/airmet/czul/05/A_LWCN25CWAO240529_C_CWAO_20260824052916.xml",
       "source_filename": "A_LWCN25CWAO240529_C_CWAO_20260824052916.xml",
-      "packaging_waiver": "MSC operational COLLECT members omit translationCentre* attrs; filename + reportStatus checks only"
+      "packaging_waiver": "MSC operational COLLECT members omit translationCentre* attrs; filename + reportStatus checks only",
+      "pair_kind": "iwxxm_only_no_public_tac_feed"
     },
     {
       "id": "airmet_czvr_13_001",
@@ -40,7 +44,8 @@
       "ops_xml": "AIRMET/ops/airmet_czvr_13_001.xml",
       "source_url": "https://dd.weather.gc.ca/today/aviation/iwxxm/airmet/czvr/13/A_LWCN21CWAO241302_C_CWAO_20260824130238.xml",
       "source_filename": "A_LWCN21CWAO241302_C_CWAO_20260824130238.xml",
-      "packaging_waiver": "MSC operational COLLECT members omit translationCentre* attrs; filename + reportStatus checks only"
+      "packaging_waiver": "MSC operational COLLECT members omit translationCentre* attrs; filename + reportStatus checks only",
+      "pair_kind": "iwxxm_only_no_public_tac_feed"
     },
     {
       "id": "airmet_czwg_12_001",
@@ -49,7 +54,8 @@
       "ops_xml": "AIRMET/ops/airmet_czwg_12_001.xml",
       "source_url": "https://dd.weather.gc.ca/today/aviation/iwxxm/airmet/czwg/12/A_LWCN23CWAO241204_C_CWAO_20260824120414.xml",
       "source_filename": "A_LWCN23CWAO241204_C_CWAO_20260824120414.xml",
-      "packaging_waiver": "MSC operational COLLECT members omit translationCentre* attrs; filename + reportStatus checks only"
+      "packaging_waiver": "MSC operational COLLECT members omit translationCentre* attrs; filename + reportStatus checks only",
+      "pair_kind": "iwxxm_only_no_public_tac_feed"
     },
     {
       "id": "airmet_czeg_gfa_sfc_vis_001",
@@ -58,7 +64,8 @@
       "ops_xml": "AIRMET/ops/airmet_czeg_gfa_sfc_vis_001.xml",
       "source_url": "https://dd.weather.gc.ca/today/aviation/iwxxm/airmet/czeg/13/A_LWCN22CWAO241355_C_CWAO_20260824135540.xml",
       "source_filename": "A_LWCN22CWAO241355_C_CWAO_20260824135540.xml",
-      "packaging_waiver": "MSC operational COLLECT members omit translationCentre* attrs; filename + reportStatus checks only"
+      "packaging_waiver": "MSC operational COLLECT members omit translationCentre* attrs; filename + reportStatus checks only",
+      "pair_kind": "iwxxm_only_no_public_tac_feed"
     },
     {
       "id": "sigmet_czeg_15_001",
@@ -68,6 +75,7 @@
       "source_url": "https://dd.weather.gc.ca/today/aviation/iwxxm/sigmet/czeg/15/A_LSCN22CWAO241540_C_CWAO_20260824154038.xml",
       "source_filename": "A_LSCN22CWAO241540_C_CWAO_20260824154038.xml",
       "packaging_waiver": "MSC operational COLLECT members omit translationCentre* attrs; filename + reportStatus checks only",
+      "pair_kind": "iwxxm_only_no_public_tac_feed",
       "sigmet_kind": "weather"
     },
     {
@@ -78,6 +86,7 @@
       "source_url": "https://dd.weather.gc.ca/today/aviation/iwxxm/sigmet/czqm/08/A_LSCN26CWAO240835_C_CWAO_20260824083546.xml",
       "source_filename": "A_LSCN26CWAO240835_C_CWAO_20260824083546.xml",
       "packaging_waiver": "MSC operational COLLECT members omit translationCentre* attrs; filename + reportStatus checks only",
+      "pair_kind": "iwxxm_only_no_public_tac_feed",
       "sigmet_kind": "weather"
     },
     {
@@ -85,56 +94,70 @@
       "product": "METAR",
       "tier": "wmoReference",
       "ops_xml": "METAR/ops/metar_basic_ops.xml",
+      "ops_tac": "METAR/ops/metar_basic_ops.tac",
       "source": "encoder_reference",
-      "packaging_waiver": "METAR/SPECI IWXXM not published on MSC datamart at pin_date; encoder reference for layer-6 packaging checks only"
+      "packaging_waiver": "METAR/SPECI IWXXM not published on MSC datamart (HTTP 404 at pin + probe); paired encoder-reference TAC+IWXXM for layer-6 packaging checks only",
+      "pair_kind": "encoder_reference_tac_iwxxm"
     },
     {
       "id": "metar_auto_ops",
       "product": "METAR",
       "tier": "wmoReference",
       "ops_xml": "METAR/ops/metar_auto_ops.xml",
+      "ops_tac": "METAR/ops/metar_auto_ops.tac",
       "source": "encoder_reference",
-      "packaging_waiver": "METAR/SPECI IWXXM not published on MSC datamart at pin_date; encoder reference for layer-6 packaging checks only"
+      "packaging_waiver": "METAR/SPECI IWXXM not published on MSC datamart (HTTP 404 at pin + probe); paired encoder-reference TAC+IWXXM for layer-6 packaging checks only",
+      "pair_kind": "encoder_reference_tac_iwxxm"
     },
     {
       "id": "metar_lwis_ops",
       "product": "METAR",
       "tier": "wmoReference",
       "ops_xml": "METAR/ops/metar_lwis_ops.xml",
+      "ops_tac": "METAR/ops/metar_lwis_ops.tac",
       "source": "encoder_reference",
-      "packaging_waiver": "METAR/SPECI IWXXM not published on MSC datamart at pin_date; encoder reference for layer-6 packaging checks only"
+      "packaging_waiver": "METAR/SPECI IWXXM not published on MSC datamart (HTTP 404 at pin + probe); paired encoder-reference TAC+IWXXM for layer-6 packaging checks only",
+      "pair_kind": "encoder_reference_tac_iwxxm"
     },
     {
       "id": "metar_sawr_ops",
       "product": "METAR",
       "tier": "wmoReference",
       "ops_xml": "METAR/ops/metar_sawr_ops.xml",
+      "ops_tac": "METAR/ops/metar_sawr_ops.tac",
       "source": "encoder_reference",
-      "packaging_waiver": "METAR/SPECI IWXXM not published on MSC datamart at pin_date; encoder reference for layer-6 packaging checks only"
+      "packaging_waiver": "METAR/SPECI IWXXM not published on MSC datamart (HTTP 404 at pin + probe); paired encoder-reference TAC+IWXXM for layer-6 packaging checks only",
+      "pair_kind": "encoder_reference_tac_iwxxm"
     },
     {
       "id": "metar_vis_sm_ops",
       "product": "METAR",
       "tier": "wmoReference",
       "ops_xml": "METAR/ops/metar_vis_sm_ops.xml",
+      "ops_tac": "METAR/ops/metar_vis_sm_ops.tac",
       "source": "encoder_reference",
-      "packaging_waiver": "METAR/SPECI IWXXM not published on MSC datamart at pin_date; encoder reference for layer-6 packaging checks only"
+      "packaging_waiver": "METAR/SPECI IWXXM not published on MSC datamart (HTTP 404 at pin + probe); paired encoder-reference TAC+IWXXM for layer-6 packaging checks only",
+      "pair_kind": "encoder_reference_tac_iwxxm"
     },
     {
       "id": "speci_basic_ops",
       "product": "SPECI",
       "tier": "wmoReference",
       "ops_xml": "SPECI/ops/speci_basic_ops.xml",
+      "ops_tac": "SPECI/ops/speci_basic_ops.tac",
       "source": "encoder_reference",
-      "packaging_waiver": "METAR/SPECI IWXXM not published on MSC datamart at pin_date; encoder reference for layer-6 packaging checks only"
+      "packaging_waiver": "METAR/SPECI IWXXM not published on MSC datamart (HTTP 404 at pin + probe); paired encoder-reference TAC+IWXXM for layer-6 packaging checks only",
+      "pair_kind": "encoder_reference_tac_iwxxm"
     },
     {
       "id": "speci_auto_ops",
       "product": "SPECI",
       "tier": "wmoReference",
       "ops_xml": "SPECI/ops/speci_auto_ops.xml",
+      "ops_tac": "SPECI/ops/speci_auto_ops.tac",
       "source": "encoder_reference",
-      "packaging_waiver": "METAR/SPECI IWXXM not published on MSC datamart at pin_date; encoder reference for layer-6 packaging checks only"
+      "packaging_waiver": "METAR/SPECI IWXXM not published on MSC datamart (HTTP 404 at pin + probe); paired encoder-reference TAC+IWXXM for layer-6 packaging checks only",
+      "pair_kind": "encoder_reference_tac_iwxxm"
     },
     {
       "id": "vaa_edziza_20260818_001",
@@ -148,7 +171,8 @@
       "packaging_waiver": "VAA validate-first TAC from Montreal VAAC; no MSC datamart IWXXM (D-EV074-vaa-waiver-tac); exchange emit still deferred"
     }
   ],
+  "metar_speci_datamart_blocker": "MSC datamart trees today/aviation/iwxxm/metar/ and .../speci/ return HTTP 404 (probed 2026-08-24 and 2026-11-13). Acceptance \u22655 METAR ops fixtures satisfied via paired encoder_reference samples under METAR/ops/; re-harvest when trees publish.",
   "vaa_harvest": "vaac_tac_waived",
   "vaa_harvest_note": "Datamart vaa/ tree absent; Montreal VAAC TAC via D-EV074-vaa-waiver-tac. 1 bulletin(s) at pin 2026-08-24 (31-day index); \u22652 when published.",
-  "manifest_sha256": "dfface322d29c3afd0fe5b6bcb52167b858073a4bf0c4865c064ceeaedab427c"
+  "manifest_sha256": "c238ed92294387ff959a90b7691ff5190ea0a84724cf525a53447a3d0ffd6d09"
 }

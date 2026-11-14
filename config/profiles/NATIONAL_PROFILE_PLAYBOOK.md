@@ -203,7 +203,7 @@ Spawn the **same stack** per P1+ national; swap sources only.
 |-------|---------|
 | Vendor manifest integrity | National pin in manifest tests |
 | Vocabulary drift | Parameterized sync (when vocab exists) |
-| Ops corpus refresh | Prefer profile-id harvest (CA script is reference; generalize when second corpus lands) |
+| Ops corpus refresh | `scripts/iwxxm/harvest_ops_corpus.py --profile CA_ECCC --product …` (type J / #1036); generalize when second corpus lands |
 | Coverage matrix | One row per profile × product |
 | Contract smoke | Templates exist; catalog parses (EV-088) |
 

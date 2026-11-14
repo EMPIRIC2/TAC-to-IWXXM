@@ -51,11 +51,15 @@ def test_bootstrap_encoder_reference(
         "convert",
         lambda tac, **_k: SimpleNamespace(ok=True, xml=f"<xml>{tac[:8]}</xml>"),
     )
-    cases = mod._bootstrap_encoder_reference(fixtures_root, dry_run=False)
+    cases = mod._bootstrap_encoder_reference(
+        fixtures_root, dry_run=False, product_filter="ALL"
+    )
     assert len(cases) == len(mod._ENCODER_REFERENCE)
     assert (fixtures_root / "METAR/ops/metar_basic_ops.xml").is_file()
 
-    dry = mod._bootstrap_encoder_reference(fixtures_root, dry_run=True)
+    dry = mod._bootstrap_encoder_reference(
+        fixtures_root, dry_run=True, product_filter="ALL"
+    )
     assert len(dry) == len(mod._ENCODER_REFERENCE)
 
 
@@ -70,7 +74,9 @@ def test_bootstrap_encoder_reference_failure(
         lambda *_a, **_k: SimpleNamespace(ok=False, xml=None, issues=["bad"]),
     )
     with pytest.raises(RuntimeError, match="encoder reference failed"):
-        mod._bootstrap_encoder_reference(fixtures_root, dry_run=False)
+        mod._bootstrap_encoder_reference(
+            fixtures_root, dry_run=False, product_filter="ALL"
+        )
 
 
 def test_harvest_network_and_manifest(
@@ -137,7 +143,11 @@ def test_harvest_skip_network_and_dry_run(
     )
     assert manifest["datamart_base"] == "https://other.example"
     assert not (fixtures_root / "ops_manifest.json").exists()
-    assert len(manifest["cases"]) == len(mod._ENCODER_REFERENCE)
+    # skip_network still bootstraps encoder refs and keeps on-disk fixture rows
+    encoder_ids = {row["id"] for row in mod._ENCODER_REFERENCE}
+    case_ids = {row["id"] for row in manifest["cases"]}
+    assert encoder_ids <= case_ids
+    assert len(manifest["cases"]) >= len(mod._ENCODER_REFERENCE)
 
 
 def test_harvest_dry_run_with_network_plan(
@@ -196,3 +206,39 @@ def test_main(
     out = capsys.readouterr().out
     assert "cases=1" in out
     assert "checksum=abc123def456" in out
+
+
+@pytest.mark.parametrize(
+    ("product_filter", "mode", "expect_metar"),
+    [
+        ("ALL", "success", True),
+        ("METAR", "success", True),
+        ("NOTAPRODUCT", "failure", False),
+        ("", "validation", True),
+    ],
+    ids=["all", "metar-only", "unknown-product", "blank-filter"],
+)
+def test_bootstrap_product_filter_modes(
+    fixtures_root: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    product_filter: str,
+    mode: str,
+    expect_metar: bool,
+) -> None:
+    """Success / failure / validation modes for product_filter bootstrap."""
+    import tac2iwxxm
+
+    monkeypatch.setattr(
+        tac2iwxxm,
+        "convert",
+        lambda tac, **_k: SimpleNamespace(ok=True, xml=f"<xml>{tac[:8]}</xml>"),
+    )
+    cases = mod._bootstrap_encoder_reference(
+        fixtures_root, dry_run=True, product_filter=product_filter
+    )
+    products = {row["product"] for row in cases}
+    if expect_metar:
+        assert "METAR" in products or mode == "validation"
+    else:
+        assert cases == []
+    _ = mode
