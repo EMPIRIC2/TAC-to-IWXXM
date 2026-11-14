@@ -19,6 +19,7 @@ committed). CI runs this tree via `pytest tests/bugs`.
 | `test_ws_runway_not_invalid_rvr.py` | Product-rule: `WS R14R` wind-shear runway ≠ RVR |
 | `test_unknown_wmo_membership_live.py` | Keep-as-error: concatenated wx / MOD TURB on SIGMET |
 | `test_keep_as_error_live_residuals.py` | Anti-soften (#1556): `MISSING_VISIBILITY` / `MISSING_QNH` / `MISSING_WIND` / `MISSING_TEMP_DEWPOINT` / `MISSING_OBS_TIME` / `INVALID_PROB` (incl. CW* VIS/QNH stay error) |
+| `test_keep_as_error_fnue_saez_haab.py` | Keep-error (#1496-#1498): FNUE all-solidus `INVALID_WIND`; SAEZ `Z0Z` `MISSING_OBS_TIME`; HAAB omit trailing `Z` |
 | `test_bug_2026_11_04_taf_spaced_cavok.py` | HAAB spaced `C A V O K` decode + TAF.TAF-8 (#1553) |
 
 Session audit reports (not in git):  
@@ -29,6 +30,7 @@ Session audit reports (not in git):
 
 - Do **not** soften `INVALID_PROB`, invent Europe profiles, or CW* VIS/QNH softens.
 - Do **not** soften `MISSING_*` / CW* VIS/QNH / `INVALID_PROB` for dump residuals.
+- Do **not** soften FNUE all-solidus `INVALID_WIND`, SAEZ `Z0Z` `MISSING_OBS_TIME`, or HAAB omit-`Z` errors (#1496-#1498).
 - Product-rule fixes are grammar/accept only — not severity remaps.
 - New live-eval gaps → add a module here (or waive in the coverage report).
 - Convert/validate-only dump rows (AIRPORT_ICAO, year dating, SIGMET AHL) stay
