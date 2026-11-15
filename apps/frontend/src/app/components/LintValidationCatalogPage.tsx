@@ -17,6 +17,7 @@ import {
   catalogFamilyLabel,
   selectedCatalogCode,
 } from '@/utils/catalogPresentation';
+import { formatOperatorMessageTemplate } from '@/utils/formatOperatorMessage';
 import {
   LINT_VALIDATION_CATALOG_ACCESS_LABEL,
   LINT_VALIDATION_CATALOG_COL_CODE,
@@ -832,7 +833,12 @@ export function LintValidationCatalogPage({
                                     {LINT_VALIDATION_CATALOG_COL_CODE}: {entry.code}
                                   </span>
                                   <span className="mt-1 block text-sm text-gray-800 dark:text-gray-200">
-                                    {entry.message_template}
+                                    {formatOperatorMessageTemplate(
+                                      entry.message_template,
+                                      {
+                                        product: entry.product,
+                                      },
+                                    )}
                                   </span>
                                 </>
                               ) : (
@@ -841,7 +847,12 @@ export function LintValidationCatalogPage({
                                     {entry.code}
                                   </span>
                                   <span className="truncate text-sm text-gray-800 dark:text-gray-200">
-                                    {entry.message_template}
+                                    {formatOperatorMessageTemplate(
+                                      entry.message_template,
+                                      {
+                                        product: entry.product,
+                                      },
+                                    )}
                                   </span>
                                 </>
                               )}
@@ -858,7 +869,12 @@ export function LintValidationCatalogPage({
                                 </p>
                                 <p className="text-gray-800 dark:text-gray-200">
                                   {LINT_VALIDATION_CATALOG_COL_DESCRIPTION}:{' '}
-                                  {entry.message_template}
+                                  {formatOperatorMessageTemplate(
+                                    entry.message_template,
+                                    {
+                                      product: entry.product,
+                                    },
+                                  )}
                                 </p>
                                 <div>
                                   <p className="font-medium">
@@ -919,7 +935,9 @@ export function LintValidationCatalogPage({
                     {detail.code}
                   </p>
                   <p className="mt-2 text-sm text-gray-800 dark:text-gray-200">
-                    {detail.message_template}
+                    {formatOperatorMessageTemplate(detail.message_template, {
+                      product: detail.product,
+                    })}
                   </p>
                   {catalogView === 'detailed' ? (
                     <SelectedRuleFacts entry={detail} />
