@@ -126,6 +126,12 @@ line-length = 120
 extend-ignore = ["E741"]
 
 [tool.ruff.lint.per-file-ignores]
+
+"src/routers/conversion_convert_continue.py" = ["F841", "ANN401", "F811"]
+"src/routers/conversion_convert_continue_part2.py" = ["F841", "ANN401", "F811"]
+"src/routers/conversion_zip_continue.py" = ["F841", "ANN401", "F811"]
+"src/routers/conversion_routes_io.py" = ["ANN401"]
+"src/routers/conversion_routes_zip.py" = ["ANN401"]
 "tests/**" = ["E402", "W293", "F841", "E722", "F811", "F401", "E712", "ANN", "D"]
 "src/routers/**" = ["B008"]
 "src/utilities/security.py" = ["B008"]

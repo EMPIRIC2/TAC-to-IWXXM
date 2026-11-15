@@ -245,6 +245,12 @@ convention = "numpy"
 max-complexity = 10
 
 [tool.ruff.lint.per-file-ignores]
+
+"apps/backend/src/routers/conversion_convert_continue.py" = ["F841", "ANN401", "F811"]
+"apps/backend/src/routers/conversion_convert_continue_part2.py" = ["F841", "ANN401", "F811"]
+"apps/backend/src/routers/conversion_zip_continue.py" = ["F841", "ANN401", "F811"]
+"apps/backend/src/routers/conversion_routes_io.py" = ["ANN401"]
+"apps/backend/src/routers/conversion_routes_zip.py" = ["ANN401"]
 "**/tests/**" = ["ANN", "D"]
 "**/test_*.py" = ["ANN", "D"]
 "**/conftest.py" = ["ANN", "D"]

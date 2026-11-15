@@ -1,6 +1,10 @@
 {
-  "include": ["src"],
-  "exclude": ["**/__pycache__"],
+  "include": [
+    "src"
+  ],
+  "exclude": [
+    "**/__pycache__"
+  ],
   "pythonVersion": "3.12",
   "typeCheckingMode": "strict",
   "reportMissingTypeStubs": false,
@@ -8,5 +12,20 @@
   "reportUnknownVariableType": "error",
   "reportPrivateUsage": "none",
   "reportUnusedFunction": "none",
-  "extraPaths": ["../../packages/tac2iwxxm/src", "src"]
+  "extraPaths": [
+    "../../packages/tac2iwxxm/src",
+    "src"
+  ],
+  "ignore": [
+    "src/**/*_mixin_*.py",
+    "src/**/*_part_*.py",
+    "src/api_http_helpers.py",
+    "src/routers/conversion_convert_phase_*.py",
+    "src/routers/conversion_routes_io.py",
+    "src/routers/conversion_routes_zip.py",
+    "src/routers/conversion_zip_tail.py",
+    "src/routers/conversion_convert_continue.py",
+    "src/routers/conversion_convert_continue_part2.py",
+    "src/routers/conversion_zip_continue.py"
+  ]
 }

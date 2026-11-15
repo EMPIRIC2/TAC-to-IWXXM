@@ -385,7 +385,7 @@ async def create_tables() -> None:
         return
 
     try:
-        from ..models import Base
+        from ..models.orm import Base
 
         logger.info("Creating database tables if they don't exist...")
         async with _engine.begin() as conn:
