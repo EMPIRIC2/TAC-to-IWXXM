@@ -1,7 +1,8 @@
 """BUG-2026-10-04 - the live map scrolls upward and only draws continent chips.
 
-The converter map must draw points and polygons, skip the region chips, and
+The Live map must draw points and polygons, skip the region chips, and
 must not pan the view when a report opens. Hover may open the card.
+Convert Results no longer hosts an embedded map tab.
 """
 
 from __future__ import annotations
@@ -16,6 +17,12 @@ _STATION_POPUP = (
     _ROOT / "apps/frontend/src/app/components/StationPopup.tsx"
 ).read_text(encoding="utf-8")
 _CONVERTER = (_ROOT / "apps/frontend/src/app/components/FileConverter.tsx").read_text(
+    encoding="utf-8"
+)
+_VISUALS = (_ROOT / "apps/frontend/src/app/components/DecodeVisualsPage.tsx").read_text(
+    encoding="utf-8"
+)
+_DRAWER = (_ROOT / "apps/frontend/src/utils/convertResultsDrawer.ts").read_text(
     encoding="utf-8"
 )
 _PANES = (_ROOT / "apps/frontend/src/app/components/LiveConvertPaneGrid.tsx").read_text(
@@ -34,9 +41,15 @@ def test_bug_2026_10_04_map_draws_features_without_clusters_or_upward_pan() -> N
     assert "decodeTac" not in _MAP
     assert "mouseover" in _MAP
     assert "onOpenPlace" in _MAP
-    assert "onOpenPlace" in _CONVERTER
+    assert "onOpenPlace" in _VISUALS
+    assert "LiveWorldMap" in _VISUALS
     assert "scrollIntoView" in _CONVERTER
-    assert "convert-weather-map" in _CONVERTER
+    assert "convert-weather-map" not in _CONVERTER
+    assert "convert-results-tab-map" not in _CONVERTER
+    assert (
+        "ConvertResultsTab = 'iwxxm' | 'console' | 'decoder' | 'downloads'" in _DRAWER
+    )
+    assert "{ id: 'map', label: 'Map' }" not in _DRAWER
     assert "convert-panes-toggle" in _CONVERTER
     assert "min-h-[100dvh]" not in _CONVERTER
     assert "min-h-[100dvh]" not in _PANES

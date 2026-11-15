@@ -2114,15 +2114,13 @@ describe('FileConverter Component', () => {
       );
       await user.click(screen.getByTestId('convert-panes-toggle'));
       expect(screen.getByTestId('convert-body')).not.toHaveAttribute('hidden');
-      expect(screen.getByTestId('convert-results-tab-map')).toHaveTextContent('Map');
-      await user.click(screen.getByTestId('convert-results-tab-map'));
-      expect(screen.getByTestId('live-world-map')).toBeInTheDocument();
+      expect(screen.queryByTestId('convert-results-tab-map')).not.toBeInTheDocument();
+      expect(screen.queryByRole('tab', { name: 'Map' })).not.toBeInTheDocument();
+      expect(screen.queryByTestId('convert-weather-map')).not.toBeInTheDocument();
+      expect(screen.queryByTestId('live-world-map')).not.toBeInTheDocument();
       expect(
-        screen
-          .getByTestId('live-convert-panes')
-          .compareDocumentPosition(screen.getByTestId('convert-weather-map')),
-      ).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
-      expect(screen.queryByRole('tab', { name: 'Live map' })).not.toBeInTheDocument();
+        screen.queryByRole('tab', { name: 'Live map' }),
+      ).not.toBeInTheDocument();
       expect(screen.getByTestId('convert-settings-dialog')).toContainElement(
         screen.getByTestId('convert-setup'),
       );
@@ -2149,8 +2147,7 @@ describe('FileConverter Component', () => {
       );
     });
 
-    it('loads a Map shell handoff into the TAC panes and scrolls up', async () => {
-      const user = userEvent.setup({ delay: null });
+    it('loads a Live map handoff into the TAC panes and scrolls up', async () => {
       const scroll = vi.fn();
       const originalScroll = HTMLElement.prototype.scrollIntoView;
       HTMLElement.prototype.scrollIntoView = scroll;
@@ -2178,54 +2175,20 @@ describe('FileConverter Component', () => {
       expect(screen.getByRole('combobox', { name: 'Product' })).toHaveValue('METAR');
       expect(onPendingMapTacConsumed).toHaveBeenCalled();
       expect(scroll).toHaveBeenCalled();
-      // BUG-2026-11-10 map-send-keep-drawer: handoff must not collapse results/Map.
+      // Handoff must not collapse results; Map tab stays absent (page-only map).
       expect(screen.getByTestId('convert-results-drawer-shell')).not.toHaveAttribute(
         'hidden',
       );
-      await user.click(screen.getByTestId('convert-results-tab-map'));
-      expect(screen.getByTestId('convert-results-panel-map')).not.toHaveAttribute(
-        'hidden',
-      );
-      expect(screen.getByTestId('live-world-map')).toBeInTheDocument();
+      expect(screen.queryByTestId('convert-results-tab-map')).not.toBeInTheDocument();
+      expect(screen.queryByTestId('live-world-map')).not.toBeInTheDocument();
       HTMLElement.prototype.scrollIntoView = originalScroll;
     });
 
-    it('loads Map Send TAC into the panes and ignores empty reports', async () => {
-      const user = userEvent.setup({ delay: null });
-      const scroll = vi.fn();
-      const originalScroll = HTMLElement.prototype.scrollIntoView;
-      HTMLElement.prototype.scrollIntoView = scroll;
-      seedLiveConvertChrome();
-      render(<FileConverter {...defaultProps} />);
-      const seeded = 'METAR KJFK 121251Z 18004KT 10SM FEW020 18/12 A3012=';
-      expect(screen.getByLabelText('Enter METAR data manually')).toHaveValue(seeded);
-
-      await user.click(screen.getByTestId('convert-results-tab-map'));
-      await user.click(screen.getByTestId('live-map-load-empty'));
-      expect(screen.getByLabelText('Enter METAR data manually')).toHaveValue(seeded);
-      await user.click(screen.getByTestId('live-map-load-blank'));
-      expect(screen.getByLabelText('Enter METAR data manually')).toHaveValue(seeded);
-
-      await user.click(screen.getByTestId('live-map-load-report'));
-      expect(screen.getByLabelText('Enter METAR data manually')).toHaveValue(
-        'METAR KJFK 121755Z 18010KT 10SM',
-      );
-      expect(screen.getByRole('combobox', { name: 'Product' })).toHaveValue('METAR');
-      expect(scroll).toHaveBeenCalled();
-      expect(screen.getByTestId('convert-results-drawer-shell')).not.toHaveAttribute(
-        'hidden',
-      );
-      HTMLElement.prototype.scrollIntoView = originalScroll;
-    });
-
-    it('applies pending map TAC and opens Live map from the Map tab', async () => {
-      const user = userEvent.setup({ delay: null });
-      const onOpenVisuals = vi.fn();
+    it('applies pending map TAC without exposing a Results Map tab', async () => {
       const onPendingMapTacConsumed = vi.fn();
       const view = render(
         <FileConverter
           {...defaultProps}
-          onOpenVisuals={onOpenVisuals}
           pendingMapTac="METAR KJFK 121755Z 18010KT 10SM"
           onPendingMapTacConsumed={onPendingMapTacConsumed}
         />,
@@ -2237,20 +2200,20 @@ describe('FileConverter Component', () => {
       });
       expect(onPendingMapTacConsumed).toHaveBeenCalled();
       expect(screen.getByRole('combobox', { name: 'Product' })).toHaveValue('METAR');
-
-      await user.click(screen.getByTestId('convert-results-tab-map'));
-      await user.click(screen.getByTestId('convert-open-decode-visuals'));
-      expect(onOpenVisuals).toHaveBeenCalledTimes(1);
+      expect(screen.queryByTestId('convert-results-tab-map')).not.toBeInTheDocument();
+      expect(
+        screen.queryByTestId('convert-open-decode-visuals'),
+      ).not.toBeInTheDocument();
 
       view.rerender(
         <FileConverter
           {...defaultProps}
-          onOpenVisuals={onOpenVisuals}
           pendingMapTac="   "
           onPendingMapTacConsumed={onPendingMapTacConsumed}
         />,
       );
       expect(onPendingMapTacConsumed.mock.calls.length).toBeGreaterThanOrEqual(1);
+      expect(screen.queryByTestId('convert-results-tab-map')).not.toBeInTheDocument();
     });
 
     it('runs soft-preview validation after a Map TAC handoff', async () => {

@@ -10,7 +10,7 @@ from __future__ import annotations
 from tac_validate import lint
 
 CLEAN_NO_EQ = "METAR KJFK 101851Z 24008KT 10SM FEW250 15/07 A3034"
-EXPECTED_COPY = "Reports in bulletins end with '=' - add it before publishing"
+EXPECTED_COPY = "Bulletin reports should end with '='. Add the terminator before you publish."
 
 
 def test_missing_terminator_severity_info() -> None:
