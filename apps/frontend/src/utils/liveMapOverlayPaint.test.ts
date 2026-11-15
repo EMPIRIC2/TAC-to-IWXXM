@@ -125,6 +125,16 @@ describe('paintTacOverlays', () => {
     );
   });
 
+  it('skips temperature badges when TAC has no temperature group', () => {
+    const cluster = clusterByStation([calm])[0];
+    expect(cluster).toBeDefined();
+    if (!cluster) {
+      return;
+    }
+    expect(paintTemperatureMarkers(mapStub, cluster, 'C')).toEqual([]);
+    expect(L.marker).not.toHaveBeenCalled();
+  });
+
   it('paints temperature badges in C or F for temperatures mode', () => {
     const cluster = clusterByStation([storm])[0];
     expect(cluster).toBeDefined();
