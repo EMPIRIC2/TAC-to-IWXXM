@@ -36,11 +36,6 @@ def default_ca_translation_centre() -> tuple[str, str]:
     tuple[str, str]
         ``(translationCentreDesignator, translationCentreName)`` from env or
         operator-neutral defaults (configurable per #1040).
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (default_ca_translation_centre)
-    2
     """
     designator = _clean_env("CA_ECCC_TRANSLATION_CENTRE_DESIGNATOR", "CWAO")
     name = _clean_env("CA_ECCC_TRANSLATION_CENTRE_NAME", "Environment and Climate Change Canada")
@@ -63,11 +58,6 @@ def ca_wmo_header_designator(product: str, *, sigmet_kind: str | None = None) ->
     -------
     str
         MSC WMO AHL designator prefix for a product (e.g.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (ca_wmo_header_designator)
-    2
     """
     key = product.strip().upper()
     if key == "SIGMET" and sigmet_kind:
@@ -96,11 +86,6 @@ def format_ca_wmo_ahl(parts: AhlParts, *, product: str, sigmet_kind: str | None 
     -------
     str
         ``A_LACN31 CYUL 231800`` style header for layer-6 cross-check.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (format_ca_wmo_ahl)
-    2
     """
     prefix = ca_wmo_header_designator(product, sigmet_kind=sigmet_kind)
     line = f"{prefix}{parts.ii} {parts.cccc} {parts.yygggg}"
@@ -125,11 +110,6 @@ def issued_at_from_yygggg(yygggg: str, *, reference: datetime | None = None) -> 
     -------
     datetime
         Aware UTC timestamp with day/hour/minute from ``yygggg``.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (issued_at_from_yygggg)
-    2
     """
     ref = reference or datetime.now(UTC)
     day = int(yygggg[:2])
@@ -162,11 +142,6 @@ def ca_msc_filename(
     -------
     str
         Filename matching ``CA_MSC_FILENAME_PATTERN``.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (ca_msc_filename)
-    2
     """
     return iwxxm_filename(parts, issued_at=issued_at, gzip=gzip)
 
@@ -190,11 +165,6 @@ def ca_distribution_path(product: str, *, issuer_code: str, hour: int) -> str:
     -------
     str
         MSC HTTPS distribution path for a product and issuer.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (ca_distribution_path)
-    2
     """
     segment = _DATAMART_PRODUCT_SEGMENT.get(product.strip().upper())
     if segment is None:
@@ -216,11 +186,6 @@ def msc_filename_matches_pattern(filename: str) -> bool:
     -------
     bool
         Whether ``filename`` matches the MSC IWXXM exchange pattern.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (msc_filename_matches_pattern)
-    2
     """
     return bool(_MSC_FILENAME_RE.match(filename.strip()))
 
@@ -238,11 +203,6 @@ def parse_msc_exchange_filename(filename: str) -> tuple[AhlParts, datetime] | No
     -------
     tuple[AhlParts, datetime] | None
         Parsed parts and UTC issue time, or ``None`` when the pattern does not match.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (parse_msc_exchange_filename)
-    2
     """
     match = _MSC_FILENAME_PARTS_RE.match(filename.strip())
     if not match:
@@ -300,11 +260,6 @@ def build_ca_eccc_output_spec_from_msc_filename(
     -------
     ProfileOutputSpec | None
         Output spec from an MSC datamart filename (ops corpus / validate-first path).
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (build_ca_eccc_output_spec_from_msc_filename)
-    2
     """
     parsed = parse_msc_exchange_filename(source_filename)
     if parsed is None:
@@ -348,11 +303,6 @@ def build_ca_eccc_output_spec(
     -------
     ProfileOutputSpec
         Contract fields for API ``metadata.output_spec``.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (build_ca_eccc_output_spec)
-    2
     """
     product_u = product.strip().upper()
     designator = ca_wmo_header_designator(product_u, sigmet_kind=sigmet_kind)
@@ -395,11 +345,6 @@ def profile_output_spec_to_dict(spec: ProfileOutputSpec) -> dict[str, str | None
     -------
     dict[str, str | None]
         Serialized ``ProfileOutputSpec`` for HTTP metadata (omit nulls).
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (profile_output_spec_to_dict)
-    2
     """
     raw = {
         "semantic_profile": spec.semantic_profile,

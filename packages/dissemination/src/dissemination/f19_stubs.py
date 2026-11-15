@@ -162,10 +162,6 @@ class StagingSinkAdapter:
         """
         Drawer / API sink discriminator for this F19 staging adapter.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (sink_type)
-        2
 
         Returns
         -------
@@ -190,10 +186,6 @@ class StagingSinkAdapter:
         ValueError
             When ``host`` is missing (secrets redacted).
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (preflight)
-        2
 
         Parameters
         ----------
@@ -235,10 +227,6 @@ class StagingSinkAdapter:
         ValueError
             When host or payload is missing (secrets redacted).
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (send)
-        2
 
         Parameters
         ----------
@@ -287,11 +275,6 @@ def get_staging_sink(sink_type: F19SinkName | str) -> StagingSinkAdapter:
     ------
     ValueError
         When ``sink_type`` is not an F19 adapter.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (get_staging_sink)
-    2
     """
     if sink_type not in F19_SINK_TYPES:
         raise ValueError(f"sink_type {sink_type!r} is not an F19 staging adapter")

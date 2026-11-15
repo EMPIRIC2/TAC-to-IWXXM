@@ -109,11 +109,6 @@ class AirportRecordBuilder:
         -------
         object
             Complete airport record with fields: - name: Airport name - iata: 3-letter IATA code - designator: Airport designator/alternate code - coordinates: {latitude, longitude} - elevation_m: Elevation in meters - status: 'active', 'closed', or 'unknown' - closure_year: Optional year airport closed - source: Description of where data came from - _override: bool indicating if data was overridden from defaults
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (build_record)
-        2
         """
         icao = icao.upper().strip()
         record: dict[str, Any] = {
@@ -277,11 +272,6 @@ class AirportRecordBuilder:
         -------
         object
             GIFTs format string or empty string if incomplete
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (get_gifts_format)
-        2
         """
         if not all([record.get("name"), record.get("iata"), record.get("designator"), record.get("coordinates")]):
             logger.warning(f"Incomplete airport record for {record['icao']}: cannot generate GIFTs format")

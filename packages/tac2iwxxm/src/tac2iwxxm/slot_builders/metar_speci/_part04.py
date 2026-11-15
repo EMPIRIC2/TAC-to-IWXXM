@@ -24,11 +24,6 @@ def parse_metar_speci(tac: str, *, product: str) -> dict[str, Any]:
     ------
     ValueError
         When the TAC cannot be decoded.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (parse_metar_speci)
-    2
     """
     text = fold_observation_case(tac).strip()
     product_u = product.upper()

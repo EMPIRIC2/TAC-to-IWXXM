@@ -80,11 +80,6 @@ class SchemaMirrorService:
         -------
         object
             Dictionary with mirroring results and manifest
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (mirror_version)
-        2
         """
         logger.info(f"Starting mirror for IWXXM {version} from {root_xsd_url}")
 
@@ -422,11 +417,6 @@ class SchemaMirrorService:
         -------
         object
             True if all checksums match, False otherwise
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (verify_integrity)
-        2
         """
         version_dir = self.base_path / version
         manifest_path = version_dir / ".manifest.json"
@@ -494,11 +484,6 @@ async def mirror_schema_version(
     -------
     object
         Mirror results dictionary
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (mirror_schema_version)
-    2
     """
     service = SchemaMirrorService(base_path)
     return await service.mirror_version(

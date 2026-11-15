@@ -97,10 +97,6 @@ class Airport(BaseModel):
         """
         Validate ICAO code format: 4 uppercase alphanumeric characters.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (validate_icao_format)
-        2
 
         Parameters
         ----------
@@ -122,10 +118,6 @@ class Airport(BaseModel):
         """
         Validate IATA code format: 3 uppercase alphanumeric characters.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (validate_iata_format)
-        2
 
         Parameters
         ----------
@@ -185,11 +177,6 @@ class AirportValidator:
 
         Also merges ``airport_registry_supplements.json`` (F3 deepen for METAR
         stations missing from the OurAirports ``icao_code`` export).
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (load_airports)
-        2
         """
         # Determine path to airports.json relative to this file
         current_file = Path(__file__)
@@ -257,11 +244,6 @@ class AirportValidator:
         -------
         object
             True if valid, False otherwise
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (validate_icao)
-        2
         """
         if not icao_code:
             return False
@@ -287,11 +269,6 @@ class AirportValidator:
         -------
         object
             Airport object if found, None otherwise
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (get_airport)
-        2
         """
         if not icao_code:
             return None
@@ -316,11 +293,6 @@ class AirportValidator:
         -------
         object
             List of matching airports
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (search_by_prefix)
-        2
         """
         if not prefix:
             return []
@@ -348,11 +320,6 @@ class AirportValidator:
         -------
         object
             List of matching airports
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (search_by_name)
-        2
         """
         if not query:
             return []
@@ -369,10 +336,6 @@ class AirportValidator:
         """
         Get all loaded airports.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (get_all_airports)
-        2
 
         Returns
         -------
@@ -385,10 +348,6 @@ class AirportValidator:
         """
         Get count of loaded airports.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (count)
-        2
 
         Returns
         -------
@@ -410,11 +369,6 @@ def get_airport_validator() -> AirportValidator:
     -------
     object
         Singleton AirportValidator instance
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (get_airport_validator)
-    2
     """
     global _validator_instance
     if _validator_instance is None:

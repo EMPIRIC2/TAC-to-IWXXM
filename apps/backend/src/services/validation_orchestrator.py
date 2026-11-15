@@ -56,10 +56,6 @@ class ComprehensiveValidationResult:
         """
         Alias for is_valid (API compatibility).
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (passed)
-        2
 
         Returns
         -------
@@ -117,10 +113,6 @@ class ValidationOrchestrator:
         """
         Public XML well-formedness validation helper.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (validate_wellformed)
-        2
 
         Parameters
         ----------
@@ -138,10 +130,6 @@ class ValidationOrchestrator:
         """
         Public XML schema validation helper.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (validate_xml_schema)
-        2
 
         Parameters
         ----------
@@ -185,10 +173,6 @@ class ValidationOrchestrator:
         """
         Validate IWXXM XML for selected layers (typically 3-7).
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (validate)
-        2
 
         Parameters
         ----------
@@ -244,11 +228,6 @@ class ValidationOrchestrator:
         -------
         object
             ComprehensiveValidationResult with all validation outcomes
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (validate_complete)
-        2
         """
         if layers is None:
             layers = list(ValidationLayer)
@@ -511,10 +490,6 @@ def get_validation_orchestrator() -> ValidationOrchestrator:
     """
     Get singleton validation orchestrator instance.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (get_validation_orchestrator)
-    2
 
     Returns
     -------

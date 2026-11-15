@@ -37,11 +37,6 @@ _STATUSES = ("draft", "wip", "finished", "failed")
 def upgrade() -> None:
     """
     Create product tables for sessions + F8 ingest.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (upgrade)
-    2
     """
     op.execute(sa.text('CREATE EXTENSION IF NOT EXISTS "pgcrypto"'))
 
@@ -218,11 +213,6 @@ def upgrade() -> None:
 def downgrade() -> None:
     """
     Drop product tables.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (downgrade)
-    2
     """
     op.execute(sa.text("DROP INDEX IF EXISTS idx_iwxxm_ingest_quarantine_job_created"))
     op.drop_table("iwxxm_ingest_quarantine")

@@ -500,11 +500,6 @@ def validate_ca_eccc_layered(
     -------
     ValidationReport
         Includes ``stages`` with operator-readable labels per EV-048.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (validate_ca_eccc_layered)
-    2
     """
     selected = tuple(levels) if levels is not None else ("xsd", "schematron")
     run_xsd_stages = "xsd" in selected
@@ -540,10 +535,6 @@ def validate_ca_eccc_layered(
         """
         Record one validation stage and merge its issues into the report.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (append_stage)
-        2
 
         Parameters
         ----------

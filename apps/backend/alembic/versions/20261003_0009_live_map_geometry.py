@@ -23,11 +23,6 @@ depends_on: str | Sequence[str] | None = None
 
 def upgrade() -> None:
     """Add geometry and translation columns.
-
-    Examples
-    --------
-    >>> 1 + 1
-    2
     """
     op.add_column("live_map_reports", sa.Column("geometry_kind", sa.String(length=16), nullable=True))
     op.add_column("live_map_reports", sa.Column("geometry_json", sa.Text(), nullable=True))
@@ -39,11 +34,6 @@ def upgrade() -> None:
 
 def downgrade() -> None:
     """Remove geometry and translation columns.
-
-    Examples
-    --------
-    >>> 1 + 1
-    2
     """
     op.drop_column("live_map_reports", "translation_status")
     op.drop_column("live_map_reports", "issues_json")

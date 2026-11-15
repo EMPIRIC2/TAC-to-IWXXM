@@ -456,10 +456,6 @@ def validate_iwxxm(
     Empty ``select`` keeps every Schematron assert. Disabled assert ids are omitted.
     XSD, well-formed, and skipped-Schematron issues always remain.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (validate_iwxxm)
-    2
 
     Parameters
     ----------

@@ -68,11 +68,6 @@ class ExplanationHook:
         -------
         str
             The hook phrase for ``rule_id``, or the pack template.
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (template_for)
-        2
         """
         phrase = self.phrases.get(rule_id)
         if phrase is None:
@@ -88,11 +83,6 @@ def require_locale(locale: str) -> None:
     ----------
     locale : str
         Locale code.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (require_locale)
-    2
     """
     if locale != ENGLISH:
         msg = f"Locale {locale!r} is not available"
@@ -127,11 +117,6 @@ def render_template(
     -------
     str
         Fill an English template.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (render_template)
-    2
     """
     require_locale(locale)
     kwargs: dict[str, str] = {}
@@ -168,11 +153,6 @@ class _SafeFormatter(string.Formatter):
         -------
         tuple[Any, Any]
             A placeholder only when its name is on the allowlist.
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (get_field)
-        2
         """
         if _FIELD.fullmatch(field_name) is None:
             msg = "Explanation placeholder is not allowed"
@@ -195,11 +175,6 @@ class _SafeFormatter(string.Formatter):
         -------
         str
             Format a value; reject non-empty format specs.
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (format_field)
-        2
         """
         if format_spec:
             msg = "Explanation format is not allowed"
@@ -222,11 +197,6 @@ class _SafeFormatter(string.Formatter):
         -------
         object
             A value; reject conversion flags.
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (convert_field)
-        2
         """
         if conversion:
             msg = "Explanation conversion is not allowed"

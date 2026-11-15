@@ -214,10 +214,6 @@ def load_output_policy(path: Path | str) -> OutputPolicyDocument:
     """
     Load one IWXXM output policy YAML file.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (load_output_policy)
-    2
 
     Parameters
     ----------
@@ -321,10 +317,6 @@ def load_output_policy_catalog(profile: str | None = None) -> dict[str, OutputPo
     its header. Omitting ``profile`` leaves those layers off. A new policy id
     with no ``extends`` is added for every profile.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (load_output_policy_catalog)
-    2
 
     Parameters
     ----------
@@ -396,11 +388,6 @@ def _merged_lists(
         ------
         PolicyError
             When ``extends`` cycles or names an unknown parent.
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (symbol: walk)
-        2
         """
         if current.id in seen:
             msg = f"extends cycle involving {current.id!r}"
@@ -442,10 +429,6 @@ def resolve_output_policy(
     activate : bool or None, optional
         When true (or lifecycle is activated), unknown ids fail closed. By default ``None``.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (resolve_output_policy)
-    2
 
     Returns
     -------
@@ -488,10 +471,6 @@ def apply_output_policy_to_report(
     """
     Drop disabled Schematron assert ids. Other issue codes stay on the report.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (apply_output_policy_to_report)
-    2
 
     Parameters
     ----------
@@ -531,11 +510,6 @@ def apply_output_policy_to_report(
         -------
         bool
             True when the issue is kept.
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (symbol: keep)
-        2
         """
         if issue.layer != "schematron":
             return True
