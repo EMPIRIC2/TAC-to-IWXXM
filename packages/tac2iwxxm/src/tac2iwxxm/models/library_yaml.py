@@ -19,7 +19,15 @@ LibraryKindName = Literal[
 
 @dataclass(frozen=True, slots=True)
 class CaptureSummary:
-    """One named or positional capture from a compiled pattern."""
+    """One named or positional capture from a compiled pattern.
+
+    Attributes
+    ----------
+    index : int
+        Capture group index.
+    name : str
+        Capture name (or synthetic positional label).
+    """
 
     index: int
     name: str
@@ -27,7 +35,23 @@ class CaptureSummary:
 
 @dataclass(frozen=True, slots=True)
 class RegexDiagnostic:
-    """Compile result for one pattern in a library YAML document."""
+    """Compile result for one pattern in a library YAML document.
+
+    Attributes
+    ----------
+    path : str
+        YAML path to the pattern.
+    pattern : str
+        Pattern text.
+    severity : RegexSeverity
+        ok / warn / fail.
+    message : str
+        Human-readable compile note.
+    captures : tuple[CaptureSummary, ...]
+        Named or positional captures.
+    sample_matched : bool | None
+        Whether the sample matched, when provided.
+    """
 
     path: str
     pattern: str
@@ -39,7 +63,31 @@ class RegexDiagnostic:
 
 @dataclass(frozen=True, slots=True)
 class LibraryYamlReport:
-    """Strict YAML parse + regex diagnostics for one library asset."""
+    """Strict YAML parse + regex diagnostics for one library asset.
+
+    Attributes
+    ----------
+    valid_yaml : bool
+        True when YAML parsed.
+    yaml_error : str | None
+        Parse error text when invalid.
+    kind : LibraryKindName | str | None
+        Library kind.
+    name : str | None
+        Asset name.
+    lifecycle : LibraryLifecycle
+        draft or activated.
+    diagnostics : tuple[RegexDiagnostic, ...]
+        Per-pattern compile results.
+    fail_count : int
+        Fail severity count.
+    warn_count : int
+        Warn severity count.
+    can_activate : bool
+        Whether activation is allowed.
+    data : dict[str, Any]
+        Parsed document body.
+    """
 
     valid_yaml: bool
     yaml_error: str | None
@@ -53,7 +101,22 @@ class LibraryYamlReport:
     data: dict[str, Any] = field(default_factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
-        """Serialize for JSON / API responses."""
+        """Serialize for JSON / API responses.
+
+        Returns
+        -------
+        dict[str, Any]
+            Report fields plus nested diagnostics.
+
+        Examples
+        --------
+        >>> LibraryYamlReport(
+        ...     valid_yaml=True, yaml_error=None, kind="conversion", name="x",
+        ...     lifecycle="draft", diagnostics=(), fail_count=0, warn_count=0,
+        ...     can_activate=True,
+        ... ).to_dict()["name"]
+        'x'
+        """
         return {
             "valid_yaml": self.valid_yaml,
             "yaml_error": self.yaml_error,

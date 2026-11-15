@@ -864,6 +864,7 @@ describe('LiveWorldMap', () => {
     vi.mocked(L.marker).mockClear();
     render(<LiveWorldMap onOpenPlace={onOpenPlace} />);
     expect(await screen.findByTestId('tac-overlay-precip')).toBeInTheDocument();
+    await waitFor(() => expect(L.circleMarker).toHaveBeenCalled());
     expect(screen.queryByTestId('live-map-tac-overlay-empty')).not.toBeInTheDocument();
     await user.click(screen.getByTestId('tac-overlay-precip'));
     await waitFor(() => {

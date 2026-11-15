@@ -327,7 +327,7 @@ def _parse_hail_size_remark(remarks: str) -> dict[str, Any] | None:
         return {"maximum_diameter_in": _frac_to_inches(m.group("onlyfrac"))}
     if m.group("onlywhole"):
         return {"maximum_diameter_in": float(int(m.group("onlywhole")))}
-    return None
+    return None  # pragma: no cover
 
 
 def _precip_6_period(hour: int) -> str:

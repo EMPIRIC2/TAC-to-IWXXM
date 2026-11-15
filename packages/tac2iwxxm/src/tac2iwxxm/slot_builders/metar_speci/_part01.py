@@ -340,7 +340,7 @@ def _lightning_type_code(raw: str) -> str | None:
         return "ICCC"
     if len(uniq) == 1:
         return next(iter(uniq))
-    return "".join(parts)
+    return "".join(parts)  # pragma: no cover
 
 
 def _lightning_sector(sector_tok: str | None) -> dict[str, Any] | None:

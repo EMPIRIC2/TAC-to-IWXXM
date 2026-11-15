@@ -67,7 +67,18 @@ class Slot:
     gloss: str = ""
 
     def to_dict(self) -> dict[str, Any]:
-        """Serialize for JSON persistence / API."""
+        """Serialize for JSON persistence / API.
+
+        Returns
+        -------
+        dict[str, Any]
+            Field map with empty and null values omitted.
+
+        Examples
+        --------
+        >>> Slot(id="wind", type="wind").to_dict()["id"]
+        'wind'
+        """
         data = asdict(self)
         return {k: v for k, v in data.items() if v is not None and v != ""}
 
@@ -110,7 +121,20 @@ class ConversionTemplate:
     fork_of: str | None = None
 
     def to_dict(self) -> dict[str, Any]:
-        """Serialize for JSON / API responses."""
+        """Serialize for JSON / API responses.
+
+        Returns
+        -------
+        dict[str, Any]
+            Wire-stable template payload including nested slots.
+
+        Examples
+        --------
+        >>> ConversionTemplate(
+        ...     id="t", name="n", access="custom", iwxxm_block="wind", slots=()
+        ... ).to_dict()["id"]
+        't'
+        """
         return {
             "id": self.id,
             "name": self.name,

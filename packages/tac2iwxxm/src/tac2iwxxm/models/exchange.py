@@ -81,7 +81,21 @@ class MscFilenameParts:
     bbb: str | None = None
 
     def to_dict(self) -> dict[str, str | None]:
-        """Wire-stable dict (same keys as the former nested parse result)."""
+        """Wire-stable dict (same keys as the former nested parse result).
+
+        Returns
+        -------
+        dict[str, str | None]
+            AHL / issuer fields for exchange naming.
+
+        Examples
+        --------
+        >>> MscFilenameParts(
+        ...     tt="SA", aa="US", ii="01", cccc="KABC", yygggg="121200",
+        ...     issuer="KWBC", issued_at="20260101120000",
+        ... ).to_dict()["tt"]
+        'SA'
+        """
         return {
             "tt": self.tt,
             "aa": self.aa,
