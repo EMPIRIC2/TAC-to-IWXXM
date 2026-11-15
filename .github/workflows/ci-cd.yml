@@ -237,6 +237,9 @@ jobs:
           git fetch --no-tags origin stage:refs/remotes/origin/stage || true
           make test-file-naming-guard
 
+      - name: TOML session ids (no S### planning ids)
+        run: make toml-session-ids-guard
+
       - name: Documentation bar (checkers)
         run: |
           make check-docs
