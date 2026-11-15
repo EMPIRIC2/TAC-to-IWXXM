@@ -14,9 +14,9 @@ export const LIVE_MAP_TAC_OVERLAY_EMPTY =
 export const LIVE_MAP_CLUSTER_PICK = 'Report at this station';
 export const LIVE_MAP_CLUSTER_COUNT = 'reports at this station';
 
+/** Overlay-mode layers (temperature is its own Live map mode). */
 export const TAC_OVERLAY_LAYERS = [
   { id: 'precip', label: 'Precipitation' },
-  { id: 'temp', label: 'Temperature' },
   { id: 'windVector', label: 'Wind vectors' },
   { id: 'windIntensity', label: 'Wind intensity' },
   { id: 'thunder', label: 'Thunderstorms' },
@@ -47,7 +47,6 @@ export type TacOverlayVisibility = Record<TacOverlayLayerId, boolean>;
 export function defaultTacOverlayVisibility(): TacOverlayVisibility {
   return {
     precip: false,
-    temp: false,
     windVector: false,
     windIntensity: false,
     thunder: false,
@@ -86,9 +85,6 @@ export function overlayApplies(
 ): boolean {
   if (id === 'precip') {
     return parsed.precipCodes.length > 0;
-  }
-  if (id === 'temp') {
-    return parsed.temperatureC !== null;
   }
   if (id === 'windVector') {
     return (
