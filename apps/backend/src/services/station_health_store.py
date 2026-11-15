@@ -31,6 +31,59 @@ from src.services.station_health_wmo_region import wmo_region_for_icao
 logger = logging.getLogger(__name__)
 
 
+def _region_filter_key(region: str | None) -> str | None:
+    """Normalize an optional WMO region filter to a store key."""
+    if not region:
+        return None
+    region_filter = region.strip().lower()
+    if region_filter == "unknown":
+        return "unknown"
+    return region.strip().upper()
+
+
+def _station_list_row(
+    *,
+    icao: str,
+    meta: StationMeta,
+    icao_rows: list[StationRecord],
+    window_key: str,
+    product_filter: str | None,
+    grade_filter: str | None,
+) -> dict[str, Any] | None:
+    """Build one list-row dict, or ``None`` when filters exclude the station."""
+    wmo_region = wmo_region_for_icao(icao, country=meta.country)
+    enriched = enrich_station_window(
+        meta=meta,
+        rows=icao_rows,
+        window_key=window_key,
+    )
+    products = enriched["products"]
+    if product_filter:
+        products = [item for item in products if item["product"] == product_filter]
+        if not products:
+            return None
+        enriched = enrich_station_window(
+            meta=meta,
+            rows=icao_rows,
+            window_key=window_key,
+            products=products,
+        )
+    if grade_filter and enriched["overall_grade"] != grade_filter:
+        return None
+    return {
+        "icao": icao,
+        "name": meta.name,
+        "wmo_region": wmo_region,
+        "overall_grade": enriched["overall_grade"],
+        "overall_score": enriched["overall_score"],
+        "products": enriched["products"],
+        "maintenance_tag_counts": enriched["maintenance_tag_counts"],
+        "file_format_counts": enriched["file_format_counts"],
+        "issue_code_counts": enriched["issue_code_counts"],
+        "centennial_metrics": enriched["centennial_metrics"],
+    }
+
+
 @dataclass
 class StationHealthStore:
     """
@@ -213,13 +266,7 @@ class StationHealthStore:
         cutoff = max(now - window_timedelta(window_key), retention_cutoff)
         product_filter = product.strip().lower() if product else None
         grade_filter = grade.strip().upper() if grade else None
-        region_filter = region.strip().lower() if region else None
-        if region_filter == "unknown":
-            region_key = "unknown"
-        elif region:
-            region_key = region.strip().upper()
-        else:
-            region_key = None
+        region_key = _region_filter_key(region)
 
         with self._lock:
             stations = dict(self._stations)
@@ -237,42 +284,20 @@ class StationHealthStore:
             wmo_region = wmo_region_for_icao(icao, country=meta.country)
             if region_key is not None and wmo_region != region_key:
                 continue
-            icao_rows = by_icao.get(icao, [])
-            enriched = enrich_station_window(
+            row = _station_list_row(
+                icao=icao,
                 meta=meta,
-                rows=icao_rows,
+                icao_rows=by_icao.get(icao, []),
                 window_key=window_key,
+                product_filter=product_filter,
+                grade_filter=grade_filter,
             )
-            products = enriched["products"]
-            if product_filter:
-                products = [item for item in products if item["product"] == product_filter]
-                if not products:
-                    continue
-                enriched = enrich_station_window(
-                    meta=meta,
-                    rows=icao_rows,
-                    window_key=window_key,
-                    products=products,
-                )
-            if grade_filter and enriched["overall_grade"] != grade_filter:
+            if row is None:
                 continue
-            grade_counts[enriched["overall_grade"]] = grade_counts.get(enriched["overall_grade"], 0) + 1
-            station_rows.append(
-                {
-                    "icao": icao,
-                    "name": meta.name,
-                    "wmo_region": wmo_region,
-                    "overall_grade": enriched["overall_grade"],
-                    "overall_score": enriched["overall_score"],
-                    "products": enriched["products"],
-                    "maintenance_tag_counts": enriched["maintenance_tag_counts"],
-                    "file_format_counts": enriched["file_format_counts"],
-                    "issue_code_counts": enriched["issue_code_counts"],
-                    "centennial_metrics": enriched["centennial_metrics"],
-                }
-            )
+            grade_counts[row["overall_grade"]] = grade_counts.get(row["overall_grade"], 0) + 1
+            station_rows.append(row)
 
-        station_rows.sort(key=lambda row: (-float(row["overall_score"]), row["icao"]))
+        station_rows.sort(key=lambda item: (-float(item["overall_score"]), item["icao"]))
         truncated = station_rows[:limit]
         return {
             "window": window_key,
