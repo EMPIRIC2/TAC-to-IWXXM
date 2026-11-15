@@ -95,7 +95,7 @@ export const LIVE_MAP_PHENOMENA = [
  * @example
  * const _ = true;
  */
-export type MapTimePreset = '1h' | '3h' | '6h' | '12h' | 'full';
+export type MapTimePreset = 'latest' | '1h' | '3h' | '6h' | '12h' | 'full';
 export const LIVE_MAP_DECODE = 'Decode';
 export const LIVE_MAP_PANEL = 'Weather map';
 export const LIVE_MAP_REFRESH_MS = 60_000;
@@ -514,7 +514,7 @@ export function filterPlaces(
     phenomena: ReadonlySet<string>;
     /** When true, keep only places whose newest report is active now. */
     activeOnly?: boolean;
-    /** Optional TAC weather overlays (precip/temp/wind/thunder/ice). */
+    /** Optional TAC weather overlays (precip/wind/thunder/ice). */
     tacLayers?: ReadonlySet<string>;
     now?: number;
     countryOf: (placeKey: string) => string | undefined;
@@ -629,6 +629,7 @@ function passesIssueWindow(
     return true;
   }
   const hoursByPreset: Record<MapTimePreset, number> = {
+    latest: 1,
     '1h': 1,
     '3h': 3,
     '6h': 6,
