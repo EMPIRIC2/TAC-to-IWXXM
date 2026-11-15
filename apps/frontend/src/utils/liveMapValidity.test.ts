@@ -224,21 +224,21 @@ describe('liveMapValidity — failure modes', () => {
 
   it('F: month wrap when TAC day is far before/after anchor', () => {
     // Day 30 vs anchor day 1 → previous month
-    expect(
-      stampFromDayHourMinute(30, 12, 0, Date.parse('2026-12-01T12:00:00Z')),
-    ).toBe(Date.parse('2026-11-30T12:00:00Z'));
+    expect(stampFromDayHourMinute(30, 12, 0, Date.parse('2026-12-01T12:00:00Z'))).toBe(
+      Date.parse('2026-11-30T12:00:00Z'),
+    );
     // Day 1 vs anchor day 30 → next month
-    expect(
-      stampFromDayHourMinute(1, 12, 0, Date.parse('2026-11-30T12:00:00Z')),
-    ).toBe(Date.parse('2026-12-01T12:00:00Z'));
+    expect(stampFromDayHourMinute(1, 12, 0, Date.parse('2026-11-30T12:00:00Z'))).toBe(
+      Date.parse('2026-12-01T12:00:00Z'),
+    );
     // January wrap to previous year
-    expect(
-      stampFromDayHourMinute(30, 12, 0, Date.parse('2026-01-01T12:00:00Z')),
-    ).toBe(Date.parse('2025-12-30T12:00:00Z'));
+    expect(stampFromDayHourMinute(30, 12, 0, Date.parse('2026-01-01T12:00:00Z'))).toBe(
+      Date.parse('2025-12-30T12:00:00Z'),
+    );
     // December wrap to next year
-    expect(
-      stampFromDayHourMinute(1, 12, 0, Date.parse('2026-12-31T12:00:00Z')),
-    ).toBe(Date.parse('2027-01-01T12:00:00Z'));
+    expect(stampFromDayHourMinute(1, 12, 0, Date.parse('2026-12-31T12:00:00Z'))).toBe(
+      Date.parse('2027-01-01T12:00:00Z'),
+    );
   });
 
   it('F: activeOnly without placeIsActiveNow callback excludes all', () => {
@@ -248,9 +248,7 @@ describe('liveMapValidity — failure modes', () => {
       '2026-11-13T12:00:00Z',
     );
     const { placeIsActiveNow: _drop, ...noCallback } = identityFilters;
-    expect(
-      filterPlaces([active], { ...noCallback, activeOnly: true }),
-    ).toEqual([]);
+    expect(filterPlaces([active], { ...noCallback, activeOnly: true })).toEqual([]);
   });
 });
 

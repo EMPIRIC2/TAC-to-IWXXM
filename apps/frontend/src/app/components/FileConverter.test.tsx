@@ -2118,9 +2118,7 @@ describe('FileConverter Component', () => {
       expect(screen.queryByRole('tab', { name: 'Map' })).not.toBeInTheDocument();
       expect(screen.queryByTestId('convert-weather-map')).not.toBeInTheDocument();
       expect(screen.queryByTestId('live-world-map')).not.toBeInTheDocument();
-      expect(
-        screen.queryByRole('tab', { name: 'Live map' }),
-      ).not.toBeInTheDocument();
+      expect(screen.queryByRole('tab', { name: 'Live map' })).not.toBeInTheDocument();
       expect(screen.getByTestId('convert-settings-dialog')).toContainElement(
         screen.getByTestId('convert-setup'),
       );
