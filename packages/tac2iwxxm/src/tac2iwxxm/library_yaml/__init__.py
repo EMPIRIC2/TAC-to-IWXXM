@@ -2,11 +2,17 @@
 
 from __future__ import annotations
 
+# Static names for type checkers (also loaded via _shared + exec at runtime).
+from tac2iwxxm.library_assets import LibraryKind as LibraryKind
+from tac2iwxxm.models import LibraryLifecycle as LibraryLifecycle
+
 from importlib import import_module as _import_module
 from pathlib import Path as _Path
 
 __all__ = [
     "CaptureSummary",
+    "LibraryKind",
+    "LibraryLifecycle",
     "LibraryYamlReport",
     "RegexDiagnostic",
     "diagnose_regex",

@@ -137,23 +137,23 @@ class BridgePreview:
         TAC group to preview.
     matched : bool
         Matched.
-    captures : list[BridgeCapture]
-        Captures.
+    captures : list[dict[str, str]]
+        Captures (wire shape; see ``BridgeCapture``).
     xml_block : str
         XML block. Default ``''``.
     compiled_pattern : str
         Compiled pattern. Default ``''``.
-    skipped : list[BridgeSkipped]
-        Skipped.
+    skipped : list[dict[str, str]]
+        Skipped (wire shape; see ``BridgeSkipped``).
     """
 
     template_id: str
     focus_group: str
     matched: bool
-    captures: list[BridgeCapture] = field(default_factory=list)
+    captures: list[dict[str, str]] = field(default_factory=list)
     xml_block: str = ""
     compiled_pattern: str = ""
-    skipped: list[BridgeSkipped] = field(default_factory=list)
+    skipped: list[dict[str, str]] = field(default_factory=list)
 
 
 __all__ = [

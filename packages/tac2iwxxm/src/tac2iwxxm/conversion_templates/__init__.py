@@ -2,11 +2,22 @@
 
 from __future__ import annotations
 
+# Static names for type checkers (also loaded via _shared + exec at runtime).
+from tac2iwxxm.models.conversion_template import (
+    BridgeCapture as BridgeCapture,
+    BridgePreview as BridgePreview,
+    BridgeSkipped as BridgeSkipped,
+    ConversionTemplate as ConversionTemplate,
+    Slot as Slot,
+)
+
 from importlib import import_module as _import_module
 from pathlib import Path as _Path
 
 __all__ = [
+    "BridgeCapture",
     "BridgePreview",
+    "BridgeSkipped",
     "ConversionTemplate",
     "Slot",
     "compile_pattern",

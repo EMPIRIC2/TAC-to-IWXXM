@@ -1,10 +1,33 @@
 """Typing stub for exec-loaded split package (EV-tac2iwxxm-models-split)."""
 
-from typing import Any
+from tac2iwxxm.library_assets import LibraryKind as LibraryKind
+from tac2iwxxm.models import (
+    CaptureSummary as CaptureSummary,
+)
+from tac2iwxxm.models import (
+    LibraryLifecycle as LibraryLifecycle,
+)
+from tac2iwxxm.models import (
+    LibraryYamlReport as LibraryYamlReport,
+)
+from tac2iwxxm.models import (
+    RegexDiagnostic as RegexDiagnostic,
+)
 
-class CaptureSummary: ...
-class LibraryYamlReport: ...
-class RegexDiagnostic: ...
+def diagnose_regex(pattern: str, *, flags: int = 0) -> RegexDiagnostic: ...
+def validate_library_yaml(
+    yaml_body: str,
+    *,
+    expected_kind: LibraryKind | None = None,
+    lifecycle: LibraryLifecycle = "draft",
+) -> LibraryYamlReport: ...
 
-diagnose_regex: Any
-validate_library_yaml: Any
+__all__ = [
+    "CaptureSummary",
+    "LibraryKind",
+    "LibraryLifecycle",
+    "LibraryYamlReport",
+    "RegexDiagnostic",
+    "diagnose_regex",
+    "validate_library_yaml",
+]
