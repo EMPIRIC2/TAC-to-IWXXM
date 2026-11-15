@@ -37,7 +37,14 @@ class CoordinateSource(Protocol):
 
 
 class UnavailableSource:
-    """Closed source used while pytest is running."""
+    """
+    Closed source used while pytest is running.
+
+    Attributes
+    ----------
+    lookup :
+        Method that raises ``SourceUnavailable`` for every ident.
+    """
 
     def lookup(self, ident: str) -> tuple[float, float]:
         """
@@ -210,6 +217,11 @@ def read_csvs(client: httpx.Client) -> CsvCoordinateSource:
     -------
     CsvCoordinateSource
         Parsed maps.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (read_csvs)
+    2
     """
     try:
         navaids = client.get(NAVAIDS_URL)

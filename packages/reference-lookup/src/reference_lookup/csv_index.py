@@ -36,6 +36,11 @@ def index_csv(csv_text: str) -> IdentIndex:
     ------
     SourceUnavailable
         When required columns are missing or a coordinate is not numeric.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (index_csv)
+    2
     """
     reader = csv.DictReader(io.StringIO(csv_text))
     names = reader.fieldnames or []

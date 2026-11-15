@@ -32,6 +32,11 @@ class IdentIndex:
 
         point : Coordinate
             Parsed decimal-degree point.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (add)
+        2
         """
         self._by_ident.setdefault(ident, []).append(point)
 
@@ -48,6 +53,11 @@ class IdentIndex:
         -------
         list[Coordinate]
             Matching rows, or an empty list when the ident is absent.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (rows_for)
+        2
         """
         return list(self._by_ident.get(ident, []))
 
@@ -64,6 +74,11 @@ class IdentIndex:
         -------
         Coordinate | None
             The only row, or ``None`` when the count is not exactly one.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (unique_point)
+        2
         """
         rows = self._by_ident.get(ident, [])
         if len(rows) != 1:

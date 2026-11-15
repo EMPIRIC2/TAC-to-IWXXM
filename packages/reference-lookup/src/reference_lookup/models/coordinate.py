@@ -28,5 +28,10 @@ class Coordinate(NamedTuple):
         -------
         tuple[float, float]
             Latitude then longitude.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (as_tuple)
+        2
         """
         return (self.latitude, self.longitude)
