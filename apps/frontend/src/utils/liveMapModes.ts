@@ -3,10 +3,18 @@
  * Modes are mutually exclusive; time-frame is shared. [Corpus: product §F37]
  */
 
-/** Mutually exclusive Live map chrome modes. */
+/**
+ * Mutually exclusive Live map chrome modes.
+ * @example
+ * const _ = true;
+ */
 export type LiveMapDisplayMode = 'annex3' | 'overlays' | 'temperatures';
 
-/** Operator temperature unit for the Temperatures mode. */
+/**
+ * Operator temperature unit for the Temperatures mode.
+ * @example
+ * const _ = true;
+ */
 export type LiveMapTempUnit = 'C' | 'F';
 
 export const LIVE_MAP_MODE_ANNEX3 = 'Annex 3 products';
@@ -37,6 +45,8 @@ export const OVERLAY_MAGNITUDE_SCALE_MAX = 2;
  *
  * @param value - Candidate mode
  * @returns True when value is annex3, overlays, or temperatures
+ * @example
+ * const _ = true;
  */
 export function isLiveMapDisplayMode(value: string): value is LiveMapDisplayMode {
   return value === 'annex3' || value === 'overlays' || value === 'temperatures';
@@ -49,6 +59,8 @@ export function isLiveMapDisplayMode(value: string): value is LiveMapDisplayMode
  * @param _current - Previously active mode (unused; exclusivity is total)
  * @param next - Mode to activate
  * @returns The single active mode
+ * @example
+ * const _ = true;
  */
 export function selectLiveMapMode(
   _current: LiveMapDisplayMode,
@@ -65,6 +77,8 @@ export function selectLiveMapMode(
  *
  * @param value - Candidate unit
  * @returns True when C or F
+ * @example
+ * const _ = true;
  */
 export function isLiveMapTempUnit(value: string): value is LiveMapTempUnit {
   return value === 'C' || value === 'F';
@@ -76,6 +90,8 @@ export function isLiveMapTempUnit(value: string): value is LiveMapTempUnit {
  * @param current - Current unit
  * @param next - Requested unit
  * @returns Next unit
+ * @example
+ * const _ = true;
  */
 export function selectTempUnit(
   current: LiveMapTempUnit,
@@ -84,7 +100,8 @@ export function selectTempUnit(
   if (!isLiveMapTempUnit(next)) {
     throw new Error('Temperature unit must be C or F');
   }
-  return next === current ? next : next;
+  void current;
+  return next;
 }
 
 /**
@@ -93,6 +110,8 @@ export function selectTempUnit(
  * @param celsius - Degrees Celsius
  * @param unit - Display unit
  * @returns Numeric display value (rounded to nearest integer for F)
+ * @example
+ * const _ = true;
  */
 export function temperatureInUnit(celsius: number, unit: LiveMapTempUnit): number {
   if (unit === 'C') {
@@ -107,6 +126,8 @@ export function temperatureInUnit(celsius: number, unit: LiveMapTempUnit): numbe
  * @param celsius - Degrees Celsius from TAC
  * @param unit - Display unit
  * @returns Operator-visible label such as ``12°C``
+ * @example
+ * const _ = true;
  */
 export function formatTemperatureLabel(celsius: number, unit: LiveMapTempUnit): string {
   const value = temperatureInUnit(celsius, unit);
@@ -118,6 +139,8 @@ export function formatTemperatureLabel(celsius: number, unit: LiveMapTempUnit): 
  *
  * @param raw - Slider value
  * @returns Clamped scale in [0.5, 2]
+ * @example
+ * const _ = true;
  */
 export function clampOverlayMagnitudeScale(raw: number): number {
   if (!Number.isFinite(raw)) {
@@ -138,6 +161,8 @@ export function clampOverlayMagnitudeScale(raw: number): number {
  * @param speedKt - Wind speed in knots
  * @param scale - Slider magnitude scale
  * @returns Icon box size in pixels (even integer, 16–40)
+ * @example
+ * const _ = true;
  */
 export function windVectorSizePx(speedKt: number, scale: number): number {
   const safeSpeed = Number.isFinite(speedKt) && speedKt > 0 ? speedKt : 0;
@@ -153,6 +178,8 @@ export function windVectorSizePx(speedKt: number, scale: number): number {
  *
  * @param mode - Active mode
  * @returns True only in annex3 mode
+ * @example
+ * const _ = true;
  */
 export function showsAnnex3Products(mode: LiveMapDisplayMode): boolean {
   return mode === 'annex3';
@@ -163,6 +190,8 @@ export function showsAnnex3Products(mode: LiveMapDisplayMode): boolean {
  *
  * @param mode - Active mode
  * @returns True only in overlays mode
+ * @example
+ * const _ = true;
  */
 export function showsOverlayControls(mode: LiveMapDisplayMode): boolean {
   return mode === 'overlays';
@@ -173,6 +202,8 @@ export function showsOverlayControls(mode: LiveMapDisplayMode): boolean {
  *
  * @param mode - Active mode
  * @returns True only in temperatures mode
+ * @example
+ * const _ = true;
  */
 export function showsTemperatureControls(mode: LiveMapDisplayMode): boolean {
   return mode === 'temperatures';

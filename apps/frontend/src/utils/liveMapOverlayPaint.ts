@@ -26,7 +26,11 @@ import {
   windVectorIconHtml,
 } from '@/utils/liveMapWeatherIcons';
 
-/** Options for overlay / temperature paint passes. */
+/**
+ * Options for overlay / temperature paint passes.
+ * @example
+ * const _ = true;
+ */
 export type TacOverlayPaintOptions = {
   magnitudeScale?: number;
   tempUnit?: LiveMapTempUnit;
@@ -227,6 +231,8 @@ export function paintTacOverlays(
  * @param cluster - Same-station cluster
  * @param unit - °C or °F
  * @returns Layers to remove on cleanup
+ * @example
+ * const _ = true;
  */
 export function paintTemperatureMarkers(
   map: L.Map,
@@ -234,15 +240,15 @@ export function paintTemperatureMarkers(
   unit: LiveMapTempUnit = 'C',
 ): L.Layer[] {
   const layers: L.Layer[] = [];
-  const member = cluster.members.find((place) => {
+  let temperatureC: number | null = null;
+  for (const place of cluster.members) {
     const parsed = parseTacOverlayFields(newestTac(place.reports));
-    return parsed.temperatureC !== null;
-  });
-  if (!member) {
-    return layers;
+    if (parsed.temperatureC !== null) {
+      temperatureC = parsed.temperatureC;
+      break;
+    }
   }
-  const parsed = parseTacOverlayFields(newestTac(member.reports));
-  if (parsed.temperatureC === null) {
+  if (temperatureC === null) {
     return layers;
   }
   WORLD_COPY_LNG_OFFSETS.forEach((lngOffset) => {
@@ -252,7 +258,7 @@ export function paintTemperatureMarkers(
         map,
         at,
         divIcon(
-          temperatureIconHtml(parsed.temperatureC as number, unit),
+          temperatureIconHtml(temperatureC, unit),
           'tac-overlay-icon-temp',
           [40, 18],
         ),

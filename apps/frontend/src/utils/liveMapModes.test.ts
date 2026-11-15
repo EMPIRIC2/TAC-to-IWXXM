@@ -100,6 +100,17 @@ describe('liveMapModes matrix', () => {
     expect(windVectorSizePx(10, 1) % 2).toBe(0);
   });
 
+  it('edge: non-positive or non-finite wind speed uses the minimum vector size', () => {
+    const baseline = windVectorSizePx(0, 1);
+    expect(windVectorSizePx(-5, 1)).toBe(baseline);
+    expect(windVectorSizePx(Number.NaN, 1)).toBe(baseline);
+  });
+
+  it('idempotent: selecting the same temperature unit keeps that unit', () => {
+    expect(selectTempUnit('C', 'C')).toBe('C');
+    expect(selectTempUnit('F', 'F')).toBe('F');
+  });
+
   it('mutation delete-equivalent: leaving overlays mode hides overlay chrome', () => {
     expect(showsOverlayControls(selectLiveMapMode('overlays', 'annex3'))).toBe(false);
     expect(

@@ -148,6 +148,19 @@ describe('paintTacOverlays', () => {
     );
   });
 
+  it('skips temperature badges when no member reports a temperature', () => {
+    const cluster = clusterByStation([calm])[0];
+    expect(cluster).toBeDefined();
+    if (!cluster) {
+      return;
+    }
+    vi.mocked(L.divIcon).mockClear();
+    vi.mocked(L.marker).mockClear();
+    const layers = paintTemperatureMarkers(mapStub, cluster, 'C');
+    expect(layers).toEqual([]);
+    expect(L.marker).not.toHaveBeenCalled();
+  });
+
   it('returns null painters when the station TAC does not feed the overlay', () => {
     const cluster = clusterByStation([calm])[0];
     expect(cluster).toBeDefined();
