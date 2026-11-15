@@ -1,4 +1,5 @@
 import pytest
+
 """Unit tests for iwxxm_validation.py schemas - 0% coverage target."""
 
 from src.schemas.iwxxm_validation import (
