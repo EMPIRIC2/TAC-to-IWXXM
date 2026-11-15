@@ -5,6 +5,7 @@
 import { useState } from 'react';
 import { ChevronDown, ChevronRight } from 'lucide-react';
 import { groupDecodeSegments } from '../../utils/groupDecodeSegments';
+import { LiveDecodeCurrentTime } from './LiveDecodeCurrentTime';
 
 /**
  * Type `DecodeSegmentView`.
@@ -105,14 +106,12 @@ export function DecodePanel({
       data-testid="decode-panel"
     >
       {pinned ? (
-        <h3 className="px-3 py-2 text-sm font-medium text-gray-900 dark:text-white">
-          Live decode
-          {product ? (
-            <span className="ml-1 font-normal text-gray-500 dark:text-gray-400">
-              ({product})
-            </span>
-          ) : null}
-        </h3>
+        <div className="px-3 py-2" data-testid="live-decode-heading">
+          <h3 className="text-sm font-medium text-gray-900 dark:text-white">
+            {product ? `Live decode (${product})` : 'Live decode'}
+          </h3>
+          <LiveDecodeCurrentTime />
+        </div>
       ) : (
         <button
           type="button"
