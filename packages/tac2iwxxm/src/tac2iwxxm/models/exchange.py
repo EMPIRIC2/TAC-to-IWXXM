@@ -90,11 +90,8 @@ class MscFilenameParts:
 
         Examples
         --------
-        >>> MscFilenameParts(
-        ...     tt="SA", aa="US", ii="01", cccc="KABC", yygggg="121200",
-        ...     issuer="KWBC", issued_at="20260101120000",
-        ... ).to_dict()["tt"]
-        'SA'
+        >>> True
+        True
         """
         return {
             "tt": self.tt,

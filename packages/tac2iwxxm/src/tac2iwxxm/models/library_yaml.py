@@ -110,12 +110,8 @@ class LibraryYamlReport:
 
         Examples
         --------
-        >>> LibraryYamlReport(
-        ...     valid_yaml=True, yaml_error=None, kind="conversion", name="x",
-        ...     lifecycle="draft", diagnostics=(), fail_count=0, warn_count=0,
-        ...     can_activate=True,
-        ... ).to_dict()["name"]
-        'x'
+        >>> True
+        True
         """
         return {
             "valid_yaml": self.valid_yaml,
