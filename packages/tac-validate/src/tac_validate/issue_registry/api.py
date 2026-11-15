@@ -237,6 +237,7 @@ def issue_from(
 __all__ = [
     "ISSUES",
     "IssueSpec",
+    "_strip_unresolved_braces",
     "by_code",
     "catalog_entries",
     "format_operator_message",
