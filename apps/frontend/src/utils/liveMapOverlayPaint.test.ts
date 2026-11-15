@@ -125,6 +125,20 @@ describe('paintTacOverlays', () => {
     );
   });
 
+  it('uses the default overlay magnitude when scale is omitted', () => {
+    const cluster = clusterByStation([storm])[0];
+    expect(cluster).toBeDefined();
+    if (!cluster) {
+      return;
+    }
+    vi.mocked(L.divIcon).mockClear();
+    vi.mocked(L.circleMarker).mockClear();
+    const layers = paintTacOverlays(mapStub, cluster, allOverlaysOn());
+    expect(layers.length).toBeGreaterThan(0);
+    expect(L.divIcon).toHaveBeenCalled();
+    expect(L.circleMarker).toHaveBeenCalled();
+  });
+
   it('paints temperature badges in C or F for temperatures mode', () => {
     const cluster = clusterByStation([storm])[0];
     expect(cluster).toBeDefined();

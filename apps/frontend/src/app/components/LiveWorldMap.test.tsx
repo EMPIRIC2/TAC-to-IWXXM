@@ -2,7 +2,14 @@
  * World map layers and the report popup.
  */
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { act, cleanup, render, screen, waitFor } from '@testing-library/react';
+import {
+  act,
+  cleanup,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import L from 'leaflet';
 import { boundsOf, LIVE_MAP_PRODUCTS, type LivePlace } from '@/utils/liveMap';
@@ -904,6 +911,10 @@ describe('LiveWorldMap', () => {
     expect(screen.queryByTestId('live-map-annex3-products')).not.toBeInTheDocument();
     expect(screen.getByTestId('live-map-overlay-scale-slider')).toBeInTheDocument();
     expect(screen.queryByTestId('live-map-tac-overlay-empty')).not.toBeInTheDocument();
+    fireEvent.change(screen.getByTestId('live-map-overlay-scale-slider'), {
+      target: { value: '1.5' },
+    });
+    expect(screen.getByTestId('live-map-overlay-scale-slider')).toHaveValue('1.5');
     await user.click(screen.getByTestId('tac-overlay-precip'));
     await waitFor(() => {
       expect(L.divIcon).toHaveBeenCalledWith(
