@@ -173,6 +173,7 @@ def test_mutation_insert_second_oceanic_fir_name() -> None:
         ("HOUSTON", "FIR name (HOUSTON)"),
     ]
 
+
 # --- Helper branch coverage (CI 100% gate) ---
 
 
@@ -205,4 +206,3 @@ def test_fir_name_continuation_rejects_stop_and_glossary_tokens() -> None:
     assert _fir_name_continuation_token("OCEANIC") is False
     assert _fir_name_continuation_token("EMBD") is False
     assert _fir_name_continuation_token("X") is False
-

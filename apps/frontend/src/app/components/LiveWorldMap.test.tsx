@@ -825,6 +825,7 @@ describe('LiveWorldMap', () => {
   it('paints TAC precip overlays and opens a rainy station from the map', async () => {
     const user = userEvent.setup();
     const onOpenPlace = vi.fn();
+    // Non-parseable stamps skip the 24h issue window (same as other map fixtures).
     const rainy: LivePlace = {
       place_key: 'KJFK',
       product: 'metar',
@@ -833,7 +834,7 @@ describe('LiveWorldMap', () => {
       geometry: { kind: 'point' },
       reports: [
         {
-          observed_at: '2026-11-13T18:00:00Z',
+          observed_at: 'rainy-now',
           tac: 'METAR KJFK 231851Z 20015G25KT 3SM -RA BR BKN012 12/11 A2998=',
           iwxxm: null,
         },
@@ -847,7 +848,7 @@ describe('LiveWorldMap', () => {
       geometry: { kind: 'point' },
       reports: [
         {
-          observed_at: '2026-11-13T18:00:00Z',
+          observed_at: 'clear-now',
           tac: 'METAR KBOS 231851Z 18012KT 10SM FEW040 15/07 A3005=',
           iwxxm: null,
         },
