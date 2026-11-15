@@ -87,7 +87,10 @@ describe('formatLiveDecodeCurrentTime', () => {
     class StubDTF {
       static supportedLocalesOf = original.supportedLocalesOf.bind(original);
       private readonly opts: { timeZoneName?: string; timeZone?: string };
-      constructor(_locales?: unknown, opts?: { timeZoneName?: string; timeZone?: string }) {
+      constructor(
+        _locales?: unknown,
+        opts?: { timeZoneName?: string; timeZone?: string },
+      ) {
         this.opts = opts ?? {};
       }
       formatToParts(date: Date): Intl.DateTimeFormatPart[] {
@@ -127,11 +130,17 @@ describe('formatLiveDecodeCurrentTime', () => {
     class StubDTF {
       static supportedLocalesOf = original.supportedLocalesOf.bind(original);
       private readonly opts: { timeZoneName?: string; timeZone?: string };
-      constructor(_locales?: unknown, opts?: { timeZoneName?: string; timeZone?: string }) {
+      constructor(
+        _locales?: unknown,
+        opts?: { timeZoneName?: string; timeZone?: string },
+      ) {
         this.opts = opts ?? {};
       }
       formatToParts(date: Date): Intl.DateTimeFormatPart[] {
-        if (this.opts.timeZoneName === 'short' || this.opts.timeZoneName === 'shortOffset') {
+        if (
+          this.opts.timeZoneName === 'short' ||
+          this.opts.timeZoneName === 'shortOffset'
+        ) {
           return [
             { type: 'hour', value: '10' },
             { type: 'minute', value: '00' },
