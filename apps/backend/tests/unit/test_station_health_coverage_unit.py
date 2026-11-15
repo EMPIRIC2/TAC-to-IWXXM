@@ -387,9 +387,11 @@ def test_postgres_store_paths_and_exceptions() -> None:
     conn.execute.side_effect = RuntimeError("detail down")
     assert store.get_station("KJFK") is None
 
-    # _load_window exception path
+    # load_window_rows exception path
+    from src.services.station_health_postgres_load import load_window_rows
+
     conn.execute.side_effect = RuntimeError("list down")
-    stations, rows = store._load_window(cutoff=now - timedelta(hours=1), product_filter=None)
+    stations, rows = load_window_rows(engine, cutoff=now - timedelta(hours=1), product_filter=None)
     assert stations == {}
     assert rows == []
 
@@ -399,7 +401,7 @@ def test_postgres_store_paths_and_exceptions() -> None:
     record_result = MagicMock()
     record_result.mappings.return_value = []
     conn.execute.side_effect = [station_result, record_result]
-    stations, rows = store._load_window(cutoff=now - timedelta(hours=1), product_filter="metar")
+    stations, rows = load_window_rows(engine, cutoff=now - timedelta(hours=1), product_filter="metar")
     assert "KJFK" in stations
 
 

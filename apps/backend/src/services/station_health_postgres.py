@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import json
 import logging
-import os
 from datetime import UTC, datetime
 from typing import Any
 
@@ -18,6 +17,8 @@ from src.services.station_health_metrics import (
     count_solidus_signals,
     window_timedelta,
 )
+from src.services.station_health_postgres_load import load_window_rows
+from src.services.station_health_postgres_url import sync_database_url
 from src.services.station_health_signals import (
     detect_file_format,
     extract_maintenance_tags,
@@ -27,41 +28,6 @@ from src.services.station_health_types import DEFAULT_METRICS, StationMeta, Stat
 from src.services.station_health_wmo_region import wmo_region_for_icao
 
 logger = logging.getLogger(__name__)
-
-
-def sync_database_url(raw: str | None = None) -> str | None:
-    """
-    Normalize ``DATABASE_URL`` for sync SQLAlchemy (psycopg).
-
-    Parameters
-    ----------
-    raw : object
-        Optional URL; defaults to ``DATABASE_URL``.
-
-    Returns
-    -------
-    str | None
-        Sync driver URL, or ``None`` when unset.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (sync_database_url)
-    2
-    """
-    value = (raw if raw is not None else os.environ.get("DATABASE_URL") or "").strip()
-    if not value:
-        return None
-    if value.startswith("postgresql+asyncpg://"):
-        url = "postgresql+psycopg://" + value.removeprefix("postgresql+asyncpg://")
-    elif value.startswith("postgresql+psycopg2://"):
-        url = "postgresql+psycopg://" + value.removeprefix("postgresql+psycopg2://")
-    elif value.startswith("postgresql://"):
-        url = "postgresql+psycopg://" + value.removeprefix("postgresql://")
-    else:
-        url = value
-    if "ssl=require" in url and "sslmode=" not in url:
-        url = url.replace("ssl=require", "sslmode=require")
-    return url
 
 
 class PostgresStationHealthStore:
@@ -319,7 +285,7 @@ class PostgresStationHealthStore:
         else:
             region_key = None
 
-        stations, records = self._load_window(cutoff=cutoff, product_filter=product_filter)
+        stations, records = load_window_rows(self._engine, cutoff=cutoff, product_filter=product_filter)
         by_icao: dict[str, list[StationRecord]] = {}
         for row in records:
             by_icao.setdefault(row.icao, []).append(row)
@@ -476,67 +442,6 @@ class PostgresStationHealthStore:
         except Exception:
             logger.exception("station health retention purge failed")
             return 0
-
-    def _load_window(
-        self,
-        *,
-        cutoff: datetime,
-        product_filter: str | None,
-    ) -> tuple[dict[str, dict[str, Any]], list[StationRecord]]:
-        """
-        Load registry rows and windowed TAC records from Postgres.
-
-        Parameters
-        ----------
-        cutoff : object
-            Inclusive lower bound for ``observed_at``.
-        product_filter : object
-            Optional product filter.
-
-        Returns
-        -------
-        tuple[dict[str, dict[str, Any]], list[StationRecord]]
-            Station map and observation rows.
-        """
-        try:
-            with self._engine.connect() as conn:
-                station_rows = conn.execute(
-                    text("SELECT icao, name, country FROM station_registry ORDER BY icao ASC")
-                ).mappings()
-                stations = {str(row["icao"]): dict(row) for row in station_rows}
-                if product_filter:
-                    record_rows = conn.execute(
-                        text(
-                            """
-                            SELECT icao, product, observed_at, ingested_at, tac_text, source,
-                                   solidus_count, missing_digit_count,
-                                   lint_error_count, lint_warning_count, convert_ok,
-                                   file_format, issue_codes
-                            FROM station_tac_records
-                            WHERE observed_at >= :cutoff AND product = :product
-                            """
-                        ),
-                        {"cutoff": cutoff, "product": product_filter},
-                    ).mappings()
-                else:
-                    record_rows = conn.execute(
-                        text(
-                            """
-                            SELECT icao, product, observed_at, ingested_at, tac_text, source,
-                                   solidus_count, missing_digit_count,
-                                   lint_error_count, lint_warning_count, convert_ok,
-                                   file_format, issue_codes
-                            FROM station_tac_records
-                            WHERE observed_at >= :cutoff
-                            """
-                        ),
-                        {"cutoff": cutoff},
-                    ).mappings()
-                records = [row_to_station_record(dict(row)) for row in record_rows]
-        except Exception:
-            logger.exception("station health list query failed")
-            return {}, []
-        return stations, records
 
 
 __all__ = ["PostgresStationHealthStore", "sync_database_url"]

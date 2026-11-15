@@ -72,7 +72,7 @@ def normalize_wmo_region(value: str | None) -> str | None:
     ValueError
         When the value is present but not a valid region id.
     """
-    if value is None:
+    if value is None or not isinstance(value, str):
         return None
     trimmed = value.strip()
     if not trimmed:
