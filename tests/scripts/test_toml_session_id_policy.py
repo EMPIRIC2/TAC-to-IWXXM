@@ -74,6 +74,9 @@ def test_session_ids_in_toml_fail(snippet: str) -> None:
         ("S000 and S023 together", ("S000", "S023")),
         ("D-S014-T33 compound", ("S014",)),
         ("feature F13 stays", ()),
+        # Ruff/Bandit security rule codes must not trip the session-id guard.
+        ('ignore = ["S102", "S101"]', ()),
+        ("S110 and S112 stay", ()),
     ],
 )
 def test_find_session_ids_validation(text: str, expected: tuple[str, ...]) -> None:

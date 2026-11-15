@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
-"""Fail when tracked ``*.toml`` files embed session-style ``S###`` planning ids.
+"""Fail when tracked ``*.toml`` files embed session-style ``S0##`` planning ids.
 
-Banned token shape: word-boundary ``S`` + three or more digits (``S000``,
-``S008``, ``S014``, …), including inside compound tokens such as
-``D-S014-…``. Prefer plain-language descriptions and comments.
+Banned token shape: word-boundary ``S0`` + two or more further digits
+(``S000``, ``S008``, ``S014``, ``S023``, …), including inside compound
+tokens such as ``D-S014-…``. Zero-padding distinguishes planning ids from
+Ruff/Bandit security codes (``S102``, ``S101``, …). Prefer plain-language
+descriptions and comments.
 
 [Corpus: tests]
 """
@@ -16,8 +18,8 @@ import subprocess
 from dataclasses import dataclass
 from pathlib import Path
 
-# Session / planning ids: S + ≥3 digits (zero-padded forms included).
-SESSION_ID_RE = re.compile(r"\bS\d{3,}\b")
+# Session / planning ids: zero-padded S0 + ≥2 digits (not Bandit S1xx…).
+SESSION_ID_RE = re.compile(r"\bS0\d{2,}\b")
 
 
 @dataclass(frozen=True)
