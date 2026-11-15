@@ -1,11 +1,11 @@
 /**
- * Live map full-page success paths (map Send handoff + station focus).
+ * Live map full-page success paths (map Send handoff + ambient station focus).
  */
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { DecodeVisualsPage } from './DecodeVisualsPage';
-import { publishDecodeVisuals, writeStationDraft } from '@/utils/decodeVisualsStore';
+import { publishDecodeVisuals } from '@/utils/decodeVisualsStore';
 
 vi.mock('@/app/components/LiveWorldMap', () => ({
   LiveWorldMap: ({
@@ -46,9 +46,13 @@ vi.mock('@/app/components/LiveWorldMap', () => ({
   ),
 }));
 
+function expectNoStationFinder(): void {
+  expect(screen.queryByTestId('decode-visuals-station')).not.toBeInTheDocument();
+  expect(document.getElementById('decode-visuals-station-input')).toBeNull();
+}
+
 describe('map full page success', () => {
   beforeEach(() => {
-    writeStationDraft(null);
     publishDecodeVisuals({ station: '', segments: [] });
   });
 
@@ -56,6 +60,7 @@ describe('map full page success', () => {
     const onOpenPlace = vi.fn();
     const user = userEvent.setup();
     render(<DecodeVisualsPage onOpenPlace={onOpenPlace} />);
+    expectNoStationFinder();
 
     await user.click(screen.getByTestId('mock-send-place'));
 
@@ -73,16 +78,19 @@ describe('map full page success', () => {
     );
   });
 
-  it('shows the station heading and passes focusStation for a complete ICAO', async () => {
-    const user = userEvent.setup();
+  it('shows the station heading and passes focusStation from published Convert station', () => {
+    publishDecodeVisuals({
+      station: 'KJFK',
+      segments: [{ code: '18010KT', explanation: 'wind' }],
+    });
     render(<DecodeVisualsPage />);
-
-    await user.type(screen.getByTestId('decode-visuals-station'), 'KJFK');
+    expectNoStationFinder();
 
     expect(screen.getByTestId('decode-visuals-heading')).toHaveTextContent('Kennedy');
     expect(screen.getByTestId('live-world-map')).toHaveAttribute(
       'data-focus-station',
       'KJFK',
     );
+    publishDecodeVisuals({ station: '', segments: [] });
   });
 });
