@@ -232,9 +232,7 @@ def test_catalog_rows_reject_malformed_nodes(monkeypatch: pytest.MonkeyPatch) ->
                 }
             }
         )
-    import tac_validate.lint_profile_catalog as catalog
-
-    monkeypatch.setattr(catalog, "MAX_INHERIT_DEPTH", 1)
+    monkeypatch.setattr("tac_validate.lint_profile_catalog.load.MAX_INHERIT_DEPTH", 1)
     with pytest.raises(ValueError, match="inherit depth exceeds"):
         _specs_from_document(
             {
@@ -299,9 +297,11 @@ def test_inherit_chain_and_resolved_overrides(monkeypatch: pytest.MonkeyPatch) -
         }
     )
     monkeypatch.setattr(
-        "tac_validate.lint_profile_catalog.load_lint_profiles",
+        "tac_validate.lint_profile_catalog.resolve.load_lint_profiles",
         lambda: rows,
     )
+    resolved_lint_profile.cache_clear()
+    load_lint_profiles.cache_clear()
     resolved = resolved_lint_profile("child")
     assert resolved is not None
     assert resolved.differs is True

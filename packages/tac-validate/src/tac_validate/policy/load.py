@@ -3,158 +3,20 @@
 Draft lifecycle warns on unknown registry codes; activate fails closed.
 """
 
+# ruff: noqa: F403, F405
+# pyright: reportWildcardImportFromLibrary=false, reportConstantRedefinition=false, reportUnknownVariableType=false, reportUnknownParameterType=false, reportUnknownArgumentType=false, reportInvalidTypeForm=false, reportUnusedImport=false, reportPrivateUsage=false, reportGeneralTypeIssues=false
 from __future__ import annotations
 
 import os
 from collections.abc import Mapping
-from dataclasses import dataclass
 from importlib import resources
 from pathlib import Path
-from typing import Any, Literal, cast
+from typing import Any, cast
 
 import yaml
 
 from tac_validate.issue_registry import ISSUES, by_code, catalog_entries
-from tac_validate.models import Issue, LintReport
-
-PolicyLifecycle = Literal["draft", "activated"]
-
-MAX_EXTENDS_DEPTH = 5
-ENV_POLICY_DIR = "TAC_VALIDATE_POLICY_DIR"
-
-_SEVERITIES = frozenset({"error", "warning", "info"})
-
-
-class PolicyError(ValueError):
-    """
-    Base error for TAC quality policy documents.
-
-    Attributes
-    ----------
-    args : tuple
-        Arguments passed to the exception constructor.
-    """
-
-
-class PolicyActivationError(PolicyError):
-    """
-    Activated policy references unknown codes or invalid severity remaps.
-
-    Attributes
-    ----------
-    args : tuple
-        Arguments passed to the exception constructor.
-    """
-
-
-class PolicyCycleError(PolicyError):
-    """
-    ``extends`` graph contains a cycle.
-
-    Attributes
-    ----------
-    args : tuple
-        Arguments passed to the exception constructor.
-    """
-
-
-class PolicyDepthError(PolicyError):
-    """
-    ``extends`` chain exceeds ``MAX_EXTENDS_DEPTH``.
-
-    Attributes
-    ----------
-    args : tuple
-        Arguments passed to the exception constructor.
-    """
-
-
-@dataclass(frozen=True, slots=True)
-class PolicyDocument:
-    """
-    One TAC quality policy YAML document.
-
-    Attributes
-    ----------
-    schema_version : int
-        Positive integer document schema version.
-    id : str
-        Policy id.
-    lifecycle : PolicyLifecycle
-        ``draft`` or ``activated``.
-    product : str or None
-        Product id, when the policy names one.
-    extends : tuple[str, ...]
-        Parent policy ids.
-    select : tuple[str, ...]
-        Issue codes to keep. A non-empty child list replaces the parent list.
-    ignore : tuple[str, ...]
-        Issue codes to drop. Child lists are appended to the parent.
-    profiles : tuple[str, ...]
-        Profile ids this document applies to.
-    severity : Mapping[str, str]
-        Issue code to severity (``error``, ``warning``, or ``info``).
-    preview : tuple[str, ...]
-        Preview issue codes. Child lists are combined with the parent.
-    detectors : tuple[str, ...]
-        Detector pack ids. A non-empty child list replaces the parent list.
-    source_path : str or None, optional
-        Path the document was loaded from. By default ``None``.
-    """
-
-    schema_version: int
-    id: str
-    lifecycle: PolicyLifecycle
-    product: str | None
-    extends: tuple[str, ...]
-    select: tuple[str, ...]
-    ignore: tuple[str, ...]
-    profiles: tuple[str, ...]
-    severity: Mapping[str, str]
-    preview: tuple[str, ...]
-    detectors: tuple[str, ...]
-    source_path: str | None = None
-
-
-@dataclass(frozen=True, slots=True)
-class ResolvedPolicy:
-    """
-    Merged policy ready for lint runtime consumption.
-
-    Attributes
-    ----------
-    id : str
-        Policy id.
-    lifecycle : PolicyLifecycle
-        ``draft`` or ``activated``.
-    product : str or None
-        Product id after walking the extend chain.
-    enabled_codes : frozenset[str]
-        Issue codes still enabled after select, preview, and ignore.
-    severity_overrides : Mapping[str, str]
-        Issue-code severity overrides from the chain.
-    preview_codes : frozenset[str]
-        Preview issue codes collected from the chain.
-    detector_ids : tuple[str, ...]
-        Detector pack ids from the nearest document that sets them.
-    warnings : tuple[str, ...]
-        Messages from code-reference checks.
-    can_activate : bool
-        True when ``warnings`` does not mention an unknown registry code.
-    chain : tuple[str, ...]
-        Policy ids from the root parent through this document.
-    """
-
-    id: str
-    lifecycle: PolicyLifecycle
-    product: str | None
-    enabled_codes: frozenset[str]
-    severity_overrides: Mapping[str, str]
-    preview_codes: frozenset[str]
-    detector_ids: tuple[str, ...]
-    warnings: tuple[str, ...]
-    can_activate: bool
-    chain: tuple[str, ...]
+from tac_validate.policy.models import *
 
 
 def _as_str_list(value: object) -> tuple[str, ...]:
@@ -614,157 +476,17 @@ def _validate_code_refs(
     return tuple(warnings)
 
 
-def resolve_policy(
-    doc: PolicyDocument,
-    *,
-    policies: Mapping[str, PolicyDocument],
-    activate: bool = False,
-) -> ResolvedPolicy:
-    """
-    Merge ``extends`` and compute enabled codes.
-
-    Parameters
-    ----------
-    doc : PolicyDocument
-        Leaf policy document.
-    policies : Mapping[str, PolicyDocument]
-        Catalog keyed by policy id (must include ``doc`` and parents).
-    activate : bool, optional
-        When True, treat as activation even if ``lifecycle`` is draft (fail closed). By default ``False``.
-
-    Returns
-    -------
-    ResolvedPolicy
-        Merged view with warnings / activation status.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (resolve_policy)
-    2
-    """
-    chain = _chain_docs(doc, policies)
-    select: list[str] = []
-    ignore: set[str] = set()
-    severity: dict[str, str] = {}
-    preview: set[str] = set()
-    detectors: list[str] = []
-    product = doc.product
-    for item in chain:
-        if item.product is not None:
-            product = item.product
-        if item.select:
-            select = list(item.select)
-        ignore |= set(item.ignore)
-        severity.update(dict(item.severity))
-        preview |= set(item.preview)
-        if item.detectors:
-            detectors = list(item.detectors)
-
-    referenced = set(select) | ignore | set(severity) | preview
-    warnings = list(
-        _validate_code_refs(
-            referenced,
-            lifecycle=doc.lifecycle,
-            activate=activate,
-        )
-    )
-
-    defaults = _default_codes_for_product(product)
-    enabled = set(select) if select else set(defaults) - preview
-    enabled -= ignore
-    enabled = {code for code in enabled if not _unknown(code)}
-
-    can_activate = not any("unknown registry code" in w for w in warnings)
-
-    return ResolvedPolicy(
-        id=doc.id,
-        lifecycle=doc.lifecycle,
-        product=product,
-        enabled_codes=frozenset(enabled),
-        severity_overrides=dict(severity),
-        preview_codes=frozenset(preview),
-        detector_ids=tuple(detectors),
-        warnings=tuple(warnings),
-        can_activate=can_activate,
-        chain=tuple(item.id for item in chain),
-    )
-
-
-def apply_policy_to_report(
-    report: LintReport,
-    policy_id: str,
-    *,
-    profile: str | None = None,
-) -> LintReport:
-    """
-    Keep issues selected by ``policy_id`` and apply severity overrides.
-
-    Parameters
-    ----------
-    report : LintReport
-        Lint report before policy filtering.
-    policy_id : str
-        TAC quality policy document id.
-    profile : str or None, optional
-        Profile id. By default ``None``.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (apply_policy_to_report)
-    2
-
-    Returns
-    -------
-    LintReport
-        Keep issues selected by ``policy_id`` and apply severity overrides.
-    """
-    catalog = load_policy_catalog(profile)
-    doc = catalog.get(policy_id)
-    if doc is None:
-        msg = f"unknown TAC quality policy {policy_id!r}"
-        raise PolicyError(msg)
-    resolved = resolve_policy(doc, policies=catalog, activate=(doc.lifecycle == "activated"))
-    selectable = _default_codes_for_product(resolved.product) | resolved.preview_codes
-    kept: list[Issue] = []
-    for issue in report.issues:
-        # Parse-gate / AHL codes outside the product catalog always pass.
-        if issue.code not in resolved.enabled_codes and issue.code in selectable:
-            continue
-        severity = resolved.severity_overrides.get(issue.code, issue.severity)
-        if severity == issue.severity:
-            kept.append(issue)
-            continue
-        kept.append(
-            Issue(
-                severity=severity,
-                code=issue.code,
-                message=issue.message,
-                location=issue.location,
-                start=issue.start,
-                end=issue.end,
-            )
-        )
-    ok = not any(item.severity == "error" for item in kept)
-    return LintReport(
-        ok=ok,
-        product=report.product,
-        issues=kept,
-        fixes=list(report.fixes),
-        profile=report.profile,
-    )
-
-
 __all__ = [
-    "ENV_POLICY_DIR",
-    "MAX_EXTENDS_DEPTH",
-    "PolicyActivationError",
-    "PolicyCycleError",
-    "PolicyDepthError",
-    "PolicyDocument",
-    "PolicyError",
-    "ResolvedPolicy",
-    "apply_policy_to_report",
+    "_as_severity_map",
+    "_as_str_list",
+    "_chain_docs",
+    "_default_codes_for_product",
+    "_layer_policy",
+    "_load_yaml_mapping",
+    "_parse_document",
+    "_take_policy_overlay",
+    "_unknown",
+    "_validate_code_refs",
     "load_policy",
     "load_policy_catalog",
-    "resolve_policy",
 ]
