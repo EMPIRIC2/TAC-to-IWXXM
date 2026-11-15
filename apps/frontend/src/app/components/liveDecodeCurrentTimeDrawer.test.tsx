@@ -11,6 +11,12 @@ import { DecodePanel } from './DecodePanel';
 
 const segments = [{ start: 0, end: 6, code: 'SIGMET', explanation: 'Report type' }];
 
+const drawerBodies = {
+  iwxxm: <div>iwxxm</div>,
+  console: <div>console</div>,
+  downloads: <div>downloads</div>,
+};
+
 describe('live decode current time in Results drawer', () => {
   it.each(['SIGMET', 'METAR', 'TAF', 'SPECI'] as const)(
     'pinned Live decode (%s) shows spaced heading and clock when decoder open',
@@ -23,13 +29,10 @@ describe('live decode current time in Results drawer', () => {
           onTabChange={() => undefined}
           height={320}
           onHeightChange={() => undefined}
-          iwxxm={<div>iwxxm</div>}
-          console={<div>console</div>}
+          {...drawerBodies}
           decoder={
             <DecodePanel pinned product={product} segments={segments} residuals={[]} />
           }
-          map={<div>map</div>}
-          downloads={<div>downloads</div>}
         />,
       );
 
@@ -59,13 +62,10 @@ describe('live decode current time in Results drawer', () => {
         onTabChange={() => undefined}
         height={320}
         onHeightChange={() => undefined}
-        iwxxm={<div>iwxxm</div>}
-        console={<div>console</div>}
+        {...drawerBodies}
         decoder={
           <DecodePanel pinned product="SIGMET" segments={segments} residuals={[]} />
         }
-        map={<div>map</div>}
-        downloads={<div>downloads</div>}
       />,
     );
     expect(screen.getByTestId('live-decode-current-time')).toBeVisible();
@@ -78,13 +78,10 @@ describe('live decode current time in Results drawer', () => {
         onTabChange={() => undefined}
         height={320}
         onHeightChange={() => undefined}
-        iwxxm={<div>iwxxm</div>}
-        console={<div>console</div>}
+        {...drawerBodies}
         decoder={
           <DecodePanel pinned product="SIGMET" segments={segments} residuals={[]} />
         }
-        map={<div>map</div>}
-        downloads={<div>downloads</div>}
       />,
     );
     expect(screen.getByTestId('convert-results-drawer')).toHaveAttribute(
@@ -105,13 +102,10 @@ describe('live decode current time in Results drawer', () => {
         onTabChange={() => undefined}
         height={320}
         onHeightChange={() => undefined}
-        iwxxm={<div>iwxxm</div>}
-        console={<div>console</div>}
+        {...drawerBodies}
         decoder={
           <DecodePanel pinned product="METAR" segments={segments} residuals={[]} />
         }
-        map={<div>map</div>}
-        downloads={<div>downloads</div>}
       />,
     );
     await user.click(screen.getByTestId('convert-results-drawer-toggle'));

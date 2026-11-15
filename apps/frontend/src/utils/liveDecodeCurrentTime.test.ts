@@ -36,12 +36,13 @@ describe('formatLiveDecodeCurrentTime', () => {
 
   it('falls back safely when Intl.DateTimeFormat throws (failure)', () => {
     const original = Intl.DateTimeFormat;
-    const boom = vi.fn(() => {
-      throw new RangeError('Invalid time zone');
-    }) as unknown as typeof Intl.DateTimeFormat;
-    // Keep constructor shape for `typeof Intl.DateTimeFormat === 'function'`
-    Object.assign(boom, { supportedLocalesOf: original.supportedLocalesOf });
-    vi.stubGlobal('Intl', { ...Intl, DateTimeFormat: boom });
+    class BoomDTF {
+      static supportedLocalesOf = original.supportedLocalesOf.bind(original);
+      constructor() {
+        throw new RangeError('Invalid time zone');
+      }
+    }
+    vi.stubGlobal('Intl', { ...Intl, DateTimeFormat: BoomDTF });
 
     const fixed = new Date('2026-11-13T20:23:45.000Z');
     const parts = formatLiveDecodeCurrentTime(fixed);
@@ -62,6 +63,144 @@ describe('formatLiveDecodeCurrentTime', () => {
     expect(parts.label).toContain('UTC');
     expect(parts.utcTime).toBe('08:05');
     globalThis.Intl = saved;
+  });
+
+  it('falls back when local formatToParts omit hour/minute', () => {
+    const original = Intl.DateTimeFormat;
+    class StubDTF {
+      static supportedLocalesOf = original.supportedLocalesOf.bind(original);
+      formatToParts(): Intl.DateTimeFormatPart[] {
+        return [{ type: 'literal', value: 'x' }];
+      }
+    }
+    vi.stubGlobal('Intl', { ...Intl, DateTimeFormat: StubDTF });
+
+    const fixed = new Date('2026-11-13T12:34:00.000Z');
+    const parts = formatLiveDecodeCurrentTime(fixed);
+    expect(parts.utcTime).toBe('12:34');
+    expect(parts.label).toContain('UTC');
+    vi.unstubAllGlobals();
+  });
+
+  it('uses shortOffset / fallback when short zone name is blank', () => {
+    const original = Intl.DateTimeFormat;
+    class StubDTF {
+      static supportedLocalesOf = original.supportedLocalesOf.bind(original);
+      private readonly opts: { timeZoneName?: string; timeZone?: string };
+      constructor(_locales?: unknown, opts?: { timeZoneName?: string; timeZone?: string }) {
+        this.opts = opts ?? {};
+      }
+      formatToParts(date: Date): Intl.DateTimeFormatPart[] {
+        const tzName = this.opts.timeZoneName;
+        if (tzName === 'short') {
+          return [
+            { type: 'hour', value: '09' },
+            { type: 'literal', value: ':' },
+            { type: 'minute', value: '01' },
+            { type: 'timeZoneName', value: '   ' },
+          ];
+        }
+        if (tzName === 'shortOffset') {
+          return [{ type: 'timeZoneName', value: 'GMT-5' }];
+        }
+        if (this.opts.timeZone === 'UTC') {
+          return [
+            { type: 'hour', value: String(date.getUTCHours()).padStart(2, '0') },
+            { type: 'minute', value: String(date.getUTCMinutes()).padStart(2, '0') },
+          ];
+        }
+        return [];
+      }
+    }
+    vi.stubGlobal('Intl', { ...Intl, DateTimeFormat: StubDTF });
+
+    const fixed = new Date('2026-11-13T14:01:00.000Z');
+    const parts = formatLiveDecodeCurrentTime(fixed, 'America/New_York');
+    expect(parts.localTime).toBe('09:01');
+    expect(parts.localZone).toBe('GMT-5');
+    expect(parts.label).toContain('(GMT-5)');
+    vi.unstubAllGlobals();
+  });
+
+  it('uses offset fallback zone when short and shortOffset names are empty', () => {
+    const original = Intl.DateTimeFormat;
+    class StubDTF {
+      static supportedLocalesOf = original.supportedLocalesOf.bind(original);
+      private readonly opts: { timeZoneName?: string; timeZone?: string };
+      constructor(_locales?: unknown, opts?: { timeZoneName?: string; timeZone?: string }) {
+        this.opts = opts ?? {};
+      }
+      formatToParts(date: Date): Intl.DateTimeFormatPart[] {
+        if (this.opts.timeZoneName === 'short' || this.opts.timeZoneName === 'shortOffset') {
+          return [
+            { type: 'hour', value: '10' },
+            { type: 'minute', value: '00' },
+            { type: 'timeZoneName', value: '' },
+          ];
+        }
+        if (this.opts.timeZone === 'UTC') {
+          return [
+            { type: 'hour', value: String(date.getUTCHours()).padStart(2, '0') },
+            { type: 'minute', value: String(date.getUTCMinutes()).padStart(2, '0') },
+          ];
+        }
+        return [
+          { type: 'hour', value: '10' },
+          { type: 'minute', value: '00' },
+        ];
+      }
+    }
+    vi.stubGlobal('Intl', { ...Intl, DateTimeFormat: StubDTF });
+
+    const fixed = new Date('2026-11-13T15:00:00.000Z');
+    const parts = formatLiveDecodeCurrentTime(fixed);
+    expect(parts.localTime).toBe('10:00');
+    expect(parts.localZone).toMatch(/UTC[+-]/);
+    expect(parts.label).toContain('(');
+    vi.unstubAllGlobals();
+  });
+
+  it('falls back when UTC formatToParts omit hour/minute', () => {
+    const original = Intl.DateTimeFormat;
+    class StubDTF {
+      static supportedLocalesOf = original.supportedLocalesOf.bind(original);
+      private readonly opts: { timeZone?: string };
+      constructor(_locales?: unknown, opts?: { timeZone?: string }) {
+        this.opts = opts ?? {};
+      }
+      formatToParts(): Intl.DateTimeFormatPart[] {
+        if (this.opts.timeZone === 'UTC') {
+          return [{ type: 'literal', value: 'x' }];
+        }
+        return [
+          { type: 'hour', value: '11' },
+          { type: 'minute', value: '22' },
+          { type: 'timeZoneName', value: 'EST' },
+        ];
+      }
+    }
+    vi.stubGlobal('Intl', { ...Intl, DateTimeFormat: StubDTF });
+
+    const fixed = new Date('2026-11-13T16:22:00.000Z');
+    const parts = formatLiveDecodeCurrentTime(fixed);
+    expect(parts.utcTime).toBe('16:22');
+    expect(parts.label).toContain('UTC');
+    vi.unstubAllGlobals();
+  });
+
+  it('formats fallback with negative local offset (west of UTC)', () => {
+    const saved = globalThis.Intl;
+    // @ts-expect-error deliberate removal for fallback path
+    delete globalThis.Intl;
+    const fixed = new Date('2026-11-13T18:00:00.000Z');
+    vi.spyOn(fixed, 'getTimezoneOffset').mockReturnValue(300); // UTC-5
+    vi.spyOn(fixed, 'getHours').mockReturnValue(13);
+    vi.spyOn(fixed, 'getMinutes').mockReturnValue(0);
+    const parts = formatLiveDecodeCurrentTime(fixed);
+    expect(parts.localZone).toBe('UTC-05:00');
+    expect(parts.label).toContain('(UTC-05:00)');
+    globalThis.Intl = saved;
+    vi.restoreAllMocks();
   });
 });
 

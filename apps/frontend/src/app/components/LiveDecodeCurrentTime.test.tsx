@@ -7,6 +7,7 @@ import { act, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import { LiveDecodeCurrentTime } from './LiveDecodeCurrentTime';
+import { DecodePanel } from './DecodePanel';
 import { LIVE_DECODE_SHOW_CURRENT_TIME_KEY } from '../../utils/liveDecodeCurrentTime';
 
 describe('LiveDecodeCurrentTime', () => {
@@ -78,5 +79,27 @@ describe('LiveDecodeCurrentTime', () => {
     expect(clock.textContent).toContain('UTC');
     expect(clock.textContent).toContain('01:02');
     expect(localStorage.getItem(LIVE_DECODE_SHOW_CURRENT_TIME_KEY)).toBe('true');
+  });
+
+  it('clears the tick interval on unmount while visible', () => {
+    const clearSpy = vi.spyOn(window, 'clearInterval');
+    const { unmount } = render(
+      <LiveDecodeCurrentTime now={() => new Date('2026-11-13T12:00:00Z')} />,
+    );
+    unmount();
+    expect(clearSpy).toHaveBeenCalled();
+    clearSpy.mockRestore();
+  });
+
+  it('pinned Live decode heading without product still mounts the clock', () => {
+    render(
+      <DecodePanel
+        pinned
+        segments={[{ start: 0, end: 5, code: 'METAR', explanation: 'Report type' }]}
+        residuals={[]}
+      />,
+    );
+    expect(screen.getByTestId('live-decode-heading')).toHaveTextContent('Live decode');
+    expect(screen.getByTestId('live-decode-current-time')).toBeInTheDocument();
   });
 });
