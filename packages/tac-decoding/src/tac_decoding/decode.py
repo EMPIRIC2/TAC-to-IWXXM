@@ -2182,8 +2182,8 @@ def _explain_sigmet_airmet(token: str, *, product: str, seen: dict[str, int]) ->
             seen["mwo"] = 1
             place = resolve_location_name(icao)
             if place:
-                return f"Originating meteorological watch office {icao} ({place})"
-            return f"Originating meteorological watch office ({icao})"
+                return f"Originating watch office {icao} ({place})"
+            return f"Originating watch office ({icao})"
         if not seen.get("fir_icao") and not (seen.get("name_open") and icao.isalpha()):
             seen["fir_icao"] = 1
             return f"Affected FIR / ATS region ({icao})"
