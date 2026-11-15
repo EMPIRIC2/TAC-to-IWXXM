@@ -1,8 +1,9 @@
 /**
  * Evolve-auto test matrix: shell Live map label (was Decode visuals).
  *
- * Covers success, failure chrome, validation empty/complete station, and
+ * Covers success, failure chrome, published empty/complete station, and
  * theme × selected mutations. Keeps data-testid="shell-nav-visuals".
+ * Station comes from publishDecodeVisuals — no Live map station finder.
  *
  * [Corpus: product §F37] [Corpus: ui-style] [Corpus: tests]
  */
@@ -14,7 +15,7 @@ import userEvent from '@testing-library/user-event';
 import { AppShellNav, SHELL_NAV_LABELS } from './AppShellNav';
 import { DecodeVisualsPage } from './DecodeVisualsPage';
 import { DECODE_VISUALS_OPEN, DECODE_VISUALS_TITLE } from '@/utils/decodeVisualsCopy';
-import { publishDecodeVisuals, writeStationDraft } from '@/utils/decodeVisualsStore';
+import { publishDecodeVisuals } from '@/utils/decodeVisualsStore';
 
 vi.mock('@/app/components/LiveWorldMap', () => ({
   LiveWorldMap: ({ focusStation }: { focusStation?: string }) => (
@@ -32,7 +33,6 @@ function assertLiveMapLabel(el: HTMLElement): void {
 
 describe('Live map nav label matrix', () => {
   beforeEach(() => {
-    writeStationDraft(null);
     publishDecodeVisuals({ station: '', segments: [] });
     document.documentElement.classList.remove('dark');
   });
@@ -94,26 +94,29 @@ describe('Live map nav label matrix', () => {
     });
   });
 
-  describe('V — validation success and failure on page chrome', () => {
-    it('V+: complete ICAO keeps Live map title while heading shows station', async () => {
-      const user = userEvent.setup();
+  describe('V — published station chrome (no Live map station finder)', () => {
+    it('V+: complete published ICAO keeps Live map title while heading shows station', () => {
+      publishDecodeVisuals({
+        station: 'KJFK',
+        segments: [{ code: '27015KT', explanation: 'Wind' }],
+      });
       render(<DecodeVisualsPage />);
-      await user.type(screen.getByTestId('decode-visuals-station'), 'KJFK');
       expect(
         screen.getByRole('heading', { name: DECODE_VISUALS_TITLE }),
       ).toHaveTextContent(NEW_LABEL);
       expect(screen.getByTestId('decode-visuals-heading')).toBeInTheDocument();
+      expect(screen.queryByTestId('decode-visuals-station')).not.toBeInTheDocument();
       expect(screen.queryByText(OLD_LABEL)).not.toBeInTheDocument();
     });
 
-    it('V−: incomplete ICAO keeps empty chrome and Live map title', async () => {
-      const user = userEvent.setup();
+    it('V−: empty published station keeps empty chrome and Live map title', () => {
+      publishDecodeVisuals({ station: '', segments: [] });
       render(<DecodeVisualsPage />);
-      await user.type(screen.getByTestId('decode-visuals-station'), 'KJ');
       expect(screen.getByTestId('decode-visuals-empty')).toBeInTheDocument();
       expect(
         screen.getByRole('heading', { name: DECODE_VISUALS_TITLE }),
       ).toHaveTextContent(NEW_LABEL);
+      expect(screen.queryByTestId('decode-visuals-station')).not.toBeInTheDocument();
       expect(screen.queryByText(OLD_LABEL)).not.toBeInTheDocument();
     });
   });

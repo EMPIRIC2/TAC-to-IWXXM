@@ -825,6 +825,9 @@ describe('LiveWorldMap', () => {
   it('paints TAC precip overlays and opens a rainy station from the map', async () => {
     const user = userEvent.setup();
     const onOpenPlace = vi.fn();
+    // Keep wall-clock near fixture stamps so the default Last-* time window
+    // still includes these reports (CI can run days after the fixture date).
+    vi.spyOn(Date, 'now').mockReturnValue(Date.parse('2026-11-13T18:30:00Z'));
     const rainy: LivePlace = {
       place_key: 'KJFK',
       product: 'metar',

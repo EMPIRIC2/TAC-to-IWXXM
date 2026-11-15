@@ -81,6 +81,7 @@ PY_LINT := apps/backend/src apps/backend/tests \
 	cursor-no-home-paths-guard \
 	test-file-naming-guard \
 	toml-session-ids-guard \
+	pytest-filterwarnings-guard \
 	pnpm-action-package-manager-guard \
 	supabase-start supabase-stop supabase-reset supabase-status supabase-push supabase-pull \
 
@@ -172,6 +173,10 @@ test-file-naming-guard:
 # Ban S### session/planning ids inside tracked *.toml comments and strings
 toml-session-ids-guard:
 	$(UV) run python scripts/ci/check_toml_session_ids.py
+
+# ADR-048 / TC-EVDOC-007: pytest filterwarnings must be error (no ignore)
+pytest-filterwarnings-guard:
+	$(UV) run python scripts/ci/check_pytest_filterwarnings.py
 
 # EV-096 / #1096: no pnpm/action-setup with.version when packageManager is set
 pnpm-action-package-manager-guard:
@@ -982,7 +987,7 @@ validate-yaml:
 overlay-preflight:
 	$(UV) run python scripts/overlays/preflight.py --all-examples
 
-validate-fast: format-check typecheck lint secrets-check validate-yaml catalog-check validation-catalog-check issue-registry-guard cursor-no-home-paths-guard test-file-naming-guard toml-session-ids-guard pnpm-action-package-manager-guard overlay-preflight file-budget file-complexity
+validate-fast: format-check typecheck lint secrets-check validate-yaml catalog-check validation-catalog-check issue-registry-guard cursor-no-home-paths-guard test-file-naming-guard toml-session-ids-guard pytest-filterwarnings-guard pnpm-action-package-manager-guard overlay-preflight file-budget file-complexity
 
 # EV-quality-tooling-suite — Wave 1 local gates [Corpus: tech-spec] TR-Q05..Q07
 check-import-linter:

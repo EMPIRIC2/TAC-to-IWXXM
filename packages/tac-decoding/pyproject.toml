@@ -26,6 +26,14 @@ packages = ["src/tac_decoding"]
 "src/tac_decoding/data/packs/metar.yaml" = "tac_decoding/data/packs/metar.yaml"
 "src/tac_decoding/data/packs/speci.yaml" = "tac_decoding/data/packs/speci.yaml"
 
+# ADR-048 / TC-EVDOC-007: warnings are errors (same bar as packages/auth).
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+filterwarnings = [
+  "error",
+]
+
 # Override (required): package sources are formatted at line-length 120; root is 88.
 [tool.ruff]
 extend = "../../pyproject.toml"
