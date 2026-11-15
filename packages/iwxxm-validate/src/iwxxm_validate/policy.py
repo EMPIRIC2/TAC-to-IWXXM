@@ -8,107 +8,26 @@ from __future__ import annotations
 
 import os
 from collections.abc import Mapping
-from dataclasses import dataclass
 from importlib import resources
 from pathlib import Path
-from typing import Any, Literal, cast
+from typing import Any, cast
 
 import yaml
 
 from iwxxm_validate.inventory import InventoryError, load_assert_inventory
-from iwxxm_validate.models import Issue, StageResult, ValidationReport
+from iwxxm_validate.models import ValidationReport
+from iwxxm_validate.models.policy import (
+    OutputPolicyDocument,
+    PolicyActivationError,
+    PolicyError,
+    PolicyLifecycle,
+    ResolvedOutputPolicy,
+)
 
-PolicyLifecycle = Literal["draft", "activated"]
 ENV_POLICY_DIR = "IWXXM_VALIDATE_POLICY_DIR"
 
 # Not selectable (D-VPL-D1..D3).
 NON_SELECTABLE = frozenset({"XSD", "WELL_FORMED", "XML_SYNTAX_ERROR", "SCHEMATRON_SKIPPED"})
-
-
-class PolicyError(ValueError):
-    """
-    Invalid IWXXM output policy document.
-
-    Attributes
-    ----------
-    args : tuple
-        Arguments passed to the exception constructor.
-    """
-
-
-class PolicyActivationError(PolicyError):
-    """
-    Activated policy references unknown or non-selectable assert ids.
-
-    Attributes
-    ----------
-    args : tuple
-        Arguments passed to the exception constructor.
-    """
-
-
-@dataclass(frozen=True, slots=True)
-class OutputPolicyDocument:
-    """
-    One IWXXM output policy YAML document.
-
-    Attributes
-    ----------
-    schema_version : int
-        Schema version.
-    id : str
-        ID.
-    lifecycle : PolicyLifecycle
-        Lifecycle.
-    pin : str
-        Pin.
-    extends : tuple[str, ...]
-        Extends.
-    select : tuple[str, ...]
-        Select.
-    ignore : tuple[str, ...]
-        Ignore.
-    profiles : tuple[str, ...], optional
-        Profiles.
-    source_path : str or None, optional
-        Source path. By default ``None``.
-    """
-
-    schema_version: int
-    id: str
-    lifecycle: PolicyLifecycle
-    pin: str
-    extends: tuple[str, ...]
-    select: tuple[str, ...]
-    ignore: tuple[str, ...]
-    profiles: tuple[str, ...] = ()
-    source_path: str | None = None
-
-
-@dataclass(frozen=True, slots=True)
-class ResolvedOutputPolicy:
-    """
-    Enabled Schematron assert ids after select/ignore against a pin inventory.
-
-    Attributes
-    ----------
-    id : str
-        ID.
-    pin : str
-        Pin.
-    lifecycle : PolicyLifecycle
-        Lifecycle.
-    enabled : frozenset[str]
-        Enabled.
-    warnings : tuple[str, ...]
-        Warnings.
-    """
-
-    id: str
-    pin: str
-    lifecycle: PolicyLifecycle
-    enabled: frozenset[str]
-    warnings: tuple[str, ...]
 
 
 def _as_str_tuple(value: object, *, field: str) -> tuple[str, ...]:
@@ -486,12 +405,7 @@ def apply_output_policy_to_report(
     profile: str | None = None,
 ) -> ValidationReport:
     """
-    Drop disabled Schematron assert ids. Other issue codes stay on the report.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (apply_output_policy_to_report)
-    2
+    Drop disabled Schematron assert ids (compat re-export).
 
     Parameters
     ----------
@@ -505,64 +419,11 @@ def apply_output_policy_to_report(
     Returns
     -------
     ValidationReport
-        Drop disabled Schematron assert ids. Other issue codes stay on the report.
+        Filtered report.
     """
-    catalog = load_output_policy_catalog(profile)
-    doc = catalog.get(policy_id)
-    if doc is None:
-        msg = f"unknown IWXXM output policy {policy_id!r}"
-        raise PolicyError(msg)
-    resolved = resolve_output_policy(doc, policies=catalog)
-    known = load_assert_inventory(doc.pin)
+    from iwxxm_validate.policy_apply import apply_output_policy_to_report as apply_fn
 
-    def keep(issue: Issue) -> bool:
-        """
-        Return whether ``issue`` stays on the report.
-
-        Schematron issues whose code is in the pin inventory are kept only
-        when that code is enabled. Other layers and unknown codes stay.
-
-        Parameters
-        ----------
-        issue : Issue
-            Finding from the validation report.
-
-        Returns
-        -------
-        bool
-            True when the issue is kept.
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (symbol: keep)
-        2
-        """
-        if issue.layer != "schematron":
-            return True
-        if issue.code not in known:
-            return True
-        return issue.code in resolved.enabled
-
-    issues = [issue for issue in report.issues if keep(issue)]
-    stages: list[StageResult] = []
-    for stage in report.stages:
-        kept = [issue for issue in stage.issues if keep(issue)]
-        stages.append(
-            StageResult(
-                stage=stage.stage,
-                label=stage.label,
-                ok=not any(issue.severity == "error" for issue in kept),
-                issues=kept,
-            )
-        )
-    ok = not any(issue.severity == "error" for issue in issues)
-    return ValidationReport(
-        ok=ok,
-        iwxxm_version=report.iwxxm_version,
-        profile=report.profile,
-        issues=issues,
-        stages=stages,
-    )
+    return apply_fn(report, policy_id, profile=profile)
 
 
 __all__ = [
@@ -571,6 +432,7 @@ __all__ = [
     "OutputPolicyDocument",
     "PolicyActivationError",
     "PolicyError",
+    "PolicyLifecycle",
     "ResolvedOutputPolicy",
     "apply_output_policy_to_report",
     "load_output_policy",

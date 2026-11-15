@@ -7,9 +7,7 @@ declare the namespace URI for that pin.
 
 from __future__ import annotations
 
-from dataclasses import dataclass
-from pathlib import Path
-
+from iwxxm_validate.models.pin_sch import PinSchBundle, PinSchError
 from iwxxm_validate.paths import schematron_path, version_dir, xsd_path
 
 # Directory pin → Schematron ``iwxxm`` namespace URI fragment after ``…/iwxxm/``.
@@ -18,43 +16,6 @@ _PIN_NS_FRAGMENT: dict[str, str] = {
     "2025-2": "2025-2",
     "3.0.0": "3.0",
 }
-
-
-class PinSchError(ValueError):
-    """
-    IWXXM pin and Schematron bundle do not match.
-
-    Attributes
-    ----------
-    args : tuple
-        Arguments passed to the exception constructor.
-    """
-
-
-@dataclass(frozen=True, slots=True)
-class PinSchBundle:
-    """
-    Resolved XSD + Schematron paths for one IWXXM pin.
-
-    Attributes
-    ----------
-    pin : str
-        Pin.
-    version_root : Path
-        Version root.
-    xsd : Path
-        XSD.
-    schematron : Path
-        Schematron.
-    namespace_uri : str
-        Namespace URI.
-    """
-
-    pin: str
-    version_root: Path
-    xsd: Path
-    schematron: Path
-    namespace_uri: str
 
 
 # Process-local cache — pin trees are immutable at runtime; avoids re-reading SCH

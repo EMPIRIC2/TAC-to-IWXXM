@@ -1,4 +1,4 @@
-"""msgspec models for IWXXM validation reports (ADR-016)."""
+"""msgspec validation report models (ADR-016)."""
 
 from __future__ import annotations
 
