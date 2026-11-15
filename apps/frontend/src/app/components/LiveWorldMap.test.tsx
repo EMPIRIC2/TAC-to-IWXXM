@@ -867,8 +867,20 @@ describe('LiveWorldMap', () => {
     vi.mocked(L.marker).mockClear();
     render(<LiveWorldMap onOpenPlace={onOpenPlace} />);
     expect(await screen.findByTestId('tac-overlay-precip')).toBeInTheDocument();
+    await waitFor(() => expect(L.circleMarker).toHaveBeenCalled());
     expect(screen.queryByTestId('live-map-tac-overlay-empty')).not.toBeInTheDocument();
+    vi.mocked(L.divIcon).mockClear();
     await user.click(screen.getByTestId('tac-overlay-precip'));
+    await waitFor(() => {
+      expect(screen.getByTestId('tac-overlay-precip')).toBeChecked();
+    });
+    // Re-paint after overlay toggle (same path as zoomend redraw).
+    const onZoom = map.on.mock.calls
+      .filter((call) => call[0] === 'zoomend')
+      .at(-1)?.[1] as (() => void) | undefined;
+    act(() => {
+      onZoom?.();
+    });
     await waitFor(() => {
       expect(L.divIcon).toHaveBeenCalledWith(
         expect.objectContaining({

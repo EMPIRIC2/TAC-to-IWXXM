@@ -1,0 +1,250 @@
+"""Split part body (exec'd into package namespace)."""
+
+from __future__ import annotations
+
+
+def _parse_ca_remarks(remarks: str, ir: dict[str, Any]) -> None:
+    """
+    Internal helper ``_parse_ca_remarks``.
+
+    Parameters
+    ----------
+    remarks : str
+        Argument ``remarks``.
+
+    ir : dict[str, Any]
+        Argument ``ir``.
+    """
+    density = _CA_DENSITY_ALT.search(remarks)
+    if density is not None:
+        ir["density_altitude_ft"] = int(density.group("ft"))
+    elif _CA_DENSITY_ALT_MISG.search(remarks):
+        ir["density_altitude_missing"] = True
+
+    ice = _CA_ICE_REMARK.search(remarks)
+    if ice is not None:
+        intensity = ice.group("intensity").upper()
+        ir["ca_icing_href"] = f"https://dd.weather.gc.ca/today/aviation/iwxxm/code-ca/AerodromeIcing/{intensity}"
+
+
+def _remarks_free_text(remarks: str) -> str:
+    """
+    Internal helper ``_remarks_free_text``.
+
+    Parameters
+    ----------
+    remarks : str
+        Argument ``remarks``.
+
+    Returns
+    -------
+    str
+        Return value.
+    """
+    leftover = _CONSUMED_REMARK.sub(" ", remarks)
+    leftover = re.sub(r"\s+", " ", leftover).strip(" =")
+    return leftover
+
+
+def _parse_remarks(rest: str, ir: dict[str, Any]) -> None:
+    """
+    Internal helper ``_parse_remarks``.
+
+    Parameters
+    ----------
+    rest : str
+        Argument ``rest``.
+
+    ir : dict[str, Any]
+        Argument ``ir``.
+    """
+    rmk = _RMK.search(rest)
+    if rmk is None:
+        return
+    remarks = rmk.group("rmk")
+    ir["remarks_present"] = True
+    ir["remarks_text"] = remarks.strip().rstrip("=").strip()
+    issues: list[str] = list(ir.get("remark_issues") or [])
+
+    if re.search(r"\bAO(?![12]\b)\w*\b", remarks):
+        issues.append("malformed AO observing-system token in REMARKS")
+    ao = _AO.search(remarks)
+    if ao is not None:
+        ir["observing_system_type"] = f"AO{ao.group('ao')}"
+        ir["observing_system_href"] = _OBS_SYSTEM_HREF.format(ao=ao.group("ao"))
+
+    if re.search(r"\bSLP(?!\d{3}\b)\w*\b", remarks):
+        issues.append("malformed SLP sea-level-pressure token in REMARKS")
+    slp = _SLP.search(remarks)
+    if slp is not None:
+        ir["sea_level_pressure_hpa"] = _slp_code_to_hpa(int(slp.group("code")))
+
+    if re.search(r"\bPK\s+WND\b", remarks) and _PK_WND.search(remarks) is None:
+        issues.append("malformed PK WND group in REMARKS")
+    pk = _PK_WND.search(remarks)
+    if pk is not None:
+        ir["peak_wind_dir_deg"] = int(pk.group("dir"))
+        ir["peak_wind_speed_kt"] = int(pk.group("spd"))
+        hhmm = pk.group("hhmm")
+        ir["peak_wind_hour"] = int(hhmm[0:2])
+        ir["peak_wind_minute"] = int(hhmm[2:4])
+
+    if re.search(r"\bWSHFT\b", remarks) and _WSHFT.search(remarks) is None:
+        issues.append("malformed WSHFT group in REMARKS")
+    wshft = _WSHFT.search(remarks)
+    if wshft is not None:
+        hhmm_ws = wshft.group("hhmm")
+        ir["wind_shift_hour"] = int(hhmm_ws[0:2])
+        ir["wind_shift_minute"] = int(hhmm_ws[2:4])
+        ir["wind_shift_frontal_passage"] = bool(wshft.group("fropa"))
+
+    lightning = _parse_lightning_remark(remarks)
+    if lightning is not None:
+        ir["observed_lightning"] = lightning
+
+    sky = _parse_sky_types_remark(remarks)
+    if sky is not None:
+        ir["character_of_the_sky"] = sky
+
+    convective = _parse_convective_remark(remarks)
+    if convective is not None:
+        ir["convective_cloud"] = convective
+
+    hail = _parse_hail_size_remark(remarks)
+    if hail is not None:
+        ir["hailstone_size"] = hail
+
+    second = _parse_second_location_remark(remarks)
+    if second is not None:
+        ir["observed_at_second_location"] = second
+
+    tower = _parse_tower_visibility_remark(remarks)
+    if tower is not None:
+        ir["tower_visibility"] = tower
+
+    sector_vis = _parse_sector_visibility_remark(remarks)
+    if sector_vis is not None:
+        ir["sector_visibility"] = sector_vis
+
+    obscuration = _parse_obscuration_remark(remarks)
+    if obscuration is not None:
+        ir["obscuration"] = obscuration
+
+    var_cig = _parse_variable_ceiling_remark(remarks)
+    if var_cig is not None:
+        ir["variable_ceiling"] = var_cig
+
+    var_sky = _parse_variable_sky_remark(remarks)
+    if var_sky is not None:
+        ir["variable_sky"] = var_sky
+
+    var_vis = _parse_variable_visibility_remark(remarks)
+    if var_vis is not None:
+        ir["variable_visibility"] = var_vis
+
+    snincr = _SNINCR.search(remarks)
+    if snincr is not None:
+        ir["snow_increase"] = {
+            "increase_in": int(snincr.group("incr")),
+            "depth_in": int(snincr.group("depth")),
+            "processed_weather_element_href": _SNOW_ELEMENT_HREF,
+            "value_type_href": _STAT_ACCUM_HREF,
+            "value_period": "PT1H",
+        }
+
+    sensor_hrefs: list[str] = []
+    for m in _SENSOR_NO.finditer(remarks):
+        code = _SENSOR_NO_CODES[m.group("tok")]
+        sensor_hrefs.append(_SENSOR_NO_HREF.format(code=code))
+    if sensor_hrefs:
+        # Preserve order, drop duplicates.
+        ir["inoperative_sensor_hrefs"] = list(dict.fromkeys(sensor_hrefs))
+
+    max_min = _parse_max_min_temperatures(remarks)
+    if max_min:
+        ir["max_min_temperatures"] = max_min
+
+    pres = _PRES_CHANGE.search(remarks)
+    if pres is not None:
+        code = "FALLING" if pres.group("dir") == "FR" else "RISING"
+        ir["pressure_change_href"] = _PRES_CHANGE_HREF.format(code=code)
+
+    if _CONTRAILS.search(remarks):
+        ir["condensation_trail"] = True
+    if _AURORA.search(remarks):
+        ir["aurora"] = True
+    if _NOSPECI.search(remarks):
+        ir["no_specials"] = True
+    if _MAINTENANCE.search(remarks):
+        ir["maintenance_indicator"] = True
+
+    recent = _parse_recent_weather_remarks(remarks)
+    if recent:
+        ir["recent_weather_us"] = recent
+
+    temp_tenths = _RMK_T.search(remarks)
+    if temp_tenths is not None:
+        ir["remark_temp_tenths_c"] = _tenths_celsius(temp_tenths.group("tsign"), temp_tenths.group("tttt"))
+        ir["remark_dewpoint_tenths_c"] = _tenths_celsius(temp_tenths.group("dsign"), temp_tenths.group("dddd"))
+
+    hour = int(ir.get("hour") or 0)
+    processed = _parse_processed_precip(remarks, hour)
+    if processed:
+        ir["processed_quantities"] = processed
+        precip = _RMK_P.search(remarks)
+        if precip is not None:
+            ir["precip_inches"] = int(precip.group("p")) / 100.0
+
+    free = _remarks_free_text(remarks)
+    if free:
+        ir["remarks_free_text"] = free
+
+    if issues:
+        ir["remark_issues"] = issues
+
+
+def fold_observation_case(tac: str) -> str:
+    """
+    Uppercase each METAR, SPECI, LWIS, or SAWR span.
+
+    A span runs from the keyword through the next ``=``, or stops before a
+    following TAF, SIGMET, AIRMET, or advisory. Those other products stay as
+    written.
+
+    Parameters
+    ----------
+    tac : str
+        TAC text that may mix an observation with another product.
+
+    Returns
+    -------
+    str
+        Text with observation spans in capitals.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (fold_observation_case)
+    2
+    """
+    if not tac:
+        return tac
+    parts: list[str] = []
+    cursor = 0
+    for match in _OBS_KEYWORD.finditer(tac):
+        start = match.start()
+        rest_from = match.end()
+        end = len(tac)
+        equals_at = tac.find("=", rest_from)
+        if equals_at != -1:
+            end = equals_at + 1
+        other = _OTHER_PRODUCT.search(tac, rest_from)
+        if other is not None and other.start() < end:
+            end = other.start()
+        next_obs = _OBS_KEYWORD.search(tac, rest_from)
+        if next_obs is not None and next_obs.start() < end:
+            end = next_obs.start()
+        parts.append(tac[cursor:start])
+        parts.append(tac[start:end].upper())
+        cursor = end
+    parts.append(tac[cursor:])
+    return "".join(parts)
