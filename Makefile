@@ -80,6 +80,7 @@ PY_LINT := apps/backend/src apps/backend/tests \
 	issue-registry-guard \
 	cursor-no-home-paths-guard \
 	test-file-naming-guard \
+	pytest-filterwarnings-guard \
 	pnpm-action-package-manager-guard \
 	supabase-start supabase-stop supabase-reset supabase-status supabase-push supabase-pull \
 
@@ -167,6 +168,10 @@ cursor-no-home-paths-guard:
 # Ban planning-id stems on *new* test modules (test_ev* / test_tc_ev* / test_mN_*)
 test-file-naming-guard:
 	$(UV) run python scripts/ci/check_test_file_naming.py --base origin/stage
+
+# ADR-048 / TC-EVDOC-007: pytest filterwarnings must be error (no ignore)
+pytest-filterwarnings-guard:
+	$(UV) run python scripts/ci/check_pytest_filterwarnings.py
 
 # EV-096 / #1096: no pnpm/action-setup with.version when packageManager is set
 pnpm-action-package-manager-guard:
@@ -977,7 +982,7 @@ validate-yaml:
 overlay-preflight:
 	$(UV) run python scripts/overlays/preflight.py --all-examples
 
-validate-fast: format-check typecheck lint secrets-check validate-yaml catalog-check validation-catalog-check issue-registry-guard cursor-no-home-paths-guard test-file-naming-guard pnpm-action-package-manager-guard overlay-preflight file-budget file-complexity
+validate-fast: format-check typecheck lint secrets-check validate-yaml catalog-check validation-catalog-check issue-registry-guard cursor-no-home-paths-guard test-file-naming-guard pytest-filterwarnings-guard pnpm-action-package-manager-guard overlay-preflight file-budget file-complexity
 
 # EV-quality-tooling-suite — Wave 1 local gates [Corpus: tech-spec] TR-Q05..Q07
 check-import-linter:
