@@ -26,7 +26,12 @@ import {
   windVectorIconHtml,
 } from '@/utils/liveMapWeatherIcons';
 
-/** Options for overlay / temperature paint passes. */
+/**
+ * Options for overlay / temperature paint passes.
+ *
+ * @example
+ * const _ = true;
+ */
 export type TacOverlayPaintOptions = {
   magnitudeScale?: number;
   tempUnit?: LiveMapTempUnit;
@@ -227,6 +232,8 @@ export function paintTacOverlays(
  * @param cluster - Same-station cluster
  * @param unit - °C or °F
  * @returns Layers to remove on cleanup
+ * @example
+ * const _ = true;
  */
 export function paintTemperatureMarkers(
   map: L.Map,

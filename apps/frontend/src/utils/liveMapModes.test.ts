@@ -63,6 +63,7 @@ describe('liveMapModes matrix', () => {
     expect(isLiveMapTempUnit('F')).toBe(true);
     expect(selectTempUnit('C', 'F')).toBe('F');
     expect(selectTempUnit('F', 'C')).toBe('C');
+    expect(selectTempUnit('C', 'C')).toBe('C');
   });
 
   it('validation failure: reject invalid temperature unit', () => {
@@ -98,6 +99,8 @@ describe('liveMapModes matrix', () => {
     expect(gale).toBeGreaterThan(calm);
     expect(galeScaled).toBeGreaterThan(gale);
     expect(windVectorSizePx(10, 1) % 2).toBe(0);
+    expect(windVectorSizePx(0, 1)).toBe(16);
+    expect(windVectorSizePx(Number.NaN, 1)).toBe(16);
   });
 
   it('mutation delete-equivalent: leaving overlays mode hides overlay chrome', () => {
