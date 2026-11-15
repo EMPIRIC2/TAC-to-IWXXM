@@ -171,3 +171,56 @@ def test_backfill_no_longer_injects_smoke() -> None:
     tree = ast.parse(updated)
     fn = next(n for n in tree.body if isinstance(n, ast.FunctionDef))
     assert ast.get_docstring(fn)
+
+
+def test_strip_write_mode_mutates_file(tmp_path: Path) -> None:
+    """Mutation update: default mode writes stripped content to disk."""
+    sample = tmp_path / "smoke.py"
+    sample.write_text(
+        "def f() -> int:\n"
+        '    """X.\n\n'
+        "    Examples\n"
+        "    --------\n"
+        "    >>> 1 + 1  # docstring smoke (f)\n"
+        "    2\n"
+        '    """\n'
+        "    return 1\n",
+        encoding="utf-8",
+    )
+    assert main([str(tmp_path)]) == 0
+    out = sample.read_text(encoding="utf-8")
+    assert ">>> 1 + 1" not in out
+    assert "Examples" not in out
+
+
+def test_strip_remaining_when_strip_is_noop(tmp_path: Path, monkeypatch) -> None:
+    """Failure: residual smoke after a no-op strip increments remaining."""
+    import scripts.docs.strip_doctest_smokes as mod
+
+    monkeypatch.setattr(mod, "strip_smoke_examples", lambda src: src)
+    sample = tmp_path / "smoke.py"
+    sample.write_text(
+        "def f() -> int:\n"
+        '    """X.\n\n'
+        "    Examples\n"
+        "    --------\n"
+        "    >>> 1 + 1\n"
+        "    2\n"
+        '    """\n'
+        "    return 1\n",
+        encoding="utf-8",
+    )
+    # --check: changed_would + remaining both non-zero → exit 1
+    assert main([str(tmp_path), "--check"]) == 1
+
+
+def test_private_fn_rejects_smoke_stub() -> None:
+    """Private helpers also reject placeholder doctest smoke."""
+    from scripts.docs.check_docs_py import _doc_ok_private_fn
+
+    issues = _doc_ok_private_fn(
+        "helper\n\nExamples\n--------\n>>> 1 + 1\n2\n",
+        has_args=False,
+        has_return=False,
+    )
+    assert any("placeholder doctest smoke" in i for i in issues)

@@ -20,9 +20,7 @@ SMOKE_EXAMPLES_BLOCK = re.compile(
     r"(?P=indent)2"
 )
 
-BARE_SMOKE_LINE = re.compile(
-    r"(?m)^[ \t]*>>> 1 \+ 1(?:[ \t]+#[^\n]*)?\n(?:[ \t]*2\n)?"
-)
+BARE_SMOKE_LINE = re.compile(r"(?m)^[ \t]*>>> 1 \+ 1(?:[ \t]+#[^\n]*)?\n(?:[ \t]*2\n)?")
 
 SKIP_DIR_NAMES = {
     "__pycache__",
@@ -80,7 +78,9 @@ def main(argv: list[str] | None = None) -> int:
         changed += 1
     verb = "changed_would" if args.check else "changed_files"
     print(f"strip_doctest_smokes {verb}={changed} remaining_1_plus_1={remaining}")
-    return 1 if (changed if args.check else remaining) else 0
+    if args.check:
+        return 1 if changed or remaining else 0
+    return 1 if remaining else 0
 
 
 if __name__ == "__main__":
