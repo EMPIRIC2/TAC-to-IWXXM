@@ -68,10 +68,6 @@ def repo_root() -> Path:
 
     Honours ``TAC_VALIDATE_REPO_ROOT`` when set.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (repo_root)
-    2
 
     Returns
     -------
@@ -88,10 +84,6 @@ def membership_artifact_path() -> Path:
     """
     Path to the committed generated membership JSON artifact.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (membership_artifact_path)
-    2
 
     Returns
     -------
@@ -179,11 +171,6 @@ def harvest_membership(
     -------
     dict[str, frozenset[str]]
         Family key → notations.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (harvest_membership)
-    2
     """
     base = root if root is not None else repo_root()
     codelists = base / "vendor" / "schemas" / "iwxxm-codelists"
@@ -211,10 +198,6 @@ def write_membership_artifact(
     Path
         Path written.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (write_membership_artifact)
-    2
 
     Parameters
     ----------
@@ -255,11 +238,6 @@ def load_membership_sets() -> dict[str, frozenset[str]]:
     ------
     FileNotFoundError
         When the artifact is missing (run harvest / ``make membership-regen``).
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (load_membership_sets)
-    2
     """
     path = membership_artifact_path()
     if not path.is_file():
@@ -276,10 +254,6 @@ def is_member(family: str, notation: str, *, sets: dict[str, frozenset[str]] | N
     """
     Return True if ``notation`` is in the named family set.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (is_member)
-    2
 
     Parameters
     ----------
@@ -315,11 +289,6 @@ def normalize_register_notation(token: str) -> str:
     -------
     str
         Underscore-joined notation (e.g. ``ISOL_TS``).
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (normalize_register_notation)
-    2
     """
     return "_".join(token.strip().split())
 
@@ -336,10 +305,6 @@ def is_member_normalized(
     Used for AIRMET/SIGMET phenomena where TAC may use spaces (``ISOL TS``) while
     ``codes.wmo.int`` / vendor CSV notations use underscores (``ISOL_TS``).
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (is_member_normalized)
-    2
 
     Parameters
     ----------

@@ -39,10 +39,6 @@ def station_scoped_policies() -> tuple[StationScopedLintPolicy, ...]:
     """
     Return catalog profiles that declare stations.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (station_scoped_policies)
-    2
 
     Returns
     -------
@@ -123,10 +119,6 @@ def resolve_profile_for_station(icao: str) -> str | None:
     Exact ``stations`` entries win over country ``station_prefixes`` (e.g. the
     military ``KBIX`` beats the US ``K`` prefix), and the longest prefix wins.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (resolve_profile_for_station)
-    2
 
     Parameters
     ----------
@@ -154,10 +146,6 @@ def accepts_end_tx_tn(profile: str) -> bool:
     """
     Return True if ``profile`` treats TX/TN after change groups as info.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (accepts_end_tx_tn)
-    2
 
     Parameters
     ----------
@@ -186,11 +174,6 @@ def stations_for(profile: str) -> frozenset[str]:
     -------
     frozenset[str]
         Station set (possibly empty).
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (stations_for)
-    2
     """
     spec = load_lint_profiles().get(profile.strip().lower())
     if spec is None:

@@ -81,10 +81,6 @@ class VersionMigrationWarning:
         """
         Convert to dictionary for API response.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (to_dict)
-        2
 
         Returns
         -------
@@ -150,11 +146,6 @@ class VersionMigrator:
         -------
         object
             Tuple of: - Migrated XML string - List of warning dictionaries for elements that were removed/modified
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (migrate)
-        2
         """
         # Reset warnings for this migration
         self.warnings = []
@@ -354,10 +345,6 @@ def get_migrator() -> VersionMigrator:
     """
     Get singleton instance of VersionMigrator.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (get_migrator)
-    2
 
     Returns
     -------
@@ -399,11 +386,6 @@ def migrate_xml(
     -------
     object
         Tuple of (migrated_xml_string, warnings_list)
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (migrate_xml)
-    2
     """
     migrator = get_migrator()
     if emit_profile is None:

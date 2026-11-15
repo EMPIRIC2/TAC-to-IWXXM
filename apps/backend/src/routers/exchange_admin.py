@@ -67,10 +67,6 @@ def get_allowlist(_user: dict[str, Any] = Depends(_require_exchange_admin)) -> d
     """
     Return the configured egress allowlist. Editing is GitOps-only.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (get_allowlist)
-    2
 
     Parameters
     ----------
@@ -92,10 +88,6 @@ def get_invitation_groups(
     """
     List multi-tenant invitation groups offered at login.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (get_invitation_groups)
-    2
 
     Parameters
     ----------
@@ -121,10 +113,6 @@ def put_invitation_group(
     """
     Bind the signed-in operator to one invitation group.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (put_invitation_group)
-    2
 
     Parameters
     ----------
@@ -156,10 +144,6 @@ def get_operator_prefs(user: dict[str, Any] = Depends(_require_exchange_admin)) 
     """
     Return national-remarks toggle and selected invitation group.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (get_operator_prefs)
-    2
 
     Parameters
     ----------
@@ -188,10 +172,6 @@ def put_national_remarks(
     """
     Operator toggle: include national remarks when publishing to WIS2.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (put_national_remarks)
-    2
 
     Parameters
     ----------
@@ -219,10 +199,6 @@ def get_templates(user: dict[str, Any] = Depends(_require_exchange_admin)) -> di
     """
     List memory-only non-secret destination templates (no vault).
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (get_templates)
-    2
 
     Parameters
     ----------
@@ -261,10 +237,6 @@ def put_template(
     """
     Create or replace a non-secret template. Secrets must be pasted at send time.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (put_template)
-    2
 
     Parameters
     ----------

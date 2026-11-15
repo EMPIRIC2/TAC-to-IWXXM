@@ -114,11 +114,6 @@ def load_packs(profile: str | None = None) -> tuple[Pack, ...]:
     -------
     tuple[Pack, ...]
         Built-in packs, with ``TAC_DECODING_PACK_DIR`` applied for ``profile``.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (load_packs)
-    2
     """
     overlay = os.environ.get(PACK_DIR_ENV, "").strip()
     if not overlay:
@@ -130,11 +125,6 @@ def load_packs(profile: str | None = None) -> tuple[Pack, ...]:
 def clear_pack_cache() -> None:
     """
     Drop cached built-in packs (tests that patch ``_BUILTIN_PACK_DIR`` must call this).
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (clear_pack_cache)
-    2
     """
     _load_builtins_cached.cache_clear()
 

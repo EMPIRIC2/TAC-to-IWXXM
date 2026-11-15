@@ -1478,11 +1478,6 @@ def fold_observation_case(tac: str) -> str:
     -------
     str
         Text with observation spans in capitals.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (fold_observation_case)
-    2
     """
     if not tac:
         return tac
@@ -1529,11 +1524,6 @@ def parse_metar_speci(tac: str, *, product: str) -> dict[str, Any]:
     ------
     ValueError
         When the TAC cannot be decoded.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (parse_metar_speci)
-    2
     """
     text = fold_observation_case(tac).strip()
     product_u = product.upper()

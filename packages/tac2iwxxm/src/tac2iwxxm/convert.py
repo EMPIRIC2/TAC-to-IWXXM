@@ -156,11 +156,6 @@ def resolve_propagate_residuals_to_remarks(
     -------
     bool
         Effective flag. Omitted / unknown profiles default to ``False`` this cycle.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (resolve_propagate_residuals_to_remarks)
-    2
     """
     if value is not None:
         return bool(value)
@@ -1108,11 +1103,6 @@ def convert(
     -------
     ConvertResult
         Structured result with XML, IR, and issues.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (convert)
-    2
     """
     product_u = product.upper()
     if product_u in {"METAR", "SPECI"}:

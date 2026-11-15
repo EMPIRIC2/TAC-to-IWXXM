@@ -195,10 +195,6 @@ def get_prefs(sub: str) -> OperatorExchangePrefs:
     """
     Return memory prefs for ``sub``, creating defaults when absent.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (get_prefs)
-    2
 
     Parameters
     ----------
@@ -288,10 +284,6 @@ def list_templates(sub: str) -> list[NonSecretTemplate]:
     """
     List non-secret templates owned by ``sub``.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (list_templates)
-    2
 
     Parameters
     ----------
@@ -372,11 +364,6 @@ def upsert_template(sub: str, body: dict[str, Any]) -> NonSecretTemplate:
 def clear_exchange_admin_state() -> None:
     """
     Reset memory stores (tests only).
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (clear_exchange_admin_state)
-    2
     """
     with _lock:
         _templates.clear()

@@ -71,10 +71,6 @@ def run_validate_tac(
     """
     Run ``tac_validate.lint``.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (run_validate_tac)
-    2
 
     Parameters
     ----------
@@ -105,10 +101,6 @@ def run_convert_iwxxm(
     """
     Run ``tac2iwxxm.convert``.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (run_convert_iwxxm)
-    2
 
     Parameters
     ----------
@@ -191,10 +183,6 @@ def run_validate_xsd(
     """
     Run IWXXM XSD validation.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (run_validate_xsd)
-    2
 
     Parameters
     ----------
@@ -229,10 +217,6 @@ def run_validate_schematron(
     """
     Run IWXXM Schematron validation (SCHEMATRON_SKIPPED soft-pass).
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (run_validate_schematron)
-    2
 
     Parameters
     ----------
@@ -295,10 +279,6 @@ def run_stage(
     KeyError
         Unknown stage id (caller should fail-closed).
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (run_stage)
-    2
 
     Parameters
     ----------

@@ -343,11 +343,6 @@ def parse_vaa(tac: str, *, product: str = "VAA") -> dict[str, Any]:
     -------
     dict[str, Any]
         A Volcanic Ash Advisory TAC into IR.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (parse_vaa)
-    2
     """
     if product.upper() != "VAA":
         raise ValueError(f"product mismatch: expected VAA, found {product}")
@@ -450,11 +445,6 @@ def parse_tca(tac: str, *, product: str = "TCA") -> dict[str, Any]:
     -------
     dict[str, Any]
         A Tropical Cyclone Advisory TAC into IR.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (parse_tca)
-    2
     """
     if product.upper() != "TCA":
         raise ValueError(f"product mismatch: expected TCA, found {product}")

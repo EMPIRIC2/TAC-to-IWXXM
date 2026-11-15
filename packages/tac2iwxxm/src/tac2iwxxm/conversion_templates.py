@@ -63,11 +63,6 @@ class Slot:
         -------
         dict[str, Any]
             Serialized form for JSON persistence / API.
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (to_dict)
-        2
         """
         data = asdict(self)
         return {k: v for k, v in data.items() if v is not None and v != ""}
@@ -118,11 +113,6 @@ class ConversionTemplate:
         -------
         dict[str, Any]
             Serialized form for JSON / API responses.
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (to_dict)
-        2
         """
         return {
             "id": self.id,
@@ -150,11 +140,6 @@ def slot_from_dict(raw: dict[str, Any]) -> Slot:
     -------
     Slot
         A :class:`Slot` from a JSON-like mapping.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (slot_from_dict)
-    2
     """
     mode_raw = str(raw.get("mode") or "convert")
     mode: SlotMode = (
@@ -191,11 +176,6 @@ def template_from_dict(raw: dict[str, Any]) -> ConversionTemplate:
     -------
     ConversionTemplate
         A :class:`ConversionTemplate` from a JSON-like mapping.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (template_from_dict)
-    2
     """
     slots_raw: list[Any] = list(raw.get("slots") or [])
     parsed_slots: list[Slot] = []
@@ -236,11 +216,6 @@ def compile_pattern(slots: list[Slot] | tuple[Slot, ...]) -> str:
     -------
     str
         Secondary pattern string.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (compile_pattern)
-    2
     """
     parts: list[str] = []
     for s in slots:
@@ -283,11 +258,6 @@ def reorder_slots(
     -------
     tuple[Slot, ...]
         Slots with ``from_id`` placed at ``to_id``'s index.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (reorder_slots)
-    2
     """
     items = list(slots)
     from_i = next((i for i, s in enumerate(items) if s.id == from_id), -1)
@@ -358,11 +328,6 @@ def preview_bridge(
     -------
     BridgePreview
         Captures and an IWXXM-shaped XML sketch for a focused TAC group.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (preview_bridge)
-    2
     """
     pattern = compile_pattern(template.slots)
     skipped = [
@@ -514,11 +479,6 @@ def list_first_party_templates() -> list[ConversionTemplate]:
     -------
     list[ConversionTemplate]
         Built-in first-party conversion templates.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (list_first_party_templates)
-    2
     """
     return list(FIRST_PARTY_TEMPLATES.values())
 
@@ -536,11 +496,6 @@ def get_first_party_template(template_id: str) -> ConversionTemplate | None:
     -------
     ConversionTemplate | None
         A first-party template by id, or ``None``.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (get_first_party_template)
-    2
     """
     return FIRST_PARTY_TEMPLATES.get(template_id)
 
@@ -569,11 +524,6 @@ def fork_first_party(template_id: str, *, new_id: str, name: str | None = None) 
     ------
     KeyError
         If ``template_id`` is not a known first-party id.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (fork_first_party)
-    2
     """
     base = FIRST_PARTY_TEMPLATES.get(template_id)
     if base is None:

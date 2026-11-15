@@ -42,11 +42,6 @@ async def verify_supabase_token(
     ------
     HTTPException
         401 when the token is missing/invalid; 503 when Auth URL env is missing.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (verify_supabase_token)
-    2
     """
     return _verify_bearer(credentials.credentials)
 
@@ -64,10 +59,6 @@ async def verify_optional_supabase_token(
         or when the token cannot be verified (public routes stay available;
         overlay apply then fails closed for missing auth).
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (verify_optional_supabase_token)
-    2
 
     Parameters
     ----------
@@ -133,10 +124,6 @@ async def fetch_jwks() -> dict[str, Any]:
     NotImplementedError
         Always; callers should use ``auth.jwks.verify_access_token``.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (fetch_jwks)
-    2
 
     Returns
     -------

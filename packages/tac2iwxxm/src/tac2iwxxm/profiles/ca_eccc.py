@@ -737,11 +737,6 @@ def emit_sigmet_ca_eccc(ir: dict[str, Any], *, iwxxm_version: str) -> str:
     -------
     str
         IWXXM 3.0.0 SIGMET XML.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (emit_sigmet_ca_eccc)
-    2
     """
     _require_ca_pin(iwxxm_version)
     return emit_sigmet_annex3(ir, iwxxm_version=iwxxm_version)
@@ -763,11 +758,6 @@ def emit_vaa_ca_eccc(ir: dict[str, Any], *, iwxxm_version: str) -> str:
     -------
     str
         IWXXM 3.0.0 volcanic ash advisory XML.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (emit_vaa_ca_eccc)
-    2
     """
     _require_ca_pin(iwxxm_version)
     return emit_vaa_annex3(ir, iwxxm_version=iwxxm_version)
@@ -794,11 +784,6 @@ def emit_airmet_ca_eccc(ir: dict[str, Any], *, iwxxm_version: str) -> str:
     ------
     ValueError
         When ``iwxxm_version`` is not ``3.0.0``.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (emit_airmet_ca_eccc)
-    2
     """
     if iwxxm_version != CA_IWXXM_VERSION:
         raise ValueError(f"profile ca_eccc requires iwxxm_version {CA_IWXXM_VERSION!r}, got {iwxxm_version!r}")
@@ -834,11 +819,6 @@ def emit_taf_ca_eccc(ir: dict[str, Any], *, iwxxm_version: str) -> str:
     ------
     ValueError
         When ``iwxxm_version`` is not ``3.0.0``.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (emit_taf_ca_eccc)
-    2
     """
     if iwxxm_version != CA_IWXXM_VERSION:
         raise ValueError(f"profile ca_eccc requires iwxxm_version {CA_IWXXM_VERSION!r}, got {iwxxm_version!r}")
@@ -879,11 +859,6 @@ def emit_metar_speci_ca_eccc(
     ------
     ValueError
         When ``iwxxm_version`` is not ``3.0.0``.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (emit_metar_speci_ca_eccc)
-    2
     """
     if iwxxm_version != CA_IWXXM_VERSION:
         raise ValueError(f"profile ca_eccc requires iwxxm_version {CA_IWXXM_VERSION!r}, got {iwxxm_version!r}")

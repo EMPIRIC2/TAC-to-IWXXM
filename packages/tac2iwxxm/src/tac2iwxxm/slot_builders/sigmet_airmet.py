@@ -1433,11 +1433,6 @@ def parse_sigmet(tac: str, *, product: str = "SIGMET") -> dict[str, Any]:
     -------
     dict
         Intermediate representation.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (parse_sigmet)
-    2
     """
     if product.upper() != "SIGMET":
         raise ValueError(f"product mismatch: expected SIGMET, found {product}")
@@ -1543,11 +1538,6 @@ def parse_airmet(tac: str, *, product: str = "AIRMET") -> dict[str, Any]:
     -------
     dict
         Intermediate representation.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (parse_airmet)
-    2
     """
     if product.upper() != "AIRMET":
         raise ValueError(f"product mismatch: expected AIRMET, found {product}")

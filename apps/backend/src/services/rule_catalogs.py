@@ -24,10 +24,6 @@ def known_families() -> frozenset[str]:
     """
     Return supported ``family`` query values.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (known_families)
-    2
 
     Returns
     -------
@@ -57,11 +53,6 @@ def catalog_for_family(family: str, *, product: str | None = None) -> list[dict[
     ------
     ValueError
         When ``family`` is unknown.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (catalog_for_family)
-    2
     """
     key = family.strip().lower()
     if key not in _FAMILIES:
@@ -129,11 +120,6 @@ def selection_options(kind: str) -> list[dict[str, Any]]:
     ------
     ValueError
         When ``kind`` is unknown.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (selection_options)
-    2
     """
     key = kind.strip().lower()
     if key not in _SELECTION_KINDS:

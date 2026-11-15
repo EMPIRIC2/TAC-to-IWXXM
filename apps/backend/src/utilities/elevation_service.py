@@ -64,11 +64,6 @@ class ElevationService:
         -------
         object
             IWXXM-compliant vertical datum code (e.g., 'EGM_96', 'NAVD88')
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (get_vertical_datum)
-        2
         """
         # Check for airport-specific override
         overrides = self.datum_map.get("airport_overrides", {})
@@ -154,11 +149,6 @@ class ElevationService:
         -------
         object
             Tuple of (elevation_meters, vertical_datum)
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (get_elevation_data)
-        2
         """
         # Get raw elevation and datum with test override support
         elevation_m, vertical_datum = self._get_raw_elevation_data(
@@ -270,11 +260,6 @@ class ElevationService:
         -------
         object
             Tuple of (latitude, longitude) or None if no override exists
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (get_coordinates_override)
-        2
         """
         overrides = self.datum_map.get("airport_overrides", {})
         if icao in overrides:
@@ -307,11 +292,6 @@ class ElevationService:
         -------
         object
             Dictionary with vertical_datum and metadata, or None if no test override
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (get_test_datum_override)
-        2
         """
         test_overrides = self.datum_map.get("test_overrides", {})
         return test_overrides.get(icao)
@@ -333,11 +313,6 @@ class ElevationService:
         -------
         object
             Dictionary with datum information or None
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (get_datum_info)
-        2
         """
         # Strip OTHER: prefix if present
         clean_datum = datum.replace("OTHER:", "").replace("_", "")
@@ -363,11 +338,6 @@ class ElevationService:
             Data source description
         notes : object
             Additional notes
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (add_airport_override)
-        2
         """
         overrides = self.datum_map.get("airport_overrides", {})
         overrides[icao] = {
@@ -382,11 +352,6 @@ class ElevationService:
     def save_datum_mapping(self) -> None:
         """
         Save current datum mapping to file.
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (save_datum_mapping)
-        2
         """
         datum_file = Path(__file__).parent.parent / "data" / "vertical_datum_map.json"
 
@@ -406,10 +371,6 @@ def get_elevation_service() -> ElevationService:
     """
     Get the singleton elevation service instance.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (get_elevation_service)
-    2
 
     Returns
     -------

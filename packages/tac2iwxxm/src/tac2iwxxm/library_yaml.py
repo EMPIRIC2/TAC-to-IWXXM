@@ -120,11 +120,6 @@ class LibraryYamlReport:
         -------
         dict[str, Any]
             Serialized form for JSON / API responses.
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (to_dict)
-        2
         """
         return {
             "valid_yaml": self.valid_yaml,
@@ -396,11 +391,6 @@ def diagnose_regex(pattern: str, *, sample: str | None = None, path: str = "patt
     -------
     RegexDiagnostic
         One pattern and classify ok / warn / fail.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (diagnose_regex)
-    2
     """
     try:
         compiled = re.compile(pattern)
@@ -495,11 +485,6 @@ def validate_library_yaml(
     -------
     LibraryYamlReport
         YAML, enforce kind/name, and collect regex diagnostics.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (validate_library_yaml)
-    2
     """
     stripped = raw.strip()
     if not stripped:

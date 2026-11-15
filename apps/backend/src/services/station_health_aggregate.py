@@ -22,11 +22,6 @@ def row_to_station_record(row: dict[str, Any]) -> StationRecord:
     -------
     StationRecord
         Normalized observation record.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (row_to_station_record)
-    2
     """
     tac_text = str(row.get("tac_text") or "")
     observed = row["observed_at"]
@@ -66,11 +61,6 @@ def grade_products_from_records(rows: list[StationRecord], window_key: str) -> l
     -------
     list[dict[str, Any]]
         Per-product grade dictionaries.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (grade_products_from_records)
-    2
     """
     by_product: dict[str, list[StationRecord]] = {}
     for row in rows:
@@ -117,11 +107,6 @@ def overall_from_products(products: list[dict[str, Any]]) -> dict[str, Any]:
     -------
     dict[str, Any]
         Overall grade and score.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (overall_from_products)
-    2
     """
     if not products:
         return {"overall_grade": "F", "overall_score": 0.0}

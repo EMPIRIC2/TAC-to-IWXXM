@@ -88,11 +88,6 @@ def load_catalog_meta() -> dict[str, dict[str, str]]:
     -------
     dict[str, dict[str, str]]
         Meta rows keyed by uppercase token.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (load_catalog_meta)
-    2
     """
     try:
         root = resources.files("tac_decoding")
@@ -122,11 +117,6 @@ def reload_catalog_meta() -> dict[str, dict[str, str]]:
     -------
     dict[str, dict[str, str]]
         Fresh meta rows keyed by uppercase token.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (reload_catalog_meta)
-    2
     """
     load_catalog_meta.cache_clear()
     return load_catalog_meta()
@@ -148,11 +138,6 @@ def default_issue_type_for_token(token: str) -> str | None:
     -------
     str | None
         ``content`` or ``None``.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (default_issue_type_for_token)
-    2
     """
     key = token.strip().upper()
     if key in _FUNCTION_WORDS:
@@ -176,11 +161,6 @@ def catalog_entries(*, limit: int | None = None) -> list[dict[str, Any]]:
     list[dict[str, Any]]
         Catalog items with ``id``, ``title``, ``summary``, ``tags``, and optional
         additive metadata (``issue_type``, ``severity``, ``source_*``, ``conform_note``).
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (catalog_entries)
-    2
     """
     glossary = load_glossary()
     meta = load_catalog_meta()
@@ -219,11 +199,6 @@ def count_issue_types() -> dict[str, int]:
     -------
     dict[str, int]
         Type → count for Spec/decisions remaining-``other`` reporting.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (count_issue_types)
-    2
     """
     counts: dict[str, int] = {}
     for row in catalog_entries():

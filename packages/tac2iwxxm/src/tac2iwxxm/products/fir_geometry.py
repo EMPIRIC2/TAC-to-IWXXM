@@ -134,11 +134,6 @@ def select_horizontal_geometry_kind(body: str) -> GeometryKind:
     -------
     GeometryKind
         ``wi_polygon``, ``relative``, ``entire_fir``, or ``none``.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (select_horizontal_geometry_kind)
-    2
     """
     if len(_wi_points(body)) >= 3:
         return "wi_polygon"
@@ -203,11 +198,6 @@ def parse_relative_geometry_phrase(body: str) -> RelativeGeometryPhrase | None:
     RelativeGeometryPhrase or None
         Parsed phrase, or ``None`` when no relative/ENTIRE FIR cue is present.
         ``WI``-only bodies return ``None`` (use :func:`select_horizontal_geometry_kind`).
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (parse_relative_geometry_phrase)
-    2
     """
     if _ENTIRE_FIR.search(body):
         return RelativeGeometryPhrase(kind="entire_fir", constraints=())
@@ -357,11 +347,6 @@ def close_ring(points: Sequence[tuple[float, float]]) -> list[tuple[float, float
     -------
     list of (lat, lon)
         Closed ring, or empty when fewer than three distinct vertices.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (close_ring)
-    2
     """
     if len(points) < 3:
         return []
@@ -389,11 +374,6 @@ def ring_to_pos_list(points: Sequence[tuple[float, float]], *, precision: int = 
     -------
     str
         Space-separated coordinates.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (ring_to_pos_list)
-    2
     """
     ring = close_ring(points)
     return " ".join(f"{lat:.{precision}f} {lon:.{precision}f}" for lat, lon in ring)
@@ -418,11 +398,6 @@ def clip_ring_to_relative(
     -------
     list of (lat, lon)
         Closed clipped ring. Empty when the intersection is empty.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (clip_ring_to_relative)
-    2
     """
     ring = close_ring(fir_boundary)
     if not ring:
@@ -459,11 +434,6 @@ def resolve_fir_relative_polygon(
     -------
     dict or None
         ``{"kind": "polygon", "pos_list": "..."}`` or ``None``.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (resolve_fir_relative_polygon)
-    2
     """
     kind = select_horizontal_geometry_kind(body)
     if kind == "wi_polygon":

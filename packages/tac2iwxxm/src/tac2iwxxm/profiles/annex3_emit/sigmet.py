@@ -861,11 +861,6 @@ def emit_convective_sigmet_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> 
     -------
     str
         US ``CONVECTIVE SIGMET`` (WST) with iwxxm-us analysis shape (#919 M11).
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (emit_convective_sigmet_annex3)
-    2
     """
     ns = _ns(iwxxm_version)
     fir = str(ir["fir"])
@@ -1000,11 +995,6 @@ def emit_sigmet_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
     -------
     str
         An IWXXM SIGMET / VolcanicAshSIGMET / TropicalCycloneSIGMET document.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (emit_sigmet_annex3)
-    2
     """
     if ir.get("convective"):
         return emit_convective_sigmet_annex3(ir, iwxxm_version=iwxxm_version)

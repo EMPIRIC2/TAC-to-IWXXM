@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 """Mechanically backfill minimal ADR-048-compliant Python docstrings.
 
-Adds module docs, private one-liners, and public NumPy stubs with executable
-Examples (trivial arithmetic smoke when a call example is unsafe to invent).
+Adds module docs, private one-liners, and public NumPy stubs (Parameters /
+Returns when applicable). Does **not** invent placeholder Examples —
+meaningful doctests belong only where a real call example is known.
 
-[Corpus: adr/ADR-048]
+[Corpus: adr/ADR-048] [Corpus: doc-standards] TC-EVDOC-002 / TC-EVDOC-004
 """
 
 from __future__ import annotations
@@ -61,11 +62,8 @@ def _public_fn_doc(name: str, node: ast.FunctionDef | ast.AsyncFunctionDef) -> s
     returns_block = ""
     if _returns_annotation(node):
         returns_block = "\n\nReturns\n-------\nobject\n    Return value."
-    # Executable smoke example (doctest-safe without inventing call args).
-    examples = (
-        f"\n\nExamples\n--------\n>>> 1 + 1  # docstring smoke (symbol: {name})\n2"
-    )
-    return f"Call ``{name}``.{params_block}{returns_block}{examples}"
+    # No placeholder Examples — inventing ``>>> 1 + 1`` smoke is forbidden.
+    return f"Call ``{name}``.{params_block}{returns_block}"
 
 
 def _private_doc(name: str) -> str:
@@ -154,7 +152,7 @@ def backfill_source(src: str, path: Path) -> str | None:
             if node.name in {"__getattr__", "__dir__"}:
                 return
             if ast.get_docstring(node) is not None:
-                # May still miss Examples — handled by rewrite pass below
+                # Do not invent Examples for existing docs.
                 return
             indent = " " * (node.col_offset + 4)
             if node.name.startswith("_"):
@@ -168,8 +166,7 @@ def backfill_source(src: str, path: Path) -> str | None:
 
     V().visit(tree)
 
-    # Second pass: public functions with docs but missing Examples — append via AST rewrite is hard;
-    # leave for checker-driven patcher below using regex on docstring strings.
+    # Examples are optional; never append placeholder doctest smoke.
 
     if not inserts:
         return None
@@ -181,52 +178,11 @@ def backfill_source(src: str, path: Path) -> str | None:
 
 
 def ensure_examples_in_existing(src: str) -> str:
-    """Append Examples smoke to public function docstrings missing Examples."""
-    try:
-        tree = ast.parse(src)
-    except SyntaxError:
-        return src
+    """No-op: do not append placeholder Examples smoke stubs.
 
-    # Use libcst-free approach: only touch files where checker still complains
-    # by re-parsing and replacing docstring nodes via line surgery is complex.
-    # Instead run a simple pattern: for each FunctionDef with docstring lacking Examples.
-    lines = src.splitlines(keepends=True)
-    replacements: list[
-        tuple[int, int, str]
-    ] = []  # start_line, end_line exclusive, new block
-
-    for node in ast.walk(tree):
-        if not isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
-            continue
-        if node.name.startswith("_"):
-            continue
-        doc = ast.get_docstring(node)
-        if not doc or "Examples" in doc:
-            continue
-        if not node.body:
-            continue
-        # Docstring is first statement
-        doc_stmt = node.body[0]
-        if not (
-            isinstance(doc_stmt, ast.Expr)
-            and isinstance(doc_stmt.value, ast.Constant)
-            and isinstance(doc_stmt.value.value, str)
-        ):
-            continue
-        start = doc_stmt.lineno - 1
-        end = doc_stmt.end_lineno or doc_stmt.lineno
-        indent = " " * (node.col_offset + 4)
-        new_doc = doc.rstrip() + (
-            f"\n\nExamples\n--------\n>>> 1 + 1  # docstring smoke ({node.name})\n2\n"
-        )
-        replacements.append((start, end, _indent_doc(new_doc, indent) + "\n"))
-
-    if not replacements:
-        return src
-    replacements.sort(key=lambda t: t[0], reverse=True)
-    for start, end, block in replacements:
-        lines[start:end] = [block]
-    return "".join(lines)
+    Kept for call-site compatibility with older backfill invocations.
+    """
+    return src
 
 
 def main(argv: list[str] | None = None) -> int:

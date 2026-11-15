@@ -70,11 +70,6 @@ def get_database_url() -> str:
     -------
     object
         PostgreSQL connection URL with SQLAlchemy async dialect
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (get_database_url)
-    2
     """
     # Try direct DATABASE_URL first. Treat a blank / whitespace-only value as
     # unset: docker-compose passes ``DATABASE_URL=${DATABASE_URL:-}`` (an empty
@@ -141,11 +136,6 @@ async def init_db_engine(
     -------
     object
         AsyncEngine instance
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (init_db_engine)
-    2
     """
     global _engine, _async_session_maker
 
@@ -195,11 +185,6 @@ async def init_db_engine(
 async def close_db_engine() -> None:
     """
     Close database engine and dispose of connections.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (close_db_engine)
-    2
     """
     global _engine, _async_session_maker
 
@@ -223,11 +208,6 @@ def get_db_engine() -> AsyncEngine | None:
     -------
     object
         AsyncEngine instance or None if not initialized
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (get_db_engine)
-    2
     """
     return _engine
 
@@ -249,10 +229,6 @@ async def get_db_session() -> AsyncGenerator[AsyncSession, None]:
     ------
         RuntimeError: If engine not initialized
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (get_db_session)
-    2
 
     Returns
     -------
@@ -281,11 +257,6 @@ async def test_db_connection() -> bool:
     -------
     object
         True if connection successful, False otherwise
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (test_db_connection)
-    2
     """
     try:
         async with get_db_session() as session:
@@ -304,11 +275,6 @@ async def get_db_stats() -> dict[str, Any]:
     -------
     object
         Dictionary with pool statistics
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (get_db_stats)
-    2
     """
     if _engine is None:
         return {
@@ -333,10 +299,6 @@ async def database_lifespan(app: FastAPI) -> AsyncIterator[None]:
     Usage:
         app = FastAPI(lifespan=database_lifespan)
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (database_lifespan)
-    2
 
     Parameters
     ----------
@@ -374,11 +336,6 @@ async def create_tables() -> None:
 
     This is called during application startup to ensure tables exist.
     It's safe to call multiple times - SQLAlchemy will skip existing tables.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (create_tables)
-    2
     """
     if _engine is None:
         logger.error("Database engine not initialized, cannot create tables")

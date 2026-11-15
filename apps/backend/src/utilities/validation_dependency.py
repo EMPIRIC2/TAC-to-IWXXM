@@ -19,10 +19,6 @@ def get_validation_service() -> ValidationService:
     """
     Get or create validation service singleton.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (get_validation_service)
-    2
 
     Returns
     -------
@@ -66,11 +62,6 @@ async def validate_metar_input(
     -------
     object
         AggregatedValidationResult with validation details
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (validate_metar_input)
-    2
     """
     if not content or not content.strip():
         raise HTTPException(status_code=400, detail="METAR content cannot be empty")
@@ -122,11 +113,6 @@ async def validate_iwxxm_input(
     -------
     object
         AggregatedValidationResult with validation details
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (validate_iwxxm_input)
-    2
     """
     if not content or not content.strip():
         raise HTTPException(status_code=400, detail="IWXXM content cannot be empty")

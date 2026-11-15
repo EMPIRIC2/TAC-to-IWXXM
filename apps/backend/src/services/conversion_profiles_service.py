@@ -314,10 +314,6 @@ class ConversionProfilesService:
         """
         List rule packs owned by the caller.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (list_rule_packs)
-        2
 
         Returns
         -------
@@ -336,10 +332,6 @@ class ConversionProfilesService:
         """
         List semantic presets owned by the caller (plus shared rows).
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (list_presets)
-        2
 
         Returns
         -------
@@ -364,10 +356,6 @@ class ConversionProfilesService:
         """
         Fetch one semantic preset by id (owner or shared).
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (get_preset)
-        2
 
         Parameters
         ----------
@@ -401,10 +389,6 @@ class ConversionProfilesService:
         """
         Insert a new semantic preset.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (create_preset)
-        2
 
         Parameters
         ----------
@@ -446,10 +430,6 @@ class ConversionProfilesService:
         """
         Patch an owned semantic preset.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (update_preset)
-        2
 
         Parameters
         ----------
@@ -497,10 +477,6 @@ class ConversionProfilesService:
         """
         Delete a semantic preset owned by the caller.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (delete_preset)
-        2
 
         Parameters
         ----------
@@ -522,10 +498,6 @@ class ConversionProfilesService:
         """
         List dissemination templates owned by the caller (plus shared rows).
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (list_templates)
-        2
 
         Returns
         -------
@@ -550,10 +522,6 @@ class ConversionProfilesService:
         """
         Fetch one dissemination template by id (owner or shared).
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (get_template)
-        2
 
         Parameters
         ----------
@@ -587,10 +555,6 @@ class ConversionProfilesService:
         """
         Insert a new dissemination template.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (create_template)
-        2
 
         Parameters
         ----------
@@ -632,10 +596,6 @@ class ConversionProfilesService:
         """
         Patch an owned dissemination template.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (update_template)
-        2
 
         Parameters
         ----------
@@ -684,10 +644,6 @@ class ConversionProfilesService:
         """
         Delete a dissemination template owned by the caller.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (delete_template)
-        2
 
         Parameters
         ----------
@@ -709,10 +665,6 @@ class ConversionProfilesService:
         """
         Fetch one rule pack by id (owner-scoped).
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (get_rule_pack)
-        2
 
         Parameters
         ----------
@@ -738,10 +690,6 @@ class ConversionProfilesService:
         """
         Insert a new rule pack.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (create_rule_pack)
-        2
 
         Parameters
         ----------
@@ -783,10 +731,6 @@ class ConversionProfilesService:
         """
         Patch an existing rule pack.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (update_rule_pack)
-        2
 
         Parameters
         ----------
@@ -821,10 +765,6 @@ class ConversionProfilesService:
         """
         Delete a rule pack owned by the caller.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (delete_rule_pack)
-        2
 
         Parameters
         ----------
@@ -880,10 +820,6 @@ class ConversionProfilesService:
         """
         List overlays owned by the caller (plus shared rows).
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (list_overlays)
-        2
 
         Returns
         -------
@@ -908,10 +844,6 @@ class ConversionProfilesService:
         """
         Fetch one overlay by id (owner or shared).
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (get_overlay)
-        2
 
         Parameters
         ----------
@@ -945,10 +877,6 @@ class ConversionProfilesService:
         """
         Insert a new server-signed overlay.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (create_overlay)
-        2
 
         Parameters
         ----------
@@ -993,10 +921,6 @@ class ConversionProfilesService:
         """
         Patch an owned overlay and re-sign.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (update_overlay)
-        2
 
         Parameters
         ----------
@@ -1051,10 +975,6 @@ class ConversionProfilesService:
         """
         Delete an overlay owned by the caller.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (delete_overlay)
-        2
 
         Parameters
         ----------
@@ -1168,10 +1088,6 @@ class ConversionProfilesService:
         """
         List first-party builtins plus custom templates visible to the caller.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (list_conversion_templates)
-        2
 
         Returns
         -------
@@ -1207,10 +1123,6 @@ class ConversionProfilesService:
         """
         Fetch a first-party or custom conversion template; fail-closed on unknown.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (get_conversion_template)
-        2
 
         Parameters
         ----------
@@ -1253,10 +1165,6 @@ class ConversionProfilesService:
         """
         Insert a custom conversion template (fork or new).
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (create_conversion_template)
-        2
 
         Parameters
         ----------
@@ -1301,10 +1209,6 @@ class ConversionProfilesService:
         """
         Patch an owned custom conversion template; reject first-party ids.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (update_conversion_template)
-        2
 
         Parameters
         ----------
@@ -1366,10 +1270,6 @@ class ConversionProfilesService:
         """
         Delete an owned custom conversion template; reject first-party.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (delete_conversion_template)
-        2
 
         Parameters
         ----------
@@ -1473,10 +1373,6 @@ class ConversionProfilesService:
         """
         List first-party defaults plus custom assets visible to the caller.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (list_library_assets)
-        2
 
         Parameters
         ----------
@@ -1516,10 +1412,6 @@ class ConversionProfilesService:
         """
         Fetch a first-party or custom library asset; fail-closed on unknown.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (get_library_asset)
-        2
 
         Parameters
         ----------
@@ -1568,10 +1460,6 @@ class ConversionProfilesService:
         """
         Parse YAML and collect regex diagnostics without persisting.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (validate_library_yaml_document)
-        2
 
         Parameters
         ----------
@@ -1657,10 +1545,6 @@ class ConversionProfilesService:
         """
         Insert a custom library asset (fork or new).
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (create_library_asset)
-        2
 
         Parameters
         ----------
@@ -1712,10 +1596,6 @@ class ConversionProfilesService:
         """
         Update owned custom asset, or auto-fork first-party on edit (AC3).
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (update_library_asset)
-        2
 
         Parameters
         ----------
@@ -1792,10 +1672,6 @@ class ConversionProfilesService:
         """
         Delete an owned custom library asset; reject first-party (AC4).
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (delete_library_asset)
-        2
 
         Parameters
         ----------
@@ -1823,10 +1699,6 @@ class ConversionProfilesService:
         """
         Resolve AC11 rule association; return ``(rule_id, rule_name)``.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (preview_library_rule)
-        2
 
         Parameters
         ----------

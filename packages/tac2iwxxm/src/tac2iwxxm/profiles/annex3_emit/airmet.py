@@ -138,11 +138,6 @@ def emit_airmet_annex3(
     -------
     str
         An IWXXM AIRMET document (F6.d / F24 A3 geometry fidelity / #731).
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (emit_airmet_annex3)
-    2
     """
     ns = _ns(iwxxm_version)
     fir = str(ir["fir"])

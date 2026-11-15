@@ -112,11 +112,6 @@ class XMIModelAnalyzer:
         -------
         object
             Dictionary mapping element ID to UMLElement
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (load_xmi_model)
-        2
         """
         if not xmi_path.exists():
             raise FileNotFoundError(f"XMI file not found: {xmi_path}")
@@ -190,11 +185,6 @@ class XMIModelAnalyzer:
         -------
         object
             Dictionary of class elements only
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (extract_classes)
-        2
         """
         return {xmi_id: elem for xmi_id, elem in elements.items() if elem.element_type in ("Class", "ClassifierRole")}
 
@@ -217,11 +207,6 @@ class XMIModelAnalyzer:
         -------
         object
             List of attribute elements owned by the class
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (extract_attributes)
-        2
         """
         return [
             elem
@@ -258,11 +243,6 @@ class XMIModelAnalyzer:
         -------
         object
             List of detected breaking changes
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (diff_models)
-        2
         """
         changes: list[BreakingChange] = []
 
@@ -347,11 +327,6 @@ class XMIModelAnalyzer:
         -------
         object
             Dictionary with categorized breaking changes
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (generate_breaking_change_report)
-        2
         """
         by_type: dict[str, list[BreakingChange]] = {}
         by_element_type: dict[str, list[BreakingChange]] = {}
@@ -400,11 +375,6 @@ def analyze_xmi_versions(old_xmi_path: Path, new_xmi_path: Path, old_version: st
     -------
     object
         Breaking change report
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (analyze_xmi_versions)
-    2
     """
     analyzer = XMIModelAnalyzer()
 

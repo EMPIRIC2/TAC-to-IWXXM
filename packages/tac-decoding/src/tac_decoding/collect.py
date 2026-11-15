@@ -226,11 +226,6 @@ def is_collect_input(text: str) -> bool:
     -------
     bool
         Whether ``text`` should use the COLLECT / IWXXM read path.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (is_collect_input)
-    2
     """
     if not _looks_like_xml(text) or _has_forbidden_dtd(text):
         return False
@@ -276,11 +271,6 @@ def _read_from_root(root: ET.Element) -> CollectRead:
 
         depth : int
             Nesting depth of ``el``.
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (walk)
-        2
         """
         nonlocal bulletin_identifier, nodes, saw_failed_attr
         if depth > _MAX_DEPTH:
@@ -337,11 +327,6 @@ def read_collect(xml: str) -> CollectRead:
     CollectRead
         ``mode`` is ``tac`` when at least one contained TAC is present, else
         ``xml_walk``.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (read_collect)
-    2
     """
     return _read_from_root(_parse_root(xml))
 
@@ -399,11 +384,6 @@ def decode_collect(xml: str, *, product: str, read: CollectRead | None = None) -
     -------
     DecodeResult
         Decode COLLECT or IWXXM XML into the public decode shape.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (decode_collect)
-    2
     """
     from tac_decoding.decode import (
         DecodeResidual,
@@ -474,11 +454,6 @@ def try_decode_collect(xml: str, *, product: str) -> DecodeResult | None:
     -------
     DecodeResult | None
         Decode COLLECT/IWXXM XML, or return ``None`` when the text is not that path.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (try_decode_collect)
-    2
     """
     if not _looks_like_xml(xml) or _has_forbidden_dtd(xml):
         return None
