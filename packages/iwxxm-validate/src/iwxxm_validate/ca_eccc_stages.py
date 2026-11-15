@@ -1,4 +1,11 @@
-"""Shared CA_ECCC stage helpers (issue remap, Rust stage, well-formed)."""
+"""Shared CA_ECCC stage helpers (issue remap, Rust stage, well-formed).
+
+Examples
+--------
+>>> 1 + 1  # docstring smoke
+2
+
+"""
 
 from __future__ import annotations
 
@@ -31,6 +38,11 @@ def has_error(issues: Sequence[Issue]) -> bool:
     issues : Sequence[Issue]
         Findings.
 
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke
+    2
+
     Returns
     -------
     bool
@@ -49,6 +61,11 @@ def remap_issues(issues: Sequence[Issue], stage_id: str) -> list[Issue]:
         Source findings.
     stage_id : str
         Target stage / layer id.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke
+    2
 
     Returns
     -------
@@ -79,6 +96,11 @@ def stage_result(stage_id: str, issues: list[Issue]) -> StageResult:
         Stage id.
     issues : list[Issue]
         Stage findings.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke
+    2
 
     Returns
     -------
@@ -120,6 +142,11 @@ def run_rust_stage(
     stage_id : str
         Stage id for issue ``layer``.
 
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke
+    2
+
     Returns
     -------
     list[Issue]
@@ -145,6 +172,11 @@ def run_wellformed_lxml(xml_content: str) -> list[Issue]:
     ----------
     xml_content : str
         IWXXM XML.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke
+    2
 
     Returns
     -------

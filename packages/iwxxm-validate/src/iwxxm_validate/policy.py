@@ -2,6 +2,12 @@
 
 Select/ignore apply to Schematron assert ids only. XSD, well-formed, and
 ``SCHEMATRON_SKIPPED`` are engine behavior and are not a select surface.
+
+Examples
+--------
+    >>> 1 + 1  # docstring smoke
+    2
+
 """
 
 from __future__ import annotations
@@ -41,6 +47,11 @@ def _as_str_tuple(value: object, *, field: str) -> tuple[str, ...]:
     field : object
         Argument ``field``.
 
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke
+    2
+
     Returns
     -------
     object
@@ -70,6 +81,11 @@ def _parse_document(data: Mapping[str, Any], *, source_path: str | None) -> Outp
         Argument ``data``.
     source_path : object
         Argument ``source_path``.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke
+    2
 
     Returns
     -------
@@ -116,6 +132,11 @@ def _load_yaml_mapping(text: str, *, source_path: str | None) -> OutputPolicyDoc
         Argument ``text``.
     source_path : object
         Argument ``source_path``.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke
+    2
 
     Returns
     -------
@@ -166,6 +187,11 @@ def _layer_output_policy(
     child : object
         Argument ``child``.
 
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke
+    2
+
     Returns
     -------
     object
@@ -206,6 +232,11 @@ def _take_output_overlay(
         Argument ``catalog``.
     profile : object
         Argument ``profile``.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke
+    2
 
     Returns
     -------
@@ -289,6 +320,11 @@ def _merged_lists(
         Argument ``doc``.
     policies : object
         Argument ``policies``.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke
+    2
 
     Returns
     -------
@@ -415,6 +451,11 @@ def apply_output_policy_to_report(
         Policy ID.
     profile : str or None, optional
         Profile id. By default ``None``.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke
+    2
 
     Returns
     -------

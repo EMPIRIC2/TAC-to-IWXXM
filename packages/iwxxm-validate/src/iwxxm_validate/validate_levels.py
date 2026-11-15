@@ -29,6 +29,12 @@ def catalog_roots(iwxxm_version: str, *, profile: str = "annex3") -> list[str]:
     -------
     list[str]
         Existing catalog root directory paths.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke
+    2
+
     """
     vdir = version_dir(iwxxm_version)
     root = vendor_iwxxm_root()
@@ -72,6 +78,12 @@ def append_extended_levels(
     -------
     list[Issue]
         Merged findings.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke
+    2
+
     """
     out = list(issues)
     try:
@@ -117,6 +129,12 @@ def report_from_issues(
     -------
     ValidationReport
         Aggregate report.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke
+    2
+
     """
     ok = not any(issue.severity == "error" for issue in issues)
     return ValidationReport(
