@@ -1,7 +1,7 @@
 """IWXXM-US profile XML writer for METAR/SPECI (F6.b).
 
 Emits WMO annex3 body plus ``iwxxm-us`` extension blocks (Addendum, AerodromePeakWind,
-AerodromeWindShift, AerodromeVariableRVR) per ADR-013 / docs/context/general-tac-iwxxm-converter.md.
+AerodromeWindShift, AerodromeVariableRVR) see docs/context/general-tac-iwxxm-converter.md.
 """
 
 from __future__ import annotations

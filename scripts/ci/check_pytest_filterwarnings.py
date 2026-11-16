@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Fail closed when pytest configs tolerate warnings.
 
-ADR-048 / TC-EVDOC-007: every ``pyproject.toml`` that defines
+ TC-EVDOC-007: every ``pyproject.toml`` that defines
 ``[tool.pytest.ini_options]`` (or owns a ``tests/`` tree under ``apps/`` /
 ``packages/`` / repo root) must set ``filterwarnings`` to treat warnings as
 errors. Broad ``ignore`` filters are rejected. Mutation-only ``-W`` overrides
@@ -178,7 +178,7 @@ def main(argv: list[str] | None = None) -> int:
     print("FAIL: pytest warnings-as-errors policy violations:", file=sys.stderr)
     for finding in findings:
         print(
-            f"  {_rel(finding.path)}: [{finding.code}] {finding.message}",
+            f" {_rel(finding.path)}: [{finding.code}] {finding.message}",
             file=sys.stderr,
         )
     return 1

@@ -174,7 +174,7 @@ test-file-naming-guard:
 toml-session-ids-guard:
 	$(UV) run python scripts/ci/check_toml_session_ids.py
 
-# ADR-048 / TC-EVDOC-007: pytest filterwarnings must be error (no ignore)
+# TC-EVDOC-007: pytest filterwarnings must be error (no ignore)
 pytest-filterwarnings-guard:
 	$(UV) run python scripts/ci/check_pytest_filterwarnings.py
 
@@ -1030,7 +1030,7 @@ doks-worker-poller-preflight:
 doks-worker-crashloop-check:
 	bash scripts/deploy/check_worker_crashloop.sh
 
-# --- Supabase local stack (repo root supabase/) ---
+# --- Supabase local stack (repo root supabase) ---
 
 supabase-start:
 	bash scripts/supabase/local-dev.sh start

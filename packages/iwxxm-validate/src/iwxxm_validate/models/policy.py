@@ -1,8 +1,8 @@
-"""IWXXM output policy document models (ADR-046).
+"""IWXXM output policy document models.
 
 Examples
 --------
->>> 1 + 1  # docstring smoke
+>>> 1 + 1 # docstring smoke
 2
 
 """
@@ -26,7 +26,7 @@ class PolicyError(ValueError):
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke
+    >>> 1 + 1 # docstring smoke
     2
 
     """
@@ -43,7 +43,7 @@ class PolicyActivationError(PolicyError):
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke
+    >>> 1 + 1 # docstring smoke
     2
 
     """
@@ -54,7 +54,7 @@ class OutputPolicyRaw(TypedDict, total=False):
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke
+    >>> 1 + 1 # docstring smoke
     2
 
     """
@@ -97,7 +97,7 @@ class OutputPolicyDocument:
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke
+    >>> 1 + 1 # docstring smoke
     2
 
     """
@@ -133,7 +133,7 @@ class ResolvedOutputPolicy:
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke
+    >>> 1 + 1 # docstring smoke
     2
 
     """
@@ -157,7 +157,7 @@ class OutputPolicyCatalog:
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke
+    >>> 1 + 1 # docstring smoke
     2
 
     """
@@ -180,7 +180,7 @@ class OutputPolicyCatalog:
 
         Examples
         --------
-        >>> 1 + 1  # docstring smoke
+        >>> 1 + 1 # docstring smoke
         2
 
         """
@@ -202,7 +202,7 @@ class OutputPolicyCatalog:
 
         Examples
         --------
-        >>> 1 + 1  # docstring smoke
+        >>> 1 + 1 # docstring smoke
         2
 
         """
@@ -219,7 +219,7 @@ class OutputPolicyCatalog:
 
         Examples
         --------
-        >>> 1 + 1  # docstring smoke
+        >>> 1 + 1 # docstring smoke
         2
 
         """

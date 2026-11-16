@@ -106,7 +106,7 @@ def set_bulletin_splitter(splitter: Callable[[str, str], object] | None) -> None
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (set_bulletin_splitter)
+    >>> 1 + 1 # docstring smoke (set_bulletin_splitter)
     2
     """
     global _bulletin_splitter
@@ -335,7 +335,7 @@ def decode_single_report(tac: str, *, product: str) -> DecodeResult:
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (decode_single_report)
+    >>> 1 + 1 # docstring smoke (decode_single_report)
     2
     """
     return _decode_single_report(tac, product=product)
@@ -360,7 +360,7 @@ def shift_decode(result: DecodeResult, offset: int) -> DecodeResult:
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (shift_decode)
+    >>> 1 + 1 # docstring smoke (shift_decode)
     2
     """
     return _shift_decode(result, offset)
@@ -408,17 +408,17 @@ def decode_tac(tac: str, *, product: str) -> DecodeResult:
     -------
     DecodeResult
         ``segments`` for recognized groups; ``residuals`` for undecoded spans;
-        ``summary`` plain-language paragraph (F9 / ADR-025).
+        ``summary`` plain-language paragraph (F9).
         METAR/SPECI/TAF aim for rich segments; VAA/TCA/SWXA/VONA use structured
         LABEL fields (EV-030 / EV-099) with explicit residuals for leftovers (G4).
         Multi-report AHL bulletins are split so each report is decoded independently
         (heading is a bulletin-framing segment, not a product residual).
         COLLECT documents decode contained TAC when present, otherwise walk XML
-        fields (ADR-045).
+        fields ().
 
     Examples
     --------
-    >>> 1 + 1  # docstring smoke (decode_tac)
+    >>> 1 + 1 # docstring smoke (decode_tac)
     2
     """
     product_u = product.upper()

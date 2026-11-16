@@ -88,7 +88,7 @@ def _quarantine_xml(
     station = station_m.group("station").upper() if station_m else "YUDO"
     aerodrome = ""
     if product in {"METAR", "SPECI", "TAF"}:
-        aerodrome = f"""  <iwxxm:aerodrome>
+        aerodrome = f""" <iwxxm:aerodrome>
     <aixm:AirportHeliport gml:id="ad.{station.lower()}">
       <aixm:timeSlice>
         <aixm:AirportHeliportTimeSlice gml:id="ad.ts.{station.lower()}">
@@ -101,14 +101,14 @@ def _quarantine_xml(
     </aixm:AirportHeliport>
   </iwxxm:aerodrome>
 """
-    time_block = f"""  <iwxxm:issueTime>
+    time_block = f""" <iwxxm:issueTime>
     <gml:TimeInstant gml:id="t.issue">
       <gml:timePosition>{now}</gml:timePosition>
     </gml:TimeInstant>
   </iwxxm:issueTime>
 """
     if product in {"METAR", "SPECI"}:
-        time_block += f"""  <iwxxm:observationTime>
+        time_block += f""" <iwxxm:observationTime>
     <gml:TimeInstant gml:id="t.obs">
       <gml:timePosition>{now}</gml:timePosition>
     </gml:TimeInstant>
@@ -327,7 +327,7 @@ def _emit(product: str, profile: str, ir: dict[str, Any], iwxxm_version: str) ->
         Return value.
     """
     if product in {"METAR", "SPECI", "TAF", "SIGMET", "AIRMET", "VAA", "TCA"}:
-        # ADR-047: core F6 products emit via YAML maps (python plugins remain builders).
+        # Core F6 products emit via YAML maps (python plugins remain builders).
         return emit_with_map(ir, product=product, profile=profile, iwxxm_version=iwxxm_version)
     if product == "SWXA":
         return emit_swxa_annex3(ir, iwxxm_version=iwxxm_version)
@@ -360,13 +360,13 @@ def _inject_translation_centre(
     str
         XML with centre attributes on the first ``iwxxm:*`` root start tag.
     """
-    extra = f'\n    translationCentreDesignator="{escape(designator)}"\n    translationCentreName="{escape(name)}"'
+    extra = f'\n translationCentreDesignator="{escape(designator)}"\n translationCentreName="{escape(name)}"'
     if heading is not None:
         bulletin_id, translation_time = heading
         extra += (
-            f'\n    translatedBulletinID="{escape(bulletin_id)}"'
-            f'\n    translatedBulletinReceptionTime="{escape(translation_time)}"'
-            f'\n    translationTime="{escape(translation_time)}"'
+            f'\n translatedBulletinID="{escape(bulletin_id)}"'
+            f'\n translatedBulletinReceptionTime="{escape(translation_time)}"'
+            f'\n translationTime="{escape(translation_time)}"'
         )
     match = _ROOT_OPEN.search(xml)
     if match is None:
