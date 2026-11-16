@@ -365,6 +365,31 @@ def _append_pre_convert_lint_issues(
         )
 
 
+def _station_health_lint_counts(
+    acc: _ConvertAccumulator,
+    lint_report: LintReport | None,
+) -> tuple[int, int, list[str]]:
+    """Collect lint severity counts and issue codes for station-health writes."""
+    lint_error_count = 0
+    lint_warning_count = 0
+    issue_codes: list[str] = []
+    if lint_report is not None:
+        for issue in lint_report.issues:
+            severity = str(getattr(issue, "severity", "") or "").lower()
+            if severity in {"error", "critical"}:
+                lint_error_count += 1
+            elif severity == "warning":
+                lint_warning_count += 1
+            code = str(getattr(issue, "code", "") or "").strip()
+            if code:
+                issue_codes.append(code)
+    for issue in getattr(acc, "issues", []) or []:
+        code = str(getattr(issue, "code", "") or "").strip()
+        if code:
+            issue_codes.append(code)
+    return lint_error_count, lint_warning_count, issue_codes
+
+
 def _record_convert_station_health(
     acc: _ConvertAccumulator,
     *,
@@ -387,23 +412,7 @@ def _record_convert_station_health(
         from src.services.station_health_recorder import record_tac_observation
     except Exception:
         return
-    lint_error_count = 0
-    lint_warning_count = 0
-    issue_codes: list[str] = []
-    if lint_report is not None:
-        for issue in lint_report.issues:
-            severity = str(getattr(issue, "severity", "") or "").lower()
-            if severity in {"error", "critical"}:
-                lint_error_count += 1
-            elif severity == "warning":
-                lint_warning_count += 1
-            code = str(getattr(issue, "code", "") or "").strip()
-            if code:
-                issue_codes.append(code)
-    for issue in getattr(acc, "issues", []) or []:
-        code = str(getattr(issue, "code", "") or "").strip()
-        if code:
-            issue_codes.append(code)
+    lint_error_count, lint_warning_count, issue_codes = _station_health_lint_counts(acc, lint_report)
     for result in acc.results:
         tac = (result.tac_input or "").strip()
         if not tac:
