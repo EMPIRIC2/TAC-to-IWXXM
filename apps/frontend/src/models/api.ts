@@ -154,7 +154,7 @@ export type SelectionOptionKind =
   | 'dissemination';
 
 /**
- * Fetch deployed selection options for dropdowns (ADR-044 / TP-YCL-01).
+ * Fetch deployed selection options for dropdowns (TP-YCL-01).
  *
  * **Endpoint**: GET /api/v1/selection-options
  * @example

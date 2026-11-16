@@ -100,7 +100,7 @@ export function useFileConverterPart3b(ctx: any) {
         .filter(Boolean)
         .join('\n');
 
-      // Auto-switch when paste looks like bulletin / COLLECT (UJ-025 / ADR-024)
+      // Auto-switch when paste looks like bulletin / COLLECT (UJ-025)
       let mode = inputMode;
       if (mode === 'tac' && D.looksLikeAhlBulletin(tacForDetect)) {
         mode = 'ahl_bulletin';
