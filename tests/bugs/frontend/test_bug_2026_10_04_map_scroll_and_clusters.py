@@ -10,24 +10,28 @@ from __future__ import annotations
 from pathlib import Path
 
 _ROOT = Path(__file__).resolve().parents[3]
-_MAP = (_ROOT / "apps/frontend/src/app/components/LiveWorldMap.tsx").read_text(
-    encoding="utf-8"
+_FE = _ROOT / "apps/frontend/src"
+_MAP = "\n".join(
+    (
+        (_FE / "app/components/LiveWorldMap.tsx").read_text(encoding="utf-8"),
+        (_FE / "app/components/LiveWorldMapView.tsx").read_text(encoding="utf-8"),
+        (_FE / "hooks/useLiveWorldMap.ts").read_text(encoding="utf-8"),
+        (_FE / "utils/liveWorldMapHelpers.tsx").read_text(encoding="utf-8"),
+    )
 )
-_STATION_POPUP = (
-    _ROOT / "apps/frontend/src/app/components/StationPopup.tsx"
-).read_text(encoding="utf-8")
-_CONVERTER = (_ROOT / "apps/frontend/src/app/components/FileConverter.tsx").read_text(
-    encoding="utf-8"
+_STATION_POPUP = (_FE / "app/components/StationPopup.tsx").read_text(encoding="utf-8")
+_CONVERTER = "\n".join(
+    (
+        (_FE / "app/components/FileConverter.tsx").read_text(encoding="utf-8"),
+        (_FE / "app/components/FileConverterChromeToolbar.tsx").read_text(
+            encoding="utf-8"
+        ),
+        (_FE / "hooks/useFileConverterPart2.ts").read_text(encoding="utf-8"),
+    )
 )
-_VISUALS = (_ROOT / "apps/frontend/src/app/components/DecodeVisualsPage.tsx").read_text(
-    encoding="utf-8"
-)
-_DRAWER = (_ROOT / "apps/frontend/src/utils/convertResultsDrawer.ts").read_text(
-    encoding="utf-8"
-)
-_PANES = (_ROOT / "apps/frontend/src/app/components/LiveConvertPaneGrid.tsx").read_text(
-    encoding="utf-8"
-)
+_VISUALS = (_FE / "app/components/DecodeVisualsPage.tsx").read_text(encoding="utf-8")
+_DRAWER = (_FE / "utils/convertResultsDrawer.ts").read_text(encoding="utf-8")
+_PANES = (_FE / "app/components/LiveConvertPaneGrid.tsx").read_text(encoding="utf-8")
 
 
 def test_bug_2026_10_04_map_draws_features_without_clusters_or_upward_pan() -> None:

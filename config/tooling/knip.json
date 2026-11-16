@@ -118,6 +118,10 @@
     "apps/frontend/src/app/components/ui/scroll-area.tsx",
     "apps/frontend/src/app/components/ui/sheet.tsx",
     "apps/frontend/src/app/components/ui/sidebar.tsx",
+    "apps/frontend/src/app/components/ui/sidebar-context.tsx",
+    "apps/frontend/src/app/components/ui/sidebar-menu.tsx",
+    "apps/frontend/src/app/components/ui/sidebar-shell.tsx",
+    "apps/frontend/src/models/index.ts",
     "apps/frontend/src/app/components/ui/skeleton.tsx",
     "apps/frontend/src/app/components/ui/table.tsx",
     "apps/frontend/src/app/components/ui/use-mobile.ts"

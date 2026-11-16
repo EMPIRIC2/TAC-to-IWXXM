@@ -80,7 +80,7 @@ vi.mock('./LiveWorldMap', () => ({
   ),
 }));
 import { clearOverlayOnAuthLoss } from '@/app/utils/clearOverlayOnAuthLoss';
-import { operatorDisseminationUiConfig } from '/utils/operatorDisseminationUi';
+import { operatorDisseminationUiConfig } from '@/utils/operatorDisseminationUi';
 import { defaultLibraryId } from '@/utils/libraryIds';
 import {
   CONVERSION_METADATA_PREFS_KEY,

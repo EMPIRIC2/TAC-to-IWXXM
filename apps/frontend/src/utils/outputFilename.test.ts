@@ -85,6 +85,8 @@ describe('toIwxxmDownloadName', () => {
     expect(toIwxxmDownloadName('pack.iwxxm')).toBe('pack.iwxxm');
     expect(toIwxxmDownloadName('')).toBe('download.xml');
     expect(toIwxxmDownloadName('   ')).toBe('download.xml');
+    expect(toIwxxmDownloadName(null as unknown as string)).toBe('download.xml');
+    expect(toIwxxmDownloadName(undefined as unknown as string)).toBe('download.xml');
   });
 
   it('forces .xml for extensionless or unknown extensions (failure modes)', () => {

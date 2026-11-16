@@ -4,7 +4,7 @@
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
-import { LIVE_ASSIST_DEBOUNCE_MS } from '/utils/liveAssist';
+import { LIVE_ASSIST_DEBOUNCE_MS } from '@/utils/liveAssist';
 
 const lintTac = vi.hoisted(() =>
   vi.fn().mockResolvedValue({

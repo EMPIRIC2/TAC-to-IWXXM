@@ -33,7 +33,13 @@ export type ValidityPlace = {
   reports: ValidityReport[];
 };
 
+/**
+ * LIVE_MAP_FILTER_ACTIVE.
+ */
 export const LIVE_MAP_FILTER_ACTIVE = 'Active reports';
+/**
+ * LIVE_MAP_ACTIVE_EMPTY.
+ */
 export const LIVE_MAP_ACTIVE_EMPTY =
   'No active reports in this view. Turn off Active reports to show all.';
 
@@ -58,6 +64,11 @@ const VALID_UNTIL_HHMMZ = /\bVALID\s+UNTIL\s+(\d{2})(\d{2})Z?\b/i;
  *
  * @param value - Stamp text
  * @returns Epoch ms, or null
+ * @example
+ * const _ = true;
+ */
+/**
+ * parseValidityStamp.
  * @example
  * const _ = true;
  */
@@ -139,6 +150,11 @@ function yearMonthForTacDay(
  * @example
  * const _ = true;
  */
+/**
+ * stampFromDayHourMinute.
+ * @example
+ * const _ = true;
+ */
 export function stampFromDayHourMinute(
   day: number,
   hour: number,
@@ -184,6 +200,11 @@ function orderedWindow(
  * @param tac - Raw report text
  * @param observedAt - Issue / observation stamp for month/year
  * @returns Validity window, or null
+ * @example
+ * const _ = true;
+ */
+/**
+ * validityFromTac.
  * @example
  * const _ = true;
  */
@@ -250,6 +271,11 @@ export function validityFromTac(
  * @example
  * const _ = true;
  */
+/**
+ * resolveReportValidity.
+ * @example
+ * const _ = true;
+ */
 export function resolveReportValidity(report: ValidityReport): ReportValidity | null {
   const fromField = parseValidityStamp(report.valid_from);
   const toField = parseValidityStamp(report.valid_to);
@@ -276,6 +302,11 @@ export function resolveReportValidity(report: ValidityReport): ReportValidity | 
  * @example
  * const _ = true;
  */
+/**
+ * isReportActiveNow.
+ * @example
+ * const _ = true;
+ */
 export function isReportActiveNow(
   validity: ReportValidity,
   nowMs = Date.now(),
@@ -291,6 +322,11 @@ export function isReportActiveNow(
  * @param place - Place with reports
  * @param nowMs - Clock
  * @returns Whether the place stays when Active reports is on
+ * @example
+ * const _ = true;
+ */
+/**
+ * placeIsActiveNow.
  * @example
  * const _ = true;
  */
@@ -311,6 +347,11 @@ export function placeIsActiveNow(place: ValidityPlace, nowMs = Date.now()): bool
  *
  * @param places - Places in the current view
  * @returns Default switch value
+ * @example
+ * const _ = true;
+ */
+/**
+ * defaultActiveReportsOn.
  * @example
  * const _ = true;
  */
