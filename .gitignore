@@ -249,3 +249,5 @@ third_party/
 
 # setuptools metadata (never commit)
 *.egg-info/
+.pytest_cache/
+**/.pytest_cache/

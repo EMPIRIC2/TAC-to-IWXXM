@@ -61,11 +61,8 @@ def _tracked_text_files() -> list[Path]:
 
 
 def _scan_text(text: str) -> list[str]:
-    hits: list[str] = []
-    for match in _ADR_DIGITS.finditer(text):
-        hits.append(match.group(0))
-    for match in _CORPUS_ADR.finditer(text):
-        hits.append(match.group(0))
+    hits = [match.group(0) for match in _ADR_DIGITS.finditer(text)]
+    hits.extend(match.group(0) for match in _CORPUS_ADR.finditer(text))
     return hits
 
 
@@ -80,8 +77,9 @@ def scan_tracked_sources() -> list[str]:
         if b"\0" in raw[:2048]:
             continue
         text = raw.decode("utf-8", errors="ignore")
-        for token in _scan_text(text):
-            found.append(f"{path.relative_to(_REPO_ROOT)}:{token}")
+        found.extend(
+            f"{path.relative_to(_REPO_ROOT)}:{token}" for token in _scan_text(text)
+        )
     return found
 
 

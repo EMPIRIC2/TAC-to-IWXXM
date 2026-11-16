@@ -799,7 +799,7 @@ def test_ev080_remaining_branch_fill(monkeypatch: pytest.MonkeyPatch) -> None:
     assert fg._ensure_closed_ring([(1.0, 2.0), (1.0, 2.0)]) == [(1.0, 2.0), (1.0, 2.0)]
     assert fg._ensure_closed_ring([(1.0, 2.0), (3.0, 4.0)])[0] == (1.0, 2.0)
 
-    # metar: / wx skip; lightning no sector; second-loc without M; max-only 6h;
+    # metar: // wx skip; lightning no sector; second-loc without M; max-only 6h;
     # no metre/SM vis; trend parse None
     trend = ms._parse_trend_group(
         {"day": 1, "hour": 12, "minute": 0, "station": "KJFK"},

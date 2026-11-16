@@ -1218,7 +1218,8 @@ describe('API Utils', () => {
         exchange_profile: 'GLOBAL_AFS',
       });
       expect(global.fetch).toHaveBeenCalledWith(
-        expect.stringMatching(\/lint-issue-catalog\?product=taf&semantic_profile=US_FAA_NWS&exchange_profile=GLOBAL_AFS$/,
+        expect.stringMatching(
+          /lint-issue-catalog\?product=taf&semantic_profile=US_FAA_NWS&exchange_profile=GLOBAL_AFS$/,
         ),
         expect.objectContaining({ method: 'GET' }),
       );
@@ -1231,7 +1232,8 @@ describe('API Utils', () => {
         source_access: 'Paywall',
       });
       expect(global.fetch).toHaveBeenCalledWith(
-        expect.stringMatching(\/lint-issue-catalog\?issue_type=presence&source_access=paywall$/,
+        expect.stringMatching(
+          /lint-issue-catalog\?issue_type=presence&source_access=paywall$/,
         ),
         expect.objectContaining({ method: 'GET' }),
       );
@@ -1275,7 +1277,8 @@ describe('API Utils', () => {
         statusText: 'Bad Gateway',
         json: vi.fn().mockRejectedValueOnce(new Error('not json')),
       });
-      await expect(fetchLintIssueCatalog({ product: 'taf' })).rejects.toThrow(HTTP 502|Bad Gateway/,
+      await expect(fetchLintIssueCatalog({ product: 'taf' })).rejects.toThrow(
+        /HTTP 502|Bad Gateway/,
       );
     });
 
@@ -1333,7 +1336,8 @@ describe('API Utils', () => {
       });
       expect(result.items[0]!.code).toBe('TS');
       expect(global.fetch).toHaveBeenCalledWith(
-        expect.stringMatching(\/code-name-dictionary\?q=thunder&product=METAR&country=INTL&wmo_amendment=WMO\+No\.\+306$/,
+        expect.stringMatching(
+          /code-name-dictionary\?q=thunder&product=METAR&country=INTL&wmo_amendment=WMO\+No\.\+306$/,
         ),
         expect.objectContaining({ method: 'GET' }),
       );
@@ -1750,7 +1754,8 @@ describe('API Utils', () => {
       await expect(
         massIngestFiles({ files: [new File(['x'], 'a.tac')], accessToken: ' ' }),
       ).rejects.toThrow(/Sign in required/);
-      await expect(massIngestFiles({ files: [], accessToken: 'tok' })).rejects.toThrow(At least one file/,
+      await expect(massIngestFiles({ files: [], accessToken: 'tok' })).rejects.toThrow(
+        /At least one file/,
       );
     });
 

@@ -9,10 +9,7 @@ import jsdoc from 'eslint-plugin-jsdoc';
 
 /** — FE paths grandfathered for max-lines / complexity. */
 // Config lives under config/tooling/; allowlists are repo-root relative.
-const _repoRoot = path.resolve(
-  path.dirname(fileURLToPath(import.meta.url)),
-  '../..',
-);
+const _repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const _allowlistPath = path.join(
   _repoRoot,
   'scripts/ci/policy/file-budget-allowlist.txt',
@@ -134,14 +131,14 @@ export default tseslint.config(
     },
   },
   {
-    /— shadcn UI kit excluded from line/complexity budget
+    // — shadcn UI kit excluded from line/complexity budget
     files: ['apps/frontend/src/app/components/ui/**/*.{ts,tsx}'],
     rules: {
       'max-lines': 'off',
       complexity: 'off',
     },
   },
-  /— grandfather oversize / high-complexity FE modules
+  // — grandfather oversize / high-complexity FE modules
   // Omit when allowlists are missing (empty files[] is invalid in flat config).
   ...(_feBudgetOverrides.length > 0
     ? [

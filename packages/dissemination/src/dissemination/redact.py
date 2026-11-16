@@ -5,7 +5,7 @@ from __future__ import annotations
 import re
 from urllib.parse import urlparse, urlunparse
 
-_URI_USERINFO = re.compile(r"(: / [^:/?#]+:)([^@/?#]+)(@)")
+_URI_USERINFO = re.compile(r"(://[^:/?#]+:)([^@/?#]+)(@)")
 _PASSWORD_JSON = re.compile(r'(?i)("?(?:password|passwd|secret|token|api[_-]?key)"?\s*[:=]\s*")([^"]*)(")')
 
 

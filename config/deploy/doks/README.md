@@ -36,7 +36,7 @@ Staging must use the **staging** Postgres instance `metar-iwxxm-staging` (never 
 
 ```bash
 kubectl --context do-nyc1-metar-iwxxm-staging -n metar-iwxxm-staging create secret generic metar-api-secrets \
-  --from-literal=DATABASE_URL='postgresql+asyncpg: / …@metar-iwxxm-staging-….db.ondigitalocean.com:25060/defaultdb?ssl=require' \
+  --from-literal=DATABASE_URL='postgresql+asyncpg://…@metar-iwxxm-staging-….db.ondigitalocean.com:25060/defaultdb?ssl=require' \
   --from-literal=SUPABASE_URL='https://….supabase.co' \
   --from-literal=SUPABASE_JWKS_URL='' \
   --from-literal=SUPABASE_PUBLISHABLE_KEY='…' \

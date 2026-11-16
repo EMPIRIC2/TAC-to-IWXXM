@@ -10,6 +10,6 @@ load "${BATS_TEST_DIRNAME}/../helpers/load"
 }
 
 @test "scripts/ci/alembic_upgrade.sh: stubbed upgrade with DATABASE_URL" {
-  run env DATABASE_URL=postgresql: / stub/stub bash scripts/ci/alembic_upgrade.sh
+  run env DATABASE_URL=postgresql://stub/stub bash scripts/ci/alembic_upgrade.sh
   [ "$status" -eq 0 ]
 }

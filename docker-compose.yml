@@ -44,7 +44,7 @@ services:
       - METAR_CORS_ORIGINS=${METAR_CORS_ORIGINS:-http://localhost:18000,http://127.0.0.1:18000}
       # Default to the bundled `db` service so `docker compose up` is self-contained.
       # Override by setting DATABASE_URL in `.env` (e.g. a Supabase pooler URL).
-      - DATABASE_URL=${DATABASE_URL:-postgresql+asyncpg: / ${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@db:5432/${POSTGRES_DB:-postgres}}
+      - DATABASE_URL=${DATABASE_URL:-postgresql+asyncpg://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@db:5432/${POSTGRES_DB:-postgres}}
     volumes:
       # LIVE-004 — repo tmp shared into API (Colima host /tmp bind is unreliable).
       - ./tmp/f16-live:/tmp/f16-live

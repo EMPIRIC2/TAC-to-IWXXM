@@ -57,16 +57,16 @@ Send requires **IWXXM XML** (convert first, or drag-drop `sample-metar.iwxxm.xml
 **Postgres (local compose)**
 
 - Sink: Postgres
-- URI: `postgresql+asyncpg: / byoc:byoc-mock-password-not-real@127.0.0.1:25432/byoc`
+- URI: `postgresql+asyncpg://byoc:byoc-mock-password-not-real@127.0.0.1:25432/byoc`
 - DDL: on
 
 **MySQL**
 
-- URI: `mysql+aiomysql: / byoc:byoc-mock-password-not-real@127.0.0.1:13306/byoc`
+- URI: `mysql+aiomysql://byoc:byoc-mock-password-not-real@127.0.0.1:13306/byoc`
 
 **SQL Server**
 
-- URI: `mssql+aioodbc: / sa:Byoc_Mock_Passw0rd!@127.0.0.1:11433/master?TrustServerCertificate=yes`
+- URI: `mssql+aioodbc://sa:Byoc_Mock_Passw0rd!@127.0.0.1:11433/master?TrustServerCertificate=yes`
 
 **WIS2 BYOC JSON**
 

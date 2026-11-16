@@ -408,7 +408,7 @@ with aliases during one CalVer window. DX tests: ``…``.
 - **operator workbench input modes **: TAC | AHL bulletin (`/convert-bulletin`) | IWXXM COLLECT
  (`/ingest-collect` 501 placeholder). Accept `.xml`/`.gz` (inflate). `log_level` +
  `include_nil_reasons` on Convert. Log Level filters Conversion log + console for lint/validate
- process messages. **Validation**: / TC-operator workbench-007 : auto-switch
+ process messages. **Validation**: TC-operator workbench-007 : auto-switch
  required. COLLECT 501 honest UX. operator workbench status unchanged.
 - **operator workbench golden examples **: Static frontend catalog (copied package
  goldens) + Examples control in FileConverter. loads TAC / AHL / happy-path IWXXM into
@@ -688,7 +688,7 @@ with aliases during one CalVer window. DX tests: ``…``.
 - **Purpose**: TCA (`iwxxm:TropicalCycloneAdvisory`) quality peer. WMO
  `tc-advisory-A2-2` golden under defaults. Themes **TCA quality bar T1–T3 / C1**. Do not confuse with
  TC SIGMET (`iwxxm:TropicalCycloneSIGMET`. quality path absorbed in **/ **).
-- **Status**: **Done** (PR ). **Deepen**: / (B4).
+- **Status**: **Done** (PR ). **Deepen**: (B4).
 - **API**: `product=tca` already in enum. no new routes.
 - **Journeys / tests**: . quality bar-001..006. deepen / TC-operator workbench-008.
 - **Fixtures**: Same translation-package mine policy as VAA quality bar (E21-D4).
@@ -699,7 +699,7 @@ with aliases during one CalVer window. DX tests: ``…``.
 
 ### SWXA quality bar
 
-- **Purpose**: / Space Weather Advisory (`iwxxm:SpaceWeatherAdvisory`) quality peer
+- **Purpose**: Space Weather Advisory (`iwxxm:SpaceWeatherAdvisory`) quality peer
  to METAR and SPECI quality bar through TCA quality bar. Completes the eight-family TAC→IWXXM converter set. TAC AHL `FN` → IWXXM `LN`.
  Registry-backed lint . golden policy .
 - **Status**: **Done** (PR ).
@@ -801,7 +801,7 @@ with aliases during one CalVer window. DX tests: ``…``.
  translation-failed happy-path. no US-in-WMO catalog mix.
 - **Non-goals**: . big-bang encode engines. hand-edit `vendor/schemas/*`. USWX. PDF/clone commits.
 - **Source**: product-requirements deepen. evolve-decisions . amend.
-- **Follow-on**: / implements, (+ full dig ❌ US types).
+- **Follow-on**: implements, (+ full dig ❌ US types).
 
 ### iwxxm-us REMARKS encode + VA multi-location
 

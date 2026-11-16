@@ -39,12 +39,12 @@ def _to_psycopg_url(url: str) -> str:
     object
         Return value.
     """
-    if url.startswith("postgresql+asyncpg: / "):
-        return "postgresql+psycopg: / " + url.removeprefix("postgresql+asyncpg: / ")
-    if url.startswith("postgresql+psycopg2: / "):
-        return "postgresql+psycopg: / " + url.removeprefix("postgresql+psycopg2: / ")
-    if url.startswith("postgresql: / "):
-        return "postgresql+psycopg: / " + url.removeprefix("postgresql: / ")
+    if url.startswith("postgresql+asyncpg://"):
+        return "postgresql+psycopg://" + url.removeprefix("postgresql+asyncpg://")
+    if url.startswith("postgresql+psycopg2://"):
+        return "postgresql+psycopg://" + url.removeprefix("postgresql+psycopg2://")
+    if url.startswith("postgresql://"):
+        return "postgresql+psycopg://" + url.removeprefix("postgresql://")
     return url
 
 

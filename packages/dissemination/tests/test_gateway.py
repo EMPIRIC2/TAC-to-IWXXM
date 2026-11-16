@@ -63,7 +63,7 @@ def test_fake_adapter_satisfies_sink_protocol(adapter: _FakeAdapter) -> None:
 async def test_validate_dispatches_to_adapter_preflight(gateway: DisseminationGateway, adapter: _FakeAdapter) -> None:
     msg = DisseminationMessage(
         gateway_kind="postgres",
-        params={"uri": "postgresql: / u:p@127.0.0.1/db"},
+        params={"uri": "postgresql://u:p@127.0.0.1/db"},
         allowlist=_allowlist("127.0.0.1"),
     )
     result = await gateway.validate(msg)
@@ -77,7 +77,7 @@ async def test_validate_dispatches_to_adapter_preflight(gateway: DisseminationGa
 async def test_send_maps_ok_to_delivered(gateway: DisseminationGateway, adapter: _FakeAdapter) -> None:
     msg = DisseminationMessage(
         gateway_kind="postgres",
-        params={"uri": "postgresql: / u:p@127.0.0.1/db"},
+        params={"uri": "postgresql://u:p@127.0.0.1/db"},
         allowlist=_allowlist("127.0.0.1"),
         iwxxm_xml="<x/>",
     )

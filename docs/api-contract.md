@@ -1441,7 +1441,7 @@ until then docs lead. is docs/checklist only (no wire change).
 
 **Breaking changes**: None on HTTP.
 
-- (2026-09-21): / Proposed: no HTTP shape change in Spec. 
+- (2026-09-21): Proposed: no HTTP shape change in Spec. 
 
 ## live TAC map live map , 
 

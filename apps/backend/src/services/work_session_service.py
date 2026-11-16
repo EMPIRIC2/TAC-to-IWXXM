@@ -47,12 +47,12 @@ def _sync_database_url() -> str:
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
             detail="Work session service unavailable - missing DATABASE_URL",
         )
-    if raw.startswith("postgresql+asyncpg: / "):
-        url = "postgresql+psycopg: / " + raw.removeprefix("postgresql+asyncpg: / ")
-    elif raw.startswith("postgresql+psycopg2: / "):
-        url = "postgresql+psycopg: / " + raw.removeprefix("postgresql+psycopg2: / ")
-    elif raw.startswith("postgresql: / "):
-        url = "postgresql+psycopg: / " + raw.removeprefix("postgresql: / ")
+    if raw.startswith("postgresql+asyncpg://"):
+        url = "postgresql+psycopg://" + raw.removeprefix("postgresql+asyncpg://")
+    elif raw.startswith("postgresql+psycopg2://"):
+        url = "postgresql+psycopg://" + raw.removeprefix("postgresql+psycopg2://")
+    elif raw.startswith("postgresql://"):
+        url = "postgresql+psycopg://" + raw.removeprefix("postgresql://")
     else:
         url = raw
     # asyncpg query param ``ssl=`` is invalid for psycopg (use sslmode=).

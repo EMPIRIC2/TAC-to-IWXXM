@@ -28,7 +28,7 @@ def rsa_keypair() -> tuple[Any, dict[str, Any]]:
     public_numbers = private_key.public_key().public_numbers()
 
     def _b64url_uint(value: int) -> str:
-        raw = value.to_bytes((value.bit_length() + 7) / 8, "big")
+        raw = value.to_bytes((value.bit_length() + 7) // 8, "big")
         import base64
 
         return base64.urlsafe_b64encode(raw).rstrip(b"=").decode("ascii")

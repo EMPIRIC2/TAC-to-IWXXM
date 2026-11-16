@@ -40,12 +40,12 @@ REQUIRED_SESSION_COLUMNS = frozenset(
 
 def _to_psycopg_url(url: str) -> str:
     """Normalize container/env URLs to SQLAlchemy psycopg v3 dialect."""
-    if url.startswith("postgresql+asyncpg: / "):
-        return "postgresql+psycopg: / " + url.removeprefix("postgresql+asyncpg: / ")
-    if url.startswith("postgresql+psycopg2: / "):
-        return "postgresql+psycopg: / " + url.removeprefix("postgresql+psycopg2: / ")
-    if url.startswith("postgresql: / "):
-        return "postgresql+psycopg: / " + url.removeprefix("postgresql: / ")
+    if url.startswith("postgresql+asyncpg://"):
+        return "postgresql+psycopg://" + url.removeprefix("postgresql+asyncpg://")
+    if url.startswith("postgresql+psycopg2://"):
+        return "postgresql+psycopg://" + url.removeprefix("postgresql+psycopg2://")
+    if url.startswith("postgresql://"):
+        return "postgresql+psycopg://" + url.removeprefix("postgresql://")
     return url
 
 

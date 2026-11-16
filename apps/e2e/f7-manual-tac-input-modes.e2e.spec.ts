@@ -159,7 +159,8 @@ test.describe('TC-F7-007 / UJ-025: Manual TAC Input modes', () => {
     await expect(page.getByTestId('convert-settings')).toBeVisible();
     await page.getByTestId('convert-settings-cog').click();
     await expect(page.getByTestId('input-mode-group')).toBeVisible();
-    await expect(page.getByTestId('input-mode-tac')).toHaveClass(bg-blue-700|bg-blue-600/,
+    await expect(page.getByTestId('input-mode-tac')).toHaveClass(
+      /bg-blue-700|bg-blue-600/,
     );
     await expect(page.getByTestId('product-type-select')).toHaveValue('auto');
 
@@ -195,7 +196,8 @@ test.describe('TC-F7-007 / UJ-025: Manual TAC Input modes', () => {
     await fillManualTac(page, AHL_BULLETIN);
     await page.getByTestId('convert-button').click();
 
-    await expect(page.getByTestId('input-mode-ahl_bulletin')).toHaveClass(bg-blue-600/,
+    await expect(page.getByTestId('input-mode-ahl_bulletin')).toHaveClass(
+      /bg-blue-600/,
       { timeout: 10000 },
     );
     await expect(
@@ -261,7 +263,8 @@ test.describe('TC-F7-007 / UJ-025: Manual TAC Input modes', () => {
     ).toBeVisible({
       timeout: 10000,
     });
-    await expect(page.getByTestId('input-mode-collect_iwxxm')).toHaveClass(bg-blue-600/,
+    await expect(page.getByTestId('input-mode-collect_iwxxm')).toHaveClass(
+      /bg-blue-600/,
     );
 
     await page.getByTestId('convert-button').click();
