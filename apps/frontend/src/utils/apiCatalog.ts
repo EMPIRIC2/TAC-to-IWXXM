@@ -146,7 +146,7 @@ export async function massIngestFiles(params: {
 }
 
 /**
- * Fetch a package-owned trust catalog by family ().
+ * Fetch a package-owned trust catalog by family.
  *
  * **Endpoint**: GET /api/v1/rule-catalogs
  * @example
@@ -154,7 +154,7 @@ export async function massIngestFiles(params: {
  */
 
 /**
- * Fetch a package-owned trust catalog by family ().
+ * Fetch a package-owned trust catalog by family.
  *
  * **Endpoint**: GET /api/v1/rule-catalogs
  * @example
