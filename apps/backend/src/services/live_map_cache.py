@@ -220,8 +220,7 @@ class LiveMapCache:
         return True
 
     def end_refresh(self) -> None:
-        """Allow the next refresh.
-        """
+        """Allow the next refresh."""
         self._refreshing = False
 
     def status_of(self, report: LiveMapReport) -> str | None:

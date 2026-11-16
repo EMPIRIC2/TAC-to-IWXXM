@@ -1,4 +1,4 @@
-# scripts/ci/generate_sbom.sh — bats coverage (EV-080 / ADR-007)
+# scripts/ci/generate_sbom.sh — bats coverage (EV-080 )
 # Stub: assert the script exists and is executable; do not hit the network.
 
 load "${BATS_TEST_DIRNAME}/../helpers/load"

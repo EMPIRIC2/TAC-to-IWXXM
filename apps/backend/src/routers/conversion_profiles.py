@@ -47,7 +47,7 @@ from ..utilities.security import verify_supabase_token
 
 router = APIRouter(prefix="/api/v1/profiles", tags=["Conversion Profiles"])
 
-# ADR-044: operator library YAML authoring retired (hard cutover).
+# : operator library YAML authoring retired (hard cutover).
 _LIBRARY_AUTHORING_GONE = {
     "code": "library_authoring_retired",
     "message": "Library authoring is no longer available. Use deployed package catalogs and selection dropdowns.",

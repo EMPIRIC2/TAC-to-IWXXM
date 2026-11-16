@@ -1,4 +1,4 @@
-"""Runtime configuration contract tests (ADR-010 / S003).
+"""Runtime configuration contract tests (S003).
 
 Replaces legacy VITE_AUTH_SERVICE_URL checks - config JSON + canonical Supabase
 env names are the source of truth for local and deploy wiring.

@@ -1,4 +1,4 @@
-"""Maintainable TAC lint issue registry (F15 / ADR-028).
+"""Maintainable TAC lint issue registry (F15).
 
 Rules import ``IssueSpec`` rows via ``by_code`` / ``issue_from`` instead of inventing
 severity or code string literals. Catalog export (``make catalog-regen``) iterates

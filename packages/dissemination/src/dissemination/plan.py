@@ -1,4 +1,4 @@
-"""DisseminationPlan execute helper (ADR-041 / EV-936).
+"""DisseminationPlan execute helper (EV-936).
 
 Runtime plan execution over :class:`DisseminationGateway`. Persistence of audit
 rows is injected via ``audit_sink`` (backend owns Postgres writes).

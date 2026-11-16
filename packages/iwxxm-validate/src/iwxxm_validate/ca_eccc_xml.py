@@ -1,5 +1,4 @@
-"""CA_ECCC document root and extension-block helpers.
-"""
+"""CA_ECCC document root and extension-block helpers."""
 
 from __future__ import annotations
 

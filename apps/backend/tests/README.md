@@ -210,7 +210,7 @@ Configured in `pyproject.toml`:
 - **asyncio_mode**: `auto` - Async test support
 - **addopts**: Coverage, verbose output, short tracebacks
 - **markers**: Unit, integration, E2E, smoke, live_api, slow, etc.
-- **filterwarnings**: `error` (warnings fail the run; ADR-048 / TC-EVDOC-007)
+- **filterwarnings**: `error` (warnings fail the run; TC-EVDOC-007)
 
 ## Test Fixtures
 

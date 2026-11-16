@@ -1,4 +1,4 @@
-"""HTTP profile wire resolution (F35 / EV-063 / ADR-036).
+"""HTTP profile wire resolution (F35 EV-063).
 
 Resolves multipart ``semantic_profile`` / ``exchange_profile`` and legacy ``profile``
 into tac2iwxxm emit keys. Unknown ids fail closed with HTTP 400.

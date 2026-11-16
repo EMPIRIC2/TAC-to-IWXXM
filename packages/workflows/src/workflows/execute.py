@@ -1,4 +1,4 @@
-"""``execute(message, workflow)`` — ADR-042."""
+"""``execute(message, workflow)`` — ."""
 
 from __future__ import annotations
 

@@ -1,4 +1,4 @@
-"""msgspec JSON response helper for high-churn HTTP routes (ADR-026 / E10-38).
+"""msgspec JSON response helper for high-churn HTTP routes (E10-38).
 
 Prefer encoding ``msgspec.Struct`` values. ``pydantic.BaseModel`` OpenAPI alias
 instances are accepted via ``model_dump(mode="json")`` then a single msgspec

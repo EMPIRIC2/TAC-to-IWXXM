@@ -1,5 +1,4 @@
-"""IWXXM output policy document models (ADR-046).
-"""
+"""IWXXM output policy document models."""
 
 from __future__ import annotations
 
@@ -32,8 +31,7 @@ class PolicyActivationError(PolicyError):
 
 
 class OutputPolicyRaw(TypedDict, total=False):
-    """YAML mapping shape for one output policy document before parse.
-    """
+    """YAML mapping shape for one output policy document before parse."""
 
     schema_version: int
     id: str

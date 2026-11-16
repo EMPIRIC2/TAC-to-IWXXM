@@ -1,7 +1,7 @@
 """Ordered Dissemination library transforms (EV-bridge AC8 / TC-EVBRIDGE-008).
 
 Apply only on Disseminate / Convert & Send paths — never on Convert-only.
-Transforms carry no destination secrets (ADR-021 / ADR-029).
+Transforms carry no destination secrets ().
 """
 
 from __future__ import annotations

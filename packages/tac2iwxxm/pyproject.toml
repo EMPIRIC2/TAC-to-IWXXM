@@ -61,7 +61,7 @@ packages = ["src/tac2iwxxm"]
 "src/tac2iwxxm/data/emit_maps/annex3-tca.yaml" = "tac2iwxxm/data/emit_maps/annex3-tca.yaml"
 "src/tac2iwxxm/conf/convert_allowlist.yaml" = "tac2iwxxm/conf/convert_allowlist.yaml"
 
-# Maturin builds the optional PyO3 cdylib (ADR-017 / T4.3). Pure-Python hatch wheel
+# Maturin builds the optional PyO3 cdylib (T4.3). Pure-Python hatch wheel
 # remains the default ``uv sync`` path; CI rust job runs ``maturin develop``.
 [tool.maturin]
 manifest-path = "rust/Cargo.toml"

@@ -5,7 +5,7 @@ line: statute-mile visibility, inch-of-mercury altimeter (via QNH), AUTO observi
 systems, Canadian REMARKS in ``iwxxm-ca:Addendum``, and non-convective low-level wind
 shear (NCLWS) in TAF base forecasts.
 
-[Corpus: product §F36] [Corpus: domain-profiles §CA_ECCC] [Corpus: adr/ADR-036]
+[Corpus: product §F36] [Corpus: domain-profiles §CA_ECCC]
 """
 
 from __future__ import annotations

@@ -64,7 +64,7 @@ export interface ResultIssueInput {
 
 const NOTE_SEVERITIES = new Set(['info', 'warning', 'warn', 'note']);
 
-/** Codes that still force needs-attention without blocking download alone (empty: ADR-054). */
+/** Codes that still force needs-attention without blocking download alone (empty:). */
 const PUBLISH_BLOCKING_CODES = new Set<string>();
 
 /**
@@ -152,7 +152,7 @@ export function assessResultCard(input: {
     }
     const code = issue.code?.trim();
     const line: ResultCardLine = code ? { message, code } : { message };
-    // ADR-054: code alone never blocks download (PUBLISH_BLOCKING_CODES empty).
+    // : code alone never blocks download (PUBLISH_BLOCKING_CODES empty).
     if (isErrorSeverity(issue.severity)) {
       errors.push(line);
     } else {
@@ -163,7 +163,7 @@ export function assessResultCard(input: {
   const hasCritical = (input.issues ?? []).some(
     (issue) => (issue.severity ?? '').trim().toLowerCase() === 'critical',
   );
-  // ADR-054: IWXXM validation errors are raised but download is allowed with awareness.
+  // : IWXXM validation errors are raised but download is allowed with awareness.
   // Only convert-critical findings, soft-preview ok=false, or unusable XML block download.
   const publishBlocked =
     hasCritical ||

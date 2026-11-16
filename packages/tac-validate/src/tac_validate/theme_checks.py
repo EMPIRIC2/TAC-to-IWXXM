@@ -1,6 +1,6 @@
 """METAR/SPECI R-theme check bodies shared by legacy dispatch and detector hatches.
 
-ADR-046 / #1216 M3: thin-wrap behind detector pack ids (D-VPL-G3). Profile for R5
+ #1216 M3: thin-wrap behind detector pack ids (D-VPL-G3). Profile for R5
 is supplied via ``lint_profile`` contextvar (hatches only receive tac + product).
 """
 

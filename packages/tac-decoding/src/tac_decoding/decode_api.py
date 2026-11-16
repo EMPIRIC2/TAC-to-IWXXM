@@ -393,13 +393,13 @@ def decode_tac(tac: str, *, product: str) -> DecodeResult:
     -------
     DecodeResult
         ``segments`` for recognized groups; ``residuals`` for undecoded spans;
-        ``summary`` plain-language paragraph (F9 / ADR-025).
+        ``summary`` plain-language paragraph (F9).
         METAR/SPECI/TAF aim for rich segments; VAA/TCA/SWXA/VONA use structured
         LABEL fields (EV-030 / EV-099) with explicit residuals for leftovers (G4).
         Multi-report AHL bulletins are split so each report is decoded independently
         (heading is a bulletin-framing segment, not a product residual).
         COLLECT documents decode contained TAC when present, otherwise walk XML
-        fields (ADR-045).
+        fields.
     """
     product_u = product.upper()
     if product_u in _SUPPORTED:

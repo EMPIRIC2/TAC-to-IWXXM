@@ -1,6 +1,6 @@
 """TC-EV-PFDG-001..005 — pack fill, mapper independence, flip, selective delete.
 
-[Corpus: tests] [Corpus: adr/ADR-045]
+[Corpus: tests]
 """
 
 from __future__ import annotations

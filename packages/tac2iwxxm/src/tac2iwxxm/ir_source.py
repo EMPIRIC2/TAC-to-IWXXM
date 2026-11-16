@@ -1,7 +1,4 @@
-"""Resolve convert IR source (legacy parser vs pack-IR path).
-
-[Corpus: adr/ADR-045]
-"""
+"""Resolve convert IR source (legacy parser vs pack-IR path)."""
 
 from __future__ import annotations
 

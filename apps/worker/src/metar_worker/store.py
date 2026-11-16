@@ -1,4 +1,4 @@
-"""Postgres store / quarantine writers via DATABASE_URL (F30 / ADR-033)."""
+"""Postgres store quarantine writers via DATABASE_URL (F30)."""
 
 from __future__ import annotations
 

@@ -38,8 +38,7 @@ def listen_for_stop(stop: asyncio.Event) -> None:
 
 
 async def serve() -> None:
-    """Translate each refresh area, then pause, until the process is stopped.
-    """
+    """Translate each refresh area, then pause, until the process is stopped."""
     stop = asyncio.Event()
     listen_for_stop(stop)
     logger.info("map translator starting")

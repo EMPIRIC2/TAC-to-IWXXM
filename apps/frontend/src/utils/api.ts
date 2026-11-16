@@ -962,7 +962,7 @@ export async function massIngestFiles(params: {
 }
 
 /**
- * Fetch a package-owned trust catalog by family (ADR-044).
+ * Fetch a package-owned trust catalog by family ().
  *
  * **Endpoint**: GET /api/v1/rule-catalogs
  * @example
@@ -1102,7 +1102,7 @@ export type SelectionOptionKind =
   | 'dissemination';
 
 /**
- * Fetch deployed selection options for dropdowns (ADR-044 / TP-YCL-01).
+ * Fetch deployed selection options for dropdowns (TP-YCL-01).
  *
  * **Endpoint**: GET /api/v1/selection-options
  * @example

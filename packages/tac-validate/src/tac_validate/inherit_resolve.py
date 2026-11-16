@@ -1,7 +1,7 @@
-"""Lint inherit factory adapter (ADR-055 LintResolvePort).
+"""Lint inherit factory adapter (LintResolvePort).
 
 Product → (empty region) → country profile → station using the lint catalog.
-[Corpus: adr/ADR-055] [Corpus: product §F15] [Corpus: pack-engine-boundary]
+ [Corpus: product §F15] [Corpus: pack-engine-boundary]
 """
 
 from __future__ import annotations

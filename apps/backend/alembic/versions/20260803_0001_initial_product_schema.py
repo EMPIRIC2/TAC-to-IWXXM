@@ -1,10 +1,10 @@
-"""Initial product schema on DO Postgres (F30/F31 / ADR-033).
+"""Initial product schema on DO Postgres (F30/F31).
 
 Revision ID: 20260803_0001
 Revises:
 Create Date: 2026-08-03
 
-Creates ``tac_work_sessions`` (ADR-020 wire shapes + swxa) and F8 ingest store /
+Creates ``tac_work_sessions`` (wire shapes + swxa) and F8 ingest store /
 quarantine tables. No Supabase Auth user FK — Auth remains on Supabase; product DB is DO.
 """
 

@@ -2,7 +2,7 @@
 
 Asserts WMO ``vona-A7-1`` is in the annex3 pack, root
 ``iwxxm:VolcanoObservatoryNoticeForAviation``, MetFeature volcano/ash +
-``iwxxm/AviationColourCode`` vocabulary (TC-F32-003). ADR-032 golden / XSD+SCH
+``iwxxm/AviationColourCode`` vocabulary (TC-F32-003). golden / XSD+SCH
 are in ``test_tc_f32_004_vona_validate_golden.py`` (T2.6).
 
 Always write "F32 theme V3" (not F23 VA-SIGMET / F26 VAA V3) - #741.

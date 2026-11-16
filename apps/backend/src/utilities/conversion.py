@@ -1,4 +1,4 @@
-"""METAR TAC → IWXXM conversion utilities (tac2iwxxm cutover - ADR-014 / T4.7)."""
+"""METAR TAC → IWXXM conversion utilities (tac2iwxxm cutover - T4.7)."""
 
 from __future__ import annotations
 
@@ -301,7 +301,7 @@ def convert_metar_tac_with_metadata(
     profile :
         ``annex3`` or ``iwxxm_us``.
     preview :
-        Soft-preview mode (ADR-022): return best-effort XML instead of raising on
+        Soft-preview mode (): return best-effort XML instead of raising on
         parse/convert failure.
     soft_preview_out :
         Optional mutable dict. When ``preview=True``, filled with ``ok`` and

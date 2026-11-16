@@ -1,5 +1,4 @@
-"""Shared CA_ECCC stage helpers (issue remap, Rust stage, well-formed).
-"""
+"""Shared CA_ECCC stage helpers (issue remap, Rust stage, well-formed)."""
 
 from __future__ import annotations
 

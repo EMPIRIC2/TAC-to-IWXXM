@@ -1,6 +1,3 @@
-"""Convert IR slot builders used by pack-IR mapping (not under ``products/``).
-
-[Corpus: adr/ADR-045]
-"""
+"""Convert IR slot builders used by pack-IR mapping (not under ``products/``)."""
 
 from __future__ import annotations

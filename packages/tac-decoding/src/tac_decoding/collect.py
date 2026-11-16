@@ -2,7 +2,7 @@
 
 Contained ``translationFailedTAC`` is decoded as TAC. Otherwise leaf XML
 fields are walked. This module never encodes IWXXM.
-[Corpus: adr/ADR-045] [Corpus: system-spec]
+ [Corpus: system-spec]
 """
 
 from __future__ import annotations

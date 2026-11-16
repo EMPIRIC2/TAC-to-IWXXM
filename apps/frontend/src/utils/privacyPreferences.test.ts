@@ -1,5 +1,5 @@
 /**
- * TC-F22-001..003 — Privacy preference center contract (F22 / UJ-033 / ADR-031).
+ * TC-F22-001..003 — Privacy preference center contract (F22 UJ-033).
  *
  * Red until T6.2 (notice + settings + localStorage) and T6.3 (GPC honor).
  */

@@ -1,7 +1,4 @@
-"""T1.2 — token-stream and label-field matchers. Version stays with the caller.
-
-[Corpus: adr/ADR-045]
-"""
+"""T1.2 — token-stream and label-field matchers. Version stays with the caller."""
 
 from __future__ import annotations
 

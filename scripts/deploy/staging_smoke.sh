@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Post-deploy staging connectivity smoke (H0c-style health + H4–H5 subset).
-# Traces: F30 AC9/AC12 / TC-F30-009 / ADR-034
+# Traces: F30 AC9/AC12 / TC-F30-009 /
 set -euo pipefail
 
 API_URL="${LIVE_API_URL:-https://api.staging.tac-to-iwxxm.com}"

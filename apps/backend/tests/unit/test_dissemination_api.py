@@ -1,4 +1,4 @@
-"""API tests for dissemination preflight/send (T2.3 / ADR-029 / api-contract)."""
+"""API tests for dissemination preflight/send (T2.3 / api-contract)."""
 
 from __future__ import annotations
 

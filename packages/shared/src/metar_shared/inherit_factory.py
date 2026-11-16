@@ -1,7 +1,7 @@
-"""Product → region → country → station inheritance factory (ADR-055).
+"""Product → region → country → station inheritance factory ().
 
 Shared **merge** helpers and resolve walk; types/ports live in
-``inherit_factory_types``. [Corpus: adr/ADR-055] [Corpus: pack-engine-boundary]
+``inherit_factory_types``. [Corpus: pack-engine-boundary]
 """
 
 from __future__ import annotations
@@ -135,7 +135,7 @@ def merge_code_sets(
 
 def merge_overrides(parent: LayerOverrides, child: LayerOverrides) -> LayerOverrides:
     """
-    Merge two override bags per ADR-055 rules.
+    Merge two override bags per rules.
 
     Parameters
     ----------

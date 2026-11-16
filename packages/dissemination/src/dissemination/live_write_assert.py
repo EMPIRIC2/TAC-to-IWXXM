@@ -3,7 +3,7 @@
 Playwright invokes this module via ``python -m dissemination.live_write_assert``
 after UI success (S05.M3 - async drivers in-package; no FastAPI imports).
 
-[Corpus: product §F16] [Corpus: tests] TC-F16-LIVE [Corpus: adr/ADR-030]
+[Corpus: product §F16] [Corpus: tests] TC-F16-LIVE
 """
 
 from __future__ import annotations

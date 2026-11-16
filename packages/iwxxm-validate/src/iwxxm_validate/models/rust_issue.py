@@ -1,5 +1,4 @@
-"""Native Rust engine issue wire shape and conversion helpers.
-"""
+"""Native Rust engine issue wire shape and conversion helpers."""
 
 from __future__ import annotations
 

@@ -1,4 +1,4 @@
-"""Coverage for scripts/docs/check_docs_py.py ADR-048 branches (scripts cov gate)."""
+"""Coverage for scripts/docs/check_docs_py.py branches (scripts cov gate)."""
 
 from __future__ import annotations
 

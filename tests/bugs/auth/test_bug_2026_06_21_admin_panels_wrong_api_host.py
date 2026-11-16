@@ -1,6 +1,6 @@
 """BUG-2026-06-21 - admin panels called wrong API host (historical).
 
-S011 / ADR-021 (#697): product ``/admin/*`` surface is removed. Regression now
+S011 / (#697): product ``/admin/*`` surface is removed. Regression now
 asserts routes are absent (404), not auth-gated on a mounted admin router.
 """
 
@@ -30,7 +30,7 @@ ADMIN_PATHS = (
 
 
 def test_admin_routes_registered_on_merged_api() -> None:
-    """Admin product routes must be absent (404) after ADR-021 removal."""
+    """Admin product routes must be absent (404) after removal."""
     client = TestClient(app)
     for path in ADMIN_PATHS:
         response = (
