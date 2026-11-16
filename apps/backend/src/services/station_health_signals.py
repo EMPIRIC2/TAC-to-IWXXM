@@ -55,10 +55,6 @@ def detect_file_format(payload: str, *, source: str | None = None) -> str:
     str
         One of ``tac``, ``bulletin``, ``iwxxm_xml``, or ``unknown``.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (detect_file_format)
-    2
     """
     _ = source
     text = payload or ""
@@ -86,10 +82,6 @@ def extract_maintenance_tags(tac_text: str) -> tuple[str, ...]:
     tuple[str, ...]
         Sorted unique tags from ``MAINTENANCE_PROBLEM_TAGS``.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (extract_maintenance_tags)
-    2
     """
     tokens = set(_TOKEN_RE.findall((tac_text or "").upper()))
     # Standalone `$` may appear with surrounding spaces; regex keeps `$`.
@@ -111,10 +103,6 @@ def normalize_issue_codes(codes: list[str] | tuple[str, ...] | None) -> tuple[st
     tuple[str, ...]
         Deduplicated, uppercased codes (max 64).
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (normalize_issue_codes)
-    2
     """
     if not codes:
         return ()
@@ -143,10 +131,6 @@ def count_maintenance_tags(rows: list[StationRecord]) -> dict[str, int]:
     dict[str, int]
         Tag → occurrence count (reports containing the tag).
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (count_maintenance_tags)
-    2
     """
     counts: Counter[str] = Counter()
     for row in rows:
@@ -172,10 +156,6 @@ def count_file_formats(rows: list[StationRecord]) -> dict[str, int]:
     dict[str, int]
         Format → count.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (count_file_formats)
-    2
     """
     counts: Counter[str] = Counter()
     for row in rows:
@@ -200,10 +180,6 @@ def count_issue_codes(rows: list[StationRecord]) -> dict[str, int]:
     dict[str, int]
         Issue code → count (per observation that listed the code).
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (count_issue_codes)
-    2
     """
     counts: Counter[str] = Counter()
     for row in rows:

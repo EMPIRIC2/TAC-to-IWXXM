@@ -67,10 +67,6 @@ def is_dev_cors_relaxation_enabled() -> bool:
     """
     Enable relaxed CORS behavior for local debugging when explicitly requested.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (is_dev_cors_relaxation_enabled)
-    2
 
     Returns
     -------
@@ -89,10 +85,6 @@ def add_origin_if_missing(origins: list[str], origin: str) -> list[str]:
     """
     Append origin if not present.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (add_origin_if_missing)
-    2
 
     Parameters
     ----------
@@ -115,10 +107,6 @@ def add_loopback_origin_variants(origins: list[Any]) -> list[Any]:
     """
     Ensure localhost and 127.0.0.1 variants are both allowed for local dev.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (add_loopback_origin_variants)
-    2
 
     Parameters
     ----------
@@ -145,10 +133,6 @@ def get_cors_origins() -> list[Any]:
     """
     Get allowed CORS origins from config with deprecated env fallbacks.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (get_cors_origins)
-    2
 
     Returns
     -------
@@ -198,10 +182,6 @@ def get_cors_allowed_headers() -> list[Any]:
     """
     Get allowed CORS request headers.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (get_cors_allowed_headers)
-    2
 
     Returns
     -------
@@ -238,10 +218,6 @@ async def parse_files(request: Request) -> list[UploadFile]:
     - Swagger UI 'Send empty value' sends empty string which FastAPI can't parse
     - This manually extracts files from the form, filtering out empty strings
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (parse_files)
-    2
 
     Parameters
     ----------
@@ -300,10 +276,6 @@ def normalize_api_product(
     """
     Normalize multipart/JSON ``product`` to uppercase enum or raise ``unknown_product`` 400.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (normalize_api_product)
-    2
 
     Parameters
     ----------
@@ -593,10 +565,6 @@ def split_manual_entries(manual_text: str, product: str | None = None) -> list[s
     line-splitting would shred the header/body (SIGMET/AIRMET) or template
     fields (``VA ADVISORY`` / ``SWX ADVISORY`` / ``VONA`` / ``DTG:`` / …).
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (split_manual_entries)
-    2
 
     Parameters
     ----------
@@ -630,10 +598,6 @@ def manual_entries_with_offsets(manual_text: str, product: str | None = None) ->
     For SIGMET/AIRMET/VAA/TCA/SWXA/VONA the single entry offset is the first
     non-whitespace character of the buffer (document preserved with internal newlines).
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (manual_entries_with_offsets)
-    2
 
     Parameters
     ----------
@@ -678,10 +642,6 @@ async def read_uploaded_text(upload_file: UploadFile) -> tuple[str | None, str |
 
     Gzip payloads (``.gz`` / magic ``1f 8b``) are inflated before decode.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (read_uploaded_text)
-    2
 
     Parameters
     ----------
@@ -747,10 +707,6 @@ async def read_upload_files_text(files: list[UploadFile] | None) -> tuple[str, s
     tuple[str, str | None]
         Joined text and an error message when a non-empty upload fails limits/encoding.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (read_upload_files_text)
-    2
 
     Parameters
     ----------
@@ -775,10 +731,6 @@ def is_xml_input(filename: str | None, content: str) -> bool:
     """
     Determine if uploaded content looks like XML input.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (is_xml_input)
-    2
 
     Parameters
     ----------
@@ -809,10 +761,6 @@ def classify_and_validate_upload_content(
     """
     Return a standardized XML rejection payload for TAC-only conversion endpoints.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (classify_and_validate_upload_content)
-    2
 
     Parameters
     ----------
@@ -882,10 +830,6 @@ def normalize_code(value: str | None, max_length: int) -> str | None:
     """
     Normalize optional alphanumeric code-like fields.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (normalize_code)
-    2
 
     Parameters
     ----------
@@ -920,10 +864,6 @@ def parse_optional_bulletin_id(value: str | None) -> str:
     HTTPException
         400 when a non-empty value is not 4 letters + 2 digits.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (parse_optional_bulletin_id)
-    2
 
     Parameters
     ----------
@@ -968,10 +908,6 @@ def parse_optional_issuing_center(value: str | None) -> str:
     HTTPException
         400 when a non-empty value is not exactly 4 letters.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (parse_optional_issuing_center)
-    2
 
     Parameters
     ----------
@@ -1011,10 +947,6 @@ def normalize_validation_level(value: str | None) -> str:
     """
     Normalize validation level to one of the supported API values.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (normalize_validation_level)
-    2
 
     Parameters
     ----------
@@ -1071,10 +1003,6 @@ async def parse_optional_files(request: Request) -> list[UploadFile]:
     """
     Parse optional file uploads, filtering out empty strings from form data.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (parse_optional_files)
-    2
 
     Parameters
     ----------
@@ -1114,11 +1042,6 @@ def bulletin_split_http_error(exc: BulletinSplitError) -> HTTPException:
     -------
     HTTPException
         400 for empty bulletins; 422 for malformed headings.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (bulletin_split_http_error)
-    2
     """
     if exc.code == "empty_bulletin":
         return HTTPException(

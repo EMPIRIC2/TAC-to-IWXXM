@@ -40,10 +40,6 @@ def parse_extension_tokens(values: Sequence[str] | None) -> list[str]:
 
     Accepts repeated form fields and/or a single JSON array string.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (parse_extension_tokens)
-    2
 
     Parameters
     ----------
@@ -109,10 +105,6 @@ def validate_extension_tokens(tokens: Sequence[str]) -> None:
     """
     Reject unknown extension tokens (fail closed).
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (validate_extension_tokens)
-    2
 
     Parameters
     ----------
@@ -140,10 +132,6 @@ def ca_eccc_validate_product(
 
     ``CA_ECCC`` without ``IWXXM_CA`` keeps the backward-compatible WMO scaffold only.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (ca_eccc_validate_product)
-    2
 
     Parameters
     ----------

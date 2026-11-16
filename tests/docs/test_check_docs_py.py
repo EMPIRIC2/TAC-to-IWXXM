@@ -17,7 +17,7 @@ def test_py_ok_fixture_clean() -> None:
 
 
 def test_py_bad_fixture_reports_gaps() -> None:
-    """Bad fixture reports missing docs / Examples / Parameters."""
+    """Bad fixture reports missing docs / Parameters (Examples optional)."""
     path = FIXTURES / "py_bad" / "sample.py"
     issues = check_file(path)
     joined = "\n".join(issues)

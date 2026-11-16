@@ -176,11 +176,6 @@ def to_canonical_xml(xml_content: str) -> str:
     ------
     ValueError
         If ``xml_content`` is not well-formed XML.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (to_canonical_xml)
-    2
     """
     try:
         root = etree.fromstring(xml_content.encode("utf-8"))
@@ -206,11 +201,6 @@ def canonical_xml_equal(left: str, right: str) -> bool:
     -------
     bool
         True when Canonical XML forms of ``left`` and ``right`` are identical.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (canonical_xml_equal)
-    2
     """
     return to_canonical_xml(left) == to_canonical_xml(right)
 

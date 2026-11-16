@@ -41,11 +41,6 @@ def resolve_propagate_residuals_to_remarks(
     -------
     bool
         Effective flag. Omitted / unknown profiles default to ``False`` this cycle.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (resolve_propagate_residuals_to_remarks)
-    2
     """
     if value is not None:
         return bool(value)

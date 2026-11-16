@@ -72,10 +72,6 @@ def station_list_row(
     dict[str, Any] | None
         Public list row, or ``None`` when filtered out.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (station_list_row)
-    2
     """
     wmo_region = wmo_region_for_icao(icao, country=meta.country)
     enriched = enrich_station_window(

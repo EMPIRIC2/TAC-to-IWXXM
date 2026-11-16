@@ -55,11 +55,6 @@ def normalize_recent_weather_tokens(
     -------
     object
         A two-tuple ``(normalized_text, warnings)`` where ``warnings`` is a list of dicts with keys ``index``, ``original``, ``replacement``, and ``rule``.  The list is empty when no rewrites were made.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (normalize_recent_weather_tokens)
-    2
     """
     warnings: list[dict[str, Any]] = []
 
@@ -120,10 +115,6 @@ def normalize_recent_weather_for_tac(
     """
     Centralized wrapper for TAC recent-weather normalization.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (normalize_recent_weather_for_tac)
-    2
 
     Parameters
     ----------

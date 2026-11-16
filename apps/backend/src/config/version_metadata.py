@@ -118,11 +118,6 @@ def get_version_metadata(version: str) -> VersionMetadata | None:
     -------
     object
         VersionMetadata if version exists, None otherwise
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (get_version_metadata)
-    2
     """
     return VERSION_METADATA.get(version)
 
@@ -149,11 +144,6 @@ def normalize_version(version_str: str) -> str:
     -------
     object
         Canonical version string
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (normalize_version)
-    2
     """
     normalized = version_str.strip()
 
@@ -180,10 +170,6 @@ def get_supported_versions() -> list[str]:
     """
     Get list of supported IWXXM versions.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (get_supported_versions)
-    2
 
     Returns
     -------

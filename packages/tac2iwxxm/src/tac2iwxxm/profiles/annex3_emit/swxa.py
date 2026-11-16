@@ -229,11 +229,6 @@ def emit_swxa_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
     -------
     str
         An IWXXM ``SpaceWeatherAdvisory`` document (F28 / EV-029 M11).
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (emit_swxa_annex3)
-    2
     """
     product = str(ir.get("product", "SWXA")).upper()
     if product != "SWXA":

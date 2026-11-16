@@ -94,10 +94,6 @@ def _output_validation_orch_layers() -> list[ValidationLayer]:
     AIRPORT_ICAO / TAC_SYNTAX are METAR/SPECI input checks (already gated before
     convert). XML_SCHEMA / SCHEMATRON run via ``_call_iwxxm_validate``.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (_output_validation_orch_layers)
-    2
 
     Returns
     -------
@@ -117,10 +113,6 @@ def _initial_layers_passed(product: str | None) -> list[str]:
     """
     Layers already satisfied before post-convert soft validation.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (_initial_layers_passed)
-    2
 
     Parameters
     ----------
@@ -418,11 +410,6 @@ class _ConvertAccumulator:
             Optional validation layer id.
         location :
             Optional location pointer within the input.
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (add_issue)
-        2
         """
         self.issues.append(
             ConversionIssue(
@@ -440,10 +427,6 @@ class _ConvertAccumulator:
         """
         Echo tac2iwxxm non-fatal convert issues (e.g. REMARKS_EXCLUDED) to the client.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (absorb_convert_issues)
-        2
 
         Parameters
         ----------
@@ -484,10 +467,6 @@ class _ConvertAccumulator:
         """
         Merge soft-preview envelope fields from convert_metar_tac_with_metadata.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (absorb_soft_preview)
-        2
 
         Parameters
         ----------
@@ -527,10 +506,6 @@ class _ConvertAccumulator:
         """
         Mark soft-preview Layer 1-2 failure and copy spans when present (ADR-022).
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (record_preview_layer12_soft_fail)
-        2
 
         Parameters
         ----------
@@ -572,10 +547,6 @@ class _ConvertAccumulator:
         """
         Flatten multi-layer validation results into conversion issues.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (add_aggregated_validation_issues)
-        2
 
         Parameters
         ----------
@@ -594,10 +565,6 @@ class _ConvertAccumulator:
         """
         Flatten a flat list of validation findings onto convert ``issues[]`` (#1159).
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (add_validation_issue_list)
-        2
 
         Parameters
         ----------
@@ -615,10 +582,6 @@ class _ConvertAccumulator:
         """
         Map one orchestrator or package finding onto a ConversionIssue.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (_append_validation_issue)
-        2
 
         Parameters
         ----------
@@ -656,10 +619,6 @@ class _ConvertAccumulator:
         """
         Emit aggregate OUTPUT_VALIDATION_WARNING plus flattened details (#1159).
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (emit_output_validation_soft_warning)
-        2
 
         Parameters
         ----------
@@ -704,10 +663,6 @@ class _ConvertAccumulator:
         """
         Emit structured conversion issues for recent-weather rewrites.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (emit_recent_wx_issues)
-        2
 
         Parameters
         ----------
@@ -1812,10 +1767,6 @@ async def convert_bulletin(
     Per-report ``issues`` / ``fixes`` follow lint-style identity.
 
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (convert_bulletin)
-    2
 
     Parameters
     ----------
@@ -2330,10 +2281,6 @@ async def convert(
     Convert METAR/SPECI TAC text to IWXXM XML.
 
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (convert)
-    2
 
     Parameters
     ----------
@@ -2669,10 +2616,6 @@ async def convert(
                 """
                 Return False when the Canadian extension bundle cannot be imported.
 
-                Examples
-                --------
-                >>> 1 + 1  # docstring smoke (ca_eccc_bundle_available)
-                2
 
                 Parameters
                 ----------
@@ -3208,10 +3151,6 @@ async def convert_zip(
     Convert METAR/SPECI TAC inputs to a ZIP of IWXXM XML files.
 
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (convert_zip)
-    2
 
     Parameters
     ----------

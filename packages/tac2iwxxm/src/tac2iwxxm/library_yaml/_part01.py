@@ -249,11 +249,6 @@ def diagnose_regex(pattern: str, *, sample: str | None = None, path: str = "patt
     -------
     RegexDiagnostic
         One pattern and classify ok / warn / fail.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (diagnose_regex)
-    2
     """
     try:
         compiled = re.compile(pattern)

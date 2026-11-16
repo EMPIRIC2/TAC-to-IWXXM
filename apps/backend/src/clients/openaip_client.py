@@ -35,10 +35,6 @@ class Airport:
         """
         Extract coordinates from GeoJSON geometry.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (lat_lon)
-        2
 
         Returns
         -------
@@ -61,10 +57,6 @@ class Airport:
         """
         Get latitude.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (latitude)
-        2
 
         Returns
         -------
@@ -79,10 +71,6 @@ class Airport:
         """
         Get longitude.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (longitude)
-        2
 
         Returns
         -------
@@ -206,11 +194,6 @@ class OpenAIPClient:
         -------
         object
             Airport object or None if not found
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (get_airport_by_icao)
-        2
         """
         self._load_local_data()
         return self._cache.get(icao.upper())
@@ -238,11 +221,6 @@ class OpenAIPClient:
         -------
         object
             List of matching airports
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (search_airports)
-        2
         """
         self._load_local_data()
 
@@ -273,11 +251,6 @@ class OpenAIPClient:
         -------
         object
             Dictionary with statistics
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (get_statistics)
-        2
         """
         self._load_local_data()
 
@@ -320,11 +293,6 @@ async def download_openaip_data(
         List of ISO country codes (default: major aviation countries)
     api_key : object
         OpenAIP API key
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (download_openaip_data)
-    2
     """
     if not api_key:
         raise ValueError("OpenAIP API key required for downloads")

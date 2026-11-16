@@ -16,10 +16,6 @@ def health() -> HealthResponse:
     Check API health and conversion availability.
 
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (health)
-    2
 
     Returns
     -------

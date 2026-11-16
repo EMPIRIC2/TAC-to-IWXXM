@@ -107,11 +107,6 @@ def build_observation_and_trends(
     -------
     observation, trends
         XML fragments (each ending with newline when non-empty).
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (build_observation_and_trends)
-    2
     """
     if ir.get("nil"):
         return f'  <iwxxm:observation nilReason="{NIL_MISSING}"/>\n', ""
@@ -230,11 +225,6 @@ def emit_metar_speci_annex3(
     -------
     str
         IWXXM XML document.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (emit_metar_speci_annex3)
-    2
     """
     ns = NS.get(iwxxm_version)
     if ns is None:

@@ -19,10 +19,6 @@ def sync_database_url(raw: str | None = None) -> str | None:
     str | None
         Sync driver URL, or ``None`` when unset.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (sync_database_url)
-    2
     """
     value = (raw if raw is not None else os.environ.get("DATABASE_URL") or "").strip()
     if not value:

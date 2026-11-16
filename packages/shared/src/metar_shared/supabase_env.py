@@ -96,11 +96,6 @@ def assert_modern_supabase_publishable_key(key: str) -> None:
     ----------
     key : str
         Publishable key to check.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (assert_modern_supabase_publishable_key)
-    2
     """
     if not key:
         raise ValueError(
@@ -122,11 +117,6 @@ def get_supabase_publishable_key() -> str:
     -------
     str
         Publishable (anon) key from env with legacy fallback.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (get_supabase_publishable_key)
-    2
     """
     value = _resolve_with_fallback(_CANONICAL_PUBLISHABLE, _DEPRECATED_PUBLISHABLE)
     if value and _is_legacy_jwt_api_key(value) and _is_production_env():
@@ -146,11 +136,6 @@ def get_supabase_secret_key() -> str:
     -------
     str
         Secret key from env with legacy service-role fallback.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (get_supabase_secret_key)
-    2
     """
     return _resolve_with_fallback(_CANONICAL_SECRET, _DEPRECATED_SECRET)
 
@@ -163,11 +148,6 @@ def get_supabase_url() -> str:
     -------
     str
         Supabase project URL from env or committed config.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (get_supabase_url)
-    2
     """
     url = os.getenv("SUPABASE_URL", "").strip()
     if url:

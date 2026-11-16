@@ -57,11 +57,6 @@ class StationHealthStore:
     def reset(self) -> None:
         """
         Clear stations and records (tests).
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (StationHealthStore.reset)
-        2
         """
         with self._lock:
             self._stations.clear()
@@ -75,11 +70,6 @@ class StationHealthStore:
         -------
         list[dict[str, Any]]
             Enabled metric rows.
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (StationHealthStore.list_metrics)
-        2
         """
         with self._lock:
             rows = [dict(row) for row in self._metrics if row.get("enabled", True)]
@@ -112,13 +102,8 @@ class StationHealthStore:
 
         Returns
         -------
-        object
-            Return value.
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (record_observation)
-        2
+        StationRecord | None
+            Stored row, or ``None`` when ICAO is invalid.
         """
         code = (icao or "").strip().upper()
         if len(code) != 4 or not code.isalpha():
@@ -215,11 +200,6 @@ class StationHealthStore:
         -------
         dict[str, Any]
             List payload with stations and summary.
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (StationHealthStore.list_stations)
-        2
         """
         if window_key not in WINDOW_SECONDS:
             window_key = "6h"
@@ -287,11 +267,6 @@ class StationHealthStore:
         -------
         dict[str, Any] | None
             Detail payload, or ``None`` when unknown.
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (StationHealthStore.get_station)
-        2
         """
         code = (icao or "").strip().upper()
         with self._lock:
@@ -333,10 +308,6 @@ class StationHealthStore:
         object
             Return value.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (purge_expired)
-        2
         """
         now = datetime.now(UTC)
         cutoff = now - window_timedelta("90d")
@@ -364,11 +335,6 @@ def get_station_health_store() -> StationHealthStoreProtocol:
     -------
     StationHealthStoreProtocol
         Active store implementation.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (get_station_health_store)
-    2
     """
     global _pg_store, _pg_url
     if _override is not None:
@@ -414,11 +380,6 @@ def set_station_health_store(store: StationHealthStoreProtocol | None) -> None:
     ----------
     store : object
         Override store, or ``None`` to clear.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (set_station_health_store)
-    2
     """
     global _override, _memory_store
     _dispose_postgres_store()

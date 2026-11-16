@@ -95,10 +95,6 @@ def observing_continuity_metric(
     object
         Return value.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (observing_continuity_metric)
-    2
     """
     label = "Observing continuity"
     if expected_count <= 0 and actual_count <= 0:
@@ -145,10 +141,6 @@ def metadata_completeness_metric(meta: StationMeta | None) -> dict[str, Any]:
     object
         Return value.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (metadata_completeness_metric)
-    2
     """
     label = "Station metadata"
     if meta is None:
@@ -208,10 +200,6 @@ def observation_quality_proxy_metric(
     object
         Return value.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (observation_quality_proxy_metric)
-    2
     """
     label = "Observation quality"
     if record_count <= 0:
@@ -240,10 +228,6 @@ def deferred_centennial_metrics() -> list[dict[str, Any]]:
     object
         Return value.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (deferred_centennial_metrics)
-    2
     """
     return [
         _insufficient(
@@ -312,10 +296,6 @@ def build_centennial_metrics(
     list[dict[str, Any]]
         Metric rows with ``status`` ``available`` or ``insufficient_data``.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (build_centennial_metrics)
-    2
     """
     metrics = [
         observing_continuity_metric(

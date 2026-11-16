@@ -51,11 +51,6 @@ def reports_from_feed(rows: list[dict[str, object]]) -> list[LiveMapReport]:
     -------
     list[LiveMapReport]
         Rows that have a station, time, text, and coordinates.
-
-    Examples
-    --------
-    >>> 1 + 1
-    2
     """
     reports: list[LiveMapReport] = []
     for row in rows:
@@ -334,11 +329,6 @@ def import_limit() -> int:
     -------
     int
         ``LIVE_MAP_IMPORT_LIMIT``, or 40. Values below 1 become 1.
-
-    Examples
-    --------
-    >>> 1 + 1
-    2
     """
     raw = os.getenv("LIVE_MAP_IMPORT_LIMIT", "40") or "40"
     try:
@@ -362,11 +352,6 @@ def translate_report(tac: str, product: str) -> tuple[str | None, list[str]]:
     -------
     tuple[str | None, list[str]]
         XML and an empty issue list, or no XML and a failure note.
-
-    Examples
-    --------
-    >>> 1 + 1
-    2
     """
     wire = {
         "metar": "METAR",
@@ -416,11 +401,6 @@ async def refresh_one(
     -------
     tuple[str, int]
         ``stored`` or ``skipped``, and the next tile index.
-
-    Examples
-    --------
-    >>> 1 + 1
-    2
     """
     if not cache.begin_refresh():
         return "skipped", index
@@ -466,11 +446,6 @@ async def refresh_region(
     -------
     tuple[str, int]
         ``stored`` or ``skipped``, and the next tile index.
-
-    Examples
-    --------
-    >>> 1 + 1
-    2
     """
     if not cache.begin_refresh():
         return "skipped", index
@@ -516,11 +491,6 @@ async def refresh_until(
         Boxes to walk.
     pause_sec : float
         Seconds between tiles.
-
-    Examples
-    --------
-    >>> 1 + 1
-    2
     """
     index = 0
     step = refresh_region if drain else refresh_one
@@ -547,11 +517,6 @@ async def fetch_bbox(bbox: Tile) -> list[dict[str, object]]:
     -------
     list[dict[str, object]]
         Feed rows for that box.
-
-    Examples
-    --------
-    >>> 1 + 1
-    2
     """
     from src.clients.aviation_weather_client import AviationWeatherClient
 
@@ -567,11 +532,6 @@ def pause_seconds() -> float:
     -------
     float
         ``LIVE_MAP_REFRESH_SECONDS``, or 300 when the value is missing or invalid.
-
-    Examples
-    --------
-    >>> 1 + 1
-    2
     """
     raw = os.getenv("LIVE_MAP_REFRESH_SECONDS") or os.getenv("LIVE_MAP_REFRESH_SEC") or "300"
     try:
@@ -592,11 +552,6 @@ def start_live_map_refresh(cache: LiveMapCache) -> asyncio.Event | None:
     -------
     asyncio.Event | None
         Stop event, or None when the loop is off.
-
-    Examples
-    --------
-    >>> 1 + 1
-    2
     """
     if os.getenv("LIVE_MAP_REFRESH", "").strip() != "1":
         return None
@@ -613,11 +568,6 @@ async def stop_live_map_refresh(stop: asyncio.Event | None) -> None:
     ----------
     stop : asyncio.Event | None
         Event returned by start_live_map_refresh.
-
-    Examples
-    --------
-    >>> 1 + 1
-    2
     """
     if stop is None:
         return

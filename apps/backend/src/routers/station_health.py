@@ -301,11 +301,6 @@ def list_station_health_metrics() -> StationHealthMetricsResponse:
     -------
     object
         Return value.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (list_station_health_metrics)
-    2
     """
     rows = get_station_health_store().list_metrics()
     metrics: list[StationMetricDefinitionModel] = []
@@ -367,11 +362,6 @@ def list_station_health(
     -------
     object
         Return value.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (list_station_health)
-    2
     """
     window_key = window.strip().lower()
     if window_key not in WINDOW_SECONDS:
@@ -455,11 +445,6 @@ def get_station_health(icao: str) -> StationHealthDetailResponse:
     -------
     object
         Return value.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (get_station_health)
-    2
     """
     detail_raw = get_station_health_store().get_station(icao)
     if detail_raw is None:

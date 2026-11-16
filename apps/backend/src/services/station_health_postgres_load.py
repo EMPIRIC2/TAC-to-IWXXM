@@ -46,10 +46,6 @@ def load_window_rows(
     tuple[dict[str, dict[str, Any]], list[StationRecord]]
         Station map and observation rows.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (load_window_rows)
-    2
     """
     try:
         with engine.connect() as conn:

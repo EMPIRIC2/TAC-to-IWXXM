@@ -16,10 +16,6 @@ def apply_output_policy_to_report(
     """
     Drop disabled Schematron assert ids. Other issue codes stay on the report.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (apply_output_policy_to_report)
-    2
 
     Parameters
     ----------
@@ -61,11 +57,6 @@ def apply_output_policy_to_report(
         -------
         bool
             True when the issue is kept.
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (symbol: keep)
-        2
         """
         if issue.layer != "schematron":
             return True

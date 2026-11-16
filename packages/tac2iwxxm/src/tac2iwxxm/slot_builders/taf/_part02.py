@@ -24,11 +24,6 @@ def parse_taf(tac: str, *, product: str = "TAF") -> dict[str, Any]:
     ------
     ValueError
         When the product mismatches or required groups are missing.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (parse_taf)
-    2
     """
     if product.upper() != "TAF":
         raise ValueError(f"product mismatch: expected TAF, found {product}")

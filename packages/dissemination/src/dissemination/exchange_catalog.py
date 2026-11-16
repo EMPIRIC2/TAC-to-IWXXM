@@ -98,11 +98,6 @@ def catalog_entries() -> list[dict[str, Any]]:
     ------
     KeyError
         When a registered exchange id has no catalog metadata.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (catalog_entries)
-    2
     """
     items: list[dict[str, Any]] = []
     for pid in sorted(known_exchange_profile_ids()):

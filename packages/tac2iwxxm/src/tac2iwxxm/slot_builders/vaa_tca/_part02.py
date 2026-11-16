@@ -19,11 +19,6 @@ def parse_tca(tac: str, *, product: str = "TCA") -> dict[str, Any]:
     -------
     dict[str, Any]
         A Tropical Cyclone Advisory TAC into IR.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (parse_tca)
-    2
     """
     if product.upper() != "TCA":
         raise ValueError(f"product mismatch: expected TCA, found {product}")

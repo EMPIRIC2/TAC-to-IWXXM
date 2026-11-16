@@ -65,22 +65,12 @@ class PostgresStationHealthStore:
         -------
         PostgresStationHealthStore
             Connected store.
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (PostgresStationHealthStore.from_url)
-        2
         """
         return cls(create_engine(url, pool_pre_ping=True))
 
     def reset(self) -> None:
         """
         No-op for API compatibility with the in-memory store.
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (PostgresStationHealthStore.reset)
-        2
         """
 
     def list_metrics(self) -> list[dict[str, Any]]:
@@ -91,11 +81,6 @@ class PostgresStationHealthStore:
         -------
         list[dict[str, Any]]
             Enabled metric rows.
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (PostgresStationHealthStore.list_metrics)
-        2
         """
         try:
             with self._engine.connect() as conn:
@@ -144,13 +129,8 @@ class PostgresStationHealthStore:
 
         Returns
         -------
-        object
-            Return value.
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (record_observation)
-        2
+        StationRecord | None
+            Stored row, or ``None`` on invalid ICAO or write failure.
         """
         code = (icao or "").strip().upper()
         if len(code) != 4 or not code.isalpha():
@@ -280,11 +260,6 @@ class PostgresStationHealthStore:
         -------
         dict[str, Any]
             List payload with stations and summary.
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (PostgresStationHealthStore.list_stations)
-        2
         """
         if window_key not in WINDOW_SECONDS:
             window_key = "6h"
@@ -377,11 +352,6 @@ class PostgresStationHealthStore:
         -------
         dict[str, Any] | None
             Detail payload, or ``None`` when unknown.
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (PostgresStationHealthStore.get_station)
-        2
         """
         code = (icao or "").strip().upper()
         try:
@@ -454,10 +424,6 @@ class PostgresStationHealthStore:
         object
             Return value.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (purge_expired)
-        2
         """
         cutoff = datetime.now(UTC) - window_timedelta("90d")
         _ = RETENTION_SECONDS

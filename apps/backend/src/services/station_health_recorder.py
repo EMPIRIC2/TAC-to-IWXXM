@@ -54,11 +54,6 @@ def record_tac_observation(
     -------
     dict[str, Any] | None
         Summary of the stored row, or ``None`` when skipped.
-
-    Examples
-    --------
-    >>> 1 + 1
-    2
     """
     code = (icao or "").strip().upper() or None
     if code is None and extract_station_icao is not None:

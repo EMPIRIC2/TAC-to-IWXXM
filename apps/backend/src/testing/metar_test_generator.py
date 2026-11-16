@@ -54,10 +54,6 @@ class METARTestCase:
         """
         Check if METAR has significant weather.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (has_weather)
-        2
 
         Returns
         -------
@@ -70,10 +66,6 @@ class METARTestCase:
         """
         Check if METAR has cloud information.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (has_clouds)
-        2
 
         Returns
         -------
@@ -86,10 +78,6 @@ class METARTestCase:
         """
         Calculate complexity score (higher = more complex).
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (complexity_score)
-        2
 
         Returns
         -------
@@ -137,10 +125,6 @@ class CoverageReport:
         """
         Add a test case to coverage tracking.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (add_test_case)
-        2
 
         Parameters
         ----------
@@ -171,10 +155,6 @@ class CoverageReport:
         """
         Convert to dictionary for JSON serialization.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (to_dict)
-        2
 
         Returns
         -------
@@ -429,11 +409,6 @@ class METARTestGenerator:
         -------
         object
             List of METARTestCase objects
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (diverse_sample)
-        2
         """
         cache_file = self.cache_dir / f"diverse_sample_{count}_{hours}h.json"
 
@@ -506,11 +481,6 @@ class METARTestGenerator:
         -------
         object
             List of METARTestCase objects
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (regional_sample)
-        2
         """
         if region not in self.WORLD_REGIONS:
             raise ValueError(f"Unknown region: {region}")
@@ -562,11 +532,6 @@ class METARTestGenerator:
         -------
         object
             List of METARTestCase objects with required phenomena
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (phenomenon_coverage)
-        2
         """
         if required_phenomena is None:
             required_phenomena = ["RA", "SN", "TS", "FG", "BR", "CB", "TCU"]
@@ -698,10 +663,6 @@ class METARTestGenerator:
         """
         Get current coverage report.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (get_coverage_report)
-        2
 
         Returns
         -------
@@ -714,10 +675,6 @@ class METARTestGenerator:
         """
         Save coverage report to JSON file.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (save_coverage_report)
-        2
 
         Parameters
         ----------
