@@ -1086,7 +1086,7 @@ paths:
       tags:
         - Conversion Profiles
       summary: Get Catalog
-      description: "Read-only ConversionProfile catalog for the authenticated Profiles inspector.\n\nRequires JWT so the inspector stays on the authenticated Profiles surface."
+      description: Read-only ConversionProfile catalog for the authenticated Profiles inspector.
       operationId: get_catalog_api_v1_profiles_catalog_get
       responses:
         200:
@@ -1457,6 +1457,33 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HTTPValidationError"
+    delete:
+      tags:
+        - Conversion Profiles
+      summary: Delete Template
+      description: Delete an owned dissemination template.
+      operationId: delete_template_api_v1_profiles_templates__template_id__delete
+      security:
+        -
+                    HTTPBearer: []
+      parameters:
+        -
+                    name: template_id
+                    in: path
+                    required: true
+                    schema:
+                      type: string
+                      format: uuid
+                      title: Template Id
+      responses:
+        204:
+          description: Successful Response
+        422:
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
     patch:
       tags:
         - Conversion Profiles
@@ -1488,33 +1515,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/DisseminationTemplateOut"
-        422:
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/HTTPValidationError"
-    delete:
-      tags:
-        - Conversion Profiles
-      summary: Delete Template
-      description: Delete an owned dissemination template.
-      operationId: delete_template_api_v1_profiles_templates__template_id__delete
-      security:
-        -
-                    HTTPBearer: []
-      parameters:
-        -
-                    name: template_id
-                    in: path
-                    required: true
-                    schema:
-                      type: string
-                      format: uuid
-                      title: Template Id
-      responses:
-        204:
-          description: Successful Response
         422:
           description: Validation Error
           content:
@@ -1829,6 +1829,99 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HTTPValidationError"
+  /api/v1/profiles/library-assets/{asset_id}:
+    get:
+      tags:
+        - Conversion Profiles
+      summary: Get Library Asset
+      description: Fetch one library asset (first-party id or custom UUID).
+      operationId: get_library_asset_api_v1_profiles_library_assets__asset_id__get
+      security:
+        -
+                    HTTPBearer: []
+      parameters:
+        -
+                    name: asset_id
+                    in: path
+                    required: true
+                    schema:
+                      type: string
+                      title: Asset Id
+      responses:
+        200:
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LibraryAssetOut"
+        422:
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
+    patch:
+      tags:
+        - Conversion Profiles
+      summary: Update Library Asset
+      description: Library authoring is no longer available.
+      operationId: update_library_asset_api_v1_profiles_library_assets__asset_id__patch
+      security:
+        -
+                    HTTPBearer: []
+      parameters:
+        -
+                    name: asset_id
+                    in: path
+                    required: true
+                    schema:
+                      type: string
+                      title: Asset Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LibraryAssetUpdate"
+      responses:
+        200:
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LibraryAssetOut"
+        422:
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
+    delete:
+      tags:
+        - Conversion Profiles
+      summary: Delete Library Asset
+      description: Library authoring is no longer available.
+      operationId: delete_library_asset_api_v1_profiles_library_assets__asset_id__delete
+      security:
+        -
+                    HTTPBearer: []
+      parameters:
+        -
+                    name: asset_id
+                    in: path
+                    required: true
+                    schema:
+                      type: string
+                      title: Asset Id
+      responses:
+        204:
+          description: Successful Response
+        422:
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
   /api/v1/profiles/library-assets:
     get:
       tags:
@@ -1950,99 +2043,6 @@ paths:
       security:
         -
                     HTTPBearer: []
-  /api/v1/profiles/library-assets/{asset_id}:
-    get:
-      tags:
-        - Conversion Profiles
-      summary: Get Library Asset
-      description: Fetch one library asset (first-party id or custom UUID).
-      operationId: get_library_asset_api_v1_profiles_library_assets__asset_id__get
-      security:
-        -
-                    HTTPBearer: []
-      parameters:
-        -
-                    name: asset_id
-                    in: path
-                    required: true
-                    schema:
-                      type: string
-                      title: Asset Id
-      responses:
-        200:
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/LibraryAssetOut"
-        422:
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/HTTPValidationError"
-    patch:
-      tags:
-        - Conversion Profiles
-      summary: Update Library Asset
-      description: Library authoring is no longer available.
-      operationId: update_library_asset_api_v1_profiles_library_assets__asset_id__patch
-      security:
-        -
-                    HTTPBearer: []
-      parameters:
-        -
-                    name: asset_id
-                    in: path
-                    required: true
-                    schema:
-                      type: string
-                      title: Asset Id
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/LibraryAssetUpdate"
-      responses:
-        200:
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/LibraryAssetOut"
-        422:
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/HTTPValidationError"
-    delete:
-      tags:
-        - Conversion Profiles
-      summary: Delete Library Asset
-      description: Library authoring is no longer available.
-      operationId: delete_library_asset_api_v1_profiles_library_assets__asset_id__delete
-      security:
-        -
-                    HTTPBearer: []
-      parameters:
-        -
-                    name: asset_id
-                    in: path
-                    required: true
-                    schema:
-                      type: string
-                      title: Asset Id
-      responses:
-        204:
-          description: Successful Response
-        422:
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/HTTPValidationError"
   /api/v1/ingest/mass:
     post:
       tags:
@@ -2478,6 +2478,31 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HTTPValidationError"
+  /api/v1/decode-tac:
+    post:
+      tags:
+        - Validation
+        - Conversion
+      summary: Decode TAC
+      description: Decode TAC into annotated segments and a plain-language summary.
+      operationId: decode_tac_endpoint_api_v1_decode_tac_post
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: "#/components/schemas/Body_decode_tac_endpoint_api_v1_decode_tac_post"
+        required: true
+      responses:
+        200:
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DecodeTacResponse"
+        415:
+          description: Unsupported Media Type - multipart/form-data required
+        422:
+          description: Missing required product field
   /api/v1/lint-tac:
     post:
       tags:
@@ -2505,31 +2530,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HTTPValidationError"
-  /api/v1/decode-tac:
-    post:
-      tags:
-        - Validation
-        - Conversion
-      summary: Decode TAC
-      description: Decode TAC into annotated segments and a plain-language summary.
-      operationId: decode_tac_endpoint_api_v1_decode_tac_post
-      requestBody:
-        content:
-          multipart/form-data:
-            schema:
-              $ref: "#/components/schemas/Body_decode_tac_endpoint_api_v1_decode_tac_post"
-        required: true
-      responses:
-        200:
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/DecodeTacResponse"
-        415:
-          description: Unsupported Media Type - multipart/form-data required
-        422:
-          description: Missing required product field
   /api/v1/stations/{icao}:
     get:
       tags:
@@ -3018,7 +3018,7 @@ components:
           description: Whether all layers passed
         layers_validated:
           items:
-            $ref: "#/components/schemas/src__schemas__validation__ValidationLayer"
+            $ref: "#/components/schemas/src__models__validation_part_1__ValidationLayer"
           type: array
           title: Layers Validated
           description: Layers validated
@@ -4068,9 +4068,7 @@ components:
             - 0
             - 1
         metadata:
-          additionalProperties: true
-          type: object
-          title: Metadata
+          $ref: "#/components/schemas/ConversionResponseMetadata"
           description: "Echoed request metadata such as bulletin_id, issuing_center, and validation options"
         ok:
           anyOf:
@@ -4122,6 +4120,28 @@ components:
                         source: EGLL.txt
         successful: 2
         total_processed: 2
+    ConversionResponseMetadata:
+      properties:
+        bulletin_id:
+          anyOf:
+            -
+                            type: string
+            -
+                            type: null
+          title: Bulletin Id
+          description: Optional bulletin identifier
+        product:
+          anyOf:
+            -
+                            type: string
+            -
+                            type: null
+          title: Product
+          description: Optional product family
+      additionalProperties: true
+      type: object
+      title: ConversionResponseMetadata
+      description: Nested convert response metadata (extra keys allowed for wire stability).
     ConversionResult:
       properties:
         name:
@@ -7878,7 +7898,7 @@ components:
           additionalProperties:
             type: number
           propertyNames:
-            $ref: "#/components/schemas/src__schemas__icao_opmet__ValidationLayer"
+            $ref: "#/components/schemas/src__models__icao_opmet__ValidationLayer"
           type: object
           title: Validation Layer Success Rates
           description: Success rate per validation layer (percentage)
@@ -8287,7 +8307,7 @@ components:
     ValidationIssue:
       properties:
         layer:
-          $ref: "#/components/schemas/src__schemas__validation__ValidationLayer"
+          $ref: "#/components/schemas/src__models__validation_part_1__ValidationLayer"
           description: Validation layer that found this issue
         level:
           $ref: "#/components/schemas/ValidationLevel"
@@ -8349,7 +8369,7 @@ components:
     ValidationLayerInfo:
       properties:
         layer:
-          $ref: "#/components/schemas/src__schemas__validation__ValidationLayer"
+          $ref: "#/components/schemas/src__models__validation_part_1__ValidationLayer"
           description: Layer identifier
         description:
           type: string
@@ -8471,7 +8491,7 @@ components:
           title: Passed
           description: Whether validation passed
         layer:
-          $ref: "#/components/schemas/src__schemas__validation__ValidationLayer"
+          $ref: "#/components/schemas/src__models__validation_part_1__ValidationLayer"
           description: Validation layer
         issues:
           items:
@@ -8759,7 +8779,7 @@ components:
       type: object
       title: WorkSessionUpdate
       description: "Body for PATCH /api/v1/work-sessions/{id}."
-    src__schemas__icao_opmet__ValidationLayer:
+    src__models__icao_opmet__ValidationLayer:
       type: string
       enum:
         - AIRPORT_ICAO
@@ -8771,7 +8791,7 @@ components:
         - WMO_CODELISTS
       title: ValidationLayer
       description: 7-layer IWXXM validation stages.
-    src__schemas__validation__ValidationLayer:
+    src__models__validation_part_1__ValidationLayer:
       type: string
       enum:
         - airport_icao

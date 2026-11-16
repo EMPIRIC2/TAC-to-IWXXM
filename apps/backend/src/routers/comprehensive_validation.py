@@ -7,10 +7,11 @@ from typing import Any
 
 from fastapi import APIRouter, Form, HTTPException
 
-from src import api as api_surface
 from src.schemas.validation import ValidateRequest, ValidateResponse, ValidationLayer
 from src.utilities.conversion import ConversionError
 from src.utilities.iwxxm_readable_decode import decode_for_validate
+
+from .conversion_api_surface import api_surface
 
 logger = logging.getLogger(__name__)
 

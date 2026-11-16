@@ -19,7 +19,7 @@ python.lang.compatibility.python37.python37-compatibility-importlib2	packages/ta
 python.lang.compatibility.python37.python37-compatibility-importlib2	packages/tac2iwxxm/src/tac2iwxxm/conversion_schema_blocks.py
 python.lang.compatibility.python37.python37-compatibility-importlib2	packages/tac2iwxxm/src/tac2iwxxm/dissemination_decoding_catalogs.py
 python.lang.compatibility.python37.python37-compatibility-importlib2	packages/tac2iwxxm/src/tac2iwxxm/validation_library_catalogs.py
-python.lang.security.use-defused-xml-parse.use-defused-xml-parse	apps/backend/src/utilities/codelist_parser.py
+python.lang.security.use-defused-xml-parse.use-defused-xml-parse	apps/backend/src/utilities/codelist_parser_part_2.py
 python.lang.security.use-defused-xml-parse.use-defused-xml-parse	packages/iwxxm-validate/src/iwxxm_validate/codelists.py
 python.lang.security.use-defused-xml-parse.use-defused-xml-parse	scripts/ci/format_coverage_pr_comment.py
 python.lang.security.use-defused-xml-parse.use-defused-xml-parse	scripts/iwxxm/mine_conversion_schema_blocks.py

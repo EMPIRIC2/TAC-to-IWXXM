@@ -15,7 +15,7 @@ from typing import Any
 from sqlalchemy import Integer, and_, func, select
 
 from ..config.icao_opmet import get_icao_region, should_log_statistics
-from ..models import TranslationStatisticsModel
+from ..models.orm import TranslationStatisticsModel
 from ..schemas.icao_opmet import TranslationStatus, ValidationLayer
 from ..schemas.validation import ValidationLayer as RuntimeValidationLayer
 from ..utilities.observability import record_translation_metric

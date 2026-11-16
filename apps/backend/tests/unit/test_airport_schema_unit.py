@@ -6,6 +6,7 @@ import json
 from pathlib import Path
 
 import pytest
+from src.models import airport as airport_model
 from src.schemas import airport as airport_schema
 
 
@@ -20,6 +21,8 @@ def _reset_airport_validator_singleton() -> None:
 def _point_airport_data_dir(monkeypatch: pytest.MonkeyPatch, data_dir: Path) -> None:
     """Reset the singleton and point catalog loads at ``data_dir``."""
     airport_schema.reset_airport_validator_for_tests()
+    # Catalog path lives on the model module; schemas re-export is a separate binding.
+    monkeypatch.setattr(airport_model, "_AIRPORT_DATA_DIR", data_dir)
     monkeypatch.setattr(airport_schema, "_AIRPORT_DATA_DIR", data_dir)
 
 

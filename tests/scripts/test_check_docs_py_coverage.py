@@ -27,6 +27,14 @@ def test_should_skip_tests_and_vendor_dirs() -> None:
     assert _should_skip(base / "packages" / "x" / "tests" / "a.py")
     assert _should_skip(base / "vendor" / "schemas" / "a.py")
     assert not _should_skip(base / "packages" / "x" / "src" / "a.py")
+    # Facade split artifacts and helpers are out of the docstring scan.
+    assert _should_skip(
+        base / "apps" / "backend" / "src" / "routers" / "conversion_part_1.py"
+    )
+    assert _should_skip(
+        base / "apps" / "backend" / "src" / "routers" / "conversion_routes_io.py"
+    )
+    assert _should_skip(base / "apps" / "backend" / "src" / "api_http_helpers.py")
 
 
 def test_typing_stub_and_args_and_returns_helpers() -> None:

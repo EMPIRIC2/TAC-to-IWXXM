@@ -622,8 +622,6 @@ export interface paths {
         /**
          * Get Catalog
          * @description Read-only ConversionProfile catalog for the authenticated Profiles inspector.
-         *
-         *     Requires JWT so the inspector stays on the authenticated Profiles surface.
          */
         get: operations["get_catalog_api_v1_profiles_catalog_get"];
         put?: never;
@@ -1573,7 +1571,7 @@ export interface components {
              * Layers Validated
              * @description Layers validated
              */
-            layers_validated: components["schemas"]["src__schemas__validation__ValidationLayer"][];
+            layers_validated: components["schemas"]["src__models__validation_part_1__ValidationLayer"][];
             /**
              * Passed
              * @description Whether all layers passed
@@ -2436,13 +2434,8 @@ export interface components {
              * @description Structured issues (errors/warnings/info) for failed or partial conversions
              */
             issues?: components["schemas"]["ConversionIssue"][];
-            /**
-             * Metadata
-             * @description Echoed request metadata such as bulletin_id, issuing_center, and validation options
-             */
-            metadata?: {
-                [key: string]: unknown;
-            };
+            /** @description Echoed request metadata such as bulletin_id, issuing_center, and validation options */
+            metadata?: components["schemas"]["ConversionResponseMetadata"];
             /**
              * Ok
              * @description Soft-preview envelope flag; set when preview=true
@@ -2472,6 +2465,24 @@ export interface components {
              * @example 5
              */
             total_processed: number;
+        };
+        /**
+         * ConversionResponseMetadata
+         * @description Nested convert response metadata (extra keys allowed for wire stability).
+         */
+        ConversionResponseMetadata: {
+            /**
+             * Bulletin Id
+             * @description Optional bulletin identifier
+             */
+            bulletin_id?: string | null;
+            /**
+             * Product
+             * @description Optional product family
+             */
+            product?: string | null;
+        } & {
+            [key: string]: unknown;
         };
         /**
          * ConversionResult
@@ -5202,7 +5213,7 @@ export interface components {
              */
             code?: string | null;
             /** @description Validation layer that found this issue */
-            layer: components["schemas"]["src__schemas__validation__ValidationLayer"];
+            layer: components["schemas"]["src__models__validation_part_1__ValidationLayer"];
             /** @description Severity level */
             level: components["schemas"]["ValidationLevel"];
             /**
@@ -5251,7 +5262,7 @@ export interface components {
              */
             description: string;
             /** @description Layer identifier */
-            layer: components["schemas"]["src__schemas__validation__ValidationLayer"];
+            layer: components["schemas"]["src__models__validation_part_1__ValidationLayer"];
             /**
              * Supported Content Types
              * @description Content types this layer supports (tac/xml)
@@ -5358,7 +5369,7 @@ export interface components {
              */
             issues?: components["schemas"]["ValidationIssue"][];
             /** @description Validation layer */
-            layer: components["schemas"]["src__schemas__validation__ValidationLayer"];
+            layer: components["schemas"]["src__models__validation_part_1__ValidationLayer"];
             /**
              * Metadata
              * @description Layer-specific metadata
@@ -5529,13 +5540,13 @@ export interface components {
          * @description 7-layer IWXXM validation stages.
          * @enum {string}
          */
-        src__schemas__icao_opmet__ValidationLayer: "AIRPORT_ICAO" | "TAC_SYNTAX" | "XML_WELLFORMED" | "XML_SCHEMA" | "SCHEMATRON" | "GML_REFERENCES" | "WMO_CODELISTS";
+        src__models__icao_opmet__ValidationLayer: "AIRPORT_ICAO" | "TAC_SYNTAX" | "XML_WELLFORMED" | "XML_SCHEMA" | "SCHEMATRON" | "GML_REFERENCES" | "WMO_CODELISTS";
         /**
          * ValidationLayer
          * @description Validation layer identifiers.
          * @enum {string}
          */
-        src__schemas__validation__ValidationLayer: "airport_icao" | "tac_syntax" | "xml_wellformed" | "xml_schema" | "schematron" | "gml_references" | "wmo_codelists";
+        src__models__validation_part_1__ValidationLayer: "airport_icao" | "tac_syntax" | "xml_wellformed" | "xml_schema" | "schematron" | "gml_references" | "wmo_codelists";
     };
     responses: never;
     parameters: never;
