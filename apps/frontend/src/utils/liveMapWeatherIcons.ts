@@ -12,28 +12,33 @@ export const ICE_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 
 export const PRECIP_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path fill="#1d4ed8" d="M12 3c-3 4.5-6 8-6 11a6 6 0 0 0 12 0c0-3-3-6.5-6-11z"/></svg>`;
 
 /**
- * Wind direction arrow HTML rotated so 0° points north (from degrees).
+ * Wind direction arrow HTML: rotation = direction; box size = magnitude.
  *
  * @param degrees - Meteorological from-direction
+ * @param sizePx - Icon box size in pixels (magnitude)
  * @returns HTML snippet for a DivIcon
  * @example
  * const _ = true;
  */
-export function windVectorIconHtml(degrees: number): string {
+export function windVectorIconHtml(degrees: number, sizePx = 28): string {
   const rot = degrees;
-  return `<span style="display:inline-flex;width:28px;height:28px;align-items:center;justify-content:center;transform:rotate(${rot}deg)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="#0f766e" d="M12 3l5 9h-3v9h-4V12H7l5-9z"/></svg></span>`;
+  const box = Math.max(16, Math.round(sizePx));
+  const glyph = Math.max(12, Math.round(box * 0.78));
+  return `<span style="display:inline-flex;width:${box}px;height:${box}px;align-items:center;justify-content:center;transform:rotate(${rot}deg)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="${glyph}" height="${glyph}" aria-hidden="true"><path fill="#0f766e" d="M12 3l5 9h-3v9h-4V12H7l5-9z"/></svg></span>`;
 }
 
 /**
  * Temperature badge HTML.
  *
- * @param celsius - Degrees C
+ * @param celsius - Degrees C from TAC
+ * @param unit - Operator display unit (C or F)
  * @returns HTML snippet for a DivIcon
  * @example
  * const _ = true;
  */
-export function temperatureIconHtml(celsius: number): string {
-  const label = `${celsius}°`;
+export function temperatureIconHtml(celsius: number, unit: 'C' | 'F' = 'C'): string {
+  const value = unit === 'C' ? celsius : Math.round((celsius * 9) / 5 + 32);
+  const label = `${value}${unit === 'C' ? '°C' : '°F'}`;
   return `<span style="display:inline-flex;align-items:center;justify-content:center;min-width:28px;height:18px;padding:0 4px;border-radius:4px;background:#fff7ed;border:1px solid #c2410c;color:#9a3412;font:600 10px/16px ui-sans-serif,system-ui,sans-serif">${label}</span>`;
 }
 

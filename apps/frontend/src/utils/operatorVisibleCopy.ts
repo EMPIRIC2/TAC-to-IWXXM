@@ -72,6 +72,15 @@ import {
 } from '@/utils/liveMap';
 import { LIVE_MAP_ACTIVE_EMPTY, LIVE_MAP_FILTER_ACTIVE } from '@/utils/liveMapValidity';
 import {
+  LIVE_MAP_DISPLAY_MODES,
+  LIVE_MAP_MODE_GROUP,
+  LIVE_MAP_OVERLAY_SCALE,
+  LIVE_MAP_SHOW_LATEST,
+  LIVE_MAP_TEMP_C,
+  LIVE_MAP_TEMP_F,
+  LIVE_MAP_TEMP_UNIT,
+} from '@/utils/liveMapModes';
+import {
   LIVE_MAP_CLUSTER_COUNT,
   LIVE_MAP_CLUSTER_PICK,
   LIVE_MAP_TAC_OVERLAY_EMPTY,
@@ -457,6 +466,16 @@ export function collectOperatorVisibleCopy(): OperatorVisibleCopyEntry[] {
       id: `live-map.phenomenon.${item.id}`,
       text: item.label,
     })),
+    { id: 'live-map.mode-group', text: LIVE_MAP_MODE_GROUP },
+    ...LIVE_MAP_DISPLAY_MODES.map((mode) => ({
+      id: `live-map.mode.${mode.id}`,
+      text: mode.label,
+    })),
+    { id: 'live-map.show-latest', text: LIVE_MAP_SHOW_LATEST },
+    { id: 'live-map.overlay-scale', text: LIVE_MAP_OVERLAY_SCALE },
+    { id: 'live-map.temp-unit', text: LIVE_MAP_TEMP_UNIT },
+    { id: 'live-map.temp-c', text: LIVE_MAP_TEMP_C },
+    { id: 'live-map.temp-f', text: LIVE_MAP_TEMP_F },
     { id: 'live-map.tac-overlays', text: LIVE_MAP_TAC_OVERLAYS },
     { id: 'live-map.tac-overlay-empty', text: LIVE_MAP_TAC_OVERLAY_EMPTY },
     { id: 'live-map.cluster-pick', text: LIVE_MAP_CLUSTER_PICK },
