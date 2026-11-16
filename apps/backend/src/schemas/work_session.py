@@ -84,11 +84,6 @@ def sanitize_work_session_title(value: object) -> object:
     object
         Plain-text title with tags removed and whitespace normalized, ``None``
         when the input was ``None``, or the original value when not a string.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (sanitize_work_session_title)
-    2
     """
     if value is None or not isinstance(value, str):
         return value

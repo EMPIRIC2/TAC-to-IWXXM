@@ -57,10 +57,6 @@ def load_assert_inventory(pin: str) -> frozenset[str]:
     pin : str
         IWXXM release directory name under the schema root.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (load_assert_inventory)
-    2
 
     Returns
     -------
@@ -82,10 +78,6 @@ def load_assert_inventory_from(pin_root: Path) -> frozenset[str]:
     """
     Load pattern ids from an explicit pin directory (tests and overlays).
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (load_assert_inventory_from)
-    2
 
     Parameters
     ----------

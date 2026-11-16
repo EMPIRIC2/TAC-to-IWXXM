@@ -193,11 +193,6 @@ def emit_vona_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
     -------
     str
         An IWXXM ``VolcanoObservatoryNoticeForAviation`` document (F32 / EV-032).
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (emit_vona_annex3)
-    2
     """
     from tac2iwxxm.codelists import aviation_colour_href
 

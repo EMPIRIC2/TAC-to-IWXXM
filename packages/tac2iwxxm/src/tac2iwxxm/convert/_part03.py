@@ -77,11 +77,6 @@ def convert(
     -------
     ConvertResult
         Structured result with XML, IR, and issues.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (convert)
-    2
     """
     product_u = product.upper()
     if product_u in {"METAR", "SPECI"}:

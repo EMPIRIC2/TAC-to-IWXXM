@@ -35,11 +35,6 @@ def project_ir(
     -------
     PackIr
         Versioned IR projection. Callers keep legacy XML emit on the parser IR.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (project_ir)
-    2
     """
     spans: list[IrSpan] = [
         {

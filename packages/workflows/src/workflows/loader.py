@@ -57,10 +57,6 @@ def default_workflows_dir() -> Path:
     ``workflows/`` tree containing ``f8-metar-ingest-default.yaml``, else
     ``Path.cwd() / "workflows"``.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (default_workflows_dir)
-    2
 
     Returns
     -------
@@ -86,10 +82,6 @@ def resolve_env_refs(
 
     Missing env vars resolve to empty string (caller may apply defaults).
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (resolve_env_refs)
-    2
 
     Parameters
     ----------
@@ -142,11 +134,6 @@ def assert_no_embedded_credentials(value: object, *, path: str = "$") -> None:
         Nested YAML structure after env resolve.
     path : str, optional
         JSON-pointer-like path for error messages. By default ``'$'``.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (assert_no_embedded_credentials)
-    2
     """
     if isinstance(value, str):
         if _CREDENTIAL_URL.search(value):
@@ -204,10 +191,6 @@ def parse_workflow_mapping(data: dict[str, object]) -> WorkflowDefinition:
     WorkflowLoadError
         On missing required fields or bad types.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (parse_workflow_mapping)
-    2
 
     Parameters
     ----------
@@ -277,10 +260,6 @@ def load_workflow(
     environ : dict[str, str] or None, optional
         Optional env map for ``${ENV:}`` resolution (defaults to ``os.environ``).
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (load_workflow)
-    2
 
     Returns
     -------

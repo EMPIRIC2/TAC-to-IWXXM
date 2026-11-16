@@ -39,11 +39,6 @@ def jwks_url_from_supabase_url(supabase_url: str) -> str:
     -------
     str
         ``{url}/auth/v1/.well-known/jwks.json``
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (jwks_url_from_supabase_url)
-    2
     """
     base = supabase_url.rstrip("/")
     return f"{base}/auth/v1/.well-known/jwks.json"
@@ -73,11 +68,6 @@ def resolve_jwks_url(
     ------
     JwtVerificationError
         If no URL can be resolved.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (resolve_jwks_url)
-    2
     """
     explicit = (jwks_url or os.getenv("SUPABASE_JWKS_URL") or "").strip()
     if explicit:
@@ -93,11 +83,6 @@ def resolve_jwks_url(
 def clear_jwks_client_cache() -> None:
     """
     Clear cached JWKS documents (tests / key rotation).
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (clear_jwks_client_cache)
-    2
     """
     _JWKS_CACHE.clear()
 
@@ -165,11 +150,6 @@ def verify_access_token(
     ------
     JwtVerificationError
         If the token is missing, expired, malformed, or signature-invalid.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (verify_access_token)
-    2
     """
     if not token or not token.strip():
         raise JwtVerificationError("Missing access token")

@@ -195,11 +195,6 @@ class DisseminationGateway:
         ------
         KeyError
             When ``gateway_kind`` is not registered.
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (validate)
-        2
         """
         adapter = self._adapter(message.gateway_kind)
         pre = await adapter.preflight(
@@ -227,11 +222,6 @@ class DisseminationGateway:
         ------
         KeyError
             When ``gateway_kind`` is not registered.
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (send)
-        2
         """
         adapter = self._adapter(message.gateway_kind)
         completed = datetime.now(UTC)
@@ -271,11 +261,6 @@ class DisseminationGateway:
         -------
         list[GatewayHealth]
             One row per kind.
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (health)
-        2
         """
         kinds = [gateway_kind] if gateway_kind is not None else sorted(self._adapters)
         rows: list[GatewayHealth] = []

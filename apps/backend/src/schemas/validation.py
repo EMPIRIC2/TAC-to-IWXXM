@@ -106,10 +106,6 @@ class ValidationResult(BaseModel):
         """
         Add a validation issue.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (add_issue)
-        2
 
         Parameters
         ----------
@@ -267,10 +263,6 @@ class AggregatedValidationResult(BaseModel):
         """
         Create aggregated result from individual layer results.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (from_results)
-        2
 
         Parameters
         ----------

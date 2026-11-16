@@ -103,11 +103,6 @@ def set_bulletin_splitter(splitter: Callable[[str, str], object] | None) -> None
     ----------
     splitter : Callable[[str, str], object] | None
         Callable that splits a bulletin into TAC reports.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (set_bulletin_splitter)
-    2
     """
     global _bulletin_splitter
     _bulletin_splitter = splitter
@@ -332,11 +327,6 @@ def decode_single_report(tac: str, *, product: str) -> DecodeResult:
     -------
     DecodeResult
         Decode one TAC report without bulletin or COLLECT dispatch.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (decode_single_report)
-    2
     """
     return _decode_single_report(tac, product=product)
 
@@ -357,11 +347,6 @@ def shift_decode(result: DecodeResult, offset: int) -> DecodeResult:
     -------
     DecodeResult
         Translate segment offsets into a parent document string.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (shift_decode)
-    2
     """
     return _shift_decode(result, offset)
 
@@ -414,12 +399,7 @@ def decode_tac(tac: str, *, product: str) -> DecodeResult:
         Multi-report AHL bulletins are split so each report is decoded independently
         (heading is a bulletin-framing segment, not a product residual).
         COLLECT documents decode contained TAC when present, otherwise walk XML
-        fields ().
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (decode_tac)
-    2
+        fields.
     """
     product_u = product.upper()
     if product_u in _SUPPORTED:

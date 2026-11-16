@@ -75,10 +75,6 @@ def profiles_service(
     """
     Build owner-scoped profiles service from JWT ``sub``.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (profiles_service)
-    2
 
     Parameters
     ----------
@@ -104,10 +100,6 @@ def get_catalog(
     Requires JWT so the inspector stays on the authenticated Profiles surface.
 
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (get_catalog)
-    2
 
     Parameters
     ----------
@@ -156,10 +148,6 @@ def list_rule_packs(
     List rule packs owned by the caller.
 
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (list_rule_packs)
-    2
 
     Parameters
     ----------
@@ -183,10 +171,6 @@ def create_rule_pack(
     Create a rule pack.
 
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (create_rule_pack)
-    2
 
     Parameters
     ----------
@@ -212,10 +196,6 @@ def get_rule_pack(
     Fetch one rule pack.
 
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (get_rule_pack)
-    2
 
     Parameters
     ----------
@@ -242,10 +222,6 @@ def patch_rule_pack(
     Update a rule pack.
 
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (patch_rule_pack)
-    2
 
     Parameters
     ----------
@@ -273,10 +249,6 @@ def delete_rule_pack(
     Delete a rule pack.
 
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (delete_rule_pack)
-    2
 
     Parameters
     ----------
@@ -296,10 +268,6 @@ def list_presets(
     List semantic presets owned by the caller (and shared presets).
 
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (list_presets)
-    2
 
     Parameters
     ----------
@@ -323,10 +291,6 @@ def create_preset(
     Create a semantic preset.
 
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (create_preset)
-    2
 
     Parameters
     ----------
@@ -352,10 +316,6 @@ def get_preset(
     Fetch one semantic preset.
 
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (get_preset)
-    2
 
     Parameters
     ----------
@@ -382,10 +342,6 @@ def patch_preset(
     Update a semantic preset.
 
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (patch_preset)
-    2
 
     Parameters
     ----------
@@ -413,10 +369,6 @@ def delete_preset(
     Delete a semantic preset.
 
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (delete_preset)
-    2
 
     Parameters
     ----------
@@ -436,10 +388,6 @@ def list_templates(
     List dissemination templates owned by the caller (and shared templates).
 
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (list_templates)
-    2
 
     Parameters
     ----------
@@ -463,10 +411,6 @@ def create_template(
     Create a dissemination template.
 
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (create_template)
-    2
 
     Parameters
     ----------
@@ -492,10 +436,6 @@ def get_template(
     Fetch one dissemination template.
 
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (get_template)
-    2
 
     Parameters
     ----------
@@ -522,10 +462,6 @@ def patch_template(
     Update a dissemination template.
 
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (patch_template)
-    2
 
     Parameters
     ----------
@@ -553,10 +489,6 @@ def delete_template(
     Delete an owned dissemination template.
 
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (delete_template)
-    2
 
     Parameters
     ----------
@@ -576,10 +508,6 @@ def list_overlays(
     List overlays owned by the caller (and shared overlays).
 
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (list_overlays)
-    2
 
     Parameters
     ----------
@@ -603,10 +531,6 @@ def create_overlay(
     Create a server-signed overlay.
 
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (create_overlay)
-    2
 
     Parameters
     ----------
@@ -632,10 +556,6 @@ def get_overlay(
     Fetch one overlay.
 
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (get_overlay)
-    2
 
     Parameters
     ----------
@@ -662,10 +582,6 @@ def patch_overlay(
     Update an owned overlay (re-signed server-side).
 
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (patch_overlay)
-    2
 
     Parameters
     ----------
@@ -693,10 +609,6 @@ def delete_overlay(
     Delete an owned overlay.
 
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (delete_overlay)
-    2
 
     Parameters
     ----------
@@ -716,10 +628,6 @@ def list_conversion_templates(
     List first-party and custom conversion templates.
 
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (list_conversion_templates)
-    2
 
     Parameters
     ----------
@@ -743,10 +651,6 @@ def create_conversion_template(
     Create a custom conversion template (optionally forked from first-party).
 
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (create_conversion_template)
-    2
 
     Parameters
     ----------
@@ -775,10 +679,6 @@ def preview_conversion_template(
     TAC to template to IWXXM bridge preview.
 
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (preview_conversion_template)
-    2
 
     Parameters
     ----------
@@ -831,10 +731,6 @@ def get_conversion_template(
     Fetch one conversion template (first-party id or custom UUID).
 
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (get_conversion_template)
-    2
 
     Parameters
     ----------
@@ -861,10 +757,6 @@ def patch_conversion_template(
     Update an owned custom conversion template.
 
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (patch_conversion_template)
-    2
 
     Parameters
     ----------
@@ -892,10 +784,6 @@ def delete_conversion_template(
     Delete an owned custom conversion template.
 
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (delete_conversion_template)
-    2
 
     Parameters
     ----------
@@ -916,10 +804,6 @@ def list_library_assets(
     List first-party and custom five-Libraries assets.
 
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (list_library_assets)
-    2
 
     Parameters
     ----------
@@ -945,10 +829,6 @@ def create_library_asset(
     Library authoring is no longer available.
 
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (create_library_asset)
-    2
 
     Parameters
     ----------
@@ -974,10 +854,6 @@ def validate_library_yaml(
     Library authoring is no longer available.
 
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (validate_library_yaml)
-    2
 
     Parameters
     ----------
@@ -1003,10 +879,6 @@ def preview_library_rule(
     Library authoring is no longer available.
 
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (preview_library_rule)
-    2
 
     Parameters
     ----------
@@ -1032,10 +904,6 @@ def get_library_asset(
     Fetch one library asset (first-party id or custom UUID).
 
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (get_library_asset)
-    2
 
     Parameters
     ----------
@@ -1062,10 +930,6 @@ def update_library_asset(
     Library authoring is no longer available.
 
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (update_library_asset)
-    2
 
     Parameters
     ----------
@@ -1093,10 +957,6 @@ def delete_library_asset(
     Library authoring is no longer available.
 
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (delete_library_asset)
-    2
 
     Parameters
     ----------

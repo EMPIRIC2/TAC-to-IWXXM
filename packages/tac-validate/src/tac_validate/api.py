@@ -101,11 +101,6 @@ def lint(
     ------
     ValueError
         Unsupported profile name, or ``iwxxm_us`` for a product without US profile.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (lint)
-    2
     """
     profile_l = normalize_profile(profile)
     product_u = product.upper()
@@ -183,11 +178,6 @@ def extract_station_icao(tac_text: str, product: str) -> str | None:
     -------
     str | None
         Four-letter ICAO, or ``None``.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (extract_station_icao)
-    2
     """
     product_u = product.upper()
     text = tac_text or ""
@@ -223,11 +213,6 @@ def prefer_station_profile(profile: str, product: str, icao: str | None) -> str:
     -------
     str
         Profile id to lint with.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (prefer_station_profile)
-    2
     """
     return prefer_lint_profile(profile, product, icao)
 
@@ -266,11 +251,6 @@ def lint_with_profile(
     -------
     LintReport
         Policy-adjusted lint report.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (lint_with_profile)
-    2
     """
     product_u = product.upper()
     station = (icao or "").strip().upper() or extract_station_icao(tac_text, product_u)

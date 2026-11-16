@@ -27,10 +27,6 @@ def _repo_root() -> Path:
     """
     Resolve the repository root that holds ``config/profiles``.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (_repo_root)
-    2
 
     Returns
     -------
@@ -55,10 +51,6 @@ def deviations_path(profile: str) -> Path:
     profile : str
         Semantic profile id.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (deviations_path)
-    2
 
     Returns
     -------
@@ -77,10 +69,6 @@ def _parse_entry(raw: CodeListEntryRaw | dict[str, object]) -> CodeListDeviation
     raw : CodeListEntryRaw or dict[str, object]
         One matrix entry.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (_parse_entry)
-    2
 
     Returns
     -------
@@ -115,10 +103,6 @@ def load_code_list_policy(profile: str) -> CodeListPolicy:
     profile : str
         Semantic profile id.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (load_code_list_policy)
-    2
 
     Returns
     -------

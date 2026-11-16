@@ -63,10 +63,6 @@ def process_job(
     Failures quarantine (caller writes quarantine row); success is store-ready.
     ``profile`` / ``iwxxm_version`` override YAML when provided (worker Settings).
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (process_job)
-    2
 
     Parameters
     ----------

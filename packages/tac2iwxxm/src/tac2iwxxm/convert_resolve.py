@@ -35,11 +35,6 @@ def prefer_emit_profile(profile: str, product: str, icao: str | None) -> str:
     -------
     str
         Emit key after prefer (applicability fall-back via lint catalog).
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (prefer_emit_profile)
-    2
     """
     resolved = resolve_semantic_profile(profile)
     emit = resolved.emit_key if resolved is not None else (profile or "").strip().lower()
@@ -61,11 +56,6 @@ class ConvertInheritResolver:
     ----------
     (none)
         Stateless adapter; pin selection remains outside this class.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (ConvertInheritResolver)
-    2
     """
 
     def resolve_convert(
@@ -91,11 +81,6 @@ class ConvertInheritResolver:
         -------
         EffectiveBundle
             Emit key and validation policy ids.
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (resolve_convert)
-        2
         """
         product_u = (product or "").strip().upper()
         station_u = (station or "").strip().upper() or None

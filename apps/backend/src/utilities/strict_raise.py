@@ -28,10 +28,6 @@ def apply_strict_validate_flags(
     step is on, enable comprehensive post-convert validation unless the caller
     already requested a deeper or equal level via validate_output.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (apply_strict_validate_flags)
-    2
 
     Parameters
     ----------
@@ -75,10 +71,6 @@ def compute_raised_severities(
     Strict OFF raises only critical and error. Strict ON raises the full ladder
     when at least one of lint/convert/validate steps is enabled (decode omitted).
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (compute_raised_severities)
-    2
 
     Parameters
     ----------
@@ -107,10 +99,6 @@ def promote_convert_failure_severity(severity: str, *, layer: str | None, code: 
     """
     Map convert-path failures to ``critical``; keep IWXXM validation as ``error``.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (promote_convert_failure_severity)
-    2
 
     Parameters
     ----------

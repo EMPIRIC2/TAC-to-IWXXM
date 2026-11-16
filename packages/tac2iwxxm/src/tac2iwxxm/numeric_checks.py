@@ -55,11 +55,6 @@ def validate_numeric_check_shape(check: object) -> str | None:
     -------
     str | None
         An error message when ``check`` is malformed, else ``None``.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (validate_numeric_check_shape)
-    2
     """
     if check is None:
         return None
@@ -110,11 +105,6 @@ def evaluate_numeric_check(check: dict[str, Any], candidate: object) -> bool | N
     bool | None
         ``True``/``False`` when evaluation is possible; ``None`` when the
         candidate cannot be parsed as a number.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (evaluate_numeric_check)
-    2
     """
     shape_error = validate_numeric_check_shape(check)
     if shape_error is not None:

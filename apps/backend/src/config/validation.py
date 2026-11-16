@@ -69,11 +69,6 @@ def get_validation_settings() -> ValidationSettings:
     -------
     ValidationSettings
         ValidationSettings instance with current configuration
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (get_validation_settings)
-    2
     """
     global _settings_instance
     if _settings_instance is None:
@@ -84,11 +79,6 @@ def get_validation_settings() -> ValidationSettings:
 def reset_validation_settings() -> None:
     """
     Reset settings instance (useful for testing).
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (reset_validation_settings)
-    2
     """
     global _settings_instance
     _settings_instance = None

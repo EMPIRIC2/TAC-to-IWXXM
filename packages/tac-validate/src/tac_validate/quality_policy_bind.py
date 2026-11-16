@@ -43,11 +43,6 @@ def resolve_tac_quality_policy_id(
     -------
     str
         Policy document id under ``tac_validate/data/policies``.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (resolve_tac_quality_policy_id)
-    2
     """
     override = tac_policy.strip() if isinstance(tac_policy, str) and tac_policy.strip() else ""
     if override:

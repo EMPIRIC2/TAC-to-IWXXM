@@ -41,10 +41,6 @@ def safe_url_for_log(url: str) -> str:
     """
     Return a log-safe URL without userinfo or query (may contain feed tokens).
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (safe_url_for_log)
-    2
 
     Parameters
     ----------
@@ -132,11 +128,6 @@ def fetch_jobs(
     -------
     list[IngestJob]
         Zero or more jobs from the feed.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (fetch_jobs)
-    2
     """
     url = validate_ingest_poller_url(url)
 

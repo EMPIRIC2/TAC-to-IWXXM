@@ -88,10 +88,6 @@ class ReconciledAirport:
         """
         Check if any conflicts were found during reconciliation.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (has_conflicts)
-        2
 
         Returns
         -------
@@ -104,10 +100,6 @@ class ReconciledAirport:
         """
         Get summary of conflicts.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (get_conflict_summary)
-        2
 
         Returns
         -------
@@ -256,11 +248,6 @@ class AirportReconciliationService:
         -------
         object
             ReconciledAirport with best-effort data or None if not found
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (get_airport)
-        2
         """
         self.stats["total_queries"] += 1
         icao = icao.upper()
@@ -549,11 +536,6 @@ class AirportReconciliationService:
         -------
         object
             Dictionary with statistics
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (get_statistics)
-        2
         """
         return {
             **self.stats,

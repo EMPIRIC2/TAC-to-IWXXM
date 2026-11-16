@@ -91,11 +91,6 @@ async def execute_plan(
     -------
     list[DeliveryReceipt]
         One receipt per destination ref.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (execute_plan)
-    2
     """
     receipts: list[DeliveryReceipt] = []
     iwxxm_xml = message.iwxxm_xml

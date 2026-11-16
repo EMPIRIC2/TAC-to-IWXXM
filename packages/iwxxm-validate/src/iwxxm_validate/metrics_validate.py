@@ -43,11 +43,6 @@ def validate_for_quality_metrics(
     -------
     ValidationReport
         Native evaluation when Rust is available.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (validate_for_quality_metrics)
-    2
     """
     return validate_iwxxm(
         xml_content,

@@ -267,11 +267,6 @@ def resolve_validation_policies(
     -------
     ResolvedValidationPolicies
         ``profile`` to TAC quality and IWXXM output policy ids.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (resolve_validation_policies)
-    2
     """
     resolved = resolve_semantic_profile(profile)
     if resolved is None:

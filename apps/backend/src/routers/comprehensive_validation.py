@@ -91,11 +91,6 @@ async def validate_comprehensive(
     -------
     object
         Return value.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (validate_comprehensive)
-    2
     """
     try:
         json_profile = None

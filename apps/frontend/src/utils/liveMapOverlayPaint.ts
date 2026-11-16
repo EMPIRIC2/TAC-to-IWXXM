@@ -5,6 +5,11 @@
 import L from 'leaflet';
 import { shiftLatLng, WORLD_COPY_LNG_OFFSETS } from '@/utils/liveMap';
 import {
+  DEFAULT_OVERLAY_MAGNITUDE_SCALE,
+  type LiveMapTempUnit,
+  windVectorSizePx,
+} from '@/utils/liveMapModes';
+import {
   placeFeedsOverlay,
   windIntensityRadius,
   type TacOverlayLayerId,
@@ -21,10 +26,22 @@ import {
   windVectorIconHtml,
 } from '@/utils/liveMapWeatherIcons';
 
+/**
+ * Options for overlay / temperature paint passes.
+ *
+ * @example
+ * const _ = true;
+ */
+export type TacOverlayPaintOptions = {
+  magnitudeScale?: number;
+  tempUnit?: LiveMapTempUnit;
+};
+
 type OverlayPainter = (
   map: L.Map,
   cluster: StationCluster,
   at: L.LatLngExpression,
+  options: TacOverlayPaintOptions,
 ) => L.Layer | null;
 
 /**
@@ -124,23 +141,7 @@ const paintPrecip: OverlayPainter = (map, cluster, at) => {
   );
 };
 
-const paintTemp: OverlayPainter = (map, cluster, at) => {
-  const parsed = parseTacOverlayFields(donorTac(cluster, 'temp'));
-  if (parsed.temperatureC === null) {
-    return null;
-  }
-  return addIconMarker(
-    map,
-    at,
-    divIcon(
-      temperatureIconHtml(parsed.temperatureC),
-      'tac-overlay-icon-temp',
-      [36, 18],
-    ),
-  );
-};
-
-const paintWindVector: OverlayPainter = (map, cluster, at) => {
+const paintWindVector: OverlayPainter = (map, cluster, at, options) => {
   const parsed = parseTacOverlayFields(donorTac(cluster, 'windVector'));
   const degrees = parsed.wind?.directionDeg;
   if (
@@ -151,20 +152,26 @@ const paintWindVector: OverlayPainter = (map, cluster, at) => {
   ) {
     return null;
   }
+  const { magnitudeScale = DEFAULT_OVERLAY_MAGNITUDE_SCALE } = options;
+  const size = windVectorSizePx(parsed.wind.speedKt, magnitudeScale);
   return addIconMarker(
     map,
     at,
-    divIcon(windVectorIconHtml(degrees), 'tac-overlay-icon-wind-vector', [28, 28]),
+    divIcon(windVectorIconHtml(degrees, size), 'tac-overlay-icon-wind-vector', [
+      size,
+      size,
+    ]),
   );
 };
 
-const paintWindIntensity: OverlayPainter = (map, cluster, at) => {
+const paintWindIntensity: OverlayPainter = (map, cluster, at, options) => {
   const parsed = parseTacOverlayFields(donorTac(cluster, 'windIntensity'));
   if (!parsed.wind) {
     return null;
   }
+  const { magnitudeScale = DEFAULT_OVERLAY_MAGNITUDE_SCALE } = options;
   return L.circleMarker(at, {
-    radius: windIntensityRadius(parsed.wind.speedKt),
+    radius: windIntensityRadius(parsed.wind.speedKt) * magnitudeScale,
     color: '#0f766e',
     fillColor: '#14b8a6',
     fillOpacity: 0.35,
@@ -181,7 +188,6 @@ const OVERLAY_PAINTERS: ReadonlyArray<{
   { id: 'thunder', paint: paintThunder },
   { id: 'ice', paint: paintIce },
   { id: 'precip', paint: paintPrecip },
-  { id: 'temp', paint: paintTemp },
   { id: 'windVector', paint: paintWindVector },
   { id: 'windIntensity', paint: paintWindIntensity },
 ];
@@ -192,6 +198,7 @@ const OVERLAY_PAINTERS: ReadonlyArray<{
  * @param map - Leaflet map
  * @param cluster - Same-station cluster
  * @param visibility - Overlay toggles
+ * @param options - Magnitude scale for wind vectors / intensity
  * @returns Layers to remove on cleanup
  * @example
  * const _ = true;
@@ -200,6 +207,7 @@ export function paintTacOverlays(
   map: L.Map,
   cluster: StationCluster,
   visibility: TacOverlayVisibility,
+  options: TacOverlayPaintOptions = {},
 ): L.Layer[] {
   const layers: L.Layer[] = [];
   WORLD_COPY_LNG_OFFSETS.forEach((lngOffset) => {
@@ -208,11 +216,55 @@ export function paintTacOverlays(
       if (!visibility[id]) {
         return;
       }
-      const layer = paint(map, cluster, at);
+      const layer = paint(map, cluster, at, options);
       if (layer) {
         layers.push(layer);
       }
     });
+  });
+  return layers;
+}
+
+/**
+ * Paint temperature badges for a station cluster (Temperatures mode).
+ *
+ * @param map - Leaflet map
+ * @param cluster - Same-station cluster
+ * @param unit - °C or °F
+ * @returns Layers to remove on cleanup
+ * @example
+ * const _ = true;
+ */
+export function paintTemperatureMarkers(
+  map: L.Map,
+  cluster: StationCluster,
+  unit: LiveMapTempUnit = 'C',
+): L.Layer[] {
+  const layers: L.Layer[] = [];
+  let temperatureC: number | null = null;
+  for (const place of cluster.members) {
+    const parsed = parseTacOverlayFields(newestTac(place.reports));
+    if (parsed.temperatureC !== null) {
+      temperatureC = parsed.temperatureC;
+      break;
+    }
+  }
+  if (temperatureC === null) {
+    return layers;
+  }
+  WORLD_COPY_LNG_OFFSETS.forEach((lngOffset) => {
+    const at = shiftLatLng(cluster.latitude, cluster.longitude, lngOffset);
+    layers.push(
+      addIconMarker(
+        map,
+        at,
+        divIcon(
+          temperatureIconHtml(temperatureC, unit),
+          'tac-overlay-icon-temp',
+          [40, 18],
+        ),
+      ),
+    );
   });
   return layers;
 }

@@ -47,11 +47,6 @@ def pytest_configure(config: object) -> None:
     ----------
     config : object
         Pytest config object. Unused.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (pytest_configure)
-    2
     """
     del config
     socket.create_connection = _guarded_create_connection  # type: ignore[method-assign]

@@ -486,6 +486,11 @@ describe('live map helpers', () => {
       'sigmet-old',
     ]);
     expect(
+      filterPlaces(loaded, { ...base, time: 'latest' }).map((place) => place.place_key),
+    ).toEqual(
+      filterPlaces(loaded, { ...base, time: '1h' }).map((place) => place.place_key),
+    );
+    expect(
       filterPlaces(loaded, { ...base, time: '3h' }).map((place) => place.place_key),
     ).toContain('sigmet-ifr');
     expect(

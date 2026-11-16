@@ -43,11 +43,6 @@ def resolve_ca_eccc_bundle(
     -------
     CaEcccSchemaBundle | None
         ``None`` when core or extension pins are missing (fail-closed).
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (resolve_ca_eccc_bundle)
-    2
     """
     if iwxxm_version != CA_ECCC_IWXXM_VERSION:
         return None
@@ -91,11 +86,6 @@ def ca_eccc_catalog_roots(
     -------
     list[str]
         Absolute directory paths suitable for ``catalog_roots`` on the Rust path.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (ca_eccc_catalog_roots)
-    2
     """
     try:
         vdir = version_dir(iwxxm_version)
@@ -126,10 +116,6 @@ def ca_eccc_bundle_available(
     """
     Return whether ``resolve_ca_eccc_bundle`` would succeed.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (ca_eccc_bundle_available)
-    2
 
     Parameters
     ----------

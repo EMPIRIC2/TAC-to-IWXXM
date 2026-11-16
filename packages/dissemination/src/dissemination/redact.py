@@ -22,11 +22,6 @@ def redact_uri(uri: str) -> str:
     -------
     str
         URI with password replaced by ``***`` when present.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (redact_uri)
-    2
     """
     redacted = _URI_USERINFO.sub(r"\1***\3", uri)
     try:
@@ -47,10 +42,6 @@ def redact_secrets(text: str) -> str:
     """
     Redact URI passwords and common secret JSON/key patterns from ``text``.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (redact_secrets)
-    2
 
     Parameters
     ----------

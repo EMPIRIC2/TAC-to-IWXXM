@@ -26,10 +26,6 @@ class SinkAdapter(Protocol):
         """
         Drawer / API sink discriminator.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (sink_type)
-        2
 
         Returns
         -------
@@ -53,10 +49,6 @@ class SinkAdapter(Protocol):
         ValueError
             When params or transport checks fail (secrets redacted).
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (preflight)
-        2
 
         Parameters
         ----------
@@ -89,10 +81,6 @@ class SinkAdapter(Protocol):
         ValueError
             When params, payload, or transport fail (secrets redacted).
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (send)
-        2
 
         Parameters
         ----------
