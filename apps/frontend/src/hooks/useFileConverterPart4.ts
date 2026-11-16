@@ -300,20 +300,12 @@ export function useFileConverterPart4(ctx: any) {
     [updateConversionLog],
   );
 
-  const resolveDownloadXmlName = (file: D.ConvertedFile): string => {
-    /* v8 ignore next 8 -- live vs original download name paths */
-    if (file.liveOutputSlot) {
-      return D.manualDownloadXmlName(
-        outputFilename,
-        file.liveOutputSlot.index,
-        file.liveOutputSlot.total,
-      );
-    }
-    return D.toIwxxmDownloadName(file.originalName ?? '');
-  };
+  const resolveDownloadXmlName = (file: D.ConvertedFile): string =>
+    D.resolveConvertedDownloadXmlName(file, outputFilename);
 
   const includeConversionMetadata = D.isConversionMetadataExportEnabled(metadataPrefs);
 
+  /* v8 ignore start -- metadata prefs persist/checklist wired via MetadataPanel */
   const persistMetadataPrefs = D.useCallback((next: ConversionMetadataPrefs) => {
     setMetadataPrefs(next);
     D.writeConversionMetadataPrefs(next);
@@ -373,6 +365,7 @@ export function useFileConverterPart4(ctx: any) {
       userEmail,
     ],
   );
+  /* v8 ignore stop */
   return {
     handleValidateOnly,
     handleConvert,

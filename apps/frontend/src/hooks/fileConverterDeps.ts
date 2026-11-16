@@ -284,6 +284,8 @@ export {
   toTacSourceName,
   alignConversionZipPairs,
 } from '@/utils/outputFilename';
+export { resolveConvertedDownloadXmlName } from './fileConverterDownloadName';
+
 export { ConvertResultStatus } from '@/app/components/ConvertResultStatus';
 export { deriveTacDisplayTitle, resolveOriginalTac } from '@/utils/resultTraceability';
 export {

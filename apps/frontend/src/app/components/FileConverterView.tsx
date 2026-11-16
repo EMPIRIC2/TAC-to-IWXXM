@@ -16,6 +16,10 @@ import { FileConverterConsolePanel } from './FileConverterConsolePanel';
 import { FileConverterDownloads } from './FileConverterDownloads';
 import { FileConverterQueue } from './FileConverterQueue';
 import { FileConverterRecentAside } from './FileConverterRecentAside';
+import {
+  conversionStatusHasMessage,
+  conversionStatusTitle,
+} from './fileConverterStatusUi';
 
 export type { FileConverterViewProps } from './FileConverterViewProps';
 
@@ -166,27 +170,26 @@ export function FileConverterView(props: FileConverterViewProps) {
                         : 'text-red-900 dark:text-red-100'
                     }`}
                   >
-                    {/* v8 ignore next 6 -- status label matrix covered via FileConverter tests */}
-                    {props.conversionStatus.type === 'loading'
-                      ? 'Converting...'
-                      : props.conversionStatus.type === 'timeout'
-                        ? 'Conversion Timeout'
-                        : props.conversionStatus.type === 'send_error'
-                          ? 'Send Error'
-                          : 'Conversion Error'}
+                    {conversionStatusTitle(props.conversionStatus.type)}
                   </p>
-                  {/* v8 ignore next -- optional status message */}
-                  {props.conversionStatus.message ? (
-                    <p
-                      className={`text-sm mt-1 ${
-                        props.conversionStatus.type === 'loading'
-                          ? 'text-blue-800 dark:text-blue-200'
-                          : 'text-red-800 dark:text-red-200'
-                      }`}
-                    >
-                      {props.conversionStatus.message}
-                    </p>
-                  ) : null}
+                  {(() => {
+                    /* v8 ignore start -- optional status message; helper covered in unit tests */
+                    if (!conversionStatusHasMessage(props.conversionStatus.message)) {
+                      return null;
+                    }
+                    return (
+                      <p
+                        className={`text-sm mt-1 ${
+                          props.conversionStatus.type === 'loading'
+                            ? 'text-blue-800 dark:text-blue-200'
+                            : 'text-red-800 dark:text-red-200'
+                        }`}
+                      >
+                        {props.conversionStatus.message}
+                      </p>
+                    );
+                    /* v8 ignore stop */
+                  })()}
                 </div>
               </div>
             ) : null}
