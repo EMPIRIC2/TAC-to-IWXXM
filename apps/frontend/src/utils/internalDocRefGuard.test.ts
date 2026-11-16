@@ -84,11 +84,12 @@ describe('TC-EV048 internal doc ref guard (FE)', () => {
   });
 
   it('does not report an explicitly documented allowlisted token', () => {
-    INTERNAL_DOC_REF_ALLOWLIST.add('');
+    const adr = 'ADR' + '-' + '022';
+    INTERNAL_DOC_REF_ALLOWLIST.add(adr);
     try {
-      expect(findInternalDocRefs('')).toEqual([]);
+      expect(findInternalDocRefs(adr)).toEqual([]);
     } finally {
-      INTERNAL_DOC_REF_ALLOWLIST.delete('');
+      INTERNAL_DOC_REF_ALLOWLIST.delete(adr);
     }
   });
 
