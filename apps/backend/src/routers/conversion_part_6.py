@@ -10,7 +10,12 @@ from fastapi import Depends, File, Form, HTTPException, Request, UploadFile
 from fastapi.responses import Response
 
 from src.routers.conversion_api_surface import api_surface
-from src.routers.conversion_part_1 import _form_text, _resolve_effective_iwxxm_version, tac_lint_fn
+from src.routers.conversion_part_1 import (
+    _form_text,
+    _resolve_effective_iwxxm_version,
+    router,
+    tac_lint_fn,
+)
 from src.schemas.validation import (
     BulletinMetaModel,
     BulletinReportResultModel,
@@ -25,6 +30,22 @@ from src.utilities.security import verify_optional_supabase_token
 from tac2iwxxm import BulletinSplitError, iwxxm_filename, parse_ahl
 
 
+@router.post(
+    "/convert-bulletin",
+    tags=["Conversion"],
+    summary="Convert a WMO bulletin",
+    response_model=ConvertBulletinResponse,
+    responses={
+        400: {"description": "Empty bulletin - no TAC reports after the abbreviated heading"},
+        415: {"description": "Unsupported Media Type - multipart/form-data required"},
+        422: {
+            "description": (
+                "Malformed abbreviated heading (INVALID_AHL) or missing required fields. "
+                "Engine split failures may include an alias of bulletin_split_failed."
+            )
+        },
+    },
+)
 async def convert_bulletin(
     request: Request,
     product: str = Form(..., description="TAC product, or iwxxm for XML pass-through"),

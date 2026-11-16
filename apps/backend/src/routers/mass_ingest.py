@@ -11,7 +11,7 @@ from typing import Any
 from fastapi import APIRouter, Depends, File, Form, HTTPException, Request, UploadFile, status
 from fastapi.responses import JSONResponse
 
-from src import api as api_surface
+from src.routers.conversion_api_surface import api_surface
 
 from ..services.mass_ingest import (
     MassIngestCaps,

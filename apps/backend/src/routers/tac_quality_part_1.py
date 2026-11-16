@@ -8,7 +8,7 @@ from fastapi import APIRouter, File, Form, HTTPException, Request, UploadFile
 from fastapi.responses import Response
 from tac_validate.issue_registry import catalog_entries as tac_catalog_entries
 
-from src import api as api_surface
+from src.routers.conversion_api_surface import api_surface
 from src.schemas.validation import (
     DecodeResidualModel,
     DecodeSegmentModel,

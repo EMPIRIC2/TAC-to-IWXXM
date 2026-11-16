@@ -9,7 +9,7 @@ from fastapi.responses import Response
 from tac_validate.api import lint_with_profile
 from tac_validate.profiles import PROFILE_ANNEX3
 
-from src import api as api_surface
+from src.routers.conversion_api_surface import api_surface
 from src.schemas.airport import get_airport_validator
 from src.schemas.validation import (
     LintFixModel,
