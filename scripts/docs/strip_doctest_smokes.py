@@ -40,7 +40,10 @@ def strip_smoke_examples(src: str) -> str:
     """Return ``src`` with placeholder smoke Examples blocks removed."""
     updated = SMOKE_EXAMPLES_BLOCK.sub("", src)
     updated = BARE_SMOKE_LINE.sub("", updated)
-    # Drop a leftover blank line immediately before a closing triple-quote.
+    if updated == src:
+        return src
+    # Only when a smoke stub was removed: drop one leftover blank line
+    # immediately before a closing triple-quote (keeps --check idempotent).
     updated = re.sub(r"\n[ \t]*\n([ \t]*)" + '"""', r"\n\1" + '"""', updated)
     return updated
 

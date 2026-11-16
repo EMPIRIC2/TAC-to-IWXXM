@@ -3,8 +3,6 @@
 Select/ignore apply to Schematron assert ids only. XSD, well-formed, and
 ``SCHEMATRON_SKIPPED`` are engine behavior and are not a select surface.
 
-Examples
---------
 """
 
 from __future__ import annotations
