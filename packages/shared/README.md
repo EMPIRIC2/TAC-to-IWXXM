@@ -1,7 +1,7 @@
 # metar-shared
 
 Shared helpers for the TAC to IWXXM toolchain (inherit-factory ports, XML
-canonicalization, env/config utilities).
+canonicalization, env/config utilities, TAC station/AHL patterns).
 
 Install:
 

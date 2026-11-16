@@ -61,13 +61,13 @@ def test_weather_token_rejects_a_bare_intensity_mark(monkeypatch: pytest.MonkeyP
         def fullmatch(_token: str) -> object:
             return object()
 
-    monkeypatch.setattr("tac_validate.product_rules_pkg._common._WX_TOKEN_SHAPE", _MatchAny)
+    monkeypatch.setattr("tac_validate.product_rules_pkg._common.helpers._WX_TOKEN_SHAPE", _MatchAny)
     assert _is_valid_weather_token("+") is False
 
 
 def test_weather_token_rejects_descriptors_that_leave_nothing(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr(
-        "tac_validate.product_rules_pkg._common._consume_wx_descriptors",
+        "tac_validate.product_rules_pkg._common.helpers._consume_wx_descriptors",
         lambda _rest: "",
     )
     assert _is_valid_weather_token("TSRA") is False
@@ -215,7 +215,7 @@ def test_metar_nil_auto_and_cor_emit_info() -> None:
 
 def test_metar_present_weather_membership_and_invalid(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr(
-        "tac_validate.theme_checks._weather_in_register",
+        "tac_validate.theme_checks.themes._weather_in_register",
         lambda _token: False,
     )
     tac = "METAR KJFK 121255Z 18008KT 10SM TSRA SCT040 22/18 A2992="
@@ -238,7 +238,7 @@ def test_metar_cloud_membership_issues(monkeypatch: pytest.MonkeyPatch) -> None:
             return False
         return real_is_member(family, token, sets=sets)
 
-    monkeypatch.setattr("tac_validate.theme_checks.membership.is_member", fake_is_member)
+    monkeypatch.setattr("tac_validate.theme_checks.themes.membership.is_member", fake_is_member)
     amount_tac = "METAR KJFK 121255Z 18008KT 10SM BKN020 22/18 A2992="
     amount_issues = [i for i in check_product_rules(amount_tac, "METAR") if i.code == "UNKNOWN_WMO_MEMBERSHIP"]
     assert amount_issues
