@@ -21,7 +21,7 @@ PROFILE = "annex3"
 
 
 @pytest.mark.ev032_smoke
-def test_tc_ev032_002_a6_2_tc_adr032_equality() -> None:
+def test_tc_ev032_002_a6_2_tc_equality() -> None:
     """Convert annex3 A6-2-TC TAC → vendor XML under canonicalize."""
     from tac2iwxxm import convert
 

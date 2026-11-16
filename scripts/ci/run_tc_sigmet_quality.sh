@@ -14,7 +14,7 @@ UV="${UV:-uv}"
 
 echo "==> A6-2-TC equality + catalog wmoPass (long pack)"
 ${UV} run pytest \
-  packages/tac2iwxxm/tests/test_tc_ev032_002_a6_2_tc_adr032_equality.py \
+  packages/tac2iwxxm/tests/test_tc_ev032_002_a6_2_tc_equality.py \
   packages/tac2iwxxm/tests/test_tc_ev032_003_a6_2_tc_catalog_wmo_pass.py \
   packages/tac2iwxxm/tests/test_tc_ev030_005_sigmet_a6_2_tc_catalog.py \
   --no-cov -v --tb=short
