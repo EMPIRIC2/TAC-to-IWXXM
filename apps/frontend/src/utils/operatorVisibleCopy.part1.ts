@@ -94,7 +94,7 @@ export const OPERATOR_VISIBLE_COPY_PART1: OperatorVisibleCopyEntry[] = [
   { id: 'live-map.filter-region', text: C.LIVE_MAP_FILTER_REGION },
   { id: 'live-map.filter-time', text: C.LIVE_MAP_FILTER_TIME },
   { id: 'live-map.filter-phenomenon', text: C.LIVE_MAP_FILTER_PHENOMENON },
-  ...LIVE_MAP_PHENOMENA.map((item) => ({
+  ...C.LIVE_MAP_PHENOMENA.map((item) => ({
     id: `live-map.phenomenon.${item.id}`,
     text: item.label,
   })),
@@ -102,7 +102,7 @@ export const OPERATOR_VISIBLE_COPY_PART1: OperatorVisibleCopyEntry[] = [
   { id: 'live-map.tac-overlay-empty', text: C.LIVE_MAP_TAC_OVERLAY_EMPTY },
   { id: 'live-map.cluster-pick', text: C.LIVE_MAP_CLUSTER_PICK },
   { id: 'live-map.cluster-count', text: C.LIVE_MAP_CLUSTER_COUNT },
-  ...TAC_OVERLAY_LAYERS.map((layer) => ({
+  ...C.TAC_OVERLAY_LAYERS.map((layer) => ({
     id: `live-map.tac-overlay.${layer.id}`,
     text: layer.label,
   })),

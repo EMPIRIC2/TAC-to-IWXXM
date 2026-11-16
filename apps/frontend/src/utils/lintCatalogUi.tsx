@@ -18,7 +18,6 @@ import {
   plainInfoExample,
   ruleExamplePair,
 } from '@/utils/ruleCatalogExamples';
-import { GlossaryRichText } from '@/app/components/glossary/GlossaryRichText';
 
 /**
  * Extra fields for the selected rule in the detailed catalog view.
@@ -43,6 +42,7 @@ export function SelectedRuleFacts({ entry }: { entry: LintIssueCatalogEntry }) {
 
 /**
  * Reports for the selected rule.
+ * Info rules use one unlabeled sample. Other levels keep pass and fail headings.
  * @example
  * const _ = true;
  */
@@ -53,63 +53,88 @@ export function RuleExamples({
   code: string;
   severity?: string | null;
 }) {
+  const examples = ruleExamplePair(code);
   if (isInfoCatalogLevel(severity)) {
-    const note = plainInfoExample(ruleExamplePair(code));
+    const sample = plainInfoExample(examples);
     return (
-      <div className="mt-3 space-y-1 text-sm" data-testid="catalog-rule-examples">
-        <p className="font-medium text-gray-900 dark:text-white">
-          {LINT_VALIDATION_CATALOG_EXAMPLES}
+      <section className="mt-4 space-y-3" aria-label={LINT_VALIDATION_CATALOG_EXAMPLES}>
+        <p className="text-sm text-gray-600 dark:text-gray-400">
+          {LINT_VALIDATION_CATALOG_EXAMPLE_NOTE}
         </p>
-        {note ? (
-          <GlossaryRichText text={note} className="text-gray-700 dark:text-gray-300" />
-        ) : (
-          <p className="text-gray-500 dark:text-gray-400">
-            {LINT_VALIDATION_CATALOG_EXAMPLES_UNAVAILABLE}
-          </p>
-        )}
-      </div>
+        <div>
+          <h3 className="text-sm font-semibold text-gray-800 dark:text-gray-200">
+            {LINT_VALIDATION_CATALOG_EXAMPLES}
+          </h3>
+          {sample ? (
+            <pre
+              data-testid="catalog-rule-example"
+              data-tone="example"
+              className="mt-1 overflow-x-auto rounded-md border border-gray-300 bg-gray-50 p-2 font-mono text-xs whitespace-pre-wrap text-gray-950 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-100"
+            >
+              {sample}
+            </pre>
+          ) : (
+            <p
+              data-testid="catalog-rule-example"
+              data-tone="unavailable"
+              className="mt-1 text-sm text-gray-600 dark:text-gray-400"
+            >
+              {LINT_VALIDATION_CATALOG_EXAMPLES_UNAVAILABLE}
+            </p>
+          )}
+        </div>
+      </section>
     );
   }
-
-  const pair = ruleExamplePair(code);
   return (
-    <div className="mt-3 space-y-2 text-sm" data-testid="catalog-rule-examples">
-      <p className="font-medium text-gray-900 dark:text-white">
-        {LINT_VALIDATION_CATALOG_EXAMPLES}
+    <section className="mt-4 space-y-3" aria-label="Passing and failing examples">
+      <p className="text-sm text-gray-600 dark:text-gray-400">
+        {LINT_VALIDATION_CATALOG_EXAMPLE_NOTE}
       </p>
       <div>
-        <p className="text-gray-600 dark:text-gray-400">
+        <h3 className="text-sm font-semibold text-emerald-800 dark:text-emerald-300">
           {LINT_VALIDATION_CATALOG_EXAMPLE_PASS}
-        </p>
-        {pair?.pass ? (
-          <GlossaryRichText
-            text={pair.pass}
-            className="text-gray-700 dark:text-gray-300"
-          />
+        </h3>
+        {examples?.pass ? (
+          <pre
+            data-testid="catalog-rule-example-pass"
+            data-tone="pass"
+            className="mt-1 overflow-x-auto rounded-md border border-emerald-300 bg-emerald-50 p-2 font-mono text-xs whitespace-pre-wrap text-emerald-950 dark:border-emerald-800 dark:bg-emerald-950 dark:text-emerald-100"
+          >
+            {examples.pass}
+          </pre>
         ) : (
-          <p className="text-gray-500 dark:text-gray-400">
+          <p
+            data-testid="catalog-rule-example-pass"
+            data-tone="unavailable"
+            className="mt-1 text-sm text-gray-600 dark:text-gray-400"
+          >
             {LINT_VALIDATION_CATALOG_EXAMPLE_PASS_UNAVAILABLE}
           </p>
         )}
       </div>
       <div>
-        <p className="text-gray-600 dark:text-gray-400">
+        <h3 className="text-sm font-semibold text-red-800 dark:text-red-300">
           {LINT_VALIDATION_CATALOG_EXAMPLE_FAIL}
-        </p>
-        {pair?.fail ? (
-          <GlossaryRichText
-            text={pair.fail}
-            className="text-gray-700 dark:text-gray-300"
-          />
+        </h3>
+        {examples?.fail ? (
+          <pre
+            data-testid="catalog-rule-example-fail"
+            data-tone="fail"
+            className="mt-1 overflow-x-auto rounded-md border border-red-300 bg-red-50 p-2 font-mono text-xs whitespace-pre-wrap text-red-950 dark:border-red-800 dark:bg-red-950 dark:text-red-100"
+          >
+            {examples.fail}
+          </pre>
         ) : (
-          <p className="text-gray-500 dark:text-gray-400">
+          <p
+            data-testid="catalog-rule-example-fail"
+            data-tone="unavailable"
+            className="mt-1 text-sm text-gray-600 dark:text-gray-400"
+          >
             {LINT_VALIDATION_CATALOG_EXAMPLE_FAIL_UNAVAILABLE}
           </p>
         )}
       </div>
-      <p className="text-xs text-gray-500 dark:text-gray-400">
-        {LINT_VALIDATION_CATALOG_EXAMPLE_NOTE}
-      </p>
-    </div>
+    </section>
   );
 }
