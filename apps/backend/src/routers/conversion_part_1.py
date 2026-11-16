@@ -14,7 +14,6 @@ from tac2iwxxm.profile_resolve import resolve_validation_policies
 from tac2iwxxm.profiles.ca_eccc import CA_IWXXM_VERSION
 from tac_validate.api import lint_with_profile
 
-from src.routers.conversion_api_surface import api_surface
 from src.schemas.conversion import (
     ConversionIssue,
     ConversionIssueSeverity,
@@ -24,6 +23,8 @@ from src.schemas.validation import (
     AggregatedValidationResult,
     ValidationLayer,
 )
+
+from .conversion_api_surface import api_surface
 
 tac_lint_fn = lint_with_profile
 

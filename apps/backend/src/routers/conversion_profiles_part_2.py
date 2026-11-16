@@ -6,8 +6,6 @@ from uuid import UUID
 
 from fastapi import Depends
 
-from src.routers.conversion_profiles_part_1 import profiles_service, router
-
 from ..schemas.conversion_profiles import (
     ConversionTemplateCreate,
     ConversionTemplateListResponse,
@@ -23,6 +21,7 @@ from ..schemas.conversion_profiles import (
     OverlayUpdate,
 )
 from ..services.conversion_profiles_service import ConversionProfilesService
+from .conversion_profiles_part_1 import profiles_service, router
 
 
 @router.patch("/templates/{template_id}", response_model=DisseminationTemplateOut)

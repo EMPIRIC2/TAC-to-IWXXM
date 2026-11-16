@@ -4,11 +4,8 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 
-import requests
-
-from src.clients.wmo_codelists_client_part_1 import REQUESTS_AVAILABLE, WMOCodelistCache, WMOCodelistInfo, logger
-
 from ..utilities.codelist_parser import CodeListParser
+from .wmo_codelists_client_part_1 import REQUESTS_AVAILABLE, WMOCodelistCache, WMOCodelistInfo, logger, requests
 
 
 class WMOCodelistsClient:

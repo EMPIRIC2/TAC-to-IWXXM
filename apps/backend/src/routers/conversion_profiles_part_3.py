@@ -4,8 +4,6 @@ from __future__ import annotations
 
 from fastapi import Depends
 
-from src.routers.conversion_profiles_part_1 import _library_authoring_gone, profiles_service, router
-
 from ..schemas.conversion_profiles import (
     LibraryAssetCreate,
     LibraryAssetListResponse,
@@ -17,6 +15,7 @@ from ..schemas.conversion_profiles import (
     LibraryYamlValidateResponse,
 )
 from ..services.conversion_profiles_service import ConversionProfilesService
+from .conversion_profiles_part_1 import _library_authoring_gone, profiles_service, router
 
 
 @router.get("/library-assets/{asset_id}", response_model=LibraryAssetOut)

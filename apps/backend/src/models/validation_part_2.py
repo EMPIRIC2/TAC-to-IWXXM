@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from pydantic import BaseModel, Field
 
-from src.models.validation_part_1 import LintFixModel, LintIssueModel
+from .validation_part_1 import LintFixModel, LintIssueModel
 
 
 class LintIssueCatalogEntryModel(BaseModel):

@@ -2,7 +2,7 @@
 
 from typing import Any, ClassVar
 
-from src.validation.semantic_rules_part_1 import (
+from .semantic_rules_part_1 import (
     IssueSeverity,
     TemperatureValidationRule,
     ValidationIssue,

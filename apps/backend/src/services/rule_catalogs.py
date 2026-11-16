@@ -82,7 +82,7 @@ def catalog_for_family(family: str, *, product: str | None = None) -> list[dict[
         ]
 
     if key == "iwxxm":
-        from src.services.iwxxm_validation_catalog import iwxxm_validation_catalog_rows
+        from .iwxxm_validation_catalog import iwxxm_validation_catalog_rows
 
         return [
             {

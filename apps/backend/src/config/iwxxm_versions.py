@@ -1,6 +1,11 @@
 """Facade for ``iwxxm_versions.py`` (line-cap split)."""
 
-from src.config.iwxxm_versions_part_1 import (
+import sys
+import types
+
+from . import iwxxm_versions_part_1 as _part1
+from . import iwxxm_versions_part_2 as _part2
+from .iwxxm_versions_part_1 import (
     ALL_VERSIONS,
     DEFAULT_VERSION,
     DEPRECATED_VERSIONS,
@@ -23,7 +28,7 @@ from src.config.iwxxm_versions_part_1 import (
     is_migration_supported,
     normalize_version,
 )
-from src.config.iwxxm_versions_part_2 import (
+from .iwxxm_versions_part_2 import (
     get_all_versions_with_metadata,
     get_breaking_changes,
     get_namespace_uri,
@@ -71,3 +76,41 @@ __all__ = [
     "register_rc_version",
     "resolve_schema_file",
 ]
+
+
+_SYNC = {
+    "PROJECT_ROOT",
+    "VERSION_REMAPPING",
+    "RC_VERSIONS",
+    "SUPPORTED_VERSIONS",
+    "get_version_config",
+}
+
+
+_ORIG: dict[str, object] = {}
+for _n in _SYNC:
+    for _mod in (
+        _part1,
+        _part2,
+    ):
+        if _mod is not None and hasattr(_mod, _n):
+            _ORIG.setdefault(_n, getattr(_mod, _n))
+
+
+class _IwxxmVersionsModule(types.ModuleType):
+    def __setattr__(self, name: str, value: object) -> None:
+        if name == "__file__":
+            # Keep part_1 Path(__file__) fallbacks and detectors in sync for tests.
+            object.__setattr__(self, name, value)
+            return
+        if name in _SYNC:
+            setattr(_part1, name, value)
+            if hasattr(_part2, name):
+                setattr(_part2, name, value)
+        super().__setattr__(name, value)
+
+    def __delattr__(self, name: str) -> None:
+        super().__delattr__(name)
+
+
+sys.modules[__name__].__class__ = _IwxxmVersionsModule

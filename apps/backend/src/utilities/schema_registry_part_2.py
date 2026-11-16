@@ -3,8 +3,6 @@
 from pathlib import Path
 from typing import Any
 
-from src.utilities.schema_registry_part_1 import logger
-
 from ..config.iwxxm_versions import (
     SUPPORTED_VERSIONS,
     get_all_versions_with_metadata,
@@ -19,6 +17,7 @@ from ..config.iwxxm_versions import (
     normalize_version,
     resolve_schema_file,
 )
+from .schema_registry_part_1 import logger
 
 
 class SchemaRegistry:

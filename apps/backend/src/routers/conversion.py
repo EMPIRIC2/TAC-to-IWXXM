@@ -1,6 +1,17 @@
 """Facade for ``conversion.py`` (line-cap split)."""
 
-from src.routers.conversion_part_1 import (
+import sys
+import types
+
+from tac2iwxxm.profile_registry import supported_report_variants_for_profile
+
+from ..schemas.conversion import FailedSpan
+from . import conversion_part_1 as _part1
+from . import conversion_part_2 as _part2
+from . import conversion_part_6 as _part6
+from . import conversion_routes_io as _routes_io
+from .conversion_api_surface import api_surface
+from .conversion_part_1 import (
     _convert_output_policy_id,
     _ConvertRuntime,
     _form_text,
@@ -16,19 +27,56 @@ from src.routers.conversion_part_1 import (
     router,
     tac_lint_fn,
 )
-from src.routers.conversion_part_2 import (
+from .conversion_part_2 import (
     _append_pre_convert_lint_issues,
     _ConvertAccumulator,
     _record_convert_station_health,
 )
-from src.routers.conversion_part_3 import _process_json_metars
-from src.routers.conversion_part_4 import _process_manual_entries
-from src.routers.conversion_part_5 import _process_uploaded_files
-from src.routers.conversion_part_6 import convert_bulletin
-from src.routers.conversion_routes_io import convert
-from src.routers.conversion_routes_zip import convert_zip
+from .conversion_part_3 import _process_json_metars
+from .conversion_part_4 import _process_manual_entries
+from .conversion_part_5 import _process_uploaded_files
+from .conversion_part_6 import ConversionProfilesService, convert_bulletin
+from .conversion_routes_io import convert
+from .conversion_routes_zip import convert_zip
+
+_SYNC = {
+    "ConversionProfilesService",
+    "FailedSpan",
+    "api_surface",
+    "supported_report_variants_for_profile",
+    "tac_lint_fn",
+}
+
+
+_ORIG: dict[str, object] = {}
+for _n in _SYNC:
+    for _mod in (
+        _part1,
+        _part2,
+        _part6,
+        _routes_io,
+    ):
+        if _mod is not None and hasattr(_mod, _n):
+            _ORIG.setdefault(_n, getattr(_mod, _n))
+
+
+class _ConversionRouterModule(types.ModuleType):
+    def __setattr__(self, name: str, value: object) -> None:
+        if name in _SYNC:
+            for mod in (_part1, _part2, _part6, _routes_io):
+                if hasattr(mod, name):
+                    setattr(mod, name, value)
+        super().__setattr__(name, value)
+
+    def __delattr__(self, name: str) -> None:
+        super().__delattr__(name)
+
+
+sys.modules[__name__].__class__ = _ConversionRouterModule
 
 __all__ = [
+    "ConversionProfilesService",
+    "FailedSpan",
     "_ConvertAccumulator",
     "_ConvertRuntime",
     "_append_pre_convert_lint_issues",
@@ -46,10 +94,12 @@ __all__ = [
     "_resolve_report_variant",
     "_run_pre_convert_validation",
     "_wire_payload_dict",
+    "api_surface",
     "convert",
     "convert_bulletin",
     "convert_zip",
     "logger",
     "router",
+    "supported_report_variants_for_profile",
     "tac_lint_fn",
 ]

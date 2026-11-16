@@ -9,13 +9,6 @@ from dissemination.packaging import apply_exchange_packaging
 from fastapi import Depends, File, Form, HTTPException, Request, UploadFile
 from fastapi.responses import Response
 
-from src.routers.conversion_api_surface import api_surface
-from src.routers.conversion_part_1 import (
-    _form_text,
-    _resolve_effective_iwxxm_version,
-    router,
-    tac_lint_fn,
-)
 from src.schemas.validation import (
     BulletinMetaModel,
     BulletinReportResultModel,
@@ -28,6 +21,14 @@ from src.utilities.conversion import ConversionError
 from src.utilities.iwxxm_pass_through import NOT_XML_CODE, lint_iwxxm_pass_through
 from src.utilities.security import verify_optional_supabase_token
 from tac2iwxxm import BulletinSplitError, iwxxm_filename, parse_ahl
+
+from .conversion_api_surface import api_surface
+from .conversion_part_1 import (
+    _form_text,
+    _resolve_effective_iwxxm_version,
+    router,
+    tac_lint_fn,
+)
 
 
 @router.post(

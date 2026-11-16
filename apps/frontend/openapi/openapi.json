@@ -47,7 +47,7 @@
           "layers_validated": {
             "description": "Layers validated",
             "items": {
-              "$ref": "#/components/schemas/src__schemas__validation__ValidationLayer"
+              "$ref": "#/components/schemas/src__models__validation_part_1__ValidationLayer"
             },
             "title": "Layers Validated",
             "type": "array"
@@ -1413,10 +1413,8 @@
             "type": "array"
           },
           "metadata": {
-            "additionalProperties": true,
-            "description": "Echoed request metadata such as bulletin_id, issuing_center, and validation options",
-            "title": "Metadata",
-            "type": "object"
+            "$ref": "#/components/schemas/ConversionResponseMetadata",
+            "description": "Echoed request metadata such as bulletin_id, issuing_center, and validation options"
           },
           "ok": {
             "anyOf": [
@@ -1473,6 +1471,38 @@
           "failed"
         ],
         "title": "ConversionResponse",
+        "type": "object"
+      },
+      "ConversionResponseMetadata": {
+        "additionalProperties": true,
+        "description": "Nested convert response metadata (extra keys allowed for wire stability).",
+        "properties": {
+          "bulletin_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Optional bulletin identifier",
+            "title": "Bulletin Id"
+          },
+          "product": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Optional product family",
+            "title": "Product"
+          }
+        },
+        "title": "ConversionResponseMetadata",
         "type": "object"
       },
       "ConversionResult": {
@@ -6526,7 +6556,7 @@
             },
             "description": "Success rate per validation layer (percentage)",
             "propertyNames": {
-              "$ref": "#/components/schemas/src__schemas__icao_opmet__ValidationLayer"
+              "$ref": "#/components/schemas/src__models__icao_opmet__ValidationLayer"
             },
             "title": "Validation Layer Success Rates",
             "type": "object"
@@ -7081,7 +7111,7 @@
             "title": "Code"
           },
           "layer": {
-            "$ref": "#/components/schemas/src__schemas__validation__ValidationLayer",
+            "$ref": "#/components/schemas/src__models__validation_part_1__ValidationLayer",
             "description": "Validation layer that found this issue"
           },
           "level": {
@@ -7163,7 +7193,7 @@
             "type": "string"
           },
           "layer": {
-            "$ref": "#/components/schemas/src__schemas__validation__ValidationLayer",
+            "$ref": "#/components/schemas/src__models__validation_part_1__ValidationLayer",
             "description": "Layer identifier"
           },
           "supported_content_types": {
@@ -7332,7 +7362,7 @@
             "type": "array"
           },
           "layer": {
-            "$ref": "#/components/schemas/src__schemas__validation__ValidationLayer",
+            "$ref": "#/components/schemas/src__models__validation_part_1__ValidationLayer",
             "description": "Validation layer"
           },
           "metadata": {
@@ -7707,7 +7737,7 @@
         "title": "WorkSessionUpdate",
         "type": "object"
       },
-      "src__schemas__icao_opmet__ValidationLayer": {
+      "src__models__icao_opmet__ValidationLayer": {
         "description": "7-layer IWXXM validation stages.",
         "enum": [
           "AIRPORT_ICAO",
@@ -7721,7 +7751,7 @@
         "title": "ValidationLayer",
         "type": "string"
       },
-      "src__schemas__validation__ValidationLayer": {
+      "src__models__validation_part_1__ValidationLayer": {
         "description": "Validation layer identifiers.",
         "enum": [
           "airport_icao",
@@ -9514,7 +9544,7 @@
     },
     "/api/v1/profiles/catalog": {
       "get": {
-        "description": "Read-only ConversionProfile catalog for the authenticated Profiles inspector.\n\nRequires JWT so the inspector stays on the authenticated Profiles surface.",
+        "description": "Read-only ConversionProfile catalog for the authenticated Profiles inspector.",
         "operationId": "get_catalog_api_v1_profiles_catalog_get",
         "responses": {
           "200": {

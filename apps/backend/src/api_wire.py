@@ -1,6 +1,10 @@
 """Facade for ``api_wire.py`` (line-cap split)."""
 
-from src.api_wire_part_1 import (
+import sys
+import types
+
+from . import api_wire_part_2 as _part2
+from .api_wire_part_1 import (
     _AHL_HEADING_SPLIT_CODES,
     _API_PRODUCTS,
     _BULLETIN_ID_RE,
@@ -26,7 +30,7 @@ from src.api_wire_part_1 import (
     normalize_api_product,
     parse_files,
 )
-from src.api_wire_part_2 import (
+from .api_wire_part_2 import (
     _call_iwxxm_validate,
     _product_uses_metar_tac_layers,
     _resolve_request_profiles,
@@ -39,13 +43,35 @@ from src.api_wire_part_2 import (
     read_uploaded_text,
     split_manual_entries,
 )
-from src.api_wire_part_3 import (
+from .api_wire_part_3 import (
     _product_uses_aerodrome_icao_layer,
     bulletin_split_http_error,
     parse_optional_bulletin_id,
     parse_optional_files,
     parse_optional_issuing_center,
 )
+
+_SYNC = {"read_uploaded_text", "read_upload_files_text", "_call_iwxxm_validate"}
+
+
+_ORIG: dict[str, object] = {}
+for _n in _SYNC:
+    for _mod in (_part2,):
+        if _mod is not None and hasattr(_mod, _n):
+            _ORIG.setdefault(_n, getattr(_mod, _n))
+
+
+class _ApiWireModule(types.ModuleType):
+    def __setattr__(self, name: str, value: object) -> None:
+        if name in _SYNC and hasattr(_part2, name):
+            setattr(_part2, name, value)
+        super().__setattr__(name, value)
+
+    def __delattr__(self, name: str) -> None:
+        super().__delattr__(name)
+
+
+sys.modules[__name__].__class__ = _ApiWireModule
 
 __all__ = [
     "MAX_BULLETIN_REPORTS",

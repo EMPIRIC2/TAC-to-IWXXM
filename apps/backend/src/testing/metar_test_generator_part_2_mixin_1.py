@@ -5,7 +5,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, cast
 
-from src.testing.metar_test_generator_part_1 import CoverageReport, METARTestCase, logger
+from .metar_test_generator_part_1 import CoverageReport, METARTestCase, logger
 
 
 class _METARTestGeneratorMethodsMixin:

@@ -90,7 +90,11 @@ def _detect_project_root() -> Path:
                 if has_versioned_schemas(root_candidate):
                     return root_candidate
 
-    current_file = Path(__file__).resolve()
+    import sys
+
+    fac = sys.modules.get("src.config.iwxxm_versions")
+    file_hint = getattr(fac, "__file__", __file__) if fac is not None else __file__
+    current_file = Path(file_hint).resolve()
     parents = [current_file.parent, *current_file.parents]
 
     # Prefer roots that contain actual versioned IWXXM schema directories.

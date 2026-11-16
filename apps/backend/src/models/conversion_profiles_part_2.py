@@ -8,7 +8,7 @@ from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict, Field
 
-from src.models.conversion_profiles_part_1 import ConversionTemplateSlot, LibraryKindLiteral
+from .conversion_profiles_part_1 import ConversionTemplateSlot, LibraryKindLiteral
 
 
 class ConversionTemplateOut(BaseModel):

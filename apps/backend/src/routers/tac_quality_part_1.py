@@ -9,7 +9,6 @@ from fastapi import APIRouter, File, Form, HTTPException, Request, UploadFile
 from fastapi.responses import Response
 from tac_validate.issue_registry import catalog_entries as tac_catalog_entries
 
-from src.routers.conversion_api_surface import api_surface
 from src.schemas.validation import (
     DecodeResidualModel,
     DecodeSegmentModel,
@@ -18,6 +17,8 @@ from src.schemas.validation import (
     LintIssueCatalogResponse,
 )
 from tac2iwxxm import decode_tac as tac2iwxxm_decode_tac
+
+from .conversion_api_surface import api_surface
 
 router = APIRouter(prefix="/api/v1", tags=["Validation"])
 

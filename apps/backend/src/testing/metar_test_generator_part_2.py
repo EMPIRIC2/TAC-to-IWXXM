@@ -5,13 +5,12 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, ClassVar
 
-from src.testing.metar_test_generator_part_1 import CoverageReport, METARTestCase, logger
-from src.testing.metar_test_generator_part_2_mixin_1 import _METARTestGeneratorMethodsMixin
-
 from ..clients.aviation_weather_client import AviationWeatherClient
 from ..clients.openaip_client import OpenAIPClient
 from ..clients.wmo_codelists_client import WMOCodelistsClient
 from ..services.airport_reconciliation import AirportReconciliationService
+from .metar_test_generator_part_1 import CoverageReport, METARTestCase, logger
+from .metar_test_generator_part_2_mixin_1 import _METARTestGeneratorMethodsMixin
 
 
 class METARTestGenerator(_METARTestGeneratorMethodsMixin):

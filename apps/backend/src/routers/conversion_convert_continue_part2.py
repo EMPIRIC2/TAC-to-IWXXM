@@ -13,18 +13,6 @@ from tac2iwxxm.heading_paste import (
 )
 
 from src.models.conversion import GroupTrace
-from src.routers.conversion_api_surface import api_surface
-from src.routers.conversion_part_1 import (
-    _ConvertRuntime,
-    _infer_report_variant_from_sample,
-)
-from src.routers.conversion_part_2 import (
-    _append_pre_convert_lint_issues,
-    _record_convert_station_health,
-)
-from src.routers.conversion_part_3 import _process_json_metars
-from src.routers.conversion_part_4 import _process_manual_entries
-from src.routers.conversion_part_5 import _process_uploaded_files
 from src.schemas.conversion import (
     ConversionIssue,
     ConversionIssueSeverity,
@@ -38,6 +26,19 @@ from src.utilities.ca_exchange_wire import (
 from src.utilities.strict_raise import (
     promote_convert_failure_severity,
 )
+
+from .conversion_api_surface import api_surface
+from .conversion_part_1 import (
+    _ConvertRuntime,
+    _infer_report_variant_from_sample,
+)
+from .conversion_part_2 import (
+    _append_pre_convert_lint_issues,
+    _record_convert_station_health,
+)
+from .conversion_part_3 import _process_json_metars
+from .conversion_part_4 import _process_manual_entries
+from .conversion_part_5 import _process_uploaded_files
 
 
 async def convert_continue_part2(_prelude: dict[str, Any]) -> Any:

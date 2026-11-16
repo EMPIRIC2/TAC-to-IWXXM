@@ -3,7 +3,7 @@
 from pathlib import Path
 from typing import Any
 
-from src.config.iwxxm_versions_part_1 import (
+from .iwxxm_versions_part_1 import (
     ALL_VERSIONS,
     PROFILE_SCOPED_VERSIONS,
     PROJECT_ROOT,

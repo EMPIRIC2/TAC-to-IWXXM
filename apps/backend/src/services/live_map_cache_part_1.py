@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import json
-from dataclasses import field
+from dataclasses import dataclass, field
 from datetime import UTC, datetime, timedelta
 from typing import TypedDict, cast
 
@@ -111,6 +111,7 @@ def retention_cutoff(*, now: datetime | None = None) -> datetime:
     return clock.astimezone(UTC) - timedelta(hours=RETENTION_HOURS)
 
 
+@dataclass(frozen=True)
 class LiveMapReport:
     """One stored observation.
 

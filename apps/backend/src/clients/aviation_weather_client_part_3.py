@@ -9,7 +9,7 @@ from typing import Any, cast
 
 import httpx
 
-from src.clients.aviation_weather_client_part_2 import AviationWeatherClient
+from .aviation_weather_client_part_2 import AviationWeatherClient
 
 
 class CachedAviationWeatherClient(AviationWeatherClient):

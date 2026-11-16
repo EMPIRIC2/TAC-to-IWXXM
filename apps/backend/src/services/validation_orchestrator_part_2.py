@@ -3,8 +3,6 @@
 from concurrent.futures import Future, ThreadPoolExecutor
 from typing import Any
 
-from src.services.validation_orchestrator_part_1 import ComprehensiveValidationResult, ValidationOutcome, logger
-
 from ..schemas.validation import (
     CodelistValidationResult,
     GMLValidationResult,
@@ -17,6 +15,7 @@ from ..schemas.validation import (
 )
 from ..services.validation import ValidationService
 from . import iwxxm_validation_adapter as iwxxm_adapter
+from .validation_orchestrator_part_1 import ComprehensiveValidationResult, ValidationOutcome, logger
 
 
 class ValidationOrchestrator:

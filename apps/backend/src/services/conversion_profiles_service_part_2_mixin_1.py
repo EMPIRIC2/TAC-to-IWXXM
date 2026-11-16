@@ -10,19 +10,6 @@ from fastapi import HTTPException
 from sqlalchemy import delete, insert, or_, select, update
 from sqlalchemy.exc import SQLAlchemyError
 
-from src.services.conversion_profiles_service_part_1 import (
-    OVERLAYS_TABLE,
-    RULE_PACKS_TABLE,
-    _get_engine,
-    _handle_db_error,
-    _reject_secrets,
-    _row_to_out,
-    _table,
-)
-from src.services.conversion_profiles_service_part_2_mixin_1_mixin_1 import (
-    __ConversionProfilesServiceMethodsMixinMethodsMixin,
-)
-
 from ..schemas.conversion_profiles import (
     ConversionTemplateOut,
     ConversionTemplateSlot,
@@ -32,6 +19,18 @@ from ..schemas.conversion_profiles import (
     RulePackCreate,
     RulePackOut,
     RulePackUpdate,
+)
+from .conversion_profiles_service_part_1 import (
+    OVERLAYS_TABLE,
+    RULE_PACKS_TABLE,
+    _get_engine,
+    _handle_db_error,
+    _reject_secrets,
+    _row_to_out,
+    _table,
+)
+from .conversion_profiles_service_part_2_mixin_1_mixin_1 import (
+    __ConversionProfilesServiceMethodsMixinMethodsMixin,
 )
 from .profile_overlay import sign_overlay, verify_overlay_signature
 
@@ -406,6 +405,7 @@ class _ConversionProfilesServiceMethodsMixin(__ConversionProfilesServiceMethodsM
         except SQLAlchemyError as exc:
             _handle_db_error(exc)
 
+    @staticmethod
     def _first_party_template_out(template_id: str) -> ConversionTemplateOut | None:
         """
         Internal helper ``_first_party_template_out``.

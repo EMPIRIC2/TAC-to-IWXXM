@@ -10,7 +10,14 @@ from fastapi import HTTPException
 from sqlalchemy import delete, insert, or_, select, update
 from sqlalchemy.exc import SQLAlchemyError
 
-from src.services.conversion_profiles_service_part_1 import (
+from ..schemas.conversion_profiles import (
+    ConversionTemplateCreate,
+    ConversionTemplateOut,
+    ConversionTemplateSlot,
+    ConversionTemplateUpdate,
+    LibraryAssetOut,
+)
+from .conversion_profiles_service_part_1 import (
     CONVERSION_TEMPLATES_TABLE,
     LIBRARY_ASSETS_TABLE,
     _get_engine,
@@ -18,16 +25,8 @@ from src.services.conversion_profiles_service_part_1 import (
     _reject_secrets,
     _table,
 )
-from src.services.conversion_profiles_service_part_2_mixin_1_mixin_1_mixin_1 import (
+from .conversion_profiles_service_part_2_mixin_1_mixin_1_mixin_1 import (
     ___ConversionProfilesServiceMethodsMixinMethodsMixinMethodsMixin,
-)
-
-from ..schemas.conversion_profiles import (
-    ConversionTemplateCreate,
-    ConversionTemplateOut,
-    ConversionTemplateSlot,
-    ConversionTemplateUpdate,
-    LibraryAssetOut,
 )
 
 

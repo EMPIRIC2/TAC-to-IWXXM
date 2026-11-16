@@ -1,6 +1,6 @@
 """Facade for ``conversion_profiles.py`` (line-cap split)."""
 
-from src.models.conversion_profiles_part_1 import (
+from .conversion_profiles_part_1 import (
     ConversionTemplateCreate,
     ConversionTemplateSlot,
     ConversionTemplateUpdate,
@@ -25,7 +25,7 @@ from src.models.conversion_profiles_part_1 import (
     RulePackOut,
     RulePackUpdate,
 )
-from src.models.conversion_profiles_part_2 import (
+from .conversion_profiles_part_2 import (
     ConversionTemplateListResponse,
     ConversionTemplateOut,
     ConversionTemplatePreviewRequest,

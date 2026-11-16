@@ -251,10 +251,10 @@ def test_validate_comprehensive_invalid_version_returns_400(client, monkeypatch)
 
     monkeypatch.setattr(versions_module, "normalize_version", lambda v: v)
 
-    def raise_invalid(_version):
+    def raise_invalid(_version, _profile=None):
         raise ValueError("bad version")
 
-    monkeypatch.setattr(versions_module, "get_version_config", raise_invalid)
+    monkeypatch.setattr(versions_module, "get_version_config_for_emit_profile", raise_invalid)
 
     response = client.post(
         "/api/v1/validate",
@@ -269,7 +269,7 @@ def test_validate_comprehensive_conversion_error_returns_400(client, monkeypatch
     from src.config import iwxxm_versions as versions_module
 
     monkeypatch.setattr(versions_module, "normalize_version", lambda v: v)
-    monkeypatch.setattr(versions_module, "get_version_config", lambda _v: {"ok": True})
+    monkeypatch.setattr(versions_module, "get_version_config_for_emit_profile", lambda _v, _p=None: {"ok": True})
 
     def fail_convert(*_args, **_kwargs):
         raise ConversionError("failed conversion")
@@ -289,7 +289,7 @@ def test_validate_comprehensive_invalid_layer_returns_400(client, monkeypatch):
     from src.config import iwxxm_versions as versions_module
 
     monkeypatch.setattr(versions_module, "normalize_version", lambda v: v)
-    monkeypatch.setattr(versions_module, "get_version_config", lambda _v: {"ok": True})
+    monkeypatch.setattr(versions_module, "get_version_config_for_emit_profile", lambda _v, _p=None: {"ok": True})
 
     response = client.post(
         "/api/v1/validate",
@@ -308,7 +308,7 @@ def test_validate_comprehensive_unexpected_exception_returns_500(client, monkeyp
     from src.config import iwxxm_versions as versions_module
 
     monkeypatch.setattr(versions_module, "normalize_version", lambda v: v)
-    monkeypatch.setattr(versions_module, "get_version_config", lambda _v: {"ok": True})
+    monkeypatch.setattr(versions_module, "get_version_config_for_emit_profile", lambda _v, _p=None: {"ok": True})
 
     class _BoomOrchestrator:
         def validate_complete(self, **_kwargs):
@@ -329,7 +329,7 @@ def test_validate_comprehensive_formats_issue_payload(client, monkeypatch):
     from src.config import iwxxm_versions as versions_module
 
     monkeypatch.setattr(versions_module, "normalize_version", lambda v: v)
-    monkeypatch.setattr(versions_module, "get_version_config", lambda _v: {"ok": True})
+    monkeypatch.setattr(versions_module, "get_version_config_for_emit_profile", lambda _v, _p=None: {"ok": True})
 
     issue = SimpleNamespace(
         layer=ValidationLayer.XML_SCHEMA,

@@ -1,6 +1,6 @@
 """Part 3 of ``validation_orchestrator.py`` (line-cap split)."""
 
-from src.services.validation_orchestrator_part_2 import ValidationOrchestrator, _orchestrator_instance
+from .validation_orchestrator_part_2 import ValidationOrchestrator, _orchestrator_instance
 
 
 def get_validation_orchestrator() -> ValidationOrchestrator:

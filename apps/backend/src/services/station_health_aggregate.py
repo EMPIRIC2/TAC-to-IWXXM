@@ -5,8 +5,8 @@ from __future__ import annotations
 from datetime import UTC
 from typing import Any
 
-from src.services.station_health_metrics import grade_product_window, letter_grade
-from src.services.station_health_types import StationRecord
+from .station_health_metrics import grade_product_window, letter_grade
+from .station_health_types import StationRecord
 
 
 def row_to_station_record(row: dict[str, Any]) -> StationRecord:

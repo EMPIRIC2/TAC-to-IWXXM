@@ -11,7 +11,7 @@ from urllib.parse import urljoin, urlparse
 
 import httpx
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("src.services.schema_mirror_service")
 
 
 class SchemaMirrorService:

@@ -10,6 +10,7 @@ from src.models.work_session import (
     WorkSessionProduct,
     WorkSessionStatus,
     WorkSessionUpdate,
+    _normalize_product_value,
     sanitize_work_session_title,
 )
 
@@ -23,5 +24,6 @@ __all__ = [
     "WorkSessionProduct",
     "WorkSessionStatus",
     "WorkSessionUpdate",
+    "_normalize_product_value",
     "sanitize_work_session_title",
 ]

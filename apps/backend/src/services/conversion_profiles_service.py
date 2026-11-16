@@ -1,6 +1,6 @@
 """Facade for ``conversion_profiles_service.py`` (line-cap split)."""
 
-from src.services.conversion_profiles_service_part_1 import (
+from .conversion_profiles_service_part_1 import (
     _SECRET_KEY,
     _URI_VALUE,
     CONVERSION_TEMPLATES_TABLE,
@@ -23,7 +23,7 @@ from src.services.conversion_profiles_service_part_1 import (
     _template_row_to_out,
     logger,
 )
-from src.services.conversion_profiles_service_part_2 import (
+from .conversion_profiles_service_part_2 import (
     ConversionProfilesService,
 )
 
@@ -51,3 +51,26 @@ __all__ = [
     "_template_row_to_out",
     "logger",
 ]
+
+import sys
+import types
+
+from . import conversion_profiles_service_part_1 as _part1
+
+_ORIG: dict[str, object] = {}
+
+
+# Populated lazily on first setattr for unknown sync sets
+class _ConversionProfilesServiceModule(types.ModuleType):
+    """Keep ``_engine`` assignments on the facade in sync with part_1."""
+
+    def __setattr__(self, name: str, value: object) -> None:
+        if name == "_engine":
+            _part1._engine = value  # type: ignore[attr-defined]
+        super().__setattr__(name, value)
+
+    def __delattr__(self, name: str) -> None:
+        super().__delattr__(name)
+
+
+sys.modules[__name__].__class__ = _ConversionProfilesServiceModule

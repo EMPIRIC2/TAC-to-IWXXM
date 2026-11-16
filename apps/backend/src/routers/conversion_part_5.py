@@ -8,17 +8,6 @@ from typing import Any
 
 from fastapi import UploadFile
 
-from src.routers.conversion_api_surface import api_surface
-from src.routers.conversion_part_1 import (
-    _convert_output_policy_id,
-    _ConvertRuntime,
-    _initial_layers_passed,
-    _output_validation_orch_layers,
-    _pre_convert_tac_layers,
-    _run_pre_convert_validation,
-    logger,
-)
-from src.routers.conversion_part_2 import _ConvertAccumulator
 from src.schemas.conversion import (
     ConversionIssueSeverity,
     ConversionResult,
@@ -30,6 +19,18 @@ from src.schemas.validation import (
 from src.services.validation import ValidationError as ValidationServiceError
 from src.utilities.conversion import ConversionError
 from src.utilities.tac_parser import extract_airport_code
+
+from .conversion_api_surface import api_surface
+from .conversion_part_1 import (
+    _convert_output_policy_id,
+    _ConvertRuntime,
+    _initial_layers_passed,
+    _output_validation_orch_layers,
+    _pre_convert_tac_layers,
+    _run_pre_convert_validation,
+    logger,
+)
+from .conversion_part_2 import _ConvertAccumulator
 
 
 async def _process_uploaded_files(

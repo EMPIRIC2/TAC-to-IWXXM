@@ -1,6 +1,6 @@
 """Facade for ``conversion_profiles.py`` (line-cap split)."""
 
-from src.routers.conversion_profiles_part_1 import (
+from .conversion_profiles_part_1 import (
     _LIBRARY_AUTHORING_GONE,
     _bearer,
     _library_authoring_gone,
@@ -22,7 +22,7 @@ from src.routers.conversion_profiles_part_1 import (
     profiles_service,
     router,
 )
-from src.routers.conversion_profiles_part_2 import (
+from .conversion_profiles_part_2 import (
     create_conversion_template,
     create_overlay,
     delete_conversion_template,
@@ -36,7 +36,7 @@ from src.routers.conversion_profiles_part_2 import (
     patch_template,
     preview_conversion_template,
 )
-from src.routers.conversion_profiles_part_3 import (
+from .conversion_profiles_part_3 import (
     create_library_asset,
     delete_library_asset,
     get_library_asset,

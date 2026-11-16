@@ -355,7 +355,8 @@ async def database_lifespan(app: FastAPI) -> AsyncIterator[None]:
         # Create tables if they don't exist
         await create_tables()
         from src.routers.live_map import get_live_map_cache
-        from src.services.live_map_refresh import start_live_map_refresh, stop_live_map_refresh
+
+        from .live_map_refresh import start_live_map_refresh, stop_live_map_refresh
 
         map_stop = start_live_map_refresh(get_live_map_cache())
         try:

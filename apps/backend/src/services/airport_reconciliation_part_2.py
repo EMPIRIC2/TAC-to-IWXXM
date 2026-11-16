@@ -3,10 +3,9 @@
 from pathlib import Path
 from typing import Any, cast
 
-from src.services.airport_reconciliation_part_1 import ConflictLog, DataSource, ReconciledAirport, logger
-
 from ..clients.aviation_weather_client import AviationWeatherClient
 from ..clients.openaip_client import OpenAIPClient
+from .airport_reconciliation_part_1 import ConflictLog, DataSource, ReconciledAirport, logger
 
 
 class AirportReconciliationService:

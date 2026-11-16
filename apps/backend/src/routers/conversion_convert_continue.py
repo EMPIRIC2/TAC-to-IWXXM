@@ -12,14 +12,6 @@ from src.metar_iwxxm_api.convert_library_hard_cut import (
     resolve_engine_profile_from_conversion_library,
 )
 from src.models.iwxxm_validation import get_namespace_version
-from src.routers.conversion_api_surface import api_surface
-from src.routers.conversion_part_1 import (
-    _convert_output_policy_id,
-    _resolve_effective_iwxxm_version,
-    _resolve_report_variant,
-    tac_lint_fn,
-)
-from src.routers.conversion_part_2 import _ConvertAccumulator
 from src.schemas.conversion import (
     ConversionIssue,
     ConversionIssueSeverity,
@@ -32,6 +24,15 @@ from src.utilities.iwxxm_pass_through import NOT_XML_CODE, lint_iwxxm_pass_throu
 from src.utilities.observability import set_request_log_level
 from src.utilities.strict_raise import apply_strict_validate_flags, compute_raised_severities
 from src.utilities.version_migration import migrate_xml
+
+from .conversion_api_surface import api_surface
+from .conversion_part_1 import (
+    _convert_output_policy_id,
+    _resolve_effective_iwxxm_version,
+    _resolve_report_variant,
+    tac_lint_fn,
+)
+from .conversion_part_2 import _ConvertAccumulator
 
 logger = logging.getLogger(__name__)
 warning = warnings.warn
@@ -428,6 +429,8 @@ async def convert_continue(_prelude: dict[str, Any]) -> Any:
     validation_service = api_surface.ValidationService()
     validation_orchestrator = api_surface.get_validation_orchestrator() if validate_output else None
     metars_list: list[Any] = []
-    from src.routers.conversion_convert_continue_part2 import convert_continue_part2
+    from .conversion_convert_continue_part2 import convert_continue_part2
 
-    return await convert_continue_part2({**globals(), **locals()})
+    # Keep keys from the routes_io prelude that this stage never bound locally
+    # (e.g. propagate_residuals_to_remarks and other Form/JSON fields).
+    return await convert_continue_part2({**_prelude, **globals(), **locals()})

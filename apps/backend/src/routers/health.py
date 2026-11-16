@@ -4,8 +4,9 @@ from __future__ import annotations
 
 from fastapi import APIRouter
 
-from src.routers.conversion_api_surface import api_surface
 from src.schemas.conversion import HealthResponse
+
+from .conversion_api_surface import api_surface
 
 router = APIRouter(tags=["Health"])
 

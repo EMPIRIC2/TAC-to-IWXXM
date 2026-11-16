@@ -66,7 +66,7 @@ async def serve() -> None:
 def main() -> None:
     """Start the translator.
 
-    The container runs ``python -c "from src.map_translator import main; main()"``.
+    The container runs ``python -c "from .map_translator import main; main()"``.
 
     Examples
     --------

@@ -10,19 +10,18 @@ from fastapi import HTTPException, status
 from sqlalchemy import delete, insert, select, update
 from sqlalchemy.exc import SQLAlchemyError
 
-from src.services.conversion_profiles_service_part_1 import (
+from ..schemas.conversion_profiles import (
+    LibraryAssetCreate,
+    LibraryAssetOut,
+    LibraryAssetUpdate,
+)
+from .conversion_profiles_service_part_1 import (
     LIBRARY_ASSETS_TABLE,
     _get_engine,
     _handle_db_error,
     _reject_secrets,
     _reject_template_values,
     _table,
-)
-
-from ..schemas.conversion_profiles import (
-    LibraryAssetCreate,
-    LibraryAssetOut,
-    LibraryAssetUpdate,
 )
 
 

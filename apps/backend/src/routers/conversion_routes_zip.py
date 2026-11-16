@@ -9,11 +9,6 @@ from typing import Any
 from fastapi import Depends, Form, HTTPException, Request, UploadFile
 from fastapi.responses import StreamingResponse
 
-from src.routers.conversion_api_surface import api_surface, parse_files
-from src.routers.conversion_part_1 import (
-    logger,
-    router,
-)
 from src.schemas.conversion import (
     ConversionIssue,
     ConversionIssueSeverity,
@@ -23,6 +18,12 @@ from src.schemas.conversion import (
 from src.schemas.icao_opmet import TranslationStatus
 from src.utilities.conversion import ConversionError
 from src.utilities.tac_parser import extract_airport_code
+
+from .conversion_api_surface import api_surface, parse_files
+from .conversion_part_1 import (
+    logger,
+    router,
+)
 
 
 @router.post(
@@ -286,6 +287,6 @@ async def convert_zip(
                 except Exception as log_err:
                     logger.error(f"Failed to log unexpected error: {log_err}")
 
-    from src.routers.conversion_zip_continue import convert_zip_continue
+    from .conversion_zip_continue import convert_zip_continue
 
     return await convert_zip_continue({**globals(), **locals()})

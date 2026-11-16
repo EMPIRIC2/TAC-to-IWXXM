@@ -9,16 +9,15 @@ from typing import Any, cast
 
 import httpx
 
-from src.services.schema_discovery_poller_part_1 import (
+from ..services.schema_mirror_service import SchemaMirrorService
+from ..utilities.xmi_model_analyzer import XMIModelAnalyzer, analyze_xmi_versions
+from .schema_discovery_poller_part_1 import (
     RC_PATTERN,
     VERSION_PATTERN,
     WMO_SCHEMA_DIRECTORIES,
     VersionCallback,
     logger,
 )
-
-from ..services.schema_mirror_service import SchemaMirrorService
-from ..utilities.xmi_model_analyzer import XMIModelAnalyzer, analyze_xmi_versions
 
 
 class SchemaDiscoveryPoller:

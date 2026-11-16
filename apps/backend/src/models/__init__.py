@@ -5,7 +5,7 @@ HTTP routers should prefer ``src.schemas`` re-exports for public API models.
 SQLAlchemy ORM tables live in ``src.models.orm``.
 """
 
-from src.models.orm import Base, TranslationStatisticsModel
+from .orm import Base, TranslationStatisticsModel
 
 __all__ = [
     "Base",

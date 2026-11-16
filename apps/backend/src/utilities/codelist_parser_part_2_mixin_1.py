@@ -3,12 +3,30 @@
 from datetime import UTC, datetime
 from typing import cast
 
-import requests
-
-from src.utilities.codelist_parser_part_1 import REQUESTS_AVAILABLE, logger
-
 from ..schemas.validation import ValidationIssue, ValidationLayer, ValidationSeverity
 from ..utilities.xml_types import lxml_etree as etree
+from .codelist_parser_part_1 import REQUESTS_AVAILABLE, logger
+
+
+def _requests_mod() -> object:
+    """Prefer facade ``requests`` so unit tests can monkeypatch the package module."""
+    import sys
+
+    fac = sys.modules.get("src.utilities.codelist_parser")
+    if fac is not None and hasattr(fac, "requests"):
+        return fac.requests
+    import requests as _requests
+
+    return _requests
+
+
+def _requests_available() -> bool:
+    import sys
+
+    fac = sys.modules.get("src.utilities.codelist_parser")
+    if fac is not None and hasattr(fac, "REQUESTS_AVAILABLE"):
+        return bool(fac.REQUESTS_AVAILABLE)
+    return bool(REQUESTS_AVAILABLE)
 
 
 class _CodeListParserMethodsMixin:
@@ -30,7 +48,7 @@ class _CodeListParserMethodsMixin:
         object
             Return value.
         """
-        if not REQUESTS_AVAILABLE:
+        if not _requests_available():
             return ValidationIssue(
                 layer=ValidationLayer.WMO_CODELISTS,
                 level=ValidationSeverity.WARNING,
@@ -52,7 +70,7 @@ class _CodeListParserMethodsMixin:
         # Fetch from registry
         try:
             logger.info(f"Validating code online: {code_url}")
-            if requests is None:
+            if _requests_mod() is None:
                 return ValidationIssue(
                     layer=ValidationLayer.WMO_CODELISTS,
                     level=ValidationSeverity.WARNING,
@@ -60,7 +78,7 @@ class _CodeListParserMethodsMixin:
                     location=xpath,
                     code="CODELIST_REQUESTS_UNAVAILABLE",
                 )
-            response = requests.get(
+            response = _requests_mod().get(
                 code_url, timeout=self.settings.wmo_validation_timeout, headers={"Accept": "application/rdf+xml"}
             )
 
@@ -117,7 +135,12 @@ class _CodeListParserMethodsMixin:
                 )
 
         except Exception as e:
-            timeout_error = getattr(getattr(requests, "exceptions", requests), "Timeout", None)
+            req = _requests_mod()
+            timeout_error = None
+            if req is not None:
+                timeout_error = getattr(getattr(req, "exceptions", req), "Timeout", None)
+                if timeout_error is None:
+                    timeout_error = getattr(req, "Timeout", None)
             if timeout_error is not None and isinstance(e, timeout_error):
                 logger.warning(f"Online validation timeout for {code_url}")
                 return ValidationIssue(

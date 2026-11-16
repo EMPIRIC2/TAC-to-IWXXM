@@ -7,13 +7,14 @@ from typing import Any, cast
 
 from tac_validate.models import LintReport
 
-from src.routers.conversion_part_1 import _wire_payload_dict, logger
 from src.schemas.conversion import (
     ConversionIssue,
     ConversionIssueSeverity,
     ConversionResult,
     FailedSpan,
 )
+
+from .conversion_part_1 import _wire_payload_dict, logger
 
 
 @dataclass(slots=True)

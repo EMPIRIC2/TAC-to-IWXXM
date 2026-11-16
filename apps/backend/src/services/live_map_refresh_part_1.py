@@ -12,7 +12,7 @@ from collections.abc import Awaitable, Callable
 from datetime import UTC, datetime
 from typing import cast
 
-from src.services.live_map_cache import LiveMapReport
+from .live_map_cache import LiveMapReport
 
 convert_mod = importlib.import_module("tac2iwxxm.convert")
 

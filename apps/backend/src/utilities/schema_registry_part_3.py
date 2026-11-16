@@ -1,6 +1,6 @@
 """Part 3 of ``schema_registry.py`` (line-cap split)."""
 
-from src.utilities.schema_registry_part_2 import SchemaRegistry
+from .schema_registry_part_2 import SchemaRegistry
 
 _registry_instance: SchemaRegistry | None = None
 

@@ -2,9 +2,8 @@
 
 from pathlib import Path
 
-from src.utilities.codelist_parser_part_2 import CodeListParser
-
 from ..schemas.validation import CodelistValidationResult
+from .codelist_parser_part_2 import CodeListParser
 
 
 class CodeListRegistry:

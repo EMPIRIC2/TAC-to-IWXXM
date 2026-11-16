@@ -8,13 +8,13 @@ from datetime import UTC, datetime
 from threading import Lock
 from typing import Any
 
-from src.services.station_health_aggregate import grade_products_from_records, overall_from_products
-from src.services.station_health_metrics import (
+from .station_health_aggregate import grade_products_from_records, overall_from_products
+from .station_health_metrics import (
     WINDOW_SECONDS,
     count_solidus_signals,
     window_timedelta,
 )
-from src.services.station_health_types import (
+from .station_health_types import (
     DEFAULT_METRICS,
     StationHealthStoreProtocol,
     StationMeta,
@@ -324,7 +324,7 @@ def get_station_health_store() -> StationHealthStoreProtocol:
     if _override is not None:
         return _override
     try:
-        from src.services.station_health_postgres import (
+        from .station_health_postgres import (
             PostgresStationHealthStore,
             sync_database_url,
         )

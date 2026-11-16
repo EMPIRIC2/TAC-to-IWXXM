@@ -1,15 +1,15 @@
 """Facade for ``validation_orchestrator.py`` (line-cap split)."""
 
-from src.services.validation_orchestrator_part_1 import (
+from .validation_orchestrator_part_1 import (
     ComprehensiveValidationResult,
     ValidationOutcome,
     logger,
 )
-from src.services.validation_orchestrator_part_2 import (
+from .validation_orchestrator_part_2 import (
     ValidationOrchestrator,
     _orchestrator_instance,
 )
-from src.services.validation_orchestrator_part_3 import (
+from .validation_orchestrator_part_3 import (
     get_validation_orchestrator,
 )
 

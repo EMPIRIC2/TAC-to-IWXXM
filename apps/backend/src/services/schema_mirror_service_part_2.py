@@ -3,7 +3,7 @@
 from pathlib import Path
 from typing import Any
 
-from src.services.schema_mirror_service_part_1 import SchemaMirrorService
+from .schema_mirror_service_part_1 import SchemaMirrorService
 
 
 async def mirror_schema_version(

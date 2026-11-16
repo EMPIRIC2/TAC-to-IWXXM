@@ -10,17 +10,17 @@ from typing import Any
 from sqlalchemy import create_engine, text
 from sqlalchemy.engine import Engine
 
-from src.services.station_health_aggregate import (
+from .station_health_aggregate import (
     grade_products_from_records,
     overall_from_products,
     row_to_station_record,
 )
-from src.services.station_health_metrics import (
+from .station_health_metrics import (
     WINDOW_SECONDS,
     count_solidus_signals,
     window_timedelta,
 )
-from src.services.station_health_types import DEFAULT_METRICS, StationRecord
+from .station_health_types import DEFAULT_METRICS, StationRecord
 
 logger = logging.getLogger(__name__)
 

@@ -6,15 +6,16 @@ from fastapi import UploadFile
 from iwxxm_validate.models import ValidationReport
 from tac2iwxxm.taf_lines import join_taf_entries, join_taf_lines
 
-from src.api_wire_part_1 import (
-    _is_multiline_template_product,
-    _iwxxm_validate_fn,
-    logger,
-)
 from src.services.validation_orchestrator import ValidationOrchestrator
 from src.utilities.extension_wire import ca_eccc_validate_product
 from src.utilities.observability import record_profile_wire_metrics
 from src.utilities.profile_wire import WireProfileSelection, resolve_route_profiles
+
+from .api_wire_part_1 import (
+    _is_multiline_template_product,
+    _iwxxm_validate_fn,
+    logger,
+)
 
 
 def _call_iwxxm_validate(

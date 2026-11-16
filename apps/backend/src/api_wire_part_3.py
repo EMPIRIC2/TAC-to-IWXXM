@@ -4,7 +4,10 @@ from __future__ import annotations
 
 from fastapi import HTTPException, Request, UploadFile
 
-from src.api_wire_part_1 import (
+from src.schemas.conversion import ConversionIssue, ConversionIssueSeverity, ErrorDetail
+from tac2iwxxm import BulletinSplitError
+
+from .api_wire_part_1 import (
     _AHL_HEADING_SPLIT_CODES,
     _BULLETIN_ID_RE,
     _CCCC_RE,
@@ -12,8 +15,6 @@ from src.api_wire_part_1 import (
     _INVALID_AHL_MESSAGE,
     _is_named_upload,
 )
-from src.schemas.conversion import ConversionIssue, ConversionIssueSeverity, ErrorDetail
-from tac2iwxxm import BulletinSplitError
 
 
 def parse_optional_bulletin_id(value: str | None) -> str:

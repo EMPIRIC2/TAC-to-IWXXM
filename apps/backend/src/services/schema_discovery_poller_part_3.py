@@ -2,7 +2,7 @@
 
 from typing import Any
 
-from src.services.schema_discovery_poller_part_2 import SchemaDiscoveryPoller
+from .schema_discovery_poller_part_2 import SchemaDiscoveryPoller
 
 
 async def discover_schemas() -> dict[str, Any]:

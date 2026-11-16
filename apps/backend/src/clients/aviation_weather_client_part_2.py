@@ -7,8 +7,8 @@ from typing import Any, Self, cast
 
 import httpx
 
-from src.clients.aviation_weather_client_part_1 import AviationWeatherAPIError
-from src.clients.aviation_weather_client_part_2_mixin_1 import _AviationWeatherClientMethodsMixin
+from .aviation_weather_client_part_1 import AviationWeatherAPIError
+from .aviation_weather_client_part_2_mixin_1 import _AviationWeatherClientMethodsMixin
 
 
 class AviationWeatherClient(_AviationWeatherClientMethodsMixin):

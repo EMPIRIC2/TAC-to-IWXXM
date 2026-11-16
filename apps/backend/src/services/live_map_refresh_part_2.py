@@ -5,8 +5,8 @@ from __future__ import annotations
 import asyncio
 import os
 
-from src.services.live_map_cache import LiveMapCache
-from src.services.live_map_refresh_part_1 import (
+from .live_map_cache import LiveMapCache
+from .live_map_refresh_part_1 import (
     REFRESH_TILES,
     FetchTile,
     Tile,

@@ -9,8 +9,6 @@ from fastapi.responses import Response
 from tac_validate.api import lint_with_profile
 from tac_validate.profiles import PROFILE_ANNEX3
 
-from src.routers.conversion_api_surface import api_surface
-from src.routers.tac_quality_part_1 import router
 from src.schemas.airport import get_airport_validator
 from src.schemas.validation import (
     LintFixModel,
@@ -19,6 +17,9 @@ from src.schemas.validation import (
 )
 from src.utilities.iwxxm_pass_through import lint_iwxxm_pass_through
 from tac2iwxxm import decode_tac as tac2iwxxm_decode_tac
+
+from .conversion_api_surface import api_surface
+from .tac_quality_part_1 import router
 
 
 @router.post(

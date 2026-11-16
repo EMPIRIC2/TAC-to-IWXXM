@@ -5,7 +5,7 @@ from __future__ import annotations
 from datetime import datetime
 from typing import Any
 
-from src.services.station_health_store import get_station_health_store
+from .station_health_store import get_station_health_store
 
 try:
     from tac_validate.api import extract_station_icao

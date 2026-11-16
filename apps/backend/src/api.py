@@ -1,6 +1,7 @@
 """Standalone backend API module for Docker deployment.
 
 TD-3b routers use conversion_api_surface to avoid import cycles.
+Public convert remains at ``/api/v1/convert`` (router-mounted).
 """
 
 from __future__ import annotations
@@ -11,7 +12,10 @@ import pathlib
 import sys
 from collections.abc import Awaitable, Callable
 
-from src.api_http_helpers import ConvertRequestLoggingMiddleware, make_custom_openapi
+try:
+    from .api_http_helpers import ConvertRequestLoggingMiddleware, make_custom_openapi
+except ImportError:  # pragma: no cover - standalone script load
+    from api_http_helpers import ConvertRequestLoggingMiddleware, make_custom_openapi
 
 # Add src directory to path for imports (for local uvicorn execution)
 sys.path.insert(0, str(pathlib.Path(__file__).parent))
@@ -284,7 +288,8 @@ async def add_translation_centre_headers(
     return response
 
 
-app.openapi = make_custom_openapi(app)
+custom_openapi = make_custom_openapi(app)
+app.openapi = custom_openapi
 
 logger.info(f"DEBUG: validation module = {validation}")
 logger.info(f"DEBUG: validation.router = {validation.router}")

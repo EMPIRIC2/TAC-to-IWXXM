@@ -10,7 +10,16 @@ from fastapi import HTTPException, status
 from sqlalchemy import delete, insert, or_, select, update
 from sqlalchemy.exc import SQLAlchemyError
 
-from src.services.conversion_profiles_service_part_1 import (
+from ..schemas.conversion_profiles import (
+    DisseminationTemplateCreate,
+    DisseminationTemplateOut,
+    DisseminationTemplateUpdate,
+    PresetCreate,
+    PresetOut,
+    PresetUpdate,
+    RulePackOut,
+)
+from .conversion_profiles_service_part_1 import (
     PRESETS_TABLE,
     RULE_PACKS_TABLE,
     TEMPLATES_TABLE,
@@ -23,17 +32,7 @@ from src.services.conversion_profiles_service_part_1 import (
     _table,
     _template_row_to_out,
 )
-from src.services.conversion_profiles_service_part_2_mixin_1 import _ConversionProfilesServiceMethodsMixin
-
-from ..schemas.conversion_profiles import (
-    DisseminationTemplateCreate,
-    DisseminationTemplateOut,
-    DisseminationTemplateUpdate,
-    PresetCreate,
-    PresetOut,
-    PresetUpdate,
-    RulePackOut,
-)
+from .conversion_profiles_service_part_2_mixin_1 import _ConversionProfilesServiceMethodsMixin
 
 
 class ConversionProfilesService(_ConversionProfilesServiceMethodsMixin):

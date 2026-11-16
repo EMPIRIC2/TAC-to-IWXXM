@@ -10,11 +10,12 @@ from typing import Any
 
 from fastapi.responses import StreamingResponse
 
-from src.routers.conversion_api_surface import api_surface
 from src.schemas.icao_opmet import TranslationStatus
 from src.services.validation import ValidationError as ValidationServiceError
 from src.utilities.conversion import ConversionError
 from src.utilities.tac_parser import extract_airport_code
+
+from .conversion_api_surface import api_surface
 
 
 async def convert_zip_continue(_prelude: dict[str, Any]) -> Any:

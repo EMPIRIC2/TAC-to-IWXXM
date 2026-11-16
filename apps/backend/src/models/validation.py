@@ -1,6 +1,6 @@
 """Facade for ``validation.py`` (line-cap split)."""
 
-from src.models.validation_part_1 import (
+from .validation_part_1 import (
     AggregatedValidationResult,
     CodelistValidationResult,
     GMLValidationResult,
@@ -19,7 +19,7 @@ from src.models.validation_part_1 import (
     ValidationTask,
     XSDValidationResult,
 )
-from src.models.validation_part_2 import (
+from .validation_part_2 import (
     BulletinMetaModel,
     BulletinReportResultModel,
     ConvertBulletinResponse,

@@ -13,7 +13,7 @@ from fastapi import FastAPI, Request
 from fastapi.responses import Response
 from prometheus_client import CONTENT_TYPE_LATEST, generate_latest
 
-from src.utilities.observability_part_1 import (
+from .observability_part_1 import (
     _ALLOWED_LOG_LEVELS,
     _JWT_RE,
     _REQUEST_LOG_LEVEL,

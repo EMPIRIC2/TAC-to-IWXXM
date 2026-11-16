@@ -5,13 +5,24 @@ from datetime import datetime
 from pathlib import Path
 from typing import cast
 
-from src.utilities.codelist_parser_part_1 import REQUESTS_AVAILABLE, logger
-from src.utilities.codelist_parser_part_2_mixin_1 import _CodeListParserMethodsMixin
-
-from ..config.validation import ValidationSettings, get_validation_settings
+from ..config.validation import ValidationSettings
+from ..config.validation import get_validation_settings as _default_get_validation_settings
 from ..schemas.validation import CodelistValidationResult, ValidationIssue, ValidationLayer, ValidationSeverity
 from ..utilities.xml_types import XmlElement
 from ..utilities.xml_types import lxml_etree as etree
+from .codelist_parser_part_1 import REQUESTS_AVAILABLE, logger
+from .codelist_parser_part_2_mixin_1 import _CodeListParserMethodsMixin
+
+
+def _resolve_get_validation_settings() -> object:
+    """Use facade monkeypatch when present."""
+    import sys
+
+    fac = sys.modules.get("src.utilities.codelist_parser")
+    fn = getattr(fac, "get_validation_settings", None) if fac is not None else None
+    if callable(fn):
+        return fn
+    return _default_get_validation_settings
 
 
 class CodeListParser(_CodeListParserMethodsMixin):
@@ -51,7 +62,7 @@ class CodeListParser(_CodeListParserMethodsMixin):
         # Load settings
         if settings is None:
             try:
-                self.settings = get_validation_settings()
+                self.settings = _resolve_get_validation_settings()()
             except ImportError:
                 # Fallback if config not available
                 from types import SimpleNamespace
