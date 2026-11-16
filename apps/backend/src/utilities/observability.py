@@ -34,6 +34,7 @@ from .observability_part_2 import (
     _filters_installed,
     _reset_request_log_level,
     ensure_request_log_filters,
+    install_fastapi_observability,
     set_request_log_level,
     setup_logging,
 )
@@ -73,6 +74,10 @@ class _ObservabilityModule(types.ModuleType):
         super().__setattr__(name, value)
 
     def __delattr__(self, name: str) -> None:
+        if name in _ORIG and hasattr(_part1, name):
+            setattr(_part1, name, _ORIG[name])
+        if name in _ORIG and hasattr(_part2, name):
+            setattr(_part2, name, _ORIG[name])
         super().__delattr__(name)
 
 
@@ -102,6 +107,7 @@ __all__ = [
     "_metric_profile_id",
     "_reset_request_log_level",
     "ensure_request_log_filters",
+    "install_fastapi_observability",
     "queue",
     "record_profile_wire_metrics",
     "record_translation_metric",

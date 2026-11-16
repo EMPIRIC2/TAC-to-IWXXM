@@ -57,6 +57,10 @@ class _SchemaDiscoveryPollerModule(types.ModuleType):
         super().__setattr__(name, value)
 
     def __delattr__(self, name: str) -> None:
+        if name in _ORIG and hasattr(_part1, name):
+            setattr(_part1, name, _ORIG[name])
+        if name in _ORIG and hasattr(_part2, name):
+            setattr(_part2, name, _ORIG[name])
         super().__delattr__(name)
 
 
