@@ -158,6 +158,18 @@ describe('paintTacOverlays', () => {
     );
   });
 
+  it('uses default magnitude scale when paint options omit scale', () => {
+    const cluster = clusterByStation([storm])[0];
+    expect(cluster).toBeDefined();
+    if (!cluster) {
+      return;
+    }
+    const layers = paintTacOverlays(mapStub, cluster, allOverlaysOn());
+    expect(layers.length).toBeGreaterThan(0);
+    expect(L.circleMarker).toHaveBeenCalled();
+    expect(L.marker).toHaveBeenCalled();
+  });
+
   it('returns null painters when the station TAC does not feed the overlay', () => {
     const cluster = clusterByStation([calm])[0];
     expect(cluster).toBeDefined();
