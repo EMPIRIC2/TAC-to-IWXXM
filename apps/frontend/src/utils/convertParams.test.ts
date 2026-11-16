@@ -71,7 +71,7 @@ describe('convertParams', () => {
 
   it('maps the params bar onto convert fields and omits blank identifiers', () => {
     const bar = {
-      bulletinId: ' SAAA00 ',
+      bulletinId: '  SAAA00 ',
       issuingCenter: '',
       reportVariant: ' SPECI ',
       profile: 'icao',
@@ -114,6 +114,6 @@ describe('convertParams', () => {
       }).validateOutput,
     ).toBe(false);
     expect(optionalTrim(undefined)).toBeUndefined();
-    expect(optionalTrim(' ')).toBeUndefined();
+    expect(optionalTrim('   ')).toBeUndefined();
   });
 });

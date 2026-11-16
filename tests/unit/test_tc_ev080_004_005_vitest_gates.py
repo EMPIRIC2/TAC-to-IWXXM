@@ -1,4 +1,7 @@
-"""TC-EV080-004 / TC-EV080-005 — Vitest coverage thresholds at 100% (EV-080 ). [Corpus: tests]"""
+"""TC-EV080-004 TC-EV080-005 — Vitest coverage thresholds at 100% (EV-080).
+
+[Corpus: tests]
+"""
 
 from __future__ import annotations
 

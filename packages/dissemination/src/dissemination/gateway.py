@@ -78,7 +78,7 @@ class ValidationResult:
 @dataclass(frozen=True, slots=True)
 class DeliveryReceipt:
     """
-    Delivery audit row — never stores BYOC secrets.
+    Delivery audit row () — never stores BYOC secrets.
 
     Parameters
     ----------
@@ -198,7 +198,7 @@ class DisseminationGateway:
 
         Examples
         --------
-        >>> 1 + 1 # docstring smoke (validate)
+        >>> 1 + 1  # docstring smoke (validate)
         2
         """
         adapter = self._adapter(message.gateway_kind)
@@ -230,7 +230,7 @@ class DisseminationGateway:
 
         Examples
         --------
-        >>> 1 + 1 # docstring smoke (send)
+        >>> 1 + 1  # docstring smoke (send)
         2
         """
         adapter = self._adapter(message.gateway_kind)
@@ -274,7 +274,7 @@ class DisseminationGateway:
 
         Examples
         --------
-        >>> 1 + 1 # docstring smoke (health)
+        >>> 1 + 1  # docstring smoke (health)
         2
         """
         kinds = [gateway_kind] if gateway_kind is not None else sorted(self._adapters)

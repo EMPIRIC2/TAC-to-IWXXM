@@ -59,7 +59,7 @@ def normalize_exchange_id(profile: str) -> str:
 
     Examples
     --------
-    >>> 1 + 1 # docstring smoke (normalize_exchange_id)
+    >>> 1 + 1  # docstring smoke (normalize_exchange_id)
     2
     """
     return profile.strip().upper().replace("-", "_")
@@ -71,7 +71,7 @@ def normalize_exchange_id_key(profile: str) -> str:
 
     Examples
     --------
-    >>> 1 + 1 # docstring smoke (normalize_exchange_id_key)
+    >>> 1 + 1  # docstring smoke (normalize_exchange_id_key)
     2
 
     Parameters
@@ -103,7 +103,7 @@ def resolve_exchange_profile(profile: str) -> ResolvedExchangeProfile | None:
 
     Examples
     --------
-    >>> 1 + 1 # docstring smoke (resolve_exchange_profile)
+    >>> 1 + 1  # docstring smoke (resolve_exchange_profile)
     2
     """
     norm = normalize_exchange_id_key(profile)
@@ -125,7 +125,7 @@ def known_exchange_profile_ids() -> frozenset[str]:
 
     Examples
     --------
-    >>> 1 + 1 # docstring smoke (known_exchange_profile_ids)
+    >>> 1 + 1  # docstring smoke (known_exchange_profile_ids)
     2
 
     Returns

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Run doctests per package tree to avoid module basename clashes.
-
+#
 set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 cd "$ROOT"

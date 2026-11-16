@@ -1,4 +1,7 @@
-"""EV-080 M2b: fill remaining apps/backend unit line/branch gaps to 100%. [Corpus: tests]"""
+"""EV-080 M2b: fill remaining apps/backend unit line/branch gaps to 100%.
+
+[Corpus: tests]
+"""
 
 from __future__ import annotations
 
@@ -40,7 +43,7 @@ def convert_client(monkeypatch: pytest.MonkeyPatch):
 
 
 def test_clean_env_blank_after_strip(monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setenv("TRANSLATION_CENTRE_NAME", " ")
+    monkeypatch.setenv("TRANSLATION_CENTRE_NAME", "   ")
     assert icao_cfg._clean_env("TRANSLATION_CENTRE_NAME") is None
 
 
@@ -157,7 +160,7 @@ def test_resolve_request_extensions_json_path() -> None:
 
 
 def test_manual_entries_multiline_whitespace_only() -> None:
-    assert api_wire.manual_entries_with_offsets(" \n\n ") == []
+    assert api_wire.manual_entries_with_offsets("  \n\n  ") == []
 
 
 def test_iwxxm_readable_empty_field_amount_and_root_amount() -> None:
@@ -808,7 +811,7 @@ def test_work_sessions_parse_product_filter_skips_empty_tokens() -> None:
 def test_api_wire_remaining_branches() -> None:
     from tac2iwxxm import BulletinSplitError
 
-    assert api_wire.manual_entries_with_offsets(" \n ", product="SIGMET") == []
+    assert api_wire.manual_entries_with_offsets("   \n  ", product="SIGMET") == []
     assert api_wire._resolve_request_profiles(route="", profile="annex3").emit_key
 
     err = api_wire.bulletin_split_http_error(BulletinSplitError("weird_code", "boom"))
@@ -1397,7 +1400,7 @@ async def test_convert_bulletin_non_multipart_and_upload_err(
 
     resp3 = convert_client.post(
         "/api/v1/convert-bulletin",
-        files={"product": (None, "METAR"), "manual_text": (None, " ")},
+        files={"product": (None, "METAR"), "manual_text": (None, "   ")},
     )
     assert resp3.status_code == 400
 

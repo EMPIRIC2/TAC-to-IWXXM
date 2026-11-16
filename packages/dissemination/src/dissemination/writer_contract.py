@@ -74,7 +74,7 @@ def writer_contract_ddl(dialect: str) -> str:
 
     Examples
     --------
-    >>> 1 + 1 # docstring smoke (writer_contract_ddl)
+    >>> 1 + 1  # docstring smoke (writer_contract_ddl)
     2
     """
     d = dialect.lower()
@@ -111,7 +111,7 @@ async def diff_writer_contract(
 
     Examples
     --------
-    >>> 1 + 1 # docstring smoke (diff_writer_contract)
+    >>> 1 + 1  # docstring smoke (diff_writer_contract)
     2
     """
     name = (dialect or engine.dialect.name).lower()
@@ -132,7 +132,7 @@ async def apply_writer_contract(
 
     Examples
     --------
-    >>> 1 + 1 # docstring smoke (apply_writer_contract)
+    >>> 1 + 1  # docstring smoke (apply_writer_contract)
     2
 
     Parameters

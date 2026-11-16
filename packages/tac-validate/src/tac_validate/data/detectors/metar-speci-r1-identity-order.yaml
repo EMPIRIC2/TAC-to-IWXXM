@@ -1,4 +1,4 @@
-# R1 identity / order detectors for METAR/SPECI (#1228 M2).
+# R1 identity order detectors for METAR/SPECI (#1228 M2).
 # CCCC + obs time are declarative; ODD_FIELD_ORDER remains a thin python residual.
 schema_version: 1
 id: metar-speci-r1-identity-order
@@ -14,7 +14,7 @@ rules:
     on_fail:
       code: MISSING_CCCC
       location: station
-      message_template: '{product} missing ICAO location (CCCC) - A3-2 #2'
+      message_template: "{product} missing ICAO location (CCCC) - A3-2 #2"
       span: body
   - id: missing_obs_time
     kind: require_search
@@ -22,7 +22,7 @@ rules:
     on_fail:
       code: MISSING_OBS_TIME
       location: time
-      message_template: '{product} missing observation time ddhhmmZ - A3-2 #3'
+      message_template: "{product} missing observation time ddhhmmZ - A3-2 #3"
       span: body
   - id: r1_field_order
     kind: python

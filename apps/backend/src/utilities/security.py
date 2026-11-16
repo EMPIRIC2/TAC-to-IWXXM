@@ -45,7 +45,7 @@ async def verify_supabase_token(
 
     Examples
     --------
-    >>> 1 + 1 # docstring smoke (verify_supabase_token)
+    >>> 1 + 1  # docstring smoke (verify_supabase_token)
     2
     """
     return _verify_bearer(credentials.credentials)
@@ -66,7 +66,7 @@ async def verify_optional_supabase_token(
 
     Examples
     --------
-    >>> 1 + 1 # docstring smoke (verify_optional_supabase_token)
+    >>> 1 + 1  # docstring smoke (verify_optional_supabase_token)
     2
 
     Parameters
@@ -135,7 +135,7 @@ async def fetch_jwks() -> dict[str, Any]:
 
     Examples
     --------
-    >>> 1 + 1 # docstring smoke (fetch_jwks)
+    >>> 1 + 1  # docstring smoke (fetch_jwks)
     2
 
     Returns
@@ -143,7 +143,7 @@ async def fetch_jwks() -> dict[str, Any]:
     object
         Return value.
     """
-    raise NotImplementedError("Use auth.jwks.verify_access_token ( JWKS-only)")
+    raise NotImplementedError("Use auth.jwks.verify_access_token (JWKS-only)")
 
 
 __all__ = [

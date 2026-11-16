@@ -150,9 +150,9 @@ def test_pack_convert_applies_profile_overlay(monkeypatch: pytest.MonkeyPatch, t
                 "extends: metar",
                 "layout: token_stream",
                 "rules:",
-                " - id: extra_group",
-                ' pattern: ["EXTRA"]',
-                ' explain: "Extra {0}"',
+                "  - id: extra_group",
+                '    pattern: ["EXTRA"]',
+                '    explain: "Extra {0}"',
             )
         ),
         encoding="utf-8",

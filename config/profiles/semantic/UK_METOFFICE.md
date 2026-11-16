@@ -1,7 +1,7 @@
 # UK_METOFFICE — UK Met Office / CAA thin overlay (P2)
 
-> **Profile id**: `UK_METOFFICE` · **Kind**: semantic · **Priority**: P2 · **Status**: implemented (EV-094 deepen / [#1098](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1098); EV-regional-dialect-profiles recorded)
-> **Catalog row**: [`catalog.yaml`](../catalog.yaml) · **Path**: thin · **ADR**: architecture decision · architecture decision
+> **Profile id**: `UK_METOFFICE` · **Kind**: semantic · **Priority**: P2 · **Status**: implemented (EV-094 deepen / [#1098](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1098); EV-regional-dialect-profiles recorded)  
+> **Catalog row**: [`catalog.yaml`](../catalog.yaml) · **Path**: thin · **ADR**: [](../../../adr/-semantic-vs-exchange-profiles.md) · [](../../../adr/-validation-policy-layers.md)
 
 UK national semantic overlay extending `ICAO_2025`: CAP 746 aerodrome MET conventions for
 METAR/SPECI/TAF. Core IWXXM only; no published UK extension XSD.
@@ -17,28 +17,28 @@ UK `EG*` TAFs prefer `uk_metoffice`, so standalone `PROB + period`
 
 ## Owns (target)
 
-| Area                  | Scope                                                                                                        |
-| --------------------- | ------------------------------------------------------------------------------------------------------------ |
-| TAC parse / normalize | ICAO baseline; CAP 746 deltas via fixtures (± empty override list)                                           |
-| IWXXM encode          | **Core WMO only**                                                                                            |
-| Products              | METAR, SPECI, TAF                                                                                            |
-| Overrides             | **Empty severity remaps** (civil ICAO; military colour OOS — D-EV094-uk-mil); VV omit noted under `recorded` |
+| Area | Scope |
+|------|-------|
+| TAC parse / normalize | ICAO baseline; CAP 746 deltas via fixtures (± empty override list) |
+| IWXXM encode | **Core WMO only** |
+| Products | METAR, SPECI, TAF |
+| Overrides | **Empty severity remaps** (civil ICAO; military colour OOS — D-EV094-uk-mil); VV omit noted under `recorded` |
 
 ## Standards hierarchy (L0–L6)
 
-| Level | Source                        | Status                                 |
-| ----- | ----------------------------- | -------------------------------------- |
-| L0    | CAP 746                       | mined (kickoff + EV-094)               |
-| L1    | WMO-No. 306                   | via ICAO_2025                          |
-| L2–L3 | IWXXM core pin                | via ICAO_2025                          |
-| L4–L5 | National XSD / vocab          | **N/A — do not invent**                |
-| L6    | Ops corpus (AWC / Met Office) | METAR + TAF attributed (M1); SPECI gap |
+| Level | Source | Status |
+|-------|--------|--------|
+| L0 | CAP 746 | mined (kickoff + EV-094) |
+| L1 | WMO-No. 306 | via ICAO_2025 |
+| L2–L3 | IWXXM core pin | via ICAO_2025 |
+| L4–L5 | National XSD / vocab | **N/A — do not invent** |
+| L6 | Ops corpus (AWC / Met Office) | METAR + TAF attributed (M1); SPECI gap |
 
 ## Code list policy
 
-| Code / list               | Global SoT | National override | Notes                    |
-| ------------------------- | ---------- | ----------------- | ------------------------ |
-| Standard METAR/TAF tokens | ICAO / WMO | none              | ATIS specials → fixtures |
+| Code / list | Global SoT | National override | Notes |
+|-------------|------------|-------------------|-------|
+| Standard METAR/TAF tokens | ICAO / WMO | none | ATIS specials → fixtures |
 
 ## Fixtures
 

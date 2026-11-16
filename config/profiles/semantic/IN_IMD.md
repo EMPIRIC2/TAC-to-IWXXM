@@ -1,7 +1,7 @@
 # IN_IMD — India IMD compat overlay (P2)
 
-> **Profile id**: `IN_IMD` · **Kind**: semantic · **Priority**: P2 · **Status**: implemented (EV-094 deepen / [#1098](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1098); kickoff EV-089 / [#920](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/920))
-> **Path**: compat · **ADR**: architecture decision
+> **Profile id**: `IN_IMD` · **Kind**: semantic · **Priority**: P2 · **Status**: implemented (EV-094 deepen / [#1098](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1098); kickoff EV-089 / [#920](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/920))  
+> **Path**: compat · **ADR**: [](../../../adr/-semantic-vs-exchange-profiles.md)
 
 Compat pack for IMD METAR/SPECI/TAF/SIGMET. Indian TAFs commonly omit TX/TN temperature
 extremes. EV-094 adds a **lint profile overlay** (`in_imd` / `IN_IMD`) that emits a
@@ -10,11 +10,11 @@ convert remains core IWXXM (no unpublished IMDIMET XSD). No AIRMET/GAMET in v1.
 
 ## Owns (target)
 
-| Area     | Scope                                                    |
-| -------- | -------------------------------------------------------- |
-| Products | METAR, SPECI, TAF, SIGMET                                |
-| Lint     | `in_imd` — TAF TX/TN omission awareness (D-EV094-in-taf) |
-| IWXXM    | Core only                                                |
+| Area | Scope |
+|------|-------|
+| Products | METAR, SPECI, TAF, SIGMET |
+| Lint | `in_imd` — TAF TX/TN omission awareness (D-EV094-in-taf) |
+| IWXXM | Core only |
 
 ## Gaps
 

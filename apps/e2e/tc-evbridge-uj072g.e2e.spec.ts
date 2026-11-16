@@ -1,6 +1,6 @@
 /**
  * EV-bridge T2 / H4–H5 — UJ-072g five Libraries + Mapping bridge + hard cut.
-
+ *
  * Spec: docs/test-plan.md TC-EVBRIDGE-005..007, 010; docs/user-journeys.md UJ-072g.
  * [Corpus: product §F7.w] [Corpus: journeys] [Corpus: tests]
  */

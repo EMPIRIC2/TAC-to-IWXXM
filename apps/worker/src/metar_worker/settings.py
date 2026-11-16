@@ -1,4 +1,4 @@
-"""Worker settings from environment ( amend / F30)."""
+"""Worker settings from environment (amend / F30)."""
 
 from __future__ import annotations
 

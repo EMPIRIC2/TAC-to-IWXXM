@@ -52,7 +52,7 @@ def test_location_resolver_soft_fail() -> None:
 
 def test_reload_glossary(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
     overlay = tmp_path / "g.yaml"
-    overlay.write_text("tokens:\n ZZTEST: custom meaning\n", encoding="utf-8")
+    overlay.write_text("tokens:\n  ZZTEST: custom meaning\n", encoding="utf-8")
     monkeypatch.setenv("TAC_DECODING_GLOSSARY_PATH", str(overlay))
     reload_glossary()
     from tac_decoding.glossary import meaning_for

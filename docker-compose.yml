@@ -9,11 +9,7 @@ services:
     volumes:
       - metar-db-data:/var/lib/postgresql/data
     healthcheck:
-      test:
-        [
-          'CMD-SHELL',
-          'pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-postgres}',
-        ]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-postgres}"]
       interval: 5s
       timeout: 5s
       retries: 10
@@ -28,7 +24,7 @@ services:
       dockerfile: apps/backend/docker/Dockerfile
     container_name: metar-iwxxm-backend
     ports:
-      - '${METAR_BACKEND_HOST_PORT:-18001}:8000'
+      - "${METAR_BACKEND_HOST_PORT:-18001}:8000"
     environment:
       - PYTHONUNBUFFERED=1
       - METAR_CONFIG_ENV=${METAR_CONFIG_ENV:-local}
@@ -52,13 +48,7 @@ services:
       db:
         condition: service_healthy
     healthcheck:
-      test:
-        [
-          'CMD',
-          'python',
-          '-c',
-          "import urllib.request; urllib.request.urlopen('http://localhost:8000/health').read()",
-        ]
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health').read()"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -78,7 +68,7 @@ services:
       - METAR_CONFIG_ENV=${METAR_CONFIG_ENV:-local}
       - SUPABASE_PUBLISHABLE_KEY=${SUPABASE_PUBLISHABLE_KEY:-${SUPABASE_ANON_KEY:-}}
     ports:
-      - '${METAR_FRONTEND_HOST_PORT:-18000}:8000'
+      - "${METAR_FRONTEND_HOST_PORT:-18000}:8000"
     volumes:
       - ./apps/frontend:/workspace/apps/frontend
       - ./packages/shared:/workspace/packages/shared
@@ -95,8 +85,7 @@ services:
       backend:
         condition: service_healthy
     healthcheck:
-      test:
-        ['CMD', 'wget', '--quiet', '--tries=1', '--spider', 'http://127.0.0.1:8000/']
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://127.0.0.1:8000/"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -109,20 +98,26 @@ services:
   # wis2box: make compose-wis2box-up
   # mock-byoc: make compose-mock-byoc-up
   wis2box:
-    profiles: ['wis2box']
+    profiles: ["wis2box"]
     build:
       context: ./packages/dissemination/docker/wis2box-harness
       dockerfile: Dockerfile
     image: metar-iwxxm-wis2box-harness:local
     container_name: metar-iwxxm-wis2box
     ports:
-      - '${WIS2BOX_MQTT_HOST_PORT:-1883}:1883'
-      - '${WIS2BOX_HTTP_HOST_PORT:-9080}:8080'
+      - "${WIS2BOX_MQTT_HOST_PORT:-1883}:1883"
+      - "${WIS2BOX_HTTP_HOST_PORT:-9080}:8080"
     environment:
       - WIS2BOX_HTTP_PORT=8080
       - WIS2BOX_DATASET_DIR=/var/lib/wis2box-harness/datasets
     healthcheck:
-      test: ['CMD', 'curl', '-sf', 'http://127.0.0.1:8080/health']
+      test:
+        [
+          "CMD",
+          "curl",
+          "-sf",
+          "http://127.0.0.1:8080/health",
+        ]
       interval: 5s
       timeout: 3s
       retries: 12
@@ -132,7 +127,7 @@ services:
     restart: unless-stopped
 
   byoc-postgres:
-    profiles: ['mock-byoc']
+    profiles: ["mock-byoc"]
     image: postgres:16
     container_name: metar-iwxxm-byoc-postgres
     environment:
@@ -140,9 +135,9 @@ services:
       POSTGRES_PASSWORD: byoc-mock-password-not-real
       POSTGRES_DB: byoc
     ports:
-      - '${BYOC_POSTGRES_HOST_PORT:-25432}:5432'
+      - "${BYOC_POSTGRES_HOST_PORT:-25432}:5432"
     healthcheck:
-      test: ['CMD-SHELL', 'pg_isready -U byoc -d byoc']
+      test: ["CMD-SHELL", "pg_isready -U byoc -d byoc"]
       interval: 5s
       timeout: 5s
       retries: 12
@@ -152,7 +147,7 @@ services:
     restart: unless-stopped
 
   byoc-mysql:
-    profiles: ['mock-byoc']
+    profiles: ["mock-byoc"]
     image: mysql:8.4
     container_name: metar-iwxxm-byoc-mysql
     environment:
@@ -161,17 +156,17 @@ services:
       MYSQL_USER: byoc
       MYSQL_PASSWORD: byoc-mock-password-not-real
     ports:
-      - '${BYOC_MYSQL_HOST_PORT:-13306}:3306'
+      - "${BYOC_MYSQL_HOST_PORT:-13306}:3306"
     healthcheck:
       test:
         [
-          'CMD',
-          'mysqladmin',
-          'ping',
-          '-h',
-          '127.0.0.1',
-          '-ubyoc',
-          '-pbyoc-mock-password-not-real',
+          "CMD",
+          "mysqladmin",
+          "ping",
+          "-h",
+          "127.0.0.1",
+          "-ubyoc",
+          "-pbyoc-mock-password-not-real",
         ]
       interval: 5s
       timeout: 5s
@@ -182,18 +177,18 @@ services:
     restart: unless-stopped
 
   byoc-sqlserver:
-    profiles: ['mock-byoc']
+    profiles: ["mock-byoc"]
     image: mcr.microsoft.com/mssql/server:2022-latest
     container_name: metar-iwxxm-byoc-sqlserver
     environment:
-      ACCEPT_EULA: 'Y'
-      MSSQL_SA_PASSWORD: 'Byoc_Mock_Passw0rd!'
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: "Byoc_Mock_Passw0rd!"
     ports:
-      - '${BYOC_SQLSERVER_HOST_PORT:-11433}:1433'
+      - "${BYOC_SQLSERVER_HOST_PORT:-11433}:1433"
     healthcheck:
       test:
         [
-          'CMD-SHELL',
+          "CMD-SHELL",
           "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P 'Byoc_Mock_Passw0rd!' -C -Q 'SELECT 1' || /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P 'Byoc_Mock_Passw0rd!' -Q 'SELECT 1'",
         ]
       interval: 5s
@@ -205,33 +200,33 @@ services:
     restart: unless-stopped
 
   byoc-mailhog:
-    profiles: ['mock-byoc']
+    profiles: ["mock-byoc"]
     image: mailhog/mailhog:v1.0.1
     container_name: metar-iwxxm-byoc-mailhog
     ports:
-      - '${BYOC_SMTP_HOST_PORT:-11025}:1025'
-      - '${BYOC_MAILHOG_UI_HOST_PORT:-18025}:8025'
+      - "${BYOC_SMTP_HOST_PORT:-11025}:1025"
+      - "${BYOC_MAILHOG_UI_HOST_PORT:-18025}:8025"
     networks:
       - metar-network
     restart: unless-stopped
 
   byoc-f19:
-    profiles: ['mock-byoc']
+    profiles: ["mock-byoc"]
     build:
       context: ./packages/dissemination/docker/f19-harness
       dockerfile: Dockerfile
     image: metar-iwxxm-f19-harness:local
     container_name: metar-iwxxm-byoc-f19
     environment:
-      F19_HARNESS_PORT: '9099'
+      F19_HARNESS_PORT: "9099"
     ports:
-      - '${BYOC_F19_HOST_PORT:-19099}:9099'
+      - "${BYOC_F19_HOST_PORT:-19099}:9099"
     healthcheck:
       test:
         [
-          'CMD',
-          'python',
-          '-c',
+          "CMD",
+          "python",
+          "-c",
           "import urllib.request; urllib.request.urlopen('http://127.0.0.1:9099/health').read()",
         ]
       interval: 5s

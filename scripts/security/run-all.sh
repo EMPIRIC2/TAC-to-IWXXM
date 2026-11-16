@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Vendored portable security suite for CI (no ~/.cursor/skills). [Corpus: ]
+# Vendored portable security suite for CI (no ~/.cursor/skills).
 set -euo pipefail
 
 ROOT="${1:-$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)}"

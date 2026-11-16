@@ -19,34 +19,34 @@ package = false
 
 [dependency-groups]
 dev = [
- "pre-commit==4.6.0",
- "ruff==0.15.17",
- "basedpyright==1.39.8",
- "pytest==9.1.0",
- "pytest-cov==7.1.0",
- "pytest-asyncio==1.4.0",
- "httpx==0.28.1",
- "httpx2==2.4.0",
- "respx==0.23.1",
- "maturin==1.14.1",
- "xsdata[cli]==26.2",
- "xsdata-pydantic==24.5",
- "metar-shared",
- "metar-backend",
- "metar-worker",
- "tac2iwxxm",
- "tac-decoding",
- "reference-lookup",
- "iwxxm-validate",
- "tac-validate",
- "iwxxm-dissemination",
- "workflows",
- "auth",
- "testcontainers[mysql,postgres]==4.14.2",
- "schemathesis==4.24.3",
- "pytest-gremlins==1.9.0",
- "import-linter==2.16",
- "deptry==0.25.1",
+  "pre-commit==4.6.0",
+  "ruff==0.15.17",
+  "basedpyright==1.39.8",
+  "pytest==9.1.0",
+  "pytest-cov==7.1.0",
+  "pytest-asyncio==1.4.0",
+  "httpx==0.28.1",
+  "httpx2==2.4.0",
+  "respx==0.23.1",
+  "maturin==1.14.1",
+  "xsdata[cli]==26.2",
+  "xsdata-pydantic==24.5",
+  "metar-shared",
+  "metar-backend",
+  "metar-worker",
+  "tac2iwxxm",
+  "tac-decoding",
+  "reference-lookup",
+  "iwxxm-validate",
+  "tac-validate",
+  "iwxxm-dissemination",
+  "workflows",
+  "auth",
+  "testcontainers[mysql,postgres]==4.14.2",
+  "schemathesis==4.24.3",
+  "pytest-gremlins==1.9.0",
+  "import-linter==2.16",
+  "deptry==0.25.1",
 ]
 
 [tool.uv.sources]
@@ -64,53 +64,53 @@ workflows = { workspace = true }
 
 [tool.uv.workspace]
 members = [
- "packages/shared",
- "packages/auth",
- "packages/tac2iwxxm",
- "packages/tac-decoding",
- "packages/reference-lookup",
- "packages/iwxxm-validate",
- "packages/tac-validate",
- "packages/dissemination",
- "packages/workflows",
- "apps/backend",
- "apps/worker",
+  "packages/shared",
+  "packages/auth",
+  "packages/tac2iwxxm",
+  "packages/tac-decoding",
+  "packages/reference-lookup",
+  "packages/iwxxm-validate",
+  "packages/tac-validate",
+  "packages/dissemination",
+  "packages/workflows",
+  "apps/backend",
+  "apps/worker",
 ]
 
 [tool.basedpyright]
 pythonVersion = "3.12"
 typeCheckingMode = "strict"
 include = [
- "apps",
- "packages",
- "tests",
+  "apps",
+  "packages",
+  "tests",
 ]
 exclude = [
- "**/node_modules",
- "**/__pycache__",
- "vendor",
- "apps/frontend/dist",
- "frontend/dist",
- # generated xsdata trees (T3.7)
- "packages/shared/src/metar_shared/iwxxm_xsd/v*",
- # tac2iwxxm split parts/shared/loaders exec'd into package ns (EV-tac2iwxxm-models-split)
- # Public types come from sibling __init__.pyi stubs.
- "packages/tac2iwxxm/src/tac2iwxxm/**/_part*.py",
- "packages/tac2iwxxm/src/tac2iwxxm/**/_shared.py",
- "packages/tac2iwxxm/src/tac2iwxxm/bulletin/__init__.py",
- "packages/tac2iwxxm/src/tac2iwxxm/conversion_templates/__init__.py",
- "packages/tac2iwxxm/src/tac2iwxxm/convert/__init__.py",
- "packages/tac2iwxxm/src/tac2iwxxm/emit_map/__init__.py",
- "packages/tac2iwxxm/src/tac2iwxxm/exchange_output/__init__.py",
- "packages/tac2iwxxm/src/tac2iwxxm/library_yaml/__init__.py",
- "packages/tac2iwxxm/src/tac2iwxxm/profiles/annex3/__init__.py",
- "packages/tac2iwxxm/src/tac2iwxxm/profiles/annex3_emit/sigmet/__init__.py",
- "packages/tac2iwxxm/src/tac2iwxxm/profiles/ca_eccc/__init__.py",
- "packages/tac2iwxxm/src/tac2iwxxm/profiles/iwxxm_us/__init__.py",
- "packages/tac2iwxxm/src/tac2iwxxm/slot_builders/metar_speci/__init__.py",
- "packages/tac2iwxxm/src/tac2iwxxm/slot_builders/sigmet_airmet/__init__.py",
- "packages/tac2iwxxm/src/tac2iwxxm/slot_builders/taf/__init__.py",
- "packages/tac2iwxxm/src/tac2iwxxm/slot_builders/vaa_tca/__init__.py",
+  "**/node_modules",
+  "**/__pycache__",
+  "vendor",
+  "apps/frontend/dist",
+  "frontend/dist",
+  # generated xsdata trees (T3.7)
+  "packages/shared/src/metar_shared/iwxxm_xsd/v*",
+  # tac2iwxxm split parts/shared/loaders exec'd into package ns (EV-tac2iwxxm-models-split)
+  # Public types come from sibling __init__.pyi stubs.
+  "packages/tac2iwxxm/src/tac2iwxxm/**/_part*.py",
+  "packages/tac2iwxxm/src/tac2iwxxm/**/_shared.py",
+  "packages/tac2iwxxm/src/tac2iwxxm/bulletin/__init__.py",
+  "packages/tac2iwxxm/src/tac2iwxxm/conversion_templates/__init__.py",
+  "packages/tac2iwxxm/src/tac2iwxxm/convert/__init__.py",
+  "packages/tac2iwxxm/src/tac2iwxxm/emit_map/__init__.py",
+  "packages/tac2iwxxm/src/tac2iwxxm/exchange_output/__init__.py",
+  "packages/tac2iwxxm/src/tac2iwxxm/library_yaml/__init__.py",
+  "packages/tac2iwxxm/src/tac2iwxxm/profiles/annex3/__init__.py",
+  "packages/tac2iwxxm/src/tac2iwxxm/profiles/annex3_emit/sigmet/__init__.py",
+  "packages/tac2iwxxm/src/tac2iwxxm/profiles/ca_eccc/__init__.py",
+  "packages/tac2iwxxm/src/tac2iwxxm/profiles/iwxxm_us/__init__.py",
+  "packages/tac2iwxxm/src/tac2iwxxm/slot_builders/metar_speci/__init__.py",
+  "packages/tac2iwxxm/src/tac2iwxxm/slot_builders/sigmet_airmet/__init__.py",
+  "packages/tac2iwxxm/src/tac2iwxxm/slot_builders/taf/__init__.py",
+  "packages/tac2iwxxm/src/tac2iwxxm/slot_builders/vaa_tca/__init__.py",
 ]
 reportMissingTypeStubs = false
 reportUnknownMemberType = "error"
@@ -122,43 +122,43 @@ pythonpath = ["."]
 asyncio_mode = "auto"
 asyncio_default_fixture_loop_scope = "function"
 addopts = [
- "-v",
- "--strict-config",
- "--strict-markers",
- "--tb=short",
+  "-v",
+  "--strict-config",
+  "--strict-markers",
+  "--tb=short",
 ]
 # Unexpected passes (XPASS) fail the run. The only intentional soft suite is the EV-023
 # informative Amd79 convert test, which opts out per test with
 # @pytest.mark.xfail(strict=False) (E23-T4=2); no other xfail may be non-strict.
 xfail_strict = true
 markers = [
- "unit: unit tests",
- "integration: integration tests",
- "live: live staging connectivity (H4–H5)",
- "live_api: live deployed API smoke tests (H3)",
- "smoke: deploy smoke tests",
- "migration: monorepo migration gate tests (TC-M001–M005)",
- "slow: longer local/CI smokes (clean-venv wheel installs)",
- "iwxxm_translation_informative: Amd79-80-2023 TAC→2025-2 informative suite (EV-023; soft/xfail in CI)",
- "quality_matrix: F29 full pilot matrix slots (optional / make test-quality-matrices-full)",
- "ev032_smoke: EV-032 path-filtered pre-commit canary (A6-2 / VONA equality + enum; E32-T7)",
- "edge_case: conversion/validation edge-case corpus (filter with -m edge_case)",
- "schemathesis: OpenAPI property tests (make test-schemathesis)",
+  "unit: unit tests",
+  "integration: integration tests",
+  "live: live staging connectivity (H4–H5)",
+  "live_api: live deployed API smoke tests (H3)",
+  "smoke: deploy smoke tests",
+  "migration: monorepo migration gate tests (TC-M001–M005)",
+  "slow: longer local/CI smokes (clean-venv wheel installs)",
+  "iwxxm_translation_informative: Amd79-80-2023 TAC→2025-2 informative suite (EV-023; soft/xfail in CI)",
+  "quality_matrix: F29 full pilot matrix slots (optional / make test-quality-matrices-full)",
+  "ev032_smoke: EV-032 path-filtered pre-commit canary (A6-2 / VONA equality + enum; E32-T7)",
+  "edge_case: conversion/validation edge-case corpus (filter with -m edge_case)",
+  "schemathesis: OpenAPI property tests (make test-schemathesis)",
 ]
-# / TC-EVDOC-007: warnings are errors. No product-wide ignore filters.
+# TC-EVDOC-007: warnings are errors. No product-wide ignore filters.
 # The pytest-gremlins "Coverage collection returned no data" warning is NOT ignored here;
 # it is passed only via -W in scripts/ci/run_mutation_python.sh (mutation chunks).
 filterwarnings = [
- "error",
+  "error",
 ]
 
 [tool.coverage.run]
 branch = true
 source = ["apps", "packages"]
 omit = [
- "**/tests/**",
- # generated xsdata trees (T3.7)
- "*/iwxxm_xsd/v*/**",
+  "**/tests/**",
+  # generated xsdata trees (T3.7)
+  "*/iwxxm_xsd/v*/**",
 ]
 
 [tool.coverage.report]
@@ -170,21 +170,21 @@ skip_covered = false
 # Per-target paths are passed via --gremlin-targets from scripts/ci/run_mutation_python.sh.
 [tool.pytest-gremlins]
 exclude = [
- "**/tests/**",
- "**/test_*.py",
- "**/conftest.py",
- "**/__pycache__/**",
- "**/migrations/**",
- "**/iwxxm_xsd/v*/**",
- "**/rust/**",
- "**/*.egg-info/**",
+  "**/tests/**",
+  "**/test_*.py",
+  "**/conftest.py",
+  "**/__pycache__/**",
+  "**/migrations/**",
+  "**/iwxxm_xsd/v*/**",
+  "**/rust/**",
+  "**/*.egg-info/**",
 ]
 operators = ["comparison", "boundary", "boolean", "arithmetic", "return"]
 report = ["console", "json"]
 workers = 2
 cache = true
 
-# Ruff configuration — root workspace (, ).
+# Ruff configuration — root workspace (,).
 # : pydocstyle (D) fail-closed with NumPy convention.
 [tool.ruff]
 target-version = "py312"
@@ -196,44 +196,44 @@ line-length = 88
 # switch needs a dedicated `ruff check --select I --fix` PR. Until then keep the
 # repo-level roots below.
 src = [
- "apps",
- "packages",
- "tests",
+  "apps",
+  "packages",
+  "tests",
 ]
 extend-exclude = [
- # generated xsdata output (only exclusion) — regenerate via make codegen-iwxxm-xsd
- "packages/shared/src/metar_shared/iwxxm_xsd",
- "packages/shared/src/metar_shared/iwxxm_xsd/v*",
+  # generated xsdata output (only exclusion) — regenerate via make codegen-iwxxm-xsd
+  "packages/shared/src/metar_shared/iwxxm_xsd",
+  "packages/shared/src/metar_shared/iwxxm_xsd/v*",
 ]
 
 [tool.ruff.lint]
 select = [
- "E", # pycodestyle errors
- "F", # pyflakes
- "I", # isort
- "UP", # pyupgrade
- "B", # flake8-bugbear
- "SIM", # flake8-simplify
- "RUF", # ruff-specific
- "PERF", # perflint
- "ASYNC", # flake8-async
- "PT", # flake8-pytest-style
- "ANN", # flake8-annotations (src only; tests ignored below)
- "D", # pydocstyle — / TC-EVDOC-008
+  "E",     # pycodestyle errors
+  "F",     # pyflakes
+  "I",     # isort
+  "UP",    # pyupgrade
+  "B",     # flake8-bugbear
+  "SIM",   # flake8-simplify
+  "RUF",   # ruff-specific
+  "PERF",  # perflint
+  "ASYNC", # flake8-async
+  "PT",    # flake8-pytest-style
+  "ANN",   # flake8-annotations (src only; tests ignored below)
+  "D", # pydocstyle — TC-EVDOC-008
 ]
 ignore = [
- "E501", # line length handled by formatter
- # NumPy / backfill style: summary on second line; D203 conflicts with D211
- "D203",
- "D212",
- # Descriptive summaries (not imperative verbs) are intentional in this corpus
- "D401",
- "D404",
- # One-line vs multi-line & blank-after-summary fight Examples sections
- "D200",
- "D205",
- "D400",
- "D415",
+  "E501", # line length handled by formatter
+  # NumPy backfill style: summary on second line; D203 conflicts with D211
+  "D203",
+  "D212",
+  # Descriptive summaries (not imperative verbs) are intentional in this corpus
+  "D401",
+  "D404",
+  # One-line vs multi-line & blank-after-summary fight Examples sections
+  "D200",
+  "D205",
+  "D400",
+  "D415",
 ]
 
 [tool.ruff.lint.pydocstyle]

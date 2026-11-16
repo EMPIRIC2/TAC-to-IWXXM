@@ -55,7 +55,7 @@ vi.mock('./LiveWorldMap', () => ({
             product: 'metar',
             latitude: 0,
             longitude: 0,
-            reports: [{ observed_at: 'empty', tac: ' ', iwxxm: null }],
+            reports: [{ observed_at: 'empty', tac: '   ', iwxxm: null }],
           })
         }
       >
@@ -460,13 +460,13 @@ vi.mock('./WorkHistorySidebar', () => ({
 vi.mock('jszip', () => ({
   default: class JSZip {
     /**
-
+     *
      */
     file() {
       return this;
     }
     /**
-
+     *
      */
     generateAsync() {
       return Promise.resolve(new Blob(['test']));
@@ -524,7 +524,7 @@ vi.mock('./ui/sonner', () => ({
 
 describe('FileConverter Component', () => {
   /**
-
+   *
    */
   async function openConvertDownloadsTab(user: {
     click: (el: Element) => Promise<void>;
@@ -1473,7 +1473,7 @@ describe('FileConverter Component', () => {
 
         // Whitespace-only TAC keeps converter chrome (no live convert call).
         mockConvertMetarToIwxxm.mockClear();
-        fireEvent.change(textarea, { target: { value: ' ' } });
+        fireEvent.change(textarea, { target: { value: '   ' } });
         await act(async () => {
           await vi.advanceTimersByTimeAsync(350);
         });
@@ -2005,7 +2005,7 @@ describe('FileConverter Component', () => {
       fireEvent.change(fileInput, {
         target: {
           files: {
-            0: { name: 'blank.tac', text: vi.fn().mockResolvedValue(' ') },
+            0: { name: 'blank.tac', text: vi.fn().mockResolvedValue('   ') },
             length: 1,
           },
         },
@@ -2153,7 +2153,7 @@ describe('FileConverter Component', () => {
       const { rerender } = render(
         <FileConverter
           {...defaultProps}
-          pendingMapTac=" "
+          pendingMapTac="   "
           onPendingMapTacConsumed={onPendingMapTacConsumed}
         />,
       );
@@ -3197,9 +3197,9 @@ describe('FileConverter Component', () => {
     it('skips blank hard-convert messages when building the visible error log', async () => {
       const user = userEvent.setup({ delay: null });
       mockConvertMetarToIwxxm.mockRejectedValueOnce(
-        new MockConvertApiError(' ', {
+        new MockConvertApiError('   ', {
           status: 400,
-          errors: ['', ' ', 'manual_input: Validation failed'],
+          errors: ['', '  ', 'manual_input: Validation failed'],
           issues: [
             {
               source: 'manual_input',
@@ -4142,7 +4142,7 @@ describe('FileConverter Component', () => {
     });
 
     /**
-
+     *
      */
     async function selectGoldenExample(label: RegExp) {
       const user = userEvent.setup({ delay: null });
@@ -4348,7 +4348,7 @@ describe('FileConverter Component', () => {
       '<?xml version="1.0"?>\n<collect:MeteorologicalBulletin xmlns:collect="http://def.wmo.int/collect/1.2" xmlns:iwxxm="http://icao.int/iwxxm/3.0">';
 
     /**
-
+     *
      */
     function invokeReactOnClick(element: HTMLElement) {
       const propsKey = Object.keys(element).find((key) =>
@@ -4362,7 +4362,7 @@ describe('FileConverter Component', () => {
     }
 
     /**
-
+     *
      */
     async function addQueueFile(container: HTMLElement, name: string, content: string) {
       const fileInput = container.querySelector(

@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
-"""Python docstring presence + Examples + NumPy shape checker. [Corpus: docstrings]
+""" Python docstring presence + Examples + NumPy shape checker.
+
+ [Corpus: docstrings]
 
 Scans in-scope product trees. Exit 0 when clean; prints violations otherwise.
 """
@@ -251,9 +253,7 @@ def iter_in_scope(root: Path) -> list[Path]:
     files: list[Path] = []
     for pattern in IN_SCOPE_GLOBS:
         for base in root.glob(pattern):
-            if (
-                not base.exists()
-            ):  # pragma: no cover - Path.glob never yields missing paths
+            if not base.exists():  # pragma: no cover - Path.glob never yields missing paths
                 continue
             if base.is_file() and base.suffix == ".py" and not _should_skip(base):
                 files.append(base)

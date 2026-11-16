@@ -6,8 +6,8 @@ Paste-ready destinations for every DisseminationDrawer option.
 ## Bring up all mocks
 
 ```bash
-make compose-mock-byoc-all-up # PG, MySQL, SQL Server, MailHog, F19, wis2box
-make test-mock-byoc-all-sinks # preflight+send for all 9 sinks
+make compose-mock-byoc-all-up    # PG, MySQL, SQL Server, MailHog, F19, wis2box
+make test-mock-byoc-all-sinks    # preflight+send for all 9 sinks
 ```
 
 | Sink | Mock | Host port / note |
@@ -50,15 +50,15 @@ Send requires **IWXXM XML** (convert first, or drag-drop `sample-metar.iwxxm.xml
 
 **SQLite (live smoke)**
 
-- Sink: SQLite
-- URI: `sqlite+aiosqlite:////tmp/live-mock-byoc.db`
-- DDL: on
+- Sink: SQLite  
+- URI: `sqlite+aiosqlite:////tmp/live-mock-byoc.db`  
+- DDL: on  
 
 **Postgres (local compose)**
 
-- Sink: Postgres
-- URI: `postgresql+asyncpg://byoc:byoc-mock-password-not-real@127.0.0.1:25432/byoc`
-- DDL: on
+- Sink: Postgres  
+- URI: `postgresql+asyncpg://byoc:byoc-mock-password-not-real@127.0.0.1:25432/byoc`  
+- DDL: on  
 
 **MySQL**
 
@@ -117,7 +117,7 @@ Use `/swim` or `/afs` for the other sinks. Live HTTP API may still return 501 fo
 ## Automated smokes
 
 ```bash
-make test-mock-byoc-smoke # unit/mocks
+make test-mock-byoc-smoke          # unit/mocks
 make compose-mock-byoc-all-up
-make test-mock-byoc-all-sinks # all 9 sinks
+make test-mock-byoc-all-sinks      # all 9 sinks
 ```

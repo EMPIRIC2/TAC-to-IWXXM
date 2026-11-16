@@ -2,11 +2,11 @@
 # F34 / EV-059 / #874 — pytest-gremlins mutation chunk (TC-F34-003 / TC-F34-005).
 # Usage: scripts/ci/run_mutation_python.sh <target>
 # Env:
-# GREMLIN_EXTRA_ARGS — extra pytest-gremlins flags (optional)
-# MUTATION_TIMEOUT_SEC — soft wall clock (default 1200); 0 disables
+#   GREMLIN_EXTRA_ARGS — extra pytest-gremlins flags (optional)
+#   MUTATION_TIMEOUT_SEC — soft wall clock (default 1200); 0 disables
 # Notes:
-# Nested package pyproject.toml files shift pytest rootdir; we force the workspace
-# root via --rootdir / -c so --gremlin-targets paths resolve correctly.
+#   Nested package pyproject.toml files shift pytest rootdir; we force the workspace
+#   root via --rootdir / -c so --gremlin-targets paths resolve correctly.
 # Exclusions (Rust / e2e / generated xsdata): [tool.pytest-gremlins] in root pyproject.toml
 set -euo pipefail
 

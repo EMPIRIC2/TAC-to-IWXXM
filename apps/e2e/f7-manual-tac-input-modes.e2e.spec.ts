@@ -1,6 +1,6 @@
 /**
- * TC-F7-007 / UJ-025 — Manual TAC Input modes (#730 / S016 EV-012).
-
+ * TC-F7-007 UJ-025 — Manual TAC Input modes (#730 S016 EV-012).
+ *
  * Spec: docs/test-plan.md TC-F7-007; docs/user-journeys.md UJ-025.
  * Hard gates: T1–T6 (S2.2).
  */

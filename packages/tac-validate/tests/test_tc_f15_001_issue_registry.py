@@ -1,4 +1,4 @@
-"""TC-F15-001 - issue registry API (S015 / EV-011, F15).
+"""TC-F15-001 - issue registry API (S015 EV-011, F15).
 
 Contract for ``tac_validate.issue_registry``:
 
@@ -165,7 +165,7 @@ def test_catalog_entries_returns_full_registry_when_unfiltered() -> None:
 
     assert catalog_entries() is ISSUES
     assert catalog_entries(product=None) is ISSUES
-    assert catalog_entries(product=" ") is ISSUES
+    assert catalog_entries(product="  ") is ISSUES
 
 
 def test_catalog_entries_filters_by_product_tag_or_field() -> None:

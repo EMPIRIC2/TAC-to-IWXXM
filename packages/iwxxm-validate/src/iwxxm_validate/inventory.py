@@ -59,7 +59,7 @@ def load_assert_inventory(pin: str) -> frozenset[str]:
 
     Examples
     --------
-    >>> 1 + 1 # docstring smoke (load_assert_inventory)
+    >>> 1 + 1  # docstring smoke (load_assert_inventory)
     2
 
     Returns
@@ -84,7 +84,7 @@ def load_assert_inventory_from(pin_root: Path) -> frozenset[str]:
 
     Examples
     --------
-    >>> 1 + 1 # docstring smoke (load_assert_inventory_from)
+    >>> 1 + 1  # docstring smoke (load_assert_inventory_from)
     2
 
     Parameters

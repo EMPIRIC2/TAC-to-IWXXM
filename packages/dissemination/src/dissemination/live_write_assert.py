@@ -43,7 +43,7 @@ async def count_iwxxm_rows(
 
     Examples
     --------
-    >>> 1 + 1 # docstring smoke (count_iwxxm_rows)
+    >>> 1 + 1  # docstring smoke (count_iwxxm_rows)
     2
     """
     if upload_key:
@@ -92,7 +92,7 @@ async def assert_live_write(
 
     Examples
     --------
-    >>> 1 + 1 # docstring smoke (assert_live_write)
+    >>> 1 + 1  # docstring smoke (assert_live_write)
     2
     """
     dialect = dialect_for_sink(sink_type)
@@ -138,7 +138,7 @@ def main(argv: list[str] | None = None) -> int:
 
     Examples
     --------
-    >>> 1 + 1 # docstring smoke (main)
+    >>> 1 + 1  # docstring smoke (main)
     2
 
     Parameters

@@ -12,11 +12,11 @@ Not a long-lived Render service (E14-04=B). Not the full WMO wis2box release sta
 # from repo root
 make compose-wis2box-up
 curl -s http://127.0.0.1:9080/health
-make compose-wis2box-harness # CI hook (up + probe + optional wis2* pytest)
+make compose-wis2box-harness   # CI hook (up + probe + optional wis2* pytest)
 make compose-wis2box-down
 ```
 
-Allowlist Compose/CI hosts when exercising the sink , recommended:
+Allowlist Compose/CI hosts when exercising the sink (), recommended:
 
 `DISSEMINATION_EGRESS_ALLOWLIST=wis2box,127.0.0.1,127.0.0.0/8,localhost`
 

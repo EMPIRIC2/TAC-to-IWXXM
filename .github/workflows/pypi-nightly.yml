@@ -1,6 +1,6 @@
 # EV-1150 — nightly TestPyPI builds for F12–F14 (CalVer .devN).
 # Prod PyPI remains tag-driven via pypi-publish.yml.
-
+#
 # Requires GitHub Environment `testpypi` + Trusted Publisher on each TestPyPI
 # project pointing at this workflow.
 name: PyPI Nightly (TestPyPI)
@@ -8,7 +8,7 @@ name: PyPI Nightly (TestPyPI)
 on:
   schedule:
     # 07:00 UTC daily
-    - cron: '0 7 * * *'
+    - cron: "0 7 * * *"
   workflow_dispatch:
     inputs:
       publish:
@@ -59,7 +59,7 @@ jobs:
       - name: Install uv
         uses: astral-sh/setup-uv@v6
         with:
-          python-version: '3.12'
+          python-version: "3.12"
           enable-cache: false
 
       - name: Bump CalVer .devN for this run
@@ -74,7 +74,7 @@ jobs:
       - name: Sync iwxxm-validate schema subset into package tree
         if: matrix.package == 'iwxxm-validate'
         env:
-          PYTHONUTF8: '1'
+          PYTHONUTF8: "1"
           PYTHONIOENCODING: utf-8
         run: uv run python packages/iwxxm-validate/scripts/sync_runtime_schemas.py
 
@@ -93,7 +93,7 @@ jobs:
         if: matrix.native == true
         uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
+          python-version: "3.12"
 
       - name: Build native linux wheel (maturin)
         if: matrix.native == true
@@ -103,7 +103,7 @@ jobs:
           command: build
           # Match pypi-publish.yml: pin interpreter inside manylinux (python3 alone fails).
           args: --release -o ../../dist -m rust/Cargo.toml -i python3.12
-          sccache: 'true'
+          sccache: "true"
           manylinux: auto
 
       - name: Publish to TestPyPI (OIDC)

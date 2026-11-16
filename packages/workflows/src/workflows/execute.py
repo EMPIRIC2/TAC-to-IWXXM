@@ -55,7 +55,7 @@ def execute(
 
     Examples
     --------
-    >>> 1 + 1 # docstring smoke (execute)
+    >>> 1 + 1  # docstring smoke (execute)
     2
     """
     if isinstance(workflow, str):

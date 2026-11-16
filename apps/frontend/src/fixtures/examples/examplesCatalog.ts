@@ -1,9 +1,9 @@
 /**
- * Frontend-only golden examples catalog (F7.g / #780 / F25 W4 / F26–F27).
-
+ * Frontend-only golden examples catalog (F7.g #780 F25 W4 F26–F27).
+ *
  * Bodies are copied from package fixtures — never import Python at runtime.
  * In-scope TAC demos are **WMO passers** (`wmoPass`) and/or **WMO reference** samples
- * (`wmoReference`) per amend / UJ-039 (EV-024). Translation-failed and US
+ * (`wmoReference`) per amend UJ-039 (EV-024). Translation-failed and US
  * demos stay out of the WMO happy-path list.
  */
 
@@ -81,7 +81,7 @@ export interface GoldenExample {
   wmoPass?: boolean;
   /**
    * Official WMO example loadable from the sample menu before convert equality
-   * ( amend / UJ-039). Mutually exclusive with ``wmoPass`` for UI tier copy.
+   * (amend UJ-039). Mutually exclusive with ``wmoPass`` for UI tier copy.
    */
   wmoReference?: boolean;
   /** Vendor / annex3 seed id when ``wmoPass`` or ``wmoReference`` (e.g. ``metar-A3-1``). */
@@ -102,7 +102,7 @@ const VENDOR =
 
 /**
  * Curated demo examples for convert + validate workbench.
-
+ *
  * WMO-scope TAC rows: strict passers and official WMO reference samples (EV-024).
  * AHL / IWXXM modes remain non-WMO-scope demos.
  */
@@ -357,7 +357,7 @@ export const WMO_PROVENANCE_NOTE = VENDOR;
 
 /**
  * Look up an example by id.
-
+ *
  * @param id - Catalog id
  * @returns Example or undefined
  */
@@ -367,7 +367,7 @@ export function getExampleById(id: string): GoldenExample | undefined {
 
 /**
  * TAC examples for a product (excludes AHL / IWXXM-only rows unless product matches).
-
+ *
  * @param product - F6 product
  * @returns Matching TAC-mode examples
  */

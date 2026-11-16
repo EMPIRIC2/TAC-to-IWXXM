@@ -245,7 +245,7 @@ describe('API Utils', () => {
       });
 
       await convertMetarToIwxxm({
-        manualText: ' KJFK 121851Z ',
+        manualText: '   KJFK 121851Z   ',
       });
 
       expect(global.fetch).toHaveBeenCalled();
@@ -360,7 +360,7 @@ describe('API Utils', () => {
       expect(body.get('decoding_library_id')).toBe('LIB.DECODING.ICAO_2025');
     });
 
-    it('appends validation, stop_on_error, bulletin, and issuing centre ', async () => {
+    it('appends validation, stop_on_error, bulletin, and issuing centre ()', async () => {
       mockFetchResponse({
         results: [],
         errors: [],
@@ -497,7 +497,7 @@ describe('API Utils', () => {
 
       await convertMetarToIwxxm({
         manualText: 'METAR KJFK 121151Z 18008KT 10SM FEW250 22/14 A3012=',
-        presetId: ' pr-123 ',
+        presetId: '  pr-123  ',
         accessToken: ' jwt ',
       });
 
@@ -847,7 +847,7 @@ describe('API Utils', () => {
   });
 
   /**
-   * T5.4 / TC-F11-001 — msgspec HTTP shape parity guards.
+   * T5.4 TC-F11-001 — msgspec HTTP shape parity guards.
    * Keys match backend contract smoke; OpenAPI→TS types live in openapiTypes (EV-052).
    */
   describe('msgspec HTTP shape parity (T5.4)', () => {
@@ -1219,7 +1219,7 @@ describe('API Utils', () => {
       });
       expect(global.fetch).toHaveBeenCalledWith(
         expect.stringMatching(
-          /lint-issue-catalog\?product=taf&semantic_profile=US_FAA_NWS&exchange_profile=GLOBAL_AFS$/,
+          /\/lint-issue-catalog\?product=taf&semantic_profile=US_FAA_NWS&exchange_profile=GLOBAL_AFS$/,
         ),
         expect.objectContaining({ method: 'GET' }),
       );
@@ -1233,7 +1233,7 @@ describe('API Utils', () => {
       });
       expect(global.fetch).toHaveBeenCalledWith(
         expect.stringMatching(
-          /lint-issue-catalog\?issue_type=presence&source_access=paywall$/,
+          /\/lint-issue-catalog\?issue_type=presence&source_access=paywall$/,
         ),
         expect.objectContaining({ method: 'GET' }),
       );
@@ -1337,7 +1337,7 @@ describe('API Utils', () => {
       expect(result.items[0]!.code).toBe('TS');
       expect(global.fetch).toHaveBeenCalledWith(
         expect.stringMatching(
-          /code-name-dictionary\?q=thunder&product=METAR&country=INTL&wmo_amendment=WMO\+No\.\+306$/,
+          /\/code-name-dictionary\?q=thunder&product=METAR&country=INTL&wmo_amendment=WMO\+No\.\+306$/,
         ),
         expect.objectContaining({ method: 'GET' }),
       );
@@ -1427,7 +1427,7 @@ describe('API Utils', () => {
     });
   });
 
-  describe('convertBulletin / ingestCollect (/024)', () => {
+  describe('convertBulletin ingestCollect (/024)', () => {
     it('posts convert-bulletin with manual text and files', async () => {
       const body = {
         bulletin_meta: {
@@ -1532,7 +1532,7 @@ describe('API Utils', () => {
       await convertBulletin({
         product: 'METAR',
         manualText: 'SAUS31',
-        extensions: ['IWXXM_CA', ' '],
+        extensions: ['IWXXM_CA', '  '],
         accessToken: 'bulletin-token',
       });
       const call = (global.fetch as ReturnType<typeof vi.fn>).mock.calls[0]!;
@@ -1719,7 +1719,7 @@ describe('API Utils', () => {
       });
       await convertMetarToIwxxm({
         manualText: 'METAR KJFK',
-        overlayId: ' ov-123 ',
+        overlayId: '  ov-123  ',
         accessToken: ' jwt ',
       });
       const [, options] = (global.fetch as ReturnType<typeof vi.fn>).mock.calls.at(-1)!;
@@ -1736,7 +1736,7 @@ describe('API Utils', () => {
         successful: 0,
         failed: 0,
       });
-      await convertMetarToIwxxm({ manualText: ' ' });
+      await convertMetarToIwxxm({ manualText: '   ' });
       const [, options] = (global.fetch as ReturnType<typeof vi.fn>).mock.calls.at(-1)!;
       const body = options.body as FormData;
       expect(body.get('manual_text')).toBeNull();
@@ -1752,7 +1752,7 @@ describe('API Utils', () => {
   describe('massIngestFiles (F33 / EV-042)', () => {
     it('requires access token and at least one file', async () => {
       await expect(
-        massIngestFiles({ files: [new File(['x'], 'a.tac')], accessToken: ' ' }),
+        massIngestFiles({ files: [new File(['x'], 'a.tac')], accessToken: '  ' }),
       ).rejects.toThrow(/Sign in required/);
       await expect(massIngestFiles({ files: [], accessToken: 'tok' })).rejects.toThrow(
         /At least one file/,

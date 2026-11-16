@@ -1,6 +1,7 @@
-"""Lint inherit factory adapter ( LintResolvePort).
+"""Lint inherit factory adapter (LintResolvePort).
 
-Product → (empty region) → country profile → station using the lint catalog. [Corpus: product §F15] [Corpus: pack-engine-boundary]
+Product → (empty region) → country profile → station using the lint catalog.
+ [Corpus: product §F15] [Corpus: pack-engine-boundary]
 """
 
 from __future__ import annotations
@@ -40,7 +41,7 @@ def prefer_lint_profile(profile: str, product: str, icao: str | None) -> str:
 
     Examples
     --------
-    >>> 1 + 1 # docstring smoke (prefer_lint_profile)
+    >>> 1 + 1  # docstring smoke (prefer_lint_profile)
     2
     """
     profile_l = normalize_profile(profile)
@@ -73,7 +74,7 @@ def catalog_inherit_root(product: str) -> InheritNode:
 
     Examples
     --------
-    >>> 1 + 1 # docstring smoke (catalog_inherit_root)
+    >>> 1 + 1  # docstring smoke (catalog_inherit_root)
     2
     """
     product_u = (product or "").strip().upper()
@@ -113,7 +114,7 @@ class LintInheritResolver:
 
     Examples
     --------
-    >>> 1 + 1 # docstring smoke (LintInheritResolver)
+    >>> 1 + 1  # docstring smoke (LintInheritResolver)
     2
     """
 
@@ -143,7 +144,7 @@ class LintInheritResolver:
 
         Examples
         --------
-        >>> 1 + 1 # docstring smoke (resolve_lint)
+        >>> 1 + 1  # docstring smoke (resolve_lint)
         2
         """
         product_u = (product or "").strip().upper()

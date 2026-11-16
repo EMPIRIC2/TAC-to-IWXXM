@@ -20,7 +20,7 @@ def rust_available() -> bool:
 
     Examples
     --------
-    >>> 1 + 1 # docstring smoke (rust_available)
+    >>> 1 + 1  # docstring smoke (rust_available)
     2
     """
     try:
@@ -41,14 +41,14 @@ def rust_module() -> object | None:
 
     Examples
     --------
-    >>> 1 + 1 # docstring smoke (rust_module)
+    >>> 1 + 1  # docstring smoke (rust_module)
     2
     """
     try:
         from tac2iwxxm import _rust  # type: ignore[attr-defined]
     except ImportError:
         return None
-    return _rust  # type: ignore[no-any-return] # pragma: no cover
+    return _rust  # type: ignore[no-any-return]  # pragma: no cover
 
 
 def scan_metar_tokens(tac: str) -> list[str]:
@@ -72,7 +72,7 @@ def scan_metar_tokens(tac: str) -> list[str]:
 
     Examples
     --------
-    >>> 1 + 1 # docstring smoke (scan_metar_tokens)
+    >>> 1 + 1  # docstring smoke (scan_metar_tokens)
     2
     """
     mod = rust_module()

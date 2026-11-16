@@ -1,8 +1,8 @@
 # CA_ECCC — Canada semantic overlay (P1)
 
-> **Profile id**: `CA_ECCC` · **Kind**: semantic · **Priority**: P1 · **Status**: implemented (EV-064–067 / #916, #1039 P1)
-> **Implementation**: [#916](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/916), [#1039](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1039)
-> **Catalog row**: [`catalog.yaml`](../catalog.yaml) · **ADR**: architecture decision
+> **Profile id**: `CA_ECCC` · **Kind**: semantic · **Priority**: P1 · **Status**: implemented (EV-064–067 / #916, #1039 P1)  
+> **Implementation**: [#916](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/916), [#1039](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1039)  
+> **Catalog row**: [`catalog.yaml`](../catalog.yaml) · **ADR**: [](../../../adr/-semantic-vs-exchange-profiles.md)
 
 Environment and Climate Change Canada (ECCC / MSC) national semantic overlay: MANOBS
 surface observations, MANAIR aviation forecasts, and Canadian IWXXM extension schemas.
@@ -16,11 +16,11 @@ errors (MANOBS expects `VIS MISG` / `PRES MISG` — not softened). PROB qualifyi
 
 ## Owns (target)
 
-| Area                  | Scope                                                                                                                                                               |
-| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| TAC parse / normalize | MANOBS METAR/SPECI/**LWIS**/**SAWR**; MANAIR TAF/AIRMET                                                                                                             |
-| IWXXM extensions      | `iwxxm-ca.xsd`, `common-ca.xsd`, `taf-ca.xsd`, `airmet-ca.xsd`, **`metar-speci-ca.xsd`**                                                                            |
-| Products              | METAR, SPECI, TAF, AIRMET (convert+validate); SIGMET (exchange emit EV-076 / validate-first ops EV-074); VAA validate-first TAC (EV-077 / `D-EV074-vaa-waiver-tac`) |
+| Area | Scope |
+|------|-------|
+| TAC parse / normalize | MANOBS METAR/SPECI/**LWIS**/**SAWR**; MANAIR TAF/AIRMET |
+| IWXXM extensions | `iwxxm-ca.xsd`, `common-ca.xsd`, `taf-ca.xsd`, `airmet-ca.xsd`, **`metar-speci-ca.xsd`** |
+| Products | METAR, SPECI, TAF, AIRMET (convert+validate); SIGMET (exchange emit EV-076 / validate-first ops EV-074); VAA validate-first TAC (EV-077 / `D-EV074-vaa-waiver-tac`) |
 
 ## METAR-family national report variants
 
@@ -28,16 +28,16 @@ Canada defines **four** surface-report TAC leads. Only two are ICAO-standard; LW
 defined in MANOBS §11.3; SAWR is a **Canadian national product** modeled in
 `metar-speci-ca.xsd` (EV-098 / #1029: no MANOBS code-form match; cite schema, not MANOBS).
 
-| TAC lead | What it is                                                                            | API `product` | IWXXM root          | Fixture `rule_id` |
-| -------- | ------------------------------------------------------------------------------------- | ------------- | ------------------- | ----------------- |
-| `METAR`  | ICAO routine aerodrome report                                                         | `METAR`       | `iwxxm:METAR`       | `CA.METAR.*`      |
-| `SPECI`  | ICAO special report                                                                   | `SPECI`       | `iwxxm:SPECI`       | `CA.SPECI.*`      |
-| `LWIS`   | **L**imited **W**eather **I**nformation **S**ystem — sparse AUTO obs (MANOBS 8 §11.3) | `METAR`       | **`iwxxm-ca:LWIS`** | `CA.METAR.LWIS`   |
-| `SAWR`   | **S**urface **A**viation **W**eather **R**eport — Canadian surface report product     | `METAR`       | **`iwxxm-ca:SAWR`** | `CA.METAR.SAWR`   |
+| TAC lead | What it is | API `product` | IWXXM root | Fixture `rule_id` |
+|----------|------------|---------------|------------|-------------------|
+| `METAR` | ICAO routine aerodrome report | `METAR` | `iwxxm:METAR` | `CA.METAR.*` |
+| `SPECI` | ICAO special report | `SPECI` | `iwxxm:SPECI` | `CA.SPECI.*` |
+| `LWIS` | **L**imited **W**eather **I**nformation **S**ystem — sparse AUTO obs (MANOBS 8 §11.3) | `METAR` | **`iwxxm-ca:LWIS`** | `CA.METAR.LWIS` |
+| `SAWR` | **S**urface **A**viation **W**eather **R**eport — Canadian surface report product | `METAR` | **`iwxxm-ca:SAWR`** | `CA.METAR.SAWR` |
 
 ### Why LWIS/SAWR use `product=METAR` in the API
 
-Per architecture decision, three layers stay separate:
+Per [](../../../adr/-semantic-vs-exchange-profiles.md), three layers stay separate:
 
 1. **`semanticProfile`** (`CA_ECCC`) — national parse/emit overlay (MANOBS + `*-ca.xsd`).
 2. **`product`** — converter dispatch family (`METAR` \| `SPECI` \| `TAF` \| …). LWIS/SAWR are
@@ -64,13 +64,13 @@ they are aerodrome **surface observation** reports, not because they encode as `
 
 **LWIS vs SAWR vs METAR (behavioural):**
 
-|                       | METAR               | LWIS                                   | SAWR                     |
-| --------------------- | ------------------- | -------------------------------------- | ------------------------ |
-| TAC prefix            | `METAR`             | `LWIS`                                 | `SAWR`                   |
-| Typical content       | Full Annex 3 body   | Wind + temp/dew + altimeter only       | Full body + Canadian RMK |
-| Visibility / clouds   | Yes (when reported) | **Omitted** (`ca_minimal_observation`) | Yes                      |
-| IWXXM namespace       | Core `iwxxm`        | National `iwxxm-ca`                    | National `iwxxm-ca`      |
-| `observingSystemType` | AWOS when `AUTO`    | **LWIS** code-ca href                  | **SAWR** code-ca href    |
+| | METAR | LWIS | SAWR |
+|---|-------|------|------|
+| TAC prefix | `METAR` | `LWIS` | `SAWR` |
+| Typical content | Full Annex 3 body | Wind + temp/dew + altimeter only | Full body + Canadian RMK |
+| Visibility / clouds | Yes (when reported) | **Omitted** (`ca_minimal_observation`) | Yes |
+| IWXXM namespace | Core `iwxxm` | National `iwxxm-ca` | National `iwxxm-ca` |
+| `observingSystemType` | AWOS when `AUTO` | **LWIS** code-ca href | **SAWR** code-ca href |
 
 ### `iwxxm-ca:Addendum` elements (EV-066 / EV-067)
 
@@ -89,12 +89,12 @@ Template: [`_template/code-list-deviations.yaml`](../_template/code-list-deviati
 
 ## Authoritative sources
 
-| Source                                                                                                                                                                                 | Access | Proves                                                          |
-| -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------ | --------------------------------------------------------------- |
-| [MANOBS](https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manobs-surface-observations.html)                                                  | public | Canadian surface observation standards (8th Ed. Amd 2)          |
+| Source | Access | Proves |
+|--------|--------|--------|
+| [MANOBS](https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manobs-surface-observations.html) | public | Canadian surface observation standards (8th Ed. Amd 2) |
 | [MANAIR 8th Ed. Amd 15](https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manair-standards-procedures-aviation-weather-forecasts-8th-ed.html) | public | Canadian aviation forecast standards (defer-to-latest Jul 2026) |
-| [MSC IWXXM-CA XSD](https://dd.weather.gc.ca/today/aviation/iwxxm/schema/)                                                                                                              | public | National extension schema tree                                  |
-| [MSC aviation IWXXM datamart](https://eccc-msc.github.io/open-data/msc-data/aviation/iwxxm/readme_aviation-iwxxm-datamart_fr/)                                                         | public | Operational IWXXM 3.0.0 + CA extensions                         |
+| [MSC IWXXM-CA XSD](https://dd.weather.gc.ca/today/aviation/iwxxm/schema/) | public | National extension schema tree |
+| [MSC aviation IWXXM datamart](https://eccc-msc.github.io/open-data/msc-data/aviation/iwxxm/readme_aviation-iwxxm-datamart_fr/) | public | Operational IWXXM 3.0.0 + CA extensions |
 
 ## Mining notes (transitory)
 
@@ -104,18 +104,18 @@ Template: [`_template/code-list-deviations.yaml`](../_template/code-list-deviati
 ## IWXXM version line
 
 MSC operational practice pins **IWXXM 3.0.0** core (`http://icao.int/iwxxm/3.0`) plus CA
-extensions, independent of the app default **2025-2** SoT line (architecture decision).
+extensions, independent of the app default **2025-2** SoT line ([](../../../adr/-semantic-vs-exchange-profiles.md)).
 
 ## Implementation
 
-| Component          | Location                                                                                         |
-| ------------------ | ------------------------------------------------------------------------------------------------ |
-| Registry           | `packages/tac2iwxxm/src/tac2iwxxm/profile_registry.py`                                           |
-| Parser (TAC leads) | `packages/tac2iwxxm/src/tac2iwxxm/products/metar_speci.py` — `ca_iwxxm_root` IR                  |
-| Emitter            | `packages/tac2iwxxm/src/tac2iwxxm/profiles/ca_eccc.py` — root tag + Addendum                     |
-| Golden fixtures    | `packages/tac2iwxxm/tests/fixtures/profiles/CA_ECCC/`                                            |
-| Validate profile   | `packages/iwxxm-validate` — layered `ca_eccc` stack (EV-068 M3–M5; API `extensions: [IWXXM_CA]`) |
-| Vendor pin         | `vendor/manifest.json` → `iwxxm-ca` 3.0 + IWXXM `3.0.0` core                                     |
+| Component | Location |
+|-----------|----------|
+| Registry | `packages/tac2iwxxm/src/tac2iwxxm/profile_registry.py` |
+| Parser (TAC leads) | `packages/tac2iwxxm/src/tac2iwxxm/products/metar_speci.py` — `ca_iwxxm_root` IR |
+| Emitter | `packages/tac2iwxxm/src/tac2iwxxm/profiles/ca_eccc.py` — root tag + Addendum |
+| Golden fixtures | `packages/tac2iwxxm/tests/fixtures/profiles/CA_ECCC/` |
+| Validate profile | `packages/iwxxm-validate` — layered `ca_eccc` stack (EV-068 M3–M5; API `extensions: [IWXXM_CA]`) |
+| Vendor pin | `vendor/manifest.json` → `iwxxm-ca` 3.0 + IWXXM `3.0.0` core |
 
 ## Gaps
 
@@ -208,7 +208,7 @@ Reusable artifact per [#1044](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/10
 ### EV-078 closeout (#916 P1 audit)
 
 - **Verified:** #916 P1 build AC met on `stage`: EV-064..077 delivered; SIGMET exchange emit (#1061) closed
-- **Waived:** VAA exchange _emit_; datamart `vaa/` HTTP 404 at probe 2026-08-24; follow `D-EV074-vaa-follow`
+- **Waived:** VAA exchange *emit*; datamart `vaa/` HTTP 404 at probe 2026-08-24; follow `D-EV074-vaa-follow`
 - **Residual:** Re-harvest VAAC TAC when 31-day index publishes ≥2 bulletins
 - Docs aligned: `feature-list.md`, `COVERAGE_MATRIX.md`, `test-plan.md` §EV-078
 
@@ -223,7 +223,7 @@ Reusable artifact per [#1044](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/10
 ### EV-075 closeout (#1032 umbrella audit)
 
 - **Verified:** #1032 GitHub close correct: aerodrome exchange output (EV-071..072), COLLECT (EV-073), ops corpus (#1036), translation metadata (#1040) met on `stage`
-- **Waived:** SIGMET/VAA exchange _emit_, which remains validate-first; follow-on [#1061](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1061) (split from #1032)
+- **Waived:** SIGMET/VAA exchange *emit*, which remains validate-first; follow-on [#1061](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1061) (split from #1032)
 - **Waived:** VAA ops IWXXM harvest (datamart `vaa/` absent); **EV-077** Montreal VAAC TAC validate-first instead
 - Docs aligned: `catalog.yaml`, `COVERAGE_MATRIX.md`, `test-plan.md` §EV-075
 
@@ -234,6 +234,6 @@ Reusable artifact per [#1044](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/10
 - LWIS/SAWR/density/icing tac-validate codes beyond EV-071 M1 slice (if not promoted)
 - `#1050` `reportVariant` wire / UI (#1024)
 - SIGMET/VAA TAC convert overlay: out of EV-074; **validate-first ops** EV-074 / #1043
-- SIGMET exchange _emit_: **EV-076 / #1061** closed; VAA exchange emit deferred (`D-EV074-vaa-follow`)
+- SIGMET exchange *emit*: **EV-076 / #1061** closed; VAA exchange emit deferred (`D-EV074-vaa-follow`)
 - `#1033` SIGMET `code-ca` semantics: note-only in EV-074 (do not ship rules)
 - Global app default migration from 2025-2 to 3.0.0

@@ -3,17 +3,17 @@
 # Human stubs: semantic/*.md · exchange/*.md
 schema_version: 2
 cycle: EV-M1-five-remaining
-updated: '2026-10-31'
+updated: "2026-10-31"
 
 priority_legend:
-  P0: 'Baseline — implemented or default exchange overlay (F35)'
-  P1: 'First national rollout targets (F36 spine: US deepen → CA_ECCC)'
-  P2: 'Planned nationals / regional exchange — gaps explicit, not blocking F35'
+  P0: "Baseline — implemented or default exchange overlay (F35)"
+  P1: "First national rollout targets (F36 spine: US deepen → CA_ECCC)"
+  P2: "Planned nationals / regional exchange — gaps explicit, not blocking F35"
 
 access_tier:
-  public: 'Freely fetchable without license purchase'
-  paywall: 'Licensed / store purchase — cite section only in repo'
-  gap: 'Authoritative SoT not yet triaged or URL unstable'
+  public: "Freely fetchable without license purchase"
+  paywall: "Licensed / store purchase — cite section only in repo"
+  gap: "Authoritative SoT not yet triaged or URL unstable"
 
 profiles:
   # --- Semantic (TAC → IWXXM) ---
@@ -27,7 +27,7 @@ profiles:
     implementation:
       package: packages/tac2iwxxm
       registry: profile_registry.py
-      issue: '#914'
+      issue: "#914"
     products: [METAR, SPECI, TAF, SIGMET, AIRMET, VAA, TCA, VONA]
     vendor_pins:
       iwxxm: vendor/manifest.json → iwxxm v2025-2
@@ -64,7 +64,7 @@ profiles:
     implementation:
       package: packages/tac2iwxxm
       module: profiles/iwxxm_us.py
-      deepen_issue: '#919'
+      deepen_issue: "#919"
     products: [METAR, SPECI, TAF, SIGMET, AIRMET, TCA, SWXA, VONA, VAA]
     vendor_pins:
       iwxxm: vendor/manifest.json → iwxxm v2025-2
@@ -100,7 +100,7 @@ profiles:
       - M14 / #1025 `iwxxm_us` → `US_FAA_NWS` alias cutover — deferred 2026-10-31
       - codes.nws.noaa.gov/FMH-1 registry probe timed out 2026-07-14
     acceptance:
-      issue: '#919'
+      issue: "#919"
       status: closed
       cycle: EV-085
       waived:
@@ -163,7 +163,7 @@ profiles:
     status: implemented
     emit_key: ca_eccc
     implementation:
-      issue: '#916'
+      issue: "#916"
       package: packages/tac2iwxxm
       module: profiles/ca_eccc.py
       validate_profile: ca_eccc
@@ -174,34 +174,34 @@ profiles:
     metar_family_variants:
       - tac_lead: METAR
         api_product: METAR
-        iwxxm_root: 'iwxxm:METAR'
+        iwxxm_root: "iwxxm:METAR"
         rule_id_prefix: CA.METAR
       - tac_lead: SPECI
         api_product: SPECI
-        iwxxm_root: 'iwxxm:SPECI'
+        iwxxm_root: "iwxxm:SPECI"
         rule_id_prefix: CA.SPECI
       - tac_lead: LWIS
         api_product: METAR
-        iwxxm_root: 'iwxxm-ca:LWIS'
+        iwxxm_root: "iwxxm-ca:LWIS"
         rule_id: CA.METAR.LWIS
         minimal_observation: true
-        manobs: 'MANOBS 8 Chap 11.3; TC AIM MET 8.5.2'
+        manobs: "MANOBS 8 Chap 11.3; TC AIM MET 8.5.2"
         notes: Limited Weather Information System — minimal obs (wind/temp/dew/altimeter)
       - tac_lead: SAWR
         api_product: METAR
-        iwxxm_root: 'iwxxm-ca:SAWR'
+        iwxxm_root: "iwxxm-ca:SAWR"
         rule_id: CA.METAR.SAWR
         notes: Surface Aviation Weather Report — full aerodrome obs + CA Addendum
     metar_speci_ca_addendum:
       - element: observingSystemType
         rule_ids: [CA.METAR.AUTO, CA.METAR.LWIS, CA.METAR.SAWR]
       - element: densityAltitude
-        tac_remark: 'DENSITY ALT ####FT'
+        tac_remark: "DENSITY ALT ####FT"
       - element: icing
-        tac_remark: 'ICE LGT|TRC|MOD|SEV|HVY'
+        tac_remark: "ICE LGT|TRC|MOD|SEV|HVY"
         rule_id: CA.METAR.RMK.ICING
       - element: processedQuantity
-        tac_remark: 'P/6/7 precip totals (shared IR with iwxxm_us)'
+        tac_remark: "P/6/7 precip totals (shared IR with iwxxm_us)"
       - element: seaLevelPressure
         rule_id: CA.METAR.RMK.SLP_T
       - element: pressureChangeIndicator
@@ -262,51 +262,51 @@ profiles:
           # SIGMET/VAA: no published *-ca XSD — skip ca_xsd as not-applicable (EV-074 / #1043)
       - id: code_ca
         label: Canadian code lists
-        issue: '#1033'
+        issue: "#1033"
       - id: exchange
         label: Exchange packaging checks
         optional: true
-        issue: '#1032'
+        issue: "#1032"
     code_list_policy:
-      issue: '#1034'
+      issue: "#1034"
       status: implemented
       deviations: semantic/CA_ECCC.code-list-deviations.yaml
       notes: >-
         Global→CA deviation matrix (replace/override/extend/none). Fail-closed on
         disallow_global URIs in iwxxm-validate (CODE_LIST_GLOBAL_DISALLOWED).
     exchange_output:
-      issue: '#1032'
+      issue: "#1032"
       status: implemented
-      closeout: 'EV-075 verified closed 2026-08-24 — aerodrome products + COLLECT + ops'
+      closeout: "EV-075 verified closed 2026-08-24 — aerodrome products + COLLECT + ops"
       ev_cycle: EV-071
-      iwxxm_version_pin: '3.0.0'
-      file_naming_pattern: 'A_{TTAAiiCCCCYYGGggBBB}_C_{CCC}_{YYYYMMddhhmmss}.xml'
-      distribution_path_template: 'https://dd.meteo.gc.ca/today/aviation/iwxxm/{product}/{issuer_code}/{HH}'
+      iwxxm_version_pin: "3.0.0"
+      file_naming_pattern: "A_{TTAAiiCCCCYYGGggBBB}_C_{CCC}_{YYYYMMddhhmmss}.xml"
+      distribution_path_template: "https://dd.meteo.gc.ca/today/aviation/iwxxm/{product}/{issuer_code}/{HH}"
       wmo_header_templates:
-        METAR: 'A_LACN'
-        SPECI: 'A_LPCN'
-        TAF: 'A_LTCN'
-        AIRMET: 'A_LWCN'
-        SIGMET: 'A_LSCN' # also A_LYCN (TC), A_LVCN (VA)
-        VAA: 'A_LUCN'
+        METAR: "A_LACN"
+        SPECI: "A_LPCN"
+        TAF: "A_LTCN"
+        AIRMET: "A_LWCN"
+        SIGMET: "A_LSCN"  # also A_LYCN (TC), A_LVCN (VA)
+        VAA: "A_LUCN"
       ev072_slice: [METAR, SPECI, TAF, AIRMET]
       ev076_slice: [SIGMET]
       ev074_validate_first: [VAA]
-      ev074_validate_first_note: 'VAA validate-first via Montreal VAAC TAC (D-EV074-vaa-waiver-tac); datamart vaa/ absent; exchange emit deferred; SIGMET emit EV-076 / #1061'
+      ev074_validate_first_note: "VAA validate-first via Montreal VAAC TAC (D-EV074-vaa-waiver-tac); datamart vaa/ absent; exchange emit deferred; SIGMET emit EV-076 / #1061"
       vaac_tac_harvest_script: scripts/iwxxm/harvest_ca_eccc_vaac_tac.py
       collect_envelope:
-        issue: '#1032'
+        issue: "#1032"
         status: implemented
         ev_cycle: EV-073
       ops_corpus:
-        issue: '#1036'
+        issue: "#1036"
         status: implemented
         ev_cycle: EV-072
-        pin_date: '2026-08-24'
+        pin_date: "2026-08-24"
         harvest_script: scripts/iwxxm/harvest_ca_eccc_ops.py
         manifest: packages/tac2iwxxm/tests/fixtures/profiles/CA_ECCC/ops_manifest.json
       translation_metadata:
-        issue: '#1040'
+        issue: "#1040"
         required_when_profile: true
         config_keys:
           - translation_centre_id
@@ -318,7 +318,7 @@ profiles:
     status: implemented
     emit_key: au_bom
     implementation:
-      issue: '#917'
+      issue: "#917"
       package: packages/tac2iwxxm
       cycle: EV-087 / EV-profile-validate-decode-deepen
     products: [TAF, METAR, SPECI, VAA, SIGMET, TCA, SWXA]
@@ -357,7 +357,7 @@ profiles:
     status: implemented
     emit_key: nz_caa_met
     implementation:
-      issue: '#918'
+      issue: "#918"
       package: packages/tac2iwxxm
       cycle: EV-087 / EV-profile-validate-decode-deepen
     products: [TAF, METAR, SPECI, VAA, VONA]
@@ -386,8 +386,8 @@ profiles:
     locale: [en]
     issuing_body: UK Met Office / CAA
     implementation:
-      issue: '#1098'
-      prior_issue: '#920'
+      issue: "#1098"
+      prior_issue: "#920"
       package: packages/tac2iwxxm
       cycle: EV-094
       path: thin
@@ -428,8 +428,8 @@ profiles:
     locale: [pt, en]
     issuing_body: DECEA / ANAC (Brazil)
     implementation:
-      issue: '#1098'
-      prior_issue: '#920'
+      issue: "#1098"
+      prior_issue: "#920"
       package: packages/tac2iwxxm
       cycle: EV-094
       path: thin
@@ -462,7 +462,7 @@ profiles:
       - No published BR IWXXM extension XSD (core-only emit)
       - GAMET TAC fixtures parse-only — no IWXXM emit (D-EV094-gamet)
       - Attributed real SPECI / Brazilian FIR SIGMET / AIRMET corpora pending (synthetic_ev089)
-      - 'SAM / CAR_SAM exchange packaging deepen stays on #921 (note only here)'
+      - "SAM / CAR_SAM exchange packaging deepen stays on #921 (note only here)"
   - id: KR_KMA
     kind: semantic
     priority: P2
@@ -471,8 +471,8 @@ profiles:
     locale: [ko, en]
     issuing_body: Korea Meteorological Administration (KMA)
     implementation:
-      issue: '#1098'
-      prior_issue: '#920'
+      issue: "#1098"
+      prior_issue: "#920"
       package: packages/tac2iwxxm
       cycle: EV-094
       path: compat
@@ -514,8 +514,8 @@ profiles:
     locale: [ja, en]
     issuing_body: Japan Meteorological Agency (JMA) / Tokyo VAAC
     implementation:
-      issue: '#1098'
-      prior_issue: '#920'
+      issue: "#1098"
+      prior_issue: "#920"
       package: packages/tac2iwxxm
       cycle: EV-094
       path: compat
@@ -556,8 +556,8 @@ profiles:
     locale: [en]
     issuing_body: India Meteorological Department (IMD)
     implementation:
-      issue: '#1098'
-      prior_issue: '#920'
+      issue: "#1098"
+      prior_issue: "#920"
       package: packages/tac2iwxxm
       cycle: EV-094
       path: compat
@@ -588,16 +588,16 @@ profiles:
     gaps:
       - No published IN IWXXM extension XSD (IMDIMET unpublished — do not invent)
       - AIP GEN 3.5 durable URL still gap (archive snapshot cited; not durable)
-      - 'No AIRMET/GAMET in v1 (AIP: not issued)'
+      - "No AIRMET/GAMET in v1 (AIP: not issued)"
       - SPECI / FIR SIGMET attributed corpora still pending (synthetic_ev089)
     lint_profile:
       id: in_imd
       aliases: [IN_IMD]
       products: [TAF]
-      intent: 'Info awareness when TX/TN omitted (national practice); not a hard error waive'
+      intent: "Info awareness when TX/TN omitted (national practice); not a hard error waive"
       registry_code: IN_TAF_TX_TN_OMITTED
       cycle: EV-094
-      issue: '#1098'
+      issue: "#1098"
 
   - id: HK_HKO
     kind: semantic
@@ -607,8 +607,8 @@ profiles:
     locale: [en, zh]
     issuing_body: Hong Kong Observatory (HKO)
     implementation:
-      issue: '#1098'
-      prior_issue: '#920'
+      issue: "#1098"
+      prior_issue: "#920"
       package: packages/tac2iwxxm
       cycle: EV-094
       path: compat
@@ -693,7 +693,7 @@ profiles:
     priority: P0
     status: implemented
     implementation:
-      issue: '#921'
+      issue: "#921"
       note: EV-065 — registry + COLLECT packaging on convert-bulletin; fixtures under dissemination/tests/fixtures/profiles/GLOBAL_AFS
     products: [METAR, SPECI, TAF, SIGMET, AIRMET, VAA, TCA]
     sources:
@@ -721,7 +721,7 @@ profiles:
     priority: P2
     status: in_progress
     implementation:
-      issue: '#1222'
+      issue: "#1222"
       note: EV-1222 — COLLECT shell via OPMET Guidelines (ROBEX HB §6.6.1); default bulletinIdentifier A_SACI31ZBBB.xml from ROBEX HB §6.4.2 / App A SACI31 example
     sources:
       - url: https://www.icao.int/sites/default/files/METP/Documents/Guidlines-for-the-Implementation-of-OPMET-Data-Exchange-using-IWXXM_5th-Edition.pdf
@@ -754,7 +754,7 @@ profiles:
     priority: P2
     status: stub
     implementation:
-      issue: '#921'
+      issue: "#921"
       note: EV-086 P0 — registry + COLLECT baseline; EV-090 mining promote (OPMET Guidelines + EUR notes); EUR Doc 018 durable edition pin added
     sources:
       - url: https://www.icao.int/sites/default/files/METP/Documents/Guidlines-for-the-Implementation-of-OPMET-Data-Exchange-using-IWXXM_5th-Edition.pdf
@@ -777,7 +777,7 @@ profiles:
     priority: P2
     status: stub
     implementation:
-      issue: '#921'
+      issue: "#921"
       note: EV-086 P0 — registry + COLLECT baseline; EV-090 shared baseline plus AFI IWXXM regional guideline pin
     sources:
       - url: https://www.icao.int/sites/default/files/METP/Documents/Guidlines-for-the-Implementation-of-OPMET-Data-Exchange-using-IWXXM_5th-Edition.pdf
@@ -799,7 +799,7 @@ profiles:
     priority: P2
     status: stub
     implementation:
-      issue: '#921'
+      issue: "#921"
       note: EV-086 P0 — registry + COLLECT baseline; EV-090 promotes shared OPMET Guidelines baseline; CAR/SAM-specific handbook still TBD
     sources:
       - url: https://www.icao.int/sites/default/files/METP/Documents/Guidlines-for-the-Implementation-of-OPMET-Data-Exchange-using-IWXXM_5th-Edition.pdf

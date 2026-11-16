@@ -1,4 +1,4 @@
-# EV-080 / #1077 — coverage surface inventory (@ 100%)
+# EV-080 #1077 — coverage surface inventory (@ 100%)
 # Corpus: [Corpus: tests] [Corpus: tech-spec]
 #
 # target_floor: universal minimum after EV-080. measured_* updated M3 (2026-08-28).
@@ -187,9 +187,9 @@ surfaces:
 
 intentional_non_surfaces:
   - id: vendor
-    reason: "Read-only third-party schemas ( approved omit)"
+    reason: "Read-only third-party schemas (approved omit)"
   - id: iwxxm_xsd_generated
-    reason: " generated trees ( approved omit)"
+    reason: " generated trees (approved omit)"
   - id: bugs
     reason: "tests/bugs runs with --no-cov"
   - id: e2e-playwright

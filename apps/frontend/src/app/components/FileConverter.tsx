@@ -710,7 +710,7 @@ function activeMetarFamilyVariants(
 
 /**
  * Operator workbench: TAC queue, convert, validate, and dissemination entry points.
-
+ *
  * @param props.accessToken - Bearer token for authenticated API calls (empty for guest)
  * @param props.userEmail - Display email in the header
  * @param props.isGuest - When true, guest-mode limits apply
@@ -1454,7 +1454,7 @@ export function FileConverter({
         .filter(Boolean)
         .join('\n');
 
-      // Auto-switch when paste looks like bulletin / COLLECT (UJ-025 )
+      // Auto-switch when paste looks like bulletin COLLECT (UJ-025)
       let mode = inputMode;
       if (mode === 'tac' && looksLikeAhlBulletin(tacForDetect)) {
         mode = 'ahl_bulletin';
@@ -2398,7 +2398,7 @@ export function FileConverter({
 
   /**
    * Show one converted file on the IWXXM tab (Downloads is manage-only).
-
+   *
    * @param file - Converted batch entry to preview
    */
   const focusConvertedForPreview = (file: ConvertedFile) => {

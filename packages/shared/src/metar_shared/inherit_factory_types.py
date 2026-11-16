@@ -1,4 +1,7 @@
-"""Types and Protocol ports for inherit factory. [Corpus: pack-engine-boundary]"""
+"""Types and Protocol ports for inherit factory.
+
+[Corpus: pack-engine-boundary]
+"""
 
 from __future__ import annotations
 

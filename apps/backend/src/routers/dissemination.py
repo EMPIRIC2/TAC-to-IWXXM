@@ -58,7 +58,7 @@ async def dissemination_preflight(
 
     Examples
     --------
-    >>> 1 + 1 # docstring smoke (dissemination_preflight)
+    >>> 1 + 1  # docstring smoke (dissemination_preflight)
     2
 
     Parameters
@@ -159,7 +159,7 @@ async def dissemination_send(
 
     Examples
     --------
-    >>> 1 + 1 # docstring smoke (dissemination_send)
+    >>> 1 + 1  # docstring smoke (dissemination_send)
     2
 
     Parameters

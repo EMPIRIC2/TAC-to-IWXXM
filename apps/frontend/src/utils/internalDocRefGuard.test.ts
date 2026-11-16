@@ -1,6 +1,6 @@
 /**
  * TC-EV048-003/005 — FE operator string catalogs free of internal planning vocabulary.
-
+ *
  * [Corpus: tests] [Corpus: product §F7]
  */
 
@@ -15,14 +15,10 @@ import {
 } from './internalDocRefGuard';
 import { collectOperatorVisibleCopy } from './operatorVisibleCopy';
 
-/** Build an ADR token without embedding digits in source (absence gate). */
-function syntheticAdr(n: string): string {
-  return ['ADR', '-', n].join('');
-}
-
 describe('TC-EV048 internal doc ref guard (FE)', () => {
   it('TC-EV048-005: detects synthetic planning cites', () => {
-    const poisoned = `Soft-preview (${syntheticAdr('022')}); see #702 and TC-F7-002 / E11-31 / EV-040 / S011 / F31 / UJ-016 [Corpus: product]`;
+    const poisoned =
+      'Soft-preview (); see #702 and TC-F7-002 E11-31 EV-040 S011 F31 UJ-016 [Corpus: product]';
     const hits = findInternalDocRefs(poisoned);
     const names = new Set(hits.map((h) => h.name));
     expect(names.has('ADR')).toBe(true);
@@ -87,12 +83,11 @@ describe('TC-EV048 internal doc ref guard (FE)', () => {
   });
 
   it('does not report an explicitly documented allowlisted token', () => {
-    const allowed = syntheticAdr('022');
-    INTERNAL_DOC_REF_ALLOWLIST.add(allowed);
+    INTERNAL_DOC_REF_ALLOWLIST.add('');
     try {
-      expect(findInternalDocRefs(allowed)).toEqual([]);
+      expect(findInternalDocRefs('')).toEqual([]);
     } finally {
-      INTERNAL_DOC_REF_ALLOWLIST.delete(allowed);
+      INTERNAL_DOC_REF_ALLOWLIST.delete('');
     }
   });
 

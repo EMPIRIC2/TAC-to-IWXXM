@@ -51,7 +51,7 @@ def test_policy_severity_override_and_filter(tmp_path: Path, monkeypatch: pytest
                 "product: metar",
                 "select: [MISSING_CCCC]",
                 "severity:",
-                " MISSING_CCCC: warning",
+                "  MISSING_CCCC: warning",
             ]
         ),
         encoding="utf-8",

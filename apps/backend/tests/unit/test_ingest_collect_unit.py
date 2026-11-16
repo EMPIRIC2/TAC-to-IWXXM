@@ -1,4 +1,4 @@
-"""Unit tests for POST /api/v1/ingest-collect placeholder ."""
+"""Unit tests for POST /api/v1/ingest-collect placeholder ()."""
 
 from __future__ import annotations
 
@@ -30,7 +30,7 @@ def test_ingest_collect_requires_multipart(client: TestClient) -> None:
 def test_ingest_collect_empty_payload_400(client: TestClient) -> None:
     response = client.post(
         "/api/v1/ingest-collect",
-        files={"manual_text": (None, " "), "profile": (None, "annex3")},
+        files={"manual_text": (None, "   "), "profile": (None, "annex3")},
     )
     assert response.status_code == 400
     assert response.json()["detail"]["code"] == "empty_collect"

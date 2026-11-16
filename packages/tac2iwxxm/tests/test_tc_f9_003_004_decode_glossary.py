@@ -110,7 +110,7 @@ def test_tc_f9_004_yaml_override_wins(tmp_path: Path, monkeypatch: pytest.Monkey
 
     override = tmp_path / "decode_glossary.yaml"
     override.write_text(
-        "tokens:\n OBSC: totally hidden for test\n ZZTEST: custom override only\n",
+        "tokens:\n  OBSC: totally hidden for test\n  ZZTEST: custom override only\n",
         encoding="utf-8",
     )
     monkeypatch.setenv("TAC2IWXXM_DECODE_GLOSSARY_PATH", str(override))

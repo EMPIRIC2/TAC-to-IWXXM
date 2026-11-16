@@ -1,6 +1,6 @@
 /**
  * H4–H5 / T2 — Playwright smokes for UJ-072 ConversionProfile editor (EV-933 / #933).
-
+ *
  * Spec: docs/test-plan.md TC-EV933-006; docs/user-journeys.md UJ-072.
  * Auth is seeded via localStorage + stubbed profile APIs so CI does not require live JWT.
  * Live H4–H5 against stage FE is deferred until this PR lands on stage (T3.2).
@@ -388,7 +388,7 @@ test.describe('UJ-072: ConversionProfile editor (EV-933 / TC-EV933-006)', () => 
   test('guest: Conversion profiles prompts for sign-in', async ({ page }) => {
     test.skip(
       true,
-      'Retired — Conversion profiles shell nav removed (EV-RPC / TC-EVPVD-001)',
+      'Retired — Conversion profiles shell nav removed (EV-RPC TC-EVPVD-001)',
     );
     await openProfiles(page);
     await expect(page.getByTestId('conversion-profiles-sign-in')).toBeVisible();

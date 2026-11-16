@@ -7,9 +7,12 @@ import reactHooks from 'eslint-plugin-react-hooks';
 import reactRefresh from 'eslint-plugin-react-refresh';
 import jsdoc from 'eslint-plugin-jsdoc';
 
-/** — FE paths grandfathered for max-lines / complexity. */
+/** — FE paths grandfathered for max-lines complexity. */
 // Config lives under config/tooling/; allowlists are repo-root relative.
-const _repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
+const _repoRoot = path.resolve(
+  path.dirname(fileURLToPath(import.meta.url)),
+  '../..',
+);
 const _allowlistPath = path.join(
   _repoRoot,
   'scripts/ci/policy/file-budget-allowlist.txt',
@@ -87,7 +90,7 @@ export default tseslint.config(
       ...sharedRules,
       ...reactHooks.configs.recommended.rules,
       'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
-      // file budget + complexity (allowlisted / ui overridden below)
+      // file budget + complexity (allowlisted ui overridden below)
       'max-lines': ['error', { max: 500, skipBlankLines: false, skipComments: false }],
       complexity: ['error', 10],
       // EV-adr048-doc-linters (TC-EVDOC-009) — presence via eslint-plugin-jsdoc.
@@ -138,7 +141,7 @@ export default tseslint.config(
       complexity: 'off',
     },
   },
-  // — grandfather oversize / high-complexity FE modules
+  // — grandfather oversize high-complexity FE modules
   // Omit when allowlists are missing (empty files[] is invalid in flat config).
   ...(_feBudgetOverrides.length > 0
     ? [

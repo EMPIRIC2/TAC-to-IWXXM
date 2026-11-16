@@ -75,7 +75,7 @@ def normalize_transform_steps(raw: object) -> list[TransformStep]:
 
     Examples
     --------
-    >>> 1 + 1 # docstring smoke (normalize_transform_steps)
+    >>> 1 + 1  # docstring smoke (normalize_transform_steps)
     2
 
     Parameters
@@ -150,7 +150,7 @@ def apply_dissemination_transforms(
 
     Examples
     --------
-    >>> 1 + 1 # docstring smoke (apply_dissemination_transforms)
+    >>> 1 + 1  # docstring smoke (apply_dissemination_transforms)
     2
     """
     steps = normalize_transform_steps(transforms)

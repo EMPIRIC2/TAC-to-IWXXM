@@ -27,7 +27,7 @@ import lxml.etree as _lxml_etree
 
 etree: Any = _lxml_etree
 
-# Dynamic IWXXM/GML attributes omitted from Quality-metrics equality ( parity).
+# Dynamic IWXXM/GML attributes omitted from Quality-metrics equality (parity).
 VOLATILE_ATTRS: frozenset[str] = frozenset(
     {
         "id",
@@ -179,7 +179,7 @@ def to_canonical_xml(xml_content: str) -> str:
 
     Examples
     --------
-    >>> 1 + 1 # docstring smoke (to_canonical_xml)
+    >>> 1 + 1  # docstring smoke (to_canonical_xml)
     2
     """
     try:
@@ -209,7 +209,7 @@ def canonical_xml_equal(left: str, right: str) -> bool:
 
     Examples
     --------
-    >>> 1 + 1 # docstring smoke (canonical_xml_equal)
+    >>> 1 + 1  # docstring smoke (canonical_xml_equal)
     2
     """
     return to_canonical_xml(left) == to_canonical_xml(right)

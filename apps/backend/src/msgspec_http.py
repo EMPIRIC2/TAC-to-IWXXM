@@ -45,7 +45,7 @@ def msgspec_json_response(
 
     Examples
     --------
-    >>> 1 + 1 # docstring smoke (msgspec_json_response)
+    >>> 1 + 1  # docstring smoke (msgspec_json_response)
     2
     """
     if isinstance(obj, BaseModel):

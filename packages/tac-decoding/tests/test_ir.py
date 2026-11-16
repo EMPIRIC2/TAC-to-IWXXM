@@ -1,4 +1,7 @@
-"""Pack IR projection from a match. [Corpus: tests]"""
+"""Pack IR projection from a match.
+
+[Corpus: tests]
+"""
 
 from __future__ import annotations
 

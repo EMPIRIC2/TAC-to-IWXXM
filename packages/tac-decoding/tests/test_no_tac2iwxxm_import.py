@@ -1,4 +1,7 @@
-"""T1.5 — tac-decoding does not import tac2iwxxm. [Corpus: tests]"""
+"""T1.5 — tac-decoding does not import tac2iwxxm.
+
+[Corpus: tests]
+"""
 
 from __future__ import annotations
 

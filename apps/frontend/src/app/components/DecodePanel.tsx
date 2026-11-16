@@ -61,7 +61,7 @@ export interface DecodePanelProps {
 
 /**
  * Renders ordered decode segments and explicit residuals.
-
+ *
  * @param props.segments - Annotated TAC spans
  * @param props.residuals - Undecoded spans (G4)
  * @param props.summary - Optional plain-language report summary (F9)

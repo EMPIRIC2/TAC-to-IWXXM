@@ -1,4 +1,4 @@
-"""Secret redaction for dissemination errors and logs ."""
+"""Secret redaction for dissemination errors and logs ()."""
 
 from __future__ import annotations
 
@@ -25,7 +25,7 @@ def redact_uri(uri: str) -> str:
 
     Examples
     --------
-    >>> 1 + 1 # docstring smoke (redact_uri)
+    >>> 1 + 1  # docstring smoke (redact_uri)
     2
     """
     redacted = _URI_USERINFO.sub(r"\1***\3", uri)
@@ -49,7 +49,7 @@ def redact_secrets(text: str) -> str:
 
     Examples
     --------
-    >>> 1 + 1 # docstring smoke (redact_secrets)
+    >>> 1 + 1  # docstring smoke (redact_secrets)
     2
 
     Parameters

@@ -106,7 +106,7 @@ def set_bulletin_splitter(splitter: Callable[[str, str], object] | None) -> None
 
     Examples
     --------
-    >>> 1 + 1 # docstring smoke (set_bulletin_splitter)
+    >>> 1 + 1  # docstring smoke (set_bulletin_splitter)
     2
     """
     global _bulletin_splitter
@@ -335,7 +335,7 @@ def decode_single_report(tac: str, *, product: str) -> DecodeResult:
 
     Examples
     --------
-    >>> 1 + 1 # docstring smoke (decode_single_report)
+    >>> 1 + 1  # docstring smoke (decode_single_report)
     2
     """
     return _decode_single_report(tac, product=product)
@@ -360,7 +360,7 @@ def shift_decode(result: DecodeResult, offset: int) -> DecodeResult:
 
     Examples
     --------
-    >>> 1 + 1 # docstring smoke (shift_decode)
+    >>> 1 + 1  # docstring smoke (shift_decode)
     2
     """
     return _shift_decode(result, offset)
@@ -418,7 +418,7 @@ def decode_tac(tac: str, *, product: str) -> DecodeResult:
 
     Examples
     --------
-    >>> 1 + 1 # docstring smoke (decode_tac)
+    >>> 1 + 1  # docstring smoke (decode_tac)
     2
     """
     product_u = product.upper()

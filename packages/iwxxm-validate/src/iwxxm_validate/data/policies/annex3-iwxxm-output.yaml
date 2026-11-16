@@ -4,7 +4,7 @@
 schema_version: 1
 id: annex3-iwxxm-output
 lifecycle: activated
-pin: '2025-2'
+pin: "2025-2"
 extends: []
 select: []
 ignore: []

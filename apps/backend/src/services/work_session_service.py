@@ -236,7 +236,7 @@ class WorkSessionService:
 
         Examples
         --------
-        >>> 1 + 1 # docstring smoke (list_sessions)
+        >>> 1 + 1  # docstring smoke (list_sessions)
         2
         """
         table = _table()
@@ -272,7 +272,7 @@ class WorkSessionService:
 
         Examples
         --------
-        >>> 1 + 1 # docstring smoke (get_session)
+        >>> 1 + 1  # docstring smoke (get_session)
         2
 
         Parameters
@@ -310,7 +310,7 @@ class WorkSessionService:
 
         Examples
         --------
-        >>> 1 + 1 # docstring smoke (create_session)
+        >>> 1 + 1  # docstring smoke (create_session)
         2
 
         Parameters
@@ -347,7 +347,7 @@ class WorkSessionService:
 
         Examples
         --------
-        >>> 1 + 1 # docstring smoke (update_session)
+        >>> 1 + 1  # docstring smoke (update_session)
         2
 
         Parameters
@@ -391,7 +391,7 @@ class WorkSessionService:
 
         Examples
         --------
-        >>> 1 + 1 # docstring smoke (soft_delete)
+        >>> 1 + 1  # docstring smoke (soft_delete)
         2
 
         Parameters
@@ -412,7 +412,7 @@ class WorkSessionService:
 
         Examples
         --------
-        >>> 1 + 1 # docstring smoke (restore_session)
+        >>> 1 + 1  # docstring smoke (restore_session)
         2
 
         Parameters

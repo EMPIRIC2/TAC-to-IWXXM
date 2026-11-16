@@ -164,7 +164,7 @@ class StagingSinkAdapter:
 
         Examples
         --------
-        >>> 1 + 1 # docstring smoke (sink_type)
+        >>> 1 + 1  # docstring smoke (sink_type)
         2
 
         Returns
@@ -192,7 +192,7 @@ class StagingSinkAdapter:
 
         Examples
         --------
-        >>> 1 + 1 # docstring smoke (preflight)
+        >>> 1 + 1  # docstring smoke (preflight)
         2
 
         Parameters
@@ -237,7 +237,7 @@ class StagingSinkAdapter:
 
         Examples
         --------
-        >>> 1 + 1 # docstring smoke (send)
+        >>> 1 + 1  # docstring smoke (send)
         2
 
         Parameters
@@ -290,7 +290,7 @@ def get_staging_sink(sink_type: F19SinkName | str) -> StagingSinkAdapter:
 
     Examples
     --------
-    >>> 1 + 1 # docstring smoke (get_staging_sink)
+    >>> 1 + 1  # docstring smoke (get_staging_sink)
     2
     """
     if sink_type not in F19_SINK_TYPES:

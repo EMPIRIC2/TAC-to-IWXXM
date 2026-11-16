@@ -261,7 +261,7 @@ class ConvertRequestLoggingMiddleware:
 
             Examples
             --------
-            >>> 1 + 1 # docstring smoke (send_wrapper)
+            >>> 1 + 1  # docstring smoke (send_wrapper)
             2
 
             Parameters
@@ -336,7 +336,7 @@ async def add_translation_centre_headers(
 
     Examples
     --------
-    >>> 1 + 1 # docstring smoke (add_translation_centre_headers)
+    >>> 1 + 1  # docstring smoke (add_translation_centre_headers)
     2
 
     Parameters
@@ -426,7 +426,7 @@ def custom_openapi() -> dict[str, Any]:
 
     Examples
     --------
-    >>> 1 + 1 # docstring smoke (custom_openapi)
+    >>> 1 + 1  # docstring smoke (custom_openapi)
     2
     """
     if app.openapi_schema:
@@ -534,7 +534,7 @@ try:
 except Exception as e:  # pragma: no cover - defensive
     logger.error(f"DEBUG: Failed to include TD-3b routers: {e}", exc_info=True)
 
-# F31 / amend: FE-direct Supabase Auth; packages/auth is JWKS + proxy only.
+# F31 amend: FE-direct Supabase Auth; packages/auth is JWKS + proxy only.
 # Ensure SUPABASE_URL is available for JWKS verification on work-sessions.
 try:
     from metar_shared.supabase_env import get_supabase_url

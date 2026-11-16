@@ -2,7 +2,7 @@
 
 > **Source**: generated from tac_validate.issue_registry + PROVENANCE_MAP  
 > **Generated**: 2026-11-13 via `make catalog-regen`  
-> **Refs**: F15 / EV-011 / F20 / EV-015 / F23 / EV-019 / EV-040
+> **ADR**: F15 EV-011 F20 EV-015 F23 EV-019 EV-040
 
 Public `code` values are stable. Default severities may tighten in minor releases.
 Do not invent ad-hoc `severity=` literals in rule bodies — import from the registry.

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # S019 / EV-014 T3.3 — CI Compose hook for F17 wis2box harness (E14-04).
-
+#
 # Profile wis2box in docker-compose.yml. Brings up the harness,
 # probes MQTT + HTTP, optionally runs wis2* pytest (T3.4 fills publish cases).
 set -euo pipefail

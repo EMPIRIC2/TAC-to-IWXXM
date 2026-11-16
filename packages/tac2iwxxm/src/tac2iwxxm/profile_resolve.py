@@ -270,7 +270,7 @@ def resolve_validation_policies(
 
     Examples
     --------
-    >>> 1 + 1 # docstring smoke (resolve_validation_policies)
+    >>> 1 + 1  # docstring smoke (resolve_validation_policies)
     2
     """
     resolved = resolve_semantic_profile(profile)

@@ -315,8 +315,8 @@ test-schemathesis:
 
 # F34 / EV-059 / #874 — Mutation testing (TC-F34-003..005). Nightly/manual only.
 # Usage: make test-mutation-python TARGET=poc-shared-env
-# make test-mutation-js TARGET=frontend
-# make test-mutation-poc # narrow Python + docs note
+#        make test-mutation-js TARGET=frontend
+#        make test-mutation-poc   # narrow Python + docs note
 # Knobs: MUTATION_TIMEOUT_SEC (default 1200), GREMLIN_EXTRA_ARGS
 test-mutation-python:
 	@test -n "$(TARGET)" || (echo "Set TARGET=backend|worker|auth|shared|tac-validate|tac2iwxxm|iwxxm-validate|dissemination|poc-shared-env" >&2; exit 2)
@@ -353,7 +353,7 @@ verify-supabase-to-do-migrate:
 		--target-url "$${MIGRATE_TARGET_DATABASE_URL:-$${DATABASE_URL}}"
 
 # F30 / TC-EV031-001 / T5.3 — SQL export dry-run (default) or apply cut.
-# MODE=dry-run|apply VERIFY=1 to run T5.2 verify after apply.
+# MODE=dry-run|apply  VERIFY=1 to run T5.2 verify after apply.
 # Target MUST be DO Postgres (script refuses same-DB source/target).
 migrate-supabase-to-do:
 	$(UV) run python scripts/ops/run_supabase_to_do_migrate.py \
@@ -408,7 +408,7 @@ test-unit-tac-decoding:
 convert-allowlist:
 	$(UV) run python scripts/tac2iwxxm/compose_convert_allowlist.py $(ARGS)
 
-# Build optional PyO3 extension (requires rustc + maturin). / T4.3.
+# Build optional PyO3 extension (requires rustc + maturin). T4.3.
 build-tac2iwxxm-native:
 	cd packages/tac2iwxxm && $(UV) run maturin develop --manifest-path rust/Cargo.toml --uv
 
@@ -484,7 +484,7 @@ sbom-check:
 
 # EV-1150 — bump F12–F14 packages to CalVer (YYYY.MM.DD[.N][.devN])
 # Usage: make pypi-calver-bump ARGS='--all'
-# make pypi-calver-bump ARGS='--package tac-validate --dev 1'
+#        make pypi-calver-bump ARGS='--package tac-validate --dev 1'
 pypi-calver-bump:
 	$(UV) run python scripts/pypi/bump_calver.py $(ARGS)
 
@@ -545,7 +545,7 @@ test-va-sigmet-quality:
 	bash scripts/ci/run_va_sigmet_quality.sh
 
 # EV-029 / E29-T4=2 — TC SIGMET quality pack (M7 / TC-EV029-004 + F23 deepen / #738)
-# EV-032 / E32-T7 — includes #835 A6-2-TC equality + catalog wmoPass (long pack).
+# EV-032 E32-T7 — includes #835 A6-2-TC equality + catalog wmoPass (long pack).
 # Fast canary: scripts/ci/run_ev032_a6_2_tc_canary.sh (path-filtered pre-commit).
 test-tc-sigmet-quality:
 	bash scripts/ci/run_tc_sigmet_quality.sh
@@ -554,7 +554,7 @@ test-tc-sigmet-quality:
 test-ev032-a6-2-canary:
 	bash scripts/ci/run_ev032_a6_2_tc_canary.sh
 
-# EV-032 / E32-T7 / T2.8 — path-filtered pre-commit canary (VONA + product enum)
+# EV-032 E32-T7 T2.8 — path-filtered pre-commit canary (VONA + product enum)
 test-ev032-vona-canary:
 	bash scripts/ci/run_ev032_vona_canary.sh
 
@@ -877,7 +877,7 @@ test-live-bulletin:
 	$(UV) run pytest tests/live/test_tc_live_f6_030_bulletin.py -m live_api -v --tb=short --no-cov
 
 # TC-LIVE-FEEDS — NOAA AWC + MET Norway, plus KNMI when KNMI_OPEN_DATA_API_KEY is in .env.
-# Manual only . Not part of test-live.
+# Manual only (). Not part of test-live.
 test-live-feeds:
 	@$(load_dotenv); \
 	$(UV) run pytest tests/live/test_national_feeds.py -m live_api -v --tb=short --no-cov
@@ -1030,7 +1030,7 @@ doks-worker-poller-preflight:
 doks-worker-crashloop-check:
 	bash scripts/deploy/check_worker_crashloop.sh
 
-# --- Supabase local stack (repo root supabase) ---
+# --- Supabase local stack (repo root supabase/) ---
 
 supabase-start:
 	bash scripts/supabase/local-dev.sh start

@@ -178,7 +178,7 @@ def main(argv: list[str] | None = None) -> int:
     print("FAIL: pytest warnings-as-errors policy violations:", file=sys.stderr)
     for finding in findings:
         print(
-            f" {_rel(finding.path)}: [{finding.code}] {finding.message}",
+            f"  {_rel(finding.path)}: [{finding.code}] {finding.message}",
             file=sys.stderr,
         )
     return 1

@@ -2,7 +2,7 @@
 """Fail if declared direct dependencies use range operators (^ ~ >= > *) except allowlist.
 
 Scans:
-  - **/package.json dependencies + devDependencies + optionalDependencies
+  - **/package.json  dependencies + devDependencies + optionalDependencies
   - **/pyproject.toml project.dependencies + project.optional-dependencies
     + dependency-groups (PEP 735 / uv)
 
@@ -10,7 +10,7 @@ Workspace path deps listed under ``tool.uv.sources`` with ``workspace = true``
 may be bare names (no version). Allowlist:
 ``scripts/ci/policy/exact-pins-allowlist.txt`` (one path:name or glob per line;
 ``#`` comments).
-[Corpus: ] [Corpus: deps] [Corpus: tech-spec] TR-E04
+ [Corpus: deps] [Corpus: tech-spec] TR-E04
 """
 
 from __future__ import annotations
@@ -169,7 +169,7 @@ def main() -> int:
     if violations:
         print("exact-pin check FAILED:", file=sys.stderr)
         for v in violations:
-            print(f" {v}", file=sys.stderr)
+            print(f"  {v}", file=sys.stderr)
         print(
             "Use exact versions (== / no ^~>=). Allowlist: scripts/ci/policy/exact-pins-allowlist.txt",
             file=sys.stderr,

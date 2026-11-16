@@ -96,7 +96,7 @@ def _output_validation_orch_layers() -> list[ValidationLayer]:
 
     Examples
     --------
-    >>> 1 + 1 # docstring smoke (_output_validation_orch_layers)
+    >>> 1 + 1  # docstring smoke (_output_validation_orch_layers)
     2
 
     Returns
@@ -119,7 +119,7 @@ def _initial_layers_passed(product: str | None) -> list[str]:
 
     Examples
     --------
-    >>> 1 + 1 # docstring smoke (_initial_layers_passed)
+    >>> 1 + 1  # docstring smoke (_initial_layers_passed)
     2
 
     Parameters
@@ -421,7 +421,7 @@ class _ConvertAccumulator:
 
         Examples
         --------
-        >>> 1 + 1 # docstring smoke (add_issue)
+        >>> 1 + 1  # docstring smoke (add_issue)
         2
         """
         self.issues.append(
@@ -442,7 +442,7 @@ class _ConvertAccumulator:
 
         Examples
         --------
-        >>> 1 + 1 # docstring smoke (absorb_convert_issues)
+        >>> 1 + 1  # docstring smoke (absorb_convert_issues)
         2
 
         Parameters
@@ -486,7 +486,7 @@ class _ConvertAccumulator:
 
         Examples
         --------
-        >>> 1 + 1 # docstring smoke (absorb_soft_preview)
+        >>> 1 + 1  # docstring smoke (absorb_soft_preview)
         2
 
         Parameters
@@ -525,11 +525,11 @@ class _ConvertAccumulator:
         base_offset: int = 0,
     ) -> None:
         """
-        Mark soft-preview Layer 1-2 failure and copy spans when present .
+        Mark soft-preview Layer 1-2 failure and copy spans when present ().
 
         Examples
         --------
-        >>> 1 + 1 # docstring smoke (record_preview_layer12_soft_fail)
+        >>> 1 + 1  # docstring smoke (record_preview_layer12_soft_fail)
         2
 
         Parameters
@@ -574,7 +574,7 @@ class _ConvertAccumulator:
 
         Examples
         --------
-        >>> 1 + 1 # docstring smoke (add_aggregated_validation_issues)
+        >>> 1 + 1  # docstring smoke (add_aggregated_validation_issues)
         2
 
         Parameters
@@ -596,7 +596,7 @@ class _ConvertAccumulator:
 
         Examples
         --------
-        >>> 1 + 1 # docstring smoke (add_validation_issue_list)
+        >>> 1 + 1  # docstring smoke (add_validation_issue_list)
         2
 
         Parameters
@@ -617,7 +617,7 @@ class _ConvertAccumulator:
 
         Examples
         --------
-        >>> 1 + 1 # docstring smoke (_append_validation_issue)
+        >>> 1 + 1  # docstring smoke (_append_validation_issue)
         2
 
         Parameters
@@ -658,7 +658,7 @@ class _ConvertAccumulator:
 
         Examples
         --------
-        >>> 1 + 1 # docstring smoke (emit_output_validation_soft_warning)
+        >>> 1 + 1  # docstring smoke (emit_output_validation_soft_warning)
         2
 
         Parameters
@@ -706,7 +706,7 @@ class _ConvertAccumulator:
 
         Examples
         --------
-        >>> 1 + 1 # docstring smoke (emit_recent_wx_issues)
+        >>> 1 + 1  # docstring smoke (emit_recent_wx_issues)
         2
 
         Parameters
@@ -1805,7 +1805,7 @@ async def convert_bulletin(
 
     Examples
     --------
-    >>> 1 + 1 # docstring smoke (convert_bulletin)
+    >>> 1 + 1  # docstring smoke (convert_bulletin)
     2
 
     Parameters
@@ -2323,7 +2323,7 @@ async def convert(
 
     Examples
     --------
-    >>> 1 + 1 # docstring smoke (convert)
+    >>> 1 + 1  # docstring smoke (convert)
     2
 
     Parameters
@@ -2662,7 +2662,7 @@ async def convert(
 
                 Examples
                 --------
-                >>> 1 + 1 # docstring smoke (ca_eccc_bundle_available)
+                >>> 1 + 1  # docstring smoke (ca_eccc_bundle_available)
                 2
 
                 Parameters
@@ -2952,7 +2952,7 @@ async def convert(
     if not include_nil_reasons:
         logger.info(
             "[CONVERT] include_nil_reasons=false accepted; tac2iwxxm may still emit "
-            "nilReason on NIL reports until engine honors the flag ( placeholder)",
+            "nilReason on NIL reports until engine honors the flag (placeholder)",
         )
 
     acc = _ConvertAccumulator()
@@ -3201,7 +3201,7 @@ async def convert_zip(
 
     Examples
     --------
-    >>> 1 + 1 # docstring smoke (convert_zip)
+    >>> 1 + 1  # docstring smoke (convert_zip)
     2
 
     Parameters

@@ -9,13 +9,13 @@ Testing infrastructure for the METAR to IWXXM Backend API with 1,090+ tests orga
 pytest
 
 # Run tests in a specific category
-pytest tests/api/ # API endpoint tests
-pytest tests/conversion/ # Conversion tests
-pytest tests/validation/ # Validation tests
+pytest tests/api/              # API endpoint tests
+pytest tests/conversion/       # Conversion tests
+pytest tests/validation/       # Validation tests
 
 # Run by marker
-pytest -m smoke # Quick smoke tests (~30 seconds)
-pytest -m "not live_api" # Skip external API calls
+pytest -m smoke               # Quick smoke tests (~30 seconds)
+pytest -m "not live_api"      # Skip external API calls
 
 # With coverage
 pytest --cov=src --cov-report=html
@@ -25,21 +25,21 @@ pytest --cov=src --cov-report=html
 
 Tests are organized into logical subdirectories by domain:
 
-| Category | Files | Description |
+| Category            | Files | Description                  |
 | ------------------- | ----- | ---------------------------- |
-| **api/** | 5 | FastAPI endpoint tests |
-| **conversion/** | 6 | METAR→IWXXM conversion |
-| **validation/** | 9 | XML/SCHEMATRON validation |
-| **iwxxm/** | 7 | IWXXM version & XML handling |
-| **services/** | 4 | Data service tests |
-| **evaluation/** | 5 | Aviation evaluation system |
-| **integration/** | 4 | Full-stack E2E tests |
-| **external_apis/** | 4 | External API clients |
-| **edge_cases/** | 7 | Feature-specific tests |
-| **infrastructure/** | 11 | Infrastructure & smoke tests |
-| **versions/** | 4 | Version compatibility |
-| **unit/** | 1 | Core unit tests |
-| **Root files** | 2 | Shared fixtures & utilities |
+| **api/**            | 5     | FastAPI endpoint tests       |
+| **conversion/**     | 6     | METAR→IWXXM conversion       |
+| **validation/**     | 9     | XML/SCHEMATRON validation    |
+| **iwxxm/**          | 7     | IWXXM version & XML handling |
+| **services/**       | 4     | Data service tests           |
+| **evaluation/**     | 5     | Aviation evaluation system   |
+| **integration/**    | 4     | Full-stack E2E tests         |
+| **external_apis/**  | 4     | External API clients         |
+| **edge_cases/**     | 7     | Feature-specific tests       |
+| **infrastructure/** | 11    | Infrastructure & smoke tests |
+| **versions/**       | 4     | Version compatibility        |
+| **unit/**           | 1     | Core unit tests              |
+| **Root files**      | 2     | Shared fixtures & utilities  |
 
 **Total: 72 test files, 1,090+ tests** ✅
 
@@ -73,13 +73,13 @@ pytest tests/infrastructure/
 ### By Marker
 
 ```bash
-pytest -m unit # Unit tests only
-pytest -m integration # Integration tests
-pytest -m smoke # Quick smoke tests
-pytest -m e2e # End-to-end tests
-pytest -m "not live_api" # Skip live API tests
-pytest -m "not slow" # Skip slow tests
-pytest -m iwxxm_2025_2 # IWXXM 2025-2 specific
+pytest -m unit              # Unit tests only
+pytest -m integration       # Integration tests
+pytest -m smoke             # Quick smoke tests
+pytest -m e2e               # End-to-end tests
+pytest -m "not live_api"    # Skip live API tests
+pytest -m "not slow"        # Skip slow tests
+pytest -m iwxxm_2025_2      # IWXXM 2025-2 specific
 ```
 
 ### With Options
@@ -344,10 +344,10 @@ pytest tests/ --html=report.html
 
 ## Resources
 
-- [pytest documentation](https://docs.pytest.org)
-- [FastAPI testing guide](https://fastapi.tiangolo.com/advanced/testing-dependencies)
-- [pytest-asyncio](https://pytest-asyncio.readthedocs.io)
-- [pytest-cov](https://pytest-cov.readthedocs.io)
+- [pytest documentation](https://docs.pytest.org/)
+- [FastAPI testing guide](https://fastapi.tiangolo.com/advanced/testing-dependencies/)
+- [pytest-asyncio](https://pytest-asyncio.readthedocs.io/)
+- [pytest-cov](https://pytest-cov.readthedocs.io/)
 
 ## Support
 
@@ -359,6 +359,6 @@ For issues or questions about the test suite, check:
 
 ---
 
-**Last refactored:** February 17, 2026
-**Total tests:** 1,090+
+**Last refactored:** February 17, 2026  
+**Total tests:** 1,090+  
 **Status:** ✅ All tests discoverable and passing

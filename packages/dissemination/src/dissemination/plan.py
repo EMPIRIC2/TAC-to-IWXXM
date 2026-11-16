@@ -94,7 +94,7 @@ async def execute_plan(
 
     Examples
     --------
-    >>> 1 + 1 # docstring smoke (execute_plan)
+    >>> 1 + 1  # docstring smoke (execute_plan)
     2
     """
     receipts: list[DeliveryReceipt] = []

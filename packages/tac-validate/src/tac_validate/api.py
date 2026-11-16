@@ -104,7 +104,7 @@ def lint(
 
     Examples
     --------
-    >>> 1 + 1 # docstring smoke (lint)
+    >>> 1 + 1  # docstring smoke (lint)
     2
     """
     profile_l = normalize_profile(profile)
@@ -186,7 +186,7 @@ def extract_station_icao(tac_text: str, product: str) -> str | None:
 
     Examples
     --------
-    >>> 1 + 1 # docstring smoke (extract_station_icao)
+    >>> 1 + 1  # docstring smoke (extract_station_icao)
     2
     """
     product_u = product.upper()
@@ -226,7 +226,7 @@ def prefer_station_profile(profile: str, product: str, icao: str | None) -> str:
 
     Examples
     --------
-    >>> 1 + 1 # docstring smoke (prefer_station_profile)
+    >>> 1 + 1  # docstring smoke (prefer_station_profile)
     2
     """
     return prefer_lint_profile(profile, product, icao)
@@ -269,7 +269,7 @@ def lint_with_profile(
 
     Examples
     --------
-    >>> 1 + 1 # docstring smoke (lint_with_profile)
+    >>> 1 + 1  # docstring smoke (lint_with_profile)
     2
     """
     product_u = product.upper()

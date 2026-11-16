@@ -19,7 +19,7 @@ Do not hand-edit generated `v*` modules.
 ```python
 from metar_shared.iwxxm_xsd import available_versions, import_version_leaf
 
-mod = import_version_leaf("2025-2", "xlink") # safe leaf import
+mod = import_version_leaf("2025-2", "xlink")  # safe leaf import
 ```
 
 Version package `__init__` re-exports can hit GML circular imports — use
@@ -30,4 +30,4 @@ Optional deps: `metar-shared[xsd]` (`pydantic`, `xsdata-pydantic`).
 ## Adapt follow-on
 
 `adapt.pydantic_to_msgspec` / `adapt.pydantic_to_rust_hint` are placeholders
-. Validate hot path remains Rust (`iwxxm-validate`).
+(). Validate hot path remains Rust (`iwxxm-validate`).
