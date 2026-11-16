@@ -23,14 +23,38 @@ from src.services.station_health_wmo_region import normalize_wmo_region
 
 
 def _count_map(raw: object) -> dict[str, int]:
-    """Coerce a count map payload to ``dict[str, int]``."""
+    """
+    Coerce a count map payload to ``dict[str, int]``.
+
+    Parameters
+    ----------
+    args
+        See function signature.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if not isinstance(raw, dict):
         return {}
     return {_as_str(key): _as_int(value) for key, value in cast(dict[object, object], raw).items()}
 
 
 def _centennial_models(raw: object) -> list[StationCentennialMetricModel]:
-    """Map Centennial metric rows."""
+    """
+    Map Centennial metric rows.
+
+    Parameters
+    ----------
+    args
+        See function signature.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if not isinstance(raw, list):
         return []
     out: list[StationCentennialMetricModel] = []

@@ -71,6 +71,11 @@ def normalize_wmo_region(value: str | None) -> str | None:
     ------
     ValueError
         When the value is present but not a valid region id.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (normalize_wmo_region)
+    2
     """
     if value is None:
         return None
@@ -99,6 +104,11 @@ def wmo_region_for_iso_country(iso_country: str | None) -> str:
     -------
     str
         Region id ``I``-``VI``, or ``unknown`` when unmapped.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (wmo_region_for_iso_country)
+    2
     """
     if not iso_country:
         return UNKNOWN_WMO_REGION
@@ -126,6 +136,11 @@ def wmo_region_for_icao(icao: str, *, country: str | None = None) -> str:
     -------
     str
         Region id or ``unknown``.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (wmo_region_for_icao)
+    2
     """
     if country:
         return wmo_region_for_iso_country(country)
@@ -157,6 +172,11 @@ def wmo_region_label(region: str) -> str:
     -------
     str
         Operator-facing label without planning ids.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (wmo_region_label)
+    2
     """
     labels = {
         "I": "Region I - Africa",

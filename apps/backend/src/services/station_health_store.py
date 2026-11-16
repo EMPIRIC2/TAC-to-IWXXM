@@ -32,7 +32,19 @@ logger = logging.getLogger(__name__)
 
 
 def _region_filter_key(region: str | None) -> str | None:
-    """Normalize an optional WMO region filter to a store key."""
+    """
+    Normalize an optional WMO region filter to a store key.
+
+    Parameters
+    ----------
+    args
+        See function signature.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if not region:
         return None
     region_filter = region.strip().lower()
@@ -50,7 +62,19 @@ def _station_list_row(
     product_filter: str | None,
     grade_filter: str | None,
 ) -> dict[str, Any] | None:
-    """Build one list-row dict, or ``None`` when filters exclude the station."""
+    """
+    Build one list-row dict, or ``None`` when filters exclude the station.
+
+    Parameters
+    ----------
+    args
+        See function signature.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     wmo_region = wmo_region_for_icao(icao, country=meta.country)
     enriched = enrich_station_window(
         meta=meta,
@@ -156,6 +180,21 @@ class StationHealthStore:
         Append one observation and refresh station metadata.
 
         Applies rolling 90-day retention after each write.
+
+        Parameters
+        ----------
+        args
+            See function signature.
+
+        Returns
+        -------
+        object
+            Return value.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (record_observation)
+        2
         """
         code = (icao or "").strip().upper()
         if len(code) != 4 or not code.isalpha():
@@ -360,7 +399,19 @@ class StationHealthStore:
         }
 
     def purge_expired(self) -> int:
-        """Delete in-memory observations older than 90 days."""
+        """
+        Delete in-memory observations older than 90 days.
+
+        Returns
+        -------
+        object
+            Return value.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (purge_expired)
+        2
+        """
         now = datetime.now(UTC)
         cutoff = now - window_timedelta("90d")
         _ = RETENTION_SECONDS

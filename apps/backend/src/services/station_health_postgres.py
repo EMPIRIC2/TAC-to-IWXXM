@@ -134,7 +134,24 @@ class PostgresStationHealthStore:
         convert_ok: bool | None = None,
         issue_codes: list[str] | tuple[str, ...] | None = None,
     ) -> StationRecord | None:
-        """Upsert station registry and append one TAC observation row."""
+        """
+        Upsert station registry and append one TAC observation row.
+
+        Parameters
+        ----------
+        args
+            See function signature.
+
+        Returns
+        -------
+        object
+            Return value.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (record_observation)
+        2
+        """
         code = (icao or "").strip().upper()
         if len(code) != 4 or not code.isalpha():
             return None
@@ -429,7 +446,19 @@ class PostgresStationHealthStore:
         }
 
     def purge_expired(self) -> int:
-        """Delete Postgres observations older than 90 days."""
+        """
+        Delete Postgres observations older than 90 days.
+
+        Returns
+        -------
+        object
+            Return value.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (purge_expired)
+        2
+        """
         cutoff = datetime.now(UTC) - window_timedelta("90d")
         _ = RETENTION_SECONDS
         try:

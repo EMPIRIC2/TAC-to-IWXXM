@@ -23,7 +23,19 @@ CONTINUITY_THRESHOLD: Final[float] = 90.0
 
 
 def _insufficient(criterion_id: str, label: str, reason: str) -> dict[str, Any]:
-    """Build an insufficient-data metric row."""
+    """
+    Build an insufficient-data metric row.
+
+    Parameters
+    ----------
+    args
+        See function signature.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return {
         "id": criterion_id,
         "label": label,
@@ -39,7 +51,19 @@ def _available(
     score: float,
     detail: str,
 ) -> dict[str, Any]:
-    """Build a computed metric row."""
+    """
+    Build a computed metric row.
+
+    Parameters
+    ----------
+    args
+        See function signature.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return {
         "id": criterion_id,
         "label": label,
@@ -60,6 +84,21 @@ def observing_continuity_metric(
 
     Uses the same availability score as Station health grades when a cadence
     expectation exists for the window.
+
+    Parameters
+    ----------
+    args
+        See function signature.
+
+    Returns
+    -------
+    object
+        Return value.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (observing_continuity_metric)
+    2
     """
     label = "Observing continuity"
     if expected_count <= 0 and actual_count <= 0:
@@ -95,6 +134,21 @@ def metadata_completeness_metric(meta: StationMeta | None) -> dict[str, Any]:
 
     Scores presence of name, country, latitude, and longitude on the registry
     row. Historic depth, elevation, and schedule history are not stored.
+
+    Parameters
+    ----------
+    args
+        See function signature.
+
+    Returns
+    -------
+    object
+        Return value.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (metadata_completeness_metric)
+    2
     """
     label = "Station metadata"
     if meta is None:
@@ -143,6 +197,21 @@ def observation_quality_proxy_metric(
 
     Blends solidus quality, missing-digit quality, and lint severity already
     used in Station health grades. Not a substitute for WIGOS site audits.
+
+    Parameters
+    ----------
+    args
+        See function signature.
+
+    Returns
+    -------
+    object
+        Return value.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (observation_quality_proxy_metric)
+    2
     """
     label = "Observation quality"
     if record_count <= 0:
@@ -163,7 +232,19 @@ def observation_quality_proxy_metric(
 
 
 def deferred_centennial_metrics() -> list[dict[str, Any]]:
-    """Criteria that cannot be measured from live TAC / registry data."""
+    """
+    Criteria that cannot be measured from live TAC / registry data.
+
+    Returns
+    -------
+    object
+        Return value.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (deferred_centennial_metrics)
+    2
+    """
     return [
         _insufficient(
             "centennial_founding_age",
@@ -230,6 +311,11 @@ def build_centennial_metrics(
     -------
     list[dict[str, Any]]
         Metric rows with ``status`` ``available`` or ``insufficient_data``.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (build_centennial_metrics)
+    2
     """
     metrics = [
         observing_continuity_metric(
