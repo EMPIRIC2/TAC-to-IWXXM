@@ -60,7 +60,7 @@ for _n in _SYNC:
         _part1,
         _part2,
     ):
-        if _mod is not None and hasattr(_mod, _n):
+        if hasattr(_mod, _n):
             _ORIG.setdefault(_n, getattr(_mod, _n))
 
 

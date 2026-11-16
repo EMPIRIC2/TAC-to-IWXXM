@@ -4,14 +4,7 @@ from __future__ import annotations
 
 import sys
 import types
-
-try:
-    import requests
-except ImportError:  # pragma: no cover
-    requests = None  # type: ignore[assignment]
-    REQUESTS_AVAILABLE = False
-else:
-    REQUESTS_AVAILABLE = True
+from importlib import import_module
 
 from ..config.validation import get_validation_settings
 from ..schemas.validation import (
@@ -34,13 +27,22 @@ from .codelist_parser_part_3 import (
 )
 from .xml_types import lxml_etree as etree
 
+
+def _load_requests() -> tuple[object | None, bool]:
+    try:
+        return import_module("requests"), True
+    except ImportError:  # pragma: no cover
+        return None, False
+
+
+requests, REQUESTS_AVAILABLE = _load_requests()
+
 _part1.REQUESTS_AVAILABLE = REQUESTS_AVAILABLE
 
 
 _ORIG: dict[str, object] = {}
 
 
-# Populated lazily on first setattr for unknown sync sets
 class _CodelistParserModule(types.ModuleType):
     """Keep facade globals patched by tests in sync with split parts."""
 

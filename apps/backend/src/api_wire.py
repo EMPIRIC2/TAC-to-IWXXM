@@ -57,7 +57,7 @@ _SYNC = {"read_uploaded_text", "read_upload_files_text", "_call_iwxxm_validate"}
 _ORIG: dict[str, object] = {}
 for _n in _SYNC:
     for _mod in (_part2,):
-        if _mod is not None and hasattr(_mod, _n):
+        if hasattr(_mod, _n):
             _ORIG.setdefault(_n, getattr(_mod, _n))
 
 

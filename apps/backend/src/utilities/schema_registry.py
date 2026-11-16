@@ -53,7 +53,7 @@ for _n in _SYNC_NAMES:
         _part2,
         _part3,
     ):
-        if _mod is not None and hasattr(_mod, _n):
+        if hasattr(_mod, _n):
             _ORIG.setdefault(_n, getattr(_mod, _n))
 
 

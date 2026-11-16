@@ -38,7 +38,7 @@ class _SchemaMirrorServiceModule(types.ModuleType):
             if hasattr(_part1, "httpx"):
                 _part1.httpx = value
             if _part2 is not None and hasattr(_part2, "httpx"):
-                _part2.httpx = value
+                _part2.httpx = value  # type: ignore[attr-defined]
         super().__setattr__(name, value)
 
     def __delattr__(self, name: str) -> None:
