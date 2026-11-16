@@ -43,6 +43,9 @@ const ICE_RE = /\b(?:FZ[A-Z]+|ICING|ICE|IC)\b/;
  * @example
  * const _ = true;
  */
+/**
+ * tempTokenToC.
+ */
 export function tempTokenToC(raw: string): number {
   const cold = raw.startsWith('M');
   const digits = cold ? raw.slice(1) : raw;
@@ -57,6 +60,9 @@ export function tempTokenToC(raw: string): number {
  * @returns Overlay fields (nulls/empty when absent)
  * @example
  * const _ = true;
+ */
+/**
+ * parseTacOverlayFields.
  */
 export function parseTacOverlayFields(tac: string): TacOverlayParse {
   const text = tac.toUpperCase();
@@ -97,6 +103,9 @@ export function parseTacOverlayFields(tac: string): TacOverlayParse {
  * @returns TAC text
  * @example
  * const _ = true;
+ */
+/**
+ * newestTac.
  */
 export function newestTac(reports: ReadonlyArray<{ tac: string }>): string {
   return reports[0]?.tac ?? '';

@@ -6,7 +6,7 @@ import {
   DO_NOT_PUBLISH_LABEL,
   type ResultCardAssessment,
   type ResultCardLine,
-} from '/utils/resultCard';
+} from '@/utils/resultCard';
 
 /**
  * Type `ConvertResultStatusProps`.

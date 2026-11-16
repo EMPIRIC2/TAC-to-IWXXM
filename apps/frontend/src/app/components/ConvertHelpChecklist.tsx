@@ -13,7 +13,7 @@ import {
   DialogTitle,
 } from './ui/dialog';
 import { Button } from './ui/button';
-import { OPERATOR_ONE_PAGER_URL } from '/utils/operatorHelp';
+import { OPERATOR_ONE_PAGER_URL } from '@/utils/operatorHelp';
 
 const STEPS = [
   'Paste a TAC report (or drop a file).',

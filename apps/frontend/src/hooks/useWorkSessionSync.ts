@@ -8,13 +8,13 @@ import type { WorkSession, WorkSessionStatus } from '@metar/shared';
 import {
   createLocalWorkSession,
   updateLocalWorkSession,
-} from '/utils/localWorkSessionStore';
-import { createWorkSession, updateWorkSession } from '/utils/workSessionApi';
+} from '@/utils/localWorkSessionStore';
+import { createWorkSession, updateWorkSession } from '@/utils/workSessionApi';
 import {
   buildWorkSessionPayload,
   type ConverterSnapshot,
-} from '/utils/workSessionPayload';
-import { canPersistWorkHistoryLocal } from '/utils/privacyPreferences';
+} from '@/utils/workSessionPayload';
+import { canPersistWorkHistoryLocal } from '@/utils/privacyPreferences';
 
 export const AUTOSAVE_DEBOUNCE_MS = 3000;
 

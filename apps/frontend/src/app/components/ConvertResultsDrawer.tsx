@@ -11,7 +11,7 @@ import type { ReactNode } from 'react';
 import {
   CONVERT_RESULTS_TABS,
   type ConvertResultsTab,
-} from '/utils/convertResultsDrawer';
+} from '@/utils/convertResultsDrawer';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
 import { Button } from './ui/button';
 import { VerticalResizeHandle } from './VerticalResizeHandle';

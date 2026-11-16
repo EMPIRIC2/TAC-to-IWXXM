@@ -37,6 +37,9 @@ export type ClusterReportChoice = {
  * @example
  * const _ = true;
  */
+/**
+ * isStationPointPlace.
+ */
 export function isStationPointPlace(place: LivePlace): boolean {
   const kind = place.geometry?.kind;
   return !kind || kind === 'point';
@@ -51,6 +54,9 @@ export function isStationPointPlace(place: LivePlace): boolean {
  * @returns Clusters keyed by station
  * @example
  * const _ = true;
+ */
+/**
+ * clusterByStation.
  */
 export function clusterByStation(places: readonly LivePlace[]): StationCluster[] {
   const buckets = new Map<string, LivePlace[]>();
@@ -81,6 +87,9 @@ export function clusterByStation(places: readonly LivePlace[]): StationCluster[]
  * @example
  * const _ = true;
  */
+/**
+ * clusterReportChoices.
+ */
 export function clusterReportChoices(cluster: StationCluster): ClusterReportChoice[] {
   const rows: ClusterReportChoice[] = [];
   for (const place of cluster.members) {
@@ -104,6 +113,9 @@ export function clusterReportChoices(cluster: StationCluster): ClusterReportChoi
  * @example
  * const _ = true;
  */
+/**
+ * clusterAriaLabel.
+ */
 export function clusterAriaLabel(cluster: StationCluster): string {
   const count = clusterReportChoices(cluster).length;
   if (count <= 1) {
@@ -120,6 +132,9 @@ export function clusterAriaLabel(cluster: StationCluster): string {
  * @returns Place with one report, or null when missing
  * @example
  * const _ = true;
+ */
+/**
+ * placeWithReportIndex.
  */
 export function placeWithReportIndex(
   place: LivePlace,

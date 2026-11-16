@@ -162,6 +162,9 @@ const CONTINENT_ANCHORS: Record<string, [number, number]> = {
  * @example
  * const _ = true;
  */
+/**
+ * plotLevel.
+ */
 export function plotLevel(zoom: number): PlotLevel {
   if (zoom < 4) {
     return 'continent';
@@ -180,6 +183,9 @@ export function plotLevel(zoom: number): PlotLevel {
  * @example
  * const _ = true;
  */
+/**
+ * continentAnchor.
+ */
 export function continentAnchor(continent: string): [number, number] {
   return CONTINENT_ANCHORS[continent] ?? [0, 0];
 }
@@ -190,6 +196,9 @@ export function continentAnchor(continent: string): [number, number] {
  * @returns Sorted names, including Antarctica
  * @example
  * const _ = true;
+ */
+/**
+ * regionFilterNames.
  */
 export function regionFilterNames(): string[] {
   const names = new Set<string>(['Antarctica']);
@@ -227,6 +236,9 @@ function inside(region: MapRegion, latitude: number, longitude: number): boolean
  * @returns Names and the marker anchor
  * @example
  * const _ = true;
+ */
+/**
+ * placeRegion.
  */
 export function placeRegion(
   latitude: number,
@@ -273,6 +285,9 @@ export function placeRegion(
  * @returns One cluster per name that has places
  * @example
  * const _ = true;
+ */
+/**
+ * clusterPlaces.
  */
 export function clusterPlaces(
   places: LivePlace[],

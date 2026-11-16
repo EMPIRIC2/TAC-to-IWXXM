@@ -203,6 +203,9 @@ const OVERLAY_PAINTERS: ReadonlyArray<{
  * @example
  * const _ = true;
  */
+/**
+ * paintTacOverlays.
+ */
 export function paintTacOverlays(
   map: L.Map,
   cluster: StationCluster,
