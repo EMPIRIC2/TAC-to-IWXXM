@@ -9,11 +9,12 @@ from __future__ import annotations
 
 import re
 import xml.etree.ElementTree as ET
-from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
+from tac_decoding.models.collect import CollectError, CollectField, CollectRead
+
 if TYPE_CHECKING:
-    from tac_decoding.decode import DecodeResult
+    from tac_decoding.models.decode_result import DecodeResult
 
 _IWXXM_ROOTS = frozenset(
     {
@@ -37,60 +38,6 @@ _MAX_DEPTH = 64
 _MAX_NODES = 10_000
 _MAX_LEAVES = 2_000
 _MAX_TAC_REPORTS = 500
-
-
-class CollectError(ValueError):
-    """
-    The text is not a readable COLLECT or IWXXM document.
-
-    Attributes
-    ----------
-    args : tuple
-        Arguments passed to the exception constructor.
-    """
-
-
-@dataclass(frozen=True, slots=True)
-class CollectField:
-    """
-    One leaf XML field from an XML-only COLLECT walk.
-
-    Attributes
-    ----------
-    name : str
-        Local name of the leaf element.
-    value : str
-        Leaf text.
-    path : str
-        Local-name path from the root to the leaf.
-    """
-
-    name: str
-    value: str
-    path: str
-
-
-@dataclass(frozen=True, slots=True)
-class CollectRead:
-    """
-    Result of reading COLLECT or IWXXM XML without encoding.
-
-    Attributes
-    ----------
-    mode : str
-        Mode.
-    bulletin_identifier : str | None
-        Bulletin identifier.
-    tac_reports : tuple[str, ...]
-        TAC reports.
-    fields : tuple[CollectField, ...]
-        Fields.
-    """
-
-    mode: str
-    bulletin_identifier: str | None
-    tac_reports: tuple[str, ...]
-    fields: tuple[CollectField, ...]
 
 
 def _local(tag: str) -> str:
@@ -464,3 +411,14 @@ def try_decode_collect(xml: str, *, product: str) -> DecodeResult | None:
     if not _is_collect_shape(root):
         return None
     return decode_collect(xml, product=product, read=_read_from_root(root))
+
+
+__all__ = [
+    "CollectError",
+    "CollectField",
+    "CollectRead",
+    "decode_collect",
+    "is_collect_input",
+    "read_collect",
+    "try_decode_collect",
+]

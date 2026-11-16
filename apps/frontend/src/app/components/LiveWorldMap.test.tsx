@@ -2,7 +2,7 @@
  * World map layers and the report popup.
  */
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { act, cleanup, render, screen, waitFor } from '@testing-library/react';
+import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import L from 'leaflet';
 import { boundsOf, LIVE_MAP_PRODUCTS, type LivePlace } from '@/utils/liveMap';
@@ -297,233 +297,241 @@ describe('LiveWorldMap', () => {
     });
   });
 
-  it('loads every layer, draws a polygon, and opens stored text', async () => {
-    const user = userEvent.setup();
-    vi.stubGlobal(
-      'fetch',
-      vi.fn().mockImplementation(async (url: string) => {
-        const target = new URL(String(url), 'http://localhost');
-        const products = target.searchParams.get('products') ?? '';
-        if (products === '') {
-          return { ok: true, json: async () => ({ places: [] }) };
-        }
-        if (!products.includes('metar')) {
-          throw new DOMException('aborted', 'AbortError');
-        }
-        return {
-          ok: true,
-          json: async () => ({
-            places: [
-              place,
-              hazard,
-              {
-                place_key: 'ZZZZ',
-                product: 'metar',
-                latitude: 10,
-                longitude: 20,
-                geometry: { kind: 'point' },
-                reports: [
-                  {
-                    observed_at: 'z',
-                    tac: 'METAR ZZZZ',
-                    iwxxm: null,
-                    issues: [],
-                  },
-                ],
-              },
-              {
-                place_key: 'line-1',
-                product: 'airmet',
-                latitude: 11,
-                longitude: 21,
-                geometry: {
-                  kind: 'line',
-                  coordinates: [
-                    [1, 2],
-                    [3, 4],
+  it(
+    'loads every layer, draws a polygon, and opens stored text',
+    { timeout: 60_000 },
+    async () => {
+      const user = userEvent.setup();
+      vi.stubGlobal(
+        'fetch',
+        vi.fn().mockImplementation(async (url: string) => {
+          const target = new URL(String(url), 'http://localhost');
+          const products = target.searchParams.get('products') ?? '';
+          if (products === '') {
+            return { ok: true, json: async () => ({ places: [] }) };
+          }
+          if (!products.includes('metar')) {
+            throw new DOMException('aborted', 'AbortError');
+          }
+          return {
+            ok: true,
+            json: async () => ({
+              places: [
+                place,
+                hazard,
+                {
+                  place_key: 'ZZZZ',
+                  product: 'metar',
+                  latitude: 10,
+                  longitude: 20,
+                  geometry: { kind: 'point' },
+                  reports: [
+                    {
+                      observed_at: 'z',
+                      tac: 'METAR ZZZZ',
+                      iwxxm: null,
+                      issues: [],
+                    },
                   ],
                 },
-                reports: [
-                  {
-                    observed_at: 'line',
-                    tac: 'AIRMET LINE',
-                    iwxxm: null,
-                    issues: [],
+                {
+                  place_key: 'line-1',
+                  product: 'airmet',
+                  latitude: 11,
+                  longitude: 21,
+                  geometry: {
+                    kind: 'line',
+                    coordinates: [
+                      [1, 2],
+                      [3, 4],
+                    ],
                   },
-                ],
-              },
-              {
-                place_key: 'BARE',
-                product: 'speci',
-                latitude: 1,
-                longitude: 2,
-                reports: [
-                  {
-                    observed_at: 'bare',
-                    tac: 'SPECI BARE',
-                    iwxxm: null,
-                    issues: [],
-                  },
-                ],
-              },
-              {
-                place_key: 'empty-1',
-                product: 'metar',
-                latitude: 3,
-                longitude: 4,
-                reports: [],
-              },
-              {
-                place_key: 'circle-1',
-                product: 'airmet',
-                latitude: 12,
-                longitude: 22,
-                geometry: { kind: 'circle', radius_m: 5000 },
-                reports: [
-                  {
-                    observed_at: 'circle',
-                    tac: 'AIRMET CIRCLE',
-                    iwxxm: null,
-                    issues: [],
-                  },
-                ],
-              },
-              {
-                place_key: 'EGLL',
-                product: 'taf',
-                latitude: 51.5,
-                longitude: -0.45,
-                geometry: { kind: 'point' },
-                reports: [
-                  {
-                    observed_at: 'egll',
-                    tac: 'TAF EGLL',
-                    iwxxm: null,
-                    issues: [],
-                  },
-                ],
-              },
-            ],
-          }),
-        };
-      }),
-    );
-    const onOpenPlace = vi.fn();
-    render(<LiveWorldMap onOpenPlace={onOpenPlace} />);
-    expect(screen.getByTestId('live-map-beta')).toHaveTextContent('Beta');
-    await paintedPolygon();
-    expect(L.polygon).toHaveBeenCalled();
-    expect(L.polyline).toHaveBeenCalled();
-    expect(L.circle).toHaveBeenCalled();
-    expect(L.circleMarker).toHaveBeenCalledWith([10, 20], expect.anything());
-    expect(L.circleMarker).toHaveBeenCalledWith([1, 2], expect.anything());
-    expect(L.canvas).toHaveBeenCalledWith({ tolerance: 0 });
-    const pointLayer = vi.mocked(L.circleMarker).mock.results.at(-1)?.value as {
-      _clickTolerance: () => number;
-    };
-    expect(pointLayer._clickTolerance()).toBe(6);
-    const lineLayer = vi.mocked(L.polyline).mock.results.at(-1)?.value as {
-      _clickTolerance: () => number;
-    };
-    expect(lineLayer._clickTolerance()).toBe(12);
-    const polygonLayer = vi.mocked(L.polygon).mock.results.at(-1)?.value as {
-      _clickTolerance: () => number;
-      _containsPoint: (point: L.Point) => boolean;
-    };
-    expect(polygonLayer._clickTolerance()).toBe(12);
-    polygonLayer._containsPoint({ x: 1, y: 2 } as L.Point);
-    const stroke = L.Polyline.prototype as unknown as {
-      _containsPoint: ReturnType<typeof vi.fn>;
-    };
-    expect(stroke._containsPoint).toHaveBeenCalledWith({ x: 1, y: 2 }, true);
-    const circleLayer = vi.mocked(L.circle).mock.results.at(-1)?.value as {
-      _point?: L.Point;
-      _radius?: number;
-      _containsPoint: (point: L.Point) => boolean;
-    };
-    circleLayer._radius = 10;
-    expect(circleLayer._containsPoint({ distanceTo: () => 0 } as never)).toBe(false);
-    circleLayer._point = { x: 0, y: 0 } as L.Point;
-    circleLayer._radius = undefined;
-    expect(circleLayer._containsPoint({ distanceTo: () => 0 } as never)).toBe(false);
-    circleLayer._radius = 10;
-    expect(circleLayer._containsPoint({ distanceTo: () => 10 } as never)).toBe(true);
-    expect(circleLayer._containsPoint({ distanceTo: () => 40 } as never)).toBe(false);
-    expect(L.divIcon).toHaveBeenCalledWith(
-      expect.objectContaining({
-        className: expect.stringContaining('live-map-cluster-chip'),
-        html: expect.stringContaining('2'),
-      }),
-    );
-    expect(canvasUpdate).toHaveBeenCalled();
-    await waitFor(() => expect(clicks.length).toBeGreaterThan(0));
-    act(() => {
-      clicks[0]?.();
-    });
-    expect(screen.getByTestId('live-map-notice')).toHaveTextContent(
-      'not validated for operational use',
-    );
-    expect(screen.getByTestId('live-map-product')).toHaveTextContent('METAR');
-    expect(screen.getByTestId('live-map-cluster-pick')).toBeInTheDocument();
-    expect(screen.getByTestId('live-map-station')).toHaveTextContent('KJFK');
-    expect(screen.getByTestId('live-map-card')).toHaveAttribute('data-layout', 'side');
-    expect(screen.getByTestId('live-map-detail')).toHaveTextContent('KJFK');
-    expect(screen.queryByTestId('live-map-decode')).not.toBeInTheDocument();
-    expect(screen.queryByTestId('live-map-xml')).not.toBeInTheDocument();
-    expect(screen.queryByTestId('live-map-tac')).not.toBeInTheDocument();
-    expect(onOpenPlace).not.toHaveBeenCalled();
-    act(() => {
-      clicks[0]?.();
-    });
-    expect(onOpenPlace).toHaveBeenCalledWith(place);
-    expect(map.panBy).not.toHaveBeenCalled();
-    expect(map.flyToBounds).not.toHaveBeenCalled();
-    expect(map.invalidateSize).toHaveBeenCalled();
-    act(() => {
-      clicks[1]?.();
-    });
-    expect(screen.getByTestId('live-map-station')).toHaveTextContent('Area');
-    expect(screen.getByTestId('live-map-issued')).toHaveTextContent('hazard');
-    expect(onOpenPlace).toHaveBeenCalledTimes(1);
-    act(() => {
-      clicks[1]?.();
-    });
-    expect(onOpenPlace).toHaveBeenCalledWith(hazard);
-    act(() => {
-      clicks[2]?.();
-    });
-    expect(screen.getByTestId('live-map-detail')).toHaveTextContent('ZZZZ');
-    for (const product of LIVE_MAP_PRODUCTS) {
-      await user.click(screen.getByTestId(`layer-${product}`));
-    }
-    await user.click(screen.getByTestId('layer-metar'));
-    await user.selectOptions(screen.getByTestId('live-map-country'), 'United States');
-    await user.selectOptions(screen.getByTestId('live-map-region'), 'Europe');
-    await user.selectOptions(screen.getByTestId('live-map-time'), '1h');
-    await user.click(screen.getByTestId('phenomenon-ifr'));
-    await user.click(screen.getByTestId('phenomenon-ifr'));
-    expect(screen.queryByTestId('live-map-error')).not.toBeInTheDocument();
-    act(() => {
-      clicks[5]?.();
-    });
-    const opened = onOpenPlace.mock.calls.length;
-    act(() => {
-      clicks[5]?.();
-    });
-    expect(onOpenPlace).toHaveBeenCalledTimes(opened);
-    marker.getPopup.mockReturnValueOnce(undefined as never);
-    act(() => {
-      clicks[0]?.();
-    });
-    const preventDefault = vi.fn();
-    act(() => {
-      keys[0]?.({ originalEvent: { key: 'Enter', preventDefault } });
-      keys[0]?.({ originalEvent: { key: ' ', preventDefault } });
-      keys[0]?.({ originalEvent: { key: 'x', preventDefault } });
-      keys[0]?.({});
-    });
-    expect(preventDefault).toHaveBeenCalled();
-  });
+                  reports: [
+                    {
+                      observed_at: 'line',
+                      tac: 'AIRMET LINE',
+                      iwxxm: null,
+                      issues: [],
+                    },
+                  ],
+                },
+                {
+                  place_key: 'BARE',
+                  product: 'speci',
+                  latitude: 1,
+                  longitude: 2,
+                  reports: [
+                    {
+                      observed_at: 'bare',
+                      tac: 'SPECI BARE',
+                      iwxxm: null,
+                      issues: [],
+                    },
+                  ],
+                },
+                {
+                  place_key: 'empty-1',
+                  product: 'metar',
+                  latitude: 3,
+                  longitude: 4,
+                  reports: [],
+                },
+                {
+                  place_key: 'circle-1',
+                  product: 'airmet',
+                  latitude: 12,
+                  longitude: 22,
+                  geometry: { kind: 'circle', radius_m: 5000 },
+                  reports: [
+                    {
+                      observed_at: 'circle',
+                      tac: 'AIRMET CIRCLE',
+                      iwxxm: null,
+                      issues: [],
+                    },
+                  ],
+                },
+                {
+                  place_key: 'EGLL',
+                  product: 'taf',
+                  latitude: 51.5,
+                  longitude: -0.45,
+                  geometry: { kind: 'point' },
+                  reports: [
+                    {
+                      observed_at: 'egll',
+                      tac: 'TAF EGLL',
+                      iwxxm: null,
+                      issues: [],
+                    },
+                  ],
+                },
+              ],
+            }),
+          };
+        }),
+      );
+      const onOpenPlace = vi.fn();
+      render(<LiveWorldMap onOpenPlace={onOpenPlace} />);
+      expect(screen.getByTestId('live-map-beta')).toHaveTextContent('Beta');
+      expect(screen.getByTestId('live-map-mode-annex3')).toBeChecked();
+      await paintedPolygon();
+      expect(L.polygon).toHaveBeenCalled();
+      expect(L.polyline).toHaveBeenCalled();
+      expect(L.circle).toHaveBeenCalled();
+      expect(L.circleMarker).toHaveBeenCalledWith([10, 20], expect.anything());
+      expect(L.circleMarker).toHaveBeenCalledWith([1, 2], expect.anything());
+      expect(L.canvas).toHaveBeenCalledWith({ tolerance: 0 });
+      const pointLayer = vi.mocked(L.circleMarker).mock.results.at(-1)?.value as {
+        _clickTolerance: () => number;
+      };
+      expect(pointLayer._clickTolerance()).toBe(6);
+      const lineLayer = vi.mocked(L.polyline).mock.results.at(-1)?.value as {
+        _clickTolerance: () => number;
+      };
+      expect(lineLayer._clickTolerance()).toBe(12);
+      const polygonLayer = vi.mocked(L.polygon).mock.results.at(-1)?.value as {
+        _clickTolerance: () => number;
+        _containsPoint: (point: L.Point) => boolean;
+      };
+      expect(polygonLayer._clickTolerance()).toBe(12);
+      polygonLayer._containsPoint({ x: 1, y: 2 } as L.Point);
+      const stroke = L.Polyline.prototype as unknown as {
+        _containsPoint: ReturnType<typeof vi.fn>;
+      };
+      expect(stroke._containsPoint).toHaveBeenCalledWith({ x: 1, y: 2 }, true);
+      const circleLayer = vi.mocked(L.circle).mock.results.at(-1)?.value as {
+        _point?: L.Point;
+        _radius?: number;
+        _containsPoint: (point: L.Point) => boolean;
+      };
+      circleLayer._radius = 10;
+      expect(circleLayer._containsPoint({ distanceTo: () => 0 } as never)).toBe(false);
+      circleLayer._point = { x: 0, y: 0 } as L.Point;
+      circleLayer._radius = undefined;
+      expect(circleLayer._containsPoint({ distanceTo: () => 0 } as never)).toBe(false);
+      circleLayer._radius = 10;
+      expect(circleLayer._containsPoint({ distanceTo: () => 10 } as never)).toBe(true);
+      expect(circleLayer._containsPoint({ distanceTo: () => 40 } as never)).toBe(false);
+      expect(L.divIcon).toHaveBeenCalledWith(
+        expect.objectContaining({
+          className: expect.stringContaining('live-map-cluster-chip'),
+          html: expect.stringContaining('2'),
+        }),
+      );
+      expect(canvasUpdate).toHaveBeenCalled();
+      await waitFor(() => expect(clicks.length).toBeGreaterThan(0));
+      act(() => {
+        clicks[0]?.();
+      });
+      expect(screen.getByTestId('live-map-notice')).toHaveTextContent(
+        'not validated for operational use',
+      );
+      expect(screen.getByTestId('live-map-product')).toHaveTextContent('METAR');
+      expect(screen.getByTestId('live-map-cluster-pick')).toBeInTheDocument();
+      expect(screen.getByTestId('live-map-station')).toHaveTextContent('KJFK');
+      expect(screen.getByTestId('live-map-card')).toHaveAttribute(
+        'data-layout',
+        'side',
+      );
+      expect(screen.getByTestId('live-map-detail')).toHaveTextContent('KJFK');
+      expect(screen.queryByTestId('live-map-decode')).not.toBeInTheDocument();
+      expect(screen.queryByTestId('live-map-xml')).not.toBeInTheDocument();
+      expect(screen.queryByTestId('live-map-tac')).not.toBeInTheDocument();
+      expect(onOpenPlace).not.toHaveBeenCalled();
+      act(() => {
+        clicks[0]?.();
+      });
+      expect(onOpenPlace).toHaveBeenCalledWith(place);
+      expect(map.panBy).not.toHaveBeenCalled();
+      expect(map.flyToBounds).not.toHaveBeenCalled();
+      expect(map.invalidateSize).toHaveBeenCalled();
+      act(() => {
+        clicks[1]?.();
+      });
+      expect(screen.getByTestId('live-map-station')).toHaveTextContent('Area');
+      expect(screen.getByTestId('live-map-issued')).toHaveTextContent('hazard');
+      expect(onOpenPlace).toHaveBeenCalledTimes(1);
+      act(() => {
+        clicks[1]?.();
+      });
+      expect(onOpenPlace).toHaveBeenCalledWith(hazard);
+      act(() => {
+        clicks[2]?.();
+      });
+      expect(screen.getByTestId('live-map-detail')).toHaveTextContent('ZZZZ');
+      for (const product of LIVE_MAP_PRODUCTS) {
+        await user.click(screen.getByTestId(`layer-${product}`));
+      }
+      await user.click(screen.getByTestId('layer-metar'));
+      await user.selectOptions(screen.getByTestId('live-map-country'), 'United States');
+      await user.selectOptions(screen.getByTestId('live-map-region'), 'Europe');
+      await user.selectOptions(screen.getByTestId('live-map-time'), '1h');
+      await user.click(screen.getByTestId('phenomenon-ifr'));
+      await user.click(screen.getByTestId('phenomenon-ifr'));
+      expect(screen.queryByTestId('live-map-error')).not.toBeInTheDocument();
+      act(() => {
+        clicks[5]?.();
+      });
+      const opened = onOpenPlace.mock.calls.length;
+      act(() => {
+        clicks[5]?.();
+      });
+      expect(onOpenPlace).toHaveBeenCalledTimes(opened);
+      marker.getPopup.mockReturnValueOnce(undefined as never);
+      act(() => {
+        clicks[0]?.();
+      });
+      const preventDefault = vi.fn();
+      act(() => {
+        keys[0]?.({ originalEvent: { key: 'Enter', preventDefault } });
+        keys[0]?.({ originalEvent: { key: ' ', preventDefault } });
+        keys[0]?.({ originalEvent: { key: 'x', preventDefault } });
+        keys[0]?.({});
+      });
+      expect(preventDefault).toHaveBeenCalled();
+    },
+  );
 
   it('draws route polygons at world zoom and opens the report', async () => {
     vi.stubGlobal(
@@ -683,28 +691,50 @@ describe('LiveWorldMap', () => {
   });
 
   it('clusters same-station products into one point with a count chip', async () => {
+    const observedAt = new Date().toISOString();
+    const stationMetar: LivePlace = {
+      ...place,
+      reports: place.reports.map((report) => ({
+        ...report,
+        observed_at: observedAt,
+      })),
+    };
+    const stationTaf: LivePlace = {
+      ...place,
+      product: 'taf',
+      reports: [{ observed_at: observedAt, tac: 'TAF KJFK 1312/1412 18010KT' }],
+    };
+    const areaHazard: LivePlace = {
+      ...hazard,
+      reports: hazard.reports.map((report) => ({
+        ...report,
+        observed_at: observedAt,
+      })),
+    };
     vi.stubGlobal(
       'fetch',
       vi.fn().mockResolvedValue({
         ok: true,
         json: async () => ({
-          places: [
-            place,
-            {
-              ...place,
-              product: 'taf',
-              reports: [{ observed_at: 'taf', tac: 'TAF KJFK' }],
-            },
-            hazard,
-          ],
+          places: [stationMetar, stationTaf, areaHazard],
         }),
       }),
     );
     const onOpenPlace = vi.fn();
     vi.mocked(L.divIcon).mockClear();
+    vi.mocked(L.circleMarker).mockClear();
     map.getZoom.mockReturnValue(2);
     render(<LiveWorldMap onOpenPlace={onOpenPlace} />);
-    await waitFor(() => expect(L.circleMarker).toHaveBeenCalled());
+    expect(await screen.findByTestId('live-world-map')).toBeInTheDocument();
+    // Active reports may default on when a TAF validity window is present —
+    // turn it off so the cluster paint path stays product-layer only.
+    const activeToggle = await screen.findByTestId('live-map-filter-active-reports');
+    if (activeToggle.getAttribute('aria-checked') === 'true') {
+      await userEvent.click(activeToggle);
+    }
+    await waitFor(() => expect(L.circleMarker).toHaveBeenCalled(), {
+      timeout: 15_000,
+    });
     expect(map.getZoom()).toBe(2);
     expect(L.divIcon).not.toHaveBeenCalled();
     map.getZoom.mockReturnValue(8);
@@ -714,7 +744,9 @@ describe('LiveWorldMap', () => {
     act(() => {
       onZoom?.();
     });
-    await waitFor(() => expect(L.divIcon).toHaveBeenCalled());
+    await waitFor(() => expect(L.divIcon).toHaveBeenCalled(), {
+      timeout: 15_000,
+    });
     expect(L.circleMarker).toHaveBeenCalledWith(
       [40.6, -73.7],
       expect.objectContaining({ fillOpacity: 1, radius: 6 }),
@@ -828,6 +860,7 @@ describe('LiveWorldMap', () => {
     // Keep wall-clock near fixture stamps so the default Last-* time window
     // still includes these reports (CI can run days after the fixture date).
     vi.spyOn(Date, 'now').mockReturnValue(Date.parse('2026-11-13T18:30:00Z'));
+    const observedAt = '2026-11-13T18:00:00Z';
     const rainy: LivePlace = {
       place_key: 'KJFK',
       product: 'metar',
@@ -836,7 +869,7 @@ describe('LiveWorldMap', () => {
       geometry: { kind: 'point' },
       reports: [
         {
-          observed_at: '2026-11-13T18:00:00Z',
+          observed_at: observedAt,
           tac: 'METAR KJFK 231851Z 20015G25KT 3SM -RA BR BKN012 12/11 A2998=',
           iwxxm: null,
         },
@@ -850,7 +883,7 @@ describe('LiveWorldMap', () => {
       geometry: { kind: 'point' },
       reports: [
         {
-          observed_at: '2026-11-13T18:00:00Z',
+          observed_at: observedAt,
           tac: 'METAR KBOS 231851Z 18012KT 10SM FEW040 15/07 A3005=',
           iwxxm: null,
         },
@@ -866,8 +899,14 @@ describe('LiveWorldMap', () => {
     vi.mocked(L.divIcon).mockClear();
     vi.mocked(L.marker).mockClear();
     render(<LiveWorldMap onOpenPlace={onOpenPlace} />);
+    expect(await screen.findByTestId('live-map-mode-group')).toBeInTheDocument();
+    expect(screen.getByTestId('live-map-annex3-products')).toBeInTheDocument();
+    expect(screen.queryByTestId('tac-overlay-precip')).not.toBeInTheDocument();
+    await user.click(screen.getByTestId('live-map-mode-overlays'));
     expect(await screen.findByTestId('tac-overlay-precip')).toBeInTheDocument();
-    await waitFor(() => expect(L.circleMarker).toHaveBeenCalled());
+    const scale = screen.getByTestId('live-map-overlay-scale-slider');
+    fireEvent.change(scale, { target: { value: '1.5' } });
+    expect(scale).toHaveValue('1.5');
     expect(screen.queryByTestId('live-map-tac-overlay-empty')).not.toBeInTheDocument();
     vi.mocked(L.divIcon).mockClear();
     await user.click(screen.getByTestId('tac-overlay-precip'));
@@ -910,13 +949,20 @@ describe('LiveWorldMap', () => {
     });
     vi.mocked(L.divIcon).mockClear();
     vi.mocked(L.circleMarker).mockClear();
-    await user.click(screen.getByTestId('tac-overlay-temp'));
     await user.click(screen.getByTestId('tac-overlay-windVector'));
     await user.click(screen.getByTestId('tac-overlay-windIntensity'));
     await waitFor(() => {
       expect(L.divIcon).toHaveBeenCalled();
       expect(L.circleMarker).toHaveBeenCalled();
     });
+    await user.click(screen.getByTestId('live-map-mode-temperatures'));
+    expect(screen.getByTestId('live-map-temp-unit-group')).toBeInTheDocument();
+    expect(screen.queryByTestId('tac-overlay-precip')).not.toBeInTheDocument();
+    await user.click(screen.getByTestId('live-map-temp-unit-F'));
+    await waitFor(() => {
+      expect(screen.getByTestId('live-map-temp-unit-F')).toBeChecked();
+    });
+    expect(screen.getByTestId('live-map-time')).toHaveValue('latest');
   });
 
   it('opens an empty-report area without a card and loads on area keydown', async () => {

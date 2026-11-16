@@ -2,11 +2,9 @@
 
 from __future__ import annotations
 
-from collections.abc import Sequence
+from collections.abc import Mapping, Sequence
 from pathlib import Path
 from typing import Any
-
-import lxml.etree as _lxml_etree
 
 from iwxxm_validate.ca_eccc_bundle import (
     CA_ECCC_IWXXM_VERSION,
@@ -14,7 +12,6 @@ from iwxxm_validate.ca_eccc_bundle import (
     resolve_ca_eccc_bundle,
 )
 from iwxxm_validate.ca_eccc_layers import (
-    CA_STAGE_LABELS,
     STAGE_CA_XSD,
     STAGE_CODE_CA,
     STAGE_EXCHANGE,
@@ -25,20 +22,41 @@ from iwxxm_validate.ca_eccc_layers import (
     ca_product_has_national_xsd,
     ca_product_xsd_path,
 )
+from iwxxm_validate.ca_eccc_stages import (
+    has_error as _has_error,
+)
+from iwxxm_validate.ca_eccc_stages import (
+    remap_issues as _remap_issues,
+)
+from iwxxm_validate.ca_eccc_stages import (
+    run_wellformed_lxml as _run_wellformed_lxml,
+)
+from iwxxm_validate.ca_eccc_stages import (
+    stage_result as _stage_result,
+)
+from iwxxm_validate.ca_eccc_xml import (
+    CA_EXTENSION_NS,
+    CA_SUBSTITUTION_ROOTS,
+    WMO_PRODUCT_ROOTS,
+)
+from iwxxm_validate.ca_eccc_xml import (
+    ca_xsd_probe_document as _ca_xsd_probe_document,
+)
+from iwxxm_validate.ca_eccc_xml import (
+    document_root_name as _document_root_name,
+)
+from iwxxm_validate.ca_eccc_xml import (
+    extract_ca_extension_blocks as _extract_ca_extension_blocks,
+)
+from iwxxm_validate.ca_eccc_xml import (
+    is_ca_substitution_root as _is_ca_substitution_root,
+)
 from iwxxm_validate.ca_exchange_validate import validate_ca_exchange_packaging
 from iwxxm_validate.code_ca_validate import validate_code_ca_membership
-from iwxxm_validate.models import Issue, StageResult, ValidationReport
+from iwxxm_validate.models import Issue, StageResult, ValidationReport, issues_from_rust
 from iwxxm_validate.native import rust_available, rust_module
 from iwxxm_validate.schematron import validate_schematron
 from iwxxm_validate.xsd import validate_xsd, validate_xsd_at_path
-
-CA_EXTENSION_NS = "https://dd.meteo.gc.ca/today/aviation/iwxxm/"
-CA_SUBSTITUTION_ROOTS = frozenset({"LWIS", "SAWR"})
-_WMO_PRODUCT_ROOTS = frozenset({"METAR", "SPECI", "TAF", "AIRMET"})
-_IWXXM_NS = "http://icao.int/iwxxm/3.0"
-
-# lxml ships without complete type stubs; bind as Any for strict basedpyright.
-etree: Any = _lxml_etree
 
 _RUST_LAYER_TO_STAGE = {
     "wellformed": STAGE_WELLFORMED,
@@ -47,107 +65,23 @@ _RUST_LAYER_TO_STAGE = {
 }
 
 
-def _has_error(issues: Sequence[Issue]) -> bool:
+def _issues_from_rust(raw: Sequence[Mapping[str, Any]], stage_id: str) -> list[Issue]:
     """
-    Internal helper ``_has_error``.
+    Convert Rust findings for a CA stage (compat shim for tests).
 
     Parameters
     ----------
-    issues : object
-        Argument ``issues``.
+    raw : Sequence[Mapping[str, Any]]
+        Native engine findings.
+    stage_id : str
+        Target stage id.
 
     Returns
     -------
-    object
-        Return value.
+    list[Issue]
+        Mapped findings.
     """
-    return any(issue.severity == "error" for issue in issues)
-
-
-def _remap_issues(issues: Sequence[Issue], stage_id: str) -> list[Issue]:
-    """
-    Internal helper ``_remap_issues``.
-
-    Parameters
-    ----------
-    issues : object
-        Argument ``issues``.
-    stage_id : object
-        Argument ``stage_id``.
-
-    Returns
-    -------
-    object
-        Return value.
-    """
-    return [
-        Issue(
-            severity=issue.severity,
-            code=issue.code,
-            message=issue.message,
-            layer=stage_id,
-            location=issue.location,
-            start=issue.start,
-            end=issue.end,
-        )
-        for issue in issues
-    ]
-
-
-def _stage_result(stage_id: str, issues: list[Issue]) -> StageResult:
-    """
-    Internal helper ``_stage_result``.
-
-    Parameters
-    ----------
-    stage_id : object
-        Argument ``stage_id``.
-    issues : object
-        Argument ``issues``.
-
-    Returns
-    -------
-    object
-        Return value.
-    """
-    return StageResult(
-        stage=stage_id,
-        label=CA_STAGE_LABELS[stage_id],
-        ok=not _has_error(issues),
-        issues=issues,
-    )
-
-
-def _issues_from_rust(raw: Sequence[dict[str, Any]], stage_id: str) -> list[Issue]:
-    """
-    Internal helper ``_issues_from_rust``.
-
-    Parameters
-    ----------
-    raw : object
-        Argument ``raw``.
-    stage_id : object
-        Argument ``stage_id``.
-
-    Returns
-    -------
-    object
-        Return value.
-    """
-    issues: list[Issue] = []
-    for item in raw:
-        rust_layer = str(item.get("layer", "xsd"))
-        mapped_stage = _RUST_LAYER_TO_STAGE.get(rust_layer, stage_id)
-        issues.append(
-            Issue(
-                severity=str(item.get("severity", "error")),
-                code=str(item.get("code", "NATIVE_ISSUE")),
-                message=str(item.get("message", "")),
-                layer=mapped_stage if stage_id == mapped_stage else stage_id,
-                location=item.get("location"),
-            )
-        )
-    return issues
+    return issues_from_rust(raw, layer_map=_RUST_LAYER_TO_STAGE, stage_id=stage_id)
 
 
 def _run_rust_stage(
@@ -160,31 +94,31 @@ def _run_rust_stage(
     stage_id: str,
 ) -> list[Issue]:
     """
-    Internal helper ``_run_rust_stage``.
+    Run the native validator for one CA stage (module-local for monkeypatches).
 
     Parameters
     ----------
-    xml_content : object
-        Argument ``xml_content``.
-    xsd_path : object
-        Argument ``xsd_path``.
-    sch_path : object
-        Argument ``sch_path``.
-    catalog_roots : object
-        Argument ``catalog_roots``.
-    levels : object
-        Argument ``levels``.
-    stage_id : object
-        Argument ``stage_id``.
+    xml_content : str
+        IWXXM XML.
+    xsd_path : str
+        Primary XSD path.
+    sch_path : str
+        Schematron path.
+    catalog_roots : list[str]
+        Catalog root directories.
+    levels : list[str]
+        Native levels to run.
+    stage_id : str
+        Stage id for issue ``layer``.
 
     Returns
     -------
-    object
-        Return value.
+    list[Issue]
+        Mapped findings.
     """
     rust = rust_module()
     assert rust is not None
-    raw = rust.validate_document(
+    raw: list[dict[str, Any]] = rust.validate_document(
         xml_content,
         xsd_path=xsd_path,
         sch_path=sch_path,
@@ -192,181 +126,6 @@ def _run_rust_stage(
         levels=levels,
     )
     return _issues_from_rust(raw, stage_id)
-
-
-def _run_wellformed_lxml(xml_content: str) -> list[Issue]:
-    """
-    Internal helper ``_run_wellformed_lxml``.
-
-    Parameters
-    ----------
-    xml_content : object
-        Argument ``xml_content``.
-
-    Returns
-    -------
-    object
-        Return value.
-    """
-    try:
-        etree.fromstring(xml_content.encode("utf-8"))
-        return []
-    except etree.XMLSyntaxError as exc:
-        return [
-            Issue(
-                severity="error",
-                code="XML_SYNTAX_ERROR",
-                message=f"XML parsing failed: {exc}",
-                layer=STAGE_WELLFORMED,
-                location=f"line {getattr(exc, 'lineno', '?')}",
-            )
-        ]
-
-
-def _document_root_name(xml_content: str) -> tuple[str | None, str | None]:
-    """
-    Internal helper ``_document_root_name``.
-
-    Parameters
-    ----------
-    xml_content : object
-        Argument ``xml_content``.
-
-    Returns
-    -------
-    object
-        Return value.
-    """
-    try:
-        root = etree.fromstring(xml_content.encode("utf-8"))
-    except etree.XMLSyntaxError:
-        return None, None
-    qname = etree.QName(root)
-    return qname.localname, qname.namespace
-
-
-def _is_ca_substitution_root(local_name: str | None, namespace: str | None) -> bool:
-    """
-    Internal helper ``_is_ca_substitution_root``.
-
-    Parameters
-    ----------
-    local_name : object
-        Argument ``local_name``.
-    namespace : object
-        Argument ``namespace``.
-
-    Returns
-    -------
-    object
-        Return value.
-    """
-    return namespace == CA_EXTENSION_NS and local_name in CA_SUBSTITUTION_ROOTS
-
-
-def _extract_ca_extension_blocks(xml_content: str) -> list[str]:
-    """
-    Internal helper ``_extract_ca_extension_blocks``.
-
-    Parameters
-    ----------
-    xml_content : object
-        Argument ``xml_content``.
-
-    Returns
-    -------
-    object
-        Return value.
-    """
-    try:
-        root = etree.fromstring(xml_content.encode("utf-8"))
-    except etree.XMLSyntaxError:
-        return []
-
-    blocks: list[str] = []
-    for extension in root.iter(f"{{{_IWXXM_NS}}}extension"):
-        for child in extension:
-            if etree.QName(child).namespace != CA_EXTENSION_NS:
-                continue
-            blocks.append(etree.tostring(child, encoding="unicode"))
-    return blocks
-
-
-def _ca_xsd_probe_document(fragment_xml: str, *, product: str) -> str:
-    """
-    Internal helper ``_ca_xsd_probe_document``.
-
-    Parameters
-    ----------
-    fragment_xml : object
-        Argument ``fragment_xml``.
-    product : object
-        Argument ``product``.
-
-    Returns
-    -------
-    object
-        Return value.
-    """
-    product_u = product.upper()
-    if product_u in {"TAF", "AIRMET"}:
-        return f'<?xml version="1.0" encoding="UTF-8"?>\n{fragment_xml}'
-    return _wrap_ca_lwis_extension_block(fragment_xml)
-
-
-def _wrap_ca_lwis_extension_block(fragment_xml: str) -> str:
-    """
-    Internal helper ``_wrap_ca_lwis_extension_block``.
-
-    Parameters
-    ----------
-    fragment_xml : object
-        Argument ``fragment_xml``.
-
-    Returns
-    -------
-    object
-        Return value.
-    """
-    designator = "CYXX"
-    return f"""<?xml version="1.0" encoding="UTF-8"?>
-<iwxxm-ca:LWIS xmlns:iwxxm="http://icao.int/iwxxm/3.0"
-    xmlns:iwxxm-ca="{CA_EXTENSION_NS}"
-    xmlns:xlink="http://www.w3.org/1999/xlink"
-    xmlns:gml="http://www.opengis.net/gml/3.2"
-    xmlns:aixm="http://www.aixm.aero/schema/5.1.1"
-    gml:id="ca.extension.probe"
-    reportStatus="NORMAL"
-    permissibleUsage="OPERATIONAL"
-    automatedStation="true">
-  <iwxxm:issueTime>
-    <gml:TimeInstant gml:id="t.issue">
-      <gml:timePosition>2023-01-01T00:00:00Z</gml:timePosition>
-    </gml:TimeInstant>
-  </iwxxm:issueTime>
-  <iwxxm:aerodrome>
-    <aixm:AirportHeliport gml:id="ad.probe">
-      <aixm:timeSlice>
-        <aixm:AirportHeliportTimeSlice gml:id="ad.ts.probe">
-          <gml:validTime/>
-          <aixm:interpretation>SNAPSHOT</aixm:interpretation>
-          <aixm:designator>{designator}</aixm:designator>
-          <aixm:locationIndicatorICAO>{designator}</aixm:locationIndicatorICAO>
-        </aixm:AirportHeliportTimeSlice>
-      </aixm:timeSlice>
-    </aixm:AirportHeliport>
-  </iwxxm:aerodrome>
-  <iwxxm:observationTime>
-    <gml:TimeInstant gml:id="t.obs">
-      <gml:timePosition>2023-01-01T00:00:00Z</gml:timePosition>
-    </gml:TimeInstant>
-  </iwxxm:observationTime>
-  <iwxxm:observation>
-    <iwxxm:MeteorologicalAerodromeObservation gml:id="obs.probe" cloudAndVisibilityOK="false">
-      <iwxxm:extension>{fragment_xml}</iwxxm:extension>
-    </iwxxm:MeteorologicalAerodromeObservation>
-  </iwxxm:observation>
-</iwxxm-ca:LWIS>"""
 
 
 def _validate_ca_xsd_document(
@@ -377,23 +136,23 @@ def _validate_ca_xsd_document(
     catalog_roots: list[str],
 ) -> list[Issue]:
     """
-    Internal helper ``_validate_ca_xsd_document``.
+    Validate one document (or probe) against a Canadian product XSD.
 
     Parameters
     ----------
-    xml_content : object
-        Argument ``xml_content``.
-    product_xsd : object
-        Argument ``product_xsd``.
-    core_sch : object
-        Argument ``core_sch``.
-    catalog_roots : object
-        Argument ``catalog_roots``.
+    xml_content : str
+        XML to validate.
+    product_xsd : Path
+        Product XSD path.
+    core_sch : str
+        Core Schematron path (required by the native API).
+    catalog_roots : list[str]
+        Catalog roots for schema resolution.
 
     Returns
     -------
-    object
-        Return value.
+    list[Issue]
+        Findings for the ``ca_xsd`` stage.
     """
     ca_path = str(product_xsd)
     if rust_available():
@@ -417,25 +176,25 @@ def _validate_ca_xsd_layer(
     catalog_roots: list[str],
 ) -> list[Issue]:
     """
-    Internal helper ``_validate_ca_xsd_layer``.
+    Run the Canadian extension XSD stage for a product document.
 
     Parameters
     ----------
-    xml_content : object
-        Argument ``xml_content``.
-    product : object
-        Argument ``product``.
-    product_xsd : object
-        Argument ``product_xsd``.
-    core_sch : object
-        Argument ``core_sch``.
-    catalog_roots : object
-        Argument ``catalog_roots``.
+    xml_content : str
+        Full IWXXM document.
+    product : str
+        Product id.
+    product_xsd : Path
+        Mapped product XSD.
+    core_sch : str
+        Core Schematron path.
+    catalog_roots : list[str]
+        Catalog roots.
 
     Returns
     -------
-    object
-        Return value.
+    list[Issue]
+        Findings for the ``ca_xsd`` stage.
     """
     local_name, namespace = _document_root_name(xml_content)
 
@@ -447,7 +206,7 @@ def _validate_ca_xsd_layer(
             catalog_roots=catalog_roots,
         )
 
-    if local_name in _WMO_PRODUCT_ROOTS:
+    if local_name in WMO_PRODUCT_ROOTS:
         blocks = _extract_ca_extension_blocks(xml_content)
         if not blocks:
             return []
@@ -664,4 +423,14 @@ def validate_ca_eccc_layered(
     )
 
 
-__all__ = ["validate_ca_eccc_layered"]
+__all__ = [
+    "CA_EXTENSION_NS",
+    "CA_SUBSTITUTION_ROOTS",
+    "STAGE_CA_XSD",
+    "STAGE_CODE_CA",
+    "STAGE_EXCHANGE",
+    "STAGE_WELLFORMED",
+    "STAGE_WMO_SCH",
+    "STAGE_WMO_XSD",
+    "validate_ca_eccc_layered",
+]

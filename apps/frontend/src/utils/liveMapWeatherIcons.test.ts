@@ -21,9 +21,10 @@ describe('liveMapWeatherIcons', () => {
     expect(weatherIconHtml(ICE_SVG)).toContain('inline-flex');
   });
 
-  it('renders a rotated wind arrow and a temperature badge', () => {
+  it('renders a rotated wind arrow sized by magnitude and temperature badges in C/F', () => {
     expect(windVectorIconHtml(180)).toContain('rotate(180deg)');
-    expect(temperatureIconHtml(-5)).toContain('-5°');
-    expect(temperatureIconHtml(12)).toContain('12°');
+    expect(windVectorIconHtml(90, 36)).toContain('width:36px');
+    expect(temperatureIconHtml(-5, 'C')).toContain('-5°C');
+    expect(temperatureIconHtml(0, 'F')).toContain('32°F');
   });
 });

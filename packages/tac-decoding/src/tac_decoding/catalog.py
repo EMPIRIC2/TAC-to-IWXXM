@@ -15,6 +15,7 @@ from typing import Any, cast
 import yaml
 
 from tac_decoding.glossary import _OFFICIAL_TOKENS, load_glossary
+from tac_decoding.models.catalog import CatalogEntry, CatalogTokenMeta
 
 # Function words / markers that must not auto-default to ``content``.
 _FUNCTION_WORDS: frozenset[str] = frozenset(
@@ -41,7 +42,7 @@ _META_KEYS: tuple[str, ...] = (
 )
 
 
-def _tokens_meta_from_mapping(raw: object) -> dict[str, dict[str, str]]:
+def _tokens_meta_from_mapping(raw: object) -> dict[str, CatalogTokenMeta]:
     """
     Parse ``catalog_meta.yaml`` token map.
 
@@ -52,7 +53,7 @@ def _tokens_meta_from_mapping(raw: object) -> dict[str, dict[str, str]]:
 
     Returns
     -------
-    dict[str, dict[str, str]]
+    dict[str, CatalogTokenMeta]
         Uppercase token → non-empty string fields only.
     """
     if not isinstance(raw, dict):
@@ -62,13 +63,13 @@ def _tokens_meta_from_mapping(raw: object) -> dict[str, dict[str, str]]:
     if not isinstance(tokens_raw, dict):
         return {}
     token_map = cast(Mapping[Any, Any], tokens_raw)
-    out: dict[str, dict[str, str]] = {}
+    out: dict[str, CatalogTokenMeta] = {}
     for key, value in token_map.items():
         if not isinstance(key, str) or not key.strip():
             continue
         if not isinstance(value, dict):
             continue
-        fields: dict[str, str] = {}
+        fields: CatalogTokenMeta = {}
         value_map = cast(Mapping[Any, Any], value)
         for meta_key in _META_KEYS:
             field_val = value_map.get(meta_key)
@@ -80,13 +81,13 @@ def _tokens_meta_from_mapping(raw: object) -> dict[str, dict[str, str]]:
 
 
 @lru_cache(maxsize=1)
-def load_catalog_meta() -> dict[str, dict[str, str]]:
+def load_catalog_meta() -> dict[str, CatalogTokenMeta]:
     """
     Load packaged ``catalog_meta.yaml`` (token → additive fields).
 
     Returns
     -------
-    dict[str, dict[str, str]]
+    dict[str, CatalogTokenMeta]
         Meta rows keyed by uppercase token.
     """
     try:
@@ -109,13 +110,13 @@ def load_catalog_meta() -> dict[str, dict[str, str]]:
     return _tokens_meta_from_mapping(loaded)
 
 
-def reload_catalog_meta() -> dict[str, dict[str, str]]:
+def reload_catalog_meta() -> dict[str, CatalogTokenMeta]:
     """
     Clear the catalog-meta cache and reload (tests).
 
     Returns
     -------
-    dict[str, dict[str, str]]
+    dict[str, CatalogTokenMeta]
         Fresh meta rows keyed by uppercase token.
     """
     load_catalog_meta.cache_clear()
@@ -164,9 +165,9 @@ def catalog_entries(*, limit: int | None = None) -> list[dict[str, Any]]:
     """
     glossary = load_glossary()
     meta = load_catalog_meta()
-    items: list[dict[str, Any]] = []
+    items: list[CatalogEntry] = []
     for token in sorted(glossary):
-        row: dict[str, Any] = {
+        row: CatalogEntry = {
             "id": token,
             "title": token,
             "summary": glossary[token],
@@ -187,8 +188,8 @@ def catalog_entries(*, limit: int | None = None) -> list[dict[str, Any]]:
             row["issue_type"] = default_issue_type_for_token(token)
         items.append(row)
     if limit is not None:
-        return items[: max(0, limit)]
-    return items
+        return cast(list[dict[str, Any]], items[: max(0, limit)])
+    return cast(list[dict[str, Any]], items)
 
 
 def count_issue_types() -> dict[str, int]:

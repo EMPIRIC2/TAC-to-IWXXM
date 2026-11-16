@@ -6,94 +6,27 @@ from collections.abc import Sequence
 from typing import Any
 
 from iwxxm_validate.api import validate
-from iwxxm_validate.ca_eccc_bundle import CA_ECCC_IWXXM_VERSION, ca_eccc_catalog_roots
+from iwxxm_validate.ca_eccc_bundle import CA_ECCC_IWXXM_VERSION
 from iwxxm_validate.ca_eccc_validate import validate_ca_eccc_layered
 from iwxxm_validate.codelists import validate_codelist_references
 from iwxxm_validate.declared_package import apply_declared_package
 from iwxxm_validate.gml import validate_gml_references
-from iwxxm_validate.models import Issue, ValidationReport
+from iwxxm_validate.models import Issue, ValidationReport, issues_from_rust
 from iwxxm_validate.native import rust_available, rust_module
 from iwxxm_validate.paths import (
     ca_xsd_path,
     codelists_dir,
-    repo_root,
     schematron_path,
     us_catalog_path,
-    vendor_iwxxm_root,
-    version_dir,
     xsd_path,
 )
 from iwxxm_validate.pin_sch import PinSchError, assert_pin_schematron_match
+from iwxxm_validate.validate_levels import catalog_roots, report_from_issues
 from iwxxm_validate.wellformed import run_wellformed_lxml
 
-_DEFAULT_LEVELS: tuple[str, ...] = ("xsd", "schematron")
-_VALID_PROFILES = frozenset({"annex3", "iwxxm_us", "ca_eccc", "ca_msc_sigmet", "us_nws_convective_sigmet"})
-_ENGINE_PROFILE = {
-    "ca_msc_sigmet": "ca_eccc",
-    "us_nws_convective_sigmet": "iwxxm_us",
-}
-_VALID_LEVELS = frozenset({"wellformed", "xsd", "schematron", "gml", "codelists"})
-_RUST_LEVELS = frozenset({"wellformed", "xsd", "schematron"})
-_LXML_LEVELS = frozenset({"xsd", "schematron"})
-
-
-def _catalog_roots(iwxxm_version: str, *, profile: str = "annex3") -> list[str]:
-    """
-    Internal helper ``_catalog_roots``.
-
-    Parameters
-    ----------
-    iwxxm_version : object
-        Argument ``iwxxm_version``.
-    profile : object
-        Argument ``profile``.
-
-    Returns
-    -------
-    object
-        Return value.
-    """
-    vdir = version_dir(iwxxm_version)
-    root = vendor_iwxxm_root()
-    candidates = [
-        vdir / "IWXXM",
-        vdir,
-        root / "externalSchema",
-        root / "externalSchema" / "schemas.opengis.net",
-        root / "externalSchema" / "schemas.wmo.int",
-        root,
-        # Optional monorepo-only fallback (excluded from the wheel subset).
-        repo_root() / "vendor" / "schemas" / "iwxxm-translation" / "externalSchema",
-    ]
-    if profile in {"ca_eccc", "ca_msc_sigmet"}:
-        return ca_eccc_catalog_roots(iwxxm_version)
-    return [str(p) for p in candidates if p.is_dir()]
-
-
-def _issues_from_rust(raw: Sequence[dict[str, Any]]) -> list[Issue]:
-    """
-    Internal helper ``_issues_from_rust``.
-
-    Parameters
-    ----------
-    raw : object
-        Argument ``raw``.
-
-    Returns
-    -------
-    object
-        Return value.
-    """
-    return [
-        Issue(
-            severity=str(item.get("severity", "error")),
-            code=str(item.get("code", "NATIVE_ISSUE")),
-            message=str(item.get("message", "")),
-            layer=str(item.get("layer", "xsd")),
-            location=item.get("location"),
-        )
-        for item in raw
-    ]
+# Compat alias for tests that call private helpers on this module.
+_catalog_roots = catalog_roots
+_report_from_issues = report_from_issues
 
 
 def _append_extended_levels(
@@ -104,23 +37,25 @@ def _append_extended_levels(
     selected: tuple[str, ...],
 ) -> list[Issue]:
     """
-    Internal helper ``_append_extended_levels``.
+    Append GML / codelist findings when those levels are selected.
+
+    Uses this module's ``codelists_dir`` so tests can monkeypatch it.
 
     Parameters
     ----------
-    issues : object
-        Argument ``issues``.
-    xml_content : object
-        Argument ``xml_content``.
-    iwxxm_version : object
-        Argument ``iwxxm_version``.
-    selected : object
-        Argument ``selected``.
+    issues : list[Issue]
+        Existing findings.
+    xml_content : str
+        IWXXM XML.
+    iwxxm_version : str
+        IWXXM release line.
+    selected : tuple[str, ...]
+        Selected validation levels.
 
     Returns
     -------
-    object
-        Return value.
+    list[Issue]
+        Merged findings.
     """
     out = list(issues)
     try:
@@ -144,36 +79,15 @@ def _append_extended_levels(
     return out
 
 
-def _report_from_issues(
-    issues: list[Issue],
-    *,
-    iwxxm_version: str,
-    profile: str,
-) -> ValidationReport:
-    """
-    Internal helper ``_report_from_issues``.
-
-    Parameters
-    ----------
-    issues : object
-        Argument ``issues``.
-    iwxxm_version : object
-        Argument ``iwxxm_version``.
-    profile : object
-        Argument ``profile``.
-
-    Returns
-    -------
-    object
-        Return value.
-    """
-    ok = not any(issue.severity == "error" for issue in issues)
-    return ValidationReport(
-        ok=ok,
-        iwxxm_version=iwxxm_version,
-        profile=profile,
-        issues=issues,
-    )
+_DEFAULT_LEVELS: tuple[str, ...] = ("xsd", "schematron")
+_VALID_PROFILES = frozenset({"annex3", "iwxxm_us", "ca_eccc", "ca_msc_sigmet", "us_nws_convective_sigmet"})
+_ENGINE_PROFILE = {
+    "ca_msc_sigmet": "ca_eccc",
+    "us_nws_convective_sigmet": "iwxxm_us",
+}
+_VALID_LEVELS = frozenset({"wellformed", "xsd", "schematron", "gml", "codelists"})
+_RUST_LEVELS = frozenset({"wellformed", "xsd", "schematron"})
+_LXML_LEVELS = frozenset({"xsd", "schematron"})
 
 
 def _validate_core_levels(
@@ -184,23 +98,23 @@ def _validate_core_levels(
     selected: tuple[str, ...],
 ) -> ValidationReport:
     """
-    Internal helper ``_validate_core_levels``.
+    Validate core levels for annex3 / iwxxm_us profiles.
 
     Parameters
     ----------
-    xml_content : object
-        Argument ``xml_content``.
-    iwxxm_version : object
-        Argument ``iwxxm_version``.
-    profile : object
-        Argument ``profile``.
-    selected : object
-        Argument ``selected``.
+    xml_content : str
+        IWXXM XML.
+    iwxxm_version : str
+        Release line.
+    profile : str
+        Profile id.
+    selected : tuple[str, ...]
+        Selected levels.
 
     Returns
     -------
-    object
-        Return value.
+    ValidationReport
+        Aggregate report.
     """
     rust_levels = [level for level in selected if level in _RUST_LEVELS]
     lxml_levels = [level for level in selected if level in _LXML_LEVELS]
@@ -223,7 +137,7 @@ def _validate_core_levels(
     only_extended = not rust_levels and not lxml_levels
     if only_extended:
         issues = _append_extended_levels([], xml_content, iwxxm_version=iwxxm_version, selected=selected)
-        return _report_from_issues(issues, iwxxm_version=iwxxm_version, profile=profile)
+        return report_from_issues(issues, iwxxm_version=iwxxm_version, profile=profile)
 
     if rust_available() and rust_levels:
         rust = rust_module()
@@ -245,29 +159,29 @@ def _validate_core_levels(
                     )
                 ],
             )
-        raw = rust.validate_document(
+        raw: list[dict[str, Any]] = rust.validate_document(
             xml_content,
             xsd_path=xsd,
             sch_path=sch,
-            catalog_roots=_catalog_roots(iwxxm_version, profile=profile),
+            catalog_roots=catalog_roots(iwxxm_version, profile=profile),
             levels=rust_levels,
         )
-        issues = _issues_from_rust(raw)
+        issues = issues_from_rust(raw)
     else:
         issues: list[Issue] = []
         if "wellformed" in selected:
             issues.extend(run_wellformed_lxml(xml_content))
-        if lxml_levels and not any(i.severity == "error" for i in issues):
+        if lxml_levels and not any(issue.severity == "error" for issue in issues):
             lxml_report = validate(
                 xml_content,
                 iwxxm_version=iwxxm_version,
                 profile=profile,
                 levels=tuple(lxml_levels),
             )
-            issues.extend(lxml_report.issues)
+            issues.extend(list(lxml_report.issues))
 
     merged = _append_extended_levels(issues, xml_content, iwxxm_version=iwxxm_version, selected=selected)
-    return _report_from_issues(merged, iwxxm_version=iwxxm_version, profile=profile)
+    return report_from_issues(merged, iwxxm_version=iwxxm_version, profile=profile)
 
 
 def _validate_iwxxm(
@@ -486,7 +400,7 @@ def validate_iwxxm(
     )
     if output_policy_id is None or not output_policy_id.strip():
         return report
-    from iwxxm_validate.policy import apply_output_policy_to_report
+    from iwxxm_validate.policy_apply import apply_output_policy_to_report
 
     return apply_output_policy_to_report(report, output_policy_id, profile=profile)
 

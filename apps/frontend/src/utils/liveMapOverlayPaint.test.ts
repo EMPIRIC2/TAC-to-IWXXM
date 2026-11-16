@@ -5,7 +5,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import L from 'leaflet';
 import type { LivePlace } from '@/utils/liveMap';
-import { paintTacOverlays } from '@/utils/liveMapOverlayPaint';
+import { paintTacOverlays, paintTemperatureMarkers } from '@/utils/liveMapOverlayPaint';
 import { clusterByStation } from '@/utils/liveMapStationCluster';
 import {
   defaultTacOverlayVisibility,
@@ -105,13 +105,15 @@ describe('paintTacOverlays', () => {
     expect(L.circleMarker).not.toHaveBeenCalled();
   });
 
-  it('paints weather, temp, wind vector, and wind intensity when TAC feeds them', () => {
+  it('paints weather, wind vector (scaled), and wind intensity when TAC feeds them', () => {
     const cluster = clusterByStation([storm])[0];
     expect(cluster).toBeDefined();
     if (!cluster) {
       return;
     }
-    const layers = paintTacOverlays(mapStub, cluster, allOverlaysOn());
+    const layers = paintTacOverlays(mapStub, cluster, allOverlaysOn(), {
+      magnitudeScale: 1.5,
+    });
     expect(layers.length).toBeGreaterThan(0);
     expect(L.divIcon).toHaveBeenCalled();
     expect(L.marker).toHaveBeenCalled();
@@ -121,6 +123,51 @@ describe('paintTacOverlays', () => {
         className: 'tac-overlay-icon-wind-intensity',
       }),
     );
+  });
+
+  it('skips temperature badges when TAC has no temperature group', () => {
+    const cluster = clusterByStation([calm])[0];
+    expect(cluster).toBeDefined();
+    if (!cluster) {
+      return;
+    }
+    expect(paintTemperatureMarkers(mapStub, cluster, 'C')).toEqual([]);
+    expect(L.marker).not.toHaveBeenCalled();
+  });
+
+  it('paints temperature badges in C or F for temperatures mode', () => {
+    const cluster = clusterByStation([storm])[0];
+    expect(cluster).toBeDefined();
+    if (!cluster) {
+      return;
+    }
+    vi.mocked(L.divIcon).mockClear();
+    const cLayers = paintTemperatureMarkers(mapStub, cluster, 'C');
+    expect(cLayers.length).toBeGreaterThan(0);
+    expect(L.divIcon).toHaveBeenCalledWith(
+      expect.objectContaining({
+        html: expect.stringContaining('°C'),
+      }),
+    );
+    vi.mocked(L.divIcon).mockClear();
+    paintTemperatureMarkers(mapStub, cluster, 'F');
+    expect(L.divIcon).toHaveBeenCalledWith(
+      expect.objectContaining({
+        html: expect.stringContaining('°F'),
+      }),
+    );
+  });
+
+  it('uses default magnitude scale when paint options omit scale', () => {
+    const cluster = clusterByStation([storm])[0];
+    expect(cluster).toBeDefined();
+    if (!cluster) {
+      return;
+    }
+    const layers = paintTacOverlays(mapStub, cluster, allOverlaysOn());
+    expect(layers.length).toBeGreaterThan(0);
+    expect(L.circleMarker).toHaveBeenCalled();
+    expect(L.marker).toHaveBeenCalled();
   });
 
   it('returns null painters when the station TAC does not feed the overlay', () => {
