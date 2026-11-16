@@ -26,7 +26,7 @@ packages = ["src/tac_decoding"]
 "src/tac_decoding/data/packs/metar.yaml" = "tac_decoding/data/packs/metar.yaml"
 "src/tac_decoding/data/packs/speci.yaml" = "tac_decoding/data/packs/speci.yaml"
 
-# ADR-048 / TC-EVDOC-007: warnings are errors (same bar as packages/auth).
+# / TC-EVDOC-007: warnings are errors (same bar as packages/auth).
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["src"]

@@ -19,10 +19,6 @@ def download_ourairports_data(output_path: Path) -> None:
     """
     Download airports.csv from OurAirports.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (download_ourairports_data)
-    2
 
     Parameters
     ----------
@@ -39,10 +35,6 @@ def convert_csv_to_json(csv_path: Path, json_path: Path) -> None:
     """
     Convert OurAirports CSV to airports.json format.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (convert_csv_to_json)
-    2
 
     Parameters
     ----------
@@ -73,7 +65,7 @@ def convert_csv_to_json(csv_path: Path, json_path: Path) -> None:
 
         for row in reader:
             # Prefer icao_code; fall back to ident when it is a 4-char designator
-            # (aligns with ADR-051 reference-lookup matching on ident).
+            # (aligns with reference-lookup matching on ident).
             icao = row.get("icao_code", "").strip().upper()
             if not icao:
                 ident = row.get("ident", "").strip().upper()
@@ -175,10 +167,6 @@ def verify_bgbw(json_path: Path) -> None:
     """
     Verify BGBW is in the database.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (verify_bgbw)
-    2
 
     Parameters
     ----------
@@ -209,11 +197,6 @@ def verify_bgbw(json_path: Path) -> None:
 def main():
     """
     Main execution.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (main)
-    2
     """
     # Determine paths
     script_dir = Path(__file__).parent

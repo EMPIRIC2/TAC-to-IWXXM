@@ -96,11 +96,6 @@ async def mass_ingest(
     -------
     JSONResponse
         Per-file accept/reject list and summary counts.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (mass_ingest)
-    2
     """
     uploads = files
     if not uploads:
@@ -176,10 +171,6 @@ async def ingest_collect(
     Member extraction is not available.
 
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (ingest_collect)
-    2
 
     Parameters
     ----------

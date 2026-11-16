@@ -3652,7 +3652,7 @@ describe('FileConverter Component', () => {
       ).toBe('DEBUG');
 
       // Validation checkboxes (not soft-preview / live IWXXM toggles).
-      // ADR-054: Strict master defaults OFF; label is "Strict".
+      // : Strict master defaults OFF; label is "Strict".
       const strictCheck = screen.getByTestId(
         'strict-validation-checkbox',
       ) as HTMLInputElement;

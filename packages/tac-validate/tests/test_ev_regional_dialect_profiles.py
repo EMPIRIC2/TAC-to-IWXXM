@@ -1,6 +1,6 @@
 """Regional dialect profiles — inherits, PROB policy, ICAO resolve, lint_with_profile.
 
-[Corpus: product §F20] [Corpus: product §F36] [Corpus: adr/ADR-046] [Corpus: tests]
+[Corpus: product §F20] [Corpus: product §F36] [Corpus: tests]
 """
 
 from __future__ import annotations

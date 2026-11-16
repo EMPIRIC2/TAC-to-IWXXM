@@ -1,6 +1,6 @@
 """T1.5 — tac-decoding does not import tac2iwxxm.
 
-[Corpus: adr/ADR-045] [Corpus: tests]
+[Corpus: tests]
 """
 
 from __future__ import annotations

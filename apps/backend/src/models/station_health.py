@@ -1,4 +1,4 @@
-"""OpenAPI models for public station-health routes (F39)."""
+"""Domain/OpenAPI models for public station-health routes (F39)."""
 
 from __future__ import annotations
 
@@ -45,6 +45,31 @@ class StationProductGradeModel(BaseModel):
     lint_error_count: int = 0
 
 
+class StationCentennialMetricModel(BaseModel):
+    """
+    One Centennial recognition-criteria proxy or insufficient-data row.
+
+    Attributes
+    ----------
+    id : object
+        Field ``id``.
+    label : object
+        Field ``label``.
+    status : object
+        Field ``status``.
+    score : object
+        Field ``score``.
+    detail : object
+        Field ``detail``.
+    """
+
+    id: str
+    label: str
+    status: str = Field(description="available or insufficient_data")
+    score: float | None = None
+    detail: str = ""
+
+
 class StationListItemModel(BaseModel):
     """
     One station row on the dashboard list.
@@ -55,6 +80,8 @@ class StationListItemModel(BaseModel):
         Field ``icao``.
     name : object
         Field ``name``.
+    wmo_region : object
+        Field ``wmo_region``.
     overall_grade : object
         Field ``overall_grade``.
     overall_score : object
@@ -65,9 +92,17 @@ class StationListItemModel(BaseModel):
 
     icao: str
     name: str | None = None
+    wmo_region: str = Field(
+        default="unknown",
+        description="WMO Regional Association id (I-VI) or unknown",
+    )
     overall_grade: str
     overall_score: float = 0.0
     products: list[StationProductGradeModel] = Field(default_factory=list)
+    maintenance_tag_counts: dict[str, int] = Field(default_factory=dict)
+    file_format_counts: dict[str, int] = Field(default_factory=dict)
+    issue_code_counts: dict[str, int] = Field(default_factory=dict)
+    centennial_metrics: list[StationCentennialMetricModel] = Field(default_factory=list)
 
 
 class StationHealthSummaryModel(BaseModel):
@@ -125,6 +160,10 @@ class StationWindowModel(BaseModel):
     overall_grade: str
     overall_score: float = 0.0
     products: list[StationProductGradeModel] = Field(default_factory=list)
+    maintenance_tag_counts: dict[str, int] = Field(default_factory=dict)
+    file_format_counts: dict[str, int] = Field(default_factory=dict)
+    issue_code_counts: dict[str, int] = Field(default_factory=dict)
+    centennial_metrics: list[StationCentennialMetricModel] = Field(default_factory=list)
 
 
 class StationHealthDetailResponse(BaseModel):
@@ -137,6 +176,8 @@ class StationHealthDetailResponse(BaseModel):
         Field ``icao``.
     name : object
         Field ``name``.
+    wmo_region : object
+        Field ``wmo_region``.
     windows : object
         Field ``windows``.
     record_count : object
@@ -145,8 +186,16 @@ class StationHealthDetailResponse(BaseModel):
 
     icao: str
     name: str | None = None
+    wmo_region: str = Field(
+        default="unknown",
+        description="WMO Regional Association id (I-VI) or unknown",
+    )
     windows: dict[str, StationWindowModel] = Field(default_factory=dict)
     record_count: int = 0
+    maintenance_tag_counts: dict[str, int] = Field(default_factory=dict)
+    file_format_counts: dict[str, int] = Field(default_factory=dict)
+    issue_code_counts: dict[str, int] = Field(default_factory=dict)
+    centennial_metrics: list[StationCentennialMetricModel] = Field(default_factory=list)
 
 
 class StationMetricDefinitionModel(BaseModel):

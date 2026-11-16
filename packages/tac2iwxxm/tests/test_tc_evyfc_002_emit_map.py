@@ -1,4 +1,4 @@
-"""TC-EVYFC-002 — Convert emit YAML parity / routing (#1229 / ADR-047)."""
+"""TC-EVYFC-002 — Convert emit YAML parity routing (#1229)."""
 
 from __future__ import annotations
 

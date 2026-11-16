@@ -38,10 +38,6 @@ class MatchPort(Protocol):
         """
         Return decode spans for the current report. Empty means none were found.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (matches)
-        2
 
         Returns
         -------
@@ -61,10 +57,6 @@ def spans_from_port(port: MatchPort | Sequence[DecodeMatch] | None) -> tuple[Dec
     """
     Normalize a port, a span sequence, or omission (``None``).
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (spans_from_port)
-    2
 
     Parameters
     ----------

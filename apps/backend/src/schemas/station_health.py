@@ -1,6 +1,7 @@
 """HTTP schema adapters for station_health (re-export from ``src.models``)."""
 
 from src.models.station_health import (
+    StationCentennialMetricModel,
     StationHealthDetailResponse,
     StationHealthListResponse,
     StationHealthMetricsResponse,
@@ -12,6 +13,7 @@ from src.models.station_health import (
 )
 
 __all__ = [
+    "StationCentennialMetricModel",
     "StationHealthDetailResponse",
     "StationHealthListResponse",
     "StationHealthMetricsResponse",

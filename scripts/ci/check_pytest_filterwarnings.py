@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Fail closed when pytest configs tolerate warnings.
 
-ADR-048 / TC-EVDOC-007: every ``pyproject.toml`` that defines
+ TC-EVDOC-007: every ``pyproject.toml`` that defines
 ``[tool.pytest.ini_options]`` (or owns a ``tests/`` tree under ``apps/`` /
 ``packages/`` / repo root) must set ``filterwarnings`` to treat warnings as
 errors. Broad ``ignore`` filters are rejected. Mutation-only ``-W`` overrides

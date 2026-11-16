@@ -1,5 +1,5 @@
 /**
- * Privacy preference store (F22 / ADR-031 / E17-7/16/17; deepened F31 / TC-F31-005).
+ * Privacy preference store (F22 / E17-7/16/17; deepened F31 TC-F31-005).
  *
  * Preferences live in `localStorage`. Guest work-history IndexedDB is **gateable**.
  * GPC detect/apply (E17-16) is completed in T6.3.

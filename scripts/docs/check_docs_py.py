@@ -1,7 +1,11 @@
 #!/usr/bin/env python3
-"""ADR-048 Python docstring presence + Examples + NumPy shape checker.
+"""Python docstring presence + NumPy shape checker.
 
-[Corpus: adr/ADR-048] [Corpus: docstrings]
+Examples sections are optional. When present they must be real API
+demonstrations — placeholder ``>>> 1 + 1`` / ``docstring smoke`` stubs fail.
+
+[Corpus: doc-standards] [Corpus: tests]
+TC-EVDOC-001 / TC-EVDOC-002 / TC-EVDOC-003 / TC-EVDOC-004
 
 Scans in-scope product trees. Exit 0 when clean; prints violations otherwise.
 """
@@ -49,14 +53,15 @@ IN_SCOPE_GLOBS = (
     "apps/worker",
 )
 
-EXAMPLES_RE = re.compile(r"(?m)^Examples\s*\n-------+")
 PARAMS_RE = re.compile(r"(?m)^Parameters\s*\n----------+")
 RETURNS_RE = re.compile(r"(?m)^Returns\s*\n-------+")
 ATTRIBUTES_RE = re.compile(r"(?m)^Attributes\s*\n----------+")
+# Placeholder arithmetic left by scripts/docs/backfill_py_docs.py — not allowed.
+SMOKE_DOCTEST_RE = re.compile(r">>> 1 \+ 1|docstring smoke")
 
 
 def _should_skip(path: Path) -> bool:
-    """Return True when ``path`` is outside the ADR-048 product scan."""
+    """Return True when ``path`` is outside the product scan."""
     parts = path.as_posix()
     name = path.name
     if any(part in parts for part in SKIP_PATH_PARTS):
@@ -117,6 +122,8 @@ def _doc_ok_private_fn(
     issues: list[str] = []
     if not doc or not doc.strip():
         return ["missing docstring"]
+    if SMOKE_DOCTEST_RE.search(doc):
+        issues.append("placeholder doctest smoke (>>> 1 + 1)")
     if has_args and not PARAMS_RE.search(doc):
         issues.append("missing Parameters section")
     if has_return and not RETURNS_RE.search(doc):
@@ -146,12 +153,15 @@ def _doc_ok_private(doc: str | None) -> bool:
 def _doc_ok_public_fn(
     doc: str | None, *, has_args: bool, has_return: bool
 ) -> list[str]:
-    """Return list of public-function shape violations for ``doc``."""
+    """Return list of public-function shape violations for ``doc``.
+
+    Examples are optional. Placeholder ``>>> 1 + 1`` smoke stubs are rejected.
+    """
     issues: list[str] = []
     if not doc or not doc.strip():
         return ["missing docstring"]
-    if not EXAMPLES_RE.search(doc):
-        issues.append("missing Examples section")
+    if SMOKE_DOCTEST_RE.search(doc):
+        issues.append("placeholder doctest smoke (>>> 1 + 1)")
     if has_args and not PARAMS_RE.search(doc):
         issues.append("missing Parameters section")
     if has_return and not RETURNS_RE.search(doc):
@@ -166,7 +176,7 @@ def _doc_ok_public_class(doc: str | None) -> list[str]:
         return ["missing docstring"]
     if ATTRIBUTES_RE.search(doc) or PARAMS_RE.search(doc):
         return []
-    # Module-style one-liner classes still need Attributes OR Parameters per ADR-048
+    # Module-style one-liner classes still need Attributes OR Parameters per
     return ["missing Attributes or Parameters section"]
 
 
@@ -191,7 +201,7 @@ def check_file(path: Path) -> list[str]:
     missing: list[str] = []
 
     class Visitor(ast.NodeVisitor):
-        """Walk AST collecting ADR-048 docstring violations."""
+        """Walk AST collecting docstring violations."""
 
         def __init__(self) -> None:
             self._stub_depth = 0
@@ -267,7 +277,9 @@ def iter_in_scope(root: Path) -> list[Path]:
     files: list[Path] = []
     for pattern in IN_SCOPE_GLOBS:
         for base in root.glob(pattern):
-            if not base.exists():  # pragma: no cover - Path.glob never yields missing paths
+            if (
+                not base.exists()
+            ):  # pragma: no cover - Path.glob never yields missing paths
                 continue
             if base.is_file() and base.suffix == ".py" and not _should_skip(base):
                 files.append(base)

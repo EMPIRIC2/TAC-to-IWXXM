@@ -1,4 +1,4 @@
-"""TC-SH-003 / TC-SH-004 — solidus counters and grade rules."""
+"""TC-SH-003 / TC-SH-004 - solidus counters and grade rules."""
 
 from __future__ import annotations
 

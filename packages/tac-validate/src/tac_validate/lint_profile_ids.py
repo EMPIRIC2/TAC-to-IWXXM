@@ -4,7 +4,7 @@ Catalog keys are lowercase. Quality-matrix YAML historically used UPPERCASE
 leaf ids (``CA_MSC_SIGMET``, ``US_NWS_*``). Sticky collectors should casefold
 through this helper so Match keys align with ``lint_profiles.yaml``.
 
-[Corpus: product §F15] [Corpus: product §F36] [Corpus: adr/ADR-046]
+[Corpus: product §F15] [Corpus: product §F36]
 """
 
 from __future__ import annotations
@@ -12,7 +12,7 @@ from __future__ import annotations
 from typing import Final
 
 # Legacy spellings that are not a pure casefold of a catalog id.
-# Conversion alias ICAO_2025 → annex3 (lint catalog root / ADR-055 defaults).
+# Conversion alias ICAO_2025 → annex3 (lint catalog root / defaults).
 PROFILE_ID_ALIASES: Final[dict[str, str]] = {
     "icao_2025": "annex3",
 }

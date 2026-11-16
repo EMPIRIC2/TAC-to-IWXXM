@@ -27,11 +27,6 @@ def emit_metar_speci_iwxxm_us(
     -------
     str
         IWXXM XML document with US extension blocks.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (emit_metar_speci_iwxxm_us)
-    2
     """
     ns = NS.get(iwxxm_version)
     if ns is None:
@@ -468,11 +463,6 @@ def emit_taf_iwxxm_us(ir: dict[str, Any], *, iwxxm_version: str) -> str:
     -------
     str
         TAF annex3 body plus optional ``MeteorologicalAerodromeForecastExtension``.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (emit_taf_iwxxm_us)
-    2
     """
     from tac2iwxxm.profiles.annex3_emit import emit_taf_annex3
 

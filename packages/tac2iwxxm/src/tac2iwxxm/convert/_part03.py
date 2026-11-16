@@ -38,7 +38,7 @@ def convert(
 
     preview : bool, optional
         When ``True``, fatal parse/profile failures still return best-effort stub XML
-        (soft-preview / ADR-022). Does not imply Schematron-passed publish.
+        (soft-preview). Does not imply Schematron-passed publish.
 
     emit_translation_centre : bool, optional
         When ``True``, emit ``translationCentreDesignator`` / ``translationCentreName``
@@ -77,11 +77,6 @@ def convert(
     -------
     ConvertResult
         Structured result with XML, IR, and issues.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (convert)
-    2
     """
     product_u = product.upper()
     if product_u in {"METAR", "SPECI"}:
@@ -344,7 +339,7 @@ def convert(
     # to operators (EV-beta-ux-export-auth / D-EV-beta-05).
     if propagate_issue is not None:
         issues.append(propagate_issue)
-    # Pipeline overlay: decode residuals → TAC warning (ADR-054 ladder; live-eval map).
+    # Pipeline overlay: decode residuals → TAC warning (ladder; live-eval map).
     decoded_for_partial = decode_tac(tac, product=product_u)
     residual_spans = [r for r in decoded_for_partial.residuals if r.text and r.text.strip()]
     if residual_spans:

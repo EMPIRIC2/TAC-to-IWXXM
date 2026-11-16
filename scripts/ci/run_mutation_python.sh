@@ -90,7 +90,7 @@ CMD=(
   --gremlin-report=json
   --gremlins-html-dir="${REPORT_DIR}/${TARGET}-html"
   --override-ini=addopts=
-  # ADR-048 warns-as-errors: gremlins empty-coverage pre-scan is advisory only
+  # warns-as-errors: gremlins empty-coverage pre-scan is advisory only
   # (https://github.com/mikelane/pytest-gremlins/issues/113). Keep -W ignore here
   # so mutation chunks stay green even if root pyproject filterwarnings drifts.
   -W "ignore:Coverage collection returned no data:UserWarning"

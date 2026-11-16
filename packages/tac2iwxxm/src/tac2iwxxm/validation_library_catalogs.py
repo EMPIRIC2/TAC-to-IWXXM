@@ -39,11 +39,6 @@ def load_tac_validation_rules() -> dict[str, Any]:
     -------
     dict[str, Any]
         Mined TAC validation rules catalog.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (load_tac_validation_rules)
-    2
     """
     data = _load_yaml("tac_validation_rules.yaml")
     if "rules" not in data:
@@ -60,11 +55,6 @@ def load_iwxxm_validation_asserts() -> dict[str, Any]:
     -------
     dict[str, Any]
         Mined IWXXM Schematron assert catalog.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (load_iwxxm_validation_asserts)
-    2
     """
     data = _load_yaml("iwxxm_validation_asserts.yaml")
     if "asserts" not in data:

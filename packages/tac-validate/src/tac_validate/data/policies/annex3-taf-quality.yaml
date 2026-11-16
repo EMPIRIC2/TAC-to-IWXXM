@@ -1,4 +1,4 @@
-# Builtin annex3 TAF TAC quality policy (ADR-046 / M4 #1230).
+# Builtin annex3 TAF TAC quality policy (M4 #1230).
 # Empty select = all non-preview registry codes for product taf.
 schema_version: 1
 id: annex3-taf-quality

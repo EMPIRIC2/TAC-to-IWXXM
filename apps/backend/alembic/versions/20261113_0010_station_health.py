@@ -23,11 +23,6 @@ depends_on: str | Sequence[str] | None = None
 def upgrade() -> None:
     """
     Create station health tables and seed metric definitions.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (upgrade)
-    2
     """
     op.create_table(
         "station_registry",
@@ -159,11 +154,6 @@ def upgrade() -> None:
 def downgrade() -> None:
     """
     Drop station health tables.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (downgrade)
-    2
     """
     op.drop_table("station_health_grades")
     op.drop_table("station_metric_definitions")

@@ -64,7 +64,7 @@ def test_postgres_record_observation_writes_sql() -> None:
     )
     assert row is not None
     assert row.icao == "KJFK"
-    assert conn.execute.call_count == 2
+    assert conn.execute.call_count == 3
 
 
 @pytest.mark.parametrize(

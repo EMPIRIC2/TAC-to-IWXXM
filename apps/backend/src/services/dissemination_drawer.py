@@ -78,10 +78,6 @@ def default_allowlist() -> Allowlist:
     """
     Load the process egress allowlist (fail-closed when empty).
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (default_allowlist)
-    2
 
     Returns
     -------
@@ -103,10 +99,6 @@ async def run_non_db_preflight(
     """
     Run WIS2 / EDIS / F19 preflight for the public drawer.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (run_non_db_preflight)
-    2
 
     Parameters
     ----------
@@ -168,10 +160,6 @@ async def run_non_db_send(
     """
     Deliver IWXXM through WIS2 / EDIS / F19 after allowlist checks.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (run_non_db_send)
-    2
 
     Parameters
     ----------

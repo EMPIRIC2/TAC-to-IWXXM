@@ -1,4 +1,4 @@
-"""Extensible decode glossary - official tables + YAML overrides (F9 / ADR-032).
+"""Extensible decode glossary - official tables + YAML overrides (F9).
 
 Merge order: official/near-official meanings first, then YAML overlay
 (``decode_glossary.yaml`` / ``TAC_DECODING_GLOSSARY_PATH`` or legacy
@@ -127,11 +127,6 @@ def set_location_name_resolver(resolver: LocationNameResolver | None) -> None:
     resolver : LocationNameResolver | None
         Callable returning a place name for an ICAO designator, or ``None`` on
         miss. ``None`` clears the resolver (designator-only explanations).
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (set_location_name_resolver)
-    2
     """
     global _location_name_resolver
     _location_name_resolver = resolver
@@ -193,11 +188,6 @@ def resolve_location_name(icao: str) -> str | None:
     -------
     str | None
         Place name when resolvable; ``None`` on miss or when no source is set.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (resolve_location_name)
-    2
     """
     designator = icao.strip().upper()
     if _location_name_resolver is not None:
@@ -280,11 +270,6 @@ def load_glossary() -> dict[str, str]:
     -------
     dict[str, str]
         Uppercase token → English meaning. Env path overrides packaged YAML keys.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (load_glossary)
-    2
     """
     overlay: dict[str, str] = {}
     overlay.update(_packaged_overlay_tokens())
@@ -302,11 +287,6 @@ def reload_glossary() -> dict[str, str]:
     -------
     dict[str, str]
         Clear the glossary cache and reload (tests / hot reload).
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (reload_glossary)
-    2
     """
     load_glossary.cache_clear()
     return load_glossary()
@@ -325,11 +305,6 @@ def meaning_for(token: str) -> str:
     -------
     str
         English meaning, or empty string if unknown.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (meaning_for)
-    2
     """
     return load_glossary().get(token.upper(), "")
 
@@ -350,11 +325,6 @@ def explain_glossary_token(token: str, *, fallback: str | None = None) -> str | 
     -------
     str | None
         Capitalized meaning or fallback; ``None`` if both missing.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (explain_glossary_token)
-    2
     """
     meaning = meaning_for(token)
     if meaning:

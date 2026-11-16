@@ -4554,12 +4554,48 @@ export interface components {
             options: components["schemas"]["SelectionOption"][];
         };
         /**
+         * StationCentennialMetricModel
+         * @description One Centennial recognition-criteria proxy or insufficient-data row.
+         */
+        StationCentennialMetricModel: {
+            /**
+             * Detail
+             * @default
+             */
+            detail: string;
+            /** Id */
+            id: string;
+            /** Label */
+            label: string;
+            /** Score */
+            score?: number | null;
+            /**
+             * Status
+             * @description available or insufficient_data
+             */
+            status: string;
+        };
+        /**
          * StationHealthDetailResponse
          * @description Response for GET /api/v1/station-health/{icao}.
          */
         StationHealthDetailResponse: {
+            /** Centennial Metrics */
+            centennial_metrics?: components["schemas"]["StationCentennialMetricModel"][];
+            /** File Format Counts */
+            file_format_counts?: {
+                [key: string]: number;
+            };
             /** Icao */
             icao: string;
+            /** Issue Code Counts */
+            issue_code_counts?: {
+                [key: string]: number;
+            };
+            /** Maintenance Tag Counts */
+            maintenance_tag_counts?: {
+                [key: string]: number;
+            };
             /** Name */
             name?: string | null;
             /**
@@ -4571,6 +4607,12 @@ export interface components {
             windows?: {
                 [key: string]: components["schemas"]["StationWindowModel"];
             };
+            /**
+             * Wmo Region
+             * @description WMO Regional Association id (I-VI) or unknown
+             * @default unknown
+             */
+            wmo_region: string;
         };
         /**
          * StationHealthListResponse
@@ -4613,8 +4655,22 @@ export interface components {
          * @description One station row on the dashboard list.
          */
         StationListItemModel: {
+            /** Centennial Metrics */
+            centennial_metrics?: components["schemas"]["StationCentennialMetricModel"][];
+            /** File Format Counts */
+            file_format_counts?: {
+                [key: string]: number;
+            };
             /** Icao */
             icao: string;
+            /** Issue Code Counts */
+            issue_code_counts?: {
+                [key: string]: number;
+            };
+            /** Maintenance Tag Counts */
+            maintenance_tag_counts?: {
+                [key: string]: number;
+            };
             /** Name */
             name?: string | null;
             /** Overall Grade */
@@ -4626,6 +4682,12 @@ export interface components {
             overall_score: number;
             /** Products */
             products?: components["schemas"]["StationProductGradeModel"][];
+            /**
+             * Wmo Region
+             * @description WMO Regional Association id (I-VI) or unknown
+             * @default unknown
+             */
+            wmo_region: string;
         };
         /**
          * StationMetricDefinitionModel
@@ -4701,6 +4763,20 @@ export interface components {
          * @description One window block on the station detail page.
          */
         StationWindowModel: {
+            /** Centennial Metrics */
+            centennial_metrics?: components["schemas"]["StationCentennialMetricModel"][];
+            /** File Format Counts */
+            file_format_counts?: {
+                [key: string]: number;
+            };
+            /** Issue Code Counts */
+            issue_code_counts?: {
+                [key: string]: number;
+            };
+            /** Maintenance Tag Counts */
+            maintenance_tag_counts?: {
+                [key: string]: number;
+            };
             /** Overall Grade */
             overall_grade: string;
             /**
@@ -7721,13 +7797,15 @@ export interface operations {
     list_station_health_api_v1_station_health_get: {
         parameters: {
             query?: {
-                /** @description Time window: 6h, 1d, or 30d */
+                /** @description Time window: 6h, 1d, 30d, or 90d */
                 window?: string;
                 /** @description Optional product filter */
                 product?: string | null;
                 /** @description Optional letter grade filter */
                 grade?: string | null;
-                /** @description Max stations to return */
+                /** @description Optional WMO region filter: I, II, III, IV, V, VI, or unknown */
+                region?: string | null;
+                /** @description Max stations to return (higher when filtering by region) */
                 limit?: number;
             };
             header?: never;

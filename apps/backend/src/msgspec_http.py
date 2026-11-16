@@ -1,4 +1,4 @@
-"""msgspec JSON response helper for high-churn HTTP routes (ADR-026 / E10-38).
+"""msgspec JSON response helper for high-churn HTTP routes (E10-38).
 
 Prefer encoding ``msgspec.Struct`` values. ``pydantic.BaseModel`` OpenAPI alias
 instances are accepted via ``model_dump(mode="json")`` then a single msgspec
@@ -42,11 +42,6 @@ def msgspec_json_response(
     -------
     Response
         Starlette/FastAPI response whose body is msgspec-encoded JSON bytes.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (msgspec_json_response)
-    2
     """
     if isinstance(obj, BaseModel):
         payload: Any = obj.model_dump(mode="json")

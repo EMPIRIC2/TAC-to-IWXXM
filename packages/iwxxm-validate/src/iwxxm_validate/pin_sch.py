@@ -26,11 +26,6 @@ _BUNDLE_CACHE: dict[str, PinSchBundle] = {}
 def clear_pin_sch_cache() -> None:
     """
     Drop cached pin↔SCH bundles (tests / path monkeypatches).
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (clear_pin_sch_cache)
-    2
     """
     _BUNDLE_CACHE.clear()
 
@@ -39,10 +34,6 @@ def expected_iwxxm_namespace(iwxxm_version: str) -> str:
     """
     Return the ICAO IWXXM namespace URI expected for ``iwxxm_version``.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (expected_iwxxm_namespace)
-    2
 
     Parameters
     ----------
@@ -81,11 +72,6 @@ def assert_pin_schematron_match(iwxxm_version: str) -> PinSchBundle:
     PinSchError
         When the pin is unknown, files are missing, SCH is outside the pin tree,
         or the SCH namespace URI does not match the pin.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (assert_pin_schematron_match)
-    2
     """
     pin = iwxxm_version.strip()
     cached = _BUNDLE_CACHE.get(pin)

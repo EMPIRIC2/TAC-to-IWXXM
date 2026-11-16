@@ -68,7 +68,7 @@ def _sigmet_location_analysis_xml(
     obs_hhmm = str(loc.get("obs_hhmm") or begin[11:13] + begin[14:16])
     obs_time = f"{begin[:10]}T{obs_hhmm[0:2]}:{obs_hhmm[2:4]}:00Z"
     # WMO multi-location VA: materialize OBS/FCST instants once; later collections
-    # xlink:href them (vendor density / ADR-032 canonical empty phenomenonTime).
+    # xlink:href them (vendor density canonical empty phenomenonTime).
     reuse_times = wmo_multi_location_va_ring and index > 0
     if reuse_times:
         obs_phenomenon_time = f'<iwxxm:phenomenonTime xlink:href="#{_WMO_MULTI_VA_OBS_TIME_ID}"/>'
@@ -373,11 +373,6 @@ def emit_convective_sigmet_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> 
     -------
     str
         US ``CONVECTIVE SIGMET`` (WST) with iwxxm-us analysis shape (#919 M11).
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (emit_convective_sigmet_annex3)
-    2
     """
     ns = _ns(iwxxm_version)
     fir = str(ir["fir"])

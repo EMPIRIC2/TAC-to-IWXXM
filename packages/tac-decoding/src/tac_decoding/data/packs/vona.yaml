@@ -1,4 +1,4 @@
-# Builtin vona label-fields pack (ADR-045 / EV-pack-fill-delete-gate).
+# Builtin vona label-fields pack (EV-pack-fill-delete-gate).
 id: vona
 layout: label_fields
 rules:

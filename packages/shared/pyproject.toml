@@ -8,7 +8,7 @@ requires-python = ">=3.12"
 dependencies = []
 
 [project.optional-dependencies]
-# ADR-027 — import generated iwxxm_xsd pydantic models (not validate hot path)
+# — import generated iwxxm_xsd pydantic models (not validate hot path)
 xsd = ["pydantic==2.13.4", "xsdata-pydantic==24.5"]
 
 [build-system]
@@ -18,7 +18,7 @@ build-backend = "hatchling.build"
 [tool.hatch.build.targets.wheel]
 packages = ["src/metar_shared"]
 
-# ADR-048 / TC-EVDOC-007: warnings are errors (same bar as packages/auth).
+# / TC-EVDOC-007: warnings are errors (same bar as packages/auth).
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["src"]
@@ -28,7 +28,7 @@ filterwarnings = [
 
 # Override (required): when `make lint` passes `packages/shared`, Ruff uses this
 # pyproject as project root so root extend-exclude paths do not apply. Keep
-# ADR-027 generated xsdata trees out of lint. [Corpus: product §F11]
+# generated xsdata trees out of lint. [Corpus: product §F11]
 [tool.ruff]
 extend = "../../pyproject.toml"
 extend-exclude = [

@@ -19,10 +19,6 @@ def uri_hostname(uri: str) -> str | None:
     """
     Return hostname from ``uri``, or ``None`` for hostless schemes (e.g. sqlite memory).
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (uri_hostname)
-    2
 
     Parameters
     ----------
@@ -56,11 +52,6 @@ def dialect_for_sink(sink_type: str) -> str:
     ------
     ValueError
         When ``sink_type`` is not a supported DB sink.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (dialect_for_sink)
-    2
     """
     mapping = {
         "postgres": "postgresql",
@@ -77,10 +68,6 @@ def normalize_sqlalchemy_uri(uri: str, sink_type: str) -> str:
     """
     Ensure async driver prefix for SQLAlchemy.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (normalize_sqlalchemy_uri)
-    2
 
     Parameters
     ----------
@@ -123,10 +110,6 @@ async def run_db_preflight(req: PreflightRequest) -> PreflightResponse:
     ValueError
         When the request is incomplete or unsupported.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (run_db_preflight)
-    2
 
     Parameters
     ----------

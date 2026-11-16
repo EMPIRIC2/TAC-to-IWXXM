@@ -389,6 +389,7 @@ def _record_convert_station_health(
         return
     lint_error_count = 0
     lint_warning_count = 0
+    issue_codes: list[str] = []
     if lint_report is not None:
         for issue in lint_report.issues:
             severity = str(getattr(issue, "severity", "") or "").lower()
@@ -396,6 +397,13 @@ def _record_convert_station_health(
                 lint_error_count += 1
             elif severity == "warning":
                 lint_warning_count += 1
+            code = str(getattr(issue, "code", "") or "").strip()
+            if code:
+                issue_codes.append(code)
+    for issue in getattr(acc, "issues", []) or []:
+        code = str(getattr(issue, "code", "") or "").strip()
+        if code:
+            issue_codes.append(code)
     for result in acc.results:
         tac = (result.tac_input or "").strip()
         if not tac:
@@ -408,6 +416,7 @@ def _record_convert_station_health(
                 lint_error_count=lint_error_count,
                 lint_warning_count=lint_warning_count,
                 convert_ok=True,
+                issue_codes=issue_codes,
             )
         except Exception:
             logger.debug("station health convert record failed", exc_info=True)

@@ -11,7 +11,12 @@ WINDOW_SECONDS: Final[dict[str, int]] = {
     "6h": 6 * 3600,
     "1d": 24 * 3600,
     "30d": 30 * 24 * 3600,
+    "90d": 90 * 24 * 3600,
 }
+
+# Rolling retention: keep at most the last 3 months of station health rows.
+RETENTION_SECONDS: Final[int] = WINDOW_SECONDS["90d"]
+RETENTION_WINDOW_KEY: Final[str] = "90d"
 
 EXPECTED_PER_HOUR: Final[dict[str, float]] = {
     "metar": 1.0,
@@ -101,11 +106,6 @@ def count_solidus_signals(tac_text: str) -> TacQualitySignals:
     -------
     object
         Return value.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (count_solidus_signals)
-    2
     """
     text = tac_text or ""
     solidus_count = text.count("/")
@@ -132,11 +132,6 @@ def expected_count_for_window(product: str, window_key: str) -> int:
     -------
     object
         Return value.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (expected_count_for_window)
-    2
     """
     seconds = WINDOW_SECONDS.get(window_key)
     if seconds is None:
@@ -165,11 +160,6 @@ def availability_score(actual_count: int, expected_count: int, *, irregular: boo
     -------
     object
         Return value.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (availability_score)
-    2
     """
     if irregular:
         if actual_count <= 0:
@@ -197,11 +187,6 @@ def solidus_quality_score(solidus_rate: float) -> float:
     -------
     object
         Return value.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (solidus_quality_score)
-    2
     """
     penalty = min(100.0, max(0.0, solidus_rate) * 500.0)
     return max(0.0, 100.0 - penalty)
@@ -220,11 +205,6 @@ def missing_digit_quality_score(missing_digit_rate: float) -> float:
     -------
     object
         Return value.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (missing_digit_quality_score)
-    2
     """
     penalty = min(100.0, max(0.0, missing_digit_rate) * 25.0)
     return max(0.0, 100.0 - penalty)
@@ -247,11 +227,6 @@ def lint_severity_score(error_count: int, warning_count: int, actual_count: int)
     -------
     object
         Return value.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (lint_severity_score)
-    2
     """
     if actual_count <= 0:
         return 100.0
@@ -273,11 +248,6 @@ def letter_grade(score: float) -> str:
     -------
     object
         Return value.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (letter_grade)
-    2
     """
     for threshold, grade in _GRADE_THRESHOLDS:
         if score >= threshold:
@@ -309,11 +279,6 @@ def overall_score(
     -------
     object
         Return value.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (overall_score)
-    2
     """
     return 0.50 * availability + 0.25 * solidus_quality + 0.15 * missing_digit_quality + 0.10 * lint_quality
 
@@ -355,11 +320,6 @@ def grade_product_window(
     -------
     object
         Return value.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (grade_product_window)
-    2
     """
     product_l = product.strip().lower() or "unknown"
     expected = expected_count_for_window(product_l, window_key)
@@ -398,11 +358,6 @@ def window_timedelta(window_key: str) -> timedelta:
     -------
     object
         Return value.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (window_timedelta)
-    2
     """
     seconds = WINDOW_SECONDS.get(window_key)
     if seconds is None:
@@ -413,6 +368,8 @@ def window_timedelta(window_key: str) -> timedelta:
 
 __all__ = [
     "EXPECTED_PER_HOUR",
+    "RETENTION_SECONDS",
+    "RETENTION_WINDOW_KEY",
     "WINDOW_SECONDS",
     "ProductWindowGrade",
     "TacQualitySignals",

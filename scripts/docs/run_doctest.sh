@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Run doctests per package tree to avoid module basename clashes.
-# [Corpus: adr/ADR-048]
+#
 set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 cd "$ROOT"
@@ -9,7 +9,10 @@ run_one() {
   local label="$1"
   shift
   echo "== test-doctest: ${label} =="
-  # Warnings as errors for this gate (D-EVDOC-05 / TC-EVDOC-004)
+  # Warnings as errors for this gate (D-EVDOC-05 / TC-EVDOC-004).
+  # Examples are optional ([Corpus: tests] TC-EVDOC-002/004) — pytest exit 5
+  # (no tests collected) is success when a tree has no real doctests left.
+  local ec=0
   uv run python -W error -m pytest -o addopts= \
     -o asyncio_default_fixture_loop_scope=function \
     --doctest-modules "$@" \
@@ -18,7 +21,11 @@ run_one() {
     --ignore-glob='**/generated/**' \
     --ignore-glob='**/testing/**' \
     --ignore-glob='**/scripts/**' \
-    -q --tb=line
+    -q --tb=line || ec=$?
+  if [[ "${ec}" -eq 0 || "${ec}" -eq 5 ]]; then
+    return 0
+  fi
+  return "${ec}"
 }
 
 # Packages with unique import roots (one tree at a time)

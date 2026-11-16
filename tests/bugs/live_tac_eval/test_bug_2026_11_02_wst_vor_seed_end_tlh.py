@@ -4,7 +4,7 @@ Live-map US convective SIGMETs name VORs that OurAirports marks ambiguous
 (multi-country) or omits (TLH chart id). The checked-in fallback table lacked
 those US points, so convert failed closed with ``unknown VOR reference 'END'``.
 
-[Corpus: product §F6] [Corpus: adr/ADR-051] [Corpus: tests]
+[Corpus: product §F6] [Corpus: tests]
 """
 
 from __future__ import annotations

@@ -153,11 +153,6 @@ def main(argv: Sequence[str] | None = None) -> int:
     -------
     int
         ``0`` when ``report.ok``; ``1`` on validation errors or I/O failure.
-
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (main)
-    2
     """
     parser = _build_parser()
     args = parser.parse_args(list(argv) if argv is not None else None)

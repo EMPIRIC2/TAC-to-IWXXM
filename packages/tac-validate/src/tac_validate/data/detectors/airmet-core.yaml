@@ -1,4 +1,4 @@
-# AIRMET core detectors (ADR-046 / M4 #1230).
+# AIRMET core detectors (M4 #1230).
 schema_version: 1
 id: airmet-core
 stage: token

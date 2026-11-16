@@ -1,4 +1,4 @@
-"""SQLAlchemy CRUD for ``tac_work_sessions`` on ``DATABASE_URL`` (F31 / ADR-033)."""
+"""SQLAlchemy CRUD for ``tac_work_sessions`` on ``DATABASE_URL`` (F31)."""
 
 from __future__ import annotations
 
@@ -233,11 +233,6 @@ class WorkSessionService:
         -------
         tuple[list[WorkSession], int]
             Matching sessions and total count before pagination.
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (list_sessions)
-        2
         """
         table = _table()
         try:
@@ -270,10 +265,6 @@ class WorkSessionService:
         """
         Return one owner-scoped session or raise HTTP 404.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (get_session)
-        2
 
         Parameters
         ----------
@@ -308,10 +299,6 @@ class WorkSessionService:
         """
         Insert a new work session row and return the persisted record.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (create_session)
-        2
 
         Parameters
         ----------
@@ -345,10 +332,6 @@ class WorkSessionService:
         """
         Apply partial updates to an existing owner-scoped session.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (update_session)
-        2
 
         Parameters
         ----------
@@ -389,10 +372,6 @@ class WorkSessionService:
         """
         Mark a session deleted without removing the row.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (soft_delete)
-        2
 
         Parameters
         ----------
@@ -410,10 +389,6 @@ class WorkSessionService:
         """
         Clear ``deleted_at`` on a previously soft-deleted session.
 
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (restore_session)
-        2
 
         Parameters
         ----------

@@ -5,7 +5,8 @@ import types
 
 from tac2iwxxm.profile_registry import supported_report_variants_for_profile
 
-from ..schemas.conversion import FailedSpan
+from src.schemas.conversion import FailedSpan
+
 from . import conversion_part_1 as _part1
 from . import conversion_part_2 as _part2
 from . import conversion_part_6 as _part6

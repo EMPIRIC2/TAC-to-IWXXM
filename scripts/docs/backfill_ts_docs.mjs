@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 /**
- * Mechanically backfill minimal ADR-048-compliant TSDoc on in-scope TS/TSX.
+ * Mechanically backfill minimal -compliant TSDoc on in-scope TS/TSX.
  *
- * [Corpus: adr/ADR-048]
+ *
  */
 import fs from "node:fs";
 import path from "node:path";

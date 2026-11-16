@@ -113,11 +113,6 @@ class StationSampler:
         -------
         object
             List of ICAO codes
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (sample_random_stations)
-        2
         """
         airports = self._load_airports()
 
@@ -156,11 +151,6 @@ class StationSampler:
         -------
         object
             List of all matching ICAO codes
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (get_all_major_airports)
-        2
         """
         airports = self._load_airports()
 
@@ -189,11 +179,6 @@ class StationSampler:
         -------
         object
             Airport info dict or None
-
-        Examples
-        --------
-        >>> 1 + 1  # docstring smoke (get_station_info)
-        2
         """
         airports = self._load_airports()
         for airport in airports:

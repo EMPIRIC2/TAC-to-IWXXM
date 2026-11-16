@@ -19,10 +19,6 @@ def init_sentry(*, dsn: str | None = None) -> bool:
     bool
         ``True`` if initialized; ``False`` when DSN unset.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (init_sentry)
-    2
 
     Parameters
     ----------

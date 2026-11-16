@@ -28,11 +28,6 @@ def listen_for_stop(stop: asyncio.Event) -> None:
     ----------
     stop : asyncio.Event
         Event the refresh loop watches.
-
-    Examples
-    --------
-    >>> 1 + 1
-    2
     """
     loop = asyncio.get_running_loop()
     for sig in (signal.SIGINT, signal.SIGTERM):
@@ -43,13 +38,7 @@ def listen_for_stop(stop: asyncio.Event) -> None:
 
 
 async def serve() -> None:
-    """Translate each refresh area, then pause, until the process is stopped.
-
-    Examples
-    --------
-    >>> 1 + 1
-    2
-    """
+    """Translate each refresh area, then pause, until the process is stopped."""
     stop = asyncio.Event()
     listen_for_stop(stop)
     logger.info("map translator starting")
@@ -66,12 +55,7 @@ async def serve() -> None:
 def main() -> None:
     """Start the translator.
 
-    The container runs ``python -c "from .map_translator import main; main()"``.
-
-    Examples
-    --------
-    >>> 1 + 1
-    2
+    The container runs ``python -c "from src.map_translator import main; main()"``.
     """
     logging.basicConfig(level=logging.INFO)
     asyncio.run(serve())

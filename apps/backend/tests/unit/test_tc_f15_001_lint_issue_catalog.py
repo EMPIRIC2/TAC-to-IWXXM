@@ -1,6 +1,6 @@
 """T5.1 / TC-F15 - GET /api/v1/lint-issue-catalog (E11-31 / api-contract).
 
-Spec: docs/api-contract.md §Lint issue catalog; ADR-028; execution-plan T5.1.
+Spec: docs/api-contract.md §Lint issue catalog; ; execution-plan T5.1.
 """
 
 from __future__ import annotations

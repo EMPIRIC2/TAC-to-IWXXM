@@ -21,10 +21,6 @@ def _repo_root() -> Path:
     """
     Resolve the repository root that holds ``config/profiles``.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (_repo_root)
-    2
 
     Returns
     -------
@@ -45,10 +41,6 @@ def _entries() -> tuple[dict[str, object], ...]:
     """
     Load CA_ECCC deviation rows from the semantic matrix YAML.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (_entries)
-    2
 
     Returns
     -------
@@ -79,10 +71,6 @@ def resolve_national_href(*, area: str, token: str) -> str | None:
     token : str
         TAC / code token.
 
-    Examples
-    --------
-    >>> 1 + 1  # docstring smoke (resolve_national_href)
-    2
 
     Returns
     -------

@@ -3,7 +3,7 @@
 > **Corpus id**: `domain-profiles` ([CORPUS.md](../../CORPUS.md))  
 > **Status**: P0/P1 catalog landed (EV-063 M5 / #913 — deepen continues in mining notes)  
 > **Epic**: [#912](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/912)  
-> **ADR**: [ADR-036](../adr/ADR-036-semantic-vs-exchange-profiles.md) (Accepted)
+> **ADR**: [](../adr/-semantic-vs-exchange-profiles.md) (Accepted)
 
 Authoritative-source catalog for **semantic** (TAC→IWXXM) and **exchange** (routing/packaging)
 profiles. This directory is the standing SoT for profile *evidence*; implementation lives in
@@ -113,7 +113,7 @@ Closeout triage: [`mining/EV-M1-913-source-triage.md`](mining/EV-M1-913-source-t
 
 - [NATIONAL_PROFILE_PLAYBOOK.md](NATIONAL_PROFILE_PLAYBOOK.md) — [#1044](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1044)
 - [GAMET-spike.md](GAMET-spike.md) — EV-089 parse-only; EV-094 reaffirm
-- [ADR-036](../../adr/ADR-036-semantic-vs-exchange-profiles.md)
+- [](../../adr/-semantic-vs-exchange-profiles.md)
 - [#913 Mine ticket](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/913)
 - [#1098 Thin/compat deepen](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1098)
 - [#1025 Alias cutover](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1025)

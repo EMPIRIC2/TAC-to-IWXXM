@@ -1,7 +1,7 @@
 """TC-F6-032 / UJ-DEV-004: iwxxm-validate XSD + Schematron against vendor pins.
 
 Spec: docs/test-plan.md TC-F6-032; docs/spec.md §packages/iwxxm-validate;
-ADR-015; ADR-016 (msgspec issue models).
+; (msgspec issue models).
 
 Decision D-S008-T21-sch: mirror current F2 - lxml XSD best-effort; Schematron via
 lxml when queryBinding allows, else SCHEMATRON_SKIPPED (non-blocking) for xslt2;
@@ -196,7 +196,7 @@ def test_package_has_no_fastapi_or_supabase_imports() -> None:
 
 
 def test_issue_models_are_msgspec_structs() -> None:
-    """ADR-016: package issue / report models use msgspec.Struct."""
+    """: package issue / report models use msgspec.Struct."""
     import msgspec
     from iwxxm_validate import Issue, ValidationReport
 
