@@ -383,7 +383,25 @@ def _check_phenomenon_membership(
     start: int,
     end: int,
 ) -> list[Issue]:
-    """Emit membership issues for SIGMET/AIRMET phenomenon candidates in ``upper``."""
+    """
+    Emit membership issues for SIGMET/AIRMET phenomenon candidates in ``upper``.
+
+    Parameters
+    ----------
+    upper : str
+        Uppercased TAC body slice.
+    product : str
+        ``SIGMET`` or ``AIRMET``.
+    start : int
+        Absolute start offset of ``upper`` in the source TAC.
+    end : int
+        Absolute end offset of ``upper`` in the source TAC.
+
+    Returns
+    -------
+    list[Issue]
+        Membership findings for unknown phenomenon tokens.
+    """
     family = "airwx_phenomena" if product == "AIRMET" else "sigwx_phenomena"
     pattern = _AIRMET_PHENOM_CANDIDATE if product == "AIRMET" else _SIGMET_PHENOM_CANDIDATE
     issues: list[Issue] = []
@@ -410,7 +428,19 @@ def _check_phenomenon_membership(
 
 
 def _cloud_candidate_tokens(tokens: list[str]) -> list[tuple[int, str]]:
-    """Return (index, token) pairs that look like cloud groups after wind."""
+    """
+    Return (index, token) pairs that look like cloud groups after wind.
+
+    Parameters
+    ----------
+    tokens : list[str]
+        TAC body tokens.
+
+    Returns
+    -------
+    list[tuple[int, str]]
+        Candidate cloud token indexes and values.
+    """
     wind_i = _token_index(tokens, _WIND)
     if wind_i is None:
         return []
@@ -439,7 +469,26 @@ def _append_remark_issue(
     body_end: int,
     token: str,
 ) -> None:
-    """Append a remark-scoped issue, spanning ``token`` when found in ``core``."""
+    """
+    Append a remark-scoped issue, spanning ``token`` when found in ``core``.
+
+    Parameters
+    ----------
+    issues : list[Issue]
+        Mutable finding list.
+    code : str
+        Registry issue code.
+    message : str
+        Operator message text.
+    core : str
+        TAC body core text used for span lookup.
+    body_start : int
+        Absolute start of the body core.
+    body_end : int
+        Absolute end of the body core.
+    token : str
+        Remark token to highlight when present.
+    """
     span = _token_span_in_core(core, token, body_start)
     if span is None:
         start, end = body_start, body_end

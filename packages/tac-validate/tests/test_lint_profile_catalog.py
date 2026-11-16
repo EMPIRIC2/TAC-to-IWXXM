@@ -296,12 +296,18 @@ def test_inherit_chain_and_resolved_overrides(monkeypatch: pytest.MonkeyPatch) -
             }
         }
     )
+    # Chain lookup and resolve both bind load_lint_profiles; patch both.
+    monkeypatch.setattr(
+        "tac_validate.lint_profile_catalog.load.load_lint_profiles",
+        lambda: rows,
+    )
     monkeypatch.setattr(
         "tac_validate.lint_profile_catalog.resolve.load_lint_profiles",
         lambda: rows,
     )
     resolved_lint_profile.cache_clear()
     load_lint_profiles.cache_clear()
+    assert profile_inherit_chain("child") == ("root", "child")
     resolved = resolved_lint_profile("child")
     assert resolved is not None
     assert resolved.differs is True

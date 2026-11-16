@@ -337,7 +337,21 @@ def load_detector_pack(path: Path | str) -> DetectorPack:
 
 
 def _header_extends(value: object, *, name: str) -> str | None:
-    """Parse a single builtin id from ``extends`` (or raise)."""
+    """
+    Parse a single builtin id from ``extends`` (or raise).
+
+    Parameters
+    ----------
+    value : object
+        Raw ``extends`` field from detector YAML.
+    name : str
+        Pack id used in error messages.
+
+    Returns
+    -------
+    str | None
+        Builtin pack id, or ``None`` when extends is empty.
+    """
     if value is None or value == []:
         return None
     if isinstance(value, str) and value.strip():
