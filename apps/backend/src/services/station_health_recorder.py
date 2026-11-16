@@ -24,6 +24,7 @@ def record_tac_observation(
     lint_error_count: int = 0,
     lint_warning_count: int = 0,
     convert_ok: bool | None = None,
+    issue_codes: list[str] | tuple[str, ...] | None = None,
 ) -> dict[str, Any] | None:
     """
     Record one TAC observation into the station health store when ICAO is known.
@@ -72,6 +73,7 @@ def record_tac_observation(
         lint_error_count=lint_error_count,
         lint_warning_count=lint_warning_count,
         convert_ok=convert_ok,
+        issue_codes=issue_codes,
     )
     if row is None:
         return None
@@ -81,6 +83,9 @@ def record_tac_observation(
         "solidus_count": row.solidus_count,
         "missing_digit_count": row.missing_digit_count,
         "source": row.source,
+        "file_format": row.file_format,
+        "issue_codes": list(row.issue_codes),
+        "maintenance_tags": list(row.maintenance_tags),
     }
 
 

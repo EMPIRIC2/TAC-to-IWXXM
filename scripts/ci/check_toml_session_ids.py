@@ -45,7 +45,7 @@ class ScanResult:
 
 
 def find_session_ids(text: str) -> tuple[str, ...]:
-    """Return distinct banned ``S###`` tokens found in ``text``."""
+    """Return distinct banned ``S0##`` tokens found in ``text``."""
     return tuple(sorted(set(SESSION_ID_RE.findall(text))))
 
 
@@ -88,7 +88,7 @@ def scan_tracked_tomls(repo_root: Path) -> ScanResult:
 
 
 def main(argv: list[str] | None = None) -> int:
-    """CLI entry: exit 1 when any tracked TOML embeds ``S###``."""
+    """CLI entry: exit 1 when any tracked TOML embeds ``S0##``."""
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
         "--root",
@@ -99,7 +99,7 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
     result = scan_tracked_tomls(args.root.resolve())
     if result.ok:
-        print("ok: no S### session ids in tracked *.toml")
+        print("ok: no S0## session ids in tracked *.toml")
         return 0
     for hit in result.hits:
         print(f"{hit.path}:{hit.line}: banned session id {hit.token!r}: {hit.text}")

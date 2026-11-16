@@ -25,6 +25,8 @@ python.lang.security.use-defused-xml-parse.use-defused-xml-parse	scripts/iwxxm/m
 python.lang.security.use-defused-xml-parse.use-defused-xml-parse	scripts/iwxxm/mine_validation_library_catalogs.py
 python.sqlalchemy.security.audit.avoid-sqlalchemy-text.avoid-sqlalchemy-text	apps/backend/src/routers/dissemination.py
 python.sqlalchemy.security.audit.avoid-sqlalchemy-text.avoid-sqlalchemy-text	apps/backend/src/services/evaluation_store.py
+python.sqlalchemy.security.audit.avoid-sqlalchemy-text.avoid-sqlalchemy-text	apps/backend/src/services/station_health_postgres.py
+python.sqlalchemy.security.audit.avoid-sqlalchemy-text.avoid-sqlalchemy-text	apps/backend/src/services/station_health_postgres_load.py
 python.sqlalchemy.security.audit.avoid-sqlalchemy-text.avoid-sqlalchemy-text	apps/worker/src/metar_worker/store.py
 python.sqlalchemy.security.audit.avoid-sqlalchemy-text.avoid-sqlalchemy-text	packages/dissemination/src/dissemination/live_write_assert.py
 python.sqlalchemy.security.audit.avoid-sqlalchemy-text.avoid-sqlalchemy-text	scripts/deploy/verify_mock_byoc_all_sinks.py

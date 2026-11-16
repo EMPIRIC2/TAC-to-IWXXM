@@ -1528,12 +1528,13 @@ GET /api/v1/station-health
 
 **Query** (optional):
 
-| Param     | Required | Description                                        |
-| --------- | -------- | -------------------------------------------------- |
-| `window`  | no       | `6h` (default), `1d`, or `30d`                     |
-| `product` | no       | Filter to one product (`metar`, `speci`, `taf`, …) |
-| `grade`   | no       | Filter to one letter (`A`–`F`)                     |
-| `limit`   | no       | Max rows (default 100, max 500)                    |
+| Param     | Required | Description                                                                 |
+| --------- | -------- | --------------------------------------------------------------------------- |
+| `window`  | no       | `6h` (default), `1d`, `30d`, or `90d` (3 months)                           |
+| `product` | no       | Filter to one product (`metar`, `speci`, `taf`, …)                         |
+| `grade`   | no       | Filter to one letter (`A`–`F`)                                             |
+| `region`  | no       | WMO Regional Association: `I`–`VI`, or `unknown`                           |
+| `limit`   | no       | Max rows (default 100; max 500 without `region`, max 5000 with `region`)   |
 
 **Response** (minimum fields):
 
@@ -1545,6 +1546,7 @@ GET /api/v1/station-health
     {
       "icao": "KJFK",
       "name": "John F Kennedy International",
+      "wmo_region": "IV",
       "overall_grade": "B",
       "overall_score": 84.5,
       "products": [
@@ -1557,6 +1559,18 @@ GET /api/v1/station-health
           "solidus_rate": 0.02,
           "missing_digit_rate": 0.0,
           "lint_error_count": 0
+        }
+      ],
+      "maintenance_tag_counts": { "$": 1 },
+      "file_format_counts": { "tac": 5 },
+      "issue_code_counts": { "INVALID_WIND": 2 },
+      "centennial_metrics": [
+        {
+          "id": "centennial_continuity",
+          "label": "Observing continuity",
+          "status": "available",
+          "score": 83.3,
+          "detail": "Availability 83.3% is below the 90% continuity proxy."
         }
       ]
     }
@@ -1574,8 +1588,10 @@ GET /api/v1/station-health/{icao}
 
 **Purpose**: One station report card across windows and products.
 
-**Response**: `icao`, optional `name`, `windows` map (`6h` / `1d` / `30d`) each with
-product rows and an overall grade, plus recent `record_count`.
+**Response**: `icao`, optional `name`, `wmo_region` (`I`–`VI` or `unknown`),
+`windows` map (`6h` / `1d` / `30d` / `90d`) each with product rows, overall
+grade, maintenance tag counts, file-format counts, issue-id counts, and
+Centennial proxy rows, plus recent `record_count` (rolling 90-day retention).
 
 ```
 GET /api/v1/station-health/metrics

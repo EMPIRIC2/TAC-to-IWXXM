@@ -528,11 +528,25 @@ with aliases during one CalVer window. DX tests: ``…``.
  grades from `station_tac_records` (in-memory store remains for unit tests only).
 - **Tables**: `station_registry`, `station_tac_records`, `station_metric_definitions`,
  `station_health_grades` (Alembic on `DATABASE_URL`).
-- **Windows**: last 6 hours, last 1 day, last 1 month (30 days).
+- **Windows**: last 6 hours, last 1 day, last 1 month (30 days), last 3 months
+ (90 days). Grades are computed from live `station_tac_records` (or the in-memory
+ store in unit tests), not from static example fixtures.
 - **Products**: METAR, SPECI, TAF, and other station-scoped products when the ICAO
  can be parsed.
+- **WMO regions**: each station is assigned a WMO Regional Association (I–VI) from
+ its ISO country (airport catalog / `station_registry.country`). Unmapped countries
+ fail closed as **Unknown region**. List queries accept an optional `region` filter
+ and raise the row cap when a region is selected so operators can load all stations
+ in that association.
+- **Retention**: rolling 90-day purge; aggregates ignore older observation rows.
 - **Quality signals**: solidus (`/`) counts, missing-digit patterns, lint severity
  counts when stored. Overall letter grade blends availability and quality.
+- **Maintenance tags**: `$` and sensor-outage tokens (for example FZRANO, TSNO)
+ counted per station window.
+- **File formats**: counts of stored payload formats (`tac`, `bulletin`, `iwxxm_xml`).
+- **Issue ids**: lint and validation catalog codes counted per station window.
+- **Centennial proxies**: continuity, metadata completeness, and observation-quality
+ proxies from live aggregates; other recognition criteria return insufficient data.
 - **Metrics registry**: `station_metric_definitions` lists dashboard cards so new
  metrics can ship without a new API shape.
 - **Auth**: public GET for aggregates and grades. Writes come only from ingest or

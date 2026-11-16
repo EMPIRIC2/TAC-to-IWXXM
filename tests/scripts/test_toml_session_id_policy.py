@@ -84,6 +84,16 @@ def test_find_session_ids_validation(text: str, expected: tuple[str, ...]) -> No
     assert policy.find_session_ids(text) == expected
 
 
+@pytest.mark.unit
+def test_ruff_per_file_ignore_s102_is_not_a_session_id() -> None:
+    """V+ — Ruff flake8-bandit codes in per-file-ignores are not planning ids."""
+    line = (
+        '"packages/tac2iwxxm/src/tac2iwxxm/**/__init__.py" = '
+        '["F401", "F403", "F405", "F821", "E402", "I001", "S102"]\n'
+    )
+    assert policy.scan_toml_text("pyproject.toml", line) == ()
+
+
 # ---------------------------------------------------------------------------
 # M — Mutation permutations (create / update / delete of banned tokens)
 # ---------------------------------------------------------------------------

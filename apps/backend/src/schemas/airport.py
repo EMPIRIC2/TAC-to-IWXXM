@@ -9,6 +9,10 @@ from typing import Any, ClassVar, cast
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
+# Resolved once at import so tests that monkeypatch ``__file__`` cannot redirect
+# the catalog path after the module has loaded (singleton poison → wrong countries).
+_AIRPORT_DATA_DIR: Path = Path(__file__).resolve().parent.parent / "data"
+
 
 class AirportCoordinates(BaseModel):
     """
@@ -178,9 +182,7 @@ class AirportValidator:
         Also merges ``airport_registry_supplements.json`` (F3 deepen for METAR
         stations missing from the OurAirports ``icao_code`` export).
         """
-        # Determine path to airports.json relative to this file
-        current_file = Path(__file__)
-        data_dir = current_file.parent.parent / "data"
+        data_dir = _AIRPORT_DATA_DIR
         data_path = data_dir / "airports.json"
         supplements_path = data_dir / "airport_registry_supplements.json"
 
@@ -359,6 +361,18 @@ class AirportValidator:
 
 # Global validator instance
 _validator_instance: AirportValidator | None = None
+
+
+def reset_airport_validator_for_tests() -> None:
+    """
+    Clear the AirportValidator singleton (unit tests only).
+
+    """
+    global _validator_instance
+    AirportValidator._instance = None
+    AirportValidator._loaded = False
+    AirportValidator._airports = {}
+    _validator_instance = None
 
 
 def get_airport_validator() -> AirportValidator:

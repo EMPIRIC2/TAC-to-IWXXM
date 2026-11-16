@@ -20,7 +20,7 @@ describe('stationHealthApi', () => {
     const fetchMock = vi.fn().mockResolvedValue({
       ok: true,
       json: async () => ({
-        window: '1d',
+        window: '90d',
         computed_at: '2026-11-13T00:00:00Z',
         stations: [],
         summary: { station_count: 0, grade_counts: {} },
@@ -29,21 +29,23 @@ describe('stationHealthApi', () => {
     vi.stubGlobal('fetch', fetchMock);
 
     const payload = await fetchStationHealthList({
-      window: '1d',
+      window: '90d',
       product: 'metar',
       grade: 'A',
-      limit: 25,
+      region: 'IV',
+      limit: 5000,
     });
-    expect(payload.window).toBe('1d');
+    expect(payload.window).toBe('90d');
     expect(fetchMock).toHaveBeenCalledWith(
       expect.stringContaining('/station-health?'),
       expect.objectContaining({ method: 'GET' }),
     );
     const url = String(fetchMock.mock.calls[0]?.[0]);
-    expect(url).toContain('window=1d');
+    expect(url).toContain('window=90d');
     expect(url).toContain('product=metar');
     expect(url).toContain('grade=A');
-    expect(url).toContain('limit=25');
+    expect(url).toContain('region=IV');
+    expect(url).toContain('limit=5000');
   });
 
   it('omits empty list filters and throws on non-OK', async () => {

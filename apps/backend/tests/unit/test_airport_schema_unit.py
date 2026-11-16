@@ -3,9 +3,24 @@
 from __future__ import annotations
 
 import json
+from pathlib import Path
 
 import pytest
 from src.schemas import airport as airport_schema
+
+
+@pytest.fixture(autouse=True)
+def _reset_airport_validator_singleton() -> None:
+    """Keep AirportValidator singleton from leaking fixture catalogs across tests."""
+    airport_schema.reset_airport_validator_for_tests()
+    yield
+    airport_schema.reset_airport_validator_for_tests()
+
+
+def _point_airport_data_dir(monkeypatch: pytest.MonkeyPatch, data_dir: Path) -> None:
+    """Reset the singleton and point catalog loads at ``data_dir``."""
+    airport_schema.reset_airport_validator_for_tests()
+    monkeypatch.setattr(airport_schema, "_AIRPORT_DATA_DIR", data_dir)
 
 
 def test_airport_model_normalizes_icao_and_iata():
@@ -80,10 +95,7 @@ def test_airport_validator_load_and_lookup(tmp_path, monkeypatch):
         encoding="utf-8",
     )
 
-    fake_file = tmp_path / "backend" / "src" / "schemas" / "airport.py"
-    fake_file.parent.mkdir(parents=True)
-    fake_file.write_text("# test")
-    monkeypatch.setattr(airport_schema, "__file__", str(fake_file))
+    _point_airport_data_dir(monkeypatch, airports_path)
 
     validator = airport_schema.AirportValidator()
     validator._loaded = False
@@ -127,10 +139,7 @@ def test_airport_validator_search_helpers_and_all_airports(tmp_path, monkeypatch
         encoding="utf-8",
     )
 
-    fake_file = tmp_path / "backend" / "src" / "schemas" / "airport.py"
-    fake_file.parent.mkdir(parents=True)
-    fake_file.write_text("# test")
-    monkeypatch.setattr(airport_schema, "__file__", str(fake_file))
+    _point_airport_data_dir(monkeypatch, airports_path)
 
     validator = airport_schema.AirportValidator()
     validator._loaded = False
@@ -147,15 +156,12 @@ def test_airport_validator_search_helpers_and_all_airports(tmp_path, monkeypatch
     assert len(all_airports) == 3
 
 
-def test_get_airport_validator_singleton(monkeypatch):
-    original = airport_schema._validator_instance
-    try:
-        airport_schema._validator_instance = None
-        first = airport_schema.get_airport_validator()
-        second = airport_schema.get_airport_validator()
-        assert first is second
-    finally:
-        airport_schema._validator_instance = original
+def test_get_airport_validator_singleton() -> None:
+    airport_schema.reset_airport_validator_for_tests()
+    first = airport_schema.get_airport_validator()
+    second = airport_schema.get_airport_validator()
+    assert first is second
+    airport_schema.reset_airport_validator_for_tests()
 
 
 def test_airport_coordinates_defaults_and_bounds():
@@ -201,10 +207,7 @@ def test_airport_validator_skips_invalid_entries(tmp_path, monkeypatch):
         encoding="utf-8",
     )
 
-    fake_file = tmp_path / "backend" / "src" / "schemas" / "airport.py"
-    fake_file.parent.mkdir(parents=True)
-    fake_file.write_text("# test")
-    monkeypatch.setattr(airport_schema, "__file__", str(fake_file))
+    _point_airport_data_dir(monkeypatch, airports_path)
 
     validator = airport_schema.AirportValidator()
     validator._loaded = False
@@ -260,10 +263,7 @@ def test_airport_validator_merges_registry_supplements(tmp_path, monkeypatch):
         encoding="utf-8",
     )
 
-    fake_file = tmp_path / "backend" / "src" / "schemas" / "airport.py"
-    fake_file.parent.mkdir(parents=True)
-    fake_file.write_text("# test")
-    monkeypatch.setattr(airport_schema, "__file__", str(fake_file))
+    _point_airport_data_dir(monkeypatch, airports_path)
 
     validator = airport_schema.AirportValidator()
     validator._loaded = False
@@ -292,10 +292,7 @@ def test_airport_validator_tolerates_corrupt_supplements(tmp_path, monkeypatch):
     )
     (airports_path / "airport_registry_supplements.json").write_text("{not-json", encoding="utf-8")
 
-    fake_file = tmp_path / "backend" / "src" / "schemas" / "airport.py"
-    fake_file.parent.mkdir(parents=True)
-    fake_file.write_text("# test")
-    monkeypatch.setattr(airport_schema, "__file__", str(fake_file))
+    _point_airport_data_dir(monkeypatch, airports_path)
 
     validator = airport_schema.AirportValidator()
     validator._loaded = False
@@ -324,10 +321,7 @@ def test_airport_validator_ignores_non_list_supplement_stations(tmp_path, monkey
         encoding="utf-8",
     )
 
-    fake_file = tmp_path / "backend" / "src" / "schemas" / "airport.py"
-    fake_file.parent.mkdir(parents=True)
-    fake_file.write_text("# test")
-    monkeypatch.setattr(airport_schema, "__file__", str(fake_file))
+    _point_airport_data_dir(monkeypatch, airports_path)
 
     validator = airport_schema.AirportValidator()
     validator._loaded = False
@@ -338,16 +332,12 @@ def test_airport_validator_ignores_non_list_supplement_stations(tmp_path, monkey
 
 
 def test_airport_validator_load_raises_when_airports_file_missing(tmp_path, monkeypatch):
-    fake_file = tmp_path / "backend" / "src" / "schemas" / "airport.py"
-    fake_file.parent.mkdir(parents=True)
-    fake_file.write_text("# test")
-    monkeypatch.setattr(airport_schema, "__file__", str(fake_file))
-
-    validator = airport_schema.AirportValidator()
-    validator._loaded = True
+    empty_dir = tmp_path / "backend" / "src" / "data"
+    empty_dir.mkdir(parents=True)
+    _point_airport_data_dir(monkeypatch, empty_dir)
 
     with pytest.raises(FileNotFoundError, match=r".*"):
-        validator.load_airports()
+        airport_schema.AirportValidator()
 
 
 def test_validate_icao_returns_false_for_empty_input():

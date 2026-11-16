@@ -1,4 +1,4 @@
-"""TC-SH-001 / TC-SH-002 — public station-health HTTP API."""
+"""TC-SH-001 / TC-SH-002 - public station-health HTTP API."""
 
 from __future__ import annotations
 
@@ -68,6 +68,12 @@ def client() -> TestClient:
             ("list_limited",),
         ),
         (
+            "/api/v1/station-health",
+            {"window": "90d", "region": "IV", "limit": 5000},
+            200,
+            ("list_has_kjfk", "list_region_iv"),
+        ),
+        (
             "/api/v1/station-health/KJFK",
             {},
             200,
@@ -90,13 +96,18 @@ def test_tc_sh_001_success_paths(
     if "list_has_kjfk" in checks:
         assert any(row["icao"] == "KJFK" for row in body["stations"])
         assert body["stations"][0]["overall_grade"] in {"A", "B", "C", "D", "F"}
+    if "list_region_iv" in checks:
+        assert all(row["wmo_region"] == "IV" for row in body["stations"])
+        assert any(row["icao"] == "KJFK" and row["wmo_region"] == "IV" for row in body["stations"])
     if "summary_nonzero" in checks:
         assert body["summary"]["station_count"] >= 1
     if "list_limited" in checks:
         assert len(body["stations"]) <= 1
     if "detail_kjfk" in checks:
         assert body["icao"] == "KJFK"
+        assert body["wmo_region"] == "IV"
         assert "6h" in body["windows"]
+        assert "90d" in body["windows"]
         assert body["record_count"] >= 2
 
 
@@ -105,6 +116,7 @@ def test_tc_sh_001_success_paths(
     [
         ("/api/v1/station-health", {"window": "2h"}, 400, "Window"),
         ("/api/v1/station-health", {"window": "99d"}, 400, "Window"),
+        ("/api/v1/station-health", {"window": "6h", "region": "VII"}, 400, "Region"),
         ("/api/v1/station-health/ZZZZ", {}, 404, "Unknown"),
         ("/api/v1/station-health/ABCD", {}, 404, "Unknown"),
     ],
