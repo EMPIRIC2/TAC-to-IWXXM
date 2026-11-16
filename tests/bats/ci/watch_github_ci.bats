@@ -1,4 +1,4 @@
-# scripts/ci/watch_github_ci.sh — bats coverage (EV-080 / ADR-007)
+# scripts/ci/watch_github_ci.sh — bats coverage (EV-080 )
 # NFR-EV080-006: stub gh and sleep; no live network or GitHub auth.
 
 load "${BATS_TEST_DIRNAME}/../helpers/load"

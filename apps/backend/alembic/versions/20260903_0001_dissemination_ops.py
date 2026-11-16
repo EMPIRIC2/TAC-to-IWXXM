@@ -1,4 +1,4 @@
-"""Dissemination ops tables (EV-936 / ADR-041 / ADR-040).
+"""Dissemination ops tables (EV-936 /).
 
 Revision ID: 20260903_0001
 Revises: 20260803_0001

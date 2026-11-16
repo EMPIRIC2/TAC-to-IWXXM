@@ -1,4 +1,4 @@
-"""Coverage for scripts/pypi/bump_calver.py (EV-1150 / ADR-043)."""
+"""Coverage for scripts/pypi/bump_calver.py (EV-1150 )."""
 
 from __future__ import annotations
 

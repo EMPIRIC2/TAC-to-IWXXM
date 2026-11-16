@@ -619,7 +619,7 @@ Full ranking: [mining/wmo-im-org-mining-notes.md](../mining/wmo-im-org-mining-no
 - **Gap vs GIFTs:** LWIS/SAWR/Addendum, Canadian RMK, GFA AIRMET phenomena, NCLWS TAF; not in historical GIFTs
 - **Consumer:** `tac2iwxxm`, `iwxxm-validate`, bulletin/exchange naming
 - **Label:** normative-schema (national) + normative-exchange (datamart readme)
-- **Caveats:** Canada pins **IWXXM package 3.0.0** on WMO landing `https://schemas.wmo.int/iwxxm/3.0/`, not app default 2025-2 (ADR-036). Observed CA XSDs: `iwxxm-ca.xsd`, `common-ca.xsd`, `metar-speci-ca.xsd`, `taf-ca.xsd`, `airmet-ca.xsd` (no dedicated `sigmet-ca` / `vaa-ca`). Vendor: `vendor/schemas/iwxxm-ca` + `vendor/schemas/iwxxm/3.0.0`. Dig: [mining/eccc-iwxxm-ca-mining-notes.md](../mining/eccc-iwxxm-ca-mining-notes.md), [mining/manobs-manair-ca-mining-notes.md](../mining/manobs-manair-ca-mining-notes.md). **EV-098 / #1028** triage: mined `schema/`, `code-ca/`, ops TAF/AIRMET/SIGMET; redirected METAR/SPECI/VAA/`doc/`/QVACI; dead=none.
+- **Caveats:** Canada pins **IWXXM package 3.0.0** on WMO landing `https://schemas.wmo.int/iwxxm/3.0/`, not app default 2025-2 (). Observed CA XSDs: `iwxxm-ca.xsd`, `common-ca.xsd`, `metar-speci-ca.xsd`, `taf-ca.xsd`, `airmet-ca.xsd` (no dedicated `sigmet-ca` `vaa-ca`). Vendor: `vendor/schemas/iwxxm-ca` + `vendor/schemas/iwxxm/3.0.0`. Dig: [mining/eccc-iwxxm-ca-mining-notes.md](../mining/eccc-iwxxm-ca-mining-notes.md), [mining/manobs-manair-ca-mining-notes.md](../mining/manobs-manair-ca-mining-notes.md). **EV-098 #1028** triage: mined `schema/`, `code-ca/`, ops TAF/AIRMET/SIGMET; redirected METAR/SPECI/VAA/`doc/`/QVACI; dead=none.
 - **Mined:** 2026-08-22 (EV-064 / #916) · deepen 2026-09-02 (EV-098 / #1028 Gate C)
 
 ### CA_ECCC code-list deviations from global WMO (#1034)
@@ -728,7 +728,7 @@ Full ranking: [mining/wmo-im-org-mining-notes.md](../mining/wmo-im-org-mining-no
 
 - **Label:** historical-GIFTs
 - **Role:** baseline of what was **not** covered (non-METAR F6, REMARKS, iwxxm-us, deep TAF CNL/NIL)
-- **Do not** use as ongoing rule SoT (ADR-014 / F6 cutover)
+- **Do not** use as ongoing rule SoT (F6 cutover)
 - **Consumer:** gap columns in [COVERAGE_MATRIX.md](./COVERAGE_MATRIX.md) only
 
 ---

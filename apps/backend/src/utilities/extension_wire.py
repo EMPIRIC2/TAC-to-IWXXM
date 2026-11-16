@@ -1,4 +1,4 @@
-"""National IWXXM extension token wire (EV-068 / ADR-036).
+"""National IWXXM extension token wire (EV-068).
 
 Parses optional ``extensions`` on convert/validate routes and maps tokens to
 validation behaviour (e.g. ``IWXXM_CA`` enables the full Canadian XSD stack).

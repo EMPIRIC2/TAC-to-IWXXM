@@ -1,4 +1,4 @@
-"""In-memory per-user rate limiter for dissemination preflight/send (ADR-029)."""
+"""In-memory per-user rate limiter for dissemination preflight/send ()."""
 
 from __future__ import annotations
 

@@ -1,5 +1,5 @@
 """
-F21 / ADR-031 abuse controls - rate limits (slowapi) + max request body.
+F21 abuse controls - rate limits (slowapi) + max request body.
 
 Env knobs (env-contract):
 - ``RATE_LIMIT_PUBLIC_PER_MIN`` (default 60)
@@ -216,7 +216,7 @@ def create_limiter() -> Limiter:
     Create a slowapi Limiter.
 
     When ``REDIS_URL`` is set (Upstash ``rediss://…``), uses that as the shared
-    storage backend so multi-replica pods share counters (EV-052 / ADR-031 amend).
+    storage backend so multi-replica pods share counters (EV-052 amend).
     When unset, falls back to in-memory storage and logs a warning.
 
     Returns

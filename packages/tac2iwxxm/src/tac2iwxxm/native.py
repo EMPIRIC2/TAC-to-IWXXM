@@ -1,4 +1,4 @@
-"""Optional PyO3 extension loader (ADR-017 / T4.3-T4.5).
+"""Optional PyO3 extension loader (T4.3-T4.5).
 
 The ``tac2iwxxm._rust`` module is built by maturin. Pure-Python paths keep working when
 the extension is absent (local without rustc); CI rust job requires it.

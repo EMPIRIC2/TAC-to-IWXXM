@@ -1,4 +1,4 @@
-"""Memory-only opaque handles for green preflight results (ADR-029 / ADR-030)."""
+"""Memory-only opaque handles for green preflight results ()."""
 
 from __future__ import annotations
 

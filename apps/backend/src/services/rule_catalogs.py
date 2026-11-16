@@ -1,4 +1,4 @@
-"""Family-aware rule catalog aggregator (ADR-044)."""
+"""Family-aware rule catalog aggregator ()."""
 
 from __future__ import annotations
 

@@ -1,4 +1,4 @@
-"""Load and validate WorkflowDefinition YAML (ADR-042)."""
+"""Load and validate WorkflowDefinition YAML ()."""
 
 from __future__ import annotations
 

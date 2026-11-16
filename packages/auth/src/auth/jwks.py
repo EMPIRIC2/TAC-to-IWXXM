@@ -1,4 +1,4 @@
-"""JWKS-only Supabase Auth JWT verification (ADR-033 / D-S038-04-b1)."""
+"""JWKS-only Supabase Auth JWT verification (D-S038-04-b1)."""
 
 from __future__ import annotations
 

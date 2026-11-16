@@ -1,6 +1,6 @@
-# ADR-056 / EV-file-budget-complexity — grandfather paths with >500 physical lines.
+# EV-file-budget-complexity — grandfather paths with >500 physical lines.
 # Do not add new paths without AskQuestion. Remove a path after a successful split.
-# Excluded entirely: iwxxm_xsd (ADR-027), frontend generated/, components/ui/.
+# Excluded entirely: iwxxm_xsd (), frontend generated/, components/ui/.
 
 apps/backend/src/api.py  # 586
 apps/backend/src/api_wire.py  # 1140

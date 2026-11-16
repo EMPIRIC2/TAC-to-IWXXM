@@ -1,4 +1,4 @@
-"""JWT gate for logged-in work-sessions (F31 / ADR-033) - JWKS-only verify."""
+"""JWT gate for logged-in work-sessions (F31) - JWKS-only verify."""
 
 from __future__ import annotations
 
@@ -130,7 +130,7 @@ async def fetch_jwks() -> dict[str, Any]:
     object
         Return value.
     """
-    raise NotImplementedError("Use auth.jwks.verify_access_token (ADR-033 JWKS-only)")
+    raise NotImplementedError("Use auth.jwks.verify_access_token (JWKS-only)")
 
 
 __all__ = [

@@ -1,4 +1,4 @@
-"""Egress allowlist and SSRF guards for dissemination destinations (ADR-029).
+"""Egress allowlist and SSRF guards for dissemination destinations ().
 
 ``DISSEMINATION_EGRESS_ALLOWLIST`` is a comma-separated list of hostnames and/or
 CIDRs. An empty allowlist is **fail-closed** - no user-host egress.
@@ -220,7 +220,7 @@ def validate_egress_host(
     for ip in resolved:
         _deny_if_blocked_ip(ip)
         # Private/loopback/link-local require an overlapping CIDR so a hostname
-        # allowlist entry cannot DNS-rebind into an unlisted LAN (ADR-029).
+        # allowlist entry cannot DNS-rebind into an unlisted LAN ().
         if (ip.is_private or ip.is_loopback or ip.is_link_local) and not _ip_on_allowlist(ip, al):
             raise EgressDenied(
                 f"resolved private/reserved address {ip} for {normalized!r} not covered by allowlisted CIDR"

@@ -38,7 +38,7 @@ def test_tc_ev027_003_decode_residuals_empty_or_allowlisted(peer) -> None:
     tac = annex3_path(peer).read_text(encoding="utf-8")
     result = decode_tac(tac, product=peer.product)
     if allows_any_residual(peer.catalog_id):
-        # F9 G4 / ADR-025 - residuals permitted when allowlist entry cites intent + issue.
+        # F9 G4 - residuals permitted when allowlist entry cites intent + issue.
         return
     got = {r.text for r in result.residuals}
     allowed = allowlisted_texts(peer.catalog_id)

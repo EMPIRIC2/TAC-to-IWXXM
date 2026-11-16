@@ -245,7 +245,7 @@ def lint_with_profile(
     match_port : MatchPort or Sequence[DecodeMatch] | None, optional
         Optional decode spans.
     apply_policy : bool, optional
-        When True (default), apply the bound ADR-046 policy.
+        When True (default), apply the bound policy.
 
     Returns
     -------

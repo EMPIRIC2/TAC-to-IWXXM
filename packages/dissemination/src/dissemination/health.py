@@ -1,4 +1,4 @@
-"""GatewayHealth helpers for DisseminationGateway (ADR-041 / EV-936)."""
+"""GatewayHealth helpers for DisseminationGateway (EV-936)."""
 
 from __future__ import annotations
 

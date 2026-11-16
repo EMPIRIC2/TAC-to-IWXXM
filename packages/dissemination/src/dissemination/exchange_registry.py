@@ -1,4 +1,4 @@
-"""Exchange profile id registry (F36 / ADR-036 / EV-063).
+"""Exchange profile id registry (F36 / EV-063).
 
 Canonical exchange ids map to wire ids (``GLOBAL_AFS``, …). Packaging hooks
 consume resolved ids - exchange profiles do not carry dissemination credentials.

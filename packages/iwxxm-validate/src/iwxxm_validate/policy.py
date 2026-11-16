@@ -1,4 +1,4 @@
-"""IWXXM output policy load + resolve (ADR-046 / #1216 M4).
+"""IWXXM output policy load + resolve (#1216 M4).
 
 Select/ignore apply to Schematron assert ids only. XSD, well-formed, and
 ``SCHEMATRON_SKIPPED`` are engine behavior and are not a select surface.

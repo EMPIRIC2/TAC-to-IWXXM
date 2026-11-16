@@ -1,4 +1,4 @@
-"""MVP stage registry — ADR-042 §10."""
+"""MVP stage registry — §10."""
 
 from __future__ import annotations
 

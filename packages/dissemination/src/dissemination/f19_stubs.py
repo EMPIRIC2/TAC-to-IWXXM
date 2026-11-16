@@ -1,7 +1,7 @@
 """AMHS / SWIM / AFS staging sink stubs (F19 / S-EV014-M2 / E14-05).
 
 Staging/test path is required this cycle; live AMHS/SWIM/AFS demos are optional.
-Stubs enforce the shared ``SinkAdapter`` contract + ADR-029 allowlist without
+Stubs enforce the shared ``SinkAdapter`` contract + allowlist without
 calling live protocol libraries.
 """
 

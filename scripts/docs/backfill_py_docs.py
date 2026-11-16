@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
-"""Mechanically backfill minimal ADR-048-compliant Python docstrings.
+"""Mechanically backfill minimal NumPy-shaped Python docstrings.
 
 Adds module docs, private one-liners, and public NumPy stubs (Parameters /
 Returns when applicable). Does **not** invent placeholder Examples —
 meaningful doctests belong only where a real call example is known.
 
-[Corpus: adr/ADR-048] [Corpus: doc-standards] TC-EVDOC-002 / TC-EVDOC-004
+[Corpus: doc-standards] TC-EVDOC-002 / TC-EVDOC-004
 """
 
 from __future__ import annotations

@@ -3,7 +3,7 @@
  * Extract @example blocks from in-scope TS/TSX and execute under node.
  *
  * Fail closed if an exported symbol has no executable example or an example throws.
- * [Corpus: adr/ADR-048]
+ *
  */
 import fs from "node:fs";
 import path from "node:path";

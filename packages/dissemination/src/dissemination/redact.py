@@ -1,4 +1,4 @@
-"""Secret redaction for dissemination errors and logs (ADR-029)."""
+"""Secret redaction for dissemination errors and logs ()."""
 
 from __future__ import annotations
 

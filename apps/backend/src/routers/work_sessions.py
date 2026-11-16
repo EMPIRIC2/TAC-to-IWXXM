@@ -1,4 +1,4 @@
-"""REST routes for F5/F7/F31 unified TAC work sessions (ADR-020 / ADR-033)."""
+"""REST routes for F5/F7/F31 unified TAC work sessions ()."""
 
 from __future__ import annotations
 

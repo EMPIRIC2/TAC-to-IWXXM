@@ -2,7 +2,7 @@
 
 Asserts WMO ``tc-advisory-A2-2`` is in the annex3 pack, root
 ``iwxxm:TropicalCycloneAdvisory``, convert → M-xsd/M-sch under default
-settings, and ``canonicalize_xml`` equals vendor golden (ADR-032 / E21-2).
+settings, and ``canonicalize_xml`` equals vendor golden (E21-2).
 
 Always write "F27 theme T3" (not F20 TAF T3) - D-S027-EV021-s02m1-1.
 """

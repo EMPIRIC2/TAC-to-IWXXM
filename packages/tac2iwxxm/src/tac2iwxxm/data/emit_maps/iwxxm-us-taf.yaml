@@ -1,4 +1,4 @@
-# ADR-047 emit map — iwxxm_us TAF (M4 / #1230).
+# emit map — iwxxm_us TAF (M4 / #1230).
 schema_version: 1
 id: iwxxm-us-taf-emit
 profiles:

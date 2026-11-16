@@ -1,4 +1,4 @@
-"""Declarative detector packs (ADR-046 / #1216 M2).
+"""Declarative detector packs (#1216 M2).
 
 Small DSL v1: ``finditer`` + ``require_search`` + ``token_scan`` with preprocess
 (before / exclude AHL). Optional ``skip_if_match`` gates rules on a window regex.

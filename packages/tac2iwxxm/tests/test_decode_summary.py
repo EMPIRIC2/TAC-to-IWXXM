@@ -2,7 +2,7 @@
 
 ``DecodeResult.summary`` is a single flowing paragraph built from decoded values.
 Residuals append a trailing "Not decoded: …" clause. Sparse products (SIGMET/AIRMET/
-VAA/TCA) use "partial decode" wording. ADR-025.
+VAA/TCA) use "partial decode" wording. .
 """
 
 from __future__ import annotations

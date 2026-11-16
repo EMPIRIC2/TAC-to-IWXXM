@@ -1,4 +1,4 @@
-"""Versioned IWXXM writer-contract DDL and schema-diff (F16 / ADR-030).
+"""Versioned IWXXM writer-contract DDL and schema-diff (F16).
 
 Contract version ``1`` targets table ``iwxxm_reports`` used by multi-DB upload sinks.
 """

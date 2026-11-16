@@ -71,7 +71,7 @@ def test_t46_uj001_e2e_spec_present() -> None:
 
 
 def test_t46_packages_gifts_removed() -> None:
-    """Cutover deletes packages/gifts (ADR-014 / Q5=(ii))."""
+    """Cutover deletes packages/gifts (Q5=(ii))."""
     assert not GIFTS_PKG.exists(), (
         f"packages/gifts still present at {GIFTS_PKG}; T4.7 must delete it"
     )

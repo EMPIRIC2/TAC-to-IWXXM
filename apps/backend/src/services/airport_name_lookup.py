@@ -3,7 +3,7 @@
 Decode asks for the station in the report. The process keeps only the
 stations it has already resolved. It does not load the airport catalog.
 
-[Corpus: product §F3] [Corpus: product §F9] [Corpus: adr/ADR-049]
+[Corpus: product §F3] [Corpus: product §F9]
 """
 
 from __future__ import annotations

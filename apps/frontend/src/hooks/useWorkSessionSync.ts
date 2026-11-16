@@ -1,5 +1,5 @@
 /**
- * F5/F7.h debounced auto-save for the converter — browser IndexedDB (ADR-031).
+ * F5/F7.h debounced auto-save for the converter — browser IndexedDB ().
  * Honors F22 / TC-F31-005 guest work-history privacy gate.
  */
 

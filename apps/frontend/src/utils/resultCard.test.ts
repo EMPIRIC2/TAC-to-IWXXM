@@ -31,7 +31,7 @@ describe('result card status', () => {
     expect(isErrorSeverity('note')).toBe(false);
   });
 
-  it('codeBlocksPublish stays empty under ADR-054 (no code alone blocks download)', () => {
+  it('codeBlocksPublish stays empty under (no code alone blocks download)', () => {
     expect(codeBlocksPublish(undefined)).toBe(false);
     expect(codeBlocksPublish(null)).toBe(false);
     expect(codeBlocksPublish('OUTPUT_VALIDATION_WARNING')).toBe(false);
