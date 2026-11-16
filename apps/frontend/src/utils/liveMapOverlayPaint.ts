@@ -152,8 +152,8 @@ const paintWindVector: OverlayPainter = (map, cluster, at, options) => {
   ) {
     return null;
   }
-  const scale = options.magnitudeScale ?? DEFAULT_OVERLAY_MAGNITUDE_SCALE;
-  const size = windVectorSizePx(parsed.wind.speedKt, scale);
+  const { magnitudeScale = DEFAULT_OVERLAY_MAGNITUDE_SCALE } = options;
+  const size = windVectorSizePx(parsed.wind.speedKt, magnitudeScale);
   return addIconMarker(
     map,
     at,
@@ -169,9 +169,9 @@ const paintWindIntensity: OverlayPainter = (map, cluster, at, options) => {
   if (!parsed.wind) {
     return null;
   }
-  const scale = options.magnitudeScale ?? DEFAULT_OVERLAY_MAGNITUDE_SCALE;
+  const { magnitudeScale = DEFAULT_OVERLAY_MAGNITUDE_SCALE } = options;
   return L.circleMarker(at, {
-    radius: windIntensityRadius(parsed.wind.speedKt) * scale,
+    radius: windIntensityRadius(parsed.wind.speedKt) * magnitudeScale,
     color: '#0f766e',
     fillColor: '#14b8a6',
     fillOpacity: 0.35,
