@@ -140,7 +140,7 @@ class _ConvertAccumulator:
         base_offset: int = 0,
     ) -> None:
         """
-        Mark soft-preview Layer 1-2 failure and copy spans when present (ADR-022).
+        Mark soft-preview Layer 1-2 failure and copy spans when present.
 
         Examples
         --------

@@ -1,4 +1,4 @@
-"""Pydantic schemas for F5/F7 unified TAC work session API (ADR-020)."""
+"""Pydantic schemas for F5/F7 unified TAC work session API."""
 
 from __future__ import annotations
 

@@ -423,7 +423,7 @@ async def convert_continue(_prelude: dict[str, Any]) -> Any:
     if not include_nil_reasons:
         logger.info(
             "[CONVERT] include_nil_reasons=false accepted; tac2iwxxm may still emit "
-            "nilReason on NIL reports until engine honors the flag (ADR-024 placeholder)",
+            "nilReason on NIL reports until engine honors the flag (placeholder)",
         )
     acc = _ConvertAccumulator()
     validation_service = api_surface.ValidationService()
