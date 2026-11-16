@@ -1,6 +1,9 @@
 """Part 1 of ``airport_reconciliation.py`` (line-cap split)."""
 
+from __future__ import annotations
+
 import logging
+from dataclasses import dataclass
 from dataclasses import field as dc_field
 from enum import Enum
 from typing import Any
@@ -17,6 +20,7 @@ class DataSource(Enum):
     FALLBACK = 4  # Lowest priority
 
 
+@dataclass
 class ConflictLog:
     """
     Log entry for data conflicts.
@@ -46,6 +50,7 @@ class ConflictLog:
         return f"Conflict for {self.icao}.{self.field}: {values_str} → resolved to {self.winner}={self.resolution}"
 
 
+@dataclass
 class ReconciledAirport:
     """
     Reconciled airport data from multiple sources.

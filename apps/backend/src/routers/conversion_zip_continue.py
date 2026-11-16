@@ -2,32 +2,36 @@
 
 from __future__ import annotations
 
+import datetime
+import io
+import time
+import zipfile
 from typing import Any
+
+from fastapi.responses import StreamingResponse
+
+from src.routers.conversion_api_surface import api_surface
+from src.schemas.icao_opmet import TranslationStatus
+from src.services.validation import ValidationError as ValidationServiceError
+from src.utilities.conversion import ConversionError
+from src.utilities.tac_parser import extract_airport_code
 
 
 async def convert_zip_continue(_prelude: dict[str, Any]) -> Any:
     """Resume ``convert_zip`` after prelude."""
-    ConversionError = _prelude.get("ConversionError")
-    StreamingResponse = _prelude.get("StreamingResponse")
-    TranslationStatus = _prelude.get("TranslationStatus")
-    ValidationServiceError = _prelude.get("ValidationServiceError")
     _ = _prelude.get("_")
     airport_code = _prelude.get("airport_code")
-    api_surface = _prelude.get("api_surface")
     body_data = _prelude.get("body_data")
     bulletin_date = _prelude.get("bulletin_date")
     content = _prelude.get("content")
     data = _prelude.get("data")
-    datetime = _prelude.get("datetime")
     duration_ms = _prelude.get("duration_ms")
     e = _prelude.get("e")
     error_msg = _prelude.get("error_msg")
     errors = _prelude.get("errors")
-    extract_airport_code = _prelude.get("extract_airport_code")
     files = _prelude.get("files")
     fname = _prelude.get("fname")
     idx = _prelude.get("idx")
-    io = _prelude.get("io")
     iwxxm_version = _prelude.get("iwxxm_version")
     log_err = _prelude.get("log_err")
     logger = _prelude.get("logger")
@@ -48,7 +52,6 @@ async def convert_zip_continue(_prelude: dict[str, Any]) -> Any:
     source_name = _prelude.get("source_name")
     stamp = _prelude.get("stamp")
     start_time = _prelude.get("start_time")
-    time = _prelude.get("time")
     translation_id = _prelude.get("translation_id")
     translation_ids = _prelude.get("translation_ids")
     uf = _prelude.get("uf")
@@ -61,7 +64,6 @@ async def convert_zip_continue(_prelude: dict[str, Any]) -> Any:
     xml_rejection = _prelude.get("xml_rejection")
     xml_text = _prelude.get("xml_text")
     zf = _prelude.get("zf")
-    zipfile = _prelude.get("zipfile")
     for idx, metar_text in enumerate(metars_list, 1):
         if not metar_text.strip():
             continue
