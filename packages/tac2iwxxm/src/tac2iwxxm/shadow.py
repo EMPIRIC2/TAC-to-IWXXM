@@ -12,6 +12,7 @@ from typing import Any
 
 from tac_decoding.ir import project_ir
 from tac_decoding.match import MatchContext, MatchResult, match_tac
+from tac_decoding.models.ir import PackIr
 from tac_decoding.packs import load_packs
 
 from tac2iwxxm.convert import convert
@@ -42,7 +43,7 @@ class ShadowResult:
         Match.
     pack_id : str | None
         Pack ID.
-    pack_ir : dict[str, object] | None
+    pack_ir : PackIr | None
         Pack ir.
     legacy_ir : dict[str, Any] | None
         Legacy ir.
@@ -54,7 +55,7 @@ class ShadowResult:
     profile: str
     match: MatchResult | None
     pack_id: str | None
-    pack_ir: dict[str, object] | None
+    pack_ir: PackIr | None
     legacy_ir: dict[str, Any] | None
 
 
@@ -105,7 +106,7 @@ def convert_shadow(
     )
     matched: MatchResult | None = None
     pack_id: str | None = None
-    pack_ir: dict[str, object] | None = None
+    pack_ir: PackIr | None = None
     product_u = product.upper()
     # Prefer legacy IR for SIGMET pack selection; fall back to default IR.
     select_ir = legacy.ir if legacy.ok else result.ir

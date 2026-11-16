@@ -73,8 +73,6 @@ packages/iwxxm-validate/rust/src/lib.rs  # 1320
 packages/iwxxm-validate/src/iwxxm_validate/ca_eccc_validate.py  # 676
 packages/iwxxm-validate/src/iwxxm_validate/policy.py  # 579
 packages/iwxxm-validate/tests/test_iwxxm_validate_unit.py  # 874
-packages/tac-decoding/src/tac_decoding/decode.py  # 2900
-packages/tac-decoding/src/tac_decoding/packs.py  # 544
 packages/tac-validate/src/tac_validate/detectors.py  # 1244
 packages/tac-validate/src/tac_validate/issue_registry.py  # 1044
 packages/tac-validate/src/tac_validate/lint_profile_catalog.py  # 531

@@ -67,11 +67,29 @@ import {
   type StationCluster,
 } from '@/utils/liveMapStationCluster';
 import {
+  DEFAULT_OVERLAY_MAGNITUDE_SCALE,
+  LIVE_MAP_DISPLAY_MODES,
+  LIVE_MAP_MODE_GROUP,
+  LIVE_MAP_OVERLAY_SCALE,
+  LIVE_MAP_SHOW_LATEST,
+  LIVE_MAP_TEMP_C,
+  LIVE_MAP_TEMP_F,
+  LIVE_MAP_TEMP_UNIT,
+  clampOverlayMagnitudeScale,
+  selectLiveMapMode,
+  selectTempUnit,
+  showsAnnex3Products,
+  showsOverlayControls,
+  showsTemperatureControls,
+  type LiveMapDisplayMode,
+  type LiveMapTempUnit,
+} from '@/utils/liveMapModes';
+import {
   defaultTacOverlayVisibility,
   toggleTacOverlay,
   type TacOverlayVisibility,
 } from '@/utils/liveMapTacLayers';
-import { paintTacOverlays } from '@/utils/liveMapOverlayPaint';
+import { paintTacOverlays, paintTemperatureMarkers } from '@/utils/liveMapOverlayPaint';
 import {
   LIVE_MAP_ACTIVE_EMPTY,
   LIVE_MAP_FILTER_ACTIVE,
@@ -415,23 +433,30 @@ export function LiveWorldMap({
   useEffect(() => {
     openPlaceRef.current = onOpenPlace;
   }, [onOpenPlace]);
+  const [displayMode, setDisplayMode] = useState<LiveMapDisplayMode>('annex3');
   const [off, setOff] = useState<ReadonlySet<string>>(new Set());
   const [country, setCountry] = useState('all');
   const [region, setRegion] = useState('all');
-  const [timePreset, setTimePreset] = useState<MapTimePreset>('full');
+  const [timePreset, setTimePreset] = useState<MapTimePreset>('latest');
   const [phenomena, setPhenomena] = useState<ReadonlySet<string>>(new Set());
   const [tacOverlays, setTacOverlays] = useState<TacOverlayVisibility>(
     defaultTacOverlayVisibility,
   );
   const [activeTouched, setActiveTouched] = useState(false);
   const [activeOnlyManual, setActiveOnlyManual] = useState(false);
+  const [overlayScale, setOverlayScale] = useState(DEFAULT_OVERLAY_MAGNITUDE_SCALE);
+  const [tempUnit, setTempUnit] = useState<LiveMapTempUnit>('C');
   const [bounds, setBounds] = useState<MapBounds | null>(null);
   const [zoom, setZoom] = useState(2);
   const [places, setPlaces] = useState<LivePlace[]>([]);
   const [error, setError] = useState('');
   const [phase, setPhase] = useState<'loading' | 'ready' | 'refreshing'>('loading');
   const [refreshTick, setRefreshTick] = useState(0);
-  const products = selectedLayerQuery(off);
+  const annex3Mode = showsAnnex3Products(displayMode);
+  const overlaysMode = showsOverlayControls(displayMode);
+  const temperaturesMode = showsTemperatureControls(displayMode);
+  // Non–Annex 3 modes still need report geometry; fetch every product layer.
+  const products = annex3Mode ? selectedLayerQuery(off) : selectedLayerQuery(new Set());
   const loaded = bounds && products ? places : EMPTY_PLACES;
   const activeOnly = activeTouched ? activeOnlyManual : defaultActiveReportsOn(loaded);
   const countries = [
@@ -580,7 +605,16 @@ export function LiveWorldMap({
             reveal();
           }
           layers.push(layer);
-          layers.push(...paintTacOverlays(map, cluster, tacOverlays));
+          if (overlaysMode) {
+            layers.push(
+              ...paintTacOverlays(map, cluster, tacOverlays, {
+                magnitudeScale: overlayScale,
+              }),
+            );
+          }
+          if (temperaturesMode) {
+            layers.push(...paintTemperatureMarkers(map, cluster, tempUnit));
+          }
           return;
         }
         const layer = drawPlace(map, place, undefined, lngOffset);
@@ -638,7 +672,16 @@ export function LiveWorldMap({
         });
       });
     };
-  }, [visible, focusStation, zoom, tacOverlays]);
+  }, [
+    visible,
+    focusStation,
+    zoom,
+    tacOverlays,
+    overlayScale,
+    overlaysMode,
+    temperaturesMode,
+    tempUnit,
+  ]);
 
   useEffect(() => {
     const node = host.current as HTMLDivElement;
@@ -720,53 +763,90 @@ export function LiveWorldMap({
             {DECODE_VISUALS_FEEDBACK}
           </a>
         </p>
-        <div className="flex flex-col gap-2">
-          {LIVE_MAP_VIEWS.map((view) => (
-            <div key={view.id} className="flex flex-wrap items-center gap-2">
-              <span className="w-24 text-[11px] font-semibold tracking-wide text-gray-400 uppercase">
-                {view.label}
-              </span>
-              {view.products.map((product) => {
-                const on = !off.has(product);
-                const color = pinColor(product);
-                return (
-                  <label
-                    key={product}
-                    className={`inline-flex cursor-pointer items-center gap-2 rounded-full border px-3 py-1 text-sm font-medium transition ${
-                      on
-                        ? 'border-transparent text-white shadow-sm'
-                        : 'border-gray-200 bg-gray-50 text-gray-500 hover:border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-400'
-                    }`}
-                    style={on ? { backgroundColor: color } : undefined}
-                  >
-                    <input
-                      type="checkbox"
-                      className="sr-only"
-                      checked={on}
-                      data-testid={`layer-${product}`}
-                      onChange={() => {
-                        const next = new Set(off);
-                        if (next.has(product)) {
-                          next.delete(product);
-                        } else {
-                          next.add(product);
-                        }
-                        setOff(next);
-                      }}
-                    />
-                    <span
-                      aria-hidden="true"
-                      data-testid={`swatch-${product}`}
-                      className={`inline-block h-2 w-2 rounded-full ${on ? 'bg-white' : ''}`}
-                      style={on ? undefined : { backgroundColor: color }}
-                    />
-                    {productLabel(product)}
-                  </label>
-                );
-              })}
-            </div>
-          ))}
+        <div
+          className="mb-3 flex flex-wrap items-center gap-2"
+          role="radiogroup"
+          aria-label={LIVE_MAP_MODE_GROUP}
+          data-testid="live-map-mode-group"
+        >
+          <span className="text-[11px] font-semibold tracking-wide text-gray-400 uppercase">
+            {LIVE_MAP_MODE_GROUP}
+          </span>
+          {LIVE_MAP_DISPLAY_MODES.map((mode) => {
+            const on = displayMode === mode.id;
+            return (
+              <label
+                key={mode.id}
+                className={`inline-flex cursor-pointer items-center rounded-full border px-3 py-1 text-sm font-medium transition ${
+                  on
+                    ? 'border-gray-900 bg-gray-900 text-white dark:border-white dark:bg-white dark:text-gray-900'
+                    : 'border-gray-200 bg-white text-gray-600 hover:border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300'
+                }`}
+              >
+                <input
+                  type="radio"
+                  className="sr-only"
+                  name="live-map-display-mode"
+                  checked={on}
+                  data-testid={`live-map-mode-${mode.id}`}
+                  onChange={() => {
+                    setDisplayMode((current) => selectLiveMapMode(current, mode.id));
+                  }}
+                />
+                {mode.label}
+              </label>
+            );
+          })}
         </div>
+        {annex3Mode ? (
+          <div className="flex flex-col gap-2" data-testid="live-map-annex3-products">
+            {LIVE_MAP_VIEWS.map((view) => (
+              <div key={view.id} className="flex flex-wrap items-center gap-2">
+                <span className="w-24 text-[11px] font-semibold tracking-wide text-gray-400 uppercase">
+                  {view.label}
+                </span>
+                {view.products.map((product) => {
+                  const on = !off.has(product);
+                  const color = pinColor(product);
+                  return (
+                    <label
+                      key={product}
+                      className={`inline-flex cursor-pointer items-center gap-2 rounded-full border px-3 py-1 text-sm font-medium transition ${
+                        on
+                          ? 'border-transparent text-white shadow-sm'
+                          : 'border-gray-200 bg-gray-50 text-gray-500 hover:border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-400'
+                      }`}
+                      style={on ? { backgroundColor: color } : undefined}
+                    >
+                      <input
+                        type="checkbox"
+                        className="sr-only"
+                        checked={on}
+                        data-testid={`layer-${product}`}
+                        onChange={() => {
+                          const next = new Set(off);
+                          if (next.has(product)) {
+                            next.delete(product);
+                          } else {
+                            next.add(product);
+                          }
+                          setOff(next);
+                        }}
+                      />
+                      <span
+                        aria-hidden="true"
+                        data-testid={`swatch-${product}`}
+                        className={`inline-block h-2 w-2 rounded-full ${on ? 'bg-white' : ''}`}
+                        style={on ? undefined : { backgroundColor: color }}
+                      />
+                      {productLabel(product)}
+                    </label>
+                  );
+                })}
+              </div>
+            ))}
+          </div>
+        ) : null}
         <div className="mt-3 flex flex-wrap items-end gap-2 border-t border-gray-100 pt-3 dark:border-gray-800">
           <label className="flex flex-col gap-1 text-[11px] font-semibold tracking-wide text-gray-400 uppercase">
             {LIVE_MAP_FILTER_COUNTRY}
@@ -814,6 +894,7 @@ export function LiveWorldMap({
                 setTimePreset(event.target.value as MapTimePreset);
               }}
             >
+              <option value="latest">{LIVE_MAP_SHOW_LATEST}</option>
               <option value="1h">{LIVE_MAP_LAST_HOUR}</option>
               <option value="3h">{LIVE_MAP_LAST_3_HOURS}</option>
               <option value="6h">{LIVE_MAP_LAST_6_HOURS}</option>
@@ -821,41 +902,6 @@ export function LiveWorldMap({
               <option value="full">{LIVE_MAP_FULL_WINDOW}</option>
             </select>
           </label>
-        </div>
-        <div className="mt-3 flex flex-wrap items-center gap-2">
-          <span className="text-[11px] font-semibold tracking-wide text-gray-400 uppercase">
-            {LIVE_MAP_FILTER_PHENOMENON}
-          </span>
-          {LIVE_MAP_PHENOMENA.map((item) => {
-            const on = phenomena.has(item.id);
-            return (
-              <label
-                key={item.id}
-                className={`inline-flex cursor-pointer items-center rounded-full border px-3 py-1 text-sm font-medium transition ${
-                  on
-                    ? 'border-gray-900 bg-gray-900 text-white dark:border-white dark:bg-white dark:text-gray-900'
-                    : 'border-gray-200 bg-white text-gray-600 hover:border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300'
-                }`}
-              >
-                <input
-                  type="checkbox"
-                  className="sr-only"
-                  checked={on}
-                  data-testid={`phenomenon-${item.id}`}
-                  onChange={() => {
-                    const next = new Set(phenomena);
-                    if (next.has(item.id)) {
-                      next.delete(item.id);
-                    } else {
-                      next.add(item.id);
-                    }
-                    setPhenomena(next);
-                  }}
-                />
-                {item.label}
-              </label>
-            );
-          })}
         </div>
         <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-gray-100 pt-3 dark:border-gray-800">
           <label
@@ -881,13 +927,115 @@ export function LiveWorldMap({
             {LIVE_MAP_FILTER_ACTIVE}
           </label>
         </div>
-        <LiveMapTacOverlayToggles
-          visibility={tacOverlays}
-          places={visible}
-          onToggle={(id) => {
-            setTacOverlays((current) => toggleTacOverlay(current, id));
-          }}
-        />
+        {annex3Mode ? (
+          <div className="mt-3 flex flex-wrap items-center gap-2">
+            <span className="text-[11px] font-semibold tracking-wide text-gray-400 uppercase">
+              {LIVE_MAP_FILTER_PHENOMENON}
+            </span>
+            {LIVE_MAP_PHENOMENA.map((item) => {
+              const on = phenomena.has(item.id);
+              return (
+                <label
+                  key={item.id}
+                  className={`inline-flex cursor-pointer items-center rounded-full border px-3 py-1 text-sm font-medium transition ${
+                    on
+                      ? 'border-gray-900 bg-gray-900 text-white dark:border-white dark:bg-white dark:text-gray-900'
+                      : 'border-gray-200 bg-white text-gray-600 hover:border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300'
+                  }`}
+                >
+                  <input
+                    type="checkbox"
+                    className="sr-only"
+                    checked={on}
+                    data-testid={`phenomenon-${item.id}`}
+                    onChange={() => {
+                      const next = new Set(phenomena);
+                      if (next.has(item.id)) {
+                        next.delete(item.id);
+                      } else {
+                        next.add(item.id);
+                      }
+                      setPhenomena(next);
+                    }}
+                  />
+                  {item.label}
+                </label>
+              );
+            })}
+          </div>
+        ) : null}
+        {overlaysMode ? (
+          <>
+            <LiveMapTacOverlayToggles
+              visibility={tacOverlays}
+              places={visible}
+              onToggle={(id) => {
+                setTacOverlays((current) => toggleTacOverlay(current, id));
+              }}
+            />
+            <label
+              className="mt-2 flex flex-col gap-1 text-[11px] font-semibold tracking-wide text-gray-400 uppercase"
+              data-testid="live-map-overlay-scale"
+            >
+              {LIVE_MAP_OVERLAY_SCALE}
+              <input
+                type="range"
+                min={0.5}
+                max={2}
+                step={0.1}
+                value={overlayScale}
+                data-testid="live-map-overlay-scale-slider"
+                onChange={(event) => {
+                  setOverlayScale(
+                    clampOverlayMagnitudeScale(Number(event.target.value)),
+                  );
+                }}
+              />
+            </label>
+          </>
+        ) : null}
+        {temperaturesMode ? (
+          <div
+            className="mt-3 flex flex-wrap items-center gap-2 border-t border-gray-100 pt-3 dark:border-gray-800"
+            role="radiogroup"
+            aria-label={LIVE_MAP_TEMP_UNIT}
+            data-testid="live-map-temp-unit-group"
+          >
+            <span className="text-[11px] font-semibold tracking-wide text-gray-400 uppercase">
+              {LIVE_MAP_TEMP_UNIT}
+            </span>
+            {(
+              [
+                ['C', LIVE_MAP_TEMP_C],
+                ['F', LIVE_MAP_TEMP_F],
+              ] as const
+            ).map(([unit, label]) => {
+              const on = tempUnit === unit;
+              return (
+                <label
+                  key={unit}
+                  className={`inline-flex cursor-pointer items-center rounded-full border px-3 py-1 text-sm font-medium transition ${
+                    on
+                      ? 'border-orange-800 bg-orange-800 text-white'
+                      : 'border-gray-200 bg-white text-gray-600 hover:border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300'
+                  }`}
+                >
+                  <input
+                    type="radio"
+                    className="sr-only"
+                    name="live-map-temp-unit"
+                    checked={on}
+                    data-testid={`live-map-temp-unit-${unit}`}
+                    onChange={() => {
+                      setTempUnit((current) => selectTempUnit(current, unit));
+                    }}
+                  />
+                  {label}
+                </label>
+              );
+            })}
+          </div>
+        ) : null}
       </div>
       <div className="flex flex-wrap items-center justify-between gap-2 px-1">
         <p
