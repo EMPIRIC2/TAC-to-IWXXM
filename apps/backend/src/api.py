@@ -1,4 +1,7 @@
-"""Standalone backend API module for Docker deployment."""
+"""Standalone backend API module for Docker deployment.
+
+TD-3b routers use conversion_api_surface to avoid import cycles.
+"""
 
 from __future__ import annotations
 
