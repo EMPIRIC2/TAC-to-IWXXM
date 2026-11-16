@@ -262,3 +262,23 @@ def test_airport_validator_singleton_reuse() -> None:
     assert first is second
     assert third is first
     reset_airport_validator_for_tests()
+
+
+def test_postgres_list_stations_named_region_key() -> None:
+    engine = MagicMock()
+    store = PostgresStationHealthStore(engine)
+    conn = MagicMock()
+    connect_cm = MagicMock()
+    connect_cm.__enter__.return_value = conn
+    connect_cm.__exit__.return_value = None
+    engine.connect.return_value = connect_cm
+    station_result = MagicMock()
+    station_result.mappings.return_value = [
+        {"icao": "KJFK", "name": "JFK", "country": "US"},
+    ]
+    record_result = MagicMock()
+    record_result.mappings.return_value = []
+    conn.execute.side_effect = [station_result, record_result]
+    payload = store.list_stations(window_key="6h", region="IV", limit=10)
+    assert payload["window"] == "6h"
+    assert isinstance(payload["stations"], list)
